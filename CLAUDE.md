@@ -22,6 +22,12 @@ game UI app, an anime creator app, and later the avatar studio and the companion
 - **Determinism is a product requirement:** shots must replay and export bit-identically in WKWebView, Chromium and
   Node. That needs a fixed step and portable maths (AB-L-0345).
 
+## Repository
+
+[xocialize-code/vrmxa-game-engine](https://github.com/xocialize-code/vrmxa-game-engine), private, `main`. CI
+(`.github/workflows/ci.yml`) runs on Node 26 for every push and pull request. `reference/` and all VRM models are
+git-ignored; commit only what this session owns, staging by path.
+
 ## Where things are
 
 | Path | What |

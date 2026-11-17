@@ -68,7 +68,7 @@ Sizes are rough: S about a day, M a few days, L a week or more of focused work. 
 
 | # | Task | Workstream | Size | After | Delivers |
 |---|---|---|---|---|---|
-| W0 | AB-T-0501 | **Foundation** | S | (repo decision) | Workspace, test runner, `tsc --checkJs`, the determinism lint rule, `registry` and `scene` lifted from the spike with its 8 tests, `dmath` moved in |
+| W0 | AB-T-0501 | **Foundation** | S | (repo: done) | Workspace, test runner, `tsc --checkJs`, the determinism lint rule, `registry` and `scene` lifted from the spike with its 8 tests, `dmath` moved in |
 | W1 | AB-T-0502 | **Core runtime** | L | W0 | Node tree over three.js `Object3D`; lifecycle (`ready`, `process`, `physicsProcess`, `exitTree`); signals and connections (including paths into instances); tags; behaviours host with per-node state machine; instantiate a `.vrmxs` into a live tree; the 60 Hz clock with interpolation α, pause and time scale; seeded RNG streams; step-driven timers and tweens; autoload services |
 | W2 | AB-T-0503 | **Physics** | M | W1 | Adapter interface and Rapier deterministic build: bodies, colliders (scene and `KHR_physics` in GLBs), sensors with the spike's two gotchas handled, joints with limits and motors (the door), ray and shape casts, named layers and masks, snapshot and restore, debug render data |
 | W3 | AB-T-0504 | **Characters** | L | W1, W2 | Load `.vrmxa` through `vrmxa-core` and `.vrm` (0.x converted); vendored three-vrm with spring and look-at state; clip player driven from step time; animation state machine on VRMXA slots with `resolveSlots`; speed blend space; root motion; look-at; expressions; bone attachments; the kinematic character controller with jump |
@@ -92,8 +92,8 @@ content can start immediately.
 
 ## Decisions M0 still needs from you
 
-1. **Repository.** This folder isn't a git repository. M0 needs one: `git init` here, a private GitHub remote under
-   the usual org, and the spikes either kept as history or moved to an `archive/` folder. This blocks W0.
+1. **Repository.** *Done 2026-11-17:* [xocialize-code/vrmxa-game-engine](https://github.com/xocialize-code/vrmxa-game-engine)
+   (private, `main`), with the spikes kept in place and CI on Node 26. W0 is unblocked.
 2. **Plain JavaScript with JSDoc types**, matching `vrmxa-core`, rather than TypeScript with a build step. Behaviours
    (user scripts) can still be TypeScript. Assumed in this plan.
 3. **Sample content licences.** The spike models (VRoid samples) are git-ignored and may not be shippable. M0 can use
