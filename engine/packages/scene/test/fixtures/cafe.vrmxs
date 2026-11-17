@@ -1,0 +1,30 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "scene-cafe",
+  "assets": [
+    {"id":"cafe","type":"glb","ref":"sets/cafe.glb","sha256":"3333333333333333333333333333333333333333333333333333333333333333"},
+    {"id":"hana","type":"vrmxa","ref":"characters/hana.vrmxa","sha256":"4444444444444444444444444444444444444444444444444444444444444444"},
+    {"id":"door","type":"vrmxs","ref":"prefabs/door.vrmxs","sha256":"2222222222222222222222222222222222222222222222222222222222222222"},
+    {"id":"double","type":"vrmxs","ref":"prefabs/double-door.vrmxs","sha256":"5555555555555555555555555555555555555555555555555555555555555555"}
+  ],
+  "nodes": [
+    {"id":"root","type":"Node3D","name":"Cafe"},
+    {"id":"set","type":"Model","parent":"root","asset":"cafe"},
+    {"id":"sun","type":"DirectionalLight","parent":"root","transform":{"q":[-0.383,0,0,0.924]},"props":{"intensity":2.5}},
+    {"id":"door-1","type":"Instance","parent":"root","asset":"door","transform":{"p":[2,0,-3],"q":[0,0.707,0,0.707]},"overrides":{"hinge":{"behaviours":[{"locked":true,"use":"hinge"}]}}},
+    {"id":"entrance","type":"Instance","parent":"root","asset":"double","transform":{"p":[0,0,6]},"overrides":{"left/hinge":{"props":{"mass":20}}}},
+    {"id":"spawn","type":"Marker","parent":"root","transform":{"p":[0,0,4]},"props":{"purpose":"spawn"}},
+    {"id":"hana-1","type":"Character","parent":"root","asset":"hana","transform":{"p":[0,0,0]},"props":{"controller":"npc","outfit":"casual"},"behaviours":[{"radius":4,"use":"wander"}]},
+    {"id":"cam","type":"Camera","parent":"root","transform":{"p":[0,1.5,4]},"props":{"fStop":1.8,"focalLength":50,"focusDistance":4,"preset":"follow","target":"hana-1"}}
+  ],
+  "connections": [
+    {"from":"door-1","signal":"ready","to":"hana-1","call":"lookAt","args":{"target":"door-1"}}
+  ],
+  "settings": {
+    "physics": {
+      "build": "deterministic",
+      "hz": 60
+    }
+  }
+}

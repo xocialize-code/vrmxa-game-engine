@@ -26,7 +26,8 @@ game UI app, an anime creator app, and later the avatar studio and the companion
 
 [xocialize-code/vrmxa-game-engine](https://github.com/xocialize-code/vrmxa-game-engine), private, `main`. CI
 (`.github/workflows/ci.yml`) runs on Node 26 for every push and pull request. `reference/` and all VRM models are
-git-ignored; commit only what this session owns, staging by path.
+git-ignored; commit only what this session owns, staging by path. `npm run check` at the root runs lint (with
+`vrmxg/deterministic` on packages marked `"vrmxg": { "determinism": "simulation" }`), the type check and every package's tests.
 
 ## Where things are
 

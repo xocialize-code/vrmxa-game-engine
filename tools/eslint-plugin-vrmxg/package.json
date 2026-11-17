@@ -1,0 +1,9 @@
+{
+  "name": "eslint-plugin-vrmxg",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ESLint rules for VRMXG. vrmxg/deterministic enforces the determinism boundary (AB-D-0248) in simulation packages.",
+  "type": "module",
+  "exports": { ".": "./index.js" },
+  "scripts": { "test": "node --test test/" }
+}

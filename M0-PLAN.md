@@ -27,8 +27,8 @@ No editor (M1), no items or closet at run time (M1), no sequencer, post stack, p
 
 ## Shape of the code
 
-One npm workspace in this folder, plain JavaScript ES modules with JSDoc types checked by `tsc --checkJs` (the
-convention `vrmxa-core` already uses), no build step for the packages themselves.
+One npm workspace in this folder, plain JavaScript ES modules with JSDoc types checked by `tsc --checkJs`, no build
+step for the packages themselves. (`vrmxa-core` is plain JavaScript too, but without type checking.)
 
 ```
 engine/
@@ -94,8 +94,9 @@ content can start immediately.
 
 1. **Repository.** *Done 2026-11-17:* [xocialize-code/vrmxa-game-engine](https://github.com/xocialize-code/vrmxa-game-engine)
    (private, `main`), with the spikes kept in place and CI on Node 26. W0 is unblocked.
-2. **Plain JavaScript with JSDoc types**, matching `vrmxa-core`, rather than TypeScript with a build step. Behaviours
-   (user scripts) can still be TypeScript. Assumed in this plan.
+2. **Plain JavaScript with JSDoc types**, like `vrmxa-core`'s plain JavaScript but type-checked, rather than
+   TypeScript with a build step. Behaviours (user scripts) can still be TypeScript. Assumed in this plan; W0 sets
+   it up with `strict` off to start.
 3. **Sample content licences.** The spike models (VRoid samples) are git-ignored and may not be shippable. M0 can use
    `spec.vrm` (ours), `vrmxa-core`'s starter animation sets if their licences allow, and CC0 clips (PRD Q9: mesh2motion).
 

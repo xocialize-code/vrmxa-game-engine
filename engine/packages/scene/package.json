@@ -1,0 +1,20 @@
+{
+  "name": "@vrmxg/scene",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG .vrmxs scenes: JSON Schema from the registry, canonical line-stable I/O, lint, prefab flattening, and edits with undo.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/registry": "0.1.0",
+    "ajv": "8.20.0"
+  },
+  "vrmxg": { "determinism": "tooling" }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@vrmxg/registry",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The VRMXG node registry: node types with typed props, signals and actions, and behaviours. Schemas, validation, the inspector and MCP tools are generated from it.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./m0": "./src/m0-nodes.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "vrmxg": { "determinism": "tooling" }
+}

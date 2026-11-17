@@ -1,0 +1,25 @@
+{
+  "name": "vrmxg",
+  "private": true,
+  "description": "VRMXG engine workspace: engine packages and (later) apps",
+  "type": "module",
+  "workspaces": [
+    "engine/packages/*",
+    "tools/*"
+  ],
+  "scripts": {
+    "test": "npm test --workspaces --if-present",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint engine tools eslint.config.js",
+    "check": "npm run lint && npm run typecheck && npm test"
+  },
+  "engines": {
+    "node": ">=26"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "eslint": "10.15.0",
+    "globals": "17.14.0",
+    "typescript": "7.0.2"
+  }
+}
