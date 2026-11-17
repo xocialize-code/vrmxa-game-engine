@@ -1,0 +1,22 @@
+{
+  "name": "@vrmxg/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The VRMXG runtime core: node tree over three.js, lifecycle, signals, behaviours and state machines, scene instantiation, the fixed 60 Hz clock, seeded RNG streams, step-driven timers and tweens, autoload services.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/scene": "0.1.0",
+    "three": "0.187.0"
+  },
+  "vrmxg": { "determinism": "simulation" }
+}

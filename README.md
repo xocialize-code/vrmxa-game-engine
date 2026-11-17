@@ -15,7 +15,7 @@ input, audio, NPC AI, capture) for a new editor app, a game UI app and an anime 
 
 | Path | What |
 |---|---|
-| `engine/packages/` | Engine packages: `dmath`, `registry`, `scene` so far; the rest arrive with M0 ([M0-PLAN.md](M0-PLAN.md)) |
+| `engine/packages/` | Engine packages: `dmath`, `registry`, `scene`, `core` so far; the rest arrive with M0 ([M0-PLAN.md](M0-PLAN.md)) |
 | `tools/` | Workspace tooling: the ESLint plugin |
 | `spike-*/` | Throwaway spikes, each with a README (verdict, results, how to run) and raw results |
 | `research/` | Research reports: cinematics, NPC AI |
@@ -33,6 +33,7 @@ npm run check        # lint (incl. the determinism rule), typecheck, every packa
 | `engine/packages/dmath` | Portable maths, bit-identical in V8 and JSC (simulation) |
 | `engine/packages/registry` | Node types, props, signals, actions, behaviours |
 | `engine/packages/scene` | `.vrmxs` schema, canonical I/O, lint, prefab flattening, undoable edits |
+| `engine/packages/core` | Node tree, lifecycle, signals, behaviours, state machines, 60 Hz clock, RNG streams, timers, tweens (simulation) |
 | `tools/eslint-plugin-vrmxg` | `vrmxg/deterministic`: the determinism boundary as a lint rule |
 
 The character, particle and export spikes need VRM models that aren't in the repository (see `.gitignore`); their
