@@ -1,0 +1,18 @@
+{
+  "note": "FNV-1a over output bits for test/cases.js inputs + edges; must match in every engine",
+  "runtime": "node v26.12.1",
+  "digests": {
+    "sin": "50d75957",
+    "cos": "1fe3ea3d",
+    "tan": "590dd09d",
+    "asin": "50d8993a",
+    "acos": "37222d11",
+    "atan": "f1a63c66",
+    "atan2": "515eec13",
+    "exp": "36e52b89",
+    "log": "f310464b",
+    "pow": "6ffd9f6d",
+    "cbrt": "d17b01a9",
+    "hypot": "d7af2d92"
+  }
+}

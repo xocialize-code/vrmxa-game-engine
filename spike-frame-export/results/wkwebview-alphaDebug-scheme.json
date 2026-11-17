@@ -1,0 +1,33 @@
+{
+  "attrs" : {
+    "alpha" : true,
+    "antialias" : true,
+    "depth" : true,
+    "failIfMajorPerformanceCaveat" : false,
+    "powerPreference" : "high-performance",
+    "premultipliedAlpha" : true,
+    "preserveDrawingBuffer" : false,
+    "stencil" : false
+  },
+  "full" : 154608,
+  "planMs" : 243,
+  "top" : [
+    [
+      255,
+      154608
+    ],
+    [
+      191,
+      1111
+    ],
+    [
+      128,
+      1007
+    ],
+    [
+      64,
+      978
+    ]
+  ],
+  "zero" : 1915896
+}

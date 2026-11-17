@@ -1,0 +1,547 @@
+{
+  "agent" : {
+    "climb" : 0.34999999999999998,
+    "height" : 1.7,
+    "maxAccel" : 12,
+    "maxSpeed" : 3.5,
+    "radius" : 0.29999999999999999,
+    "slope" : 45
+  },
+  "backends" : {
+    "navcat" : {
+      "bake" : {
+        "solo" : {
+          "coldMs" : 108,
+          "polys" : 110,
+          "warmMedianMs" : 51
+        },
+        "tiled" : {
+          "coldMs" : 47,
+          "polys" : 214,
+          "tiles" : 81,
+          "warmMedianMs" : 43
+        }
+      },
+      "coupled" : {
+        "50-free" : {
+          "arrivals" : 50,
+          "doorMs" : [
+            1,
+            1
+          ],
+          "drift" : {
+            "lastMean" : 0.52100000000000002,
+            "max" : 2.3450000000000002,
+            "meanOfMeans" : 0.28689999999999999
+          },
+          "hash" : "858b2943",
+          "maxNavGap" : 0.27600000000000002,
+          "repeatable" : null,
+          "resets" : 0,
+          "stuck" : 0,
+          "timing" : {
+            "controllersAndPhysics" : {
+              "max" : 2,
+              "mean" : 1.2969999999999999,
+              "p50" : 1,
+              "p95" : 2
+            },
+            "crowd" : {
+              "max" : 1,
+              "mean" : 0.30199999999999999,
+              "p50" : 0,
+              "p95" : 1
+            },
+            "total" : {
+              "max" : 3,
+              "mean" : 1.5980000000000001,
+              "p50" : 2,
+              "p95" : 2
+            }
+          }
+        },
+        "50-sync" : {
+          "arrivals" : 59,
+          "doorMs" : [
+            1,
+            1
+          ],
+          "drift" : {
+            "lastMean" : 0.001,
+            "max" : 0.127,
+            "meanOfMeans" : 0.0019
+          },
+          "hash" : "f6a04ea6",
+          "maxNavGap" : 0.27600000000000002,
+          "repeatable" : true,
+          "resets" : 0,
+          "stuck" : 0,
+          "timing" : {
+            "controllersAndPhysics" : {
+              "max" : 3,
+              "mean" : 1.288,
+              "p50" : 1,
+              "p95" : 2
+            },
+            "crowd" : {
+              "max" : 1,
+              "mean" : 0.29699999999999999,
+              "p50" : 0,
+              "p95" : 1
+            },
+            "total" : {
+              "max" : 3,
+              "mean" : 1.585,
+              "p50" : 2,
+              "p95" : 2
+            }
+          }
+        },
+        "200-free" : {
+          "arrivals" : 156,
+          "doorMs" : [
+            1,
+            2
+          ],
+          "drift" : {
+            "lastMean" : 0.41799999999999998,
+            "max" : 1.008,
+            "meanOfMeans" : 0.2361
+          },
+          "hash" : "f78775e8",
+          "maxNavGap" : 0.27200000000000002,
+          "repeatable" : null,
+          "resets" : 0,
+          "stuck" : 0,
+          "timing" : {
+            "controllersAndPhysics" : {
+              "max" : 6,
+              "mean" : 5.2270000000000003,
+              "p50" : 5,
+              "p95" : 6
+            },
+            "crowd" : {
+              "max" : 5,
+              "mean" : 2.347,
+              "p50" : 2,
+              "p95" : 3
+            },
+            "total" : {
+              "max" : 11,
+              "mean" : 7.5730000000000004,
+              "p50" : 8,
+              "p95" : 8
+            }
+          }
+        },
+        "200-sync" : {
+          "arrivals" : 172,
+          "doorMs" : [
+            1,
+            2
+          ],
+          "drift" : {
+            "lastMean" : 0.0040000000000000001,
+            "max" : 0.42499999999999999,
+            "meanOfMeans" : 0.0089999999999999993
+          },
+          "hash" : "2d991d2a",
+          "maxNavGap" : 0.27200000000000002,
+          "repeatable" : true,
+          "resets" : 0,
+          "stuck" : 0,
+          "timing" : {
+            "controllersAndPhysics" : {
+              "max" : 6,
+              "mean" : 5.1520000000000001,
+              "p50" : 5,
+              "p95" : 6
+            },
+            "crowd" : {
+              "max" : 6,
+              "mean" : 2.327,
+              "p50" : 2,
+              "p95" : 3
+            },
+            "total" : {
+              "max" : 11,
+              "mean" : 7.4779999999999998,
+              "p50" : 7,
+              "p95" : 8
+            }
+          }
+        }
+      },
+      "crowd" : {
+        "10" : {
+          "arrivals" : 8,
+          "doorMs" : [
+            1,
+            1
+          ],
+          "hash" : "17dda427",
+          "repeatable" : true,
+          "timing" : {
+            "max" : 1,
+            "mean" : 0.048000000000000001,
+            "p50" : 0,
+            "p95" : 0
+          }
+        },
+        "50" : {
+          "arrivals" : 67,
+          "doorMs" : [
+            2,
+            1
+          ],
+          "hash" : "1437178a",
+          "repeatable" : true,
+          "timing" : {
+            "max" : 2,
+            "mean" : 0.20499999999999999,
+            "p50" : 0,
+            "p95" : 1
+          }
+        },
+        "200" : {
+          "arrivals" : 178,
+          "doorMs" : [
+            2,
+            1
+          ],
+          "hash" : "db4018a7",
+          "repeatable" : true,
+          "timing" : {
+            "max" : 4,
+            "mean" : 1.5649999999999999,
+            "p50" : 2,
+            "p95" : 2
+          }
+        }
+      },
+      "crowdSnapshot" : {
+        "hashA" : "33a19f40",
+        "hashB" : "33a19f40",
+        "identical" : true,
+        "jsonBytes" : 1110432,
+        "restoreMs" : 2,
+        "supported" : true,
+        "takeMs" : 4
+      },
+      "debugTriangles" : 793,
+      "door" : {
+        "closeMs" : {
+          "max" : 1,
+          "mean" : 1,
+          "p50" : 1,
+          "p95" : 1
+        },
+        "openMs" : {
+          "max" : 1,
+          "mean" : 1,
+          "p50" : 1,
+          "p95" : 1
+        },
+        "pathLength" : {
+          "closed" : 22.609999999999999,
+          "open" : 14,
+          "reopened" : 14
+        },
+        "tilesTouched" : 2
+      },
+      "initMs" : 0,
+      "input" : {
+        "triangles" : 4756,
+        "vertices" : 2505
+      },
+      "library" : "navcat",
+      "offMeshLink" : {
+        "afterRemove" : 7.0019999999999998,
+        "baked" : 2.2200000000000002,
+        "bakedReverse" : 7.0019999999999998,
+        "bakeWithLinkMs" : 35,
+        "runtime" : 2.2200000000000002,
+        "runtimeAddMs" : 0,
+        "runtimeRemoveMs" : 0,
+        "without" : 7.0019999999999998
+      },
+      "pathQuery" : {
+        "found" : 200,
+        "meanMs" : 0.014999999999999999,
+        "pairs" : 200
+      },
+      "version" : "0.4.1"
+    },
+    "recast" : {
+      "bake" : {
+        "solo" : {
+          "coldMs" : 38,
+          "polys" : 107,
+          "warmMedianMs" : 14
+        },
+        "tiled" : {
+          "coldMs" : 22,
+          "polys" : 102,
+          "tiles" : 81,
+          "warmMedianMs" : 14
+        }
+      },
+      "coupled" : {
+        "50-free" : {
+          "arrivals" : 52,
+          "doorMs" : [
+            1,
+            0
+          ],
+          "drift" : {
+            "lastMean" : 0.48399999999999999,
+            "max" : 2.3479999999999999,
+            "meanOfMeans" : 0.27639999999999998
+          },
+          "hash" : "39312eaa",
+          "maxNavGap" : 0.58399999999999996,
+          "repeatable" : null,
+          "resets" : 0,
+          "stuck" : 0,
+          "timing" : {
+            "controllersAndPhysics" : {
+              "max" : 2,
+              "mean" : 1.272,
+              "p50" : 1,
+              "p95" : 2
+            },
+            "crowd" : {
+              "max" : 1,
+              "mean" : 0.082000000000000003,
+              "p50" : 0,
+              "p95" : 1
+            },
+            "total" : {
+              "max" : 2,
+              "mean" : 1.353,
+              "p50" : 1,
+              "p95" : 2
+            }
+          }
+        },
+        "50-sync" : {
+          "arrivals" : 62,
+          "doorMs" : [
+            0,
+            0
+          ],
+          "drift" : {
+            "lastMean" : 0.0030000000000000001,
+            "max" : 0.127,
+            "meanOfMeans" : 0.0019
+          },
+          "hash" : "5cafa1cd",
+          "maxNavGap" : 0.58399999999999996,
+          "repeatable" : true,
+          "resets" : 0,
+          "stuck" : 0,
+          "timing" : {
+            "controllersAndPhysics" : {
+              "max" : 5,
+              "mean" : 1.3069999999999999,
+              "p50" : 1,
+              "p95" : 2
+            },
+            "crowd" : {
+              "max" : 1,
+              "mean" : 0.074999999999999997,
+              "p50" : 0,
+              "p95" : 1
+            },
+            "total" : {
+              "max" : 5,
+              "mean" : 1.3819999999999999,
+              "p50" : 1,
+              "p95" : 2
+            }
+          }
+        },
+        "200-free" : {
+          "arrivals" : 163,
+          "doorMs" : [
+            0,
+            0
+          ],
+          "drift" : {
+            "lastMean" : 0.433,
+            "max" : 2.7000000000000002,
+            "meanOfMeans" : 0.24110000000000001
+          },
+          "hash" : "1fa6fe17",
+          "maxNavGap" : 0.68500000000000005,
+          "repeatable" : null,
+          "resets" : 0,
+          "stuck" : 0,
+          "timing" : {
+            "controllersAndPhysics" : {
+              "max" : 6,
+              "mean" : 5.1420000000000003,
+              "p50" : 5,
+              "p95" : 6
+            },
+            "crowd" : {
+              "max" : 1,
+              "mean" : 0.64500000000000002,
+              "p50" : 1,
+              "p95" : 1
+            },
+            "total" : {
+              "max" : 7,
+              "mean" : 5.7869999999999999,
+              "p50" : 6,
+              "p95" : 6
+            }
+          }
+        },
+        "200-sync" : {
+          "arrivals" : 152,
+          "doorMs" : [
+            0,
+            1
+          ],
+          "drift" : {
+            "lastMean" : 0.0060000000000000001,
+            "max" : 0.26000000000000001,
+            "meanOfMeans" : 0.0092999999999999992
+          },
+          "hash" : "df440436",
+          "maxNavGap" : 0.68500000000000005,
+          "repeatable" : true,
+          "resets" : 0,
+          "stuck" : 0,
+          "timing" : {
+            "controllersAndPhysics" : {
+              "max" : 6,
+              "mean" : 5.093,
+              "p50" : 5,
+              "p95" : 6
+            },
+            "crowd" : {
+              "max" : 1,
+              "mean" : 0.65000000000000002,
+              "p50" : 1,
+              "p95" : 1
+            },
+            "total" : {
+              "max" : 7,
+              "mean" : 5.7430000000000003,
+              "p50" : 6,
+              "p95" : 6
+            }
+          }
+        }
+      },
+      "crowd" : {
+        "10" : {
+          "arrivals" : 7,
+          "doorMs" : [
+            0,
+            0
+          ],
+          "hash" : "1d0ca378",
+          "repeatable" : true,
+          "timing" : {
+            "max" : 1,
+            "mean" : 0.012,
+            "p50" : 0,
+            "p95" : 0
+          }
+        },
+        "50" : {
+          "arrivals" : 62,
+          "doorMs" : [
+            0,
+            0
+          ],
+          "hash" : "1dbeb21d",
+          "repeatable" : true,
+          "timing" : {
+            "max" : 1,
+            "mean" : 0.071999999999999995,
+            "p50" : 0,
+            "p95" : 1
+          }
+        },
+        "200" : {
+          "arrivals" : 170,
+          "doorMs" : [
+            0,
+            0
+          ],
+          "hash" : "3ed9e129",
+          "repeatable" : true,
+          "timing" : {
+            "max" : 2,
+            "mean" : 0.59499999999999997,
+            "p50" : 1,
+            "p95" : 1
+          }
+        }
+      },
+      "crowdSnapshot" : {
+        "supported" : false,
+        "why" : "dtCrowd state (corridors, path queue, boundaries) lives in WASM; no snapshot API"
+      },
+      "debugTriangles" : 206,
+      "door" : {
+        "closeMs" : {
+          "max" : 0,
+          "mean" : 0,
+          "p50" : 0,
+          "p95" : 0
+        },
+        "openMs" : {
+          "max" : 1,
+          "mean" : 0.10000000000000001,
+          "p50" : 0,
+          "p95" : 1
+        },
+        "pathLength" : {
+          "closed" : 22.611000000000001,
+          "open" : 14,
+          "reopened" : 14
+        },
+        "tilesTouched" : 2
+      },
+      "initMs" : 12,
+      "input" : {
+        "triangles" : 4756,
+        "vertices" : 2505
+      },
+      "library" : "recast-navigation",
+      "offMeshLink" : {
+        "baked" : 1.9570000000000001,
+        "bakedReverse" : 6.5979999999999999,
+        "bakeWithLinkMs" : 14,
+        "runtime" : "not supported on a tile-cache navmesh",
+        "without" : 6.5979999999999999
+      },
+      "pathQuery" : {
+        "found" : 200,
+        "meanMs" : 0.01,
+        "pairs" : 200
+      },
+      "version" : "0.44.0"
+    }
+  },
+  "env" : {
+    "crossOriginIsolated" : true,
+    "isSecureContext" : true,
+    "origin" : "vrmxg-nav:\/\/app",
+    "runtime" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "sharedArrayBuffer" : false,
+    "timerResolutionMs" : 1
+  },
+  "rapier" : {
+    "initMs" : 17,
+    "version" : "0.21.0"
+  },
+  "seed" : 20261117,
+  "steps" : 600,
+  "when" : "2026-11-17T19:15:59.288Z"
+}

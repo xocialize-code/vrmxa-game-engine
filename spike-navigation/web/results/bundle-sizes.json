@@ -1,0 +1,30 @@
+{
+  "recast-navigation (core + generators: bake, tile cache, crowd, queries)": {
+    "minKB": 815.3,
+    "gzipKB": 227.6
+  },
+  "@recast-navigation/three helpers (on top)": {
+    "minKB": 3.6,
+    "gzipKB": 1.4
+  },
+  "navcat (bake solo + tiled, crowd, queries, off-mesh)": {
+    "minKB": 229.2,
+    "gzipKB": 59.7
+  },
+  "navcat (tree-shaken: what this spike imports)": {
+    "minKB": 162.8,
+    "gzipKB": 43.7
+  },
+  "navcat/three helpers (on top)": {
+    "minKB": 9.9,
+    "gzipKB": 2.7
+  },
+  "three-pathfinding (queries only, no baking)": {
+    "minKB": 13.2,
+    "gzipKB": 4.1
+  },
+  "yuka (whole library: navmesh queries, steering, no baking)": {
+    "minKB": 149.2,
+    "gzipKB": 33.2
+  }
+}

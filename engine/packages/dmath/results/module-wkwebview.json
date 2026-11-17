@@ -1,0 +1,502 @@
+[
+  {
+    "case" : "check=1",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "result" : {
+      "digestsMatchGolden" : true,
+      "goldenRuntime" : "node v26.12.1",
+      "mismatched" : [
+
+      ],
+      "report" : {
+        "acos" : {
+          "digest" : "37222d11",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 8,
+          "hist" : {
+            "0" : 1670,
+            "1" : 330,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            -0.1506096082739532
+          ]
+        },
+        "asin" : {
+          "digest" : "50d8993a",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 9,
+          "hist" : {
+            "0" : 1829,
+            "1" : 171,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            -0.1506096082739532
+          ]
+        },
+        "atan" : {
+          "digest" : "f1a63c66",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 10,
+          "hist" : {
+            "0" : 1917,
+            "1" : 83,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            -3.2098926864564419
+          ]
+        },
+        "atan2" : {
+          "digest" : "515eec13",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 21,
+          "hist" : {
+            "0" : 1651,
+            "1" : 349,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            3.5055991960689425,
+            -4.5737255597487092
+          ]
+        },
+        "cbrt" : {
+          "digest" : "d17b01a9",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 10,
+          "hist" : {
+            "0" : 1755,
+            "1" : 245,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            1.8282129941508174
+          ]
+        },
+        "cos" : {
+          "digest" : "1fe3ea3d",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 7,
+          "hist" : {
+            "0" : 1920,
+            "1" : 80,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            12554.331356659532
+          ]
+        },
+        "exp" : {
+          "digest" : "36e52b89",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 12,
+          "hist" : {
+            "0" : 1806,
+            "1" : 194,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            241.36825376190245
+          ]
+        },
+        "hypot" : {
+          "digest" : "d7af2d92",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 11,
+          "hist" : {
+            "0" : 1624,
+            "1" : 373,
+            "2" : 3,
+            "more" : 0
+          },
+          "maxUlp" : 2,
+          "random" : 2000,
+          "worstArgs" : [
+            -2.0589969027787447,
+            -7.239604857750237
+          ]
+        },
+        "log" : {
+          "digest" : "f310464b",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 11,
+          "hist" : {
+            "0" : 1941,
+            "1" : 59,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            0.81920660406377477
+          ]
+        },
+        "pow" : {
+          "digest" : "6ffd9f6d",
+          "edgeMismatch" : [
+            {
+              "args" : [
+                "10",
+                "308"
+              ],
+              "native" : "1.0000000000000006e+308",
+              "ours" : "1e+308"
+            }
+          ],
+          "edges" : 35,
+          "hist" : {
+            "0" : 1810,
+            "1" : 190,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            903.12801233083826,
+            39.258696530014277
+          ]
+        },
+        "sin" : {
+          "digest" : "50d75957",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 10,
+          "hist" : {
+            "0" : 1907,
+            "1" : 93,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            -8.6631999630481005
+          ]
+        },
+        "tan" : {
+          "digest" : "590dd09d",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 9,
+          "hist" : {
+            "0" : 1226,
+            "1" : 748,
+            "2" : 26,
+            "more" : 0
+          },
+          "maxUlp" : 2,
+          "random" : 2000,
+          "worstArgs" : [
+            2.1374529555439947
+          ]
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "check=1",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "result" : {
+      "digestsMatchGolden" : true,
+      "goldenRuntime" : "node v26.12.1",
+      "mismatched" : [
+
+      ],
+      "report" : {
+        "acos" : {
+          "digest" : "37222d11",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 8,
+          "hist" : {
+            "0" : 1670,
+            "1" : 330,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            -0.1506096082739532
+          ]
+        },
+        "asin" : {
+          "digest" : "50d8993a",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 9,
+          "hist" : {
+            "0" : 1829,
+            "1" : 171,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            -0.1506096082739532
+          ]
+        },
+        "atan" : {
+          "digest" : "f1a63c66",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 10,
+          "hist" : {
+            "0" : 1917,
+            "1" : 83,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            -3.2098926864564419
+          ]
+        },
+        "atan2" : {
+          "digest" : "515eec13",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 21,
+          "hist" : {
+            "0" : 1651,
+            "1" : 349,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            3.5055991960689425,
+            -4.5737255597487092
+          ]
+        },
+        "cbrt" : {
+          "digest" : "d17b01a9",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 10,
+          "hist" : {
+            "0" : 1755,
+            "1" : 245,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            1.8282129941508174
+          ]
+        },
+        "cos" : {
+          "digest" : "1fe3ea3d",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 7,
+          "hist" : {
+            "0" : 1920,
+            "1" : 80,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            12554.331356659532
+          ]
+        },
+        "exp" : {
+          "digest" : "36e52b89",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 12,
+          "hist" : {
+            "0" : 1806,
+            "1" : 194,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            241.36825376190245
+          ]
+        },
+        "hypot" : {
+          "digest" : "d7af2d92",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 11,
+          "hist" : {
+            "0" : 1624,
+            "1" : 373,
+            "2" : 3,
+            "more" : 0
+          },
+          "maxUlp" : 2,
+          "random" : 2000,
+          "worstArgs" : [
+            -2.0589969027787447,
+            -7.239604857750237
+          ]
+        },
+        "log" : {
+          "digest" : "f310464b",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 11,
+          "hist" : {
+            "0" : 1941,
+            "1" : 59,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            0.81920660406377477
+          ]
+        },
+        "pow" : {
+          "digest" : "6ffd9f6d",
+          "edgeMismatch" : [
+            {
+              "args" : [
+                "10",
+                "308"
+              ],
+              "native" : "1.0000000000000006e+308",
+              "ours" : "1e+308"
+            }
+          ],
+          "edges" : 35,
+          "hist" : {
+            "0" : 1810,
+            "1" : 190,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            903.12801233083826,
+            39.258696530014277
+          ]
+        },
+        "sin" : {
+          "digest" : "50d75957",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 10,
+          "hist" : {
+            "0" : 1907,
+            "1" : 93,
+            "2" : 0,
+            "more" : 0
+          },
+          "maxUlp" : 1,
+          "random" : 2000,
+          "worstArgs" : [
+            -8.6631999630481005
+          ]
+        },
+        "tan" : {
+          "digest" : "590dd09d",
+          "edgeMismatch" : [
+
+          ],
+          "edges" : 9,
+          "hist" : {
+            "0" : 1226,
+            "1" : 748,
+            "2" : 26,
+            "more" : 0
+          },
+          "maxUlp" : 2,
+          "random" : 2000,
+          "worstArgs" : [
+            2.1374529555439947
+          ]
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  }
+]

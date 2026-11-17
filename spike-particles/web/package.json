@@ -1,0 +1,32 @@
+{
+  "name": "vrmxg-particles-spike",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "models": "node scripts/copy-models.mjs",
+    "predev": "node scripts/copy-models.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/copy-models.mjs",
+    "build": "vite build",
+    "test:node": "node scripts/node-tests.mjs"
+  },
+  "dependencies": {
+    "@newkrok/three-particles": "3.0.0",
+    "@pixiv/three-vrm": "3.5.5",
+    "@pixiv/three-vrm-animation": "3.5.5",
+    "quarks.core": "0.18.0",
+    "three": "0.187.0",
+    "three-nebula": "13.3.0",
+    "three.proton.js": "0.2.3",
+    "three.quarks": "0.18.0",
+    "vue": "3.5.45"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "6.0.11",
+    "vite": "8.3.8"
+  },
+  "overrides": {
+    "three": "0.187.0"
+  }
+}

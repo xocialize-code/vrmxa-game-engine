@@ -1,0 +1,285 @@
+{
+  "bridgeTypes" : {
+    "encoders" : [
+      {
+        "codec" : "\u0000\u0000\u0000\u0018",
+        "hardware" : false,
+        "name" : "Apple 24-bit RGB"
+      },
+      {
+        "codec" : "\u0000\u0000\u0000 ",
+        "hardware" : false,
+        "name" : "Apple 32-bit ARGB"
+      },
+      {
+        "codec" : "apcn",
+        "hardware" : false,
+        "name" : "Apple ProRes 422"
+      },
+      {
+        "codec" : "apch",
+        "hardware" : false,
+        "name" : "Apple ProRes 422 HQ"
+      },
+      {
+        "codec" : "apcs",
+        "hardware" : false,
+        "name" : "Apple ProRes 422 LT"
+      },
+      {
+        "codec" : "apco",
+        "hardware" : false,
+        "name" : "Apple ProRes 422 Proxy"
+      },
+      {
+        "codec" : "ap4h",
+        "hardware" : false,
+        "name" : "Apple ProRes 4444"
+      },
+      {
+        "codec" : "ap4x",
+        "hardware" : false,
+        "name" : "Apple ProRes 4444 XQ"
+      },
+      {
+        "codec" : "apcn",
+        "hardware" : true,
+        "name" : "AppleProResHW 422"
+      },
+      {
+        "codec" : "apch",
+        "hardware" : true,
+        "name" : "AppleProResHW 422 HQ"
+      },
+      {
+        "codec" : "apcs",
+        "hardware" : true,
+        "name" : "AppleProResHW 422 LT"
+      },
+      {
+        "codec" : "apco",
+        "hardware" : true,
+        "name" : "AppleProResHW 422 Proxy"
+      },
+      {
+        "codec" : "ap4h",
+        "hardware" : true,
+        "name" : "AppleProResHW 4444"
+      },
+      {
+        "codec" : "ap4x",
+        "hardware" : true,
+        "name" : "AppleProResHW 4444 XQ"
+      },
+      {
+        "codec" : "deph",
+        "hardware" : true,
+        "name" : "Apple Depth (HEVC)-Apple HEVC (HW)"
+      },
+      {
+        "codec" : "deph",
+        "hardware" : false,
+        "name" : "Apple Depth (HEVC)-Apple HEVC (SW)"
+      },
+      {
+        "codec" : "dish",
+        "hardware" : true,
+        "name" : "Apple Disparity (HEVC)-Apple HEVC (HW)"
+      },
+      {
+        "codec" : "dish",
+        "hardware" : false,
+        "name" : "Apple Disparity (HEVC)-Apple HEVC (SW)"
+      },
+      {
+        "codec" : "h263",
+        "hardware" : false,
+        "name" : "Apple H.263 (SW)"
+      },
+      {
+        "codec" : "avc1",
+        "hardware" : true,
+        "name" : "Apple H.264 (HW)"
+      },
+      {
+        "codec" : "avc1",
+        "hardware" : false,
+        "name" : "Apple H.264 (SW)"
+      },
+      {
+        "codec" : "hvc1",
+        "hardware" : true,
+        "name" : "Apple HEVC (HW)"
+      },
+      {
+        "codec" : "hvc1",
+        "hardware" : false,
+        "name" : "Apple HEVC (SW)"
+      },
+      {
+        "codec" : "jpeg",
+        "hardware" : false,
+        "name" : "Apple JPEG"
+      },
+      {
+        "codec" : "jpeg",
+        "hardware" : true,
+        "name" : "JPEG (HW)"
+      },
+      {
+        "codec" : "muxa",
+        "hardware" : true,
+        "name" : "Apple Muxed Alpha-Apple HEVC (HW)"
+      },
+      {
+        "codec" : "muxa",
+        "hardware" : false,
+        "name" : "Apple Muxed Alpha-Apple HEVC (SW)"
+      }
+    ],
+    "os" : "Version 27.3 (Build 26C5047e)",
+    "schemeBodyKinds" : {
+
+    },
+    "types" : {
+      "callAsyncJavaScript.ab" : "__NSDictionaryM",
+      "callAsyncJavaScript.str" : "NSTaggedPointerString",
+      "callAsyncJavaScript.u8" : "__NSDictionaryM",
+      "postMessage.ab" : "__NSDictionaryM",
+      "postMessage.ab.value" : "",
+      "postMessage.arr" : "__NSArrayM",
+      "postMessage.f32" : "__NSDictionaryM",
+      "postMessage.f32.value" : "0:1.5",
+      "postMessage.str" : "NSTaggedPointerString",
+      "postMessage.u8" : "__NSDictionaryM",
+      "postMessage.u8.value" : "0:1,1:2,2:3"
+    }
+  },
+  "env" : {
+    "crossOriginIsolated" : false,
+    "devicePixelRatio" : 1,
+    "origin" : "vrmxg-export:\/\/app",
+    "sharedArrayBuffer" : "undefined",
+    "shot" : {
+      "clipSeconds" : 1.0333333015441895,
+      "simHz" : 120,
+      "springJoints" : 106,
+      "three" : "187",
+      "vrmVersion" : "1"
+    },
+    "toBase64" : "function",
+    "userAgent" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "webgl" : {
+      "maxRenderbuffer" : 16384,
+      "maxTexture" : 16384,
+      "maxViewport" : [
+        16384,
+        16384
+      ],
+      "renderer" : "Apple GPU",
+      "samples" : 4,
+      "version" : "WebGL 2.0"
+    }
+  },
+  "planMs" : 375,
+  "webcodecs" : {
+    "audio" : {
+      "aac" : true,
+      "flac" : false,
+      "opus" : true,
+      "pcm" : true
+    },
+    "AudioData" : "function",
+    "AudioEncoder" : "function",
+    "MediaStreamTrackProcessor" : "undefined",
+    "video" : {
+      "av1" : {
+        "1080p" : true,
+        "1080p_alphaKeep" : false,
+        "1080p_hw" : true,
+        "1080p_quantizer" : "throws: TypeError: Type error",
+        "1080p_realtime" : true,
+        "1080p_sw" : true,
+        "2160p" : true,
+        "2160p_alphaKeep" : false,
+        "2160p_hw" : true,
+        "2160p_quantizer" : "throws: TypeError: Type error",
+        "2160p_realtime" : true,
+        "2160p_sw" : true
+      },
+      "avc-high" : {
+        "1080p" : true,
+        "1080p_alphaKeep" : false,
+        "1080p_hw" : true,
+        "1080p_quantizer" : "throws: TypeError: Type error",
+        "1080p_realtime" : true,
+        "1080p_sw" : true,
+        "2160p" : true,
+        "2160p_alphaKeep" : false,
+        "2160p_hw" : true,
+        "2160p_quantizer" : "throws: TypeError: Type error",
+        "2160p_realtime" : true,
+        "2160p_sw" : true
+      },
+      "avc-main" : {
+        "1080p" : true,
+        "1080p_alphaKeep" : false,
+        "1080p_hw" : true,
+        "1080p_quantizer" : "throws: TypeError: Type error",
+        "1080p_realtime" : true,
+        "1080p_sw" : true,
+        "2160p" : true,
+        "2160p_alphaKeep" : false,
+        "2160p_hw" : true,
+        "2160p_quantizer" : "throws: TypeError: Type error",
+        "2160p_realtime" : true,
+        "2160p_sw" : true
+      },
+      "hevc-main" : {
+        "1080p" : true,
+        "1080p_alphaKeep" : false,
+        "1080p_hw" : true,
+        "1080p_quantizer" : "throws: TypeError: Type error",
+        "1080p_realtime" : true,
+        "1080p_sw" : true,
+        "2160p" : true,
+        "2160p_alphaKeep" : false,
+        "2160p_hw" : true,
+        "2160p_quantizer" : "throws: TypeError: Type error",
+        "2160p_realtime" : true,
+        "2160p_sw" : true
+      },
+      "hevc-main-hev1" : {
+        "1080p" : true,
+        "1080p_alphaKeep" : false,
+        "1080p_hw" : true,
+        "1080p_quantizer" : "throws: TypeError: Type error",
+        "1080p_realtime" : true,
+        "1080p_sw" : true,
+        "2160p" : true,
+        "2160p_alphaKeep" : false,
+        "2160p_hw" : true,
+        "2160p_quantizer" : "throws: TypeError: Type error",
+        "2160p_realtime" : true,
+        "2160p_sw" : true
+      },
+      "vp9" : {
+        "1080p" : true,
+        "1080p_alphaKeep" : false,
+        "1080p_hw" : true,
+        "1080p_quantizer" : "throws: TypeError: Type error",
+        "1080p_realtime" : true,
+        "1080p_sw" : true,
+        "2160p" : true,
+        "2160p_alphaKeep" : false,
+        "2160p_hw" : true,
+        "2160p_quantizer" : "throws: TypeError: Type error",
+        "2160p_realtime" : true,
+        "2160p_sw" : true
+      }
+    },
+    "VideoDecoder" : "function",
+    "VideoEncoder" : "function",
+    "VideoFrame" : "function"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "vrmxg-navigation-spike",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:node": "node scripts/node-tests.mjs",
+    "sizes": "node scripts/bundle-sizes.mjs"
+  },
+  "dependencies": {
+    "@dimforge/rapier3d-deterministic-compat": "0.21.0",
+    "@recast-navigation/core": "0.44.0",
+    "@recast-navigation/generators": "0.44.0",
+    "@recast-navigation/three": "0.44.0",
+    "navcat": "0.4.1",
+    "three": "0.187.0",
+    "three-pathfinding": "1.3.0",
+    "vue": "3.5.45",
+    "yuka": "0.7.8"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "6.0.11",
+    "vite": "8.3.8"
+  }
+}

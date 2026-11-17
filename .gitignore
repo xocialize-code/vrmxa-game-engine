@@ -1,0 +1,17 @@
+# Reference repos (Godot and others) are read locally, never committed, as in vrmxa-avatar-studio.
+reference/
+
+.DS_Store
+node_modules/
+dist/
+build/
+mac/build/
+
+# VRM models and clips: the spikes' VRoid samples can't be shipped, and spec.vrm lives in
+# xocialize-code/vrmxa-spec. Spikes copy them into public/models/ locally.
+public/models/
+*.vrm
+*.vrma
+
+# Rendered video from spike-frame-export
+spike-frame-export/out/

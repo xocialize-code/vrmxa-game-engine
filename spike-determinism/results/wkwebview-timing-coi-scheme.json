@@ -1,0 +1,291 @@
+{
+  "env" : {
+    "crossOriginIsolated" : true,
+    "origin" : "vrmxg-dspike:\/\/app",
+    "runtime" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "sharedArrayBuffer" : false,
+    "timerResolutionMs" : 1
+  },
+  "micro" : {
+    "acos" : {
+      "dmathNs" : 12.5,
+      "nativeNs" : 4
+    },
+    "asin" : {
+      "dmathNs" : 9,
+      "nativeNs" : 10.5
+    },
+    "atan" : {
+      "dmathNs" : 6.5,
+      "nativeNs" : 9
+    },
+    "atan2" : {
+      "dmathNs" : 13.5,
+      "nativeNs" : 10
+    },
+    "cos" : {
+      "dmathNs" : 8.5,
+      "nativeNs" : 5
+    },
+    "sin" : {
+      "dmathNs" : 9.5,
+      "nativeNs" : 3
+    }
+  },
+  "steps" : 600,
+  "timing" : [
+    {
+      "matrices" : {
+        "max" : 1,
+        "mean" : 0.02,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "mode" : "native",
+      "model" : "spec",
+      "n" : 1,
+      "sim" : {
+        "max" : 2,
+        "mean" : 0.040000000000000001,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "simPerCharMs" : 0.040000000000000001,
+      "springJoints" : 4,
+      "steps" : 600,
+      "wallMsPerStep" : 0.059999999999999998
+    },
+    {
+      "matrices" : {
+        "max" : 1,
+        "mean" : 0.02,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "mode" : "dmath",
+      "model" : "spec",
+      "n" : 1,
+      "sim" : {
+        "max" : 1,
+        "mean" : 0.035000000000000003,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "simPerCharMs" : 0.035000000000000003,
+      "springJoints" : 4,
+      "steps" : 600,
+      "wallMsPerStep" : 0.055
+    },
+    {
+      "matrices" : {
+        "max" : 1,
+        "mean" : 0.1133,
+        "p50" : 0,
+        "p95" : 1
+      },
+      "mode" : "native",
+      "model" : "spec",
+      "n" : 5,
+      "sim" : {
+        "max" : 1,
+        "mean" : 0.14499999999999999,
+        "p50" : 0,
+        "p95" : 1
+      },
+      "simPerCharMs" : 0.029000000000000001,
+      "springJoints" : 4,
+      "steps" : 600,
+      "wallMsPerStep" : 0.25829999999999997
+    },
+    {
+      "matrices" : {
+        "max" : 1,
+        "mean" : 0.073300000000000004,
+        "p50" : 0,
+        "p95" : 1
+      },
+      "mode" : "dmath",
+      "model" : "spec",
+      "n" : 5,
+      "sim" : {
+        "max" : 1,
+        "mean" : 0.1583,
+        "p50" : 0,
+        "p95" : 1
+      },
+      "simPerCharMs" : 0.031699999999999999,
+      "springJoints" : 4,
+      "steps" : 600,
+      "wallMsPerStep" : 0.23169999999999999
+    },
+    {
+      "matrices" : {
+        "max" : 1,
+        "mean" : 0.40500000000000003,
+        "p50" : 0,
+        "p95" : 1
+      },
+      "mode" : "native",
+      "model" : "spec",
+      "n" : 20,
+      "sim" : {
+        "max" : 1,
+        "mean" : 0.73170000000000002,
+        "p50" : 1,
+        "p95" : 1
+      },
+      "simPerCharMs" : 0.036600000000000001,
+      "springJoints" : 4,
+      "steps" : 600,
+      "wallMsPerStep" : 1.1367
+    },
+    {
+      "matrices" : {
+        "max" : 1,
+        "mean" : 0.38169999999999998,
+        "p50" : 0,
+        "p95" : 1
+      },
+      "mode" : "dmath",
+      "model" : "spec",
+      "n" : 20,
+      "sim" : {
+        "max" : 2,
+        "mean" : 0.75170000000000003,
+        "p50" : 1,
+        "p95" : 1
+      },
+      "simPerCharMs" : 0.037600000000000001,
+      "springJoints" : 4,
+      "steps" : 600,
+      "wallMsPerStep" : 1.1333
+    },
+    {
+      "matrices" : {
+        "max" : 1,
+        "mean" : 0.040000000000000001,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "mode" : "native",
+      "model" : "vroid10",
+      "n" : 1,
+      "sim" : {
+        "max" : 1,
+        "mean" : 0.1033,
+        "p50" : 0,
+        "p95" : 1
+      },
+      "simPerCharMs" : 0.1033,
+      "springJoints" : 106,
+      "steps" : 600,
+      "wallMsPerStep" : 0.14499999999999999
+    },
+    {
+      "matrices" : {
+        "max" : 1,
+        "mean" : 0.038300000000000001,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "mode" : "dmath",
+      "model" : "vroid10",
+      "n" : 1,
+      "sim" : {
+        "max" : 1,
+        "mean" : 0.1017,
+        "p50" : 0,
+        "p95" : 1
+      },
+      "simPerCharMs" : 0.1017,
+      "springJoints" : 106,
+      "steps" : 600,
+      "wallMsPerStep" : 0.14000000000000001
+    },
+    {
+      "matrices" : {
+        "max" : 1,
+        "mean" : 0.23669999999999999,
+        "p50" : 0,
+        "p95" : 1
+      },
+      "mode" : "native",
+      "model" : "vroid10",
+      "n" : 5,
+      "sim" : {
+        "max" : 1,
+        "mean" : 0.54330000000000001,
+        "p50" : 1,
+        "p95" : 1
+      },
+      "simPerCharMs" : 0.1087,
+      "springJoints" : 106,
+      "steps" : 600,
+      "wallMsPerStep" : 0.78000000000000003
+    },
+    {
+      "matrices" : {
+        "max" : 1,
+        "mean" : 0.23669999999999999,
+        "p50" : 0,
+        "p95" : 1
+      },
+      "mode" : "dmath",
+      "model" : "vroid10",
+      "n" : 5,
+      "sim" : {
+        "max" : 1,
+        "mean" : 0.55330000000000001,
+        "p50" : 1,
+        "p95" : 1
+      },
+      "simPerCharMs" : 0.11070000000000001,
+      "springJoints" : 106,
+      "steps" : 600,
+      "wallMsPerStep" : 0.79000000000000004
+    },
+    {
+      "matrices" : {
+        "max" : 2,
+        "mean" : 1.2166999999999999,
+        "p50" : 1,
+        "p95" : 2
+      },
+      "mode" : "native",
+      "model" : "vroid10",
+      "n" : 20,
+      "sim" : {
+        "max" : 4,
+        "mean" : 2.6717,
+        "p50" : 3,
+        "p95" : 3
+      },
+      "simPerCharMs" : 0.1336,
+      "springJoints" : 106,
+      "steps" : 600,
+      "wallMsPerStep" : 3.8883000000000001
+    },
+    {
+      "matrices" : {
+        "max" : 2,
+        "mean" : 0.93500000000000005,
+        "p50" : 1,
+        "p95" : 1
+      },
+      "mode" : "dmath",
+      "model" : "vroid10",
+      "n" : 20,
+      "sim" : {
+        "max" : 3,
+        "mean" : 2.1566999999999998,
+        "p50" : 2,
+        "p95" : 3
+      },
+      "simPerCharMs" : 0.10780000000000001,
+      "springJoints" : 106,
+      "steps" : 600,
+      "wallMsPerStep" : 3.0916999999999999
+    }
+  ],
+  "when" : "2026-11-17T19:15:30.882Z"
+}

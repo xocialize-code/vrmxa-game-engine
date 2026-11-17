@@ -1,0 +1,29 @@
+{
+  "name": "vrmxg-physics-spike",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "models": "node scripts/copy-models.mjs",
+    "predev": "node scripts/copy-models.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/copy-models.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:node": "node scripts/node-tests.mjs"
+  },
+  "dependencies": {
+    "@dimforge/rapier3d-compat": "0.21.0",
+    "@dimforge/rapier3d-deterministic-compat": "0.21.0",
+    "@dimforge/rapier3d-simd-compat": "0.21.0",
+    "@pixiv/three-vrm": "3.5.5",
+    "@pixiv/three-vrm-animation": "3.5.5",
+    "jolt-physics": "1.1.1",
+    "three": "0.187.0",
+    "vue": "3.5.45"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "6.0.11",
+    "vite": "8.3.8"
+  }
+}

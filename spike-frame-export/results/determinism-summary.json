@@ -1,0 +1,175 @@
+{
+  "frames": 300,
+  "comparisons": [
+    {
+      "label": "run 1: pass A",
+      "identical": true,
+      "matchingFrames": 300,
+      "of": 300
+    },
+    {
+      "label": "run 1: pass B (same page, after reset())",
+      "identical": true,
+      "matchingFrames": 300,
+      "of": 300
+    },
+    {
+      "label": "run 1: PBO readback",
+      "identical": true,
+      "matchingFrames": 300,
+      "of": 300
+    },
+    {
+      "label": "run 1: simulate all, render only 0/1/75/150/299",
+      "identical": true,
+      "matchingFrames": 5,
+      "of": 5
+    },
+    {
+      "label": "run 1: 60 fps run, even frames vs 30 fps",
+      "identical": true,
+      "matchingFrames": 300,
+      "of": 300
+    },
+    {
+      "label": "run 1: 4K, 60 frames vs run 1",
+      "identical": true,
+      "matchingFrames": 60,
+      "of": 60
+    },
+    {
+      "label": "run 2 (new process): pass A",
+      "identical": true,
+      "matchingFrames": 300,
+      "of": 300
+    },
+    {
+      "label": "run 2 (new process): pass B (same page, after reset())",
+      "identical": true,
+      "matchingFrames": 300,
+      "of": 300
+    },
+    {
+      "label": "run 2 (new process): PBO readback",
+      "identical": true,
+      "matchingFrames": 300,
+      "of": 300
+    },
+    {
+      "label": "run 2 (new process): simulate all, render only 0/1/75/150/299",
+      "identical": true,
+      "matchingFrames": 5,
+      "of": 5
+    },
+    {
+      "label": "run 2 (new process): 60 fps run, even frames vs 30 fps",
+      "identical": true,
+      "matchingFrames": 300,
+      "of": 300
+    },
+    {
+      "label": "run 2 (new process): 4K, 60 frames vs run 1",
+      "identical": true,
+      "matchingFrames": 60,
+      "of": 60
+    },
+    {
+      "label": "run 3 (loopback origin): pass A",
+      "identical": true,
+      "matchingFrames": 300,
+      "of": 300
+    },
+    {
+      "label": "run 3 (loopback origin): pass B (same page, after reset())",
+      "identical": true,
+      "matchingFrames": 300,
+      "of": 300
+    },
+    {
+      "label": "run 3 (loopback origin): PBO readback",
+      "identical": true,
+      "matchingFrames": 300,
+      "of": 300
+    },
+    {
+      "label": "run 3 (loopback origin): simulate all, render only 0/1/75/150/299",
+      "identical": true,
+      "matchingFrames": 5,
+      "of": 5
+    },
+    {
+      "label": "run 3 (loopback origin): 60 fps run, even frames vs 30 fps",
+      "identical": true,
+      "matchingFrames": 300,
+      "of": 300
+    },
+    {
+      "label": "run 3 (loopback origin): 4K, 60 frames vs run 1",
+      "identical": true,
+      "matchingFrames": 60,
+      "of": 60
+    }
+  ],
+  "distinctFramesInRun1": 300,
+  "encodes": [
+    {
+      "codec": "h264",
+      "inputFramesIdentical": true,
+      "fileBytes": [
+        2960271,
+        2960271
+      ],
+      "fileSha256Equal": false,
+      "decodedFramesIdentical": 90,
+      "of": 90
+    },
+    {
+      "codec": "hevc",
+      "inputFramesIdentical": true,
+      "fileBytes": [
+        2992577,
+        2992577
+      ],
+      "fileSha256Equal": false,
+      "decodedFramesIdentical": 90,
+      "of": 90
+    },
+    {
+      "codec": "prores4444",
+      "inputFramesIdentical": true,
+      "fileBytes": [
+        121217483,
+        121217483
+      ],
+      "fileSha256Equal": false,
+      "decodedFramesIdentical": 90,
+      "of": 90
+    }
+  ],
+  "encodesAcrossProcesses": [
+    {
+      "codec": "h264",
+      "note": "run 2 overwrote run 1 files; compare sizes only",
+      "bytes": [
+        2960272,
+        2960271
+      ]
+    },
+    {
+      "codec": "hevc",
+      "note": "run 2 overwrote run 1 files; compare sizes only",
+      "bytes": [
+        2992578,
+        2992577
+      ]
+    },
+    {
+      "codec": "prores4444",
+      "note": "run 2 overwrote run 1 files; compare sizes only",
+      "bytes": [
+        121217483,
+        121217483
+      ]
+    }
+  ]
+}

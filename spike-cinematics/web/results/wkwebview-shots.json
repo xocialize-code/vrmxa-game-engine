@@ -1,0 +1,1572 @@
+[
+  {
+    "case" : "pipe=none",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_none__scheme.png",
+    "result" : {
+      "drawCalls" : 64,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.5169999999999999,
+      "msMedian" : 1,
+      "msP90" : 2,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+
+      ],
+      "pipe" : "none",
+      "programs" : 21,
+      "triangles" : 152628,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=builtin",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_builtin__scheme.png",
+    "result" : {
+      "drawCalls" : 143,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.2669999999999999,
+      "msMedian" : 2,
+      "msP90" : 3,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "e",
+        "kh"
+      ],
+      "pipe" : "builtin",
+      "programs" : 34,
+      "triangles" : 305271,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=three",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_three__scheme.png",
+    "result" : {
+      "drawCalls" : 146,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.617,
+      "msMedian" : 2,
+      "msP90" : 3,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "Th",
+        "kh",
+        "e",
+        "xh",
+        "jh",
+        "xh",
+        "Nh"
+      ],
+      "pipe" : "three",
+      "programs" : 37,
+      "triangles" : 305274,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_pmndrs__scheme.png",
+    "result" : {
+      "dof" : {
+        "bokehScale" : 2.3181015226013226,
+        "focusDistance" : 3.8999999999999999,
+        "focusRange" : 0.54314846507202352
+      },
+      "drawCalls" : 94,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.0830000000000002,
+      "msMedian" : 2,
+      "msP90" : 2,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 35,
+      "triangles" : 152658,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&fx=dof,bloom,vig,ca,grain,lut",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_pmndrs_fx_dof_bloom_vig_ca_grain_lut__scheme.png",
+    "result" : {
+      "drawCalls" : 65,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.4830000000000001,
+      "msMedian" : 1,
+      "msP90" : 2,
+      "mtoonOutline" : "1",
+      "off" : [
+        "dof",
+        "bloom",
+        "vig",
+        "ca",
+        "grain",
+        "lut"
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(ToneMappingEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 22,
+      "triangles" : 152629,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&mtoonOutline=0.004&fx=dof,bloom,vig,ca,grain,lut",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_pmndrs_mtoonOutline_0_004_fx_dof_bloom_vig_ca_grain_lut__scheme.png",
+    "result" : {
+      "drawCalls" : 65,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.117,
+      "msMedian" : 2,
+      "msP90" : 3,
+      "mtoonOutline" : "0.004",
+      "off" : [
+        "dof",
+        "bloom",
+        "vig",
+        "ca",
+        "grain",
+        "lut"
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(ToneMappingEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 22,
+      "triangles" : 152629,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&edges=1&mtoonOutline=0&fx=dof,bloom,vig,ca,grain,lut",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_pmndrs_edges_1_mtoonOutline_0_fx_dof_bloom_vig_ca_grain_lut__scheme.png",
+    "result" : {
+      "drawCalls" : 95,
+      "edges" : true,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.0329999999999999,
+      "msMedian" : 2,
+      "msP90" : 2,
+      "mtoonOutline" : "0",
+      "off" : [
+        "dof",
+        "bloom",
+        "vig",
+        "ca",
+        "grain",
+        "lut"
+      ],
+      "passes" : [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(Edges)",
+        "EffectPass(ToneMappingEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 22,
+      "triangles" : 183735,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&edges=1&mtoonOutline=0.004&fx=dof,bloom,vig,ca,grain,lut",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_pmndrs_edges_1_mtoonOutline_0_004_fx_dof_bloom_vig_ca_grain_lut__scheme.png",
+    "result" : {
+      "drawCalls" : 101,
+      "edges" : true,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.9830000000000001,
+      "msMedian" : 2,
+      "msP90" : 2,
+      "mtoonOutline" : "0.004",
+      "off" : [
+        "dof",
+        "bloom",
+        "vig",
+        "ca",
+        "grain",
+        "lut"
+      ],
+      "passes" : [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(Edges)",
+        "EffectPass(ToneMappingEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 26,
+      "triangles" : 229233,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&speed=1&fx=dof",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_pmndrs_speed_1_fx_dof__scheme.png",
+    "result" : {
+      "drawCalls" : 82,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.7829999999999999,
+      "msMedian" : 2,
+      "msP90" : 2,
+      "mtoonOutline" : "1",
+      "off" : [
+        "dof"
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+SpeedLines)",
+        "EffectPass(ChromaticAberrationEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 26,
+      "triangles" : 152646,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&w=1920&h=1080",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_pmndrs_w_1920_h_1080__scheme.png",
+    "result" : {
+      "dof" : {
+        "bokehScale" : 3.4771522839019835,
+        "focusDistance" : 3.8999999999999999,
+        "focusRange" : 0.54314846507202352
+      },
+      "drawCalls" : 94,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.3170000000000002,
+      "msMedian" : 2,
+      "msP90" : 3,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 35,
+      "triangles" : 152658,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=three&w=1920&h=1080",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_three_w_1920_h_1080__scheme.png",
+    "result" : {
+      "drawCalls" : 146,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 3.5169999999999999,
+      "msMedian" : 3,
+      "msP90" : 4,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "Th",
+        "kh",
+        "e",
+        "xh",
+        "jh",
+        "xh",
+        "Nh"
+      ],
+      "pipe" : "three",
+      "programs" : 37,
+      "triangles" : 305274,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=none&w=1920&h=1080",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_none_w_1920_h_1080__scheme.png",
+    "result" : {
+      "drawCalls" : 64,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.417,
+      "msMedian" : 1,
+      "msP90" : 2,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+
+      ],
+      "pipe" : "none",
+      "programs" : 21,
+      "triangles" : 152628,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&shadows=0",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_pmndrs_shadows_0__scheme.png",
+    "result" : {
+      "dof" : {
+        "bokehScale" : 2.3181015226013226,
+        "focusDistance" : 3.8999999999999999,
+        "focusRange" : 0.54314846507202352
+      },
+      "drawCalls" : 65,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.8999999999999999,
+      "msMedian" : 2,
+      "msP90" : 2,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 25,
+      "triangles" : 76633,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=none&shadows=0",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_none_shadows_0__scheme.png",
+    "result" : {
+      "drawCalls" : 35,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.45,
+      "msMedian" : 1,
+      "msP90" : 2,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+
+      ],
+      "pipe" : "none",
+      "programs" : 11,
+      "triangles" : 76603,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&shadows=0&w=1920&h=1080",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_pmndrs_shadows_0_w_1920_h_1080__scheme.png",
+    "result" : {
+      "dof" : {
+        "bokehScale" : 3.4771522839019835,
+        "focusDistance" : 3.8999999999999999,
+        "focusRange" : 0.54314846507202352
+      },
+      "drawCalls" : 65,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.2000000000000002,
+      "msMedian" : 2,
+      "msP90" : 2,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 25,
+      "triangles" : 76633,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=none&shadows=0&w=1920&h=1080",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_none_shadows_0_w_1920_h_1080__scheme.png",
+    "result" : {
+      "drawCalls" : 35,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.133,
+      "msMedian" : 1,
+      "msP90" : 1,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+
+      ],
+      "pipe" : "none",
+      "programs" : 11,
+      "triangles" : 76603,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&frames=200",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_pmndrs_frames_200__scheme.png",
+    "result" : {
+      "dof" : {
+        "bokehScale" : 2.3181015226013226,
+        "focusDistance" : 3.8999999999999999,
+        "focusRange" : 0.54314846507202352
+      },
+      "drawCalls" : 94,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.905,
+      "msMedian" : 2,
+      "msP90" : 2,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 35,
+      "triangles" : 152658,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=none&frames=200",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "pipe_none_frames_200__scheme.png",
+    "result" : {
+      "drawCalls" : 64,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.25,
+      "msMedian" : 1,
+      "msP90" : 2,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+
+      ],
+      "pipe" : "none",
+      "programs" : 21,
+      "triangles" : 152628,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=none",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_none__loopback.png",
+    "result" : {
+      "drawCalls" : 64,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.48,
+      "msMedian" : 1.1599999999999999,
+      "msP90" : 1.5800000000000001,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+
+      ],
+      "pipe" : "none",
+      "programs" : 21,
+      "triangles" : 152628,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=builtin",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_builtin__loopback.png",
+    "result" : {
+      "drawCalls" : 143,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.3140000000000001,
+      "msMedian" : 2.04,
+      "msP90" : 2.46,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "e",
+        "kh"
+      ],
+      "pipe" : "builtin",
+      "programs" : 34,
+      "triangles" : 305271,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=three",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_three__loopback.png",
+    "result" : {
+      "drawCalls" : 146,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.7570000000000001,
+      "msMedian" : 2.4199999999999999,
+      "msP90" : 3,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "Th",
+        "kh",
+        "e",
+        "xh",
+        "jh",
+        "xh",
+        "Nh"
+      ],
+      "pipe" : "three",
+      "programs" : 37,
+      "triangles" : 305274,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_pmndrs__loopback.png",
+    "result" : {
+      "dof" : {
+        "bokehScale" : 2.3181015226013226,
+        "focusDistance" : 3.8999999999999999,
+        "focusRange" : 0.54314846507202352
+      },
+      "drawCalls" : 94,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.0720000000000001,
+      "msMedian" : 1.8,
+      "msP90" : 2.1800000000000002,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 35,
+      "triangles" : 152658,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&fx=dof,bloom,vig,ca,grain,lut",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_pmndrs_fx_dof_bloom_vig_ca_grain_lut__loopback.png",
+    "result" : {
+      "drawCalls" : 65,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.554,
+      "msMedian" : 1.1399999999999999,
+      "msP90" : 2.1400000000000001,
+      "mtoonOutline" : "1",
+      "off" : [
+        "dof",
+        "bloom",
+        "vig",
+        "ca",
+        "grain",
+        "lut"
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(ToneMappingEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 22,
+      "triangles" : 152629,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&mtoonOutline=0.004&fx=dof,bloom,vig,ca,grain,lut",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_pmndrs_mtoonOutline_0_004_fx_dof_bloom_vig_ca_grain_lut__loopback.png",
+    "result" : {
+      "drawCalls" : 65,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.4970000000000001,
+      "msMedian" : 1.1599999999999999,
+      "msP90" : 1.6799999999999999,
+      "mtoonOutline" : "0.004",
+      "off" : [
+        "dof",
+        "bloom",
+        "vig",
+        "ca",
+        "grain",
+        "lut"
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(ToneMappingEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 22,
+      "triangles" : 152629,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&edges=1&mtoonOutline=0&fx=dof,bloom,vig,ca,grain,lut",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_pmndrs_edges_1_mtoonOutline_0_fx_dof_bloom_vig_ca_grain_lut__loopback.png",
+    "result" : {
+      "drawCalls" : 95,
+      "edges" : true,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.5449999999999999,
+      "msMedian" : 2.0600000000000001,
+      "msP90" : 3.04,
+      "mtoonOutline" : "0",
+      "off" : [
+        "dof",
+        "bloom",
+        "vig",
+        "ca",
+        "grain",
+        "lut"
+      ],
+      "passes" : [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(Edges)",
+        "EffectPass(ToneMappingEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 22,
+      "triangles" : 183735,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&edges=1&mtoonOutline=0.004&fx=dof,bloom,vig,ca,grain,lut",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_pmndrs_edges_1_mtoonOutline_0_004_fx_dof_bloom_vig_ca_grain_lut__loopback.png",
+    "result" : {
+      "drawCalls" : 101,
+      "edges" : true,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.137,
+      "msMedian" : 1.74,
+      "msP90" : 2.5800000000000001,
+      "mtoonOutline" : "0.004",
+      "off" : [
+        "dof",
+        "bloom",
+        "vig",
+        "ca",
+        "grain",
+        "lut"
+      ],
+      "passes" : [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(Edges)",
+        "EffectPass(ToneMappingEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 26,
+      "triangles" : 229233,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&speed=1&fx=dof",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_pmndrs_speed_1_fx_dof__loopback.png",
+    "result" : {
+      "drawCalls" : 82,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.9590000000000001,
+      "msMedian" : 1.6200000000000001,
+      "msP90" : 2.1200000000000001,
+      "mtoonOutline" : "1",
+      "off" : [
+        "dof"
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+SpeedLines)",
+        "EffectPass(ChromaticAberrationEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 26,
+      "triangles" : 152646,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&w=1920&h=1080",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_pmndrs_w_1920_h_1080__loopback.png",
+    "result" : {
+      "dof" : {
+        "bokehScale" : 3.4771522839019835,
+        "focusDistance" : 3.8999999999999999,
+        "focusRange" : 0.54314846507202352
+      },
+      "drawCalls" : 94,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.3410000000000002,
+      "msMedian" : 2.0600000000000001,
+      "msP90" : 2.2999999999999998,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 35,
+      "triangles" : 152658,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=three&w=1920&h=1080",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_three_w_1920_h_1080__loopback.png",
+    "result" : {
+      "drawCalls" : 146,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 3.6560000000000001,
+      "msMedian" : 3.2200000000000002,
+      "msP90" : 4.2199999999999998,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "Th",
+        "kh",
+        "e",
+        "xh",
+        "jh",
+        "xh",
+        "Nh"
+      ],
+      "pipe" : "three",
+      "programs" : 37,
+      "triangles" : 305274,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=none&w=1920&h=1080",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_none_w_1920_h_1080__loopback.png",
+    "result" : {
+      "drawCalls" : 64,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.7290000000000001,
+      "msMedian" : 1.52,
+      "msP90" : 2,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+
+      ],
+      "pipe" : "none",
+      "programs" : 21,
+      "triangles" : 152628,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&shadows=0",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_pmndrs_shadows_0__loopback.png",
+    "result" : {
+      "dof" : {
+        "bokehScale" : 2.3181015226013226,
+        "focusDistance" : 3.8999999999999999,
+        "focusRange" : 0.54314846507202352
+      },
+      "drawCalls" : 65,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.0409999999999999,
+      "msMedian" : 1.76,
+      "msP90" : 1.96,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 25,
+      "triangles" : 76633,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=none&shadows=0",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_none_shadows_0__loopback.png",
+    "result" : {
+      "drawCalls" : 35,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.196,
+      "msMedian" : 0.83999999999999997,
+      "msP90" : 1.74,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+
+      ],
+      "pipe" : "none",
+      "programs" : 11,
+      "triangles" : 76603,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&shadows=0&w=1920&h=1080",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_pmndrs_shadows_0_w_1920_h_1080__loopback.png",
+    "result" : {
+      "dof" : {
+        "bokehScale" : 3.4771522839019835,
+        "focusDistance" : 3.8999999999999999,
+        "focusRange" : 0.54314846507202352
+      },
+      "drawCalls" : 65,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 2.129,
+      "msMedian" : 1.8600000000000001,
+      "msP90" : 2.0600000000000001,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 25,
+      "triangles" : 76633,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=none&shadows=0&w=1920&h=1080",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_none_shadows_0_w_1920_h_1080__loopback.png",
+    "result" : {
+      "drawCalls" : 35,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.2629999999999999,
+      "msMedian" : 1,
+      "msP90" : 1.1799999999999999,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+
+      ],
+      "pipe" : "none",
+      "programs" : 11,
+      "triangles" : 76603,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=pmndrs&frames=200",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_pmndrs_frames_200__loopback.png",
+    "result" : {
+      "dof" : {
+        "bokehScale" : 2.3181015226013226,
+        "focusDistance" : 3.8999999999999999,
+        "focusRange" : 0.54314846507202352
+      },
+      "drawCalls" : 94,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.9430000000000001,
+      "msMedian" : 1.72,
+      "msP90" : 1.98,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+        "RenderPass",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+      ],
+      "pipe" : "pmndrs",
+      "programs" : 35,
+      "triangles" : 152658,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "pipe=none&frames=200",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "pipe_none_frames_200__loopback.png",
+    "result" : {
+      "drawCalls" : 64,
+      "edges" : false,
+      "errors" : [
+
+      ],
+      "glRenderer" : "Apple GPU",
+      "msMean" : 1.323,
+      "msMedian" : 1.0800000000000001,
+      "msP90" : 1.3999999999999999,
+      "mtoonOutline" : "1",
+      "off" : [
+
+      ],
+      "passes" : [
+
+      ],
+      "pipe" : "none",
+      "programs" : 21,
+      "triangles" : 152628,
+      "warnings" : [
+
+      ]
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  }
+]

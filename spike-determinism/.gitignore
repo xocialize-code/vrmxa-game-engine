@@ -1,0 +1,5 @@
+# Built app and web build both bundle the VRM models: never commit or ship them.
+mac/build/
+web/dist/
+web/node_modules/
+web/public/models/

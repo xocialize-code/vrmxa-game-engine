@@ -1,0 +1,22 @@
+{
+  "name": "vrmxg-cinematics-spike",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "models": "node scripts/copy-models.mjs",
+    "predev": "node scripts/copy-models.mjs",
+    "dev": "vite",
+    "shots": "node scripts/shots.mjs"
+  },
+  "dependencies": {
+    "@pixiv/three-vrm": "3.5.5",
+    "postprocessing": "6.39.6",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@pixiv/three-vrm-animation": "^3.5.5",
+    "playwright-core": "1.58.0",
+    "vite": "8.3.8"
+  }
+}

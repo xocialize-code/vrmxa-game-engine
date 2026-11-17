@@ -1,0 +1,424 @@
+{
+  "env": {
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "timerResolutionMs": 0.1,
+    "location": "http://127.0.0.1:5243/?autorun=1"
+  },
+  "determinism": [
+    {
+      "variant": "quarks · unseeded (Math.random)",
+      "lib": "quarks",
+      "opts": {
+        "seeding": "none"
+      },
+      "hash300": "d11878b1",
+      "hash600": "0bf15a73",
+      "particles600": 10165,
+      "repeatable": false
+    },
+    {
+      "variant": "quarks · adapter RNG, one stream",
+      "lib": "quarks",
+      "opts": {
+        "seeding": "stream"
+      },
+      "hash300": "f4faa7ea",
+      "hash600": "e1aaa333",
+      "particles600": 10209,
+      "repeatable": true
+    },
+    {
+      "variant": "quarks · adapter RNG, per-frame seed",
+      "lib": "quarks",
+      "opts": {
+        "seeding": "frame"
+      },
+      "hash300": "65f23c4f",
+      "hash600": "a267fe0e",
+      "particles600": 10252,
+      "repeatable": true
+    },
+    {
+      "variant": "nebula · unseeded",
+      "lib": "nebula",
+      "opts": {
+        "seeding": "none"
+      },
+      "hash300": "f13fe121",
+      "hash600": "9625057a",
+      "particles600": 10183,
+      "repeatable": false
+    },
+    {
+      "variant": "nebula · setSeed",
+      "lib": "nebula",
+      "opts": {
+        "seeding": "seed"
+      },
+      "hash300": "5219637e",
+      "hash600": "412a65b6",
+      "particles600": 10197,
+      "repeatable": true
+    },
+    {
+      "variant": "stateless · closed form (CPU twin)",
+      "lib": "stateless",
+      "opts": {},
+      "hash300": "d042ec4d",
+      "hash600": "3133df02",
+      "particles600": 10313,
+      "repeatable": true
+    },
+    {
+      "variant": "quarks · per-frame seed + portable math",
+      "lib": "quarks",
+      "opts": {
+        "seeding": "frame",
+        "math": "portable"
+      },
+      "hash300": "60f38072",
+      "hash600": "01256b25",
+      "particles600": 10252,
+      "repeatable": true
+    },
+    {
+      "variant": "nebula · setSeed + portable math",
+      "lib": "nebula",
+      "opts": {
+        "seeding": "seed",
+        "math": "portable"
+      },
+      "hash300": "1e6014e9",
+      "hash600": "16b5fbfa",
+      "particles600": 10197,
+      "repeatable": true
+    },
+    {
+      "variant": "stateless · CPU twin + portable math",
+      "lib": "stateless",
+      "opts": {
+        "math": "portable"
+      },
+      "hash300": "11eb0328",
+      "hash600": "7f10a6b5",
+      "particles600": 10313,
+      "repeatable": true
+    },
+    {
+      "variant": "three.proton.js · Math.random swap (probe)",
+      "lib": "proton",
+      "hash600": "43c0e248",
+      "particles600": 10091,
+      "repeatable": true,
+      "msPerStep": 3.328,
+      "sceneObjects": 10091
+    },
+    {
+      "variant": "three.proton.js · Math.random swap + portable math (probe)",
+      "lib": "proton",
+      "hash600": "942f0926",
+      "particles600": 10091,
+      "repeatable": true,
+      "msPerStep": 3.394
+    },
+    {
+      "variant": "@newkrok/three-particles · Math.random swap + synthetic clock (probe)",
+      "lib": "newkrok",
+      "hash600": "5c333af9",
+      "repeatable": true,
+      "msPerStep": 0.159
+    }
+  ],
+  "scrub": {
+    "quarksFull": {
+      "ordered": true,
+      "unordered": true,
+      "snapshotBytes": 7314226,
+      "snapshotMs": 6.7,
+      "restoreMs": 4.7,
+      "particles": 10241
+    },
+    "quarksWindow": {
+      "ordered": false,
+      "unordered": true,
+      "windowFrames": 100,
+      "restoreMs": 65,
+      "emitterStateBytesPerFrame": 4294,
+      "particles": 10241
+    },
+    "quarksResim": {
+      "ordered": true,
+      "frames": 450,
+      "ms": 377,
+      "msPerFrame": 0.838
+    },
+    "nebulaResim": {
+      "ordered": true,
+      "frames": 450,
+      "ms": 839.4,
+      "msPerFrame": 1.865
+    },
+    "statelessSeek": {
+      "ordered": true,
+      "seekMs": 0.1
+    }
+  },
+  "json": {
+    "quarks": {
+      "bytes": 1929079,
+      "bytesWithoutImages": 15366,
+      "systems": 7,
+      "loadedSystems": 7,
+      "sameState": true,
+      "particles": 104
+    },
+    "stateless": {
+      "bytes": 2895,
+      "sameState": true
+    }
+  },
+  "perf": [
+    {
+      "lib": "quarks",
+      "emitters": 1,
+      "target": 10000,
+      "live": 9936,
+      "step": {
+        "mean": 0.956,
+        "p50": 0.9,
+        "p95": 1.1,
+        "max": 2,
+        "n": 300
+      },
+      "render": {
+        "mean": 0.326,
+        "p50": 0,
+        "p95": 0.1,
+        "max": 93.9,
+        "n": 300
+      },
+      "drawCalls": 1
+    },
+    {
+      "lib": "quarks",
+      "emitters": 10,
+      "target": 10000,
+      "live": 10114,
+      "step": {
+        "mean": 0.895,
+        "p50": 0.9,
+        "p95": 1,
+        "max": 1.7,
+        "n": 300
+      },
+      "render": {
+        "mean": 0.012,
+        "p50": 0,
+        "p95": 0.1,
+        "max": 0.1,
+        "n": 300
+      },
+      "drawCalls": 1
+    },
+    {
+      "lib": "quarks",
+      "emitters": 50,
+      "target": 10000,
+      "live": 8924,
+      "step": {
+        "mean": 0.751,
+        "p50": 0.7,
+        "p95": 0.9,
+        "max": 1.7,
+        "n": 300
+      },
+      "render": {
+        "mean": 0.016,
+        "p50": 0,
+        "p95": 0.1,
+        "max": 0.1,
+        "n": 300
+      },
+      "drawCalls": 1
+    },
+    {
+      "lib": "nebula",
+      "emitters": 1,
+      "target": 10000,
+      "live": 9950,
+      "step": {
+        "mean": 3.634,
+        "p50": 3.6,
+        "p95": 4.3,
+        "max": 5.5,
+        "n": 300
+      },
+      "render": {
+        "mean": 0.022,
+        "p50": 0,
+        "p95": 0.1,
+        "max": 0.4,
+        "n": 300
+      },
+      "drawCalls": 1
+    },
+    {
+      "lib": "nebula",
+      "emitters": 10,
+      "target": 10000,
+      "live": 10059,
+      "step": {
+        "mean": 2.957,
+        "p50": 2.9,
+        "p95": 3.7,
+        "max": 6.3,
+        "n": 300
+      },
+      "render": {
+        "mean": 0.02,
+        "p50": 0,
+        "p95": 0.1,
+        "max": 0.4,
+        "n": 300
+      },
+      "drawCalls": 1
+    },
+    {
+      "lib": "nebula",
+      "emitters": 50,
+      "target": 10000,
+      "live": 8945,
+      "step": {
+        "mean": 2.364,
+        "p50": 2.3,
+        "p95": 2.8,
+        "max": 3.5,
+        "n": 300
+      },
+      "render": {
+        "mean": 0.012,
+        "p50": 0,
+        "p95": 0.1,
+        "max": 0.3,
+        "n": 300
+      },
+      "drawCalls": 1
+    },
+    {
+      "lib": "stateless",
+      "emitters": 1,
+      "target": 10000,
+      "live": 9988,
+      "step": {
+        "mean": 0.001,
+        "p50": 0,
+        "p95": 0,
+        "max": 0.1,
+        "n": 300
+      },
+      "render": {
+        "mean": 0.008,
+        "p50": 0,
+        "p95": 0,
+        "max": 2,
+        "n": 300
+      },
+      "drawCalls": 1
+    },
+    {
+      "lib": "stateless",
+      "emitters": 10,
+      "target": 10000,
+      "live": 10144,
+      "step": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0.1,
+        "n": 300
+      },
+      "render": {
+        "mean": 0.017,
+        "p50": 0,
+        "p95": 0.1,
+        "max": 1.8,
+        "n": 300
+      },
+      "drawCalls": 10
+    },
+    {
+      "lib": "stateless",
+      "emitters": 50,
+      "target": 10000,
+      "live": 9134,
+      "step": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0.1,
+        "n": 300
+      },
+      "render": {
+        "mean": 0.055,
+        "p50": 0,
+        "p95": 0.1,
+        "max": 2.4,
+        "n": 300
+      },
+      "drawCalls": 50
+    },
+    {
+      "lib": "quarks + portable math",
+      "emitters": 10,
+      "target": 10000,
+      "live": 10114,
+      "step": {
+        "mean": 0.884,
+        "p50": 0.9,
+        "p95": 1,
+        "max": 1.6,
+        "n": 300
+      },
+      "render": null,
+      "drawCalls": null
+    },
+    {
+      "lib": "nebula + portable math",
+      "emitters": 10,
+      "target": 10000,
+      "live": 10059,
+      "step": {
+        "mean": 1.794,
+        "p50": 1.8,
+        "p95": 2,
+        "max": 3.4,
+        "n": 300
+      },
+      "render": null,
+      "drawCalls": null
+    }
+  ],
+  "totalMs": 33672,
+  "pixelScrub": {
+    "quarks-full": {
+      "same": true,
+      "ref": "d523a6b1"
+    },
+    "quarks-window": {
+      "same": false,
+      "ref": "d523a6b1"
+    },
+    "nebula-resim": {
+      "same": true,
+      "ref": "1829dcdc"
+    },
+    "stateless-seek": {
+      "same": true,
+      "ref": "467c79df"
+    }
+  },
+  "gl": {
+    "renderer": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "maxPointSize": 511
+  }
+}

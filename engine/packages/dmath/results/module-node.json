@@ -1,0 +1,192 @@
+{
+ "sin": {
+  "digest": "50d75957",
+  "random": 2000,
+  "maxUlp": 1,
+  "worstArgs": [
+   -8.6631999630481
+  ],
+  "hist": {
+   "0": 1978,
+   "1": 22,
+   "2": 0,
+   "more": 0
+  },
+  "edges": 10,
+  "edgeMismatch": []
+ },
+ "cos": {
+  "digest": "1fe3ea3d",
+  "random": 2000,
+  "maxUlp": 1,
+  "worstArgs": [
+   -5.811397037468851
+  ],
+  "hist": {
+   "0": 1983,
+   "1": 17,
+   "2": 0,
+   "more": 0
+  },
+  "edges": 7,
+  "edgeMismatch": []
+ },
+ "tan": {
+  "digest": "590dd09d",
+  "random": 2000,
+  "maxUlp": 1,
+  "worstArgs": [
+   -0.602938634157181
+  ],
+  "hist": {
+   "0": 1982,
+   "1": 18,
+   "2": 0,
+   "more": 0
+  },
+  "edges": 9,
+  "edgeMismatch": []
+ },
+ "asin": {
+  "digest": "50d8993a",
+  "random": 2000,
+  "maxUlp": 1,
+  "worstArgs": [
+   -0.513940030708909
+  ],
+  "hist": {
+   "0": 1982,
+   "1": 18,
+   "2": 0,
+   "more": 0
+  },
+  "edges": 9,
+  "edgeMismatch": []
+ },
+ "acos": {
+  "digest": "37222d11",
+  "random": 2000,
+  "maxUlp": 1,
+  "worstArgs": [
+   0.5882621705532074
+  ],
+  "hist": {
+   "0": 1990,
+   "1": 10,
+   "2": 0,
+   "more": 0
+  },
+  "edges": 8,
+  "edgeMismatch": []
+ },
+ "atan": {
+  "digest": "f1a63c66",
+  "random": 2000,
+  "maxUlp": 1,
+  "worstArgs": [
+   2.532615654170513
+  ],
+  "hist": {
+   "0": 1995,
+   "1": 5,
+   "2": 0,
+   "more": 0
+  },
+  "edges": 10,
+  "edgeMismatch": []
+ },
+ "atan2": {
+  "digest": "515eec13",
+  "random": 2000,
+  "maxUlp": 1,
+  "worstArgs": [
+   1.8776209140196443,
+   6.373306475579739
+  ],
+  "hist": {
+   "0": 1997,
+   "1": 3,
+   "2": 0,
+   "more": 0
+  },
+  "edges": 21,
+  "edgeMismatch": []
+ },
+ "exp": {
+  "digest": "36e52b89",
+  "random": 2000,
+  "maxUlp": 1,
+  "worstArgs": [
+   510.44872403144836
+  ],
+  "hist": {
+   "0": 1999,
+   "1": 1,
+   "2": 0,
+   "more": 0
+  },
+  "edges": 12,
+  "edgeMismatch": []
+ },
+ "log": {
+  "digest": "f310464b",
+  "random": 2000,
+  "maxUlp": 1,
+  "worstArgs": [
+   0.7586609477003332
+  ],
+  "hist": {
+   "0": 1992,
+   "1": 8,
+   "2": 0,
+   "more": 0
+  },
+  "edges": 11,
+  "edgeMismatch": []
+ },
+ "pow": {
+  "digest": "6ffd9f6d",
+  "random": 2000,
+  "maxUlp": 1,
+  "worstArgs": [
+   903.1280123308383,
+   39.25869653001428
+  ],
+  "hist": {
+   "0": 1810,
+   "1": 190,
+   "2": 0,
+   "more": 0
+  },
+  "edges": 35,
+  "edgeMismatch": []
+ },
+ "cbrt": {
+  "digest": "d17b01a9",
+  "random": 2000,
+  "maxUlp": 0,
+  "worstArgs": null,
+  "hist": {
+   "0": 2000,
+   "1": 0,
+   "2": 0,
+   "more": 0
+  },
+  "edges": 10,
+  "edgeMismatch": []
+ },
+ "hypot": {
+  "digest": "d7af2d92",
+  "random": 2000,
+  "maxUlp": 0,
+  "worstArgs": null,
+  "hist": {
+   "0": 2000,
+   "1": 0,
+   "2": 0,
+   "more": 0
+  },
+  "edges": 11,
+  "edgeMismatch": []
+ }
+}

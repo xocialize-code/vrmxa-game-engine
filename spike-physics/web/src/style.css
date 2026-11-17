@@ -1,0 +1,21 @@
+:root { color-scheme: light dark; font: 13px/1.45 -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; --bg: #f4f5f7; --fg: #1c1e21; --panel: rgba(255,255,255,0.86); --muted: #5f6670; --bad: #c0392b; }
+@media (prefers-color-scheme: dark) { :root { --bg: #16181b; --fg: #e8eaed; --panel: rgba(24,26,29,0.86); --muted: #9aa0a8; --bad: #ff6b5b; } }
+html, body, #app { margin: 0; height: 100%; background: var(--bg); color: var(--fg); }
+.stage-wrap { position: relative; height: 100%; overflow: hidden; }
+.stage { display: block; width: 100%; height: 100%; touch-action: none; }
+.hud { position: absolute; top: 12px; left: 12px; width: 280px; padding: 12px 14px; background: var(--panel); border-radius: 10px; backdrop-filter: blur(12px); box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+.hud h1, .report h1 { font-size: 14px; margin: 0 0 8px; }
+.hud label { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 4px 0; }
+.hud select { max-width: 170px; }
+.hud dl { display: grid; grid-template-columns: 70px 1fr; gap: 2px 8px; margin: 10px 0; font-variant-numeric: tabular-nums; }
+.hud dt { color: var(--muted); }
+.hud dd { margin: 0; }
+.help { color: var(--muted); margin: 6px 0 0; }
+.report { padding: 20px 24px; max-width: 1100px; }
+.env { display: flex; flex-wrap: wrap; gap: 16px; color: var(--muted); }
+.env b { color: var(--fg); }
+.log { color: var(--muted); font-family: ui-monospace, Menlo, monospace; font-size: 12px; padding-left: 18px; }
+table { border-collapse: collapse; margin-top: 12px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 4px 10px; border-bottom: 1px solid color-mix(in srgb, var(--fg) 15%, transparent); }
+th { color: var(--muted); font-weight: 500; }
+.bad { color: var(--bad); white-space: pre-wrap; }

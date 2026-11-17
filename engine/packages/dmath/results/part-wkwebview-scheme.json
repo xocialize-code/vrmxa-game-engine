@@ -1,0 +1,426 @@
+{
+  "determinism" : [
+    {
+      "hash300" : "e2dc39c4",
+      "hash600" : "5afd0ba7",
+      "lib" : "quarks",
+      "opts" : {
+        "seeding" : "none"
+      },
+      "particles600" : 10189,
+      "repeatable" : false,
+      "variant" : "quarks · unseeded (Math.random)"
+    },
+    {
+      "hash300" : "46cf9762",
+      "hash600" : "da9126ed",
+      "lib" : "quarks",
+      "opts" : {
+        "seeding" : "stream"
+      },
+      "particles600" : 10209,
+      "repeatable" : true,
+      "variant" : "quarks · adapter RNG, one stream"
+    },
+    {
+      "hash300" : "1ff1b7a2",
+      "hash600" : "5ff6669f",
+      "lib" : "quarks",
+      "opts" : {
+        "seeding" : "frame"
+      },
+      "particles600" : 10252,
+      "repeatable" : true,
+      "variant" : "quarks · adapter RNG, per-frame seed"
+    },
+    {
+      "hash300" : "2669932f",
+      "hash600" : "5a7fa80e",
+      "lib" : "nebula",
+      "opts" : {
+        "seeding" : "none"
+      },
+      "particles600" : 10224,
+      "repeatable" : false,
+      "variant" : "nebula · unseeded"
+    },
+    {
+      "hash300" : "e77142e3",
+      "hash600" : "93c60c07",
+      "lib" : "nebula",
+      "opts" : {
+        "seeding" : "seed"
+      },
+      "particles600" : 10197,
+      "repeatable" : true,
+      "variant" : "nebula · setSeed"
+    },
+    {
+      "hash300" : "65ffdf65",
+      "hash600" : "eef5422c",
+      "lib" : "stateless",
+      "opts" : {
+
+      },
+      "particles600" : 10313,
+      "repeatable" : true,
+      "variant" : "stateless · closed form (CPU twin)"
+    },
+    {
+      "hash300" : "60f38072",
+      "hash600" : "01256b25",
+      "lib" : "quarks",
+      "opts" : {
+        "math" : "portable",
+        "seeding" : "frame"
+      },
+      "particles600" : 10252,
+      "repeatable" : true,
+      "variant" : "quarks · per-frame seed + portable math"
+    },
+    {
+      "hash300" : "1e6014e9",
+      "hash600" : "16b5fbfa",
+      "lib" : "nebula",
+      "opts" : {
+        "math" : "portable",
+        "seeding" : "seed"
+      },
+      "particles600" : 10197,
+      "repeatable" : true,
+      "variant" : "nebula · setSeed + portable math"
+    },
+    {
+      "hash300" : "11eb0328",
+      "hash600" : "7f10a6b5",
+      "lib" : "stateless",
+      "opts" : {
+        "math" : "portable"
+      },
+      "particles600" : 10313,
+      "repeatable" : true,
+      "variant" : "stateless · CPU twin + portable math"
+    },
+    {
+      "hash600" : "e2508fa7",
+      "lib" : "proton",
+      "msPerStep" : 2.1000000000000001,
+      "particles600" : 10091,
+      "repeatable" : true,
+      "sceneObjects" : 10091,
+      "variant" : "three.proton.js · Math.random swap (probe)"
+    },
+    {
+      "hash600" : "942f0926",
+      "lib" : "proton",
+      "msPerStep" : 2.0249999999999999,
+      "particles600" : 10091,
+      "repeatable" : true,
+      "variant" : "three.proton.js · Math.random swap + portable math (probe)"
+    },
+    {
+      "hash600" : "5c333af9",
+      "lib" : "newkrok",
+      "msPerStep" : 0.125,
+      "repeatable" : true,
+      "variant" : "@newkrok\/three-particles · Math.random swap + synthetic clock (probe)"
+    }
+  ],
+  "env" : {
+    "location" : "vrmxg-particles:\/\/app\/index.html?autorun=1",
+    "timerResolutionMs" : 1,
+    "userAgent" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+  },
+  "gl" : {
+    "maxPointSize" : 511,
+    "renderer" : "WebGL 2.0"
+  },
+  "json" : {
+    "quarks" : {
+      "bytes" : 1929079,
+      "bytesWithoutImages" : 15366,
+      "loadedSystems" : 7,
+      "particles" : 104,
+      "sameState" : true,
+      "systems" : 7
+    },
+    "stateless" : {
+      "bytes" : 2895,
+      "sameState" : true
+    }
+  },
+  "perf" : [
+    {
+      "drawCalls" : 1,
+      "emitters" : 1,
+      "lib" : "quarks",
+      "live" : 9936,
+      "render" : {
+        "max" : 1,
+        "mean" : 0.029999999999999999,
+        "n" : 300,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "step" : {
+        "max" : 1,
+        "mean" : 0.76700000000000002,
+        "n" : 300,
+        "p50" : 1,
+        "p95" : 1
+      },
+      "target" : 10000
+    },
+    {
+      "drawCalls" : 1,
+      "emitters" : 10,
+      "lib" : "quarks",
+      "live" : 10114,
+      "render" : {
+        "max" : 1,
+        "mean" : 0.063,
+        "n" : 300,
+        "p50" : 0,
+        "p95" : 1
+      },
+      "step" : {
+        "max" : 1,
+        "mean" : 0.70299999999999996,
+        "n" : 300,
+        "p50" : 1,
+        "p95" : 1
+      },
+      "target" : 10000
+    },
+    {
+      "drawCalls" : 1,
+      "emitters" : 50,
+      "lib" : "quarks",
+      "live" : 8924,
+      "render" : {
+        "max" : 1,
+        "mean" : 0.027,
+        "n" : 300,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "step" : {
+        "max" : 1,
+        "mean" : 0.71999999999999997,
+        "n" : 300,
+        "p50" : 1,
+        "p95" : 1
+      },
+      "target" : 10000
+    },
+    {
+      "drawCalls" : 1,
+      "emitters" : 1,
+      "lib" : "nebula",
+      "live" : 9950,
+      "render" : {
+        "max" : 2,
+        "mean" : 0.042999999999999997,
+        "n" : 300,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "step" : {
+        "max" : 4,
+        "mean" : 2.2530000000000001,
+        "n" : 300,
+        "p50" : 2,
+        "p95" : 3
+      },
+      "target" : 10000
+    },
+    {
+      "drawCalls" : 1,
+      "emitters" : 10,
+      "lib" : "nebula",
+      "live" : 10059,
+      "render" : {
+        "max" : 1,
+        "mean" : 0.023,
+        "n" : 300,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "step" : {
+        "max" : 4,
+        "mean" : 2.2000000000000002,
+        "n" : 300,
+        "p50" : 2,
+        "p95" : 3
+      },
+      "target" : 10000
+    },
+    {
+      "drawCalls" : 1,
+      "emitters" : 50,
+      "lib" : "nebula",
+      "live" : 8945,
+      "render" : {
+        "max" : 1,
+        "mean" : 0.02,
+        "n" : 300,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "step" : {
+        "max" : 4,
+        "mean" : 2.0569999999999999,
+        "n" : 300,
+        "p50" : 2,
+        "p95" : 3
+      },
+      "target" : 10000
+    },
+    {
+      "drawCalls" : 1,
+      "emitters" : 1,
+      "lib" : "stateless",
+      "live" : 9988,
+      "render" : {
+        "max" : 2,
+        "mean" : 0.01,
+        "n" : 300,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "step" : {
+        "max" : 0,
+        "mean" : 0,
+        "n" : 300,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "target" : 10000
+    },
+    {
+      "drawCalls" : 10,
+      "emitters" : 10,
+      "lib" : "stateless",
+      "live" : 10144,
+      "render" : {
+        "max" : 2,
+        "mean" : 0.012999999999999999,
+        "n" : 300,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "step" : {
+        "max" : 0,
+        "mean" : 0,
+        "n" : 300,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "target" : 10000
+    },
+    {
+      "drawCalls" : 50,
+      "emitters" : 50,
+      "lib" : "stateless",
+      "live" : 9134,
+      "render" : {
+        "max" : 3,
+        "mean" : 0.050000000000000003,
+        "n" : 300,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "step" : {
+        "max" : 0,
+        "mean" : 0,
+        "n" : 300,
+        "p50" : 0,
+        "p95" : 0
+      },
+      "target" : 10000
+    },
+    {
+      "drawCalls" : null,
+      "emitters" : 10,
+      "lib" : "quarks + portable math",
+      "live" : 10114,
+      "render" : null,
+      "step" : {
+        "max" : 1,
+        "mean" : 0.73299999999999998,
+        "n" : 300,
+        "p50" : 1,
+        "p95" : 1
+      },
+      "target" : 10000
+    },
+    {
+      "drawCalls" : null,
+      "emitters" : 10,
+      "lib" : "nebula + portable math",
+      "live" : 10059,
+      "render" : null,
+      "step" : {
+        "max" : 2,
+        "mean" : 1.143,
+        "n" : 300,
+        "p50" : 1,
+        "p95" : 2
+      },
+      "target" : 10000
+    }
+  ],
+  "pixelScrub" : {
+    "nebula-resim" : {
+      "ref" : "1829dcdc",
+      "same" : true
+    },
+    "quarks-full" : {
+      "ref" : "d523a6b1",
+      "same" : true
+    },
+    "quarks-window" : {
+      "ref" : "d523a6b1",
+      "same" : false
+    },
+    "stateless-seek" : {
+      "ref" : "467c79df",
+      "same" : true
+    }
+  },
+  "scrub" : {
+    "nebulaResim" : {
+      "frames" : 450,
+      "ms" : 549,
+      "msPerFrame" : 1.22,
+      "ordered" : true
+    },
+    "quarksFull" : {
+      "ordered" : true,
+      "particles" : 10241,
+      "restoreMs" : 4,
+      "snapshotBytes" : 7314253,
+      "snapshotMs" : 5,
+      "unordered" : true
+    },
+    "quarksResim" : {
+      "frames" : 450,
+      "ms" : 253,
+      "msPerFrame" : 0.56200000000000006,
+      "ordered" : true
+    },
+    "quarksWindow" : {
+      "emitterStateBytesPerFrame" : 4294,
+      "ordered" : false,
+      "particles" : 10241,
+      "restoreMs" : 45,
+      "unordered" : true,
+      "windowFrames" : 100
+    },
+    "statelessSeek" : {
+      "ordered" : true,
+      "seekMs" : 0
+    }
+  },
+  "totalMs" : 24057
+}

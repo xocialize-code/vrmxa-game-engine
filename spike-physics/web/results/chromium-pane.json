@@ -1,0 +1,352 @@
+{
+  "when": "2026-11-17T18:17:32.338Z",
+  "env": {
+    "runtime": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36",
+    "origin": "http://127.0.0.1:5230",
+    "isSecureContext": true,
+    "crossOriginIsolated": false,
+    "sharedArrayBuffer": false,
+    "hardwareConcurrency": 18
+  },
+  "rapier": {
+    "standard": {
+      "version": "0.21.0",
+      "initMs": 12.8,
+      "full": {
+        "hash": "44f6c2b6",
+        "repeatable": true,
+        "checkpoints": {
+          "100": "d72eb955",
+          "200": "36826e03",
+          "300": "4e04fcf3",
+          "400": "0028b053",
+          "500": "7d02a536",
+          "600": "44f6c2b6"
+        }
+      },
+      "noCloth": {
+        "hash": "ba65cf1c",
+        "repeatable": true,
+        "checkpoints": {
+          "100": "61061fd7",
+          "200": "e052f88d",
+          "300": "d3ffb0dd",
+          "400": "91c4cbbd",
+          "500": "8573029c",
+          "600": "ba65cf1c"
+        }
+      },
+      "snapshot": {
+        "identical": true,
+        "hashA": "44f6c2b6",
+        "hashB": "44f6c2b6",
+        "snapshotBytes": 1272359,
+        "takeMs": 0.9,
+        "restoreMs": 1.5
+      },
+      "snapshotNoCloth": {
+        "identical": true,
+        "hashA": "ba65cf1c",
+        "hashB": "ba65cf1c",
+        "snapshotBytes": 1102879,
+        "takeMs": 0.4,
+        "restoreMs": 1.1
+      },
+      "timing": {
+        "full": {
+          "mean": 0.346,
+          "p50": 0.4,
+          "p95": 0.7,
+          "max": 1.4,
+          "allAwake60": 0.572,
+          "awake": {
+            "0": 302,
+            "60": 300,
+            "120": 101,
+            "180": 31,
+            "240": 10,
+            "300": 1,
+            "360": 60,
+            "420": 190,
+            "480": 230,
+            "540": 229
+          }
+        },
+        "noCloth": {
+          "mean": 0.316,
+          "p50": 0.3,
+          "p95": 0.6,
+          "max": 0.9,
+          "allAwake60": 0.295,
+          "awake": {
+            "0": 301,
+            "60": 300,
+            "120": 101,
+            "180": 31,
+            "240": 10,
+            "300": 1,
+            "360": 60,
+            "420": 190,
+            "480": 230,
+            "540": 229
+          }
+        },
+        "boxesOnly": {
+          "mean": 0.109,
+          "p50": 0.1,
+          "p95": 0.4,
+          "max": 0.6,
+          "allAwake60": 0.273,
+          "awake": {
+            "0": 300,
+            "60": 300,
+            "120": 100,
+            "180": 30,
+            "240": 10,
+            "300": 0,
+            "360": 0,
+            "420": 0,
+            "480": 0,
+            "540": 0
+          }
+        }
+      }
+    },
+    "simd": {
+      "version": "0.21.0",
+      "initMs": 14.9,
+      "full": {
+        "hash": "aea7c548",
+        "repeatable": true,
+        "checkpoints": {
+          "100": "fd5ff1c2",
+          "200": "e94c9f69",
+          "300": "56190d31",
+          "400": "c793092d",
+          "500": "ba9efc5a",
+          "600": "aea7c548"
+        }
+      },
+      "noCloth": {
+        "hash": "b9e2a3d0",
+        "repeatable": true,
+        "checkpoints": {
+          "100": "9fbc7f58",
+          "200": "840f921b",
+          "300": "65a8bf33",
+          "400": "801ccb1f",
+          "500": "bbae3220",
+          "600": "b9e2a3d0"
+        }
+      },
+      "snapshot": {
+        "identical": true,
+        "hashA": "aea7c548",
+        "hashB": "aea7c548",
+        "snapshotBytes": 1272159,
+        "takeMs": 1,
+        "restoreMs": 2.1
+      },
+      "snapshotNoCloth": {
+        "identical": true,
+        "hashA": "b9e2a3d0",
+        "hashB": "b9e2a3d0",
+        "snapshotBytes": 1102679,
+        "takeMs": 0.4,
+        "restoreMs": 1.2
+      },
+      "timing": {
+        "full": {
+          "mean": 0.231,
+          "p50": 0.2,
+          "p95": 0.6,
+          "max": 0.9,
+          "allAwake60": 0.472,
+          "awake": {
+            "0": 302,
+            "60": 300,
+            "120": 101,
+            "180": 31,
+            "240": 10,
+            "300": 1,
+            "360": 60,
+            "420": 190,
+            "480": 220,
+            "540": 218
+          }
+        },
+        "noCloth": {
+          "mean": 0.6,
+          "p50": 0.5,
+          "p95": 1.3,
+          "max": 6.8,
+          "allAwake60": 0.707,
+          "awake": {
+            "0": 301,
+            "60": 300,
+            "120": 101,
+            "180": 31,
+            "240": 10,
+            "300": 1,
+            "360": 60,
+            "420": 190,
+            "480": 220,
+            "540": 218
+          }
+        },
+        "boxesOnly": {
+          "mean": 0.195,
+          "p50": 0.1,
+          "p95": 0.6,
+          "max": 1.4,
+          "allAwake60": 0.433,
+          "awake": {
+            "0": 300,
+            "60": 300,
+            "120": 100,
+            "180": 30,
+            "240": 10,
+            "300": 0,
+            "360": 0,
+            "420": 0,
+            "480": 0,
+            "540": 0
+          }
+        }
+      }
+    },
+    "deterministic": {
+      "version": "0.21.0",
+      "initMs": 32.7,
+      "full": {
+        "hash": "44f6c2b6",
+        "repeatable": true,
+        "checkpoints": {
+          "100": "d72eb955",
+          "200": "36826e03",
+          "300": "4e04fcf3",
+          "400": "0028b053",
+          "500": "7d02a536",
+          "600": "44f6c2b6"
+        }
+      },
+      "noCloth": {
+        "hash": "ba65cf1c",
+        "repeatable": true,
+        "checkpoints": {
+          "100": "61061fd7",
+          "200": "e052f88d",
+          "300": "d3ffb0dd",
+          "400": "91c4cbbd",
+          "500": "8573029c",
+          "600": "ba65cf1c"
+        }
+      },
+      "snapshot": {
+        "identical": true,
+        "hashA": "44f6c2b6",
+        "hashB": "44f6c2b6",
+        "snapshotBytes": 1272359,
+        "takeMs": 5.6,
+        "restoreMs": 13.5
+      },
+      "snapshotNoCloth": {
+        "identical": true,
+        "hashA": "ba65cf1c",
+        "hashB": "ba65cf1c",
+        "snapshotBytes": 1102879,
+        "takeMs": 0.8,
+        "restoreMs": 1.6
+      },
+      "timing": {
+        "full": {
+          "mean": 1.02,
+          "p50": 1.1,
+          "p95": 2.2,
+          "max": 7.1,
+          "allAwake60": 1.662,
+          "awake": {
+            "0": 302,
+            "60": 300,
+            "120": 101,
+            "180": 31,
+            "240": 10,
+            "300": 1,
+            "360": 60,
+            "420": 190,
+            "480": 230,
+            "540": 229
+          }
+        },
+        "noCloth": {
+          "mean": 0.922,
+          "p50": 1,
+          "p95": 2.1,
+          "max": 3.3,
+          "allAwake60": 0.93,
+          "awake": {
+            "0": 301,
+            "60": 300,
+            "120": 101,
+            "180": 31,
+            "240": 10,
+            "300": 1,
+            "360": 60,
+            "420": 190,
+            "480": 230,
+            "540": 229
+          }
+        },
+        "boxesOnly": {
+          "mean": 0.317,
+          "p50": 0.1,
+          "p95": 1.2,
+          "max": 3.4,
+          "allAwake60": 0.795,
+          "awake": {
+            "0": 300,
+            "60": 300,
+            "120": 100,
+            "180": 30,
+            "240": 10,
+            "300": 0,
+            "360": 0,
+            "420": 0,
+            "480": 0,
+            "540": 0
+          }
+        }
+      }
+    }
+  },
+  "jolt": {
+    "build": "jolt-physics 1.1.1 wasm-compat (single-threaded)",
+    "initMs": 56.6,
+    "awake": {
+      "0": 300,
+      "60": 300,
+      "120": 290,
+      "180": 290,
+      "240": 285,
+      "300": 295,
+      "360": 277,
+      "420": 256,
+      "480": 230,
+      "540": 213
+    },
+    "allAwake60": 2.3,
+    "finalBoxY": {
+      "min": 0.14,
+      "max": 3.92
+    },
+    "boxesOnly": {
+      "mean": 2.918,
+      "p50": 2.9,
+      "p95": 4.9,
+      "max": 7.4
+    }
+  },
+  "joltMT": {
+    "skipped": "no SharedArrayBuffer in this context"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "1000": {
+    "nodes": 1008,
+    "flatNodes": 2026,
+    "bytes": 140364,
+    "lines": 1231,
+    "checkMs": 1,
+    "serializeMs": 1.07,
+    "parseMs": 0.4,
+    "flattenMs": 0.3,
+    "setMs": 0.02
+  },
+  "10000": {
+    "nodes": 10008,
+    "flatNodes": 20026,
+    "bytes": 1419764,
+    "lines": 12031,
+    "checkMs": 6.81,
+    "serializeMs": 9.51,
+    "parseMs": 3.97,
+    "flattenMs": 2.08,
+    "setMs": 0.14
+  },
+  "node": "v26.12.1",
+  "compileMs": 39.7
+}

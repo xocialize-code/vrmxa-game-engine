@@ -1,0 +1,314 @@
+[
+  {
+    "file": "q-native-h264-16M.mp4",
+    "bytes": 19906030,
+    "mbps": 15.92,
+    "codec": "h264",
+    "profile": "High",
+    "frames": 300,
+    "hasBFrames": 2,
+    "pictTypes": {
+      "I,": 6,
+      "B": 220,
+      "P": 74
+    },
+    "colour": "bt709/bt709/bt709/tv",
+    "vmaf": 99.97,
+    "vmafMin": 91.8,
+    "vmafHarmonic": 99.97,
+    "psnrY": 45.87,
+    "ssim": 0.9992
+  },
+  {
+    "file": "q-native-h264-2M.mp4",
+    "bytes": 2557463,
+    "mbps": 2.05,
+    "codec": "h264",
+    "profile": "High",
+    "frames": 300,
+    "hasBFrames": 2,
+    "pictTypes": {
+      "I,": 6,
+      "B": 220,
+      "P": 74
+    },
+    "colour": "bt709/bt709/bt709/tv",
+    "vmaf": 81.66,
+    "vmafMin": 75.96,
+    "vmafHarmonic": 81.59,
+    "psnrY": 35.22,
+    "ssim": 0.9895
+  },
+  {
+    "file": "q-native-h264-4M.mp4",
+    "bytes": 5018294,
+    "mbps": 4.01,
+    "codec": "h264",
+    "profile": "High",
+    "frames": 300,
+    "hasBFrames": 2,
+    "pictTypes": {
+      "I,": 6,
+      "B": 220,
+      "P": 74
+    },
+    "colour": "bt709/bt709/bt709/tv",
+    "vmaf": 94.83,
+    "vmafMin": 88.15,
+    "vmafHarmonic": 94.82,
+    "psnrY": 39.31,
+    "ssim": 0.9969
+  },
+  {
+    "file": "q-native-h264-8M.mp4",
+    "bytes": 9989728,
+    "mbps": 7.99,
+    "codec": "h264",
+    "profile": "High",
+    "frames": 300,
+    "hasBFrames": 2,
+    "pictTypes": {
+      "I,": 6,
+      "B": 220,
+      "P": 74
+    },
+    "colour": "bt709/bt709/bt709/tv",
+    "vmaf": 99.69,
+    "vmafMin": 91.18,
+    "vmafHarmonic": 99.69,
+    "psnrY": 42.83,
+    "ssim": 0.9987
+  },
+  {
+    "file": "q-native-hevc-16M.mp4",
+    "bytes": 19934347,
+    "mbps": 15.95,
+    "codec": "hevc",
+    "profile": "Main",
+    "frames": 300,
+    "hasBFrames": 2,
+    "pictTypes": {
+      "I,": 5,
+      "B": 224,
+      "P": 71
+    },
+    "colour": "bt709/bt709/bt709/tv",
+    "vmaf": 99.98,
+    "vmafMin": 93.64,
+    "vmafHarmonic": 99.98,
+    "psnrY": 46.32,
+    "ssim": 0.9993
+  },
+  {
+    "file": "q-native-hevc-2M.mp4",
+    "bytes": 2589773,
+    "mbps": 2.07,
+    "codec": "hevc",
+    "profile": "Main",
+    "frames": 300,
+    "hasBFrames": 2,
+    "pictTypes": {
+      "I,": 5,
+      "B": 224,
+      "P": 71
+    },
+    "colour": "bt709/bt709/bt709/tv",
+    "vmaf": 86.68,
+    "vmafMin": 79.1,
+    "vmafHarmonic": 86.44,
+    "psnrY": 37.23,
+    "ssim": 0.9942
+  },
+  {
+    "file": "q-native-hevc-4M.mp4",
+    "bytes": 5036965,
+    "mbps": 4.03,
+    "codec": "hevc",
+    "profile": "Main",
+    "frames": 300,
+    "hasBFrames": 2,
+    "pictTypes": {
+      "I,": 5,
+      "B": 224,
+      "P": 71
+    },
+    "colour": "bt709/bt709/bt709/tv",
+    "vmaf": 96.47,
+    "vmafMin": 89.01,
+    "vmafHarmonic": 96.42,
+    "psnrY": 40.84,
+    "ssim": 0.9978
+  },
+  {
+    "file": "q-native-hevc-8M.mp4",
+    "bytes": 9968860,
+    "mbps": 7.98,
+    "codec": "hevc",
+    "profile": "Main",
+    "frames": 300,
+    "hasBFrames": 2,
+    "pictTypes": {
+      "I,": 5,
+      "B": 224,
+      "P": 71
+    },
+    "colour": "bt709/bt709/bt709/tv",
+    "vmaf": 99.75,
+    "vmafMin": 90.3,
+    "vmafHarmonic": 99.75,
+    "psnrY": 43.68,
+    "ssim": 0.9989
+  },
+  {
+    "file": "q-wc-avc-high-16M.mp4",
+    "bytes": 10999463,
+    "mbps": 8.8,
+    "codec": "h264",
+    "profile": "High",
+    "frames": 300,
+    "hasBFrames": 0,
+    "pictTypes": {
+      "I": 5,
+      "P": 295
+    },
+    "colour": "bt709/iec61966-2-1/bt709/pc",
+    "vmaf": 99.92,
+    "vmafMin": 94.95,
+    "vmafHarmonic": 99.91,
+    "psnrY": 38.33,
+    "ssim": 0.9982
+  },
+  {
+    "file": "q-wc-avc-high-2M.mp4",
+    "bytes": 1354519,
+    "mbps": 1.08,
+    "codec": "h264",
+    "profile": "High",
+    "frames": 186,
+    "hasBFrames": 0,
+    "pictTypes": {
+      "I": 5,
+      "P": 181
+    },
+    "colour": "bt709/iec61966-2-1/bt709/pc",
+    "vmaf": 74.22,
+    "vmafMin": 59.53,
+    "vmafHarmonic": 73.6,
+    "psnrY": 33.13,
+    "ssim": 0.9863
+  },
+  {
+    "file": "q-wc-avc-high-4M.mp4",
+    "bytes": 2702571,
+    "mbps": 2.16,
+    "codec": "h264",
+    "profile": "High",
+    "frames": 292,
+    "hasBFrames": 0,
+    "pictTypes": {
+      "I": 5,
+      "P": 287
+    },
+    "colour": "bt709/iec61966-2-1/bt709/pc",
+    "vmaf": 85.53,
+    "vmafMin": 79.19,
+    "vmafHarmonic": 85.37,
+    "psnrY": 35.05,
+    "ssim": 0.9929
+  },
+  {
+    "file": "q-wc-avc-high-8M.mp4",
+    "bytes": 5497344,
+    "mbps": 4.4,
+    "codec": "h264",
+    "profile": "High",
+    "frames": 300,
+    "hasBFrames": 0,
+    "pictTypes": {
+      "I": 5,
+      "P": 295
+    },
+    "colour": "bt709/iec61966-2-1/bt709/pc",
+    "vmaf": 96.46,
+    "vmafMin": 92.38,
+    "vmafHarmonic": 96.44,
+    "psnrY": 37.16,
+    "ssim": 0.9968
+  },
+  {
+    "file": "q-wc-hevc-main-16M.mp4",
+    "bytes": 18943957,
+    "mbps": 15.16,
+    "codec": "hevc",
+    "profile": "Main",
+    "frames": 300,
+    "hasBFrames": 0,
+    "pictTypes": {
+      "I": 5,
+      "B": 295
+    },
+    "colour": "bt709/iec61966-2-1/bt709/pc",
+    "vmaf": 99.99,
+    "vmafMin": 95.63,
+    "vmafHarmonic": 99.98,
+    "psnrY": 39.02,
+    "ssim": 0.9987
+  },
+  {
+    "file": "q-wc-hevc-main-2M.mp4",
+    "bytes": 2397351,
+    "mbps": 1.92,
+    "codec": "hevc",
+    "profile": "Main",
+    "frames": 300,
+    "hasBFrames": 0,
+    "pictTypes": {
+      "I": 5,
+      "B": 295
+    },
+    "colour": "bt709/iec61966-2-1/bt709/pc",
+    "vmaf": 88.5,
+    "vmafMin": 77.13,
+    "vmafHarmonic": 88.43,
+    "psnrY": 35.04,
+    "ssim": 0.994
+  },
+  {
+    "file": "q-wc-hevc-main-4M.mp4",
+    "bytes": 4752875,
+    "mbps": 3.8,
+    "codec": "hevc",
+    "profile": "Main",
+    "frames": 300,
+    "hasBFrames": 0,
+    "pictTypes": {
+      "I": 5,
+      "B": 295
+    },
+    "colour": "bt709/iec61966-2-1/bt709/pc",
+    "vmaf": 97.52,
+    "vmafMin": 89.49,
+    "vmafHarmonic": 97.5,
+    "psnrY": 37.1,
+    "ssim": 0.9973
+  },
+  {
+    "file": "q-wc-hevc-main-8M.mp4",
+    "bytes": 9507751,
+    "mbps": 7.61,
+    "codec": "hevc",
+    "profile": "Main",
+    "frames": 300,
+    "hasBFrames": 0,
+    "pictTypes": {
+      "I": 5,
+      "B": 295
+    },
+    "colour": "bt709/iec61966-2-1/bt709/pc",
+    "vmaf": 99.94,
+    "vmafMin": 94.27,
+    "vmafHarmonic": 99.94,
+    "psnrY": 38.36,
+    "ssim": 0.9984
+  }
+]

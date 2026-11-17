@@ -1,0 +1,57 @@
+# VRMXG: area contract
+
+## Bridge identity
+
+**AREA-ID: `vrmxg`** (aliases: `vrmxa-game-engine`, `vrmxg-engine`, `vrmx-game-engine`). Work in this directory
+answers for that identity on the bridge.
+- **Session start:** `bridge assume vrmxg` gives owed asks, open tasks and the context pack in one command.
+- **Assumption** is informational, never a lock. A stale last-assumed age in `bridge areas` means nobody is home, and
+  you take over by assuming.
+- **Filing:** file answers and asks under this id; the roster validates recipients. Records filed before the area
+  existed (2026-11-17) carry `project: vrmxa-game-engine`.
+
+## What VRMXG is
+
+VRMXG is a three.js game engine built around our VRMX formats: VRMXA characters, VRMXW wearables and the proposed
+VRMXI game items. Its feature set is modelled on Godot 4. It delivers the interactive world (scene, physics,
+characters, cameras, input, audio, NPC AI, capture) and lives **outside** the apps that use it: a new editor app, a
+game UI app, an anime creator app, and later the avatar studio and the companion app.
+- **Stack:** three r187, `@pixiv/three-vrm` 3.5.5, Vue 3, a thin sandboxed WKWebView wrapper in Swift.
+- **Constraint:** the wrapper's custom URL scheme gives no `SharedArrayBuffer` (AB-L-0346), so WASM runs
+  single-threaded.
+- **Determinism is a product requirement:** shots must replay and export bit-identically in WKWebView, Chromium and
+  Node. That needs a fixed step and portable maths (AB-L-0345).
+
+## Where things are
+
+| Path | What |
+|---|---|
+| [VRMXG-PRD.md](VRMXG-PRD.md) | The PRD (features pass): Godot feature map with P0–P2, format family, scene format, phasing, open questions. The spike table at the top links every receipt |
+| [vrmxa-game-engine-notes.md](vrmxa-game-engine-notes.md) | The operator's original notes |
+| [physics-engine-research.md](physics-engine-research.md) | Physics research: Rapier, Jolt as fallback |
+| `engine/packages/dmath/` | `@vrmxg/dmath`, the first engine package: portable transcendental maths, bit-identical in V8 and JSC (AB-R-0931). Install it before anything parses a VRM. Its version is part of a replay's identity |
+| `spike-physics/` | Rapier in the real stack, plus the WKWebView wrapper the other spikes copy (AB-R-0923) |
+| `spike-determinism/` | Character determinism and the `dmath` shim (AB-R-0924) |
+| `spike-navigation/` | navcat vs recast-navigation-js (AB-R-0925) |
+| `spike-particles/` | three.quarks behind a deterministic adapter (AB-R-0926) |
+| `spike-frame-export/` | Offline render to AVAssetWriter (AB-R-0927) |
+| `spike-cinematics/` | pmndrs post stack on MToon (AB-R-0928, WKWebView AB-R-0929) |
+| `spike-steprate/` | 60 Hz vs 120 Hz simulation step: keep 60 Hz, interpolate presentation (AB-R-0932, decision AB-D-0245) |
+| `spike-registry/` | Node registry → `.vrmxs` schema, lint, undoable edits, generic MCP tools (AB-R-0933); the seed of `engine/packages/registry`, `scene` and `mcp` |
+| `research/` | `cinematics.md` (sequencer, cameras, post, viewports), `npc-ai.md` (behaviour trees, utility, LLM director) |
+| `reference/` | Godot 4.8-beta source and other reference repos. Read-only |
+| `../VRMXA_Specification/` | The VRMXA / VRMXW specs and the closet protocol (owned elsewhere) |
+| `../vrmxa-avatar-studio/` | The avatar studio, the first consumer of the VRMX formats |
+
+## Rules
+
+- Spikes are throwaway. Each one has a README with a verdict, run instructions and raw JSON in `results/`. File
+  measurements as receipts with `--package` and `--version`.
+- Take timings over the loopback origin, in a fresh `WKWebView`: the scheme origin's timer resolves only 1 ms, and a
+  web view that has loaded the scheme keeps that timer after navigating to loopback (AB-L-0346).
+- Pick one Rapier build per project. The SIMD build's results differ from the scalar builds', and snapshots replay
+  only on the build that made them.
+- Keep fdlibm's licence notice with any port of it.
+- Simulation code uses `@vrmxg/dmath` for transcendental maths, never the engine's own `Math.sin` and the rest, and never
+  the `**` operator (it bypasses a patched `Math.pow`). Changing `src/index.js` changes replay hashes: regenerate
+  `test/golden.json` on purpose and bump the version.

@@ -1,0 +1,34 @@
+{
+  "three.quarks (WebGL)": {
+    "minKB": 195.1,
+    "gzipKB": 41.3
+  },
+  "three.quarks/webgpu": {
+    "minKB": 216.4,
+    "gzipKB": 47.4
+  },
+  "three-nebula (WebGL)": {
+    "minKB": 100.2,
+    "gzipKB": 25
+  },
+  "three-nebula/webgpu": {
+    "minKB": 8.4,
+    "gzipKB": 2.8
+  },
+  "three.proton.js": {
+    "minKB": 57.1,
+    "gzipKB": 13.2
+  },
+  "@newkrok/three-particles": {
+    "minKB": 97.4,
+    "gzipKB": 26.3
+  },
+  "stateless (this spike)": {
+    "minKB": 22.2,
+    "gzipKB": 8.3
+  },
+  "portable math (this spike)": {
+    "minKB": 5.4,
+    "gzipKB": 2.4
+  }
+}

@@ -1,0 +1,4 @@
+{"video":"q-native-h264-16M.mp4","frame":45,"meanBias_BGR":[-0.55,-1.43,-0.15],"meanAbsErr_BGR":[1.82,1.69,1.41]}
+{"video":"q-native-hevc-16M.mp4","frame":45,"meanBias_BGR":[-1.12,-1.47,-0.5],"meanAbsErr_BGR":[1.84,1.71,1.31]}
+{"video":"q-wc-avc-high-16M.mp4","frame":45,"meanBias_BGR":[0.75,-2.53,-1.64],"meanAbsErr_BGR":[2.29,2.99,3.09]}
+{"video":"q-wc-hevc-main-16M.mp4","frame":45,"meanBias_BGR":[-0.45,-2.34,-2.09],"meanAbsErr_BGR":[1.45,2.64,2.6]}

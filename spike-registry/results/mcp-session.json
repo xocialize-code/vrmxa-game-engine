@@ -1,0 +1,238 @@
+{
+  "work": "/var/folders/2t/n472rntx42g8s3bd3_xz7tg00000gn/T/vrmxg-mcp-tvteZQ",
+  "toolList": {
+    "perType": {
+      "tools": 23,
+      "bytes": 35182,
+      "approxTokens": 8796
+    },
+    "generic": {
+      "tools": 12,
+      "bytes": 3665,
+      "approxTokens": 916
+    }
+  },
+  "steps": [
+    {
+      "name": "describe",
+      "args": {},
+      "isError": false,
+      "ms": 0.98,
+      "bytes": 1980,
+      "text": "{\n \"types\": [\n  {\n   \"type\": \"Node3D\",\n   \"extends\": null,\n   \"description\": \"A transform in the tree. Every other node type derives from it.\"\n  },\n  {\n   \"type\": \"Marker\",\n   \"extends\": \"Node3D\",\n   \"description\": \"A named point: spawn points, look targets, waypoints.\"\n  },\n  {\n   \"type\": \"Model\",\n   \"extends\": \"Node3D\",\n   \"description\": \"Static or animated glTF geometry from a .glb asset (sets,…"
+    },
+    {
+      "name": "describe",
+      "args": {
+        "type": "Camera"
+      },
+      "isError": false,
+      "ms": 0.34,
+      "bytes": 6122,
+      "text": "{\n \"type\": \"Camera\",\n \"extends\": [\n  \"Node3D\"\n ],\n \"description\": \"A physical camera: lens, sensor and focus, as the cinematics research specifies.\",\n \"asset\": null,\n \"schema\": {\n  \"type\": \"object\",\n  \"required\": [\n   \"id\",\n   \"type\"\n  ],\n  \"description\": \"A physical camera: lens, sensor and focus, as the cinematics research specifies.\",\n  \"properties\": {\n   \"id\": {\n    \"type\": \"string\",\n    \"patt…"
+    },
+    {
+      "name": "tree",
+      "args": {},
+      "isError": false,
+      "ms": 0.25,
+      "bytes": 155,
+      "text": "root (Node3D, \"Cafe\")\n  set (Model)\n  sun (DirectionalLight)\n  door-1 (Instance)\n  entrance (Instance)\n  spawn (Marker)\n  hana-1 (Character)\n  cam (Camera)"
+    },
+    {
+      "name": "add_node",
+      "args": {
+        "node": {
+          "id": "cam-2",
+          "type": "Camera",
+          "parent": "root",
+          "props": {
+            "focalLength": 2,
+            "preset": "orbit",
+            "target": "hana-1"
+          }
+        }
+      },
+      "isError": true,
+      "ms": 0.76,
+      "bytes": 36,
+      "text": "cam-2/props/focalLength must be >= 4"
+    },
+    {
+      "name": "add_node",
+      "args": {
+        "node": {
+          "id": "cam-2",
+          "type": "Camera",
+          "parent": "root",
+          "transform": {
+            "p": [
+              2,
+              1.6,
+              2
+            ]
+          },
+          "props": {
+            "focalLength": 85,
+            "preset": "orbit",
+            "target": "hana-1"
+          }
+        }
+      },
+      "isError": false,
+      "ms": 0.31,
+      "bytes": 11,
+      "text": "added cam-2"
+    },
+    {
+      "name": "add_node",
+      "args": {
+        "node": {
+          "id": "key",
+          "type": "PointLight",
+          "parent": "root",
+          "transform": {
+            "p": [
+              1,
+              2.5,
+              1
+            ]
+          },
+          "props": {
+            "intensity": 60,
+            "range": 8,
+            "color": "#ffe8c0"
+          }
+        }
+      },
+      "isError": false,
+      "ms": 0.5,
+      "bytes": 9,
+      "text": "added key"
+    },
+    {
+      "name": "get_node",
+      "args": {
+        "id": "hana-1"
+      },
+      "isError": false,
+      "ms": 0.19,
+      "bytes": 418,
+      "text": "{\n \"node\": {\n  \"id\": \"hana-1\",\n  \"type\": \"Character\",\n  \"parent\": \"root\",\n  \"asset\": \"hana\",\n  \"transform\": {\n   \"p\": [\n    0,\n    0,\n    0\n   ]\n  },\n  \"props\": {\n   \"controller\": \"npc\",\n   \"outfit\": \"casual\"\n  },\n  \"behaviours\": [\n   {\n    \"radius\": 4,\n    \"use\": \"wander\"\n   }\n  ]\n },\n \"signals\": [\n  \"ready\",\n  \"arrived\",\n  \"spoke\"\n ],\n \"actions\": [\n  \"show\",\n  \"hide\",\n  \"say\",\n  \"goTo\",\n  \"emote…"
+    },
+    {
+      "name": "connect",
+      "args": {
+        "from": "hana-1",
+        "signal": "arrived",
+        "to": "door-1",
+        "call": "open"
+      },
+      "isError": true,
+      "ms": 0.18,
+      "bytes": 56,
+      "text": "Instance \"door-1\" has no action \"open\" (has: show, hide)"
+    },
+    {
+      "name": "tree",
+      "args": {
+        "flatten": true
+      },
+      "isError": false,
+      "ms": 0.46,
+      "bytes": 864,
+      "text": "root (Node3D, \"Cafe\")\n  set (Model)\n  sun (DirectionalLight)\n  door-1 (Instance)\n    door-1/door (Node3D, \"Door\")\n      door-1/frame (Model)\n      door-1/hinge (RigidBody)\n        door-1/panel (Collider)\n      door-1/trigger (Area)\n  entrance (Instance)\n    entrance/pair (Node3D, \"Double door\")\n      entrance/left (Instance)\n        entrance/left/door (Node3D, \"Door\")\n          entrance/left/frame…"
+    },
+    {
+      "name": "connect",
+      "args": {
+        "from": "hana-1",
+        "signal": "arrived",
+        "to": "door-1/hinge",
+        "call": "open"
+      },
+      "isError": false,
+      "ms": 0.32,
+      "bytes": 45,
+      "text": "connected hana-1.arrived -> door-1/hinge.open"
+    },
+    {
+      "name": "set",
+      "args": {
+        "id": "door-1",
+        "path": "overrides.hinge.behaviours",
+        "value": [
+          {
+            "use": "hinge",
+            "locked": false
+          }
+        ]
+      },
+      "isError": false,
+      "ms": 0.55,
+      "bytes": 68,
+      "text": "door-1.overrides.hinge.behaviours = [{\"use\":\"hinge\",\"locked\":false}]"
+    },
+    {
+      "name": "set",
+      "args": {
+        "id": "cam",
+        "path": "props.fStop",
+        "value": "wide"
+      },
+      "isError": true,
+      "ms": 0.14,
+      "bytes": 30,
+      "text": "cam/props/fStop must be number"
+    },
+    {
+      "name": "set",
+      "args": {
+        "id": "cam",
+        "path": "props.fStop",
+        "value": 1.4
+      },
+      "isError": false,
+      "ms": 0.12,
+      "bytes": 21,
+      "text": "cam.props.fStop = 1.4"
+    },
+    {
+      "name": "undo",
+      "args": {},
+      "isError": false,
+      "ms": 0.11,
+      "bytes": 6,
+      "text": "undone"
+    },
+    {
+      "name": "validate",
+      "args": {},
+      "isError": false,
+      "ms": 3.96,
+      "bytes": 47,
+      "text": "{\n \"ok\": true,\n \"errors\": [],\n \"warnings\": []\n}"
+    },
+    {
+      "name": "save",
+      "args": {},
+      "isError": false,
+      "ms": 0.54,
+      "bytes": 109,
+      "text": "{\n \"saved\": \"cafe.vrmxs\",\n \"changedLines\": {\n  \"added\": 6,\n  \"removed\": 3,\n  \"total\": 9\n },\n \"warnings\": []\n}"
+    }
+  ],
+  "saved": {
+    "saved": "cafe.vrmxs",
+    "changedLines": {
+      "added": 6,
+      "removed": 3,
+      "total": 9
+    },
+    "warnings": []
+  },
+  "fileDiff": {
+    "linesBefore": 31,
+    "linesAfter": 34
+  }
+}

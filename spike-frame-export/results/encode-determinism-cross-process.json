@@ -1,0 +1,1 @@
+{"note":"det-enc-*-a encoded in two separate app processes (determinism run 3 and run 4), decoded with ffmpeg -f framemd5 and compared","h264":"identical (90/90), same size 2960271 B","hevc":"identical (90/90), same size 2992577 B","fileBytesDiffer":"only the mvhd/tkhd/mdhd creation and modification timestamps (7 bytes, cmp -l)"}

@@ -1,0 +1,767 @@
+{
+  "env" : {
+    "crossOriginIsolated" : false,
+    "devicePixelRatio" : 1,
+    "origin" : "vrmxg-export:\/\/app",
+    "sharedArrayBuffer" : "undefined",
+    "shot" : {
+      "clipSeconds" : 1.0333333015441895,
+      "simHz" : 120,
+      "springJoints" : 106,
+      "three" : "187",
+      "vrmVersion" : "1"
+    },
+    "toBase64" : "function",
+    "userAgent" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "webgl" : {
+      "maxRenderbuffer" : 16384,
+      "maxTexture" : 16384,
+      "maxViewport" : [
+        16384,
+        16384
+      ],
+      "renderer" : "Apple GPU",
+      "samples" : 4,
+      "version" : "WebGL 2.0"
+    }
+  },
+  "jobs" : [
+    {
+      "alpha" : false,
+      "audio" : true,
+      "bitrate" : 16000000,
+      "bytesSentPerFrame" : 8266752,
+      "codec" : "h264",
+      "fps" : 30,
+      "frames" : 300,
+      "framesPerSec" : 294.99000000000001,
+      "height" : 1080,
+      "inflight" : 2,
+      "loopMs" : 1005,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-h264-1080p30",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 1.3700000000000001,
+        "render" : 0.93000000000000005,
+        "total" : 3.3900000000000001,
+        "waitSend" : 0.31
+      },
+      "rawMBps" : 2446.73,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0.02,
+        "bytesIn" : 2488320000,
+        "convertMsPerFrame" : 0.14000000000000001,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-h264-1080p30.mp4",
+        "fileBytes" : 20126243,
+        "finishMs" : 11.4,
+        "frames" : 300,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 300
+        },
+        "swiftWallMs" : 1016.9,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 1017,
+      "width" : 1920
+    },
+    {
+      "alpha" : false,
+      "audio" : true,
+      "bitrate" : 10000000,
+      "bytesSentPerFrame" : 8266752,
+      "codec" : "hevc",
+      "fps" : 30,
+      "frames" : 300,
+      "framesPerSec" : 319.14999999999998,
+      "height" : 1080,
+      "inflight" : 2,
+      "loopMs" : 927,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-hevc-1080p30",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 1.3700000000000001,
+        "render" : 0.81000000000000005,
+        "total" : 3.1299999999999999,
+        "waitSend" : 0.16
+      },
+      "rawMBps" : 2647.1500000000001,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0.02,
+        "bytesIn" : 2488320000,
+        "convertMsPerFrame" : 0.14000000000000001,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-hevc-1080p30.mp4",
+        "fileBytes" : 12678318,
+        "finishMs" : 11.9,
+        "frames" : 300,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 600
+        },
+        "swiftWallMs" : 939.20000000000005,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 940,
+      "width" : 1920
+    },
+    {
+      "alpha" : true,
+      "audio" : true,
+      "bytesSentPerFrame" : 8266752,
+      "codec" : "hevc-alpha",
+      "fps" : 30,
+      "frames" : 300,
+      "framesPerSec" : 240.19,
+      "height" : 1080,
+      "inflight" : 2,
+      "loopMs" : 1082,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-hevc-alpha-1080p30-alpha",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 1.3500000000000001,
+        "render" : 0.73999999999999999,
+        "total" : 4.1600000000000001,
+        "waitSend" : 0.71999999999999997
+      },
+      "rawMBps" : 1992.25,
+      "swift" : {
+        "alphaCheck" : {
+          "frame0" : {
+            "cornerAlpha" : 0,
+            "opaque" : 0,
+            "partial" : 161099,
+            "transparent" : 1912501,
+            "transparentPct" : 92.200000000000003
+          }
+        },
+        "appendWaitMsPerFrame" : 1.6200000000000001,
+        "bytesIn" : 2488320000,
+        "convertMsPerFrame" : 0.14999999999999999,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-hevc-alpha-1080p30-alpha.mov",
+        "fileBytes" : 7708468,
+        "finishMs" : 78.900000000000006,
+        "frames" : 300,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 900
+        },
+        "swiftWallMs" : 1247.4000000000001,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 1249,
+      "width" : 1920
+    },
+    {
+      "alpha" : true,
+      "audio" : true,
+      "bytesSentPerFrame" : 8266752,
+      "codec" : "prores4444",
+      "fps" : 30,
+      "frames" : 300,
+      "framesPerSec" : 298.80000000000001,
+      "height" : 1080,
+      "inflight" : 2,
+      "loopMs" : 939,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-prores4444-1080p30-alpha",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 1.26,
+        "render" : 0.87,
+        "total" : 3.3500000000000001,
+        "waitSend" : 0.17000000000000001
+      },
+      "rawMBps" : 2478.4099999999999,
+      "swift" : {
+        "alphaCheck" : {
+          "frame0" : {
+            "cornerAlpha" : 0,
+            "opaque" : 0,
+            "partial" : 157704,
+            "transparent" : 1915896,
+            "transparentPct" : 92.400000000000006
+          }
+        },
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 2488320000,
+        "convertMsPerFrame" : 0.13,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-prores4444-1080p30-alpha.mov",
+        "fileBytes" : 102061311,
+        "finishMs" : 16.300000000000001,
+        "frames" : 300,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 1200
+        },
+        "swiftWallMs" : 1003.1,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 1004,
+      "width" : 1920
+    },
+    {
+      "alpha" : false,
+      "audio" : true,
+      "bitrate" : 24000000,
+      "bytesSentPerFrame" : 8280576,
+      "codec" : "h264",
+      "fps" : 60,
+      "frames" : 600,
+      "framesPerSec" : 345.62,
+      "height" : 1080,
+      "inflight" : 2,
+      "loopMs" : 1722,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-h264-1080p60",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 1.4199999999999999,
+        "render" : 0.58999999999999997,
+        "total" : 2.8900000000000001,
+        "waitSend" : 0.14000000000000001
+      },
+      "rawMBps" : 2866.73,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0.01,
+        "bytesIn" : 4976640000,
+        "convertMsPerFrame" : 0.14000000000000001,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-h264-1080p60.mp4",
+        "fileBytes" : 30026314,
+        "finishMs" : 12.699999999999999,
+        "frames" : 600,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 1800
+        },
+        "swiftWallMs" : 1735.8,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 1736,
+      "width" : 1920
+    },
+    {
+      "alpha" : false,
+      "audio" : true,
+      "bitrate" : 15000000,
+      "bytesSentPerFrame" : 8280576,
+      "codec" : "hevc",
+      "fps" : 60,
+      "frames" : 600,
+      "framesPerSec" : 342.86000000000001,
+      "height" : 1080,
+      "inflight" : 2,
+      "loopMs" : 1738,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-hevc-1080p60",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 1.4099999999999999,
+        "render" : 0.58999999999999997,
+        "total" : 2.9199999999999999,
+        "waitSend" : 0.14999999999999999
+      },
+      "rawMBps" : 2843.79,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0.01,
+        "bytesIn" : 4976640000,
+        "convertMsPerFrame" : 0.14000000000000001,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-hevc-1080p60.mp4",
+        "fileBytes" : 19039917,
+        "finishMs" : 11.800000000000001,
+        "frames" : 600,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 2400
+        },
+        "swiftWallMs" : 1750.5999999999999,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 1750,
+      "width" : 1920
+    },
+    {
+      "alpha" : true,
+      "audio" : true,
+      "bytesSentPerFrame" : 8280576,
+      "codec" : "hevc-alpha",
+      "fps" : 60,
+      "frames" : 600,
+      "framesPerSec" : 262.35000000000002,
+      "height" : 1080,
+      "inflight" : 2,
+      "loopMs" : 2183,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-hevc-alpha-1080p60-alpha",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 1.3,
+        "render" : 0.56000000000000005,
+        "total" : 3.8100000000000001,
+        "waitSend" : 0.98999999999999999
+      },
+      "rawMBps" : 2176.0599999999999,
+      "swift" : {
+        "alphaCheck" : {
+          "frame0" : {
+            "cornerAlpha" : 0,
+            "opaque" : 0,
+            "partial" : 161099,
+            "transparent" : 1912501,
+            "transparentPct" : 92.200000000000003
+          }
+        },
+        "appendWaitMsPerFrame" : 2.0600000000000001,
+        "bytesIn" : 4976640000,
+        "convertMsPerFrame" : 0.14999999999999999,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-hevc-alpha-1080p60-alpha.mov",
+        "fileBytes" : 16064428,
+        "finishMs" : 82.799999999999997,
+        "frames" : 600,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 3000
+        },
+        "swiftWallMs" : 2284.6999999999998,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 2287,
+      "width" : 1920
+    },
+    {
+      "alpha" : true,
+      "audio" : true,
+      "bytesSentPerFrame" : 8280576,
+      "codec" : "prores4444",
+      "fps" : 60,
+      "frames" : 600,
+      "framesPerSec" : 349.85000000000002,
+      "height" : 1080,
+      "inflight" : 2,
+      "loopMs" : 1659,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-prores4444-1080p60-alpha",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 1.3799999999999999,
+        "render" : 0.53000000000000003,
+        "total" : 2.8599999999999999,
+        "waitSend" : 0.14999999999999999
+      },
+      "rawMBps" : 2901.8299999999999,
+      "swift" : {
+        "alphaCheck" : {
+          "frame0" : {
+            "cornerAlpha" : 0,
+            "opaque" : 0,
+            "partial" : 157704,
+            "transparent" : 1915896,
+            "transparentPct" : 92.400000000000006
+          }
+        },
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 4976640000,
+        "convertMsPerFrame" : 0.14000000000000001,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-prores4444-1080p60-alpha.mov",
+        "fileBytes" : 203861191,
+        "finishMs" : 15.800000000000001,
+        "frames" : 600,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 3600
+        },
+        "swiftWallMs" : 1714.5999999999999,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 1715,
+      "width" : 1920
+    },
+    {
+      "alpha" : false,
+      "audio" : true,
+      "bitrate" : 50000000,
+      "bytesSentPerFrame" : 33067008,
+      "codec" : "h264",
+      "fps" : 30,
+      "frames" : 300,
+      "framesPerSec" : 112.95,
+      "height" : 2160,
+      "inflight" : 2,
+      "loopMs" : 2620,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-h264-2160p30",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 4.7800000000000002,
+        "render" : 0.84999999999999998,
+        "total" : 8.8499999999999996,
+        "waitSend" : 0.56000000000000005
+      },
+      "rawMBps" : 3747.4699999999998,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 9953280000,
+        "convertMsPerFrame" : 0.41999999999999998,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-h264-2160p30.mp4",
+        "fileBytes" : 54721768,
+        "finishMs" : 35.100000000000001,
+        "frames" : 300,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 3900
+        },
+        "swiftWallMs" : 2656.0999999999999,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 2656,
+      "width" : 3840
+    },
+    {
+      "alpha" : false,
+      "audio" : true,
+      "bitrate" : 30000000,
+      "bytesSentPerFrame" : 33067008,
+      "codec" : "hevc",
+      "fps" : 30,
+      "frames" : 300,
+      "framesPerSec" : 114.98999999999999,
+      "height" : 2160,
+      "inflight" : 2,
+      "loopMs" : 2574,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-hevc-2160p30",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 4.79,
+        "render" : 0.81999999999999995,
+        "total" : 8.6999999999999993,
+        "waitSend" : 0.53000000000000003
+      },
+      "rawMBps" : 3814.98,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 9953280000,
+        "convertMsPerFrame" : 0.42999999999999999,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-hevc-2160p30.mp4",
+        "fileBytes" : 33989798,
+        "finishMs" : 34.100000000000001,
+        "frames" : 300,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 4200
+        },
+        "swiftWallMs" : 2608.8000000000002,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 2609,
+      "width" : 3840
+    },
+    {
+      "alpha" : true,
+      "audio" : true,
+      "bytesSentPerFrame" : 33067008,
+      "codec" : "hevc-alpha",
+      "fps" : 30,
+      "frames" : 300,
+      "framesPerSec" : 69.859999999999999,
+      "height" : 2160,
+      "inflight" : 2,
+      "loopMs" : 3953,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-hevc-alpha-2160p30-alpha",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 4.3499999999999996,
+        "render" : 0.81999999999999995,
+        "total" : 14.31,
+        "waitSend" : 5.4800000000000004
+      },
+      "rawMBps" : 2317.9499999999998,
+      "swift" : {
+        "alphaCheck" : {
+          "frame0" : {
+            "cornerAlpha" : 0,
+            "opaque" : 0,
+            "partial" : 634446,
+            "transparent" : 7659954,
+            "transparentPct" : 92.400000000000006
+          }
+        },
+        "appendWaitMsPerFrame" : 10.83,
+        "bytesIn" : 9953280000,
+        "convertMsPerFrame" : 0.40000000000000002,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-hevc-alpha-2160p30-alpha.mov",
+        "fileBytes" : 15544905,
+        "finishMs" : 294.30000000000001,
+        "frames" : 300,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 4500
+        },
+        "swiftWallMs" : 4288.5,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 4294,
+      "width" : 3840
+    },
+    {
+      "alpha" : true,
+      "audio" : true,
+      "bytesSentPerFrame" : 33067008,
+      "codec" : "prores4444",
+      "fps" : 30,
+      "frames" : 300,
+      "framesPerSec" : 110.58,
+      "height" : 2160,
+      "inflight" : 2,
+      "loopMs" : 2633,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-prores4444-2160p30-alpha",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 4.8399999999999999,
+        "render" : 0.85999999999999999,
+        "total" : 9.0399999999999991,
+        "waitSend" : 0.53000000000000003
+      },
+      "rawMBps" : 3668.7399999999998,
+      "swift" : {
+        "alphaCheck" : {
+          "frame0" : {
+            "cornerAlpha" : 0,
+            "opaque" : 0,
+            "partial" : 627869,
+            "transparent" : 7666531,
+            "transparentPct" : 92.400000000000006
+          }
+        },
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 9953280000,
+        "convertMsPerFrame" : 0.40999999999999998,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-prores4444-2160p30-alpha.mov",
+        "fileBytes" : 276427471,
+        "finishMs" : 19.899999999999999,
+        "frames" : 300,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 4800
+        },
+        "swiftWallMs" : 2711.5,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 2713,
+      "width" : 3840
+    },
+    {
+      "alpha" : false,
+      "audio" : true,
+      "bitrate" : 80000000,
+      "bytesSentPerFrame" : 33122304,
+      "codec" : "h264",
+      "fps" : 60,
+      "frames" : 600,
+      "framesPerSec" : 114.16,
+      "height" : 2160,
+      "inflight" : 2,
+      "loopMs" : 5220,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-h264-2160p60",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 4.8399999999999999,
+        "render" : 0.66000000000000003,
+        "total" : 8.7599999999999998,
+        "waitSend" : 0.59999999999999998
+      },
+      "rawMBps" : 3787.4000000000001,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 19906560000,
+        "convertMsPerFrame" : 0.40999999999999998,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-h264-2160p60.mp4",
+        "fileBytes" : 94813505,
+        "finishMs" : 35.5,
+        "frames" : 600,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 5400
+        },
+        "swiftWallMs" : 5255.6000000000004,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 5256,
+      "width" : 3840
+    },
+    {
+      "alpha" : false,
+      "audio" : true,
+      "bitrate" : 48000000,
+      "bytesSentPerFrame" : 33122304,
+      "codec" : "hevc",
+      "fps" : 60,
+      "frames" : 600,
+      "framesPerSec" : 114.94,
+      "height" : 2160,
+      "inflight" : 2,
+      "loopMs" : 5184,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-hevc-2160p60",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 4.8899999999999997,
+        "render" : 0.65000000000000002,
+        "total" : 8.6999999999999993,
+        "waitSend" : 0.48999999999999999
+      },
+      "rawMBps" : 3813.52,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 19906560000,
+        "convertMsPerFrame" : 0.41999999999999998,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-hevc-2160p60.mp4",
+        "fileBytes" : 60274907,
+        "finishMs" : 34.799999999999997,
+        "frames" : 600,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 6000
+        },
+        "swiftWallMs" : 5219.6999999999998,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 5220,
+      "width" : 3840
+    },
+    {
+      "alpha" : true,
+      "audio" : true,
+      "bytesSentPerFrame" : 33122304,
+      "codec" : "hevc-alpha",
+      "fps" : 60,
+      "frames" : 600,
+      "framesPerSec" : 71.329999999999998,
+      "height" : 2160,
+      "inflight" : 2,
+      "loopMs" : 8053,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-hevc-alpha-2160p60-alpha",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 4.6699999999999999,
+        "render" : 0.68000000000000005,
+        "total" : 14.02,
+        "waitSend" : 5.4400000000000004
+      },
+      "rawMBps" : 2366.4499999999998,
+      "swift" : {
+        "alphaCheck" : {
+          "frame0" : {
+            "cornerAlpha" : 0,
+            "opaque" : 0,
+            "partial" : 634446,
+            "transparent" : 7659954,
+            "transparentPct" : 92.400000000000006
+          }
+        },
+        "appendWaitMsPerFrame" : 10.359999999999999,
+        "bytesIn" : 19906560000,
+        "convertMsPerFrame" : 0.39000000000000001,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-hevc-alpha-2160p60-alpha.mov",
+        "fileBytes" : 33519758,
+        "finishMs" : 309.39999999999998,
+        "frames" : 600,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 6600
+        },
+        "swiftWallMs" : 8406.5,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 8412,
+      "width" : 3840
+    },
+    {
+      "alpha" : true,
+      "audio" : true,
+      "bytesSentPerFrame" : 33122304,
+      "codec" : "prores4444",
+      "fps" : 60,
+      "frames" : 600,
+      "framesPerSec" : 117.83,
+      "height" : 2160,
+      "inflight" : 2,
+      "loopMs" : 5010,
+      "method" : "scheme-post-pbo",
+      "mode" : "encode",
+      "name" : "exp-prores4444-2160p60-alpha",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 4.7599999999999998,
+        "render" : 0.56000000000000005,
+        "total" : 8.4900000000000002,
+        "waitSend" : 0.46000000000000002
+      },
+      "rawMBps" : 3909.3800000000001,
+      "swift" : {
+        "alphaCheck" : {
+          "frame0" : {
+            "cornerAlpha" : 0,
+            "opaque" : 0,
+            "partial" : 627869,
+            "transparent" : 7666531,
+            "transparentPct" : 92.400000000000006
+          }
+        },
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 19906560000,
+        "convertMsPerFrame" : 0.40999999999999998,
+        "decodeMsPerFrame" : 0,
+        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/exp-prores4444-2160p60-alpha.mov",
+        "fileBytes" : 552441263,
+        "finishMs" : 20,
+        "frames" : 600,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 7200
+        },
+        "swiftWallMs" : 5090.1000000000004,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 5092,
+      "width" : 3840
+    }
+  ],
+  "planMs" : 49463
+}

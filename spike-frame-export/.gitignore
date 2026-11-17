@@ -1,0 +1,7 @@
+out/
+mac/build/
+web/node_modules/
+web/dist/
+web/public/models/
+.DS_Store
+web/public/audio/

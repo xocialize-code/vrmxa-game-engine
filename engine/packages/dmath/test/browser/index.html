@@ -1,0 +1,16 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>@vrmxg/dmath cross-engine check</title>
+<pre id="out">running…</pre>
+<script type="module">
+// Served with src/ and test/ next to this page (scripts/stage-browser.mjs). Sets window.READY and
+// window.__result like the spike pages, so the WKWebView harness and Playwright can read it.
+import { evaluate } from './test/cases.js';
+import golden from './test/golden.json' with { type: 'json' };
+const report = evaluate();
+const mismatched = Object.keys(report).filter((k) => report[k].digest !== golden.digests[k]);
+window.__result = { ua: navigator.userAgent, goldenRuntime: golden.runtime, digestsMatchGolden: mismatched.length === 0, mismatched, report };
+window.__errors = [];
+window.READY = true;
+document.getElementById('out').textContent = JSON.stringify(window.__result, null, 1);
+</script>

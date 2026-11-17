@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VRMXG Particles Spike</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      // report load-time errors to the wrapper before the app's own bridge exists
+      const _post = (type, payload) => { try { window.webkit?.messageHandlers?.spike?.postMessage(JSON.stringify({ type, payload })); } catch {} };
+      window.addEventListener('error', (e) => _post('error', `${e.message} @ ${e.filename}:${e.lineno}`));
+      window.addEventListener('unhandledrejection', (e) => _post('error', String(e.reason?.stack || e.reason)));
+      _post('log', 'html loaded');
+    </script>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

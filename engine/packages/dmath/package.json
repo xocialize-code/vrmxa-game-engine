@@ -1,0 +1,15 @@
+{
+  "name": "@vrmxg/dmath",
+  "version": "0.1.0",
+  "description": "Portable transcendental Math for VRMXG: bit-identical in V8 and JavaScriptCore (FreeBSD msun ports)",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.js" },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/",
+    "golden": "node scripts/golden.mjs"
+  },
+  "license": "SEE LICENSE IN src/index.js (fdlibm notice)"
+}

@@ -1,0 +1,367 @@
+{
+  "env" : {
+    "crossOriginIsolated" : false,
+    "devicePixelRatio" : 1,
+    "origin" : "http:\/\/127.0.0.1:60415",
+    "sharedArrayBuffer" : "undefined",
+    "shot" : {
+      "clipSeconds" : 1.0333333015441895,
+      "simHz" : 120,
+      "springJoints" : 106,
+      "three" : "187",
+      "vrmVersion" : "1"
+    },
+    "toBase64" : "function",
+    "userAgent" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "webgl" : {
+      "maxRenderbuffer" : 16384,
+      "maxTexture" : 16384,
+      "maxViewport" : [
+        16384,
+        16384
+      ],
+      "renderer" : "Apple GPU",
+      "samples" : 4,
+      "version" : "WebGL 2.0"
+    }
+  },
+  "jobs" : [
+    {
+      "fps" : 30,
+      "frames" : 90,
+      "framesPerSec" : 375,
+      "height" : 1080,
+      "inflight" : 1,
+      "loopMs" : 238,
+      "method" : "render-only",
+      "mode" : "sink",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 1.8600000000000001,
+        "render" : 0.79000000000000004,
+        "total" : 2.6699999999999999,
+        "waitSend" : 0
+      },
+      "rawMBps" : 3110.4000000000001,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 0,
+        "convertMsPerFrame" : 0,
+        "decodeMsPerFrame" : 0,
+        "frames" : 0,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 945
+        },
+        "swiftWallMs" : 237.90000000000001,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 240,
+      "width" : 1920
+    },
+    {
+      "fps" : 30,
+      "frames" : 90,
+      "framesPerSec" : 216.87,
+      "height" : 1080,
+      "inflight" : 1,
+      "loopMs" : 413,
+      "method" : "read-only",
+      "mode" : "sink",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 3.79,
+        "render" : 0.80000000000000004,
+        "total" : 4.6100000000000003,
+        "waitSend" : 0
+      },
+      "rawMBps" : 1798.79,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 0,
+        "convertMsPerFrame" : 0,
+        "decodeMsPerFrame" : 0,
+        "frames" : 0,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 945
+        },
+        "swiftWallMs" : 413.60000000000002,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 415,
+      "width" : 1920
+    },
+    {
+      "bytesSentPerFrame" : 8294400,
+      "fps" : 30,
+      "frames" : 90,
+      "framesPerSec" : 80.290000000000006,
+      "height" : 1080,
+      "inflight" : 1,
+      "loopMs" : 1121,
+      "method" : "loopback-post",
+      "mode" : "sink",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 4.5199999999999996,
+        "render" : 0.98999999999999999,
+        "total" : 12.460000000000001,
+        "waitSend" : 6.1799999999999997
+      },
+      "rawMBps" : 665.91999999999996,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 746496000,
+        "convertMsPerFrame" : 0,
+        "decodeMsPerFrame" : 0,
+        "frames" : 90,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 945
+        },
+        "swiftWallMs" : 1120.8,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 1121,
+      "width" : 1920
+    },
+    {
+      "bytesSentPerFrame" : 8294400,
+      "fps" : 30,
+      "frames" : 90,
+      "framesPerSec" : 153.31999999999999,
+      "height" : 1080,
+      "inflight" : 2,
+      "loopMs" : 587,
+      "method" : "loopback-post",
+      "mode" : "sink",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 4.5,
+        "render" : 0.85999999999999999,
+        "total" : 6.5199999999999996,
+        "waitSend" : 0.35999999999999999
+      },
+      "rawMBps" : 1271.71,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 746496000,
+        "convertMsPerFrame" : 0,
+        "decodeMsPerFrame" : 0,
+        "frames" : 90,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 945
+        },
+        "swiftWallMs" : 587.29999999999995,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 587,
+      "width" : 1920
+    },
+    {
+      "bytesSentPerFrame" : 8294400,
+      "fps" : 30,
+      "frames" : 90,
+      "framesPerSec" : 156.25,
+      "height" : 1080,
+      "inflight" : 3,
+      "loopMs" : 576,
+      "method" : "loopback-post",
+      "mode" : "sink",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 4.5300000000000002,
+        "render" : 0.90000000000000002,
+        "total" : 6.4000000000000004,
+        "waitSend" : 0.20999999999999999
+      },
+      "rawMBps" : 1296,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 746496000,
+        "convertMsPerFrame" : 0,
+        "decodeMsPerFrame" : 0,
+        "frames" : 90,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 945
+        },
+        "swiftWallMs" : 576.39999999999998,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 576,
+      "width" : 1920
+    },
+    {
+      "fps" : 30,
+      "frames" : 45,
+      "framesPerSec" : 314.69,
+      "height" : 2160,
+      "inflight" : 1,
+      "loopMs" : 143,
+      "method" : "render-only",
+      "mode" : "sink",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 2.5299999999999998,
+        "render" : 0.64000000000000001,
+        "total" : 3.1800000000000002,
+        "waitSend" : 0
+      },
+      "rawMBps" : 10440.5,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 0,
+        "convertMsPerFrame" : 0,
+        "decodeMsPerFrame" : 0,
+        "frames" : 0,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 945
+        },
+        "swiftWallMs" : 143,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 143,
+      "width" : 3840
+    },
+    {
+      "fps" : 30,
+      "frames" : 45,
+      "framesPerSec" : 82.120000000000005,
+      "height" : 2160,
+      "inflight" : 1,
+      "loopMs" : 546,
+      "method" : "read-only",
+      "mode" : "sink",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 11.31,
+        "render" : 0.81999999999999995,
+        "total" : 12.18,
+        "waitSend" : 0
+      },
+      "rawMBps" : 2724.4400000000001,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 0,
+        "convertMsPerFrame" : 0,
+        "decodeMsPerFrame" : 0,
+        "frames" : 0,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 945
+        },
+        "swiftWallMs" : 546.60000000000002,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 548,
+      "width" : 3840
+    },
+    {
+      "bytesSentPerFrame" : 33177600,
+      "fps" : 30,
+      "frames" : 45,
+      "framesPerSec" : 28.109999999999999,
+      "height" : 2160,
+      "inflight" : 1,
+      "loopMs" : 1601,
+      "method" : "loopback-post",
+      "mode" : "sink",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 11.779999999999999,
+        "render" : 0.93000000000000005,
+        "total" : 35.579999999999998,
+        "waitSend" : 20.27
+      },
+      "rawMBps" : 932.53999999999996,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 1492992000,
+        "convertMsPerFrame" : 0,
+        "decodeMsPerFrame" : 0,
+        "frames" : 45,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 945
+        },
+        "swiftWallMs" : 1601.5,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 1601,
+      "width" : 3840
+    },
+    {
+      "bytesSentPerFrame" : 33177600,
+      "fps" : 30,
+      "frames" : 45,
+      "framesPerSec" : 43.649999999999999,
+      "height" : 2160,
+      "inflight" : 2,
+      "loopMs" : 1031,
+      "method" : "loopback-post",
+      "mode" : "sink",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 11.529999999999999,
+        "render" : 0.80000000000000004,
+        "total" : 22.91,
+        "waitSend" : 7.8899999999999997
+      },
+      "rawMBps" : 1448.0999999999999,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 1492992000,
+        "convertMsPerFrame" : 0,
+        "decodeMsPerFrame" : 0,
+        "frames" : 45,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 945
+        },
+        "swiftWallMs" : 1031.3,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 1031,
+      "width" : 3840
+    },
+    {
+      "bytesSentPerFrame" : 33177600,
+      "fps" : 30,
+      "frames" : 45,
+      "framesPerSec" : 53.829999999999998,
+      "height" : 2160,
+      "inflight" : 3,
+      "loopMs" : 836,
+      "method" : "loopback-post",
+      "mode" : "sink",
+      "perFrameMs" : {
+        "pack" : 0,
+        "read" : 11.51,
+        "render" : 0.87,
+        "total" : 18.579999999999998,
+        "waitSend" : 3.5299999999999998
+      },
+      "rawMBps" : 1785.8800000000001,
+      "swift" : {
+        "appendWaitMsPerFrame" : 0,
+        "bytesIn" : 1492992000,
+        "convertMsPerFrame" : 0,
+        "decodeMsPerFrame" : 0,
+        "frames" : 45,
+        "hashMsPerFrame" : 0,
+        "schemeBodyKinds" : {
+          "httpBody" : 945
+        },
+        "swiftWallMs" : 836.39999999999998,
+        "writeMsPerFrame" : 0
+      },
+      "wallMs" : 836,
+      "width" : 3840
+    }
+  ],
+  "planMs" : 7919
+}

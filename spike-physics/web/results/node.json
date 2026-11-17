@@ -1,0 +1,376 @@
+{
+  "when": "2026-11-17T18:16:54.838Z",
+  "env": {
+    "runtime": "node 26.12.1",
+    "origin": null,
+    "isSecureContext": null,
+    "crossOriginIsolated": null,
+    "sharedArrayBuffer": true,
+    "hardwareConcurrency": 18
+  },
+  "rapier": {
+    "standard": {
+      "version": "0.21.0",
+      "initMs": 26.7,
+      "full": {
+        "hash": "44f6c2b6",
+        "repeatable": true,
+        "checkpoints": {
+          "100": "d72eb955",
+          "200": "36826e03",
+          "300": "4e04fcf3",
+          "400": "0028b053",
+          "500": "7d02a536",
+          "600": "44f6c2b6"
+        }
+      },
+      "noCloth": {
+        "hash": "ba65cf1c",
+        "repeatable": true,
+        "checkpoints": {
+          "100": "61061fd7",
+          "200": "e052f88d",
+          "300": "d3ffb0dd",
+          "400": "91c4cbbd",
+          "500": "8573029c",
+          "600": "ba65cf1c"
+        }
+      },
+      "snapshot": {
+        "identical": true,
+        "hashA": "44f6c2b6",
+        "hashB": "44f6c2b6",
+        "snapshotBytes": 1272359,
+        "takeMs": 2.62,
+        "restoreMs": 5.92
+      },
+      "snapshotNoCloth": {
+        "identical": true,
+        "hashA": "ba65cf1c",
+        "hashB": "ba65cf1c",
+        "snapshotBytes": 1102879,
+        "takeMs": 0.42,
+        "restoreMs": 0.62
+      },
+      "timing": {
+        "full": {
+          "mean": 0.345,
+          "p50": 0.414,
+          "p95": 0.686,
+          "max": 1.195,
+          "allAwake60": 0.588,
+          "awake": {
+            "0": 302,
+            "60": 300,
+            "120": 101,
+            "180": 31,
+            "240": 10,
+            "300": 1,
+            "360": 60,
+            "420": 190,
+            "480": 230,
+            "540": 229
+          }
+        },
+        "noCloth": {
+          "mean": 0.313,
+          "p50": 0.326,
+          "p95": 0.592,
+          "max": 1.139,
+          "allAwake60": 0.284,
+          "awake": {
+            "0": 301,
+            "60": 300,
+            "120": 101,
+            "180": 31,
+            "240": 10,
+            "300": 1,
+            "360": 60,
+            "420": 190,
+            "480": 230,
+            "540": 229
+          }
+        },
+        "boxesOnly": {
+          "mean": 0.111,
+          "p50": 0.046,
+          "p95": 0.431,
+          "max": 1.003,
+          "allAwake60": 0.288,
+          "awake": {
+            "0": 300,
+            "60": 300,
+            "120": 100,
+            "180": 30,
+            "240": 10,
+            "300": 0,
+            "360": 0,
+            "420": 0,
+            "480": 0,
+            "540": 0
+          }
+        }
+      }
+    },
+    "simd": {
+      "version": "0.21.0",
+      "initMs": 19.7,
+      "full": {
+        "hash": "aea7c548",
+        "repeatable": true,
+        "checkpoints": {
+          "100": "fd5ff1c2",
+          "200": "e94c9f69",
+          "300": "56190d31",
+          "400": "c793092d",
+          "500": "ba9efc5a",
+          "600": "aea7c548"
+        }
+      },
+      "noCloth": {
+        "hash": "b9e2a3d0",
+        "repeatable": true,
+        "checkpoints": {
+          "100": "9fbc7f58",
+          "200": "840f921b",
+          "300": "65a8bf33",
+          "400": "801ccb1f",
+          "500": "bbae3220",
+          "600": "b9e2a3d0"
+        }
+      },
+      "snapshot": {
+        "identical": true,
+        "hashA": "aea7c548",
+        "hashB": "aea7c548",
+        "snapshotBytes": 1272159,
+        "takeMs": 2.4,
+        "restoreMs": 5.38
+      },
+      "snapshotNoCloth": {
+        "identical": true,
+        "hashA": "b9e2a3d0",
+        "hashB": "b9e2a3d0",
+        "snapshotBytes": 1102679,
+        "takeMs": 0.42,
+        "restoreMs": 1.1
+      },
+      "timing": {
+        "full": {
+          "mean": 0.225,
+          "p50": 0.208,
+          "p95": 0.568,
+          "max": 0.941,
+          "allAwake60": 0.473,
+          "awake": {
+            "0": 302,
+            "60": 300,
+            "120": 101,
+            "180": 31,
+            "240": 10,
+            "300": 1,
+            "360": 60,
+            "420": 190,
+            "480": 220,
+            "540": 218
+          }
+        },
+        "noCloth": {
+          "mean": 0.193,
+          "p50": 0.195,
+          "p95": 0.406,
+          "max": 1.037,
+          "allAwake60": 0.178,
+          "awake": {
+            "0": 301,
+            "60": 300,
+            "120": 101,
+            "180": 31,
+            "240": 10,
+            "300": 1,
+            "360": 60,
+            "420": 190,
+            "480": 220,
+            "540": 218
+          }
+        },
+        "boxesOnly": {
+          "mean": 0.063,
+          "p50": 0.033,
+          "p95": 0.195,
+          "max": 0.344,
+          "allAwake60": 0.166,
+          "awake": {
+            "0": 300,
+            "60": 300,
+            "120": 100,
+            "180": 30,
+            "240": 10,
+            "300": 0,
+            "360": 0,
+            "420": 0,
+            "480": 0,
+            "540": 0
+          }
+        }
+      }
+    },
+    "deterministic": {
+      "version": "0.21.0",
+      "initMs": 18.8,
+      "full": {
+        "hash": "44f6c2b6",
+        "repeatable": true,
+        "checkpoints": {
+          "100": "d72eb955",
+          "200": "36826e03",
+          "300": "4e04fcf3",
+          "400": "0028b053",
+          "500": "7d02a536",
+          "600": "44f6c2b6"
+        }
+      },
+      "noCloth": {
+        "hash": "ba65cf1c",
+        "repeatable": true,
+        "checkpoints": {
+          "100": "61061fd7",
+          "200": "e052f88d",
+          "300": "d3ffb0dd",
+          "400": "91c4cbbd",
+          "500": "8573029c",
+          "600": "ba65cf1c"
+        }
+      },
+      "snapshot": {
+        "identical": true,
+        "hashA": "44f6c2b6",
+        "hashB": "44f6c2b6",
+        "snapshotBytes": 1272359,
+        "takeMs": 2.31,
+        "restoreMs": 5.06
+      },
+      "snapshotNoCloth": {
+        "identical": true,
+        "hashA": "ba65cf1c",
+        "hashB": "ba65cf1c",
+        "snapshotBytes": 1102879,
+        "takeMs": 0.45,
+        "restoreMs": 0.58
+      },
+      "timing": {
+        "full": {
+          "mean": 0.387,
+          "p50": 0.45,
+          "p95": 0.784,
+          "max": 1.173,
+          "allAwake60": 0.673,
+          "awake": {
+            "0": 302,
+            "60": 300,
+            "120": 101,
+            "180": 31,
+            "240": 10,
+            "300": 1,
+            "360": 60,
+            "420": 190,
+            "480": 230,
+            "540": 229
+          }
+        },
+        "noCloth": {
+          "mean": 0.412,
+          "p50": 0.443,
+          "p95": 0.952,
+          "max": 2.552,
+          "allAwake60": 0.35,
+          "awake": {
+            "0": 301,
+            "60": 300,
+            "120": 101,
+            "180": 31,
+            "240": 10,
+            "300": 1,
+            "360": 60,
+            "420": 190,
+            "480": 230,
+            "540": 229
+          }
+        },
+        "boxesOnly": {
+          "mean": 0.109,
+          "p50": 0.036,
+          "p95": 0.435,
+          "max": 0.567,
+          "allAwake60": 0.288,
+          "awake": {
+            "0": 300,
+            "60": 300,
+            "120": 100,
+            "180": 30,
+            "240": 10,
+            "300": 0,
+            "360": 0,
+            "420": 0,
+            "480": 0,
+            "540": 0
+          }
+        }
+      }
+    }
+  },
+  "jolt": {
+    "build": "jolt-physics 1.1.1 wasm-compat (single-threaded)",
+    "initMs": 30.4,
+    "awake": {
+      "0": 300,
+      "60": 300,
+      "120": 290,
+      "180": 290,
+      "240": 285,
+      "300": 295,
+      "360": 277,
+      "420": 256,
+      "480": 230,
+      "540": 213
+    },
+    "allAwake60": 1.031,
+    "finalBoxY": {
+      "min": 0.14,
+      "max": 3.92
+    },
+    "boxesOnly": {
+      "mean": 1.335,
+      "p50": 1.357,
+      "p95": 2.183,
+      "max": 3.395
+    }
+  },
+  "joltMT": {
+    "build": "jolt-physics 1.1.1 wasm-compat-multithread (4 workers)",
+    "initMs": 87.6,
+    "awake": {
+      "0": 300,
+      "60": 300,
+      "120": 290,
+      "180": 290,
+      "240": 285,
+      "300": 295,
+      "360": 277,
+      "420": 256,
+      "480": 230,
+      "540": 213
+    },
+    "allAwake60": 0.239,
+    "finalBoxY": {
+      "min": 0.14,
+      "max": 3.92
+    },
+    "boxesOnly": {
+      "mean": 0.395,
+      "p50": 0.334,
+      "p95": 0.681,
+      "max": 2.718
+    }
+  }
+}

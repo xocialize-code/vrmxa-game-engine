@@ -1,0 +1,117 @@
+[
+  {
+    "case": "pipe=none&frames=200",
+    "result": {
+      "pipe": "none",
+      "edges": false,
+      "mtoonOutline": "1",
+      "off": [],
+      "passes": [],
+      "drawCalls": 64,
+      "triangles": 152628,
+      "msMedian": 1.2,
+      "msP90": 1.6,
+      "programs": 21,
+      "errors": [],
+      "warnings": [],
+      "glRenderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)"
+    },
+    "logs": [
+      "debug: [vite] connecting...",
+      "debug: [vite] connected.",
+      "debug: [vite] connecting...",
+      "debug: [vite] connected.",
+      "log: [spike] thin lens {\"Hd\":55.60555555555556,\"near\":3.647245861778734,\"far\":4.1903943268507575,\"cocAt8m_px\":9.50792433315535}",
+      "error: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "log: [spike] outline materials 2 0",
+      "log: [spike] {\"pipe\":\"none\",\"edges\":false,\"mtoonOutline\":\"1\",\"off\":[],\"passes\":[],\"drawCalls\":64,\"triangles\":152628,\"msMedian\":1.2,\"msP90\":1.6,\"programs\":21,\"errors\":[],\"warnings\":[],\"glRenderer\":\"ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)\"}"
+    ]
+  },
+  {
+    "case": "pipe=views&n=4&frames=200",
+    "result": {
+      "pipe": "views",
+      "edges": false,
+      "mtoonOutline": "1",
+      "off": [],
+      "passes": [],
+      "views": 4,
+      "drawCalls": 233,
+      "triangles": 609204,
+      "msMedian": 3.3,
+      "msP90": 3.5,
+      "programs": 21,
+      "errors": [],
+      "warnings": [],
+      "glRenderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)"
+    },
+    "logs": [
+      "debug: [vite] connecting...",
+      "debug: [vite] connected.",
+      "log: [spike] thin lens {\"Hd\":55.60555555555556,\"near\":3.647245861778734,\"far\":4.1903943268507575,\"cocAt8m_px\":9.50792433315535}",
+      "log: [spike] outline materials 2 0",
+      "log: [spike] {\"pipe\":\"views\",\"edges\":false,\"mtoonOutline\":\"1\",\"off\":[],\"passes\":[],\"views\":4,\"drawCalls\":233,\"triangles\":609204,\"msMedian\":3.3,\"msP90\":3.5,\"programs\":21,\"errors\":[],\"warnings\":[],\"glRenderer\":\"ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)\"}"
+    ]
+  },
+  {
+    "case": "pipe=views&n=4&shadowOnce=1&frames=200",
+    "result": {
+      "pipe": "views",
+      "edges": false,
+      "mtoonOutline": "1",
+      "off": [],
+      "passes": [],
+      "views": 4,
+      "drawCalls": 146,
+      "triangles": 381129,
+      "msMedian": 2.9,
+      "msP90": 3.1,
+      "programs": 21,
+      "errors": [],
+      "warnings": [],
+      "glRenderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)"
+    },
+    "logs": [
+      "debug: [vite] connecting...",
+      "debug: [vite] connected.",
+      "log: [spike] thin lens {\"Hd\":55.60555555555556,\"near\":3.647245861778734,\"far\":4.1903943268507575,\"cocAt8m_px\":9.50792433315535}",
+      "log: [spike] outline materials 2 0",
+      "log: [spike] {\"pipe\":\"views\",\"edges\":false,\"mtoonOutline\":\"1\",\"off\":[],\"passes\":[],\"views\":4,\"drawCalls\":146,\"triangles\":381129,\"msMedian\":2.9,\"msP90\":3.1,\"programs\":21,\"errors\":[],\"warnings\":[],\"glRenderer\":\"ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)\"}"
+    ]
+  },
+  {
+    "case": "pipe=pmndrs&frames=200",
+    "result": {
+      "pipe": "pmndrs",
+      "edges": false,
+      "mtoonOutline": "1",
+      "off": [],
+      "passes": [
+        "RenderPass",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+      ],
+      "dof": {
+        "focusDistance": 3.9,
+        "focusRange": 0.5431484650720235,
+        "bokehScale": 2.3181015226013226
+      },
+      "drawCalls": 94,
+      "triangles": 152658,
+      "msMedian": 2.1,
+      "msP90": 2.2,
+      "programs": 35,
+      "errors": [],
+      "warnings": [],
+      "glRenderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)"
+    },
+    "logs": [
+      "debug: [vite] connecting...",
+      "debug: [vite] connected.",
+      "log: [spike] thin lens {\"Hd\":55.60555555555556,\"near\":3.647245861778734,\"far\":4.1903943268507575,\"cocAt8m_px\":9.50792433315535}",
+      "log: [spike] outline materials 2 0",
+      "log: [spike] {\"pipe\":\"pmndrs\",\"edges\":false,\"mtoonOutline\":\"1\",\"off\":[],\"passes\":[\"RenderPass\",\"EffectPass(DepthOfFieldEffect)\",\"EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect)\",\"EffectPass(ChromaticAberrationEffect)\"],\"dof\":{\"focusDistance\":3.9,\"focusRange\":0.5431484650720235,\"bokehScale\":2.3181015226013226},\"drawCalls\":94,\"triangles\":152658,\"msMedian\":2.1,\"msP90\":2.2,\"programs\":35,\"errors\":[],\"warnings\":[],\"glRenderer\":\"ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)\"}"
+    ]
+  }
+]

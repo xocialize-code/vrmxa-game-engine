@@ -1,0 +1,4 @@
+html, body, #app { margin: 0; background: #1a1a1a; color: #ddd; font: 12px -apple-system, system-ui, sans-serif; overflow: hidden; }
+/* Top-left, unscaled: WKWebView.takeSnapshot reads this rect 1:1. */
+canvas.shot { position: fixed; left: 0; top: 0; display: block; }
+.status { position: fixed; right: 8px; bottom: 6px; opacity: 0.7; }

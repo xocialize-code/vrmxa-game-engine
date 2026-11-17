@@ -1,0 +1,30 @@
+{
+  "backend" : "WebGPU",
+  "navigatorGpu" : true,
+  "shots" : [
+    {
+      "drawCalls" : 4,
+      "name" : "webgpu-quarks-impact",
+      "ok" : true,
+      "particles" : 42
+    },
+    {
+      "drawCalls" : 7,
+      "name" : "webgpu-quarks-sparkles",
+      "ok" : true,
+      "particles" : 84
+    },
+    {
+      "drawCalls" : 10,
+      "name" : "webgpu-quarks-speedlines",
+      "ok" : true,
+      "particles" : 19
+    },
+    {
+      "drawCalls" : 13,
+      "name" : "webgpu-nebula-sparkles",
+      "ok" : true,
+      "particles" : 73
+    }
+  ]
+}

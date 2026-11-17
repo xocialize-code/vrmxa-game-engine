@@ -1,0 +1,40 @@
+# Tests the engine packages and the spikes that run without models on every push and pull request.
+# Modelled on xocialize-code/vrmxa-avatar-studio's ci.yml. The VRM models the character spikes need are
+# never committed (see .gitignore), so those suites run on the development Mac only. When the engine starts
+# depending on vrmxa-core (AB-D-0249) this job will check out vrmxa-avatar-studio beside the repository
+# with a read-only deploy key, the way vrmxa-avatar-studio checks out vrmxa-spec.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: "**/package-lock.json"
+
+      - name: "@vrmxg/dmath"
+        working-directory: engine/packages/dmath
+        run: npm test
+
+      - name: spike-registry
+        working-directory: spike-registry
+        run: npm ci && npm test && node scripts/mcp-client.mjs > /dev/null

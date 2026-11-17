@@ -1,0 +1,17 @@
+{
+  "name": "vrmxg-registry-spike",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Spike: one node registry generates the .vrmxs JSON Schema, validation, edits with undo, and the MCP tools",
+  "scripts": {
+    "test": "node --test test/",
+    "mcp": "node src/mcp-server.js",
+    "client": "node scripts/mcp-client.mjs",
+    "bench": "node scripts/bench.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "ajv": "8.20.0"
+  }
+}
