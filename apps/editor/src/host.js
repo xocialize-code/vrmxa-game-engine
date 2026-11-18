@@ -10,6 +10,7 @@ import { installPortableMath } from '@vrmxg/dmath';
 import { loadRapier } from '@vrmxg/physics';
 import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
 import { RenderHost } from '@vrmxg/render';
+import { PostStack, lutFromCube } from '@vrmxg/post';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { parse, describeType } from '@vrmxg/scene';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
@@ -45,7 +46,7 @@ export class EditorHost {
   /** @param {HTMLCanvasElement} canvas */
   constructor(canvas) {
     this.canvas = canvas;
-    this.host = new RenderHost({ canvas, preserveDrawingBuffer: true });
+    this.host = new RenderHost({ canvas, preserveDrawingBuffer: true, post: (r) => this.postStack(r) });
     this.camera = new PerspectiveCamera(50, 16 / 9, 0.05, 500);
     this.camera.position.set(9, 7, 14);
     this.host.camera = this.camera;
@@ -82,6 +83,9 @@ export class EditorHost {
     canvas.addEventListener('pointerup', (e) => this.onClick(e));
     this.loop();
   }
+
+  /** The post stack for a renderer (M2 W3): LUTs read from the open project. */
+  postStack(renderer) { return new PostStack(renderer, { loadLut: async (file) => lutFromCube(await this.project.text(file)) }); }
 
   /** Tell the UI: 'stats' for the readouts only (every few frames), anything else for the panels. */
   changed(kind = 'all') { this.onChange?.(kind); }
@@ -451,7 +455,7 @@ export class EditorHost {
       world = built.world;
       const frames = framesFor(seconds ?? built.seconds, rate);
       this.exporting.frames = frames;
-      this.exportHost ??= new RenderHost({ canvas: document.createElement('canvas'), dprCap: 1 });
+      this.exportHost ??= new RenderHost({ canvas: document.createElement('canvas'), dprCap: 1, post: (r) => this.postStack(r) });
       const ext = CODECS[codec].ext;
       const base = (name || `${(this.sceneRef ?? 'scene').replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-')}-${size}${fps.replace('.', '')}`).replace(/\.(mp4|mov)$/, '');
       const sink = hashOnly ? hashSink() : shellSink({ call });

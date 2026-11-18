@@ -22,6 +22,8 @@ export class CameraBrainNode extends Node {
   get channel() { return this.props.channel ?? 'main'; }
 
   enterTree() { this.tree.services.get('cameras')?.registerBrain(this); }
+  /** Claim the output camera from the start, so its own rig never steps (a snapshot at step 0 restores exactly). */
+  ready() { const cam = /** @type {any} */ (this.tree.find(this.props.camera)); if (cam?.camera) cam.drivenBy = this; }
   exitTree() { this.tree.services.get('cameras')?.unregisterBrain(this); }
 
   /** A sequence's camera track: this vcam is live whatever the priorities (blend: { style, seconds } or the table's). */

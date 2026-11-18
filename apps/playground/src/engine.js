@@ -6,9 +6,11 @@ import { loadRapier } from '@vrmxg/physics';
 import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
 import { PRESETS } from '@vrmxg/camera';
 import { RenderHost } from '@vrmxg/render';
+import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
+import { captureStill } from '@vrmxg/export';
 import { loadSample, buildWorld } from './world.js';
 import { serialize } from '@vrmxg/scene';
-import { runSimulation, runDevices, runAudio, runItems, runCinematic, STEPS } from './acceptance.js';
+import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, STEPS } from './acceptance.js';
 import { AudioOutput } from '@vrmxg/audio';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import * as core from '@vrmxa-core/index.js';
@@ -31,7 +33,7 @@ export class Playground {
   /** @param {HTMLCanvasElement} canvas @param {{ preserveDrawingBuffer?: boolean }} [opts] */
   constructor(canvas, { preserveDrawingBuffer = false } = {}) {
     this.canvas = canvas;
-    this.host = new RenderHost({ canvas, preserveDrawingBuffer });
+    this.host = new RenderHost({ canvas, preserveDrawingBuffer, post: (r) => new PostStack(r, { loadLut: async (file) => lutFromCube(new TextDecoder().decode(await bytes(file))) }) });
     this.tree = null; this.input = null;
     this.playing = false;
     this.stats = { frameMs: 0, fps: 0, simMs: 0, renderMs: 0, step: 0, alpha: 0, steps: 0 };
@@ -85,9 +87,11 @@ export class Playground {
     const devices = await runDevices(R, sample, opts);
     const items = await runItems(R, sample, opts);
     const cinematic = await runCinematic(R, sample, opts);
+    const sequence = await runSequence(R, sample, opts, { now });
     const audio = await runAudio(R, sample, opts, { silentFinal: items.final, take: 'input/play-items.json', steps: items.steps });
     const rendered = await this._renderedChecks(simulation);
-    return { simulation, devices, items, cinematic, audio, rendered };
+    rendered.post = await this._postChecks();
+    return { simulation, devices, items, cinematic, sequence, audio, rendered };
   }
 
   async _renderedChecks(simulation) {
@@ -134,6 +138,38 @@ export class Playground {
       doorSignals: signals.filter((s) => s.signal === 'stateChanged').map(({ step, node, to }) => ({ step, node, to })),
       presets, debug, calls: host.renderer.info.render.calls, triangles: host.renderer.info.render.triangles,
     };
+  }
+
+  /**
+   * M2 W3: the anime post stack on the cafe: no errors; its cost at 1080p and 4K against no post; a 4K frame scaled to
+   * 1080p against the 1080p frame (SSIM, with and without grain: grain is per pixel by design); four viewports.
+   */
+  async _postChecks() {
+    const host = this.host, tree = this.tree, env = tree.find('env'), post = host.post;
+    const now = () => performance.now();
+    const debug = { ...host.debug.show }; host.debug.set(false); // debug wireframes are 1 px at any size: not the look
+    const time = (n) => { const ms = []; for (let i = 0; i < n; i++) { const t0 = now(); host.render(1, false); host.renderer.getContext().finish(); ms.push(now() - t0); } ms.sort((a, b) => a - b); return +ms[n >> 1].toFixed(3); };
+    const at = (w, h, fn) => { const r = host.renderer, pr = r.getPixelRatio(), gl = r.getContext(), cw = gl.drawingBufferWidth / pr, ch = gl.drawingBufferHeight / pr; r.setPixelRatio(1); host.resize(w, h); const out = fn(); r.setPixelRatio(pr); host.resize(cw, ch); return out; };
+    const cost = (label) => ({ [label + '1080p']: at(1920, 1080, () => time(30)), [label + '4k']: at(3840, 2160, () => time(20)) });
+    env.props.post = null; host.views.update(tree);
+    const none = cost('none');
+    env.props.post = 'anime'; host.views.update(tree);
+    host.render(1, false);
+    const anime = cost('anime');
+    const ssim = (grain) => {
+      post.setParams({ 'grain.amount': grain ? 0.18 : 0 });
+      const a = captureStill(host, { width: 1920, height: 1080 }), b = captureStill(host, { width: 3840, height: 2160 });
+      return +ssimDown(a.rgba, b.rgba, 1920, 1080).toFixed(4);
+    };
+    const ssimNoGrain = ssim(false), ssimGrain = ssim(true);
+    // four views: the current camera and three more around Hana, scissored, no post on them
+    const cam = tree.services.get('cameras').current.camera;
+    const cams = [cam, ...[0, 1, 2].map((i) => { const c = cam.clone(); const a = (i / 3) * Math.PI * 2; c.position.set(-1.5 + Math.sin(a) * 4, 1.6, -3 + Math.cos(a) * 4); c.lookAt(-1.5, 1.2, -3); c.updateMatrixWorld(); return c; })];
+    const views = gridLayout(4).map((v, i) => ({ camera: cams[i], ...v }));
+    const viewMs = at(1920, 1080, () => { const ms = []; for (let i = 0; i < 20; i++) { const t0 = now(); renderViews(host.renderer, host.scene, views); host.renderer.getContext().finish(); ms.push(now() - t0); } ms.sort((x, y) => x - y); return +ms[10].toFixed(3); });
+    env.props.post = null; host.views.update(tree);
+    host.debug.set(debug);
+    return { passes: post.passes, costMs: { ...none, ...anime }, ssim: { noGrain: ssimNoGrain, grain: ssimGrain }, views4Ms: viewMs };
   }
 
   /** The running scene as a .vrmxs document (canonical JSON), for saving. */
@@ -227,4 +263,25 @@ export class Playground {
     };
     requestAnimationFrame(tick);
   }
+}
+
+/** Mean SSIM (luminance, 8×8 windows) of a 1080p frame against a 4K one box-filtered down to it. */
+function ssimDown(a, b4, w, h) {
+  const lum = (r, g, bl) => 0.299 * r + 0.587 * g + 0.114 * bl;
+  const A = new Float32Array(w * h), B = new Float32Array(w * h), W4 = w * 2;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = (y * w + x) * 4; A[y * w + x] = lum(a[i], a[i + 1], a[i + 2]);
+    let s = 0; for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1]]) { const j = ((y * 2 + dy) * W4 + x * 2 + dx) * 4; s += lum(b4[j], b4[j + 1], b4[j + 2]); }
+    B[y * w + x] = s / 4;
+  }
+  const C1 = (0.01 * 255) ** 2, C2 = (0.03 * 255) ** 2;
+  let total = 0, n = 0;
+  for (let y = 0; y + 8 <= h; y += 4) for (let x = 0; x + 8 <= w; x += 4) {
+    let ma = 0, mb = 0; for (let j = 0; j < 8; j++) for (let i = 0; i < 8; i++) { ma += A[(y + j) * w + x + i]; mb += B[(y + j) * w + x + i]; }
+    ma /= 64; mb /= 64;
+    let va = 0, vb = 0, cov = 0; for (let j = 0; j < 8; j++) for (let i = 0; i < 8; i++) { const da = A[(y + j) * w + x + i] - ma, db = B[(y + j) * w + x + i] - mb; va += da * da; vb += db * db; cov += da * db; }
+    va /= 63; vb /= 63; cov /= 63;
+    total += ((2 * ma * mb + C1) * (2 * cov + C2)) / ((ma * ma + mb * mb + C1) * (va + vb + C2)); n++;
+  }
+  return total / n;
 }

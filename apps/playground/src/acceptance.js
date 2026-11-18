@@ -13,6 +13,9 @@
 //                  and a CameraBrain blending three VirtualCameras (orbit with handheld noise, a dolly on a Path3D, an
 //                  over-the-shoulder composer) onto a second camera: a hash of every component after every step and
 //                  the brain's output camera, and a snapshot taken mid-blend restored and re-simulated.
+//   runSequence    (M2 W1) sequences/morning.vrmxs in its set: four shots, a camera track, Mira walking in on an event
+//                  key, eyes, Hana's line, a shot override. A hash of every component after every step, then scrubbing
+//                  (backwards, forwards, from snapshots) checked against the hashes of the straight play.
 //   runItems       (M1 W10) the recorded take with items (content/sample/input/play-items.json): Mira walks in, takes the
 //                  sword into her closet, opens the cupboard, sits on a stool, gets up and switches the counter lights
 //                  off; Hana greets her on the way. A hash of every component after every step, a snapshot after the
@@ -20,7 +23,8 @@
 //                  the closet, item states, and Hana's line (voice, mouth, look-at, blinks, caption).
 import { VirtualDevice } from '@vrmxg/input';
 import { captureWorld, restoreWorld, worldHashes, compareRuns, hashValue, packRun } from '@vrmxg/snapshot';
-import { buildWorld } from './world.js';
+import { buildWorld, loadSample } from './world.js';
+import { SequencePlayer, subtitles } from '@vrmxg/sequence';
 import { AudioOutput, mixOffline, hashSamples } from '@vrmxg/audio';
 
 export const STEPS = 600, SNAPSHOT_AT = 300, ITEMS_SNAPSHOT_AT = 720; // a step whose hash includes Rapier's bytes (every 60th), after the equip
@@ -250,5 +254,39 @@ export async function runCinematic(R, sample, opts) {
     snapshot: { at: SNAP_C, rerunMatches: restored === null, divergence: restored },
     doorAt: seen.doorAt, cameraChanges: seen.changes, talkMax: r3(seen.talkMax), light: A.tree.find('counter-light').props.intensity,
     cine: { p: cine().object3d.position.toArray().map(r3), focalLength: r3(cine().props.focalLength), live: A.tree.find('brain').bstate.live },
+  };
+}
+
+/** The sample sequence, M2 W1 (see the top). @param {any} R @param {any} sample the cafe's (for its bytes) @param {any} opts */
+export async function runSequence(R, sample, opts, { now = () => 0 } = {}) {
+  const S = await loadSample(sample.bytes, 'sequences/morning.vrmxs');
+  const A = await buildWorld(R, S, opts);
+  const svc = A.sequence, end = svc.stepOf(svc.duration).step + 1;
+  const seen = { cams: [], shots: [], spokeAt: null, light: {} };
+  A.tree.listen(A.tree.find('brain'), 'cameraChanged', (p) => seen.cams.push(`${A.tree.clock.step}:${p.to}`));
+  A.tree.listen(A.tree.root, 'shotChanged', (p) => seen.shots.push(`${A.tree.clock.step}:${p.shot}`));
+  A.tree.listen(A.tree.find('hana-1'), 'spoke', () => { seen.spokeAt ??= A.tree.clock.step; });
+  const scrubFrames = [287, 40, 130, 200, 129, 250];
+  const at = new Map(scrubFrames.map((f) => [svc.stepOf(f).step, f])), want = new Map();
+  const run = [{ step: 0, h: worldHashes(A.tree) }];
+  for (let k = 1; k <= end; k++) {
+    while (!A.tree.step()) await A.tree.settle();
+    run.push({ step: k, h: worldHashes(A.tree, { physicsBytes: k % 60 === 0 }) });
+    if (at.has(k)) want.set(at.get(k), hashValue(worldHashes(A.tree, { physicsBytes: true })));
+    if (k === svc.stepOf(150).step) seen.light.s2 = A.tree.find('counter-light').props.intensity;
+  }
+  const B = await buildWorld(R, S, opts);
+  const player = new SequencePlayer(B.tree, { every: 120 });
+  const scrub = [];
+  for (const f of scrubFrames) {
+    const t = now(); const r = await player.seek(f); const ms = now() - t;
+    scrub.push({ frame: f, step: r.step, restored: r.restored, stepped: r.stepped, ms: +ms.toFixed(1), matches: hashValue(worldHashes(B.tree, { physicsBytes: true })) === want.get(f) });
+  }
+  const mira = A.tree.find('mira').object3d.position;
+  return {
+    steps: end, run: packRun(run), final: hashValue(run.at(-1).h), components: Object.keys(run[0].h).length,
+    cameraChanges: seen.cams, shots: seen.shots, spokeAt: seen.spokeAt, lightInShot2: seen.light.s2, light: A.tree.find('counter-light').props.intensity,
+    mira: mira.toArray().map(r3), post: A.tree.find('env').props.post, scrub,
+    subtitles: subtitles(S.doc.sequence, { 'hana-1': 'Hana' }),
   };
 }

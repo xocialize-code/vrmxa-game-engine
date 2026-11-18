@@ -1,0 +1,26 @@
+{
+  "scene": "sequences/morning.vrmxs stretched to 1440 frames (60 s at 24 fps), cafe with Mira and Hana, stub textures",
+  "node": "v26.12.1",
+  "snapshotEverySteps": 120,
+  "coldSeekMs": {
+    "30s": 372.1,
+    "60s": 578.5
+  },
+  "fillTo60sMs": 569.6,
+  "msPerStep": 0.158,
+  "randomSeekMs": {
+    "n": 60,
+    "median": 10.7,
+    "p90": 19.8,
+    "max": 27.6
+  },
+  "nextFrameSeekMs": {
+    "median": 0.5,
+    "max": 10.29
+  },
+  "snapshots": {
+    "count": 31,
+    "meanBytes": 95551,
+    "totalMB": 2.8
+  }
+}

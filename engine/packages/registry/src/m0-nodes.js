@@ -177,6 +177,7 @@ export function m0Registry() {
       fogColor: P.color({ default: '#c9d3df' }), fogNear: P.number({ min: 0, unit: 'm', default: 10 }), fogFar: P.number({ min: 0, unit: 'm', default: 60 }), fogDensity: P.number({ min: 0, default: 0.02 }),
       toneMapping: P.enum(['neutral', 'agx', 'aces', 'none'], { default: 'neutral', description: 'Neutral keeps MToon\'s authored colours.' }),
       exposure: P.number({ min: 0, default: 1 }),
+      post: { schema: { description: 'The post stack (M2 W3): a preset ("anime", "clean") or a list of effects [{ effect: edges | dof | bloom | grade | lut | toneMapping | vignette | grain | anime | chromaticAberration | smaa, …params }]. Lengths in px at 1080p.', anyOf: [{ type: 'string' }, { type: 'array', items: { type: 'object', required: ['effect'] } }] }, meta: { widget: 'json' } },
       ground: P.boolean({ default: false, description: 'A shadow-receiving ground plane at y = 0.' }),
       groundColor: P.color({ default: '#9aa3ad' }), groundSize: P.number({ min: 1, unit: 'm', default: 40 }),
     },

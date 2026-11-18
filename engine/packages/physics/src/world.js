@@ -174,6 +174,9 @@ export class PhysicsWorld {
   setKinematicPose(handle, p, rot) { const b = this.world.getRigidBody(handle); b.setNextKinematicTranslation(v(p)); b.setNextKinematicRotation(q(rot)); }
   /** Teleport (any body type). */
   setPose(handle, p, rot) { const b = this.world.getRigidBody(handle); b.setTranslation(v(p), true); b.setRotation(q(rot), true); }
+  /** A body's velocities: linear (m/s) and angular (rad/s), world space. */
+  bodyMotion(handle) { const b = this.world.getRigidBody(handle); return { lv: arr3(b.linvel()), av: arr3(b.angvel()) }; }
+  setMotion(handle, lv, av) { const b = this.world.getRigidBody(handle); b.setLinvel(v(lv), true); b.setAngvel(v(av), true); }
   applyImpulse(handle, impulse) { this.world.getRigidBody(handle).applyImpulse(v(impulse), true); }
   isSleeping(handle) { return this.world.getRigidBody(handle).isSleeping(); }
   /** Call f(handle) for every awake body (Rapier's active set): cheap on a settled scene. */

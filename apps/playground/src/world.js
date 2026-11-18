@@ -15,6 +15,7 @@ import { installCloset } from '@vrmxg/closet';
 import { installAudio } from '@vrmxg/audio';
 import { installVoice } from '@vrmxg/voice';
 import { installTracks } from '@vrmxg/tracks';
+import { installSequence, composeSequence, isSequence } from '@vrmxg/sequence';
 
 const text = (b) => new TextDecoder().decode(b);
 
@@ -23,7 +24,9 @@ const text = (b) => new TextDecoder().decode(b);
  * @param {(ref: string) => Promise<Uint8Array>} bytes a project file by ref
  */
 export async function loadSample(bytes, scene = 'cafe.vrmxs') {
-  const doc = parse(text(await bytes(scene)));
+  let doc = parse(text(await bytes(scene)));
+  // a sequence (M2 W1) plays in its set: the set's nodes under their own ids, plus the sequence's cameras and tracks
+  if (isSequence(doc)) doc = composeSequence(doc, parse(text(await bytes(doc.set))));
   const prefabs = new Map();
   const walk = async (d) => { for (const a of d.assets ?? []) if (a.type === 'vrmxs' && !prefabs.has(a.ref)) { const p = parse(text(await bytes(a.ref))); prefabs.set(a.ref, p); await walk(p); } };
   await walk(doc);
@@ -62,10 +65,12 @@ export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = n
   await voice.prepare(sample.doc); lap('voice');
   const tracks = installTracks(tree); // AnimationPlayers (M2 W0): advanced before the nodes step
   await tracks.prepare(sample.doc);
+  const sequence = sample.doc.sequence ? installSequence(tree) : null; // a sequence world (M2 W1): its tracks play in the step
+  await sequence?.prepare(sample.doc);
   const { interact, inventory } = installInteraction(tree);
   const wardrobe = closet && vrmxaCore ? installCloset(tree, { vrmxaCore, closet, spec, stubTextures }) : null;
   await wardrobe?.prepare(sample.doc); lap('closet');
   tree.instantiate(structuredClone(sample.doc)); lap('instantiate');
   await wardrobe?.showWorn(); lap('showWorn');
-  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe, audio, voice, tracks };
+  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe, audio, voice, tracks, sequence };
 }

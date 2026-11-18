@@ -23,6 +23,21 @@ const _v = new Vector3();
 /** The body's objects in order, skipping presentation subtrees (held items' models): what the snapshot holds. */
 function simTraverse(o, fn) { if (o.userData.presentation) return; fn(o); for (const c of o.children) simTraverse(c, fn); }
 
+/**
+ * three's mixer writes a bone only when the value it computes differs from its previous update's (PropertyMixer.apply).
+ * That makes a bone's value depend on history the snapshot can't hold: a bone left at another value by loading, or put
+ * back by restoring a snapshot, stays wrong while the clip holds still. Poisoning the previous values before each
+ * update makes the mixer write every active binding: the pose is a function of this step's inputs alone.
+ */
+function writeEveryBinding(m) {
+  const prev = m._accuIndex, cur = prev ^ 1; // the update about to run accumulates into `cur` and compares it with `prev`
+  for (let i = 0; i < m._nActiveBindings; i++) {
+    const b = m._bindings[i], n = b.valueSize, buf = b.buffer, orig = n * b._origIndex;
+    buf.copyWithin(cur * n + n, orig, orig + n); // a binding no clip weights this step mixes from here: start from its original
+    buf.fill(NaN, prev * n + n, prev * n + 2 * n);
+  }
+}
+
 export class CharacterNode extends Node {
   static actions = ['say', 'goTo', 'emote', 'lookAt'];
 
@@ -195,6 +210,7 @@ export class CharacterNode extends Node {
     const add = (clip, time, weight) => { const a = this.actions.get(clip); if (!a || weight <= 0) return; if (a.weight > 0) a.weight += weight; else { a.time = time; a.weight = weight; } };
     if (tw < 1) for (const { clip, time, weight } of this.graph.output()) add(clip, time, weight * (1 - tw));
     if (tw > 0) for (const c of track.clips) { const r = this.resolveTrackClip(c); if (r) add(r.clip, r.time, c.weight * tw); }
+    writeEveryBinding(this.mixer);
     this.mixer.update(0);
 
     // 4. travel root motion: the clip's forward drift is the controller's job

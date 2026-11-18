@@ -15,8 +15,8 @@ import { installCloset } from '@vrmxg/closet';
 import { installAudio } from '@vrmxg/audio';
 import { installVoice } from '@vrmxg/voice';
 import { installTracks } from '@vrmxg/tracks';
-
-
+import { installSequence, composeSequence, isSequence } from '@vrmxg/sequence';
+import { parse } from '@vrmxg/scene';
 import { LiveView } from './live.js';
 
 export class EngineSession extends LiveView {
@@ -26,6 +26,8 @@ export class EngineSession extends LiveView {
   /** (Re)start from a scene document. */
   async load(doc, prefabs) {
     const p = this.project;
+    // a sequence (M2 W1) runs in its set: compose them, and read the set's prefabs too
+    if (isSequence(doc)) { doc = composeSequence(doc, parse(new TextDecoder().decode(p.bytes(doc.set)))); prefabs = p.prefabs(doc, new Map(prefabs)); }
     const tree = new SceneTree({ registry: m0Registry(), prefabs, behaviours: await p.behaviours(), seed: p.seed });
     installInput(tree);
     installPhysics(tree, await loadRapier());
@@ -42,6 +44,7 @@ export class EngineSession extends LiveView {
     const voice = installVoice(tree, { resolve: (ref) => p.bytes(ref) });
     await voice.prepare(doc);
     await installTracks(tree).prepare(doc);
+    if (doc.sequence) await installSequence(tree).prepare(doc);
     installInteraction(tree);
     const closetModule = vrmxaCore ? await p.vrmxaCloset() : null;
     const closet = closetModule ? installCloset(tree, { vrmxaCore, closet: closetModule, stubTextures: true }) : null;

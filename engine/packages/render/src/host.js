@@ -23,8 +23,10 @@ export class RenderHost {
    * @param {boolean} [opts.antialias]
    * @param {boolean} [opts.interpolate] blend presentation at α (true); off renders the last step
    * @param {boolean} [opts.preserveDrawingBuffer] keep the frame readable (screenshots)
+   * @param {(renderer: any) => any} [opts.post] makes the post stack (@vrmxg/post's PostStack): the scene's Environment
+   *   `post` then drives it; without one, scenes render without post
    */
-  constructor({ canvas, renderer, dprCap = 2, antialias = true, interpolate = true, preserveDrawingBuffer = false } = {}) {
+  constructor({ canvas, renderer, dprCap = 2, antialias = true, interpolate = true, preserveDrawingBuffer = false, post = null } = {}) {
     this.renderer = renderer ?? new WebGLRenderer({ canvas, antialias, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer });
     const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
     this.renderer.setPixelRatio?.(Math.min(dpr, dprCap));
@@ -44,6 +46,11 @@ export class RenderHost {
     this._room = undefined;
     /** Called during render with the blend applied, before drawing: (alpha) => void. For traces and tests. */
     this.onPresent = null;
+    /** The post stack (M2 W3), configured from the scene's Environment `post`; null renders straight to the canvas. */
+    this.post = post ? post(this.renderer) : null;
+    if (this.post) this.post.dofSource = () => this.cameraNode()?.postDof?.(this.renderer.getContext?.().drawingBufferHeight ?? 1080) ?? null;
+    /** Presentation time of the frame being drawn (s): (step + α) / 60. Time-based post effects use it. */
+    this.time = 0;
     this.last = { steps: 0, alpha: 1, renderMs: 0 };
   }
 
@@ -80,6 +87,7 @@ export class RenderHost {
   /** The output's size in CSS pixels; cameras fit their lens to the aspect. */
   resize(width, height) {
     this.renderer.setSize(width, height, false);
+    if (this.post) { const gl = this.renderer.getContext(); this.post.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight); }
     this.tree?.services.get('cameras')?.setAspect(width / height);
     this.fallbackCamera.aspect = width / height; this.fallbackCamera.updateProjectionMatrix();
     if (this.camera?.isPerspectiveCamera) { this.camera.aspect = width / height; this.camera.updateProjectionMatrix(); }
@@ -137,17 +145,26 @@ export class RenderHost {
     const tree = this.tree;
     const t0 = typeof performance !== 'undefined' ? performance.now() : 0;
     this.views.update(tree);
+    // a sequence's post tracks (M2 W1): presentation values at this frame and α, after the Environment configured the stack
+    const pv = this.post ? tree.services.get('sequence')?.postValues?.(alpha) : null;
+    if (pv) this.post.setParams(pv);
     this.debug.update(tree, stepped);
     const camera = this.camera ?? tree.services.get('cameras')?.current?.camera ?? this.fallbackCamera;
     const blend = this.interpolate && alpha < 1;
     if (blend) this.interpolator.apply(alpha);
     this.onPresent?.(alpha);
-    this.renderer.render(this.scene, camera);
+    this.time = (tree.clock.step - 1 + alpha) / 60;
+    if (this.post?.active) this.post.render(this.scene, camera, this.time);
+    else this.renderer.render(this.scene, camera);
     if (blend && this.interpolator.restore()) tree.root.object3d.updateMatrixWorld(true);
     this.last.renderMs = (typeof performance !== 'undefined' ? performance.now() : 0) - t0;
   }
 
+  /** The Camera node the view renders through (null when the host's own camera overrides it). */
+  cameraNode() { return this.camera ? null : this.tree?.services.get('cameras')?.current ?? null; }
+
   dispose() {
+    this.post?.dispose?.();
     this.detach();
     this.views.dispose(); this.debug.dispose();
     this._room?.dispose();

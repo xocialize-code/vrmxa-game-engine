@@ -107,6 +107,8 @@ export class EnvironmentView {
     const { scene, renderer } = this.host;
     renderer.toneMapping = TONE_MAPPINGS[p.toneMapping] ?? NeutralToneMapping;
     renderer.toneMappingExposure = p.exposure;
+    // the post stack (M2 W3): the scene's `post` effects; while it runs it does the tone mapping itself
+    this.host.post?.configure(p.post ?? null, { toneMapping: p.toneMapping, exposure: p.exposure });
     const env = p.environment === 'room' ? this.host.roomEnvironment() : null;
     scene.environment = env;
     scene.environmentIntensity = p.environmentIntensity;
@@ -175,6 +177,17 @@ export class Views {
     this.sync(tree);
     for (const v of this.lights.values()) v.update();
     this.environment.update(this.envNode?.props ?? {});
+    if (this.host.post) this.markCharacters(tree);
   }
+  /** Characters on the post stack's mask layer (2), so screen-space edges skip them (they keep MToon's outline). */
+  markCharacters(tree) {
+    for (const n of tree.all()) {
+      const any = /** @type {any} */ (n);
+      if (n.type !== 'Character' || !any.vrm || any._maskedVrm === any.vrm) continue;
+      any._maskedVrm = any.vrm;
+      n.object3d.traverse((o) => o.layers.enable(2));
+    }
+  }
+
   dispose() { for (const v of this.lights.values()) v.dispose(); this.lights.clear(); this.environment.dispose(); }
 }

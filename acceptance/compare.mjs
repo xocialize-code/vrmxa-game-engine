@@ -106,6 +106,23 @@ const items = (r) => r?.result?.items ?? r?.items;
   check(10, 'Tracks and cinematic cameras: AnimationPlayer + CameraBrain blends identical everywhere, snapshot mid-blend', ok,
     ref ? `${ref.steps} steps × ${ref.components} components (the brain's camera included), final ${ref.final}; door opened @${ref.doorAt} (event key), light ${ref.light}, Hana's talk clip up to ${ref.talkMax}; camera changes ${ref.cameraChanges.join(', ')}; snapshot @${ref.snapshot.at} (mid-blend) ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? 'identical' : 'DIFFERS'}`).join('; ')}` : 'no node result');
 }
+// 11 (M2 W3). The post stack: the anime look renders with no errors in every browser; a 4K frame scaled to 1080p looks
+// like the 1080p frame (SSIM ≥ 0.98 without grain, which is per pixel by design); its cost and four viewports measured.
+{
+  const rows = Object.entries(browsers).map(([k, r]) => { const p = r?.result?.rendered?.post, errs = (r?.errors?.length ?? 0); return { k, p, ok: !!p && errs === 0 && p.ssim.noGrain >= 0.98 && p.passes.length >= 5 }; });
+  check(11, 'Post: the anime stack renders everywhere; 4K matches 1080p (SSIM ≥ 0.98 without grain); costs and four viewports measured', rows.every((r) => r.ok),
+    rows.map((r) => (r.p ? `${r.k}: SSIM ${r.p.ssim.noGrain} (grain ${r.p.ssim.grain}), anime ${r.p.costMs.anime1080p} / ${r.p.costMs.anime4k} ms vs none ${r.p.costMs.none1080p} / ${r.p.costMs.none4k} ms (1080p / 4K), 4 views ${r.p.views4Ms} ms` : `${r.k}: no result`)).join('; ') + (rows[0]?.p ? `; passes ${rows[0].p.passes.join(' → ')}` : ''));
+}
+// 12 (M2 W1). Sequences: sequences/morning.vrmxs in its set hashes identically at every step everywhere (its camera track,
+// event key, eyes, line and shot override included), and scrubbing to any frame, backwards or forwards, from snapshots,
+// lands on the world of the straight play.
+{
+  const sq = (r) => r?.result?.sequence ?? r?.sequence, ref = sq(node);
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = sq(r); const d = x && ref ? compareRuns(unpackRun(ref.run), unpackRun(x.run)) : { step: -1, component: 'no result' }; return { k, d, x, ok: !!x && !d && x.scrub.every((s) => s.matches) }; });
+  const ok = !!ref && ref.scrub.every((s) => s.matches) && ref.cameraChanges.length === 4 && ref.spokeAt !== null && ref.lightInShot2 === 30 && rows.every((r) => r.ok);
+  check(12, 'Sequences: the morning sequence identical everywhere; scrubbing lands on the straight play\'s world', ok,
+    ref ? `${ref.steps} steps × ${ref.components} components, final ${ref.final}; cameras ${ref.cameraChanges.join(', ')}; shots ${ref.shots.join(', ')}; Hana's line @${ref.spokeAt}; counter light ${ref.lightInShot2} in s2, ${ref.light} after; Mira at ${ref.mira.join(', ')}; scrub ${ref.scrub.map((s) => `${s.frame}${s.matches ? '' : ' DIFFERS'} (${s.restored === null ? 'stepped' : `from ${s.restored}`} +${s.stepped}, ${s.ms} ms)`).join(', ')}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? `identical, scrub exact (${r.x.scrub.map((s) => s.ms).join('/')} ms)` : 'DIFFERS'}`).join('; ')}` : 'no node result');
+}
 checks.sort((a, b) => a.n - b.n);
 fs.writeFileSync(res('summary.json'), JSON.stringify({ checks, runtimes: { node: node?.version, chromium: chromium?.version, wkwebview: scheme?.ua } }, null, 1) + '\n');
 process.exit(checks.every((c) => c.ok) ? 0 : 1);

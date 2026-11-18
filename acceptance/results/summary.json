@@ -4,7 +4,7 @@
    "n": 1,
    "title": "The cafe runs in the playground in WKWebView (scheme, loopback) and Chromium",
    "ok": true,
-   "evidence": "chromium: 600 frames, render 0.574 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 1.327 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 1.295 ms, door opened at step 113, 6 presets, 0 errors"
+   "evidence": "chromium: 600 frames, render 0.582 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 0.612 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 0.95 ms, door opened at step 113, 6 presets, 0 errors"
   },
   {
    "n": 2,
@@ -16,7 +16,7 @@
    "n": 3,
    "title": "A 10 s recorded run hashes identically at every step everywhere; a snapshot at 300 re-simulates to 600 identically",
    "ok": true,
-   "evidence": "600 steps × 62 components; final f2371e0ef65e9f16; chromium: identical, snapshot identical, rendered = headless true; wkwebview-scheme: identical, snapshot identical, rendered = headless true; wkwebview-loopback: identical, snapshot identical, rendered = headless true"
+   "evidence": "600 steps × 62 components; final 1a0fa28c0f4c7799; chromium: identical, snapshot identical, rendered = headless true; wkwebview-scheme: identical, snapshot identical, rendered = headless true; wkwebview-loopback: identical, snapshot identical, rendered = headless true"
   },
   {
    "n": 4,
@@ -40,13 +40,13 @@
    "n": 7,
    "title": "Audio: the run with sound hashes as without; the offline mix renders identically twice",
    "ok": true,
-   "evidence": "chromium: final f105d15ede18d945 = silent, mix 27.8 s 97cb1089/97cb1089 same, peak 0.7287; wkwebview-scheme: final f105d15ede18d945 = silent, mix 27.8 s 1342d9e7/1342d9e7 same, peak 0.7288; wkwebview-loopback: final f105d15ede18d945 = silent, mix 27.8 s 1342d9e7/1342d9e7 same, peak 0.7288; heard: node:ambience, node:entrance-close-sound, node:entrance-open-sound, node:music, node:switch-sound, voice:hana-1"
+   "evidence": "chromium: final ab4c36df0e124813 = silent, mix 27.8 s 97cb1089/97cb1089 same, peak 0.7287; wkwebview-scheme: final ab4c36df0e124813 = silent, mix 27.8 s 1342d9e7/1342d9e7 same, peak 0.7288; wkwebview-loopback: final ab4c36df0e124813 = silent, mix 27.8 s 1342d9e7/1342d9e7 same, peak 0.7288; heard: node:ambience, node:entrance-close-sound, node:entrance-open-sound, node:music, node:switch-sound, voice:hana-1"
   },
   {
    "n": 8,
    "title": "The take with items: sword into the closet, cupboard, stool, switch; identical everywhere, snapshot across the equip",
    "ok": true,
-   "evidence": "1668 steps × 62 components, final f105d15ede18d945; prompts Take sword @523, Sit stool-7 @615, Open cupboard @750, Switch off light-switch @1522; states idle/move/sit/sitIdle/stand/take/use; sword taken @548, worn held+stowed, held:sword, idle set \"sword\"; seated @906; cupboard open, switch off; snapshot @720 (after the equip) identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
+   "evidence": "1668 steps × 62 components, final ab4c36df0e124813; prompts Take sword @523, Sit stool-7 @615, Open cupboard @750, Switch off light-switch @1522; states idle/move/sit/sitIdle/stand/take/use; sword taken @548, worn held+stowed, held:sword, idle set \"sword\"; seated @906; cupboard open, switch off; snapshot @720 (after the equip) identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
   },
   {
    "n": 9,
@@ -58,7 +58,19 @@
    "n": 10,
    "title": "Tracks and cinematic cameras: AnimationPlayer + CameraBrain blends identical everywhere, snapshot mid-blend",
    "ok": true,
-   "evidence": "300 steps × 76 components (the brain's camera included), final 8afc1328ba578d85; door opened @31 (event key), light 18, Hana's talk clip up to 1; camera changes 0:null>orbit, 160:orbit>dolly; snapshot @180 (mid-blend) identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
+   "evidence": "300 steps × 76 components (the brain's camera included), final 23eb620c26b3ecd6; door opened @31 (event key), light 18, Hana's talk clip up to 1; camera changes 0:null>orbit, 160:orbit>dolly; snapshot @180 (mid-blend) identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
+  },
+  {
+   "n": 11,
+   "title": "Post: the anime stack renders everywhere; 4K matches 1080p (SSIM ≥ 0.98 without grain); costs and four viewports measured",
+   "ok": true,
+   "evidence": "chromium: SSIM 0.9861 (grain 0.9507), anime 1.4 / 1.6 ms vs none 0.4 / 0.5 ms (1080p / 4K), 4 views 1.4 ms; wkwebview-scheme: SSIM 0.9861 (grain 0.9507), anime 2 / 3 ms vs none 0 / 0 ms (1080p / 4K), 4 views 2 ms; wkwebview-loopback: SSIM 0.9861 (grain 0.9507), anime 1.38 / 3.12 ms vs none 0.26 / 0.98 ms (1080p / 4K), 4 views 0.86 ms; passes RenderPass → NormalPass → EffectPass(EdgeEffect) → EffectPass(DepthOfFieldEffect) → EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect) → EffectPass(ChromaticAberrationEffect)"
+  },
+  {
+   "n": 12,
+   "title": "Sequences: the morning sequence identical everywhere; scrubbing lands on the straight play's world",
+   "ok": true,
+   "evidence": "721 steps × 73 components, final 1877d6668ebbbe96; cameras 0:vc-wide, 299:vc-hana, 479:vc-ots, 629:vc-two; shots 0:s1, 299:s2, 479:s3, 629:s4; Hana's line @314; counter light 30 in s2, 18 after; Mira at -0.789, 0.025, 1.482; scrub 287 (stepped +717, 148.8 ms), 40 (from 0 +100, 22.6 ms), 130 (from 240 +85, 17.4 ms), 200 (from 480 +20, 5.3 ms), 129 (from 240 +82, 15.8 ms), 250 (from 600 +25, 5.5 ms); chromium: identical, scrub exact (119.4/18.8/14.8/4.3/14.7/4.8 ms); wkwebview-scheme: identical, scrub exact (73/12/9/3/8/2 ms); wkwebview-loopback: identical, scrub exact (75.3/12.6/9.4/2.7/9/3.1 ms)"
   }
  ],
  "runtimes": {

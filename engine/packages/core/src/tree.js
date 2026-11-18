@@ -212,6 +212,10 @@ export class SceneTree {
    */
   step() {
     for (const s of this.services.values()) if (s.holds?.(this.clock.step)) return false;
+    // The first step starts from current world matrices, whatever happened since instantiate (characters placed after
+    // their load, a frame drawn or not): otherwise spring bones see a jump from stale matrices on step 1, and a world
+    // restored at step 0 (restoreWorld updates them) steps differently from a fresh one.
+    if (this.clock.step === 0) this.root.object3d.updateMatrixWorld(true);
     for (const s of this.services.values()) s.physicsProcess?.(DT);
     this.timers.step((n) => (n && this.byId.get(n.id) === n ? this.scaleOf(n) : 0));
     // Only nodes with step work (a physicsProcess override, behaviours or a state machine), in tree

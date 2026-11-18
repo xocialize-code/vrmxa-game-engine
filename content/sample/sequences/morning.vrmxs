@@ -1,0 +1,42 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "morning",
+  "set": "cafe.vrmxs",
+  "assets": [],
+  "nodes": [
+    { "id": "mark-in", "type": "Marker", "name": "Mira's mark", "transform": { "p": [-0.8, 0, 1.2] } },
+    { "id": "brain", "type": "CameraBrain", "props": { "camera": "cam" } },
+    { "id": "vc-wide", "type": "VirtualCamera", "name": "Wide, the door", "transform": { "p": [2.2, 1.7, 0.5] }, "props": { "body": { "type": "fixed" }, "aim": { "type": "composer", "target": "mira", "screen": [0, 0.1], "damping": 0.3 }, "lens": { "focalLength": 28 } } },
+    { "id": "vc-hana", "type": "VirtualCamera", "name": "Hana, close", "props": { "rig": "closeUp", "body": { "target": "hana-1" }, "aim": { "target": "hana-1" } } },
+    { "id": "vc-ots", "type": "VirtualCamera", "name": "Over Mira's shoulder", "props": { "rig": "overShoulder", "body": { "target": "mira" }, "aim": { "target": "hana-1" } } },
+    { "id": "vc-two", "type": "VirtualCamera", "name": "Two shot", "transform": { "p": [1.8, 1.5, -1.0] }, "props": { "rig": "twoShot", "aim": { "targets": ["mira", "hana-1"], "size": 0.7 } } }
+  ],
+  "connections": [],
+  "sequence": {
+    "fps": 24,
+    "duration": 288,
+    "shots": [
+      { "id": "s1", "name": "Arrival", "start": 0, "end": 120 },
+      { "id": "s2", "name": "Welcome", "start": 120, "end": 192, "overrides": { "counter-light": { "props": { "intensity": 30 } } } },
+      { "id": "s3", "name": "Mira", "start": 192, "end": 252 },
+      { "id": "s4", "name": "Together", "start": 252, "end": 288 }
+    ],
+    "markers": [{ "frame": 120, "name": "Hana notices" }, { "frame": 252, "name": "out" }],
+    "tracks": [
+      { "id": "cameras", "type": "camera", "clips": [
+        { "start": 0, "end": 120, "camera": "vc-wide" },
+        { "start": 120, "end": 192, "camera": "vc-hana" },
+        { "start": 192, "end": 252, "camera": "vc-ots", "blend": { "frames": 12, "style": "easeInOut" } },
+        { "start": 252, "end": 288, "camera": "vc-two" }
+      ] },
+      { "id": "walk-in", "type": "event", "keys": [[6, { "target": "mira", "call": "goTo", "args": { "target": "mark-in" } }]] },
+      { "id": "eyes-hana", "type": "lookAt", "target": "hana-1", "clips": [{ "start": 120, "end": 288, "at": "mira" }] },
+      { "id": "eyes-mira", "type": "lookAt", "target": "mira", "clips": [{ "start": 150, "end": 288, "at": "hana-1" }] },
+      { "id": "hana-says", "type": "dialogue", "target": "hana-1", "clips": [{ "start": 126, "end": 246, "clip": "voice/hana-welcome.wav", "text": "Oh, hi! Welcome to the cafe. Sit anywhere you like, and I'll bring you a menu." }] },
+      { "id": "look", "type": "property", "target": "env", "path": "props.post", "keys": [[0, "anime"]] },
+      { "id": "beat", "type": "post", "keys": { "anime.speedLines": [[114, 0], [120, 0.9], [138, 0, "easeOut"]], "anime.impact": [[120, 0.6], [126, 0, "easeOut"]] } },
+      { "id": "simulation", "type": "simulation", "clips": [{ "start": 0, "end": 288, "mode": "live" }] }
+    ]
+  }
+}

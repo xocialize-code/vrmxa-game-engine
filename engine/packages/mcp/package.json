@@ -33,6 +33,7 @@
     "@vrmxg/physics": "0.1.0",
     "@vrmxg/registry": "0.1.0",
     "@vrmxg/scene": "0.1.0",
+    "@vrmxg/sequence": "0.1.0",
     "@vrmxg/tracks": "0.1.0",
     "@vrmxg/voice": "0.1.0",
     "three": "0.187.0"

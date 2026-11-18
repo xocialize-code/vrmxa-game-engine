@@ -1,0 +1,31 @@
+{
+  "name": "@vrmxg/sequence",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG sequences (M2 W1): a .vrmxs of its own that includes the set scene, with shots, shot overrides, markers and tracks (camera, lookAt, dialogue, post, simulation on top of @vrmxg/tracks); exact scrubbing from snapshots; bake to a pose cache; SRT subtitles.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0",
+    "@vrmxg/tracks": "0.1.0"
+  },
+  "devDependencies": {
+    "@vrmxg/camera": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/registry": "0.1.0"
+  },
+  "vrmxg": {
+    "determinism": "simulation"
+  }
+}

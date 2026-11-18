@@ -371,10 +371,12 @@ export class ClosetService {
     return {
       worn: Object.fromEntries([...this.worn].map(([k, v]) => [k, v.map((w) => ({ ...w, tags: [...w.tags] }))])),
       jobs: this.jobs.map((j) => ({ char: j.char, at: j.at, label: j.label })),
+      shown: this.shown, // the first step shows the worn look: a world restored at step 0 does it again, as a fresh one does
     };
   }
 
   setState(s) {
+    if (s.shown !== undefined) this.shown = s.shown;
     if (s.jobs.length) throw new Error(`a snapshot taken while a closet redraw was pending (${s.jobs.map((j) => j.label).join(', ')}) can't be restored: snapshot before it, or after it lands`);
     for (const [char, worn] of Object.entries(s.worn)) {
       const body = (this.worn.get(char) ?? []).filter((w) => !w.pinned).map((w) => `${w.id}:${w.state}`).sort().join('|');

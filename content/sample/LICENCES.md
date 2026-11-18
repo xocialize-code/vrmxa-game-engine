@@ -11,6 +11,7 @@ outright and shippable in our apps.
 | File | Licence | Source |
 |---|---|---|
 | `cafe.vrmxs` | Xocialize original | The sample cafe scene, written for M0 (W8, AB-T-0509) |
+| `sequences/morning.vrmxs` | Xocialize original | The sample sequence (M2 W1, AB-T-0524): four shots of Mira arriving and Hana welcoming her, filmed in `cafe.vrmxs` |
 | `prefabs/door.vrmxs` | Xocialize original | A hinged door with its frame and trigger |
 | `prefabs/double-door.vrmxs` | Xocialize original | Two doors, the right one mirrored |
 | `behaviours.js` | Xocialize original | The project's `wander` behaviour |

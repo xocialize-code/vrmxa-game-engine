@@ -1,0 +1,19 @@
+{
+  "name": "@vrmxg/post",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG post stack (M2 W3): the anime look as scene data (environment.post), behind an adapter over pmndrs postprocessing 6.39 — edges on sets, physical DOF, bloom, grade and LUT, tone mapping, vignette, grain, speed lines, focus lines, impact frames, chromatic aberration — with resolution-independent parameters; scissored viewports.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "postprocessing": "6.39.6",
+    "three": "0.187.0"
+  }
+}
