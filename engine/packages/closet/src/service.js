@@ -367,6 +367,37 @@ export class ClosetService {
     }
   }
 
+  /**
+   * Before restoring a snapshot into a fresh world (a save loaded): bring each character's body to the snapshot's look
+   * (what is drawn into avatar.vrm), so setState finds the same body. Async and outside the step: the bundle takes the
+   * saved worn set, the body is redrawn and swapped in. Pinned items need nothing here (present() shows them).
+   * @param {{ worn: Record<string, any[]> }} s the closet service's state in the snapshot
+   */
+  async adoptLook(s) {
+    const body = (list) => list.filter((w) => !w.pinned).map((w) => `${w.id}:${w.state}`).sort().join('|');
+    const lib = this.tree.services.get('characters');
+    for (const [char, worn] of Object.entries(s.worn ?? {})) {
+      const actor = this.tree.find(char);
+      if (!actor || body(this.worn.get(char) ?? []) === body(worn)) continue;
+      if (!this.spec) throw new Error(`${char}'s save wears a different look: redrawing avatar.vrm needs spec.vrm (pass spec to installCloset)`);
+      const b = this.bundle(actor), items = this.tree.services.get('items');
+      const c = this.closet.closetOf(b);
+      for (const id of c.worn.items) if (!worn.some((w) => w.id === id)) await this.closet.takeOff(b, id, { redraw: false });
+      for (const w of worn) {
+        if (!this.closet.closetOf(b).items.some((x) => x.id === w.id)) {
+          const bytes = w.from ? items?.get(w.from)?.wearable : null;
+          if (!bytes) throw new Error(`${char} wears ${w.id}, which neither the bundle nor its item (${w.from ?? 'unknown'}) has`);
+          await this.closet.addItem(b, bytes, { source: items.get(w.from).manifest?.name ?? null, spec: this.spec ?? undefined });
+        }
+        await this.closet.putOn(b, w.id, { state: w.state ?? undefined, redraw: false });
+      }
+      const r = await this.closet.redrawAvatar(b, { spec: this.spec });
+      actor.swapVRM({ vrm: await lib.parseBody(r.bytes), clips: actor.clips });
+      this.drawn.set(char, new Map(this.wornIn(b).filter((w) => w.pinned).map((w) => [w.id, w.state])));
+      this.worn.set(char, worn.map((w) => ({ ...w, tags: [...w.tags] })));
+    }
+  }
+
   getState() {
     return {
       worn: Object.fromEntries([...this.worn].map(([k, v]) => [k, v.map((w) => ({ ...w, tags: [...w.tags] }))])),

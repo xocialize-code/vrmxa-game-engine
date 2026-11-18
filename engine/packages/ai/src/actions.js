@@ -40,7 +40,7 @@ export const ACTIONS = {
     update() { return 'success'; },
   },
   gesture: {
-    description: 'Play a one-shot animation slot (talk, use, greet …) when the character\'s set fills it.',
+    description: 'Play a one-shot animation slot (talk, use, greet …) when the character\'s set fills it: a masked slot (G10) plays over walking, a full-body one stops it.',
     args: { type: 'object', properties: { slot: str('The VRMXA animation slot.') }, required: ['slot'], additionalProperties: false },
     start(ctx, a) {
       const g = ctx.node.graph;
@@ -48,7 +48,7 @@ export const ACTIONS = {
       ctx.node.startAction(a.slot);
       return { at: ctx.step };
     },
-    update(ctx, a, d) { return d.failed ? 'failure' : ctx.step > d.at && !ctx.node.graph.busy ? 'success' : 'running'; },
+    update(ctx, a, d) { return d.failed ? 'failure' : ctx.step > d.at && !ctx.node.graph.busy && !ctx.node.graph.gesturing ? 'success' : 'running'; },
   },
   lookAt: {
     description: 'Look at a node (eyes and head), or with no target stop.',

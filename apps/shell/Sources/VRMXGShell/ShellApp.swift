@@ -1,7 +1,7 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.2.0"
+public let vrmxgShellVersion = "0.3.0"
 
 /// One app's shell: its name, URL scheme, window and any bridge methods of its own.
 public struct ShellConfiguration {
@@ -53,6 +53,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
              "scheme": "\(self.config.scheme)://app/"]
         }
         files.register(on: router)
+        SaveMethods(appName: config.appName, env: env).register(on: router) // save slots (M2 W9)
         exports.register(on: router, posts: posts)
         for (name, handler) in config.methods { router.register(name, handler) }
 

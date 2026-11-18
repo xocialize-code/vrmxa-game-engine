@@ -80,6 +80,7 @@ export function m0Registry() {
     signals: { arrived: { args: { target: P.nodeRef() } }, spoke: { args: { text: P.string() } }, lineEnded: { args: { text: P.string() } }, dressed: { args: { worn: P.list(P.string()) } } },
     actions: {
       say: { args: { text: arg(P.string(), 'What to say (the caption; lip-synced from estimated timings without a clip).'), clip: arg(P.string(), 'A voice line in the project (.wav), with its word timings beside it (<clip>.timings.json).') }, description: 'Speak a line: the clip plays from the head, the mouth follows its word timings, a caption shows.' },
+      reach: { args: { hand: arg(P.enum(['left', 'right']), 'Which hand (right).'), point: arg(P.vec3({ unit: 'm' }), 'A point.'), target: arg(P.nodeRef(), 'Or a node.'), part: arg(P.string(), 'An item\'s part (a knob).'), seconds: arg(P.number({ unit: 's' }), 'How long (1).') }, description: 'Reach a hand to a point, a node or an item\'s part: two-bone IK on the arm, fading in and out.' },
       goTo: { args: { target: arg(P.nodeRef(), 'Node to walk to.'), point: arg(P.vec3({ unit: 'm' }), 'Or a point to walk to.') }, description: 'Walk to a node or a point, along the navmesh when the scene has one (around tables and through doorways), else straight.' },
       emote: { args: { name: arg(P.string(), 'Expression or emote clip name.') } },
       lookAt: { args: { target: arg(P.nodeRef(), 'Node to look at; omit to stop.') } },

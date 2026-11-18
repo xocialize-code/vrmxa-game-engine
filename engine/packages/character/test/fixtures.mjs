@@ -59,7 +59,7 @@ function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 
  * fall, land) and a "sword" set (priority 1, requires the tag "sword") that changes idle.
  * `travel: true` makes walk and run root-motion "travel" clips.
  */
-export async function testAnimations(core, { travel = false, actions = false } = {}) {
+export async function testAnimations(core, { travel = false, actions = false, layers = false } = {}) {
   const defs = [
     ['idle', { seconds: 2, swing: 0.03 }, { loops: true, rootMotion: 'inPlace' }],
     ['walk', { seconds: 1, swing: 0.5, bob: 0.03, travel: travel ? 1.4 : 0 }, { loops: true, speed: 1.4, rootMotion: travel ? 'travel' : 'inPlace' }],
@@ -79,6 +79,8 @@ export async function testAnimations(core, { travel = false, actions = false } =
     ['stand', { seconds: 0.6, sit: 1, sitTo: 0 }, { loops: false, rootMotion: 'inPlace' }],
   ];
   if (actions) defs.push(...ACTION_DEFS);
+  // G10 layers (M2 W8): a wave for the masked `greet` gesture (the right arm raised high, waving)
+  if (layers) defs.push(['greet', { seconds: 1.2, reach: 2.6, gesture: 0.35 }, { loops: false, rootMotion: 'inPlace' }]);
   const clips = new Map(), entries = [], sha = {};
   for (const [name, gen, meta] of defs) {
     const bytes = makeClip(core, name, gen);
@@ -91,8 +93,8 @@ export async function testAnimations(core, { travel = false, actions = false } =
   const doc = {
     format: 'vrmxa-animations', version: 1, clips: entries,
     sets: [
-      { id: 'default', name: 'Default', default: true, priority: 0, requires: [], slots: { idle: slot('idle'), walk: slot('walk'), run: slot('run'), jump: slot('jump'), fall: slot('fall'), land: slot('land'), ...(actions ? Object.fromEntries(ACTION_DEFS.map(([n]) => [n, slot(n)])) : {}) } },
-      { id: 'sword', name: 'With a sword', priority: 1, requires: ['sword'], slots: { idle: slot('idle-sword') } },
+      { id: 'default', name: 'Default', default: true, priority: 0, requires: [], slots: { idle: slot('idle'), walk: slot('walk'), run: slot('run'), jump: slot('jump'), fall: slot('fall'), land: slot('land'), ...(actions ? Object.fromEntries(ACTION_DEFS.map(([n]) => [n, slot(n)])) : {}), ...(layers ? { greet: [{ ...slot('greet')[0], mask: 'arms' }] } : {}) } },
+      { id: 'sword', name: 'With a sword', priority: 1, requires: ['sword'], slots: { idle: slot('idle-sword'), ...(layers ? { hold: [{ ...slot('idle-sword')[0], mask: 'upperBody' }] } : {}) } },
     ],
   };
   return { doc, clips, sha };

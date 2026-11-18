@@ -113,6 +113,30 @@ func tempDir(_ files: [String: String]) throws -> URL {
     }
 }
 
+@Suite @MainActor struct SaveMethodTests {
+    @Test func writeListReadAndRemoveSlots() async throws {
+        let dir = try tempDir([:])
+        let saves = SaveMethods(appName: "Test", env: ["VRMXG_SHELL_SAVES": dir.appendingPathComponent("Saves").path])
+        let router = BridgeRouter(); saves.register(on: router)
+        let w = await router.handle(body: ["method": "saves.write", "params": ["slot": "slot-1", "text": "{\"format\":\"vrmxg-save\"}", "summary": ["step": 720, "name": "After the sword"]]])
+        #expect((w.0 as? [String: Any])?["bytes"] as? Int == 23)
+        _ = await router.handle(body: ["method": "saves.write", "params": ["slot": "slot-2", "text": "{}"]])
+        let l = await router.handle(body: ["method": "saves.list"])
+        let list = (l.0 as? [String: Any])?["saves"] as? [[String: Any]] ?? []
+        #expect(list.map { $0["slot"] as? String } == ["slot-1", "slot-2"])
+        #expect((list.first?["summary"] as? [String: Any])?["step"] as? Int == 720)
+        let r = await router.handle(body: ["method": "saves.read", "params": ["slot": "slot-1"]])
+        #expect((r.0 as? [String: Any])?["text"] as? String == "{\"format\":\"vrmxg-save\"}")
+        _ = await router.handle(body: ["method": "saves.remove", "params": ["slot": "slot-2"]])
+        let after = await router.handle(body: ["method": "saves.list"])
+        #expect(((after.0 as? [String: Any])?["saves"] as? [[String: Any]])?.count == 1)
+        let bad = await router.handle(body: ["method": "saves.write", "params": ["slot": "../evil", "text": "x"]])
+        #expect(bad.1?.contains("a slot is") == true)
+        let missing = await router.handle(body: ["method": "saves.read", "params": ["slot": "nope"]])
+        #expect(missing.1?.contains("no save") == true)
+    }
+}
+
 @Suite struct PostRouterTests {
     @Test func routesByPrefixAndParsesTheQuery() async {
         let r = PostRouter()

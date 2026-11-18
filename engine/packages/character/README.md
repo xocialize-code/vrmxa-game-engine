@@ -22,6 +22,20 @@ tree.find('mira').input.move = [0, 1.4];                         // m/s; .input.
 | `graph.js` | `LocomotionGraph`: a state machine on VRMXA slots (idle ⇄ move, jump → fall → land), a 1D walk/run blend by the clips' authored speeds with a shared phase, crossfades on every change (slot `blendIn`), clip choice by weight from the character's random stream. A stateless driver: it sets every action's time and weight each step; its state is a few numbers |
 | `character.js` | `CharacterNode`: intent (`input` or `goTo`) → gravity, jump and the physics kinematic controller, facing turned towards the movement → graph → pose (`mixer.update(0)`) → travel root motion removed from the hips → `vrm.update(dt)` (look-at, expressions, constraints, springs at the fixed step). Actions: `say`, `goTo`, `emote`, `lookAt`. `getState()` / `setState()`: every node's local transform, springs (the vendored three-vrm's state API), look-at, expressions, graph, controller. `BoneAttachmentNode` rides on a humanoid bone |
 
+## Layers and IK (M2 W8)
+
+**Layers.** These are proposed to VRMXA as G10, "a mask per clip or slot". A slot entry may carry a `mask`: `fullBody` (the default), `upperBody`, `lowerBody`, `arms`, `hands` or `face`, and a masked clip plays over the state's full-body pose on its bones only (`masks.js` lists them by VRM humanoid bone):
+- **hold:** a set's `hold` slot layers over every state except sitting and the full-body actions, fading with them. The sample's sword set holds its idle on the upper body, so with the sword in hand Mira walks and runs with it raised.
+- **gestures:** a masked one-shot (`startAction('greet')` with an `arms` entry) plays over locomotion instead of replacing it, so she waves while walking. `graph.gesturing` is true while it plays.
+
+Masked clips are subclips made when the body is put on, in a fixed order, so the mixer accumulates the same way in every run. A layer's share f of its bones is weighted B·f/(1−f) against the full-body weight B (the mixer averages by weight). Both layers are in the graph's state.
+
+**IK.** `ik.js` is an analytic two-bone solve (law of cosines through the portable `Math.acos`, quaternions from unit vectors). It runs on the normalized bones after the mixer and before `vrm.update`:
+- **feet:** rays down from above each ankle and the root. A foot over lower ground drops the pelvis; each leg then reaches its own ground, smoothed over a few steps. Flat ground runs no IK at all, so poses and hashes stay as they were. `footIK: false` turns it off.
+- **hands:** `reach({ hand, point | target, part?, seconds })` bends the arm to a point, a node or an item's part, fading in and out. The interaction service reaches for an item's `Grip`, `Knob` or `Handle` part (or a verb's `grip`) on interact, so opening the cupboard reaches for its knob.
+
+The feet's offsets and the reach are in the character's controller state, so they are in the snapshot.
+
 ## Rules it follows
 
 - **One VRM per node, never cloned.** `library.prepare(doc)` before `instantiate`; `prepareNode` before a runtime add.

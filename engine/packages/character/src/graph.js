@@ -6,6 +6,14 @@
 //
 // States:  idle ⇄ move (speed > 0.1 m/s) ; idle/move → jump (jumped) → fall (falling, when a fall clip
 //          exists) → land (grounded again, when a land clip exists) → idle/move.
+//
+// Layers (M2 W8; proposed to VRMXA as G10, "a mask per clip or slot"): a slot entry may carry a `mask` (fullBody, the
+// default; upperBody, lowerBody, arms, hands, face), and a masked clip plays over the state's full-body pose on its
+// bones only:
+//   hold     the `hold` slot (an equipped set's pose: the sword held up) layers over every state but sitting and
+//            the full-body actions, fading in and out with them, so Mira walks and runs with the sword raised
+//   gesture  a masked one-shot (`act('greet')` with a masked entry) plays over locomotion instead of replacing it:
+//            a wave while walking; it fades in and out over its blendIn
 
 const MOVING = 0.1; // m/s
 
@@ -15,6 +23,8 @@ const MOVING = 0.1; // m/s
  * held until `stand`.
  */
 export const ACTIONS = new Set(['use', 'take', 'talk', 'sit', 'sitIdle', 'stand']);
+/** States that own the whole body: the hold layer fades out in them. */
+const FULL_BODY = new Set(['use', 'take', 'sit', 'sitIdle', 'stand']);
 
 /**
  * @typedef {{ clip: string, weight?: number, rate?: number, blendIn?: number }} SlotEntry
@@ -41,6 +51,8 @@ export class LocomotionGraph {
     this.speed = 0;
     this.prevSpeed = 0;
     this.picks = {};     // slot → chosen entry (by weight, on entering the state)
+    this.hold = { w: 0, t: 0 }; // the hold layer: its weight and time
+    this.layer = null;   // a masked one-shot playing over the state: { slot, clip, t }
     this.setSlots(slots);
   }
 
@@ -49,20 +61,22 @@ export class LocomotionGraph {
     this.slots = slots;
     this.picks = {};
     this._pick(this.state);
+    if (this.has('hold')) this._pickSlot('hold');
+  }
+
+  _pickSlot(slot) {
+    const list = this.slots[slot]?.clips ?? [];
+    if (!list.length) return null;
+    const total = list.reduce((a, e) => a + (e.weight ?? 1), 0);
+    let x = this.rand() * total, chosen = list[list.length - 1];
+    for (const e of list) { x -= e.weight ?? 1; if (x <= 0) { chosen = e; break; } }
+    this.picks[slot] = chosen;
+    return chosen;
   }
 
   has(slot) { return !!this.slots[slot]?.clips?.length; }
 
-  _pick(state) {
-    for (const slot of slotsOf(state, this)) {
-      const list = this.slots[slot]?.clips ?? [];
-      if (!list.length) continue;
-      const total = list.reduce((a, e) => a + (e.weight ?? 1), 0);
-      let x = this.rand() * total, chosen = list[list.length - 1];
-      for (const e of list) { x -= e.weight ?? 1; if (x <= 0) { chosen = e; break; } }
-      this.picks[slot] = chosen;
-    }
-  }
+  _pick(state) { for (const slot of slotsOf(state, this)) this._pickSlot(slot); }
 
   _go(state, dtSteps = 60) {
     if (state === this.state) return;
@@ -96,13 +110,28 @@ export class LocomotionGraph {
     this.time += dt;
     if (this.state === 'move') this.phase = advancePhase(this, this.phase, speed, dt);
     if (this.fade > 0) this.fade--;
+    // layers: the hold pose follows the state (not while sitting or in a full-body action); a gesture runs out
+    const h = this.picks.hold, holdOn = !!h && this.has('hold') && !FULL_BODY.has(this.state);
+    const rate = dt / Math.max(dt, h?.blendIn ?? 0.25);
+    this.hold.w = holdOn ? Math.min(1, this.hold.w + rate) : Math.max(0, this.hold.w - rate);
+    this.hold.t += dt;
+    if (this.layer) { this.layer.t += dt; if (this.layer.t >= (this.info.get(this.layer.clip)?.duration ?? 1)) this.layer = null; }
   }
 
   /** Start an action state (use, take, talk, sit, stand; sitIdle follows sit). */
   act(state, hz = 60) {
-    if (!ACTIONS.has(state)) throw new Error(`"${state}" isn't an action (${[...ACTIONS].join(', ')})`);
+    // a slot whose entry is masked plays as a layer over whatever the body is doing (a gesture), not as a state
+    const list = this.slots[state]?.clips ?? [];
+    if (list.length && list.every((e) => e.mask && e.mask !== 'fullBody')) {
+      const e = this._pickSlot(state);
+      this.layer = { slot: state, clip: e.clip, t: 0 };
+      return;
+    }
+    if (!ACTIONS.has(state)) throw new Error(`"${state}" isn't an action (${[...ACTIONS].join(', ')}) or a masked slot`);
     this._go(state, hz);
   }
+  /** True while a masked one-shot (a gesture) plays over the body. */
+  get gesturing() { return !!this.layer; }
   /** True while an action plays or the character sits. */
   get busy() { return ACTIONS.has(this.state); }
 
@@ -126,7 +155,15 @@ export class LocomotionGraph {
     const add = (list, k) => { for (const { clip, time, weight } of list) { const o = out.get(clip); if (o) { o.weight += weight * k; o.time = time; } else out.set(clip, { clip, time, weight: weight * k }); } };
     add(this.contributions(this.state, this.time, this.phase, this.speed), this.prev ? f : 1);
     if (this.prev && f < 1) add(this.contributions(this.prev, this.prevTime, this.prevPhase, this.prevSpeed), 1 - f);
-    return [...out.values()];
+    const list = [...out.values()];
+    // masked layers on top: { clip, time, weight (its share on the masked bones), mask }
+    const h = this.picks.hold;
+    if (h && this.hold.w > 0) { const c = this.clipAt(h, this.hold.t); list.push({ ...c, weight: this.hold.w, mask: h.mask ?? 'upperBody' }); }
+    if (this.layer) {
+      const e = this.picks[this.layer.slot], d = this.info.get(this.layer.clip)?.duration ?? 1, bi = Math.max(1e-3, e?.blendIn ?? 0.2), t = this.layer.t;
+      list.push({ clip: this.layer.clip, time: Math.min(t, d), weight: Math.max(0, Math.min(1, t / bi, (d - t) / bi)), mask: e?.mask ?? 'upperBody' });
+    }
+    return list;
   }
 
   contributions(state, t, phase, speed) {
@@ -172,12 +209,14 @@ export class LocomotionGraph {
 
   getState() {
     const { state, prev, fade, fadeTotal, time, prevTime, phase, prevPhase, speed, prevSpeed } = this;
-    return { state, prev, fade, fadeTotal, time, prevTime, phase, prevPhase, speed, prevSpeed, picks: Object.fromEntries(Object.entries(this.picks).map(([k, e]) => [k, e.clip])) };
+    return { state, prev, fade, fadeTotal, time, prevTime, phase, prevPhase, speed, prevSpeed, picks: Object.fromEntries(Object.entries(this.picks).map(([k, e]) => [k, e.clip])), hold: { ...this.hold }, layer: this.layer ? { ...this.layer } : null };
   }
   setState(s) {
     Object.assign(this, { state: s.state, prev: s.prev, fade: s.fade, fadeTotal: s.fadeTotal, time: s.time, prevTime: s.prevTime, phase: s.phase, prevPhase: s.prevPhase, speed: s.speed, prevSpeed: s.prevSpeed });
     this.picks = {};
     for (const [slot, clip] of Object.entries(s.picks)) { const e = (this.slots[slot]?.clips ?? []).find((x) => x.clip === clip); if (e) this.picks[slot] = e; }
+    this.hold = s.hold ? { ...s.hold } : { w: 0, t: 0 };
+    this.layer = s.layer ? { ...s.layer } : null;
   }
 }
 

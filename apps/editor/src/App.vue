@@ -16,7 +16,7 @@ const ui = reactive({
   tree: [], selected: [], inspector: null, assets: [], undo: null, redo: null, dirty: false, valid: true, problems: '',
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
   debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
-  mcp: '', tl: null, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
+  mcp: '', tl: null, gameSlot: 'slot-1', gameNote: '', paused: false, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
   ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '' },
 });
 /** @type {EditorHost} */ let ed = null; // never reactive
@@ -41,7 +41,7 @@ function refresh(kind = 'all') {
   if (assetsOf !== ed.project?.files) { assetsOf = ed.project?.files; ui.assets = ed.assets().map((a) => ({ ...a })); }
   ui.gizmo = ed.gizmoMode; ui.snap = ed.snap; ui.camera = ed.cameraMode;
   if (!s) return;
-  ui.mode = s.mode;
+  ui.mode = s.mode; ui.paused = !!ed.paused;
   ui.tree = plainTree(s.tree());
   ui.selected = [...s.selection];
   ui.inspector = ed.inspect();
@@ -86,6 +86,10 @@ const verify = () => act(() => ed.verifySaved());
 const undo = () => act(() => ed.session.undo());
 const redo = () => act(() => ed.session.redo());
 const play = () => act(() => (ed.session.mode === 'playing' ? ed.stop() : ed.play()));
+// save games while playing (M2 W9)
+const saveGame = () => act(async () => { const r = await ed.saveGame(ui.gameSlot); ui.gameNote = `saved ${r.slot} at step ${r.step} (${(r.bytes / 1024).toFixed(0)} KB) · ${r.hash}`; });
+const loadGame = () => act(async () => { const r = await ed.loadGame(ui.gameSlot); ui.gameNote = `loaded ${r.slot} at step ${r.step} (paused) · ${r.hash}`; });
+const resume = () => act(() => { ed.paused = !ed.paused; });
 const takeSeconds = () => { const t = ui.ex.takes.find((x) => x.id === ui.ex.take); if (t?.seconds) ui.ex.seconds = +t.seconds.toFixed(2); };
 const exportVideo = () => act(() => ed.exportVideo({ take: ui.ex.take, seconds: +ui.ex.seconds, size: ui.ex.size, fps: ui.ex.fps, codec: ui.ex.codec, audio: ui.ex.audio, name: ui.ex.name.trim() }));
 const saveStill = () => act(() => ed.saveStill(ui.ex.size));
@@ -178,6 +182,14 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       <button id="frame" type="button" aria-label="Frame selection" @click="frame">Frame</button>
       <span class="sep" />
       <button id="export-open" type="button" :aria-pressed="ui.ex.open" aria-label="Export" :disabled="ui.mode !== 'editing'" @click="ui.ex.open = !ui.ex.open">Export</button>
+      <template v-if="ui.mode === 'playing'">
+        <div class="seg" role="radiogroup" aria-label="Save slot">
+          <button v-for="g in ['slot-1', 'slot-2', 'slot-3']" :id="`game-${g}`" :key="g" type="button" role="radio" :aria-checked="ui.gameSlot === g" :aria-label="`Save slot ${g.slice(-1)}`" :class="{ on: ui.gameSlot === g }" @click="ui.gameSlot = g">{{ g.slice(-1) }}</button>
+        </div>
+        <button id="save-game" type="button" aria-label="Save game" @click="saveGame">Save Game</button>
+        <button id="pause-game" type="button" :aria-label="ui.paused ? 'Resume' : 'Pause'" @click="resume">{{ ui.paused ? 'Resume' : 'Pause' }}</button>
+      </template>
+      <button id="load-game" type="button" :disabled="ui.loading" aria-label="Load game" title="Load the slot's save into a fresh play of this scene" @click="loadGame">Load Game</button>
       <button id="play" type="button" class="play" :disabled="ui.loading && ui.mode === 'editing'" :aria-label="ui.mode === 'playing' ? 'Stop' : 'Play'" @click="play">{{ ui.mode === 'playing' ? '■ Stop' : '▶ Play' }}</button>
     </header>
 
@@ -252,6 +264,7 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       <button v-if="ui.saved" id="verify" type="button" aria-label="Reopen and compare" @click="verify">Reopen &amp; compare</button>
       <output v-if="ui.verify" id="verify-result" :aria-label="`Reopened ${ui.verify}`">{{ ui.verify }}</output>
       <output v-if="ui.stopped" id="stop-result" :aria-label="`Stopped: ${ui.stopped}`">Stopped: {{ ui.stopped }}</output>
+      <output v-if="ui.gameNote" id="game-note" :aria-label="ui.gameNote">{{ ui.gameNote }}</output>
       <output v-if="ui.mcp" id="mcp-state" :aria-label="ui.mcp">{{ ui.mcp }}</output>
       <output id="frame-time" :aria-label="`Frame time ${ui.frame}`">{{ ui.frame }}</output>
       <output id="build-time" :aria-label="`Build ${ui.build}`">build {{ ui.build }}</output>

@@ -11,6 +11,8 @@
 import { AnimationMixer, Object3D, Vector3 } from 'three';
 import { createVRMAnimationClip, VRMLookAtQuaternionProxy } from '@pixiv/three-vrm-animation';
 import { Node } from '@vrmxg/core';
+import { maskClip, maskedEntries } from './masks.js';
+import { twoBoneIK } from './ik.js';
 import { LocomotionGraph } from './graph.js';
 
 const GRAVITY = -9.81;
@@ -39,7 +41,7 @@ function writeEveryBinding(m) {
 }
 
 export class CharacterNode extends Node {
-  static actions = ['say', 'goTo', 'emote', 'lookAt'];
+  static actions = ['say', 'goTo', 'emote', 'lookAt', 'reach'];
 
   constructor(data, def) {
     super(data, def);
@@ -110,6 +112,16 @@ export class CharacterNode extends Node {
       if (meta.name) this.clipByName.set(meta.name, sha);
     }
     this.clipInfo = info;
+    // masked variants (G10 layers) of the clips the animation sets name with a mask, made now in a fixed order so the
+    // mixer accumulates the same way in every run (an action made later would change the order)
+    /** "sha|mask" → action */ this.maskedActions = new Map();
+    for (const key of maskedEntries(this.animations)) {
+      const [sha, mask] = key.split('|'), full = this.actions.get(sha);
+      if (!full) continue;
+      const action = this.mixer.clipAction(maskClip(full.getClip(), this.vrm, mask));
+      action.play(); action.weight = 0; action.paused = true;
+      this.maskedActions.set(key, action);
+    }
   }
 
   /**
@@ -206,12 +218,24 @@ export class CharacterNode extends Node {
     // 3. animation graph → pose
     this.graph.step(dt, { speed, grounded: c.grounded, verticalSpeed: c.vy, jumped: c.jumped });
     for (const a of this.actions.values()) a.weight = 0;
+    for (const a of this.maskedActions.values()) a.weight = 0;
     // An animation track (@vrmxg/tracks: an AnimationPlayer or a sequence, set before the nodes step) takes over by its
     // weight; the graph keeps stepping underneath, so control returns to it smoothly when the track lets go.
     const track = this.trackAnimation, tw = track ? Math.max(0, Math.min(1, track.weight)) : 0;
     const add = (clip, time, weight) => { const a = this.actions.get(clip); if (!a || weight <= 0) return; if (a.weight > 0) a.weight += weight; else { a.time = time; a.weight = weight; } };
-    if (tw < 1) for (const { clip, time, weight } of this.graph.output()) add(clip, time, weight * (1 - tw));
-    if (tw > 0) for (const c of track.clips) { const r = this.resolveTrackClip(c); if (r) add(r.clip, r.time, c.weight * tw); }
+    const out = tw < 1 ? this.graph.output() : [];
+    let base = 0;
+    for (const { clip, time, weight, mask } of out) if (!mask) { add(clip, time, weight * (1 - tw)); base += weight * (1 - tw); }
+    if (tw > 0) for (const c of track.clips) { const r = this.resolveTrackClip(c); if (r) { add(r.clip, r.time, c.weight * tw); base += c.weight * tw; } }
+    // layers: a masked clip takes share f of its bones. The mixer averages by weight, so against the full-body weight B
+    // on those bones it gets B·f / (1 − f) (f held below 1: at 0.995 the base keeps half a percent)
+    for (const { clip, time, weight, mask } of out) {
+      if (!mask || weight <= 0) continue;
+      const a = this.maskedActions.get(`${clip}|${mask}`);
+      if (!a) continue;
+      const f = Math.min(0.995, weight * (1 - tw)), w = (base || 1) * f / (1 - f);
+      if (a.weight > 0) a.weight += w; else { a.time = time; a.weight = w; }
+    }
     writeEveryBinding(this.mixer);
     this.mixer.update(0);
 
@@ -221,6 +245,9 @@ export class CharacterNode extends Node {
       const rest = this.vrm.humanoid.normalizedRestPose?.hips?.position;
       if (hips && rest) { hips.position.x = rest[0]; hips.position.z = rest[2]; }
     }
+
+    // 4b. IK (M2 W8): feet on uneven ground, a hand reaching for a grip
+    this.solveIK(dt);
 
     // 5. look-at target (a character's head, not its feet; plus the voice service's small glances), within limits:
     //    behind the character (more than ~100° from its facing) the eyes go back to the front. Then the VRM's own update.
@@ -332,6 +359,73 @@ export class CharacterNode extends Node {
     em.setValue(name, 1);
     this.after(1, () => em.setValue(name, 0));
   }
+  /**
+   * Reach a hand to a point, a node, or an item's part (a knob), for `seconds`, fading in and out over `blend`:
+   * two-bone IK on the arm. @param {{ hand?: 'left' | 'right', point?: number[], target?: string, part?: string, seconds?: number, blend?: number }} [o]
+   */
+  reach({ hand = 'right', point, target, part, seconds = 1, blend = 0.25 } = {}) {
+    this.ctrl.reach = { hand, point: point ? [...point] : null, target: target ?? null, part: part ?? null, from: this.tree.clock.step, until: this.tree.clock.step + Math.round(seconds * 60), blend };
+  }
+
+  /** Where a reach points now (a moving knob is followed), or null. */
+  reachPoint(r) {
+    if (r.point) return _v.set(r.point[0], r.point[1], r.point[2]);
+    const n = /** @type {any} */ (this.tree.find(r.target));
+    const o = r.part ? n?.part?.(r.part) : n?.object3d;
+    if (!o) return null;
+    o.updateWorldMatrix(true, false);
+    return _v.setFromMatrixPosition(o.matrixWorld);
+  }
+
+  /**
+   * Feet and hands (two-bone IK on the normalized bones, after the mixer, before vrm.update):
+   *   feet   on the ground under each: rays down from above each ankle and the root; a foot over lower ground drops
+   *          the pelvis by the difference, each leg then reaches its own ground (smoothed over a few steps). Flat
+   *          ground changes nothing (the IK isn't run)
+   *   hands  a reach (reach(), or an item's grip on interact) bends the arm to the point, weighted in and out
+   */
+  solveIK(dt) {
+    const c = this.ctrl, h = this.vrm.humanoid, physics = this.physics;
+    if (!h) return;
+    const k = Math.min(1, dt * 12);
+    // feet
+    let want = [0, 0];
+    if (this.props.footIK !== false && physics && c.grounded && !c.seat && !this.graph.busy) {
+      const p = this.object3d.position, ground = (x, z) => physics.world.raycast([x, p.y + 0.6, z], [0, -1, 0], 1.2, { excludeBody: this.body })?.point[1] ?? null;
+      const g0 = ground(p.x, p.z);
+      if (g0 !== null) want = ['left', 'right'].map((s) => {
+        const f = h.getNormalizedBoneNode(`${s}Foot`);
+        if (!f) return 0;
+        f.updateWorldMatrix(true, false);
+        const e = f.matrixWorld.elements, g = ground(e[12], e[14]);
+        const d = g === null ? 0 : Math.max(-0.4, Math.min(0.4, g - g0));
+        return Math.abs(d) < 0.005 ? 0 : d;
+      });
+    }
+    const feet = c.feet ?? [0, 0];
+    c.feet = [feet[0] + (want[0] - feet[0]) * k, feet[1] + (want[1] - feet[1]) * k].map((v) => (Math.abs(v) < 1e-4 ? 0 : v));
+    if (c.feet[0] || c.feet[1]) {
+      const drop = Math.min(0, c.feet[0], c.feet[1]), hips = h.getNormalizedBoneNode('hips');
+      const targets = ['left', 'right'].map((s, i) => { const f = h.getNormalizedBoneNode(`${s}Foot`); f.updateWorldMatrix(true, false); return new Vector3().setFromMatrixPosition(f.matrixWorld).add(new Vector3(0, c.feet[i], 0)); });
+      if (hips && drop) { hips.position.y += drop / (hips.parent?.getWorldScale(new Vector3()).y || 1); hips.updateWorldMatrix(false, true); }
+      ['left', 'right'].forEach((s, i) => {
+        const up = h.getNormalizedBoneNode(`${s}UpperLeg`), lo = h.getNormalizedBoneNode(`${s}LowerLeg`), ft = h.getNormalizedBoneNode(`${s}Foot`);
+        if (up && lo && ft) twoBoneIK(up, lo, ft, targets[i], { pole: this.object3d.localToWorld(new Vector3(0, 0.5, 2)) });
+      });
+    }
+    // a hand
+    const r = c.reach, step = this.tree.clock.step;
+    if (r) {
+      if (step >= r.until) delete c.reach;
+      else {
+        const t = this.reachPoint(r), bs = Math.max(1, r.blend * 60);
+        const w = Math.max(0, Math.min(1, (step - r.from) / bs, (r.until - step) / bs));
+        const up = h.getNormalizedBoneNode(`${r.hand}UpperArm`), lo = h.getNormalizedBoneNode(`${r.hand}LowerArm`), hd = h.getNormalizedBoneNode(`${r.hand}Hand`);
+        if (t && up && lo && hd) twoBoneIK(up, lo, hd, t.clone(), { weight: w, pole: this.object3d.localToWorld(new Vector3(r.hand === 'right' ? -1 : 1, -0.5, -1)) });
+      }
+    }
+  }
+
   /** Look at a node; omit target to stop. @param {{ target?: string }} [args] */
   lookAt({ target } = {}) { this.ctrl.look = target ?? null; if (!target) delete this.ctrl.lookOffset; }
 

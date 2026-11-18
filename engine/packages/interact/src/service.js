@@ -126,6 +126,9 @@ export class InteractService {
     } else {
       result = item.perform({ verb: v.verb, by: actor.id });
       if (slot && ['use', 'take', 'talk'].includes(slot)) actor.startAction(slot);
+      // the hand goes to the item's grip (M2 W8): the verb's `grip` part, else a Grip, Knob or Handle part
+      const grip = v.grip ?? ['Grip', 'Knob', 'Handle', 'handle'].find((n) => item.part(n));
+      if (grip && item.part(grip) && actor.reach) actor.reach({ hand: 'right', target: item.id, part: grip, seconds: Math.max(0.6, actor.graph?.durationOf?.(slot ?? 'use') ?? 0.8) });
     }
     actor.emit('interacted', { item: item.id, verb: v.verb });
     this.setFocus(actor, null);

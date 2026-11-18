@@ -144,7 +144,7 @@ if (fs.existsSync(studio)) {
   write('characters/mira.vrmxa', fs.readFileSync(path.join(studio, 'fixtures/characters/full.vrmxa')));
   write('characters/hana.vrmxa', fs.readFileSync(path.join(studio, 'fixtures/characters/minimal.vrmxa')));
   const { vrmxaCore, testAnimations } = await import(path.join(root, '../../engine/packages/character/test/fixtures.mjs'));
-  const a = await testAnimations(await vrmxaCore(), { travel: true, actions: true }); // walk and run carry root motion (M0 check 2); use / equip / talk / sit / sitIdle / stand for items (M1 W3)
+  const a = await testAnimations(await vrmxaCore(), { travel: true, actions: true, layers: true }); // walk and run carry root motion (M0 check 2); use / equip / talk / sit / sitIdle / stand for items (M1 W3); the sword's hold and a greet wave as masked layers (M2 W8, G10)
   const byName = new Map(a.doc.clips.map((c) => [c.sha256, c.name]));
   for (const [sha, bytes] of a.clips) write(`animations/clips/${byName.get(sha)}.vrma`, bytes);
   // The sword set follows a sword in hand (VRMXA §8.3, a state's tags): Mira's own sword is stowed, so her idle

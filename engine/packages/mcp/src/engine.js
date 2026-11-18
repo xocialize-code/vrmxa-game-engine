@@ -19,6 +19,7 @@ import { installSequence, composeSequence, isSequence } from '@vrmxg/sequence';
 import { installParticles } from '@vrmxg/particles';
 import { installNav } from '@vrmxg/nav';
 import { installAi } from '@vrmxg/ai';
+import { installSave } from '@vrmxg/save';
 import { parse } from '@vrmxg/scene';
 import { LiveView } from './live.js';
 
@@ -52,6 +53,7 @@ export class EngineSession extends LiveView {
     installNav(tree);
     installInteraction(tree);
     installAi(tree);
+    installSave(tree, { scene: { ref: doc.id ?? 'scene', doc } });
     const closetModule = vrmxaCore ? await p.vrmxaCloset() : null;
     const closet = closetModule ? installCloset(tree, { vrmxaCore, closet: closetModule, stubTextures: true }) : null;
     await closet?.prepare(doc);

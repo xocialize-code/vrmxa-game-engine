@@ -10,9 +10,11 @@ import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
 import { captureStill } from '@vrmxg/export';
 import { loadSample, buildWorld } from './world.js';
 import { serialize } from '@vrmxg/scene';
-import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, runBrains, STEPS } from './acceptance.js';
+import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, runBrains, runSave, STEPS } from './acceptance.js';
 import { AudioOutput } from '@vrmxg/audio';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
+import { ShellStore, IndexedDBStore } from '@vrmxg/save';
+import { inShell, call } from '../../shell/js/shell.js';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
@@ -90,10 +92,11 @@ export class Playground {
     const sequence = await runSequence(R, sample, opts, { now });
     const particles = await runParticles(R, sample, opts, { now });
     const brains = await runBrains(R, sample, opts, { now });
+    const save = await runSave(R, sample, opts, { now });
     const audio = await runAudio(R, sample, opts, { silentFinal: items.final, take: 'input/play-items.json', steps: items.steps });
     const rendered = await this._renderedChecks(simulation);
     rendered.post = await this._postChecks();
-    return { simulation, devices, items, cinematic, sequence, particles, brains, audio, rendered };
+    return { simulation, devices, items, cinematic, sequence, particles, brains, save, audio, rendered };
   }
 
   async _renderedChecks(simulation) {
@@ -196,6 +199,32 @@ export class Playground {
   }
 
   setTimeScale(s) { if (this.tree) this.tree.clock.timeScale = s; }
+
+  // ---------------------------------------------------------------- save slots (M2 W9)
+
+  /** Where saves go: the Mac shell's saves folder, or IndexedDB in a browser. */
+  store() { return (this._store ??= inShell ? new ShellStore(call) : new IndexedDBStore('vrmxg-playground')); }
+  async slots() { return this.store().list(); }
+  /** Save the world now into a slot. → the slot's entry */
+  async saveSlot(slot) {
+    const svc = this.tree.services.get('save');
+    const doc = svc.save({ name: `${this.scene} at ${(this.tree.clock.step / 60).toFixed(1)} s`, savedAt: new Date().toISOString() });
+    const r = await this.store().write(slot, doc);
+    this.lastSave = { slot, step: this.tree.clock.step, bytes: r.bytes, hash: hashValue(worldHashes(this.tree, { physicsBytes: true })) };
+    this._changed();
+    return this.lastSave;
+  }
+  /** Load a slot: a fresh world of its scene, the save restored into it, paused on the saved step. */
+  async loadSlot(slot) {
+    const doc = await this.store().read(slot);
+    await this.load(doc.summary?.scene ?? this.scene);
+    const step = await this.tree.services.get('save').load(doc);
+    this.host.render(1);
+    this.stats.step = step;
+    this.lastLoad = { slot, step, hash: hashValue(worldHashes(this.tree, { physicsBytes: true })) };
+    this._changed();
+    return this.lastLoad;
+  }
 
   /** Replay a recorded input file from now on (a path under the site root). */
   async replay(path = 'input/walk-in.json') {

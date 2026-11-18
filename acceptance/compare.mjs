@@ -144,6 +144,18 @@ const items = (r) => r?.result?.items ?? r?.items;
   check(14, 'Navigation and NPC brains: Hana serves Mira on the navmesh, identical everywhere; snapshot mid-order', ok,
     ref ? `${ref.steps} steps × ${ref.components} components, final ${ref.final}; navmesh ${ref.nav.polys} polys in ${ref.nav.tiles} tiles (${ref.nav.bakeMs} ms), blocked: ${ref.nav.blocked.join(', ')}; ${ref.events.join(' · ')}; Mira ${ref.left ? 'left' : 'DID NOT LEAVE'}; step ${ref.stepMs} ms (node); snapshot @${ref.snapshot.at} ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? `identical (step ${r.x.stepMs} ms)` : 'DIFFERS'}`).join('; ')}` : 'no node result');
 }
+// 15 (M2 W9). Save games: the take with items saved at step 720 into a store (IndexedDB in the browsers) and read back is
+// the same file everywhere; loaded into a fresh world it plays to the end with the same per-step hashes everywhere, and
+// those are the hashes of the run that never stopped (check 8's).
+{
+  const sv = (r) => r?.result?.save ?? r?.save, ref = sv(node), items = node?.items;
+  const tail = items ? unpackRun(items.run).filter((x) => x.step > (ref?.savedAt ?? 0)) : [];
+  const sameAsUnbroken = !!ref && compareRuns(tail, unpackRun(ref.run));
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = sv(r); const d = x && ref ? compareRuns(unpackRun(ref.run), unpackRun(x.run)) : { step: -1, component: 'no result' }; return { k, d, x, ok: !!x && !d && x.file === ref?.file }; });
+  const ok = !!ref && sameAsUnbroken === null && rows.every((r) => r.ok);
+  check(15, 'Save games: saved at 720, loaded into a fresh world, the same per-step hashes to the end everywhere as the unbroken run', ok,
+    ref ? `save file ${(ref.bytes / 1024).toFixed(0)} KB (${ref.file}), saved in ${ref.saveMs} ms, loaded in ${ref.loadMs} ms (node); ${ref.steps - ref.savedAt} steps after the load, final ${ref.final}; ${sameAsUnbroken === null ? 'identical to the unbroken run (check 8)' : `DIFFERS from the unbroken run at ${sameAsUnbroken.step} in ${sameAsUnbroken.component}`}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? `identical, same file via ${r.x.store} (load ${r.x.loadMs} ms)` : `DIFFERS (file ${r.x?.file})`}`).join('; ')}` : 'no node result');
+}
 checks.sort((a, b) => a.n - b.n);
 fs.writeFileSync(res('summary.json'), JSON.stringify({ checks, runtimes: { node: node?.version, chromium: chromium?.version, wkwebview: scheme?.ua } }, null, 1) + '\n');
 process.exit(checks.every((c) => c.ok) ? 0 : 1);

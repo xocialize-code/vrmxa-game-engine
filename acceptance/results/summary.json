@@ -4,7 +4,7 @@
    "n": 1,
    "title": "The cafe runs in the playground in WKWebView (scheme, loopback) and Chromium",
    "ok": true,
-   "evidence": "chromium: 600 frames, render 0.631 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 0.518 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 0.489 ms, door opened at step 113, 6 presets, 0 errors"
+   "evidence": "chromium: 600 frames, render 0.548 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 1.238 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 1.271 ms, door opened at step 113, 6 presets, 0 errors"
   },
   {
    "n": 2,
@@ -16,7 +16,7 @@
    "n": 3,
    "title": "A 10 s recorded run hashes identically at every step everywhere; a snapshot at 300 re-simulates to 600 identically",
    "ok": true,
-   "evidence": "600 steps × 64 components; final c7e33a8b5601c6b3; chromium: identical, snapshot identical, rendered = headless true; wkwebview-scheme: identical, snapshot identical, rendered = headless true; wkwebview-loopback: identical, snapshot identical, rendered = headless true"
+   "evidence": "600 steps × 65 components; final a4a44f7f693a038e; chromium: identical, snapshot identical, rendered = headless true; wkwebview-scheme: identical, snapshot identical, rendered = headless true; wkwebview-loopback: identical, snapshot identical, rendered = headless true"
   },
   {
    "n": 4,
@@ -34,19 +34,19 @@
    "n": 6,
    "title": "Debug draw shows colliders, sensors, rays and the character capsules",
    "ok": true,
-   "evidence": "62 colliders + 14 sensors (cupboard#Reach, door-1#Reach, entrance-left#Reach, entrance-right#Reach, light-switch#Reach, stool-1#Reach, stool-2#Reach, stool-3#Reach, stool-4#Reach, stool-5#Reach, stool-6#Reach, stool-7#Reach, stool-8#Reach, sword#Reach) + 2 capsules (hana-1, mira) = 78 of 78; 2 rays (the spring arm's, the interaction focus's); the same in chromium, wkwebview-scheme, wkwebview-loopback"
+   "evidence": "62 colliders + 14 sensors (cupboard#Reach, door-1#Reach, entrance-left#Reach, entrance-right#Reach, light-switch#Reach, stool-1#Reach, stool-2#Reach, stool-3#Reach, stool-4#Reach, stool-5#Reach, stool-6#Reach, stool-7#Reach, stool-8#Reach, sword#Reach) + 2 capsules (hana-1, mira) = 78 of 78; 8 rays (the spring arm's, the interaction focus's); the same in chromium, wkwebview-scheme, wkwebview-loopback"
   },
   {
    "n": 7,
    "title": "Audio: the run with sound hashes as without; the offline mix renders identically twice",
    "ok": true,
-   "evidence": "chromium: final 1a092839f5efdcd5 = silent, mix 27.8 s 97cb1089/97cb1089 same, peak 0.7287; wkwebview-scheme: final 1a092839f5efdcd5 = silent, mix 27.8 s 1342d9e7/1342d9e7 same, peak 0.7288; wkwebview-loopback: final 1a092839f5efdcd5 = silent, mix 27.8 s 1342d9e7/1342d9e7 same, peak 0.7288; heard: node:ambience, node:entrance-close-sound, node:entrance-open-sound, node:music, node:switch-sound, voice:hana-1"
+   "evidence": "chromium: final 0a485d262da51646 = silent, mix 27.8 s 97cb1089/97cb1089 same, peak 0.7287; wkwebview-scheme: final 0a485d262da51646 = silent, mix 27.8 s 1342d9e7/1342d9e7 same, peak 0.7288; wkwebview-loopback: final 0a485d262da51646 = silent, mix 27.8 s 1342d9e7/1342d9e7 same, peak 0.7288; heard: node:ambience, node:entrance-close-sound, node:entrance-open-sound, node:music, node:switch-sound, voice:hana-1"
   },
   {
    "n": 8,
    "title": "The take with items: sword into the closet, cupboard, stool, switch; identical everywhere, snapshot across the equip",
    "ok": true,
-   "evidence": "1668 steps × 64 components, final 1a092839f5efdcd5; prompts Take sword @523, Sit stool-7 @615, Open cupboard @750, Switch off light-switch @1522; states idle/move/sit/sitIdle/stand/take/use; sword taken @548, worn held+stowed, held:sword, idle set \"sword\"; seated @906; cupboard open, switch off; snapshot @720 (after the equip) identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
+   "evidence": "1668 steps × 65 components, final 0a485d262da51646; prompts Take sword @523, Sit stool-7 @615, Open cupboard @750, Switch off light-switch @1522; states idle/move/sit/sitIdle/stand/take/use; sword taken @548, worn held+stowed, held:sword, idle set \"sword\"; seated @906; cupboard open, switch off; snapshot @720 (after the equip) identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
   },
   {
    "n": 9,
@@ -58,31 +58,37 @@
    "n": 10,
    "title": "Tracks and cinematic cameras: AnimationPlayer + CameraBrain blends identical everywhere, snapshot mid-blend",
    "ok": true,
-   "evidence": "300 steps × 78 components (the brain's camera included), final d1bf35da9483b192; door opened @31 (event key), light 18, Hana's talk clip up to 1; camera changes 0:null>orbit, 160:orbit>dolly; snapshot @180 (mid-blend) identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
+   "evidence": "300 steps × 79 components (the brain's camera included), final 6bc137ea1a478de0; door opened @31 (event key), light 18, Hana's talk clip up to 1; camera changes 0:null>orbit, 160:orbit>dolly; snapshot @180 (mid-blend) identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
   },
   {
    "n": 11,
    "title": "Post: the anime stack renders everywhere; 4K matches 1080p (SSIM ≥ 0.98 without grain); costs and four viewports measured",
    "ok": true,
-   "evidence": "chromium: SSIM 0.9861 (grain 0.9507), anime 1.9 / 1.6 ms vs none 0.5 / 0.6 ms (1080p / 4K), 4 views 1.5 ms; wkwebview-scheme: SSIM 0.9861 (grain 0.9507), anime 2 / 3 ms vs none 0 / 0 ms (1080p / 4K), 4 views 1 ms; wkwebview-loopback: SSIM 0.9861 (grain 0.9507), anime 1.48 / 3.22 ms vs none 0.26 / 0.26 ms (1080p / 4K), 4 views 0.9 ms; passes RenderPass → NormalPass → EffectPass(EdgeEffect) → EffectPass(DepthOfFieldEffect) → EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect) → EffectPass(ChromaticAberrationEffect)"
+   "evidence": "chromium: SSIM 0.9861 (grain 0.9507), anime 1.5 / 1.4 ms vs none 0.4 / 0.5 ms (1080p / 4K), 4 views 1.4 ms; wkwebview-scheme: SSIM 0.9861 (grain 0.9507), anime 2 / 3 ms vs none 0 / 2 ms (1080p / 4K), 4 views 1 ms; wkwebview-loopback: SSIM 0.9861 (grain 0.9507), anime 1.24 / 2.68 ms vs none 0.34 / 1.9 ms (1080p / 4K), 4 views 0.9 ms; passes RenderPass → NormalPass → EffectPass(EdgeEffect) → EffectPass(DepthOfFieldEffect) → EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect) → EffectPass(ChromaticAberrationEffect)"
   },
   {
    "n": 12,
    "title": "Sequences: the morning sequence identical everywhere; scrubbing lands on the straight play's world",
    "ok": true,
-   "evidence": "721 steps × 77 components, final 95d820d8ae4d0ead; cameras 0:vc-wide, 299:vc-hana, 479:vc-ots, 629:vc-two; shots 0:s1, 299:s2, 479:s3, 629:s4; Hana's line @314; counter light 30 in s2, 18 after; Mira at -0.789, 0.025, 1.477; scrub 287 (stepped +717, 217.8 ms), 40 (from 0 +100, 51.5 ms), 130 (from 240 +85, 49.5 ms), 200 (from 480 +20, 25.3 ms), 129 (from 240 +82, 39.1 ms), 250 (from 600 +25, 26.5 ms); chromium: identical, scrub exact (167.5/40.2/35.5/20.6/33/21.7 ms); wkwebview-scheme: identical, scrub exact (128/35/29/19/28/18 ms); wkwebview-loopback: identical, scrub exact (127.7/35.1/29.5/18.5/28.5/18.9 ms)"
+   "evidence": "721 steps × 78 components, final 2bd468f8923005c7; cameras 0:vc-wide, 299:vc-hana, 479:vc-ots, 629:vc-two; shots 0:s1, 299:s2, 479:s3, 629:s4; Hana's line @314; counter light 30 in s2, 18 after; Mira at -0.789, 0.025, 1.477; scrub 287 (stepped +717, 207 ms), 40 (from 0 +100, 47.7 ms), 130 (from 240 +85, 40.3 ms), 200 (from 480 +20, 23.1 ms), 129 (from 240 +82, 37.3 ms), 250 (from 600 +25, 23.1 ms); chromium: identical, scrub exact (165.6/40.4/34.1/19.4/32.1/19.8 ms); wkwebview-scheme: identical, scrub exact (126/32/28/17/26/18 ms); wkwebview-loopback: identical, scrub exact (124.1/32.8/27.8/17.8/26.5/17.4 ms)"
   },
   {
    "n": 13,
    "title": "Particles: steam, dust and sparks identical everywhere at every step; snapshot mid-effect",
    "ok": true,
-   "evidence": "360 steps × 149 components, final 4332dc0527c06b4d; 43 emitters, up to 1207 particles, 3 batches; live at the end: steam 28, dust 9, sparks 0; particle step 0.308 ms (node); snapshot @180 identical; chromium: identical (step 0.258 ms); wkwebview-scheme: identical (step 0.194 ms); wkwebview-loopback: identical (step 0.189 ms)"
+   "evidence": "360 steps × 150 components, final 976e7033e22ad048; 43 emitters, up to 1207 particles, 3 batches; live at the end: steam 28, dust 9, sparks 0; particle step 0.22 ms (node); snapshot @180 identical; chromium: identical (step 0.2 ms); wkwebview-scheme: identical (step 0.172 ms); wkwebview-loopback: identical (step 0.153 ms)"
   },
   {
    "n": 14,
    "title": "Navigation and NPC brains: Hana serves Mira on the navmesh, identical everywhere; snapshot mid-order",
    "ok": true,
-   "evidence": "3400 steps × 63 components, final 352c5fe7d9e0e1af; navmesh 110 polys in 18 tiles (16.1 ms), blocked: item:door-1; 368:mira:sits stool-2 · 453:hana-1:Welcome in! · 834:hana-1:Hi! What can I get you? · 835:mira:A latte, please. · 963:hana-1:Coming right up! · 2014:hana-1:Here you go. Enjoy! · 2488:mira:stands; Mira left; step 0.222 ms (node); snapshot @1200 identical; chromium: identical (step 0.188 ms); wkwebview-scheme: identical (step 0.14 ms); wkwebview-loopback: identical (step 0.144 ms)"
+   "evidence": "3400 steps × 64 components, final eb7f37fb3f467380; navmesh 110 polys in 18 tiles (23.7 ms), blocked: item:door-1; 368:mira:sits stool-2 · 453:hana-1:Welcome in! · 834:hana-1:Hi! What can I get you? · 835:mira:A latte, please. · 963:hana-1:Coming right up! · 2014:hana-1:Here you go. Enjoy! · 2488:mira:stands; Mira left; step 0.208 ms (node); snapshot @1200 identical; chromium: identical (step 0.176 ms); wkwebview-scheme: identical (step 0.137 ms); wkwebview-loopback: identical (step 0.138 ms)"
+  },
+  {
+   "n": 15,
+   "title": "Save games: saved at 720, loaded into a fresh world, the same per-step hashes to the end everywhere as the unbroken run",
+   "ok": true,
+   "evidence": "save file 235 KB (82350ebafdf00816), saved in 3.1 ms, loaded in 19.4 ms (node); 948 steps after the load, final 0a485d262da51646; identical to the unbroken run (check 8); chromium: identical, same file via IndexedDB (load 16.5 ms); wkwebview-scheme: identical, same file via IndexedDB (load 17 ms); wkwebview-loopback: identical, same file via IndexedDB (load 16.6 ms)"
   }
  ],
  "runtimes": {

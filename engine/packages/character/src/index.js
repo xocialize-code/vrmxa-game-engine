@@ -23,3 +23,4 @@ export function installCharacters(tree, opts) {
   tree.classes.set('BoneAttachment', BoneAttachmentNode);
   return tree.addService('characters', new CharacterLibrary({ prefabs: tree.prefabs, ...opts }));
 }
+export { MASKS, maskClip, maskNodes, maskedEntries } from './masks.js';

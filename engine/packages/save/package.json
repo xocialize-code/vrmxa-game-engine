@@ -1,0 +1,25 @@
+{
+  "name": "@vrmxg/save",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG save games (M2 W9): the save service (the world snapshot with inventories, closet, flags and NPC brains), versioned save files naming what they need to replay (snapshot format, Rapier build, the portable maths, the scene), and stores: the Mac shell's saves folder, IndexedDB in a browser, memory, and files in Node.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./node": "./src/node-store.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  },
+  "devDependencies": {
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/registry": "0.1.0"
+  }
+}

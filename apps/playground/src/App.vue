@@ -6,7 +6,7 @@ import { Playground, PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [] });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '' });
 const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
 let pg = null; // never reactive
 
@@ -32,7 +32,7 @@ const mode = new URLSearchParams(location.search).get('mode');
 onMounted(async () => {
   pg = new Playground(canvas.value, { preserveDrawingBuffer: mode === 'acceptance' });
   pg.onChange = refresh; window.__playground = pg;
-  if (mode !== 'acceptance') { await load(); return; }
+  if (mode !== 'acceptance') { await load(); await listSaves(); return; }
   // M0's exit checks (acceptance/README.md): results for the runners in window.__result, then READY.
   try {
     const r = await pg.acceptance();
@@ -74,6 +74,11 @@ const setPreset = () => pg.setPreset(ui.preset);
 const setDebug = () => pg.setDebug({ ...ui.debug });
 const setInterp = () => pg.setInterpolation(ui.interpolate);
 const setBus = (name, opts) => pg.setBus(name, opts);
+// save slots (M2 W9): the shell's saves folder in the Mac app, IndexedDB in a browser
+const listSaves = async () => { try { ui.saves = await pg.slots(); } catch (e) { ui.error = String(e?.message ?? e); } };
+const saveSlot = async () => { try { const r = await pg.saveSlot(ui.slot); ui.saveNote = `saved ${r.slot} at step ${r.step} (${(r.bytes / 1024).toFixed(0)} KB) · ${r.hash}`; await listSaves(); } catch (e) { ui.error = String(e?.message ?? e); } };
+const loadSlot = async () => { ui.loading = true; try { const r = await pg.loadSlot(ui.slot); ui.saveNote = `loaded ${r.slot} at step ${r.step} · ${r.hash}`; } catch (e) { ui.error = String(e?.message ?? e); } ui.loading = false; refresh(); };
+const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return e ? `${s}: ${e.seconds ?? '?'} s` : `${s}: empty`; };
 </script>
 
 <template>
@@ -89,6 +94,13 @@ const setBus = (name, opts) => pg.setBus(name, opts);
       <button id="replay" type="button" :disabled="ui.loading" aria-label="Replay demo walk" @click="replay">Replay demo walk</button>
       <button v-if="ui.shell" id="open-scene" type="button" :disabled="ui.loading" aria-label="Open scene" @click="openScene">Open…</button>
       <button v-if="ui.shell" id="save-scene" type="button" :disabled="ui.loading" aria-label="Save scene as" @click="saveScene">Save as…</button>
+      <fieldset class="saves" aria-label="Save slots">
+        <div class="seg" role="radiogroup" aria-label="Slot">
+          <button v-for="s in ['slot-1', 'slot-2', 'slot-3']" :id="`slot-${s.slice(-1)}`" :key="s" type="button" role="radio" :aria-checked="ui.slot === s" :aria-label="slotLabel(s)" :title="slotLabel(s)" :class="{ on: ui.slot === s }" @click="ui.slot = s; listSaves()">{{ s.slice(-1) }}</button>
+        </div>
+        <button id="save-game" type="button" :disabled="ui.loading" aria-label="Save game" @click="saveSlot">Save</button>
+        <button id="load-game" type="button" :disabled="ui.loading || !ui.saves.some((x) => x.slot === ui.slot)" aria-label="Load game" @click="loadSlot">Load</button>
+      </fieldset>
       <label class="field">Time scale
         <select v-model="ui.timeScale" aria-label="Time scale" @change="setScale"><option :value="0.25">0.25×</option><option :value="0.5">0.5×</option><option :value="1">1×</option><option :value="2">2×</option></select>
       </label>
@@ -116,6 +128,7 @@ const setBus = (name, opts) => pg.setBus(name, opts);
         <label><input type="checkbox" v-model="ui.interpolate" aria-label="Interpolate" @change="setInterp"> Interpolate</label>
       </fieldset>
       <!-- Each readout's accessible name carries its value ("Frame time 16.7 ms · 60 fps"), so AppProbe reads it in one find. -->
+      <output v-if="ui.saveNote" id="save-note" :aria-label="ui.saveNote">{{ ui.saveNote }}</output>
       <dl class="readout">
         <div><dt id="frame-time-label">Frame time</dt><dd><output id="frame-time" :aria-label="`Frame time ${ui.frame}`">{{ ui.frame }}</output></dd></div>
         <div><dt id="sim-time-label">Simulation</dt><dd><output id="sim-time" :aria-label="`Simulation ${ui.sim}`">{{ ui.sim }}</output></dd></div>
@@ -166,4 +179,7 @@ canvas { display: block; width: 100%; height: 100%; outline: none; }
 .captions span { opacity: 0.55; } .captions span.said, .captions span.now { opacity: 1; } .captions span.now { color: #ffd76a; }
 .prompt { position: absolute; left: 50%; bottom: 18%; transform: translateX(-50%); margin: 0; padding: 6px 12px; border-radius: 8px; background: color-mix(in srgb, var(--panel) 88%, transparent); font-size: 15px; pointer-events: none; }
 .prompt kbd { display: inline-block; min-width: 1.4em; padding: 1px 6px; margin-right: 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; background: var(--bg); font: 600 13px/1.4 -apple-system, system-ui, sans-serif; text-align: center; }
+.saves { display: flex; align-items: center; gap: 4px; border: 0; margin: 0; padding: 0; }
+.seg { display: inline-flex; } .seg button { border-radius: 0; margin-left: -1px; min-width: 26px; } .seg button:first-child { border-radius: 6px 0 0 6px; } .seg button:last-child { border-radius: 0 6px 6px 0; }
+.seg button.on { background: #2f6fde; color: #fff; border-color: #2f6fde; }
 </style>

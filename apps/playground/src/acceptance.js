@@ -22,6 +22,9 @@
 //   runBrains      (M2 W6 + W7) Hana on the server preset and Mira on the customer preset, both on the navmesh: Mira
 //                  comes in, sits, orders; Hana greets, takes the order, makes it, serves it; Mira leaves. A hash of every
 //                  component after every step (brains, crowd and memory included) and a snapshot mid-order re-simulated.
+//   runSave        (M2 W9) the take with items saved at step 720 (after the equip) into a save file, written to a store
+//                  (IndexedDB in a browser, memory in Node) and read back, loaded into a fresh world, and replayed to the
+//                  end: the file's bytes and every step after the load hash the same everywhere.
 //   runItems       (M1 W10) the recorded take with items (content/sample/input/play-items.json): Mira walks in, takes the
 //                  sword into her closet, opens the cupboard, sits on a stool, gets up and switches the counter lights
 //                  off; Hana greets her on the way. A hash of every component after every step, a snapshot after the
@@ -31,6 +34,7 @@ import { VirtualDevice } from '@vrmxg/input';
 import { captureWorld, restoreWorld, worldHashes, compareRuns, hashValue, packRun } from '@vrmxg/snapshot';
 import { buildWorld, loadSample } from './world.js';
 import { SequencePlayer, subtitles } from '@vrmxg/sequence';
+import { MemoryStore, IndexedDBStore } from '@vrmxg/save';
 import { AudioOutput, mixOffline, hashSamples } from '@vrmxg/audio';
 
 export const STEPS = 600, SNAPSHOT_AT = 300, ITEMS_SNAPSHOT_AT = 720; // a step whose hash includes Rapier's bytes (every 60th), after the equip
@@ -361,5 +365,34 @@ export async function runBrains(R, sample, opts, { now = () => 0 } = {}) {
     snapshot: { at: SNAP_B, rerunMatches: restored === null, divergence: restored },
     events, left: !!mira.behaviours[0].bb.left, nav: { polys: A.nav.stats.polys, tiles: A.nav.stats.tiles, bakeMs: +A.nav.stats.bakeMs.toFixed(1), blocked: Object.keys(A.nav.st.blocked) },
     stepMs: +(ms / STEPS_B).toFixed(3),
+  };
+}
+
+/** Save games, M2 W9 (see the top). @param {any} R @param {any} sample @param {any} opts */
+export async function runSave(R, sample, opts, { now = () => 0 } = {}) {
+  const SAVE_AT = ITEMS_SNAPSHOT_AT;
+  const rec = JSON.parse(text(await sample.bytes('input/play-items.json')));
+  const steps = rec.frames.length;
+  const A = await buildWorld(R, sample, opts);
+  A.input.replay(structuredClone(rec));
+  while (A.tree.clock.step < SAVE_AT) while (!A.tree.step()) await A.tree.settle();
+  const t0 = now();
+  const doc = A.save.save({ name: 'acceptance', savedAt: null });
+  const saveMs = now() - t0;
+  const store = typeof indexedDB !== 'undefined' ? new IndexedDBStore('vrmxg-acceptance') : new MemoryStore();
+  await store.write('acceptance', doc);
+  const back = await store.read('acceptance');
+  const fileText = JSON.stringify(back);
+  const B = await buildWorld(R, sample, opts);
+  const t1 = now();
+  await B.save.load(back);
+  const loadMs = now() - t1;
+  B.input.replay(structuredClone(rec));
+  const run = [];
+  for (let k = SAVE_AT + 1; k <= steps; k++) { while (!B.tree.step()) await B.tree.settle(); run.push({ step: k, h: worldHashes(B.tree, { physicsBytes: k % 60 === 0 }) }); }
+  await store.remove('acceptance');
+  return {
+    savedAt: SAVE_AT, steps, store: store instanceof MemoryStore ? 'memory' : 'IndexedDB', bytes: fileText.length, file: hashValue(fileText), run: packRun(run), final: hashValue(run.at(-1).h),
+    saveMs: +saveMs.toFixed(1), loadMs: +loadMs.toFixed(1), requires: back.requires,
   };
 }

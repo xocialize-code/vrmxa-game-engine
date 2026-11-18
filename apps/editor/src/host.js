@@ -12,6 +12,7 @@ import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
 import { RenderHost } from '@vrmxg/render';
 import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
 import { composeSequence, isSequence, SequencePlayer } from '@vrmxg/sequence';
+import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { parse, describeType } from '@vrmxg/scene';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
@@ -469,6 +470,35 @@ export class EditorHost {
     this.attachGizmo();
     this.changed();
     return this.lastStop;
+  }
+
+  // ---------------------------------------------------------------- save games in play (M2 W9)
+
+  /** Where play-mode saves go: the Mac shell's saves folder, or IndexedDB in a browser. */
+  saveStore() { return (this._saveStore ??= inShell ? new ShellStore(call) : new IndexedDBStore('vrmxg-editor')); }
+  async saveSlots() { return this.saveStore().list(); }
+  /** Save the play world now into a slot. */
+  async saveGame(slot) {
+    if (!this.playWorld) throw new Error('Save Game works while playing');
+    const tree = this.playWorld.tree, doc = this.playWorld.save.save({ name: `${this.sceneRef} at ${(tree.clock.step / 60).toFixed(1)} s`, savedAt: new Date().toISOString() });
+    const r = await this.saveStore().write(slot, doc);
+    this.lastGameSave = { slot, step: tree.clock.step, bytes: r.bytes, hash: hashValue(worldHashes(tree, { physicsBytes: true })) };
+    this.changed();
+    return this.lastGameSave;
+  }
+  /** Load a slot into a fresh play world of the scene as it is (refused, with the reason, when the scene changed since). */
+  async loadGame(slot) {
+    const doc = await this.saveStore().read(slot);
+    if (this.session?.mode === 'playing') this.stop();
+    await this.play();
+    if (!this.playWorld) throw new Error(this.error || 'play did not start');
+    try { await this.playWorld.save.load(doc); } catch (e) { this.stop(); throw e; }
+    this.paused = true; // the loaded moment, held until Play goes on
+    this.host.render(1, false);
+    const tree = this.playWorld.tree;
+    this.lastGameLoad = { slot, step: tree.clock.step, hash: hashValue(worldHashes(tree, { physicsBytes: true })) };
+    this.changed();
+    return this.lastGameLoad;
   }
 
   // ---------------------------------------------------------------- export, stills, thumbnails
