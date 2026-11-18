@@ -90,13 +90,13 @@ export class Playground {
     const scene = {
       types, setMeshes,
       player: tree.find('mira')?.behaviours.map((b) => b.name), npc: tree.find('hana-1')?.behaviours.map((b) => b.name),
-      doors: tree.all().filter((n) => n.type === 'Instance').map((n) => n.id), lights: tree.all().filter((n) => /Light$/.test(n.type)).map((n) => `${n.id}:${n.type}`),
+      doors: tree.all().filter((n) => n.type === 'Item' && n.manifest?.type === 'door').map((n) => n.id), lights: tree.all().filter((n) => /Light$/.test(n.type)).map((n) => `${n.id}:${n.type}`),
       prop: !!tree.find('espresso')?.model,
     };
     // the recorded walk, rendered: one step per frame at 60 Hz until the 600th step
     const signals = [];
     const emit = tree.emit.bind(tree);
-    tree.emit = (node, signal, payload) => { signals.push({ step: tree.clock.step, node: node.id, signal }); return emit(node, signal, payload); };
+    tree.emit = (node, signal, payload) => { signals.push({ step: tree.clock.step, node: node.id, signal, to: payload?.to }); return emit(node, signal, payload); };
     const rec = await (await fetch('input/walk-in.json')).json();
     this.input.replay({ ...rec, start: tree.clock.step });
     const renderMs = []; let frames = 0;
@@ -122,7 +122,7 @@ export class Playground {
     return {
       scene, frames, renderMs: { mean: +(sorted.reduce((a, b) => a + b, 0) / sorted.length).toFixed(3), p95: +sorted[Math.floor(sorted.length * 0.95)].toFixed(3) },
       sameAsHeadless: h600 === headless600, h600, headless600,
-      doorSignals: signals.filter((s) => s.signal === 'opened' || s.signal === 'closed'),
+      doorSignals: signals.filter((s) => s.signal === 'stateChanged').map(({ step, node, to }) => ({ step, node, to })),
       presets, debug, calls: host.renderer.info.render.calls, triangles: host.renderer.info.render.triangles,
     };
   }

@@ -10,6 +10,7 @@ import { installCharacters } from '@vrmxg/character';
 import { installInput } from '@vrmxg/input';
 import { installCameras } from '@vrmxg/camera';
 import { installModels } from '@vrmxg/model';
+import { installItems } from '@vrmxg/item';
 
 const r = (v, d = 4) => +v.toFixed(d);
 const arr = (a, d) => Array.from(a, (v) => r(v, d));
@@ -27,7 +28,10 @@ export class EngineSession {
     const lib = installCharacters(tree, { resolve: (ref) => p.bytes(ref), vrmxaCore: await p.vrmxaCore(), stubTextures: true, prefabs, projectAnimations: p.animations() });
     installCameras(tree);
     const models = installModels(tree, { resolve: (ref) => p.bytes(ref), stubTextures: true });
+    const vrmxaCore = await p.vrmxaCore();
+    const items = installItems(tree, { resolve: (ref) => p.bytes(ref), vrmxaCore, stubTextures: true });
     await models.prepare(doc);
+    if (vrmxaCore) await items.prepare(doc); // .vrmxi files are ZIPs: reading them takes vrmxa-core (--vrmxa-core)
     await lib.prepare(doc);
     this.signals = [];
     const emit = tree.emit.bind(tree);

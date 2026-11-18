@@ -20,8 +20,8 @@ const check = (n, title, ok, evidence) => { checks.push({ n, title, ok, evidence
   const rows = Object.entries(browsers).map(([k, r]) => {
     const x = r?.result?.rendered, errs = (r?.errors?.length ?? 0) + (r?.console?.filter((l) => l.startsWith('error') || l.startsWith('pageerror')).length ?? 0);
     const ok = !!x && errs === 0 && x.frames >= 600 && x.scene.setMeshes > 0 && x.scene.player.includes('player') && x.scene.npc.includes('wander')
-      && x.scene.doors.includes('entrance') && x.scene.lights.length >= 2 && x.doorSignals.some((s) => s.signal === 'opened') && Object.keys(x.presets).length === 6;
-    return { k, ok, line: x ? `${k}: ${x.frames} frames, render ${x.renderMs.mean} ms, door opened at step ${x.doorSignals.find((s) => s.signal === 'opened')?.step}, ${Object.keys(x.presets).length} presets, ${errs} errors` : `${k}: no result` };
+      && x.scene.doors.includes('entrance-left') && x.scene.lights.length >= 2 && x.doorSignals.some((s) => s.to === 'open') && Object.keys(x.presets).length === 6;
+    return { k, ok, line: x ? `${k}: ${x.frames} frames, render ${x.renderMs.mean} ms, door opened at step ${x.doorSignals.find((s) => s.to === 'open')?.step}, ${Object.keys(x.presets).length} presets, ${errs} errors` : `${k}: no result` };
   });
   check(1, 'The cafe runs in the playground in WKWebView (scheme, loopback) and Chromium', rows.every((r) => r.ok), rows.map((r) => r.line).join('; '));
 }

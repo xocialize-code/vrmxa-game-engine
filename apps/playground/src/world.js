@@ -9,6 +9,7 @@ import { installCharacters } from '@vrmxg/character';
 import { installInput } from '@vrmxg/input';
 import { installCameras } from '@vrmxg/camera';
 import { installModels } from '@vrmxg/model';
+import { installItems } from '@vrmxg/item';
 
 const text = (b) => new TextDecoder().decode(b);
 
@@ -39,8 +40,10 @@ export async function buildWorld(R, sample, { vrmxaCore, behaviours, stubTexture
   const lib = installCharacters(tree, { resolve: sample.bytes, vrmxaCore, prefabs: sample.prefabs, stubTextures, projectAnimations: sample.animations });
   installCameras(tree);
   const models = installModels(tree, { resolve: sample.bytes, stubTextures });
+  const items = installItems(tree, { resolve: sample.bytes, vrmxaCore, stubTextures });
   await models.prepare(sample.doc);
+  await items.prepare(sample.doc);
   await lib.prepare(sample.doc);
   tree.instantiate(structuredClone(sample.doc));
-  return { tree, input, models, lib };
+  return { tree, input, models, items, lib };
 }

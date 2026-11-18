@@ -21,7 +21,7 @@ const fs = require("fs"), [file, out, tmp] = process.argv.slice(1);
 for (const r of JSON.parse(fs.readFileSync(file, "utf8"))) {
   const o = { runtime: `wkwebview-${r.origin}`, ua: r.ua, timerRes: r.timerRes, timedOut: r.timedOut, errors: r.errors, warnings: r.warnings, result: r.result };
   fs.writeFileSync(`${out}/wkwebview-${r.origin}.json`, JSON.stringify(o) + "\n");
-  // The canvas readback (toDataURL) comes back blank here; the Mac wrapper's window captures (AppProbe) are the visual record.
+  // The canvas readback (toDataURL) comes back blank here; the Mac wrapper window captures (AppProbe) are the visual record.
   const x = r.result ?? {};
   console.log(r.origin, "errors", (r.errors ?? []).length, "warnings", (r.warnings ?? []).length, r.timedOut ? "TIMED OUT" : "", "final", x.simulation?.final, "snapshot", x.simulation?.snapshot.rerunMatches, "rendered=headless", x.rendered?.sameAsHeadless, "debug", JSON.stringify(x.rendered?.debug));
   if ((r.errors ?? []).length) console.log(r.errors);

@@ -1,0 +1,32 @@
+{
+  "name": "@vrmxg/item",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXI game items for VRMXG: read and check .vrmxi files, Item nodes with their bodies, colliders, sensors, joints, states and verbs, item state in snapshots, and a writer for generated items.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/model": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@vrmxg/character": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  },
+  "vrmxg": {
+    "determinism": "simulation"
+  }
+}

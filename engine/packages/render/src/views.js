@@ -164,7 +164,7 @@ export class Views {
     for (const n of live) {
       if ((n.type === 'DirectionalLight' || n.type === 'PointLight' || n.type === 'SpotLight') && !this.lights.has(n)) this.lights.set(n, new LightView(n));
       else if (n.type === 'Environment' && !this.envNode) this.envNode = n;
-      else if ((n.type === 'Character' || n.type === 'Model') && !this.shadowed.has(n)) {
+      else if ((n.type === 'Character' || n.type === 'Model' || n.type === 'Item') && !this.shadowed.has(n)) {
         this.shadowed.add(n);
         const cast = n.props.castShadow ?? true, receive = n.props.receiveShadow ?? true;
         n.object3d.traverse((o) => { if (o.isMesh && !o.userData.presentation) { o.castShadow = cast; o.receiveShadow = receive; if (o.isSkinnedMesh) o.frustumCulled = false; } });

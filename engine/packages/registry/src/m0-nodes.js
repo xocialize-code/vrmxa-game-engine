@@ -91,6 +91,23 @@ export function m0Registry() {
       groundColor: P.color({ default: '#9aa3ad' }), groundSize: P.number({ min: 1, unit: 'm', default: 40 }),
     },
   });
+  // A VRMXI game item (VRMXI-base-draft.md): model, bodies, colliders and sensors, joints, states and verbs come from
+  // the .vrmxi; the scene places it and may start it in another state.
+  r.define('Item', {
+    extends: 'Node3D', description: 'A VRMXI game item: a door, container, pickup, switch, seat or spawn point, with its states and verbs.',
+    asset: { types: ['vrmxi'], required: true },
+    props: { state: P.string({ sim: true, description: 'The state the item starts in; absent: its default (the first).' }) },
+    signals: {
+      stateChanged: { args: { from: P.string(), to: P.string() } },
+      verb: { args: { verb: P.string(), by: P.nodeRef() } },
+      entered: { args: { sensor: P.string(), body: P.nodeRef() } },
+      exited: { args: { sensor: P.string(), body: P.nodeRef() } },
+    },
+    actions: {
+      enterState: { args: { state: arg(P.string(), 'One of the item\'s states.') }, description: 'Move the item to a state (joints, shown meshes, morphs, animations, sensors).' },
+      perform: { args: { verb: arg(P.string(), 'A verb the item offers in its current state.'), by: arg(P.nodeRef(), 'The character doing it.') }, description: 'Do one of the item\'s verbs.' },
+    },
+  });
   r.define('RigidBody', {
     extends: 'Node3D', description: 'A Rapier rigid body; its Collider children give it shape.',
     props: { bodyType: P.enum(['dynamic', 'kinematic', 'fixed'], { default: 'dynamic', sim: true }), mass: P.number({ min: 0, unit: 'kg', sim: true }), linearDamping: P.number({ min: 0, default: 0, sim: true }) },

@@ -15,7 +15,7 @@ input, audio, NPC AI, capture) for a new editor app, a game UI app and an anime 
 
 | Path | What |
 |---|---|
-| `engine/packages/` | Engine packages: `dmath`, `registry`, `scene`, `core`, `physics`, `character`, `input`, `camera`, `snapshot`, `render`, `mcp`, `model` so far; the rest arrive with M0 ([M0-PLAN.md](M0-PLAN.md)) |
+| `engine/packages/` | Engine packages: `dmath`, `registry`, `scene`, `core`, `physics`, `character`, `input`, `camera`, `snapshot`, `render`, `mcp`, `model`, `item` so far; the rest arrive with M0 ([M0-PLAN.md](M0-PLAN.md)) |
 | `apps/` | `shell` (the shared Mac shell, a Swift package), `playground` (Vite + Vue test app) and `playground-mac` (it on the shell) |
 | `acceptance/` | M0's six exit checks on the sample cafe, in Node, Chromium and WKWebView, and their results |
 | `content/sample/` | The sample project M0 runs: the cafe, doors, two characters, clips, a recorded walk; every file's licence in `LICENCES.md` |
@@ -43,6 +43,7 @@ npm run check        # lint (incl. the determinism rule), typecheck, every packa
 | `engine/packages/camera` | Physical Camera node, rig presets with a spring arm, the cameras service, physics and mesh picking (simulation) |
 | `engine/packages/snapshot` | World snapshots, per-step component hashes, run comparison; the Node / Chromium / WKWebView determinism harness (simulation) |
 | `engine/packages/render` | The render host: WebGL for MToon, interp| `engine/packages/model` | Model nodes: glTF sets and props, colliders from KHR_physics, a GLB writer for generated content (simulation) |
+| `engine/packages/item` | VRMXI game items: read and check `.vrmxi`, Item nodes with bodies, sensors, joints, states and verbs (simulation) |
 olation at α that never touches simulated state, Environment and light nodes, shadow presets, debug draw |
 | `engine/packages/mcp` | The MCP server: describe types, edit `.vrmxs` with undo, inspect and drive the scene in a headless engine |
 | `engine/vendor/three-vrm` | `@pixiv/three-vrm` 3.5.5 vendored, plus a spring-bone state API |

@@ -13,7 +13,11 @@ export async function parseGLB(bytes, { stubTextures = false } = {}) {
   if (stubTextures) loader.register((parser) => ({ name: 'vrmxg_stub_textures', loadTexture: () => Promise.resolve(null) }));
   const ab = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
   const gltf = await loader.parseAsync(ab, '');
-  return { scene: gltf.scene, json: readGLBJson(bytes) };
+  const json = readGLBJson(bytes);
+  // glTF node index → the Object3D the loader made for it (names aren't reliable: the loader de-duplicates them)
+  const nodeObjects = new Array((json.nodes ?? []).length).fill(null);
+  for (const [object, a] of gltf.parser.associations) if (object?.isObject3D && a?.nodes !== undefined) nodeObjects[a.nodes] = object;
+  return { scene: gltf.scene, animations: gltf.animations ?? [], json, nodeObjects };
 }
 
 export class ModelLibrary {

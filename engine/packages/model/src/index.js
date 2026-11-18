@@ -3,7 +3,7 @@
 import { ModelLibrary, ModelNode } from './library.js';
 
 export { ModelLibrary, ModelNode, parseGLB } from './library.js';
-export { writeGLB, readGLBJson } from './glb.js';
+export { writeGLB, writeGLBTree, readGLBJson } from './glb.js';
 
 /**
  * Give a SceneTree models: registers the Model class and adds the "models" service. Then

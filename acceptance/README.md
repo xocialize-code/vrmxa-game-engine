@@ -27,6 +27,10 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
 | 5 | MCP describes, inspects the running engine, edits with undo | A Claude Code session: describe, engine through the walk, hinge read live at 100.1°, add / set / undo, validate, save; 10 calls, none failed | AB-R-0950 |
 | 6 | Debug draw: colliders, sensors, rays, capsules | 38 of 38 colliders (33 solid, 3 door triggers, 2 capsules) and the spring-arm ray, in every browser | AB-R-0951 |
 
+**Re-run at M1 W2 (AB-R-0955).** The files in `results/` are now that re-run: the cafe's doors are VRMXI items, and all
+six checks pass, with the same final hash `f0e803b406afaa51` in Node, Chromium and WKWebView over both origins (check 5's
+MCP session is still the W9 one).
+
 Found on the way and fixed: travel root motion could never turn a walk into a run (the blend read the speed root motion
 had already clamped); the sample's sword set named a tag Mira doesn't wear. Known gaps: the WKWebView harness's canvas
 readback comes back blank for the playground page (the wrapper's window captures are the visual record:

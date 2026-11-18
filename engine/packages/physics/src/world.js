@@ -108,15 +108,43 @@ export class PhysicsWorld {
    * A revolute (hinge) joint with optional limits and a position motor.
    * @param {number} a body handle
    * @param {number} b body handle
-   * @param {{ anchorA?: number[], anchorB?: number[], axis?: number[], limits?: number[], motor?: { target: number, stiffness: number, damping: number } }} spec
+   * @param {{ anchorA?: number[], anchorB?: number[], axis?: number[], limits?: number[], motor?: { target: number, stiffness: number, damping: number }, contacts?: boolean }} spec
+   *   contacts: whether the two jointed bodies collide with each other (Rapier's default, true)
    */
-  createRevolute(a, b, { anchorA = [0, 0, 0], anchorB = [0, 0, 0], axis = [0, 1, 0], limits, motor }) {
+  createRevolute(a, b, { anchorA = [0, 0, 0], anchorB = [0, 0, 0], axis = [0, 1, 0], limits, motor, contacts = true }) {
     const jd = this.R.JointData.revolute(v(anchorA), v(anchorB), v(axis));
     const joint = this.world.createImpulseJoint(jd, this.world.getRigidBody(a), this.world.getRigidBody(b), true);
+    if (!contacts) joint.setContactsEnabled(false);
     if (limits) joint.setLimits(limits[0], limits[1]);
     if (motor) joint.configureMotorPosition(motor.target, motor.stiffness, motor.damping);
     return joint.handle;
   }
+  /**
+   * A prismatic (slider) joint along an axis, with optional limits and a position motor.
+   * @param {number} a @param {number} b body handles
+   * @param {{ anchorA?: number[], anchorB?: number[], axis?: number[], limits?: number[], motor?: { target: number, stiffness: number, damping: number }, contacts?: boolean }} spec
+   */
+  createPrismatic(a, b, { anchorA = [0, 0, 0], anchorB = [0, 0, 0], axis = [0, 1, 0], limits, motor, contacts = true }) {
+    const jd = this.R.JointData.prismatic(v(anchorA), v(anchorB), v(axis));
+    const joint = this.world.createImpulseJoint(jd, this.world.getRigidBody(a), this.world.getRigidBody(b), true);
+    if (!contacts) joint.setContactsEnabled(false);
+    if (limits) joint.setLimits(limits[0], limits[1]);
+    if (motor) joint.configureMotorPosition(motor.target, motor.stiffness, motor.damping);
+    return joint.handle;
+  }
+
+  /** A fixed joint: holds body b where it is relative to a, at the anchors (frames identity). */
+  createFixedJoint(a, b, { anchorA = [0, 0, 0], anchorB = [0, 0, 0], contacts = true } = {}) {
+    const id = { w: 1, x: 0, y: 0, z: 0 };
+    const jd = this.R.JointData.fixed(v(anchorA), id, v(anchorB), id);
+    const joint = this.world.createImpulseJoint(jd, this.world.getRigidBody(a), this.world.getRigidBody(b), true);
+    if (!contacts) joint.setContactsEnabled(false);
+    return joint.handle;
+  }
+
+  /** Switch a collider (a sensor, say) on or off; off, it neither collides nor senses. Part of the snapshot. */
+  setColliderEnabled(collider, on) { this.world.getCollider(collider)?.setEnabled(on); }
+
   setMotorTarget(joint, target, stiffness, damping) {
     this.world.getImpulseJoint(joint).configureMotorPosition(target, stiffness, damping);
     // A sleeping door wouldn't feel its motor change.

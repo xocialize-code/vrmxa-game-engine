@@ -18,7 +18,7 @@ const r3 = (v) => +v.toFixed(3);
 function watchSignals(tree) {
   const log = [];
   const emit = tree.emit.bind(tree);
-  tree.emit = (node, signal, payload) => { log.push({ step: tree.clock.step, node: node.id, signal }); return emit(node, signal, payload); };
+  tree.emit = (node, signal, payload) => { log.push({ step: tree.clock.step, node: node.id, signal, ...(signal === 'stateChanged' ? { to: payload?.to } : {}) }); return emit(node, signal, payload); };
   return log;
 }
 
@@ -66,8 +66,8 @@ export async function runSimulation(R, sample, opts, { now = () => 0 } = {}) {
       ...play, states: [...play.states].sort(), maxSpeed: r3(play.maxSpeed), maxRunWeight: r3(play.maxRunWeight), maxHeight: r3(play.maxHeight),
       miraEnd: [p.x, p.y, p.z].map(r3), hanaMovedM: r3(hana.position.distanceTo(hana0)),
       slots: Object.keys(mira.graph.slots).filter((s) => mira.graph.has(s)), idleClip: nameOf.get(picks.idle), equipped: [...mira.equipped].sort(),
-      doorSignals: signals.filter((s) => s.node.startsWith('entrance/') || s.node.startsWith('door-1/')),
-      staffDoor: A.tree.find('door-1/hinge').behaviours[0].inspect(),
+      doorSignals: signals.filter((s) => (s.node.startsWith('entrance-') || s.node === 'door-1') && s.signal === 'stateChanged'),
+      staffDoor: A.tree.find('door-1').inspect(),
     },
     stepMs: { mean: r3(stats.reduce((a, b) => a + b, 0) / stats.length), p50: r3(stats[stats.length >> 1]), p95: r3(stats[Math.floor(stats.length * 0.95)]) },
   };
