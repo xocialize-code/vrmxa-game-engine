@@ -1,0 +1,6 @@
+{
+  "name": "vrmxg-determinism-harness",
+  "private": true,
+  "type": "module",
+  "description": "The W6 determinism harness: the cafe with recorded input in Node, Chromium and WKWebView (not a workspace package)"
+}

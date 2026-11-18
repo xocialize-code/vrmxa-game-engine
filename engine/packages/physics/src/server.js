@@ -171,7 +171,9 @@ export class PhysicsServer {
     if (snap.build.version !== this.build.version || snap.build.rapier !== this.build.rapier) throw new Error(`snapshot from ${snap.build.rapier} ${snap.build.version} can't restore into ${this.build.rapier} ${this.build.version}`);
     this.world.restore(snap.bytes);
     this._parentInverse.clear();
-    for (const n of this.moving) if (n.body !== undefined) this.writeBack(n);
+    // Dynamic nodes take the restored poses. Kinematic ones keep theirs: the node is the authority, and
+    // Rapier holds only the f32 copy it was given.
+    for (const n of this.moving) if (n.body !== undefined && n.bodyType === 'dynamic') this.writeBack(n);
     const byKey = new Map(this.watchers.map((w) => [`${w.node.id}|${w.name}`, w]));
     for (const [id, name, state] of snap.watchers) byKey.get(`${id}|${name}`)?.setState(state);
   }

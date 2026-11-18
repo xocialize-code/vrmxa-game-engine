@@ -75,7 +75,23 @@ export class TimerService {
     }
   }
 
-  getState() { return [...this.items.values()].map(({ fn, onDone, owner, target, ease, ...rest }) => ({ ...rest, owner: owner?.id })); }
+  getState() { return { nextId: this.nextId, items: [...this.items.values()].map(({ fn, onDone, owner, target, ease, ...rest }) => ({ ...rest, owner: owner?.id })) }; }
+
+  /**
+   * Restore counters onto the timers this tree already has, matched by id. Timers hold code (closures),
+   * so a snapshot can only resume timers the same code created in the same order (in ready(), say):
+   * one created at run time and missing here can't be brought back, and that is an error, not a guess.
+   */
+  setState(s) {
+    const want = new Map(s.items.map((t) => [t.id, t]));
+    for (const [id, t] of want) if (!this.items.has(id)) throw new Error(`timer ${id} (${t.kind} owned by "${t.owner}") was created at run time; a snapshot can't recreate its code`);
+    for (const id of [...this.items.keys()]) if (!want.has(id)) this.items.delete(id);
+    for (const [id, t] of want) {
+      const live = this.items.get(id);
+      for (const k of ['left', 'steps', 'acc', 'done', 'repeat', 'from', 'to', 'path']) if (k in t) live[k] = structuredClone(t[k]);
+    }
+    this.nextId = s.nextId;
+  }
 }
 
 function read(obj, path) { return path.split('.').reduce((o, k) => o?.[k], obj); }

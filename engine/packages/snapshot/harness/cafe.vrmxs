@@ -1,0 +1,34 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "w6-cafe",
+  "assets": [
+    {"id":"mira","type":"vrm","ref":"characters/mira.vrm"},
+    {"id":"hana","type":"vrm","ref":"characters/hana.vrm"},
+    {"id":"door","type":"vrmxs","ref":"prefabs/door.vrmxs"},
+    {"id":"double","type":"vrmxs","ref":"prefabs/double-door.vrmxs"}
+  ],
+  "nodes": [
+    {"id":"root","type":"Node3D","name":"Cafe"},
+    {"id":"floor","type":"Collider","parent":"root","transform":{"p":[0,-0.1,0]},"props":{"shape":"box","size":[16,0.2,16]}},
+    {"id":"wall-n","type":"Collider","parent":"root","transform":{"p":[0,1.5,-6]},"props":{"shape":"box","size":[12,3,0.2]}},
+    {"id":"wall-e","type":"Collider","parent":"root","transform":{"p":[6,1.5,0]},"props":{"shape":"box","size":[0.2,3,12]}},
+    {"id":"wall-w","type":"Collider","parent":"root","transform":{"p":[-6,1.5,0]},"props":{"shape":"box","size":[0.2,3,12]}},
+    {"id":"sun","type":"DirectionalLight","parent":"root","transform":{"q":[-0.383,0,0,0.924]},"props":{"intensity":2.5}},
+    {"id":"door-1","type":"Instance","parent":"root","asset":"door","transform":{"p":[2,0,-3],"q":[0,0.707,0,0.707]},"overrides":{"hinge":{"behaviours":[{"locked":true,"use":"hinge"}]}}},
+    {"id":"entrance","type":"Instance","parent":"root","asset":"double","transform":{"p":[0,0,6]},"overrides":{"left/hinge":{"props":{"mass":20}}}},
+    {"id":"spawn","type":"Marker","parent":"root","transform":{"p":[0,0,3]},"props":{"purpose":"spawn"}},
+    {"id":"hana-1","type":"Character","parent":"root","asset":"hana","transform":{"p":[-2,0,0]},"props":{"controller":"npc","outfit":"casual"},"behaviours":[{"radius":3,"use":"wander"}]},
+    {"id":"mira","type":"Character","parent":"root","asset":"mira","transform":{"p":[0,0,3]},"behaviours":[{"use":"player"}]},
+    {"id":"cam","type":"Camera","parent":"root","transform":{"p":[0,1.6,0]},"props":{"focalLength":35,"preset":"follow","target":"mira"}}
+  ],
+  "connections": [
+    {"from":"door-1","signal":"ready","to":"hana-1","call":"lookAt","args":{"target":"door-1"}}
+  ],
+  "settings": {
+    "physics": {
+      "build": "deterministic",
+      "hz": 60
+    }
+  }
+}

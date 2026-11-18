@@ -22,6 +22,10 @@ export class CameraService {
   }
   setCurrent(cam) { this.current = cam; this.tree.emit?.(cam, 'madeCurrent', {}); }
 
+  /** The cameras part of a world snapshot: which camera is current (each camera keeps its own rig state). */
+  getState() { return { current: this.current?.id ?? null }; }
+  setState(s) { this.current = s.current === null ? null : this.cameras.find((c) => c.id === s.current) ?? this.current; }
+
   /** The output's aspect changed (canvas resize, export size). */
   setAspect(aspect) { this.aspect = aspect; for (const c of this.cameras) c.applyLens(aspect); }
 

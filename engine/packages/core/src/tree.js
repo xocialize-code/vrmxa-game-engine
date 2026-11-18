@@ -326,6 +326,36 @@ export class SceneTree {
     };
   }
 
+  /**
+   * Restore getState() onto a tree instantiated from the same scene: clock, random streams, timers, and
+   * every node's transform, props, behaviour params and state, and state machine. Systems with their own
+   * state (physics, characters, cameras, input) restore theirs separately (@vrmxg/snapshot does it all).
+   */
+  setState(s) {
+    // Check that this is the same scene before changing anything.
+    for (const ns of s.nodes) {
+      const n = this.byId.get(ns.id);
+      if (!n) throw new Error(`snapshot node "${ns.id}" isn't in this tree: restore onto the scene the snapshot came from`);
+      ns.behaviours.forEach(([name], i) => { if (n.behaviours[i]?.name !== name) throw new Error(`"${ns.id}" behaviour ${i} is ${n.behaviours[i]?.name}, the snapshot has ${name}`); });
+    }
+    this.timers.setState(s.timers);
+    this.clock.setState(s.clock);
+    this.rng.setState(s.rng);
+    for (const ns of s.nodes) {
+      const n = this.byId.get(ns.id);
+      n.object3d.position.fromArray(ns.p); n.object3d.quaternion.fromArray(ns.q); n.object3d.scale.fromArray(ns.s);
+      n.props = structuredClone(ns.props);
+      ns.behaviours.forEach(([name, params, state], i) => {
+        const b = n.behaviours[i];
+        for (const k of Object.keys(b.params)) delete b.params[k];
+        Object.assign(b.params, structuredClone(params));
+        if (state !== null) b.setState(structuredClone(state));
+      });
+      if (ns.sm && n.stateMachine) n.stateMachine.setState(ns.sm);
+    }
+    this.root.object3d.updateMatrixWorld(true);
+  }
+
   /** FNV-1a over the canonical JSON of getState(): one word to compare runs and engines. */
   stateHash() {
     const s = JSON.stringify(this.getState());
