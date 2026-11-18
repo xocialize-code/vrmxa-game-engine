@@ -1,0 +1,28 @@
+{
+  "name": "@vrmxg/render",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The VRMXG render host: a WebGL renderer set up for MToon, presentation interpolated at the clock's α without touching simulated state, Environment and light nodes with shadow presets and frozen shadow maps, and debug draw for colliders, sensors, character capsules and rays.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/core": "0.1.0",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@vrmxg/camera": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/input": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/scene": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  }
+}

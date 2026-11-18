@@ -63,8 +63,34 @@ export function m0Registry() {
     },
     signals: { madeCurrent: {} },
   });
-  r.define('DirectionalLight', { extends: 'Node3D', description: 'Sun-like light.', props: { color: P.color({ default: '#ffffff' }), intensity: P.number({ min: 0, default: 2 }), castShadow: P.boolean({ default: true }) } });
-  r.define('PointLight', { extends: 'Node3D', description: 'Omni light with range.', props: { color: P.color({ default: '#ffffff' }), intensity: P.number({ min: 0, default: 1, unit: 'cd' }), range: P.number({ min: 0, unit: 'm', default: 10 }) } });
+  // Lights and the environment are presentation: none of their props is simulated. Lights shine along
+  // their node's -Z. Shadow presets set the map size and bias; `shadowUpdate: "once"` freezes the map
+  // (static sets), re-rendered when the light or its props change.
+  const shadow = (on) => ({
+    castShadow: P.boolean({ default: on }),
+    shadowPreset: P.enum(['low', 'medium', 'high', 'ultra'], { default: 'medium', description: 'Map size 512 / 1024 / 2048 / 4096, with matching bias.' }),
+    shadowUpdate: P.enum(['always', 'once'], { default: 'always', description: '"once" renders the map once and keeps it (static sets).' }),
+  });
+  r.define('DirectionalLight', { extends: 'Node3D', description: 'Sun-like light along the node\'s -Z. The shadow box is centred on the node.', props: { color: P.color({ default: '#ffffff' }), intensity: P.number({ min: 0, default: 2 }), ...shadow(true), shadowExtent: P.number({ min: 0.5, unit: 'm', default: 8, description: 'Half the width of the shadow box.' }) } });
+  r.define('PointLight', { extends: 'Node3D', description: 'Omni light with range.', props: { color: P.color({ default: '#ffffff' }), intensity: P.number({ min: 0, default: 1, unit: 'cd' }), range: P.number({ min: 0, unit: 'm', default: 10 }), ...shadow(false) } });
+  r.define('SpotLight', { extends: 'Node3D', description: 'Cone light along the node\'s -Z.', props: { color: P.color({ default: '#ffffff' }), intensity: P.number({ min: 0, default: 10, unit: 'cd' }), range: P.number({ min: 0, unit: 'm', default: 10 }), angle: P.number({ min: 1, max: 89, unit: 'deg', default: 30, description: 'Half-angle of the cone.' }), penumbra: P.number({ min: 0, max: 1, default: 0.2 }), ...shadow(false) } });
+  r.define('Environment', {
+    extends: 'Node3D', description: 'How the world looks around everything: background, environment lighting, ambient, fog, tone mapping, exposure, an optional ground plane. One per scene (the first wins).',
+    props: {
+      background: P.enum(['color', 'gradient', 'environment', 'transparent'], { default: 'color' }),
+      backgroundColor: P.color({ default: '#c9d3df' }),
+      skyTopColor: P.color({ default: '#6f9bd1' }), skyHorizonColor: P.color({ default: '#dfe7ef' }),
+      environment: P.enum(['none', 'room'], { default: 'room', description: 'Image-based lighting: none, or a neutral studio room.' }),
+      environmentIntensity: P.number({ min: 0, default: 0.4 }),
+      ambientColor: P.color({ default: '#ffffff' }), ambientIntensity: P.number({ min: 0, default: 0.6 }),
+      fog: P.enum(['none', 'linear', 'exponential'], { default: 'none' }),
+      fogColor: P.color({ default: '#c9d3df' }), fogNear: P.number({ min: 0, unit: 'm', default: 10 }), fogFar: P.number({ min: 0, unit: 'm', default: 60 }), fogDensity: P.number({ min: 0, default: 0.02 }),
+      toneMapping: P.enum(['neutral', 'agx', 'aces', 'none'], { default: 'neutral', description: 'Neutral keeps MToon\'s authored colours.' }),
+      exposure: P.number({ min: 0, default: 1 }),
+      ground: P.boolean({ default: false, description: 'A shadow-receiving ground plane at y = 0.' }),
+      groundColor: P.color({ default: '#9aa3ad' }), groundSize: P.number({ min: 1, unit: 'm', default: 40 }),
+    },
+  });
   r.define('RigidBody', {
     extends: 'Node3D', description: 'A Rapier rigid body; its Collider children give it shape.',
     props: { bodyType: P.enum(['dynamic', 'kinematic', 'fixed'], { default: 'dynamic', sim: true }), mass: P.number({ min: 0, unit: 'kg', sim: true }), linearDamping: P.number({ min: 0, default: 0, sim: true }) },

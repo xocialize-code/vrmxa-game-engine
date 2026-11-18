@@ -59,17 +59,20 @@ export async function loadAssets(files) {
 
 /**
  * A fresh world from the cafe. `npcs` adds that many extra wandering characters (VRoid-class, 106 spring
- * joints) for the budget check.
- * @param {any} R Rapier @param {any} assets @param {{ npcs?: number, replay?: boolean }} [opts]
+ * joints) for the budget check; `extraNodes` adds scene nodes (the render demo's Environment);
+ * `stubTextures: false` decodes the VRMs' textures, for rendering.
+ * @param {any} R Rapier @param {any} assets
+ * @param {{ npcs?: number, replay?: boolean, stubTextures?: boolean, extraNodes?: any[] }} [opts]
  */
-export async function buildWorld(R, assets, { npcs = 0, replay = true } = {}) {
+export async function buildWorld(R, assets, { npcs = 0, replay = true, stubTextures = true, extraNodes = [] } = {}) {
   const tree = new SceneTree({ registry: m0Registry(), prefabs: assets.prefabs, behaviours: new Map([['wander', Wander]]), seed: 6 });
   const input = installInput(tree);
   installPhysics(tree, R);
-  const lib = installCharacters(tree, { resolve: (ref) => assets.models[ref], stubTextures: true });
+  const lib = installCharacters(tree, { resolve: (ref) => assets.models[ref], stubTextures });
   installCameras(tree);
   for (const ref of Object.keys(assets.models)) lib.setAnimations(ref, assets.animations);
   const doc = structuredClone(assets.scene);
+  doc.nodes.push(...structuredClone(extraNodes));
   if (npcs) {
     doc.assets.push({ id: 'npc', type: 'vrm', ref: 'characters/npc.vrm' });
     for (let i = 0; i < npcs; i++) doc.nodes.push({ id: `npc-${i}`, type: 'Character', parent: 'root', asset: 'npc', transform: { p: [-4.5 + (i % 6) * 1.8, 0, -4.5 + Math.floor(i / 6) * 2] }, behaviours: [{ use: 'wander', radius: 1.5 }] });

@@ -45,6 +45,8 @@ export class SceneTree {
     /** @type {Map<Node, Map<string, any[]>>} */ this.links = new Map();
     /** @type {Node[] | null} cached tree order for step(); null after the tree changes */
     this._order = null;
+    /** Bumped whenever nodes are added or removed: presentation layers resync their views on a change. */
+    this.structureVersion = 0;
     /** Actions that were called but that no node method or behaviour implements: [{ id, action }]. */
     this.unhandled = [];
     this.doc = null;
@@ -98,6 +100,7 @@ export class SceneTree {
     parent.object3d.remove(node.object3d);
     node.parent = null;
     this._order = null;
+    this.structureVersion++;
     for (const n of gone) { this.byId.delete(n.id); this.links.delete(n); this.timers.cancelOwnedBy(n); n.tree = null; }
     // Connections into the removed subtree go too; code listeners (fn) stay with their emitter.
     for (const map of this.links.values()) for (const [sig, list] of map) map.set(sig, list.filter((l) => l.fn || this.byId.has(l.to)));
@@ -121,6 +124,7 @@ export class SceneTree {
     parent.object3d.add(node.object3d);
     this.byId.set(node.id, node);
     this._order = null;
+    this.structureVersion++;
   }
 
   // enterTree pre-order, then behaviours attach, then ready post-order (Godot's order).
@@ -230,9 +234,14 @@ export class SceneTree {
   frame(elapsedSeconds) {
     const { steps, alpha } = this.clock.advance(elapsedSeconds);
     this.run(steps);
+    this.present(elapsedSeconds, alpha);
+    return alpha;
+  }
+
+  /** Every node's presentation process at α (a render host runs the steps itself, then calls this). */
+  present(elapsedSeconds, alpha) {
     const pre = (n) => { for (const c of n.children) { if (this.scaleOf(c) > 0) { c.process(elapsedSeconds, alpha); for (const b of c.behaviours) b.process(elapsedSeconds, alpha); } pre(c); } };
     pre(this.root);
-    return alpha;
   }
 
   // ---------------------------------------------------------------- queries

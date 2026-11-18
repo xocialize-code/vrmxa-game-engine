@@ -1,0 +1,6 @@
+{
+  "name": "vrmxg-render-demo",
+  "private": true,
+  "type": "module",
+  "description": "The W5 render host on the W6 harness's cafe, in Chromium and WKWebView (not a workspace package)"
+}

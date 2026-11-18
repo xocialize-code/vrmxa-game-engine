@@ -1,0 +1,415 @@
+[
+  {
+    "case" : "mode=trace",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "mode_trace__scheme.png",
+    "result" : {
+      "debug" : {
+        "capsules" : 0,
+        "colliders" : 0,
+        "physicsColliders" : 12,
+        "rays" : 0,
+        "sensors" : [
+
+        ]
+      },
+      "hashes" : {
+        "firstDiffInterpolated" : null,
+        "firstDiffPlain" : null,
+        "headlessFinal" : "92927c8d46b5274f",
+        "interpolatedSame" : true,
+        "plainSame" : true,
+        "steps" : 600
+      },
+      "live" : {
+        "displayHz" : 58.799999999999997,
+        "frames" : 110,
+        "intervalMs" : {
+          "mean" : 18.282,
+          "p50" : 17,
+          "p95" : 18
+        },
+        "stepsPerFrame" : {
+          "0" : 2,
+          "1" : 107,
+          "8" : 1
+        }
+      },
+      "mode" : "trace",
+      "renderer" : {
+        "calls" : 68,
+        "dpr" : 1,
+        "programs" : 23,
+        "triangles" : 206294
+      },
+      "renderMs" : {
+        "interpolated" : {
+          "mean" : 1.2270000000000001,
+          "p50" : 1,
+          "p95" : 2
+        },
+        "plain" : {
+          "mean" : 1.028,
+          "p50" : 1,
+          "p95" : 2
+        }
+      },
+      "smoothness120" : {
+        "interpolated" : {
+          "cv" : 0,
+          "frames" : 119,
+          "meanMm" : 11.667,
+          "sample" : [
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67
+          ],
+          "stillFrames" : 0
+        },
+        "plain" : {
+          "cv" : 1.0084,
+          "frames" : 119,
+          "meanMm" : 11.569000000000001,
+          "sample" : [
+            0,
+            23.329999999999998,
+            0,
+            23.329999999999998,
+            0,
+            23.329999999999998,
+            0,
+            23.329999999999998
+          ],
+          "stillFrames" : 60
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "mode=trace&debug=1",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "scheme",
+    "png" : "mode_trace_debug_1__scheme.png",
+    "result" : {
+      "debug" : {
+        "capsules" : 2,
+        "colliders" : 7,
+        "physicsColliders" : 12,
+        "rays" : 1,
+        "sensors" : [
+          "door-1\/trigger",
+          "entrance\/left\/trigger",
+          "entrance\/right\/trigger"
+        ]
+      },
+      "hashes" : {
+        "firstDiffInterpolated" : null,
+        "firstDiffPlain" : null,
+        "headlessFinal" : "92927c8d46b5274f",
+        "interpolatedSame" : true,
+        "plainSame" : true,
+        "steps" : 600
+      },
+      "live" : {
+        "displayHz" : 58.799999999999997,
+        "frames" : 113,
+        "intervalMs" : {
+          "mean" : 17.734999999999999,
+          "p50" : 17,
+          "p95" : 18
+        },
+        "stepsPerFrame" : {
+          "0" : 3,
+          "1" : 109,
+          "8" : 1
+        }
+      },
+      "mode" : "trace",
+      "renderer" : {
+        "calls" : 81,
+        "dpr" : 1,
+        "programs" : 25,
+        "triangles" : 206294
+      },
+      "renderMs" : {
+        "interpolated" : {
+          "mean" : 1.325,
+          "p50" : 1,
+          "p95" : 2
+        },
+        "plain" : {
+          "mean" : 0.92200000000000004,
+          "p50" : 1,
+          "p95" : 2
+        }
+      },
+      "smoothness120" : {
+        "interpolated" : {
+          "cv" : 0,
+          "frames" : 119,
+          "meanMm" : 11.667,
+          "sample" : [
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67
+          ],
+          "stillFrames" : 0
+        },
+        "plain" : {
+          "cv" : 1.0084,
+          "frames" : 119,
+          "meanMm" : 11.569000000000001,
+          "sample" : [
+            0,
+            23.329999999999998,
+            0,
+            23.329999999999998,
+            0,
+            23.329999999999998,
+            0,
+            23.329999999999998
+          ],
+          "stillFrames" : 60
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "mode=trace",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "mode_trace__loopback.png",
+    "result" : {
+      "debug" : {
+        "capsules" : 0,
+        "colliders" : 0,
+        "physicsColliders" : 12,
+        "rays" : 0,
+        "sensors" : [
+
+        ]
+      },
+      "hashes" : {
+        "firstDiffInterpolated" : null,
+        "firstDiffPlain" : null,
+        "headlessFinal" : "92927c8d46b5274f",
+        "interpolatedSame" : true,
+        "plainSame" : true,
+        "steps" : 600
+      },
+      "live" : {
+        "displayHz" : 60,
+        "frames" : 113,
+        "intervalMs" : {
+          "mean" : 17.744,
+          "p50" : 16.66,
+          "p95" : 18.199999999999999
+        },
+        "stepsPerFrame" : {
+          "0" : 3,
+          "1" : 109,
+          "8" : 1
+        }
+      },
+      "mode" : "trace",
+      "renderer" : {
+        "calls" : 68,
+        "dpr" : 1,
+        "programs" : 23,
+        "triangles" : 206294
+      },
+      "renderMs" : {
+        "interpolated" : {
+          "mean" : 1.2509999999999999,
+          "p50" : 1.02,
+          "p95" : 1.3999999999999999
+        },
+        "plain" : {
+          "mean" : 1.0289999999999999,
+          "p50" : 0.95999999999999996,
+          "p95" : 1.3799999999999999
+        }
+      },
+      "smoothness120" : {
+        "interpolated" : {
+          "cv" : 0,
+          "frames" : 119,
+          "meanMm" : 11.667,
+          "sample" : [
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67
+          ],
+          "stillFrames" : 0
+        },
+        "plain" : {
+          "cv" : 1.0084,
+          "frames" : 119,
+          "meanMm" : 11.569000000000001,
+          "sample" : [
+            0,
+            23.329999999999998,
+            0,
+            23.329999999999998,
+            0,
+            23.329999999999998,
+            0,
+            23.329999999999998
+          ],
+          "stillFrames" : 60
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "mode=trace&debug=1",
+    "errors" : [
+
+    ],
+    "isolated" : true,
+    "origin" : "loopback",
+    "png" : "mode_trace_debug_1__loopback.png",
+    "result" : {
+      "debug" : {
+        "capsules" : 2,
+        "colliders" : 7,
+        "physicsColliders" : 12,
+        "rays" : 1,
+        "sensors" : [
+          "door-1\/trigger",
+          "entrance\/left\/trigger",
+          "entrance\/right\/trigger"
+        ]
+      },
+      "hashes" : {
+        "firstDiffInterpolated" : null,
+        "firstDiffPlain" : null,
+        "headlessFinal" : "92927c8d46b5274f",
+        "interpolatedSame" : true,
+        "plainSame" : true,
+        "steps" : 600
+      },
+      "live" : {
+        "displayHz" : 60,
+        "frames" : 113,
+        "intervalMs" : {
+          "mean" : 17.797000000000001,
+          "p50" : 16.66,
+          "p95" : 17.760000000000002
+        },
+        "stepsPerFrame" : {
+          "0" : 5,
+          "1" : 105,
+          "2" : 2,
+          "8" : 1
+        }
+      },
+      "mode" : "trace",
+      "renderer" : {
+        "calls" : 81,
+        "dpr" : 1,
+        "programs" : 25,
+        "triangles" : 206294
+      },
+      "renderMs" : {
+        "interpolated" : {
+          "mean" : 1.1890000000000001,
+          "p50" : 1,
+          "p95" : 1.3400000000000001
+        },
+        "plain" : {
+          "mean" : 0.76300000000000001,
+          "p50" : 0.57999999999999996,
+          "p95" : 1.1799999999999999
+        }
+      },
+      "smoothness120" : {
+        "interpolated" : {
+          "cv" : 0,
+          "frames" : 119,
+          "meanMm" : 11.667,
+          "sample" : [
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67,
+            11.67
+          ],
+          "stillFrames" : 0
+        },
+        "plain" : {
+          "cv" : 1.0084,
+          "frames" : 119,
+          "meanMm" : 11.569000000000001,
+          "sample" : [
+            0,
+            23.329999999999998,
+            0,
+            23.329999999999998,
+            0,
+            23.329999999999998,
+            0,
+            23.329999999999998
+          ],
+          "stillFrames" : 60
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  }
+]

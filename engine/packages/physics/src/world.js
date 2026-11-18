@@ -32,6 +32,12 @@ export class PhysicsWorld {
     this.world = new R.World(v(gravity));
     this.world.timestep = DT / substeps;
     this.events = new R.EventQueue(true);
+    /**
+     * Debug draw's ray tap: called with (origin, dir, maxDistance, distance | null) for every raycast
+     * when set. Presentation only: it must record, never change the world.
+     * @type {null | ((origin: number[], dir: number[], maxDistance: number, distance: number | null) => void)}
+     */
+    this.onRay = null;
     /** Character controllers made by createCharacterController (rebuilt after restore). */
     this.controllers = new Set();
   }
@@ -236,6 +242,7 @@ export class PhysicsWorld {
     const flags = excludeSensors ? R.QueryFilterFlags.EXCLUDE_SENSORS : 0;
     const exclude = excludeBody !== undefined ? this.world.getRigidBody(excludeBody) : undefined;
     const hit = this.world.castRayAndGetNormal(ray, maxDistance, true, flags, this.layers.queryGroups(layers), undefined, exclude);
+    this.onRay?.(origin, dir, maxDistance, hit ? hit.timeOfImpact : null);
     if (!hit) return null;
     const t = hit.timeOfImpact;
     return { collider: hit.collider.handle, distance: t, point: [origin[0] + dir[0] * t, origin[1] + dir[1] * t, origin[2] + dir[2] * t], normal: arr3(hit.normal) };

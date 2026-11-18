@@ -1,0 +1,97 @@
+{
+ "runtime": "chromium-debug",
+ "version": "156.0.8078.4",
+ "result": {
+  "mode": "trace",
+  "debug": {
+   "colliders": 7,
+   "sensors": [
+    "door-1/trigger",
+    "entrance/left/trigger",
+    "entrance/right/trigger"
+   ],
+   "capsules": 2,
+   "rays": 1,
+   "physicsColliders": 12
+  },
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "hashes": {
+   "steps": 600,
+   "headlessFinal": "92927c8d46b5274f",
+   "interpolatedSame": true,
+   "plainSame": true,
+   "firstDiffInterpolated": null,
+   "firstDiffPlain": null
+  },
+  "smoothness120": {
+   "interpolated": {
+    "frames": 119,
+    "meanMm": 11.667,
+    "cv": 0,
+    "stillFrames": 0,
+    "sample": [
+     11.67,
+     11.67,
+     11.67,
+     11.67,
+     11.67,
+     11.67,
+     11.67,
+     11.67
+    ]
+   },
+   "plain": {
+    "frames": 119,
+    "meanMm": 11.569,
+    "cv": 1.0084,
+    "stillFrames": 60,
+    "sample": [
+     0,
+     23.33,
+     0,
+     23.33,
+     0,
+     23.33,
+     0,
+     23.33
+    ]
+   }
+  },
+  "renderMs": {
+   "interpolated": {
+    "mean": 0.615,
+    "p50": 0.4,
+    "p95": 0.5
+   },
+   "plain": {
+    "mean": 0.439,
+    "p50": 0.3,
+    "p95": 0.4
+   }
+  },
+  "live": {
+   "frames": 115,
+   "intervalMs": {
+    "mean": 17.537,
+    "p50": 16.7,
+    "p95": 16.8
+   },
+   "displayHz": 59.9,
+   "stepsPerFrame": {
+    "0": 27,
+    "1": 60,
+    "2": 27,
+    "7": 1
+   }
+  },
+  "renderer": {
+   "calls": 81,
+   "triangles": 206294,
+   "programs": 25,
+   "dpr": 1
+  }
+ },
+ "errors": [],
+ "warnings": [],
+ "console": []
+}
