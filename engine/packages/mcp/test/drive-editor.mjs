@@ -11,6 +11,7 @@ const port = opt('--port', '5183'), out = opt('--out', null), calls = opt('--cal
 const client = new Client({ name: 'drive-editor', version: '0.1.0' });
 await client.connect(new StdioClientTransport({ command: process.execPath, args: [path.join(import.meta.dirname, '../src/server.js'), '--editor', '--port', port], stderr: 'inherit' }));
 const log = [];
+process.on('uncaughtException', async (e) => { console.error(e); await client.close().catch(() => {}); process.exit(1); }); // never leave the server holding the port
 async function call(name, args = {}) {
   const r = await client.callTool({ name, arguments: args });
   const text = r.content.filter((c) => c.type === 'text').map((c) => c.text).join('\n');
@@ -20,7 +21,7 @@ async function call(name, args = {}) {
   console.log(`${r.isError ? '✖' : '✔'} ${name} ${JSON.stringify(args)}\n   ${text.slice(0, 300).replace(/\n/g, '\n   ')}`);
   return { text, isError: !!r.isError };
 }
-if (calls) { for (const [name, args] of JSON.parse(fs.readFileSync(calls, 'utf8'))) await call(name, args); if (out) fs.writeFileSync(path.join(out, 'drive-editor.json'), JSON.stringify(log, null, 1) + '\n'); await client.close(); process.exit(0); }
+if (calls) { for (const [name, args] of JSON.parse(fs.readFileSync(calls, 'utf8'))) await call(name, args); if (out) { fs.mkdirSync(out, { recursive: true }); } if (out) fs.writeFileSync(path.join(out, 'drive-editor.json'), JSON.stringify(log, null, 1) + '\n'); await client.close(); process.exit(0); }
 await call('tree');
 await call('add_node', { node: { id: 'cam-mcp', type: 'Camera', parent: 'root', transform: { p: [4, 3, 6] }, props: { focalLength: 50 } } });
 await call('play', { action: 'play' });
@@ -34,5 +35,5 @@ await call('screenshot', { width: 960, height: 540 });
 await call('get_node', { id: 'hana-1', live: true });
 await call('play', { action: 'stop' });
 await call('undo');
-if (out) fs.writeFileSync(path.join(out, 'drive-editor.json'), JSON.stringify(log, null, 1) + '\n');
+if (out) { fs.mkdirSync(out, { recursive: true }); } if (out) fs.writeFileSync(path.join(out, 'drive-editor.json'), JSON.stringify(log, null, 1) + '\n');
 await client.close();

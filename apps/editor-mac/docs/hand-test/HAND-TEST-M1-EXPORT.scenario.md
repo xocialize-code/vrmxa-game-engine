@@ -21,7 +21,7 @@ fresh: false
   until find("id=doc-state").0.name matches "^Scene cafe.vrmxs"
   act id=open-project action=press
   until find("id=project-name").0.name == "Project project"
-  until find("id=doc-state").0.name matches "^Scene cafe.vrmxs 20 nodes"
+  until find("id=doc-state").0.name matches "^Scene cafe.vrmxs [0-9]+ nodes saved"   # the project's cafe, loaded
   act id=export-open action=press
   wait id=export-run timeout_ms=5000
   expect find("id=export-take").0.value == "input/walk-in.json"   # the recorded walk is the default take

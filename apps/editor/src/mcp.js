@@ -37,14 +37,14 @@ export function editorTarget(ed) {
       }
       if (action === 'stop') return ed.stop() ?? { mode: session().mode };
       const tree = live().live;
-      tree.clock.paused = action === 'pause';
+      ed.paused = action === 'pause'; // the editor stops stepping; the clock's own pause would freeze the characters
       ed.changed();
-      return { paused: tree.clock.paused, step: tree.clock.step };
+      return { paused: ed.paused, step: tree.clock.step };
     },
     recording: async (ref) => JSON.parse(await ed.project.text(ref)),
     // Paused: the steps run at once. Playing: the frame loop runs them in real time, and the call returns when it has.
     step: (v, opts) => v.step(opts, async (tree, steps) => {
-      if (tree.clock.paused) {
+      if (ed.paused) {
         for (let i = 0; i < steps; i++) while (!tree.step()) await tree.settle();
         ed.host.interpolator.version = -1; // nothing to blend from: show the new step as it is
         return;
@@ -52,7 +52,7 @@ export function editorTarget(ed) {
       const until = tree.clock.step + steps;
       while (tree.clock.step < until) {
         if (ed.playWorld?.tree !== tree) throw new Error('play stopped');
-        if (tree.clock.paused) { while (tree.clock.step < until) while (!tree.step()) await tree.settle(); break; }
+        if (ed.paused) { while (tree.clock.step < until) while (!tree.step()) await tree.settle(); break; }
         await sleep(8);
       }
     }),

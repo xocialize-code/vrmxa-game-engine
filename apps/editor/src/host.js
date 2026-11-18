@@ -74,6 +74,7 @@ export class EditorHost {
     this._gen = 0; this._frames = []; this._last = null; this._rebuildTimer = null;
     this._downAt = null;
     this.lastTake = null;      // the last Play: { scene, doc, input, steps }
+    this.paused = false;       // play paused (MCP): the frame loop draws but doesn't step; not the clock's own pause, which freezes pausable nodes
     this.exporting = null;     // { n, frames, phase } while an export runs
     this.lastExport = null; this.lastStill = null;
     this.exportHost = null;
@@ -376,6 +377,7 @@ export class EditorHost {
       }
       for (const d of Object.values(this.devices)) world.input.addDevice(d);
       this.playWorld = world;
+      this.paused = false;
       this.host.camera = null; // the scene's camera
       this.orbit.enabled = false;
       this.host.attach(world.tree);
@@ -389,6 +391,7 @@ export class EditorHost {
 
   stop() {
     if (this.session?.mode !== 'playing') return null;
+    this.paused = false;
     const world = this.playWorld;
     const steps = world?.tree.clock.step ?? 0;
     if (world?.input.recording && steps > 0) this.lastTake = { scene: this.sceneRef, doc: this.playDoc, input: structuredClone(world.input.recording), steps };
@@ -526,7 +529,8 @@ export class EditorHost {
       const r = this.canvas.getBoundingClientRect();
       if (r.width && (this._w !== r.width || this._h !== r.height)) { this._w = r.width; this._h = r.height; this.host.resize(r.width, r.height); }
       try {
-        if (this.session?.mode === 'playing' && this.playWorld) {
+        if (this.session?.mode === 'playing' && this.playWorld && this.paused) { this.host.render(1, false); this.stats.step = tree.clock.step; }
+        else if (this.session?.mode === 'playing' && this.playWorld) {
           this.host.frame(dt); this.stats.step = tree.clock.step;
           if (tree.services.get('voice')?.lines.size && this._frames.length % 6 === 0) this.changed('captions'); // word by word
           const pr = this.prompt(), key = pr?.text ?? null;
