@@ -38,6 +38,7 @@ git-ignored; commit only what this session owns, staging by path. `npm run check
 | [physics-engine-research.md](physics-engine-research.md) | Physics research: Rapier, Jolt as fallback |
 | `engine/packages/dmath/` | `@vrmxg/dmath`, the first engine package: portable transcendental maths, bit-identical in V8 and JSC (AB-R-0931). Install it before anything parses a VRM. Its version is part of a replay's identity |
 | `apps/playground/`, `apps/playground-mac/` | The M0 playground (Vue) and its WKWebView wrapper; AppProbe scenario in `apps/playground-mac/docs/hand-test/` |
+| `acceptance/` | M0's exit checks (W9): `node.mjs`, `chromium.mjs`, `wkwebview.sh`, `compare.mjs`; results and receipts AB-R-0946 to 0951 |
 | `content/sample/` | The sample project (cafe, doors, Mira, Hana, clips, demo walk). Every file needs a row in `LICENCES.md` (CI checks) |
 | `spike-physics/` | Rapier in the real stack, plus the WKWebView wrapper the other spikes copy (AB-R-0923) |
 | `spike-determinism/` | Character determinism and the `dmath` shim (AB-R-0924) |

@@ -1,5 +1,7 @@
 # VRMXG M0 plan: the runtime core
 
+**Done 2026-11-17:** all six checks below pass ([acceptance/](acceptance/README.md), receipts AB-R-0946 to 0951; the base-Mac budget is AB-T-0511).
+
 *Draft, 2026-11-17. M0 as the PRD scopes it (§8): node tree, scenes, signals, fixed-step loop with interpolation,
 Rapier adapter, VRMXA player, animation slots and state machine, character controller, camera presets, input map,
 picking, debug draw, MCP describe and inspect. It builds on the eight spikes and the decisions already made: `.vrmxs`

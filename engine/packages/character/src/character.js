@@ -119,7 +119,7 @@ export class CharacterNode extends Node {
       }
     }
     let speed = Math.sqrt(mx * mx + mz * mz);
-    if (speed > 0.1 && this.graph.moveRootMotion() === 'travel') { const k = this.graph.moveSpeed() / speed; mx *= k; mz *= k; speed = this.graph.moveSpeed(); }
+    if (speed > 0.1 && this.graph.moveRootMotion(speed) === 'travel') { const s = this.graph.moveSpeed(speed), k = s / speed; mx *= k; mz *= k; speed = s; }
 
     // 2. controller
     c.jumped = false;

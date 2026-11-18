@@ -1,0 +1,6 @@
+{
+  "name": "vrmxg-m0-acceptance",
+  "private": true,
+  "type": "module",
+  "description": "M0's exit checks (W9, AB-T-0510) on the sample cafe, in Node, Chromium and WKWebView (not a workspace package)"
+}

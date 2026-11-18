@@ -51,3 +51,7 @@ injected Math.random is reported as diverging at step 201 in `node:mira` (with `
 480 timed steps: **1.92 ms per step in WKWebView over loopback** (p95 2.28, max 2.58) against M0's 5 ms. Snapshot capture
 1.04 ms, restore 3.19 ms. Chromium 3.65 ms and Node 4.35 ms: JSC runs this about twice as fast as V8, so Node numbers
 are not the product's. Raw files and `summary.json` are in `harness/results/`.
+
+**Re-run for M0 acceptance (AB-R-0948, AB-R-0949, W9).** The files in `harness/results/` are now that re-run: the same
+final hash `db46e5d51c815425` in all four runtimes, the injected Math.random still named at step 201, and 2.11 ms per
+step for 20 characters in WKWebView over loopback.

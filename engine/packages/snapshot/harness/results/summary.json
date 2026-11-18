@@ -10,34 +10,34 @@
    "sameAsNode": true,
    "firstDivergence": null,
    "snapshotRestore": true,
-   "captureMs": 0.3,
-   "restoreMs": 4.6,
+   "captureMs": 0.2,
+   "restoreMs": 4.8,
    "budget": {
     "characters": 20,
     "steps": 480,
     "stepMs": {
-     "mean": 3.646,
-     "p50": 3.6,
-     "p95": 4,
-     "max": 4.7
+     "mean": 3.986,
+     "p50": 4,
+     "p95": 4.3,
+     "max": 4.9
     },
     "captureMs": {
-     "mean": 1.3,
-     "p50": 1.1,
-     "p95": 2.9,
-     "max": 2.9
+     "mean": 1.2,
+     "p50": 1,
+     "p95": 3,
+     "max": 3
     },
     "restoreMs": {
-     "mean": 5.19,
-     "p50": 5,
-     "p95": 9.2,
-     "max": 9.2
+     "mean": 5.17,
+     "p50": 4.7,
+     "p95": 9.7,
+     "max": 9.7
     }
    }
   },
   "chromium-inject-200": {
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
-   "final": "6b8c32316fc314ac",
+   "final": "155153a35da713b9",
    "sameAsNode": false,
    "firstDivergence": {
     "step": 201,
@@ -50,11 +50,11 @@
      "physics"
     ],
     "a": "9400c047533d2017",
-    "b": "8038e395b760a997"
+    "b": "a8bb5c3c2cd686e8"
    },
    "snapshotRestore": true,
-   "captureMs": 0.2,
-   "restoreMs": 4.7,
+   "captureMs": 0.3,
+   "restoreMs": 5.1,
    "budget": null
   },
   "node": {
@@ -63,34 +63,34 @@
    "sameAsNode": true,
    "firstDivergence": null,
    "snapshotRestore": true,
-   "captureMs": 0.316,
-   "restoreMs": 5.276,
+   "captureMs": 0.447,
+   "restoreMs": 5.877,
    "budget": {
     "characters": 20,
     "steps": 480,
     "stepMs": {
-     "mean": 4.346,
-     "p50": 4.296,
-     "p95": 4.719,
-     "max": 5.236
+     "mean": 5.031,
+     "p50": 5.009,
+     "p95": 5.503,
+     "max": 7.057
     },
     "captureMs": {
-     "mean": 1.281,
-     "p50": 1.243,
-     "p95": 1.727,
-     "max": 1.727
+     "mean": 1.371,
+     "p50": 1.303,
+     "p95": 1.693,
+     "max": 1.693
     },
     "restoreMs": {
-     "mean": 5.82,
-     "p50": 5.698,
-     "p95": 6.771,
-     "max": 6.771
+     "mean": 6.515,
+     "p50": 6.388,
+     "p95": 7.411,
+     "max": 7.411
     }
    }
   },
   "node-inject-200": {
    "ua": "v26.12.1",
-   "final": "eb20871f171aed79",
+   "final": "4cbceef2535e0a0a",
    "sameAsNode": false,
    "firstDivergence": {
     "step": 201,
@@ -103,11 +103,11 @@
      "physics"
     ],
     "a": "9400c047533d2017",
-    "b": "a0ab0175d1145e3a"
+    "b": "a765c9dcdbf77c68"
    },
    "snapshotRestore": true,
-   "captureMs": 0.304,
-   "restoreMs": 5.279,
+   "captureMs": 0.378,
+   "restoreMs": 5.864,
    "budget": null
   },
   "wkwebview-loopback": {
@@ -116,34 +116,34 @@
    "sameAsNode": true,
    "firstDivergence": null,
    "snapshotRestore": true,
-   "captureMs": 0.32,
-   "restoreMs": 1.92,
+   "captureMs": 0.36,
+   "restoreMs": 1.88,
    "budget": {
     "captureMs": {
      "max": 2.3,
-     "mean": 1.04,
-     "p50": 0.92,
+     "mean": 1.066,
+     "p50": 0.96,
      "p95": 2.3
     },
     "characters": 20,
     "restoreMs": {
-     "max": 5.72,
-     "mean": 3.192,
-     "p50": 2.96,
-     "p95": 5.72
+     "max": 5.38,
+     "mean": 3.05,
+     "p50": 2.8,
+     "p95": 5.38
     },
     "stepMs": {
-     "max": 2.58,
-     "mean": 1.924,
-     "p50": 1.88,
-     "p95": 2.28
+     "max": 2.84,
+     "mean": 2.11,
+     "p50": 2.12,
+     "p95": 2.38
     },
     "steps": 480
    }
   },
   "wkwebview-loopback-inject-200": {
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
-   "final": "11dd430db42f697c",
+   "final": "c0a2800fbcbf798e",
    "sameAsNode": false,
    "firstDivergence": {
     "step": 201,
@@ -156,11 +156,11 @@
      "physics"
     ],
     "a": "9400c047533d2017",
-    "b": "455b29feaf014b0f"
+    "b": "bed974985b312ea5"
    },
    "snapshotRestore": true,
-   "captureMs": 0.32,
-   "restoreMs": 1.88,
+   "captureMs": 0.36,
+   "restoreMs": 1.92,
    "budget": null
   },
   "wkwebview-scheme": {
@@ -173,23 +173,23 @@
    "restoreMs": 2,
    "budget": {
     "captureMs": {
-     "max": 3,
-     "mean": 1,
+     "max": 2,
+     "mean": 1.1,
      "p50": 1,
-     "p95": 3
+     "p95": 2
     },
     "characters": 20,
     "restoreMs": {
-     "max": 5,
-     "mean": 3,
+     "max": 6,
+     "mean": 3.1,
      "p50": 3,
-     "p95": 5
+     "p95": 6
     },
     "stepMs": {
      "max": 3,
-     "mean": 1.902,
+     "mean": 2.056,
      "p50": 2,
-     "p95": 2
+     "p95": 3
     },
     "steps": 480
    }

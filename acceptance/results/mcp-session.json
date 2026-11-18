@@ -1,0 +1,102 @@
+{
+ "date": "2026-11-17",
+ "client": "claude -p (Claude Code 2.1.319, sonnet) with the vrmxg MCP server on a temporary copy of content/sample (--behaviours behaviours.js --vrmxa-core vrmxa-avatar-studio/packages/vrmxa-core)",
+ "ok": true,
+ "evidence": "describe Camera; engine_load (33 nodes); engine_step 160 replaying input/walk-in.json: entrance/left/trigger bodyEntered @109, entrance/left/hinge opened @130; get_node live entrance/left/hinge: 100.1° (target 100, opened); add_node cam-acceptance, set focalLength 85, undo -> 50; validate ok (0 errors, 0 warnings); save (3 lines); 10 tool calls, none failed; $0.144",
+ "calls": [
+  {
+   "tool": "describe",
+   "input": {
+    "type": "Camera"
+   },
+   "isError": false,
+   "result": "{\n \"type\": \"Camera\",\n \"extends\": [\n  \"Node3D\"\n ],\n \"description\": \"A physical camera: lens, sensor and focus, as the cinematics research specifies.\",\n \"asset\": null,\n \"schema\": {\n  \"type\": \"object\",\n  \"required\": [\n   \"id\",\n   \"type\"\n  ],\n  \"description\": \"A physical camera: lens, sensor and focus, as the cinematics research specifies.\",\n  \"properties\": {\n   \"id\": {\n    \"type\": \"string\",\n    \"patt…"
+  },
+  {
+   "tool": "engine_load",
+   "input": {},
+   "isError": false,
+   "result": "{\n \"nodes\": 33,\n \"step\": 0,\n \"services\": [\n  \"input\",\n  \"physics\",\n  \"characters\",\n  \"cameras\",\n  \"models\"\n ]\n}"
+  },
+  {
+   "tool": "engine_step",
+   "input": {
+    "steps": 160,
+    "replay": "input/walk-in.json"
+   },
+   "isError": false,
+   "result": "{\n \"step\": 160,\n \"seconds\": 2.667,\n \"signals\": [\n  {\n   \"step\": 109,\n   \"node\": \"entrance/left/trigger\",\n   \"signal\": \"bodyEntered\"\n  },\n  {\n   \"step\": 130,\n   \"node\": \"entrance/left/hinge\",\n   \"signal\": \"opened\"\n  }\n ],\n \"moreSignals\": 0\n}"
+  },
+  {
+   "tool": "get_node",
+   "input": {
+    "id": "entrance/left/hinge",
+    "live": true
+   },
+   "isError": false,
+   "result": "{\n \"id\": \"entrance/left/hinge\",\n \"type\": \"RigidBody\",\n \"step\": 160,\n \"local\": {\n  \"p\": [\n   -0.45,\n   0,\n   0\n  ],\n  \"q\": [\n   0,\n   0.7666,\n   0,\n   0.6421\n  ]\n },\n \"world\": {\n  \"p\": [\n   -0.95,\n   0,\n   6.1\n  ]\n },\n \"props\": {\n  \"bodyType\": \"dynamic\",\n  \"mass\": 12\n },\n \"behaviours\": [\n  {\n   \"use\": \"hinge\",\n   \"state\": {\n    \"angleDeg\": 100.1,\n    \"targetDeg\": 100,\n    \"reported\": \"opened\",\n    …"
+  },
+  {
+   "tool": "add_node",
+   "input": {
+    "node": {
+     "id": "cam-acceptance",
+     "type": "Camera",
+     "parent": "root",
+     "transform": {
+      "p": [
+       3,
+       2.5,
+       4
+      ]
+     },
+     "props": {
+      "preset": "orbit",
+      "target": "mira",
+      "focalLength": 50
+     }
+    }
+   },
+   "isError": false,
+   "result": "added cam-acceptance"
+  },
+  {
+   "tool": "set",
+   "input": {
+    "id": "cam-acceptance",
+    "path": "props.focalLength",
+    "value": 85
+   },
+   "isError": false,
+   "result": "cam-acceptance.props.focalLength = 85"
+  },
+  {
+   "tool": "undo",
+   "input": {},
+   "isError": false,
+   "result": "undone"
+  },
+  {
+   "tool": "get_node",
+   "input": {
+    "id": "cam-acceptance"
+   },
+   "isError": false,
+   "result": "{\n \"node\": {\n  \"id\": \"cam-acceptance\",\n  \"type\": \"Camera\",\n  \"parent\": \"root\",\n  \"transform\": {\n   \"p\": [\n    3,\n    2.5,\n    4\n   ]\n  },\n  \"props\": {\n   \"preset\": \"orbit\",\n   \"target\": \"mira\",\n   \"focalLength\": 50\n  }\n },\n \"signals\": [\n  \"ready\",\n  \"madeCurrent\"\n ],\n \"actions\": [\n  \"show\",\n  \"hide\",\n  \"makeCurrent\",\n  \"setPreset\",\n  \"nextPreset\"\n ]\n}"
+  },
+  {
+   "tool": "validate",
+   "input": {},
+   "isError": false,
+   "result": "{\n \"ok\": true,\n \"errors\": [],\n \"warnings\": []\n}"
+  },
+  {
+   "tool": "save",
+   "input": {},
+   "isError": false,
+   "result": "{\n \"saved\": \"cafe.vrmxs\",\n \"changedLines\": {\n  \"added\": 2,\n  \"removed\": 1,\n  \"total\": 3\n },\n \"warnings\": []\n}"
+  }
+ ],
+ "final": "1. **Camera type:** It extends Node3D and models a physical camera. Props:\n   - `focalLength`: 4–1200 mm, default 50.\n   - `sensor`: super35, fullframe, mft or custom.\n   - `fStop`: 0.7–64.\n   - `focusDistance`, `near` and `far`.\n   - `preset`: free, fixed, orbit, follow, overShoulder or firstPerson.\n   - `rig` and `target`.\n\n   Signals are `ready` and `madeCurrent`. Actions are `show`, `hide`, `makeCurrent`, `setPreset` and `nextPreset`.\n2. **Engine run:** I loaded the engine (33 nodes) and stepped 160 steps (2.667 s) replaying `input/walk-in.json`. Two signals fired:\n   - Step 109: `bodyEntered` on `entrance/left/trigger`.\n   - Step 130: `opened` on `entrance/left/hinge`.\n3. **Hinge state:** `entrance/left/hinge` is at 100.1° against a 100° target. It reports \"opened\" and is not locked.\n4. **Camera edits:**\n   - I added `cam-acceptance` under `root` at [3, 2.5, 4], with preset orbit, target `mira` and focal length 50.\n   - I set `props.focalLength` to 85.\n   - I undid that change.\n5. **Check and save:**\n   - `get_node` shows `focalLength` back at 50.\n   - `validate` returned ok, with no errors or warnings.\n   - `save` wrote `cafe.vrmxs` with 3 changed lines (2 added, 1 removed) and no warnings.",
+ "savedLine": "    {\"id\":\"cam-acceptance\",\"type\":\"Camera\",\"parent\":\"root\",\"transform\":{\"p\":[3,2.5,4]},\"props\":{\"focalLength\":50,\"preset\":\"orbit\",\"target\":\"mira\"}}"
+}

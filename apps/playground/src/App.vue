@@ -24,7 +24,21 @@ async function load() {
   ui.loading = false; refresh();
 }
 
-onMounted(async () => { pg = new Playground(canvas.value); pg.onChange = refresh; window.__playground = pg; await load(); });
+const mode = new URLSearchParams(location.search).get('mode');
+onMounted(async () => {
+  pg = new Playground(canvas.value, { preserveDrawingBuffer: mode === 'acceptance' });
+  pg.onChange = refresh; window.__playground = pg;
+  if (mode !== 'acceptance') { await load(); return; }
+  // M0's exit checks (acceptance/README.md): results for the runners in window.__result, then READY.
+  try {
+    const r = await pg.acceptance();
+    window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...r };
+    const s = r.simulation, x = r.rendered;
+    ui.notes = `acceptance: final ${s.final} · snapshot ${s.snapshot.rerunMatches ? 'identical' : 'DIFFERS'} · rendered = headless ${x.sameAsHeadless} · debug ${x.debug.colliders}+${x.debug.sensors.length}+${x.debug.capsules.length}/${x.debug.physicsColliders}`;
+  } catch (e) { window.__errors.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
+  ui.loading = false; refresh();
+  window.READY = true;
+});
 
 const toggle = () => pg.toggle();
 const step = () => pg.step();

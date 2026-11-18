@@ -1,0 +1,45 @@
+{
+ "checks": [
+  {
+   "n": 1,
+   "title": "The cafe runs in the playground in WKWebView (scheme, loopback) and Chromium",
+   "ok": true,
+   "evidence": "chromium: 600 frames, render 0.464 ms, door opened at step 130, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 0.578 ms, door opened at step 130, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 0.984 ms, door opened at step 130, 6 presets, 0 errors"
+  },
+  {
+   "n": 2,
+   "title": "Walk, run and jump by keyboard, mouse and gamepad, with VRMXA slots, speed blend and root motion",
+   "ok": true,
+   "evidence": "states fall/idle/jump/land/move; speed up to 4 m/s, run weight 1; 410 steps on travel root motion; jump 1.02 m; idle slot \"idle-sword\" (Mira wears stowed:sword, top:shell, weapon:sword); keyboard walk 1.4, run 4 m/s; gamepad moved 1.367 m and jumped; mouse turned the camera -0.5 rad; same in every runtime: true"
+  },
+  {
+   "n": 3,
+   "title": "A 10 s recorded run hashes identically at every step everywhere; a snapshot at 300 re-simulates to 600 identically",
+   "ok": true,
+   "evidence": "600 steps × 43 components; final a44f1d6333b4b6ce; chromium: identical, snapshot identical, rendered = headless true; wkwebview-scheme: identical, snapshot identical, rendered = headless true; wkwebview-loopback: identical, snapshot identical, rendered = headless true"
+  },
+  {
+   "n": 4,
+   "title": "20 characters plus physics step in under 5 ms in WKWebView over loopback (M5 Max)",
+   "ok": true,
+   "evidence": "20 characters, 2.11 ms mean, p95 2.38, max 2.84 (engine/packages/snapshot/harness, 480 timed steps); not measured on a base M-series Mac"
+  },
+  {
+   "n": 5,
+   "title": "MCP: describe, inspect the running engine, edit with undo",
+   "ok": true,
+   "evidence": "describe Camera; engine_load (33 nodes); engine_step 160 replaying input/walk-in.json: entrance/left/trigger bodyEntered @109, entrance/left/hinge opened @130; get_node live entrance/left/hinge: 100.1° (target 100, opened); add_node cam-acceptance, set focalLength 85, undo -> 50; validate ok (0 errors, 0 warnings); save (3 lines); 10 tool calls, none failed; $0.144"
+  },
+  {
+   "n": 6,
+   "title": "Debug draw shows colliders, sensors, rays and the character capsules",
+   "ok": true,
+   "evidence": "33 colliders + 3 sensors (door-1/trigger, entrance/left/trigger, entrance/right/trigger) + 2 capsules (hana-1, mira) = 38 of 38; 1 spring-arm ray; the same in chromium, wkwebview-scheme, wkwebview-loopback"
+  }
+ ],
+ "runtimes": {
+  "node": "v26.12.1",
+  "chromium": "156.0.8078.4",
+  "wkwebview": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+ }
+}

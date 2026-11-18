@@ -2,15 +2,13 @@
 // never in reactive state (a reactive proxy around three.js objects costs every access and breaks identity).
 // The UI talks to it through plain methods and reads a small stats object a few times a second.
 import { installPortableMath } from '@vrmxg/dmath';
-import { m0Registry } from '@vrmxg/registry/m0';
-import { parse } from '@vrmxg/scene';
-import { SceneTree } from '@vrmxg/core';
-import { loadRapier, installPhysics } from '@vrmxg/physics';
-import { installCharacters } from '@vrmxg/character';
-import { installInput, KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
-import { installCameras, PRESETS } from '@vrmxg/camera';
-import { installModels } from '@vrmxg/model';
+import { loadRapier } from '@vrmxg/physics';
+import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
+import { PRESETS } from '@vrmxg/camera';
 import { RenderHost } from '@vrmxg/render';
+import { loadSample, buildWorld } from './world.js';
+import { runSimulation, runDevices, STEPS } from './acceptance.js';
+import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
 import * as projectBehaviours from '@content/behaviours.js';
@@ -22,13 +20,15 @@ const behaviours = new Map(Object.entries(projectBehaviours).filter(([, v]) => t
 const bytes = async (ref) => { const r = await fetch(ref); if (!r.ok) throw new Error(`${ref}: ${r.status}`); return new Uint8Array(await r.arrayBuffer()); };
 const json = async (ref) => JSON.parse(new TextDecoder().decode(await bytes(ref)));
 
+export { vrmxaCore, behaviours, bytes };
+
 export { PRESETS };
 
 export class Playground {
-  /** @param {HTMLCanvasElement} canvas */
-  constructor(canvas) {
+  /** @param {HTMLCanvasElement} canvas @param {{ preserveDrawingBuffer?: boolean }} [opts] */
+  constructor(canvas, { preserveDrawingBuffer = false } = {}) {
     this.canvas = canvas;
-    this.host = new RenderHost({ canvas });
+    this.host = new RenderHost({ canvas, preserveDrawingBuffer });
     this.tree = null; this.input = null;
     this.playing = false;
     this.stats = { frameMs: 0, fps: 0, simMs: 0, renderMs: 0, step: 0, alpha: 0, steps: 0 };
@@ -46,22 +46,8 @@ export class Playground {
   async load(scene = 'cafe.vrmxs') {
     this.pause();
     const R = await loadRapier();
-    const doc = parse(new TextDecoder().decode(await bytes(scene)));
-    const prefabs = new Map();
-    const walk = async (d) => { for (const a of d.assets ?? []) if (a.type === 'vrmxs' && !prefabs.has(a.ref)) { const p = parse(new TextDecoder().decode(await bytes(a.ref))); prefabs.set(a.ref, p); await walk(p); } };
-    await walk(doc);
-    const animDoc = await json('animations.json');
-    const clips = new Map();
-    for (const c of animDoc.clips) clips.set(c.sha256, await bytes(c.file));
-    const tree = new SceneTree({ registry: m0Registry(), prefabs, behaviours, seed: 1 });
-    const input = installInput(tree);
-    installPhysics(tree, R);
-    const lib = installCharacters(tree, { resolve: bytes, vrmxaCore, prefabs, projectAnimations: { doc: animDoc, clips } });
-    installCameras(tree);
-    const models = installModels(tree, { resolve: bytes });
-    await models.prepare(doc);
-    await lib.prepare(doc);
-    tree.instantiate(doc);
+    this.sample = await loadSample(bytes, scene);
+    const { tree, input, models } = await buildWorld(R, this.sample, { vrmxaCore, behaviours });
     if (!this.devices) {
       this.devices = { keyboard: new KeyboardDevice(), mouse: new MouseDevice(), gamepad: new GamepadDevice() };
       this.devices.keyboard.attach(window); this.devices.mouse.attach(this.canvas);
@@ -74,6 +60,66 @@ export class Playground {
     this._loop();
     this._changed();
     return { nodes: tree.all().length, skipped: models.skipped };
+  }
+
+  /**
+   * M0's exit checks in this browser (?mode=acceptance): the runtime-neutral ones (acceptance.js), then the
+   * playground itself: the recorded walk rendered frame by frame, every camera preset, debug draw.
+   */
+  async acceptance() {
+    const R = await loadRapier(), now = () => performance.now();
+    const sample = await loadSample(bytes);
+    const opts = { vrmxaCore, behaviours };
+    const simulation = await runSimulation(R, sample, opts, { now });
+    const devices = await runDevices(R, sample, opts);
+    const rendered = await this._renderedChecks(simulation);
+    return { simulation, devices, rendered };
+  }
+
+  async _renderedChecks(simulation) {
+    await this.load();
+    this.pause();
+    const tree = this.tree, host = this.host;
+    const types = {}; for (const n of tree.all()) types[n.type] = (types[n.type] ?? 0) + 1;
+    let setMeshes = 0; tree.find('set')?.object3d.traverse((o) => { if (o.isMesh) setMeshes++; });
+    const scene = {
+      types, setMeshes,
+      player: tree.find('mira')?.behaviours.map((b) => b.name), npc: tree.find('hana-1')?.behaviours.map((b) => b.name),
+      doors: tree.all().filter((n) => n.type === 'Instance').map((n) => n.id), lights: tree.all().filter((n) => /Light$/.test(n.type)).map((n) => `${n.id}:${n.type}`),
+      prop: !!tree.find('espresso')?.model,
+    };
+    // the recorded walk, rendered: one step per frame at 60 Hz until the 600th step
+    const signals = [];
+    const emit = tree.emit.bind(tree);
+    tree.emit = (node, signal, payload) => { signals.push({ step: tree.clock.step, node: node.id, signal }); return emit(node, signal, payload); };
+    const rec = await (await fetch('input/walk-in.json')).json();
+    this.input.replay({ ...rec, start: tree.clock.step });
+    const renderMs = []; let frames = 0;
+    while (tree.clock.step < STEPS) { host.frame(1 / 60); renderMs.push(host.last.renderMs); frames++; }
+    const h600 = hashValue(worldHashes(tree, { physicsBytes: true }));
+    const headless600 = simulation.final; // the headless run's hash after step 600, same components
+    // every camera preset, switched at run time
+    const cam = /** @type {any} */ (tree.services.get('cameras').current), presets = {};
+    for (const p of PRESETS) {
+      cam.call('setPreset', { preset: p });
+      for (let i = 0; i < 30; i++) host.frame(1 / 60);
+      const w = cam.object3d.getWorldPosition(cam.object3d.position.clone());
+      presets[p] = { preset: cam.preset, at: w.toArray().map((v) => +v.toFixed(2)) };
+    }
+    cam.call('setPreset', { preset: 'follow' }); // the follow camera's spring arm casts a ray every step
+    // debug draw, everything on
+    host.debug.set(true);
+    for (let i = 0; i < 30; i++) host.frame(1 / 60);
+    const physics = tree.services.get('physics');
+    const wires = [...host.debug.wires.values()];
+    const debug = { ...host.debug.counts(), physicsColliders: physics.colliders.size, sensors: wires.filter((w) => w.kind === 'sensor').map((w) => w.line.userData.node).sort(), capsules: wires.filter((w) => w.kind === 'capsule').map((w) => w.line.userData.node).sort() };
+    const sorted = [...renderMs].sort((a, b) => a - b);
+    return {
+      scene, frames, renderMs: { mean: +(sorted.reduce((a, b) => a + b, 0) / sorted.length).toFixed(3), p95: +sorted[Math.floor(sorted.length * 0.95)].toFixed(3) },
+      sameAsHeadless: h600 === headless600, h600, headless600,
+      doorSignals: signals.filter((s) => s.signal === 'opened' || s.signal === 'closed'),
+      presets, debug, calls: host.renderer.info.render.calls, triangles: host.renderer.info.render.triangles,
+    };
   }
 
   play() { this.playing = true; this._last = null; this._changed(); }

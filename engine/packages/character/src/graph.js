@@ -131,14 +131,21 @@ export class LocomotionGraph {
     return { clip: e.clip, time: info.loops ? local - Math.floor(local / d) * d : Math.min(local, d), weight: 1 };
   }
 
-  /** The move clip's root-motion kind ('travel' moves the character by the clip, 'inPlace' by input). */
-  moveRootMotion() {
-    const e = this.picks[this.runWeight(this.speed) > 0.5 ? 'run' : 'walk'] ?? this.picks.walk;
+  /**
+   * The move clip's root-motion kind ('travel' moves the character by the clip, 'inPlace' by input) at a speed:
+   * the speed the controller is asked for, or the graph's own.
+   */
+  moveRootMotion(speed = this.speed) {
+    const e = this.picks[this.runWeight(speed) > 0.5 ? 'run' : 'walk'] ?? this.picks.walk;
     return e ? this.info.get(e.clip)?.rootMotion ?? 'inPlace' : 'inPlace';
   }
-  /** Authored speed of the blended move clips (m/s), for travel root motion. */
-  moveSpeed() {
-    const wr = this.runWeight(this.speed);
+  /**
+   * Authored speed of the move clips blended for a speed (m/s), for travel root motion. Pass the speed asked for:
+   * blending from the graph's own speed, which travel root motion has already set to a clip's speed, would hold
+   * the blend where it is (a walk could never become a run).
+   */
+  moveSpeed(speed = this.speed) {
+    const wr = this.runWeight(speed);
     const sw = this.picks.walk ? this.info.get(this.picks.walk.clip)?.speed ?? 1.4 : 1.4;
     const sr = this.picks.run ? this.info.get(this.picks.run.clip)?.speed ?? 4 : sw;
     return sw + (sr - sw) * wr;

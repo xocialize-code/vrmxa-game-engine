@@ -501,11 +501,11 @@ Start minimal (engine notes: "the game development UI can start minimally for te
 
 ## 8. Phasing
 
-*M0 is planned in detail in [M0-PLAN.md](M0-PLAN.md) (plan AB-P-0013, tasks AB-T-0501 to 0510).*
+*M0 is planned in detail in [M0-PLAN.md](M0-PLAN.md) (plan AB-P-0013, tasks AB-T-0501 to 0510).* **M0 is done (2026-11-17):** the six exit checks pass on the sample cafe in Node, Chromium and WKWebView ([acceptance/](acceptance/README.md), receipts AB-R-0946 to 0951); the budget on a base M-series Mac is still to measure (AB-T-0511). M1 planning can start.
 
 | Phase | Scope |
 |---|---|
-| **M0 Runtime core** | Node tree, scenes, signals, fixed-step loop with interpolation, Rapier adapter, VRMXA player, animation slots and state machine, character controller, cameras (presets), input map, picking, debug draw, MCP describe / inspect |
+| **M0 Runtime core** (done 2026-11-17) | Node tree, scenes, signals, fixed-step loop with interpolation, Rapier adapter, VRMXA player, animation slots and state machine, character controller, cameras (presets), input map, picking, debug draw, MCP describe / inspect |
 | **M1 Playable** | VRMXI items and interaction, closet protocol at run time, look-at, lip sync, audio, minimal editor (tree, inspector, gizmos, play), MCP edit / drive, frame export |
 | **M2 Production** | Shot sequencer, virtual cameras and blends, post stack, particles, navigation and behaviour trees, save, layered animation (G10), IK |
 | **M3 Later** | Persona-driven NPCs, ragdolls, vehicles, viewports and split screen, networking, WebXR, WebGPU, camera and gesture input |

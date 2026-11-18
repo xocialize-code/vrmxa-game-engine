@@ -163,3 +163,16 @@ test('travel root motion: the clip\'s authored speed moves the character and the
   const rest = mira.vrm.humanoid.normalizedRestPose.hips.position;
   assert.deepEqual([hips.x, hips.z], [rest[0], rest[2]], 'the clip\'s forward drift is removed from the hips');
 });
+
+test('travel root motion blends from the speed asked for: a run input becomes a run, not a walk held at walk speed', { skip: SKIP }, async () => {
+  const { tree, mira } = await setup({ animations: animsTravel });
+  const step = (n, move) => { for (let k = 0; k < n; k++) { mira.input.move = move; tree.step(); } };
+  step(30, [0, 0]);
+  step(60, [0, 4]);
+  assert.ok(Math.abs(mira.graph.speed - 4) < 1e-9 && mira.graph.runWeight(mira.graph.speed) === 1, `running at the run clip's 4 m/s (${mira.graph.speed})`);
+  const z = mira.object3d.position.z;
+  step(30, [0, 4]);
+  assert.ok(Math.abs(mira.object3d.position.z - z - 2) < 0.05, 'moving 4 m/s');
+  step(60, [0, 2.7]);
+  assert.ok(Math.abs(mira.graph.speed - 2.7) < 1e-9 && mira.graph.runWeight(2.7) > 0.4 && mira.graph.runWeight(2.7) < 0.6, 'between the clips: blended, at the speed asked');
+});

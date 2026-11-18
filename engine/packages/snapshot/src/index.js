@@ -166,3 +166,30 @@ export function assertSameRun(a, b, label = 'runs') {
   const d = compareRuns(a, b);
   if (d) throw new Error(`${label} diverge at step ${d.step} in ${d.component}${d.components.length > 1 ? ` (and ${d.components.slice(1, 6).join(', ')}${d.components.length > 6 ? ', …' : ''})` : ''}: ${d.a} vs ${d.b}`);
 }
+
+/**
+ * A recorded run, compact for storage and transport: the component names once, then per step its clock and
+ * only the components whose hash changed since the previous step ({ index: hash }).
+ * @param {Array<{ step: number, h: Record<string, string> }>} run
+ */
+export function packRun(run) {
+  const components = [...new Set(run.flatMap((r) => Object.keys(r.h)))];
+  let prev = {};
+  const steps = run.map((r) => {
+    /** @type {Record<number, string | null>} */ const changed = {};
+    components.forEach((c, i) => { if (r.h[c] !== prev[c]) changed[i] = r.h[c] ?? null; });
+    prev = r.h;
+    return [r.step, changed];
+  });
+  return { components, steps };
+}
+
+/** The inverse of packRun. @param {{ components: string[], steps: Array<[number, Record<string, string | null>]> }} packed */
+export function unpackRun({ components, steps }) {
+  /** @type {Record<string, string>} */ let cur = {};
+  return steps.map(([step, changed]) => {
+    cur = { ...cur };
+    for (const [i, h] of Object.entries(changed)) { if (h === null) delete cur[components[Number(i)]]; else cur[components[Number(i)]] = h; }
+    return { step, h: cur };
+  });
+}
