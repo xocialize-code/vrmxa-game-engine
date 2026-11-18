@@ -30,7 +30,7 @@ test('schema catches typed errors with useful messages', () => {
   d.nodes.find((n) => n.id === 'set').asset = 'hana';                  // wrong asset type for Model
   const r = check(d, { prefabs });
   assert.ok(r.errors.some((e) => /focalLength must be >= 4/.test(e)), r.errors.join('\n'));
-  assert.ok(r.errors.some((e) => /preset must be equal to one of the allowed values \(free, orbit/.test(e)));
+  assert.ok(r.errors.some((e) => /preset must be equal to one of the allowed values \(free, fixed, orbit/.test(e)));
   assert.ok(r.errors.some((e) => /radius must be >= 0/.test(e)));
   assert.ok(r.errors.some((e) => /asset "hana" is vrmxa; Model needs glb/.test(e)));
 });
@@ -117,6 +117,6 @@ test('describe gives an agent everything for a type: schema, units, signals, act
   assert.equal(t.propMeta.capsuleHeight.unit, 'm');
   assert.ok(t.actions.say.args.properties.text);
   assert.ok(t.signals.ready, 'inherited signal');
-  assert.deepEqual(t.behaviours, ['wander']);
+  assert.deepEqual(t.behaviours, ['wander', 'player']);
   assert.ok(JSON.stringify(documentSchema(reg)).length > 1000);
 });

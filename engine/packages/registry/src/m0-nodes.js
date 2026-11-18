@@ -52,10 +52,16 @@ export function m0Registry() {
       fStop: P.number({ min: 0.7, max: 64, default: 2.8 }),
       focusDistance: P.number({ min: 0.05, unit: 'm', default: 3 }),
       near: P.number({ min: 0.001, unit: 'm', default: 0.1 }), far: P.number({ min: 0.1, unit: 'm', default: 500 }),
-      preset: P.enum(['free', 'orbit', 'follow', 'firstPerson', 'fixed'], { default: 'free' }),
+      preset: P.enum(['free', 'fixed', 'orbit', 'follow', 'overShoulder', 'firstPerson'], { default: 'free', sim: true, description: 'Rig preset; switchable at run time (setPreset, nextPreset).' }),
+      rig: { schema: { type: 'object', description: 'Rig overrides: distance, height, side (m).' }, meta: { sim: true } },
       target: P.nodeRef({ description: 'Follow / orbit target.' }),
     },
-    actions: { makeCurrent: { args: {}, description: 'Render through this camera.' } },
+    actions: {
+      makeCurrent: { args: {}, description: 'Render through this camera.' },
+      setPreset: { args: { preset: arg(P.enum(['free', 'fixed', 'orbit', 'follow', 'overShoulder', 'firstPerson']), 'Rig preset.') } },
+      nextPreset: { args: {} },
+    },
+    signals: { madeCurrent: {} },
   });
   r.define('DirectionalLight', { extends: 'Node3D', description: 'Sun-like light.', props: { color: P.color({ default: '#ffffff' }), intensity: P.number({ min: 0, default: 2 }), castShadow: P.boolean({ default: true }) } });
   r.define('PointLight', { extends: 'Node3D', description: 'Omni light with range.', props: { color: P.color({ default: '#ffffff' }), intensity: P.number({ min: 0, default: 1, unit: 'cd' }), range: P.number({ min: 0, unit: 'm', default: 10 }) } });
@@ -90,6 +96,7 @@ export function m0Registry() {
     params: { axis: P.vec3({ default: [0, 1, 0] }), openAngle: P.number({ min: -180, max: 180, default: 100, unit: '°' }), locked: P.boolean({ default: false }) },
     signals: { opened: {}, closed: {} }, actions: { open: { args: {} }, close: { args: {} }, toggle: { args: {} } },
   });
+  r.behaviour('player', { description: 'Drives a Character from the move / jump / run actions, relative to the current camera.', on: ['Character'], params: { walkSpeed: P.number({ min: 0, default: 1.4, unit: 'm/s' }), runSpeed: P.number({ min: 0, default: 4, unit: 'm/s' }) } });
   r.behaviour('pickup', { description: 'Can be picked up; equips a VRMXW if the item names one.', on: ['Instance', 'Model', 'RigidBody'], params: { item: P.string() }, signals: { pickedUp: { args: { by: P.nodeRef() } } } });
   return r;
 }

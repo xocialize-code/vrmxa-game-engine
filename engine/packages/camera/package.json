@@ -1,0 +1,21 @@
+{
+  "name": "@vrmxg/camera",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG cameras: the physical Camera node (focal length, sensor, focus, f-stop, thin-lens depth of field), rig presets stepped with the simulation (orbit, follow, over the shoulder, first person, fixed, free) with a spring arm, and picking (physics ray, three-mesh-bvh on skinned meshes).",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/core": "0.1.0",
+    "three": "0.187.0",
+    "three-mesh-bvh": "0.9.18"
+  },
+  "vrmxg": { "determinism": "simulation" }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@vrmxg/input",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG input: named actions from vrmxg.json bound to keys, mouse and gamepads, latched once per simulation step, recorded and replayed; and the player controller behaviour.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/core": "0.1.0"
+  },
+  "vrmxg": { "determinism": "simulation" }
+}
