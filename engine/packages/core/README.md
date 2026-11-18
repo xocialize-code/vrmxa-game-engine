@@ -31,7 +31,7 @@ const saved = tree.toDocument();      // back to .vrmxs; changes inside prefabs 
 | **Pause and time scale** | `clock.paused`; per node `processMode` (`inherit`, `pausable`, `always`, `disabled`) and `timeScale` (multiplies down the tree) |
 | **Random** | `RandomStreams`: named sfc32 streams from the scene seed (`node.rng`, `behaviour.rng`, `tree.rng.get(name)`), snapshot-able |
 | **Timers and tweens** | Counted in steps; owned by a node and cancelled with it; follow its pause and time scale. Tweens interpolate numbers and arrays, slerp quaternions, with easings |
-| **Autoloads** | `loadServices(vrmxg.json, classes)`: project services that start before the scene and step first |
+| **Services** | `loadServices(vrmxg.json, classes)` for project autoloads, `addService(name, service)` for engine systems (physics). They start before the scene; `physicsProcess` runs first in a step, `afterNodes` after the nodes |
 | **State** | `getState()` and `stateHash()`: everything simulated, for replay and cross-engine checks |
 
 ## One step, in order
@@ -40,7 +40,9 @@ const saved = tree.toDocument();      // back to .vrmxs; changes inside prefabs 
 2. Timers and tweens, in creation order.
 3. Every processing node in tree order (parent before children, siblings in order): the node's `physicsProcess`, its
    behaviours' in attachment order, then its state machine.
-4. The clock advances. Nodes added during a step first run on the next one.
+4. Services' `afterNodes`, in declaration order: the physics world steps here, after nodes and behaviours set this
+   step's inputs, and its contact and sensor events dispatch.
+5. The clock advances. Nodes added during a step first run on the next one.
 
 ## Tests
 

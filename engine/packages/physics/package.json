@@ -1,0 +1,21 @@
+{
+  "name": "@vrmxg/physics",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG physics: an engine-neutral adapter implemented on Rapier's deterministic build, RigidBody / Collider / Area nodes, the hinge behaviour, queries, collision layers, snapshots and debug render data.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@dimforge/rapier3d-deterministic-compat": "0.21.0",
+    "@vrmxg/core": "0.1.0",
+    "three": "0.187.0"
+  },
+  "vrmxg": { "determinism": "simulation" }
+}

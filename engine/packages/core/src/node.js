@@ -40,7 +40,7 @@ export class Node {
     /** @type {Node[]} */ this.children = [];
     /** @type {import('./tree.js').SceneTree | null} */ this.tree = null;
     /** @type {import('./behaviour.js').Behaviour[]} */ this.behaviours = [];
-    /** @type {import('./statemachine.js').StateMachine | null} */ this.stateMachine = null;
+    /** @type {import('./statemachine.js').StateMachine | null} */ this._stateMachine = null;
     /** 'inherit' | 'pausable' | 'always' (runs while the tree is paused) | 'disabled' */
     this.processMode = 'inherit';
     /** Multiplies the step for this subtree (slow motion); 0 freezes it. */
@@ -49,6 +49,13 @@ export class Node {
     this.inner = this.id.includes('/');
     /** @internal the tree's own root node */ this._isRoot = false;
     /** @internal parent id from the document, until the node is attached */ this._parentId = /** @type {string | undefined} */ (data.parent);
+  }
+
+  /** Optional per-node state machine, stepped after the node's behaviours. */
+  get stateMachine() { return this._stateMachine; }
+  set stateMachine(sm) {
+    this._stateMachine = sm;
+    if (this.tree) this.tree._order = null; // the tree's list of nodes with step work changes
   }
 
   // ---------------------------------------------------------------- lifecycle (override in subclasses)

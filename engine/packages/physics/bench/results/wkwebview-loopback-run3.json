@@ -1,0 +1,69 @@
+{
+  "origin": "loopback",
+  "timerRes": 0.02,
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+  "engine": {
+    "mean": 0.1232,
+    "p50": 0.04,
+    "p95": 0.5533
+  },
+  "isolated": true,
+  "overheadMs": 0.0107,
+  "overheadPct": 9.5,
+  "passes": [
+    {
+      "engine": {
+        "mean": 0.1245,
+        "p50": 0.04,
+        "p95": 0.56
+      },
+      "raw": {
+        "mean": 0.1224,
+        "p50": 0.04,
+        "p95": 0.54
+      }
+    },
+    {
+      "engine": {
+        "mean": 0.1234,
+        "p50": 0.04,
+        "p95": 0.56
+      },
+      "raw": {
+        "mean": 0.1133,
+        "p50": 0.02,
+        "p95": 0.5
+      }
+    },
+    {
+      "engine": {
+        "mean": 0.1215,
+        "p50": 0.04,
+        "p95": 0.54
+      },
+      "raw": {
+        "mean": 0.1133,
+        "p50": 0.04,
+        "p95": 0.5
+      }
+    },
+    {
+      "engine": {
+        "mean": 0.1247,
+        "p50": 0.04,
+        "p95": 0.56
+      },
+      "raw": {
+        "mean": 0.1108,
+        "p50": 0.04,
+        "p95": 0.5
+      }
+    }
+  ],
+  "rapier": "0.21.0",
+  "raw": {
+    "mean": 0.1125,
+    "p50": 0.0333,
+    "p95": 0.5
+  }
+}

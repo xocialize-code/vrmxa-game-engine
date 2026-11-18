@@ -215,12 +215,12 @@ test('unknown node types and behaviours run as plain nodes and survive the round
 
 test('autoload services start before the scene and step first', () => {
   const order = [];
-  class Score { constructor(tree, entry) { this.points = entry.start; } ready() { order.push('service ready'); } physicsProcess() { this.points++; order.push('service step'); } }
+  class Score { constructor(tree, entry) { this.points = entry.start; } ready() { order.push('service ready'); } physicsProcess() { this.points++; order.push('service step'); } afterNodes() { order.push('service after'); } }
   const tree = makeTree().loadServices({ autoload: [{ name: 'score', use: 'score', start: 10 }] }, new Map([['score', Score]]));
   class N extends Node { physicsProcess() { order.push('node step'); } }
   tree.classes = new Map([['Marker', N]]);
   tree.instantiate({ format: 'vrmxs', version: 1, id: 's', nodes: [{ id: 'm', type: 'Marker' }] });
   tree.step();
-  assert.deepEqual(order, ['service ready', 'service step', 'node step']);
+  assert.deepEqual(order, ['service ready', 'service step', 'node step', 'service after']);
   assert.equal(tree.services.get('score').points, 11);
 });

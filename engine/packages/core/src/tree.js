@@ -6,7 +6,9 @@
 //   2. timers and tweens, in creation order;
 //   3. every processing node in tree order (pre-order: parent before children, siblings in order):
 //      the node's physicsProcess, then its behaviours' in attachment order, then its state machine;
-//   4. the clock advances.
+//   4. autoload services' afterNodes, in declaration order (the physics world steps here, after
+//      nodes and behaviours have set this step's inputs, and its events dispatch);
+//   5. the clock advances.
 // Nodes added during a step first process on the next one. Signals dispatch immediately, in
 // connection order.
 import { flatten } from '@vrmxg/scene';
@@ -14,6 +16,8 @@ import { Node } from './node.js';
 import { Clock, DT } from './clock.js';
 import { RandomStreams } from './rng.js';
 import { TimerService } from './timers.js';
+
+const NOOP_STEP = Node.prototype.physicsProcess;
 
 export class SceneTree {
   /**
@@ -39,6 +43,8 @@ export class SceneTree {
     this.root.tree = this;
     /** @type {Map<string, Node>} */ this.byId = new Map();
     /** @type {Map<Node, Map<string, any[]>>} */ this.links = new Map();
+    /** @type {Node[] | null} cached tree order for step(); null after the tree changes */
+    this._order = null;
     /** Actions that were called but that no node method or behaviour implements: [{ id, action }]. */
     this.unhandled = [];
     this.doc = null;
@@ -91,6 +97,7 @@ export class SceneTree {
     parent.children.splice(parent.children.indexOf(node), 1);
     parent.object3d.remove(node.object3d);
     node.parent = null;
+    this._order = null;
     for (const n of gone) { this.byId.delete(n.id); this.links.delete(n); this.timers.cancelOwnedBy(n); n.tree = null; }
     // Connections into the removed subtree go too; code listeners (fn) stay with their emitter.
     for (const map of this.links.values()) for (const [sig, list] of map) map.set(sig, list.filter((l) => l.fn || this.byId.has(l.to)));
@@ -113,6 +120,7 @@ export class SceneTree {
     parent.children.splice(i, 0, node);
     parent.object3d.add(node.object3d);
     this.byId.set(node.id, node);
+    this._order = null;
   }
 
   // enterTree pre-order, then behaviours attach, then ready post-order (Godot's order).
@@ -123,6 +131,7 @@ export class SceneTree {
     for (const n of order) this._attachBehaviours(n);
     const post = (n) => { for (const c of n.children) post(c); n.ready(); for (const b of n.behaviours) b.ready(); n.stateMachine?.start(); };
     for (const n of nodes) post(n);
+    this._order = null;
   }
 
   _attachBehaviours(node) {
@@ -195,10 +204,10 @@ export class SceneTree {
   step() {
     for (const s of this.services.values()) s.physicsProcess?.(DT);
     this.timers.step((n) => (n && this.byId.get(n.id) === n ? this.scaleOf(n) : 0));
-    const order = [];
-    const pre = (n) => { for (const c of n.children) { order.push(c); pre(c); } };
-    pre(this.root);
-    for (const n of order) {
+    // Only nodes with step work (a physicsProcess override, behaviours or a state machine), in tree
+    // order; the list is rebuilt after the tree changes or a state machine is attached.
+    if (this._order === null) this._order = this.all().filter((n) => n.physicsProcess !== NOOP_STEP || n.behaviours.length > 0 || n.stateMachine !== null);
+    for (const n of this._order) {
       if (n.tree !== this) continue; // removed earlier in this step
       const scale = this.scaleOf(n);
       if (scale === 0) continue;
@@ -207,6 +216,7 @@ export class SceneTree {
       for (const b of n.behaviours) b.physicsProcess(dt);
       n.stateMachine?.step(dt);
     }
+    for (const s of this.services.values()) s.afterNodes?.(DT);
     this.clock.step++;
   }
 
@@ -235,12 +245,21 @@ export class SceneTree {
 
   // ---------------------------------------------------------------- autoloads
 
+  /** Add a service directly (engine systems such as physics register themselves this way). */
+  addService(name, service) {
+    if (this.services.has(name)) throw new Error(`service "${name}" already exists`);
+    this.services.set(name, service);
+    service.ready?.();
+    return service;
+  }
+
   /**
    * Start the project's autoload services (vrmxg.json { "autoload": [{ "name", "use", ...params }] }).
    * @param {any} project parsed vrmxg.json
    * @param {Map<string, any>} serviceClasses classes by "use"
    */
   loadServices(project, serviceClasses) {
+    if (!project.autoload) return this;
     for (const entry of project.autoload ?? []) {
       const Cls = serviceClasses.get(entry.use);
       if (!Cls) throw new Error(`autoload "${entry.name}" uses unknown service "${entry.use}"`);

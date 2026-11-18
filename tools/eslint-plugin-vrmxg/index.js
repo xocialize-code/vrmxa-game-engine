@@ -8,7 +8,8 @@
 //   - setTimeout, setInterval, requestAnimationFrame, queueMicrotask → step-driven timers
 //   - the ** operator and **=                                → Math.pow (portable once dmath is installed)
 //   - Math.sinh, cosh, tanh, asinh, acosh, atanh, expm1, log1p, log2, log10 (not in dmath)
-//   - .rotation (three's Euler mirror, computed with asin/atan2 on every quaternion write) → .quaternion
+//   - .rotation read or written as a property (three's Euler mirror, computed with asin/atan2 on every
+//     quaternion write) → .quaternion; calling a method named rotation() is fine
 // Packages opt in with "vrmxg": { "determinism": "simulation" } in their package.json (eslint.config.js).
 // A deliberate exception takes a reason: // eslint-disable-next-line vrmxg/deterministic -- <why>
 
@@ -53,7 +54,9 @@ const deterministic = {
         if (name === null) return;
         const base = baseName(node.object);
         if (base) checkMember(node, base, name);
-        if (name === 'rotation' && !node.computed) context.report({ node: node.property, messageId: 'rotation' });
+        // three's Euler mirror is a property; a method named rotation() (Rapier's body.rotation()) is not it.
+        const called = node.parent?.type === 'CallExpression' && node.parent.callee === node;
+        if (name === 'rotation' && !node.computed && !called) context.report({ node: node.property, messageId: 'rotation' });
       },
       // const { random, log2 } = Math
       VariableDeclarator(node) {

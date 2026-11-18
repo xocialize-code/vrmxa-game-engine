@@ -16,6 +16,7 @@ tester.run('vrmxg/deterministic', plugin.rules.deterministic, {
      const f64 = new Float64Array(1); const u32 = new Uint32Array(f64.buffer);
      export const step = (s, dt) => { const a = Math.sin(s.t) * Math.sqrt(dt); s.v = Math.pow(a, 2) + Math.abs(s.v) + Math.floor(s.t) + Math.imul(3, 5) + Math.trunc(dt); s.t += dt; return sin(a) + pow(2, 0.5); };`,
     'node.quaternion.setFromAxisAngle(axis, angle);',
+    'const r = body.rotation(); const t = body.translation();', // Rapier's methods, not three's Euler
     'const r = Math.max(Math.min(x, 1), 0) + Math.round(y) + Math.hypot(a, b) + Math.atan2(y, x) + Math.exp(z) + Math.log(w) + Math.cbrt(v);',
     'const rng = createRng(seed); const v = rng.next();',
     'const settings = { rotationSpeed: 1 }; settings.rotationSpeed = 2;',

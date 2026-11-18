@@ -1,0 +1,6 @@
+{
+  "name": "vrmxg-physics-bench",
+  "private": true,
+  "type": "module",
+  "description": "Step-cost bench for @vrmxg/physics vs raw Rapier (not a workspace package)"
+}

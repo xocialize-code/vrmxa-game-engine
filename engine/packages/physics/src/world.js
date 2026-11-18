@@ -1,0 +1,216 @@
+// PhysicsWorld: the engine-neutral adapter (physics-engine-research.md), implemented on Rapier. Engine
+// code talks to this, never to Rapier, so Jolt (or Box3D) stays a swap rather than a rewrite. Plain
+// arrays in and out ([x, y, z], [x, y, z, w]); handles are opaque numbers (Rapier's are bit-cast
+// floats: use them as keys, never print them).
+import { DT } from '@vrmxg/core';
+import { Layers } from './layers.js';
+
+const v = (a) => ({ x: a[0], y: a[1], z: a[2] });
+const q = (a) => ({ x: a[0], y: a[1], z: a[2], w: a[3] });
+const arr3 = (o) => [o.x, o.y, o.z];
+const arr4 = (o) => [o.x, o.y, o.z, o.w];
+
+/**
+ * @typedef {object} ShapeSpec
+ * @property {'box'|'sphere'|'capsule'|'cylinder'|'convex'|'trimesh'} shape
+ * @property {number[]} [size] box: full extents in metres (as glTF KHR shapes; Rapier takes half)
+ * @property {number} [radius] sphere, capsule, cylinder
+ * @property {number} [height] capsule (total, caps included, as Godot), cylinder
+ * @property {Float32Array} [vertices] convex, trimesh
+ * @property {Uint32Array} [indices] trimesh
+ */
+
+export class PhysicsWorld {
+  /**
+   * @param {any} R initialised Rapier module (loadRapier())
+   * @param {{ gravity?: number[], layers?: Layers, substeps?: number }} [opts]
+   */
+  constructor(R, { gravity = [0, -9.81, 0], layers = new Layers(), substeps = 1 } = {}) {
+    this.R = R;
+    this.layers = layers;
+    this.substeps = substeps;
+    this.world = new R.World(v(gravity));
+    this.world.timestep = DT / substeps;
+    this.events = new R.EventQueue(true);
+  }
+
+  // ---------------------------------------------------------------- bodies, colliders, joints
+
+  /**
+   * @param {{ type?: 'dynamic'|'kinematic'|'fixed', p?: number[], q?: number[], linearDamping?: number, angularDamping?: number, ccd?: boolean }} spec
+   * @returns {number} body handle
+   */
+  createBody({ type = 'dynamic', p = [0, 0, 0], q: rot = [0, 0, 0, 1], linearDamping = 0, angularDamping = 0, ccd = false }) {
+    const R = this.R;
+    const desc = type === 'fixed' ? R.RigidBodyDesc.fixed() : type === 'kinematic' ? R.RigidBodyDesc.kinematicPositionBased() : R.RigidBodyDesc.dynamic();
+    desc.setTranslation(p[0], p[1], p[2]).setRotation(q(rot)).setLinearDamping(linearDamping).setAngularDamping(angularDamping).setCcdEnabled(ccd);
+    return this.world.createRigidBody(desc).handle;
+  }
+
+  /** @param {ShapeSpec} s */
+  shapeDesc(s) {
+    const R = this.R;
+    switch (s.shape) {
+      case 'box': { const z = s.size ?? [1, 1, 1]; return R.ColliderDesc.cuboid(z[0] / 2, z[1] / 2, z[2] / 2); }
+      case 'sphere': return R.ColliderDesc.ball(s.radius ?? 0.5);
+      case 'capsule': { const r = s.radius ?? 0.3; return R.ColliderDesc.capsule(Math.max(0, (s.height ?? 1.8) / 2 - r), r); }
+      case 'cylinder': return R.ColliderDesc.cylinder((s.height ?? 1) / 2, s.radius ?? 0.5);
+      case 'convex': if (!s.vertices) throw new Error('convex collider needs vertices'); return R.ColliderDesc.convexHull(s.vertices);
+      case 'trimesh': if (!s.vertices || !s.indices) throw new Error('trimesh collider needs vertices and indices'); return R.ColliderDesc.trimesh(s.vertices, s.indices);
+      default: throw new Error(`unknown collider shape "${s.shape}"`);
+    }
+  }
+
+  /**
+   * @param {number} body handle of the body it moves with
+   * @param {ShapeSpec & { p?: number[], q?: number[], sensor?: boolean, friction?: number, restitution?: number, mass?: number, layer?: string, events?: boolean }} spec
+   *   p / q: pose relative to the body
+   * @returns {number} collider handle
+   */
+  createCollider(body, spec) {
+    const R = this.R;
+    const d = this.shapeDesc(spec);
+    if (spec.p) d.setTranslation(spec.p[0], spec.p[1], spec.p[2]);
+    if (spec.q) d.setRotation(q(spec.q));
+    if (spec.friction !== undefined) d.setFriction(spec.friction);
+    if (spec.restitution !== undefined) d.setRestitution(spec.restitution);
+    if (spec.mass !== undefined) d.setMass(spec.mass);
+    d.setCollisionGroups(this.layers.groups(spec.layer));
+    if (spec.sensor) {
+      d.setSensor(true);
+      // Sensors don't see kinematic bodies unless KINEMATIC_FIXED is on (spike gotcha 2).
+      d.setActiveCollisionTypes(R.ActiveCollisionTypes.DEFAULT | R.ActiveCollisionTypes.KINEMATIC_FIXED | R.ActiveCollisionTypes.KINEMATIC_KINEMATIC);
+    }
+    if (spec.sensor || spec.events) d.setActiveEvents(R.ActiveEvents.COLLISION_EVENTS);
+    return this.world.createCollider(d, this.world.getRigidBody(body)).handle;
+  }
+
+  /** Switch collision events on or off for a collider (contact signals cost only when used). */
+  setColliderEvents(collider, on) { this.world.getCollider(collider).setActiveEvents(on ? this.R.ActiveEvents.COLLISION_EVENTS : this.R.ActiveEvents.NONE); }
+
+  /** Set a collider's mass after the fact (inertia follows from its shape). */
+  setColliderMass(collider, mass) { this.world.getCollider(collider).setMass(mass); }
+  /** Shape volume in m³, for sharing a body's mass among its colliders. */
+  colliderVolume(collider) { return this.world.getCollider(collider).volume(); }
+
+  /**
+   * A revolute (hinge) joint with optional limits and a position motor.
+   * @param {number} a body handle
+   * @param {number} b body handle
+   * @param {{ anchorA?: number[], anchorB?: number[], axis?: number[], limits?: number[], motor?: { target: number, stiffness: number, damping: number } }} spec
+   */
+  createRevolute(a, b, { anchorA = [0, 0, 0], anchorB = [0, 0, 0], axis = [0, 1, 0], limits, motor }) {
+    const jd = this.R.JointData.revolute(v(anchorA), v(anchorB), v(axis));
+    const joint = this.world.createImpulseJoint(jd, this.world.getRigidBody(a), this.world.getRigidBody(b), true);
+    if (limits) joint.setLimits(limits[0], limits[1]);
+    if (motor) joint.configureMotorPosition(motor.target, motor.stiffness, motor.damping);
+    return joint.handle;
+  }
+  setMotorTarget(joint, target, stiffness, damping) {
+    this.world.getImpulseJoint(joint).configureMotorPosition(target, stiffness, damping);
+    // A sleeping door wouldn't feel its motor change.
+    this.world.getImpulseJoint(joint).body2().wakeUp();
+  }
+
+  removeBody(handle) { const b = this.world.getRigidBody(handle); if (b) this.world.removeRigidBody(b); }
+  removeCollider(handle) { const c = this.world.getCollider(handle); if (c) this.world.removeCollider(c, true); }
+  removeJoint(handle) { const j = this.world.getImpulseJoint(handle); if (j) this.world.removeImpulseJoint(j, true); }
+
+  // ---------------------------------------------------------------- poses and forces
+
+  /**
+   * Copy a body's world pose into objects with set(x, y, z) and set(x, y, z, w) (three's Vector3 and
+   * Quaternion): no arrays per call, and one set() each. Setting a three Quaternion's components one by
+   * one fires its change callback (and Object3D's Euler re-sync) four times.
+   */
+  readPose(handle, outPosition, outQuaternion) {
+    const b = this.world.getRigidBody(handle);
+    const t = b.translation(), r = b.rotation();
+    outPosition.set(t.x, t.y, t.z);
+    outQuaternion.set(r.x, r.y, r.z, r.w);
+  }
+  /** World pose of a body. */
+  bodyPose(handle) { const b = this.world.getRigidBody(handle); return { p: arr3(b.translation()), q: arr4(b.rotation()) }; }
+  /** Where a kinematic body should be after the next step. */
+  setKinematicPose(handle, p, rot) { const b = this.world.getRigidBody(handle); b.setNextKinematicTranslation(v(p)); b.setNextKinematicRotation(q(rot)); }
+  /** Teleport (any body type). */
+  setPose(handle, p, rot) { const b = this.world.getRigidBody(handle); b.setTranslation(v(p), true); b.setRotation(q(rot), true); }
+  applyImpulse(handle, impulse) { this.world.getRigidBody(handle).applyImpulse(v(impulse), true); }
+  isSleeping(handle) { return this.world.getRigidBody(handle).isSleeping(); }
+  /** Call f(handle) for every awake body (Rapier's active set): cheap on a settled scene. */
+  forEachAwakeBody(f) { this.world.bodies.forEachActiveRigidBody(this.world.islands, (b) => f(b.handle)); }
+  bodyOfCollider(collider) { return this.world.getCollider(collider)?.parent()?.handle; }
+
+  // ---------------------------------------------------------------- stepping
+
+  /**
+   * One engine step (1/60 s, split into `substeps` Rapier steps). Returns the collision events that
+   * started or stopped, in Rapier's order: [{ a, b, started }] with collider handles.
+   */
+  step() {
+    const out = [];
+    for (let i = 0; i < this.substeps; i++) {
+      this.world.step(this.events);
+      this.events.drainCollisionEvents((a, b, started) => out.push({ a, b, started }));
+    }
+    return out;
+  }
+
+  // ---------------------------------------------------------------- queries
+
+  /**
+   * First hit along a ray.
+   * @param {number[]} origin @param {number[]} dir unit direction @param {number} maxDistance
+   * @param {{ layers?: string[], excludeSensors?: boolean, excludeBody?: number }} [opts]
+   * @returns {{ collider: number, distance: number, point: number[], normal: number[] } | null}
+   */
+  raycast(origin, dir, maxDistance, { layers, excludeSensors = true, excludeBody } = {}) {
+    const R = this.R;
+    const ray = new R.Ray(v(origin), v(dir));
+    const flags = excludeSensors ? R.QueryFilterFlags.EXCLUDE_SENSORS : 0;
+    const exclude = excludeBody !== undefined ? this.world.getRigidBody(excludeBody) : undefined;
+    const hit = this.world.castRayAndGetNormal(ray, maxDistance, true, flags, this.layers.queryGroups(layers), undefined, exclude);
+    if (!hit) return null;
+    const t = hit.timeOfImpact;
+    return { collider: hit.collider.handle, distance: t, point: [origin[0] + dir[0] * t, origin[1] + dir[1] * t, origin[2] + dir[2] * t], normal: arr3(hit.normal) };
+  }
+
+  /**
+   * Sweep a shape along a velocity; first hit within maxToi (in units of the velocity vector).
+   * @param {ShapeSpec} shape @param {number[]} p @param {number[]} rot @param {number[]} velocity @param {number} maxToi
+   * @param {{ layers?: string[], excludeSensors?: boolean }} [opts]
+   */
+  shapecast(shape, p, rot, velocity, maxToi, { layers, excludeSensors = true } = {}) {
+    const R = this.R;
+    const s = this.shapeDesc(shape).shape;
+    const flags = excludeSensors ? R.QueryFilterFlags.EXCLUDE_SENSORS : 0;
+    const hit = this.world.castShape(v(p), q(rot), v(velocity), s, 0, maxToi, true, flags, this.layers.queryGroups(layers));
+    if (!hit) return null;
+    return { collider: hit.collider.handle, toi: hit.time_of_impact ?? hit.timeOfImpact, normal: arr3(hit.normal1 ?? hit.normal2 ?? { x: 0, y: 0, z: 0 }) };
+  }
+
+  /** Colliders currently overlapping a sensor (or touching a solid collider). */
+  overlapping(collider) {
+    const c = this.world.getCollider(collider), out = [];
+    if (c.isSensor()) this.world.intersectionPairsWith(c, (o) => out.push(o.handle));
+    else this.world.contactPairsWith(c, (o) => out.push(o.handle));
+    return out;
+  }
+
+  // ---------------------------------------------------------------- snapshot and debug
+
+  /** The whole world as bytes (bodies, colliders, joints, contacts, sleep state). Handles survive. */
+  snapshot() { return this.world.takeSnapshot(); }
+  /** Replace the world with a snapshot (from this build of Rapier only). */
+  restore(bytes) {
+    const ts = this.world.timestep;
+    this.world.free();
+    this.world = this.R.World.restoreSnapshot(bytes);
+    this.world.timestep = ts;
+  }
+
+  /** Line segments of every collider, for debug draw: { vertices: Float32Array (xyz pairs), colors: Float32Array (rgba) }. */
+  debugLines() { const d = this.world.debugRender(); return { vertices: d.vertices, colors: d.colors }; }
+
+  free() { this.world.free(); this.events.free(); }
+}
