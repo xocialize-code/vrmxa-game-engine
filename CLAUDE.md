@@ -34,7 +34,7 @@ git-ignored; commit only what this session owns, staging by path. `npm run check
 | Path | What |
 |---|---|
 | [VRMXG-PRD.md](VRMXG-PRD.md) | The PRD (features pass): Godot feature map with P0–P2, format family, scene format, phasing, open questions. The spike table at the top links every receipt |
-| [M0-PLAN.md](M0-PLAN.md), [M1-PLAN.md](M1-PLAN.md) | M0 (done 2026-11-17, AB-P-0013) and M1 (playable, done 2026-11-18, AB-P-0014: tasks AB-T-0512 to 0522, receipts AB-R-0967 to 0973) |
+| [M0-PLAN.md](M0-PLAN.md), [M1-PLAN.md](M1-PLAN.md), [M2-PLAN.md](M2-PLAN.md) | M0 (done 2026-11-17, AB-P-0013) and M1 (playable, done 2026-11-18, AB-P-0014: tasks AB-T-0512 to 0522, receipts AB-R-0967 to 0973) and M2 (production, AB-P-0015: tasks AB-T-0523 to 0535) |
 | [vrmxa-game-engine-notes.md](vrmxa-game-engine-notes.md) | The operator's original notes |
 | [physics-engine-research.md](physics-engine-research.md) | Physics research: Rapier, Jolt as fallback |
 | `engine/packages/dmath/` | `@vrmxg/dmath`, the first engine package: portable transcendental maths, bit-identical in V8 and JSC (AB-R-0931). Install it before anything parses a VRM. Its version is part of a replay's identity |

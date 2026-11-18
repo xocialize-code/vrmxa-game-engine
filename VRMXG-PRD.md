@@ -501,7 +501,7 @@ Start minimal (engine notes: "the game development UI can start minimally for te
 
 ## 8. Phasing
 
-*M0 is planned in detail in [M0-PLAN.md](M0-PLAN.md) (plan AB-P-0013, tasks AB-T-0501 to 0510).* **M0 is done (2026-11-17):** the six exit checks pass on the sample cafe in Node, Chromium and WKWebView ([acceptance/](acceptance/README.md), receipts AB-R-0946 to 0951); the budget on a base M-series Mac is still to measure (AB-T-0511). M1 is planned in [M1-PLAN.md](M1-PLAN.md) (plan AB-P-0014, tasks AB-T-0512 to 0522). **M1 is done (2026-11-18):** its seven exit checks pass, with the editor, play in place with items, Hana's line, audio, MCP on the open editor and frame export in the Mac app, and the acceptance (now nine checks) green in Node, Chromium and WKWebView ([acceptance/](acceptance/README.md), receipts AB-R-0967 to 0973). M2 planning can start.
+*M0 is planned in detail in [M0-PLAN.md](M0-PLAN.md) (plan AB-P-0013, tasks AB-T-0501 to 0510).* **M0 is done (2026-11-17):** the six exit checks pass on the sample cafe in Node, Chromium and WKWebView ([acceptance/](acceptance/README.md), receipts AB-R-0946 to 0951); the budget on a base M-series Mac is still to measure (AB-T-0511). M1 is planned in [M1-PLAN.md](M1-PLAN.md) (plan AB-P-0014, tasks AB-T-0512 to 0522). **M1 is done (2026-11-18):** its seven exit checks pass, with the editor, play in place with items, Hana's line, audio, MCP on the open editor and frame export in the Mac app, and the acceptance (now nine checks) green in Node, Chromium and WKWebView ([acceptance/](acceptance/README.md), receipts AB-R-0967 to 0973). M2 is planned in [M2-PLAN.md](M2-PLAN.md) (plan AB-P-0015, tasks AB-T-0523 to 0535).
 
 | Phase | Scope |
 |---|---|
