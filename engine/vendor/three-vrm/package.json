@@ -1,0 +1,17 @@
+{
+  "name": "@vrmxg/three-vrm",
+  "version": "3.5.5-vrmxg.0",
+  "private": true,
+  "description": "@pixiv/three-vrm 3.5.5 (MIT), vendored for VRMXG. vrmxg.0 is the upstream bundle unchanged; later versions add an engine state API (see README).",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": "./lib/three-vrm.module.js"
+  },
+  "files": ["lib", "LICENSE", "README.md"],
+  "sideEffects": false,
+  "peerDependencies": {
+    "three": ">=0.137"
+  },
+  "vrmxg": { "determinism": "vendored" }
+}

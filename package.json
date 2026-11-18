@@ -5,6 +5,7 @@
   "type": "module",
   "workspaces": [
     "engine/packages/*",
+    "engine/vendor/*",
     "tools/*"
   ],
   "scripts": {

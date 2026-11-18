@@ -15,7 +15,7 @@ const simulation = fs.readdirSync(path.join(root, 'engine/packages'))
   .map((d) => `engine/packages/${d}/src/**/*.js`);
 
 export default [
-  { ignores: ['**/node_modules/**', '**/build/**', '**/dist/**', '**/results/**'] },
+  { ignores: ['**/node_modules/**', '**/build/**', '**/dist/**', '**/results/**', 'engine/vendor/**'] }, // vendored code is upstream's
   {
     files: ['engine/**/*.{js,mjs}', 'tools/**/*.{js,mjs}', 'eslint.config.js'],
     languageOptions: { ecmaVersion: 'latest', sourceType: 'module', globals: { ...globals.node, ...globals.browser } },
