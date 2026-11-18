@@ -1,0 +1,244 @@
+{
+ "url": "http://loopback/speak",
+ "model": "Kokoro-82M bf16 (mlx-audio)",
+ "machine": "Apple M5 Max, 128 GB",
+ "node": "v26.12.1",
+ "lines": 28,
+ "ms": {
+  "p50": 38.1,
+  "p90": 89.2,
+  "max": 89.3
+ },
+ "stepsLate": {
+  "p50": 3,
+  "p90": 6
+ },
+ "rtf": 0.019,
+ "everyWordTimed": true,
+ "runs": [
+  {
+   "voice": "af_heart",
+   "rep": 0,
+   "words": 2,
+   "ms": 32.5,
+   "audio": 1.625,
+   "timedWords": 2
+  },
+  {
+   "voice": "af_heart",
+   "rep": 0,
+   "words": 6,
+   "ms": 40.3,
+   "audio": 1.875,
+   "timedWords": 6
+  },
+  {
+   "voice": "af_heart",
+   "rep": 0,
+   "words": 3,
+   "ms": 35,
+   "audio": 1.875,
+   "timedWords": 3
+  },
+  {
+   "voice": "af_heart",
+   "rep": 0,
+   "words": 3,
+   "ms": 32.7,
+   "audio": 1.6,
+   "timedWords": 3
+  },
+  {
+   "voice": "af_heart",
+   "rep": 0,
+   "words": 4,
+   "ms": 38.7,
+   "audio": 2.125,
+   "timedWords": 4
+  },
+  {
+   "voice": "af_heart",
+   "rep": 0,
+   "words": 13,
+   "ms": 78.3,
+   "audio": 4.4,
+   "timedWords": 13
+  },
+  {
+   "voice": "af_heart",
+   "rep": 0,
+   "words": 15,
+   "ms": 89.3,
+   "audio": 5,
+   "timedWords": 15
+  },
+  {
+   "voice": "af_heart",
+   "rep": 1,
+   "words": 2,
+   "ms": 32,
+   "audio": 1.625,
+   "timedWords": 2
+  },
+  {
+   "voice": "af_heart",
+   "rep": 1,
+   "words": 6,
+   "ms": 39,
+   "audio": 1.875,
+   "timedWords": 6
+  },
+  {
+   "voice": "af_heart",
+   "rep": 1,
+   "words": 3,
+   "ms": 35.3,
+   "audio": 1.875,
+   "timedWords": 3
+  },
+  {
+   "voice": "af_heart",
+   "rep": 1,
+   "words": 3,
+   "ms": 32.3,
+   "audio": 1.6,
+   "timedWords": 3
+  },
+  {
+   "voice": "af_heart",
+   "rep": 1,
+   "words": 4,
+   "ms": 38.1,
+   "audio": 2.125,
+   "timedWords": 4
+  },
+  {
+   "voice": "af_heart",
+   "rep": 1,
+   "words": 13,
+   "ms": 78.6,
+   "audio": 4.4,
+   "timedWords": 13
+  },
+  {
+   "voice": "af_heart",
+   "rep": 1,
+   "words": 15,
+   "ms": 89.2,
+   "audio": 5,
+   "timedWords": 15
+  },
+  {
+   "voice": "am_adam",
+   "rep": 0,
+   "words": 2,
+   "ms": 31.3,
+   "audio": 1.6,
+   "timedWords": 2
+  },
+  {
+   "voice": "am_adam",
+   "rep": 0,
+   "words": 6,
+   "ms": 40.2,
+   "audio": 2.025,
+   "timedWords": 6
+  },
+  {
+   "voice": "am_adam",
+   "rep": 0,
+   "words": 3,
+   "ms": 35.8,
+   "audio": 1.95,
+   "timedWords": 3
+  },
+  {
+   "voice": "am_adam",
+   "rep": 0,
+   "words": 3,
+   "ms": 32.8,
+   "audio": 1.65,
+   "timedWords": 3
+  },
+  {
+   "voice": "am_adam",
+   "rep": 0,
+   "words": 4,
+   "ms": 38,
+   "audio": 2.1,
+   "timedWords": 4
+  },
+  {
+   "voice": "am_adam",
+   "rep": 0,
+   "words": 13,
+   "ms": 77.1,
+   "audio": 4.4,
+   "timedWords": 13
+  },
+  {
+   "voice": "am_adam",
+   "rep": 0,
+   "words": 15,
+   "ms": 88.2,
+   "audio": 4.975,
+   "timedWords": 15
+  },
+  {
+   "voice": "am_adam",
+   "rep": 1,
+   "words": 2,
+   "ms": 31.5,
+   "audio": 1.6,
+   "timedWords": 2
+  },
+  {
+   "voice": "am_adam",
+   "rep": 1,
+   "words": 6,
+   "ms": 40.5,
+   "audio": 2.025,
+   "timedWords": 6
+  },
+  {
+   "voice": "am_adam",
+   "rep": 1,
+   "words": 3,
+   "ms": 36.1,
+   "audio": 1.95,
+   "timedWords": 3
+  },
+  {
+   "voice": "am_adam",
+   "rep": 1,
+   "words": 3,
+   "ms": 34.1,
+   "audio": 1.65,
+   "timedWords": 3
+  },
+  {
+   "voice": "am_adam",
+   "rep": 1,
+   "words": 4,
+   "ms": 37.6,
+   "audio": 2.1,
+   "timedWords": 4
+  },
+  {
+   "voice": "am_adam",
+   "rep": 1,
+   "words": 13,
+   "ms": 76.6,
+   "audio": 4.4,
+   "timedWords": 13
+  },
+  {
+   "voice": "am_adam",
+   "rep": 1,
+   "words": 15,
+   "ms": 89.3,
+   "audio": 4.975,
+   "timedWords": 15
+  }
+ ]
+}

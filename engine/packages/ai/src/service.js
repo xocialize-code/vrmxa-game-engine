@@ -6,13 +6,30 @@
 import { ACTIONS } from './actions.js';
 
 export class AiService {
-  constructor(tree) {
-    this.tree = tree;
+  /** @param {any} tree @param {{ resolve?: (ref: string) => Promise<Uint8Array> | Uint8Array }} [opts] resolve: project files (brain documents) */
+  constructor(tree, { resolve } = {}) {
+    this.tree = tree; this.resolve = resolve ?? null;
+    /** Brain documents a scene names by path ("brains/hana.json"): ref → preset (data, like an asset; not state). */
+    this.presets = new Map();
     /** @type {any[]} brains in the order they became ready */ this.brains = [];
     /** Stimuli of recent steps: { step, kind, source, position, loudness, topic, to, text } (simulation state). */
     this.stimuli = [];
     /** Injected decisions waiting for their step, and every one applied (the log a replay reads). */
     this.pending = []; this.log = [];
+  }
+
+  /** Read every brain document the scene's brains name by path (before instantiate), prefab instances aside. */
+  async prepare(doc) {
+    const refs = new Set();
+    for (const n of doc.nodes ?? []) for (const b of n.behaviours ?? []) if (b.use === 'brain' && typeof b.preset === 'string' && /\.json$/i.test(b.preset)) refs.add(b.preset);
+    for (const ref of refs) {
+      if (this.presets.has(ref)) continue;
+      if (!this.resolve) throw new Error(`a brain names ${ref}: install the AI service with a resolve to read it`);
+      const d = JSON.parse(new TextDecoder().decode(await this.resolve(ref)));
+      if (d.format !== 'vrmxg-brain' || !d.tree) throw new Error(`${ref}: not a brain document ({ "format": "vrmxg-brain", "plan", "senses", "tree" })`);
+      this.presets.set(ref, d);
+    }
+    return this;
   }
 
   register(b) { this.brains.push(b); }

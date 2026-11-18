@@ -75,7 +75,9 @@ export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = n
   await sequence?.prepare(sample.doc);
   const nav = installNav(tree); // a navmesh baked from the colliders on the first step; characters' goTo follows it (M2 W6)
   const { interact, inventory } = installInteraction(tree);
-  const ai = installAi(tree); // NPC brains (M2 W7): the brain behaviour and the shared stimuli
+  const ai = installAi(tree, { resolve: sample.bytes }); // NPC brains (M2 W7): the brain behaviour and the shared stimuli
+  await ai.prepare(sample.doc); // brain documents named by path (M2 W11), and any voice clips they say
+  for (const p of ai.presets.values()) await voice.prepare({ nodes: [{ id: 'brain', behaviours: [p] }] });
   const save = installSave(tree, { scene: { ref: sample.scene, doc: sample.doc } }); // save games (M2 W9): flags, save files
   const wardrobe = closet && vrmxaCore ? installCloset(tree, { vrmxaCore, closet, spec, stubTextures }) : null;
   await wardrobe?.prepare(sample.doc); lap('closet');

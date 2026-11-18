@@ -52,7 +52,9 @@ export class EngineSession extends LiveView {
     if (doc.sequence) await installSequence(tree).prepare(doc);
     installNav(tree);
     installInteraction(tree);
-    installAi(tree);
+    const ai = installAi(tree, { resolve: (ref) => p.bytes(ref) });
+    await ai.prepare(doc);
+    for (const pr of ai.presets.values()) await voice.prepare({ nodes: [{ id: 'brain', behaviours: [pr] }] });
     installSave(tree, { scene: { ref: doc.id ?? 'scene', doc } });
     const closetModule = vrmxaCore ? await p.vrmxaCloset() : null;
     const closet = closetModule ? installCloset(tree, { vrmxaCore, closet: closetModule, stubTextures: true }) : null;

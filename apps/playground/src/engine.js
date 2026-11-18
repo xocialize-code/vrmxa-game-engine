@@ -10,11 +10,12 @@ import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
 import { captureStill } from '@vrmxg/export';
 import { loadSample, buildWorld } from './world.js';
 import { serialize } from '@vrmxg/scene';
-import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, runBrains, runSave, STEPS } from './acceptance.js';
+import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, runBrains, runSave, runFilm, STEPS } from './acceptance.js';
 import { AudioOutput } from '@vrmxg/audio';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { inShell, call } from '../../shell/js/shell.js';
+import { httpTTS, shellTTS } from '@vrmxg/voice';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
@@ -30,6 +31,9 @@ const json = async (ref) => JSON.parse(new TextDecoder().decode(await bytes(ref)
 export { vrmxaCore, behaviours, bytes };
 
 export { PRESETS };
+
+/** The sample's voices for live lines, by speaker (the baked lines name theirs in content/sample/voice/lines.json). */
+const VOICES = { 'hana-1': 'af_heart', mira: 'af_bella', 'customer-1': 'am_adam' };
 
 export class Playground {
   /** @param {HTMLCanvasElement} canvas @param {{ preserveDrawingBuffer?: boolean }} [opts] */
@@ -67,6 +71,10 @@ export class Playground {
     }
     for (const d of Object.values(this.devices)) input.addDevice(d);
     this.tree = tree; this.input = input; this.scene = scene;
+    // live lines (M2 W10): ?tts=<loopback url> (content/sample/tools/tts-server.py) or ?tts=shell (the shell's tts.speak,
+    // once MLXEngine has the endpoint: AB-A-0308). Presentation only: text-only lines are heard, the simulation is unchanged
+    const tts = new URLSearchParams(location.search).get('tts');
+    if (tts) tree.services.get('voice')?.useLive(tts === 'shell' ? shellTTS({ call }) : httpTTS(tts), { voices: VOICES, now: () => performance.now() });
     // the prompt and what the player wears change on signals: refresh the controls then, not on the next stats tick
     for (const n of tree.all()) if (n.type === 'Character') { n.on('focusChanged', () => this._changed()); n.on('dressed', () => this._changed()); }
     this.host.attach(tree);
@@ -93,10 +101,11 @@ export class Playground {
     const particles = await runParticles(R, sample, opts, { now });
     const brains = await runBrains(R, sample, opts, { now });
     const save = await runSave(R, sample, opts, { now });
+    const film = await runFilm(R, sample, opts, { now });
     const audio = await runAudio(R, sample, opts, { silentFinal: items.final, take: 'input/play-items.json', steps: items.steps });
     const rendered = await this._renderedChecks(simulation);
     rendered.post = await this._postChecks();
-    return { simulation, devices, items, cinematic, sequence, particles, brains, save, audio, rendered };
+    return { simulation, devices, items, cinematic, sequence, particles, brains, save, film, audio, rendered };
   }
 
   async _renderedChecks(simulation) {

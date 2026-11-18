@@ -7,6 +7,28 @@
 //   scene:   describe, tree, get_node, add_node, set, remove_node, reparent, connect, validate, undo, redo, save
 //   engine:  engine_load (headless) or play (editor), engine_step, physics, call_action, interact; screenshot (editor);
 //            tree and get_node with live=true read the running world instead of the file
+//   M2 W11:  edit (a batch of edit ops as one undo step: how sequences are edited, setDoc on sequence.*), sequence (the
+//            outline, or the world on a frame with its hash), brain (inspect / inject / record / replay); screenshot of
+//            any sequence frame (editor). Answers are compact JSON, cut at OUTPUT_LIMIT characters.
+
+/** What the server tells a client at initialize: the few rules that save an agent a round trip. */
+export const INSTRUCTIONS = [
+  'VRMXG scenes (.vrmxs) are node trees; call describe before using a node type or behaviour, and validate before save.',
+  'Every edit is one undo step; edit batches several (add, set, remove, reparent, connect, setDoc) into one.',
+  'A sequence is a scene with a "sequence" block (shots, markers, tracks); edit it with setDoc ops on paths like sequence.tracks.',
+  'The engine is deterministic at 60 Hz: engine_step and sequence frames replay bit for bit, and sequence returns a world hash to compare.',
+  'NPC brains: brain op=inspect shows the running branch and blackboard; op=inject gives a goal or an action on a step, logged for replay.',
+].join(' ');
+
+export const OUTPUT_LIMIT = 24000;
+
+/** Pixel statistics of an RGBA still: a blank frame (one flat colour) is a failed render, not a picture. */
+export function imageStats(rgba) {
+  let n = 0, sum = 0, sq = 0;
+  for (let i = 0; i < rgba.length; i += 16) { const y = 0.2126 * rgba[i] + 0.7152 * rgba[i + 1] + 0.0722 * rgba[i + 2]; sum += y; sq += y * y; n++; }
+  const mean = sum / n, sd = Math.sqrt(Math.max(0, sq / n - mean * mean));
+  return { meanLuma: Math.round(mean * 10) / 10, sdLuma: Math.round(sd * 10) / 10, blank: sd < 2 };
+}
 import { createValidator, flatten, describeType, describeBehaviour } from '@vrmxg/scene';
 
 /**
@@ -51,7 +73,15 @@ export function toolList(reg, mode = 'headless') {
     { name: 'interact', description: 'A character does an item\'s verb (take, use, sit, open), as the player\'s interact would.',
       inputSchema: { type: 'object', required: ['actor', 'item', 'verb'], properties: { actor: ID, item: ID, verb: { type: 'string' } } } },
   ];
-  if (mode === 'editor') tools.push({ name: 'screenshot', description: 'A PNG of the editor\'s view (the play camera while playing).', inputSchema: { type: 'object', properties: { width: { type: 'integer', minimum: 64, maximum: 1920 }, height: { type: 'integer', minimum: 64, maximum: 1080 } } } });
+  tools.push(
+    { name: 'edit', description: 'Several edits as one undo step, all or nothing. ops: {op:"add",node} {op:"set",id,path,value} {op:"remove",id} {op:"reparent",id,parent} {op:"connect",from,signal,to,call,args} {op:"setDoc",path,value} (path under sequence or settings, e.g. "sequence.shots").',
+      inputSchema: { type: 'object', required: ['ops'], properties: { ops: { type: 'array', minItems: 1, items: { type: 'object', required: ['op'] } }, label: { type: 'string' } } } },
+    { name: 'sequence', description: `A sequence's outline (shots, markers, tracks); with frame, the ${mode === 'editor' ? 'preview' : 'running'} world put on that frame exactly as playing would reach it: shot, camera, lines, and a world hash to compare replays.`,
+      inputSchema: { type: 'object', properties: { frame: { type: 'number', minimum: 0 } } } },
+    { name: 'brain', description: 'An NPC brain in the running world. inspect: running branch, utility scores, goal, blackboard, memory. inject: a goal {name,params} or an action {do,args} on a step (logged). record: the events applied. replay: a log.',
+      inputSchema: { type: 'object', properties: { op: { type: 'string', enum: ['inspect', 'inject', 'record', 'replay'] }, id: ID, goal: { type: 'object' }, action: { type: 'object' }, step: { type: 'integer', minimum: 0 }, log: { type: 'array' } } } },
+  );
+  if (mode === 'editor') tools.push({ name: 'screenshot', description: 'A PNG of the editor\'s view (the play camera while playing); frame: that frame of the open sequence, as exported, with its world hash and a blank-frame check.', inputSchema: { type: 'object', properties: { width: { type: 'integer', minimum: 64, maximum: 1920 }, height: { type: 'integer', minimum: 64, maximum: 1080 }, frame: { type: 'number', minimum: 0 } } } });
   return tools;
 }
 
@@ -113,7 +143,28 @@ export function createHandlers(reg, target) {
     physics() { return target.live().physicsState(); },
     call_action({ id, action, args }) { return target.live().callAction(id, action, args); },
     interact({ actor, item, verb }) { return target.live().interact(actor, item, verb); },
-    async screenshot({ width = 960, height = 540 }) { if (!target.screenshot) throw new Error('no view to take a screenshot of'); return { image: await target.screenshot({ width, height }) }; },
+    async screenshot({ width = 960, height = 540, frame }) {
+      if (!target.screenshot) throw new Error('no view to take a screenshot of');
+      const { stats, hash, frame: f, ...image } = await target.screenshot({ width, height, frame });
+      return { image, note: [f !== undefined ? `frame ${f}` : null, hash ? `hash ${hash}` : null, stats ? `luma ${stats.meanLuma}±${stats.sdLuma}${stats.blank ? ' BLANK' : ''}` : null].filter(Boolean).join(', ') };
+    },
+    edit({ ops, label }) {
+      if (!Array.isArray(ops) || !ops.length) throw new Error('ops: one or more edit ops');
+      const name = label ?? (ops.length === 1 ? `${ops[0].op} ${ops[0].id ?? ops[0].path ?? ops[0].node?.id ?? ''}`.trim() : `${ops.length} edits`);
+      target.apply({ op: 'batch', ops, label: name }, name);
+      return `${ops.length} edit${ops.length > 1 ? 's' : ''} applied as one undo step ("${name}")`;
+    },
+    async sequence({ frame }) {
+      if (frame === undefined) {
+        const seq = target.doc().sequence;
+        if (!seq) throw new Error('the scene has no sequence block');
+        return { fps: seq.fps ?? 24, duration: seq.duration, seconds: Math.round((seq.duration / (seq.fps ?? 24)) * 100) / 100, set: target.doc().set ?? null,
+          shots: (seq.shots ?? []).map((x) => `${x.id} ${x.start}-${x.end}${x.name ? ` "${x.name}"` : ''}`), markers: (seq.markers ?? []).map((m) => `${m.frame} ${m.name}`),
+          tracks: (seq.tracks ?? []).map((t, i) => `[${i}] ${t.id} (${t.type}${t.target ? ` → ${t.target}` : ''}) ${t.clips ? `${t.clips.length} clips` : 'keys'}`) };
+      }
+      return target.sequenceAt ? target.sequenceAt(frame) : target.live().sequenceAt(frame);
+    },
+    brain(args) { return target.live().brainOp(args); },
   };
 }
 
@@ -127,8 +178,9 @@ export function caller(handlers) {
     if (!fn) return { isError: true, text: `unknown tool ${name}` };
     try {
       const out = await fn(args ?? {});
-      if (out?.image) return { isError: false, text: `${out.image.width}×${out.image.height} PNG`, image: out.image };
-      return { isError: false, text: typeof out === 'string' ? out : JSON.stringify(out, null, 1) };
+      if (out?.image) return { isError: false, text: `${out.image.width}×${out.image.height} PNG${out.note ? `; ${out.note}` : ''}`, image: out.image };
+      const text = typeof out === 'string' ? out : JSON.stringify(out);
+      return { isError: false, text: text.length > OUTPUT_LIMIT ? `${text.slice(0, OUTPUT_LIMIT)}… (cut at ${OUTPUT_LIMIT} of ${text.length} characters: ask for less)` : text };
     } catch (e) { return { isError: true, text: e.message }; }
   };
 }

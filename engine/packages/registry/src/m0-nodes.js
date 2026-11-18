@@ -244,8 +244,8 @@ export function m0Registry() {
     params: { axis: P.vec3({ default: [0, 1, 0] }), openAngle: P.number({ min: -180, max: 180, default: 100, unit: '°' }), locked: P.boolean({ default: false }) },
     signals: { opened: {}, closed: {} }, actions: { open: { args: {} }, close: { args: {} }, toggle: { args: {} } },
   });
-  r.behaviour('brain', { description: 'An NPC brain (M2 W7): perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer) or a preset object; vars override its blackboard plan.', on: ['Character'], params: {
-    preset: { schema: { anyOf: [{ type: 'string', enum: ['server', 'customer', 'wanderer'] }, { type: 'object' }], default: 'wanderer', description: 'A role preset, or a preset object ({ plan, senses, tree }).' }, meta: { widget: 'json' } },
+  r.behaviour('brain', { description: 'An NPC brain (M2 W7): perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan.', on: ['Character'], params: {
+    preset: { schema: { anyOf: [{ type: 'string', enum: ['server', 'customer', 'wanderer'] }, { type: 'string', pattern: '\\.json$' }, { type: 'object' }], default: 'wanderer', description: 'A role preset, a brain document\'s path, or a preset object ({ plan, senses, tree }).' }, meta: { widget: 'json' } },
     vars: { schema: { type: 'object', description: 'Blackboard values over the preset\'s plan.' }, meta: { widget: 'json' } },
     tickEvery: P.number({ min: 1, default: 1, description: 'Think every n steps (four times slower far from the player).' }),
     lodDistance: P.number({ min: 0, default: 25, unit: 'm' }),

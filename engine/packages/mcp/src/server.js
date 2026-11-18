@@ -34,7 +34,8 @@ if (argv.includes('--editor')) {
   ({ tools, call } = createTools({ registry: m0Registry(), project, scene }));
 }
 
-const server = new Server({ name: 'vrmxg', version: '0.2.0' }, { capabilities: { tools: {} } });
+const { INSTRUCTIONS } = await import('./tools.js');
+const server = new Server({ name: 'vrmxg', version: '0.3.0' }, { capabilities: { tools: {} }, instructions: INSTRUCTIONS });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools }));
 server.setRequestHandler(CallToolRequestSchema, async (req) => {
   const { text, isError, image } = await call(req.params.name, req.params.arguments ?? {});

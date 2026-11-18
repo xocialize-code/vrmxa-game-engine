@@ -2,6 +2,8 @@
 // physics (bodies, sensors, contacts), actions, interactions, and stepping with input held or replayed. Shared by the
 // headless engine (engine.js, in Node) and the editor's play world (apps/editor, in the page): no Node APIs here.
 import { Vector3 } from 'three';
+import { SequencePlayer, shotAt } from '@vrmxg/sequence';
+import { worldHashes, hashValue } from '@vrmxg/snapshot';
 
 const r = (v, d = 4) => +v.toFixed(d);
 const arr = (a, d) => Array.from(a, (v) => r(v, d));
@@ -14,7 +16,7 @@ export class LiveView {
 
   /** Watch a tree: signals emitted from now on are logged for step results. */
   attach(tree) {
-    this.tree = tree; this.signals = [];
+    this.tree = tree; this.signals = []; this.player = null;
     if (!tree.__mcpEmit) {
       const emit = tree.emit.bind(tree), view = this;
       tree.__mcpEmit = true;
@@ -133,5 +135,58 @@ export class LiveView {
     const result = service.request(actor, item, verb);
     if (!result) throw new Error(`${actor} can't ${verb} ${item} (verbs it offers: ${tree.find(item).offered?.().map((v) => v.verb).join(', ') ?? 'none'})`);
     return { result, step: tree.clock.step };
+  }
+
+  /** One hash of the whole world (every component of worldHashes): a frame's identity, for comparing replays. */
+  worldHash() { return hashValue(worldHashes(this.live, { physicsBytes: true })).slice(0, 16); }
+
+  /**
+   * The running sequence (M2 W11): its outline, or with a frame the world put on that frame exactly as a straight play
+   * would reach it (a snapshot seek: SequencePlayer), with what is happening there.
+   * @param {number} [frame]
+   */
+  async sequenceAt(frame) {
+    const tree = this.live, svc = tree.services.get('sequence');
+    if (!svc?.seq) throw new Error('the running world has no sequence: load a sequence scene (engine_load) first');
+    const seq = svc.seq;
+    if (frame === undefined) {
+      return {
+        fps: svc.fps, duration: svc.duration, seconds: r(svc.duration / svc.fps, 2), frame: r(svc.frameAt(), 2),
+        shots: (seq.shots ?? []).map((s) => `${s.id} ${s.start}-${s.end}${s.name ? ` "${s.name}"` : ''}`),
+        markers: (seq.markers ?? []).map((m) => `${m.frame} ${m.name}`),
+        tracks: svc.tracks.map((t) => `${t.id} (${t.type}${t.target ? ` → ${t.target}` : ''}): ${(t.clips ?? []).length || (Array.isArray(t.keys) ? t.keys.length : Object.keys(t.keys ?? {}).length)} ${t.clips ? 'clips' : 'keys'}`),
+      };
+    }
+    if (!(frame >= 0 && frame <= svc.duration)) throw new Error(`frame: 0 to ${svc.duration}`);
+    if (!this.player) this.player = new SequencePlayer(tree);
+    const how = await this.player.seek(frame);
+    const shot = shotAt(seq, frame), cams = tree.services.get('cameras');
+    const voice = tree.services.get('voice');
+    return {
+      frame, step: how.step, alpha: r(how.alpha, 3), restored: how.restored, stepped: how.stepped,
+      shot: shot ? `${shot.id}${shot.name ? ` "${shot.name}"` : ''}` : null,
+      camera: cams?.current?.id ?? null, virtualCamera: /** @type {any} */ (tree.all().find((n) => n.type === 'CameraBrain'))?.bstate?.live ?? null,
+      speaking: voice ? voice.captions(1).map((c) => `${c.actor}: ${c.text}`) : [],
+      hash: this.worldHash(),
+    };
+  }
+
+  /**
+   * An NPC brain (M2 W11): inspect (the running branch, utility scores, blackboard, memory), inject a goal or an action
+   * (the director's hook: applied on its step and logged), record (the events applied so far) or replay a log.
+   */
+  brainOp({ id, op = 'inspect', goal, action, step, log }) {
+    const tree = this.live, ai = tree.services.get('ai');
+    if (!ai) throw new Error('no AI service in this world');
+    if (op === 'record') return { step: tree.clock.step, log: ai.record() };
+    if (op === 'replay') { if (!Array.isArray(log)) throw new Error('replay needs log: the events record returned'); ai.replay(log); return { queued: log.length, step: tree.clock.step }; }
+    const brain = id ? ai.brainOf(id) : null;
+    if (!brain) throw new Error(id ? `"${id}" has no brain (brains: ${ai.brains.map((b) => b.node.id).join(', ') || 'none'})` : `id: one of ${ai.brains.map((b) => b.node.id).join(', ') || 'no brains here'}`);
+    if (op === 'inject') { ai.inject({ agent: id, step, goal, action }); return { injected: goal ? { goal } : { action }, at: step ?? tree.clock.step }; }
+    if (op !== 'inspect') throw new Error(`op: inspect, inject, record or replay`);
+    const s = brain.inspect();
+    // memory as short lines, newest first, at most 12: a brain remembers a lot
+    const memory = s.memory.slice().sort((a, b) => b.last - a.last).slice(0, 12).map((m) => [m.kind, m.source, m.topic, `@${m.last}`, `×${r(m.strength, 2)}`].filter((x) => x != null).join(' '));
+    return { id, step: tree.clock.step, preset: typeof s.preset === 'string' ? s.preset : '(object)', status: s.status, running: s.running.map((x) => x.do ?? x.name ?? x.type).join(' > '), utility: s.utility, goal: s.bb.goal, bb: Object.fromEntries(Object.entries(s.bb).filter(([k]) => k !== 'goal')), memory };
   }
 }

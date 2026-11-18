@@ -76,3 +76,21 @@ Afterwards the editor's toolbar read "Undo Add cam-overview (MCP)", and Edit ›
 returned to its saved hash and Redo then named the session's edit (`docs/hand-test/shots/mcp/after-undo.png`). The first
 run split its calls between two editors polling the same bridge (a browser tab left open). The bridge now serves one
 editor at a time and tells any other that the link is taken.
+
+## Sequences, brains and frames (M2 W11, AB-T-0534)
+
+Three tools more, still generic (20 tools, about 1,730 tokens headless; 21 and 1,860 for the editor), and the server's
+`instructions` at initialize (the five rules that save an agent a round trip). Answers are compact JSON, cut at 24,000
+characters with a note.
+
+| Tool | What |
+|---|---|
+| `edit` | Several edit ops as one undo step, all or nothing: add, set, remove, reparent, connect, and `setDoc` on `sequence.*` or `settings.*`. Sequences are edited this way: shots, markers and tracks are document values, not node types |
+| `sequence` | Without a frame, the outline from the file (shots, markers, tracks; no engine needed). With one, the running world (headless) or the editor's preview world put on that frame exactly as playing would reach it (SequencePlayer's snapshots), with the shot, the live virtual camera, who is speaking and a world hash to compare replays |
+| `brain` | inspect (the running branch, utility scores, goal, blackboard, the 12 freshest memories), inject a goal or an action on a step (logged), record the events applied, replay a log: the hook M3's director uses |
+| `screenshot` (editor) | `frame`: that frame of the open sequence as an export renders it, with its world hash and pixel statistics; a flat frame is flagged BLANK |
+
+`tools/beats.mjs` runs a scene headless and prints each brain's branch as it changes, the lines and the cuts, with the
+frame each lands on: "Morning at the cafe" was cut from it. Checked in the editor in Chromium over the bridge: the
+outline, a seek to frame 735 (s4, 766 ms from step 0), three frame screenshots (luma 170–193 ± 47–62, none blank) and a
+batch edit undone in one step.

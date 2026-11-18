@@ -22,6 +22,9 @@
 //   runBrains      (M2 W6 + W7) Hana on the server preset and Mira on the customer preset, both on the navmesh: Mira
 //                  comes in, sits, orders; Hana greets, takes the order, makes it, serves it; Mira leaves. A hash of every
 //                  component after every step (brains, crowd and memory included) and a snapshot mid-order re-simulated.
+//   runFilm        (M2 W11) "Morning at the cafe" (sequences/cafe-morning.vrmxs): 45 s, Hana and Mira cast with brain
+//                  documents, four baked lines, the espresso steam, a music cue. A hash of every component after every
+//                  step, where the story's beats land (each line, the steam, served), and a snapshot mid-film re-simulated.
 //   runSave        (M2 W9) the take with items saved at step 720 (after the equip) into a save file, written to a store
 //                  (IndexedDB in a browser, memory in Node) and read back, loaded into a fresh world, and replayed to the
 //                  end: the file's bytes and every step after the load hash the same everywhere.
@@ -365,6 +368,43 @@ export async function runBrains(R, sample, opts, { now = () => 0 } = {}) {
     snapshot: { at: SNAP_B, rerunMatches: restored === null, divergence: restored },
     events, left: !!mira.behaviours[0].bb.left, nav: { polys: A.nav.stats.polys, tiles: A.nav.stats.tiles, bakeMs: +A.nav.stats.bakeMs.toFixed(1), blocked: Object.keys(A.nav.st.blocked) },
     stepMs: +(ms / STEPS_B).toFixed(3),
+  };
+}
+
+/** "Morning at the cafe", M2 W11 (see the top). @param {any} R @param {any} sample @param {any} opts */
+export async function runFilm(R, sample, opts, { now = () => 0 } = {}) {
+  const S = await loadSample(sample.bytes, 'sequences/cafe-morning.vrmxs');
+  const A = await buildWorld(R, S, opts);
+  const tree = A.tree, svc = A.sequence, end = svc.stepOf(svc.duration).step, SNAP_F = 1750;
+  const hana = /** @type {any} */ (tree.find('hana-1')), mira = /** @type {any} */ (tree.find('mira')), steam = /** @type {any} */ (tree.find('espresso-steam')), music = /** @type {any} */ (tree.find('music'));
+  const flat = (a, b) => +Math.hypot(a.x - b.x, a.z - b.z).toFixed(2);
+  const beats = { lines: [], cameras: [], steam: null, served: null, music: null, seated: null };
+  for (const id of ['hana-1', 'mira']) tree.listen(tree.find(id), 'spoke', (a) => beats.lines.push({ step: tree.clock.step, who: id, text: a.text, apart: flat(hana.object3d.position, mira.object3d.position) }));
+  tree.listen(tree.find('brain'), 'cameraChanged', (p) => beats.cameras.push(`${tree.clock.step}:${p.to}`));
+  const machine = { x: 1.2, z: -4.3 };
+  const run = [{ step: 0, h: worldHashes(tree) }];
+  let snap = null, ms = 0;
+  for (let k = 1; k <= end; k++) {
+    const t0 = now();
+    while (!tree.step()) await tree.settle();
+    ms += now() - t0;
+    if (beats.seated === null && mira.ctrl.seat) beats.seated = k;
+    if (beats.steam === null && steam.count > 0) beats.steam = { step: k, hanaFromMachine: flat(hana.object3d.position, machine) };
+    if (beats.served === null && mira.behaviours[0].bb.goal?.name === 'served') beats.served = k;
+    if (beats.music === null && music.playing) beats.music = k;
+    run.push({ step: k, h: worldHashes(tree, { physicsBytes: k % 60 === 0 }) });
+    if (k === SNAP_F) snap = captureWorld(tree, { meta: { scene: S.scene } });
+  }
+  const B = await buildWorld(R, S, opts);
+  restoreWorld(B.tree, snap);
+  const again = [];
+  for (let k = SNAP_F + 1; k <= SNAP_F + 300; k++) { while (!B.tree.step()) await B.tree.settle(); again.push({ step: k, h: worldHashes(B.tree, { physicsBytes: k % 60 === 0 }) }); }
+  const restored = compareRuns(run.slice(SNAP_F + 1, SNAP_F + 301), again);
+  return {
+    steps: end, seconds: svc.duration / svc.fps, run: packRun(run), final: hashValue(run.at(-1).h), components: Object.keys(run[0].h).length,
+    snapshot: { at: SNAP_F, rerunMatches: restored === null, divergence: restored },
+    beats, brains: A.ai.brains.map((b) => `${b.node.id}:${b.params.preset}`), stepMs: +(ms / end).toFixed(3),
+    subtitles: subtitles(S.doc.sequence, { 'hana-1': 'Hana', mira: 'Mira' }),
   };
 }
 

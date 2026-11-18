@@ -5,7 +5,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { installPortableMath } from '@vrmxg/dmath';
 import { RandomStream } from '@vrmxg/core';
-import { compile, tick, curve, ACTIONS, PRESETS, NODE_TYPES, actionSchemas } from '@vrmxg/ai';
+import { compile, tick, curve, ACTIONS, PRESETS, NODE_TYPES, actionSchemas, AiService } from '@vrmxg/ai';
+import fs from 'node:fs';
+import path from 'node:path';
 
 installPortableMath();
 
@@ -117,4 +119,20 @@ test('every preset compiles; the vocabulary and node types describe themselves',
   assert.ok(NODE_TYPES.utility.description);
   assert.throws(() => compile({ type: 'action', do: 'fly' }), /unknown action "fly"/);
   assert.throws(() => compile({ type: 'nope' }), /unknown tree node/);
+});
+
+test('brain documents (M2 W11): prepare reads the ones a scene names by path, checks their format, and their trees compile', async () => {
+  const SAMPLE = path.join(import.meta.dirname, '../../../../content/sample');
+  const read = (ref) => new Uint8Array(fs.readFileSync(path.join(SAMPLE, ref)));
+  const doc = { nodes: [
+    { id: 'hana-1', type: 'Character', behaviours: [{ use: 'brain', preset: 'brains/hana.json' }] },
+    { id: 'mira', type: 'Character', behaviours: [{ use: 'brain', preset: 'brains/customer.json' }] },
+    { id: 'w', type: 'Character', behaviours: [{ use: 'brain', preset: 'wanderer' }] },
+  ] };
+  const ai = new AiService({}, { resolve: read });
+  await ai.prepare(doc);
+  assert.deepEqual([...ai.presets.keys()], ['brains/hana.json', 'brains/customer.json']);
+  for (const p of ai.presets.values()) assert.ok(compile(p.tree).length > 5);
+  await assert.rejects(new AiService({}).prepare(doc), /install the AI service with a resolve/);
+  await assert.rejects(new AiService({}, { resolve: () => new TextEncoder().encode('{"tree":{}}') }).prepare(doc), /not a brain document/);
 });

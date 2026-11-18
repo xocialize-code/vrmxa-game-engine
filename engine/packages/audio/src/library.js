@@ -38,6 +38,15 @@ export class AudioLibrary {
     return clip;
   }
 
+  /** Put a clip's bytes in under a ref (a live line's synthesised clip, M2 W10). */
+  put(ref, bytes) {
+    const info = wavInfo(bytes);
+    if (!info) throw new Error(`${ref}: the engine reads WAV clips (PCM or float); this isn't one`);
+    const clip = { bytes, duration: info.duration, sampleRate: info.sampleRate, channels: info.channels };
+    this.clips.set(ref, clip);
+    return clip;
+  }
+
   clip(ref) { return this.clips.get(ref) ?? null; }
   refOf(id) { return this.refs.get(id) ?? null; }
 

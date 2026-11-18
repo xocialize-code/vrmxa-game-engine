@@ -21,3 +21,4 @@ spike-frame-export/out/
 
 # SwiftPM build folders (apps/shell, apps/*-mac)
 .build/
+__pycache__/

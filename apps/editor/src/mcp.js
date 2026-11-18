@@ -4,7 +4,7 @@
 // editor's own Undo ("Undo Add cam-overview (MCP)"); play, stepping, input, interactions and cues act on the play
 // world; screenshot is the view as drawn.
 import { m0Registry } from '@vrmxg/registry/m0';
-import { createHandlers, caller } from '@vrmxg/mcp/tools';
+import { createHandlers, caller, imageStats } from '@vrmxg/mcp/tools';
 import { LiveView } from '@vrmxg/mcp/live';
 import { toBase64 } from '@vrmxg/export';
 
@@ -56,7 +56,26 @@ export function editorTarget(ed) {
         await sleep(8);
       }
     }),
-    async screenshot({ width, height }) { return { data: toBase64(await ed.stillPNG(width, height)), width, height }; },
+    async screenshot({ width, height, frame }) {
+      if (frame === undefined) return { data: toBase64(await ed.stillPNG(width, height)), width, height };
+      // a frame of the open sequence (M2 W11): the preview world put on it as an export renders it, then drawn
+      const s = await this.sequenceAt(frame);
+      const { png, still } = await ed.still(width, height);
+      return { data: toBase64(png), width, height, frame: s.frame, hash: s.hash, stats: imageStats(still.rgba) };
+    },
+    /** The open sequence on a frame (the timeline's scrub: snapshots, exact). */
+    async sequenceAt(frame) {
+      const s = session();
+      if (!s.isSequence) throw new Error('the open scene is not a sequence');
+      if (s.mode !== 'editing') throw new Error('stop playing first: frames are shown from the preview world');
+      if (!(frame >= 0 && frame <= s.doc.sequence.duration)) throw new Error(`frame: 0 to ${s.doc.sequence.duration}`);
+      await ed.scrubTo(frame);
+      if (ed.error) throw new Error(ed.error);
+      const st = ed.scrubState, tree = ed.preview.world.tree;
+      const voice = tree.services.get('voice'), shot = (s.doc.sequence.shots ?? []).find((x) => frame >= x.start && frame < x.end);
+      return { frame: st.frame, step: st.step, alpha: st.alpha, restored: st.restored, stepped: st.stepped, ms: st.ms, shot: shot ? `${shot.id}${shot.name ? ` "${shot.name}"` : ''}` : null,
+        camera: tree.services.get('cameras')?.current?.id ?? null, virtualCamera: /** @type {any} */ (tree.all().find((n) => n.type === 'CameraBrain'))?.bstate?.live ?? null, speaking: voice ? voice.captions(1).map((c) => `${c.actor}: ${c.text}`) : [], hash: st.hash.slice(0, 16) };
+    },
   };
 }
 

@@ -7,6 +7,9 @@
 // tracks and the sequence's own nodes refer to "mira" and "hana-1" as the set does, and every reference inside the set
 // (behaviour targets, connections, camera targets) keeps working. The sequence's nodes join the set's tree (a node
 // without a parent goes under the set's root); its assets are added (an asset id may not clash with a different one).
+// Casting (M2 W11): sequence.cast { setNodeId: { props?, behaviours?, transform? } } recasts the set's own nodes for the
+// whole film: props merged over the set's, behaviours and transform replaced (Hana serving with a brain instead of
+// wandering, the set's music held for the sequence's own cue). The set's file is untouched.
 
 /** True for a sequence document. */
 export const isSequence = (doc) => typeof doc?.set === 'string' && !!doc.sequence;
@@ -25,7 +28,18 @@ export function composeSequence(seq, set) {
     assets.set(a.id, a);
   }
   const root = set.nodes.find((n) => n.parent === undefined)?.id;
-  const nodes = [...set.nodes, ...(seq.nodes ?? []).map((n) => (n.parent === undefined && root ? { ...n, parent: root } : n))];
+  const cast = seq.sequence?.cast ?? {};
+  for (const id of Object.keys(cast)) if (!ids.has(id)) throw new Error(`sequence "${seq.id}": cast names "${id}", which isn't in the set (${seq.set})`);
+  const recast = (n) => {
+    const c = cast[n.id];
+    if (!c) return n;
+    const out = structuredClone(n);
+    if (c.props) out.props = { ...(n.props ?? {}), ...structuredClone(c.props) };
+    if (c.behaviours) out.behaviours = structuredClone(c.behaviours);
+    if (c.transform) out.transform = structuredClone(c.transform);
+    return out;
+  };
+  const nodes = [...set.nodes.map(recast), ...(seq.nodes ?? []).map((n) => (n.parent === undefined && root ? { ...n, parent: root } : n))];
   return {
     ...set, id: seq.id, assets: [...assets.values()], nodes,
     connections: [...(set.connections ?? []), ...(seq.connections ?? [])],

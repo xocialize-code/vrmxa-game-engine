@@ -42,18 +42,21 @@ const prefabFiles = { 'prefabs/door.vrmxs': path.join(coreFixtures, 'prefabs/doo
 const sample = path.join(here, '../../../../content/sample');
 const doorFiles = Object.fromEntries(['prefabs/door.vrmxs', 'prefabs/double-door.vrmxs', 'props/door-frame.glb', 'props/door-panel.glb'].map((f) => [f, path.join(sample, f)]));
 
-test('the tool list is generic and small: 17 tools under 1,500 tokens headless, 18 under 1,800 for the editor', async () => {
+test('the tool list is generic and small: 20 tools under 2,000 tokens headless, 21 under 2,200 for the editor; instructions at initialize', async () => {
   const dir = project('list', { 'cafe.vrmxs': path.join(coreFixtures, 'cafe.vrmxs'), ...prefabFiles });
   const { client } = await connect([dir, 'cafe.vrmxs']);
   const { tools } = await client.listTools();
   await client.close();
   const bytes = Buffer.byteLength(JSON.stringify(tools));
-  assert.equal(tools.length, 17);
-  assert.ok(bytes / 4 < 1500, `${bytes} bytes ≈ ${Math.round(bytes / 4)} tokens`);
+  const instructions = client.getInstructions();
+  assert.equal(tools.length, 20);
+  assert.ok(bytes / 4 < 2000, `${bytes} bytes ≈ ${Math.round(bytes / 4)} tokens`);
+  assert.ok(instructions?.includes('describe') && instructions.length < 1000, `instructions: ${instructions}`);
   const editor = toolList(m0Registry(), 'editor'), eb = Buffer.byteLength(JSON.stringify(editor));
   assert.deepEqual(editor.map((t) => t.name).filter((n) => !tools.some((t) => t.name === n)), ['play', 'screenshot']);
   assert.ok(!editor.some((t) => t.name === 'engine_load'));
-  assert.ok(eb / 4 < 1800, `editor: ${eb} bytes ≈ ${Math.round(eb / 4)} tokens`);
+  assert.ok(eb / 4 < 2200, `editor: ${eb} bytes ≈ ${Math.round(eb / 4)} tokens`);
+  console.log(`  tool list: ${tools.length} tools ≈ ${Math.round(bytes / 4)} tokens headless, ${editor.length} ≈ ${Math.round(eb / 4)} for the editor`);
 });
 
 // A stand-in for the editor's page: polls the bridge and runs the same handlers over a target whose edits carry labels,
@@ -193,4 +196,68 @@ test('inspect on the cafe: Mira replays the recorded walk, the entrance door ope
   const hana = await call('get_node', { id: 'hana-1', live: true });
   assert.equal(hana.behaviours[0].use, 'wander', 'the project behaviour runs');
   await client.close();
+});
+
+test('sequences (M2 W11): the outline from the file, edits as one undo step (setDoc), frames seeked exactly with a world hash', async () => {
+  const dir = project('seq', { 'doors-seq.vrmxs': path.join(here, 'fixtures/doors-seq.vrmxs'), 'doors.vrmxs': path.join(here, 'fixtures/doors.vrmxs'), ...doorFiles });
+  const { client, call } = await connect([dir, 'doors-seq.vrmxs', '--behaviours', path.join(here, 'fixtures/behaviours.mjs')]);
+  const outline = await call('sequence');
+  assert.deepEqual(outline.shots, ['s1 0-24 "Closed"', 's2 24-72 "Opening"']);
+  assert.equal(outline.seconds, 3);
+  // two edits, one undo step
+  const r = await call('edit', { ops: [
+    { op: 'setDoc', path: 'sequence.shots', value: [{ id: 's1', name: 'Closed', start: 0, end: 24 }, { id: 's2', name: 'Opening', start: 24, end: 48 }, { id: 's3', name: 'Open', start: 48, end: 72 }] },
+    { op: 'setDoc', path: 'sequence.markers', value: [{ frame: 12, name: 'open' }, { frame: 48, name: 'open now' }] },
+  ], label: 'Split the last shot' });
+  assert.match(r, /2 edits applied as one undo step/);
+  assert.equal((await call('sequence')).shots.length, 3);
+  await call('edit', { ops: [{ op: 'setDoc', path: 'nodes', value: [] }] }, true); // only sequence / settings
+  await call('undo');
+  assert.equal((await call('sequence')).shots.length, 2, 'one undo takes back both');
+  assert.equal((await call('sequence')).markers.length, 1);
+  await call('sequence', { frame: 40 }, true); // no engine yet
+  await call('engine_load');
+  const a = await call('sequence', { frame: 60 });
+  assert.equal(a.shot, 's2 "Opening"');
+  assert.equal(a.step, 150);
+  const early = await call('sequence', { frame: 6 });
+  assert.ok(early.restored === 0 || early.restored === 120, `back to a snapshot: ${JSON.stringify(early)}`);
+  const b = await call('sequence', { frame: 60 });
+  assert.equal(b.hash, a.hash, 'the same frame, the same world, however it was reached');
+  const hinge = await call('get_node', { id: 'entrance/right/hinge', live: true });
+  assert.ok(hinge.behaviours[0].state.angleDeg < -20, `the event track opened it: ${hinge.behaviours[0].state.angleDeg}°`);
+  await call('sequence', { frame: 500 }, true);
+  await call('brain', { op: 'inspect', id: 'walker' }, true); // no brains here: said so
+  await client.close();
+});
+
+test('brain (M2 W11): inspect, inject a goal on a step, record and replay through the handlers', async () => {
+  const { SceneTree } = await import('@vrmxg/core');
+  const { installAi } = await import('@vrmxg/ai');
+  const { LiveView } = await import('@vrmxg/mcp');
+  const tree = new SceneTree({ registry: m0Registry(), seed: 1 });
+  const ai = installAi(tree);
+  tree.instantiate({ format: 'vrmxs', version: 1, id: 'b', nodes: [{ id: 'npc', type: 'Node3D' }] });
+  const bb = { counter: [0, 0, 0], goal: null };
+  ai.register({ node: tree.find('npc'), bb, inspect: () => ({ preset: 'server', status: 'running', running: [{ type: 'utility' }, { type: 'action', do: 'goTo' }], utility: [], bb, memory: [{ kind: 'sight', source: 'mira', topic: null, last: 3, strength: 0.5 }] }) });
+  const view = new LiveView(tree);
+  const call = caller(createHandlers(m0Registry(), { doc: () => ({ nodes: [] }), prefabs: () => new Map(), live: () => view }));
+  const ins = JSON.parse((await call('brain', { op: 'inspect', id: 'npc' })).text);
+  assert.equal(ins.running, 'utility > goTo');
+  assert.deepEqual(ins.memory, ['sight mira @3 ×0.5']);
+  assert.match((await call('brain', { op: 'inspect', id: 'nobody' })).text, /has no brain \(brains: npc\)/);
+  await call('brain', { op: 'inject', id: 'npc', goal: { name: 'takeOrder', params: { customer: 'mira' } }, step: 0 });
+  ai.applyInjected(ai.brainOf('npc'), { step: 0 });
+  assert.equal(bb.goal.name, 'takeOrder');
+  const rec = JSON.parse((await call('brain', { op: 'record' })).text);
+  assert.equal(rec.log.length, 1);
+  assert.match((await call('brain', { op: 'replay', log: rec.log })).text, /"queued":1/);
+  assert.match((await call('brain', { op: 'fly', id: 'npc' })).text, /op: inspect, inject, record or replay/);
+});
+
+test('answers are compact and bounded', async () => {
+  const call = caller({ big: () => ({ a: 'x'.repeat(30000) }), small: () => ({ a: [1, 2] }) });
+  assert.equal((await call('small')).text, '{"a":[1,2]}');
+  const big = (await call('big')).text;
+  assert.ok(big.length < 24200 && big.includes('cut at 24000'), big.slice(-80));
 });

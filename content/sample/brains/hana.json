@@ -1,0 +1,49 @@
+{
+ "format": "vrmxg-brain",
+ "version": 1,
+ "name": "Hana, serving",
+ "about": "The cafe's server for 'Morning at the cafe' (M2 W11). She keeps to the counter, waves at whoever she sees come in, and when a customer asks her over (setGoal takeOrder) she walks to them, listens while the order is spoken, nods, makes it at the espresso machine and brings it. Her lines are the sequence's (a dialogue track): this tree only moves and gestures, so the script can be cut to it.",
+ "plan": { "counter": [0.6, 0, -4.6], "machine": [1.2, 0, -4.85], "greeted": {}, "customer": null },
+ "senses": { "sight": { "range": 12, "fov": 150, "every": 6 }, "hearing": { "sensitivity": 1.5 } },
+ "tree": {
+  "type": "utility", "rate": 10, "hysteresis": 0.2, "children": [
+   { "name": "takeOrder", "considerations": [{ "input": "goal", "name": "takeOrder", "curve": { "type": "step", "at": 0.5 } }], "tree": {
+    "type": "sequence", "children": [
+     { "type": "set", "key": "customer", "value": "$goal.params.customer" },
+     { "type": "action", "do": "goTo", "args": { "target": "$customer", "within": 1.3, "timeout": 30 } },
+     { "type": "action", "do": "lookAt", "args": { "target": "$customer" } },
+     { "type": "action", "do": "wait", "args": { "seconds": 5.5 } },
+     { "type": "action", "do": "gesture", "args": { "slot": "nod" } },
+     { "type": "action", "do": "lookAt", "args": {} },
+     { "type": "action", "do": "goTo", "args": { "point": "$machine", "timeout": 30 } },
+     { "type": "action", "do": "lookAt", "args": { "target": "espresso" } },
+     { "type": "action", "do": "gesture", "args": { "slot": "use" } },
+     { "type": "action", "do": "wait", "args": { "seconds": 1 } },
+     { "type": "action", "do": "gesture", "args": { "slot": "use" } },
+     { "type": "action", "do": "lookAt", "args": {} },
+     { "type": "action", "do": "goTo", "args": { "target": "$customer", "within": 1.3, "timeout": 30 } },
+     { "type": "action", "do": "lookAt", "args": { "target": "$customer" } },
+     { "type": "action", "do": "gesture", "args": { "slot": "use" } },
+     { "type": "action", "do": "wait", "args": { "seconds": 1 } },
+     { "type": "action", "do": "setGoal", "args": { "agent": "$customer", "goal": "served" } },
+     { "type": "action", "do": "setGoal", "args": { "goal": "" } },
+     { "type": "action", "do": "wait", "args": { "seconds": 2 } },
+     { "type": "action", "do": "lookAt", "args": {} }
+    ] } },
+   { "name": "greet", "weight": 1.25, "considerations": [{ "input": "test", "test": "newcomer", "curve": { "type": "step", "at": 0.5 } }], "tree": {
+    "type": "sequence", "children": [
+     { "type": "choose", "pick": "remembered", "kind": "sight", "within": 1, "exclude": "greeted", "key": "newcomer" },
+     { "type": "set", "key": "greeted.$newcomer", "value": true },
+     { "type": "action", "do": "lookAt", "args": { "target": "$newcomer" } },
+     { "type": "action", "do": "gesture", "args": { "slot": "greet" } },
+     { "type": "action", "do": "wait", "args": { "seconds": 1.5 } },
+     { "type": "action", "do": "lookAt", "args": {} }
+    ] } },
+   { "name": "tend", "weight": 0.3, "considerations": [{ "input": "constant", "value": 1, "curve": { "type": "linear" } }], "tree": {
+    "type": "sequence", "children": [
+     { "type": "action", "do": "goTo", "args": { "point": "$counter", "timeout": 30 } },
+     { "type": "action", "do": "wait", "args": { "min": 1, "max": 2 } }
+    ] } }
+  ]
+ }
+}

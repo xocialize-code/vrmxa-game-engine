@@ -35,3 +35,15 @@ Not yet:
 - emote and gesture slots beyond the character's set;
 - a crowd brain for audiences;
 - the LLM director itself (M3, AB-D-0256).
+
+## Brain documents (M2 W11)
+
+A brain can name a document in the project instead of a preset: `{ "use": "brain", "preset": "brains/hana.json" }`, a
+`vrmxg-brain` file (`{ format, version, name, about, plan, senses, tree }`, the preset shape). `installAi(tree, { resolve
+})` and `await ai.prepare(doc)` read them before instantiate; the playground, the editor and the MCP engine do, and
+preload any voice clips a document's `say` actions name. The sample's `brains/hana.json` (serving, without lines: the
+film's script speaks them) and `brains/customer.json` (pauses at the window, sits, calls the server over, cheers and sips
+once served) drive "Morning at the cafe".
+
+The `gesture` action now ends a masked slot (a layer: nod, cheer, sip) when the layer ends, whatever the body is doing:
+seated counted as busy before, so a seated customer's gesture never finished.

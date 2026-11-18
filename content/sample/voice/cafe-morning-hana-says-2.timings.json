@@ -1,0 +1,28 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Coming right up!",
+ "audio": "cafe-morning-hana-says-2.wav",
+ "sampleRate": 24000,
+ "duration": 1.6,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Coming",
+   "start": 0.325,
+   "duration": 0.3
+  },
+  {
+   "text": "right",
+   "start": 0.625,
+   "duration": 0.225
+  },
+  {
+   "text": "up",
+   "start": 0.85,
+   "duration": 0.475
+  }
+ ]
+}

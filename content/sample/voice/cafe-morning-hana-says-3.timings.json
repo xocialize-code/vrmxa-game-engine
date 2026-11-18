@@ -1,0 +1,33 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Here you go. Enjoy!",
+ "audio": "cafe-morning-hana-says-3.wav",
+ "sampleRate": 24000,
+ "duration": 2.125,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Here",
+   "start": 0.325,
+   "duration": 0.225
+  },
+  {
+   "text": "you",
+   "start": 0.55,
+   "duration": 0.15
+  },
+  {
+   "text": "go",
+   "start": 0.7,
+   "duration": 0.325
+  },
+  {
+   "text": "Enjoy",
+   "start": 1.125,
+   "duration": 0.725
+  }
+ ]
+}

@@ -156,6 +156,19 @@ const items = (r) => r?.result?.items ?? r?.items;
   check(15, 'Save games: saved at 720, loaded into a fresh world, the same per-step hashes to the end everywhere as the unbroken run', ok,
     ref ? `save file ${(ref.bytes / 1024).toFixed(0)} KB (${ref.file}), saved in ${ref.saveMs} ms, loaded in ${ref.loadMs} ms (node); ${ref.steps - ref.savedAt} steps after the load, final ${ref.final}; ${sameAsUnbroken === null ? 'identical to the unbroken run (check 8)' : `DIFFERS from the unbroken run at ${sameAsUnbroken.step} in ${sameAsUnbroken.component}`}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? `identical, same file via ${r.x.store} (load ${r.x.loadMs} ms)` : `DIFFERS (file ${r.x?.file})`}`).join('; ')}` : 'no node result');
 }
+// 16 (M2 W11). "Morning at the cafe": the 45 s film (brains cast from brain documents, four baked lines, steam, a music
+// cue) hashes identically at every step everywhere; its beats land where the cut needs them (every line spoken with Hana
+// at Mira's table, the steam while Hana is at the machine, served before the end, the music on its cue); a snapshot
+// mid-film re-simulates identically.
+{
+  const fm = (r) => r?.result?.film ?? r?.film, ref = fm(node);
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = fm(r); const d = x && ref ? compareRuns(unpackRun(ref.run), unpackRun(x.run)) : { step: -1, component: 'no result' }; return { k, d, x, ok: !!x && !d && x.snapshot.rerunMatches }; });
+  const b = ref?.beats;
+  const beatsOk = !!b && b.lines.length === 4 && b.lines.every((l) => l.apart < 2.6) && !!b.steam && b.steam.hanaFromMachine < 1.2 && b.served !== null && b.served < ref.steps && b.music !== null && b.cameras.length >= 8;
+  const ok = !!ref && ref.snapshot.rerunMatches && beatsOk && rows.every((r) => r.ok);
+  check(16, 'Morning at the cafe: the 45 s film identical everywhere; lines, steam and served land on the cut; snapshot mid-film', ok,
+    ref ? `${ref.steps} steps (${ref.seconds} s) × ${ref.components} components, final ${ref.final}; brains ${ref.brains.join(', ')}; lines ${b.lines.map((l) => `@${l.step} ${l.who} (${l.apart} m apart)`).join(', ')}; seated @${b.seated}; steam @${b.steam?.step} (Hana ${b.steam?.hanaFromMachine} m from the machine); served @${b.served}; music @${b.music}; ${b.cameras.length} camera changes; step ${ref.stepMs} ms (node); snapshot @${ref.snapshot.at} ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? 'identical' : 'DIFFERS'}`).join('; ')}` : 'no node result');
+}
 checks.sort((a, b) => a.n - b.n);
 fs.writeFileSync(res('summary.json'), JSON.stringify({ checks, runtimes: { node: node?.version, chromium: chromium?.version, wkwebview: scheme?.ua } }, null, 1) + '\n');
 process.exit(checks.every((c) => c.ok) ? 0 : 1);

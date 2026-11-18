@@ -46,3 +46,11 @@ Tests (`npm test`):
   post values at α, scrubbing (backwards, forwards, from snapshots) equal to straight play, a snapshot mid-shot, baking;
 - on the cafe (needs vrmxa-avatar-studio): the morning sequence twice the same, cameras, Mira's walk, eyes, Hana's line
   on frame 126, the cheated light, and scrubbing exact.
+
+## Casting (M2 W11)
+
+`sequence.cast` recasts the set's own nodes for the whole film without touching the set's file: `{ "hana-1": {
+"transform": …, "behaviours": [{ "use": "brain", "preset": "brains/hana.json" }] }, "music": { "props": { "autoplay":
+false } } }`. Props merge over the set's; behaviours and transform replace them; a name the set doesn't have is refused.
+"Morning at the cafe" (`content/sample/sequences/cafe-morning.vrmxs`) casts Hana as the server, Mira as the customer,
+and holds the set's music for its own cue.

@@ -73,6 +73,19 @@ test('composing: the set\'s nodes keep their ids, the sequence\'s join under the
   assert.throws(() => composeSequence({ ...SEQ, assets: [{ id: 'a', type: 'vrma', ref: 'x.vrma' }] }, { ...SET, assets: [{ id: 'a', type: 'vrma', ref: 'y.vrma' }] }), /asset "a"/);
 });
 
+test('casting (M2 W11): sequence.cast recasts set nodes for the film (props merged, behaviours and transform replaced); the set is untouched', () => {
+  const seq = { ...SEQ, sequence: { ...SEQ.sequence, cast: { hana: { transform: { p: [1, 0, 1] }, props: { purpose: 'mark' }, behaviours: [{ use: 'brain', preset: 'server' }] } } } };
+  const before = JSON.stringify(SET);
+  const d = composeSequence(seq, SET);
+  const h = d.nodes.find((n) => n.id === 'hana');
+  assert.deepEqual(h.transform, { p: [1, 0, 1] });
+  assert.deepEqual(h.behaviours, [{ use: 'brain', preset: 'server' }]);
+  assert.equal(h.props.purpose, 'mark');
+  assert.deepEqual(d.nodes.find((n) => n.id === 'mira').transform, { p: [0, 0, 0] }, 'others as in the set');
+  assert.equal(JSON.stringify(SET), before, 'the set document is not changed');
+  assert.throws(() => composeSequence({ ...SEQ, sequence: { ...SEQ.sequence, cast: { nobody: { props: {} } } } }, SET), /cast names "nobody"/);
+});
+
 test('checks, clips, post values and SRT subtitles', () => {
   const ids = new Set(composeSequence(SEQ, SET).nodes.map((n) => n.id));
   assert.deepEqual(checkSequence(SEQ.sequence, { nodeIds: ids }), []);

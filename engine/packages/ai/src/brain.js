@@ -17,8 +17,9 @@ const EYE = 1.5;
 
 export class BrainBehaviour extends Behaviour {
   ready() {
-    const preset = typeof this.params.preset === 'object' ? this.params.preset : PRESETS[this.params.preset ?? 'wanderer'];
-    if (!preset) throw new Error(`${this.node.id}: no brain preset "${this.params.preset}" (${Object.keys(PRESETS).join(', ')})`);
+    const name = this.params.preset ?? 'wanderer', ai = this.node.tree.services.get('ai');
+    const preset = typeof name === 'object' ? name : PRESETS[name] ?? ai?.presets.get(name);
+    if (!preset) throw new Error(`${this.node.id}: no brain preset "${name}" (${Object.keys(PRESETS).join(', ')}, or a brain document the AI service read: await ai.prepare(doc))`);
     this.preset = preset;
     this.nodes = compile(preset.tree);
     const p = this.node.object3d.position;

@@ -12,7 +12,10 @@
 // Word timings live beside the clip: voice/hana-welcome.wav → voice/hana-welcome.timings.json ({ words: [{ text,
 // start, duration }], offset? }: `offset` corrects the timing source, seconds added to every word). A line with no timings file mouths estimated timings (estimateWords); a line with only text
 // mouths the text. Clips a scene names (in connections' args, behaviour params) are read by prepare().
+//
+// Live lines (M2 W10, live.js): useLive(provider) gives text-only lines a voice while playing, as presentation only.
 import { buildTrack, sampleMouth, wordAt, estimateWords, VOWELS } from './lipsync.js';
+import { LiveLines } from './live.js';
 
 const DT = 1 / 60;
 const BLINK = [1 / 3, 2 / 3, 1, 0.83, 0.67, 0.5, 0.33, 0.17]; // 8 steps: shut in 3, open in 5
@@ -26,8 +29,15 @@ export class VoiceService {
     /** character id → { nextBlink, blinkAt, nextGlance } */ this.faces = new Map();
     /** track cache: key → viseme keys (derived, not state) */ this.tracks = new Map();
     const audio = tree.services.get('audio');
-    if (audio) audio.addProvider(() => this.sounds());
+    if (audio) audio.addProvider((step) => this.sounds(step));
+    /** @type {LiveLines | null} presentation: text-only lines through a TTS provider */ this.live = null;
   }
+
+  /**
+   * Speak text-only lines through a TTS provider while playing (presentation: see live.js). null turns it off.
+   * @param {ConstructorParameters<typeof LiveLines>[1] | null} provider @param {ConstructorParameters<typeof LiveLines>[2]} [opts]
+   */
+  useLive(provider, opts) { this.live = provider ? new LiveLines(this, provider, opts) : null; return this.live; }
 
   /** Read every clip a scene names (and its timings), so say() can start it on a step. */
   async prepare(doc) {
@@ -73,6 +83,7 @@ export class VoiceService {
       line = { clip: null, text: text ?? '', startStep: this.tree.clock.step, duration: last ? last.start + last.duration + 0.2 : 0, words };
     }
     this.lines.set(actor.id, line);
+    if (!line.clip) this.live?.started(actor.id, line);
     actor.emit('spoke', { text: line.text });
   }
 
@@ -124,7 +135,7 @@ export class VoiceService {
   // ---------------------------------------------------------------- presentation
 
   /** What the audio service plays for the lines: each clip from its speaker's head, on the voice bus. */
-  sounds() {
+  sounds(step = this.tree.clock.step) {
     const out = [];
     for (const [id, line] of this.lines) {
       if (!line.clip) continue;
@@ -135,6 +146,7 @@ export class VoiceService {
       const e = head.matrixWorld.elements;
       out.push({ key: `voice:${id}`, ref: line.clip, startStep: line.startStep, loop: false, bus: 'voice', gain: 1, position: [e[12], e[13], e[14]], distance: { ref: 1.5, max: 25, rolloff: 1 } });
     }
+    if (this.live) out.push(...this.live.sounds(step));
     return out;
   }
 
@@ -160,5 +172,6 @@ export class VoiceService {
   setState(s) {
     this.lines = new Map(s.lines.map(([id, l]) => [id, { ...l }]));
     this.faces = new Map(s.faces.map(([id, f]) => [id, { ...f }]));
+    this.live?.reset();
   }
 }

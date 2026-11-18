@@ -563,11 +563,14 @@ export class EditorHost {
   }
 
   /** The view as it is now (edit camera or the play camera) at a size, as a PNG. */
-  async stillPNG(width, height) {
+  async stillPNG(width, height) { return (await this.still(width, height)).png; }
+
+  /** The view drawn at a size: { png, still } (still: its RGBA, for checks like a blank frame). */
+  async still(width, height) {
     if (!this.host.tree) throw new Error('nothing to draw');
     const still = captureStill(this.host, { width, height, alpha: this.host.last.alpha ?? 1 });
     if (this._w) this.host.resize(this._w, this._h); // the viewport's own size, exactly
-    return encodePNG(still);
+    return { png: await encodePNG(still), still };
   }
 
   /** Save a still of the view: a save panel in the shell, a download in a browser. */

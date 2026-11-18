@@ -1,0 +1,30 @@
+{
+ "format": "vrmxg-brain",
+ "version": 1,
+ "name": "A customer",
+ "about": "A morning customer (M2 W11): pauses at the window, comes in, takes a free seat, asks the server over (setGoal takeOrder on $server), watches them, and once served (the goal 'served') smiles, cheers a little and sips. The order itself is the sequence's dialogue; in play, the W7 'customer' preset speaks it instead.",
+ "plan": { "entry": [-0.3, 0, 4.4], "server": "hana-1", "seat": null },
+ "senses": { "sight": { "range": 8, "fov": 140, "every": 6 } },
+ "tree": {
+  "type": "sequence", "children": [
+   { "type": "action", "do": "wait", "args": { "seconds": 4.5 } },
+   { "type": "action", "do": "goTo", "args": { "point": "$entry", "timeout": 30 } },
+   { "type": "choose", "pick": "advert", "verb": "sit", "range": 15, "key": "seat" },
+   { "type": "action", "do": "goTo", "args": { "target": "$seat", "within": 0.9, "timeout": 30 } },
+   { "type": "action", "do": "interact", "args": { "item": "$seat", "verb": "sit" } },
+   { "type": "action", "do": "lookAt", "args": { "target": "$server" } },
+   { "type": "action", "do": "setGoal", "args": { "agent": "$server", "goal": "takeOrder", "params": { "customer": "$self" } } },
+   { "type": "until", "test": "goal", "name": "served", "timeout": 120 },
+   { "type": "action", "do": "emote", "args": { "name": "happy" } },
+   { "type": "action", "do": "gesture", "args": { "slot": "cheer" } },
+   { "type": "action", "do": "wait", "args": { "seconds": 1.5 } },
+   { "type": "action", "do": "lookAt", "args": {} },
+   { "type": "action", "do": "gesture", "args": { "slot": "sip" } },
+   { "type": "action", "do": "wait", "args": { "seconds": 4 } },
+   { "type": "repeat", "child": { "type": "sequence", "children": [
+     { "type": "action", "do": "gesture", "args": { "slot": "sip" } },
+     { "type": "action", "do": "wait", "args": { "min": 4, "max": 7 } }
+   ] } }
+  ]
+ }
+}

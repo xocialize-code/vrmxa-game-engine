@@ -1,0 +1,21 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "doors-seq",
+  "set": "doors.vrmxs",
+  "assets": [],
+  "nodes": [],
+  "connections": [],
+  "sequence": {
+    "fps": 24,
+    "duration": 72,
+    "shots": [
+      {"id":"s1","name":"Closed","start":0,"end":24},
+      {"id":"s2","name":"Opening","start":24,"end":72}
+    ],
+    "markers": [{"frame":12,"name":"open"}],
+    "tracks": [
+      {"id":"open","type":"event","keys":[[12,{"call":"open","target":"entrance/right/hinge"}]]}
+    ]
+  }
+}

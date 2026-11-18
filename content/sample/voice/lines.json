@@ -1,0 +1,8 @@
+[
+ {"id":"hana-welcome","voice":"af_heart","text":"Oh, hi! Welcome to the cafe. Sit anywhere you like, and I'll bring you a menu."},
+ {"id":"hana-sword","voice":"af_heart","text":"Careful with that sword. The last person who swung it broke a lamp."},
+ {"id":"cafe-morning-hana-says-1","voice":"af_heart","text":"Good morning! What can I get you?"},
+ {"id":"cafe-morning-hana-says-2","voice":"af_heart","text":"Coming right up!"},
+ {"id":"cafe-morning-hana-says-3","voice":"af_heart","text":"Here you go. Enjoy!"},
+ {"id":"cafe-morning-mira-says-1","voice":"af_bella","text":"A latte, please. And one of those croissants."}
+]

@@ -1,6 +1,8 @@
 // @vrmxg/voice — M1 W6 (AB-T-0518).
 import { VoiceService } from './service.js';
 export { VoiceService } from './service.js';
+export { LiveLines, shellTTS, httpTTS } from './live.js';
+export { bakePlan, applyBake } from './bake.js';
 export { buildTrack, sampleMouth, wordAt, estimateWords, VOWELS, OCULUS_TO_VRM } from './lipsync.js';
 
 /**

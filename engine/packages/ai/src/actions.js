@@ -46,9 +46,15 @@ export const ACTIONS = {
       const g = ctx.node.graph;
       if (!g?.has?.(a.slot) || !ctx.node.startAction) return { failed: true };
       ctx.node.startAction(a.slot);
-      return { at: ctx.step };
+      // a masked slot plays as a layer over whatever the body does (seated included): done when the layer ends
+      return { at: ctx.step, layer: !!ctx.node.graph.gesturing };
     },
-    update(ctx, a, d) { return d.failed ? 'failure' : ctx.step > d.at && !ctx.node.graph.busy && !ctx.node.graph.gesturing ? 'success' : 'running'; },
+    update(ctx, a, d) {
+      if (d.failed) return 'failure';
+      if (ctx.step <= d.at) return 'running';
+      const g = ctx.node.graph;
+      return (d.layer ? !g.gesturing : !g.busy && !g.gesturing) ? 'success' : 'running';
+    },
   },
   lookAt: {
     description: 'Look at a node (eyes and head), or with no target stop.',

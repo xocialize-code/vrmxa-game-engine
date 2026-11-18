@@ -32,12 +32,14 @@ const qz = (a) => [0, 0, Math.sin(a / 2), Math.cos(a / 2)];
 // One generated clip: legs and arms swing by `swing` radians per cycle; `bob` lifts the hips; `travel`
 // moves the hips forward by that many metres over the clip (root motion).
 // `sit` (0 standing … 1 seated, hips 0.5 m up, thighs level, shins down) may change over the clip (sitTo); `reach`
-// raises the right arm forward (use, take); `gesture` waves both forearms a little (talk).
-function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 0, crouch = 0, armsUp = 0, sit = 0, sitTo = sit, reach = 0, gesture = 0 }) {
+// raises the right arm forward (use, take); `gesture` waves both forearms a little (talk). Emotes (M2 W11): `nod` tips
+// the neck and head forward that many radians, twice; `cheer` raises both arms high and shakes them.
+function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 0, crouch = 0, armsUp = 0, sit = 0, sitTo = sit, reach = 0, gesture = 0, nod = 0, cheer = 0 }) {
   const frames = Math.round(seconds * fps) + 1;
   const bones = {};
   const names = ['leftUpperLeg', 'rightUpperLeg', 'leftUpperArm', 'rightUpperArm', 'spine'];
   if (sit || sitTo) names.push('leftLowerLeg', 'rightLowerLeg');
+  if (nod) names.push('neck', 'head');
   for (const b of names) bones[b] = new Float32Array(frames * 4);
   const hips = new Float32Array(frames * 3);
   for (let f = 0; f < frames; f++) {
@@ -46,8 +48,10 @@ function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 
     bones.leftUpperLeg.set(qx(s - crouch - k * Math.PI / 2), f * 4);
     bones.rightUpperLeg.set(qx(-s - crouch - k * Math.PI / 2), f * 4);
     if (bones.leftLowerLeg) { bones.leftLowerLeg.set(qx(k * Math.PI / 2), f * 4); bones.rightLowerLeg.set(qx(k * Math.PI / 2), f * 4); }
-    bones.leftUpperArm.set(qz(-1.2 + armsUp - s * 0.5 + g), f * 4);
-    bones.rightUpperArm.set(r ? qx(-r) : qz(1.2 - armsUp + s * 0.5 - g), f * 4);
+    const up = cheer * Math.sin(Math.PI * t); // up and down again over the clip
+    bones.leftUpperArm.set(qz(-1.2 + armsUp + up - s * 0.5 + g), f * 4);
+    bones.rightUpperArm.set(r ? qx(-r) : qz(1.2 - armsUp - up + s * 0.5 - g), f * 4);
+    if (nod) { const a = nod * Math.max(0, Math.sin(2 * ph)); bones.neck.set(qx(a * 0.4), f * 4); bones.head.set(qx(a * 0.6), f * 4); }
     bones.spine.set(qx(crouch * 0.3), f * 4);
     hips.set([0, 0.95 + bob * Math.abs(Math.sin(ph)) - crouch * 0.2 - k * 0.45, travel * t], f * 3);
   }
@@ -59,7 +63,7 @@ function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 
  * fall, land) and a "sword" set (priority 1, requires the tag "sword") that changes idle.
  * `travel: true` makes walk and run root-motion "travel" clips.
  */
-export async function testAnimations(core, { travel = false, actions = false, layers = false } = {}) {
+export async function testAnimations(core, { travel = false, actions = false, layers = false, emotes = false } = {}) {
   const defs = [
     ['idle', { seconds: 2, swing: 0.03 }, { loops: true, rootMotion: 'inPlace' }],
     ['walk', { seconds: 1, swing: 0.5, bob: 0.03, travel: travel ? 1.4 : 0 }, { loops: true, speed: 1.4, rootMotion: travel ? 'travel' : 'inPlace' }],
@@ -81,6 +85,13 @@ export async function testAnimations(core, { travel = false, actions = false, la
   if (actions) defs.push(...ACTION_DEFS);
   // G10 layers (M2 W8): a wave for the masked `greet` gesture (the right arm raised high, waving)
   if (layers) defs.push(['greet', { seconds: 1.2, reach: 2.6, gesture: 0.35 }, { loops: false, rootMotion: 'inPlace' }]);
+  // emotes (M2 W11), masked one-shots: a nod (the head), a cheer (both arms), a sip from a cup (the right arm to the mouth)
+  const EMOTES = [
+    ['nod', { seconds: 1.0, nod: 0.35 }, { loops: false, rootMotion: 'inPlace' }, 'face'],
+    ['cheer', { seconds: 1.4, cheer: 1.9, gesture: 0.25 }, { loops: false, rootMotion: 'inPlace' }, 'arms'],
+    ['sip', { seconds: 2.0, reach: 2.2 }, { loops: false, rootMotion: 'inPlace' }, 'arms'],
+  ];
+  if (emotes) defs.push(...EMOTES.map(([n, g, m]) => [n, g, m]));
   const clips = new Map(), entries = [], sha = {};
   for (const [name, gen, meta] of defs) {
     const bytes = makeClip(core, name, gen);
@@ -93,7 +104,7 @@ export async function testAnimations(core, { travel = false, actions = false, la
   const doc = {
     format: 'vrmxa-animations', version: 1, clips: entries,
     sets: [
-      { id: 'default', name: 'Default', default: true, priority: 0, requires: [], slots: { idle: slot('idle'), walk: slot('walk'), run: slot('run'), jump: slot('jump'), fall: slot('fall'), land: slot('land'), ...(actions ? Object.fromEntries(ACTION_DEFS.map(([n]) => [n, slot(n)])) : {}), ...(layers ? { greet: [{ ...slot('greet')[0], mask: 'arms' }] } : {}) } },
+      { id: 'default', name: 'Default', default: true, priority: 0, requires: [], slots: { idle: slot('idle'), walk: slot('walk'), run: slot('run'), jump: slot('jump'), fall: slot('fall'), land: slot('land'), ...(actions ? Object.fromEntries(ACTION_DEFS.map(([n]) => [n, slot(n)])) : {}), ...(layers ? { greet: [{ ...slot('greet')[0], mask: 'arms' }] } : {}), ...(emotes ? Object.fromEntries(EMOTES.map(([n, , , mask]) => [n, [{ ...slot(n)[0], mask }]])) : {}) } },
       { id: 'sword', name: 'With a sword', priority: 1, requires: ['sword'], slots: { idle: slot('idle-sword'), ...(layers ? { hold: [{ ...slot('idle-sword')[0], mask: 'upperBody' }] } : {}) } },
     ],
   };

@@ -6,7 +6,9 @@ import { Playground, PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '' });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '' });
+// the sample's scenes and sequences; ?scene= picks one at load
+const SCENES = ['cafe.vrmxs', 'sequences/morning.vrmxs', 'sequences/cafe-morning.vrmxs'];
 const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
 let pg = null; // never reactive
 
@@ -86,7 +88,7 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
     <header class="bar" role="toolbar" aria-label="Playground controls">
       <strong class="title">VRMXG Playground</strong>
       <label class="field">Scene
-        <select v-model="ui.scene" aria-label="Scene" @change="load"><option value="cafe.vrmxs">cafe.vrmxs</option></select>
+        <select v-model="ui.scene" aria-label="Scene" @change="load"><option v-for="s in SCENES" :key="s" :value="s">{{ s }}</option></select>
       </label>
       <button id="play" type="button" :disabled="ui.loading" :aria-label="ui.playing ? 'Pause' : 'Play'" @click="toggle">{{ ui.playing ? 'Pause' : 'Play' }}</button>
       <button id="step" type="button" :disabled="ui.loading" aria-label="Step" @click="step">Step</button>
