@@ -1,0 +1,32 @@
+{
+  "origin": "loopback",
+  "timerRes": 0.02,
+  "timedOut": false,
+  "errors": [],
+  "isolated": true,
+  "one": {
+    "characters": 1,
+    "mean": 0.111,
+    "p50": 0.1,
+    "p95": 0.14,
+    "perCharacter": 0.1109,
+    "springJoints": 106
+  },
+  "twenty": {
+    "characters": 20,
+    "mean": 2.011,
+    "p50": 1.96,
+    "p95": 2.32,
+    "perCharacter": 0.1005,
+    "springJoints": 106
+  },
+  "twentyAgain": {
+    "characters": 20,
+    "mean": 1.995,
+    "p50": 2,
+    "p95": 2.24,
+    "perCharacter": 0.0998,
+    "springJoints": 106
+  },
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+}

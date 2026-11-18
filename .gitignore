@@ -9,7 +9,7 @@ mac/build/
 
 # VRM models and clips: the spikes' VRoid samples can't be shipped, and spec.vrm lives in
 # xocialize-code/vrmxa-spec. Spikes copy them into public/models/ locally.
-public/models/
+**/public/models/
 *.vrm
 *.vrma
 

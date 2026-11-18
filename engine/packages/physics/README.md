@@ -36,6 +36,13 @@ const snap = physics.snapshot();               // Rapier bytes + physics behavio
 - **Contact events cost only when used**: a RigidBody's colliders report collisions only once something listens to its
   `contact` signal (a data connection or `on('contact')`).
 - **Settled scenes are cheap**: only Rapier's awake bodies are written back to their nodes each step.
+- **Character controllers** (`createCharacterController`, used by `@vrmxg/character`): Rapier's kinematic controller plus
+  two fixes found in W3. Rapier 0.21's controller lets a capsule sink into box, convex and round-box colliders (not
+  trimeshes) until it sticks, in all three builds; one downward ray keeps the capsule 5 mm above its own offset (22
+  stalls in 600 steps at 0 mm, none at 5 mm). Controllers aren't in Rapier snapshots, so `restore()` rebuilds them.
+- **Kinematic bodies never sleep**: asleep, Rapier ignores their next pose and their collider stays behind.
+- **Restored worlds compute what the original did**: shape dimensions read back from a collider are rounded to f32
+  (a collider created in this session caches the description's f64 numbers; one from a snapshot reads f32).
 
 ## Results (AB-R-0938)
 

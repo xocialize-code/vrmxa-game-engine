@@ -32,6 +32,8 @@ export class PhysicsWorld {
     this.world = new R.World(v(gravity));
     this.world.timestep = DT / substeps;
     this.events = new R.EventQueue(true);
+    /** Character controllers made by createCharacterController (rebuilt after restore). */
+    this.controllers = new Set();
   }
 
   // ---------------------------------------------------------------- bodies, colliders, joints
@@ -44,6 +46,9 @@ export class PhysicsWorld {
     const R = this.R;
     const desc = type === 'fixed' ? R.RigidBodyDesc.fixed() : type === 'kinematic' ? R.RigidBodyDesc.kinematicPositionBased() : R.RigidBodyDesc.dynamic();
     desc.setTranslation(p[0], p[1], p[2]).setRotation(q(rot)).setLinearDamping(linearDamping).setAngularDamping(angularDamping).setCcdEnabled(ccd);
+    // A kinematic body is moved by its node every step; once asleep, Rapier ignores its next pose and its
+    // collider stays behind (a character standing still for a second then can't walk).
+    if (type === 'kinematic') desc.setCanSleep(false);
     return this.world.createRigidBody(desc).handle;
   }
 
@@ -156,6 +161,67 @@ export class PhysicsWorld {
     return out;
   }
 
+  // ---------------------------------------------------------------- character controllers
+
+  /**
+   * A kinematic character controller (Rapier's KinematicCharacterController): slides along walls, climbs
+   * slopes up to `maxSlope`, steps up to `stepHeight`, snaps down to the ground, pushes dynamic bodies.
+   * Sensors never block it (spike gotcha 1).
+   * @param {{ offset?: number, groundMargin?: number, maxSlope?: number, minSlide?: number, stepHeight?: number, stepWidth?: number, snap?: number, mass?: number, layers?: string[] }} [opts] angles in radians
+   * @returns {{ move: (collider: number, desired: number[]) => { movement: number[], grounded: boolean }, free: () => void, rebuild: () => void }}
+   */
+  createCharacterController({ offset = 0.02, groundMargin = 0.005, maxSlope = 0.7853981633974483, minSlide = 0.5235987755982988, stepHeight = 0.35, stepWidth = 0.2, snap = 0.3, mass = 70, layers } = {}) {
+    const R = this.R;
+    // Rapier's controllers live outside the world and aren't in its snapshots: build one now and again
+    // whenever restore() replaces the world.
+    const build = () => {
+      const k = this.world.createCharacterController(offset);
+      k.setMaxSlopeClimbAngle(maxSlope);
+      k.setMinSlopeSlideAngle(minSlide);
+      k.enableAutostep(stepHeight, stepWidth, true);
+      k.enableSnapToGround(snap);
+      k.setApplyImpulsesToDynamicBodies(true);
+      k.setCharacterMass(mass);
+      return k;
+    };
+    let kcc = build();
+    const groups = this.layers.queryGroups(layers);
+    const ray = new R.Ray({ x: 0, y: 0, z: 0 }, { x: 0, y: -1, z: 0 });
+    const handle = {
+      rebuild: () => { kcc = build(); },
+      move: (collider, desired) => {
+        const c = this.world.getCollider(collider);
+        kcc.computeColliderMovement(c, v(desired), R.QueryFilterFlags.EXCLUDE_SENSORS, groups);
+        const m = arr3(kcc.computedMovement());
+        let grounded = kcc.computedGrounded();
+        // Rapier 0.21's controller lets a capsule sink into box, convex and round-box colliders (not
+        // trimeshes) a little each step until it sticks, in all three builds (AB-L recorded). Keep the
+        // capsule's bottom `offset` above the ground under it with one downward ray from its centre.
+        const shape = c.shape;
+        if (desired[1] <= 0 && shape.halfHeight !== undefined && shape.radius !== undefined) {
+          const t = c.translation();
+          // Rapier stores shapes in f32, but a collider created in this session caches its JS shape with the
+          // description's f64 numbers, while one from restoreSnapshot reads the f32 ones: round to f32 so a
+          // restored run computes exactly what the original did.
+          const reach = Math.fround(shape.halfHeight) + Math.fround(shape.radius);
+          ray.origin = { x: t.x + m[0], y: t.y + m[1], z: t.z + m[2] };
+          const hit = this.world.castRay(ray, reach + 0.05, true, R.QueryFilterFlags.EXCLUDE_SENSORS, groups, c, c.parent());
+          if (hit) {
+            const ground = ray.origin.y - hit.timeOfImpact, bottom = ray.origin.y - reach;
+            // Held `groundMargin` above the controller's own offset: at exactly the offset the floor
+            // intermittently reads as an obstacle and the step stalls (22 stalls in 600 steps at 0, none at 5 mm).
+            const rest = ground + offset + groundMargin;
+            if (bottom < rest) { m[1] += rest - bottom; grounded = true; }
+          }
+        }
+        return { movement: m, grounded };
+      },
+      free: () => { this.world.removeCharacterController(kcc); this.controllers.delete(handle); },
+    };
+    this.controllers.add(handle);
+    return handle;
+  }
+
   // ---------------------------------------------------------------- queries
 
   /**
@@ -207,6 +273,7 @@ export class PhysicsWorld {
     this.world.free();
     this.world = this.R.World.restoreSnapshot(bytes);
     this.world.timestep = ts;
+    for (const c of this.controllers) c.rebuild();
   }
 
   /** Line segments of every collider, for debug draw: { vertices: Float32Array (xyz pairs), colors: Float32Array (rgba) }. */

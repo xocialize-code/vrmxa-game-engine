@@ -32,6 +32,9 @@ export function m0Registry() {
       controller: P.enum(['none', 'player', 'npc'], { default: 'none', sim: true }),
       animationSet: P.string({ description: 'Animation set id; defaults to the one equipped items imply (VRMXA §8.3).' }),
       capsuleHeight: P.number({ min: 0.3, max: 3, unit: 'm', sim: true }),
+      walkSpeed: P.number({ min: 0, default: 1.4, unit: 'm/s', sim: true }),
+      jumpSpeed: P.number({ min: 0, default: 4.5, unit: 'm/s', sim: true }),
+      layer: P.string({ description: 'Collision layer of the capsule.' }),
     },
     signals: { arrived: { args: { target: P.nodeRef() } }, spoke: { args: { text: P.string() } } },
     actions: {
@@ -73,6 +76,11 @@ export function m0Registry() {
   r.define('Area', {
     extends: 'Collider', description: 'A sensor volume: reports bodies entering and leaving (door triggers, pickups).',
     signals: { bodyEntered: { args: { body: P.nodeRef() } }, bodyExited: { args: { body: P.nodeRef() } } },
+  });
+
+  r.define('BoneAttachment', {
+    extends: 'Node3D', description: 'Rides on a humanoid bone of the Character it is inside (held and stowed items).',
+    props: { bone: P.string({ default: 'rightHand', description: 'VRM humanoid bone name.' }) },
   });
 
   // Behaviours: named code in the project, referenced from scenes by id (no code in scenes).

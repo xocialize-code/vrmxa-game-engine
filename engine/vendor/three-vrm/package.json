@@ -6,12 +6,22 @@
   "type": "module",
   "license": "MIT",
   "exports": {
-    ".": "./lib/three-vrm.module.js"
+    ".": {
+      "types": "./lib/three-vrm.module.d.ts",
+      "default": "./lib/three-vrm.module.js"
+    }
   },
-  "files": ["lib", "LICENSE", "README.md"],
+  "files": [
+    "lib",
+    "LICENSE",
+    "README.md"
+  ],
   "sideEffects": false,
   "peerDependencies": {
     "three": ">=0.137"
   },
-  "vrmxg": { "determinism": "vendored" }
+  "vrmxg": {
+    "determinism": "vendored"
+  },
+  "types": "./lib/three-vrm.module.d.ts"
 }

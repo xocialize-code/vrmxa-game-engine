@@ -1,0 +1,30 @@
+{
+  "name": "@vrmxg/character",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG characters: VRMXA / VRM loading, the Character node (animation graph on VRMXA slots, speed blend, root motion, kinematic controller with jump, look-at, expressions, actions), bone attachments, and a snapshot-able character state.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@pixiv/three-vrm-animation": "3.5.5",
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/scene": "0.1.0",
+    "@vrmxg/three-vrm": "3.5.5-vrmxg.1",
+    "three": "0.187.0"
+  },
+  "peerDependencies": {
+    "@vrmxg/physics": "0.1.0"
+  },
+  "vrmxg": {
+    "determinism": "simulation"
+  }
+}

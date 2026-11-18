@@ -1,0 +1,6 @@
+{
+  "name": "vrmxg-character-bench",
+  "private": true,
+  "type": "module",
+  "description": "Step cost of 20 VRoid-class characters (not a workspace package)"
+}
