@@ -10,7 +10,7 @@ import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
 import { captureStill } from '@vrmxg/export';
 import { loadSample, buildWorld } from './world.js';
 import { serialize } from '@vrmxg/scene';
-import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, STEPS } from './acceptance.js';
+import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, runBrains, STEPS } from './acceptance.js';
 import { AudioOutput } from '@vrmxg/audio';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import * as core from '@vrmxa-core/index.js';
@@ -89,10 +89,11 @@ export class Playground {
     const cinematic = await runCinematic(R, sample, opts);
     const sequence = await runSequence(R, sample, opts, { now });
     const particles = await runParticles(R, sample, opts, { now });
+    const brains = await runBrains(R, sample, opts, { now });
     const audio = await runAudio(R, sample, opts, { silentFinal: items.final, take: 'input/play-items.json', steps: items.steps });
     const rendered = await this._renderedChecks(simulation);
     rendered.post = await this._postChecks();
-    return { simulation, devices, items, cinematic, sequence, particles, audio, rendered };
+    return { simulation, devices, items, cinematic, sequence, particles, brains, audio, rendered };
   }
 
   async _renderedChecks(simulation) {

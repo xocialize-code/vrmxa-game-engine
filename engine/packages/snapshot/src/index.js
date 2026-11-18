@@ -118,7 +118,7 @@ export function worldHashes(tree, { physicsBytes = false } = {}) {
   for (const [name, s] of tree.services) {
     if (typeof s.stateVector === 'function') {
       out[name] = hashValue(s.stateVector());
-      if (physicsBytes) out[`${name}:bytes`] = hashValue(s.world.snapshot());
+      if (physicsBytes && s.world?.snapshot) out[`${name}:bytes`] = hashValue(s.world.snapshot());
     } else if (typeof s.getState === 'function') out[`service:${name}`] = hashValue(s.getState());
   }
   return out;

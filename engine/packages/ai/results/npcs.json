@@ -1,0 +1,16 @@
+{
+  "scene": "cafe: Hana (server), Mira (customer), 8 wandering Hanas; stub textures",
+  "node": "v26.12.1",
+  "characters": 10,
+  "brains": 10,
+  "steps": 1200,
+  "stepMs": {
+    "mean": 1.001,
+    "p95": 1.42,
+    "max": 2.474
+  },
+  "brainsMsPerStep": 0.044,
+  "navMsPerStep": 0.088,
+  "navBakeMs": 0,
+  "wanderersMoved": 8
+}

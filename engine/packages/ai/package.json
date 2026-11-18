@@ -1,0 +1,26 @@
+{
+  "name": "@vrmxg/ai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG NPC brains (M2 W7): a small behaviour tree runtime with a utility selector, blackboards, stimulus memory, perception (sight cone with line-of-sight rays, hearing, proximity, smart-object adverts), seeded per-agent randomness, LOD tick rates, the action vocabulary (say, emote, gesture, lookAt, goTo, follow, interact, setGoal, wait), role presets (server, customer, wanderer) and the recorded-input hook for M3's director. All of it simulation: in the snapshot.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/core": "0.1.0"
+  },
+  "devDependencies": {
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/nav": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  },
+  "vrmxg": { "determinism": "simulation" }
+}

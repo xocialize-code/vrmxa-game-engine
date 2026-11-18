@@ -80,7 +80,7 @@ export function m0Registry() {
     signals: { arrived: { args: { target: P.nodeRef() } }, spoke: { args: { text: P.string() } }, lineEnded: { args: { text: P.string() } }, dressed: { args: { worn: P.list(P.string()) } } },
     actions: {
       say: { args: { text: arg(P.string(), 'What to say (the caption; lip-synced from estimated timings without a clip).'), clip: arg(P.string(), 'A voice line in the project (.wav), with its word timings beside it (<clip>.timings.json).') }, description: 'Speak a line: the clip plays from the head, the mouth follows its word timings, a caption shows.' },
-      goTo: { args: { target: arg(P.nodeRef(), 'Node to walk to.') }, description: 'Walk to a node using navigation.' },
+      goTo: { args: { target: arg(P.nodeRef(), 'Node to walk to.'), point: arg(P.vec3({ unit: 'm' }), 'Or a point to walk to.') }, description: 'Walk to a node or a point, along the navmesh when the scene has one (around tables and through doorways), else straight.' },
       emote: { args: { name: arg(P.string(), 'Expression or emote clip name.') } },
       lookAt: { args: { target: arg(P.nodeRef(), 'Node to look at; omit to stop.') } },
     },
@@ -243,6 +243,13 @@ export function m0Registry() {
     params: { axis: P.vec3({ default: [0, 1, 0] }), openAngle: P.number({ min: -180, max: 180, default: 100, unit: '°' }), locked: P.boolean({ default: false }) },
     signals: { opened: {}, closed: {} }, actions: { open: { args: {} }, close: { args: {} }, toggle: { args: {} } },
   });
+  r.behaviour('brain', { description: 'An NPC brain (M2 W7): perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer) or a preset object; vars override its blackboard plan.', on: ['Character'], params: {
+    preset: { schema: { anyOf: [{ type: 'string', enum: ['server', 'customer', 'wanderer'] }, { type: 'object' }], default: 'wanderer', description: 'A role preset, or a preset object ({ plan, senses, tree }).' }, meta: { widget: 'json' } },
+    vars: { schema: { type: 'object', description: 'Blackboard values over the preset\'s plan.' }, meta: { widget: 'json' } },
+    tickEvery: P.number({ min: 1, default: 1, description: 'Think every n steps (four times slower far from the player).' }),
+    lodDistance: P.number({ min: 0, default: 25, unit: 'm' }),
+    senses: { schema: { type: 'object', description: 'Perception settings over the preset\'s: sight { range, fov, every }, hearing { sensitivity }, proximity { radius }, maxAge, decay.' }, meta: { widget: 'json' } },
+  } });
   r.behaviour('player', { description: 'Drives a Character from the move / jump / run actions, relative to the current camera.', on: ['Character'], params: { walkSpeed: P.number({ min: 0, default: 1.4, unit: 'm/s' }), runSpeed: P.number({ min: 0, default: 4, unit: 'm/s' }) } });
   r.behaviour('pickup', { description: 'Can be picked up; equips a VRMXW if the item names one.', on: ['Instance', 'Model', 'RigidBody'], params: { item: P.string() }, signals: { pickedUp: { args: { by: P.nodeRef() } } } });
   return r;

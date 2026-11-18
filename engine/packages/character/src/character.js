@@ -159,12 +159,14 @@ export class CharacterNode extends Node {
     let [mx, mz] = this.graph.busy || c.seat ? [0, 0] : this.input.move;
     if (this.graph.busy || c.seat) this.input.jump = false;
     if (c.goTo) {
-      const target = this.tree.find(c.goTo);
-      if (!target) c.goTo = null;
+      // a node, or a point [x, y, z]; with a navmesh (@vrmxg/nav) the crowd's velocity steers (navMove), else a straight line
+      const target = Array.isArray(c.goTo) ? null : this.tree.find(c.goTo);
+      if (!target && !Array.isArray(c.goTo)) { c.goTo = null; delete c.navMove; delete c.navArrived; }
       else {
-        const t = target.object3d.getWorldPosition(_v), p = this.object3d.position;
+        const t = target ? target.object3d.getWorldPosition(_v) : _v.set(c.goTo[0], c.goTo[1], c.goTo[2]), p = this.object3d.position;
         const dx = t.x - p.x, dz = t.z - p.z, d = Math.sqrt(dx * dx + dz * dz);
-        if (d < ARRIVE) { c.goTo = null; mx = 0; mz = 0; this.emit('arrived', { target: target.id }); }
+        if (d < ARRIVE || c.navArrived) { const id = target ? target.id : null; c.goTo = null; delete c.navMove; delete c.navArrived; mx = 0; mz = 0; this.emit('arrived', { target: id }); }
+        else if (c.navMove) { [mx, mz] = c.navMove; }
         else { const s = this.props.walkSpeed ?? 1.4; mx = (dx / d) * s; mz = (dz / d) * s; }
       }
     }
@@ -321,7 +323,8 @@ export class CharacterNode extends Node {
     return o.getWorldPosition(new Vector3());
   }
   /** Walk to a node (straight line until navigation lands in M2); `arrived` when within 0.3 m. */
-  goTo({ target }) { this.ctrl.goTo = target ?? null; }
+  /** Walk to a node (target) or a point ([x, y, z]); with neither, stop. @param {{ target?: string, point?: number[] }} [o] */
+  goTo({ target, point } = {}) { this.ctrl.goTo = point ? [point[0], point[1] ?? 0, point[2]] : target ?? null; if (!this.ctrl.goTo) { delete this.ctrl.navMove; delete this.ctrl.navArrived; } }
   /** Play an expression for a moment: up to 1 and back over a second. */
   emote({ name }) {
     const em = this.vrm.expressionManager;

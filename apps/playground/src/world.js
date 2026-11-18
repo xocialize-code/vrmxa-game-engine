@@ -17,6 +17,8 @@ import { installVoice } from '@vrmxg/voice';
 import { installTracks } from '@vrmxg/tracks';
 import { installSequence, composeSequence, isSequence } from '@vrmxg/sequence';
 import { installParticles } from '@vrmxg/particles';
+import { installNav } from '@vrmxg/nav';
+import { installAi } from '@vrmxg/ai';
 
 const text = (b) => new TextDecoder().decode(b);
 
@@ -70,10 +72,12 @@ export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = n
   await particles.prepare(sample.doc);
   const sequence = sample.doc.sequence ? installSequence(tree) : null; // a sequence world (M2 W1): its tracks play in the step
   await sequence?.prepare(sample.doc);
+  const nav = installNav(tree); // a navmesh baked from the colliders on the first step; characters' goTo follows it (M2 W6)
   const { interact, inventory } = installInteraction(tree);
+  const ai = installAi(tree); // NPC brains (M2 W7): the brain behaviour and the shared stimuli
   const wardrobe = closet && vrmxaCore ? installCloset(tree, { vrmxaCore, closet, spec, stubTextures }) : null;
   await wardrobe?.prepare(sample.doc); lap('closet');
   tree.instantiate(structuredClone(sample.doc)); lap('instantiate');
   await wardrobe?.showWorn(); lap('showWorn');
-  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe, audio, voice, tracks, sequence, particles };
+  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe, audio, voice, tracks, sequence, particles, nav, ai };
 }

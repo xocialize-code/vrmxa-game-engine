@@ -132,6 +132,18 @@ const items = (r) => r?.result?.items ?? r?.items;
   check(13, 'Particles: steam, dust and sparks identical everywhere at every step; snapshot mid-effect', ok,
     ref ? `${ref.steps} steps × ${ref.components} components, final ${ref.final}; ${ref.emitters} emitters, up to ${ref.peakParticles} particles, ${ref.batches} batches; live at the end: steam ${ref.live.steam}, dust ${ref.live.dust}, sparks ${ref.live.sparks}; particle step ${ref.stepMs} ms (node); snapshot @${ref.snapshot.at} ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? `identical (step ${r.x.stepMs} ms)` : 'DIFFERS'}`).join('; ')}` : 'no node result');
 }
+// 14 (M2 W6 + W7). Navigation and NPC brains: Hana (server) and Mira (customer) on a navmesh baked from the cafe's
+// colliders hash identically at every step everywhere (brains, memory, crowd included); the story happens in order; a
+// snapshot mid-order re-simulates identically.
+{
+  const bx = (r) => r?.result?.brains ?? r?.brains, ref = bx(node);
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = bx(r); const d = x && ref ? compareRuns(unpackRun(ref.run), unpackRun(x.run)) : { step: -1, component: 'no result' }; return { k, d, x, ok: !!x && !d && x.snapshot.rerunMatches }; });
+  const at = (text) => { const e = ref?.events.find((x) => x.includes(text)); return e ? Number(e.split(':')[0]) : null; };
+  const order = [at('mira:sits'), at('What can I get you?'), at('A latte, please.'), at('Coming right up!'), at('Here you go.'), at('mira:stands')];
+  const ok = !!ref && ref.snapshot.rerunMatches && order.every((v, i) => v !== null && (i === 0 || v > order[i - 1])) && ref.left && ref.nav.blocked.length > 0 && rows.every((r) => r.ok);
+  check(14, 'Navigation and NPC brains: Hana serves Mira on the navmesh, identical everywhere; snapshot mid-order', ok,
+    ref ? `${ref.steps} steps × ${ref.components} components, final ${ref.final}; navmesh ${ref.nav.polys} polys in ${ref.nav.tiles} tiles (${ref.nav.bakeMs} ms), blocked: ${ref.nav.blocked.join(', ')}; ${ref.events.join(' · ')}; Mira ${ref.left ? 'left' : 'DID NOT LEAVE'}; step ${ref.stepMs} ms (node); snapshot @${ref.snapshot.at} ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? `identical (step ${r.x.stepMs} ms)` : 'DIFFERS'}`).join('; ')}` : 'no node result');
+}
 checks.sort((a, b) => a.n - b.n);
 fs.writeFileSync(res('summary.json'), JSON.stringify({ checks, runtimes: { node: node?.version, chromium: chromium?.version, wkwebview: scheme?.ua } }, null, 1) + '\n');
 process.exit(checks.every((c) => c.ok) ? 0 : 1);

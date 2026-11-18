@@ -9,6 +9,7 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@vrmxg/ai": "0.1.0",
     "@vrmxg/audio": "0.1.0",
     "@vrmxg/camera": "0.1.0",
     "@vrmxg/character": "0.1.0",
@@ -22,6 +23,7 @@
     "@vrmxg/item": "0.1.0",
     "@vrmxg/mcp": "0.1.0",
     "@vrmxg/model": "0.1.0",
+    "@vrmxg/nav": "0.1.0",
     "@vrmxg/particles": "0.1.0",
     "@vrmxg/physics": "0.1.0",
     "@vrmxg/post": "0.1.0",

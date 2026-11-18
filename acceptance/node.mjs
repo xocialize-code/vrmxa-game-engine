@@ -7,7 +7,7 @@ import { performance } from 'node:perf_hooks';
 import { installPortableMath } from '@vrmxg/dmath';
 import { loadRapier } from '@vrmxg/physics';
 import { loadSample } from '../apps/playground/src/world.js';
-import { runSimulation, runDevices, runItems, runCinematic, runSequence, runParticles } from '../apps/playground/src/acceptance.js';
+import { runSimulation, runDevices, runItems, runCinematic, runSequence, runParticles, runBrains } from '../apps/playground/src/acceptance.js';
 import { vrmxaCore, PATHS } from '../engine/packages/character/test/fixtures.mjs';
 import * as projectBehaviours from '../content/sample/behaviours.js';
 
@@ -25,6 +25,7 @@ const items = await runItems(R, sample, opts);
 const cinematic = await runCinematic(R, sample, opts);
 const sequence = await runSequence(R, sample, opts, { now: () => performance.now() });
 const particles = await runParticles(R, sample, opts, { now: () => performance.now() });
-const out = { runtime: 'node', version: process.version, simulation, devices, items, cinematic, sequence, particles };
+const brains = await runBrains(R, sample, opts, { now: () => performance.now() });
+const out = { runtime: 'node', version: process.version, simulation, devices, items, cinematic, sequence, particles, brains };
 fs.writeFileSync(path.join(here, 'results/node.json'), JSON.stringify(out) + '\n');
-console.log(JSON.stringify({ final: simulation.final, components: simulation.components, snapshot: simulation.snapshot, play: simulation.play, stepMs: simulation.stepMs, devices, items: { ...items, run: undefined }, cinematic: { ...cinematic, run: undefined }, sequence: { ...sequence, run: undefined }, particles: { ...particles, run: undefined } }, null, 1));
+console.log(JSON.stringify({ final: simulation.final, components: simulation.components, snapshot: simulation.snapshot, play: simulation.play, stepMs: simulation.stepMs, devices, items: { ...items, run: undefined }, cinematic: { ...cinematic, run: undefined }, sequence: { ...sequence, run: undefined }, particles: { ...particles, run: undefined }, brains: { ...brains, run: undefined } }, null, 1));

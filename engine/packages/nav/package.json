@@ -1,0 +1,27 @@
+{
+  "name": "@vrmxg/nav",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG navigation (M2 W6): navcat 0.4.1 (MIT) behind an adapter: a tiled navmesh baked from the scene's colliders, doors as tile-rebuild obstacles, off-mesh links, a vendored crowd whose agents drive the Rapier character controllers, crowd state in the snapshot.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "mathcat": "0.0.12",
+    "navcat": "0.4.1"
+  },
+  "devDependencies": {
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  },
+  "vrmxg": { "determinism": "simulation" }
+}

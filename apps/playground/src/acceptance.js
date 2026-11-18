@@ -19,6 +19,9 @@
 //   runParticles   (M2 W4) the cafe with steam on the espresso machine, dust and a looping spark burst, plus 40 steam
 //                  emitters as a load: a hash of every component after every step (the particles are node state), a
 //                  snapshot mid-effect restored and re-simulated, and the cost of the particle step.
+//   runBrains      (M2 W6 + W7) Hana on the server preset and Mira on the customer preset, both on the navmesh: Mira
+//                  comes in, sits, orders; Hana greets, takes the order, makes it, serves it; Mira leaves. A hash of every
+//                  component after every step (brains, crowd and memory included) and a snapshot mid-order re-simulated.
 //   runItems       (M1 W10) the recorded take with items (content/sample/input/play-items.json): Mira walks in, takes the
 //                  sword into her closet, opens the cupboard, sits on a stool, gets up and switches the counter lights
 //                  off; Hana greets her on the way. A hash of every component after every step, a snapshot after the
@@ -326,5 +329,37 @@ export async function runParticles(R, sample, opts, { now = () => 0 } = {}) {
     snapshot: { at: SNAP_P, rerunMatches: restored === null, divergence: restored },
     emitters: extra.length, peakParticles: peak, live: { steam: em('fx-steam'), dust: em('fx-dust'), sparks: em('fx-sparks') },
     stepMs: +(svc.stepMs / STEPS_P).toFixed(3), batches: svc.batch.batches.length,
+  };
+}
+
+/** NPC brains on the navmesh, M2 W6 + W7 (see the top). @param {any} R @param {any} sample @param {any} opts */
+export async function runBrains(R, sample, opts, { now = () => 0 } = {}) {
+  const STEPS_B = 3400, SNAP_B = 1200;
+  const S = { ...sample, doc: { ...sample.doc, nodes: sample.doc.nodes.map((n) => (n.id === 'hana-1' ? { ...n, behaviours: [{ use: 'brain', preset: 'server' }] } : n.id === 'mira' ? { ...n, behaviours: [{ use: 'brain', preset: 'customer' }] } : n)) } };
+  const A = await buildWorld(R, S, opts);
+  const tree = A.tree, events = [], mira = /** @type {any} */ (tree.find('mira'));
+  for (const id of ['hana-1', 'mira']) tree.listen(tree.find(id), 'spoke', (a) => events.push(`${tree.clock.step}:${id}:${a.text}`));
+  A.nav.timer = now;
+  const run = [{ step: 0, h: worldHashes(tree) }];
+  let snap = null, seated = null, stood = null, ms = 0;
+  for (let k = 1; k <= STEPS_B; k++) {
+    const t0 = now();
+    while (!tree.step()) await tree.settle();
+    ms += now() - t0;
+    if (mira.ctrl.seat && seated === null) { seated = k; events.push(`${k}:mira:sits ${mira.ctrl.seat.item}`); }
+    if (seated !== null && !mira.ctrl.seat && stood === null) { stood = k; events.push(`${k}:mira:stands`); }
+    run.push({ step: k, h: worldHashes(tree, { physicsBytes: k % 60 === 0 }) });
+    if (k === SNAP_B) snap = captureWorld(tree, { meta: { scene: sample.scene, brains: true } });
+  }
+  const B = await buildWorld(R, S, opts);
+  restoreWorld(B.tree, snap);
+  const again = [];
+  for (let k = SNAP_B + 1; k <= STEPS_B; k++) { while (!B.tree.step()) await B.tree.settle(); again.push({ step: k, h: worldHashes(B.tree, { physicsBytes: k % 60 === 0 }) }); }
+  const restored = compareRuns(run.slice(SNAP_B + 1), again);
+  return {
+    steps: STEPS_B, run: packRun(run), final: hashValue(run.at(-1).h), components: Object.keys(run[0].h).length,
+    snapshot: { at: SNAP_B, rerunMatches: restored === null, divergence: restored },
+    events, left: !!mira.behaviours[0].bb.left, nav: { polys: A.nav.stats.polys, tiles: A.nav.stats.tiles, bakeMs: +A.nav.stats.bakeMs.toFixed(1), blocked: Object.keys(A.nav.st.blocked) },
+    stepMs: +(ms / STEPS_B).toFixed(3),
   };
 }
