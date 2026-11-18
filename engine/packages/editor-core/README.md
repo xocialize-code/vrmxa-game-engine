@@ -29,3 +29,18 @@ Tests (`node --test test/`): the sample's asset list; building the cafe from it 
 every step undone back to the empty scene and redone, saved and reopened byte for byte and valid; the committed cafe
 opening unchanged; selection; play in place on a real SceneTree (a copy, edits refused, Stop restores the document and
 the selection, the edit view never stepped).
+
+## The timeline's model (M2 W5, AB-T-0528)
+
+`timeline.js` and `sequence.js`: what the editor's timeline panel draws and does, with no UI, tested in Node.
+
+| Piece | What |
+|---|---|
+| `TimelineGeometry` | One value (`pxPerFrame`, `visibleStart`) that the ruler, track headers and lanes all read, as `DesignScaffoldTimeline` does: `x(frame)`, `frameAt(x)`, `frames(px)`, `zoom(scale, anchor)` (the anchor stays put), `scroll`, `ticks(width, fps)` (the smallest step at least 56 px apart; majors each second, as timecode) |
+| Snapping | `snapTargets(seq, { except, playhead })`: frame 0 and the end, markers, shot edges, keys and clip edges, the playhead (not the dragged item); `snapFrame(frame, targets, tolerance)` with the tolerance in frames from `SNAP_PX` (8) at the current zoom, so snapping feels the same at every zoom |
+| `rowsOf(seq)` | The rows: the shots, then each track as keys or clips (`CLIP_TRACKS`; expression and post keys per channel) |
+| `SequenceCommands` (`session.seq`) | `set`, `addTrack` / `removeTrack` / `setTrack`, `addKey` / `moveKey` / `setKey` / `removeKey` (kept sorted; a key landing on another replaces it), `addClip` / `moveClip` / `setClip` / `removeClip`, `addShot` (with a camera, its clip on the camera track in the same step) / `moveShot` (its camera clip follows) / `setShot` / `removeShot`, `addMarker` / `removeMarker`. Each copies the sequence, changes the copy, checks it with `checkSequence` (targets may be the set's nodes: `session.targetIds`) and puts it in with one `setDoc` op: one undo step, refused whole |
+| `newSequenceDoc({ id, set, fps, duration })` | An empty sequence document; `session.isSequence`; `session.validate()` checks a sequence composed with its set (`session.setDoc`) |
+
+`@vrmxg/scene` serializes a sequence block line by line (its scalars, then one shot, marker and track per line), so
+moving a key changes one line, and saving then reopening gives the same bytes.

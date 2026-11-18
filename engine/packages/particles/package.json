@@ -1,0 +1,26 @@
+{
+  "name": "@vrmxg/particles",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG particles (M2 W4): three.quarks 0.18 behind a deterministic adapter (seeded per-step RNG, portable maths, the fixed step, snapshots); the ParticleEmitter node, effect documents and built-in steam, dust and sparks; gameplay emitters in the simulation, visual-only ones as presentation.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/core": "0.1.0",
+    "three": "0.187.0",
+    "three.quarks": "0.18.0"
+  },
+  "devDependencies": {
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  },
+  "vrmxg": { "determinism": "simulation" }
+}

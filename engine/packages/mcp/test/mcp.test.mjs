@@ -139,7 +139,7 @@ test('inspect: the walker walks through the entrance trigger, the door swings op
   const { client, call } = await connect([dir, 'doors.vrmxs', '--behaviours', path.join(here, 'fixtures/behaviours.mjs')]);
   await call('engine_step', { steps: 1 }, true); // nothing running yet
   const loaded = await call('engine_load');
-  assert.deepEqual(loaded.services, ['input', 'physics', 'characters', 'cameras', 'models', 'items', 'audio', 'voice', 'tracks', 'inventory', 'interact']);
+  assert.deepEqual(loaded.services, ['input', 'physics', 'characters', 'cameras', 'models', 'items', 'audio', 'voice', 'tracks', 'particles', 'inventory', 'interact']);
   assert.ok((await call('tree', { live: true })).includes('entrance/right/hinge (RigidBody)'));
   await call('engine_step', { steps: 10, hold: { jump_high: 1 } }, true); // unknown action: refused with the list
   const walked = await call('engine_step', { steps: 90, hold: { move_y: -1 } }); // S: 3 m towards +z, into the right door's trigger

@@ -8,7 +8,10 @@ import { Ajv2020 } from 'ajv/dist/2020.js';
 import { documentSchema } from './schema.js';
 import { flatten } from './instance.js';
 
-const TOP = ['format', 'version', 'id', 'assets', 'nodes', 'connections', 'settings'];
+const TOP = ['format', 'version', 'id', 'set', 'assets', 'nodes', 'connections', 'settings', 'sequence'];
+// A sequence block (M2 W1/W5): its scalars, then one shot, marker and track per line, so moving a key changes one line
+const SEQ_KEYS = ['fps', 'duration', 'autoplay', 'snapshotEvery', 'shots', 'markers', 'tracks'];
+const SEQ_LISTS = { shots: ['id', 'name', 'start', 'end', 'camera', 'overrides'], markers: ['frame', 'name'], tracks: ['id', 'type', 'target', 'path', 'brain', 'step', 'interp', 'keys', 'clips'] };
 const NODE_KEYS = ['id', 'type', 'parent', 'name', 'asset', 'transform', 'props', 'overrides', 'behaviours', 'tags'];
 const ASSET_KEYS = ['id', 'type', 'ref', 'sha256'];
 const CONN_KEYS = ['from', 'signal', 'to', 'call', 'args'];
@@ -34,6 +37,13 @@ export function serialize(doc) {
     if (k === 'assets' || k === 'nodes' || k === 'connections') {
       const keys = k === 'assets' ? ASSET_KEYS : k === 'nodes' ? NODE_KEYS : CONN_KEYS;
       parts.push(v.length ? `  "${k}": [\n${v.map((x) => `    ${line(x, keys)}`).join(',\n')}\n  ]` : `  "${k}": []`);
+    } else if (k === 'sequence' && v && typeof v === 'object' && !Array.isArray(v)) {
+      const sq = ordered(v, SEQ_KEYS), rows = [];
+      for (const [sk, sv] of Object.entries(sq)) {
+        if (SEQ_LISTS[sk] && Array.isArray(sv)) rows.push(sv.length ? `    "${sk}": [\n${sv.map((x) => `      ${line(x, SEQ_LISTS[sk])}`).join(',\n')}\n    ]` : `    "${sk}": []`);
+        else rows.push(`    "${sk}": ${JSON.stringify(sortDeep(sv))}`);
+      }
+      parts.push(`  "sequence": {\n${rows.join(',\n')}\n  }`);
     } else if (k === 'settings' || (v && typeof v === 'object')) {
       parts.push(`  "${k}": ${JSON.stringify(sortDeep(v), null, 2).replace(/\n/g, '\n  ')}`);
     } else parts.push(`  "${k}": ${JSON.stringify(v)}`);

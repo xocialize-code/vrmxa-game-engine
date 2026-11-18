@@ -16,6 +16,9 @@
 //   runSequence    (M2 W1) sequences/morning.vrmxs in its set: four shots, a camera track, Mira walking in on an event
 //                  key, eyes, Hana's line, a shot override. A hash of every component after every step, then scrubbing
 //                  (backwards, forwards, from snapshots) checked against the hashes of the straight play.
+//   runParticles   (M2 W4) the cafe with steam on the espresso machine, dust and a looping spark burst, plus 40 steam
+//                  emitters as a load: a hash of every component after every step (the particles are node state), a
+//                  snapshot mid-effect restored and re-simulated, and the cost of the particle step.
 //   runItems       (M1 W10) the recorded take with items (content/sample/input/play-items.json): Mira walks in, takes the
 //                  sword into her closet, opens the cupboard, sits on a stool, gets up and switches the counter lights
 //                  off; Hana greets her on the way. A hash of every component after every step, a snapshot after the
@@ -280,7 +283,7 @@ export async function runSequence(R, sample, opts, { now = () => 0 } = {}) {
   const scrub = [];
   for (const f of scrubFrames) {
     const t = now(); const r = await player.seek(f); const ms = now() - t;
-    scrub.push({ frame: f, step: r.step, restored: r.restored, stepped: r.stepped, ms: +ms.toFixed(1), matches: hashValue(worldHashes(B.tree, { physicsBytes: true })) === want.get(f) });
+    scrub.push({ frame: f, step: r.step, restored: r.restored, stepped: r.stepped, ms: +ms.toFixed(1), hash: want.get(f), matches: hashValue(worldHashes(B.tree, { physicsBytes: true })) === want.get(f) });
   }
   const mira = A.tree.find('mira').object3d.position;
   return {
@@ -288,5 +291,40 @@ export async function runSequence(R, sample, opts, { now = () => 0 } = {}) {
     cameraChanges: seen.cams, shots: seen.shots, spokeAt: seen.spokeAt, lightInShot2: seen.light.s2, light: A.tree.find('counter-light').props.intensity,
     mira: mira.toArray().map(r3), post: A.tree.find('env').props.post, scrub,
     subtitles: subtitles(S.doc.sequence, { 'hana-1': 'Hana' }),
+  };
+}
+
+/** Particles, M2 W4 (see the top). @param {any} R @param {any} sample @param {any} opts @param {{ now?: () => number }} [t] */
+export async function runParticles(R, sample, opts, { now = () => 0 } = {}) {
+  const STEPS_P = 360, SNAP_P = 180, LOAD = 40;
+  const extra = [
+    { id: 'fx-steam', type: 'ParticleEmitter', parent: 'root', transform: { p: [1.3, 1.55, -4.1] }, props: { effect: 'steam' } },
+    { id: 'fx-dust', type: 'ParticleEmitter', parent: 'root', transform: { p: [-0.5, 0.02, 4] }, props: { effect: 'dust' } },
+    { id: 'fx-sparks', type: 'ParticleEmitter', parent: 'root', transform: { p: [-3, 1.2, -1.6] }, props: { effect: 'sparks' } },
+    ...Array.from({ length: LOAD }, (_, i) => ({ id: `fx-load-${i}`, type: 'ParticleEmitter', parent: 'root', transform: { p: [-4 + (i % 8), 0.5, -2 + Math.floor(i / 8)] }, props: { effect: 'steam' } })),
+  ];
+  const S = { ...sample, doc: { ...sample.doc, nodes: [...sample.doc.nodes, ...extra] } };
+  const A = await buildWorld(R, S, opts);
+  const svc = A.tree.services.get('particles');
+  svc.timer = now; // the service times its own step through the caller's clock (nothing in the simulation reads one)
+  const run = [{ step: 0, h: worldHashes(A.tree) }];
+  let snap = null, peak = 0;
+  for (let k = 1; k <= STEPS_P; k++) {
+    while (!A.tree.step()) await A.tree.settle();
+    peak = Math.max(peak, svc.count());
+    run.push({ step: k, h: worldHashes(A.tree, { physicsBytes: k % 60 === 0 }) });
+    if (k === SNAP_P) snap = captureWorld(A.tree);
+  }
+  const B = await buildWorld(R, S, opts);
+  restoreWorld(B.tree, snap);
+  const again = [];
+  for (let k = SNAP_P + 1; k <= STEPS_P; k++) { while (!B.tree.step()) await B.tree.settle(); again.push({ step: k, h: worldHashes(B.tree, { physicsBytes: k % 60 === 0 }) }); }
+  const restored = compareRuns(run.slice(SNAP_P + 1), again);
+  const em = (id) => /** @type {any} */ (A.tree.find(id)).count;
+  return {
+    steps: STEPS_P, run: packRun(run), final: hashValue(run.at(-1).h), components: Object.keys(run[0].h).length,
+    snapshot: { at: SNAP_P, rerunMatches: restored === null, divergence: restored },
+    emitters: extra.length, peakParticles: peak, live: { steam: em('fx-steam'), dust: em('fx-dust'), sparks: em('fx-sparks') },
+    stepMs: +(svc.stepMs / STEPS_P).toFixed(3), batches: svc.batch.batches.length,
   };
 }

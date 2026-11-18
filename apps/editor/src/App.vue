@@ -8,6 +8,7 @@ import { McpLink } from './mcp.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 import TreeItem from './TreeItem.vue';
 import Inspector from './Inspector.vue';
+import Timeline from './Timeline.vue';
 
 const canvas = ref(null);
 const ui = reactive({
@@ -15,7 +16,7 @@ const ui = reactive({
   tree: [], selected: [], inspector: null, assets: [], undo: null, redo: null, dirty: false, valid: true, problems: '',
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
   debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
-  mcp: '',
+  mcp: '', tl: null, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
   ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '' },
 });
 /** @type {EditorHost} */ let ed = null; // never reactive
@@ -31,7 +32,8 @@ function refresh(kind = 'all') {
   ui.captions = ed.captions();
   ui.prompt = ed.prompt();
   if (ed.exporting) Object.assign(ui.ex, { n: ed.exporting.n, frames: ed.exporting.frames, phase: ed.exporting.phase, running: true });
-  if (kind === 'stats' || kind === 'captions' || kind === 'export') return;
+  if (kind === 'timeline' || kind === 'all') ui.tl = ed.timeline();
+  if (kind === 'stats' || kind === 'captions' || kind === 'export' || kind === 'timeline') return;
   const s = ed.session;
   ui.loading = ed.busy > 0;
   if (ed.error) ui.error = ed.error;
@@ -77,6 +79,7 @@ const openProject = () => act(async () => ed.openProject(await openProjectFolder
 const openScene = () => act(() => (ui.scenes.includes(ui.scene) ? ed.openScene(ui.scene) : null));
 const fileName = () => { const n = ui.fileName.trim() || 'untitled.vrmxs'; return n.endsWith('.vrmxs') ? n : `${n}.vrmxs`; };
 const newScene = () => act(() => ed.newScene(fileName()));
+const openFile = () => act(() => { const f = fileName(); if (!ui.scenes.includes(f)) throw new Error(`${f} isn't in the project`); return ed.openScene(f); });
 const save = () => act(() => ed.save());
 const saveAs = () => act(() => ed.save(fileName()));
 const verify = () => act(() => ed.verifySaved());
@@ -88,6 +91,20 @@ const exportVideo = () => act(() => ed.exportVideo({ take: ui.ex.take, seconds: 
 const saveStill = () => act(() => ed.saveStill(ui.ex.size));
 const thumbnail = () => act(() => ed.makeThumbnail());
 const select = (id, add) => act(() => ed.session.select([id], { add }));
+// the timeline (M2 W5): sequence commands are one undo step each; scrubs and transport are view state
+const newSequence = () => act(() => ed.newSequence(ui.seqName.endsWith('.vrmxs') ? ui.seqName : `${ui.seqName}.vrmxs`, ui.seqSet));
+const tlCmd = (name, ...args) => act(() => ed.session.seq[name](...args));
+const tlScrub = (f) => { ed.scrubTo(f); refresh('timeline'); };
+const tlTransport = (what, v) => act(() => {
+  if (what === 'play') ed.playPreview();
+  else if (what === 'in' || what === 'out' || what === 'clear') ed.setRange(what);
+  else if (what === 'loop') { ed.loopRange = v; }
+  else if (what === 'camera') ed.setPreviewCamera(v);
+  else if (what === 'angles') ed.setAngles(v);
+  else if (what === 'edit') ed.editView();
+  else if (what === 'cameraFromView') ed.cameraFromView();
+});
+const setScenes = () => ui.scenes.filter((x) => !x.startsWith('prefabs/') && !x.startsWith('sequences/'));
 const reparent = (id, parent) => act(() => ed.session.reparent(id, parent));
 const remove = () => act(() => ed.session.remove());
 const addNode = () => act(() => ed.session.addNode(ui.addType, { at: ed.lookPoint() }));
@@ -133,14 +150,20 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
 </script>
 
 <template>
-  <div class="app">
+  <div class="app" :class="{ 'with-timeline': !!ui.tl }">
     <header class="bar" role="toolbar" aria-label="Editor controls">
       <strong class="title">VRMXG Editor</strong>
       <button v-if="ui.shell" id="open-project" type="button" aria-label="Open project" @click="openProject">Open Project…</button>
       <span class="muted project" id="project-name" :aria-label="`Project ${ui.project}`" :title="ui.project">{{ ui.project }}</span>
       <select id="scene" v-model="ui.scene" aria-label="Scene" title="Open a scene of the project" :disabled="ui.mode !== 'editing'" @change="openScene"><option v-if="!ui.scenes.includes(ui.scene)" :value="ui.scene">{{ ui.scene }} (new)</option><option v-for="s in ui.scenes" :key="s" :value="s">{{ s }}</option></select>
-      <input id="file-name" v-model="ui.fileName" class="file-name" aria-label="Scene file name" title="The file New and Save As use, in the project" :disabled="ui.mode !== 'editing'">
+      <input id="file-name" @focus="$event.target.select()" v-model="ui.fileName" class="file-name" aria-label="Scene file name" title="The file New and Save As use, in the project" :disabled="ui.mode !== 'editing'">
+      <button id="open-file" type="button" aria-label="Open file" title="Open the scene or sequence named in the file field" :disabled="ui.mode !== 'editing'" @click="openFile">Open</button>
       <button id="new-scene" type="button" aria-label="New scene" :disabled="ui.mode !== 'editing'" @click="newScene">New</button>
+      <span class="sep" />
+      <select id="seq-set" v-model="ui.seqSet" aria-label="Set to film" title="The scene a new sequence films" :disabled="ui.mode !== 'editing'"><option v-for="x in setScenes()" :key="x" :value="x">{{ x }}</option></select>
+      <input id="seq-name" @focus="$event.target.select()" v-model="ui.seqName" class="file-name" aria-label="Sequence file name" title="The new sequence's file" :disabled="ui.mode !== 'editing'">
+      <button id="new-sequence" type="button" aria-label="New sequence" :disabled="ui.mode !== 'editing'" @click="newSequence">New Sequence</button>
+      <span class="sep" />
       <button id="save" type="button" :disabled="!ui.writable || ui.mode !== 'editing'" :aria-label="ui.writable ? 'Save' : 'Save (open a project folder to save)'" @click="save">Save</button>
       <button id="save-as" type="button" :disabled="!ui.writable || ui.mode !== 'editing'" aria-label="Save as" @click="saveAs">Save As…</button>
       <span class="sep" />
@@ -209,7 +232,8 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
 
     <aside class="dock right"><Inspector :data="ui.inspector" v-on="onInspector" /></aside>
 
-    <section class="assets" aria-label="Assets">
+    <Timeline v-if="ui.tl" :data="ui.tl" :disabled="ui.mode !== 'editing' || ui.loading" @cmd="tlCmd" @scrub="tlScrub" @transport="tlTransport" />
+    <section v-else class="assets" aria-label="Assets">
       <div class="dock-head"><h2>Assets</h2><input v-model="ui.assetFilter" type="search" placeholder="Filter" aria-label="Filter assets"></div>
       <ul class="asset-list">
         <li v-for="a in shown()" :key="a.ref" draggable="true" :title="a.ref" @dragstart="dragAsset($event, a.ref)">
@@ -241,6 +265,7 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
 @media (prefers-color-scheme: dark) { :root { --bg: #15171b; --panel: #1e2127; --ink: #e8eaee; --muted: #9aa1ad; --line: #30353d; --accent: #5b8ff0; --sel: #24365a; } }
 html, body, #app { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 13px/1.4 -apple-system, system-ui, sans-serif; }
 .app { display: grid; height: 100%; grid-template: "bar bar bar" auto "left stage right" 1fr "left assets right" 200px "status status status" auto / 280px 1fr 300px; }
+.app.with-timeline { grid-template-rows: auto 1fr 300px auto; }
 .bar { grid-area: bar; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 10px; background: var(--panel); border-bottom: 1px solid var(--line); }
 .status { grid-area: status; border-top: 1px solid var(--line); border-bottom: 0; font-size: 12px; gap: 14px; }
 .title { margin-right: 4px; }

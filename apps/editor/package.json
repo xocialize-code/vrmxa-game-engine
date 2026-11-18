@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "The VRMXG editor (M1 W7): open a project, build a scene from its assets, tree, inspector, gizmos, undo, save, play in place.",
+  "description": "The VRMXG editor (M1 W7, M2 W5): open a project, build a scene from its assets, tree, inspector, gizmos, undo, save, play in place; sequences on a timeline with scrub, camera preview and multi-angle views.",
   "scripts": {
     "dev": "vite",
     "build": "vite build"
@@ -22,14 +22,17 @@
     "@vrmxg/item": "0.1.0",
     "@vrmxg/mcp": "0.1.0",
     "@vrmxg/model": "0.1.0",
+    "@vrmxg/particles": "0.1.0",
     "@vrmxg/physics": "0.1.0",
     "@vrmxg/post": "0.1.0",
     "@vrmxg/registry": "0.1.0",
     "@vrmxg/render": "0.1.0",
     "@vrmxg/scene": "0.1.0",
+    "@vrmxg/sequence": "0.1.0",
     "@vrmxg/snapshot": "0.1.0",
     "@vrmxg/tracks": "0.1.0",
     "@vrmxg/voice": "0.1.0",
+    "camera-controls": "3.1.2",
     "vue": "3.5.45"
   },
   "devDependencies": {

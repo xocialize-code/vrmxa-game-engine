@@ -10,6 +10,8 @@
 import { createEditor, createValidator, parse, serialize } from '@vrmxg/scene';
 import { hashValue } from '@vrmxg/snapshot';
 import { assetType, nodeTypeFor, slug, uniqueId } from './assets.js';
+import { SequenceCommands } from './sequence.js';
+import { composeSequence } from '@vrmxg/sequence';
 
 const clone = (v) => structuredClone(v);
 const TRANSFORM_KEYS = ['p', 'q', 's'];
@@ -33,7 +35,16 @@ export class EditorSession {
     /** 'editing' | 'playing' */ this.mode = 'editing';
     this.play = null;
     this.listeners = new Set();
+    /** Ids a sequence's tracks may target beyond the document's own (the set's nodes): the app sets it. @type {(() => Set<string>) | null} */
+    this.targetIds = null;
+    /** The set document a sequence films (the app sets it): validation sees the sequence in its set. */
+    this.setDoc = null;
+    /** Timeline commands on the document's sequence (M2 W5), each one undo step. */
+    this.seq = new SequenceCommands(this, () => (this.targetIds ? new Set([...this.targetIds(), ...this.doc.nodes.map((n) => n.id)]) : null));
   }
+
+  /** True for a sequence document (a set it films and a sequence block). */
+  get isSequence() { return typeof this.doc.set === 'string' && !!this.doc.sequence; }
 
   /** A new empty scene: a root Node3D. */
   static empty(registry, id = 'scene') {
@@ -60,7 +71,11 @@ export class EditorSession {
   /** A hash of the document's canonical text: equal hashes, equal files. */
   hash() { return hashValue(this.text()); }
   get dirty() { return this.text() !== this.savedText; }
-  validate() { return this.validator.check(this.doc, { prefabs: this.prefabs }); }
+  validate() {
+    let doc = this.doc;
+    if (this.isSequence && this.setDoc) { try { doc = composeSequence(this.doc, this.setDoc); } catch (e) { return { ok: false, errors: [String(e.message)], warnings: [] }; } }
+    return this.validator.check(doc, { prefabs: this.prefabs });
+  }
   /** What Undo and Redo would do ("Move mira"), or null. */
   history() {
     const p = this.editor.peek();

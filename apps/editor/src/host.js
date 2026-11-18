@@ -2,19 +2,20 @@
 // identity): the editing session, the edit view (a SceneTree of the document, built but never stepped), the render
 // host with the editor's own camera, orbit / fly controls, the transform gizmo, picking, asset drops, and play in
 // place. The UI calls plain methods and copies plain data out of `snapshot()` when `onChange` fires.
-import { Box3, BoxHelper, Euler, Plane, PerspectiveCamera, Quaternion, Raycaster, Vector2, Vector3 } from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { Box3, BoxHelper, Euler, Matrix4, Plane, PerspectiveCamera, Quaternion, Raycaster, Sphere, Spherical, Vector2, Vector3, Vector4 } from 'three';
+import CameraControls from 'camera-controls';
 import { FlyControls } from 'three/addons/controls/FlyControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { installPortableMath } from '@vrmxg/dmath';
 import { loadRapier } from '@vrmxg/physics';
 import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
 import { RenderHost } from '@vrmxg/render';
-import { PostStack, lutFromCube } from '@vrmxg/post';
+import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
+import { composeSequence, isSequence, SequencePlayer } from '@vrmxg/sequence';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { parse, describeType } from '@vrmxg/scene';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
-import { EditorSession, assetList } from '@vrmxg/editor-core';
+import { EditorSession, assetList, newSequenceDoc, rowsOf } from '@vrmxg/editor-core';
 import { AudioOutput } from '@vrmxg/audio';
 import { exportTake, shellSink, hashSink, captureStill, encodePNG, toBase64, SIZES, RATES, CODECS, framesFor, secondsOf } from '@vrmxg/export';
 import { inShell, call } from '../../shell/js/shell.js';
@@ -25,11 +26,12 @@ import { buildWorld } from '../../playground/src/world.js';
 import '../../playground/src/sqljs.js'; // vrmxa-core's sql.js for bundles with a database (Mira's)
 
 installPortableMath(); // before anything parses a VRM or steps a world
+CameraControls.install({ THREE: { Vector2, Vector3, Vector4, Quaternion, Matrix4, Spherical, Box3, Sphere, Raycaster } });
 const vrmxaCore = { ...vrmxaMain, ...vrmxaAnim };
 const registry = m0Registry();
 const SNAP = { translate: 0.25, rotate: 15, scale: 0.1 };
 /** Node types the Add menu offers (no asset needed). */
-export const ADDABLE = ['Node3D', 'DirectionalLight', 'PointLight', 'SpotLight', 'Environment', 'Camera', 'Collider', 'RigidBody', 'Area', 'Marker'].filter((t) => registry.get(t) && !registry.get(t).abstract && !registry.get(t).asset?.required);
+export const ADDABLE = ['Node3D', 'DirectionalLight', 'PointLight', 'SpotLight', 'Environment', 'Camera', 'VirtualCamera', 'CameraBrain', 'Path3D', 'ParticleEmitter', 'Collider', 'RigidBody', 'Area', 'Marker'].filter((t) => registry.get(t) && !registry.get(t).abstract && !registry.get(t).asset?.required);
 
 /** A short digest of a list of frame hashes: two exports with the same digest have the same frames. */
 function digest(list) { return hashValue(list.join(',')); }
@@ -51,8 +53,10 @@ export class EditorHost {
     this.camera.position.set(9, 7, 14);
     this.host.camera = this.camera;
     this.cameraMode = 'orbit';
-    this.orbit = new OrbitControls(this.camera, canvas);
-    this.orbit.target.set(0, 1, 0); this.orbit.update();
+    // camera-controls (yomotsu, MIT; M2 W5): orbit, dolly to the cursor and truck, with smooth transitions
+    this.orbit = new CameraControls(this.camera, canvas);
+    this.orbit.dollyToCursor = true;
+    this.orbit.setLookAt(9, 7, 14, 0, 1, 0, false);
     this.fly = null;
     this.gizmo = new TransformControls(this.camera, canvas);
     this.gizmo.setTranslationSnap(SNAP.translate); this.gizmo.setRotationSnap((SNAP.rotate * Math.PI) / 180); this.gizmo.setScaleSnap(SNAP.scale);
@@ -79,6 +83,12 @@ export class EditorHost {
     this.exporting = null;     // { n, frames, phase } while an export runs
     this.lastExport = null; this.lastStill = null;
     this.exportHost = null;
+    // the timeline (M2 W5): the set a sequence films, the playhead, the play range, the preview world
+    this.setScene = null;      // { ref, doc } for a sequence document
+    this.view = 'edit';        // 'edit': the document's edit view; 'preview': the sequence played to the playhead
+    this.playhead = 0; this.range = null; this.loopRange = true; this.previewPlaying = false;
+    this.previewCamera = 'sequence'; this.angles = false; this.preview = null; this.scrubState = null;
+    this._scrubWant = null; this._scrubbing = null; this._previewBuilding = null; this._previewTimer = null; this._angleCams = [];
     canvas.addEventListener('pointerdown', (e) => { this._downAt = [e.clientX, e.clientY]; });
     canvas.addEventListener('pointerup', (e) => this.onClick(e));
     this.loop();
@@ -105,8 +115,10 @@ export class EditorHost {
     try {
       const text = await this.project.text(ref);
       const doc = parse(text);
-      const prefabs = await this.project.prefabs(doc);
+      await this.loadSet(doc);
+      const prefabs = await this.project.prefabs(this.setScene ? composeSequence(doc, this.setScene.doc) : doc);
       this.session = new EditorSession({ registry, text, prefabs, path: ref });
+      this.adoptSession();
       this.sceneRef = ref;
       this.session.on((e) => this.onSession(e));
       this.edit = null;
@@ -116,12 +128,53 @@ export class EditorHost {
   }
 
   async newScene(ref = 'untitled.vrmxs') {
+    this.setScene = null;
     this.session = EditorSession.empty(registry, ref.replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-'));
     this.session.path = ref; this.sceneRef = ref;
+    this.adoptSession();
     this.session.on((e) => this.onSession(e));
     this.edit = null;
     await this.rebuild();
     this.changed();
+  }
+
+  /** A sequence document films a set: read it (its nodes are what tracks target). */
+  async loadSet(doc) {
+    this.setScene = isSequence(doc) ? { ref: doc.set, doc: parse(await this.project.text(doc.set)) } : null;
+  }
+
+  /** A new session: the timeline starts over, and a sequence's tracks may target the set's nodes. */
+  adoptSession() {
+    const set = this.setScene;
+    this.session.targetIds = set ? () => new Set(set.doc.nodes.map((n) => n.id)) : null;
+    this.session.setDoc = set?.doc ?? null;
+    this.preview = null; this.scrubState = null; this.previewPlaying = false; this.playhead = 0; this.range = null; this.view = 'edit';
+    this.host.camera = this.camera;
+  }
+
+  /**
+   * A new sequence filming a set (M2 W5): an empty timeline and a CameraBrain on the set's first Camera, so camera
+   * tracks have something to switch. Saved as `ref`.
+   */
+  async newSequence(ref = 'sequences/untitled.vrmxs', setRef = 'cafe.vrmxs', { fps = 24, duration = 240 } = {}) {
+    if (this.session?.mode === 'playing') this.stop();
+    this.busy++; this.changed();
+    try {
+      const id = ref.split('/').pop().replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-');
+      const doc = newSequenceDoc({ id, set: setRef, fps, duration });
+      await this.loadSet(doc);
+      const cam = this.setScene.doc.nodes.find((n) => n.type === 'Camera');
+      if (cam) doc.nodes.push({ id: 'brain', type: 'CameraBrain', props: { camera: cam.id } });
+      const prefabs = await this.project.prefabs(composeSequence(doc, this.setScene.doc));
+      this.session = new EditorSession({ registry, doc, prefabs, path: ref });
+      this.session.savedText = '';
+      this.sceneRef = ref;
+      this.adoptSession();
+      this.session.on((e) => this.onSession(e));
+      this.edit = null;
+      await this.rebuild();
+      this.frameAll();
+    } finally { this.busy--; this.changed(); }
   }
 
   /** Save into the project (the scene's own ref, or `ref` for Save As). → { path, bytes, hash } */
@@ -138,6 +191,7 @@ export class EditorHost {
   async verifySaved() {
     const text = await this.project.text(this.sceneRef);
     const reopened = new EditorSession({ registry, text, prefabs: this.session.prefabs });
+    reopened.targetIds = this.session.targetIds; reopened.setDoc = this.session.setDoc;
     const v = reopened.validate();
     this.lastVerify = { ref: this.sceneRef, same: hashValue(text) === this.lastSave?.hash && reopened.text() === text, hash: hashValue(text), valid: v.ok, errors: v.errors };
     this.changed();
@@ -148,7 +202,7 @@ export class EditorHost {
 
   /** What a rebuild is needed for: everything about the document except node transforms. */
   shapeOf(doc) {
-    return JSON.stringify({ a: doc.assets, c: doc.connections, s: doc.settings, n: doc.nodes.map(({ transform, ...rest }) => rest) });
+    return JSON.stringify({ a: doc.assets, c: doc.connections, s: doc.settings, q: doc.sequence, n: doc.nodes.map(({ transform, ...rest }) => rest) });
   }
 
   onSession(e) {
@@ -157,6 +211,7 @@ export class EditorHost {
     // an edit, undo or redo: transforms only are applied in place; anything else rebuilds the view
     if (this.edit && this.shapeOf(this.session.doc) === this.edit.shape) this.applyTransforms();
     else this.scheduleRebuild();
+    if (this.view === 'preview') this.schedulePreview(); // the preview follows the edit (a fresh world, at the playhead)
     this.changed();
   }
 
@@ -174,8 +229,7 @@ export class EditorHost {
     if (gen !== this._gen) return; // a newer edit started another build
     if (this.session.mode === 'playing') return;
     this.edit = { tree: world.tree, objects: this.objectMap(world.tree), shape: this.shapeOf(doc) };
-    this.host.attach(world.tree);
-    this.host.debug.set(this.debug);
+    if (this.view === 'edit') { this.host.attach(world.tree); this.host.debug.set(this.debug); }
     this.stats.buildMs = performance.now() - t0;
     this.error = '';
     this.attachGizmo();
@@ -189,6 +243,7 @@ export class EditorHost {
   async buildFrom(doc, { play = false, heard = play } = {}) {
     const p = this.project;
     if (this.cacheFor !== p) { this.cacheFor = p; this.characterCache = { sources: new Map(), clips: new Map() }; this.animCache = await p.animations(); }
+    if (this.setScene && isSequence(doc)) doc = composeSequence(doc, this.setScene.doc); // a sequence plays in its set
     const sample = { scene: this.sceneRef, doc, prefabs: this.session.prefabs, animations: this.animCache, bytes: (ref) => p.bytes(ref) };
     this.buildTimings = {};
     if (heard && !this.audio) this.audio = new AudioOutput(); // made on the first Play: that click is the gesture that lets it sound
@@ -298,7 +353,7 @@ export class EditorHost {
   }
 
   /** The point of the ground the view centres on. */
-  lookPoint() { const t = this.cameraMode === 'orbit' ? this.orbit.target : this.camera.position.clone().add(this.camera.getWorldDirection(new Vector3()).multiplyScalar(4)); return [t.x, 0, t.z]; }
+  lookPoint() { const t = this.cameraMode === 'orbit' ? this.orbit.getTarget(new Vector3()) : this.camera.position.clone().add(this.camera.getWorldDirection(new Vector3()).multiplyScalar(4)); return [t.x, 0, t.z]; }
 
   // ---------------------------------------------------------------- camera
 
@@ -311,8 +366,9 @@ export class EditorHost {
       this.fly.movementSpeed = 4; this.fly.rollSpeed = 0.6; this.fly.dragToLook = true;
     } else {
       this.fly?.dispose(); this.fly = null;
-      this.orbit.target.copy(this.camera.position).add(this.camera.getWorldDirection(new Vector3()).multiplyScalar(5));
-      this.orbit.enabled = true; this.orbit.update();
+      const p = this.camera.position, t = p.clone().add(this.camera.getWorldDirection(new Vector3()).multiplyScalar(5));
+      this.orbit.setLookAt(p.x, p.y, p.z, t.x, t.y, t.z, false);
+      this.orbit.enabled = true;
     }
     this.changed();
   }
@@ -324,10 +380,9 @@ export class EditorHost {
     const box = new Box3().setFromObject(o);
     if (box.isEmpty()) return;
     const c = box.getCenter(new Vector3()), r = Math.max(1, box.getSize(new Vector3()).length() / 2);
-    const dir = this.camera.position.clone().sub(this.orbit.target).normalize();
-    this.orbit.target.copy(c);
-    this.camera.position.copy(c).addScaledVector(dir.lengthSq() ? dir : new Vector3(0.5, 0.4, 0.8).normalize(), Math.max(3, r * 2.2));
-    this.orbit.update();
+    const dir = this.camera.position.clone().sub(this.orbit.getTarget(new Vector3())).normalize();
+    const to = c.clone().addScaledVector(dir.lengthSq() ? dir : new Vector3(0.5, 0.4, 0.8).normalize(), Math.max(3, r * 2.2));
+    this.orbit.setLookAt(to.x, to.y, to.z, c.x, c.y, c.z, false);
   }
 
   // ---------------------------------------------------------------- inspector data
@@ -365,6 +420,7 @@ export class EditorHost {
 
   async play() {
     if (!this.session || this.session.mode !== 'editing') return;
+    this.editView();
     this.gizmo.detach(); this.box.visible = false;
     this.editHash = this.edit ? hashValue(worldHashes(this.edit.tree)) : null;
     this.busy++; this.changed();
@@ -520,6 +576,170 @@ export class EditorHost {
 
   setDebug(kinds) { this.debug = { ...kinds }; this.host.debug.set(this.debug); }
 
+  // ---------------------------------------------------------------- the timeline (M2 W5)
+
+  /** What the timeline shows (plain data). */
+  timeline() {
+    const s = this.session;
+    if (!s?.isSequence) return null;
+    const seq = structuredClone(s.doc.sequence), set = this.setScene?.doc;
+    const all = [...(set?.nodes ?? []), ...s.doc.nodes];
+    return {
+      seq, rows: rowsOf(seq), fps: seq.fps, duration: seq.duration, set: s.doc.set,
+      cameras: all.filter((n) => n.type === 'VirtualCamera').map((n) => n.id),
+      characters: all.filter((n) => n.type === 'Character').map((n) => n.id),
+      nodes: all.map((n) => n.id),
+      playhead: this.playhead, range: this.range ? [...this.range] : null, loop: this.loopRange, playing: this.previewPlaying,
+      view: this.view, previewCamera: this.previewCamera, angles: this.angles, scrub: this.scrubState ? { ...this.scrubState } : null,
+      building: !!this._previewBuilding, angleNames: this.angles ? this._angleCams.map((c) => c.name) : [],
+    };
+  }
+
+  /** The preview world: the sequence as the runtimes play it, rebuilt when the document changes. */
+  async previewWorld() {
+    const hash = this.session.hash();
+    if (this.preview?.hash === hash) return this.preview;
+    if (this._previewBuilding?.hash === hash) return this._previewBuilding.promise;
+    const promise = (async () => {
+      this.changed('timeline');
+      const t0 = performance.now();
+      const world = await this.buildFrom(parse(this.session.text()), { play: true, heard: false });
+      const old = this.preview; this.preview = { hash, world, player: new SequencePlayer(world.tree, { every: 120 }), buildMs: performance.now() - t0 };
+      if (old && this.host.tree === old.world.tree) this.host.detach();
+      return this.preview;
+    })();
+    this._previewBuilding = { hash, promise };
+    try { return await promise; } finally { if (this._previewBuilding?.promise === promise) this._previewBuilding = null; this.changed('timeline'); }
+  }
+
+  /**
+   * Show a frame of the sequence exactly as an export renders it: the preview world put on the frame's step from its
+   * snapshots (SequencePlayer), then the render host's frameAt, which steps the last step and draws the blend at α.
+   * Scrubs queue: while one runs, the latest asked-for frame waits and the ones in between are skipped.
+   */
+  scrubTo(frame) {
+    const s = this.session;
+    if (!s?.isSequence || s.mode !== 'editing') return Promise.resolve(null);
+    this.playhead = Math.max(0, Math.min(s.doc.sequence.duration, frame));
+    this._scrubWant = this.playhead;
+    this._scrubbing ??= (async () => {
+      try {
+        while (this._scrubWant !== null) {
+          const f = this._scrubWant; this._scrubWant = null;
+          const p = await this.previewWorld();
+          const { step, alpha } = p.world.sequence.stepOf(Math.floor(f));
+          const t0 = performance.now();
+          const r = await p.player.seekStep(Math.max(0, step - 1));
+          if (this.host.tree !== p.world.tree) { this.host.attach(p.world.tree); this.host.debug.set(this.debug); }
+          this.gizmo.detach(); this.box.visible = false;
+          this.view = 'preview';
+          this.host.camera = this.previewCamera === 'sequence' ? null : this.camera;
+          await this.host.frameAt(step, alpha);
+          this.scrubState = { frame: Math.floor(f), step, alpha: +alpha.toFixed(3), restored: r.restored, stepped: r.stepped + (step > r.step ? step - r.step : 0), ms: +(performance.now() - t0).toFixed(1), hash: hashValue(worldHashes(p.world.tree, { physicsBytes: true })) };
+          this.drawAngles();
+          this.changed('timeline');
+        }
+      } catch (err) { this.error = String(err?.stack ?? err); this.changed(); }
+      finally { this._scrubbing = null; }
+    })();
+    return this._scrubbing;
+  }
+
+  schedulePreview() {
+    clearTimeout(this._previewTimer);
+    this._previewTimer = setTimeout(() => this.scrubTo(this.playhead), 150);
+  }
+
+  /**
+   * A VirtualCamera where the editor's view is, looking the same way with the same field of view (fixed body, no aim):
+   * frame a shot by flying the view there, then press. One undo step. → its id
+   */
+  cameraFromView() {
+    const s = this.session, ids = new Set([...s.doc.nodes.map((n) => n.id), ...(this.setScene?.doc.nodes.map((n) => n.id) ?? [])]);
+    let id = 'shot-cam'; for (let i = 2; ids.has(id); i++) id = `shot-cam-${i}`;
+    const r = (v) => Math.round(v * 1e4) / 1e4, c = this.camera;
+    const focalLength = r(12 / Math.tan((c.fov * Math.PI) / 360));
+    const node = { id, type: 'VirtualCamera', name: 'Camera from view', transform: { p: c.position.toArray().map(r), q: c.quaternion.toArray().map(r) }, props: { body: { type: 'fixed' }, aim: { type: 'none' }, lens: { focalLength } } };
+    s.run(`Add ${id} from the view`, [{ op: 'add', node }]);
+    s.select(id);
+    return id;
+  }
+
+  /** Back to the edit view (the gizmo, the editor's camera). */
+  editView() {
+    this.previewPlaying = false;
+    if (this.view === 'edit') return;
+    this.view = 'edit';
+    this.host.camera = this.camera;
+    if (this.edit) { this.host.attach(this.edit.tree); this.host.debug.set(this.debug); }
+    this.attachGizmo();
+    this.changed();
+  }
+
+  /** Play the preview from the playhead in real time, through the range (looping if set). */
+  playPreview(on = !this.previewPlaying) {
+    if (on) {
+      const [a, b] = this.range ?? [0, this.session.doc.sequence.duration];
+      if (this.playhead >= b - 1 || this.playhead < a) this.playhead = a;
+    }
+    this._playClock = null;
+    this.previewPlaying = on;
+    if (on) this.scrubTo(this.playhead);
+    this.changed('timeline');
+  }
+
+  /** Real-time preview play: the playhead follows the wall clock from where play began; frames the scrub can't keep up with are skipped. */
+  advancePreview() {
+    const seq = this.session?.doc.sequence;
+    if (!seq) { this.previewPlaying = false; return; }
+    const [a, b] = this.range ?? [0, seq.duration], now = performance.now();
+    this._playClock ??= { t: now, f: this.playhead };
+    let f = this._playClock.f + ((now - this._playClock.t) / 1000) * seq.fps;
+    if (f >= b) {
+      if (this.loopRange) { f = a; this._playClock = { t: now, f: a }; } else { f = b - 1; this.previewPlaying = false; this._playClock = null; }
+    }
+    if (this._scrubbing) { this._scrubWant = Math.floor(f); this.playhead = f; return; } // the running scrub takes the newest frame
+    if (Math.floor(f) !== Math.floor(this.playhead) || !this.scrubState) this.scrubTo(f); else this.playhead = f;
+  }
+
+  setRange(which) {
+    const seq = this.session?.doc.sequence; if (!seq) return;
+    const r = this.range ?? [0, seq.duration], f = Math.round(this.playhead);
+    if (which === 'in') this.range = [Math.min(f, r[1] - 1), r[1]];
+    else if (which === 'out') this.range = [r[0], Math.max(f + 1, r[0] + 1)];
+    else this.range = null;
+    this.changed('timeline');
+  }
+
+  setPreviewCamera(mode) {
+    this.previewCamera = mode;
+    if (this.view === 'preview') { this.host.camera = mode === 'sequence' ? null : this.camera; this.host.render(this.host.last.alpha ?? 1, false); this.drawAngles(); }
+    this.changed('timeline');
+  }
+
+  setAngles(on) { this.angles = on; if (this.view === 'preview') { this.host.render(this.host.last.alpha ?? 1, false); this.drawAngles(); } this.changed('timeline'); }
+
+  /** Multi-angle view (W3 viewports): the shot being shown, then every VirtualCamera of the sequence, in a grid. */
+  drawAngles() {
+    if (!this.angles || this.view !== 'preview' || !this.preview) return;
+    const tree = this.preview.world.tree, cams = tree.services.get('cameras');
+    const vcams = cams?.virtual ?? [];
+    while (this._angleCams.length < vcams.length) this._angleCams.push(new PerspectiveCamera(40, 16 / 9, 0.05, 200));
+    const views = [{ camera: this.host.camera ?? cams?.current?.camera ?? this.camera }];
+    vcams.forEach((v, i) => {
+      const c = this._angleCams[i], pose = v.pose;
+      if (!pose) return;
+      c.position.copy(pose.p); c.quaternion.copy(pose.q);
+      c.fov = (2 * Math.atan(12 / (pose.focalLength || 35)) * 180) / Math.PI; c.updateProjectionMatrix(); c.updateMatrixWorld();
+      c.name = v.id;
+      views.push({ camera: c });
+    });
+    this._angleCams.length = Math.max(0, views.length - 1);
+    const layout = gridLayout(views.length);
+    this.host.renderer.setScissorTest(false); this.host.renderer.clear(); // cells the grid leaves empty show nothing
+    renderViews(this.host.renderer, this.host.scene, views.map((v, i) => ({ ...v, ...layout[i] })));
+  }
+
   // ---------------------------------------------------------------- the frame loop
 
   loop() {
@@ -540,7 +760,12 @@ export class EditorHost {
           const pr = this.prompt(), key = pr?.text ?? null;
           if (key !== this._promptKey) { this._promptKey = key; this.changed('captions'); }
         }
-        else { if (this.fly) this.fly.update(dt); else this.orbit.update(); if (this.box.visible) this.box.update(); this.host.render(1, false); }
+        else if (this.view === 'preview') {
+          if (this.fly) this.fly.update(dt); else this.orbit.update(dt);
+          if (this.previewPlaying) this.advancePreview();
+          else if (!this._scrubbing && this.host.tree === this.preview?.world.tree) { this.host.render(this.host.last.alpha ?? 1, false); this.drawAngles(); }
+        }
+        else { if (this.fly) this.fly.update(dt); else this.orbit.update(dt); if (this.box.visible) this.box.update(); this.host.render(1, false); }
         this.stats.renderMs = this.host.last.renderMs;
       } catch (err) { this.error = String(err?.stack ?? err); if (this.session?.mode === 'playing') this.stop(); console.error(err); }
       if (this._frames.length >= 20) {

@@ -1,0 +1,524 @@
+{
+  "checklist" : "/Volumes/Satechi/Development/vrmxa-game-engine/apps/editor-mac/docs/HAND-TEST-M2-TIMELINE.md",
+  "rows" : [
+    {
+      "checklist_line" : 8,
+      "checks" : [
+        {
+          "actual" : "\"Scene cafe.vrmxs 29 nodes saved valid hash 8fb64e11446af298\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe.vrmxs\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project project\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 1 nodes unsaved changes valid hash 91e63b477f886876\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene sequences/hand-test.vrmxs 1 nodes unsaved changes valid\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-shots\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"No preview\"",
+          "check" : "find(\"id=tl-scrub\").0.name == \"No preview\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Editor pid 21856, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-18T184605Z.log",
+        "19: wait id=open-project enabled=true timeout_ms=40000 → found after 378 ms: button \"Open project\" #open-project [W:VRMXG Editor/0/0/0/0/0/1@4649] (383 ms)",
+        "20: until find(\"id=doc-state\").0.name matches \"^Scene cafe.vrmxs\" → ok (915 ms)",
+        "21: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":109,\"x\":2721,\"y\":162},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (19 ms)",
+        "22: until find(\"id=project-name\").0.name == \"Project project\" → ok (894 ms)",
+        "23: act id=seq-name action=set_value value=sequences/hand-test.vrmxs → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":139,\"x\":3465,\"y\":162},\"help\":\"The new sequence's file\",\"id\":\"seq-name\",\"name\":\"Seque (452 ms)",
+        "24: act id=new-sequence action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":110,\"x\":3611,\"y\":162},\"help\":\"\",\"id\":\"new-sequence\",\"name\":\"New sequence\",\"ref\":\"W:VRMXG (19 ms)",
+        "25: until find(\"id=doc-state\").0.name matches \"^Scene sequences/hand-test.vrmxs 1 nodes unsaved changes valid\" → ok (476 ms)",
+        "26: expect find(\"id=tl-head-shots\").count == 1 → ok (16 ms)",
+        "27: expect find(\"id=tl-scrub\").0.name == \"No preview\" → ok (14 ms)"
+      ],
+      "message" : null,
+      "ms" : 3659,
+      "notes" : [
+
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A new sequence films the cafe: it opens with an empty timeline and a CameraBrain on the set's camera.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 9,
+      "checks" : [
+        {
+          "actual" : "\"Undo Add shot-cam from the view\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add shot-cam from the view\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add shot-cam-2 from the view\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add shot-cam-2 from the view\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add shot Shot 1\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add shot Shot 1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 48 step 120 alpha 0 world 338e51d1f7fa4bda\"",
+          "check" : "find(\"id=tl-scrub\").0.name matches \"^Showing frame 48 step 120 \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add shot Shot 2\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add shot Shot 2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 96 step 240 alpha 0 world 2f09df5e95860e05\"",
+          "check" : "find(\"id=tl-scrub\").0.name matches \"^Showing frame 96 step 240 \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add shot Shot 3\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add shot Shot 3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Shot Shot 3 96 to 144' exact=true\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Clip shot-cam 96 to 144' exact=true\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "32: act id=tl-cam-from-view action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":128,\"x\":4503,\"y\":1609},\"help\":\"A virtual camera where the editor's view is\",\"id\":\"tl-cam (15 ms)",
+        "33: until find(\"id=undo\").0.name == \"Undo Add shot-cam from the view\" → ok (30 ms)",
+        "34: act id=tl-cam-from-view action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":128,\"x\":4503,\"y\":1628},\"help\":\"A virtual camera where the editor's view is\",\"id\":\"tl-cam (49 ms)",
+        "35: until find(\"id=undo\").0.name == \"Undo Add shot-cam-2 from the view\" → ok (517 ms)",
+        "36: act id=tl-cam-shot-cam action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":64,\"x\":4503,\"y\":1605},\"help\":\"\",\"id\":\"tl-cam-shot-cam\",\"name\":\"Camera shot-cam\",\"ref\":\"W (24 ms)",
+        "37: act id=tl-add-shot action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":73,\"x\":4666,\"y\":1658},\"help\":\"\",\"id\":\"tl-add-shot\",\"name\":\"Add shot at playhead\",\"ref\":\" (26 ms)",
+        "38: until find(\"id=undo\").0.name == \"Undo Add shot Shot 1\" → ok (24 ms)",
+        "39: act id=tl-frame action=set_value value=48 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":83,\"x\":3131,\"y\":1436},\"help\":\"\",\"id\":\"tl-frame\",\"name\":\"Frame\",\"ref\":\"W:VRMXG Editor (585 ms)",
+        "40: until find(\"id=tl-scrub\").0.name matches \"^Showing frame 48 step 120 \" → ok (1016 ms)",
+        "41: act id=tl-cam-shot-cam-2 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":77,\"x\":4570,\"y\":1605},\"help\":\"\",\"id\":\"tl-cam-shot-cam-2\",\"name\":\"Camera shot-cam-2\",\"ref (25 ms)",
+        "42: act id=tl-add-shot action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":73,\"x\":4666,\"y\":1658},\"help\":\"\",\"id\":\"tl-add-shot\",\"name\":\"Add shot at playhead\",\"ref\":\" (20 ms)",
+        "43: until find(\"id=undo\").0.name == \"Undo Add shot Shot 2\" → ok (21 ms)",
+        "44: act id=tl-frame action=set_value value=96 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":83,\"x\":3131,\"y\":1436},\"help\":\"\",\"id\":\"tl-frame\",\"name\":\"Frame\",\"ref\":\"W:VRMXG Editor (462 ms)",
+        "45: until find(\"id=tl-scrub\").0.name matches \"^Showing frame 96 step 240 \" → ok (827 ms)",
+        "46: act id=tl-cam-shot-cam action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":64,\"x\":4503,\"y\":1605},\"help\":\"\",\"id\":\"tl-cam-shot-cam\",\"name\":\"Camera shot-cam\",\"ref\":\"W (29 ms)",
+        "47: act id=tl-add-shot action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":73,\"x\":4666,\"y\":1658},\"help\":\"\",\"id\":\"tl-add-shot\",\"name\":\"Add shot at playhead\",\"ref\":\" (26 ms)",
+        "48: until find(\"id=undo\").0.name == \"Undo Add shot Shot 3\" → ok (20 ms)",
+        "49: expect find(\"role=button name='Shot Shot 3 96 to 144' exact=true\").count == 1 → ok (51 ms)",
+        "50: expect find(\"role=button name='Clip shot-cam 96 to 144' exact=true\").count == 1 → ok (163 ms)"
+      ],
+      "message" : null,
+      "ms" : 5014,
+      "notes" : [
+
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Three shots are laid out from the timeline, each on a virtual camera, each one undo step that also puts a clip on the camera track.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 10,
+      "checks" : [
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-hana-1-animation\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add clip to hana-1-animation @96\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add clip to hana-1-animation @96\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-hana-1-expression\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Key hana-1-expression.happy @96\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Key hana-1-expression.happy @96\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-hana-1-dialogue\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add clip to hana-1-dialogue @96\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add clip to hana-1-dialogue @96\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Clip Welcome in! 96 to 156' exact=true\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "55: act id=tl-type-animation action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":66,\"x\":4558,\"y\":1476},\"help\":\"\",\"id\":\"tl-type-animation\",\"name\":\"Track type animation\",\" (32 ms)",
+        "56: act id=tl-target-hana-1 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":51,\"x\":4542,\"y\":1544},\"help\":\"\",\"id\":\"tl-target-hana-1\",\"name\":\"Target hana-1\",\"ref\":\"W: (26 ms)",
+        "57: act id=tl-add-track action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":77,\"x\":4503,\"y\":1567},\"help\":\"\",\"id\":\"tl-add-track\",\"name\":\"Add track\",\"ref\":\"W:VRMXG Ed (31 ms)",
+        "58: until find(\"id=tl-head-hana-1-animation\").count == 1 → ok (21 ms)",
+        "59: act id=tl-head-hana-1-animation action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":89,\"x\":2959,\"y\":1560},\"help\":\"hana-1-animation · hana-1\",\"id\":\"tl-head-hana-1-animation\" (52 ms)",
+        "60: act id=tl-value action=set_value value=talk → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":111,\"x\":4542,\"y\":1726},\"help\":\"\",\"id\":\"tl-value\",\"name\":\"Key value or clip text\",\"re (663 ms)",
+        "61: act id=tl-clip-length action=set_value value=60 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":111,\"x\":4532,\"y\":1740},\"help\":\"\",\"id\":\"tl-clip-length\",\"name\":\"Clip length\",\"ref\":\"W (977 ms)",
+        "62: act id=tl-add-clip action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":42,\"x\":4694,\"y\":1695},\"help\":\"\",\"id\":\"tl-add-clip\",\"name\":\"Add clip at playhead\",\"ref\":\" (27 ms)",
+        "63: until find(\"id=undo\").0.name == \"Undo Add clip to hana-1-animation @96\" → ok (21 ms)",
+        "64: act id=tl-type-expression action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":72,\"x\":4626,\"y\":1415},\"help\":\"\",\"id\":\"tl-type-expression\",\"name\":\"Track type expression\" (54 ms)",
+        "65: act id=tl-add-track action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":77,\"x\":4503,\"y\":1567},\"help\":\"\",\"id\":\"tl-add-track\",\"name\":\"Add track\",\"ref\":\"W:VRMXG Ed (411 ms)",
+        "66: until find(\"id=tl-head-hana-1-expression\").count == 1 → ok (950 ms)",
+        "67: act id=tl-head-hana-1-expression action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":89,\"x\":2959,\"y\":1591},\"help\":\"hana-1-expression · hana-1\",\"id\":\"tl-head-hana-1-expressio (501 ms)",
+        "68: act id=tl-value action=set_value value=1 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":111,\"x\":4542,\"y\":1726},\"help\":\"\",\"id\":\"tl-value\",\"name\":\"Key value or clip text\",\"re (991 ms)",
+        "69: act id=tl-add-key action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":41,\"x\":4648,\"y\":1770},\"help\":\"\",\"id\":\"tl-add-key\",\"name\":\"Add key at playhead\",\"ref\":\"W: (52 ms)",
+        "70: until find(\"id=undo\").0.name == \"Undo Key hana-1-expression.happy @96\" → ok (29 ms)",
+        "71: act id=tl-type-dialogue action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":59,\"x\":4503,\"y\":1407},\"help\":\"\",\"id\":\"tl-type-dialogue\",\"name\":\"Track type dialogue\",\"re (198 ms)",
+        "72: act id=tl-add-track action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":77,\"x\":4503,\"y\":1567},\"help\":\"\",\"id\":\"tl-add-track\",\"name\":\"Add track\",\"ref\":\"W:VRMXG Ed (271 ms)",
+        "73: until find(\"id=tl-head-hana-1-dialogue\").count == 1 → ok (954 ms)",
+        "74: act id=tl-head-hana-1-dialogue action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":89,\"x\":2959,\"y\":1622},\"help\":\"hana-1-dialogue · hana-1\",\"id\":\"tl-head-hana-1-dialogue\",\" (580 ms)",
+        "75: act id=tl-value action=set_value value=\"Welcome in!\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":111,\"x\":4542,\"y\":1726},\"help\":\"\",\"id\":\"tl-value\",\"name\":\"Key value or clip text\",\"re (897 ms)",
+        "76: act id=tl-add-clip action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":42,\"x\":4694,\"y\":1740},\"help\":\"\",\"id\":\"tl-add-clip\",\"name\":\"Add clip at playhead\",\"ref\":\" (49 ms)",
+        "77: until find(\"id=undo\").0.name == \"Undo Add clip to hana-1-dialogue @96\" → ok (29 ms)",
+        "78: expect find(\"role=button name='Clip Welcome in! 96 to 156' exact=true\").count == 1 → ok (199 ms)",
+        "80: shot \"built\" (218 ms)"
+      ],
+      "message" : null,
+      "ms" : 10059,
+      "notes" : [
+        "shot 1: built"
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+        "/Volumes/Satechi/Development/vrmxa-game-engine/apps/editor-mac/docs/hand-test/results/m2-timeline/shots/r3-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Animation, expression and dialogue tracks for Hana get a clip, a key and a line from the timeline.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 11,
+      "checks" : [
+        {
+          "actual" : "\"Undo Move key hana-1-expression.happy to 97\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Move key hana-1-expression.happy to 97\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Move key hana-1-expression.happy to 107\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Move key hana-1-expression.happy to 107\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Key happy at 107' exact=true\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "85: act role=button name=\"Key happy at 96\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":15,\"w\":16,\"x\":3629,\"y\":1595},\"help\":\"Key happy at 96\",\"name\":\"Key happy at 96\",\"ref\":\"W:VRMXG E (28 ms)",
+        "86: keys right → {\"sent\":true} (107 ms)",
+        "87: until find(\"id=undo\").0.name == \"Undo Move key hana-1-expression.happy to 97\" → ok (254 ms)",
+        "88: keys shift+right → {\"sent\":true} (113 ms)",
+        "89: until find(\"id=undo\").0.name == \"Undo Move key hana-1-expression.happy to 107\" → ok (992 ms)",
+        "90: expect find(\"role=button name='Key happy at 107' exact=true\").count == 1 → ok (297 ms)"
+      ],
+      "message" : null,
+      "ms" : 2625,
+      "notes" : [
+
+      ],
+      "row" : 4,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A selected key moves with the arrow keys, one undo step per press.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 12,
+      "checks" : [
+        {
+          "actual" : "false",
+          "check" : "find(\"id=undo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 1 nodes unsaved changes valid hash 91e63b477f886876\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene sequences/hand-test.vrmxs 1 nodes \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\"",
+          "check" : "find(\"id=doc-state\").0.name == $built",
+          "ok" : true
+        },
+        {
+          "actual" : "false",
+          "check" : "find(\"id=redo\").0.enabled == false",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "95: set built = find(\"id=doc-state\").0.name → \"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\" (22 ms)",
+        "96: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "96: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "96: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "96: menu \"Edit › Undo*\" press → pressed Edit › Undo* (160 ms)",
+        "96: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "96: menu \"Edit › Undo*\" press → pressed Edit › Undo* (151 ms)",
+        "96: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "96: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "96: menu \"Edit › Undo*\" press → pressed Edit › Undo* (157 ms)",
+        "96: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "96: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "96: menu \"Edit › Undo*\" press → pressed Edit › Undo* (158 ms)",
+        "96: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "96: until find(\"id=undo\").0.enabled == false do menu \"Edit › Undo*\" press tries=20 → ok after 13 (14451 ms)",
+        "97: expect find(\"id=doc-state\").0.name matches \"^Scene sequences/hand-test.vrmxs 1 nodes \" → ok (253 ms)",
+        "98: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "98: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "98: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "98: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "98: menu \"Edit › Redo*\" press → pressed Edit › Redo* (153 ms)",
+        "98: menu \"Edit › Redo*\" press → pressed Edit › Redo* (158 ms)",
+        "98: menu \"Edit › Redo*\" press → pressed Edit › Redo* (160 ms)",
+        "98: menu \"Edit › Redo*\" press → pressed Edit › Redo* (149 ms)",
+        "98: menu \"Edit › Redo*\" press → pressed Edit › Redo* (150 ms)",
+        "98: menu \"Edit › Redo*\" press → pressed Edit › Redo* (157 ms)",
+        "98: menu \"Edit › Redo*\" press → pressed Edit › Redo* (152 ms)",
+        "98: menu \"Edit › Redo*\" press → pressed Edit › Redo* (153 ms)",
+        "98: menu \"Edit › Redo*\" press → pressed Edit › Redo* (160 ms)",
+        "98: until find(\"id=doc-state\").0.name == $built do menu \"Edit › Redo*\" press tries=20 → ok after 13 (13129 ms)",
+        "99: expect find(\"id=redo\").0.enabled == false → ok (103 ms)"
+      ],
+      "message" : null,
+      "ms" : 28568,
+      "notes" : [
+
+      ],
+      "row" : 5,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Undo walks the whole build back to the empty sequence, and redo returns it to the same document (same hash).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 13,
+      "checks" : [
+        {
+          "actual" : "\"Saved sequences/hand-test.vrmxs · 1568 bytes · e7ea412e64ce0412\"",
+          "check" : "find(\"id=saved\").0.name matches \"^Saved sequences/hand-test.vrmxs · [0-9]+ bytes · [0-9a-f]{16}$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Reopened sequences/hand-test.vrmxs: same bytes as saved, valid\"",
+          "check" : "find(\"id=verify-result\").0.name == \"Reopened sequences/hand-test.vrmxs: same bytes as saved, valid\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "104: act id=save action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":48,\"x\":3779,\"y\":162},\"help\":\"\",\"id\":\"save\",\"name\":\"Save\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (15 ms)",
+        "105: until find(\"id=saved\").0.name matches \"^Saved sequences/hand-test.vrmxs · [0-9]+ bytes · [0-9a-f]{16}$\" → ok (18 ms)",
+        "106: act id=verify action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":127,\"x\":3577,\"y\":1743},\"help\":\"\",\"id\":\"verify\",\"name\":\"Reopen and compare\",\"ref\":\"W:VRMX (21 ms)",
+        "107: until find(\"id=verify-result\").0.name == \"Reopened sequences/hand-test.vrmxs: same bytes as saved, valid\" → ok (132 ms)"
+      ],
+      "message" : null,
+      "ms" : 759,
+      "notes" : [
+
+      ],
+      "row" : 6,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Save writes the sequence into the project; reopening it from disk gives the same bytes, and it validates.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 14,
+      "checks" : [
+        {
+          "actual" : "\"Scene sequences/morning.vrmxs 7 nodes saved valid hash 6474cef96fdfa706\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene sequences/morning.vrmxs \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 130 step 325 alpha 0 world 5e65acbe356561f1\"",
+          "check" : "find(\"id=tl-scrub\").0.name == \"Showing frame 130 step 325 alpha 0 world 5e65acbe356561f1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 40 step 100 alpha 0 world f0ef4e430dc29757\"",
+          "check" : "find(\"id=tl-scrub\").0.name == \"Showing frame 40 step 100 alpha 0 world f0ef4e430dc29757\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 200 step 500 alpha 0 world d8f38c6b9d156da1\"",
+          "check" : "find(\"id=tl-scrub\").0.name == \"Showing frame 200 step 500 alpha 0 world d8f38c6b9d156da1\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "112: act id=file-name action=set_value value=sequences/morning.vrmxs → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":139,\"x\":3096,\"y\":162},\"help\":\"The file New and Save As use, in the project\",\"id\":\"fi (445 ms)",
+        "113: act id=open-file action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":3242,\"y\":162},\"help\":\"Open the scene or sequence named in the file field\",\"id\":\"o (41 ms)",
+        "114: until find(\"id=doc-state\").0.name matches \"^Scene sequences/morning.vrmxs \" → ok (479 ms)",
+        "115: act id=tl-frame action=set_value value=130 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":83,\"x\":3131,\"y\":1436},\"help\":\"\",\"id\":\"tl-frame\",\"name\":\"Frame\",\"ref\":\"W:VRMXG Editor (425 ms)",
+        "116: until find(\"id=tl-scrub\").0.name == \"Showing frame 130 step 325 alpha 0 world 5e65acbe356561f1\" timeout=60000 → ok (1496 ms)",
+        "117: act id=tl-frame action=set_value value=40 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":83,\"x\":3131,\"y\":1436},\"help\":\"\",\"id\":\"tl-frame\",\"name\":\"Frame\",\"ref\":\"W:VRMXG Editor (431 ms)",
+        "118: until find(\"id=tl-scrub\").0.name == \"Showing frame 40 step 100 alpha 0 world f0ef4e430dc29757\" → ok (22 ms)",
+        "119: act id=tl-frame action=set_value value=200 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":83,\"x\":3131,\"y\":1436},\"help\":\"\",\"id\":\"tl-frame\",\"name\":\"Frame\",\"ref\":\"W:VRMXG Editor (433 ms)",
+        "120: until find(\"id=tl-scrub\").0.name == \"Showing frame 200 step 500 alpha 0 world d8f38c6b9d156da1\" → ok (27 ms)",
+        "121: shot \"scrubbed\" (272 ms)"
+      ],
+      "message" : null,
+      "ms" : 4272,
+      "notes" : [
+        "shot 1: scrubbed"
+      ],
+      "row" : 7,
+      "section" : "",
+      "shots" : [
+        "/Volumes/Satechi/Development/vrmxa-game-engine/apps/editor-mac/docs/hand-test/results/m2-timeline/shots/r7-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Scrubbing the morning sequence to frame 130 shows the world the runtimes agree on (acceptance check 12's hash for that frame), forwards and backwards.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 15,
+      "checks" : [
+        {
+          "actual" : "\"Showing frame 100 step 250 alpha 0 world cb32a65f66a884e7\"",
+          "check" : "find(\"id=tl-scrub\").0.name matches \"^Showing frame 100 \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"149\"",
+          "check" : "find(\"id=tl-frame\").0.value >= 130",
+          "ok" : true
+        },
+        {
+          "actual" : "2",
+          "check" : "find(\"name='Angles: shot, vc-wide, vc-hana, vc-ots, vc-two' exact=true\").count >= 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "126: act id=tl-frame action=set_value value=100 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":83,\"x\":3131,\"y\":1436},\"help\":\"\",\"id\":\"tl-frame\",\"name\":\"Frame\",\"ref\":\"W:VRMXG Editor (432 ms)",
+        "127: until find(\"id=tl-scrub\").0.name matches \"^Showing frame 100 \" → ok (52 ms)",
+        "128: act id=tl-play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":78,\"x\":2968,\"y\":1436},\"help\":\"\",\"id\":\"tl-play\",\"name\":\"Play sequence\",\"ref\":\"W:VRMXG Edi (32 ms)",
+        "130: act id=tl-play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":78,\"x\":2968,\"y\":1436},\"help\":\"\",\"id\":\"tl-play\",\"name\":\"Pause sequence\",\"ref\":\"W:VRMXG Ed (42 ms)",
+        "131: expect find(\"id=tl-frame\").0.value >= 130 → ok (30 ms)",
+        "132: act id=tl-angles action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":13,\"w\":13,\"x\":3586,\"y\":1443},\"help\":\"\",\"id\":\"tl-angles\",\"name\":\"Angles\",\"ref\":\"W:VRMXG Editor/0 (20 ms)",
+        "133: until find(\"name='Angles: shot, vc-wide, vc-hana, vc-ots, vc-two' exact=true\").count >= 1 → ok (103 ms)",
+        "134: shot \"angles\" (214 ms)"
+      ],
+      "message" : null,
+      "ms" : 3179,
+      "notes" : [
+        "shot 1: angles"
+      ],
+      "row" : 8,
+      "section" : "",
+      "shots" : [
+        "/Volumes/Satechi/Development/vrmxa-game-engine/apps/editor-mac/docs/hand-test/results/m2-timeline/shots/r8-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "needs-you",
+      "text" : "The preview plays in real time, through the shot camera, and the multi-angle view shows the shot and every virtual camera.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "/Volumes/Satechi/Development/vrmxa-game-engine/apps/editor-mac/docs/hand-test/HAND-TEST-M2-TIMELINE.scenario.md",
+  "summary" : "8 rows: 7 passed, 0 failed, 1 need you; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}

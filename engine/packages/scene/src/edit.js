@@ -80,6 +80,14 @@ export function createEditor(reg, doc, { prefabs } = {}) {
       doc.nodes[i] = next;
       return { op: 'set', id, path, value: before };
     },
+    /** A value in the document itself, outside its nodes: the sequence block (M2 W5) or settings. */
+    setDoc({ path, value }) {
+      if (!/^(sequence|settings)(\.|$)/.test(path ?? '')) throw new Error(`setDoc edits the sequence or settings, not "${path}"`);
+      const before = clone(getPath(doc, path));
+      if (value !== undefined && JSON.stringify(value) === undefined) throw new Error(`setDoc ${path}: not JSON`);
+      setPath(doc, path, clone(value));
+      return { op: 'setDoc', path, value: before };
+    },
     reparent({ id, parent, index: at }) {
       const i = need(id);
       if (parent !== undefined) {

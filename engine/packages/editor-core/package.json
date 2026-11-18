@@ -2,18 +2,21 @@
   "name": "@vrmxg/editor-core",
   "version": "0.1.0",
   "private": true,
-  "description": "The VRMXG editor's model without UI (M1 W7): a scene open for editing, selection, undoable commands on @vrmxg/scene's editor, assets dropped in as nodes, save, and play in place from a snapshot.",
+  "description": "The VRMXG editor's model without UI (M1 W7, M2 W5): a scene or sequence open for editing, selection, undoable commands on @vrmxg/scene's editor, assets dropped in as nodes, save, play in place, and the timeline's model (one geometry, ticks, snapping, rows, sequence commands).",
   "type": "module",
   "exports": {
     ".": "./src/index.js"
   },
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "sideEffects": false,
   "scripts": {
     "test": "node --test test/"
   },
   "dependencies": {
     "@vrmxg/scene": "0.1.0",
+    "@vrmxg/sequence": "0.1.0",
     "@vrmxg/snapshot": "0.1.0"
   },
   "devDependencies": {

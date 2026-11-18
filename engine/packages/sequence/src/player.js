@@ -33,13 +33,18 @@ export class SequencePlayer {
   /** Put the world on a frame: { step, alpha } for the render host's frameAt, and how it got there. */
   async seek(frame) {
     const { step, alpha } = this.service.stepOf(frame);
+    return { frame, alpha, ...(await this.seekStep(step)) };
+  }
+
+  /** Put the world on a step: from the nearest snapshot at or before it, or on from where it is when that is nearer. */
+  async seekStep(step) {
     const now = this.tree.clock.step;
     let best = -1;
     for (const s of this.snaps.keys()) if (s <= step && s > best) best = s;
     let restored = null;
     if (!(now <= step && now >= best)) { restoreWorld(this.tree, this.snaps.get(best)); restored = best; }
     const stepped = await this.stepTo(step);
-    return { frame, step, alpha, restored, stepped };
+    return { step, restored, stepped };
   }
 
   /** Forget the snapshots after a frame (an edit there changes everything after it); 0 forgets all but the first. */

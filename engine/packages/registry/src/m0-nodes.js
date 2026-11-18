@@ -145,6 +145,17 @@ export function m0Registry() {
       clearOverride: { args: {} },
     },
   });
+  r.define('ParticleEmitter', {
+    extends: 'Node3D', description: 'Shows a particle effect where it stands: steam, dust, sparks, or an effect document from the project. In the simulation by default (seeded, in the snapshot, scrubs exactly); presentation for visual-only dressing.',
+    props: {
+      effect: P.string({ default: 'steam', sim: true, description: 'A built-in effect (steam, dust, sparks) or a project effect document (.json).' }),
+      mode: P.enum(['simulation', 'presentation'], { default: 'simulation', sim: true, description: 'simulation: stepped at 60 Hz, in the snapshot and the hash; presentation: stepped with the frame, visual only.' }),
+      autoplay: P.boolean({ default: true, sim: true, description: 'Start when the scene starts.' }),
+      speed: P.number({ min: 0, max: 16, default: 1, sim: true, description: 'Time scale of the effect.' }),
+    },
+    signals: { finished: { args: {}, description: 'A non-looping effect ended and its last particle died.' } },
+    actions: { play: { args: {}, description: 'Start emitting from the effect\'s start.' }, stop: { args: {}, description: 'Stop emitting; live particles finish their lives.' }, restart: { args: {}, description: 'Clear the particles and start over.' } },
+  });
   r.define('Path3D', {
     extends: 'Node3D', description: 'A smooth path through points (Catmull-Rom, by arc length) for dollies, rails and cranes.',
     props: {

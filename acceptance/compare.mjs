@@ -123,6 +123,15 @@ const items = (r) => r?.result?.items ?? r?.items;
   check(12, 'Sequences: the morning sequence identical everywhere; scrubbing lands on the straight play\'s world', ok,
     ref ? `${ref.steps} steps × ${ref.components} components, final ${ref.final}; cameras ${ref.cameraChanges.join(', ')}; shots ${ref.shots.join(', ')}; Hana's line @${ref.spokeAt}; counter light ${ref.lightInShot2} in s2, ${ref.light} after; Mira at ${ref.mira.join(', ')}; scrub ${ref.scrub.map((s) => `${s.frame}${s.matches ? '' : ' DIFFERS'} (${s.restored === null ? 'stepped' : `from ${s.restored}`} +${s.stepped}, ${s.ms} ms)`).join(', ')}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? `identical, scrub exact (${r.x.scrub.map((s) => s.ms).join('/')} ms)` : 'DIFFERS'}`).join('; ')}` : 'no node result');
 }
+// 13 (M2 W4). Particles: steam, dust, sparks and 40 more steam emitters in the cafe hash identically at every step
+// everywhere (the particles are node state: seeded per step, portable maths), and a snapshot mid-effect re-simulates.
+{
+  const pt = (r) => r?.result?.particles ?? r?.particles, ref = pt(node);
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = pt(r); const d = x && ref ? compareRuns(unpackRun(ref.run), unpackRun(x.run)) : { step: -1, component: 'no result' }; return { k, d, x, ok: !!x && !d && x.snapshot.rerunMatches }; });
+  const ok = !!ref && ref.snapshot.rerunMatches && ref.live.steam > 10 && ref.live.dust > 0 && rows.every((r) => r.ok);
+  check(13, 'Particles: steam, dust and sparks identical everywhere at every step; snapshot mid-effect', ok,
+    ref ? `${ref.steps} steps × ${ref.components} components, final ${ref.final}; ${ref.emitters} emitters, up to ${ref.peakParticles} particles, ${ref.batches} batches; live at the end: steam ${ref.live.steam}, dust ${ref.live.dust}, sparks ${ref.live.sparks}; particle step ${ref.stepMs} ms (node); snapshot @${ref.snapshot.at} ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? `identical (step ${r.x.stepMs} ms)` : 'DIFFERS'}`).join('; ')}` : 'no node result');
+}
 checks.sort((a, b) => a.n - b.n);
 fs.writeFileSync(res('summary.json'), JSON.stringify({ checks, runtimes: { node: node?.version, chromium: chromium?.version, wkwebview: scheme?.ua } }, null, 1) + '\n');
 process.exit(checks.every((c) => c.ok) ? 0 : 1);

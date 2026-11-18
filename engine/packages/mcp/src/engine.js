@@ -16,6 +16,7 @@ import { installAudio } from '@vrmxg/audio';
 import { installVoice } from '@vrmxg/voice';
 import { installTracks } from '@vrmxg/tracks';
 import { installSequence, composeSequence, isSequence } from '@vrmxg/sequence';
+import { installParticles } from '@vrmxg/particles';
 import { parse } from '@vrmxg/scene';
 import { LiveView } from './live.js';
 
@@ -44,6 +45,7 @@ export class EngineSession extends LiveView {
     const voice = installVoice(tree, { resolve: (ref) => p.bytes(ref) });
     await voice.prepare(doc);
     await installTracks(tree).prepare(doc);
+    await installParticles(tree, { resolve: (ref) => Promise.resolve(p.bytes(ref)) }).prepare(doc);
     if (doc.sequence) await installSequence(tree).prepare(doc);
     installInteraction(tree);
     const closetModule = vrmxaCore ? await p.vrmxaCloset() : null;

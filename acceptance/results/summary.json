@@ -4,7 +4,7 @@
    "n": 1,
    "title": "The cafe runs in the playground in WKWebView (scheme, loopback) and Chromium",
    "ok": true,
-   "evidence": "chromium: 600 frames, render 0.582 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 0.612 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 0.95 ms, door opened at step 113, 6 presets, 0 errors"
+   "evidence": "chromium: 600 frames, render 0.549 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 1.153 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 1.044 ms, door opened at step 113, 6 presets, 0 errors"
   },
   {
    "n": 2,
@@ -64,13 +64,19 @@
    "n": 11,
    "title": "Post: the anime stack renders everywhere; 4K matches 1080p (SSIM ≥ 0.98 without grain); costs and four viewports measured",
    "ok": true,
-   "evidence": "chromium: SSIM 0.9861 (grain 0.9507), anime 1.4 / 1.6 ms vs none 0.4 / 0.5 ms (1080p / 4K), 4 views 1.4 ms; wkwebview-scheme: SSIM 0.9861 (grain 0.9507), anime 2 / 3 ms vs none 0 / 0 ms (1080p / 4K), 4 views 2 ms; wkwebview-loopback: SSIM 0.9861 (grain 0.9507), anime 1.38 / 3.12 ms vs none 0.26 / 0.98 ms (1080p / 4K), 4 views 0.86 ms; passes RenderPass → NormalPass → EffectPass(EdgeEffect) → EffectPass(DepthOfFieldEffect) → EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect) → EffectPass(ChromaticAberrationEffect)"
+   "evidence": "chromium: SSIM 0.9861 (grain 0.9507), anime 1.5 / 1.3 ms vs none 0.5 / 0.5 ms (1080p / 4K), 4 views 1.3 ms; wkwebview-scheme: SSIM 0.9861 (grain 0.9507), anime 2 / 3 ms vs none 0 / 2 ms (1080p / 4K), 4 views 1 ms; wkwebview-loopback: SSIM 0.9861 (grain 0.9507), anime 1.18 / 2.9 ms vs none 0.26 / 1.02 ms (1080p / 4K), 4 views 1.08 ms; passes RenderPass → NormalPass → EffectPass(EdgeEffect) → EffectPass(DepthOfFieldEffect) → EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect) → EffectPass(ChromaticAberrationEffect)"
   },
   {
    "n": 12,
    "title": "Sequences: the morning sequence identical everywhere; scrubbing lands on the straight play's world",
    "ok": true,
-   "evidence": "721 steps × 73 components, final 1877d6668ebbbe96; cameras 0:vc-wide, 299:vc-hana, 479:vc-ots, 629:vc-two; shots 0:s1, 299:s2, 479:s3, 629:s4; Hana's line @314; counter light 30 in s2, 18 after; Mira at -0.789, 0.025, 1.482; scrub 287 (stepped +717, 148.8 ms), 40 (from 0 +100, 22.6 ms), 130 (from 240 +85, 17.4 ms), 200 (from 480 +20, 5.3 ms), 129 (from 240 +82, 15.8 ms), 250 (from 600 +25, 5.5 ms); chromium: identical, scrub exact (119.4/18.8/14.8/4.3/14.7/4.8 ms); wkwebview-scheme: identical, scrub exact (73/12/9/3/8/2 ms); wkwebview-loopback: identical, scrub exact (75.3/12.6/9.4/2.7/9/3.1 ms)"
+   "evidence": "721 steps × 75 components, final f422026c1edf95c7; cameras 0:vc-wide, 299:vc-hana, 479:vc-ots, 629:vc-two; shots 0:s1, 299:s2, 479:s3, 629:s4; Hana's line @314; counter light 30 in s2, 18 after; Mira at -0.789, 0.025, 1.482; scrub 287 (stepped +717, 148.7 ms), 40 (from 0 +100, 24.2 ms), 130 (from 240 +85, 18 ms), 200 (from 480 +20, 5.4 ms), 129 (from 240 +82, 16.6 ms), 250 (from 600 +25, 5.8 ms); chromium: identical, scrub exact (121.9/20.8/16.3/4.4/14.3/4.7 ms); wkwebview-scheme: identical, scrub exact (82/14/11/3/10/3 ms); wkwebview-loopback: identical, scrub exact (85.1/14.6/10.8/3/9.8/3.4 ms)"
+  },
+  {
+   "n": 13,
+   "title": "Particles: steam, dust and sparks identical everywhere at every step; snapshot mid-effect",
+   "ok": true,
+   "evidence": "360 steps × 147 components, final c583433c7317a05d; 43 emitters, up to 1207 particles, 3 batches; live at the end: steam 28, dust 9, sparks 0; particle step 0.217 ms (node); snapshot @180 identical; chromium: identical (step 0.2 ms); wkwebview-scheme: identical (step 0.125 ms); wkwebview-loopback: identical (step 0.152 ms)"
   }
  ],
  "runtimes": {
