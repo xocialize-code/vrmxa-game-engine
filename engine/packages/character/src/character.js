@@ -34,6 +34,8 @@ export class CharacterNode extends Node {
     /** @type {any} */ this.graph = null;
     /** @type {Map<string, any>} clip sha256 → AnimationAction */ this.actions = new Map();
     this.ctrl = { vy: 0, grounded: true, yaw: 0, jumped: false, goTo: null, look: null, seat: null };
+    /** What an animation track asks for this step ({ weight, clips }), set by @vrmxg/tracks before the nodes step; null: the graph alone. */
+    this.trackAnimation = null;
     /** Tags of what is worn; animation slots follow them (VRMXA §8.3). (Node `tags` are the node's own.) */
     this.equipped = new Set();
     /** @type {any} */ this.physics = null;
@@ -82,6 +84,7 @@ export class CharacterNode extends Node {
     }
     this.mixer = new AnimationMixer(this.vrm.scene);
     this.actions = new Map();
+    /** clip name → sha256, for tracks that name clips (@vrmxg/tracks) */ this.clipByName = new Map();
     const info = new Map();
     for (const [sha, { anim, meta }] of prep.clips) {
       const clip = createVRMAnimationClip(anim, this.vrm);
@@ -89,6 +92,7 @@ export class CharacterNode extends Node {
       action.play(); action.weight = 0; action.paused = true;
       this.actions.set(sha, action);
       info.set(sha, { duration: meta.duration ?? clip.duration, loops: meta.loops ?? true, speed: meta.speed ?? null, rootMotion: meta.rootMotion ?? 'inPlace' });
+      if (meta.name) this.clipByName.set(meta.name, sha);
     }
     this.clipInfo = info;
   }
@@ -185,11 +189,12 @@ export class CharacterNode extends Node {
     // 3. animation graph → pose
     this.graph.step(dt, { speed, grounded: c.grounded, verticalSpeed: c.vy, jumped: c.jumped });
     for (const a of this.actions.values()) a.weight = 0;
-    for (const { clip, time, weight } of this.graph.output()) {
-      const a = this.actions.get(clip);
-      if (!a) continue;
-      a.time = time; a.weight = weight;
-    }
+    // An animation track (@vrmxg/tracks: an AnimationPlayer or a sequence, set before the nodes step) takes over by its
+    // weight; the graph keeps stepping underneath, so control returns to it smoothly when the track lets go.
+    const track = this.trackAnimation, tw = track ? Math.max(0, Math.min(1, track.weight)) : 0;
+    const add = (clip, time, weight) => { const a = this.actions.get(clip); if (!a || weight <= 0) return; if (a.weight > 0) a.weight += weight; else { a.time = time; a.weight = weight; } };
+    if (tw < 1) for (const { clip, time, weight } of this.graph.output()) add(clip, time, weight * (1 - tw));
+    if (tw > 0) for (const c of track.clips) { const r = this.resolveTrackClip(c); if (r) add(r.clip, r.time, c.weight * tw); }
     this.mixer.update(0);
 
     // 4. travel root motion: the clip's forward drift is the controller's job
@@ -225,6 +230,15 @@ export class CharacterNode extends Node {
 
   /** Play an action slot (use, take, talk, stand; sit through sitOn). Movement waits until it ends. */
   startAction(slot) { this.graph.act(slot); }
+
+  /** A track's clip ({ slot } | { clip: name or sha256 }, time in seconds, loop) → { clip: sha256, time in the clip }. */
+  resolveTrackClip(c) {
+    const sha = c.slot ? (this.graph.picks[c.slot]?.clip ?? this.graph.slots[c.slot]?.clips?.[0]?.clip) : (this.actions.has(c.clip) ? c.clip : this.clipByName.get(c.clip));
+    if (!sha || !this.actions.has(sha)) return null;
+    const d = this.clipInfo.get(sha)?.duration || 1;
+    const t = c.loop === false ? Math.min(Math.max(0, c.time), d) : c.time - Math.floor(c.time / d) * d;
+    return { clip: sha, time: t };
+  }
   /** True while an action plays or the character is seated. */
   get busy() { return this.graph.busy || !!this.ctrl.seat; }
 

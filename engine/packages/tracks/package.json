@@ -1,0 +1,25 @@
+{
+  "name": "@vrmxg/tracks",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG track core (M2 W0): keyed tracks (property, transform, expression, event, audio, animation) evaluated as a pure function of the frame, held on ones / twos / threes, and the AnimationPlayer node that plays them inside the simulation step.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/core": "0.1.0",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  },
+  "vrmxg": { "determinism": "simulation" }
+}

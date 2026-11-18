@@ -31,6 +31,30 @@ export function m0Registry() {
     extends: 'AudioPlayer', description: 'Plays a sound clip from where it is: doors, switches, machines.',
     props: { ...audioProps, refDistance: P.number({ min: 0.01, default: 1, unit: 'm', description: 'Full volume up to this distance.' }), maxDistance: P.number({ min: 0.1, default: 30, unit: 'm' }), rolloff: P.number({ min: 0, default: 1, description: 'How fast it fades past refDistance (inverse distance).' }) },
   });
+  // M2 W0: keyed tracks played on the step clock (@vrmxg/tracks). A track is { id, type, target?, path?, step?, interp?,
+  // keys? | clips? }; see @vrmxg/tracks for the types. Playing is simulation (a door it opens replays bit for bit).
+  const trackSchema = { type: 'object', required: ['type'], properties: {
+    id: { type: 'string' }, type: { enum: ['property', 'transform', 'expression', 'event', 'audio', 'animation'] },
+    target: { type: 'string', description: 'Node id the track drives (property, transform, expression, animation).' },
+    path: { type: 'string', description: 'Property tracks: "visible" or "props.<name>".' },
+    step: { type: 'integer', minimum: 1, maximum: 4, description: 'Hold on ones, twos, threes (anime timing).' },
+    interp: { enum: ['linear', 'step'] }, bus: { type: 'string' },
+    keys: { description: '[[frame, value, ease?], …]; expression tracks: { name: [[frame, weight, ease?], …] }; event tracks: [[frame, { target, call, args } | { emit }]].' },
+    clips: { type: 'array', items: { type: 'object' }, description: 'Animation: [{ start, end, slot | clip, speed, offset, loop, blendIn, blendOut }]; audio: [{ start, end, asset, offset, gain, bus }].' },
+  } };
+  r.define('AnimationPlayer', {
+    extends: 'Node3D', description: 'Plays keyed tracks on the simulation clock: properties, transforms, expressions, character animation, events and sounds. For doors, items, lights and small cutscenes.',
+    props: {
+      tracks: { schema: { type: 'array', items: trackSchema, description: 'The tracks it plays.' }, meta: { widget: 'json', sim: true } },
+      length: P.number({ min: 0, unit: 'frames', sim: true, description: 'Where it ends (default: its last key or clip).' }),
+      fps: P.number({ min: 1, max: 240, default: 30, sim: true, description: 'Frames per second the keys are counted in.' }),
+      speed: P.number({ min: 0, max: 16, default: 1, sim: true }),
+      loop: P.boolean({ default: false, sim: true }),
+      autoplay: P.boolean({ default: false, sim: true, description: 'Start when the scene starts.' }),
+    },
+    signals: { started: { args: { from: P.number() } }, finished: { args: { stopped: P.boolean() } }, event: { args: { name: P.string() }, description: 'An event key with emit.' } },
+    actions: { play: { args: { from: arg(P.number(), 'Frame to start from (0).') }, description: 'Play from a frame.' }, stop: { args: {} }, seek: { args: { frame: arg(P.number(), 'Frame to show.') }, description: 'Jump to a frame (no events fire).' } },
+  });
   r.define('Marker', { extends: 'Node3D', description: 'A named point: spawn points, look targets, waypoints.', props: { purpose: P.enum(['spawn', 'look', 'waypoint', 'other'], { default: 'other' }) } });
   r.define('Model', {
     extends: 'Node3D', description: 'Static or animated glTF geometry from a .glb asset (sets, props).',

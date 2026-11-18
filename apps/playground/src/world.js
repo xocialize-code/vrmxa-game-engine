@@ -14,6 +14,7 @@ import { installInteraction } from '@vrmxg/interact';
 import { installCloset } from '@vrmxg/closet';
 import { installAudio } from '@vrmxg/audio';
 import { installVoice } from '@vrmxg/voice';
+import { installTracks } from '@vrmxg/tracks';
 
 const text = (b) => new TextDecoder().decode(b);
 
@@ -59,10 +60,12 @@ export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = n
   await lib.prepare(sample.doc); lap('characters');
   const voice = installVoice(tree, { resolve: sample.bytes }); // lines heard through the audio service, faces
   await voice.prepare(sample.doc); lap('voice');
+  const tracks = installTracks(tree); // AnimationPlayers (M2 W0): advanced before the nodes step
+  await tracks.prepare(sample.doc);
   const { interact, inventory } = installInteraction(tree);
   const wardrobe = closet && vrmxaCore ? installCloset(tree, { vrmxaCore, closet, spec, stubTextures }) : null;
   await wardrobe?.prepare(sample.doc); lap('closet');
   tree.instantiate(structuredClone(sample.doc)); lap('instantiate');
   await wardrobe?.showWorn(); lap('showWorn');
-  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe, audio, voice };
+  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe, audio, voice, tracks };
 }

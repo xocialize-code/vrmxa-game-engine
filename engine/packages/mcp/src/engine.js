@@ -14,6 +14,7 @@ import { installInteraction } from '@vrmxg/interact';
 import { installCloset } from '@vrmxg/closet';
 import { installAudio } from '@vrmxg/audio';
 import { installVoice } from '@vrmxg/voice';
+import { installTracks } from '@vrmxg/tracks';
 
 
 import { LiveView } from './live.js';
@@ -40,6 +41,7 @@ export class EngineSession extends LiveView {
     await lib.prepare(doc);
     const voice = installVoice(tree, { resolve: (ref) => p.bytes(ref) });
     await voice.prepare(doc);
+    await installTracks(tree).prepare(doc);
     installInteraction(tree);
     const closetModule = vrmxaCore ? await p.vrmxaCloset() : null;
     const closet = closetModule ? installCloset(tree, { vrmxaCore, closet: closetModule, stubTextures: true }) : null;

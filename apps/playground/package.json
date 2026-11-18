@@ -23,6 +23,7 @@
     "@vrmxg/registry": "0.1.0",
     "@vrmxg/render": "0.1.0",
     "@vrmxg/scene": "0.1.0",
+    "@vrmxg/tracks": "0.1.0",
     "@vrmxg/voice": "0.1.0",
     "vue": "3.5.45"
   },
