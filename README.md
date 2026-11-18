@@ -6,8 +6,8 @@ input, audio, NPC AI, capture) for a new editor app, a game UI app and an anime 
 
 | | |
 |---|---|
-| **State** | 2026-11-17. PRD features pass, eight spikes, the first engine package (`@vrmxg/dmath`), and the M0 plan. No engine runtime yet. |
-| **Read first** | [VRMXG-PRD.md](VRMXG-PRD.md) (the product), [M0-PLAN.md](M0-PLAN.md) (what gets built first), [CLAUDE.md](CLAUDE.md) (the area contract and where everything is) |
+| **State** | 2026-11-17. **M0 done**: the runtime core, the playground and its Mac wrapper, sample content, all six exit checks passing ([acceptance/](acceptance/README.md)). M1 (playable: items, closet, audio, voice, the editor, export) is planned. |
+| **Read first** | [VRMXG-PRD.md](VRMXG-PRD.md) (the product), [M0-PLAN.md](M0-PLAN.md) (done), [M1-PLAN.md](M1-PLAN.md) (next), [CLAUDE.md](CLAUDE.md) (the area contract and where everything is) |
 | **Stack** | three r187, `@pixiv/three-vrm` 3.5.5, Rapier (deterministic build), Vue 3, a thin sandboxed WKWebView wrapper for macOS |
 | **Bridge** | Area `vrmxg` on AgentBridge: `bridge assume vrmxg` |
 

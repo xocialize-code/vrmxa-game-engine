@@ -501,7 +501,7 @@ Start minimal (engine notes: "the game development UI can start minimally for te
 
 ## 8. Phasing
 
-*M0 is planned in detail in [M0-PLAN.md](M0-PLAN.md) (plan AB-P-0013, tasks AB-T-0501 to 0510).* **M0 is done (2026-11-17):** the six exit checks pass on the sample cafe in Node, Chromium and WKWebView ([acceptance/](acceptance/README.md), receipts AB-R-0946 to 0951); the budget on a base M-series Mac is still to measure (AB-T-0511). M1 planning can start.
+*M0 is planned in detail in [M0-PLAN.md](M0-PLAN.md) (plan AB-P-0013, tasks AB-T-0501 to 0510).* **M0 is done (2026-11-17):** the six exit checks pass on the sample cafe in Node, Chromium and WKWebView ([acceptance/](acceptance/README.md), receipts AB-R-0946 to 0951); the budget on a base M-series Mac is still to measure (AB-T-0511). M1 is planned in [M1-PLAN.md](M1-PLAN.md) (plan AB-P-0014, tasks AB-T-0512 to 0522).
 
 | Phase | Scope |
 |---|---|
@@ -514,14 +514,15 @@ Start minimal (engine notes: "the game development UI can start minimally for te
 
 1. **Scene format.** *Decided 2026-11-17 (AB-D-0246): our own JSON (`.vrmxs`) as the source of
    truth, glTF for assets and as an export target (§4.1).*
-2. **VRMXI.** *Decided: a separate format for items that aren't equipped (§4).* Still open: does
-   a pickup VRMXI embed its VRMXW or reference it, and who owns the specification
-   (`VRMXA_Specification` or this repo)?
+2. **VRMXI.** *Decided: a separate format for items that aren't equipped (§4). Decided 2026-11-17: it is
+   specified in `VRMXA_Specification` beside VRMXW (AB-D-0251), and an item the player may take into the closet
+   embeds its VRMXW, while items that can't be taken carry none (AB-D-0252).*
 3. **Behaviours.** *Decided 2026-11-17 (AB-D-0247): plain scripts attached to nodes (Godot, Mage
    and MavonEngine all work this way), plus a per-node state machine; no ECS in M0.*
 4. **Apps.** *Decided: the editor is a new app, alongside a game UI app and an anime creator app
-   (§1).* Still open: do spokesmodel spots belong in the anime creator or get an app of their own,
-   and do the three apps share one Swift wrapper?
+   (§1). Decided 2026-11-17: the editor is `apps/editor` in this repository, and every VRMXG Mac app shares one
+   Swift shell, `apps/shell` (AB-D-0253).* Still open: do spokesmodel spots belong in the anime creator or get an app
+   of their own?
 5. **Particles and navigation.** *Settled by spikes: three.quarks for particles
    (`spike-particles/`), navcat for navigation (`spike-navigation/`).*
 6. **NPC AI.** *Recommendation (`research/npc-ai.md`): behaviour trees as the executor with
