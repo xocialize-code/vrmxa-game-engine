@@ -92,7 +92,7 @@ nee
 |---|---|---|
 | `.vrmxa` | A character: appearance, closet, animation sets, voice, persona | Spec draft, bundle v5 |
 | `.vrmxw` | A wearable fitted to the base model; may carry states and animations | Spec draft, v1 |
-| `.vrmxi` | **New.** A game item that isn't equipped: model, colliders, joints, sensors, internal animations, item type (door, loot box, vehicle …), interaction verbs, state | To specify |
+| `.vrmxi` | **New.** A game item that isn't equipped: model, colliders, joints, sensors, internal animations, item type (door, loot box, vehicle …), interaction verbs, state | Draft 0.1 in `VRMXA_Specification` (`VRMXI-base-draft.md`, under review: [xocialize-code/vrmxa-spec#1](https://github.com/xocialize-code/vrmxa-spec/pull/1)) |
 | `.vrmxs` (proposed name) | **New.** A scene: a saved node tree, the Godot `.tscn` equivalent, instancable inside other scenes. Our own JSON (§4.1) | Recommended, to specify |
 | Project | **New.** Input map, autoloads, physics layers, settings, entry scene | To specify |
 
