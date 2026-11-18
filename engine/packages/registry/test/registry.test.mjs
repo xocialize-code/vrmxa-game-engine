@@ -45,9 +45,9 @@ test('surface: a node has its type\'s signals and actions plus its behaviours\''
   assert.deepEqual(Object.keys(r.surface({ id: 'x', type: 'Unknown' }).signals), []);
 });
 
-test('the M0 fixture set: 15 types, 4 behaviours, all derived from Node3D', () => {
+test('the fixture set (M0, plus M1 so far): 17 types, 6 behaviours, all derived from Node3D', () => {
   const r = m0Registry();
-  assert.equal(r.types.size, 15);
-  assert.equal(r.behaviours.size, 4);
+  assert.equal(r.types.size, 17);
+  assert.equal(r.behaviours.size, 6);
   for (const t of r.types.keys()) assert.ok(r.isA(t, 'Node3D'), t);
 });

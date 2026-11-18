@@ -133,7 +133,7 @@ export class SceneTree {
     const pre = (n) => { n.tree = this; order.push(n); n.enterTree(); for (const c of n.children) pre(c); };
     for (const n of nodes) pre(n);
     for (const n of order) this._attachBehaviours(n);
-    const post = (n) => { for (const c of n.children) post(c); n.ready(); for (const b of n.behaviours) b.ready(); n.stateMachine?.start(); };
+    const post = (n) => { for (const c of n.children) post(c); n.ready(); for (const b of n.behaviours) b.ready(); n.stateMachine?.start(); if (n !== this.root) this.emit(n, 'ready', {}); };
     for (const n of nodes) post(n);
     this._order = null;
   }
@@ -259,6 +259,7 @@ export class SceneTree {
   present(elapsedSeconds, alpha) {
     const pre = (n) => { for (const c of n.children) { if (this.scaleOf(c) > 0) { c.process(elapsedSeconds, alpha); for (const b of c.behaviours) b.process(elapsedSeconds, alpha); } pre(c); } };
     pre(this.root);
+    for (const s of this.services.values()) s.present?.(elapsedSeconds, alpha); // presentation services (audio): after the nodes
   }
 
   // ---------------------------------------------------------------- queries
@@ -348,6 +349,7 @@ export class SceneTree {
         p: n.object3d.position.toArray(), q: n.object3d.quaternion.toArray(), s: n.object3d.scale.toArray(),
         props: n.props, behaviours: n.behaviours.map((b) => [b.name, b.params, b.getState()]),
         sm: n.stateMachine?.getState() ?? null,
+        ...(n.object3d.visible ? {} : { hidden: true }), // hide() (a light switched off); absent while shown, as before
       })),
     };
   }
@@ -375,6 +377,7 @@ export class SceneTree {
       const n = this.byId.get(ns.id);
       n.object3d.position.fromArray(ns.p); n.object3d.quaternion.fromArray(ns.q); n.object3d.scale.fromArray(ns.s);
       n.props = structuredClone(ns.props);
+      n.object3d.visible = !ns.hidden;
       ns.behaviours.forEach(([name, params, state], i) => {
         const b = n.behaviours[i];
         for (const k of Object.keys(b.params)) delete b.params[k];

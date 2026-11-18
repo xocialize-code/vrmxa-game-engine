@@ -6,7 +6,8 @@ import { Playground, PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: 'cafe.vrmxs', notes: '', prompt: null, wearing: '' });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [] });
+const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
 let pg = null; // never reactive
 
 function refresh() {
@@ -15,6 +16,7 @@ function refresh() {
   ui.sim = pg.stats.simMs ? `${pg.stats.simMs.toFixed(2)} ms` : '—';
   ui.render = pg.stats.renderMs ? `${pg.stats.renderMs.toFixed(2)} ms` : '—';
   ui.prompt = pg.prompt(); ui.wearing = pg.wearing();
+  ui.buses = pg.busSettings(); ui.audioOn = !!pg.audio?.running; ui.captions = pg.captions();
   const cur = pg.currentCamera(); ui.cameras = pg.cameras(); ui.camera = cur?.id ?? ''; ui.preset = cur?.preset ?? '';
   if (pg.error) ui.error = pg.error;
 }
@@ -71,6 +73,7 @@ const setCamera = () => pg.setCamera(ui.camera);
 const setPreset = () => pg.setPreset(ui.preset);
 const setDebug = () => pg.setDebug({ ...ui.debug });
 const setInterp = () => pg.setInterpolation(ui.interpolate);
+const setBus = (name, opts) => pg.setBus(name, opts);
 </script>
 
 <template>
@@ -99,6 +102,9 @@ const setInterp = () => pg.setInterpolation(ui.interpolate);
     <main class="stage"><canvas ref="canvas" aria-label="Scene view" tabindex="0"></canvas>
       <p v-if="ui.loading" class="overlay">Loading…</p>
       <pre v-if="ui.error" class="overlay error" role="alert">{{ ui.error }}</pre>
+      <div v-if="ui.captions.length" id="captions" class="captions" role="status" aria-live="polite">
+        <p v-for="c in ui.captions" :key="c.actor" :aria-label="`${c.name}: ${c.text}`"><strong>{{ c.name }}</strong> <span v-for="(w, i) in c.words" :key="i" :class="{ said: i < c.spoken, now: i === c.word }">{{ `${w} ` }}</span></p>
+      </div>
       <p v-if="ui.prompt" id="prompt" class="prompt" role="status" :aria-label="`Press ${ui.prompt.key} to ${ui.prompt.text}`"><kbd>{{ ui.prompt.key }}</kbd> {{ ui.prompt.text }}</p>
     </main>
     <footer class="bar status">
@@ -116,6 +122,13 @@ const setInterp = () => pg.setInterpolation(ui.interpolate);
         <div><dt id="render-time-label">Render</dt><dd><output id="render-time" :aria-label="`Render ${ui.render}`">{{ ui.render }}</output></dd></div>
         <div><dt id="step-label">Step</dt><dd><output id="step-count" :aria-label="`Step ${ui.step}`">{{ ui.step }}</output></dd></div>
       </dl>
+      <fieldset v-if="ui.buses" class="mixer" aria-label="Mixer"><legend>Sound{{ ui.audioOn ? '' : ' (click to start)' }}</legend>
+        <label v-for="(label, name) in BUS_LABELS" :key="name" class="bus" :title="label">
+          <span>{{ label }}</span>
+          <input type="range" min="0" max="1" step="0.05" :value="ui.buses[name].volume" :aria-label="`${label} volume`" @input="setBus(name, { volume: Number($event.target.value) })">
+          <input type="checkbox" :checked="ui.buses[name].muted" :aria-label="`Mute ${label}`" @change="setBus(name, { muted: $event.target.checked })">
+        </label>
+      </fieldset>
       <span id="notes" class="notes" :aria-label="ui.notes">{{ ui.notes }} · WASD move, Shift run, Space jump, E interact, C camera</span>
       <span v-if="ui.wearing" id="wearing" class="notes" :aria-label="`Mira wears ${ui.wearing}`">Wearing: {{ ui.wearing }}</span>
       <span v-if="ui.shell" id="shell-info" class="notes" :aria-label="`Shell ${ui.shell}`">{{ ui.shell }}</span>
@@ -146,6 +159,11 @@ canvas { display: block; width: 100%; height: 100%; outline: none; }
 .readout dt { color: var(--muted); }
 .readout dd { margin: 0; font-variant-numeric: tabular-nums; min-width: 4.5em; }
 .notes { color: var(--muted); }
+.mixer { display: flex; gap: 10px; border: 0; margin: 0; padding: 0; align-items: center; } .mixer legend { float: left; margin-right: 6px; color: var(--muted); }
+.mixer .bus { display: flex; align-items: center; gap: 4px; font-size: 12px; } .mixer input[type=range] { width: 64px; }
+.captions { position: absolute; left: 50%; bottom: 6%; transform: translateX(-50%); max-width: 70%; text-align: center; pointer-events: none; }
+.captions p { margin: 4px 0; padding: 6px 12px; border-radius: 8px; background: rgba(10, 12, 16, 0.72); color: #f2f2f2; font-size: 16px; }
+.captions span { opacity: 0.55; } .captions span.said, .captions span.now { opacity: 1; } .captions span.now { color: #ffd76a; }
 .prompt { position: absolute; left: 50%; bottom: 18%; transform: translateX(-50%); margin: 0; padding: 6px 12px; border-radius: 8px; background: color-mix(in srgb, var(--panel) 88%, transparent); font-size: 15px; pointer-events: none; }
 .prompt kbd { display: inline-block; min-width: 1.4em; padding: 1px 6px; margin-right: 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; background: var(--bg); font: 600 13px/1.4 -apple-system, system-ui, sans-serif; text-align: center; }
 </style>

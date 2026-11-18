@@ -1,0 +1,93 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Oh, hi! Welcome to the cafe. Sit anywhere you like, and I'll bring you a menu.",
+ "audio": "hana-welcome.wav",
+ "sampleRate": 24000,
+ "duration": 5.0,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Oh",
+   "start": 0.3,
+   "duration": 0.15
+  },
+  {
+   "text": "hi",
+   "start": 0.5,
+   "duration": 0.35
+  },
+  {
+   "text": "Welcome",
+   "start": 0.9375,
+   "duration": 0.3875
+  },
+  {
+   "text": "to",
+   "start": 1.325,
+   "duration": 0.0875
+  },
+  {
+   "text": "the",
+   "start": 1.4125,
+   "duration": 0.0875
+  },
+  {
+   "text": "cafe",
+   "start": 1.5,
+   "duration": 0.825
+  },
+  {
+   "text": "Sit",
+   "start": 2.5,
+   "duration": 0.2125
+  },
+  {
+   "text": "anywhere",
+   "start": 2.7125,
+   "duration": 0.2875
+  },
+  {
+   "text": "you",
+   "start": 3.0,
+   "duration": 0.15
+  },
+  {
+   "text": "like",
+   "start": 3.15,
+   "duration": 0.35
+  },
+  {
+   "text": "and",
+   "start": 3.5375,
+   "duration": 0.1
+  },
+  {
+   "text": "I'll",
+   "start": 3.6375,
+   "duration": 0.1125
+  },
+  {
+   "text": "bring",
+   "start": 3.75,
+   "duration": 0.175
+  },
+  {
+   "text": "you",
+   "start": 3.925,
+   "duration": 0.0875
+  },
+  {
+   "text": "a",
+   "start": 4.0125,
+   "duration": 0.0625
+  },
+  {
+   "text": "menu",
+   "start": 4.075,
+   "duration": 0.65
+  }
+ ]
+}

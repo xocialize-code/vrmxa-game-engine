@@ -13,7 +13,7 @@ const ui = reactive({
   shell: '', project: '', writable: false, scenes: [], scene: '', loading: true, error: '', mode: 'editing',
   tree: [], selected: [], inspector: null, assets: [], undo: null, redo: null, dirty: false, valid: true, problems: '',
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
-  debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', step: 0, assetFilter: '', fileName: 'built-cafe.vrmxs',
+  debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', step: 0, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
 });
 /** @type {EditorHost} */ let ed = null; // never reactive
 
@@ -25,7 +25,8 @@ function refresh(kind = 'all') {
   ui.frame = ed.stats.frameMs ? `${ed.stats.frameMs.toFixed(1)} ms · ${ed.stats.fps.toFixed(0)} fps` : '—';
   ui.build = ed.stats.buildMs ? `${ed.stats.buildMs.toFixed(0)} ms` : '—';
   ui.step = ed.stats.step;
-  if (kind === 'stats') return;
+  ui.captions = ed.captions();
+  if (kind === 'stats' || kind === 'captions') return;
   const s = ed.session;
   ui.loading = ed.busy > 0;
   if (ed.error) ui.error = ed.error;
@@ -151,6 +152,9 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       <p v-if="ui.loading" class="overlay">Loading…</p>
       <p v-if="ui.mode === 'playing'" class="overlay playing" role="status">Playing · step {{ ui.step }} · WASD move, E interact</p>
       <pre v-if="ui.error" class="overlay error" role="alert">{{ ui.error }}</pre>
+      <div v-if="ui.captions.length" id="captions" class="captions" role="status" aria-live="polite">
+        <p v-for="c in ui.captions" :key="c.actor" :aria-label="`${c.name}: ${c.text}`"><strong>{{ c.name }}</strong> <span v-for="(w, i) in c.words" :key="i" :class="{ said: i < c.spoken, now: i === c.word }">{{ `${w} ` }}</span></p>
+      </div>
     </main>
 
     <aside class="dock right"><Inspector :data="ui.inspector" v-on="onInspector" /></aside>
@@ -216,6 +220,9 @@ h3 { font-size: 12px; color: var(--muted); margin: 14px 0 6px; }
 canvas { display: block; width: 100%; height: 100%; outline: none; }
 .overlay { position: absolute; left: 12px; top: 8px; margin: 0; padding: 6px 10px; background: color-mix(in srgb, var(--panel) 88%, transparent); border-radius: 6px; }
 .overlay.playing { left: auto; right: 12px; }
+.captions { position: absolute; left: 50%; bottom: 6%; transform: translateX(-50%); max-width: 70%; text-align: center; pointer-events: none; }
+.captions p { margin: 4px 0; padding: 6px 12px; border-radius: 8px; background: rgba(10, 12, 16, 0.72); color: #f2f2f2; font-size: 16px; }
+.captions span { opacity: 0.55; } .captions span.said, .captions span.now { opacity: 1; } .captions span.now { color: #ffd76a; }
 .error { color: #c0392b; white-space: pre-wrap; max-width: 80%; max-height: 60%; overflow: auto; top: 44px; }
 .inspector { padding: 0 12px 12px; } .inspector h2 { padding: 8px 0; }
 .inspector .field { justify-content: space-between; margin: 6px 0; } .inspector .field input:not([type=checkbox]), .inspector .field select { width: 150px; max-width: 60%; box-sizing: border-box; }

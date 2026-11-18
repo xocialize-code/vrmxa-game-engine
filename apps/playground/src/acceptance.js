@@ -7,9 +7,12 @@
 //                  states, speed blend and root motion, the jump, Hana wandering, the locked staff door.
 //   runDevices     the player through real devices: keyboard keys, a gamepad stick and button, mouse look, all
 //                  through the action map.
+//   runAudio       (browsers, M1 W5) the same walk heard through a Web Audio output: the hashes are the silent run's,
+//                  and its recording mixed offline twice gives the same samples.
 import { VirtualDevice } from '@vrmxg/input';
 import { captureWorld, restoreWorld, worldHashes, compareRuns, hashValue, packRun } from '@vrmxg/snapshot';
 import { buildWorld } from './world.js';
+import { AudioOutput, mixOffline, hashSamples } from '@vrmxg/audio';
 
 export const STEPS = 600, SNAPSHOT_AT = 300;
 const text = (b) => new TextDecoder().decode(b);
@@ -111,4 +114,30 @@ export async function runDevices(R, sample, opts) {
     out.takeSword.closetWorn = W.closet.closetOf('mira').worn.items.map((id) => id.slice(0, 8));
   }
   return out;
+}
+
+/**
+ * The walk heard through a Web Audio output (a browser): sound is presentation, so the final hash is the silent run's;
+ * the run's recording mixed offline twice is the same samples (the offline mix W8's export uses).
+ * @param {any} R @param {any} sample @param {any} opts @param {{ silentFinal: string, AudioContext?: any }} o
+ */
+export async function runAudio(R, sample, opts, { silentFinal, AudioContext: Ctor = globalThis.AudioContext }) {
+  const output = new AudioOutput({ AudioContext: Ctor });
+  const rec = JSON.parse(new TextDecoder().decode(await sample.bytes('input/walk-in.json')));
+  const W = await buildWorld(R, sample, { ...opts, audioOutput: output });
+  W.input.replay(structuredClone(rec));
+  W.audio.record();
+  let last = null;
+  for (let k = 1; k <= STEPS; k++) { W.tree.step(); W.tree.present(k / 60, 1); last = worldHashes(W.tree, { physicsBytes: k % 60 === 0 }); }
+  const final = hashValue(last);
+  const recording = W.audio.recording();
+  const heard = new Set(recording.steps.flatMap((s) => s.sounds.map((x) => x.key)));
+  W.audio.dispose();
+  await output.ctx.close?.();
+  const a = await mixOffline(recording, W.audio.library), b = await mixOffline(recording, W.audio.library);
+  let peak = 0; for (let c = 0; c < a.numberOfChannels; c++) for (const v of a.getChannelData(c)) peak = Math.max(peak, Math.abs(v));
+  return {
+    final, sameAsSilent: final === silentFinal, sounds: [...heard].sort(),
+    mix: { seconds: +(a.length / a.sampleRate).toFixed(3), sampleRate: a.sampleRate, channels: a.numberOfChannels, hashA: hashSamples(a), hashB: hashSamples(b), same: hashSamples(a) === hashSamples(b), peak: +peak.toFixed(4) },
+  };
 }

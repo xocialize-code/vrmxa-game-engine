@@ -12,6 +12,8 @@ import { installModels } from '@vrmxg/model';
 import { installItems } from '@vrmxg/item';
 import { installInteraction } from '@vrmxg/interact';
 import { installCloset } from '@vrmxg/closet';
+import { installAudio } from '@vrmxg/audio';
+import { installVoice } from '@vrmxg/voice';
 
 const text = (b) => new TextDecoder().decode(b);
 
@@ -33,12 +35,13 @@ export async function loadSample(bytes, scene = 'cafe.vrmxs') {
 /**
  * A fresh SceneTree of the sample scene, instantiated and ready to step.
  * @param {any} R Rapier @param {Awaited<ReturnType<typeof loadSample>>} sample
- * @param {{ vrmxaCore: any, closet?: any, spec?: Uint8Array | null, behaviours: Map<string, any>, stubTextures?: boolean, seed?: number, timings?: Record<string, number> | null, now?: () => number, characterCache?: any }} opts
+ * @param {{ vrmxaCore: any, closet?: any, spec?: Uint8Array | null, behaviours: Map<string, any>, stubTextures?: boolean, seed?: number, timings?: Record<string, number> | null, now?: () => number, characterCache?: any, audioOutput?: any }} opts
  *   closet: vrmxa-core's ./closet module (the closet at run time: taking the sword); spec: spec.vrm, for redraws;
  *   timings: filled with each phase's ms (by `now`, a wall clock the caller passes: nothing here reads one);
- *   characterCache: read bundles and clips kept between builds (the editor's view)
+ *   characterCache: read bundles and clips kept between builds (the editor's view);
+ *   audioOutput: an @vrmxg/audio AudioOutput to hear the world through (none: silent)
  */
-export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = null, behaviours, stubTextures = false, seed = 1, timings = null, now = () => 0, characterCache = null }) {
+export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = null, behaviours, stubTextures = false, seed = 1, timings = null, now = () => 0, characterCache = null, audioOutput = null }) {
   let t = now();
   const lap = (k) => { if (timings) { const n = now(); timings[k] = n - t; t = n; } };
   const tree = new SceneTree({ registry: m0Registry(), prefabs: sample.prefabs, behaviours, seed });
@@ -48,14 +51,18 @@ export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = n
   installCameras(tree);
   const models = installModels(tree, { resolve: sample.bytes, stubTextures });
   const items = installItems(tree, { resolve: sample.bytes, vrmxaCore, stubTextures });
+  const audio = installAudio(tree, { resolve: sample.bytes, output: audioOutput }); // silent without an output, the same simulation
   lap('setup');
   await models.prepare(sample.doc); lap('models');
   await items.prepare(sample.doc); lap('items');
+  await audio.prepare(sample.doc); lap('audio');
   await lib.prepare(sample.doc); lap('characters');
+  const voice = installVoice(tree, { resolve: sample.bytes }); // lines heard through the audio service, faces
+  await voice.prepare(sample.doc); lap('voice');
   const { interact, inventory } = installInteraction(tree);
   const wardrobe = closet && vrmxaCore ? installCloset(tree, { vrmxaCore, closet, spec, stubTextures }) : null;
   await wardrobe?.prepare(sample.doc); lap('closet');
   tree.instantiate(structuredClone(sample.doc)); lap('instantiate');
   await wardrobe?.showWorn(); lap('showWorn');
-  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe };
+  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe, audio, voice };
 }

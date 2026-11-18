@@ -39,6 +39,13 @@ to the table and takes the sword, which check 2 now requires (idle set default â
 Check 6 counts four reach sensors and two rays (the spring arm's, the interaction focus's). Rebuild the playground
 before the browser runs: a stale `dist/` diverges at step 0.
 
+**Re-run at M1 W5 and W6 (AB-R-0960, AB-R-0961).** The cafe now has sound (door, switch, room tone, music on their buses), a light switch by the
+counter, and Hana greets Mira when she comes close (a voice line, lip-synced, captioned). All checks pass with the final
+hash `b5711aac29b64f2d` in Node, Chromium and WKWebView over both origins, and a seventh: the walk heard through a Web
+Audio output hashes exactly as the silent run, and its recording mixed offline twice is the same samples (each runtime
+its own mix hash). Found on the way: the `ready` signal every node declares was never emitted, so the cafe's
+`door-1.ready â†’ hana-1.lookAt` connection had never run; it does now.
+
 Found on the way and fixed: travel root motion could never turn a walk into a run (the blend read the speed root motion
 had already clamped); the sample's sword set named a tag Mira doesn't wear. Known gaps: the WKWebView harness's canvas
 readback comes back blank for the playground page (the wrapper's window captures are the visual record:

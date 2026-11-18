@@ -8,7 +8,7 @@
 //   5. vrm.update(dt): humanoid, look-at, expressions, node constraints, spring bones at the fixed step.
 // Its whole state (every node's local transform, springs, look-at, expressions, graph, controller) is
 // getState() / setState(), through the vendored three-vrm's state API only.
-import { AnimationMixer, Vector3 } from 'three';
+import { AnimationMixer, Object3D, Vector3 } from 'three';
 import { createVRMAnimationClip, VRMLookAtQuaternionProxy } from '@pixiv/three-vrm-animation';
 import { Node } from '@vrmxg/core';
 import { LocomotionGraph } from './graph.js';
@@ -40,6 +40,7 @@ export class CharacterNode extends Node {
     /** @type {any} */ this.kcc = null;
     this.body = undefined;
     this.collider = undefined;
+    /** what the eyes aim at (detached: not in the scene, not in a snapshot) */ this._lookPoint = new Object3D();
   }
 
   get bodyType() { return 'kinematic'; }
@@ -198,11 +199,24 @@ export class CharacterNode extends Node {
       if (hips && rest) { hips.position.x = rest[0]; hips.position.z = rest[2]; }
     }
 
-    // 5. look-at target, then the VRM's own update at the fixed step
+    // 5. look-at target (a character's head, not its feet; plus the voice service's small glances), within limits:
+    //    behind the character (more than ~100° from its facing) the eyes go back to the front. Then the VRM's own update.
     if (this.vrm.lookAt) {
       const t = c.look ? this.tree.find(c.look) : null;
-      this.vrm.lookAt.target = t ? t.object3d : null;
-      this.vrm.lookAt.autoUpdate = !!t;
+      const at = t ? this.lookPointOf(t) : null;
+      if (at && c.lookOffset) { at.x += c.lookOffset[0]; at.y += c.lookOffset[1]; at.z += c.lookOffset[2]; }
+      let ok = !!at;
+      if (at) {
+        const me = this.object3d.getWorldPosition(_v);
+        const dx = at.x - me.x, dz = at.z - me.z, len = Math.sqrt(dx * dx + dz * dz);
+        // facing is +Z rotated by yaw: (sin yaw, cos yaw); the node's quaternion gives it without trigonometry
+        const q = this.object3d.quaternion, fx = 2 * (q.x * q.z + q.w * q.y), fz = 1 - 2 * (q.x * q.x + q.y * q.y);
+        ok = len < 1e-6 || (dx * fx + dz * fz) / len > -0.17;
+      }
+      if (ok) { this._lookPoint.position.copy(at); this._lookPoint.updateMatrixWorld(); }
+      this.vrm.lookAt.target = ok ? this._lookPoint : null;
+      this.vrm.lookAt.autoUpdate = ok;
+      if (!ok && (this.vrm.lookAt.yaw || this.vrm.lookAt.pitch)) { this.vrm.lookAt.yaw = 0; this.vrm.lookAt.pitch = 0; }
     }
     this.vrm.update(dt);
   }
@@ -258,8 +272,24 @@ export class CharacterNode extends Node {
   }
 
   // ---------------------------------------------------------------- actions (the shared vocabulary)
-  /** Speak a line (lip sync arrives with audio in M1; the signal fires now). */
-  say({ text }) { this.emit('spoke', { text }); }
+  /**
+   * Speak a line: through the voice service (a clip, lip sync, a caption) when there is one; the signal fires now.
+   * @param {{ text?: string, clip?: string }} [args]
+   */
+  say({ text, clip } = {}) {
+    const voice = this.tree.services.get('voice');
+    if (voice) voice.say(this, { text, clip }); else this.emit('spoke', { text });
+  }
+  /** True while a line is being said. */
+  get speaking() { return !!this.tree?.services.get('voice')?.speaking(this.id); }
+
+  /** Where to look at a node: a character's head, anything else's origin (world space, a new vector). */
+  lookPointOf(node) {
+    const head = node.vrm?.humanoid?.getRawBoneNode('head');
+    const o = head ?? node.object3d;
+    o.updateWorldMatrix(true, false);
+    return o.getWorldPosition(new Vector3());
+  }
   /** Walk to a node (straight line until navigation lands in M2); `arrived` when within 0.3 m. */
   goTo({ target }) { this.ctrl.goTo = target ?? null; }
   /** Play an expression for a moment: up to 1 and back over a second. */
@@ -270,7 +300,7 @@ export class CharacterNode extends Node {
     this.after(1, () => em.setValue(name, 0));
   }
   /** Look at a node; omit target to stop. @param {{ target?: string }} [args] */
-  lookAt({ target } = {}) { this.ctrl.look = target ?? null; }
+  lookAt({ target } = {}) { this.ctrl.look = target ?? null; if (!target) delete this.ctrl.lookOffset; }
 
   /** Set an expression weight directly (0..1). */
   setExpression(name, weight) { this.vrm.expressionManager?.setValue(name, weight); }

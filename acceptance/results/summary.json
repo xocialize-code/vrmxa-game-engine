@@ -4,7 +4,7 @@
    "n": 1,
    "title": "The cafe runs in the playground in WKWebView (scheme, loopback) and Chromium",
    "ok": true,
-   "evidence": "chromium: 600 frames, render 0.528 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 0.808 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 0.903 ms, door opened at step 113, 6 presets, 0 errors"
+   "evidence": "chromium: 600 frames, render 0.509 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 0.802 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 0.784 ms, door opened at step 113, 6 presets, 0 errors"
   },
   {
    "n": 2,
@@ -16,7 +16,7 @@
    "n": 3,
    "title": "A 10 s recorded run hashes identically at every step everywhere; a snapshot at 300 re-simulates to 600 identically",
    "ok": true,
-   "evidence": "600 steps × 31 components; final 868739057945df05; chromium: identical, snapshot identical, rendered = headless true; wkwebview-scheme: identical, snapshot identical, rendered = headless true; wkwebview-loopback: identical, snapshot identical, rendered = headless true"
+   "evidence": "600 steps × 44 components; final b5711aac29b64f2d; chromium: identical, snapshot identical, rendered = headless true; wkwebview-scheme: identical, snapshot identical, rendered = headless true; wkwebview-loopback: identical, snapshot identical, rendered = headless true"
   },
   {
    "n": 4,
@@ -34,7 +34,13 @@
    "n": 6,
    "title": "Debug draw shows colliders, sensors, rays and the character capsules",
    "ok": true,
-   "evidence": "38 colliders + 4 sensors (door-1#Reach, entrance-left#Reach, entrance-right#Reach, sword#Reach) + 2 capsules (hana-1, mira) = 44 of 44; 2 rays (the spring arm's, the interaction focus's); the same in chromium, wkwebview-scheme, wkwebview-loopback"
+   "evidence": "40 colliders + 5 sensors (door-1#Reach, entrance-left#Reach, entrance-right#Reach, light-switch#Reach, sword#Reach) + 2 capsules (hana-1, mira) = 47 of 47; 2 rays (the spring arm's, the interaction focus's); the same in chromium, wkwebview-scheme, wkwebview-loopback"
+  },
+  {
+   "n": 7,
+   "title": "Audio: the run with sound hashes as without; the offline mix renders identically twice",
+   "ok": true,
+   "evidence": "chromium: final b5711aac29b64f2d = silent, mix 10 s ed4be685/ed4be685 same, peak 0.7134; wkwebview-scheme: final b5711aac29b64f2d = silent, mix 10 s 2f271ebd/2f271ebd same, peak 0.7132; wkwebview-loopback: final b5711aac29b64f2d = silent, mix 10 s 2f271ebd/2f271ebd same, peak 0.7132; heard: node:ambience, node:entrance-close-sound, node:entrance-open-sound, node:music, voice:hana-1"
   }
  ],
  "runtimes": {

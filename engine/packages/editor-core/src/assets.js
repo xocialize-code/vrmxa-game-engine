@@ -2,8 +2,8 @@
 // type comes from the registry (each type names the asset types it takes), so a new type is picked up without edits.
 
 /** File extension → document asset type. `vrm` files are characters too (a plain body, no closet). */
-const KINDS = { glb: 'glb', gltf: 'glb', vrmxa: 'vrmxa', vrm: 'vrmxa', vrmxi: 'vrmxi', vrmxs: 'vrmxs', vrmxw: 'vrmxw' };
-const LABELS = { glb: 'Model', vrmxa: 'Character', vrmxi: 'Item', vrmxs: 'Prefab', vrmxw: 'Wearable' };
+const KINDS = { glb: 'glb', gltf: 'glb', vrmxa: 'vrmxa', vrm: 'vrmxa', vrmxi: 'vrmxi', vrmxs: 'vrmxs', vrmxw: 'vrmxw', wav: 'audio' };
+const LABELS = { glb: 'Model', vrmxa: 'Character', vrmxi: 'Item', vrmxs: 'Prefab', audio: 'Sound', vrmxw: 'Wearable' };
 
 /** The asset type of a project file, or null for files the editor doesn't place (clips, scripts, images…). */
 export function assetType(ref) {

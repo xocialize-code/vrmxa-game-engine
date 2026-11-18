@@ -14,6 +14,23 @@ export function m0Registry() {
     signals: { ready: { description: 'The node entered the running tree.' } },
     actions: { show: { args: {} }, hide: { args: {} } },
   });
+  // M1 W5: sound. Playing is simulation (the step it started on; the clip's length ends it), what is heard is not.
+  const audioProps = {
+    bus: P.enum(['music', 'sfx', 'voice', 'ambience'], { default: 'sfx', description: 'The mixer bus it plays on.' }),
+    volume: P.number({ min: 0, max: 4, default: 1, description: 'Linear gain.' }),
+    loop: P.boolean({ default: false, sim: true }),
+    autoplay: P.boolean({ default: false, sim: true, description: 'Start when the scene starts.' }),
+  };
+  r.define('AudioPlayer', {
+    extends: 'Node3D', description: 'Plays a sound clip (.wav) everywhere at once: music, ambience, interface sounds.',
+    asset: { types: ['audio'], required: true }, props: audioProps,
+    signals: { started: {}, finished: { args: { stopped: P.boolean() } } },
+    actions: { play: { args: {}, description: 'Play from the start.' }, stop: { args: {} } },
+  });
+  r.define('AudioPlayer3D', {
+    extends: 'AudioPlayer', description: 'Plays a sound clip from where it is: doors, switches, machines.',
+    props: { ...audioProps, refDistance: P.number({ min: 0.01, default: 1, unit: 'm', description: 'Full volume up to this distance.' }), maxDistance: P.number({ min: 0.1, default: 30, unit: 'm' }), rolloff: P.number({ min: 0, default: 1, description: 'How fast it fades past refDistance (inverse distance).' }) },
+  });
   r.define('Marker', { extends: 'Node3D', description: 'A named point: spawn points, look targets, waypoints.', props: { purpose: P.enum(['spawn', 'look', 'waypoint', 'other'], { default: 'other' }) } });
   r.define('Model', {
     extends: 'Node3D', description: 'Static or animated glTF geometry from a .glb asset (sets, props).',
@@ -36,9 +53,9 @@ export function m0Registry() {
       jumpSpeed: P.number({ min: 0, default: 4.5, unit: 'm/s', sim: true }),
       layer: P.string({ description: 'Collision layer of the capsule.' }),
     },
-    signals: { arrived: { args: { target: P.nodeRef() } }, spoke: { args: { text: P.string() } }, dressed: { args: { worn: P.list(P.string()) } } },
+    signals: { arrived: { args: { target: P.nodeRef() } }, spoke: { args: { text: P.string() } }, lineEnded: { args: { text: P.string() } }, dressed: { args: { worn: P.list(P.string()) } } },
     actions: {
-      say: { args: { text: arg(P.string(), 'What to say (lip-synced).') }, description: 'Speak a line.' },
+      say: { args: { text: arg(P.string(), 'What to say (the caption; lip-synced from estimated timings without a clip).'), clip: arg(P.string(), 'A voice line in the project (.wav), with its word timings beside it (<clip>.timings.json).') }, description: 'Speak a line: the clip plays from the head, the mouth follows its word timings, a caption shows.' },
       goTo: { args: { target: arg(P.nodeRef(), 'Node to walk to.') }, description: 'Walk to a node using navigation.' },
       emote: { args: { name: arg(P.string(), 'Expression or emote clip name.') } },
       lookAt: { args: { target: arg(P.nodeRef(), 'Node to look at; omit to stop.') } },
@@ -134,6 +151,8 @@ export function m0Registry() {
 
   // Behaviours: named code in the project, referenced from scenes by id (no code in scenes).
   r.behaviour('wander', { description: 'Walk to random reachable points within a radius.', on: ['Character'], params: { radius: P.number({ min: 0, default: 4, unit: 'm' }), pause: P.number({ min: 0, default: 2, unit: 's' }) } });
+  r.behaviour('greet', { description: 'Says a line to someone who comes close (looking at them), then waits a while before greeting again.', on: ['Character'], params: { target: P.nodeRef({ description: 'Who to greet (the player).' }), radius: P.number({ min: 0, default: 2, unit: 'm' }), clip: P.string({ description: 'A voice line (.wav) with its timings beside it.' }), text: P.string({ description: 'The caption (or the line, without a clip).' }), cooldown: P.number({ min: 0, default: 20, unit: 's' }) } });
+  r.behaviour('switchedBy', { description: 'Shown while an item is in a state (a lamp lit while its switch is on), hidden otherwise.', on: ['Node3D'], params: { item: P.nodeRef({ description: 'The item (a switch).' }), state: P.string({ default: 'on' }) } });
   r.behaviour('hinge', {
     description: 'A door hinge: a revolute joint with limits and a motor.', on: ['RigidBody'],
     params: { axis: P.vec3({ default: [0, 1, 0] }), openAngle: P.number({ min: -180, max: 180, default: 100, unit: '°' }), locked: P.boolean({ default: false }) },

@@ -124,6 +124,8 @@ if (fs.existsSync(studio)) {
   write('items/cafe-door.vrmxi', door);
   // the specification's sword pickup (takeable, embeds a pinned "Short sword", put on held), byte for byte
   if (SPEC) write('items/sword-pickup.vrmxi', fs.readFileSync(path.join(SPEC, 'fixtures-vrmxi/items/sword-pickup.vrmxi')));
+  // and its light switch (off / on, a use verb each way), byte for byte
+  if (SPEC) write('items/switch.vrmxi', fs.readFileSync(path.join(SPEC, 'fixtures-vrmxi/items/switch.vrmxi')));
 } else console.log('vrmxa-avatar-studio not beside the repo: characters and clips left as committed');
 
 // ---------------------------------------------------------------- scenes: canonical form, validated

@@ -1,0 +1,26 @@
+{
+  "name": "@vrmxg/voice",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG voice and faces (M1 W6): characters say lines (a clip heard from the head, the mouth lip-synced on the step clock from word timings, a caption), blink, and look at things with small saccades.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/audio": "0.1.0"
+  },
+  "devDependencies": {
+    "@vrmxg/character": "0.1.0",
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  },
+  "vrmxg": { "determinism": "simulation" }
+}

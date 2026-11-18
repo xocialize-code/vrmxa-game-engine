@@ -6,7 +6,7 @@ input, audio, NPC AI, capture) for a new editor app, a game UI app and an anime 
 
 | | |
 |---|---|
-| **State** | 2026-11-18. **M0 done**: the runtime core, the playground and its Mac wrapper, sample content, all six exit checks passing ([acceptance/](acceptance/README.md)). **M1 (playable) in progress**: the shared shell, VRMXI items, interaction, the closet at run time and the editor are in; audio, voice, export, MCP in the editor and M1's acceptance are next ([M1-PLAN.md](M1-PLAN.md)). |
+| **State** | 2026-11-18. **M0 done**: the runtime core, the playground and its Mac wrapper, sample content, all six exit checks passing ([acceptance/](acceptance/README.md)). **M1 (playable) in progress**: the shared shell, VRMXI items, interaction, the closet at run time, the editor, audio and voice are in; export, MCP in the editor with the rest of the content, and M1's acceptance are next ([M1-PLAN.md](M1-PLAN.md)). |
 | **Read first** | [VRMXG-PRD.md](VRMXG-PRD.md) (the product), [M0-PLAN.md](M0-PLAN.md) (done), [M1-PLAN.md](M1-PLAN.md) (next), [CLAUDE.md](CLAUDE.md) (the area contract and where everything is) |
 | **Stack** | three r187, `@pixiv/three-vrm` 3.5.5, Rapier (deterministic build), Vue 3, a thin sandboxed WKWebView wrapper for macOS |
 | **Bridge** | Area `vrmxg` on AgentBridge: `bridge assume vrmxg` |
@@ -15,7 +15,7 @@ input, audio, NPC AI, capture) for a new editor app, a game UI app and an anime 
 
 | Path | What |
 |---|---|
-| `engine/packages/` | Engine packages: `dmath`, `registry`, `scene`, `core`, `physics`, `character`, `input`, `camera`, `snapshot`, `render`, `mcp`, `model`, `item`, `interact`, `closet`, `editor-core` so far ([M1-PLAN.md](M1-PLAN.md) has the rest) |
+| `engine/packages/` | Engine packages: `dmath`, `registry`, `scene`, `core`, `physics`, `character`, `input`, `camera`, `snapshot`, `render`, `mcp`, `model`, `item`, `interact`, `closet`, `editor-core`, `audio`, `voice` so far ([M1-PLAN.md](M1-PLAN.md) has the rest) |
 | `apps/` | `shell` (the shared Mac shell, a Swift package), `playground` (Vite + Vue test app), `editor` (the editor, Vite + Vue) and `playground-mac`, `editor-mac` (each on the shell) |
 | `acceptance/` | M0's six exit checks on the sample cafe, in Node, Chromium and WKWebView, and their results |
 | `content/sample/` | The sample project M0 runs: the cafe, doors, two characters, clips, a recorded walk; every file's licence in `LICENCES.md` |

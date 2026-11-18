@@ -1,0 +1,78 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Careful with that sword. The last person who swung it broke a lamp.",
+ "audio": "hana-sword.wav",
+ "sampleRate": 24000,
+ "duration": 4.4,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Careful",
+   "start": 0.275,
+   "duration": 0.3875
+  },
+  {
+   "text": "with",
+   "start": 0.6625,
+   "duration": 0.1375
+  },
+  {
+   "text": "that",
+   "start": 0.8,
+   "duration": 0.275
+  },
+  {
+   "text": "sword",
+   "start": 1.075,
+   "duration": 0.575
+  },
+  {
+   "text": "The",
+   "start": 1.775,
+   "duration": 0.125
+  },
+  {
+   "text": "last",
+   "start": 1.9,
+   "duration": 0.325
+  },
+  {
+   "text": "person",
+   "start": 2.225,
+   "duration": 0.3625
+  },
+  {
+   "text": "who",
+   "start": 2.5875,
+   "duration": 0.1625
+  },
+  {
+   "text": "swung",
+   "start": 2.75,
+   "duration": 0.35
+  },
+  {
+   "text": "it",
+   "start": 3.1,
+   "duration": 0.15
+  },
+  {
+   "text": "broke",
+   "start": 3.25,
+   "duration": 0.2125
+  },
+  {
+   "text": "a",
+   "start": 3.4625,
+   "duration": 0.0875
+  },
+  {
+   "text": "lamp",
+   "start": 3.55,
+   "duration": 0.6
+  }
+ ]
+}

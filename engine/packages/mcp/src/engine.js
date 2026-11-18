@@ -13,6 +13,8 @@ import { installModels } from '@vrmxg/model';
 import { installItems } from '@vrmxg/item';
 import { installInteraction } from '@vrmxg/interact';
 import { installCloset } from '@vrmxg/closet';
+import { installAudio } from '@vrmxg/audio';
+import { installVoice } from '@vrmxg/voice';
 
 const r = (v, d = 4) => +v.toFixed(d);
 const arr = (a, d) => Array.from(a, (v) => r(v, d));
@@ -32,9 +34,13 @@ export class EngineSession {
     const models = installModels(tree, { resolve: (ref) => p.bytes(ref), stubTextures: true });
     const vrmxaCore = await p.vrmxaCore();
     const items = installItems(tree, { resolve: (ref) => p.bytes(ref), vrmxaCore, stubTextures: true });
+    const audio = installAudio(tree, { resolve: (ref) => p.bytes(ref) }); // silent: the simulation only
     await models.prepare(doc);
+    await audio.prepare(doc);
     if (vrmxaCore) await items.prepare(doc); // .vrmxi files are ZIPs: reading them takes vrmxa-core (--vrmxa-core)
     await lib.prepare(doc);
+    const voice = installVoice(tree, { resolve: (ref) => p.bytes(ref) });
+    await voice.prepare(doc);
     installInteraction(tree);
     const closetModule = vrmxaCore ? await p.vrmxaCloset() : null;
     const closet = closetModule ? installCloset(tree, { vrmxaCore, closet: closetModule, stubTextures: true }) : null;

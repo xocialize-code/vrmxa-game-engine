@@ -14,6 +14,7 @@ import { m0Registry } from '@vrmxg/registry/m0';
 import { parse, describeType } from '@vrmxg/scene';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { EditorSession, assetList } from '@vrmxg/editor-core';
+import { AudioOutput } from '@vrmxg/audio';
 import * as vrmxaMain from '@vrmxa-core/index.js';
 import * as vrmxaAnim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
@@ -168,7 +169,8 @@ export class EditorHost {
     if (this.cacheFor !== p) { this.cacheFor = p; this.characterCache = { sources: new Map(), clips: new Map() }; this.animCache = await p.animations(); }
     const sample = { scene: this.sceneRef, doc, prefabs: this.session.prefabs, animations: this.animCache, bytes: (ref) => p.bytes(ref) };
     this.buildTimings = {};
-    return buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: play ? null : this.characterCache });
+    if (play && !this.audio) this.audio = new AudioOutput(); // made on the first Play: that click is the gesture that lets it sound
+    return buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: play ? null : this.characterCache, audioOutput: play ? this.audio : null });
   }
 
   /** Each scene node's object, for picking: inner nodes of a prefab instance pick the instance. */
@@ -345,7 +347,9 @@ export class EditorHost {
     this.editHash = this.edit ? hashValue(worldHashes(this.edit.tree)) : null;
     this.busy++; this.changed();
     try {
+      this.audio?.ctx.resume?.();
       const world = await this.session.startPlay((doc) => this.buildFrom(doc, { play: true }));
+      this.audio?.ctx.resume?.();
       if (!this.devices) {
         this.devices = { keyboard: new KeyboardDevice(), mouse: new MouseDevice(), gamepad: new GamepadDevice() };
         this.devices.keyboard.attach(window); this.devices.mouse.attach(this.canvas);
@@ -367,6 +371,7 @@ export class EditorHost {
     if (this.session?.mode !== 'playing') return null;
     const world = this.playWorld;
     const r = this.session.stopPlay(() => {
+      world.audio?.dispose(); // silence what the play world was playing
       for (const d of Object.values(this.devices ?? {})) world.input.removeDevice?.(d);
       this.host.detach();
     });
@@ -380,6 +385,9 @@ export class EditorHost {
     this.changed();
     return this.lastStop;
   }
+
+  /** What is being said in the play world: the voice service's captions at this frame's blend. */
+  captions() { return this.playWorld?.tree.services.get('voice')?.captions(this.host.last.alpha ?? 1) ?? []; }
 
   setDebug(kinds) { this.debug = { ...kinds }; this.host.debug.set(this.debug); }
 
@@ -396,7 +404,10 @@ export class EditorHost {
       const r = this.canvas.getBoundingClientRect();
       if (r.width && (this._w !== r.width || this._h !== r.height)) { this._w = r.width; this._h = r.height; this.host.resize(r.width, r.height); }
       try {
-        if (this.session?.mode === 'playing' && this.playWorld) { this.host.frame(dt); this.stats.step = tree.clock.step; }
+        if (this.session?.mode === 'playing' && this.playWorld) {
+          this.host.frame(dt); this.stats.step = tree.clock.step;
+          if (tree.services.get('voice')?.lines.size && this._frames.length % 6 === 0) this.changed('captions'); // word by word
+        }
         else { if (this.fly) this.fly.update(dt); else this.orbit.update(); if (this.box.visible) this.box.update(); this.host.render(1, false); }
         this.stats.renderMs = this.host.last.renderMs;
       } catch (err) { this.error = String(err?.stack ?? err); if (this.session?.mode === 'playing') this.stop(); console.error(err); }

@@ -1,4 +1,5 @@
-// Reads every runtime's results and evaluates M0's six exit checks (M0-PLAN.md "What M0 is done looking like").
+// Reads every runtime's results and evaluates M0's six exit checks (M0-PLAN.md "What M0 is done looking like"), plus
+// M1's audio check (W5).
 // Writes results/summary.json and prints a line per check. Exit 1 if any automated check fails.
 //   node acceptance/compare.mjs
 import fs from 'node:fs';
@@ -58,9 +59,17 @@ if (mcp) check(5, 'MCP: describe, inspect the running engine, edit with undo', m
 
 // 6. Debug draw, counted in every browser.
 {
-  const rows = Object.entries(browsers).map(([k, r]) => { const x = r?.result?.rendered?.debug; return { k, x, ok: !!x && x.colliders + x.sensors.length + x.capsules.length === x.physicsColliders && x.sensors.length === 4 && x.sensors.every((n) => n.endsWith('#Reach')) && x.capsules.length === 2 && x.rays > 0 }; });
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = r?.result?.rendered?.debug; return { k, x, ok: !!x && x.colliders + x.sensors.length + x.capsules.length === x.physicsColliders && x.sensors.length === 5 && x.sensors.every((n) => n.endsWith('#Reach')) && x.capsules.length === 2 && x.rays > 0 }; });
   const x = rows[0].x;
   check(6, 'Debug draw shows colliders, sensors, rays and the character capsules', rows.every((r) => r.ok), `${x.colliders} colliders + ${x.sensors.length} sensors (${x.sensors.join(', ')}) + ${x.capsules.length} capsules (${x.capsules.join(', ')}) = ${x.physicsColliders} of ${x.physicsColliders}; ${x.rays} rays (the spring arm's, the interaction focus's); the same in ${rows.filter((r) => r.ok).map((r) => r.k).join(', ')}`);
+}
+// 7 (M1 W5). Sound is presentation: the walk heard through Web Audio hashes as the silent run; the offline mix of its
+// recording is the same samples twice.
+{
+  const rows = Object.entries(browsers).map(([k, r]) => { const a = r?.result?.audio; return { k, a, ok: !!a && a.sameAsSilent && a.mix.same && a.mix.peak > 0 && a.sounds.includes('node:music') && a.sounds.includes('node:entrance-open-sound') }; });
+  const a = rows.find((r) => r.a)?.a;
+  check(7, 'Audio: the run with sound hashes as without; the offline mix renders identically twice', rows.every((r) => r.ok),
+    a ? rows.map((r) => `${r.k}: ${r.a ? `final ${r.a.final} ${r.a.sameAsSilent ? '= silent' : '≠ SILENT'}, mix ${r.a.mix.seconds} s ${r.a.mix.hashA}/${r.a.mix.hashB} ${r.a.mix.same ? 'same' : 'DIFFER'}, peak ${r.a.mix.peak}` : 'no result'}`).join('; ') + `; heard: ${a.sounds.join(', ')}` : 'no audio results');
 }
 checks.sort((a, b) => a.n - b.n);
 fs.writeFileSync(res('summary.json'), JSON.stringify({ checks, runtimes: { node: node?.version, chromium: chromium?.version, wkwebview: scheme?.ua } }, null, 1) + '\n');

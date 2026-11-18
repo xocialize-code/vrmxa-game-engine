@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.2",
+    "@vrmxg/audio": "0.1.0",
     "@vrmxg/camera": "0.1.0",
     "@vrmxg/character": "0.1.0",
     "@vrmxg/closet": "0.1.0",
@@ -30,6 +31,7 @@
     "@vrmxg/physics": "0.1.0",
     "@vrmxg/registry": "0.1.0",
     "@vrmxg/scene": "0.1.0",
+    "@vrmxg/voice": "0.1.0",
     "three": "0.187.0"
   }
 }

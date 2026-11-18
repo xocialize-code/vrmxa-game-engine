@@ -73,6 +73,9 @@ export class Node {
   // ---------------------------------------------------------------- signals and actions
   /** Emit one of this node's signals: connected actions run now, in connection order. */
   emit(signal, payload) { this.tree?.emit(this, signal, payload); }
+  /** Show or hide the node and everything under it (Node3D's actions; a hidden light gives no light). */
+  show() { this.object3d.visible = true; }
+  hide() { this.object3d.visible = false; }
   /** Call an action on this node (its own method, or a behaviour's). */
   call(action, args) { return this.tree?.call(this, action, args); }
   /** Listen to a signal from code. Returns a function that disconnects. */

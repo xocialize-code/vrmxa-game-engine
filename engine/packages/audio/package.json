@@ -1,0 +1,24 @@
+{
+  "name": "@vrmxg/audio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG audio (M1 W5): AudioPlayer and positional AudioPlayer3D nodes whose playing state is simulation (started on a step, ended by the clip's length), heard through Web Audio as presentation, with buses, an unlock on first gesture, a recorder and an offline mix.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/core": "0.1.0"
+  },
+  "devDependencies": {
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  },
+  "vrmxg": { "determinism": "simulation" }
+}

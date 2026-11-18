@@ -8,7 +8,8 @@ import { PRESETS } from '@vrmxg/camera';
 import { RenderHost } from '@vrmxg/render';
 import { loadSample, buildWorld } from './world.js';
 import { serialize } from '@vrmxg/scene';
-import { runSimulation, runDevices, STEPS } from './acceptance.js';
+import { runSimulation, runDevices, runAudio, STEPS } from './acceptance.js';
+import { AudioOutput } from '@vrmxg/audio';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
@@ -53,7 +54,9 @@ export class Playground {
     const R = await loadRapier();
     const read = text === undefined ? bytes : async (ref) => (ref === scene ? new TextEncoder().encode(text) : bytes(ref));
     this.sample = await loadSample(read, scene);
-    const { tree, input, models } = await buildWorld(R, this.sample, { vrmxaCore, closet, behaviours });
+    if (!this.audio) { this.audio = new AudioOutput(); this.audio.unlockOn(window); } // one output for every load; heard after the first gesture
+    this.tree?.services.get('audio')?.dispose();
+    const { tree, input, models } = await buildWorld(R, this.sample, { vrmxaCore, closet, behaviours, audioOutput: this.audio });
     if (!this.devices) {
       this.devices = { keyboard: new KeyboardDevice(), mouse: new MouseDevice(), gamepad: new GamepadDevice() };
       this.devices.keyboard.attach(window); this.devices.mouse.attach(this.canvas);
@@ -80,8 +83,9 @@ export class Playground {
     const opts = { vrmxaCore, closet, behaviours };
     const simulation = await runSimulation(R, sample, opts, { now });
     const devices = await runDevices(R, sample, opts);
+    const audio = await runAudio(R, sample, opts, { silentFinal: simulation.final });
     const rendered = await this._renderedChecks(simulation);
-    return { simulation, devices, rendered };
+    return { simulation, devices, audio, rendered };
   }
 
   async _renderedChecks(simulation) {
@@ -133,8 +137,12 @@ export class Playground {
   /** The running scene as a .vrmxs document (canonical JSON), for saving. */
   sceneText() { return serialize(this.tree.toDocument()); }
 
-  play() { this.playing = true; this._last = null; this._changed(); }
-  pause() { this.playing = false; this._changed(); }
+  play() { this.playing = true; this._last = null; this.audio?.ctx.resume?.(); this._changed(); }
+  pause() { this.playing = false; if (this.audio?.running) this.audio.ctx.suspend?.(); this._changed(); }
+
+  /** The mixer: a bus's volume (0..1) and mute ('master', 'music', 'sfx', 'voice', 'ambience'). */
+  setBus(name, opts) { this.audio?.setBus(name, opts); this._changed(); }
+  busSettings() { return this.audio?.settings() ?? null; }
   toggle() { return this.playing ? this.pause() : this.play(); }
 
   /** One simulation step while paused. */
@@ -165,6 +173,9 @@ export class Playground {
     const item = this.tree.find(f.item);
     return { key: 'E', text: `${f.prompt ?? f.verb} ${item?.name ?? f.item}` };
   }
+
+  /** What is being said now: [{ name, text, word, words }] (the voice service's captions, at the frame's blend). */
+  captions() { return this.tree?.services.get('voice')?.captions(this.host.last.alpha ?? 1) ?? []; }
 
   /** What the player wears (the closet at run time), for a status line. */
   wearing() {
@@ -202,6 +213,7 @@ export class Playground {
         } else this.host.render(1, false);
       } catch (e) { this.error = String(e?.stack ?? e); this.pause(); console.error(e); }
       this.stats.step = this.tree.clock.step;
+      if (this.playing && this.tree.services.get('voice')?.lines.size && this._frames.length % 6 === 0) this._changed(); // captions, word by word
       if (this._frames.length >= 15) {
         const avg = (a) => a.reduce((x, y) => x + y, 0) / (a.length || 1);
         this.stats.frameMs = avg(this._frames); this.stats.fps = 1000 / this.stats.frameMs;
