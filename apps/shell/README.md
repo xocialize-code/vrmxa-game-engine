@@ -25,12 +25,18 @@ if (inShell) {
 | Origins | The web build (`Resources/web`) over a loopback HTTP server, the default (a 20 µs timer and SharedArrayBuffer, AB-L-0346), or the custom scheme `<scheme>://app/` (`VRMXG_ORIGIN=scheme`). `VRMXG_QUERY` adds a query string. Both send the cross-origin isolation headers |
 | Project mount | `project.open` mounts a folder at `/project/` on both origins, so the page fetches project assets by URL |
 | Bridge | `window.webkit.messageHandlers.vrmxg.postMessage({ method, params })` returns a promise (`WKScriptMessageHandlerWithReply`); errors come back as `{ code, message }` (`bad_request`, `unknown_method`, `bad_params`, `cancelled`, `no_project`, `failed`). Native → page: `vrmxg-shell` events |
-| Methods | `shell.info`; `file.open`, `file.save` (system panels; writing back to a file the person opened or saved needs no panel); `project.open`, `project.list`, `project.write`; plus each app's own |
+| Methods | `shell.info` (with the `scheme` base); `file.open`, `file.save` (system panels; writing back to a file the person opened or saved needs no panel; `text`, or `base64` for binary); `project.open`, `project.list`, `project.write` (`text` or `base64`); `export.begin`, `export.end`, `export.cancel` (frame export, below); plus each app's own |
+| Binary POSTs | `PostRouter`, on both origins: the page `fetch`es an `ArrayBuffer` or typed-array body (a `Blob` body arrives empty; typed arrays don't cross `postMessage`, spike-frame-export); the reply comes once the body is consumed, which is the backpressure. Responses carry CORS headers, so a loopback page can POST to the scheme (the faster transport) |
+| Frame export (M1 W8) | `export.begin { width, height, fps: [num, den], frames, codec, audio, hash, suggestedName }` opens the file (save panel, a granted `path`, or `VRMXG_SHELL_EXPORT`: a file, or a folder ending in `/`); `POST __export/frame?id=&n=` raw RGBA from `readPixels`, flipped and swizzled with vImage and appended to AVAssetWriter (H.264 / HEVC with B-frames and BT.709 tags, HEVC with alpha, ProRes 4444 un-premultiplied), frame n stamped n · den / num; `POST __export/audio?id=` the mixed WAV, muxed as AAC after the last frame (passthrough video, so the writer's interleaving never waits on sound); `export.end` returns the file and timings, with `hash: true` a SHA-256 of every frame as it arrived. Automated exports keep `<file>.frames.json` and the WAV beside the file |
 | Menus | App, File (Open…, Open Project…, Save, Save As…: sent to the page as `menu.*` events), Edit (undo / redo and the clipboard through the responder chain; with `pageUndo`, undo and redo go to the page as `menu.undo` / `menu.redo`), View (Reload), Window |
 | Sandbox | `app-sandbox`, `network.client`, `network.server` (loopback), `files.user-selected.read-write` (panels) |
-| Automation | `VRMXG_SHELL_OPEN`, `VRMXG_SHELL_SAVE`, `VRMXG_SHELL_PROJECT` stand in for the panels (relative paths are under the app's temporary folder, inside its sandbox), so AppProbe scenarios open and save without the panel |
+| Automation | `VRMXG_SHELL_OPEN`, `VRMXG_SHELL_SAVE`, `VRMXG_SHELL_PROJECT`, `VRMXG_SHELL_EXPORT` stand in for the panels (relative paths are under the app's temporary folder, inside its sandbox), so AppProbe scenarios open and save without the panel |
 
 Tests: `swift test` in `apps/shell` (file serving and project mounts with path traversal refused, loopback GET / HEAD /
-405, bridge dispatch and errors as values, open / save / project through the automation hooks). The playground's
-AppProbe scenario (`apps/playground-mac/docs/hand-test`) checks the round trip and Open / Save in the running app.
-Frame export (AVAssetWriter behind a bridge endpoint) is M1 W8.
+405 and POST parsing, POST routing, bridge dispatch and errors as values, open / save / project through the automation
+hooks with binary writes; export: H.264 with sound frame-exact with the flip and swizzle checked on decoded pixels,
+29.97 fps landing exactly, ProRes decoding identically across encodes with matching frame hashes, missing frames
+refused). `DeterminismExperiment.swift` is an env-gated probe of VideoToolbox's decoded-frame determinism (see there).
+Bridge replies must hold plain values only: WebKit refuses a reply with a Swift Optional inside ("the result value passed
+back … was unsupported"). The playground's AppProbe scenario (`apps/playground-mac/docs/hand-test`) checks the round trip
+and Open / Save in the running app; the editor's export scenario (`apps/editor-mac/docs/hand-test`) checks export.

@@ -2,7 +2,7 @@
 // The editor's window: toolbar, scene tree, viewport, inspector, asset list, status. Engine objects stay in the
 // EditorHost (never reactive); this keeps plain copies of what the panels show, refreshed when the host says so.
 import { onMounted, reactive, ref } from 'vue';
-import { EditorHost, ADDABLE } from './host.js';
+import { EditorHost, ADDABLE, SIZES, RATES, CODECS } from './host.js';
 import { bundledProject, openProjectFolder } from './project.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 import TreeItem from './TreeItem.vue';
@@ -14,6 +14,7 @@ const ui = reactive({
   tree: [], selected: [], inspector: null, assets: [], undo: null, redo: null, dirty: false, valid: true, problems: '',
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
   debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', step: 0, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
+  ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '' },
 });
 /** @type {EditorHost} */ let ed = null; // never reactive
 
@@ -26,7 +27,8 @@ function refresh(kind = 'all') {
   ui.build = ed.stats.buildMs ? `${ed.stats.buildMs.toFixed(0)} ms` : '—';
   ui.step = ed.stats.step;
   ui.captions = ed.captions();
-  if (kind === 'stats' || kind === 'captions') return;
+  if (ed.exporting) Object.assign(ui.ex, { n: ed.exporting.n, frames: ed.exporting.frames, phase: ed.exporting.phase, running: true });
+  if (kind === 'stats' || kind === 'captions' || kind === 'export') return;
   const s = ed.session;
   ui.loading = ed.busy > 0;
   if (ed.error) ui.error = ed.error;
@@ -43,6 +45,12 @@ function refresh(kind = 'all') {
   const v = s.validate(); ui.valid = v.ok; ui.problems = v.ok ? `${v.warnings.length} warnings` : v.errors.slice(0, 3).join('; ');
   ui.saved = ed.lastSave ? `${ed.lastSave.ref} · ${ed.lastSave.bytes} bytes · ${ed.lastSave.hash}` : '';
   ui.verify = ed.lastVerify ? `${ed.lastVerify.ref}: ${ed.lastVerify.same ? 'same bytes as saved' : 'DIFFERS from what was saved'}, ${ed.lastVerify.valid ? 'valid' : `invalid: ${ed.lastVerify.errors.join('; ')}`}` : '';
+  ui.ex.takes = ed.takes();
+  if (!ui.ex.takes.some((t) => t.id === ui.ex.take)) ui.ex.take = ui.ex.takes.find((t) => t.id === 'input/walk-in.json')?.id ?? ui.ex.takes[0]?.id ?? '';
+  ui.ex.running = !!ed.exporting;
+  const x = ed.lastExport;
+  ui.ex.result = x ? `${x.name ?? x.began?.name ?? 'hashes only'}: ${x.frames} frames, ${x.seconds.toFixed(3)} s, ${CODECS[x.codec].label} ${x.size} ${x.fpsLabel} fps${x.audio ? ', with sound' : ''} · exported in ${(x.ms.total / 1000).toFixed(2)} s (${x.framesPerSecond} fps, ${x.transport || 'hash'}; per frame: render ${x.perFrameMs.render} ms, readback ${x.perFrameMs.readback}, waiting ${x.perFrameMs.wait}${x.encodeMsPerFrame !== undefined ? `, encode ${x.encodeMsPerFrame}, encoder wait ${x.waitMsPerFrame}` : ''}; sound ${x.ms.audio} ms${x.muxMs !== undefined ? `, mux ${x.muxMs} ms` : ''}) · frames ${x.hashesDigest ?? '—'}` : '';
+  ui.ex.still = ed.lastStill ? `${ed.lastStill.thumbnail ? 'Thumbnail' : 'Still'} ${ed.lastStill.path ?? ed.lastStill.name} · ${ed.lastStill.bytes} bytes` : '';
   ui.stopped = ed.lastStop ? `scene ${ed.lastStop.restored && ed.lastStop.hash === ed.lastStop.before ? 'as before Play' : 'CHANGED'} (${ed.lastStop.hash}), view ${ed.lastStop.viewSame ? 'unchanged' : 'CHANGED'}` : '';
 }
 
@@ -66,6 +74,10 @@ const verify = () => act(() => ed.verifySaved());
 const undo = () => act(() => ed.session.undo());
 const redo = () => act(() => ed.session.redo());
 const play = () => act(() => (ed.session.mode === 'playing' ? ed.stop() : ed.play()));
+const takeSeconds = () => { const t = ui.ex.takes.find((x) => x.id === ui.ex.take); if (t?.seconds) ui.ex.seconds = +t.seconds.toFixed(2); };
+const exportVideo = () => act(() => ed.exportVideo({ take: ui.ex.take, seconds: +ui.ex.seconds, size: ui.ex.size, fps: ui.ex.fps, codec: ui.ex.codec, audio: ui.ex.audio, name: ui.ex.name.trim() }));
+const saveStill = () => act(() => ed.saveStill(ui.ex.size));
+const thumbnail = () => act(() => ed.makeThumbnail());
 const select = (id, add) => act(() => ed.session.select([id], { add }));
 const reparent = (id, parent) => act(() => ed.session.reparent(id, parent));
 const remove = () => act(() => ed.session.remove());
@@ -133,6 +145,7 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       <select id="camera-mode" v-model="ui.camera" aria-label="View camera" title="Viewport camera" @change="setCamera"><option value="orbit">Orbit</option><option value="fly">Fly</option></select>
       <button id="frame" type="button" aria-label="Frame selection" @click="frame">Frame</button>
       <span class="sep" />
+      <button id="export-open" type="button" :aria-pressed="ui.ex.open" aria-label="Export" :disabled="ui.mode !== 'editing'" @click="ui.ex.open = !ui.ex.open">Export</button>
       <button id="play" type="button" class="play" :disabled="ui.loading && ui.mode === 'editing'" :aria-label="ui.mode === 'playing' ? 'Stop' : 'Play'" @click="play">{{ ui.mode === 'playing' ? '■ Stop' : '▶ Play' }}</button>
     </header>
 
@@ -152,6 +165,33 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       <p v-if="ui.loading" class="overlay">Loading…</p>
       <p v-if="ui.mode === 'playing'" class="overlay playing" role="status">Playing · step {{ ui.step }} · WASD move, E interact</p>
       <pre v-if="ui.error" class="overlay error" role="alert">{{ ui.error }}</pre>
+      <section v-if="ui.ex.open" id="export-panel" class="export" role="dialog" aria-label="Export">
+        <h2>Export</h2>
+        <label class="field">Take <select id="export-take" v-model="ui.ex.take" aria-label="Take" :disabled="ui.ex.running" @change="takeSeconds"><option v-for="t in ui.ex.takes" :key="t.id" :value="t.id">{{ t.label }}</option></select></label>
+        <label class="field">Seconds <input id="export-seconds" v-model="ui.ex.seconds" type="number" min="0.1" step="0.1" aria-label="Seconds" :disabled="ui.ex.running"></label>
+        <div class="field"><span>Size</span><div class="seg" role="radiogroup" aria-label="Size">
+          <button v-for="(wh, k) in SIZES" :id="`size-${k}`" :key="k" type="button" role="radio" :aria-checked="ui.ex.size === k" :aria-label="`${k} ${wh[0]}×${wh[1]}`" :title="`${wh[0]}×${wh[1]}`" :class="{ on: ui.ex.size === k }" :disabled="ui.ex.running" @click="ui.ex.size = k">{{ k }}</button>
+        </div></div>
+        <div class="field"><span>Frame rate</span><div class="seg" role="radiogroup" aria-label="Frame rate">
+          <button v-for="(r, k) in RATES" :id="`fps-${k.replace('.', '')}`" :key="k" type="button" role="radio" :aria-checked="ui.ex.fps === k" :aria-label="`${k} fps`" :class="{ on: ui.ex.fps === k }" :disabled="ui.ex.running" @click="ui.ex.fps = k">{{ k }}</button>
+        </div></div>
+        <div class="field"><span>Codec</span><div class="seg" role="radiogroup" aria-label="Codec">
+          <button v-for="(c, k) in CODECS" :id="`codec-${k}`" :key="k" type="button" role="radio" :aria-checked="ui.ex.codec === k" :aria-label="`${c.label} .${c.ext}`" :title="`${c.label} (.${c.ext})${c.alpha ? ', keeps transparency' : ''}`" :class="{ on: ui.ex.codec === k }" :disabled="ui.ex.running" @click="ui.ex.codec = k">{{ c.short }}</button>
+        </div></div>
+        <label class="field"><span>Sound</span><input id="export-audio" v-model="ui.ex.audio" type="checkbox" aria-label="Sound" :disabled="ui.ex.running"></label>
+        <label class="field">File name <input id="export-name" v-model="ui.ex.name" aria-label="Export file name" placeholder="automatic" :disabled="ui.ex.running"></label>
+        <div class="row">
+          <button id="export-run" type="button" class="play" :disabled="ui.ex.running || !ui.ex.take" :aria-label="ui.shell ? 'Export video' : 'Export (frame hashes only: video needs the Mac app)'" @click="exportVideo">{{ ui.shell ? 'Export Video…' : 'Export (hashes)' }}</button>
+          <progress v-if="ui.ex.running" id="export-progress" :max="ui.ex.frames || 1" :value="ui.ex.n" :aria-label="`Exporting ${ui.ex.phase} ${ui.ex.n} of ${ui.ex.frames}`" />
+        </div>
+        <output v-if="ui.ex.result" id="export-result" :aria-label="`Exported ${ui.ex.result}`">{{ ui.ex.result }}</output>
+        <h3>Stills</h3>
+        <div class="row">
+          <button id="save-still" type="button" aria-label="Save still" :disabled="ui.ex.running" @click="saveStill">Save Still…</button>
+          <button id="thumbnail" type="button" aria-label="Make thumbnail" :disabled="ui.ex.running" @click="thumbnail">Thumbnail</button>
+        </div>
+        <output v-if="ui.ex.still" id="still-result" :aria-label="ui.ex.still">{{ ui.ex.still }}</output>
+      </section>
       <div v-if="ui.captions.length" id="captions" class="captions" role="status" aria-live="polite">
         <p v-for="c in ui.captions" :key="c.actor" :aria-label="`${c.name}: ${c.text}`"><strong>{{ c.name }}</strong> <span v-for="(w, i) in c.words" :key="i" :class="{ said: i < c.spoken, now: i === c.word }">{{ `${w} ` }}</span></p>
       </div>
@@ -238,4 +278,8 @@ canvas { display: block; width: 100%; height: 100%; outline: none; }
 .asset-list .kind { width: 64px; color: var(--muted); font-size: 11px; } .asset-list .aname { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .toggles { display: flex; gap: 8px; border: 0; margin: 0; padding: 0; } .toggles legend { float: left; margin-right: 4px; color: var(--muted); }
 output { font-variant-numeric: tabular-nums; }
+.export { position: absolute; right: 12px; top: 8px; width: 320px; max-height: calc(100% - 24px); overflow: auto; padding: 10px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25); box-sizing: border-box; }
+.export .field { justify-content: space-between; margin: 6px 0; gap: 8px; } .export .seg button { padding: 3px 6px; font-size: 12px; } .export .field select, .export .field input:not([type=checkbox]) { width: 180px; box-sizing: border-box; }
+.export .row { display: flex; align-items: center; gap: 8px; margin: 8px 0; } .export progress { flex: 1; }
+.export output { display: block; font-size: 12px; color: var(--muted); word-break: break-word; }
 </style>

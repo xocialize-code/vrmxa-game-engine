@@ -32,6 +32,17 @@ export class Project {
     return r;
   }
 
+  /** Write a binary file (a thumbnail) into the project folder. @param {string} ref @param {string} base64 */
+  async writeBase64(ref, base64) {
+    if (!this.writable || !inShell) throw new Error(`${this.name} is read-only here: open a project folder to write into it`);
+    const r = await call('project.write', { path: ref, base64 });
+    if (!this.files.includes(ref)) this.files = [...this.files, ref].sort();
+    return r;
+  }
+
+  /** Recorded input in the project (input/*.json, takes/*.json): the takes it can export. */
+  takes() { return this.files.filter((f) => /^(input|takes)\/.+\.json$/.test(f)); }
+
   /** Every prefab a scene uses, recursively, by ref. */
   async prefabs(doc, map = new Map(), depth = 0) {
     for (const a of doc.assets ?? []) {

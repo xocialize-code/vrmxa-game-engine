@@ -1,0 +1,28 @@
+{
+  "name": "@vrmxg/export",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG frame export (M1 W8): a take stepped offline at any frame rate with presentation interpolated at \u03b1, rendered at export size, read back asynchronously and handed to a sink (the Mac shell's AVAssetWriter, or a hasher); the sound mixed offline; stills and thumbnails.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/audio": "0.1.0",
+    "@vrmxg/core": "0.1.0"
+  },
+  "devDependencies": {
+    "@vrmxg/camera": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/render": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  }
+}

@@ -10,7 +10,7 @@ public final class FileMethods {
     let roots: WebRoots
     let env: [String: String]
     /// Files and folders the person granted this session (writing back to them needs no panel).
-    private(set) var granted: Set<URL> = []
+    var granted: Set<URL> = []
     public init(roots: WebRoots, env: [String: String] = ProcessInfo.processInfo.environment) { self.roots = roots; self.env = env }
 
     func hook(_ key: String) -> URL? {
@@ -48,8 +48,17 @@ public final class FileMethods {
         return out
     }
 
+    /// The bytes to write: `text`, or `base64` for binary files (a still, a thumbnail).
+    static func payload(_ p: BridgeParams) throws -> Data {
+        if let b = p.string("base64") {
+            guard let d = Data(base64Encoded: b) else { throw BridgeError("bad_params", "base64 does not decode") }
+            return d
+        }
+        return Data(try p.require("text").utf8)
+    }
+
     func save(_ p: BridgeParams) async throws -> Any? {
-        let text = try p.require("text")
+        let data = try Self.payload(p)
         var url: URL?
         if let path = p.string("path"), granted.contains(URL(fileURLWithPath: path)) { url = URL(fileURLWithPath: path) }
         if url == nil { url = hook("VRMXG_SHELL_SAVE") }
@@ -62,7 +71,6 @@ public final class FileMethods {
             url = u
         }
         let file = url!
-        let data = Data(text.utf8)
         try data.write(to: file, options: .atomic)
         granted.insert(file)
         return ["path": file.path, "name": file.lastPathComponent, "bytes": data.count]
@@ -95,14 +103,14 @@ public final class FileMethods {
         return out.sorted()
     }
 
-    /// Write a text file inside the mounted project (a path relative to it).
+    /// Write a file inside the mounted project (a path relative to it): `text`, or `base64` for binary.
     func writeProject(_ p: BridgeParams) throws -> Any? {
         guard let root = roots.projectFolder else { throw BridgeError("no_project", "no project is open") }
-        let rel = try p.require("path"), text = try p.require("text")
+        let rel = try p.require("path"), data = try Self.payload(p)
         let file = root.appendingPathComponent(rel).standardizedFileURL
         guard file.path.hasPrefix(root.standardizedFileURL.path + "/") else { throw BridgeError("bad_params", "\(rel) is outside the project") }
         try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
-        try Data(text.utf8).write(to: file, options: .atomic)
-        return ["path": rel, "bytes": text.utf8.count]
+        try data.write(to: file, options: .atomic)
+        return ["path": rel, "bytes": data.count]
     }
 }

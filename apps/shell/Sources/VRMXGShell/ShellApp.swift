@@ -1,7 +1,7 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.1.0"
+public let vrmxgShellVersion = "0.2.0"
 
 /// One app's shell: its name, URL scheme, window and any bridge methods of its own.
 public struct ShellConfiguration {
@@ -31,9 +31,12 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     public private(set) var webView: WKWebView!
     public let roots: WebRoots
     public let router = BridgeRouter()
+    /// Binary POSTs from the page (frame export), on both origins.
+    public let posts = PostRouter()
     lazy var files = FileMethods(roots: roots)
-    lazy var scheme = SchemeHandler(scheme: config.scheme, roots: roots)
-    lazy var server = LoopbackServer(roots: roots)
+    lazy var exports = ExportMethods(files: files)
+    lazy var scheme = SchemeHandler(scheme: config.scheme, roots: roots, posts: posts)
+    lazy var server = LoopbackServer(roots: roots, posts: posts)
     let env = ProcessInfo.processInfo.environment
     public private(set) var origin = "loopback"
 
@@ -46,9 +49,11 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         router.register("shell.info") { [unowned self] _ in
             ["shell": vrmxgShellVersion, "app": self.config.appName,
              "appVersion": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "",
-             "origin": self.origin, "url": self.webView.url?.absoluteString ?? "", "methods": self.router.methods]
+             "origin": self.origin, "url": self.webView.url?.absoluteString ?? "", "methods": self.router.methods,
+             "scheme": "\(self.config.scheme)://app/"]
         }
         files.register(on: router)
+        exports.register(on: router, posts: posts)
         for (name, handler) in config.methods { router.register(name, handler) }
 
         let wk = WKWebViewConfiguration()

@@ -15,6 +15,8 @@ import { parse, describeType } from '@vrmxg/scene';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { EditorSession, assetList } from '@vrmxg/editor-core';
 import { AudioOutput } from '@vrmxg/audio';
+import { exportTake, shellSink, hashSink, captureStill, encodePNG, toBase64, SIZES, RATES, CODECS, framesFor, secondsOf } from '@vrmxg/export';
+import { inShell, call } from '../../shell/js/shell.js';
 import * as vrmxaMain from '@vrmxa-core/index.js';
 import * as vrmxaAnim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
@@ -27,6 +29,17 @@ const registry = m0Registry();
 const SNAP = { translate: 0.25, rotate: 15, scale: 0.1 };
 /** Node types the Add menu offers (no asset needed). */
 export const ADDABLE = ['Node3D', 'DirectionalLight', 'PointLight', 'SpotLight', 'Environment', 'Camera', 'Collider', 'RigidBody', 'Area', 'Marker'].filter((t) => registry.get(t) && !registry.get(t).abstract && !registry.get(t).asset?.required);
+
+/** A short digest of a list of frame hashes: two exports with the same digest have the same frames. */
+function digest(list) { return hashValue(list.join(',')); }
+
+function download(bytes, name, type) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([bytes], { type })); a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+export { SIZES, RATES, CODECS, secondsOf };
 
 export class EditorHost {
   /** @param {HTMLCanvasElement} canvas */
@@ -60,6 +73,10 @@ export class EditorHost {
     this.busy = 0;
     this._gen = 0; this._frames = []; this._last = null; this._rebuildTimer = null;
     this._downAt = null;
+    this.lastTake = null;      // the last Play: { scene, doc, input, steps }
+    this.exporting = null;     // { n, frames, phase } while an export runs
+    this.lastExport = null; this.lastStill = null;
+    this.exportHost = null;
     canvas.addEventListener('pointerdown', (e) => { this._downAt = [e.clientX, e.clientY]; });
     canvas.addEventListener('pointerup', (e) => this.onClick(e));
     this.loop();
@@ -164,13 +181,13 @@ export class EditorHost {
    * A world from a document. The edit view (play false) is never stepped, so it skips the run-time closet and reuses
    * the project's read bundles and clips between rebuilds; Play builds the full world, as the game does.
    */
-  async buildFrom(doc, { play = false } = {}) {
+  async buildFrom(doc, { play = false, heard = play } = {}) {
     const p = this.project;
     if (this.cacheFor !== p) { this.cacheFor = p; this.characterCache = { sources: new Map(), clips: new Map() }; this.animCache = await p.animations(); }
     const sample = { scene: this.sceneRef, doc, prefabs: this.session.prefabs, animations: this.animCache, bytes: (ref) => p.bytes(ref) };
     this.buildTimings = {};
-    if (play && !this.audio) this.audio = new AudioOutput(); // made on the first Play: that click is the gesture that lets it sound
-    return buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: play ? null : this.characterCache, audioOutput: play ? this.audio : null });
+    if (heard && !this.audio) this.audio = new AudioOutput(); // made on the first Play: that click is the gesture that lets it sound
+    return buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: play ? null : this.characterCache, audioOutput: heard ? this.audio : null });
   }
 
   /** Each scene node's object, for picking: inner nodes of a prefab instance pick the instance. */
@@ -348,8 +365,11 @@ export class EditorHost {
     this.busy++; this.changed();
     try {
       this.audio?.ctx.resume?.();
-      const world = await this.session.startPlay((doc) => this.buildFrom(doc, { play: true }));
+      let playDoc = null;
+      const world = await this.session.startPlay((doc) => { playDoc = structuredClone(doc); return this.buildFrom(doc, { play: true }); });
       this.audio?.ctx.resume?.();
+      world.input.record(); // every Play is a take: its input, replayable from step 0 (Export)
+      this.playDoc = playDoc;
       if (!this.devices) {
         this.devices = { keyboard: new KeyboardDevice(), mouse: new MouseDevice(), gamepad: new GamepadDevice() };
         this.devices.keyboard.attach(window); this.devices.mouse.attach(this.canvas);
@@ -370,6 +390,8 @@ export class EditorHost {
   stop() {
     if (this.session?.mode !== 'playing') return null;
     const world = this.playWorld;
+    const steps = world?.tree.clock.step ?? 0;
+    if (world?.input.recording && steps > 0) this.lastTake = { scene: this.sceneRef, doc: this.playDoc, input: structuredClone(world.input.recording), steps };
     const r = this.session.stopPlay(() => {
       world.audio?.dispose(); // silence what the play world was playing
       for (const d of Object.values(this.devices ?? {})) world.input.removeDevice?.(d);
@@ -384,6 +406,96 @@ export class EditorHost {
     this.attachGizmo();
     this.changed();
     return this.lastStop;
+  }
+
+  // ---------------------------------------------------------------- export, stills, thumbnails
+
+  /** The takes there are to export: the last Play, then the project's recorded input. */
+  takes() {
+    const out = [];
+    if (this.lastTake) out.push({ id: 'play', label: `Last play (${(this.lastTake.steps / 60).toFixed(1)} s)`, seconds: this.lastTake.steps / 60 });
+    for (const f of this.project?.takes() ?? []) out.push({ id: f, label: f, seconds: null });
+    return out;
+  }
+
+  /** A take as a world at step 0 with its input replaying: { world, seconds }. Sound is recorded, not heard. */
+  async takeWorld(id) {
+    let doc, input;
+    if (id === 'play') {
+      if (!this.lastTake) throw new Error('nothing has been played yet');
+      ({ doc, input } = this.lastTake);
+    } else {
+      doc = structuredClone(this.session.doc);
+      input = JSON.parse(await this.project.text(id));
+    }
+    const world = await this.buildFrom(structuredClone(doc), { play: true, heard: false });
+    world.input.replay(structuredClone(input));
+    return { world, seconds: (input.frames?.length ?? 0) / 60 };
+  }
+
+  /**
+   * Export a take to a video file through the shell (a hash of every frame without it, or with `hashOnly`).
+   * @param {{ take: string, seconds?: number, size: string, fps: string, codec: string, audio: boolean, name?: string, hash?: boolean, hashOnly?: boolean }} o
+   */
+  async exportVideo({ take, seconds, size, fps, codec, audio, name, hash = true, hashOnly = !inShell }) {
+    if (this.exporting) throw new Error('an export is already running');
+    if (this.session?.mode !== 'editing') throw new Error('stop playing before exporting');
+    const [width, height] = SIZES[size], rate = RATES[fps];
+    this.exporting = { n: 0, frames: 0, phase: 'building' }; this.error = ''; this.changed();
+    let world = null;
+    try {
+      const built = await this.takeWorld(take);
+      world = built.world;
+      const frames = framesFor(seconds ?? built.seconds, rate);
+      this.exporting.frames = frames;
+      this.exportHost ??= new RenderHost({ canvas: document.createElement('canvas'), dprCap: 1 });
+      const ext = CODECS[codec].ext;
+      const base = (name || `${(this.sceneRef ?? 'scene').replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-')}-${size}${fps.replace('.', '')}`).replace(/\.(mp4|mov)$/, '');
+      const sink = hashOnly ? hashSink() : shellSink({ call });
+      const r = await exportTake({
+        tree: world.tree, host: this.exportHost, fps: rate, frames, width, height, sink, audio,
+        job: { codec, suggestedName: `${base}.${ext}`, hash, title: 'Export Video' },
+        onProgress: (p) => { this.exporting = { ...p }; this.changed('export'); }, now: () => performance.now(),
+      });
+      const { frameHashes, ...rest } = r;
+      this.lastExport = { ...rest, take, size, fpsLabel: fps, codec, frameHashes, hashOnly, hashesDigest: frameHashes ? digest(frameHashes) : null };
+      return this.lastExport;
+    } catch (err) { this.error = String(err?.message ?? err); throw err; }
+    finally {
+      // a fresh renderer per export: the take's world goes, and its GPU resources with it
+      if (this.exportHost) { this.exportHost.dispose(); this.exportHost.renderer.forceContextLoss?.(); this.exportHost = null; }
+      world?.audio?.dispose();
+      this.exporting = null; this.changed();
+    }
+  }
+
+  /** The view as it is now (edit camera or the play camera) at a size, as a PNG. */
+  async stillPNG(width, height) {
+    if (!this.host.tree) throw new Error('nothing to draw');
+    const still = captureStill(this.host, { width, height, alpha: this.host.last.alpha ?? 1 });
+    if (this._w) this.host.resize(this._w, this._h); // the viewport's own size, exactly
+    return encodePNG(still);
+  }
+
+  /** Save a still of the view: a save panel in the shell, a download in a browser. */
+  async saveStill(size = '1080p') {
+    const [w, h] = SIZES[size];
+    const png = await this.stillPNG(w, h);
+    const name = `${(this.sceneRef ?? 'scene').replace(/\.vrmxs$/, '')}-still.png`;
+    if (inShell) this.lastStill = await call('file.save', { base64: toBase64(png), suggestedName: name, types: ['png'], title: 'Save Still' });
+    else { download(png, name, 'image/png'); this.lastStill = { name, bytes: png.length }; }
+    this.changed();
+    return this.lastStill;
+  }
+
+  /** A 480×270 thumbnail of the view, into the project as thumbnails/<scene>.png. */
+  async makeThumbnail() {
+    const png = await this.stillPNG(480, 270);
+    const ref = `thumbnails/${(this.sceneRef ?? 'scene').replace(/\.vrmxs$/, '').replace(/^.*\//, '')}.png`;
+    if (this.project?.writable && inShell) this.lastStill = { ...(await this.project.writeBase64(ref, toBase64(png))), thumbnail: true };
+    else { download(png, ref.replace('thumbnails/', ''), 'image/png'); this.lastStill = { path: ref, bytes: png.length, thumbnail: true }; }
+    this.changed();
+    return this.lastStill;
   }
 
   /** What is being said in the play world: the voice service's captions at this frame's blend. */

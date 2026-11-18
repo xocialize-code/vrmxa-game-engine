@@ -107,6 +107,31 @@ export class RenderHost {
     return this.last;
   }
 
+  /**
+   * Offline (frame export, scrubbing forward): run the tree up to `step`, waiting out any step a service holds (a
+   * closet redraw), then draw at α, exactly as live play would have shown that moment: the blend of the last two
+   * steps. `frameToStep(n, fps)` from @vrmxg/core gives frame n's step and α. Nothing here reads a clock.
+   * @param {number} step @param {number} alpha
+   * @param {(step: number) => void} [afterStep]
+   */
+  async frameAt(step, alpha, afterStep) {
+    const tree = this.tree;
+    if (step < tree.clock.step) throw new Error(`frameAt(${step}): the tree is already at step ${tree.clock.step}; offline frames only go forward`);
+    const steps = step - tree.clock.step;
+    for (let i = 0; i < steps; i++) {
+      if (i === steps - 1 && this.interpolate) this.interpolator.beforeStep(tree);
+      while (!tree.step()) await tree.settle();
+      afterStep?.(tree.clock.step);
+    }
+    if (this.interpolate) this.interpolator.afterSteps(tree, steps > 0);
+    const t = (step + alpha) / 60, dt = this._offlineT === undefined || t < this._offlineT ? 0 : t - this._offlineT; // presentation gets the frame's delta, as in live play
+    this._offlineT = t;
+    tree.present(dt, alpha);
+    this.render(alpha, steps > 0);
+    this.last.steps = steps; this.last.alpha = alpha; this.last.held = false;
+    return this.last;
+  }
+
   /** Draw the tree at α (1 = the last step as simulated). */
   render(alpha = 1, stepped = true) {
     const tree = this.tree;
