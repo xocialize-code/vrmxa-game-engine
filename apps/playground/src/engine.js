@@ -8,7 +8,7 @@ import { PRESETS } from '@vrmxg/camera';
 import { RenderHost } from '@vrmxg/render';
 import { loadSample, buildWorld } from './world.js';
 import { serialize } from '@vrmxg/scene';
-import { runSimulation, runDevices, runAudio, STEPS } from './acceptance.js';
+import { runSimulation, runDevices, runAudio, runItems, STEPS } from './acceptance.js';
 import { AudioOutput } from '@vrmxg/audio';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import * as core from '@vrmxa-core/index.js';
@@ -83,9 +83,10 @@ export class Playground {
     const opts = { vrmxaCore, closet, behaviours };
     const simulation = await runSimulation(R, sample, opts, { now });
     const devices = await runDevices(R, sample, opts);
-    const audio = await runAudio(R, sample, opts, { silentFinal: simulation.final });
+    const items = await runItems(R, sample, opts);
+    const audio = await runAudio(R, sample, opts, { silentFinal: items.final, take: 'input/play-items.json', steps: items.steps });
     const rendered = await this._renderedChecks(simulation);
-    return { simulation, devices, audio, rendered };
+    return { simulation, devices, items, audio, rendered };
   }
 
   async _renderedChecks(simulation) {

@@ -96,6 +96,7 @@ test('lip sync against the audio: the mouth leads or lags the clip\'s loudness b
   for (let lag = -20; lag <= 20; lag++) if (corr(lag) > corr(best)) best = lag;
   console.log(`  best lag ${best * 10} ms (+ = mouth leads), r ${corr(best).toFixed(3)} at it, r ${corr(0).toFixed(3)} at 0`);
   assert.ok(Math.abs(best * 10) <= 50, `best lag ${best * 10} ms`);
+  if (process.env.VRMXG_LIPSYNC_OUT) fs.writeFileSync(process.env.VRMXG_LIPSYNC_OUT, JSON.stringify({ bestLagMs: best * 10, r: +corr(best).toFixed(3), source: 'engine/packages/voice/test/voice.test.mjs, Hana\'s welcome line' }) + '\n');
   assert.ok(corr(best) > 0.3, 'the mouth follows the loudness');
 });
 

@@ -7,14 +7,19 @@
 //                  states, speed blend and root motion, the jump, Hana wandering, the locked staff door.
 //   runDevices     the player through real devices: keyboard keys, a gamepad stick and button, mouse look, all
 //                  through the action map.
-//   runAudio       (browsers, M1 W5) the same walk heard through a Web Audio output: the hashes are the silent run's,
-//                  and its recording mixed offline twice gives the same samples.
+//   runAudio       (browsers, M1 W5) a take heard through a Web Audio output: the hashes are the silent run's, and its
+//                  recording mixed offline twice gives the same samples.
+//   runItems       (M1 W10) the recorded take with items (content/sample/input/play-items.json): Mira walks in, takes the
+//                  sword into her closet, opens the cupboard, sits on a stool, gets up and switches the counter lights
+//                  off; Hana greets her on the way. A hash of every component after every step, a snapshot after the
+//                  equip restored and re-simulated to the end, and what the take shows: prompts, verbs, animation states,
+//                  the closet, item states, and Hana's line (voice, mouth, look-at, blinks, caption).
 import { VirtualDevice } from '@vrmxg/input';
 import { captureWorld, restoreWorld, worldHashes, compareRuns, hashValue, packRun } from '@vrmxg/snapshot';
 import { buildWorld } from './world.js';
 import { AudioOutput, mixOffline, hashSamples } from '@vrmxg/audio';
 
-export const STEPS = 600, SNAPSHOT_AT = 300;
+export const STEPS = 600, SNAPSHOT_AT = 300, ITEMS_SNAPSHOT_AT = 720; // a step whose hash includes Rapier's bytes (every 60th), after the equip
 const text = (b) => new TextDecoder().decode(b);
 const r3 = (v) => +v.toFixed(3);
 
@@ -119,16 +124,16 @@ export async function runDevices(R, sample, opts) {
 /**
  * The walk heard through a Web Audio output (a browser): sound is presentation, so the final hash is the silent run's;
  * the run's recording mixed offline twice is the same samples (the offline mix W8's export uses).
- * @param {any} R @param {any} sample @param {any} opts @param {{ silentFinal: string, AudioContext?: any }} o
+ * @param {any} R @param {any} sample @param {any} opts @param {{ silentFinal: string, AudioContext?: any, take?: string, steps?: number }} o
  */
-export async function runAudio(R, sample, opts, { silentFinal, AudioContext: Ctor = globalThis.AudioContext }) {
+export async function runAudio(R, sample, opts, { silentFinal, AudioContext: Ctor = globalThis.AudioContext, take = 'input/walk-in.json', steps = STEPS }) {
   const output = new AudioOutput({ AudioContext: Ctor });
-  const rec = JSON.parse(new TextDecoder().decode(await sample.bytes('input/walk-in.json')));
+  const rec = JSON.parse(new TextDecoder().decode(await sample.bytes(take)));
   const W = await buildWorld(R, sample, { ...opts, audioOutput: output });
   W.input.replay(structuredClone(rec));
   W.audio.record();
   let last = null;
-  for (let k = 1; k <= STEPS; k++) { W.tree.step(); W.tree.present(k / 60, 1); last = worldHashes(W.tree, { physicsBytes: k % 60 === 0 }); }
+  for (let k = 1; k <= steps; k++) { while (!W.tree.step()) await W.tree.settle(); W.tree.present(k / 60, 1); last = worldHashes(W.tree, { physicsBytes: k % 60 === 0 }); }
   const final = hashValue(last);
   const recording = W.audio.recording();
   const heard = new Set(recording.steps.flatMap((s) => s.sounds.map((x) => x.key)));
@@ -137,7 +142,59 @@ export async function runAudio(R, sample, opts, { silentFinal, AudioContext: Cto
   const a = await mixOffline(recording, W.audio.library), b = await mixOffline(recording, W.audio.library);
   let peak = 0; for (let c = 0; c < a.numberOfChannels; c++) for (const v of a.getChannelData(c)) peak = Math.max(peak, Math.abs(v));
   return {
-    final, sameAsSilent: final === silentFinal, sounds: [...heard].sort(),
+    take, final, sameAsSilent: final === silentFinal, sounds: [...heard].sort(),
     mix: { seconds: +(a.length / a.sampleRate).toFixed(3), sampleRate: a.sampleRate, channels: a.numberOfChannels, hashA: hashSamples(a), hashB: hashSamples(b), same: hashSamples(a) === hashSamples(b), peak: +peak.toFixed(4) },
+  };
+}
+
+/** The recorded take with items, M1 W10 (see the top). @param {any} R @param {any} sample @param {any} opts */
+export async function runItems(R, sample, opts) {
+  const rec = JSON.parse(text(await sample.bytes('input/play-items.json')));
+  const steps = rec.frames.length;
+  const A = await buildWorld(R, sample, opts);
+  A.input.replay(structuredClone(rec));
+  const signals = watchSignals(A.tree);
+  const tree = A.tree, mira = /** @type {any} */ (tree.find('mira')), hana = /** @type {any} */ (tree.find('hana-1'));
+  const voice = tree.services.get('voice'), em = hana.vrm?.expressionManager;
+  const seen = { prompts: new Map(), states: new Set(), seatedAt: null, swordGoneAt: null };
+  const talk = { speakingSteps: 0, firstLineAt: null, mouthMax: 0, lookingAtMira: 0, blinks: 0, caption: null, glances: 0 };
+  let blinkWas = 0, offsetWas = '';
+  const run = [{ step: 0, h: worldHashes(tree, { physicsBytes: true }) }];
+  let snap = null;
+  for (let k = 1; k <= steps; k++) {
+    while (!tree.step()) await tree.settle();
+    for (const p of A.interact.prompts()) if (p.actor === 'mira') { const key = `${p.verb}:${p.item}`; if (!seen.prompts.has(key)) seen.prompts.set(key, { step: k, prompt: p.prompt }); }
+    seen.states.add(mira.graph.state);
+    if (mira.ctrl.seat && seen.seatedAt === null) seen.seatedAt = k;
+    if (!tree.find('sword') && seen.swordGoneAt === null) seen.swordGoneAt = k;
+    if (voice.speaking('hana-1')) {
+      talk.speakingSteps++; talk.firstLineAt ??= k;
+      if (em) for (const v of ['aa', 'ih', 'ou', 'ee', 'oh']) talk.mouthMax = Math.max(talk.mouthMax, em.getValue(v) ?? 0);
+      if (!talk.caption) { const c = voice.captions(1).find((x) => x.actor === 'hana-1'); if (c) talk.caption = { name: c.name, text: c.text }; }
+    }
+    if (hana.ctrl.look === 'mira') talk.lookingAtMira++;
+    const b = em?.getValue('blink') ?? 0; if (b > 0.5 && blinkWas <= 0.5) talk.blinks++; blinkWas = b;
+    const o = JSON.stringify(hana.ctrl.lookOffset ?? null); if (o !== offsetWas && hana.ctrl.lookOffset) talk.glances++; offsetWas = o;
+    run.push({ step: k, h: worldHashes(tree, { physicsBytes: k % 60 === 0 }) });
+    if (k === ITEMS_SNAPSHOT_AT) snap = captureWorld(tree, { meta: { scene: sample.scene, take: 'input/play-items.json' } });
+  }
+  const B = await buildWorld(R, sample, opts);
+  B.input.replay(structuredClone(rec));
+  restoreWorld(B.tree, snap);
+  const atRestore = compareRuns([run[ITEMS_SNAPSHOT_AT]], [{ step: ITEMS_SNAPSHOT_AT, h: worldHashes(B.tree, { physicsBytes: true }) }]);
+  const again = [];
+  for (let k = ITEMS_SNAPSHOT_AT + 1; k <= steps; k++) { while (!B.tree.step()) await B.tree.settle(); again.push({ step: k, h: worldHashes(B.tree, { physicsBytes: k % 60 === 0 }) }); }
+  const restored = compareRuns(run.slice(ITEMS_SNAPSHOT_AT + 1), again);
+  await A.closet?.settle();
+  const itemState = (id) => tree.find(id)?.current ?? null;
+  return {
+    steps, run: packRun(run), final: hashValue(run.at(-1).h), components: Object.keys(run[0].h).length,
+    snapshot: { at: ITEMS_SNAPSHOT_AT, afterEquip: seen.swordGoneAt !== null && seen.swordGoneAt < ITEMS_SNAPSHOT_AT, matchesAtRestore: atRestore === null, rerunMatches: restored === null, divergence: atRestore ?? restored },
+    prompts: Object.fromEntries([...seen.prompts].map(([k, v]) => [k, v])),
+    states: [...seen.states].sort(), seatedAt: seen.seatedAt, swordTakenAt: seen.swordGoneAt,
+    closet: A.closet ? { worn: A.closet.wornBy('mira').map((w) => w.state).filter(Boolean).sort(), held: [...mira.equipped].filter((t) => t.startsWith('held:')).sort(), idleSet: mira.graph.slots.idle?.set?.id ?? null } : null,
+    items: { cupboard: itemState('cupboard'), 'light-switch': itemState('light-switch'), sword: tree.find('sword') ? 'in the world' : 'taken' },
+    itemSignals: signals.filter((s) => s.signal === 'stateChanged' && ['cupboard', 'light-switch'].includes(s.node)),
+    hana: { ...talk, mouthMax: r3(talk.mouthMax) },
   };
 }

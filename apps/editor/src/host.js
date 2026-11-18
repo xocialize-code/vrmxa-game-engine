@@ -498,6 +498,16 @@ export class EditorHost {
     return this.lastStill;
   }
 
+  /** What the player can do now in the play world ("Take Short sword"), or null. */
+  prompt() {
+    const w = this.playWorld; if (!w?.interact) return null;
+    const player = w.tree.all().find((n) => n.type === 'Character' && n.behaviours.some((b) => b.name === 'player'));
+    const f = player && w.interact.prompts().find((p) => p.actor === player.id);
+    if (!f) return null;
+    const item = w.tree.find(f.item);
+    return { key: 'E', text: `${f.prompt ?? f.verb} ${item?.name ?? f.item}` };
+  }
+
   /** What is being said in the play world: the voice service's captions at this frame's blend. */
   captions() { return this.playWorld?.tree.services.get('voice')?.captions(this.host.last.alpha ?? 1) ?? []; }
 
@@ -519,6 +529,8 @@ export class EditorHost {
         if (this.session?.mode === 'playing' && this.playWorld) {
           this.host.frame(dt); this.stats.step = tree.clock.step;
           if (tree.services.get('voice')?.lines.size && this._frames.length % 6 === 0) this.changed('captions'); // word by word
+          const pr = this.prompt(), key = pr?.text ?? null;
+          if (key !== this._promptKey) { this._promptKey = key; this.changed('captions'); }
         }
         else { if (this.fly) this.fly.update(dt); else this.orbit.update(); if (this.box.visible) this.box.update(); this.host.render(1, false); }
         this.stats.renderMs = this.host.last.renderMs;

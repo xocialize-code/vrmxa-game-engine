@@ -14,7 +14,7 @@ const ui = reactive({
   shell: '', project: '', writable: false, scenes: [], scene: '', loading: true, error: '', mode: 'editing',
   tree: [], selected: [], inspector: null, assets: [], undo: null, redo: null, dirty: false, valid: true, problems: '',
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
-  debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', step: 0, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
+  debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
   mcp: '',
   ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '' },
 });
@@ -29,6 +29,7 @@ function refresh(kind = 'all') {
   ui.build = ed.stats.buildMs ? `${ed.stats.buildMs.toFixed(0)} ms` : '—';
   ui.step = ed.stats.step;
   ui.captions = ed.captions();
+  ui.prompt = ed.prompt();
   if (ed.exporting) Object.assign(ui.ex, { n: ed.exporting.n, frames: ed.exporting.frames, phase: ed.exporting.phase, running: true });
   if (kind === 'stats' || kind === 'captions' || kind === 'export') return;
   const s = ed.session;
@@ -200,6 +201,7 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
         </div>
         <output v-if="ui.ex.still" id="still-result" :aria-label="ui.ex.still">{{ ui.ex.still }}</output>
       </section>
+      <p v-if="ui.prompt" id="prompt" class="prompt" role="status" :aria-label="`Press ${ui.prompt.key} to ${ui.prompt.text}`"><kbd>{{ ui.prompt.key }}</kbd> {{ ui.prompt.text }}</p>
       <div v-if="ui.captions.length" id="captions" class="captions" role="status" aria-live="polite">
         <p v-for="c in ui.captions" :key="c.actor" :aria-label="`${c.name}: ${c.text}`"><strong>{{ c.name }}</strong> <span v-for="(w, i) in c.words" :key="i" :class="{ said: i < c.spoken, now: i === c.word }">{{ `${w} ` }}</span></p>
       </div>
@@ -269,6 +271,8 @@ h3 { font-size: 12px; color: var(--muted); margin: 14px 0 6px; }
 canvas { display: block; width: 100%; height: 100%; outline: none; }
 .overlay { position: absolute; left: 12px; top: 8px; margin: 0; padding: 6px 10px; background: color-mix(in srgb, var(--panel) 88%, transparent); border-radius: 6px; }
 .overlay.playing { left: auto; right: 12px; }
+.prompt { position: absolute; left: 50%; bottom: 18%; transform: translateX(-50%); margin: 0; padding: 6px 12px; border-radius: 8px; background: color-mix(in srgb, var(--panel) 88%, transparent); font-size: 15px; pointer-events: none; }
+.prompt kbd { display: inline-block; min-width: 1.4em; padding: 1px 6px; margin-right: 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; background: var(--bg); font: 600 13px/1.4 -apple-system, system-ui, sans-serif; text-align: center; }
 .captions { position: absolute; left: 50%; bottom: 6%; transform: translateX(-50%); max-width: 70%; text-align: center; pointer-events: none; }
 .captions p { margin: 4px 0; padding: 6px 12px; border-radius: 8px; background: rgba(10, 12, 16, 0.72); color: #f2f2f2; font-size: 16px; }
 .captions span { opacity: 0.55; } .captions span.said, .captions span.now { opacity: 1; } .captions span.now { color: #ffd76a; }

@@ -38,7 +38,8 @@ export class LiveView {
   async step({ steps = 1, hold, recording } = {}, run = runNow) {
     const tree = this.live, input = tree.services.get('input');
     if (!(steps >= 1 && steps <= 36000)) throw new Error('steps: 1 to 36000');
-    if (recording) input.replay(structuredClone(recording));
+    // a recording plays from its start step, or from now when the world is already past it (a take replayed mid-play)
+    if (recording) input.replay({ ...structuredClone(recording), start: Math.max(recording.start ?? 0, tree.clock.step) });
     else if (hold) {
       const map = input.map;
       for (const k of Object.keys(hold)) if (!map.names.includes(k)) throw new Error(`no input action "${k}"; actions: ${map.names.join(', ')}`);

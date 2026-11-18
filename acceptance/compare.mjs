@@ -1,5 +1,5 @@
 // Reads every runtime's results and evaluates M0's six exit checks (M0-PLAN.md "What M0 is done looking like"), plus
-// M1's audio check (W5).
+// M1's: audio (W5), the recorded take with items (W10) and Hana's line (W10).
 // Writes results/summary.json and prints a line per check. Exit 1 if any automated check fails.
 //   node acceptance/compare.mjs
 import fs from 'node:fs';
@@ -63,13 +63,38 @@ if (mcp) check(5, 'MCP: describe, inspect the running engine, edit with undo', m
   const x = rows[0].x;
   check(6, 'Debug draw shows colliders, sensors, rays and the character capsules', rows.every((r) => r.ok), `${x.colliders} colliders + ${x.sensors.length} sensors (${x.sensors.join(', ')}) + ${x.capsules.length} capsules (${x.capsules.join(', ')}) = ${x.physicsColliders} of ${x.physicsColliders}; ${x.rays} rays (the spring arm's, the interaction focus's); the same in ${rows.filter((r) => r.ok).map((r) => r.k).join(', ')}`);
 }
-// 7 (M1 W5). Sound is presentation: the walk heard through Web Audio hashes as the silent run; the offline mix of its
-// recording is the same samples twice.
+// 7 (M1 W5). Sound is presentation: the items take heard through Web Audio hashes as the silent run; the offline mix of
+// its recording is the same samples twice; the doors, the switch (positional), ambience, music and Hana's voice are heard.
 {
-  const rows = Object.entries(browsers).map(([k, r]) => { const a = r?.result?.audio; return { k, a, ok: !!a && a.sameAsSilent && a.mix.same && a.mix.peak > 0 && a.sounds.includes('node:music') && a.sounds.includes('node:entrance-open-sound') }; });
+  const want = ['node:music', 'node:ambience', 'node:entrance-open-sound', 'node:switch-sound', 'voice:hana-1'];
+  const rows = Object.entries(browsers).map(([k, r]) => { const a = r?.result?.audio; return { k, a, ok: !!a && a.sameAsSilent && a.mix.same && a.mix.peak > 0 && want.every((x) => a.sounds.includes(x)) }; });
   const a = rows.find((r) => r.a)?.a;
   check(7, 'Audio: the run with sound hashes as without; the offline mix renders identically twice', rows.every((r) => r.ok),
     a ? rows.map((r) => `${r.k}: ${r.a ? `final ${r.a.final} ${r.a.sameAsSilent ? '= silent' : '≠ SILENT'}, mix ${r.a.mix.seconds} s ${r.a.mix.hashA}/${r.a.mix.hashB} ${r.a.mix.same ? 'same' : 'DIFFER'}, peak ${r.a.mix.peak}` : 'no result'}`).join('; ') + `; heard: ${a.sounds.join(', ')}` : 'no audio results');
+}
+// 8 (M1 W10). The recorded take with items: Mira takes the sword into her closet (held, her idle set changes), opens the
+// cupboard, sits on a stool and gets up, switches the lights off: prompts, verbs and animation slots for each; identical
+// per-step hashes in every runtime; a snapshot after the equip restored and re-simulated to the end identically.
+const items = (r) => r?.result?.items ?? r?.items;
+{
+  const ref = items(node);
+  const summary = (x) => x && canon({ prompts: x.prompts, states: x.states, seatedAt: x.seatedAt, swordTakenAt: x.swordTakenAt, closet: x.closet, items: x.items, itemSignals: x.itemSignals, hana: x.hana, final: x.final });
+  const okRun = (x) => !!x && x.snapshot.afterEquip && x.snapshot.matchesAtRestore && x.snapshot.rerunMatches && ['take:sword', 'open:cupboard', 'sit:stool-7', 'use:light-switch'].every((p) => x.prompts[p])
+    && ['take', 'use', 'sit', 'sitIdle', 'stand'].every((st) => x.states.includes(st)) && x.closet?.held.includes('held:sword') && x.closet?.idleSet === 'sword'
+    && x.items.sword === 'taken' && x.items.cupboard === 'open' && x.items['light-switch'] === 'off' && x.seatedAt !== null;
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = items(r); const d = x && ref ? compareRuns(unpackRun(ref.run), unpackRun(x.run)) : { step: -1, component: 'no result' }; return { k, d, ok: okRun(x) && !d && summary(x) === summary(ref) }; });
+  check(8, 'The take with items: sword into the closet, cupboard, stool, switch; identical everywhere, snapshot across the equip', !!ref && okRun(ref) && rows.every((r) => r.ok),
+    ref ? `${ref.steps} steps × ${ref.components} components, final ${ref.final}; prompts ${Object.entries(ref.prompts).filter(([p]) => /sword|cupboard|stool-7|switch/.test(p)).map(([p, v]) => `${v.prompt} ${p.split(':')[1]} @${v.step}`).join(', ')}; states ${ref.states.join('/')}; sword taken @${ref.swordTakenAt}, worn ${ref.closet.worn.join('+')}, ${ref.closet.held.join(', ')}, idle set "${ref.closet.idleSet}"; seated @${ref.seatedAt}; cupboard ${ref.items.cupboard}, switch ${ref.items['light-switch']}; snapshot @${ref.snapshot.at} (after the equip) ${ref.snapshot.matchesAtRestore && ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? 'identical' : 'DIFFERS'}`).join('; ')}` : 'no node result');
+}
+
+// 9 (M1 W10). Hana talks: walking up to her starts her line; her voice plays from her (check 7), her mouth follows it
+// (the lip-sync lag is measured by @vrmxg/voice's test against the clip's loudness), she looks at Mira and blinks, and a
+// caption says the line. Same in every runtime (part of check 8's summary).
+{
+  const h = items(node)?.hana, lag = (() => { try { return JSON.parse(fs.readFileSync(res('lipsync.json'), 'utf8')); } catch { return null; } })();
+  const ok = !!h && h.speakingSteps > 60 && h.mouthMax > 0.3 && h.lookingAtMira > 0 && h.blinks >= 2 && !!h.caption?.text && (!lag || Math.abs(lag.bestLagMs) <= 50);
+  check(9, 'Hana greets Mira: her line, mouth, look-at, blinks and caption', ok,
+    h ? `line from step ${h.firstLineAt} for ${h.speakingSteps} steps, mouth up to ${h.mouthMax}, looking at Mira ${h.lookingAtMira} steps (${h.glances} glances), ${h.blinks} blinks, caption "${h.caption?.name}: ${h.caption?.text}"${lag ? `; lip sync ${lag.bestLagMs >= 0 ? '+' : ''}${lag.bestLagMs} ms against the clip (${lag.source})` : ''}` : 'no result');
 }
 checks.sort((a, b) => a.n - b.n);
 fs.writeFileSync(res('summary.json'), JSON.stringify({ checks, runtimes: { node: node?.version, chromium: chromium?.version, wkwebview: scheme?.ua } }, null, 1) + '\n');

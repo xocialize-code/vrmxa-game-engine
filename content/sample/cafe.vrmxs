@@ -25,7 +25,7 @@
     {"id":"espresso","type":"Model","parent":"root","name":"Espresso machine","asset":"espresso","transform":{"p":[1.2,1.25,-4.3]},"props":{"colliders":"none"}},
     {"id":"sun","type":"DirectionalLight","parent":"root","transform":{"q":[-0.354,0.354,0.146,0.854]},"props":{"intensity":2.4,"shadowExtent":10,"shadowPreset":"high"}},
     {"id":"counter-light","type":"SpotLight","parent":"root","transform":{"p":[0,2.9,-3.2],"q":[-0.643,0,0,0.766]},"props":{"angle":40,"color":"#ffe2b0","intensity":18,"range":7},"behaviours":[{"item":"light-switch","use":"switchedBy"}]},
-    {"id":"light-switch","type":"Item","parent":"root","name":"Counter lights","asset":"switch","transform":{"p":[2.6,1.2,-5.95]},"props":{"state":"on"}},
+    {"id":"light-switch","type":"Item","parent":"root","name":"Counter lights","asset":"switch","transform":{"p":[2.6,0,-5.95]},"props":{"state":"on"}},
     {"id":"switch-sound","type":"AudioPlayer3D","parent":"light-switch","name":"Switch click","asset":"switch-click","props":{"refDistance":1.5}},
     {"id":"entrance-open-sound","type":"AudioPlayer3D","parent":"root","name":"Entrance opening","asset":"door-open","transform":{"p":[0,1.2,6.1]},"props":{"refDistance":2}},
     {"id":"entrance-close-sound","type":"AudioPlayer3D","parent":"root","name":"Entrance closing","asset":"door-close","transform":{"p":[0,1.2,6.1]},"props":{"refDistance":2}},
