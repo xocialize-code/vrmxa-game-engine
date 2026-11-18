@@ -1,6 +1,6 @@
 {
   "name": "@vrmxg/three-vrm",
-  "version": "3.5.5-vrmxg.0",
+  "version": "3.5.5-vrmxg.1",
   "private": true,
   "description": "@pixiv/three-vrm 3.5.5 (MIT), vendored for VRMXG. vrmxg.0 is the upstream bundle unchanged; later versions add an engine state API (see README).",
   "type": "module",

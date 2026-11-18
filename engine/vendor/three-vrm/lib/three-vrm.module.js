@@ -6740,6 +6740,40 @@ VRMUtils.deepDispose = deepDispose;
 VRMUtils.removeUnnecessaryJoints = removeUnnecessaryJoints;
 VRMUtils.removeUnnecessaryVertices = removeUnnecessaryVertices;
 VRMUtils.rotateVRM0 = rotateVRM0;
+// ---- VRMXG patch (3.5.5-vrmxg.1): spring-bone state API ------------------------------------------
+// Snapshots for timeline scrubbing need each joint's Verlet state (AB-R-0924), which upstream keeps in
+// private fields. These methods are the only place that touches them. A joint's state is its current and
+// previous tail (in its center space): six numbers. The manager's state is every joint's, in joint order
+// (insertion order of `joints`, the same on every load of the same file). Restore the bones' own local
+// transforms too: a joint's tails alone don't put its bone back.
+VRMSpringBoneJoint.prototype.getState = function getState() {
+  const c = this._currentTail, p = this._prevTail;
+  return [c.x, c.y, c.z, p.x, p.y, p.z];
+};
+VRMSpringBoneJoint.prototype.setState = function setState(s) {
+  this._currentTail.set(s[0], s[1], s[2]);
+  this._prevTail.set(s[3], s[4], s[5]);
+};
+VRMSpringBoneManager.prototype.getState = function getState() {
+  const out = new Float64Array(this._joints.size * 6);
+  let i = 0;
+  for (const joint of this._joints) {
+    const c = joint._currentTail, p = joint._prevTail;
+    out[i++] = c.x; out[i++] = c.y; out[i++] = c.z; out[i++] = p.x; out[i++] = p.y; out[i++] = p.z;
+  }
+  return out;
+};
+VRMSpringBoneManager.prototype.setState = function setState(state) {
+  if (state.length !== this._joints.size * 6) throw new Error(`spring-bone state has ${state.length / 6} joints; this manager has ${this._joints.size}`);
+  let i = 0;
+  for (const joint of this._joints) {
+    joint._currentTail.set(state[i], state[i + 1], state[i + 2]);
+    joint._prevTail.set(state[i + 3], state[i + 4], state[i + 5]);
+    i += 6;
+  }
+};
+// ---- end VRMXG patch -------------------------------------------------------------------------------
+
 export {
   MToonMaterial,
   MToonMaterialDebugMode,

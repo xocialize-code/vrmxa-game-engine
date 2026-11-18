@@ -7,6 +7,7 @@ MToon, v0 compat and HDR emissive in one file; it imports only `three`). The lic
 | Version | Change |
 |---|---|
 | `3.5.5-vrmxg.0` | The upstream bundle, byte for byte (sha256 below) |
+| `3.5.5-vrmxg.1` | Spring-bone state API: `VRMSpringBoneJoint.getState()/setState()` (six numbers: current and previous tail) and `VRMSpringBoneManager.getState()/setState()` (every joint's, in joint order), appended before the exports. Look-at needs no patch: `vrm.lookAt.yaw` / `pitch` are public |
 
 Upstream bundle sha256: `bfc0f3bd49ee5b706b3055d366759e881f20dee32be344c4c8f586600f223434` (`lib/three-vrm.module.js` as published).
 
