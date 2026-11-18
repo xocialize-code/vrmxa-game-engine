@@ -6,7 +6,7 @@ are scripts on nodes (AB-D-0247). Node 26, ajv 8.20.0, `@modelcontextprotocol/sd
 
 ## Verdict
 
-> **2026-11-17:** lifted into `engine/packages/registry` and `engine/packages/scene` (M0 W0, AB-T-0501). This folder stays as the spike's record; the MCP server moves in W7.
+> **2026-11-17:** lifted into `engine/packages/registry` and `engine/packages/scene` (M0 W0, AB-T-0501). This folder stays as the spike's record; the MCP server moved to `engine/packages/mcp` in W7 (AB-T-0508).
 
 **It works, and it is the right shape for M0.** One file of definitions ([src/nodes.js](src/nodes.js): 11 node types,
 3 behaviours) drives everything below; adding a type touches nothing else.

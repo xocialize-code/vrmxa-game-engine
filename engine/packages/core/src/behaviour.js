@@ -23,6 +23,9 @@ export class Behaviour {
   process(dt, alpha) {}
   exitTree() {}
 
+  /** What tools (MCP, the inspector) show of this behaviour while it runs: its state unless it says more. */
+  inspect() { return this.getState(); }
+
   /** Snapshot state beyond the params (override when a behaviour keeps some). */
   getState() { return null; }
   setState(s) {}

@@ -15,7 +15,7 @@ input, audio, NPC AI, capture) for a new editor app, a game UI app and an anime 
 
 | Path | What |
 |---|---|
-| `engine/packages/` | Engine packages: `dmath`, `registry`, `scene`, `core`, `physics`, `character`, `input`, `camera`, `snapshot`, `render` so far; the rest arrive with M0 ([M0-PLAN.md](M0-PLAN.md)) |
+| `engine/packages/` | Engine packages: `dmath`, `registry`, `scene`, `core`, `physics`, `character`, `input`, `camera`, `snapshot`, `render`, `mcp` so far; the rest arrive with M0 ([M0-PLAN.md](M0-PLAN.md)) |
 | `tools/` | Workspace tooling: the ESLint plugin |
 | `spike-*/` | Throwaway spikes, each with a README (verdict, results, how to run) and raw results |
 | `research/` | Research reports: cinematics, NPC AI |
@@ -40,6 +40,7 @@ npm run check        # lint (incl. the determinism rule), typecheck, every packa
 | `engine/packages/camera` | Physical Camera node, rig presets with a spring arm, the cameras service, physics and mesh picking (simulation) |
 | `engine/packages/snapshot` | World snapshots, per-step component hashes, run comparison; the Node / Chromium / WKWebView determinism harness (simulation) |
 | `engine/packages/render` | The render host: WebGL for MToon, interpolation at α that never touches simulated state, Environment and light nodes, shadow presets, debug draw |
+| `engine/packages/mcp` | The MCP server: describe types, edit `.vrmxs` with undo, inspect and drive the scene in a headless engine |
 | `engine/vendor/three-vrm` | `@pixiv/three-vrm` 3.5.5 vendored, plus a spring-bone state API |
 | `tools/eslint-plugin-vrmxg` | `vrmxg/deterministic`: the determinism boundary as a lint rule |
 

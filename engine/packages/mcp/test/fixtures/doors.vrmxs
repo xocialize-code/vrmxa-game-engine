@@ -1,0 +1,15 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "doors",
+  "assets": [
+    {"id":"double","type":"vrmxs","ref":"prefabs/double-door.vrmxs"}
+  ],
+  "nodes": [
+    {"id":"root","type":"Node3D"},
+    {"id":"floor","type":"Collider","parent":"root","transform":{"p":[0,-0.1,0]},"props":{"shape":"box","size":[20,0.2,20]}},
+    {"id":"entrance","type":"Instance","parent":"root","asset":"double","transform":{"p":[0,0,6]}},
+    {"id":"walker","type":"RigidBody","parent":"root","transform":{"p":[0.5,0.9,2]},"props":{"bodyType":"kinematic"},"behaviours":[{"use":"walker"}]},
+    {"id":"walker-shape","type":"Collider","parent":"walker","props":{"radius":0.3,"height":1.2,"shape":"capsule"}}
+  ]
+}

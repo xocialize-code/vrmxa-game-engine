@@ -1,0 +1,31 @@
+{
+  "name": "@vrmxg/mcp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The VRMXG MCP server: describe node types from the registry, edit a .vrmxs scene with undo, and inspect and drive the scene in a headless engine (live tree, node state, physics, stepping with input).",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "bin": {
+    "vrmxg-mcp": "./src/server.js"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "@vrmxg/camera": "0.1.0",
+    "@vrmxg/character": "0.1.0",
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/input": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/scene": "0.1.0",
+    "three": "0.187.0"
+  }
+}

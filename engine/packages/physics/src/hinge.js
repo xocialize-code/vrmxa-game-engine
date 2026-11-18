@@ -64,6 +64,7 @@ export class HingeBehaviour extends Behaviour {
   }
 
   getState() { return { target: this.target, reported: this.reported }; }
+  inspect() { return { angleDeg: +(this.angle() / DEG).toFixed(2), targetDeg: +(this.target / DEG).toFixed(2), reported: this.reported, locked: !!this.params.locked }; }
   setState(s) { this.target = s.target; this.reported = s.reported; }
 }
 

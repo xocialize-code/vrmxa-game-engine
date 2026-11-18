@@ -1,0 +1,62 @@
+{
+ "date": "2026-11-17",
+ "client": "claude -p (Claude Code 2.1.319), --model sonnet, --mcp-config with this server on a temp copy of core/test/fixtures/cafe.vrmxs",
+ "prompt": "Describe the Camera node type, then add a second camera to the cafe scene: id cam-overview, under root, at [4, 3, 6], orbit preset targeting hana-1, 85 mm lens. Save, then validate, report the validate result.",
+ "mcpServers": [
+  {
+   "name": "vrmxg",
+   "status": "connected",
+   "source": "dynamic"
+  }
+ ],
+ "calls": [
+  {
+   "tool": "mcp__vrmxg__describe",
+   "input": {
+    "type": "Camera"
+   },
+   "result": "{\n \"type\": \"Camera\",\n \"extends\": [\n  \"Node3D\"\n ],\n \"description\": \"A physical camera: lens, sensor and focus, as the cinematics research specifies.\",\n \"asset\": null,\n \"schema\": {\n  \"type\": \"object\",\n  \"required\": [\n   \"id\",\n   \"type\"\n  ],\n  \"description\": \"A physical camera: lens, sensor and focus, …",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg__add_node",
+   "input": {
+    "node": {
+     "id": "cam-overview",
+     "type": "Camera",
+     "parent": "root",
+     "transform": {
+      "p": [
+       4,
+       3,
+       6
+      ]
+     },
+     "props": {
+      "preset": "orbit",
+      "target": "hana-1",
+      "focalLength": 85
+     }
+    }
+   },
+   "result": "added cam-overview",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg__save",
+   "input": {},
+   "result": "{\n \"saved\": \"cafe.vrmxs\",\n \"changedLines\": {\n  \"added\": 2,\n  \"removed\": 1,\n  \"total\": 3\n },\n \"warnings\": []\n}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg__validate",
+   "input": {},
+   "result": "{\n \"ok\": true,\n \"errors\": [],\n \"warnings\": []\n}",
+   "isError": false
+  }
+ ],
+ "final": "Camera node type: a physical camera (lens, sensor, focus) with props like focalLength (mm), preset (free/fixed/orbit/follow/overShoulder/firstPerson) and target.\n\nI added `cam-overview` under `root` at [4, 3, 6], with an orbit preset targeting `hana-1` and a focal length of 85 mm. I then saved the scene to `cafe.vrmxs`.\n\n**Validate result: ok: true, 0 errors, 0 warnings.**",
+ "costUsd": 0.11153710000000001,
+ "turns": 6,
+ "savedLine": "    {\"id\":\"cam-overview\",\"type\":\"Camera\",\"parent\":\"root\",\"transform\":{\"p\":[4,3,6]},\"props\":{\"focalLength\":85,\"preset\":\"orbit\",\"target\":\"hana-1\"}}"
+}
