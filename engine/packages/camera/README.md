@@ -1,7 +1,7 @@
 # @vrmxg/camera
 
-M0 W4 (AB-T-0505). The physical Camera node, rig presets stepped with the simulation, a spring arm, the `cameras`
-service, and picking.
+M0 W4 (AB-T-0505), M2 W2 (AB-T-0525). The physical Camera node, gameplay rig presets stepped with the simulation,
+a spring arm, cinematic VirtualCameras and CameraBrains, Path3D, the `cameras` service, and picking.
 
 ```js
 import { installCameras, pickPhysics, MeshPicker } from '@vrmxg/camera';
@@ -28,3 +28,31 @@ wall and easing back; look input on the current camera only, `camera_next`; phys
 picks on a skinned mesh in a bent pose and after it straightens. Integration (skips without the VRMs): 10 s of keyboard
 and gamepad drive Mira through the player controller and a follow camera, switching preset mid-run, and the replay
 reaches the identical character and camera state; the mesh picker hits her skinned VRM.
+
+## Cinematic cameras (M2 W2)
+
+`research/cinematics.md` §1.2: a physical `Camera`, Cinemachine-style `VirtualCamera`s, and a `CameraBrain` per output.
+
+```json
+{ "id": "ots", "type": "VirtualCamera", "props": { "rig": "overShoulder", "body": { "target": "mira" }, "aim": { "target": "hana-1" } } },
+{ "id": "brain", "type": "CameraBrain", "props": { "camera": "cam", "defaultBlend": { "style": "easeInOut", "seconds": 1 } } }
+```
+
+| Piece | What |
+|---|---|
+| Lens | `sensor` (super35, fullframe, mft, anime, or custom `sensorMm`), `gateFit` (fill crops, overscan shows the whole sensor), `dutch` (roll), `coc`. `thinLens` (CoC 0.025 mm by default: the research's worked example, 50 mm f/1.8 at 3.9 m, gives 3.65–4.19 m), `focalForFov`, and `postDof` / `Camera.postDof()`: focus distance, sharp range and bokeh in pixels for the post stack (W3) |
+| `VirtualCamera` | A candidate shot, stepped at 60 Hz: **body** fixed, follow (offset, damping), orbit (radius, yaw, pitch, yawSpeed: a turntable), thirdPerson (shoulder, arm, spring arm), firstPerson, dolly (on a `Path3D`: a u, or the point closest to the target, damped), hardLock. **Aim** none, lookAt, composer (keeps the target at a screen point: holds in the dead zone, damped beyond it, never outside the soft zone), groupFraming (centres several targets and sets the focal length so they fill `size` of the frame), panTilt. **Lens** per shot (focal length, f-stop, focus distance or target, dutch). **Noise** profiles (seeded smooth noise: handheldLight, handheldHeavy, vehicle). **Impulses** (`impulse { strength, zoom }`: trauma shake ∝ trauma², a zoom punch, decaying) |
+| Rig presets | `rig`: fixed, security, follow, thirdPerson, overShoulder, firstPerson, topDown, orbit, turntable, dolly, crane, closeUp, twoShot, handheld, shotReverse; the node's own body / aim / lens / noise override any part. `shotReverse(a, b, { side, reverse })` places a shot and its reverse on one side of the 180° line |
+| `CameraBrain` | One per output: the live vcam on its `channel` (highest priority; the most recently `activate`d wins a tie), blending from the previous one (both still stepping) by `defaultBlend` or a per-pair entry in `blends` (cut, linear, easeInOut, easeIn, easeOut; seconds, or frames at an fps). `override { camera, blend }` forces a shot (a sequence's camera track, W1). It writes the pose and lens to its `camera` and makes it current unless `makeCurrent: false`; that camera's own rig stays out of the way. Signal `cameraChanged` |
+| `Path3D` | Catmull-Rom through `points` by arc length (`pointAt(u)`, `closestU(p)`), open or closed |
+
+All of it is simulation: damping, noise and shake step with the clock, and vcam and brain state are in the snapshot,
+so a camera move or a blend replays identically (acceptance check 10: identical at every step in Node, Chromium and
+WKWebView, with a snapshot taken mid-blend). The gameplay presets above stay on `Camera` for the player's camera
+(camera-relative movement and look input).
+
+Tests (`test/cinematic.test.mjs`): the lens numbers; every body (follow settles at its offset, orbit at its radius, a
+turntable turns, a dolly rides its path); lookAt, the composer and group framing checked by projecting the targets to
+the screen; shot / reverse on one side of the line; seeded noise and an impulse that decays; the brain (priority, ties,
+an eased blend halfway at t = 0.5, a per-pair cut, an override, the lens on the camera); replay and a restore mid-blend.
+Not yet: camera-controls for the editor's viewport navigation (moved to W5, the timeline).

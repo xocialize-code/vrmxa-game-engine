@@ -4,7 +4,7 @@
    "n": 1,
    "title": "The cafe runs in the playground in WKWebView (scheme, loopback) and Chromium",
    "ok": true,
-   "evidence": "chromium: 600 frames, render 0.564 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 1.33 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 1.343 ms, door opened at step 113, 6 presets, 0 errors"
+   "evidence": "chromium: 600 frames, render 0.574 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 1.327 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 1.295 ms, door opened at step 113, 6 presets, 0 errors"
   },
   {
    "n": 2,
@@ -53,6 +53,12 @@
    "title": "Hana greets Mira: her line, mouth, look-at, blinks and caption",
    "ok": true,
    "evidence": "line from step 475 for 301 steps, mouth up to 1, looking at Mira 1668 steps (23 glances), 6 blinks, caption \"Hana: Oh, hi! Welcome to the cafe. Sit anywhere you like, and I'll bring you a menu.\"; lip sync +20 ms against the clip (engine/packages/voice/test/voice.test.mjs, Hana's welcome line)"
+  },
+  {
+   "n": 10,
+   "title": "Tracks and cinematic cameras: AnimationPlayer + CameraBrain blends identical everywhere, snapshot mid-blend",
+   "ok": true,
+   "evidence": "300 steps × 76 components (the brain's camera included), final 8afc1328ba578d85; door opened @31 (event key), light 18, Hana's talk clip up to 1; camera changes 0:null>orbit, 160:orbit>dolly; snapshot @180 (mid-blend) identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
   }
  ],
  "runtimes": {

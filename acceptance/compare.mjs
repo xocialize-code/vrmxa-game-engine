@@ -96,6 +96,16 @@ const items = (r) => r?.result?.items ?? r?.items;
   check(9, 'Hana greets Mira: her line, mouth, look-at, blinks and caption', ok,
     h ? `line from step ${h.firstLineAt} for ${h.speakingSteps} steps, mouth up to ${h.mouthMax}, looking at Mira ${h.lookingAtMira} steps (${h.glances} glances), ${h.blinks} blinks, caption "${h.caption?.name}: ${h.caption?.text}"${lag ? `; lip sync ${lag.bestLagMs >= 0 ? '+' : ''}${lag.bestLagMs} ms against the clip (${lag.source})` : ''}` : 'no result');
 }
+// 10 (M2 W0 + W2). Tracks and cinematic cameras: the walk with an AnimationPlayer (door by event, light fade, Hana's talk
+// clip) and a CameraBrain blending three VirtualCameras onto a camera hashes identically at every step everywhere,
+// the brain's output camera included; a snapshot taken mid-blend re-simulates identically.
+{
+  const cin = (r) => r?.result?.cinematic ?? r?.cinematic, ref = cin(node);
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = cin(r); const d = x && ref ? compareRuns(unpackRun(ref.run), unpackRun(x.run)) : { step: -1, component: 'no result' }; return { k, d, ok: !!x && !d && x.snapshot.rerunMatches }; });
+  const ok = !!ref && ref.snapshot.rerunMatches && ref.doorAt !== null && ref.talkMax > 0.99 && ref.cameraChanges.length >= 2 && rows.every((r) => r.ok);
+  check(10, 'Tracks and cinematic cameras: AnimationPlayer + CameraBrain blends identical everywhere, snapshot mid-blend', ok,
+    ref ? `${ref.steps} steps × ${ref.components} components (the brain's camera included), final ${ref.final}; door opened @${ref.doorAt} (event key), light ${ref.light}, Hana's talk clip up to ${ref.talkMax}; camera changes ${ref.cameraChanges.join(', ')}; snapshot @${ref.snapshot.at} (mid-blend) ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? 'identical' : 'DIFFERS'}`).join('; ')}` : 'no node result');
+}
 checks.sort((a, b) => a.n - b.n);
 fs.writeFileSync(res('summary.json'), JSON.stringify({ checks, runtimes: { node: node?.version, chromium: chromium?.version, wkwebview: scheme?.ua } }, null, 1) + '\n');
 process.exit(checks.every((c) => c.ok) ? 0 : 1);

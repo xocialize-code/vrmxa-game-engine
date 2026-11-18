@@ -10,7 +10,7 @@
 // overShoulder (follow, shorter and offset to the right), firstPerson (at the target's eyes).
 import { PerspectiveCamera, Matrix4, Vector3, Quaternion } from 'three';
 import { Node } from '@vrmxg/core';
-import { verticalFov, thinLens } from './lens.js';
+import { verticalFov, thinLens, postDof } from './lens.js';
 
 export const PRESETS = ['free', 'fixed', 'orbit', 'follow', 'overShoulder', 'firstPerson'];
 const DEFAULTS = {
@@ -22,7 +22,7 @@ const DEFAULTS = {
 const PITCH_MIN = -1.2, PITCH_MAX = 1.3; // radians; positive looks down
 const ARM_RADIUS = 0.2, ARM_RETURN = 4;  // spring arm: keep 0.2 m off walls, ease back out at 4 m/s
 
-const _m = new Matrix4(), _q = new Quaternion(), _v = new Vector3(), _up = new Vector3(0, 1, 0), _eye = new Vector3(), _at = new Vector3();
+const _m = new Matrix4(), _q = new Quaternion(), _qd = new Quaternion(), _v = new Vector3(), _up = new Vector3(0, 1, 0), _z = new Vector3(0, 0, 1), _eye = new Vector3(), _at = new Vector3();
 
 export class CameraNode extends Node {
   static actions = ['makeCurrent', 'setPreset', 'nextPreset'];
@@ -34,6 +34,8 @@ export class CameraNode extends Node {
     this.object3d.add(this.camera);
     /** Rig state: view yaw (0 looks along +Z), pitch (positive looks down), orbit distance, spring-arm length. */
     this.rig = { yaw: 0, pitch: 0.2, distance: null, arm: null };
+    /** The CameraBrain driving this camera (M2 W2), if any: its own rig then stays out of the way. @type {any} */
+    this.drivenBy = null;
     // The starting view, when the scene gives one (degrees): rig { yaw: 180 } looks along -Z.
     const deg = Math.PI / 180, start = this.props.rig ?? {};
     if (typeof start.yaw === 'number') this.rig.yaw = start.yaw * deg;
@@ -42,6 +44,8 @@ export class CameraNode extends Node {
   }
 
   get preset() { return this.props.preset ?? 'free'; }
+  /** The sensor: a named one, or `sensorMm` [w, h] when `sensor` is custom. */
+  get sensor() { const p = this.props; return p.sensor === 'custom' && Array.isArray(p.sensorMm) ? p.sensorMm : p.sensor ?? 'super35'; }
   /** The rig's yaw: what camera-relative movement is relative to. */
   get rigYaw() { return this.preset === 'free' || this.preset === 'fixed' ? this.viewYaw() : this.rig.yaw; }
 
@@ -52,7 +56,7 @@ export class CameraNode extends Node {
   applyLens(aspect = this.camera.aspect) {
     const p = this.props;
     this.camera.aspect = aspect;
-    this.camera.fov = verticalFov(p.focalLength ?? 50, p.sensor ?? 'super35', aspect);
+    this.camera.fov = verticalFov(p.focalLength ?? 50, this.sensor, aspect, p.gateFit ?? 'fill');
     this.camera.near = p.near ?? 0.1;
     this.camera.far = p.far ?? 500;
     this.camera.updateProjectionMatrix();
@@ -61,10 +65,20 @@ export class CameraNode extends Node {
   /** Thin-lens depth of field for the current lens and focus (focus follows the target when set). */
   dof() {
     const p = this.props;
-    let focus = p.focusDistance ?? 3;
-    const t = p.target ? this.tree?.find(p.target) : null;
-    if (t) focus = Math.max(0.05, this.object3d.getWorldPosition(_v).distanceTo(this.pivotOf(t, new Vector3())));
-    return thinLens({ focalMm: p.focalLength ?? 50, focusM: focus, fStop: p.fStop ?? 2.8, sensor: p.sensor ?? 'super35' });
+    return thinLens({ focalMm: p.focalLength ?? 50, focusM: this.focus(), fStop: p.fStop ?? 2.8, sensor: this.sensor, cocMm: p.coc });
+  }
+
+  /** The focus distance: to the target when it has one (and no brain sets it), else the focusDistance prop. */
+  focus() {
+    const p = this.props;
+    const t = p.target && !this.drivenBy ? this.tree?.find(p.target) : null;
+    return t ? Math.max(0.05, this.object3d.getWorldPosition(_v).distanceTo(this.pivotOf(t, new Vector3()))) : p.focusDistance ?? 3;
+  }
+
+  /** What the post stack's depth of field needs for an output height (M2 W3): focus distance, sharp range, bokeh in px. */
+  postDof(heightPx = 1080) {
+    const p = this.props;
+    return postDof({ focalMm: p.focalLength ?? 50, focusM: this.focus(), fStop: p.fStop ?? 2.8, sensor: this.sensor, cocMm: p.coc, heightPx, aspect: this.camera.aspect });
   }
 
   // ---------------------------------------------------------------- actions
@@ -149,6 +163,7 @@ export class CameraNode extends Node {
   lookFrom(eye, at) {
     _m.lookAt(eye, at, _up); // -Z towards `at`
     _q.setFromRotationMatrix(_m);
+    if (this.props.dutch) _q.multiply(_qd.setFromAxisAngle(_z, (this.props.dutch * Math.PI) / 180)); // dutch angle: roll about the view axis
     const o = this.object3d;
     o.parent?.updateWorldMatrix(true, false);
     if (o.parent && !isIdentity(o.parent.matrixWorld)) {
@@ -161,7 +176,8 @@ export class CameraNode extends Node {
   }
 
   getState() { return { rig: { ...this.rig }, preset: this.preset, p: this.object3d.position.toArray(), q: this.object3d.quaternion.toArray() }; }
-  setState(s) { this.rig = { ...s.rig }; this.props.preset = s.preset; this.object3d.position.fromArray(s.p); this.object3d.quaternion.fromArray(s.q); }
+  // the preset only when it changed: a restore mustn't add a prop the scene never set
+  setState(s) { this.rig = { ...s.rig }; if (s.preset !== this.preset) this.props.preset = s.preset; this.object3d.position.fromArray(s.p); this.object3d.quaternion.fromArray(s.q); }
 }
 
 function isIdentity(m) {

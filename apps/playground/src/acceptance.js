@@ -9,6 +9,10 @@
 //                  through the action map.
 //   runAudio       (browsers, M1 W5) a take heard through a Web Audio output: the hashes are the silent run's, and its
 //                  recording mixed offline twice gives the same samples.
+//   runCinematic   (M2 W0 + W2) the walk with an AnimationPlayer (a door by an event, a light fade, Hana's talk clip)
+//                  and a CameraBrain blending three VirtualCameras (orbit with handheld noise, a dolly on a Path3D, an
+//                  over-the-shoulder composer) onto a second camera: a hash of every component after every step and
+//                  the brain's output camera, and a snapshot taken mid-blend restored and re-simulated.
 //   runItems       (M1 W10) the recorded take with items (content/sample/input/play-items.json): Mira walks in, takes the
 //                  sword into her closet, opens the cupboard, sits on a stool, gets up and switches the counter lights
 //                  off; Hana greets her on the way. A hash of every component after every step, a snapshot after the
@@ -196,5 +200,55 @@ export async function runItems(R, sample, opts) {
     items: { cupboard: itemState('cupboard'), 'light-switch': itemState('light-switch'), sword: tree.find('sword') ? 'in the world' : 'taken' },
     itemSignals: signals.filter((s) => s.signal === 'stateChanged' && ['cupboard', 'light-switch'].includes(s.node)),
     hana: { ...talk, mouthMax: r3(talk.mouthMax) },
+  };
+}
+
+/** Tracks and cinematic cameras in the cafe, M2 W0 + W2 (see the top). @param {any} R @param {any} sample @param {any} opts */
+export async function runCinematic(R, sample, opts) {
+  const STEPS_C = 300, SNAP_C = 180;
+  const extra = [
+    { id: 'show', type: 'AnimationPlayer', parent: 'root', props: { fps: 30, autoplay: true, tracks: [
+      { id: 'door', type: 'event', keys: [[15, { target: 'door-1', call: 'enterState', args: { state: 'open' } }], [80, { target: 'dolly', call: 'activate' }]] },
+      { id: 'light', type: 'property', target: 'counter-light', path: 'props.intensity', keys: [[0, 18], [45, 4, 'easeInOut'], [120, 18]] },
+      { id: 'talk', type: 'animation', target: 'hana-1', clips: [{ start: 20, end: 110, slot: 'talk', blendIn: 8, blendOut: 8 }] },
+    ] } },
+    { id: 'cine', type: 'Camera', parent: 'root', props: { focalLength: 35 } },
+    { id: 'rail', type: 'Path3D', parent: 'root', props: { points: [[-3, 1.6, 4], [-1, 1.7, 2], [1, 1.8, 0], [2.5, 1.6, -1.5]] } },
+    { id: 'orbit', type: 'VirtualCamera', parent: 'root', props: { priority: 10, rig: 'orbit', body: { target: 'hana-1', radius: 3.5, yawSpeed: 12 }, noise: { profile: 'handheldLight' } } },
+    { id: 'dolly', type: 'VirtualCamera', parent: 'root', props: { priority: 10, rig: 'dolly', body: { path: 'rail', target: 'mira', lead: 0.05 }, aim: { target: 'mira' } } },
+    { id: 'ots', type: 'VirtualCamera', parent: 'root', props: { priority: 5, rig: 'overShoulder', body: { target: 'mira' }, aim: { target: 'hana-1' } } },
+    { id: 'brain', type: 'CameraBrain', parent: 'root', props: { camera: 'cine', makeCurrent: false, defaultBlend: { style: 'easeInOut', seconds: 1.5 } } },
+  ];
+  const doc = { ...sample.doc, nodes: [...sample.doc.nodes, ...extra] };
+  const S = { ...sample, doc };
+  const rec = JSON.parse(text(await sample.bytes('input/walk-in.json')));
+  const A = await buildWorld(R, S, opts);
+  A.input.replay(structuredClone(rec));
+  const cine = () => /** @type {any} */ (A.tree.find('cine'));
+  const camHash = (t) => { const c = /** @type {any} */ (t.find('cine')); return hashValue([c.object3d.position.toArray(), c.object3d.quaternion.toArray(), c.props.focalLength]); };
+  const run = [{ step: 0, h: { ...worldHashes(A.tree, { physicsBytes: true }), cine: camHash(A.tree) } }];
+  const seen = { doorAt: null, changes: [], talkMax: 0 };
+  const emit = A.tree.emit.bind(A.tree);
+  A.tree.emit = (n, sig, p) => { if (sig === 'cameraChanged') seen.changes.push(`${A.tree.clock.step}:${p.from}>${p.to}`); return emit(n, sig, p); };
+  let snap = null;
+  for (let k = 1; k <= STEPS_C; k++) {
+    while (!A.tree.step()) await A.tree.settle();
+    if (seen.doorAt === null && A.tree.find('door-1').current === 'open') seen.doorAt = k;
+    const hana = /** @type {any} */ (A.tree.find('hana-1')), talk = hana.graph.slots.talk?.clips?.[0]?.clip;
+    if (talk) seen.talkMax = Math.max(seen.talkMax, hana.actions.get(talk)?.weight ?? 0);
+    run.push({ step: k, h: { ...worldHashes(A.tree, { physicsBytes: k % 60 === 0 }), cine: camHash(A.tree) } });
+    if (k === SNAP_C) snap = captureWorld(A.tree, { meta: { scene: sample.scene, cinematic: true } });
+  }
+  const B = await buildWorld(R, S, opts);
+  B.input.replay(structuredClone(rec));
+  restoreWorld(B.tree, snap);
+  const again = [];
+  for (let k = SNAP_C + 1; k <= STEPS_C; k++) { while (!B.tree.step()) await B.tree.settle(); again.push({ step: k, h: { ...worldHashes(B.tree, { physicsBytes: k % 60 === 0 }), cine: camHash(B.tree) } }); }
+  const restored = compareRuns(run.slice(SNAP_C + 1), again);
+  return {
+    steps: STEPS_C, run: packRun(run), final: hashValue(run.at(-1).h), components: Object.keys(run[0].h).length,
+    snapshot: { at: SNAP_C, rerunMatches: restored === null, divergence: restored },
+    doorAt: seen.doorAt, cameraChanges: seen.changes, talkMax: r3(seen.talkMax), light: A.tree.find('counter-light').props.intensity,
+    cine: { p: cine().object3d.position.toArray().map(r3), focalLength: r3(cine().props.focalLength), live: A.tree.find('brain').bstate.live },
   };
 }

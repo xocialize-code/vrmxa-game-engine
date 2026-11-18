@@ -89,8 +89,12 @@ export function m0Registry() {
     extends: 'Node3D', description: 'A physical camera: lens, sensor and focus, as the cinematics research specifies.',
     props: {
       focalLength: P.number({ min: 4, max: 1200, default: 50, unit: 'mm' }),
-      sensor: P.enum(['super35', 'fullframe', 'mft', 'custom'], { default: 'super35' }),
+      sensor: P.enum(['super35', 'fullframe', 'mft', 'anime', 'custom'], { default: 'super35' }),
+      sensorMm: P.vec3({ description: 'A custom sensor: [width, height, 0] in mm (sensor custom).' }),
+      gateFit: P.enum(['fill', 'overscan'], { default: 'fill', description: 'Fill the frame with the sensor (crop) or show all of it.' }),
       fStop: P.number({ min: 0.7, max: 64, default: 2.8 }),
+      coc: P.number({ min: 0.001, max: 0.2, unit: 'mm', description: 'Circle of confusion (default: the sensor diagonal / 1500).' }),
+      dutch: P.number({ min: -90, max: 90, default: 0, unit: '°', description: 'Dutch angle: roll about the view axis.' }),
       focusDistance: P.number({ min: 0.05, unit: 'm', default: 3 }),
       near: P.number({ min: 0.001, unit: 'm', default: 0.1 }), far: P.number({ min: 0.1, unit: 'm', default: 500 }),
       preset: P.enum(['free', 'fixed', 'orbit', 'follow', 'overShoulder', 'firstPerson'], { default: 'free', sim: true, description: 'Rig preset; switchable at run time (setPreset, nextPreset).' }),
@@ -103,6 +107,51 @@ export function m0Registry() {
       nextPreset: { args: {} },
     },
     signals: { madeCurrent: {} },
+  });
+  // M2 W2: cinematic cameras. A VirtualCamera is a candidate shot (body, aim, lens, noise); a CameraBrain picks the live
+  // one on its channel and blends it onto a Camera node; Path3D carries dollies and cranes. All step at 60 Hz with the
+  // simulation, so camera moves and blends replay identically.
+  const RIG_NAMES = ['fixed', 'security', 'follow', 'thirdPerson', 'overShoulder', 'firstPerson', 'topDown', 'orbit', 'turntable', 'dolly', 'crane', 'closeUp', 'twoShot', 'handheld', 'shotReverse'];
+  r.define('VirtualCamera', {
+    extends: 'Node3D', description: 'A candidate shot: a body (where the camera is), an aim (where it looks), a lens, seeded noise and impulses. A CameraBrain picks one and renders through its Camera.',
+    props: {
+      rig: P.enum(RIG_NAMES, { default: 'fixed', sim: true, description: 'Preset body / aim / lens / noise; the props below override any part.' }),
+      priority: P.number({ default: 10, sim: true, description: 'Higher wins on its channel; the most recently activated wins a tie.' }),
+      channel: P.string({ default: 'main', sim: true, description: 'Which brain (output) it competes for.' }),
+      enabled: P.boolean({ default: true, sim: true }),
+      body: { schema: { type: 'object', description: 'type: fixed | follow | orbit | thirdPerson | firstPerson | dolly | hardLock; target; follow: offset [x, y, z] (target space), space, damping (s); orbit: radius, yaw, pitch (°), yawSpeed (°/s); thirdPerson: shoulder, arm, collide; dolly: path (a Path3D), u (0–1, else closest to the target), lead, pathDamping.' }, meta: { sim: true } },
+      aim: { schema: { type: 'object', description: 'type: none | lookAt | composer | groupFraming | panTilt; target ("id" or "id#head"); offset; composer: screen [x, y] (−1…1), deadZone [w, h], softZone [w, h], damping (s); groupFraming: targets [...], size (frame-height fraction); panTilt: yaw, pitch (°).' }, meta: { sim: true } },
+      lens: { schema: { type: 'object', description: 'focalLength (mm), fStop, focusDistance (m) or focusTarget, dutch (°), sensor.' }, meta: { sim: true } },
+      noise: { schema: { type: 'object', description: 'profile: handheldLight | handheldHeavy | vehicle; amplitude, frequency multipliers.' }, meta: { sim: true } },
+      impulseDecay: P.number({ min: 0.05, default: 0.6, unit: 's', sim: true }),
+    },
+    actions: {
+      activate: { args: {}, description: 'Make it the most recently activated (wins ties).' },
+      impulse: { args: { strength: arg(P.number({ min: 0, max: 1 }), 'Trauma added (shake ∝ trauma²).'), zoom: arg(P.number({ min: -0.5, max: 0.5 }), 'Zoom punch: a focal-length kick that eases back.') }, description: 'Shake the shot.' },
+    },
+  });
+  r.define('CameraBrain', {
+    extends: 'Node3D', description: 'Picks the live VirtualCamera on its channel and blends between them onto a Camera node: one per output (main view, picture in picture, split screen, a render job).',
+    props: {
+      camera: P.nodeRef({ sim: true, description: 'The Camera node it drives.' }),
+      channel: P.string({ default: 'main', sim: true }),
+      defaultBlend: { schema: { type: 'object', description: '{ style: cut | linear | easeInOut | easeIn | easeOut, seconds } (or frames + fps).' }, meta: { sim: true } },
+      blends: { schema: { type: 'array', items: { type: 'object' }, description: 'Per-pair blends: [{ from, to, style, seconds }] ("*" matches any).' }, meta: { sim: true } },
+      makeCurrent: P.boolean({ default: true, sim: true, description: 'Make its Camera the one the view renders through.' }),
+    },
+    signals: { cameraChanged: { args: { from: P.nodeRef(), to: P.nodeRef() } } },
+    actions: {
+      override: { args: { camera: arg(P.nodeRef(), 'The VirtualCamera to make live.'), blend: arg({ schema: { type: 'object' }, meta: {} }, 'Blend to it: { style, seconds }.') }, description: 'Force a shot (a sequence\'s camera track).' },
+      clearOverride: { args: {} },
+    },
+  });
+  r.define('Path3D', {
+    extends: 'Node3D', description: 'A smooth path through points (Catmull-Rom, by arc length) for dollies, rails and cranes.',
+    props: {
+      points: { schema: { type: 'array', items: { type: 'array', items: { type: 'number' }, minItems: 3, maxItems: 3 }, minItems: 2, description: 'Points in the node\'s space.' }, meta: { sim: true } },
+      closed: P.boolean({ default: false, sim: true }),
+      tension: P.number({ min: 0, max: 1, default: 0.5, sim: true }),
+    },
   });
   // Lights and the environment are presentation: none of their props is simulated. Lights shine along
   // their node's -Z. Shadow presets set the map size and bias; `shadowUpdate: "once"` freezes the map
