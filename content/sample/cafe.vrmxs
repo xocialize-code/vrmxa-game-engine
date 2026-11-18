@@ -7,7 +7,8 @@
     {"id":"espresso","type":"glb","ref":"props/espresso-machine.glb"},
     {"id":"mira","type":"vrmxa","ref":"characters/mira.vrmxa"},
     {"id":"hana","type":"vrmxa","ref":"characters/hana.vrmxa"},
-    {"id":"cafe-door","type":"vrmxi","ref":"items/cafe-door.vrmxi"}
+    {"id":"cafe-door","type":"vrmxi","ref":"items/cafe-door.vrmxi"},
+    {"id":"sword-pickup","type":"vrmxi","ref":"items/sword-pickup.vrmxi"}
   ],
   "nodes": [
     {"id":"root","type":"Node3D","name":"Cafe"},
@@ -19,6 +20,7 @@
     {"id":"door-1","type":"Item","parent":"root","name":"Staff door","asset":"cafe-door","transform":{"p":[6.1,0,-3],"q":[0,0.7071068,0,0.7071068]},"props":{"state":"locked"}},
     {"id":"entrance-left","type":"Item","parent":"root","name":"Entrance (left)","asset":"cafe-door","transform":{"p":[-0.5,0,6.1]}},
     {"id":"entrance-right","type":"Item","parent":"root","name":"Entrance (right)","asset":"cafe-door","transform":{"p":[0.5,0,6.1],"q":[0,1,0,0]}},
+    {"id":"sword","type":"Item","parent":"root","name":"Short sword","asset":"sword-pickup","transform":{"p":[-3,0.78,-1.95],"q":[0,0.7071068,0,0.7071068]}},
     {"id":"spawn","type":"Marker","parent":"root","transform":{"p":[-0.5,0,9.5]},"props":{"purpose":"spawn"}},
     {"id":"mira","type":"Character","parent":"root","name":"Mira","asset":"mira","transform":{"p":[-0.5,0,9.5],"q":[0,1,0,0]},"behaviours":[{"use":"player"}]},
     {"id":"hana-1","type":"Character","parent":"root","name":"Hana","asset":"hana","transform":{"p":[-1.5,0,-3]},"props":{"controller":"npc"},"behaviours":[{"radius":1.5,"use":"wander"}]},

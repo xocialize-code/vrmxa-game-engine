@@ -6,7 +6,7 @@ import { Playground, PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: 'cafe.vrmxs', notes: '' });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: 'cafe.vrmxs', notes: '', prompt: null, wearing: '' });
 let pg = null; // never reactive
 
 function refresh() {
@@ -14,6 +14,7 @@ function refresh() {
   ui.frame = pg.stats.frameMs ? `${pg.stats.frameMs.toFixed(1)} ms · ${pg.stats.fps.toFixed(0)} fps` : '—';
   ui.sim = pg.stats.simMs ? `${pg.stats.simMs.toFixed(2)} ms` : '—';
   ui.render = pg.stats.renderMs ? `${pg.stats.renderMs.toFixed(2)} ms` : '—';
+  ui.prompt = pg.prompt(); ui.wearing = pg.wearing();
   const cur = pg.currentCamera(); ui.cameras = pg.cameras(); ui.camera = cur?.id ?? ''; ui.preset = cur?.preset ?? '';
   if (pg.error) ui.error = pg.error;
 }
@@ -98,6 +99,7 @@ const setInterp = () => pg.setInterpolation(ui.interpolate);
     <main class="stage"><canvas ref="canvas" aria-label="Scene view" tabindex="0"></canvas>
       <p v-if="ui.loading" class="overlay">Loading…</p>
       <pre v-if="ui.error" class="overlay error" role="alert">{{ ui.error }}</pre>
+      <p v-if="ui.prompt" id="prompt" class="prompt" role="status" :aria-label="`Press ${ui.prompt.key} to ${ui.prompt.text}`"><kbd>{{ ui.prompt.key }}</kbd> {{ ui.prompt.text }}</p>
     </main>
     <footer class="bar status">
       <fieldset class="toggles"><legend>Debug draw</legend>
@@ -114,7 +116,8 @@ const setInterp = () => pg.setInterpolation(ui.interpolate);
         <div><dt id="render-time-label">Render</dt><dd><output id="render-time" :aria-label="`Render ${ui.render}`">{{ ui.render }}</output></dd></div>
         <div><dt id="step-label">Step</dt><dd><output id="step-count" :aria-label="`Step ${ui.step}`">{{ ui.step }}</output></dd></div>
       </dl>
-      <span id="notes" class="notes" :aria-label="ui.notes">{{ ui.notes }} · WASD move, Shift run, Space jump, C camera</span>
+      <span id="notes" class="notes" :aria-label="ui.notes">{{ ui.notes }} · WASD move, Shift run, Space jump, E interact, C camera</span>
+      <span v-if="ui.wearing" id="wearing" class="notes" :aria-label="`Mira wears ${ui.wearing}`">Wearing: {{ ui.wearing }}</span>
       <span v-if="ui.shell" id="shell-info" class="notes" :aria-label="`Shell ${ui.shell}`">{{ ui.shell }}</span>
     </footer>
   </div>
@@ -143,4 +146,6 @@ canvas { display: block; width: 100%; height: 100%; outline: none; }
 .readout dt { color: var(--muted); }
 .readout dd { margin: 0; font-variant-numeric: tabular-nums; min-width: 4.5em; }
 .notes { color: var(--muted); }
+.prompt { position: absolute; left: 50%; bottom: 18%; transform: translateX(-50%); margin: 0; padding: 6px 12px; border-radius: 8px; background: color-mix(in srgb, var(--panel) 88%, transparent); font-size: 15px; pointer-events: none; }
+.prompt kbd { display: inline-block; min-width: 1.4em; padding: 1px 6px; margin-right: 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; background: var(--bg); font: 600 13px/1.4 -apple-system, system-ui, sans-serif; text-align: center; }
 </style>

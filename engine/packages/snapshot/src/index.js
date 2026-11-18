@@ -134,7 +134,23 @@ export function recordRun(tree, steps, { physicsBytesEvery = 0, onStep } = {}) {
   const out = [];
   for (let i = 0; i < steps; i++) {
     onStep?.(tree.clock.step);
-    tree.step();
+    if (!tree.step()) throw new Error(`recordRun: step ${tree.clock.step} is held by pending work (a closet redraw?): record with recordRunAsync`);
+    const step = tree.clock.step;
+    out.push({ step, h: worldHashes(tree, { physicsBytes: physicsBytesEvery > 0 && step % physicsBytesEvery === 0 }) });
+  }
+  return out;
+}
+
+/**
+ * recordRun for runs whose steps a service may hold (closet redraws): waits them out.
+ * @param {any} tree @param {number} steps
+ * @param {{ physicsBytesEvery?: number, onStep?: (step: number) => void }} [opts]
+ */
+export async function recordRunAsync(tree, steps, { physicsBytesEvery = 0, onStep } = {}) {
+  const out = [];
+  for (let i = 0; i < steps; i++) {
+    onStep?.(tree.clock.step);
+    while (!tree.step()) await tree.settle();
     const step = tree.clock.step;
     out.push({ step, h: worldHashes(tree, { physicsBytes: physicsBytesEvery > 0 && step % physicsBytesEvery === 0 }) });
   }

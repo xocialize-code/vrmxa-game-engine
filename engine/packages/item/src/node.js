@@ -72,7 +72,7 @@ export class ItemNode extends Node {
       if (c.sensor) {
         const item = this;
         // A sensor with no collision filter senses characters (VRMXI §5.1); filters by layer name are read later.
-        info = { id: `${this.id}#${c.name}`, isSensor: true, emit(signal, e) { if (item.tree.find(e.body)?.type === 'Character') item.emit(signal === 'bodyEntered' ? 'entered' : 'exited', { sensor: c.name, body: e.body }); } };
+        info = { id: `${this.id}#${c.name}`, isSensor: true, emit(signal, e) { if (item.tree?.find(e.body)?.type === 'Character') item.emit(signal === 'bodyEntered' ? 'entered' : 'exited', { sensor: c.name, body: e.body }); } };
       }
       const h = physics.addCollider(info, this, handle, { ...c.shape, p: c.p, q: c.q, sensor: c.sensor });
       if (c.sensor) this.sensorHandles.set(c.name, h);

@@ -31,6 +31,14 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
 six checks pass, with the same final hash `f0e803b406afaa51` in Node, Chromium and WKWebView over both origins (check 5's
 MCP session is still the W9 one).
 
+**Re-run at M1 W4 (AB-R-0958).** The cafe now has the specification's sword pickup on a table, and every runtime's
+world installs interaction (`@vrmxg/interact`, AB-R-0956) and the closet (`@vrmxg/closet`, AB-R-0957). All six checks
+pass with the final hash `868739057945df05` in Node, Chromium and WKWebView over both origins. The sword set now asks
+for a sword in hand (`held:sword`): Mira's idle is the default (her own sword is stowed) until the device run walks her
+to the table and takes the sword, which check 2 now requires (idle set default → sword, the same in every runtime).
+Check 6 counts four reach sensors and two rays (the spring arm's, the interaction focus's). Rebuild the playground
+before the browser runs: a stale `dist/` diverges at step 0.
+
 Found on the way and fixed: travel root motion could never turn a walk into a run (the blend read the speed root motion
 had already clamped); the sample's sword set named a tag Mira doesn't wear. Known gaps: the WKWebView harness's canvas
 readback comes back blank for the playground page (the wrapper's window captures are the visual record:

@@ -57,6 +57,14 @@ export class Project {
     return { ...main, ...anim };
   }
 
+  /** vrmxa-core's ./closet module (the closet at run time), or null. */
+  async vrmxaCloset() {
+    if (!this.vrmxaCorePath) return null;
+    const base = fs.statSync(this.vrmxaCorePath).isDirectory() ? this.vrmxaCorePath : path.dirname(this.vrmxaCorePath);
+    const file = path.join(base, 'src/closet/index.js');
+    return fs.existsSync(file) ? import(pathToFileURL(file).href) : null;
+  }
+
   /** Project animation sets every character falls back on, or null. */
   animations() {
     if (!this.exists('animations.json')) return null;

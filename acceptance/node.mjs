@@ -8,14 +8,15 @@ import { installPortableMath } from '@vrmxg/dmath';
 import { loadRapier } from '@vrmxg/physics';
 import { loadSample } from '../apps/playground/src/world.js';
 import { runSimulation, runDevices } from '../apps/playground/src/acceptance.js';
-import { vrmxaCore } from '../engine/packages/character/test/fixtures.mjs';
+import { vrmxaCore, PATHS } from '../engine/packages/character/test/fixtures.mjs';
 import * as projectBehaviours from '../content/sample/behaviours.js';
 
 installPortableMath();
 const here = import.meta.dirname, content = path.join(here, '../content/sample');
 const bytes = async (ref) => new Uint8Array(fs.readFileSync(path.join(content, ref)));
 const behaviours = new Map(Object.entries(projectBehaviours).filter(([, v]) => typeof v === 'function'));
-const opts = { vrmxaCore: await vrmxaCore(), behaviours, stubTextures: true };
+const closet = await import(PATHS.core.replace(/index\.js$/, 'closet/index.js'));
+const opts = { vrmxaCore: await vrmxaCore(), closet, behaviours, stubTextures: true };
 const R = await loadRapier();
 const sample = await loadSample(bytes);
 const simulation = await runSimulation(R, sample, opts, { now: () => performance.now() });

@@ -90,15 +90,17 @@ export class RenderHost {
   frame(elapsedSeconds, afterStep) {
     const tree = this.tree;
     const { steps, alpha } = tree.clock.advance(elapsedSeconds);
+    let stepped = 0;
     for (let i = 0; i < steps; i++) {
       if (i === steps - 1 && this.interpolate) this.interpolator.beforeStep(tree);
-      tree.step();
+      if (!tree.step()) break; // a service holds the step (pending work): try again next frame
+      stepped++;
       afterStep?.(tree.clock.step);
     }
-    if (this.interpolate) this.interpolator.afterSteps(tree, steps > 0);
+    if (this.interpolate) this.interpolator.afterSteps(tree, stepped > 0);
     tree.present(elapsedSeconds, alpha);
-    this.render(alpha, steps > 0);
-    this.last.steps = steps; this.last.alpha = alpha;
+    this.render(stepped < steps ? 1 : alpha, stepped > 0);
+    this.last.steps = stepped; this.last.alpha = alpha; this.last.held = stepped < steps;
     return this.last;
   }
 

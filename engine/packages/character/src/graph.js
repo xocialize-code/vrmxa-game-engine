@@ -10,6 +10,13 @@
 const MOVING = 0.1; // m/s
 
 /**
+ * Action states (VRMXA §8.2 slots a character plays while it does something with an item, VRMXI §8): one-shots
+ * return to idle or move when their clip ends (at once when the slot is empty); `sit` settles into `sitIdle`,
+ * held until `stand`.
+ */
+export const ACTIONS = new Set(['use', 'take', 'talk', 'sit', 'sitIdle', 'stand']);
+
+/**
  * @typedef {{ clip: string, weight?: number, rate?: number, blendIn?: number }} SlotEntry
  * @typedef {{ duration: number, loops: boolean, speed: number | null, rootMotion: string | null }} ClipInfo
  */
@@ -76,7 +83,11 @@ export class LocomotionGraph {
     const hz = Math.round(1 / dt);
     this.speed = speed;
     const s = this.state;
-    if (jumped && this.has('jump')) this._go('jump', hz);
+    if (ACTIONS.has(s)) {
+      const done = this.time >= this.durationOf(slotsOf(s, this)[0]);
+      if (s === 'sit' && done) this._go('sitIdle', hz);
+      else if (s !== 'sitIdle' && s !== 'sit' && done) this._go(speed > MOVING ? 'move' : 'idle', hz);
+    } else if (jumped && this.has('jump')) this._go('jump', hz);
     else if (s === 'jump' && verticalSpeed < 0 && this.has('fall')) this._go('fall', hz);
     else if ((s === 'jump' || s === 'fall') && grounded && this.time > 0.1) this._go(this.has('land') ? 'land' : speed > MOVING ? 'move' : 'idle', hz);
     else if (s === 'land' && this.time >= this.durationOf('land')) this._go(speed > MOVING ? 'move' : 'idle', hz);
@@ -86,6 +97,14 @@ export class LocomotionGraph {
     if (this.state === 'move') this.phase = advancePhase(this, this.phase, speed, dt);
     if (this.fade > 0) this.fade--;
   }
+
+  /** Start an action state (use, take, talk, sit, stand; sitIdle follows sit). */
+  act(state, hz = 60) {
+    if (!ACTIONS.has(state)) throw new Error(`"${state}" isn't an action (${[...ACTIONS].join(', ')})`);
+    this._go(state, hz);
+  }
+  /** True while an action plays or the character sits. */
+  get busy() { return ACTIONS.has(this.state); }
 
   durationOf(slot) { const e = this.picks[slot]; return e ? this.info.get(e.clip)?.duration ?? 1 : 0; }
 
@@ -167,6 +186,8 @@ function slotsOf(state, g) {
     case 'move': return g.has('walk') ? ['walk', 'run'] : ['run'];
     case 'fall': return g.has('fall') ? ['fall'] : ['jump'];
     case 'land': return g.has('land') ? ['land'] : ['idle'];
+    case 'take': return g.has('take') ? ['take'] : ['equip']; // `take` is proposed for VRMXA §8.2 (VRMXI Q3); until then, equip
+    case 'sitIdle': return g.has('sitIdle') ? ['sitIdle'] : ['sit'];
     default: return [state];
   }
 }

@@ -16,7 +16,12 @@ import { LocomotionGraph } from './graph.js';
 const GRAVITY = -9.81;
 const TURN_RATE = 10; // rad/s
 const ARRIVE = 0.3;   // m, goTo arrival radius
+/** Hip height above the feet when seated, for the generated `sit` clips: a seat point is where the hips go (VRMXI §8.2). */
+const SEATED_HIPS = 0.5;
 const _v = new Vector3();
+
+/** The body's objects in order, skipping presentation subtrees (held items' models): what the snapshot holds. */
+function simTraverse(o, fn) { if (o.userData.presentation) return; fn(o); for (const c of o.children) simTraverse(c, fn); }
 
 export class CharacterNode extends Node {
   static actions = ['say', 'goTo', 'emote', 'lookAt'];
@@ -28,7 +33,7 @@ export class CharacterNode extends Node {
     /** @type {any} */ this.vrm = null;
     /** @type {any} */ this.graph = null;
     /** @type {Map<string, any>} clip sha256 → AnimationAction */ this.actions = new Map();
-    this.ctrl = { vy: 0, grounded: true, yaw: 0, jumped: false, goTo: null, look: null };
+    this.ctrl = { vy: 0, grounded: true, yaw: 0, jumped: false, goTo: null, look: null, seat: null };
     /** Tags of what is worn; animation slots follow them (VRMXA §8.3). (Node `tags` are the node's own.) */
     this.equipped = new Set();
     /** @type {any} */ this.physics = null;
@@ -44,30 +49,13 @@ export class CharacterNode extends Node {
     if (!lib) throw new Error(`Character "${this.id}" needs the characters service (installCharacters)`);
     const prep = lib.take(this.id);
     this.lib = lib;
-    this.vrm = prep.vrm;
     this.animations = prep.animations;
     this.equipped = new Set(prep.tags);
-    this.object3d.add(this.vrm.scene);
     // Facing starts from the node's own rotation about Y.
     const q = this.object3d.quaternion;
     this.ctrl.yaw = 2 * Math.atan2(q.y, q.w);
-
-    if (this.vrm.lookAt) {
-      const proxy = new VRMLookAtQuaternionProxy(this.vrm.lookAt);
-      proxy.name = 'VRMLookAtQuaternionProxy';
-      this.vrm.scene.add(proxy);
-    }
-    this.mixer = new AnimationMixer(this.vrm.scene);
-    const info = new Map();
-    for (const [sha, { anim, meta }] of prep.clips) {
-      const clip = createVRMAnimationClip(anim, this.vrm);
-      const action = this.mixer.clipAction(clip);
-      action.play(); action.weight = 0; action.paused = true;
-      this.actions.set(sha, action);
-      info.set(sha, { duration: meta.duration ?? clip.duration, loops: meta.loops ?? true, speed: meta.speed ?? null, rootMotion: meta.rootMotion ?? 'inPlace' });
-    }
-    this.clipInfo = info;
-    this.graph = new LocomotionGraph(lib.resolveSlots(this.animations, this.equipped), info, () => this.rng.float());
+    this.useVRM(prep);
+    this.graph = new LocomotionGraph(lib.resolveSlots(this.animations, this.equipped), this.clipInfo, () => this.rng.float());
 
     const physics = this.tree.services.get('physics');
     if (physics) {
@@ -79,6 +67,47 @@ export class CharacterNode extends Node {
       this.kcc = physics.world.createCharacterController({});
     }
     this.vrm.update(0); // rest pose, springs settled at rest
+  }
+
+  /** Put a parsed VRM on this node: its look-at proxy, a mixer with the prepared clips bound to it. */
+  useVRM(prep) {
+    this.vrm = prep.vrm;
+    this.clips = prep.clips; // kept for a later swapVRM
+    this.object3d.add(this.vrm.scene);
+    if (this.vrm.lookAt) {
+      const proxy = new VRMLookAtQuaternionProxy(this.vrm.lookAt);
+      proxy.name = 'VRMLookAtQuaternionProxy';
+      this.vrm.scene.add(proxy);
+    }
+    this.mixer = new AnimationMixer(this.vrm.scene);
+    this.actions = new Map();
+    const info = new Map();
+    for (const [sha, { anim, meta }] of prep.clips) {
+      const clip = createVRMAnimationClip(anim, this.vrm);
+      const action = this.mixer.clipAction(clip);
+      action.play(); action.weight = 0; action.paused = true;
+      this.actions.set(sha, action);
+      info.set(sha, { duration: meta.duration ?? clip.duration, loops: meta.loops ?? true, speed: meta.speed ?? null, rootMotion: meta.rootMotion ?? 'inPlace' });
+    }
+    this.clipInfo = info;
+  }
+
+  /**
+   * Swap in another body (a closet redraw: VRMXA's avatar.vrm drawn with what is now worn), keeping everything
+   * that isn't the body: the controller, the locomotion graph, facing, look target, what is worn. The new body's
+   * pose comes from the graph on this step and its springs start at rest, so the swap is the same in every run.
+   * Presentation objects hung on the old body (held items' models) are moved to the same bones of the new one.
+   * @param {{ vrm: any, clips: Map<string, any> }} prep
+   */
+  swapVRM(prep) {
+    const hung = [];
+    this.vrm.scene.traverse((o) => { for (const c of o.children) if (c.userData.presentation && c.userData.bone) hung.push(c); });
+    this.mixer?.stopAllAction();
+    this.object3d.remove(this.vrm.scene);
+    this.useVRM(prep);
+    for (const c of hung) this.vrm.humanoid?.getRawBoneNode(c.userData.bone)?.add(c);
+    this.vrm.update(0);
+    this.object3d.updateWorldMatrix(true, true);
   }
 
   exitTree() {
@@ -106,8 +135,9 @@ export class CharacterNode extends Node {
 
   physicsProcess(dt) {
     const c = this.ctrl;
-    // 1. intent
-    let [mx, mz] = this.input.move;
+    // 1. intent (none while an action plays or the character sits)
+    let [mx, mz] = this.graph.busy || c.seat ? [0, 0] : this.input.move;
+    if (this.graph.busy || c.seat) this.input.jump = false;
     if (c.goTo) {
       const target = this.tree.find(c.goTo);
       if (!target) c.goTo = null;
@@ -128,7 +158,12 @@ export class CharacterNode extends Node {
     c.vy += GRAVITY * dt;
     const desired = [mx * dt, c.vy * dt, mz * dt];
     const p = this.object3d.position;
-    if (this.kcc) {
+    if (c.seat) { // held on the seat (no controller, no gravity), following it if it moves (VRMXI §8.2)
+      c.vy = 0; c.grounded = true;
+      const pt = /** @type {any} */ (this.tree.find(c.seat.item))?.seatPoints?.()[c.seat.point]?.node;
+      if (pt) { pt.updateWorldMatrix(true, false); const e = pt.matrixWorld.elements; this.placeAt(e[12], e[13] - SEATED_HIPS, e[14], Math.atan2(e[8], e[10])); }
+    }
+    else if (this.kcc) {
       const { movement, grounded } = this.kcc.move(this.collider, desired);
       p.set(p.x + movement[0], p.y + movement[1], p.z + movement[2]);
       c.grounded = grounded;
@@ -172,6 +207,56 @@ export class CharacterNode extends Node {
     this.vrm.update(dt);
   }
 
+  // ---------------------------------------------------------------- items (VRMXI §8): actions, seats
+
+  /** Play an action slot (use, take, talk, stand; sit through sitOn). Movement waits until it ends. */
+  startAction(slot) { this.graph.act(slot); }
+  /** True while an action plays or the character is seated. */
+  get busy() { return this.graph.busy || !!this.ctrl.seat; }
+
+  /**
+   * Sit in one of an item's seat points: the hips go to the point's node, facing its +Z (VRMXI §8.2); the collider is
+   * off while seated, and the item's tags count toward what the character has on (VRMXI §8.1).
+   * @param {any} item an Item node @param {number} index seat point
+   */
+  sitOn(item, index = 0) {
+    const point = item.seatPoints()[index];
+    if (!point?.node) throw new Error(`${item.id} has no seat point ${index}`);
+    point.node.updateWorldMatrix(true, false);
+    const e = point.node.matrixWorld.elements, yaw = Math.atan2(e[8], e[10]);
+    const p = this.object3d.position;
+    const tags = item.itemTags().filter((t) => !this.equipped.has(t));
+    this.ctrl.seat = { item: item.id, point: index, tags, from: [p.x, p.y, p.z, this.ctrl.yaw], exit: point.exit ? true : null };
+    this.placeAt(e[12], e[13] - SEATED_HIPS, e[14], yaw);
+    if (this.collider !== undefined) this.physics.world.setColliderEnabled(this.collider, false);
+    if (tags.length) this.setEquippedTags([...this.equipped, ...tags]);
+    this.graph.act('sit');
+  }
+
+  /** Stand up from a seat: to its exit point (or where the character came from), control back. */
+  standUp() {
+    const seat = this.ctrl.seat;
+    if (!seat) return;
+    // to the seat's exit point where it is now (the seat may have moved), else back where the character came from
+    const exitNode = seat.exit ? /** @type {any} */ (this.tree.find(seat.item))?.seatPoints?.()[seat.point]?.exit : null;
+    let x, y, z, yaw;
+    if (exitNode) { exitNode.updateWorldMatrix(true, false); const e = exitNode.matrixWorld.elements; [x, y, z, yaw] = [e[12], e[13], e[14], Math.atan2(e[8], e[10])]; }
+    else [x, y, z, yaw] = seat.from;
+    this.ctrl.seat = null;
+    this.placeAt(x, y, z, yaw);
+    if (this.collider !== undefined) this.physics.world.setColliderEnabled(this.collider, true);
+    if (seat.tags.length) this.setEquippedTags([...this.equipped].filter((t) => !seat.tags.includes(t)));
+    this.graph.act('stand');
+  }
+
+  /** Put the character's feet at a point, facing a yaw (radians, 0 along +Z). */
+  placeAt(x, y, z, yaw) {
+    this.object3d.position.set(x, y, z);
+    this.ctrl.yaw = yaw;
+    this.object3d.quaternion.set(0, Math.sin(yaw / 2), 0, Math.cos(yaw / 2));
+    this.object3d.updateWorldMatrix(true, true);
+  }
+
   // ---------------------------------------------------------------- actions (the shared vocabulary)
   /** Speak a line (lip sync arrives with audio in M1; the signal fires now). */
   say({ text }) { this.emit('spoke', { text }); }
@@ -195,7 +280,7 @@ export class CharacterNode extends Node {
   /** Everything that makes this character's next step what it is, as plain data. */
   getState() {
     const nodes = [];
-    this.vrm.scene.traverse((o) => { nodes.push(o.position.x, o.position.y, o.position.z, o.quaternion.x, o.quaternion.y, o.quaternion.z, o.quaternion.w, o.scale.x, o.scale.y, o.scale.z); });
+    simTraverse(this.vrm.scene, (o) => { nodes.push(o.position.x, o.position.y, o.position.z, o.quaternion.x, o.quaternion.y, o.quaternion.z, o.quaternion.w, o.scale.x, o.scale.y, o.scale.z); });
     const em = this.vrm.expressionManager;
     const p = this.object3d.position, q = this.object3d.quaternion;
     return {
@@ -214,7 +299,7 @@ export class CharacterNode extends Node {
     this.object3d.position.set(s.node[0], s.node[1], s.node[2]);
     this.object3d.quaternion.set(s.node[3], s.node[4], s.node[5], s.node[6]);
     let i = 0;
-    this.vrm.scene.traverse((o) => {
+    simTraverse(this.vrm.scene, (o) => {
       const a = s.pose;
       o.position.set(a[i], a[i + 1], a[i + 2]); o.quaternion.set(a[i + 3], a[i + 4], a[i + 5], a[i + 6]); o.scale.set(a[i + 7], a[i + 8], a[i + 9]);
       if (!o.matrixAutoUpdate) o.updateMatrix(); // spring bones keep manual matrices
@@ -223,7 +308,12 @@ export class CharacterNode extends Node {
     this.vrm.springBoneManager?.setState(s.springs);
     if (this.vrm.lookAt && s.lookAt) { this.vrm.lookAt.yaw = s.lookAt[0]; this.vrm.lookAt.pitch = s.lookAt[1]; }
     for (const [k, v] of Object.entries(s.expressions)) this.vrm.expressionManager?.setValue(k, v);
-    if (s.equipped.join('|') !== [...this.equipped].join('|')) this.setEquippedTags(s.equipped);
+    if (s.equipped.join('|') !== [...this.equipped].join('|')) {
+      // slots for what the snapshot had on, without picking clips (that would draw from the random stream);
+      // the graph's own state brings the picks back
+      this.equipped = new Set(s.equipped);
+      this.graph.slots = this.lib.resolveSlots(this.animations, this.equipped);
+    }
     this.graph.setState(s.graph);
     const { move, ...ctrl } = s.ctrl;
     this.ctrl = { ...ctrl };

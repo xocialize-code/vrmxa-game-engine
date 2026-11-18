@@ -205,7 +205,13 @@ export class SceneTree {
   }
 
   /** One fixed simulation step (see the order at the top of this file). */
+  /**
+   * One simulation step. A service whose work for this step isn't ready yet (a closet redraw due now, say) holds
+   * it: holds() returns true and nothing runs, so the result lands on the same step in every run. Then step()
+   * returns false: live play skips the step (a hitch), and a script awaits settle() and tries again.
+   */
   step() {
+    for (const s of this.services.values()) if (s.holds?.(this.clock.step)) return false;
     for (const s of this.services.values()) s.physicsProcess?.(DT);
     this.timers.step((n) => (n && this.byId.get(n.id) === n ? this.scaleOf(n) : 0));
     // Only nodes with step work (a physicsProcess override, behaviours or a state machine), in tree
@@ -222,10 +228,21 @@ export class SceneTree {
     }
     for (const s of this.services.values()) s.afterNodes?.(DT);
     this.clock.step++;
+    return true;
   }
 
-  /** Run `count` steps. */
-  run(count) { for (let i = 0; i < count; i++) this.step(); }
+  /** `count` steps. A held step is an error here (nothing can finish while this runs): use runAsync. */
+  run(count) {
+    for (let i = 0; i < count; i++) if (!this.step()) throw new Error(`step ${this.clock.step} is held by a service's pending work: use runAsync, or await settle() first`);
+  }
+
+  /** Whatever services are still working on (resolves when nothing is pending). */
+  async settle() { for (const s of this.services.values()) if (s.settle) await s.settle(); }
+
+  /** `count` steps, waiting out any step a service holds. */
+  async runAsync(count) {
+    for (let i = 0; i < count; i++) while (!this.step()) await this.settle();
+  }
 
   /**
    * Live play: give the elapsed display time; runs the due steps, then every node's presentation
@@ -233,7 +250,7 @@ export class SceneTree {
    */
   frame(elapsedSeconds) {
     const { steps, alpha } = this.clock.advance(elapsedSeconds);
-    this.run(steps);
+    for (let i = 0; i < steps; i++) if (!this.step()) break; // held: the rest waits for the next frame
     this.present(elapsedSeconds, alpha);
     return alpha;
   }
@@ -341,6 +358,10 @@ export class SceneTree {
    * state (physics, characters, cameras, input) restore theirs separately (@vrmxg/snapshot does it all).
    */
   setState(s) {
+    // Nodes the run removed (an item taken, say) aren't in the snapshot: remove them here too. Nodes added at run time
+    // can't be brought back this way (they need preparing), and the check below names them.
+    const keep = new Set(s.nodes.map((n) => n.id));
+    for (const n of this.all()) if (!keep.has(n.id) && this.byId.has(n.id) && (!n.parent || n.parent._isRoot || keep.has(n.parent.id))) this.remove(n.id);
     // Check that this is the same scene before changing anything.
     for (const ns of s.nodes) {
       const n = this.byId.get(ns.id);

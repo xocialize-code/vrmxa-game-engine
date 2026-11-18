@@ -97,5 +97,18 @@ export async function runDevices(R, sample, opts) {
   out.gamepadJump = { airborneSteps: gAir };
   const yaw0 = cam.rig.yaw; dev.moveMouse(200, 0); steps(1); out.mouseLook = { yawChange: r3(cam.rig.yaw - yaw0) };
   const preset0 = cam.preset; dev.press('KeyC'); steps(1); dev.release('KeyC'); steps(1); out.cameraNext = { from: preset0, to: cam.preset };
+  // M1 W3 + W4: walk up to the sword on the table and take it: into Mira's closet, into her hand, her idle changes
+  if (W.closet && W.tree.find('sword')) {
+    mira.placeAt(-3, 0, -1.4, Math.PI); steps(3);
+    const prompts = W.interact.prompts().map((p) => `${p.verb}:${p.item}`);
+    const idleBefore = mira.graph.slots.idle?.set?.id ?? null;
+    dev.press('KeyE'); steps(1); dev.release('KeyE'); steps(1);
+    out.takeSword = {
+      prompts, idleBefore, idleAfter: mira.graph.slots.idle?.set?.id ?? null, taken: !W.tree.find('sword'),
+      worn: W.closet.wornBy('mira').map((w) => `${w.id.slice(0, 8)}:${w.state}`), equipped: [...mira.equipped].sort(),
+    };
+    await W.closet.settle();
+    out.takeSword.closetWorn = W.closet.closetOf('mira').worn.items.map((id) => id.slice(0, 8));
+  }
   return out;
 }

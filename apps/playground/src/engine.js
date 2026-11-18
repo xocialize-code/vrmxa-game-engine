@@ -12,6 +12,7 @@ import { runSimulation, runDevices, STEPS } from './acceptance.js';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
+import * as closet from '@vrmxa-core/closet/index.js';
 import * as projectBehaviours from '@content/behaviours.js';
 import './sqljs.js';
 
@@ -52,13 +53,15 @@ export class Playground {
     const R = await loadRapier();
     const read = text === undefined ? bytes : async (ref) => (ref === scene ? new TextEncoder().encode(text) : bytes(ref));
     this.sample = await loadSample(read, scene);
-    const { tree, input, models } = await buildWorld(R, this.sample, { vrmxaCore, behaviours });
+    const { tree, input, models } = await buildWorld(R, this.sample, { vrmxaCore, closet, behaviours });
     if (!this.devices) {
       this.devices = { keyboard: new KeyboardDevice(), mouse: new MouseDevice(), gamepad: new GamepadDevice() };
       this.devices.keyboard.attach(window); this.devices.mouse.attach(this.canvas);
     }
     for (const d of Object.values(this.devices)) input.addDevice(d);
     this.tree = tree; this.input = input; this.scene = scene;
+    // the prompt and what the player wears change on signals: refresh the controls then, not on the next stats tick
+    for (const n of tree.all()) if (n.type === 'Character') { n.on('focusChanged', () => this._changed()); n.on('dressed', () => this._changed()); }
     this.host.attach(tree);
     this.resize();
     this.host.render(1);
@@ -74,7 +77,7 @@ export class Playground {
   async acceptance() {
     const R = await loadRapier(), now = () => performance.now();
     const sample = await loadSample(bytes);
-    const opts = { vrmxaCore, behaviours };
+    const opts = { vrmxaCore, closet, behaviours };
     const simulation = await runSimulation(R, sample, opts, { now });
     const devices = await runDevices(R, sample, opts);
     const rendered = await this._renderedChecks(simulation);
@@ -154,6 +157,24 @@ export class Playground {
   }
 
   cameras() { return this.tree?.services.get('cameras')?.cameras.map((c) => c.id) ?? []; }
+  /** What the player can do now ("Take Short sword"), from the interaction service's prompts, or null. */
+  prompt() {
+    const player = this.tree?.all().find((n) => n.type === 'Character' && n.behaviourEntries?.some((b) => b.use === 'player'));
+    const f = player && this.tree.services.get('interact')?.focus.get(player.id);
+    if (!f) return null;
+    const item = this.tree.find(f.item);
+    return { key: 'E', text: `${f.prompt ?? f.verb} ${item?.name ?? f.item}` };
+  }
+
+  /** What the player wears (the closet at run time), for a status line. */
+  wearing() {
+    const closet = this.tree?.services.get('closet');
+    const player = this.tree?.all().find((n) => n.type === 'Character' && n.behaviourEntries?.some((b) => b.use === 'player'));
+    if (!closet || !player) return '';
+    const c = closet.closetOf(player.id);
+    return closet.wornBy(player.id).map((w) => `${c.items.find((x) => x.id === w.id)?.name ?? w.id}${w.state ? ` (${w.state})` : ''}`).join(', ');
+  }
+
   currentCamera() { const c = this.tree?.services.get('cameras')?.current; return c ? { id: c.id, preset: c.preset } : null; }
   setCamera(id) { this.tree?.find(id)?.call('makeCurrent'); this._changed(); }
   setPreset(preset) { const c = this.tree?.services.get('cameras')?.current; if (c) c.call('setPreset', { preset }); this._changed(); }

@@ -30,10 +30,10 @@ const check = (n, title, ok, evidence) => { checks.push({ n, title, ok, evidence
 {
   const p = sim(node).play, d = node.devices;
   const ok = ['idle', 'move', 'jump', 'fall', 'land'].every((s) => p.states.includes(s)) && p.maxSpeed === 4 && p.maxRunWeight === 1 && p.travelSteps > 0 && p.airborneSteps > 0
-    && p.idleClip === 'idle-sword' && d.keyboardWalk.speed === 1.4 && d.keyboardRun.speed === 4 && d.keyboardRun.runWeight === 1 && d.keyboardJump.landed && d.gamepadStick.movedM > 0.5 && d.gamepadJump.airborneSteps > 0 && d.mouseLook.yawChange !== 0;
+    && p.idleClip === 'idle' && d.takeSword?.idleBefore === 'default' && d.takeSword?.idleAfter === 'sword' && d.takeSword?.taken && d.keyboardWalk.speed === 1.4 && d.keyboardRun.speed === 4 && d.keyboardRun.runWeight === 1 && d.keyboardJump.landed && d.gamepadStick.movedM > 0.5 && d.gamepadJump.airborneSteps > 0 && d.mouseLook.yawChange !== 0;
   const same = Object.values(browsers).every((r) => canon(r?.result?.devices) === canon(d));
   check(2, 'Walk, run and jump by keyboard, mouse and gamepad, with VRMXA slots, speed blend and root motion', ok && same,
-    `states ${p.states.join('/')}; speed up to ${p.maxSpeed} m/s, run weight ${p.maxRunWeight}; ${p.travelSteps} steps on travel root motion; jump ${p.maxHeight} m; idle slot "${p.idleClip}" (Mira wears ${p.equipped.join(', ')}); keyboard walk ${d.keyboardWalk.speed}, run ${d.keyboardRun.speed} m/s; gamepad moved ${d.gamepadStick.movedM} m and jumped; mouse turned the camera ${d.mouseLook.yawChange} rad; same in every runtime: ${same}`);
+    `states ${p.states.join('/')}; speed up to ${p.maxSpeed} m/s, run weight ${p.maxRunWeight}; ${p.travelSteps} steps on travel root motion; jump ${p.maxHeight} m; idle slot "${p.idleClip}" (Mira wears ${p.equipped.join(', ')}); taking the sword (M1 W4): prompts ${d.takeSword?.prompts?.join(', ')}, idle set ${d.takeSword?.idleBefore} → ${d.takeSword?.idleAfter}, worn ${d.takeSword?.worn?.join(', ')}; keyboard walk ${d.keyboardWalk.speed}, run ${d.keyboardRun.speed} m/s; gamepad moved ${d.gamepadStick.movedM} m and jumped; mouse turned the camera ${d.mouseLook.yawChange} rad; same in every runtime: ${same}`);
 }
 
 // 3. Bit for bit: per-step hashes identical in Node, Chromium, WKWebView scheme and loopback; snapshot/restore identical.
@@ -58,9 +58,9 @@ if (mcp) check(5, 'MCP: describe, inspect the running engine, edit with undo', m
 
 // 6. Debug draw, counted in every browser.
 {
-  const rows = Object.entries(browsers).map(([k, r]) => { const x = r?.result?.rendered?.debug; return { k, x, ok: !!x && x.colliders + x.sensors.length + x.capsules.length === x.physicsColliders && x.sensors.length === 3 && x.capsules.length === 2 && x.rays > 0 }; });
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = r?.result?.rendered?.debug; return { k, x, ok: !!x && x.colliders + x.sensors.length + x.capsules.length === x.physicsColliders && x.sensors.length === 4 && x.sensors.every((n) => n.endsWith('#Reach')) && x.capsules.length === 2 && x.rays > 0 }; });
   const x = rows[0].x;
-  check(6, 'Debug draw shows colliders, sensors, rays and the character capsules', rows.every((r) => r.ok), `${x.colliders} colliders + ${x.sensors.length} sensors (${x.sensors.join(', ')}) + ${x.capsules.length} capsules (${x.capsules.join(', ')}) = ${x.physicsColliders} of ${x.physicsColliders}; ${x.rays} spring-arm ray; the same in ${rows.filter((r) => r.ok).map((r) => r.k).join(', ')}`);
+  check(6, 'Debug draw shows colliders, sensors, rays and the character capsules', rows.every((r) => r.ok), `${x.colliders} colliders + ${x.sensors.length} sensors (${x.sensors.join(', ')}) + ${x.capsules.length} capsules (${x.capsules.join(', ')}) = ${x.physicsColliders} of ${x.physicsColliders}; ${x.rays} rays (the spring arm's, the interaction focus's); the same in ${rows.filter((r) => r.ok).map((r) => r.k).join(', ')}`);
 }
 checks.sort((a, b) => a.n - b.n);
 fs.writeFileSync(res('summary.json'), JSON.stringify({ checks, runtimes: { node: node?.version, chromium: chromium?.version, wkwebview: scheme?.ua } }, null, 1) + '\n');

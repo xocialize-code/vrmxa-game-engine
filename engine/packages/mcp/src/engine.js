@@ -11,6 +11,8 @@ import { installInput } from '@vrmxg/input';
 import { installCameras } from '@vrmxg/camera';
 import { installModels } from '@vrmxg/model';
 import { installItems } from '@vrmxg/item';
+import { installInteraction } from '@vrmxg/interact';
+import { installCloset } from '@vrmxg/closet';
 
 const r = (v, d = 4) => +v.toFixed(d);
 const arr = (a, d) => Array.from(a, (v) => r(v, d));
@@ -33,6 +35,10 @@ export class EngineSession {
     await models.prepare(doc);
     if (vrmxaCore) await items.prepare(doc); // .vrmxi files are ZIPs: reading them takes vrmxa-core (--vrmxa-core)
     await lib.prepare(doc);
+    installInteraction(tree);
+    const closetModule = vrmxaCore ? await p.vrmxaCloset() : null;
+    const closet = closetModule ? installCloset(tree, { vrmxaCore, closet: closetModule, stubTextures: true }) : null;
+    await closet?.prepare(doc);
     this.signals = [];
     const emit = tree.emit.bind(tree);
     tree.emit = (node, signal, payload) => { if (this.signals.length < 500) this.signals.push({ step: tree.clock.step, node: node.id, signal }); return emit(node, signal, payload); };

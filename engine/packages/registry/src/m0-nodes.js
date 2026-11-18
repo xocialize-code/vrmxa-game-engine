@@ -36,7 +36,7 @@ export function m0Registry() {
       jumpSpeed: P.number({ min: 0, default: 4.5, unit: 'm/s', sim: true }),
       layer: P.string({ description: 'Collision layer of the capsule.' }),
     },
-    signals: { arrived: { args: { target: P.nodeRef() } }, spoke: { args: { text: P.string() } } },
+    signals: { arrived: { args: { target: P.nodeRef() } }, spoke: { args: { text: P.string() } }, dressed: { args: { worn: P.list(P.string()) } } },
     actions: {
       say: { args: { text: arg(P.string(), 'What to say (lip-synced).') }, description: 'Speak a line.' },
       goTo: { args: { target: arg(P.nodeRef(), 'Node to walk to.') }, description: 'Walk to a node using navigation.' },

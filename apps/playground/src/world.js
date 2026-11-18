@@ -10,6 +10,8 @@ import { installInput } from '@vrmxg/input';
 import { installCameras } from '@vrmxg/camera';
 import { installModels } from '@vrmxg/model';
 import { installItems } from '@vrmxg/item';
+import { installInteraction } from '@vrmxg/interact';
+import { installCloset } from '@vrmxg/closet';
 
 const text = (b) => new TextDecoder().decode(b);
 
@@ -31,9 +33,10 @@ export async function loadSample(bytes, scene = 'cafe.vrmxs') {
 /**
  * A fresh SceneTree of the sample scene, instantiated and ready to step.
  * @param {any} R Rapier @param {Awaited<ReturnType<typeof loadSample>>} sample
- * @param {{ vrmxaCore: any, behaviours: Map<string, any>, stubTextures?: boolean, seed?: number }} opts
+ * @param {{ vrmxaCore: any, closet?: any, spec?: Uint8Array | null, behaviours: Map<string, any>, stubTextures?: boolean, seed?: number }} opts
+ *   closet: vrmxa-core's ./closet module (the closet at run time: taking the sword); spec: spec.vrm, for redraws
  */
-export async function buildWorld(R, sample, { vrmxaCore, behaviours, stubTextures = false, seed = 1 }) {
+export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = null, behaviours, stubTextures = false, seed = 1 }) {
   const tree = new SceneTree({ registry: m0Registry(), prefabs: sample.prefabs, behaviours, seed });
   const input = installInput(tree);
   installPhysics(tree, R);
@@ -44,6 +47,10 @@ export async function buildWorld(R, sample, { vrmxaCore, behaviours, stubTexture
   await models.prepare(sample.doc);
   await items.prepare(sample.doc);
   await lib.prepare(sample.doc);
+  const { interact, inventory } = installInteraction(tree);
+  const wardrobe = closet && vrmxaCore ? installCloset(tree, { vrmxaCore, closet, spec, stubTextures }) : null;
+  await wardrobe?.prepare(sample.doc);
   tree.instantiate(structuredClone(sample.doc));
-  return { tree, input, models, items, lib };
+  await wardrobe?.showWorn();
+  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe };
 }

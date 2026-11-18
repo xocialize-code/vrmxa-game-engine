@@ -31,20 +31,25 @@ const qz = (a) => [0, 0, Math.sin(a / 2), Math.cos(a / 2)];
 
 // One generated clip: legs and arms swing by `swing` radians per cycle; `bob` lifts the hips; `travel`
 // moves the hips forward by that many metres over the clip (root motion).
-function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 0, crouch = 0, armsUp = 0 }) {
+// `sit` (0 standing … 1 seated, hips 0.5 m up, thighs level, shins down) may change over the clip (sitTo); `reach`
+// raises the right arm forward (use, take); `gesture` waves both forearms a little (talk).
+function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 0, crouch = 0, armsUp = 0, sit = 0, sitTo = sit, reach = 0, gesture = 0 }) {
   const frames = Math.round(seconds * fps) + 1;
   const bones = {};
-  for (const b of ['leftUpperLeg', 'rightUpperLeg', 'leftUpperArm', 'rightUpperArm', 'spine']) bones[b] = new Float32Array(frames * 4);
+  const names = ['leftUpperLeg', 'rightUpperLeg', 'leftUpperArm', 'rightUpperArm', 'spine'];
+  if (sit || sitTo) names.push('leftLowerLeg', 'rightLowerLeg');
+  for (const b of names) bones[b] = new Float32Array(frames * 4);
   const hips = new Float32Array(frames * 3);
   for (let f = 0; f < frames; f++) {
     const t = f / (frames - 1), ph = 2 * Math.PI * t;
-    const s = Math.sin(ph) * swing;
-    bones.leftUpperLeg.set(qx(s - crouch), f * 4);
-    bones.rightUpperLeg.set(qx(-s - crouch), f * 4);
-    bones.leftUpperArm.set(qz(-1.2 + armsUp - s * 0.5), f * 4);
-    bones.rightUpperArm.set(qz(1.2 - armsUp + s * 0.5), f * 4);
+    const s = Math.sin(ph) * swing, g = Math.sin(2 * ph) * gesture, k = sit + (sitTo - sit) * t, r = reach * Math.sin(Math.PI * t);
+    bones.leftUpperLeg.set(qx(s - crouch - k * Math.PI / 2), f * 4);
+    bones.rightUpperLeg.set(qx(-s - crouch - k * Math.PI / 2), f * 4);
+    if (bones.leftLowerLeg) { bones.leftLowerLeg.set(qx(k * Math.PI / 2), f * 4); bones.rightLowerLeg.set(qx(k * Math.PI / 2), f * 4); }
+    bones.leftUpperArm.set(qz(-1.2 + armsUp - s * 0.5 + g), f * 4);
+    bones.rightUpperArm.set(r ? qx(-r) : qz(1.2 - armsUp + s * 0.5 - g), f * 4);
     bones.spine.set(qx(crouch * 0.3), f * 4);
-    hips.set([0, 0.95 + bob * Math.abs(Math.sin(ph)) - crouch * 0.2, travel * t], f * 3);
+    hips.set([0, 0.95 + bob * Math.abs(Math.sin(ph)) - crouch * 0.2 - k * 0.45, travel * t], f * 3);
   }
   return core.writeVrma({ name, fps, frames, rest: REST, restHips: REST.hips, bones, hips, expressions: {}, custom: new Set(), lookAt: null, lookAtOffset: null, extras: { source: 'engine/packages/character/test/fixtures.mjs' } });
 }
@@ -54,7 +59,7 @@ function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 
  * fall, land) and a "sword" set (priority 1, requires the tag "sword") that changes idle.
  * `travel: true` makes walk and run root-motion "travel" clips.
  */
-export async function testAnimations(core, { travel = false } = {}) {
+export async function testAnimations(core, { travel = false, actions = false } = {}) {
   const defs = [
     ['idle', { seconds: 2, swing: 0.03 }, { loops: true, rootMotion: 'inPlace' }],
     ['walk', { seconds: 1, swing: 0.5, bob: 0.03, travel: travel ? 1.4 : 0 }, { loops: true, speed: 1.4, rootMotion: travel ? 'travel' : 'inPlace' }],
@@ -64,6 +69,16 @@ export async function testAnimations(core, { travel = false } = {}) {
     ['land', { seconds: 0.3, crouch: 0.5 }, { loops: false, rootMotion: 'inPlace' }],
     ['idle-sword', { seconds: 2, swing: 0.02, armsUp: 0.3 }, { loops: true, rootMotion: 'inPlace' }],
   ];
+  // the slots a character plays with items (VRMXI §8): use, equip (for take, until VRMXA has `take`), talk, sit, sitIdle, stand
+  const ACTION_DEFS = [
+    ['use', { seconds: 0.8, reach: 1.2 }, { loops: false, rootMotion: 'inPlace' }],
+    ['equip', { seconds: 1.0, crouch: 0.4, reach: 1.0 }, { loops: false, rootMotion: 'inPlace' }],
+    ['talk', { seconds: 2, swing: 0.02, gesture: 0.15 }, { loops: true, rootMotion: 'inPlace' }],
+    ['sit', { seconds: 0.8, sit: 0, sitTo: 1 }, { loops: false, rootMotion: 'inPlace' }],
+    ['sitIdle', { seconds: 2, sit: 1, swing: 0.01 }, { loops: true, rootMotion: 'inPlace' }],
+    ['stand', { seconds: 0.6, sit: 1, sitTo: 0 }, { loops: false, rootMotion: 'inPlace' }],
+  ];
+  if (actions) defs.push(...ACTION_DEFS);
   const clips = new Map(), entries = [], sha = {};
   for (const [name, gen, meta] of defs) {
     const bytes = makeClip(core, name, gen);
@@ -76,7 +91,7 @@ export async function testAnimations(core, { travel = false } = {}) {
   const doc = {
     format: 'vrmxa-animations', version: 1, clips: entries,
     sets: [
-      { id: 'default', name: 'Default', default: true, priority: 0, requires: [], slots: { idle: slot('idle'), walk: slot('walk'), run: slot('run'), jump: slot('jump'), fall: slot('fall'), land: slot('land') } },
+      { id: 'default', name: 'Default', default: true, priority: 0, requires: [], slots: { idle: slot('idle'), walk: slot('walk'), run: slot('run'), jump: slot('jump'), fall: slot('fall'), land: slot('land'), ...(actions ? Object.fromEntries(ACTION_DEFS.map(([n]) => [n, slot(n)])) : {}) } },
       { id: 'sword', name: 'With a sword', priority: 1, requires: ['sword'], slots: { idle: slot('idle-sword') } },
     ],
   };

@@ -70,6 +70,9 @@ export class CharacterLibrary {
     return this.prepared.get(id);
   }
 
+  /** Parse another body for a character already in the tree (a closet redraw's avatar.vrm). */
+  parseBody(bytes) { return parseVRM(bytes, { stubTextures: this.stubTextures }); }
+
   /** The prepared character for a node; each one is used once. */
   take(id) {
     const p = this.prepared.get(id);
