@@ -9,6 +9,7 @@ import { loadRapier, installPhysics } from '@vrmxg/physics';
 import { installCharacters } from '@vrmxg/character';
 import { installInput } from '@vrmxg/input';
 import { installCameras } from '@vrmxg/camera';
+import { installModels } from '@vrmxg/model';
 
 const r = (v, d = 4) => +v.toFixed(d);
 const arr = (a, d) => Array.from(a, (v) => r(v, d));
@@ -25,13 +26,15 @@ export class EngineSession {
     installPhysics(tree, await loadRapier());
     const lib = installCharacters(tree, { resolve: (ref) => p.bytes(ref), vrmxaCore: await p.vrmxaCore(), stubTextures: true, prefabs, projectAnimations: p.animations() });
     installCameras(tree);
+    const models = installModels(tree, { resolve: (ref) => p.bytes(ref), stubTextures: true });
+    await models.prepare(doc);
     await lib.prepare(doc);
     this.signals = [];
     const emit = tree.emit.bind(tree);
     tree.emit = (node, signal, payload) => { if (this.signals.length < 500) this.signals.push({ step: tree.clock.step, node: node.id, signal }); return emit(node, signal, payload); };
     tree.instantiate(doc);
     this.tree = tree;
-    return { nodes: tree.all().length, step: 0, services: [...tree.services.keys()] };
+    return { nodes: tree.all().length, step: 0, services: [...tree.services.keys()], ...(models.skipped.length ? { skipped: models.skipped } : {}) };
   }
 
   get live() { if (!this.tree) throw new Error('no engine running: call engine_load first'); return this.tree; }

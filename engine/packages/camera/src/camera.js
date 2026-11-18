@@ -34,6 +34,10 @@ export class CameraNode extends Node {
     this.object3d.add(this.camera);
     /** Rig state: view yaw (0 looks along +Z), pitch (positive looks down), orbit distance, spring-arm length. */
     this.rig = { yaw: 0, pitch: 0.2, distance: null, arm: null };
+    // The starting view, when the scene gives one (degrees): rig { yaw: 180 } looks along -Z.
+    const deg = Math.PI / 180, start = this.props.rig ?? {};
+    if (typeof start.yaw === 'number') this.rig.yaw = start.yaw * deg;
+    if (typeof start.pitch === 'number') this.rig.pitch = start.pitch * deg;
     this.applyLens();
   }
 

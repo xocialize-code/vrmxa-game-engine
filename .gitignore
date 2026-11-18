@@ -15,3 +15,6 @@ mac/build/
 
 # Rendered video from spike-frame-export
 spike-frame-export/out/
+
+# The sample content's generated CC0 clips are committed (content/sample/LICENCES.md)
+!content/sample/animations/clips/*.vrma

@@ -37,6 +37,9 @@ async function connect(args) {
   return { client, call };
 }
 const prefabFiles = { 'prefabs/door.vrmxs': path.join(coreFixtures, 'prefabs/door.vrmxs'), 'prefabs/double-door.vrmxs': path.join(coreFixtures, 'prefabs/double-door.vrmxs') };
+// The engine loads Models, so engine tests use the sample content's door: its frame and panel GLBs ship with it.
+const sample = path.join(here, '../../../../content/sample');
+const doorFiles = Object.fromEntries(['prefabs/door.vrmxs', 'prefabs/double-door.vrmxs', 'props/door-frame.glb', 'props/door-panel.glb'].map((f) => [f, path.join(sample, f)]));
 
 test('the tool list is generic and small: 16 tools under 1,500 tokens', async () => {
   const dir = project('list', { 'cafe.vrmxs': path.join(coreFixtures, 'cafe.vrmxs'), ...prefabFiles });
@@ -69,11 +72,11 @@ test('an agent describes Camera, adds a camera to the cafe, saves, and the file 
 });
 
 test('inspect: the walker walks through the entrance trigger, the door swings open, physics and the hinge say so', async () => {
-  const dir = project('doors', { 'doors.vrmxs': path.join(here, 'fixtures/doors.vrmxs'), ...prefabFiles });
+  const dir = project('doors', { 'doors.vrmxs': path.join(here, 'fixtures/doors.vrmxs'), ...doorFiles });
   const { client, call } = await connect([dir, 'doors.vrmxs', '--behaviours', path.join(here, 'fixtures/behaviours.mjs')]);
   await call('engine_step', { steps: 1 }, true); // nothing running yet
   const loaded = await call('engine_load');
-  assert.deepEqual(loaded.services, ['input', 'physics', 'characters', 'cameras']);
+  assert.deepEqual(loaded.services, ['input', 'physics', 'characters', 'cameras', 'models']);
   assert.ok((await call('tree', { live: true })).includes('entrance/right/hinge (RigidBody)'));
   await call('engine_step', { steps: 10, hold: { jump_high: 1 } }, true); // unknown action: refused with the list
   const walked = await call('engine_step', { steps: 90, hold: { move_y: -1 } }); // S: 3 m towards +z, into the right door's trigger
@@ -110,7 +113,7 @@ test('inspect on the cafe: Mira replays the recorded walk, the entrance door ope
   const files = {
     'cafe.vrmxs': path.join(harnessModels, 'cafe.vrmxs'), 'input.json': path.join(harnessModels, 'input.json'),
     'characters/mira.vrm': path.join(harnessModels, 'mira.vrm'), 'characters/hana.vrm': path.join(harnessModels, 'hana.vrm'),
-    'animations.json': path.join(harnessModels, 'animations.json'), ...prefabFiles,
+    'animations.json': path.join(harnessModels, 'animations.json'), ...doorFiles,
   };
   for (const c of anim.clips) files[c.file] = path.join(harnessModels, 'clips', `${c.sha256}.vrma`);
   const dir = project('cafe', files);

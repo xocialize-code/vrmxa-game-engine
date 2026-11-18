@@ -53,7 +53,7 @@ export function m0Registry() {
       focusDistance: P.number({ min: 0.05, unit: 'm', default: 3 }),
       near: P.number({ min: 0.001, unit: 'm', default: 0.1 }), far: P.number({ min: 0.1, unit: 'm', default: 500 }),
       preset: P.enum(['free', 'fixed', 'orbit', 'follow', 'overShoulder', 'firstPerson'], { default: 'free', sim: true, description: 'Rig preset; switchable at run time (setPreset, nextPreset).' }),
-      rig: { schema: { type: 'object', description: 'Rig overrides: distance, height, side (m).' }, meta: { sim: true } },
+      rig: { schema: { type: 'object', description: 'Rig overrides: distance, height, side (m); yaw, pitch (degrees): the starting view, yaw 0 looking along +Z.' }, meta: { sim: true } },
       target: P.nodeRef({ description: 'Follow / orbit target.' }),
     },
     actions: {

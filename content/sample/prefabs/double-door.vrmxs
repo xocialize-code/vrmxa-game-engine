@@ -1,0 +1,13 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "prefab-double-door",
+  "assets": [
+    {"id":"door","type":"vrmxs","ref":"prefabs/door.vrmxs"}
+  ],
+  "nodes": [
+    {"id":"pair","type":"Node3D","name":"Double door"},
+    {"id":"left","type":"Instance","parent":"pair","asset":"door","transform":{"p":[-0.5,0,0]}},
+    {"id":"right","type":"Instance","parent":"pair","asset":"door","transform":{"p":[0.5,0,0],"q":[0,1,0,0]},"overrides":{"hinge":{"behaviours":[{"openAngle":-100,"use":"hinge"}]}}}
+  ]
+}

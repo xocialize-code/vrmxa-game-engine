@@ -1,0 +1,21 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "prefab-door",
+  "assets": [
+    {"id":"frame-glb","type":"glb","ref":"props/door-frame.glb"},
+    {"id":"panel-glb","type":"glb","ref":"props/door-panel.glb"}
+  ],
+  "nodes": [
+    {"id":"door","type":"Node3D","name":"Door"},
+    {"id":"frame","type":"Model","parent":"door","asset":"frame-glb"},
+    {"id":"hinge","type":"RigidBody","parent":"door","transform":{"p":[-0.45,0,0]},"props":{"bodyType":"dynamic","mass":12},"behaviours":[{"locked":false,"openAngle":100,"use":"hinge"}]},
+    {"id":"panel","type":"Collider","parent":"hinge","transform":{"p":[0.45,1,0]},"props":{"shape":"box","size":[0.88,2,0.04]}},
+    {"id":"panel-model","type":"Model","parent":"hinge","asset":"panel-glb","transform":{"p":[0.45,1,0]},"props":{"castShadow":true,"colliders":"none"}},
+    {"id":"trigger","type":"Area","parent":"door","transform":{"p":[0,1,0.8]},"props":{"shape":"box","size":[1.2,2,1]}}
+  ],
+  "connections": [
+    {"from":"trigger","signal":"bodyEntered","to":"hinge","call":"open"},
+    {"from":"trigger","signal":"bodyExited","to":"hinge","call":"close"}
+  ]
+}

@@ -44,6 +44,9 @@ jobs:
       - name: Test every package
         run: npm test
 
+      - name: Sample content has a licence for every file
+        run: node content/sample/tools/check-licences.mjs
+
       - name: spike-registry
         working-directory: spike-registry
         run: npm ci && npm test && node scripts/mcp-client.mjs > /dev/null

@@ -1,0 +1,27 @@
+{
+  "name": "@vrmxg/playground",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The VRMXG playground (M0 W8): open a .vrmxs, play / pause / step, time scale, camera presets, debug draw, frame time. A test harness, not an editor.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@vrmxg/camera": "0.1.0",
+    "@vrmxg/character": "0.1.0",
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/input": "0.1.0",
+    "@vrmxg/model": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/render": "0.1.0",
+    "@vrmxg/scene": "0.1.0",
+    "vue": "3.5.45"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "6.0.11"
+  }
+}

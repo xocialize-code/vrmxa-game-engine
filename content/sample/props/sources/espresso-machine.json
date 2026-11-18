@@ -1,0 +1,91 @@
+{
+ "generated": "2026-11-18",
+ "prompt": "a compact stainless steel espresso machine with a black portafilter and two small white cups on top, product photo, centered, plain light grey background, soft studio light, three-quarter view",
+ "image": {
+  "id": "job_xsmc43hnv3dvdcm2hsfc",
+  "operation": "image.generate",
+  "effective": {
+   "count": 1,
+   "model_params": {
+    "model": "z-image-turbo",
+    "prompt_enhancement": {
+     "applied": false,
+     "outcome": "no_profile"
+    },
+    "steps": 8,
+    "x-gaea.worker": {
+     "effective": {
+      "count": 1,
+      "seed": 11,
+      "size": {
+       "height": 1024,
+       "width": 1024
+      },
+      "x-zimage.steps": 8
+     },
+     "lane": "int4",
+     "operation": "image.generate",
+     "plugin": "com.xocialize.gaea.z-image",
+     "prepare_seconds": 5.386,
+     "seconds": 17.592,
+     "version": "0.2.1"
+    }
+   },
+   "quality": "standard",
+   "seed": 11,
+   "size": {
+    "height": 1024,
+    "width": 1024
+   },
+   "x-zimage.steps": 8
+  },
+  "licence": {
+   "commercial_use": true,
+   "spdx": "Apache-2.0",
+   "terms_url": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  "warnings": []
+ },
+ "mesh": {
+  "id": "job_42ncx7b575tgv2xafkvy",
+  "operation": "mesh.generate",
+  "effective": {
+   "background": "remove",
+   "max_faces": 40000,
+   "model_params": {
+    "x-gaea.worker": {
+     "effective": {
+      "background": "remove",
+      "max_faces": 40000,
+      "resolution": 512,
+      "seed": 5,
+      "texture": "atlas",
+      "texture_size": 1024
+     },
+     "lane": "bf16",
+     "operation": "mesh.generate",
+     "plugin": "com.xocialize.gaea.trellis2",
+     "prepare_seconds": 3.105,
+     "seconds": 74.27,
+     "version": "0.1.0"
+    }
+   },
+   "placement": "centered",
+   "quality": "standard",
+   "resolution": 512,
+   "seed": 5,
+   "size_m": 0.42,
+   "texture": "atlas",
+   "texture_size": 1024
+  },
+  "licence": {
+   "attribution": "Built with DINOv3",
+   "commercial_use": true,
+   "notice": "TRELLIS.2 is MIT; its DINOv3 image conditioner is under Meta's DINOv3 License, which asks for \"Built with DINOv3\" wherever it ships.",
+   "spdx": "LicenseRef-DINOv3",
+   "terms_url": "https://ai.meta.com/resources/models-and-libraries/dinov3-license/"
+  },
+  "warnings": []
+ },
+ "glbBytes": 3815920
+}
