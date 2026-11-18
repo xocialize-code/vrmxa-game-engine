@@ -16,7 +16,7 @@ input, audio, NPC AI, capture) for a new editor app, a game UI app and an anime 
 | Path | What |
 |---|---|
 | `engine/packages/` | Engine packages: `dmath`, `registry`, `scene`, `core`, `physics`, `character`, `input`, `camera`, `snapshot`, `render`, `mcp`, `model` so far; the rest arrive with M0 ([M0-PLAN.md](M0-PLAN.md)) |
-| `apps/` | `playground` (Vite + Vue test app) and `playground-mac` (its WKWebView wrapper) |
+| `apps/` | `shell` (the shared Mac shell, a Swift package), `playground` (Vite + Vue test app) and `playground-mac` (it on the shell) |
 | `acceptance/` | M0's six exit checks on the sample cafe, in Node, Chromium and WKWebView, and their results |
 | `content/sample/` | The sample project M0 runs: the cafe, doors, two characters, clips, a recorded walk; every file's licence in `LICENCES.md` |
 | `tools/` | Workspace tooling: the ESLint plugin |

@@ -1,0 +1,136 @@
+import AppKit
+import WebKit
+
+public let vrmxgShellVersion = "0.1.0"
+
+/// One app's shell: its name, URL scheme, window and any bridge methods of its own.
+public struct ShellConfiguration {
+    public var appName: String
+    /// The custom scheme's name (`<scheme>://app/`), unique per app.
+    public var scheme: String
+    public var size: NSSize
+    /// The web build's folder inside the bundle's Resources.
+    public var webFolder: String
+    /// App-specific bridge methods, registered after the shell's own.
+    public var methods: [(String, BridgeHandler)]
+    public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = []) {
+        self.appName = appName; self.scheme = scheme; self.size = size; self.webFolder = webFolder; self.methods = methods
+    }
+}
+
+/// The app delegate every VRMXG Mac app runs. Loads the web build over loopback (default: the origin with a fine
+/// timer and SharedArrayBuffer, AB-L-0346) or the custom scheme (`VRMXG_ORIGIN=scheme`), with `VRMXG_QUERY` as an
+/// extra query; registers the shell's bridge methods; forwards File menu commands to the page as events.
+@MainActor
+public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDelegate {
+    public let config: ShellConfiguration
+    public private(set) var window: NSWindow!
+    public private(set) var webView: WKWebView!
+    public let roots: WebRoots
+    public let router = BridgeRouter()
+    lazy var files = FileMethods(roots: roots)
+    lazy var scheme = SchemeHandler(scheme: config.scheme, roots: roots)
+    lazy var server = LoopbackServer(roots: roots)
+    let env = ProcessInfo.processInfo.environment
+    public private(set) var origin = "loopback"
+
+    public init(config: ShellConfiguration) {
+        self.config = config
+        self.roots = WebRoots(app: Bundle.main.resourceURL!.appendingPathComponent(config.webFolder, isDirectory: true))
+    }
+
+    public func applicationDidFinishLaunching(_ note: Notification) {
+        router.register("shell.info") { [unowned self] _ in
+            ["shell": vrmxgShellVersion, "app": self.config.appName,
+             "appVersion": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "",
+             "origin": self.origin, "url": self.webView.url?.absoluteString ?? "", "methods": self.router.methods]
+        }
+        files.register(on: router)
+        for (name, handler) in config.methods { router.register(name, handler) }
+
+        let wk = WKWebViewConfiguration()
+        wk.setURLSchemeHandler(scheme, forURLScheme: config.scheme)
+        wk.userContentController.addScriptMessageHandler(ShellBridge(router: router), contentWorld: .page, name: ShellBridge.name)
+        webView = WKWebView(frame: NSRect(origin: .zero, size: config.size), configuration: wk)
+        webView.navigationDelegate = self
+        webView.uiDelegate = self
+        webView.isInspectable = true
+        webView.setAccessibilityIdentifier("web")
+
+        window = NSWindow(contentRect: webView.frame, styleMask: [.titled, .closable, .resizable, .miniaturizable], backing: .buffered, defer: false)
+        window.title = config.appName
+        window.contentView = webView
+        window.setFrameAutosaveName("\(config.scheme)-main")
+        window.center()
+        window.makeKeyAndOrderFront(nil)
+        NSApp.mainMenu = buildMenu()
+        NSApp.activate(ignoringOtherApps: true)
+
+        if env["VRMXG_ORIGIN"] == "scheme" { load(port: 0); return }
+        do { try server.start { [weak self] port in self?.load(port: port) } }
+        catch { print("[shell] loopback server failed: \(error); using the scheme"); load(port: 0) }
+    }
+
+    func load(port: UInt16) {
+        origin = port != 0 ? "loopback" : "scheme"
+        let base = port != 0 ? "http://127.0.0.1:\(port)/index.html" : "\(config.scheme)://app/index.html"
+        let q = env["VRMXG_QUERY"].map { "?\($0)" } ?? ""
+        print("[shell] \(config.appName) \(base)\(q)")
+        webView.load(URLRequest(url: URL(string: base + q)!))
+    }
+
+    /// Send an event to the page.
+    public func emit(_ name: String, _ payload: [String: Any] = [:]) { ShellBridge.emit(webView, name, payload) }
+
+    func buildMenu() -> NSMenu {
+        let main = NSMenu()
+        func menu(_ title: String, _ items: [NSMenuItem]) { let m = NSMenu(title: title); items.forEach(m.addItem); let i = NSMenuItem(); i.submenu = m; main.addItem(i) }
+        func item(_ title: String, _ action: Selector?, _ key: String = "", _ mods: NSEvent.ModifierFlags = .command, target: AnyObject? = nil) -> NSMenuItem {
+            let i = NSMenuItem(title: title, action: action, keyEquivalent: key); i.keyEquivalentModifierMask = mods; if let target { i.target = target }; return i
+        }
+        menu(config.appName, [item("About \(config.appName)", #selector(NSApplication.orderFrontStandardAboutPanel(_:))), .separator(),
+                              item("Hide \(config.appName)", #selector(NSApplication.hide(_:)), "h"), .separator(),
+                              item("Quit \(config.appName)", #selector(NSApplication.terminate(_:)), "q")])
+        menu("File", [item("Open…", #selector(menuOpen), "o", target: self), item("Open Project…", #selector(menuOpenProject), "o", [.command, .shift], target: self), .separator(),
+                      item("Save", #selector(menuSave), "s", target: self), item("Save As…", #selector(menuSaveAs), "s", [.command, .shift], target: self), .separator(),
+                      item("Close Window", #selector(NSWindow.performClose(_:)), "w")])
+        menu("Edit", [item("Undo", Selector(("undo:")), "z"), item("Redo", Selector(("redo:")), "z", [.command, .shift]), .separator(),
+                      item("Cut", #selector(NSText.cut(_:)), "x"), item("Copy", #selector(NSText.copy(_:)), "c"), item("Paste", #selector(NSText.paste(_:)), "v"),
+                      item("Select All", #selector(NSText.selectAll(_:)), "a")])
+        menu("View", [item("Reload", #selector(reload), "r", target: self)])
+        menu("Window", [item("Minimize", #selector(NSWindow.performMiniaturize(_:)), "m")])
+        return main
+    }
+
+    @objc func menuOpen() { emit("menu.open") }
+    @objc func menuOpenProject() { emit("menu.openProject") }
+    @objc func menuSave() { emit("menu.save") }
+    @objc func menuSaveAs() { emit("menu.saveAs") }
+    @objc func reload() { webView.reload() }
+
+    public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) { print("[shell] load failed: \(error)") }
+    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { print("[shell] web content process ended; reloading"); webView.reload() }
+
+    // <input type=file> in the page
+    public func webView(_ webView: WKWebView, runOpenPanelWith parameters: WKOpenPanelParameters, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor ([URL]?) -> Void) {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = parameters.allowsMultipleSelection
+        panel.canChooseDirectories = parameters.allowsDirectories
+        completionHandler(panel.runModal() == .OK ? panel.urls : nil)
+    }
+
+    public func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
+}
+
+public enum ShellApp {
+    /// Run an app on the shell (call from `main.swift`; never returns).
+    @MainActor public static func run(_ config: ShellConfiguration) -> Never {
+        setvbuf(stdout, nil, _IONBF, 0)
+        let app = NSApplication.shared
+        let delegate = ShellAppDelegate(config: config)
+        app.delegate = delegate
+        app.setActivationPolicy(.regular)
+        withExtendedLifetime(delegate) { app.run() }
+        exit(0)
+    }
+}

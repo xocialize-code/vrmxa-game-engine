@@ -7,6 +7,7 @@ import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
 import { PRESETS } from '@vrmxg/camera';
 import { RenderHost } from '@vrmxg/render';
 import { loadSample, buildWorld } from './world.js';
+import { serialize } from '@vrmxg/scene';
 import { runSimulation, runDevices, STEPS } from './acceptance.js';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import * as core from '@vrmxa-core/index.js';
@@ -42,11 +43,15 @@ export class Playground {
 
   resize() { const r = this.canvas.getBoundingClientRect(); if (r.width && r.height) this.host.resize(r.width, r.height); }
 
-  /** Load a scene of the sample project (a path under the site root). */
-  async load(scene = 'cafe.vrmxs') {
+  /**
+   * Load a scene of the sample project (a path under the site root). `text`: the scene's own JSON instead of the
+   * file at that path (a scene opened through the Mac shell); its asset refs still resolve against the site.
+   */
+  async load(scene = 'cafe.vrmxs', { text } = {}) {
     this.pause();
     const R = await loadRapier();
-    this.sample = await loadSample(bytes, scene);
+    const read = text === undefined ? bytes : async (ref) => (ref === scene ? new TextEncoder().encode(text) : bytes(ref));
+    this.sample = await loadSample(read, scene);
     const { tree, input, models } = await buildWorld(R, this.sample, { vrmxaCore, behaviours });
     if (!this.devices) {
       this.devices = { keyboard: new KeyboardDevice(), mouse: new MouseDevice(), gamepad: new GamepadDevice() };
@@ -121,6 +126,9 @@ export class Playground {
       presets, debug, calls: host.renderer.info.render.calls, triangles: host.renderer.info.render.triangles,
     };
   }
+
+  /** The running scene as a .vrmxs document (canonical JSON), for saving. */
+  sceneText() { return serialize(this.tree.toDocument()); }
 
   play() { this.playing = true; this._last = null; this._changed(); }
   pause() { this.playing = false; this._changed(); }

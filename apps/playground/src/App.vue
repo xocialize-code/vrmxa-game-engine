@@ -3,9 +3,10 @@
 // plain copies of what the controls show, refreshed when the engine says something changed.
 import { onMounted, ref, reactive } from 'vue';
 import { Playground, PRESETS } from './engine.js';
+import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: 'cafe.vrmxs', notes: '' });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: 'cafe.vrmxs', notes: '' });
 let pg = null; // never reactive
 
 function refresh() {
@@ -40,6 +41,27 @@ onMounted(async () => {
   window.READY = true;
 });
 
+// In the Mac shell: open and save scenes through the system panels; File menu commands arrive as events.
+async function openScene() {
+  try {
+    const f = await call('file.open', { types: ['vrmxs'], title: 'Open Scene' });
+    ui.loading = true; ui.error = '';
+    const r = await pg.load('cafe.vrmxs', { text: f.text });
+    ui.file = f.path; ui.notes = `${f.name} · ${r.nodes} nodes`;
+  } catch (e) { if (e.code !== 'cancelled') ui.error = String(e?.message ?? e); }
+  ui.loading = false; refresh();
+}
+async function saveScene() {
+  try {
+    const r = await call('file.save', { text: pg.sceneText(), suggestedName: 'cafe.vrmxs', types: ['vrmxs'], title: 'Save Scene' });
+    ui.file = r.path; ui.notes = `saved ${r.name} (${r.bytes} bytes)`;
+  } catch (e) { if (e.code !== 'cancelled') ui.error = String(e?.message ?? e); }
+}
+if (inShell) {
+  call('shell.info').then((i) => { ui.shell = `${i.app} · shell ${i.shell} · ${i.origin}`; });
+  on('menu.open', openScene); on('menu.save', saveScene); on('menu.saveAs', saveScene);
+}
+
 const toggle = () => pg.toggle();
 const step = () => pg.step();
 const replay = () => pg.replay();
@@ -61,6 +83,8 @@ const setInterp = () => pg.setInterpolation(ui.interpolate);
       <button id="step" type="button" :disabled="ui.loading" aria-label="Step" @click="step">Step</button>
       <button id="reset" type="button" :disabled="ui.loading" aria-label="Reset" @click="load">Reset</button>
       <button id="replay" type="button" :disabled="ui.loading" aria-label="Replay demo walk" @click="replay">Replay demo walk</button>
+      <button v-if="ui.shell" id="open-scene" type="button" :disabled="ui.loading" aria-label="Open scene" @click="openScene">Open…</button>
+      <button v-if="ui.shell" id="save-scene" type="button" :disabled="ui.loading" aria-label="Save scene as" @click="saveScene">Save as…</button>
       <label class="field">Time scale
         <select v-model="ui.timeScale" aria-label="Time scale" @change="setScale"><option :value="0.25">0.25×</option><option :value="0.5">0.5×</option><option :value="1">1×</option><option :value="2">2×</option></select>
       </label>
@@ -90,7 +114,8 @@ const setInterp = () => pg.setInterpolation(ui.interpolate);
         <div><dt id="render-time-label">Render</dt><dd><output id="render-time" :aria-label="`Render ${ui.render}`">{{ ui.render }}</output></dd></div>
         <div><dt id="step-label">Step</dt><dd><output id="step-count" :aria-label="`Step ${ui.step}`">{{ ui.step }}</output></dd></div>
       </dl>
-      <span class="notes">{{ ui.notes }} · WASD move, Shift run, Space jump, C camera</span>
+      <span id="notes" class="notes" :aria-label="ui.notes">{{ ui.notes }} · WASD move, Shift run, Space jump, C camera</span>
+      <span v-if="ui.shell" id="shell-info" class="notes" :aria-label="`Shell ${ui.shell}`">{{ ui.shell }}</span>
     </footer>
   </div>
 </template>

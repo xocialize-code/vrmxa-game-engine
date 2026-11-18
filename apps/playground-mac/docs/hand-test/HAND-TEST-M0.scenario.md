@@ -1,13 +1,15 @@
 # Playground hand test (M0): AppProbe scenario
 
 Run: `appprobe checklist scenario=apps/playground-mac/docs/hand-test/HAND-TEST-M0.scenario.md` after
-`apps/playground-mac/scripts/build.sh`. Each readout's accessible name carries its value (`Step 1608`,
+`apps/playground-mac/scripts/build.sh` and `apps/playground-mac/scripts/hand-test-fixtures.sh` (which puts `open.vrmxs`
+in the app's sandbox, where the shell's `VRMXG_SHELL_OPEN` / `VRMXG_SHELL_SAVE` hooks stand in for the panels). Each readout's accessible name carries its value (`Step 1608`,
 `Frame time 16.7 ms · 60 fps`), and WebKit's element ids read as identifiers (`#play`, `#step-count`).
 
 ```scenario
 app: VRMXG Playground
 launch: ../../build/VRMXGPlayground.app
 checklist: ../HAND-TEST-M0.md
+env: {"VRMXG_SHELL_OPEN": "open.vrmxs", "VRMXG_SHELL_SAVE": "saved.vrmxs"}
 fresh: false
 ```
 
@@ -18,6 +20,19 @@ fresh: false
   expect find("role=popupbutton name=cam").count >= 1   # the camera list holds the scene's camera
   expect find("role=statictext text=Error").count == 0   # no load error on the page
   shot "loaded"
+  ```
+
+- [ ] The shell answers the page: the status bar names the app, the shell version and the origin.
+  ```steps
+  until find("id=shell-info").0.name matches "^Shell VRMXG Playground · shell [0-9.]+ · loopback$"   # page -> Swift -> page round trip
+  ```
+
+- [ ] Open… and Save as… go through the shell: a scene opens from a file and saves back to one.
+  ```steps
+  act id=open-scene action=press
+  until find("id=notes").0.name matches "^open.vrmxs · [0-9]+ nodes$" timeout=40000   # the opened scene loaded
+  act id=save-scene action=press
+  until find("id=notes").0.name matches "^saved saved.vrmxs \\([0-9]+ bytes\\)$"   # written through file.save
   ```
 
 - [ ] Play runs the simulation: the button turns into Pause, the step count climbs and the frame-time readout shows milliseconds and fps.

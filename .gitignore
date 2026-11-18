@@ -18,3 +18,6 @@ spike-frame-export/out/
 
 # The sample content's generated CC0 clips are committed (content/sample/LICENCES.md)
 !content/sample/animations/clips/*.vrma
+
+# SwiftPM build folders (apps/shell, apps/*-mac)
+.build/

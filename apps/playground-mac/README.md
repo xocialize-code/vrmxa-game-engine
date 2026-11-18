@@ -1,17 +1,18 @@
 # VRMXG playground for the Mac
 
-M0 W8 (AB-T-0509). The playground's web build in the spikes' sandboxed WKWebView shell, served from the app bundle over
-loopback (the default: the origin with a fine timer, AB-L-0346) or the custom scheme (`PLAYGROUND_ORIGIN=scheme`). No
-Xcode project: `scripts/build.sh` runs the Vite build, `swiftc` and an ad hoc signature.
+M0 W8 (AB-T-0509), on the shared shell since M1 W0 (AB-T-0512). The playground's web build in `apps/shell`, served
+from the app bundle over loopback (the default) or the custom scheme (`VRMXG_ORIGIN=scheme`); in the app the
+playground also opens and saves scenes through the system panels (File › Open…, Save As…). No Xcode project:
+`scripts/build.sh` runs the Vite build, `swift build` and an ad hoc signature.
 
 ```sh
 apps/playground-mac/scripts/build.sh                     # build/VRMXGPlayground.app (SKIP_WEB=1 reuses apps/playground/dist)
 open apps/playground-mac/build/VRMXGPlayground.app
+apps/playground-mac/scripts/hand-test-fixtures.sh
 appprobe checklist scenario=apps/playground-mac/docs/hand-test/HAND-TEST-M0.scenario.md
 ```
 
-The shared wrapper for M1's apps is still open (M0-PLAN Q4); this one is the spike shell with a menu and a window
-that remembers its frame.
+`scripts/hand-test-fixtures.sh` puts the scenario's `open.vrmxs` in the app's sandbox for the shell's automation hooks.
 
 **Hand test (AppProbe, AB-R-0945, 2026-11-17).** [`docs/HAND-TEST-M0.md`](docs/HAND-TEST-M0.md) and its scenario: the
 cafe loads; Play turns into Pause, the step count climbs and the frame-time readout shows "16.7 ms · 60 fps" (a 60 Hz
