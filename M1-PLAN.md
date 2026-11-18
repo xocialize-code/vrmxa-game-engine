@@ -1,5 +1,8 @@
 # VRMXG M1 plan: playable
 
+**Done 2026-11-18.** All eleven workstreams are closed, and the seven exit checks below pass, each with a receipt (AB-R-0967 to
+0973; [acceptance/README.md](acceptance/README.md)).
+
 *Draft, 2026-11-17. M1 as the PRD scopes it (§8): VRMXI items and interaction, the closet protocol at run time,
 look-at, lip sync, audio, a minimal editor (tree, inspector, gizmos, play), MCP edit and drive, frame export. It
 builds on M0 (done 2026-11-17: [acceptance/](acceptance/README.md), receipts AB-R-0946 to 0951) and four decisions

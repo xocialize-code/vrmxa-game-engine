@@ -14,10 +14,10 @@
   {
    "tool": "ToolSearch",
    "input": {
-    "query": "select:mcp__vrmxg-editor__add_node,mcp__vrmxg-editor__call_action,mcp__vrmxg-editor__connect,mcp__vrmxg-editor__describe,mcp__vrmxg-editor__engine_step,mcp__vrmxg-editor__get_node,mcp__vrmxg-editor__interact,mcp__vrmxg-editor__play,mcp__vrmxg-editor__screenshot,mcp__vrmxg-editor__tree,mcp__vrmxg-editor__physics,mcp__vrmxg-editor__set",
-    "max_results": 20
+    "query": "select:mcp__vrmxg-editor__add_node,mcp__vrmxg-editor__play,mcp__vrmxg-editor__interact,mcp__vrmxg-editor__call_action,mcp__vrmxg-editor__engine_step,mcp__vrmxg-editor__get_node,mcp__vrmxg-editor__screenshot,mcp__vrmxg-editor__describe,mcp__vrmxg-editor__tree,mcp__vrmxg-editor__connect",
+    "max_results": 10
    },
-   "result": "\n\n\n\n\n\n\n\n\n\n\n",
+   "result": "\n\n\n\n\n\n\n\n\n",
    "isError": false
   },
   {
@@ -74,7 +74,7 @@
      "move_y": 1
     }
    },
-   "result": "{\n \"step\": 140,\n \"seconds\": 2.333,\n \"signals\": [],\n \"moreSignals\": 0\n}",
+   "result": "{\n \"step\": 141,\n \"seconds\": 2.35,\n \"signals\": [],\n \"moreSignals\": 0\n}",
    "isError": false
   },
   {
@@ -83,7 +83,7 @@
     "id": "mira",
     "live": true
    },
-   "result": "{\n \"id\": \"mira\",\n \"type\": \"Character\",\n \"step\": 270,\n \"local\": {\n  \"p\": [\n   -0.5,\n   0.025,\n   8.1\n  ],\n  \"q\": [\n   0,\n   1,\n   0,\n   0\n  ]\n },\n \"world\": {\n  \"p\": [\n   -0.5,\n   0.025,\n   8.1\n  ]\n },\n \"props\": {},\n \"behaviours\": [\n  {\n   \"use\": \"player\",\n   \"state\": null\n  }\n ],\n \"body\": {\n  \"type\": \"kinematic\",\n  \"linvel\": [\n   0,\n   0,\n   0\n  ],\n  \"angvel\": [\n   0,\n   0,\n   0\n  ],\n  \"sleeping\": ",
+   "result": "{\n \"id\": \"mira\",\n \"type\": \"Character\",\n \"step\": 266,\n \"local\": {\n  \"p\": [\n   -0.5,\n   0.025,\n   8.1\n  ],\n  \"q\": [\n   0,\n   1,\n   0,\n   0\n  ]\n },\n \"world\": {\n  \"p\": [\n   -0.5,\n   0.025,\n   8.1\n  ]\n },\n \"props\": {},\n \"behaviours\": [\n  {\n   \"use\": \"player\",\n   \"state\": null\n  }\n ],\n \"body\": {\n  \"type\": \"kinematic\",\n  \"linvel\": [\n   0,\n   0,\n   0\n  ],\n  \"angvel\": [\n   0,\n   0,\n   0\n  ],\n  \"sleeping\": ",
    "isError": false
   },
   {
@@ -93,7 +93,7 @@
     "item": "sword",
     "verb": "take"
    },
-   "result": "{\n \"result\": {\n  \"verb\": \"take\",\n  \"to\": null,\n  \"slot\": \"take\",\n  \"prompt\": \"Take\",\n  \"into\": \"closet\"\n },\n \"step\": 477\n}",
+   "result": "{\n \"result\": {\n  \"verb\": \"take\",\n  \"to\": null,\n  \"slot\": \"take\",\n  \"prompt\": \"Take\",\n  \"into\": \"closet\"\n },\n \"step\": 443\n}",
    "isError": false
   },
   {
@@ -101,7 +101,7 @@
    "input": {
     "steps": 30
    },
-   "result": "{\n \"step\": 590,\n \"seconds\": 9.833,\n \"signals\": [],\n \"moreSignals\": 0\n}",
+   "result": "{\n \"step\": 599,\n \"seconds\": 9.983,\n \"signals\": [],\n \"moreSignals\": 0\n}",
    "isError": false
   },
   {
@@ -110,7 +110,7 @@
     "id": "mira",
     "live": true
    },
-   "result": "{\n \"id\": \"mira\",\n \"type\": \"Character\",\n \"step\": 683,\n \"local\": {\n  \"p\": [\n   -0.5,\n   0.025,\n   8.1\n  ],\n  \"q\": [\n   0,\n   -0.9926,\n   0,\n   0.1216\n  ]\n },\n \"world\": {\n  \"p\": [\n   -0.5,\n   0.025,\n   8.1\n  ]\n },\n \"props\": {},\n \"behaviours\": [\n  {\n   \"use\": \"player\",\n   \"state\": null\n  }\n ],\n \"body\": {\n  \"type\": \"kinematic\",\n  \"linvel\": [\n   0,\n   0,\n   0\n  ],\n  \"angvel\": [\n   0,\n   0,\n   0\n  ],\n  \"",
+   "result": "{\n \"id\": \"mira\",\n \"type\": \"Character\",\n \"step\": 690,\n \"local\": {\n  \"p\": [\n   -0.5,\n   0.025,\n   8.1\n  ],\n  \"q\": [\n   0,\n   -0.9926,\n   0,\n   0.1216\n  ]\n },\n \"world\": {\n  \"p\": [\n   -0.5,\n   0.025,\n   8.1\n  ]\n },\n \"props\": {},\n \"behaviours\": [\n  {\n   \"use\": \"player\",\n   \"state\": null\n  }\n ],\n \"body\": {\n  \"type\": \"kinematic\",\n  \"linvel\": [\n   0,\n   0,\n   0\n  ],\n  \"angvel\": [\n   0,\n   0,\n   0\n  ],\n  \"",
    "isError": false
   },
   {
@@ -123,7 +123,7 @@
      "text": "Welcome in! Take a seat anywhere."
     }
    },
-   "result": "{\n \"called\": \"hana-1.say\",\n \"result\": null,\n \"step\": 711\n}",
+   "result": "{\n \"called\": \"hana-1.say\",\n \"result\": null,\n \"step\": 718\n}",
    "isError": false
   },
   {
@@ -131,7 +131,7 @@
    "input": {
     "steps": 60
    },
-   "result": "{\n \"step\": 884,\n \"seconds\": 14.733,\n \"signals\": [],\n \"moreSignals\": 0\n}",
+   "result": "{\n \"step\": 864,\n \"seconds\": 14.4,\n \"signals\": [],\n \"moreSignals\": 0\n}",
    "isError": false
   },
   {
@@ -140,7 +140,7 @@
     "id": "hana-1",
     "live": true
    },
-   "result": "{\n \"id\": \"hana-1\",\n \"type\": \"Character\",\n \"step\": 969,\n \"local\": {\n  \"p\": [\n   -1.5921,\n   0.025,\n   -3.5299\n  ],\n  \"q\": [\n   0,\n   -1,\n   0,\n   -0.0048\n  ]\n },\n \"world\": {\n  \"p\": [\n   -1.5921,\n   0.025,\n   -3.5299\n  ]\n },\n \"props\": {\n  \"controller\": \"npc\"\n },\n \"behaviours\": [\n  {\n   \"use\": \"wander\",\n   \"state\": {\n    \"home\": [\n     -1.5,\n     -3\n    ],\n    \"target\": [\n     -1.5866950995630806,\n  ",
+   "result": "{\n \"id\": \"hana-1\",\n \"type\": \"Character\",\n \"step\": 962,\n \"local\": {\n  \"p\": [\n   -1.5908,\n   0.025,\n   -3.5299\n  ],\n  \"q\": [\n   0,\n   -1,\n   0,\n   -0.0036\n  ]\n },\n \"world\": {\n  \"p\": [\n   -1.5908,\n   0.025,\n   -3.5299\n  ]\n },\n \"props\": {\n  \"controller\": \"npc\"\n },\n \"behaviours\": [\n  {\n   \"use\": \"wander\",\n   \"state\": {\n    \"home\": [\n     -1.5,\n     -3\n    ],\n    \"target\": [\n     -1.5866950995630806,\n  ",
    "isError": false
   },
   {
@@ -154,7 +154,7 @@
    "input": {
     "action": "stop"
    },
-   "result": "{\n \"restored\": true,\n \"hash\": \"aa6c82377a927718\",\n \"before\": \"aa6c82377a927718\",\n \"viewSame\": true\n}",
+   "result": "{\n \"restored\": true,\n \"hash\": \"159c673ab301d76b\",\n \"before\": \"159c673ab301d76b\",\n \"viewSame\": true\n}",
    "isError": false
   },
   {
@@ -165,6 +165,6 @@
   }
  ],
  "failed": 0,
- "costUSD": 0.21110179999999995,
- "final": "All seven steps ran. Steps 3 and 5 gave results that don't match what you'd expect.\n\n1. **Camera:** `cam-overview` is added under root at [4, 3, 6]. It uses the orbit preset, targets `hana-1` and has an 85 mm lens. It shows in the tree after the stop.\n2. **Play:** The scene went into play mode at step 0.\n3. **move_y held for 60 steps:** Mira did not appear to move.\n   - Her live position was [-0.5, 0.025, 8.1] and her animation was `idle`, with speed 0 and move [0, 0].\n   - The step counter went from 0 to 140 over my 60-step request, and it kept rising between calls. The engine seems to run in real time while playing, so the counts don't match what I asked for.\n   - Mira's yaw was 3.14 (facing back toward -Z), so she may have been blocked or not driven by the held input. I didn't investigate.\n4. **Take sword:** `interact` returned `take` into the closet. After stepping 30, her live equipped list was `top:shell`, `weapon:sword`, `stowed:sword` and `held:sword`. She is holding the sword. She already had `stowed:sword` and `weapon:sword` before the take.\n5. **Hana say:** The `say` call returned with no error. After 60 steps Hana's live state was:\n   - position [-1.59, 0.025, -3.53]\n   - animation `idle`\n   - speed 0\n   - looking at `mira`\n   - `wander` and `greet` behaviours active\n   - nothing equipped\n\n   I saw no sign in her state that she was speaking.\n6. **Screenshot:** It shows a rear view of a plain, pale mannequin-like humanoid in a T-pose-ish stance, with a short sword on its back and one beside its arm. In front of it is a pair of brown double doors with blue glass panels. This looks like Mira at the entrance, and Hana isn't visible. The view isn't from `cam-overview`'s position.\n7. **Stop:** The scene came back unchanged. `restored` was true and the hash `aa6c82377a927718` matched the hash from before play. The view was also the same.\n\nI did not undo or save, so `cam-overview` is still in the unsaved scene."
+ "costUSD": 0.21257530000000002,
+ "final": "All seven steps ran. Two things differ from what you'd expect: the scene ran in real time between my calls, so my readings came later than the step counts suggest, and the screenshot doesn't show the new camera.\n\n1. **Camera:** I added `cam-overview` under `root` at [4, 3, 6] with the orbit preset, target `hana-1` and a 85 mm lens. I didn't call `makeCurrent` on it.\n2. **Play:** The scene started at step 0.\n3. **move_y held for 60 steps:** The step counter jumped from 0 to 141 for that call. When I read Mira, at step 266, she was at [-0.5, 0.025, 8.1], facing yaw 3.14, with animation `idle` and speed 0. Her move input was already zero, so this is where she ended up after the hold, not her state during it.\n4. **Sword take:** `interact` returned `take`, going into the closet. After the 30 steps, at step 690, her equipped list was `top:shell`, `weapon:sword`, `stowed:sword` and `held:sword`. She was idle at the same position, now facing yaw -2.90. Before the take she already had `stowed:sword` and `weapon:sword`, so the only new entry is `held:sword`.\n5. **Hana's `say`:** The call returned, and 60 steps later (step 962) Hana was at [-1.59, 0.025, -3.53] with animation `idle`, `speaking: true` and `look: \"mira\"`. Her `wander` and `greet` behaviours were still running, and she was standing still.\n6. **Screenshot:** It shows a plain mannequin-like figure from behind, with two light grey sword shapes across its back and sides. In front of it are brown double doors with blue windows, probably the entrance. The framing matches the default play camera, not the 85 mm orbit camera on Hana.\n7. **Stop:** `play stop` reported `restored: true`. The scene hash was `159c673ab301d76b` before and after, and the view was unchanged. The tree now has `cam-overview` as the only difference from the original, which is my added camera. I didn't undo or save."
 }

@@ -4,7 +4,7 @@
    "n": 1,
    "title": "The cafe runs in the playground in WKWebView (scheme, loopback) and Chromium",
    "ok": true,
-   "evidence": "chromium: 600 frames, render 0.56 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 1.278 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 1.274 ms, door opened at step 113, 6 presets, 0 errors"
+   "evidence": "chromium: 600 frames, render 0.564 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 1.33 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 1.343 ms, door opened at step 113, 6 presets, 0 errors"
   },
   {
    "n": 2,
@@ -16,7 +16,7 @@
    "n": 3,
    "title": "A 10 s recorded run hashes identically at every step everywhere; a snapshot at 300 re-simulates to 600 identically",
    "ok": true,
-   "evidence": "600 steps × 62 components; final 82e9ba247b1d5dd4; chromium: identical, snapshot identical, rendered = headless true; wkwebview-scheme: identical, snapshot identical, rendered = headless true; wkwebview-loopback: identical, snapshot identical, rendered = headless true"
+   "evidence": "600 steps × 62 components; final f2371e0ef65e9f16; chromium: identical, snapshot identical, rendered = headless true; wkwebview-scheme: identical, snapshot identical, rendered = headless true; wkwebview-loopback: identical, snapshot identical, rendered = headless true"
   },
   {
    "n": 4,
@@ -40,7 +40,19 @@
    "n": 7,
    "title": "Audio: the run with sound hashes as without; the offline mix renders identically twice",
    "ok": true,
-   "evidence": "chromium: final 82e9ba247b1d5dd4 = silent, mix 10 s ed4be685/ed4be685 same, peak 0.7134; wkwebview-scheme: final 82e9ba247b1d5dd4 = silent, mix 10 s 2f271ebd/2f271ebd same, peak 0.7132; wkwebview-loopback: final 82e9ba247b1d5dd4 = silent, mix 10 s 2f271ebd/2f271ebd same, peak 0.7132; heard: node:ambience, node:entrance-close-sound, node:entrance-open-sound, node:music, voice:hana-1"
+   "evidence": "chromium: final f105d15ede18d945 = silent, mix 27.8 s 97cb1089/97cb1089 same, peak 0.7287; wkwebview-scheme: final f105d15ede18d945 = silent, mix 27.8 s 1342d9e7/1342d9e7 same, peak 0.7288; wkwebview-loopback: final f105d15ede18d945 = silent, mix 27.8 s 1342d9e7/1342d9e7 same, peak 0.7288; heard: node:ambience, node:entrance-close-sound, node:entrance-open-sound, node:music, node:switch-sound, voice:hana-1"
+  },
+  {
+   "n": 8,
+   "title": "The take with items: sword into the closet, cupboard, stool, switch; identical everywhere, snapshot across the equip",
+   "ok": true,
+   "evidence": "1668 steps × 62 components, final f105d15ede18d945; prompts Take sword @523, Sit stool-7 @615, Open cupboard @750, Switch off light-switch @1522; states idle/move/sit/sitIdle/stand/take/use; sword taken @548, worn held+stowed, held:sword, idle set \"sword\"; seated @906; cupboard open, switch off; snapshot @720 (after the equip) identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
+  },
+  {
+   "n": 9,
+   "title": "Hana greets Mira: her line, mouth, look-at, blinks and caption",
+   "ok": true,
+   "evidence": "line from step 475 for 301 steps, mouth up to 1, looking at Mira 1668 steps (23 glances), 6 blinks, caption \"Hana: Oh, hi! Welcome to the cafe. Sit anywhere you like, and I'll bring you a menu.\"; lip sync +20 ms against the clip (engine/packages/voice/test/voice.test.mjs, Hana's welcome line)"
   }
  ],
  "runtimes": {
