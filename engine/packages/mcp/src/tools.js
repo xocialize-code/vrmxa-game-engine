@@ -1,35 +1,27 @@
 // The MCP tools: generic, with schemas from the registry (AB-R-0933: one tool per node type costs about
-// 660 tokens each and doesn't scale; `describe` returns a type's schema on demand instead).
+// 660 tokens each and doesn't scale; `describe` returns a type's schema on demand instead). One list, two targets:
+//   headless (server.js <root> <scene>): the scene file, edited with undo, and a headless engine in Node
+//   editor   (server.js --editor): the scene open in the VRMXG editor, edited through its command log (each edit is
+//            one step of the editor's own Undo), its play world driven and read, screenshots of its view
+// No Node APIs here: the editor runs these handlers in the page.
 //   scene:   describe, tree, get_node, add_node, set, remove_node, reparent, connect, validate, undo, redo, save
-//   engine:  engine_load, engine_step, physics, call_action; tree and get_node with live=true read the
-//            running engine instead of the file
-// Every edit goes through @vrmxg/scene's editor (undoable, checked against the schema); save writes the
-// canonical form and refuses a scene with errors.
-import fs from 'node:fs';
-import path from 'node:path';
-import { createValidator, parse, serialize, createEditor, flatten, describeType, describeBehaviour, changedLines } from '@vrmxg/scene';
-import { EngineSession } from './engine.js';
+//   engine:  engine_load (headless) or play (editor), engine_step, physics, call_action, interact; screenshot (editor);
+//            tree and get_node with live=true read the running world instead of the file
+import { createValidator, flatten, describeType, describeBehaviour } from '@vrmxg/scene';
 
 /**
- * @param {{ registry: any, project: import('./project.js').Project, scene: string }} opts scene: path under the project
+ * The tool list for a target.
+ * @param {any} reg the registry @param {'headless' | 'editor'} mode
  */
-export function createTools({ registry: reg, project, scene }) {
-  const scenePath = project.file(scene);
-  const { check } = createValidator(reg);
-  const doc = parse(fs.readFileSync(scenePath, 'utf8'));
-  let savedText = serialize(doc);
-  const prefabs = () => project.prefabs(doc);
-  const editor = createEditor(reg, doc, { prefabs });
-  const engine = new EngineSession(project);
+export function toolList(reg, mode = 'headless') {
   const types = [...reg.types.keys()];
   const ID = { type: 'string', description: 'Node id ("instance/inner" inside prefabs)' };
-  const LIVE = { type: 'boolean', description: 'Read the running engine (engine_load) instead of the file' };
+  const LIVE = { type: 'boolean', description: mode === 'editor' ? 'Read the play world instead of the scene' : 'Read the running engine (engine_load) instead of the file' };
   const none = { type: 'object', properties: {} };
-
   const tools = [
     { name: 'describe', description: 'List node types and behaviours, or one type\'s JSON Schema, units, signals, actions and accepted behaviours. Call before using a type.',
       inputSchema: { type: 'object', properties: { type: { type: 'string', enum: types }, behaviour: { type: 'string', enum: [...reg.behaviours.keys()] } } } },
-    { name: 'tree', description: 'The scene as an indented tree. flatten expands prefab instances; live shows the running engine with world positions.',
+    { name: 'tree', description: 'The scene as an indented tree. flatten expands prefab instances; live shows the running world with world positions.',
       inputSchema: { type: 'object', properties: { flatten: { type: 'boolean' }, live: LIVE } } },
     { name: 'get_node', description: 'A node as stored, with its signals and actions; live: its simulated state (transform, behaviours, body, character, camera).',
       inputSchema: { type: 'object', required: ['id'], properties: { id: ID, live: LIVE } } },
@@ -44,71 +36,99 @@ export function createTools({ registry: reg, project, scene }) {
     { name: 'connect', description: 'Connect a node\'s signal to another node\'s action (see get_node for both).',
       inputSchema: { type: 'object', required: ['from', 'signal', 'to', 'call'], properties: { from: ID, signal: { type: 'string' }, to: ID, call: { type: 'string' }, args: { type: 'object' } } } },
     { name: 'validate', description: 'Check the scene: schema errors, broken references; unknown data as warnings.', inputSchema: none },
-    { name: 'undo', description: 'Undo the last edit.', inputSchema: none },
+    { name: 'undo', description: mode === 'editor' ? 'Undo the editor\'s last edit (yours or the person\'s).' : 'Undo the last edit.', inputSchema: none },
     { name: 'redo', description: 'Redo the last undone edit.', inputSchema: none },
-    { name: 'save', description: 'Write the scene in canonical form (refused with errors); returns lines changed.', inputSchema: none },
-    { name: 'engine_load', description: 'Start a headless engine (physics, characters, input, cameras) from the scene as edited.', inputSchema: none },
-    { name: 'engine_step', description: 'Step the engine at 60 Hz. hold: input actions held meanwhile, e.g. {"move_y": 1, "run": true}; replay: an input recording file. Returns signals fired.',
+    { name: 'save', description: 'Write the scene in canonical form (refused with errors).', inputSchema: none },
+    mode === 'editor'
+      ? { name: 'play', description: 'Play the scene in the editor (play), stop (the scene comes back unchanged), pause or resume.',
+        inputSchema: { type: 'object', required: ['action'], properties: { action: { type: 'string', enum: ['play', 'stop', 'pause', 'resume'] } } } }
+      : { name: 'engine_load', description: 'Start a headless engine (physics, characters, input, cameras) from the scene as edited.', inputSchema: none },
+    { name: 'engine_step', description: `Step at 60 Hz${mode === 'editor' ? ' (paused: at once; playing: in real time)' : ''}. hold: input actions held meanwhile, e.g. {"move_y": 1, "run": true}; replay: an input recording file. Returns signals fired.`,
       inputSchema: { type: 'object', properties: { steps: { type: 'integer', minimum: 1, maximum: 36000 }, hold: { type: 'object' }, replay: { type: 'string' } } } },
-    { name: 'physics', description: 'The running engine\'s physics: moving bodies (pose, velocity, sleeping), what each sensor holds, solid contacts.', inputSchema: none },
-    { name: 'call_action', description: 'Call an action on a live node, e.g. open on a hinge, goTo or say on a character.',
+    { name: 'physics', description: 'The running world\'s physics: moving bodies (pose, velocity, sleeping), what each sensor holds, solid contacts.', inputSchema: none },
+    { name: 'call_action', description: 'Call an action on a live node, e.g. open on a hinge, goTo, say or lookAt on a character.',
       inputSchema: { type: 'object', required: ['id', 'action'], properties: { id: ID, action: { type: 'string' }, args: { type: 'object' } } } },
+    { name: 'interact', description: 'A character does an item\'s verb (take, use, sit, open), as the player\'s interact would.',
+      inputSchema: { type: 'object', required: ['actor', 'item', 'verb'], properties: { actor: ID, item: ID, verb: { type: 'string' } } } },
   ];
+  if (mode === 'editor') tools.push({ name: 'screenshot', description: 'A PNG of the editor\'s view (the play camera while playing).', inputSchema: { type: 'object', properties: { width: { type: 'integer', minimum: 64, maximum: 1920 }, height: { type: 'integer', minimum: 64, maximum: 1080 } } } });
+  return tools;
+}
 
-  const treeText = (nodes) => {
-    const kids = new Map();
-    for (const n of nodes) { const k = n.parent ?? ''; if (!kids.has(k)) kids.set(k, []); kids.get(k).push(n); }
-    const out = [];
-    const walk = (p, depth) => { for (const n of kids.get(p) ?? []) { out.push(`${'  '.repeat(depth)}${n.id} (${n.type}${n.name ? `, "${n.name}"` : ''})`); walk(n.id, depth + 1); } };
-    walk('', 0);
-    return out.join('\n');
-  };
+const treeText = (nodes) => {
+  const kids = new Map();
+  for (const n of nodes) { const k = n.parent ?? ''; if (!kids.has(k)) kids.set(k, []); kids.get(k).push(n); }
+  const out = [];
+  const walk = (p, depth) => { for (const n of kids.get(p) ?? []) { out.push(`${'  '.repeat(depth)}${n.id} (${n.type}${n.name ? `, "${n.name}"` : ''})`); walk(n.id, depth + 1); } };
+  walk('', 0);
+  return out.join('\n');
+};
 
-  const handlers = {
+/**
+ * The handlers over a target:
+ *   doc(), prefabs(): the scene being edited     apply(op, label): one undoable edit     undo(), redo(): booleans
+ *   save(): what was written                     live(): a LiveView of the running world (throws if none)
+ *   load() (headless) | play(action) (editor)    recording(ref): an input recording, read     step(view, opts)?: how to step
+ *   screenshot({ width, height })?: { data: base64 PNG, width, height }
+ * @param {any} reg @param {any} target
+ */
+export function createHandlers(reg, target) {
+  const { check } = createValidator(reg);
+  const types = [...reg.types.keys()];
+  return {
     describe({ type, behaviour }) {
       if (type) return describeType(reg, type);
       if (behaviour) return describeBehaviour(reg, behaviour);
       return { types: types.map((t) => ({ type: t, extends: reg.get(t).extends, description: reg.get(t).description })), behaviours: [...reg.behaviours.values()].map((b) => ({ behaviour: b.name, on: b.on, description: b.description })) };
     },
-    tree({ flatten: flat, live }) { return live ? engine.treeText() : treeText(flat ? flatten(doc, prefabs()).nodes : doc.nodes); },
+    tree({ flatten: flat, live }) { const doc = target.doc(); return live ? target.live().treeText() : treeText(flat ? flatten(doc, target.prefabs()).nodes : doc.nodes); },
     get_node({ id, live }) {
-      if (live) return engine.nodeState(id);
-      const n = (id.includes('/') ? flatten(doc, prefabs()).nodes : doc.nodes).find((x) => x.id === id);
+      if (live) return target.live().nodeState(id);
+      const doc = target.doc();
+      const n = (id.includes('/') ? flatten(doc, target.prefabs()).nodes : doc.nodes).find((x) => x.id === id);
       if (!n) throw new Error(`no node "${id}"`);
       const s = reg.surface(n);
       return { node: n, signals: Object.keys(s.signals), actions: Object.keys(s.actions) };
     },
-    add_node({ node, index }) { editor.apply({ op: 'add', node, index }); return `added ${node.id}`; },
-    set({ id, path: p, value }) { editor.apply({ op: 'set', id, path: p, value }); return `${id}.${p} = ${JSON.stringify(value)}`; },
-    remove_node({ id }) { editor.apply({ op: 'remove', id }); return `removed ${id}`; },
-    reparent({ id, parent, index }) { editor.apply({ op: 'reparent', id, parent, index }); return `${id} now under ${parent ?? '(root)'}`; },
-    connect(a) { editor.apply({ op: 'connect', ...a }); return `connected ${a.from}.${a.signal} -> ${a.to}.${a.call}`; },
-    validate() { return check(doc, { prefabs: prefabs() }); },
-    undo() { return editor.undo() ? 'undone' : 'nothing to undo'; },
-    redo() { return editor.redo() ? 'redone' : 'nothing to redo'; },
+    add_node({ node, index }) { target.apply({ op: 'add', node, index }, `Add ${node.id}`); return `added ${node.id}`; },
+    set({ id, path: p, value }) { target.apply({ op: 'set', id, path: p, value }, `Set ${id} ${p}`); return `${id}.${p} = ${JSON.stringify(value)}`; },
+    remove_node({ id }) { target.apply({ op: 'remove', id }, `Delete ${id}`); return `removed ${id}`; },
+    reparent({ id, parent, index }) { target.apply({ op: 'reparent', id, parent, index }, `Move ${id} under ${parent ?? 'the root'}`); return `${id} now under ${parent ?? '(root)'}`; },
+    connect(a) { target.apply({ op: 'connect', ...a }, `Connect ${a.from} ${a.signal}`); return `connected ${a.from}.${a.signal} -> ${a.to}.${a.call}`; },
+    validate() { return check(target.doc(), { prefabs: target.prefabs() }); },
+    undo() { return target.undo() ? 'undone' : 'nothing to undo'; },
+    redo() { return target.redo() ? 'redone' : 'nothing to redo'; },
     save() {
-      const r = check(doc, { prefabs: prefabs() });
+      const r = check(target.doc(), { prefabs: target.prefabs() });
       if (!r.ok) throw new Error(`not saved: ${r.errors.length} errors\n${r.errors.join('\n')}`);
-      const text = serialize(doc);
-      const n = changedLines(savedText, text);
-      fs.writeFileSync(scenePath, text); savedText = text;
-      return { saved: path.relative(project.root, scenePath), changedLines: n, warnings: r.warnings };
+      return target.save(r);
     },
-    async engine_load() { return engine.load(structuredClone(doc), prefabs()); },
-    engine_step(a) { return engine.step(a); },
-    physics() { return engine.physicsState(); },
-    call_action({ id, action, args }) { return engine.callAction(id, action, args); },
+    engine_load() { return target.load(); },
+    play({ action }) { return target.play(action); },
+    async engine_step({ steps, hold, replay }) {
+      const view = target.live();
+      const opts = { steps, hold, recording: replay ? await target.recording(replay) : undefined };
+      return target.step ? target.step(view, opts) : view.step(opts);
+    },
+    physics() { return target.live().physicsState(); },
+    call_action({ id, action, args }) { return target.live().callAction(id, action, args); },
+    interact({ actor, item, verb }) { return target.live().interact(actor, item, verb); },
+    async screenshot({ width = 960, height = 540 }) { if (!target.screenshot) throw new Error('no view to take a screenshot of'); return { image: await target.screenshot({ width, height }) }; },
   };
+}
 
-  /** Run a tool: { text, isError }. Errors come back as text, so an agent can read them and retry. */
-  async function call(name, args = {}) {
+/**
+ * Run a tool: { text, isError, image? }. Errors come back as text, so an agent can read them and retry.
+ * @param {Record<string, (args: any) => any>} handlers
+ */
+export function caller(handlers) {
+  return async function call(name, args = {}) {
     const fn = handlers[name];
     if (!fn) return { isError: true, text: `unknown tool ${name}` };
     try {
       const out = await fn(args ?? {});
+      if (out?.image) return { isError: false, text: `${out.image.width}×${out.image.height} PNG`, image: out.image };
       return { isError: false, text: typeof out === 'string' ? out : JSON.stringify(out, null, 1) };
     } catch (e) { return { isError: true, text: e.message }; }
-  }
-
-  return { tools, call, doc, editor, engine };
+  };
 }

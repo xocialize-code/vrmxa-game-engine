@@ -1,0 +1,170 @@
+{
+ "date": "2026-11-18",
+ "client": "claude -p (Claude Code 2.1.319, sonnet), --mcp-config with vrmxg-mcp --editor",
+ "exitCode": 0,
+ "mcpServers": [
+  {
+   "name": "vrmxg-editor",
+   "status": "connected",
+   "source": "dynamic"
+  }
+ ],
+ "prompt": "You are connected to the VRMXG editor, which has the sample cafe scene open. Using only the vrmxg-editor tools:\n1. Add a camera to the scene: id cam-overview, under root, at [4, 3, 6], orbit preset targeting hana-1, 85 mm lens.\n2. Play the scene.\n3. Hold the move_y input at 1 for 60 steps, and report Mira's live position and animation state.\n4. Have Mira take the sword (item \"sword\", verb \"take\"), step 30, and report what she is holding (her live state).\n5. Cue Hana: call her say action with clip \"voice/hana-welcome.wav\" and text \"Welcome in! Take a seat anywhere.\", step 60, and report Hana's live state.\n6. Take a screenshot and describe briefly what it shows.\n7. Stop playing, and report whether the scene came back unchanged.\nDo not undo or save. Finish with a short report of each step.",
+ "calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__vrmxg-editor__add_node,mcp__vrmxg-editor__call_action,mcp__vrmxg-editor__connect,mcp__vrmxg-editor__describe,mcp__vrmxg-editor__engine_step,mcp__vrmxg-editor__get_node,mcp__vrmxg-editor__interact,mcp__vrmxg-editor__play,mcp__vrmxg-editor__screenshot,mcp__vrmxg-editor__tree,mcp__vrmxg-editor__physics,mcp__vrmxg-editor__set",
+    "max_results": 20
+   },
+   "result": "\n\n\n\n\n\n\n\n\n\n\n",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "Camera"
+   },
+   "result": "{\n \"type\": \"Camera\",\n \"extends\": [\n  \"Node3D\"\n ],\n \"description\": \"A physical camera: lens, sensor and focus, as the cinematics research specifies.\",\n \"asset\": null,\n \"schema\": {\n  \"type\": \"object\",\n  \"required\": [\n   \"id\",\n   \"type\"\n  ],\n  \"description\": \"A physical camera: lens, sensor and focus, as the cinematics research specifies.\",\n  \"properties\": {\n   \"id\": {\n    \"type\": \"string\",\n    \"patt",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__tree",
+   "input": {},
+   "result": "root (Node3D, \"Cafe\")\n  env (Environment)\n  set (Model)\n  espresso (Model, \"Espresso machine\")\n  sun (DirectionalLight)\n  counter-light (SpotLight)\n  light-switch (Item, \"Counter lights\")\n    switch-sound (AudioPlayer3D, \"Switch click\")\n  entrance-open-sound (AudioPlayer3D, \"Entrance opening\")\n  entrance-close-sound (AudioPlayer3D, \"Entrance closing\")\n  ambience (AudioPlayer, \"Room tone\")\n  music ",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__add_node",
+   "input": {
+    "node": {
+     "id": "cam-overview",
+     "type": "Camera",
+     "parent": "root",
+     "transform": {
+      "p": [
+       4,
+       3,
+       6
+      ]
+     },
+     "props": {
+      "preset": "orbit",
+      "target": "hana-1",
+      "focalLength": 85
+     }
+    }
+   },
+   "result": "added cam-overview",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__play",
+   "input": {
+    "action": "play"
+   },
+   "result": "{\n \"mode\": \"playing\",\n \"step\": 0\n}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__engine_step",
+   "input": {
+    "steps": 60,
+    "hold": {
+     "move_y": 1
+    }
+   },
+   "result": "{\n \"step\": 140,\n \"seconds\": 2.333,\n \"signals\": [],\n \"moreSignals\": 0\n}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "mira",
+    "live": true
+   },
+   "result": "{\n \"id\": \"mira\",\n \"type\": \"Character\",\n \"step\": 270,\n \"local\": {\n  \"p\": [\n   -0.5,\n   0.025,\n   8.1\n  ],\n  \"q\": [\n   0,\n   1,\n   0,\n   0\n  ]\n },\n \"world\": {\n  \"p\": [\n   -0.5,\n   0.025,\n   8.1\n  ]\n },\n \"props\": {},\n \"behaviours\": [\n  {\n   \"use\": \"player\",\n   \"state\": null\n  }\n ],\n \"body\": {\n  \"type\": \"kinematic\",\n  \"linvel\": [\n   0,\n   0,\n   0\n  ],\n  \"angvel\": [\n   0,\n   0,\n   0\n  ],\n  \"sleeping\": ",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__interact",
+   "input": {
+    "actor": "mira",
+    "item": "sword",
+    "verb": "take"
+   },
+   "result": "{\n \"result\": {\n  \"verb\": \"take\",\n  \"to\": null,\n  \"slot\": \"take\",\n  \"prompt\": \"Take\",\n  \"into\": \"closet\"\n },\n \"step\": 477\n}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__engine_step",
+   "input": {
+    "steps": 30
+   },
+   "result": "{\n \"step\": 590,\n \"seconds\": 9.833,\n \"signals\": [],\n \"moreSignals\": 0\n}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "mira",
+    "live": true
+   },
+   "result": "{\n \"id\": \"mira\",\n \"type\": \"Character\",\n \"step\": 683,\n \"local\": {\n  \"p\": [\n   -0.5,\n   0.025,\n   8.1\n  ],\n  \"q\": [\n   0,\n   -0.9926,\n   0,\n   0.1216\n  ]\n },\n \"world\": {\n  \"p\": [\n   -0.5,\n   0.025,\n   8.1\n  ]\n },\n \"props\": {},\n \"behaviours\": [\n  {\n   \"use\": \"player\",\n   \"state\": null\n  }\n ],\n \"body\": {\n  \"type\": \"kinematic\",\n  \"linvel\": [\n   0,\n   0,\n   0\n  ],\n  \"angvel\": [\n   0,\n   0,\n   0\n  ],\n  \"",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__call_action",
+   "input": {
+    "id": "hana-1",
+    "action": "say",
+    "args": {
+     "clip": "voice/hana-welcome.wav",
+     "text": "Welcome in! Take a seat anywhere."
+    }
+   },
+   "result": "{\n \"called\": \"hana-1.say\",\n \"result\": null,\n \"step\": 711\n}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__engine_step",
+   "input": {
+    "steps": 60
+   },
+   "result": "{\n \"step\": 884,\n \"seconds\": 14.733,\n \"signals\": [],\n \"moreSignals\": 0\n}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "hana-1",
+    "live": true
+   },
+   "result": "{\n \"id\": \"hana-1\",\n \"type\": \"Character\",\n \"step\": 969,\n \"local\": {\n  \"p\": [\n   -1.5921,\n   0.025,\n   -3.5299\n  ],\n  \"q\": [\n   0,\n   -1,\n   0,\n   -0.0048\n  ]\n },\n \"world\": {\n  \"p\": [\n   -1.5921,\n   0.025,\n   -3.5299\n  ]\n },\n \"props\": {\n  \"controller\": \"npc\"\n },\n \"behaviours\": [\n  {\n   \"use\": \"wander\",\n   \"state\": {\n    \"home\": [\n     -1.5,\n     -3\n    ],\n    \"target\": [\n     -1.5866950995630806,\n  ",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__screenshot",
+   "input": {},
+   "result": "[image]\n[image saved by Claude Code]\n960×540 PNG",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__play",
+   "input": {
+    "action": "stop"
+   },
+   "result": "{\n \"restored\": true,\n \"hash\": \"aa6c82377a927718\",\n \"before\": \"aa6c82377a927718\",\n \"viewSame\": true\n}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__tree",
+   "input": {},
+   "result": "root (Node3D, \"Cafe\")\n  env (Environment)\n  set (Model)\n  espresso (Model, \"Espresso machine\")\n  sun (DirectionalLight)\n  counter-light (SpotLight)\n  light-switch (Item, \"Counter lights\")\n    switch-sound (AudioPlayer3D, \"Switch click\")\n  entrance-open-sound (AudioPlayer3D, \"Entrance opening\")\n  entrance-close-sound (AudioPlayer3D, \"Entrance closing\")\n  ambience (AudioPlayer, \"Room tone\")\n  music ",
+   "isError": false
+  }
+ ],
+ "failed": 0,
+ "costUSD": 0.21110179999999995,
+ "final": "All seven steps ran. Steps 3 and 5 gave results that don't match what you'd expect.\n\n1. **Camera:** `cam-overview` is added under root at [4, 3, 6]. It uses the orbit preset, targets `hana-1` and has an 85 mm lens. It shows in the tree after the stop.\n2. **Play:** The scene went into play mode at step 0.\n3. **move_y held for 60 steps:** Mira did not appear to move.\n   - Her live position was [-0.5, 0.025, 8.1] and her animation was `idle`, with speed 0 and move [0, 0].\n   - The step counter went from 0 to 140 over my 60-step request, and it kept rising between calls. The engine seems to run in real time while playing, so the counts don't match what I asked for.\n   - Mira's yaw was 3.14 (facing back toward -Z), so she may have been blocked or not driven by the held input. I didn't investigate.\n4. **Take sword:** `interact` returned `take` into the closet. After stepping 30, her live equipped list was `top:shell`, `weapon:sword`, `stowed:sword` and `held:sword`. She is holding the sword. She already had `stowed:sword` and `weapon:sword` before the take.\n5. **Hana say:** The `say` call returned with no error. After 60 steps Hana's live state was:\n   - position [-1.59, 0.025, -3.53]\n   - animation `idle`\n   - speed 0\n   - looking at `mira`\n   - `wander` and `greet` behaviours active\n   - nothing equipped\n\n   I saw no sign in her state that she was speaking.\n6. **Screenshot:** It shows a rear view of a plain, pale mannequin-like humanoid in a T-pose-ish stance, with a short sword on its back and one beside its arm. In front of it is a pair of brown double doors with blue glass panels. This looks like Mira at the entrance, and Hana isn't visible. The view isn't from `cam-overview`'s position.\n7. **Stop:** The scene came back unchanged. `restored` was true and the hash `aa6c82377a927718` matched the hash from before play. The view was also the same.\n\nI did not undo or save, so `cam-overview` is still in the unsaved scene."
+}

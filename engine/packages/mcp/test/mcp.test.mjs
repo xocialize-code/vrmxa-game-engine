@@ -9,7 +9,8 @@ import path from 'node:path';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { m0Registry } from '@vrmxg/registry/m0';
-import { createValidator, parse } from '@vrmxg/scene';
+import { createValidator, parse, createEditor } from '@vrmxg/scene';
+import { toolList, createHandlers, caller } from '@vrmxg/mcp';
 
 const here = import.meta.dirname;
 const server = path.join(here, '../src/server.js');
@@ -41,14 +42,76 @@ const prefabFiles = { 'prefabs/door.vrmxs': path.join(coreFixtures, 'prefabs/doo
 const sample = path.join(here, '../../../../content/sample');
 const doorFiles = Object.fromEntries(['prefabs/door.vrmxs', 'prefabs/double-door.vrmxs', 'props/door-frame.glb', 'props/door-panel.glb'].map((f) => [f, path.join(sample, f)]));
 
-test('the tool list is generic and small: 16 tools under 1,500 tokens', async () => {
+test('the tool list is generic and small: 17 tools under 1,500 tokens headless, 18 under 1,800 for the editor', async () => {
   const dir = project('list', { 'cafe.vrmxs': path.join(coreFixtures, 'cafe.vrmxs'), ...prefabFiles });
   const { client } = await connect([dir, 'cafe.vrmxs']);
   const { tools } = await client.listTools();
   await client.close();
   const bytes = Buffer.byteLength(JSON.stringify(tools));
-  assert.equal(tools.length, 16);
+  assert.equal(tools.length, 17);
   assert.ok(bytes / 4 < 1500, `${bytes} bytes ≈ ${Math.round(bytes / 4)} tokens`);
+  const editor = toolList(m0Registry(), 'editor'), eb = Buffer.byteLength(JSON.stringify(editor));
+  assert.deepEqual(editor.map((t) => t.name).filter((n) => !tools.some((t) => t.name === n)), ['play', 'screenshot']);
+  assert.ok(!editor.some((t) => t.name === 'engine_load'));
+  assert.ok(eb / 4 < 1800, `editor: ${eb} bytes ≈ ${Math.round(eb / 4)} tokens`);
+});
+
+// A stand-in for the editor's page: polls the bridge and runs the same handlers over a target whose edits carry labels,
+// as the editor's command log does.
+async function fakeEditor(port, { stop }) {
+  const reg = m0Registry();
+  const doc = parse(fs.readFileSync(path.join(coreFixtures, 'cafe.vrmxs'), 'utf8'));
+  const prefabs = new Map(Object.keys(prefabFiles).map((k) => [k, parse(fs.readFileSync(prefabFiles[k], 'utf8'))]));
+  const ed = createEditor(reg, doc, { prefabs: () => prefabs });
+  const log = [];
+  const target = {
+    doc: () => doc, prefabs: () => prefabs,
+    apply: (op, label) => { ed.apply({ ...op, label }); log.push(label); },
+    undo: () => ed.undo(), redo: () => ed.redo(),
+    live: () => { throw new Error('not playing: call play first'); },
+    play: (action) => ({ mode: action === 'play' ? 'playing' : 'editing' }),
+    screenshot: async ({ width, height }) => ({ data: Buffer.from('png').toString('base64'), width, height }),
+  };
+  const call = caller(createHandlers(reg, target));
+  let reply = null, hello = { app: 'fake editor' };
+  while (!stop.done) {
+    const res = await fetch(`http://127.0.0.1:${port}/vrmxg-mcp/exchange`, { method: 'POST', body: JSON.stringify({ editor: 'a', hello, reply }) }).catch(() => null);
+    hello = null; reply = null;
+    if (!res) { await new Promise((r) => setTimeout(r, 50)); continue; }
+    const m = await res.json();
+    if (m.call) reply = { id: m.call.id, ...(await call(m.call.name, m.call.args)) };
+  }
+  return { ed, log };
+}
+
+test('editor mode: tool calls reach the open editor through the bridge; its edits carry labels and undo there', async () => {
+  const client = new Client({ name: 'vrmxg-mcp-test', version: '0.1.0' });
+  const transport = new StdioClientTransport({ command: process.execPath, args: [server, '--editor', '--port', '0', '--hold-ms', '300'], stderr: 'pipe' });
+  let port = 0;
+  const ready = new Promise((resolve) => transport.stderr.on('data', (d) => { const m = /127\.0\.0\.1:(\d+)/.exec(String(d)); if (m) { port = +m[1]; resolve(); } }));
+  await client.connect(transport); clients.push(client);
+  await ready;
+  const { tools } = await client.listTools();
+  assert.ok(tools.some((t) => t.name === 'screenshot'));
+  const stop = { done: false };
+  const page = fakeEditor(port, { stop });
+  await new Promise((r) => setTimeout(r, 100));
+  // a second editor polling the same bridge is told another has the link, so calls never split between them
+  const other = await (await fetch(`http://127.0.0.1:${port}/vrmxg-mcp/exchange`, { method: 'POST', body: JSON.stringify({ editor: 'b' }) })).json();
+  assert.ok(other.taken, 'the second editor is turned away');
+  const call = async (name, a = {}) => { const r = await client.callTool({ name, arguments: a }); return r; };
+  const added = await call('add_node', { node: { id: 'cam-mcp', type: 'Camera', parent: 'root', transform: { p: [4, 3, 6] }, props: { focalLength: 50 } } });
+  assert.equal(added.content[0].text, 'added cam-mcp');
+  const live = await call('get_node', { id: 'mira', live: true });
+  assert.ok(live.isError && live.content[0].text.includes('call play first'), 'errors come back as text');
+  const shot = await call('screenshot', { width: 320, height: 180 });
+  assert.equal(shot.content[0].type, 'image'); assert.equal(shot.content[1].text, '320×180 PNG');
+  assert.equal((await call('undo')).content[0].text, 'undone');
+  stop.done = true;
+  const { ed, log } = await page;
+  assert.deepEqual(log, ['Add cam-mcp']);
+  assert.ok(!ed.doc.nodes.some((n) => n.id === 'cam-mcp'), 'undone in the editor');
+  assert.equal(ed.peek().redo.label, 'Add cam-mcp', 'the editor\'s history names it');
 });
 
 test('an agent describes Camera, adds a camera to the cafe, saves, and the file validates', async () => {

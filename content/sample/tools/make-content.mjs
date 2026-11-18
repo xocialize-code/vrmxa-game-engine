@@ -49,8 +49,8 @@ for (const [x, z] of [[-3, 1], [3, 1], [3, -2], [-3, -2.2]]) {
   parts.push({ name: `table-${x}-${z}`, size: [0.9, 0.05, 0.9], p: [x, 0.75, z], color: C.wood });
   parts.push({ name: `table-leg-${x}-${z}`, size: [0.1, 0.72, 0.1], p: [x, 0.36, z], color: C.trim });
   parts.push({ name: `table-col-${x}-${z}`, size: [0.9, 0.78, 0.9], p: [x, 0.39, z], color: C.wood, collider: true, visible: false });
-  for (const [dx, dz] of [[-0.75, 0], [0.75, 0]]) parts.push({ name: `stool-${x + dx}-${z + dz}`, size: [0.36, 0.46, 0.36], p: [x + dx, 0.23, z + dz], color: C.seat, collider: true });
 }
+// (the stools beside the tables are items now: items/stool.vrmxi, sat on with the sit verb, M1 W9)
 for (const x of [-1.5, 0, 1.5]) parts.push({ name: `pendant-${x}`, size: [0.3, 0.12, 0.3], p: [x, 2.6, -4.2], color: C.lamp, roughness: 0.3 });
 write('sets/cafe.glb', writeGLB({ name: 'cafe', generator: GEN, parts }));
 
@@ -103,6 +103,41 @@ const doorManifest = {
   listing: null, origin: { made: 'authored', source: 'content/sample/tools/make-content.mjs' }, madeWith: null, thumbnail: null, files: [],
 };
 
+// ---------------------------------------------------------------- a cupboard (M1 W9): a VRMXI container with a hinged door
+// Carcass of fixed boxes against a wall (front +z, origin on the floor), one door leaf on a hinge at its left edge that
+// opens outwards, a mug on the shelf, a Reach sensor in front; closed / open states, open and close verbs.
+const cupboardModel = () => writeGLBTree({ name: 'Cupboard', generator: GEN, roots: ['Cupboard'], nodes: [
+  { name: 'Cupboard', children: ['Carcass', 'Door', 'Mug', 'Reach'] },
+  { name: 'Carcass', children: ['Back', 'Side left', 'Side right', 'Top', 'Bottom', 'Shelf'] },
+  { name: 'Back', t: [0, 0.9, -0.215], box: { size: [0.9, 1.8, 0.02], color: C.shelf }, collider: box3([0.9, 1.8, 0.02]) },
+  { name: 'Side left', t: [-0.44, 0.9, 0], box: { size: [0.02, 1.8, 0.45], color: C.wood }, collider: box3([0.02, 1.8, 0.45]) },
+  { name: 'Side right', t: [0.44, 0.9, 0], box: { size: [0.02, 1.8, 0.45], color: C.wood }, collider: box3([0.02, 1.8, 0.45]) },
+  { name: 'Top', t: [0, 1.79, 0], box: { size: [0.9, 0.02, 0.45], color: C.wood }, collider: box3([0.9, 0.02, 0.45]) },
+  { name: 'Bottom', t: [0, 0.05, 0], box: { size: [0.9, 0.1, 0.45], color: C.trim }, collider: box3([0.9, 0.1, 0.45]) },
+  { name: 'Shelf', t: [0, 0.95, 0], box: { size: [0.86, 0.02, 0.42], color: C.shelf } },
+  { name: 'Door', t: [0, 0.92, 0.235], motion: { mass: 4 }, children: ['Leaf', 'Knob'] },
+  { name: 'Leaf', box: { size: [0.86, 1.64, 0.02], color: '#8f6242', roughness: 0.6 }, collider: box3([0.86, 1.64, 0.02]) },
+  { name: 'Knob', t: [0.36, 0, 0.03], box: { size: [0.04, 0.04, 0.04], color: '#c9c3b6', metalness: 0.8, roughness: 0.3 } },
+  { name: 'Mug', t: [0.1, 1.01, 0], box: { size: [0.09, 0.1, 0.09], color: '#e8e4dc', roughness: 0.4 } },
+  { name: 'Reach', t: [0, 0.9, 0.8], trigger: box3([1.2, 1.8, 1.1]) },
+] });
+const cupboardManifest = {
+  format: 'vrmxi', version: 1, id: '8e2c4a6b-1d3f-4e5a-b7c9-0a1b2c3d4e5f', revision: 1, name: 'Cupboard',
+  generator: GEN, type: 'container', tags: ['container:cupboard'], model: { file: 'model.glb' },
+  joints: [{ name: 'hinge', type: 'hinge', body: 'Door', to: null, anchor: [-0.43, 0.92, 0.235], axis: [0, 1, 0], limits: { min: -1.9, max: 0 }, motor: { target: 0, stiffness: 120, damping: 20 } }],
+  states: [
+    { name: 'closed', tags: ['cupboard:closed'], joints: { hinge: 0 } },
+    { name: 'open', tags: ['cupboard:open'], joints: { hinge: -1.6 } },
+  ],
+  verbs: [
+    { verb: 'open', prompt: 'Open', states: ['closed'], to: 'open', reach: 'Reach' },
+    { verb: 'open', prompt: 'Close', states: ['open'], to: 'closed', reach: 'Reach' },
+  ],
+  takeable: false, extensions: {},
+  meta: { version: '1.0', authors: ['Xocialize LLC'], licenseUrl: 'https://vrm.dev/licenses/1.0/', commercialUsage: 'corporation', creditNotation: 'unnecessary', allowRedistribution: true, modification: 'allowModificationRedistribution' },
+  listing: null, origin: { made: 'authored', source: 'content/sample/tools/make-content.mjs' }, madeWith: null, thumbnail: null, files: [],
+};
+
 // ---------------------------------------------------------------- characters and clips (need the sibling repos)
 const studio = path.join(dev, 'vrmxa-avatar-studio/packages/vrmxa-core');
 if (fs.existsSync(studio)) {
@@ -122,10 +157,15 @@ if (fs.existsSync(studio)) {
   const { SPEC, specChecker } = await import(path.join(root, '../../engine/packages/item/test/fixtures.mjs'));
   if (SPEC) { const found = (await specChecker())(door).filter((p) => p.severity === 'error'); if (found.length) throw new Error(`items/cafe-door.vrmxi: ${JSON.stringify(found)}`); console.log('valid items/cafe-door.vrmxi (VRMXI checker)'); }
   write('items/cafe-door.vrmxi', door);
+  const cupboard = await packItem({ manifest: cupboardManifest, model: cupboardModel(), vrmxaCore: await vrmxaCore() });
+  if (SPEC) { const found = (await specChecker())(cupboard).filter((p) => p.severity === 'error'); if (found.length) throw new Error(`items/cupboard.vrmxi: ${JSON.stringify(found)}`); console.log('valid items/cupboard.vrmxi (VRMXI checker)'); }
+  write('items/cupboard.vrmxi', cupboard);
   // the specification's sword pickup (takeable, embeds a pinned "Short sword", put on held), byte for byte
   if (SPEC) write('items/sword-pickup.vrmxi', fs.readFileSync(path.join(SPEC, 'fixtures-vrmxi/items/sword-pickup.vrmxi')));
   // and its light switch (off / on, a use verb each way), byte for byte
   if (SPEC) write('items/switch.vrmxi', fs.readFileSync(path.join(SPEC, 'fixtures-vrmxi/items/switch.vrmxi')));
+  // and its stool (a seat: sit, with a seat point and an exit), byte for byte: the cafe's stools (M1 W9)
+  if (SPEC) write('items/stool.vrmxi', fs.readFileSync(path.join(SPEC, 'fixtures-vrmxi/items/stool.vrmxi')));
 } else console.log('vrmxa-avatar-studio not beside the repo: characters and clips left as committed');
 
 // ---------------------------------------------------------------- scenes: canonical form, validated

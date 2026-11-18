@@ -57,9 +57,9 @@ const check = (n, title, ok, evidence) => { checks.push({ n, title, ok, evidence
 const mcp = fs.existsSync(res('mcp-session.json')) ? JSON.parse(fs.readFileSync(res('mcp-session.json'), 'utf8')) : null;
 if (mcp) check(5, 'MCP: describe, inspect the running engine, edit with undo', mcp.ok, mcp.evidence);
 
-// 6. Debug draw, counted in every browser.
+// 6. Debug draw, counted in every browser (14 Reach sensors since M1 W9: doors, switch, sword, cupboard, 8 stools).
 {
-  const rows = Object.entries(browsers).map(([k, r]) => { const x = r?.result?.rendered?.debug; return { k, x, ok: !!x && x.colliders + x.sensors.length + x.capsules.length === x.physicsColliders && x.sensors.length === 5 && x.sensors.every((n) => n.endsWith('#Reach')) && x.capsules.length === 2 && x.rays > 0 }; });
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = r?.result?.rendered?.debug; return { k, x, ok: !!x && x.colliders + x.sensors.length + x.capsules.length === x.physicsColliders && x.sensors.length === 14 && x.sensors.every((n) => n.endsWith('#Reach')) && x.capsules.length === 2 && x.rays > 0 }; });
   const x = rows[0].x;
   check(6, 'Debug draw shows colliders, sensors, rays and the character capsules', rows.every((r) => r.ok), `${x.colliders} colliders + ${x.sensors.length} sensors (${x.sensors.join(', ')}) + ${x.capsules.length} capsules (${x.capsules.join(', ')}) = ${x.physicsColliders} of ${x.physicsColliders}; ${x.rays} rays (the spring arm's, the interaction focus's); the same in ${rows.filter((r) => r.ok).map((r) => r.k).join(', ')}`);
 }

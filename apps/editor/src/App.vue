@@ -4,6 +4,7 @@
 import { onMounted, reactive, ref } from 'vue';
 import { EditorHost, ADDABLE, SIZES, RATES, CODECS } from './host.js';
 import { bundledProject, openProjectFolder } from './project.js';
+import { McpLink } from './mcp.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 import TreeItem from './TreeItem.vue';
 import Inspector from './Inspector.vue';
@@ -14,6 +15,7 @@ const ui = reactive({
   tree: [], selected: [], inspector: null, assets: [], undo: null, redo: null, dirty: false, valid: true, problems: '',
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
   debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', step: 0, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
+  mcp: '',
   ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '' },
 });
 /** @type {EditorHost} */ let ed = null; // never reactive
@@ -59,6 +61,12 @@ const act = async (fn) => { try { ui.error = ''; await fn(); } catch (e) { ui.er
 onMounted(async () => {
   ed = new EditorHost(canvas.value);
   ed.onChange = refresh; window.__editor = ed;
+  // MCP: on in the Mac app, or with ?mcp (=port, or =off) in a browser; vrmxg-mcp --editor listens on 127.0.0.1:5183
+  const q = new URLSearchParams(location.search).get('mcp');
+  if ((inShell && q !== 'off') || (q && q !== 'off')) {
+    const link = new McpLink(ed, { url: `http://127.0.0.1:${/^\d+$/.test(q ?? '') ? q : 5183}`, onChange: () => { ui.mcp = link.state === 'off' ? 'MCP: waiting for vrmxg-mcp --editor' : link.state === 'taken' ? 'MCP: another editor has the link' : `MCP ${link.state}${link.last ? ` · ${link.last}` : ''} · ${link.calls} calls`; } });
+    window.__mcp = link; link.onChange(); link.start();
+  }
   await act(async () => ed.openProject(await bundledProject()));
   ui.loading = false;
 });
@@ -218,6 +226,7 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       <button v-if="ui.saved" id="verify" type="button" aria-label="Reopen and compare" @click="verify">Reopen &amp; compare</button>
       <output v-if="ui.verify" id="verify-result" :aria-label="`Reopened ${ui.verify}`">{{ ui.verify }}</output>
       <output v-if="ui.stopped" id="stop-result" :aria-label="`Stopped: ${ui.stopped}`">Stopped: {{ ui.stopped }}</output>
+      <output v-if="ui.mcp" id="mcp-state" :aria-label="ui.mcp">{{ ui.mcp }}</output>
       <output id="frame-time" :aria-label="`Frame time ${ui.frame}`">{{ ui.frame }}</output>
       <output id="build-time" :aria-label="`Build ${ui.build}`">build {{ ui.build }}</output>
       <span v-if="ui.shell" class="muted" :aria-label="`Shell ${ui.shell}`">{{ ui.shell }}</span>

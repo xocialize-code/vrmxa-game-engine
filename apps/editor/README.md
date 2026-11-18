@@ -17,6 +17,7 @@ apps/editor-mac/scripts/build.sh        # the Mac app, where Open Project… mou
 | Viewport | The edit view: a SceneTree of the document, built but never stepped, drawn from the editor's own camera. Click picks (a prefab's inner parts pick the instance), the gizmo moves the selection (one undo step on release), an asset dropped on it lands on the surface under the pointer (floors and table tops, not walls) |
 | Inspector | Generated from the registry for the node's type: name, parent, position, rotation (degrees, yaw first), scale, then every prop by its widget (number, checkbox, list, colour, node, JSON); a set prop has a reset. A field commits on Return or leaving it |
 | Assets | The project's placeable files (`@vrmxg/editor-core`'s `assetList`): drag one onto the viewport, or Add it where the view looks (the first thing in an empty scene goes at the origin) |
+| MCP (M1 W9) | `vrmxg-mcp --editor` drives the open editor (`src/mcp.js`): the link polls 127.0.0.1:5183, on by default in the Mac app and with `?mcp` in a browser (`?mcp=<port>`, `?mcp=off`). Edits go through the session's command log ("Undo Add cam (MCP)"), play / step / input / interact / cues act on the play world, screenshot is the view; the status bar shows the link and the last call |
 | Status | Node count, saved or not, valid or not, the document's hash; after a save its size and hash, and Reopen & compare (read back from disk: same bytes, valid); after Stop, whether the scene and the edit view are as before Play; frame and build times; debug draw toggles |
 
 Edits that only move nodes are applied to the edit view in place; anything else rebuilds it (about 300 ms for the
@@ -26,4 +27,4 @@ the scene's camera and the keyboard, mouse and gamepad.
 
 A project's own modules (`behaviours.js`) import `@vrmxg/core` by name; the page's import map points that at
 `static/vrmxg-core.js`, which hands them the editor's own engine. Not yet: multi-selection gizmos, copy and paste,
-connections in the inspector, MCP attached to the open editor (W9), WebCodecs export in a browser (the spike chose it as a fallback only).
+connections in the inspector, WebCodecs export in a browser (the spike chose it as a fallback only).
