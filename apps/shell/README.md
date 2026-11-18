@@ -26,7 +26,7 @@ if (inShell) {
 | Project mount | `project.open` mounts a folder at `/project/` on both origins, so the page fetches project assets by URL |
 | Bridge | `window.webkit.messageHandlers.vrmxg.postMessage({ method, params })` returns a promise (`WKScriptMessageHandlerWithReply`); errors come back as `{ code, message }` (`bad_request`, `unknown_method`, `bad_params`, `cancelled`, `no_project`, `failed`). Native → page: `vrmxg-shell` events |
 | Methods | `shell.info`; `file.open`, `file.save` (system panels; writing back to a file the person opened or saved needs no panel); `project.open`, `project.list`, `project.write`; plus each app's own |
-| Menus | App, File (Open…, Open Project…, Save, Save As…: sent to the page as `menu.*` events), Edit (undo / redo and the clipboard through the responder chain), View (Reload), Window |
+| Menus | App, File (Open…, Open Project…, Save, Save As…: sent to the page as `menu.*` events), Edit (undo / redo and the clipboard through the responder chain; with `pageUndo`, undo and redo go to the page as `menu.undo` / `menu.redo`), View (Reload), Window |
 | Sandbox | `app-sandbox`, `network.client`, `network.server` (loopback), `files.user-selected.read-write` (panels) |
 | Automation | `VRMXG_SHELL_OPEN`, `VRMXG_SHELL_SAVE`, `VRMXG_SHELL_PROJECT` stand in for the panels (relative paths are under the app's temporary folder, inside its sandbox), so AppProbe scenarios open and save without the panel |
 

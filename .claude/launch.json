@@ -4,14 +4,35 @@
     {
       "name": "physics-spike",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "/Volumes/Satechi/Development/vrmxa-game-engine/spike-physics/web", "run", "dev"],
+      "runtimeArgs": [
+        "--prefix",
+        "/Volumes/Satechi/Development/vrmxa-game-engine/spike-physics/web",
+        "run",
+        "dev"
+      ],
       "port": 5230
     },
     {
       "name": "playground",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "/Volumes/Satechi/Development/vrmxa-game-engine/apps/playground", "run", "dev"],
+      "runtimeArgs": [
+        "--prefix",
+        "/Volumes/Satechi/Development/vrmxa-game-engine/apps/playground",
+        "run",
+        "dev"
+      ],
       "port": 5181
+    },
+    {
+      "name": "editor",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "/Volumes/Satechi/Development/vrmxa-game-engine/apps/editor",
+        "run",
+        "dev"
+      ],
+      "port": 5182
     }
   ]
 }

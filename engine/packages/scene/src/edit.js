@@ -1,5 +1,5 @@
 // Edits on a .vrmxs document: add, remove (with its subtree), set a value at a path, reparent,
-// connect / disconnect. Each edit is checked against the registry before it applies, returns its
+// connect / disconnect, add / remove an asset entry, and a batch of these as one step. Each edit is checked against the registry before it applies, returns its
 // inverse, and goes on an undo stack, so an MCP agent's change is as undoable as a user's.
 import { Ajv2020 } from 'ajv/dist/2020.js';
 import { nodeSchema } from './schema.js';
@@ -116,23 +116,50 @@ export function createEditor(reg, doc, { prefabs } = {}) {
       return { op: 'reconnectAt', index: i, connection: c };
     },
     reconnectAt({ index: i, connection }) { doc.connections.splice(i, 0, connection); return { op: 'disconnect', index: i }; },
+    addAsset({ asset, index: at }) { // a document asset entry ({ id, type, ref }); nodes name it by id
+      if (!asset?.id || !asset?.type || !asset?.ref) throw new Error('addAsset needs asset.id, asset.type and asset.ref');
+      doc.assets ??= [];
+      if (doc.assets.some((a) => a.id === asset.id)) throw new Error(`asset "${asset.id}" already exists`);
+      const i = at ?? doc.assets.length;
+      doc.assets.splice(i, 0, clone(asset));
+      return { op: 'removeAsset', id: asset.id };
+    },
+    removeAsset({ id }) {
+      const i = (doc.assets ?? []).findIndex((a) => a.id === id);
+      if (i < 0) throw new Error(`no asset "${id}"`);
+      const users = doc.nodes.filter((n) => n.asset === id).map((n) => n.id);
+      if (users.length) throw new Error(`asset "${id}" is used by ${users.join(', ')}`);
+      const [a] = doc.assets.splice(i, 1);
+      return { op: 'addAsset', asset: a, index: i };
+    },
+    batch({ ops, label }) { // several edits as one undo step; all or nothing
+      const done = [];
+      try { for (const o of ops) done.push(run(o)); }
+      catch (e) { for (const inv of done.reverse()) run(inv); throw e; }
+      return { op: 'batch', ops: done.reverse(), ...(label ? { label } : {}) };
+    },
   };
-
-  function apply(op) {
+  function run(op) {
     const fn = OPS[op.op];
     if (!fn) throw new Error(`unknown op "${op.op}"`);
-    const inverse = fn(op);
+    return fn(op);
+  }
+
+  function apply(op) {
+    const inverse = run(op);
     undoStack.push({ op, inverse });
     redoStack.length = 0;
     return inverse;
   }
   function undo() {
     const e = undoStack.pop(); if (!e) return false;
-    OPS[e.inverse.op](e.inverse); redoStack.push(e); return true;
+    run(e.inverse); redoStack.push(e); return true;
   }
   function redo() {
     const e = redoStack.pop(); if (!e) return false;
-    e.inverse = OPS[e.op.op](e.op); undoStack.push(e); return true;
+    e.inverse = run(e.op); undoStack.push(e); return true;
   }
-  return { apply, undo, redo, doc, checkNode, history: () => undoStack.map((e) => e.op) };
+  /** The edits undo and redo would act on next (their ops, with any `label`), and how many of each there are. */
+  const peek = () => ({ undo: undoStack.at(-1)?.op ?? null, redo: redoStack.at(-1)?.op ?? null, undoDepth: undoStack.length, redoDepth: redoStack.length });
+  return { apply, undo, redo, peek, doc, checkNode, history: () => undoStack.map((e) => e.op) };
 }

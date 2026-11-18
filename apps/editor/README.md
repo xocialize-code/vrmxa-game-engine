@@ -1,0 +1,28 @@
+# VRMXG editor
+
+M1 W7 (AB-T-0519). Build a scene from a project's assets, edit it, play it in place. Vite + Vue over
+`@vrmxg/editor-core`; the engine side (`src/host.js`) lives outside Vue, which only ever holds plain copies of what the
+panels show (the tree, the inspector's fields, the asset list), refreshed when the host says something changed.
+
+```sh
+npm run dev --prefix apps/editor        # http://localhost:5182, the sample project (read-only in a browser)
+apps/editor-mac/scripts/build.sh        # the Mac app, where Open Project… mounts a folder and Save writes into it
+```
+
+| Panel | What |
+|---|---|
+| Toolbar | Open Project… (Mac), the project's scenes, a file name for New and Save As…, Save, Undo / Redo (named after the step: "Undo Move mira"), Move / Rotate / Scale, Snap (0.25 m, 15°, 0.1), Orbit or Fly view, Frame, Play / Stop |
+| Scene | The document's tree: click selects (shift adds), drag a row onto another to reparent it, or onto the empty space to move it to the top; Add (lights, cameras, groups, colliders, markers: types that need no asset), Delete |
+| Viewport | The edit view: a SceneTree of the document, built but never stepped, drawn from the editor's own camera. Click picks (a prefab's inner parts pick the instance), the gizmo moves the selection (one undo step on release), an asset dropped on it lands on the surface under the pointer (floors and table tops, not walls) |
+| Inspector | Generated from the registry for the node's type: name, parent, position, rotation (degrees, yaw first), scale, then every prop by its widget (number, checkbox, list, colour, node, JSON); a set prop has a reset. A field commits on Return or leaving it |
+| Assets | The project's placeable files (`@vrmxg/editor-core`'s `assetList`): drag one onto the viewport, or Add it where the view looks (the first thing in an empty scene goes at the origin) |
+| Status | Node count, saved or not, valid or not, the document's hash; after a save its size and hash, and Reopen & compare (read back from disk: same bytes, valid); after Stop, whether the scene and the edit view are as before Play; frame and build times; debug draw toggles |
+
+Edits that only move nodes are applied to the edit view in place; anything else rebuilds it (about 300 ms for the
+cafe in a browser: the characters' VRMs are parsed again, their bundles and clips kept between builds; the run-time
+closet is left out of the edit view). Play builds the full world from a copy of the document, as the game does, with
+the scene's camera and the keyboard, mouse and gamepad.
+
+A project's own modules (`behaviours.js`) import `@vrmxg/core` by name; the page's import map points that at
+`static/vrmxg-core.js`, which hands them the editor's own engine. Not yet: multi-selection gizmos, copy and paste,
+connections in the inspector, MCP attached to the open editor (W9), export (W8).

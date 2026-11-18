@@ -1,0 +1,32 @@
+{
+  "name": "@vrmxg/editor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The VRMXG editor (M1 W7): open a project, build a scene from its assets, tree, inspector, gizmos, undo, save, play in place.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@vrmxg/camera": "0.1.0",
+    "@vrmxg/character": "0.1.0",
+    "@vrmxg/closet": "0.1.0",
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/editor-core": "0.1.0",
+    "@vrmxg/input": "0.1.0",
+    "@vrmxg/interact": "0.1.0",
+    "@vrmxg/item": "0.1.0",
+    "@vrmxg/model": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/render": "0.1.0",
+    "@vrmxg/scene": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0",
+    "vue": "3.5.45"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "6.0.11"
+  }
+}

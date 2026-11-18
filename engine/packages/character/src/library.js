@@ -21,8 +21,10 @@ export class CharacterLibrary {
    * @param {boolean} [opts.stubTextures] headless: skip image decoding
    * @param {Map<string, any>} [opts.prefabs] for characters inside prefab instances
    * @param {{ doc: any, clips: Map<string, Uint8Array> }} [opts.projectAnimations] sets every character falls back on
+   * @param {{ sources: Map<string, any>, clips: Map<string, any> }} [opts.cache] read bundles and parsed clips, shared
+   *   between libraries (an editor rebuilding its view); VRMs are still parsed per node (they can't be shared)
    */
-  constructor({ resolve, vrmxaCore = null, stubTextures = false, prefabs = new Map(), projectAnimations = null }) {
+  constructor({ resolve, vrmxaCore = null, stubTextures = false, prefabs = new Map(), projectAnimations = null, cache = null }) {
     this.resolve = resolve;
     this.vrmxaCore = vrmxaCore;
     this.stubTextures = stubTextures;
@@ -31,9 +33,9 @@ export class CharacterLibrary {
     /** ref → { animations override } */
     this.overrides = new Map();
     /** ref → source (bundle contents, parsed once) */
-    this.sources = new Map();
+    this.sources = cache?.sources ?? new Map();
     /** sha256 → VRMAnimation (parsed once) */
-    this.clipCache = new Map();
+    this.clipCache = cache?.clips ?? new Map();
     /** node id → prepared character */
     this.prepared = new Map();
   }

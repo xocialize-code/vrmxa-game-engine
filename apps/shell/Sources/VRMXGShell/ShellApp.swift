@@ -13,8 +13,11 @@ public struct ShellConfiguration {
     public var webFolder: String
     /// App-specific bridge methods, registered after the shell's own.
     public var methods: [(String, BridgeHandler)]
-    public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = []) {
-        self.appName = appName; self.scheme = scheme; self.size = size; self.webFolder = webFolder; self.methods = methods
+    /// Edit › Undo and Redo go to the page as `menu.undo` / `menu.redo` events (an editor with its own history; the page
+    /// hands them on to a focused text field itself) instead of WebKit's undo manager.
+    public var pageUndo: Bool
+    public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = [], pageUndo: Bool = false) {
+        self.appName = appName; self.scheme = scheme; self.size = size; self.webFolder = webFolder; self.methods = methods; self.pageUndo = pageUndo
     }
 }
 
@@ -94,7 +97,9 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         menu("File", [item("Open…", #selector(menuOpen), "o", target: self), item("Open Project…", #selector(menuOpenProject), "o", [.command, .shift], target: self), .separator(),
                       item("Save", #selector(menuSave), "s", target: self), item("Save As…", #selector(menuSaveAs), "s", [.command, .shift], target: self), .separator(),
                       item("Close Window", #selector(NSWindow.performClose(_:)), "w")])
-        menu("Edit", [item("Undo", Selector(("undo:")), "z"), item("Redo", Selector(("redo:")), "z", [.command, .shift]), .separator(),
+        let undo = config.pageUndo ? item("Undo", #selector(menuUndo), "z", target: self) : item("Undo", Selector(("undo:")), "z")
+        let redo = config.pageUndo ? item("Redo", #selector(menuRedo), "z", [.command, .shift], target: self) : item("Redo", Selector(("redo:")), "z", [.command, .shift])
+        menu("Edit", [undo, redo, .separator(),
                       item("Cut", #selector(NSText.cut(_:)), "x"), item("Copy", #selector(NSText.copy(_:)), "c"), item("Paste", #selector(NSText.paste(_:)), "v"),
                       item("Select All", #selector(NSText.selectAll(_:)), "a")])
         menu("View", [item("Reload", #selector(reload), "r", target: self)])
@@ -106,6 +111,8 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     @objc func menuOpenProject() { emit("menu.openProject") }
     @objc func menuSave() { emit("menu.save") }
     @objc func menuSaveAs() { emit("menu.saveAs") }
+    @objc func menuUndo() { emit("menu.undo") }
+    @objc func menuRedo() { emit("menu.redo") }
     @objc func reload() { webView.reload() }
 
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) { print("[shell] load failed: \(error)") }

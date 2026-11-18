@@ -39,6 +39,8 @@ export class RenderHost {
     this.fallbackCamera = new PerspectiveCamera(50, 16 / 9, 0.05, 500);
     this.fallbackCamera.position.set(0, 1.6, 6);
     this.tree = null;
+    /** A camera that overrides the scene's (the editor's viewport camera); null draws from the scene's current camera. */
+    this.camera = null;
     this._room = undefined;
     /** Called during render with the blend applied, before drawing: (alpha) => void. For traces and tests. */
     this.onPresent = null;
@@ -80,6 +82,7 @@ export class RenderHost {
     this.renderer.setSize(width, height, false);
     this.tree?.services.get('cameras')?.setAspect(width / height);
     this.fallbackCamera.aspect = width / height; this.fallbackCamera.updateProjectionMatrix();
+    if (this.camera?.isPerspectiveCamera) { this.camera.aspect = width / height; this.camera.updateProjectionMatrix(); }
   }
 
   /**
@@ -110,7 +113,7 @@ export class RenderHost {
     const t0 = typeof performance !== 'undefined' ? performance.now() : 0;
     this.views.update(tree);
     this.debug.update(tree, stepped);
-    const camera = tree.services.get('cameras')?.current?.camera ?? this.fallbackCamera;
+    const camera = this.camera ?? tree.services.get('cameras')?.current?.camera ?? this.fallbackCamera;
     const blend = this.interpolate && alpha < 1;
     if (blend) this.interpolator.apply(alpha);
     this.onPresent?.(alpha);

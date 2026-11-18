@@ -120,3 +120,20 @@ test('describe gives an agent everything for a type: schema, units, signals, act
   assert.deepEqual(t.behaviours, ['wander', 'player']);
   assert.ok(JSON.stringify(documentSchema(reg)).length > 1000);
 });
+
+test('a batch (an asset and the node using it) is one undo step, all or nothing; assets in use can\'t be removed', async () => {
+  const { m0Registry } = await import('@vrmxg/registry/m0');
+  const { createEditor, serialize } = await import('../src/index.js');
+  const doc = { format: 'vrmxs', version: 1, id: 't', assets: [], nodes: [{ id: 'root', type: 'Node3D' }] };
+  const before = serialize(doc);
+  const ed = createEditor(m0Registry(), doc);
+  ed.apply({ op: 'batch', label: 'Add cafe', ops: [{ op: 'addAsset', asset: { id: 'cafe', type: 'glb', ref: 'sets/cafe.glb' } }, { op: 'add', node: { id: 'set', type: 'Model', parent: 'root', asset: 'cafe' } }] });
+  assert.equal(ed.peek().undo.label, 'Add cafe');
+  assert.throws(() => ed.apply({ op: 'removeAsset', id: 'cafe' }), /used by set/);
+  assert.throws(() => ed.apply({ op: 'batch', ops: [{ op: 'addAsset', asset: { id: 'x', type: 'glb', ref: 'x.glb' } }, { op: 'add', node: { id: 'set', type: 'Model', asset: 'x' } }] }), /already exists/);
+  assert.equal(doc.assets.length, 1, 'the failed batch left nothing behind');
+  ed.undo();
+  assert.equal(serialize(doc), before);
+  ed.redo();
+  assert.deepEqual(doc.nodes.map((n) => n.id), ['root', 'set']);
+});
