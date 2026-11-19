@@ -86,3 +86,10 @@ test('prompts follow VRMXA §11: persona, then memory, then the conversation, th
   assert.notEqual(promptHash(req), promptHash({ ...req, messages: msgs.slice(1) }));
   assert.match(promptHash(req), /^[0-9a-f]{16}$/);
 });
+
+test('a line holding markup is not speech (M3 W3: what LFM2.5 wrote when it slipped)', () => {
+  for (const text of ['<｜DSML｜function_calls>\n<｜DSML｜invoke name="say">', '< TASK_COMPLETED >  \nYou: I should get going.', '<|tool_call_start|>[say(text="x")]', '<think>hmm</think> Sure!', 'Of course.\nUser: thanks'])
+    assert.equal(validate({ toolCalls: [call('say', { text })] }, M).ok, false, JSON.stringify(text));
+  for (const text of ['$4.50, please.', 'Note: we close at five.', 'I <3 this place.', 'Ha! Yes: absolutely.'])
+    assert.equal(validate({ toolCalls: [call('say', { text })] }, M).ok, true, JSON.stringify(text));
+});

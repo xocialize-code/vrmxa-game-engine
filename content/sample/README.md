@@ -21,7 +21,7 @@ behaviours.js --vrmxa-core ../../../vrmxa-avatar-studio/packages/vrmxa-core`) an
 | `brains/` | Behaviour trees as `vrmxg-brain` documents: Hana serving, a customer |
 | `effects/espresso-steam.json` | The steam wand: a dense jet, then wisps |
 | `looks/morning.cube` | A 17³ LUT: cool lifted shadows, warm highlights (`tools/make-lut.mjs`) |
-| `voice/` | Lines (Kokoro-82M through mlx-audio) with word timings; `voice/lines.json` lists them. `tools/bake-lines.mjs <sequence>` bakes a sequence's text-only dialogue; `tools/tts-server.py` speaks lines live while playing (the playground's `?tts=http://127.0.0.1:5190/speak`) |
+| `voice/` | Lines (Kokoro-82M through mlx-audio) with word timings; `voice/lines.json` lists them. `tools/bake-lines.mjs <sequence>` bakes a sequence's text-only dialogue; `tools/tts-server.py` speaks lines live while playing (the playground's `?tts=http://127.0.0.1:5190/speak`); `tools/voice-server.py` (M3 W3) adds the director's model and speech-to-text on one port (5191): `/v1/chat/completions`, `/transcribe`, `/speak` |
 
 Regenerate with `node content/sample/tools/make-content.mjs` (needs vrmxa-avatar-studio beside the repo for the
 characters and clips) and `node content/sample/tools/make-input.mjs`; the prop with `tools/generate-prop.mjs` (needs

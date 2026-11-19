@@ -9,13 +9,16 @@
  * @param {Persona} o.persona
  * @param {string | null} [o.memory] what the app remembers about this person, as text
  * @param {{ role: 'user' | 'assistant', content: string }[]} [o.history] the conversation so far
- * @param {string} o.moment the situation and the newest turn
+ * @param {string} o.moment the newest turn: what the person said, word for word (or, with no one speaking, the reason
+ *   the character is asked)
+ * @param {string | null} [o.situation] who and what is around now, what she is doing (M3 W3: in the system prompt, so
+ *   the newest turn is only the person's words; with the moment in the user turn, LFM2.5 echoed it back)
  * @returns {{ role: string, content: string }[]}
  *
  * @typedef {{ name: string, summary?: string, description?: string, personality?: string, traits?: string[],
  *   speech_style?: string, languages?: string[], examples?: { user: string, character: string }[], story?: string }} Persona
  */
-export function buildMessages({ framing = FRAMING, persona, memory = null, history = [], moment }) {
+export function buildMessages({ framing = FRAMING, persona, memory = null, history = [], moment, situation = null }) {
   const p = persona, lines = [framing.trim(), '', `You are ${p.name}.`];
   if (p.summary) lines.push(p.summary);
   if (p.description) lines.push(`Appearance and manner: ${p.description}`);
@@ -26,13 +29,14 @@ export function buildMessages({ framing = FRAMING, persona, memory = null, histo
   if (p.story) lines.push(`Your situation: ${p.story}`);
   if (p.examples?.length) lines.push('', 'How you sound:', ...p.examples.map((e) => `- They: ${e.user}\n  You: ${e.character}`));
   if (memory) lines.push('', 'What you remember about the person you are talking to:', memory.trim());
+  if (situation) lines.push('', 'Right now:', situation.trim());
   return [{ role: 'system', content: lines.join('\n') }, ...history.map((h) => ({ role: h.role, content: h.content })), { role: 'user', content: moment }];
 }
 
 /** The app's default rules: short spoken replies, through the tools, never narrating. */
 export const FRAMING = `You are a character in a small 3D world, talking with a person in real time. Answer through the tools you are given:
-- Speak with the say tool: one or two short sentences, as you would say them out loud. Never describe your actions in words.
-- Act with the other tools (walk, look, use things, take on a goal) when the person asks or it suits the moment.
+- Every reply has exactly one say call: one or two short sentences that answer what the person just said, in your own words, as you would say them out loud. Never repeat their words back, and never describe your actions in words.
+- Add other tools only when they help: take on one of your goals when the person asks for it (an order means your order goal, with who it is for and what they asked for), walk, look, or use something nearby.
 - Only use the people, things, faces and gestures the tools list. If you can't do something, say so in character.`;
 
 /**

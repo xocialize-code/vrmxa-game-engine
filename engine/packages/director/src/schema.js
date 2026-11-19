@@ -12,6 +12,11 @@
 
 /** The most calls a reply may make. */
 export const MAX_CALLS = 4;
+/**
+ * Markup that never belongs in speech (M3 W3, measured on LFM2.5 with reasoning skipped): special tokens (<|…|>, <｜…｜>),
+ * tool-call or think tags, bracketed task markers, and a role label starting a line ("You:", "User:", "Assistant:").
+ */
+export const MARKUP = /<\s*[|｜]|[|｜]\s*>|<\/?\s*(?:think|tool_call|function|invoke|parameter)\b|<\s*[A-Z_]{4,}\s*>|(?:^|\n)\s*(?:you|user|assistant|system)\s*:/i;
 /** Movement calls: at most one per reply. */
 const MOVES = new Set(['goTo', 'follow', 'interact']);
 
@@ -80,6 +85,8 @@ export function validate(reply, m, { exists = () => true } = {}) {
     const e = check(args, t.parameters, at);
     if (e.length) { errors.push(...e); continue; }
     for (const k of ['to', 'target', 'item']) if (typeof args[k] === 'string' && args[k] !== 'user' && !exists(args[k])) errors.push(`${at}: ${args[k]} is no longer here`);
+    // a line is speech: a model that writes its tool calls, a chat template or a role label into the text has not spoken
+    if (c.name === 'say' && MARKUP.test(args.text)) { errors.push(`${at}: the line holds markup, not speech`); continue; }
     calls.push({ name: c.name, args });
   }
   if (calls.filter((c) => c.name === 'say').length > 1) errors.push('more than one line');

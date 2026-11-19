@@ -38,3 +38,49 @@ lines in two voices, median 38 ms, p90 89 ms (3 and 6 steps late at 60 Hz), real
 In Chromium a live line asked for at step 176 was heard from step 180. Tests (`test/live.test.mjs`): the same hashes
 step by step with and without a provider, heard from its arrival step in the speaker's voice, nothing while recording,
 a failing provider given up, httpTTS's request and decoding, bakePlan / applyBake.
+
+## Listening (M3 W3, AB-T-0542)
+
+The person's voice into a conversation, outside the step:
+- **Detector:** microphone frames go through an energy voice-activity detector.
+- **Start of speech:** the director is told (`director.speaking`), so the character listens and holds a line until
+  the person stops.
+- **End of speech:** the utterance goes to a speech-to-text provider, and its text goes to `director.talk`.
+
+Only the director touches the simulation, and it logs what it does, so a conversation replays with no microphone, STT or
+model.
+
+```js
+import { listenTo, microphone, httpSTT } from '@vrmxg/voice';
+const ear = listenTo({ director, agent: 'hana-1', stt: httpSTT('http://127.0.0.1:5191/transcribe') });
+const stop = await microphone((frame) => ear.feed(frame));   // off until called: getUserMedia
+```
+
+| Piece | What |
+|---|---|
+| `EnergyVAD` | 20 ms frames:<br>• the first 300 ms only learn the room's noise floor;<br>• speech starts after 80 ms above the threshold (noise × 3, never below 0.006 RMS) and ends after 450 ms of quiet;<br>• an utterance keeps 200 ms of audio from before its start;<br>• one with less than 250 ms of speech is flagged `short` and not transcribed;<br>• 15 s at most.<br>It counts frames and reads no clock |
+| `listenTo({ director, agent, stt })` | `feed(frame)`: start → `speaking(agent, true)`; end → `speaking(agent, false)`, then the WAV to the STT provider and its text to `talk`. Whisper's tags for silence (`[BLANK_AUDIO]`) are dropped |
+| STT providers | `httpSTT(url)` posts the WAV to the loopback stand-in's `/transcribe`. `shellSTT(native)` calls the Mac shell's `stt.transcribe` (MLXEngine's live plane, asked as AB-A-0311; not in the shell yet) |
+| `microphone(onFrame)` | getUserMedia (echo cancellation and noise suppression on), an AudioWorklet, frames resampled to 16 kHz |
+| `encodeWav` | Mono float → 16-bit PCM WAV |
+
+The loopback stand-in is `content/sample/tools/voice-server.py`, on one port (5191), with every answer's server time:
+- `/v1/chat/completions`: LFM2.5-8B-A1B int4 through mlx-lm, reasoning skipped;
+- `/transcribe`: whisper-large-v3-turbo;
+- `/speak`: Kokoro.
+
+The director's spoken turn through it is measured in `@vrmxg/director` (`scripts/measure-turn.mjs`).
+
+Tests (`test/listen.test.mjs`):
+- the detector on synthetic frames: start, end, pre-roll, blips, a noisy room;
+- the WAV encoder;
+- both STT providers' wire shapes;
+- `listenTo` driving a director.
+
+Not yet:
+- the Mac shell's microphone: the WKWebView media permission and the entitlement;
+- the shell's `stt.*`, `llm.respond` and `tts.speak`, which wait on `mlx-engine` (AB-A-0308, AB-A-0311) and
+  `mlx-solutions` (AB-A-0312);
+- streaming speech-to-text partials;
+- barge-in, which would stop her line when the person talks over it.
+

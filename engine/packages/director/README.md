@@ -59,6 +59,26 @@ Conversation (M3 W2, `test/conversation.test.mjs`, the cafe):
 - **Goal choice** on a watched signal is asked after the step it fired in, and once per cooldown.
 - **Turn-taking.** A reply that arrives while Mira is still speaking waits until she stops.
 
+A spoken turn (M3 W3, `scripts/measure-turn.mjs` through the loopback stand-in `content/sample/tools/voice-server.py`,
+M5 Max). Ten lines to Hana, each synthesised in another voice, transcribed by whisper-large-v3-turbo, answered by
+LFM2.5-8B-A1B int4 (reasoning skipped) with her real prompt and tools, and her line synthesised by Kokoro:
+- **Latency meets the target, with the GPU to itself.** STT + LLM + TTS took a median 0.59–0.95 s (max 1.63 s), about
+  1.0–1.4 s from the end of speech once the detector's 450 ms wait is added.
+  - With other models running on the GPU (a Gaea z-image worker and TRELLIS.2), it took a median 1.2–1.8 s
+    (`results/turn-t0.6.json`, `results/turn-t0.2.json`, recorded with them running).
+- **Speech-to-text was word-perfect** on all ten lines.
+- **The model is not reliable enough yet.**
+  - Across the runs, 3–6 of 10 replies had no line: an action alone, a line over 400 characters, or its tool call
+    written as markup in the text. At temperature 0.2, half the lines were markup.
+  - Some lines echoed the person ("Do you have any non-milk options today?").
+  - The latte request became `takeOrder` on the wrong turn, or not at all.
+
+  The validator now rejects a line holding markup (`MARKUP`): before that, some of it would have been spoken.
+
+  The prompt now puts the situation in the system prompt and the person's words alone in the newest turn. It asks for
+  exactly one line per reply, in her own words. That cut the echoes but did not fix the rest. Choosing the director's
+  model (another model, reasoning on, or constrained decoding) is open.
+
 Tests without a world cover:
 - the schemas narrowed to a moment;
 - fifteen bad-reply fixtures, each rejected with a reason;
@@ -66,8 +86,8 @@ Tests without a world cover:
 - the §11 prompt order and the hash.
 
 Not yet:
-- personas from VRMXA bundles (W1);
-- the shell's `llm.respond` and the loopback stand-in (W3);
+- the shell's `llm.respond` (W3; waits on `mlx-engine`, AB-A-0311);
+- a director model that answers in tool calls reliably (see the spoken turn above);
 - the request's history in saves, and baking a take into a sequence (W4);
 - MCP tools (W10);
 - requests in flight when a snapshot is restored live (W4 decides: cancel them, or keep their answers).

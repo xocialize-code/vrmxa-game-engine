@@ -101,7 +101,9 @@ export class Director {
     const step = this.tree.clock.step, id = `${agent}#${++this.n}`;
     const persona = this.personaOf(agent), m = this.moment(agent, persona);
     const history = this.history.get(agent) ?? [];
-    const messages = buildMessages({ framing: persona.framing ?? this.framing, persona, memory: this.memory(agent), history, moment: describeMoment(m, { heard, reason, userName: this.userName, doing: doingOf(brain) }) });
+    // the situation goes in the system prompt; the newest turn is the person's words alone (or why she is asked)
+    const situation = describeMoment(m, { doing: doingOf(brain), userName: this.userName });
+    const messages = buildMessages({ framing: persona.framing ?? this.framing, persona, memory: this.memory(agent), history, situation, moment: heard ? heard.text : reason });
     const request = { messages, tools: toolsFor(m), maxTokens: this.maxTokens, priority };
     const hash = promptHash({ messages, tools: request.tools });
     const r = { id, agent, kind, step, priority, request, hash, moment: m, heard, state: 'queued', deadline: step + this.timeout };

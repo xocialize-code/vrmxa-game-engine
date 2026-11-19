@@ -1,0 +1,236 @@
+{
+ "when": "2026-11-19T16:58:00.166Z",
+ "url": "http://127.0.0.1:5191",
+ "hardware": "Mac Studio M5 Max (Mac17,14)",
+ "models": {
+  "llm": "mlx-community/LFM2.5-8B-A1B-MLX-4bit (reasoning skipped)",
+  "stt": "mlx-community/whisper-large-v3-turbo",
+  "tts": "mlx-community/Kokoro-82M-bf16"
+ },
+ "temperature": 0.6,
+ "turns": 10,
+ "valid": 8,
+ "withLine": 5,
+ "textOnlyReplies": 3,
+ "steady": {
+  "turnMs": {
+   "median": 1808,
+   "max": 2009.2,
+   "mean": 1689.4
+  },
+  "sttMs": {
+   "median": 412.8,
+   "max": 421,
+   "mean": 381.7
+  },
+  "llmMs": {
+   "median": 1062.6,
+   "max": 1135.9,
+   "mean": 970.8
+  },
+  "ttsMs": {
+   "median": 298.2,
+   "max": 525.6,
+   "mean": 337
+  }
+ },
+ "vadEndMs": 450,
+ "note": "turnMs = STT + LLM + whole-line TTS round trips, steady state (first turn left out); end of speech to first audio adds the detector's 450 ms end-of-speech wait",
+ "rows": [
+  {
+   "said": "Good morning, Hana!",
+   "heard": "Good morning, Hana.",
+   "seconds": 1.975,
+   "sttMs": 359.3,
+   "llmMs": 4792.5,
+   "ttsMs": null,
+   "turnMs": null,
+   "valid": false,
+   "toolCalls": 0,
+   "textOnly": true,
+   "calls": null,
+   "errors": [
+    "call 1 (say).text: longer than 400"
+   ]
+  },
+  {
+   "said": "Could I get a latte, please?",
+   "heard": "Could I get a latte, please?",
+   "seconds": 2.25,
+   "sttMs": 442.5,
+   "llmMs": 1088.1,
+   "ttsMs": 294.2,
+   "turnMs": 1824.8,
+   "valid": true,
+   "toolCalls": 1,
+   "textOnly": false,
+   "calls": [
+    {
+     "name": "say",
+     "text": "Sure thing! What would you like to add to your latte?",
+     "emotion": "happy",
+     "gesture": "cheer"
+    }
+   ],
+   "errors": null
+  },
+  {
+   "said": "How long have you been running this place?",
+   "heard": "How long have you been running this place?",
+   "seconds": 2.725,
+   "sttMs": 421,
+   "llmMs": 1062.6,
+   "ttsMs": 525.6,
+   "turnMs": 2009.2,
+   "valid": true,
+   "toolCalls": 1,
+   "textOnly": false,
+   "calls": [
+    {
+     "name": "say",
+     "text": "That depends! I’ve been running this little corner spot for about five years. What’s your order, then?",
+     "emotion": "happy",
+     "gesture": "cheer"
+    }
+   ],
+   "errors": null
+  },
+  {
+   "said": "What do you recommend today?",
+   "heard": "What do you recommend today?",
+   "seconds": 2.175,
+   "sttMs": 406.2,
+   "llmMs": 1023.8,
+   "ttsMs": null,
+   "turnMs": null,
+   "valid": true,
+   "toolCalls": 1,
+   "textOnly": false,
+   "calls": [
+    {
+     "name": "setGoal",
+     "goal": "takeOrder",
+     "params": {
+      "customer": "user"
+     }
+    }
+   ],
+   "errors": null
+  },
+  {
+   "said": "Is it always this quiet in the morning?",
+   "heard": "Is it always this quiet in the morning?",
+   "seconds": 2.85,
+   "sttMs": 429.3,
+   "llmMs": 652.7,
+   "ttsMs": null,
+   "turnMs": null,
+   "valid": true,
+   "toolCalls": 1,
+   "textOnly": false,
+   "calls": [
+    {
+     "name": "lookAt",
+     "target": "user"
+    }
+   ],
+   "errors": null
+  },
+  {
+   "said": "Can I sit by the window?",
+   "heard": "Can I sit by the window?",
+   "seconds": 2.25,
+   "sttMs": 428.9,
+   "llmMs": 690.2,
+   "ttsMs": null,
+   "turnMs": null,
+   "valid": true,
+   "toolCalls": 1,
+   "textOnly": false,
+   "calls": [
+    {
+     "name": "gesture",
+     "slot": "greet"
+    }
+   ],
+   "errors": null
+  },
+  {
+   "said": "That smells amazing.",
+   "heard": "That smells amazing.",
+   "seconds": 2.225,
+   "sttMs": 412.8,
+   "llmMs": 1135.9,
+   "ttsMs": 259.3,
+   "turnMs": 1808,
+   "valid": true,
+   "toolCalls": 1,
+   "textOnly": false,
+   "calls": [
+    {
+     "name": "say",
+     "text": "Sure thing! What would you like to add to your latte?",
+     "emotion": "happy",
+     "gesture": "cheer"
+    }
+   ],
+   "errors": null
+  },
+  {
+   "said": "Do you have anything without milk?",
+   "heard": "Do you have anything without milk?",
+   "seconds": 2.625,
+   "sttMs": 285.8,
+   "llmMs": 882.8,
+   "ttsMs": 264.8,
+   "turnMs": 1433.3,
+   "valid": true,
+   "toolCalls": 1,
+   "textOnly": false,
+   "calls": [
+    {
+     "name": "say",
+     "text": "Absolutely! I can make a plain latte for you.",
+     "emotion": "happy",
+     "gesture": "cheer"
+    }
+   ],
+   "errors": null
+  },
+  {
+   "said": "Thanks, you are the best.",
+   "heard": "Thanks, you are the best.",
+   "seconds": 2.075,
+   "sttMs": 407.1,
+   "llmMs": 801.8,
+   "ttsMs": 298.2,
+   "turnMs": 1507.1,
+   "valid": true,
+   "toolCalls": 0,
+   "textOnly": true,
+   "calls": [
+    {
+     "name": "say",
+     "text": "You're very welcome! Let me know if you'd like anything else."
+    }
+   ],
+   "errors": null
+  },
+  {
+   "said": "I should get going. See you tomorrow!",
+   "heard": "I should get going, see you tomorrow.",
+   "seconds": 2.7,
+   "sttMs": 397,
+   "llmMs": 1043.2,
+   "ttsMs": null,
+   "turnMs": null,
+   "valid": false,
+   "toolCalls": 0,
+   "textOnly": true,
+   "calls": null,
+   "errors": [
+    "call 1 (say): the line holds markup, not speech"
+   ]
+  }
+ ]
+}
