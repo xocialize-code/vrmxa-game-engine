@@ -15,16 +15,16 @@
 //   three are in 3.5.5 on any three revision):
 //   1. matcap UV: `matcapUV.mul(1, -1).add(0, 1)` is 1 − uv on BOTH axes, because TSL's mul/add are
 //      variadic (a.mul(1, -1) is a·1·−1, not a·vec2(1, −1)). The V flip is intended; the U flip mirrors the
-//      matcap left↔right. Fixed with vec2 operands.
+//      matcap left↔right. Fixed with vec2 operands. Upstream: pixiv/three-vrm#1904.
 //   2. rim view direction: the parametric rim uses `modelViewPosition`, which in TSL is the OBJECT's origin
 //      in view space (a per-object uniform), not the fragment's position. The rim's N·V is computed against
 //      one direction per mesh (for a VRM, towards its feet). Fixed with `positionView` (per fragment), as
-//      the GLSL uses vViewPosition.
+//      the GLSL uses vViewPosition. Upstream: pixiv/three-vrm#1905.
 //   3. rim lighting mix: GLSL mixes the rim towards (direct + ambient irradiance) / π; the node model leaves
 //      the ambient irradiance out (it mixes towards 0 in indirectSpecular). Fixed by mixing towards
-//      BRDF_Lambert(irradiance) there.
+//      BRDF_Lambert(irradiance) there. Upstream: pixiv/three-vrm#1906.
 //   4. UV animation mask channel: the node version reads the mask's R channel; the MToon spec and the GLSL
-//      read B (VRoid Hub sample, a UV-animated yukata with masks). Fixed to `.b`.
+//      read B. Fixed to `.b`. Upstream: pixiv/three-vrm#1907.
 //
 // --check: exit 1 if the stock file no longer matches (a new three-vrm release), so the patch is not
 // applied blindly.
