@@ -169,6 +169,19 @@ const items = (r) => r?.result?.items ?? r?.items;
   check(16, 'Morning at the cafe: the 45 s film identical everywhere; lines, steam and served land on the cut; snapshot mid-film', ok,
     ref ? `${ref.steps} steps (${ref.seconds} s) × ${ref.components} components, final ${ref.final}; brains ${ref.brains.join(', ')}; lines ${b.lines.map((l) => `@${l.step} ${l.who} (${l.apart} m apart)`).join(', ')}; seated @${b.seated}; steam @${b.steam?.step} (Hana ${b.steam?.hanaFromMachine} m from the machine); served @${b.served}; music @${b.music}; ${b.cameras.length} camera changes; step ${ref.stepMs} ms (node); snapshot @${ref.snapshot.at} ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? 'identical' : 'DIFFERS'}`).join('; ')}` : 'no node result');
 }
+// 17 (M3 W4). A recorded conversation replays with no model: takes/conversation.json (Mira walks in and talks with Hana
+// for two minutes; the director's requests and decisions are in its ai log) replayed from its input and log alone hashes
+// identically at every step everywhere; Hana says her six directed lines and serves the latte once; a snapshot halfway
+// (a save) restored with the log's later entries plays to the same end.
+{
+  const cv = (r) => r?.result?.conversation ?? r?.conversation, ref = cv(node);
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = cv(r); const d = x && ref ? compareRuns(unpackRun(ref.run), unpackRun(x.run)) : { step: -1, component: 'no result' }; return { k, d, x, ok: !!x && !d && x.snapshot.rerunMatches }; });
+  const served = ref?.lines.filter((l) => l.endsWith(':Here you go. Enjoy!')).length;
+  const directed = ref?.lines.filter((l) => !/:(Here you go\. Enjoy!|Welcome in!|Hi! What can I get you\?|Coming right up!)$/.test(l)).length;
+  const ok = !!ref && ref.snapshot.rerunMatches && served === 1 && directed === 6 && rows.every((r) => r.ok);
+  check(17, 'A recorded conversation replays with no model, identical everywhere; a save halfway continues to the same end', ok,
+    ref ? `${ref.steps} steps × ${ref.components} components, ${ref.events} logged events (${ref.decisions} decisions), final ${ref.final}; Hana: ${ref.lines.map((l) => l.replace(':', ' ')).join(' · ')}; served ${served}×; step ${ref.stepMs} ms (node); snapshot @${ref.snapshot.at} ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? 'identical' : 'DIFFERS'}`).join('; ')}` : 'no node result');
+}
 checks.sort((a, b) => a.n - b.n);
 fs.writeFileSync(res('summary.json'), JSON.stringify({ checks, runtimes: { node: node?.version, chromium: chromium?.version, wkwebview: scheme?.ua } }, null, 1) + '\n');
 process.exit(checks.every((c) => c.ok) ? 0 : 1);

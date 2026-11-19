@@ -175,7 +175,9 @@ const takeOrder = {
       A('goTo', { target: '$customer', within: 1.3, timeout: 30 }),
       A('lookAt', { target: '$customer' }),
       A('say', { text: 'Here you go. Enjoy!', topic: 'served', to: '$customer' }),
-      A('setGoal', { agent: '$customer', goal: 'served' }),
+      // a customer without a brain (the player) can't take a goal: that must not stop her finishing (M3 W4: the order
+      // was served again and again when the person played the customer)
+      { type: 'succeed', child: A('setGoal', { agent: '$customer', goal: 'served' }) },
       A('setGoal', { goal: '' }),
       A('lookAt', {}),
     ] },

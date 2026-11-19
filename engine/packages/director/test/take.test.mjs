@@ -66,7 +66,7 @@ test('a take replays exactly; baked into a sequence it says her lines on the sam
     for (const [at, text] of Object.entries(talk)) { if (step === Number(at) - 90) d.speaking('hana-1', true); if (step === Number(at)) { d.speaking('hana-1', false); d.talk('hana-1', text); } }
   } });
   const take = makeTake({ scene: 'cafe.vrmxs', cast: CAST, input: walkIn, ai: L.ai.record(), steps });
-  assert.ok(live.said.some((s) => s[1] === 'Here you go. Enjoy!'), `she brought the latte (${live.said.map((s) => s[1]).join(' / ')})`);
+  assert.equal(live.said.filter((s) => s[1] === 'Here you go. Enjoy!').length, 1, `she brought the latte, once (${live.said.map((s) => s[1]).join(' / ')})`);
 
   const R = await world(); R.input.replay(take.input); R.ai.replay(take.ai);
   const replayed = await run(R, steps);

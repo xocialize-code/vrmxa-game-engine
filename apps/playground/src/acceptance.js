@@ -436,3 +436,41 @@ export async function runSave(R, sample, opts, { now = () => 0 } = {}) {
     saveMs: +saveMs.toFixed(1), loadMs: +loadMs.toFixed(1), requires: back.requires,
   };
 }
+
+/**
+ * M3 W4 (AB-T-0543), check 17: a recorded conversation replays with no model. takes/conversation.json (tools/
+ * make-conversation.mjs: Mira walks in and talks with Hana, the host, for two minutes; the director's requests and
+ * decisions are in the take's ai log) is replayed from its input and log alone, hashing every step; a snapshot taken
+ * halfway (a save) is restored into a fresh world and plays to the end with the log's later entries.
+ * @param {any} R @param {any} sample @param {any} opts
+ */
+export async function runConversation(R, sample, opts, { now = () => 0 } = {}) {
+  const take = JSON.parse(text(await sample.bytes('takes/conversation.json')));
+  const SNAP = Math.floor(take.steps / 2);
+  const S = { ...sample, doc: { ...sample.doc, nodes: sample.doc.nodes.map((n) => (take.cast?.[n.id] ? { ...n, ...take.cast[n.id] } : n)) } };
+  const A = await buildWorld(R, S, opts), tree = A.tree, lines = [];
+  tree.listen(tree.find('hana-1'), 'spoke', (a) => lines.push(`${tree.clock.step}:${a.text}`));
+  A.input.replay(structuredClone(take.input));
+  A.ai.replay(take.ai);
+  const run = [{ step: 0, h: worldHashes(tree) }];
+  let snap = null, ms = 0;
+  for (let k = 1; k <= take.steps; k++) {
+    const t0 = now();
+    while (!tree.step()) await tree.settle();
+    ms += now() - t0;
+    run.push({ step: k, h: worldHashes(tree, { physicsBytes: k % 60 === 0 }) });
+    if (k === SNAP) snap = captureWorld(tree, { meta: { scene: sample.scene, conversation: true } });
+  }
+  const B = await buildWorld(R, S, opts);
+  restoreWorld(B.tree, snap);
+  B.input.replay(structuredClone(take.input));
+  B.ai.replay(take.ai.filter((e) => e.step > SNAP));
+  const again = [];
+  for (let k = SNAP + 1; k <= take.steps; k++) { while (!B.tree.step()) await B.tree.settle(); again.push({ step: k, h: worldHashes(B.tree, { physicsBytes: k % 60 === 0 }) }); }
+  const restored = compareRuns(run.slice(SNAP + 1), again);
+  const decisions = take.ai.filter((e) => e.kind === 'decision').length;
+  return {
+    steps: take.steps, events: take.ai.length, decisions, run: packRun(run), final: hashValue(run.at(-1).h), components: Object.keys(run[0].h).length,
+    snapshot: { at: SNAP, rerunMatches: restored === null, divergence: restored }, lines, stepMs: +(ms / take.steps).toFixed(3),
+  };
+}
