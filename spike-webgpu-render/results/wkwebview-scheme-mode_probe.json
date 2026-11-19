@@ -1,0 +1,81 @@
+{
+  "adapter" : {
+    "architecture" : "apple",
+    "description" : "apple",
+    "device" : "apple",
+    "isFallbackAdapter" : false,
+    "vendor" : "apple"
+  },
+  "crossOriginIsolated" : true,
+  "device" : true,
+  "errors" : [
+
+  ],
+  "features" : [
+    "bgra8unorm-storage",
+    "clip-distances",
+    "core-features-and-limits",
+    "depth-clip-control",
+    "depth32float-stencil8",
+    "float16-renderable",
+    "float32-blendable",
+    "float32-filterable",
+    "float32-renderable",
+    "indirect-first-instance",
+    "primitive-index",
+    "rg11b10ufloat-renderable",
+    "shader-f16",
+    "subgroups",
+    "texture-compression-astc",
+    "texture-compression-astc-sliced-3d",
+    "texture-compression-bc",
+    "texture-compression-bc-sliced-3d",
+    "texture-compression-etc2",
+    "texture-formats-tier1",
+    "texture-formats-tier2",
+    "timestamp-query"
+  ],
+  "isSecureContext" : true,
+  "limits" : {
+    "maxBindGroups" : 11,
+    "maxBufferSize" : 2147483644,
+    "maxColorAttachmentBytesPerSample" : 64,
+    "maxColorAttachments" : 8,
+    "maxComputeWorkgroupStorageSize" : 32768,
+    "maxSampledTexturesPerShaderStage" : 44,
+    "maxStorageBufferBindingSize" : 2147483644,
+    "maxTextureDimension2D" : 16384
+  },
+  "mode" : "probe",
+  "navigatorGpu" : true,
+  "origin" : "vrmxg-spike:\/\/app",
+  "preferredCanvasFormat" : "bgra8unorm",
+  "renderer" : "webgpu",
+  "requestAdapterMs" : 1,
+  "runtime" : "wkwebview",
+  "shotNames" : [
+
+  ],
+  "threeBackend" : "WebGPU",
+  "threeRevision" : "187",
+  "timerResolutionMs" : 1,
+  "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+  "warnings" : [
+
+  ],
+  "wgslLanguageFeatures" : [
+    "packed_4x8_integer_dot_product",
+    "pointer_composite_access",
+    "readonly_and_readwrite_storage_textures",
+    "subgroup_id",
+    "subgroup_uniformity",
+    "texture_formats_tier1",
+    "unrestricted_pointer_parameters"
+  ],
+  "wrapper" : {
+    "case" : "mode=probe&origin=scheme",
+    "origin" : "scheme",
+    "seconds" : 0,
+    "timedOut" : false
+  }
+}

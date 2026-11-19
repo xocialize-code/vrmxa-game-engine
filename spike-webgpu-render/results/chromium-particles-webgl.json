@@ -1,0 +1,78 @@
+{
+  "runtime": "chromium",
+  "version": "156.0.8078.4",
+  "headless": {
+    "final": "976e7033e22ad048",
+    "matchesReference": true,
+    "peakParticles": 1207,
+    "stepMs": 0.233
+  },
+  "kind": "webgl",
+  "backend": "WebGL2",
+  "quarks": "three.quarks BatchedRenderer (WebGL)",
+  "dummy": null,
+  "diff360": {
+    "pixels": 0,
+    "perChannel": {
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "a": 0
+    },
+    "maxDelta": 0,
+    "box": null
+  },
+  "pixels": {
+    "second": "restored at 180",
+    "emitters": 43,
+    "steps": [
+      200,
+      240,
+      280,
+      320,
+      360
+    ],
+    "run": {
+      "200": "3bf0a33a543f19a8",
+      "240": "b10d75ce214e80b0",
+      "280": "75edc9d55745b139",
+      "320": "2bb40bc1ee5701fd",
+      "360": "68c99f5eb14d8dc3"
+    },
+    "restored": {
+      "200": "3bf0a33a543f19a8",
+      "240": "b10d75ce214e80b0",
+      "280": "75edc9d55745b139",
+      "320": "2bb40bc1ee5701fd",
+      "360": "68c99f5eb14d8dc3"
+    },
+    "identical": true,
+    "distinct": 5
+  },
+  "rendered": {
+    "final": "976e7033e22ad048",
+    "sameAsHeadless": true,
+    "snapshotRerunMatches": true,
+    "divergence": null,
+    "batches": 3,
+    "batchClass": "BatchedRenderer",
+    "maxDrawCalls": 189,
+    "frameMs": {
+      "median": 1.4,
+      "p90": 1.7,
+      "mean": 2.321,
+      "n": 360
+    },
+    "live": 1149
+  },
+  "mode": "particles",
+  "renderer": "webgl",
+  "origin": "http://127.0.0.1:5241",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "errors": [],
+  "warnings": [],
+  "shotNames": [
+    "webgl-particles-720p"
+  ],
+  "console": []
+}

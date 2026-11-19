@@ -1,0 +1,111 @@
+{
+  "runtime": "chromium",
+  "version": "156.0.8078.4",
+  "headless": true,
+  "kind": "webgl",
+  "backend": "WebGL2",
+  "quarks": "three.quarks BatchedRenderer (WebGL)",
+  "swappedMaterials": 0,
+  "cost": {
+    "none.1080p": {
+      "median": 0.5,
+      "p90": 0.6,
+      "mean": 0.487,
+      "n": 40
+    },
+    "none.4k": {
+      "median": 0.5,
+      "p90": 0.6,
+      "mean": 0.508,
+      "n": 25
+    },
+    "anime.1080p": {
+      "median": 1.6,
+      "p90": 1.9,
+      "mean": 1.65,
+      "n": 40
+    },
+    "anime.4k": {
+      "median": 1.5,
+      "p90": 1.7,
+      "mean": 1.536,
+      "n": 25
+    },
+    "animeLut.1080p": {
+      "median": 1.7,
+      "p90": 1.9,
+      "mean": 1.695,
+      "n": 40
+    },
+    "animeLut.4k": {
+      "median": 1.5,
+      "p90": 1.7,
+      "mean": 1.516,
+      "n": 25
+    }
+  },
+  "passes": {
+    "none": null,
+    "anime": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+    ],
+    "animeLut": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+    ]
+  },
+  "calls": {
+    "none.1080p": {
+      "calls": 227,
+      "triangles": 219352
+    },
+    "none.4k": {
+      "calls": 227,
+      "triangles": 219352
+    },
+    "anime.1080p": {
+      "calls": 395,
+      "triangles": 397885
+    },
+    "anime.4k": {
+      "calls": 395,
+      "triangles": 397885
+    },
+    "animeLut.1080p": {
+      "calls": 395,
+      "triangles": 397885
+    },
+    "animeLut.4k": {
+      "calls": 395,
+      "triangles": 397885
+    }
+  },
+  "throughputMs": {
+    "none.1080p": 0.46,
+    "none.4k": 0.457,
+    "anime.1080p": 1.6,
+    "anime.4k": 4.51,
+    "animeLut.1080p": 1.607,
+    "animeLut.4k": 4.523
+  },
+  "mode": "bench",
+  "renderer": "webgl",
+  "origin": "http://127.0.0.1:5241",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "errors": [],
+  "warnings": [],
+  "shotNames": [
+    "webgl-anime-1080p",
+    "webgl-nopost-1080p"
+  ],
+  "console": []
+}

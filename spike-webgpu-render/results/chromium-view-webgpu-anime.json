@@ -1,0 +1,30 @@
+{
+  "runtime": "chromium",
+  "version": "156.0.8078.4",
+  "headless": true,
+  "kind": "webgpu",
+  "backend": "WebGPU",
+  "swapped": 22,
+  "passes": [
+    "scene(MSAA4, MRT output+emissive+normal)",
+    "characterMask(layer 2, ½ res)",
+    "edges(custom TSL)",
+    "dof()",
+    "merged(bloom(emissive MRT)+grade+toneMapping()+vignette+grain+anime(custom TSL))",
+    "chromaticAberration(custom TSL)"
+  ],
+  "info": {
+    "calls": 290,
+    "triangles": 295328
+  },
+  "mode": "view",
+  "renderer": "webgpu",
+  "origin": "http://127.0.0.1:5241",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "errors": [],
+  "warnings": [],
+  "shotNames": [
+    "webgpu-view-anime"
+  ],
+  "console": []
+}

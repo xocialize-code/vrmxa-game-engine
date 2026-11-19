@@ -1,0 +1,118 @@
+{
+  "backend" : "WebGPU",
+  "calls" : {
+    "anime.4k" : {
+      "calls" : 290,
+      "triangles" : 295328
+    },
+    "anime.1080p" : {
+      "calls" : 290,
+      "triangles" : 295328
+    },
+    "animeLut.4k" : {
+      "calls" : 290,
+      "triangles" : 295328
+    },
+    "animeLut.1080p" : {
+      "calls" : 290,
+      "triangles" : 295328
+    },
+    "none.4k" : {
+      "calls" : 244,
+      "triangles" : 226509
+    },
+    "none.1080p" : {
+      "calls" : 244,
+      "triangles" : 226509
+    }
+  },
+  "cost" : {
+    "anime.4k" : {
+      "mean" : 6.7699999999999996,
+      "median" : 6.7400000000000002,
+      "n" : 25,
+      "p90" : 7.0199999999999996
+    },
+    "anime.1080p" : {
+      "mean" : 3.2559999999999998,
+      "median" : 3.2200000000000002,
+      "n" : 40,
+      "p90" : 3.48
+    },
+    "animeLut.4k" : {
+      "mean" : 6.7489999999999997,
+      "median" : 6.6799999999999997,
+      "n" : 25,
+      "p90" : 6.96
+    },
+    "animeLut.1080p" : {
+      "mean" : 3.5049999999999999,
+      "median" : 3.3799999999999999,
+      "n" : 40,
+      "p90" : 3.8799999999999999
+    },
+    "none.4k" : {
+      "mean" : 2.9500000000000002,
+      "median" : 2.9199999999999999,
+      "n" : 25,
+      "p90" : 3.3199999999999998
+    },
+    "none.1080p" : {
+      "mean" : 1.5269999999999999,
+      "median" : 1.5,
+      "n" : 40,
+      "p90" : 1.6799999999999999
+    }
+  },
+  "errors" : [
+
+  ],
+  "kind" : "webgpu",
+  "mode" : "bench",
+  "origin" : "http:\/\/127.0.0.1:60568",
+  "passes" : {
+    "anime" : [
+      "scene(MSAA4, MRT output+emissive+normal)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof()",
+      "merged(bloom(emissive MRT)+grade+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+    ],
+    "animeLut" : [
+      "scene(MSAA4, MRT output+emissive+normal)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof()",
+      "merged(bloom(emissive MRT)+grade+lut3D()+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+    ],
+    "none" : null
+  },
+  "quarks" : "three.quarks\/webgpu WebGPUBatchedRenderer",
+  "renderer" : "webgpu",
+  "runtime" : "wkwebview",
+  "shotNames" : [
+    "webgpu-anime-1080p",
+    "webgpu-nopost-1080p"
+  ],
+  "swappedMaterials" : 22,
+  "throughputMs" : {
+    "anime.4k" : 4.907,
+    "anime.1080p" : 1.9359999999999999,
+    "animeLut.4k" : 4.9020000000000001,
+    "animeLut.1080p" : 2.1360000000000001,
+    "none.4k" : 0.90500000000000003,
+    "none.1080p" : 0.79900000000000004
+  },
+  "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+  "warnings" : [
+
+  ],
+  "wrapper" : {
+    "case" : "mode=bench&renderer=webgpu&origin=loopback",
+    "origin" : "loopback",
+    "seconds" : 6,
+    "timedOut" : false
+  }
+}

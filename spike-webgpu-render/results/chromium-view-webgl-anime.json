@@ -1,0 +1,30 @@
+{
+  "runtime": "chromium",
+  "version": "156.0.8078.4",
+  "headless": true,
+  "kind": "webgl",
+  "backend": "WebGL2",
+  "swapped": 0,
+  "passes": [
+    "RenderPass",
+    "NormalPass",
+    "EffectPass(EdgeEffect)",
+    "EffectPass(DepthOfFieldEffect)",
+    "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+    "EffectPass(ChromaticAberrationEffect)"
+  ],
+  "info": {
+    "calls": 395,
+    "triangles": 397885
+  },
+  "mode": "view",
+  "renderer": "webgl",
+  "origin": "http://127.0.0.1:5241",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "errors": [],
+  "warnings": [],
+  "shotNames": [
+    "webgl-view-anime"
+  ],
+  "console": []
+}

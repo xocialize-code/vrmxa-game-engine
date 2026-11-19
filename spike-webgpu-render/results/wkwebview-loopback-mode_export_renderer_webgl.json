@@ -1,0 +1,400 @@
+{
+  "backend" : "WebGL2",
+  "errors" : [
+
+  ],
+  "exports" : {
+    "4k" : {
+      "a" : {
+        "final" : "dadd3237b19a54e1",
+        "hashes" : [
+          "d1256b613c877d19",
+          "b7c32c2f7b3b2b64",
+          "6d4f33621ea1453a",
+          "8d6033c457f68336",
+          "e80448cfe1c24be0",
+          "4a5a60e51680b887",
+          "4245e596f8de2479",
+          "0f70f47e3e1e2a5e",
+          "706a61b619055e2a",
+          "6e37c9a4f052a5f7",
+          "1141c2d30f7bde53",
+          "ac31fb5b85c90775"
+        ],
+        "info" : {
+          "calls" : 1,
+          "triangles" : 1
+        },
+        "passes" : [
+          "RenderPass",
+          "NormalPass",
+          "EffectPass(EdgeEffect)",
+          "EffectPass(DepthOfFieldEffect)",
+          "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+          "EffectPass(ChromaticAberrationEffect)"
+        ],
+        "perFrameMs" : {
+          "mean" : 83.204999999999998,
+          "median" : 20.760000000000002,
+          "n" : 12,
+          "p90" : 55.240000000000002
+        },
+        "totalMs" : 1025.5999999999999
+      },
+      "b" : {
+        "final" : "dadd3237b19a54e1",
+        "hashes" : [
+          "d1256b613c877d19",
+          "b7c32c2f7b3b2b64",
+          "6d4f33621ea1453a",
+          "8d6033c457f68336",
+          "e80448cfe1c24be0",
+          "4a5a60e51680b887",
+          "4245e596f8de2479",
+          "0f70f47e3e1e2a5e",
+          "706a61b619055e2a",
+          "6e37c9a4f052a5f7",
+          "1141c2d30f7bde53",
+          "ac31fb5b85c90775"
+        ],
+        "info" : {
+          "calls" : 1,
+          "triangles" : 1
+        },
+        "passes" : [
+          "RenderPass",
+          "NormalPass",
+          "EffectPass(EdgeEffect)",
+          "EffectPass(DepthOfFieldEffect)",
+          "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+          "EffectPass(ChromaticAberrationEffect)"
+        ],
+        "perFrameMs" : {
+          "mean" : 80.706999999999994,
+          "median" : 20.539999999999999,
+          "n" : 12,
+          "p90" : 55.219999999999999
+        },
+        "totalMs" : 996.5
+      },
+      "differingFrames" : [
+
+      ],
+      "digest" : "7407a64996db3d54",
+      "frames" : 12,
+      "identical" : true
+    },
+    "1080p" : {
+      "a" : {
+        "final" : "dd975db48db06852",
+        "hashes" : [
+          "b36506b5c18eb1d5",
+          "999a193d01c58ef1",
+          "4fd89db1a4a0b3f8",
+          "da42857adf380aaf",
+          "a13455fb5fb065a6",
+          "86c3fc76191e6b37",
+          "79d27bfbc02986bd",
+          "a122eaf88d978755",
+          "a4601dff084696d8",
+          "765c2bdfa45c1d87",
+          "0e66b5b123271709",
+          "4934163c5009084c",
+          "475809007f1e1596",
+          "a654bcfb0cf32c15",
+          "0500071a75d16a5e",
+          "0ced6b469bbf4f4e",
+          "e04e40558212e978",
+          "47e06b70c6b3d053",
+          "54ad2598186706f6",
+          "29d3fbafaa5d1881",
+          "97c06f2bf26d9ba3",
+          "ab1d1ac857ed3074",
+          "c82d89b26dd405de",
+          "a3493cec5f73f69e",
+          "5b7f6288dc9e1ba3",
+          "3a575a24c0653fbb",
+          "0a095bab8aa059e8",
+          "94b278f8f04f153b",
+          "4a0ef18c29a123f6",
+          "d13424b489ed864f",
+          "ecff7a7f0f1f864a",
+          "4b39dfcef0ccc8b5",
+          "36d812ffb253c8b5",
+          "56b6f8051e7080a6",
+          "2ee663d851da7eb1",
+          "eda5459265e5a7cd",
+          "7e819d5d06ded645",
+          "343a8606202cabf5",
+          "7a4aac8ec8dcf286",
+          "3c285e94da0218d5",
+          "17a023ab7291fe5f",
+          "ffe4ce20e15e610c",
+          "6e1c933781eb98a0",
+          "650befb153fb39de",
+          "0dbc8eb094ec7233",
+          "2f3fe1a52a9f03ec",
+          "5e93821a39a801e2",
+          "5bc28ae43670a2d1",
+          "82526bb50f9bba3e",
+          "962ea1d2fd26ba71",
+          "1816a8e1187cd241",
+          "2699e66a9c85dd1a",
+          "967884a9cc341976",
+          "65a8ec67f208b972",
+          "7ef6fd539124ebea",
+          "a3393654a7f098ca",
+          "306a24acb8611026",
+          "920dd04fa1300a31",
+          "4d3fd0e0d2832a46",
+          "544368de472a7afc",
+          "820f601dcc6de80a",
+          "5fb145e432163a15",
+          "bcfc388ac5a45262",
+          "5e83e855475ded66",
+          "4926f045902b9696",
+          "09186b08fe7ee560",
+          "34861f94dcd93268",
+          "e62dfa6ccfe2e839",
+          "7a38eb0f234e22e8",
+          "14cd626ed2f5f3f1",
+          "52f0191aa4c202de",
+          "8eb738192d9d5a8a",
+          "3c0f9fb3d459c510",
+          "61fc87542cfcae23",
+          "ec245a22066a4366",
+          "7997b2f6006e39a6",
+          "7f65322d6d878447",
+          "96c20c762e420e5e",
+          "b6efca5189f29030",
+          "485ece755cad0b84",
+          "e984073bae3cd431",
+          "c382d55cf958fea7",
+          "c0f32fcba7caaeac",
+          "89407c0ed3dd833a",
+          "d8e67292301d9467",
+          "a467b5bdf109a9fc",
+          "c38753f5e1eaea23",
+          "642d1fb8a0c9150e",
+          "ab230117914bd1b4",
+          "6fdef8936b27d02e"
+        ],
+        "info" : {
+          "calls" : 1,
+          "triangles" : 1
+        },
+        "passes" : [
+          "RenderPass",
+          "NormalPass",
+          "EffectPass(EdgeEffect)",
+          "EffectPass(DepthOfFieldEffect)",
+          "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+          "EffectPass(ChromaticAberrationEffect)"
+        ],
+        "perFrameMs" : {
+          "mean" : 13.361000000000001,
+          "median" : 8.1400000000000006,
+          "n" : 90,
+          "p90" : 10.140000000000001
+        },
+        "totalMs" : 1211.2
+      },
+      "b" : {
+        "final" : "dd975db48db06852",
+        "hashes" : [
+          "b36506b5c18eb1d5",
+          "999a193d01c58ef1",
+          "4fd89db1a4a0b3f8",
+          "da42857adf380aaf",
+          "a13455fb5fb065a6",
+          "86c3fc76191e6b37",
+          "79d27bfbc02986bd",
+          "a122eaf88d978755",
+          "a4601dff084696d8",
+          "765c2bdfa45c1d87",
+          "0e66b5b123271709",
+          "4934163c5009084c",
+          "475809007f1e1596",
+          "a654bcfb0cf32c15",
+          "0500071a75d16a5e",
+          "0ced6b469bbf4f4e",
+          "e04e40558212e978",
+          "47e06b70c6b3d053",
+          "54ad2598186706f6",
+          "29d3fbafaa5d1881",
+          "97c06f2bf26d9ba3",
+          "ab1d1ac857ed3074",
+          "c82d89b26dd405de",
+          "a3493cec5f73f69e",
+          "5b7f6288dc9e1ba3",
+          "3a575a24c0653fbb",
+          "0a095bab8aa059e8",
+          "94b278f8f04f153b",
+          "4a0ef18c29a123f6",
+          "d13424b489ed864f",
+          "ecff7a7f0f1f864a",
+          "4b39dfcef0ccc8b5",
+          "36d812ffb253c8b5",
+          "56b6f8051e7080a6",
+          "2ee663d851da7eb1",
+          "eda5459265e5a7cd",
+          "7e819d5d06ded645",
+          "343a8606202cabf5",
+          "7a4aac8ec8dcf286",
+          "3c285e94da0218d5",
+          "17a023ab7291fe5f",
+          "ffe4ce20e15e610c",
+          "6e1c933781eb98a0",
+          "650befb153fb39de",
+          "0dbc8eb094ec7233",
+          "2f3fe1a52a9f03ec",
+          "5e93821a39a801e2",
+          "5bc28ae43670a2d1",
+          "82526bb50f9bba3e",
+          "962ea1d2fd26ba71",
+          "1816a8e1187cd241",
+          "2699e66a9c85dd1a",
+          "967884a9cc341976",
+          "65a8ec67f208b972",
+          "7ef6fd539124ebea",
+          "a3393654a7f098ca",
+          "306a24acb8611026",
+          "920dd04fa1300a31",
+          "4d3fd0e0d2832a46",
+          "544368de472a7afc",
+          "820f601dcc6de80a",
+          "5fb145e432163a15",
+          "bcfc388ac5a45262",
+          "5e83e855475ded66",
+          "4926f045902b9696",
+          "09186b08fe7ee560",
+          "34861f94dcd93268",
+          "e62dfa6ccfe2e839",
+          "7a38eb0f234e22e8",
+          "14cd626ed2f5f3f1",
+          "52f0191aa4c202de",
+          "8eb738192d9d5a8a",
+          "3c0f9fb3d459c510",
+          "61fc87542cfcae23",
+          "ec245a22066a4366",
+          "7997b2f6006e39a6",
+          "7f65322d6d878447",
+          "96c20c762e420e5e",
+          "b6efca5189f29030",
+          "485ece755cad0b84",
+          "e984073bae3cd431",
+          "c382d55cf958fea7",
+          "c0f32fcba7caaeac",
+          "89407c0ed3dd833a",
+          "d8e67292301d9467",
+          "a467b5bdf109a9fc",
+          "c38753f5e1eaea23",
+          "642d1fb8a0c9150e",
+          "ab230117914bd1b4",
+          "6fdef8936b27d02e"
+        ],
+        "info" : {
+          "calls" : 1,
+          "triangles" : 1
+        },
+        "passes" : [
+          "RenderPass",
+          "NormalPass",
+          "EffectPass(EdgeEffect)",
+          "EffectPass(DepthOfFieldEffect)",
+          "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+          "EffectPass(ChromaticAberrationEffect)"
+        ],
+        "perFrameMs" : {
+          "mean" : 12.710000000000001,
+          "median" : 8.0399999999999991,
+          "n" : 90,
+          "p90" : 9.8200000000000003
+        },
+        "totalMs" : 1151.5
+      },
+      "differingFrames" : [
+
+      ],
+      "digest" : "b031d0bf8ca76efc",
+      "frames" : 90,
+      "identical" : true
+    }
+  },
+  "kind" : "webgl",
+  "mode" : "export",
+  "origin" : "http:\/\/127.0.0.1:60566",
+  "renderer" : "webgl",
+  "runtime" : "wkwebview",
+  "shotNames" : [
+    "webgl-export-1080p-last"
+  ],
+  "timing" : [
+    {
+      "hash" : "2e1731d61d403166",
+      "pboPipelinedMs" : {
+        "mean" : 1.984,
+        "median" : 1.96,
+        "n" : 40,
+        "p90" : 2.1800000000000002
+      },
+      "pboSameFrameMs" : {
+        "mean" : 3.2949999999999999,
+        "median" : 2.8799999999999999,
+        "n" : 40,
+        "p90" : 4.5999999999999996
+      },
+      "readPixelsSyncMs" : {
+        "mean" : 4.7649999999999997,
+        "median" : 4.4199999999999999,
+        "n" : 40,
+        "p90" : 5.5800000000000001
+      },
+      "renderMs" : {
+        "mean" : 1.835,
+        "median" : 1.8,
+        "n" : 40,
+        "p90" : 2.1400000000000001
+      },
+      "size" : "1920x1080"
+    },
+    {
+      "hash" : "43d7bd1460fb73a2",
+      "pboPipelinedMs" : {
+        "mean" : 5.8209999999999997,
+        "median" : 5.5199999999999996,
+        "n" : 20,
+        "p90" : 6.4800000000000004
+      },
+      "pboSameFrameMs" : {
+        "mean" : 10.638999999999999,
+        "median" : 10.52,
+        "n" : 20,
+        "p90" : 12.220000000000001
+      },
+      "readPixelsSyncMs" : {
+        "mean" : 14.856999999999999,
+        "median" : 14.76,
+        "n" : 20,
+        "p90" : 15.720000000000001
+      },
+      "renderMs" : {
+        "mean" : 2.121,
+        "median" : 2.1200000000000001,
+        "n" : 20,
+        "p90" : 2.3199999999999998
+      },
+      "size" : "3840x2160"
+    }
+  ],
+  "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+  "warnings" : [
+
+  ],
+  "wrapper" : {
+    "case" : "mode=export&renderer=webgl&origin=loopback",
+    "origin" : "loopback",
+    "seconds" : 12,
+    "timedOut" : false
+  }
+}

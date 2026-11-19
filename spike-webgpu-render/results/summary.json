@@ -1,0 +1,922 @@
+{
+  "bench": {
+    "chromium-bench-webgl.json": {
+      "kind": "webgl",
+      "cost": {
+        "none.1080p": {
+          "median": 0.5,
+          "p90": 0.6,
+          "mean": 0.487,
+          "n": 40
+        },
+        "none.4k": {
+          "median": 0.5,
+          "p90": 0.6,
+          "mean": 0.508,
+          "n": 25
+        },
+        "anime.1080p": {
+          "median": 1.6,
+          "p90": 1.9,
+          "mean": 1.65,
+          "n": 40
+        },
+        "anime.4k": {
+          "median": 1.5,
+          "p90": 1.7,
+          "mean": 1.536,
+          "n": 25
+        },
+        "animeLut.1080p": {
+          "median": 1.7,
+          "p90": 1.9,
+          "mean": 1.695,
+          "n": 40
+        },
+        "animeLut.4k": {
+          "median": 1.5,
+          "p90": 1.7,
+          "mean": 1.516,
+          "n": 25
+        }
+      },
+      "throughputMs": {
+        "none.1080p": 0.46,
+        "none.4k": 0.457,
+        "anime.1080p": 1.6,
+        "anime.4k": 4.51,
+        "animeLut.1080p": 1.607,
+        "animeLut.4k": 4.523
+      },
+      "calls": {
+        "none.1080p": {
+          "calls": 227,
+          "triangles": 219352
+        },
+        "none.4k": {
+          "calls": 227,
+          "triangles": 219352
+        },
+        "anime.1080p": {
+          "calls": 395,
+          "triangles": 397885
+        },
+        "anime.4k": {
+          "calls": 395,
+          "triangles": 397885
+        },
+        "animeLut.1080p": {
+          "calls": 395,
+          "triangles": 397885
+        },
+        "animeLut.4k": {
+          "calls": 395,
+          "triangles": 397885
+        }
+      },
+      "passes": {
+        "none": null,
+        "anime": [
+          "RenderPass",
+          "NormalPass",
+          "EffectPass(EdgeEffect)",
+          "EffectPass(DepthOfFieldEffect)",
+          "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+          "EffectPass(ChromaticAberrationEffect)"
+        ],
+        "animeLut": [
+          "RenderPass",
+          "NormalPass",
+          "EffectPass(EdgeEffect)",
+          "EffectPass(DepthOfFieldEffect)",
+          "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+          "EffectPass(ChromaticAberrationEffect)"
+        ]
+      },
+      "errors": 0
+    },
+    "chromium-bench-webgpu.json": {
+      "kind": "webgpu",
+      "cost": {
+        "none.1080p": {
+          "median": 1.6,
+          "p90": 1.8,
+          "mean": 1.627,
+          "n": 40
+        },
+        "none.4k": {
+          "median": 3.2,
+          "p90": 3.8,
+          "mean": 3.22,
+          "n": 25
+        },
+        "anime.1080p": {
+          "median": 2.9,
+          "p90": 3,
+          "mean": 2.862,
+          "n": 40
+        },
+        "anime.4k": {
+          "median": 5,
+          "p90": 5.1,
+          "mean": 4.984,
+          "n": 25
+        },
+        "animeLut.1080p": {
+          "median": 2.8,
+          "p90": 3.2,
+          "mean": 2.872,
+          "n": 40
+        },
+        "animeLut.4k": {
+          "median": 4.9,
+          "p90": 5.1,
+          "mean": 4.92,
+          "n": 25
+        }
+      },
+      "throughputMs": {
+        "none.1080p": 0.757,
+        "none.4k": 0.78,
+        "anime.1080p": 1.41,
+        "anime.4k": 3.183,
+        "animeLut.1080p": 1.527,
+        "animeLut.4k": 3.197
+      },
+      "calls": {
+        "none.1080p": {
+          "calls": 244,
+          "triangles": 226509
+        },
+        "none.4k": {
+          "calls": 244,
+          "triangles": 226509
+        },
+        "anime.1080p": {
+          "calls": 290,
+          "triangles": 295328
+        },
+        "anime.4k": {
+          "calls": 290,
+          "triangles": 295328
+        },
+        "animeLut.1080p": {
+          "calls": 290,
+          "triangles": 295328
+        },
+        "animeLut.4k": {
+          "calls": 290,
+          "triangles": 295328
+        }
+      },
+      "passes": {
+        "none": null,
+        "anime": [
+          "scene(MSAA4, MRT output+emissive+normal)",
+          "characterMask(layer 2, ½ res)",
+          "edges(custom TSL)",
+          "dof()",
+          "merged(bloom(emissive MRT)+grade+toneMapping()+vignette+grain+anime(custom TSL))",
+          "chromaticAberration(custom TSL)"
+        ],
+        "animeLut": [
+          "scene(MSAA4, MRT output+emissive+normal)",
+          "characterMask(layer 2, ½ res)",
+          "edges(custom TSL)",
+          "dof()",
+          "merged(bloom(emissive MRT)+grade+lut3D()+toneMapping()+vignette+grain+anime(custom TSL))",
+          "chromaticAberration(custom TSL)"
+        ]
+      },
+      "errors": 0
+    },
+    "wkwebview-loopback-mode_bench_renderer_webgl.json": {
+      "kind": "webgl",
+      "cost": {
+        "anime.4k": {
+          "mean": 19.466,
+          "median": 5.44,
+          "n": 25,
+          "p90": 14.46
+        },
+        "anime.1080p": {
+          "mean": 1.86,
+          "median": 1.38,
+          "n": 40,
+          "p90": 2.7
+        },
+        "animeLut.4k": {
+          "mean": 18.322,
+          "median": 5.46,
+          "n": 25,
+          "p90": 10.1
+        },
+        "animeLut.1080p": {
+          "mean": 1.768,
+          "median": 1.46,
+          "n": 40,
+          "p90": 2.58
+        },
+        "none.4k": {
+          "mean": 0.718,
+          "median": 0.7,
+          "n": 25,
+          "p90": 0.76
+        },
+        "none.1080p": {
+          "mean": 2.236,
+          "median": 0.7,
+          "n": 40,
+          "p90": 5
+        }
+      },
+      "throughputMs": {
+        "anime.4k": 5.22,
+        "anime.1080p": 2.663,
+        "animeLut.4k": 5.266,
+        "animeLut.1080p": 2.27,
+        "none.4k": 1.193,
+        "none.1080p": 0.679
+      },
+      "calls": {
+        "anime.4k": {
+          "calls": 395,
+          "triangles": 397885
+        },
+        "anime.1080p": {
+          "calls": 395,
+          "triangles": 397885
+        },
+        "animeLut.4k": {
+          "calls": 395,
+          "triangles": 397885
+        },
+        "animeLut.1080p": {
+          "calls": 395,
+          "triangles": 397885
+        },
+        "none.4k": {
+          "calls": 227,
+          "triangles": 219352
+        },
+        "none.1080p": {
+          "calls": 227,
+          "triangles": 219352
+        }
+      },
+      "passes": {
+        "anime": [
+          "RenderPass",
+          "NormalPass",
+          "EffectPass(EdgeEffect)",
+          "EffectPass(DepthOfFieldEffect)",
+          "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+          "EffectPass(ChromaticAberrationEffect)"
+        ],
+        "animeLut": [
+          "RenderPass",
+          "NormalPass",
+          "EffectPass(EdgeEffect)",
+          "EffectPass(DepthOfFieldEffect)",
+          "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+          "EffectPass(ChromaticAberrationEffect)"
+        ],
+        "none": null
+      },
+      "errors": 0
+    },
+    "wkwebview-loopback-mode_bench_renderer_webgpu.json": {
+      "kind": "webgpu",
+      "cost": {
+        "anime.4k": {
+          "mean": 6.77,
+          "median": 6.74,
+          "n": 25,
+          "p90": 7.02
+        },
+        "anime.1080p": {
+          "mean": 3.256,
+          "median": 3.22,
+          "n": 40,
+          "p90": 3.48
+        },
+        "animeLut.4k": {
+          "mean": 6.749,
+          "median": 6.68,
+          "n": 25,
+          "p90": 6.96
+        },
+        "animeLut.1080p": {
+          "mean": 3.505,
+          "median": 3.38,
+          "n": 40,
+          "p90": 3.88
+        },
+        "none.4k": {
+          "mean": 2.95,
+          "median": 2.92,
+          "n": 25,
+          "p90": 3.32
+        },
+        "none.1080p": {
+          "mean": 1.527,
+          "median": 1.5,
+          "n": 40,
+          "p90": 1.68
+        }
+      },
+      "throughputMs": {
+        "anime.4k": 4.907,
+        "anime.1080p": 1.936,
+        "animeLut.4k": 4.902,
+        "animeLut.1080p": 2.136,
+        "none.4k": 0.905,
+        "none.1080p": 0.799
+      },
+      "calls": {
+        "anime.4k": {
+          "calls": 290,
+          "triangles": 295328
+        },
+        "anime.1080p": {
+          "calls": 290,
+          "triangles": 295328
+        },
+        "animeLut.4k": {
+          "calls": 290,
+          "triangles": 295328
+        },
+        "animeLut.1080p": {
+          "calls": 290,
+          "triangles": 295328
+        },
+        "none.4k": {
+          "calls": 244,
+          "triangles": 226509
+        },
+        "none.1080p": {
+          "calls": 244,
+          "triangles": 226509
+        }
+      },
+      "passes": {
+        "anime": [
+          "scene(MSAA4, MRT output+emissive+normal)",
+          "characterMask(layer 2, ½ res)",
+          "edges(custom TSL)",
+          "dof()",
+          "merged(bloom(emissive MRT)+grade+toneMapping()+vignette+grain+anime(custom TSL))",
+          "chromaticAberration(custom TSL)"
+        ],
+        "animeLut": [
+          "scene(MSAA4, MRT output+emissive+normal)",
+          "characterMask(layer 2, ½ res)",
+          "edges(custom TSL)",
+          "dof()",
+          "merged(bloom(emissive MRT)+grade+lut3D()+toneMapping()+vignette+grain+anime(custom TSL))",
+          "chromaticAberration(custom TSL)"
+        ],
+        "none": null
+      },
+      "errors": 0
+    }
+  },
+  "exports": {
+    "chromium-export-webgl.json:1080p": {
+      "identical": true,
+      "digest": "325882aaac77d91e",
+      "frames": 90
+    },
+    "chromium-export-webgl.json:4k": {
+      "identical": true,
+      "digest": "52cea067853f19e2",
+      "frames": 12
+    },
+    "chromium-export-webgpu.json:1080p": {
+      "identical": true,
+      "digest": "03db9f76c8b82309",
+      "frames": 90
+    },
+    "chromium-export-webgpu.json:4k": {
+      "identical": true,
+      "digest": "0a2b69944544f9a0",
+      "frames": 12
+    },
+    "wkwebview-loopback-mode_export_renderer_webgl.json:4k": {
+      "identical": true,
+      "digest": "7407a64996db3d54",
+      "frames": 12
+    },
+    "wkwebview-loopback-mode_export_renderer_webgl.json:1080p": {
+      "identical": true,
+      "digest": "b031d0bf8ca76efc",
+      "frames": 90
+    },
+    "wkwebview-loopback-mode_export_renderer_webgpu.json:4k": {
+      "identical": true,
+      "digest": "f450285b59b8b9bd",
+      "frames": 12
+    },
+    "wkwebview-loopback-mode_export_renderer_webgpu.json:1080p": {
+      "identical": true,
+      "digest": "071fd8804bc0d857",
+      "frames": 90
+    },
+    "wkwebview-loopback-mode_export_renderer_webgpu_timing_0.json:1080p": {
+      "identical": true,
+      "digest": "071fd8804bc0d857",
+      "frames": 90
+    },
+    "wkwebview-scheme-mode_export_renderer_webgpu.json:4k": {
+      "identical": true,
+      "digest": "f450285b59b8b9bd",
+      "frames": 12
+    },
+    "wkwebview-scheme-mode_export_renderer_webgpu.json:1080p": {
+      "identical": true,
+      "digest": "071fd8804bc0d857",
+      "frames": 90
+    }
+  },
+  "particles": {
+    "chromium-particles-webgl.json": {
+      "final": "976e7033e22ad048",
+      "sameAsHeadless": true,
+      "rerun": true,
+      "pixels": {
+        "second": "restored at 180",
+        "emitters": 43,
+        "steps": [
+          200,
+          240,
+          280,
+          320,
+          360
+        ],
+        "run": {
+          "200": "3bf0a33a543f19a8",
+          "240": "b10d75ce214e80b0",
+          "280": "75edc9d55745b139",
+          "320": "2bb40bc1ee5701fd",
+          "360": "68c99f5eb14d8dc3"
+        },
+        "restored": {
+          "200": "3bf0a33a543f19a8",
+          "240": "b10d75ce214e80b0",
+          "280": "75edc9d55745b139",
+          "320": "2bb40bc1ee5701fd",
+          "360": "68c99f5eb14d8dc3"
+        },
+        "identical": true,
+        "distinct": 5
+      },
+      "diff360": {
+        "pixels": 0,
+        "perChannel": {
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "a": 0
+        },
+        "maxDelta": 0,
+        "box": null
+      }
+    },
+    "chromium-particles-webgpu-warmup.json": {
+      "final": "976e7033e22ad048",
+      "sameAsHeadless": true,
+      "rerun": true,
+      "pixels": {
+        "second": "restored at 180",
+        "emitters": 43,
+        "steps": [
+          200,
+          240,
+          280,
+          320,
+          360
+        ],
+        "run": {
+          "200": "6817ce14b863ccce",
+          "240": "a5ba98ece8450f57",
+          "280": "ed716d0a738d3052",
+          "320": "74a98743373a6315",
+          "360": "69f26fc98b2973b0"
+        },
+        "restored": {
+          "200": "6817ce14b863ccce",
+          "240": "a5ba98ece8450f57",
+          "280": "ed716d0a738d3052",
+          "320": "74a98743373a6315",
+          "360": "69f26fc98b2973b0"
+        },
+        "identical": true,
+        "distinct": 5
+      },
+      "diff360": {
+        "pixels": 0,
+        "perChannel": {
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "a": 0
+        },
+        "maxDelta": 0,
+        "box": null
+      }
+    },
+    "chromium-particles-webgpu.json": {
+      "final": "976e7033e22ad048",
+      "sameAsHeadless": true,
+      "rerun": true,
+      "pixels": {
+        "second": "restored at 180",
+        "emitters": 43,
+        "steps": [
+          200,
+          240,
+          280,
+          320,
+          360
+        ],
+        "run": {
+          "200": "bc219114ce8a1a3c",
+          "240": "efd798ec2079c47f",
+          "280": "4107886ba03596bf",
+          "320": "3969874332338aaa",
+          "360": "f3e26fc94d020de6"
+        },
+        "restored": {
+          "200": "6817ce14b863ccce",
+          "240": "a5ba98ece8450f57",
+          "280": "ed716d0a738d3052",
+          "320": "74a98743373a6315",
+          "360": "69f26fc98b2973b0"
+        },
+        "identical": false,
+        "distinct": 5
+      },
+      "diff360": {
+        "pixels": 2,
+        "perChannel": {
+          "r": 0,
+          "g": 0,
+          "b": 2,
+          "a": 0
+        },
+        "maxDelta": 1,
+        "box": [
+          22,
+          270,
+          524,
+          373
+        ]
+      }
+    },
+    "wkwebview-loopback-mode_particles_renderer_webgl.json": {
+      "final": "976e7033e22ad048",
+      "sameAsHeadless": true,
+      "rerun": true,
+      "pixels": {
+        "distinct": 5,
+        "emitters": 43,
+        "identical": true,
+        "restored": {
+          "200": "54e5c0b446e8bbf5",
+          "240": "3e223d0fc66cc67d",
+          "280": "7347ca02ca894ac8",
+          "320": "6783e15186387667",
+          "360": "43abf78f5cad42d2"
+        },
+        "run": {
+          "200": "54e5c0b446e8bbf5",
+          "240": "3e223d0fc66cc67d",
+          "280": "7347ca02ca894ac8",
+          "320": "6783e15186387667",
+          "360": "43abf78f5cad42d2"
+        },
+        "second": "restored at 180",
+        "steps": [
+          200,
+          240,
+          280,
+          320,
+          360
+        ]
+      },
+      "diff360": {
+        "box": null,
+        "maxDelta": 0,
+        "perChannel": {
+          "a": 0,
+          "b": 0,
+          "g": 0,
+          "r": 0
+        },
+        "pixels": 0
+      }
+    },
+    "wkwebview-loopback-mode_particles_renderer_webgpu.json": {
+      "final": "976e7033e22ad048",
+      "sameAsHeadless": true,
+      "rerun": true,
+      "pixels": {
+        "distinct": 5,
+        "emitters": 43,
+        "identical": false,
+        "restored": {
+          "200": "683ee97cf5492b04",
+          "240": "e45dc52378bdefe7",
+          "280": "0bf97f9e7c0f9fc1",
+          "320": "435267af6f2033b5",
+          "360": "deceffb0739a3393"
+        },
+        "run": {
+          "200": "7eb9afbb8618c1fb",
+          "240": "f4d59748d9ee7d4d",
+          "280": "0a5d4880fbc1a2e5",
+          "320": "850d503c76c6a4fc",
+          "360": "97172b93f3ed5a63"
+        },
+        "second": "restored at 180",
+        "steps": [
+          200,
+          240,
+          280,
+          320,
+          360
+        ]
+      },
+      "diff360": {
+        "box": [
+          22,
+          197,
+          938,
+          578
+        ],
+        "maxDelta": 1,
+        "perChannel": {
+          "a": 0,
+          "b": 4,
+          "g": 2,
+          "r": 1
+        },
+        "pixels": 7
+      }
+    },
+    "wkwebview-loopback-mode_particles_renderer_webgpu_b_fresh.json": {
+      "final": "976e7033e22ad048",
+      "sameAsHeadless": true,
+      "rerun": true,
+      "pixels": {
+        "distinct": 5,
+        "emitters": 43,
+        "identical": false,
+        "restored": {
+          "200": "683ee97cf5492b04",
+          "240": "e45dc52378bdefe7",
+          "280": "0bf97f9e7c0f9fc1",
+          "320": "435267af6f2033b5",
+          "360": "deceffb0739a3393"
+        },
+        "run": {
+          "200": "7eb9afbb8618c1fb",
+          "240": "f4d59748d9ee7d4d",
+          "280": "0a5d4880fbc1a2e5",
+          "320": "850d503c76c6a4fc",
+          "360": "97172b93f3ed5a63"
+        },
+        "second": "fresh run from step 0",
+        "steps": [
+          200,
+          240,
+          280,
+          320,
+          360
+        ]
+      },
+      "diff360": {
+        "box": [
+          22,
+          197,
+          938,
+          578
+        ],
+        "maxDelta": 1,
+        "perChannel": {
+          "a": 0,
+          "b": 4,
+          "g": 2,
+          "r": 1
+        },
+        "pixels": 7
+      }
+    },
+    "wkwebview-loopback-mode_particles_renderer_webgpu_b_fresh_dummy_host.json": {
+      "final": "976e7033e22ad048",
+      "sameAsHeadless": true,
+      "rerun": true,
+      "pixels": {
+        "distinct": 5,
+        "emitters": 43,
+        "identical": true,
+        "restored": {
+          "200": "683ee97cf5492b04",
+          "240": "e45dc52378bdefe7",
+          "280": "0bf97f9e7c0f9fc1",
+          "320": "435267af6f2033b5",
+          "360": "deceffb0739a3393"
+        },
+        "run": {
+          "200": "683ee97cf5492b04",
+          "240": "e45dc52378bdefe7",
+          "280": "0bf97f9e7c0f9fc1",
+          "320": "435267af6f2033b5",
+          "360": "deceffb0739a3393"
+        },
+        "second": "fresh run from step 0",
+        "steps": [
+          200,
+          240,
+          280,
+          320,
+          360
+        ]
+      },
+      "diff360": {
+        "box": null,
+        "maxDelta": 0,
+        "perChannel": {
+          "a": 0,
+          "b": 0,
+          "g": 0,
+          "r": 0
+        },
+        "pixels": 0
+      }
+    },
+    "wkwebview-loopback-mode_particles_renderer_webgpu_dummy_host.json": {
+      "final": "976e7033e22ad048",
+      "sameAsHeadless": true,
+      "rerun": true,
+      "pixels": {
+        "distinct": 5,
+        "emitters": 43,
+        "identical": true,
+        "restored": {
+          "200": "683ee97cf5492b04",
+          "240": "e45dc52378bdefe7",
+          "280": "0bf97f9e7c0f9fc1",
+          "320": "435267af6f2033b5",
+          "360": "deceffb0739a3393"
+        },
+        "run": {
+          "200": "683ee97cf5492b04",
+          "240": "e45dc52378bdefe7",
+          "280": "0bf97f9e7c0f9fc1",
+          "320": "435267af6f2033b5",
+          "360": "deceffb0739a3393"
+        },
+        "second": "restored at 180",
+        "steps": [
+          200,
+          240,
+          280,
+          320,
+          360
+        ]
+      },
+      "diff360": {
+        "box": null,
+        "maxDelta": 0,
+        "perChannel": {
+          "a": 0,
+          "b": 0,
+          "g": 0,
+          "r": 0
+        },
+        "pixels": 0
+      }
+    }
+  },
+  "probes": {
+    "chromium-probe.json": {
+      "navigatorGpu": true,
+      "backend": "WebGPU",
+      "features": [
+        "atomic-vec2u-min-max",
+        "bgra8unorm-storage",
+        "chromium-experimental-subgroup-matrix",
+        "clip-distances",
+        "core-features-and-limits",
+        "depth-clip-control",
+        "depth32float-stencil8",
+        "dual-source-blending",
+        "float32-blendable",
+        "float32-filterable",
+        "indirect-first-instance",
+        "primitive-index",
+        "rg11b10ufloat-renderable",
+        "shader-f16",
+        "subgroup-size-control",
+        "subgroups",
+        "texture-component-swizzle",
+        "texture-compression-astc",
+        "texture-compression-astc-sliced-3d",
+        "texture-compression-bc",
+        "texture-compression-bc-sliced-3d",
+        "texture-compression-etc2",
+        "texture-compression-unaligned",
+        "texture-formats-tier1",
+        "texture-formats-tier2",
+        "timestamp-query"
+      ],
+      "limits": {
+        "maxTextureDimension2D": 16384,
+        "maxBufferSize": 4294967292,
+        "maxStorageBufferBindingSize": 4294967292,
+        "maxColorAttachments": 8,
+        "maxColorAttachmentBytesPerSample": 128,
+        "maxComputeWorkgroupStorageSize": 32768,
+        "maxSampledTexturesPerShaderStage": 48,
+        "maxBindGroups": 4
+      }
+    },
+    "wkwebview-loopback-mode_probe.json": {
+      "navigatorGpu": true,
+      "backend": "WebGPU",
+      "features": [
+        "bgra8unorm-storage",
+        "clip-distances",
+        "core-features-and-limits",
+        "depth-clip-control",
+        "depth32float-stencil8",
+        "float16-renderable",
+        "float32-blendable",
+        "float32-filterable",
+        "float32-renderable",
+        "indirect-first-instance",
+        "primitive-index",
+        "rg11b10ufloat-renderable",
+        "shader-f16",
+        "subgroups",
+        "texture-compression-astc",
+        "texture-compression-astc-sliced-3d",
+        "texture-compression-bc",
+        "texture-compression-bc-sliced-3d",
+        "texture-compression-etc2",
+        "texture-formats-tier1",
+        "texture-formats-tier2",
+        "timestamp-query"
+      ],
+      "limits": {
+        "maxBindGroups": 11,
+        "maxBufferSize": 2147483644,
+        "maxColorAttachmentBytesPerSample": 64,
+        "maxColorAttachments": 8,
+        "maxComputeWorkgroupStorageSize": 32768,
+        "maxSampledTexturesPerShaderStage": 44,
+        "maxStorageBufferBindingSize": 2147483644,
+        "maxTextureDimension2D": 16384
+      }
+    },
+    "wkwebview-scheme-mode_probe.json": {
+      "navigatorGpu": true,
+      "backend": "WebGPU",
+      "features": [
+        "bgra8unorm-storage",
+        "clip-distances",
+        "core-features-and-limits",
+        "depth-clip-control",
+        "depth32float-stencil8",
+        "float16-renderable",
+        "float32-blendable",
+        "float32-filterable",
+        "float32-renderable",
+        "indirect-first-instance",
+        "primitive-index",
+        "rg11b10ufloat-renderable",
+        "shader-f16",
+        "subgroups",
+        "texture-compression-astc",
+        "texture-compression-astc-sliced-3d",
+        "texture-compression-bc",
+        "texture-compression-bc-sliced-3d",
+        "texture-compression-etc2",
+        "texture-formats-tier1",
+        "texture-formats-tier2",
+        "timestamp-query"
+      ],
+      "limits": {
+        "maxBindGroups": 11,
+        "maxBufferSize": 2147483644,
+        "maxColorAttachmentBytesPerSample": 64,
+        "maxColorAttachments": 8,
+        "maxComputeWorkgroupStorageSize": 32768,
+        "maxSampledTexturesPerShaderStage": 44,
+        "maxStorageBufferBindingSize": 2147483644,
+        "maxTextureDimension2D": 16384
+      }
+    }
+  }
+}

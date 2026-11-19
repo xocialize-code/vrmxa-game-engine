@@ -1,0 +1,86 @@
+{
+  "backend" : "WebGPU",
+  "diff360" : {
+    "box" : null,
+    "maxDelta" : 0,
+    "perChannel" : {
+      "a" : 0,
+      "b" : 0,
+      "g" : 0,
+      "r" : 0
+    },
+    "pixels" : 0
+  },
+  "dummy" : "host",
+  "errors" : [
+
+  ],
+  "headless" : {
+    "final" : "976e7033e22ad048",
+    "matchesReference" : true,
+    "peakParticles" : 1207,
+    "stepMs" : 0.19700000000000001
+  },
+  "kind" : "webgpu",
+  "mode" : "particles",
+  "origin" : "http:\/\/127.0.0.1:60568",
+  "pixels" : {
+    "distinct" : 5,
+    "emitters" : 43,
+    "identical" : true,
+    "restored" : {
+      "200" : "683ee97cf5492b04",
+      "240" : "e45dc52378bdefe7",
+      "280" : "0bf97f9e7c0f9fc1",
+      "320" : "435267af6f2033b5",
+      "360" : "deceffb0739a3393"
+    },
+    "run" : {
+      "200" : "683ee97cf5492b04",
+      "240" : "e45dc52378bdefe7",
+      "280" : "0bf97f9e7c0f9fc1",
+      "320" : "435267af6f2033b5",
+      "360" : "deceffb0739a3393"
+    },
+    "second" : "restored at 180",
+    "steps" : [
+      200,
+      240,
+      280,
+      320,
+      360
+    ]
+  },
+  "quarks" : "three.quarks\/webgpu WebGPUBatchedRenderer",
+  "rendered" : {
+    "batchClass" : "TSe",
+    "batches" : 3,
+    "divergence" : null,
+    "final" : "976e7033e22ad048",
+    "frameMs" : {
+      "mean" : 4.1260000000000003,
+      "median" : 3.3399999999999999,
+      "n" : 360,
+      "p90" : 4.46
+    },
+    "live" : 1149,
+    "maxDrawCalls" : 205,
+    "sameAsHeadless" : true,
+    "snapshotRerunMatches" : true
+  },
+  "renderer" : "webgpu",
+  "runtime" : "wkwebview",
+  "shotNames" : [
+    "webgpu-particles-720p"
+  ],
+  "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+  "warnings" : [
+
+  ],
+  "wrapper" : {
+    "case" : "mode=particles&renderer=webgpu&dummy=host&origin=loopback",
+    "origin" : "loopback",
+    "seconds" : 9,
+    "timedOut" : false
+  }
+}

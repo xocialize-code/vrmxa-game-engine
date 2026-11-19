@@ -1,0 +1,10 @@
+{
+  "name": "vrmxg-spike-webgpu-render",
+  "private": true,
+  "type": "module",
+  "description": "AB-T-0554: the render path (post in TSL, three.quarks, readback, WKWebView) on WebGPURenderer, on the sample cafe. Throwaway; uses the workspace's three r187 and engine packages from the repo root's node_modules.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  }
+}

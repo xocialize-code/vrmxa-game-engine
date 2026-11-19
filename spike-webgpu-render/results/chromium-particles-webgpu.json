@@ -1,0 +1,83 @@
+{
+  "runtime": "chromium",
+  "version": "156.0.8078.4",
+  "headless": {
+    "final": "976e7033e22ad048",
+    "matchesReference": true,
+    "peakParticles": 1207,
+    "stepMs": 0.3
+  },
+  "kind": "webgpu",
+  "backend": "WebGPU",
+  "quarks": "three.quarks/webgpu WebGPUBatchedRenderer",
+  "dummy": null,
+  "diff360": {
+    "pixels": 2,
+    "perChannel": {
+      "r": 0,
+      "g": 0,
+      "b": 2,
+      "a": 0
+    },
+    "maxDelta": 1,
+    "box": [
+      22,
+      270,
+      524,
+      373
+    ]
+  },
+  "pixels": {
+    "second": "restored at 180",
+    "emitters": 43,
+    "steps": [
+      200,
+      240,
+      280,
+      320,
+      360
+    ],
+    "run": {
+      "200": "bc219114ce8a1a3c",
+      "240": "efd798ec2079c47f",
+      "280": "4107886ba03596bf",
+      "320": "3969874332338aaa",
+      "360": "f3e26fc94d020de6"
+    },
+    "restored": {
+      "200": "6817ce14b863ccce",
+      "240": "a5ba98ece8450f57",
+      "280": "ed716d0a738d3052",
+      "320": "74a98743373a6315",
+      "360": "69f26fc98b2973b0"
+    },
+    "identical": false,
+    "distinct": 5
+  },
+  "rendered": {
+    "final": "976e7033e22ad048",
+    "sameAsHeadless": true,
+    "snapshotRerunMatches": true,
+    "divergence": null,
+    "batches": 3,
+    "batchClass": "WebGPUBatchedRenderer",
+    "maxDrawCalls": 205,
+    "frameMs": {
+      "median": 3.6,
+      "p90": 3.9,
+      "mean": 4.415,
+      "n": 360
+    },
+    "live": 1149
+  },
+  "mode": "particles",
+  "renderer": "webgpu",
+  "origin": "http://127.0.0.1:5241",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "errors": [],
+  "warnings": [],
+  "shotNames": [
+    "webgpu-particles-720p"
+  ],
+  "console": []
+}

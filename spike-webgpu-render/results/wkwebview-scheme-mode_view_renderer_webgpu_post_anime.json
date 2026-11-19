@@ -1,0 +1,37 @@
+{
+  "backend" : "WebGPU",
+  "errors" : [
+
+  ],
+  "info" : {
+    "calls" : 290,
+    "triangles" : 295328
+  },
+  "kind" : "webgpu",
+  "mode" : "view",
+  "origin" : "vrmxg-spike:\/\/app",
+  "passes" : [
+    "scene(MSAA4, MRT output+emissive+normal)",
+    "characterMask(layer 2, ½ res)",
+    "edges(custom TSL)",
+    "dof()",
+    "merged(bloom(emissive MRT)+grade+toneMapping()+vignette+grain+anime(custom TSL))",
+    "chromaticAberration(custom TSL)"
+  ],
+  "renderer" : "webgpu",
+  "runtime" : "wkwebview",
+  "shotNames" : [
+    "webgpu-view-anime"
+  ],
+  "swapped" : 22,
+  "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+  "warnings" : [
+
+  ],
+  "wrapper" : {
+    "case" : "mode=view&renderer=webgpu&post=anime&origin=scheme",
+    "origin" : "scheme",
+    "seconds" : 2,
+    "timedOut" : false
+  }
+}

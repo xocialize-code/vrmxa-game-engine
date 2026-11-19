@@ -1,0 +1,111 @@
+{
+  "runtime": "chromium",
+  "version": "156.0.8078.4",
+  "headless": true,
+  "kind": "webgpu",
+  "backend": "WebGPU",
+  "quarks": "three.quarks/webgpu WebGPUBatchedRenderer",
+  "swappedMaterials": 22,
+  "cost": {
+    "none.1080p": {
+      "median": 1.6,
+      "p90": 1.8,
+      "mean": 1.627,
+      "n": 40
+    },
+    "none.4k": {
+      "median": 3.2,
+      "p90": 3.8,
+      "mean": 3.22,
+      "n": 25
+    },
+    "anime.1080p": {
+      "median": 2.9,
+      "p90": 3,
+      "mean": 2.862,
+      "n": 40
+    },
+    "anime.4k": {
+      "median": 5,
+      "p90": 5.1,
+      "mean": 4.984,
+      "n": 25
+    },
+    "animeLut.1080p": {
+      "median": 2.8,
+      "p90": 3.2,
+      "mean": 2.872,
+      "n": 40
+    },
+    "animeLut.4k": {
+      "median": 4.9,
+      "p90": 5.1,
+      "mean": 4.92,
+      "n": 25
+    }
+  },
+  "passes": {
+    "none": null,
+    "anime": [
+      "scene(MSAA4, MRT output+emissive+normal)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof()",
+      "merged(bloom(emissive MRT)+grade+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+    ],
+    "animeLut": [
+      "scene(MSAA4, MRT output+emissive+normal)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof()",
+      "merged(bloom(emissive MRT)+grade+lut3D()+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+    ]
+  },
+  "calls": {
+    "none.1080p": {
+      "calls": 244,
+      "triangles": 226509
+    },
+    "none.4k": {
+      "calls": 244,
+      "triangles": 226509
+    },
+    "anime.1080p": {
+      "calls": 290,
+      "triangles": 295328
+    },
+    "anime.4k": {
+      "calls": 290,
+      "triangles": 295328
+    },
+    "animeLut.1080p": {
+      "calls": 290,
+      "triangles": 295328
+    },
+    "animeLut.4k": {
+      "calls": 290,
+      "triangles": 295328
+    }
+  },
+  "throughputMs": {
+    "none.1080p": 0.757,
+    "none.4k": 0.78,
+    "anime.1080p": 1.41,
+    "anime.4k": 3.183,
+    "animeLut.1080p": 1.527,
+    "animeLut.4k": 3.197
+  },
+  "mode": "bench",
+  "renderer": "webgpu",
+  "origin": "http://127.0.0.1:5241",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "errors": [],
+  "warnings": [],
+  "shotNames": [
+    "webgpu-anime-1080p",
+    "webgpu-nopost-1080p"
+  ],
+  "console": []
+}

@@ -1,0 +1,424 @@
+{
+  "runtime": "chromium",
+  "version": "156.0.8078.4",
+  "headless": true,
+  "kind": "webgpu",
+  "timing": [
+    {
+      "size": "1920x1080",
+      "renderMs": {
+        "median": 2.9,
+        "p90": 5.8,
+        "mean": 3.702,
+        "n": 40
+      },
+      "mapAsyncAfterFrameMs": {
+        "median": 0.5,
+        "p90": 0.6,
+        "mean": 0.502,
+        "n": 40
+      },
+      "threeReadRenderTargetPixelsAsyncMs": {
+        "median": 1.4,
+        "p90": 1.6,
+        "mean": 1.413,
+        "n": 40
+      },
+      "renderPlusReadMinusRenderMs": {
+        "median": 0.3,
+        "p90": 0.7,
+        "mean": 0.268,
+        "n": 40
+      },
+      "pipelinedMs": {
+        "median": 0.2,
+        "p90": 0.3,
+        "mean": 0.267,
+        "n": 40
+      },
+      "hash": "90a4c3c52113986c"
+    },
+    {
+      "size": "3840x2160",
+      "renderMs": {
+        "median": 8.3,
+        "p90": 9.4,
+        "mean": 7.415,
+        "n": 20
+      },
+      "mapAsyncAfterFrameMs": {
+        "median": 1.3,
+        "p90": 1.4,
+        "mean": 1.295,
+        "n": 20
+      },
+      "threeReadRenderTargetPixelsAsyncMs": {
+        "median": 4.9,
+        "p90": 5.2,
+        "mean": 4.905,
+        "n": 20
+      },
+      "renderPlusReadMinusRenderMs": {
+        "median": 1.3,
+        "p90": 2.2,
+        "mean": 1.065,
+        "n": 20
+      },
+      "pipelinedMs": {
+        "median": 1.7,
+        "p90": 6.5,
+        "mean": 2.3,
+        "n": 20
+      },
+      "hash": "00813d77471984aa"
+    }
+  ],
+  "exports": {
+    "1080p": {
+      "frames": 90,
+      "a": {
+        "hashes": [
+          "a174573f97269e45",
+          "af33e68a34fb4dd5",
+          "095c1b13d00e8c68",
+          "7705141cf9be9102",
+          "9674fdec4e3576aa",
+          "561555d2c6654555",
+          "e168aea98bb0cc38",
+          "4e96696bf5eb139e",
+          "4f67d5418aa81b6f",
+          "a5e3a85b900a1497",
+          "f8de7dc7093dd0fd",
+          "a53922e1823d58a4",
+          "8d2f03e8ba01d011",
+          "b00b1a4bb4b6d4af",
+          "5797d13663c56e86",
+          "e881302c57ecd4ae",
+          "64798a5294b19fe4",
+          "206286504cdf3b04",
+          "ed74a3b363f50cad",
+          "0b6a9e8985480720",
+          "f48b8fc573a5fb45",
+          "2282897b8254592d",
+          "a6439754a3898530",
+          "692c2f6bd4afba4c",
+          "17f0c09c1f507238",
+          "62fdd945f371178a",
+          "d0a7f9262edae498",
+          "b02baa130701cfd4",
+          "bd4881d0adb81582",
+          "b61d84ea879e2517",
+          "a494d5a335aef8c4",
+          "c146e51b2853b2b9",
+          "68f365d9783d8759",
+          "5f7689735901f18e",
+          "7080da6ae924e467",
+          "b75482d3aa293d4b",
+          "1753d7581fb9d771",
+          "8f9abf8bc5ddbd22",
+          "9f2ab49af6d081dd",
+          "6abe9c14d274add2",
+          "2f9cf950f6a61422",
+          "8d2c088d25e9b573",
+          "c89d7a1839454c12",
+          "0feb57e54264c732",
+          "524e7ec2d4e61da1",
+          "6007cd8e08415a8a",
+          "b9c67737350794c4",
+          "4904d35ab904cb55",
+          "7e8e88261a542af6",
+          "eeb536ed7901c446",
+          "56a3e8197ead5c15",
+          "7f878e72a20e3897",
+          "f6b67f30bbe1b5dd",
+          "06ec309512f00146",
+          "c69a0cd99140966e",
+          "97d0ad4acb99b731",
+          "36a91eb0c48b3a38",
+          "a2b89b99189117f0",
+          "d0040e8dbfb947bb",
+          "701375a22acfe044",
+          "0c13007798d298d4",
+          "9dd5ab0dbcadc0c0",
+          "e353c39355e9fe04",
+          "51dbcf8934677bd9",
+          "2498d1086297c127",
+          "cc8089fc095584ec",
+          "1594dba74b4dda52",
+          "1baf318f1901313a",
+          "61040246b03ec8b9",
+          "da27f75ebc4136af",
+          "8dc069d2fdb6b658",
+          "e5be6da93dc61c96",
+          "e5e58a2d381304f8",
+          "5ce701d224a3aee3",
+          "9326307823efc32d",
+          "9722e2bcce189555",
+          "8d7989d479fca4fb",
+          "61add829ecf0ebc4",
+          "de5af2be48e04a8a",
+          "40316439ba1d081a",
+          "b1e8c3ed176198ba",
+          "437dd382cab76dda",
+          "53963cc2b7a889fe",
+          "b1d9112fc10ea3f1",
+          "6498957bdb43fc89",
+          "9d36ef78fe59af83",
+          "13dc33fbb83667ef",
+          "b52fc4f6aa202083",
+          "90d689db522da115",
+          "247c04b0ddbf618a"
+        ],
+        "final": "dd975db48db06852",
+        "perFrameMs": {
+          "median": 5.3,
+          "p90": 6.3,
+          "mean": 7.502,
+          "n": 90
+        },
+        "totalMs": 681.2,
+        "info": {
+          "calls": 554,
+          "triangles": 590374
+        },
+        "passes": [
+          "scene(MSAA4, MRT output+emissive+normal)",
+          "characterMask(layer 2, ½ res)",
+          "edges(custom TSL)",
+          "dof()",
+          "merged(bloom(emissive MRT)+grade+toneMapping()+vignette+grain+anime(custom TSL))",
+          "chromaticAberration(custom TSL)"
+        ]
+      },
+      "b": {
+        "hashes": [
+          "a174573f97269e45",
+          "af33e68a34fb4dd5",
+          "095c1b13d00e8c68",
+          "7705141cf9be9102",
+          "9674fdec4e3576aa",
+          "561555d2c6654555",
+          "e168aea98bb0cc38",
+          "4e96696bf5eb139e",
+          "4f67d5418aa81b6f",
+          "a5e3a85b900a1497",
+          "f8de7dc7093dd0fd",
+          "a53922e1823d58a4",
+          "8d2f03e8ba01d011",
+          "b00b1a4bb4b6d4af",
+          "5797d13663c56e86",
+          "e881302c57ecd4ae",
+          "64798a5294b19fe4",
+          "206286504cdf3b04",
+          "ed74a3b363f50cad",
+          "0b6a9e8985480720",
+          "f48b8fc573a5fb45",
+          "2282897b8254592d",
+          "a6439754a3898530",
+          "692c2f6bd4afba4c",
+          "17f0c09c1f507238",
+          "62fdd945f371178a",
+          "d0a7f9262edae498",
+          "b02baa130701cfd4",
+          "bd4881d0adb81582",
+          "b61d84ea879e2517",
+          "a494d5a335aef8c4",
+          "c146e51b2853b2b9",
+          "68f365d9783d8759",
+          "5f7689735901f18e",
+          "7080da6ae924e467",
+          "b75482d3aa293d4b",
+          "1753d7581fb9d771",
+          "8f9abf8bc5ddbd22",
+          "9f2ab49af6d081dd",
+          "6abe9c14d274add2",
+          "2f9cf950f6a61422",
+          "8d2c088d25e9b573",
+          "c89d7a1839454c12",
+          "0feb57e54264c732",
+          "524e7ec2d4e61da1",
+          "6007cd8e08415a8a",
+          "b9c67737350794c4",
+          "4904d35ab904cb55",
+          "7e8e88261a542af6",
+          "eeb536ed7901c446",
+          "56a3e8197ead5c15",
+          "7f878e72a20e3897",
+          "f6b67f30bbe1b5dd",
+          "06ec309512f00146",
+          "c69a0cd99140966e",
+          "97d0ad4acb99b731",
+          "36a91eb0c48b3a38",
+          "a2b89b99189117f0",
+          "d0040e8dbfb947bb",
+          "701375a22acfe044",
+          "0c13007798d298d4",
+          "9dd5ab0dbcadc0c0",
+          "e353c39355e9fe04",
+          "51dbcf8934677bd9",
+          "2498d1086297c127",
+          "cc8089fc095584ec",
+          "1594dba74b4dda52",
+          "1baf318f1901313a",
+          "61040246b03ec8b9",
+          "da27f75ebc4136af",
+          "8dc069d2fdb6b658",
+          "e5be6da93dc61c96",
+          "e5e58a2d381304f8",
+          "5ce701d224a3aee3",
+          "9326307823efc32d",
+          "9722e2bcce189555",
+          "8d7989d479fca4fb",
+          "61add829ecf0ebc4",
+          "de5af2be48e04a8a",
+          "40316439ba1d081a",
+          "b1e8c3ed176198ba",
+          "437dd382cab76dda",
+          "53963cc2b7a889fe",
+          "b1d9112fc10ea3f1",
+          "6498957bdb43fc89",
+          "9d36ef78fe59af83",
+          "13dc33fbb83667ef",
+          "b52fc4f6aa202083",
+          "90d689db522da115",
+          "247c04b0ddbf618a"
+        ],
+        "final": "dd975db48db06852",
+        "perFrameMs": {
+          "median": 5.1,
+          "p90": 5.5,
+          "mean": 7.207,
+          "n": 90
+        },
+        "totalMs": 654.1,
+        "info": {
+          "calls": 0,
+          "triangles": 0
+        },
+        "passes": [
+          "scene(MSAA4, MRT output+emissive+normal)",
+          "characterMask(layer 2, ½ res)",
+          "edges(custom TSL)",
+          "dof()",
+          "merged(bloom(emissive MRT)+grade+toneMapping()+vignette+grain+anime(custom TSL))",
+          "chromaticAberration(custom TSL)"
+        ]
+      },
+      "identical": true,
+      "differingFrames": [],
+      "digest": "03db9f76c8b82309"
+    },
+    "4k": {
+      "frames": 12,
+      "a": {
+        "hashes": [
+          "1192025580a1a9d9",
+          "9db950d8b34f00c2",
+          "44ff19008dcb7869",
+          "52fa3ae5904528ac",
+          "cdc9696330f86d98",
+          "164c87d56813ac63",
+          "7c65ef11ebb1ef25",
+          "673fcebb3da5f0b4",
+          "c828b6c1cfa002bd",
+          "67cb038ae2aed22d",
+          "5805e8ec9139ab31",
+          "e3871ce3437bca6e"
+        ],
+        "final": "dadd3237b19a54e1",
+        "perFrameMs": {
+          "median": 13.7,
+          "p90": 42,
+          "mean": 28.317,
+          "n": 12
+        },
+        "totalMs": 359.6,
+        "info": {
+          "calls": 0,
+          "triangles": 0
+        },
+        "passes": [
+          "scene(MSAA4, MRT output+emissive+normal)",
+          "characterMask(layer 2, ½ res)",
+          "edges(custom TSL)",
+          "dof()",
+          "merged(bloom(emissive MRT)+grade+toneMapping()+vignette+grain+anime(custom TSL))",
+          "chromaticAberration(custom TSL)"
+        ]
+      },
+      "b": {
+        "hashes": [
+          "1192025580a1a9d9",
+          "9db950d8b34f00c2",
+          "44ff19008dcb7869",
+          "52fa3ae5904528ac",
+          "cdc9696330f86d98",
+          "164c87d56813ac63",
+          "7c65ef11ebb1ef25",
+          "673fcebb3da5f0b4",
+          "c828b6c1cfa002bd",
+          "67cb038ae2aed22d",
+          "5805e8ec9139ab31",
+          "e3871ce3437bca6e"
+        ],
+        "final": "dadd3237b19a54e1",
+        "perFrameMs": {
+          "median": 14,
+          "p90": 43.7,
+          "mean": 29.9,
+          "n": 12
+        },
+        "totalMs": 378.7,
+        "info": {
+          "calls": 0,
+          "triangles": 0
+        },
+        "passes": [
+          "scene(MSAA4, MRT output+emissive+normal)",
+          "characterMask(layer 2, ½ res)",
+          "edges(custom TSL)",
+          "dof()",
+          "merged(bloom(emissive MRT)+grade+toneMapping()+vignette+grain+anime(custom TSL))",
+          "chromaticAberration(custom TSL)"
+        ]
+      },
+      "identical": true,
+      "differingFrames": [],
+      "digest": "0a2b69944544f9a0"
+    }
+  },
+  "backend": "WebGPU",
+  "withoutTick": {
+    "tick": {
+      "hashes": [
+        "c250d07fd232cd10",
+        "fa70d71700e791a1",
+        "99d4ec6cee9fc60c",
+        "73d9fd2bc110ca3a",
+        "0015ca81feb023a3"
+      ],
+      "distinct": 5
+    },
+    "noTick": {
+      "hashes": [
+        "c250d07fd232cd10",
+        "c250d07fd232cd10",
+        "c250d07fd232cd10",
+        "c250d07fd232cd10",
+        "c250d07fd232cd10"
+      ],
+      "distinct": 1
+    }
+  },
+  "firstRendererIsExportA": false,
+  "mode": "export",
+  "renderer": "webgpu",
+  "origin": "http://127.0.0.1:5241",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "errors": [],
+  "warnings": [],
+  "shotNames": [
+    "webgpu-export-1080p-last"
+  ],
+  "console": []
+}

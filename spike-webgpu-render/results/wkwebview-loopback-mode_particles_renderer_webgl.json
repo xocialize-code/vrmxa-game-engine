@@ -1,0 +1,86 @@
+{
+  "backend" : "WebGL2",
+  "diff360" : {
+    "box" : null,
+    "maxDelta" : 0,
+    "perChannel" : {
+      "a" : 0,
+      "b" : 0,
+      "g" : 0,
+      "r" : 0
+    },
+    "pixels" : 0
+  },
+  "dummy" : null,
+  "errors" : [
+
+  ],
+  "headless" : {
+    "final" : "976e7033e22ad048",
+    "matchesReference" : true,
+    "peakParticles" : 1207,
+    "stepMs" : 0.22500000000000001
+  },
+  "kind" : "webgl",
+  "mode" : "particles",
+  "origin" : "http:\/\/127.0.0.1:60568",
+  "pixels" : {
+    "distinct" : 5,
+    "emitters" : 43,
+    "identical" : true,
+    "restored" : {
+      "200" : "54e5c0b446e8bbf5",
+      "240" : "3e223d0fc66cc67d",
+      "280" : "7347ca02ca894ac8",
+      "320" : "6783e15186387667",
+      "360" : "43abf78f5cad42d2"
+    },
+    "run" : {
+      "200" : "54e5c0b446e8bbf5",
+      "240" : "3e223d0fc66cc67d",
+      "280" : "7347ca02ca894ac8",
+      "320" : "6783e15186387667",
+      "360" : "43abf78f5cad42d2"
+    },
+    "second" : "restored at 180",
+    "steps" : [
+      200,
+      240,
+      280,
+      320,
+      360
+    ]
+  },
+  "quarks" : "three.quarks BatchedRenderer (WebGL)",
+  "rendered" : {
+    "batchClass" : "Zpe",
+    "batches" : 3,
+    "divergence" : null,
+    "final" : "976e7033e22ad048",
+    "frameMs" : {
+      "mean" : 2.698,
+      "median" : 1.5800000000000001,
+      "n" : 360,
+      "p90" : 1.98
+    },
+    "live" : 1149,
+    "maxDrawCalls" : 189,
+    "sameAsHeadless" : true,
+    "snapshotRerunMatches" : true
+  },
+  "renderer" : "webgl",
+  "runtime" : "wkwebview",
+  "shotNames" : [
+    "webgl-particles-720p"
+  ],
+  "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+  "warnings" : [
+
+  ],
+  "wrapper" : {
+    "case" : "mode=particles&renderer=webgl&origin=loopback",
+    "origin" : "loopback",
+    "seconds" : 8,
+    "timedOut" : false
+  }
+}
