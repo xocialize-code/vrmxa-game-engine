@@ -35,7 +35,7 @@ export class Director {
    * @param {number} [o.maxTokens]
    *
    * @typedef {import('./prompt.js').Persona & { allowedExpressions?: string[], gestures?: string[],
-   *   goals?: { name: string, description?: string }[] }} PersonaInfo
+   *   goals?: { name: string, description?: string }[], framing?: string }} PersonaInfo
    */
   constructor(tree, { model, persona = () => null, memory = () => null, framing = FRAMING, user = null, userName = null, timeout = 240, maxInFlight = 2, reach = 6, maxTokens = 160 }) {
     this.tree = tree; this.model = model; this.persona = persona; this.memory = memory; this.framing = framing;
@@ -71,7 +71,7 @@ export class Director {
     const step = this.tree.clock.step, id = `${agent}#${++this.n}`;
     const persona = this.personaOf(agent), m = this.moment(agent, persona);
     const history = this.history.get(agent) ?? [];
-    const messages = buildMessages({ framing: this.framing, persona, memory: this.memory(agent), history, moment: describeMoment(m, { heard, reason, userName: this.userName, doing: doingOf(brain) }) });
+    const messages = buildMessages({ framing: persona.framing ?? this.framing, persona, memory: this.memory(agent), history, moment: describeMoment(m, { heard, reason, userName: this.userName, doing: doingOf(brain) }) });
     const request = { messages, tools: toolsFor(m), maxTokens: this.maxTokens, priority };
     const hash = promptHash({ messages, tools: request.tools });
     const r = { id, agent, kind, step, priority, request, hash, moment: m, heard, state: 'queued', deadline: step + this.timeout };

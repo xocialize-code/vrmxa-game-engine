@@ -19,6 +19,7 @@ import { installSequence, composeSequence, isSequence } from '@vrmxg/sequence';
 import { installParticles } from '@vrmxg/particles';
 import { installNav } from '@vrmxg/nav';
 import { installAi } from '@vrmxg/ai';
+import { installPersonas } from '@vrmxg/persona';
 import { installSave } from '@vrmxg/save';
 
 const text = (b) => new TextDecoder().decode(b);
@@ -37,7 +38,10 @@ export async function loadSample(bytes, scene = 'cafe.vrmxs') {
   const animDoc = JSON.parse(text(await bytes('animations.json')));
   const clips = new Map();
   for (const c of animDoc.clips) clips.set(c.sha256, await bytes(c.file));
-  return { scene, doc, prefabs, animations: { doc: animDoc, clips }, bytes };
+  // the project's app personas (M3 W1), keyed by VRMXA id: optional
+  let personas = null;
+  try { personas = JSON.parse(text(await bytes('personas.json'))); } catch { personas = null; }
+  return { scene, doc, prefabs, animations: { doc: animDoc, clips }, bytes, personas };
 }
 
 /**
@@ -75,6 +79,8 @@ export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = n
   await sequence?.prepare(sample.doc);
   const nav = installNav(tree); // a navmesh baked from the colliders on the first step; characters' goTo follows it (M2 W6)
   const { interact, inventory } = installInteraction(tree);
+  const personas = installPersonas(tree, { resolve: sample.bytes, library: lib, doc: sample.personas ?? null }); // who each character is (M3 W1)
+  await personas.prepare();
   const ai = installAi(tree, { resolve: sample.bytes }); // NPC brains (M2 W7): the brain behaviour and the shared stimuli
   await ai.prepare(sample.doc); // brain documents named by path (M2 W11), and any voice clips they say
   for (const p of ai.presets.values()) await voice.prepare({ nodes: [{ id: 'brain', behaviours: [p] }] });
@@ -83,5 +89,5 @@ export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = n
   await wardrobe?.prepare(sample.doc); lap('closet');
   tree.instantiate(structuredClone(sample.doc)); lap('instantiate');
   await wardrobe?.showWorn(); lap('showWorn');
-  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe, audio, voice, tracks, sequence, particles, nav, ai, save };
+  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe, audio, voice, tracks, sequence, particles, nav, ai, save, personas };
 }

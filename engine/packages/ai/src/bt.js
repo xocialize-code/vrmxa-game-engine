@@ -90,6 +90,8 @@ export const INPUTS = {
   closeness: (ctx, { target, range = 10 }) => { const t = posOf(ctx, resolve(target, ctx)), p = ctx.node.object3d.position; return t ? 1 - Math.min(1, flat([p.x, 0, p.z], t) / range) : 0; },
   /** a free advert of `verb` within `range` */
   advert: (ctx, { verb, range = 10 }) => (ctx.ai.adverts(ctx.node, verb, range).length ? 1 : 0),
+  /** a role-profile trait, 0…1 (M3 W1: the persona service's profile for this character; 0.5 without one) */
+  trait: (ctx, { name }) => ctx.ai.trait?.(ctx.node.id, name) ?? 0.5,
   /** a test as 0 or 1 */
   test: (ctx, a) => (TESTS[a.test]?.(ctx, a) ? 1 : 0),
 };

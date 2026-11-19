@@ -1,0 +1,23 @@
+{
+  "name": "@vrmxg/persona",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG personas (M3 W1): the VRMXA core persona from the bundle or its exchange form, the app persona from the project keyed by VRMXA id, the persona in effect, the role profile (seven traits) that weights utility through @vrmxg/ai's trait input, and app memory as a provider. Project data, not simulation state; never written into a bundle.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "devDependencies": {
+    "@vrmxg/ai": "0.1.0",
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/director": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  }
+}

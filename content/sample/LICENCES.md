@@ -13,6 +13,8 @@ outright and shippable in our apps.
 | `cafe.vrmxs` | Xocialize original | The sample cafe scene, written for M0 (W8, AB-T-0509) |
 | `sequences/morning.vrmxs` | Xocialize original | The sample sequence (M2 W1, AB-T-0524): four shots of Mira arriving and Hana welcoming her, filmed in `cafe.vrmxs` |
 | `sequences/cafe-morning.vrmxs` | Xocialize original | "Morning at the cafe" (M2 W11, AB-T-0534): 45 s, five shots, four baked lines, a music cue, the espresso steam and the morning look; Hana and Mira cast with the brains below |
+| `personas.json` | Xocialize original | The project's app personas (M3 W1, AB-T-0540), keyed by VRMXA id: Hana's and Mira's stories, role profiles and goals |
+| `personas/hana.persona.json` | Xocialize original | Hana's core persona in VRMXA's exchange form (§10.1), since her bundle carries none |
 | `brains/hana.json` | Xocialize original | Hana's behaviour tree for the film (M2 W11): serving, as a `vrmxg-brain` document |
 | `brains/customer.json` | Xocialize original | The customer's behaviour tree (M2 W11), a `vrmxg-brain` document |
 | `effects/espresso-steam.json` | Xocialize original | The espresso machine's steam wand (M2 W11), a `vrmxg-effect` document |

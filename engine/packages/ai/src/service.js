@@ -75,6 +75,9 @@ export class AiService {
     return out.sort((a, b) => a.d - b.d || (a.id < b.id ? -1 : 1));
   }
 
+  /** A character's role-profile trait (0…1) from the persona service (M3 W1), or 0.5. Project data, like a scene: not state. */
+  trait(id, name) { const v = this.tree.services.get('persona')?.profileOf?.(id)?.[name]; return typeof v === 'number' ? v : 0.5; }
+
   standUp(node) { const s = this.tree.services.get('interact'); if (s && node.ctrl?.seat) s.standUp(node); }
 
   /** True when a player character is farther than `distance` (brains tick four times slower then: the LOD). */

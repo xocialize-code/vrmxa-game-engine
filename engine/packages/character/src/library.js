@@ -38,6 +38,8 @@ export class CharacterLibrary {
     this.clipCache = cache?.clips ?? new Map();
     /** node id → prepared character */
     this.prepared = new Map();
+    /** Every prepared Character node → { ref, vrmxaId, persona (the bundle's character.sqlite data, or null) } (M3 W1). */
+    this.characters = new Map();
   }
 
   /** Replace or add animation sets for one asset ref: { doc, clips: Map sha256 → .vrma bytes }. */
@@ -69,6 +71,7 @@ export class CharacterLibrary {
       clips.set(c.sha256, { anim: this.clipCache.get(c.sha256), meta: c });
     }
     this.prepared.set(id, { vrm, ref, animations: doc, clips, tags: new Set(src.tags) });
+    this.characters.set(id, { ref, vrmxaId: src.vrmxaId ?? null, persona: src.persona ?? null });
     return this.prepared.get(id);
   }
 
@@ -103,9 +106,10 @@ export class CharacterLibrary {
       for (const c of doc.clips ?? []) if (c.file && bundle.entries.has(c.file)) clips.set(c.sha256, bundle.entries.get(c.file));
       // VRMXA §8.3: sets follow every worn item's tags plus its state's (vrmxa-core's equippedState).
       const tags = this.vrmxaCore.equippedState ? (await this.vrmxaCore.equippedState(bundle)).tags : [];
-      src = { vrmBytes: bundle.entries.get('avatar.vrm'), animations: { doc, clips }, tags };
+      // the character's id (VRMXA §4.1: what app data, its persona and memory, is keyed by) and its core persona (§10.1)
+      src = { vrmBytes: bundle.entries.get('avatar.vrm'), animations: { doc, clips }, tags, vrmxaId: bundle.manifest.id ?? null, persona: bundle.database ?? null };
     } else {
-      src = { vrmBytes: bytes, animations: { doc: { format: 'vrmxa-animations', version: 1, clips: [], sets: [] }, clips: new Map() }, tags: [] };
+      src = { vrmBytes: bytes, animations: { doc: { format: 'vrmxa-animations', version: 1, clips: [], sets: [] }, clips: new Map() }, tags: [], vrmxaId: null, persona: null };
     }
     this.sources.set(ref, src);
     return src;
