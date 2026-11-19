@@ -34,3 +34,8 @@ Tests (`npm test`):
 - refusals with their reasons;
 - memory and file stores;
 - on the cafe: the take with items saved after the sword, written to a file, loaded, the same hashes to the end.
+
+`save({ extra })` (M3 W4) carries app data outside the simulation, which the world never reads: the director's
+conversation history, which its prompts need after a load (`director.getHistory()` / `setHistory()`). After loading
+into a live world, `director.resume()` asks again any question the save caught on its way to the model. In a replay,
+the log's entries after the save point are queued again (`ai.replay(log.filter((e) => e.step > step))`).

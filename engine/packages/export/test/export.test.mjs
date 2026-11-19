@@ -97,7 +97,7 @@ test('two exports of the same take hash the same frame for frame; a started tree
 test('a cancelled export tells the sink', async () => {
   const tree = world(), host = new RenderHost({ renderer: fakeRenderer(tree), dprCap: 1 }), sink = recordingSink();
   const signal = { aborted: false };
-  await assert.rejects(exportTake({ tree, host, fps: 30, frames: 30, width: 8, height: 8, sink, audio: false, signal, onProgress: (p) => { if (p.n >= 10) signal.aborted = true; } }), /cancelled/);
+  await assert.rejects(exportTake({ tree, host, fps: 30, frames: 30, width: 16, height: 9, sink, audio: false, signal, onProgress: (p) => { if (p.n >= 10) signal.aborted = true; } }), /cancelled/);
   assert.ok(sink.cancelled && !sink.ended);
 });
 
@@ -126,4 +126,9 @@ test("the take's mix: a sound begun on step k is heard from (k + 1) / 60 s, cut 
   assert.equal(ch.length, 48000);
   const onset = ch.findIndex((v) => v !== 0);
   assert.equal(onset, (31 * 48000) / 60, `onset at sample ${onset}: step 30 + 1`);
+});
+
+test('a take is exported at its world\'s fixed aspect (M3 W4, AB-T-0538): another shape is refused, not reframed', async () => {
+  const tree = world();
+  await assert.rejects(exportTake({ tree, host: new RenderHost({ renderer: fakeRenderer(tree), dprCap: 1 }), fps: 30, frames: 2, width: 8, height: 8, sink: hashSink(), audio: false }), /fixed aspect of 1\.7778; 8×8/);
 });

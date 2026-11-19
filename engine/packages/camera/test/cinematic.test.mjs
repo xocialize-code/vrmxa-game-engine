@@ -23,9 +23,9 @@ test('the lens: the research\'s worked example, gate fit, the inverse, post DOF 
 });
 
 // Two "characters" (markers: their eyes are 1.5 m above), the output camera, a path, a brain and some shots.
-function world(extra = [], brain = {}) {
+function world(extra = [], brain = {}, opts = {}) {
   const tree = new SceneTree({ registry: m0Registry(), seed: 1 });
-  const cams = installCameras(tree);
+  const cams = installCameras(tree, opts);
   tree.instantiate({ format: 'vrmxs', version: 1, id: 'w2', nodes: [
     { id: 'root', type: 'Node3D' },
     { id: 'mira', type: 'Marker', parent: 'root', transform: { p: [0, 0, 0] } },
@@ -129,9 +129,29 @@ test('the aspect the composer frames with is a simulation input: a fixed aspect 
   const drive = (t) => { for (let k = 0; k < 90; k++) { t.find('hana').object3d.position.x = Math.sin(k * 0.05); t.step(); } };
   const h = (w) => hashValue([worldHashes(w.tree), w.cam.object3d.quaternion.toArray()]);
   const A = world(shots); drive(A.tree);
-  const B = world(shots); B.cams.setAspect(4 / 3); drive(B.tree);
-  assert.notEqual(h(B), h(A), 'a free aspect follows the output: the framing changes');
+  const B = world(shots, {}, { aspect: null }); B.cams.setAspect(4 / 3); drive(B.tree);
+  assert.notEqual(h(B), h(A), 'a free aspect (opted into) follows the output: the framing changes');
   const C = world(shots); C.cams.fixAspect(16 / 9); C.cams.setAspect(4 / 3); drive(C.tree);
   assert.equal(h(C), h(A), 'a fixed aspect: the same world whatever the window');
   near(C.cam.camera.aspect, 4 / 3, 1e-12, 'the lens still refits for drawing');
+});
+
+test('every world frames at a fixed 16:9 by default (M3 W4, AB-T-0538): a play take in a 4:3 window, resized mid-run, steps as at 16:9', () => {
+  const shots = [vc('c', { body: { type: 'fixed' }, aim: { type: 'composer', target: 'hana', screen: [0.4, 0.1], damping: 0.3 }, transform: { p: [4, 1.7, -2] } })];
+  const run = (resize) => {
+    const w = world(shots), hashes = [];
+    w.cams.setAspect(4 / 3); // the play window
+    for (let k = 0; k < 120; k++) {
+      if (resize && k === 60) w.cams.setAspect(21 / 9); // the window resized mid-run
+      w.tree.find('hana').object3d.position.x = Math.sin(k * 0.05);
+      w.tree.step();
+      hashes.push(hashValue([worldHashes(w.tree), w.cam.object3d.quaternion.toArray()]));
+    }
+    return { hashes, w };
+  };
+  const live = run(true), exported = world(shots), ref = [];
+  for (let k = 0; k < 120; k++) { exported.tree.find('hana').object3d.position.x = Math.sin(k * 0.05); exported.tree.step(); ref.push(hashValue([worldHashes(exported.tree), exported.cam.object3d.quaternion.toArray()])); }
+  assert.deepEqual(live.hashes, ref, 'the live run, resized twice, equals the export at 16:9 at every step');
+  assert.equal(live.w.cams.fixed, 16 / 9);
+  near(live.w.cam.camera.aspect, 21 / 9, 1e-12, 'the lens drew at the window\'s aspect');
 });

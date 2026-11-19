@@ -49,6 +49,9 @@ export class SequenceService {
       if (t.type === 'audio' && c.asset && audio) await audio.library.add(c.asset);
     }
     if (this.seq.autoplay !== false) this.play({});
+    // an input track (M3 W4): the player's recorded input, from the sequence's first step
+    const rec = this.tracks.find((t) => t.type === 'input')?.recording;
+    if (rec) this.tree.services.get('input')?.replay({ ...structuredClone(rec), start: this.pb.startStep + (rec.start ?? 0) });
     return this;
   }
 
@@ -86,6 +89,7 @@ export class SequenceService {
       } else if (t.type === 'camera') this.applyCamera(t, held);
       else if (t.type === 'lookAt') this.applyLook(t, held);
       else if (t.type === 'dialogue') for (const c of linesBetween(t, prev, frame)) this.say(t.target, c);
+      else if (t.type === 'decisions') this.decide(t, prev, frame);
     }
     if (done) {
       pb.playing = false;
@@ -116,6 +120,17 @@ export class SequenceService {
       if (e.call) { const n = this.tree.find(e.target); if (n) this.tree.call(n, e.call, e.args ?? {}); }
       else if (e.emit) this.tree.emit(this.tree.root, 'event', { name: e.emit, ...(e.args ?? {}) });
     }
+  }
+
+  /**
+   * A decisions track (M3 W4): the recorded events whose frames this step crossed, injected now for its target. A take's
+   * event applied on step s is keyed at frame (s + 1) · fps / 60 (takeToSequence), which this step crosses while the
+   * clock reads s: the brains apply it on the same step the take did.
+   */
+  decide(track, from, to) {
+    const ai = this.tree.services.get('ai');
+    if (!ai) return;
+    for (const e of eventsBetween(track, from, to)) { const { frame, ...ev } = e; void frame; ai.inject({ ...ev, agent: track.target, step: this.tree.clock.step }); }
   }
 
   say(target, c) {

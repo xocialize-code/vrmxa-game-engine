@@ -5,11 +5,14 @@
 //   dialogue    target; clips [{ start, end, clip?, text }]: a voice line (audio, visemes from its timings, a subtitle)
 //   post        keys { "anime.speedLines": [[frame, value, ease?], …], … }: the post stack's values (presentation)
 //   simulation  clips [{ start, end, mode: live | baked }]: spans the player replays from a pose cache instead of stepping
+//   decisions   target (a Character with a brain); keys [[frame, event]]: @vrmxg/ai injected events (a director's
+//               requests and decisions, recorded in a take: M3 W4), injected on the step the sequence crosses the frame
+//   input       recording (an @vrmxg/input recording): the player's input, replayed from the sequence's first step
 // Shots: [{ id, name, start, end, camera?, overrides? }] with overrides { nodeId: { transform?, props? } } applied while
 // the shot is live (anime cheats continuity); markers [{ frame, name }].
 import { sampleKeys, checkTrack, TRACK_TYPES } from '@vrmxg/tracks';
 
-export const SEQUENCE_TRACK_TYPES = [...TRACK_TYPES, 'camera', 'lookAt', 'dialogue', 'post', 'simulation'];
+export const SEQUENCE_TRACK_TYPES = [...TRACK_TYPES, 'camera', 'lookAt', 'dialogue', 'post', 'simulation', 'decisions', 'input'];
 
 /** The clip covering a frame (the latest-starting one when clips overlap), or null. */
 export function clipAt(track, frame) {
@@ -45,7 +48,9 @@ export function checkSequence(seq, { nodeIds = null } = {}) {
     const id = t.id ?? '(track)';
     if (!SEQUENCE_TRACK_TYPES.includes(t.type)) { out.push(`${id}: unknown type "${t.type}" (${SEQUENCE_TRACK_TYPES.join(', ')})`); continue; }
     if (TRACK_TYPES.includes(t.type)) out.push(...checkTrack(t));
-    if (['lookAt', 'dialogue'].includes(t.type) && !t.target) out.push(`${id}: a ${t.type} track needs a target`);
+    if (['lookAt', 'dialogue', 'decisions'].includes(t.type) && !t.target) out.push(`${id}: a ${t.type} track needs a target`);
+    if (t.type === 'decisions') for (const k of t.keys ?? []) if (!Array.isArray(k) || !(k[0] >= 0) || typeof k[1] !== 'object' || !(k[1].goal || k[1].action || k[1].actions?.length || k[1].bb)) out.push(`${id}: a decisions key is [frame, { goal | action | actions | bb, … }]`);
+    if (t.type === 'input' && !Array.isArray(t.recording?.frames)) out.push(`${id}: an input track holds an input recording ({ frames, … })`);
     for (const c of t.clips ?? []) {
       if (!(c.end > c.start) && !TRACK_TYPES.includes(t.type)) out.push(`${id}: a clip must end after it starts (${c.start} → ${c.end})`);
       if (t.type === 'camera' && !c.camera) out.push(`${id}: a camera clip names a camera`);

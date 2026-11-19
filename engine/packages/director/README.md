@@ -149,6 +149,23 @@ M5 Max, with other GPU work running (a Bernini job and a Swift build), so the ti
 - **One caution about the order checks:** when a model gives `takeOrder` without the order, the person's words fill
   it. That is engine behaviour (the host's tree only needs to know there is an order), but it helps those checks pass.
 
+**Takes, saves and the bake** (M3 W4, AB-T-0543; `src/take.js`):
+- **Take** (`makeTake`): the scene, the cast it ran, the player's input recording and the ai log. It replays with no
+  model (`ai.replay(take.ai)`). Its aspect is fixed (16:9, AB-T-0538), so it needs no recording.
+- **Saves:** they carry the snapshot, and the history as `extra`. A game saved mid-conversation, even mid-wait, loads
+  and continues to the same world with the log's later entries. In live play, `resume()` asks the caught question
+  again (`test/save.test.mjs`).
+- **The bake** (`takeToSequence`) produces a sequence document that instances the set:
+  - her lines become dialogue clips, editable and ready for `tools/bake-lines.mjs`;
+  - the person's heard lines go on their character;
+  - the rest goes on a `decisions` track, and the input on an `input` track;
+  - the cast becomes the sequence's `cast`.
+
+  `test/take.test.mjs` runs it on the cafe:
+  - the take replays to the same world every 30 steps;
+  - the baked sequence says her lines on the same steps, Mira walks where she did, and the order is made and brought;
+  - two runs of the sequence are the same world.
+
 Tests without a world cover:
 - the schemas narrowed to a moment;
 - fifteen bad-reply fixtures, each rejected with a reason;

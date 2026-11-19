@@ -64,3 +64,14 @@ drawing. Unless the world called `fixAspect(a)`, it also sets the aspect the ste
 an editor still that resized the preview world and gave it back the viewport's aspect moved a scrubbed shot away from
 the frames its snapshots were taken at. A camera restored from a snapshot re-derives its lens (`setState` ends with
 `applyLens`). Tests: a fixed aspect holds through a resize; a free one follows it.
+
+## The aspect is fixed from the start (M3 W4, AB-T-0538)
+
+`installCameras(tree, { aspect })` fixes the aspect the simulation frames at, 16:9 by default:
+- a window's resize (`RenderHost.resize` → `setAspect`) only refits the lenses for drawing;
+- so a play take steps the same in any window, and its export, replay and saves match it step for step;
+- `exportTake` refuses an export at another shape rather than reframe it;
+- `aspect: null` restores M2's behaviour, where the composer follows the output.
+
+Tested in `test/cinematic.test.mjs`: a composer scene in a 4:3 window, resized mid-run, equals the 16:9 export at every
+step.

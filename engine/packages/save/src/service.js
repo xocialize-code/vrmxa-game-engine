@@ -52,9 +52,11 @@ export class SaveService {
 
   /**
    * A save file of the world now (plain JSON). `savedAt` and anything else outside the simulation come from the caller.
-   * @param {{ name?: string, savedAt?: string, note?: string }} [o]
+   * `extra` is app data outside the simulation the save should carry (M3 W4: the director's conversation history, which
+   * its prompts need after a load); the world never reads it.
+   * @param {{ name?: string, savedAt?: string, note?: string, extra?: any }} [o]
    */
-  save({ name = null, savedAt = null, note = null } = {}) {
+  save({ name = null, savedAt = null, note = null, extra = null } = {}) {
     const why = this.cannotSave();
     if (why) throw new Error(`can't save: ${why}`);
     const snap = captureWorld(this.tree, { meta: { scene: this.scene?.ref ?? null } });
@@ -64,6 +66,7 @@ export class SaveService {
       app: this.app, requires: this.requires(),
       summary: { step: snap.step, seconds: Math.round((snap.step / 60) * 10) / 10, scene: this.scene?.ref ?? null, characters, flags: structuredClone(this.flags), inventories: this.tree.services.get('inventory')?.getState?.() ?? null },
       snapshot: encode(snap),
+      ...(extra !== null ? { extra: structuredClone(extra) } : {}),
     };
   }
 

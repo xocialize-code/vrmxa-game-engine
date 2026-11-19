@@ -237,6 +237,33 @@ export class Director {
     if (said) { const h = this.history.get(r.agent) ?? []; h.push({ role: 'assistant', content: said.args.text }); this.history.set(r.agent, h.slice(-24)); }
   }
 
+  // ---------------------------------------------------------------- saves (M3 W4)
+
+  /** The conversations so far, as plain data, for a save's `extra` (the prompts need them after a load). */
+  getHistory() { return Object.fromEntries([...this.history].map(([k, v]) => [k, structuredClone(v)])); }
+  /** Conversations from a save's `extra`. */
+  setHistory(h) { this.history = new Map(Object.entries(h ?? {}).map(([k, v]) => [k, structuredClone(v)])); }
+
+  /**
+   * After a game is loaded into a live world: a question the save caught on its way to the model never gets its answer,
+   * so each character still waiting is told it was interrupted (her tree stops thinking) and the question is asked again.
+   * In replay the log carries what happened instead, and nothing is asked. → the requests asked again
+   */
+  resume() {
+    if (this.model.replay) return [];
+    const step = this.tree.clock.step, asked = [];
+    for (const b of this.ai.brains) {
+      const d = b.bb.director;
+      if (!d?.pending) continue;
+      const agent = b.node.id;
+      this.ai.inject({ step, agent, kind: 'decision', bb: { director: { pending: null, since: null, last: d.pending, failed: 'interrupted' } }, meta: { id: d.pending, failed: 'interrupted' } });
+      const heard = b.bb.heard;
+      if (heard?.text && heard.step >= d.since) asked.push(this.talk(agent, heard.text, { from: heard.from }));
+      else asked.push(this.consider(agent));
+    }
+    return asked;
+  }
+
   // ---------------------------------------------------------------- the moment
 
   personaOf(agent) {

@@ -5,6 +5,7 @@ export { Director, EMOTIONS, toInject } from './director.js';
 export { toolsFor, validate, check, MAX_CALLS } from './schema.js';
 export { buildMessages, describeMoment, promptHash, FRAMING } from './prompt.js';
 export { shellModel, httpModel, scriptedModel, replayModel } from './model.js';
+export { TAKE_FORMAT, makeTake, isTake, takeToSequence } from './take.js';
 export { LINE_FRAMING, lineRequest, verdictRequest, parseVerdict, cleanLine, isGoodbye, splitCalls, normalizeVerdict, salvage, verdictParts } from './split.js';
 
 /**

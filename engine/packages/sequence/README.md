@@ -58,3 +58,13 @@ and holds the set's music for its own cue.
 A sequence world frames at 16:9 whatever it is drawn into (`ASPECT`; `prepare` calls the cameras service's
 `fixAspect`). The VirtualCameras frame in screen space, so the aspect is a simulation input, and a scrub restores
 snapshots that were taken at it (M2 W12).
+
+## Decisions and input tracks (M3 W4, AB-T-0543)
+
+Two simulation tracks, written by `@vrmxg/director`'s `takeToSequence` (a conversation take baked into a sequence):
+- `decisions`: a target and keys `[[frame, event]]`. The events are `@vrmxg/ai` injected events (requests, decisions,
+  hearing flags), injected on the step the sequence crosses their frame. A take's event from step s is keyed at
+  (s + 1) · fps / 60, so it lands on the same step.
+- `input`: a `recording` from `@vrmxg/input`, replayed from the sequence's first step.
+
+`checkSequence` validates both.

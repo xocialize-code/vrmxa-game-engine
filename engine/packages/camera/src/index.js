@@ -21,12 +21,18 @@ export { pickPhysics, MeshPicker, rayFrom } from './pick.js';
  * Give a SceneTree cameras: registers the Camera class and adds the "cameras" service. Install after
  * physics (rigs step after the physics world, in afterNodes).
  * @param {import('@vrmxg/core').SceneTree} tree
+ * @param {{ aspect?: number | null }} [opts] aspect: the aspect the simulation frames at, fixed (16:9); null follows the
+ *   output (the M2 behaviour: a resize changes a composer's framing)
  * @returns {CameraService}
  */
-export function installCameras(tree) {
+export function installCameras(tree, { aspect = 16 / 9 } = {}) {
   tree.classes.set('Camera', CameraNode);
   tree.classes.set('VirtualCamera', VirtualCameraNode); // M2 W2
   tree.classes.set('CameraBrain', CameraBrainNode);
   tree.classes.set('Path3D', Path3DNode);
-  return tree.addService('cameras', new CameraService(tree));
+  const cams = tree.addService('cameras', new CameraService(tree));
+  // the aspect the simulation frames at is fixed from the start (M3 W4, AB-T-0538): a window's resize refits the lenses
+  // for drawing but never changes a step, so a play take exports, replays and loads framing-exact. null: follow the output
+  if (aspect !== null) cams.fixAspect(aspect);
+  return cams;
 }
