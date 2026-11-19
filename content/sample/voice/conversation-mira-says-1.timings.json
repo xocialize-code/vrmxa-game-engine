@@ -1,0 +1,28 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Good morning, Hana!",
+ "audio": "conversation-mira-says-1.wav",
+ "sampleRate": 24000,
+ "duration": 1.975,
+ "source": "Kokoro-82M af_sky (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Good",
+   "start": 0.35,
+   "duration": 0.225
+  },
+  {
+   "text": "morning",
+   "start": 0.575,
+   "duration": 0.4
+  },
+  {
+   "text": "Hana",
+   "start": 1.025,
+   "duration": 0.65
+  }
+ ]
+}

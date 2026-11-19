@@ -1,0 +1,63 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "I could not sleep. Could I get a latte, please?",
+ "audio": "conversation-mira-says-2.wav",
+ "sampleRate": 24000,
+ "duration": 3.35,
+ "source": "Kokoro-82M af_sky (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "I",
+   "start": 0.375,
+   "duration": 0.125
+  },
+  {
+   "text": "could",
+   "start": 0.5,
+   "duration": 0.1625
+  },
+  {
+   "text": "not",
+   "start": 0.6625,
+   "duration": 0.25
+  },
+  {
+   "text": "sleep",
+   "start": 0.9125,
+   "duration": 0.4625
+  },
+  {
+   "text": "Could",
+   "start": 1.475,
+   "duration": 0.1375
+  },
+  {
+   "text": "I",
+   "start": 1.6125,
+   "duration": 0.0875
+  },
+  {
+   "text": "get",
+   "start": 1.7,
+   "duration": 0.1375
+  },
+  {
+   "text": "a",
+   "start": 1.8375,
+   "duration": 0.0625
+  },
+  {
+   "text": "latte",
+   "start": 1.9,
+   "duration": 0.425
+  },
+  {
+   "text": "please",
+   "start": 2.375,
+   "duration": 0.725
+  }
+ ]
+}

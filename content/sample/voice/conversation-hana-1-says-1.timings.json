@@ -1,0 +1,43 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Morning, Mira! You are early today.",
+ "audio": "conversation-hana-1-says-1.wav",
+ "sampleRate": 24000,
+ "duration": 2.725,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Morning",
+   "start": 0.3,
+   "duration": 0.325
+  },
+  {
+   "text": "Mira",
+   "start": 0.675,
+   "duration": 0.5
+  },
+  {
+   "text": "You",
+   "start": 1.3,
+   "duration": 0.1125
+  },
+  {
+   "text": "are",
+   "start": 1.4125,
+   "duration": 0.1125
+  },
+  {
+   "text": "early",
+   "start": 1.525,
+   "duration": 0.325
+  },
+  {
+   "text": "today",
+   "start": 1.85,
+   "duration": 0.6
+  }
+ ]
+}

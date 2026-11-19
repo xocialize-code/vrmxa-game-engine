@@ -1,0 +1,48 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "I should get going. See you tomorrow!",
+ "audio": "conversation-mira-says-6.wav",
+ "sampleRate": 24000,
+ "duration": 2.7,
+ "source": "Kokoro-82M af_sky (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "I",
+   "start": 0.375,
+   "duration": 0.15
+  },
+  {
+   "text": "should",
+   "start": 0.525,
+   "duration": 0.15
+  },
+  {
+   "text": "get",
+   "start": 0.675,
+   "duration": 0.2
+  },
+  {
+   "text": "going",
+   "start": 0.875,
+   "duration": 0.425
+  },
+  {
+   "text": "See",
+   "start": 1.3875,
+   "duration": 0.1625
+  },
+  {
+   "text": "you",
+   "start": 1.55,
+   "duration": 0.125
+  },
+  {
+   "text": "tomorrow",
+   "start": 1.675,
+   "duration": 0.725
+  }
+ ]
+}

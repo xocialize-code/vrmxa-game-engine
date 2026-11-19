@@ -14,7 +14,9 @@ import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
 import { composeSequence, isSequence, SequencePlayer, subtitles } from '@vrmxg/sequence';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { m0Registry } from '@vrmxg/registry/m0';
-import { parse, describeType } from '@vrmxg/scene';
+import { parse, describeType, serialize } from '@vrmxg/scene';
+import { makeTake, isTake, takeToSequence } from '@vrmxg/director';
+import { shellTTS, httpTTS } from '@vrmxg/voice';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { EditorSession, assetList, newSequenceDoc, rowsOf } from '@vrmxg/editor-core';
 import { AudioOutput } from '@vrmxg/audio';
@@ -455,7 +457,9 @@ export class EditorHost {
     this.paused = false;
     const world = this.playWorld;
     const steps = world?.tree.clock.step ?? 0;
-    if (world?.input.recording && steps > 0) this.lastTake = { scene: this.sceneRef, doc: this.playDoc, input: structuredClone(world.input.recording), steps };
+    // a take is what was played: its input and (M3 W4) the ai log, everything injected (a director's requests and
+    // decisions, MCP's), so it replays, exports and bakes with no model
+    if (world?.input.recording && steps > 0) this.lastTake = { scene: this.sceneRef, doc: this.playDoc, input: structuredClone(world.input.recording), ai: world.ai?.record() ?? [], steps };
     const r = this.session.stopPlay(() => {
       world.audio?.dispose(); // silence what the play world was playing
       for (const d of Object.values(this.devices ?? {})) world.input.removeDevice?.(d);
@@ -522,16 +526,67 @@ export class EditorHost {
       const world = await this.buildFrom(parse(this.session.text()), { play: true, heard: false });
       return { world, seconds: seq.duration / seq.fps };
     }
+    let ai = [], steps = null;
     if (id === 'play') {
       if (!this.lastTake) throw new Error('nothing has been played yet');
-      ({ doc, input } = this.lastTake);
+      ({ doc, input } = this.lastTake); ai = this.lastTake.ai ?? []; steps = this.lastTake.steps;
     } else {
       doc = structuredClone(this.session.doc);
-      input = JSON.parse(await this.project.text(id));
+      const file = JSON.parse(await this.project.text(id));
+      if (isTake(file)) { // a take file (M3 W4): its cast over the open scene, its input and its ai log
+        doc = { ...doc, nodes: doc.nodes.map((n) => (file.cast?.[n.id] ? { ...n, ...file.cast[n.id] } : n)) };
+        input = file.input; ai = file.ai ?? []; steps = file.steps;
+      } else input = file; // a bare input recording (M1)
     }
     const world = await this.buildFrom(structuredClone(doc), { play: true, heard: false });
-    world.input.replay(structuredClone(input));
-    return { world, seconds: (input.frames?.length ?? 0) / 60 };
+    if (input) world.input.replay(structuredClone(input));
+    if (ai.length) world.ai?.replay(ai);
+    return { world, seconds: (steps ?? input?.frames?.length ?? 0) / 60 };
+  }
+
+  /**
+   * Bake a take (the last play, or a take file) into a sequence document in the project (M3 W4, takeToSequence): her
+   * lines as dialogue clips, the person's on their character, the decisions and the input as tracks. → its ref
+   */
+  async bakeTake(id = 'play', name = null) {
+    let take;
+    if (id === 'play') {
+      if (!this.lastTake) throw new Error('nothing has been played yet');
+      const t = this.lastTake;
+      take = makeTake({ scene: t.scene, input: t.input, ai: t.ai ?? [], steps: t.steps });
+    } else {
+      const file = JSON.parse(await this.project.text(id));
+      take = isTake(file) ? file : makeTake({ scene: this.sceneRef, input: file, steps: file.frames?.length ?? 0 });
+    }
+    if (isSequence(parse(await this.project.text(take.scene)))) throw new Error(`${take.scene} is a sequence: bake takes played in a set`);
+    const base = (name || `${take.scene.replace(/^.*\//, '').replace(/\.vrmxs$/, '')}-take`).replace(/\.vrmxs$/, '');
+    let ref = `sequences/${base}.vrmxs`;
+    for (let n = 2; this.project.files.includes(ref); n++) ref = `sequences/${base}-${n}.vrmxs`;
+    const seq = takeToSequence(take, { id: ref.replace(/^sequences\//, '').replace(/\.vrmxs$/, ''), user: this.playerId?.() ?? 'mira' });
+    await this.project.write(ref, serialize(seq));
+    this.lastBake = { ref, tracks: seq.sequence.tracks.map((t) => t.id), frames: seq.sequence.duration };
+    this.changed();
+    return ref;
+  }
+
+  /** The TTS voice for regenerating lines: the Mac shell's tts.speak, or a loopback server (?tts=…/speak). */
+  ttsProvider() {
+    const url = new URLSearchParams(globalThis.location?.search ?? '').get('tts');
+    if (url) return (this._tts ??= httpTTS(url));
+    if (inShell) return (this._tts ??= shellTTS({ call }));
+    throw new Error('no TTS voice: open the editor with ?tts=http://127.0.0.1:5190/speak (tools/tts-server.py), or in the Mac app once the shell speaks');
+  }
+
+  /** Regenerate one dialogue line of the open sequence (M3 W4): new audio and timings, one undo step. */
+  async regenerateLine(trackId, index, text, { voice = null } = {}) {
+    if (!this.session?.isSequence) throw new Error('open a sequence to regenerate its lines');
+    const tts = this.ttsProvider();
+    const track = this.session.doc.sequence.tracks.find((t) => t.id === trackId);
+    const v = voice ?? this.voiceOf?.(track?.target) ?? 'af_heart';
+    const write = async (ref, bytes) => (typeof bytes === 'string' ? this.project.write(ref, bytes) : this.project.writeBase64(ref, toBase64(bytes)));
+    const ref = await this.session.seq.regenerateLine(trackId, index, text, { speak: (o) => tts.speak({ ...o, voice: v }), write });
+    this.changed();
+    return ref;
   }
 
   /**
@@ -597,7 +652,9 @@ export class EditorHost {
     const n = x.frameHashes.length;
     const want = frames ?? [...new Set([
       ...(seq.shots ?? []).flatMap((sh) => [sh.start, Math.floor((sh.start + sh.end) / 2), sh.end - 1]),
-      ...(seq.tracks ?? []).flatMap((t) => [...(t.clips ?? []).map((c) => c.start), ...(Array.isArray(t.keys) ? t.keys.map((k) => k[0]) : [])]),
+      // clip starts and keys may sit between frames (a baked take's decisions land on exact steps, M3 W4): the frame
+      // each falls in is the one the export drew
+      ...(seq.tracks ?? []).flatMap((t) => [...(t.clips ?? []).map((c) => c.start), ...(Array.isArray(t.keys) ? t.keys.map((k) => k[0]) : [])]).map((f) => Math.floor(f)),
     ])];
     const order = want.filter((f) => f >= 0 && f < n).sort((a, b) => b - a); // backwards: each jump is a restore
     const [width, height] = SIZES[x.size];

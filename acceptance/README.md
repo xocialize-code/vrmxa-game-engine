@@ -1,4 +1,4 @@
-# M0, M1 and M2 acceptance
+# M0, M1, M2 and M3 acceptance
 
 M0 W9 (AB-T-0510): the six exit checks of [M0-PLAN.md](../M0-PLAN.md) ("What M0 is done looking like"), run on the
 sample cafe (`content/sample`) at one commit, in every runtime, and filed as receipts.
@@ -15,6 +15,20 @@ node acceptance/compare.mjs       # evaluates the six checks: results/summary.js
 that need no renderer; the playground's acceptance mode adds the rendered pass (the walk rendered frame by frame,
 every camera preset, debug draw). Check 4 re-runs the W6 harness (`engine/packages/snapshot/harness`); check 5 is a
 Claude Code session with the MCP server (`results/mcp-session.json`).
+
+## M3 so far (2026-11-19, M5 Max)
+
+M3 adds checks as its workstreams land. The M3 acceptance (W13) runs all ten of its exit checks at the M3 commit.
+- **Check 17** (W4, AB-T-0543): a recorded conversation replays with no model. `takes/conversation.json`, made by
+  `tools/make-conversation.mjs`, is two minutes of Mira talking with Hana (the host), with the director's split turn on
+  a scripted model; its ai log holds 30 events, 12 of them decisions. Replayed from its input and log alone:
+  - it hashes identically at every step in Node, Chromium and WKWebView (scheme and loopback), final 605004a4a0349dde;
+  - a snapshot at step 3,600, restored with the log's later entries, plays to the same end;
+  - checks 1–16 are unchanged, so 17 of 17 pass.
+- **The baked conversation** (`node acceptance/m3/conversation-export.mjs`, `results/m3-conversation-export.json`):
+  - the take baked into `sequences/conversation.vrmxs` (12 lines baked to audio with `tools/bake-lines.mjs`) exports
+    in the editor at 1080p24 with sound twice, to the same 2,929 frames (digest e8cfde98e135a744, audio 3d65d16c);
+  - jumping to 27 frames of its shot, lines and decisions from snapshots draws exactly the exported frames.
 
 ## Result: M2 is done (2026-11-18, M5 Max)
 

@@ -72,6 +72,6 @@ export function takeToSequence(take, { id = 'conversation', fps = 24, user = 'mi
   const markers = [...lines.values()].flat().sort((a, b) => a.start - b.start).map((l) => ({ frame: Math.round(l.start), name: l.text.slice(0, 40) }));
   return {
     format: 'vrmxs', version: 1, id, set: take.scene, assets: [], nodes: [], connections: [],
-    sequence: { fps, duration, shots: [], markers, tracks, ...(take.cast && Object.keys(take.cast).length ? { cast: structuredClone(take.cast) } : {}) },
+    sequence: { fps, duration, shots: [{ id: 'take', name: 'The take', start: 0, end: duration }], markers, tracks, ...(take.cast && Object.keys(take.cast).length ? { cast: structuredClone(take.cast) } : {}) },
   };
 }

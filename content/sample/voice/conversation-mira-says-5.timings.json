@@ -1,0 +1,48 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Do you ever get a day off?",
+ "audio": "conversation-mira-says-5.wav",
+ "sampleRate": 24000,
+ "duration": 2.375,
+ "source": "Kokoro-82M af_sky (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Do",
+   "start": 0.35,
+   "duration": 0.1
+  },
+  {
+   "text": "you",
+   "start": 0.45,
+   "duration": 0.2625
+  },
+  {
+   "text": "ever",
+   "start": 0.7125,
+   "duration": 0.3375
+  },
+  {
+   "text": "get",
+   "start": 1.05,
+   "duration": 0.1625
+  },
+  {
+   "text": "a",
+   "start": 1.2125,
+   "duration": 0.0875
+  },
+  {
+   "text": "day",
+   "start": 1.3,
+   "duration": 0.25
+  },
+  {
+   "text": "off",
+   "start": 1.55,
+   "duration": 0.575
+  }
+ ]
+}

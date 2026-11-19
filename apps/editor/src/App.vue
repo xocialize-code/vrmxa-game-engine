@@ -114,6 +114,7 @@ function takeSeconds() {
   if (t?.fps && RATES[String(t.fps)]) ui.ex.fps = String(t.fps); // a sequence exports at its own rate by default
 }
 const checkScrub = () => act(() => ed.checkExportAgainstScrub());
+const bakeTake = () => act(async () => { const ref = await ed.bakeTake(ui.ex.take, ui.ex.name.trim() || null); ui.ex.open = false; await ed.openScene(ref); });
 const exportVideo = () => act(() => ed.exportVideo({ take: ui.ex.take, seconds: +ui.ex.seconds, size: ui.ex.size, fps: ui.ex.fps, codec: ui.ex.codec, audio: ui.ex.audio, name: ui.ex.name.trim() }));
 const saveStill = () => act(() => ed.saveStill(ui.ex.size));
 const thumbnail = () => act(() => ed.makeThumbnail());
@@ -127,6 +128,7 @@ const tlTransport = (what, v) => act(() => {
   else if (what === 'in' || what === 'out' || what === 'clear') ed.setRange(what);
   else if (what === 'loop') { ed.loopRange = v; }
   else if (what === 'camera') ed.setPreviewCamera(v);
+  else if (what === 'regenerate') return ed.regenerateLine(v.row, v.index, v.text); // M3 W4: one undo step
   else if (what === 'angles') ed.setAngles(v);
   else if (what === 'edit') ed.editView();
   else if (what === 'cameraFromView') ed.cameraFromView();
@@ -252,6 +254,9 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
           <progress v-if="ui.ex.running" id="export-progress" :max="ui.ex.frames || 1" :value="ui.ex.n" :aria-label="`Exporting ${ui.ex.phase} ${ui.ex.n} of ${ui.ex.frames}`" />
         </div>
         <output v-if="ui.ex.result" id="export-result" :aria-label="`Exported ${ui.ex.result}`">{{ ui.ex.result }}</output>
+        <div v-if="ui.ex.take && ui.ex.take !== 'sequence'" class="row">
+          <button id="export-bake" type="button" aria-label="Bake the take into a sequence" title="A sequence of this take: the lines as dialogue clips, the decisions and the input as tracks" :disabled="ui.ex.running" @click="bakeTake">Bake into Sequence</button>
+        </div>
         <div v-if="ui.ex.canCheck" class="row">
           <button id="export-check" type="button" aria-label="Check the export against scrubbing" title="Jump to frames of each shot from snapshots and compare them with the exported frames" :disabled="ui.ex.running" @click="checkScrub">Check Against Scrub</button>
           <output v-if="ui.ex.check" id="export-check-result" :aria-label="ui.ex.check" :title="`frame, scrub, export: ${ui.ex.checkRows}`">{{ ui.ex.check }}</output>

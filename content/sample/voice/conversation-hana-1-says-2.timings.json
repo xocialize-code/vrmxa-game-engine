@@ -1,0 +1,48 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Of course. One latte, coming right up.",
+ "audio": "conversation-hana-1-says-2.wav",
+ "sampleRate": 24000,
+ "duration": 2.875,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Of",
+   "start": 0.25,
+   "duration": 0.175
+  },
+  {
+   "text": "course",
+   "start": 0.425,
+   "duration": 0.5
+  },
+  {
+   "text": "One",
+   "start": 1.025,
+   "duration": 0.175
+  },
+  {
+   "text": "latte",
+   "start": 1.2,
+   "duration": 0.45
+  },
+  {
+   "text": "coming",
+   "start": 1.7,
+   "duration": 0.25
+  },
+  {
+   "text": "right",
+   "start": 1.95,
+   "duration": 0.2125
+  },
+  {
+   "text": "up",
+   "start": 2.1625,
+   "duration": 0.4625
+  }
+ ]
+}

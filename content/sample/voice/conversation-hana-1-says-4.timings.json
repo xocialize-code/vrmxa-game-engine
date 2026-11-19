@@ -1,0 +1,58 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Five years this spring. Feels like longer some days.",
+ "audio": "conversation-hana-1-says-4.wav",
+ "sampleRate": 24000,
+ "duration": 3.625,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Five",
+   "start": 0.3,
+   "duration": 0.2875
+  },
+  {
+   "text": "years",
+   "start": 0.5875,
+   "duration": 0.2625
+  },
+  {
+   "text": "this",
+   "start": 0.85,
+   "duration": 0.15
+  },
+  {
+   "text": "spring",
+   "start": 1.0,
+   "duration": 0.6
+  },
+  {
+   "text": "Feels",
+   "start": 1.7375,
+   "duration": 0.3
+  },
+  {
+   "text": "like",
+   "start": 2.0375,
+   "duration": 0.1875
+  },
+  {
+   "text": "longer",
+   "start": 2.225,
+   "duration": 0.325
+  },
+  {
+   "text": "some",
+   "start": 2.55,
+   "duration": 0.175
+  },
+  {
+   "text": "days",
+   "start": 2.725,
+   "duration": 0.625
+  }
+ ]
+}

@@ -4,5 +4,17 @@
  {"id":"cafe-morning-hana-says-1","voice":"af_heart","text":"Good morning! What can I get you?"},
  {"id":"cafe-morning-hana-says-2","voice":"af_heart","text":"Coming right up!"},
  {"id":"cafe-morning-hana-says-3","voice":"af_heart","text":"Here you go. Enjoy!"},
- {"id":"cafe-morning-mira-says-1","voice":"af_bella","text":"A latte, please. And one of those croissants."}
+ {"id":"cafe-morning-mira-says-1","voice":"af_bella","text":"A latte, please. And one of those croissants."},
+ {"id":"conversation-hana-1-says-1","voice":"af_heart","text":"Morning, Mira! You are early today."},
+ {"id":"conversation-hana-1-says-2","voice":"af_heart","text":"Of course. One latte, coming right up."},
+ {"id":"conversation-hana-1-says-3","voice":"af_heart","text":"Fresh beans this morning. Enjoy it."},
+ {"id":"conversation-hana-1-says-4","voice":"af_heart","text":"Five years this spring. Feels like longer some days."},
+ {"id":"conversation-hana-1-says-5","voice":"af_heart","text":"Sundays, if the machine behaves."},
+ {"id":"conversation-hana-1-says-6","voice":"af_heart","text":"See you tomorrow, Mira. Good luck today!"},
+ {"id":"conversation-mira-says-1","voice":"af_sky","text":"Good morning, Hana!"},
+ {"id":"conversation-mira-says-2","voice":"af_sky","text":"I could not sleep. Could I get a latte, please?"},
+ {"id":"conversation-mira-says-3","voice":"af_sky","text":"Thank you. It smells wonderful."},
+ {"id":"conversation-mira-says-4","voice":"af_sky","text":"How long have you had this place?"},
+ {"id":"conversation-mira-says-5","voice":"af_sky","text":"Do you ever get a day off?"},
+ {"id":"conversation-mira-says-6","voice":"af_sky","text":"I should get going. See you tomorrow!"}
 ]

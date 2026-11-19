@@ -1,0 +1,48 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "See you tomorrow, Mira. Good luck today!",
+ "audio": "conversation-hana-1-says-6.wav",
+ "sampleRate": 24000,
+ "duration": 2.9,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "See",
+   "start": 0.3,
+   "duration": 0.15
+  },
+  {
+   "text": "you",
+   "start": 0.45,
+   "duration": 0.15
+  },
+  {
+   "text": "tomorrow",
+   "start": 0.6,
+   "duration": 0.375
+  },
+  {
+   "text": "Mira",
+   "start": 1.025,
+   "duration": 0.475
+  },
+  {
+   "text": "Good",
+   "start": 1.6125,
+   "duration": 0.1875
+  },
+  {
+   "text": "luck",
+   "start": 1.8,
+   "duration": 0.225
+  },
+  {
+   "text": "today",
+   "start": 2.025,
+   "duration": 0.6
+  }
+ ]
+}

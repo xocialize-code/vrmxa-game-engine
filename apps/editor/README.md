@@ -30,3 +30,21 @@ the scene's camera and the keyboard, mouse and gamepad.
 A project's own modules (`behaviours.js`) import `@vrmxg/core` by name; the page's import map points that at
 `static/vrmxg-core.js`, which hands them the editor's own engine. Not yet: dragging several timeline items at once, curve editing of keys, a shot list separate from the shot row, MCP tools for sequences (W11), multi-selection gizmos, copy and paste,
 connections in the inspector, WebCodecs export in a browser (the spike chose it as a fallback only).
+
+## Takes into sequences (M3 W4, AB-T-0543)
+
+- **A Play's take** keeps the ai log beside its input: everything injected, from a director's requests and decisions
+  to MCP's. Exports and Last play replay it with no model.
+- **Take files:** a `takes/*.json` may be a full take (`vrmxg-take`: its cast, input and log), as well as a bare
+  input recording.
+- **Export › Bake into Sequence** writes `sequences/<scene>-take.vrmxs` (`takeToSequence`) and opens it:
+  - her lines become dialogue clips, and the person's go on their character;
+  - the decisions and the input become tracks.
+- **Timeline › Regenerate**, on a selected line, speaks its text again with the TTS voice (the shell's `tts.speak`,
+  or `?tts=http://127.0.0.1:5190/speak` for `tools/tts-server.py`). It writes the clip and its timings, and changes
+  the line as one undo step.
+- **Check Against Scrub** samples the whole frame a fractional key or clip start falls in. A baked take's decisions
+  sit between frames, on exact steps.
+
+Writing to the project (Bake, Regenerate) needs the Mac shell; in a browser the bundled sample is read-only.
+

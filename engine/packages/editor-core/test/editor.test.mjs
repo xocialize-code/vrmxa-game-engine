@@ -136,3 +136,25 @@ test('selection: replace, add (the last is primary), unknown ids dropped, delete
   s.select(null);
   assert.equal(s.primary, null);
 });
+
+test('regenerating a line (M3 W4): spoken, its clip and timings written, then one undo step that undo reverses', async () => {
+  const doc = { format: 'vrmxs', version: 1, id: 'conversation', set: 'cafe.vrmxs', assets: [], nodes: [], connections: [],
+    sequence: { fps: 24, duration: 480, shots: [], markers: [], tracks: [{ id: 'hana-1-says', type: 'dialogue', target: 'hana-1', clips: [{ start: 100, end: 160, text: 'Morning, Mira!', clip: 'voice/old.wav' }] }] } };
+  const s = new EditorSession({ registry: reg, text: JSON.stringify(doc) });
+  const written = {}, asked = [];
+  const speak = async (o) => { asked.push(o); return { wav: new Uint8Array([82, 73, 70, 70]), words: [{ text: 'Good', start: 0.03, duration: 0.3 }, { text: 'morning!', start: 0.35, duration: 0.6 }], duration: 1.1 }; };
+  const write = async (ref, bytes) => { written[ref] = bytes; };
+  const before = s.history().undoDepth;
+  const ref = await s.seq.regenerateLine('hana-1-says', 0, 'Good morning!', { speak, write, voice: 'af_heart' });
+  assert.deepEqual(asked, [{ text: 'Good morning!', voice: 'af_heart' }]);
+  assert.match(ref, /^voice\/conversation-hana-1-says-1-[0-9a-f]{8}\.wav$/);
+  assert.deepEqual(Object.keys(written).sort(), [ref, ref.replace('.wav', '.timings.json')].sort());
+  assert.deepEqual(JSON.parse(written[ref.replace('.wav', '.timings.json')]).words.length, 2);
+  const c = s.doc.sequence.tracks[0].clips[0];
+  assert.deepEqual([c.text, c.clip, c.end], ['Good morning!', ref, 100 + 27], 'text, clip and subtitle length (1.1 s at 24 fps)');
+  assert.equal(s.history().undoDepth - before, 1, 'one undo step');
+  assert.equal(s.history().undo, 'Regenerate line "Good morning!"');
+  s.undo();
+  assert.deepEqual(s.doc.sequence.tracks[0].clips[0], { start: 100, end: 160, text: 'Morning, Mira!', clip: 'voice/old.wav' }, 'undo puts the old line back');
+  await assert.rejects(s.seq.regenerateLine('hana-1-says', 3, 'x', { speak, write }), /no line 3/);
+});

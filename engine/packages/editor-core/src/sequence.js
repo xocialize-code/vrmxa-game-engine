@@ -127,6 +127,38 @@ export class SequenceCommands {
   }
   removeClip(trackId, index) { return this.edit(`Delete clip ${trackId} ${index}`, (s) => { (s.tracks.find((x) => x.id === trackId) ?? this.track(trackId)).clips.splice(index, 1); }); }
 
+  /**
+   * Regenerate one dialogue line (M3 W4, AB-T-0543): new text spoken by a TTS provider, its clip and word timings
+   * written into the project, then the clip's text, audio and subtitle length changed as one undo step. Undo puts the
+   * old clip back (its file is still there).
+   * @param {string} trackId @param {number} index
+   * @param {string} text
+   * @param {{ speak: (o: { text: string, voice?: string }) => Promise<{ wav: Uint8Array, words?: any[], duration?: number }>,
+   *   write: (ref: string, bytes: Uint8Array | string) => Promise<any>, voice?: string, ref?: string }} o
+   * @returns {Promise<string>} the clip's ref
+   */
+  async regenerateLine(trackId, index, text, { speak, write, voice, ref }) {
+    const t = this.track(trackId);
+    if (t.type !== 'dialogue') throw new Error(`${trackId} is a ${t.type} track, not dialogue`);
+    const old = t.clips?.[index];
+    if (!old) throw new Error(`${trackId} has no line ${index}`);
+    if (!String(text).trim()) throw new Error('a line needs words');
+    const r = await speak({ text, voice });
+    let h = 0x811c9dc5;
+    for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 0x01000193);
+    const clip = ref ?? `voice/${slug(this.session.doc.id ?? 'sequence')}-${slug(trackId)}-${index + 1}-${(h >>> 0).toString(16).padStart(8, '0')}.wav`;
+    const words = r.words ?? [];
+    await write(clip, r.wav);
+    await write(clip.replace(/\.wav$/, '.timings.json'), `${JSON.stringify({ words, offset: 0 }, null, 1)}\n`);
+    const seconds = r.duration ?? (words.length ? words.at(-1).start + words.at(-1).duration : null);
+    return this.edit(`Regenerate line "${text.length > 32 ? `${text.slice(0, 31)}…` : text}"`, (s) => {
+      const c = s.tracks.find((x) => x.id === trackId).clips[index];
+      c.text = text; c.clip = clip;
+      if (seconds) c.end = c.start + Math.max(1, Math.ceil(seconds * s.fps));
+      return clip;
+    });
+  }
+
   // ---------------------------------------------------------------- shots and markers
 
   /**
