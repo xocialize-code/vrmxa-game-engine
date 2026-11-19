@@ -34,7 +34,7 @@ git-ignored; commit only what this session owns, staging by path. `npm run check
 | Path | What |
 |---|---|
 | [VRMXG-PRD.md](VRMXG-PRD.md) | The PRD (features pass): Godot feature map with P0–P2, format family, scene format, phasing, open questions. The spike table at the top links every receipt |
-| [M0-PLAN.md](M0-PLAN.md), [M1-PLAN.md](M1-PLAN.md), [M2-PLAN.md](M2-PLAN.md) | M0 (done 2026-11-17, AB-P-0013) and M1 (playable, done 2026-11-18, AB-P-0014: tasks AB-T-0512 to 0522, receipts AB-R-0967 to 0973) and M2 (production, done 2026-11-18, AB-P-0015: tasks AB-T-0523 to 0535, receipts AB-R-0994 to 1003) |
+| [M0-PLAN.md](M0-PLAN.md), [M1-PLAN.md](M1-PLAN.md), [M2-PLAN.md](M2-PLAN.md), [M3-PLAN.md](M3-PLAN.md) | M0 (done 2026-11-17, AB-P-0013) and M1 (playable, done 2026-11-18, AB-P-0014: tasks AB-T-0512 to 0522, receipts AB-R-0967 to 0973) and M2 (production, done 2026-11-18, AB-P-0015: tasks AB-T-0523 to 0535, receipts AB-R-0994 to 1003), and M3 (characters you talk to, planned 2026-11-19, AB-P-0016: tasks AB-T-0539 to 0552; WebGPU research AB-T-0553, 0554) |
 | [vrmxa-game-engine-notes.md](vrmxa-game-engine-notes.md) | The operator's original notes |
 | [physics-engine-research.md](physics-engine-research.md) | Physics research: Rapier, Jolt as fallback |
 | `engine/packages/dmath/` | `@vrmxg/dmath`, the first engine package: portable transcendental maths, bit-identical in V8 and JSC (AB-R-0931). Install it before anything parses a VRM. Its version is part of a replay's identity |
@@ -54,6 +54,7 @@ git-ignored; commit only what this session owns, staging by path. `npm run check
 | `research/` | `cinematics.md` (sequencer, cameras, post, viewports), `npc-ai.md` (behaviour trees, utility, LLM director) |
 | `reference/` | Godot 4.8-beta source and other reference repos. Read-only |
 | `../VRMXA_Specification/` | The VRMXA / VRMXW specs and the closet protocol (owned elsewhere) |
+| `../vrmxa-companion/` | The companion app (M3 W11, AB-D-0262): its own project and bridge area, on `apps/shell` and the engine's packages by path |
 | `../vrmxa-avatar-studio/` | The avatar studio, the first consumer of the VRMX formats |
 
 ## Rules
