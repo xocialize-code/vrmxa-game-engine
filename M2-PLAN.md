@@ -1,5 +1,8 @@
 # VRMXG M2 plan: production
 
+**Done 2026-11-18.** All thirteen workstreams are closed, and the ten exit checks below pass at 2df012b, each with a
+receipt (AB-R-0994 to 1003; [acceptance/README.md](acceptance/README.md)).
+
 *Draft, 2026-11-18. M2 as the PRD scopes it (§8): the shot sequencer, virtual cameras and blends, the post stack,
 particles, navigation and behaviour trees, save, layered animation (VRMXA G10) and IK. It builds on M1 (done 2026-11-18:
 [acceptance/](acceptance/README.md), receipts AB-R-0967 to 0973). The operator chose its weighting and two of its
