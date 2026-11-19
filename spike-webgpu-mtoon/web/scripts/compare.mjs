@@ -89,7 +89,7 @@ function montage(A, B, diff, file) {
 const stills = [];
 const read = (f) => fs.existsSync(path.join(res, f)) ? JSON.parse(fs.readFileSync(path.join(res, f), 'utf8')) : null;
 const key = (r) => [r.result.revision, r.result.model, r.result.view, r.result.features + (r.result.hide ? `,hide-${r.result.hide}` : '') + (r.result.noemissive ? ',noemissive' : ''), r.result.sun, r.result.amb].join('|');
-for (const r of ['chromium.json', 'chromium-vroid.json', 'chromium-upstream-r186.json'].flatMap((f) => read(f)?.rows ?? [])) if (r.png && r.result?.stage === 'rendered') stills.push({ runtime: 'chromium', dir: 'chromium', file: r.png, renderer: r.result.renderer, lib: r.result.lib, k: key(r) });
+for (const r of ['chromium.json', 'chromium-vroid.json', 'chromium-upstream-r186.json', 'blend-space.json'].flatMap((f) => read(f)?.rows ?? [])) if (r.png && r.result?.stage === 'rendered') stills.push({ runtime: 'chromium', dir: 'chromium', file: r.png, renderer: r.result.renderer, lib: r.result.lib, k: key(r) });
 for (const r of ['wkwebview.json', 'wkwebview-vroid.json'].flatMap((f) => read(f)?.rows ?? [])) if (r.png && r.result?.stage === 'rendered') stills.push({ runtime: `wkwebview-${r.origin}`, dir: 'wkwebview', file: r.png, renderer: r.result.renderer, lib: r.result.lib, k: key(r) });
 const find = (runtime, renderer, k, lib) => stills.find((s) => s.runtime === runtime && s.renderer === renderer && s.k === k && (lib === undefined || s.lib === lib));
 
@@ -100,6 +100,13 @@ for (const rt of runtimes) for (const ref of stills.filter((s) => s.runtime === 
     const b = find(rt, renderer, ref.k, lib);
     if (b) pairs.push({ kind: `webgl vs ${renderer}${lib === 'patched' ? '' : ` (${lib})`}`, a: ref, b });
   }
+}
+// Blend space with post (AB-T-0553 follow-up): WebGL to the canvas vs WebGL through @vrmxg/post, and post vs WebGPU.
+for (const rt of runtimes) for (const ref of stills.filter((s) => s.runtime === rt && s.renderer === 'webgl')) {
+  for (const p of ['webgl-post', 'webgl-post-ms0']) { const b = find(rt, p, ref.k); if (b) pairs.push({ kind: `webgl vs ${p}`, a: ref, b }); }
+}
+for (const rt of runtimes) for (const ref of stills.filter((s) => s.runtime === rt && s.renderer.startsWith('webgl-post'))) {
+  const b = find(rt, 'webgpu', ref.k, 'patched'); if (b) pairs.push({ kind: `${ref.renderer} vs webgpu`, a: ref, b });
 }
 for (const a of stills.filter((s) => s.runtime === 'chromium')) for (const rt of runtimes.filter((r) => r !== 'chromium')) {
   const b = find(rt, a.renderer, a.k, a.lib);

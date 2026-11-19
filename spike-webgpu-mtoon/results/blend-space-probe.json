@@ -1,0 +1,120 @@
+{
+ "date": "2026-11-19T17:07:33.551Z",
+ "material": "MeshBasicMaterial / MeshBasicNodeMaterial, colour (0.95, 0.4, 0.3), opacity 0.5, depthWrite false",
+ "predictions": {
+  "front over background": {
+   "srgbSpace": [
+    233,
+    196,
+    190
+   ],
+   "linearSpace": [
+    233,
+    198,
+    195
+   ]
+  },
+  "front over blue sphere": {
+   "srgbSpace": [
+    187,
+    160,
+    196
+   ],
+   "linearSpace": [
+    200,
+    160,
+    203
+   ]
+  }
+ },
+ "renderers": {
+  "webgl": {
+   "front over background": [
+    233,
+    195,
+    189
+   ],
+   "front over blue sphere": [
+    187,
+    159,
+    196
+   ],
+   "blue sphere alone": [
+    124,
+    149,
+    243
+   ],
+   "background": [
+    216,
+    221,
+    230
+   ]
+  },
+  "webgl-post-ms0": {
+   "front over background": [
+    233,
+    198,
+    195
+   ],
+   "front over blue sphere": [
+    200,
+    160,
+    203
+   ],
+   "blue sphere alone": [
+    124,
+    149,
+    243
+   ],
+   "background": [
+    216,
+    221,
+    230
+   ]
+  },
+  "webgl-post": {
+   "front over background": [
+    233,
+    198,
+    195
+   ],
+   "front over blue sphere": [
+    200,
+    160,
+    203
+   ],
+   "blue sphere alone": [
+    124,
+    149,
+    243
+   ],
+   "background": [
+    216,
+    221,
+    230
+   ]
+  },
+  "webgpu": {
+   "front over background": [
+    233,
+    198,
+    195
+   ],
+   "front over blue sphere": [
+    200,
+    160,
+    203
+   ],
+   "blue sphere alone": [
+    124,
+    149,
+    243
+   ],
+   "background": [
+    216,
+    221,
+    230
+   ]
+  }
+ }
+}

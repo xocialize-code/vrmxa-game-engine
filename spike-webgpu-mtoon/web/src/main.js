@@ -2,6 +2,8 @@
 // GLSL) or WebGPURenderer (MToonNodeMaterial, TSL), so the two can be compared pixel for pixel.
 //
 // Query: renderer=webgl|webgpu|webgpu-gl (WebGPURenderer forced onto its WebGL2 backend)
+//        renderer=webgl-post: WebGLRenderer through the engine's own @vrmxg/post PostStack (imported read-only), a
+//          pass-through spec (tone mapping 'none' = LINEAR) on its HalfFloat target; postms=0|4 (its MSAA, default 4)
 //        lib=patched|loadonly|stock (MToonNodeMaterial from src/vendor/three-vrm-nodes.js, -loadonly.js, or @pixiv/three-vrm/nodes)
 //        model=mira|hana|vroid10   view=body|face|back   features=all|none|matcap,rim,emissive,uv   sun, amb
 //        t=<s> (UV animation time)   w, h
@@ -23,7 +25,7 @@ const features = fq === '1' || fq === 'all' ? ALL : fq === '0' || fq === 'none' 
 const sunIntensity = +(q.get('sun') ?? 1.6), ambIntensity = +(q.get('amb') ?? 0.25);
 const uvTime = +(q.get('t') ?? 1.25);
 const W = +(q.get('w') ?? 512), H = +(q.get('h') ?? 768);
-const gpu = rendererKind !== 'webgl';
+const gpu = rendererKind.startsWith('webgpu');
 const THREE = gpu ? THREE_GPU : THREE_GL;
 
 const errors = (window.__errors ??= []);
@@ -147,6 +149,8 @@ function buildSpheres(Material) {
   return { group, mats };
 }
 
+let draw = null; // set for renderer=webgl-post; otherwise renderer.render
+
 async function main() {
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
@@ -162,6 +166,16 @@ async function main() {
   } else {
     renderer = new THREE_GL.WebGLRenderer({ canvas, antialias: false, preserveDrawingBuffer: true });
     result.backend = 'WebGL2';
+  }
+  if (rendererKind === 'webgl-post') {
+    const { PostStack } = await import('../../../engine/packages/post/src/stack.js');
+    const post = new PostStack(renderer, { multisampling: +(q.get('postms') ?? 4) });
+    post.configure([{ effect: 'toneMapping' }], { toneMapping: 'none' });
+    post.setSize(W, H);
+    draw = (scene, camera) => post.render(scene, camera);
+    result.postMultisampling = post.multisampling;
+    if (post.multisampling === 0) result.renderer = 'webgl-post-ms0'; // its own name, so the comparison keys stay distinct
+    result.postSpec = 'toneMapping (none = LINEAR), HalfFloat';
   }
   result.revision = THREE.REVISION;
   renderer.setPixelRatio(1);
@@ -293,13 +307,13 @@ async function capture(renderer, scene, camera) {
   for (let i = 0; i < 4; i++) {
     await new Promise((r) => requestAnimationFrame(r));
     const t = performance.now();
-    renderer.render(scene, camera);
+    (draw ?? ((s, c) => renderer.render(s, c)))(scene, camera);
     if (i === 0) result.firstRenderMs = +(performance.now() - t).toFixed(2); // includes building every pipeline
   }
   if (gpu) await renderer.compileAsync?.(scene, camera);
   await new Promise((r) => requestAnimationFrame(r));
   const t0 = performance.now();
-  renderer.render(scene, camera);
+  (draw ?? ((s, c) => renderer.render(s, c)))(scene, camera);
   window.__png = renderer.domElement.toDataURL('image/png');
   result.renderMs = +(performance.now() - t0).toFixed(2);
   // timing=1: CPU time of renderer.render() over 120 frames (take it over loopback: the scheme timer is 1 ms).
