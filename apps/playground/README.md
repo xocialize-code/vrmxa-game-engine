@@ -33,10 +33,11 @@ nothing, and the step is the same with them on or off.
   `?preset=host`.
 - **The chat:** type a line, or pick one of her replies (her app persona's `replies` in `personas.json`). Keys typed
   into the chat box never reach the game's input.
-- **Speech bubbles:** each line shows over the speaker's head, word by word, with punctuation, while the director waits
-  for the model it shows "…".
-  - A speaker out of frame gets a bubble pinned to the edge, with their name and no tail.
-  - A speaker behind the camera gets none (the caption says it).
+- **Speech bubbles, drawn in the canvas** (`@vrmxg/text`, troika): each line shows over the speaker's head, word by
+  word, with punctuation; while the director waits for the model it shows "…".
+  - A speaker out of view gets none; the caption says the line.
+  - A screen-reader copy of the bubbles stays in the page, visually hidden.
+  - **Names** toggles name tags over the characters.
 - **Captions** at the bottom, as before. They now keep the line's punctuation. Both have toggles in the status bar.
 - **`?take=takes/conversation.json`** replays a recorded conversation (its cast, input and ai log) with no model.
 
@@ -44,5 +45,5 @@ Checked in headless Chromium by `acceptance/m3/dialogue-chromium.mjs` (`acceptan
 - the typed line, the "…" bubble, her reply with its caption, and a picked reply that sets her order goal;
 - the take replayed with the bubbles and captions read every step hashes the same as with both off.
 
-In-world text drawn in the canvas (bubbles in exports, name tags, title cards) waits on the text rendering spike,
-AB-T-0536.
+The text spike (AB-T-0536) chose troika for in-world text. Subtitles burned into exports, and title cards, are still to
+do.

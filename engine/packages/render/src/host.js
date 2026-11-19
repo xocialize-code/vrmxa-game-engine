@@ -46,6 +46,13 @@ export class RenderHost {
     this._room = undefined;
     /** Called during render with the blend applied, before drawing: (alpha) => void. For traces and tests. */
     this.onPresent = null;
+    /**
+     * Presentation drawn over the world (M3 W6: @vrmxg/text's speech bubbles): { update(tree, camera, alpha), settle?() }.
+     * Updated as each frame is presented, with the blend applied; an offline frame waits for settle() before drawing.
+     * They hang in this host's scene, never the tree.
+     * @type {{ update: (tree: any, camera: any, alpha: number) => void, settle?: () => Promise<void> }[]}
+     */
+    this.overlays = [];
     /** The post stack (M2 W3), configured from the scene's Environment `post`; null renders straight to the canvas. */
     this.post = post ? post(this.renderer) : null;
     if (this.post) this.post.dofSource = () => this.cameraNode()?.postDof?.(this.renderer.getContext?.().drawingBufferHeight ?? 1080) ?? null;
@@ -137,6 +144,11 @@ export class RenderHost {
     tree.present(dt, alpha);
     // an offline frame waits for the post stack's loads (a LUT), so its look never depends on timing (M2 W12)
     if (this.post?.settle) { this.views.update(tree); await this.post.settle(); }
+    // and for its overlays' typesetting (speech bubbles, M3 W6): the text this frame shows, laid out before it draws
+    if (this.overlays.length) {
+      const camera = this.camera ?? tree.services.get('cameras')?.current?.camera ?? this.fallbackCamera;
+      for (const o of this.overlays) { o.update(tree, camera, alpha); if (o.settle) await o.settle(); }
+    }
     this.render(alpha, steps > 0);
     this.last.steps = steps; this.last.alpha = alpha; this.last.held = false;
     return this.last;
@@ -155,6 +167,7 @@ export class RenderHost {
     const blend = this.interpolate && alpha < 1;
     if (blend) this.interpolator.apply(alpha);
     this.onPresent?.(alpha);
+    for (const o of this.overlays) o.update(tree, camera, alpha);
     this.time = (tree.clock.step - 1 + alpha) / 60;
     if (this.post?.active) this.post.render(this.scene, camera, this.time);
     else this.renderer.render(this.scene, camera);

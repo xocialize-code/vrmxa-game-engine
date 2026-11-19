@@ -7,7 +7,7 @@ import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
 import { PRESETS } from '@vrmxg/camera';
 import { RenderHost } from '@vrmxg/render';
 import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
-import { captureStill } from '@vrmxg/export';
+import { captureStill, hashFrame } from '@vrmxg/export';
 import { loadSample, buildWorld } from './world.js';
 import { serialize } from '@vrmxg/scene';
 import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, runBrains, runSave, runFilm, runConversation, STEPS } from './acceptance.js';
@@ -18,6 +18,7 @@ import { inShell, call } from '../../shell/js/shell.js';
 import { httpTTS, shellTTS } from '@vrmxg/voice';
 import { installDirector, httpModel, scriptedModel, isTake } from '@vrmxg/director';
 import { Vector3 } from 'three';
+import { TextLayer } from '@vrmxg/text';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
@@ -42,6 +43,8 @@ export class Playground {
   constructor(canvas, { preserveDrawingBuffer = false } = {}) {
     this.canvas = canvas;
     this.host = new RenderHost({ canvas, preserveDrawingBuffer, post: (r) => new PostStack(r, { loadLut: async (file) => lutFromCube(new TextDecoder().decode(await bytes(file))) }) });
+    // speech bubbles in the canvas (M3 W6, troika: the text spike's verdict), the sample's static Noto Sans JP; no CDN
+    this.text = new TextLayer({ font: 'fonts/NotoSansJP-Regular.ttf', bold: 'fonts/NotoSansJP-Bold.ttf', unicodeFontsURL: 'fonts/' }).attach(this.host);
     this.tree = null; this.input = null;
     this.playing = false;
     this.stats = { frameMs: 0, fps: 0, simMs: 0, renderMs: 0, step: 0, alpha: 0, steps: 0 };
@@ -314,6 +317,18 @@ export class Playground {
     const x = ((v.x + 1) / 2) * w, y = ((1 - v.y) / 2) * h;
     const cx = Math.min(w - 150, Math.max(150, x)), cy = Math.min(h - 140, Math.max(60, y));
     return { x: Math.round(cx), y: Math.round(cy), visible: true, edge: Math.abs(cx - x) > 12 || Math.abs(cy - y) > 12 }; // a small nudge keeps the tail
+  }
+
+  /** Speech bubbles in the canvas on or off (presentation: the world is the same either way). */
+  setBubbles(on) { this.text.bubbles = !!on; if (!this.playing) this.host.render(1, false); }
+  /** Name tags over the characters on or off. */
+  setNameTags(on) { this.text.nameTags = !!on; if (!on) { for (const t of this.text.tags.values()) { this.text.group.remove(t.text); t.dispose(); } this.text.tags.clear(); } if (!this.playing) this.host.render(1, false); }
+
+  /** The drawn frame's hash (FNV-1a of the RGBA read-back, as exports hash theirs): read right after a render. */
+  frameHash() {
+    const gl = this.host.renderer.getContext(), w = gl.drawingBufferWidth, h = gl.drawingBufferHeight, buf = new Uint8Array(w * h * 4);
+    gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+    return hashFrame(buf);
   }
 
   /** The world's hash now (the presentation checks compare it with the dialogue UI on and off). */

@@ -18,8 +18,40 @@
     "order": "latte"
    },
    "from": "director",
-   "step": 386
-  }
+   "step": 389
+  },
+  "canvasThinking": [
+   {
+    "actor": "hana-1",
+    "text": "…",
+    "thinking": true
+   }
+  ],
+  "canvasLine": [
+   {
+    "actor": "hana-1",
+    "text": "Good morning! Lovely to see you.",
+    "thinking": false
+   }
+  ]
+ },
+ "canvasFrames": {
+  "step": 3326,
+  "again": 3326,
+  "hashes": [
+   "5a3b68cdf95f628d",
+   "5a3b68cdf95f628d",
+   "5a3b68cdf95f628d",
+   "5a3b68cdf95f628d"
+  ],
+  "identical": true,
+  "shown": [
+   {
+    "actor": "hana-1",
+    "text": "Fresh beans this morning. Enjoy it.",
+    "thinking": false
+   }
+  ]
  },
  "presentation": {
   "steps": 3000,

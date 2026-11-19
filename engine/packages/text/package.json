@@ -1,0 +1,18 @@
+{
+  "name": "@vrmxg/text",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG in-canvas text (M3 W6): speech bubbles and name tags in the world with troika-three-text (the text spike's verdict, AB-T-0536). Presentation: it reads the world, hangs in the render host's scene outside the tree, and settles before an offline frame.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "dependencies": {
+    "troika-three-text": "0.53.1"
+  },
+  "peerDependencies": {
+    "three": "*"
+  }
+}

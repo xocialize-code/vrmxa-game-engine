@@ -36,7 +36,9 @@ M3 adds checks as its workstreams land. The M3 acceptance (W13) runs all ten of 
     caption;
   - a picked reply ("Could I get a latte, please?") sets her `takeOrder` goal;
   - the recorded conversation replayed for 3,000 steps with the bubbles and captions read every step hashes the same
-    at every 300th step as with both off.
+    at every 300th step as with both off;
+  - the bubbles are drawn in the canvas (`@vrmxg/text`, troika, the text spike's verdict AB-T-0536): a frame with
+    Hana's bubble hashes the same drawn twice and on another load of the page.
 
 ## Result: M2 is done (2026-11-18, M5 Max)
 

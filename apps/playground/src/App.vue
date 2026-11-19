@@ -6,7 +6,7 @@ import { Playground, PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, showBubbles: true, showCaptions: true });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, showBubbles: true, showCaptions: true, showNames: false });
 // the sample's scenes and sequences; ?scene= picks one at load
 const SCENES = ['cafe.vrmxs', 'sequences/morning.vrmxs', 'sequences/cafe-morning.vrmxs'];
 const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
@@ -26,6 +26,8 @@ function refresh() {
 
 // M3 W6: talking to the character with a director (typed, or a choice); bubbles and captions are presentation only
 function say(text) { try { pg.talk(text); } catch (e) { ui.error = String(e?.message ?? e); } refresh(); }
+const setBubbles = () => { pg.setBubbles(ui.showBubbles); refresh(); };
+const setNames = () => { pg.setNameTags(ui.showNames); refresh(); };
 function send() { const t = ui.chatText.trim(); if (!t) return; say(t); ui.chatText = ''; }
 
 async function load() {
@@ -121,7 +123,7 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
     <main class="stage"><canvas ref="canvas" aria-label="Scene view" tabindex="0"></canvas>
       <p v-if="ui.loading" class="overlay">Loading…</p>
       <pre v-if="ui.error" class="overlay error" role="alert">{{ ui.error }}</pre>
-      <div v-if="ui.showBubbles && ui.bubbles.length" id="bubbles" class="bubbles">
+      <div v-if="ui.showBubbles && ui.bubbles.length" id="bubbles" class="bubbles sr-only">
         <div v-for="b in ui.bubbles" :key="`${b.actor}-${b.kind}`" class="bubble" :class="[b.kind, { edge: b.edge }]" :style="{ left: `${b.x}px`, top: `${b.y}px` }" role="status" :aria-label="b.kind === 'thinking' ? `${b.name} is thinking` : `${b.name} says: ${b.text}`">
           <span v-if="b.kind === 'thinking'" class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
           <template v-else><strong v-if="b.edge">{{ b.name }}</strong><span v-for="(w, i) in b.words" :key="i" :class="{ said: i < b.spoken, now: i === b.word }">{{ `${w} ` }}</span></template>
@@ -148,7 +150,8 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
         <label><input type="checkbox" v-model="ui.debug.capsules" aria-label="Capsules" @change="setDebug"> Capsules</label>
         <label><input type="checkbox" v-model="ui.debug.rays" aria-label="Rays" @change="setDebug"> Rays</label>
         <label><input type="checkbox" v-model="ui.interpolate" aria-label="Interpolate" @change="setInterp"> Interpolate</label>
-        <label><input id="show-bubbles" type="checkbox" v-model="ui.showBubbles" aria-label="Speech bubbles" @change="refresh"> Bubbles</label>
+        <label><input id="show-bubbles" type="checkbox" v-model="ui.showBubbles" aria-label="Speech bubbles" @change="setBubbles"> Bubbles</label>
+        <label><input id="show-names" type="checkbox" v-model="ui.showNames" aria-label="Name tags" @change="setNames"> Names</label>
         <label><input id="show-captions" type="checkbox" v-model="ui.showCaptions" aria-label="Captions" @change="refresh"> Captions</label>
       </fieldset>
       <!-- Each readout's accessible name carries its value ("Frame time 16.7 ms · 60 fps"), so AppProbe reads it in one find. -->
@@ -198,7 +201,9 @@ canvas { display: block; width: 100%; height: 100%; outline: none; }
 .notes { color: var(--muted); }
 .mixer { display: flex; gap: 10px; border: 0; margin: 0; padding: 0; align-items: center; } .mixer legend { float: left; margin-right: 6px; color: var(--muted); }
 .mixer .bus { display: flex; align-items: center; gap: 4px; font-size: 12px; } .mixer input[type=range] { width: 64px; }
-/* M3 W6: speech bubbles over the speakers, and the chat */
+/* M3 W6: speech bubbles are drawn in the canvas (@vrmxg/text); this list of them is for screen readers only */
+.sr-only { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+/* the DOM bubbles' look (kept for when the canvas can't draw text) */
 .bubbles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
 .bubble { position: absolute; transform: translate(-50%, calc(-100% - 10px)); max-width: 280px; padding: 8px 12px; border-radius: 14px; background: #fffdf7; color: #1d1f24; font-size: 15px; line-height: 1.35; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25); }
 .bubble::after { content: ''; position: absolute; left: 50%; bottom: -8px; transform: translateX(-50%); border: 8px solid transparent; border-bottom: 0; border-top-color: #fffdf7; }

@@ -4,6 +4,8 @@
 //      Screenshots in acceptance/results/m3-dialogue-*.png.
 //   2. Bubbles and captions are presentation: the recorded conversation (?take=takes/conversation.json) replayed twice,
 //      once reading bubbles and captions every step and once with both off, hashes the same at every 300th step.
+//   3. The bubbles are drawn in the canvas (@vrmxg/text, troika): a frame with Hana's bubble, typeset and drawn, hashes
+//      the same drawn twice and on another load of the page.
 // Needs the playground's dev server (npm --prefix apps/playground run dev, port 5181).
 // Writes acceptance/results/m3-dialogue-chromium.json.
 //   node acceptance/m3/dialogue-chromium.mjs [--url http://localhost:5181]
@@ -36,10 +38,12 @@ const choices = await page.$$eval('#chat .choice', (bs) => bs.map((b) => b.textC
 await page.fill('#chat-input', 'Good morning, Hana!');
 await page.press('#chat-input', 'Enter');
 const thinking = await until(page, async () => (await bubble(page)).find((l) => /is thinking/.test(l)), 5000);
+const canvasThinking = await page.evaluate(() => window.__playground.text.state());
 if (thinking) await page.screenshot({ path: res('m3-dialogue-thinking.png') });
 const line = await until(page, async () => (await bubble(page)).find((l) => /Hana says: Good morning! Lovely to see you\./.test(l)));
 await page.waitForTimeout(900);
 const caption = await page.evaluate(() => document.querySelector('#captions p')?.getAttribute('aria-label') ?? null);
+const canvasLine = await page.evaluate(() => window.__playground.text.state());
 await page.screenshot({ path: res('m3-dialogue-typed.png') });
 await until(page, async () => !(await bubble(page)).length, 15000);
 await page.click('#chat .choice:nth-child(2)'); // "Could I get a latte, please?"
@@ -65,8 +69,15 @@ const replay = async (withUI) => {
     }
     return { hashes, seen: [...seen], shotAt: shot };
   }, withUI);
-  if (withUI) { // a still of a line in the take, bubble and caption on
-    await p.evaluate(async () => { const pg = window.__playground; while (!pg.bubbles().some((b) => b.kind === 'line')) pg.host.frame(1 / 60); });
+  if (withUI) { // a frame of a line in the take, its bubble typeset and drawn in the canvas: hashed twice, and a still
+    out.frame = await p.evaluate(async () => {
+      const pg = window.__playground;
+      while (!pg.bubbles().some((b) => b.kind === 'line')) pg.host.frame(1 / 60);
+      pg.host.render(1, false); await pg.text.settle();
+      pg.host.render(1, false); const a = pg.frameHash();
+      pg.host.render(1, false); const b = pg.frameHash();
+      return { step: pg.tree.clock.step, a, b, shown: pg.text.state() };
+    });
     await p.evaluate(() => window.__playground._changed());
     await p.waitForTimeout(300);
     await p.screenshot({ path: res('m3-dialogue-take.png') });
@@ -74,12 +85,14 @@ const replay = async (withUI) => {
   await p.close();
   return out;
 };
-const on = await replay(true), off = await replay(false);
+const on = await replay(true), off = await replay(false), again = await replay(true);
 await browser.close();
 const same = Object.keys(on.hashes).every((k) => on.hashes[k] === off.hashes[k]);
+const frames = { step: on.frame.step, again: again.frame.step, hashes: [on.frame.a, on.frame.b, again.frame.a, again.frame.b], identical: on.frame.step === again.frame.step && new Set([on.frame.a, on.frame.b, again.frame.a, again.frame.b]).size === 1, shown: on.frame.shown };
 const out = {
   runtime: 'chromium',
-  typed: { choices, thinking, line, caption, order, goal },
+  typed: { choices, thinking, line, caption, order, goal, canvasThinking, canvasLine },
+  canvasFrames: frames,
   presentation: { steps: 3000, samples: Object.keys(on.hashes).length, same, linesSeen: on.seen, hashesWithUI: on.hashes, hashesWithout: off.hashes },
   screenshots: ['m3-dialogue-thinking.png', 'm3-dialogue-typed.png', 'm3-dialogue-choice.png', 'm3-dialogue-take.png'],
   errors,

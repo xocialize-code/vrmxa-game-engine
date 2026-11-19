@@ -11,6 +11,7 @@
   "dependencies": {
     "@vrmxg/ai": "0.1.0",
     "@vrmxg/director": "0.1.0",
+    "@vrmxg/text": "0.1.0",
     "@vrmxg/persona": "0.1.0",
     "@vrmxg/audio": "0.1.0",
     "@vrmxg/camera": "0.1.0",
