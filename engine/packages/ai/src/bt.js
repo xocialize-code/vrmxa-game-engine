@@ -38,7 +38,7 @@ export const NODE_TYPES = {
   condition: { description: 'A test, now.', args: { test: { type: 'string' } } },
   action: { description: 'One action of the vocabulary.', args: { do: { enum: Object.keys(ACTIONS) }, args: { type: 'object' } } },
   set: { description: 'Write a blackboard value.', args: { key: { type: 'string' }, value: {} } },
-  choose: { description: 'Pick into the blackboard: an advert (a free seat), a random reachable point near home, a remembered agent.', args: { pick: { enum: ['advert', 'point', 'remembered'] }, key: { type: 'string' } } },
+  choose: { description: 'Pick into the blackboard: an advert (a free seat), a random reachable point near home, a remembered agent, an item of a blackboard list.', args: { pick: { enum: ['advert', 'point', 'remembered', 'item'] }, key: { type: 'string' } } },
 };
 
 /** Resolve "$key" / "$key.path" / "$self" in action arguments from the blackboard. */
@@ -92,6 +92,16 @@ export const INPUTS = {
   advert: (ctx, { verb, range = 10 }) => (ctx.ai.adverts(ctx.node, verb, range).length ? 1 : 0),
   /** a role-profile trait, 0…1 (M3 W1: the persona service's profile for this character; 0.5 without one) */
   trait: (ctx, { name }) => ctx.ai.trait?.(ctx.node.id, name) ?? 0.5,
+  /**
+   * 1 while fewer than `min` + (`max` − `min`) · trait seconds have passed since the step in blackboard `key`, else 0
+   * (M3 W2: a talkative character lingers in a quiet conversation, a reserved one gets back to work sooner)
+   */
+  linger: (ctx, { key, min = 4, max = 20, trait = 'talkativeness' }) => {
+    const v = Number(resolve(`$${key}`, ctx));
+    if (!Number.isFinite(v)) return 0;
+    const t = ctx.ai.trait?.(ctx.node.id, trait) ?? 0.5;
+    return ctx.step - v <= (min + (max - min) * t) * 60 ? 1 : 0;
+  },
   /** a test as 0 or 1 */
   test: (ctx, a) => (TESTS[a.test]?.(ctx, a) ? 1 : 0),
 };
@@ -245,6 +255,10 @@ function choose(ctx, spec) {
         if (!best || m.strength > best.strength || (m.strength === best.strength && m.source < best.source)) best = m;
       }
       return best?.source ?? null;
+    }
+    case 'item': { // one element of the blackboard list `from`, from the agent's own stream (M3 W2: a filler line)
+      const list = resolve(`$${spec.from}`, ctx);
+      return Array.isArray(list) && list.length ? structuredClone(list[Math.min(list.length - 1, Math.floor(ctx.rng.float() * list.length))]) : null;
     }
     default: throw new Error(`choose: unknown pick "${spec.pick}"`);
   }

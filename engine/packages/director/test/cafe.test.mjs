@@ -72,7 +72,7 @@ test('a conversation: the wait is in the step, the line lands on its step, and t
   assert.ok(a.waiting[0] >= 500 && a.waiting[0] <= 502 && a.waiting.at(-1) <= line[0], `Hana is flagged waiting from ${a.waiting[0]} to ${a.waiting.at(-1)}`);
   const [req, dec] = a.log.filter((e) => e.kind);
   assert.equal(req.kind, 'request'); assert.equal(req.meta.heard.text, 'Hi Hana! Could I get a latte, please?');
-  assert.equal(dec.kind, 'decision'); assert.deepEqual(dec.actions.map((x) => x.do), ['emote', 'say', 'lookAt']);
+  assert.equal(dec.kind, 'decision'); assert.deepEqual(dec.actions.map((x) => x.do), ['think', 'emote', 'say', 'lookAt'], 'stop thinking, then the face, the line and the look');
   assert.equal(dec.meta.source.model, 'scripted'); assert.match(dec.meta.source.promptHash, /^[0-9a-f]{16}$/);
   assert.equal(dec.meta.source.promptHash, req.meta.hash, 'the decision names the prompt it answers');
   const tools = a.director.requests[0].request.tools.find((t) => t.name === 'say').parameters.properties;

@@ -48,6 +48,8 @@ export class Director {
     this.history = new Map();
     this.queue = []; this.inFlight = 0; this.n = 0;
     /** Waiters released by pump(): { step, resolve }. */ this.waiters = [];
+    /** Salient events from the step, asked about in pump; agent → the step before which it isn't asked again. */
+    this.salient = []; this.considered = new Map();
     this.stats = { asked: 0, answered: 0, rejected: 0, failed: 0, timedOut: 0, late: 0 };
   }
 
@@ -61,8 +63,36 @@ export class Director {
     return this.ask(agent, { kind: 'talk', priority: 0, heard: { from, text: String(text).slice(0, 600) } });
   }
 
-  /** Ask `agent` to choose what to do next (goal choice on a salient event: W2 calls it). */
+  /** Ask `agent` to choose what to do next (goal choice; `watch` asks on salient events). */
   consider(agent, reason = 'Decide what to do next.') { return this.ask(agent, { kind: 'consider', priority: 1, reason }); }
+
+  /**
+   * The person (or `from`) starts or stops speaking to `agent` (M3 W2: voice activity from the shell, W3). It enters the
+   * step as bb.hearing, so the character listens (looks, nods) and holds a line until they stop; logged, so it replays.
+   * @param {string} agent @param {boolean} on @param {{ from?: string }} [o]
+   */
+  speaking(agent, on, { from = 'user' } = {}) {
+    if (this.model.replay) return;
+    const step = this.tree.clock.step;
+    // someone speaking to her starts (or keeps up) a conversation with them
+    const bb = on ? { hearing: { from: this.who(from), step }, conversation: { with: this.who(from), last: step } } : { hearing: null };
+    this.ai.inject({ step, agent, kind: 'hearing', bb });
+  }
+
+  /**
+   * Ask `agent` to choose a goal when `signal` fires on node `on` (a salient event: a customer came in, the door opened).
+   * The signal fires inside the step, so the question is asked after it (in pump), never more often than `cooldown` steps.
+   * @param {string} agent @param {string} on a node id @param {string} signal
+   * @param {{ reason?: string | ((args: any) => string), cooldown?: number }} [o]
+   */
+  watch(agent, on, signal, { reason = `Something happened: ${signal}.`, cooldown = 600 } = {}) {
+    const node = this.tree.find(on);
+    if (!node) throw new Error(`watch: no node ${on}`);
+    this.tree.listen(node, signal, (args) => this.salient.push({ agent, cooldown, reason: typeof reason === 'function' ? reason(args) : reason }));
+  }
+
+  /** A person's id as the step knows them: `user` is the node they speak as. */
+  who(from) { return from === 'user' ? this.user ?? 'user' : from; }
 
   ask(agent, { kind, priority, heard = null, reason = null }) {
     if (this.model.replay) return null;
@@ -79,7 +109,9 @@ export class Director {
     if (heard) history.push({ role: 'user', content: heard.text });
     this.history.set(agent, history.slice(-24));
     // into the step now: the tree sees it is waiting (and what was heard) on its next tick, and a replay reproduces it
-    this.ai.inject({ step, agent, kind: 'request', bb: { director: { pending: id, since: step }, ...(heard ? { heard: { ...heard, step } } : {}) }, meta: { id, kind, hash, ...(heard ? { heard } : {}), ...(reason ? { reason } : {}) } });
+    // (and, when someone spoke, that she is in a conversation with them: the tree stays with them while it lasts)
+    const talk = heard ? { heard: { ...heard, step }, conversation: { with: this.who(heard.from), last: step } } : {};
+    this.ai.inject({ step, agent, kind: 'request', bb: { director: { pending: id, since: step }, ...talk }, meta: { id, kind, hash, ...(heard ? { heard } : {}), ...(reason ? { reason } : {}) } });
     this.queue.push(r);
     this.queue.sort((a, b) => a.priority - b.priority || a.step - b.step || (a.id < b.id ? -1 : 1));
     this.dispatch();
@@ -103,6 +135,10 @@ export class Director {
   /** Call after each step: releases step waiters, times requests out, sends queued ones. */
   pump() {
     const step = this.tree.clock.step;
+    if (this.salient.length) { // salient events from the last step: ask, at most once per cooldown per character
+      const due = this.salient; this.salient = [];
+      for (const s of due) if (step >= (this.considered.get(s.agent) ?? -Infinity)) { this.considered.set(s.agent, step + s.cooldown); this.consider(s.agent, s.reason); }
+    }
     if (this.waiters.length) { const due = this.waiters.filter((w) => w.step <= step); this.waiters = this.waiters.filter((w) => w.step > step); for (const w of due) w.resolve(); }
     for (const r of this.requests) if ((r.state === 'queued' || r.state === 'asking') && step >= r.deadline) {
       if (r.state === 'asking') this.inFlight--;
@@ -133,9 +169,13 @@ export class Director {
   /** The decision into the step, on the first tick from now: the calls as actions, a goal, blackboard values. */
   decide(r, { calls = [], failed = null, errors = null, model = this.model.name }) {
     const step = this.tree.clock.step, e = toInject(calls, this.user);
-    const bb = { director: { pending: null, since: null, last: r.id, ...(failed ? { failed } : {}) }, ...e.bb };
+    // her reply keeps the conversation going (its quiet is counted from here), unless she ended it
+    const going = r.heard && !('conversation' in e.bb) ? { conversation: { with: this.who(r.heard.from), last: step } } : {};
+    const bb = { director: { pending: null, since: null, last: r.id, ...(failed ? { failed } : {}) }, ...going, ...e.bb };
     const meta = { id: r.id, source: { model, promptHash: r.hash }, asked: r.step, ...(failed ? { failed, errors } : { calls }) };
-    this.ai.inject({ step, agent: r.agent, kind: 'decision', bb, ...(e.actions.length ? { actions: e.actions } : {}), ...(e.goal ? { goal: e.goal } : {}), meta });
+    // a decision that acts ends the thinking first (the tree, which would, waits behind the decision's actions)
+    const actions = e.actions.length ? [{ do: 'think', args: { on: false } }, ...e.actions] : [];
+    this.ai.inject({ step, agent: r.agent, kind: 'decision', bb, ...(actions.length ? { actions } : {}), ...(e.goal ? { goal: e.goal } : {}), meta });
     const said = calls.find((c) => c.name === 'say');
     if (said) { const h = this.history.get(r.agent) ?? []; h.push({ role: 'assistant', content: said.args.text }); this.history.set(r.agent, h.slice(-24)); }
   }
@@ -208,7 +248,7 @@ export function toInject(calls, user) {
       actions.push({ do: 'say', args: { text: args.text, topic: 'chat', ...(who(args.to) ? { to: who(args.to) } : {}) } });
       if (args.gesture) actions.push({ do: 'gesture', args: { slot: args.gesture } });
       if (who(args.to)) actions.push({ do: 'lookAt', args: { target: who(args.to) } });
-    } else if (name === 'setGoal') goal = { name: args.goal, params: args.params ?? {} };
+    } else if (name === 'setGoal') goal = { name: args.goal, params: Object.fromEntries(Object.entries(args.params ?? {}).map(([k, v]) => [k, v === 'user' ? who(v) ?? v : v])) };
     else if (name === 'endConversation') bb.conversation = null;
     else if (name === 'emote') actions.push({ do: 'emote', args: { name: args.name } });
     else if (name === 'gesture') actions.push({ do: 'gesture', args: { slot: args.slot } });

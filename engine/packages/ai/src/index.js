@@ -7,7 +7,7 @@ export { AiService } from './service.js';
 export { ACTIONS, actionSchemas, approach, positionOf } from './actions.js';
 export { NODE_TYPES, TESTS, INPUTS, STATUS, compile, tick, resolve } from './bt.js';
 export { CURVES, curve } from './curves.js';
-export { PRESETS } from './presets.js';
+export { PRESETS, FILLERS, conversation } from './presets.js';
 
 /**
  * Give a tree the `brain` behaviour and the "ai" service. Install after nav and interaction. With `resolve`, brains may

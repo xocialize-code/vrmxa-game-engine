@@ -257,6 +257,10 @@ export class CharacterNode extends Node {
       const t = c.look ? this.tree.find(c.look) : null;
       const at = t ? this.lookPointOf(t) : null;
       if (at && c.lookOffset) { at.x += c.lookOffset[0]; at.y += c.lookOffset[1]; at.z += c.lookOffset[2]; }
+      if (at && c.lookAway) { // thinking (M3 W2): the gaze goes 0.4 m to one side of the target and 0.3 m up
+        const me = this.object3d.getWorldPosition(_v), dx = at.x - me.x, dz = at.z - me.z, len = Math.sqrt(dx * dx + dz * dz) || 1;
+        at.x += (-dz / len) * 0.4 * c.lookAway; at.z += (dx / len) * 0.4 * c.lookAway; at.y += 0.3;
+      }
       let ok = !!at;
       if (at) {
         const me = this.object3d.getWorldPosition(_v);
@@ -434,6 +438,8 @@ export class CharacterNode extends Node {
 
   /** Look at a node; omit target to stop. @param {{ target?: string }} [args] */
   lookAt({ target } = {}) { this.ctrl.look = target ?? null; if (!target) delete this.ctrl.lookOffset; }
+  /** Look away from the target, up and to one side (M3 W2: thinking); side 1 left, −1 right, 0 back. @param {{ side?: number }} [args] */
+  lookAway({ side = 1 } = {}) { if (side) this.ctrl.lookAway = side; else delete this.ctrl.lookAway; }
 
   /** Set an expression weight directly (0..1). */
   setExpression(name, weight) { this.vrm.expressionManager?.setValue(name, weight); }

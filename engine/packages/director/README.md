@@ -29,6 +29,7 @@ W.ai.replay(recordedLog);                   // with installDirector(tree, { mode
 | Tools (`schema.js`) | `toolsFor(moment)`: the ai vocabulary with its free strings narrowed to enums (emotions, gestures, people, items, verbs, goals), plus `endConversation`. A tool with nothing to choose from is left out. Coordinates are never offered |
 | Validation | `validate(reply, moment, { exists })`: every call must match its tool's schema, every id must still be in the world, at most four calls, one line and one movement. Text with no calls is read as a line. Any fault rejects the whole reply, with reasons |
 | Into the step | A request enters at once as `{ kind: 'request', bb: { director: { pending, since }, heard } }`: the tree sees the wait on its next tick (W2 plays `think` on it). A decision enters on the first tick after the reply arrives as `{ kind: 'decision', actions, goal, bb, meta: { source: { model, promptHash } } }`. `say` becomes its face, the line, its gesture and a look at the listener, started together. A rejected, failed or timed-out request enters as a decision with no calls: the wait clears and the tree carries on. A late answer is dropped |
+| Conversation (M3 W2) | Inputs the director sends into the step:<br>• `talk` sets `bb.conversation { with, last }` and her reply renews it; `endConversation` clears it;<br>• `speaking(agent, on)` sets `bb.hearing` while the person speaks (from voice activity, W3) and starts a conversation;<br>• `watch(agent, node, signal, { reason, cooldown })` asks for goal choice when a signal fires, after the step it fired in, at most once per cooldown.<br>A decision that acts starts with `think { on: false }`, so she stops looking away as she answers. `user` in a goal's params becomes the person's node |
 | `inspect(agent)` | Pending requests, the last one (calls or errors), and the conversation so far: for the debugger and MCP (W10) |
 
 **The `ai` service's side** (in `@vrmxg/ai`, for this package):
@@ -48,6 +49,16 @@ Measured (Node 26, M5 Max, `npm test`, the sample cafe with a scripted model; ne
   of them is said, and Hana still serves Mira.
 - **A model that never answers** times out after 240 steps, and its late answer is dropped.
 
+Conversation (M3 W2, `test/conversation.test.mjs`, the cafe):
+- **Hana as `host`.** She listens while Mira speaks (looks at her, nods) and looks away while the reply is on its way.
+  Past 1.5 s she says a filler line, then the reply. "Could I have a latte?" becomes `takeOrder` with the order, and
+  she makes and brings it without asking again. Two runs and a replay of the log are the same world every 30 steps.
+- **Lingering.** A talkative Hana (0.9) stays in a quiet conversation for about 18 s, a reserved one (0.1) about 6 s.
+- **Hana as `follower`.** "Wait by the door" sends her to the entrance to wait there; "follow me" brings her back to
+  Mira.
+- **Goal choice** on a watched signal is asked after the step it fired in, and once per cooldown.
+- **Turn-taking.** A reply that arrives while Mira is still speaking waits until she stops.
+
 Tests without a world cover:
 - the schemas narrowed to a moment;
 - fifteen bad-reply fixtures, each rejected with a reason;
@@ -55,7 +66,6 @@ Tests without a world cover:
 - the §11 prompt order and the hash.
 
 Not yet:
-- conversation behaviour on the wait (`listen`, `think`, filler; W2);
 - personas from VRMXA bundles (W1);
 - the shell's `llm.respond` and the loopback stand-in (W3);
 - the request's history in saves, and baking a take into a sequence (W4);

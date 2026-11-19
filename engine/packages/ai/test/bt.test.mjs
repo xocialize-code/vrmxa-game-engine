@@ -114,7 +114,7 @@ test('tree state is plain data: a copy taken mid-run resumes identically', () =>
 
 test('every preset compiles; the vocabulary and node types describe themselves', () => {
   for (const [k, p] of Object.entries(PRESETS)) assert.ok(compile(p.tree).length > 3, k);
-  assert.deepEqual(Object.keys(ACTIONS).sort(), ['emote', 'follow', 'gesture', 'goTo', 'interact', 'lookAt', 'say', 'setGoal', 'wait']);
+  assert.deepEqual(Object.keys(ACTIONS).sort(), ['emote', 'follow', 'gesture', 'goTo', 'interact', 'lookAt', 'say', 'setGoal', 'think', 'wait']);
   for (const [k, s] of Object.entries(actionSchemas())) assert.equal(s.args.type, 'object', k);
   assert.ok(NODE_TYPES.utility.description);
   assert.throws(() => compile({ type: 'action', do: 'fly' }), /unknown action "fly"/);

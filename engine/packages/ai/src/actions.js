@@ -62,6 +62,12 @@ export const ACTIONS = {
     start(ctx, a) { ctx.node.lookAt?.({ target: a.target || undefined }); return {}; },
     update() { return 'success'; },
   },
+  think: {
+    description: 'Look away while thinking (up and to one side of what she looks at), or stop (on: false).',
+    args: { type: 'object', properties: { on: { type: 'boolean', description: 'Think (true) or stop (false).', default: true } }, additionalProperties: false },
+    start(ctx, a) { ctx.node.lookAway?.({ side: a.on === false ? 0 : 1 }); return {}; },
+    update() { return 'success'; },
+  },
   goTo: {
     description: 'Walk to a node or a point, along the navmesh; succeeds within `within` metres, fails after `timeout` seconds.',
     args: { type: 'object', properties: { target: str('A node id.'), point: vec3('Or a point.'), within: num('Arrival distance (m).', { default: 0.35 }), timeout: num('Give up after (s).', { default: 30 }) }, additionalProperties: false },

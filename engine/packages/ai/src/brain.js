@@ -42,6 +42,10 @@ export class BrainBehaviour extends Behaviour {
     const ctx = { node: this.node, tree: this.tree, ai, brain: this, bb: this.bb, step, rng: this.rng };
     ai.applyInjected(this, ctx);
     const o = this.bb.override;
+    // turn-taking (M3 W2): an injected line waits while the person is still speaking (bb.hearing), for up to 2 s
+    const holds = o && !o.started && this.bb.hearing && (o.all ? o.all.some((a) => a.do === 'say') : o.do === 'say');
+    if (holds && step - (o.since ??= step) < 120) { this.status = 'override:held'; this.lastTick = step; return; }
+    if (o && !o.started && (o.all || o.literal)) o.started = true;
     if (o?.all) { // injected actions started together (a director's line with its face and gesture): all must finish
       for (const a of o.all) {
         if (a.status !== 'running') continue;
