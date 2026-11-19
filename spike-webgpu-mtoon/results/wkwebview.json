@@ -1,5 +1,5 @@
 {
-  "date" : "2026-11-19T14:40:57Z",
+  "date" : "2026-11-19T15:15:59Z",
   "os" : "Version 27.3 (Build 26C5047e)",
   "rows" : [
     {
@@ -17,7 +17,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 17,
         "h" : 512,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -268,6 +270,7 @@
         ],
         "model" : "spheres",
         "mtoonCount" : 7,
+        "noemissive" : false,
         "renderer" : "webgl",
         "renderMs" : 7,
         "revision" : "187",
@@ -304,8 +307,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 27,
         "h" : 512,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -556,6 +561,7 @@
         ],
         "model" : "spheres",
         "mtoonCount" : 7,
+        "noemissive" : false,
         "renderer" : "webgpu",
         "renderMs" : 7,
         "revision" : "187",
@@ -598,8 +604,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 34,
         "h" : 512,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -850,8 +858,9 @@
         ],
         "model" : "spheres",
         "mtoonCount" : 7,
+        "noemissive" : false,
         "renderer" : "webgpu-gl",
-        "renderMs" : 8,
+        "renderMs" : 7,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -892,8 +901,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 25,
         "h" : 512,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "loadonly",
         "materials" : [
           {
@@ -1144,6 +1155,7 @@
         ],
         "model" : "spheres",
         "mtoonCount" : 7,
+        "noemissive" : false,
         "renderer" : "webgpu",
         "renderMs" : 6,
         "revision" : "187",
@@ -1172,6 +1184,538 @@
       "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
     },
     {
+      "case" : "renderer=webgl&model=spheres2&features=none&w=768&h=400",
+      "hasGpu" : true,
+      "name" : "webgl_spheres2_fnone_w_768_h_400",
+      "origin" : "scheme",
+      "png" : "webgl_spheres2_fnone_w_768_h_400__scheme.png",
+      "result" : {
+        "amb" : 0.25,
+        "backend" : "WebGL2",
+        "drawCalls" : 7,
+        "errorCount" : 0,
+        "errors" : [
+
+        ],
+        "features" : "none",
+        "firstRenderMs" : 347,
+        "h" : 400,
+        "hide" : null,
+        "lib" : null,
+        "materials" : [
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+
+            ],
+            "matcap" : false,
+            "name" : "",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.10000000000000001,
+              0.14999999999999999,
+              0.5
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "uvAnimationMaskTexture"
+            ],
+            "matcap" : false,
+            "name" : "uvmaskB",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.59999999999999998,
+              0.59999999999999998,
+              0.59999999999999998
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0,
+              0.29999999999999999
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+
+            ],
+            "matcap" : false,
+            "name" : "alpha",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.5,
+              0.20000000000000001,
+              0.20000000000000001
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+
+            ],
+            "matcap" : false,
+            "name" : "alphaZWrite",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.5,
+              0.20000000000000001,
+              0.20000000000000001
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map"
+            ],
+            "matcap" : false,
+            "name" : "alphaMapUv",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.59999999999999998,
+              0.59999999999999998,
+              0.59999999999999998
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0,
+              0.20000000000000001,
+              0
+            ]
+          }
+        ],
+        "model" : "spheres2",
+        "mtoonCount" : 5,
+        "noemissive" : false,
+        "renderer" : "webgl",
+        "renderMs" : 5,
+        "revision" : "187",
+        "stage" : "rendered",
+        "sun" : 1.6000000000000001,
+        "triangles" : 27776,
+        "uniqueWarnings" : [
+
+        ],
+        "uvTime" : 1.25,
+        "view" : "body",
+        "w" : 768,
+        "warningCount" : 0,
+        "warnings" : [
+
+        ]
+      },
+      "secure" : true,
+      "timedOut" : false,
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    {
+      "case" : "renderer=webgl&model=threealpha&features=none&w=400&h=400",
+      "hasGpu" : true,
+      "name" : "webgl_threealpha_fnone_w_400_h_400",
+      "origin" : "scheme",
+      "png" : "webgl_threealpha_fnone_w_400_h_400__scheme.png",
+      "result" : {
+        "amb" : 0.25,
+        "backend" : "WebGL2",
+        "drawCalls" : 2,
+        "errorCount" : 0,
+        "errors" : [
+
+        ],
+        "features" : "none",
+        "firstRenderMs" : 84,
+        "h" : 400,
+        "hide" : null,
+        "lib" : null,
+        "model" : "threealpha",
+        "noemissive" : false,
+        "renderer" : "webgl",
+        "renderMs" : 3,
+        "revision" : "187",
+        "stage" : "rendered",
+        "sun" : 1.6000000000000001,
+        "triangles" : 7936,
+        "uniqueWarnings" : [
+
+        ],
+        "uvTime" : 1.25,
+        "view" : "body",
+        "w" : 400,
+        "warningCount" : 0,
+        "warnings" : [
+
+        ]
+      },
+      "secure" : true,
+      "timedOut" : false,
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    {
+      "case" : "renderer=webgpu&model=spheres2&features=none&w=768&h=400",
+      "hasGpu" : true,
+      "name" : "webgpu_spheres2_fnone_w_768_h_400",
+      "origin" : "scheme",
+      "png" : "webgpu_spheres2_fnone_w_768_h_400__scheme.png",
+      "result" : {
+        "amb" : 0.25,
+        "backend" : "WebGPU",
+        "drawCalls" : 8,
+        "errorCount" : 0,
+        "errors" : [
+
+        ],
+        "features" : "none",
+        "firstRenderMs" : 676,
+        "h" : 400,
+        "hasNavigatorGpu" : true,
+        "hide" : null,
+        "lib" : "patched",
+        "materials" : [
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+
+            ],
+            "matcap" : false,
+            "name" : "",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.10000000000000001,
+              0.14999999999999999,
+              0.5
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "uvAnimationMaskTexture"
+            ],
+            "matcap" : false,
+            "name" : "uvmaskB",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.59999999999999998,
+              0.59999999999999998,
+              0.59999999999999998
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0,
+              0.29999999999999999
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+
+            ],
+            "matcap" : false,
+            "name" : "alpha",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.5,
+              0.20000000000000001,
+              0.20000000000000001
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+
+            ],
+            "matcap" : false,
+            "name" : "alphaZWrite",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.5,
+              0.20000000000000001,
+              0.20000000000000001
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map"
+            ],
+            "matcap" : false,
+            "name" : "alphaMapUv",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.59999999999999998,
+              0.59999999999999998,
+              0.59999999999999998
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0,
+              0.20000000000000001,
+              0
+            ]
+          }
+        ],
+        "model" : "spheres2",
+        "mtoonCount" : 5,
+        "noemissive" : false,
+        "renderer" : "webgpu",
+        "renderMs" : 5,
+        "revision" : "187",
+        "stage" : "rendered",
+        "sun" : 1.6000000000000001,
+        "triangles" : 27777,
+        "uniqueWarnings" : [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ],
+        "uvTime" : 1.25,
+        "view" : "body",
+        "w" : 768,
+        "warningCount" : 5,
+        "warnings" : [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ]
+      },
+      "secure" : true,
+      "timedOut" : false,
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    {
+      "case" : "renderer=webgpu&model=threealpha&features=none&w=400&h=400",
+      "hasGpu" : true,
+      "name" : "webgpu_threealpha_fnone_w_400_h_400",
+      "origin" : "scheme",
+      "png" : "webgpu_threealpha_fnone_w_400_h_400__scheme.png",
+      "result" : {
+        "amb" : 0.25,
+        "backend" : "WebGPU",
+        "drawCalls" : 3,
+        "errorCount" : 0,
+        "errors" : [
+
+        ],
+        "features" : "none",
+        "firstRenderMs" : 119,
+        "h" : 400,
+        "hasNavigatorGpu" : true,
+        "hide" : null,
+        "lib" : "patched",
+        "model" : "threealpha",
+        "noemissive" : false,
+        "renderer" : "webgpu",
+        "renderMs" : 3,
+        "revision" : "187",
+        "stage" : "rendered",
+        "sun" : 1.6000000000000001,
+        "triangles" : 7937,
+        "uniqueWarnings" : [
+
+        ],
+        "uvTime" : 1.25,
+        "view" : "body",
+        "w" : 400,
+        "warningCount" : 0,
+        "warnings" : [
+
+        ]
+      },
+      "secure" : true,
+      "timedOut" : false,
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    {
       "case" : "renderer=webgl&model=mira&view=body&features=all",
       "hasGpu" : true,
       "name" : "webgl_mira_body_fall",
@@ -1186,7 +1730,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 131,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -1601,9 +2147,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 7,
+        "renderMs" : 8,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -1638,8 +2185,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 89,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -2054,9 +2603,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 6,
+        "renderMs" : 7,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -2097,7 +2647,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 120,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -2523,6 +3075,7 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
         "renderMs" : 6,
@@ -2560,8 +3113,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 90,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -2987,6 +3542,7 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
         "renderMs" : 6,
@@ -3030,7 +3586,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 118,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -3445,9 +4003,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 9,
+        "renderMs" : 8,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -3482,8 +4041,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 86,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -3898,9 +4459,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 8,
+        "renderMs" : 9,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -3941,7 +4503,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 118,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -4367,6 +4931,7 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
         "renderMs" : 6,
@@ -4404,8 +4969,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 91,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -4831,6 +5398,7 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
         "renderMs" : 6,
@@ -4874,7 +5442,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 123,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -5289,9 +5859,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 6,
+        "renderMs" : 7,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -5326,8 +5897,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 90,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -5742,9 +6315,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 6,
+        "renderMs" : 7,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -5785,7 +6359,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 125,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -6211,6 +6787,7 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
         "renderMs" : 5,
@@ -6248,8 +6825,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 91,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -6675,9 +7254,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 6,
+        "renderMs" : 5,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -6718,7 +7298,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 120,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -7133,9 +7715,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 7,
+        "renderMs" : 6,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -7170,8 +7753,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 88,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -7586,9 +8171,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 6,
+        "renderMs" : 7,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -7629,7 +8215,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 124,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -8055,9 +8643,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 5,
+        "renderMs" : 6,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -8092,8 +8681,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 91,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -8519,6 +9110,7 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
         "renderMs" : 5,
@@ -8562,7 +9154,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 121,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -8977,6 +9571,7 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
         "renderMs" : 8,
@@ -9014,8 +9609,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 89,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -9430,6 +10027,7 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
         "renderMs" : 8,
@@ -9473,7 +10071,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 124,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -9899,6 +10499,7 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
         "renderMs" : 6,
@@ -9936,8 +10537,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 98,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -10363,6 +10966,7 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
         "renderMs" : 6,
@@ -10406,7 +11010,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 128,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -10821,6 +11427,7 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
         "renderMs" : 7,
@@ -10858,8 +11465,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 98,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -11274,6 +11883,7 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
         "renderMs" : 7,
@@ -11317,7 +11927,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 169,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -11743,9 +12355,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 5,
+        "renderMs" : 8,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -11780,8 +12393,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 99,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -12207,9 +12822,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 6,
+        "renderMs" : 5,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -12250,7 +12866,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 239,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -12812,9 +13430,10 @@
         ],
         "model" : "vroid10",
         "mtoonCount" : 15,
+        "noemissive" : false,
         "outlineCount" : 0,
         "renderer" : "webgl",
-        "renderMs" : 7,
+        "renderMs" : 9,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -12849,8 +13468,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 133,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -13412,9 +14033,10 @@
         ],
         "model" : "vroid10",
         "mtoonCount" : 15,
+        "noemissive" : false,
         "outlineCount" : 0,
         "renderer" : "webgpu",
-        "renderMs" : 8,
+        "renderMs" : 14,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -13456,8 +14078,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 123,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "loadonly",
         "materials" : [
           {
@@ -14019,6 +14643,7 @@
         ],
         "model" : "vroid10",
         "mtoonCount" : 15,
+        "noemissive" : false,
         "outlineCount" : 0,
         "renderer" : "webgpu",
         "renderMs" : 8,
@@ -14063,8 +14688,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 96,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "loadonly",
         "materials" : [
           {
@@ -14479,9 +15106,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 9,
+        "renderMs" : 8,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -14522,9 +15150,11 @@
         "features" : "matcap,rim,emissive,uv",
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "importError" : "Error: @pixiv\/three-vrm\/nodes 3.5.5 cannot be bundled with three r187: Rolldown MISSING_EXPORT \"transformedNormalView\" is not exported by three.tsl.js (vite build fails)",
         "lib" : "stock",
         "model" : "mira",
+        "noemissive" : false,
         "renderer" : "webgpu",
         "revision" : "187",
         "stage" : "import",
@@ -14559,7 +15189,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 18.52,
         "h" : 512,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -14810,8 +15442,9 @@
         ],
         "model" : "spheres",
         "mtoonCount" : 7,
+        "noemissive" : false,
         "renderer" : "webgl",
-        "renderMs" : 5.7400000000000002,
+        "renderMs" : 5.8399999999999999,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -14846,8 +15479,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 29.260000000000002,
         "h" : 512,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -15098,8 +15733,9 @@
         ],
         "model" : "spheres",
         "mtoonCount" : 7,
+        "noemissive" : false,
         "renderer" : "webgpu",
-        "renderMs" : 6.9800000000000004,
+        "renderMs" : 6.2000000000000002,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -15140,8 +15776,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 36.460000000000001,
         "h" : 512,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -15392,8 +16030,9 @@
         ],
         "model" : "spheres",
         "mtoonCount" : 7,
+        "noemissive" : false,
         "renderer" : "webgpu-gl",
-        "renderMs" : 7.8399999999999999,
+        "renderMs" : 15.140000000000001,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -15434,8 +16073,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 30.879999999999999,
         "h" : 512,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "loadonly",
         "materials" : [
           {
@@ -15686,8 +16327,9 @@
         ],
         "model" : "spheres",
         "mtoonCount" : 7,
+        "noemissive" : false,
         "renderer" : "webgpu",
-        "renderMs" : 6.2599999999999998,
+        "renderMs" : 6.2999999999999998,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -15714,6 +16356,538 @@
       "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
     },
     {
+      "case" : "renderer=webgl&model=spheres2&features=none&w=768&h=400",
+      "hasGpu" : true,
+      "name" : "webgl_spheres2_fnone_w_768_h_400",
+      "origin" : "loopback",
+      "png" : "webgl_spheres2_fnone_w_768_h_400__loopback.png",
+      "result" : {
+        "amb" : 0.25,
+        "backend" : "WebGL2",
+        "drawCalls" : 7,
+        "errorCount" : 0,
+        "errors" : [
+
+        ],
+        "features" : "none",
+        "firstRenderMs" : 18.600000000000001,
+        "h" : 400,
+        "hide" : null,
+        "lib" : null,
+        "materials" : [
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+
+            ],
+            "matcap" : false,
+            "name" : "",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.10000000000000001,
+              0.14999999999999999,
+              0.5
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "uvAnimationMaskTexture"
+            ],
+            "matcap" : false,
+            "name" : "uvmaskB",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.59999999999999998,
+              0.59999999999999998,
+              0.59999999999999998
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0,
+              0.29999999999999999
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+
+            ],
+            "matcap" : false,
+            "name" : "alpha",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.5,
+              0.20000000000000001,
+              0.20000000000000001
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+
+            ],
+            "matcap" : false,
+            "name" : "alphaZWrite",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.5,
+              0.20000000000000001,
+              0.20000000000000001
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map"
+            ],
+            "matcap" : false,
+            "name" : "alphaMapUv",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.59999999999999998,
+              0.59999999999999998,
+              0.59999999999999998
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0,
+              0.20000000000000001,
+              0
+            ]
+          }
+        ],
+        "model" : "spheres2",
+        "mtoonCount" : 5,
+        "noemissive" : false,
+        "renderer" : "webgl",
+        "renderMs" : 4.8799999999999999,
+        "revision" : "187",
+        "stage" : "rendered",
+        "sun" : 1.6000000000000001,
+        "triangles" : 27776,
+        "uniqueWarnings" : [
+
+        ],
+        "uvTime" : 1.25,
+        "view" : "body",
+        "w" : 768,
+        "warningCount" : 0,
+        "warnings" : [
+
+        ]
+      },
+      "secure" : true,
+      "timedOut" : false,
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    {
+      "case" : "renderer=webgl&model=threealpha&features=none&w=400&h=400",
+      "hasGpu" : true,
+      "name" : "webgl_threealpha_fnone_w_400_h_400",
+      "origin" : "loopback",
+      "png" : "webgl_threealpha_fnone_w_400_h_400__loopback.png",
+      "result" : {
+        "amb" : 0.25,
+        "backend" : "WebGL2",
+        "drawCalls" : 2,
+        "errorCount" : 0,
+        "errors" : [
+
+        ],
+        "features" : "none",
+        "firstRenderMs" : 6.5,
+        "h" : 400,
+        "hide" : null,
+        "lib" : null,
+        "model" : "threealpha",
+        "noemissive" : false,
+        "renderer" : "webgl",
+        "renderMs" : 5,
+        "revision" : "187",
+        "stage" : "rendered",
+        "sun" : 1.6000000000000001,
+        "triangles" : 7936,
+        "uniqueWarnings" : [
+
+        ],
+        "uvTime" : 1.25,
+        "view" : "body",
+        "w" : 400,
+        "warningCount" : 0,
+        "warnings" : [
+
+        ]
+      },
+      "secure" : true,
+      "timedOut" : false,
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    {
+      "case" : "renderer=webgpu&model=spheres2&features=none&w=768&h=400",
+      "hasGpu" : true,
+      "name" : "webgpu_spheres2_fnone_w_768_h_400",
+      "origin" : "loopback",
+      "png" : "webgpu_spheres2_fnone_w_768_h_400__loopback.png",
+      "result" : {
+        "amb" : 0.25,
+        "backend" : "WebGPU",
+        "drawCalls" : 8,
+        "errorCount" : 0,
+        "errors" : [
+
+        ],
+        "features" : "none",
+        "firstRenderMs" : 25.920000000000002,
+        "h" : 400,
+        "hasNavigatorGpu" : true,
+        "hide" : null,
+        "lib" : "patched",
+        "materials" : [
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+
+            ],
+            "matcap" : false,
+            "name" : "",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.10000000000000001,
+              0.14999999999999999,
+              0.5
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "uvAnimationMaskTexture"
+            ],
+            "matcap" : false,
+            "name" : "uvmaskB",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.59999999999999998,
+              0.59999999999999998,
+              0.59999999999999998
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0,
+              0.29999999999999999
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+
+            ],
+            "matcap" : false,
+            "name" : "alpha",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.5,
+              0.20000000000000001,
+              0.20000000000000001
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+
+            ],
+            "matcap" : false,
+            "name" : "alphaZWrite",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.5,
+              0.20000000000000001,
+              0.20000000000000001
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "emissive" : [
+              0,
+              0,
+              0
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map"
+            ],
+            "matcap" : false,
+            "name" : "alphaMapUv",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0,
+              0,
+              0
+            ],
+            "rimPower" : 5,
+            "shade" : [
+              0.59999999999999998,
+              0.59999999999999998,
+              0.59999999999999998
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0,
+              0.20000000000000001,
+              0
+            ]
+          }
+        ],
+        "model" : "spheres2",
+        "mtoonCount" : 5,
+        "noemissive" : false,
+        "renderer" : "webgpu",
+        "renderMs" : 4.7599999999999998,
+        "revision" : "187",
+        "stage" : "rendered",
+        "sun" : 1.6000000000000001,
+        "triangles" : 27777,
+        "uniqueWarnings" : [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ],
+        "uvTime" : 1.25,
+        "view" : "body",
+        "w" : 768,
+        "warningCount" : 5,
+        "warnings" : [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ]
+      },
+      "secure" : true,
+      "timedOut" : false,
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    {
+      "case" : "renderer=webgpu&model=threealpha&features=none&w=400&h=400",
+      "hasGpu" : true,
+      "name" : "webgpu_threealpha_fnone_w_400_h_400",
+      "origin" : "loopback",
+      "png" : "webgpu_threealpha_fnone_w_400_h_400__loopback.png",
+      "result" : {
+        "amb" : 0.25,
+        "backend" : "WebGPU",
+        "drawCalls" : 3,
+        "errorCount" : 0,
+        "errors" : [
+
+        ],
+        "features" : "none",
+        "firstRenderMs" : 14.859999999999999,
+        "h" : 400,
+        "hasNavigatorGpu" : true,
+        "hide" : null,
+        "lib" : "patched",
+        "model" : "threealpha",
+        "noemissive" : false,
+        "renderer" : "webgpu",
+        "renderMs" : 3.6200000000000001,
+        "revision" : "187",
+        "stage" : "rendered",
+        "sun" : 1.6000000000000001,
+        "triangles" : 7937,
+        "uniqueWarnings" : [
+
+        ],
+        "uvTime" : 1.25,
+        "view" : "body",
+        "w" : 400,
+        "warningCount" : 0,
+        "warnings" : [
+
+        ]
+      },
+      "secure" : true,
+      "timedOut" : false,
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    {
       "case" : "renderer=webgl&model=mira&view=body&features=all",
       "hasGpu" : true,
       "name" : "webgl_mira_body_fall",
@@ -15728,7 +16902,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 157.84,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -16143,9 +17319,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 7.0999999999999996,
+        "renderMs" : 7.1799999999999997,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -16180,8 +17357,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 102.08,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -16596,9 +17775,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 6.6799999999999997,
+        "renderMs" : 11.66,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -16639,7 +17819,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 134.68000000000001,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -17065,9 +18247,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 6.2199999999999998,
+        "renderMs" : 10.66,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -17102,8 +18285,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 104.73999999999999,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -17529,9 +18714,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 5.7800000000000002,
+        "renderMs" : 8.9600000000000009,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -17572,7 +18758,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 132.13999999999999,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -17987,9 +19175,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 9.5199999999999996,
+        "renderMs" : 8.8200000000000003,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -18024,8 +19213,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 97.239999999999995,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -18440,9 +19631,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 8.8800000000000008,
+        "renderMs" : 10.720000000000001,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -18483,7 +19675,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 145.12,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -18909,9 +20103,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 6.0800000000000001,
+        "renderMs" : 9.7400000000000002,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -18946,8 +20141,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 99.599999999999994,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -19373,9 +20570,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 5.9400000000000004,
+        "renderMs" : 9.3200000000000003,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -19416,7 +20614,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 149.28,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -19831,9 +21031,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 6.9800000000000004,
+        "renderMs" : 6.8200000000000003,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -19868,8 +21069,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 113.56,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -20284,9 +21487,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 6.7599999999999998,
+        "renderMs" : 6.6399999999999997,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -20327,7 +21531,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 139.24000000000001,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -20753,9 +21959,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 5.2999999999999998,
+        "renderMs" : 6.4199999999999999,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -20790,8 +21997,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 106.73999999999999,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -21217,9 +22426,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 5.7199999999999998,
+        "renderMs" : 5.5999999999999996,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -21260,7 +22470,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 147.30000000000001,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -21675,9 +22887,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 6.6399999999999997,
+        "renderMs" : 6.6600000000000001,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -21712,8 +22925,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 108.52,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -22128,9 +23343,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 7.3600000000000003,
+        "renderMs" : 6.8799999999999999,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -22171,7 +23387,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 152.56,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -22597,9 +23815,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 5.5800000000000001,
+        "renderMs" : 6.1399999999999997,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -22634,8 +23853,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 97.5,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -23061,9 +24282,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 5.8799999999999999,
+        "renderMs" : 5.5800000000000001,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -23104,7 +24326,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 131.86000000000001,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -23519,9 +24743,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 8.0999999999999996,
+        "renderMs" : 8.3000000000000007,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -23556,8 +24781,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 98.019999999999996,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -23972,9 +25199,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 8.7200000000000006,
+        "renderMs" : 8.7599999999999998,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -24015,7 +25243,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 132.84,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -24441,9 +25671,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 5.8399999999999999,
+        "renderMs" : 6.1200000000000001,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -24478,8 +25709,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 96.959999999999994,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -24905,6 +26138,7 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
         "renderMs" : 6.0800000000000001,
@@ -24948,7 +26182,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 132.44,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -25363,9 +26599,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 6.46,
+        "renderMs" : 6.8799999999999999,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -25400,8 +26637,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 95.599999999999994,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -25816,9 +27055,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 6.7999999999999998,
+        "renderMs" : 6.96,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -25859,7 +27099,9 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 133.5,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -26285,9 +27527,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgl",
-        "renderMs" : 5.3200000000000003,
+        "renderMs" : 5.8799999999999999,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -26322,8 +27565,10 @@
 
         ],
         "features" : "none",
+        "firstRenderMs" : 98.099999999999994,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -26749,9 +27994,10 @@
         ],
         "model" : "hana",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 5.7199999999999998,
+        "renderMs" : 5.3399999999999999,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -26792,7 +28038,9 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 231.84,
         "h" : 768,
+        "hide" : null,
         "lib" : null,
         "materials" : [
           {
@@ -27354,9 +28602,10 @@
         ],
         "model" : "vroid10",
         "mtoonCount" : 15,
+        "noemissive" : false,
         "outlineCount" : 0,
         "renderer" : "webgl",
-        "renderMs" : 8.4000000000000004,
+        "renderMs" : 8.0199999999999996,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -27391,8 +28640,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 115.23999999999999,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "patched",
         "materials" : [
           {
@@ -27954,9 +29205,10 @@
         ],
         "model" : "vroid10",
         "mtoonCount" : 15,
+        "noemissive" : false,
         "outlineCount" : 0,
         "renderer" : "webgpu",
-        "renderMs" : 7.7599999999999998,
+        "renderMs" : 8.3399999999999999,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -27998,8 +29250,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 116.34,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "loadonly",
         "materials" : [
           {
@@ -28561,9 +29815,10 @@
         ],
         "model" : "vroid10",
         "mtoonCount" : 15,
+        "noemissive" : false,
         "outlineCount" : 0,
         "renderer" : "webgpu",
-        "renderMs" : 7.2599999999999998,
+        "renderMs" : 8.0800000000000001,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -28605,8 +29860,10 @@
 
         ],
         "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 97.299999999999997,
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "lib" : "loadonly",
         "materials" : [
           {
@@ -29021,9 +30278,10 @@
         ],
         "model" : "mira",
         "mtoonCount" : 11,
+        "noemissive" : false,
         "outlineCount" : 2,
         "renderer" : "webgpu",
-        "renderMs" : 8.3200000000000003,
+        "renderMs" : 9.0600000000000005,
         "revision" : "187",
         "stage" : "rendered",
         "sun" : 1.6000000000000001,
@@ -29064,9 +30322,11 @@
         "features" : "matcap,rim,emissive,uv",
         "h" : 768,
         "hasNavigatorGpu" : true,
+        "hide" : null,
         "importError" : "Error: @pixiv\/three-vrm\/nodes 3.5.5 cannot be bundled with three r187: Rolldown MISSING_EXPORT \"transformedNormalView\" is not exported by three.tsl.js (vite build fails)",
         "lib" : "stock",
         "model" : "mira",
+        "noemissive" : false,
         "renderer" : "webgpu",
         "revision" : "187",
         "stage" : "import",

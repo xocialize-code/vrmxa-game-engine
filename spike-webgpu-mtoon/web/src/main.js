@@ -35,7 +35,7 @@ for (const [level, sink] of [['error', errors], ['warn', warnings]]) {
 addEventListener('error', (e) => errors.push(`uncaught: ${e.message}`));
 addEventListener('unhandledrejection', (e) => errors.push(`unhandled: ${e.reason?.stack ?? e.reason}`));
 
-const result = { renderer: rendererKind, lib: gpu ? lib : null, model: modelName, view, features: features.join(',') || 'none', sun: sunIntensity, amb: ambIntensity, uvTime, w: W, h: H, errors, warnings };
+const result = { renderer: rendererKind, lib: gpu ? lib : null, model: modelName, view, features: features.join(',') || 'none', sun: sunIntensity, amb: ambIntensity, hide: q.get('hide'), noemissive: q.get('noemissive') === '1', uvTime, w: W, h: H, errors, warnings };
 window.__result = result;
 
 function finish(extra = {}) {
@@ -194,6 +194,42 @@ async function main() {
     camera.position.set(0, 0, 4); camera.lookAt(0, 0, 0);
     return capture(renderer, scene, camera);
   }
+  if (modelName === 'threealpha') { // control: three's own MeshBasicMaterial at opacity 0.5 over a blue sphere and the background
+    const B = gpu ? THREE_GPU.MeshBasicNodeMaterial : THREE_GL.MeshBasicMaterial;
+    const front = new B({ color: new THREE.Color(0.95, 0.4, 0.3), transparent: true, opacity: 0.5, depthWrite: false });
+    const back = new B({ color: new THREE.Color(0.2, 0.3, 0.9) });
+    const geo = new THREE.SphereGeometry(0.5, 64, 32);
+    const f = new THREE.Mesh(geo, front); f.position.set(-0.2, 0, 0.5); const b = new THREE.Mesh(geo, back); b.position.set(0.3, 0.15, -0.2);
+    scene.add(f, b);
+    const camera = new THREE.PerspectiveCamera(30, W / H, 0.05, 50); camera.position.set(0, 0, 4); camera.lookAt(0, 0, 0);
+    return capture(renderer, scene, camera);
+  }
+  if (modelName === 'spheres2') { // transparency and the UV-animation mask channel
+    const mats = [];
+    const geo = new THREE.SphereGeometry(0.4, 64, 32);
+    const Material = gpu ? MToonNodeMaterial : MToonMaterial;
+    const mask = (() => { // B = 1, R = G = 0: animates only if the mask is read from B (the spec's channel)
+      const d = new Uint8Array(4 * 4 * 4); for (let i = 0; i < 16; i++) d.set([0, 0, 255, 255], i * 4);
+      const t = new THREE.DataTexture(d, 4, 4); t.needsUpdate = true; return t; })();
+    const back = new Material(); back.color.setRGB(0.2, 0.3, 0.9); back.shadeColorFactor.setRGB(0.1, 0.15, 0.5); mats.push(back);
+    const cells = {
+      uvmaskB: (m) => { m.map = makeChecker(); m.uvAnimationMaskTexture = mask; m.uvAnimationScrollXSpeedFactor = 0.07; m.uvAnimationRotationSpeedFactor = 0.3; },
+      alpha: (m) => { m.color.setRGB(0.95, 0.4, 0.3); m.shadeColorFactor.setRGB(0.5, 0.2, 0.2); m.transparent = true; m.opacity = 0.5; m.depthWrite = false; },
+      alphaZWrite: (m) => { m.color.setRGB(0.95, 0.4, 0.3); m.shadeColorFactor.setRGB(0.5, 0.2, 0.2); m.transparent = true; m.opacity = 0.5; m.depthWrite = true; },
+      alphaMapUv: (m) => { m.map = makeChecker(); m.transparent = true; m.opacity = 0.6; m.depthWrite = false; m.uvAnimationScrollYSpeedFactor = 0.2; },
+    };
+    Object.entries(cells).forEach(([name, setup], i) => {
+      const m = new Material(); m.name = name; m.color.setRGB(1, 1, 1); m.shadeColorFactor.setRGB(0.6, 0.6, 0.6); setup(m); m.needsUpdate = true; mats.push(m);
+      const x = (i - 1.5) * 0.95;
+      const mesh = new THREE.Mesh(geo, m); mesh.position.set(x, 1, 0.5); scene.add(mesh);
+      if (name !== 'uvmaskB') { const b = new THREE.Mesh(geo, back); b.position.set(x + 0.25, 1.15, -0.2); scene.add(b); }
+    });
+    for (const m of mats) m.update?.(uvTime);
+    result.materials = mats.map(describe); result.mtoonCount = mats.length;
+    const camera = new THREE.PerspectiveCamera(30, W / H, 0.05, 50);
+    camera.position.set(0, 1.05, 5.2); camera.lookAt(0, 1.05, 0);
+    return capture(renderer, scene, camera);
+  }
   if (modelName === 'spheres') {
     const { group, mats } = buildSpheres(gpu ? MToonNodeMaterial : MToonMaterial);
     scene.add(group);
@@ -233,6 +269,9 @@ async function main() {
 
   const materials = new Set();
   vrm.scene.traverse((o) => { if (o.isMesh) for (const m of [o.material].flat()) if (isMToon(m)) materials.add(m); });
+  // Diagnostics, applied to both renderers alike: hide=transparent drops blended materials; noemissive=1 zeroes emission.
+  for (const h of (q.get('hide') ?? '').split(',')) for (const m of materials) if ((h === 'transparent' && m.transparent) || (h === 'outline' && m.isOutline)) m.visible = false;
+  if (q.get('noemissive') === '1') for (const m of materials) { m.emissive.setRGB(0, 0, 0); m.needsUpdate = true; }
   if (features.length) forceFeatures(materials, features);
   for (const m of materials) m.update?.(uvTime);
   result.materials = [...materials].map(describe);

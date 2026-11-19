@@ -18,6 +18,15 @@
  var threeRevision = parseInt(THREE.REVISION, 10);
  if (threeRevision < 167) {
    console.warn(
+@@ -77,7 +77,7 @@
+   setup() {
+     let uvAnimationMask = 1;
+     if (this.hasMaskTexture) {
+-      uvAnimationMask = vec4(refUVAnimationMaskTexture).context({ getUV: () => uv() }).r;
++      uvAnimationMask = vec4(refUVAnimationMaskTexture).context({ getUV: () => uv() }).b; // VRMXG patch 4: the spec (and GLSL) mask channel is B
+     }
+     let animatedUv = uv();
+     const phase = refUVAnimationRotationPhase.mul(uvAnimationMask);
 @@ -175,7 +175,7 @@
    indirectSpecular(context) {
      const { reflectedLight } = context;

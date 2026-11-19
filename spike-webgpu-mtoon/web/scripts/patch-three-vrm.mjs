@@ -23,6 +23,8 @@
 //   3. rim lighting mix: GLSL mixes the rim towards (direct + ambient irradiance) / π; the node model leaves
 //      the ambient irradiance out (it mixes towards 0 in indirectSpecular). Fixed by mixing towards
 //      BRDF_Lambert(irradiance) there.
+//   4. UV animation mask channel: the node version reads the mask's R channel; the MToon spec and the GLSL
+//      read B (VRoid Hub sample, a UV-animated yukata with masks). Fixed to `.b`.
 //
 // --check: exit 1 if the stock file no longer matches (a new three-vrm release), so the patch is not
 // applied blindly.
@@ -62,6 +64,10 @@ const fidelityEdits = [
   [
     'parametricRim.add(matcap).mul(rimMultiply).mul(mix(vec3(1), vec3(0), rimLightingMix))',
     'parametricRim.add(matcap).mul(rimMultiply).mul(mix(vec3(1), BRDF_Lambert({ diffuseColor: context.irradiance }), rimLightingMix)) // VRMXG patch 3: ambient in the rim mix, as GLSL',
+  ],
+  [
+    'uvAnimationMask = vec4(refUVAnimationMaskTexture).context({ getUV: () => uv() }).r;',
+    'uvAnimationMask = vec4(refUVAnimationMaskTexture).context({ getUV: () => uv() }).b; // VRMXG patch 4: the spec (and GLSL) mask channel is B',
   ],
 ];
 

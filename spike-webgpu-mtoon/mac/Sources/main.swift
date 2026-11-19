@@ -18,6 +18,7 @@ setvbuf(stdout, nil, _IONBF, 0)
 let defaultCases: [String] = {
     var c: [String] = []
     for r in ["webgl", "webgpu", "webgpu-gl", "webgpu&lib=loadonly"] { c.append("renderer=\(r)&model=spheres&features=none&w=768&h=512") }
+    for r in ["webgl", "webgpu"] { c.append("renderer=\(r)&model=spheres2&features=none&w=768&h=400"); c.append("renderer=\(r)&model=threealpha&features=none&w=400&h=400") }
     for model in ["mira", "hana"] {
         for view in ["body", "face", "back"] {
             for features in ["all", "none"] {
@@ -71,7 +72,7 @@ final class Spike: NSObject, NSApplicationDelegate, WKNavigationDelegate {
             for c in cases {
                 let name = c.replacingOccurrences(of: "renderer=|model=|view=|lib=", with: "", options: .regularExpression)
                     .replacingOccurrences(of: "features=", with: "f")
-                    .replacingOccurrences(of: "[=&,.]", with: "_", options: .regularExpression)
+                    .replacingOccurrences(of: "[=&,./]", with: "_", options: .regularExpression)
                 queue.append((name, origin, c, URL(string: "\(base)?\(c)")!))
             }
         }

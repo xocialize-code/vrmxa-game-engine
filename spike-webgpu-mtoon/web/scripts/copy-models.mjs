@@ -19,3 +19,21 @@ for (const name of ['mira', 'hana']) {
 const vroid = path.join(repo, 'spike-physics/web/public/models/vroid10.vrm');
 if (fs.existsSync(vroid) && !fs.existsSync(path.join(dst, 'vroid10.vrm'))) fs.copyFileSync(vroid, path.join(dst, 'vroid10.vrm'));
 console.log('models ready:', fs.readdirSync(dst).join(', '));
+
+// The VRoid Hub sample (results/vroid-sample.json, picked by scripts/scan-vroid-dataset.py) when the dataset is
+// mounted: public/models/vroid-sample/<id>.vrm. Licence-filtered; never committed.
+const dataset = process.env.VROID_DATASET ?? '/Volumes/DEV_ARCHIVE/vroid-vrm-dataset/vroid';
+const sampleFile = path.resolve(here, '../../results/vroid-sample.json');
+if (fs.existsSync(dataset) && fs.existsSync(sampleFile)) {
+  const { sample } = JSON.parse(fs.readFileSync(sampleFile, 'utf8'));
+  fs.mkdirSync(path.join(dst, 'vroid-sample'), { recursive: true });
+  for (const { id } of sample) {
+    const out = path.join(dst, 'vroid-sample', `${id}.vrm`);
+    if (!fs.existsSync(out)) fs.copyFileSync(path.join(dataset, findBucket(id), id, `${id}.vrm`), out);
+  }
+  console.log(`vroid sample ready: ${sample.length} models`);
+}
+function findBucket(id) {
+  for (const b of fs.readdirSync(dataset)) if (fs.existsSync(path.join(dataset, b, id))) return b;
+  throw new Error(`model ${id} not in ${dataset}`);
+}

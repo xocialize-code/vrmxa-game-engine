@@ -1,0 +1,481 @@
+{
+ "date": "2026-11-19",
+ "filter": "corporate_commercial_use=allow, is_other_users_available, not R15/R18/adult",
+ "summary": {
+  "scanned": 35144,
+  "eligible": 11991,
+  "eligibleBySpec": {
+   "0.x": 11988,
+   "1.0": 3
+  },
+  "eligibleFeatures": {
+   "matcap": 11960,
+   "rim": 7139,
+   "rimtex": 7,
+   "outline": 10602,
+   "emissive": 11319,
+   "uvanim": 5,
+   "normal": 11964
+  }
+ },
+ "sample": [
+  {
+   "id": "5377008041718576437",
+   "spec": "0.x",
+   "mtoon": 14,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim",
+    "rimtex"
+   ],
+   "mb": 15.8,
+   "credit": "unnecessary",
+   "user": "ニンジャポテト",
+   "gen": "saturday06_blender_vrm_exporter_experimental_2.20.17"
+  },
+  {
+   "id": "683570916569519462",
+   "spec": "0.x",
+   "mtoon": 23,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim",
+    "uvanim"
+   ],
+   "mb": 23.1,
+   "credit": "unnecessary",
+   "user": "ontokyo",
+   "gen": "UniGLTF-2.53.0"
+  },
+  {
+   "id": "781283935986966908",
+   "spec": "1.0",
+   "mtoon": 17,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim"
+   ],
+   "mb": 17.6,
+   "credit": "unnecessary",
+   "user": "LK_R1R",
+   "gen": "VRoid Studio-1.28.2"
+  },
+  {
+   "id": "7118561724237600491",
+   "spec": "0.x",
+   "mtoon": 1,
+   "feats": [
+    "emissive",
+    "outline",
+    "rim",
+    "rimtex"
+   ],
+   "mb": 15.8,
+   "credit": "necessary",
+   "user": "StudioF#／二月ほづみ",
+   "gen": "UniGLTF-2.39.2"
+  },
+  {
+   "id": "8925648887586241722",
+   "spec": "0.x",
+   "mtoon": 15,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim",
+    "rimtex"
+   ],
+   "mb": 26.5,
+   "credit": "unnecessary",
+   "user": "oroteden",
+   "gen": "UniGLTF-2.43.0"
+  },
+  {
+   "id": "72737273765115068",
+   "spec": "0.x",
+   "mtoon": 18,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim",
+    "rimtex"
+   ],
+   "mb": 19.6,
+   "credit": "necessary",
+   "user": "Canomdarra",
+   "gen": "UniGLTF-2.64.1"
+  },
+  {
+   "id": "1106387890734920725",
+   "spec": "0.x",
+   "mtoon": 14,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "rim",
+    "uvanim"
+   ],
+   "mb": 16.9,
+   "credit": "unnecessary",
+   "user": "Andymente",
+   "gen": "UniGLTF-2.39.1"
+  },
+  {
+   "id": "4476029521109097948",
+   "spec": "0.x",
+   "mtoon": 15,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim",
+    "uvanim"
+   ],
+   "mb": 32.7,
+   "credit": "necessary",
+   "user": "フリカ・スピカ",
+   "gen": "UniGLTF-2.41.0"
+  },
+  {
+   "id": "7045835166594079488",
+   "spec": "0.x",
+   "mtoon": 24,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim",
+    "uvanim"
+   ],
+   "mb": 27.9,
+   "credit": "unnecessary",
+   "user": "あわ",
+   "gen": "UniGLTF-2.49.0"
+  },
+  {
+   "id": "2000878793424960119",
+   "spec": "0.x",
+   "mtoon": 1,
+   "feats": [
+    "emissive",
+    "outline",
+    "rim",
+    "rimtex"
+   ],
+   "mb": 16.8,
+   "credit": "necessary",
+   "user": "StudioF#／二月ほづみ",
+   "gen": "UniGLTF-2.39.2"
+  },
+  {
+   "id": "9096495490126901469",
+   "spec": "1.0",
+   "mtoon": 15,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "rim"
+   ],
+   "mb": 16.0,
+   "credit": "necessary",
+   "user": "腐れ蜜柑🍊",
+   "gen": "VRoid Studio-2.2.0"
+  },
+  {
+   "id": "9131188767415573519",
+   "spec": "1.0",
+   "mtoon": 21,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim"
+   ],
+   "mb": 17.2,
+   "credit": "unnecessary",
+   "user": "Ethan Van Beek",
+   "gen": "VRoid Studio-2.3.0"
+  },
+  {
+   "id": "5623506467352661172",
+   "spec": "0.x",
+   "mtoon": 15,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim",
+    "rimtex"
+   ],
+   "mb": 27.8,
+   "credit": "unnecessary",
+   "user": "Meh Creator",
+   "gen": "UniGLTF-2.43.0"
+  },
+  {
+   "id": "6772236228042218999",
+   "spec": "0.x",
+   "mtoon": 19,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim",
+    "rimtex"
+   ],
+   "mb": 21.6,
+   "credit": "necessary",
+   "user": "Canomdarra",
+   "gen": "UniGLTF-2.64.1"
+  },
+  {
+   "id": "36667025581839509",
+   "spec": "0.x",
+   "mtoon": 18,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim",
+    "uvanim"
+   ],
+   "mb": 45.6,
+   "credit": "necessary",
+   "user": "フリカ・スピカ",
+   "gen": "UniGLTF-2.41.0"
+  },
+  {
+   "id": "6730408261661865024",
+   "spec": "0.x",
+   "mtoon": 16,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim"
+   ],
+   "mb": 19.5,
+   "credit": "necessary",
+   "user": "🐾✨🍑Peach🍑✨🐾",
+   "gen": "UniGLTF-1.28"
+  },
+  {
+   "id": "4980041895392338383",
+   "spec": "0.x",
+   "mtoon": 13,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim"
+   ],
+   "mb": 14.4,
+   "credit": "unnecessary",
+   "user": "anime freak",
+   "gen": "UniGLTF-2.44.0"
+  },
+  {
+   "id": "3280523630200483021",
+   "spec": "0.x",
+   "mtoon": 14,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline"
+   ],
+   "mb": 17.3,
+   "credit": "unnecessary",
+   "user": "Ky",
+   "gen": "UniGLTF-1.28"
+  },
+  {
+   "id": "7741315968582457228",
+   "spec": "0.x",
+   "mtoon": 18,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline"
+   ],
+   "mb": 17.3,
+   "credit": "necessary",
+   "user": "TacoBac0",
+   "gen": "UniGLTF-1.24"
+  },
+  {
+   "id": "3909374989192124655",
+   "spec": "0.x",
+   "mtoon": 19,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline"
+   ],
+   "mb": 16.9,
+   "credit": "unnecessary",
+   "user": "yomox9",
+   "gen": "UniGLTF-2.44.0"
+  },
+  {
+   "id": "3056109163048768038",
+   "spec": "0.x",
+   "mtoon": 13,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal"
+   ],
+   "mb": 16.1,
+   "credit": "necessary",
+   "user": "kawaiikagari",
+   "gen": "UniGLTF-1.28"
+  },
+  {
+   "id": "6390367771791393258",
+   "spec": "0.x",
+   "mtoon": 15,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "rim"
+   ],
+   "mb": 16.7,
+   "credit": "unnecessary",
+   "user": "Gail 2.0",
+   "gen": "UniGLTF-1.28"
+  },
+  {
+   "id": "5829719813287343679",
+   "spec": "0.x",
+   "mtoon": 16,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "rim"
+   ],
+   "mb": 12.0,
+   "credit": "unnecessary",
+   "user": "るう",
+   "gen": "UniGLTF-2.44.0"
+  },
+  {
+   "id": "2282837006096681927",
+   "spec": "0.x",
+   "mtoon": 13,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal"
+   ],
+   "mb": 17.9,
+   "credit": "unnecessary",
+   "user": "LittleMxStar",
+   "gen": "UniGLTF-2.44.0"
+  },
+  {
+   "id": "4468064246693787126",
+   "spec": "0.x",
+   "mtoon": 18,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal"
+   ],
+   "mb": 17.7,
+   "credit": "necessary",
+   "user": "Lkun",
+   "gen": "UniGLTF-1.24"
+  },
+  {
+   "id": "6828061916575277363",
+   "spec": "0.x",
+   "mtoon": 14,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline"
+   ],
+   "mb": 17.2,
+   "credit": "unnecessary",
+   "user": "oroteden",
+   "gen": "UniGLTF-2.43.0"
+  },
+  {
+   "id": "7759537575914242647",
+   "spec": "0.x",
+   "mtoon": 14,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim"
+   ],
+   "mb": 22.4,
+   "credit": "unnecessary",
+   "user": "oroteden",
+   "gen": "UniGLTF-2.38.0"
+  },
+  {
+   "id": "3113672398263143313",
+   "spec": "0.x",
+   "mtoon": 16,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim"
+   ],
+   "mb": 20.6,
+   "credit": "unnecessary",
+   "user": "oroteden",
+   "gen": "UniGLTF-2.43.0"
+  },
+  {
+   "id": "8766885322704098600",
+   "spec": "0.x",
+   "mtoon": 18,
+   "feats": [
+    "emissive",
+    "matcap",
+    "normal",
+    "outline",
+    "rim"
+   ],
+   "mb": 17.0,
+   "credit": "necessary",
+   "user": "Robotnik",
+   "gen": "UniGLTF-2.64.1"
+  }
+ ]
+}

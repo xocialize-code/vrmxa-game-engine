@@ -88,9 +88,9 @@ function montage(A, B, diff, file) {
 // Collect the stills: Chromium rows (results/chromium.json) and WKWebView rows (results/wkwebview.json).
 const stills = [];
 const read = (f) => fs.existsSync(path.join(res, f)) ? JSON.parse(fs.readFileSync(path.join(res, f), 'utf8')) : null;
-const key = (r) => [r.result.revision, r.result.model, r.result.view, r.result.features, r.result.sun, r.result.amb].join('|');
-for (const r of read('chromium.json')?.rows ?? []) if (r.png && r.result?.stage === 'rendered') stills.push({ runtime: 'chromium', dir: 'chromium', file: r.png, renderer: r.result.renderer, lib: r.result.lib, k: key(r) });
-for (const r of read('wkwebview.json')?.rows ?? []) if (r.png && r.result?.stage === 'rendered') stills.push({ runtime: `wkwebview-${r.origin}`, dir: 'wkwebview', file: r.png, renderer: r.result.renderer, lib: r.result.lib, k: key(r) });
+const key = (r) => [r.result.revision, r.result.model, r.result.view, r.result.features + (r.result.hide ? `,hide-${r.result.hide}` : '') + (r.result.noemissive ? ',noemissive' : ''), r.result.sun, r.result.amb].join('|');
+for (const r of ['chromium.json', 'chromium-vroid.json'].flatMap((f) => read(f)?.rows ?? [])) if (r.png && r.result?.stage === 'rendered') stills.push({ runtime: 'chromium', dir: 'chromium', file: r.png, renderer: r.result.renderer, lib: r.result.lib, k: key(r) });
+for (const r of ['wkwebview.json', 'wkwebview-vroid.json'].flatMap((f) => read(f)?.rows ?? [])) if (r.png && r.result?.stage === 'rendered') stills.push({ runtime: `wkwebview-${r.origin}`, dir: 'wkwebview', file: r.png, renderer: r.result.renderer, lib: r.result.lib, k: key(r) });
 const find = (runtime, renderer, k, lib) => stills.find((s) => s.runtime === runtime && s.renderer === renderer && s.k === k && (lib === undefined || s.lib === lib));
 
 const pairs = [];
@@ -113,10 +113,20 @@ for (const p of pairs) {
   const { diff, ...m } = compare(A, B);
   const name = `${p.a.runtime}__${p.a.file.replace('.png', '')}__vs__${p.b.runtime}__${p.b.renderer}${p.b.lib && p.b.lib !== "patched" ? "_" + p.b.lib : ""}`.replace(/[^\w.-]+/g, '_');
   const [three, model, view, features, sun, amb] = p.a.k.split('|');
-  // Montages for the sample characters only (the VRoid sample can't be shipped, so its pictures stay local).
-  if (model !== 'vroid10' || process.argv.includes('--all-montages')) montage(A, B, diff, path.join(res, 'compare', name + '.png'));
+  // Montages for the sample characters only (VRoid models can't be shipped, so their pictures stay local).
+  if (!model.startsWith('vroid') || process.argv.includes('--all-montages')) montage(A, B, diff, path.join(res, 'compare', name + '.png'));
   rows.push({ kind: p.kind, three, model, view, features, sun: +sun, amb: +amb, a: `${p.a.dir}/${p.a.file}`, b: `${p.b.dir}/${p.b.file}`, montage: `compare/${name}.png`, ...m });
 }
 rows.sort((x, y) => x.kind.localeCompare(y.kind) || x.model.localeCompare(y.model) || x.view.localeCompare(y.view));
 for (const r of rows) console.log(`${r.kind.padEnd(44)} r${r.three} ${r.model.padEnd(8)} ${r.view.padEnd(5)} ${r.features.padEnd(22)} amb ${r.amb}  SSIM ${r.ssim.toFixed(4)} box ${r.ssimBox?.toFixed(4)}  fg>8 ${String(r.fgOver8Pct).padStart(5)}%  max ${String(r.maxDelta).padStart(3)}  PSNR ${r.psnr}`);
-fs.writeFileSync(path.join(res, 'compare.json'), JSON.stringify({ date: new Date().toISOString(), method: 'SSIM on luma, 11x11 Gaussian sigma 1.5; ssimBox over the character bounding box; fgOver8 = character pixels whose max channel differs by more than 8/255', rows }, null, 1) + '\n');
+// Per-group summary: worst case over the VRoid Hub sample (and every other group of models), per pair kind.
+const groups = {};
+for (const r of rows) {
+  const g = `${r.kind} | ${r.model.startsWith('vroid-sample/') ? 'vroid-sample' : r.model} | ${r.view} | ${r.features === 'none' ? 'authored' : r.features}`;
+  const s = (groups[g] ??= { n: 0, ssimMin: 1, fgOver8PctMax: 0, fgOver8PctMean: 0, psnrMin: Infinity });
+  s.n++; s.ssimMin = Math.min(s.ssimMin, r.ssim); s.fgOver8PctMax = Math.max(s.fgOver8PctMax, r.fgOver8Pct); s.fgOver8PctMean += r.fgOver8Pct; s.psnrMin = Math.min(s.psnrMin, r.psnr);
+}
+for (const s of Object.values(groups)) s.fgOver8PctMean = +(s.fgOver8PctMean / s.n).toFixed(2);
+const summary = Object.fromEntries(Object.entries(groups).filter(([g]) => g.includes('vroid-sample')).sort());
+if (Object.keys(summary).length) { console.log('\nVRoid Hub sample, worst case per group:'); for (const [g, s] of Object.entries(summary)) console.log(`  ${g.padEnd(70)} n ${s.n}  SSIM min ${s.ssimMin.toFixed(4)}  fg>8 max ${s.fgOver8PctMax}% mean ${s.fgOver8PctMean}%  PSNR min ${s.psnrMin}`); }
+fs.writeFileSync(path.join(res, 'compare.json'), JSON.stringify({ date: new Date().toISOString(), vroidSampleSummary: summary, method: 'SSIM on luma, 11x11 Gaussian sigma 1.5; ssimBox over the character bounding box; fgOver8 = character pixels whose max channel differs by more than 8/255', rows }, null, 1) + '\n');

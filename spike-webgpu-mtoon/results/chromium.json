@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-19T14:38:31.348Z",
+  "date": "2026-11-19T15:15:21.473Z",
   "browser": "156.0.8078.4",
   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
   "rows": [
@@ -18,6 +18,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 768,
         "h": 512,
@@ -261,7 +263,8 @@
           }
         ],
         "mtoonCount": 7,
-        "renderMs": 3.5,
+        "firstRenderMs": 22.7,
+        "renderMs": 3.4,
         "drawCalls": 7,
         "triangles": 27776,
         "stage": "rendered",
@@ -285,6 +288,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 768,
         "h": 512,
@@ -537,7 +542,8 @@
           }
         ],
         "mtoonCount": 7,
-        "renderMs": 3.6,
+        "firstRenderMs": 23.1,
+        "renderMs": 3.4,
         "drawCalls": 8,
         "triangles": 27777,
         "stage": "rendered",
@@ -563,6 +569,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 768,
         "h": 512,
@@ -815,7 +823,8 @@
           }
         ],
         "mtoonCount": 7,
-        "renderMs": 3.4,
+        "firstRenderMs": 34.2,
+        "renderMs": 3.7,
         "drawCalls": 8,
         "triangles": 27777,
         "stage": "rendered",
@@ -841,6 +850,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 768,
         "h": 512,
@@ -1093,7 +1104,8 @@
           }
         ],
         "mtoonCount": 7,
-        "renderMs": 3.6,
+        "firstRenderMs": 24.5,
+        "renderMs": 3.2,
         "drawCalls": 8,
         "triangles": 27777,
         "stage": "rendered",
@@ -1119,6 +1131,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 768,
         "h": 512,
@@ -1371,7 +1385,8 @@
           }
         ],
         "mtoonCount": 7,
-        "renderMs": 3.5,
+        "firstRenderMs": 35.9,
+        "renderMs": 3.7,
         "drawCalls": 8,
         "triangles": 27777,
         "stage": "rendered",
@@ -1380,6 +1395,1896 @@
         "uniqueWarnings": [
           "THREE.TempNode: This module has been deprecated. Extend Node instead."
         ]
+      }
+    },
+    {
+      "name": "r187__webgl_spheres2_fnone_w_768_h_400",
+      "three": "187",
+      "case": "renderer=webgl&model=spheres2&features=none&w=768&h=400",
+      "timedOut": false,
+      "png": "r187__webgl_spheres2_fnone_w_768_h_400.png",
+      "pageErrors": [],
+      "result": {
+        "renderer": "webgl",
+        "lib": null,
+        "model": "spheres2",
+        "view": "body",
+        "features": "none",
+        "sun": 1.6,
+        "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
+        "uvTime": 1.25,
+        "w": 768,
+        "h": 400,
+        "errors": [],
+        "warnings": [],
+        "backend": "WebGL2",
+        "revision": "187",
+        "materials": [
+          {
+            "name": "",
+            "type": "ShaderMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.1,
+              0.15,
+              0.5
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "uvmaskB",
+            "type": "ShaderMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.6,
+              0.6,
+              0.6
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0.07,
+              0,
+              0.3
+            ],
+            "maps": [
+              "map",
+              "uvAnimationMaskTexture"
+            ]
+          },
+          {
+            "name": "alpha",
+            "type": "ShaderMaterial",
+            "isOutline": false,
+            "transparent": true,
+            "shade": [
+              0.5,
+              0.2,
+              0.2
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "alphaZWrite",
+            "type": "ShaderMaterial",
+            "isOutline": false,
+            "transparent": true,
+            "shade": [
+              0.5,
+              0.2,
+              0.2
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "alphaMapUv",
+            "type": "ShaderMaterial",
+            "isOutline": false,
+            "transparent": true,
+            "shade": [
+              0.6,
+              0.6,
+              0.6
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0.2,
+              0
+            ],
+            "maps": [
+              "map"
+            ]
+          }
+        ],
+        "mtoonCount": 5,
+        "firstRenderMs": 17.9,
+        "renderMs": 2.3,
+        "drawCalls": 7,
+        "triangles": 27776,
+        "stage": "rendered",
+        "errorCount": 0,
+        "warningCount": 0,
+        "uniqueWarnings": []
+      }
+    },
+    {
+      "name": "r187__webgpu_spheres2_fnone_w_768_h_400",
+      "three": "187",
+      "case": "renderer=webgpu&model=spheres2&features=none&w=768&h=400",
+      "timedOut": false,
+      "png": "r187__webgpu_spheres2_fnone_w_768_h_400.png",
+      "pageErrors": [],
+      "result": {
+        "renderer": "webgpu",
+        "lib": "patched",
+        "model": "spheres2",
+        "view": "body",
+        "features": "none",
+        "sun": 1.6,
+        "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
+        "uvTime": 1.25,
+        "w": 768,
+        "h": 400,
+        "errors": [],
+        "warnings": [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ],
+        "hasNavigatorGpu": true,
+        "backend": "WebGPU",
+        "revision": "187",
+        "materials": [
+          {
+            "name": "",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.1,
+              0.15,
+              0.5
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "uvmaskB",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.6,
+              0.6,
+              0.6
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0.07,
+              0,
+              0.3
+            ],
+            "maps": [
+              "map",
+              "uvAnimationMaskTexture"
+            ]
+          },
+          {
+            "name": "alpha",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": true,
+            "shade": [
+              0.5,
+              0.2,
+              0.2
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "alphaZWrite",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": true,
+            "shade": [
+              0.5,
+              0.2,
+              0.2
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "alphaMapUv",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": true,
+            "shade": [
+              0.6,
+              0.6,
+              0.6
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0.2,
+              0
+            ],
+            "maps": [
+              "map"
+            ]
+          }
+        ],
+        "mtoonCount": 5,
+        "firstRenderMs": 21.1,
+        "renderMs": 2.7,
+        "drawCalls": 8,
+        "triangles": 27777,
+        "stage": "rendered",
+        "errorCount": 0,
+        "warningCount": 5,
+        "uniqueWarnings": [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ]
+      }
+    },
+    {
+      "name": "r187__webgpu_loadonly_spheres2_fnone_w_768_h_400",
+      "three": "187",
+      "case": "renderer=webgpu&lib=loadonly&model=spheres2&features=none&w=768&h=400",
+      "timedOut": false,
+      "png": "r187__webgpu_loadonly_spheres2_fnone_w_768_h_400.png",
+      "pageErrors": [],
+      "result": {
+        "renderer": "webgpu",
+        "lib": "loadonly",
+        "model": "spheres2",
+        "view": "body",
+        "features": "none",
+        "sun": 1.6,
+        "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
+        "uvTime": 1.25,
+        "w": 768,
+        "h": 400,
+        "errors": [],
+        "warnings": [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ],
+        "hasNavigatorGpu": true,
+        "backend": "WebGPU",
+        "revision": "187",
+        "materials": [
+          {
+            "name": "",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.1,
+              0.15,
+              0.5
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "uvmaskB",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.6,
+              0.6,
+              0.6
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0.07,
+              0,
+              0.3
+            ],
+            "maps": [
+              "map",
+              "uvAnimationMaskTexture"
+            ]
+          },
+          {
+            "name": "alpha",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": true,
+            "shade": [
+              0.5,
+              0.2,
+              0.2
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "alphaZWrite",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": true,
+            "shade": [
+              0.5,
+              0.2,
+              0.2
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "alphaMapUv",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": true,
+            "shade": [
+              0.6,
+              0.6,
+              0.6
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0.2,
+              0
+            ],
+            "maps": [
+              "map"
+            ]
+          }
+        ],
+        "mtoonCount": 5,
+        "firstRenderMs": 22.1,
+        "renderMs": 2.5,
+        "drawCalls": 8,
+        "triangles": 27777,
+        "stage": "rendered",
+        "errorCount": 0,
+        "warningCount": 5,
+        "uniqueWarnings": [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ]
+      }
+    },
+    {
+      "name": "r187__webgl_threealpha_fnone_w_400_h_400",
+      "three": "187",
+      "case": "renderer=webgl&model=threealpha&features=none&w=400&h=400",
+      "timedOut": false,
+      "png": "r187__webgl_threealpha_fnone_w_400_h_400.png",
+      "pageErrors": [],
+      "result": {
+        "renderer": "webgl",
+        "lib": null,
+        "model": "threealpha",
+        "view": "body",
+        "features": "none",
+        "sun": 1.6,
+        "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
+        "uvTime": 1.25,
+        "w": 400,
+        "h": 400,
+        "errors": [],
+        "warnings": [],
+        "backend": "WebGL2",
+        "revision": "187",
+        "firstRenderMs": 7,
+        "renderMs": 1.8,
+        "drawCalls": 2,
+        "triangles": 7936,
+        "stage": "rendered",
+        "errorCount": 0,
+        "warningCount": 0,
+        "uniqueWarnings": []
+      }
+    },
+    {
+      "name": "r187__webgpu_threealpha_fnone_w_400_h_400",
+      "three": "187",
+      "case": "renderer=webgpu&model=threealpha&features=none&w=400&h=400",
+      "timedOut": false,
+      "png": "r187__webgpu_threealpha_fnone_w_400_h_400.png",
+      "pageErrors": [],
+      "result": {
+        "renderer": "webgpu",
+        "lib": "patched",
+        "model": "threealpha",
+        "view": "body",
+        "features": "none",
+        "sun": 1.6,
+        "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
+        "uvTime": 1.25,
+        "w": 400,
+        "h": 400,
+        "errors": [],
+        "warnings": [],
+        "hasNavigatorGpu": true,
+        "backend": "WebGPU",
+        "revision": "187",
+        "firstRenderMs": 12.6,
+        "renderMs": 2.3,
+        "drawCalls": 3,
+        "triangles": 7937,
+        "stage": "rendered",
+        "errorCount": 0,
+        "warningCount": 0,
+        "uniqueWarnings": []
+      }
+    },
+    {
+      "name": "r187__webgl_spheres_fnone_amb_0_w_768_h_512_matcapTex_quad",
+      "three": "187",
+      "case": "renderer=webgl&model=spheres&features=none&amb=0&w=768&h=512&matcapTex=quad",
+      "timedOut": false,
+      "png": "r187__webgl_spheres_fnone_amb_0_w_768_h_512_matcapTex_quad.png",
+      "pageErrors": [],
+      "result": {
+        "renderer": "webgl",
+        "lib": null,
+        "model": "spheres",
+        "view": "body",
+        "features": "none",
+        "sun": 1.6,
+        "amb": 0,
+        "hide": null,
+        "noemissive": false,
+        "uvTime": 1.25,
+        "w": 768,
+        "h": 512,
+        "errors": [],
+        "warnings": [],
+        "backend": "WebGL2",
+        "revision": "187",
+        "materials": [
+          {
+            "name": "shade",
+            "type": "ShaderMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.35,
+              0.3,
+              0.6
+            ],
+            "shadingShift": -0.1,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "shade (outline)",
+            "type": "ShaderMaterial",
+            "isOutline": true,
+            "transparent": false,
+            "shade": [
+              0.35,
+              0.3,
+              0.6
+            ],
+            "shadingShift": -0.1,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "worldCoordinates",
+            "outlineWidth": 0.02,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "rim",
+            "type": "ShaderMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              1,
+              0.5,
+              0.2
+            ],
+            "rimPower": 3,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "rimlit",
+            "type": "ShaderMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              1,
+              0.5,
+              0.2
+            ],
+            "rimPower": 3,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "matcap",
+            "type": "ShaderMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": true,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "emissive",
+            "type": "ShaderMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0.2,
+              0.6,
+              0.3
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "uv",
+            "type": "ShaderMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.6,
+              0.6,
+              0.6
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0.07,
+              0.03,
+              0.3
+            ],
+            "maps": [
+              "map"
+            ]
+          }
+        ],
+        "mtoonCount": 7,
+        "firstRenderMs": 15.5,
+        "renderMs": 2.7,
+        "drawCalls": 7,
+        "triangles": 27776,
+        "stage": "rendered",
+        "errorCount": 0,
+        "warningCount": 0,
+        "uniqueWarnings": []
+      }
+    },
+    {
+      "name": "r187__webgpu_spheres_fnone_amb_0_w_768_h_512_matcapTex_quad",
+      "three": "187",
+      "case": "renderer=webgpu&model=spheres&features=none&amb=0&w=768&h=512&matcapTex=quad",
+      "timedOut": false,
+      "png": "r187__webgpu_spheres_fnone_amb_0_w_768_h_512_matcapTex_quad.png",
+      "pageErrors": [],
+      "result": {
+        "renderer": "webgpu",
+        "lib": "patched",
+        "model": "spheres",
+        "view": "body",
+        "features": "none",
+        "sun": 1.6,
+        "amb": 0,
+        "hide": null,
+        "noemissive": false,
+        "uvTime": 1.25,
+        "w": 768,
+        "h": 512,
+        "errors": [],
+        "warnings": [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ],
+        "hasNavigatorGpu": true,
+        "backend": "WebGPU",
+        "revision": "187",
+        "materials": [
+          {
+            "name": "shade",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.35,
+              0.3,
+              0.6
+            ],
+            "shadingShift": -0.1,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "shade (outline)",
+            "type": "NodeMaterial",
+            "isOutline": true,
+            "transparent": false,
+            "shade": [
+              0.35,
+              0.3,
+              0.6
+            ],
+            "shadingShift": -0.1,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "worldCoordinates",
+            "outlineWidth": 0.02,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "rim",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              1,
+              0.5,
+              0.2
+            ],
+            "rimPower": 3,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "rimlit",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              1,
+              0.5,
+              0.2
+            ],
+            "rimPower": 3,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "matcap",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": true,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "emissive",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0.2,
+              0.6,
+              0.3
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "uv",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.6,
+              0.6,
+              0.6
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0.07,
+              0.03,
+              0.3
+            ],
+            "maps": [
+              "map"
+            ]
+          }
+        ],
+        "mtoonCount": 7,
+        "firstRenderMs": 23.3,
+        "renderMs": 3.8,
+        "drawCalls": 8,
+        "triangles": 27777,
+        "stage": "rendered",
+        "errorCount": 0,
+        "warningCount": 7,
+        "uniqueWarnings": [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ]
+      }
+    },
+    {
+      "name": "r187__webgpu-gl_spheres_fnone_amb_0_w_768_h_512_matcapTex_quad",
+      "three": "187",
+      "case": "renderer=webgpu-gl&model=spheres&features=none&amb=0&w=768&h=512&matcapTex=quad",
+      "timedOut": false,
+      "png": "r187__webgpu-gl_spheres_fnone_amb_0_w_768_h_512_matcapTex_quad.png",
+      "pageErrors": [],
+      "result": {
+        "renderer": "webgpu-gl",
+        "lib": "patched",
+        "model": "spheres",
+        "view": "body",
+        "features": "none",
+        "sun": 1.6,
+        "amb": 0,
+        "hide": null,
+        "noemissive": false,
+        "uvTime": 1.25,
+        "w": 768,
+        "h": 512,
+        "errors": [],
+        "warnings": [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ],
+        "hasNavigatorGpu": true,
+        "backend": "WebGL2",
+        "revision": "187",
+        "materials": [
+          {
+            "name": "shade",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.35,
+              0.3,
+              0.6
+            ],
+            "shadingShift": -0.1,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "shade (outline)",
+            "type": "NodeMaterial",
+            "isOutline": true,
+            "transparent": false,
+            "shade": [
+              0.35,
+              0.3,
+              0.6
+            ],
+            "shadingShift": -0.1,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "worldCoordinates",
+            "outlineWidth": 0.02,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "rim",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              1,
+              0.5,
+              0.2
+            ],
+            "rimPower": 3,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "rimlit",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              1,
+              0.5,
+              0.2
+            ],
+            "rimPower": 3,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "matcap",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": true,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "emissive",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0.2,
+              0.6,
+              0.3
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "uv",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.6,
+              0.6,
+              0.6
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0.07,
+              0.03,
+              0.3
+            ],
+            "maps": [
+              "map"
+            ]
+          }
+        ],
+        "mtoonCount": 7,
+        "firstRenderMs": 317.9,
+        "renderMs": 3.3,
+        "drawCalls": 8,
+        "triangles": 27777,
+        "stage": "rendered",
+        "errorCount": 0,
+        "warningCount": 7,
+        "uniqueWarnings": [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ]
+      }
+    },
+    {
+      "name": "r187__webgpu_loadonly_spheres_fnone_amb_0_w_768_h_512_matcapTex_quad",
+      "three": "187",
+      "case": "renderer=webgpu&lib=loadonly&model=spheres&features=none&amb=0&w=768&h=512&matcapTex=quad",
+      "timedOut": false,
+      "png": "r187__webgpu_loadonly_spheres_fnone_amb_0_w_768_h_512_matcapTex_quad.png",
+      "pageErrors": [],
+      "result": {
+        "renderer": "webgpu",
+        "lib": "loadonly",
+        "model": "spheres",
+        "view": "body",
+        "features": "none",
+        "sun": 1.6,
+        "amb": 0,
+        "hide": null,
+        "noemissive": false,
+        "uvTime": 1.25,
+        "w": 768,
+        "h": 512,
+        "errors": [],
+        "warnings": [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ],
+        "hasNavigatorGpu": true,
+        "backend": "WebGPU",
+        "revision": "187",
+        "materials": [
+          {
+            "name": "shade",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.35,
+              0.3,
+              0.6
+            ],
+            "shadingShift": -0.1,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "shade (outline)",
+            "type": "NodeMaterial",
+            "isOutline": true,
+            "transparent": false,
+            "shade": [
+              0.35,
+              0.3,
+              0.6
+            ],
+            "shadingShift": -0.1,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "worldCoordinates",
+            "outlineWidth": 0.02,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "rim",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              1,
+              0.5,
+              0.2
+            ],
+            "rimPower": 3,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "rimlit",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              1,
+              0.5,
+              0.2
+            ],
+            "rimPower": 3,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "matcap",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": true,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "emissive",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0,
+              0,
+              0
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0.2,
+              0.6,
+              0.3
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0,
+              0,
+              0
+            ],
+            "maps": []
+          },
+          {
+            "name": "uv",
+            "type": "NodeMaterial",
+            "isOutline": false,
+            "transparent": false,
+            "shade": [
+              0.6,
+              0.6,
+              0.6
+            ],
+            "shadingShift": 0,
+            "shadingToony": 0.9,
+            "rim": [
+              0,
+              0,
+              0
+            ],
+            "rimPower": 5,
+            "matcap": false,
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "outlineWidthMode": "none",
+            "outlineWidth": 0,
+            "uvAnim": [
+              0.07,
+              0.03,
+              0.3
+            ],
+            "maps": [
+              "map"
+            ]
+          }
+        ],
+        "mtoonCount": 7,
+        "firstRenderMs": 24.7,
+        "renderMs": 3.1,
+        "drawCalls": 8,
+        "triangles": 27777,
+        "stage": "rendered",
+        "errorCount": 0,
+        "warningCount": 7,
+        "uniqueWarnings": [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ]
+      }
+    },
+    {
+      "name": "r187__webgl_threematcap_fnone_w_400_h_400_matcapTex_quad",
+      "three": "187",
+      "case": "renderer=webgl&model=threematcap&features=none&w=400&h=400&matcapTex=quad",
+      "timedOut": false,
+      "png": "r187__webgl_threematcap_fnone_w_400_h_400_matcapTex_quad.png",
+      "pageErrors": [],
+      "result": {
+        "renderer": "webgl",
+        "lib": null,
+        "model": "threematcap",
+        "view": "body",
+        "features": "none",
+        "sun": 1.6,
+        "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
+        "uvTime": 1.25,
+        "w": 400,
+        "h": 400,
+        "errors": [],
+        "warnings": [],
+        "backend": "WebGL2",
+        "revision": "187",
+        "firstRenderMs": 59.9,
+        "renderMs": 1.8,
+        "drawCalls": 1,
+        "triangles": 3968,
+        "stage": "rendered",
+        "errorCount": 0,
+        "warningCount": 0,
+        "uniqueWarnings": []
+      }
+    },
+    {
+      "name": "r187__webgpu_threematcap_fnone_w_400_h_400_matcapTex_quad",
+      "three": "187",
+      "case": "renderer=webgpu&model=threematcap&features=none&w=400&h=400&matcapTex=quad",
+      "timedOut": false,
+      "png": "r187__webgpu_threematcap_fnone_w_400_h_400_matcapTex_quad.png",
+      "pageErrors": [],
+      "result": {
+        "renderer": "webgpu",
+        "lib": "patched",
+        "model": "threematcap",
+        "view": "body",
+        "features": "none",
+        "sun": 1.6,
+        "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
+        "uvTime": 1.25,
+        "w": 400,
+        "h": 400,
+        "errors": [],
+        "warnings": [],
+        "hasNavigatorGpu": true,
+        "backend": "WebGPU",
+        "revision": "187",
+        "firstRenderMs": 12,
+        "renderMs": 2.4,
+        "drawCalls": 2,
+        "triangles": 3969,
+        "stage": "rendered",
+        "errorCount": 0,
+        "warningCount": 0,
+        "uniqueWarnings": []
       }
     },
     {
@@ -1397,6 +3302,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -1817,7 +3724,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4.6,
+        "firstRenderMs": 109.9,
+        "renderMs": 4.1,
         "drawCalls": 11,
         "triangles": 34380,
         "stage": "rendered",
@@ -1841,6 +3749,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -2270,7 +4180,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.7,
+        "firstRenderMs": 73.3,
+        "renderMs": 3.8,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -2296,6 +4207,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -2725,7 +4638,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4.4,
+        "firstRenderMs": 137.7,
+        "renderMs": 4.7,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -2751,6 +4665,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -3180,7 +5096,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.7,
+        "firstRenderMs": 72.9,
+        "renderMs": 4,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -3206,6 +5123,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -3637,7 +5556,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.3,
+        "firstRenderMs": 119.9,
+        "renderMs": 3.5,
         "drawCalls": 11,
         "triangles": 34380,
         "stage": "rendered",
@@ -3661,6 +5581,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -4101,7 +6023,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.1,
+        "firstRenderMs": 76.1,
+        "renderMs": 3.2,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -4127,6 +6050,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -4567,7 +6492,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.6,
+        "firstRenderMs": 143.9,
+        "renderMs": 3.9,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -4593,6 +6519,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -5033,7 +6961,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 2.7,
+        "firstRenderMs": 76.3,
+        "renderMs": 3.1,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -5059,6 +6988,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -5479,7 +7410,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 5,
+        "firstRenderMs": 102.3,
+        "renderMs": 5.7,
         "drawCalls": 11,
         "triangles": 34380,
         "stage": "rendered",
@@ -5503,6 +7435,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -5932,6 +7866,7 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
+        "firstRenderMs": 73.5,
         "renderMs": 4.9,
         "drawCalls": 16,
         "triangles": 35677,
@@ -5958,6 +7893,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -6387,7 +8324,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 6.2,
+        "firstRenderMs": 130,
+        "renderMs": 5.6,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -6413,6 +8351,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -6842,7 +8782,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4.7,
+        "firstRenderMs": 73.7,
+        "renderMs": 5,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -6868,6 +8809,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -7299,7 +9242,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.9,
+        "firstRenderMs": 111.7,
+        "renderMs": 3.6,
         "drawCalls": 11,
         "triangles": 34380,
         "stage": "rendered",
@@ -7323,6 +9267,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -7763,7 +9709,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.4,
+        "firstRenderMs": 75.9,
+        "renderMs": 3.3,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -7789,6 +9736,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -8229,7 +10178,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4.1,
+        "firstRenderMs": 136,
+        "renderMs": 4.5,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -8255,6 +10205,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -8695,7 +10647,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.3,
+        "firstRenderMs": 76.9,
+        "renderMs": 3.4,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -8721,6 +10674,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -9141,6 +11096,7 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
+        "firstRenderMs": 110.4,
         "renderMs": 4.2,
         "drawCalls": 11,
         "triangles": 34380,
@@ -9165,6 +11121,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -9594,7 +11552,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.8,
+        "firstRenderMs": 77.1,
+        "renderMs": 3.7,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -9620,6 +11579,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -10049,7 +12010,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4.8,
+        "firstRenderMs": 138.3,
+        "renderMs": 4.2,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -10075,6 +12037,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -10504,7 +12468,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.5,
+        "firstRenderMs": 75.1,
+        "renderMs": 3.8,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -10530,6 +12495,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -10961,6 +12928,7 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
+        "firstRenderMs": 119.7,
         "renderMs": 3.4,
         "drawCalls": 11,
         "triangles": 34380,
@@ -10985,6 +12953,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -11425,7 +13395,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 2.8,
+        "firstRenderMs": 77.6,
+        "renderMs": 2.9,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -11451,6 +13422,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -11891,7 +13864,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.6,
+        "firstRenderMs": 138.7,
+        "renderMs": 3.7,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -11917,6 +13891,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -12357,7 +14333,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 2.8,
+        "firstRenderMs": 79.9,
+        "renderMs": 3.4,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -12383,6 +14360,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -12803,7 +14782,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.9,
+        "firstRenderMs": 105.8,
+        "renderMs": 4.2,
         "drawCalls": 11,
         "triangles": 34380,
         "stage": "rendered",
@@ -12827,6 +14807,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -13256,7 +15238,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4.1,
+        "firstRenderMs": 72.9,
+        "renderMs": 3.8,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -13282,6 +15265,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -13711,7 +15696,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4.5,
+        "firstRenderMs": 129.7,
+        "renderMs": 5,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -13737,6 +15723,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -14166,7 +16154,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.6,
+        "firstRenderMs": 73.4,
+        "renderMs": 4,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -14192,6 +16181,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -14623,7 +16614,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.4,
+        "firstRenderMs": 117.1,
+        "renderMs": 3.3,
         "drawCalls": 11,
         "triangles": 34380,
         "stage": "rendered",
@@ -14647,6 +16639,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -15087,7 +17081,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 2.9,
+        "firstRenderMs": 76.3,
+        "renderMs": 3,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -15113,6 +17108,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -15553,7 +17550,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4.2,
+        "firstRenderMs": 134.5,
+        "renderMs": 4.1,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -15579,6 +17577,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -16019,7 +18019,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.4,
+        "firstRenderMs": 76.6,
+        "renderMs": 3,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -16045,6 +18046,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -16465,7 +18468,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 5,
+        "firstRenderMs": 103.6,
+        "renderMs": 5.3,
         "drawCalls": 11,
         "triangles": 34380,
         "stage": "rendered",
@@ -16489,6 +18493,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -16918,7 +18924,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4.6,
+        "firstRenderMs": 72.7,
+        "renderMs": 5.2,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -16944,6 +18951,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -17373,7 +19382,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 5.3,
+        "firstRenderMs": 129.3,
+        "renderMs": 5.6,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -17399,6 +19409,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -17828,7 +19840,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4.7,
+        "firstRenderMs": 71.8,
+        "renderMs": 5,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -17854,6 +19867,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -18285,7 +20300,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.8,
+        "firstRenderMs": 107.5,
+        "renderMs": 3.7,
         "drawCalls": 11,
         "triangles": 34380,
         "stage": "rendered",
@@ -18309,6 +20325,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -18749,7 +20767,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.2,
+        "firstRenderMs": 76.6,
+        "renderMs": 3.4,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -18775,6 +20794,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -19215,7 +21236,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4,
+        "firstRenderMs": 134.3,
+        "renderMs": 4.1,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -19241,6 +21263,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -19681,7 +21705,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.5,
+        "firstRenderMs": 75.6,
+        "renderMs": 3.4,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -19707,6 +21732,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -20127,7 +22154,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.9,
+        "firstRenderMs": 106.2,
+        "renderMs": 4,
         "drawCalls": 11,
         "triangles": 34380,
         "stage": "rendered",
@@ -20151,6 +22179,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -20580,7 +22610,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.7,
+        "firstRenderMs": 72.5,
+        "renderMs": 3.9,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -20606,6 +22637,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -21035,7 +23068,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4.4,
+        "firstRenderMs": 130.3,
+        "renderMs": 4.1,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -21061,6 +23095,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -21490,7 +23526,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.8,
+        "firstRenderMs": 71.4,
+        "renderMs": 3.7,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -21516,6 +23553,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -21947,6 +23986,7 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
+        "firstRenderMs": 106.8,
         "renderMs": 3.3,
         "drawCalls": 11,
         "triangles": 34380,
@@ -21971,6 +24011,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -22411,7 +24453,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 2.8,
+        "firstRenderMs": 76.5,
+        "renderMs": 3.3,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -22437,6 +24480,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -22877,7 +24922,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3.6,
+        "firstRenderMs": 132,
+        "renderMs": 3.5,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -22903,6 +24949,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -23343,7 +25391,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 3,
+        "firstRenderMs": 76.2,
+        "renderMs": 3.1,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -23369,6 +25418,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -23936,7 +25987,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 5.1,
+        "firstRenderMs": 230.8,
+        "renderMs": 5.4,
         "drawCalls": 15,
         "triangles": 41609,
         "stage": "rendered",
@@ -23960,6 +26012,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -24537,7 +26591,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 4.5,
+        "firstRenderMs": 81,
+        "renderMs": 4.4,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -24563,6 +26618,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -25140,7 +27197,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 12.1,
+        "firstRenderMs": 309.8,
+        "renderMs": 6,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -25166,6 +27224,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -25743,6 +27803,7 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
+        "firstRenderMs": 79.1,
         "renderMs": 4.2,
         "drawCalls": 18,
         "triangles": 41836,
@@ -25769,6 +27830,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -26351,7 +28414,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 6.4,
+        "firstRenderMs": 231,
+        "renderMs": 6.8,
         "drawCalls": 15,
         "triangles": 41609,
         "stage": "rendered",
@@ -26375,6 +28439,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -26967,7 +29033,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 3.9,
+        "firstRenderMs": 82.2,
+        "renderMs": 4.6,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -26993,6 +29060,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -27585,7 +29654,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 5.5,
+        "firstRenderMs": 318.4,
+        "renderMs": 5.6,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -27611,6 +29681,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -28203,7 +30275,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 3.8,
+        "firstRenderMs": 81,
+        "renderMs": 4,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -28229,6 +30302,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -28796,6 +30871,7 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
+        "firstRenderMs": 219,
         "renderMs": 7.3,
         "drawCalls": 15,
         "triangles": 41609,
@@ -28820,6 +30896,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -29397,7 +31475,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 7.3,
+        "firstRenderMs": 78.7,
+        "renderMs": 6.9,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -29423,6 +31502,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -30000,7 +32081,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 8.3,
+        "firstRenderMs": 298.9,
+        "renderMs": 7.7,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -30026,6 +32108,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -30603,7 +32687,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 7.6,
+        "firstRenderMs": 80,
+        "renderMs": 7.2,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -30629,6 +32714,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -31211,7 +33298,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 6.4,
+        "firstRenderMs": 226,
+        "renderMs": 6.6,
         "drawCalls": 15,
         "triangles": 41609,
         "stage": "rendered",
@@ -31235,6 +33323,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -31827,7 +33917,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 6.4,
+        "firstRenderMs": 81.4,
+        "renderMs": 6.2,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -31853,6 +33944,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -32445,7 +34538,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 7.5,
+        "firstRenderMs": 305.5,
+        "renderMs": 7.6,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -32471,6 +34565,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -33063,7 +35159,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 6.3,
+        "firstRenderMs": 80.1,
+        "renderMs": 6.4,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -33089,6 +35186,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -33656,7 +35755,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 4.9,
+        "firstRenderMs": 216.6,
+        "renderMs": 4.7,
         "drawCalls": 15,
         "triangles": 41609,
         "stage": "rendered",
@@ -33680,6 +35780,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -34257,7 +36359,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 4.3,
+        "firstRenderMs": 71.8,
+        "renderMs": 4.2,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -34283,6 +36386,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -34860,7 +36965,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 5.3,
+        "firstRenderMs": 295.5,
+        "renderMs": 5.9,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -34886,6 +36992,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -35463,7 +37571,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 4.1,
+        "firstRenderMs": 71,
+        "renderMs": 4.2,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -35489,6 +37598,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -36071,6 +38182,7 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
+        "firstRenderMs": 221.8,
         "renderMs": 4.7,
         "drawCalls": 15,
         "triangles": 41609,
@@ -36095,6 +38207,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -36687,7 +38801,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 3.9,
+        "firstRenderMs": 72.5,
+        "renderMs": 3.8,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -36713,6 +38828,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -37305,7 +39422,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 4.8,
+        "firstRenderMs": 309.1,
+        "renderMs": 4.9,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -37331,6 +39449,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -37923,7 +40043,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 3.5,
+        "firstRenderMs": 73.2,
+        "renderMs": 3.9,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -37949,6 +40070,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -37981,6 +40104,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -38013,6 +40138,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -38433,7 +40560,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4.1,
+        "firstRenderMs": 115.5,
+        "renderMs": 4.8,
         "drawCalls": 11,
         "triangles": 34380,
         "stage": "rendered",
@@ -38457,6 +40585,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -39024,7 +41154,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 5.7,
+        "firstRenderMs": 226.7,
+        "renderMs": 5.1,
         "drawCalls": 15,
         "triangles": 41609,
         "stage": "rendered",
@@ -39048,6 +41179,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -39477,7 +41610,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4,
+        "firstRenderMs": 74.3,
+        "renderMs": 3.8,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -39503,6 +41637,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -40080,7 +42216,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 4.1,
+        "firstRenderMs": 83,
+        "renderMs": 4.3,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -40106,6 +42243,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -40527,7 +42666,8 @@
         ],
         "mtoonCount": 11,
         "outlineCount": 2,
-        "renderMs": 4.1,
+        "firstRenderMs": 72.7,
+        "renderMs": 3.9,
         "drawCalls": 16,
         "triangles": 35677,
         "stage": "rendered",
@@ -40551,6 +42691,8 @@
         "features": "matcap,rim,emissive,uv",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 512,
         "h": 768,
@@ -41119,7 +43261,8 @@
         ],
         "mtoonCount": 15,
         "outlineCount": 0,
-        "renderMs": 4.2,
+        "firstRenderMs": 79.7,
+        "renderMs": 4.1,
         "drawCalls": 18,
         "triangles": 41836,
         "stage": "rendered",
@@ -41143,6 +43286,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 768,
         "h": 512,
@@ -41386,7 +43531,8 @@
           }
         ],
         "mtoonCount": 7,
-        "renderMs": 3.2,
+        "firstRenderMs": 18.1,
+        "renderMs": 3.1,
         "drawCalls": 7,
         "triangles": 27776,
         "stage": "rendered",
@@ -41410,6 +43556,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 768,
         "h": 512,
@@ -41662,6 +43810,7 @@
           }
         ],
         "mtoonCount": 7,
+        "firstRenderMs": 25.8,
         "renderMs": 3.3,
         "drawCalls": 8,
         "triangles": 27777,
@@ -41688,6 +43837,8 @@
         "features": "none",
         "sun": 1.6,
         "amb": 0.25,
+        "hide": null,
+        "noemissive": false,
         "uvTime": 1.25,
         "w": 768,
         "h": 512,
@@ -41932,7 +44083,8 @@
           }
         ],
         "mtoonCount": 7,
-        "renderMs": 3.8,
+        "firstRenderMs": 22.3,
+        "renderMs": 4.5,
         "drawCalls": 8,
         "triangles": 27777,
         "stage": "rendered",
