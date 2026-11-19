@@ -1,0 +1,2135 @@
+{
+  "date" : "2026-11-19T14:42:14Z",
+  "os" : "Version 27.3 (Build 26C5047e)",
+  "rows" : [
+    {
+      "case" : "renderer=webgl&model=mira&view=body&features=all&timing=1&w=1920&h=1080",
+      "hasGpu" : true,
+      "name" : "webgl_mira_body_fall_timing_1_w_1920_h_1080",
+      "origin" : "loopback",
+      "png" : "webgl_mira_body_fall_timing_1_w_1920_h_1080__loopback.png",
+      "result" : {
+        "amb" : 0.25,
+        "backend" : "WebGL2",
+        "cpuMsMedian" : 0.38,
+        "cpuMsP90" : 0.57999999999999996,
+        "drawCalls" : 11,
+        "errorCount" : 0,
+        "errors" : [
+
+        ],
+        "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 133.69999999999999,
+        "h" : 1080,
+        "lib" : null,
+        "materials" : [
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceMouth_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_EyeIris_00_EYE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_EyeHighlight_00_EYE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap",
+              "outlineWidthMultiplyTexture"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_Face_00_SKIN (Instance)",
+            "outlineWidth" : 0.00080000000000000004,
+            "outlineWidthMode" : "worldCoordinates",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : true,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap",
+              "outlineWidthMultiplyTexture"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_Face_00_SKIN (Instance) (Outline)",
+            "outlineWidth" : 0.00080000000000000004,
+            "outlineWidthMode" : "worldCoordinates",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_EyeWhite_00_EYE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceBrow_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceEyelash_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.70999990000000002,
+            "shadingToony" : 0.90999996699999997,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceEyeline_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_Body_00_SKIN (Instance)",
+            "outlineWidth" : 0.00080000000000000004,
+            "outlineWidthMode" : "worldCoordinates",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : -0.050000011900000002,
+            "shadingToony" : 0.94999999999999996,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : true,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_Body_00_SKIN (Instance) (Outline)",
+            "outlineWidth" : 0.00080000000000000004,
+            "outlineWidthMode" : "worldCoordinates",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : -0.050000011900000002,
+            "shadingToony" : 0.94999999999999996,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          }
+        ],
+        "model" : "mira",
+        "mtoonCount" : 11,
+        "outlineCount" : 2,
+        "renderer" : "webgl",
+        "renderMs" : 19.120000000000001,
+        "revision" : "187",
+        "stage" : "rendered",
+        "sun" : 1.6000000000000001,
+        "triangles" : 34380,
+        "uniqueWarnings" : [
+
+        ],
+        "uvTime" : 1.25,
+        "view" : "body",
+        "w" : 1920,
+        "warningCount" : 0,
+        "warnings" : [
+
+        ]
+      },
+      "secure" : true,
+      "timedOut" : false,
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    {
+      "case" : "renderer=webgpu&model=mira&view=body&features=all&timing=1&w=1920&h=1080",
+      "hasGpu" : true,
+      "name" : "webgpu_mira_body_fall_timing_1_w_1920_h_1080",
+      "origin" : "loopback",
+      "png" : "webgpu_mira_body_fall_timing_1_w_1920_h_1080__loopback.png",
+      "result" : {
+        "amb" : 0.25,
+        "backend" : "WebGPU",
+        "cpuMsMedian" : 0.64000000000000001,
+        "cpuMsP90" : 0.85999999999999999,
+        "drawCalls" : 16,
+        "errorCount" : 0,
+        "errors" : [
+
+        ],
+        "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 99.959999999999994,
+        "h" : 1080,
+        "hasNavigatorGpu" : true,
+        "lib" : "patched",
+        "materials" : [
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceMouth_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_EyeIris_00_EYE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_EyeHighlight_00_EYE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap",
+              "outlineWidthMultiplyTexture"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_Face_00_SKIN (Instance)",
+            "outlineWidth" : 0.00080000000000000004,
+            "outlineWidthMode" : "worldCoordinates",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : true,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap",
+              "outlineWidthMultiplyTexture"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_Face_00_SKIN (Instance) (Outline)",
+            "outlineWidth" : 0.00080000000000000004,
+            "outlineWidthMode" : "worldCoordinates",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_EyeWhite_00_EYE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceBrow_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceEyelash_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.70999990000000002,
+            "shadingToony" : 0.90999996699999997,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceEyeline_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.81291663599999997,
+            "shadingToony" : 0.90458333499999999,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_Body_00_SKIN (Instance)",
+            "outlineWidth" : 0.00080000000000000004,
+            "outlineWidthMode" : "worldCoordinates",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : -0.050000011900000002,
+            "shadingToony" : 0.94999999999999996,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : true,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_Body_00_SKIN (Instance) (Outline)",
+            "outlineWidth" : 0.00080000000000000004,
+            "outlineWidthMode" : "worldCoordinates",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : -0.050000011900000002,
+            "shadingToony" : 0.94999999999999996,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          }
+        ],
+        "model" : "mira",
+        "mtoonCount" : 11,
+        "outlineCount" : 2,
+        "renderer" : "webgpu",
+        "renderMs" : 18.879999999999999,
+        "revision" : "187",
+        "stage" : "rendered",
+        "sun" : 1.6000000000000001,
+        "triangles" : 35677,
+        "uniqueWarnings" : [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ],
+        "uvTime" : 1.25,
+        "view" : "body",
+        "w" : 1920,
+        "warningCount" : 7,
+        "warnings" : [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ]
+      },
+      "secure" : true,
+      "timedOut" : false,
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    {
+      "case" : "renderer=webgl&model=vroid10&view=body&features=all&timing=1&w=1920&h=1080",
+      "hasGpu" : true,
+      "name" : "webgl_vroid10_body_fall_timing_1_w_1920_h_1080",
+      "origin" : "loopback",
+      "png" : "webgl_vroid10_body_fall_timing_1_w_1920_h_1080__loopback.png",
+      "result" : {
+        "amb" : 0.25,
+        "backend" : "WebGL2",
+        "cpuMsMedian" : 0.44,
+        "cpuMsP90" : 0.52000000000000002,
+        "drawCalls" : 15,
+        "errorCount" : 0,
+        "errors" : [
+
+        ],
+        "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 234,
+        "h" : 1080,
+        "lib" : null,
+        "materials" : [
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceMouth_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : 0.90000000000000002,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_EyeIris_00_EYE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.90000000000000002,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap",
+              "outlineWidthMultiplyTexture"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_Face_00_SKIN (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : 0.90000000000000002,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_EyeWhite_00_EYE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.90000000000000002,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceBrow_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.90000000000000002,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceEyeline_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.90000000000000002,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_Body_00_SKIN (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_007_02_Tops_01_CLOTH (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.624,
+              0.67200000000000004,
+              0.93000000000000005
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_007_01_Tops_01_CLOTH (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.624,
+              0.67200000000000004,
+              0.93000000000000005
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_001_03_Bottoms_01_CLOTH (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93300000000000005,
+              0.621,
+              0.71099999999999997
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_001_01_Shoes_01_CLOTH (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93300000000000005,
+              0.621,
+              0.71099999999999997
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_001_02_Accessory_Tie_01_CLOTH (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93300000000000005,
+              0.621,
+              0.71099999999999997
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_HairBack_00_HAIR (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 1,
+            "shadingToony" : 1,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_Hair_00_HAIR_01 (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 1,
+            "shadingToony" : 1,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_Hair_00_HAIR_02 (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 1,
+            "shadingToony" : 1,
+            "transparent" : false,
+            "type" : "ShaderMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          }
+        ],
+        "model" : "vroid10",
+        "mtoonCount" : 15,
+        "outlineCount" : 0,
+        "renderer" : "webgl",
+        "renderMs" : 19.859999999999999,
+        "revision" : "187",
+        "stage" : "rendered",
+        "sun" : 1.6000000000000001,
+        "triangles" : 41609,
+        "uniqueWarnings" : [
+
+        ],
+        "uvTime" : 1.25,
+        "view" : "body",
+        "w" : 1920,
+        "warningCount" : 0,
+        "warnings" : [
+
+        ]
+      },
+      "secure" : true,
+      "timedOut" : false,
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    {
+      "case" : "renderer=webgpu&model=vroid10&view=body&features=all&timing=1&w=1920&h=1080",
+      "hasGpu" : true,
+      "name" : "webgpu_vroid10_body_fall_timing_1_w_1920_h_1080",
+      "origin" : "loopback",
+      "png" : "webgpu_vroid10_body_fall_timing_1_w_1920_h_1080__loopback.png",
+      "result" : {
+        "amb" : 0.25,
+        "backend" : "WebGPU",
+        "cpuMsMedian" : 0.64000000000000001,
+        "cpuMsP90" : 0.95999999999999996,
+        "drawCalls" : 18,
+        "errorCount" : 0,
+        "errors" : [
+
+        ],
+        "features" : "matcap,rim,emissive,uv",
+        "firstRenderMs" : 105.23999999999999,
+        "h" : 1080,
+        "hasNavigatorGpu" : true,
+        "lib" : "patched",
+        "materials" : [
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceMouth_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : 0.90000000000000002,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_EyeIris_00_EYE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.90000000000000002,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap",
+              "outlineWidthMultiplyTexture"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_Face_00_SKIN (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : 0.90000000000000002,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_EyeWhite_00_EYE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.90000000000000002,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceBrow_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.90000000000000002,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_FaceEyeline_00_FACE (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 0.90000000000000002,
+            "shadingToony" : 0.90000000000000002,
+            "transparent" : true,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_Body_00_SKIN (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93000000000000005,
+              0.624,
+              0.70799999999999996
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_007_02_Tops_01_CLOTH (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.624,
+              0.67200000000000004,
+              0.93000000000000005
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_007_01_Tops_01_CLOTH (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.624,
+              0.67200000000000004,
+              0.93000000000000005
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_001_03_Bottoms_01_CLOTH (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93300000000000005,
+              0.621,
+              0.71099999999999997
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_001_01_Shoes_01_CLOTH (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93300000000000005,
+              0.621,
+              0.71099999999999997
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_001_02_Accessory_Tie_01_CLOTH (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              0.93300000000000005,
+              0.621,
+              0.71099999999999997
+            ],
+            "shadingShift" : 0,
+            "shadingToony" : 0,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_00_HairBack_00_HAIR (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 1,
+            "shadingToony" : 1,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_Hair_00_HAIR_01 (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 1,
+            "shadingToony" : 1,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          },
+          {
+            "emissive" : [
+              0.080000000000000002,
+              0.02,
+              0.059999999999999998
+            ],
+            "isOutline" : false,
+            "maps" : [
+              "map",
+              "shadeMultiplyTexture",
+              "normalMap"
+            ],
+            "matcap" : true,
+            "name" : "N00_000_Hair_00_HAIR_02 (Instance)",
+            "outlineWidth" : 0,
+            "outlineWidthMode" : "none",
+            "rim" : [
+              0.90000000000000002,
+              0.45000000000000001,
+              0.20000000000000001
+            ],
+            "rimPower" : 4,
+            "shade" : [
+              1,
+              1,
+              1
+            ],
+            "shadingShift" : 1,
+            "shadingToony" : 1,
+            "transparent" : false,
+            "type" : "NodeMaterial",
+            "uvAnim" : [
+              0.070000000000000007,
+              0.029999999999999999,
+              0.050000000000000003
+            ]
+          }
+        ],
+        "model" : "vroid10",
+        "mtoonCount" : 15,
+        "outlineCount" : 0,
+        "renderer" : "webgpu",
+        "renderMs" : 19.699999999999999,
+        "revision" : "187",
+        "stage" : "rendered",
+        "sun" : 1.6000000000000001,
+        "triangles" : 41836,
+        "uniqueWarnings" : [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ],
+        "uvTime" : 1.25,
+        "view" : "body",
+        "w" : 1920,
+        "warningCount" : 8,
+        "warnings" : [
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+          "THREE.TempNode: This module has been deprecated. Extend Node instead."
+        ]
+      },
+      "secure" : true,
+      "timedOut" : false,
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    }
+  ]
+}

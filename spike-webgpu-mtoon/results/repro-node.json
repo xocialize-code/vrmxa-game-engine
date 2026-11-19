@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-19T14:28:05.428Z",
+  "node": "v26.12.1",
+  "threeVrm": "3.5.5",
+  "rows": [
+    {
+      "three": "187",
+      "lib": "stock",
+      "ok": false,
+      "revision": "187",
+      "error": "SyntaxError: The requested module 'three/tsl' does not provide an export named 'transformedNormalView'",
+      "warnings": []
+    },
+    {
+      "three": "187",
+      "lib": "patched",
+      "ok": true,
+      "revision": "187",
+      "constructed": [
+        "NodeMaterial",
+        "NodeMaterial"
+      ],
+      "warnings": []
+    },
+    {
+      "three": "186",
+      "lib": "stock",
+      "ok": true,
+      "revision": "186",
+      "constructed": [
+        "NodeMaterial",
+        "NodeMaterial"
+      ],
+      "warnings": []
+    },
+    {
+      "three": "186",
+      "lib": "patched",
+      "ok": true,
+      "revision": "186",
+      "constructed": [
+        "NodeMaterial",
+        "NodeMaterial"
+      ],
+      "warnings": []
+    }
+  ]
+}

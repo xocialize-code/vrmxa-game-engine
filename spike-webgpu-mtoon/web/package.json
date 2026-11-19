@@ -1,0 +1,24 @@
+{
+  "name": "vrmxg-webgpu-mtoon-spike",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "models": "node scripts/copy-models.mjs",
+    "postinstall": "node scripts/patch-three-vrm.mjs",
+    "predev": "node scripts/copy-models.mjs",
+    "dev": "vite",
+    "repro": "node scripts/repro-node.mjs",
+    "shots": "node scripts/shots.mjs"
+  },
+  "dependencies": {
+    "@pixiv/three-vrm": "3.5.5",
+    "three": "0.187.0",
+    "three-r186": "npm:three@0.186.1"
+  },
+  "devDependencies": {
+    "playwright-core": "1.58.0",
+    "pngjs": "^7.0.0",
+    "vite": "8.3.8"
+  }
+}

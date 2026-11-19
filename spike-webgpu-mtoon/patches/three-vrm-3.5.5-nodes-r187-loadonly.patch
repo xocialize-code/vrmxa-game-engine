@@ -1,0 +1,20 @@
+--- a/lib/nodes/index.module.js
++++ b/lib/nodes/index.module.js
+@@ -13,7 +13,7 @@
+ import { cos, mat2, sin, uv, vec2, vec4 } from "three/tsl";
+ import { materialReference } from "three/tsl";
+ import * as THREE4 from "three/webgpu";
+-import { BRDF_Lambert, diffuseColor, float, mix, transformedNormalView, vec3 } from "three/tsl";
++import { BRDF_Lambert, diffuseColor, float, mix, normalView as transformedNormalView, vec3 } from "three/tsl"; // VRMXG patch: r187 removed transformedNormalView (pixiv/three-vrm#1890)
+ import * as THREE3 from "three/webgpu";
+ import { nodeImmutable } from "three/tsl";
+ import * as THREE_TSL from "three/tsl";
+@@ -35,7 +35,7 @@
+   vec3 as vec32,
+   vec4 as vec42
+ } from "three/tsl";
+-import { float as float2, modelViewPosition, transformedNormalView as transformedNormalView2 } from "three/tsl";
++import { float as float2, modelViewPosition, normalView as transformedNormalView2 } from "three/tsl"; // VRMXG patch: r187 removed transformedNormalView (pixiv/three-vrm#1890)
+ var threeRevision = parseInt(THREE.REVISION, 10);
+ if (threeRevision < 167) {
+   console.warn(
