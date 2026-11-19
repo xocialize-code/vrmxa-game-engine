@@ -30,6 +30,14 @@ M3 adds checks as its workstreams land. The M3 acceptance (W13) runs all ten of 
     in the editor at 1080p24 with sound twice, to the same 2,929 frames (digest e8cfde98e135a744, audio 3d65d16c);
   - jumping to 27 frames of its shot, lines and decisions from snapshots draws exactly the exported frames.
 
+- **The dialogue UI** (W6, `node acceptance/m3/dialogue-chromium.mjs` against the playground's dev server,
+  `results/m3-dialogue-chromium.json` and `m3-dialogue-*.png`):
+  - a typed line to Hana (`?director=demo`) shows her "…" bubble, then her reply word by word over her head, with the
+    caption;
+  - a picked reply ("Could I get a latte, please?") sets her `takeOrder` goal;
+  - the recorded conversation replayed for 3,000 steps with the bubbles and captions read every step hashes the same
+    at every 300th step as with both off.
+
 ## Result: M2 is done (2026-11-18, M5 Max)
 
 M2's ten exit checks ([M2-PLAN.md](../M2-PLAN.md) "What M2 is done looking like") were run at the M2 commit 2df012b in

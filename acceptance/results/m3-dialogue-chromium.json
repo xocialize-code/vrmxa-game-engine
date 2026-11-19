@@ -1,0 +1,67 @@
+{
+ "runtime": "chromium",
+ "typed": {
+  "choices": [
+   "Good morning, Hana!",
+   "Could I get a latte, please?",
+   "How's your morning going?",
+   "See you tomorrow!"
+  ],
+  "thinking": "Hana is thinking",
+  "line": "Hana says: Good morning! Lovely to see you.",
+  "caption": "Hana: Good morning! Lovely to see you.",
+  "order": "Hana says: One latte, coming right up!",
+  "goal": {
+   "name": "takeOrder",
+   "params": {
+    "customer": "mira",
+    "order": "latte"
+   },
+   "from": "director",
+   "step": 386
+  }
+ },
+ "presentation": {
+  "steps": 3000,
+  "samples": 10,
+  "same": true,
+  "linesSeen": [
+   "thinking",
+   "Morning, Mira! You are early today.",
+   "Of course. One latte, coming right up.",
+   "Here you go. Enjoy!",
+   "Welcome in!"
+  ],
+  "hashesWithUI": {
+   "300": "dc317613439075de",
+   "600": "a0d1c879d55df681",
+   "900": "1f69af9e125e27ab",
+   "1200": "f382cf07588f7d51",
+   "1500": "d5b5a1dd46bb721f",
+   "1800": "3b64370f59492cdf",
+   "2100": "c25ba707cd7f7235",
+   "2400": "8247a855aeacdc45",
+   "2700": "e0efdc5cf721ef85",
+   "3000": "b58b3033783c6c6c"
+  },
+  "hashesWithout": {
+   "300": "dc317613439075de",
+   "600": "a0d1c879d55df681",
+   "900": "1f69af9e125e27ab",
+   "1200": "f382cf07588f7d51",
+   "1500": "d5b5a1dd46bb721f",
+   "1800": "3b64370f59492cdf",
+   "2100": "c25ba707cd7f7235",
+   "2400": "8247a855aeacdc45",
+   "2700": "e0efdc5cf721ef85",
+   "3000": "b58b3033783c6c6c"
+  }
+ },
+ "screenshots": [
+  "m3-dialogue-thinking.png",
+  "m3-dialogue-typed.png",
+  "m3-dialogue-choice.png",
+  "m3-dialogue-take.png"
+ ],
+ "errors": []
+}

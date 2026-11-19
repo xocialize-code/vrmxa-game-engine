@@ -23,3 +23,26 @@ too. "Replay demo walk" plays `content/sample/input/walk-in.json`.
 
 **Result (AB-R-0945, 2026-11-17).** Headless Chromium 156: the cafe loads, Play runs 166 steps in 3 s, simulation
 0.32 ms per step, render 0.86 ms, no console errors or warnings. The in-app browser ran at 120 fps.
+
+## Dialogue (M3 W6, AB-T-0545)
+
+Talking to a character, as screen overlays over the canvas. They are presentation: they read the world and write
+nothing, and the step is the same with them on or off.
+- **`?director=demo`** (a scripted model) or **`?director=http://127.0.0.1:5191/v1/chat/completions&model=omni4`**
+  (the loopback stand-in) puts a director on the character you talk to: `?talkTo=hana-1`, recast with
+  `?preset=host`.
+- **The chat:** type a line, or pick one of her replies (her app persona's `replies` in `personas.json`). Keys typed
+  into the chat box never reach the game's input.
+- **Speech bubbles:** each line shows over the speaker's head, word by word, with punctuation, while the director waits
+  for the model it shows "…".
+  - A speaker out of frame gets a bubble pinned to the edge, with their name and no tail.
+  - A speaker behind the camera gets none (the caption says it).
+- **Captions** at the bottom, as before. They now keep the line's punctuation. Both have toggles in the status bar.
+- **`?take=takes/conversation.json`** replays a recorded conversation (its cast, input and ai log) with no model.
+
+Checked in headless Chromium by `acceptance/m3/dialogue-chromium.mjs` (`acceptance/results/m3-dialogue-*.png`):
+- the typed line, the "…" bubble, her reply with its caption, and a picked reply that sets her order goal;
+- the take replayed with the bubbles and captions read every step hashes the same as with both off.
+
+In-world text drawn in the canvas (bubbles in exports, name tags, title cards) waits on the text rendering spike,
+AB-T-0536.

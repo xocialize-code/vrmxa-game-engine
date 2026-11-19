@@ -6,7 +6,7 @@ import { Playground, PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '' });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, showBubbles: true, showCaptions: true });
 // the sample's scenes and sequences; ?scene= picks one at load
 const SCENES = ['cafe.vrmxs', 'sequences/morning.vrmxs', 'sequences/cafe-morning.vrmxs'];
 const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
@@ -19,9 +19,14 @@ function refresh() {
   ui.render = pg.stats.renderMs ? `${pg.stats.renderMs.toFixed(2)} ms` : '—';
   ui.prompt = pg.prompt(); ui.wearing = pg.wearing();
   ui.buses = pg.busSettings(); ui.audioOn = !!pg.audio?.running; ui.captions = pg.captions();
+  ui.bubbles = ui.showBubbles ? pg.bubbles() : []; ui.hasDirector = !!pg.director; ui.choices = pg.choices(); // M3 W6
   const cur = pg.currentCamera(); ui.cameras = pg.cameras(); ui.camera = cur?.id ?? ''; ui.preset = cur?.preset ?? '';
   if (pg.error) ui.error = pg.error;
 }
+
+// M3 W6: talking to the character with a director (typed, or a choice); bubbles and captions are presentation only
+function say(text) { try { pg.talk(text); } catch (e) { ui.error = String(e?.message ?? e); } refresh(); }
+function send() { const t = ui.chatText.trim(); if (!t) return; say(t); ui.chatText = ''; }
 
 async function load() {
   ui.loading = true; ui.error = '';
@@ -116,7 +121,22 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
     <main class="stage"><canvas ref="canvas" aria-label="Scene view" tabindex="0"></canvas>
       <p v-if="ui.loading" class="overlay">Loading…</p>
       <pre v-if="ui.error" class="overlay error" role="alert">{{ ui.error }}</pre>
-      <div v-if="ui.captions.length" id="captions" class="captions" role="status" aria-live="polite">
+      <div v-if="ui.showBubbles && ui.bubbles.length" id="bubbles" class="bubbles">
+        <div v-for="b in ui.bubbles" :key="`${b.actor}-${b.kind}`" class="bubble" :class="[b.kind, { edge: b.edge }]" :style="{ left: `${b.x}px`, top: `${b.y}px` }" role="status" :aria-label="b.kind === 'thinking' ? `${b.name} is thinking` : `${b.name} says: ${b.text}`">
+          <span v-if="b.kind === 'thinking'" class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <template v-else><strong v-if="b.edge">{{ b.name }}</strong><span v-for="(w, i) in b.words" :key="i" :class="{ said: i < b.spoken, now: i === b.word }">{{ `${w} ` }}</span></template>
+        </div>
+      </div>
+      <form v-if="ui.hasDirector" id="chat" class="chat" aria-label="Talk" @submit.prevent="send">
+        <div class="choices" role="group" aria-label="Replies">
+          <button v-for="c in ui.choices" :key="c" type="button" class="choice" :aria-label="`Say: ${c}`" @click="say(c)">{{ c }}</button>
+        </div>
+        <div class="line">
+          <input id="chat-input" v-model="ui.chatText" type="text" placeholder="Say something…" aria-label="Say something" autocomplete="off" @keydown.stop @keyup.stop>
+          <button id="chat-send" type="submit" aria-label="Send" :disabled="!ui.chatText.trim()">Send</button>
+        </div>
+      </form>
+      <div v-if="ui.showCaptions && ui.captions.length" id="captions" class="captions" role="status" aria-live="polite">
         <p v-for="c in ui.captions" :key="c.actor" :aria-label="`${c.name}: ${c.text}`"><strong>{{ c.name }}</strong> <span v-for="(w, i) in c.words" :key="i" :class="{ said: i < c.spoken, now: i === c.word }">{{ `${w} ` }}</span></p>
       </div>
       <p v-if="ui.prompt" id="prompt" class="prompt" role="status" :aria-label="`Press ${ui.prompt.key} to ${ui.prompt.text}`"><kbd>{{ ui.prompt.key }}</kbd> {{ ui.prompt.text }}</p>
@@ -128,6 +148,8 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
         <label><input type="checkbox" v-model="ui.debug.capsules" aria-label="Capsules" @change="setDebug"> Capsules</label>
         <label><input type="checkbox" v-model="ui.debug.rays" aria-label="Rays" @change="setDebug"> Rays</label>
         <label><input type="checkbox" v-model="ui.interpolate" aria-label="Interpolate" @change="setInterp"> Interpolate</label>
+        <label><input id="show-bubbles" type="checkbox" v-model="ui.showBubbles" aria-label="Speech bubbles" @change="refresh"> Bubbles</label>
+        <label><input id="show-captions" type="checkbox" v-model="ui.showCaptions" aria-label="Captions" @change="refresh"> Captions</label>
       </fieldset>
       <!-- Each readout's accessible name carries its value ("Frame time 16.7 ms · 60 fps"), so AppProbe reads it in one find. -->
       <output v-if="ui.saveNote" id="save-note" :aria-label="ui.saveNote">{{ ui.saveNote }}</output>
@@ -176,6 +198,22 @@ canvas { display: block; width: 100%; height: 100%; outline: none; }
 .notes { color: var(--muted); }
 .mixer { display: flex; gap: 10px; border: 0; margin: 0; padding: 0; align-items: center; } .mixer legend { float: left; margin-right: 6px; color: var(--muted); }
 .mixer .bus { display: flex; align-items: center; gap: 4px; font-size: 12px; } .mixer input[type=range] { width: 64px; }
+/* M3 W6: speech bubbles over the speakers, and the chat */
+.bubbles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.bubble { position: absolute; transform: translate(-50%, calc(-100% - 10px)); max-width: 280px; padding: 8px 12px; border-radius: 14px; background: #fffdf7; color: #1d1f24; font-size: 15px; line-height: 1.35; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25); }
+.bubble::after { content: ''; position: absolute; left: 50%; bottom: -8px; transform: translateX(-50%); border: 8px solid transparent; border-bottom: 0; border-top-color: #fffdf7; }
+.bubble span { opacity: 0.45; } .bubble span.said, .bubble span.now { opacity: 1; }
+.bubble.thinking { padding: 10px 14px; }
+.bubble.edge::after { display: none; } .bubble.edge { outline: 1px solid rgba(0, 0, 0, 0.12); }
+.bubble strong { margin-right: 4px; }
+.dots { display: inline-flex; gap: 4px; } .dots i { width: 6px; height: 6px; border-radius: 50%; background: #6b7280; animation: dot 1.1s infinite ease-in-out; } .dots i:nth-child(2) { animation-delay: 0.15s; } .dots i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes dot { 0%, 80%, 100% { opacity: 0.25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
+@media (prefers-reduced-motion: reduce) { .dots i { animation: none; opacity: 0.7; } }
+.chat { position: absolute; left: 16px; bottom: 16px; width: min(420px, calc(100% - 32px)); display: flex; flex-direction: column; gap: 8px; }
+.chat .choices { display: flex; flex-wrap: wrap; gap: 6px; }
+.chat .choice { padding: 5px 10px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.35); background: rgba(10, 12, 16, 0.6); color: #f2f2f2; font-size: 13px; cursor: pointer; }
+.chat .line { display: flex; gap: 6px; }
+.chat input { flex: 1; min-width: 0; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.35); background: rgba(10, 12, 16, 0.72); color: #f2f2f2; font-size: 15px; }
 .captions { position: absolute; left: 50%; bottom: 6%; transform: translateX(-50%); max-width: 70%; text-align: center; pointer-events: none; }
 .captions p { margin: 4px 0; padding: 6px 12px; border-radius: 8px; background: rgba(10, 12, 16, 0.72); color: #f2f2f2; font-size: 16px; }
 .captions span { opacity: 0.55; } .captions span.said, .captions span.now { opacity: 1; } .captions span.now { color: #ffd76a; }

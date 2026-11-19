@@ -16,6 +16,8 @@ import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { inShell, call } from '../../shell/js/shell.js';
 import { httpTTS, shellTTS } from '@vrmxg/voice';
+import { installDirector, httpModel, scriptedModel, isTake } from '@vrmxg/director';
+import { Vector3 } from 'three';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
@@ -62,9 +64,28 @@ export class Playground {
     const R = await loadRapier();
     const read = text === undefined ? bytes : async (ref) => (ref === scene ? new TextEncoder().encode(text) : bytes(ref));
     this.sample = await loadSample(read, scene);
+    // M3 W6: ?director=<chat url>&model=omni4 (the loopback stand-in), or ?director=demo (a scripted model), puts a
+    // director on the character you talk to (?talkTo=hana-1, recast with ?preset=host); ?take=takes/….json replays a
+    // recorded conversation (its cast, input and ai log) with no model
+    const params = new URLSearchParams(location.search);
+    this.talkTo = params.get('talkTo') ?? 'hana-1';
+    const takeRef = params.get('take'), directorUrl = params.get('director');
+    const take = takeRef ? JSON.parse(new TextDecoder().decode(await read(takeRef))) : null;
+    if (take && !isTake(take)) throw new Error(`${takeRef} is not a take (vrmxg-take)`);
+    const cast = take?.cast ?? (directorUrl ? { [this.talkTo]: { behaviours: [{ use: 'brain', preset: params.get('preset') ?? 'host' }] } } : null);
+    if (cast) this.sample = { ...this.sample, doc: { ...this.sample.doc, nodes: this.sample.doc.nodes.map((n) => (cast[n.id] ? { ...n, ...cast[n.id] } : n)) } };
     if (!this.audio) { this.audio = new AudioOutput(); this.audio.unlockOn(window); } // one output for every load; heard after the first gesture
     this.tree?.services.get('audio')?.dispose();
-    const { tree, input, models } = await buildWorld(R, this.sample, { vrmxaCore, closet, behaviours, audioOutput: this.audio });
+    const world = await buildWorld(R, this.sample, { vrmxaCore, closet, behaviours, audioOutput: this.audio });
+    const { tree, input, models } = world;
+    this.world = world;
+    if (take) { input.replay(structuredClone(take.input)); world.ai.replay(take.ai); }
+    this.director = null;
+    if (directorUrl && !take) {
+      const player = tree.all().find((n) => n.type === 'Character' && n.behaviourEntries?.some((b) => b.use === 'player'));
+      const model = directorUrl === 'demo' ? demoModel() : httpModel(directorUrl, { model: params.get('model') ?? 'omni4', temperature: 0 });
+      this.director = installDirector(tree, { model, user: player?.id ?? null, userName: player?.name ?? null, persona: (id) => world.personas.forDirector(id), memory: (id) => world.personas.memoryOf(id) });
+    }
     if (!this.devices) {
       this.devices = { keyboard: new KeyboardDevice(), mouse: new MouseDevice(), gamepad: new GamepadDevice() };
       this.devices.keyboard.attach(window); this.devices.mouse.attach(this.canvas);
@@ -254,7 +275,65 @@ export class Playground {
   }
 
   /** What is being said now: [{ name, text, word, words }] (the voice service's captions, at the frame's blend). */
-  captions() { return this.tree?.services.get('voice')?.captions(this.host.last.alpha ?? 1) ?? []; }
+  captions() {
+    // the line's own words, punctuation kept, when they pair one to one with the timed words (M3 W6)
+    return (this.tree?.services.get('voice')?.captions(this.host.last.alpha ?? 1) ?? []).map((c) => {
+      const tokens = String(c.text ?? '').trim().split(/\s+/);
+      return tokens.length === c.words?.length ? { ...c, words: tokens } : c;
+    });
+  }
+
+  // ---------------------------------------------------------------- dialogue (M3 W6): presentation, never the world
+
+  /**
+   * Speech bubbles: each line being said, over its speaker's head in screen pixels, and a "…" for a character whose
+   * director is waiting on the model. Read from the world, written nowhere: the step is the same with them or without.
+   * → [{ actor, name, kind: 'line' | 'thinking', words?, word?, spoken?, x, y }]
+   */
+  bubbles() {
+    const tree = this.tree;
+    if (!tree) return [];
+    const out = this.captions().map((c) => ({ ...c, kind: 'line', ...this.screenOf(c.actor) }));
+    for (const b of tree.services.get('ai')?.brains ?? []) if (b.bb.director?.pending && !out.some((o) => o.actor === b.node.id)) out.push({ actor: b.node.id, name: b.node.name ?? b.node.id, kind: 'thinking', ...this.screenOf(b.node.id) });
+    return out.filter((o) => o.visible);
+  }
+
+  /**
+   * Where a character's bubble goes, in the canvas's CSS pixels: above its head, kept inside the view. A speaker out of
+   * frame gets its bubble pinned to the nearest edge (`edge`, drawn without a tail); one behind the camera gets none
+   * (the caption still says it).
+   */
+  screenOf(id) {
+    const n = /** @type {any} */ (this.tree?.find(id)), cam = this.host.camera ?? this.tree?.services.get('cameras')?.current?.camera;
+    if (!n || !cam) return { visible: false };
+    const head = n.vrm?.humanoid?.getNormalizedBoneNode?.('head');
+    const p = head ? head.getWorldPosition(new Vector3()) : n.object3d.getWorldPosition(new Vector3()).add(new Vector3(0, 1.6, 0));
+    p.y += 0.32;
+    const v = p.project(cam), w = this.canvas.clientWidth, h = this.canvas.clientHeight;
+    if (!(v.z < 1)) return { visible: false };
+    const x = ((v.x + 1) / 2) * w, y = ((1 - v.y) / 2) * h;
+    const cx = Math.min(w - 150, Math.max(150, x)), cy = Math.min(h - 140, Math.max(60, y));
+    return { x: Math.round(cx), y: Math.round(cy), visible: true, edge: Math.abs(cx - x) > 12 || Math.abs(cy - y) > 12 }; // a small nudge keeps the tail
+  }
+
+  /** The world's hash now (the presentation checks compare it with the dialogue UI on and off). */
+  worldHash() { return this.tree ? hashValue(worldHashes(this.tree, { physicsBytes: true })) : null; }
+
+  /** Say something to the character you talk to (typed chat, a choice): its director takes it from here. */
+  talk(text) {
+    if (!this.director) throw new Error('no director: open the playground with ?director=demo, or ?director=http://127.0.0.1:5191/v1/chat/completions');
+    const t = String(text ?? '').trim();
+    if (!t) return null;
+    const id = this.director.talk(this.talkTo, t);
+    this._changed();
+    return id;
+  }
+
+  /** Replies the person can pick (the character's app persona `replies`, else a few general ones). */
+  choices() {
+    if (!this.director) return [];
+    return this.world?.personas?.appOf(this.talkTo)?.replies ?? ['Hello!', 'How are you today?', 'See you later!'];
+  }
 
   /** What the player wears (the closet at run time), for a status line. */
   wearing() {
@@ -286,13 +365,16 @@ export class Playground {
         if (this.playing) {
           const t0 = performance.now();
           const { steps } = this.host.frame(dt);
+          this.director?.pump();
           const total = performance.now() - t0;
           this._render.push(this.host.last.renderMs); this._sim.push(Math.max(0, total - this.host.last.renderMs) / Math.max(1, steps));
           this.stats.steps = steps; this.stats.alpha = this.host.last.alpha;
         } else this.host.render(1, false);
       } catch (e) { this.error = String(e?.stack ?? e); this.pause(); console.error(e); }
       this.stats.step = this.tree.clock.step;
-      if (this.playing && this.tree.services.get('voice')?.lines.size && this._frames.length % 6 === 0) this._changed(); // captions, word by word
+      // captions word by word, and bubbles following their speakers (M3 W6): the controls refresh while anyone speaks or thinks
+      const talking = this.tree.services.get('voice')?.lines.size || this.tree.services.get('ai')?.brains.some((b) => b.bb.director?.pending);
+      if (this.playing && talking && this._frames.length % 2 === 0) this._changed();
       if (this._frames.length >= 15) {
         const avg = (a) => a.reduce((x, y) => x + y, 0) / (a.length || 1);
         this.stats.frameMs = avg(this._frames); this.stats.fps = 1000 / this.stats.frameMs;
@@ -326,3 +408,24 @@ function ssimDown(a, b4, w, h) {
   }
   return total / n;
 }
+
+/**
+ * A scripted director model for demos and screenshots (?director=demo): the split turn's line and verdict from a few
+ * patterns, so the dialogue UI can be tried with no model running.
+ */
+export function demoModel() {
+  const isVerdict = (req) => !req.tools.length && /Fill in this JSON object/.test(req.messages.at(-1).content);
+  const said = (req) => (isVerdict(req) ? /said to [^:]+: "(.*)"/.exec(req.messages[0].content)?.[1] ?? '' : req.messages.at(-1).content ?? '');
+  const RULES = [
+    [/\b(latte|coffee|cappuccino|espresso|tea|mocha)\b/i, (m) => [`One ${m[1].toLowerCase()}, coming right up!`, { emotion: 'happy', goal: { name: 'takeOrder', params: { customer: 'user', order: m[1].toLowerCase() } } }]],
+    [/\b(bye|see you|good night)\b/i, () => ['See you soon! Take care.', { emotion: 'happy', gesture: 'greet' }]],
+    [/\b(morning|hello|hi|hey)\b/i, () => ['Good morning! Lovely to see you.', { emotion: 'happy', gesture: 'greet' }]],
+    [/\bhow are you|how's\b/i, () => ['Busy, but happy. The beans are fresh today.', { emotion: 'relaxed' }]],
+  ];
+  return scriptedModel((req) => {
+    const text = said(req), hit = RULES.map(([re, f]) => [re.exec(text), f]).find(([m]) => m);
+    const [line, verdict] = hit ? hit[1](hit[0]) : ['Mm, tell me more.', { emotion: 'relaxed', gesture: 'nod' }];
+    return { text: isVerdict(req) ? JSON.stringify(verdict) : line };
+  }, { latency: 40, name: 'demo' });
+}
+
