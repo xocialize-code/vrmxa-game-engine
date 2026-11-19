@@ -51,7 +51,7 @@ outright and shippable in our apps.
 | `tools/make-voice.py` | Xocialize original | Bakes the lines in `voice/lines.json` and their word timings with Kokoro (mlx-audio) |
 | `tools/kokoro_tts.py` | Xocialize original | Kokoro through mlx-audio: a line to PCM and word timings (shared by the two scripts beside it) |
 | `tools/tts-server.py` | Xocialize original | A loopback TTS server for live lines while playing (M2 W10) |
-| `tools/voice-server.py` | Xocialize original | The loopback voice stand-in (M3 W3, AB-T-0542): LLM chat with tools (LFM2.5 through mlx-lm), speech-to-text (whisper through mlx-whisper) and Kokoro speech, for the director and browsers until MLXEngine's calls exist |
+| `tools/voice-server.py` | Xocialize original | The loopback voice stand-in (M3 W3, AB-T-0542): LLM chat with tools (LFM2.5 through mlx-lm; LFM3 and Qwen3-VL through mlx-vlm, several at once for the model evaluation), speech-to-text (whisper through mlx-whisper) and Kokoro speech, for the director and browsers until MLXEngine's calls exist |
 | `tools/bake-lines.mjs` | Xocialize original | Bakes a sequence's text-only dialogue to clips (M2 W10) |
 | `tools/make-lut.mjs` | Xocialize original | Writes `looks/morning.cube` |
 | `props/door-panel.glb` | Xocialize original | Generated the same way: the panel you see; its collider is the prefab's |

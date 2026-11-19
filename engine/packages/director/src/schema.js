@@ -48,7 +48,7 @@ export function toolsFor(m) {
   if (m.gestures.length) t.push(tool('gesture', 'Make a gesture, without speaking.', { slot: enumOf(m.gestures, 'The gesture.') }, ['slot']));
   if (places.length) t.push(tool('lookAt', 'Look at someone or something.', { target: enumOf(places, 'Who or what.') }, ['target']));
   if (places.length) t.push(tool('goTo', 'Walk over to someone or something.', { target: enumOf(places, 'Who or what.') }, ['target']));
-  if (m.characters.length) t.push(tool('follow', 'Follow someone, staying close.', { target: enumOf(m.characters.map((c) => c.id), 'Who.') }, ['target']));
+  if (people.length) t.push(tool('follow', 'Follow someone, staying close.', { target: enumOf(people, 'Who.') }, ['target']));
   if (m.items.length && verbs.length) t.push(tool('interact', 'Use an item nearby: sit on a stool, open a door …', { item: enumOf(m.items.map((i) => i.id), 'The item.'), verb: enumOf(verbs, 'What to do with it.') }, ['item', 'verb']));
   if (m.goals.length) t.push(tool('setGoal', 'Take on one of your goals (what you will do next, on your own).', { goal: enumOf(m.goals.map((g) => g.name), m.goals.map((g) => `${g.name}: ${g.description ?? ''}`).join('; ')), params: { type: 'object', description: 'What the goal is about (who for, which item).' } }, ['goal']));
   t.push(tool('wait', 'Pause for a few seconds.', { seconds: { type: 'number', minimum: 0.5, maximum: 30, description: 'How long (s).' } }, ['seconds']));

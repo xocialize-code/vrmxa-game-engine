@@ -15,7 +15,8 @@ AB-A-0308 for TTS with word timings), and serves browsers and the acceptance in 
 Every answer carries `ms`, the server's own time for it (the latency receipts split the turn by stage).
 
   HF_HUB_CACHE=/Volumes/DEV_VOL1/Models HF_HUB_OFFLINE=1 <venv>/bin/python -I tools/voice-server.py [--port 5191]
-      [--no-llm] [--no-stt] [--no-tts]
+      [--llm lfm25,omni4,lfm3fast,qwen4] [--no-llm] [--no-stt] [--no-tts]
+  A request's "model" picks among the loaded models (MODELS below); the first is the default.
 """
 import ast
 import base64
@@ -36,38 +37,81 @@ LLM_REPO = "mlx-community/LFM2.5-8B-A1B-MLX-4bit"
 STT_REPO = "mlx-community/whisper-large-v3-turbo"
 VOICES = {"af_heart", "af_bella", "af_nicole", "af_sarah", "af_sky", "am_adam", "am_echo", "am_eric", "am_michael", "bf_emma", "bm_george"}
 gpu = threading.Lock()  # one model at a time on the GPU
-llm = tts = None
+tts = None
 stt_ready = False
 
 
-# ---------------------------------------------------------------- the language model
+# ---------------------------------------------------------------- the language models
 
-def load_llm():
+# The candidates (M3 director model evaluation): name → (runtime, weights, chat-template options, a prefill after the
+# generation prompt). A request's "model" picks one; the first loaded is the default. Paths are the local snapshots.
+M = "/Volumes/DEV_VOL1/Models/Models"
+MODELS = {
+    "lfm25": ("lm", LLM_REPO, {}, "<think></think>"),  # reasoning skipped
+    "omni4": ("vlm", f"{M}/models--LiquidAI--LFM3-Omni-2B-MLX-4bit", {}, ""),
+    "lfm3fast": ("vlm", f"{M}/models--LiquidAI--LFM3-1.7B-MLX-8bit", {"enable_thinking": False}, ""),
+    "qwen4": ("vlm", "/Volumes/DEV_VOL1/Models/mlx-community--Qwen3-VL-4B-Instruct-4bit", {}, ""),
+}
+llms = {}  # name → (kind, model, processor-or-tokenizer, tokenizer, template options, prefill)
+llm = None  # the default model's name
+
+
+def load_llms(names):
     global llm
-    from mlx_lm import load
-    model, tok = load(LLM_REPO)
-    llm = (model, tok)
-    chat([{"role": "user", "content": "Hi"}], [], 8)  # warm
+    for name in names:
+        kind, path, kw, prefill = MODELS[name]
+        if kind == "vlm":
+            from mlx_vlm import load
+            model, proc = load(path)
+            tok = getattr(proc, "tokenizer", proc)
+        else:
+            from mlx_lm import load
+            model, tok = load(path)
+            proc = tok
+        llms[name] = (kind, model, proc, tok, kw, prefill)
+        llm = llm or name
+        chat(name, [{"role": "user", "content": "Hi"}], [], 8, 0.0)  # warm
 
 
-def chat(messages, tools, max_tokens, temperature=0.6):
-    """→ (text, tool_calls, tokens). Reasoning is skipped by prefilling an empty think block."""
-    from mlx_lm import generate
-    from mlx_lm.sample_utils import make_sampler
-    model, tok = llm
-    prompt = tok.apply_chat_template(messages, tools=tools or None, add_generation_prompt=True, tokenize=False) + "<think></think>"
-    out = generate(model, tok, prompt=prompt, max_tokens=max_tokens, sampler=make_sampler(temp=temperature), verbose=False)
+def chat(name, messages, tools, max_tokens, temperature=0.6):
+    """→ (text, tool_calls, tokens). Temperature 0 is greedy."""
+    kind, model, proc, tok, kw, prefill = llms[name]
+    prompt = tok.apply_chat_template(messages, tools=tools or None, add_generation_prompt=True, tokenize=False, **kw) + prefill
+    ids = []
+    if kind == "vlm":
+        from mlx_vlm import stream_generate
+        for r in stream_generate(model, proc, prompt, max_tokens=max_tokens, temperature=temperature):
+            ids.append(int(r.token))
+    else:
+        from mlx_lm import stream_generate
+        from mlx_lm.sample_utils import make_sampler
+        for r in stream_generate(model, tok, prompt, max_tokens=max_tokens, sampler=make_sampler(temp=temperature)):
+            ids.append(int(r.token))
+    out = tok.decode(ids, skip_special_tokens=False)
+    for end in ("<|im_end|>", "<|endoftext|>"):
+        out = out.replace(end, "")
     calls, text = parse_tool_calls(out)
-    return text, calls, len(tok.encode(out))
+    return text, calls, len(ids)
 
 
 CALLS = re.compile(r"<\|tool_call_start\|>(.*?)<\|tool_call_end\|>", re.S)
+QWEN_CALLS = re.compile(r"<tool_call>\s*(\{.*?\})\s*</tool_call>", re.S)
 
 
 def parse_tool_calls(out):
-    """LFM writes calls as a Python list of calls: [say(text='Hi', to='user'), setGoal(goal='x', params={...})].
-    Parsed with ast (literals only, never evaluated). Returns (calls as OpenAI tool_calls, the rest as text)."""
+    """LFM writes calls as a Python list of calls: [say(text='Hi', to='user'), setGoal(goal='x', params={...})], parsed
+    with ast (literals only, never evaluated); Qwen writes <tool_call>{"name", "arguments"}</tool_call>. Returns (calls
+    as OpenAI tool_calls, the rest as text, reasoning removed)."""
     calls = []
+    for m in QWEN_CALLS.finditer(out):
+        try:
+            j = json.loads(m.group(1))
+            calls.append({"type": "function", "function": {"name": j.get("name"), "arguments": json.dumps(j.get("arguments", {}))}})
+        except ValueError:
+            calls.append({"type": "function", "function": {"name": "__unparsed__", "arguments": m.group(1)[:400]}})
+    out = QWEN_CALLS.sub("", out)
+    if "</think>" in out:
+        out = out.split("</think>", 1)[1]
     for m in CALLS.finditer(out):
         try:
             tree = ast.parse(m.group(1).strip(), mode="eval").body
@@ -152,12 +196,13 @@ class Handler(BaseHTTPRequestHandler):
         if not llm:
             return self.answer(503, {"error": "started with --no-llm"})
         req = json.loads(self.body() or b"{}")
+        name = req.get("model") if req.get("model") in llms else llm
         tools = [t["function"] if t.get("type") == "function" else t for t in req.get("tools", [])]
         t0 = time.perf_counter()
         with gpu:
-            text, calls, tokens = chat(req.get("messages", []), tools, int(req.get("max_tokens", 200)), float(req.get("temperature", 0.6)))
+            text, calls, tokens = chat(name, req.get("messages", []), tools, int(req.get("max_tokens", 200)), float(req.get("temperature", 0.6)))
         ms = round((time.perf_counter() - t0) * 1000, 1)
-        self.answer(200, {"model": LLM_REPO, "ms": ms, "usage": {"completion_tokens": tokens},
+        self.answer(200, {"model": name, "ms": ms, "usage": {"completion_tokens": tokens},
                           "choices": [{"index": 0, "message": {"role": "assistant", "content": text, "tool_calls": calls}, "finish_reason": "tool_calls" if calls else "stop"}]})
         print(f"llm {ms:7.1f} ms  {tokens:3d} tok  {json.dumps([c['function']['name'] for c in calls])} {(text or '')[:50]}", file=sys.stderr)
 
@@ -207,9 +252,9 @@ def main():
     if "--no-stt" not in sys.argv:
         load_stt()
     if "--no-llm" not in sys.argv:
-        load_llm()
+        load_llms(sys.argv[sys.argv.index("--llm") + 1].split(",") if "--llm" in sys.argv else ["lfm25"])
     server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
-    print(f"voice-server: http://127.0.0.1:{server.server_address[1]} (llm {bool(llm)}, stt {stt_ready}, tts {bool(tts)}; ready in {time.perf_counter() - t0:.1f} s)", file=sys.stderr, flush=True)
+    print(f"voice-server: http://127.0.0.1:{server.server_address[1]} (llm {list(llms)}, stt {stt_ready}, tts {bool(tts)}; ready in {time.perf_counter() - t0:.1f} s)", file=sys.stderr, flush=True)
     server.serve_forever()
 
 

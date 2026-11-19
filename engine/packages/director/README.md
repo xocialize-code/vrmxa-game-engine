@@ -79,6 +79,53 @@ LFM2.5-8B-A1B int4 (reasoning skipped) with her real prompt and tools, and her l
   exactly one line per reply, in her own words. That cut the echoes but did not fix the rest. Choosing the director's
   model (another model, reasoning on, or constrained decoding) is open.
 
+**Choosing the director's model** (`scripts/eval-models.mjs`; `results/models.json`, every reply in `results/models.md`).
+Setup:
+- **Turns:** 31 typed turns to Hana, scored by checks: small talk, orders, things that only sound like orders, looking at
+  and using things, goodbyes and things that only sound like them, and a follower's commands.
+- **Prompt and validation:** the director's real prompt, tools and validation.
+- **Models:** four local models through the stand-in (`voice-server.py --llm lfm25,omni4,lfm3fast,qwen4`), greedy.
+- **Designs:** one call with tools (W0), and the split turn (`split.js`): a line call, then a JSON verdict call. The
+  split comes from the companion's spike, AB-R-1017.
+
+A turn passes when its reply is valid, it has a clean line (no echo, at most 200 characters), and every check holds.
+M5 Max, with other GPU work running (a Bernini job and a Swift build), so the times are relative:
+
+| Model | Design | Passed | Valid with a line | Echoes | Checks | Reply ms median / p90 | Line ms |
+|---|---|---|---|---|---|---|---|
+| LFM2.5-8B-A1B int4 (reasoning skipped) | one | **14/31** | 21 | 2 | 28/39 | 201 / 301 | 201 |
+| LFM2.5-8B-A1B int4 (reasoning skipped) | split | **13/31** | 31 | 6 | 26/39 | 328 / 446 | 98 |
+| LFM3-Omni-2B 4-bit | one | **15/31** | 25 | 2 | 25/39 | 156 / 186 | 156 |
+| LFM3-Omni-2B 4-bit | split | **26/31** | 31 | 1 | 35/39 | 303 / 450 | 87 |
+| LFM3-1.7B 8-bit (thinking off) | one | **13/31** | 14 | 0 | 20/39 | 234 / 298 | 234 |
+| LFM3-1.7B 8-bit (thinking off) | split | **13/31** | 31 | 0 | 21/39 | 590 / 751 | 137 |
+| Qwen3-VL-4B-Instruct 4-bit | one | **17/31** | 21 | 0 | 32/39 | 539 / 583 | 539 |
+| Qwen3-VL-4B-Instruct 4-bit | split | **27/31** | 31 | 0 | 35/39 | 748 / 1169 | 221 |
+
+- **The split turn is the design.** In one call, every model often left out the line, or failed on orders and
+  commands (0 of 6 orders, 0 of 5 commands for all four). Qwen chose the right goals in one call but spoke only about
+  two times in three. With the split, every model gave a valid line on every turn.
+- **The split works with `salvage`.** The line must stand alone. Each verdict part (face, gesture, action, goal) is
+  kept only if it validates on its own, after `normalizeVerdict` maps the shapes models write instead:
+  - a verb as the action;
+  - a goal as the action, or as a string;
+  - a name where an id belongs;
+  - a missing target, customer or order.
+
+  Goodbyes are decided by rule (`isGoodbye`). Validating the verdict whole (the first run) cut the split's passes
+  roughly in half.
+- **Two models lead.**
+  - **LFM3-Omni-2B 4-bit** passed 26 of 31, with its line in about 90 ms and the whole turn in about 300 ms. It missed
+    two of five commands and one "use".
+  - **Qwen3-VL-4B-Instruct 4-bit** passed 27 of 31, with every order and every command right. It is about 2.5 times
+    slower: its line takes about 220 ms and the whole turn about 750 ms. Its misses were extra goals and actions nobody
+    asked for (an order on "Good morning"), and its lines run sharper in tone.
+  - LFM2.5, the plan's default, passed 13 of 31 and echoed six lines.
+- **What the numbers don't judge:** character. A person's read of `results/models.md` decides between the two leaders'
+  voices, as the companion's spike also found.
+- **One caution about the order checks:** when a model gives `takeOrder` without the order, the person's words fill
+  it. That is engine behaviour (the host's tree only needs to know there is an order), but it helps those checks pass.
+
 Tests without a world cover:
 - the schemas narrowed to a moment;
 - fifteen bad-reply fixtures, each rejected with a reason;
@@ -87,7 +134,7 @@ Tests without a world cover:
 
 Not yet:
 - the shell's `llm.respond` (W3; waits on `mlx-engine`, AB-A-0311);
-- a director model that answers in tool calls reliably (see the spoken turn above);
+- the split turn inside `Director` (the helpers are in `split.js`; `ask()` still makes one call), and the default model (see above);
 - the request's history in saves, and baking a take into a sequence (W4);
 - MCP tools (W10);
 - requests in flight when a snapshot is restored live (W4 decides: cancel them, or keep their answers).
