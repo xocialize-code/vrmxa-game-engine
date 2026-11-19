@@ -17,7 +17,7 @@ behaviours.js --vrmxa-core ../../../vrmxa-avatar-studio/packages/vrmxa-core`) an
 | `input/walk-in.json` | 10 s of recorded input: walk in, run to the counter, look around, walk back, jump |
 | `behaviours.js` | The project's `wander` |
 | `sequences/morning.vrmxs` | The M2 W1 sequence: 12 s, four shots of Mira arriving and Hana welcoming her |
-| `sequences/cafe-morning.vrmxs` | **"Morning at the cafe"** (M2 W11): 45 s, five shots (Morning, Arrival, The order, Steam, Served), four baked lines, a music cue on the arrival, the espresso steam, the `looks/morning.cube` grade. Hana and Mira are cast (`sequence.cast`) with the brains below, and the script is cut to what they do (`engine/packages/mcp/tools/beats.mjs`) |
+| `sequences/cafe-morning.vrmxs` | **"Morning at the cafe"** (M2 W11): 45 s, five shots (Morning, Arrival, The order, Steam, Served), four baked lines, a music cue on the arrival, the espresso steam, the `looks/morning.cube` grade. Hana and Mira are cast (`sequence.cast`) with the brains below, and the script is cut to what they do (`engine/packages/mcp/tools/beats.mjs`). M2 W12 added four tracks so the film has a track of every kind, written with `serialize`; the beats are unchanged. `hana-talk` plays Hana's talk clip on twos, `hana-face` is her smile at the order, `counter-light` brings the counter light up from 6 to 18, and `fade` is a closing vignette on the post stack |
 | `brains/` | Behaviour trees as `vrmxg-brain` documents: Hana serving, a customer |
 | `effects/espresso-steam.json` | The steam wand: a dense jet, then wisps |
 | `looks/morning.cube` | A 17³ LUT: cool lifted shadows, warm highlights (`tools/make-lut.mjs`) |

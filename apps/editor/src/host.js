@@ -11,14 +11,14 @@ import { loadRapier } from '@vrmxg/physics';
 import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
 import { RenderHost } from '@vrmxg/render';
 import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
-import { composeSequence, isSequence, SequencePlayer } from '@vrmxg/sequence';
+import { composeSequence, isSequence, SequencePlayer, subtitles } from '@vrmxg/sequence';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { parse, describeType } from '@vrmxg/scene';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { EditorSession, assetList, newSequenceDoc, rowsOf } from '@vrmxg/editor-core';
 import { AudioOutput } from '@vrmxg/audio';
-import { exportTake, shellSink, hashSink, captureStill, encodePNG, toBase64, SIZES, RATES, CODECS, framesFor, secondsOf } from '@vrmxg/export';
+import { exportTake, shellSink, hashSink, hashFrame, Readback, captureStill, encodePNG, toBase64, SIZES, RATES, CODECS, framesFor, secondsOf } from '@vrmxg/export';
 import { inShell, call } from '../../shell/js/shell.js';
 import * as vrmxaMain from '@vrmxa-core/index.js';
 import * as vrmxaAnim from '@vrmxa-core/anim/index.js';
@@ -503,9 +503,11 @@ export class EditorHost {
 
   // ---------------------------------------------------------------- export, stills, thumbnails
 
-  /** The takes there are to export: the last Play, then the project's recorded input. */
+  /** The takes there are to export: the open sequence, the last Play, then the project's recorded input. */
   takes() {
     const out = [];
+    const seq = this.session?.isSequence ? this.session.doc.sequence : null;
+    if (seq) out.push({ id: 'sequence', label: `The sequence (${(seq.duration / seq.fps).toFixed(1)} s at ${seq.fps} fps)`, seconds: seq.duration / seq.fps, fps: seq.fps });
     if (this.lastTake) out.push({ id: 'play', label: `Last play (${(this.lastTake.steps / 60).toFixed(1)} s)`, seconds: this.lastTake.steps / 60 });
     for (const f of this.project?.takes() ?? []) out.push({ id: f, label: f, seconds: null });
     return out;
@@ -514,6 +516,12 @@ export class EditorHost {
   /** A take as a world at step 0 with its input replaying: { world, seconds }. Sound is recorded, not heard. */
   async takeWorld(id) {
     let doc, input;
+    if (id === 'sequence') {
+      // the sequence as the runtimes play it from its first frame, exactly as the timeline's preview builds it
+      const seq = this.session.doc.sequence;
+      const world = await this.buildFrom(parse(this.session.text()), { play: true, heard: false });
+      return { world, seconds: seq.duration / seq.fps };
+    }
     if (id === 'play') {
       if (!this.lastTake) throw new Error('nothing has been played yet');
       ({ doc, input } = this.lastTake);
@@ -528,9 +536,9 @@ export class EditorHost {
 
   /**
    * Export a take to a video file through the shell (a hash of every frame without it, or with `hashOnly`).
-   * @param {{ take: string, seconds?: number, size: string, fps: string, codec: string, audio: boolean, name?: string, hash?: boolean, hashOnly?: boolean }} o
+   * @param {{ take: string, seconds?: number, size: string, fps: string, codec: string, audio: boolean, name?: string, hash?: boolean, hashOnly?: boolean, sink?: any }} o
    */
-  async exportVideo({ take, seconds, size, fps, codec, audio, name, hash = true, hashOnly = !inShell }) {
+  async exportVideo({ take, seconds, size, fps, codec, audio, name, hash = true, hashOnly = !inShell, sink: sinkIn = null }) {
     if (this.exporting) throw new Error('an export is already running');
     if (this.session?.mode !== 'editing') throw new Error('stop playing before exporting');
     const [width, height] = SIZES[size], rate = RATES[fps];
@@ -544,19 +552,82 @@ export class EditorHost {
       this.exportHost ??= new RenderHost({ canvas: document.createElement('canvas'), dprCap: 1, post: (r) => this.postStack(r) });
       const ext = CODECS[codec].ext;
       const base = (name || `${(this.sceneRef ?? 'scene').replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-')}-${size}${fps.replace('.', '')}`).replace(/\.(mp4|mov)$/, '');
-      const sink = hashOnly ? hashSink() : shellSink({ call });
+      const sink = sinkIn ?? (hashOnly ? hashSink() : shellSink({ call })); // a sink passed in: checks, other transports
+      // a sequence's dialogue goes beside the movie as <name>.srt (the shell writes it; hash-only keeps the text)
+      const srt = take === 'sequence' ? subtitles(this.session.doc.sequence, this.names()) : null;
+      // a sequence's world hash at every frame, for the scrub check: the same world drawn differently, or another world
+      const worldAt = take === 'sequence' ? [] : null;
       const r = await exportTake({
         tree: world.tree, host: this.exportHost, fps: rate, frames, width, height, sink, audio,
-        job: { codec, suggestedName: `${base}.${ext}`, hash, title: 'Export Video' },
+        onFrame: worldAt ? (n) => { worldAt[n] = hashValue(worldHashes(world.tree, { physicsBytes: true })); } : undefined,
+        job: { codec, suggestedName: `${base}.${ext}`, hash, title: 'Export Video', ...(srt ? { subtitles: srt } : {}) },
         onProgress: (p) => { this.exporting = { ...p }; this.changed('export'); }, now: () => performance.now(),
       });
       const { frameHashes, ...rest } = r;
-      this.lastExport = { ...rest, take, size, fpsLabel: fps, codec, frameHashes, hashOnly, hashesDigest: frameHashes ? digest(frameHashes) : null };
+      const subs = srt ? { lines: srt ? srt.split('\n\n').filter(Boolean).length : 0, bytes: srt.length, path: rest.subtitles ?? null, error: rest.subtitlesError ?? null, text: hashOnly ? srt : undefined } : null;
+      this.lastExport = { ...rest, take, size, fpsLabel: fps, codec, frameHashes, hashOnly, hashesDigest: frameHashes ? digest(frameHashes) : null, subs, worldAt, scrubCheck: null };
       return this.lastExport;
     } catch (err) { this.error = String(err?.message ?? err); throw err; }
     finally {
       // a fresh renderer per export: the take's world goes, and its GPU resources with it
       if (this.exportHost) { this.exportHost.dispose(); this.exportHost.renderer.forceContextLoss?.(); this.exportHost = null; }
+      world?.audio?.dispose();
+      this.exporting = null; this.changed();
+    }
+  }
+
+  /** Character id → name, for captions and subtitles (the set's and the sequence's nodes). */
+  names() {
+    const all = [...(this.setScene?.doc.nodes ?? []), ...(this.session?.doc.nodes ?? [])];
+    return Object.fromEntries(all.filter((n) => n.type === 'Character').map((n) => [n.id, n.name ?? n.id]));
+  }
+
+  /**
+   * Check the last export of the sequence against scrubbing (M2 check 2 and 5): a fresh world jumps to each frame from
+   * its snapshots (SequencePlayer, backwards first, so every jump restores one) and is drawn at the export's size and
+   * post, and each frame's hash is compared with the hash the export took of the same frame as it played through.
+   * @param {{ frames?: number[] }} [o] export frames to check (default: each shot's first, middle and last frame, and
+   *   the frame each line, event and key starts on)
+   */
+  async checkExportAgainstScrub({ frames } = {}) {
+    const x = this.lastExport;
+    if (!x || x.take !== 'sequence' || !x.frameHashes?.length) throw new Error('export the sequence (with frame hashes) first');
+    const seq = this.session.doc.sequence;
+    if (RATES[x.fpsLabel].num !== seq.fps || RATES[x.fpsLabel].den !== 1) throw new Error(`export at the sequence's ${seq.fps} fps to compare frame for frame`);
+    const n = x.frameHashes.length;
+    const want = frames ?? [...new Set([
+      ...(seq.shots ?? []).flatMap((sh) => [sh.start, Math.floor((sh.start + sh.end) / 2), sh.end - 1]),
+      ...(seq.tracks ?? []).flatMap((t) => [...(t.clips ?? []).map((c) => c.start), ...(Array.isArray(t.keys) ? t.keys.map((k) => k[0]) : [])]),
+    ])];
+    const order = want.filter((f) => f >= 0 && f < n).sort((a, b) => b - a); // backwards: each jump is a restore
+    const [width, height] = SIZES[x.size];
+    this.exporting = { n: 0, frames: order.length, phase: 'checking' }; this.changed();
+    let world = null, host = null;
+    try {
+      ({ world } = await this.takeWorld('sequence'));
+      const player = new SequencePlayer(world.tree, { every: 120 });
+      host = new RenderHost({ canvas: document.createElement('canvas'), dprCap: 1, post: (r) => this.postStack(r) });
+      host.attach(world.tree); host.resize(width, height);
+      const gl = host.renderer.getContext(), rb = new Readback(gl, width, height), buf = new Uint8Array(width * height * 4);
+      // the first jump plays the sequence through once (the snapshots); the others restore
+      await player.seekStep(world.sequence.stepOf(n - 1).step);
+      const rows = [];
+      for (const f of order) {
+        const { step, alpha } = world.sequence.stepOf(f);
+        const t0 = performance.now();
+        const r = await player.seekStep(Math.max(0, step - 1));
+        await host.frameAt(step, alpha);
+        rb.readNow(buf); // synchronous: a pixel-pack read taken back at once can come back stale in WebKit
+        const hash = hashFrame(buf), wh = hashValue(worldHashes(world.tree, { physicsBytes: true }));
+        rows.push({ frame: f, step, alpha: +alpha.toFixed(3), restored: r.restored, ms: +(performance.now() - t0).toFixed(1), scrub: hash, exported: x.frameHashes[f], same: hash === x.frameHashes[f], world: wh, worldSame: x.worldAt ? wh === x.worldAt[f] : null });
+        this.exporting = { n: rows.length, frames: order.length, phase: 'checking' }; this.changed('export');
+      }
+      rows.sort((a, b) => a.frame - b.frame);
+      x.scrubCheck = { frames: rows.length, same: rows.filter((r) => r.same).length, rows };
+      return x.scrubCheck;
+    } catch (err) { this.error = String(err?.message ?? err); throw err; }
+    finally {
+      if (host) { host.dispose(); host.renderer.forceContextLoss?.(); }
       world?.audio?.dispose();
       this.exporting = null; this.changed();
     }

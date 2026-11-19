@@ -12,5 +12,12 @@
 	<key>LSMinimumSystemVersion</key><string>15.0</string>
 	<key>NSHighResolutionCapable</key><true/>
 	<key>NSPrincipalClass</key><string>NSApplication</string>
+	<!-- a movie's subtitles (.srt) are written beside it in the sandbox as a related item (apps/shell FrameExport.swift) -->
+	<key>CFBundleDocumentTypes</key><array><dict>
+		<key>CFBundleTypeName</key><string>SubRip Subtitles</string>
+		<key>CFBundleTypeExtensions</key><array><string>srt</string></array>
+		<key>CFBundleTypeRole</key><string>Editor</string>
+		<key>NSIsRelatedItemType</key><true/>
+	</dict></array>
 </dict>
 </plist>

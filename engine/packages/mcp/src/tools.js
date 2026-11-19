@@ -8,14 +8,14 @@
 //   engine:  engine_load (headless) or play (editor), engine_step, physics, call_action, interact; screenshot (editor);
 //            tree and get_node with live=true read the running world instead of the file
 //   M2 W11:  edit (a batch of edit ops as one undo step: how sequences are edited, setDoc on sequence.*), sequence (the
-//            outline, or the world on a frame with its hash), brain (inspect / inject / record / replay); screenshot of
+//            outline, a setDoc path's value, or the world on a frame with its hash), brain (inspect / inject / record / replay); screenshot of
 //            any sequence frame (editor). Answers are compact JSON, cut at OUTPUT_LIMIT characters.
 
 /** What the server tells a client at initialize: the few rules that save an agent a round trip. */
 export const INSTRUCTIONS = [
   'VRMXG scenes (.vrmxs) are node trees; call describe before using a node type or behaviour, and validate before save.',
   'Every edit is one undo step; edit batches several (add, set, remove, reparent, connect, setDoc) into one.',
-  'A sequence is a scene with a "sequence" block (shots, markers, tracks); edit it with setDoc ops on paths like sequence.tracks.',
+  'A sequence is a scene with a "sequence" block (shots, markers, tracks); edit it with setDoc ops on paths like sequence.tracks (read what a path holds first: sequence with path).',
   'The engine is deterministic at 60 Hz: engine_step and sequence frames replay bit for bit, and sequence returns a world hash to compare.',
   'NPC brains: brain op=inspect shows the running branch and blackboard; op=inject gives a goal or an action on a step, logged for replay.',
 ].join(' ');
@@ -76,13 +76,25 @@ export function toolList(reg, mode = 'headless') {
   tools.push(
     { name: 'edit', description: 'Several edits as one undo step, all or nothing. ops: {op:"add",node} {op:"set",id,path,value} {op:"remove",id} {op:"reparent",id,parent} {op:"connect",from,signal,to,call,args} {op:"setDoc",path,value} (path under sequence or settings, e.g. "sequence.shots").',
       inputSchema: { type: 'object', required: ['ops'], properties: { ops: { type: 'array', minItems: 1, items: { type: 'object', required: ['op'] } }, label: { type: 'string' } } } },
-    { name: 'sequence', description: `A sequence's outline (shots, markers, tracks); with frame, the ${mode === 'editor' ? 'preview' : 'running'} world put on that frame exactly as playing would reach it: shot, camera, lines, and a world hash to compare replays.`,
-      inputSchema: { type: 'object', properties: { frame: { type: 'number', minimum: 0 } } } },
+    { name: 'sequence', description: `A sequence's outline (shots, markers, tracks, cast); with path, the value there as JSON (the paths setDoc writes, e.g. "sequence.tracks.4" or "sequence.cast.mira": read it, change it, write it back); with frame, the ${mode === 'editor' ? 'preview' : 'running'} world put on that frame exactly as playing would reach it: shot, camera, lines, and a world hash to compare replays.`,
+      inputSchema: { type: 'object', properties: { frame: { type: 'number', minimum: 0 }, path: { type: 'string' } } } },
     { name: 'brain', description: 'An NPC brain in the running world. inspect: running branch, utility scores, goal, blackboard, memory. inject: a goal {name,params} or an action {do,args} on a step (logged). record: the events applied. replay: a log.',
       inputSchema: { type: 'object', properties: { op: { type: 'string', enum: ['inspect', 'inject', 'record', 'replay'] }, id: ID, goal: { type: 'object' }, action: { type: 'object' }, step: { type: 'integer', minimum: 0 }, log: { type: 'array' } } } },
   );
   if (mode === 'editor') tools.push({ name: 'screenshot', description: 'A PNG of the editor\'s view (the play camera while playing); frame: that frame of the open sequence, as exported, with its world hash and a blank-frame check.', inputSchema: { type: 'object', properties: { width: { type: 'integer', minimum: 64, maximum: 1920 }, height: { type: 'integer', minimum: 64, maximum: 1080 }, frame: { type: 'number', minimum: 0 } } } });
   return tools;
+}
+
+/** The value at a setDoc path ("sequence.tracks.4.keys", "settings.physics"): what an edit would replace. */
+function docAt(doc, path) {
+  const parts = String(path).split('.');
+  if (parts[0] !== 'sequence' && parts[0] !== 'settings') throw new Error(`path: under sequence or settings, as setDoc writes (not "${path}")`);
+  let v = doc;
+  for (const [i, k] of parts.entries()) {
+    if (v === null || typeof v !== 'object' || !(k in v)) throw new Error(`${parts.slice(0, i + 1).join('.')}: nothing there${v && typeof v === 'object' ? ` (has ${Object.keys(v).slice(0, 20).join(', ')})` : ''}`);
+    v = v[k];
+  }
+  return v;
 }
 
 const treeText = (nodes) => {
@@ -154,13 +166,15 @@ export function createHandlers(reg, target) {
       target.apply({ op: 'batch', ops, label: name }, name);
       return `${ops.length} edit${ops.length > 1 ? 's' : ''} applied as one undo step ("${name}")`;
     },
-    async sequence({ frame }) {
+    async sequence({ frame, path }) {
+      if (path !== undefined) return docAt(target.doc(), path);
       if (frame === undefined) {
         const seq = target.doc().sequence;
         if (!seq) throw new Error('the scene has no sequence block');
         return { fps: seq.fps ?? 24, duration: seq.duration, seconds: Math.round((seq.duration / (seq.fps ?? 24)) * 100) / 100, set: target.doc().set ?? null,
           shots: (seq.shots ?? []).map((x) => `${x.id} ${x.start}-${x.end}${x.name ? ` "${x.name}"` : ''}`), markers: (seq.markers ?? []).map((m) => `${m.frame} ${m.name}`),
-          tracks: (seq.tracks ?? []).map((t, i) => `[${i}] ${t.id} (${t.type}${t.target ? ` → ${t.target}` : ''}) ${t.clips ? `${t.clips.length} clips` : 'keys'}`) };
+          tracks: (seq.tracks ?? []).map((t, i) => `[${i}] ${t.id} (${t.type}${t.target ? ` → ${t.target}` : ''}) ${t.clips ? `${t.clips.length} clips` : 'keys'}`),
+          cast: Object.keys(seq.cast ?? {}), read: 'sequence with path "sequence.tracks.<i>" (or any setDoc path) gives the value to edit' };
       }
       return target.sequenceAt ? target.sequenceAt(frame) : target.live().sequenceAt(frame);
     },

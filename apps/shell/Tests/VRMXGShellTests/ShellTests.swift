@@ -256,6 +256,22 @@ func sineWAV(seconds: Double, rate: Int = 48000) -> Data {
         #expect(Set(ha ?? []).count == 24, "every frame differs")
     }
 
+    @Test func frameHashIsThePagesHashFrame() {
+        // vectors from @vrmxg/export's hashFrame (engine/packages/export/src/sinks.js)
+        let b = Data((0..<4096).map { UInt8(truncatingIfNeeded: $0 * 37 + 11) })
+        #expect(hashFrame(b) == "4f9a61c5e7aff90c")
+        #expect(hashFrame(Data(count: 8)) == "117697cd1138fae6")
+    }
+
+    @Test func subtitlesLandBesideTheFile() async throws {
+        var s = ExportSettings(width: 64, height: 64, fpsNum: 24, frames: 2)
+        s.subtitles = "1\n00:00:00,000 --> 00:00:01,000\nHana: Hello\n"
+        let (url, r) = try await encode(s, name: "subs.mp4")
+        let srt = url.deletingPathExtension().appendingPathExtension("srt")
+        #expect(r["subtitles"] as? String == srt.path)
+        #expect(try String(contentsOf: srt, encoding: .utf8) == s.subtitles)
+    }
+
     @Test func refusesMissingFrames() async throws {
         let s = ExportSettings(width: 64, height: 64, fpsNum: 24, frames: 10)
         let out = FileManager.default.temporaryDirectory.appendingPathComponent("vrmxg-export-short-\(UUID().uuidString).mp4")

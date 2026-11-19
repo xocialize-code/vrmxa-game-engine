@@ -1,20 +1,22 @@
 // M1 W9's acceptance session (AB-T-0521): a Claude Code session (claude -p) with vrmxg-mcp --editor drives the editor
 // that is open (the Mac app, on the sample project), and its tool calls are recorded in
 // docs/hand-test/results/mcp-editor-session.json. Afterwards the editor's own Undo should name the session's edit.
-//   node apps/editor-mac/scripts/mcp-session.mjs [--model sonnet]
+// --m2: M2 check 9 (AB-T-0535): with "Morning at the cafe" open, the agent directs the film (a shot, a camera, an
+// expression key, a line, a behaviour tree), renders a frame and reads an NPC's brain; → mcp-editor-session-m2.json.
+//   node apps/editor-mac/scripts/mcp-session.mjs [--model sonnet] [--m2]
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 
 const argv = process.argv.slice(2), opt = (k, d) => { const i = argv.indexOf(k); return i < 0 ? d : argv[i + 1]; };
-const model = opt('--model', 'sonnet');
+const model = opt('--model', 'sonnet'), m2 = argv.includes('--m2');
 const server = path.resolve(import.meta.dirname, '../../../engine/packages/mcp/src/server.js');
-const out = path.join(import.meta.dirname, '../docs/hand-test/results/mcp-editor-session.json');
+const out = path.join(import.meta.dirname, `../docs/hand-test/results/mcp-editor-session${m2 ? '-m2' : ''}.json`);
 const config = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-mcp-session-')), 'mcp.json');
 fs.writeFileSync(config, JSON.stringify({ mcpServers: { 'vrmxg-editor': { command: process.execPath, args: [server, '--editor'] } } }));
 
-const prompt = `You are connected to the VRMXG editor, which has the sample cafe scene open. Using only the vrmxg-editor tools:
+const promptM1 = `You are connected to the VRMXG editor, which has the sample cafe scene open. Using only the vrmxg-editor tools:
 1. Add a camera to the scene: id cam-overview, under root, at [4, 3, 6], orbit preset targeting hana-1, 85 mm lens.
 2. Play the scene.
 3. Hold the move_y input at 1 for 60 steps, and report Mira's live position and animation state.
@@ -24,8 +26,22 @@ const prompt = `You are connected to the VRMXG editor, which has the sample cafe
 7. Stop playing, and report whether the scene came back unchanged.
 Do not undo or save. Finish with a short report of each step.`;
 
+const promptM2 = `You are connected to the VRMXG editor, which has the sequence "Morning at the cafe" (sequences/cafe-morning.vrmxs) open: a 45 s film of the sample cafe at 24 fps. Using only the vrmxg-editor tools:
+1. Read the sequence's outline.
+2. Rig a camera for a closing shot: add a VirtualCamera "vc-goodbye" to the sequence that frames Hana (hana-1) in a close-up: a fixed body about 1.6 m in front of her at head height, a composer aim on her, an 85 mm lens.
+3. Add a sixth shot, "Goodbye", from frame 1080 to 1176 on vc-goodbye: lengthen the sequence to 1176 frames and give the camera track a clip for it, in one batch edit.
+4. Key Hana's "happy" expression up to 1 at frame 1092 and back to 0 at frame 1164.
+5. Add a line of dialogue for Mira (mira) from frame 1100 to 1150: "See you tomorrow, Hana!"
+6. Adjust Mira's behaviour tree for the film: in the sequence's cast, replace her brain's preset (now the document brains/customer.json) with an inline preset object whose tree is a sequence of three actions: wait 2 seconds, lookAt hana-1, emote happy. (Tree nodes look like { "type": "sequence", "children": [ { "type": "action", "do": "wait", "args": { "seconds": 2 } }, … ] }.)
+7. Render frame 1120 of the sequence as a screenshot (960×540) and say what it shows, with its world hash.
+8. Play the sequence, step 600 steps, read Hana's brain (her running branch, goal and blackboard), then stop playing.
+Do not undo or save. Finish with a short report of each step.`;
+const prompt = m2 ? promptM2 : promptM1;
+
 const args = ['-p', prompt, '--model', model, '--mcp-config', config, '--strict-mcp-config', '--output-format', 'stream-json', '--verbose',
-  '--allowedTools', 'mcp__vrmxg-editor__*'];
+  '--allowedTools', 'mcp__vrmxg-editor__*',
+  // the editor's tools only: a first M2 run read the .vrmxs from disk to learn the tracks (sequence {path} now does that)
+  '--disallowedTools', 'Bash', 'Read', 'Grep', 'Glob', 'Edit', 'Write', 'NotebookEdit', 'WebFetch', 'WebSearch', 'Task', 'Agent'];
 const child = spawn('claude', args, { stdio: ['ignore', 'pipe', 'inherit'] });
 let buf = '';
 const events = [];

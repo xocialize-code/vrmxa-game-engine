@@ -23,4 +23,9 @@ frame; the shell hashes each frame as it arrives (`hash: true`). Decoded H.264 /
 encodes of the same pixels (VideoToolbox's rate control answers append timing, AB-L-0013; measured in
 `apps/shell/Tests/VRMXGShellTests/DeterminismExperiment.swift`); ProRes 4444, intra only, decodes the same.
 
+`exportTake` also takes `onFrame(n, step, alpha)`, called after each frame is drawn (the editor records the world's
+hash there to place a difference between export and scrub). Each frame's bytes are copied before they go to the
+shell's sink, because the readback reuses its buffer. A world with a fixed aspect (a sequence: 16:9) refuses an export
+size of another aspect, rather than export a shot framed differently from the one scrubbed (M2 W12).
+
 Tests: `node --test test/` (the frame plan, the loop against a stand-in renderer and sink, the mix shift).

@@ -1,0 +1,407 @@
+{
+ "date": "2026-11-19",
+ "client": "claude -p (Claude Code 2.1.319, sonnet), --mcp-config with vrmxg-mcp --editor",
+ "exitCode": 0,
+ "mcpServers": [
+  {
+   "name": "vrmxg-editor",
+   "status": "connected",
+   "source": "dynamic"
+  }
+ ],
+ "prompt": "You are connected to the VRMXG editor, which has the sequence \"Morning at the cafe\" (sequences/cafe-morning.vrmxs) open: a 45 s film of the sample cafe at 24 fps. Using only the vrmxg-editor tools:\n1. Read the sequence's outline.\n2. Rig a camera for a closing shot: add a VirtualCamera \"vc-goodbye\" to the sequence that frames Hana (hana-1) in a close-up: a fixed body about 1.6 m in front of her at head height, a composer aim on her, an 85 mm lens.\n3. Add a sixth shot, \"Goodbye\", from frame 1080 to 1176 on vc-goodbye: lengthen the sequence to 1176 frames and give the camera track a clip for it, in one batch edit.\n4. Key Hana's \"happy\" expression up to 1 at frame 1092 and back to 0 at frame 1164.\n5. Add a line of dialogue for Mira (mira) from frame 1100 to 1150: \"See you tomorrow, Hana!\"\n6. Adjust Mira's behaviour tree for the film: in the sequence's cast, replace her brain's preset (now the document brains/customer.json) with an inline preset object whose tree is a sequence of three actions: wait 2 seconds, lookAt hana-1, emote happy. (Tree nodes look like { \"type\": \"sequence\", \"children\": [ { \"type\": \"action\", \"do\": \"wait\", \"args\": { \"seconds\": 2 } }, … ] }.)\n7. Render frame 1120 of the sequence as a screenshot (960×540) and say what it shows, with its world hash.\n8. Play the sequence, step 600 steps, read Hana's brain (her running branch, goal and blackboard), then stop playing.\nDo not undo or save. Finish with a short report of each step.",
+ "calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__vrmxg-editor__sequence,mcp__vrmxg-editor__edit,mcp__vrmxg-editor__screenshot,mcp__vrmxg-editor__play,mcp__vrmxg-editor__engine_step,mcp__vrmxg-editor__brain,mcp__vrmxg-editor__describe,mcp__vrmxg-editor__get_node",
+    "max_results": 10
+   },
+   "result": "\n\n\n\n\n\n\n",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__sequence",
+   "input": {},
+   "result": "{\"fps\":24,\"duration\":1080,\"seconds\":45,\"set\":\"cafe.vrmxs\",\"shots\":[\"s1 0-168 \\\"Morning\\\"\",\"s2 168-336 \\\"Arrival\\\"\",\"s3 336-600 \\\"The order\\\"\",\"s4 600-870 \\\"Steam\\\"\",\"s5 870-1080 \\\"Served\\\"\"],\"markers\":[\"148 Hana waves\",\"168 music\",\"699 steam\",\"954 served\"],\"tracks\":[\"[0] cameras (camera) 8 clips\",\"[1] hana-says (dialogue → hana-1) 3 clips\",\"[2] mira-says (dialogue → mira) 1 clips\",\"[3] hana-talk (",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "VirtualCamera"
+   },
+   "result": "{\"type\":\"VirtualCamera\",\"extends\":[\"Node3D\"],\"description\":\"A candidate shot: a body (where the camera is), an aim (where it looks), a lens, seeded noise and impulses. A CameraBrain picks one and renders through its Camera.\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"A candidate shot: a body (where the camera is), an aim (where it looks), a lens, seeded noise an",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "hana-1"
+   },
+   "result": "no node \"hana-1\"",
+   "isError": true
+  },
+  {
+   "tool": "mcp__vrmxg-editor__sequence",
+   "input": {
+    "path": "sequence.tracks.0"
+   },
+   "result": "{\"id\":\"cameras\",\"type\":\"camera\",\"clips\":[{\"camera\":\"vc-establish\",\"end\":168,\"start\":0},{\"camera\":\"vc-door\",\"end\":336,\"start\":168},{\"camera\":\"vc-two\",\"end\":408,\"start\":336},{\"blend\":{\"frames\":12,\"style\":\"easeInOut\"},\"camera\":\"vc-ots\",\"end\":556,\"start\":408},{\"camera\":\"vc-hana\",\"end\":600,\"start\":556},{\"camera\":\"vc-machine\",\"end\":870,\"start\":600},{\"camera\":\"vc-two\",\"end\":1010,\"start\":870},{\"blend\":{\"f",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__sequence",
+   "input": {
+    "path": "sequence.tracks.4"
+   },
+   "result": "{\"id\":\"hana-face\",\"type\":\"expression\",\"target\":\"hana-1\",\"keys\":{\"happy\":[[904,0],[912,0.7,\"easeOut\"],[956,0.7],[972,0,\"easeIn\"]]}}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__sequence",
+   "input": {
+    "path": "sequence.tracks.2"
+   },
+   "result": "{\"id\":\"mira-says\",\"type\":\"dialogue\",\"target\":\"mira\",\"clips\":[{\"clip\":\"voice/cafe-morning-mira-says-1.wav\",\"end\":556,\"start\":470,\"text\":\"A latte, please. And one of those croissants.\"}]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__sequence",
+   "input": {
+    "path": "sequence.cast"
+   },
+   "result": "{\"hana-1\":{\"behaviours\":[{\"preset\":\"brains/hana.json\",\"use\":\"brain\"}],\"transform\":{\"p\":[0.6,0,-4.6]}},\"mira\":{\"behaviours\":[{\"preset\":\"brains/customer.json\",\"use\":\"brain\"}]},\"music\":{\"props\":{\"autoplay\":false}}}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__sequence",
+   "input": {
+    "path": "sequence.shots"
+   },
+   "result": "[{\"id\":\"s1\",\"name\":\"Morning\",\"start\":0,\"end\":168},{\"id\":\"s2\",\"name\":\"Arrival\",\"start\":168,\"end\":336},{\"id\":\"s3\",\"name\":\"The order\",\"start\":336,\"end\":600},{\"id\":\"s4\",\"name\":\"Steam\",\"start\":600,\"end\":870},{\"id\":\"s5\",\"name\":\"Served\",\"start\":870,\"end\":1080}]",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "vc-hana"
+   },
+   "result": "{\"node\":{\"id\":\"vc-hana\",\"type\":\"VirtualCamera\",\"name\":\"Hana, close\",\"props\":{\"aim\":{\"target\":\"hana-1\"},\"body\":{\"target\":\"hana-1\"},\"rig\":\"closeUp\"}},\"signals\":[\"ready\"],\"actions\":[\"show\",\"hide\",\"activate\",\"impulse\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "hana-1",
+    "live": true
+   },
+   "result": "not playing: call play with action \"play\" first",
+   "isError": true
+  },
+  {
+   "tool": "mcp__vrmxg-editor__edit",
+   "input": {
+    "label": "Goodbye shot",
+    "ops": [
+     {
+      "op": "add",
+      "node": {
+       "id": "vc-goodbye",
+       "type": "VirtualCamera",
+       "name": "Goodbye, Hana close",
+       "transform": {
+        "p": [
+         0.6,
+         1.55,
+         -3
+        ]
+       },
+       "props": {
+        "rig": "fixed",
+        "body": {
+         "type": "fixed"
+        },
+        "aim": {
+         "type": "composer",
+         "target": "hana-1#head"
+        },
+        "lens": {
+         "focalLength": 85
+        }
+       }
+      }
+     },
+     {
+      "op": "setDoc",
+      "path": "sequence.duration",
+      "value": 1176
+     },
+     {
+      "op": "setDoc",
+      "path": "sequence.shots",
+      "value": [
+       {
+        "id": "s1",
+        "name": "Morning",
+        "start": 0,
+        "end": 168
+       },
+       {
+        "id": "s2",
+        "name": "Arrival",
+        "start": 168,
+        "end": 336
+       },
+       {
+        "id": "s3",
+        "name": "The order",
+        "start": 336,
+        "end": 600
+       },
+       {
+        "id": "s4",
+        "name": "Steam",
+        "start": 600,
+        "end": 870
+       },
+       {
+        "id": "s5",
+        "name": "Served",
+        "start": 870,
+        "end": 1080
+       },
+       {
+        "id": "s6",
+        "name": "Goodbye",
+        "start": 1080,
+        "end": 1176
+       }
+      ]
+     },
+     {
+      "op": "setDoc",
+      "path": "sequence.tracks.0.clips",
+      "value": [
+       {
+        "camera": "vc-establish",
+        "end": 168,
+        "start": 0
+       },
+       {
+        "camera": "vc-door",
+        "end": 336,
+        "start": 168
+       },
+       {
+        "camera": "vc-two",
+        "end": 408,
+        "start": 336
+       },
+       {
+        "blend": {
+         "frames": 12,
+         "style": "easeInOut"
+        },
+        "camera": "vc-ots",
+        "end": 556,
+        "start": 408
+       },
+       {
+        "camera": "vc-hana",
+        "end": 600,
+        "start": 556
+       },
+       {
+        "camera": "vc-machine",
+        "end": 870,
+        "start": 600
+       },
+       {
+        "camera": "vc-two",
+        "end": 1010,
+        "start": 870
+       },
+       {
+        "blend": {
+         "frames": 24,
+         "style": "easeInOut"
+        },
+        "camera": "vc-establish",
+        "end": 1080,
+        "start": 1010
+       },
+       {
+        "camera": "vc-goodbye",
+        "end": 1176,
+        "start": 1080
+       }
+      ]
+     }
+    ]
+   },
+   "result": "4 edits applied as one undo step (\"Goodbye shot\")",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__sequence",
+   "input": {
+    "path": "sequence.duration"
+   },
+   "result": "1176",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__edit",
+   "input": {
+    "label": "Goodbye details",
+    "ops": [
+     {
+      "op": "setDoc",
+      "path": "sequence.tracks.4.keys.happy",
+      "value": [
+       [
+        904,
+        0
+       ],
+       [
+        912,
+        0.7,
+        "easeOut"
+       ],
+       [
+        956,
+        0.7
+       ],
+       [
+        972,
+        0,
+        "easeIn"
+       ],
+       [
+        1092,
+        1,
+        "easeOut"
+       ],
+       [
+        1164,
+        0,
+        "easeIn"
+       ]
+      ]
+     },
+     {
+      "op": "setDoc",
+      "path": "sequence.tracks.2.clips",
+      "value": [
+       {
+        "clip": "voice/cafe-morning-mira-says-1.wav",
+        "end": 556,
+        "start": 470,
+        "text": "A latte, please. And one of those croissants."
+       },
+       {
+        "start": 1100,
+        "end": 1150,
+        "text": "See you tomorrow, Hana!"
+       }
+      ]
+     },
+     {
+      "op": "setDoc",
+      "path": "sequence.cast.mira.behaviours",
+      "value": [
+       {
+        "use": "brain",
+        "preset": {
+         "tree": {
+          "type": "sequence",
+          "children": [
+           {
+            "type": "action",
+            "do": "wait",
+            "args": {
+             "seconds": 2
+            }
+           },
+           {
+            "type": "action",
+            "do": "lookAt",
+            "args": {
+             "target": "hana-1"
+            }
+           },
+           {
+            "type": "action",
+            "do": "emote",
+            "args": {
+             "name": "happy"
+            }
+           }
+          ]
+         }
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "result": "3 edits applied as one undo step (\"Goodbye details\")",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__screenshot",
+   "input": {
+    "frame": 1120,
+    "width": 960,
+    "height": 540
+   },
+   "result": "[image]\n[image saved by Claude Code]\n960×540 PNG; frame 1120, hash b556847fa65a5368, luma 170.5±49.1",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__sequence",
+   "input": {
+    "frame": 1120
+   },
+   "result": "{\"frame\":1120,\"step\":2800,\"alpha\":0,\"restored\":2760,\"stepped\":40,\"ms\":64.5,\"shot\":\"s6 \\\"Goodbye\\\"\",\"camera\":\"cam\",\"virtualCamera\":\"vc-goodbye\",\"speaking\":[\"mira: See you tomorrow, Hana!\"],\"hash\":\"b556847fa65a5368\"}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__play",
+   "input": {
+    "action": "play"
+   },
+   "result": "{\"mode\":\"playing\",\"step\":0}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__engine_step",
+   "input": {
+    "steps": 600
+   },
+   "result": "{\"step\":669,\"seconds\":11.15,\"signals\":[{\"step\":419,\"node\":\"\",\"signal\":\"shotChanged\"},{\"step\":419,\"node\":\"music\",\"signal\":\"started\"},{\"step\":419,\"node\":\"brain\",\"signal\":\"cameraChanged\"}],\"moreSignals\":0}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__brain",
+   "input": {
+    "op": "inspect",
+    "id": "hana-1"
+   },
+   "result": "{\"id\":\"hana-1\",\"step\":765,\"preset\":\"brains/hana.json\",\"status\":\"running\",\"running\":\"utility > sequence > wait\",\"utility\":[{\"i\":0,\"options\":[\"takeOrder\",\"greet\",\"tend\"],\"current\":2,\"scores\":[0,0,0.5]}],\"goal\":null,\"bb\":{\"home\":[0.6,0,-4.6],\"counter\":[0.6,0,-4.6],\"machine\":[1.2,0,-4.85],\"greeted\":{},\"customer\":null},\"memory\":[]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__play",
+   "input": {
+    "action": "stop"
+   },
+   "result": "{\"restored\":true,\"hash\":\"ce2a34073fa8fc29\",\"before\":\"ce2a34073fa8fc29\",\"viewSame\":true}",
+   "isError": false
+  }
+ ],
+ "failed": 2,
+ "costUSD": 0.21910979999999997,
+ "final": "All eight steps are done. Nothing was undone or saved. The results below are edits plus a rendered frame and a play session. I haven't run `validate`.\n\n1. **Outline:** the sequence is 24 fps and 1080 frames (45 s), with 5 shots (s1 to s5) and 13 tracks. Cast: hana-1, mira, music.\n2. **Camera:** I added VirtualCamera `vc-goodbye` with these settings:\n   - **Body and position:** fixed body at [0.6, 1.55, -3.0]. That is 1.6 m in front of Hana at head height. I assumed she faces +Z, because her cast entry only overrides position (0.6, 0, -4.6).\n   - **Aim and lens:** composer aim on `hana-1#head`, 85 mm lens.\n3. **Shot:** one batch edit (one undo step) added shot s6 \"Goodbye\" at frames 1080–1176. The same edit set the duration to 1176 and added a `vc-goodbye` clip on the camera track from 1080 to 1176.\n4. **Expression:** I appended happy keys [1092, 1] and [1164, 0] to the existing track, keeping Hana's earlier keys.\n5. **Dialogue:** I added \"See you tomorrow, Hana!\" for Mira at frames 1100–1150. It is text only, with no voice clip.\n6. **Brain:** Mira's brain preset in the cast is now an inline object. Its tree is a sequence of `wait` (2 s), `lookAt` (hana-1) and `emote` (happy). The `emote` args `{name:\"happy\"}` and the `lookAt` args `{target:\"hana-1\"}` are my guesses. The tool didn't check them.\n7. **Frame 1120:** this is a 960×540 close-up of Hana's face and shoulders from the `vc-goodbye` shot. She has a wide open-mouth smile and closed, happy eyes. The framing is centred and the background is warm beige with a vignette. World hash: `b556847fa65a5368`. The sequence read-out confirms Mira's line is speaking at that frame.\n8. **Playback:** I played, stepped 600 steps (now at step 669, 11.15 s), then inspected Hana's brain and stopped. When I stopped, the scene came back unchanged, with hash `ce2a34073fa8fc29` before and after.\n   - **Running branch:** `utility > sequence > wait`.\n   - **Utility scores:** takeOrder 0, greet 0, tend 0.5. The current choice is tend.\n   - **Goal:** none.\n   - **Blackboard:** `home` and `counter` are [0.6, 0, -4.6], `machine` is [1.2, 0, -4.85], `greeted` is {}, `customer` is null."
+}

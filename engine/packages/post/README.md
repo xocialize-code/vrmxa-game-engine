@@ -29,5 +29,11 @@ Measured (acceptance check 11, results in `acceptance/results/`; M5 Max): SSIM b
 post); the anime stack costs 1.4 / 1.6 ms at 1080p / 4K in Chromium against 0.4 / 0.5 ms without post (WKWebView over
 loopback 1.4 / 3.1 against 0.3 / 1.0); four viewports 0.9–1.4 ms. The SSIM is measured with debug draw off.
 
+**Offline frames wait for the grade** (M2 W12). A LUT loads asynchronously. `configure` keeps each load in
+`loading`, and `await stack.settle()` resolves when none is left (a load that fails sets the LUT to none and warns).
+`RenderHost.frameAt` awaits it before drawing, so an export or a scrub never draws a frame before its grade arrives.
+Without it the editor's hash-only export, which never yields, came out ungraded, while a Mac export picked the grade up
+from its second frame.
+
 Tests (`npm test`): spec normalisation (presets, defaults, order, unknown effects refused), structure keys, and the
 layout of viewports. The rendered checks run in the browsers (`acceptance/`).

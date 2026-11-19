@@ -1,7 +1,7 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.3.0"
+public let vrmxgShellVersion = "0.4.0"
 
 /// One app's shell: its name, URL scheme, window and any bridge methods of its own.
 public struct ShellConfiguration {
@@ -35,6 +35,8 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     public let posts = PostRouter()
     lazy var files = FileMethods(roots: roots)
     lazy var exports = ExportMethods(files: files)
+    /// Held for the app's life: its bridge handlers capture it unowned (a temporary here crashed the first saves.* call)
+    lazy var saves = SaveMethods(appName: config.appName, env: env)
     lazy var scheme = SchemeHandler(scheme: config.scheme, roots: roots, posts: posts)
     lazy var server = LoopbackServer(roots: roots, posts: posts)
     let env = ProcessInfo.processInfo.environment
@@ -53,7 +55,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
              "scheme": "\(self.config.scheme)://app/"]
         }
         files.register(on: router)
-        SaveMethods(appName: config.appName, env: env).register(on: router) // save slots (M2 W9)
+        saves.register(on: router) // save slots (M2 W9)
         exports.register(on: router, posts: posts)
         for (name, handler) in config.methods { router.register(name, handler) }
 

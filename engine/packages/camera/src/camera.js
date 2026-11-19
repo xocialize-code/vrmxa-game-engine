@@ -177,7 +177,9 @@ export class CameraNode extends Node {
 
   getState() { return { rig: { ...this.rig }, preset: this.preset, p: this.object3d.position.toArray(), q: this.object3d.quaternion.toArray() }; }
   // the preset only when it changed: a restore mustn't add a prop the scene never set
-  setState(s) { this.rig = { ...s.rig }; if (s.preset !== this.preset) this.props.preset = s.preset; this.object3d.position.fromArray(s.p); this.object3d.quaternion.fromArray(s.q); }
+  // and the lens from the restored props (a CameraBrain writes focal length, f-stop and focus into them each step): a frame
+  // drawn right after a restore, before any step, uses the snapshot's lens, not the last one drawn (M2 W12)
+  setState(s) { this.rig = { ...s.rig }; if (s.preset !== this.preset) this.props.preset = s.preset; this.object3d.position.fromArray(s.p); this.object3d.quaternion.fromArray(s.q); this.applyLens(); }
 }
 
 function isIdentity(m) {

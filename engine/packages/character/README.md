@@ -34,7 +34,9 @@ Masked clips are subclips made when the body is put on, in a fixed order, so the
 - **feet:** rays down from above each ankle and the root. A foot over lower ground drops the pelvis; each leg then reaches its own ground, smoothed over a few steps. Flat ground runs no IK at all, so poses and hashes stay as they were. `footIK: false` turns it off.
 - **hands:** `reach({ hand, point | target, part?, seconds })` bends the arm to a point, a node or an item's part, fading in and out. The interaction service reaches for an item's `Grip`, `Knob` or `Handle` part (or a verb's `grip`) on interact, so opening the cupboard reaches for its knob.
 
-The feet's offsets and the reach are in the character's controller state, so they are in the snapshot.
+The feet's offsets and the reach are in the character's controller state, so they are in the snapshot. So is an emote
+(`ctrl.emote = { name, until }`, cleared at the start of the step it ends on). It used to be a closure timer, which a
+snapshot can't hold, so a scrub into the film refused the world (M2 W12).
 
 ## Rules it follows
 

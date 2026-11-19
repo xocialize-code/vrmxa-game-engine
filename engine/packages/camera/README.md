@@ -56,3 +56,11 @@ turntable turns, a dolly rides its path); lookAt, the composer and group framing
 the screen; shot / reverse on one side of the line; seeded noise and an impulse that decays; the brain (priority, ties,
 an eased blend halfway at t = 0.5, a per-pair cut, an override, the lens on the camera); replay and a restore mid-blend.
 Not yet: camera-controls for the editor's viewport navigation (moved to W5, the timeline).
+
+**The output aspect is a simulation input** (M2 W12). The composer and group framing work in screen space, so a
+VirtualCamera's move depends on the aspect it frames at. `setAspect` (from `RenderHost.resize`) refits every lens for
+drawing. Unless the world called `fixAspect(a)`, it also sets the aspect the step frames with. A sequence fixes 16:9
+(`SequenceService.prepare`), so its world steps the same in a viewport of any shape, a still or an export. Before this,
+an editor still that resized the preview world and gave it back the viewport's aspect moved a scrubbed shot away from
+the frames its snapshots were taken at. A camera restored from a snapshot re-derives its lens (`setState` ends with
+`applyLens`). Tests: a fixed aspect holds through a resize; a free one follows it.

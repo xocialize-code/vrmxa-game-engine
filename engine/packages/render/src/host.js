@@ -135,6 +135,8 @@ export class RenderHost {
     const t = (step + alpha) / 60, dt = this._offlineT === undefined || t < this._offlineT ? 0 : t - this._offlineT; // presentation gets the frame's delta, as in live play
     this._offlineT = t;
     tree.present(dt, alpha);
+    // an offline frame waits for the post stack's loads (a LUT), so its look never depends on timing (M2 W12)
+    if (this.post?.settle) { this.views.update(tree); await this.post.settle(); }
     this.render(alpha, steps > 0);
     this.last.steps = steps; this.last.alpha = alpha; this.last.held = false;
     return this.last;

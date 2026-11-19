@@ -180,7 +180,12 @@ function setField(field, raw) {
   }
 }
 /** Select an item without dragging it (a click, or an accessibility press). */
-const pick = (row, item) => { if (!drag.value) sel.value = { row: row.id, kind: item.kind, index: item.index, channel: item.channel ?? null, id: item.id }; };
+// picking an item leaves any field being typed in, so the arrows nudge it (an accessibility press focuses nothing)
+const pick = (row, item) => {
+  if (drag.value) return;
+  sel.value = { row: row.id, kind: item.kind, index: item.index, channel: item.channel ?? null, id: item.id };
+  if (typing()) /** @type {HTMLElement} */ (document.activeElement).blur();
+};
 const itemLabel = (item) => (item.kind === 'key' ? `Key ${item.label ? `${item.label} ` : ''}at ${item.start}` : `${item.kind === 'shot' ? 'Shot' : 'Clip'} ${item.label} ${item.start} to ${item.end}`);
 defineExpose({ fit, select: (s) => { sel.value = s; } });
 </script>

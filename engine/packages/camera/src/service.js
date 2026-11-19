@@ -11,6 +11,8 @@ export class CameraService {
     /** @type {any[]} */ this.virtual = [];   // VirtualCameras (M2 W2)
     /** @type {any[]} */ this.brains = [];    // CameraBrains
     this.aspect = 16 / 9;
+    /** @type {number | undefined} the aspect the world fixed (fixAspect), or undefined: it follows the output */
+    this.fixed = undefined;
   }
 
   registerVirtual(v) { this.virtual.push(v); }
@@ -33,8 +35,18 @@ export class CameraService {
   getState() { return { current: this.current?.id ?? null }; }
   setState(s) { this.current = s.current === null ? null : this.cameras.find((c) => c.id === s.current) ?? this.current; }
 
-  /** The output's aspect changed (canvas resize, export size). */
-  setAspect(aspect) { this.aspect = aspect; for (const c of this.cameras) c.applyLens(aspect); }
+  /**
+   * The output's aspect changed (canvas resize, export size). Every lens refits for drawing. The aspect the virtual
+   * cameras frame with in the step (a composer's screen position, a group's framing) follows it too, unless the world
+   * fixed it (fixAspect).
+   */
+  setAspect(aspect) { if (this.fixed === undefined) this.aspect = aspect; for (const c of this.cameras) c.applyLens(aspect); }
+
+  /**
+   * Fix the aspect the simulation frames with, whatever the window does: a sequence world, which must step the same
+   * whether it is shown in a viewport, a still or an export (a scrub restores snapshots taken at this aspect).
+   */
+  fixAspect(aspect) { this.fixed = aspect; this.aspect = aspect; }
 
   afterNodes(dt) {
     const input = this.tree.services.get('input');

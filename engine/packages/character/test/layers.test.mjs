@@ -79,3 +79,22 @@ test('layers replay: two runs identical, a snapshot mid-wave restores the same',
   const c = await run(null, a.snap);
   assert.equal(c.hash, a.hash, 'restored mid-wave (step 170)');
 });
+
+test('an emote is state: a snapshot taken during one restores, and the expression goes back to 0 a second later (M2 W12)', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+  const run = async (from = null) => {
+    const W = await world(), tree = W.tree, mira = /** @type {any} */ (tree.find('mira'));
+    if (from) restoreWorld(tree, from);
+    let snap = null, mid = null;
+    while (tree.clock.step < 200) {
+      if (tree.clock.step === 100 && !from) mira.emote({ name: 'happy' });
+      tree.step();
+      if (tree.clock.step === 130) { snap = captureWorld(tree); mid = mira.vrm.expressionManager.getValue('happy'); }
+    }
+    return { hash: hashValue(worldHashes(tree, { physicsBytes: true })), snap, mid, end: mira.vrm.expressionManager.getValue('happy') };
+  };
+  const a = await run();
+  assert.equal(a.mid, 1, 'still smiling half a second in');
+  assert.equal(a.end, 0, 'back to 0 after the second');
+  const b = await run(a.snap); // a closure timer here used to throw: "created at run time; a snapshot can't recreate its code"
+  assert.equal(b.hash, a.hash, 'restored mid-emote (step 130)');
+});

@@ -17,7 +17,7 @@ const ui = reactive({
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
   debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
   mcp: '', tl: null, gameSlot: 'slot-1', gameNote: '', paused: false, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
-  ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '' },
+  ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '', check: '', canCheck: false, scene: '', checkRows: '' },
 });
 /** @type {EditorHost} */ let ed = null; // never reactive
 
@@ -51,10 +51,22 @@ function refresh(kind = 'all') {
   ui.saved = ed.lastSave ? `${ed.lastSave.ref} · ${ed.lastSave.bytes} bytes · ${ed.lastSave.hash}` : '';
   ui.verify = ed.lastVerify ? `${ed.lastVerify.ref}: ${ed.lastVerify.same ? 'same bytes as saved' : 'DIFFERS from what was saved'}, ${ed.lastVerify.valid ? 'valid' : `invalid: ${ed.lastVerify.errors.join('; ')}`}` : '';
   ui.ex.takes = ed.takes();
-  if (!ui.ex.takes.some((t) => t.id === ui.ex.take)) ui.ex.take = ui.ex.takes.find((t) => t.id === 'input/walk-in.json')?.id ?? ui.ex.takes[0]?.id ?? '';
+  // a sequence just opened: export it by default (at its own rate); another scene: keep the take if it still exists
+  const seqOpen = ui.ex.takes.some((t) => t.id === 'sequence'), scene = ed.sceneRef ?? '';
+  if (seqOpen && ui.ex.scene !== scene) { ui.ex.take = 'sequence'; takeSeconds(); }
+  ui.ex.scene = scene;
+  if (!ui.ex.takes.some((t) => t.id === ui.ex.take)) {
+    ui.ex.take = ui.ex.takes.find((t) => t.id === 'sequence')?.id ?? ui.ex.takes.find((t) => t.id === 'input/walk-in.json')?.id ?? ui.ex.takes[0]?.id ?? '';
+    takeSeconds();
+  }
   ui.ex.running = !!ed.exporting;
   const x = ed.lastExport;
-  ui.ex.result = x ? `${x.name ?? x.began?.name ?? 'hashes only'}: ${x.frames} frames, ${x.seconds.toFixed(3)} s, ${CODECS[x.codec].label} ${x.size} ${x.fpsLabel} fps${x.audio ? ', with sound' : ''} · exported in ${(x.ms.total / 1000).toFixed(2)} s (${x.framesPerSecond} fps, ${x.transport || 'hash'}; per frame: render ${x.perFrameMs.render} ms, readback ${x.perFrameMs.readback}, waiting ${x.perFrameMs.wait}${x.encodeMsPerFrame !== undefined ? `, encode ${x.encodeMsPerFrame}, encoder wait ${x.waitMsPerFrame}` : ''}; sound ${x.ms.audio} ms${x.muxMs !== undefined ? `, mux ${x.muxMs} ms` : ''}) · frames ${x.hashesDigest ?? '—'}` : '';
+  ui.ex.result = x ? `${x.name ?? x.began?.name ?? 'hashes only'}: ${x.frames} frames, ${x.seconds.toFixed(3)} s, ${CODECS[x.codec].label} ${x.size} ${x.fpsLabel} fps${x.audio ? ', with sound' : ''} · exported in ${(x.ms.total / 1000).toFixed(2)} s (${x.framesPerSecond} fps, ${x.transport || 'hash'}; per frame: render ${x.perFrameMs.render} ms, readback ${x.perFrameMs.readback}, waiting ${x.perFrameMs.wait}${x.encodeMsPerFrame !== undefined ? `, encode ${x.encodeMsPerFrame}, encoder wait ${x.waitMsPerFrame}` : ''}; sound ${x.ms.audio} ms${x.muxMs !== undefined ? `, mux ${x.muxMs} ms` : ''}) · frames ${x.hashesDigest ?? '—'}${x.subs ? ` · subtitles ${x.subs.error ? `not written (${x.subs.error})` : `${x.subs.path ? x.subs.path.split('/').pop() : '(text)'}, ${x.subs.lines} lines`}` : ''}` : '';
+  const c = x?.scrubCheck;
+  ui.ex.check = !c ? '' : c.same === c.frames ? `Scrub matches the export: all ${c.frames} frames (${c.rows.map((r) => r.frame).join(', ')})`
+    : `Scrub differs from the export: ${c.frames - c.same} of ${c.frames} frames (${c.rows.filter((r) => !r.same).map((r) => `${r.frame}${r.worldSame === true ? ' same world' : r.worldSame === false ? ' other world' : ''}`).join(', ')})`;
+  ui.ex.canCheck = x?.take === 'sequence' && !!x.frameHashes?.length;
+  ui.ex.checkRows = c ? c.rows.map((r) => `${r.frame} ${r.scrub} ${r.exported}`).join('; ') : '';
   ui.ex.still = ed.lastStill ? `${ed.lastStill.thumbnail ? 'Thumbnail' : 'Still'} ${ed.lastStill.path ?? ed.lastStill.name} · ${ed.lastStill.bytes} bytes` : '';
   ui.stopped = ed.lastStop ? `scene ${ed.lastStop.restored && ed.lastStop.hash === ed.lastStop.before ? 'as before Play' : 'CHANGED'} (${ed.lastStop.hash}), view ${ed.lastStop.viewSame ? 'unchanged' : 'CHANGED'}` : '';
 }
@@ -72,6 +84,8 @@ onMounted(async () => {
   }
   await act(async () => ed.openProject(await bundledProject()));
   ui.loading = false;
+  // a harness's check (M2 W12): export the film as frame hashes and check it against scrubbing
+  if (new URLSearchParams(location.search).get('mode') === 'check-export') (await import('./checkmode.js')).checkModeMain(ed);
 });
 
 // ---------------------------------------------------------------- commands
@@ -88,9 +102,18 @@ const redo = () => act(() => ed.session.redo());
 const play = () => act(() => (ed.session.mode === 'playing' ? ed.stop() : ed.play()));
 // save games while playing (M2 W9)
 const saveGame = () => act(async () => { const r = await ed.saveGame(ui.gameSlot); ui.gameNote = `saved ${r.slot} at step ${r.step} (${(r.bytes / 1024).toFixed(0)} KB) · ${r.hash}`; });
-const loadGame = () => act(async () => { const r = await ed.loadGame(ui.gameSlot); ui.gameNote = `loaded ${r.slot} at step ${r.step} (paused) · ${r.hash}`; });
+const loadGame = () => act(async () => {
+  const saved = ed.lastGameSave, r = await ed.loadGame(ui.gameSlot);
+  const same = saved?.slot === r.slot ? (saved.step === r.step && saved.hash === r.hash ? ' · the world as saved' : ` · not the world saved (${saved.hash} at step ${saved.step})`) : '';
+  ui.gameNote = `loaded ${r.slot} at step ${r.step} (paused) · ${r.hash}${same}`;
+});
 const resume = () => act(() => { ed.paused = !ed.paused; });
-const takeSeconds = () => { const t = ui.ex.takes.find((x) => x.id === ui.ex.take); if (t?.seconds) ui.ex.seconds = +t.seconds.toFixed(2); };
+function takeSeconds() {
+  const t = ui.ex.takes.find((x) => x.id === ui.ex.take);
+  if (t?.seconds) ui.ex.seconds = +t.seconds.toFixed(2);
+  if (t?.fps && RATES[String(t.fps)]) ui.ex.fps = String(t.fps); // a sequence exports at its own rate by default
+}
+const checkScrub = () => act(() => ed.checkExportAgainstScrub());
 const exportVideo = () => act(() => ed.exportVideo({ take: ui.ex.take, seconds: +ui.ex.seconds, size: ui.ex.size, fps: ui.ex.fps, codec: ui.ex.codec, audio: ui.ex.audio, name: ui.ex.name.trim() }));
 const saveStill = () => act(() => ed.saveStill(ui.ex.size));
 const thumbnail = () => act(() => ed.makeThumbnail());
@@ -212,7 +235,7 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       <section v-if="ui.ex.open" id="export-panel" class="export" role="dialog" aria-label="Export">
         <h2>Export</h2>
         <label class="field">Take <select id="export-take" v-model="ui.ex.take" aria-label="Take" :disabled="ui.ex.running" @change="takeSeconds"><option v-for="t in ui.ex.takes" :key="t.id" :value="t.id">{{ t.label }}</option></select></label>
-        <label class="field">Seconds <input id="export-seconds" v-model="ui.ex.seconds" type="number" min="0.1" step="0.1" aria-label="Seconds" :disabled="ui.ex.running"></label>
+        <label class="field">Seconds <input id="export-seconds" v-model="ui.ex.seconds" type="number" min="0.1" step="0.1" aria-label="Seconds" :disabled="ui.ex.running" @focus="$event.target.select()"></label>
         <div class="field"><span>Size</span><div class="seg" role="radiogroup" aria-label="Size">
           <button v-for="(wh, k) in SIZES" :id="`size-${k}`" :key="k" type="button" role="radio" :aria-checked="ui.ex.size === k" :aria-label="`${k} ${wh[0]}×${wh[1]}`" :title="`${wh[0]}×${wh[1]}`" :class="{ on: ui.ex.size === k }" :disabled="ui.ex.running" @click="ui.ex.size = k">{{ k }}</button>
         </div></div>
@@ -223,12 +246,16 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
           <button v-for="(c, k) in CODECS" :id="`codec-${k}`" :key="k" type="button" role="radio" :aria-checked="ui.ex.codec === k" :aria-label="`${c.label} .${c.ext}`" :title="`${c.label} (.${c.ext})${c.alpha ? ', keeps transparency' : ''}`" :class="{ on: ui.ex.codec === k }" :disabled="ui.ex.running" @click="ui.ex.codec = k">{{ c.short }}</button>
         </div></div>
         <label class="field"><span>Sound</span><input id="export-audio" v-model="ui.ex.audio" type="checkbox" aria-label="Sound" :disabled="ui.ex.running"></label>
-        <label class="field">File name <input id="export-name" v-model="ui.ex.name" aria-label="Export file name" placeholder="automatic" :disabled="ui.ex.running"></label>
+        <label class="field">File name <input id="export-name" v-model="ui.ex.name" aria-label="Export file name" placeholder="automatic" :disabled="ui.ex.running" @focus="$event.target.select()"></label>
         <div class="row">
           <button id="export-run" type="button" class="play" :disabled="ui.ex.running || !ui.ex.take" :aria-label="ui.shell ? 'Export video' : 'Export (frame hashes only: video needs the Mac app)'" @click="exportVideo">{{ ui.shell ? 'Export Video…' : 'Export (hashes)' }}</button>
           <progress v-if="ui.ex.running" id="export-progress" :max="ui.ex.frames || 1" :value="ui.ex.n" :aria-label="`Exporting ${ui.ex.phase} ${ui.ex.n} of ${ui.ex.frames}`" />
         </div>
         <output v-if="ui.ex.result" id="export-result" :aria-label="`Exported ${ui.ex.result}`">{{ ui.ex.result }}</output>
+        <div v-if="ui.ex.canCheck" class="row">
+          <button id="export-check" type="button" aria-label="Check the export against scrubbing" title="Jump to frames of each shot from snapshots and compare them with the exported frames" :disabled="ui.ex.running" @click="checkScrub">Check Against Scrub</button>
+          <output v-if="ui.ex.check" id="export-check-result" :aria-label="ui.ex.check" :title="`frame, scrub, export: ${ui.ex.checkRows}`">{{ ui.ex.check }}</output>
+        </div>
         <h3>Stills</h3>
         <div class="row">
           <button id="save-still" type="button" aria-label="Save still" :disabled="ui.ex.running" @click="saveStill">Save Still…</button>

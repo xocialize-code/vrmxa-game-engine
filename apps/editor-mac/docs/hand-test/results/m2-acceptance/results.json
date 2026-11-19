@@ -1,0 +1,386 @@
+{
+  "checklist" : "/Volumes/Satechi/Development/vrmxa-game-engine/apps/editor-mac/docs/HAND-TEST-M2-ACCEPTANCE.md",
+  "rows" : [
+    {
+      "checklist_line" : 9,
+      "checks" : [
+        {
+          "actual" : "\"Scene cafe.vrmxs 29 nodes saved valid hash 8fb64e11446af298\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe.vrmxs\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project project\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/cafe-morning.vrmxs 8 nodes saved valid hash 30ec2200fdd408c3\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene sequences/cafe-morning.vrmxs [0-9]+ nodes saved valid\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Shot Morning 0 to 168' exact=true\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Shot Served 870 to 1080' exact=true\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-cameras\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-hana-talk\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-hana-face\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-eyes-mira\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-hana-says\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-mira-says\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-steam\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-music-cue\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-counter-light\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-music-fade\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-look\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-fade\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 699 step 1747 alpha 0.5 world f279b7d7d26f3e47\"",
+          "check" : "find(\"id=tl-scrub\").0.name matches \"^Showing frame 699 step 17[0-9]{2} alpha 0.5 world [0-9a-f]{16}$\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Editor pid 4785, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-19T022738Z.log",
+        "19: wait id=open-project enabled=true timeout_ms=40000 → found after 222 ms: button \"Open project\" #open-project [W:VRMXG Editor/0/0/0/0/0/1@4649] (230 ms)",
+        "20: until find(\"id=doc-state\").0.name matches \"^Scene cafe.vrmxs\" → ok (957 ms)",
+        "21: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":109,\"x\":2721,\"y\":162},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (22 ms)",
+        "22: until find(\"id=project-name\").0.name == \"Project project\" → ok (942 ms)",
+        "23: act id=file-name action=set_value value=sequences/cafe-morning.vrmxs → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":139,\"x\":3119,\"y\":162},\"help\":\"The file New and Save As use, in the project\",\"id\":\"fi (452 ms)",
+        "24: act id=open-file action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":3265,\"y\":162},\"help\":\"Open the scene or sequence named in the file field\",\"id\":\"o (22 ms)",
+        "25: until find(\"id=doc-state\").0.name matches \"^Scene sequences/cafe-morning.vrmxs [0-9]+ nodes saved valid\" → ok (573 ms)",
+        "26: expect find(\"role=button name='Shot Morning 0 to 168' exact=true\").count == 1 → ok (18 ms)",
+        "27: expect find(\"role=button name='Shot Served 870 to 1080' exact=true\").count == 1 → ok (26 ms)",
+        "28: expect find(\"id=tl-head-cameras\").count == 1 → ok (18 ms)",
+        "29: expect find(\"id=tl-head-hana-talk\").count == 1 → ok (20 ms)",
+        "30: expect find(\"id=tl-head-hana-face\").count == 1 → ok (20 ms)",
+        "31: expect find(\"id=tl-head-eyes-mira\").count == 1 → ok (18 ms)",
+        "32: expect find(\"id=tl-head-hana-says\").count == 1 → ok (18 ms)",
+        "33: expect find(\"id=tl-head-mira-says\").count == 1 → ok (18 ms)",
+        "34: expect find(\"id=tl-head-steam\").count == 1 → ok (22 ms)",
+        "35: expect find(\"id=tl-head-music-cue\").count == 1 → ok (19 ms)",
+        "36: expect find(\"id=tl-head-counter-light\").count == 1 → ok (22 ms)",
+        "37: expect find(\"id=tl-head-music-fade\").count == 1 → ok (18 ms)",
+        "38: expect find(\"id=tl-head-look\").count == 1 → ok (18 ms)",
+        "39: expect find(\"id=tl-head-fade\").count == 1 → ok (17 ms)",
+        "40: act id=tl-frame action=set_value value=699 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":83,\"x\":3131,\"y\":1436},\"help\":\"\",\"id\":\"tl-frame\",\"name\":\"Frame\",\"ref\":\"W:VRMXG Editor (430 ms)",
+        "41: until find(\"id=tl-scrub\").0.name matches \"^Showing frame 699 step 17[0-9]{2} alpha 0.5 world [0-9a-f]{16}$\" timeout=90000 → ok (1641 ms)",
+        "43: shot \"film\" (273 ms)"
+      ],
+      "message" : null,
+      "ms" : 8319,
+      "notes" : [
+        "shot 1: film"
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+        "/Volumes/Satechi/Development/vrmxa-game-engine/apps/editor-mac/docs/hand-test/results/m2-acceptance/shots/r1-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Check 1: \"Morning at the cafe\" opens in the timeline with five shots on a 24 fps ruler and a track of every kind: camera cuts and blends, Hana's animation (held on twos), an expression, look-at, dialogue for both, event keys (steam, the music cue), property keys (the counter light, the music's fade, the look) and a post track.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 10,
+      "checks" : [
+        {
+          "actual" : "\"Undo Move key hana-face.happy to 913\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Move key hana-face.happy to 913\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/cafe-morning.vrmxs 8 nodes saved valid hash 30ec2200fdd408c3\"",
+          "check" : "find(\"id=doc-state\").0.name == $before",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Saved sequences/cafe-morning.vrmxs · 4806 bytes · 30ec2200fdd408c3\"",
+          "check" : "find(\"id=saved\").0.name matches \"^Saved sequences/cafe-morning.vrmxs · [0-9]+ bytes · [0-9a-f]{16}$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Reopened sequences/cafe-morning.vrmxs: same bytes as saved, valid\"",
+          "check" : "find(\"id=verify-result\").0.name == \"Reopened sequences/cafe-morning.vrmxs: same bytes as saved, valid\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "48: set before = find(\"id=doc-state\").0.name → \"Scene sequences/cafe-morning.vrmxs 8 nodes saved valid hash 30ec2200fdd408c3\" (24 ms)",
+        "49: act role=button name=\"Key happy at 912\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":15,\"w\":15,\"x\":4235,\"y\":1657},\"help\":\"Key happy at 912\",\"name\":\"Key happy at 912\",\"ref\":\"W:VRMXG (30 ms)",
+        "50: keys right → {\"sent\":true} (114 ms)",
+        "51: until find(\"id=undo\").0.name == \"Undo Move key hana-face.happy to 913\" → ok (240 ms)",
+        "52: menu \"Edit › Undo*\" press → pressed Edit › Undo* (153 ms)",
+        "53: until find(\"id=doc-state\").0.name == $before → ok (592 ms)",
+        "54: act id=save action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":48,\"x\":3763,\"y\":162},\"help\":\"\",\"id\":\"save\",\"name\":\"Save\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (976 ms)",
+        "55: until find(\"id=saved\").0.name matches \"^Saved sequences/cafe-morning.vrmxs · [0-9]+ bytes · [0-9a-f]{16}$\" → ok (358 ms)",
+        "56: act id=verify action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":127,\"x\":3594,\"y\":1743},\"help\":\"\",\"id\":\"verify\",\"name\":\"Reopen and compare\",\"ref\":\"W:VRMX (771 ms)",
+        "57: until find(\"id=verify-result\").0.name == \"Reopened sequences/cafe-morning.vrmxs: same bytes as saved, valid\" → ok (105 ms)"
+      ],
+      "message" : null,
+      "ms" : 3600,
+      "notes" : [
+
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Check 1: an edit is one undo step, undo restores the document exactly, and save then reopen gives the same bytes and validates.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 11,
+      "checks" : [
+        {
+          "actual" : "\"45\"",
+          "check" : "find(\"id=export-seconds\").0.value matches \"^45\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Exported film-a.mp4: 1080 frames, 45.000 s, H.264 1080p 24 fps, with sound · exported in 6.88 s (156.96 fps, scheme; per frame: render 2.06 ms, readback 1.4, waiting 0.7, encode 0.2, encoder wait 0; sound 758.68 ms, mux 212 ms) · frames 3…",
+          "check" : "find(\"id=export-result\").0.name matches \"^Exported film-a.mp4: 1080 frames, 45.000 s, H.264 1080p 24 fps, with sound .* subtitles film-a.srt, 4 lines$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Exported film-b.mp4: 1080 frames, 45.000 s, H.264 1080p 24 fps, with sound · exported in 6.59 s (163.93 fps, scheme; per frame: render 1.94 ms, readback 1.32, waiting 0.62, encode 0.2, encoder wait 0; sound 771.42 ms, mux 154.5 ms) · fram…",
+          "check" : "find(\"id=export-result\").0.name matches \"^Exported film-b.mp4: 1080 frames, 45.000 s\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Exported film-prores.mov: 1080 frames, 45.000 s, ProRes 4444 1080p 24 fps, with sound · exported in 6.76 s (159.81 fps, scheme; per frame: render 2.12 ms, readback 1.24, waiting 0.7, encode 0.35, encoder wait 0; sound 761.36 ms, mux 177.8…",
+          "check" : "find(\"id=export-result\").0.name matches \"^Exported film-prores.mov: 1080 frames, 45.000 s, ProRes 4444 1080p 24 fps, with sound .* subtitles film-prores.srt, 4 lines$\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "62: act id=export-open action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":59,\"x\":4405,\"y\":162},\"help\":\"\",\"id\":\"export-open\",\"name\":\"Export\",\"ref\":\"W:VRMXG Editor/ (26 ms)",
+        "63: wait id=export-run timeout_ms=5000 → found after 27 ms: button \"Export video\" #export-run [W:VRMXG Editor/0/0/0/0/2/1/11@36b9] (27 ms)",
+        "64: expect find(\"id=export-seconds\").0.value matches \"^45\" → ok (22 ms)",
+        "65: act id=size-1080p action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":51,\"x\":4620,\"y\":296},\"help\":\"1920×1080\",\"id\":\"size-1080p\",\"name\":\"1080p 1920×1080\",\"ref\" (27 ms)",
+        "66: act id=codec-h264 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":50,\"x\":4542,\"y\":357},\"help\":\"H.264 (.mp4)\",\"id\":\"codec-h264\",\"name\":\"H.264 .mp4\",\"ref\":\" (26 ms)",
+        "67: act id=export-name action=set_value value=film-a → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":180,\"x\":4566,\"y\":412},\"help\":\"\",\"id\":\"export-name\",\"name\":\"Export file name\",\"ref\":\" (426 ms)",
+        "68: act id=export-run action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":106,\"x\":4452,\"y\":446},\"help\":\"\",\"id\":\"export-run\",\"name\":\"Export video\",\"ref\":\"W:VRMXG E (48 ms)",
+        "69: until find(\"id=export-result\").0.name matches \"^Exported film-a.mp4: 1080 frames, 45.000 s, H.264 1080p 24 fps, with sound .* subtitles film-a.srt, 4 lines$\" timeout=600000 → ok (8051 ms)",
+        "70: act id=export-name action=set_value value=film-b → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":180,\"x\":4566,\"y\":412},\"help\":\"\",\"id\":\"export-name\",\"name\":\"Export file name\",\"ref\":\" (438 ms)",
+        "71: act id=export-run action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":106,\"x\":4452,\"y\":446},\"help\":\"\",\"id\":\"export-run\",\"name\":\"Export video\",\"ref\":\"W:VRMXG E (61 ms)",
+        "72: until find(\"id=export-result\").0.name matches \"^Exported film-b.mp4: 1080 frames, 45.000 s\" timeout=600000 → ok (7693 ms)",
+        "73: act id=codec-prores4444 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":55,\"x\":4692,\"y\":357},\"help\":\"ProRes 4444 (.mov), keeps transparency\",\"id\":\"codec-prores4 (32 ms)",
+        "74: act id=export-name action=set_value value=film-prores → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":180,\"x\":4566,\"y\":412},\"help\":\"\",\"id\":\"export-name\",\"name\":\"Export file name\",\"ref\":\" (435 ms)",
+        "75: act id=export-run action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":106,\"x\":4452,\"y\":446},\"help\":\"\",\"id\":\"export-run\",\"name\":\"Export video\",\"ref\":\"W:VRMXG E (54 ms)",
+        "76: until find(\"id=export-result\").0.name matches \"^Exported film-prores.mov: 1080 frames, 45.000 s, ProRes 4444 1080p 24 fps, with sound .* subtitles film-prores.srt, 4 lines$\" timeout=900000 → ok (7861 ms)",
+        "77: shot \"exported\" (214 ms)"
+      ],
+      "message" : null,
+      "ms" : 25671,
+      "notes" : [
+        "shot 1: exported"
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+        "/Volumes/Satechi/Development/vrmxa-game-engine/apps/editor-mac/docs/hand-test/results/m2-acceptance/shots/r3-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Check 5: the sequence exports at 1080p24 with sound to H.264 twice and to ProRes 4444: 1,080 frames, 45.000 s, with its subtitles beside each file.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 12,
+      "checks" : [
+        {
+          "actual" : "\"Scrub matches the export: all 26 frames (0, 84, 120, 167, 168, 252, 335, 336, 400, 408, 410, 468, 470, 556, 560, 599, 600, 699, 735, 869, 870, 904, 975, 1000, 1010, 1079)\"",
+          "check" : "find(\"id=export-check-result\").0.name matches \"^Scrub matches the export: all [0-9]+ frames\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "83: act id=export-check action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":144,\"x\":4452,\"y\":606},\"help\":\"Jump to frames of each shot from snapshots and compare the (29 ms)",
+        "84: until find(\"id=export-check-result\").0.name matches \"^Scrub matches the export: all [0-9]+ frames\" timeout=300000 → ok (2948 ms)",
+        "85: shot \"scrub-check\" (212 ms)"
+      ],
+      "message" : null,
+      "ms" : 3421,
+      "notes" : [
+        "shot 1: scrub-check"
+      ],
+      "row" : 4,
+      "section" : "",
+      "shots" : [
+        "/Volumes/Satechi/Development/vrmxa-game-engine/apps/editor-mac/docs/hand-test/results/m2-acceptance/shots/r4-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Checks 2 and 5: jumping to frames of every shot, line and cue from snapshots draws exactly the frames the export rendered by playing through.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 13,
+      "checks" : [
+        {
+          "actual" : "\"Scene cafe.vrmxs 29 nodes saved valid hash 8fb64e11446af298\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe.vrmxs \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Stop\"",
+          "check" : "find(\"id=play\").0.name == \"Stop\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Resume\"",
+          "check" : "find(\"id=pause-game\").0.name == \"Resume\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"saved slot-1 at step 215 (236 KB) · cc6e53587c13f158\"",
+          "check" : "find(\"id=game-note\").0.name matches \"^saved slot-1 at step [0-9]+ \\([0-9]+ KB\\) · [0-9a-f]{16}$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Play\"",
+          "check" : "find(\"id=play\").0.name == \"Play\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"loaded slot-1 at step 215 (paused) · cc6e53587c13f158 · the world as saved\"",
+          "check" : "find(\"id=game-note\").0.name matches \"^loaded slot-1 at step [0-9]+ \\(paused\\) · [0-9a-f]{16} · the world as saved$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Play\"",
+          "check" : "find(\"id=play\").0.name == \"Play\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "90: act id=export-open action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":59,\"x\":4405,\"y\":162},\"help\":\"\",\"id\":\"export-open\",\"name\":\"Export\",\"ref\":\"W:VRMXG Editor/ (26 ms)",
+        "91: act id=file-name action=set_value value=cafe.vrmxs → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":139,\"x\":3119,\"y\":162},\"help\":\"The file New and Save As use, in the project\",\"id\":\"fi (432 ms)",
+        "92: act id=open-file action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":3265,\"y\":162},\"help\":\"Open the scene or sequence named in the file field\",\"id\":\"o (67 ms)",
+        "93: until find(\"id=doc-state\").0.name matches \"^Scene cafe.vrmxs \" → ok (545 ms)",
+        "94: act id=play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":79,\"x\":4565,\"y\":162},\"help\":\"\",\"id\":\"play\",\"name\":\"Play\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (37 ms)",
+        "95: until find(\"id=play\").0.name == \"Stop\" → ok (1433 ms)",
+        "97: act id=pause-game action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":56,\"x\":4645,\"y\":162},\"help\":\"\",\"id\":\"pause-game\",\"name\":\"Pause\",\"ref\":\"W:VRMXG Editor/0/ (71 ms)",
+        "98: until find(\"id=pause-game\").0.name == \"Resume\" → ok (27 ms)",
+        "99: act id=save-game action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":87,\"x\":4551,\"y\":162},\"help\":\"\",\"id\":\"save-game\",\"name\":\"Save game\",\"ref\":\"W:VRMXG Editor (22 ms)",
+        "100: until find(\"id=game-note\").0.name matches \"^saved slot-1 at step [0-9]+ \\([0-9]+ KB\\) · [0-9a-f]{16}$\" → ok (29 ms)",
+        "101: act id=play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":79,\"x\":4814,\"y\":162},\"help\":\"\",\"id\":\"play\",\"name\":\"Stop\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (24 ms)",
+        "102: until find(\"id=play\").0.name == \"Play\" → ok (37 ms)",
+        "103: act id=load-game action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":88,\"x\":4471,\"y\":162},\"help\":\"Load the slot's save into a fresh play of this scene\",\"id\": (19 ms)",
+        "104: until find(\"id=game-note\").0.name matches \"^loaded slot-1 at step [0-9]+ \\(paused\\) · [0-9a-f]{16} · the world as saved$\" timeout=60000 → ok (1109 ms)",
+        "105: shot \"game-loaded\" (216 ms)",
+        "106: act id=play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":79,\"x\":4814,\"y\":162},\"help\":\"\",\"id\":\"play\",\"name\":\"Stop\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (28 ms)",
+        "107: until find(\"id=play\").0.name == \"Play\" → ok (27 ms)"
+      ],
+      "message" : null,
+      "ms" : 7423,
+      "notes" : [
+        "shot 1: game-loaded"
+      ],
+      "row" : 5,
+      "section" : "",
+      "shots" : [
+        "/Volumes/Satechi/Development/vrmxa-game-engine/apps/editor-mac/docs/hand-test/results/m2-acceptance/shots/r5-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Check 8: a game saved in play goes to a file through the shell, and loading it gives the world as saved.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "/Volumes/Satechi/Development/vrmxa-game-engine/apps/editor-mac/docs/hand-test/HAND-TEST-M2-ACCEPTANCE.scenario.md",
+  "summary" : "5 rows: 5 passed, 0 failed, 0 need you; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}

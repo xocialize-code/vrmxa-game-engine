@@ -121,3 +121,17 @@ test('cameras replay identically; a snapshot taken mid-blend restores and re-sim
   const h = (w) => hashValue([worldHashes(w.tree), w.cam.object3d.position.toArray(), w.cam.object3d.quaternion.toArray(), w.cam.props.focalLength]);
   assert.equal(h(B), h(A), 'two runs'); assert.equal(h(C), h(A), 'restored mid-blend');
 });
+
+test('the aspect the composer frames with is a simulation input: a fixed aspect holds through a resize', () => {
+  // M2 W12 (AB-T-0535): an editor still resized the preview world's output and back to the window's, and the sequence's
+  // scrub then stepped at the window's aspect from snapshots taken at 16:9: frame 1120 of the agent's film moved
+  const shots = [vc('c', { body: { type: 'fixed' }, aim: { type: 'composer', target: 'hana', screen: [0.4, 0.1], damping: 0.3 }, transform: { p: [4, 1.7, -2] } })];
+  const drive = (t) => { for (let k = 0; k < 90; k++) { t.find('hana').object3d.position.x = Math.sin(k * 0.05); t.step(); } };
+  const h = (w) => hashValue([worldHashes(w.tree), w.cam.object3d.quaternion.toArray()]);
+  const A = world(shots); drive(A.tree);
+  const B = world(shots); B.cams.setAspect(4 / 3); drive(B.tree);
+  assert.notEqual(h(B), h(A), 'a free aspect follows the output: the framing changes');
+  const C = world(shots); C.cams.fixAspect(16 / 9); C.cams.setAspect(4 / 3); drive(C.tree);
+  assert.equal(h(C), h(A), 'a fixed aspect: the same world whatever the window');
+  near(C.cam.camera.aspect, 4 / 3, 1e-12, 'the lens still refits for drawing');
+});

@@ -25,6 +25,11 @@ requestAnimationFrame(function tick(t) { if (last) host.frame((t - last) / 1000)
 `test/render.test.mjs` (Node, a stand-in renderer that updates the scene graph as WebGLRenderer does) and `demo/` (real
 WebGL with characters and textures, in Chromium and WKWebView).
 
+**Offline frames** (`frameAt(step, alpha)`, used by exports and scrubs): the host updates its views and awaits the post
+stack's `settle()` before it draws, so a frame never depends on how long the page yielded (M2 W12). After the tree is
+restored without stepping (a scrub's first frame), the interpolator drops the pair it captured before the restore and
+draws the step as it is.
+
 Tests (`npm test`, no models, so they run on CI): hashes headless / interpolated / plain over 600 recorded steps at a
 120 Hz frame rate; the walker moves 2.5 cm every frame interpolated, 0 / 5 cm without; the blend never stays in an object
 and fires no change callback; lights, shadow presets, frozen maps and the Environment follow nodes and prop edits; a wire

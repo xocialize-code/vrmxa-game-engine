@@ -204,6 +204,12 @@ test('sequences (M2 W11): the outline from the file, edits as one undo step (set
   const outline = await call('sequence');
   assert.deepEqual(outline.shots, ['s1 0-24 "Closed"', 's2 24-72 "Opening"']);
   assert.equal(outline.seconds, 3);
+  // what setDoc would replace, readable first (check 9's agent had only the outline, and stopped rather than overwrite)
+  const shots = await call('sequence', { path: 'sequence.shots' });
+  assert.deepEqual(shots.map((x) => x.id), ['s1', 's2']);
+  assert.equal((await call('sequence', { path: 'sequence.shots.1' })).name, 'Opening');
+  await call('sequence', { path: 'nodes' }, true); // only sequence / settings, as setDoc
+  await call('sequence', { path: 'sequence.nope' }, true);
   // two edits, one undo step
   const r = await call('edit', { ops: [
     { op: 'setDoc', path: 'sequence.shots', value: [{ id: 's1', name: 'Closed', start: 0, end: 24 }, { id: 's2', name: 'Opening', start: 24, end: 48 }, { id: 's3', name: 'Open', start: 48, end: 72 }] },

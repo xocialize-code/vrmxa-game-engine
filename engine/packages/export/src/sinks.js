@@ -49,7 +49,10 @@ export function shellSink({ call, fetch: f = globalThis.fetch.bind(globalThis), 
       id = r.id;
       return r;
     },
-    frame: (n, bytes) => post(`__export/frame?id=${id}&n=${n}`, bytes),
+    // a copy per frame: the frame loop reuses its buffer for the next readback, and WebKit can read a fetch body after
+    // fetch() returns, so the shell got pixels the next frame had partly overwritten (M2 W12: the Mac export differed
+    // from the same app's scrub and from a hash-only export, frame for frame, while three exports agreed)
+    frame: (n, bytes) => post(`__export/frame?id=${id}&n=${n}`, bytes.slice()),
     audio: (wav) => post(`__export/audio?id=${id}`, wav),
     end: (page) => call('export.end', { id, page }),
     cancel: () => (id ? call('export.cancel', { id }).catch(() => {}) : null),

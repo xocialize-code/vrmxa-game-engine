@@ -29,6 +29,7 @@ export class Interpolator {
     /** @type {number[]} */ this.touchedMeshes = [];
     this.version = -1;
     this.root = null;
+    /** The tree's step when `curr` was captured. */ this.at = -1;
     this.blend = new Float64Array(4);
   }
 
@@ -70,8 +71,11 @@ export class Interpolator {
 
   /** Call after the frame's steps (also when there were none: then nothing changes). */
   afterSteps(tree, stepped) {
-    if (this.sync(tree)) return;           // the tree changed shape this step: nothing to blend from
-    if (stepped) this.capture(this.curr, this.mCurr);
+    // no steps this frame, but the tree is on another step than the one captured: it was restored (a scrub) or stepped
+    // without the host. The captured pair is stale, so there is nothing to blend from (M2 W12: a scrub to frame 0)
+    if (!stepped && this.at !== tree.clock.step) this.version = -1;
+    if (this.sync(tree)) { this.at = tree.clock.step; return; } // the tree changed shape: nothing to blend from
+    if (stepped) { this.capture(this.curr, this.mCurr); this.at = tree.clock.step; }
   }
 
   /** Write the blend at α into the objects (simulated values saved). */

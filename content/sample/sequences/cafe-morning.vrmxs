@@ -35,11 +35,15 @@
       {"id":"cameras","type":"camera","clips":[{"camera":"vc-establish","end":168,"start":0},{"camera":"vc-door","end":336,"start":168},{"camera":"vc-two","end":408,"start":336},{"blend":{"frames":12,"style":"easeInOut"},"camera":"vc-ots","end":556,"start":408},{"camera":"vc-hana","end":600,"start":556},{"camera":"vc-machine","end":870,"start":600},{"camera":"vc-two","end":1010,"start":870},{"blend":{"frames":24,"style":"easeInOut"},"camera":"vc-establish","end":1080,"start":1010}]},
       {"id":"hana-says","type":"dialogue","target":"hana-1","clips":[{"clip":"voice/cafe-morning-hana-says-1.wav","end":466,"start":410,"text":"Good morning! What can I get you?"},{"clip":"voice/cafe-morning-hana-says-2.wav","end":599,"start":560,"text":"Coming right up!"},{"clip":"voice/cafe-morning-hana-says-3.wav","end":955,"start":904,"text":"Here you go. Enjoy!"}]},
       {"id":"mira-says","type":"dialogue","target":"mira","clips":[{"clip":"voice/cafe-morning-mira-says-1.wav","end":556,"start":470,"text":"A latte, please. And one of those croissants."}]},
+      {"id":"hana-talk","type":"animation","target":"hana-1","step":2,"clips":[{"blendIn":6,"blendOut":8,"end":470,"slot":"talk","start":410}]},
+      {"id":"hana-face","type":"expression","target":"hana-1","keys":{"happy":[[904,0],[912,0.7,"easeOut"],[956,0.7],[972,0,"easeIn"]]}},
       {"id":"eyes-mira","type":"lookAt","target":"mira","clips":[{"at":"hana-1","end":556,"start":400}]},
       {"id":"steam","type":"event","keys":[[699,{"call":"play","target":"espresso-steam"}]]},
       {"id":"music-cue","type":"event","keys":[[168,{"call":"play","target":"music"}]]},
       {"id":"music-fade","type":"property","target":"music","path":"props.volume","keys":[[0,0.35],[1000,0.35],[1080,0,"easeIn"]]},
+      {"id":"counter-light","type":"property","target":"counter-light","path":"props.intensity","keys":[[0,6],[120,18,"easeInOut"]]},
       {"id":"look","type":"property","target":"env","path":"props.post","keys":[[0,[{"effect":"bloom","intensity":0.7},{"contrast":0.04,"effect":"grade","saturation":0.05},{"effect":"lut","file":"looks/morning.cube","intensity":0.85},{"effect":"toneMapping"},{"effect":"vignette"},{"amount":0.12,"effect":"grain"}]]]},
+      {"id":"fade","type":"post","keys":{"vignette.darkness":[[1010,0.5],[1080,0.85,"easeIn"]]}},
       {"id":"simulation","type":"simulation","clips":[{"end":1080,"mode":"live","start":0}]}
     ],
     "cast": {"hana-1":{"behaviours":[{"preset":"brains/hana.json","use":"brain"}],"transform":{"p":[0.6,0,-4.6]}},"mira":{"behaviours":[{"preset":"brains/customer.json","use":"brain"}]},"music":{"props":{"autoplay":false}}}

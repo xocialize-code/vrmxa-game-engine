@@ -54,3 +54,7 @@ Tests (`npm test`):
 false } } }`. Props merge over the set's; behaviours and transform replace them; a name the set doesn't have is refused.
 "Morning at the cafe" (`content/sample/sequences/cafe-morning.vrmxs`) casts Hana as the server, Mira as the customer,
 and holds the set's music for its own cue.
+
+A sequence world frames at 16:9 whatever it is drawn into (`ASPECT`; `prepare` calls the cameras service's
+`fixAspect`). The VirtualCameras frame in screen space, so the aspect is a simulation input, and a scrub restores
+snapshots that were taken at it (M2 W12).

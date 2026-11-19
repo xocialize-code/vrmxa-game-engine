@@ -1,5 +1,4 @@
 import Accelerate
-import CryptoKit
 import AppKit
 import AVFoundation
 import UniformTypeIdentifiers
@@ -17,9 +16,13 @@ public struct ExportSettings: Sendable, Equatable {
     /// Average bit rate in bits per second (H.264 / HEVC); nil picks one from the size and rate.
     public var bitrate: Int?
     public var audio: Bool
-    /// SHA-256 (first 8 bytes, hex) of every frame as it arrives, before encoding: the export's determinism contract
-    /// (decoded H.264 / HEVC frames can differ between encodes of the same pixels, AB-L-0013; ProRes's don't).
+    /// A hash of every frame as it arrives, before encoding: the export's determinism contract (decoded H.264 / HEVC
+    /// frames can differ between encodes of the same pixels, AB-L-0013; ProRes's don't). It is @vrmxg/export's
+    /// hashFrame (FNV-1a, two lanes, 16 hex digits), so a Mac export compares directly with a browser's hash-only export
+    /// and with a scrub of the same frame (M2 W12).
     public var hash = false
+    /// SRT text to keep beside the file as `<name>.srt` (a sequence's dialogue); nil for none.
+    public var subtitles: String?
     /// Keep the evidence beside the file (automation): `<file>.frames.json` with the frame hashes, and the mixed WAV.
     public var sidecars = false
     /// Extra VideoToolbox compression properties (experiments and tests).
@@ -242,9 +245,9 @@ public final class ExportSession: @unchecked Sendable { // mutable state is touc
             guard self.writer != nil else { done(BridgeError("cancelled", "the export was cancelled or has finished")); return }
             guard n >= self.nextN, n < self.settings.frames, self.pending[n] == nil else { done(BridgeError("bad_params", "frame \(n) is out of range or a repeat")); return }
             self.pending[n] = (data, done)
-            if self.settings.hash { // off the encoding queue: SHA-256 costs ~2.5 ms a 1080p frame (spike-frame-export gotcha 15)
+            if self.settings.hash { // off the encoding queue (spike-frame-export gotcha 15)
                 DispatchQueue.global(qos: .userInitiated).async(group: self.hashGroup) {
-                    let h = SHA256.hash(data: data).prefix(8).map { String(format: "%02x", $0) }.joined()
+                    let h = hashFrame(data)
                     self.hashLock.withLock { self.hashes[n] = h }
                 }
             }
@@ -302,6 +305,11 @@ public final class ExportSession: @unchecked Sendable { // mutable state is touc
         // only plain values: WebKit refuses a reply holding a Swift Optional ("the result value … was unsupported")
         if let b = settings.effectiveBitrate { out["bitrate"] = b }
         if settings.hash { out["frameHashes"] = frameHashes }
+        if let srt = settings.subtitles {
+            let url = output.deletingPathExtension().appendingPathExtension("srt")
+            do { try writeSidecar(Data(srt.utf8), to: url, beside: output); out["subtitles"] = url.path }
+            catch { out["subtitlesError"] = ExportMethods.message(error) }
+        }
         if settings.sidecars, settings.hash, let data = try? JSONSerialization.data(withJSONObject: ["frames": frameHashes, "page": pageTimings, "shell": out.filter { $0.key != "frameHashes" }, "settings": ["width": settings.width, "height": settings.height, "fps": [Int(settings.fpsNum), Int(settings.fpsDen)], "codec": settings.codec, "audio": settings.audio]], options: [.sortedKeys]) {
             try? data.write(to: URL(fileURLWithPath: output.path + ".frames.json"))
         }
@@ -319,8 +327,42 @@ public final class ExportSession: @unchecked Sendable { // mutable state is touc
     }
 }
 
+/// @vrmxg/export's hashFrame: FNV-1a over the frame's 32-bit little-endian words in two lanes, as 16 hex digits.
+public func hashFrame(_ data: Data) -> String {
+    var a: UInt32 = 0x811c9dc5, b: UInt32 = 0x2545f491
+    data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) in
+        let n = raw.count / 4
+        for i in 0..<n {
+            let u = UInt32(littleEndian: raw.loadUnaligned(fromByteOffset: i * 4, as: UInt32.self))
+            a = (a ^ u) &* 0x01000193
+            b = ((b ^ u) &* 0x5bd1e995) ^ (b >> 15)
+        }
+    }
+    return String(format: "%08x%08x", a, b)
+}
+
+/// A file beside one the person chose (a movie's subtitles). In the sandbox that is a related item: the app declares
+/// the extension with NSIsRelatedItemType, and the write is coordinated by a presenter whose primary item is the movie.
+final class SidecarPresenter: NSObject, NSFilePresenter {
+    let primaryPresentedItemURL: URL?, presentedItemURL: URL?
+    let presentedItemOperationQueue = OperationQueue()
+    init(primary: URL, sidecar: URL) { primaryPresentedItemURL = primary; presentedItemURL = sidecar }
+}
+
+func writeSidecar(_ data: Data, to url: URL, beside primary: URL) throws {
+    if (try? data.write(to: url)) != nil { return } // outside the sandbox, or a folder automation made
+    let p = SidecarPresenter(primary: primary, sidecar: url)
+    NSFileCoordinator.addFilePresenter(p)
+    defer { NSFileCoordinator.removeFilePresenter(p) }
+    var coordErr: NSError?, writeErr: Error?
+    NSFileCoordinator(filePresenter: p).coordinate(writingItemAt: url, options: .forReplacing, error: &coordErr) { u in
+        do { try data.write(to: u) } catch { writeErr = error }
+    }
+    if let e = coordErr ?? writeErr { throw e }
+}
+
 /// The export bridge methods and POST routes:
-///   export.begin { width, height, fps: [num, den], frames, codec, bitrate?, audio?, suggestedName, path? } → { id, path, … }
+///   export.begin { width, height, fps: [num, den], frames, codec, bitrate?, audio?, hash?, subtitles?, suggestedName, path? } → { id, path, … }
 ///   POST __export/frame?id=&n=   raw RGBA from readPixels (row 0 at the bottom), answered once encoded
 ///   POST __export/audio?id=      the mixed WAV
 ///   export.end { id } → the file and timings;  export.cancel { id }
@@ -372,6 +414,7 @@ public final class ExportMethods {
         var s = ExportSettings(width: w, height: h, fpsNum: fps[0].int32Value, fpsDen: fps[1].int32Value, frames: frames, codec: codec,
                                bitrate: p.number("bitrate").map(Int.init), audio: p.bool("audio") ?? false)
         s.hash = p.bool("hash") ?? false
+        s.subtitles = p.string("subtitles")
         return s
     }
 

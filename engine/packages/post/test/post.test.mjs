@@ -30,3 +30,23 @@ test('viewport grids fill the canvas', () => {
   assert.deepEqual(g.map((v) => [v.x, v.y, v.w, v.h]), [[0, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5], [0, 0, 0.5, 0.5], [0.5, 0, 0.5, 0.5]]);
   assert.equal(gridLayout(9).length, 9);
 });
+
+test('settle() waits for a LUT the spec loads; a failed load settles too (M2 W12: an offline frame waits for its grade)', async () => {
+  const { PostStack } = await import('@vrmxg/post');
+  let release;
+  const renderer = { toneMapping: 0 };
+  const stack = new PostStack(renderer, { loadLut: (file) => (file === 'bad.cube' ? Promise.reject(new Error('missing')) : new Promise((r) => { release = () => r({ lut: file }); })) });
+  stack.configure([{ effect: 'lut', file: 'looks/morning.cube' }]);
+  stack.configure([{ effect: 'lut', file: 'looks/morning.cube' }]); // asked again while loading: one load
+  assert.equal(stack.loading.size, 1);
+  let settled = false;
+  const p = stack.settle().then(() => { settled = true; });
+  await new Promise((r) => setTimeout(r, 5));
+  assert.equal(settled, false, 'still loading');
+  release(); await p;
+  assert.deepEqual(stack.luts.get('looks/morning.cube'), { lut: 'looks/morning.cube' });
+  const warn = console.warn; console.warn = () => {};
+  stack.configure([{ effect: 'lut', file: 'bad.cube' }]);
+  await stack.settle(); console.warn = warn;
+  assert.equal(stack.luts.get('bad.cube'), null, 'a failed LUT is remembered as none, not retried forever');
+});

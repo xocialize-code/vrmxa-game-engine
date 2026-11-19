@@ -11,7 +11,7 @@ import { SceneTree, Behaviour } from '@vrmxg/core';
 import { loadRapier, installPhysics } from '@vrmxg/physics';
 import { installInput, VirtualDevice } from '@vrmxg/input';
 import { installCameras } from '@vrmxg/camera';
-import { worldHashes } from '@vrmxg/snapshot';
+import { worldHashes, captureWorld, restoreWorld } from '@vrmxg/snapshot';
 import { RenderHost, SHADOW_PRESETS } from '@vrmxg/render';
 
 installPortableMath();
@@ -115,6 +115,22 @@ test('the blend never stays in the objects, and never fires change callbacks', (
   assert.equal(walker.position.x, sim, 'simulated value restored exactly');
   assert.ok(walker.matrixWorld.elements[12] === sim, 'world matrix re-derived from it');
   assert.equal(calls, 0, 'no quaternion change callback ran');
+});
+
+test('a frame with no steps after a restore draws the restored step, not a blend with what was drawn before it (M2 W12)', async () => {
+  const w = world(), host = new RenderHost({ renderer: new FakeRenderer() }).attach(w.tree);
+  w.dev.press('KeyD');
+  const walker = w.tree.find('walker').object3d, v = new Vector3();
+  let seen;
+  host.onPresent = () => { walker.getWorldPosition(v); seen = v.x; };
+  await host.frameAt(30, 0.5);
+  const snap = captureWorld(w.tree), at30 = walker.position.x;
+  await host.frameAt(90, 0.4); // the host captures steps 89 and 90
+  restoreWorld(w.tree, snap);  // a scrub back to step 30
+  await host.frameAt(30, 0);   // frame 0 of a shot: no step to blend from
+  assert.equal(seen, at30, `drawn at step 30's pose (${seen} vs ${at30})`);
+  await host.frameAt(31, 0.5); // and blending resumes from there
+  assert.ok(seen > at30 && seen < walker.position.x, 'halfway between steps 30 and 31');
 });
 
 test('lights, shadows and the Environment follow their nodes and props', () => {

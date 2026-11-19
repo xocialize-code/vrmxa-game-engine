@@ -25,15 +25,18 @@ import { stepsFor, audioSamples, secondsOf } from './plan.js';
  * @param {number} [o.lag] how many frames behind the render readback is copied out (1; 2 measured no faster at 4K: the cost
  *   is the 33 MB copy out of WebKit's GPU process, not the GPU finishing)
  * @param {(p: { n: number, frames: number, phase: string }) => void} [o.onProgress]
+ * @param {(n: number, step: number, alpha: number) => void} [o.onFrame] after frame n is drawn (a check hashing the world)
  * @param {{ aborted: boolean }} [o.signal]
  * @param {() => number} [o.now] a wall clock, for the timings only
  * @param {any} [o.OfflineAudioContext]
  */
-export async function exportTake({ tree, host, fps, frames, width, height, sink, job = {}, audio = true, inflight = 2, lag = 1, onProgress, signal, now = () => 0, OfflineAudioContext }) {
+export async function exportTake({ tree, host, fps, frames, width, height, sink, job = {}, audio = true, inflight = 2, lag = 1, onProgress, onFrame, signal, now = () => 0, OfflineAudioContext }) {
   const rate = rationalFps(fps);
   const sound = audio ? tree.services.get('audio') : null;
   if (audio && !sound) throw new Error('this world has no audio service; export with audio: false');
   if (tree.clock.step !== 0) throw new Error(`a take is exported from step 0 (the tree is at ${tree.clock.step})`);
+  const fixed = tree.services.get('cameras')?.fixed;
+  if (fixed !== undefined && Math.abs(fixed - width / height) > 1e-9) throw new Error(`this world frames at a fixed aspect of ${fixed.toFixed(4)}; ${width}×${height} is ${(width / height).toFixed(4)}`);
   host.attach(tree);
   host.resize(width, height);
   const gl = host.renderer.getContext();
@@ -59,6 +62,7 @@ export async function exportTake({ tree, host, fps, frames, width, height, sink,
       let a = now();
       await host.frameAt(step, alpha);
       t.render += now() - a;
+      onFrame?.(n, step, alpha); // the world as frame n shows it (a check records its hash)
       a = now(); rb.read(n % slots); t.readback += now() - a;
       if (n >= lag) await send(n - lag);
       if (n % 10 === 0) onProgress?.({ n, frames, phase: 'frames' });

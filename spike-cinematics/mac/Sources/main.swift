@@ -9,6 +9,7 @@ import WebKit
 //   CinematicsSpike.app/Contents/MacOS/CinematicsSpike            all default cases, both origins
 //   SPIKE_CASES='pipe=pmndrs;pipe=none'                           only these cases (';'-separated)
 //   SPIKE_ORIGINS='loopback'                                      scheme, loopback or both (default)
+//   SPIKE_TIMEOUT=900                                             seconds a case may take (120)
 // Output: <app temp dir>/wkwebview-shots.json and <case>__<origin>.png; the paths are printed.
 
 setvbuf(stdout, nil, _IONBF, 0)
@@ -96,7 +97,7 @@ final class Spike: NSObject, NSApplicationDelegate, WKNavigationDelegate {
             MainActor.assumeIsolated {
                 guard let self else { return }
                 if (value as? Bool) == true { self.collect(timedOut: false); return }
-                if self.navError != nil || Date().timeIntervalSince(started) > 120 { self.collect(timedOut: true); return }
+                if self.navError != nil || Date().timeIntervalSince(started) > (Double(ProcessInfo.processInfo.environment["SPIKE_TIMEOUT"] ?? "") ?? 120) { self.collect(timedOut: true); return }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { self.poll(started: started) }
             }
         }

@@ -81,12 +81,12 @@ editor at a time and tells any other that the link is taken.
 
 Three tools more, still generic (20 tools, about 1,730 tokens headless; 21 and 1,860 for the editor), and the server's
 `instructions` at initialize (the five rules that save an agent a round trip). Answers are compact JSON, cut at 24,000
-characters with a note.
+characters with a note. M2 W12 added `sequence {path}`: 20 tools at about 1,770 tokens headless, 21 at about 1,900 for the editor.
 
 | Tool | What |
 |---|---|
 | `edit` | Several edit ops as one undo step, all or nothing: add, set, remove, reparent, connect, and `setDoc` on `sequence.*` or `settings.*`. Sequences are edited this way: shots, markers and tracks are document values, not node types |
-| `sequence` | Without a frame, the outline from the file (shots, markers, tracks; no engine needed). With one, the running world (headless) or the editor's preview world put on that frame exactly as playing would reach it (SequencePlayer's snapshots), with the shot, the live virtual camera, who is speaking and a world hash to compare replays |
+| `sequence` | Without a frame, the outline from the file (shots, markers, tracks, cast; no engine needed). With `path`, the value at a `setDoc` path (`sequence.tracks.4`, `sequence.cast.mira`), so an agent reads what an edit replaces before writing it (M2 W12: with only the outline, check 9's agent stopped rather than overwrite tracks blind). With one, the running world (headless) or the editor's preview world put on that frame exactly as playing would reach it (SequencePlayer's snapshots), with the shot, the live virtual camera, who is speaking and a world hash to compare replays |
 | `brain` | inspect (the running branch, utility scores, goal, blackboard, the 12 freshest memories), inject a goal or an action on a step (logged), record the events applied, replay a log: the hook M3's director uses |
 | `screenshot` (editor) | `frame`: that frame of the open sequence as an export renders it, with its world hash and pixel statistics; a flat frame is flagged BLANK |
 

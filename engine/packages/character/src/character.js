@@ -167,6 +167,8 @@ export class CharacterNode extends Node {
 
   physicsProcess(dt) {
     const c = this.ctrl;
+    // 0. an emote's moment is over (state, not a timer: a snapshot taken mid-emote restores)
+    if (c.emote && this.tree.clock.step >= c.emote.until) { this.vrm.expressionManager?.setValue(c.emote.name, 0); delete c.emote; }
     // 1. intent (none while an action plays or the character sits)
     let [mx, mz] = this.graph.busy || c.seat ? [0, 0] : this.input.move;
     if (this.graph.busy || c.seat) this.input.jump = false;
@@ -352,12 +354,16 @@ export class CharacterNode extends Node {
   /** Walk to a node (straight line until navigation lands in M2); `arrived` when within 0.3 m. */
   /** Walk to a node (target) or a point ([x, y, z]); with neither, stop. @param {{ target?: string, point?: number[] }} [o] */
   goTo({ target, point } = {}) { this.ctrl.goTo = point ? [point[0], point[1] ?? 0, point[2]] : target ?? null; if (!this.ctrl.goTo) { delete this.ctrl.navMove; delete this.ctrl.navArrived; } }
-  /** Play an expression for a moment: up to 1 and back over a second. */
+  /**
+   * Play an expression for a moment: up to 1, and back to 0 a second later. The moment is the character's state
+   * (ctrl.emote), not a closure timer, so a snapshot taken during it restores (M2 W12: scrubbing the film).
+   */
   emote({ name }) {
     const em = this.vrm.expressionManager;
     if (!em?.getExpression(name)) return;
+    if (this.ctrl.emote && this.ctrl.emote.name !== name) em.setValue(this.ctrl.emote.name, 0);
     em.setValue(name, 1);
-    this.after(1, () => em.setValue(name, 0));
+    this.ctrl.emote = { name, until: this.tree.clock.step + 60 };
   }
   /**
    * Reach a hand to a point, a node, or an item's part (a knob), for `seconds`, fading in and out over `blend`:

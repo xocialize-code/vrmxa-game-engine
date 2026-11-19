@@ -13,6 +13,8 @@ import { applyTrack, sampleAudio, eventsBetween, TRACK_TYPES } from '@vrmxg/trac
 import { clipAt, shotAt, samplePost, linesBetween } from './evaluate.js';
 
 const START = -1e-9;
+/** The aspect a sequence frames at (its export sizes, SIZES in @vrmxg/export, are all 16:9). */
+export const ASPECT = 16 / 9;
 
 export class SequenceService {
   constructor(tree) {
@@ -38,6 +40,9 @@ export class SequenceService {
   async prepare(doc) {
     this.seq = doc.sequence ?? null;
     if (!this.seq) return this;
+    // the virtual cameras frame in screen space, so the output aspect is a simulation input: a sequence steps at its
+    // export's (every export size is 16:9), never at a window's, or a resize between snapshot and scrub moves the shot
+    this.tree.services.get('cameras')?.fixAspect?.(ASPECT);
     const voice = this.tree.services.get('voice'), audio = this.tree.services.get('audio');
     for (const t of this.tracks) for (const c of t.clips ?? []) {
       if (t.type === 'dialogue' && c.clip && voice) await voice.preload(c.clip);

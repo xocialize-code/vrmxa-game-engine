@@ -21,6 +21,7 @@ export class PostStack {
     this.renderer = renderer;
     this.multisampling = multisampling;
     this.loadLut = loadLut ?? null;
+    /** file → the load in flight */ this.loading = new Map();
     this.composer = null;
     this.spec = [];
     this.key = '';
@@ -51,8 +52,21 @@ export class PostStack {
     if (key !== this.key) { this.key = key; this.composer?.dispose(); this.composer = null; }
     this.renderer.toneMapping = spec.length ? NoToneMapping : this.renderer.toneMapping;
     if (this.composer) this.apply();
-    for (const e of spec) if (e.effect === 'lut' && e.file && !this.luts.has(e.file) && this.loadLut) this.loadLut(e.file).then((t) => { this.luts.set(e.file, t); this.key = ''; this.composer?.dispose(); this.composer = null; });
+    for (const e of spec) {
+      if (e.effect !== 'lut' || !e.file || this.luts.has(e.file) || this.loading.has(e.file) || !this.loadLut) continue;
+      const file = e.file;
+      this.loading.set(file, this.loadLut(file).then((t) => { this.luts.set(file, t); this.key = ''; this.composer?.dispose(); this.composer = null; })
+        .catch((err) => { this.luts.set(file, null); console.warn(`[post] LUT ${file}: ${err?.message ?? err}`); })
+        .finally(() => this.loading.delete(file)));
+    }
   }
+
+  /**
+   * Wait for what the spec still loads (LUTs). A live view draws without them until they arrive; an offline frame (an
+   * export, a scrub) waits, or its look depends on how the frame loop yields (M2 W12: a hash-only export never got the
+   * grade, a shell export got it from its second frame).
+   */
+  async settle() { while (this.loading.size) await Promise.all([...this.loading.values()]); }
 
   /** Build the composer for a scene and camera (lazily, on the first render after a structural change). */
   build(scene, camera) {
