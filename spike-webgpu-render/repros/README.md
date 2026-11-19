@@ -2,13 +2,13 @@
 
 *2026-11-19. These are minimal standalone repros of the three.js issues that `spike-webgpu-render/` found. Each page uses plain three (r187 from the repo root's `node_modules`, or three's `dev` branch) and nothing from the engine. Every page prints PASS or FAIL with what it saw. They were checked in Chrome for Testing 156, headless on Metal (M5 Max, macOS 27.3), through `web/scripts/chromium.mjs`, against r187 and against `dev` at `577fb27` (2026-11-19). Raw results are in `results/`.*
 
-**Nothing here has been posted upstream.** Filing an issue needs the operator's explicit OK.
+**Posted 2026-11-19 with the operator's OK:** [mrdoob/three.js#35620](https://github.com/mrdoob/three.js/issues/35620) (bug report, draft 1) and [mrdoob/three.js#35621](https://github.com/mrdoob/three.js/issues/35621) (feature request, draft 3). Their live examples are anonymous jsfiddles: [punbjk7h](https://jsfiddle.net/punbjk7h/) and [d4gpatbz](https://jsfiddle.net/d4gpatbz/), both on the r187 CDN build. The posted texts differ from the drafts below only in wording and layout, since they follow three's issue templates.
 
 | Repro | r187 | dev `577fb27` | Upstream | What to do |
 |---|---|---|---|---|
-| [1-dof-first-frame.html](1-dof-first-frame.html) | FAIL | FAIL | No existing issue found | File draft 1 (once the operator approves) |
+| [1-dof-first-frame.html](1-dof-first-frame.html) | FAIL | FAIL | Filed as [#35620](https://github.com/mrdoob/three.js/issues/35620) | Watch it |
 | [2-mrtnode-no-mrt.html](2-mrtnode-no-mrt.html) | FAIL (canvas, render target) | PASS | [#35373](https://github.com/mrdoob/three.js/issues/35373), fixed by [#35376](https://github.com/mrdoob/three.js/pull/35376) on 2026-11-08, after r187 | Don't file. The fix ships in r188 |
-| [3-offline-nodeframe.html](3-offline-nodeframe.html) | FAIL | FAIL | No existing issue found | File draft 3 (once the operator approves) |
+| [3-offline-nodeframe.html](3-offline-nodeframe.html) | FAIL | FAIL | Filed as [#35621](https://github.com/mrdoob/three.js/issues/35621) (a feature request: three has no public call for this) | Watch it |
 | First-renderer WGSL order (spike gotcha 6) | not reproduced | not tried | none | Kept out (see the end of this file) |
 
 ### What changed from the spike's account
