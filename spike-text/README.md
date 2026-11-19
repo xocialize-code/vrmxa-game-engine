@@ -46,6 +46,8 @@ TSL has every operation it uses (2–3 days). troika is GLSL-only and deeply tie
 Until our renderer exists, title cards can use troika too, with `sdfGlyphSize` 64. At 230 px glyphs, the stroke ends
 show slight SDF lumps, which 128 doesn't fix.
 
+Receipts: AB-R-1023 (troika-three-text 0.53.1), AB-R-1024 (three-slug 1.1.4), AB-R-1025 (harfbuzzjs 1.6.4 and the hbslug path). Lesson AB-L-0368 (variable fonts render their default instance).
+
 ## Findings (Mac Studio M5 Max, Chromium 156 / ANGLE Metal, WKWebView macOS 27; Release builds)
 
 ### 4K title-card frames, hashed (FNV-1a of the RGBA8 read-back, as `@vrmxg/export`)
