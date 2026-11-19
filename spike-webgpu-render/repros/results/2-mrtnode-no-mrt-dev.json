@@ -1,0 +1,39 @@
+{
+ "runtime": "chromium",
+ "version": "156.0.8078.4",
+ "headless": true,
+ "three": "dev",
+ "repro": "2-mrtnode-no-mrt",
+ "pass": true,
+ "observation": "With material.mrtNode, every case (canvas, rt, shadow) drew what the control drew, with no errors.",
+ "cases": {
+  "canvas": {
+   "pass": true,
+   "meanAbsDiffToControl": 0,
+   "redPixelsControl": 2564,
+   "redPixels": 2564,
+   "wgslError": false,
+   "controlErrors": 0,
+   "errors": []
+  },
+  "rt": {
+   "pass": true,
+   "meanAbsDiffToControl": 0,
+   "redPixelsControl": 498,
+   "redPixels": 498,
+   "wgslError": false,
+   "controlErrors": 0,
+   "errors": []
+  },
+  "shadow": {
+   "pass": true,
+   "meanAbsDiffToControl": 0,
+   "redPixelsControl": 2564,
+   "redPixels": 2564,
+   "wgslError": false,
+   "controlErrors": 0,
+   "errors": []
+  }
+ },
+ "log": []
+}

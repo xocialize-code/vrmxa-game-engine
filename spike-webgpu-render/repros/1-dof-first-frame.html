@@ -1,0 +1,126 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>repro 1: a new dof() draws one flat first frame</title>
+<!-- three r187 WebGPURenderer. Build pipeline A (pass → dof → toneMapping) and draw 3 frames, pipeline B (tone
+     mapping only) 3 frames, pipeline C (the same structure as A) 3 frames, each frame in its own rAF. Expected: no
+     frame is one flat colour. Seen: the FIRST frame of every newly built dof() pipeline (A and C alike) is one flat
+     colour. DepthOfFieldNode.updateBefore() sizes its targets from its input texture, which on that frame is still
+     the PassNode's 1x1 target: the pipeline's own graph never samples the pass, so the pass's updateBefore() first
+     runs nested inside DOF's, from its internal quad materials, after DOF has sized itself (firstFrameUpdateOrder).
+     The spike (AB-T-0554) saw it only after a rebuild because it drew one frame after rebuilding.
+     ?effect=gaussianBlur  the same with gaussianBlur(), which sizes itself the same way but is not affected: its
+                           output samples the pass, so the pass runs first
+     ?presize=1            workaround: scenePass.setSize(w, h) before the first frame
+     ?dispose=1            dispose each pipeline before building the next; ?skipB=1 leave out B; ?frames=n -->
+<script src="three-map.js"></script>
+<body style="margin:0;background:#fff">
+<script type="module">
+import * as THREE from 'three/webgpu';
+import { pass, toneMapping, uniform } from 'three/tsl';
+import { dof } from 'three/addons/tsl/display/DepthOfFieldNode.js';
+import { gaussianBlur } from 'three/addons/tsl/display/GaussianBlurNode.js';
+
+const q = new URLSearchParams(location.search);
+const W = 320, H = 180;
+const renderer = new THREE.WebGPURenderer({ antialias: false });
+renderer.setPixelRatio(1);
+renderer.setSize(W, H);
+document.body.append(renderer.domElement);
+await renderer.init();
+
+// Boxes at different depths, so DOF has something to blur.
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x335577);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 2));
+const sun = new THREE.DirectionalLight(0xffffff, 2); sun.position.set(2, 4, 3); scene.add(sun);
+for (let i = 0; i < 6; i++) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardNodeMaterial({ color: new THREE.Color().setHSL(i / 6, 0.7, 0.5) }));
+  m.position.set(-3 + i * 1.2, 0, -i * 2); m.rotation.set(0.4, 0.6 * i, 0); scene.add(m);
+}
+const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 100);
+camera.position.set(0, 1, 5); camera.lookAt(0, 0, -4);
+
+// Diagnostic: the input size DepthOfFieldNode.updateBefore() sizes its targets from, on each call.
+const sizesSeen = [], firstFrameOrder = [];
+let patched = false;
+function watch(node) {
+  if (patched) return; patched = true;
+  const proto = Object.getPrototypeOf(node.getTextureNode ? node : node.node ?? node);
+  const orig = proto.updateBefore;
+  proto.updateBefore = function (frame) { const im = this.textureNode.value.image; sizesSeen.push(`${im.width}x${im.height}`); order.push('effect:begin'); const r = orig.call(this, frame); order.push('effect:end'); return r; };
+}
+// Diagnostic: the order of the effect's and the PassNode's updateBefore() calls in the first frame.
+const order = [];
+const passProto = Object.getPrototypeOf(pass(new THREE.Scene(), new THREE.PerspectiveCamera()));
+const passOrig = passProto.updateBefore;
+passProto.updateBefore = function (frame) { order.push('pass'); return passOrig.call(this, frame); };
+
+const focus = uniform(6), range = uniform(3), bokeh = uniform(2);
+function build(withDof) {
+  const scenePass = pass(scene, camera);
+  let col = scenePass.getTextureNode('output');
+  if (q.get('presize') === '1') scenePass.setSize(W, H); // workaround: size the pass before the first frame
+  if (withDof) {
+    col = q.get('effect') === 'gaussianBlur' ? gaussianBlur(col, 2) : dof(col, scenePass.getViewZNode(), focus, range, bokeh);
+    watch(col);
+  }
+  const pipeline = new THREE.RenderPipeline(renderer);
+  pipeline.outputNode = toneMapping(THREE.ACESFilmicToneMapping, uniform(1), col);
+  return pipeline;
+}
+
+// Draw `frames` frames, each in a normal rAF frame (so frameId advances: no offline loop here), and copy the canvas
+// in the same task. Returns every frame's pixels.
+const grab2d = new OffscreenCanvas(W, H).getContext('2d', { willReadFrequently: true });
+async function draw(pipeline, frames = 3) {
+  const imgs = [];
+  order.length = 0;
+  for (let i = 0; i < frames; i++) await new Promise((done) => renderer.setAnimationLoop(() => {
+    renderer.setAnimationLoop(null);
+    pipeline.render();
+    grab2d.clearRect(0, 0, W, H); grab2d.drawImage(renderer.domElement, 0, 0);
+    imgs.push(grab2d.getImageData(0, 0, W, H).data);
+    if (imgs.length === 1) firstFrameOrder.push(order.join(' → '));
+    done();
+  }));
+  return imgs;
+}
+const stats = (d) => {
+  const colours = new Set(); let s = 0, s2 = 0, n = d.length / 4;
+  for (let i = 0; i < d.length; i += 4) { const l = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]; s += l; s2 += l * l; colours.add((d[i] << 16) | (d[i + 1] << 8) | d[i + 2]); }
+  return { colours: colours.size, mean: +(s / n).toFixed(2), stddev: +Math.sqrt(Math.max(0, s2 / n - (s / n) ** 2)).toFixed(2), centre: [...d.slice(((H / 2) * W + W / 2) * 4, ((H / 2) * W + W / 2) * 4 + 4)] };
+};
+const meanAbsDiff = (a, b) => { let s = 0; for (let i = 0; i < a.length; i++) if (i % 4 !== 3) s += Math.abs(a[i] - b[i]); return +(s / (a.length * 0.75)).toFixed(3); };
+
+const N = +(q.get('frames') ?? 3);
+const A = build(true);
+const framesA = await draw(A, N);
+let framesB = null, prev = A;
+if (q.get('skipB') !== '1') {
+  if (q.get('dispose') === '1') prev.dispose();
+  const B = build(false);
+  framesB = await draw(B, N);
+  prev = B;
+}
+if (q.get('dispose') === '1') prev.dispose();
+const C = build(true);
+const framesC = await draw(C, N);
+
+const isFlat = (s) => s.colours <= 2 || s.stddev < 1;
+const per = (fr) => fr.map(stats).map((s) => ({ ...s, flat: isFlat(s) }));
+const sA = per(framesA), sC = per(framesC);
+const last = (a) => a[a.length - 1];
+const d = meanAbsDiff(last(framesA), last(framesC));
+const _ = 0;
+const flatFramesA = sA.filter((s) => s.flat).length, flatFramesC = sC.filter((s) => s.flat).length;
+const pass_ = flatFramesA === 0 && flatFramesC === 0 && d < 1;
+report({
+  repro: '1-dof-first-frame', effect: q.get('effect') ?? 'dof', pass: pass_,
+  observation: pass_
+    ? `No flat frames: pipeline C (a second ${q.get('effect') ?? 'dof'}() → toneMapping) drew the same image as A (mean |A − C| on the last frame = ${d} levels; ${last(sC).colours} colours, stddev ${last(sC).stddev}).`
+    : `Flat frames (≤2 colours): pipeline A (first ${q.get('effect') ?? 'dof'}()) ${flatFramesA} of ${N} (frame ${sA.findIndex((x) => x.flat) + 1}), pipeline C (the same built after ${q.get('skipB') === '1' ? 'A' : 'A and B'}) ${flatFramesC} of ${N}. Last frames: mean |A − C| = ${d} levels, flat colour rgba ${sA.find((x) => x.flat)?.centre ?? sC.find((x) => x.flat)?.centre}. Input size per updateBefore(): ${sizesSeen.join(', ')}.`,
+  options: Object.fromEntries(q),
+  dofInputSizePerUpdate: sizesSeen, firstFrameUpdateOrder: firstFrameOrder,
+  A: sA, B: framesB && per(framesB), C: sC, meanAbsDiffLastAC: d,
+});
+</script>

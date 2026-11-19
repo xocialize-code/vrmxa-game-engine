@@ -1,0 +1,97 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>repro 2: material.mrtNode breaks passes without MRT</title>
+<!-- three r187 WebGPURenderer. One mesh has its own mrtNode, as in the selective-bloom example
+     (material.mrtNode = mrt({ emissive })). Each case draws the scene with and without that mrtNode and compares:
+       canvas  plain renderer.render(scene, camera) to the canvas (the framebuffer target has no MRT)
+       rt      renderer.render() into a RenderTarget with one unnamed texture
+       shadow  a RenderPipeline whose pass HAS the MRT { output, emissive }, with a shadow-casting light. This checks
+               the spike's claim that shadow maps break too: they do NOT in r187 (shadow passes draw with an override
+               material, so the mesh's mrtNode never reaches them), whatever the shadow type
+     Expected: every case draws what the control draws, no errors. Seen in r187: canvas and rt fail with WGSL
+     "structures must have at least one member" (struct OutputType {}) and the mesh is missing; shadow passes.
+     Upstream: already reported as mrdoob/three.js#35373 and fixed on dev by #35376 (MRTNode.isCompatible()).
+     ?case=canvas|rt|shadow runs one case (default: all); ?shadowType=VSMShadowMap|PCFSoftShadowMap|…; ?colorNode=1
+     gives the mesh a colorNode (the shadow pass then builds a per-material shadow variant). -->
+<script src="three-map.js"></script>
+<body style="margin:0;background:#fff">
+<script type="module">
+import * as THREE from 'three/webgpu';
+import { mrt, output, emissive, vec4, pass, color } from 'three/tsl';
+
+const q = new URLSearchParams(location.search);
+const W = 256, H = 256;
+const grab2d = new OffscreenCanvas(W, H).getContext('2d', { willReadFrequently: true });
+const frame = (renderer, fn) => new Promise((done) => renderer.setAnimationLoop(() => { renderer.setAnimationLoop(null); done(fn()); }));
+
+function makeScene(withMrtNode, shadows) {
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x202830);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+  const sun = new THREE.DirectionalLight(0xffffff, 3); sun.position.set(2, 6, 1); scene.add(sun);
+  sun.castShadow = shadows;
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), new THREE.MeshStandardNodeMaterial({ color: 0x999999 }));
+  ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+  const glowing = new THREE.MeshStandardNodeMaterial({ color: 0xff2020, emissive: 0x400000 });
+  if (q.get('colorNode') === '1') glowing.colorNode = color(0xff2020);
+  if (withMrtNode) glowing.mrtNode = mrt({ emissive: vec4(emissive, output.a) });
+  const box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), glowing);
+  box.position.y = 1; box.castShadow = true; scene.add(box);
+  const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 100);
+  camera.position.set(0, 3, 6); camera.lookAt(0, 0.7, 0);
+  return { scene, camera };
+}
+
+async function draw(kind, withMrtNode) {
+  const renderer = new THREE.WebGPURenderer({ antialias: false });
+  renderer.setPixelRatio(1); renderer.setSize(W, H);
+  renderer.shadowMap.enabled = kind === 'shadow';
+  if (q.get('shadowType')) renderer.shadowMap.type = THREE[q.get('shadowType')];
+  document.body.append(renderer.domElement);
+  await renderer.init();
+  const gpuErrors = [];
+  renderer.backend.device?.addEventListener('uncapturederror', (e) => gpuErrors.push(e.error.message.slice(0, 300)));
+  const logStart = window.__log.length;
+  const { scene, camera } = makeScene(withMrtNode, kind === 'shadow');
+  let img;
+  if (kind === 'canvas') {
+    for (let i = 0; i < 3; i++) img = await frame(renderer, () => { renderer.render(scene, camera); grab2d.drawImage(renderer.domElement, 0, 0); return grab2d.getImageData(0, 0, W, H).data; });
+  } else if (kind === 'rt') {
+    const rt = new THREE.RenderTarget(W, H); // one texture, default name ''
+    for (let i = 0; i < 3; i++) await frame(renderer, () => { renderer.setRenderTarget(rt); renderer.render(scene, camera); renderer.setRenderTarget(null); });
+    img = await renderer.readRenderTargetPixelsAsync(rt, 0, 0, W, H);
+  } else {
+    const scenePass = pass(scene, camera);
+    scenePass.setMRT(mrt({ output, emissive: vec4(emissive, 1) }));
+    const pipeline = new THREE.RenderPipeline(renderer, scenePass.getTextureNode('output'));
+    for (let i = 0; i < 3; i++) img = await frame(renderer, () => { pipeline.render(); grab2d.drawImage(renderer.domElement, 0, 0); return grab2d.getImageData(0, 0, W, H).data; });
+  }
+  await renderer.backend.device?.queue.onSubmittedWorkDone();
+  await new Promise((r) => setTimeout(r, 50)); // let uncaptured errors arrive
+  const errors = [...window.__log.slice(logStart).filter((l) => !l.startsWith('warn')), ...gpuErrors];
+  renderer.setAnimationLoop(null);
+  renderer.domElement.remove();
+  renderer.dispose();
+  let red = 0; for (let i = 0; i < img.length; i += 4) if (img[i] > 120 && img[i + 1] < 80 && img[i + 2] < 80) red++;
+  return { img: new Uint8Array(img), red, errors };
+}
+
+const meanAbsDiff = (a, b) => { let s = 0; for (let i = 0; i < a.length; i++) if (i % 4 !== 3) s += Math.abs(a[i] - b[i]); return +(s / (a.length * 0.75)).toFixed(3); };
+const cases = q.get('case') ? [q.get('case')] : ['canvas', 'rt', 'shadow'];
+const out = {};
+for (const kind of cases) {
+  const control = await draw(kind, false);
+  const test = await draw(kind, true);
+  const d = meanAbsDiff(control.img, test.img);
+  const wgslError = test.errors.some((e) => /structure|OutputType|ShaderModule|pipeline/i.test(e));
+  out[kind] = { pass: d < 0.5 && test.errors.length === 0, meanAbsDiffToControl: d, redPixelsControl: control.red, redPixels: test.red, wgslError, controlErrors: control.errors.length, errors: test.errors.slice(0, 3).map((e) => e.slice(0, 200)) };
+}
+const failed = Object.entries(out).filter(([, r]) => !r.pass);
+report({
+  repro: '2-mrtnode-no-mrt', pass: failed.length === 0,
+  observation: failed.length === 0
+    ? `With material.mrtNode, every case (${cases.join(', ')}) drew what the control drew, with no errors.`
+    : failed.map(([k, r]) => `${k}: ${r.wgslError ? 'WGSL/pipeline error, ' : ''}${r.errors.length} error(s), red box pixels ${r.redPixels} vs ${r.redPixelsControl} in the control, mean |control − test| ${r.meanAbsDiffToControl}. First: ${r.errors[0] ?? '-'}`).join('\n'),
+  cases: out,
+});
+</script>

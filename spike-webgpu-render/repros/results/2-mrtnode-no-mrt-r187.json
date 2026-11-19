@@ -1,0 +1,54 @@
+{
+ "runtime": "chromium",
+ "version": "156.0.8078.4",
+ "headless": true,
+ "three": "r187",
+ "repro": "2-mrtnode-no-mrt",
+ "pass": false,
+ "observation": "canvas: WGSL/pipeline error, 3 error(s), red box pixels 0 vs 2564 in the control, mean |control − test| 3.435. First: error: THREE.WebGPURenderer: Uncaptured WebGPU GPUValidationError: Error while parsing WGSL: :12:8 error: structures must have at least one member\nstruct OutputType {\n       ^^^^^^^^^^\n\n\n - While call\nrt: WGSL/pipeline error, 3 error(s), red box pixels 0 vs 498 in the control, mean |control − test| 2.373. First: error: THREE.WebGPURenderer: Uncaptured WebGPU GPUValidationError: Error while parsing WGSL: :12:8 error: structures must have at least one member\nstruct OutputType {\n       ^^^^^^^^^^\n\n\n - While call",
+ "cases": {
+  "canvas": {
+   "pass": false,
+   "meanAbsDiffToControl": 3.435,
+   "redPixelsControl": 2564,
+   "redPixels": 0,
+   "wgslError": true,
+   "controlErrors": 0,
+   "errors": [
+    "error: THREE.WebGPURenderer: Uncaptured WebGPU GPUValidationError: Error while parsing WGSL: :12:8 error: structures must have at least one member\nstruct OutputType {\n       ^^^^^^^^^^\n\n\n - While call",
+    "error: THREE.WebGPURenderer: Render pipeline creation failed (renderPipeline_MeshStandardNodeMaterial_21): [Invalid ShaderModule \"fragment\"] is invalid due to a previous error.\n - While validating fra",
+    "error: THREE.WebGPURenderer: Uncaptured WebGPU GPUValidationError: [Invalid RenderPipeline \"renderPipeline_MeshStandardNodeMaterial_21\"] is invalid due to a previous error.\n - While encoding [RenderPa"
+   ]
+  },
+  "rt": {
+   "pass": false,
+   "meanAbsDiffToControl": 2.373,
+   "redPixelsControl": 498,
+   "redPixels": 0,
+   "wgslError": true,
+   "controlErrors": 0,
+   "errors": [
+    "error: THREE.WebGPURenderer: Uncaptured WebGPU GPUValidationError: Error while parsing WGSL: :12:8 error: structures must have at least one member\nstruct OutputType {\n       ^^^^^^^^^^\n\n\n - While call",
+    "error: THREE.WebGPURenderer: Render pipeline creation failed (renderPipeline_MeshStandardNodeMaterial_26): [Invalid ShaderModule \"fragment\"] is invalid due to a previous error.\n - While validating fra",
+    "error: THREE.WebGPURenderer: Uncaptured WebGPU GPUValidationError: [Invalid RenderPipeline \"renderPipeline_MeshStandardNodeMaterial_26\"] is invalid due to a previous error.\n - While encoding [RenderPa"
+   ]
+  },
+  "shadow": {
+   "pass": true,
+   "meanAbsDiffToControl": 0,
+   "redPixelsControl": 2564,
+   "redPixels": 2564,
+   "wgslError": false,
+   "controlErrors": 0,
+   "errors": []
+  }
+ },
+ "log": [
+  "error: THREE.WebGPURenderer: Uncaptured WebGPU GPUValidationError: Error while parsing WGSL: :12:8 error: structures must have at least one member\nstruct OutputType {\n       ^^^^^^^^^^\n\n\n - While call",
+  "error: THREE.WebGPURenderer: Render pipeline creation failed (renderPipeline_MeshStandardNodeMaterial_21): [Invalid ShaderModule \"fragment\"] is invalid due to a previous error.\n - While validating fra",
+  "error: THREE.WebGPURenderer: Uncaptured WebGPU GPUValidationError: [Invalid RenderPipeline \"renderPipeline_MeshStandardNodeMaterial_21\"] is invalid due to a previous error.\n - While encoding [RenderPa",
+  "error: THREE.WebGPURenderer: Uncaptured WebGPU GPUValidationError: [Invalid CommandBuffer from CommandEncoder \"renderContext_2\"] is invalid due to a previous error.\n - While calling [Queue].Submit([[I",
+  "error: THREE.WebGPURenderer [renderPipeline_MeshStandardNodeMaterial_21 / fragment error] at line 12:8: structures must have at least one member\n  struct OutputType {\n         ^",
+  "error: THREE.WebGPURenderer: Uncaptured WebGPU GPUValidationError: Error while parsing WGSL: :12:8 error: structures must have at least one member\nstruct OutputType {\n       ^^^^^^^^^^\n\n\n - While call"
+ ]
+}

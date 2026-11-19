@@ -1,0 +1,92 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>repro 3: passes and shadow maps freeze in an offline loop</title>
+<!-- three r187 WebGPURenderer. An offline render loop (an export, a timing loop) draws frames back to back without
+     yielding to requestAnimationFrame. A box moves one unit per frame. Each case draws 5 frames three ways, each on
+     a fresh renderer, after one warm-up frame in rAF:
+       raf      each frame in its own rAF callback (the reference)
+       offline  all 5 frames in one task, as an exporter does
+       tick     the same, calling renderer._nodes.nodeFrame.update() before each frame (the workaround, private)
+     Cases:
+       pipeline  a RenderPipeline over pass(scene, camera): the PassNode's updateBefore is NodeUpdateType.FRAME
+       shadow    plain renderer.render() with a shadow-casting light: the shadow map is also updated once per frameId
+     Expected: offline frames equal the reference. Seen: offline frames all show the warm-up frame's pass (pipeline)
+     or its shadow (shadow), because only the renderer's internal rAF loop (Animation.js) advances
+     nodeFrame.frameId, and there is no public call to advance it.
+     ?case=pipeline|shadow runs one case (default: both). -->
+<script src="three-map.js"></script>
+<body style="margin:0;background:#fff">
+<script type="module">
+import * as THREE from 'three/webgpu';
+import { pass } from 'three/tsl';
+
+const q = new URLSearchParams(location.search);
+const W = 256, H = 144, FRAMES = 5;
+const grab2d = new OffscreenCanvas(W, H).getContext('2d', { willReadFrequently: true });
+const inRaf = (renderer, fn) => new Promise((done) => renderer.setAnimationLoop(() => { renderer.setAnimationLoop(null); done(fn()); }));
+
+async function run(kind, mode) {
+  const renderer = new THREE.WebGPURenderer({ antialias: false });
+  renderer.setPixelRatio(1); renderer.setSize(W, H);
+  renderer.shadowMap.enabled = kind === 'shadow';
+  document.body.append(renderer.domElement);
+  await renderer.init();
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x202830);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+  const sun = new THREE.DirectionalLight(0xffffff, 3); sun.position.set(0, 6, 0.5); sun.castShadow = true; scene.add(sun);
+  sun.shadow.camera.left = sun.shadow.camera.bottom = -6; sun.shadow.camera.right = sun.shadow.camera.top = 6;
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(14, 8), new THREE.MeshStandardNodeMaterial({ color: 0xaaaaaa }));
+  ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+  const box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardNodeMaterial({ color: 0xff3030 }));
+  box.castShadow = true; scene.add(box);
+  // In the shadow case the camera sees only the ground, so a frame changes only through the shadow.
+  const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 100);
+  if (kind === 'shadow') { camera.position.set(0, 9, 0.01); camera.lookAt(0, 0, 0); box.position.y = 3; }
+  else { camera.position.set(0, 3, 7); camera.lookAt(0, 0.5, 0); box.position.y = 0.5; }
+  if (kind === 'shadow') { box.layers.set(1); sun.shadow.camera.layers.enable(1); } // shadow camera sees the box, the view camera doesn't
+
+  const pipeline = kind === 'pipeline' ? new THREE.RenderPipeline(renderer, pass(scene, camera).getTextureNode('output')) : null;
+  const draw = () => (pipeline ? pipeline.render() : renderer.render(scene, camera));
+  const grab = () => { grab2d.clearRect(0, 0, W, H); grab2d.drawImage(renderer.domElement, 0, 0); return grab2d.getImageData(0, 0, W, H).data; };
+  const nodeFrame = renderer._nodes.nodeFrame;
+
+  box.position.x = -3;
+  await inRaf(renderer, draw); // warm-up frame (state 0), as an app that has been running
+  const frames = [], frameIds = [];
+  if (mode === 'raf') {
+    for (let i = 1; i <= FRAMES; i++) frames.push(await inRaf(renderer, () => { box.position.x = -3 + i; draw(); frameIds.push(nodeFrame.frameId); return grab(); }));
+  } else {
+    for (let i = 1; i <= FRAMES; i++) { // one task, no await: what an offline exporter's inner loop does
+      box.position.x = -3 + i;
+      if (mode === 'tick') nodeFrame.update();
+      draw(); frameIds.push(nodeFrame.frameId);
+      frames.push(grab());
+    }
+  }
+  renderer.domElement.remove(); renderer.dispose();
+  return { frames, frameIds };
+}
+
+const key = (d) => { let h = 2166136261; for (let i = 0; i < d.length; i++) h = Math.imul(h ^ d[i], 16777619); return (h >>> 0).toString(16); };
+const meanAbsDiff = (a, b) => { let s = 0; for (let i = 0; i < a.length; i++) if (i % 4 !== 3) s += Math.abs(a[i] - b[i]); return +(s / (a.length * 0.75)).toFixed(3); };
+const cases = q.get('case') ? [q.get('case')] : ['pipeline', 'shadow'];
+const out = {};
+for (const kind of cases) {
+  const ref = await run(kind, 'raf');
+  const r = { raf: { distinct: new Set(ref.frames.map(key)).size, frameIds: ref.frameIds } };
+  for (const mode of ['offline', 'tick']) {
+    const m = await run(kind, mode);
+    r[mode] = { distinct: new Set(m.frames.map(key)).size, frameIds: m.frameIds, diffToReference: m.frames.map((f, i) => meanAbsDiff(f, ref.frames[i])) };
+  }
+  r.pass = r.offline.distinct === FRAMES && r.offline.diffToReference.every((d) => d === 0);
+  out[kind] = r;
+}
+const failed = Object.entries(out).filter(([, r]) => !r.pass);
+report({
+  repro: '3-offline-nodeframe', pass: failed.length === 0,
+  observation: Object.entries(out).map(([k, r]) => `${k}: ${FRAMES} frames drawn in one task gave ${r.offline.distinct} distinct image(s) (frameId stayed ${[...new Set(r.offline.frameIds)].join(',')}); differences from the rAF reference ${r.offline.diffToReference.join(' / ')}. In rAF: ${r.raf.distinct} distinct. With nodeFrame.update() per frame: ${r.tick.distinct} distinct, differences ${r.tick.diffToReference.join(' / ')}.`).join('\n'),
+  cases: out,
+});
+</script>

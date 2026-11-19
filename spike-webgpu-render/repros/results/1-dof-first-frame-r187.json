@@ -1,0 +1,142 @@
+{
+ "runtime": "chromium",
+ "version": "156.0.8078.4",
+ "headless": true,
+ "three": "r187",
+ "repro": "1-dof-first-frame",
+ "effect": "dof",
+ "pass": false,
+ "observation": "Flat frames (≤2 colours): pipeline A (first dof()) 1 of 3 (frame 1), pipeline C (the same built after A and B) 1 of 3. Last frames: mean |A − C| = 0 levels, flat colour rgba 39,83,124,255. Input size per updateBefore(): 1x1, 320x180, 320x180, 1x1, 320x180, 320x180.",
+ "options": {
+  "three": "r187"
+ },
+ "dofInputSizePerUpdate": [
+  "1x1",
+  "320x180",
+  "320x180",
+  "1x1",
+  "320x180",
+  "320x180"
+ ],
+ "firstFrameUpdateOrder": [
+  "effect:begin → pass → effect:end",
+  "pass",
+  "effect:begin → pass → effect:end"
+ ],
+ "A": [
+  {
+   "colours": 1,
+   "mean": 74.52,
+   "stddev": 0,
+   "centre": [
+    39,
+    83,
+    124,
+    255
+   ],
+   "flat": true
+  },
+  {
+   "colours": 3155,
+   "mean": 80,
+   "stddev": 27.35,
+   "centre": [
+    106,
+    189,
+    149,
+    255
+   ],
+   "flat": false
+  },
+  {
+   "colours": 3155,
+   "mean": 80,
+   "stddev": 27.35,
+   "centre": [
+    106,
+    189,
+    149,
+    255
+   ],
+   "flat": false
+  }
+ ],
+ "B": [
+  {
+   "colours": 22,
+   "mean": 77.58,
+   "stddev": 24.65,
+   "centre": [
+    113,
+    193,
+    100,
+    255
+   ],
+   "flat": false
+  },
+  {
+   "colours": 22,
+   "mean": 77.58,
+   "stddev": 24.65,
+   "centre": [
+    113,
+    193,
+    100,
+    255
+   ],
+   "flat": false
+  },
+  {
+   "colours": 22,
+   "mean": 77.58,
+   "stddev": 24.65,
+   "centre": [
+    113,
+    193,
+    100,
+    255
+   ],
+   "flat": false
+  }
+ ],
+ "C": [
+  {
+   "colours": 1,
+   "mean": 74.52,
+   "stddev": 0,
+   "centre": [
+    39,
+    83,
+    124,
+    255
+   ],
+   "flat": true
+  },
+  {
+   "colours": 3155,
+   "mean": 80,
+   "stddev": 27.35,
+   "centre": [
+    106,
+    189,
+    149,
+    255
+   ],
+   "flat": false
+  },
+  {
+   "colours": 3155,
+   "mean": 80,
+   "stddev": 27.35,
+   "centre": [
+    106,
+    189,
+    149,
+    255
+   ],
+   "flat": false
+  }
+ ],
+ "meanAbsDiffLastAC": 0,
+ "log": []
+}
