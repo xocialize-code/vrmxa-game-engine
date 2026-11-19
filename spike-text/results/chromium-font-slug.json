@@ -1,0 +1,124 @@
+{
+  "runtime": "chromium",
+  "mode": "font",
+  "lib": "slug",
+  "font": {
+    "file": "NotoSansJP-wght.ttf",
+    "bytes": 9589900,
+    "fetchMs": 29.8,
+    "glyphs": 17936,
+    "cmapCodePoints": 16732,
+    "axes": {
+      "wght": {
+        "axisIndex": 0,
+        "tag": "wght",
+        "nameId": 265,
+        "flags": 0,
+        "min": 100,
+        "default": 100,
+        "max": 900
+      }
+    },
+    "tables": [
+      "glyf",
+      "gvar",
+      "HVAR",
+      "GSUB",
+      "GPOS"
+    ]
+  },
+  "hbWasmMs": 4.7,
+  "gl": {
+    "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)",
+    "maxTexture": 16384,
+    "timerQuery": true
+  },
+  "slug": {
+    "ascii": {
+      "buildMs": 31.3,
+      "glyphs": 96,
+      "cubicSkipped": 0,
+      "curves": {
+        "w": 4096,
+        "h": 1,
+        "bytes": 65536
+      },
+      "bands": {
+        "w": 4096,
+        "h": 4,
+        "bytes": 131072
+      },
+      "total": 196608
+    },
+    "set3000": {
+      "buildMs": 155.3,
+      "glyphs": 2941,
+      "cubicSkipped": 0,
+      "curves": {
+        "w": 4096,
+        "h": 62,
+        "bytes": 4063232
+      },
+      "bands": {
+        "w": 4096,
+        "h": 236,
+        "bytes": 7733248
+      },
+      "total": 11796480
+    },
+    "full": {
+      "buildMs": 791.8,
+      "glyphs": 16089,
+      "cubicSkipped": 0,
+      "curves": {
+        "w": 4096,
+        "h": 419,
+        "bytes": 27459584
+      },
+      "bands": {
+        "w": 4096,
+        "h": 1466,
+        "bytes": 48037888
+      },
+      "total": 75497472
+    },
+    "totalMs": 978.5
+  },
+  "sample": {
+    "hash": "6d8ee27918c60cf6",
+    "litPixels": 91856,
+    "info": {
+      "buildMs": 1.5,
+      "quads": 312,
+      "missingGlyphs": 9,
+      "font": {
+        "buildMs": 791.8,
+        "glyphs": 16089,
+        "cubicSkipped": 0,
+        "curves": {
+          "w": 4096,
+          "h": 419,
+          "bytes": 27459584
+        },
+        "bands": {
+          "w": 4096,
+          "h": 1466,
+          "bytes": 48037888
+        },
+        "total": 75497472
+      }
+    }
+  },
+  "query": "?mode=font&lib=slug",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "origin": "http:",
+  "three": "187",
+  "totalMs": 1087,
+  "errors": [],
+  "warnings": [],
+  "browserVersion": "156.0.8078.4",
+  "headless": true,
+  "console": [
+    "error: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

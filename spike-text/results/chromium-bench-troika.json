@@ -1,0 +1,343 @@
+{
+  "runtime": "chromium",
+  "mode": "bench",
+  "lib": "troika",
+  "sdf": "gpu",
+  "cases": [
+    {
+      "name": "title",
+      "size": "3840x2160",
+      "quads": 89,
+      "synced": {
+        "text": {
+          "median": 0.3,
+          "min": 0.2,
+          "max": 0.5,
+          "n": 120
+        },
+        "empty": {
+          "median": 0.3,
+          "min": 0.2,
+          "max": 0.6,
+          "n": 120
+        },
+        "textMs": 0
+      },
+      "backToBack": {
+        "text": {
+          "median": 0.035,
+          "min": 0.028,
+          "max": 0.05,
+          "n": 6
+        },
+        "empty": {
+          "median": 0.022,
+          "min": 0.018,
+          "max": 0.028,
+          "n": 6
+        },
+        "textMs": 0.013
+      },
+      "timerQuery": {
+        "text": {
+          "median": 0.071,
+          "min": 0.045,
+          "max": 0.229,
+          "n": 60
+        },
+        "empty": {
+          "median": 0.073,
+          "min": 0.038,
+          "max": 0.257,
+          "n": 60
+        },
+        "textMs": -0.002
+      },
+      "info": {
+        "buildMs": 36,
+        "quads": 89,
+        "atlas": {
+          "w": 2048,
+          "h": 128,
+          "bytes": 1048576
+        },
+        "sdfGlyphSize": 64,
+        "timings": {
+          "fontLoad": 14.400000005960464,
+          "typesetting": 2.0999999940395355,
+          "quads": 0.09999999403953552,
+          "sdf": {
+            "0": 0.4000000059604645,
+            "1": 0,
+            "2": 0.09999999403953552,
+            "3": 0.09999999403953552,
+            "4": 0.4000000059604645,
+            "5": 0.09999999403953552,
+            "6": 0,
+            "7": 0.10000002384185791,
+            "8": 0.09999999403953552,
+            "9": 0,
+            "10": 0
+          },
+          "sdfTotal": 2.699999988079071,
+          "total": 35.29999998211861
+        }
+      }
+    },
+    {
+      "name": "fill",
+      "size": "3840x2160",
+      "quads": 2,
+      "synced": {
+        "text": {
+          "median": 0.3,
+          "min": 0.2,
+          "max": 0.5,
+          "n": 120
+        },
+        "empty": {
+          "median": 0.3,
+          "min": 0.2,
+          "max": 0.5,
+          "n": 120
+        },
+        "textMs": 0
+      },
+      "backToBack": {
+        "text": {
+          "median": 0.112,
+          "min": 0.11,
+          "max": 0.115,
+          "n": 6
+        },
+        "empty": {
+          "median": 0.007,
+          "min": 0.003,
+          "max": 0.012,
+          "n": 6
+        },
+        "textMs": 0.105
+      },
+      "timerQuery": {
+        "text": {
+          "median": 0.088,
+          "min": 0.087,
+          "max": 0.089,
+          "n": 60
+        },
+        "empty": {
+          "median": 0.01,
+          "min": 0.01,
+          "max": 0.01,
+          "n": 60
+        },
+        "textMs": 0.078
+      },
+      "info": {
+        "buildMs": 0.6,
+        "quads": 2,
+        "atlas": {
+          "w": 2048,
+          "h": 128,
+          "bytes": 1048576
+        },
+        "sdfGlyphSize": 64,
+        "timings": {
+          "fontLoad": 0.10000002384185791,
+          "typesetting": 0,
+          "quads": 0,
+          "sdf": {},
+          "sdfTotal": 0,
+          "total": 0.4000000059604645
+        }
+      }
+    },
+    {
+      "name": "glyphs2000",
+      "size": "1920x1080",
+      "quads": 2000,
+      "synced": {
+        "text": {
+          "median": 0.4,
+          "min": 0.3,
+          "max": 0.7,
+          "n": 120
+        },
+        "empty": {
+          "median": 0.3,
+          "min": 0.1,
+          "max": 0.7,
+          "n": 120
+        },
+        "textMs": 0.1
+      },
+      "backToBack": {
+        "text": {
+          "median": 0.097,
+          "min": 0.087,
+          "max": 0.108,
+          "n": 6
+        },
+        "empty": {
+          "median": 0.008,
+          "min": 0.005,
+          "max": 0.008,
+          "n": 6
+        },
+        "textMs": 0.089
+      },
+      "timerQuery": {
+        "text": {
+          "median": 0.026,
+          "min": 0.025,
+          "max": 0.027,
+          "n": 60
+        },
+        "empty": {
+          "median": 0.006,
+          "min": 0.005,
+          "max": 0.007,
+          "n": 60
+        },
+        "textMs": 0.02
+      },
+      "info": {
+        "buildMs": 9.1,
+        "quads": 2000,
+        "atlas": {
+          "w": 2048,
+          "h": 128,
+          "bytes": 1048576
+        },
+        "sdfGlyphSize": 64,
+        "timings": {
+          "fontLoad": 0.10000002384185791,
+          "typesetting": 0.5999999940395355,
+          "quads": 0.09999999403953552,
+          "sdf": {
+            "59": 0,
+            "60": 0.09999999403953552,
+            "61": 0,
+            "62": 0.10000002384185791,
+            "63": 0.09999999403953552,
+            "64": 0.09999999403953552,
+            "65": 0.09999999403953552,
+            "66": 0.09999999403953552,
+            "67": 0,
+            "68": 0.10000002384185791,
+            "69": 0,
+            "70": 0.09999999403953552,
+            "71": 0.09999999403953552,
+            "72": 0,
+            "73": 0,
+            "74": 0.09999999403953552,
+            "75": 0,
+            "76": 0,
+            "77": 0.09999999403953552,
+            "78": 0,
+            "79": 0.20000001788139343,
+            "80": 0.09999999403953552,
+            "81": 0,
+            "82": 0,
+            "83": 0,
+            "84": 0.09999999403953552,
+            "85": 0,
+            "86": 0,
+            "87": 0.09999999403953552,
+            "88": 0,
+            "89": 0,
+            "90": 0,
+            "91": 0
+          },
+          "sdfTotal": 1.7000000178813934,
+          "total": 2.800000011920929
+        }
+      }
+    },
+    {
+      "name": "glyphs2000",
+      "size": "3840x2160",
+      "quads": 2000,
+      "synced": {
+        "text": {
+          "median": 0.4,
+          "min": 0.3,
+          "max": 1.2,
+          "n": 120
+        },
+        "empty": {
+          "median": 0.3,
+          "min": 0.2,
+          "max": 0.5,
+          "n": 120
+        },
+        "textMs": 0.1
+      },
+      "backToBack": {
+        "text": {
+          "median": 0.127,
+          "min": 0.122,
+          "max": 0.132,
+          "n": 6
+        },
+        "empty": {
+          "median": 0.007,
+          "min": 0.005,
+          "max": 0.008,
+          "n": 6
+        },
+        "textMs": 0.12
+      },
+      "timerQuery": {
+        "text": {
+          "median": 0.068,
+          "min": 0.063,
+          "max": 0.296,
+          "n": 60
+        },
+        "empty": {
+          "median": 0.01,
+          "min": 0.01,
+          "max": 0.012,
+          "n": 60
+        },
+        "textMs": 0.058
+      },
+      "info": {
+        "buildMs": 5.8,
+        "quads": 2000,
+        "atlas": {
+          "w": 2048,
+          "h": 128,
+          "bytes": 1048576
+        },
+        "sdfGlyphSize": 64,
+        "timings": {
+          "fontLoad": 0,
+          "typesetting": 0.19999998807907104,
+          "quads": 0,
+          "sdf": {},
+          "sdfTotal": 0,
+          "total": 0.6000000238418579
+        }
+      }
+    }
+  ],
+  "gl": {
+    "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)",
+    "maxTexture": 16384,
+    "timerQuery": true
+  },
+  "query": "?mode=bench&lib=troika",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "origin": "http:",
+  "three": "187",
+  "totalMs": 773,
+  "errors": [],
+  "warnings": [],
+  "browserVersion": "156.0.8078.4",
+  "headless": true,
+  "console": [
+    "error: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

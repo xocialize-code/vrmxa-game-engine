@@ -1,0 +1,88 @@
+{
+  "runtime": "chromium",
+  "mode": "title",
+  "lib": "troika",
+  "tag": "troika-sdfjs-4k",
+  "size": "3840x2160",
+  "hash": "a5647fbd1827be4e",
+  "repeatable": true,
+  "runs": [
+    {
+      "hashes": [
+        "a5647fbd1827be4e",
+        "a5647fbd1827be4e"
+      ],
+      "info": {
+        "buildMs": 130.2,
+        "quads": 89,
+        "atlas": {
+          "w": 2048,
+          "h": 128,
+          "bytes": 1048576
+        },
+        "sdfGlyphSize": 64,
+        "timings": {
+          "fontLoad": 15.800000011920929,
+          "typesetting": 2.199999988079071,
+          "quads": 0.19999998807907104,
+          "sdf": {
+            "0": 8,
+            "1": 82,
+            "2": 3.9000000059604645,
+            "3": 15.699999988079071,
+            "4": 7.5999999940395355,
+            "5": 13.900000005960464,
+            "6": 6.699999988079071,
+            "7": 7.799999982118607,
+            "8": 8.099999994039536,
+            "9": 3.5999999940395355,
+            "10": 0.8999999761581421
+          },
+          "sdfTotal": 89.7000000178814,
+          "total": 128.59999999403954
+        }
+      },
+      "atlasHash": "25904d72bb9f9a63"
+    },
+    {
+      "hashes": [
+        "a5647fbd1827be4e",
+        "a5647fbd1827be4e"
+      ],
+      "info": {
+        "buildMs": 1.4,
+        "quads": 89,
+        "atlas": {
+          "w": 2048,
+          "h": 128,
+          "bytes": 1048576
+        },
+        "sdfGlyphSize": 64,
+        "timings": {
+          "fontLoad": 0,
+          "typesetting": 0.10000002384185791,
+          "quads": 0,
+          "sdf": {},
+          "sdfTotal": 0,
+          "total": 0.4000000059604645
+        }
+      },
+      "atlasHash": "25904d72bb9f9a63"
+    }
+  ],
+  "query": "?mode=title&lib=troika&sdf=js",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "origin": "http:",
+  "three": "187",
+  "totalMs": 445,
+  "errors": [],
+  "warnings": [
+    "configureTextBuilder called after first font request; will be ignored."
+  ],
+  "browserVersion": "156.0.8078.4",
+  "headless": true,
+  "console": [
+    "error: Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "warning: configureTextBuilder called after first font request; will be ignored."
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "errors" : [
+
+  ],
+  "hash" : "52f64758d9b05751",
+  "lib" : "slug",
+  "mode" : "title",
+  "origin" : "vrmxg-spike:",
+  "query" : "?mode=title&lib=slug",
+  "repeatable" : true,
+  "runs" : [
+    {
+      "hashes" : [
+        "52f64758d9b05751",
+        "52f64758d9b05751"
+      ],
+      "info" : {
+        "buildMs" : 21,
+        "font" : {
+          "bands" : {
+            "bytes" : 98304,
+            "h" : 3,
+            "w" : 4096
+          },
+          "buildMs" : 20,
+          "cubicSkipped" : 0,
+          "curves" : {
+            "bytes" : 65536,
+            "h" : 1,
+            "w" : 4096
+          },
+          "glyphs" : 59,
+          "total" : 163840
+        },
+        "missingGlyphs" : 3,
+        "quads" : 90
+      }
+    },
+    {
+      "hashes" : [
+        "52f64758d9b05751",
+        "52f64758d9b05751"
+      ],
+      "info" : {
+        "buildMs" : 10,
+        "font" : {
+          "bands" : {
+            "bytes" : 98304,
+            "h" : 3,
+            "w" : 4096
+          },
+          "buildMs" : 10,
+          "cubicSkipped" : 0,
+          "curves" : {
+            "bytes" : 65536,
+            "h" : 1,
+            "w" : 4096
+          },
+          "glyphs" : 59,
+          "total" : 163840
+        },
+        "missingGlyphs" : 3,
+        "quads" : 90
+      }
+    }
+  ],
+  "runtime" : "wkwebview",
+  "size" : "3840x2160",
+  "tag" : "slug-4k",
+  "three" : "187",
+  "totalMs" : 542,
+  "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+  "warnings" : [
+
+  ],
+  "wrapper" : {
+    "case" : "mode=title&lib=slug",
+    "origin" : "scheme",
+    "seconds" : 0,
+    "timedOut" : false
+  }
+}

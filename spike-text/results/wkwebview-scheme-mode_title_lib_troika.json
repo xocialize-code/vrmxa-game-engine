@@ -1,0 +1,76 @@
+{
+  "errors" : [
+
+  ],
+  "hash" : "a5647fbd1827be4e",
+  "lib" : "troika",
+  "mode" : "title",
+  "origin" : "vrmxg-spike:",
+  "query" : "?mode=title&lib=troika",
+  "repeatable" : true,
+  "runs" : [
+    {
+      "atlasHash" : "5727a372b58a0865",
+      "hashes" : [
+        "a5647fbd1827be4e",
+        "a5647fbd1827be4e"
+      ],
+      "info" : {
+        "atlas" : {
+          "bytes" : 1048576,
+          "h" : 128,
+          "w" : 2048
+        },
+        "buildMs" : 223,
+        "quads" : 89,
+        "sdfGlyphSize" : 64,
+        "timings" : {
+          "fontLoad" : 10,
+          "sdfGlyphs" : 11,
+          "sdfTotal" : 3,
+          "total" : 222,
+          "typesetting" : 3
+        }
+      }
+    },
+    {
+      "atlasHash" : "5727a372b58a0865",
+      "hashes" : [
+        "a5647fbd1827be4e",
+        "a5647fbd1827be4e"
+      ],
+      "info" : {
+        "atlas" : {
+          "bytes" : 1048576,
+          "h" : 128,
+          "w" : 2048
+        },
+        "buildMs" : 2,
+        "quads" : 89,
+        "sdfGlyphSize" : 64,
+        "timings" : {
+          "fontLoad" : 0,
+          "sdfGlyphs" : 0,
+          "sdfTotal" : 0,
+          "total" : 1,
+          "typesetting" : 1
+        }
+      }
+    }
+  ],
+  "runtime" : "wkwebview",
+  "size" : "3840x2160",
+  "tag" : "troika-4k",
+  "three" : "187",
+  "totalMs" : 858,
+  "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+  "warnings" : [
+
+  ],
+  "wrapper" : {
+    "case" : "mode=title&lib=troika",
+    "origin" : "scheme",
+    "seconds" : 1,
+    "timedOut" : false
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "runtime": "chromium",
+  "mode": "title",
+  "lib": "hbslug",
+  "tag": "hbslug-w700-4k",
+  "size": "3840x2160",
+  "hash": "7193bec3f938c51f",
+  "repeatable": true,
+  "runs": [
+    {
+      "hashes": [
+        "7193bec3f938c51f",
+        "7193bec3f938c51f"
+      ],
+      "info": {
+        "buildMs": 10,
+        "shapeMs": 1.7,
+        "quads": 89,
+        "wght": 700,
+        "font": {
+          "buildMs": 7.9,
+          "outlineMs": 3.4,
+          "glyphs": 61,
+          "cubicSkipped": 0,
+          "curves": {
+            "w": 4096,
+            "h": 1,
+            "bytes": 65536
+          },
+          "bands": {
+            "w": 4096,
+            "h": 3,
+            "bytes": 98304
+          },
+          "total": 163840
+        }
+      }
+    },
+    {
+      "hashes": [
+        "7193bec3f938c51f",
+        "7193bec3f938c51f"
+      ],
+      "info": {
+        "buildMs": 6.2,
+        "shapeMs": 0.2,
+        "quads": 89,
+        "wght": 700,
+        "font": {
+          "buildMs": 5.9,
+          "outlineMs": 1.7,
+          "glyphs": 61,
+          "cubicSkipped": 0,
+          "curves": {
+            "w": 4096,
+            "h": 1,
+            "bytes": 65536
+          },
+          "bands": {
+            "w": 4096,
+            "h": 3,
+            "bytes": 98304
+          },
+          "total": 163840
+        }
+      }
+    }
+  ],
+  "query": "?mode=title&lib=hbslug",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "origin": "http:",
+  "three": "187",
+  "totalMs": 297,
+  "errors": [],
+  "warnings": [],
+  "browserVersion": "156.0.8078.4",
+  "headless": true,
+  "console": [
+    "error: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

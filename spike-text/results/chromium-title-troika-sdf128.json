@@ -1,0 +1,71 @@
+{
+  "runtime": "chromium",
+  "mode": "title",
+  "lib": "troika",
+  "tag": "troika-sdf128-4k",
+  "size": "3840x2160",
+  "hash": "1ad37fc6357ac823",
+  "repeatable": true,
+  "runs": [
+    {
+      "hashes": [
+        "1ad37fc6357ac823",
+        "1ad37fc6357ac823"
+      ],
+      "info": {
+        "buildMs": 36.7,
+        "quads": 89,
+        "atlas": {
+          "w": 2048,
+          "h": 512,
+          "bytes": 4194304
+        },
+        "sdfGlyphSize": 128,
+        "timings": {
+          "fontLoad": 14.799999982118607,
+          "typesetting": 2.0999999940395355,
+          "sdfGlyphs": 11,
+          "sdfTotal": 2.800000011920929,
+          "total": 36
+        }
+      },
+      "atlasHash": "0bb6012720e5ed8a"
+    },
+    {
+      "hashes": [
+        "1ad37fc6357ac823",
+        "1ad37fc6357ac823"
+      ],
+      "info": {
+        "buildMs": 1.1,
+        "quads": 89,
+        "atlas": {
+          "w": 2048,
+          "h": 512,
+          "bytes": 4194304
+        },
+        "sdfGlyphSize": 128,
+        "timings": {
+          "fontLoad": 0,
+          "typesetting": 0.09999999403953552,
+          "sdfGlyphs": 0,
+          "sdfTotal": 0,
+          "total": 0.5
+        }
+      },
+      "atlasHash": "0bb6012720e5ed8a"
+    }
+  ],
+  "query": "?mode=title&lib=troika&sdfSize=128",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "origin": "http:",
+  "three": "187",
+  "totalMs": 322,
+  "errors": [],
+  "warnings": [],
+  "browserVersion": "156.0.8078.4",
+  "headless": true,
+  "console": [
+    "error: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

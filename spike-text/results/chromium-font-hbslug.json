@@ -1,0 +1,112 @@
+{
+  "runtime": "chromium",
+  "mode": "font",
+  "lib": "hbslug",
+  "font": {
+    "file": "NotoSansJP-wght.ttf",
+    "bytes": 9589900,
+    "fetchMs": 26.7,
+    "glyphs": 17936,
+    "cmapCodePoints": 16732,
+    "axes": {
+      "wght": {
+        "axisIndex": 0,
+        "tag": "wght",
+        "nameId": 265,
+        "flags": 0,
+        "min": 100,
+        "default": 100,
+        "max": 900
+      }
+    },
+    "tables": [
+      "glyf",
+      "gvar",
+      "HVAR",
+      "GSUB",
+      "GPOS"
+    ]
+  },
+  "hbWasmMs": 4.9,
+  "gl": {
+    "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)",
+    "maxTexture": 16384,
+    "timerQuery": true
+  },
+  "hbslug": {
+    "wght": 400,
+    "set3000": {
+      "buildMs": 160.5,
+      "outlineMs": 78,
+      "glyphs": 2999,
+      "cubicSkipped": 0,
+      "curves": {
+        "w": 4096,
+        "h": 54,
+        "bytes": 3538944
+      },
+      "bands": {
+        "w": 4096,
+        "h": 240,
+        "bytes": 7864320
+      },
+      "total": 11403264
+    },
+    "full": {
+      "buildMs": 1285.5,
+      "outlineMs": 592.2,
+      "glyphs": 17936,
+      "cubicSkipped": 0,
+      "curves": {
+        "w": 4096,
+        "h": 397,
+        "bytes": 26017792
+      },
+      "bands": {
+        "w": 4096,
+        "h": 1646,
+        "bytes": 53936128
+      },
+      "total": 79953920
+    }
+  },
+  "sample": {
+    "hash": "db7d724c52123111",
+    "litPixels": 174335,
+    "info": {
+      "buildMs": 19.9,
+      "shapeMs": 0.2,
+      "quads": 311,
+      "wght": 400,
+      "font": {
+        "buildMs": 19,
+        "outlineMs": 9.1,
+        "glyphs": 312,
+        "cubicSkipped": 0,
+        "curves": {
+          "w": 4096,
+          "h": 7,
+          "bytes": 458752
+        },
+        "bands": {
+          "w": 4096,
+          "h": 29,
+          "bytes": 950272
+        },
+        "total": 1409024
+      }
+    }
+  },
+  "query": "?mode=font&lib=hbslug&wght=400",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "origin": "http:",
+  "three": "187",
+  "totalMs": 1569,
+  "errors": [],
+  "warnings": [],
+  "browserVersion": "156.0.8078.4",
+  "headless": true,
+  "console": [
+    "error: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

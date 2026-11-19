@@ -1,0 +1,129 @@
+{
+  "errors" : [
+
+  ],
+  "font" : {
+    "axes" : {
+      "wght" : {
+        "axisIndex" : 0,
+        "default" : 100,
+        "flags" : 0,
+        "max" : 900,
+        "min" : 100,
+        "nameId" : 265,
+        "tag" : "wght"
+      }
+    },
+    "bytes" : 9589900,
+    "cmapCodePoints" : 16732,
+    "fetchMs" : 6.2000000000000002,
+    "file" : "NotoSansJP-wght.ttf",
+    "glyphs" : 17936,
+    "tables" : [
+      "glyf",
+      "gvar",
+      "HVAR",
+      "GSUB",
+      "GPOS"
+    ]
+  },
+  "gl" : {
+    "maxTexture" : 16384,
+    "renderer" : "Apple GPU",
+    "timerQuery" : false
+  },
+  "hbWasmMs" : 10.300000000000001,
+  "lib" : "slug",
+  "mode" : "font",
+  "origin" : "http:",
+  "query" : "?mode=font&lib=slug&origin=loopback",
+  "runtime" : "wkwebview",
+  "sample" : {
+    "hash" : "6d8ee27918c60cf6",
+    "info" : {
+      "buildMs" : 1,
+      "font" : {
+        "bands" : {
+          "bytes" : 48037888,
+          "h" : 1466,
+          "w" : 4096
+        },
+        "buildMs" : 626.89999999999998,
+        "cubicSkipped" : 0,
+        "curves" : {
+          "bytes" : 27459584,
+          "h" : 419,
+          "w" : 4096
+        },
+        "glyphs" : 16089,
+        "total" : 75497472
+      },
+      "missingGlyphs" : 9,
+      "quads" : 312
+    },
+    "litPixels" : 91856
+  },
+  "slug" : {
+    "ascii" : {
+      "bands" : {
+        "bytes" : 131072,
+        "h" : 4,
+        "w" : 4096
+      },
+      "buildMs" : 19.399999999999999,
+      "cubicSkipped" : 0,
+      "curves" : {
+        "bytes" : 65536,
+        "h" : 1,
+        "w" : 4096
+      },
+      "glyphs" : 96,
+      "total" : 196608
+    },
+    "full" : {
+      "bands" : {
+        "bytes" : 48037888,
+        "h" : 1466,
+        "w" : 4096
+      },
+      "buildMs" : 626.89999999999998,
+      "cubicSkipped" : 0,
+      "curves" : {
+        "bytes" : 27459584,
+        "h" : 419,
+        "w" : 4096
+      },
+      "glyphs" : 16089,
+      "total" : 75497472
+    },
+    "set3000" : {
+      "bands" : {
+        "bytes" : 7733248,
+        "h" : 236,
+        "w" : 4096
+      },
+      "buildMs" : 127.40000000000001,
+      "cubicSkipped" : 0,
+      "curves" : {
+        "bytes" : 4063232,
+        "h" : 62,
+        "w" : 4096
+      },
+      "glyphs" : 2941,
+      "total" : 11796480
+    },
+    "totalMs" : 773.79999999999995
+  },
+  "three" : "187",
+  "totalMs" : 860,
+  "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+  "warnings" : [
+
+  ],
+  "wrapper" : {
+    "case" : "mode=font&lib=slug&origin=loopback",
+    "origin" : "loopback",
+    "seconds" : 0,
+    "timedOut" : false
+  }
+}

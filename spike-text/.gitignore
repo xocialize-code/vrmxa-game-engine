@@ -1,0 +1,5 @@
+# The Noto Sans JP variable TTF is 9.6 MB: fetched by fonts/fetch.sh, never committed (the OFL licence beside it is).
+fonts/*.ttf
+web/node_modules/
+web/dist/
+mac/build/

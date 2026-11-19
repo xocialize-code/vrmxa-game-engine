@@ -1,0 +1,71 @@
+{
+  "runtime": "chromium",
+  "mode": "title",
+  "lib": "troika",
+  "tag": "troika-sdfjs-4k",
+  "size": "3840x2160",
+  "hash": "a5647fbd1827be4e",
+  "repeatable": true,
+  "runs": [
+    {
+      "hashes": [
+        "a5647fbd1827be4e",
+        "a5647fbd1827be4e"
+      ],
+      "info": {
+        "buildMs": 110.5,
+        "quads": 89,
+        "atlas": {
+          "w": 2048,
+          "h": 128,
+          "bytes": 1048576
+        },
+        "sdfGlyphSize": 64,
+        "timings": {
+          "fontLoad": 15.400000005960464,
+          "typesetting": 2.0999999940395355,
+          "sdfGlyphs": 11,
+          "sdfTotal": 27.400000005960464,
+          "total": 66.80000001192093
+        }
+      },
+      "atlasHash": "25904d72bb9f9a63"
+    },
+    {
+      "hashes": [
+        "a5647fbd1827be4e",
+        "a5647fbd1827be4e"
+      ],
+      "info": {
+        "buildMs": 1.1,
+        "quads": 89,
+        "atlas": {
+          "w": 2048,
+          "h": 128,
+          "bytes": 1048576
+        },
+        "sdfGlyphSize": 64,
+        "timings": {
+          "fontLoad": 0,
+          "typesetting": 0.20000001788139343,
+          "sdfGlyphs": 0,
+          "sdfTotal": 0,
+          "total": 0.5
+        }
+      },
+      "atlasHash": "25904d72bb9f9a63"
+    }
+  ],
+  "query": "?mode=title&lib=troika&sdf=js",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "origin": "http:",
+  "three": "187",
+  "totalMs": 384,
+  "errors": [],
+  "warnings": [],
+  "browserVersion": "156.0.8078.4",
+  "headless": true,
+  "console": [
+    "error: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

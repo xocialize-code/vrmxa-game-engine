@@ -1,0 +1,77 @@
+{
+  "runtime": "chromium",
+  "mode": "title",
+  "lib": "slug",
+  "tag": "slug-4k",
+  "size": "3840x2160",
+  "hash": "52f64758d9b05751",
+  "repeatable": true,
+  "runs": [
+    {
+      "hashes": [
+        "52f64758d9b05751",
+        "52f64758d9b05751"
+      ],
+      "info": {
+        "buildMs": 33.7,
+        "quads": 90,
+        "missingGlyphs": 3,
+        "font": {
+          "buildMs": 33.1,
+          "glyphs": 59,
+          "cubicSkipped": 0,
+          "curves": {
+            "w": 4096,
+            "h": 1,
+            "bytes": 65536
+          },
+          "bands": {
+            "w": 4096,
+            "h": 3,
+            "bytes": 98304
+          },
+          "total": 163840
+        }
+      }
+    },
+    {
+      "hashes": [
+        "52f64758d9b05751",
+        "52f64758d9b05751"
+      ],
+      "info": {
+        "buildMs": 22.8,
+        "quads": 90,
+        "missingGlyphs": 3,
+        "font": {
+          "buildMs": 22.7,
+          "glyphs": 59,
+          "cubicSkipped": 0,
+          "curves": {
+            "w": 4096,
+            "h": 1,
+            "bytes": 65536
+          },
+          "bands": {
+            "w": 4096,
+            "h": 3,
+            "bytes": 98304
+          },
+          "total": 163840
+        }
+      }
+    }
+  ],
+  "query": "?mode=title&lib=slug",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "origin": "http:",
+  "three": "187",
+  "totalMs": 495,
+  "errors": [],
+  "warnings": [],
+  "browserVersion": "156.0.8078.4",
+  "headless": true,
+  "console": [
+    "error: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

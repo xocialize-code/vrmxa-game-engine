@@ -1,0 +1,15 @@
+{
+  "name": "vrmxg-spike-text",
+  "private": true,
+  "type": "module",
+  "description": "AB-T-0536: in-canvas text for VRMXG — Slug (three-slug / JSlug) vs troika-three-text, with HarfBuzz-wasm shaping and Noto Sans JP. Throwaway. three r187 and vite come from the repo root's node_modules (installed with --legacy-peer-deps so no second three is fetched).",
+  "scripts": {
+    "dev": "../../node_modules/.bin/vite",
+    "build": "../../node_modules/.bin/vite build"
+  },
+  "dependencies": {
+    "three-slug": "1.1.4",
+    "troika-three-text": "0.53.1",
+    "harfbuzzjs": "1.6.4"
+  }
+}

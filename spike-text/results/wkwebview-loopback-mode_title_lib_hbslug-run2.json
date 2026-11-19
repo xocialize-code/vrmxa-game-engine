@@ -1,0 +1,86 @@
+{
+  "errors" : [
+
+  ],
+  "hash" : "7193bec3f938c51f",
+  "lib" : "hbslug",
+  "mode" : "title",
+  "origin" : "http:",
+  "query" : "?mode=title&lib=hbslug",
+  "repeatable" : true,
+  "runs" : [
+    {
+      "hashes" : [
+        "7193bec3f938c51f",
+        "7193bec3f938c51f"
+      ],
+      "info" : {
+        "buildMs" : 10.9,
+        "font" : {
+          "bands" : {
+            "bytes" : 98304,
+            "h" : 3,
+            "w" : 4096
+          },
+          "buildMs" : 7,
+          "cubicSkipped" : 0,
+          "curves" : {
+            "bytes" : 65536,
+            "h" : 1,
+            "w" : 4096
+          },
+          "glyphs" : 61,
+          "outlineMs" : 3.3999999999999999,
+          "total" : 163840
+        },
+        "quads" : 89,
+        "shapeMs" : 3.3999999999999999,
+        "wght" : 700
+      }
+    },
+    {
+      "hashes" : [
+        "7193bec3f938c51f",
+        "7193bec3f938c51f"
+      ],
+      "info" : {
+        "buildMs" : 4.5999999999999996,
+        "font" : {
+          "bands" : {
+            "bytes" : 98304,
+            "h" : 3,
+            "w" : 4096
+          },
+          "buildMs" : 3.7000000000000002,
+          "cubicSkipped" : 0,
+          "curves" : {
+            "bytes" : 65536,
+            "h" : 1,
+            "w" : 4096
+          },
+          "glyphs" : 61,
+          "outlineMs" : 1,
+          "total" : 163840
+        },
+        "quads" : 89,
+        "shapeMs" : 0.78000000000000003,
+        "wght" : 700
+      }
+    }
+  ],
+  "runtime" : "wkwebview",
+  "size" : "3840x2160",
+  "tag" : "hbslug-w700-4k",
+  "three" : "187",
+  "totalMs" : 317,
+  "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+  "warnings" : [
+
+  ],
+  "wrapper" : {
+    "case" : "mode=title&lib=hbslug",
+    "origin" : "loopback",
+    "seconds" : 0,
+    "timedOut" : false
+  }
+}

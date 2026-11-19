@@ -1,0 +1,309 @@
+{
+  "runtime": "chromium",
+  "mode": "bench",
+  "lib": "slug",
+  "sdf": "gpu",
+  "cases": [
+    {
+      "name": "title",
+      "size": "3840x2160",
+      "quads": 90,
+      "synced": {
+        "text": {
+          "median": 0.4,
+          "min": 0.3,
+          "max": 1.4,
+          "n": 120
+        },
+        "empty": {
+          "median": 0.3,
+          "min": 0.2,
+          "max": 0.6,
+          "n": 120
+        },
+        "textMs": 0.1
+      },
+      "backToBack": {
+        "text": {
+          "median": 0.172,
+          "min": 0.153,
+          "max": 0.275,
+          "n": 6
+        },
+        "empty": {
+          "median": 0.025,
+          "min": 0.02,
+          "max": 0.032,
+          "n": 6
+        },
+        "textMs": 0.147
+      },
+      "timerQuery": {
+        "text": {
+          "median": 0.756,
+          "min": 0.105,
+          "max": 1.432,
+          "n": 60
+        },
+        "empty": {
+          "median": 0.585,
+          "min": 0.044,
+          "max": 1.177,
+          "n": 60
+        },
+        "textMs": 0.171
+      },
+      "info": {
+        "buildMs": 32.5,
+        "quads": 90,
+        "missingGlyphs": 3,
+        "font": {
+          "buildMs": 32,
+          "glyphs": 59,
+          "cubicSkipped": 0,
+          "curves": {
+            "w": 4096,
+            "h": 1,
+            "bytes": 65536
+          },
+          "bands": {
+            "w": 4096,
+            "h": 3,
+            "bytes": 98304
+          },
+          "total": 163840
+        }
+      }
+    },
+    {
+      "name": "fill",
+      "size": "3840x2160",
+      "quads": 2,
+      "synced": {
+        "text": {
+          "median": 1,
+          "min": 0.9,
+          "max": 1.4,
+          "n": 120
+        },
+        "empty": {
+          "median": 0.3,
+          "min": 0.2,
+          "max": 0.5,
+          "n": 120
+        },
+        "textMs": 0.7
+      },
+      "backToBack": {
+        "text": {
+          "median": 0.87,
+          "min": 0.835,
+          "max": 0.882,
+          "n": 6
+        },
+        "empty": {
+          "median": 0.007,
+          "min": 0.007,
+          "max": 0.01,
+          "n": 6
+        },
+        "textMs": 0.863
+      },
+      "timerQuery": {
+        "text": {
+          "median": 12.803,
+          "min": 0.702,
+          "max": 13.028,
+          "n": 60
+        },
+        "empty": {
+          "median": 0.01,
+          "min": 0.01,
+          "max": 0.011,
+          "n": 60
+        },
+        "textMs": 12.793
+      },
+      "info": {
+        "buildMs": 17.3,
+        "quads": 2,
+        "missingGlyphs": 0,
+        "font": {
+          "buildMs": 17.2,
+          "glyphs": 3,
+          "cubicSkipped": 0,
+          "curves": {
+            "w": 4096,
+            "h": 1,
+            "bytes": 65536
+          },
+          "bands": {
+            "w": 4096,
+            "h": 1,
+            "bytes": 32768
+          },
+          "total": 98304
+        }
+      }
+    },
+    {
+      "name": "glyphs2000",
+      "size": "1920x1080",
+      "quads": 2000,
+      "synced": {
+        "text": {
+          "median": 0.9,
+          "min": 0.7,
+          "max": 1.2,
+          "n": 120
+        },
+        "empty": {
+          "median": 0.3,
+          "min": 0.2,
+          "max": 0.5,
+          "n": 120
+        },
+        "textMs": 0.6
+      },
+      "backToBack": {
+        "text": {
+          "median": 0.633,
+          "min": 0.617,
+          "max": 0.773,
+          "n": 6
+        },
+        "empty": {
+          "median": 0.007,
+          "min": 0.007,
+          "max": 0.013,
+          "n": 6
+        },
+        "textMs": 0.626
+      },
+      "timerQuery": {
+        "text": {
+          "median": 0.229,
+          "min": 0.219,
+          "max": 0.379,
+          "n": 60
+        },
+        "empty": {
+          "median": 0.006,
+          "min": 0.005,
+          "max": 0.007,
+          "n": 60
+        },
+        "textMs": 0.223
+      },
+      "info": {
+        "buildMs": 29,
+        "quads": 2000,
+        "missingGlyphs": 92,
+        "font": {
+          "buildMs": 28.1,
+          "glyphs": 105,
+          "cubicSkipped": 0,
+          "curves": {
+            "w": 4096,
+            "h": 2,
+            "bytes": 131072
+          },
+          "bands": {
+            "w": 4096,
+            "h": 8,
+            "bytes": 262144
+          },
+          "total": 393216
+        }
+      }
+    },
+    {
+      "name": "glyphs2000",
+      "size": "3840x2160",
+      "quads": 2000,
+      "synced": {
+        "text": {
+          "median": 1.2,
+          "min": 0.9,
+          "max": 1.5,
+          "n": 120
+        },
+        "empty": {
+          "median": 0.3,
+          "min": 0.1,
+          "max": 0.6,
+          "n": 120
+        },
+        "textMs": 0.9
+      },
+      "backToBack": {
+        "text": {
+          "median": 0.952,
+          "min": 0.935,
+          "max": 0.983,
+          "n": 6
+        },
+        "empty": {
+          "median": 0.007,
+          "min": 0.005,
+          "max": 0.023,
+          "n": 6
+        },
+        "textMs": 0.945
+      },
+      "timerQuery": {
+        "text": {
+          "median": 1.702,
+          "min": 0.441,
+          "max": 2.751,
+          "n": 60
+        },
+        "empty": {
+          "median": 0.01,
+          "min": 0.01,
+          "max": 0.015,
+          "n": 60
+        },
+        "textMs": 1.692
+      },
+      "info": {
+        "buildMs": 26.3,
+        "quads": 2000,
+        "missingGlyphs": 92,
+        "font": {
+          "buildMs": 25.7,
+          "glyphs": 105,
+          "cubicSkipped": 0,
+          "curves": {
+            "w": 4096,
+            "h": 2,
+            "bytes": 131072
+          },
+          "bands": {
+            "w": 4096,
+            "h": 8,
+            "bytes": 262144
+          },
+          "total": 393216
+        }
+      }
+    }
+  ],
+  "gl": {
+    "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)",
+    "maxTexture": 16384,
+    "timerQuery": true
+  },
+  "query": "?mode=bench&lib=slug",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "origin": "http:",
+  "three": "187",
+  "totalMs": 2118,
+  "errors": [],
+  "warnings": [],
+  "browserVersion": "156.0.8078.4",
+  "headless": true,
+  "console": [
+    "error: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

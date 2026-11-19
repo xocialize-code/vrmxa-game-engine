@@ -1,0 +1,258 @@
+{
+  "cases" : [
+    {
+      "backToBack" : {
+        "empty" : {
+          "max" : 0.023,
+          "median" : 0.021999999999999999,
+          "min" : 0.019,
+          "n" : 6
+        },
+        "text" : {
+          "max" : 0.184,
+          "median" : 0.14999999999999999,
+          "min" : 0.127,
+          "n" : 6
+        },
+        "textMs" : 0.128
+      },
+      "info" : {
+        "buildMs" : 21.399999999999999,
+        "font" : {
+          "bands" : {
+            "bytes" : 98304,
+            "h" : 3,
+            "w" : 4096
+          },
+          "buildMs" : 20.800000000000001,
+          "cubicSkipped" : 0,
+          "curves" : {
+            "bytes" : 65536,
+            "h" : 1,
+            "w" : 4096
+          },
+          "glyphs" : 59,
+          "total" : 163840
+        },
+        "missingGlyphs" : 3,
+        "quads" : 90
+      },
+      "name" : "title",
+      "quads" : 90,
+      "size" : "3840x2160",
+      "synced" : {
+        "empty" : {
+          "max" : 0.40000000000000002,
+          "median" : 0.26000000000000001,
+          "min" : 0.22,
+          "n" : 120
+        },
+        "text" : {
+          "max" : 0.52000000000000002,
+          "median" : 0.35999999999999999,
+          "min" : 0.29999999999999999,
+          "n" : 120
+        },
+        "textMs" : 0.10000000000000001
+      },
+      "timerQuery" : null
+    },
+    {
+      "backToBack" : {
+        "empty" : {
+          "max" : 0.0070000000000000001,
+          "median" : 0.0060000000000000001,
+          "min" : 0.0050000000000000001,
+          "n" : 6
+        },
+        "text" : {
+          "max" : 0.86899999999999999,
+          "median" : 0.85899999999999999,
+          "min" : 0.82999999999999996,
+          "n" : 6
+        },
+        "textMs" : 0.85299999999999998
+      },
+      "info" : {
+        "buildMs" : 6.5999999999999996,
+        "font" : {
+          "bands" : {
+            "bytes" : 32768,
+            "h" : 1,
+            "w" : 4096
+          },
+          "buildMs" : 6.4000000000000004,
+          "cubicSkipped" : 0,
+          "curves" : {
+            "bytes" : 65536,
+            "h" : 1,
+            "w" : 4096
+          },
+          "glyphs" : 3,
+          "total" : 98304
+        },
+        "missingGlyphs" : 0,
+        "quads" : 2
+      },
+      "name" : "fill",
+      "quads" : 2,
+      "size" : "3840x2160",
+      "synced" : {
+        "empty" : {
+          "max" : 0.40000000000000002,
+          "median" : 0.23999999999999999,
+          "min" : 0.20000000000000001,
+          "n" : 120
+        },
+        "text" : {
+          "max" : 1.1399999999999999,
+          "median" : 0.95999999999999996,
+          "min" : 0.88,
+          "n" : 120
+        },
+        "textMs" : 0.71999999999999997
+      },
+      "timerQuery" : null
+    },
+    {
+      "backToBack" : {
+        "empty" : {
+          "max" : 0.0070000000000000001,
+          "median" : 0.0070000000000000001,
+          "min" : 0.0060000000000000001,
+          "n" : 6
+        },
+        "text" : {
+          "max" : 0.45200000000000001,
+          "median" : 0.438,
+          "min" : 0.39800000000000002,
+          "n" : 6
+        },
+        "textMs" : 0.43099999999999999
+      },
+      "info" : {
+        "buildMs" : 15.1,
+        "font" : {
+          "bands" : {
+            "bytes" : 262144,
+            "h" : 8,
+            "w" : 4096
+          },
+          "buildMs" : 14,
+          "cubicSkipped" : 0,
+          "curves" : {
+            "bytes" : 131072,
+            "h" : 2,
+            "w" : 4096
+          },
+          "glyphs" : 105,
+          "total" : 393216
+        },
+        "missingGlyphs" : 92,
+        "quads" : 2000
+      },
+      "name" : "glyphs2000",
+      "quads" : 2000,
+      "size" : "1920x1080",
+      "synced" : {
+        "empty" : {
+          "max" : 0.44,
+          "median" : 0.23999999999999999,
+          "min" : 0.20000000000000001,
+          "n" : 120
+        },
+        "text" : {
+          "max" : 1.76,
+          "median" : 0.59999999999999998,
+          "min" : 0.54000000000000004,
+          "n" : 120
+        },
+        "textMs" : 0.35999999999999999
+      },
+      "timerQuery" : null
+    },
+    {
+      "backToBack" : {
+        "empty" : {
+          "max" : 0.010999999999999999,
+          "median" : 0.0070000000000000001,
+          "min" : 0.0060000000000000001,
+          "n" : 6
+        },
+        "text" : {
+          "max" : 0.78600000000000003,
+          "median" : 0.78000000000000003,
+          "min" : 0.72799999999999998,
+          "n" : 6
+        },
+        "textMs" : 0.77300000000000002
+      },
+      "info" : {
+        "buildMs" : 12.800000000000001,
+        "font" : {
+          "bands" : {
+            "bytes" : 262144,
+            "h" : 8,
+            "w" : 4096
+          },
+          "buildMs" : 12,
+          "cubicSkipped" : 0,
+          "curves" : {
+            "bytes" : 131072,
+            "h" : 2,
+            "w" : 4096
+          },
+          "glyphs" : 105,
+          "total" : 393216
+        },
+        "missingGlyphs" : 92,
+        "quads" : 2000
+      },
+      "name" : "glyphs2000",
+      "quads" : 2000,
+      "size" : "3840x2160",
+      "synced" : {
+        "empty" : {
+          "max" : 0.40000000000000002,
+          "median" : 0.23999999999999999,
+          "min" : 0.20000000000000001,
+          "n" : 120
+        },
+        "text" : {
+          "max" : 0.97999999999999998,
+          "median" : 0.80000000000000004,
+          "min" : 0.76000000000000001,
+          "n" : 120
+        },
+        "textMs" : 0.56000000000000005
+      },
+      "timerQuery" : null
+    }
+  ],
+  "errors" : [
+
+  ],
+  "gl" : {
+    "maxTexture" : 16384,
+    "renderer" : "Apple GPU",
+    "timerQuery" : false
+  },
+  "lib" : "slug",
+  "mode" : "bench",
+  "origin" : "http:",
+  "query" : "?mode=bench&lib=slug&origin=loopback",
+  "runtime" : "wkwebview",
+  "sdf" : "gpu",
+  "three" : "187",
+  "totalMs" : 1631,
+  "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+  "warnings" : [
+
+  ],
+  "wrapper" : {
+    "case" : "mode=bench&lib=slug&origin=loopback",
+    "origin" : "loopback",
+    "seconds" : 1,
+    "timedOut" : false
+  }
+}

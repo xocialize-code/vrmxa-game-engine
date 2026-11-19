@@ -1,0 +1,93 @@
+{
+  "errors" : [
+
+  ],
+  "font" : {
+    "axes" : {
+      "wght" : {
+        "axisIndex" : 0,
+        "default" : 100,
+        "flags" : 0,
+        "max" : 900,
+        "min" : 100,
+        "nameId" : 265,
+        "tag" : "wght"
+      }
+    },
+    "bytes" : 9589900,
+    "cmapCodePoints" : 16732,
+    "fetchMs" : 6.2999999999999998,
+    "file" : "NotoSansJP-wght.ttf",
+    "glyphs" : 17936,
+    "tables" : [
+      "glyf",
+      "gvar",
+      "HVAR",
+      "GSUB",
+      "GPOS"
+    ]
+  },
+  "gl" : {
+    "maxTexture" : 16384,
+    "renderer" : "Apple GPU",
+    "timerQuery" : false
+  },
+  "hbWasmMs" : 8,
+  "lib" : "troika",
+  "mode" : "font",
+  "origin" : "http:",
+  "query" : "?mode=font&lib=troika&origin=loopback",
+  "runtime" : "wkwebview",
+  "sample" : {
+    "hash" : "531bffaaa4941b80",
+    "info" : {
+      "atlas" : {
+        "bytes" : 16777216,
+        "h" : 2048,
+        "w" : 2048
+      },
+      "buildMs" : 2.7999999999999998,
+      "quads" : 311,
+      "sdfGlyphSize" : 64,
+      "timings" : {
+        "fontLoad" : 0.03999999999996362,
+        "sdfGlyphs" : 0,
+        "sdfTotal" : 0,
+        "total" : 0.51999999999998181,
+        "typesetting" : 0.12000000000000455
+      }
+    },
+    "litPixels" : 113064
+  },
+  "three" : "187",
+  "totalMs" : 988,
+  "troika" : {
+    "set3000" : {
+      "atlas" : {
+        "bytes" : 16777216,
+        "h" : 2048,
+        "w" : 2048
+      },
+      "buildMs" : 625.20000000000005,
+      "quads" : 2998,
+      "sdfGlyphSize" : 64,
+      "timings" : {
+        "fontLoad" : 11.94,
+        "sdfGlyphs" : 99,
+        "sdfTotal" : 8.6399999999999864,
+        "total" : 70.019999999999982,
+        "typesetting" : 3.740000000000002
+      }
+    }
+  },
+  "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+  "warnings" : [
+
+  ],
+  "wrapper" : {
+    "case" : "mode=font&lib=troika&origin=loopback",
+    "origin" : "loopback",
+    "seconds" : 1,
+    "timedOut" : false
+  }
+}

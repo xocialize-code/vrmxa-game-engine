@@ -1,0 +1,899 @@
+{
+ "title": {
+  "hbslug-w700-4k": {
+   "chromium run2": {
+    "hash": "7193bec3f938c51f",
+    "inPageRepeatable": true
+   },
+   "chromium run1": {
+    "hash": "7193bec3f938c51f",
+    "inPageRepeatable": true
+   },
+   "wkwebview-loopback run2": {
+    "hash": "7193bec3f938c51f",
+    "inPageRepeatable": true
+   },
+   "wkwebview-loopback run1": {
+    "hash": "7193bec3f938c51f",
+    "inPageRepeatable": true
+   },
+   "wkwebview-scheme run2": {
+    "hash": "7193bec3f938c51f",
+    "inPageRepeatable": true
+   },
+   "wkwebview-scheme run1": {
+    "hash": "7193bec3f938c51f",
+    "inPageRepeatable": true
+   },
+   "identicalEverywhere": true
+  },
+  "slug-4k": {
+   "chromium run2": {
+    "hash": "52f64758d9b05751",
+    "inPageRepeatable": true
+   },
+   "chromium run1": {
+    "hash": "52f64758d9b05751",
+    "inPageRepeatable": true
+   },
+   "wkwebview-loopback run2": {
+    "hash": "52f64758d9b05751",
+    "inPageRepeatable": true
+   },
+   "wkwebview-loopback run1": {
+    "hash": "52f64758d9b05751",
+    "inPageRepeatable": true
+   },
+   "wkwebview-scheme run2": {
+    "hash": "52f64758d9b05751",
+    "inPageRepeatable": true
+   },
+   "wkwebview-scheme run1": {
+    "hash": "52f64758d9b05751",
+    "inPageRepeatable": true
+   },
+   "identicalEverywhere": true
+  },
+  "troika-4k": {
+   "chromium run2": {
+    "hash": "a5647fbd1827be4e",
+    "inPageRepeatable": true,
+    "atlas": "5727a372b58a0865"
+   },
+   "chromium run1": {
+    "hash": "a5647fbd1827be4e",
+    "inPageRepeatable": true,
+    "atlas": "5727a372b58a0865"
+   },
+   "wkwebview-loopback run2": {
+    "hash": "a5647fbd1827be4e",
+    "inPageRepeatable": true,
+    "atlas": "5727a372b58a0865"
+   },
+   "wkwebview-loopback run1": {
+    "hash": "a5647fbd1827be4e",
+    "inPageRepeatable": true,
+    "atlas": "5727a372b58a0865"
+   },
+   "wkwebview-scheme run2": {
+    "hash": "a5647fbd1827be4e",
+    "inPageRepeatable": true,
+    "atlas": "5727a372b58a0865"
+   },
+   "wkwebview-scheme run1": {
+    "hash": "a5647fbd1827be4e",
+    "inPageRepeatable": true,
+    "atlas": "5727a372b58a0865"
+   },
+   "identicalEverywhere": true
+  },
+  "troika-sdf128-4k": {
+   "chromium run2": {
+    "hash": "1ad37fc6357ac823",
+    "inPageRepeatable": true,
+    "atlas": "0bb6012720e5ed8a"
+   },
+   "chromium run1": {
+    "hash": "1ad37fc6357ac823",
+    "inPageRepeatable": true,
+    "atlas": "0bb6012720e5ed8a"
+   },
+   "wkwebview-loopback run2": {
+    "hash": "1ad37fc6357ac823",
+    "inPageRepeatable": true,
+    "atlas": "0bb6012720e5ed8a"
+   },
+   "wkwebview-loopback run1": {
+    "hash": "1ad37fc6357ac823",
+    "inPageRepeatable": true,
+    "atlas": "0bb6012720e5ed8a"
+   },
+   "wkwebview-scheme run2": {
+    "hash": "1ad37fc6357ac823",
+    "inPageRepeatable": true,
+    "atlas": "0bb6012720e5ed8a"
+   },
+   "wkwebview-scheme run1": {
+    "hash": "1ad37fc6357ac823",
+    "inPageRepeatable": true,
+    "atlas": "0bb6012720e5ed8a"
+   },
+   "identicalEverywhere": true
+  },
+  "troika-sdfjs-4k": {
+   "chromium run2": {
+    "hash": "a5647fbd1827be4e",
+    "inPageRepeatable": true,
+    "atlas": "25904d72bb9f9a63"
+   },
+   "chromium run1": {
+    "hash": "a5647fbd1827be4e",
+    "inPageRepeatable": true,
+    "atlas": "25904d72bb9f9a63"
+   },
+   "wkwebview-loopback run2": {
+    "hash": "a5647fbd1827be4e",
+    "inPageRepeatable": true,
+    "atlas": "25904d72bb9f9a63"
+   },
+   "wkwebview-loopback run1": {
+    "hash": "a5647fbd1827be4e",
+    "inPageRepeatable": true,
+    "atlas": "25904d72bb9f9a63"
+   },
+   "wkwebview-scheme run2": {
+    "hash": "a5647fbd1827be4e",
+    "inPageRepeatable": true,
+    "atlas": "25904d72bb9f9a63"
+   },
+   "wkwebview-scheme run1": {
+    "hash": "a5647fbd1827be4e",
+    "inPageRepeatable": true,
+    "atlas": "25904d72bb9f9a63"
+   },
+   "identicalEverywhere": true
+  }
+ },
+ "bench": {
+  "title 3840x2160": {
+   "hbslug-w100": {
+    "chromium": {
+     "textMsBackToBack": 0.131,
+     "textMsSynced": 0.1,
+     "timerQueryMs": 0.109,
+     "quads": 89
+    }
+   },
+   "hbslug": {
+    "chromium": {
+     "textMsBackToBack": 0.16,
+     "textMsSynced": 0.1,
+     "timerQueryMs": 0.207,
+     "quads": 89
+    },
+    "wkwebview-loopback": {
+     "textMsBackToBack": 0.139,
+     "textMsSynced": 0.1,
+     "timerQueryMs": null,
+     "quads": 89
+    }
+   },
+   "slug": {
+    "chromium": {
+     "textMsBackToBack": 0.147,
+     "textMsSynced": 0.1,
+     "timerQueryMs": 0.171,
+     "quads": 90
+    },
+    "wkwebview-loopback": {
+     "textMsBackToBack": 0.128,
+     "textMsSynced": 0.1,
+     "timerQueryMs": null,
+     "quads": 90
+    }
+   },
+   "troika": {
+    "chromium": {
+     "textMsBackToBack": 0.013,
+     "textMsSynced": 0,
+     "timerQueryMs": -0.002,
+     "quads": 89
+    },
+    "wkwebview-loopback": {
+     "textMsBackToBack": 0.011,
+     "textMsSynced": 0.02,
+     "timerQueryMs": null,
+     "quads": 89
+    }
+   }
+  },
+  "fill 3840x2160": {
+   "hbslug-w100": {
+    "chromium": {
+     "textMsBackToBack": 0.835,
+     "textMsSynced": 0.7,
+     "timerQueryMs": 10.941,
+     "quads": 2
+    }
+   },
+   "hbslug": {
+    "chromium": {
+     "textMsBackToBack": 0.995,
+     "textMsSynced": 0.8,
+     "timerQueryMs": 14.502,
+     "quads": 2
+    },
+    "wkwebview-loopback": {
+     "textMsBackToBack": 0.967,
+     "textMsSynced": 0.82,
+     "timerQueryMs": null,
+     "quads": 2
+    }
+   },
+   "slug": {
+    "chromium": {
+     "textMsBackToBack": 0.863,
+     "textMsSynced": 0.7,
+     "timerQueryMs": 12.793,
+     "quads": 2
+    },
+    "wkwebview-loopback": {
+     "textMsBackToBack": 0.853,
+     "textMsSynced": 0.72,
+     "timerQueryMs": null,
+     "quads": 2
+    }
+   },
+   "troika": {
+    "chromium": {
+     "textMsBackToBack": 0.105,
+     "textMsSynced": 0,
+     "timerQueryMs": 0.078,
+     "quads": 2
+    },
+    "wkwebview-loopback": {
+     "textMsBackToBack": 0.104,
+     "textMsSynced": 0.06,
+     "timerQueryMs": null,
+     "quads": 2
+    }
+   }
+  },
+  "glyphs2000 1920x1080": {
+   "hbslug-w100": {
+    "chromium": {
+     "textMsBackToBack": 0.659,
+     "textMsSynced": 0.6,
+     "timerQueryMs": 0.22,
+     "quads": 2000
+    }
+   },
+   "hbslug": {
+    "chromium": {
+     "textMsBackToBack": 0.624,
+     "textMsSynced": 0.6,
+     "timerQueryMs": 0.23,
+     "quads": 2000
+    },
+    "wkwebview-loopback": {
+     "textMsBackToBack": 0.4,
+     "textMsSynced": 0.36,
+     "timerQueryMs": null,
+     "quads": 2000
+    }
+   },
+   "slug": {
+    "chromium": {
+     "textMsBackToBack": 0.626,
+     "textMsSynced": 0.6,
+     "timerQueryMs": 0.223,
+     "quads": 2000
+    },
+    "wkwebview-loopback": {
+     "textMsBackToBack": 0.431,
+     "textMsSynced": 0.36,
+     "timerQueryMs": null,
+     "quads": 2000
+    }
+   },
+   "troika": {
+    "chromium": {
+     "textMsBackToBack": 0.089,
+     "textMsSynced": 0.1,
+     "timerQueryMs": 0.02,
+     "quads": 2000
+    },
+    "wkwebview-loopback": {
+     "textMsBackToBack": 0.1,
+     "textMsSynced": 0.1,
+     "timerQueryMs": null,
+     "quads": 2000
+    }
+   }
+  },
+  "glyphs2000 3840x2160": {
+   "hbslug-w100": {
+    "chromium": {
+     "textMsBackToBack": 0.952,
+     "textMsSynced": 0.8,
+     "timerQueryMs": 1.17,
+     "quads": 2000
+    }
+   },
+   "hbslug": {
+    "chromium": {
+     "textMsBackToBack": 0.976,
+     "textMsSynced": 0.9,
+     "timerQueryMs": 2.599,
+     "quads": 2000
+    },
+    "wkwebview-loopback": {
+     "textMsBackToBack": 0.701,
+     "textMsSynced": 0.62,
+     "timerQueryMs": null,
+     "quads": 2000
+    }
+   },
+   "slug": {
+    "chromium": {
+     "textMsBackToBack": 0.945,
+     "textMsSynced": 0.9,
+     "timerQueryMs": 1.692,
+     "quads": 2000
+    },
+    "wkwebview-loopback": {
+     "textMsBackToBack": 0.773,
+     "textMsSynced": 0.56,
+     "timerQueryMs": null,
+     "quads": 2000
+    }
+   },
+   "troika": {
+    "chromium": {
+     "textMsBackToBack": 0.12,
+     "textMsSynced": 0.1,
+     "timerQueryMs": 0.058,
+     "quads": 2000
+    },
+    "wkwebview-loopback": {
+     "textMsBackToBack": 0.127,
+     "textMsSynced": 0.14,
+     "timerQueryMs": null,
+     "quads": 2000
+    }
+   }
+  }
+ },
+ "font": {
+  "file": {
+   "file": "NotoSansJP-wght.ttf",
+   "bytes": 9589900,
+   "fetchMs": 26.7,
+   "glyphs": 17936,
+   "cmapCodePoints": 16732,
+   "axes": {
+    "wght": {
+     "axisIndex": 0,
+     "tag": "wght",
+     "nameId": 265,
+     "flags": 0,
+     "min": 100,
+     "default": 100,
+     "max": 900
+    }
+   },
+   "tables": [
+    "glyf",
+    "gvar",
+    "HVAR",
+    "GSUB",
+    "GPOS"
+   ]
+  },
+  "hbslug": {
+   "chromium": {
+    "hbslug": {
+     "wght": 400,
+     "set3000": {
+      "buildMs": 160.5,
+      "outlineMs": 78,
+      "glyphs": 2999,
+      "cubicSkipped": 0,
+      "curves": {
+       "w": 4096,
+       "h": 54,
+       "bytes": 3538944
+      },
+      "bands": {
+       "w": 4096,
+       "h": 240,
+       "bytes": 7864320
+      },
+      "total": 11403264
+     },
+     "full": {
+      "buildMs": 1285.5,
+      "outlineMs": 592.2,
+      "glyphs": 17936,
+      "cubicSkipped": 0,
+      "curves": {
+       "w": 4096,
+       "h": 397,
+       "bytes": 26017792
+      },
+      "bands": {
+       "w": 4096,
+       "h": 1646,
+       "bytes": 53936128
+      },
+      "total": 79953920
+     }
+    },
+    "sampleHash": "db7d724c52123111",
+    "sampleMissing": 0
+   },
+   "wkwebview-loopback": {
+    "hbslug": {
+     "full": {
+      "bands": {
+       "bytes": 53936128,
+       "h": 1646,
+       "w": 4096
+      },
+      "buildMs": 1002.6,
+      "cubicSkipped": 0,
+      "curves": {
+       "bytes": 26017792,
+       "h": 397,
+       "w": 4096
+      },
+      "glyphs": 17936,
+      "outlineMs": 497.9,
+      "total": 79953920
+     },
+     "set3000": {
+      "bands": {
+       "bytes": 7864320,
+       "h": 240,
+       "w": 4096
+      },
+      "buildMs": 170.5,
+      "cubicSkipped": 0,
+      "curves": {
+       "bytes": 3538944,
+       "h": 54,
+       "w": 4096
+      },
+      "glyphs": 2999,
+      "outlineMs": 66.8,
+      "total": 11403264
+     },
+     "wght": 400
+    },
+    "sampleHash": "db7d724c52123111",
+    "sampleMissing": 0
+   }
+  },
+  "slug": {
+   "chromium": {
+    "slug": {
+     "ascii": {
+      "buildMs": 31.3,
+      "glyphs": 96,
+      "cubicSkipped": 0,
+      "curves": {
+       "w": 4096,
+       "h": 1,
+       "bytes": 65536
+      },
+      "bands": {
+       "w": 4096,
+       "h": 4,
+       "bytes": 131072
+      },
+      "total": 196608
+     },
+     "set3000": {
+      "buildMs": 155.3,
+      "glyphs": 2941,
+      "cubicSkipped": 0,
+      "curves": {
+       "w": 4096,
+       "h": 62,
+       "bytes": 4063232
+      },
+      "bands": {
+       "w": 4096,
+       "h": 236,
+       "bytes": 7733248
+      },
+      "total": 11796480
+     },
+     "full": {
+      "buildMs": 791.8,
+      "glyphs": 16089,
+      "cubicSkipped": 0,
+      "curves": {
+       "w": 4096,
+       "h": 419,
+       "bytes": 27459584
+      },
+      "bands": {
+       "w": 4096,
+       "h": 1466,
+       "bytes": 48037888
+      },
+      "total": 75497472
+     },
+     "totalMs": 978.5
+    },
+    "sampleHash": "6d8ee27918c60cf6",
+    "sampleMissing": 9
+   },
+   "wkwebview-loopback": {
+    "slug": {
+     "ascii": {
+      "bands": {
+       "bytes": 131072,
+       "h": 4,
+       "w": 4096
+      },
+      "buildMs": 19.4,
+      "cubicSkipped": 0,
+      "curves": {
+       "bytes": 65536,
+       "h": 1,
+       "w": 4096
+      },
+      "glyphs": 96,
+      "total": 196608
+     },
+     "full": {
+      "bands": {
+       "bytes": 48037888,
+       "h": 1466,
+       "w": 4096
+      },
+      "buildMs": 626.9,
+      "cubicSkipped": 0,
+      "curves": {
+       "bytes": 27459584,
+       "h": 419,
+       "w": 4096
+      },
+      "glyphs": 16089,
+      "total": 75497472
+     },
+     "set3000": {
+      "bands": {
+       "bytes": 7733248,
+       "h": 236,
+       "w": 4096
+      },
+      "buildMs": 127.4,
+      "cubicSkipped": 0,
+      "curves": {
+       "bytes": 4063232,
+       "h": 62,
+       "w": 4096
+      },
+      "glyphs": 2941,
+      "total": 11796480
+     },
+     "totalMs": 773.8
+    },
+    "sampleHash": "6d8ee27918c60cf6",
+    "sampleMissing": 9
+   }
+  },
+  "troika": {
+   "chromium": {
+    "troika": {
+     "set3000": {
+      "buildMs": 365.4,
+      "quads": 2998,
+      "atlas": {
+       "w": 2048,
+       "h": 2048,
+       "bytes": 16777216
+      },
+      "sdfGlyphSize": 64,
+      "timings": {
+       "fontLoad": 14.199999988079071,
+       "typesetting": 3.199999988079071,
+       "quads": 0.09999999403953552,
+       "sdf": {
+        "0": 0.19999998807907104,
+        "1": 0.09999999403953552,
+        "2": 0,
+        "3": 0.09999999403953552,
+        "4": 0.10000002384185791,
+        "5": 0,
+        "6": 0.09999999403953552,
+        "7": 0.19999998807907104,
+        "8": 0.09999999403953552,
+        "9": 0,
+        "10": 0,
+        "11": 0.10000002384185791,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0,
+        "16": 0,
+        "17": 0.09999999403953552,
+        "18": 0,
+        "19": 0,
+        "20": 0,
+        "21": 0.09999999403953552,
+        "22": 0,
+        "23": 0,
+        "24": 0,
+        "25": 0.09999999403953552,
+        "26": 0,
+        "27": 0,
+        "28": 0,
+        "29": 0,
+        "30": 0,
+        "31": 0.09999999403953552,
+        "32": 0,
+        "33": 0,
+        "34": 0,
+        "35": 0.30000001192092896,
+        "36": 0,
+        "37": 0,
+        "38": 0,
+        "39": 0,
+        "40": 0,
+        "41": 0.09999999403953552,
+        "42": 0,
+        "43": 0,
+        "44": 0,
+        "45": 0,
+        "46": 0,
+        "47": 0,
+        "48": 0,
+        "49": 0,
+        "50": 0.09999999403953552,
+        "51": 0,
+        "52": 0,
+        "53": 0,
+        "54": 0,
+        "55": 0,
+        "56": 0.10000002384185791,
+        "57": 0,
+        "58": 0,
+        "59": 0,
+        "60": 0,
+        "61": 0,
+        "62": 0,
+        "63": 0,
+        "64": 0,
+        "65": 0,
+        "66": 0,
+        "67": 0,
+        "68": 0,
+        "69": 0,
+        "70": 0.09999999403953552,
+        "71": 0,
+        "72": 0,
+        "73": 0,
+        "74": 0,
+        "75": 0,
+        "76": 0,
+        "77": 0,
+        "78": 0.09999999403953552,
+        "79": 0,
+        "80": 0,
+        "81": 0,
+        "82": 0,
+        "83": 0,
+        "84": 0.09999999403953552,
+        "85": 0,
+        "86": 0,
+        "87": 0,
+        "88": 0.09999999403953552,
+        "89": 0,
+        "90": 0.10000002384185791,
+        "91": 0,
+        "92": 0,
+        "93": 0,
+        "94": 0,
+        "95": 0,
+        "96": 0,
+        "97": 0.09999999403953552,
+        "98": 0
+       },
+       "sdfTotal": 5.300000011920929,
+       "total": 74.09999999403954
+      }
+     }
+    },
+    "sampleHash": "531bffaaa4941b80",
+    "sampleMissing": 0
+   },
+   "wkwebview-loopback": {
+    "troika": {
+     "set3000": {
+      "atlas": {
+       "bytes": 16777216,
+       "h": 2048,
+       "w": 2048
+      },
+      "buildMs": 625.2,
+      "quads": 2998,
+      "sdfGlyphSize": 64,
+      "timings": {
+       "fontLoad": 11.94,
+       "sdfGlyphs": 99,
+       "sdfTotal": 8.639999999999986,
+       "total": 70.01999999999998,
+       "typesetting": 3.740000000000002
+      }
+     }
+    },
+    "sampleHash": "531bffaaa4941b80",
+    "sampleMissing": 0
+   }
+  }
+ },
+ "hb": {
+  "chromium run2": {
+   "env": {
+    "crossOriginIsolated": false,
+    "sharedArrayBuffer": false,
+    "protocol": "http:",
+    "hardwareConcurrency": 18
+   },
+   "wasmMs": 8.2,
+   "shape2000Ms": 0.4,
+   "hash": "864f5ac7a082fcd6",
+   "kerning": [
+    4620,
+    4795
+   ],
+   "palt": [
+    11000,
+    8628
+   ],
+   "verticalSubstituted": 4,
+   "wghtAdvances": {
+    "w100": 4170,
+    "w400": 4290,
+    "w700": 4410,
+    "w900": 4477
+   }
+  },
+  "chromium run1": {
+   "env": {
+    "crossOriginIsolated": false,
+    "sharedArrayBuffer": false,
+    "protocol": "http:",
+    "hardwareConcurrency": 18
+   },
+   "wasmMs": 5.4,
+   "shape2000Ms": 0.3,
+   "hash": "864f5ac7a082fcd6",
+   "kerning": [
+    4620,
+    4795
+   ],
+   "palt": [
+    11000,
+    8628
+   ],
+   "verticalSubstituted": 4,
+   "wghtAdvances": {
+    "w100": 4170,
+    "w400": 4290,
+    "w700": 4410,
+    "w900": 4477
+   }
+  },
+  "wkwebview-loopback run2": {
+   "env": {
+    "crossOriginIsolated": true,
+    "hardwareConcurrency": 8,
+    "protocol": "http:",
+    "sharedArrayBuffer": true
+   },
+   "wasmMs": 8.2,
+   "shape2000Ms": 0.26,
+   "hash": "864f5ac7a082fcd6",
+   "kerning": [
+    4620,
+    4795
+   ],
+   "palt": [
+    11000,
+    8628
+   ],
+   "verticalSubstituted": 4,
+   "wghtAdvances": {
+    "w100": 4170,
+    "w400": 4290,
+    "w700": 4410,
+    "w900": 4477
+   }
+  },
+  "wkwebview-loopback run1": {
+   "env": {
+    "crossOriginIsolated": true,
+    "hardwareConcurrency": 8,
+    "protocol": "http:",
+    "sharedArrayBuffer": true
+   },
+   "wasmMs": 7,
+   "shape2000Ms": 0.26,
+   "hash": "864f5ac7a082fcd6",
+   "kerning": [
+    4620,
+    4795
+   ],
+   "palt": [
+    11000,
+    8628
+   ],
+   "verticalSubstituted": 4,
+   "wghtAdvances": {
+    "w100": 4170,
+    "w400": 4290,
+    "w700": 4410,
+    "w900": 4477
+   }
+  },
+  "wkwebview-scheme run2": {
+   "env": {
+    "crossOriginIsolated": true,
+    "hardwareConcurrency": 8,
+    "protocol": "vrmxg-spike:",
+    "sharedArrayBuffer": false
+   },
+   "wasmMs": 6,
+   "shape2000Ms": 0,
+   "hash": "864f5ac7a082fcd6",
+   "kerning": [
+    4620,
+    4795
+   ],
+   "palt": [
+    11000,
+    8628
+   ],
+   "verticalSubstituted": 4,
+   "wghtAdvances": {
+    "w100": 4170,
+    "w400": 4290,
+    "w700": 4410,
+    "w900": 4477
+   }
+  },
+  "wkwebview-scheme run1": {
+   "env": {
+    "crossOriginIsolated": true,
+    "hardwareConcurrency": 8,
+    "protocol": "vrmxg-spike:",
+    "sharedArrayBuffer": false
+   },
+   "wasmMs": 9,
+   "shape2000Ms": 0,
+   "hash": "864f5ac7a082fcd6",
+   "kerning": [
+    4620,
+    4795
+   ],
+   "palt": [
+    11000,
+    8628
+   ],
+   "verticalSubstituted": 4,
+   "wghtAdvances": {
+    "w100": 4170,
+    "w400": 4290,
+    "w700": 4410,
+    "w900": 4477
+   }
+  }
+ },
+ "failed": [],
+ "files": 49
+}
