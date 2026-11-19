@@ -19,7 +19,7 @@ ai.inject({ step: 120, agent: 'hana-1', action: { do: 'say', args: { text: 'Good
 | Curves | `linear`, `inverse`, whole-power `exponent`, `logistic` (a smoothstep stand-in), `bell`, `step`, `constant`. All polynomials, with no exp and no fractional pow |
 | Actions | `say` (heard by others as speech, with a topic), `emote`, `gesture` (a one-shot slot), `lookAt`, `goTo` (along the navmesh; arriving where the mesh ends counts), `follow`, `interact` (sit, use, …, or stand), `setGoal` (yours or another agent's), `wait`. Each has a JSON Schema (`actionSchemas()`) |
 | Presets | `wanderer`: reachable random points near home, pauses, and sits on a free seat now and then. `customer`: comes in, takes a free seat, calls the server over, orders when asked, waits, drinks, stands, leaves. `server`: greets newcomers, takes an order (walks over, asks, listens), makes it at the counter, brings it, and tends the counter otherwise. A scene can give a preset object in place of a name |
-| Director hook | `inject` queues a goal or an action for a step. It applies at the agent's next tick (an action runs as an override the tree waits behind) and is logged; `record()` returns the log and `replay(log)` queues it again. A shot replays without calling the model (research §4.3) |
+| Director hook | `inject` queues a goal, an action, several `actions` started together (M3: a line with its face and gesture) or blackboard `bb` values for a step, with `kind` and `meta` carried into the log. It applies at the agent's next tick (actions run as an override the tree waits behind, their arguments literal) and is logged; `record()` returns the log and `replay(log)` queues it again. A shot replays without calling the model (research §4.3). The snapshot and hash hold only events already due; later ones are inputs, so a replay matches the live run at every step. `@vrmxg/director` (M3 W0) is its user |
 
 Measured:
 - Acceptance check 14: Hana serves Mira. Mira sits (368), Hana greets her (453), asks (834), Mira orders (835), Hana acknowledges (963) and serves (2014), and Mira stands (2488) and leaves. It is identical at every step in Node, Chromium and WKWebView, and a snapshot mid-order re-simulates identically.
@@ -34,7 +34,7 @@ Not yet:
 - MCP tools for brains (W11);
 - emote and gesture slots beyond the character's set;
 - a crowd brain for audiences;
-- the LLM director itself (M3, AB-D-0256).
+- the LLM director itself: `@vrmxg/director` (M3 W0).
 
 ## Brain documents (M2 W11)
 

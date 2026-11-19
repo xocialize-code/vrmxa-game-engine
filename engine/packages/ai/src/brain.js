@@ -42,8 +42,18 @@ export class BrainBehaviour extends Behaviour {
     const ctx = { node: this.node, tree: this.tree, ai, brain: this, bb: this.bb, step, rng: this.rng };
     ai.applyInjected(this, ctx);
     const o = this.bb.override;
-    if (o) { // an injected action (the director's, a cue's) runs first; the tree waits behind it
-      const act = ACTIONS[o.do], args = resolve(o.args, ctx);
+    if (o?.all) { // injected actions started together (a director's line with its face and gesture): all must finish
+      for (const a of o.all) {
+        if (a.status !== 'running') continue;
+        const act = ACTIONS[a.do];
+        if (!a.data) a.data = act.start(ctx, a.args) ?? {};
+        a.status = act.update(ctx, a.args, a.data);
+      }
+      const running = o.all.some((a) => a.status === 'running');
+      if (!running) this.bb.override = null;
+      this.status = `override:${running ? 'running' : o.all.every((a) => a.status === 'success') ? 'success' : 'failure'}`;
+    } else if (o) { // an injected action (the director's, a cue's) runs first; the tree waits behind it
+      const act = ACTIONS[o.do], args = o.literal ? o.args : resolve(o.args, ctx);
       if (!o.data) o.data = act.start(ctx, args) ?? {};
       const r = act.update(ctx, args, o.data);
       if (r !== 'running') this.bb.override = null;

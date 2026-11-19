@@ -88,13 +88,21 @@ export class AiService {
   // ---------------------------------------------------------------- the recorded-input hook (M3's director)
 
   /**
-   * A decision from outside the step: { step, agent, goal: { name, params } } or { step, agent, action: { do, args } }.
-   * It applies on that step (or the next brain tick after it), is logged, and replays from the log.
+   * A decision from outside the step. It applies on `step` (or the agent's next brain tick after it), is logged, and
+   * replays from the log:
+   *   { step, agent, goal: { name, params } }      a goal onto the blackboard
+   *   { step, agent, action: { do, args } }        one action, run as an override the tree waits behind
+   *   { step, agent, actions: [{ do, args }, …] }  several, started together; the tree waits until all are done (M3:
+   *                                                a director's say with its face and gesture)
+   *   { step, agent, bb: { key: value } }          blackboard values set (M3: the director's pending flag, what was heard)
+   * Any of them together; `kind` and `meta` are carried into the log as they are (the director's request / decision,
+   * model and prompt hash). Injected arguments are literal: a "$…" string is text, never a blackboard reference.
    */
   inject(e) {
-    if (!e.agent || (!e.goal && !e.action)) throw new Error('inject needs an agent and a goal or an action');
-    if (e.action && !ACTIONS[e.action.do]) throw new Error(`unknown action "${e.action.do}"`);
-    this.pending.push(structuredClone({ step: e.step ?? this.tree.clock.step, agent: e.agent, ...(e.goal ? { goal: e.goal } : {}), ...(e.action ? { action: e.action } : {}) }));
+    if (!e.agent || (!e.goal && !e.action && !e.actions?.length && !e.bb)) throw new Error('inject needs an agent and a goal, an action, actions or bb values');
+    for (const a of [e.action, ...(e.actions ?? [])]) if (a && !ACTIONS[a.do]) throw new Error(`unknown action "${a.do}"`);
+    const keep = ['kind', 'goal', 'action', 'actions', 'bb', 'meta'];
+    this.pending.push(structuredClone({ step: e.step ?? this.tree.clock.step, agent: e.agent, ...Object.fromEntries(keep.filter((k) => e[k] !== undefined).map((k) => [k, e[k]])) }));
     this.pending.sort((a, b) => a.step - b.step);
   }
   /** Replay a log: every event queued again for its step. */
@@ -108,13 +116,23 @@ export class AiService {
     if (due.length) {
       this.pending = this.pending.filter((e) => !due.includes(e));
       for (const e of due) {
+        if (e.bb) Object.assign(brain.bb, structuredClone(e.bb));
         if (e.goal) brain.bb.goal = { ...structuredClone(e.goal), from: 'director', step: ctx.step };
-        if (e.action) brain.bb.override = { do: e.action.do, args: structuredClone(e.action.args ?? {}), data: null };
+        if (e.action) brain.bb.override = { do: e.action.do, args: structuredClone(e.action.args ?? {}), data: null, literal: true };
+        if (e.actions?.length) brain.bb.override = { all: e.actions.map((a) => ({ do: a.do, args: structuredClone(a.args ?? {}), data: null, status: 'running' })), literal: true };
         this.log.push(e);
       }
     }
   }
 
-  getState() { return { stimuli: structuredClone(this.stimuli), pending: structuredClone(this.pending), log: structuredClone(this.log) }; }
-  setState(s) { this.stimuli = structuredClone(s.stimuli); this.pending = structuredClone(s.pending); this.log = structuredClone(s.log); }
+  // The world holds the injected events already due (step ≤ the clock) and not yet applied. Events queued for later
+  // steps (a replayed log) are inputs, like recorded keys: not in the snapshot or the hash, so a replay is the same world
+  // as the live run at every step, and a restore keeps this tree's own later inputs (restoreWorld sets the clock first).
+  // A restore to an earlier step does not bring back events already applied after it: queue the log's later entries again.
+  getState() { const now = this.tree.clock.step; return { stimuli: structuredClone(this.stimuli), pending: structuredClone(this.pending.filter((e) => e.step <= now)), log: structuredClone(this.log) }; }
+  setState(s) {
+    const now = this.tree.clock.step, later = this.pending.filter((e) => e.step > now);
+    this.stimuli = structuredClone(s.stimuli); this.log = structuredClone(s.log);
+    this.pending = [...structuredClone(s.pending), ...later].sort((a, b) => a.step - b.step);
+  }
 }

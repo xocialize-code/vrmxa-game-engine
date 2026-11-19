@@ -1,0 +1,24 @@
+{
+  "name": "@vrmxg/director",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG's LLM director (M3 W0): persona-driven decisions made outside the 60 Hz step. A LanguageModel adapter (shell bridge, loopback HTTP, scripted, replay), one shared request queue, prompts in VRMXA §11 order, tool schemas narrowed per character and moment from @vrmxg/ai's action vocabulary, validation against the schema and the world, and decisions that enter the step only through ai.inject, logged so a conversation replays without the model.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/ai": "0.1.0"
+  },
+  "devDependencies": {
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  }
+}
