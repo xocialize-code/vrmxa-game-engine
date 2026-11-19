@@ -43,7 +43,7 @@ test('personas in the cafe: ids, core and app personas, the director, the trait 
 
   // the director, on the persona service
   P.memory = (id) => (id === HANA ? 'Mira usually has an oat latte.' : null);
-  const director = installDirector(W.tree, { model: scriptedModel([{ toolCalls: [] }]), user: 'mira', userName: 'Mira', persona: (id) => P.forDirector(id), memory: (id) => P.memoryOf(id) });
+  const director = installDirector(W.tree, { design: 'one', model: scriptedModel([{ toolCalls: [] }]), user: 'mira', userName: 'Mira', persona: (id) => P.forDirector(id), memory: (id) => P.memoryOf(id) });
   for (let i = 0; i < 400; i++) W.tree.step();
   director.talk('hana-1', 'Morning!');
   const req = director.requests[0].request, sys = req.messages[0].content;

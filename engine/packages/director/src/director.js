@@ -13,6 +13,7 @@
 // the ai service's log, so ai.replay(ai.record()) reproduces a conversation with no model at all.
 import { toolsFor, validate } from './schema.js';
 import { buildMessages, describeMoment, promptHash, FRAMING } from './prompt.js';
+import { lineRequest, verdictRequest, parseVerdict, cleanLine, verdictParts } from './split.js';
 
 /** Expressions a reply may carry when the persona names none: VRM 1.0's five emotion presets (VRMXA §10.1). */
 export const EMOTIONS = ['happy', 'angry', 'sad', 'relaxed', 'surprised'];
@@ -33,13 +34,17 @@ export class Director {
    * @param {number} [o.maxInFlight] requests at the model at once (2)
    * @param {number} [o.reach] how far items count as nearby (m)
    * @param {number} [o.maxTokens]
+   * @param {'split' | 'one'} [o.design] the split turn (a line call, then a JSON verdict; the default, AB-D-0265) or one call with tools
    *
    * @typedef {import('./prompt.js').Persona & { allowedExpressions?: string[], gestures?: string[],
    *   goals?: { name: string, description?: string }[], framing?: string }} PersonaInfo
    */
-  constructor(tree, { model, persona = () => null, memory = () => null, framing = FRAMING, user = null, userName = null, timeout = 240, maxInFlight = 2, reach = 6, maxTokens = 160 }) {
+  constructor(tree, { model, persona = () => null, memory = () => null, framing = FRAMING, user = null, userName = null, timeout = 240, maxInFlight = 2, reach = 6, maxTokens = 160, design = 'split' }) {
     this.tree = tree; this.model = model; this.persona = persona; this.memory = memory; this.framing = framing;
     this.user = user; this.userName = userName; this.timeout = timeout; this.maxInFlight = maxInFlight; this.reach = reach; this.maxTokens = maxTokens;
+    if (design !== 'split' && design !== 'one') throw new Error(`design: 'split' (a line call, then a verdict) or 'one' (one call with tools), not ${design}`);
+    /** 'split' (the default, AB-D-0265): her line, then a JSON verdict; 'one': one call with tools (W0's design). */
+    this.design = design;
     this.ai = tree.services.get('ai');
     if (!this.ai) throw new Error('the director needs the ai service (installAi) first');
     /** Every request: { id, agent, kind, step, priority, request, hash, moment, state, … } (a debugging record, not replay data). */
@@ -103,10 +108,21 @@ export class Director {
     const history = this.history.get(agent) ?? [];
     // the situation goes in the system prompt; the newest turn is the person's words alone (or why she is asked)
     const situation = describeMoment(m, { doing: doingOf(brain), userName: this.userName });
-    const messages = buildMessages({ framing: persona.framing ?? this.framing, persona, memory: this.memory(agent), history, situation, moment: heard ? heard.text : reason });
-    const request = { messages, tools: toolsFor(m), maxTokens: this.maxTokens, priority };
-    const hash = promptHash({ messages, tools: request.tools });
-    const r = { id, agent, kind, step, priority, request, hash, moment: m, heard, state: 'queued', deadline: step + this.timeout };
+    // the split turn starts with her line (or, for a goal choice with no one speaking, is the verdict alone); one-call
+    // asks for the line and the actions together, with tools
+    let part = 'one', request;
+    if (this.design === 'one') {
+      const messages = buildMessages({ framing: persona.framing ?? this.framing, persona, memory: this.memory(agent), history, situation, moment: heard ? heard.text : reason });
+      request = { messages, tools: toolsFor(m), maxTokens: this.maxTokens, priority };
+    } else if (heard) {
+      part = 'line';
+      request = { ...lineRequest({ persona, memory: this.memory(agent), history, situation, moment: heard.text }), maxTokens: 90, priority };
+    } else {
+      part = 'verdict';
+      request = { ...verdictRequest({ moment: m, name: persona.name, userName: this.userName ?? 'the person', heard: reason }), maxTokens: 120, priority };
+    }
+    const hash = promptHash({ messages: request.messages, tools: request.tools });
+    const r = { id, agent, kind, part, step, priority, request, hash, moment: m, heard, reason, name: persona.name, line: null, state: 'queued', deadline: step + this.timeout };
     this.requests.push(r); this.stats.asked++;
     if (heard) history.push({ role: 'user', content: heard.text });
     this.history.set(agent, history.slice(-24));
@@ -145,7 +161,8 @@ export class Director {
     for (const r of this.requests) if ((r.state === 'queued' || r.state === 'asking') && step >= r.deadline) {
       if (r.state === 'asking') this.inFlight--;
       r.state = 'timedOut'; this.stats.timedOut++;
-      this.decide(r, { failed: 'timeout' });
+      if (r.part === 'verdict' && r.line !== null) this.decideVerdict(r, null, { failed: 'timeout' }); // the line stands
+      else this.decide(r, { failed: 'timeout' });
     }
     this.dispatch();
   }
@@ -155,26 +172,64 @@ export class Director {
   answered(r, reply) {
     if (r.state !== 'asking') { if (r.state === 'timedOut') { r.late = true; this.stats.late++; } return; }
     this.inFlight--; r.reply = reply; r.answeredAt = this.tree.clock.step;
-    const v = validate(reply, r.moment, { exists: (id) => !!this.tree.find(id) });
-    if ('errors' in v) { r.state = 'rejected'; r.errors = v.errors; this.stats.rejected++; this.decide(r, { failed: 'rejected', errors: v.errors, model: reply.model }); }
-    else { r.state = 'answered'; r.calls = v.calls; this.stats.answered++; this.decide(r, { calls: v.calls, model: reply.model }); }
+    const exists = (id) => !!this.tree.find(id);
+    if (r.part === 'line') {
+      // her line alone; it goes into the step at once (she speaks while the verdict is asked for)
+      const said = cleanLine(reply.text ?? reply.toolCalls?.find((c) => c.name === 'say')?.arguments?.text ?? '', r.name);
+      const v = validate({ toolCalls: [{ name: 'say', arguments: { text: said, to: 'user' } }] }, r.moment, { exists });
+      if ('errors' in v) { r.state = 'rejected'; r.errors = v.errors; this.stats.rejected++; this.decide(r, { failed: 'rejected', errors: v.errors, model: reply.model }); }
+      else { r.state = 'answered'; r.calls = v.calls; this.stats.answered++; this.decide(r, { calls: v.calls, model: reply.model }); this.askVerdict(r, said); }
+    } else if (r.part === 'verdict') {
+      r.state = 'answered'; this.decideVerdict(r, parseVerdict(reply.text), { model: reply.model });
+    } else {
+      const v = validate(reply, r.moment, { exists });
+      if ('errors' in v) { r.state = 'rejected'; r.errors = v.errors; this.stats.rejected++; this.decide(r, { failed: 'rejected', errors: v.errors, model: reply.model }); }
+      else { r.state = 'answered'; r.calls = v.calls; this.stats.answered++; this.decide(r, { calls: v.calls, model: reply.model }); }
+    }
     this.dispatch();
   }
 
   failed(r, e) {
     if (r.state !== 'asking') return;
     this.inFlight--; r.state = 'failed'; r.error = e?.message ?? String(e); this.stats.failed++;
-    this.decide(r, { failed: 'error', errors: [r.error] });
+    if (r.part === 'verdict' && r.line !== null) this.decideVerdict(r, null, { failed: 'error', errors: [r.error] }); // the line stands
+    else this.decide(r, { failed: 'error', errors: [r.error] });
     this.dispatch();
   }
 
+  /** The split turn's second call: the verdict on her line (queued at once, with its own deadline). */
+  askVerdict(r, line) {
+    const step = this.tree.clock.step;
+    const request = { ...verdictRequest({ moment: r.moment, name: r.name, userName: this.userName ?? 'the person', heard: r.heard.text, line }), maxTokens: 120, priority: r.priority };
+    const v = { ...r, id: `${r.id}:verdict`, parent: r.id, part: 'verdict', step, request, hash: promptHash({ messages: request.messages, tools: request.tools }), line, state: 'queued', deadline: step + this.timeout, calls: undefined, reply: undefined };
+    this.requests.push(v);
+    this.queue.push(v);
+    this.queue.sort((a, b) => a.priority - b.priority || a.step - b.step || (a.id < b.id ? -1 : 1));
+  }
+
+  /**
+   * A verdict into the step: its parts that validate (her face and gesture, the action, the goal; endConversation after a
+   * goodbye, by rule), as a second decision. With no verdict (it failed), only the goodbye rule. A goal choice's verdict
+   * (no line) is the whole turn.
+   */
+  decideVerdict(r, verdict, { failed = null, errors = null, model = this.model.name } = {}) {
+    const p = verdictParts(verdict ?? {}, r.moment, { heard: r.heard?.text ?? '', userName: this.userName ?? '', exists: (id) => !!this.tree.find(id), validate });
+    r.dropped = p.dropped; r.verdict = verdict;
+    if (!verdict) this.stats.verdictsFailed = (this.stats.verdictsFailed ?? 0) + 1;
+    const calls = [...(p.face.emotion ? [{ name: 'emote', args: { name: p.face.emotion } }] : []), ...(p.face.gesture ? [{ name: 'gesture', args: { slot: p.face.gesture } }] : []), ...p.calls];
+    r.calls = calls;
+    if (r.line === null) this.decide(r, { calls, model, ...(failed ? { failed, errors } : {}) }); // a goal choice: the whole turn
+    else this.decide(r, { calls, model, part: 'verdict', ...(failed || !verdict ? { failed: failed ?? 'unparsed', errors: errors ?? (verdict ? null : ['the verdict is not JSON']) } : {}), dropped: p.dropped });
+  }
+
   /** The decision into the step, on the first tick from now: the calls as actions, a goal, blackboard values. */
-  decide(r, { calls = [], failed = null, errors = null, model = this.model.name }) {
+  decide(r, { calls = [], failed = null, errors = null, model = this.model.name, part = null, dropped = null }) {
     const step = this.tree.clock.step, e = toInject(calls, this.user);
     // her reply keeps the conversation going (its quiet is counted from here), unless she ended it
     const going = r.heard && !('conversation' in e.bb) ? { conversation: { with: this.who(r.heard.from), last: step } } : {};
     const bb = { director: { pending: null, since: null, last: r.id, ...(failed ? { failed } : {}) }, ...going, ...e.bb };
-    const meta = { id: r.id, source: { model, promptHash: r.hash }, asked: r.step, ...(failed ? { failed, errors } : { calls }) };
+    // a split turn's verdict is its second decision: what it kept, and what it dropped or why it failed (the line stands)
+    const meta = { id: r.id, source: { model, promptHash: r.hash }, asked: r.step, ...(part ? { part, calls, ...(dropped?.length ? { dropped } : {}) } : {}), ...(failed ? { failed, errors } : part ? {} : { calls }) };
     // a decision that acts ends the thinking first (the tree, which would, waits behind the decision's actions)
     const actions = e.actions.length ? [{ do: 'think', args: { on: false } }, ...e.actions] : [];
     this.ai.inject({ step, agent: r.agent, kind: 'decision', bb, ...(actions.length ? { actions } : {}), ...(e.goal ? { goal: e.goal } : {}), meta });

@@ -65,7 +65,7 @@ LFM2.5-8B-A1B int4 (reasoning skipped) with her real prompt and tools, and her l
 - **Latency meets the target, with the GPU to itself.** STT + LLM + TTS took a median 0.59–0.95 s (max 1.63 s), about
   1.0–1.4 s from the end of speech once the detector's 450 ms wait is added.
   - With other models running on the GPU (a Gaea z-image worker and TRELLIS.2), it took a median 1.2–1.8 s
-    (`results/turn-t0.6.json`, `results/turn-t0.2.json`, recorded with them running).
+    (these first runs' files are superseded by the split turn's measurement below).
 - **Speech-to-text was word-perfect** on all ten lines.
 - **The model is not reliable enough yet.**
   - Across the runs, 3–6 of 10 replies had no line: an action alone, a line over 400 characters, or its tool call
@@ -78,6 +78,29 @@ LFM2.5-8B-A1B int4 (reasoning skipped) with her real prompt and tools, and her l
   The prompt now puts the situation in the system prompt and the person's words alone in the newest turn. It asks for
   exactly one line per reply, in her own words. That cut the echoes but did not fix the rest. Choosing the director's
   model (another model, reasoning on, or constrained decoding) is open.
+
+**The director's design and model** (AB-D-0265, the operator's choice after the evaluation below): `Director` makes
+the split turn by default (`design: 'split'`; `design: 'one'` keeps the one-call turn, which the W0 and W2 tests use):
+1. Her line is asked for first. It enters the step as soon as it arrives, with `think` off, the line and a look, so she
+   speaks while the verdict is asked for.
+2. The verdict follows as a second decision (`meta.part: 'verdict'`): what validated (face, gesture, action, goal),
+   what was dropped, and `endConversation` after a goodbye, by rule.
+3. If the verdict fails or times out, the line stands, and the goodbye rule still applies.
+4. A goal choice with no one speaking (`consider`) is a verdict alone.
+
+The default model is LFM3-Omni-2B 4-bit. A spoken turn on it (`scripts/measure-turn.mjs`, `results/turn-omni4.json`;
+Omni hears through its own ASR, Kokoro speaks from `tts-server.py`; M5 Max, with TRELLIS.2 running):
+- **First audio:** median 638 ms (max 964 ms) for STT 164 + line 277 + TTS 211. That is about 1.1 s from the end of
+  speech with the detector's 450 ms.
+- **Lines:** 10 of 10 valid.
+- **Hearing:** 9 of 10 heard word for word. The tenth was "Good morning, Hanath."
+- **The verdict:** median 718 ms, while she speaks.
+
+Tests: `test/split-cafe.test.mjs` runs on the cafe:
+- the line, then the verdict, with the order made and brought, and a replay of the log the same world;
+- a goodbye ended by rule though the verdict was not JSON;
+- a verdict that never comes, leaving the line;
+- a goal choice as a verdict alone.
 
 **Choosing the director's model** (`scripts/eval-models.mjs`; `results/models.json`, every reply in `results/models.md`).
 Setup:
@@ -134,7 +157,7 @@ Tests without a world cover:
 
 Not yet:
 - the shell's `llm.respond` (W3; waits on `mlx-engine`, AB-A-0311);
-- the split turn inside `Director` (the helpers are in `split.js`; `ask()` still makes one call), and the default model (see above);
+- a person's read of Omni's character, and a prompt pass (AB-R-1017 found it repetitive as prompted);
 - the request's history in saves, and baking a take into a sequence (W4);
 - MCP tools (W10);
 - requests in flight when a snapshot is restored live (W4 decides: cancel them, or keep their answers).

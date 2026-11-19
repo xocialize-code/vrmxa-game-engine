@@ -39,9 +39,9 @@ async function world(brain, { profile = null } = {}) {
 }
 
 /** Step `steps` steps; `script(step, director, W)` after each; `watch(step, W)` records. Hashes every 30 steps. */
-async function play(W, { steps, model, script = () => {}, watch = () => {}, replay = null, setup = () => {} }) {
+async function play(W, { steps, model, script = () => {}, watch = () => {}, replay = null, setup = () => {}, design = 'one' }) {
   const tree = W.tree, P = W.personas;
-  const director = installDirector(tree, { model, user: 'mira', userName: 'Mira', persona: (id) => P.forDirector(id), memory: (id) => P.memoryOf(id) });
+  const director = installDirector(tree, { design, model, user: 'mira', userName: 'Mira', persona: (id) => P.forDirector(id), memory: (id) => P.memoryOf(id) });
   setup(director, W);
   const said = [], hashes = {};
   tree.listen(tree.find('hana-1'), 'spoke', (a) => said.push([tree.clock.step, a.text]));

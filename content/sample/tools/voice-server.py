@@ -4,19 +4,19 @@ It stands in for the MLXEngine calls the Mac shell will make (asked of mlx-engin
 AB-A-0308 for TTS with word timings), and serves browsers and the acceptance in the meantime. Three endpoints,
 127.0.0.1 only, CORS-readable:
 
-  POST /v1/chat/completions   OpenAI-compatible chat with tools (what @vrmxg/director's httpModel sends): LFM2.5-8B-A1B
-                              int4 through mlx-lm, with reasoning skipped (an empty <think></think> is prefilled);
-                              LFM's tool calls ([say(text='…', to='user')]) come back as OpenAI tool_calls
+  POST /v1/chat/completions   OpenAI-compatible chat (with tools, for the one-call design): the director's model,
+                              LFM3-Omni-2B 4-bit by default (AB-D-0265); a request's "model" picks among those loaded.
+                              Tool calls come back as OpenAI tool_calls (LFM's [say(text='…')] and Qwen's <tool_call>)
   POST /transcribe            a WAV (16-bit PCM, any rate; the body as bytes, or JSON { "wav": base64 }) → { text, ms }:
-                              whisper-large-v3-turbo through mlx-whisper
+                              Omni's own ASR when omni4 is loaded (AB-R-1017: 4.5 % word error), else whisper-large-v3-turbo
   POST /speak                 { text, voice } → { wav (base64), sampleRate, duration, words, ms }: Kokoro-82M (as
                               tts-server.py, the shape @vrmxg/voice's httpTTS reads)
 
 Every answer carries `ms`, the server's own time for it (the latency receipts split the turn by stage).
 
   HF_HUB_CACHE=/Volumes/DEV_VOL1/Models HF_HUB_OFFLINE=1 <venv>/bin/python -I tools/voice-server.py [--port 5191]
-      [--llm lfm25,omni4,lfm3fast,qwen4] [--no-llm] [--no-stt] [--no-tts]
-  A request's "model" picks among the loaded models (MODELS below); the first is the default.
+      [--llm omni4[,lfm25,lfm3fast,qwen4]] [--stt omni|whisper] [--no-llm] [--no-stt] [--no-tts]
+  The venv needs mlx-vlm (LFM3, Qwen3-VL) and mlx-audio (Kokoro); mlx-lm for lfm25; mlx-whisper only for --stt whisper.
 """
 import ast
 import base64
@@ -129,14 +129,34 @@ def parse_tool_calls(out):
 
 # ---------------------------------------------------------------- speech to text
 
-def load_stt():
-    global stt_ready
+stt_kind = "whisper"
+
+
+def load_stt(kind):
+    """kind: "omni" (LFM3-Omni-2B's own ASR, the loaded omni4 model: 4.5 % word error against Nemotron's 9.4 % in the
+    companion's spike, AB-R-1017) or "whisper" (whisper-large-v3-turbo through mlx-whisper)."""
+    global stt_ready, stt_kind
     import numpy as np
+    if kind == "omni" and "omni4" not in llms:
+        raise SystemExit("--stt omni needs omni4 among --llm")
+    stt_kind = kind
     transcribe(np.zeros(16000, dtype=np.float32))  # warm: downloads nothing (offline), compiles
     stt_ready = True
 
 
 def transcribe(audio):
+    if stt_kind == "omni":
+        import tempfile
+        from mlx_vlm import stream_generate
+        _, model, proc, tok, kw, _ = llms["omni4"]
+        msgs = [{"role": "system", "content": "Perform ASR in English."}, {"role": "user", "content": [{"type": "audio"}]}]
+        prompt = tok.apply_chat_template(msgs, add_generation_prompt=True, tokenize=False)
+        with tempfile.NamedTemporaryFile(suffix=".wav") as f:  # mlx-vlm reads audio from a file
+            import numpy as np
+            pcm = (np.clip(audio, -1, 1) * 32767).astype("<i2").tobytes()
+            with wave.open(f.name, "wb") as w:
+                w.setnchannels(1); w.setsampwidth(2); w.setframerate(16000); w.writeframes(pcm)
+            return "".join(r.text for r in stream_generate(model, proc, prompt, audio=[f.name], max_tokens=200, temperature=0.0)).strip()
     import mlx_whisper
     r = mlx_whisper.transcribe(audio, path_or_hf_repo=STT_REPO, language="en", fp16=True, condition_on_previous_text=False)
     return r.get("text", "").strip()
@@ -249,12 +269,12 @@ def main():
     if "--no-tts" not in sys.argv:
         from kokoro_tts import Kokoro
         tts = Kokoro(); tts.speak("Ready.")  # warm: the first synthesis compiles
-    if "--no-stt" not in sys.argv:
-        load_stt()
-    if "--no-llm" not in sys.argv:
-        load_llms(sys.argv[sys.argv.index("--llm") + 1].split(",") if "--llm" in sys.argv else ["lfm25"])
+    if "--no-llm" not in sys.argv:  # the director's default is omni4 (AB-D-0265)
+        load_llms(sys.argv[sys.argv.index("--llm") + 1].split(",") if "--llm" in sys.argv else ["omni4"])
+    if "--no-stt" not in sys.argv:  # Omni hears too when it is loaded; whisper otherwise
+        load_stt(sys.argv[sys.argv.index("--stt") + 1] if "--stt" in sys.argv else ("omni" if "omni4" in llms else "whisper"))
     server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
-    print(f"voice-server: http://127.0.0.1:{server.server_address[1]} (llm {list(llms)}, stt {stt_ready}, tts {bool(tts)}; ready in {time.perf_counter() - t0:.1f} s)", file=sys.stderr, flush=True)
+    print(f"voice-server: http://127.0.0.1:{server.server_address[1]} (llm {list(llms)}, stt {stt_kind if stt_ready else False}, tts {bool(tts)}; ready in {time.perf_counter() - t0:.1f} s)", file=sys.stderr, flush=True)
     server.serve_forever()
 
 

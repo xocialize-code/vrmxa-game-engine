@@ -187,8 +187,10 @@ can start against the loopback stand-in before MLXEngine answers.
    the engine and the shell by path, and gets its own bridge area.
 
 Taken from research as defaults (say so if any should change):
-- **Model:** LFM2.5-8B-A1B int4 (native tool calling, about 270 tok/s), in non-reasoning mode for director calls and
-  replies with short JSON. Reasoning took 600–1,400 ms of a 1.2 s turn in VoiceChatKit (research §4.4).
+- **Model:** *changed 2026-11-19 (AB-D-0265):* **LFM3-Omni-2B 4-bit, with the split turn.** The turn is a line call,
+  then a JSON verdict call, salvaged part by part, with goodbyes decided by rule. The evaluation (AB-R-1018,
+  `engine/packages/director/README.md`) scored it 26 of 31 cafe turns, with its line in about 90 ms. The first default,
+  LFM2.5-8B-A1B int4 with reasoning skipped, scored 13 of 31, and every model was weak in one tool-calling call.
 - **Speech:**
   - STT is MLXEngine's live plane (Nemotron) as VoiceChatKit uses it;
   - TTS is Kokoro with word timings (AB-A-0308);

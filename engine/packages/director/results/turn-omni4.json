@@ -1,0 +1,280 @@
+{
+ "when": "2026-11-19T17:48:53.091Z",
+ "url": "http://127.0.0.1:5191",
+ "ttsUrl": "http://127.0.0.1:5190",
+ "hardware": "Mac Studio M5 Max (Mac17,14)",
+ "design": "split",
+ "models": {
+  "llm": "omni4 (greedy)",
+  "stt": "LFM3-Omni-2B 4-bit, its own ASR",
+  "tts": "mlx-community/Kokoro-82M-bf16"
+ },
+ "turns": 10,
+ "validLines": 10,
+ "heardExactly": 9,
+ "steady": {
+  "firstAudioMs": {
+   "median": 637.5,
+   "max": 964.1,
+   "mean": 680
+  },
+  "sttMs": {
+   "median": 164.3,
+   "max": 235,
+   "mean": 170.9
+  },
+  "lineMs": {
+   "median": 277.2,
+   "max": 364.6,
+   "mean": 281.2
+  },
+  "ttsMs": {
+   "median": 210.6,
+   "max": 366.7,
+   "mean": 227.9
+  },
+  "verdictMs": {
+   "median": 717.6,
+   "max": 872.5,
+   "mean": 720.2
+  }
+ },
+ "vadEndMs": 450,
+ "note": "firstAudioMs = STT + line + whole-line TTS round trips, steady state (first turn left out); the verdict follows while she speaks; end of speech to first audio adds the detector's 450 ms wait",
+ "rows": [
+  {
+   "said": "Good morning, Hana!",
+   "heard": "Good morning, Hanath.",
+   "line": "Always! What can I get you?",
+   "valid": true,
+   "sttMs": 163,
+   "lineMs": 176.5,
+   "ttsMs": 125.4,
+   "verdictMs": 575.6,
+   "firstAudioMs": 464.8,
+   "calls": [],
+   "face": {
+    "text": "Always! What can I get you?",
+    "to": "user",
+    "gesture": "greet"
+   },
+   "dropped": [
+    "greet: call 1 (greet): not a tool you have now"
+   ]
+  },
+  {
+   "said": "Could I get a latte, please?",
+   "heard": "Could I get a latte, please?",
+   "line": "Sure, I'll make it for you right away.",
+   "valid": true,
+   "sttMs": 166.7,
+   "lineMs": 229.7,
+   "ttsMs": 152.4,
+   "verdictMs": 672.9,
+   "firstAudioMs": 548.8,
+   "calls": [
+    {
+     "name": "interact",
+     "item": "stool-1",
+     "verb": "sit"
+    },
+    {
+     "name": "setGoal",
+     "goal": "takeOrder",
+     "params": {
+      "customer": "user",
+      "order": "Could I get a latte, please?"
+     }
+    }
+   ],
+   "face": {
+    "text": "Sure, I'll make it for you right away.",
+    "to": "user",
+    "gesture": "nod"
+   },
+   "dropped": []
+  },
+  {
+   "said": "How long have you been running this place?",
+   "heard": "How long have you been running this place?",
+   "line": "Three years now. It's become a little bit of a tradition with the regulars.",
+   "valid": true,
+   "sttMs": 202.5,
+   "lineMs": 359.4,
+   "ttsMs": 366.7,
+   "verdictMs": 600.1,
+   "firstAudioMs": 928.7,
+   "calls": [
+    {
+     "name": "lookAt",
+     "target": "user"
+    }
+   ],
+   "face": {
+    "text": "Three years now. It's become a little bit of a tradition with the regulars.",
+    "to": "user"
+   },
+   "dropped": []
+  },
+  {
+   "said": "What do you recommend today?",
+   "heard": "What do you recommend today?",
+   "line": "The house special is a croissant with a house-made espresso.",
+   "valid": true,
+   "sttMs": 130.2,
+   "lineMs": 254.9,
+   "ttsMs": 210.6,
+   "verdictMs": 575.1,
+   "firstAudioMs": 595.8,
+   "calls": [
+    {
+     "name": "lookAt",
+     "target": "user"
+    }
+   ],
+   "face": {
+    "text": "The house special is a croissant with a house-made espresso.",
+    "to": "user"
+   },
+   "dropped": []
+  },
+  {
+   "said": "Is it always this quiet in the morning?",
+   "heard": "Is it always this quiet in the morning?",
+   "line": "Not quite. There's usually a few regulars coming in early.",
+   "valid": true,
+   "sttMs": 164.3,
+   "lineMs": 236.7,
+   "ttsMs": 236.5,
+   "verdictMs": 607.7,
+   "firstAudioMs": 637.5,
+   "calls": [
+    {
+     "name": "lookAt",
+     "target": "user"
+    }
+   ],
+   "face": {
+    "text": "Not quite. There's usually a few regulars coming in early.",
+    "to": "user"
+   },
+   "dropped": []
+  },
+  {
+   "said": "Can I sit by the window?",
+   "heard": "Can I sit by the window?",
+   "line": "Sit on stool one, it's the best spot.",
+   "valid": true,
+   "sttMs": 148.4,
+   "lineMs": 277.2,
+   "ttsMs": 177.2,
+   "verdictMs": 872.5,
+   "firstAudioMs": 602.9,
+   "calls": [
+    {
+     "name": "interact",
+     "item": "stool-1",
+     "verb": "sit"
+    }
+   ],
+   "face": {
+    "text": "Sit on stool one, it's the best spot.",
+    "to": "user"
+   },
+   "dropped": []
+  },
+  {
+   "said": "That smells amazing.",
+   "heard": "That smells amazing.",
+   "line": "It does, thanks for saying that.",
+   "valid": true,
+   "sttMs": 153.5,
+   "lineMs": 308.2,
+   "ttsMs": 215,
+   "verdictMs": 821.7,
+   "firstAudioMs": 676.7,
+   "calls": [
+    {
+     "name": "lookAt",
+     "target": "user"
+    }
+   ],
+   "face": {
+    "text": "It does, thanks for saying that.",
+    "to": "user",
+    "gesture": "nod"
+   },
+   "dropped": []
+  },
+  {
+   "said": "Do you have anything without milk?",
+   "heard": "Do you have anything without milk?",
+   "line": "I can make it without milk, just a bit less creamy.",
+   "valid": true,
+   "sttMs": 235,
+   "lineMs": 364.6,
+   "ttsMs": 364.5,
+   "verdictMs": 828,
+   "firstAudioMs": 964.1,
+   "calls": [
+    {
+     "name": "lookAt",
+     "target": "user"
+    }
+   ],
+   "face": {
+    "text": "I can make it without milk, just a bit less creamy.",
+    "to": "user"
+   },
+   "dropped": []
+  },
+  {
+   "said": "Thanks, you are the best.",
+   "heard": "Thanks, you are the best.",
+   "line": "Thanks, I'm glad you like it.",
+   "valid": true,
+   "sttMs": 179.9,
+   "lineMs": 332.3,
+   "ttsMs": 153.4,
+   "verdictMs": 717.6,
+   "firstAudioMs": 665.5,
+   "calls": [
+    {
+     "name": "lookAt",
+     "target": "user"
+    }
+   ],
+   "face": {
+    "text": "Thanks, I'm glad you like it.",
+    "to": "user"
+   },
+   "dropped": []
+  },
+  {
+   "said": "I should get going. See you tomorrow!",
+   "heard": "I should get going. See you tomorrow.",
+   "line": "See you tomorrow, have a good morning!",
+   "valid": true,
+   "sttMs": 157.8,
+   "lineMs": 167.5,
+   "ttsMs": 175,
+   "verdictMs": 786.5,
+   "firstAudioMs": 500.3,
+   "calls": [
+    {
+     "name": "goTo",
+     "target": "user"
+    },
+    {
+     "name": "endConversation"
+    }
+   ],
+   "face": {
+    "text": "See you tomorrow, have a good morning!",
+    "to": "user",
+    "gesture": "greet"
+   },
+   "dropped": []
+  }
+ ]
+}

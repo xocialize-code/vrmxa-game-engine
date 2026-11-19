@@ -23,18 +23,18 @@ export function lineRequest(o) {
 
 /**
  * The verdict request: what was said on both sides, and the moment's choices as a JSON shape to fill.
- * @param {{ moment: import('./schema.js').Moment, name: string, userName?: string, heard: string, line: string }} o
+ * With no line (a goal choice on an event, `consider`), `heard` is what happened and the verdict is the whole turn.
+ * @param {{ moment: import('./schema.js').Moment, name: string, userName?: string, heard: string, line?: string | null }} o
  */
-export function verdictRequest({ moment: m, name, userName = 'the person', heard, line }) {
+export function verdictRequest({ moment: m, name, userName = 'the person', heard, line = null }) {
   const people = [...(m.user ? ['user'] : []), ...m.characters.map((c) => c.id)];
   const places = [...people, ...m.items.map((i) => i.id)];
   const verbs = [...new Set(m.items.flatMap((i) => i.verbs))].sort();
   const list = (xs) => xs.map((x) => JSON.stringify(x)).join(', ');
   const lines = [
-    `${userName} said to ${name}: "${heard}"`,
-    `${name} answered: "${line}"`,
+    ...(line === null ? [`What just happened, for ${name}: ${heard}`] : [`${userName} said to ${name}: "${heard}"`, `${name} answered: "${line}"`]),
     '',
-    `Decide what ${name} does along with that answer. Fill in this JSON object and answer with the object only:`,
+    `Decide what ${name} does ${line === null ? 'now' : 'along with that answer'}. Fill in this JSON object and answer with the object only:`,
     '{',
     `  "emotion": ${m.expressions.length ? `one of ${list(m.expressions)}, or null` : 'null'},`,
     `  "gesture": ${m.gestures.length ? `one of ${list(m.gestures)}, or null` : 'null'},`,
@@ -116,22 +116,33 @@ export function normalizeVerdict(v, m, { userName = '', heard = '' } = {}) {
  * @returns {{ ok: true, calls: { name: string, args: any }[], dropped: string[] } | { ok: false, errors: string[] }}
  */
 export function salvage(line, verdict, m, { heard = '', userName = '', exists, validate }) {
-  const v = normalizeVerdict(verdict, m, { userName, heard }), dropped = [];
-  const say = { text: line, to: 'user' };
+  const head = validate({ toolCalls: [{ name: 'say', arguments: { text: line, to: 'user' } }] }, m, { exists });
+  if (!head.ok) return head;
+  const p = verdictParts(verdict, m, { heard, userName, exists, validate });
+  const say = { ...head.calls[0], args: { ...head.calls[0].args, ...p.face } };
+  return { ok: true, calls: [say, ...p.calls], dropped: p.dropped };
+}
+
+/**
+ * A verdict's parts, each kept only if it validates on its own: the face and gesture for her line (`face`), and the
+ * action, the goal and, after a goodbye, endConversation (`calls`). For a turn with no line (a goal choice) too.
+ * @param {any} verdict @param {import('./schema.js').Moment} m
+ * @param {{ heard?: string, userName?: string, exists?: (id: string) => boolean, validate: (reply: any, m: any, w?: any) => any }} o
+ * @returns {{ face: { emotion?: string, gesture?: string }, calls: { name: string, args: any }[], dropped: string[] }}
+ */
+export function verdictParts(verdict, m, { heard = '', userName = '', exists, validate }) {
+  const v = normalizeVerdict(verdict, m, { userName, heard }), dropped = [], face = {};
   for (const k of ['emotion', 'gesture']) {
     if (typeof v[k] !== 'string') continue;
-    const r = validate({ toolCalls: [{ name: 'say', arguments: { ...say, [k]: v[k] } }] }, m, { exists });
-    if (r.ok) say[k] = v[k]; else dropped.push(`${k} ${v[k]}`);
+    const r = validate({ toolCalls: [{ name: 'say', arguments: { text: 'x', to: 'user', [k]: v[k] } }] }, m, { exists });
+    if (r.ok) face[k] = v[k]; else dropped.push(`${k} ${v[k]}`);
   }
-  const head = validate({ toolCalls: [{ name: 'say', arguments: say }] }, m, { exists });
-  if (!head.ok) return head;
-  const calls = [...head.calls];
-  const rest = splitCalls(line, { action: v.action, goal: v.goal }, { heard }).slice(1);
-  for (const c of rest) {
+  const calls = [];
+  for (const c of splitCalls('', { action: v.action, goal: v.goal }, { heard }).slice(1)) {
     const r = validate({ toolCalls: [c] }, m, { exists });
     if (r.ok) calls.push(...r.calls); else dropped.push(`${c.name}: ${r.errors.join('; ')}`);
   }
-  return { ok: true, calls, dropped };
+  return { face, calls, dropped };
 }
 
 /**

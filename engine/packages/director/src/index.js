@@ -5,7 +5,7 @@ export { Director, EMOTIONS, toInject } from './director.js';
 export { toolsFor, validate, check, MAX_CALLS } from './schema.js';
 export { buildMessages, describeMoment, promptHash, FRAMING } from './prompt.js';
 export { shellModel, httpModel, scriptedModel, replayModel } from './model.js';
-export { LINE_FRAMING, lineRequest, verdictRequest, parseVerdict, cleanLine, isGoodbye, splitCalls, normalizeVerdict, salvage } from './split.js';
+export { LINE_FRAMING, lineRequest, verdictRequest, parseVerdict, cleanLine, isGoodbye, splitCalls, normalizeVerdict, salvage, verdictParts } from './split.js';
 
 /**
  * A director for a tree that has the ai service. The host calls `director.pump()` after each step.

@@ -40,7 +40,7 @@ const flush = () => new Promise((r) => setImmediate(r));
  */
 async function play(R, sample, opts, { steps, model, script = () => {}, replay = null, from = null, snapAt = null }) {
   const W = await buildWorld(R, sample, opts), tree = W.tree;
-  const director = installDirector(tree, { model, user: 'mira', userName: 'Mira', persona: (id) => (id === 'hana-1' ? { name: 'Hana', summary: 'Runs the cafe.', allowedExpressions: ['happy', 'relaxed'] } : null) });
+  const director = installDirector(tree, { design: 'one', model, user: 'mira', userName: 'Mira', persona: (id) => (id === 'hana-1' ? { name: 'Hana', summary: 'Runs the cafe.', allowedExpressions: ['happy', 'relaxed'] } : null) });
   const said = [], waiting = [], hashes = {};
   for (const id of ['hana-1', 'mira']) tree.listen(tree.find(id), 'spoke', (a) => said.push([tree.clock.step, id, a.text]));
   if (from) restoreWorld(tree, from.snap);

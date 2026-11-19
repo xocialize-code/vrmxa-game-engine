@@ -65,9 +65,10 @@ const stop = await microphone((frame) => ear.feed(frame));   // off until called
 | `encodeWav` | Mono float → 16-bit PCM WAV |
 
 The loopback stand-in is `content/sample/tools/voice-server.py`, on one port (5191), with every answer's server time:
-- `/v1/chat/completions`: LFM2.5-8B-A1B int4 through mlx-lm, reasoning skipped;
-- `/transcribe`: whisper-large-v3-turbo;
-- `/speak`: Kokoro.
+- `/v1/chat/completions`: the director's model, LFM3-Omni-2B 4-bit by default (AB-D-0265); `--llm` loads others
+  (LFM2.5, LFM3-1.7B, Qwen3-VL-4B), and a request's `model` picks one;
+- `/transcribe`: Omni's own ASR when it is loaded, else whisper-large-v3-turbo;
+- `/speak`: Kokoro (or `tts-server.py`, when the server's venv lacks Kokoro's `misaki`).
 
 The director's spoken turn through it is measured in `@vrmxg/director` (`scripts/measure-turn.mjs`).
 
