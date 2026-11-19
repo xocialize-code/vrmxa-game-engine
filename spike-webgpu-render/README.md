@@ -4,6 +4,8 @@
 
 ## Verdict
 
+*Receipts: AB-R-1005 (post stack), AB-R-1006 (three.quarks), AB-R-1007 (readback and exports), AB-R-1008 (WKWebView). Task AB-T-0554 is done.*
+
 **Every piece runs on `WebGPURenderer`, and exports stay byte-identical. M4 needs six engine changes and five r187 workarounds, all listed below. Nothing here blocks M4.**
 
 | Piece | Verdict |
