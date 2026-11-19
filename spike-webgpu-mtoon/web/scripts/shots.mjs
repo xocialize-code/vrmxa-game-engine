@@ -52,8 +52,9 @@ export function vroidMatrix() {
   return cases;
 }
 const vroid = process.argv.includes('--vroid-sample');
-const args = process.argv.slice(2).filter((a) => !a.startsWith('--'));
-const cases = vroid ? vroidMatrix() : args.length ? args.map((q) => ({ three: '187', q })) : matrix();
+const args = process.argv.slice(2).filter((a, i, all) => !a.startsWith('--') && all[i - 1] !== '--out');
+const argThree = process.argv.includes('--r186') ? '186' : '187';
+const cases = vroid ? vroidMatrix() : args.length ? args.map((q) => ({ three: argThree, q })) : matrix();
 fs.mkdirSync(outDir, { recursive: true });
 const browser = await chromium.launch({ executablePath: exe, headless: true, args: ['--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist', '--enable-unsafe-webgpu'] });
 const rows = [];
@@ -81,5 +82,7 @@ for (const three of ['187', '186']) {
   await server.close();
 }
 const ua = await (await browser.newPage()).evaluate('navigator.userAgent');
-fs.writeFileSync(path.join(web, vroid ? '../results/chromium-vroid.json' : '../results/chromium.json'), JSON.stringify({ date: new Date().toISOString(), browser: browser.version(), ua, rows }, null, 2) + '\n');
+// --out <name>: write ../results/<name>.json instead (ad-hoc runs shouldn't overwrite the main matrix)
+const outName = process.argv.includes('--out') ? process.argv[process.argv.indexOf('--out') + 1] : vroid ? 'chromium-vroid' : 'chromium';
+fs.writeFileSync(path.join(web, `../results/${outName}.json`), JSON.stringify({ date: new Date().toISOString(), browser: browser.version(), ua, rows }, null, 2) + '\n');
 await browser.close();

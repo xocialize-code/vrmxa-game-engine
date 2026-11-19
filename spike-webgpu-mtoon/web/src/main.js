@@ -172,7 +172,8 @@ async function main() {
   let MToonNodeMaterial;
   if (gpu) {
     try {
-      const mod = lib === 'stock' ? await import('@pixiv/three-vrm/nodes') : lib === 'loadonly' ? await import('./vendor/three-vrm-nodes-loadonly.js') : await import('./vendor/three-vrm-nodes.js');
+      // lib=upstream: lib/nodes built from the upstream fix PRs (pixiv/three-vrm#1904-1907 branches merged on dev), copied in by hand; loads on r186.
+      const mod = lib === 'stock' ? await import('@pixiv/three-vrm/nodes') : lib === 'loadonly' ? await import('./vendor/three-vrm-nodes-loadonly.js') : lib === 'upstream' ? await import('./vendor/three-vrm-nodes-upstream.js') : await import('./vendor/three-vrm-nodes.js');
       MToonNodeMaterial = mod.MToonNodeMaterial;
     } catch (e) {
       errors.push(`import ${lib}: ${e.name}: ${e.message}`);
