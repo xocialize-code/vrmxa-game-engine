@@ -23,11 +23,14 @@ export class CharacterLibrary {
    * @param {{ doc: any, clips: Map<string, Uint8Array> }} [opts.projectAnimations] sets every character falls back on
    * @param {{ sources: Map<string, any>, clips: Map<string, any> }} [opts.cache] read bundles and parsed clips, shared
    *   between libraries (an editor rebuilding its view); VRMs are still parsed per node (they can't be shared)
+   * @param {any} [opts.mtoonMaterial] the MToon material class VRMs load with: the render host's `mtoonMaterial`
+   *   (MToonNodeMaterial on WebGPU, M4 W0); none: three-vrm's MToonMaterial (WebGL, headless)
    */
-  constructor({ resolve, vrmxaCore = null, stubTextures = false, prefabs = new Map(), projectAnimations = null, cache = null }) {
+  constructor({ resolve, vrmxaCore = null, stubTextures = false, prefabs = new Map(), projectAnimations = null, cache = null, mtoonMaterial = null }) {
     this.resolve = resolve;
     this.vrmxaCore = vrmxaCore;
     this.stubTextures = stubTextures;
+    this.mtoonMaterial = mtoonMaterial;
     this.prefabs = prefabs;
     this.projectAnimations = projectAnimations;
     /** ref → { animations override } */
@@ -60,7 +63,7 @@ export class CharacterLibrary {
   /** Prepare one Character node (for a runtime add). */
   async prepareNode(id, ref) {
     const src = await this.source(ref);
-    const vrm = await parseVRM(src.vrmBytes, { stubTextures: this.stubTextures });
+    const vrm = await parseVRM(src.vrmBytes, { stubTextures: this.stubTextures, mtoonMaterial: this.mtoonMaterial });
     const doc = mergeSets(this.overrides.get(ref)?.doc ?? src.animations.doc, this.projectAnimations?.doc);
     const clipBytes = new Map([...(this.projectAnimations?.clips ?? []), ...src.animations.clips, ...(this.overrides.get(ref)?.clips ?? [])]);
     const clips = new Map();
@@ -76,7 +79,7 @@ export class CharacterLibrary {
   }
 
   /** Parse another body for a character already in the tree (a closet redraw's avatar.vrm). */
-  parseBody(bytes) { return parseVRM(bytes, { stubTextures: this.stubTextures }); }
+  parseBody(bytes) { return parseVRM(bytes, { stubTextures: this.stubTextures, mtoonMaterial: this.mtoonMaterial }); }
 
   /** The prepared character for a node; each one is used once. */
   take(id) {

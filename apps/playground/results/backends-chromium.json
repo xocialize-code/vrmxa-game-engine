@@ -1,0 +1,87 @@
+{
+ "version": "156.0.8078.4",
+ "steps": [
+  300,
+  301,
+  302,
+  303,
+  304
+ ],
+ "still": 420,
+ "webgl": {
+  "backend": "webgl",
+  "isWebGPUBackend": false,
+  "size": [
+   1280,
+   653
+  ],
+  "steps": [
+   300,
+   301,
+   302,
+   303,
+   304
+  ],
+  "frames": [
+   "ab251b3b",
+   "1c41c663",
+   "29e68665",
+   "e573dd8e",
+   "029b3d09"
+  ],
+  "distinct": 5,
+  "still": 420,
+  "stillHash": "df6b9781",
+  "stillMsWithRead": 27.9,
+  "diff": null,
+  "materials": [
+   "MeshBasicMaterial",
+   "ShaderMaterial"
+  ],
+  "environment": true,
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "console": []
+ },
+ "webgpu": {
+  "backend": "webgpu",
+  "isWebGPUBackend": true,
+  "size": [
+   1280,
+   653
+  ],
+  "steps": [
+   300,
+   301,
+   302,
+   303,
+   304
+  ],
+  "frames": [
+   "681dfded",
+   "af8a4b7a",
+   "54b5ffe0",
+   "db86e656",
+   "b281ed9c"
+  ],
+  "distinct": 5,
+  "still": 420,
+  "stillHash": "ef7873ea",
+  "stillMsWithRead": 26.8,
+  "diff": {
+   "meanMaxChannel": 0.897,
+   "over8": 0.01562,
+   "max": 160
+  },
+  "materials": [
+   "MeshBasicMaterial",
+   "NodeMaterial"
+  ],
+  "environment": true,
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "console": []
+ },
+ "reload": {
+  "webgl": true,
+  "webgpu": true
+ }
+}
