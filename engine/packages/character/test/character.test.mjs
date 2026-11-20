@@ -91,14 +91,16 @@ test('animation slots follow what is worn (resolveSlots on equipped tags)', { sk
   assert.deepEqual([...mira.equipped], worn, 'starts with the bundle\'s equipped tags');
   tree.run(30);
   const idleClip = () => mira.graph.output().find((o) => o.weight > 0.99)?.clip;
-  assert.equal(idleClip(), anims.sha.idle);
+  // the default idle is one of three weighted clips (M3 W12, AB-A-0315)
+  const defaultIdle = (c) => [anims.sha.idle, anims.sha['idle-shift'], anims.sha['idle-breathe']].includes(c);
+  assert.ok(defaultIdle(idleClip()), 'a default-set idle');
   mira.setEquippedTags([...worn, 'sword']);
   assert.equal(lib.resolveSlots(anims.doc, new Set(['sword'])).idle.set.id, 'sword', 'vrmxa-core picks the item set');
   tree.run(30);
   assert.equal(idleClip(), anims.sha['idle-sword'], 'idle now plays the sword set\'s clip');
   mira.setEquippedTags(worn);
   tree.run(30);
-  assert.equal(idleClip(), anims.sha.idle);
+  assert.ok(defaultIdle(idleClip()), 'back to a default-set idle');
 });
 
 test('two runs are bit-identical at every step', { skip: SKIP }, async () => {

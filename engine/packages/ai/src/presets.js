@@ -19,10 +19,13 @@ export const FILLERS = ['Hmm, let me think.', 'Oh, good question.', 'Hm, one mom
  *   listen   the person is speaking (bb.hearing): look at them, nod now and then
  *   think    a reply is on its way (bb.director.pending): look away; past 1.5 s, a filler line, once
  *   attend   otherwise: look at them
- * @param {{ weight?: number, min?: number, max?: number }} [o] linger: min s (trait 0) to max s (trait 1) of quiet
+ * @param {{ weight?: number, min?: number, max?: number, face?: boolean }} [o] linger: min s (trait 0) to max s (trait 1) of quiet;
+ *   face: turn the body to the person before looking at them
  */
-export function conversation({ weight = 0.9, min = 4, max = 20 } = {}) {
+export function conversation({ weight = 0.9, min = 4, max = 20, face = false } = {}) {
   const stopThinking = A('think', { on: false });
+  // face: turn the body to the person first (M3 W12, AB-A-0313), when they're behind look-at's reach; never fails the branch
+  const turn = (who) => (face ? [{ type: 'succeed', child: A('face', { target: who }) }] : []);
   return {
     name: 'converse', weight,
     considerations: [
@@ -34,11 +37,13 @@ export function conversation({ weight = 0.9, min = 4, max = 20 } = {}) {
         { name: 'listen', weight: 1, considerations: [{ input: 'test', test: 'bb', key: 'hearing', curve: { type: 'step', at: 0.5 } }], tree: {
           type: 'sequence', children: [
             stopThinking,
+            ...turn('$hearing.from'),
             A('lookAt', { target: '$hearing.from' }),
             { type: 'repeat', child: { type: 'sequence', children: [A('wait', { min: 0.5, max: 1.2 }), { type: 'succeed', child: A('gesture', { slot: 'nod' }) }, A('wait', { min: 0.8, max: 1.8 })] } },
           ] } },
         { name: 'think', weight: 0.9, considerations: [{ input: 'test', test: 'bb', key: 'director.pending', curve: { type: 'step', at: 0.5 } }], tree: {
           type: 'sequence', children: [
+            ...turn('$conversation.with'),
             A('lookAt', { target: '$conversation.with' }),
             A('think', {}),
             { type: 'selector', children: [
@@ -52,7 +57,7 @@ export function conversation({ weight = 0.9, min = 4, max = 20 } = {}) {
             stopThinking,
           ] } },
         { name: 'attend', weight: 0.2, considerations: [{ input: 'constant', value: 1, curve: { type: 'linear' } }], tree: {
-          type: 'sequence', children: [stopThinking, A('lookAt', { target: '$conversation.with' }), { type: 'repeat', child: A('wait', { seconds: 1 }) }] } },
+          type: 'sequence', children: [stopThinking, ...turn('$conversation.with'), A('lookAt', { target: '$conversation.with' }), { type: 'repeat', child: A('wait', { seconds: 1 }) }] } },
       ],
     },
   };
@@ -207,7 +212,7 @@ Object.assign(PRESETS, {
     plan: { radius: 2, fillers: FILLERS },
     senses: { sight: { range: 8, fov: 140, every: 6 } },
     goals: [],
-    tree: { type: 'utility', rate: 10, hysteresis: 0.2, children: [conversation(), ...PRESETS.wanderer.tree.children] },
+    tree: { type: 'utility', rate: 10, hysteresis: 0.2, children: [conversation({ face: true }), ...PRESETS.wanderer.tree.children] },
   },
 
   /**

@@ -46,7 +46,7 @@ function writeEveryBinding(m) {
 }
 
 export class CharacterNode extends Node {
-  static actions = ['say', 'goTo', 'emote', 'lookAt', 'reach', 'knockDown', 'getUp'];
+  static actions = ['say', 'goTo', 'emote', 'lookAt', 'reach', 'knockDown', 'getUp', 'face'];
 
   constructor(data, def) {
     super(data, def);
@@ -221,6 +221,17 @@ export class CharacterNode extends Node {
       c.grounded = p.y <= 0;
     }
     if (c.grounded && c.vy < 0) c.vy = 0;
+    // turning in place to face someone (face(); M3 W12, AB-A-0313): standing still, eased, done within ~5°
+    if (c.face && speed <= 0.1 && !c.seat && !this.graph.busy) {
+      let d = c.face.yaw - c.yaw;
+      d -= Math.floor((d + Math.PI) / (2 * Math.PI)) * 2 * Math.PI;
+      if (Math.abs(d) < 0.08) { delete c.face; this.emit('faced', {}); }
+      else {
+        const max = c.face.rate * dt;
+        c.yaw += Math.max(-max, Math.min(max, d));
+        this.object3d.quaternion.set(0, Math.sin(c.yaw / 2), 0, Math.cos(c.yaw / 2));
+      }
+    }
     if (speed > 0.1) {
       const target = Math.atan2(mx, mz);
       let d = target - c.yaw;
@@ -469,6 +480,20 @@ export class CharacterNode extends Node {
         if (t && up && lo && hd) twoBoneIK(up, lo, hd, t.clone(), { weight: w, pole: this.object3d.localToWorld(new Vector3(r.hand === 'right' ? -1 : 1, -0.5, -1)) });
       }
     }
+  }
+
+  /**
+   * Turn the body to face a node or a point, in place, easing at `rate` rad/s (M3 W12, AB-A-0313: look-at alone stops
+   * about 100° from the facing). Done within ~5° (the `faced` signal); walking or sitting waits. Its target is state.
+   * @param {{ target?: string, point?: number[], rate?: number }} [args]
+   */
+  face({ target, point, rate = 4 } = {}) {
+    let at = point;
+    if (!at && target) { const n = this.tree.find(target); if (n) { const w = n.object3d.getWorldPosition(new Vector3()); at = [w.x, w.y, w.z]; } }
+    if (!at) { delete this.ctrl.face; return; }
+    const p = this.object3d.getWorldPosition(new Vector3()), dx = at[0] - p.x, dz = at[2] - p.z;
+    if (dx * dx + dz * dz < 1e-6) { delete this.ctrl.face; return; }
+    this.ctrl.face = { yaw: Math.atan2(dx, dz), rate };
   }
 
   /** Look at a node; omit target to stop. @param {{ target?: string }} [args] */

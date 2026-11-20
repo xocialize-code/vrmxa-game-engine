@@ -79,7 +79,7 @@ export function m0Registry() {
       mass: P.number({ min: 1, unit: 'kg', sim: true, description: 'Shared among the ragdoll\'s parts when knocked down (60).' }),
       getUpSeconds: P.number({ min: 0.1, max: 10, unit: 's', sim: true, description: 'How long getting up from a ragdoll blends back into animation (1.2).' }),
     },
-    signals: { arrived: { args: { target: P.nodeRef() } }, spoke: { args: { text: P.string() } }, lineEnded: { args: { text: P.string() } }, dressed: { args: { worn: P.list(P.string()) } }, knockedDown: {}, gettingUp: {}, gotUp: {} },
+    signals: { arrived: { args: { target: P.nodeRef() } }, spoke: { args: { text: P.string() } }, lineEnded: { args: { text: P.string() } }, dressed: { args: { worn: P.list(P.string()) } }, knockedDown: {}, gettingUp: {}, gotUp: {}, faced: {} },
     actions: {
       say: { args: { text: arg(P.string(), 'What to say (the caption; lip-synced from estimated timings without a clip).'), clip: arg(P.string(), 'A voice line in the project (.wav), with its word timings beside it (<clip>.timings.json).') }, description: 'Speak a line: the clip plays from the head, the mouth follows its word timings, a caption shows.' },
       reach: { args: { hand: arg(P.enum(['left', 'right']), 'Which hand (right).'), point: arg(P.vec3({ unit: 'm' }), 'A point.'), target: arg(P.nodeRef(), 'Or a node.'), part: arg(P.string(), 'An item\'s part (a knob).'), seconds: arg(P.number({ unit: 's' }), 'How long (1).') }, description: 'Reach a hand to a point, a node or an item\'s part: two-bone IK on the arm, fading in and out.' },
@@ -88,6 +88,7 @@ export function m0Registry() {
       lookAt: { args: { target: arg(P.nodeRef(), 'Node to look at; omit to stop.') } },
       knockDown: { args: { impulse: arg(P.vec3({ unit: 'N·s' }), 'A shove in world space, on the torso (or `part`).'), part: arg(P.string(), 'The humanoid bone whose part takes the shove (spine).'), getUp: arg(P.boolean(), 'Get up once settled (true); false stays down until getUp.') }, description: 'Fall as a ragdoll (capsules and joints from the humanoid), then get up, blending back into animation.' },
       getUp: { description: 'Get up from a ragdoll lying still.' },
+      face: { args: { target: arg(P.nodeRef(), 'Turn to face this node.'), point: arg(P.vec3({ unit: 'm' }), 'Or this point.'), rate: arg(P.number({ min: 0, unit: 'rad/s' }), 'How fast (4).') }, description: 'Turn the body to face a node or a point, in place (M3 W12); look-at alone stops about 100° from the facing.' },
     },
   });
   r.define('Camera', {

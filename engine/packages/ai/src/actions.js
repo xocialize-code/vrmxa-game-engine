@@ -56,6 +56,23 @@ export const ACTIONS = {
       return (d.layer ? !g.gesturing : !g.busy && !g.gesturing) ? 'success' : 'running';
     },
   },
+  face: {
+    description: 'Turn the body to face someone or something, in place (M3 W12): what a character does before talking to someone behind it.',
+    args: { type: 'object', properties: { target: str('A node id.'), point: vec3('Or a point.'), seconds: num('Give up after this long (3).', { minimum: 0 }) }, additionalProperties: false },
+    start(ctx, a) {
+      const p = a.point ?? positionOf(ctx.tree, a.target);
+      if (!p || !ctx.node.face) return { failed: true };
+      ctx.node.face({ point: p });
+      return { until: ctx.step + Math.round((a.seconds ?? 3) * 60) };
+    },
+    update(ctx, a, d) {
+      if (d.failed) return 'failure';
+      if (!ctx.node.ctrl?.face) return 'success';
+      if (ctx.step > d.until) { delete ctx.node.ctrl.face; return 'failure'; }
+      return 'running';
+    },
+    cancel(ctx) { if (ctx.node.ctrl) delete ctx.node.ctrl.face; },
+  },
   lookAt: {
     description: 'Look at a node (eyes and head), or with no target stop.',
     args: { type: 'object', properties: { target: str('A node id.') }, additionalProperties: false },
