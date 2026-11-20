@@ -5,7 +5,7 @@ import { installPortableMath } from '@vrmxg/dmath';
 import { loadRapier } from '@vrmxg/physics';
 import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
 import { PRESETS } from '@vrmxg/camera';
-import { RenderHost, backendFromQuery, resolveBackend } from '@vrmxg/render';
+import { RenderHost, backendFromQuery } from '@vrmxg/render';
 import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
 import { captureStill, hashFrame } from '@vrmxg/export';
 import { loadSample, buildWorld } from './world.js';
@@ -56,6 +56,7 @@ export class Playground {
     this.host = null; this.text = null;
     /** The render host, made asynchronously (a WebGPURenderer needs `await init()`); load() waits for it. */
     this.ready = this._makeHost({ preserveDrawingBuffer, backend });
+    this.ready.catch((e) => { this.error = String(e?.message ?? e); }); // load() awaits it and reports the failure
     this.tree = null; this.input = null;
     this.playing = false;
     this.stats = { frameMs: 0, fps: 0, simMs: 0, renderMs: 0, step: 0, alpha: 0, steps: 0, backend: '' };
@@ -73,11 +74,13 @@ export class Playground {
    * (TSL post is M4 W1) and without bubbles (troika's shaders are WebGL's; the captions still show every line).
    */
   async _makeHost({ preserveDrawingBuffer, backend }) {
-    const webgl = (await resolveBackend(backend)) === 'webgl';
+    // the backend is known only once the host exists (auto falls back to WebGL if WebGPU fails inside init()), so the post
+    // stack is made for a WebGLRenderer only, and the bubbles go on a WebGL host only
     this.host = await RenderHost.create({
-      canvas: this.canvas, backend: webgl ? 'webgl' : 'webgpu', preserveDrawingBuffer,
-      post: webgl ? (r) => new PostStack(r, { loadLut: async (file) => lutFromCube(new TextDecoder().decode(await bytes(file))) }) : null,
+      canvas: this.canvas, backend, preserveDrawingBuffer,
+      post: (r) => (r.isWebGLRenderer ? new PostStack(r, { loadLut: async (file) => lutFromCube(new TextDecoder().decode(await bytes(file))) }) : null),
     });
+    const webgl = this.host.backend === 'webgl';
     // speech bubbles in the canvas (M3 W6, troika: the text spike's verdict), the sample's static Noto Sans JP; no CDN
     if (webgl) this.text = new TextLayer({ font: 'fonts/NotoSansJP-Regular.ttf', bold: 'fonts/NotoSansJP-Bold.ttf', unicodeFontsURL: 'fonts/' }).attach(this.host);
     this.stats.backend = this.host.backend;
@@ -324,6 +327,7 @@ export class Playground {
 
   /** Replay a recorded input file from now on (a path under the site root). */
   async replay(path = 'input/walk-in.json') {
+    if (!this.input) return;
     const rec = await json(path);
     this.input.replay({ ...rec, start: this.tree.clock.step });
     this.play();
@@ -382,9 +386,9 @@ export class Playground {
   }
 
   /** Speech bubbles in the canvas on or off (presentation: the world is the same either way). */
-  setBubbles(on) { if (!this.text) return; this.text.bubbles = !!on; if (!this.playing) this.host.render(1, false); }
+  setBubbles(on) { if (!this.text) return; this.text.bubbles = !!on; if (this.tree && !this.playing) this.host.render(1, false); }
   /** Name tags over the characters on or off. */
-  setNameTags(on) { if (!this.text) return; this.text.nameTags = !!on; if (!on) { for (const t of this.text.tags.values()) { this.text.group.remove(t.text); t.dispose(); } this.text.tags.clear(); } if (!this.playing) this.host.render(1, false); }
+  setNameTags(on) { if (!this.text) return; this.text.nameTags = !!on; if (!on) { for (const t of this.text.tags.values()) { this.text.group.remove(t.text); t.dispose(); } this.text.tags.clear(); } if (this.tree && !this.playing) this.host.render(1, false); }
 
   /** The drawn frame's hash (FNV-1a of the RGBA read-back, as exports hash theirs): read right after a render. */
   frameHash() {
@@ -527,8 +531,8 @@ export class Playground {
   currentCamera() { const c = this.tree?.services.get('cameras')?.current; return c ? { id: c.id, preset: c.preset } : null; }
   setCamera(id) { this.tree?.find(id)?.call('makeCurrent'); this._changed(); }
   setPreset(preset) { const c = this.tree?.services.get('cameras')?.current; if (c) c.call('setPreset', { preset }); this._changed(); }
-  setDebug(kinds) { this.host.debug.set(kinds); if (!this.playing) this.host.render(1, false); }
-  setInterpolation(on) { this.host.interpolate = on; }
+  setDebug(kinds) { if (!this.host) return; this.host.debug.set(kinds); if (this.tree && !this.playing) this.host.render(1, false); }
+  setInterpolation(on) { if (this.host) this.host.interpolate = on; }
 
   _changed() { this.onChange?.(); }
 

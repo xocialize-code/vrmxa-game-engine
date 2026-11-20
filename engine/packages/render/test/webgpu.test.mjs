@@ -8,6 +8,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
+import os from 'node:os';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { installPortableMath } from '@vrmxg/dmath';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { SceneTree } from '@vrmxg/core';
@@ -16,8 +20,11 @@ import { RenderHost, backendFromQuery, resolveBackend, webgpuAvailable, warmUpWe
 
 installPortableMath();
 
-/** A stand-in three/webgpu: WebGPURenderer with what the host touches, PMREMGenerator; every construction logged. */
-function fakeWebGPU() {
+/**
+ * A stand-in three/webgpu: WebGPURenderer with what the host touches, PMREMGenerator; every construction logged.
+ * `fallsBack(id)`: renderer `id` lands on three's WebGL2 fallback in init(); `initThrows(id)`: its init() rejects.
+ */
+function fakeWebGPU({ fallsBack = (id) => false, initThrows = (id) => false } = {}) {
   const log = [];
   class NodeFrame { constructor() { this.frameId = 0; } update() { this.frameId++; } }
   class WebGPURenderer {
@@ -27,12 +34,17 @@ function fakeWebGPU() {
       this.size = [300, 150]; this.pixelRatio = 1; this.drawn = []; this.id = log.filter((e) => e.startsWith('renderer')).length;
       log.push(`renderer ${this.id}${opts.canvas ? ' (canvas)' : ''}`);
     }
-    async init() { this._nodes = { nodeFrame: new NodeFrame() }; this._initialized = true; log.push(`init ${this.id}`); return this; }
+    async init() {
+      if (initThrows(this.id)) { log.push(`init ${this.id} failed`); throw new Error('device lost'); }
+      this._nodes = { nodeFrame: new NodeFrame() }; this._initialized = true;
+      this.backend = fallsBack(this.id) ? { isWebGLBackend: true } : { isWebGPUBackend: true };
+      log.push(`init ${this.id}${fallsBack(this.id) ? ' (WebGL2 fallback)' : ''}`); return this;
+    }
     setPixelRatio(r) { this.pixelRatio = r; }
     setSize(w, h) { this.size = [w, h]; }
     getDrawingBufferSize(v) { return v.set(Math.floor(this.size[0] * this.pixelRatio), Math.floor(this.size[1] * this.pixelRatio)); }
     render(scene, camera) { scene.updateMatrixWorld(); camera.updateMatrixWorld?.(); this.drawn.push(this._nodes.nodeFrame.frameId); }
-    dispose() {}
+    dispose() { this.disposed = true; }
   }
   class PMREMGenerator {
     constructor(renderer) { this.renderer = renderer; log.push(`pmrem ${renderer.id}`); }
@@ -96,6 +108,55 @@ test('RenderHost.create on WebGPU: an initialised WebGPURenderer on the canvas, 
   assert.throws(() => new RenderHost({ renderer: new module.WebGPURenderer() }), /await renderer.init\(\)/);
 });
 
+// ---------------------------------------------------------------- three's quiet WebGL2 fallback inside init()
+
+const glStandIn = () => ({ isWebGLRenderer: true, setPixelRatio() {}, setSize() {}, shadowMap: {}, render() {}, dispose() {}, getContext: () => ({ drawingBufferWidth: 1, drawingBufferHeight: 1 }) });
+
+test('WebGPU failing inside the warm-up\'s init(): a forced webgpu throws, auto makes a WebGL host before touching the canvas', async () => {
+  const forced = fakeWebGPU({ fallsBack: () => true });
+  await assert.rejects(RenderHost.create({ backend: 'webgpu', navigator: gpuNavigator(), webgpu: forced.module, canvas: {} }), /the warm-up renderer got three's WebGL2 fallback/);
+  assert.deepEqual(forced.log, ['renderer 0', 'init 0 (WebGL2 fallback)', 'pmrem 0'], 'the view\'s renderer was never made');
+  const auto = fakeWebGPU({ fallsBack: () => true });
+  const host = await RenderHost.create({ backend: 'auto', navigator: gpuNavigator(), webgpu: auto.module, canvas: {}, fallbackRenderer: glStandIn() });
+  assert.equal(host.backend, 'webgl');
+  assert.equal(host.mtoonMaterial, null, 'characters keep the WebGL MToonMaterial');
+  assert.ok(!auto.log.includes('renderer 1 (canvas)'));
+});
+
+test('WebGPU failing inside the view renderer\'s init(): a forced webgpu throws, auto falls back to WebGL; the renderer is disposed', async () => {
+  const auto = fakeWebGPU({ fallsBack: (id) => id === 1 });
+  await warmUpWebGPU({ webgpu: auto.module }); // id 0: WebGPU
+  const view = new auto.module.WebGPURenderer(); // id 1: falls back in init()
+  const host = await RenderHost.create({ backend: 'auto', navigator: gpuNavigator(), webgpu: auto.module, renderer: view, fallbackRenderer: glStandIn() });
+  assert.equal(host.backend, 'webgl');
+  assert.equal(view.disposed, true);
+  const forced2 = fakeWebGPU({ fallsBack: (id) => id === 1 });
+  await warmUpWebGPU({ webgpu: forced2.module });
+  await assert.rejects(RenderHost.create({ backend: 'webgpu', navigator: gpuNavigator(), webgpu: forced2.module, renderer: new forced2.module.WebGPURenderer() }), /the view's renderer got three's WebGL2 fallback/);
+});
+
+test('a host made directly with a WebGPURenderer must have it on WebGPU, with webgpu and mtoonMaterial (no half-working host)', async () => {
+  const { module } = fakeWebGPU({ fallsBack: (id) => id === 1 });
+  const ok = new module.WebGPURenderer(); await ok.init();
+  const gl2 = new module.WebGPURenderer(); await gl2.init();
+  assert.throws(() => new RenderHost({ renderer: gl2, webgpu: module, mtoonMaterial: class {} }), /fell back to its WebGL2 backend/);
+  assert.throws(() => new RenderHost({ renderer: ok }), /needs `webgpu`/);
+  assert.throws(() => new RenderHost({ renderer: ok, webgpu: module }), /`mtoonMaterial`/);
+  assert.throws(() => new RenderHost({ renderer: ok, mtoonMaterial: class {} }), /needs `webgpu`/);
+  const host = new RenderHost({ renderer: ok, webgpu: module, mtoonMaterial: class {} });
+  assert.equal(host.backend, 'webgpu');
+});
+
+test('a failed warm-up isn\'t cached: the next create tries again', async () => {
+  let fail = true;
+  const { log, module } = fakeWebGPU({ initThrows: () => fail });
+  await assert.rejects(RenderHost.create({ backend: 'webgpu', navigator: gpuNavigator(), webgpu: module }), /device lost/);
+  fail = false;
+  const host = await RenderHost.create({ backend: 'webgpu', navigator: gpuNavigator(), webgpu: module });
+  assert.equal(host.backend, 'webgpu');
+  assert.deepEqual(log, ['renderer 0', 'init 0 failed', 'renderer 1', 'init 1', 'pmrem 1', 'renderer 2', 'init 2'], 'a second warm-up, then the view');
+});
+
 // ---------------------------------------------------------------- gotcha 6: the warm-up renderer
 
 test('gotcha 6: one warm-up WebGPURenderer, initialised with a room PMREM, comes before the view\'s and every later renderer', async () => {
@@ -144,7 +205,7 @@ test('gotcha 1 on WebGL is a no-op, and a WebGPURenderer without the private nod
   gl.advanceNodeFrame();
   const { module } = fakeWebGPU();
   const r = new module.WebGPURenderer(); await r.init(); delete r._nodes;
-  const host = new RenderHost({ renderer: r, webgpu: module });
+  const host = new RenderHost({ renderer: r, webgpu: module, mtoonMaterial: class {} });
   assert.throws(() => host.advanceNodeFrame(), /nodeFrame\.update is gone/);
 });
 
@@ -194,7 +255,7 @@ test('the post stack and the lens are sized from the drawing buffer on WebGPU (i
 
 test('the three-vrm patch is applied on install: MToonNodeMaterial loads on r187 and carries the six fixes', async () => {
   const require = createRequire(import.meta.url);
-  const file = require.resolve('@pixiv/three-vrm/nodes').replace(/index\.cjs$/, 'index.module.js');
+  const file = require.resolve('@pixiv/three-vrm/nodes').replace(/index\.cjs$/, 'index.module.js'); // resolves the CJS path; read the ES module beside it
   const text = fs.readFileSync(file, 'utf8');
   assert.equal((text.match(/VRMXG patch/g) ?? []).length, 6, 'six patched lines');
   // stock 3.5.5 fails to link on r187 (transformedNormalView is gone): importing at all proves the load fix
@@ -202,7 +263,48 @@ test('the three-vrm patch is applied on install: MToonNodeMaterial loads on r187
   const m = new MToonNodeMaterial();
   assert.equal(m.isMToonNodeMaterial, true);
   const { PATCHES, inspect } = await import('../../../../scripts/patch-three-vrm.mjs');
-  assert.equal(inspect(PATCHES[0]).state, 'patched');
+  assert.deepEqual(PATCHES.map((p) => inspect(p).state), ['patched', 'patched']);
+});
+
+test('patch-three-vrm: --require-patched fails a stock install (CI proves the install patched); a changed file fails --check', async () => {
+  const { run, sha256 } = await import('../../../../scripts/patch-three-vrm.mjs');
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-patch-'));
+  const dir = path.join(base, 'node_modules', 'pkg');
+  fs.mkdirSync(path.join(dir, 'lib'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ version: '1.0.0' }));
+  const stock = 'a\nb\nc\n', patched = 'a\nB\nc\n';
+  fs.writeFileSync(path.join(base, 'p.patch'), '--- a/f\n+++ b/f\n@@ -1,3 +1,3 @@\n a\n-b\n+B\n c\n');
+  fs.writeFileSync(path.join(dir, 'lib/f.js'), stock);
+  const patches = [{ name: 'p', patch: path.join(base, 'p.patch'), pkg: 'pkg', version: '1.0.0', file: 'lib/f.js', stock: sha256(stock), patched: sha256(patched) }];
+  const quiet = { base, patches, log: () => {}, error: () => {} };
+  assert.equal(run({ ...quiet, check: true }), 0, '--check accepts stock (the patch applies)');
+  assert.equal(run({ ...quiet, check: true, requirePatched: true }), 1, '--require-patched does not');
+  assert.equal(fs.readFileSync(path.join(dir, 'lib/f.js'), 'utf8'), stock, '--check changes nothing');
+  assert.equal(run(quiet), 0);
+  assert.equal(fs.readFileSync(path.join(dir, 'lib/f.js'), 'utf8'), patched);
+  assert.equal(run({ ...quiet, check: true, requirePatched: true }), 0);
+  assert.equal(run(quiet), 0, 'applying again is a no-op');
+  fs.writeFileSync(path.join(dir, 'lib/f.js'), 'a\nX\nc\n');
+  assert.equal(run({ ...quiet, check: true }), 1, 'a file that is neither stock nor patched');
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ version: '1.0.1' }));
+  assert.equal(run({ ...quiet, check: true }), 1, 'another version');
+  fs.rmSync(base, { recursive: true });
+});
+
+test('patch-three-vrm runs as a script through a symlink with a space and # in its path (import.meta.main)', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg patch #'));
+  const link = path.join(dir, 'patch three-vrm#.mjs');
+  fs.symlinkSync(fileURLToPath(new URL('../../../../scripts/patch-three-vrm.mjs', import.meta.url)), link);
+  const r = spawnSync(process.execPath, [link, '--check', '--require-patched'], { encoding: 'utf8' });
+  fs.rmSync(dir, { recursive: true });
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /index\.module\.js is patched/, 'it ran (the old argv[1] comparison would exit 0 having done nothing)');
+  assert.match(r.stdout, /index\.cjs is patched/);
+});
+
+test('three-vrm\'s CommonJS nodes build (stock, unpatched) is stubbed out: require() throws instead of drawing wrong', () => {
+  const require = createRequire(import.meta.url);
+  assert.throws(() => require('@pixiv/three-vrm/nodes'), /VRMXG disables the CommonJS build/);
 });
 
 test('patch-three-vrm applies hunks exactly and refuses a file that changed', async () => {

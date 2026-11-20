@@ -19,7 +19,7 @@ import { Interpolator } from './interpolate.js';
 import { Views } from './views.js';
 import { renderViews } from '@vrmxg/post';
 import { DebugDraw } from './debug.js';
-import { resolveBackend, loadWebGPU, warmUpWebGPU, roomPMREM } from './backend.js';
+import { resolveBackend, loadWebGPU, warmUpWebGPU, roomPMREM, isWebGPUBackend } from './backend.js';
 
 export class RenderHost {
   /**
@@ -35,9 +35,16 @@ export class RenderHost {
    * @param {any} [opts.webgpu] three/webgpu, with a WebGPURenderer (its PMREMGenerator makes the room environment)
    * @param {any} [opts.mtoonMaterial] the MToon material class characters load with on this renderer (null: the loader's
    *   default, MToonMaterial for WebGL)
+   * A WebGPURenderer must come initialised, on its WebGPU backend, with `webgpu` and `mtoonMaterial` (MToonNodeMaterial
+   * from '@pixiv/three-vrm/nodes'): RenderHost.create does all of that. Anything less throws rather than half-work (no
+   * room environment, characters on the WebGL MToonMaterial, a host that says WebGPU while drawing on WebGL2).
    */
   constructor({ canvas, renderer, dprCap = 2, antialias = true, interpolate = true, preserveDrawingBuffer = false, post = null, webgpu = null, mtoonMaterial = null } = {}) {
-    if (renderer?.isWebGPURenderer && renderer._initialized === false) throw new Error('RenderHost: await renderer.init() before handing a WebGPURenderer to the host (or use RenderHost.create)');
+    if (renderer?.isWebGPURenderer) {
+      if (renderer._initialized === false) throw new Error('RenderHost: await renderer.init() before handing a WebGPURenderer to the host (or use RenderHost.create)');
+      if (!isWebGPUBackend(renderer)) throw new Error('RenderHost: this WebGPURenderer fell back to its WebGL2 backend in init(); the host draws WebGL through WebGLRenderer (use RenderHost.create with backend "auto")');
+      if (!webgpu || !mtoonMaterial) throw new Error('RenderHost: a WebGPURenderer needs `webgpu` (three/webgpu, for the room environment\'s PMREM) and `mtoonMaterial` (MToonNodeMaterial from \'@pixiv/three-vrm/nodes\'), or use RenderHost.create');
+    }
     this.renderer = renderer ?? new WebGLRenderer({ canvas, antialias, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer });
     /** 'webgpu' (a WebGPURenderer), 'webgl' (a WebGLRenderer) or 'stand-in' (tests). */
     this.backend = this.renderer.isWebGPURenderer ? 'webgpu' : this.renderer.isWebGLRenderer ? 'webgl' : 'stand-in';
@@ -90,15 +97,29 @@ export class RenderHost {
    * `?renderer=` switch. For WebGPU it first warms the page up (warmUpWebGPU, AB-T-0554 gotcha 6), then creates and
    * initialises the view's WebGPURenderer, and loads the patched MToonNodeMaterial for characters. The other options
    * are the constructor's (preserveDrawingBuffer is WebGL's: a WebGPU canvas is read in the task that drew it).
-   * @param {ConstructorParameters<typeof RenderHost>[0] & { backend?: import('./backend.js').BackendChoice, navigator?: any }} [opts]
+   * three's WebGPURenderer falls back to its WebGL2 backend inside init() when WebGPU fails there (requestDevice after
+   * requestAdapter succeeded, a lost device): then a forced 'webgpu' throws, and 'auto' makes a WebGL host.
+   * `fallbackRenderer`: the renderer auto's WebGL path uses instead of a new WebGLRenderer (a stand-in, in tests).
+   * @param {ConstructorParameters<typeof RenderHost>[0] & { backend?: import('./backend.js').BackendChoice, navigator?: any, fallbackRenderer?: any }} [opts]
    */
-  static async create({ backend = 'webgl', navigator: nav = globalThis.navigator, webgpu = null, mtoonMaterial = null, ...opts } = {}) {
+  static async create({ backend = 'webgl', navigator: nav = globalThis.navigator, webgpu = null, mtoonMaterial = null, fallbackRenderer = null, ...opts } = {}) {
     const chosen = await resolveBackend(backend, { navigator: nav });
     if (chosen === 'webgl') return new RenderHost({ ...opts, mtoonMaterial });
+    /** WebGPU failed inside a renderer's init(): a forced WebGPU says so; auto takes the WebGL path. */
+    const fellBack = (which) => {
+      if (backend === 'webgpu') throw new Error(`renderer=webgpu: ${which} got three's WebGL2 fallback, not WebGPU (WebGPU failed inside init(), e.g. requestDevice); use renderer=auto to fall back to WebGL`);
+      return new RenderHost({ ...opts, renderer: fallbackRenderer ?? undefined, mtoonMaterial: null });
+    };
     const W = webgpu ?? await loadWebGPU();
-    await warmUpWebGPU({ webgpu: W }); // before this renderer, so it isn't the page's first (gotcha 6)
+    const warm = await warmUpWebGPU({ webgpu: W }); // before this renderer, so it isn't the page's first (gotcha 6)
+    if (!warm.webgpu) return fellBack('the warm-up renderer'); // found before the view's canvas is touched
     const renderer = opts.renderer ?? new W.WebGPURenderer({ canvas: opts.canvas, antialias: opts.antialias ?? true, alpha: true, powerPreference: 'high-performance' });
     await renderer.init();
+    if (!isWebGPUBackend(renderer)) {
+      // rare once the warm-up got WebGPU; auto's WebGLRenderer then gets the canvas's existing WebGL2 context
+      renderer.dispose?.();
+      return fellBack('the view\'s renderer');
+    }
     mtoonMaterial ??= (await import('@pixiv/three-vrm/nodes')).MToonNodeMaterial; // patched on install (scripts/patch-three-vrm.mjs)
     return new RenderHost({ ...opts, renderer, webgpu: W, mtoonMaterial });
   }

@@ -28,7 +28,9 @@ too. "Replay demo walk" plays `content/sample/input/walk-in.json`.
 
 **`?renderer=webgpu`** draws the playground with three's `WebGPURenderer` (`?renderer=auto`: WebGPU where the page has
 it, else WebGL). Without the switch it stays on WebGL until M4 W3 flips the default; `?mode=acceptance` stays on WebGL
-until W3 runs it on both. The Renderer readout says which backend drew.
+until W3 runs it on both. The Renderer readout says which backend drew. The host is made asynchronously, so the controls
+that need the world stay disabled until it and the scene are there; a forced `?renderer=webgpu` where WebGPU fails shows
+the error and leaves them disabled (`backends-chromium.mjs` checks that too).
 - **On WebGPU** the cafe and its characters render (Mira and Hana with the patched `MToonNodeMaterial`), with shadows
   and the room environment.
 - **Not yet on WebGPU:** the post stack (TSL post is W1), readback and `frameHash` (W2), and the speech bubbles and
@@ -56,7 +58,7 @@ apps/playground/scripts/backends-wkwebview.sh         # the same in WKWebView, s
   right after `render()`, so offline frames read that way all looked the same. `toDataURL` in the drawing task gives
   the frame just drawn. Chromium gives the new frame either way (AB-L-0372).
 - **WebGL in WKWebView** came out as one of two images from load to load (3 of 16 loads gave the other), which W0 didn't
-  change. It's noted for W3.
+  change. It's noted for W3 (AB-T-0587, blocking AB-T-0575).
 
 ## Dialogue (M3 W6, AB-T-0545)
 
