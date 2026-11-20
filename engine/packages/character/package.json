@@ -2,7 +2,7 @@
   "name": "@vrmxg/character",
   "version": "0.1.0",
   "private": true,
-  "description": "VRMXG characters: VRMXA / VRM loading, the Character node (animation graph on VRMXA slots, speed blend, root motion, kinematic controller with jump, look-at, expressions, actions), bone attachments, and a snapshot-able character state.",
+  "description": "VRMXG characters: VRMXA / VRM loading, the Character node (animation graph on VRMXA slots, speed blend, root motion, kinematic controller with jump, look-at, expressions, actions, a ragdoll knockdown with get-up), bone attachments, and a snapshot-able character state.",
   "type": "module",
   "exports": {
     ".": "./src/index.js"

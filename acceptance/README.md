@@ -40,6 +40,18 @@ M3 adds checks as its workstreams land. The M3 acceptance (W13) runs all ten of 
   - the bubbles are drawn in the canvas (`@vrmxg/text`, troika, the text spike's verdict AB-T-0536): a frame with
     Hana's bubble hashes the same drawn twice and on another load of the page.
 
+- **Check 18** (W7, AB-T-0546): ragdolls. Mira and Hana stand on a landing 0.9 m up at the top of four steps outside the
+  cafe (`apps/playground/src/stairs.js`: box colliders added to the sample scene, which itself is unchanged); both are
+  knocked down the stairs at step 30 (45 N·s on the torso):
+  - each falls as a ragdoll from the one humanoid mapping (eleven parts, sized from the skeleton, nothing per model),
+    lies still, and gets up at the foot of the stairs, blending back into animation (Mira: down at step 244, up at 356;
+    Hana: down at 144, up at 256);
+  - it hashes identically at every step in Node, Chromium and WKWebView (scheme and loopback), final 2a28db30b92d6f78;
+  - a snapshot 40 steps into the fall re-simulates to the same end;
+  - checks 1–17 are unchanged, so 18 of 18 pass.
+- **The fall seen** (`node acceptance/m3/ragdoll-chromium.mjs` against the playground's dev server, `?fall`):
+  `results/m3-ragdoll-{tumbling,lying,rising,up}.png`, with the stairs in debug draw until W12 brings visible ones.
+
 ## Result: M2 is done (2026-11-18, M5 Max)
 
 M2's ten exit checks ([M2-PLAN.md](../M2-PLAN.md) "What M2 is done looking like") were run at the M2 commit 2df012b in

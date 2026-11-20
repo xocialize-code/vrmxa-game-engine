@@ -10,6 +10,7 @@ import { Matrix4, Vector3, Quaternion } from 'three';
 import { PhysicsWorld } from './world.js';
 import { Layers } from './layers.js';
 import { RAPIER_BUILD } from './rapier.js';
+import { buildRagdoll, removeRagdoll, ragdollMotion, settleRagdoll } from './ragdoll.js';
 
 const _m = new Matrix4(), _p = new Vector3(), _q = new Quaternion(), _s = new Vector3();
 
@@ -83,6 +84,14 @@ export class PhysicsServer {
   }
 
   removeCollider(handle) { this.colliders.delete(handle); this.world.removeCollider(handle); }
+
+  // ---------------------------------------------------------------- ragdolls (M3 W7: a character's, through ragdoll.js)
+
+  /** Bodies and joints for ragdoll parts (buildRagdoll). They aren't nodes' bodies: the node that asked keeps the handles in its state. */
+  buildRagdoll(parts, opts) { return buildRagdoll(this.world, parts, opts); }
+  removeRagdoll(rd) { removeRagdoll(this.world, rd); }
+  ragdollMotion(rd, count) { return ragdollMotion(this.world, rd, count); }
+  settleRagdoll(rd, opts) { settleRagdoll(this.world, rd, opts); }
 
   watch(behaviour) { this.watchers.push(behaviour); return () => { this.watchers = this.watchers.filter((w) => w !== behaviour); }; }
 

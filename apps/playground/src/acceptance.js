@@ -28,6 +28,9 @@
 //   runSave        (M2 W9) the take with items saved at step 720 (after the equip) into a save file, written to a store
 //                  (IndexedDB in a browser, memory in Node) and read back, loaded into a fresh world, and replayed to the
 //                  end: the file's bytes and every step after the load hash the same everywhere.
+//   runRagdoll     (M3 W7) Mira and Hana on a landing at the top of four steps (stairs.js), knocked down the stairs at
+//                  step 30: each falls as a ragdoll, lies still and gets up, blending back into animation. A hash of every
+//                  component after every step, a snapshot taken mid-fall restored and re-simulated, and how each fall went.
 //   runItems       (M1 W10) the recorded take with items (content/sample/input/play-items.json): Mira walks in, takes the
 //                  sword into her closet, opens the cupboard, sits on a stool, gets up and switches the counter lights
 //                  off; Hana greets her on the way. A hash of every component after every step, a snapshot after the
@@ -39,6 +42,7 @@ import { buildWorld, loadSample } from './world.js';
 import { SequencePlayer, subtitles } from '@vrmxg/sequence';
 import { MemoryStore, IndexedDBStore } from '@vrmxg/save';
 import { AudioOutput, mixOffline, hashSamples } from '@vrmxg/audio';
+import { withStairs, knockDownStairs, FALL_SPOTS, STAIRS } from './stairs.js';
 
 export const STEPS = 600, SNAPSHOT_AT = 300, ITEMS_SNAPSHOT_AT = 720; // a step whose hash includes Rapier's bytes (every 60th), after the equip
 const text = (b) => new TextDecoder().decode(b);
@@ -472,5 +476,42 @@ export async function runConversation(R, sample, opts, { now = () => 0 } = {}) {
   return {
     steps: take.steps, events: take.ai.length, decisions, run: packRun(run), final: hashValue(run.at(-1).h), components: Object.keys(run[0].h).length,
     snapshot: { at: SNAP, rerunMatches: restored === null, divergence: restored }, lines, stepMs: +(ms / take.steps).toFixed(3),
+  };
+}
+
+/** M3 W7: knocked down the stairs (see the header). */
+export async function runRagdoll(R, sample, opts, { now = () => 0 } = {}) {
+  const STEPS_R = 600, KNOCK = 30, SNAP = KNOCK + 40, who = Object.keys(FALL_SPOTS);
+  const S = { ...sample, doc: withStairs(sample.doc) };
+  const A = await buildWorld(R, S, opts), tree = A.tree;
+  const cs = who.map((id) => /** @type {any} */ (tree.find(id)));
+  const falls = Object.fromEntries(who.map((id) => [id, { phases: [], lowestHips: Infinity }]));
+  const hipsY = (c) => { const n = c.vrm.humanoid.getNormalizedBoneNode('hips'); n.updateWorldMatrix(true, false); return n.matrixWorld.elements[13]; };
+  const run = [{ step: 0, h: worldHashes(tree) }];
+  let snap = null, ms = 0;
+  for (let k = 1; k <= STEPS_R; k++) {
+    const t0 = now(); tree.step(); ms += now() - t0;
+    if (k === KNOCK) knockDownStairs(tree);
+    for (const c of cs) {
+      const f = falls[c.id], ph = c.ragdoll?.phase ?? 'up';
+      if (f.phases.at(-1)?.[0] !== ph) f.phases.push([ph, k]);
+      if (c.ragdoll && c.ragdoll.phase !== 'rising') f.lowestHips = Math.min(f.lowestHips, hipsY(c));
+    }
+    run.push({ step: k, h: worldHashes(tree, { physicsBytes: k % 60 === 0 }) });
+    if (k === SNAP) snap = captureWorld(tree, { meta: { scene: sample.scene, ragdoll: true } });
+  }
+  for (const c of cs) {
+    const f = falls[c.id], p = c.object3d.position;
+    Object.assign(f, { lowestHips: r3(f.lowestHips), end: [p.x, p.y, p.z].map(r3), standing: r3(hipsY(c) - p.y), phases: f.phases.map(([ph, k]) => `${ph}@${k}`) });
+  }
+  const B = await buildWorld(R, S, opts);
+  restoreWorld(B.tree, snap);
+  const again = [];
+  for (let k = SNAP + 1; k <= STEPS_R; k++) { B.tree.step(); again.push({ step: k, h: worldHashes(B.tree, { physicsBytes: k % 60 === 0 }) }); }
+  const restored = compareRuns(run.slice(SNAP + 1), again);
+  return {
+    steps: STEPS_R, knock: KNOCK, run: packRun(run), final: hashValue(run.at(-1).h), components: Object.keys(run[0].h).length,
+    snapshot: { at: SNAP, midFall: who.every((id) => snap.nodes[id]?.ragdoll?.phase === 'falling'), rerunMatches: restored === null, divergence: restored },
+    falls, landing: STAIRS.top, stepMs: +(ms / STEPS_R).toFixed(3),
   };
 }

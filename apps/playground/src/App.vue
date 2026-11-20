@@ -6,7 +6,7 @@ import { Playground, PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, showBubbles: true, showCaptions: true, showNames: false });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, fall: false, showBubbles: true, showCaptions: true, showNames: false });
 // the sample's scenes and sequences; ?scene= picks one at load
 const SCENES = ['cafe.vrmxs', 'sequences/morning.vrmxs', 'sequences/cafe-morning.vrmxs'];
 const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
@@ -20,6 +20,7 @@ function refresh() {
   ui.prompt = pg.prompt(); ui.wearing = pg.wearing();
   ui.buses = pg.busSettings(); ui.audioOn = !!pg.audio?.running; ui.captions = pg.captions();
   ui.bubbles = ui.showBubbles ? pg.bubbles() : []; ui.hasDirector = !!pg.director; ui.choices = pg.choices(); // M3 W6
+  ui.fall = !!pg.fall; // M3 W7
   const cur = pg.currentCamera(); ui.cameras = pg.cameras(); ui.camera = cur?.id ?? ''; ui.preset = cur?.preset ?? '';
   if (pg.error) ui.error = pg.error;
 }
@@ -28,6 +29,8 @@ function refresh() {
 function say(text) { try { pg.talk(text); } catch (e) { ui.error = String(e?.message ?? e); } refresh(); }
 const setBubbles = () => { pg.setBubbles(ui.showBubbles); refresh(); };
 const setNames = () => { pg.setNameTags(ui.showNames); refresh(); };
+// M3 W7: ?fall — shove Mira and Hana down the stairs (and play, so the fall is seen)
+function knockDown() { try { pg.knockDown(); if (!pg.playing) pg.play(); } catch (e) { ui.error = String(e?.message ?? e); } refresh(); }
 function send() { const t = ui.chatText.trim(); if (!t) return; say(t); ui.chatText = ''; }
 
 async function load() {
@@ -101,6 +104,7 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
       <button id="step" type="button" :disabled="ui.loading" aria-label="Step" @click="step">Step</button>
       <button id="reset" type="button" :disabled="ui.loading" aria-label="Reset" @click="load">Reset</button>
       <button id="replay" type="button" :disabled="ui.loading" aria-label="Replay demo walk" @click="replay">Replay demo walk</button>
+      <button v-if="ui.fall" id="knock-down" type="button" :disabled="ui.loading" aria-label="Knock down the stairs" @click="knockDown">Knock down</button>
       <button v-if="ui.shell" id="open-scene" type="button" :disabled="ui.loading" aria-label="Open scene" @click="openScene">Open…</button>
       <button v-if="ui.shell" id="save-scene" type="button" :disabled="ui.loading" aria-label="Save scene as" @click="saveScene">Save as…</button>
       <fieldset class="saves" aria-label="Save slots">

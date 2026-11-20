@@ -10,7 +10,7 @@ import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
 import { captureStill, hashFrame } from '@vrmxg/export';
 import { loadSample, buildWorld } from './world.js';
 import { serialize } from '@vrmxg/scene';
-import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, runBrains, runSave, runFilm, runConversation, STEPS } from './acceptance.js';
+import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, runBrains, runSave, runFilm, runConversation, runRagdoll, STEPS } from './acceptance.js';
 import { AudioOutput } from '@vrmxg/audio';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
@@ -19,6 +19,7 @@ import { httpTTS, shellTTS } from '@vrmxg/voice';
 import { installDirector, httpModel, isTake, demoModel } from '@vrmxg/director';
 import { Vector3 } from 'three';
 import { TextLayer } from '@vrmxg/text';
+import { withStairs, knockDownStairs } from './stairs.js';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
@@ -77,6 +78,9 @@ export class Playground {
     if (take && !isTake(take)) throw new Error(`${takeRef} is not a take (vrmxg-take)`);
     const cast = take?.cast ?? (directorUrl ? { [this.talkTo]: { behaviours: [{ use: 'brain', preset: params.get('preset') ?? 'host' }] } } : null);
     if (cast) this.sample = { ...this.sample, doc: { ...this.sample.doc, nodes: this.sample.doc.nodes.map((n) => (cast[n.id] ? { ...n, ...cast[n.id] } : n)) } };
+    // M3 W7: ?fall puts a flight of stairs outside the cafe with Mira and Hana on its landing (knockDown() shoves them)
+    this.fall = params.has('fall');
+    if (this.fall) this.sample = { ...this.sample, doc: withStairs(this.sample.doc, { camera: true }) };
     if (!this.audio) { this.audio = new AudioOutput(); this.audio.unlockOn(window); } // one output for every load; heard after the first gesture
     this.tree?.services.get('audio')?.dispose();
     const world = await buildWorld(R, this.sample, { vrmxaCore, closet, behaviours, audioOutput: this.audio });
@@ -127,10 +131,11 @@ export class Playground {
     const save = await runSave(R, sample, opts, { now });
     const film = await runFilm(R, sample, opts, { now });
     const conversation = await runConversation(R, sample, opts, { now });
+    const ragdoll = await runRagdoll(R, sample, opts, { now });
     const audio = await runAudio(R, sample, opts, { silentFinal: items.final, take: 'input/play-items.json', steps: items.steps });
     const rendered = await this._renderedChecks(simulation);
     rendered.post = await this._postChecks();
-    return { simulation, devices, items, cinematic, sequence, particles, brains, save, film, conversation, audio, rendered };
+    return { simulation, devices, items, cinematic, sequence, particles, brains, save, film, conversation, ragdoll, audio, rendered };
   }
 
   async _renderedChecks(simulation) {
@@ -333,6 +338,13 @@ export class Playground {
 
   /** The world's hash now (the presentation checks compare it with the dialogue UI on and off). */
   worldHash() { return this.tree ? hashValue(worldHashes(this.tree, { physicsBytes: true })) : null; }
+
+  /** ?fall (M3 W7): knock Mira and Hana down the stairs. */
+  knockDown(impulse) {
+    if (!this.fall) throw new Error('open the playground with ?fall for the stairs');
+    knockDownStairs(this.tree, impulse);
+    this._changed();
+  }
 
   /** Say something to the character you talk to (typed chat, a choice): its director takes it from here. */
   talk(text) {

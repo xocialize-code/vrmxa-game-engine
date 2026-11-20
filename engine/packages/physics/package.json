@@ -2,7 +2,7 @@
   "name": "@vrmxg/physics",
   "version": "0.1.0",
   "private": true,
-  "description": "VRMXG physics: an engine-neutral adapter implemented on Rapier's deterministic build, RigidBody / Collider / Area nodes, the hinge behaviour, queries, collision layers, snapshots and debug render data.",
+  "description": "VRMXG physics: an engine-neutral adapter implemented on Rapier's deterministic build, RigidBody / Collider / Area nodes, the hinge behaviour, queries, collision layers, ball joints and hinges by frames, ragdolls from parts, snapshots and debug render data.",
   "type": "module",
   "exports": {
     ".": "./src/index.js"

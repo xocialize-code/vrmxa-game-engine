@@ -182,6 +182,17 @@ const items = (r) => r?.result?.items ?? r?.items;
   check(17, 'A recorded conversation replays with no model, identical everywhere; a save halfway continues to the same end', ok,
     ref ? `${ref.steps} steps × ${ref.components} components, ${ref.events} logged events (${ref.decisions} decisions), final ${ref.final}; Hana: ${ref.lines.map((l) => l.replace(':', ' ')).join(' · ')}; served ${served}×; step ${ref.stepMs} ms (node); snapshot @${ref.snapshot.at} ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? 'identical' : 'DIFFERS'}`).join('; ')}` : 'no node result');
 }
+// 18 (M3 W7). Ragdolls: Mira and Hana on a landing at the top of four steps, knocked down the stairs at step 30. Each
+// falls as a ragdoll (one mapping from the humanoid, nothing per model), lies still and gets up below the landing,
+// blending back into animation; every step hashes identically everywhere, and a snapshot mid-fall re-simulates to the end.
+{
+  const rg = (r) => r?.result?.ragdoll ?? r?.ragdoll, ref = rg(node);
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = rg(r); const d = x && ref ? compareRuns(unpackRun(ref.run), unpackRun(x.run)) : { step: -1, component: 'no result' }; return { k, d, x, ok: !!x && !d && x.snapshot.rerunMatches }; });
+  const fell = ref && Object.values(ref.falls).every((f) => f.phases.map((p) => p.split('@')[0]).join(' ') === 'up falling down rising up' && f.lowestHips < ref.landing - 0.3 && f.end[1] < ref.landing - 0.15 && f.standing > 0.6);
+  const ok = !!ref && fell && ref.snapshot.midFall && ref.snapshot.rerunMatches && rows.every((r) => r.ok);
+  check(18, 'Ragdolls: knocked down the stairs, both characters fall, lie still and get up, identical everywhere; a snapshot mid-fall', ok,
+    ref ? `${ref.steps} steps × ${ref.components} components, knocked at ${ref.knock}, final ${ref.final}; ${Object.entries(ref.falls).map(([id, f]) => `${id}: ${f.phases.join(' → ')}, hips down to ${f.lowestHips} m, up at [${f.end}] (hips ${f.standing} m)`).join('; ')}; step ${ref.stepMs} ms (node); snapshot @${ref.snapshot.at} ${ref.snapshot.midFall ? 'mid-fall' : 'NOT mid-fall'} ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? 'identical' : 'DIFFERS'}`).join('; ')}` : 'no node result');
+}
 checks.sort((a, b) => a.n - b.n);
 fs.writeFileSync(res('summary.json'), JSON.stringify({ checks, runtimes: { node: node?.version, chromium: chromium?.version, wkwebview: scheme?.ua } }, null, 1) + '\n');
 process.exit(checks.every((c) => c.ok) ? 0 : 1);

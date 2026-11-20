@@ -1,6 +1,6 @@
 // @vrmxg/physics — M0 W2 (AB-T-0503). An engine-neutral adapter on Rapier's deterministic build
 // (AB-R-0923), the RigidBody / Collider / Area nodes, the hinge behaviour, ray and shape casts, named
-// collision layers, snapshots and debug render data. Inside the determinism boundary (AB-D-0248).
+// collision layers, snapshots and debug render data; ball joints, hinges by frames and ragdolls (M3 W7). Inside the determinism boundary (AB-D-0248).
 import { PhysicsServer } from './server.js';
 import { RigidBodyNode, ColliderNode, AreaNode } from './nodes.js';
 import { HingeBehaviour } from './hinge.js';
@@ -8,7 +8,8 @@ import { readPhysics } from './khr.js';
 
 export { loadRapier, RAPIER_BUILD } from './rapier.js';
 export { PhysicsWorld } from './world.js';
-export { Layers } from './layers.js';
+export { Layers, RAGDOLL_BIT } from './layers.js';
+export { buildRagdoll, removeRagdoll, ragdollMotion, settleRagdoll } from './ragdoll.js';
 export { PhysicsServer, worldPose, relativePose } from './server.js';
 export { RigidBodyNode, ColliderNode, AreaNode } from './nodes.js';
 export { HingeBehaviour } from './hinge.js';

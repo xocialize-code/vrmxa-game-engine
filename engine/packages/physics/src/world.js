@@ -45,13 +45,15 @@ export class PhysicsWorld {
   // ---------------------------------------------------------------- bodies, colliders, joints
 
   /**
-   * @param {{ type?: 'dynamic'|'kinematic'|'fixed', p?: number[], q?: number[], linearDamping?: number, angularDamping?: number, ccd?: boolean }} spec
+   * @param {{ type?: 'dynamic'|'kinematic'|'fixed', p?: number[], q?: number[], linearDamping?: number, angularDamping?: number, ccd?: boolean, iterations?: number }} spec
+   *   iterations: extra solver iterations for the island this body is in (a ragdoll's long chain of joints), not the world's
    * @returns {number} body handle
    */
-  createBody({ type = 'dynamic', p = [0, 0, 0], q: rot = [0, 0, 0, 1], linearDamping = 0, angularDamping = 0, ccd = false }) {
+  createBody({ type = 'dynamic', p = [0, 0, 0], q: rot = [0, 0, 0, 1], linearDamping = 0, angularDamping = 0, ccd = false, iterations = 0 }) {
     const R = this.R;
     const desc = type === 'fixed' ? R.RigidBodyDesc.fixed() : type === 'kinematic' ? R.RigidBodyDesc.kinematicPositionBased() : R.RigidBodyDesc.dynamic();
     desc.setTranslation(p[0], p[1], p[2]).setRotation(q(rot)).setLinearDamping(linearDamping).setAngularDamping(angularDamping).setCcdEnabled(ccd);
+    if (iterations > 0) desc.setAdditionalSolverIterations(iterations);
     // A kinematic body is moved by its node every step; once asleep, Rapier ignores its next pose and its
     // collider stays behind (a character standing still for a second then can't walk).
     if (type === 'kinematic') desc.setCanSleep(false);
@@ -74,8 +76,9 @@ export class PhysicsWorld {
 
   /**
    * @param {number} body handle of the body it moves with
-   * @param {ShapeSpec & { p?: number[], q?: number[], sensor?: boolean, friction?: number, restitution?: number, mass?: number, layer?: string, events?: boolean }} spec
-   *   p / q: pose relative to the body
+   * @param {ShapeSpec & { p?: number[], q?: number[], sensor?: boolean, friction?: number, restitution?: number, mass?: number, layer?: string, events?: boolean, ragdoll?: boolean }} spec
+   *   p / q: pose relative to the body; ragdoll: a ragdoll's part (Layers.ragdollGroups: it touches the world, never
+   *   another ragdoll part)
    * @returns {number} collider handle
    */
   createCollider(body, spec) {
@@ -86,7 +89,7 @@ export class PhysicsWorld {
     if (spec.friction !== undefined) d.setFriction(spec.friction);
     if (spec.restitution !== undefined) d.setRestitution(spec.restitution);
     if (spec.mass !== undefined) d.setMass(spec.mass);
-    d.setCollisionGroups(this.layers.groups(spec.layer));
+    d.setCollisionGroups(spec.ragdoll ? this.layers.ragdollGroups(spec.layer) : this.layers.groups(spec.layer));
     if (spec.sensor) {
       d.setSensor(true);
       // Sensors don't see kinematic bodies unless KINEMATIC_FIXED is on (spike gotcha 2).
@@ -142,6 +145,62 @@ export class PhysicsWorld {
     return joint.handle;
   }
 
+  /**
+   * A ball-and-socket joint (M3 W7: shoulders, hips, the neck, the spine of a ragdoll), with optional limits per
+   * angular axis and joint friction.
+   *
+   * The joint's frame on each body is the anchor and a rotation (frameA, frameB, in each body's own frame); the joint is
+   * at zero when the two frames coincide, and limits are angles about the frame's x, y and z axes (Rapier bounds the
+   * relative rotation's components, so each limit is exact alone and approximate when several axes bend at once).
+   * Rapier's JS API sets limits only on one-axis joints; the raw joint set takes them on any axis of any joint.
+   * friction: a velocity motor at zero on each angular axis, damping the relative spin. Rapier's default motor model is
+   * acceleration-based, so it is a rate (1/s) whatever the parts weigh. It is not a powered joint (a pose-seeking motor
+   * is the Jolt trigger, PRD §5.5). Joints are made at one fixed place in the solver's order: their creation order.
+   * @param {number} a @param {number} b body handles
+   * @param {{ anchorA?: number[], anchorB?: number[], frameA?: number[], frameB?: number[],
+   *   limits?: { x?: number[], y?: number[], z?: number[] }, friction?: number, contacts?: boolean }} spec
+   */
+  createSpherical(a, b, { anchorA = [0, 0, 0], anchorB = [0, 0, 0], frameA = [0, 0, 0, 1], frameB = [0, 0, 0, 1], limits = {}, friction = 0, contacts = true } = {}) {
+    const R = this.R;
+    const joint = this.world.createImpulseJoint(R.JointData.spherical(v(anchorA), v(anchorB)), this.world.getRigidBody(a), this.world.getRigidBody(b), true);
+    joint.setLocalFrame1(v(anchorA), q(frameA));
+    joint.setLocalFrame2(v(anchorB), q(frameB));
+    if (!contacts) joint.setContactsEnabled(false);
+    const axes = { x: R.JointAxis.AngX, y: R.JointAxis.AngY, z: R.JointAxis.AngZ };
+    const raw = this.world.impulseJoints.raw; // the typed handle Rapier returns for a ball has no per-axis setters
+    for (const [k, axis] of Object.entries(axes)) {
+      const l = limits[k];
+      if (l) raw.jointSetLimits(joint.handle, axis, l[0], l[1]);
+      if (friction > 0) raw.jointConfigureMotorVelocity(joint.handle, axis, 0, friction);
+    }
+    return joint.handle;
+  }
+
+  /**
+   * A hinge given by frames (M3 W7: knees, elbows): it turns about frame x, where the frames are as createSpherical's,
+   * with limits on that angle and joint friction. createRevolute's axis-and-anchors form stays for doors.
+   * @param {number} a @param {number} b body handles
+   * @param {{ anchorA?: number[], anchorB?: number[], frameA?: number[], frameB?: number[], limits?: number[], friction?: number, contacts?: boolean }} spec
+   */
+  createHinge(a, b, { anchorA = [0, 0, 0], anchorB = [0, 0, 0], frameA = [0, 0, 0, 1], frameB = [0, 0, 0, 1], limits, friction = 0, contacts = true } = {}) {
+    const jd = this.R.JointData.revolute(v(anchorA), v(anchorB), { x: 1, y: 0, z: 0 });
+    const joint = this.world.createImpulseJoint(jd, this.world.getRigidBody(a), this.world.getRigidBody(b), true);
+    joint.setLocalFrame1(v(anchorA), q(frameA));
+    joint.setLocalFrame2(v(anchorB), q(frameB));
+    if (!contacts) joint.setContactsEnabled(false);
+    if (limits) joint.setLimits(limits[0], limits[1]);
+    if (friction > 0) joint.configureMotorVelocity(0, friction);
+    return joint.handle;
+  }
+
+  /**
+   * Set a joint's angular limits again ({ x, y, z }, radians, about its frame's axes; an axis left out keeps its limits):
+   * a ball's three, a hinge's x. [−π, π] opens an axis: Rapier bounds the sine of the half angle, which never passes ±1.
+   */
+  setAngularLimits(joint, limits) {
+    const R = this.R, raw = this.world.impulseJoints.raw;
+    for (const [k, axis] of [['x', R.JointAxis.AngX], ['y', R.JointAxis.AngY], ['z', R.JointAxis.AngZ]]) if (limits[k]) raw.jointSetLimits(joint, axis, limits[k][0], limits[k][1]);
+  }
   /** Switch a collider (a sensor, say) on or off; off, it neither collides nor senses. Part of the snapshot. */
   setColliderEnabled(collider, on) { this.world.getCollider(collider)?.setEnabled(on); }
 
@@ -177,6 +236,8 @@ export class PhysicsWorld {
   /** A body's velocities: linear (m/s) and angular (rad/s), world space. */
   bodyMotion(handle) { const b = this.world.getRigidBody(handle); return { lv: arr3(b.linvel()), av: arr3(b.angvel()) }; }
   setMotion(handle, lv, av) { const b = this.world.getRigidBody(handle); b.setLinvel(v(lv), true); b.setAngvel(v(av), true); }
+  /** Change a body's damping (a ragdoll lying down settles its limbs). Part of the snapshot. */
+  setDamping(handle, linear, angular) { const b = this.world.getRigidBody(handle); b.setLinearDamping(linear); b.setAngularDamping(angular); }
   applyImpulse(handle, impulse) { this.world.getRigidBody(handle).applyImpulse(v(impulse), true); }
   isSleeping(handle) { return this.world.getRigidBody(handle).isSleeping(); }
   /** Call f(handle) for every awake body (Rapier's active set): cheap on a settled scene. */

@@ -6,21 +6,26 @@
 //   3. animation graph on VRMXA slots → each action's time and weight → mixer.update(0),
 //   4. travel root motion stripped from the hips,
 //   5. vrm.update(dt): humanoid, look-at, expressions, node constraints, spring bones at the fixed step.
+// Knocked down (M3 W7), the body is a ragdoll (ragdoll.js): steps 1 to 4 give way to the bones taking the ragdoll's
+// pose; once it lies still the character gets up, the animation coming back over the lying pose.
 // Its whole state (every node's local transform, springs, look-at, expressions, graph, controller) is
 // getState() / setState(), through the vendored three-vrm's state API only.
-import { AnimationMixer, Object3D, Vector3 } from 'three';
+import { AnimationMixer, Object3D, Quaternion, Vector3 } from 'three';
 import { createVRMAnimationClip, VRMLookAtQuaternionProxy } from '@pixiv/three-vrm-animation';
 import { Node } from '@vrmxg/core';
 import { maskClip, maskedEntries } from './masks.js';
 import { twoBoneIK } from './ik.js';
 import { LocomotionGraph } from './graph.js';
+import { humanoidRagdoll, poseFromRagdoll, RAGDOLL_BONES } from './ragdoll.js';
 
 const GRAVITY = -9.81;
 const TURN_RATE = 10; // rad/s
 const ARRIVE = 0.3;   // m, goTo arrival radius
 /** Hip height above the feet when seated, for the generated `sit` clips: a seat point is where the hips go (VRMXI §8.2). */
 const SEATED_HIPS = 0.5;
-const _v = new Vector3();
+const _v = new Vector3(), _qa = new Quaternion(), _qb = new Quaternion();
+/** Ragdoll timing (steps at 60 Hz): the trunk still this long counts as lying; down this long before getting up; never longer than this falling. */
+const STILL_STEPS = 20, DOWN_STEPS = 40, MAX_FALL_STEPS = 360;
 
 /** The body's objects in order, skipping presentation subtrees (held items' models): what the snapshot holds. */
 function simTraverse(o, fn) { if (o.userData.presentation) return; fn(o); for (const c of o.children) simTraverse(c, fn); }
@@ -41,7 +46,7 @@ function writeEveryBinding(m) {
 }
 
 export class CharacterNode extends Node {
-  static actions = ['say', 'goTo', 'emote', 'lookAt', 'reach'];
+  static actions = ['say', 'goTo', 'emote', 'lookAt', 'reach', 'knockDown', 'getUp'];
 
   constructor(data, def) {
     super(data, def);
@@ -60,6 +65,13 @@ export class CharacterNode extends Node {
     this.body = undefined;
     this.collider = undefined;
     /** what the eyes aim at (detached: not in the scene, not in a snapshot) */ this._lookPoint = new Object3D();
+    /**
+     * Knocked down (M3 W7): { phase: 'falling' | 'down' | 'rising', since, getUp, still, bodies, joints, balls, pre } while a
+     * ragdoll (pre: the pose before the fall); rising: { since, pre, from, blend } (from: the lying pose the animation
+     * comes back over). Null on its feet.
+     * @type {any}
+     */
+    this.ragdoll = null;
   }
 
   get bodyType() { return 'kinematic'; }
@@ -143,6 +155,7 @@ export class CharacterNode extends Node {
   }
 
   exitTree() {
+    if (this.ragdoll?.bodies) this.physics.removeRagdoll(this.ragdoll);
     if (this.physics) { this.kcc.free(); this.physics.removeBody(this, this.body); }
     this.mixer?.stopAllAction();
     this.object3d.remove(this.vrm.scene);
@@ -167,12 +180,13 @@ export class CharacterNode extends Node {
 
   physicsProcess(dt) {
     const c = this.ctrl;
+    if (this.ragdoll && this.ragdoll.phase !== 'rising') { this.ragdollStep(); this.lookAndUpdate(dt); return; }
     // 0. an emote's moment is over (state, not a timer: a snapshot taken mid-emote restores)
     if (c.emote && this.tree.clock.step >= c.emote.until) { this.vrm.expressionManager?.setValue(c.emote.name, 0); delete c.emote; }
     // 1. intent (none while an action plays or the character sits)
-    let [mx, mz] = this.graph.busy || c.seat ? [0, 0] : this.input.move;
-    if (this.graph.busy || c.seat) this.input.jump = false;
-    if (c.goTo) {
+    let [mx, mz] = this.graph.busy || c.seat || this.ragdoll ? [0, 0] : this.input.move;
+    if (this.graph.busy || c.seat || this.ragdoll) this.input.jump = false;
+    if (c.goTo && !this.ragdoll) {
       // a node, or a point [x, y, z]; with a navmesh (@vrmxg/nav) the crowd's velocity steers (navMove), else a straight line
       const target = Array.isArray(c.goTo) ? null : this.tree.find(c.goTo);
       if (!target && !Array.isArray(c.goTo)) { c.goTo = null; delete c.navMove; delete c.navArrived; }
@@ -238,6 +252,8 @@ export class CharacterNode extends Node {
       const f = Math.min(0.995, weight * (1 - tw)), w = (base || 1) * f / (1 - f);
       if (a.weight > 0) a.weight += w; else { a.time = time; a.weight = w; }
     }
+    // getting up (M3 W7): bones no clip moves go back to where they were before the fall (the mixer writes the rest)
+    if (this.ragdoll) this.setHumanPose(this.ragdoll.pre);
     writeEveryBinding(this.mixer);
     this.mixer.update(0);
 
@@ -248,11 +264,21 @@ export class CharacterNode extends Node {
       if (hips && rest) { hips.position.x = rest[0]; hips.position.z = rest[2]; }
     }
 
+    // 4a. getting up (M3 W7): the animated pose comes in over the lying one
+    if (this.ragdoll) this.blendFromRagdoll();
+
     // 4b. IK (M2 W8): feet on uneven ground, a hand reaching for a grip
     this.solveIK(dt);
 
-    // 5. look-at target (a character's head, not its feet; plus the voice service's small glances), within limits:
-    //    behind the character (more than ~100° from its facing) the eyes go back to the front. Then the VRM's own update.
+    this.lookAndUpdate(dt);
+  }
+
+  /**
+   * 5. look-at target (a character's head, not its feet; plus the voice service's small glances), within limits:
+   *    behind the character (more than ~100° from its facing) the eyes go back to the front. Then the VRM's own update.
+   */
+  lookAndUpdate(dt) {
+    const c = this.ctrl;
     if (this.vrm.lookAt) {
       const t = c.look ? this.tree.find(c.look) : null;
       const at = t ? this.lookPointOf(t) : null;
@@ -290,8 +316,8 @@ export class CharacterNode extends Node {
     const t = c.loop === false ? Math.min(Math.max(0, c.time), d) : c.time - Math.floor(c.time / d) * d;
     return { clip: sha, time: t };
   }
-  /** True while an action plays or the character is seated. */
-  get busy() { return this.graph.busy || !!this.ctrl.seat; }
+  /** True while an action plays, the character is seated, or knocked down and getting up. */
+  get busy() { return this.graph.busy || !!this.ctrl.seat || !!this.ragdoll; }
 
   /**
    * Sit in one of an item's seat points: the hips go to the point's node, facing its +Z (VRMXI §8.2); the collider is
@@ -400,7 +426,7 @@ export class CharacterNode extends Node {
     const k = Math.min(1, dt * 12);
     // feet
     let want = [0, 0];
-    if (this.props.footIK !== false && physics && c.grounded && !c.seat && !this.graph.busy) {
+    if (this.props.footIK !== false && physics && c.grounded && !c.seat && !this.graph.busy && !this.ragdoll) {
       const p = this.object3d.position, ground = (x, z) => physics.world.raycast([x, p.y + 0.6, z], [0, -1, 0], 1.2, { excludeBody: this.body })?.point[1] ?? null;
       const g0 = ground(p.x, p.z);
       if (g0 !== null) want = ['left', 'right'].map((s) => {
@@ -441,6 +467,115 @@ export class CharacterNode extends Node {
   /** Look away from the target, up and to one side (M3 W2: thinking); side 1 left, −1 right, 0 back. @param {{ side?: number }} [args] */
   lookAway({ side = 1 } = {}) { if (side) this.ctrl.lookAway = side; else delete this.ctrl.lookAway; }
 
+  // ---------------------------------------------------------------- knocked down (M3 W7): the ragdoll
+
+  /**
+   * Fall as a ragdoll: the humanoid's parts from the pose the character is in, moving as the character was, with a
+   * shove (N·s, world space) on one part. The capsule is off until the character is up again. Once the ragdoll has lain
+   * still for half a second (or after six seconds), the character gets up, unless `getUp` is false (then getUp() does).
+   * @param {{ impulse?: number[], part?: string, getUp?: boolean }} [o] part: the humanoid bone whose part takes the shove
+   */
+  knockDown({ impulse = [0, 0, 0], part = 'spine', getUp = true } = {}) {
+    if (!this.physics) throw new Error(`Character "${this.id}": a ragdoll needs the physics service`);
+    const at = Math.max(0, RAGDOLL_BONES.indexOf(part));
+    if (this.ragdoll?.bodies) { this.physics.world.applyImpulse(this.ragdoll.bodies[at], impulse); this.ragdoll.still = 0; return; } // down already: shoved again
+    if (this.ctrl.seat) this.standUp();
+    this.object3d.updateWorldMatrix(true, true);
+    const pre = this.humanPose(); // what getting up comes back to for bones no clip moves
+    const parts = humanoidRagdoll(this.vrm, { mass: this.props.mass ?? 60 });
+    // the parts move as the character did: its speed along its facing, and its fall
+    const s = this.graph.speed ?? 0, yaw = this.ctrl.yaw;
+    const rd = this.physics.buildRagdoll(parts, { layer: this.props.layer, iterations: 4, velocity: [Math.sin(yaw) * s, this.ctrl.vy, Math.cos(yaw) * s] });
+    this.physics.world.applyImpulse(rd.bodies[at], impulse);
+    if (this.collider !== undefined) this.physics.world.setColliderEnabled(this.collider, false);
+    const c = this.ctrl;
+    c.goTo = null; delete c.navMove; delete c.navArrived; delete c.reach;
+    c.vy = 0;
+    this.input.move = [0, 0]; this.input.jump = false;
+    this.ragdoll = { phase: 'falling', since: this.tree.clock.step, getUp, still: 0, bodies: rd.bodies, joints: rd.joints, balls: rd.balls, pre };
+    this.emit('knockedDown', {});
+  }
+
+  /** A ragdoll's step: the bones take the bodies' poses (from the last physics step); settled, it lies, then gets up. */
+  ragdollStep() {
+    const rd = this.ragdoll, w = this.physics.world, step = this.tree.clock.step;
+    poseFromRagdoll(this.vrm, rd.bodies.map((b) => w.bodyPose(b)));
+    if (rd.phase === 'falling') {
+      // lying still is the hips and the torso (the first two parts) staying put: their speed, not their spin (a trunk
+      // lying at a joint limit shakes in place, 0.5–1.5 rad/s, until settleRagdoll opens the limits and damps the parts)
+      const m = this.physics.ragdollMotion(rd, 2);
+      rd.still = m.lin < 0.15 ? rd.still + 1 : 0;
+      if (rd.still >= STILL_STEPS || step - rd.since >= MAX_FALL_STEPS) { rd.phase = 'down'; rd.since = step; this.physics.settleRagdoll(rd); }
+    } else if (rd.phase === 'down' && rd.getUp && step - rd.since >= DOWN_STEPS) this.getUp();
+  }
+
+  /**
+   * Get up from a ragdoll lying down: the bodies go, the character stands where the hips lie, facing its feet when on its
+   * back (its head when on its front), with the capsule back on. Its animation (a `getUp` slot when it has one, else
+   * idle) then comes in over the lying pose for `getUpSeconds` (1.2).
+   */
+  getUp() {
+    const rd = this.ragdoll;
+    if (!rd?.bodies) return;
+    const w = this.physics.world, h = this.vrm.humanoid, step = this.tree.clock.step;
+    const hips = w.bodyPose(rd.bodies[0]);
+    this.physics.removeRagdoll(rd);
+    // which way it lies: the hips' up (along the spine) and forward (a VRM 0.x rig faces −z in its own frame)
+    _qa.fromArray(hips.q);
+    const fz = h.getNormalizedBoneNode('leftUpperLeg').position.x < 0 ? -1 : 1;
+    const up = new Vector3(0, 1, 0).applyQuaternion(_qa), fwd = new Vector3(0, 0, fz).applyQuaternion(_qa);
+    let dx = fwd.y > 0 ? -up.x : up.x, dz = fwd.y > 0 ? -up.z : up.z;
+    if (dx * dx + dz * dz < 0.04) { dx = fwd.x; dz = fwd.z; } // sitting up: face where the chest faces
+    const yaw = Math.atan2(dx, dz);
+    const ground = w.raycast([hips.p[0], hips.p[1] + 0.5, hips.p[2]], [0, -1, 0], 3, { excludeBody: this.body });
+    // stand the node under the hips; every bone stays where it lies (only the hips' pose is relative to the node)
+    const hb = h.getNormalizedBoneNode('hips');
+    const hp = hb.getWorldPosition(new Vector3()), hq = hb.getWorldQuaternion(new Quaternion());
+    this.placeAt(hips.p[0], ground ? ground.point[1] : hips.p[1] - 0.1, hips.p[2], yaw);
+    hb.position.copy(hb.parent.worldToLocal(hp));
+    hb.quaternion.copy(hb.parent.getWorldQuaternion(_qb).invert().multiply(hq));
+    const from = this.humanPose();
+    if (this.collider !== undefined) w.setColliderEnabled(this.collider, true);
+    this.ctrl.vy = 0; this.ctrl.grounded = true;
+    if (this.graph.has('getUp')) this.graph.act('getUp');
+    this.ragdoll = { phase: 'rising', since: step, pre: rd.pre, from, blend: Math.max(1, Math.round((this.props.getUpSeconds ?? 1.2) * 60)) };
+    this.emit('gettingUp', {});
+  }
+
+  /** Getting up: each bone eases from where it lay to where the animation has it (smoothstep), the hips too. */
+  blendFromRagdoll() {
+    const rd = this.ragdoll, t = (this.tree.clock.step - rd.since) / rd.blend;
+    if (t >= 1) { this.ragdoll = null; this.emit('gotUp', {}); return; }
+    const k = t * t * (3 - 2 * t), f = rd.from;
+    this.forEachHumanBone((n, i) => {
+      _qb.copy(n.quaternion);
+      n.quaternion.slerpQuaternions(_qa.set(f[i], f[i + 1], f[i + 2], f[i + 3]), _qb, k);
+    });
+    const p = this.vrm.humanoid.getNormalizedBoneNode('hips').position, o = f.length - 3;
+    p.set(f[o] + (p.x - f[o]) * k, f[o + 1] + (p.y - f[o + 1]) * k, f[o + 2] + (p.z - f[o + 2]) * k);
+  }
+
+  /** f(node, offset) for each normalized humanoid bone the VRM has, in a fixed order; offset: its quaternion's in a humanPose. */
+  forEachHumanBone(f) {
+    const h = this.vrm.humanoid;
+    let i = 0;
+    for (const name of Object.keys(h.humanBones)) { const n = h.getNormalizedBoneNode(name); if (n) { f(n, i); i += 4; } }
+  }
+  /** The normalized humanoid's local rotations (forEachHumanBone's order), then the hips' position. */
+  humanPose() {
+    const out = [];
+    this.forEachHumanBone((n) => out.push(n.quaternion.x, n.quaternion.y, n.quaternion.z, n.quaternion.w));
+    const p = this.vrm.humanoid.getNormalizedBoneNode('hips').position;
+    out.push(p.x, p.y, p.z);
+    return Float64Array.from(out);
+  }
+  /** Put the normalized humanoid in a humanPose. */
+  setHumanPose(a) {
+    this.forEachHumanBone((n, i) => n.quaternion.set(a[i], a[i + 1], a[i + 2], a[i + 3]));
+    const o = a.length - 3;
+    this.vrm.humanoid.getNormalizedBoneNode('hips').position.set(a[o], a[o + 1], a[o + 2]);
+  }
+
   /** Set an expression weight directly (0..1). */
   setExpression(name, weight) { this.vrm.expressionManager?.setValue(name, weight); }
 
@@ -461,6 +596,7 @@ export class CharacterNode extends Node {
       graph: this.graph.getState(),
       ctrl: { ...this.ctrl, move: [...this.input.move] },
       equipped: [...this.equipped],
+      ...(this.ragdoll ? { ragdoll: structuredClone(this.ragdoll) } : {}), // only while knocked down: a standing character's state is as it was
     };
   }
 
@@ -486,6 +622,7 @@ export class CharacterNode extends Node {
     this.graph.setState(s.graph);
     const { move, ...ctrl } = s.ctrl;
     this.ctrl = { ...ctrl };
+    this.ragdoll = s.ragdoll ? structuredClone(s.ragdoll) : null; // its bodies come back with the physics snapshot
     this.input.move = [...move];
     this.object3d.updateWorldMatrix(true, true); // the node, its parents and the whole VRM, as a played run has them
   }

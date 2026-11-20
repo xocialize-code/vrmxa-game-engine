@@ -24,3 +24,4 @@ export function installCharacters(tree, opts) {
   return tree.addService('characters', new CharacterLibrary({ prefabs: tree.prefabs, ...opts }));
 }
 export { MASKS, maskClip, maskNodes, maskedEntries } from './masks.js';
+export { humanoidRagdoll, poseFromRagdoll, RAGDOLL_BONES } from './ragdoll.js';

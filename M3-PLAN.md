@@ -115,7 +115,9 @@ engine/packages/
   input/        (grows) speech and camera stimuli as logged inputs; a second player's map
   sense/        camera presence, face direction and gestures (wave, nod, point) → stimuli; the camera's capture
                 stays native or in the page, whichever the spike picks
-  physics/      (grows) spherical and fixed joints, the ragdoll mapping and blend, the raycast vehicle
+  physics/      (grows) ball joints and hinges by frames, ragdolls from parts (W7), the raycast vehicle
+  character/    (grows) the VRM humanoid → ragdoll mapping, knockdown and the get-up blend (W7: it reads the humanoid,
+                so it lives with the character; physics stays engine-neutral)
   item/         (grows) the vehicle item type and its seat
   render/post/  (grows) split screen: viewports with a brain each, the shadow map drawn once
 apps/shell/     an optional voice product: mic capture, VAD, STT, LLM and TTS through MLXEngine, as the bridge methods
