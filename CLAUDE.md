@@ -51,7 +51,7 @@ git-ignored; commit only what this session owns, staging by path. `npm run check
 | `spike-cinematics/` | pmndrs post stack on MToon (AB-R-0928, WKWebView AB-R-0929) |
 | `spike-steprate/` | 60 Hz vs 120 Hz simulation step: keep 60 Hz, interpolate presentation (AB-R-0932, decision AB-D-0245) |
 | `spike-camera/` | Camera capture: native AVCapture + Vision in the shell beats in-page MediaPipe (main-thread cost); the scheme origin is a secure context for getUserMedia (M3 W5, AB-T-0544) |
-| `spike-avatar-studio/` | Moving the Avatar Studio onto the engine: not needed for M4 (the studio's CLI makes a character the engine casts as is); content and voice first, then the shell (M4 W5) and the stage (after M4 W0) |
+| `spike-avatar-studio/` | Moving the Avatar Studio onto the engine: not needed for M4, and it wouldn't close the UI gaps (same stack). The CLI makes a character the engine casts as is; by hand, the UI lacks a library with a starter wardrobe (U1) and MCP (U2) first. Then the shell (M4 W5) and the stage (after M4 W0) |
 | `spike-registry/` | Node registry → `.vrmxs` schema, lint, undoable edits, generic MCP tools (AB-R-0933); the seed of `engine/packages/registry`, `scene` and `mcp` |
 | `research/` | `cinematics.md` (sequencer, cameras, post, viewports), `npc-ai.md` (behaviour trees, utility, LLM director) |
 | `reference/` | Godot 4.8-beta source and other reference repos. Read-only |

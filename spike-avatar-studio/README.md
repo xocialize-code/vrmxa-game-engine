@@ -3,7 +3,43 @@
 *2026-11-19. The question: what would it take to move VRMXA Avatar Studio (`../vrmxa-avatar-studio`) onto VRMXG, so
 that we can make the `.vrmxa` characters M4 casts ([M4-PLAN.md](../M4-PLAN.md), checks 2 and 12)?*
 
-## Verdict
+## The UI (added 2026-11-19, after the operator's correction)
+
+The question was about the studio's **UI**, not what it can do underneath. The library, its CLI and the studio's
+command registry (`app/src/probe/commands.js`, about 123 commands, the "one path" its PRD's MCP-3 asks for) can build
+a character already (below). The question is whether a person can, by hand.
+
+**Walking through it** (the studio's dev server, `New character`, 1440×900):
+- Face and Body are finished and polished: shape sliders, head shapes, colours, a live stage with undo.
+- **Then there is nothing to put on her.** Hair and the closet both start empty ("The closet is empty. Add an item
+  (.vrmxw) to put it on."). Every hair piece and garment has to come from a `.vrmxw` file the person already has, or
+  from "Import a VRM". Home's library of characters and items is designed but still demo data (`app/src/demo/library.js`).
+- Hair by hand means drawing strokes one at a time from a blank head. Hair locks (the `hair-locks` package, 2,470 lines,
+  isn't wired in) and hair from a picture are "Coming later".
+- Eye states and mouth states, Make with Gaea (an item from a picture), and the agent drawer are "Coming later". Item
+  Material and Paint have no screen.
+
+**The UI gaps, in the order that gets a person to a usable character:**
+
+| # | Gap | Size | Notes |
+|---|---|---|---|
+| U1 | **A real library:** characters and items on Home, and pickers in Hair and Closet, read from a library folder and seeded with a starter wardrobe and hair pieces | M, plus the content | The minimum: with U1 and a starter set, a person can make a dressed character by hand. The content is the same need as before (licensed pieces from the importer, or Gaea) |
+| U2 | **The MCP server and the agent drawer** (PRD §16.1, MCP-1 to MCP-11) | S–M | The registry is already the one path. The engine's pattern carries over: `vrmxg-mcp --editor` on loopback, the page polls it and runs each call through the same commands, and each edit lands on the app's undo marked as the agent's (`apps/editor/src/mcp.js`, `engine/packages/mcp`) |
+| U3 | Hair locks: wire `hair-locks` into the Locks tab | M | Much faster than strokes for anime hair |
+| U4 | Item Material and Paint: recolour and repaint worn items | M | Variety from a small wardrobe |
+| U5 | Eye and mouth states (EYE, MTH) | M–L | Layered eye and mouth art; the 14 VRM expressions cover M4 until then |
+| U6 | Make with Gaea: an item from a picture | L | Waits on Gaea's pipelines; the biggest lever on content later |
+
+**Does moving onto the engine close them?** No. The studio's UI is Vue 3.5 on three r187, the same stack as the
+engine's apps, so the screens would move across unchanged and the gaps would move with them. Only U2 gets cheaper with
+the engine: its MCP plumbing exists and works (AB-R-1027). The shell (step 1 below) and the stage (step 2) bring a
+shared Mac app and the game's look, not the missing screens.
+
+**So:** close U1 and U2 in the studio first. A library with a starter wardrobe lets a person make a character by hand,
+and MCP lets an agent do the same through the same commands. Take U3 to U6 as the studio's own phases. The move onto
+the engine stays a later, separate step.
+
+## Verdict on the move
 
 **The studio doesn't have to move for M4: it can already make characters the engine plays. What M4 lacks is characters
 worth casting, which means content (hair and clothes) and a voice the engine can speak with. Do those first, in the

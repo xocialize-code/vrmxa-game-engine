@@ -33,6 +33,17 @@
         "dev"
       ],
       "port": 5182
+    },
+    {
+      "name": "avatar-studio",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "/Volumes/Satechi/Development/vrmxa-avatar-studio/app",
+        "run",
+        "dev"
+      ],
+      "port": 5210
     }
   ]
 }
