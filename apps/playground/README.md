@@ -33,7 +33,10 @@ that need the world stay disabled until it and the scene are there; a forced `?r
 the error and leaves them disabled (`backends-chromium.mjs` checks that too).
 - **On WebGPU** the cafe and its characters render (Mira and Hana with the patched `MToonNodeMaterial`), with shadows
   and the room environment.
-- **Not yet on WebGPU:** the post stack (TSL post is W1), readback and `frameHash` (W2), and the speech bubbles and
+- **Post on WebGPU (M4 W1):** the host makes the backend's own post stack (`post: { loadCube }`): pmndrs on WebGL,
+  `TSLPostStack` on WebGPU. The **Post** picker in the status bar (`#post-look`) switches the look on either backend:
+  the scene's own, none, or a preset (`anime`, `clean`). It's presentation only.
+- **Not yet on WebGPU:** readback and `frameHash` (W2), and the speech bubbles and
   name tags (troika's shaders are WebGL's; the captions still show every line; the two checkboxes are disabled).
 - **`?mode=backends&renderer=…`** draws the cafe offline as an export does, and reads each frame with `toDataURL` in the
   task that drew it (`Playground.backendCheck`). It replays the recorded walk, draws five consecutive frames with
@@ -60,6 +63,30 @@ apps/playground/scripts/backends-wkwebview.sh         # the same in WKWebView, s
   the frame just drawn. Chromium gives the new frame either way (AB-L-0372).
 - **WebGL in WKWebView** came out as one of two images from load to load (3 of 16 loads gave the other), which W0 didn't
   change. It's noted for W3 (AB-T-0587, blocking AB-T-0575).
+
+## Post on WebGPU (M4 W1, AB-T-0573)
+
+**`?mode=post&renderer=webgpu|webgl`** (`src/post-check.js`) checks the post stack on that backend the way an export
+draws: `frameAt` with no yield to rAF, each frame read with `toDataURL` in the task that drew it. The check owns the
+canvas (`Playground.offline`: the paused frame loop and the resize observer stay out of it) at 1920×1080.
+- **The looks** (`LOOKS`): none, `clean`, `anime`, and the anime preset without grain, with the sample's LUT
+  (`looks/morning.cube`), with its overlays keyed on (speed and focus lines) and with a close-up's shallow focus. Each is
+  drawn on step 420 of the recorded walk from a pipeline built for it there and then. That first frame must equal the
+  next draw of the same frame and must not be flat (gotcha 4).
+- **Two exports** of five consecutive frames with the anime preset, each from a fresh load. The first builds its
+  pipeline at frame 0 and the second takes it from the cache. They must be byte-identical, five distinct frames each.
+- **The cost** of a frame without post and with the anime preset (median of 20, GPU work included: `gl.finish()` on
+  WebGL, `onSubmittedWorkDone()` on WebGPU, which adds its own round trip).
+
+```sh
+(cd apps/playground && npx vite build)
+node apps/playground/scripts/post-chromium.mjs     # both backends, two loads each; looks compared: results/post-chromium.json
+apps/playground/scripts/post-wkwebview.sh          # WKWebView, scheme and loopback, two loads each: results/post-wkwebview.json
+node apps/playground/scripts/post-compare.mjs a.png b.png   # SSIM and pixel differences of any two stills
+```
+
+The full-size stills go to `results/post/` (git-ignored). `results/post-preview-{webgl,webgpu}-{animeNoGrain,animeShallow}.png`
+are 960-px previews from Chromium. The results are in `@vrmxg/post`'s README ("TSL on WebGPU").
 
 ## Dialogue (M3 W6, AB-T-0545)
 
