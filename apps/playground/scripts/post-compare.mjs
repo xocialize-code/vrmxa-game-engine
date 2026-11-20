@@ -1,6 +1,7 @@
 // M4 W1 (AB-T-0573): the post looks of two backends (or two engines) compared, decoded in headless Chromium: SSIM on
 // luma (8×8 windows every 4 px, as check 11's ssimDown), the mean of each pixel's largest channel difference, the share
-// of pixels off by more than 8 levels, and the largest difference.
+// of pixels off by more than 8 levels, the largest difference, and the SSIM at ¼ size (4×4 means: per-pixel noise such as
+// grain averages out there).
 //   node apps/playground/scripts/post-compare.mjs a.png b.png [a2.png b2.png …]   → JSON lines on stdout
 // Also importable: compareStills(browser, [[a, b], …]) with PNG data URLs.
 import fs from 'node:fs';
@@ -27,15 +28,20 @@ export async function compareStills(browser, pairs) {
         lb[p] = 0.299 * B.data[i] + 0.587 * B.data[i + 1] + 0.114 * B.data[i + 2];
       }
       const C1 = (0.01 * 255) ** 2, C2 = (0.03 * 255) ** 2;
-      let total = 0, k = 0;
-      for (let y = 0; y + 8 <= h; y += 4) for (let x = 0; x + 8 <= w; x += 4) {
-        let ma = 0, mb = 0; for (let j = 0; j < 8; j++) for (let i = 0; i < 8; i++) { ma += la[(y + j) * w + x + i]; mb += lb[(y + j) * w + x + i]; }
-        ma /= 64; mb /= 64;
-        let va = 0, vb = 0, cov = 0; for (let j = 0; j < 8; j++) for (let i = 0; i < 8; i++) { const da = la[(y + j) * w + x + i] - ma, db = lb[(y + j) * w + x + i] - mb; va += da * da; vb += db * db; cov += da * db; }
-        va /= 63; vb /= 63; cov /= 63;
-        total += ((2 * ma * mb + C1) * (2 * cov + C2)) / ((ma * ma + mb * mb + C1) * (va + vb + C2)); k++;
-      }
-      return { size: [w, h], ssim: +(total / k).toFixed(4), meanMaxChannel: +(sum / n).toFixed(3), over8: +(over8 / n).toFixed(5), max };
+      const ssim = (la, lb, w, h) => {
+        let total = 0, k = 0;
+        for (let y = 0; y + 8 <= h; y += 4) for (let x = 0; x + 8 <= w; x += 4) {
+          let ma = 0, mb = 0; for (let j = 0; j < 8; j++) for (let i = 0; i < 8; i++) { ma += la[(y + j) * w + x + i]; mb += lb[(y + j) * w + x + i]; }
+          ma /= 64; mb /= 64;
+          let va = 0, vb = 0, cov = 0; for (let j = 0; j < 8; j++) for (let i = 0; i < 8; i++) { const da = la[(y + j) * w + x + i] - ma, db = lb[(y + j) * w + x + i] - mb; va += da * da; vb += db * db; cov += da * db; }
+          va /= 63; vb /= 63; cov /= 63;
+          total += ((2 * ma * mb + C1) * (2 * cov + C2)) / ((ma * ma + mb * mb + C1) * (va + vb + C2)); k++;
+        }
+        return total / k;
+      };
+      // the same at ¼ size (each 4×4 block's mean): per-pixel noise such as grain averages out, the look doesn't
+      const qw = w >> 2, qh = h >> 2, down = (l) => { const o = new Float32Array(qw * qh); for (let y = 0; y < qh; y++) for (let x = 0; x < qw; x++) { let t = 0; for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) t += l[(y * 4 + j) * w + x * 4 + i]; o[y * qw + x] = t / 16; } return o; };
+      return { size: [w, h], ssim: +ssim(la, lb, w, h).toFixed(4), ssimQuarter: +ssim(down(la), down(lb), qw, qh).toFixed(4), meanMaxChannel: +(sum / n).toFixed(3), over8: +(over8 / n).toFixed(5), max };
     }, pair));
   }
   await page.close();

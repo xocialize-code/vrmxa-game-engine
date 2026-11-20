@@ -35,6 +35,6 @@ const looks = Object.keys(pngs.webgpu ?? {});
 const cmp = await compareStills(browser, looks.map((l) => [pngs.webgl[l], pngs.webgpu[l]]));
 await browser.close();
 const ssim = Object.fromEntries(looks.map((l, i) => [l, cmp[i]]));
-for (const l of looks) console.log(l.padEnd(14), 'SSIM', ssim[l].ssim, 'mean', ssim[l].meanMaxChannel, '>8', ssim[l].over8);
+for (const l of looks) console.log(l.padEnd(14), 'SSIM', ssim[l].ssim, '¼', ssim[l].ssimQuarter, 'mean', ssim[l].meanMaxChannel, '>8', ssim[l].over8);
 fs.writeFileSync(path.join(out, 'post-wkwebview.json'), JSON.stringify({ tolerance: 0.98, repeats, webgpuVsWebgl: ssim, runs }, null, 1) + '\n');
 process.exitCode = bad || !repeats.webgpu ? 1 : 0;

@@ -55,7 +55,7 @@ const out = {
   webgpuVsWebgl: ssim,
 };
 fs.writeFileSync(path.join(results, 'post-chromium.json'), JSON.stringify(out, null, 1) + '\n');
-for (const l of looks) console.log(l.padEnd(14), 'SSIM', ssim[l].ssim, 'mean', ssim[l].meanMaxChannel, '>8', ssim[l].over8, '| first=again', runs.webgl.looks[l].firstEqualsAgain, runs.webgpu.looks[l].firstEqualsAgain, '| std', runs.webgl.looks[l].lumaStd, runs.webgpu.looks[l].lumaStd);
+for (const l of looks) console.log(l.padEnd(14), 'SSIM', ssim[l].ssim, '¼', ssim[l].ssimQuarter, 'mean', ssim[l].meanMaxChannel, '>8', ssim[l].over8, '| first=again', runs.webgl.looks[l].firstEqualsAgain, runs.webgpu.looks[l].firstEqualsAgain, '| std', runs.webgl.looks[l].lumaStd, runs.webgpu.looks[l].lumaStd);
 for (const b of ['webgl', 'webgpu']) console.log(b, runs[b].stack, 'exports identical', runs[b].exports?.identical, 'reload', out.reload[b], 'distinct', runs[b].exports?.distinct, 'frame0 std', runs[b].exports?.frame0?.lumaStd, 'cost', JSON.stringify(runs[b].costMs), 'console', runs[b].console.length, runs[b].errors?.length);
 const bad = Object.values(runs).some((r) => r.console.length || r.errors?.length || !r.exports?.identical || r.exports.distinct !== r.frames.length || r.exports.frame0.lumaStd < 5
   || Object.values(r.looks).some((x) => !x.firstEqualsAgain || x.lumaStd < 5))

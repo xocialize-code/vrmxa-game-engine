@@ -11,7 +11,7 @@ export const EFFECTS = {
   dof: { auto: true, focusDistance: 3, focusRange: 2, bokehScale: 2, about: 'Depth of field. auto: from the current Camera\'s lens (focal length, f-stop, focus: thin-lens maths); else the numbers given (m, px at 1080p)' },
   bloom: { intensity: 1, threshold: 0.9, smoothing: 0.03, radius: 0.6, about: 'Bloom on what is brighter than threshold (emissive, lights)' },
   grade: { saturation: 0, hue: 0, brightness: 0, contrast: 0, about: 'Colour grade: saturation, hue (radians), brightness, contrast (−1…1)' },
-  lut: { file: null, intensity: 1, about: 'A 3D LUT (.cube) from the project' },
+  lut: { file: null, intensity: 1, about: 'A 3D LUT (.cube) from the project; intensity (0…1) mixes it in' },
   toneMapping: { mode: null, about: 'Tone mapping mode (default: the Environment\'s toneMapping); the renderer\'s own is off while the stack runs' },
   vignette: { offset: 0.3, darkness: 0.55 },
   grain: { amount: 0.25, about: 'Film grain, its pattern from the frame time (deterministic in exports)' },

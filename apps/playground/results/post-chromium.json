@@ -9,8 +9,8 @@
   "isWebGPUBackend": false,
   "stack": "tce",
   "size": [
-   1280,
-   653
+   1920,
+   1080
   ],
   "frames": [
    300,
@@ -113,6 +113,22 @@
      "EffectPass(ChromaticAberrationEffect)"
     ]
    },
+   "animeLut85": {
+    "hash": "14190e5f",
+    "again": "14190e5f",
+    "firstEqualsAgain": true,
+    "lumaStd": 65.16,
+    "colours": 4096,
+    "newPipeline": false,
+    "passes": [
+     "RenderPass",
+     "NormalPass",
+     "EffectPass(EdgeEffect)",
+     "EffectPass(DepthOfFieldEffect)",
+     "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+     "EffectPass(ChromaticAberrationEffect)"
+    ]
+   },
    "animeOverlays": {
     "hash": "5fe5eefe",
     "again": "5fe5eefe",
@@ -148,7 +164,7 @@
   },
   "costMs": {
    "none": 0.6,
-   "anime": 1.6
+   "anime": 1.5
   },
   "errors": [],
   "console": [],
@@ -160,10 +176,10 @@
   "origin": "http:",
   "backend": "webgpu",
   "isWebGPUBackend": true,
-  "stack": "Me",
+  "stack": "r",
   "size": [
-   1280,
-   653
+   1920,
+   1080
   ],
   "frames": [
    300,
@@ -269,6 +285,23 @@
      "chromaticAberration(custom TSL)"
     ]
    },
+   "animeLut85": {
+    "hash": "e950f306",
+    "again": "e950f306",
+    "firstEqualsAgain": true,
+    "lumaStd": 65.14,
+    "colours": 4096,
+    "newPipeline": false,
+    "passes": [
+     "scene(MSAA4)",
+     "normals(override, full res)",
+     "characterMask(layer 2, ½ res)",
+     "edges(custom TSL)",
+     "dof(pmndrs port)",
+     "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+     "chromaticAberration(custom TSL)"
+    ]
+   },
    "animeOverlays": {
     "hash": "e3db9c23",
     "again": "e3db9c23",
@@ -305,8 +338,8 @@
    }
   },
   "costMs": {
-   "none": 1.9,
-   "anime": 5.7
+   "none": 1.8,
+   "anime": 4.4
   },
   "errors": [],
   "console": [],
@@ -325,6 +358,7 @@
     1080
    ],
    "ssim": 0.994,
+   "ssimQuarter": 0.997,
    "meanMaxChannel": 0.41,
    "over8": 0.00797,
    "max": 160
@@ -335,6 +369,7 @@
     1080
    ],
    "ssim": 0.9971,
+   "ssimQuarter": 0.9997,
    "meanMaxChannel": 0.158,
    "over8": 0.00311,
    "max": 160
@@ -345,6 +380,7 @@
     1080
    ],
    "ssim": 0.9611,
+   "ssimQuarter": 0.9933,
    "meanMaxChannel": 2.49,
    "over8": 0.01311,
    "max": 170
@@ -355,6 +391,7 @@
     1080
    ],
    "ssim": 0.996,
+   "ssimQuarter": 0.996,
    "meanMaxChannel": 0.548,
    "over8": 0.01286,
    "max": 166
@@ -365,9 +402,21 @@
     1080
    ],
    "ssim": 0.9958,
+   "ssimQuarter": 0.9959,
    "meanMaxChannel": 0.647,
    "over8": 0.01292,
    "max": 180
+  },
+  "animeLut85": {
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9958,
+   "ssimQuarter": 0.9959,
+   "meanMaxChannel": 0.63,
+   "over8": 0.01287,
+   "max": 178
   },
   "animeOverlays": {
    "size": [
@@ -375,6 +424,7 @@
     1080
    ],
    "ssim": 0.9961,
+   "ssimQuarter": 0.9962,
    "meanMaxChannel": 0.503,
    "over8": 0.01201,
    "max": 166
@@ -385,6 +435,7 @@
     1080
    ],
    "ssim": 0.995,
+   "ssimQuarter": 0.9973,
    "meanMaxChannel": 0.751,
    "over8": 0.03012,
    "max": 140

@@ -18,6 +18,8 @@ export const LOOKS = {
   anime: 'anime',
   animeNoGrain: anime.map((e) => (e.effect === 'grain' ? { ...e, amount: 0 } : e)),
   animeLut: [...anime.map((e) => (e.effect === 'grain' ? { ...e, amount: 0 } : e)), { effect: 'lut', file: 'looks/morning.cube' }],
+  // the LUT mixed in at the film's 0.85 (sequences/cafe-morning.vrmxs): both stacks honour intensity
+  animeLut85: [...anime.map((e) => (e.effect === 'grain' ? { ...e, amount: 0 } : e)), { effect: 'lut', file: 'looks/morning.cube', intensity: 0.85 }],
   animeOverlays: anime.map((e) => (e.effect === 'grain' ? { ...e, amount: 0 } : e.effect === 'anime' ? { ...e, speedLines: 0.9, focusLines: 0.5 } : e)),
   // a close-up's shallow focus (on Hana, 3 m; Mira in front blurs): the strongest bokeh the stack allows
   animeShallow: anime.map((e) => (e.effect === 'grain' ? { ...e, amount: 0 } : e.effect === 'dof' ? { ...e, auto: false, focusDistance: 3.5, focusRange: 0.6, bokehScale: 4 } : e)),
@@ -102,10 +104,11 @@ export async function postCheck(pg, { frames = [300, 301, 302, 303, 304], still 
   // export B: a fresh load, the anime pipeline from the cache
   const b = await exportFrames();
   host.render = draw;
+  const size = [pg.canvas.width, pg.canvas.height]; // the stills' size, before the page takes the canvas back
   pg.offline = false;
   return {
     backend: host.backend, isWebGPUBackend: !!host.renderer.backend?.isWebGPUBackend, stack: host.post?.constructor?.name ?? null,
-    size: [pg.canvas.width, pg.canvas.height], frames, still,
+    size, frames, still,
     exports: {
       a: a.map((p) => p.hash), b: b.map((p) => p.hash), identical: a.map((p) => p.hash).join() === b.map((p) => p.hash).join(),
       distinct: new Set(a.map((p) => p.hash)).size, frame0: { lumaStd: a[0].lumaStd, colours: a[0].colours },

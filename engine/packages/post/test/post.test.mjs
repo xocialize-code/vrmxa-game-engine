@@ -50,3 +50,23 @@ test('settle() waits for a LUT the spec loads; a failed load settles too (M2 W12
   await stack.settle(); console.warn = warn;
   assert.equal(stack.luts.get('bad.cube'), null, 'a failed LUT is remembered as none, not retried forever');
 });
+
+test('the LUT\'s intensity on WebGL (M4 W1 review): below 1 it blends NORMAL at that opacity; at 1 it stays SRC, drawing as before', async () => {
+  const fs = await import('node:fs');
+  const { PostStack, lutFromCube, normalizePost } = await import('@vrmxg/post');
+  const { LUT3DEffect, BlendFunction } = await import('postprocessing');
+  const cube = fs.readFileSync(new URL('../../../../content/sample/looks/morning.cube', import.meta.url), 'utf8');
+  const fresh = new LUT3DEffect(lutFromCube(cube));
+  assert.equal(fresh.blendMode.blendFunction, BlendFunction.SRC, 'pmndrs\' own default: full strength');
+  const stack = new PostStack({ toneMapping: 0 });
+  stack.spec = normalizePost([{ effect: 'lut', file: 'looks/morning.cube', intensity: 0.85 }]); // cafe-morning.vrmxs keys 0.85
+  stack.effects = { lut: fresh }; stack.composer = {};
+  stack.apply();
+  assert.equal(fresh.blendMode.blendFunction, BlendFunction.NORMAL);
+  assert.equal(fresh.blendMode.opacity.value, 0.85);
+  stack.setParams({ 'lut.intensity': 1 });
+  assert.equal(fresh.blendMode.blendFunction, BlendFunction.SRC, 'back to the unchanged full-strength path');
+  assert.equal(fresh.blendMode.opacity.value, 1);
+  stack.setParams({ 'lut.intensity': -2 });
+  assert.equal(fresh.blendMode.opacity.value, 0, 'clamped to 0…1');
+});
