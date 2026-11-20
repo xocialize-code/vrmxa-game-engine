@@ -29,6 +29,9 @@ export const PRESETS = {
   clean: [{ effect: 'bloom', intensity: 0.6 }, { effect: 'toneMapping' }],
 };
 
+/** The layer characters are on for the edge mask (the render host enables it on Character subtrees). */
+export const CHARACTER_LAYER = 2;
+
 export const ORDER = ['edges', 'dof', 'bloom', 'grade', 'lut', 'toneMapping', 'vignette', 'grain', 'anime', 'chromaticAberration', 'smaa'];
 
 /**
