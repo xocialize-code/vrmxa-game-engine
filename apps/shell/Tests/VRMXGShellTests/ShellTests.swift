@@ -282,3 +282,29 @@ func sineWAV(seconds: Double, rate: Int = 48000) -> Data {
         #expect(bad != nil, "a cancelled export takes no more frames")
     }
 }
+
+/// The microphone's permission (M3 W3). The test runner's bundle declares no usage descriptions, which is the case an
+/// app without them is in: request refuses, and the web view's getUserMedia is denied even for our own origin.
+@Suite @MainActor struct MicrophoneTests {
+    @Test func statusAndRequestThroughTheBridge() async throws {
+        let router = BridgeRouter()
+        MicrophoneMethods().register(on: router)
+        #expect(router.methods.contains("microphone.status") && router.methods.contains("microphone.request"))
+        let (status, err) = await router.handle(body: ["method": "microphone.status"])
+        #expect(err == nil)
+        let s = try #require(status as? [String: Any])
+        #expect(s["available"] is Bool && s["usageDescription"] as? Bool == false)
+        #expect(["authorized", "denied", "restricted", "notDetermined"].contains(s["authorization"] as? String ?? ""))
+        let (_, refused) = await router.handle(body: ["method": "microphone.request"])
+        #expect(refused?.contains("\"unavailable\"") == true, "no usage description: refuse, don't let the system end the app")
+    }
+
+    @Test func mediaCaptureOnlyForOurOwnOriginsAndDeclaredDevices() {
+        // Foreign origins are always denied.
+        #expect(MicrophoneMethods.mediaDecision(host: "example.com", scheme: "https", appScheme: "vrmxg-playground", type: .microphone) == .deny)
+        #expect(MicrophoneMethods.mediaDecision(host: "127.0.0.2", scheme: "http", appScheme: "vrmxg-playground", type: .microphone) == .deny)
+        // Our own origins, but no usage descriptions in this bundle: denied too.
+        #expect(MicrophoneMethods.mediaDecision(host: "127.0.0.1", scheme: "http", appScheme: "vrmxg-playground", type: .microphone) == .deny)
+        #expect(MicrophoneMethods.mediaDecision(host: "app", scheme: "vrmxg-playground", appScheme: "vrmxg-playground", type: .camera) == .deny)
+    }
+}

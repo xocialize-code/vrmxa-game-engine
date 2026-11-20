@@ -1,7 +1,7 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.5.0"
+public let vrmxgShellVersion = "0.6.0"
 
 /// One app's shell: its name, URL scheme, window and any bridge methods of its own.
 public struct ShellConfiguration {
@@ -39,6 +39,8 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     lazy var saves = SaveMethods(appName: config.appName, env: env)
     /// The camera (M3 W5): feature frames to the page as `camera.frame` events
     lazy var camera = CameraMethods(emit: { [unowned self] name, payload in self.emit(name, payload) })
+    /// The microphone's permission (M3 W3)
+    let microphone = MicrophoneMethods()
     lazy var scheme = SchemeHandler(scheme: config.scheme, roots: roots, posts: posts)
     lazy var server = LoopbackServer(roots: roots, posts: posts)
     let env = ProcessInfo.processInfo.environment
@@ -59,6 +61,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         files.register(on: router)
         saves.register(on: router) // save slots (M2 W9)
         camera.register(on: router) // the camera (M3 W5): needs the app's camera entitlement and usage description
+        microphone.register(on: router) // the microphone's permission (M3 W3): needs the audio-input entitlement and usage description
         exports.register(on: router, posts: posts)
         for (name, handler) in config.methods { router.register(name, handler) }
 
@@ -79,6 +82,15 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         window.makeKeyAndOrderFront(nil)
         NSApp.mainMenu = buildMenu()
         NSApp.activate(ignoringOtherApps: true)
+
+        // VRMXG_SHELL_MIC=request asks for the microphone at launch and prints the outcome (the permission check, AB-L-0370)
+        if env["VRMXG_SHELL_MIC"] == "request" {
+            Task { @MainActor in
+                print("[shell] microphone before: \(MicrophoneMethods.status())")
+                let r = (try? await MicrophoneMethods.request()) ?? ["error": "no NSMicrophoneUsageDescription"]
+                print("[shell] microphone after request: \(r)")
+            }
+        }
 
         if env["VRMXG_ORIGIN"] == "scheme" { load(port: 0); return }
         do { try server.start { [weak self] port in self?.load(port: port) } }
@@ -135,6 +147,11 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         panel.allowsMultipleSelection = parameters.allowsMultipleSelection
         panel.canChooseDirectories = parameters.allowsDirectories
         completionHandler(panel.runModal() == .OK ? panel.urls : nil)
+    }
+
+    // getUserMedia in the page: our own origins get the devices the app declares (macOS still asks the person once)
+    public func webView(_ webView: WKWebView, requestMediaCapturePermissionFor origin: WKSecurityOrigin, initiatedByFrame frame: WKFrameInfo, type: WKMediaCaptureType, decisionHandler: @escaping @MainActor (WKPermissionDecision) -> Void) {
+        decisionHandler(MicrophoneMethods.mediaDecision(host: origin.host, scheme: origin.protocol, appScheme: config.scheme, type: type))
     }
 
     public func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
