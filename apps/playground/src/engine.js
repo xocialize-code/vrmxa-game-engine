@@ -5,7 +5,7 @@ import { installPortableMath } from '@vrmxg/dmath';
 import { loadRapier } from '@vrmxg/physics';
 import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
 import { PRESETS } from '@vrmxg/camera';
-import { RenderHost } from '@vrmxg/render';
+import { RenderHost, backendFromQuery, resolveBackend } from '@vrmxg/render';
 import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
 import { captureStill, hashFrame } from '@vrmxg/export';
 import { loadSample, buildWorld } from './world.js';
@@ -46,15 +46,19 @@ export { PRESETS };
 const VOICES = { 'hana-1': 'af_heart', mira: 'af_bella', 'customer-1': 'am_adam' };
 
 export class Playground {
-  /** @param {HTMLCanvasElement} canvas @param {{ preserveDrawingBuffer?: boolean }} [opts] */
-  constructor(canvas, { preserveDrawingBuffer = false } = {}) {
+  /**
+   * @param {HTMLCanvasElement} canvas
+   * @param {{ preserveDrawingBuffer?: boolean, backend?: 'webgpu' | 'webgl' | 'auto' }} [opts] backend: the renderer
+   *   (M4 W0); by default the `?renderer=webgpu|webgl|auto` switch, else WebGL until M4 W3 flips the default
+   */
+  constructor(canvas, { preserveDrawingBuffer = false, backend = backendFromQuery(location.search) } = {}) {
     this.canvas = canvas;
-    this.host = new RenderHost({ canvas, preserveDrawingBuffer, post: (r) => new PostStack(r, { loadLut: async (file) => lutFromCube(new TextDecoder().decode(await bytes(file))) }) });
-    // speech bubbles in the canvas (M3 W6, troika: the text spike's verdict), the sample's static Noto Sans JP; no CDN
-    this.text = new TextLayer({ font: 'fonts/NotoSansJP-Regular.ttf', bold: 'fonts/NotoSansJP-Bold.ttf', unicodeFontsURL: 'fonts/' }).attach(this.host);
+    this.host = null; this.text = null;
+    /** The render host, made asynchronously (a WebGPURenderer needs `await init()`); load() waits for it. */
+    this.ready = this._makeHost({ preserveDrawingBuffer, backend });
     this.tree = null; this.input = null;
     this.playing = false;
-    this.stats = { frameMs: 0, fps: 0, simMs: 0, renderMs: 0, step: 0, alpha: 0, steps: 0 };
+    this.stats = { frameMs: 0, fps: 0, simMs: 0, renderMs: 0, step: 0, alpha: 0, steps: 0, backend: '' };
     this._frames = []; this._sim = []; this._render = [];
     this._last = null;
     this.devices = null;
@@ -63,13 +67,32 @@ export class Playground {
     new ResizeObserver(() => this.resize()).observe(canvas);
   }
 
-  resize() { const r = this.canvas.getBoundingClientRect(); if (r.width && r.height) this.host.resize(r.width, r.height); }
+  /**
+   * The render host on the chosen backend. WebGL is the M3 playground exactly: the pmndrs post stack and troika's
+   * speech bubbles. WebGPU (M4 W0) draws the scene and its characters (the patched MToonNodeMaterial) without post
+   * (TSL post is M4 W1) and without bubbles (troika's shaders are WebGL's; the captions still show every line).
+   */
+  async _makeHost({ preserveDrawingBuffer, backend }) {
+    const webgl = (await resolveBackend(backend)) === 'webgl';
+    this.host = await RenderHost.create({
+      canvas: this.canvas, backend: webgl ? 'webgl' : 'webgpu', preserveDrawingBuffer,
+      post: webgl ? (r) => new PostStack(r, { loadLut: async (file) => lutFromCube(new TextDecoder().decode(await bytes(file))) }) : null,
+    });
+    // speech bubbles in the canvas (M3 W6, troika: the text spike's verdict), the sample's static Noto Sans JP; no CDN
+    if (webgl) this.text = new TextLayer({ font: 'fonts/NotoSansJP-Regular.ttf', bold: 'fonts/NotoSansJP-Bold.ttf', unicodeFontsURL: 'fonts/' }).attach(this.host);
+    this.stats.backend = this.host.backend;
+    this.resize();
+    return this.host;
+  }
+
+  resize() { const r = this.canvas.getBoundingClientRect(); if (r.width && r.height) this.host?.resize(r.width, r.height); }
 
   /**
    * Load a scene of the sample project (a path under the site root). `text`: the scene's own JSON instead of the
    * file at that path (a scene opened through the Mac shell); its asset refs still resolve against the site.
    */
   async load(scene = 'cafe.vrmxs', { text } = {}) {
+    await this.ready;
     this.pause();
     const R = await loadRapier();
     const read = text === undefined ? bytes : async (ref) => (ref === scene ? new TextEncoder().encode(text) : bytes(ref));
@@ -107,7 +130,7 @@ export class Playground {
     this.tree?.services.get('audio')?.dispose();
     await this.camera?.stop();
     this.camera = null;
-    const world = await buildWorld(R, this.sample, { vrmxaCore, closet, behaviours, audioOutput: this.audio, sense: this.cameraMode, players: this.split ? 2 : 1 });
+    const world = await buildWorld(R, this.sample, { vrmxaCore, closet, behaviours, audioOutput: this.audio, sense: this.cameraMode, players: this.split ? 2 : 1, mtoonMaterial: this.host.mtoonMaterial });
     this.host.layout = this.layout;
     const { tree, input, models } = world;
     this.world = world;
@@ -359,15 +382,69 @@ export class Playground {
   }
 
   /** Speech bubbles in the canvas on or off (presentation: the world is the same either way). */
-  setBubbles(on) { this.text.bubbles = !!on; if (!this.playing) this.host.render(1, false); }
+  setBubbles(on) { if (!this.text) return; this.text.bubbles = !!on; if (!this.playing) this.host.render(1, false); }
   /** Name tags over the characters on or off. */
-  setNameTags(on) { this.text.nameTags = !!on; if (!on) { for (const t of this.text.tags.values()) { this.text.group.remove(t.text); t.dispose(); } this.text.tags.clear(); } if (!this.playing) this.host.render(1, false); }
+  setNameTags(on) { if (!this.text) return; this.text.nameTags = !!on; if (!on) { for (const t of this.text.tags.values()) { this.text.group.remove(t.text); t.dispose(); } this.text.tags.clear(); } if (!this.playing) this.host.render(1, false); }
 
   /** The drawn frame's hash (FNV-1a of the RGBA read-back, as exports hash theirs): read right after a render. */
   frameHash() {
+    if (this.host.backend !== 'webgl') throw new Error('frameHash reads WebGL\'s drawing buffer; WebGPU readback is M4 W2');
     const gl = this.host.renderer.getContext(), w = gl.drawingBufferWidth, h = gl.drawingBufferHeight, buf = new Uint8Array(w * h * 4);
     gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     return hashFrame(buf);
+  }
+
+  /**
+   * M4 W0 (?mode=backends): the cafe on this page's backend, drawn the way an export draws. The recorded walk replays
+   * from a fresh load; five consecutive offline frames (host.frameAt, no yield to rAF between them: AB-T-0554 gotcha 1)
+   * and a still are read with toDataURL right after each draw, then decoded and hashed. In WKWebView, drawImage of a
+   * WebGPU canvas gives the last *presented* frame even right after render(), so every offline frame looked the same;
+   * toDataURL in the drawing task gives the frame just drawn (Chromium gives it either way). Speech bubbles are off
+   * (troika's are WebGL-only for now). `compareWith`: another backend's still as a PNG data URL, compared pixel by pixel.
+   * @param {{ steps?: number[], still?: number, compareWith?: string | null }} [o]
+   */
+  async backendCheck({ steps = [300, 301, 302, 303, 304], still = 420, compareWith = null } = {}) {
+    await this.load(this.scene ?? 'cafe.vrmxs');
+    this.pause();
+    this.setBubbles(false);
+    this.input.replay({ ...(await json('input/walk-in.json')), start: this.tree.clock.step });
+    const host = this.host;
+    /** A PNG data URL's pixels and their FNV-1a hash. */
+    const pixels = async (url) => {
+      const img = new Image(); img.src = url; await img.decode();
+      const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+      const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(img, 0, 0);
+      const d = g.getImageData(0, 0, c.width, c.height).data;
+      let h = 0x811c9dc5; for (let i = 0; i < d.length; i++) h = Math.imul(h ^ d[i], 0x01000193) >>> 0;
+      return { hash: h.toString(16).padStart(8, '0'), data: d };
+    };
+    let last = null;
+    const draw = host.render.bind(host);
+    host.render = (alpha, stepped) => { draw(alpha, stepped); last = this.canvas.toDataURL('image/png'); }; // in the drawing task
+    const urls = [];
+    for (const s of steps) { await host.frameAt(s, 0.5); urls.push(last); }
+    const t0 = performance.now();
+    await host.frameAt(still, 0.5);
+    const ms = performance.now() - t0; // the frame and its toDataURL
+    host.render = draw;
+    const png = last, shot = await pixels(png);
+    const frames = []; for (const u of urls) frames.push((await pixels(u)).hash);
+    let diff = null;
+    if (compareWith) {
+      const o = (await pixels(compareWith)).data, d = shot.data;
+      let sum = 0, over8 = 0, max = 0;
+      for (let i = 0; i < d.length; i += 4) {
+        const m = Math.max(Math.abs(d[i] - o[i]), Math.abs(d[i + 1] - o[i + 1]), Math.abs(d[i + 2] - o[i + 2]));
+        sum += m; if (m > 8) over8++; if (m > max) max = m;
+      }
+      diff = { meanMaxChannel: +(sum / (d.length / 4)).toFixed(3), over8: +(over8 / (d.length / 4)).toFixed(5), max };
+    }
+    const materials = new Set(); this.tree.find('mira')?.object3d.traverse((o) => { for (const m of [o.material ?? []].flat()) materials.add(m.type); });
+    return {
+      backend: host.backend, isWebGPUBackend: !!host.renderer.backend?.isWebGPUBackend, size: [this.canvas.width, this.canvas.height],
+      steps, frames, distinct: new Set(frames).size, still, stillHash: shot.hash, stillMsWithRead: +ms.toFixed(1), png, diff,
+      materials: [...materials], environment: !!host.scene.environment,
+    };
   }
 
   /** The world's hash now (the presentation checks compare it with the dialogue UI on and off). */

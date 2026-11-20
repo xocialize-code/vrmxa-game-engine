@@ -3,7 +3,7 @@
 // depends on pixels, and headless runs need no image decoding.
 import { Texture } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { VRMLoaderPlugin, VRMUtils } from '@vrmxg/three-vrm';
+import { VRMLoaderPlugin, MToonMaterialLoaderPlugin, VRMUtils } from '@vrmxg/three-vrm';
 import { VRMAnimationLoaderPlugin } from '@pixiv/three-vrm-animation';
 
 class StubTextures {
@@ -15,12 +15,13 @@ const toBuffer = (bytes) => (bytes instanceof ArrayBuffer ? bytes.slice(0) : byt
 
 /**
  * @param {Uint8Array | ArrayBuffer} bytes a .vrm (0.x is turned to face +Z like 1.0)
- * @param {{ stubTextures?: boolean }} [opts]
+ * @param {{ stubTextures?: boolean, mtoonMaterial?: any }} [opts] mtoonMaterial: the MToon material class (M4 W0: the
+ *   render host's, MToonNodeMaterial on WebGPU); none: three-vrm's MToonMaterial (WebGL)
  */
-export async function parseVRM(bytes, { stubTextures = false } = {}) {
+export async function parseVRM(bytes, { stubTextures = false, mtoonMaterial = null } = {}) {
   const loader = new GLTFLoader();
   if (stubTextures) loader.register((p) => new StubTextures(p));
-  loader.register((p) => new VRMLoaderPlugin(p));
+  loader.register((p) => new VRMLoaderPlugin(p, mtoonMaterial ? { mtoonMaterialPlugin: new MToonMaterialLoaderPlugin(p, { materialType: mtoonMaterial }) } : undefined));
   const gltf = await loader.parseAsync(toBuffer(bytes), '');
   const vrm = gltf.userData.vrm;
   if (!vrm) throw new Error('not a VRM: no VRMC_vrm or VRM extension');

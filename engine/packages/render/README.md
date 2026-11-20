@@ -1,6 +1,6 @@
 # @vrmxg/render
 
-M0 W5 (AB-T-0506). The render host: a three.js WebGL renderer set up for MToon, presentation interpolated at the clock's
+M0 W5 (AB-T-0506). The render host: a three.js WebGL renderer (and since M4 W0 a WebGPU one: see "WebGPU" below) set up for MToon, presentation interpolated at the clock's
 α without touching simulated state, Environment and light nodes with shadow presets and frozen shadow maps, and debug
 draw. Presentation only: outside the determinism boundary.
 
@@ -34,6 +34,41 @@ Tests (`npm test`, no models, so they run on CI): hashes headless / interpolated
 120 Hz frame rate; the walker moves 2.5 cm every frame interpolated, 0 / 5 cm without; the blend never stays in an object
 and fires no change callback; lights, shadow presets, frozen maps and the Environment follow nodes and prop edits; a wire
 per collider with the door triggers as sensors and the spring-arm ray; attaching another tree rebuilds views and wires.
+
+## WebGPU (M4 W0, AB-T-0572)
+
+WebGPU is M4's default renderer and WebGL its tested fallback (AB-D-0271). Until M4 W3 flips the default, apps stay on
+WebGL and ask for WebGPU through a query switch.
+
+```js
+import { RenderHost, backendFromQuery, warmUpWebGPU } from '@vrmxg/render';
+warmUpWebGPU();                                               // at app start (optional: create() does it too)
+const host = await RenderHost.create({ canvas, backend: backendFromQuery(location.search) }); // ?renderer=webgpu|webgl|auto
+const lib = installCharacters(tree, { ...opts, mtoonMaterial: host.mtoonMaterial });          // MToonNodeMaterial on WebGPU
+```
+
+| Piece | What |
+|---|---|
+| Backend choice (`backend.js`) | `webgl` (the default until W3), `webgpu` (throws where the page has no WebGPU: a forced backend never quietly becomes the other), `auto` (WebGPU where `navigator.gpu` gives an adapter, else WebGL). `backendFromQuery` reads `?renderer=`. three/webgpu is imported only for WebGPU, in its own chunk |
+| `RenderHost.create` | Resolves the backend; for WebGPU it warms the page up, creates and `await init()`s the view's `WebGPURenderer`, and loads the patched `MToonNodeMaterial` (`host.mtoonMaterial`; null on WebGL, so the loader keeps `MToonMaterial`). `host.backend` says which. The constructor still takes a renderer, and refuses a `WebGPURenderer` that hasn't been initialised |
+| Room environment | `roomEnvironment()` makes the PMREM with three/webgpu's `PMREMGenerator` on WebGPU (it used to return null without WebGL) |
+| Drawing-buffer size | `drawingBufferSize()`: WebGL reads its context as before; WebGPU has none, so `getDrawingBufferSize()`. The post stack and the lens are sized from it |
+| Node frame (gotcha 1) | `frameAt` calls `advanceNodeFrame()` before it draws: r187 updates a RenderPipeline's passes and the shadow maps once per `nodeFrame.frameId`, and only the renderer's own rAF loop advances it, so an export that never yields would draw every frame over the first one's passes. It's the private `renderer._nodes.nodeFrame`; the host throws if a three upgrade moves it |
+| Warm-up renderer (gotcha 6) | `warmUpWebGPU()`: one throwaway `WebGPURenderer`, initialised with a room PMREM, created once per page before any other. The page's first `WebGPURenderer` compiles some materials differently, so its frames differ from later renderers' by ±1 in a few pixels. It's kept, not disposed, as the spike measured it |
+| The three-vrm patch | `scripts/patch-three-vrm.mjs` applies `engine/patches/three-vrm-3.5.5-nodes-r187.patch` to `@pixiv/three-vrm`'s `lib/nodes` on install (AB-T-0553's six lines, AB-D-0274). `--check` runs in CI and fails unless the installed file is exactly the stock 3.5.5 file or exactly that file patched |
+
+**Not in W0:** TSL post (W1: on WebGPU the host runs without post), particles and readback (W2), both backends in the
+acceptance and the default flip (W3). The playground's speech bubbles (troika) are WebGL-only for now.
+
+**Tests** (`test/webgpu.test.mjs`, Node, a stand-in three/webgpu): the query switch and backend choice; gotcha 6, the
+warm-up comes first and once, before the view's and every later renderer, and WebGL never touches WebGPU; gotcha 1,
+`frameAt` advances the node frame once per offline frame and live frames leave it to three's loop; a canary that reads
+three r187 itself (the version, `renderer._nodes`, the rAF-only advance) so a three bump fails here first; the PMREM;
+the drawing-buffer size on both backends; the patch applied (MToonNodeMaterial loads on r187, six patched lines) and
+the patcher's exact-hunk applier.
+
+**In browsers** (`apps/playground`, `?renderer=webgpu`): `scripts/backends-chromium.mjs` and `backends-wkwebview.sh`
+draw the cafe with Mira offline on both backends (results in `apps/playground/results/`, receipt AB-R-1055).
 
 ## The demo (`demo/`)
 

@@ -6,7 +6,7 @@ import { Playground, PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, mic: null, fall: false, split: false, sense: null, cameraDevices: [], cameraDevice: '', showBubbles: true, showCaptions: true, showNames: false });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, mic: null, fall: false, split: false, sense: null, cameraDevices: [], cameraDevice: '', showBubbles: true, showCaptions: true, showNames: false, backend: '—' });
 // the sample's scenes and sequences; ?scene= picks one at load
 const SCENES = ['cafe.vrmxs', 'cafe-talk.vrmxs', 'cafe-follow.vrmxs', 'cafe-stairs.vrmxs', 'cafe-cart.vrmxs', 'cafe-split.vrmxs', 'sequences/morning.vrmxs', 'sequences/cafe-morning.vrmxs', 'sequences/conversation.vrmxs'];
 const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
@@ -17,6 +17,7 @@ function refresh() {
   ui.frame = pg.stats.frameMs ? `${pg.stats.frameMs.toFixed(1)} ms · ${pg.stats.fps.toFixed(0)} fps` : '—';
   ui.sim = pg.stats.simMs ? `${pg.stats.simMs.toFixed(2)} ms` : '—';
   ui.render = pg.stats.renderMs ? `${pg.stats.renderMs.toFixed(2)} ms` : '—';
+  ui.backend = pg.stats.backend === 'webgpu' ? 'WebGPU' : pg.stats.backend === 'webgl' ? 'WebGL' : '—';
   ui.prompt = pg.prompt(); ui.wearing = pg.wearing();
   ui.buses = pg.busSettings(); ui.audioOn = !!pg.audio?.running; ui.captions = pg.captions();
   ui.bubbles = ui.showBubbles ? pg.bubbles() : []; ui.hasDirector = !!pg.director; ui.choices = pg.choices(); // M3 W6
@@ -67,8 +68,15 @@ async function load() {
 
 const mode = new URLSearchParams(location.search).get('mode');
 onMounted(async () => {
-  pg = new Playground(canvas.value, { preserveDrawingBuffer: mode === 'acceptance' });
+  // the acceptance stays on WebGL until M4 W3 runs it on both backends; elsewhere ?renderer=webgpu|webgl|auto (M4 W0)
+  pg = new Playground(canvas.value, { preserveDrawingBuffer: mode === 'acceptance', ...(mode === 'acceptance' ? { backend: 'webgl' } : {}) });
   pg.onChange = refresh; window.__playground = pg;
+  // M4 W0: ?mode=backends&renderer=webgpu|webgl draws the cafe offline on that backend (scripts/backends-chromium.mjs, WKWebView)
+  if (mode === 'backends') {
+    try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await pg.backendCheck()) }; ui.notes = `backends: ${window.__result.backend}, ${window.__result.distinct} distinct offline frames, still ${window.__result.stillHash}`; }
+    catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
+    ui.loading = false; refresh(); window.READY = true; return;
+  }
   if (mode !== 'acceptance') { await load(); await listSaves(); return; }
   // M0's exit checks (acceptance/README.md): results for the runners in window.__result, then READY.
   try {
@@ -189,8 +197,8 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
         <label><input type="checkbox" v-model="ui.debug.capsules" aria-label="Capsules" @change="setDebug"> Capsules</label>
         <label><input type="checkbox" v-model="ui.debug.rays" aria-label="Rays" @change="setDebug"> Rays</label>
         <label><input type="checkbox" v-model="ui.interpolate" aria-label="Interpolate" @change="setInterp"> Interpolate</label>
-        <label><input id="show-bubbles" type="checkbox" v-model="ui.showBubbles" aria-label="Speech bubbles" @change="setBubbles"> Bubbles</label>
-        <label><input id="show-names" type="checkbox" v-model="ui.showNames" aria-label="Name tags" @change="setNames"> Names</label>
+        <label><input id="show-bubbles" type="checkbox" v-model="ui.showBubbles" :disabled="ui.backend === 'WebGPU'" aria-label="Speech bubbles" title="WebGL only for now (troika)" @change="setBubbles"> Bubbles</label>
+        <label><input id="show-names" type="checkbox" v-model="ui.showNames" :disabled="ui.backend === 'WebGPU'" aria-label="Name tags" title="WebGL only for now (troika)" @change="setNames"> Names</label>
         <label><input id="show-captions" type="checkbox" v-model="ui.showCaptions" aria-label="Captions" @change="refresh"> Captions</label>
       </fieldset>
       <!-- Each readout's accessible name carries its value ("Frame time 16.7 ms · 60 fps"), so AppProbe reads it in one find. -->
@@ -199,6 +207,7 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
         <div><dt id="frame-time-label">Frame time</dt><dd><output id="frame-time" :aria-label="`Frame time ${ui.frame}`">{{ ui.frame }}</output></dd></div>
         <div><dt id="sim-time-label">Simulation</dt><dd><output id="sim-time" :aria-label="`Simulation ${ui.sim}`">{{ ui.sim }}</output></dd></div>
         <div><dt id="render-time-label">Render</dt><dd><output id="render-time" :aria-label="`Render ${ui.render}`">{{ ui.render }}</output></dd></div>
+        <div><dt id="renderer-label">Renderer</dt><dd><output id="renderer" :aria-label="`Renderer ${ui.backend}`">{{ ui.backend }}</output></dd></div>
         <div><dt id="step-label">Step</dt><dd><output id="step-count" :aria-label="`Step ${ui.step}`">{{ ui.step }}</output></dd></div>
       </dl>
       <fieldset v-if="ui.buses" class="mixer" aria-label="Mixer"><legend>Sound{{ ui.audioOn ? '' : ' (click to start)' }}</legend>

@@ -8,12 +8,18 @@
 // Environment, debug draw) catch up; the blend at α is written in, the frame is drawn from the current
 // camera, and the simulated values go straight back. Simulation hashes are the same with the host or
 // without it, with interpolation on or off (test/render.test.mjs, the demo in every runtime).
-import { PCFShadowMap, PMREMGenerator, PerspectiveCamera, SRGBColorSpace, Scene, WebGLRenderer } from 'three';
+//
+// M4 W0 (AB-T-0572): the host also takes a WebGPURenderer. `await RenderHost.create({ backend })` picks the backend
+// (backend.js: 'webgl', 'webgpu' or 'auto'), warms the page's WebGPU up once, and initialises the renderer. On WebGPU
+// the room environment comes from three/webgpu's PMREM, sizes come from the drawing buffer, offline frames advance
+// three's node frame, and characters load with the patched MToonNodeMaterial (`host.mtoonMaterial`).
+import { PCFShadowMap, PMREMGenerator, PerspectiveCamera, SRGBColorSpace, Scene, Vector2, WebGLRenderer } from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { Interpolator } from './interpolate.js';
 import { Views } from './views.js';
 import { renderViews } from '@vrmxg/post';
 import { DebugDraw } from './debug.js';
+import { resolveBackend, loadWebGPU, warmUpWebGPU, roomPMREM } from './backend.js';
 
 export class RenderHost {
   /**
@@ -26,9 +32,18 @@ export class RenderHost {
    * @param {boolean} [opts.preserveDrawingBuffer] keep the frame readable (screenshots)
    * @param {(renderer: any) => any} [opts.post] makes the post stack (@vrmxg/post's PostStack): the scene's Environment
    *   `post` then drives it; without one, scenes render without post
+   * @param {any} [opts.webgpu] three/webgpu, with a WebGPURenderer (its PMREMGenerator makes the room environment)
+   * @param {any} [opts.mtoonMaterial] the MToon material class characters load with on this renderer (null: the loader's
+   *   default, MToonMaterial for WebGL)
    */
-  constructor({ canvas, renderer, dprCap = 2, antialias = true, interpolate = true, preserveDrawingBuffer = false, post = null } = {}) {
+  constructor({ canvas, renderer, dprCap = 2, antialias = true, interpolate = true, preserveDrawingBuffer = false, post = null, webgpu = null, mtoonMaterial = null } = {}) {
+    if (renderer?.isWebGPURenderer && renderer._initialized === false) throw new Error('RenderHost: await renderer.init() before handing a WebGPURenderer to the host (or use RenderHost.create)');
     this.renderer = renderer ?? new WebGLRenderer({ canvas, antialias, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer });
+    /** 'webgpu' (a WebGPURenderer), 'webgl' (a WebGLRenderer) or 'stand-in' (tests). */
+    this.backend = this.renderer.isWebGPURenderer ? 'webgpu' : this.renderer.isWebGLRenderer ? 'webgl' : 'stand-in';
+    this._webgpu = webgpu;
+    /** The MToon material class to load characters with (CharacterLibrary's `mtoonMaterial`); null: MToonMaterial. */
+    this.mtoonMaterial = mtoonMaterial;
     const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
     this.renderer.setPixelRatio?.(Math.min(dpr, dprCap));
     this.renderer.outputColorSpace = SRGBColorSpace;
@@ -63,10 +78,29 @@ export class RenderHost {
     this.layout = null;
     /** The post stack (M2 W3), configured from the scene's Environment `post`; null renders straight to the canvas. */
     this.post = post ? post(this.renderer) : null;
-    if (this.post) this.post.dofSource = () => this.cameraNode()?.postDof?.(this.renderer.getContext?.().drawingBufferHeight ?? 1080) ?? null;
+    if (this.post) this.post.dofSource = () => this.cameraNode()?.postDof?.(this.drawingBufferSize()?.height ?? 1080) ?? null;
     /** Presentation time of the frame being drawn (s): (step + α) / 60. Time-based post effects use it. */
     this.time = 0;
     this.last = { steps: 0, alpha: 1, renderMs: 0 };
+  }
+
+  /**
+   * A host on the backend `backend` asks for (M4 W0): 'webgl' (the default until M4 W3), 'webgpu' (throws without
+   * WebGPU) or 'auto' (WebGPU where the page has it, else WebGL). `backendFromQuery(location.search)` reads the
+   * `?renderer=` switch. For WebGPU it first warms the page up (warmUpWebGPU, AB-T-0554 gotcha 6), then creates and
+   * initialises the view's WebGPURenderer, and loads the patched MToonNodeMaterial for characters. The other options
+   * are the constructor's (preserveDrawingBuffer is WebGL's: a WebGPU canvas is read in the task that drew it).
+   * @param {ConstructorParameters<typeof RenderHost>[0] & { backend?: import('./backend.js').BackendChoice, navigator?: any }} [opts]
+   */
+  static async create({ backend = 'webgl', navigator: nav = globalThis.navigator, webgpu = null, mtoonMaterial = null, ...opts } = {}) {
+    const chosen = await resolveBackend(backend, { navigator: nav });
+    if (chosen === 'webgl') return new RenderHost({ ...opts, mtoonMaterial });
+    const W = webgpu ?? await loadWebGPU();
+    await warmUpWebGPU({ webgpu: W }); // before this renderer, so it isn't the page's first (gotcha 6)
+    const renderer = opts.renderer ?? new W.WebGPURenderer({ canvas: opts.canvas, antialias: opts.antialias ?? true, alpha: true, powerPreference: 'high-performance' });
+    await renderer.init();
+    mtoonMaterial ??= (await import('@pixiv/three-vrm/nodes')).MToonNodeMaterial; // patched on install (scripts/patch-three-vrm.mjs)
+    return new RenderHost({ ...opts, renderer, webgpu: W, mtoonMaterial });
   }
 
   /** Blend presentation at α (true), or draw the last step as simulated (false). */
@@ -89,9 +123,14 @@ export class RenderHost {
     this.tree = null;
   }
 
-  /** The neutral studio environment (PMREM), made once; null without a real WebGL renderer. */
+  /** The neutral studio environment (PMREM), made once with the renderer's own generator; null on a stand-in. */
   roomEnvironment() {
     if (this._room !== undefined) return this._room;
+    if (this.renderer.isWebGPURenderer && this._webgpu) {
+      const { pmrem, texture } = roomPMREM(this.renderer, this._webgpu.PMREMGenerator);
+      this._pmrem = pmrem; // kept with its texture, as the spike measured it (disposed with the host)
+      return (this._room = texture);
+    }
     if (!this.renderer.isWebGLRenderer) return (this._room = null);
     const pmrem = new PMREMGenerator(this.renderer);
     this._room = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
@@ -99,10 +138,35 @@ export class RenderHost {
     return this._room;
   }
 
+  /**
+   * The drawing buffer's size in device pixels: WebGL's context reports it; WebGPU has no GL context, so the renderer's
+   * getDrawingBufferSize. null on a stand-in renderer that has neither.
+   * @returns {{ width: number, height: number } | null}
+   */
+  drawingBufferSize() {
+    const r = this.renderer;
+    if (r.isWebGLRenderer) { const gl = r.getContext(); return { width: gl.drawingBufferWidth, height: gl.drawingBufferHeight }; }
+    if (r.getDrawingBufferSize) { const v = r.getDrawingBufferSize(new Vector2()); return { width: v.x, height: v.y }; }
+    return null;
+  }
+
+  /**
+   * WebGPU (AB-T-0554 gotcha 1): advance three's node frame. A RenderPipeline's passes and the shadow maps update once
+   * per `nodeFrame.frameId`, and only the renderer's own requestAnimationFrame loop advances it, so an offline loop that
+   * never yields (an export) would draw every frame over the first one's pass textures. r187 has no public call for it.
+   * A no-op on WebGL; throws if a three upgrade moved the private field (so the workaround can't silently stop working).
+   */
+  advanceNodeFrame() {
+    if (!this.renderer.isWebGPURenderer) return;
+    const nf = this.renderer._nodes?.nodeFrame;
+    if (typeof nf?.update !== 'function') throw new Error('RenderHost: WebGPURenderer._nodes.nodeFrame.update is gone (three upgraded?): offline frames would repeat; see AB-T-0554 gotcha 1');
+    nf.update();
+  }
+
   /** The output's size in CSS pixels; cameras fit their lens to the aspect. */
   resize(width, height) {
     this.renderer.setSize(width, height, false);
-    if (this.post) { const gl = this.renderer.getContext(); this.post.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight); }
+    if (this.post) { const s = this.drawingBufferSize(); this.post.setSize(s.width, s.height); }
     this.tree?.services.get('cameras')?.setAspect(width / height);
     this.fallbackCamera.aspect = width / height; this.fallbackCamera.updateProjectionMatrix();
     if (this.camera?.isPerspectiveCamera) { this.camera.aspect = width / height; this.camera.updateProjectionMatrix(); }
@@ -157,6 +221,7 @@ export class RenderHost {
       const camera = this.camera ?? tree.services.get('cameras')?.current?.camera ?? this.fallbackCamera;
       for (const o of this.overlays) { o.update(tree, camera, alpha); if (o.settle) await o.settle(); }
     }
+    this.advanceNodeFrame(); // WebGPU: this frame's passes and shadow maps redraw, though nothing yielded to rAF (gotcha 1)
     this.render(alpha, steps > 0);
     this.last.steps = steps; this.last.alpha = alpha; this.last.held = false;
     return this.last;
@@ -192,7 +257,7 @@ export class RenderHost {
     this.post?.dispose?.();
     this.detach();
     this.views.dispose(); this.debug.dispose();
-    this._room?.dispose();
+    this._room?.dispose(); this._pmrem?.dispose();
     this.renderer.dispose?.();
   }
 }
