@@ -26,8 +26,9 @@ export const CHARACTER_LAYER = 2;
 /**
  * The character mask: characters only (their layer), drawn white with no background, at half resolution, as
  * @vrmxg/post's drawMask does. (A per-material mrtNode would be cheaper, but in r187 a material's mrtNode replaces its
- * output in every render-target pass without an MRT: shadow maps and the renderer's own framebuffer then fail to
- * compile, "struct OutputType {}" with no members.)
+ * output in every pass without an MRT that draws it: the canvas framebuffer and plain render targets then fail to
+ * compile, "struct OutputType {}" with no members. Shadow maps are fine (override material). Upstream #35373, fixed
+ * on dev by #35376, so r188 can use mrtNode.)
  */
 class MaskPassNode extends PassNode {
   updateBefore(frame) {
@@ -41,7 +42,7 @@ const TONE = { neutral: NeutralToneMapping, agx: AgXToneMapping, aces: ACESFilmi
 
 /** Each @vrmxg/post effect → what it is under TSL in r187. */
 export const MAPPING = {
-  edges: { tsl: 'custom', with: 'pass() MRT normal (packNormalToRGB(normalView)) + depth texture; character mask from a half-res pass of layer 2 (PassNode.setLayers + overrideMaterial); material.mrtNode breaks shadow passes in r187', note: 'three has sobel() (luminance only) and outline() (a selection outline); neither is depth+normal set edges with a mask' },
+  edges: { tsl: 'custom', with: 'pass() MRT normal (packNormalToRGB(normalView)) + depth texture; character mask from a half-res pass of layer 2 (PassNode.setLayers + overrideMaterial); material.mrtNode breaks non-MRT passes in r187 (#35373, fixed for r188)', note: 'three has sobel() (luminance only) and outline() (a selection outline); neither is depth+normal set edges with a mask' },
   dof: { tsl: 'dof()', with: 'scenePass.getViewZNode(); focusDistance and range in world units as pmndrs', note: 'bokehScale is not the same unit as pmndrs\' (visual match not tuned)' },
   bloom: { tsl: 'bloom()', with: 'on the emissive MRT target: selective by construction', note: 'pmndrs path is luminance-threshold bloom; bloomMode=threshold here runs bloom() on the colour with the same threshold for a like-for-like cost' },
   grade: { tsl: 'hue(), saturation() + custom brightness/contrast', note: 'two lines of TSL' },
@@ -274,9 +275,10 @@ export class TSLPostStack {
 
   /**
    * Drop the current pipeline. Pipelines are cached by structure (which effects, the LUT, the scene and camera) and
-   * reused when that structure comes back: in r187 a dof() built after another pipeline has drawn can come out as one
-   * flat colour (reproduced: dof → tone mapping only → dof again; anime + LUT → anime), so the stack never builds a
-   * second pipeline for a structure it has seen. ?disposeOld=1 (disposeOld) disposes and forgets instead, to show it.
+   * reused when that structure comes back: in r187 the FIRST frame of every newly built dof() is one flat colour (DOF
+   * sizes its targets from the scene pass's still-1×1 target; mrdoob/three.js#35620). A cached pipeline has already
+   * drawn that frame. (Other fixes: scenePass.setSize(w, h) at build, or drop the first frame after a rebuild; an
+   * offline export must do one of them before its first frame.) ?disposeOld=1 disposes and forgets, to show it.
    */
   disposePipeline() {
     if (this.disposeOld) { this.pipeline?.dispose(); this.cache.clear(); }
