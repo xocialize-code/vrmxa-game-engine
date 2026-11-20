@@ -1,0 +1,56 @@
+--- a/lib/nodes/index.module.js
++++ b/lib/nodes/index.module.js
+@@ -13,7 +13,7 @@
+ import { cos, mat2, sin, uv, vec2, vec4 } from "three/tsl";
+ import { materialReference } from "three/tsl";
+ import * as THREE4 from "three/webgpu";
+-import { BRDF_Lambert, diffuseColor, float, mix, transformedNormalView, vec3 } from "three/tsl";
++import { BRDF_Lambert, diffuseColor, float, mix, normalView as transformedNormalView, vec3 } from "three/tsl"; // VRMXG patch: r187 removed transformedNormalView (pixiv/three-vrm#1890)
+ import * as THREE3 from "three/webgpu";
+ import { nodeImmutable } from "three/tsl";
+ import * as THREE_TSL from "three/tsl";
+@@ -35,7 +35,7 @@
+   vec3 as vec32,
+   vec4 as vec42
+ } from "three/tsl";
+-import { float as float2, modelViewPosition, transformedNormalView as transformedNormalView2 } from "three/tsl";
++import { float as float2, positionView, normalView as transformedNormalView2 } from "three/tsl"; // VRMXG patch: r187 removed transformedNormalView (pixiv/three-vrm#1890); patch 2: positionView
+ var threeRevision = parseInt(THREE.REVISION, 10);
+ if (threeRevision < 167) {
+   console.warn(
+@@ -77,7 +77,7 @@
+   setup() {
+     let uvAnimationMask = 1;
+     if (this.hasMaskTexture) {
+-      uvAnimationMask = vec4(refUVAnimationMaskTexture).context({ getUV: () => uv() }).r;
++      uvAnimationMask = vec4(refUVAnimationMaskTexture).context({ getUV: () => uv() }).b; // VRMXG patch 4: the spec (and GLSL) mask channel is B
+     }
+     let animatedUv = uv();
+     const phase = refUVAnimationRotationPhase.mul(uvAnimationMask);
+@@ -175,7 +175,7 @@
+   indirectSpecular(context) {
+     const { reflectedLight } = context;
+     reflectedLight.indirectSpecular.addAssign(
+-      parametricRim.add(matcap).mul(rimMultiply).mul(mix(vec3(1), vec3(0), rimLightingMix))
++      parametricRim.add(matcap).mul(rimMultiply).mul(mix(vec3(1), BRDF_Lambert({ diffuseColor: context.irradiance }), rimLightingMix)) // VRMXG patch 3: ambient in the rim mix, as GLSL
+     );
+   }
+ };
+@@ -190,7 +190,7 @@
+     parametricRimFresnelPower,
+     parametricRimColor
+   }) => {
+-    const viewDir = modelViewPosition.normalize();
++    const viewDir = positionView.normalize(); // VRMXG patch 2: per-fragment, not the object origin (modelViewPosition)
+     const dotNV = transformedNormalView2.dot(viewDir.negate());
+     const rim = float2(1).sub(dotNV).add(parametricRimLift).clamp().pow(parametricRimFresnelPower);
+     return rim.mul(parametricRimColor);
+@@ -483,7 +483,7 @@
+       return vec32(this.matcapNode);
+     }
+     if (this.matcapTexture && this.matcapTexture.isTexture === true) {
+-      const map = refMatcapTexture.context({ getUV: () => matcapUV.mul(1, -1).add(0, 1) });
++      const map = refMatcapTexture.context({ getUV: () => matcapUV.mul(vec2(1, -1)).add(vec2(0, 1)) }); // VRMXG patch 1: variadic mul/add mirrored U
+       return map.mul(refMatcapFactor);
+     }
+     return vec32(0);

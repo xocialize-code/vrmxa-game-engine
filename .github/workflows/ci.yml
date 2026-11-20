@@ -32,8 +32,11 @@ jobs:
           cache: npm
           cache-dependency-path: "**/package-lock.json"
 
-      - name: Install the workspace
+      - name: Install the workspace (postinstall applies engine/patches)
         run: npm ci
+
+      - name: The three-vrm patch still matches the installed three-vrm (AB-D-0274)
+        run: node scripts/patch-three-vrm.mjs --check
 
       - name: Lint (incl. vrmxg/deterministic on simulation packages)
         run: npm run lint
