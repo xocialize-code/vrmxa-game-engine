@@ -48,6 +48,13 @@ export async function resolveBackend(choice, { navigator: nav = globalThis.navig
 let webgpuModule = null;
 export const loadWebGPU = () => (webgpuModule ??= import('three/webgpu').catch((e) => { webgpuModule = null; throw e; }));
 
+/**
+ * three.quarks/webgpu's BatchedRenderer (WebGPUBatchedRenderer: TSL node materials), the particle renderer a WebGPU host
+ * hands to the particles service (M4 W2; spike-webgpu-render: the same particle hashes, AB-R-1006). Loaded with
+ * three/webgpu, never by a WebGL page; WebGL's comes from three.quarks itself.
+ */
+export const loadParticleRenderer = async () => (await import('three.quarks/webgpu')).BatchedRenderer;
+
 /** One warm-up per three/webgpu module (one per page; a test's stand-in module gets its own). */
 const warmUps = new WeakMap();
 

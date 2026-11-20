@@ -1,0 +1,77 @@
+{
+ "note": "M4 W2: hunting the one frame (frame 10 of the first export, loopback, second load) that differed in frames-wkwebview.json. WKWebView loopback, WebGPU. None differed again.",
+ "short": {
+  "query": "mode=frames&renderer=webgpu&parts=particles,filmRepeat&frames=24&repeat=6",
+  "loads": [
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,filmRepeat&frames=24&repeat=6",
+    "digests": [
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb"
+    ],
+    "differing": 0
+   },
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,filmRepeat&frames=24&repeat=6&again=1",
+    "digests": [
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb"
+    ],
+    "differing": 0
+   },
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,filmRepeat&frames=24&repeat=6&again=2",
+    "digests": [
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb"
+    ],
+    "differing": 0
+   }
+  ]
+ },
+ "full": {
+  "query": "mode=frames&renderer=webgpu&parts=particles,film",
+  "loads": [
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,film",
+    "first": "01bbab58fabd08f7",
+    "second": "01bbab58fabd08f7",
+    "framesDiffer": [],
+    "audio": "b69c46ab"
+   },
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,film&again=1",
+    "first": "01bbab58fabd08f7",
+    "second": "01bbab58fabd08f7",
+    "framesDiffer": [],
+    "audio": "b69c46ab"
+   },
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,film&again=2",
+    "first": "01bbab58fabd08f7",
+    "second": "01bbab58fabd08f7",
+    "framesDiffer": [],
+    "audio": "b69c46ab"
+   },
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,film&again=3",
+    "first": "01bbab58fabd08f7",
+    "second": "01bbab58fabd08f7",
+    "framesDiffer": [],
+    "audio": "b69c46ab"
+   }
+  ]
+ }
+}

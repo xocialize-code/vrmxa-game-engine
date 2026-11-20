@@ -709,7 +709,7 @@ export class EditorHost {
   /** The view drawn at a size: { png, still } (still: its RGBA, for checks like a blank frame). */
   async still(width, height) {
     if (!this.host.tree) throw new Error('nothing to draw');
-    const still = captureStill(this.host, { width, height, alpha: this.host.last.alpha ?? 1 });
+    const still = await captureStill(this.host, { width, height, alpha: this.host.last.alpha ?? 1 });
     if (this._w) this.host.resize(this._w, this._h); // the viewport's own size, exactly
     return { png: await encodePNG(still), still };
   }

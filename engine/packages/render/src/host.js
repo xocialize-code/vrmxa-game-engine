@@ -15,11 +15,12 @@
 // three's node frame, and characters load with the patched MToonNodeMaterial (`host.mtoonMaterial`).
 import { PCFShadowMap, PMREMGenerator, PerspectiveCamera, SRGBColorSpace, Scene, Vector2, WebGLRenderer } from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { BatchedRenderer as WebGLBatchedRenderer } from 'three.quarks';
 import { Interpolator } from './interpolate.js';
 import { Views } from './views.js';
 import { renderViews } from '@vrmxg/post';
 import { DebugDraw } from './debug.js';
-import { resolveBackend, loadWebGPU, warmUpWebGPU, roomPMREM, isWebGPUBackend } from './backend.js';
+import { resolveBackend, loadWebGPU, warmUpWebGPU, roomPMREM, isWebGPUBackend, loadParticleRenderer } from './backend.js';
 
 export class RenderHost {
   /**
@@ -35,11 +36,13 @@ export class RenderHost {
    * @param {any} [opts.webgpu] three/webgpu, with a WebGPURenderer (its PMREMGenerator makes the room environment)
    * @param {any} [opts.mtoonMaterial] the MToon material class characters load with on this renderer (null: the loader's
    *   default, MToonMaterial for WebGL)
+   * @param {any} [opts.particleRenderer] the three.quarks BatchedRenderer class particles draw with on this renderer (M4 W2):
+   *   three.quarks' own for WebGL (the default there), three.quarks/webgpu's for WebGPU (RenderHost.create loads it)
    * A WebGPURenderer must come initialised, on its WebGPU backend, with `webgpu` and `mtoonMaterial` (MToonNodeMaterial
    * from '@pixiv/three-vrm/nodes'): RenderHost.create does all of that. Anything less throws rather than half-work (no
    * room environment, characters on the WebGL MToonMaterial, a host that says WebGPU while drawing on WebGL2).
    */
-  constructor({ canvas, renderer, dprCap = 2, antialias = true, interpolate = true, preserveDrawingBuffer = false, post = null, webgpu = null, mtoonMaterial = null } = {}) {
+  constructor({ canvas, renderer, dprCap = 2, antialias = true, interpolate = true, preserveDrawingBuffer = false, post = null, webgpu = null, mtoonMaterial = null, particleRenderer = undefined } = {}) {
     if (renderer?.isWebGPURenderer) {
       if (renderer._initialized === false) throw new Error('RenderHost: await renderer.init() before handing a WebGPURenderer to the host (or use RenderHost.create)');
       if (!isWebGPUBackend(renderer)) throw new Error('RenderHost: this WebGPURenderer fell back to its WebGL2 backend in init(); the host draws WebGL through WebGLRenderer (use RenderHost.create with backend "auto")');
@@ -51,6 +54,11 @@ export class RenderHost {
     this._webgpu = webgpu;
     /** The MToon material class to load characters with (CharacterLibrary's `mtoonMaterial`); null: MToonMaterial. */
     this.mtoonMaterial = mtoonMaterial;
+    /**
+     * The three.quarks BatchedRenderer class for this renderer (M4 W2): a tree's particles service takes it on attach.
+     * null: this host draws no particles (a stand-in, or a WebGPU host made without one).
+     */
+    this.particleRenderer = particleRenderer !== undefined ? particleRenderer : this.backend === 'webgl' ? WebGLBatchedRenderer : null;
     const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
     this.renderer.setPixelRatio?.(Math.min(dpr, dprCap));
     this.renderer.outputColorSpace = SRGBColorSpace;
@@ -121,18 +129,23 @@ export class RenderHost {
       return fellBack('the view\'s renderer');
     }
     mtoonMaterial ??= (await import('@pixiv/three-vrm/nodes')).MToonNodeMaterial; // patched on install (scripts/patch-three-vrm.mjs)
-    return new RenderHost({ ...opts, renderer, webgpu: W, mtoonMaterial });
+    const particleRenderer = opts.particleRenderer ?? (await loadParticleRenderer()); // three.quarks/webgpu's, TSL (M4 W2)
+    return new RenderHost({ ...opts, renderer, webgpu: W, mtoonMaterial, particleRenderer });
   }
 
   /** Blend presentation at α (true), or draw the last step as simulated (false). */
   get interpolate() { return this._interpolate; }
   set interpolate(on) { this._interpolate = on; this.interpolator.version = -1; } // re-capture before blending again
 
-  /** Show a tree. Its root joins the host's scene; the tree runs as it would headless. */
+  /**
+   * Show a tree. Its root joins the host's scene; the tree runs as it would headless. Services that draw take what
+   * they need for this renderer from the host (`attachHost`: particles take `particleRenderer`, M4 W2).
+   */
   attach(tree) {
     if (this.tree) this.detach();
     this.tree = tree;
     this.scene.add(tree.root.object3d);
+    for (const s of tree.services.values()) s.attachHost?.(this);
     this.interpolator.version = -1;
     this.views.sync(tree);
     return this;

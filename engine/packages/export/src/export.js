@@ -4,11 +4,15 @@
 // behind, a pixel-pack buffer) and hands it to a sink with at most `inflight` frames outstanding. Then it runs on to
 // the end of the last frame for the sound, mixes what was recorded offline and hands the sink a WAV.
 //
+// M4 W2 (AB-T-0574): on either backend. readbackFor(host) gives WebGL's pixel-pack readback or WebGPU's (an output
+// target, a ring of 3 map buffers); WebGPU's rows come top-down, and the sink's job says so (`topDown`: the shell's
+// writer flips WebGL's rows and leaves WebGPU's).
+//
 // Nothing here reads a clock except the caller's `now`, for the timings it reports. Frames depend only on the world
 // and the frame rate: two exports of a take give the same pixels, frame for frame.
 import { frameToStep, rationalFps } from '@vrmxg/core';
 import { mixOffline, writeWav } from '@vrmxg/audio';
-import { Readback } from './readback.js';
+import { readbackFor } from './gpu-readback.js';
 import { stepsFor, audioSamples, secondsOf } from './plan.js';
 
 /**
@@ -23,7 +27,7 @@ import { stepsFor, audioSamples, secondsOf } from './plan.js';
  * @param {boolean} [o.audio] mix and send the sound (needs the tree's audio service)
  * @param {number} [o.inflight] frames outstanding at the sink (2)
  * @param {number} [o.lag] how many frames behind the render readback is copied out (1; 2 measured no faster at 4K: the cost
- *   is the 33 MB copy out of WebKit's GPU process, not the GPU finishing)
+ *   is the 33 MB copy out of WebKit's GPU process, not the GPU finishing). WebGPU's ring of 3 allows up to 2
  * @param {(p: { n: number, frames: number, phase: string }) => void} [o.onProgress]
  * @param {(n: number, step: number, alpha: number) => void} [o.onFrame] after frame n is drawn (a check hashing the world)
  * @param {{ aborted: boolean }} [o.signal]
@@ -39,20 +43,22 @@ export async function exportTake({ tree, host, fps, frames, width, height, sink,
   if (fixed !== undefined && Math.abs(fixed - width / height) > 1e-9) throw new Error(`this world frames at a fixed aspect of ${fixed.toFixed(4)}; ${width}×${height} is ${(width / height).toFixed(4)}`);
   host.attach(tree);
   host.resize(width, height);
-  const gl = host.renderer.getContext();
-  if (gl.drawingBufferWidth !== width || gl.drawingBufferHeight !== height) throw new Error(`the drawing buffer is ${gl.drawingBufferWidth}×${gl.drawingBufferHeight}, not ${width}×${height} (give the export host dprCap: 1)`);
-  const rb = new Readback(gl, width, height);
+  const gl = host.renderer.isWebGPURenderer ? null : host.renderer.getContext();
+  const drawn = gl ? { width: gl.drawingBufferWidth, height: gl.drawingBufferHeight } : host.drawingBufferSize();
+  if (drawn.width !== width || drawn.height !== height) throw new Error(`the drawing buffer is ${drawn.width}×${drawn.height}, not ${width}×${height} (give the export host dprCap: 1)`);
+  const slots = lag + 1;
+  const rb = readbackFor(host, width, height);
+  if (slots > rb.ring) throw new Error(`lag ${lag} needs ${slots} readback slots; this backend's ring has ${rb.ring}`);
   const buf = new Uint8Array(width * height * 4);
   const t = { begin: 0, render: 0, readback: 0, wait: 0, audio: 0, end: 0 };
   const t0 = now();
   sound?.record();
-  const began = await sink.begin({ width, height, fps: [rate.num, rate.den], frames, audio: !!sound, ...job });
+  const began = await sink.begin({ width, height, fps: [rate.num, rate.den], frames, audio: !!sound, topDown: rb.topDown, ...job });
   t.begin = now() - t0;
   const pending = [];
-  const slots = lag + 1;
   const send = async (n) => {
     if (pending.length >= inflight) { const a = now(); await pending.shift(); t.wait += now() - a; }
-    const a = now(); rb.take(n % slots, buf); t.readback += now() - a;
+    const a = now(); await rb.take(n % slots, buf); t.readback += now() - a;
     pending.push(Promise.resolve(sink.frame(n, buf)));
   };
   try {
@@ -60,7 +66,7 @@ export async function exportTake({ tree, host, fps, frames, width, height, sink,
       if (signal?.aborted) throw new Error('export cancelled');
       const { step, alpha } = frameToStep(n, rate);
       let a = now();
-      await host.frameAt(step, alpha);
+      await rb.draw(() => host.frameAt(step, alpha));
       t.render += now() - a;
       onFrame?.(n, step, alpha); // the world as frame n shows it (a check records its hash)
       a = now(); rb.read(n % slots); t.readback += now() - a;
@@ -82,12 +88,12 @@ export async function exportTake({ tree, host, fps, frames, width, height, sink,
     onProgress?.({ n: frames, frames, phase: 'finishing' });
     const a = now();
     const r2 = (x) => Math.round(x * 100) / 100;
-    const page = { frames, ms: { loop: r2(a - t0), begin: r2(t.begin), render: r2(t.render), readback: r2(t.readback), wait: r2(t.wait), audio: r2(t.audio) }, transport: sink.transport ?? '' };
+    const page = { frames, backend: host.backend, ms: { loop: r2(a - t0), begin: r2(t.begin), render: r2(t.render), readback: r2(t.readback), wait: r2(t.wait), audio: r2(t.audio) }, transport: sink.transport ?? '' };
     const result = await sink.end(page);
     t.end = now() - a;
     const total = now() - t0;
     return {
-      ...result, began, frames, fps: [rate.num, rate.den], seconds: secondsOf(frames, rate), width, height, transport: sink.transport,
+      ...result, began, frames, fps: [rate.num, rate.den], seconds: secondsOf(frames, rate), width, height, transport: sink.transport, backend: host.backend,
       steps: tree.clock.step, audioHash: mix?.hash ?? null,
       ms: { total: r2(total), begin: r2(t.begin), render: r2(t.render), readback: r2(t.readback), wait: r2(t.wait), audio: r2(t.audio), end: r2(t.end) },
       perFrameMs: { render: r2(t.render / frames), readback: r2(t.readback / frames), wait: r2(t.wait / frames), total: r2(total / frames) },
@@ -97,7 +103,7 @@ export async function exportTake({ tree, host, fps, frames, width, height, sink,
     await sink.cancel?.();
     throw e;
   } finally {
-    rb.dispose();
+    rb.release();
   }
 }
 

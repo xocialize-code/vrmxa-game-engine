@@ -29,6 +29,14 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
   Node, Chromium, WKWebView scheme and loopback all give sample 58cebece…f902 (11,207 bytes) and re-script
   7d761dd9…9180 (6,183 bytes). The package's tests hold the sample's hash too (`engine/packages/script/test/golden.json`).
 
+- **W2, particles and readback on WebGPU** (AB-T-0574): check 13 drawn on both backends, the morning film exported
+  twice, stills and the readback's cost, in the playground's `?mode=frames` (`apps/playground/README.md`, "Particles and
+  readback"). The WebGL acceptance re-run at W2 (`node.mjs`, `chromium.mjs`, `wkwebview.sh`, `compare.mjs`) passes 20 of
+  20 in every runtime, and every final, every per-step run, the draw calls, triangles, debug counts, presets and post
+  SSIM equal the committed M3 results (`results/m4-w2-rerun-summary.json`; the other result files are kept as M3 left
+  them). One field moved: check 13's headless `batches` is 0, because since W2 the particles' batch renderer comes from a
+  render host and nothing draws headless.
+
 ## Result: M3 is done (2026-11-19, M5 Max)
 
 M3's ten exit checks ([M3-PLAN.md](../M3-PLAN.md) "What M3 is done looking like") were run at the M3 commit 37ca5e3 in

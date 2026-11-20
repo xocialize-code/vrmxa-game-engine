@@ -1,0 +1,762 @@
+{
+ "version": "27.3.0",
+ "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "sameAcrossLoads": {
+  "webgpu": true,
+  "webgl": true
+ },
+ "runs": [
+  {
+   "load": 1,
+   "mode": "frames",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "origin": "http:",
+   "backend": "webgpu",
+   "particles": {
+    "steps": 360,
+    "size": [
+     960,
+     540
+    ],
+    "final": "09ef4d21b00189d1",
+    "headlessFinal": "09ef4d21b00189d1",
+    "sameAsHeadless": true,
+    "batch": {
+     "renderer": "three.quarks/webgpu",
+     "batches": 3,
+     "particles": 1149
+    },
+    "distinctFrames": 361,
+    "lastFrame": "a38f400fe7660542",
+    "framesDigest": "908e259af2c6aab5",
+    "snapshot": {
+     "at": 180,
+     "worldMatches": true,
+     "framesCompared": 181,
+     "framesDiffer": []
+    },
+    "perFrameMs": {
+     "render": 2.234,
+     "readback": 1.112
+    }
+   },
+   "film": {
+    "size": [
+     1920,
+     1080
+    ],
+    "fps": "24",
+    "frames": 1080,
+    "first": {
+     "frames": 1080,
+     "audioBytes": 8640044,
+     "fps": [
+      24,
+      1
+     ],
+     "seconds": 45,
+     "width": 1920,
+     "height": 1080,
+     "backend": "webgpu",
+     "steps": 2700,
+     "audioHash": "7a6ff838",
+     "ms": {
+      "total": 5503.4,
+      "begin": 0,
+      "render": 2048.7,
+      "readback": 580.3,
+      "wait": 2.6,
+      "audio": 212.3,
+      "end": 0
+     },
+     "perFrameMs": {
+      "render": 1.9,
+      "readback": 0.54,
+      "wait": 0,
+      "total": 5.1
+     },
+     "framesPerSecond": 196.24,
+     "steamDrawn": true,
+     "digest": "72e11057f7fe8c21",
+     "distinct": 988,
+     "worldDigest": "ac743fcb5a5572b3"
+    },
+    "second": {
+     "frames": 1080,
+     "audioBytes": 8640044,
+     "fps": [
+      24,
+      1
+     ],
+     "seconds": 45,
+     "width": 1920,
+     "height": 1080,
+     "backend": "webgpu",
+     "steps": 2700,
+     "audioHash": "7a6ff838",
+     "ms": {
+      "total": 5626.6,
+      "begin": 0,
+      "render": 2143.2,
+      "readback": 605.5,
+      "wait": 3.1,
+      "audio": 205.8,
+      "end": 0.1
+     },
+     "perFrameMs": {
+      "render": 1.98,
+      "readback": 0.56,
+      "wait": 0,
+      "total": 5.21
+     },
+     "framesPerSecond": 191.95,
+     "steamDrawn": true,
+     "digest": "72e11057f7fe8c21",
+     "distinct": 988,
+     "worldDigest": "ac743fcb5a5572b3"
+    },
+    "identical": true,
+    "framesDiffer": [],
+    "worldSame": true
+   },
+   "still": {
+    "size": [
+     640,
+     360
+    ],
+    "hash": "0f15bc0ddf1851dd",
+    "repeats": true,
+    "pixels": 230400,
+    "opaque": 230400,
+    "differ": 0,
+    "maxDiff": 0,
+    "upsideDownWouldDiffer": 160114,
+    "viewAfter": [
+     1280,
+     720
+    ],
+    "viewFollows": true
+   },
+   "readback": {
+    "1080p": {
+     "renderMs": {
+      "median": 1.5,
+      "p95": 1.9,
+      "min": 1.2,
+      "n": 30
+     },
+     "exportLoopMs": {
+      "median": 0.3,
+      "p95": 1.4,
+      "min": 0.2,
+      "n": 30
+     },
+     "afterFrameMs": {
+      "median": 0.5,
+      "p95": 1.4,
+      "min": 0.4,
+      "n": 30
+     },
+     "hash": "4c1ad7c1dbc06059"
+    },
+    "4k": {
+     "renderMs": {
+      "median": 1.8,
+      "p95": 2.5,
+      "min": 1.4,
+      "n": 30
+     },
+     "exportLoopMs": {
+      "median": 0.8,
+      "p95": 3.1,
+      "min": 0.5,
+      "n": 30
+     },
+     "afterFrameMs": {
+      "median": 1.4,
+      "p95": 2.4,
+      "min": 1.2,
+      "n": 30
+     },
+     "hash": "4521ddc51002085a"
+    }
+   },
+   "ms": 20590,
+   "errors": [],
+   "verdicts": {
+    "backend": "webgpu",
+    "particlesSameAsHeadless": true,
+    "particlesDrawnByHost": true,
+    "particlesDistinctFrames": true,
+    "restoredSame": true,
+    "filmTwiceIdentical": true,
+    "stillMatchesCanvas": true,
+    "noErrors": true
+   }
+  },
+  {
+   "load": 2,
+   "mode": "frames",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "origin": "http:",
+   "backend": "webgpu",
+   "particles": {
+    "steps": 360,
+    "size": [
+     960,
+     540
+    ],
+    "final": "09ef4d21b00189d1",
+    "headlessFinal": "09ef4d21b00189d1",
+    "sameAsHeadless": true,
+    "batch": {
+     "renderer": "three.quarks/webgpu",
+     "batches": 3,
+     "particles": 1149
+    },
+    "distinctFrames": 361,
+    "lastFrame": "a38f400fe7660542",
+    "framesDigest": "908e259af2c6aab5",
+    "snapshot": {
+     "at": 180,
+     "worldMatches": true,
+     "framesCompared": 181,
+     "framesDiffer": []
+    },
+    "perFrameMs": {
+     "render": 2.26,
+     "readback": 1.103
+    }
+   },
+   "film": {
+    "size": [
+     1920,
+     1080
+    ],
+    "fps": "24",
+    "frames": 1080,
+    "first": {
+     "frames": 1080,
+     "audioBytes": 8640044,
+     "fps": [
+      24,
+      1
+     ],
+     "seconds": 45,
+     "width": 1920,
+     "height": 1080,
+     "backend": "webgpu",
+     "steps": 2700,
+     "audioHash": "7a6ff838",
+     "ms": {
+      "total": 5443.5,
+      "begin": 0,
+      "render": 2017.1,
+      "readback": 561.2,
+      "wait": 2.4,
+      "audio": 206.1,
+      "end": 0
+     },
+     "perFrameMs": {
+      "render": 1.87,
+      "readback": 0.52,
+      "wait": 0,
+      "total": 5.04
+     },
+     "framesPerSecond": 198.4,
+     "steamDrawn": true,
+     "digest": "72e11057f7fe8c21",
+     "distinct": 988,
+     "worldDigest": "ac743fcb5a5572b3"
+    },
+    "second": {
+     "frames": 1080,
+     "audioBytes": 8640044,
+     "fps": [
+      24,
+      1
+     ],
+     "seconds": 45,
+     "width": 1920,
+     "height": 1080,
+     "backend": "webgpu",
+     "steps": 2700,
+     "audioHash": "7a6ff838",
+     "ms": {
+      "total": 5442.5,
+      "begin": 0,
+      "render": 2029.1,
+      "readback": 566.9,
+      "wait": 2.4,
+      "audio": 204.8,
+      "end": 0
+     },
+     "perFrameMs": {
+      "render": 1.88,
+      "readback": 0.52,
+      "wait": 0,
+      "total": 5.04
+     },
+     "framesPerSecond": 198.44,
+     "steamDrawn": true,
+     "digest": "72e11057f7fe8c21",
+     "distinct": 988,
+     "worldDigest": "ac743fcb5a5572b3"
+    },
+    "identical": true,
+    "framesDiffer": [],
+    "worldSame": true
+   },
+   "still": {
+    "size": [
+     640,
+     360
+    ],
+    "hash": "0f15bc0ddf1851dd",
+    "repeats": true,
+    "pixels": 230400,
+    "opaque": 230400,
+    "differ": 0,
+    "maxDiff": 0,
+    "upsideDownWouldDiffer": 160114,
+    "viewAfter": [
+     1280,
+     720
+    ],
+    "viewFollows": true
+   },
+   "readback": {
+    "1080p": {
+     "renderMs": {
+      "median": 1.3,
+      "p95": 2.1,
+      "min": 1.1,
+      "n": 30
+     },
+     "exportLoopMs": {
+      "median": 0.3,
+      "p95": 1.2,
+      "min": 0.1,
+      "n": 30
+     },
+     "afterFrameMs": {
+      "median": 0.5,
+      "p95": 0.6,
+      "min": 0.4,
+      "n": 30
+     },
+     "hash": "4c1ad7c1dbc06059"
+    },
+    "4k": {
+     "renderMs": {
+      "median": 1.8,
+      "p95": 2.3,
+      "min": 1.3,
+      "n": 30
+     },
+     "exportLoopMs": {
+      "median": 1.3,
+      "p95": 3.4,
+      "min": 0.5,
+      "n": 30
+     },
+     "afterFrameMs": {
+      "median": 1.4,
+      "p95": 1.6,
+      "min": 1.1,
+      "n": 30
+     },
+     "hash": "4521ddc51002085a"
+    }
+   },
+   "ms": 20189,
+   "errors": [],
+   "verdicts": {
+    "backend": "webgpu",
+    "particlesSameAsHeadless": true,
+    "particlesDrawnByHost": true,
+    "particlesDistinctFrames": true,
+    "restoredSame": true,
+    "filmTwiceIdentical": true,
+    "stillMatchesCanvas": true,
+    "noErrors": true
+   }
+  },
+  {
+   "load": 1,
+   "mode": "frames",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "origin": "http:",
+   "backend": "webgl",
+   "particles": {
+    "steps": 360,
+    "size": [
+     960,
+     540
+    ],
+    "final": "09ef4d21b00189d1",
+    "headlessFinal": "09ef4d21b00189d1",
+    "sameAsHeadless": true,
+    "batch": {
+     "renderer": "three.quarks",
+     "batches": 3,
+     "particles": 1149
+    },
+    "distinctFrames": 361,
+    "lastFrame": "c9613a1f209caf91",
+    "framesDigest": "16c4913d2bbbc4bb",
+    "snapshot": {
+     "at": 180,
+     "worldMatches": true,
+     "framesCompared": 181,
+     "framesDiffer": []
+    },
+    "perFrameMs": {
+     "render": 2.148,
+     "readback": 1.509
+    }
+   },
+   "film": {
+    "size": [
+     1920,
+     1080
+    ],
+    "fps": "24",
+    "frames": 1080,
+    "first": {
+     "frames": 1080,
+     "audioBytes": 8640044,
+     "fps": [
+      24,
+      1
+     ],
+     "seconds": 45,
+     "width": 1920,
+     "height": 1080,
+     "backend": "webgl",
+     "steps": 2700,
+     "audioHash": "7a6ff838",
+     "ms": {
+      "total": 7944,
+      "begin": 0.1,
+      "render": 2236,
+      "readback": 2844.2,
+      "wait": 0.5,
+      "audio": 208.7,
+      "end": 0
+     },
+     "perFrameMs": {
+      "render": 2.07,
+      "readback": 2.63,
+      "wait": 0,
+      "total": 7.36
+     },
+     "framesPerSecond": 135.95,
+     "steamDrawn": true,
+     "digest": "4c2265c827597f04",
+     "distinct": 1080,
+     "worldDigest": "ac743fcb5a5572b3"
+    },
+    "second": {
+     "frames": 1080,
+     "audioBytes": 8640044,
+     "fps": [
+      24,
+      1
+     ],
+     "seconds": 45,
+     "width": 1920,
+     "height": 1080,
+     "backend": "webgl",
+     "steps": 2700,
+     "audioHash": "7a6ff838",
+     "ms": {
+      "total": 7774.7,
+      "begin": 0,
+      "render": 2116.5,
+      "readback": 2844.5,
+      "wait": 0.4,
+      "audio": 206.6,
+      "end": 0.1
+     },
+     "perFrameMs": {
+      "render": 1.96,
+      "readback": 2.63,
+      "wait": 0,
+      "total": 7.2
+     },
+     "framesPerSecond": 138.91,
+     "steamDrawn": true,
+     "digest": "4c2265c827597f04",
+     "distinct": 1080,
+     "worldDigest": "ac743fcb5a5572b3"
+    },
+    "identical": true,
+    "framesDiffer": [],
+    "worldSame": true
+   },
+   "still": {
+    "size": [
+     640,
+     360
+    ],
+    "hash": "6fb7d276fe6be5b7",
+    "repeats": true,
+    "pixels": 230400,
+    "opaque": 230400,
+    "differ": 0,
+    "maxDiff": 0,
+    "upsideDownWouldDiffer": 172240,
+    "viewAfter": [
+     1280,
+     720
+    ],
+    "viewFollows": true
+   },
+   "readback": {
+    "1080p": {
+     "renderMs": {
+      "median": 0.7,
+      "p95": 0.8,
+      "min": 0.5,
+      "n": 30
+     },
+     "exportLoopMs": {
+      "median": 2.7,
+      "p95": 3.7,
+      "min": 2.4,
+      "n": 30
+     },
+     "afterFrameMs": {
+      "median": 2.9,
+      "p95": 3.3,
+      "min": 2.7,
+      "n": 30
+     },
+     "hash": "985eb7f629ba0133"
+    },
+    "4k": {
+     "renderMs": {
+      "median": 0.7,
+      "p95": 0.9,
+      "min": 0.5,
+      "n": 30
+     },
+     "exportLoopMs": {
+      "median": 9.3,
+      "p95": 14,
+      "min": 9,
+      "n": 30
+     },
+     "afterFrameMs": {
+      "median": 10,
+      "p95": 10.7,
+      "min": 9.2,
+      "n": 30
+     },
+     "hash": "337eac7ace895766"
+    }
+   },
+   "ms": 25944,
+   "errors": [],
+   "verdicts": {
+    "backend": "webgl",
+    "particlesSameAsHeadless": true,
+    "particlesDrawnByHost": true,
+    "particlesDistinctFrames": true,
+    "restoredSame": true,
+    "filmTwiceIdentical": true,
+    "stillMatchesCanvas": true,
+    "noErrors": true
+   }
+  },
+  {
+   "load": 2,
+   "mode": "frames",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "origin": "http:",
+   "backend": "webgl",
+   "particles": {
+    "steps": 360,
+    "size": [
+     960,
+     540
+    ],
+    "final": "09ef4d21b00189d1",
+    "headlessFinal": "09ef4d21b00189d1",
+    "sameAsHeadless": true,
+    "batch": {
+     "renderer": "three.quarks",
+     "batches": 3,
+     "particles": 1149
+    },
+    "distinctFrames": 361,
+    "lastFrame": "c9613a1f209caf91",
+    "framesDigest": "16c4913d2bbbc4bb",
+    "snapshot": {
+     "at": 180,
+     "worldMatches": true,
+     "framesCompared": 181,
+     "framesDiffer": []
+    },
+    "perFrameMs": {
+     "render": 2.117,
+     "readback": 1.613
+    }
+   },
+   "film": {
+    "size": [
+     1920,
+     1080
+    ],
+    "fps": "24",
+    "frames": 1080,
+    "first": {
+     "frames": 1080,
+     "audioBytes": 8640044,
+     "fps": [
+      24,
+      1
+     ],
+     "seconds": 45,
+     "width": 1920,
+     "height": 1080,
+     "backend": "webgl",
+     "steps": 2700,
+     "audioHash": "7a6ff838",
+     "ms": {
+      "total": 7973.3,
+      "begin": 0,
+      "render": 2234.1,
+      "readback": 2850.1,
+      "wait": 0.4,
+      "audio": 215.4,
+      "end": 0.1
+     },
+     "perFrameMs": {
+      "render": 2.07,
+      "readback": 2.64,
+      "wait": 0,
+      "total": 7.38
+     },
+     "framesPerSecond": 135.45,
+     "steamDrawn": true,
+     "digest": "4c2265c827597f04",
+     "distinct": 1080,
+     "worldDigest": "ac743fcb5a5572b3"
+    },
+    "second": {
+     "frames": 1080,
+     "audioBytes": 8640044,
+     "fps": [
+      24,
+      1
+     ],
+     "seconds": 45,
+     "width": 1920,
+     "height": 1080,
+     "backend": "webgl",
+     "steps": 2700,
+     "audioHash": "7a6ff838",
+     "ms": {
+      "total": 8043,
+      "begin": 0,
+      "render": 2247.3,
+      "readback": 2920.8,
+      "wait": 0.7,
+      "audio": 214,
+      "end": 0
+     },
+     "perFrameMs": {
+      "render": 2.08,
+      "readback": 2.7,
+      "wait": 0,
+      "total": 7.45
+     },
+     "framesPerSecond": 134.28,
+     "steamDrawn": true,
+     "digest": "4c2265c827597f04",
+     "distinct": 1080,
+     "worldDigest": "ac743fcb5a5572b3"
+    },
+    "identical": true,
+    "framesDiffer": [],
+    "worldSame": true
+   },
+   "still": {
+    "size": [
+     640,
+     360
+    ],
+    "hash": "6fb7d276fe6be5b7",
+    "repeats": true,
+    "pixels": 230400,
+    "opaque": 230400,
+    "differ": 0,
+    "maxDiff": 0,
+    "upsideDownWouldDiffer": 172240,
+    "viewAfter": [
+     1280,
+     720
+    ],
+    "viewFollows": true
+   },
+   "readback": {
+    "1080p": {
+     "renderMs": {
+      "median": 0.7,
+      "p95": 0.9,
+      "min": 0.5,
+      "n": 30
+     },
+     "exportLoopMs": {
+      "median": 2.7,
+      "p95": 3.8,
+      "min": 2.5,
+      "n": 30
+     },
+     "afterFrameMs": {
+      "median": 2.7,
+      "p95": 2.8,
+      "min": 2.5,
+      "n": 30
+     },
+     "hash": "985eb7f629ba0133"
+    },
+    "4k": {
+     "renderMs": {
+      "median": 0.8,
+      "p95": 0.9,
+      "min": 0.7,
+      "n": 30
+     },
+     "exportLoopMs": {
+      "median": 9.4,
+      "p95": 16.4,
+      "min": 9,
+      "n": 30
+     },
+     "afterFrameMs": {
+      "median": 9.8,
+      "p95": 10.2,
+      "min": 9.5,
+      "n": 30
+     },
+     "hash": "337eac7ace895766"
+    }
+   },
+   "ms": 26324,
+   "errors": [],
+   "verdicts": {
+    "backend": "webgl",
+    "particlesSameAsHeadless": true,
+    "particlesDrawnByHost": true,
+    "particlesDistinctFrames": true,
+    "restoredSame": true,
+    "filmTwiceIdentical": true,
+    "stillMatchesCanvas": true,
+    "noErrors": true
+   }
+  }
+ ]
+}

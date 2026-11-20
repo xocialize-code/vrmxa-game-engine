@@ -74,8 +74,8 @@ const replay = async (withUI) => {
       const pg = window.__playground;
       while (!pg.bubbles().some((b) => b.kind === 'line')) pg.host.frame(1 / 60);
       pg.host.render(1, false); await pg.text.settle();
-      pg.host.render(1, false); const a = pg.frameHash();
-      pg.host.render(1, false); const b = pg.frameHash();
+      pg.host.render(1, false); const a = await pg.frameHash();
+      pg.host.render(1, false); const b = await pg.frameHash();
       return { step: pg.tree.clock.step, a, b, shown: pg.text.state() };
     });
     await p.evaluate(() => window.__playground._changed());

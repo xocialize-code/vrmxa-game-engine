@@ -300,6 +300,22 @@ func sineWAV(seconds: Double, rate: Int = 48000) -> Data {
         #expect(hashFrame(Data(count: 8)) == "117697cd1138fae6")
     }
 
+    @Test func rowsBottomUpFromWebGLAndTopDownFromWebGPU() {
+        // a 3×2 RGBA frame: pixel (x, y from the top) = [x, y, 7, 255]; BGRA rows out, row 0 at the top, either way
+        let w = 3, h = 2
+        func frame(topDown: Bool) -> Data {
+            var d = Data(count: w * h * 4)
+            for row in 0..<h { let y = topDown ? row : h - 1 - row; for x in 0..<w { d.replaceSubrange((row * w + x) * 4..<(row * w + x) * 4 + 4, with: [UInt8(x), UInt8(y), 7, 255]) } }
+            return d
+        }
+        for topDown in [false, true] {
+            var out = [UInt8](repeating: 0, count: w * h * 4)
+            out.withUnsafeMutableBytes { VideoWriter.rgbaBottomUpToBGRA(frame(topDown: topDown), dst: $0.baseAddress!, dstRowBytes: w * 4, width: w, height: h, topDown: topDown) }
+            #expect(Array(out[0..<4]) == [7, 0, 0, 255], "top-left first (topDown \(topDown))")
+            #expect(Array(out[(w * 4 + 8)..<(w * 4 + 12)]) == [7, 1, 2, 255], "bottom-right last (topDown \(topDown))")
+        }
+    }
+
     @Test func subtitlesLandBesideTheFile() async throws {
         var s = ExportSettings(width: 64, height: 64, fpsNum: 24, frames: 2)
         s.subtitles = "1\n00:00:00,000 --> 00:00:01,000\nHana: Hello\n"

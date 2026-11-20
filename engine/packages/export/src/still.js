@@ -1,25 +1,43 @@
 // Stills and thumbnails: what a host draws now, at any size, as a PNG. Uses the host's own renderer: the drawing buffer
 // is resized for the shot and put back, so the editor's viewport blinks for one frame at most.
+// M4 W2 (AB-T-0574): on both backends. WebGL reads the drawing buffer at once; WebGPU draws into its readback's output
+// target and maps it (asynchronously, so captureStill returns a promise on both).
 import { toImageRGBA } from './readback.js';
+import { readbackFor } from './gpu-readback.js';
 
 /**
  * @param {any} host a RenderHost with a tree attached
  * @param {{ width: number, height: number, alpha?: number, camera?: any }} o
- * @returns {{ width: number, height: number, rgba: Uint8ClampedArray }} straight-alpha RGBA, row 0 at the top
+ * @returns {Promise<{ width: number, height: number, rgba: Uint8ClampedArray }>} straight-alpha RGBA, row 0 at the top
  */
-export function captureStill(host, { width, height, alpha = 1 }) {
-  const r = host.renderer, gl = r.getContext();
-  const prevRatio = r.getPixelRatio();
-  const cssW = gl.drawingBufferWidth / prevRatio, cssH = gl.drawingBufferHeight / prevRatio;
+export async function captureStill(host, { width, height, alpha = 1 }) {
+  const r = host.renderer;
+  const prevRatio = r.getPixelRatio(), was = host.drawingBufferSize();
+  const cssW = was.width / prevRatio, cssH = was.height / prevRatio;
   r.setPixelRatio(1);
   host.resize(width, height);
-  host.render(alpha, false);
   const bytes = new Uint8Array(width * height * 4);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, bytes);
-  r.setPixelRatio(prevRatio);
-  host.resize(cssW, cssH);
-  host.render(alpha, false);
-  return { width, height, rgba: toImageRGBA(bytes, width, height) };
+  let topDown = false;
+  try {
+    if (r.isWebGPURenderer) {
+      const rb = readbackFor(host, width, height);
+      host.advanceNodeFrame(); // a frame of its own: passes and shadow maps redraw at this size (AB-T-0554 gotcha 1)
+      await rb.draw(() => host.render(alpha, false));
+      await rb.readNow(bytes);
+      rb.release();
+      topDown = rb.topDown;
+    } else {
+      const gl = r.getContext();
+      host.render(alpha, false);
+      gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, bytes);
+    }
+  } finally {
+    r.setPixelRatio(prevRatio);
+    host.resize(cssW, cssH);
+    host.advanceNodeFrame();
+    host.render(alpha, false);
+  }
+  return { width, height, rgba: toImageRGBA(bytes, width, height, { topDown }) };
 }
 
 /** A still as PNG bytes (a browser: OffscreenCanvas or a canvas element). */

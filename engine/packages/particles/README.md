@@ -20,9 +20,13 @@ await particles.prepare(doc);                            // reads project effect
 | Snapshot | Each emitter's particles (every field as numbers and arrays) and its systems' emission state are its node state. When an emitter registers it spawns one throwaway particle, because quarks' per-particle value generators learn their slot in a particle's memory only on the first spawn. Without it, a world restored before it ever emitted read NaN rotations |
 | Effect documents | `{ "format": "vrmxg-effect", "version": 1, "systems": [...] }`, one quarks system each: life, speed, size, start angle, colours, rate and bursts, a shape (point, sphere, hemisphere, cone, circle; cones point up by default), gravity and force, size / speed / colour / opacity over life, spin, an atlas tile, blending, billboard or stretched rendering. `checkEffect` names what's wrong |
 | Drawing | One quarks `BatchedRenderer` per tree draws every emitter, one draw per material and render mode. The 8-tile atlas is drawn from pixel maths (dot, puff, spark, flash, ring, line, drop, star), so there are no image files. quarks disposes a system whose root isn't a `Scene`, so a tree outside a render host hangs under a private Scene until a host takes it |
+| The renderer's batch (M4 W2) | The `BatchedRenderer` class comes from the render host (`host.particleRenderer`), never from here: three.quarks' own on WebGL, `three.quarks/webgpu`'s `WebGPUBatchedRenderer` (TSL node materials) on WebGPU. `RenderHost.attach` calls the service's `attachHost(host)`; a host on the other backend moves every system to a new batch (`useRenderer`). Headless nothing draws, so there is no batch. quarks' simulation never reads the batch (a system only tells it when its look changes), so the particles hash the same with WebGL's, WebGPU's or none. `installParticles(tree, { BatchedRenderer })` gives one before any host (tests) |
 
 Measured (acceptance check 13: 43 emitters, up to 1,207 particles in the cafe): identical at every step in Node,
 Chromium and WKWebView, a snapshot mid-effect re-simulates identically, and the particle step costs 0.12–0.22 ms.
+M4 W2 draws check 13 on both backends (the playground's `?mode=frames`, `apps/playground/README.md`): the world hashes
+as headless at every step on WebGL and WebGPU, final `09ef4d21b00189d1`, and a world restored mid-effect on a fresh host
+draws the same frames.
 
 Tests (`npm test`):
 - effect documents and the atlas;
@@ -32,7 +36,8 @@ Tests (`npm test`):
 - every built-in effect restored mid-effect into a fresh world, matching the run step by step;
 - stop and finished;
 - presentation emitters staying out of the hash;
-- batching.
+- batching;
+- the batch renderer from the host: none headless, WebGL's or WebGPU's, swapped mid-run, the same hashes with each.
 
 Not yet: collisions (quarks' `ApplyCollision` with Rapier), sub-emitters and trails in effect documents, interpolated
 particle positions between steps (they draw at the last step), soft particles.

@@ -16,7 +16,8 @@
   },
   "dependencies": {
     "@vrmxg/audio": "0.1.0",
-    "@vrmxg/core": "0.1.0"
+    "@vrmxg/core": "0.1.0",
+    "three": "0.187.0"
   },
   "devDependencies": {
     "@vrmxg/camera": "0.1.0",

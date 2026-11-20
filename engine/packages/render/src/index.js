@@ -3,7 +3,7 @@
 // draw. Presentation only: outside the determinism boundary, and it never writes simulated state.
 // M4 W0 (AB-T-0572): WebGPU beside WebGL (backend.js), chosen by RenderHost.create and the ?renderer= switch.
 export { RenderHost } from './host.js';
-export { backendFromQuery, webgpuAvailable, resolveBackend, warmUpWebGPU, loadWebGPU, roomPMREM, isWebGPUBackend } from './backend.js';
+export { backendFromQuery, webgpuAvailable, resolveBackend, warmUpWebGPU, loadWebGPU, roomPMREM, isWebGPUBackend, loadParticleRenderer } from './backend.js';
 export { Interpolator } from './interpolate.js';
 export { Views, EnvironmentView, SHADOW_PRESETS, TONE_MAPPINGS, DEFAULT_ENVIRONMENT } from './views.js';
 export { DebugDraw, DEBUG_COLORS, shapeLines } from './debug.js';
