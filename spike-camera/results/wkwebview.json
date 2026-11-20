@@ -1,0 +1,176 @@
+{
+ "cases": [
+  {
+   "case": "probe",
+   "errors": [],
+   "origin": "scheme",
+   "result": {
+    "devices": [
+     "audioinput",
+     "videoinput"
+    ],
+    "getUserMedia": "function",
+    "mediaDevices": "object",
+    "origin": "vrmxg-camera://app",
+    "secure": true
+   },
+   "timedOut": false
+  },
+  {
+   "case": "bench&frames=300",
+   "errors": [],
+   "origin": "scheme",
+   "result": {
+    "clip": "clip.mp4",
+    "delegate": "GPU",
+    "faceFrames": 0,
+    "frames": 300,
+    "handsSeen": 377,
+    "initMs": 341,
+    "ms": {
+     "face": {
+      "mean": 3.91,
+      "median": 3,
+      "p90": 6
+     },
+     "gesture": {
+      "mean": 13.93,
+      "median": 13,
+      "p90": 19
+     },
+     "pose": {
+      "mean": 8.71,
+      "median": 9,
+      "p90": 10
+     }
+    },
+    "size": [
+     540,
+     960
+    ]
+   },
+   "timedOut": false
+  },
+  {
+   "case": "bench&frames=300&delegate=CPU",
+   "errors": [],
+   "origin": "scheme",
+   "result": {
+    "clip": "clip.mp4",
+    "delegate": "CPU",
+    "faceFrames": 0,
+    "frames": 300,
+    "handsSeen": 366,
+    "initMs": 338,
+    "ms": {
+     "face": {
+      "mean": 14.71,
+      "median": 14,
+      "p90": 18
+     },
+     "gesture": {
+      "mean": 41.99,
+      "median": 38,
+      "p90": 50
+     },
+     "pose": {
+      "mean": 28,
+      "median": 28,
+      "p90": 30
+     }
+    },
+    "size": [
+     540,
+     960
+    ]
+   },
+   "timedOut": false
+  },
+  {
+   "case": "probe",
+   "errors": [],
+   "origin": "loopback",
+   "result": {
+    "devices": [
+     "audioinput",
+     "videoinput"
+    ],
+    "getUserMedia": "function",
+    "mediaDevices": "object",
+    "origin": "http://127.0.0.1:61575",
+    "secure": true
+   },
+   "timedOut": false
+  },
+  {
+   "case": "bench&frames=300",
+   "errors": [],
+   "origin": "loopback",
+   "result": {
+    "clip": "clip.mp4",
+    "delegate": "GPU",
+    "faceFrames": 0,
+    "frames": 300,
+    "handsSeen": 377,
+    "initMs": 362.2,
+    "ms": {
+     "face": {
+      "mean": 3.56,
+      "median": 2.7,
+      "p90": 5.74
+     },
+     "gesture": {
+      "mean": 12.46,
+      "median": 12.4,
+      "p90": 18.28
+     },
+     "pose": {
+      "mean": 7.9,
+      "median": 7.3,
+      "p90": 10.16
+     }
+    },
+    "size": [
+     540,
+     960
+    ]
+   },
+   "timedOut": false
+  },
+  {
+   "case": "bench&frames=300&delegate=CPU",
+   "errors": [],
+   "origin": "loopback",
+   "result": {
+    "clip": "clip.mp4",
+    "delegate": "CPU",
+    "faceFrames": 0,
+    "frames": 300,
+    "handsSeen": 366,
+    "initMs": 384.7,
+    "ms": {
+     "face": {
+      "mean": 16.17,
+      "median": 14.22,
+      "p90": 21.98
+     },
+     "gesture": {
+      "mean": 43.64,
+      "median": 41.58,
+      "p90": 53.56
+     },
+     "pose": {
+      "mean": 29.48,
+      "median": 28.1,
+      "p90": 33.62
+     }
+    },
+    "size": [
+     540,
+     960
+    ]
+   },
+   "timedOut": false
+  }
+ ]
+}

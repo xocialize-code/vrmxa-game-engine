@@ -3,6 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleExecutable</key><string>VRMXGPlayground</string>
+	<key>NSCameraUsageDescription</key><string>With the camera on, characters notice you, look at you and answer a wave or a nod. The images stay on this Mac: only where your face and hands are reaches the scene.</string>
 	<key>CFBundleIdentifier</key><string>com.xocialize.vrmxg-playground</string>
 	<key>CFBundleName</key><string>VRMXG Playground</string>
 	<key>CFBundleDisplayName</key><string>VRMXG Playground</string>

@@ -6,7 +6,7 @@ import { Playground, PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, fall: false, showBubbles: true, showCaptions: true, showNames: false });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, fall: false, sense: null, showBubbles: true, showCaptions: true, showNames: false });
 // the sample's scenes and sequences; ?scene= picks one at load
 const SCENES = ['cafe.vrmxs', 'sequences/morning.vrmxs', 'sequences/cafe-morning.vrmxs'];
 const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
@@ -21,6 +21,7 @@ function refresh() {
   ui.buses = pg.busSettings(); ui.audioOn = !!pg.audio?.running; ui.captions = pg.captions();
   ui.bubbles = ui.showBubbles ? pg.bubbles() : []; ui.hasDirector = !!pg.director; ui.choices = pg.choices(); // M3 W6
   ui.fall = !!pg.fall; // M3 W7
+  ui.sense = pg.cameraStatus(); // M3 W5
   const cur = pg.currentCamera(); ui.cameras = pg.cameras(); ui.camera = cur?.id ?? ''; ui.preset = cur?.preset ?? '';
   if (pg.error) ui.error = pg.error;
 }
@@ -29,6 +30,20 @@ function refresh() {
 function say(text) { try { pg.talk(text); } catch (e) { ui.error = String(e?.message ?? e); } refresh(); }
 const setBubbles = () => { pg.setBubbles(ui.showBubbles); refresh(); };
 const setNames = () => { pg.setNameTags(ui.showNames); refresh(); };
+// M3 W5: ?camera — the camera on and off (the Mac app's native capture), its status, and the session saved (no images)
+async function toggleCamera() {
+  try { if (ui.sense?.on) await pg.cameraOff(); else { await pg.cameraOn(); if (!pg.playing) pg.play(); } } catch (e) { ui.error = String(e?.message ?? e); }
+  refresh();
+}
+const cameraLabel = () => { const c = ui.sense; if (!c) return ''; return c.on ? `Camera on · ${c.present ? 'you are there' : 'no one there'}${c.last ? ` · last: ${c.last}` : ''}` : `Camera off${c.events ? ` · ${c.events} events logged` : ''}`; };
+async function saveCameraSession() {
+  const text = JSON.stringify(pg.cameraSession()) + '\n', name = `camera-session-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.json`;
+  try {
+    if (ui.shell) await call('file.save', { text, suggestedName: name });
+    else { const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([text], { type: 'application/json' })), download: name }); a.click(); }
+  } catch (e) { if (e?.code !== 'cancelled') ui.error = String(e?.message ?? e); }
+}
+
 // M3 W7: ?fall — shove Mira and Hana down the stairs (and play, so the fall is seen)
 function knockDown() { try { pg.knockDown(); if (!pg.playing) pg.play(); } catch (e) { ui.error = String(e?.message ?? e); } refresh(); }
 function send() { const t = ui.chatText.trim(); if (!t) return; say(t); ui.chatText = ''; }
@@ -104,6 +119,9 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
       <button id="step" type="button" :disabled="ui.loading" aria-label="Step" @click="step">Step</button>
       <button id="reset" type="button" :disabled="ui.loading" aria-label="Reset" @click="load">Reset</button>
       <button id="replay" type="button" :disabled="ui.loading" aria-label="Replay demo walk" @click="replay">Replay demo walk</button>
+      <button v-if="ui.sense" id="camera-toggle" type="button" :disabled="ui.loading" :aria-pressed="ui.sense.on" :aria-label="ui.sense.on ? 'Turn the camera off' : 'Turn the camera on'" @click="toggleCamera">{{ ui.sense.on ? 'Camera off' : 'Camera on' }}</button>
+      <button v-if="ui.sense" id="camera-save" type="button" :disabled="ui.loading || !ui.sense.events" aria-label="Save the camera session" @click="saveCameraSession">Save session</button>
+      <span v-if="ui.sense" id="camera-status" class="notes" role="status" :aria-label="cameraLabel()">{{ cameraLabel() }}</span>
       <button v-if="ui.fall" id="knock-down" type="button" :disabled="ui.loading" aria-label="Knock down the stairs" @click="knockDown">Knock down</button>
       <button v-if="ui.shell" id="open-scene" type="button" :disabled="ui.loading" aria-label="Open scene" @click="openScene">Open…</button>
       <button v-if="ui.shell" id="save-scene" type="button" :disabled="ui.loading" aria-label="Save scene as" @click="saveScene">Save as…</button>

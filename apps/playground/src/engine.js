@@ -14,12 +14,13 @@ import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequenc
 import { AudioOutput } from '@vrmxg/audio';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
-import { inShell, call } from '../../shell/js/shell.js';
+import { inShell, call, on as shellOn } from '../../shell/js/shell.js';
 import { httpTTS, shellTTS } from '@vrmxg/voice';
 import { installDirector, httpModel, isTake, demoModel } from '@vrmxg/director';
 import { Vector3 } from 'three';
 import { TextLayer } from '@vrmxg/text';
 import { withStairs, knockDownStairs } from './stairs.js';
+import { withCamera, shellCamera, recordedFrames, connectCamera } from '@vrmxg/sense';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
@@ -29,6 +30,8 @@ import './sqljs.js';
 installPortableMath(); // before anything parses a VRM or steps a world
 const vrmxaCore = { ...core, ...anim };
 const behaviours = new Map(Object.entries(projectBehaviours).filter(([, v]) => typeof v === 'function'));
+/** ?camera's close shot of the character you talk to (Hana at her spot by the counter, facing the room). */
+const CAMERA_SHOT = { p: [-1.5, 1.5, -0.9], q: [-0.0238, 0, 0, 0.9997] };
 const bytes = async (ref) => { const r = await fetch(ref); if (!r.ok) throw new Error(`${ref}: ${r.status}`); return new Uint8Array(await r.arrayBuffer()); };
 const json = async (ref) => JSON.parse(new TextDecoder().decode(await bytes(ref)));
 
@@ -81,12 +84,23 @@ export class Playground {
     // M3 W7: ?fall puts a flight of stairs outside the cafe with Mira and Hana on its landing (knockDown() shoves them)
     this.fall = params.has('fall');
     if (this.fall) this.sample = { ...this.sample, doc: withStairs(this.sample.doc, { camera: true }) };
+    // M3 W5: ?camera puts the person at the camera into the world (the sense service and its viewer node); the character
+    // you talk to notices you, looks at you and answers a wave and a nod. Without a director or a take, she stands for a
+    // close shot with nothing else to do. A take that carries camera events replays them with the camera off.
+    this.cameraMode = params.has('camera') || !!take?.sense;
+    if (this.cameraMode) {
+      let doc = withCamera(this.sample.doc, { notice: [this.talkTo], params: { say: { wave: 'Oh, hi there!' } } });
+      if (!take && !directorUrl) doc = { ...doc, nodes: doc.nodes.map((n) => (n.id === this.talkTo ? { ...n, behaviours: n.behaviours.filter((b) => b.use === 'noticeViewer') } : n.id === 'cam' ? { ...n, transform: { ...n.transform, ...CAMERA_SHOT }, props: { ...n.props, preset: 'fixed', target: this.talkTo } } : n)) };
+      this.sample = { ...this.sample, doc };
+    }
     if (!this.audio) { this.audio = new AudioOutput(); this.audio.unlockOn(window); } // one output for every load; heard after the first gesture
     this.tree?.services.get('audio')?.dispose();
-    const world = await buildWorld(R, this.sample, { vrmxaCore, closet, behaviours, audioOutput: this.audio });
+    await this.camera?.stop();
+    this.camera = null;
+    const world = await buildWorld(R, this.sample, { vrmxaCore, closet, behaviours, audioOutput: this.audio, sense: this.cameraMode });
     const { tree, input, models } = world;
     this.world = world;
-    if (take) { input.replay(structuredClone(take.input)); world.ai.replay(take.ai); }
+    if (take) { input.replay(structuredClone(take.input)); world.ai.replay(take.ai); if (take.sense) world.sense.replay(take.sense); }
     this.director = null;
     if (directorUrl && !take) {
       const player = tree.all().find((n) => n.type === 'Character' && n.behaviourEntries?.some((b) => b.use === 'player'));
@@ -338,6 +352,36 @@ export class Playground {
 
   /** The world's hash now (the presentation checks compare it with the dialogue UI on and off). */
   worldHash() { return this.tree ? hashValue(worldHashes(this.tree, { physicsBytes: true })) : null; }
+
+  // ---------------------------------------------------------------- the camera (M3 W5, ?camera)
+
+  /**
+   * Turn the camera on: the Mac shell's (native capture, AB-T-0544's verdict), or outside it the recorded frames
+   * ?frames=<file> names. Each detected event applies on the next step and is logged.
+   */
+  async cameraOn() {
+    if (!this.world?.sense) throw new Error('open the playground with ?camera');
+    if (this.camera?.on) return this.camera;
+    const framesRef = new URLSearchParams(location.search).get('frames');
+    let source;
+    if (inShell) source = shellCamera({ call, on: shellOn });
+    else if (framesRef) source = recordedFrames(JSON.parse(new TextDecoder().decode(await bytes(framesRef))).frames, { now: () => performance.now() });
+    else throw new Error('the camera runs in the Mac app (apps/playground-mac); in a browser, replay recorded frames with ?frames=<file>');
+    this.cameraEvents = [];
+    this.camera = connectCamera(this.world.sense, source, { keep: true, onEvent: (e) => { this.cameraEvents.push({ ...e, step: this.tree.clock.step }); this._changed(); } });
+    this.cameraInfo = await this.camera.start({ fps: 15 });
+    this._changed();
+    return this.camera;
+  }
+  async cameraOff() { await this.camera?.stop(); this._changed(); }
+  /** The camera's state for the UI: on, someone there, the last event. */
+  cameraStatus() {
+    if (!this.world?.sense) return null;
+    const v = this.world.sense.viewer, last = this.cameraEvents?.filter((e) => e.type !== 'face').at(-1);
+    return { on: !!this.camera?.on, present: v.present, last: last ? (last.type === 'presence' ? (last.present ? 'appeared' : 'left') : last.type) : null, events: this.world.sense.log.filter((e) => e.type !== 'face').length };
+  }
+  /** What a session kept (no images): the feature frames, the events as logged by step, and the step it reached. */
+  cameraSession() { return { format: 'vrmxg-camera-session', version: 1, scene: this.scene, step: this.tree.clock.step, device: this.cameraInfo?.device ?? null, frames: this.camera?.frames ?? [], log: this.world?.sense?.record() ?? [] }; }
 
   /** ?fall (M3 W7): knock Mira and Hana down the stairs. */
   knockDown(impulse) {

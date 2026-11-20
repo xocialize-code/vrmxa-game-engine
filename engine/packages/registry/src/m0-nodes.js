@@ -248,6 +248,11 @@ export function m0Registry() {
     params: { axis: P.vec3({ default: [0, 1, 0] }), openAngle: P.number({ min: -180, max: 180, default: 100, unit: '°' }), locked: P.boolean({ default: false }) },
     signals: { opened: {}, closed: {} }, actions: { open: { args: {} }, close: { args: {} }, toggle: { args: {} } },
   });
+  r.behaviour('noticeViewer', { description: 'Sees the person at the camera (M3 W5, @vrmxg/sense): looks at them when they appear and away when they leave, answers a wave and a nod with animation slots, and can say lines. Needs the sense service and the scene\'s viewer node.', on: ['Character'], params: {
+    answers: { schema: { type: 'object', additionalProperties: { type: 'string' }, default: { wave: 'greet', nod: 'nod' }, description: 'Camera event (wave, nod, shake, point) → the animation slot that answers it.' }, meta: { widget: 'json' } },
+    say: { schema: { type: 'object', additionalProperties: { type: 'string' }, description: 'Camera event (appeared, wave, nod, shake, point) → a line to say.' }, meta: { widget: 'json' } },
+    smile: P.string({ default: 'happy', description: 'The expression shown when someone appears.' }),
+  } });
   r.behaviour('brain', { description: 'An NPC brain (M2 W7): perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; M3: host, conversationPartner, follower, which a director can talk with), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan.', on: ['Character'], params: {
     preset: { schema: { anyOf: [{ type: 'string', enum: ['server', 'customer', 'wanderer', 'host', 'conversationPartner', 'follower'] }, { type: 'string', pattern: '\\.json$' }, { type: 'object' }], default: 'wanderer', description: 'A role preset, a brain document\'s path, or a preset object ({ plan, senses, tree }).' }, meta: { widget: 'json' } },
     vars: { schema: { type: 'object', description: 'Blackboard values over the preset\'s plan.' }, meta: { widget: 'json' } },

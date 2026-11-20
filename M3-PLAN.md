@@ -113,8 +113,8 @@ engine/packages/
   voice/        (grows) live lines: the shell's tts.speak and the loopback server; each line's audio and timings
                 recorded as assets
   input/        (grows) speech and camera stimuli as logged inputs; a second player's map
-  sense/        camera presence, face direction and gestures (wave, nod, point) → stimuli; the camera's capture
-                stays native or in the page, whichever the spike picks
+  sense/        camera presence, face direction and gestures (wave, nod, shake, point) → logged events, stimuli and
+                the noticeViewer behaviour; capture is native in the shell (W5's spike: spike-camera/README.md)
   physics/      (grows) ball joints and hinges by frames, ragdolls from parts (W7), the raycast vehicle
   character/    (grows) the VRM humanoid → ragdoll mapping, knockdown and the get-up blend (W7: it reads the humanoid,
                 so it lives with the character; physics stays engine-neutral)

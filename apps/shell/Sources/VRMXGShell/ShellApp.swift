@@ -1,7 +1,7 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.4.0"
+public let vrmxgShellVersion = "0.5.0"
 
 /// One app's shell: its name, URL scheme, window and any bridge methods of its own.
 public struct ShellConfiguration {
@@ -37,6 +37,8 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     lazy var exports = ExportMethods(files: files)
     /// Held for the app's life: its bridge handlers capture it unowned (a temporary here crashed the first saves.* call)
     lazy var saves = SaveMethods(appName: config.appName, env: env)
+    /// The camera (M3 W5): feature frames to the page as `camera.frame` events
+    lazy var camera = CameraMethods(emit: { [unowned self] name, payload in self.emit(name, payload) })
     lazy var scheme = SchemeHandler(scheme: config.scheme, roots: roots, posts: posts)
     lazy var server = LoopbackServer(roots: roots, posts: posts)
     let env = ProcessInfo.processInfo.environment
@@ -56,6 +58,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         }
         files.register(on: router)
         saves.register(on: router) // save slots (M2 W9)
+        camera.register(on: router) // the camera (M3 W5): needs the app's camera entitlement and usage description
         exports.register(on: router, posts: posts)
         for (name, handler) in config.methods { router.register(name, handler) }
 

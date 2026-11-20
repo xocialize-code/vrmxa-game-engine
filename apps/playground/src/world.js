@@ -21,6 +21,7 @@ import { installNav } from '@vrmxg/nav';
 import { installAi } from '@vrmxg/ai';
 import { installPersonas } from '@vrmxg/persona';
 import { installSave } from '@vrmxg/save';
+import { installSense } from '@vrmxg/sense';
 
 const text = (b) => new TextDecoder().decode(b);
 
@@ -47,13 +48,14 @@ export async function loadSample(bytes, scene = 'cafe.vrmxs') {
 /**
  * A fresh SceneTree of the sample scene, instantiated and ready to step.
  * @param {any} R Rapier @param {Awaited<ReturnType<typeof loadSample>>} sample
- * @param {{ vrmxaCore: any, closet?: any, spec?: Uint8Array | null, behaviours: Map<string, any>, stubTextures?: boolean, seed?: number, timings?: Record<string, number> | null, now?: () => number, characterCache?: any, audioOutput?: any }} opts
+ * @param {{ vrmxaCore: any, closet?: any, spec?: Uint8Array | null, behaviours: Map<string, any>, stubTextures?: boolean, seed?: number, timings?: Record<string, number> | null, now?: () => number, characterCache?: any, audioOutput?: any, sense?: boolean }} opts
  *   closet: vrmxa-core's ./closet module (the closet at run time: taking the sword); spec: spec.vrm, for redraws;
  *   timings: filled with each phase's ms (by `now`, a wall clock the caller passes: nothing here reads one);
  *   characterCache: read bundles and clips kept between builds (the editor's view);
- *   audioOutput: an @vrmxg/audio AudioOutput to hear the world through (none: silent)
+ *   audioOutput: an @vrmxg/audio AudioOutput to hear the world through (none: silent); sense: install the camera's sense
+ *   service (@vrmxg/sense; the scene needs its viewer node: withCamera)
  */
-export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = null, behaviours, stubTextures = false, seed = 1, timings = null, now = () => 0, characterCache = null, audioOutput = null }) {
+export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = null, behaviours, stubTextures = false, seed = 1, timings = null, now = () => 0, characterCache = null, audioOutput = null, sense = false }) {
   let t = now();
   const lap = (k) => { if (timings) { const n = now(); timings[k] = n - t; t = n; } };
   const tree = new SceneTree({ registry: m0Registry(), prefabs: sample.prefabs, behaviours, seed });
@@ -81,6 +83,7 @@ export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = n
   const { interact, inventory } = installInteraction(tree);
   const personas = installPersonas(tree, { resolve: sample.bytes, library: lib, doc: sample.personas ?? null, overrides: sample.doc.settings?.personas ?? null }); // who each character is (M3 W1); the scene's overrides (W10)
   await personas.prepare();
+  const camera = sense ? installSense(tree) : null; // the person at the camera (M3 W5): only when a camera is used or a take carries its events
   const ai = installAi(tree, { resolve: sample.bytes }); // NPC brains (M2 W7): the brain behaviour and the shared stimuli
   await ai.prepare(sample.doc); // brain documents named by path (M2 W11), and any voice clips they say
   for (const p of ai.presets.values()) await voice.prepare({ nodes: [{ id: 'brain', behaviours: [p] }] });
@@ -89,5 +92,5 @@ export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = n
   await wardrobe?.prepare(sample.doc); lap('closet');
   tree.instantiate(structuredClone(sample.doc)); lap('instantiate');
   await wardrobe?.showWorn(); lap('showWorn');
-  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe, audio, voice, tracks, sequence, particles, nav, ai, save, personas };
+  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe, audio, voice, tracks, sequence, particles, nav, ai, save, personas, sense: camera };
 }

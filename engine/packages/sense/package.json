@@ -1,0 +1,27 @@
+{
+  "name": "@vrmxg/sense",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG camera sense (M3 W5): feature frames from the Mac shell's camera (or recorded) → presence, face, wave, nod, shake and point events → applied on a step, logged and replayed by the sense service; brain stimuli and the noticeViewer behaviour. No image leaves the capture.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/core": "0.1.0",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@vrmxg/ai": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  },
+  "vrmxg": {
+    "determinism": "simulation"
+  }
+}

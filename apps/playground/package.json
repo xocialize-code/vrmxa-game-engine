@@ -31,6 +31,7 @@
     "@vrmxg/registry": "0.1.0",
     "@vrmxg/render": "0.1.0",
     "@vrmxg/save": "0.1.0",
+    "@vrmxg/sense": "0.1.0",
     "@vrmxg/scene": "0.1.0",
     "@vrmxg/sequence": "0.1.0",
     "@vrmxg/tracks": "0.1.0",

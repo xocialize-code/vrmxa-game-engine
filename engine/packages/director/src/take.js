@@ -1,8 +1,9 @@
 // Takes of a conversation (M3 W4, AB-T-0543): what was played, as data, and its bake into a sequence.
 //
 // A take is a world built from step 0 plus its inputs: the scene (and the cast it ran: which brain each character had),
-// the player's input recording, and the ai service's log (every request, decision, hearing flag the director injected).
-// Replaying the log needs no microphone, STT or model. The output aspect is fixed (16:9, AB-T-0538), so it needs no
+// the player's input recording, the ai service's log (every request, decision, hearing flag the director injected) and,
+// when the camera was on, the sense service's log (M3 W5: presence, face, wave, nod …). Replaying the logs needs no
+// microphone, STT, model or camera. The output aspect is fixed (16:9, AB-T-0538), so it needs no
 // recording.
 //
 // takeToSequence turns a take into a sequence document that instances the set (M2's .vrmxs sequence, AB-D-0257):
@@ -20,10 +21,11 @@ export const TAKE_FORMAT = 'vrmxg-take';
 
 /**
  * A take of what was played.
- * @param {{ scene: string, cast?: Record<string, any>, input?: any, ai?: any[], steps: number, note?: string }} o
+ * @param {{ scene: string, cast?: Record<string, any>, input?: any, ai?: any[], sense?: any[] | null, steps: number, note?: string }} o
+ *   sense: the sense service's log (only when the camera was on: a take without one is as it was)
  */
-export function makeTake({ scene, cast = {}, input = null, ai = [], steps, note = null }) {
-  return { format: TAKE_FORMAT, version: 1, scene, cast: structuredClone(cast), input: input && structuredClone(input), ai: structuredClone(ai), steps, ...(note ? { note } : {}) };
+export function makeTake({ scene, cast = {}, input = null, ai = [], sense = null, steps, note = null }) {
+  return { format: TAKE_FORMAT, version: 1, scene, cast: structuredClone(cast), input: input && structuredClone(input), ai: structuredClone(ai), ...(sense?.length ? { sense: structuredClone(sense) } : {}), steps, ...(note ? { note } : {}) };
 }
 
 /** Is this a take document (or a bare input recording, the M1 kind of take)? */

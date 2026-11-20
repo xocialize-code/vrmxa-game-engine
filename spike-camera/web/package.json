@@ -1,0 +1,17 @@
+{
+  "name": "vrmxg-camera-spike",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "models": "node scripts/fetch-models.mjs",
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "1.2.2"
+  },
+  "devDependencies": {
+    "vite": "8.3.8"
+  }
+}
