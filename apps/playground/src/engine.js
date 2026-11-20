@@ -16,7 +16,7 @@ import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { inShell, call } from '../../shell/js/shell.js';
 import { httpTTS, shellTTS } from '@vrmxg/voice';
-import { installDirector, httpModel, scriptedModel, isTake } from '@vrmxg/director';
+import { installDirector, httpModel, isTake, demoModel } from '@vrmxg/director';
 import { Vector3 } from 'three';
 import { TextLayer } from '@vrmxg/text';
 import * as core from '@vrmxa-core/index.js';
@@ -423,24 +423,3 @@ function ssimDown(a, b4, w, h) {
   }
   return total / n;
 }
-
-/**
- * A scripted director model for demos and screenshots (?director=demo): the split turn's line and verdict from a few
- * patterns, so the dialogue UI can be tried with no model running.
- */
-export function demoModel() {
-  const isVerdict = (req) => !req.tools.length && /Fill in this JSON object/.test(req.messages.at(-1).content);
-  const said = (req) => (isVerdict(req) ? /said to [^:]+: "(.*)"/.exec(req.messages[0].content)?.[1] ?? '' : req.messages.at(-1).content ?? '');
-  const RULES = [
-    [/\b(latte|coffee|cappuccino|espresso|tea|mocha)\b/i, (m) => [`One ${m[1].toLowerCase()}, coming right up!`, { emotion: 'happy', goal: { name: 'takeOrder', params: { customer: 'user', order: m[1].toLowerCase() } } }]],
-    [/\b(bye|see you|good night)\b/i, () => ['See you soon! Take care.', { emotion: 'happy', gesture: 'greet' }]],
-    [/\b(morning|hello|hi|hey)\b/i, () => ['Good morning! Lovely to see you.', { emotion: 'happy', gesture: 'greet' }]],
-    [/\bhow are you|how's\b/i, () => ['Busy, but happy. The beans are fresh today.', { emotion: 'relaxed' }]],
-  ];
-  return scriptedModel((req) => {
-    const text = said(req), hit = RULES.map(([re, f]) => [re.exec(text), f]).find(([m]) => m);
-    const [line, verdict] = hit ? hit[1](hit[0]) : ['Mm, tell me more.', { emotion: 'relaxed', gesture: 'nod' }];
-    return { text: isVerdict(req) ? JSON.stringify(verdict) : line };
-  }, { latency: 40, name: 'demo' });
-}
-

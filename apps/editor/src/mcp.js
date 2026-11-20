@@ -19,6 +19,7 @@ export function editorTarget(ed) {
     const w = ed.playWorld;
     if (!w) throw new Error(view.notRunning);
     if (view.tree !== w.tree) view.attach(w.tree);
+    view.director = ed.playDirector ?? null; // M3 W10 (the editor's frame loop pumps it)
     return view;
   };
   return {
@@ -42,6 +43,9 @@ export function editorTarget(ed) {
       return { paused: ed.paused, step: tree.clock.step };
     },
     recording: async (ref) => JSON.parse(await ed.project.text(ref)),
+    takes: async () => ed.project.takes().filter((f) => f.startsWith('takes/')),
+    // the persona service of the play world, or of the editor's own view when not playing (profiles are edited there)
+    personas: () => (ed.playWorld ?? ed.edit)?.personas ?? null,
     // Paused: the steps run at once. Playing: the frame loop runs them in real time, and the call returns when it has.
     step: (v, opts) => v.step(opts, async (tree, steps) => {
       if (ed.paused) {

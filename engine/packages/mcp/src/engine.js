@@ -19,13 +19,20 @@ import { installSequence, composeSequence, isSequence } from '@vrmxg/sequence';
 import { installParticles } from '@vrmxg/particles';
 import { installNav } from '@vrmxg/nav';
 import { installAi } from '@vrmxg/ai';
+import { installPersonas } from '@vrmxg/persona';
+import { installDirector, demoModel, httpModel } from '@vrmxg/director';
 import { installSave } from '@vrmxg/save';
 import { parse } from '@vrmxg/scene';
 import { LiveView } from './live.js';
 
 export class EngineSession extends LiveView {
   /** @param {import('./project.js').Project} project */
-  constructor(project) { super(); this.project = project; }
+  /**
+   * @param {import('./project.js').Project} project
+   * @param {{ director?: string | null }} [opts] director (M3 W10): "demo" (a scripted model) or a chat-completions URL
+   *   (the loopback stand-in): the characters with brains get a director, pumped as the engine steps
+   */
+  constructor(project, { director = null } = {}) { super(); this.project = project; this.directorSpec = director; }
 
   /** (Re)start from a scene document. */
   async load(doc, prefabs) {
@@ -52,6 +59,9 @@ export class EngineSession extends LiveView {
     if (doc.sequence) await installSequence(tree).prepare(doc);
     installNav(tree);
     installInteraction(tree);
+    // who each character is (M3 W1): the project's personas.json, with the scene's own overrides (settings.personas)
+    const personas = installPersonas(tree, { resolve: (ref) => p.bytes(ref), library: lib, doc: p.exists('personas.json') ? p.json('personas.json') : null, overrides: doc.settings?.personas ?? null });
+    await personas.prepare();
     const ai = installAi(tree, { resolve: (ref) => p.bytes(ref) });
     await ai.prepare(doc);
     for (const pr of ai.presets.values()) await voice.prepare({ nodes: [{ id: 'brain', behaviours: [pr] }] });
@@ -61,6 +71,14 @@ export class EngineSession extends LiveView {
     await closet?.prepare(doc);
     this.attach(tree);
     tree.instantiate(doc);
+    // a director (M3 W10) for the characters with brains: the player (if any) is the person who talks
+    this.director = null; this.pumpDirector = false;
+    if (this.directorSpec) {
+      const player = tree.all().find((n) => n.type === 'Character' && n.behaviourEntries?.some((b) => b.use === 'player'));
+      const model = this.directorSpec === 'demo' ? demoModel({ latency: 20 }) : httpModel(this.directorSpec, { model: 'omni4', temperature: 0 });
+      this.director = installDirector(tree, { model, user: player?.id ?? null, userName: player?.name ?? null, persona: (id) => personas.forDirector(id), memory: (id) => personas.memoryOf(id) });
+      this.pumpDirector = true;
+    }
     return { nodes: tree.all().length, step: 0, services: [...tree.services.keys()], ...(models.skipped.length ? { skipped: models.skipped } : {}) };
   }
 

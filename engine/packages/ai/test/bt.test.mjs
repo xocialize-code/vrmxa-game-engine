@@ -136,3 +136,11 @@ test('brain documents (M2 W11): prepare reads the ones a scene names by path, ch
   await assert.rejects(new AiService({}).prepare(doc), /install the AI service with a resolve/);
   await assert.rejects(new AiService({}, { resolve: () => new TextEncoder().encode('{"tree":{}}') }).prepare(doc), /not a brain document/);
 });
+
+test('every preset the ai package has is one the scene schema accepts (M3 W10: host, conversationPartner, follower were refused)', async () => {
+  const { m0Registry } = await import('@vrmxg/registry/m0');
+  const reg = m0Registry(), b = reg.behaviours.get('brain');
+  const presetSchema = (b.params ?? b.paramsSchema?.properties)?.preset?.schema ?? b.schema?.properties?.preset;
+  const names = presetSchema.anyOf.find((x) => x.enum).enum;
+  assert.deepEqual(Object.keys(PRESETS).filter((k) => !names.includes(k)), [], `missing from the registry: ${Object.keys(PRESETS).filter((k) => !names.includes(k))}`);
+});

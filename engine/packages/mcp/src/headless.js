@@ -15,7 +15,7 @@ export function createTools({ registry: reg, project, scene }) {
   let savedText = serialize(doc);
   const prefabs = () => project.prefabs(doc);
   const editor = createEditor(reg, doc, { prefabs });
-  const engine = new EngineSession(project);
+  const engine = new EngineSession(project, { director: process.env.VRMXG_DIRECTOR ?? null });
   const target = {
     doc: () => doc, prefabs,
     apply: (op) => editor.apply(op),
@@ -29,6 +29,8 @@ export function createTools({ registry: reg, project, scene }) {
     live: () => engine,
     load: () => engine.load(structuredClone(doc), prefabs()),
     recording: (ref) => project.json(ref),
+    takes: () => (fs.existsSync(project.file('takes')) ? fs.readdirSync(project.file('takes')).filter((f) => f.endsWith('.json')).map((f) => `takes/${f}`) : []),
+    personas: () => engine.tree?.services.get('persona') ?? null,
   };
   const tools = toolList(reg, 'headless');
   return { tools, call: caller(createHandlers(reg, target)), doc, editor, engine };

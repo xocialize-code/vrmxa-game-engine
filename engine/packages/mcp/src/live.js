@@ -12,7 +12,12 @@ async function runNow(tree, steps) { for (let i = 0; i < steps; i++) while (!tre
 
 export class LiveView {
   /** @param {any} [tree] */
-  constructor(tree = null) { this.tree = null; this.signals = []; /** @type {string | null} what to say when nothing is running */ this.notRunning = null; if (tree) this.attach(tree); }
+  constructor(tree = null) {
+    this.tree = null; this.signals = []; /** @type {string | null} what to say when nothing is running */ this.notRunning = null;
+    /** @type {any} the world's director, if it has one (M3 W10) */ this.director = null;
+    /** step pumps the director after each step (the headless engine; the editor pumps its own) */ this.pumpDirector = false;
+    if (tree) this.attach(tree);
+  }
 
   /** Watch a tree: signals emitted from now on are logged for step results. */
   attach(tree) {
@@ -50,7 +55,11 @@ export class LiveView {
       input.replay({ version: 1, start: tree.clock.step, axes: [...map.axes], buttons: [...map.buttons], frames: Array.from({ length: steps }, () => [axes, bits >>> 0]) });
     }
     const from = this.signals.length;
-    await run(tree, steps);
+    // a director outside the step (M3 W10) is pumped after each step, and its answers get a turn to arrive, as a host's
+    // frame loop would do (the editor pumps its own in its frame loop, so it leaves pumpDirector off)
+    const d = this.pumpDirector ? this.director : null;
+    if (d) for (let i = 0; i < steps; i++) { await run(tree, 1); d.pump(); await new Promise((res) => setTimeout(res, 0)); }
+    else await run(tree, steps);
     const fired = this.signals.slice(from);
     return { step: tree.clock.step, seconds: r(tree.clock.time, 3), signals: fired.slice(0, 50), moreSignals: Math.max(0, fired.length - 50) };
   }
@@ -175,15 +184,23 @@ export class LiveView {
    * An NPC brain (M2 W11): inspect (the running branch, utility scores, blackboard, memory), inject a goal or an action
    * (the director's hook: applied on its step and logged), record (the events applied so far) or replay a log.
    */
-  brainOp({ id, op = 'inspect', goal, action, step, log }) {
+  brainOp({ id, op = 'inspect', goal, action, step, log, text }) {
     const tree = this.live, ai = tree.services.get('ai');
     if (!ai) throw new Error('no AI service in this world');
+    if (op === 'director' || op === 'talk') { // M3 W10: the character's director (requests, the last answer, the conversation)
+      const d = this.director;
+      if (!d) throw new Error('no director in this world (the editor plays with one when opened with ?director=demo or a chat URL; the headless engine with VRMXG_DIRECTOR)');
+      if (!ai.brainOf(id)) throw new Error(`"${id}" has no brain to direct (brains: ${ai.brains.map((b) => b.node.id).join(', ') || 'none'})`);
+      if (op === 'talk') { if (!String(text ?? '').trim()) throw new Error('talk needs text'); return { asked: d.talk(id, String(text)), as: d.user ?? 'the person', step: tree.clock.step, then: 'engine_step, then brain op=director for the answer (the person is "user" to the model, the node they play in the world)' }; }
+      const bb = ai.brainOf(id).bb, s = d.inspect(id);
+      return { id, step: tree.clock.step, design: d.design, ...s, conversation: bb.conversation ?? null, hearing: bb.hearing ?? null };
+    }
     if (op === 'record') return { step: tree.clock.step, log: ai.record() };
     if (op === 'replay') { if (!Array.isArray(log)) throw new Error('replay needs log: the events record returned'); ai.replay(log); return { queued: log.length, step: tree.clock.step }; }
     const brain = id ? ai.brainOf(id) : null;
     if (!brain) throw new Error(id ? `"${id}" has no brain (brains: ${ai.brains.map((b) => b.node.id).join(', ') || 'none'})` : `id: one of ${ai.brains.map((b) => b.node.id).join(', ') || 'no brains here'}`);
     if (op === 'inject') { ai.inject({ agent: id, step, goal, action }); return { injected: goal ? { goal } : { action }, at: step ?? tree.clock.step }; }
-    if (op !== 'inspect') throw new Error(`op: inspect, inject, record or replay`);
+    if (op !== 'inspect') throw new Error('op: inspect, inject, record, replay, director, talk, takes or profile');
     const s = brain.inspect();
     // memory as short lines, newest first, at most 12: a brain remembers a lot
     const memory = s.memory.slice().sort((a, b) => b.last - a.last).slice(0, 12).map((m) => [m.kind, m.source, m.topic, `@${m.last}`, `×${r(m.strength, 2)}`].filter((x) => x != null).join(' '));

@@ -3,16 +3,19 @@
 // docs/hand-test/results/mcp-editor-session.json. Afterwards the editor's own Undo should name the session's edit.
 // --m2: M2 check 9 (AB-T-0535): with "Morning at the cafe" open, the agent directs the film (a shot, a camera, an
 // expression key, a line, a behaviour tree), renders a frame and reads an NPC's brain; → mcp-editor-session-m2.json.
-//   node apps/editor-mac/scripts/mcp-session.mjs [--model sonnet] [--m2]
+// --m3: M3 W10 (AB-T-0549): with the cafe open in an editor started with ?director=demo, the agent gives Hana the host
+// brain, plays, talks to her, injects a decision and reads her director's answer, edits her role profile, and undoes the
+// profile edit and the brain with the editor's Undo; → mcp-editor-session-m3.json.
+//   node apps/editor-mac/scripts/mcp-session.mjs [--model sonnet] [--m2 | --m3]
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 
 const argv = process.argv.slice(2), opt = (k, d) => { const i = argv.indexOf(k); return i < 0 ? d : argv[i + 1]; };
-const model = opt('--model', 'sonnet'), m2 = argv.includes('--m2');
+const model = opt('--model', 'sonnet'), m2 = argv.includes('--m2'), m3 = argv.includes('--m3');
 const server = path.resolve(import.meta.dirname, '../../../engine/packages/mcp/src/server.js');
-const out = path.join(import.meta.dirname, `../docs/hand-test/results/mcp-editor-session${m2 ? '-m2' : ''}.json`);
+const out = path.join(import.meta.dirname, `../docs/hand-test/results/mcp-editor-session${m2 ? '-m2' : m3 ? '-m3' : ''}.json`);
 const config = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-mcp-session-')), 'mcp.json');
 fs.writeFileSync(config, JSON.stringify({ mcpServers: { 'vrmxg-editor': { command: process.execPath, args: [server, '--editor'] } } }));
 
@@ -36,7 +39,15 @@ const promptM2 = `You are connected to the VRMXG editor, which has the sequence 
 7. Render frame 1120 of the sequence as a screenshot (960×540) and say what it shows, with its world hash.
 8. Play the sequence, step 600 steps, read Hana's brain (her running branch, goal and blackboard), then stop playing.
 Do not undo or save. Finish with a short report of each step.`;
-const prompt = m2 ? promptM2 : promptM1;
+const promptM3 = `You are connected to the VRMXG editor, which has the sample cafe scene (cafe.vrmxs) open. Hana (hana-1) runs the cafe. Using only the vrmxg-editor tools:
+1. Give Hana a brain: set her behaviours to [{ "use": "brain", "preset": "host" }] (one edit).
+2. Play the scene. Read Hana's persona and role profile (brain op=profile).
+3. Talk to Hana through her director (brain op=talk): "Good morning, Hana! Could I get a latte, please?". Step 120, then read her director (brain op=director): what did she answer, and what is she doing now (brain op=inspect: her goal)?
+4. Inject a decision for Hana (brain op=inject): an action { "do": "emote", "args": { "name": "surprised" } }. Step 30 and confirm it was applied (brain op=record).
+5. Stop playing. Make Hana less talkative: set her role profile's talkativeness to 0.25 (brain op=profile with profile). Read the profile back.
+6. Undo twice with the editor's undo: say what each undo reverted, then read her profile again and check her behaviours are back as they were.
+Do not save. Finish with a short report of each step.`;
+const prompt = m2 ? promptM2 : m3 ? promptM3 : promptM1;
 
 const args = ['-p', prompt, '--model', model, '--mcp-config', config, '--strict-mcp-config', '--output-format', 'stream-json', '--verbose',
   '--allowedTools', 'mcp__vrmxg-editor__*',

@@ -94,3 +94,39 @@ characters with a note. M2 W12 added `sequence {path}`: 20 tools at about 1,770 
 frame each lands on: "Morning at the cafe" was cut from it. Checked in the editor in Chromium over the bridge: the
 outline, a seek to frame 735 (s4, 766 ms from step 0), three frame screenshots (luma 170–193 ± 47–62, none blank) and a
 batch edit undone in one step.
+
+## Directors (M3 W10, AB-T-0549)
+
+`brain` grows four ops, and `replay` takes a take; still 20 tools (about 1,857 tokens headless, 1,987 for the
+editor):
+- **`director`:** a directed character's requests in flight, its last answer (calls or errors) and the conversation so
+  far, with the blackboard's conversation and hearing flags.
+- **`talk`:** say text to her through her director, as the person (the player's node). Then `engine_step`, and
+  `director` shows the answer.
+- **`takes`:** the project's recorded conversations (`takes/*.json`): scene, seconds, events and decisions.
+- **`replay` with `take`:** a take's ai log and input, from now on.
+- **`profile`:** her persona (name, summary, traits, goals, replies) and role profile. With `profile`, it sets traits
+  (0–1). The write is a `setDoc` on the scene's `settings.personas`, so it's one undo step, saves with the scene, and
+  undoes exactly. The project's `personas.json` is left as it is.
+
+**Where the directors are:**
+- **Headless:** `VRMXG_DIRECTOR=demo` (or a chat-completions URL) gives the engine a director, pumped as it steps.
+- **The editor:** opened with `?director=demo` (or a URL), it gives its play world one, pumped by its frame loop.
+
+Both load the project's `personas.json` with the scene's overrides.
+
+**Checked:**
+- `test/mcp.test.mjs`, over stdio on the sample cafe with Hana as host:
+  - a profile read, set and undone, with the scene exactly restored;
+  - talk, then the answer and the order goal;
+  - takes listed and replayed.
+- A Claude Code session on the editor (`apps/editor-mac/scripts/mcp-session.mjs --m3`, Sonnet, editor tools only,
+  `docs/hand-test/results/mcp-editor-session-m3.json`): 19 calls, none failed.
+  - It gave Hana a brain, played, read her persona, talked to her ("One latte, coming right up!", goal takeOrder),
+    injected an emote and confirmed it in the record.
+  - It set her talkativeness, and undid the profile and the brain with the editor's Undo, leaving the scene's settings
+    as they were.
+
+The first session run found that the scene schema refused the M3 presets (`host`, `conversationPartner`, `follower`).
+The second found that the editor never loaded `personas.json`, and that a profile undo left an empty object behind.
+All three are fixed.

@@ -16,12 +16,15 @@ export const FORMAT = 'vrmxg-personas';
 export class PersonaService {
   /**
    * @param {any} tree
-   * @param {{ resolve?: (ref: string) => Promise<Uint8Array> | Uint8Array, library?: any, doc?: any }} [opts]
-   *   library: the character library (installCharacters' return); doc: the project's personas document, already read
+   * @param {{ resolve?: (ref: string) => Promise<Uint8Array> | Uint8Array, library?: any, doc?: any, overrides?: Record<string, any> }} [opts]
+   *   library: the character library (installCharacters' return); doc: the project's personas document, already read;
+   *   overrides: the scene's own (M3 W10: its `settings.personas`, by VRMXA id), laid over the project's, so a scene can
+   *   tune a character and an editor's Undo covers it
    */
-  constructor(tree, { resolve = null, library = null, doc = null } = {}) {
+  constructor(tree, { resolve = null, library = null, doc = null, overrides = null } = {}) {
     this.tree = tree; this.resolve = resolve; this.library = library;
     this.doc = doc ? checkDoc(doc) : { format: FORMAT, version: 1, characters: {} };
+    this.overrides = structuredClone(overrides ?? {});
     /** Exchange-form core personas the app personas name, by ref. */ this.cores = new Map();
     /** @type {(vrmxaId: string | null, nodeId: string) => string | null} what the app remembers, as text */
     this.memory = () => null;
@@ -42,7 +45,13 @@ export class PersonaService {
   /** The character's VRMXA id (its bundle's manifest id), or null for a plain VRM. */
   vrmxaIdOf(nodeId) { return this.library?.characters?.get(nodeId)?.vrmxaId ?? null; }
   /** The app persona for a node (by its VRMXA id), or null. */
-  appOf(nodeId) { const id = this.vrmxaIdOf(nodeId); return id ? this.doc.characters[id] ?? null : null; }
+  appOf(nodeId) {
+    const id = this.vrmxaIdOf(nodeId);
+    if (!id) return null;
+    const base = this.doc.characters[id] ?? null, over = this.overrides[id] ?? null;
+    if (!over) return base;
+    return { ...(base ?? {}), ...over, ...(base?.profile || over.profile ? { profile: { ...(base?.profile ?? {}), ...(over.profile ?? {}) } } : {}) };
+  }
   /** The core persona: the bundle's, else the exchange file its app persona names. */
   coreOf(nodeId) {
     const own = corePersona(this.library?.characters?.get(nodeId)?.persona);

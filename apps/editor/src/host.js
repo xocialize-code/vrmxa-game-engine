@@ -15,7 +15,7 @@ import { composeSequence, isSequence, SequencePlayer, subtitles } from '@vrmxg/s
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { parse, describeType, serialize } from '@vrmxg/scene';
-import { makeTake, isTake, takeToSequence } from '@vrmxg/director';
+import { makeTake, isTake, takeToSequence, installDirector, demoModel, httpModel } from '@vrmxg/director';
 import { shellTTS, httpTTS } from '@vrmxg/voice';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { EditorSession, assetList, newSequenceDoc, rowsOf } from '@vrmxg/editor-core';
@@ -231,7 +231,7 @@ export class EditorHost {
     const world = await this.buildFrom(doc);
     if (gen !== this._gen) return; // a newer edit started another build
     if (this.session.mode === 'playing') return;
-    this.edit = { tree: world.tree, objects: this.objectMap(world.tree), shape: this.shapeOf(doc) };
+    this.edit = { tree: world.tree, objects: this.objectMap(world.tree), shape: this.shapeOf(doc), personas: world.personas ?? null };
     if (this.view === 'edit') { this.host.attach(world.tree); this.host.debug.set(this.debug); }
     this.stats.buildMs = performance.now() - t0;
     this.error = '';
@@ -245,9 +245,13 @@ export class EditorHost {
    */
   async buildFrom(doc, { play = false, heard = play } = {}) {
     const p = this.project;
-    if (this.cacheFor !== p) { this.cacheFor = p; this.characterCache = { sources: new Map(), clips: new Map() }; this.animCache = await p.animations(); }
+    if (this.cacheFor !== p) {
+      this.cacheFor = p; this.characterCache = { sources: new Map(), clips: new Map() }; this.animCache = await p.animations();
+      // the project's app personas (M3 W1), when it has them: who each character is, for brains and directors
+      this.personasCache = p.files?.includes('personas.json') ? JSON.parse(await p.text('personas.json')) : null;
+    }
     if (this.setScene && isSequence(doc)) doc = composeSequence(doc, this.setScene.doc); // a sequence plays in its set
-    const sample = { scene: this.sceneRef, doc, prefabs: this.session.prefabs, animations: this.animCache, bytes: (ref) => p.bytes(ref) };
+    const sample = { scene: this.sceneRef, doc, prefabs: this.session.prefabs, animations: this.animCache, bytes: (ref) => p.bytes(ref), personas: this.personasCache ?? null };
     this.buildTimings = {};
     if (heard && !this.audio) this.audio = new AudioOutput(); // made on the first Play: that click is the gesture that lets it sound
     return buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: play ? null : this.characterCache, audioOutput: heard ? this.audio : null });
@@ -440,6 +444,15 @@ export class EditorHost {
       }
       for (const d of Object.values(this.devices)) world.input.addDevice(d);
       this.playWorld = world;
+      // a director in play (M3 W10): ?director=demo (scripted) or a chat URL (the loopback stand-in, &model=omni4); MCP's
+      // brain op=talk / op=director reach it, and the frame loop pumps it
+      this.playDirector = null;
+      const dp = new URLSearchParams(globalThis.location?.search ?? '').get('director');
+      if (dp) {
+        const player = world.tree.all().find((n) => n.type === 'Character' && n.behaviourEntries?.some((b) => b.use === 'player'));
+        const model = dp === 'demo' ? demoModel() : httpModel(dp, { model: new URLSearchParams(globalThis.location.search).get('model') ?? 'omni4', temperature: 0 });
+        this.playDirector = installDirector(world.tree, { model, user: player?.id ?? null, userName: player?.name ?? null, persona: (id) => world.personas?.forDirector(id), memory: (id) => world.personas?.memoryOf(id) });
+      }
       this.paused = false;
       this.host.camera = null; // the scene's camera
       this.orbit.enabled = false;
@@ -916,7 +929,7 @@ export class EditorHost {
       try {
         if (this.session?.mode === 'playing' && this.playWorld && this.paused) { this.host.render(1, false); this.stats.step = tree.clock.step; }
         else if (this.session?.mode === 'playing' && this.playWorld) {
-          this.host.frame(dt); this.stats.step = tree.clock.step;
+          this.host.frame(dt); this.playDirector?.pump(); this.stats.step = tree.clock.step;
           if (tree.services.get('voice')?.lines.size && this._frames.length % 6 === 0) this.changed('captions'); // word by word
           const pr = this.prompt(), key = pr?.text ?? null;
           if (key !== this._promptKey) { this._promptKey = key; this.changed('captions'); }

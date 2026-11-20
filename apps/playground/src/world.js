@@ -79,7 +79,7 @@ export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = n
   await sequence?.prepare(sample.doc);
   const nav = installNav(tree); // a navmesh baked from the colliders on the first step; characters' goTo follows it (M2 W6)
   const { interact, inventory } = installInteraction(tree);
-  const personas = installPersonas(tree, { resolve: sample.bytes, library: lib, doc: sample.personas ?? null }); // who each character is (M3 W1)
+  const personas = installPersonas(tree, { resolve: sample.bytes, library: lib, doc: sample.personas ?? null, overrides: sample.doc.settings?.personas ?? null }); // who each character is (M3 W1); the scene's overrides (W10)
   await personas.prepare();
   const ai = installAi(tree, { resolve: sample.bytes }); // NPC brains (M2 W7): the brain behaviour and the shared stimuli
   await ai.prepare(sample.doc); // brain documents named by path (M2 W11), and any voice clips they say

@@ -142,7 +142,7 @@ test('inspect: the walker walks through the entrance trigger, the door swings op
   const { client, call } = await connect([dir, 'doors.vrmxs', '--behaviours', path.join(here, 'fixtures/behaviours.mjs')]);
   await call('engine_step', { steps: 1 }, true); // nothing running yet
   const loaded = await call('engine_load');
-  assert.deepEqual(loaded.services, ['input', 'physics', 'characters', 'cameras', 'models', 'items', 'audio', 'voice', 'tracks', 'particles', 'nav', 'inventory', 'interact', 'ai', 'save']);
+  assert.deepEqual(loaded.services, ['input', 'physics', 'characters', 'cameras', 'models', 'items', 'audio', 'voice', 'tracks', 'particles', 'nav', 'inventory', 'interact', 'persona', 'ai', 'save']);
   assert.ok((await call('tree', { live: true })).includes('entrance/right/hinge (RigidBody)'));
   await call('engine_step', { steps: 10, hold: { jump_high: 1 } }, true); // unknown action: refused with the list
   const walked = await call('engine_step', { steps: 90, hold: { move_y: -1 } }); // S: 3 m towards +z, into the right door's trigger
@@ -258,7 +258,7 @@ test('brain (M2 W11): inspect, inject a goal on a step, record and replay throug
   const rec = JSON.parse((await call('brain', { op: 'record' })).text);
   assert.equal(rec.log.length, 1);
   assert.match((await call('brain', { op: 'replay', log: rec.log })).text, /"queued":1/);
-  assert.match((await call('brain', { op: 'fly', id: 'npc' })).text, /op: inspect, inject, record or replay/);
+  assert.match((await call('brain', { op: 'fly', id: 'npc' })).text, /op: inspect, inject, record, replay, director, talk, takes or profile/);
 });
 
 test('answers are compact and bounded', async () => {
@@ -267,3 +267,45 @@ test('answers are compact and bounded', async () => {
   const big = (await call('big')).text;
   assert.ok(big.length < 24200 && big.includes('cut at 24000'), big.slice(-80));
 });
+
+const CORE = path.join(here, '../../../../../vrmxa-avatar-studio/packages/vrmxa-core');
+test('directors (M3 W10) over stdio on the sample cafe: a profile read, set as one undo step and undone; talk, the answer, the goal; takes listed and replayed', { skip: fs.existsSync(CORE) ? false : 'needs vrmxa-avatar-studio' }, async () => {
+  const dir = path.join(work, 'directed');
+  fs.cpSync(sample, dir, { recursive: true });
+  const cafe = JSON.parse(fs.readFileSync(path.join(dir, 'cafe.vrmxs'), 'utf8'));
+  cafe.nodes = cafe.nodes.map((n) => (n.id === 'hana-1' ? { ...n, behaviours: [{ use: 'brain', preset: 'host' }] } : n));
+  fs.writeFileSync(path.join(dir, 'cafe.vrmxs'), JSON.stringify(cafe));
+  const client = new Client({ name: 'vrmxg-mcp-test', version: '0.1.0' });
+  await client.connect(new StdioClientTransport({ command: process.execPath, args: [server, dir, 'cafe.vrmxs', '--vrmxa-core', CORE, '--behaviours', path.join(sample, 'behaviours.js')], env: { ...process.env, VRMXG_DIRECTOR: 'demo' }, stderr: 'inherit' }));
+  clients.push(client);
+  const call = async (name, a = {}) => { const r = await client.callTool({ name, arguments: a }); const t = r.content.map((x) => x.text).join('\n'); if (r.isError) throw new Error(`${name}: ${t}`); try { return JSON.parse(t); } catch { return t; } };
+  await call('engine_load');
+
+  const before = await call('brain', { op: 'profile', id: 'hana-1' });
+  assert.equal(before.name, 'Hana'); assert.equal(before.profile.talkativeness, 0.7);
+  assert.deepEqual(before.goals, ['takeOrder']); assert.ok(before.replies.includes('Could I get a latte, please?'));
+  const set = await call('brain', { op: 'profile', id: 'hana-1', profile: { talkativeness: 0.2 } });
+  assert.equal(set.set.talkativeness, 0.2);
+  assert.equal((await call('brain', { op: 'profile', id: 'hana-1' })).profile.talkativeness, 0.2, 'the running world sees it');
+  assert.match(await call('undo'), /undone/i);
+  assert.equal((await call('brain', { op: 'profile', id: 'hana-1' })).profile.talkativeness, 0.7, 'one undo step puts it back');
+  assert.equal((await call('sequence', { path: 'settings' })).personas, undefined, 'and the scene exactly as it was (no empty persona left behind)');
+
+  const asked = await call('brain', { op: 'talk', id: 'hana-1', text: 'Could I get a latte, please?' });
+  assert.match(asked.asked, /^hana-1#1$/);
+  const waiting = await call('brain', { op: 'director', id: 'hana-1' });
+  assert.equal(waiting.pending.length, 1, 'waiting on the model');
+  await call('engine_step', { steps: 120 });
+  const d = await call('brain', { op: 'director', id: 'hana-1' });
+  assert.equal(d.design, 'split'); assert.equal(d.pending.length, 0);
+  assert.deepEqual(d.history.map((h) => h.content), ['Could I get a latte, please?', 'One latte, coming right up!']);
+  assert.equal(d.conversation.with, 'mira');
+  assert.equal((await call('brain', { op: 'inspect', id: 'hana-1' })).goal.name, 'takeOrder', 'the verdict gave her the order');
+
+  const takes = await call('brain', { op: 'takes' });
+  const conv = takes.find((t) => t.ref === 'takes/conversation.json');
+  assert.ok(conv && conv.decisions === 12 && conv.seconds === 120, JSON.stringify(takes));
+  const rep = await call('brain', { op: 'replay', take: 'takes/conversation.json' });
+  assert.equal(rep.queued, 30); assert.equal(rep.input, true);
+});
+

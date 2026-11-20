@@ -1,0 +1,199 @@
+{
+ "date": "2026-11-20",
+ "client": "claude -p (Claude Code 2.1.319, sonnet), --mcp-config with vrmxg-mcp --editor",
+ "exitCode": 0,
+ "mcpServers": [
+  {
+   "name": "vrmxg-editor",
+   "status": "connected",
+   "source": "dynamic"
+  }
+ ],
+ "prompt": "You are connected to the VRMXG editor, which has the sample cafe scene (cafe.vrmxs) open. Hana (hana-1) runs the cafe. Using only the vrmxg-editor tools:\n1. Give Hana a brain: set her behaviours to [{ \"use\": \"brain\", \"preset\": \"host\" }] (one edit).\n2. Play the scene. Read Hana's persona and role profile (brain op=profile).\n3. Talk to Hana through her director (brain op=talk): \"Good morning, Hana! Could I get a latte, please?\". Step 120, then read her director (brain op=director): what did she answer, and what is she doing now (brain op=inspect: her goal)?\n4. Inject a decision for Hana (brain op=inject): an action { \"do\": \"emote\", \"args\": { \"name\": \"surprised\" } }. Step 30 and confirm it was applied (brain op=record).\n5. Stop playing. Make Hana less talkative: set her role profile's talkativeness to 0.25 (brain op=profile with profile). Read the profile back.\n6. Undo twice with the editor's undo: say what each undo reverted, then read her profile again and check her behaviours are back as they were.\nDo not save. Finish with a short report of each step.",
+ "calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__vrmxg-editor__edit,mcp__vrmxg-editor__play,mcp__vrmxg-editor__brain,mcp__vrmxg-editor__engine_step,mcp__vrmxg-editor__undo,mcp__vrmxg-editor__get_node,mcp__vrmxg-editor__set",
+    "max_results": 10
+   },
+   "result": "\n\n\n\n\n\n",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "hana-1"
+   },
+   "result": "{\"node\":{\"id\":\"hana-1\",\"type\":\"Character\",\"parent\":\"root\",\"name\":\"Hana\",\"asset\":\"hana\",\"transform\":{\"p\":[-1.5,0,-3]},\"props\":{\"controller\":\"npc\"},\"behaviours\":[{\"radius\":1.5,\"use\":\"wander\"},{\"clip\":\"voice/hana-welcome.wav\",\"cooldown\":30,\"radius\":2.2,\"target\":\"mira\",\"use\":\"greet\"}]},\"signals\":[\"ready\",\"arrived\",\"spoke\",\"lineEnded\",\"dressed\"],\"actions\":[\"show\",\"hide\",\"say\",\"reach\",\"goTo\",\"emote\",\"lo",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__edit",
+   "input": {
+    "ops": [
+     {
+      "op": "set",
+      "id": "hana-1",
+      "path": "behaviours",
+      "value": [
+       {
+        "use": "brain",
+        "preset": "host"
+       }
+      ]
+     }
+    ],
+    "label": "Give Hana a brain"
+   },
+   "result": "1 edit applied as one undo step (\"Give Hana a brain\")",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__play",
+   "input": {
+    "action": "play"
+   },
+   "result": "{\"mode\":\"playing\",\"step\":0}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__brain",
+   "input": {
+    "op": "profile",
+    "id": "hana-1"
+   },
+   "result": "{\"id\":\"hana-1\",\"vrmxaId\":\"cc97eb67-3eac-41c3-9e91-c15029fb6595\",\"name\":\"Hana\",\"summary\":\"Runs a small corner cafe and knows every regular by their order.\",\"traits\":[\"warm\",\"quick\",\"patient\",\"kind\"],\"profile\":{\"sociability\":0.8,\"curiosity\":0.55,\"boldness\":0.6,\"energy\":0.75,\"talkativeness\":0.7,\"personalSpace\":0.4,\"patience\":0.8},\"goals\":[\"takeOrder\"],\"replies\":[\"Good morning, Hana!\",\"Could I get a l",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__brain",
+   "input": {
+    "op": "talk",
+    "id": "hana-1",
+    "text": "Good morning, Hana! Could I get a latte, please?"
+   },
+   "result": "{\"asked\":\"hana-1#1\",\"step\":111,\"then\":\"engine_step, then brain op=director for the answer\"}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__engine_step",
+   "input": {
+    "steps": 120
+   },
+   "result": "{\"step\":342,\"seconds\":5.7,\"signals\":[{\"step\":286,\"node\":\"hana-1\",\"signal\":\"lineEnded\"},{\"step\":292,\"node\":\"hana-1\",\"signal\":\"arrived\"}],\"moreSignals\":0}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__brain",
+   "input": {
+    "op": "director",
+    "id": "hana-1"
+   },
+   "result": "{\"id\":\"hana-1\",\"step\":462,\"design\":\"split\",\"model\":\"demo\",\"pending\":[],\"last\":{\"id\":\"hana-1#1:verdict\",\"state\":\"answered\",\"hash\":\"d748393b8d604f6a\",\"calls\":[{\"name\":\"emote\",\"args\":{\"name\":\"happy\"}},{\"name\":\"setGoal\",\"args\":{\"goal\":\"takeOrder\",\"params\":{\"customer\":\"user\",\"order\":\"latte\"}}}],\"errors\":null,\"asked\":151,\"answered\":191},\"history\":[{\"role\":\"user\",\"content\":\"Good morning, Hana! Could I ge",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__brain",
+   "input": {
+    "op": "inspect",
+    "id": "hana-1"
+   },
+   "result": "{\"id\":\"hana-1\",\"step\":475,\"preset\":\"host\",\"status\":\"running\",\"running\":\"utility > sequence > wait\",\"utility\":[{\"i\":0,\"options\":[\"takeOrder\",\"greet\",\"converse\",\"tend\"],\"current\":0,\"scores\":[1.7,0,0.9,0.3]}],\"goal\":{\"name\":\"takeOrder\",\"params\":{\"customer\":\"mira\",\"order\":\"latte\"},\"from\":\"director\",\"step\":191},\"bb\":{\"home\":[-1.5,0,-3],\"counter\":[0.6,0,-4.6],\"greeted\":{},\"customer\":\"mira\",\"fillers\":[\"H",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__brain",
+   "input": {
+    "op": "inject",
+    "id": "hana-1",
+    "action": {
+     "do": "emote",
+     "args": {
+      "name": "surprised"
+     }
+    }
+   },
+   "result": "{\"injected\":{\"action\":{\"do\":\"emote\",\"args\":{\"name\":\"surprised\"}}},\"at\":598}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__engine_step",
+   "input": {
+    "steps": 30
+   },
+   "result": "{\"step\":754,\"seconds\":12.567,\"signals\":[],\"moreSignals\":0}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__brain",
+   "input": {
+    "op": "record",
+    "id": "hana-1"
+   },
+   "result": "{\"step\":832,\"log\":[{\"step\":111,\"agent\":\"hana-1\",\"kind\":\"request\",\"bb\":{\"director\":{\"pending\":\"hana-1#1\",\"since\":111},\"heard\":{\"from\":\"user\",\"text\":\"Good morning, Hana! Could I get a latte, please?\",\"step\":111},\"conversation\":{\"with\":\"mira\",\"last\":111}},\"meta\":{\"id\":\"hana-1#1\",\"kind\":\"talk\",\"hash\":\"5e5ff28403864276\",\"heard\":{\"from\":\"user\",\"text\":\"Good morning, Hana! Could I get a latte, please?\"}}}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__play",
+   "input": {
+    "action": "stop"
+   },
+   "result": "{\"restored\":true,\"hash\":\"8df9cba7c95b9615\",\"before\":\"8df9cba7c95b9615\",\"viewSame\":true}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__brain",
+   "input": {
+    "op": "profile",
+    "id": "hana-1",
+    "profile": {
+     "talkativeness": 0.25
+    }
+   },
+   "result": "{\"id\":\"hana-1\",\"set\":{\"talkativeness\":0.25},\"note\":\"one undo step; saved with the scene (settings.personas)\"}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__brain",
+   "input": {
+    "op": "profile",
+    "id": "hana-1"
+   },
+   "result": "{\"id\":\"hana-1\",\"vrmxaId\":\"cc97eb67-3eac-41c3-9e91-c15029fb6595\",\"name\":\"Hana\",\"summary\":\"Runs a small corner cafe and knows every regular by their order.\",\"traits\":[\"warm\",\"quick\",\"patient\",\"kind\"],\"profile\":{\"sociability\":0.8,\"curiosity\":0.55,\"boldness\":0.6,\"energy\":0.75,\"talkativeness\":0.25,\"personalSpace\":0.4,\"patience\":0.8},\"goals\":[\"takeOrder\"],\"replies\":[\"Good morning, Hana!\",\"Could I get a ",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__undo",
+   "input": {},
+   "result": "undone",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__undo",
+   "input": {},
+   "result": "undone",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__brain",
+   "input": {
+    "op": "profile",
+    "id": "hana-1"
+   },
+   "result": "{\"id\":\"hana-1\",\"vrmxaId\":\"cc97eb67-3eac-41c3-9e91-c15029fb6595\",\"name\":\"Hana\",\"summary\":\"Runs a small corner cafe and knows every regular by their order.\",\"traits\":[\"warm\",\"quick\",\"patient\",\"kind\"],\"profile\":{\"sociability\":0.8,\"curiosity\":0.55,\"boldness\":0.6,\"energy\":0.75,\"talkativeness\":0.7,\"personalSpace\":0.4,\"patience\":0.8},\"goals\":[\"takeOrder\"],\"replies\":[\"Good morning, Hana!\",\"Could I get a l",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "hana-1"
+   },
+   "result": "{\"node\":{\"id\":\"hana-1\",\"type\":\"Character\",\"parent\":\"root\",\"name\":\"Hana\",\"asset\":\"hana\",\"transform\":{\"p\":[-1.5,0,-3]},\"props\":{\"controller\":\"npc\"},\"behaviours\":[{\"radius\":1.5,\"use\":\"wander\"},{\"clip\":\"voice/hana-welcome.wav\",\"cooldown\":30,\"radius\":2.2,\"target\":\"mira\",\"use\":\"greet\"}]},\"signals\":[\"ready\",\"arrived\",\"spoke\",\"lineEnded\",\"dressed\"],\"actions\":[\"show\",\"hide\",\"say\",\"reach\",\"goTo\",\"emote\",\"lo",
+   "isError": false
+  }
+ ],
+ "failed": 0,
+ "costUSD": 0.1675831,
+ "final": "All six steps are done, and nothing was saved. Undoing twice put Hana's behaviours and profile back as they were.\n\n1. **Brain:** One edit set Hana's behaviours to `[{use:\"brain\", preset:\"host\"}]`. They had been `wander` plus `greet`.\n\n2. **Play and profile:** I played the scene and read her profile. It describes her as a warm, quick, patient, kind cafe owner whose goal is `takeOrder`. Her talkativeness was 0.7 and sociability 0.8.\n\n3. **Talk:** I said \"Good morning, Hana! Could I get a latte, please?\" and stepped 120.\n   - **Her answer:** \"One latte, coming right up!\"\n   - **What she did:** She emoted happy and set her goal to `takeOrder` for a latte. When I inspected her she was running `utility > sequence > wait`, with `takeOrder` scoring 1.7.\n   - **Discrepancy:** The director's call named the customer as \"user\", but the goal on her blackboard says `customer: mira`. She replied to Mira, who was in conversation with her, rather than to me.\n\n4. **Inject:** I injected `emote surprised`, stepped 30, and read the record. It shows the action logged at step 598, so it was applied. The editor was running in real time, so the step counter was ahead of what I'd asked for.\n\n5. **Less talkative:** I stopped playing, and the scene was restored with an identical hash. I then set talkativeness to 0.25, and reading it back showed 0.25 with a scene override of `{profile:{talkativeness:0.25}}`.\n\n6. **Undo twice:**\n   - **First undo:** It reverted the talkativeness change.\n   - **Second undo:** It reverted the \"Give Hana a brain\" edit, which was the only other edit.\n   - **Check:** Her profile reads 0.7 again with `sceneOverrides: null`. Her behaviours are back to the original `wander` and `greet`."
+}

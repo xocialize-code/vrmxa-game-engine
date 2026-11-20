@@ -17,7 +17,7 @@ export const INSTRUCTIONS = [
   'Every edit is one undo step; edit batches several (add, set, remove, reparent, connect, setDoc) into one.',
   'A sequence is a scene with a "sequence" block (shots, markers, tracks); edit it with setDoc ops on paths like sequence.tracks (read what a path holds first: sequence with path).',
   'The engine is deterministic at 60 Hz: engine_step and sequence frames replay bit for bit, and sequence returns a world hash to compare.',
-  'NPC brains: brain op=inspect shows the running branch and blackboard; op=inject gives a goal or an action on a step, logged for replay.',
+  'NPC brains: brain op=inspect shows the running branch and blackboard; op=inject gives a goal or an action on a step, logged for replay; op=talk speaks to a directed character, op=director shows her answer.',
 ].join(' ');
 
 export const OUTPUT_LIMIT = 24000;
@@ -78,8 +78,8 @@ export function toolList(reg, mode = 'headless') {
       inputSchema: { type: 'object', required: ['ops'], properties: { ops: { type: 'array', minItems: 1, items: { type: 'object', required: ['op'] } }, label: { type: 'string' } } } },
     { name: 'sequence', description: `A sequence's outline (shots, markers, tracks, cast); with path, the value there as JSON (the paths setDoc writes, e.g. "sequence.tracks.4" or "sequence.cast.mira": read it, change it, write it back); with frame, the ${mode === 'editor' ? 'preview' : 'running'} world put on that frame exactly as playing would reach it: shot, camera, lines, and a world hash to compare replays.`,
       inputSchema: { type: 'object', properties: { frame: { type: 'number', minimum: 0 }, path: { type: 'string' } } } },
-    { name: 'brain', description: 'An NPC brain in the running world. inspect: running branch, utility scores, goal, blackboard, memory. inject: a goal {name,params} or an action {do,args} on a step (logged). record: the events applied. replay: a log.',
-      inputSchema: { type: 'object', properties: { op: { type: 'string', enum: ['inspect', 'inject', 'record', 'replay'] }, id: ID, goal: { type: 'object' }, action: { type: 'object' }, step: { type: 'integer', minimum: 0 }, log: { type: 'array' } } } },
+    { name: 'brain', description: 'An NPC brain in the running world. inspect: branch, utility, goal, blackboard, memory. inject: a goal {name,params} or action {do,args} on a step (logged). record: the events applied. replay: a log, or a take file (its log and input). director: her director (requests, last answer, conversation). talk: say text to her. takes: recorded conversations. profile: persona and role profile (0-1 traits); with profile, set traits (one undo step).',
+      inputSchema: { type: 'object', properties: { op: { type: 'string', enum: ['inspect', 'inject', 'record', 'replay', 'director', 'talk', 'takes', 'profile'] }, id: ID, goal: { type: 'object' }, action: { type: 'object' }, step: { type: 'integer', minimum: 0 }, log: { type: 'array' }, take: { type: 'string' }, text: { type: 'string' }, profile: { type: 'object' } } } },
   );
   if (mode === 'editor') tools.push({ name: 'screenshot', description: 'A PNG of the editor\'s view (the play camera while playing); frame: that frame of the open sequence, as exported, with its world hash and a blank-frame check.', inputSchema: { type: 'object', properties: { width: { type: 'integer', minimum: 64, maximum: 1920 }, height: { type: 'integer', minimum: 64, maximum: 1080 }, frame: { type: 'number', minimum: 0 } } } });
   return tools;
@@ -178,8 +178,58 @@ export function createHandlers(reg, target) {
       }
       return target.sequenceAt ? target.sequenceAt(frame) : target.live().sequenceAt(frame);
     },
-    brain(args) { return target.live().brainOp(args); },
+    async brain(args) {
+      const op = args.op ?? 'inspect';
+      if (op === 'takes') { // the project's recorded conversations (M3 W10)
+        if (!target.takes) throw new Error('no project files to list here');
+        const out = [];
+        for (const ref of await target.takes()) {
+          const t = await Promise.resolve().then(() => target.recording(ref)).catch(() => null);
+          if (t?.format === 'vrmxg-take') out.push({ ref, scene: t.scene, seconds: Math.round((t.steps / 60) * 10) / 10, events: t.ai?.length ?? 0, decisions: (t.ai ?? []).filter((e) => e.kind === 'decision').length, cast: Object.keys(t.cast ?? {}) });
+          else if (t?.frames) out.push({ ref, input: true, seconds: Math.round((t.frames.length / 60) * 10) / 10 });
+        }
+        return out;
+      }
+      if (op === 'replay' && args.take) { // a take file: its ai log and its input, from now on in the running world
+        const t = await target.recording(args.take);
+        if (t?.format !== 'vrmxg-take') throw new Error(`${args.take} is not a take (vrmxg-take): pass an input recording to engine_step replay`);
+        const view = target.live(), tree = view.live;
+        tree.services.get('ai')?.replay(t.ai ?? []);
+        if (t.input) tree.services.get('input').replay({ ...structuredClone(t.input), start: Math.max(t.input.start ?? 0, tree.clock.step) });
+        return { take: args.take, queued: t.ai?.length ?? 0, input: !!t.input, step: tree.clock.step, note: t.cast && Object.keys(t.cast).length ? `recorded with cast ${JSON.stringify(t.cast)}: the world plays as built` : undefined };
+      }
+      if (op === 'profile') return profileOp(target, args);
+      return target.live().brainOp(args);
+    },
   };
+}
+
+/**
+ * A character's persona and role profile (M3 W10), read from the running world's persona service (or the editor's view
+ * when not playing); with `profile`, set some traits: a setDoc on the scene's settings.personas.<vrmxa id>.profile, so it
+ * is one undo step and saves with the scene (the project's personas.json is left as it is).
+ */
+function profileOp(target, { id, profile }) {
+  const P = target.personas?.() ?? target.live().live.services.get('persona');
+  if (!P) throw new Error('no persona service in this world');
+  if (!id) throw new Error('profile needs id: a character');
+  const vid = P.vrmxaIdOf(id);
+  if (!vid) throw new Error(`"${id}" has no VRMXA id (a .vrmxa character): app personas are keyed by it`);
+  P.overrides = structuredClone(target.doc().settings?.personas ?? {}); // the scene as it stands (after an undo too)
+  const TRAITS = ['sociability', 'curiosity', 'boldness', 'energy', 'talkativeness', 'personalSpace', 'patience'];
+  if (profile) {
+    const bad = Object.keys(profile).filter((k) => !TRAITS.includes(k) || typeof profile[k] !== 'number');
+    if (bad.length) throw new Error(`profile traits are numbers 0-1: ${TRAITS.join(', ')} (not ${bad.join(', ')})`);
+    const value = { ...(target.doc().settings?.personas?.[vid]?.profile ?? {}), ...Object.fromEntries(Object.entries(profile).map(([k, v]) => [k, Math.round(Math.min(1, Math.max(0, v)) * 100) / 100])) };
+    // the whole settings.personas block, so an undo puts the scene back exactly (a deeper path left empty objects behind)
+    const all = structuredClone(target.doc().settings?.personas ?? {});
+    all[vid] = { ...(all[vid] ?? {}), profile: value };
+    target.apply({ op: 'setDoc', path: 'settings.personas', value: all }, `Profile ${id}`);
+    P.overrides = structuredClone(target.doc().settings?.personas ?? {}); // the running world sees it at once
+    return { id, set: value, note: 'one undo step; saved with the scene (settings.personas)' };
+  }
+  const p = P.personaOf(id), app = P.appOf(id);
+  return { id, vrmxaId: vid, name: p?.name ?? id, summary: p?.summary ?? null, traits: p?.traits ?? [], profile: P.profileOf(id), goals: (app?.goals ?? []).map((g) => g.name), replies: app?.replies ?? [], sceneOverrides: target.doc().settings?.personas?.[vid] ?? null };
 }
 
 /**

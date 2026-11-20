@@ -56,3 +56,7 @@ Not yet:
 - reading the app persona from an app other than the sample project (the companion app has its own store, W11);
 - the editor's persona inspector and MCP editing (W10);
 - voices from `voice_id` (W3).
+
+**Scene overrides (M3 W10):** `overrides` (the scene's `settings.personas`, by VRMXA id) are laid over the project's
+app personas, profile trait by trait. A scene can tune a character, and an editor's Undo covers it, because MCP's
+`brain op=profile` writes there.
