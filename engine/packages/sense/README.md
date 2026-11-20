@@ -2,8 +2,10 @@
 
 The person in front of the camera, as part of the world (M3 W5, AB-T-0544).
 
-- **Capture** runs in the Mac shell: AVCapture and Vision, `camera.start` / `camera.stop`, `camera.frame` events. Only
-  numbers reach the page. `spike-camera/README.md` has the measurements and the verdict. In a browser, `recordedFrames`
+- **Capture** runs in the Mac shell: AVCapture and Vision, `camera.devices` / `camera.start { device }` /
+  `camera.stop`, `camera.frame` events. Only numbers reach the page. The system's default camera can be a capture card,
+  so let the person pick (`shellCamera(...).devices()`). Launch the app through LaunchServices: a child process of
+  another app is refused the camera with no prompt. `spike-camera/README.md` has the measurements and the verdict. In a browser, `recordedFrames`
   replays a saved session.
 - **`GestureDetector`** (detect.js) turns feature frames into events: presence, face (throttled), wave, nod, shake and
   point. Thresholds are in face widths, and nod and shake work with either angle sign. It runs outside the step, as a

@@ -6,12 +6,15 @@ import { GestureDetector } from './detect.js';
 
 /**
  * The Mac shell's camera (apps/shell CameraMethods). @param {{ call: Function, on: Function }} shell the page's shell.js
- * @returns {{ start: (onFrame: (f: any) => void, opts?: { fps?: number }) => Promise<any>, stop: () => Promise<void> }}
+ * devices() lists the cameras ({ id, name, kind, isDefault }; a capture card is one too); start takes a device id, or
+ * uses the system's default camera.
+ * @returns {{ devices: () => Promise<any[]>, start: (onFrame: (f: any) => void, opts?: { fps?: number, device?: string | null }) => Promise<any>, stop: () => Promise<void> }}
  */
 export function shellCamera({ call, on }) {
   let off = null;
   return {
-    async start(onFrame, { fps = 15 } = {}) { off?.(); off = on('camera.frame', (p) => onFrame(p.frame ?? p)); return call('camera.start', { fps }); },
+    async devices() { return (await call('camera.devices')).devices ?? []; },
+    async start(onFrame, { fps = 15, device = null } = {}) { off?.(); off = on('camera.frame', (p) => onFrame(p.frame ?? p)); return call('camera.start', { fps, ...(device ? { device } : {}) }); },
     async stop() { off?.(); off = null; await call('camera.stop').catch(() => {}); },
   };
 }

@@ -369,11 +369,16 @@ export class Playground {
     else throw new Error('the camera runs in the Mac app (apps/playground-mac); in a browser, replay recorded frames with ?frames=<file>');
     this.cameraEvents = [];
     this.camera = connectCamera(this.world.sense, source, { keep: true, onEvent: (e) => { this.cameraEvents.push({ ...e, step: this.tree.clock.step }); this._changed(); } });
-    this.cameraInfo = await this.camera.start({ fps: 15 });
+    this.cameraInfo = await this.camera.start({ fps: 15, device: inShell ? this.cameraDevice : null });
     this._changed();
     return this.camera;
   }
   async cameraOff() { await this.camera?.stop(); this._changed(); }
+  /** The cameras the Mac shell sees (built-in, display, USB, capture cards), for a picker; [] outside the shell. */
+  async cameraDevices() { return inShell ? shellCamera({ call, on: shellOn }).devices() : []; }
+  /** The camera to use (an id from cameraDevices; null: the system's default). Remembered in this browser profile. */
+  get cameraDevice() { try { return localStorage.getItem('vrmxg.camera.device') || null; } catch { return null; } }
+  set cameraDevice(id) { try { if (id) localStorage.setItem('vrmxg.camera.device', id); else localStorage.removeItem('vrmxg.camera.device'); } catch { /* storage off */ } }
   /** The camera's state for the UI: on, someone there, the last event. */
   cameraStatus() {
     if (!this.world?.sense) return null;

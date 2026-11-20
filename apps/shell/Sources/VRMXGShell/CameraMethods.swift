@@ -6,8 +6,10 @@ import Vision
 /// The camera (M3 W5, AB-T-0544; the spike's verdict in spike-camera/README.md): AVCapture and Apple's Vision on a
 /// background queue, and only numbers sent to the page, as `camera.frame` events carrying feature frames
 /// (`@vrmxg/sense` detect.js has the format). No image leaves the capture queue, and nothing is kept.
-///   camera.status → { available, authorization, running }
-///   camera.start { fps? = 15 } → { running, fps, device }   (macOS asks the person the first time)
+///   camera.status → { available, authorization, running, device }
+///   camera.devices → { devices: [{ id, name, model, kind, isDefault }] }   kind: builtIn, external, continuity, deskView
+///   camera.start { fps? = 15, device? } → { running, fps, device, deviceId }   (macOS asks the person the first time)
+/// `device` is an id from camera.devices; without it, the system's default camera (which may be a capture card).
 ///   camera.stop → { running: false }
 /// An app that uses it needs `com.apple.security.device.camera` in its entitlements and NSCameraUsageDescription in its
 /// Info.plist; without the description camera.start refuses instead of the system ending the app.
@@ -20,9 +22,10 @@ public final class CameraMethods {
 
     public func register(on router: BridgeRouter) {
         router.register("camera.status") { [unowned self] _ in
-            ["available": AVCaptureDevice.default(for: .video) != nil, "authorization": Self.authorization(), "running": self.capture != nil]
+            ["available": AVCaptureDevice.default(for: .video) != nil, "authorization": Self.authorization(), "running": self.capture != nil, "device": (self.capture?.deviceName).map { $0 as Any } ?? NSNull()]
         }
-        router.register("camera.start") { [unowned self] p in try await self.start(fps: p.number("fps") ?? 15) }
+        router.register("camera.devices") { _ in ["devices": Self.devices()] }
+        router.register("camera.start") { [unowned self] p in try await self.start(fps: p.number("fps") ?? 15, device: p.string("device")) }
         router.register("camera.stop") { [unowned self] _ in self.stop(); return ["running": false] }
     }
 
@@ -36,7 +39,17 @@ public final class CameraMethods {
         }
     }
 
-    func start(fps: Double) async throws -> Any? {
+    /// Every video device: built-in and display cameras, external ones (USB cameras and capture cards), Continuity Camera.
+    static func devices() -> [[String: Any]] {
+        let session = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .external, .continuityCamera, .deskViewCamera], mediaType: .video, position: .unspecified)
+        let fallback = AVCaptureDevice.default(for: .video)?.uniqueID
+        return session.devices.map { d in
+            let kind: String = switch d.deviceType { case .builtInWideAngleCamera: "builtIn"; case .external: "external"; case .continuityCamera: "continuity"; case .deskViewCamera: "deskView"; default: "other" }
+            return ["id": d.uniqueID, "name": d.localizedName, "model": d.modelID, "kind": kind, "isDefault": d.uniqueID == fallback]
+        }
+    }
+
+    func start(fps: Double, device: String? = nil) async throws -> Any? {
         guard Bundle.main.object(forInfoDictionaryKey: "NSCameraUsageDescription") != nil else {
             throw BridgeError("unavailable", "this app has no NSCameraUsageDescription: it can't use the camera")
         }
@@ -44,7 +57,15 @@ public final class CameraMethods {
             throw BridgeError("denied", "camera access is off for this app (System Settings › Privacy & Security › Camera)")
         }
         stop()
-        let c = CameraCapture(fps: max(1, min(30, fps))) { [weak self] json in
+        let chosen: AVCaptureDevice
+        if let device {
+            guard let d = AVCaptureDevice(uniqueID: device) else { throw BridgeError("bad_params", "no camera with id \(device): see camera.devices") }
+            chosen = d
+        } else {
+            guard let d = AVCaptureDevice.default(for: .video) else { throw BridgeError("unavailable", "no camera") }
+            chosen = d
+        }
+        let c = CameraCapture(fps: max(1, min(30, fps)), device: chosen) { [weak self] json in
             Task { @MainActor in
                 guard let self, self.capture != nil, let obj = try? JSONSerialization.jsonObject(with: json) as? [String: Any] else { return }
                 self.emit("camera.frame", ["frame": obj])
@@ -52,7 +73,7 @@ public final class CameraMethods {
         }
         try c.run()
         capture = c
-        return ["running": true, "fps": c.fps, "device": c.deviceName]
+        return ["running": true, "fps": c.fps, "device": c.deviceName, "deviceId": chosen.uniqueID]
     }
 
     func stop() { capture?.stop(); capture = nil }
@@ -62,6 +83,7 @@ public final class CameraMethods {
 /// each feature frame handed on as JSON. Runs on its own serial queue.
 final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, @unchecked Sendable {
     let fps: Double
+    let device: AVCaptureDevice
     let onFrame: @Sendable (Data) -> Void
     let session = AVCaptureSession()
     let queue = DispatchQueue(label: "vrmxg.shell.camera")
@@ -71,19 +93,19 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     var first: CMTime?
     var last: CMTime?
 
-    init(fps: Double, onFrame: @escaping @Sendable (Data) -> Void) {
-        self.fps = fps; self.onFrame = onFrame
+    init(fps: Double, device: AVCaptureDevice, onFrame: @escaping @Sendable (Data) -> Void) {
+        self.fps = fps; self.device = device; self.onFrame = onFrame
         face.revision = VNDetectFaceRectanglesRequestRevision3
         hands.maximumHandCount = 2
     }
 
     func run() throws {
-        guard let device = AVCaptureDevice.default(for: .video) else { throw BridgeError("unavailable", "no camera") }
         deviceName = device.localizedName
-        session.sessionPreset = .vga640x480
         let input = try AVCaptureDeviceInput(device: device)
-        guard session.canAddInput(input) else { throw BridgeError("failed", "can't read the camera") }
+        guard session.canAddInput(input) else { throw BridgeError("failed", "can't read \(deviceName)") }
         session.addInput(input)
+        // 640×480 is plenty for faces and hands; a device that doesn't offer it (a capture card) gets the nearest preset
+        for preset: AVCaptureSession.Preset in [.vga640x480, .hd1280x720, .medium, .high] where session.canSetSessionPreset(preset) { session.sessionPreset = preset; break }
         let output = AVCaptureVideoDataOutput()
         output.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange]
         output.alwaysDiscardsLateVideoFrames = true

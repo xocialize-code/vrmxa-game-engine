@@ -6,7 +6,7 @@ import { Playground, PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, fall: false, sense: null, showBubbles: true, showCaptions: true, showNames: false });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, fall: false, sense: null, cameraDevices: [], cameraDevice: '', showBubbles: true, showCaptions: true, showNames: false });
 // the sample's scenes and sequences; ?scene= picks one at load
 const SCENES = ['cafe.vrmxs', 'sequences/morning.vrmxs', 'sequences/cafe-morning.vrmxs'];
 const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
@@ -31,6 +31,11 @@ function say(text) { try { pg.talk(text); } catch (e) { ui.error = String(e?.mes
 const setBubbles = () => { pg.setBubbles(ui.showBubbles); refresh(); };
 const setNames = () => { pg.setNameTags(ui.showNames); refresh(); };
 // M3 W5: ?camera — the camera on and off (the Mac app's native capture), its status, and the session saved (no images)
+// the cameras the shell sees (a capture card is one too): pick one, remembered for next time
+async function listCameras() {
+  try { ui.cameraDevices = await pg.cameraDevices(); ui.cameraDevice = pg.cameraDevice && ui.cameraDevices.some((d) => d.id === pg.cameraDevice) ? pg.cameraDevice : ''; } catch { ui.cameraDevices = []; }
+}
+const pickCamera = () => { pg.cameraDevice = ui.cameraDevice || null; };
 async function toggleCamera() {
   try { if (ui.sense?.on) await pg.cameraOff(); else { await pg.cameraOn(); if (!pg.playing) pg.play(); } } catch (e) { ui.error = String(e?.message ?? e); }
   refresh();
@@ -53,6 +58,7 @@ async function load() {
   try { const r = await pg.load(ui.scene); ui.notes = `${r.nodes} nodes${r.skipped.length ? ` · skipped: ${r.skipped.map((s) => s.node).join(', ')}` : ''}`; }
   catch (e) { ui.error = String(e?.stack ?? e); console.error(e); }
   ui.loading = false; refresh();
+  if (pg.cameraMode) listCameras(); // M3 W5: the shell's cameras for the picker
 }
 
 const mode = new URLSearchParams(location.search).get('mode');
@@ -119,8 +125,12 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
       <button id="step" type="button" :disabled="ui.loading" aria-label="Step" @click="step">Step</button>
       <button id="reset" type="button" :disabled="ui.loading" aria-label="Reset" @click="load">Reset</button>
       <button id="replay" type="button" :disabled="ui.loading" aria-label="Replay demo walk" @click="replay">Replay demo walk</button>
+      <select v-if="ui.sense && ui.cameraDevices.length" id="camera-device" v-model="ui.cameraDevice" aria-label="Which camera" :disabled="ui.sense.on" @change="pickCamera">
+        <option value="">Default camera</option>
+        <option v-for="d in ui.cameraDevices" :key="d.id" :value="d.id">{{ d.name }}{{ d.kind === 'external' ? ' (external)' : '' }}</option>
+      </select>
       <button v-if="ui.sense" id="camera-toggle" type="button" :disabled="ui.loading" :aria-pressed="ui.sense.on" :aria-label="ui.sense.on ? 'Turn the camera off' : 'Turn the camera on'" @click="toggleCamera">{{ ui.sense.on ? 'Camera off' : 'Camera on' }}</button>
-      <button v-if="ui.sense" id="camera-save" type="button" :disabled="ui.loading || !ui.sense.events" aria-label="Save the camera session" @click="saveCameraSession">Save session</button>
+      <button v-if="ui.sense" id="camera-save" type="button" :disabled="ui.loading || !ui.sense.events" aria-label="Save the camera session" @click="saveCameraSession">Save camera session</button>
       <span v-if="ui.sense" id="camera-status" class="notes" role="status" :aria-label="cameraLabel()">{{ cameraLabel() }}</span>
       <button v-if="ui.fall" id="knock-down" type="button" :disabled="ui.loading" aria-label="Knock down the stairs" @click="knockDown">Knock down</button>
       <button v-if="ui.shell" id="open-scene" type="button" :disabled="ui.loading" aria-label="Open scene" @click="openScene">Open…</button>

@@ -1,6 +1,6 @@
 # Spike: where camera capture runs (M3 W5, AB-T-0544)
 
-**Verdict: capture runs in the Mac shell.** AVCapture and Apple's Vision run on a background queue and send only
+**Verdict: capture runs in the Mac shell.** It is confirmed live in the playground's Mac app: wave and nod answered (low light, 2026-11-19). AVCapture and Apple's Vision run on a background queue and send only
 numbers to the page, as `camera.frame` events (shell 0.5.0, `camera.start` / `camera.stop`). In-page MediaPipe works
 too, but it costs the page's main thread about a frame's budget per camera frame. It stays a browser-only option,
 built here and not shipped. Both paths give the same feature frames, so `@vrmxg/sense` doesn't care which one ran.
@@ -61,16 +61,27 @@ loopback: face 3, hands 13, pose 9 on the GPU delegate.
 The page path stays possible for a browser with no shell: `web/src/main.js` emits the same frames. M3 ships the
 recorded-frames source for browsers (`?camera&frames=…`), not MediaPipe.
 
-## The live session (pending)
+## The live session (2026-11-19, the operator, low light)
 
-Waiting for the operator at the Mac: the camera prompt, then a wave, a nod and leaving, with the playground's Mac app
-at `?camera`. It will measure:
-- latency from capture to features;
-- the frame rate kept, and CPU;
-- whether the detector's thresholds fit a real person;
-- whether `getUserMedia` delivers a stream under the custom scheme.
+In the playground's Mac app at `?camera`, the operator saw:
+- Hana look at them when they appeared;
+- her answer to a wave (`greet` and "Oh, hi there!");
+- her nod back after a nod.
 
-Those numbers go here and in the receipt.
+The scene they saved afterwards had the viewer node at the camera, shifted with their face. Two things turned up:
+
+- **Launched by another process, the app is refused the camera with no prompt.** AppProbe's `launch` starts the
+  executable as its own child, so TCC weighs the request against the launching process (no camera usage description)
+  and refuses silently. No prompt appears and the app isn't listed in Settings › Privacy & Security › Camera. Launched
+  through LaunchServices (`open --env VRMXG_QUERY=camera …app`, or from Finder), the app asks for itself and the
+  prompt appears.
+- **The system's default camera can be a capture card.** On this Mac `AVCaptureDevice.default(for: .video)` picked a
+  USB capture card over the monitor's camera. So the shell has `camera.devices` and `camera.start { device }`, and the
+  playground has a camera picker that remembers the choice. A device that lacks 640×480 gets the nearest preset.
+
+The light was too low to trust timings, and the session file wasn't saved (Save as… saved the scene; the button is
+now "Save camera session"). Live latency, the frame rate kept, CPU, and the detector's thresholds on a real person
+wait for a re-test in better light.
 
 ## Run it
 
