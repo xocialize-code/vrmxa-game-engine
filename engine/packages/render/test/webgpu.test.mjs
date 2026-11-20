@@ -336,6 +336,44 @@ test('patch-three-vrm: --require-patched fails a stock install (CI proves the in
   fs.rmSync(base, { recursive: true });
 });
 
+test('patch-three-vrm updates a file patched by an earlier patch: undoes it back to stock, then applies the current one', async () => {
+  const { run, sha256, reverseUnifiedDiff, applyUnifiedDiff } = await import('../../../../scripts/patch-three-vrm.mjs');
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-patch-'));
+  const dir = path.join(base, 'node_modules', 'pkg');
+  fs.mkdirSync(path.join(dir, 'lib'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ version: '1.0.0' }));
+  const stock = 'a\nb\nc\nd\n', old = 'a\nB\nc\nd\n', now = 'a\nB\nc\nD\nE\n';
+  const oldDiff = '--- a/f\n+++ b/f\n@@ -1,3 +1,3 @@\n a\n-b\n+B\n c\n';
+  fs.writeFileSync(path.join(base, 'old.patch'), oldDiff);
+  fs.writeFileSync(path.join(base, 'now.patch'), '--- a/f\n+++ b/f\n@@ -1,4 +1,5 @@\n a\n-b\n+B\n c\n-d\n+D\n+E\n');
+  assert.equal(applyUnifiedDiff(old, reverseUnifiedDiff(oldDiff)), stock, 'a reversed diff undoes it');
+  fs.writeFileSync(path.join(dir, 'lib/f.js'), old);
+  const patches = [{ name: 'p', patch: path.join(base, 'now.patch'), pkg: 'pkg', version: '1.0.0', file: 'lib/f.js', stock: sha256(stock), patched: sha256(now), previous: [{ patched: sha256(old), patch: path.join(base, 'old.patch') }] }];
+  const quiet = { base, patches, log: () => {}, error: () => {} };
+  assert.equal(run({ ...quiet, check: true }), 1, '--check fails an earlier patch (the install needs to update it)');
+  assert.equal(fs.readFileSync(path.join(dir, 'lib/f.js'), 'utf8'), old, '--check changes nothing');
+  assert.equal(run(quiet), 0);
+  assert.equal(fs.readFileSync(path.join(dir, 'lib/f.js'), 'utf8'), now);
+  assert.equal(run({ ...quiet, check: true, requirePatched: true }), 0);
+  fs.rmSync(base, { recursive: true });
+});
+
+test('patch-three-vrm: the earlier three-vrm patch undoes to the stock hash the current one starts from', async () => {
+  const { PATCHES, reverseUnifiedDiff, applyUnifiedDiff, patchText, sha256 } = await import('../../../../scripts/patch-three-vrm.mjs');
+  const p = PATCHES[0];
+  const root = fileURLToPath(new URL('../../../../', import.meta.url));
+  const installed = fs.readFileSync(path.join(root, 'node_modules', p.pkg, p.file), 'utf8');
+  assert.equal(sha256(installed), p.patched, 'the install is on the current patch');
+  for (const prev of p.previous) {
+    // the current file, back to stock, then forward under the earlier patch, must give that patch's recorded hash
+    const stock = applyUnifiedDiff(installed, reverseUnifiedDiff(fs.readFileSync(path.join(root, p.patch), 'utf8')));
+    assert.equal(sha256(stock), p.stock);
+    const earlier = applyUnifiedDiff(stock, fs.readFileSync(path.join(root, prev.patch), 'utf8'));
+    assert.equal(sha256(earlier), prev.patched);
+    assert.equal(sha256(patchText(p, applyUnifiedDiff(earlier, reverseUnifiedDiff(fs.readFileSync(path.join(root, prev.patch), 'utf8'))))), p.patched);
+  }
+});
+
 test('patch-three-vrm runs as a script through a symlink with a space and # in its path (import.meta.main)', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg patch #'));
   const link = path.join(dir, 'patch three-vrm#.mjs');

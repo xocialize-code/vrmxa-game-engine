@@ -28,6 +28,10 @@
 // Each patch names the package version and the sha256 of the stock file and of the patched file. Any other content (a
 // new three-vrm release, a hand edit) fails: the patch is never applied blindly. Drop a hunk when a release fixes its
 // issue, and regenerate the hashes (`--print-hashes` prints them for the installed file and the patch applied to it).
+//
+// A checkout installed under an earlier patch keeps that file in node_modules, and npm doesn't reinstall it. So when a
+// patch changes, list the earlier patched hash under `previous` with that patch's diff (kept in engine/patches/previous/):
+// the script undoes it exactly, checks the result is the stock file, and applies the current patch.
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -45,7 +49,8 @@ throw new Error("@pixiv/three-vrm/nodes: VRMXG disables the CommonJS build (not 
 /**
  * The patches: package, version, the file, its sha256 stock and patched, and how it's patched (`patch`: a unified diff
  * under engine/patches/; `replace`: new contents).
- * @type {{ name: string, pkg: string, version: string, file: string, stock: string, patched: string, patch?: string, replace?: string }[]}
+ * `previous`: earlier patched hashes and their diffs, undone back to stock before the current patch is applied.
+ * @type {{ name: string, pkg: string, version: string, file: string, stock: string, patched: string, patch?: string, replace?: string, previous?: { patched: string, patch: string }[] }[]}
  */
 export const PATCHES = [
   {
@@ -56,6 +61,10 @@ export const PATCHES = [
     file: 'lib/nodes/index.module.js',
     stock: '1b88101eb9f22f3976249f1ff7f53cde08d2699f36c24d0b9b66d7e5ffa21f26',
     patched: '72d018f3e6ad85bf2fc40d19d83c4c5479d99672698cbf0ac01133f8ef20fb70',
+    previous: [
+      // patches 1–4 and the imports, before patch 5 (8febbca to 9a310dd)
+      { patched: '4b0d8187d90c698a945cc6a7bbf0fb99b05b4a0703449bd7dafa1a68b73e2141', patch: 'engine/patches/previous/three-vrm-3.5.5-nodes-r187.patches1-4.patch' },
+    ],
   },
   {
     name: 'the CommonJS stub',
@@ -107,6 +116,18 @@ export function applyUnifiedDiff(text, diff) {
   return out.join('\n');
 }
 
+/** A unified diff turned around: applying it undoes the original. @param {string} diff */
+export function reverseUnifiedDiff(diff) {
+  return diff.split('\n').map((l) => {
+    const m = /^@@ -(\d+(?:,\d+)?) \+(\d+(?:,\d+)?) @@(.*)$/.exec(l);
+    if (m) return `@@ -${m[2]} +${m[1]} @@${m[3]}`;
+    if (l.startsWith('---') || l.startsWith('+++')) return l;
+    if (l[0] === '-') return `+${l.slice(1)}`;
+    if (l[0] === '+') return `-${l.slice(1)}`;
+    return l;
+  }).join('\n');
+}
+
 /**
  * The state of one patch in a node_modules tree: 'stock' (unpatched, the patch applies), 'patched', or a problem.
  * @param {typeof PATCHES[number]} p @param {string} [base] the directory holding node_modules
@@ -121,6 +142,8 @@ export function inspect(p, base = root) {
   const hash = sha256(text);
   if (version !== p.version) return { state: 'version', file, text, hash, message: `${p.pkg} is ${version}; ${p.name} is for ${p.version}. Check whether the release fixes the patch's issues, then update or drop it` };
   if (hash === p.patched) return { state: 'patched', file, text, hash };
+  const prev = p.previous?.find((q) => q.patched === hash);
+  if (prev) return { state: 'previous', file, text, hash, previous: prev };
   if (hash !== p.stock) return { state: 'changed', file, text, hash, message: `${p.pkg} ${version} ${p.file} is neither the stock file (${p.stock.slice(0, 12)}…) nor the patched one (${p.patched.slice(0, 12)}…): ${hash.slice(0, 12)}…` };
   return { state: 'stock', file, text, hash };
 }
@@ -141,6 +164,17 @@ export function run({ check = false, requirePatched = false, print = false, base
       continue;
     }
     if (s.state === 'missing' && !check) { log(`patch-three-vrm: ${s.message}; nothing to patch`); continue; }
+    if (s.state === 'previous') {
+      const prev = /** @type {{ patched: string, patch: string }} */ (s.previous);
+      const stock = applyUnifiedDiff(/** @type {string} */ (s.text), reverseUnifiedDiff(fs.readFileSync(path.resolve(root, prev.patch), 'utf8')));
+      if (sha256(stock) !== p.stock) { error(`patch-three-vrm: undoing the earlier patch on ${where} didn't give the stock file (${sha256(stock).slice(0, 12)}…)`); failed = true; continue; }
+      if (check) { error(`patch-three-vrm: ${where} has an earlier version of ${p.name}: run the script without --check to update it`); failed = true; continue; }
+      const patched = patchText(p, stock);
+      if (sha256(patched) !== p.patched) { error(`patch-three-vrm: ${p.name} applied, but the result's sha256 is ${sha256(patched)}, not ${p.patched}`); failed = true; continue; }
+      fs.writeFileSync(/** @type {string} */ (s.file), patched);
+      log(`patch-three-vrm: updated ${where} from an earlier patch to ${p.name}`);
+      continue;
+    }
     if (s.state === 'stock') {
       const patched = patchText(p, s.text); // throws if a hunk no longer applies
       if (sha256(patched) !== p.patched) { error(`patch-three-vrm: ${p.name} applied, but the result's sha256 is ${sha256(patched)}, not ${p.patched}`); failed = true; continue; }
