@@ -1,0 +1,50 @@
+{
+ "check": "M4 W4 in WKWebView",
+ "node": {
+  "sample": {
+   "sha256": "54809283aa35913db1bfd2d54818efd761f96bee8f3f391a5967458bdceab96d",
+   "bytes": 10642
+  },
+  "rescript": {
+   "sha256": "de80c2e255a0d394ab3f97d3db748054e9756168472faceea8b4aecd6475a553",
+   "bytes": 5904
+  },
+  "version": "v26.12.1"
+ },
+ "runs": [
+  {
+   "origin": "scheme",
+   "timedOut": false,
+   "errors": [],
+   "result": {
+    "rescript": {
+     "bytes": 5904,
+     "sha256": "de80c2e255a0d394ab3f97d3db748054e9756168472faceea8b4aecd6475a553"
+    },
+    "sample": {
+     "bytes": 10642,
+     "sha256": "54809283aa35913db1bfd2d54818efd761f96bee8f3f391a5967458bdceab96d"
+    },
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+   },
+   "same": true
+  },
+  {
+   "origin": "loopback",
+   "timedOut": false,
+   "errors": [],
+   "result": {
+    "rescript": {
+     "bytes": 5904,
+     "sha256": "de80c2e255a0d394ab3f97d3db748054e9756168472faceea8b4aecd6475a553"
+    },
+    "sample": {
+     "bytes": 10642,
+     "sha256": "54809283aa35913db1bfd2d54818efd761f96bee8f3f391a5967458bdceab96d"
+    },
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+   },
+   "same": true
+  }
+ ]
+}

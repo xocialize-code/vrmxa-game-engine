@@ -1,0 +1,27 @@
+{
+ "check": "M4 W4: the same script gives the same sequence in every runtime",
+ "same": true,
+ "node": {
+  "sample": {
+   "sha256": "54809283aa35913db1bfd2d54818efd761f96bee8f3f391a5967458bdceab96d",
+   "bytes": 10642
+  },
+  "rescript": {
+   "sha256": "de80c2e255a0d394ab3f97d3db748054e9756168472faceea8b4aecd6475a553",
+   "bytes": 5904
+  },
+  "version": "v26.12.1"
+ },
+ "chromium": {
+  "sample": {
+   "sha256": "54809283aa35913db1bfd2d54818efd761f96bee8f3f391a5967458bdceab96d",
+   "bytes": 10642
+  },
+  "rescript": {
+   "sha256": "de80c2e255a0d394ab3f97d3db748054e9756168472faceea8b4aecd6475a553",
+   "bytes": 5904
+  },
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "errors": []
+ }
+}
