@@ -22,7 +22,7 @@ const MOVING = 0.1; // m/s
  * return to idle or move when their clip ends (at once when the slot is empty); `sit` settles into `sitIdle`,
  * held until `stand`.
  */
-export const ACTIONS = new Set(['use', 'take', 'talk', 'sit', 'sitIdle', 'stand']);
+export const ACTIONS = new Set(['use', 'take', 'talk', 'sit', 'sitIdle', 'stand', 'getUp']); // getUp (M3 W12): rising from a fall
 /** States that own the whole body: the hold layer fades out in them. */
 const FULL_BODY = new Set(['use', 'take', 'sit', 'sitIdle', 'stand']);
 

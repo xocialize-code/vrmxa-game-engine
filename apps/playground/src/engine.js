@@ -21,7 +21,7 @@ import { Vector3 } from 'three';
 import { TextLayer } from '@vrmxg/text';
 import { withStairs, knockDownStairs } from './stairs.js';
 import { withCart } from './vehicle.js';
-import { withTwoPlayers, SPLIT_LAYOUT } from './split.js';
+import { withTwoPlayers, playerLayout } from './split.js';
 import { withCamera, shellCamera, recordedFrames, connectCamera } from '@vrmxg/sense';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
@@ -87,8 +87,10 @@ export class Playground {
     // M3 W8: ?cart puts a cart on the pavement with Mira beside its driver's door (E gets in and out, WASD drives)
     if (params.has('cart')) this.sample = { ...this.sample, doc: withCart(this.sample.doc) };
     // M3 W9: ?split, two players side by side (Mira on WASD and the mouse, Hana on the arrows or a gamepad)
-    this.split = params.has('split');
-    if (this.split) this.sample = { ...this.sample, doc: withTwoPlayers(this.sample.doc) };
+    if (params.has('split')) this.sample = { ...this.sample, doc: withTwoPlayers(this.sample.doc) };
+    // a scene with player cameras (cafe-split.vrmxs, or ?split) plays in split screen: their layout, two players' map
+    this.layout = playerLayout(this.sample.doc);
+    this.split = !!this.layout;
     this.fall = params.has('fall');
     if (this.fall) this.sample = { ...this.sample, doc: withStairs(this.sample.doc, { camera: true }) };
     // M3 W5: ?camera puts the person at the camera into the world (the sense service and its viewer node); the character
@@ -105,7 +107,7 @@ export class Playground {
     await this.camera?.stop();
     this.camera = null;
     const world = await buildWorld(R, this.sample, { vrmxaCore, closet, behaviours, audioOutput: this.audio, sense: this.cameraMode, players: this.split ? 2 : 1 });
-    this.host.layout = this.split ? SPLIT_LAYOUT : null;
+    this.host.layout = this.layout;
     const { tree, input, models } = world;
     this.world = world;
     if (take) { input.replay(structuredClone(take.input)); world.ai.replay(take.ai); if (take.sense) world.sense.replay(take.sense); }

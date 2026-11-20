@@ -8,7 +8,7 @@ import { inShell, call, on } from '../../shell/js/shell.js';
 const canvas = ref(null);
 const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, fall: false, split: false, sense: null, cameraDevices: [], cameraDevice: '', showBubbles: true, showCaptions: true, showNames: false });
 // the sample's scenes and sequences; ?scene= picks one at load
-const SCENES = ['cafe.vrmxs', 'sequences/morning.vrmxs', 'sequences/cafe-morning.vrmxs'];
+const SCENES = ['cafe.vrmxs', 'cafe-talk.vrmxs', 'cafe-follow.vrmxs', 'cafe-stairs.vrmxs', 'cafe-cart.vrmxs', 'cafe-split.vrmxs', 'sequences/morning.vrmxs', 'sequences/cafe-morning.vrmxs', 'sequences/conversation.vrmxs'];
 const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
 let pg = null; // never reactive
 

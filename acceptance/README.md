@@ -46,7 +46,9 @@ M3 adds checks as its workstreams land. The M3 acceptance (W13) runs all ten of 
   - each falls as a ragdoll from the one humanoid mapping (eleven parts, sized from the skeleton, nothing per model),
     lies still, and gets up at the foot of the stairs, blending back into animation (Mira: down at step 244, up at 356;
     Hana: down at 144, up at 256);
-  - it hashes identically at every step in Node, Chromium and WKWebView (scheme and loopback), final 2a28db30b92d6f78;
+  - it hashes identically at every step in Node, Chromium and WKWebView (scheme and loopback), final 2a28db30b92d6f78
+    (09ba2116fa74e9f2 since W12: the stairs are a drawn model, `sets/stairs.glb`, and getting up plays the `getUp` clip;
+    the same falls, to the step and the millimetre);
   - a snapshot 40 steps into the fall re-simulates to the same end;
   - checks 1–17 are unchanged, so 18 of 18 pass.
 - **Check 19** (W8, AB-T-0547): vehicles. A two-seat cart (`items/cart.vrmxi`, a VRMXI `vehicle`: the section proposed in

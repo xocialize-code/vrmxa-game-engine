@@ -35,3 +35,13 @@ export { routeKeys } from './vehicle.js';
  * left is −x); then Hana jumps.
  */
 export const TWO_PLAYER_ROUTE = [[20, 80, ['KeyW']], [80, 150, ['KeyA', 'ShiftLeft']], [30, 90, ['ArrowUp']], [90, 160, ['ArrowRight', 'ShiftRight']], [200, 201, ['ControlRight']]];
+
+/**
+ * The layout for a scene's player cameras (Camera nodes with a `player` prop), side by side in player order; null when
+ * the scene has none past player 1 (one view). @param {any} doc
+ */
+export function playerLayout(doc) {
+  const cams = doc.nodes.filter((n) => n.type === 'Camera' && n.props?.player >= 1).sort((a, b) => a.props.player - b.props.player);
+  if (!cams.some((c) => c.props.player > 1)) return null;
+  return cams.map((c, i) => ({ camera: c.id, x: i / cams.length, y: 0, w: 1 / cams.length, h: 1 }));
+}

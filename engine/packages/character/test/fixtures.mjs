@@ -28,32 +28,41 @@ const REST = {
 };
 const qx = (a) => [Math.sin(a / 2), 0, 0, Math.cos(a / 2)];
 const qz = (a) => [0, 0, Math.sin(a / 2), Math.cos(a / 2)];
+const qy = (a) => [0, Math.sin(a / 2), 0, Math.cos(a / 2)];
+/** a then b, as quaternions [x, y, z, w] (b applied first, in a's frame) */
+const mulq = ([ax, ay, az, aw], [bx, by, bz, bw]) => [aw * bx + ax * bw + ay * bz - az * by, aw * by - ax * bz + ay * bw + az * bx, aw * bz + ax * by - ay * bx + az * bw, aw * bw - ax * bx - ay * by - az * bz];
 
 // One generated clip: legs and arms swing by `swing` radians per cycle; `bob` lifts the hips; `travel`
 // moves the hips forward by that many metres over the clip (root motion).
 // `sit` (0 standing … 1 seated, hips 0.5 m up, thighs level, shins down) may change over the clip (sitTo); `reach`
 // raises the right arm forward (use, take); `gesture` waves both forearms a little (talk). Emotes (M2 W11): `nod` tips
-// the neck and head forward that many radians, twice; `cheer` raises both arms high and shakes them.
-function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 0, crouch = 0, armsUp = 0, sit = 0, sitTo = sit, reach = 0, gesture = 0, nod = 0, cheer = 0 }) {
+// the neck and head forward that many radians, twice; `cheer` raises both arms high and shakes them. Gestures (M3 W12):
+// `shrug` lifts both arms a little and tilts the head; `point` holds the right arm out forward; `laugh` tips the head
+// back and shakes the spine; `kneel` (0 standing … 1 kneeling, hips 0.3 m up, thighs up, shins back, leaning forward) may
+// change over the clip (kneelTo): getting up from a fall.
+function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 0, crouch = 0, armsUp = 0, sit = 0, sitTo = sit, reach = 0, gesture = 0, nod = 0, cheer = 0, shrug = 0, point = 0, laugh = 0, kneel = 0, kneelTo = kneel }) {
   const frames = Math.round(seconds * fps) + 1;
   const bones = {};
   const names = ['leftUpperLeg', 'rightUpperLeg', 'leftUpperArm', 'rightUpperArm', 'spine'];
-  if (sit || sitTo) names.push('leftLowerLeg', 'rightLowerLeg');
-  if (nod) names.push('neck', 'head');
+  if (sit || sitTo || kneel || kneelTo) names.push('leftLowerLeg', 'rightLowerLeg');
+  if (nod || shrug || laugh) names.push('neck', 'head');
   for (const b of names) bones[b] = new Float32Array(frames * 4);
   const hips = new Float32Array(frames * 3);
   for (let f = 0; f < frames; f++) {
     const t = f / (frames - 1), ph = 2 * Math.PI * t;
     const s = Math.sin(ph) * swing, g = Math.sin(2 * ph) * gesture, k = sit + (sitTo - sit) * t, r = reach * Math.sin(Math.PI * t);
-    bones.leftUpperLeg.set(qx(s - crouch - k * Math.PI / 2), f * 4);
-    bones.rightUpperLeg.set(qx(-s - crouch - k * Math.PI / 2), f * 4);
-    if (bones.leftLowerLeg) { bones.leftLowerLeg.set(qx(k * Math.PI / 2), f * 4); bones.rightLowerLeg.set(qx(k * Math.PI / 2), f * 4); }
+    // the gestures (M3 W12) are 0 for every older clip, so those clips' bytes don't change
+    const kn = kneel + (kneelTo - kneel) * t, env = Math.sin(Math.PI * t), sh = shrug * env, la = laugh * env, po = point * Math.min(1, env * 2.5);
+    bones.leftUpperLeg.set(qx(s - crouch - k * Math.PI / 2 - kn * 1.6), f * 4);
+    bones.rightUpperLeg.set(qx(-s - crouch - k * Math.PI / 2 - kn * 1.6), f * 4);
+    if (bones.leftLowerLeg) { bones.leftLowerLeg.set(qx(k * Math.PI / 2 + kn * 2.2), f * 4); bones.rightLowerLeg.set(qx(k * Math.PI / 2 + kn * 2.2), f * 4); }
     const up = cheer * Math.sin(Math.PI * t); // up and down again over the clip
-    bones.leftUpperArm.set(qz(-1.2 + armsUp + up - s * 0.5 + g), f * 4);
-    bones.rightUpperArm.set(r ? qx(-r) : qz(1.2 - armsUp - up + s * 0.5 - g), f * 4);
+    bones.leftUpperArm.set(qz(-1.2 + armsUp + up - s * 0.5 + g + sh * 0.35), f * 4);
+    bones.rightUpperArm.set(r ? qx(-r) : po ? mulq(qy(1.45 * po), qz(1.2 * (1 - po))) : qz(1.2 - armsUp - up + s * 0.5 - g - sh * 0.35), f * 4);
     if (nod) { const a = nod * Math.max(0, Math.sin(2 * ph)); bones.neck.set(qx(a * 0.4), f * 4); bones.head.set(qx(a * 0.6), f * 4); }
-    bones.spine.set(qx(crouch * 0.3), f * 4);
-    hips.set([0, 0.95 + bob * Math.abs(Math.sin(ph)) - crouch * 0.2 - k * 0.45, travel * t], f * 3);
+    else if (shrug || laugh) { bones.neck.set(qx(-la * 0.2), f * 4); bones.head.set(mulq(qz(sh * 0.22), qx(-la * 0.3 + la * 0.06 * Math.sin(8 * ph))), f * 4); }
+    bones.spine.set(qx(crouch * 0.3 + kn * 0.6 + la * 0.05 * Math.sin(10 * ph)), f * 4);
+    hips.set([0, 0.95 + bob * Math.abs(Math.sin(ph)) - crouch * 0.2 - k * 0.45 - kn * 0.65, travel * t], f * 3);
   }
   return core.writeVrma({ name, fps, frames, rest: REST, restHips: REST.hips, bones, hips, expressions: {}, custom: new Set(), lookAt: null, lookAtOffset: null, extras: { source: 'engine/packages/character/test/fixtures.mjs' } });
 }
@@ -81,6 +90,8 @@ export async function testAnimations(core, { travel = false, actions = false, la
     ['sit', { seconds: 0.8, sit: 0, sitTo: 1 }, { loops: false, rootMotion: 'inPlace' }],
     ['sitIdle', { seconds: 2, sit: 1, swing: 0.01 }, { loops: true, rootMotion: 'inPlace' }],
     ['stand', { seconds: 0.6, sit: 1, sitTo: 0 }, { loops: false, rootMotion: 'inPlace' }],
+    // M3 W12: getting up from a fall (a ragdoll's get-up blends into it): from kneeling to standing
+    ['getUp', { seconds: 1.2, kneel: 1, kneelTo: 0 }, { loops: false, rootMotion: 'inPlace' }],
   ];
   if (actions) defs.push(...ACTION_DEFS);
   // G10 layers (M2 W8): a wave for the masked `greet` gesture (the right arm raised high, waving)
@@ -90,6 +101,10 @@ export async function testAnimations(core, { travel = false, actions = false, la
     ['nod', { seconds: 1.0, nod: 0.35 }, { loops: false, rootMotion: 'inPlace' }, 'face'],
     ['cheer', { seconds: 1.4, cheer: 1.9, gesture: 0.25 }, { loops: false, rootMotion: 'inPlace' }, 'arms'],
     ['sip', { seconds: 2.0, reach: 2.2 }, { loops: false, rootMotion: 'inPlace' }, 'arms'],
+    // M3 W12: a conversation's gestures (a director picks them from the slots the set fills)
+    ['shrug', { seconds: 1.1, shrug: 1 }, { loops: false, rootMotion: 'inPlace' }, 'upperBody'],
+    ['point', { seconds: 1.6, point: 1 }, { loops: false, rootMotion: 'inPlace' }, 'arms'],
+    ['laugh', { seconds: 1.5, laugh: 1 }, { loops: false, rootMotion: 'inPlace' }, 'upperBody'],
   ];
   if (emotes) defs.push(...EMOTES.map(([n, g, m]) => [n, g, m]));
   const clips = new Map(), entries = [], sha = {};
@@ -104,7 +119,7 @@ export async function testAnimations(core, { travel = false, actions = false, la
   const doc = {
     format: 'vrmxa-animations', version: 1, clips: entries,
     sets: [
-      { id: 'default', name: 'Default', default: true, priority: 0, requires: [], slots: { idle: slot('idle'), walk: slot('walk'), run: slot('run'), jump: slot('jump'), fall: slot('fall'), land: slot('land'), ...(actions ? Object.fromEntries(ACTION_DEFS.map(([n]) => [n, slot(n)])) : {}), ...(layers ? { greet: [{ ...slot('greet')[0], mask: 'arms' }] } : {}), ...(emotes ? Object.fromEntries(EMOTES.map(([n, , , mask]) => [n, [{ ...slot(n)[0], mask }]])) : {}) } },
+      { id: 'default', name: 'Default', default: true, priority: 0, requires: [], slots: { idle: slot('idle'), walk: slot('walk'), run: slot('run'), jump: slot('jump'), fall: slot('fall'), land: slot('land'), ...(actions ? Object.fromEntries(ACTION_DEFS.map(([n]) => [n, slot(n)])) : {}), ...(layers ? { greet: [{ ...slot('greet')[0], mask: 'arms' }], wave: [{ ...slot('greet')[0], mask: 'arms' }] } : {}), ...(emotes ? Object.fromEntries(EMOTES.map(([n, , , mask]) => [n, [{ ...slot(n)[0], mask }]])) : {}) } },
       { id: 'sword', name: 'With a sword', priority: 1, requires: ['sword'], slots: { idle: slot('idle-sword'), ...(layers ? { hold: [{ ...slot('idle-sword')[0], mask: 'upperBody' }] } : {}) } },
     ],
   };

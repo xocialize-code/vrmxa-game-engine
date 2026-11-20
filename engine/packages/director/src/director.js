@@ -18,7 +18,7 @@ import { lineRequest, verdictRequest, parseVerdict, cleanLine, verdictParts } fr
 /** Expressions a reply may carry when the persona names none: VRM 1.0's five emotion presets (VRMXA §10.1). */
 export const EMOTIONS = ['happy', 'angry', 'sad', 'relaxed', 'surprised'];
 /** Animation slots that aren't gestures (locomotion and item actions). */
-const NOT_GESTURES = new Set(['idle', 'walk', 'run', 'jump', 'fall', 'land', 'hold', 'use', 'take', 'talk', 'sit', 'sitIdle', 'stand', 'crouch', 'turn']);
+const NOT_GESTURES = new Set(['idle', 'walk', 'run', 'jump', 'fall', 'land', 'hold', 'use', 'take', 'talk', 'sit', 'sitIdle', 'stand', 'crouch', 'turn', 'getUp']);
 
 export class Director {
   /**
@@ -292,7 +292,10 @@ export class Director {
     const has = n.vrm?.expressionManager ? new Set(n.vrm.expressionManager.expressions.map((e) => e.expressionName)) : null;
     const expressions = (persona.allowedExpressions ?? EMOTIONS).filter((e) => !has || has.has(e));
     const gestures = persona.gestures ?? Object.keys(n.graph?.slots ?? {}).filter((s) => !NOT_GESTURES.has(s) && n.graph.has(s)).sort();
-    const goals = persona.goals ?? brain?.preset?.goals ?? [];
+    // a goal means something only if the brain's tree pursues it: its preset's goals decide (the app persona may describe
+    // them better); the app persona's whole list only for a brain that declares none (a custom brain document)
+    const own = brain?.preset?.goals;
+    const goals = own ? own.map((g) => ({ ...g, ...(persona.goals?.find((x) => x.name === g.name) ?? {}) })) : persona.goals ?? [];
     return { agent, characters, items: items.slice(0, 8).map(({ d, ...i }) => i), expressions, gestures, goals, user: this.user && tree.find(this.user) ? this.user : null };
   }
 
