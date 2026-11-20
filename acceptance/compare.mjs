@@ -193,6 +193,19 @@ const items = (r) => r?.result?.items ?? r?.items;
   check(18, 'Ragdolls: knocked down the stairs, both characters fall, lie still and get up, identical everywhere; a snapshot mid-fall', ok,
     ref ? `${ref.steps} steps × ${ref.components} components, knocked at ${ref.knock}, final ${ref.final}; ${Object.entries(ref.falls).map(([id, f]) => `${id}: ${f.phases.join(' → ')}, hips down to ${f.lowestHips} m, up at [${f.end}] (hips ${f.standing} m)`).join('; ')}; step ${ref.stepMs} ms (node); snapshot @${ref.snapshot.at} ${ref.snapshot.midFall ? 'mid-fall' : 'NOT mid-fall'} ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? 'identical' : 'DIFFERS'}`).join('; ')}` : 'no node result');
 }
+// 19 (M3 W8). Vehicles: the cart on the pavement. Mira gets in with the interact key, drives a recorded route (along the
+// pavement, a lane change, the brakes) and gets out once it has stopped; the camera chases the cart while she drives.
+// Every step hashes identically everywhere, the input recording replays into a fresh world with the same hashes, and a
+// snapshot mid-drive re-simulates to the end.
+{
+  const vh = (r) => r?.result?.vehicle ?? r?.vehicle, ref = vh(node);
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = vh(r); const d = x && ref ? compareRuns(unpackRun(ref.run), unpackRun(x.run)) : { step: -1, component: 'no result' }; return { k, d, x, ok: !!x && !d && x.replay.matches && x.snapshot.rerunMatches }; });
+  const dr = ref?.drive;
+  const drove = !!dr && dr.seated !== null && dr.seated <= 40 && dr.left !== null && dr.cartEnd[0] < dr.cartFrom[0] - 4 && dr.cartEnd[2] - dr.cartFrom[2] > 0.5 && dr.maxSpeed > 2.5 && dr.chased > 200 && dr.parked;
+  const ok = !!ref && drove && ref.replay.matches && ref.snapshot.midDrive && ref.snapshot.rerunMatches && rows.every((r) => r.ok);
+  check(19, 'Vehicles: Mira gets in the cart, drives a recorded route and gets out; replays identically everywhere; a snapshot mid-drive', ok,
+    ref ? `${ref.steps} steps × ${ref.components} components, final ${ref.final}; in at ${dr.seated}, out at ${dr.left}; the cart from [${dr.cartFrom}] to [${dr.cartEnd}], up to ${dr.maxSpeed} m/s, parked ${dr.parked}; camera chasing ${dr.chased} steps; the recording replayed ${ref.replay.matches ? 'identical' : 'DIFFERS'}; snapshot @${ref.snapshot.at} ${ref.snapshot.midDrive ? 'mid-drive' : 'NOT mid-drive'} ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; step ${ref.stepMs} ms (node); ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? 'identical' : 'DIFFERS'}`).join('; ')}` : 'no node result');
+}
 checks.sort((a, b) => a.n - b.n);
 fs.writeFileSync(res('summary.json'), JSON.stringify({ checks, runtimes: { node: node?.version, chromium: chromium?.version, wkwebview: scheme?.ua } }, null, 1) + '\n');
 process.exit(checks.every((c) => c.ok) ? 0 : 1);

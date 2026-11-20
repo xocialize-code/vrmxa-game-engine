@@ -31,6 +31,9 @@
 //   runRagdoll     (M3 W7) Mira and Hana on a landing at the top of four steps (stairs.js), knocked down the stairs at
 //                  step 30: each falls as a ragdoll, lies still and gets up, blending back into animation. A hash of every
 //                  component after every step, a snapshot taken mid-fall restored and re-simulated, and how each fall went.
+//   runVehicle     (M3 W8) the cart on the pavement (vehicle.js): Mira gets in with the interact key, drives a recorded route
+//                  (along the pavement, a lane change, the brakes) and gets out once it has stopped. A hash of every
+//                  component after every step; the input recording replayed into a fresh world; a snapshot mid-drive.
 //   runItems       (M1 W10) the recorded take with items (content/sample/input/play-items.json): Mira walks in, takes the
 //                  sword into her closet, opens the cupboard, sits on a stool, gets up and switches the counter lights
 //                  off; Hana greets her on the way. A hash of every component after every step, a snapshot after the
@@ -43,6 +46,7 @@ import { SequencePlayer, subtitles } from '@vrmxg/sequence';
 import { MemoryStore, IndexedDBStore } from '@vrmxg/save';
 import { AudioOutput, mixOffline, hashSamples } from '@vrmxg/audio';
 import { withStairs, knockDownStairs, FALL_SPOTS, STAIRS } from './stairs.js';
+import { withCart, CART, DRIVE_ROUTE, routeKeys } from './vehicle.js';
 
 export const STEPS = 600, SNAPSHOT_AT = 300, ITEMS_SNAPSHOT_AT = 720; // a step whose hash includes Rapier's bytes (every 60th), after the equip
 const text = (b) => new TextDecoder().decode(b);
@@ -513,5 +517,45 @@ export async function runRagdoll(R, sample, opts, { now = () => 0 } = {}) {
     steps: STEPS_R, knock: KNOCK, run: packRun(run), final: hashValue(run.at(-1).h), components: Object.keys(run[0].h).length,
     snapshot: { at: SNAP, midFall: who.every((id) => snap.nodes[id]?.ragdoll?.phase === 'falling'), rerunMatches: restored === null, divergence: restored },
     falls, landing: STAIRS.top, stepMs: +(ms / STEPS_R).toFixed(3),
+  };
+}
+
+/** M3 W8: the cart (see the header). */
+export async function runVehicle(R, sample, opts, { now = () => 0 } = {}) {
+  const STEPS_V = 540, SNAP = 260;
+  const S = { ...sample, doc: withCart(sample.doc) };
+  const A = await buildWorld(R, S, opts), tree = A.tree, dev = A.input.addDevice(new VirtualDevice());
+  const mira = /** @type {any} */ (tree.find('mira')), cart = /** @type {any} */ (tree.find('cart')), cam = /** @type {any} */ (tree.find('cam'));
+  A.input.record();
+  const run = [{ step: 0, h: worldHashes(tree) }], drive = { seated: null, left: null, maxSpeed: 0, chased: 0 };
+  let held = new Set(), snap = null, ms = 0;
+  for (let k = 0; k < STEPS_V; k++) {
+    held = routeKeys(DRIVE_ROUTE, k, dev, held);
+    const t0 = now(); tree.step(); ms += now() - t0;
+    if (mira.ctrl.seat && drive.seated === null) drive.seated = tree.clock.step;
+    if (!mira.ctrl.seat && drive.seated !== null && drive.left === null) drive.left = tree.clock.step;
+    drive.maxSpeed = Math.max(drive.maxSpeed, cart.vehicleSpeed());
+    if (cam.rig.vehicle) drive.chased++;
+    run.push({ step: tree.clock.step, h: worldHashes(tree, { physicsBytes: tree.clock.step % 60 === 0 }) });
+    if (tree.clock.step === SNAP) snap = captureWorld(tree, { meta: { scene: sample.scene, vehicle: true } });
+  }
+  const rec = A.input.stop();
+  const c = cart.part('Chassis'); c.updateWorldMatrix(true, false);
+  const e = c.matrixWorld.elements, p = mira.object3d.position;
+  Object.assign(drive, { maxSpeed: r3(drive.maxSpeed), cartFrom: CART.p, cartEnd: [e[12], e[13], e[14]].map(r3), miraEnd: [p.x, p.y, p.z].map(r3), parked: Math.abs(cart.vehicleSpeed()) < 0.05 });
+  const B = await buildWorld(R, S, opts);
+  B.input.replay(structuredClone(rec));
+  const replayed = [{ step: 0, h: worldHashes(B.tree) }];
+  for (let k = 0; k < STEPS_V; k++) { B.tree.step(); replayed.push({ step: B.tree.clock.step, h: worldHashes(B.tree, { physicsBytes: B.tree.clock.step % 60 === 0 }) }); }
+  const C = await buildWorld(R, S, opts);
+  C.input.replay(structuredClone(rec));
+  restoreWorld(C.tree, snap);
+  const again = [];
+  for (let k = SNAP; k < STEPS_V; k++) { C.tree.step(); again.push({ step: C.tree.clock.step, h: worldHashes(C.tree, { physicsBytes: C.tree.clock.step % 60 === 0 }) }); }
+  return {
+    steps: STEPS_V, run: packRun(run), final: hashValue(run.at(-1).h), components: Object.keys(run[0].h).length,
+    replay: { matches: compareRuns(run, replayed) === null, divergence: compareRuns(run, replayed) },
+    snapshot: { at: SNAP, midDrive: !!snap.nodes.mira.ctrl.seat, rerunMatches: compareRuns(run.slice(SNAP + 1), again) === null, divergence: compareRuns(run.slice(SNAP + 1), again) },
+    drive, stepMs: +(ms / STEPS_V).toFixed(3),
   };
 }

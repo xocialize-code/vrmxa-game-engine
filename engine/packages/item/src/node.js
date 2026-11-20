@@ -9,15 +9,17 @@
 //   verbs       offered by state; `perform` raises `verb`, then moves to `to` (raising `stateChanged`); `enterState`
 //               moves to a state directly (scene connections, the game)
 //   sensors     raise `entered` / `exited` with the sensor's name when a character enters or leaves (VRMXI §5.1)
+//   vehicle     a `vehicle` item drives on raycast wheels, steered by its driver's seat (M3 W8, vehicle.js)
 // Item state (current state, animation times) is part of the world snapshot; bodies and joints are in Rapier's.
 import { AnimationMixer, LoopRepeat } from 'three';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { Node } from '@vrmxg/core';
+import { Vehicle } from './vehicle.js';
 
 const DEFAULT_SLOT = { open: 'use', take: 'take', use: 'use', sit: 'sit', talk: 'talk' };
 
 export class ItemNode extends Node {
-  static actions = ['enterState', 'perform'];
+  static actions = ['enterState', 'perform', 'drive'];
 
   enterTree() {
     const lib = this.tree.services.get('items');
@@ -38,6 +40,7 @@ export class ItemNode extends Node {
     this.clips = new Map(it.animations.map((c) => [c.name, c]));
     this.anim = { play: null, loop: null };
     this.buildPhysics(it.plan);
+    /** @type {Vehicle | null} */ this.vehicle = this.manifest.type === 'vehicle' && this.physics ? new Vehicle(this) : null;
     const start = this.props.state ?? this.states[0]?.name ?? null;
     if (start !== null && !this.states.some((s) => s.name === start)) throw new Error(`Item "${this.id}": no state "${start}" (${this.states.map((s) => s.name).join(', ')})`);
     this.current = start;
@@ -107,6 +110,7 @@ export class ItemNode extends Node {
   }
 
   exitTree() {
+    this.vehicle?.free();
     const physics = this.physics;
     if (physics) {
       for (const { proxy } of this.parts.values()) physics.removeBody(proxy, proxy.body);
@@ -163,6 +167,7 @@ export class ItemNode extends Node {
   }
 
   physicsProcess(dt) {
+    this.vehicle?.step(dt); // steering, engine and brakes before physics steps
     const { play, loop } = this.anim;
     if (!play && !loop) return;
     if (play) play.t = Math.min(play.t + dt, this.clips.get(play.name).duration);
@@ -200,6 +205,11 @@ export class ItemNode extends Node {
     return { verb, to: v.to ?? null, slot: this.slotOf(v), prompt: v.prompt ?? null };
   }
 
+  /** A vehicle's driving from a script or a brain (its driver not a player): { throttle, steer }, each −1…1. */
+  drive(args = {}) { this.vehicle?.drive(args); }
+  /** A vehicle's forward speed (m/s), else 0. */
+  vehicleSpeed() { return this.vehicle?.speed() ?? 0; }
+
   /** What the item means right now: its tags plus its state's (VRMXI §7). */
   itemTags() { return [...(this.manifest.tags ?? []), ...(this.state(this.current)?.tags ?? [])]; }
 
@@ -222,9 +232,9 @@ export class ItemNode extends Node {
 
   // ---------------------------------------------------------------- snapshot
 
-  getState() { return { state: this.current, play: this.anim.play && { ...this.anim.play }, loop: this.anim.loop && { ...this.anim.loop } }; }
+  getState() { return { state: this.current, play: this.anim.play && { ...this.anim.play }, loop: this.anim.loop && { ...this.anim.loop }, ...(this.vehicle ? { vehicle: this.vehicle.getState() } : {}) }; }
   /** Restore item state. Motor targets and sensors are restored with Rapier's bytes, so they aren't touched here. */
-  setState(s) { this.current = s.state; this.anim = { play: s.play && { ...s.play }, loop: s.loop && { ...s.loop } }; this.applyLook(); this.pose(); }
+  setState(s) { this.current = s.state; this.anim = { play: s.play && { ...s.play }, loop: s.loop && { ...s.loop } }; if (s.vehicle) this.vehicle?.setState(s.vehicle); this.applyLook(); this.pose(); }
 }
 
 /** Rotate v by quaternion q ([x, y, z, w]). @param {number[]} q @param {number[]} v @returns {number[]} */

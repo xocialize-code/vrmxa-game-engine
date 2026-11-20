@@ -49,6 +49,15 @@ M3 adds checks as its workstreams land. The M3 acceptance (W13) runs all ten of 
   - it hashes identically at every step in Node, Chromium and WKWebView (scheme and loopback), final 2a28db30b92d6f78;
   - a snapshot 40 steps into the fall re-simulates to the same end;
   - checks 1–17 are unchanged, so 18 of 18 pass.
+- **Check 19** (W8, AB-T-0547): vehicles. A two-seat cart (`items/cart.vrmxi`, a VRMXI `vehicle`: the section proposed in
+  `VRMXI-vehicle-proposal.md`) stands on the pavement outside the cafe (`apps/playground/src/vehicle.js`):
+  - Mira gets in with the interact key at step 31, drives a recorded route (along the pavement, a lane change, the
+    brakes) and gets out at step 421 with the cart parked; it goes from x 4 to x −1.96 and 1.2 m across, at up to
+    4.15 m/s; the camera chases it for 390 steps;
+  - it hashes identically at every step in Node, Chromium and WKWebView (scheme and loopback), final 3eb1af557e12014c;
+  - the input recording replays into a fresh world with the same hashes, and a snapshot mid-drive re-simulates to the
+    end;
+  - checks 1–18 are unchanged, so 19 of 19 pass.
 - **The fall seen** (`node acceptance/m3/ragdoll-chromium.mjs` against the playground's dev server, `?fall`):
   `results/m3-ragdoll-{tumbling,lying,rising,up}.png`, with the stairs in debug draw until W12 brings visible ones.
 

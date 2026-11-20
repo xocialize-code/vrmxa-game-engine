@@ -320,6 +320,72 @@ export class PhysicsWorld {
     return handle;
   }
 
+  // ---------------------------------------------------------------- vehicles (M3 W8)
+
+  /**
+   * A raycast vehicle on a dynamic chassis body (Rapier's DynamicRayCastVehicleController): each wheel a ray down from
+   * its hard point with a spring, friction and the steering, engine force and brake set every step. The chassis frame
+   * is VRMXI's (+Y up, the front +Z). Like the character controller it lives outside Rapier's world and its snapshot:
+   * it is built again whenever restore() replaces the world, and the wheels' inputs are set again every step, so nothing
+   * it keeps between steps (wheel spin, for drawing) changes the simulation.
+   * @param {number} chassis body handle
+   * @param {{ wheels: Array<{ at: number[], radius: number, rest?: number, travel?: number, stiffness?: number,
+   *   compression?: number, relaxation?: number, maxForce?: number, friction?: number, side?: number }>, layers?: string[] }} spec
+   *   at: the wheel's centre at rest, in the chassis frame; rest: suspension rest length (the hard point is that far
+   *   above the centre); travel: how far it compresses; friction: slip friction; side: sideways grip
+   * @returns {{ update: (dt: number, inputs: Array<{ steer?: number, engine?: number, brake?: number }>) => void,
+   *   wheels: () => Array<{ steer: number, spin: number, suspension: number, contact: boolean }>, speed: () => number,
+   *   rebuild: () => void, free: () => void }}
+   */
+  createVehicle(chassis, { wheels, layers } = { wheels: [] }) {
+    const R = this.R;
+    const groups = this.layers.queryGroups(layers);
+    const build = () => {
+      const c = this.world.createVehicleController(this.world.getRigidBody(chassis));
+      c.indexUpAxis = 1;
+      c.setIndexForwardAxis = 2; // Rapier names this setter as a property
+      wheels.forEach((w, i) => {
+        const rest = w.rest ?? 0.2;
+        c.addWheel(v([w.at[0], w.at[1] + rest, w.at[2]]), { x: 0, y: -1, z: 0 }, { x: -1, y: 0, z: 0 }, rest, w.radius);
+        c.setWheelMaxSuspensionTravel(i, w.travel ?? 0.15);
+        c.setWheelSuspensionStiffness(i, w.stiffness ?? 30);
+        c.setWheelSuspensionCompression(i, w.compression ?? 2.4);
+        c.setWheelSuspensionRelaxation(i, w.relaxation ?? 3.2);
+        c.setWheelMaxSuspensionForce(i, w.maxForce ?? 6000);
+        c.setWheelFrictionSlip(i, w.friction ?? 2.5);
+        c.setWheelSideFrictionStiffness(i, w.side ?? 1);
+      });
+      return c;
+    };
+    let ctl = build();
+    const handle = {
+      rebuild: () => { ctl = build(); },
+      update: (dt, inputs) => {
+        inputs.forEach((x, i) => { ctl.setWheelSteering(i, x.steer ?? 0); ctl.setWheelEngineForce(i, x.engine ?? 0); ctl.setWheelBrake(i, x.brake ?? 0); });
+        // A parked car sleeps. Driving wakes it; otherwise the controller leaves a sleeping chassis alone: Rapier's would
+        // keep adding its springs' impulse to a body that no longer integrates (measured: 0.72 m/s upward, never
+        // applied, read back as speed, and a kick on waking). Anything that hits the car wakes it.
+        const body = this.world.getRigidBody(chassis);
+        if (inputs.some((x) => x.engine || x.steer)) body.wakeUp();
+        else if (body.isSleeping()) return;
+        ctl.updateVehicle(dt, R.QueryFilterFlags.EXCLUDE_SENSORS, groups);
+      },
+      wheels: () => wheels.map((_, i) => ({ steer: ctl.wheelSteering(i) ?? 0, spin: ctl.wheelRotation(i) ?? 0, suspension: ctl.wheelSuspensionLength(i) ?? 0, contact: ctl.wheelIsInContact(i) })),
+      // from the chassis itself (its velocity along its front, +z), not the controller's figure: that is computed by its
+      // last update, so a controller built again after a restore would read 0 until it has run once
+      speed: () => {
+        const b = this.world.getRigidBody(chassis);
+        if (b.isSleeping()) return 0;
+        const r = b.rotation(), l = b.linvel();
+        const fx = 2 * (r.x * r.z + r.w * r.y), fy = 2 * (r.y * r.z - r.w * r.x), fz = 1 - 2 * (r.x * r.x + r.y * r.y);
+        return l.x * fx + l.y * fy + l.z * fz;
+      },
+      free: () => { this.world.removeVehicleController(ctl); this.controllers.delete(handle); },
+    };
+    this.controllers.add(handle);
+    return handle;
+  }
+
   // ---------------------------------------------------------------- queries
 
   /**

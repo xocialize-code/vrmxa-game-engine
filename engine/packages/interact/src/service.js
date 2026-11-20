@@ -5,7 +5,8 @@
 //   prompt   kept as data (prompts()) for the app to draw; `focusChanged` on the character when it changes
 //   do       on the `interact` action, the focused verb: the character turns to the item (or goes to its `at` node),
 //            plays the verb's animation slot, and the item does it; `sit` seats it on the nearest free seat point
-//            (moving or interacting again stands it up); `take` removes the item from the world, into the closet
+//            (moving or interacting again stands it up; in a vehicle's seat moving drives, and interact gets out once it
+//            has nearly stopped); `take` removes the item from the world, into the closet
 //            service when the item is takeable and one is installed (M1 W4), else into the inventory
 // NPCs and scripts use request(actor, item, verb). All of it is simulation: deterministic and in the snapshot.
 
@@ -34,6 +35,13 @@ export class InteractService {
     for (const actor of this.actors()) {
       const pressed = input?.pressed('interact') ?? false;
       if (actor.ctrl.seat) {
+        // a vehicle's seat: moving drives (or does nothing, as a passenger); interact gets out once it has (nearly) stopped
+        const seatItem = /** @type {any} */ (this.tree.find(actor.ctrl.seat.item));
+        if (seatItem?.manifest?.type === 'vehicle') {
+          if (pressed && Math.abs(seatItem.vehicleSpeed()) < 1) this.standUp(actor);
+          this.setFocus(actor, null);
+          continue;
+        }
         const mx = input?.axis('move_x') ?? 0, my = input?.axis('move_y') ?? 0;
         if (!actor.graph.busy || actor.graph.state === 'sitIdle') { if (pressed || mx * mx + my * my > 0.25) { this.standUp(actor); continue; } }
         this.setFocus(actor, null);

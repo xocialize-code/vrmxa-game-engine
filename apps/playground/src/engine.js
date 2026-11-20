@@ -10,7 +10,7 @@ import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
 import { captureStill, hashFrame } from '@vrmxg/export';
 import { loadSample, buildWorld } from './world.js';
 import { serialize } from '@vrmxg/scene';
-import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, runBrains, runSave, runFilm, runConversation, runRagdoll, STEPS } from './acceptance.js';
+import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, runBrains, runSave, runFilm, runConversation, runRagdoll, runVehicle, STEPS } from './acceptance.js';
 import { AudioOutput } from '@vrmxg/audio';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
@@ -20,6 +20,7 @@ import { installDirector, httpModel, isTake, demoModel } from '@vrmxg/director';
 import { Vector3 } from 'three';
 import { TextLayer } from '@vrmxg/text';
 import { withStairs, knockDownStairs } from './stairs.js';
+import { withCart } from './vehicle.js';
 import { withCamera, shellCamera, recordedFrames, connectCamera } from '@vrmxg/sense';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
@@ -82,6 +83,8 @@ export class Playground {
     const cast = take?.cast ?? (directorUrl ? { [this.talkTo]: { behaviours: [{ use: 'brain', preset: params.get('preset') ?? 'host' }] } } : null);
     if (cast) this.sample = { ...this.sample, doc: { ...this.sample.doc, nodes: this.sample.doc.nodes.map((n) => (cast[n.id] ? { ...n, ...cast[n.id] } : n)) } };
     // M3 W7: ?fall puts a flight of stairs outside the cafe with Mira and Hana on its landing (knockDown() shoves them)
+    // M3 W8: ?cart puts a cart on the pavement with Mira beside its driver's door (E gets in and out, WASD drives)
+    if (params.has('cart')) this.sample = { ...this.sample, doc: withCart(this.sample.doc) };
     this.fall = params.has('fall');
     if (this.fall) this.sample = { ...this.sample, doc: withStairs(this.sample.doc, { camera: true }) };
     // M3 W5: ?camera puts the person at the camera into the world (the sense service and its viewer node); the character
@@ -146,10 +149,11 @@ export class Playground {
     const film = await runFilm(R, sample, opts, { now });
     const conversation = await runConversation(R, sample, opts, { now });
     const ragdoll = await runRagdoll(R, sample, opts, { now });
+    const vehicle = await runVehicle(R, sample, opts, { now });
     const audio = await runAudio(R, sample, opts, { silentFinal: items.final, take: 'input/play-items.json', steps: items.steps });
     const rendered = await this._renderedChecks(simulation);
     rendered.post = await this._postChecks();
-    return { simulation, devices, items, cinematic, sequence, particles, brains, save, film, conversation, ragdoll, audio, rendered };
+    return { simulation, devices, items, cinematic, sequence, particles, brains, save, film, conversation, ragdoll, vehicle, audio, rendered };
   }
 
   async _renderedChecks(simulation) {

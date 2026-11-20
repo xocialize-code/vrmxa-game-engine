@@ -19,6 +19,8 @@ const DEFAULTS = {
   overShoulder: { distance: 1.6, height: 1.55, side: 0.45 },
   firstPerson: { distance: 0, height: 0, side: 0 },
 };
+/** The follow rigs while their target sits in a vehicle (M3 W8): farther back, easing behind its heading, looking a little down. */
+const VEHICLE_RIG = { distance: 5.5, height: 1.2, side: 0 }, CHASE_RATE = 2, CHASE_PITCH = 0.22; // rad/s towards the heading; looking a little down
 const PITCH_MIN = -1.2, PITCH_MAX = 1.3; // radians; positive looks down
 const ARM_RADIUS = 0.2, ARM_RETURN = 4;  // spring arm: keep 0.2 m off walls, ease back out at 4 m/s
 
@@ -125,7 +127,20 @@ export class CameraNode extends Node {
       r.yaw -= look.lookX;
       r.pitch = Math.max(PITCH_MIN, Math.min(PITCH_MAX, r.pitch + look.lookY));
     }
-    const d = { ...DEFAULTS[preset], ...(this.props.rig ?? {}) };
+    // in a vehicle's seat (M3 W8) the follow rigs chase it: farther back, the yaw and pitch easing behind its heading unless
+    // the player turns the view. rig.vehicle is there only while chasing, so a world with no vehicle keeps its state as it was
+    const tctrl = /** @type {any} */ (target).ctrl;
+    const seatItem = tctrl?.seat ? /** @type {any} */ (this.tree.find(tctrl.seat.item)) : null;
+    const chase = (preset === 'follow' || preset === 'overShoulder') && seatItem?.manifest?.type === 'vehicle';
+    const d = { ...DEFAULTS[preset], ...(this.props.rig ?? {}), ...(chase ? VEHICLE_RIG : {}) };
+    if (chase !== !!r.vehicle) { r.distance = d.distance; r.arm = null; if (chase) r.vehicle = true; else delete r.vehicle; }
+    if (chase && !(look && (look.lookX || look.lookY))) {
+      let dy = tctrl.yaw - r.yaw;
+      dy -= Math.floor((dy + Math.PI) / (2 * Math.PI)) * 2 * Math.PI;
+      const max = CHASE_RATE * dt;
+      r.yaw += Math.max(-max, Math.min(max, dy));
+      r.pitch += Math.max(-max, Math.min(max, CHASE_PITCH - r.pitch));
+    }
     if (r.distance === null) r.distance = d.distance;
     if (look && preset === 'orbit') r.distance = Math.max(0.5, Math.min(30, r.distance * (1 + look.zoom)));
     const pivot = this.pivotOf(target, _at);

@@ -213,6 +213,7 @@ export function m0Registry() {
     actions: {
       enterState: { args: { state: arg(P.string(), 'One of the item\'s states.') }, description: 'Move the item to a state (joints, shown meshes, morphs, animations, sensors).' },
       perform: { args: { verb: arg(P.string(), 'A verb the item offers in its current state.'), by: arg(P.nodeRef(), 'The character doing it.') }, description: 'Do one of the item\'s verbs.' },
+      drive: { args: { throttle: arg(P.number({ min: -1, max: 1 }), 'Forward (1) to reverse (−1).'), steer: arg(P.number({ min: -1, max: 1 }), 'Right (1) to left (−1).') }, description: 'A vehicle\'s driving while a non-player sits in its driver\'s seat (M3 W8): a script or a brain.' },
     },
   });
   r.define('RigidBody', {

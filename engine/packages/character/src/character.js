@@ -210,8 +210,7 @@ export class CharacterNode extends Node {
     const p = this.object3d.position;
     if (c.seat) { // held on the seat (no controller, no gravity), following it if it moves (VRMXI §8.2)
       c.vy = 0; c.grounded = true;
-      const pt = /** @type {any} */ (this.tree.find(c.seat.item))?.seatPoints?.()[c.seat.point]?.node;
-      if (pt) { pt.updateWorldMatrix(true, false); const e = pt.matrixWorld.elements; this.placeAt(e[12], e[13] - SEATED_HIPS, e[14], Math.atan2(e[8], e[10])); }
+      this.followSeat();
     }
     else if (this.kcc) {
       const { movement, grounded } = this.kcc.move(this.collider, desired);
@@ -352,6 +351,16 @@ export class CharacterNode extends Node {
     if (this.collider !== undefined) this.physics.world.setColliderEnabled(this.collider, true);
     if (seat.tags.length) this.setEquippedTags([...this.equipped].filter((t) => !seat.tags.includes(t)));
     this.graph.act('stand');
+  }
+
+  /** Seated: the hips at the seat point, facing its +Z (a vehicle calls this again after physics has moved it). */
+  followSeat() {
+    const c = this.ctrl;
+    const pt = c.seat ? /** @type {any} */ (this.tree.find(c.seat.item))?.seatPoints?.()[c.seat.point]?.node : null;
+    if (!pt) return;
+    pt.updateWorldMatrix(true, false);
+    const e = pt.matrixWorld.elements;
+    this.placeAt(e[12], e[13] - SEATED_HIPS, e[14], Math.atan2(e[8], e[10]));
   }
 
   /** Put the character's feet at a point, facing a yaw (radians, 0 along +Z). */

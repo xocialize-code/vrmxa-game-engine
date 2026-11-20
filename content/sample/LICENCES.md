@@ -17,6 +17,7 @@ outright and shippable in our apps.
 | `personas/hana.persona.json` | Xocialize original | Hana's core persona in VRMXA's exchange form (§10.1), since her bundle carries none |
 | `takes/conversation.json` | Xocialize original | A two-minute take of Mira talking with Hana (M3 W4, AB-T-0543): scene, cast, input and the director's ai log, made by `tools/make-conversation.mjs` with a scripted model; acceptance check 17 |
 | `input/camera-demo.json` | Xocialize original (CC0) | A synthetic camera session as feature frames, no images (M3 W5, AB-T-0544): appears, waves, nods, shakes, points, leaves; made by `tools/make-camera-demo.mjs`; the playground's `?camera&frames=` |
+| `items/cart.vrmxi` | Xocialize original | A two-seat cart, a VRMXI `vehicle` (M3 W8, AB-T-0547): a chassis on four raycast wheels, driver's and passenger's seats, made by `tools/make-vehicle.mjs` |
 | `sequences/conversation.vrmxs` | Xocialize original | That take baked into a sequence (`takeToSequence`): her lines as dialogue clips, the person's on Mira, a decisions track, an input track |
 | `brains/hana.json` | Xocialize original | Hana's behaviour tree for the film (M2 W11): serving, as a `vrmxg-brain` document |
 | `brains/customer.json` | Xocialize original | The customer's behaviour tree (M2 W11), a `vrmxg-brain` document |
@@ -31,6 +32,7 @@ outright and shippable in our apps.
 | `tools/make-content.mjs` | Xocialize original | Generates the GLBs and clips, copies the characters, validates the scenes |
 | `tools/make-conversation.mjs` | Xocialize original | Writes `takes/conversation.json` (and, with `--sequence`, `sequences/conversation.vrmxs`) |
 | `tools/make-camera-demo.mjs` | Xocialize original | Writes `input/camera-demo.json` from @vrmxg/sense's synthetic test script |
+| `tools/make-vehicle.mjs` | Xocialize original | Writes `items/cart.vrmxi` |
 | `fonts/NotoSansJP-Regular.ttf` | SIL OFL 1.1 (`fonts/OFL.txt`) | Noto Sans JP (Google, the Noto project), the static wght 400 instance subset to Latin, kana and punctuation by `tools/make-fonts.py` from the variable font the text spike downloaded (M3 W6) |
 | `fonts/NotoSansJP-Bold.ttf` | SIL OFL 1.1 (`fonts/OFL.txt`) | The same at wght 700 |
 | `fonts/OFL.txt` | SIL OFL 1.1 | The fonts' licence |
