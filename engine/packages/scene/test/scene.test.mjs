@@ -117,7 +117,7 @@ test('describe gives an agent everything for a type: schema, units, signals, act
   assert.equal(t.propMeta.capsuleHeight.unit, 'm');
   assert.ok(t.actions.say.args.properties.text);
   assert.ok(t.signals.ready, 'inherited signal');
-  assert.deepEqual(t.behaviours, ['wander', 'greet', 'switchedBy', 'brain', 'player']);
+  assert.deepEqual(t.behaviours, ['wander', 'greet', 'switchedBy', 'noticeViewer', 'brain', 'player']);
   assert.ok(JSON.stringify(documentSchema(reg)).length > 1000);
 });
 
