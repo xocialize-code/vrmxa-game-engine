@@ -223,3 +223,100 @@ test('re-scripting is deterministic: the same edits from the same document give 
   const edited = SMALL.replace('Hana wipes the counter.\n', 'Hana wipes the counter.\n\nMIRA\nExcuse me?\n');
   assert.equal(text(build(edited, structuredClone(doc)).doc), text(build(edited, structuredClone(doc)).doc));
 });
+
+// review of PR #2, blocking 1: an edited line is matched by its words, not by its place in the gap
+const TWO = `Title: Two
+Set: cafe.vrmxs
+Marks:
+    HANA = behind-counter
+    MIRA = counter-front
+
+INT. CAFE - MORNING
+
+HANA
+Morning!
+
+MIRA
+A latte, please.
+
+MIRA
+Is it always this quiet in the morning?
+
+HANA
+Only until the students wake up.
+`;
+
+test('an edited line keeps its own id when the line before it by the same speaker is cut', () => {
+  const a = build(TWO);
+  const doc = structuredClone(a.doc);
+  const quiet = lineId(a, 'Is it always');
+  clip(doc, 'mira-eyes', (c) => c.src === `${quiet}#look`).at = 'camera';
+  const edited = TWO.replace('MIRA\nA latte, please.\n\n', '').replace('Is it always this quiet in the morning?', 'Is it always this quiet in the mornings here?');
+  const b = build(edited, doc);
+  assert.equal(lineId(b, 'Is it always'), quiet, 'the reworded line is matched by its words, not the cut line\'s place');
+  const looks = track(b.doc, 'mira-eyes').clips.filter((c) => c.src === `${quiet}#look`);
+  assert.equal(looks.length, 1, 'one look for the line, not a hand one and a generated one');
+  assert.equal(looks[0].at, 'camera');
+  const say = clip(b.doc, 'mira-says', (c) => c.src === `${quiet}#say`);
+  assert.deepEqual([looks[0].start, looks[0].end], [say.start, say.end]);
+  assert.ok(!track(b.doc, 'mira-eyes').clips.some((c) => c.src.split('#')[0] !== quiet && c.hand), 'no hand item left on a cut line');
+  valid(b.doc);
+  // rewritten past recognition beside the cut line: a new line, and the old line's hand look goes (with a warning)
+  const c = build(TWO.replace('MIRA\nA latte, please.\n\n', '').replace('Is it always this quiet in the morning?', 'Do you have oat milk?'), doc);
+  assert.notEqual(lineId(c, 'Do you have'), quiet);
+  assert.ok(!track(c.doc, 'mira-eyes').clips.some((x) => x.at === 'camera'));
+  assert.ok(c.warnings.some((w) => w.includes(quiet) && /took 1 hand-edited item/.test(w)), c.warnings.join('\n'));
+});
+
+// blocking 2: a cut line takes its hand edits with it
+test('a cut line takes its hand-edited dialogue, look, shot and face keys with it, and says so', () => {
+  const src = `${SMALL}\nMIRA\n(smiling)\nThanks!\n`;
+  const a = build(src);
+  const doc = structuredClone(a.doc);
+  const latte = lineId(a, 'A latte'), thanks = lineId(a, 'Thanks');
+  const say = clip(doc, 'mira-says', (c) => c.src === `${latte}#say`); say.end += 12; // retimed
+  clip(doc, 'mira-eyes', (c) => c.src === `${latte}#look`).at = 'camera';
+  doc.sequence.shots.find((x) => x.src === `${latte}#shot`).overrides = { 'counter-light': { props: { intensity: 30 } } };
+  const happy = track(doc, 'mira-face').keys.happy; happy[1] = [happy[1][0], 1, 'easeOut'];
+  const b = build(src.replace('MIRA\nA latte, please.\n\n', '').replace('MIRA\n(smiling)\nThanks!\n', ''), doc);
+  assert.ok(!track(b.doc, 'mira-says'), 'her words are gone with the line');
+  assert.ok(!(track(b.doc, 'mira-eyes')?.clips ?? []).some((c) => [latte, thanks].includes(c.src.split('#')[0])));
+  assert.ok(!b.doc.sequence.shots.some((x) => x.src.startsWith(latte)));
+  assert.equal(track(b.doc, 'mira-face'), undefined, 'the hand-keyed smile went with its line');
+  assert.ok(b.warnings.some((w) => w.includes(latte) && /took 3 hand-edited items/.test(w)), b.warnings.join('\n'));
+  assert.ok(b.warnings.some((w) => w.includes(thanks) && /hand-edited item/.test(w)), b.warnings.join('\n'));
+  assert.equal(b.doc.sequence.script.hand, undefined);
+  assert.equal(b.doc.sequence.script.used, undefined, 'nothing refers to the cut ids any more');
+  valid(b.doc);
+});
+
+// should-fix 4: the build's nodes follow the script too
+test('generated nodes: a moved mark moves the wide; a cast member cut entirely loses her camera; hand-moved nodes stay', () => {
+  const a = build(SMALL);
+  const moved = SMALL.replace('MIRA = counter-front', 'MIRA = window-table');
+  const b = build(moved, a.doc);
+  const wide = (r) => r.doc.nodes.find((n) => n.id === 'vc-wide').transform.p;
+  assert.notDeepEqual(wide(b), wide(a), 'the wide is placed off the new line');
+  assert.deepEqual(b.doc.sequence.cast.mira.transform, marks['window-table']);
+  assert.ok(b.setNodes.some((x) => x.id === 'vc-wide' && x.path === 'transform'));
+  assert.ok(b.addNodes.some((n) => n.id === 'mark-window-table'));
+  assert.ok(b.removeNodes.includes('mark-counter-front'), 'a mark nothing uses any more goes');
+  // a hand-moved wide is the person's: kept where they put it
+  const doc = structuredClone(a.doc);
+  doc.nodes.find((n) => n.id === 'vc-wide').transform = { p: [5, 2, 5] };
+  const c = build(moved, doc);
+  assert.deepEqual(c.doc.nodes.find((n) => n.id === 'vc-wide').transform, { p: [5, 2, 5] });
+  // cut all of Hana's lines: her close-up goes (nothing uses it)
+  const noHana = build(SMALL.replace(/HANA\n\(smiling\)\nGood morning! \[\[greet\]\] What can I get you\?\n\n/, '').replace('HANA\n(nods)\nComing right up!\n', ''), a.doc);
+  assert.ok(noHana.removeNodes.includes('vc-hana-1'));
+  assert.ok(!noHana.doc.nodes.some((n) => n.id === 'vc-hana-1'));
+  valid(noHana.doc);
+  // in the editor, those node changes are part of the one undo step
+  const s = new EditorSession({ registry: m0Registry(), text: text(a.doc) });
+  s.setDoc = set;
+  const before = s.text();
+  const out = applyScript(s, moved, { marks });
+  assert.equal(out.changed, true);
+  assert.equal(s.text(), text(b.doc));
+  s.undo(); assert.equal(s.text(), before);
+});

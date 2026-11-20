@@ -15,8 +15,10 @@
 // The script is read into beats: a scene heading, an action paragraph, a line (a cue with its parentheticals and
 // dialogue) or a transition. Each beat has a stable id (ids.js), and each element in it one derived from the beat's.
 import { GESTURES, EXPRESSIONS, KEYED_TAGS } from './vocab.js';
-import { assignIds } from './ids.js';
+import { assignIds, signature } from './ids.js';
 
+/** Keys that start a title page (Fountain's, and ours: Set, Cast, Marks, fps); others may follow once it has started. */
+const TITLE_KEYS = ['title', 'credit', 'author', 'authors', 'source', 'draft date', 'date', 'contact', 'copyright', 'notes', 'revision', 'set', 'cast', 'marks', 'fps'];
 const SCENE = /^(?:int\.?\/ext|i\/e|int|ext|est)[. ]/i;
 const TRANSITION = /^(?:[A-Z0-9 .'-]+ TO:|FADE (?:OUT|IN|TO BLACK)[.:]?|CUT TO BLACK\.?)$/;
 const TAG = /^(?:([A-Z][A-Z0-9'.-]*(?: [A-Z][A-Z0-9'.-]*)*)\s+)?([a-z][a-z0-9-]*)(?::\s*(\S.*?))?\s*$/;
@@ -24,7 +26,7 @@ const TAG = /^(?:([A-Z][A-Z0-9'.-]*(?: [A-Z][A-Z0-9'.-]*)*)\s+)?([a-z][a-z0-9-]*
 /** Collapse whitespace. */
 const squash = (s) => s.replace(/\s+/g, ' ').trim();
 /** Text a viewer reads: notes, emphasis markers and escapes removed. */
-export const plain = (s) => squash(s.replace(/\[\[[^\]]*\]\]/g, ' ').replace(/\\(.)/g, '$1').replace(/(^|[^\\])[*_]+/g, '$1'));
+export const plain = (s) => squash(s.replace(/\s*\[\[[^\]]*\]\](?=[.,!?;:…])/g, '').replace(/\[\[[^\]]*\]\]/g, ' ').replace(/\\(.)/g, '$1').replace(/(^|[^\\])[*_]+/g, '$1'));
 const words = (s) => (s ? s.split(' ').filter(Boolean).length : 0);
 
 /** Is this a character cue's text (all capitals outside an extension, with at least one letter)? */
@@ -49,9 +51,11 @@ export function parseScript(text, { previous = null, vocab = {} } = {}) {
   // ---------------------------------------------------------------- the title page
   const title = { cast: {}, marks: {}, keys: {}, lines: {} };
   let i = 0;
-  if (/^[A-Za-z][A-Za-z ]*:/.test(lines[0] ?? '')) {
+  const firstText = lines.find((l) => l !== null) ?? '';
+  if (TITLE_KEYS.includes((/^([A-Za-z][A-Za-z ]*):/.exec(firstText)?.[1] ?? '').trim().toLowerCase())) {
     let key = null;
-    for (; i < lines.length && lines[i].trim() !== ''; i++) {
+    for (; i < lines.length && (lines[i] === null || lines[i].trim() !== ''); i++) {
+      if (lines[i] === null) continue;
       const l = lines[i], m = /^([A-Za-z][A-Za-z ]*):\s*(.*)$/.exec(l);
       if (m && !/^\s/.test(l)) { key = m[1].trim().toLowerCase(); title.keys[key] = m[2].trim(); title.lines[key] = i + 1; if (m[2].trim()) titleValue(title, key, m[2].trim(), i + 1, err); }
       else if (key && /^\s/.test(l)) { title.keys[key] = squash(`${title.keys[key]}\n${l.trim()}`); titleValue(title, key, l.trim(), i + 1, err); }
@@ -96,7 +100,9 @@ export function parseScript(text, { previous = null, vocab = {} } = {}) {
   const close = () => { cur = null; };
 
   for (; i < lines.length; i++) {
+    if (lines[i] === null) continue; // a line the boneyard took: gone, not blank
     const n = i + 1, raw = lines[i], t = raw.trim();
+    if (raw === '  ' && cur?.kind === 'line') { cur.endLine = n; continue; } // two spaces keep a dialogue block going
     if (t === '') { if (cur?.kind === 'line' && !cur.parts.some((p) => p.kind === 'text' && p.text)) err(cur.line, `${cur.cue}: a cue needs dialogue under it`); close(); blank = true; continue; }
     const wasBlank = blank; blank = false;
 
@@ -140,7 +146,7 @@ export function parseScript(text, { previous = null, vocab = {} } = {}) {
     }
     if (t.startsWith('>') && !t.endsWith('<')) { beats.push({ kind: 'transition', text: t.slice(1).trim().toUpperCase(), raw: t, line: n, endLine: n }); blank = true; continue; }
     if (t.startsWith('>') && t.endsWith('<')) { cur = action(t.slice(1, -1), n); continue; } // centred text is action
-    const next = (lines[i + 1] ?? '').trim();
+    const next = (lines.slice(i + 1).find((l) => l !== null) ?? '').trim();
     if (TRANSITION.test(t) && next === '') { beats.push({ kind: 'transition', text: t, raw: t, line: n, endLine: n }); continue; }
     if (t.startsWith('@') || (cueLike(t) && next !== '')) {
       const body = t.startsWith('@') ? t.slice(1).trim() : t;
@@ -150,7 +156,7 @@ export function parseScript(text, { previous = null, vocab = {} } = {}) {
       const cue = squash((ext ? noCaret.slice(0, ext.index) : noCaret).toUpperCase());
       if (!cue) { err(n, 'a character cue needs a name'); continue; }
       const extension = ext ? ext[1].trim().toUpperCase() : null;
-      if (dual && !beats.some((b) => b.kind === 'line')) err(n, `${cue} ^: dual dialogue needs a line before it`);
+      if (dual && beats.at(-1)?.kind !== 'line') err(n, `${cue} ^: dual dialogue goes straight after the line it overlaps`);
       cur = { kind: 'line', cue, ...(extension && !/^CONT/.test(extension) ? { ext: extension } : {}), ...(dual ? { dual: true } : {}), parts: [], raw: t, line: n, endLine: n };
       beats.push(cur);
       continue;
@@ -172,6 +178,7 @@ export function parseScript(text, { previous = null, vocab = {} } = {}) {
     b.key = `${b.kind}|${b.kind === 'line' ? b.cue : ''}|${squash(b.raw)}`;
     if (b.kind === 'line') { b.text = b.parts.filter((p) => p.kind === 'text').map((p) => p.text).join(' '); b.words = words(b.text); }
     if (b.kind === 'action') b.words = words(b.text);
+    b.sig = signature(b.kind === 'scene' ? b.heading : b.text);
   }
   if (!beats.some((b) => b.kind !== 'transition')) err(Math.max(1, i), 'the script has no scenes, action or dialogue');
 
@@ -199,20 +206,23 @@ function titleValue(title, key, value, line, err) {
   }
 }
 
-/** Blank out /* boneyard *\/ (keeping the line count, so errors point at the right lines). */
+/**
+ * Take out /* boneyard *\/: a line the boneyard takes whole becomes null (skipped, so a cut line inside a dialogue
+ * block doesn't end it), and the line count is kept, so errors point at the right lines.
+ */
 function stripBoneyard(lines, err) {
   const out = [];
   let open = 0;
   for (let k = 0; k < lines.length; k++) {
     let l = lines[k], s = '';
-    let at = 0;
+    let at = 0, touched = !!open || l.includes('/*');
     while (at < l.length) {
       if (open) { const e = l.indexOf('*/', at); if (e < 0) { at = l.length; break; } open = 0; at = e + 2; continue; }
       const b = l.indexOf('/*', at);
       if (b < 0) { s += l.slice(at); break; }
       s += l.slice(at, b); open = k + 1; at = b + 2;
     }
-    out.push(open && !s.trim() && l.trim() ? '' : s);
+    out.push(touched && !s.trim() ? null : s);
   }
   if (open) err(open, 'a boneyard /* opens here and never closes');
   return out;

@@ -22,15 +22,15 @@ applyScript(session, edited, { marks });                                      //
 
 | Element | Written as | Notes |
 |---|---|---|
-| Title page | `Key: value` lines at the top, indented continuation lines | Our keys: `Set` (the set's file), `Cast` (`HANA = hana-1`), `Marks` (`HANA = behind-counter`), `fps`. Others (Title, Credit …) are kept |
+| Title page | `Key: value` lines at the top, indented continuation lines | Starts only on a known key (Fountain's Title, Credit, Author, Source, Draft date, Contact … or ours), so a script opening `FADE IN:` keeps that line. Our keys: `Set` (the set's file), `Cast` (`HANA = hana-1`), `Marks` (`HANA = behind-counter`), `fps`. Others are kept |
 | Scene heading | `INT.` / `EXT.` / `EST.` / `INT./EXT.` / `I/E`, or forced with `.`; `#10#` scene number | A duplicate scene number is an error |
 | Action | Any other paragraph; forced with `!`; `>centred<` | |
-| Character cue | All capitals, then dialogue on the next line; forced with `@`; `(V.O.)`, `(O.S.)`; `^` for dual dialogue | `(CONT'D)` is ignored |
+| Character cue | All capitals, then dialogue on the next line; forced with `@`; `(V.O.)`, `(O.S.)`; `^` for dual dialogue | `(CONT'D)` is ignored. A `^` line must come straight after the line it overlaps |
 | Parenthetical | `(…)` inside a dialogue block | Read for performance (below) |
-| Dialogue | The lines under a cue, until a blank line | |
+| Dialogue | The lines under a cue, until a blank line | A line of exactly two spaces keeps the block going |
 | Transition | `… TO:` or `FADE OUT.` alone between blank lines, or forced with `>` | |
 | Notes | `[[…]]` on one line | Tags when they read as one (below); otherwise a writer's note, ignored |
-| Boneyard, sections, synopses, page breaks | `/* … */`, `#`, `=`, `===` | Read and ignored |
+| Boneyard, sections, synopses, page breaks | `/* … */`, `#`, `=`, `===` | Read and ignored; a line the boneyard takes whole is gone, not blank, so it doesn't end a dialogue block |
 | Not in the subset | Lyrics (`~`), notes over several lines, an unclosed boneyard | Errors at their lines |
 
 **Tags** are notes that read as one. Typing `[[nod]]` gives a gesture (VRMXA slots: greet, nod, shrug, point, laugh,
@@ -58,8 +58,11 @@ dialogue) or a transition. Every element gets an id. A beat's id is its kind and
 
 When re-scripting, beats are matched to the last build's beat table (`sequence.script.beats`):
 - exact matches first, as a longest common subsequence;
-- then, between matches, unmatched old and new beats of the same kind and speaker, in order. So a line whose words were
-  edited keeps its id, and with it its hand edits and its shot number.
+- then, between matches, unmatched old and new beats of the same kind and speaker, paired by their words: the
+  order-keeping pairing with the most words in common. A pair needs half its words shared (Dice ≥ 0.5), unless it is
+  the only old and the only new beat of its kind in that gap. So a line whose words were edited keeps its id, and with
+  it its hand edits and its shot number, even when a line beside it by the same speaker is cut. The beat table keeps
+  each beat's first 32 words for this.
 
 A changed speaker makes a new beat. A new beat never reuses an id that a hand edit still refers to.
 
@@ -68,7 +71,7 @@ A changed speaker makes a new beat. A new beat never reuses an id that a hand ed
 | What | How |
 |---|---|
 | Timing | Integer frames (24 fps by default, or the title page's `fps`). A scene heading is a 2 s establishing shot. Action is read at 0.3 s a word (1.5 to 8 s), or `[[hold]]`. A line takes M3's estimate (0.4 s + 0.32 s a word, 1 to 12 s), plus pauses, then 0.25 s. Dual dialogue starts with the line before it. A line whose dialogue clip was edited by hand takes that clip's length, and everything after it moves |
-| Shots | One per beat: a heading, an action paragraph or a line (a dual line shares the shot before it). Shots tile the film. Numbers 010, 020 … are kept once given; a new shot goes between (025) or takes a letter (030A). `renumber: true` starts again |
+| Shots | One per beat: a heading, an action paragraph or a line (a dual line shares the shot before it). Shots tile the film. Numbers 010, 020 … are kept once given; a new shot goes between (025) or takes letters in reading order (030A, 030B, 030AA between 030A and 030B). Between 030 and 030A nothing fits: the new shot is numbered out of order (030B) with a warning. `renumber: true` starts again |
 | Cast | Each speaking character is cast (`sequence.cast`) on her first mark (the title page's `Marks`, else her first `[[at]]`), with no behaviours, so she stands for the camera (`behaviours: true` keeps the set's). A mark is a Marker node in the sequence or the set (`name` or `mark-name`), or one the build places from `marks` |
 | Moves | A later `[[NAME at: mark]]` is a cut: a `transform` track with step keys. In-world effect not yet checked: it writes the character's object transform, as M2's transform tracks do. W9/W12 will show whether a controller-driven character takes it |
 | Dialogue | A `dialogue` track per speaker (`hana-1-says`), a clip per line with its text, ready for W7's bake (`@vrmxg/voice` `bakePlan`) |
@@ -76,7 +79,7 @@ A changed speaker makes a new beat. A new beat never reuses an id that a hand ed
 | Performance | An `animation` track per character on twos (`hana-1-act`): talk under every line (not off screen, not voice-over), and gestures from tags and parentheticals blending in over it (talk blends back after). An `expression` track (`hana-1-face`): a rise over 8 frames to 0.7, a hold to the end of the beat and a fall over 16 frames; overlapping runs of one expression join |
 | Cameras | `coverage(ctx) → { nodes, cuts }` is the hook W8 replaces. `defaultCoverage` uses a wide (`vc-wide`, group framing, placed off the line between the first two marks) for headings, action, overlaps and voice-over, and a close-up per speaker (`vc-hana-1`, M2's closeUp rig) for lines. A CameraBrain (`brain`) drives the set's Camera. `DISSOLVE TO:` blends into the next shot's camera over 12 frames; other transitions cut (fades wait for W8/post) |
 | Markers | One per scene heading |
-| Nodes | The build adds the nodes it needs (brain, cameras, marks) when they are missing, and never changes a node that exists: a moved camera is a hand edit |
+| Nodes | The build's nodes (brain, cameras, marks it places) follow the item rules, recorded in `script.nodes`: added when missing; replaced by the new build's while untouched (a mark changed on the title page moves its Marker and the wide camera); the person's once edited (a moved camera stays where they put it); removed when no longer placed, if untouched and nothing in the sequence names them (a character whose lines are all cut loses her close-up) |
 
 ## Re-scripting keeps hand edits
 
@@ -107,10 +110,15 @@ Generated clips, shots, markers and cast entries carry `src: "<beat>#<role>"` (`
 7. **The words are the script's.** A hand-edited dialogue clip keeps its timing but takes its words from the script, and
    a warning says so. Its length becomes the line's length. A baked voice (`clip`, `timings` …) isn't a hand edit: it
    stays while the words are unchanged and goes when they change, so the bake picks the line up again.
-8. **Overlaps give way.** Generated shots and camera clips give way to kept ones, since shots don't overlap.
-9. **Duration.** A hand-set duration is kept, with a warning when the script runs longer or shorter.
+8. **A cut beat takes its hand edits with it.** When a beat leaves the script, its hand-edited items go too: dialogue,
+   looks, gestures, shots, cameras, and the hand keys in its span. Its words are gone from the script, so its edits
+   have no line to belong to. A warning names the beat and how many items went. Items a person made themselves (no
+   `src`) are never dropped this way; they move to the beat before.
+9. **Overlaps give way.** Generated shots and camera clips give way to kept ones, since shots don't overlap.
+10. **Duration.** A hand-set duration is kept, with a warning when the script runs longer or shorter.
 
-`release: [beatId]` gives a beat back to the script. Its hand-edited items, deletions and hand keys go, and it is
+`release: [beatId]` gives a beat back to the script. A beat's id is in the `src` of everything it made
+(`ln-cd2c6011#say`), and `parsed.beats` from a build maps script lines to ids. Its hand-edited items, deletions and hand keys go, and it is
 generated afresh. In the editor, `applyScript(session, text)` makes the new sequence block and any missing nodes one
 undo step. A script with errors changes nothing, and neither does a build that gives the same document.
 
@@ -122,7 +130,7 @@ undo step. A script with errors changes nothing, and neither does a build that g
   cafe (`checkSequence`, `composeSequence`, the scene schema), the same bytes twice and against
   `content/sample/sequences/cafe-order.vrmxs`, and the golden hash. Also the coverage hook, vocabularies, V.O., O.S.,
   dual dialogue and moves;
-- **rescript:** ten hand-edit cases, including the editor's one undo step with exact bytes on undo and redo.
+- **rescript:** thirteen hand-edit cases (among them a reworded line beside a cut one, a cut line's hand edits, and the build's nodes), including the editor's one undo step with exact bytes on undo and redo.
 
 `acceptance/m4/script-chromium.mjs` and `script-wkwebview.sh` hash the sample and a re-script after hand edits in Node,
 Chromium and WKWebView (scheme and loopback). All four agree (`acceptance/results/m4-script*.json`).

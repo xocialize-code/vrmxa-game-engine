@@ -3,23 +3,23 @@
  "same": true,
  "node": {
   "sample": {
-   "sha256": "54809283aa35913db1bfd2d54818efd761f96bee8f3f391a5967458bdceab96d",
-   "bytes": 10642
+   "sha256": "58cebecefcc8d62d4b58e24133e946dbf161df9f6fb4d75a0ea656793dd4f902",
+   "bytes": 11207
   },
   "rescript": {
-   "sha256": "de80c2e255a0d394ab3f97d3db748054e9756168472faceea8b4aecd6475a553",
-   "bytes": 5904
+   "sha256": "7d761dd99f2aead2f77cfb80f39d6ba6b06baddd758350d97708b598a5bb9180",
+   "bytes": 6183
   },
   "version": "v26.12.1"
  },
  "chromium": {
   "sample": {
-   "sha256": "54809283aa35913db1bfd2d54818efd761f96bee8f3f391a5967458bdceab96d",
-   "bytes": 10642
+   "sha256": "58cebecefcc8d62d4b58e24133e946dbf161df9f6fb4d75a0ea656793dd4f902",
+   "bytes": 11207
   },
   "rescript": {
-   "sha256": "de80c2e255a0d394ab3f97d3db748054e9756168472faceea8b4aecd6475a553",
-   "bytes": 5904
+   "sha256": "7d761dd99f2aead2f77cfb80f39d6ba6b06baddd758350d97708b598a5bb9180",
+   "bytes": 6183
   },
   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
   "errors": []

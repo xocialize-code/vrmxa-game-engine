@@ -26,8 +26,8 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
   node acceptance/m4/script-chromium.mjs     # Node and headless Chromium over loopback: results/m4-script.json
   acceptance/m4/script-wkwebview.sh          # WKWebView, scheme and loopback: results/m4-script-wkwebview.json
   ```
-  Node, Chromium, WKWebView scheme and loopback all give sample 54809283…b96d (10,642 bytes) and re-script
-  de80c2e2…a553 (5,904 bytes). The package's tests hold the sample's hash too (`engine/packages/script/test/golden.json`).
+  Node, Chromium, WKWebView scheme and loopback all give sample 58cebece…f902 (11,207 bytes) and re-script
+  7d761dd9…9180 (6,183 bytes). The package's tests hold the sample's hash too (`engine/packages/script/test/golden.json`).
 
 ## Result: M3 is done (2026-11-19, M5 Max)
 

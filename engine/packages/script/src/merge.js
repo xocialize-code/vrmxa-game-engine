@@ -54,6 +54,10 @@ export function merge(prev, G, { oldRows, beats, live, duration, release = new S
   const released = (src) => release.has(beatOf(src));
   const oldRemoved = new Set((S.removed ?? []).filter((k) => isLive(k.split('|')[1]) && !released(k.split('|')[1])));
   const oldHand = new Set((S.hand ?? []).filter((k) => isLive(k.split('|')[1]) && !released(k.split('|')[1])));
+  // a cut beat takes its hand-edited items with it (its words are gone from the script, so its edits have no line)
+  const deadHand = (S.hand ?? []).filter((k) => !isLive(k.split('|')[1]));
+  const cutDropped = new Map();
+  const cutDrop = (src, n = 1) => { const b = beatOf(src); cutDropped.set(b, (cutDropped.get(b) ?? 0) + n); };
 
   // ---------------------------------------------------------------- time: kept items move with their beats
   const oldBy = new Map(oldRows.map((r) => [r.id, r])), newBy = new Map(beats.map((b) => [b.id, b]));
@@ -94,6 +98,7 @@ export function merge(prev, G, { oldRows, beats, live, duration, release = new S
         if (nu && type === 'dialogue' && nu.text === item.text) for (const f of BAKE_FIELDS) if (item[f] !== undefined) nu[f] = clone(item[f]);
         continue;
       }
+      if (!isLive(src)) { cutDrop(src); continue; } // the person's, but its beat was cut
       // the person's: if they left its times as the script last gave them, it takes the script's new times (a look
       // turned to the camera still spans its line); otherwise it moves with its beat
       const nu = roles.get(src);
@@ -140,6 +145,7 @@ export function merge(prev, G, { oldRows, beats, live, duration, release = new S
   // ---------------------------------------------------------------- keyed channels
   function mergeKeyed(coll, cur, groups, channelled) {
     const out = channelled ? {} : [];
+    const cutSpans = [];
     const curBy = channelled ? Object.entries(cur ?? {}) : [[null, cur ?? []]];
     const chans = new Set([...curBy.map(([c]) => c), ...groups.map((g) => g.channel)]);
     for (const ch of [...chans].sort((a, b) => cmp(a ?? '', b ?? ''))) {
@@ -153,8 +159,17 @@ export function merge(prev, G, { oldRows, beats, live, duration, release = new S
         for (const fp of want) { const h = have.find((x) => !x.taken && !found.includes(x) && x.fp === fp); if (h) found.push(h); }
         if (found.length === want.length || released(role)) for (const h of found) h.taken = true; // the script's: replaced below
         else if (isLive(role)) next.hand.add(key);
+        else { for (const h of found) h.taken = true; cutSpans.push(role); } // edited, and its beat was cut
       }
       for (const k of oldHand) if (k.startsWith(`${coll}|`) && (channelOf(k.slice(coll.length + 1)) ?? null) === ch) next.hand.add(k);
+      for (const k of deadHand) if (k.startsWith(`${coll}|`) && (channelOf(k.slice(coll.length + 1)) ?? null) === ch) cutSpans.push(k.slice(coll.length + 1));
+      // a cut beat's hand keys: those in its old span (to the end of an expression's fall)
+      for (const role of cutSpans.splice(0)) {
+        const r = oldBy.get(beatOf(role)); if (!r) continue;
+        let n = 0;
+        for (const h of have) if (!h.taken && h.k[0] >= r.start && h.k[0] <= r.end + 24) { h.taken = true; n++; }
+        if (n) cutDrop(role, n);
+      }
       const keep = moveKeys(have.filter((x) => !x.taken).map((x) => x.k));
       if (release.size) { // a released beat's own hand keys go with it
         for (const b of release) {
@@ -236,6 +251,11 @@ export function merge(prev, G, { oldRows, beats, live, duration, release = new S
   if (S.gen?.duration !== undefined && seq.duration !== undefined && seq.duration !== S.gen.duration) {
     dur = seq.duration;
     if (dur !== duration) warnings.push(`the duration was set by hand (${dur} frames); the script runs ${duration}`);
+  }
+  for (const [b, n] of cutDropped) {
+    const r = oldBy.get(b);
+    const what = r ? `${r.kind}${r.cue ? ` (${r.cue}: "${r.words.slice(0, 6).join(' ')}${r.words.length > 6 ? ' …' : ''}")` : ''}` : 'beat';
+    warnings.push(`the cut ${what} ${b} took ${n} hand-edited item${n === 1 ? '' : 's'} with it`);
   }
   return { shots, markers, cast, tracks, duration: dur, genDuration: duration, next, warnings };
 }

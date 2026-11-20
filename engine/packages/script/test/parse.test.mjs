@@ -2,7 +2,7 @@
 // and errors that point at script lines.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseScript, buildSequence, formatErrors } from '../src/index.js';
+import { parseScript, buildSequence, formatErrors, plain, numberShots } from '../src/index.js';
 import { sample, set, marks } from './helpers.mjs';
 
 test('the sample reads as scene, action, cues, dialogue, parentheticals and transitions', () => {
@@ -152,4 +152,37 @@ Hello. [[look: the moon]]
   const noSet = buildSequence('INT. A\n\nHANA\nHi.\n');
   assert.equal(noSet.ok, false);
   assert.match(noSet.errors[0].message, /which set/);
+});
+
+test('review fixes: a boneyard line inside dialogue, dual dialogue placement, title keys, two spaces, tag spacing', () => {
+  // a line the boneyard takes is gone, not blank: the cue keeps its dialogue
+  const bone = parseScript('INT. A\n\nMIRA\n/* cut */\nHello there.\n');
+  assert.deepEqual(bone.errors, []);
+  assert.deepEqual(bone.beats.map((b) => b.kind), ['scene', 'line']);
+  assert.equal(bone.beats[1].text, 'Hello there.');
+  // dual dialogue goes straight after the line it overlaps
+  const dual = parseScript('INT. A\n\nHANA\nHi.\n\nShe waves.\n\nMIRA ^\nHi!\n');
+  assert.deepEqual(dual.errors.map((e) => [e.line, /straight after/.test(e.message)]), [[8, true]]);
+  assert.deepEqual(parseScript('INT. A\n\nHANA\nHi.\n\nMIRA ^\nHi!\n').errors, []);
+  // only known keys start a title page: FADE IN: is a transition, not a key
+  const fade = parseScript('FADE IN:\n\nINT. A\n\nHANA\nHi.\n');
+  assert.deepEqual(fade.title.keys, {});
+  assert.deepEqual(fade.beats.map((b) => b.kind), ['transition', 'scene', 'line']);
+  assert.equal(parseScript('Draft date: today\nSet: cafe.vrmxs\n\nINT. A\n').title.set, 'cafe.vrmxs');
+  // a line of two spaces keeps a dialogue block going
+  const two = parseScript('INT. A\n\nHANA\nFirst.\n  \nSecond.\n');
+  assert.equal(two.beats.filter((b) => b.kind === 'line').length, 1);
+  assert.equal(two.beats[1].text, 'First. Second.');
+  // a tag cut from before punctuation leaves no space
+  assert.equal(plain('Hi there [[nod]].'), 'Hi there.');
+  assert.equal(plain('Good morning! [[greet]] What can I get you?'), 'Good morning! What can I get you?');
+});
+
+test('shot numbers: between, letters in reading order, and a warning where nothing fits', () => {
+  const n = (prev, ids) => { const w = []; const m = numberShots(ids.map((id) => ({ id })), new Map(Object.entries(prev)), { warn: (x) => w.push(x) }); return [[...m.values()], w.length]; };
+  assert.deepEqual(n({}, ['a', 'b', 'c']), [['010', '020', '030'], 0]);
+  assert.deepEqual(n({ a: '010', c: '020' }, ['a', 'b', 'c']), [['010', '015', '020'], 0]);
+  assert.deepEqual(n({ a: '030', c: '031' }, ['a', 'b', 'x', 'c']), [['030', '030A', '030B', '031'], 0]);
+  assert.deepEqual(n({ a: '029A', c: '029B' }, ['a', 'b', 'c']), [['029A', '029AA', '029B'], 0]);
+  assert.deepEqual(n({ a: '029', c: '029A' }, ['a', 'b', 'c']), [['029', '029B', '029A'], 1], 'no room between 029 and 029A: said, not hidden');
 });

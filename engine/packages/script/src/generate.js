@@ -3,8 +3,14 @@
 // "talk", "g:nod", "look", "cam", "shot" …), and keyed channels are generated in groups with the same kind of key. The
 // re-script merge (merge.js) uses those to tell what a person changed.
 
-/** Shot numbers that survive edits: kept once given; new shots go between (035, 032) or take a letter (030A). */
-export function numberShots(shotBeats, previous = new Map(), { renumber = false } = {}) {
+/**
+ * Shot numbers that survive edits: kept once given; new shots go between (035, 032) or take letters after the shot
+ * before, in reading order (030A, 030B; 030AA between 030A and 030B). Between 030 and 030A nothing fits: the new shot
+ * is numbered after 030A's letters and `warn` says so (renumber: true numbers every shot again).
+ * @param {{ id: string }[]} shotBeats @param {Map<string, string>} [previous]
+ * @param {{ renumber?: boolean, warn?: (message: string) => void }} [o]
+ */
+export function numberShots(shotBeats, previous = new Map(), { renumber = false, warn = (message) => void message } = {}) {
   const out = new Map();
   const parse = (s) => { const m = /^(\d+)([A-Z]*)$/.exec(s ?? ''); return m ? { n: Number(m[1]), x: m[2] } : null; };
   const fmt = (n, x = '') => `${String(n).padStart(3, '0')}${x}`;
@@ -15,26 +21,43 @@ export function numberShots(shotBeats, previous = new Map(), { renumber = false 
     let j = i; while (j < shotBeats.length && !known[j]) j++;
     const lo = i > 0 ? parse(out.get(shotBeats[i - 1].id)) : { n: 0, x: '' }, hi = j < shotBeats.length ? known[j] : null;
     const run = j - i;
+    let prev = lo.x;
     for (let k = 0; k < run; k++) {
       let name;
-      if (!hi) name = fmt(lo.n - (lo.n % 10) + 10 * (k + 1));
-      else if (hi.n - lo.n - 1 >= run) name = fmt(lo.n + Math.floor(((k + 1) * (hi.n - lo.n)) / (run + 1)));
-      else { // no room between the numbers: letters after the shot before (030A, 030B …)
-        const base = lo.x ? lo.x.charCodeAt(0) - 64 : 0;
-        let code = base + 1 + k;
-        name = fmt(lo.n, letters(code));
-        while (taken.has(name)) { code++; name = fmt(lo.n, letters(code)); }
+      if (!hi && !lo.x) name = fmt(lo.n - (lo.n % 10) + 10 * (k + 1));
+      else if (hi && !lo.x && hi.n - lo.n - 1 >= run) name = fmt(lo.n + Math.floor(((k + 1) * (hi.n - lo.n)) / (run + 1)));
+      else if (!hi || hi.n > lo.n + 1 || (hi.n > lo.n && !lo.x)) {
+        // room above the shot before: the next integer when free of letters, else letters after it
+        name = fmt(lo.n, suffixAfter(prev, null, taken, lo.n));
+      } else {
+        const upper = hi.n === lo.n ? hi.x : null;
+        let x = suffixAfter(prev, upper, taken, lo.n);
+        if (x === null) { x = suffixAfter(upper ?? prev, null, taken, lo.n); warn(`no shot number fits between ${fmt(lo.n, lo.x)} and ${fmt(hi.n, hi.x)}: the new shot is ${fmt(lo.n, x)}, out of reading order (renumber to tidy)`); }
+        name = fmt(lo.n, x);
       }
-      while (taken.has(name)) name = `${name}A`;
       taken.add(name);
+      prev = parse(name).n === lo.n ? parse(name).x : prev;
       out.set(shotBeats[i + k].id, name);
     }
     i = j;
   }
   return out;
 }
-/** 1 → A … 26 → Z, 27 → ZA … */
-const letters = (n) => (n <= 26 ? String.fromCharCode(64 + n) : `Z${letters(n - 26)}`);
+/** Letter suffixes in reading order: the shortest after `a` and before `b` (null: unbounded) not yet taken, or null. */
+function suffixAfter(a, b, taken, n) {
+  const fmt = (x) => `${String(n).padStart(3, '0')}${x}`;
+  const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for (const len of [1, 2, 3]) {
+    let best = null;
+    const walk = (p) => {
+      if (p.length === len) { if (p > a && (b === null || p < b) && !taken.has(fmt(p)) && (best === null || p < best)) best = p; return; }
+      for (const c of A) walk(p + c);
+    };
+    if (len < 3) walk(''); else for (const c of A) for (const d of A) for (const e of A) { const p = c + d + e; if (p > a && (b === null || p < b) && !taken.has(fmt(p)) && (best === null || p < best)) best = p; }
+    if (best !== null) return best;
+  }
+  return null;
+}
 
 /**
  * The default coverage until W8's rules: an establishing wide for a scene heading and for action (a group framing of
