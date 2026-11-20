@@ -75,8 +75,13 @@ frame back through `@vrmxg/export`'s `readbackFor` and hashes it. `&parts=` pick
   exports must agree frame for frame.
 - **still:** `captureStill` is compared with the canvas's own pixels at 640×360 (`toDataURL` in the drawing task), and
   the view must follow a resize afterwards.
-- **readback:** the readback's cost per frame at 1080p and 4K on a cafe frame. `exportLoop` reads frame n and takes
-  n − 1, as `exportTake` does; `afterFrame` reads and takes a frame the GPU has finished.
+- **readback:** a 640×360 still, then the readback's cost per frame at 1080p, 4K and 1366×768 (rows padded in the copy)
+  on the same host, each size checked for content. `exportLoop` reads frame n and takes n − 1, as `exportTake` does;
+  `afterFrame` reads and takes a frame the GPU has finished.
+- **reuse:** a 640×360 still, then 24 film frames at 1080p on the same host, against a fresh host's: equal, with content.
+- **alpha:** a red quad at opacity 0.5 over nothing; its middle pixel as read back, and after `toImageRGBA`.
+- **filmRepeat** (not in the default parts, for AB-T-0589): `&frames=1080&repeat=3&audio=1&tiles=1` exports the film
+  three times per page and returns any frame that differs, with the tiles that differ and its images.
 
 ```sh
 (cd apps/playground && npx vite build)
@@ -94,24 +99,32 @@ apps/playground/scripts/frames-wkwebview.sh          # WKWebView, scheme and loo
   `01bbab58fabd08f7` in WKWebView, on both origins and every load; WebGL's digest to `4c2265c827597f04` and
   `696295fc68b0fa12`. The sound hashes the same in every run. WebGPU has 988 distinct frames to WebGL's 1,080 in both
   engines: WebGL's post adds grain to every frame, and WebGPU has no post until W1, so the film's still moments repeat.
-- **One frame once.** On WKWebView loopback's second load, frame 10 of the first WebGPU export differed from the second
-  export and from every other run. It didn't come back in 26 more WebGPU exports in WKWebView (6 × 3 loads of 24
-  frames, then 4 loads of the whole film twice; `results/frames-wkwebview-repeats.json`). The cause isn't found (AB-T-0589).
+- **One frame, now and then, with sound.** In WKWebView a WebGPU export sometimes has one or two frames that differ from
+  the page's other exports, by 1 level in a couple of pixels. It happened in the first and the second full run (frames 10
+  and 153). Hunting it, with sound recording, 4 of 18 exports had one (frames 140–142, 747, 1032), against 0 of 18 with
+  sound off (`results/frames-wkwebview-repeats.json`). The world hash is the same at those frames, so it's presentation.
+  The kept pair differs near the espresso machine's edge. Chromium hasn't shown it. The cause isn't found (AB-T-0589).
 - **Stills match the canvas** pixel for pixel on both backends: 230,400 of 230,400 pixels at 640×360 (a flipped still
   would differ in 160,114). The view kept drawing at its own size after the stills.
-- **Readback cost** (median ms per frame; the two loads' medians where they differ; WKWebView over loopback):
+- **Every size reads back** on both backends after a 640×360 still on the same renderer: 1080p, 4K and 1366×768 all
+  have content. The first version of the WebGPU readback made a second output target for the second size, and in three
+  r187 a second output target on a renderer never receives an output draw: every 4K WebGPU read was zeros (PR #7
+  review). Now one target per renderer is resized for each size, and a probe checks each new or resized target. An
+  export after a still on the same host matches a fresh host's frames.
+- **Alpha is premultiplied on both backends:** the half-transparent red reads back `[127, 0, 0, 128]` on WebGPU and
+  WebGL, in Chromium and WKWebView, and `toImageRGBA` gives `[253, 0, 0, 128]`.
+- **Readback cost** (median ms per frame; the two loads' medians; WKWebView over loopback; after the fix):
 
-  | Runtime | Backend | 1080p export loop | 1080p after frame | 4K export loop | 4K after frame |
-  |---|---|---|---|---|---|
-  | WKWebView | WebGPU (mapAsync, ring of 3) | 1.86 / 2.14 | 2.06 / 2.30 | 7.78 / 9.64 | 7.22 / 8.30 |
-  | WKWebView | WebGL (pixel-pack buffer) | 1.98 / 3.54 | 2.32 / 3.42 | 5.76 / 10.64 | 6.02 / 10.38 |
-  | Chromium | WebGPU | 0.3 | 0.5 | 0.8 / 1.3 | 1.4 |
-  | Chromium | WebGL | 2.7 | 2.7 / 2.9 | 9.3 / 9.4 | 9.8 / 10.0 |
+  | Runtime | Backend | 1080p export loop | 1080p after frame | 4K export loop | 4K after frame | 1366×768 export loop |
+  |---|---|---|---|---|---|---|
+  | WKWebView | WebGPU (mapAsync, ring of 3) | 1.88 / 1.94 | 2.04 / 2.00 | 8.66 / 8.80 | 7.72 / 7.92 | 1.36 / 1.26 |
+  | WKWebView | WebGL (pixel-pack buffer) | 1.78 / 3.22 | 3.34 / 3.00 | 6.14 / 7.22 | 5.92 / 5.78 | 1.44 / 1.68 |
+  | Chromium | WebGPU | 0.2 / 0.5 | 0.5 | 1.6 / 1.4 | 1.4 | 0.3 / 0.2 |
+  | Chromium | WebGL | 2.5 / 2.8 | 2.8 / 3.1 | 8.6 / 9.6 | 10.4 / 9.9 | 1.4 / 1.6 |
 
-  In the film's export loop at 1080p24 the readback costs 2.81 / 2.78 ms a frame on WebGPU in WKWebView (whole frame
-  8.40 / 8.12 ms) and 2.39 / 2.17 on WebGL (7.16 / 7.63). In Chromium it costs 0.54 / 0.52 on WebGPU (5.1) and 2.63 on
-  WebGL (7.4). WebKit's mapAsync is still the slow part, as the spike found (2.46 / 9.68 ms there). WebGL's second load
-  in WKWebView ran about 1.8 times slower than its first, so its range is wide.
+  In the film's export loop at 1080p24 the readback costs 2.76 / 2.85 ms a frame on WebGPU in WKWebView (whole frame
+  8.13 / 8.62 ms) and 2.09 / 2.27 on WebGL (7.64 / 7.27). In Chromium it costs 0.54 / 0.55 on WebGPU (5.2) and
+  2.51 / 2.73 on WebGL (6.9 / 7.8). WebKit's mapAsync is the slow part, as the spike found (2.46 / 9.68 ms there).
 - **A Chromium quirk.** A WebGPU canvas still at the browser's default 300×150 when an output target was drawn on its
   renderer stopped following resizes (`toDataURL` kept giving 300×150). This page never sizes its view canvas, so the
   still check sizes it first.

@@ -13,7 +13,7 @@
 //               a finished frame
 // Frames are exact per engine: Chromium's and WebKit's differ (AB-T-0554 gotcha 10), so the runners compare each
 // runtime with itself (two loads, and WKWebView's two origins).
-import { PerspectiveCamera } from 'three';
+import { PerspectiveCamera, Scene, Mesh, PlaneGeometry, MeshBasicMaterial } from 'three';
 import { RenderHost } from '@vrmxg/render';
 import { exportTake, hashSink, hashFrame, readbackFor, captureStill, toImageRGBA, framesFor, RATES, SIZES } from '@vrmxg/export';
 import { captureWorld, restoreWorld, worldHashes, hashValue, packRun } from '@vrmxg/snapshot';
@@ -22,6 +22,8 @@ import { runParticles, withParticleLoad, PARTICLE_STEPS, PARTICLE_SNAPSHOT_AT } 
 
 const now = () => performance.now();
 const r3 = (x) => +x.toFixed(3);
+/** The share of pixels with anything in them (a blank read is 0): every byte of RGBA, not a sample. */
+const content = (bytes) => { const u = new Uint32Array(bytes.buffer, bytes.byteOffset, bytes.byteLength >> 2); let n = 0; for (let i = 0; i < u.length; i++) if (u[i]) n++; return +(n / u.length).toFixed(4); };
 const stats = (a) => { const s = [...a].sort((x, y) => x - y); return { median: r3(s[s.length >> 1]), p95: r3(s[Math.min(s.length - 1, Math.floor(s.length * 0.95))]), min: r3(s[0]), n: s.length }; };
 
 /** A host of its own for offline frames, on `backend`. */
@@ -196,10 +198,10 @@ export async function stillCheck(host, canvas, { width = 640, height = 360, view
  * exportTake does; the frame's render not included), `afterFrame` reads and takes a frame the GPU has finished.
  * @param {any} host an offline host with the world attached
  */
-export async function readbackCost(host, { sizes = ['1080p', '4k'], frames = 30 } = {}) {
+export async function readbackCost(host, { sizes = ['1080p', '4k', '1366x768'], frames = 30 } = {}) {
   const out = {};
   for (const size of sizes) {
-    const [w, h] = SIZES[size];
+    const [w, h] = SIZES[size] ?? size.split('x').map(Number); // 1366×768: rows padded to 256 bytes in the copy
     host.resize(w, h);
     const rb = readbackFor(host, w, h), buf = new Uint8Array(w * h * 4), slots = Math.min(rb.ring, 3);
     const render = [], loop = [], after = [];
@@ -216,13 +218,57 @@ export async function readbackCost(host, { sizes = ['1080p', '4k'], frames = 30 
     }
     await rb.take(frames % slots, buf);
     rb.release();
-    out[size] = { renderMs: stats(render), exportLoopMs: stats(loop), afterFrameMs: stats(after), hash: hashFrame(buf) };
+    out[size] = { renderMs: stats(render), exportLoopMs: stats(loop), afterFrameMs: stats(after), hash: hashFrame(buf), content: content(buf) };
   }
   return out;
 }
 
+/**
+ * An export after a still on the same host (PR #7 review: on WebGPU a second output target came back empty): a 640×360
+ * still, then 24 film frames at 1080p on that host, against the same 24 frames on a fresh host. They must be equal and
+ * have content.
+ */
+export async function reuseCheck({ R, sample, opts, backend, post = null, frames = 24 }) {
+  const S = await loadSample(sample.bytes, 'sequences/cafe-morning.vrmxs');
+  const run = async (stillFirst) => {
+    const host = await offlineHost(backend, post);
+    const w = await buildWorld(R, S, { ...opts, mtoonMaterial: host.mtoonMaterial });
+    let still = null;
+    if (stillFirst) { host.attach(w.tree); host.resize(1280, 720); still = content(new Uint8Array((await captureStill(host, { width: 640, height: 360 })).rgba.buffer)); }
+    let first = null;
+    const hs = hashSink(), sink = { ...hs, frame(k, bytes) { if (k === 0) first = content(bytes); return hs.frame(k, bytes); } };
+    const r = await exportTake({ tree: w.tree, host, fps: RATES['24'], frames, width: 1920, height: 1080, sink, audio: false });
+    dropHost(host);
+    return { hashes: r.frameHashes, still, firstFrameContent: first };
+  };
+  const a = await run(true), b = await run(false);
+  return { frames, stillContent: a.still, firstFrameContent: a.firstFrameContent, freshFirstFrameContent: b.firstFrameContent, same: a.hashes.join() === b.hashes.join() };
+}
+
+/**
+ * What a half-transparent pixel reads back as (W10's alpha export): a red quad at opacity 0.5 filling the view, nothing
+ * behind it, the clear transparent. The raw bytes of the middle pixel, and what toImageRGBA makes of them.
+ */
+export async function alphaCheck({ backend }) {
+  const host = await offlineHost(backend, null), r = host.renderer;
+  const scene = new Scene();
+  scene.add(new Mesh(new PlaneGeometry(4, 4), new MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 })));
+  const cam = new PerspectiveCamera(50, 1, 0.1, 10); cam.position.z = 2; cam.updateMatrixWorld();
+  r.setClearColor(0x000000, 0);
+  r.setPixelRatio(1); host.resize(64, 64);
+  const rb = readbackFor(host, 64, 64), buf = new Uint8Array(64 * 64 * 4);
+  host.advanceNodeFrame();
+  await rb.draw(() => r.render(scene, cam));
+  await rb.readNow(buf);
+  rb.release?.();
+  const i = (32 * 64 + 32) * 4, raw = [...buf.subarray(i, i + 4)];
+  const img = toImageRGBA(buf, 64, 64, { topDown: rb.topDown }), shown = [...img.subarray(i, i + 4)];
+  dropHost(host);
+  return { raw, toImageRGBA: shown, clearCorner: [...buf.subarray(0, 4)] };
+}
+
 /** Everything above, on this page's backend. */
-export async function framesCheck({ R, sample, opts, backend, post, view, canvas, parts = ['particles', 'film', 'still', 'readback'], film = {} }) {
+export async function framesCheck({ R, sample, opts, backend, post, view, canvas, parts = ['particles', 'film', 'still', 'readback', 'reuse', 'alpha'], film = {} }) {
   const res = { backend };
   const t0 = now();
   if (parts.includes('particles')) res.particles = await particlesRendered({ R, sample, opts, backend, post });
@@ -235,45 +281,56 @@ export async function framesCheck({ R, sample, opts, backend, post, view, canvas
     w.input.replay(JSON.parse(new TextDecoder().decode(await sample.bytes('input/walk-in.json'))));
     host.attach(w.tree); host.resize(1280, 720);
     await host.frameAt(420, 0.5); // Mira inside, Hana at the counter (the backends check's still)
-    res.readback = await readbackCost(host);
+    // a still first, on the same renderer: every size after it is another size of the one output target (PR #7 review)
+    const still = await captureStill(host, { width: 640, height: 360 });
+    host.resize(1280, 720);
+    res.readback = { still640: { content: content(new Uint8Array(still.rgba.buffer)) }, ...(await readbackCost(host)) };
     dropHost(host);
   }
+  if (parts.includes('reuse')) res.reuse = await reuseCheck({ R, sample, opts, backend, post });
+  if (parts.includes('alpha')) res.alpha = await alphaCheck({ backend });
   res.ms = Math.round(now() - t0);
   return res;
 }
 
 /**
- * Hunting a frame that differs between exports (?mode=frames&parts=filmRepeat&frames=24&repeat=6): the film exported
- * `repeat` times in one page, each on a fresh host; the first export's frames are kept, and a later frame that differs
- * comes back as both images and a pixel count, with the world's hash at that frame in each.
+ * Hunting a frame that differs between exports (?mode=frames&parts=filmRepeat&frames=N&repeat=3): the film exported
+ * `repeat` times in one page, each on a fresh host. Every frame is hashed whole and in 16 × 9 tiles. A frame that
+ * differs from the first export's comes back with the tiles that differ, its image, and the same frame's image from a
+ * later export (with three exports, the odd one out is the wrong one).
  */
-export async function filmRepeat({ R, sample, opts, backend, post = null, size = '1080p', fps = '24', frames = 24, repeat = 6, audio = false }) {
+export async function filmRepeat({ R, sample, opts, backend, post = null, size = '1080p', fps = '24', frames = null, repeat = 3, audio = false, tileHashes = true }) {
   const [width, height] = SIZES[size], rate = RATES[fps];
   const S = await loadSample(sample.bytes, 'sequences/cafe-morning.vrmxs');
+  const TX = 16, TY = 9, tw = width / TX, th = height / TY;
+  const tiles = (bytes) => {
+    const u = new Uint32Array(bytes.buffer, bytes.byteOffset, bytes.byteLength >> 2), out = new Uint32Array(TX * TY);
+    for (let y = 0; y < height; y++) { const ty = Math.floor(y / th) * TX; for (let x = 0; x < width; x++) { const t = ty + Math.floor(x / tw); out[t] = Math.imul(out[t] ^ u[y * width + x], 0x01000193); } }
+    return out;
+  };
+  const runs = [], wanted = new Set(), refShots = {};
   let ref = null;
-  const runs = [];
   for (let i = 0; i < repeat; i++) {
     const host = await offlineHost(backend, post);
     const w = await buildWorld(R, S, { ...opts, mtoonMaterial: host.mtoonMaterial });
-    const kept = [], worldAt = [], diffs = [];
+    const n = frames ?? framesFor(w.sequence.duration / w.sequence.fps, rate);
+    const hashes = [], tileSets = [], diffs = [];
     const hs = hashSink();
     const sink = { ...hs, frame(k, bytes) {
-      if (!ref) kept[k] = bytes.slice();
-      else if (hashFrame(bytes) !== ref.hashes[k]) {
-        const a = ref.kept[k]; let n = 0, max = 0, minX = width, minY = height, maxX = -1, maxY = -1;
-        for (let p = 0; p < bytes.length; p += 4) {
-          const m = Math.max(Math.abs(a[p] - bytes[p]), Math.abs(a[p + 1] - bytes[p + 1]), Math.abs(a[p + 2] - bytes[p + 2]), Math.abs(a[p + 3] - bytes[p + 3]));
-          if (m) { n++; max = Math.max(max, m); const x = (p >> 2) % width, y = Math.floor((p >> 2) / width); minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y); }
-        }
-        diffs.push({ frame: k, pixels: n, max, box: [minX, minY, maxX, maxY], world: worldAt[k] === ref.worldAt[k], ...(diffs.length < 2 ? { png: pngOf(bytes, width, height, hs.job.topDown), refPng: pngOf(a, width, height, hs.job.topDown) } : {}) });
-      }
+      const h = hashFrame(bytes); hashes[k] = h;
+      const t = tileHashes ? tiles(bytes) : null; tileSets[k] = t;
+      if (ref && h !== ref.hashes[k]) {
+        const differ = []; if (t) for (let j = 0; j < t.length; j++) if (t[j] !== ref.tiles[k][j]) differ.push(j);
+        diffs.push({ frame: k, tiles: differ, png: pngOf(bytes, width, height, hs.job.topDown, 0.5) });
+        wanted.add(k);
+      } else if (wanted.has(k) && !refShots[k]) refShots[k] = { from: i, png: pngOf(bytes, width, height, hs.job.topDown, 0.5) };
       return hs.frame(k, bytes);
     } };
-    const r = await exportTake({ tree: w.tree, host, fps: rate, frames, width, height, sink, audio, now, onFrame: (k) => { worldAt[k] = hashValue(worldHashes(w.tree, { physicsBytes: true })); } });
+    const r = await exportTake({ tree: w.tree, host, fps: rate, frames: n, width, height, sink, audio, now });
     dropHost(host);
     w.audio?.dispose?.();
-    if (!ref) ref = { hashes: r.frameHashes, kept, worldAt };
-    runs.push({ digest: hashValue(r.frameHashes.join(',')), diffs });
+    if (!ref) ref = { hashes, tiles: tileSets };
+    runs.push({ digest: hashValue(r.frameHashes.join(',')), frames: n, diffs });
   }
-  return { size: [width, height], frames, repeat, runs };
+  return { size: [width, height], repeat, tiles: [TX, TY], runs, refShots };
 }

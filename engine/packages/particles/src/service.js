@@ -59,6 +59,7 @@ export class ParticlesService {
     /** A clock the caller may give (acceptance timing): the step's own cost accumulates in stepMs. @type {(() => number) | null} */ this.timer = null;
     this.stepMs = 0;
     if (BatchedRenderer) this.useRenderer(BatchedRenderer);
+    else if (tree.renderHost) this.attachHost(tree.renderHost); // installed after a host attached the tree
   }
 
   /** A render host attached the tree: draw with its BatchedRenderer (null on a host that can't draw particles). */
@@ -120,6 +121,7 @@ export class ParticlesService {
   }
 
   register(node) {
+    if (!this.batch && this.tree.renderHost) this.attachHost(this.tree.renderHost); // a host attached before this service existed
     const doc = this.effects.get(node.effect);
     if (!doc) throw new Error(`${node.id}: unknown effect "${node.effect}" (built in: ${Object.keys(BUILTIN).join(', ')}; or a project .json named in the scene)`);
     this.ensureStage();

@@ -13,6 +13,8 @@ export class Readback {
     this.size = width * height * 4;
     /** Rows come bottom-up (the drawing buffer's order). */
     this.topDown = false;
+    /** Colours come premultiplied by alpha (the drawing buffer's). */
+    this.premultiplied = true;
     /** Slots are made as they are used: no limit on frames read and not yet taken. */
     this.ring = Infinity;
     /** @type {Array<{ buf: WebGLBuffer | null, fence: WebGLSync | null, bytes?: Uint8Array }>} */

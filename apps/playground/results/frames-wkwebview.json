@@ -9,6 +9,26 @@
  },
  "runs": [
   {
+   "alpha": {
+    "clearCorner": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "raw": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "toImageRGBA": [
+     253,
+     0,
+     0,
+     128
+    ]
+   },
    "backend": "webgpu",
    "film": {
     "first": {
@@ -22,21 +42,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 113.55,
+     "framesPerSecond": 112.11,
      "height": 1080,
      "ms": {
-      "audio": 784,
-      "begin": 1,
-      "end": 0,
-      "readback": 3155,
-      "render": 2887,
-      "total": 9511,
-      "wait": 2
+      "audio": 809,
+      "begin": 0,
+      "end": 1,
+      "readback": 3102,
+      "render": 3077,
+      "total": 9633,
+      "wait": 0
      },
      "perFrameMs": {
-      "readback": 2.92,
-      "render": 2.67,
-      "total": 8.81,
+      "readback": 2.87,
+      "render": 2.85,
+      "total": 8.92,
       "wait": 0
      },
      "seconds": 45,
@@ -60,21 +80,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 120.17,
+     "framesPerSecond": 110.87,
      "height": 1080,
      "ms": {
-      "audio": 791,
+      "audio": 817,
       "begin": 0,
       "end": 0,
-      "readback": 3210,
-      "render": 2431,
-      "total": 8987,
-      "wait": 0
+      "readback": 3067,
+      "render": 3152,
+      "total": 9741,
+      "wait": 1
      },
      "perFrameMs": {
-      "readback": 2.97,
-      "render": 2.25,
-      "total": 8.32,
+      "readback": 2.84,
+      "render": 2.92,
+      "total": 9.02,
       "wait": 0
      },
      "seconds": 45,
@@ -90,7 +110,7 @@
     "worldSame": true
    },
    "mode": "frames",
-   "ms": 34595,
+   "ms": 36973,
    "origin": "scheme",
    "particles": {
     "batch": {
@@ -104,8 +124,8 @@
     "headlessFinal": "09ef4d21b00189d1",
     "lastFrame": "14c86ea05ef19deb",
     "perFrameMs": {
-     "readback": 1.828,
-     "render": 4.507
+     "readback": 1.582,
+     "render": 3.637
     },
     "sameAsHeadless": true,
     "size": [
@@ -126,20 +146,21 @@
       "median": 8,
       "min": 7,
       "n": 30,
-      "p95": 9
-     },
-     "exportLoopMs": {
-      "median": 8,
-      "min": 7,
-      "n": 30,
       "p95": 11
      },
-     "hash": "4521ddc51002085a",
+     "content": 1,
+     "exportLoopMs": {
+      "median": 9,
+      "min": 8,
+      "n": 30,
+      "p95": 12
+     },
+     "hash": "33b1693ba65e89b1",
      "renderMs": {
       "median": 3,
       "min": 2,
       "n": 30,
-      "p95": 4
+      "p95": 12
      }
     },
     "1080p": {
@@ -149,20 +170,53 @@
       "n": 30,
       "p95": 3
      },
+     "content": 1,
      "exportLoopMs": {
+      "median": 2,
+      "min": 1,
+      "n": 30,
+      "p95": 4
+     },
+     "hash": "dce370960ace74ca",
+     "renderMs": {
       "median": 2,
       "min": 2,
       "n": 30,
       "p95": 5
+     }
+    },
+    "1366x768": {
+     "afterFrameMs": {
+      "median": 1,
+      "min": 1,
+      "n": 30,
+      "p95": 2
      },
-     "hash": "dce370960ace74ca",
+     "content": 1,
+     "exportLoopMs": {
+      "median": 2,
+      "min": 1,
+      "n": 30,
+      "p95": 3
+     },
+     "hash": "aeac7b42708e0147",
      "renderMs": {
       "median": 2,
       "min": 1,
       "n": 30,
       "p95": 3
      }
+    },
+    "still640": {
+     "content": 1
     }
+   },
+   "reuse": {
+    "firstFrameContent": 1,
+    "frames": 24,
+    "freshFirstFrameContent": 1,
+    "same": true,
+    "stillContent": 1
    },
    "still": {
     "differ": 0,
@@ -194,10 +248,33 @@
     "restoredSame": true,
     "filmTwiceIdentical": true,
     "stillMatchesCanvas": true,
+    "readbackHasContent": true,
+    "exportAfterStillSame": true,
+    "alphaPremultiplied": true,
     "noErrors": true
    }
   },
   {
+   "alpha": {
+    "clearCorner": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "raw": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "toImageRGBA": [
+     253,
+     0,
+     0,
+     128
+    ]
+   },
    "backend": "webgl",
    "film": {
     "first": {
@@ -211,21 +288,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 71.19,
+     "framesPerSecond": 129.42,
      "height": 1080,
      "ms": {
-      "audio": 1274,
+      "audio": 852,
       "begin": 0,
       "end": 0,
-      "readback": 3792,
-      "render": 7342,
-      "total": 15170,
-      "wait": 2
+      "readback": 2233,
+      "render": 2547,
+      "total": 8345,
+      "wait": 0
      },
      "perFrameMs": {
-      "readback": 3.51,
-      "render": 6.8,
-      "total": 14.05,
+      "readback": 2.07,
+      "render": 2.36,
+      "total": 7.73,
       "wait": 0
      },
      "seconds": 45,
@@ -249,21 +326,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 103.28,
+     "framesPerSecond": 131.02,
      "height": 1080,
      "ms": {
-      "audio": 1030,
+      "audio": 851,
       "begin": 0,
       "end": 0,
-      "readback": 3739,
-      "render": 2979,
-      "total": 10457,
+      "readback": 2332,
+      "render": 2370,
+      "total": 8243,
       "wait": 0
      },
      "perFrameMs": {
-      "readback": 3.46,
-      "render": 2.76,
-      "total": 9.68,
+      "readback": 2.16,
+      "render": 2.19,
+      "total": 7.63,
       "wait": 0
      },
      "seconds": 45,
@@ -279,7 +356,7 @@
     "worldSame": true
    },
    "mode": "frames",
-   "ms": 38232,
+   "ms": 32445,
    "origin": "scheme",
    "particles": {
     "batch": {
@@ -293,8 +370,8 @@
     "headlessFinal": "09ef4d21b00189d1",
     "lastFrame": "405ff713a0e1f702",
     "perFrameMs": {
-     "readback": 1.205,
-     "render": 2.54
+     "readback": 1.274,
+     "render": 2.377
     },
     "sameAsHeadless": true,
     "size": [
@@ -312,16 +389,17 @@
    "readback": {
     "4k": {
      "afterFrameMs": {
-      "median": 10,
-      "min": 8,
+      "median": 7,
+      "min": 6,
       "n": 30,
-      "p95": 12
+      "p95": 7
      },
+     "content": 1,
      "exportLoopMs": {
-      "median": 10,
+      "median": 7,
       "min": 5,
       "n": 30,
-      "p95": 12
+      "p95": 11
      },
      "hash": "a4493723bee672b1",
      "renderMs": {
@@ -334,24 +412,57 @@
     "1080p": {
      "afterFrameMs": {
       "median": 4,
-      "min": 3,
-      "n": 30,
-      "p95": 8
-     },
-     "exportLoopMs": {
-      "median": 3,
       "min": 2,
       "n": 30,
-      "p95": 4
+      "p95": 5
+     },
+     "content": 1,
+     "exportLoopMs": {
+      "median": 2,
+      "min": 1,
+      "n": 30,
+      "p95": 2
      },
      "hash": "4f42c2eaf55cc4a2",
      "renderMs": {
       "median": 1,
+      "min": 0,
+      "n": 30,
+      "p95": 1
+     }
+    },
+    "1366x768": {
+     "afterFrameMs": {
+      "median": 2,
       "min": 1,
       "n": 30,
       "p95": 2
+     },
+     "content": 1,
+     "exportLoopMs": {
+      "median": 2,
+      "min": 1,
+      "n": 30,
+      "p95": 2
+     },
+     "hash": "990d8710e4dabdb4",
+     "renderMs": {
+      "median": 1,
+      "min": 0,
+      "n": 30,
+      "p95": 1
      }
+    },
+    "still640": {
+     "content": 1
     }
+   },
+   "reuse": {
+    "firstFrameContent": 1,
+    "frames": 24,
+    "freshFirstFrameContent": 1,
+    "same": true,
+    "stillContent": 1
    },
    "still": {
     "differ": 0,
@@ -383,10 +494,33 @@
     "restoredSame": true,
     "filmTwiceIdentical": true,
     "stillMatchesCanvas": true,
+    "readbackHasContent": true,
+    "exportAfterStillSame": true,
+    "alphaPremultiplied": true,
     "noErrors": true
    }
   },
   {
+   "alpha": {
+    "clearCorner": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "raw": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "toImageRGBA": [
+     253,
+     0,
+     0,
+     128
+    ]
+   },
    "backend": "webgpu",
    "film": {
     "first": {
@@ -400,21 +534,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 118.96,
+     "framesPerSecond": 112.83,
      "height": 1080,
      "ms": {
-      "audio": 798,
+      "audio": 819,
       "begin": 0,
       "end": 0,
-      "readback": 3025,
-      "render": 2639,
-      "total": 9079,
-      "wait": 0
+      "readback": 3029,
+      "render": 3057,
+      "total": 9572,
+      "wait": 1
      },
      "perFrameMs": {
       "readback": 2.8,
-      "render": 2.44,
-      "total": 8.41,
+      "render": 2.83,
+      "total": 8.86,
       "wait": 0
      },
      "seconds": 45,
@@ -438,21 +572,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 120.29,
+     "framesPerSecond": 111.72,
      "height": 1080,
      "ms": {
-      "audio": 812,
+      "audio": 811,
       "begin": 0,
       "end": 0,
-      "readback": 3060,
-      "render": 2523,
-      "total": 8978,
-      "wait": 0
+      "readback": 3130,
+      "render": 3077,
+      "total": 9667,
+      "wait": 1
      },
      "perFrameMs": {
-      "readback": 2.83,
-      "render": 2.34,
-      "total": 8.31,
+      "readback": 2.9,
+      "render": 2.85,
+      "total": 8.95,
       "wait": 0
      },
      "seconds": 45,
@@ -468,7 +602,7 @@
     "worldSame": true
    },
    "mode": "frames",
-   "ms": 31681,
+   "ms": 37145,
    "origin": "scheme",
    "particles": {
     "batch": {
@@ -482,8 +616,8 @@
     "headlessFinal": "09ef4d21b00189d1",
     "lastFrame": "14c86ea05ef19deb",
     "perFrameMs": {
-     "readback": 1.737,
-     "render": 2.665
+     "readback": 1.889,
+     "render": 3.299
     },
     "sameAsHeadless": true,
     "size": [
@@ -502,22 +636,23 @@
     "4k": {
      "afterFrameMs": {
       "median": 8,
-      "min": 7,
+      "min": 8,
       "n": 30,
       "p95": 9
      },
+     "content": 1,
      "exportLoopMs": {
-      "median": 8,
-      "min": 6,
+      "median": 9,
+      "min": 7,
       "n": 30,
-      "p95": 15
+      "p95": 11
      },
-     "hash": "4521ddc51002085a",
+     "hash": "33b1693ba65e89b1",
      "renderMs": {
-      "median": 3,
-      "min": 2,
+      "median": 4,
+      "min": 3,
       "n": 30,
-      "p95": 4
+      "p95": 10
      }
     },
     "1080p": {
@@ -527,9 +662,10 @@
       "n": 30,
       "p95": 3
      },
+     "content": 1,
      "exportLoopMs": {
       "median": 2,
-      "min": 1,
+      "min": 2,
       "n": 30,
       "p95": 5
      },
@@ -538,9 +674,41 @@
       "median": 3,
       "min": 2,
       "n": 30,
-      "p95": 4
+      "p95": 5
      }
+    },
+    "1366x768": {
+     "afterFrameMs": {
+      "median": 2,
+      "min": 1,
+      "n": 30,
+      "p95": 3
+     },
+     "content": 1,
+     "exportLoopMs": {
+      "median": 1,
+      "min": 1,
+      "n": 30,
+      "p95": 3
+     },
+     "hash": "aeac7b42708e0147",
+     "renderMs": {
+      "median": 2,
+      "min": 2,
+      "n": 30,
+      "p95": 3
+     }
+    },
+    "still640": {
+     "content": 1
     }
+   },
+   "reuse": {
+    "firstFrameContent": 1,
+    "frames": 24,
+    "freshFirstFrameContent": 1,
+    "same": true,
+    "stillContent": 1
    },
    "still": {
     "differ": 0,
@@ -572,10 +740,33 @@
     "restoredSame": true,
     "filmTwiceIdentical": true,
     "stillMatchesCanvas": true,
+    "readbackHasContent": true,
+    "exportAfterStillSame": true,
+    "alphaPremultiplied": true,
     "noErrors": true
    }
   },
   {
+   "alpha": {
+    "clearCorner": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "raw": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "toImageRGBA": [
+     253,
+     0,
+     0,
+     128
+    ]
+   },
    "backend": "webgl",
    "film": {
     "first": {
@@ -589,21 +780,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 141.77,
+     "framesPerSecond": 148.29,
      "height": 1080,
      "ms": {
-      "audio": 781,
+      "audio": 762,
       "begin": 0,
       "end": 0,
-      "readback": 2554,
-      "render": 1679,
-      "total": 7618,
-      "wait": 0
+      "readback": 2257,
+      "render": 1744,
+      "total": 7283,
+      "wait": 2
      },
      "perFrameMs": {
-      "readback": 2.36,
-      "render": 1.55,
-      "total": 7.05,
+      "readback": 2.09,
+      "render": 1.61,
+      "total": 6.74,
       "wait": 0
      },
      "seconds": 45,
@@ -627,21 +818,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 147.2,
+     "framesPerSecond": 151.05,
      "height": 1080,
      "ms": {
-      "audio": 784,
+      "audio": 777,
       "begin": 0,
       "end": 0,
-      "readback": 2449,
-      "render": 1569,
-      "total": 7337,
+      "readback": 2275,
+      "render": 1567,
+      "total": 7150,
       "wait": 1
      },
      "perFrameMs": {
-      "readback": 2.27,
+      "readback": 2.11,
       "render": 1.45,
-      "total": 6.79,
+      "total": 6.62,
       "wait": 0
      },
      "seconds": 45,
@@ -657,7 +848,7 @@
     "worldSame": true
    },
    "mode": "frames",
-   "ms": 26565,
+   "ms": 28910,
    "origin": "scheme",
    "particles": {
     "batch": {
@@ -671,8 +862,8 @@
     "headlessFinal": "09ef4d21b00189d1",
     "lastFrame": "405ff713a0e1f702",
     "perFrameMs": {
-     "readback": 1.114,
-     "render": 2.294
+     "readback": 1.211,
+     "render": 2.033
     },
     "sameAsHeadless": true,
     "size": [
@@ -695,15 +886,16 @@
       "n": 30,
       "p95": 7
      },
+     "content": 1,
      "exportLoopMs": {
       "median": 6,
-      "min": 4,
+      "min": 3,
       "n": 30,
       "p95": 7
      },
      "hash": "a4493723bee672b1",
      "renderMs": {
-      "median": 1,
+      "median": 0,
       "min": 0,
       "n": 30,
       "p95": 1
@@ -714,13 +906,14 @@
       "median": 2,
       "min": 1,
       "n": 30,
-      "p95": 4
+      "p95": 2
      },
+     "content": 1,
      "exportLoopMs": {
       "median": 2,
       "min": 1,
       "n": 30,
-      "p95": 3
+      "p95": 2
      },
      "hash": "4f42c2eaf55cc4a2",
      "renderMs": {
@@ -729,7 +922,39 @@
       "n": 30,
       "p95": 1
      }
+    },
+    "1366x768": {
+     "afterFrameMs": {
+      "median": 1,
+      "min": 1,
+      "n": 30,
+      "p95": 2
+     },
+     "content": 1,
+     "exportLoopMs": {
+      "median": 1,
+      "min": 0,
+      "n": 30,
+      "p95": 2
+     },
+     "hash": "990d8710e4dabdb4",
+     "renderMs": {
+      "median": 0,
+      "min": 0,
+      "n": 30,
+      "p95": 1
+     }
+    },
+    "still640": {
+     "content": 1
     }
+   },
+   "reuse": {
+    "firstFrameContent": 1,
+    "frames": 24,
+    "freshFirstFrameContent": 1,
+    "same": true,
+    "stillContent": 1
    },
    "still": {
     "differ": 0,
@@ -761,10 +986,33 @@
     "restoredSame": true,
     "filmTwiceIdentical": true,
     "stillMatchesCanvas": true,
+    "readbackHasContent": true,
+    "exportAfterStillSame": true,
+    "alphaPremultiplied": true,
     "noErrors": true
    }
   },
   {
+   "alpha": {
+    "clearCorner": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "raw": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "toImageRGBA": [
+     253,
+     0,
+     0,
+     128
+    ]
+   },
    "backend": "webgpu",
    "film": {
     "first": {
@@ -778,21 +1026,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 119.1,
+     "framesPerSecond": 122.97,
      "height": 1080,
      "ms": {
-      "audio": 794.42,
-      "begin": 0,
+      "audio": 785.38,
+      "begin": 0.02,
       "end": 0.04,
-      "readback": 3039.28,
-      "render": 2628.88,
-      "total": 9067.94,
-      "wait": 0.86
+      "readback": 2984.58,
+      "render": 2464.38,
+      "total": 8782.28,
+      "wait": 0.9
      },
      "perFrameMs": {
-      "readback": 2.81,
-      "render": 2.43,
-      "total": 8.4,
+      "readback": 2.76,
+      "render": 2.28,
+      "total": 8.13,
       "wait": 0
      },
      "seconds": 45,
@@ -816,21 +1064,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 118.6,
+     "framesPerSecond": 118.32,
      "height": 1080,
      "ms": {
-      "audio": 804.62,
+      "audio": 823.02,
       "begin": 0,
       "end": 0.02,
-      "readback": 3101.88,
-      "render": 2600.1,
-      "total": 9106.24,
-      "wait": 0.88
+      "readback": 3012.58,
+      "render": 2685.78,
+      "total": 9127.96,
+      "wait": 0.92
      },
      "perFrameMs": {
-      "readback": 2.87,
-      "render": 2.41,
-      "total": 8.43,
+      "readback": 2.79,
+      "render": 2.49,
+      "total": 8.45,
       "wait": 0
      },
      "seconds": 45,
@@ -846,7 +1094,7 @@
     "worldSame": true
    },
    "mode": "frames",
-   "ms": 31589,
+   "ms": 34809,
    "origin": "loopback",
    "particles": {
     "batch": {
@@ -860,8 +1108,8 @@
     "headlessFinal": "09ef4d21b00189d1",
     "lastFrame": "14c86ea05ef19deb",
     "perFrameMs": {
-     "readback": 1.663,
-     "render": 2.494
+     "readback": 1.711,
+     "render": 2.716
     },
     "sameAsHeadless": true,
     "size": [
@@ -879,46 +1127,80 @@
    "readback": {
     "4k": {
      "afterFrameMs": {
-      "median": 7.22,
-      "min": 6.9,
+      "median": 7.72,
+      "min": 7.32,
       "n": 30,
-      "p95": 8.02
+      "p95": 9.74
      },
+     "content": 1,
      "exportLoopMs": {
-      "median": 7.78,
-      "min": 6.38,
+      "median": 8.66,
+      "min": 7.18,
       "n": 30,
-      "p95": 16.08
+      "p95": 10.48
      },
-     "hash": "4521ddc51002085a",
+     "hash": "33b1693ba65e89b1",
      "renderMs": {
-      "median": 2.92,
-      "min": 2.7,
+      "median": 3.38,
+      "min": 2.34,
       "n": 30,
-      "p95": 3.82
+      "p95": 8.82
      }
     },
     "1080p": {
      "afterFrameMs": {
-      "median": 2.06,
-      "min": 1.94,
+      "median": 2.04,
+      "min": 1.88,
       "n": 30,
-      "p95": 2.3
+      "p95": 2.62
      },
+     "content": 1,
      "exportLoopMs": {
-      "median": 1.86,
+      "median": 1.88,
       "min": 1.68,
       "n": 30,
-      "p95": 3.62
+      "p95": 4.12
      },
      "hash": "dce370960ace74ca",
      "renderMs": {
-      "median": 2.82,
-      "min": 2.02,
+      "median": 2.54,
+      "min": 1.74,
       "n": 30,
-      "p95": 5.16
+      "p95": 4.78
      }
+    },
+    "1366x768": {
+     "afterFrameMs": {
+      "median": 1.3,
+      "min": 1.18,
+      "n": 30,
+      "p95": 2.58
+     },
+     "content": 1,
+     "exportLoopMs": {
+      "median": 1.36,
+      "min": 1.14,
+      "n": 30,
+      "p95": 2.54
+     },
+     "hash": "aeac7b42708e0147",
+     "renderMs": {
+      "median": 1.68,
+      "min": 1.34,
+      "n": 30,
+      "p95": 3.14
+     }
+    },
+    "still640": {
+     "content": 1
     }
+   },
+   "reuse": {
+    "firstFrameContent": 1,
+    "frames": 24,
+    "freshFirstFrameContent": 1,
+    "same": true,
+    "stillContent": 1
    },
    "still": {
     "differ": 0,
@@ -950,10 +1232,33 @@
     "restoredSame": true,
     "filmTwiceIdentical": true,
     "stillMatchesCanvas": true,
+    "readbackHasContent": true,
+    "exportAfterStillSame": true,
+    "alphaPremultiplied": true,
     "noErrors": true
    }
   },
   {
+   "alpha": {
+    "clearCorner": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "raw": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "toImageRGBA": [
+     253,
+     0,
+     0,
+     128
+    ]
+   },
    "backend": "webgl",
    "film": {
     "first": {
@@ -967,21 +1272,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 139.59,
+     "framesPerSecond": 130.85,
      "height": 1080,
      "ms": {
-      "audio": 775.06,
+      "audio": 812.84,
       "begin": 0.02,
-      "end": 0.04,
-      "readback": 2580.3,
-      "render": 1769.7,
-      "total": 7737.18,
-      "wait": 0.62
+      "end": 0.06,
+      "readback": 2262.02,
+      "render": 2469.94,
+      "total": 8253.5,
+      "wait": 0.78
      },
      "perFrameMs": {
-      "readback": 2.39,
-      "render": 1.64,
-      "total": 7.16,
+      "readback": 2.09,
+      "render": 2.29,
+      "total": 7.64,
       "wait": 0
      },
      "seconds": 45,
@@ -1005,21 +1310,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 149.68,
+     "framesPerSecond": 135.45,
      "height": 1080,
      "ms": {
-      "audio": 763.48,
+      "audio": 805.56,
       "begin": 0,
       "end": 0.02,
-      "readback": 2319.98,
-      "render": 1595.1,
-      "total": 7215.16,
-      "wait": 0.48
+      "readback": 2170.32,
+      "render": 2321.88,
+      "total": 7973.44,
+      "wait": 0.7
      },
      "perFrameMs": {
-      "readback": 2.15,
-      "render": 1.48,
-      "total": 6.68,
+      "readback": 2.01,
+      "render": 2.15,
+      "total": 7.38,
       "wait": 0
      },
      "seconds": 45,
@@ -1035,7 +1340,7 @@
     "worldSame": true
    },
    "mode": "frames",
-   "ms": 26267,
+   "ms": 31892,
    "origin": "loopback",
    "particles": {
     "batch": {
@@ -1049,8 +1354,8 @@
     "headlessFinal": "09ef4d21b00189d1",
     "lastFrame": "405ff713a0e1f702",
     "perFrameMs": {
-     "readback": 1.037,
-     "render": 1.897
+     "readback": 1.326,
+     "render": 2.329
     },
     "sameAsHeadless": true,
     "size": [
@@ -1068,46 +1373,80 @@
    "readback": {
     "4k": {
      "afterFrameMs": {
-      "median": 6.02,
-      "min": 5.06,
+      "median": 5.92,
+      "min": 5.52,
       "n": 30,
-      "p95": 9.5
+      "p95": 6.74
      },
+     "content": 1,
      "exportLoopMs": {
-      "median": 5.76,
-      "min": 3.48,
+      "median": 6.14,
+      "min": 3.94,
       "n": 30,
-      "p95": 6.42
+      "p95": 7.82
      },
      "hash": "a4493723bee672b1",
      "renderMs": {
-      "median": 0.48,
-      "min": 0.34,
+      "median": 0.64,
+      "min": 0.54,
       "n": 30,
-      "p95": 0.76
+      "p95": 0.78
      }
     },
     "1080p": {
      "afterFrameMs": {
-      "median": 2.32,
-      "min": 1.76,
+      "median": 3.34,
+      "min": 1.8,
       "n": 30,
-      "p95": 3.36
+      "p95": 4.56
      },
+     "content": 1,
      "exportLoopMs": {
-      "median": 1.98,
-      "min": 0.9,
+      "median": 1.78,
+      "min": 1.14,
       "n": 30,
-      "p95": 2.32
+      "p95": 2.08
      },
      "hash": "4f42c2eaf55cc4a2",
      "renderMs": {
-      "median": 0.54,
-      "min": 0.34,
+      "median": 0.84,
+      "min": 0.5,
       "n": 30,
-      "p95": 0.94
+      "p95": 1.04
      }
+    },
+    "1366x768": {
+     "afterFrameMs": {
+      "median": 1.54,
+      "min": 1.34,
+      "n": 30,
+      "p95": 2.24
+     },
+     "content": 1,
+     "exportLoopMs": {
+      "median": 1.44,
+      "min": 0.86,
+      "n": 30,
+      "p95": 1.88
+     },
+     "hash": "990d8710e4dabdb4",
+     "renderMs": {
+      "median": 0.48,
+      "min": 0.38,
+      "n": 30,
+      "p95": 0.56
+     }
+    },
+    "still640": {
+     "content": 1
     }
+   },
+   "reuse": {
+    "firstFrameContent": 1,
+    "frames": 24,
+    "freshFirstFrameContent": 1,
+    "same": true,
+    "stillContent": 1
    },
    "still": {
     "differ": 0,
@@ -1139,38 +1478,61 @@
     "restoredSame": true,
     "filmTwiceIdentical": true,
     "stillMatchesCanvas": true,
+    "readbackHasContent": true,
+    "exportAfterStillSame": true,
+    "alphaPremultiplied": true,
     "noErrors": true
    }
   },
   {
+   "alpha": {
+    "clearCorner": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "raw": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "toImageRGBA": [
+     253,
+     0,
+     0,
+     128
+    ]
+   },
    "backend": "webgpu",
    "film": {
     "first": {
      "audioBytes": 8640044,
      "audioHash": "b69c46ab",
      "backend": "webgpu",
-     "digest": "9d7171c53452c632",
+     "digest": "f0e47fa5c9d82000",
      "distinct": 988,
      "fps": [
       24,
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 123.12,
+     "framesPerSecond": 116.06,
      "height": 1080,
      "ms": {
-      "audio": 773.86,
+      "audio": 796.62,
       "begin": 0.02,
       "end": 0.04,
-      "readback": 2998.3,
-      "render": 2433.72,
-      "total": 8771.74,
-      "wait": 0.72
+      "readback": 3077.08,
+      "render": 2754.12,
+      "total": 9305.3,
+      "wait": 1.24
      },
      "perFrameMs": {
-      "readback": 2.78,
-      "render": 2.25,
-      "total": 8.12,
+      "readback": 2.85,
+      "render": 2.55,
+      "total": 8.62,
       "wait": 0
      },
      "seconds": 45,
@@ -1182,7 +1544,7 @@
     "fps": "24",
     "frames": 1080,
     "framesDiffer": [
-     10
+     153
     ],
     "identical": false,
     "second": {
@@ -1196,21 +1558,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 123.77,
+     "framesPerSecond": 117.04,
      "height": 1080,
      "ms": {
-      "audio": 778.96,
-      "begin": 0.02,
-      "end": 0.02,
-      "readback": 3006.46,
-      "render": 2379.32,
-      "total": 8726.18,
-      "wait": 0.58
+      "audio": 795.46,
+      "begin": 0,
+      "end": 0.04,
+      "readback": 3045.62,
+      "render": 2717.72,
+      "total": 9228,
+      "wait": 0.8
      },
      "perFrameMs": {
-      "readback": 2.78,
-      "render": 2.2,
-      "total": 8.08,
+      "readback": 2.82,
+      "render": 2.52,
+      "total": 8.54,
       "wait": 0
      },
      "seconds": 45,
@@ -1226,7 +1588,7 @@
     "worldSame": true
    },
    "mode": "frames",
-   "ms": 31290,
+   "ms": 36158,
    "origin": "loopback",
    "particles": {
     "batch": {
@@ -1240,8 +1602,8 @@
     "headlessFinal": "09ef4d21b00189d1",
     "lastFrame": "14c86ea05ef19deb",
     "perFrameMs": {
-     "readback": 1.682,
-     "render": 2.693
+     "readback": 1.84,
+     "render": 3.173
     },
     "sameAsHeadless": true,
     "size": [
@@ -1259,46 +1621,80 @@
    "readback": {
     "4k": {
      "afterFrameMs": {
-      "median": 8.3,
-      "min": 7.64,
+      "median": 7.92,
+      "min": 7.52,
       "n": 30,
-      "p95": 9.16
+      "p95": 9.4
      },
+     "content": 1,
      "exportLoopMs": {
-      "median": 9.64,
-      "min": 8,
+      "median": 8.8,
+      "min": 7.3,
       "n": 30,
-      "p95": 11.16
+      "p95": 10.54
      },
-     "hash": "4521ddc51002085a",
+     "hash": "33b1693ba65e89b1",
      "renderMs": {
-      "median": 3.14,
-      "min": 2.36,
+      "median": 2.68,
+      "min": 2.32,
       "n": 30,
-      "p95": 5.56
+      "p95": 7
      }
     },
     "1080p": {
      "afterFrameMs": {
-      "median": 2.3,
-      "min": 2.06,
+      "median": 2,
+      "min": 1.84,
       "n": 30,
-      "p95": 2.6
+      "p95": 3.38
      },
+     "content": 1,
      "exportLoopMs": {
-      "median": 2.14,
-      "min": 1.94,
+      "median": 1.94,
+      "min": 1.7,
       "n": 30,
-      "p95": 7.88
+      "p95": 4.06
      },
      "hash": "dce370960ace74ca",
      "renderMs": {
-      "median": 3.1,
-      "min": 2.3,
+      "median": 2.06,
+      "min": 1.54,
       "n": 30,
-      "p95": 3.8
+      "p95": 3.22
      }
+    },
+    "1366x768": {
+     "afterFrameMs": {
+      "median": 1.36,
+      "min": 1.26,
+      "n": 30,
+      "p95": 2.86
+     },
+     "content": 1,
+     "exportLoopMs": {
+      "median": 1.26,
+      "min": 1.14,
+      "n": 30,
+      "p95": 2.6
+     },
+     "hash": "aeac7b42708e0147",
+     "renderMs": {
+      "median": 2.28,
+      "min": 1.54,
+      "n": 30,
+      "p95": 3.3
+     }
+    },
+    "still640": {
+     "content": 1
     }
+   },
+   "reuse": {
+    "firstFrameContent": 1,
+    "frames": 24,
+    "freshFirstFrameContent": 1,
+    "same": true,
+    "stillContent": 1
    },
    "still": {
     "differ": 0,
@@ -1330,10 +1726,33 @@
     "restoredSame": true,
     "filmTwiceIdentical": false,
     "stillMatchesCanvas": true,
+    "readbackHasContent": true,
+    "exportAfterStillSame": true,
+    "alphaPremultiplied": true,
     "noErrors": true
    }
   },
   {
+   "alpha": {
+    "clearCorner": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "raw": [
+     127,
+     0,
+     0,
+     128
+    ],
+    "toImageRGBA": [
+     253,
+     0,
+     0,
+     128
+    ]
+   },
    "backend": "webgl",
    "film": {
     "first": {
@@ -1347,21 +1766,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 131.11,
+     "framesPerSecond": 137.52,
      "height": 1080,
      "ms": {
-      "audio": 822.14,
+      "audio": 781.62,
       "begin": 0.02,
-      "end": 0.04,
-      "readback": 2348.16,
-      "render": 2325.12,
-      "total": 8237.2,
-      "wait": 1.06
+      "end": 0.06,
+      "readback": 2452.58,
+      "render": 1947.28,
+      "total": 7853.62,
+      "wait": 0.92
      },
      "perFrameMs": {
-      "readback": 2.17,
-      "render": 2.15,
-      "total": 7.63,
+      "readback": 2.27,
+      "render": 1.8,
+      "total": 7.27,
       "wait": 0
      },
      "seconds": 45,
@@ -1385,21 +1804,21 @@
       1
      ],
      "frames": 1080,
-     "framesPerSecond": 141.44,
+     "framesPerSecond": 136.02,
      "height": 1080,
      "ms": {
-      "audio": 1025,
-      "begin": 0,
-      "end": 0.04,
-      "readback": 2336.72,
-      "render": 1722.14,
-      "total": 7635.54,
-      "wait": 0.42
+      "audio": 802.58,
+      "begin": 0.02,
+      "end": 0.02,
+      "readback": 2360.1,
+      "render": 2096.8,
+      "total": 7939.86,
+      "wait": 0.62
      },
      "perFrameMs": {
-      "readback": 2.16,
-      "render": 1.59,
-      "total": 7.07,
+      "readback": 2.19,
+      "render": 1.94,
+      "total": 7.35,
       "wait": 0
      },
      "seconds": 45,
@@ -1415,7 +1834,7 @@
     "worldSame": true
    },
    "mode": "frames",
-   "ms": 28611,
+   "ms": 31108,
    "origin": "loopback",
    "particles": {
     "batch": {
@@ -1429,8 +1848,8 @@
     "headlessFinal": "09ef4d21b00189d1",
     "lastFrame": "405ff713a0e1f702",
     "perFrameMs": {
-     "readback": 1.07,
-     "render": 2.194
+     "readback": 1.057,
+     "render": 2.133
     },
     "sameAsHeadless": true,
     "size": [
@@ -1448,46 +1867,80 @@
    "readback": {
     "4k": {
      "afterFrameMs": {
-      "median": 10.38,
-      "min": 6.98,
+      "median": 5.78,
+      "min": 5.4,
       "n": 30,
-      "p95": 12.36
+      "p95": 6.74
      },
+     "content": 1,
      "exportLoopMs": {
-      "median": 10.64,
-      "min": 5.24,
+      "median": 7.22,
+      "min": 4.08,
       "n": 30,
-      "p95": 14
+      "p95": 8.72
      },
      "hash": "a4493723bee672b1",
      "renderMs": {
-      "median": 0.74,
-      "min": 0.62,
+      "median": 0.62,
+      "min": 0.52,
       "n": 30,
       "p95": 0.8
      }
     },
     "1080p": {
      "afterFrameMs": {
-      "median": 3.42,
-      "min": 3.24,
+      "median": 3,
+      "min": 2.18,
       "n": 30,
-      "p95": 3.92
+      "p95": 3.42
      },
+     "content": 1,
      "exportLoopMs": {
-      "median": 3.54,
-      "min": 1.26,
+      "median": 3.22,
+      "min": 1.28,
       "n": 30,
-      "p95": 4.16
+      "p95": 4.26
      },
      "hash": "4f42c2eaf55cc4a2",
      "renderMs": {
-      "median": 0.76,
-      "min": 0.64,
+      "median": 0.72,
+      "min": 0.5,
       "n": 30,
-      "p95": 0.88
+      "p95": 1.08
      }
+    },
+    "1366x768": {
+     "afterFrameMs": {
+      "median": 1.8,
+      "min": 1.48,
+      "n": 30,
+      "p95": 2.8
+     },
+     "content": 1,
+     "exportLoopMs": {
+      "median": 1.68,
+      "min": 0.74,
+      "n": 30,
+      "p95": 2.18
+     },
+     "hash": "990d8710e4dabdb4",
+     "renderMs": {
+      "median": 0.44,
+      "min": 0.34,
+      "n": 30,
+      "p95": 0.56
+     }
+    },
+    "still640": {
+     "content": 1
     }
+   },
+   "reuse": {
+    "firstFrameContent": 1,
+    "frames": 24,
+    "freshFirstFrameContent": 1,
+    "same": true,
+    "stillContent": 1
    },
    "still": {
     "differ": 0,
@@ -1519,6 +1972,9 @@
     "restoredSame": true,
     "filmTwiceIdentical": true,
     "stillMatchesCanvas": true,
+    "readbackHasContent": true,
+    "exportAfterStillSame": true,
+    "alphaPremultiplied": true,
     "noErrors": true
    }
   }

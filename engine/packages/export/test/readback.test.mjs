@@ -47,8 +47,9 @@ function fakeGPU() {
         for (const ops of list) for (const { src, dst, size: [w, h] } of ops) {
           assert.equal(dst.bytesPerRow % 256, 0, 'bytesPerRow is a multiple of 256');
           assert.equal(dst.buffer.state, 'unmapped', 'a copy into a mapped buffer');
+          const ox = src.origin?.x ?? 0, oy = src.origin?.y ?? 0, tw = src.texture.width;
           dst.buffer.bytes.fill(0xee); // the padding shows if it isn't stripped
-          for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) dst.buffer.bytes.set(src.texture.pixels.subarray((y * w + x) * 4, (y * w + x) * 4 + 4), y * dst.bytesPerRow + x * 4);
+          for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) dst.buffer.bytes.set(src.texture.pixels.subarray(((y + oy) * tw + x + ox) * 4, ((y + oy) * tw + x + ox) * 4 + 4), y * dst.bytesPerRow + x * 4);
         }
       },
     },
@@ -61,17 +62,32 @@ function fakeGPU() {
     setPixelRatio(r) { this.ratio = r; }, getPixelRatio() { return this.ratio; },
     setSize(w, h) { this.size = [w, h]; },
     getDrawingBufferSize(v) { return v.set(this.size[0] * this.ratio, this.size[1] * this.ratio); },
-    initRenderTarget(rt) { data.set(rt.texture, { texture: { pixels: new Uint8Array(rt.width * rt.height * 4), width: rt.width, height: rt.height } }); },
+    initRenderTarget(rt) {
+      log.targets = (log.targets ?? 0) + 1;
+      const tex = { pixels: new Uint8Array(rt.width * rt.height * 4), width: rt.width, height: rt.height, dead: renderer.secondTargetsDead && log.targets > 1 };
+      data.set(rt.texture, { texture: tex });
+      rt.addEventListener?.('resize', () => {});
+    },
     setOutputRenderTarget(rt) { this.out = rt; log.outputs.push(rt ? `${rt.width}x${rt.height}` : 'canvas'); },
     getOutputRenderTarget() { return this.out; },
-    /** Draws frame n's image (n counts renders) into the output target, or the canvas. */
-    render() {
-      frame++;
+    /**
+     * Draws frame n's image (n counts renders) into the output target, or the canvas; the readback's probe scene draws
+     * white without counting. A target resized since its texture was made gets a texture of the new size. A "dead"
+     * target (secondTargetsDead: r187's second output target) receives nothing.
+     */
+    render(scene) {
+      const probe = scene?.name === 'readback-probe';
+      if (!probe) frame++;
       const [w, h] = this.out ? [this.out.width, this.out.height] : [this.size[0] * this.ratio, this.size[1] * this.ratio];
       if (!this.out && canvas.pixels?.length !== w * h * 4) canvas = { pixels: new Uint8Array(w * h * 4), width: w, height: h };
-      const t = this.out ? data.get(this.out.texture).texture : canvas;
-      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) t.pixels.set(pixel(x, y, frame), (y * w + x) * 4);
-      this.lastFrame = frame;
+      let t = canvas;
+      if (this.out) {
+        t = data.get(this.out.texture).texture;
+        if (t.width !== w || t.height !== h) Object.assign(t, { pixels: new Uint8Array(w * h * 4), width: w, height: h });
+        if (t.dead) return;
+      }
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) t.pixels.set(probe ? [255, 255, 255, 255] : pixel(x, y, frame), (y * w + x) * 4);
+      if (!probe) this.lastFrame = frame;
     },
     dispose() {},
   };
@@ -108,7 +124,7 @@ test('draw() renders into the output target as if to the canvas, and puts the pr
   const r = fakeGPU(), rb = new GPUReadback(r, 4, 2);
   await rb.draw(() => r.render());
   await assert.rejects(rb.draw(() => { throw new Error('boom'); }), /boom/);
-  assert.deepEqual(r.log.outputs, ['4x2', 'canvas', '4x2', 'canvas']);
+  assert.deepEqual(r.log.outputs, ['4x2', 'canvas', '4x2', 'canvas', '4x2', 'canvas'], 'the probe once, then each draw');
   assert.equal(r.out, null);
   assert.equal(await rb.draw(async () => 7), 7, 'the draw\'s own result comes back (frameAt\'s)');
 });
@@ -123,8 +139,9 @@ test('the ring of 3: frame n is read into slot n % 3 and taken a frame later fro
   }
   await rb.take(6 % 3, out); got.push(out[2]);
   assert.deepEqual(got, [1, 2, 3, 4, 5, 6, 7], 'every frame, in order, none overwritten by a later one');
-  assert.equal(r.log.buffers.length, 3, 'three map buffers, made once and reused');
-  assert.ok(r.log.buffers.every((b) => b.usage === (0x0001 | 0x0008) && b.size === 256 * h && b.state === 'unmapped'));
+  const ringBufs = () => r.log.buffers.filter((b) => b.size === 256 * h); // the probe's are 256 bytes
+  assert.equal(ringBufs().length, 3, 'three map buffers, made once and reused');
+  assert.ok(ringBufs().every((b) => b.usage === (0x0001 | 0x0008) && b.state === 'unmapped'));
   // two frames outstanding (lag 2) still fit; a third read into a slot nobody took is refused
   await rb.draw(() => r.render()); rb.read(0);
   await rb.draw(() => r.render()); rb.read(1);
@@ -136,27 +153,73 @@ test('the ring of 3: frame n is read into slot n % 3 and taken a frame later fro
   // release frees the buffers and keeps the target; the next read makes them again
   const target = rb.target;
   rb.release();
-  assert.ok(r.log.buffers.every((b) => b.destroyed));
+  assert.ok(ringBufs().every((b) => b.destroyed));
   await rb.draw(() => r.render());
   assert.deepEqual(await rb.readNow(out), image(w, h, r.lastFrame));
   assert.equal(rb.target, target);
-  assert.equal(r.log.buffers.length, 4);
+  assert.equal(ringBufs().length, 4);
 });
 
-test('readbackFor: one WebGPU readback (one output target) per renderer and size, kept; WebGL gets a new pixel-pack one', () => {
+test('readbackFor: one WebGPU readback per renderer, its one output target resized for each size; WebGL gets a new pixel-pack one', async () => {
   const r = fakeGPU(), r2 = fakeGPU();
   const host = { renderer: r }, other = { renderer: r2 };
   const a = readbackFor(host, 1920, 1080);
   assert.ok(a instanceof GPUReadback);
-  assert.equal(readbackFor(host, 1920, 1080), a, 'the same target for the same size, even after release');
-  a.release();
-  assert.equal(readbackFor(host, 1920, 1080), a);
-  assert.notEqual(readbackFor(host, 3840, 2160), a, 'another size, another target');
+  const target = a.target;
+  assert.equal(readbackFor(host, 640, 360), a, 'another size: the same readback');
+  assert.equal(a.target, target, 'and the same target, resized (r187 draws nothing into a second output target)');
+  assert.deepEqual([a.target.width, a.target.height, a.width, a.height, a.bytesPerRow], [640, 360, 640, 360, 2560]);
+  assert.equal(r.log.targets, 1, 'one target ever made on this renderer');
   assert.notEqual(readbackFor(other, 1920, 1080), a, 'another renderer, its own');
+  // a still at one size, then frames at another, on the same renderer: both have their content (the reviewer's case)
+  const s1 = readbackFor(host, 16, 8); await s1.draw(() => r.render());
+  assert.deepEqual(await s1.readNow(new Uint8Array(16 * 8 * 4)), image(16, 8, r.lastFrame));
+  const s2 = readbackFor(host, 70, 4); await s2.draw(() => r.render()); // 280 bytes a row: padded
+  assert.deepEqual(await s2.readNow(new Uint8Array(70 * 4 * 4)), image(70, 4, r.lastFrame));
   const gl = { getContext: () => ({}) };
   const g = readbackFor({ renderer: gl }, 8, 8);
   assert.ok(g instanceof Readback && g.ring === Infinity && g.topDown === false);
   assert.notEqual(readbackFor({ renderer: gl }, 8, 8), g);
+});
+
+test('a target that receives no output draw (r187\'s second output target) throws at the probe instead of reading empty frames', async () => {
+  const r = fakeGPU();
+  r.secondTargetsDead = true;
+  const first = new GPUReadback(r, 8, 4);
+  await first.draw(() => r.render());
+  assert.deepEqual(await first.readNow(new Uint8Array(8 * 4 * 4)), image(8, 4, 1), 'the first target draws');
+  const second = new GPUReadback(r, 8, 4);
+  await assert.rejects(second.draw(() => r.render()), /received no output draw .*readbackFor keeps one per renderer/);
+  first.setSize(12, 6);
+  assert.equal(first.verified, false, 'a resized target is probed again');
+  await first.draw(() => r.render());
+  assert.deepEqual(await first.readNow(new Uint8Array(12 * 6 * 4)), image(12, 6, r.lastFrame), 'and still draws at the new size');
+});
+
+test('the ring under cancellation and stills: release() mid-map rejects only the take; a slot being taken is not free; a failed copy still unmaps', async () => {
+  const r = fakeGPU(), rb = new GPUReadback(r, 64, 2), out = new Uint8Array(64 * 2 * 4);
+  const unhandled = [];
+  const onUnhandled = (e) => unhandled.push(e);
+  process.on('unhandledRejection', onUnhandled);
+  try {
+    await rb.draw(() => r.render()); rb.read(0); rb.read(1);
+    assert.throws(() => rb.setSize(32, 2), /can't change size .* while it holds frames/);
+    const taking = rb.take(0, out); // in flight: slot 0 isn't free until it is unmapped
+    const still = rb.readNow(new Uint8Array(64 * 2 * 4)); // a still while the export's take waits
+    assert.equal(rb.slots[2].state, 'taking', 'readNow took slot 2, not the slot being taken');
+    await taking; await still;
+    rb.release(); // slot 1's map is pending (a cancelled export)
+    await new Promise((res) => setTimeout(res, 10));
+    assert.deepEqual(unhandled, [], 'no unhandled rejection (a page error in the browser)');
+    // a copy that throws (the wrong size of `out`) still unmaps and frees the slot
+    await rb.draw(() => r.render()); rb.read(0);
+    await assert.rejects(rb.take(0, new Uint8Array(4)));
+    assert.equal(rb.slots[0].state, 'idle');
+    assert.equal(rb.slots[0].buf.state, 'unmapped');
+    // and a pending map cut short by release() reaches its take as an error
+    rb.read(0); const t = rb.take(0, out); rb.release();
+    await assert.rejects(t, /destroyed/);
+  } finally { process.off('unhandledRejection', onUnhandled); }
 });
 
 class Mover extends Behaviour { physicsProcess(dt) { this.node.object3d.position.x += 3 * dt; } }
@@ -183,7 +246,8 @@ test('exportTake on WebGPU: every frame drawn into the output target, taken thro
   assert.deepEqual(frames.map((x) => x.n), [...Array(12).keys()], 'frames reach the sink in order');
   assert.deepEqual(frames.map((x) => x.f), [...Array(12).keys()].map((n) => n + 1), 'each frame is its own render');
   assert.ok(frames.every((x) => x.top === 0 && x.bottom === 17), 'row 0 at the top');
-  assert.equal(r.log.buffers.length, 3, 'the ring of 3');
+  const ring = r.log.buffers.filter((b) => b.size === 256 * 18); // 32 × 4 bytes a row, padded to 256; the probe's are 256
+  assert.equal(ring.length, 3, 'the ring of 3');
   assert.ok(r.log.buffers.every((b) => b.destroyed), 'released at the end');
   assert.equal(r.out, null, 'the canvas is the output again');
   assert.equal(r._nodes.nodeFrame.frameId, 12, 'a node frame per offline frame');

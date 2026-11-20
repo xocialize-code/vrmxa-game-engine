@@ -14,10 +14,15 @@ export function verdicts(r) {
     restoredSame: !!p?.snapshot.worldMatches && p.snapshot.framesDiffer.length === 0,
     filmTwiceIdentical: !!f?.identical && f.worldSame && f.first.steamDrawn,
     stillMatchesCanvas: !!s && s.repeats && s.differ === 0 && s.opaque > s.pixels * 0.9 && s.upsideDownWouldDiffer > 0 && s.viewFollows,
+    // PR #7 review: a second size on one WebGPU renderer read back empty; every size after a still must have content
+    readbackHasContent: !!r.readback && Object.values(r.readback).every((x) => x.content > 0.5),
+    exportAfterStillSame: !!r.reuse?.same && r.reuse.firstFrameContent > 0.5 && r.reuse.stillContent > 0.5,
+    // a red quad at opacity 0.5 over nothing reads back premultiplied, [127 or 128, 0, 0, 128], on both backends
+    alphaPremultiplied: !!r.alpha && Math.abs(r.alpha.raw[0] - 127.5) <= 1 && r.alpha.raw[1] === 0 && r.alpha.raw[3] === 128 && r.alpha.toImageRGBA[0] >= 252,
     noErrors: !(r.errors?.length),
   };
 }
-export const sameKey = (r) => JSON.stringify({ p: [r.particles?.final, r.particles?.framesDigest, r.particles?.lastFrame], f: [r.film?.first.digest, r.film?.first.audioHash], s: r.still?.hash, rb: Object.fromEntries(Object.entries(r.readback ?? {}).map(([k, v]) => [k, v.hash])) });
+export const sameKey = (r) => JSON.stringify({ p: [r.particles?.final, r.particles?.framesDigest, r.particles?.lastFrame], f: [r.film?.first.digest, r.film?.first.audioHash], s: r.still?.hash, rb: Object.fromEntries(Object.entries(r.readback ?? {}).filter(([, v]) => v.hash).map(([k, v]) => [k, v.hash])), a: r.alpha?.raw });
 
 /** The frames to look at (written for load 1; dir null writes none): check 13's step 300, film frame 600 (half size), the still; dropped from the JSON. */
 export function keepShots(r, prefix, dir) {

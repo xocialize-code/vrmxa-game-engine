@@ -41,7 +41,7 @@ const same = (b, o) => new Set(runs.filter((r) => r.backend === b && (!o || r.or
 // WebGPU must repeat on every load and across both origins; WebGL is reported (AB-T-0587)
 const repeat = { webgpu: same("webgpu"), webgpuScheme: same("webgpu", "scheme"), webgpuLoopback: same("webgpu", "loopback"), webgl: same("webgl"), webglScheme: same("webgl", "scheme"), webglLoopback: same("webgl", "loopback") };
 console.log("repeatable", JSON.stringify(repeat));
-for (const r of runs.filter((x) => x.origin === "loopback")) console.log(r.backend, r.case.includes("again") ? "again" : "first", "readback", JSON.stringify(Object.fromEntries(Object.entries(r.readback ?? {}).map(([k, v]) => [k, { loop: v.exportLoopMs.median, after: v.afterFrameMs.median, render: v.renderMs.median }]))), "film ms/frame", JSON.stringify(r.film?.first.perFrameMs));
+for (const r of runs.filter((x) => x.origin === "loopback")) console.log(r.backend, r.case.includes("again") ? "again" : "first", "readback", JSON.stringify(Object.fromEntries(Object.entries(r.readback ?? {}).filter(([, v]) => v.exportLoopMs).map(([k, v]) => [k, { loop: v.exportLoopMs.median, after: v.afterFrameMs.median, render: v.renderMs.median }]))), "film ms/frame", JSON.stringify(r.film?.first.perFrameMs));
 fs.writeFileSync(`${out}/frames-wkwebview.json`, JSON.stringify({ repeat, runs }, null, 1) + "\n");
 process.exitCode = bad || !repeat.webgpu ? 1 : 0;
 ' "$tmp/wkwebview-shots.json" "$here/../results" "$here/frames-verdicts.mjs"

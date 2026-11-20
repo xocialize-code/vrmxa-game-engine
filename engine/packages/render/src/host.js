@@ -139,12 +139,14 @@ export class RenderHost {
 
   /**
    * Show a tree. Its root joins the host's scene; the tree runs as it would headless. Services that draw take what
-   * they need for this renderer from the host (`attachHost`: particles take `particleRenderer`, M4 W2).
+   * they need for this renderer from the host (`attachHost`: particles take `particleRenderer`, M4 W2). The tree keeps
+   * the host as `tree.renderHost`, so a service installed later can take it then.
    */
   attach(tree) {
     if (this.tree) this.detach();
     this.tree = tree;
     this.scene.add(tree.root.object3d);
+    tree.renderHost = this; // a service installed after this attach finds the host here
     for (const s of tree.services.values()) s.attachHost?.(this);
     this.interpolator.version = -1;
     this.views.sync(tree);
@@ -154,6 +156,7 @@ export class RenderHost {
   detach() {
     if (!this.tree) return;
     this.scene.remove(this.tree.root.object3d);
+    if (this.tree.renderHost === this) this.tree.renderHost = null;
     this.tree = null;
   }
 

@@ -50,6 +50,6 @@ const sameAcrossLoads = Object.fromEntries(['webgpu', 'webgl'].map((b) => [b, ne
 const out = { version: (await import('node:os')).release(), browser: runs[0]?.ua, sameAcrossLoads, runs };
 fs.writeFileSync(path.join(results, 'frames-chromium.json'), JSON.stringify(out, null, 1) + '\n');
 console.log('same across loads', JSON.stringify(sameAcrossLoads));
-for (const r of runs) console.log(r.backend, r.load, 'readback', JSON.stringify(Object.fromEntries(Object.entries(r.readback ?? {}).map(([k, v]) => [k, { loop: v.exportLoopMs.median, after: v.afterFrameMs.median, render: v.renderMs.median }]))), 'film ms/frame', JSON.stringify(r.film?.first.perFrameMs));
+for (const r of runs) console.log(r.backend, r.load, 'readback', JSON.stringify(Object.fromEntries(Object.entries(r.readback ?? {}).filter(([, v]) => v.exportLoopMs).map(([k, v]) => [k, { loop: v.exportLoopMs.median, after: v.afterFrameMs.median, render: v.renderMs.median }]))), 'film ms/frame', JSON.stringify(r.film?.first.perFrameMs));
 const bad = runs.some((r) => Object.values(r.verdicts).some((v) => v === false)) || !sameAcrossLoads.webgpu || !sameAcrossLoads.webgl;
 process.exit(bad ? 1 : 0);

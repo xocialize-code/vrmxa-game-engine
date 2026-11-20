@@ -138,3 +138,19 @@ test('the batch renderer is the host\'s: none headless, WebGL\'s or WebGPU\'s, s
   assert.equal(moved.particles.batch, null, 'a host that can\'t draw particles (a stand-in) drops it');
   assert.ok(systems.every((s) => s._renderer === null));
 });
+
+test('a particles service installed after a host attached the tree still draws with the host\'s renderer (tree.renderHost)', () => {
+  const host = { particleRenderer: WebGPUBatchedRenderer };
+  // as RenderHost.attach leaves it: the tree knows its host before the service exists
+  const tree = new SceneTree({ registry: m0Registry(), seed: 5 });
+  tree.renderHost = host;
+  const particles = installParticles(tree);
+  assert.ok(particles.batch instanceof WebGPUBatchedRenderer, 'took the host\'s renderer when installed');
+  // and one made before the host, then a host arriving without calling attachHost, picks it up on the next emitter
+  const t2 = new SceneTree({ registry: m0Registry(), seed: 5 });
+  const p2 = installParticles(t2);
+  assert.equal(p2.batch, null);
+  t2.renderHost = host;
+  t2.instantiate({ format: 'vrmxs', version: 1, id: 'p', nodes: [{ id: 'root', type: 'Node3D' }, { id: 'cup', type: 'ParticleEmitter', parent: 'root', props: { effect: 'steam' } }] });
+  assert.ok(p2.batch instanceof WebGPUBatchedRenderer && p2.batch.batches.length > 0, 'on its first emitter');
+});

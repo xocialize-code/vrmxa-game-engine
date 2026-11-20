@@ -115,6 +115,9 @@ test('RenderHost.create on WebGPU: an initialised WebGPURenderer on the canvas, 
   tree.addService('drawsSomething', { attachHost: (h) => seen.push(h) });
   host.attach(tree); gl.attach(tree);
   assert.deepEqual(seen, [host, gl]);
+  assert.equal(tree.renderHost, gl, 'the tree keeps its host, for a service installed later');
+  gl.detach();
+  assert.equal(tree.renderHost, null);
   // a WebGPURenderer handed over before init() is refused (render() would throw later, far from the cause)
   assert.throws(() => new RenderHost({ renderer: new module.WebGPURenderer() }), /await renderer.init\(\)/);
 });

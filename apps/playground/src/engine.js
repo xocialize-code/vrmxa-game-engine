@@ -401,6 +401,7 @@ export class Playground {
     const host = this.host, { width: w, height: h } = host.drawingBufferSize(), buf = new Uint8Array(w * h * 4);
     if (host.backend === 'webgl') { const gl = host.renderer.getContext(); gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, buf); return hashFrame(buf); }
     const rb = readbackFor(host, w, h);
+    host.advanceNodeFrame(); // a frame of its own: passes and shadow maps redraw (AB-T-0554 gotcha 1), as captureStill does
     await rb.draw(() => host.render(host.last.alpha ?? 1, false));
     await rb.readNow(buf);
     rb.release();

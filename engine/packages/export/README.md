@@ -37,10 +37,10 @@ render target instead and copies it out:
 | Piece | What |
 |---|---|
 | `draw(fn)` | `renderer.setOutputRenderTarget(target)` around the render (`host.frameAt` or `host.render`), and the previous output put back, even when the draw throws. Not `setRenderTarget`: that skips tone mapping and sRGB and depth-tests against the target's own depth |
-| `read(slot)` | `copyTextureToBuffer` into one of a ring of 3 `MAP_READ` buffers (rows padded to 256 bytes; none at 1080p or 4K), then `mapAsync`. A slot still holding a frame nobody took is refused |
-| `take(slot, out)` | Waits for the map, copies the rows out tightly packed, unmaps. `readNow(out)` reads and takes one free slot (stills) |
-| Rows | Top-down (a texture's order), premultiplied like the canvas. `topDown` says so on both readbacks (WebGL's is `false`); `toImageRGBA(bytes, w, h, { topDown })` flips only WebGL's. The export's job carries `topDown`, and the shell's writer (`ExportSettings.topDown`) flips only WebGL's rows |
-| One target per size | `readbackFor` keeps one `GPUReadback` per renderer and size for the renderer's life: in r187, output targets made after the first one never received the draws (the spike's gotcha 3). `release()` frees the map buffers and keeps the target |
+| `read(slot)` | `copyTextureToBuffer` into one of a ring of 3 `MAP_READ` buffers (rows padded to 256 bytes: 1366 wide pads, 1080p and 4K don't), then `mapAsync`. A slot is idle, mapping or being taken; only an idle one can be read into or picked by `readNow` |
+| `take(slot, out)` | Waits for the map, copies the rows out tightly packed, unmaps (also when the copy throws), and only then frees the slot. `readNow(out)` reads and takes one idle slot (stills). `release()` mid-export (a cancel) leaves no unhandled rejection: a pending map rejects into its `take` only |
+| Rows and alpha | Rows top-down (a texture's order); `topDown` says so on both readbacks (WebGL's is `false`), `toImageRGBA(bytes, w, h, { topDown })` flips only WebGL's, and the export's job carries `topDown` for the shell's writer (`ExportSettings.topDown`). Colours are premultiplied on both backends (`premultiplied`): a red quad at opacity 0.5 over nothing reads back `[127, 0, 0, 128]` on each (the playground's alpha check), so `toImageRGBA` and the shell's ProRes 4444 unpremultiply treat them the same |
+| One target per renderer | In three r187 a second output target on a renderer never receives an output draw: it reads back zeros, even with the first one disposed, though `setRenderTarget` draws and clears land in it. `readbackFor` keeps one `GPUReadback` per renderer and resizes its one target for each size (`setSize`, refused while frames are outstanding); resizing works at every size and back. A new or resized target is checked with a probe (an empty scene with a white background through the output path, its middle pixel read back) before its first draw, and throws rather than export transparent black frames |
 | In `exportTake` | `await rb.draw(() => host.frameAt(step, α))`, read frame n, take n − 1 (`lag` up to 2 fits the ring of 3), `host.advanceNodeFrame()` per frame as `frameAt` does. `backend` is in the result and the shell's page timings |
 
 In Chromium a WebGPU canvas still at the browser's default 300×150 when an output target was drawn on its renderer
@@ -50,4 +50,6 @@ stills.
 
 Tests: `node --test test/` (the frame plan, the loop against a stand-in renderer and sink, the mix shift;
 `test/readback.test.mjs`: WebGPU's row order, padding and ring against a stand-in device that keeps WebGPU's rules,
-one target per size, `exportTake` and `captureStill` on a WebGPU host). Real WebGPU: the playground's `?mode=frames`.
+one target per renderer resized for each size, a still then frames at another size, the probe refusing a target that
+receives no draw, release mid-map, a slot being taken not handed to a still, a failed copy unmapping, and `exportTake`
+and `captureStill` on a WebGPU host). Real WebGPU: the playground's `?mode=frames`.
