@@ -27,7 +27,41 @@
      }
      let animatedUv = uv();
      const phase = refUVAnimationRotationPhase.mul(uvAnimationMask);
-@@ -175,7 +175,7 @@
+@@ -117,8 +117,7 @@
+     return top.div(bottom).clamp();
+   }
+ );
+-var getShading = FnCompat(({ dotNL }) => {
+-  const shadow = 1;
++var getShading = FnCompat(({ dotNL, shadow }) => { // VRMXG patch 5: the light's shadow, as the GLSL getShading( dotNL, shadow, ... )
+   const feather = float(1).sub(shadingToony);
+   let shading = dotNL.add(shadingShift);
+   shading = linearstep({
+@@ -143,11 +142,21 @@
+   direct({
+     lightDirection,
+     lightColor,
++    lightNode, // VRMXG patch 5
+     reflectedLight
+-  }) {
++  }, builder) { // VRMXG patch 5
++    let shadow = float(1); // VRMXG patch 5: three (r187) multiplies a receiving object's shadow into lightColor; GLSL MToon
++    if (lightNode && lightNode.shadowNode && lightNode.baseColorNode && lightNode.colorNode !== lightNode.baseColorNode && !builder.context.getShadow) { // VRMXG patch 5: puts it into the toon shading instead,
++      const shadowed = lightNode.colorNode; // VRMXG patch 5: so the shaded side takes shadeColor under the full light. Re-derive
++      lightNode.colorNode = lightNode.baseColorNode; // VRMXG patch 5: the light's colour without the shadow (spot cone, distance
++      lightColor = lightNode.setupDirect(builder).lightColor; // VRMXG patch 5: attenuation, projected map kept; any light type)
++      lightNode.colorNode = shadowed; // VRMXG patch 5
++      shadow = lightNode.shadowNode; // VRMXG patch 5
++    } // VRMXG patch 5
+     const dotNL = transformedNormalView.dot(lightDirection).clamp(-1, 1);
+     const shading = getShading({
+-      dotNL
++      dotNL,
++      shadow // VRMXG patch 5
+     });
+     reflectedLight.directDiffuse.addAssign(
+       getDiffuse({
+@@ -175,7 +184,7 @@
    indirectSpecular(context) {
      const { reflectedLight } = context;
      reflectedLight.indirectSpecular.addAssign(
@@ -36,7 +70,7 @@
      );
    }
  };
-@@ -190,7 +190,7 @@
+@@ -190,7 +199,7 @@
      parametricRimFresnelPower,
      parametricRimColor
    }) => {
@@ -45,7 +79,7 @@
      const dotNV = transformedNormalView2.dot(viewDir.negate());
      const rim = float2(1).sub(dotNV).add(parametricRimLift).clamp().pow(parametricRimFresnelPower);
      return rim.mul(parametricRimColor);
-@@ -483,7 +483,7 @@
+@@ -483,7 +492,7 @@
        return vec32(this.matcapNode);
      }
      if (this.matcapTexture && this.matcapTexture.isTexture === true) {

@@ -1,7 +1,8 @@
 #!/bin/sh
 # M4 W0 (AB-T-0572): the playground's ?mode=backends on both renderers in WKWebView, over the custom scheme and over
 # loopback, each twice, in fresh web views (the acceptance harness: a copy of spike-cinematics/mac's app with the built
-# playground as its web content). Writes results/backends-wkwebview.json and results/playground-wkwebview-*.png.
+# playground as its web content). Writes results/backends-wkwebview.json (with the two backends' stills compared) and
+# results/playground-wkwebview-*.png.
 #   (cd apps/playground && npx vite build) && apps/playground/scripts/backends-wkwebview.sh
 set -e
 here=$(cd "$(dirname "$0")" && pwd)
@@ -36,5 +37,9 @@ const same = (b, o) => new Set(runs.filter((r) => r.backend === b && (!o || r.or
 const repeat = { webgpu: same("webgpu"), webgl: same("webgl"), webglVariants: new Set(runs.filter((r) => r.backend === "webgl").map((r) => r.stillHash)).size };
 console.log("repeatable", JSON.stringify(repeat));
 fs.writeFileSync(`${out}/backends-wkwebview.json`, JSON.stringify({ repeat, runs }, null, 1) + "\n");
-process.exit(bad || !repeat.webgpu ? 1 : 0);
+process.exitCode = bad || !repeat.webgpu ? 1 : 0;
 ' "$tmp/wkwebview-shots.json" "$here/../results"
+# the two backends' loopback stills, compared as backends-chromium.mjs compares Chromium's
+diff=$(node "$here/compare-stills.mjs" "$here/../results/playground-wkwebview-webgl.png" "$here/../results/playground-wkwebview-webgpu.png")
+echo "WebGL vs WebGPU stills: $diff"
+node -e 'const fs = require("fs"), f = process.argv[1], o = JSON.parse(fs.readFileSync(f, "utf8")); o.diff = JSON.parse(process.argv[2]); fs.writeFileSync(f, JSON.stringify(o, null, 1) + "\n");' "$here/../results/backends-wkwebview.json" "$diff"

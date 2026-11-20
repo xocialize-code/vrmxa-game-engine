@@ -49,11 +49,12 @@ apps/playground/scripts/backends-wkwebview.sh         # the same in WKWebView, s
 - **WebGPU runs on its WebGPU backend everywhere,** with Mira on `MToonNodeMaterial`. Five consecutive offline frames
   give five distinct images, and every frame repeats exactly on a second load. In WKWebView the scheme and loopback
   origins give the same frames.
-- **The two backends' stills** (`results/playground-webgl.png`, `playground-webgpu.png`, bubbles off) differ by 0.9
-  levels on average; 1.6% of pixels differ by more than 8. Most of that is one MToon difference the six-line patch
-  doesn't cover: `MToonNodeMaterial` ignores the shadow in its toon shading. three r187 multiplies the shadow into the
-  light colour, so shadowed skin goes dark (Mira's arm) where WebGL's MToon shades it with the shade colour (AB-L-0373; fix or
-  tolerate: AB-T-0586).
+- **The two backends' stills** (`results/playground-webgl.png`, `playground-webgpu.png`, bubbles off) differed by 0.9
+  levels on average, with 1.56% of pixels off by more than 8. Most of that was MToon shadows: `MToonNodeMaterial`
+  ignored the shadow in its toon shading, so shadowed skin went dark (Mira's arm) where WebGL's MToon uses the shade
+  colour (AB-L-0373). Patch 5 (AB-T-0586) fixes it: the means fall to 0.48 (Chromium) and 0.51 (WKWebView), and the
+  shares over 8 to 1.04% and 1.22% (from 1.73% in WKWebView). What's left is led by the espresso machine's metal and
+  character edges.
 - **WebKit reads a WebGPU canvas differently.** `drawImage` of a WebGPU canvas gives the last *presented* frame even
   right after `render()`, so offline frames read that way all looked the same. `toDataURL` in the drawing task gives
   the frame just drawn. Chromium gives the new frame either way (AB-L-0372).

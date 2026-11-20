@@ -253,17 +253,62 @@ test('the post stack and the lens are sized from the drawing buffer on WebGPU (i
 
 // ---------------------------------------------------------------- the three-vrm patch
 
-test('the three-vrm patch is applied on install: MToonNodeMaterial loads on r187 and carries the six fixes', async () => {
+test('the three-vrm patch is applied on install: MToonNodeMaterial loads on r187 and carries the load fix and five fidelity fixes', async () => {
   const require = createRequire(import.meta.url);
   const file = require.resolve('@pixiv/three-vrm/nodes').replace(/index\.cjs$/, 'index.module.js'); // resolves the CJS path; read the ES module beside it
   const text = fs.readFileSync(file, 'utf8');
-  assert.equal((text.match(/VRMXG patch/g) ?? []).length, 6, 'six patched lines');
+  assert.equal((text.match(/VRMXG patch/g) ?? []).length, 18, 'AB-T-0553\'s six lines and patch 5\'s twelve (AB-T-0586)');
+  for (const n of [1, 2, 3, 4, 5]) assert.match(text, new RegExp(`VRMXG patch ${n}`), `fix ${n}`);
   // stock 3.5.5 fails to link on r187 (transformedNormalView is gone): importing at all proves the load fix
   const { MToonNodeMaterial } = await import('@pixiv/three-vrm/nodes');
   const m = new MToonNodeMaterial();
   assert.equal(m.isMToonNodeMaterial, true);
   const { PATCHES, inspect } = await import('../../../../scripts/patch-three-vrm.mjs');
   assert.deepEqual(PATCHES.map((p) => inspect(p).state), ['patched', 'patched']);
+});
+
+// ---------------------------------------------------------------- patch 5: shadows in the toon shading (AB-T-0586)
+
+/** MToonLightingModel.direct with a stand-in light node; what it hands getDiffuse (lightColor, and shading's inputs). */
+async function directWith(lightNode, lightColor, context = {}) {
+  const { MToonNodeMaterial } = await import('@pixiv/three-vrm/nodes');
+  const { vec3 } = await import('three/tsl');
+  const diffuse = [];
+  new MToonNodeMaterial().setupLightingModel().direct({ lightDirection: vec3(0, 0, 1), lightColor, lightNode, reflectedLight: { directDiffuse: { addAssign: (n) => diffuse.push(n) }, directSpecular: { addAssign: () => {} } } }, { context });
+  const inputs = (n) => (Array.isArray(n.rawInputs) ? n.rawInputs[0] : n.rawInputs);
+  const call = inputs(diffuse[0]);
+  return { lightColor: call.lightColor, shadow: inputs(call.shading).shadow };
+}
+
+test('patch 5: a shadowed MToon fragment keeps the full light and takes the shadow into its toon shading (shade colour, as GLSL)', async () => {
+  const { float, vec3, uniform } = await import('three/tsl');
+  const base = uniform(vec3(1, 0.9, 0.8)), shadowNode = float(0.25), shadowed = base.mul(shadowNode);
+  const calls = [];
+  // a light whose colour three (r187) has multiplied by the receiving object's shadow; setupDirect adds its attenuation
+  const lightNode = { shadowNode, baseColorNode: base, colorNode: shadowed, setupDirect() { const c = this.colorNode.mul(0.5); calls.push({ colorNode: this.colorNode, lightColor: c }); return { lightColor: c }; } };
+  const r = await directWith(lightNode, shadowed.mul(0.5));
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].colorNode, base, 'the light colour re-derived from the unshadowed colour (attenuation, spot cone kept)');
+  assert.equal(r.lightColor, calls[0].lightColor, 'the diffuse is lit by the unshadowed light');
+  assert.equal(r.shadow, shadowNode, 'and the shadow goes into getShading, so a shadowed fragment mixes towards shadeColor');
+  assert.equal(lightNode.colorNode, shadowed, 'the light node is left as three set it');
+});
+
+test('patch 5: a light that casts no shadow on this object (or a custom getShadow pass) is left as it was', async () => {
+  const { float, vec3, uniform } = await import('three/tsl');
+  const base = uniform(vec3(1, 1, 1));
+  let called = 0;
+  const setupDirect = () => { called++; return { lightColor: base }; };
+  // castShadow on, but this object doesn't receive: three leaves colorNode at baseColorNode (shadowNode from another object)
+  const noReceive = await directWith({ shadowNode: float(0.5), baseColorNode: base, colorNode: base, setupDirect }, base);
+  assert.equal(noReceive.lightColor, base);
+  assert.equal(noReceive.shadow.value, 1, 'shadow 1: the shading as before');
+  const none = await directWith({ shadowNode: null, baseColorNode: base, colorNode: base, setupDirect }, base); // no shadow at all
+  assert.equal(none.shadow.value, 1);
+  const shadowed = base.mul(float(0.5));
+  const custom = await directWith({ shadowNode: float(0.5), baseColorNode: base, colorNode: shadowed, setupDirect }, shadowed, { getShadow: () => shadowed });
+  assert.equal(custom.lightColor, shadowed, 'a pass with its own getShadow keeps three\'s colour');
+  assert.equal(called, 0);
 });
 
 test('patch-three-vrm: --require-patched fails a stock install (CI proves the install patched); a changed file fails --check', async () => {

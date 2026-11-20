@@ -11,11 +11,11 @@
    "distinct": 5,
    "environment": true,
    "frames": [
-    "0e2a2aca",
-    "da8da3c5",
-    "928d3346",
-    "44499a6d",
-    "4f408829"
+    "e04eb760",
+    "7a21b86c",
+    "7154d6a3",
+    "5e45b93d",
+    "d27d6a57"
    ],
    "isWebGPUBackend": true,
    "materials": [
@@ -36,7 +36,7 @@
     304
    ],
    "still": 420,
-   "stillHash": "86813e8c",
+   "stillHash": "d16d5efe",
    "stillMsWithRead": 31,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgpu",
@@ -87,11 +87,11 @@
    "distinct": 5,
    "environment": true,
    "frames": [
-    "0e2a2aca",
-    "da8da3c5",
-    "928d3346",
-    "44499a6d",
-    "4f408829"
+    "e04eb760",
+    "7a21b86c",
+    "7154d6a3",
+    "5e45b93d",
+    "d27d6a57"
    ],
    "isWebGPUBackend": true,
    "materials": [
@@ -112,8 +112,8 @@
     304
    ],
    "still": 420,
-   "stillHash": "86813e8c",
-   "stillMsWithRead": 31,
+   "stillHash": "d16d5efe",
+   "stillMsWithRead": 32,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgpu&again=1",
    "errors": [],
@@ -151,7 +151,7 @@
    ],
    "still": 420,
    "stillHash": "a46febe0",
-   "stillMsWithRead": 27,
+   "stillMsWithRead": 26,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgl&again=1",
    "errors": [],
@@ -163,11 +163,11 @@
    "distinct": 5,
    "environment": true,
    "frames": [
-    "0e2a2aca",
-    "da8da3c5",
-    "928d3346",
-    "44499a6d",
-    "4f408829"
+    "e04eb760",
+    "7a21b86c",
+    "7154d6a3",
+    "5e45b93d",
+    "d27d6a57"
    ],
    "isWebGPUBackend": true,
    "materials": [
@@ -188,8 +188,8 @@
     304
    ],
    "still": 420,
-   "stillHash": "86813e8c",
-   "stillMsWithRead": 37.6,
+   "stillHash": "d16d5efe",
+   "stillMsWithRead": 31.6,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgpu",
    "errors": [],
@@ -227,7 +227,7 @@
    ],
    "still": 420,
    "stillHash": "a46febe0",
-   "stillMsWithRead": 27.9,
+   "stillMsWithRead": 26.1,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgl",
    "errors": [],
@@ -239,11 +239,11 @@
    "distinct": 5,
    "environment": true,
    "frames": [
-    "0e2a2aca",
-    "da8da3c5",
-    "928d3346",
-    "44499a6d",
-    "4f408829"
+    "e04eb760",
+    "7a21b86c",
+    "7154d6a3",
+    "5e45b93d",
+    "d27d6a57"
    ],
    "isWebGPUBackend": true,
    "materials": [
@@ -264,8 +264,8 @@
     304
    ],
    "still": 420,
-   "stillHash": "86813e8c",
-   "stillMsWithRead": 33.8,
+   "stillHash": "d16d5efe",
+   "stillMsWithRead": 31.3,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgpu&again=1",
    "errors": [],
@@ -303,11 +303,20 @@
    ],
    "still": 420,
    "stillHash": "a46febe0",
-   "stillMsWithRead": 28.6,
+   "stillMsWithRead": 27.1,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgl&again=1",
    "errors": [],
    "timedOut": false
   }
- ]
+ ],
+ "diff": {
+  "size": [
+   1280,
+   485
+  ],
+  "meanMaxChannel": 0.511,
+  "over8": 0.01217,
+  "max": 160
+ }
 }

@@ -7,13 +7,19 @@
 //                                              file the patch was made against, or exactly that file patched
 //   ... --check --require-patched              and exit 1 unless every file is patched (CI: proves the install patched)
 //
-// The six lines (engine/patches/three-vrm-3.5.5-nodes-r187.patch):
+// engine/patches/three-vrm-3.5.5-nodes-r187.patch, every changed line marked "VRMXG patch":
 //   - two imports pointed at `normalView`: r187 removed `transformedNormalView` (pixiv/three-vrm#1889, fix #1890);
-//   - matcap U no longer mirrored: TSL's mul/add are variadic (pixiv/three-vrm#1904);
-//   - the rim's view direction per fragment (`positionView`), not the object's origin (#1905);
-//   - ambient light in the rim lighting mix, as the GLSL (#1906);
-//   - the UV-animation mask reads B, as the spec (#1907).
-// With them MToonNodeMaterial on WebGPURenderer matches WebGL's MToonMaterial (SSIM ≥ 0.995, AB-R-1004).
+//   - 1: matcap U no longer mirrored: TSL's mul/add are variadic (pixiv/three-vrm#1904);
+//   - 2: the rim's view direction per fragment (`positionView`), not the object's origin (#1905);
+//   - 3: ambient light in the rim lighting mix, as the GLSL (#1906);
+//   - 4: the UV-animation mask reads B, as the spec (#1907);
+//   - 5 (AB-T-0586, not offered upstream yet): shadows in the toon shading. three r187 multiplies a receiving object's
+//     shadow into the light colour, and three-vrm's getShading has `shadow = 1` (upstream's own TODO), so shadowed
+//     MToon went dark. The patch re-derives the light's colour without the shadow (the light node's setupDirect with
+//     its base colour: spot cone, distance attenuation and projected maps kept, for any light type) and multiplies the
+//     shadow into the shading, as GLSL MToon's getShading( dotNL, shadow, ... ): the shaded side takes shadeColor.
+// With 1–4, MToonNodeMaterial on WebGPURenderer matches WebGL's MToonMaterial unshadowed (SSIM ≥ 0.995, AB-R-1004);
+// 5 brings shadowed MToon in line (AB-T-0586's receipt). The first six lines were AB-T-0553's; 5 adds twelve.
 //
 // The package's CommonJS nodes build (`lib/nodes/index.cjs`, what `require('@pixiv/three-vrm/nodes')` loads) would stay
 // stock, and stock loads on r187 through three's CommonJS build and draws wrong. It's replaced by a stub that throws,
@@ -49,7 +55,7 @@ export const PATCHES = [
     version: '3.5.5',
     file: 'lib/nodes/index.module.js',
     stock: '1b88101eb9f22f3976249f1ff7f53cde08d2699f36c24d0b9b66d7e5ffa21f26',
-    patched: '4b0d8187d90c698a945cc6a7bbf0fb99b05b4a0703449bd7dafa1a68b73e2141',
+    patched: '72d018f3e6ad85bf2fc40d19d83c4c5479d99672698cbf0ac01133f8ef20fb70',
   },
   {
     name: 'the CommonJS stub',

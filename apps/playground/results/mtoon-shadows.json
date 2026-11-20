@@ -1,0 +1,77 @@
+{
+ "task": "AB-T-0586",
+ "what": "WebGL vs WebGPU stills of the cafe at step 420 (Playground.backendCheck, bubbles off), before and after three-vrm patch 5 (shadows in MToon toon shading)",
+ "chromium": {
+  "before": {
+   "meanMaxChannel": 0.897,
+   "over8": 0.01562,
+   "max": 160
+  },
+  "after": {
+   "meanMaxChannel": 0.483,
+   "over8": 0.01044,
+   "max": 160
+  },
+  "version": "156.0.8078.4"
+ },
+ "wkwebview": {
+  "before": {
+   "size": [
+    1280,
+    485
+   ],
+   "meanMaxChannel": 0.898,
+   "over8": 0.01725,
+   "max": 160
+  },
+  "after": {
+   "size": [
+    1280,
+    485
+   ],
+   "meanMaxChannel": 0.511,
+   "over8": 0.01217,
+   "max": 160
+  },
+  "webgpuRepeat": true
+ },
+ "overEightTiles80px": {
+  "before": [
+   [
+    "480,560",
+    1362
+   ],
+   [
+    "560,320",
+    903
+   ],
+   [
+    "480,480",
+    889
+   ],
+   [
+    "1040,240",
+    735
+   ]
+  ],
+  "after": [
+   [
+    "1040,240",
+    735
+   ],
+   [
+    "720,560",
+    260
+   ],
+   [
+    "480,560",
+    259
+   ],
+   [
+    "1040,160",
+    232
+   ]
+  ],
+  "note": "1040,240 is the espresso machine (metal PBR); 480,480–560,560 and 560,320 are Mira"
+ }
+}

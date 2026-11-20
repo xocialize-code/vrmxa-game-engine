@@ -56,7 +56,7 @@ const lib = installCharacters(tree, { ...opts, mtoonMaterial: host.mtoonMaterial
 | Drawing-buffer size | `drawingBufferSize()`: WebGL reads its context as before; WebGPU has none, so `getDrawingBufferSize()`. The post stack and the lens are sized from it |
 | Node frame (gotcha 1) | `frameAt` calls `advanceNodeFrame()` before it draws: r187 updates a RenderPipeline's passes and the shadow maps once per `nodeFrame.frameId`, and only the renderer's own rAF loop advances it, so an export that never yields would draw every frame over the first one's passes. It's the private `renderer._nodes.nodeFrame`; the host throws if a three upgrade moves it |
 | Warm-up renderer (gotcha 6) | `warmUpWebGPU()`: one throwaway `WebGPURenderer`, initialised with a room PMREM, created once per page before any other. The page's first `WebGPURenderer` compiles some materials differently, so its frames differ from later renderers' by ±1 in a few pixels. It's kept, not disposed, as the spike measured it |
-| The three-vrm patch | `scripts/patch-three-vrm.mjs` applies `engine/patches/three-vrm-3.5.5-nodes-r187.patch` to `@pixiv/three-vrm`'s `lib/nodes/index.module.js` on install (AB-T-0553's six lines, AB-D-0274), and replaces the CommonJS `index.cjs` (stock, which loads on r187 and draws wrong) with a stub that throws. `--check` fails unless each file is exactly stock 3.5.5 or exactly patched; CI adds `--require-patched`, which also fails a stock file, so it proves the install patched |
+| The three-vrm patch | `scripts/patch-three-vrm.mjs` applies `engine/patches/three-vrm-3.5.5-nodes-r187.patch` to `@pixiv/three-vrm`'s `lib/nodes/index.module.js` on install (AB-T-0553's six lines plus patch 5's twelve, AB-T-0586: the light's shadow goes into MToon's toon shading, not its light colour, so shadowed MToon takes the shade colour as on WebGL; AB-D-0274), and replaces the CommonJS `index.cjs` (stock, which loads on r187 and draws wrong) with a stub that throws. `--check` fails unless each file is exactly stock 3.5.5 or exactly patched; CI adds `--require-patched`, which also fails a stock file, so it proves the install patched |
 
 **Not in W0:** TSL post (W1: on WebGPU the host runs without post), particles and readback (W2), both backends in the
 acceptance and the default flip (W3). The playground's speech bubbles (troika) are WebGL-only for now.
@@ -65,7 +65,7 @@ acceptance and the default flip (W3). The playground's speech bubbles (troika) a
 warm-up comes first and once, before the view's and every later renderer, and WebGL never touches WebGPU; gotcha 1,
 `frameAt` advances the node frame once per offline frame and live frames leave it to three's loop; a canary that reads
 three r187 itself (the version, `renderer._nodes`, the rAF-only advance) so a three bump fails here first; the PMREM;
-the drawing-buffer size on both backends; the patch applied (MToonNodeMaterial loads on r187, six patched lines) and
+the drawing-buffer size on both backends; the patch applied (MToonNodeMaterial loads on r187, all five fixes); patch 5 with a shadowed light, a non-receiving object and a custom shadow pass; and
 the patcher's exact-hunk applier.
 
 **In browsers** (`apps/playground`, `?renderer=webgpu`): `scripts/backends-chromium.mjs` and `backends-wkwebview.sh`

@@ -32,7 +32,7 @@
   "distinct": 5,
   "still": 420,
   "stillHash": "df6b9781",
-  "stillMsWithRead": 28.3,
+  "stillMsWithRead": 27.6,
   "diff": null,
   "materials": [
    "MeshBasicMaterial",
@@ -57,19 +57,19 @@
    304
   ],
   "frames": [
-   "681dfded",
-   "af8a4b7a",
-   "54b5ffe0",
-   "db86e656",
-   "b281ed9c"
+   "bcded41c",
+   "68f68984",
+   "552231cf",
+   "56f66e1e",
+   "c38dbc11"
   ],
   "distinct": 5,
   "still": 420,
-  "stillHash": "ef7873ea",
-  "stillMsWithRead": 28.9,
+  "stillHash": "7676dc42",
+  "stillMsWithRead": 27.4,
   "diff": {
-   "meanMaxChannel": 0.897,
-   "over8": 0.01562,
+   "meanMaxChannel": 0.483,
+   "over8": 0.01044,
    "max": 160
   },
   "materials": [
