@@ -1,0 +1,393 @@
+{
+ "version": "156.0.8078.4",
+ "tolerance": 0.98,
+ "webgl": {
+  "mode": "post",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "origin": "http:",
+  "backend": "webgl",
+  "isWebGPUBackend": false,
+  "stack": "tce",
+  "size": [
+   1280,
+   653
+  ],
+  "frames": [
+   300,
+   301,
+   302,
+   303,
+   304
+  ],
+  "still": 420,
+  "exports": {
+   "a": [
+    "ee123715",
+    "1d4d6680",
+    "2c9f9993",
+    "af5d2143",
+    "05acdd7c"
+   ],
+   "b": [
+    "ee123715",
+    "1d4d6680",
+    "2c9f9993",
+    "af5d2143",
+    "05acdd7c"
+   ],
+   "identical": true,
+   "distinct": 5,
+   "frame0": {
+    "lumaStd": 55.75,
+    "colours": 4096
+   },
+   "pipelinesBuiltByA": null
+  },
+  "looks": {
+   "none": {
+    "hash": "dc246979",
+    "again": "dc246979",
+    "firstEqualsAgain": true,
+    "lumaStd": 64.09,
+    "colours": 2910,
+    "newPipeline": false,
+    "passes": []
+   },
+   "clean": {
+    "hash": "38fb13bc",
+    "again": "38fb13bc",
+    "firstEqualsAgain": true,
+    "lumaStd": 63.65,
+    "colours": 3843,
+    "newPipeline": false,
+    "passes": [
+     "RenderPass",
+     "EffectPass(BloomEffect+ToneMappingEffect)"
+    ]
+   },
+   "anime": {
+    "hash": "50c3ce9d",
+    "again": "50c3ce9d",
+    "firstEqualsAgain": true,
+    "lumaStd": 61.88,
+    "colours": 4096,
+    "newPipeline": false,
+    "passes": [
+     "RenderPass",
+     "NormalPass",
+     "EffectPass(EdgeEffect)",
+     "EffectPass(DepthOfFieldEffect)",
+     "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+     "EffectPass(ChromaticAberrationEffect)"
+    ]
+   },
+   "animeNoGrain": {
+    "hash": "183568c3",
+    "again": "183568c3",
+    "firstEqualsAgain": true,
+    "lumaStd": 61.94,
+    "colours": 4096,
+    "newPipeline": false,
+    "passes": [
+     "RenderPass",
+     "NormalPass",
+     "EffectPass(EdgeEffect)",
+     "EffectPass(DepthOfFieldEffect)",
+     "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+     "EffectPass(ChromaticAberrationEffect)"
+    ]
+   },
+   "animeLut": {
+    "hash": "620e9412",
+    "again": "620e9412",
+    "firstEqualsAgain": true,
+    "lumaStd": 65.77,
+    "colours": 4096,
+    "newPipeline": false,
+    "passes": [
+     "RenderPass",
+     "NormalPass",
+     "EffectPass(EdgeEffect)",
+     "EffectPass(DepthOfFieldEffect)",
+     "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+     "EffectPass(ChromaticAberrationEffect)"
+    ]
+   },
+   "animeOverlays": {
+    "hash": "5fe5eefe",
+    "again": "5fe5eefe",
+    "firstEqualsAgain": true,
+    "lumaStd": 62.61,
+    "colours": 4096,
+    "newPipeline": false,
+    "passes": [
+     "RenderPass",
+     "NormalPass",
+     "EffectPass(EdgeEffect)",
+     "EffectPass(DepthOfFieldEffect)",
+     "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+     "EffectPass(ChromaticAberrationEffect)"
+    ]
+   },
+   "animeShallow": {
+    "hash": "956df4ca",
+    "again": "956df4ca",
+    "firstEqualsAgain": true,
+    "lumaStd": 60.05,
+    "colours": 4096,
+    "newPipeline": false,
+    "passes": [
+     "RenderPass",
+     "NormalPass",
+     "EffectPass(EdgeEffect)",
+     "EffectPass(DepthOfFieldEffect)",
+     "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+     "EffectPass(ChromaticAberrationEffect)"
+    ]
+   }
+  },
+  "costMs": {
+   "none": 0.6,
+   "anime": 1.6
+  },
+  "errors": [],
+  "console": [],
+  "warnings": []
+ },
+ "webgpu": {
+  "mode": "post",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "origin": "http:",
+  "backend": "webgpu",
+  "isWebGPUBackend": true,
+  "stack": "Me",
+  "size": [
+   1280,
+   653
+  ],
+  "frames": [
+   300,
+   301,
+   302,
+   303,
+   304
+  ],
+  "still": 420,
+  "exports": {
+   "a": [
+    "407aceb6",
+    "27e11bc0",
+    "b070af2c",
+    "f27f2898",
+    "faac09cf"
+   ],
+   "b": [
+    "407aceb6",
+    "27e11bc0",
+    "b070af2c",
+    "f27f2898",
+    "faac09cf"
+   ],
+   "identical": true,
+   "distinct": 5,
+   "frame0": {
+    "lumaStd": 55.74,
+    "colours": 4096
+   },
+   "pipelinesBuiltByA": 1
+  },
+  "looks": {
+   "none": {
+    "hash": "7c360b4e",
+    "again": "7c360b4e",
+    "firstEqualsAgain": true,
+    "lumaStd": 64.02,
+    "colours": 2881,
+    "newPipeline": true,
+    "passes": []
+   },
+   "clean": {
+    "hash": "0990ae70",
+    "again": "0990ae70",
+    "firstEqualsAgain": true,
+    "lumaStd": 63.64,
+    "colours": 3861,
+    "newPipeline": true,
+    "passes": [
+     "scene(MSAA4)",
+     "merged(bloom(mipmap 8)+toneMapping())"
+    ]
+   },
+   "anime": {
+    "hash": "c08ba208",
+    "again": "c08ba208",
+    "firstEqualsAgain": true,
+    "lumaStd": 61.86,
+    "colours": 4096,
+    "newPipeline": false,
+    "passes": [
+     "scene(MSAA4)",
+     "normals(override, full res)",
+     "characterMask(layer 2, ½ res)",
+     "edges(custom TSL)",
+     "dof(pmndrs port)",
+     "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+     "chromaticAberration(custom TSL)"
+    ]
+   },
+   "animeNoGrain": {
+    "hash": "ee39e5cc",
+    "again": "ee39e5cc",
+    "firstEqualsAgain": true,
+    "lumaStd": 61.92,
+    "colours": 4096,
+    "newPipeline": false,
+    "passes": [
+     "scene(MSAA4)",
+     "normals(override, full res)",
+     "characterMask(layer 2, ½ res)",
+     "edges(custom TSL)",
+     "dof(pmndrs port)",
+     "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+     "chromaticAberration(custom TSL)"
+    ]
+   },
+   "animeLut": {
+    "hash": "352128c9",
+    "again": "352128c9",
+    "firstEqualsAgain": true,
+    "lumaStd": 65.75,
+    "colours": 4096,
+    "newPipeline": true,
+    "passes": [
+     "scene(MSAA4)",
+     "normals(override, full res)",
+     "characterMask(layer 2, ½ res)",
+     "edges(custom TSL)",
+     "dof(pmndrs port)",
+     "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+     "chromaticAberration(custom TSL)"
+    ]
+   },
+   "animeOverlays": {
+    "hash": "e3db9c23",
+    "again": "e3db9c23",
+    "firstEqualsAgain": true,
+    "lumaStd": 62.6,
+    "colours": 4096,
+    "newPipeline": false,
+    "passes": [
+     "scene(MSAA4)",
+     "normals(override, full res)",
+     "characterMask(layer 2, ½ res)",
+     "edges(custom TSL)",
+     "dof(pmndrs port)",
+     "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+     "chromaticAberration(custom TSL)"
+    ]
+   },
+   "animeShallow": {
+    "hash": "3841983b",
+    "again": "3841983b",
+    "firstEqualsAgain": true,
+    "lumaStd": 60.05,
+    "colours": 4096,
+    "newPipeline": false,
+    "passes": [
+     "scene(MSAA4)",
+     "normals(override, full res)",
+     "characterMask(layer 2, ½ res)",
+     "edges(custom TSL)",
+     "dof(pmndrs port)",
+     "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+     "chromaticAberration(custom TSL)"
+    ]
+   }
+  },
+  "costMs": {
+   "none": 1.9,
+   "anime": 5.7
+  },
+  "errors": [],
+  "console": [],
+  "warnings": [
+   "THREE.TempNode: This module has been deprecated. Extend Node instead."
+  ]
+ },
+ "reload": {
+  "webgl": true,
+  "webgpu": true
+ },
+ "webgpuVsWebgl": {
+  "none": {
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.994,
+   "meanMaxChannel": 0.41,
+   "over8": 0.00797,
+   "max": 160
+  },
+  "clean": {
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9971,
+   "meanMaxChannel": 0.158,
+   "over8": 0.00311,
+   "max": 160
+  },
+  "anime": {
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9611,
+   "meanMaxChannel": 2.49,
+   "over8": 0.01311,
+   "max": 170
+  },
+  "animeNoGrain": {
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.996,
+   "meanMaxChannel": 0.548,
+   "over8": 0.01286,
+   "max": 166
+  },
+  "animeLut": {
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9958,
+   "meanMaxChannel": 0.647,
+   "over8": 0.01292,
+   "max": 180
+  },
+  "animeOverlays": {
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9961,
+   "meanMaxChannel": 0.503,
+   "over8": 0.01201,
+   "max": 166
+  },
+  "animeShallow": {
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.995,
+   "meanMaxChannel": 0.751,
+   "over8": 0.03012,
+   "max": 140
+  }
+ }
+}

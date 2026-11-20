@@ -1,16 +1,15 @@
-// PostStack (M2 W3, AB-T-0526): the adapter between a scene's post spec and pmndrs postprocessing 6.39 (a TSL adapter
-// later, when MToon runs on WebGPU: research/cinematics.md §1.3). It owns one EffectComposer (MSAA 4× on HalfFloat
+// PostStack (M2 W3, AB-T-0526): the adapter between a scene's post spec and pmndrs postprocessing 6.39 (its TSL
+// twin on WebGPU is TSLPostStack, tsl.js: M4 W1). It owns one EffectComposer (MSAA 4× on HalfFloat
 // buffers), builds the passes in the anime order from the spec, updates parameters in place (a post track keys them
 // every frame without a rebuild), draws a character mask for the edges, and takes the frame's time from the caller so
 // grain is the same in every export of a frame.
 import { EffectComposer, RenderPass, EffectPass, NormalPass, DepthOfFieldEffect, BloomEffect, HueSaturationEffect, BrightnessContrastEffect, ToneMappingEffect, ToneMappingMode, VignetteEffect, NoiseEffect, ChromaticAberrationEffect, SMAAEffect, LUT3DEffect, LUTCubeLoader, BlendFunction } from 'postprocessing';
 import { HalfFloatType, WebGLRenderTarget, MeshBasicMaterial, Vector2, NoToneMapping, Color } from 'three';
 import { AnimeEffect, EdgeEffect } from './effects.js';
-import { normalizePost, structureOf } from './spec.js';
+import { normalizePost, structureOf, CHARACTER_LAYER } from './spec.js';
 
 const TONE = { neutral: ToneMappingMode.NEUTRAL, agx: ToneMappingMode.AGX, aces: ToneMappingMode.ACES_FILMIC, none: ToneMappingMode.LINEAR };
-/** The layer characters are on for the edge mask (the render host enables it on Character subtrees). */
-export const CHARACTER_LAYER = 2;
+export { CHARACTER_LAYER };
 
 export class PostStack {
   /**
