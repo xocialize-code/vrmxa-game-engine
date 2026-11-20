@@ -1,0 +1,54 @@
+{
+ "file": "sample mira",
+ "ms": 1789,
+ "final": "e4fe22c48c93dc89",
+ "states": [
+  "fall",
+  "idle",
+  "jump",
+  "land",
+  "move"
+ ],
+ "maxSpeed": 4,
+ "jump": 1.02,
+ "slots": [
+  "idle",
+  "walk",
+  "run",
+  "jump",
+  "fall",
+  "land",
+  "use",
+  "equip",
+  "talk",
+  "sit",
+  "sitIdle",
+  "stand",
+  "getUp",
+  "greet",
+  "wave",
+  "nod",
+  "cheer",
+  "sip",
+  "shrug",
+  "point",
+  "laugh",
+  "x-lookAround",
+  "x-stretch",
+  "x-headTilt"
+ ],
+ "idle": "idle-shift",
+ "equipped": [
+  "stowed:sword",
+  "top:shell",
+  "weapon:sword"
+ ],
+ "snapshot": true,
+ "stepMs": {
+  "mean": 0,
+  "p50": 0,
+  "p95": 0
+ },
+ "expressions": 14,
+ "persona": "Mira"
+}
