@@ -100,6 +100,8 @@ Each export builds its own renderer and world, replays the walk-in take from ste
 | Chromium 156 | WebGPU | 1080p / 4K | yes / yes | `03db9f76c8b82309` / `0a2b69944544f9a0` | 5.3 / 13.7 |
 | Chromium 156 | WebGL | 1080p / 4K | yes / yes | `325882aaac77d91e` / `52cea067853f19e2` | 8.1 / 22.2 |
 
+**Frame 0 caveat:** each export built a new pipeline, so its frame 0 was `dof()`'s flat first frame (gotcha 4, mrdoob/three.js#35620). It was flat in both exports, so they still matched. A real exporter on r187 calls `scenePass.setSize(w, h)` when building the pipeline, or draws and discards one frame first.
+
 **Without advancing the node frame** (`withoutTick` in the JSON), five offline frames, steps 120 to 128, came out as **one** distinct image in both runtimes: every frame showed the first one's pass textures. With the tick they came out as five.
 
 ### three.quarks under WebGPU
