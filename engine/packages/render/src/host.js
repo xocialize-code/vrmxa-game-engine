@@ -18,9 +18,13 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { BatchedRenderer as WebGLBatchedRenderer } from 'three.quarks';
 import { Interpolator } from './interpolate.js';
 import { Views } from './views.js';
-import { renderViews } from '@vrmxg/post';
+import { renderViews, makePostStack } from '@vrmxg/post';
 import { DebugDraw } from './debug.js';
 import { resolveBackend, loadWebGPU, warmUpWebGPU, roomPMREM, isWebGPUBackend, loadParticleRenderer } from './backend.js';
+
+/**
+ * @typedef {Omit<NonNullable<ConstructorParameters<typeof RenderHost>[0]>, 'post'> & { backend?: import('./backend.js').BackendChoice, navigator?: any, fallbackRenderer?: any, post?: ((renderer: any) => any) | { loadCube?: (file: string) => Promise<string>, multisampling?: number } | null }} CreateOptions
+ */
 
 export class RenderHost {
   /**
@@ -32,7 +36,8 @@ export class RenderHost {
    * @param {boolean} [opts.interpolate] blend presentation at α (true); off renders the last step
    * @param {boolean} [opts.preserveDrawingBuffer] keep the frame readable (screenshots)
    * @param {(renderer: any) => any} [opts.post] makes the post stack (@vrmxg/post's PostStack): the scene's Environment
-   *   `post` then drives it; without one, scenes render without post
+   *   `post` then drives it; without one, scenes render without post. RenderHost.create also takes options here
+   *   (`{ loadCube }`) and makes the backend's stack itself (M4 W1: PostStack on WebGL, TSLPostStack on WebGPU)
    * @param {any} [opts.webgpu] three/webgpu, with a WebGPURenderer (its PMREMGenerator makes the room environment)
    * @param {any} [opts.mtoonMaterial] the MToon material class characters load with on this renderer (null: the loader's
    *   default, MToonMaterial for WebGL)
@@ -92,8 +97,8 @@ export class RenderHost {
      */
     this.layout = null;
     /** The post stack (M2 W3), configured from the scene's Environment `post`; null renders straight to the canvas. */
-    this.post = post ? post(this.renderer) : null;
-    if (this.post) this.post.dofSource = () => this.cameraNode()?.postDof?.(this.drawingBufferSize()?.height ?? 1080) ?? null;
+    this.post = typeof post === 'function' ? post(this.renderer) : null;
+    if (this.post) this.post.dofSource = this._dofSource();
     /** Presentation time of the frame being drawn (s): (step + α) / 60. Time-based post effects use it. */
     this.time = 0;
     this.last = { steps: 0, alpha: 1, renderMs: 0 };
@@ -108,9 +113,19 @@ export class RenderHost {
    * three's WebGPURenderer falls back to its WebGL2 backend inside init() when WebGPU fails there (requestDevice after
    * requestAdapter succeeded, a lost device): then a forced 'webgpu' throws, and 'auto' makes a WebGL host.
    * `fallbackRenderer`: the renderer auto's WebGL path uses instead of a new WebGLRenderer (a stand-in, in tests).
-   * @param {ConstructorParameters<typeof RenderHost>[0] & { backend?: import('./backend.js').BackendChoice, navigator?: any, fallbackRenderer?: any }} [opts]
+   * `post`: the constructor's factory, or options for the backend's own stack (`{ loadCube }`: a .cube's text, M4 W1).
+   * @param {CreateOptions} [opts]
    */
-  static async create({ backend = 'webgl', navigator: nav = globalThis.navigator, webgpu = null, mtoonMaterial = null, fallbackRenderer = null, ...opts } = {}) {
+  static async create({ post = null, ...rest } = {}) {
+    // `post` as options (M4 W1): the stack for whichever backend the host got, made once its renderer exists
+    if (!post || typeof post === 'function') return RenderHost._create({ ...rest, post: /** @type {(renderer: any) => any} */ (post || undefined) });
+    const host = await RenderHost._create(rest);
+    if (host.backend !== 'stand-in') host.setPost(await makePostStack(host.renderer, post));
+    return host;
+  }
+
+  /** @param {Omit<CreateOptions, 'post'> & { post?: (renderer: any) => any }} [opts] */
+  static async _create({ backend = 'webgl', navigator: nav = globalThis.navigator, webgpu = null, mtoonMaterial = null, fallbackRenderer = null, ...opts } = {}) {
     const chosen = await resolveBackend(backend, { navigator: nav });
     if (chosen === 'webgl') return new RenderHost({ ...opts, mtoonMaterial });
     /** WebGPU failed inside a renderer's init(): a forced WebGPU says so; auto takes the WebGL path. */
@@ -132,6 +147,23 @@ export class RenderHost {
     const particleRenderer = opts.particleRenderer ?? (await loadParticleRenderer()); // three.quarks/webgpu's, TSL (M4 W2)
     return new RenderHost({ ...opts, renderer, webgpu: W, mtoonMaterial, particleRenderer });
   }
+
+  /**
+   * Install a post stack (PostStack, TSLPostStack, or null for none): it takes the current camera's lens for its depth of
+   * field, the drawing buffer's size, and the scene's Environment `post` on the next frame.
+   */
+  setPost(stack) {
+    if (this.post && this.post !== stack) this.post.dispose?.();
+    this.post = stack ?? null;
+    if (!this.post) return;
+    this.post.dofSource = this._dofSource();
+    const s = this.drawingBufferSize();
+    if (s?.width && s?.height) this.post.setSize?.(s.width, s.height);
+    this.views.environment.key = ''; // configure the new stack from the Environment on the next update
+  }
+
+  /** The current camera's depth of field for the post stack (its lens at the drawing buffer's height). */
+  _dofSource() { return () => this.cameraNode()?.postDof?.(this.drawingBufferSize()?.height ?? 1080) ?? null; }
 
   /** Blend presentation at α (true), or draw the last step as simulated (false). */
   get interpolate() { return this._interpolate; }

@@ -34,7 +34,10 @@ the error and leaves them disabled (`backends-chromium.mjs` checks that too).
 - **On WebGPU** the cafe and its characters render (Mira and Hana with the patched `MToonNodeMaterial`), with shadows
   and the room environment. Since M4 W2, particles too (three.quarks/webgpu's batch renderer, from the host), and
   readback: `frameHash()` (now a promise on both backends), stills and exports.
-- **Not yet on WebGPU:** the post stack (TSL post is W1), and the speech bubbles and
+- **Post on WebGPU (M4 W1):** the host makes the backend's own post stack (`post: { loadCube }`): pmndrs on WebGL,
+  `TSLPostStack` on WebGPU. The **Post** picker in the status bar (`#post-look`) switches the look on either backend:
+  the scene's own, none, or a preset (`anime`, `clean`). It's presentation only.
+- **Not yet on WebGPU:** the speech bubbles and
   name tags (troika's shaders are WebGL's; the captions still show every line; the two checkboxes are disabled).
 - **`?mode=backends&renderer=…`** draws the cafe offline as an export does, and reads each frame with `toDataURL` in the
   task that drew it (`Playground.backendCheck`). It replays the recorded walk, draws five consecutive frames with
@@ -61,6 +64,30 @@ apps/playground/scripts/backends-wkwebview.sh         # the same in WKWebView, s
   the frame just drawn. Chromium gives the new frame either way (AB-L-0372).
 - **WebGL in WKWebView** came out as one of two images from load to load (3 of 16 loads gave the other), which W0 didn't
   change. It's noted for W3 (AB-T-0587, blocking AB-T-0575).
+
+## Post on WebGPU (M4 W1, AB-T-0573)
+
+**`?mode=post&renderer=webgpu|webgl`** (`src/post-check.js`) checks the post stack on that backend the way an export
+draws: `frameAt` with no yield to rAF, each frame read with `toDataURL` in the task that drew it. The check owns the
+canvas (`Playground.offline`: the paused frame loop and the resize observer stay out of it) at 1920×1080.
+- **The looks** (`LOOKS`): none, `clean`, `anime`, and the anime preset without grain, with the sample's LUT
+  (`looks/morning.cube`), with its overlays keyed on (speed and focus lines) and with a close-up's shallow focus. Each is
+  drawn on step 420 of the recorded walk from a pipeline built for it there and then. That first frame must equal the
+  next draw of the same frame and must not be flat (gotcha 4).
+- **Two exports** of five consecutive frames with the anime preset, each from a fresh load. The first builds its
+  pipeline at frame 0 and the second takes it from the cache. They must be byte-identical, five distinct frames each.
+- **The cost** of a frame without post and with the anime preset (median of 20, GPU work included: `gl.finish()` on
+  WebGL, `onSubmittedWorkDone()` on WebGPU, which adds its own round trip).
+
+```sh
+(cd apps/playground && npx vite build)
+node apps/playground/scripts/post-chromium.mjs     # both backends, two loads each; looks compared: results/post-chromium.json
+apps/playground/scripts/post-wkwebview.sh          # WKWebView, scheme and loopback, two loads each: results/post-wkwebview.json
+node apps/playground/scripts/post-compare.mjs a.png b.png   # SSIM and pixel differences of any two stills
+```
+
+The full-size stills go to `results/post/` (git-ignored). `results/post-preview-{webgl,webgpu}-{animeNoGrain,animeShallow}.png`
+are 960-px previews from Chromium. The results are in `@vrmxg/post`'s README ("TSL on WebGPU").
 
 ## Particles and readback (M4 W2, AB-T-0574)
 
@@ -95,15 +122,18 @@ apps/playground/scripts/frames-wkwebview.sh          # WKWebView, scheme and loo
   every step on both backends in Chromium and in WKWebView over both origins. The final hash is `09ef4d21b00189d1`,
   check 13's since M3's 37ca5e3 (the spike's `976e7033e22ad048` came before 37ca5e3 moved every final). All 361 frames
   are distinct, and the world restored at step 180 drew the same 181 frames on every run.
-- **The film exports twice the same.** WebGPU's frames digest to `72e11057f7fe8c21` in Chromium and
-  `01bbab58fabd08f7` in WKWebView, on both origins and every load; WebGL's digest to `4c2265c827597f04` and
-  `696295fc68b0fa12`. The sound hashes the same in every run. WebGPU has 988 distinct frames to WebGL's 1,080 in both
-  engines: WebGL's post adds grain to every frame, and WebGPU has no post until W1, so the film's still moments repeat.
+- **The film exports twice the same.** Before W1's merge (no post on WebGPU): WebGPU's frames digest to
+  `72e11057f7fe8c21` in Chromium and `01bbab58fabd08f7` in WKWebView, WebGL's to `4c2265c827597f04` and
+  `696295fc68b0fa12`. With W1 merged, WebGPU exports carry TSL post (the film's anime look with grain): `af463f8e404b4e2b`
+  in Chromium and `aa30672928beb2b1` in WKWebView, on both origins, and every frame distinct (1,080, as on WebGL, where
+  grain also makes every frame distinct). The sound hashes the same in every run.
 - **One frame, now and then, with sound.** In WKWebView a WebGPU export sometimes has one or two frames that differ from
   the page's other exports, by 1 level in a couple of pixels. It happened in the first and the second full run (frames 10
   and 153). Hunting it, with sound recording, 4 of 18 exports had one (frames 140–142, 747, 1032), against 0 of 18 with
   sound off (`results/frames-wkwebview-repeats.json`). The world hash is the same at those frames, so it's presentation.
-  The kept pair differs near the espresso machine's edge. Chromium hasn't shown it. The cause isn't found (AB-T-0589).
+  The kept pair differs near the espresso machine's edge. With W1's TSL post in the exports, Chromium shows it too: a
+  hunt found single frames off in 5 of 9 exports, always one pixel by 1 level in the middle tile, though the full runner
+  then passed on both loads. On the merged tree WKWebView had one more (frame 4). The cause isn't found (AB-T-0589).
 - **Stills match the canvas** pixel for pixel on both backends: 230,400 of 230,400 pixels at 640×360 (a flipped still
   would differ in 160,114). The view kept drawing at its own size after the stills.
 - **Every size reads back** on both backends after a 640×360 still on the same renderer: 1080p, 4K and 1366×768 all
@@ -113,7 +143,8 @@ apps/playground/scripts/frames-wkwebview.sh          # WKWebView, scheme and loo
   export after a still on the same host matches a fresh host's frames.
 - **Alpha is premultiplied on both backends:** the half-transparent red reads back `[127, 0, 0, 128]` on WebGPU and
   WebGL, in Chromium and WKWebView, and `toImageRGBA` gives `[253, 0, 0, 128]`.
-- **Readback cost** (median ms per frame; the two loads' medians; WKWebView over loopback; after the fix):
+- **Readback cost** (median ms per frame; the two loads' medians; WKWebView over loopback; after the fix, before W1's
+  merge: the readback copies the same bytes with or without post):
 
   | Runtime | Backend | 1080p export loop | 1080p after frame | 4K export loop | 4K after frame | 1366×768 export loop |
   |---|---|---|---|---|---|---|

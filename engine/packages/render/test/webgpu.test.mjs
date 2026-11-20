@@ -265,6 +265,32 @@ test('the post stack and the lens are sized from the drawing buffer on WebGPU (i
   assert.deepEqual(sizes.at(-1), [1279, 719]);
 });
 
+test('M4 W1: create({ post: { loadCube } }) makes the backend\'s own stack (TSL on WebGPU, pmndrs on WebGL), sized and lens-fed', async () => {
+  const { module } = fakeWebGPU();
+  const loadCube = async () => 'LUT_3D_SIZE 2';
+  const gpu = await RenderHost.create({ backend: 'webgpu', navigator: gpuNavigator(), webgpu: module, post: { loadCube } });
+  assert.equal(gpu.post.constructor.name, 'TSLPostStack');
+  assert.equal(typeof gpu.post.dofSource, 'function', 'the current camera\'s lens feeds its depth of field');
+  assert.deepEqual(gpu.post.size.toArray(), [300, 150], 'sized from the drawing buffer when installed');
+  const gl = await RenderHost.create({ backend: 'webgl', renderer: { isWebGLRenderer: true, toneMapping: 0, setPixelRatio() {}, setSize() {}, shadowMap: {}, render() {}, dispose() {}, getContext: () => ({ drawingBufferWidth: 640, drawingBufferHeight: 360 }) }, post: { loadCube } });
+  assert.equal(gl.post.constructor.name, 'PostStack');
+  assert.deepEqual(gl.post.size.toArray(), [640, 360]);
+  // setPost replaces (and disposes) the stack, and the Environment configures the new one on the next update
+  let disposed = false; gpu.post.dispose = () => { disposed = true; };
+  const configured = [];
+  const next = { configure: (p) => configured.push(p), setSize() {}, dispose() {}, active: false };
+  gpu.attach(cafeTree());
+  gpu.post.render = () => {};
+  gpu.render(1, false);
+  gpu.setPost(next);
+  assert.equal(disposed, true);
+  gpu.render(1, false);
+  assert.equal(configured.length, 1, 'configured from the Environment on the next frame');
+  // a factory still works as before, and a stand-in host gets no stack
+  const stand = await RenderHost.create({ backend: 'auto', navigator: noGpu, webgpu: module, renderer: { setPixelRatio() {}, shadowMap: {}, render() {}, dispose() {} }, post: { loadCube } });
+  assert.equal(stand.post, null);
+});
+
 // ---------------------------------------------------------------- the three-vrm patch
 
 test('the three-vrm patch is applied on install: MToonNodeMaterial loads on r187 and carries the load fix and five fidelity fixes', async () => {

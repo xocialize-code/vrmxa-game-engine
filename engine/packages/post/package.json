@@ -2,10 +2,11 @@
   "name": "@vrmxg/post",
   "version": "0.1.0",
   "private": true,
-  "description": "VRMXG post stack (M2 W3): the anime look as scene data (environment.post), behind an adapter over pmndrs postprocessing 6.39 — edges on sets, physical DOF, bloom, grade and LUT, tone mapping, vignette, grain, speed lines, focus lines, impact frames, chromatic aberration — with resolution-independent parameters; scissored viewports.",
+  "description": "VRMXG post stack (M2 W3): the anime look as scene data (environment.post), behind an adapter over pmndrs postprocessing 6.39 — edges on sets, physical DOF, bloom, grade and LUT, tone mapping, vignette, grain, speed lines, focus lines, impact frames, chromatic aberration — with resolution-independent parameters; scissored viewports. On WebGPU (M4 W1, @vrmxg/post/tsl) the same stack as a TSL RenderPipeline.",
   "type": "module",
   "exports": {
-    ".": "./src/index.js"
+    ".": "./src/index.js",
+    "./tsl": "./src/tsl.js"
   },
   "files": ["src"],
   "sideEffects": false,

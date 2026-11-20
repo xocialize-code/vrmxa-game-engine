@@ -2,11 +2,14 @@
 // The playground's controls. Engine objects stay in the Playground instance (not reactive); this keeps
 // plain copies of what the controls show, refreshed when the engine says something changed.
 import { onMounted, ref, reactive } from 'vue';
-import { Playground, PRESETS } from './engine.js';
+import { Playground, PRESETS, POST_PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
+import { postCheck } from './post-check.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, mic: null, fall: false, split: false, sense: null, cameraDevices: [], cameraDevice: '', showBubbles: true, showCaptions: true, showNames: false, backend: '—', ready: false });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, mic: null, fall: false, split: false, sense: null, cameraDevices: [], cameraDevice: '', showBubbles: true, showCaptions: true, showNames: false, backend: '—', ready: false, post: 'scene' });
+// M4 W1: the post look, on either backend (the scene's own, none, or a preset)
+const POST_LOOKS = ['scene', 'none', ...Object.keys(POST_PRESETS)];
 // the sample's scenes and sequences; ?scene= picks one at load
 const SCENES = ['cafe.vrmxs', 'cafe-talk.vrmxs', 'cafe-follow.vrmxs', 'cafe-stairs.vrmxs', 'cafe-cart.vrmxs', 'cafe-split.vrmxs', 'sequences/morning.vrmxs', 'sequences/cafe-morning.vrmxs', 'sequences/conversation.vrmxs'];
 const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
@@ -26,6 +29,7 @@ function refresh() {
   ui.fall = !!pg.fall; // M3 W7
   ui.split = !!pg.split; // M3 W9: two players side by side
   ui.sense = pg.cameraStatus(); // M3 W5
+  ui.post = pg.postLook();
   const cur = pg.currentCamera(); ui.cameras = pg.cameras(); ui.camera = cur?.id ?? ''; ui.preset = cur?.preset ?? '';
   if (pg.error) ui.error = pg.error;
 }
@@ -34,6 +38,7 @@ function refresh() {
 function say(text) { try { pg.talk(text); } catch (e) { ui.error = String(e?.message ?? e); } refresh(); }
 const setBubbles = () => { pg.setBubbles(ui.showBubbles); refresh(); };
 const setNames = () => { pg.setNameTags(ui.showNames); refresh(); };
+const setPost = () => { pg.setPost(ui.post); refresh(); };
 // M3 W5: ?camera — the camera on and off (the Mac app's native capture), its status, and the session saved (no images)
 // the cameras the shell sees (a capture card is one too): pick one, remembered for next time
 async function listCameras() {
@@ -83,6 +88,12 @@ onMounted(async () => {
   if (mode === 'frames') {
     const q = new URLSearchParams(location.search), parts = q.get('parts')?.split(',');
     try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await pg.framesCheck({ ...(parts ? { parts } : {}), ...(q.get('frames') ? { film: { frames: +q.get('frames'), ...(q.get('repeat') ? { repeat: +q.get('repeat') } : {}), ...(q.has('audio') ? { audio: q.get('audio') === '1' } : {}), ...(q.has('tiles') ? { tileHashes: q.get('tiles') === '1' } : {}) } } : {}) })) }; ui.notes = `frames: ${window.__result.backend}`; }
+    catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
+    ui.loading = false; refresh(); window.READY = true; return;
+  }
+  // M4 W1: ?mode=post&renderer=webgpu|webgl draws every post look offline on that backend (scripts/post-chromium.mjs, WKWebView)
+  if (mode === 'post') {
+    try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await postCheck(pg)) }; ui.notes = `post: ${window.__result.stack}, exports ${window.__result.exports.identical ? 'identical' : 'DIFFER'}`; }
     catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
     ui.loading = false; refresh(); window.READY = true; return;
   }
@@ -171,6 +182,9 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
       </label>
       <label class="field">Preset
         <select v-model="ui.preset" aria-label="Camera preset" @change="setPreset"><option v-for="p in PRESETS" :key="p" :value="p">{{ p }}</option></select>
+      </label>
+      <label class="field">Post
+        <select id="post-look" v-model="ui.post" :disabled="!ui.ready" aria-label="Post look" @change="setPost"><option v-for="p in POST_LOOKS" :key="p" :value="p">{{ p }}</option></select>
       </label>
     </header>
     <main class="stage"><canvas ref="canvas" aria-label="Scene view" tabindex="0"></canvas>

@@ -36,8 +36,8 @@
      "framesDiffer": []
     },
     "perFrameMs": {
-     "render": 2.427,
-     "readback": 1.15
+     "render": 2.023,
+     "readback": 1.009
     }
    },
    "film": {
@@ -61,24 +61,24 @@
      "steps": 2700,
      "audioHash": "7a6ff838",
      "ms": {
-      "total": 5627.9,
+      "total": 5659.7,
       "begin": 0,
-      "render": 2144.7,
-      "readback": 587.7,
-      "wait": 2.5,
-      "audio": 221.5,
+      "render": 2174.4,
+      "readback": 593.4,
+      "wait": 3.1,
+      "audio": 210,
       "end": 0
      },
      "perFrameMs": {
-      "render": 1.99,
-      "readback": 0.54,
+      "render": 2.01,
+      "readback": 0.55,
       "wait": 0,
-      "total": 5.21
+      "total": 5.24
      },
-     "framesPerSecond": 191.9,
+     "framesPerSecond": 190.82,
      "steamDrawn": true,
-     "digest": "72e11057f7fe8c21",
-     "distinct": 988,
+     "digest": "af463f8e404b4e2b",
+     "distinct": 1080,
      "worldDigest": "ac743fcb5a5572b3"
     },
     "second": {
@@ -95,24 +95,24 @@
      "steps": 2700,
      "audioHash": "7a6ff838",
      "ms": {
-      "total": 5522.3,
+      "total": 5547.7,
       "begin": 0,
-      "render": 2072,
-      "readback": 573.5,
-      "wait": 2.7,
-      "audio": 214,
+      "render": 2105.7,
+      "readback": 579.6,
+      "wait": 2.2,
+      "audio": 203.3,
       "end": 0
      },
      "perFrameMs": {
-      "render": 1.92,
-      "readback": 0.53,
+      "render": 1.95,
+      "readback": 0.54,
       "wait": 0,
-      "total": 5.11
+      "total": 5.14
      },
-     "framesPerSecond": 195.57,
+     "framesPerSecond": 194.68,
      "steamDrawn": true,
-     "digest": "72e11057f7fe8c21",
-     "distinct": 988,
+     "digest": "af463f8e404b4e2b",
+     "distinct": 1080,
      "worldDigest": "ac743fcb5a5572b3"
     },
     "identical": true,
@@ -143,15 +143,15 @@
     },
     "1080p": {
      "renderMs": {
-      "median": 1.7,
-      "p95": 2.3,
-      "min": 1.4,
+      "median": 1.4,
+      "p95": 1.9,
+      "min": 1.2,
       "n": 30
      },
      "exportLoopMs": {
-      "median": 0.2,
+      "median": 0.3,
       "p95": 1.4,
-      "min": 0.1,
+      "min": 0,
       "n": 30
      },
      "afterFrameMs": {
@@ -165,21 +165,21 @@
     },
     "4k": {
      "renderMs": {
-      "median": 4.4,
-      "p95": 4.7,
-      "min": 2.9,
+      "median": 2,
+      "p95": 3.2,
+      "min": 1.6,
       "n": 30
      },
      "exportLoopMs": {
       "median": 1.6,
-      "p95": 4.4,
-      "min": 0.5,
+      "p95": 3.5,
+      "min": 0.6,
       "n": 30
      },
      "afterFrameMs": {
-      "median": 1.4,
-      "p95": 1.7,
-      "min": 1.2,
+      "median": 1.2,
+      "p95": 1.5,
+      "min": 1.1,
       "n": 30
      },
      "hash": "5b8569da41e816bb",
@@ -187,20 +187,20 @@
     },
     "1366x768": {
      "renderMs": {
-      "median": 1.4,
-      "p95": 2.5,
+      "median": 1.3,
+      "p95": 1.7,
       "min": 1.2,
       "n": 30
      },
      "exportLoopMs": {
-      "median": 0.3,
-      "p95": 1.4,
+      "median": 0.2,
+      "p95": 1.1,
       "min": 0,
       "n": 30
      },
      "afterFrameMs": {
       "median": 0.4,
-      "p95": 0.7,
+      "p95": 0.6,
       "min": 0.3,
       "n": 30
      },
@@ -213,7 +213,8 @@
     "stillContent": 1,
     "firstFrameContent": 1,
     "freshFirstFrameContent": 1,
-    "same": true
+    "same": true,
+    "framesDiffer": []
    },
    "alpha": {
     "raw": [
@@ -235,7 +236,7 @@
      128
     ]
    },
-   "ms": 22996,
+   "ms": 22125,
    "errors": [],
    "verdicts": {
     "backend": "webgpu",
@@ -281,8 +282,8 @@
      "framesDiffer": []
     },
     "perFrameMs": {
-     "render": 2.286,
-     "readback": 1.114
+     "render": 2.005,
+     "readback": 1.021
     }
    },
    "film": {
@@ -306,24 +307,24 @@
      "steps": 2700,
      "audioHash": "7a6ff838",
      "ms": {
-      "total": 5633.9,
+      "total": 6057.6,
       "begin": 0,
-      "render": 2156.2,
-      "readback": 591,
-      "wait": 2.5,
-      "audio": 214.9,
-      "end": 0
+      "render": 2470.1,
+      "readback": 666.9,
+      "wait": 3.6,
+      "audio": 217.9,
+      "end": 0.1
      },
      "perFrameMs": {
-      "render": 2,
-      "readback": 0.55,
+      "render": 2.29,
+      "readback": 0.62,
       "wait": 0,
-      "total": 5.22
+      "total": 5.61
      },
-     "framesPerSecond": 191.7,
+     "framesPerSecond": 178.29,
      "steamDrawn": true,
-     "digest": "72e11057f7fe8c21",
-     "distinct": 988,
+     "digest": "af463f8e404b4e2b",
+     "distinct": 1080,
      "worldDigest": "ac743fcb5a5572b3"
     },
     "second": {
@@ -340,24 +341,24 @@
      "steps": 2700,
      "audioHash": "7a6ff838",
      "ms": {
-      "total": 5430,
+      "total": 5855,
       "begin": 0,
-      "render": 2003.1,
-      "readback": 549.7,
-      "wait": 2.2,
-      "audio": 212.5,
-      "end": 0.1
+      "render": 2332,
+      "readback": 637.9,
+      "wait": 3.3,
+      "audio": 211.7,
+      "end": 0
      },
      "perFrameMs": {
-      "render": 1.85,
-      "readback": 0.51,
+      "render": 2.16,
+      "readback": 0.59,
       "wait": 0,
-      "total": 5.03
+      "total": 5.42
      },
-     "framesPerSecond": 198.9,
+     "framesPerSecond": 184.46,
      "steamDrawn": true,
-     "digest": "72e11057f7fe8c21",
-     "distinct": 988,
+     "digest": "af463f8e404b4e2b",
+     "distinct": 1080,
      "worldDigest": "ac743fcb5a5572b3"
     },
     "identical": true,
@@ -388,20 +389,20 @@
     },
     "1080p": {
      "renderMs": {
-      "median": 1.6,
-      "p95": 2.6,
+      "median": 1.4,
+      "p95": 1.9,
       "min": 1.2,
       "n": 30
      },
      "exportLoopMs": {
-      "median": 0.5,
-      "p95": 1.6,
+      "median": 0.4,
+      "p95": 1.7,
       "min": 0.1,
       "n": 30
      },
      "afterFrameMs": {
       "median": 0.5,
-      "p95": 1.5,
+      "p95": 0.8,
       "min": 0.4,
       "n": 30
      },
@@ -410,21 +411,21 @@
     },
     "4k": {
      "renderMs": {
-      "median": 4.4,
-      "p95": 4.7,
-      "min": 4.2,
+      "median": 4.3,
+      "p95": 4.5,
+      "min": 4.1,
       "n": 30
      },
      "exportLoopMs": {
       "median": 1.4,
-      "p95": 4,
+      "p95": 4.3,
       "min": 0.5,
       "n": 30
      },
      "afterFrameMs": {
       "median": 1.4,
-      "p95": 2,
-      "min": 1.3,
+      "p95": 2.3,
+      "min": 1.2,
       "n": 30
      },
      "hash": "5b8569da41e816bb",
@@ -433,7 +434,7 @@
     "1366x768": {
      "renderMs": {
       "median": 1.3,
-      "p95": 1.8,
+      "p95": 1.7,
       "min": 1.1,
       "n": 30
      },
@@ -444,9 +445,9 @@
       "n": 30
      },
      "afterFrameMs": {
-      "median": 0.5,
-      "p95": 0.6,
-      "min": 0.4,
+      "median": 0.4,
+      "p95": 0.7,
+      "min": 0.3,
       "n": 30
      },
      "hash": "ebcc87643cfbd9e3",
@@ -458,7 +459,8 @@
     "stillContent": 1,
     "firstFrameContent": 1,
     "freshFirstFrameContent": 1,
-    "same": true
+    "same": true,
+    "framesDiffer": []
    },
    "alpha": {
     "raw": [
@@ -480,7 +482,7 @@
      128
     ]
    },
-   "ms": 22581,
+   "ms": 23072,
    "errors": [],
    "verdicts": {
     "backend": "webgpu",
@@ -526,8 +528,8 @@
      "framesDiffer": []
     },
     "perFrameMs": {
-     "render": 1.959,
-     "readback": 1.445
+     "render": 2.081,
+     "readback": 1.492
     }
    },
    "film": {
@@ -551,21 +553,21 @@
      "steps": 2700,
      "audioHash": "7a6ff838",
      "ms": {
-      "total": 7394.5,
+      "total": 7845.2,
       "begin": 0.1,
-      "render": 1918,
-      "readback": 2708.7,
+      "render": 2171.8,
+      "readback": 2819.2,
       "wait": 0.8,
-      "audio": 207.6,
-      "end": 0
+      "audio": 212.7,
+      "end": 0.1
      },
      "perFrameMs": {
-      "render": 1.78,
-      "readback": 2.51,
+      "render": 2.01,
+      "readback": 2.61,
       "wait": 0,
-      "total": 6.85
+      "total": 7.26
      },
-     "framesPerSecond": 146.05,
+     "framesPerSecond": 137.66,
      "steamDrawn": true,
      "digest": "4c2265c827597f04",
      "distinct": 1080,
@@ -585,21 +587,21 @@
      "steps": 2700,
      "audioHash": "7a6ff838",
      "ms": {
-      "total": 7348.6,
+      "total": 7805.8,
       "begin": 0.1,
-      "render": 1872.2,
-      "readback": 2724,
-      "wait": 0.2,
-      "audio": 199.3,
+      "render": 2123.8,
+      "readback": 2839.8,
+      "wait": 0.7,
+      "audio": 210.1,
       "end": 0
      },
      "perFrameMs": {
-      "render": 1.73,
-      "readback": 2.52,
+      "render": 1.97,
+      "readback": 2.63,
       "wait": 0,
-      "total": 6.8
+      "total": 7.23
      },
-     "framesPerSecond": 146.97,
+     "framesPerSecond": 138.36,
      "steamDrawn": true,
      "digest": "4c2265c827597f04",
      "distinct": 1080,
@@ -634,19 +636,19 @@
     "1080p": {
      "renderMs": {
       "median": 0.5,
-      "p95": 0.7,
-      "min": 0.3,
+      "p95": 0.8,
+      "min": 0.4,
       "n": 30
      },
      "exportLoopMs": {
       "median": 2.5,
       "p95": 3.8,
-      "min": 2.3,
+      "min": 2.4,
       "n": 30
      },
      "afterFrameMs": {
       "median": 2.8,
-      "p95": 2.9,
+      "p95": 3,
       "min": 2.5,
       "n": 30
      },
@@ -655,21 +657,21 @@
     },
     "4k": {
      "renderMs": {
-      "median": 0.6,
+      "median": 0.5,
       "p95": 0.8,
       "min": 0.4,
       "n": 30
      },
      "exportLoopMs": {
-      "median": 8.6,
-      "p95": 13.9,
-      "min": 8.5,
+      "median": 8.9,
+      "p95": 13.7,
+      "min": 8.6,
       "n": 30
      },
      "afterFrameMs": {
       "median": 10.4,
-      "p95": 11.1,
-      "min": 9.9,
+      "p95": 10.7,
+      "min": 9.5,
       "n": 30
      },
      "hash": "337eac7ace895766",
@@ -678,19 +680,19 @@
     "1366x768": {
      "renderMs": {
       "median": 0.5,
-      "p95": 0.7,
+      "p95": 0.6,
       "min": 0.4,
       "n": 30
      },
      "exportLoopMs": {
       "median": 1.4,
-      "p95": 1.9,
+      "p95": 1.7,
       "min": 1.3,
       "n": 30
      },
      "afterFrameMs": {
       "median": 1.9,
-      "p95": 2.3,
+      "p95": 2.4,
       "min": 1.7,
       "n": 30
      },
@@ -703,7 +705,8 @@
     "stillContent": 1,
     "firstFrameContent": 1,
     "freshFirstFrameContent": 1,
-    "same": true
+    "same": true,
+    "framesDiffer": []
    },
    "alpha": {
     "raw": [
@@ -725,7 +728,7 @@
      128
     ]
    },
-   "ms": 26767,
+   "ms": 28142,
    "errors": [],
    "verdicts": {
     "backend": "webgl",
@@ -771,8 +774,8 @@
      "framesDiffer": []
     },
     "perFrameMs": {
-     "render": 2.424,
-     "readback": 1.579
+     "render": 1.881,
+     "readback": 1.412
     }
    },
    "film": {
@@ -796,21 +799,21 @@
      "steps": 2700,
      "audioHash": "7a6ff838",
      "ms": {
-      "total": 8365.1,
-      "begin": 0.1,
-      "render": 2499.8,
-      "readback": 2951.3,
-      "wait": 1.2,
-      "audio": 217.5,
+      "total": 8016,
+      "begin": 0,
+      "render": 2071.2,
+      "readback": 2924.4,
+      "wait": 0.5,
+      "audio": 204.3,
       "end": 0
      },
      "perFrameMs": {
-      "render": 2.31,
-      "readback": 2.73,
+      "render": 1.92,
+      "readback": 2.71,
       "wait": 0,
-      "total": 7.75
+      "total": 7.42
      },
-     "framesPerSecond": 129.11,
+     "framesPerSecond": 134.73,
      "steamDrawn": true,
      "digest": "4c2265c827597f04",
      "distinct": 1080,
@@ -830,21 +833,21 @@
      "steps": 2700,
      "audioHash": "7a6ff838",
      "ms": {
-      "total": 8297.5,
+      "total": 7205.3,
       "begin": 0,
-      "render": 2482.7,
-      "readback": 2923.3,
-      "wait": 0.8,
-      "audio": 224.3,
-      "end": 0.1
+      "render": 1783.8,
+      "readback": 2687.2,
+      "wait": 0.4,
+      "audio": 199.1,
+      "end": 0
      },
      "perFrameMs": {
-      "render": 2.3,
-      "readback": 2.71,
+      "render": 1.65,
+      "readback": 2.49,
       "wait": 0,
-      "total": 7.68
+      "total": 6.67
      },
-     "framesPerSecond": 130.16,
+     "framesPerSecond": 149.89,
      "steamDrawn": true,
      "digest": "4c2265c827597f04",
      "distinct": 1080,
@@ -878,21 +881,21 @@
     },
     "1080p": {
      "renderMs": {
-      "median": 0.8,
-      "p95": 1,
-      "min": 0.7,
+      "median": 0.5,
+      "p95": 0.7,
+      "min": 0.4,
       "n": 30
      },
      "exportLoopMs": {
-      "median": 2.8,
-      "p95": 4.2,
-      "min": 2.5,
+      "median": 2.5,
+      "p95": 3.9,
+      "min": 2.4,
       "n": 30
      },
      "afterFrameMs": {
-      "median": 3.1,
-      "p95": 3.9,
-      "min": 2.7,
+      "median": 2.8,
+      "p95": 3,
+      "min": 2.6,
       "n": 30
      },
      "hash": "985eb7f629ba0133",
@@ -900,21 +903,21 @@
     },
     "4k": {
      "renderMs": {
-      "median": 0.8,
-      "p95": 1,
-      "min": 0.7,
+      "median": 0.5,
+      "p95": 0.6,
+      "min": 0.4,
       "n": 30
      },
      "exportLoopMs": {
-      "median": 9.6,
-      "p95": 17.3,
-      "min": 9.2,
+      "median": 8.6,
+      "p95": 12.8,
+      "min": 8.5,
       "n": 30
      },
      "afterFrameMs": {
-      "median": 9.9,
-      "p95": 10.6,
-      "min": 9.5,
+      "median": 10.4,
+      "p95": 10.9,
+      "min": 10.2,
       "n": 30
      },
      "hash": "337eac7ace895766",
@@ -922,21 +925,21 @@
     },
     "1366x768": {
      "renderMs": {
-      "median": 0.7,
-      "p95": 0.9,
-      "min": 0.6,
+      "median": 0.4,
+      "p95": 0.6,
+      "min": 0.3,
       "n": 30
      },
      "exportLoopMs": {
-      "median": 1.6,
-      "p95": 1.9,
-      "min": 1.5,
+      "median": 1.4,
+      "p95": 1.7,
+      "min": 1.2,
       "n": 30
      },
      "afterFrameMs": {
-      "median": 1.8,
-      "p95": 2.8,
-      "min": 1.5,
+      "median": 1.9,
+      "p95": 2.2,
+      "min": 1.7,
       "n": 30
      },
      "hash": "4ad3dee98049a634",
@@ -948,7 +951,8 @@
     "stillContent": 1,
     "firstFrameContent": 1,
     "freshFirstFrameContent": 1,
-    "same": true
+    "same": true,
+    "framesDiffer": []
    },
    "alpha": {
     "raw": [
@@ -970,7 +974,7 @@
      128
     ]
    },
-   "ms": 29901,
+   "ms": 27216,
    "errors": [],
    "verdicts": {
     "backend": "webgl",

@@ -242,7 +242,8 @@ export async function reuseCheck({ R, sample, opts, backend, post = null, frames
     return { hashes: r.frameHashes, still, firstFrameContent: first };
   };
   const a = await run(true), b = await run(false);
-  return { frames, stillContent: a.still, firstFrameContent: a.firstFrameContent, freshFirstFrameContent: b.firstFrameContent, same: a.hashes.join() === b.hashes.join() };
+  const differ = a.hashes.map((h, i) => (h === b.hashes[i] ? -1 : i)).filter((i) => i >= 0);
+  return { frames, stillContent: a.still, firstFrameContent: a.firstFrameContent, freshFirstFrameContent: b.firstFrameContent, same: !differ.length, framesDiffer: differ };
 }
 
 /**

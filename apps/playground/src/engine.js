@@ -6,7 +6,7 @@ import { loadRapier } from '@vrmxg/physics';
 import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
 import { PRESETS } from '@vrmxg/camera';
 import { RenderHost, backendFromQuery } from '@vrmxg/render';
-import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
+import { renderViews, gridLayout, PRESETS as POST_PRESETS } from '@vrmxg/post';
 import { captureStill, hashFrame, readbackFor } from '@vrmxg/export';
 import { loadSample, buildWorld } from './world.js';
 import { serialize } from '@vrmxg/scene';
@@ -41,7 +41,7 @@ const json = async (ref) => JSON.parse(new TextDecoder().decode(await bytes(ref)
 
 export { vrmxaCore, behaviours, bytes };
 
-export { PRESETS };
+export { PRESETS, POST_PRESETS };
 
 /** The sample's voices for live lines, by speaker (the baked lines name theirs in content/sample/voice/lines.json). */
 const VOICES = { 'hana-1': 'af_heart', mira: 'af_bella', 'customer-1': 'am_adam' };
@@ -71,15 +71,15 @@ export class Playground {
 
   /**
    * The render host on the chosen backend. WebGL is the M3 playground exactly: the pmndrs post stack and troika's
-   * speech bubbles. WebGPU (M4 W0) draws the scene and its characters (the patched MToonNodeMaterial) without post
-   * (TSL post is M4 W1) and without bubbles (troika's shaders are WebGL's; the captions still show every line).
+   * speech bubbles. WebGPU (M4 W0) draws the scene and its characters (the patched MToonNodeMaterial) through the TSL
+   * post stack (M4 W1), without bubbles (troika's shaders are WebGL's; the captions still show every line).
    */
   async _makeHost({ preserveDrawingBuffer, backend }) {
-    // the backend is known only once the host exists (auto falls back to WebGL if WebGPU fails inside init()), so the post
-    // stack is made for a WebGLRenderer only, and the bubbles go on a WebGL host only
+    // the backend is known only once the host exists (auto falls back to WebGL if WebGPU fails inside init()): the host
+    // makes that backend's post stack (pmndrs on WebGL, TSL on WebGPU), and the bubbles go on a WebGL host only
     this.host = await RenderHost.create({
       canvas: this.canvas, backend, preserveDrawingBuffer,
-      post: (r) => (r.isWebGLRenderer ? new PostStack(r, { loadLut: async (file) => lutFromCube(new TextDecoder().decode(await bytes(file))) }) : null),
+      post: { loadCube: async (file) => new TextDecoder().decode(await bytes(file)) },
     });
     const webgl = this.host.backend === 'webgl';
     // speech bubbles in the canvas (M3 W6, troika: the text spike's verdict), the sample's static Noto Sans JP; no CDN
@@ -89,7 +89,14 @@ export class Playground {
     return this.host;
   }
 
-  resize() { const r = this.canvas.getBoundingClientRect(); if (r.width && r.height) this.host?.resize(r.width, r.height); }
+  resize() { if (this.offline) return; const r = this.canvas.getBoundingClientRect(); if (r.width && r.height) this.host?.resize(r.width, r.height); }
+
+  /**
+   * Offline checks own the canvas (M4 W1): no frame loop draws while paused and the canvas keeps the size the check
+   * gives it (the paused loop's draws and the resize observer's would land between the check's frames).
+   */
+  set offline(on) { this._offline = !!on; if (!on) this.resize(); }
+  get offline() { return !!this._offline; }
 
   /**
    * Load a scene of the sample project (a path under the site root). `text`: the scene's own JSON instead of the
@@ -386,6 +393,25 @@ export class Playground {
     return { x: Math.round(cx), y: Math.round(cy), visible: true, edge: Math.abs(cx - x) > 12 || Math.abs(cy - y) > 12 }; // a small nudge keeps the tail
   }
 
+  /**
+   * The post look (M4 W1's toggle; presentation only, the world is the same either way): 'scene' (what the scene's
+   * Environment authors), 'none', or a preset ('anime', 'clean'), on either backend.
+   * @param {string} choice
+   */
+  setPost(choice) {
+    const env = this.tree?.all().find((n) => n.type === 'Environment');
+    if (!env || !this.host?.post) return;
+    if (this._authoredPost === undefined || this._postTree !== this.tree) { this._authoredPost = env.props.post ?? null; this._postTree = this.tree; }
+    env.props.post = choice === 'scene' ? this._authoredPost : choice === 'none' ? null : choice;
+    this.postChoice = choice;
+    this.host.views.update(this.tree);
+    if (!this.playing) this.host.render(1, false);
+    this._changed();
+  }
+
+  /** The post look the toggle shows ('scene' after every load). */
+  postLook() { return this._postTree === this.tree ? this.postChoice : 'scene'; }
+
   /** Speech bubbles in the canvas on or off (presentation: the world is the same either way). */
   setBubbles(on) { if (!this.text) return; this.text.bubbles = !!on; if (this.tree && !this.playing) this.host.render(1, false); }
   /** Name tags over the characters on or off. */
@@ -418,7 +444,8 @@ export class Playground {
     this.pause();
     this.setBubbles(false);
     const R = await loadRapier(), sample = await loadSample(bytes);
-    const post = (r) => (r.isWebGLRenderer ? new PostStack(r, { loadLut: async (file) => lutFromCube(new TextDecoder().decode(await bytes(file))) }) : null);
+    // export hosts get the view's post: each backend's own stack (pmndrs on WebGL, TSL on WebGPU since M4 W1)
+    const post = { loadCube: async (file) => new TextDecoder().decode(await bytes(file)) };
     return framesCheck({ R, sample, opts: { vrmxaCore, closet, behaviours }, backend: this.host.backend, post, view: this.host, canvas: this.canvas, ...o });
   }
 
@@ -565,7 +592,7 @@ export class Playground {
     this._running = true;
     const tick = (t) => {
       requestAnimationFrame(tick);
-      if (!this.tree) return;
+      if (!this.tree || this.offline) return;
       const dt = this._last === null ? 0 : Math.min(0.25, (t - this._last) / 1000);
       if (this._last !== null) this._frames.push(t - this._last);
       this._last = t;

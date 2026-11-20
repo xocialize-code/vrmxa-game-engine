@@ -16,6 +16,9 @@ mac/build/
 # Rendered video from spike-frame-export
 spike-frame-export/out/
 
+# The post check's full-size stills (apps/playground scripts/post-*.mjs; 960-px previews are committed beside them)
+apps/playground/results/post/
+
 # The sample content's generated CC0 clips are committed (content/sample/LICENCES.md)
 !content/sample/animations/clips/*.vrma
 
