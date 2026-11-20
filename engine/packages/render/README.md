@@ -68,7 +68,7 @@ the drawing-buffer size on both backends; the patch applied (MToonNodeMaterial l
 the patcher's exact-hunk applier.
 
 **In browsers** (`apps/playground`, `?renderer=webgpu`): `scripts/backends-chromium.mjs` and `backends-wkwebview.sh`
-draw the cafe with Mira offline on both backends (results in `apps/playground/results/`).
+draw the cafe with Mira offline on both backends (results in `apps/playground/results/`, receipt AB-R-1055).
 
 ## The demo (`demo/`)
 
