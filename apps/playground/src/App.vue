@@ -6,7 +6,7 @@ import { Playground, PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, fall: false, split: false, sense: null, cameraDevices: [], cameraDevice: '', showBubbles: true, showCaptions: true, showNames: false });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, mic: null, fall: false, split: false, sense: null, cameraDevices: [], cameraDevice: '', showBubbles: true, showCaptions: true, showNames: false });
 // the sample's scenes and sequences; ?scene= picks one at load
 const SCENES = ['cafe.vrmxs', 'cafe-talk.vrmxs', 'cafe-follow.vrmxs', 'cafe-stairs.vrmxs', 'cafe-cart.vrmxs', 'cafe-split.vrmxs', 'sequences/morning.vrmxs', 'sequences/cafe-morning.vrmxs', 'sequences/conversation.vrmxs'];
 const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
@@ -20,6 +20,7 @@ function refresh() {
   ui.prompt = pg.prompt(); ui.wearing = pg.wearing();
   ui.buses = pg.busSettings(); ui.audioOn = !!pg.audio?.running; ui.captions = pg.captions();
   ui.bubbles = ui.showBubbles ? pg.bubbles() : []; ui.hasDirector = !!pg.director; ui.choices = pg.choices(); // M3 W6
+  ui.mic = pg.listening?.available ? { on: pg.listening.active, status: pg.listening.status } : null; // M3 W3
   ui.fall = !!pg.fall; // M3 W7
   ui.split = !!pg.split; // M3 W9: two players side by side
   ui.sense = pg.cameraStatus(); // M3 W5
@@ -52,6 +53,8 @@ async function saveCameraSession() {
 
 // M3 W7: ?fall — shove Mira and Hana down the stairs (and play, so the fall is seen)
 function knockDown() { try { pg.knockDown(); if (!pg.playing) pg.play(); } catch (e) { ui.error = String(e?.message ?? e); } refresh(); }
+// M3 W3: talk with your voice (the page's microphone, or the shell's with ?listen=shell)
+async function toggleMic() { try { await pg.toggleListening(); } catch (e) { ui.error = String(e?.message ?? e); } refresh(); }
 function send() { const t = ui.chatText.trim(); if (!t) return; say(t); ui.chatText = ''; }
 
 async function load() {
@@ -170,6 +173,8 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
         <div class="line">
           <input id="chat-input" v-model="ui.chatText" type="text" placeholder="Say something…" aria-label="Say something" autocomplete="off" @keydown.stop @keyup.stop>
           <button id="chat-send" type="submit" aria-label="Send" :disabled="!ui.chatText.trim()">Send</button>
+          <button v-if="ui.mic" id="chat-mic" type="button" :aria-pressed="ui.mic.on" :aria-label="ui.mic.on ? 'Stop listening' : 'Talk with your voice'" @click="toggleMic">{{ ui.mic.on ? 'Listening…' : 'Mic' }}</button>
+          <span v-if="ui.mic?.status" id="mic-status" class="mic-status" role="status">{{ ui.mic.status }}</span>
         </div>
       </form>
       <div v-if="ui.showCaptions && ui.captions.length" id="captions" class="captions" role="status" aria-live="polite">

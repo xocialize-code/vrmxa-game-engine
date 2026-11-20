@@ -3,7 +3,7 @@
 // WAV encoder, the STT providers' wire shapes, and listenTo driving a director: speaking on and off, then the transcript.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { EnergyVAD, encodeWav, listenTo, httpSTT, shellSTT } from '@vrmxg/voice';
+import { EnergyVAD, encodeWav, decodeWav, wavFrames, listenTo, httpSTT, shellSTT, shellListen } from '@vrmxg/voice';
 
 const RATE = 16000, N = 320; // 20 ms frames
 const quiet = (a = 0.001) => Float32Array.from({ length: N }, (_, i) => a * Math.sin(i * 0.7));
@@ -57,4 +57,58 @@ test('listenTo: speaking on at the start, off at the end, then the transcript to
   feed(loud(), 40); feed(quiet(), 30); // whisper's tag for silence: not said to her
   await new Promise((r) => setImmediate(r));
   assert.equal(told.filter((t) => t[0] === 'talk').length, 1);
+});
+
+test('decodeWav reads back what encodeWav wrote (16-bit) and 32-bit float', () => {
+  const x = Float32Array.from({ length: 100 }, (_, i) => Math.sin(i / 5) * 0.5);
+  const { samples, rate } = decodeWav(encodeWav(x, 24000));
+  assert.equal(rate, 24000);
+  assert.equal(samples.length, 100);
+  for (let i = 0; i < 100; i++) assert.ok(Math.abs(samples[i] - x[i]) < 1e-4);
+  const f = new Uint8Array(44 + 8), v = new DataView(f.buffer);
+  f.set([...'RIFF'].map((c) => c.charCodeAt(0)), 0); f.set([...'WAVEfmt '].map((c) => c.charCodeAt(0)), 8);
+  v.setUint32(16, 16, true); v.setUint16(20, 3, true); v.setUint16(22, 1, true); v.setUint32(24, 8000, true); v.setUint16(34, 32, true);
+  f.set([...'data'].map((c) => c.charCodeAt(0)), 36); v.setUint32(40, 8, true); v.setFloat32(44, 0.25, true); v.setFloat32(48, -0.5, true);
+  assert.deepEqual([...decodeWav(f).samples], [0.25, -0.5]);
+  assert.throws(() => decodeWav(new Uint8Array(12)), /not a WAV/);
+});
+
+test('wavFrames: a recording as a live microphone, paced by the clock, with lead and tail silence, then the detector hears it', async () => {
+  const speech = Float32Array.from({ length: 16000 }, (_, i) => 0.2 * Math.sin(i * 0.3)); // 1 s at 16 kHz
+  let clock = 0, pump = null;
+  const frames = [], ends = [];
+  const feed = wavFrames(encodeWav(speech, 16000), (f) => frames.push(Float32Array.from(f)), {
+    leadMs: 400, tailMs: 600, now: () => clock, onSpeechEnd: (t) => ends.push(t), tick: (fn) => { pump = fn; return 1; }, untick: () => { pump = null; },
+  });
+  clock = 100; pump(); assert.equal(frames.length, 5, 'only the frames due by the clock');
+  clock = 5000; pump();
+  await feed.done;
+  assert.equal(frames.length, 100, '0.4 + 1 + 0.6 s of 20 ms frames');
+  assert.deepEqual(ends, [5000], 'the end of speech is reported once, when its last frame went in');
+  assert.ok(frames[0].every((s) => s === 0) && frames[99].every((s) => s === 0) && frames[50].some((s) => s !== 0));
+  const vad = new EnergyVAD(), events = frames.flatMap((f) => vad.feed(f)).map((e) => e.type);
+  assert.deepEqual(events, ['start', 'end']);
+});
+
+test('shellListen: the shell\'s microphone events drive the director, and it reopens after each utterance until stopped', async () => {
+  const calls = [], handlers = new Map(), said = [], speaking = [];
+  const native = {
+    async call(m, p) { calls.push([m, p]); return m === 'stt.listen' ? { listening: true } : { listening: false }; },
+    on(name, fn) { handlers.set(name, fn); return () => handlers.delete(name); },
+  };
+  const director = { speaking: (a, on) => speaking.push([a, on]), talk: (a, t) => said.push([a, t]) };
+  const heard = [];
+  const l = shellListen({ native, director, agent: 'hana-1', onTranscript: (t) => heard.push(t.text) });
+  await l.start();
+  const emit = (e) => handlers.get('stt.event')(e);
+  emit({ type: 'listening' }); emit({ type: 'speechStarted' }); emit({ type: 'partial', text: 'a lat' }); emit({ type: 'speechEnded' });
+  emit({ type: 'final', text: ' A latte, please. ' });
+  emit({ type: 'final', text: '[noise]' });
+  assert.deepEqual(speaking, [['hana-1', true], ['hana-1', false]]);
+  assert.deepEqual(said, [['hana-1', 'A latte, please.']], 'noise tags are not said');
+  assert.deepEqual(heard, ['A latte, please.']);
+  assert.equal(calls.filter(([m]) => m === 'stt.listen').length, 3, 'opened, then reopened after each final');
+  await l.stop();
+  assert.deepEqual(calls.at(-1), ['stt.stop', { cancel: true }]);
+  assert.equal(handlers.has('stt.event'), false, 'unsubscribed');
 });

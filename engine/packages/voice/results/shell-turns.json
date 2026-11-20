@@ -1,0 +1,319 @@
+{
+ "when": "2026-11-20T04:29:37.862Z",
+ "where": "VRMXG Playground (Mac app, shell voice product)",
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+ "models": {
+  "llm": "Qwen3.5-4B-4bit (mlx-qwen-llm-swift)",
+  "stt": "Nemotron 3.5 ASR 0.6B (mlx-nemotron-stt-swift)",
+  "tts": "Kokoro-82M (mlx-kokoro-tts-swift)"
+ },
+ "modelsFolder": "/Volumes/DEV_VOL1/Models",
+ "prepareMs": 1173.9,
+ "turns": 11,
+ "heardAll": true,
+ "vadEndMs": 450,
+ "steady": {
+  "firstAudioMs": {
+   "median": 813.45,
+   "max": 979,
+   "mean": 821.4
+  },
+  "fromSpeechEndMs": {
+   "median": 1263.4499999999998,
+   "max": 1429,
+   "mean": 1271.4
+  },
+  "sttMs": {
+   "median": 249.8,
+   "max": 307.8,
+   "mean": 253.8
+  },
+  "talkToAudioMs": {
+   "median": 546.7,
+   "max": 700.7,
+   "mean": 563.4
+  },
+  "ttsMs": {
+   "median": 217.55,
+   "max": 286.6,
+   "mean": 225.6
+  }
+ },
+ "lineMs": {
+  "median": 322.45000000000005,
+  "max": 390.8,
+  "mean": 320.1
+ },
+ "verdictMs": {
+  "median": 499.75,
+  "max": 555.4,
+  "mean": 459.7
+ },
+ "note": "firstAudioMs: the detector's end of speech → her line heard (STT round trip + director line via llm.respond + tts.speak + the step it starts on); fromSpeechEndMs adds the detector's 450 ms wait (EnergyVAD endMs). fromRecordingEndMs is from the synthesised clip's last sample, which includes its trailing silence. The first turn is a warm-up, left out.",
+ "rows": [
+  {
+   "said": "Good morning, Hana!",
+   "heard": "Good morning Hannah.",
+   "line": "Morning to you too! Just what you ordered this time, or should I make something new for you?",
+   "sttMs": 205.5,
+   "sttRoundTripMs": 210.1,
+   "talkToAudioMs": 367.5,
+   "ttsMs": 112.9,
+   "firstAudioMs": 577.6,
+   "fromSpeechEndMs": 1027.6,
+   "fromRecordingEndMs": 403.7,
+   "calls": [
+    {
+     "part": "line",
+     "afterTalkMs": 0.7,
+     "ms": 238.6
+    },
+    {
+     "part": "verdict",
+     "afterTalkMs": 240,
+     "ms": 516
+    }
+   ]
+  },
+  {
+   "said": "Could I get a latte, please?",
+   "heard": "Could I get a latte please?",
+   "line": "Got it, a latte for you!\nHold on just a second, that espresso machine is taking forever.",
+   "sttMs": 228.2,
+   "sttRoundTripMs": 231.3,
+   "talkToAudioMs": 497.7,
+   "ttsMs": 220.3,
+   "firstAudioMs": 729,
+   "fromSpeechEndMs": 1179,
+   "fromRecordingEndMs": 626.9,
+   "calls": [
+    {
+     "part": "line",
+     "afterTalkMs": 0.3,
+     "ms": 245.5
+    },
+    {
+     "part": "verdict",
+     "afterTalkMs": 246,
+     "ms": 500.7
+    }
+   ]
+  },
+  {
+   "said": "How long have you been running this place?",
+   "heard": "How long have you been running this place?",
+   "line": "Longer than you've been around, I bet. Since before you even knew what a coffee cup looked like.",
+   "sttMs": 294.5,
+   "sttRoundTripMs": 299.7,
+   "talkToAudioMs": 472.6,
+   "ttsMs": 196.1,
+   "firstAudioMs": 772.3,
+   "fromSpeechEndMs": 1222.3,
+   "fromRecordingEndMs": 692.3,
+   "calls": [
+    {
+     "part": "line",
+     "afterTalkMs": 0.2,
+     "ms": 262.7
+    },
+    {
+     "part": "verdict",
+     "afterTalkMs": 263.1,
+     "ms": 491.2
+    }
+   ]
+  },
+  {
+   "said": "What do you recommend today?",
+   "heard": "What do you recommend today?",
+   "line": "You could try the house special, it's a bit of a mystery. Or just stick with your usual if you're feeling brave.",
+   "sttMs": 249.6,
+   "sttRoundTripMs": 254,
+   "talkToAudioMs": 516.1,
+   "ttsMs": 211.8,
+   "firstAudioMs": 770.2,
+   "fromSpeechEndMs": 1220.2,
+   "fromRecordingEndMs": 569.7,
+   "calls": [
+    {
+     "part": "line",
+     "afterTalkMs": 0.2,
+     "ms": 292.2
+    },
+    {
+     "part": "verdict",
+     "afterTalkMs": 292.6,
+     "ms": 484.3
+    }
+   ]
+  },
+  {
+   "said": "Is it always this quiet in the morning?",
+   "heard": "Is it always this quiet in the morning?",
+   "line": "Not always! Just a few larks and the espresso machine arguing about who's faster. You're doing great though, for a morning.",
+   "sttMs": 289.3,
+   "sttRoundTripMs": 294.7,
+   "talkToAudioMs": 575.8,
+   "ttsMs": 248.3,
+   "firstAudioMs": 870.5,
+   "fromSpeechEndMs": 1320.5,
+   "fromRecordingEndMs": 631.7,
+   "calls": [
+    {
+     "part": "line",
+     "afterTalkMs": 0.3,
+     "ms": 323.3
+    },
+    {
+     "part": "verdict",
+     "afterTalkMs": 323.8,
+     "ms": 529.8
+    }
+   ]
+  },
+  {
+   "said": "Can I sit by the window?",
+   "heard": "Can I sit by the window?",
+   "line": "Sure thing, go ahead and take the stool by the light. Just make sure you don't spill the milk on your new shoes.",
+   "sttMs": 250,
+   "sttRoundTripMs": 254.1,
+   "talkToAudioMs": 541.7,
+   "ttsMs": 207.2,
+   "firstAudioMs": 795.8,
+   "fromSpeechEndMs": 1245.8,
+   "fromRecordingEndMs": 657.8,
+   "calls": [
+    {
+     "part": "line",
+     "afterTalkMs": 0.2,
+     "ms": 315.1
+    },
+    {
+     "part": "verdict",
+     "afterTalkMs": 315.4,
+     "ms": null
+    }
+   ]
+  },
+  {
+   "said": "That smells amazing.",
+   "heard": "That smells amazing.",
+   "line": "It's nothing special, just hot milk and a little bit of magic.\nNow, are we getting the bill or just enjoying the aroma?",
+   "sttMs": 218.5,
+   "sttRoundTripMs": 222.3,
+   "talkToAudioMs": 608.8,
+   "ttsMs": 245,
+   "firstAudioMs": 831.1,
+   "fromSpeechEndMs": 1281.1,
+   "fromRecordingEndMs": 608.3,
+   "calls": [
+    {
+     "part": "line",
+     "afterTalkMs": 0.2,
+     "ms": 344.5
+    },
+    {
+     "part": "verdict",
+     "afterTalkMs": 344.9,
+     "ms": 531.5
+    }
+   ]
+  },
+  {
+   "said": "Do you have anything without milk?",
+   "heard": "Do you have anything without milk?",
+   "line": "We got it, but you'll have to skip the foam too since we don't do lattes without cream.\nHow about a black coffee or maybe some tea instead?",
+   "sttMs": 273.6,
+   "sttRoundTripMs": 278.3,
+   "talkToAudioMs": 700.7,
+   "ttsMs": 286.6,
+   "firstAudioMs": 979,
+   "fromSpeechEndMs": 1429,
+   "fromRecordingEndMs": 906.1,
+   "calls": [
+    {
+     "part": "line",
+     "afterTalkMs": 0.2,
+     "ms": 390.8
+    },
+    {
+     "part": "verdict",
+     "afterTalkMs": 391.1,
+     "ms": 555.4
+    }
+   ]
+  },
+  {
+   "said": "Thanks, you are the best.",
+   "heard": "Thanks you are the best.",
+   "line": "I'll take that as a compliment, but I'll keep working hard for you.\nNow, how about a quick walk around the block before you head out?",
+   "sttMs": 221.7,
+   "sttRoundTripMs": 225.3,
+   "talkToAudioMs": 645.6,
+   "ttsMs": 250,
+   "firstAudioMs": 870.8,
+   "fromSpeechEndMs": 1320.8,
+   "fromRecordingEndMs": 751.3,
+   "calls": [
+    {
+     "part": "line",
+     "afterTalkMs": 0.2,
+     "ms": 380.5
+    },
+    {
+     "part": "verdict",
+     "afterTalkMs": 380.8,
+     "ms": 526.3
+    }
+   ]
+  },
+  {
+   "said": "What music is this?",
+   "heard": "What music is this?",
+   "line": "Just some upbeat jazz to keep the energy high.\nIt's the perfect mood for a busy morning!",
+   "sttMs": 204.9,
+   "sttRoundTripMs": 207.3,
+   "talkToAudioMs": 551.7,
+   "ttsMs": 214.8,
+   "firstAudioMs": 759,
+   "fromSpeechEndMs": 1209,
+   "fromRecordingEndMs": 679.2,
+   "calls": [
+    {
+     "part": "line",
+     "afterTalkMs": 0.2,
+     "ms": 321.6
+    },
+    {
+     "part": "verdict",
+     "afterTalkMs": 322,
+     "ms": 498.8
+    }
+   ]
+  },
+  {
+   "said": "I should get going. See you tomorrow!",
+   "heard": "I should get going, see you tomorrow.",
+   "line": "See you then! Don't be late next time, or I might just serve you a free espresso.",
+   "sttMs": 307.8,
+   "sttRoundTripMs": 313.4,
+   "talkToAudioMs": 523.2,
+   "ttsMs": 176.1,
+   "firstAudioMs": 836.6,
+   "fromSpeechEndMs": 1286.6,
+   "fromRecordingEndMs": 636.8,
+   "calls": [
+    {
+     "part": "line",
+     "afterTalkMs": 0.2,
+     "ms": 324.4
+    },
+    {
+     "part": "verdict",
+     "afterTalkMs": 324.7,
+     "ms": 478.8
+    }
+   ]
+  }
+ ]
+}

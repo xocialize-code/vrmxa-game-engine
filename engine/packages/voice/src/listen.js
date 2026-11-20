@@ -6,9 +6,11 @@
 // through the director, which logs it, so a conversation replays with no microphone, no STT and no model.
 //
 // A speech-to-text provider is { name, transcribe(wav: Uint8Array) → Promise<{ text, ms? }> }:
-//   shellSTT(native)   the Mac shell's bridge: native.call('stt.transcribe', { wav: base64 }) (MLXEngine's live plane,
-//                      asked of mlx-engine, AB-A-0311; until the shell has the method the call fails)
+//   shellSTT(native)   the Mac shell's bridge: native.call('stt.transcribe', { wav: base64 }) (Nemotron through MLXEngine,
+//                      in the shell's voice product apps/shell/Voice; AB-A-0311)
 //   httpSTT(url)       the loopback stand-in (content/sample/tools/voice-server.py: whisper through mlx-whisper)
+// The shell's own microphone is the other way in: shellListen() takes its stt.listen events (VoiceChatKit's capture, VAD
+// and live STT, natively) in place of microphone() + listenTo(). Use one microphone or the other, never both.
 // Nothing here reads a clock: the detector counts frames, and latency is measured by whoever calls it.
 
 const b64 = (bytes) => {
@@ -18,9 +20,103 @@ const b64 = (bytes) => {
   return btoa(s);
 };
 
-/** The Mac shell's bridge. */
+/** The Mac shell's bridge: stt.transcribe (Nemotron through MLXEngine, in the shell's voice product). */
 export function shellSTT(native) {
   return { name: 'shell', async transcribe(wav) { const r = await native.call('stt.transcribe', { wav: b64(wav) }); return { text: String(r.text ?? '').trim(), ms: r.ms ?? null }; } };
+}
+
+/**
+ * The shell's native microphone into a conversation with `agent` (stt.listen: VoiceChatKit's capture, EnergyVAD and the
+ * live plane). Its events do what listenTo's do: speech start and end go to director.speaking, a final transcript to
+ * director.talk. The shell listens one utterance at a time; this reopens after each until stop().
+ * No echo cancellation natively: stop it while the character speaks through speakers, or use headphones.
+ * @param {{ native: { call: (m: string, p?: any) => Promise<any>, on: (name: string, fn: (e: any) => void) => () => void },
+ *   director: any, agent: string, onTranscript?: (t: { text: string }) => void, onEvent?: (e: any) => void,
+ *   onError?: (e: Error) => void }} o
+ */
+export function shellListen({ native, director, agent, onTranscript = () => {}, onEvent = () => {}, onError = (e) => console.warn(`[voice] listen: ${e.message}`) }) {
+  let open = false, off = null;
+  const listen = () => native.call('stt.listen').catch((e) => { open = false; onError(e); });
+  return {
+    get listening() { return open; },
+    async start() {
+      if (open) return;
+      open = true;
+      off = native.on('stt.event', (e) => {
+        onEvent(e);
+        if (e.type === 'speechStarted') director.speaking(agent, true);
+        else if (e.type === 'speechEnded') director.speaking(agent, false);
+        else if (e.type === 'final' || e.type === 'failed' || e.type === 'cancelled') {
+          const text = e.type === 'final' ? String(e.text ?? '').trim() : '';
+          if (text && !/^\[.*\]$/.test(text)) { onTranscript({ text }); director.talk(agent, text); }
+          if (e.type === 'failed') onError(new Error(e.text ?? 'listening failed'));
+          if (open && e.type !== 'cancelled') listen();
+        }
+      });
+      await listen();
+    },
+    async stop() {
+      open = false;
+      off?.(); off = null;
+      await native.call('stt.stop', { cancel: true }).catch(() => {});
+    },
+  };
+}
+
+/** A 16-bit PCM or 32-bit float WAV (the first channel) → { samples, rate }. */
+export function decodeWav(bytes) {
+  const b = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+  const v = new DataView(b.buffer, b.byteOffset, b.byteLength), tag = (i) => String.fromCharCode(b[i], b[i + 1], b[i + 2], b[i + 3]);
+  if (b.length < 12 || tag(0) !== 'RIFF' || tag(8) !== 'WAVE') throw new Error('not a WAV');
+  let i = 12, format = 1, channels = 1, rate = 16000, bits = 16;
+  while (i + 8 <= b.length) {
+    const id = tag(i), size = v.getUint32(i + 4, true), body = i + 8;
+    if (id === 'fmt ') { format = v.getUint16(body, true); channels = v.getUint16(body + 2, true) || 1; rate = v.getUint32(body + 4, true); bits = v.getUint16(body + 14, true); }
+    else if (id === 'data') {
+      const frame = channels * (bits / 8), n = Math.floor(Math.min(size, b.length - body) / frame), out = new Float32Array(n);
+      for (let k = 0; k < n; k++) {
+        const o = body + k * frame;
+        if (format === 1 && bits === 16) out[k] = v.getInt16(o, true) / 32768;
+        else if (format === 3 && bits === 32) out[k] = v.getFloat32(o, true);
+        else throw new Error(`a WAV of 16-bit PCM or 32-bit float, please (format ${format}, ${bits} bits)`);
+      }
+      return { samples: out, rate };
+    }
+    i = body + size + (size & 1);
+  }
+  throw new Error('the WAV has no data');
+}
+
+/**
+ * A recording as a microphone (tests, measurements): the WAV's samples at `rate` in `frameMs` frames, paced by `now`
+ * as a live microphone would deliver them, then `tailMs` of silence so a detector closes. onSpeechEnd(t) reports when
+ * the recording's last sample went in, by the same clock. The caller brings the clock and the timer (`now`, `tick`,
+ * `untick`): nothing here reads one. Returns { done, stop }.
+ * @param {Uint8Array} wav @param {(frame: Float32Array) => void} onFrame
+ * @param {{ now: () => number, tick: (fn: () => void) => any, untick: (h: any) => void, rate?: number, frameMs?: number,
+ *   leadMs?: number, tailMs?: number, onSpeechEnd?: (t: number) => void }} o
+ */
+export function wavFrames(wav, onFrame, { now, tick, untick, rate = 16000, frameMs = 20, leadMs = 400, tailMs = 1200, onSpeechEnd = () => {} }) {
+  const { samples, rate: from } = decodeWav(wav);
+  const step = from / rate, n = Math.floor(samples.length / step), speech = new Float32Array(n);
+  for (let k = 0; k < n; k++) { const p = k * step, i = Math.floor(p), t = p - i; speech[k] = i + 1 < samples.length ? samples[i] * (1 - t) + samples[i + 1] * t : samples[i]; }
+  const per = Math.round((rate * frameMs) / 1000), lead = Math.round((rate * leadMs) / 1000), all = new Float32Array(lead + n + Math.round((rate * tailMs) / 1000));
+  all.set(speech, lead);
+  const frames = Math.floor(all.length / per), endFrame = Math.ceil((lead + n) / per);
+  let sent = 0, h = null, resolve;
+  const done = new Promise((r) => { resolve = r; });
+  const t0 = now();
+  const pump = () => {
+    const due = Math.min(frames, Math.floor((now() - t0) / frameMs));
+    while (sent < due) {
+      onFrame(all.subarray(sent * per, (sent + 1) * per));
+      sent++;
+      if (sent === endFrame) onSpeechEnd(now());
+    }
+    if (sent >= frames) { untick(h); resolve(); }
+  };
+  h = tick(pump);
+  return { done, stop() { untick(h); resolve(); } };
 }
 
 /** A loopback STT server: POST the WAV's bytes → { text, ms }. */
@@ -147,10 +243,13 @@ export function listenTo({ director, agent, stt, vad = new EnergyVAD(), onTransc
 export async function microphone(onFrame, { rate = 16000, frameMs = 20 } = {}) {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 } });
   const ctx = new AudioContext();
+  if (ctx.state === 'suspended') ctx.resume().catch(() => {}); // not awaited: WebKit holds it until a user gesture
   const code = `registerProcessor('vrmxg-mic', class extends AudioWorkletProcessor { process(i) { const c = i[0]?.[0]; if (c) this.port.postMessage(c.slice(0)); return true; } });`;
   await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([code], { type: 'text/javascript' })));
   const node = new AudioWorkletNode(ctx, 'vrmxg-mic');
   ctx.createMediaStreamSource(stream).connect(node);
+  // WebKit renders only nodes that reach the destination: a silent gain gets the worklet pulled without being heard
+  const mute = ctx.createGain(); mute.gain.value = 0; node.connect(mute).connect(ctx.destination);
   const per = Math.round((rate * frameMs) / 1000), step = ctx.sampleRate / rate;
   let buf = new Float32Array(0), pos = 0;
   node.port.onmessage = (m) => {
@@ -161,5 +260,6 @@ export async function microphone(onFrame, { rate = 16000, frameMs = 20 } = {}) {
     const used = Math.floor(pos); buf = buf.subarray(used); pos -= used;
     for (let k = 0; k + per <= out.length; k += per) onFrame(Float32Array.from(out.slice(k, k + per)));
   };
-  return () => { node.disconnect(); stream.getTracks().forEach((t) => t.stop()); ctx.close(); };
+  const stop = () => { node.disconnect(); stream.getTracks().forEach((t) => t.stop()); ctx.close(); };
+  return Object.assign(stop, { context: ctx, stream }); // for a status line: the context's state, the track's
 }

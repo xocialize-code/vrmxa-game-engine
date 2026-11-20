@@ -11,5 +11,7 @@
 	<key>com.apple.security.device.camera</key><true/>
 	<!-- The microphone (M3 W3): the page's getUserMedia (@vrmxg/voice microphone()) and the shell's microphone.* methods. -->
 	<key>com.apple.security.device.audio-input</key><true/>
+	<!-- The voice models' folder (M3 W3): picked once with voice.chooseModels and remembered as a security-scoped bookmark. -->
+	<key>com.apple.security.files.bookmarks.app-scope</key><true/>
 </dict>
 </plist>

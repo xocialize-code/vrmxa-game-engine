@@ -1,0 +1,249 @@
+{
+  "originHash" : "aadb633e28919724c6c83ae693bb0b2580f88e5b227187dd387059d97d2e1e7d",
+  "pins" : [
+    {
+      "identity" : "audio-polish-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/audio-polish-kit.git",
+      "state" : {
+        "revision" : "8923f0cb257fdc56a97fc98d214352d2f1f23ff0",
+        "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "designscaffold",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/DesignScaffold",
+      "state" : {
+        "revision" : "4e44017bbfb1c445aabbe85687f0a1a00ba193f2",
+        "version" : "0.26.0"
+      }
+    },
+    {
+      "identity" : "eventsource",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mattt/EventSource.git",
+      "state" : {
+        "revision" : "bb4b61273b5a976bb571859c17f903ebc3439df1",
+        "version" : "1.6.0"
+      }
+    },
+    {
+      "identity" : "kokoro-mlx-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/kokoro-mlx-swift.git",
+      "state" : {
+        "revision" : "bda3b0d34864b19c28114713afa910c218676344",
+        "version" : "0.2.1"
+      }
+    },
+    {
+      "identity" : "mlx-audio-dsp",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/mlx-audio-dsp.git",
+      "state" : {
+        "revision" : "73823a16924363e2be7fa5f10ed767d1f7ffd9ae",
+        "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "mlx-constrained-decoding-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/mlx-constrained-decoding-swift",
+      "state" : {
+        "revision" : "846adbebe5f8cae995415998f9e9bf0afce4cf11",
+        "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "mlx-engine-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/mlx-engine-swift",
+      "state" : {
+        "revision" : "81fe1dbd248903df25fc7cb745b9d7ff0b844201",
+        "version" : "0.82.1"
+      }
+    },
+    {
+      "identity" : "mlx-gepard-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/mlx-gepard-swift",
+      "state" : {
+        "revision" : "783a0f9240d0ac2cd28cf8cb69b2ba7ef50b8106",
+        "version" : "0.4.4"
+      }
+    },
+    {
+      "identity" : "mlx-kokoro-tts-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/mlx-kokoro-tts-swift",
+      "state" : {
+        "revision" : "4a979df572fd4b5feea74c45368cf7380022eccf",
+        "version" : "0.6.0"
+      }
+    },
+    {
+      "identity" : "mlx-lfm-llm-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/mlx-lfm-llm-swift",
+      "state" : {
+        "revision" : "9403e4cce4309e9fad2db07290158654dfd19711",
+        "version" : "0.5.0"
+      }
+    },
+    {
+      "identity" : "mlx-nemotron-stt-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/mlx-nemotron-stt-swift",
+      "state" : {
+        "revision" : "9ed4821b1eb6db55f1d4fbeaafe583a29d80720b",
+        "version" : "0.4.0"
+      }
+    },
+    {
+      "identity" : "mlx-qwen-llm-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/mlx-qwen-llm-swift",
+      "state" : {
+        "revision" : "1a570f19133698491417102dc332113940b6aa6f",
+        "version" : "0.7.0"
+      }
+    },
+    {
+      "identity" : "mlx-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/mlx-swift",
+      "state" : {
+        "revision" : "1ebd51c28f6d3af13c54d933faf0b1181b41a1ef",
+        "version" : "0.33.1"
+      }
+    },
+    {
+      "identity" : "mlx-swift-lm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ml-explore/mlx-swift-lm",
+      "state" : {
+        "revision" : "ca661dc6885f8603e911746838b60d312439a368",
+        "version" : "3.33.0"
+      }
+    },
+    {
+      "identity" : "nemotron-asr-mlx-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/nemotron-asr-mlx-swift.git",
+      "state" : {
+        "revision" : "a93d264ff282fb986634fc77e4ddac62e40e68e0",
+        "version" : "0.2.0"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "revision" : "6a52f3251125d74daf04fcbd5e6f08a75d074382",
+        "version" : "1.8.2"
+      }
+    },
+    {
+      "identity" : "swift-asn1",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-asn1.git",
+      "state" : {
+        "revision" : "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+        "version" : "1.7.4"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections.git",
+      "state" : {
+        "revision" : "88754449ab766a739610b660e117762115fabc9c",
+        "version" : "1.7.6"
+      }
+    },
+    {
+      "identity" : "swift-crypto",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-crypto.git",
+      "state" : {
+        "revision" : "da9d28d69ebe3894b18376c8f2395c2f37b8448f",
+        "version" : "4.5.2"
+      }
+    },
+    {
+      "identity" : "swift-huggingface",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/huggingface/swift-huggingface",
+      "state" : {
+        "revision" : "f0a0cb43cb1b402d2bbf6fb10d8981328c449c48",
+        "version" : "0.13.0"
+      }
+    },
+    {
+      "identity" : "swift-jinja",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/huggingface/swift-jinja.git",
+      "state" : {
+        "revision" : "3104efda56131c37dda52e9142f02cc2425c02e6",
+        "version" : "3.2.1"
+      }
+    },
+    {
+      "identity" : "swift-numerics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-numerics",
+      "state" : {
+        "revision" : "0c0290ff6b24942dadb83a929ffaaa1481df04a2",
+        "version" : "1.1.1"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
+      "state" : {
+        "revision" : "79e4b74a295b6eb74a8b585e3a39d29e70c1dbd1",
+        "version" : "603.0.2"
+      }
+    },
+    {
+      "identity" : "swift-transformers",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/huggingface/swift-transformers",
+      "state" : {
+        "revision" : "402a8a1105f52038b0949d9596981fc9e32bed17",
+        "version" : "1.4.0"
+      }
+    },
+    {
+      "identity" : "tts-orchestrator-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/tts-orchestrator-kit",
+      "state" : {
+        "revision" : "937c3e8b294d42265a8931f9b6fb00a3676053d5",
+        "version" : "0.2.0"
+      }
+    },
+    {
+      "identity" : "voice-chat-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xocialize/voice-chat-kit",
+      "state" : {
+        "revision" : "960f3897afc977e722603b21b1f2c9a47ce48501",
+        "version" : "0.5.0"
+      }
+    },
+    {
+      "identity" : "yyjson",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ibireme/yyjson.git",
+      "state" : {
+        "revision" : "6447536015f3d600f3d65323b10976103b337ca7",
+        "version" : "0.13.0"
+      }
+    }
+  ],
+  "version" : 3
+}

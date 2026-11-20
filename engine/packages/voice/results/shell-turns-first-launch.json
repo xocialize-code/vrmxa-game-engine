@@ -1,0 +1,166 @@
+{
+ "when": "2026-11-20T04:26:38.938Z",
+ "where": "VRMXG Playground (Mac app, shell voice product)",
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+ "models": {
+  "tts": "Kokoro-82M (mlx-kokoro-tts-swift)",
+  "stt": "Nemotron 3.5 ASR 0.6B (mlx-nemotron-stt-swift)",
+  "llm": "Qwen3.5-4B-4bit (mlx-qwen-llm-swift)"
+ },
+ "modelsFolder": "/Volumes/DEV_VOL1/Models",
+ "prepareMs": 17135.8,
+ "turns": 11,
+ "heardAll": true,
+ "vadEndMs": 450,
+ "steady": {
+  "firstAudioMs": {
+   "median": 790.75,
+   "max": 7327.5,
+   "mean": 1505.9
+  },
+  "fromSpeechEndMs": {
+   "median": 695.1,
+   "max": 7223.5,
+   "mean": 1360.5
+  },
+  "sttMs": {
+   "median": 253.15,
+   "max": 388.8,
+   "mean": 268.6
+  },
+  "talkToAudioMs": {
+   "median": 526.9,
+   "max": 7070.1,
+   "mean": 1232.6
+  },
+  "ttsMs": {
+   "median": 188.75,
+   "max": 246.3,
+   "mean": 195.8
+  }
+ },
+ "note": "firstAudioMs: the detector's end of speech → her line heard (STT round trip + director line via llm.respond + tts.speak + the step it starts on); fromSpeechEndMs adds the detector's 450 ms wait. The first turn is a warm-up, left out.",
+ "rows": [
+  {
+   "said": "Good morning, Hana!",
+   "heard": "Good morning Hannah.",
+   "line": "Morning! The espresso machine is still catching up with itself, but you're safe. What can I get you to start with?",
+   "sttMs": 305.4,
+   "sttRoundTripMs": 310.2,
+   "talkToAudioMs": 2105.4,
+   "ttsMs": 635.8,
+   "firstAudioMs": 2415.6,
+   "fromSpeechEndMs": 2232.9
+  },
+  {
+   "said": "Could I get a latte, please?",
+   "heard": "Could I get a latte please?",
+   "line": "You picked a classic, but the barista is currently arguing with the milk foam. Grab a seat while I fix that.",
+   "sttMs": 253,
+   "sttRoundTripMs": 257.4,
+   "talkToAudioMs": 7070.1,
+   "ttsMs": 166.6,
+   "firstAudioMs": 7327.5,
+   "fromSpeechEndMs": 7223.5
+  },
+  {
+   "said": "How long have you been running this place?",
+   "heard": "How long have you been running this place?",
+   "line": "Long enough to know every grump and every sweet tooth. Just long enough to make you feel like home.",
+   "sttMs": 302.7,
+   "sttRoundTripMs": 307.7,
+   "talkToAudioMs": 488.6,
+   "ttsMs": 207.7,
+   "firstAudioMs": 796.4,
+   "fromSpeechEndMs": 716.6
+  },
+  {
+   "said": "What do you recommend today?",
+   "heard": "What do you recommend today?",
+   "line": "Skip the milk foam and take the lavender honey latte instead. It's the only thing that can calm down your morning nerves.",
+   "sttMs": 253.3,
+   "sttRoundTripMs": 257.6,
+   "talkToAudioMs": 527.5,
+   "ttsMs": 246.3,
+   "firstAudioMs": 785.1,
+   "fromSpeechEndMs": 585.6
+  },
+  {
+   "said": "Is it always this quiet in the morning?",
+   "heard": "Is it always this quiet in the morning?",
+   "line": "Only until the first few customers arrive. Then it'll be a busy morning indeed.",
+   "sttMs": 286.4,
+   "sttRoundTripMs": 291.5,
+   "talkToAudioMs": 1171.3,
+   "ttsMs": 185.9,
+   "firstAudioMs": 1462.8,
+   "fromSpeechEndMs": 1223.8
+  },
+  {
+   "said": "Can I sit by the window?",
+   "heard": "Can I sit by the window?",
+   "line": "Be my guest, the light's perfect for watching the world get busy. Just don't spill anything.",
+   "sttMs": 252.1,
+   "sttRoundTripMs": 256.9,
+   "talkToAudioMs": 480.5,
+   "ttsMs": 199.7,
+   "firstAudioMs": 737.4,
+   "fromSpeechEndMs": 593.5
+  },
+  {
+   "said": "That smells amazing.",
+   "heard": "That smells amazing.",
+   "line": "That's the secret ingredient, a dash of patience and a lot of sugar.",
+   "sttMs": 220.2,
+   "sttRoundTripMs": 224.2,
+   "talkToAudioMs": 439.2,
+   "ttsMs": 177.3,
+   "firstAudioMs": 663.4,
+   "fromSpeechEndMs": 442.3
+  },
+  {
+   "said": "Do you have anything without milk?",
+   "heard": "Do you have anything without milk?",
+   "line": "Lactose-free lattes are on the menu, but they taste like water. Skip the milk, grab a seat, and I'll make it.",
+   "sttMs": 278.5,
+   "sttRoundTripMs": 283.4,
+   "talkToAudioMs": 611.5,
+   "ttsMs": 220.5,
+   "firstAudioMs": 894.8,
+   "fromSpeechEndMs": 815.1
+  },
+  {
+   "said": "Thanks, you are the best.",
+   "heard": "Thanks you are the best.",
+   "line": "You're welcome, stranger. Now sit down and let's get that coffee in you.",
+   "sttMs": 228.1,
+   "sttRoundTripMs": 232.9,
+   "talkToAudioMs": 468.6,
+   "ttsMs": 176.7,
+   "firstAudioMs": 701.5,
+   "fromSpeechEndMs": 585.6
+  },
+  {
+   "said": "What music is this?",
+   "heard": "What music is this?",
+   "line": "It's just the espresso machine's symphony, but you're welcome to your own playlist if you have one.",
+   "sttMs": 222.4,
+   "sttRoundTripMs": 227.1,
+   "talkToAudioMs": 526.3,
+   "ttsMs": 189.3,
+   "firstAudioMs": 753.4,
+   "fromSpeechEndMs": 673.6
+  },
+  {
+   "said": "I should get going. See you tomorrow!",
+   "heard": "I should get going, see you tomorrow.",
+   "line": "Take care of yourself, and remember to buy the coffee. I'll be here to welcome you next time.",
+   "sttMs": 388.8,
+   "sttRoundTripMs": 394.3,
+   "talkToAudioMs": 542.4,
+   "ttsMs": 188.2,
+   "firstAudioMs": 936.7,
+   "fromSpeechEndMs": 745.6
+  }
+ ]
+}

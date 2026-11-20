@@ -7,8 +7,8 @@
 // export) live clips are left out: a shot is exported with baked lines (bake.js, tools/bake-lines.mjs).
 //
 // A provider is { name, speak({ text, voice }) → Promise<{ wav: Uint8Array, words?: [{ text, start, duration }] }> }.
-//   shellTTS(native)   the Mac shell's bridge: native.call('tts.speak', { text, voice }) (an MLXEngine endpoint, asked of
-//                      the mlx-engine area; until the shell has the method the call fails and live lines stay silent)
+//   shellTTS(native)   the Mac shell's bridge: native.call('tts.speak', { text, voice }) (Kokoro with word timings through
+//                      MLXEngine, in the shell's voice product apps/shell/Voice; AB-A-0308)
 //   httpTTS(url)       a loopback TTS server (content/sample/tools/tts-server.py: Kokoro through mlx-audio), POST JSON
 // Both answer { wav: base64, sampleRate, words }.
 
@@ -41,11 +41,13 @@ export class LiveLines {
   /**
    * @param {any} voice the voice service
    * @param {{ name?: string, speak: (line: { text: string, voice: string }) => Promise<{ wav: Uint8Array, words?: any[] }> }} provider
-   * @param {{ voices?: Record<string, string>, voice?: string, onError?: (e: Error) => void, now?: () => number }} [opts] voices:
-   *   character id → voice name; now: a clock for the latency stats (the caller's: nothing here reads one by itself)
+   * @param {{ voices?: Record<string, string>, voice?: string, onError?: (e: Error) => void, now?: () => number,
+   *   onHeard?: (h: { id: string, text: string, step: number, ms: number, at: number }) => void }} [opts] voices:
+   *   character id → voice name; now: a clock for the latency stats (the caller's: nothing here reads one by itself);
+   *   onHeard: a live line's audio starts (its first step), with the provider's time and the clock's (a turn's measurement)
    */
-  constructor(voice, provider, { voices = {}, voice: fallback = 'af_heart', onError = (e) => console.warn(`[voice] live line: ${e.message}`), now = () => 0 } = {}) {
-    this.voice = voice; this.provider = provider; this.voices = voices; this.fallback = fallback; this.onError = onError; this.now = now;
+  constructor(voice, provider, { voices = {}, voice: fallback = 'af_heart', onError = (e) => console.warn(`[voice] live line: ${e.message}`), now = () => 0, onHeard = () => {} } = {}) {
+    this.voice = voice; this.provider = provider; this.voices = voices; this.fallback = fallback; this.onError = onError; this.now = now; this.onHeard = onHeard;
     /** text|voice → { state: 'pending' | 'ready' | 'failed', ref?, duration?, ms? } */ this.clips = new Map();
     /** character id → { line (the voice service's line object), key, heardFrom (step) } */ this.playing = new Map();
     this.failures = 0;
@@ -87,7 +89,7 @@ export class LiveLines {
       // the line was replaced, or ended and its clip has played out
       if (current !== p.line && current) { this.playing.delete(id); continue; }
       if (entry?.state !== 'ready') { if (!current) this.playing.delete(id); continue; }
-      if (p.heardFrom === null) p.heardFrom = step;
+      if (p.heardFrom === null) { p.heardFrom = step; this.onHeard({ id, text: p.line.text, step, ms: entry.ms, at: this.now() }); }
       if ((step - p.heardFrom) / 60 > entry.duration) { this.playing.delete(id); continue; }
       const actor = this.voice.tree.find(id);
       const head = actor?.vrm?.humanoid?.getRawBoneNode('head') ?? actor?.object3d;

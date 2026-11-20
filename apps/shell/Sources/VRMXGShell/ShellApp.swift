@@ -22,10 +22,13 @@ public struct ShellConfiguration {
     public var closeKeepsRunning: Bool
     /// false: no Dock icon or app menu (an accessory app, like LSUIElement); pair it with a status item.
     public var dockIcon: Bool
+    /// Runs once the shell's own methods are registered, before the page loads: an optional product (the voice methods,
+    /// apps/shell/Voice) registers its methods on `router` and keeps itself in `keepAlive`.
+    public var setUp: (@MainActor (ShellAppDelegate) -> Void)?
     public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = [], pageUndo: Bool = false,
-                statusItem: StatusItemConfiguration? = nil, closeKeepsRunning: Bool = false, dockIcon: Bool = true) {
+                statusItem: StatusItemConfiguration? = nil, closeKeepsRunning: Bool = false, dockIcon: Bool = true, setUp: (@MainActor (ShellAppDelegate) -> Void)? = nil) {
         self.appName = appName; self.scheme = scheme; self.size = size; self.webFolder = webFolder; self.methods = methods; self.pageUndo = pageUndo
-        self.statusItem = statusItem; self.closeKeepsRunning = closeKeepsRunning; self.dockIcon = dockIcon
+        self.statusItem = statusItem; self.closeKeepsRunning = closeKeepsRunning; self.dockIcon = dockIcon; self.setUp = setUp
     }
 }
 
@@ -56,6 +59,8 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     /// The window's mode, "normal" or "floating" (WindowModes.swift)
     var windowMode = "normal"
     var statusItem: NSStatusItem?
+    /// Objects an app's setUp registered handlers on, held for the app's life (their handlers capture them unowned, AB-L-0363).
+    public var keepAlive: [AnyObject] = []
 
     public init(config: ShellConfiguration) {
         self.config = config
@@ -75,6 +80,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         microphone.register(on: router) // the microphone's permission (M3 W3): needs the audio-input entitlement and usage description
         exports.register(on: router, posts: posts)
         for (name, handler) in config.methods { router.register(name, handler) }
+        config.setUp?(self)
 
         let wk = WKWebViewConfiguration()
         wk.setURLSchemeHandler(scheme, forURLScheme: config.scheme)

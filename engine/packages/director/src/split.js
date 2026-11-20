@@ -45,7 +45,8 @@ export function verdictRequest({ moment: m, name, userName = 'the person', heard
   if (m.goals.length) lines.push('', 'Goals:', ...m.goals.map((g) => `- ${g.name}: ${g.description ?? ''}`));
   lines.push('', `Things here: ${m.items.map((i) => `${i.id} (${i.name})`).join(', ') || 'none'}. "user" is ${userName}.`);
   lines.push('Set a goal or an action only when the person asked for it or the answer promised it. Most answers need neither.');
-  return { messages: [{ role: 'user', content: lines.join('\n') }], tools: [] };
+  // json: one JSON object, grammar-constrained where the model can (the shell's llm.respond); others ignore it
+  return { messages: [{ role: 'user', content: lines.join('\n') }], tools: [], json: true };
 }
 
 /**

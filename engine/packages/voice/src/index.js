@@ -2,7 +2,7 @@
 import { VoiceService } from './service.js';
 export { VoiceService } from './service.js';
 export { LiveLines, shellTTS, httpTTS } from './live.js';
-export { EnergyVAD, listenTo, microphone, encodeWav, shellSTT, httpSTT } from './listen.js';
+export { EnergyVAD, listenTo, microphone, encodeWav, decodeWav, wavFrames, shellSTT, shellListen, httpSTT } from './listen.js';
 export { bakePlan, applyBake } from './bake.js';
 export { buildTrack, sampleMouth, wordAt, estimateWords, VOWELS, OCULUS_TO_VRM } from './lipsync.js';
 

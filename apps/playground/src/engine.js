@@ -16,7 +16,8 @@ import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { inShell, call, on as shellOn } from '../../shell/js/shell.js';
 import { httpTTS, shellTTS } from '@vrmxg/voice';
-import { installDirector, httpModel, isTake, demoModel } from '@vrmxg/director';
+import { installDirector, httpModel, shellModel, isTake, demoModel } from '@vrmxg/director';
+import { Listening, measureVoiceTurns } from './voice.js';
 import { Vector3 } from 'three';
 import { TextLayer } from '@vrmxg/text';
 import { withStairs, knockDownStairs } from './stairs.js';
@@ -114,7 +115,8 @@ export class Playground {
     this.director = null;
     if (directorUrl && !take) {
       const player = tree.all().find((n) => n.type === 'Character' && n.behaviourEntries?.some((b) => b.use === 'player'));
-      const model = directorUrl === 'demo' ? demoModel() : httpModel(directorUrl, { model: params.get('model') ?? 'omni4', temperature: 0 });
+      // ?director=shell: the Mac shell's llm.respond (MLXEngine in the shell's voice product, M3 W3)
+      const model = directorUrl === 'demo' ? demoModel() : directorUrl === 'shell' ? shellModel({ call }) : httpModel(directorUrl, { model: params.get('model') ?? 'omni4', temperature: 0 });
       this.director = installDirector(tree, { model, user: player?.id ?? null, userName: player?.name ?? null, persona: (id) => world.personas.forDirector(id), memory: (id) => world.personas.memoryOf(id) });
     }
     if (!this.devices) {
@@ -129,10 +131,16 @@ export class Playground {
     if (tts) tree.services.get('voice')?.useLive(tts === 'shell' ? shellTTS({ call }) : httpTTS(tts), { voices: VOICES, now: () => performance.now() });
     // the prompt and what the player wears change on signals: refresh the controls then, not on the next stats tick
     for (const n of tree.all()) if (n.type === 'Character') { n.on('focusChanged', () => this._changed()); n.on('dressed', () => this._changed()); }
+    // M3 W3: your voice into the conversation (voice.js): ?listen=page|shell; ?measure=voice runs the measured turns
+    await this.listening?.stop();
+    this.listening = this.director ? new Listening(this, { inShell, call, on: shellOn, params: new URLSearchParams(location.search) }) : null;
     this.host.attach(tree);
     this.resize();
     this.host.render(1);
     this._loop();
+    if (this.director && new URLSearchParams(location.search).get('measure') === 'voice') {
+      measureVoiceTurns(this, { call }).catch((e) => { console.error(`[voice-measure] ${e?.stack ?? e}`); window.__voiceMeasure = { error: String(e?.message ?? e) }; });
+    }
     this._changed();
     return { nodes: tree.all().length, skipped: models.skipped };
   }
@@ -415,6 +423,13 @@ export class Playground {
     const id = this.director.talk(this.talkTo, t);
     this._changed();
     return id;
+  }
+
+  /** Listen to the person's voice, or stop (voice.js). */
+  async toggleListening() {
+    if (!this.listening?.available) throw new Error('no microphone path: the Mac app, or ?stt=<loopback url> in a browser');
+    if (this.listening.active) await this.listening.stop(); else { await this.listening.start(); if (!this.playing) this.play(); }
+    this._changed();
   }
 
   /** Replies the person can pick (the character's app persona `replies`, else a few general ones). */

@@ -3,8 +3,9 @@
 //   request { messages: [{ role, content }], tools: [{ name, description, parameters }], maxTokens, priority }
 //   reply   { text?, toolCalls: [{ name, arguments }], model }   (arguments: an object, or the JSON text of one)
 // Backends:
-//   shellModel(native)   the Mac shell's bridge: native.call('llm.respond', request) (MLXEngine; asked of mlx-engine,
-//                        AB-A-0311; until the shell has the method the call fails and the tree carries on)
+//   shellModel(native)   the Mac shell's bridge: native.call('llm.respond', request) (MLXEngine in the shell's voice
+//                        product, apps/shell/Voice: Qwen3.5-4B 4-bit until LFM3-Omni-2B has a Swift package; no tools,
+//                        so the split turn; the verdict's `json: true` is grammar-constrained there)
 //   httpModel(url)       an OpenAI-compatible chat-completions endpoint on loopback (the stand-in for browsers)
 //   scriptedModel(fn)    replies from a function or a list, after `latency` steps: every test and acceptance check
 //   replayModel()        never called: in replay the decisions come from the ai service's log
