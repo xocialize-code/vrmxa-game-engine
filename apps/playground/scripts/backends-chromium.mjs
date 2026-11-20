@@ -4,6 +4,7 @@
 // it. Then it does the same on a second load of each page. Writes results/backends-chromium.json and one still per
 // backend (results/playground-{webgl,webgpu}.png) and the page (results/playground-ui-*.png), and compares the two backends' stills pixel by pixel (speech bubbles
 // off on both: they are WebGL-only until text moves to TSL).
+// It also forces ?renderer=webgpu on a page without WebGPU (the error shows; controls stay disabled; nothing throws).
 // Exit 1 on a page error, a backend that isn't the one asked for, offline frames that repeat, or a reload that differs.
 //   (cd apps/playground && npx vite build) && node apps/playground/scripts/backends-chromium.mjs
 import fs from 'node:fs';
@@ -50,6 +51,28 @@ async function run(renderer, compareWith = null) {
   return { ...out, console: consoleLines };
 }
 
+/**
+ * A forced ?renderer=webgpu on a page without WebGPU: the error shows, every control that needs the world stays disabled,
+ * and the toggles called anyway don't throw (the host never came).
+ */
+async function forcedWithoutWebGPU() {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 860 } });
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
+  await page.addInitScript(() => Object.defineProperty(Navigator.prototype, 'gpu', { get: () => undefined }));
+  await page.goto(`${base}?renderer=webgpu`);
+  await page.waitForSelector('.error', { timeout: 60000 });
+  const out = await page.evaluate(() => {
+    const pg = /** @type {any} */ (window).__playground, thrown = [];
+    for (const f of [() => pg.setDebug({ colliders: true }), () => pg.setInterpolation(false), () => pg.setBubbles(false), () => pg.setNameTags(true), () => pg.step()]) { try { f(); } catch (e) { thrown.push(String(e)); } }
+    const ids = ['play', 'step', 'replay', 'save-game', 'show-bubbles', 'show-names'];
+    const boxes = [...document.querySelectorAll('input[type=checkbox]')].filter((b) => ['Colliders', 'Sensors', 'Capsules', 'Rays', 'Interpolate'].includes(b.getAttribute('aria-label')));
+    return { error: document.querySelector('.error')?.textContent?.slice(0, 160), host: !!pg.host, thrown, enabled: [...ids.filter((id) => !document.getElementById(id)?.disabled), ...boxes.filter((b) => !b.disabled).map((b) => b.getAttribute('aria-label'))] };
+  });
+  await page.close();
+  return { ...out, pageErrors: errors };
+}
+const forced = await forcedWithoutWebGPU();
 const webgl = await run('webgl'), webglAgain = await run('webgl');
 const webgpuAgain = await run('webgpu'), webgpu = await run('webgpu', webgl.png);
 fs.mkdirSync(results, { recursive: true });
@@ -58,11 +81,13 @@ const strip = ({ png, ...r }) => r;
 const out = {
   version: browser.version(), steps: STEPS, still: STILL,
   webgl: strip(webgl), webgpu: strip(webgpu),
+  forcedWithoutWebGPU: forced,
   reload: { webgl: webglAgain.stillHash === webgl.stillHash && webglAgain.frames.join() === webgl.frames.join(), webgpu: webgpuAgain.stillHash === webgpu.stillHash && webgpuAgain.frames.join() === webgpu.frames.join() },
 };
 await browser.close(); server.close();
 fs.writeFileSync(path.join(results, 'backends-chromium.json'), JSON.stringify(out, null, 1) + '\n');
 console.log(JSON.stringify(out, null, 1));
 const bad = [webgl, webgpu, webglAgain, webgpuAgain].some((r) => r.console.length || r.distinct !== STEPS.length)
+  || !/no WebGPU/.test(forced.error ?? '') || forced.host || forced.thrown.length || forced.enabled.length || forced.pageErrors.length
   || webgl.backend !== 'webgl' || webgpu.backend !== 'webgpu' || !webgpu.isWebGPUBackend || !out.reload.webgl || !out.reload.webgpu;
 process.exit(bad ? 1 : 0);

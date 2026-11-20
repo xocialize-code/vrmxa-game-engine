@@ -32,7 +32,7 @@
   "distinct": 5,
   "still": 420,
   "stillHash": "df6b9781",
-  "stillMsWithRead": 27.9,
+  "stillMsWithRead": 28.3,
   "diff": null,
   "materials": [
    "MeshBasicMaterial",
@@ -66,7 +66,7 @@
   "distinct": 5,
   "still": 420,
   "stillHash": "ef7873ea",
-  "stillMsWithRead": 26.8,
+  "stillMsWithRead": 28.9,
   "diff": {
    "meanMaxChannel": 0.897,
    "over8": 0.01562,
@@ -79,6 +79,13 @@
   "environment": true,
   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
   "console": []
+ },
+ "forcedWithoutWebGPU": {
+  "error": "renderer=webgpu: this page has no WebGPU (navigator.gpu or an adapter is missing); use renderer=auto to fall back to WebGL",
+  "host": false,
+  "thrown": [],
+  "enabled": [],
+  "pageErrors": []
  },
  "reload": {
   "webgl": true,

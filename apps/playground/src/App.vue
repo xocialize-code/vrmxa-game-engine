@@ -6,7 +6,7 @@ import { Playground, PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, mic: null, fall: false, split: false, sense: null, cameraDevices: [], cameraDevice: '', showBubbles: true, showCaptions: true, showNames: false, backend: '—' });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, mic: null, fall: false, split: false, sense: null, cameraDevices: [], cameraDevice: '', showBubbles: true, showCaptions: true, showNames: false, backend: '—', ready: false });
 // the sample's scenes and sequences; ?scene= picks one at load
 const SCENES = ['cafe.vrmxs', 'cafe-talk.vrmxs', 'cafe-follow.vrmxs', 'cafe-stairs.vrmxs', 'cafe-cart.vrmxs', 'cafe-split.vrmxs', 'sequences/morning.vrmxs', 'sequences/cafe-morning.vrmxs', 'sequences/conversation.vrmxs'];
 const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
@@ -18,6 +18,7 @@ function refresh() {
   ui.sim = pg.stats.simMs ? `${pg.stats.simMs.toFixed(2)} ms` : '—';
   ui.render = pg.stats.renderMs ? `${pg.stats.renderMs.toFixed(2)} ms` : '—';
   ui.backend = pg.stats.backend === 'webgpu' ? 'WebGPU' : pg.stats.backend === 'webgl' ? 'WebGL' : '—';
+  ui.ready = !!(pg.host && pg.tree); // the host is made asynchronously, and a forced backend can fail: controls wait for both
   ui.prompt = pg.prompt(); ui.wearing = pg.wearing();
   ui.buses = pg.busSettings(); ui.audioOn = !!pg.audio?.running; ui.captions = pg.captions();
   ui.bubbles = ui.showBubbles ? pg.bubbles() : []; ui.hasDirector = !!pg.director; ui.choices = pg.choices(); // M3 W6
@@ -133,26 +134,26 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
       <label class="field">Scene
         <select v-model="ui.scene" aria-label="Scene" @change="load"><option v-for="s in SCENES" :key="s" :value="s">{{ s }}</option></select>
       </label>
-      <button id="play" type="button" :disabled="ui.loading" :aria-label="ui.playing ? 'Pause' : 'Play'" @click="toggle">{{ ui.playing ? 'Pause' : 'Play' }}</button>
-      <button id="step" type="button" :disabled="ui.loading" aria-label="Step" @click="step">Step</button>
+      <button id="play" type="button" :disabled="ui.loading || !ui.ready" :aria-label="ui.playing ? 'Pause' : 'Play'" @click="toggle">{{ ui.playing ? 'Pause' : 'Play' }}</button>
+      <button id="step" type="button" :disabled="ui.loading || !ui.ready" aria-label="Step" @click="step">Step</button>
       <button id="reset" type="button" :disabled="ui.loading" aria-label="Reset" @click="load">Reset</button>
-      <button id="replay" type="button" :disabled="ui.loading" aria-label="Replay demo walk" @click="replay">Replay demo walk</button>
+      <button id="replay" type="button" :disabled="ui.loading || !ui.ready" aria-label="Replay demo walk" @click="replay">Replay demo walk</button>
       <select v-if="ui.sense && ui.cameraDevices.length" id="camera-device" v-model="ui.cameraDevice" aria-label="Which camera" :disabled="ui.sense.on" @change="pickCamera">
         <option value="">Default camera</option>
         <option v-for="d in ui.cameraDevices" :key="d.id" :value="d.id">{{ d.name }}{{ d.kind === 'external' ? ' (external)' : '' }}</option>
       </select>
-      <button v-if="ui.sense" id="camera-toggle" type="button" :disabled="ui.loading" :aria-pressed="ui.sense.on" :aria-label="ui.sense.on ? 'Turn the camera off' : 'Turn the camera on'" @click="toggleCamera">{{ ui.sense.on ? 'Camera off' : 'Camera on' }}</button>
-      <button v-if="ui.sense" id="camera-save" type="button" :disabled="ui.loading || !ui.sense.events" aria-label="Save the camera session" @click="saveCameraSession">Save camera session</button>
+      <button v-if="ui.sense" id="camera-toggle" type="button" :disabled="ui.loading || !ui.ready" :aria-pressed="ui.sense.on" :aria-label="ui.sense.on ? 'Turn the camera off' : 'Turn the camera on'" @click="toggleCamera">{{ ui.sense.on ? 'Camera off' : 'Camera on' }}</button>
+      <button v-if="ui.sense" id="camera-save" type="button" :disabled="ui.loading || !ui.ready || !ui.sense.events" aria-label="Save the camera session" @click="saveCameraSession">Save camera session</button>
       <span v-if="ui.sense" id="camera-status" class="notes" role="status" :aria-label="cameraLabel()">{{ cameraLabel() }}</span>
-      <button v-if="ui.fall" id="knock-down" type="button" :disabled="ui.loading" aria-label="Knock down the stairs" @click="knockDown">Knock down</button>
-      <button v-if="ui.shell" id="open-scene" type="button" :disabled="ui.loading" aria-label="Open scene" @click="openScene">Open…</button>
-      <button v-if="ui.shell" id="save-scene" type="button" :disabled="ui.loading" aria-label="Save scene as" @click="saveScene">Save as…</button>
+      <button v-if="ui.fall" id="knock-down" type="button" :disabled="ui.loading || !ui.ready" aria-label="Knock down the stairs" @click="knockDown">Knock down</button>
+      <button v-if="ui.shell" id="open-scene" type="button" :disabled="ui.loading || !ui.ready" aria-label="Open scene" @click="openScene">Open…</button>
+      <button v-if="ui.shell" id="save-scene" type="button" :disabled="ui.loading || !ui.ready" aria-label="Save scene as" @click="saveScene">Save as…</button>
       <fieldset class="saves" aria-label="Save slots">
         <div class="seg" role="radiogroup" aria-label="Slot">
           <button v-for="s in ['slot-1', 'slot-2', 'slot-3']" :id="`slot-${s.slice(-1)}`" :key="s" type="button" role="radio" :aria-checked="ui.slot === s" :aria-label="slotLabel(s)" :title="slotLabel(s)" :class="{ on: ui.slot === s }" @click="ui.slot = s; listSaves()">{{ s.slice(-1) }}</button>
         </div>
-        <button id="save-game" type="button" :disabled="ui.loading" aria-label="Save game" @click="saveSlot">Save</button>
-        <button id="load-game" type="button" :disabled="ui.loading || !ui.saves.some((x) => x.slot === ui.slot)" aria-label="Load game" @click="loadSlot">Load</button>
+        <button id="save-game" type="button" :disabled="ui.loading || !ui.ready" aria-label="Save game" @click="saveSlot">Save</button>
+        <button id="load-game" type="button" :disabled="ui.loading || !ui.ready || !ui.saves.some((x) => x.slot === ui.slot)" aria-label="Load game" @click="loadSlot">Load</button>
       </fieldset>
       <label class="field">Time scale
         <select v-model="ui.timeScale" aria-label="Time scale" @change="setScale"><option :value="0.25">0.25×</option><option :value="0.5">0.5×</option><option :value="1">1×</option><option :value="2">2×</option></select>
@@ -192,13 +193,13 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
     </main>
     <footer class="bar status">
       <fieldset class="toggles"><legend>Debug draw</legend>
-        <label><input type="checkbox" v-model="ui.debug.colliders" aria-label="Colliders" @change="setDebug"> Colliders</label>
-        <label><input type="checkbox" v-model="ui.debug.sensors" aria-label="Sensors" @change="setDebug"> Sensors</label>
-        <label><input type="checkbox" v-model="ui.debug.capsules" aria-label="Capsules" @change="setDebug"> Capsules</label>
-        <label><input type="checkbox" v-model="ui.debug.rays" aria-label="Rays" @change="setDebug"> Rays</label>
-        <label><input type="checkbox" v-model="ui.interpolate" aria-label="Interpolate" @change="setInterp"> Interpolate</label>
-        <label><input id="show-bubbles" type="checkbox" v-model="ui.showBubbles" :disabled="ui.backend === 'WebGPU'" aria-label="Speech bubbles" title="WebGL only for now (troika)" @change="setBubbles"> Bubbles</label>
-        <label><input id="show-names" type="checkbox" v-model="ui.showNames" :disabled="ui.backend === 'WebGPU'" aria-label="Name tags" title="WebGL only for now (troika)" @change="setNames"> Names</label>
+        <label><input type="checkbox" v-model="ui.debug.colliders" :disabled="!ui.ready" aria-label="Colliders" @change="setDebug"> Colliders</label>
+        <label><input type="checkbox" v-model="ui.debug.sensors" :disabled="!ui.ready" aria-label="Sensors" @change="setDebug"> Sensors</label>
+        <label><input type="checkbox" v-model="ui.debug.capsules" :disabled="!ui.ready" aria-label="Capsules" @change="setDebug"> Capsules</label>
+        <label><input type="checkbox" v-model="ui.debug.rays" :disabled="!ui.ready" aria-label="Rays" @change="setDebug"> Rays</label>
+        <label><input type="checkbox" v-model="ui.interpolate" :disabled="!ui.ready" aria-label="Interpolate" @change="setInterp"> Interpolate</label>
+        <label><input id="show-bubbles" type="checkbox" v-model="ui.showBubbles" :disabled="!ui.ready || ui.backend === 'WebGPU'" aria-label="Speech bubbles" title="WebGL only for now (troika)" @change="setBubbles"> Bubbles</label>
+        <label><input id="show-names" type="checkbox" v-model="ui.showNames" :disabled="!ui.ready || ui.backend === 'WebGPU'" aria-label="Name tags" title="WebGL only for now (troika)" @change="setNames"> Names</label>
         <label><input id="show-captions" type="checkbox" v-model="ui.showCaptions" aria-label="Captions" @change="refresh"> Captions</label>
       </fieldset>
       <!-- Each readout's accessible name carries its value ("Frame time 16.7 ms · 60 fps"), so AppProbe reads it in one find. -->
