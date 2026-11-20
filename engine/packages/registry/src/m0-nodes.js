@@ -103,6 +103,7 @@ export function m0Registry() {
       focusDistance: P.number({ min: 0.05, unit: 'm', default: 3 }),
       near: P.number({ min: 0.001, unit: 'm', default: 0.1 }), far: P.number({ min: 0.1, unit: 'm', default: 500 }),
       preset: P.enum(['free', 'fixed', 'orbit', 'follow', 'overShoulder', 'firstPerson'], { default: 'free', sim: true, description: 'Rig preset; switchable at run time (setPreset, nextPreset).' }),
+      player: P.number({ min: 1, max: 4, sim: true, description: 'Split screen (M3 W9): this camera is that player\'s, takes that player\'s look input and draws in their viewport.' }),
       rig: { schema: { type: 'object', description: 'Rig overrides: distance, height, side (m); yaw, pitch (degrees): the starting view, yaw 0 looking along +Z.' }, meta: { sim: true } },
       target: P.nodeRef({ description: 'Follow / orbit target.' }),
     },
@@ -261,7 +262,7 @@ export function m0Registry() {
     lodDistance: P.number({ min: 0, default: 25, unit: 'm' }),
     senses: { schema: { type: 'object', description: 'Perception settings over the preset\'s: sight { range, fov, every }, hearing { sensitivity }, proximity { radius }, maxAge, decay.' }, meta: { widget: 'json' } },
   } });
-  r.behaviour('player', { description: 'Drives a Character from the move / jump / run actions, relative to the current camera.', on: ['Character'], params: { walkSpeed: P.number({ min: 0, default: 1.4, unit: 'm/s' }), runSpeed: P.number({ min: 0, default: 4, unit: 'm/s' }) } });
+  r.behaviour('player', { description: 'Drives a Character from the move / jump / run actions, relative to the current camera (split screen: its player\'s actions and camera).', on: ['Character'], params: { walkSpeed: P.number({ min: 0, default: 1.4, unit: 'm/s' }), runSpeed: P.number({ min: 0, default: 4, unit: 'm/s' }), player: P.number({ min: 1, max: 4, default: 1, description: 'Which player (M3 W9): 2 reads the p2.* actions and player 2\'s camera.' }) } });
   r.behaviour('pickup', { description: 'Can be picked up; equips a VRMXW if the item names one.', on: ['Instance', 'Model', 'RigidBody'], params: { item: P.string() }, signals: { pickedUp: { args: { by: P.nodeRef() } } } });
   return r;
 }

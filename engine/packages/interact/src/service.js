@@ -30,10 +30,14 @@ export class InteractService {
   /** What each actor could do now, for the app's prompt: [{ actor, item, verb, prompt }]. */
   prompts() { return [...this.focus].map(([actor, f]) => ({ actor, ...f })); }
 
+  /** An actor's action-name prefix: its player behaviour's player (split screen, M3 W9); '' for player 1 and NPCs. */
+  prefixOf(actor) { const n = actor.behaviours.find((b) => b.name === 'player')?.params.player ?? 1; return n > 1 ? `p${n}.` : ''; }
+
   physicsProcess() {
     const input = this.tree.services.get('input');
     for (const actor of this.actors()) {
-      const pressed = input?.pressed('interact') ?? false;
+      const pre = this.prefixOf(actor);
+      const pressed = input?.pressed(`${pre}interact`) ?? false;
       if (actor.ctrl.seat) {
         // a vehicle's seat: moving drives (or does nothing, as a passenger); interact gets out once it has (nearly) stopped
         const seatItem = /** @type {any} */ (this.tree.find(actor.ctrl.seat.item));
@@ -42,7 +46,7 @@ export class InteractService {
           this.setFocus(actor, null);
           continue;
         }
-        const mx = input?.axis('move_x') ?? 0, my = input?.axis('move_y') ?? 0;
+        const mx = input?.axis(`${pre}move_x`) ?? 0, my = input?.axis(`${pre}move_y`) ?? 0;
         if (!actor.graph.busy || actor.graph.state === 'sitIdle') { if (pressed || mx * mx + my * my > 0.25) { this.standUp(actor); continue; } }
         this.setFocus(actor, null);
         continue;

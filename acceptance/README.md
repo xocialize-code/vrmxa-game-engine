@@ -58,6 +58,19 @@ M3 adds checks as its workstreams land. The M3 acceptance (W13) runs all ten of 
   - the input recording replays into a fresh world with the same hashes, and a snapshot mid-drive re-simulates to the
     end;
   - checks 1–18 are unchanged, so 19 of 19 pass.
+- **Check 20** (W9, AB-T-0548): split screen. Two players on one keyboard and one gamepad (`apps/playground/src/split.js`,
+  input's `twoPlayerActions`): Mira is player 1 on WASD and the mouse, Hana player 2 on the arrows and the gamepad, each
+  with a follow camera of their own:
+  - each walks relative to their own camera and they run apart (Mira 4.67 m left, Hana 4.67 m right); Hana jumps; the
+    gamepad's right stick turns player 2's camera (−0.89 rad) and leaves player 1's alone;
+  - it hashes identically at every step in Node, Chromium and WKWebView (scheme and loopback), final 85c5829125340355;
+    the recording of both players (9 axes, 8 buttons) replays into a fresh world with the same hashes, and a snapshot
+    re-simulates;
+  - checks 1–19 are unchanged, so 20 of 20 pass.
+- **Split screen's cost** (`node acceptance/m3/split-chromium.mjs` against the playground's dev server, `?split`,
+  `results/m3-split-chromium.json` and `m3-split.png`). At 1920×1080 in Chromium, two views take 1.0 ms a frame against
+  0.5 ms for one (the median of 40; a second run gave 0.8 against 0.5). That is 241 draw calls against 178: the shadow
+  map is drawn once (M2's `renderViews`), where two full views would be about 356.
 - **The fall seen** (`node acceptance/m3/ragdoll-chromium.mjs` against the playground's dev server, `?fall`):
   `results/m3-ragdoll-{tumbling,lying,rising,up}.png`, with the stairs in debug draw until W12 brings visible ones.
 

@@ -12,6 +12,7 @@ import { PCFShadowMap, PMREMGenerator, PerspectiveCamera, SRGBColorSpace, Scene,
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { Interpolator } from './interpolate.js';
 import { Views } from './views.js';
+import { renderViews } from '@vrmxg/post';
 import { DebugDraw } from './debug.js';
 
 export class RenderHost {
@@ -53,6 +54,13 @@ export class RenderHost {
      * @type {{ update: (tree: any, camera: any, alpha: number) => void, settle?: () => Promise<void> }[]}
      */
     this.overlays = [];
+    /**
+     * Split screen (M3 W9): viewports, each through a Camera node ({ camera: node id, x, y, w, h }, fractions of the
+     * output, y from the bottom), drawn with @vrmxg/post's renderViews (the shadow map once per frame, no post stack).
+     * null: one view through the current camera.
+     * @type {Array<{ camera: string, x: number, y: number, w: number, h: number }> | null}
+     */
+    this.layout = null;
     /** The post stack (M2 W3), configured from the scene's Environment `post`; null renders straight to the canvas. */
     this.post = post ? post(this.renderer) : null;
     if (this.post) this.post.dofSource = () => this.cameraNode()?.postDof?.(this.renderer.getContext?.().drawingBufferHeight ?? 1080) ?? null;
@@ -167,9 +175,11 @@ export class RenderHost {
     const blend = this.interpolate && alpha < 1;
     if (blend) this.interpolator.apply(alpha);
     this.onPresent?.(alpha);
-    for (const o of this.overlays) o.update(tree, camera, alpha);
+    const views = this.layout?.length ? this.layout.map((v) => ({ ...v, camera: /** @type {any} */ (tree.find(v.camera))?.camera })).filter((v) => v.camera) : null;
+    for (const o of this.overlays) o.update(tree, views?.[0]?.camera ?? camera, alpha);
     this.time = (tree.clock.step - 1 + alpha) / 60;
-    if (this.post?.active) this.post.render(this.scene, camera, this.time);
+    if (views?.length) renderViews(this.renderer, this.scene, views);
+    else if (this.post?.active) this.post.render(this.scene, camera, this.time);
     else this.renderer.render(this.scene, camera);
     if (blend && this.interpolator.restore()) tree.root.object3d.updateMatrixWorld(true);
     this.last.renderMs = (typeof performance !== 'undefined' ? performance.now() : 0) - t0;

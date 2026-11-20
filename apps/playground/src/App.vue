@@ -6,7 +6,7 @@ import { Playground, PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 
 const canvas = ref(null);
-const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, fall: false, sense: null, cameraDevices: [], cameraDevice: '', showBubbles: true, showCaptions: true, showNames: false });
+const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, fall: false, split: false, sense: null, cameraDevices: [], cameraDevice: '', showBubbles: true, showCaptions: true, showNames: false });
 // the sample's scenes and sequences; ?scene= picks one at load
 const SCENES = ['cafe.vrmxs', 'sequences/morning.vrmxs', 'sequences/cafe-morning.vrmxs'];
 const BUS_LABELS = { master: 'Master', music: 'Music', ambience: 'Ambience', sfx: 'Effects', voice: 'Voice' };
@@ -21,6 +21,7 @@ function refresh() {
   ui.buses = pg.busSettings(); ui.audioOn = !!pg.audio?.running; ui.captions = pg.captions();
   ui.bubbles = ui.showBubbles ? pg.bubbles() : []; ui.hasDirector = !!pg.director; ui.choices = pg.choices(); // M3 W6
   ui.fall = !!pg.fall; // M3 W7
+  ui.split = !!pg.split; // M3 W9: two players side by side
   ui.sense = pg.cameraStatus(); // M3 W5
   const cur = pg.currentCamera(); ui.cameras = pg.cameras(); ui.camera = cur?.id ?? ''; ui.preset = cur?.preset ?? '';
   if (pg.error) ui.error = pg.error;
@@ -153,6 +154,7 @@ const slotLabel = (s) => { const e = ui.saves.find((x) => x.slot === s); return 
       </label>
     </header>
     <main class="stage"><canvas ref="canvas" aria-label="Scene view" tabindex="0"></canvas>
+      <div v-if="ui.split" class="split-divider" aria-hidden="true"></div>
       <p v-if="ui.loading" class="overlay">Loading…</p>
       <pre v-if="ui.error" class="overlay error" role="alert">{{ ui.error }}</pre>
       <div v-if="ui.showBubbles && ui.bubbles.length" id="bubbles" class="bubbles sr-only">
@@ -222,6 +224,7 @@ button#play { background: var(--accent); color: #fff; border-color: var(--accent
 button:disabled { opacity: 0.5; }
 .stage { position: relative; min-height: 0; }
 canvas { display: block; width: 100%; height: 100%; outline: none; }
+.split-divider { position: absolute; top: 0; bottom: 0; left: calc(50% - 1px); width: 2px; background: var(--panel, #1c1e22); pointer-events: none; }
 .overlay { position: absolute; left: 12px; top: 8px; margin: 0; padding: 6px 10px; background: color-mix(in srgb, var(--panel) 85%, transparent); border-radius: 6px; }
 .error { color: #c0392b; white-space: pre-wrap; max-width: 80%; max-height: 60%; overflow: auto; }
 .toggles { display: flex; gap: 10px; border: 0; margin: 0; padding: 0; }

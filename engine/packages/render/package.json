@@ -21,6 +21,7 @@
     "@vrmxg/dmath": "0.1.0",
     "@vrmxg/input": "0.1.0",
     "@vrmxg/physics": "0.1.0",
+    "@vrmxg/post": "0.1.0",
     "@vrmxg/registry": "0.1.0",
     "@vrmxg/scene": "0.1.0",
     "@vrmxg/snapshot": "0.1.0"

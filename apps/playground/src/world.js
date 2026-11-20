@@ -6,7 +6,7 @@ import { parse } from '@vrmxg/scene';
 import { SceneTree } from '@vrmxg/core';
 import { installPhysics } from '@vrmxg/physics';
 import { installCharacters } from '@vrmxg/character';
-import { installInput } from '@vrmxg/input';
+import { installInput, twoPlayerActions } from '@vrmxg/input';
 import { installCameras } from '@vrmxg/camera';
 import { installModels } from '@vrmxg/model';
 import { installItems } from '@vrmxg/item';
@@ -48,18 +48,19 @@ export async function loadSample(bytes, scene = 'cafe.vrmxs') {
 /**
  * A fresh SceneTree of the sample scene, instantiated and ready to step.
  * @param {any} R Rapier @param {Awaited<ReturnType<typeof loadSample>>} sample
- * @param {{ vrmxaCore: any, closet?: any, spec?: Uint8Array | null, behaviours: Map<string, any>, stubTextures?: boolean, seed?: number, timings?: Record<string, number> | null, now?: () => number, characterCache?: any, audioOutput?: any, sense?: boolean }} opts
+ * @param {{ vrmxaCore: any, closet?: any, spec?: Uint8Array | null, behaviours: Map<string, any>, stubTextures?: boolean, seed?: number, timings?: Record<string, number> | null, now?: () => number, characterCache?: any, audioOutput?: any, sense?: boolean, players?: number }} opts
  *   closet: vrmxa-core's ./closet module (the closet at run time: taking the sword); spec: spec.vrm, for redraws;
  *   timings: filled with each phase's ms (by `now`, a wall clock the caller passes: nothing here reads one);
  *   characterCache: read bundles and clips kept between builds (the editor's view);
  *   audioOutput: an @vrmxg/audio AudioOutput to hear the world through (none: silent); sense: install the camera's sense
- *   service (@vrmxg/sense; the scene needs its viewer node: withCamera)
+ *   service (@vrmxg/sense; the scene needs its viewer node: withCamera); players: 2 installs the two-player action map
+ *   (split screen, M3 W9; the scene gives player 2 a character and a camera: withTwoPlayers)
  */
-export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = null, behaviours, stubTextures = false, seed = 1, timings = null, now = () => 0, characterCache = null, audioOutput = null, sense = false }) {
+export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = null, behaviours, stubTextures = false, seed = 1, timings = null, now = () => 0, characterCache = null, audioOutput = null, sense = false, players = 1 }) {
   let t = now();
   const lap = (k) => { if (timings) { const n = now(); timings[k] = n - t; t = n; } };
   const tree = new SceneTree({ registry: m0Registry(), prefabs: sample.prefabs, behaviours, seed });
-  const input = installInput(tree);
+  const input = installInput(tree, players > 1 ? { actions: twoPlayerActions() } : {}); // split screen (M3 W9): p2.* actions
   installPhysics(tree, R);
   const lib = installCharacters(tree, { resolve: sample.bytes, vrmxaCore, prefabs: sample.prefabs, stubTextures, projectAnimations: sample.animations, cache: characterCache });
   installCameras(tree);

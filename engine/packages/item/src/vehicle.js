@@ -65,9 +65,10 @@ export class Vehicle {
     const e = { force: 600, reverse: 300, brake: 25, maxSpeed: 8, maxSteer: 0.5, steerSpeed: 2, ...(this.def.engine ?? {}) };
     const d = this.driver(), st = this.state;
     let throttle = 0, turn = 0;
-    if (d && d.behaviours?.some((b) => b.name === 'player')) {
-      const input = this.item.tree.services.get('input');
-      throttle = input?.axis('move_y') ?? 0; turn = input?.axis('move_x') ?? 0;
+    const player = d?.behaviours?.find((b) => b.name === 'player');
+    if (player) { // split screen (M3 W9): the driver's own player's actions
+      const input = this.item.tree.services.get('input'), n = player.params.player ?? 1, pre = n > 1 ? `p${n}.` : '';
+      throttle = input?.axis(`${pre}move_y`) ?? 0; turn = input?.axis(`${pre}move_x`) ?? 0;
     } else if (d && st.cmd) { throttle = st.cmd.throttle; turn = st.cmd.steer; }
     throttle = Math.max(-1, Math.min(1, throttle)); turn = Math.max(-1, Math.min(1, turn));
     // facing +z, a positive wheel angle turns towards +x: the left; move_x is +1 to the right

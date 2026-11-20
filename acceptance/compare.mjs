@@ -206,6 +206,19 @@ const items = (r) => r?.result?.items ?? r?.items;
   check(19, 'Vehicles: Mira gets in the cart, drives a recorded route and gets out; replays identically everywhere; a snapshot mid-drive', ok,
     ref ? `${ref.steps} steps × ${ref.components} components, final ${ref.final}; in at ${dr.seated}, out at ${dr.left}; the cart from [${dr.cartFrom}] to [${dr.cartEnd}], up to ${dr.maxSpeed} m/s, parked ${dr.parked}; camera chasing ${dr.chased} steps; the recording replayed ${ref.replay.matches ? 'identical' : 'DIFFERS'}; snapshot @${ref.snapshot.at} ${ref.snapshot.midDrive ? 'mid-drive' : 'NOT mid-drive'} ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; step ${ref.stepMs} ms (node); ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? 'identical' : 'DIFFERS'}`).join('; ')}` : 'no node result');
 }
+// 20 (M3 W9). Split screen: two players on one keyboard and one gamepad. Mira (WASD) and Hana (the arrows) each walk
+// relative to their own camera and run apart; player 2 jumps and turns their camera with the gamepad's right stick, which
+// leaves player 1's alone. Every step hashes identically everywhere, both players' recording replays into a fresh world,
+// and a snapshot re-simulates. (The frame cost of two views against one: acceptance/m3/split-chromium.mjs.)
+{
+  const sp = (r) => r?.result?.split ?? r?.split, ref = sp(node);
+  const rows = Object.entries(browsers).map(([k, r]) => { const x = sp(r); const d = x && ref ? compareRuns(unpackRun(ref.run), unpackRun(x.run)) : { step: -1, component: 'no result' }; return { k, d, x, ok: !!x && !d && x.replay.matches && x.snapshot.rerunMatches }; });
+  const pl = ref?.play;
+  const played = !!pl && pl.mira[1] < -1 && pl.hana[1] < -1 && pl.mira[0] < -2 && pl.hana[0] > 2 && pl.hanaAirSteps > 10 && Math.abs(pl.cam2Turned) > 0.3 && pl.cam1Turned === 0;
+  const ok = !!ref && played && ref.replay.matches && ref.snapshot.rerunMatches && rows.every((r) => r.ok);
+  check(20, 'Split screen: two players move two characters with their own cameras; both players\' recording replays identically everywhere', ok,
+    ref ? `${ref.steps} steps × ${ref.components} components, ${ref.actions.axes} axes and ${ref.actions.buttons} buttons recorded, final ${ref.final}; Mira moved [x ${pl.mira[0]}, z ${pl.mira[1]}], Hana [x ${pl.hana[0]}, z ${pl.hana[1]}]; Hana ${pl.hanaAirSteps} steps in the air; player 2's camera turned ${pl.cam2Turned} rad, player 1's ${pl.cam1Turned}; the recording replayed ${ref.replay.matches ? 'identical' : 'DIFFERS'}; snapshot @${ref.snapshot.at} ${ref.snapshot.rerunMatches ? 'identical' : 'DIFFERS'}; step ${ref.stepMs} ms (node); ${rows.map((r) => `${r.k}: ${r.d ? `DIVERGES at ${r.d.step} in ${r.d.component}` : r.ok ? 'identical' : 'DIFFERS'}`).join('; ')}` : 'no node result');
+}
 checks.sort((a, b) => a.n - b.n);
 fs.writeFileSync(res('summary.json'), JSON.stringify({ checks, runtimes: { node: node?.version, chromium: chromium?.version, wkwebview: scheme?.ua } }, null, 1) + '\n');
 process.exit(checks.every((c) => c.ok) ? 0 : 1);

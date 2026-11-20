@@ -10,7 +10,7 @@ import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
 import { captureStill, hashFrame } from '@vrmxg/export';
 import { loadSample, buildWorld } from './world.js';
 import { serialize } from '@vrmxg/scene';
-import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, runBrains, runSave, runFilm, runConversation, runRagdoll, runVehicle, STEPS } from './acceptance.js';
+import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, runBrains, runSave, runFilm, runConversation, runRagdoll, runVehicle, runSplit, STEPS } from './acceptance.js';
 import { AudioOutput } from '@vrmxg/audio';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
@@ -21,6 +21,7 @@ import { Vector3 } from 'three';
 import { TextLayer } from '@vrmxg/text';
 import { withStairs, knockDownStairs } from './stairs.js';
 import { withCart } from './vehicle.js';
+import { withTwoPlayers, SPLIT_LAYOUT } from './split.js';
 import { withCamera, shellCamera, recordedFrames, connectCamera } from '@vrmxg/sense';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
@@ -85,6 +86,9 @@ export class Playground {
     // M3 W7: ?fall puts a flight of stairs outside the cafe with Mira and Hana on its landing (knockDown() shoves them)
     // M3 W8: ?cart puts a cart on the pavement with Mira beside its driver's door (E gets in and out, WASD drives)
     if (params.has('cart')) this.sample = { ...this.sample, doc: withCart(this.sample.doc) };
+    // M3 W9: ?split, two players side by side (Mira on WASD and the mouse, Hana on the arrows or a gamepad)
+    this.split = params.has('split');
+    if (this.split) this.sample = { ...this.sample, doc: withTwoPlayers(this.sample.doc) };
     this.fall = params.has('fall');
     if (this.fall) this.sample = { ...this.sample, doc: withStairs(this.sample.doc, { camera: true }) };
     // M3 W5: ?camera puts the person at the camera into the world (the sense service and its viewer node); the character
@@ -100,7 +104,8 @@ export class Playground {
     this.tree?.services.get('audio')?.dispose();
     await this.camera?.stop();
     this.camera = null;
-    const world = await buildWorld(R, this.sample, { vrmxaCore, closet, behaviours, audioOutput: this.audio, sense: this.cameraMode });
+    const world = await buildWorld(R, this.sample, { vrmxaCore, closet, behaviours, audioOutput: this.audio, sense: this.cameraMode, players: this.split ? 2 : 1 });
+    this.host.layout = this.split ? SPLIT_LAYOUT : null;
     const { tree, input, models } = world;
     this.world = world;
     if (take) { input.replay(structuredClone(take.input)); world.ai.replay(take.ai); if (take.sense) world.sense.replay(take.sense); }
@@ -150,10 +155,11 @@ export class Playground {
     const conversation = await runConversation(R, sample, opts, { now });
     const ragdoll = await runRagdoll(R, sample, opts, { now });
     const vehicle = await runVehicle(R, sample, opts, { now });
+    const split = await runSplit(R, sample, opts, { now });
     const audio = await runAudio(R, sample, opts, { silentFinal: items.final, take: 'input/play-items.json', steps: items.steps });
     const rendered = await this._renderedChecks(simulation);
     rendered.post = await this._postChecks();
-    return { simulation, devices, items, cinematic, sequence, particles, brains, save, film, conversation, ragdoll, vehicle, audio, rendered };
+    return { simulation, devices, items, cinematic, sequence, particles, brains, save, film, conversation, ragdoll, vehicle, split, audio, rendered };
   }
 
   async _renderedChecks(simulation) {

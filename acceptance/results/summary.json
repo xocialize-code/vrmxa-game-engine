@@ -4,7 +4,7 @@
    "n": 1,
    "title": "The cafe runs in the playground in WKWebView (scheme, loopback) and Chromium",
    "ok": true,
-   "evidence": "chromium: 600 frames, render 0.647 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 0.702 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 0.992 ms, door opened at step 113, 6 presets, 0 errors"
+   "evidence": "chromium: 600 frames, render 0.626 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-scheme: 600 frames, render 1.268 ms, door opened at step 113, 6 presets, 0 errors; wkwebview-loopback: 600 frames, render 0.537 ms, door opened at step 113, 6 presets, 0 errors"
   },
   {
    "n": 2,
@@ -64,55 +64,61 @@
    "n": 11,
    "title": "Post: the anime stack renders everywhere; 4K matches 1080p (SSIM ≥ 0.98 without grain); costs and four viewports measured",
    "ok": true,
-   "evidence": "chromium: SSIM 0.9861 (grain 0.9507), anime 1.9 / 1.9 ms vs none 0.5 / 0.5 ms (1080p / 4K), 4 views 1.4 ms; wkwebview-scheme: SSIM 0.9861 (grain 0.9507), anime 2 / 5 ms vs none 0 / 1 ms (1080p / 4K), 4 views 1 ms; wkwebview-loopback: SSIM 0.9861 (grain 0.9507), anime 2.48 / 4.5 ms vs none 0.3 / 0.28 ms (1080p / 4K), 4 views 0.96 ms; passes RenderPass → NormalPass → EffectPass(EdgeEffect) → EffectPass(DepthOfFieldEffect) → EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect) → EffectPass(ChromaticAberrationEffect)"
+   "evidence": "chromium: SSIM 0.9861 (grain 0.9507), anime 1.7 / 1.6 ms vs none 0.5 / 0.5 ms (1080p / 4K), 4 views 1.5 ms; wkwebview-scheme: SSIM 0.9861 (grain 0.9507), anime 2 / 3 ms vs none 0 / 1 ms (1080p / 4K), 4 views 1 ms; wkwebview-loopback: SSIM 0.9861 (grain 0.9507), anime 1.46 / 2.7 ms vs none 0.28 / 0.28 ms (1080p / 4K), 4 views 0.86 ms; passes RenderPass → NormalPass → EffectPass(EdgeEffect) → EffectPass(DepthOfFieldEffect) → EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect) → EffectPass(ChromaticAberrationEffect)"
   },
   {
    "n": 12,
    "title": "Sequences: the morning sequence identical everywhere; scrubbing lands on the straight play's world",
    "ok": true,
-   "evidence": "721 steps × 78 components, final 2bd468f8923005c7; cameras 0:vc-wide, 299:vc-hana, 479:vc-ots, 629:vc-two; shots 0:s1, 299:s2, 479:s3, 629:s4; Hana's line @314; counter light 30 in s2, 18 after; Mira at -0.789, 0.025, 1.477; scrub 287 (stepped +717, 219.2 ms), 40 (from 0 +100, 55.4 ms), 130 (from 240 +85, 43.7 ms), 200 (from 480 +20, 25 ms), 129 (from 240 +82, 39.4 ms), 250 (from 600 +25, 23.9 ms); chromium: identical, scrub exact (173.9/45/38.2/21.4/36.5/23.4 ms); wkwebview-scheme: identical, scrub exact (140/37/30/19/29/19 ms); wkwebview-loopback: identical, scrub exact (135.7/38.3/31.3/20.1/29.6/20.2 ms)"
+   "evidence": "721 steps × 78 components, final 2bd468f8923005c7; cameras 0:vc-wide, 299:vc-hana, 479:vc-ots, 629:vc-two; shots 0:s1, 299:s2, 479:s3, 629:s4; Hana's line @314; counter light 30 in s2, 18 after; Mira at -0.789, 0.025, 1.477; scrub 287 (stepped +717, 224.6 ms), 40 (from 0 +100, 54.4 ms), 130 (from 240 +85, 44.2 ms), 200 (from 480 +20, 24.7 ms), 129 (from 240 +82, 48.2 ms), 250 (from 600 +25, 28.2 ms); chromium: identical, scrub exact (172.9/42/36.2/20/33.2/21.8 ms); wkwebview-scheme: identical, scrub exact (127/33/28/17/27/19 ms); wkwebview-loopback: identical, scrub exact (126/33/28/17.5/27/17.6 ms)"
   },
   {
    "n": 13,
    "title": "Particles: steam, dust and sparks identical everywhere at every step; snapshot mid-effect",
    "ok": true,
-   "evidence": "360 steps × 150 components, final 976e7033e22ad048; 43 emitters, up to 1207 particles, 3 batches; live at the end: steam 28, dust 9, sparks 0; particle step 0.262 ms (node); snapshot @180 identical; chromium: identical (step 0.259 ms); wkwebview-scheme: identical (step 0.183 ms); wkwebview-loopback: identical (step 0.168 ms)"
+   "evidence": "360 steps × 150 components, final 976e7033e22ad048; 43 emitters, up to 1207 particles, 3 batches; live at the end: steam 28, dust 9, sparks 0; particle step 0.247 ms (node); snapshot @180 identical; chromium: identical (step 0.213 ms); wkwebview-scheme: identical (step 0.161 ms); wkwebview-loopback: identical (step 0.153 ms)"
   },
   {
    "n": 14,
    "title": "Navigation and NPC brains: Hana serves Mira on the navmesh, identical everywhere; snapshot mid-order",
    "ok": true,
-   "evidence": "3400 steps × 64 components, final 5cda8e0f430bba8f; navmesh 110 polys in 18 tiles (23.5 ms), blocked: item:door-1; 368:mira:sits stool-2 · 453:hana-1:Welcome in! · 834:hana-1:Hi! What can I get you? · 835:mira:A latte, please. · 963:hana-1:Coming right up! · 2014:hana-1:Here you go. Enjoy! · 2488:mira:stands; Mira left; step 0.226 ms (node); snapshot @1200 identical; chromium: identical (step 0.204 ms); wkwebview-scheme: identical (step 0.153 ms); wkwebview-loopback: identical (step 0.15 ms)"
+   "evidence": "3400 steps × 64 components, final 5cda8e0f430bba8f; navmesh 110 polys in 18 tiles (23.6 ms), blocked: item:door-1; 368:mira:sits stool-2 · 453:hana-1:Welcome in! · 834:hana-1:Hi! What can I get you? · 835:mira:A latte, please. · 963:hana-1:Coming right up! · 2014:hana-1:Here you go. Enjoy! · 2488:mira:stands; Mira left; step 0.225 ms (node); snapshot @1200 identical; chromium: identical (step 0.179 ms); wkwebview-scheme: identical (step 0.141 ms); wkwebview-loopback: identical (step 0.141 ms)"
   },
   {
    "n": 15,
    "title": "Save games: saved at 720, loaded into a fresh world, the same per-step hashes to the end everywhere as the unbroken run",
    "ok": true,
-   "evidence": "save file 235 KB (82350ebafdf00816), saved in 3.3 ms, loaded in 20.1 ms (node); 948 steps after the load, final 0a485d262da51646; identical to the unbroken run (check 8); chromium: identical, same file via IndexedDB (load 19.7 ms); wkwebview-scheme: identical, same file via IndexedDB (load 17 ms); wkwebview-loopback: identical, same file via IndexedDB (load 17.1 ms)"
+   "evidence": "save file 235 KB (82350ebafdf00816), saved in 3.4 ms, loaded in 24.4 ms (node); 948 steps after the load, final 0a485d262da51646; identical to the unbroken run (check 8); chromium: identical, same file via IndexedDB (load 17.1 ms); wkwebview-scheme: identical, same file via IndexedDB (load 16 ms); wkwebview-loopback: identical, same file via IndexedDB (load 17.5 ms)"
   },
   {
    "n": 16,
    "title": "Morning at the cafe: the 45 s film identical everywhere; lines, steam and served land on the cut; snapshot mid-film",
    "ok": true,
-   "evidence": "2700 steps (45 s) × 81 components, final 5b60c6d7369b2569; brains mira:brains/customer.json, hana-1:brains/hana.json; lines @1024 hana-1 (2.04 m apart), @1174 mira (2.02 m apart), @1399 hana-1 (2.02 m apart), @2259 hana-1 (2.03 m apart); seated @613; steam @1750 (Hana 0.71 m from the machine); served @2384; music @420; 8 camera changes; step 0.274 ms (node); snapshot @1750 identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
+   "evidence": "2700 steps (45 s) × 81 components, final 5b60c6d7369b2569; brains mira:brains/customer.json, hana-1:brains/hana.json; lines @1024 hana-1 (2.04 m apart), @1174 mira (2.02 m apart), @1399 hana-1 (2.02 m apart), @2259 hana-1 (2.03 m apart); seated @613; steam @1750 (Hana 0.71 m from the machine); served @2384; music @420; 8 camera changes; step 0.277 ms (node); snapshot @1750 identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
   },
   {
    "n": 17,
    "title": "A recorded conversation replays with no model, identical everywhere; a save halfway continues to the same end",
    "ok": true,
-   "evidence": "7200 steps × 64 components, 30 logged events (12 decisions), final 605004a4a0349dde; Hana: 725 Morning, Mira! You are early today. · 1325 Of course. One latte, coming right up. · 1967 Here you go. Enjoy! · 2080 Welcome in! · 3325 Fresh beans this morning. Enjoy it. · 4225 Five years this spring. Feels like longer some days. · 5225 Sundays, if the machine behaves. · 6325 See you tomorrow, Mira. Good luck today!; served 1×; step 0.181 ms (node); snapshot @3600 identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
+   "evidence": "7200 steps × 64 components, 30 logged events (12 decisions), final 605004a4a0349dde; Hana: 725 Morning, Mira! You are early today. · 1325 Of course. One latte, coming right up. · 1967 Here you go. Enjoy! · 2080 Welcome in! · 3325 Fresh beans this morning. Enjoy it. · 4225 Five years this spring. Feels like longer some days. · 5225 Sundays, if the machine behaves. · 6325 See you tomorrow, Mira. Good luck today!; served 1×; step 0.188 ms (node); snapshot @3600 identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
   },
   {
    "n": 18,
    "title": "Ragdolls: knocked down the stairs, both characters fall, lie still and get up, identical everywhere; a snapshot mid-fall",
    "ok": true,
-   "evidence": "600 steps × 70 components, knocked at 30, final 2a28db30b92d6f78; mira: up@1 → falling@30 → down@244 → rising@284 → up@356, hips down to 0.089 m, up at [0.922,0.025,8.584] (hips 0.893 m); hana-1: up@1 → falling@30 → down@144 → rising@184 → up@256, hips down to 0.094 m, up at [1.013,0.025,9.869] (hips 0.893 m); step 0.287 ms (node); snapshot @70 mid-fall identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
+   "evidence": "600 steps × 70 components, knocked at 30, final 2a28db30b92d6f78; mira: up@1 → falling@30 → down@244 → rising@284 → up@356, hips down to 0.089 m, up at [0.922,0.025,8.584] (hips 0.893 m); hana-1: up@1 → falling@30 → down@144 → rising@184 → up@256, hips down to 0.094 m, up at [1.013,0.025,9.869] (hips 0.893 m); step 0.29 ms (node); snapshot @70 mid-fall identical; chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
   },
   {
    "n": 19,
    "title": "Vehicles: Mira gets in the cart, drives a recorded route and gets out; replays identically everywhere; a snapshot mid-drive",
    "ok": true,
-   "evidence": "540 steps × 66 components, final 3eb1af557e12014c; in at 31, out at 421; the cart from [4,0,10.5] to [-1.955,0.373,11.681], up to 4.151 m/s, parked true; camera chasing 390 steps; the recording replayed identical; snapshot @260 mid-drive identical; step 0.304 ms (node); chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
+   "evidence": "540 steps × 66 components, final 3eb1af557e12014c; in at 31, out at 421; the cart from [4,0,10.5] to [-1.955,0.373,11.681], up to 4.151 m/s, parked true; camera chasing 390 steps; the recording replayed identical; snapshot @260 mid-drive identical; step 0.298 ms (node); chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
+  },
+  {
+   "n": 20,
+   "title": "Split screen: two players move two characters with their own cameras; both players' recording replays identically everywhere",
+   "ok": true,
+   "evidence": "320 steps × 66 components, 9 axes and 8 buttons recorded, final 85c5829125340355; Mira moved [x -4.667, z -1.4], Hana [x 4.667, z -1.4]; Hana 54 steps in the air; player 2's camera turned -0.889 rad, player 1's 0; the recording replayed identical; snapshot @160 identical; step 0.245 ms (node); chromium: identical; wkwebview-scheme: identical; wkwebview-loopback: identical"
   }
  ],
  "runtimes": {

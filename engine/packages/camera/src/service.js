@@ -29,6 +29,11 @@ export class CameraService {
     this.cameras = this.cameras.filter((c) => c !== cam);
     if (this.current === cam) this.current = this.cameras[0] ?? null;
   }
+  /**
+   * Player n's camera (M3 W9, split screen): the Camera whose `player` prop is n; for player 1 with none, the current one.
+   * @param {number} n
+   */
+  forPlayer(n = 1) { return this.cameras.find((c) => c.props.player === n) ?? (n === 1 ? this.current : null); }
   setCurrent(cam) { this.current = cam; this.tree.emit?.(cam, 'madeCurrent', {}); }
 
   /** The cameras part of a world snapshot: which camera is current (each camera keeps its own rig state). */
@@ -52,11 +57,16 @@ export class CameraService {
     const input = this.tree.services.get('input');
     const physics = this.tree.services.get('physics');
     if (input && this.current && input.pressed('camera_next') && !this.current.drivenBy) this.current.nextPreset();
+    // split screen (M3 W9): a camera for player 2 or later cycles on that player's camera_next
+    for (const cam of this.cameras) { const n = cam.props.player; if (n > 1 && input?.pressed(`p${n}.camera_next`) && !cam.drivenBy) cam.nextPreset(); }
     // virtual cameras first (their shots), then the cameras' own rigs, then the brains (they win on the cameras they drive)
     for (const v of this.virtual) if (this.tree.scaleOf(v) > 0) v.step(dt * this.tree.scaleOf(v), physics, this.aspect);
     for (const cam of this.cameras) {
       if (this.tree.scaleOf(cam) === 0 || cam.drivenBy) continue;
-      const look = input && cam === this.current ? { lookX: input.axis('look_x'), lookY: input.axis('look_y'), zoom: input.axis('zoom') } : null;
+      // look input: the current camera's from player 1; a camera that names a player (split screen) from that player
+      const n = cam.props.player, pre = n > 1 ? `p${n}.` : '';
+      const looks = input && (n ? true : cam === this.current);
+      const look = looks ? { lookX: input.axis(`${pre}look_x`), lookY: input.axis(`${pre}look_y`), zoom: n > 1 ? 0 : input.axis('zoom') } : null;
       cam.stepRig(dt * this.tree.scaleOf(cam), look, physics);
     }
     for (const b of this.brains) if (this.tree.scaleOf(b) > 0) b.step(this.virtual);

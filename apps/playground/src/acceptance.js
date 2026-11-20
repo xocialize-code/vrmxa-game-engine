@@ -34,6 +34,10 @@
 //   runVehicle     (M3 W8) the cart on the pavement (vehicle.js): Mira gets in with the interact key, drives a recorded route
 //                  (along the pavement, a lane change, the brakes) and gets out once it has stopped. A hash of every
 //                  component after every step; the input recording replayed into a fresh world; a snapshot mid-drive.
+//   runSplit       (M3 W9) two players (split.js): Mira on WASD, Hana on the arrows, each walking relative to their own camera,
+//                  then running apart along the pavement; player 2 jumps and turns their camera with the gamepad's right
+//                  stick. A hash of every component after every step; both players' recording replayed into a fresh world;
+//                  a snapshot re-simulated.
 //   runItems       (M1 W10) the recorded take with items (content/sample/input/play-items.json): Mira walks in, takes the
 //                  sword into her closet, opens the cupboard, sits on a stool, gets up and switches the counter lights
 //                  off; Hana greets her on the way. A hash of every component after every step, a snapshot after the
@@ -47,6 +51,7 @@ import { MemoryStore, IndexedDBStore } from '@vrmxg/save';
 import { AudioOutput, mixOffline, hashSamples } from '@vrmxg/audio';
 import { withStairs, knockDownStairs, FALL_SPOTS, STAIRS } from './stairs.js';
 import { withCart, CART, DRIVE_ROUTE, routeKeys } from './vehicle.js';
+import { withTwoPlayers, TWO_PLAYER_ROUTE } from './split.js';
 
 export const STEPS = 600, SNAPSHOT_AT = 300, ITEMS_SNAPSHOT_AT = 720; // a step whose hash includes Rapier's bytes (every 60th), after the equip
 const text = (b) => new TextDecoder().decode(b);
@@ -557,5 +562,44 @@ export async function runVehicle(R, sample, opts, { now = () => 0 } = {}) {
     replay: { matches: compareRuns(run, replayed) === null, divergence: compareRuns(run, replayed) },
     snapshot: { at: SNAP, midDrive: !!snap.nodes.mira.ctrl.seat, rerunMatches: compareRuns(run.slice(SNAP + 1), again) === null, divergence: compareRuns(run.slice(SNAP + 1), again) },
     drive, stepMs: +(ms / STEPS_V).toFixed(3),
+  };
+}
+
+/** M3 W9: two players (see the header). */
+export async function runSplit(R, sample, opts, { now = () => 0 } = {}) {
+  const STEPS_S = 320, SNAP = 160;
+  const S = { ...sample, doc: withTwoPlayers(sample.doc) }, o = { ...opts, players: 2 };
+  const A = await buildWorld(R, S, o), tree = A.tree, dev = A.input.addDevice(new VirtualDevice());
+  const mira = /** @type {any} */ (tree.find('mira')), hana = /** @type {any} */ (tree.find('hana-1')), cam2 = /** @type {any} */ (tree.find('cam-2')), cam = /** @type {any} */ (tree.find('cam'));
+  const m0 = mira.object3d.position.clone(), h0 = hana.object3d.position.clone();
+  A.input.record();
+  const run = [{ step: 0, h: worldHashes(tree) }];
+  let held = new Set(), snap = null, ms = 0, hanaAir = 0, yaw2 = 0, yaw1 = 0;
+  for (let k = 0; k < STEPS_S; k++) {
+    held = routeKeys(TWO_PLAYER_ROUTE, k, dev, held);
+    if (k === 260) { dev.setGamepad([0, 0, 0.5, 0]); yaw2 = cam2.rig.yaw; yaw1 = cam.rig.yaw; } else if (k === 300) dev.setGamepad([0, 0, 0, 0]);
+    const t0 = now(); tree.step(); ms += now() - t0;
+    if (!hana.ctrl.grounded) hanaAir++;
+    run.push({ step: tree.clock.step, h: worldHashes(tree, { physicsBytes: tree.clock.step % 60 === 0 }) });
+    if (tree.clock.step === SNAP) snap = captureWorld(tree, { meta: { scene: sample.scene, players: 2 } });
+  }
+  const rec = A.input.stop();
+  const dm = mira.object3d.position.clone().sub(m0), dh = hana.object3d.position.clone().sub(h0);
+  const B = await buildWorld(R, S, o);
+  B.input.replay(structuredClone(rec));
+  const replayed = [{ step: 0, h: worldHashes(B.tree) }];
+  for (let k = 0; k < STEPS_S; k++) { B.tree.step(); replayed.push({ step: B.tree.clock.step, h: worldHashes(B.tree, { physicsBytes: B.tree.clock.step % 60 === 0 }) }); }
+  const C = await buildWorld(R, S, o);
+  C.input.replay(structuredClone(rec));
+  restoreWorld(C.tree, snap);
+  const again = [];
+  for (let k = SNAP; k < STEPS_S; k++) { C.tree.step(); again.push({ step: C.tree.clock.step, h: worldHashes(C.tree, { physicsBytes: C.tree.clock.step % 60 === 0 }) }); }
+  return {
+    steps: STEPS_S, run: packRun(run), final: hashValue(run.at(-1).h), components: Object.keys(run[0].h).length,
+    actions: { axes: rec.axes.length, buttons: rec.buttons.length },
+    play: { mira: [dm.x, dm.z].map(r3), hana: [dh.x, dh.z].map(r3), hanaAirSteps: hanaAir, cam2Turned: r3(cam2.rig.yaw - yaw2), cam1Turned: r3(cam.rig.yaw - yaw1) },
+    replay: { matches: compareRuns(run, replayed) === null, divergence: compareRuns(run, replayed) },
+    snapshot: { at: SNAP, rerunMatches: compareRuns(run.slice(SNAP + 1), again) === null, divergence: compareRuns(run.slice(SNAP + 1), again) },
+    stepMs: +(ms / STEPS_S).toFixed(3),
   };
 }

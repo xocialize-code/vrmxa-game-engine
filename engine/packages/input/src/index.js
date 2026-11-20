@@ -5,7 +5,7 @@
 import { InputService } from './service.js';
 import { PlayerController } from './player.js';
 
-export { ActionMap, DEFAULT_ACTIONS } from './actions.js';
+export { ActionMap, DEFAULT_ACTIONS, twoPlayerActions, playerPrefix } from './actions.js';
 export { KeyboardDevice, MouseDevice, GamepadDevice, VirtualDevice } from './devices.js';
 export { InputService } from './service.js';
 export { PlayerController } from './player.js';
