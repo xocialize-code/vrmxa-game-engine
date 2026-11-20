@@ -1,5 +1,10 @@
 # VRMXG M3 plan: characters you talk to
 
+**M3 is done (2026-11-19).** Its ten exit checks pass at 37ca5e3: [acceptance/](acceptance/README.md), receipts AB-R-1038
+to 1046 and AB-R-1048 (task AB-T-0552). Hana holds a spoken conversation in the cafe; what she says and does comes from
+her persona and acts through her tree's actions, and the conversation replays exactly without the model. The companion
+app v0 is in `../vrmxa-companion` (87ef3e2). Carried on: AB-T-0557 (the camera re-test in good light).
+
 *Draft, 2026-11-19. M3 picks from the PRD's "M3 Later" row (§8): persona-driven NPCs, ragdolls, vehicles, viewports and
 split screen, networking, WebXR, WebGPU, and camera and gesture input. It builds on M2 (done 2026-11-18:
 [acceptance/](acceptance/README.md), receipts AB-R-0994 to 1003). M2 built the behaviour trees, the action vocabulary

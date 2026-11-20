@@ -16,9 +16,31 @@ that need no renderer; the playground's acceptance mode adds the rendered pass (
 every camera preset, debug draw). Check 4 re-runs the W6 harness (`engine/packages/snapshot/harness`); check 5 is a
 Claude Code session with the MCP server (`results/mcp-session.json`).
 
-## M3 so far (2026-11-19, M5 Max)
+## Result: M3 is done (2026-11-19, M5 Max)
 
-M3 adds checks as its workstreams land. The M3 acceptance (W13) runs all ten of its exit checks at the M3 commit.
+M3's ten exit checks ([M3-PLAN.md](../M3-PLAN.md) "What M3 is done looking like") were run at the M3 commit 37ca5e3 in
+every runtime, in the playground's Mac app and in the companion app. Each is filed as a receipt:
+
+| # | Check | Result | Receipt |
+|---|---|---|---|
+| 1 | A persona drives the character | Hana's VRMXA persona becomes a role profile that weights her utility, stored as app persona, and the director's prompt, layered in §11's order. Tools are filtered per character and moment: emotions she is allowed, gestures her set fills, targets she has seen. 15 bad-reply fixtures and 6 in-world faults are each rejected, and her tree carries on (AB-R-1010) | AB-R-1038 |
+| 2 | You talk, she answers | In the playground's Mac app, the shell's voice goes from microphone and VAD through STT, the director and TTS with word timings, with lip sync. From end of speech to her first audio: median 1.26 s, max 1.43 s over 10 steady turns (AB-R-1037). She nods while you speak, looks away as she thinks and says a filler past 1.5 s. In a browser the same conversation works typed, through the loopback stand-in (AB-R-1022) | AB-R-1039 |
+| 3 | Her decisions act in the world | An order she hears becomes her serving goal, and M2's server tree makes and brings it. A follower waits by the door when asked, then follows (`takes/follow.json`). Goal choice runs on salient events. Two directors share one model: the character spoken to goes first, and at most two requests are at the model (`director/test/queue.test.mjs`) | AB-R-1040 |
+| 4 | It replays exactly | Check 17: the two-minute conversation replays with no model, identical at every step in every runtime, final 605004a4a0349dde. A save halfway continues to the same end (AB-R-1020) | AB-R-1041 |
+| 5 | A conversation becomes a shot | The take baked into a sequence exports at 1080p24 with sound twice, to the same 2,929 frames, and 27 scrubs draw exactly the exported frames (AB-R-1021). Regenerating a line is one undo step. A take's aspect is fixed at 16:9 (AB-T-0538) | AB-R-1042 |
+| 6 | She sees you | Native Vision in the shell, off until turned on; no frame leaves the device (AB-R-1029). She notices the viewer and looks, and answers a wave and a nod. The stimuli are logged by step and replay hash for hash, also from a snapshot. Live in the Mac app, wave and nod worked in low light; a re-test in good light is AB-T-0557 | AB-R-1043 |
+| 7 | Bodies and play | Checks 18 to 20: a ragdoll fall down the stairs and a get-up, a cart driven and parked, and two-player split screen. Each is identical in every runtime, and its replay and mid-run snapshot are exact (AB-R-1028, 1030, 1031) | AB-R-1044 |
+| 8 | The companion app starts | `../vrmxa-companion` v0 at 87ef3e2, on the shell and the engine's packages by path. She idles with variety (the three extras; after a stroll she faces the camera, within 4°), looks at you while attending, and holds a spoken conversation through the shell's voice and the director. After a quit and relaunch she says "Welcome back, Sam.", from memory encrypted at rest. At 20 fps idle she uses 19.6 % of a core and 2.9 % GPU, against 35.0 % and 8.2 % engaged (AB-R-1047). Hand test 7/9 scripted (the room checked by eye; the glance half of look-at not clear in a still), voice 4/4 | AB-R-1048 |
+| 9 | Agents can direct a conversation | A Claude Code session with only the editor's MCP tools read Hana's director state, talked to her, injected a decision, played a conversation and edited her profile. The editor's Undo walked both edits back. 19 calls, none failed; 20 tools ≈ 1,857 tokens (AB-R-1027) | AB-R-1045 |
+| 10 | M0, M1 and M2 still hold | `npm run check` is green. `compare.mjs` passes 20 of 20 in Node, Chromium and WKWebView scheme and loopback. Every final but the conversation's moved at 37ca5e3 when the default idle became three weighted variants | AB-R-1046 |
+
+The acceptance found two things to fix, both fixed at 37ca5e3:
+- check 2 asserted the idle clip by name, which no longer holds once the default set picks among variants;
+- the conversation preset's option type lacked `face`.
+
+## M3's checks as they landed
+
+M3 added checks as its workstreams landed.
 - **Check 17** (W4, AB-T-0543): a recorded conversation replays with no model. `takes/conversation.json`, made by
   `tools/make-conversation.mjs`, is two minutes of Mira talking with Hana (the host), with the director's split turn on
   a scripted model; its ai log holds 30 events, 12 of them decisions. Replayed from its input and log alone:
