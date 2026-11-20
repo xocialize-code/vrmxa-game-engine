@@ -13,7 +13,7 @@
 //   - 2: the rim's view direction per fragment (`positionView`), not the object's origin (#1905);
 //   - 3: ambient light in the rim lighting mix, as the GLSL (#1906);
 //   - 4: the UV-animation mask reads B, as the spec (#1907);
-//   - 5 (AB-T-0586, not offered upstream yet): shadows in the toon shading. three r187 multiplies a receiving object's
+//   - 5 (AB-T-0586; pixiv/three-vrm#1912, fix #1913 on top of #1878): shadows in the toon shading. three r187 multiplies a receiving object's
 //     shadow into the light colour, and three-vrm's getShading has `shadow = 1` (upstream's own TODO), so shadowed
 //     MToon went dark. The patch re-derives the light's colour without the shadow (the light node's setupDirect with
 //     its base colour: spot cone, distance attenuation and projected maps kept, for any light type) and multiplies the
