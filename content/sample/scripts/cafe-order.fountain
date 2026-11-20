@@ -1,0 +1,47 @@
+Title: The Order
+Credit: A sample script for VRMXG (M4 W4)
+Set: cafe.vrmxs
+Cast:
+    HANA = hana-1
+    MIRA = mira
+Marks:
+    HANA = behind-counter
+    MIRA = counter-front
+
+INT. CAFE - MORNING
+
+Sun through the front window. Hana wipes the counter as Mira steps up to it.
+
+HANA
+(smiling)
+Good morning! [[greet]] What can I get you?
+
+MIRA
+Hmm. [[point]] A latte, please. And one of those croissants.
+
+HANA
+(nods)
+Coming right up!
+
+Hana turns to the espresso machine. Steam hisses. [[MIRA look: HANA]]
+
+MIRA
+(to Hana)
+Is it always this quiet in the morning?
+
+HANA
+(beat)
+Only until the students wake up. [[laugh]]
+
+> DISSOLVE TO:
+
+Hana sets the cup and the croissant on the counter. [[HANA happy]]
+
+HANA
+Here you go. Enjoy!
+
+MIRA
+(warmly)
+Thank you! [[sip]]
+
+FADE OUT.

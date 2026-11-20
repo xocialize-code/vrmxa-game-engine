@@ -16,6 +16,19 @@ that need no renderer; the playground's acceptance mode adds the rendered pass (
 every camera preset, debug draw). Check 4 re-runs the W6 harness (`engine/packages/snapshot/harness`); check 5 is a
 Claude Code session with the MCP server (`results/mcp-session.json`).
 
+## M4's checks as they land
+
+- **Check 1, scripts** (W4, AB-T-0576): the same script gives the same sequence, byte for byte, in every runtime.
+  `acceptance/m4/script-scenario.js` builds the sample script (`content/sample/scripts/cafe-order.fountain`) over the
+  cafe, and re-scripts a small script after hand edits (a gesture moved, a smile keyed bigger, a look turned to the
+  camera, a track deleted; then a line added above and words changed). Each runtime hashes the canonical `.vrmxs` text:
+  ```sh
+  node acceptance/m4/script-chromium.mjs     # Node and headless Chromium over loopback: results/m4-script.json
+  acceptance/m4/script-wkwebview.sh          # WKWebView, scheme and loopback: results/m4-script-wkwebview.json
+  ```
+  Node, Chromium, WKWebView scheme and loopback all give sample 58cebece…f902 (11,207 bytes) and re-script
+  7d761dd9…9180 (6,183 bytes). The package's tests hold the sample's hash too (`engine/packages/script/test/golden.json`).
+
 ## Result: M3 is done (2026-11-19, M5 Max)
 
 M3's ten exit checks ([M3-PLAN.md](../M3-PLAN.md) "What M3 is done looking like") were run at the M3 commit 37ca5e3 in

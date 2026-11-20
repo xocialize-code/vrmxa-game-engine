@@ -1,0 +1,8 @@
+{
+  "note": "Marks for the sample scripts in the cafe (M4 W4): where the cast stands. The build places each as a Marker node in the sequence when the set has none by that name.",
+  "marks": {
+    "behind-counter": { "p": [0.6, 0, -4.6] },
+    "counter-front": { "p": [0.6, 0, -3.3], "q": [0, 1, 0, 0] },
+    "window-table": { "p": [-2.2, 0, -1.4], "q": [0, 0.7071068, 0, 0.7071068] }
+  }
+}

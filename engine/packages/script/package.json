@@ -1,0 +1,26 @@
+{
+  "name": "@vrmxg/script",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG scripts (M4 W4): a Fountain-subset parser of our own (scene headings, action, character cues, dialogue, parentheticals, transitions) with a stable id per element and errors that point at script lines; the build from a script to a sequence over a set (numbered shots, the cast on marks, dialogue, look-at, a default performance, a coverage hook); re-scripting that keeps hand edits; deterministic output.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "devDependencies": {
+    "@vrmxg/editor-core": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/scene": "0.1.0",
+    "@vrmxg/sequence": "0.1.0"
+  },
+  "vrmxg": {
+    "determinism": "simulation"
+  }
+}
