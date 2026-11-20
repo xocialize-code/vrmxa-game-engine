@@ -104,6 +104,20 @@ test('RenderHost.create on WebGPU: an initialised WebGPURenderer on the canvas, 
   assert.equal(host.renderer._initialized, true);
   assert.equal(host.renderer.opts.canvas, canvas);
   assert.equal(host.mtoonMaterial?.name, 'MToonNodeMaterial');
+  // M4 W2: particles draw with three.quarks/webgpu's batch renderer (TSL); WebGL hosts keep three.quarks' own
+  const quarksGPU = await import('three.quarks/webgpu'), quarksGL = await import('three.quarks');
+  assert.equal(host.particleRenderer, quarksGPU.WebGPUBatchedRenderer);
+  const gl = new RenderHost({ renderer: { isWebGLRenderer: true, setPixelRatio() {}, shadowMap: {}, render() {}, dispose() {}, getContext: () => ({ drawingBufferWidth: 1, drawingBufferHeight: 1 }) } });
+  assert.equal(gl.particleRenderer, quarksGL.BatchedRenderer);
+  assert.equal(new RenderHost({ renderer: { setPixelRatio() {}, shadowMap: {}, render() {}, dispose() {} } }).particleRenderer, null, 'a stand-in draws none');
+  // a tree's services that draw get the host on attach (the particles service takes particleRenderer from it)
+  const tree = cafeTree(), seen = [];
+  tree.addService('drawsSomething', { attachHost: (h) => seen.push(h) });
+  host.attach(tree); gl.attach(tree);
+  assert.deepEqual(seen, [host, gl]);
+  assert.equal(tree.renderHost, gl, 'the tree keeps its host, for a service installed later');
+  gl.detach();
+  assert.equal(tree.renderHost, null);
   // a WebGPURenderer handed over before init() is refused (render() would throw later, far from the cause)
   assert.throws(() => new RenderHost({ renderer: new module.WebGPURenderer() }), /await renderer.init\(\)/);
 });

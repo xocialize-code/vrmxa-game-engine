@@ -318,15 +318,21 @@ export async function runSequence(R, sample, opts, { now = () => 0 } = {}) {
 }
 
 /** Particles, M2 W4 (see the top). @param {any} R @param {any} sample @param {any} opts @param {{ now?: () => number }} [t] */
-export async function runParticles(R, sample, opts, { now = () => 0 } = {}) {
-  const STEPS_P = 360, SNAP_P = 180, LOAD = 40;
+export const PARTICLE_STEPS = 360, PARTICLE_SNAPSHOT_AT = 180;
+/** Check 13's scene: the cafe with steam, dust and sparks, and 40 more steam emitters (M4 W2 draws it on both backends). */
+export function withParticleLoad(sample, load = 40) {
   const extra = [
     { id: 'fx-steam', type: 'ParticleEmitter', parent: 'root', transform: { p: [1.3, 1.55, -4.1] }, props: { effect: 'steam' } },
     { id: 'fx-dust', type: 'ParticleEmitter', parent: 'root', transform: { p: [-0.5, 0.02, 4] }, props: { effect: 'dust' } },
     { id: 'fx-sparks', type: 'ParticleEmitter', parent: 'root', transform: { p: [-3, 1.2, -1.6] }, props: { effect: 'sparks' } },
-    ...Array.from({ length: LOAD }, (_, i) => ({ id: `fx-load-${i}`, type: 'ParticleEmitter', parent: 'root', transform: { p: [-4 + (i % 8), 0.5, -2 + Math.floor(i / 8)] }, props: { effect: 'steam' } })),
+    ...Array.from({ length: load }, (_, i) => ({ id: `fx-load-${i}`, type: 'ParticleEmitter', parent: 'root', transform: { p: [-4 + (i % 8), 0.5, -2 + Math.floor(i / 8)] }, props: { effect: 'steam' } })),
   ];
-  const S = { ...sample, doc: { ...sample.doc, nodes: [...sample.doc.nodes, ...extra] } };
+  return { sample: { ...sample, doc: { ...sample.doc, nodes: [...sample.doc.nodes, ...extra] } }, emitters: extra.length };
+}
+
+export async function runParticles(R, sample, opts, { now = () => 0 } = {}) {
+  const STEPS_P = PARTICLE_STEPS, SNAP_P = PARTICLE_SNAPSHOT_AT;
+  const { sample: S, emitters } = withParticleLoad(sample);
   const A = await buildWorld(R, S, opts);
   const svc = A.tree.services.get('particles');
   svc.timer = now; // the service times its own step through the caller's clock (nothing in the simulation reads one)
@@ -347,8 +353,9 @@ export async function runParticles(R, sample, opts, { now = () => 0 } = {}) {
   return {
     steps: STEPS_P, run: packRun(run), final: hashValue(run.at(-1).h), components: Object.keys(run[0].h).length,
     snapshot: { at: SNAP_P, rerunMatches: restored === null, divergence: restored },
-    emitters: extra.length, peakParticles: peak, live: { steam: em('fx-steam'), dust: em('fx-dust'), sparks: em('fx-sparks') },
-    stepMs: +(svc.stepMs / STEPS_P).toFixed(3), batches: svc.batch.batches.length,
+    // batches: headless, nothing draws, so 0 since M4 W2 (the batch renderer comes from a render host); ?mode=frames draws it
+    emitters, peakParticles: peak, live: { steam: em('fx-steam'), dust: em('fx-dust'), sparks: em('fx-sparks') },
+    stepMs: +(svc.stepMs / STEPS_P).toFixed(3), batches: svc.batch?.batches.length ?? 0,
   };
 }
 

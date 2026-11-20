@@ -32,11 +32,12 @@ until W3 runs it on both. The Renderer readout says which backend drew. The host
 that need the world stay disabled until it and the scene are there; a forced `?renderer=webgpu` where WebGPU fails shows
 the error and leaves them disabled (`backends-chromium.mjs` checks that too).
 - **On WebGPU** the cafe and its characters render (Mira and Hana with the patched `MToonNodeMaterial`), with shadows
-  and the room environment.
+  and the room environment. Since M4 W2, particles too (three.quarks/webgpu's batch renderer, from the host), and
+  readback: `frameHash()` (now a promise on both backends), stills and exports.
 - **Post on WebGPU (M4 W1):** the host makes the backend's own post stack (`post: { loadCube }`): pmndrs on WebGL,
   `TSLPostStack` on WebGPU. The **Post** picker in the status bar (`#post-look`) switches the look on either backend:
   the scene's own, none, or a preset (`anime`, `clean`). It's presentation only.
-- **Not yet on WebGPU:** readback and `frameHash` (W2), and the speech bubbles and
+- **Not yet on WebGPU:** the speech bubbles and
   name tags (troika's shaders are WebGL's; the captions still show every line; the two checkboxes are disabled).
 - **`?mode=backends&renderer=…`** draws the cafe offline as an export does, and reads each frame with `toDataURL` in the
   task that drew it (`Playground.backendCheck`). It replays the recorded walk, draws five consecutive frames with
@@ -87,6 +88,77 @@ node apps/playground/scripts/post-compare.mjs a.png b.png   # SSIM and pixel dif
 
 The full-size stills go to `results/post/` (git-ignored). `results/post-preview-{webgl,webgpu}-{animeNoGrain,animeShallow}.png`
 are 960-px previews from Chromium. The results are in `@vrmxg/post`'s README ("TSL on WebGPU").
+
+## Particles and readback (M4 W2, AB-T-0574)
+
+**`?mode=frames&renderer=webgpu|webgl`** (`src/frames.js`, `Playground.framesCheck`) checks particles and readback
+on the page's backend. Each part draws offline on hosts of its own (`RenderHost.create`, `dprCap: 1`), reads every
+frame back through `@vrmxg/export`'s `readbackFor` and hashes it. `&parts=` picks some of them.
+- **particles:** check 13's scene (the cafe, steam, dust, sparks and 40 more steam emitters) is drawn every step on the
+  host's own batch renderer, through a fixed camera onto the emitters. The world must hash as headless at every step.
+  A snapshot at step 180 is restored into a fresh world on a fresh host, which must draw the same frames to step 360.
+- **film:** the morning film (`sequences/cafe-morning.vrmxs`, 1,080 frames at 1080p24, with its sound and the
+  espresso's steam) is exported twice through `exportTake` to a hash sink, each time on a fresh host and world. The two
+  exports must agree frame for frame.
+- **still:** `captureStill` is compared with the canvas's own pixels at 640×360 (`toDataURL` in the drawing task), and
+  the view must follow a resize afterwards.
+- **readback:** a 640×360 still, then the readback's cost per frame at 1080p, 4K and 1366×768 (rows padded in the copy)
+  on the same host, each size checked for content. `exportLoop` reads frame n and takes n − 1, as `exportTake` does;
+  `afterFrame` reads and takes a frame the GPU has finished.
+- **reuse:** a 640×360 still, then 24 film frames at 1080p on the same host, against a fresh host's: equal, with content.
+- **alpha:** a red quad at opacity 0.5 over nothing; its middle pixel as read back, and after `toImageRGBA`.
+- **filmRepeat** (not in the default parts, for AB-T-0589): `&frames=1080&repeat=3&audio=1&tiles=1` exports the film
+  three times per page and returns any frame that differs, with the tiles that differ and its images.
+
+```sh
+(cd apps/playground && npx vite build)
+node apps/playground/scripts/frames-chromium.mjs     # both backends, two loads each: results/frames-chromium.json
+apps/playground/scripts/frames-wkwebview.sh          # WKWebView, scheme and loopback, two loads each: results/frames-wkwebview.json
+```
+
+**Result (2026-11-20, M5 Max, Chrome for Testing 156 headless on Metal, WKWebView on macOS 27.3).**
+- **Particles on both backends.** WebGPU draws with `three.quarks/webgpu`'s batch renderer and WebGL with three.quarks'
+  own (3 batches, 1,149 particles at step 360; `results/frames-*-particles.png`). The world hashes as headless at
+  every step on both backends in Chromium and in WKWebView over both origins. The final hash is `09ef4d21b00189d1`,
+  check 13's since M3's 37ca5e3 (the spike's `976e7033e22ad048` came before 37ca5e3 moved every final). All 361 frames
+  are distinct, and the world restored at step 180 drew the same 181 frames on every run.
+- **The film exports twice the same.** Before W1's merge (no post on WebGPU): WebGPU's frames digest to
+  `72e11057f7fe8c21` in Chromium and `01bbab58fabd08f7` in WKWebView, WebGL's to `4c2265c827597f04` and
+  `696295fc68b0fa12`. With W1 merged, WebGPU exports carry TSL post (the film's anime look with grain): `af463f8e404b4e2b`
+  in Chromium and `aa30672928beb2b1` in WKWebView, on both origins, and every frame distinct (1,080, as on WebGL, where
+  grain also makes every frame distinct). The sound hashes the same in every run.
+- **One frame, now and then, with sound.** In WKWebView a WebGPU export sometimes has one or two frames that differ from
+  the page's other exports, by 1 level in a couple of pixels. It happened in the first and the second full run (frames 10
+  and 153). Hunting it, with sound recording, 4 of 18 exports had one (frames 140–142, 747, 1032), against 0 of 18 with
+  sound off (`results/frames-wkwebview-repeats.json`). The world hash is the same at those frames, so it's presentation.
+  The kept pair differs near the espresso machine's edge. With W1's TSL post in the exports, Chromium shows it too: a
+  hunt found single frames off in 5 of 9 exports, always one pixel by 1 level in the middle tile, though the full runner
+  then passed on both loads. On the merged tree WKWebView had one more (frame 4). The cause isn't found (AB-T-0589).
+- **Stills match the canvas** pixel for pixel on both backends: 230,400 of 230,400 pixels at 640×360 (a flipped still
+  would differ in 160,114). The view kept drawing at its own size after the stills.
+- **Every size reads back** on both backends after a 640×360 still on the same renderer: 1080p, 4K and 1366×768 all
+  have content. The first version of the WebGPU readback made a second output target for the second size, and in three
+  r187 a second output target on a renderer never receives an output draw: every 4K WebGPU read was zeros (PR #7
+  review). Now one target per renderer is resized for each size, and a probe checks each new or resized target. An
+  export after a still on the same host matches a fresh host's frames.
+- **Alpha is premultiplied on both backends:** the half-transparent red reads back `[127, 0, 0, 128]` on WebGPU and
+  WebGL, in Chromium and WKWebView, and `toImageRGBA` gives `[253, 0, 0, 128]`.
+- **Readback cost** (median ms per frame; the two loads' medians; WKWebView over loopback; after the fix, before W1's
+  merge: the readback copies the same bytes with or without post):
+
+  | Runtime | Backend | 1080p export loop | 1080p after frame | 4K export loop | 4K after frame | 1366×768 export loop |
+  |---|---|---|---|---|---|---|
+  | WKWebView | WebGPU (mapAsync, ring of 3) | 1.88 / 1.94 | 2.04 / 2.00 | 8.66 / 8.80 | 7.72 / 7.92 | 1.36 / 1.26 |
+  | WKWebView | WebGL (pixel-pack buffer) | 1.78 / 3.22 | 3.34 / 3.00 | 6.14 / 7.22 | 5.92 / 5.78 | 1.44 / 1.68 |
+  | Chromium | WebGPU | 0.2 / 0.5 | 0.5 | 1.6 / 1.4 | 1.4 | 0.3 / 0.2 |
+  | Chromium | WebGL | 2.5 / 2.8 | 2.8 / 3.1 | 8.6 / 9.6 | 10.4 / 9.9 | 1.4 / 1.6 |
+
+  In the film's export loop at 1080p24 the readback costs 2.76 / 2.85 ms a frame on WebGPU in WKWebView (whole frame
+  8.13 / 8.62 ms) and 2.09 / 2.27 on WebGL (7.64 / 7.27). In Chromium it costs 0.54 / 0.55 on WebGPU (5.2) and
+  2.51 / 2.73 on WebGL (6.9 / 7.8). WebKit's mapAsync is the slow part, as the spike found (2.46 / 9.68 ms there).
+- **A Chromium quirk.** A WebGPU canvas still at the browser's default 300×150 when an output target was drawn on its
+  renderer stopped following resizes (`toDataURL` kept giving 300×150). This page never sizes its view canvas, so the
+  still check sizes it first.
 
 ## Dialogue (M3 W6, AB-T-0545)
 

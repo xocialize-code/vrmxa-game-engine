@@ -1,0 +1,269 @@
+{
+ "note": "M4 W2: hunting the one frame (frame 10 of the first export, loopback, second load) that differed in frames-wkwebview.json. WKWebView loopback, WebGPU. None differed again.",
+ "short": {
+  "query": "mode=frames&renderer=webgpu&parts=particles,filmRepeat&frames=24&repeat=6",
+  "loads": [
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,filmRepeat&frames=24&repeat=6",
+    "digests": [
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb"
+    ],
+    "differing": 0
+   },
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,filmRepeat&frames=24&repeat=6&again=1",
+    "digests": [
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb"
+    ],
+    "differing": 0
+   },
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,filmRepeat&frames=24&repeat=6&again=2",
+    "digests": [
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb",
+     "b6528acee81201cb"
+    ],
+    "differing": 0
+   }
+  ]
+ },
+ "full": {
+  "query": "mode=frames&renderer=webgpu&parts=particles,film",
+  "loads": [
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,film",
+    "first": "01bbab58fabd08f7",
+    "second": "01bbab58fabd08f7",
+    "framesDiffer": [],
+    "audio": "b69c46ab"
+   },
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,film&again=1",
+    "first": "01bbab58fabd08f7",
+    "second": "01bbab58fabd08f7",
+    "framesDiffer": [],
+    "audio": "b69c46ab"
+   },
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,film&again=2",
+    "first": "01bbab58fabd08f7",
+    "second": "01bbab58fabd08f7",
+    "framesDiffer": [],
+    "audio": "b69c46ab"
+   },
+   {
+    "case": "mode=frames&renderer=webgpu&parts=particles,film&again=3",
+    "first": "01bbab58fabd08f7",
+    "second": "01bbab58fabd08f7",
+    "framesDiffer": [],
+    "audio": "b69c46ab"
+   }
+  ]
+ },
+ "afterReview": {
+  "note": "M4 W2 (AB-T-0589): WebGPU film exports in WKWebView over loopback, the whole film at 1080p24, each export on a fresh host. A frame that differs from the page's other exports is listed by export and frame. Sound recording is the trigger: none differ with audio off.",
+  "audioOff_tileHashed": {
+   "query": "mode=frames&renderer=webgpu&parts=filmRepeat&frames=1080&repeat=3",
+   "pages": [
+    [
+     "01bbab58fabd08f7",
+     "01bbab58fabd08f7",
+     "01bbab58fabd08f7"
+    ],
+    [
+     "01bbab58fabd08f7",
+     "01bbab58fabd08f7",
+     "01bbab58fabd08f7"
+    ],
+    [
+     "01bbab58fabd08f7",
+     "01bbab58fabd08f7",
+     "01bbab58fabd08f7"
+    ],
+    [
+     "01bbab58fabd08f7",
+     "01bbab58fabd08f7",
+     "01bbab58fabd08f7"
+    ],
+    [
+     "01bbab58fabd08f7",
+     "01bbab58fabd08f7",
+     "01bbab58fabd08f7"
+    ],
+    [
+     "01bbab58fabd08f7",
+     "01bbab58fabd08f7",
+     "01bbab58fabd08f7"
+    ]
+   ]
+  },
+  "audioOn": {
+   "query": "mode=frames&renderer=webgpu&parts=filmRepeat&frames=1080&repeat=3&audio=1&tiles=0",
+   "pages": [
+    [
+     {
+      "digest": "9fad3c4cf7d6e0d5",
+      "differFromFirst": []
+     },
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": [
+       142
+      ]
+     },
+     {
+      "digest": "4c49646682a1d08a",
+      "differFromFirst": [
+       142,
+       1032
+      ]
+     }
+    ],
+    [
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": []
+     },
+     {
+      "digest": "605f9081f5d7eb8d",
+      "differFromFirst": [
+       747
+      ]
+     },
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": []
+     }
+    ],
+    [
+     {
+      "digest": "626c3a136045ed1a",
+      "differFromFirst": []
+     },
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": [
+       140,
+       141
+      ]
+     },
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": [
+       140,
+       141
+      ]
+     }
+    ],
+    [
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": []
+     },
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": []
+     },
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": []
+     }
+    ],
+    [
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": []
+     },
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": []
+     },
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": []
+     }
+    ],
+    [
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": []
+     },
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": []
+     },
+     {
+      "digest": "01bbab58fabd08f7",
+      "differFromFirst": []
+     }
+    ]
+   ]
+  },
+  "audioOn_twoPerPage": {
+   "query": "mode=frames&renderer=webgpu&parts=film",
+   "pages": [
+    {
+     "first": "01bbab58fabd08f7",
+     "second": "01bbab58fabd08f7",
+     "framesDiffer": []
+    },
+    {
+     "first": "cd6a29bb7f7e7cb2",
+     "second": "01bbab58fabd08f7",
+     "framesDiffer": [
+      682
+     ]
+    },
+    {
+     "first": "01bbab58fabd08f7",
+     "second": "01bbab58fabd08f7",
+     "framesDiffer": []
+    },
+    {
+     "first": "01bbab58fabd08f7",
+     "second": "01bbab58fabd08f7",
+     "framesDiffer": []
+    },
+    {
+     "first": "01bbab58fabd08f7",
+     "second": "01bbab58fabd08f7",
+     "framesDiffer": []
+    },
+    {
+     "first": "01bbab58fabd08f7",
+     "second": "01bbab58fabd08f7",
+     "framesDiffer": []
+    },
+    {
+     "first": "ba9cf01ac8509432",
+     "second": "01bbab58fabd08f7",
+     "framesDiffer": [
+      786
+     ]
+    },
+    {
+     "first": "01bbab58fabd08f7",
+     "second": "6a009797b857f466",
+     "framesDiffer": [
+      760
+     ]
+    }
+   ]
+  },
+  "pixels": "page 2 of audioOn, export 2 frame 747 against export 3 (half size): 2 pixels differ, by 1 level, near (1304, 604) at full size, the espresso machine's lower right edge; the world hash is the same"
+ }
+}

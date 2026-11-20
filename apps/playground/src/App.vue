@@ -83,6 +83,14 @@ onMounted(async () => {
     catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
     ui.loading = false; refresh(); window.READY = true; return;
   }
+  // M4 W2: ?mode=frames&renderer=webgpu|webgl: particles drawn, the film exported twice, stills, the readback's cost
+  // (scripts/frames-chromium.mjs, frames-wkwebview.sh); &parts=particles,film,still,readback picks some
+  if (mode === 'frames') {
+    const q = new URLSearchParams(location.search), parts = q.get('parts')?.split(',');
+    try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await pg.framesCheck({ ...(parts ? { parts } : {}), ...(q.get('frames') ? { film: { frames: +q.get('frames'), ...(q.get('repeat') ? { repeat: +q.get('repeat') } : {}), ...(q.has('audio') ? { audio: q.get('audio') === '1' } : {}), ...(q.has('tiles') ? { tileHashes: q.get('tiles') === '1' } : {}) } } : {}) })) }; ui.notes = `frames: ${window.__result.backend}`; }
+    catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
+    ui.loading = false; refresh(); window.READY = true; return;
+  }
   // M4 W1: ?mode=post&renderer=webgpu|webgl draws every post look offline on that backend (scripts/post-chromium.mjs, WKWebView)
   if (mode === 'post') {
     try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await postCheck(pg)) }; ui.notes = `post: ${window.__result.stack}, exports ${window.__result.exports.identical ? 'identical' : 'DIFFER'}`; }

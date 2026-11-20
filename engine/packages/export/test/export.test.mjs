@@ -65,7 +65,7 @@ test('an export shows what live play shows, frame for frame, and never changes t
   const r = await exportTake({ tree, host, fps, frames, width: 64, height: 36, sink, audio: false, job: { codec: 'h264' } });
   assert.equal(sink.frames.length, frames);
   assert.deepEqual(sink.frames.map((f) => f.n), [...Array(frames).keys()], 'in order, each once');
-  assert.deepEqual(sink.job, { width: 64, height: 36, fps: [24, 1], frames, audio: false, codec: 'h264' });
+  assert.deepEqual(sink.job, { width: 64, height: 36, fps: [24, 1], frames, audio: false, topDown: false, codec: 'h264' });
   assert.ok(sink.ended && !sink.cancelled);
   // frame n blends steps s − 1 and s at α: the box at 3 m/s × (s − 1 + α) / 60, exactly live play's lag
   for (const f of sink.frames) {

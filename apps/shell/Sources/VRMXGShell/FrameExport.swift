@@ -27,6 +27,8 @@ public struct ExportSettings: Sendable, Equatable {
     public var sidecars = false
     /// Extra VideoToolbox compression properties (experiments and tests).
     public var extra: [String: Double] = [:]
+    /// Frames arrive with row 0 at the top (WebGPU's readback, M4 W2) rather than at the bottom (WebGL's readPixels).
+    public var topDown = false
 
     public init(width: Int, height: Int, fpsNum: Int32, fpsDen: Int32 = 1, frames: Int, codec: String = "h264", bitrate: Int? = nil, audio: Bool = false) {
         self.width = width; self.height = height; self.fpsNum = fpsNum; self.fpsDen = fpsDen; self.frames = frames; self.codec = codec; self.bitrate = bitrate; self.audio = audio
@@ -107,8 +109,8 @@ final class VideoWriter: @unchecked Sendable { // used from its session's serial
         writer.startSession(atSourceTime: .zero)
     }
 
-    /// Frame n from WebGL's readPixels (RGBA, row 0 at the bottom). Blocks until the encoder takes more: the page
-    /// feels that as its POST not answering yet.
+    /// Frame n as RGBA: from WebGL's readPixels (row 0 at the bottom), or from WebGPU's readback (row 0 at the top) when
+    /// the settings say `topDown`. Blocks until the encoder takes more: the page feels that as its POST not answering yet.
     func append(_ n: Int, rgbaBottomUp data: Data) throws {
         let s = settings
         guard data.count == s.width * s.height * 4 else { throw BridgeError("bad_params", "frame \(n) is \(data.count) bytes; \(s.width)×\(s.height) RGBA is \(s.width * s.height * 4)") }
@@ -124,7 +126,7 @@ final class VideoWriter: @unchecked Sendable { // used from its session's serial
         guard let pb else { throw BridgeError("failed", "no pixel buffer") }
         CVPixelBufferLockBaseAddress(pb, [])
         let dst = CVPixelBufferGetBaseAddress(pb)!, rowBytes = CVPixelBufferGetBytesPerRow(pb)
-        Self.rgbaBottomUpToBGRA(data, dst: dst, dstRowBytes: rowBytes, width: s.width, height: s.height)
+        Self.rgbaBottomUpToBGRA(data, dst: dst, dstRowBytes: rowBytes, width: s.width, height: s.height, topDown: s.topDown)
         if s.codec == "prores4444" { // ProRes has no "premultiplied" flag and compositors read it as straight alpha
             var b = vImage_Buffer(data: dst, height: vImagePixelCount(s.height), width: vImagePixelCount(s.width), rowBytes: rowBytes)
             vImageUnpremultiplyData_RGBA8888(&b, &b, vImage_Flags(kvImageNoFlags))
@@ -144,7 +146,8 @@ final class VideoWriter: @unchecked Sendable { // used from its session's serial
     func cancel() { writer.cancelWriting(); try? FileManager.default.removeItem(at: url) }
 
     /// readPixels gives RGBA with row 0 at the bottom; AVFoundation wants BGRA, row 0 at the top. One pass, in bands.
-    static func rgbaBottomUpToBGRA(_ src: Data, dst: UnsafeMutableRawPointer, dstRowBytes: Int, width: Int, height: Int) {
+    /// `topDown`: the source rows are already top-first (WebGPU), so only the channels move.
+    static func rgbaBottomUpToBGRA(_ src: Data, dst: UnsafeMutableRawPointer, dstRowBytes: Int, width: Int, height: Int, topDown: Bool = false) {
         src.withUnsafeBytes { s in
             nonisolated(unsafe) let sp = UnsafeMutableRawPointer(mutating: s.baseAddress!)
             nonisolated(unsafe) let d = dst
@@ -152,7 +155,7 @@ final class VideoWriter: @unchecked Sendable { // used from its session's serial
             DispatchQueue.concurrentPerform(iterations: bands) { b in
                 var map: [UInt8] = [2, 1, 0, 3]
                 for y in (height * b / bands)..<(height * (b + 1) / bands) {
-                    var sb = vImage_Buffer(data: sp + (height - 1 - y) * width * 4, height: 1, width: vImagePixelCount(width), rowBytes: width * 4)
+                    var sb = vImage_Buffer(data: sp + (topDown ? y : height - 1 - y) * width * 4, height: 1, width: vImagePixelCount(width), rowBytes: width * 4)
                     var db = vImage_Buffer(data: d + y * dstRowBytes, height: 1, width: vImagePixelCount(width), rowBytes: dstRowBytes)
                     vImagePermuteChannels_ARGB8888(&sb, &db, &map, vImage_Flags(kvImageDoNotTile))
                 }
@@ -362,8 +365,8 @@ func writeSidecar(_ data: Data, to url: URL, beside primary: URL) throws {
 }
 
 /// The export bridge methods and POST routes:
-///   export.begin { width, height, fps: [num, den], frames, codec, bitrate?, audio?, hash?, subtitles?, suggestedName, path? } → { id, path, … }
-///   POST __export/frame?id=&n=   raw RGBA from readPixels (row 0 at the bottom), answered once encoded
+///   export.begin { width, height, fps: [num, den], frames, codec, bitrate?, audio?, hash?, subtitles?, topDown?, suggestedName, path? } → { id, path, … }
+///   POST __export/frame?id=&n=   raw RGBA, row 0 at the bottom (WebGL's readPixels) or, with topDown, at the top (WebGPU), answered once encoded
 ///   POST __export/audio?id=      the mixed WAV
 ///   export.end { id } → the file and timings;  export.cancel { id }
 /// The destination comes from a save panel, a `path` the person already granted, or `VRMXG_SHELL_EXPORT` (a file, or a
@@ -415,6 +418,7 @@ public final class ExportMethods {
                                bitrate: p.number("bitrate").map(Int.init), audio: p.bool("audio") ?? false)
         s.hash = p.bool("hash") ?? false
         s.subtitles = p.string("subtitles")
+        s.topDown = p.bool("topDown") ?? false
         return s
     }
 

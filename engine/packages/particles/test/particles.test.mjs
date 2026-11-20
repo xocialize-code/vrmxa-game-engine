@@ -1,6 +1,8 @@
 // M2 W4 (AB-T-0527): effect documents, the ParticleEmitter in a tree (steam, dust, sparks), determinism (the same
 // particles every run; a stream that depends on the step alone), snapshot / restore mid-effect replaying identically,
 // presentation emitters outside the hash, and the batch renderer's buffers filling.
+// M4 W2 (AB-T-0574): the batch renderer comes from the host (WebGL's or three.quarks/webgpu's, or none headless), and
+// the particles hash the same with each.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { installPortableMath } from '@vrmxg/dmath';
@@ -8,12 +10,14 @@ import { m0Registry } from '@vrmxg/registry/m0';
 import { SceneTree } from '@vrmxg/core';
 import { captureWorld, restoreWorld, worldHashes, hashValue } from '@vrmxg/snapshot';
 import { installParticles, BUILTIN, checkEffect, atlasPixels, TILES } from '@vrmxg/particles';
+import { BatchedRenderer as WebGLBatchedRenderer } from 'three.quarks';
+import { BatchedRenderer as WebGPUBatchedRenderer } from 'three.quarks/webgpu';
 
 installPortableMath();
 
-function world(extra = [], seed = 5) {
+function world(extra = [], seed = 5, BatchedRenderer = WebGLBatchedRenderer) {
   const tree = new SceneTree({ registry: m0Registry(), seed });
-  const particles = installParticles(tree);
+  const particles = installParticles(tree, { BatchedRenderer });
   tree.instantiate({ format: 'vrmxs', version: 1, id: 'p', nodes: [
     { id: 'root', type: 'Node3D' },
     { id: 'cup', type: 'ParticleEmitter', parent: 'root', transform: { p: [0, 1, 0] }, props: { effect: 'steam' } },
@@ -102,4 +106,51 @@ test('a fresh world restored mid-effect steps each emitter exactly as the run di
     const b = one(); restoreWorld(b, captureWorld(a));
     for (let k = 0; k < 120; k++) { a.step(); b.step(); assert.deepEqual(b.find('e').getState(), a.find('e').getState(), `${effect}, step ${k + 1} after the restore`); }
   }
+});
+
+test('the batch renderer is the host\'s: none headless, WebGL\'s or WebGPU\'s, swapped mid-run; the particles hash the same with each', () => {
+  const run = (R, swap) => {
+    const { tree, particles } = world([], 5, R);
+    const hashes = [];
+    for (let k = 1; k <= 150; k++) {
+      tree.step();
+      if (k === 60 && swap) particles.attachHost({ particleRenderer: swap }); // a host on the other backend took the tree
+      particles.present(1 / 60);
+      if (k % 30 === 0) hashes.push(hash(tree));
+    }
+    return { hashes, particles, tree };
+  };
+  const none = run(null), gl = run(WebGLBatchedRenderer), gpu = run(WebGPUBatchedRenderer), moved = run(WebGLBatchedRenderer, WebGPUBatchedRenderer);
+  assert.equal(none.particles.batch, null, 'headless: nothing draws, no batch');
+  for (const r of [gl, gpu, moved]) assert.deepEqual(r.hashes, none.hashes, 'the same particles with any batch renderer, or none');
+  assert.ok(gpu.particles.batch instanceof WebGPUBatchedRenderer && gpu.particles.batch.batches.length >= 2, 'WebGPU\'s batches');
+  const b = moved.particles.batch;
+  assert.ok(b instanceof WebGPUBatchedRenderer, 'the swap made a WebGPU batch');
+  assert.equal(b.parent, moved.tree.root.object3d, 'in the tree, where the old one was');
+  assert.equal(moved.tree.root.object3d.children.filter((o) => o.name === 'particles').length, 1, 'and the old one is gone');
+  const systems = moved.particles.emitters.flatMap((e) => e.systems);
+  assert.ok(systems.every((s) => s._renderer === b), 'every system tells the new batch when its look changes');
+  assert.equal(b.batches.reduce((n, x) => n + x.systems.size, 0), systems.length, 'every system is in one of its batches');
+  const same = moved.particles.batch;
+  moved.particles.attachHost({ particleRenderer: WebGPUBatchedRenderer });
+  assert.equal(moved.particles.batch, same, 'a host on the same backend keeps the batch');
+  moved.particles.attachHost({});
+  assert.equal(moved.particles.batch, null, 'a host that can\'t draw particles (a stand-in) drops it');
+  assert.ok(systems.every((s) => s._renderer === null));
+});
+
+test('a particles service installed after a host attached the tree still draws with the host\'s renderer (tree.renderHost)', () => {
+  const host = { particleRenderer: WebGPUBatchedRenderer };
+  // as RenderHost.attach leaves it: the tree knows its host before the service exists
+  const tree = new SceneTree({ registry: m0Registry(), seed: 5 });
+  tree.renderHost = host;
+  const particles = installParticles(tree);
+  assert.ok(particles.batch instanceof WebGPUBatchedRenderer, 'took the host\'s renderer when installed');
+  // and one made before the host, then a host arriving without calling attachHost, picks it up on the next emitter
+  const t2 = new SceneTree({ registry: m0Registry(), seed: 5 });
+  const p2 = installParticles(t2);
+  assert.equal(p2.batch, null);
+  t2.renderHost = host;
+  t2.instantiate({ format: 'vrmxs', version: 1, id: 'p', nodes: [{ id: 'root', type: 'Node3D' }, { id: 'cup', type: 'ParticleEmitter', parent: 'root', props: { effect: 'steam' } }] });
+  assert.ok(p2.batch instanceof WebGPUBatchedRenderer && p2.batch.batches.length > 0, 'on its first emitter');
 });

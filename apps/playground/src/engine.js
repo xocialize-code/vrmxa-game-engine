@@ -7,7 +7,7 @@ import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
 import { PRESETS } from '@vrmxg/camera';
 import { RenderHost, backendFromQuery } from '@vrmxg/render';
 import { renderViews, gridLayout, PRESETS as POST_PRESETS } from '@vrmxg/post';
-import { captureStill, hashFrame } from '@vrmxg/export';
+import { captureStill, hashFrame, readbackFor } from '@vrmxg/export';
 import { loadSample, buildWorld } from './world.js';
 import { serialize } from '@vrmxg/scene';
 import { runSimulation, runDevices, runAudio, runItems, runCinematic, runSequence, runParticles, runBrains, runSave, runFilm, runConversation, runRagdoll, runVehicle, runSplit, STEPS } from './acceptance.js';
@@ -24,6 +24,7 @@ import { withStairs, knockDownStairs } from './stairs.js';
 import { withCart } from './vehicle.js';
 import { withTwoPlayers, playerLayout } from './split.js';
 import { withCamera, shellCamera, recordedFrames, connectCamera } from '@vrmxg/sense';
+import { framesCheck } from './frames.js';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
@@ -267,12 +268,12 @@ export class Playground {
     env.props.post = 'anime'; host.views.update(tree);
     host.render(1, false);
     const anime = cost('anime');
-    const ssim = (grain) => {
+    const ssim = async (grain) => {
       post.setParams({ 'grain.amount': grain ? 0.18 : 0 });
-      const a = captureStill(host, { width: 1920, height: 1080 }), b = captureStill(host, { width: 3840, height: 2160 });
+      const a = await captureStill(host, { width: 1920, height: 1080 }), b = await captureStill(host, { width: 3840, height: 2160 });
       return +ssimDown(a.rgba, b.rgba, 1920, 1080).toFixed(4);
     };
-    const ssimNoGrain = ssim(false), ssimGrain = ssim(true);
+    const ssimNoGrain = await ssim(false), ssimGrain = await ssim(true);
     // four views: the current camera and three more around Hana, scissored, no post on them
     const cam = tree.services.get('cameras').current.camera;
     const cams = [cam, ...[0, 1, 2].map((i) => { const c = cam.clone(); const a = (i / 3) * Math.PI * 2; c.position.set(-1.5 + Math.sin(a) * 4, 1.6, -3 + Math.cos(a) * 4); c.lookAt(-1.5, 1.2, -3); c.updateMatrixWorld(); return c; })];
@@ -416,12 +417,36 @@ export class Playground {
   /** Name tags over the characters on or off. */
   setNameTags(on) { if (!this.text) return; this.text.nameTags = !!on; if (!on) { for (const t of this.text.tags.values()) { this.text.group.remove(t.text); t.dispose(); } this.text.tags.clear(); } if (this.tree && !this.playing) this.host.render(1, false); }
 
-  /** The drawn frame's hash (FNV-1a of the RGBA read-back, as exports hash theirs): read right after a render. */
-  frameHash() {
-    if (this.host.backend !== 'webgl') throw new Error('frameHash reads WebGL\'s drawing buffer; WebGPU readback is M4 W2');
-    const gl = this.host.renderer.getContext(), w = gl.drawingBufferWidth, h = gl.drawingBufferHeight, buf = new Uint8Array(w * h * 4);
-    gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  /**
+   * The drawn frame's hash (FNV-1a of the RGBA read-back, as exports hash theirs). WebGL reads the drawing buffer as the
+   * last render left it (call right after one); WebGPU can't read its canvas, so the frame is drawn again into the
+   * readback's output target (M4 W2) and read from there. WebGPU's rows are top-down, so the two backends' hashes of
+   * the same picture differ (they differ anyway: the backends' pixels aren't the same).
+   */
+  async frameHash() {
+    const host = this.host, { width: w, height: h } = host.drawingBufferSize(), buf = new Uint8Array(w * h * 4);
+    if (host.backend === 'webgl') { const gl = host.renderer.getContext(); gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, buf); return hashFrame(buf); }
+    const rb = readbackFor(host, w, h);
+    host.advanceNodeFrame(); // a frame of its own: passes and shadow maps redraw (AB-T-0554 gotcha 1), as captureStill does
+    await rb.draw(() => host.render(host.last.alpha ?? 1, false));
+    await rb.readNow(buf);
+    rb.release();
     return hashFrame(buf);
+  }
+
+  /**
+   * M4 W2 (?mode=frames&renderer=webgpu|webgl): particles and readback on this page's backend (frames.js): check 13
+   * drawn and restored mid-effect, the morning film exported twice, captureStill against the canvas, the readback's cost.
+   * @param {{ parts?: string[], film?: object }} [o]
+   */
+  async framesCheck(o = {}) {
+    await this.load(this.scene ?? 'cafe.vrmxs');
+    this.pause();
+    this.setBubbles(false);
+    const R = await loadRapier(), sample = await loadSample(bytes);
+    // export hosts get the view's post: each backend's own stack (pmndrs on WebGL, TSL on WebGPU since M4 W1)
+    const post = { loadCube: async (file) => new TextDecoder().decode(await bytes(file)) };
+    return framesCheck({ R, sample, opts: { vrmxaCore, closet, behaviours }, backend: this.host.backend, post, view: this.host, canvas: this.canvas, ...o });
   }
 
   /**

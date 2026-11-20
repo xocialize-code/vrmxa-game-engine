@@ -56,11 +56,13 @@ const lib = installCharacters(tree, { ...opts, mtoonMaterial: host.mtoonMaterial
 | Room environment | `roomEnvironment()` makes the PMREM with three/webgpu's `PMREMGenerator` on WebGPU (it used to return null without WebGL) |
 | Drawing-buffer size | `drawingBufferSize()`: WebGL reads its context as before; WebGPU has none, so `getDrawingBufferSize()`. The post stack and the lens are sized from it |
 | Node frame (gotcha 1) | `frameAt` calls `advanceNodeFrame()` before it draws: r187 updates a RenderPipeline's passes and the shadow maps once per `nodeFrame.frameId`, and only the renderer's own rAF loop advances it, so an export that never yields would draw every frame over the first one's passes. It's the private `renderer._nodes.nodeFrame`; the host throws if a three upgrade moves it |
+| Particles (M4 W2) | `host.particleRenderer`: the three.quarks `BatchedRenderer` class for this renderer, three.quarks' own on WebGL (the default there), `three.quarks/webgpu`'s on WebGPU (`create` loads it with three/webgpu, `loadParticleRenderer`). `attach(tree)` hands the host to every service with an `attachHost(host)`: the particles service takes its batch renderer from it. The tree keeps the host as `tree.renderHost` (cleared on detach), for a service installed later. A stand-in draws none (null) |
 | Warm-up renderer (gotcha 6) | `warmUpWebGPU()`: one throwaway `WebGPURenderer`, initialised with a room PMREM, created once per page before any other. The page's first `WebGPURenderer` compiles some materials differently, so its frames differ from later renderers' by ±1 in a few pixels. It's kept, not disposed, as the spike measured it |
 | The three-vrm patch | `scripts/patch-three-vrm.mjs` applies `engine/patches/three-vrm-3.5.5-nodes-r187.patch` to `@pixiv/three-vrm`'s `lib/nodes/index.module.js` on install (AB-T-0553's six lines plus patch 5's twelve, AB-T-0586: the light's shadow goes into MToon's toon shading, not its light colour, so shadowed MToon takes the shade colour as on WebGL; AB-D-0274), and replaces the CommonJS `index.cjs` (stock, which loads on r187 and draws wrong) with a stub that throws. `--check` fails unless each file is exactly stock 3.5.5 or exactly patched; CI adds `--require-patched`, which also fails a stock file, so it proves the install patched |
 
-**Not in W0:** TSL post (W1, now in: the row above), particles and readback (W2), both backends in the
-acceptance and the default flip (W3). The playground's speech bubbles (troika) are WebGL-only for now.
+**Not in W0:** TSL post (W1, now in: the row above), particles and readback (W2, now in: above and `@vrmxg/export`'s
+`GPUReadback`), both backends in the acceptance and the default flip (W3). The playground's speech bubbles (troika) are
+WebGL-only for now.
 
 **Tests** (`test/webgpu.test.mjs`, Node, a stand-in three/webgpu): the query switch and backend choice; gotcha 6, the
 warm-up comes first and once, before the view's and every later renderer, and WebGL never touches WebGPU; gotcha 1,
