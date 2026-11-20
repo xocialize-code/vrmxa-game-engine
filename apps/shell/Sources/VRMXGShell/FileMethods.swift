@@ -5,13 +5,24 @@ import UniformTypeIdentifiers
 /// picks, for the life of the process); for automation, environment variables stand in for the panels:
 ///   VRMXG_SHELL_OPEN=<file>   VRMXG_SHELL_SAVE=<file>   VRMXG_SHELL_PROJECT=<folder>
 /// (a relative path is under the app's temporary directory, inside its sandbox container).
+///
+/// Binary files (AB-A-0314, shell 0.6.0): `file.open { types, serve: true }` serves the chosen file at a URL on both
+/// origins (`url`: `/opened/<token>/<name>`, fetched by the page, no copy over the bridge); `binary: true` returns its
+/// bytes as `base64` instead (up to 64 MB). `remember: "<key>"` keeps a security-scoped bookmark, so on a later launch
+/// `file.reopen { key, serve?, binary? }` opens it again with no panel (null when nothing is remembered or the file has
+/// gone); `file.forget { key }` drops it. Remembering needs `com.apple.security.files.bookmarks.app-scope`.
 @MainActor
 public final class FileMethods {
     let roots: WebRoots
     let env: [String: String]
+    let defaults: UserDefaults
     /// Files and folders the person granted this session (writing back to them needs no panel).
     var granted: Set<URL> = []
-    public init(roots: WebRoots, env: [String: String] = ProcessInfo.processInfo.environment) { self.roots = roots; self.env = env }
+    /// Files reopened from bookmarks, whose security scope stays open for the app's life.
+    var scoped: Set<URL> = []
+    public init(roots: WebRoots, env: [String: String] = ProcessInfo.processInfo.environment, defaults: UserDefaults = .standard) {
+        self.roots = roots; self.env = env; self.defaults = defaults
+    }
 
     func hook(_ key: String) -> URL? {
         guard let v = env[key], !v.isEmpty else { return nil }
@@ -20,6 +31,8 @@ public final class FileMethods {
 
     public func register(on router: BridgeRouter) {
         router.register("file.open") { [unowned self] p in try await self.open(p) }
+        router.register("file.reopen") { [unowned self] p in try self.reopen(p) }
+        router.register("file.forget") { [unowned self] p in self.defaults.removeObject(forKey: Self.bookmarkKey(try p.require("key"))); return ["forgotten": true] }
         router.register("file.save") { [unowned self] p in try await self.save(p) }
         router.register("project.open") { [unowned self] p in try await self.openProject(p) }
         router.register("project.list") { [unowned self] _ in try self.listProject() }
@@ -42,10 +55,48 @@ public final class FileMethods {
         }
         let file = url!
         granted.insert(file)
-        let data = try Data(contentsOf: file)
-        var out: [String: Any] = ["path": file.path, "name": file.lastPathComponent, "size": data.count]
-        if data.count <= 32 << 20, let text = String(data: data, encoding: .utf8) { out["text"] = text }
+        if let key = p.string("remember") { try remember(file, key: key) }
+        return try describe(file, p)
+    }
+
+    /// What `file.open` and `file.reopen` answer: `url` with `serve`, `base64` with `binary`, else `text` (UTF-8 up to 32 MB).
+    func describe(_ file: URL, _ p: BridgeParams) throws -> [String: Any] {
+        let size = (try? file.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+        var out: [String: Any] = ["path": file.path, "name": file.lastPathComponent, "size": size]
+        if p.bool("serve") == true {
+            out["url"] = roots.serveOpened(file)
+        } else if p.bool("binary") == true {
+            guard size <= 64 << 20 else { throw BridgeError("too_large", "\(file.lastPathComponent) is over 64 MB: open it with serve: true") }
+            out["base64"] = try Data(contentsOf: file).base64EncodedString()
+        } else {
+            let data = try Data(contentsOf: file)
+            if data.count <= 32 << 20, let text = String(data: data, encoding: .utf8) { out["text"] = text }
+        }
         return out
+    }
+
+    static func bookmarkKey(_ key: String) -> String { "vrmxg.shell.remembered.\(key)" }
+
+    /// A security-scoped bookmark in the sandbox (a plain one where there's no sandbox, as in tests).
+    func remember(_ file: URL, key: String) throws {
+        let data: Data
+        if let scoped = try? file.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil) { data = scoped }
+        else { data = try file.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil) }
+        defaults.set(data, forKey: Self.bookmarkKey(key))
+    }
+
+    func reopen(_ p: BridgeParams) throws -> Any? {
+        let key = try p.require("key")
+        guard let data = defaults.data(forKey: Self.bookmarkKey(key)) else { return nil }
+        var stale = false
+        let resolved = (try? URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &stale))
+            ?? (try? URL(resolvingBookmarkData: data, options: [], relativeTo: nil, bookmarkDataIsStale: &stale))
+        guard let file = resolved else { return nil }
+        if !scoped.contains(file), file.startAccessingSecurityScopedResource() { scoped.insert(file) }
+        guard FileManager.default.isReadableFile(atPath: file.path) else { return nil }
+        granted.insert(file)
+        if stale { try? remember(file, key: key) }
+        return try describe(file, p)
     }
 
     /// The bytes to write: `text`, or `base64` for binary files (a still, a thumbnail).

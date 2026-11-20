@@ -1,3 +1,5 @@
+import AppKit
+import WebKit
 import AVFoundation
 import Foundation
 import Testing
@@ -110,6 +112,41 @@ func tempDir(_ files: [String: String]) throws -> URL {
         #expect(FileManager.default.fileExists(atPath: dir.appendingPathComponent("proj/scenes/new.vrmxs").path))
         let escape = await router.handle(body: ["method": "project.write", "params": ["path": "../evil.txt", "text": "x"]])
         #expect(escape.1?.contains("outside the project") == true)
+    }
+}
+
+/// A binary file the person picks (AB-A-0314): served at a URL or returned as base64, remembered across launches.
+@Suite @MainActor struct BinaryOpenTests {
+    @Test func serveBase64RememberReopenAndForget() async throws {
+        let dir = try tempDir(["web/index.html": "<p>", "Mira Chan.vrmxa": "PK\u{3}\u{4}zip"])
+        let bytes = try Data(contentsOf: dir.appendingPathComponent("Mira Chan.vrmxa"))
+        let roots = WebRoots(app: dir.appendingPathComponent("web"))
+        let suite = "vrmxg-shell-test-\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let env = ["VRMXG_SHELL_OPEN": dir.appendingPathComponent("Mira Chan.vrmxa").path]
+        let first = FileMethods(roots: roots, env: env, defaults: defaults) // held: its handlers capture it unowned (AB-L-0363)
+        let router = BridgeRouter(); first.register(on: router)
+
+        let served = try #require(await router.handle(body: ["method": "file.open", "params": ["types": ["vrmxa"], "serve": true, "remember": "character"]]).0 as? [String: Any])
+        let url = try #require(served["url"] as? String)
+        #expect(url.hasPrefix("/opened/") && url.hasSuffix("/Mira%20Chan.vrmxa") && served["text"] == nil && served["size"] as? Int == bytes.count)
+        let got = roots.read(path: url)
+        #expect(got.status == 200 && got.data == bytes && got.type == "application/zip", "fetched by URL, no copy over the bridge")
+        #expect(roots.read(path: "/opened/0000/Mira%20Chan.vrmxa").status == 404, "only the issued token serves")
+
+        let b64 = try #require(await router.handle(body: ["method": "file.open", "params": ["binary": true]]).0 as? [String: Any])
+        #expect(Data(base64Encoded: b64["base64"] as? String ?? "") == bytes)
+
+        // the next launch: a new FileMethods, no panel hook, the same defaults
+        let second = FileMethods(roots: roots, env: [:], defaults: defaults)
+        let next = BridgeRouter(); second.register(on: next)
+        let again = try #require(await next.handle(body: ["method": "file.reopen", "params": ["key": "character", "serve": true]]).0 as? [String: Any])
+        #expect(roots.read(path: again["url"] as? String ?? "").data == bytes)
+        #expect(await next.handle(body: ["method": "file.reopen", "params": ["key": "other"]]).0 is NSNull, "nothing remembered: null")
+        _ = await next.handle(body: ["method": "file.forget", "params": ["key": "character"]])
+        #expect(await next.handle(body: ["method": "file.reopen", "params": ["key": "character"]]).0 is NSNull)
+        withExtendedLifetime((first, second)) {}
     }
 }
 
@@ -306,5 +343,47 @@ func sineWAV(seconds: Double, rate: Int = 48000) -> Data {
         // Our own origins, but no usage descriptions in this bundle: denied too.
         #expect(MicrophoneMethods.mediaDecision(host: "127.0.0.1", scheme: "http", appScheme: "vrmxg-playground", type: .microphone) == .deny)
         #expect(MicrophoneMethods.mediaDecision(host: "app", scheme: "vrmxg-playground", appScheme: "vrmxg-playground", type: .camera) == .deny)
+    }
+}
+
+/// Window modes and the menu bar item (AB-A-0317), on a real window and web view without launching the app.
+@Suite @MainActor struct WindowModeTests {
+    func delegate(_ config: ShellConfiguration) -> ShellAppDelegate {
+        let d = ShellAppDelegate(config: config)
+        d.webView = WKWebView(frame: NSRect(x: 0, y: 0, width: 800, height: 600))
+        d.window = NSWindow(contentRect: d.webView.frame, styleMask: [.titled, .closable, .resizable, .miniaturizable], backing: .buffered, defer: true)
+        d.window.contentView = d.webView
+        d.registerWindowMethods()
+        return d
+    }
+
+    @Test func floatingAndBackToNormal() async throws {
+        let d = delegate(ShellConfiguration(appName: "Test", scheme: "vrmxg-test-\(UUID().uuidString.prefix(8).lowercased())", size: NSSize(width: 800, height: 600)))
+        #expect((await d.router.handle(body: ["method": "window.state"]).0 as? [String: Any])?["mode"] as? String == "normal")
+        let f = await d.router.handle(body: ["method": "window.setMode", "params": ["mode": "floating", "borderless": true]])
+        #expect((f.0 as? [String: Any])?["mode"] as? String == "floating")
+        #expect(d.window.level == .floating && d.window.styleMask.contains(.borderless) && !d.window.isOpaque)
+        #expect(d.window.contentLayoutRect.size == NSSize(width: 360, height: 480), "the floating size the first time")
+        _ = await d.router.handle(body: ["method": "window.setMode", "params": ["mode": "normal"]])
+        #expect(d.window.level == .normal && d.window.styleMask.contains(.titled) && d.window.isOpaque)
+        let bad = await d.router.handle(body: ["method": "window.setMode", "params": ["mode": "huge"]])
+        #expect(bad.1?.contains("bad_params") == true)
+        _ = await d.router.handle(body: ["method": "window.hide"])
+        #expect(!d.window.isVisible)
+        // the default: closing closes, and the last window ends the app, as before
+        #expect(d.windowShouldClose(d.window) && d.applicationShouldTerminateAfterLastWindowClosed(NSApplication.shared))
+        d.window.orderOut(nil)
+    }
+
+    @Test func closeKeepsRunningWithAStatusItem() async throws {
+        let config = ShellConfiguration(appName: "Companion", scheme: "vrmxg-test-\(UUID().uuidString.prefix(8).lowercased())",
+                                        statusItem: StatusItemConfiguration(items: [("Talk", "talk")]), closeKeepsRunning: true, dockIcon: false)
+        let d = delegate(config)
+        d.showWindow()
+        #expect(!d.windowShouldClose(d.window) && !d.window.isVisible, "closing hides")
+        #expect(!d.applicationShouldTerminateAfterLastWindowClosed(NSApplication.shared))
+        let titles = d.statusItem?.menu?.items.map(\.title) ?? []
+        #expect(titles == ["Show Window", "", "Talk", "", "Quit Companion"])
+        if let s = d.statusItem { NSStatusBar.system.removeStatusItem(s) }
     }
 }

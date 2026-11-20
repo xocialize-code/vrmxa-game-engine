@@ -16,8 +16,16 @@ public struct ShellConfiguration {
     /// Edit › Undo and Redo go to the page as `menu.undo` / `menu.redo` events (an editor with its own history; the page
     /// hands them on to a focused text field itself) instead of WebKit's undo manager.
     public var pageUndo: Bool
-    public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = [], pageUndo: Bool = false) {
+    /// A menu bar item (AB-A-0317; WindowModes.swift). nil: none, as before.
+    public var statusItem: StatusItemConfiguration?
+    /// Closing the window hides it and the app keeps running (reopen from the status item, the Dock or `window.show`).
+    public var closeKeepsRunning: Bool
+    /// false: no Dock icon or app menu (an accessory app, like LSUIElement); pair it with a status item.
+    public var dockIcon: Bool
+    public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = [], pageUndo: Bool = false,
+                statusItem: StatusItemConfiguration? = nil, closeKeepsRunning: Bool = false, dockIcon: Bool = true) {
         self.appName = appName; self.scheme = scheme; self.size = size; self.webFolder = webFolder; self.methods = methods; self.pageUndo = pageUndo
+        self.statusItem = statusItem; self.closeKeepsRunning = closeKeepsRunning; self.dockIcon = dockIcon
     }
 }
 
@@ -27,8 +35,8 @@ public struct ShellConfiguration {
 @MainActor
 public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDelegate {
     public let config: ShellConfiguration
-    public private(set) var window: NSWindow!
-    public private(set) var webView: WKWebView!
+    public internal(set) var window: NSWindow!
+    public internal(set) var webView: WKWebView!
     public let roots: WebRoots
     public let router = BridgeRouter()
     /// Binary POSTs from the page (frame export), on both origins.
@@ -45,6 +53,9 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     lazy var server = LoopbackServer(roots: roots, posts: posts)
     let env = ProcessInfo.processInfo.environment
     public private(set) var origin = "loopback"
+    /// The window's mode, "normal" or "floating" (WindowModes.swift)
+    var windowMode = "normal"
+    var statusItem: NSStatusItem?
 
     public init(config: ShellConfiguration) {
         self.config = config
@@ -82,6 +93,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         window.makeKeyAndOrderFront(nil)
         NSApp.mainMenu = buildMenu()
         NSApp.activate(ignoringOtherApps: true)
+        registerWindowMethods() // window.* and, when configured, the status item (AB-A-0317)
 
         // VRMXG_SHELL_MIC=request asks for the microphone at launch and prints the outcome (the permission check, AB-L-0370)
         if env["VRMXG_SHELL_MIC"] == "request" {
@@ -154,7 +166,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         decisionHandler(MicrophoneMethods.mediaDecision(host: origin.host, scheme: origin.protocol, appScheme: config.scheme, type: type))
     }
 
-    public func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
+    public func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { !config.closeKeepsRunning }
 }
 
 public enum ShellApp {
@@ -164,7 +176,7 @@ public enum ShellApp {
         let app = NSApplication.shared
         let delegate = ShellAppDelegate(config: config)
         app.delegate = delegate
-        app.setActivationPolicy(.regular)
+        app.setActivationPolicy(config.dockIcon ? .regular : .accessory)
         withExtendedLifetime(delegate) { app.run() }
         exit(0)
     }

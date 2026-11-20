@@ -1,10 +1,12 @@
 import Foundation
 
-/// What the shell serves: the app's own web build at `/`, and an opened project folder at `/project/` (so a page
-/// fetches project assets by URL on either origin). Shared by the scheme handler and the loopback server.
-public final class WebRoots: @unchecked Sendable { // `project` is guarded by `lock`
+/// What the shell serves: the app's own web build at `/`, an opened project folder at `/project/` (so a page
+/// fetches project assets by URL on either origin), and single files the person opened at `/opened/<token>/<name>`.
+/// Shared by the scheme handler and the loopback server.
+public final class WebRoots: @unchecked Sendable { // `project` and `opened` are guarded by `lock`
     public let app: URL
     private var project: URL?
+    private var opened: [String: URL] = [:]
     private let lock = NSLock()
 
     public init(app: URL) { self.app = app.standardizedFileURL }
@@ -15,11 +17,26 @@ public final class WebRoots: @unchecked Sendable { // `project` is guarded by `l
     public func mountProject(_ url: URL?) { lock.withLock { project = url?.standardizedFileURL } }
     public var projectFolder: URL? { lock.withLock { project } }
 
+    public static let openedPrefix = "/opened/"
+
+    /// Serve one file the person opened, at an unguessable path; returns the path (`/opened/<token>/<name>`).
+    public func serveOpened(_ file: URL) -> String {
+        let token = UUID().uuidString.lowercased().replacingOccurrences(of: "-", with: "")
+        lock.withLock { opened[token] = file.standardizedFileURL }
+        let name = file.lastPathComponent.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "file"
+        return "\(Self.openedPrefix)\(token)/\(name)"
+    }
+
     /// Status, content type and bytes for a request path (query already removed).
     public func read(path rawPath: String) -> (status: Int, type: String, data: Data) {
         var path = rawPath.removingPercentEncoding ?? rawPath
         if path.isEmpty || path == "/" { path = "/index.html" }
         var root = app
+        if path.hasPrefix(Self.openedPrefix) {
+            let token = String(path.dropFirst(Self.openedPrefix.count).prefix { $0 != "/" })
+            guard let file = lock.withLock({ opened[token] }), let data = try? Data(contentsOf: file, options: .mappedIfSafe) else { return Self.notFound(path) }
+            return (200, Self.mimeType(file.pathExtension), data)
+        }
         if path.hasPrefix(Self.projectPrefix) {
             guard let p = projectFolder else { return Self.notFound(path) }
             root = p
