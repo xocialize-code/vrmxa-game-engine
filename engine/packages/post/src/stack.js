@@ -109,6 +109,9 @@ export class PostStack {
         case 'edges': if (E.edges) { E.edges.thickness1080 = e.thickness; E.edges.uniforms.get('colour').value = new Color(e.colour).toArray(); E.edges.uniforms.get('strength').value = e.strength; E.edges.setSize(this.size.x, this.size.y); } break;
         case 'dof': if (E.dof) { const d = e.auto && this.dofSource?.(); E.dof.cocMaterial.focusDistance = d ? d.focusDistance : e.focusDistance; E.dof.cocMaterial.focusRange = Math.max(0.05, Math.min(50, d ? d.focusRange : e.focusRange)); E.dof.bokehScale = Math.min(8, (d ? d.bokehPx / 24 : e.bokehScale) * k); } break;
         case 'bloom': if (E.bloom) { E.bloom.intensity = e.intensity; E.bloom.luminanceMaterial.threshold = e.threshold; E.bloom.luminanceMaterial.smoothing = e.smoothing; E.bloom.mipmapBlurPass.radius = e.radius; } break;
+        // the LUT's intensity (M4 W1 review): pmndrs draws a LUT3DEffect with SRC (full strength); below 1 it blends NORMAL
+        // with that opacity, in sRGB as the LUT runs. At 1 the effect keeps SRC, so a full-strength grade draws as before
+        case 'lut': if (E.lut) { const k = Math.min(1, Math.max(0, e.intensity ?? 1)), f = k < 1 ? BlendFunction.NORMAL : BlendFunction.SRC; if (E.lut.blendMode.blendFunction !== f) E.lut.blendMode.blendFunction = f; E.lut.blendMode.opacity.value = k; } break;
         case 'grade': if (E.hue) { E.hue.saturation = e.saturation; E.hue.hue = e.hue; E.bc.brightness = e.brightness; E.bc.contrast = e.contrast; } break;
         case 'vignette': if (E.vignette) { E.vignette.offset = e.offset; E.vignette.darkness = e.darkness; } break;
         case 'grain': if (E.grain) E.grain.blendMode.opacity.value = e.amount; break;

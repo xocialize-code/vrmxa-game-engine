@@ -286,7 +286,13 @@ test('M4 W1: create({ post: { loadCube } }) makes the backend\'s own stack (TSL 
   assert.equal(disposed, true);
   gpu.render(1, false);
   assert.equal(configured.length, 1, 'configured from the Environment on the next frame');
-  // a factory still works as before, and a stand-in host gets no stack
+  // a factory still works as before: the host calls it with its renderer
+  const made = { setSize() {}, configure() {}, dispose() {}, active: false };
+  let calledWith = null;
+  const viaFactory = await RenderHost.create({ backend: 'webgpu', navigator: gpuNavigator(), webgpu: module, post: (r) => { calledWith = r; return made; } });
+  assert.equal(viaFactory.post, made);
+  assert.equal(calledWith, viaFactory.renderer);
+  // options on a stand-in host: no stack (there's no backend to make one for)
   const stand = await RenderHost.create({ backend: 'auto', navigator: noGpu, webgpu: module, renderer: { setPixelRatio() {}, shadowMap: {}, render() {}, dispose() {} }, post: { loadCube } });
   assert.equal(stand.post, null);
 });

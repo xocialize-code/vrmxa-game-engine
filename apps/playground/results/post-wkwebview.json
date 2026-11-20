@@ -11,6 +11,7 @@
     1080
    ],
    "ssim": 0.9611,
+   "ssimQuarter": 0.9933,
    "meanMaxChannel": 2.49,
    "over8": 0.01312,
    "max": 170
@@ -21,9 +22,21 @@
     1080
    ],
    "ssim": 0.9958,
+   "ssimQuarter": 0.9959,
    "meanMaxChannel": 0.648,
    "over8": 0.01293,
    "max": 180
+  },
+  "animeLut85": {
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9958,
+   "ssimQuarter": 0.9959,
+   "meanMaxChannel": 0.631,
+   "over8": 0.01288,
+   "max": 178
   },
   "animeNoGrain": {
    "size": [
@@ -31,6 +44,7 @@
     1080
    ],
    "ssim": 0.996,
+   "ssimQuarter": 0.996,
    "meanMaxChannel": 0.549,
    "over8": 0.01287,
    "max": 166
@@ -41,6 +55,7 @@
     1080
    ],
    "ssim": 0.9961,
+   "ssimQuarter": 0.9962,
    "meanMaxChannel": 0.503,
    "over8": 0.01202,
    "max": 166
@@ -51,6 +66,7 @@
     1080
    ],
    "ssim": 0.995,
+   "ssimQuarter": 0.9973,
    "meanMaxChannel": 0.751,
    "over8": 0.03011,
    "max": 140
@@ -61,6 +77,7 @@
     1080
    ],
    "ssim": 0.9971,
+   "ssimQuarter": 0.9997,
    "meanMaxChannel": 0.159,
    "over8": 0.00313,
    "max": 160
@@ -71,6 +88,7 @@
     1080
    ],
    "ssim": 0.9939,
+   "ssimQuarter": 0.997,
    "meanMaxChannel": 0.406,
    "over8": 0.00799,
    "max": 160
@@ -80,318 +98,7 @@
   {
    "backend": "webgpu",
    "costMs": {
-    "anime": 5,
-    "none": 3
-   },
-   "exports": {
-    "a": [
-     "f62efd8c",
-     "c27d01f5",
-     "6dbfbca2",
-     "90e620bd",
-     "edb7c5a0"
-    ],
-    "b": [
-     "f62efd8c",
-     "c27d01f5",
-     "6dbfbca2",
-     "90e620bd",
-     "edb7c5a0"
-    ],
-    "distinct": 5,
-    "frame0": {
-     "colours": 4096,
-     "lumaStd": 55.74
-    },
-    "identical": true,
-    "pipelinesBuiltByA": 1
-   },
-   "frames": [
-    300,
-    301,
-    302,
-    303,
-    304
-   ],
-   "isWebGPUBackend": true,
-   "looks": {
-    "anime": {
-     "again": "42698883",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "42698883",
-     "lumaStd": 61.86,
-     "newPipeline": false,
-     "passes": [
-      "scene(MSAA4)",
-      "normals(override, full res)",
-      "characterMask(layer 2, ½ res)",
-      "edges(custom TSL)",
-      "dof(pmndrs port)",
-      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
-      "chromaticAberration(custom TSL)"
-     ]
-    },
-    "animeLut": {
-     "again": "a1d33737",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "a1d33737",
-     "lumaStd": 65.74,
-     "newPipeline": true,
-     "passes": [
-      "scene(MSAA4)",
-      "normals(override, full res)",
-      "characterMask(layer 2, ½ res)",
-      "edges(custom TSL)",
-      "dof(pmndrs port)",
-      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
-      "chromaticAberration(custom TSL)"
-     ]
-    },
-    "animeNoGrain": {
-     "again": "311fdc52",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "311fdc52",
-     "lumaStd": 61.91,
-     "newPipeline": false,
-     "passes": [
-      "scene(MSAA4)",
-      "normals(override, full res)",
-      "characterMask(layer 2, ½ res)",
-      "edges(custom TSL)",
-      "dof(pmndrs port)",
-      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
-      "chromaticAberration(custom TSL)"
-     ]
-    },
-    "animeOverlays": {
-     "again": "526821bc",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "526821bc",
-     "lumaStd": 62.59,
-     "newPipeline": false,
-     "passes": [
-      "scene(MSAA4)",
-      "normals(override, full res)",
-      "characterMask(layer 2, ½ res)",
-      "edges(custom TSL)",
-      "dof(pmndrs port)",
-      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
-      "chromaticAberration(custom TSL)"
-     ]
-    },
-    "animeShallow": {
-     "again": "dd4851cc",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "dd4851cc",
-     "lumaStd": 60.05,
-     "newPipeline": false,
-     "passes": [
-      "scene(MSAA4)",
-      "normals(override, full res)",
-      "characterMask(layer 2, ½ res)",
-      "edges(custom TSL)",
-      "dof(pmndrs port)",
-      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
-      "chromaticAberration(custom TSL)"
-     ]
-    },
-    "clean": {
-     "again": "d3d6aac8",
-     "colours": 3899,
-     "firstEqualsAgain": true,
-     "hash": "d3d6aac8",
-     "lumaStd": 63.63,
-     "newPipeline": true,
-     "passes": [
-      "scene(MSAA4)",
-      "merged(bloom(mipmap 8)+toneMapping())"
-     ]
-    },
-    "none": {
-     "again": "63be6d9a",
-     "colours": 2911,
-     "firstEqualsAgain": true,
-     "hash": "63be6d9a",
-     "lumaStd": 64.02,
-     "newPipeline": true,
-     "passes": []
-    }
-   },
-   "mode": "post",
-   "origin": "scheme",
-   "size": [
-    1280,
-    485
-   ],
-   "stack": "Ne",
-   "still": 420,
-   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
-   "case": "mode=post&renderer=webgpu",
-   "errors": [],
-   "timedOut": false
-  },
-  {
-   "backend": "webgl",
-   "costMs": {
-    "anime": 1,
-    "none": 0
-   },
-   "exports": {
-    "a": [
-     "56ac8615",
-     "0090b0e0",
-     "ff734f43",
-     "ded322c0",
-     "4a17d698"
-    ],
-    "b": [
-     "56ac8615",
-     "0090b0e0",
-     "ff734f43",
-     "ded322c0",
-     "4a17d698"
-    ],
-    "distinct": 5,
-    "frame0": {
-     "colours": 4096,
-     "lumaStd": 55.75
-    },
-    "identical": true,
-    "pipelinesBuiltByA": null
-   },
-   "frames": [
-    300,
-    301,
-    302,
-    303,
-    304
-   ],
-   "isWebGPUBackend": false,
-   "looks": {
-    "anime": {
-     "again": "f87da800",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "f87da800",
-     "lumaStd": 61.88,
-     "newPipeline": false,
-     "passes": [
-      "RenderPass",
-      "NormalPass",
-      "EffectPass(EdgeEffect)",
-      "EffectPass(DepthOfFieldEffect)",
-      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
-      "EffectPass(ChromaticAberrationEffect)"
-     ]
-    },
-    "animeLut": {
-     "again": "7ff2d726",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "7ff2d726",
-     "lumaStd": 65.76,
-     "newPipeline": false,
-     "passes": [
-      "RenderPass",
-      "NormalPass",
-      "EffectPass(EdgeEffect)",
-      "EffectPass(DepthOfFieldEffect)",
-      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
-      "EffectPass(ChromaticAberrationEffect)"
-     ]
-    },
-    "animeNoGrain": {
-     "again": "dad8c7ae",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "dad8c7ae",
-     "lumaStd": 61.94,
-     "newPipeline": false,
-     "passes": [
-      "RenderPass",
-      "NormalPass",
-      "EffectPass(EdgeEffect)",
-      "EffectPass(DepthOfFieldEffect)",
-      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
-      "EffectPass(ChromaticAberrationEffect)"
-     ]
-    },
-    "animeOverlays": {
-     "again": "b67b7a23",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "b67b7a23",
-     "lumaStd": 62.61,
-     "newPipeline": false,
-     "passes": [
-      "RenderPass",
-      "NormalPass",
-      "EffectPass(EdgeEffect)",
-      "EffectPass(DepthOfFieldEffect)",
-      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
-      "EffectPass(ChromaticAberrationEffect)"
-     ]
-    },
-    "animeShallow": {
-     "again": "c0ef44a1",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "c0ef44a1",
-     "lumaStd": 60.05,
-     "newPipeline": false,
-     "passes": [
-      "RenderPass",
-      "NormalPass",
-      "EffectPass(EdgeEffect)",
-      "EffectPass(DepthOfFieldEffect)",
-      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
-      "EffectPass(ChromaticAberrationEffect)"
-     ]
-    },
-    "clean": {
-     "again": "13d28421",
-     "colours": 3865,
-     "firstEqualsAgain": true,
-     "hash": "13d28421",
-     "lumaStd": 63.64,
-     "newPipeline": false,
-     "passes": [
-      "RenderPass",
-      "EffectPass(BloomEffect+ToneMappingEffect)"
-     ]
-    },
-    "none": {
-     "again": "75b4f5a8",
-     "colours": 2928,
-     "firstEqualsAgain": true,
-     "hash": "75b4f5a8",
-     "lumaStd": 64.09,
-     "newPipeline": false,
-     "passes": []
-    }
-   },
-   "mode": "post",
-   "origin": "scheme",
-   "size": [
-    1280,
-    485
-   ],
-   "stack": "tce",
-   "still": 420,
-   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
-   "case": "mode=post&renderer=webgl",
-   "errors": [],
-   "timedOut": false
-  },
-  {
-   "backend": "webgpu",
-   "costMs": {
-    "anime": 6,
+    "anime": 4,
     "none": 2
    },
    "exports": {
@@ -460,6 +167,23 @@
       "chromaticAberration(custom TSL)"
      ]
     },
+    "animeLut85": {
+     "again": "a92d57c7",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "a92d57c7",
+     "lumaStd": 65.14,
+     "newPipeline": false,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
     "animeNoGrain": {
      "again": "311fdc52",
      "colours": 4096,
@@ -536,10 +260,354 @@
    "mode": "post",
    "origin": "scheme",
    "size": [
-    1280,
-    485
+    1920,
+    1080
    ],
-   "stack": "Ne",
+   "stack": "r",
+   "still": 420,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=post&renderer=webgpu",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "costMs": {
+    "anime": 1,
+    "none": 0
+   },
+   "exports": {
+    "a": [
+     "56ac8615",
+     "0090b0e0",
+     "ff734f43",
+     "ded322c0",
+     "4a17d698"
+    ],
+    "b": [
+     "56ac8615",
+     "0090b0e0",
+     "ff734f43",
+     "ded322c0",
+     "4a17d698"
+    ],
+    "distinct": 5,
+    "frame0": {
+     "colours": 4096,
+     "lumaStd": 55.75
+    },
+    "identical": true,
+    "pipelinesBuiltByA": null
+   },
+   "frames": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "isWebGPUBackend": false,
+   "looks": {
+    "anime": {
+     "again": "f87da800",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "f87da800",
+     "lumaStd": 61.88,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+     ]
+    },
+    "animeLut": {
+     "again": "7ff2d726",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "7ff2d726",
+     "lumaStd": 65.76,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+     ]
+    },
+    "animeLut85": {
+     "again": "447f66be",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "447f66be",
+     "lumaStd": 65.16,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+     ]
+    },
+    "animeNoGrain": {
+     "again": "dad8c7ae",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "dad8c7ae",
+     "lumaStd": 61.94,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+     ]
+    },
+    "animeOverlays": {
+     "again": "b67b7a23",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "b67b7a23",
+     "lumaStd": 62.61,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+     ]
+    },
+    "animeShallow": {
+     "again": "c0ef44a1",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "c0ef44a1",
+     "lumaStd": 60.05,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+     ]
+    },
+    "clean": {
+     "again": "13d28421",
+     "colours": 3865,
+     "firstEqualsAgain": true,
+     "hash": "13d28421",
+     "lumaStd": 63.64,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "EffectPass(BloomEffect+ToneMappingEffect)"
+     ]
+    },
+    "none": {
+     "again": "75b4f5a8",
+     "colours": 2928,
+     "firstEqualsAgain": true,
+     "hash": "75b4f5a8",
+     "lumaStd": 64.09,
+     "newPipeline": false,
+     "passes": []
+    }
+   },
+   "mode": "post",
+   "origin": "scheme",
+   "size": [
+    1920,
+    1080
+   ],
+   "stack": "tce",
+   "still": 420,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=post&renderer=webgl",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "costMs": {
+    "anime": 4,
+    "none": 2
+   },
+   "exports": {
+    "a": [
+     "f62efd8c",
+     "c27d01f5",
+     "6dbfbca2",
+     "90e620bd",
+     "edb7c5a0"
+    ],
+    "b": [
+     "f62efd8c",
+     "c27d01f5",
+     "6dbfbca2",
+     "90e620bd",
+     "edb7c5a0"
+    ],
+    "distinct": 5,
+    "frame0": {
+     "colours": 4096,
+     "lumaStd": 55.74
+    },
+    "identical": true,
+    "pipelinesBuiltByA": 1
+   },
+   "frames": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "isWebGPUBackend": true,
+   "looks": {
+    "anime": {
+     "again": "42698883",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "42698883",
+     "lumaStd": 61.86,
+     "newPipeline": false,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
+    "animeLut": {
+     "again": "a1d33737",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "a1d33737",
+     "lumaStd": 65.74,
+     "newPipeline": true,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
+    "animeLut85": {
+     "again": "a92d57c7",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "a92d57c7",
+     "lumaStd": 65.14,
+     "newPipeline": false,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
+    "animeNoGrain": {
+     "again": "311fdc52",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "311fdc52",
+     "lumaStd": 61.91,
+     "newPipeline": false,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
+    "animeOverlays": {
+     "again": "526821bc",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "526821bc",
+     "lumaStd": 62.59,
+     "newPipeline": false,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
+    "animeShallow": {
+     "again": "dd4851cc",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "dd4851cc",
+     "lumaStd": 60.05,
+     "newPipeline": false,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
+    "clean": {
+     "again": "d3d6aac8",
+     "colours": 3899,
+     "firstEqualsAgain": true,
+     "hash": "d3d6aac8",
+     "lumaStd": 63.63,
+     "newPipeline": true,
+     "passes": [
+      "scene(MSAA4)",
+      "merged(bloom(mipmap 8)+toneMapping())"
+     ]
+    },
+    "none": {
+     "again": "63be6d9a",
+     "colours": 2911,
+     "firstEqualsAgain": true,
+     "hash": "63be6d9a",
+     "lumaStd": 64.02,
+     "newPipeline": true,
+     "passes": []
+    }
+   },
+   "mode": "post",
+   "origin": "scheme",
+   "size": [
+    1920,
+    1080
+   ],
+   "stack": "r",
    "still": 420,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=post&renderer=webgpu&again=1",
@@ -616,6 +684,22 @@
       "EffectPass(ChromaticAberrationEffect)"
      ]
     },
+    "animeLut85": {
+     "again": "447f66be",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "447f66be",
+     "lumaStd": 65.16,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+     ]
+    },
     "animeNoGrain": {
      "again": "dad8c7ae",
      "colours": 4096,
@@ -689,8 +773,8 @@
    "mode": "post",
    "origin": "scheme",
    "size": [
-    1280,
-    485
+    1920,
+    1080
    ],
    "stack": "tce",
    "still": 420,
@@ -702,8 +786,8 @@
   {
    "backend": "webgpu",
    "costMs": {
-    "anime": 3.72,
-    "none": 2.48
+    "anime": 4.72,
+    "none": 1.9
    },
    "exports": {
     "a": [
@@ -761,6 +845,23 @@
      "hash": "a1d33737",
      "lumaStd": 65.74,
      "newPipeline": true,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
+    "animeLut85": {
+     "again": "a92d57c7",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "a92d57c7",
+     "lumaStd": 65.14,
+     "newPipeline": false,
      "passes": [
       "scene(MSAA4)",
       "normals(override, full res)",
@@ -847,10 +948,10 @@
    "mode": "post",
    "origin": "loopback",
    "size": [
-    1280,
-    485
+    1920,
+    1080
    ],
-   "stack": "Ne",
+   "stack": "r",
    "still": 420,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=post&renderer=webgpu",
@@ -860,7 +961,351 @@
   {
    "backend": "webgl",
    "costMs": {
-    "anime": 1.16,
+    "anime": 1.02,
+    "none": 0.36
+   },
+   "exports": {
+    "a": [
+     "56ac8615",
+     "0090b0e0",
+     "ff734f43",
+     "ded322c0",
+     "4a17d698"
+    ],
+    "b": [
+     "56ac8615",
+     "0090b0e0",
+     "ff734f43",
+     "ded322c0",
+     "4a17d698"
+    ],
+    "distinct": 5,
+    "frame0": {
+     "colours": 4096,
+     "lumaStd": 55.75
+    },
+    "identical": true,
+    "pipelinesBuiltByA": null
+   },
+   "frames": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "isWebGPUBackend": false,
+   "looks": {
+    "anime": {
+     "again": "f87da800",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "f87da800",
+     "lumaStd": 61.88,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+     ]
+    },
+    "animeLut": {
+     "again": "7ff2d726",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "7ff2d726",
+     "lumaStd": 65.76,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+     ]
+    },
+    "animeLut85": {
+     "again": "447f66be",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "447f66be",
+     "lumaStd": 65.16,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+     ]
+    },
+    "animeNoGrain": {
+     "again": "dad8c7ae",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "dad8c7ae",
+     "lumaStd": 61.94,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+     ]
+    },
+    "animeOverlays": {
+     "again": "b67b7a23",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "b67b7a23",
+     "lumaStd": 62.61,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+     ]
+    },
+    "animeShallow": {
+     "again": "c0ef44a1",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "c0ef44a1",
+     "lumaStd": 60.05,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "NormalPass",
+      "EffectPass(EdgeEffect)",
+      "EffectPass(DepthOfFieldEffect)",
+      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+      "EffectPass(ChromaticAberrationEffect)"
+     ]
+    },
+    "clean": {
+     "again": "13d28421",
+     "colours": 3865,
+     "firstEqualsAgain": true,
+     "hash": "13d28421",
+     "lumaStd": 63.64,
+     "newPipeline": false,
+     "passes": [
+      "RenderPass",
+      "EffectPass(BloomEffect+ToneMappingEffect)"
+     ]
+    },
+    "none": {
+     "again": "75b4f5a8",
+     "colours": 2928,
+     "firstEqualsAgain": true,
+     "hash": "75b4f5a8",
+     "lumaStd": 64.09,
+     "newPipeline": false,
+     "passes": []
+    }
+   },
+   "mode": "post",
+   "origin": "loopback",
+   "size": [
+    1920,
+    1080
+   ],
+   "stack": "tce",
+   "still": 420,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=post&renderer=webgl",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "costMs": {
+    "anime": 3.72,
+    "none": 2.22
+   },
+   "exports": {
+    "a": [
+     "f62efd8c",
+     "c27d01f5",
+     "6dbfbca2",
+     "90e620bd",
+     "edb7c5a0"
+    ],
+    "b": [
+     "f62efd8c",
+     "c27d01f5",
+     "6dbfbca2",
+     "90e620bd",
+     "edb7c5a0"
+    ],
+    "distinct": 5,
+    "frame0": {
+     "colours": 4096,
+     "lumaStd": 55.74
+    },
+    "identical": true,
+    "pipelinesBuiltByA": 1
+   },
+   "frames": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "isWebGPUBackend": true,
+   "looks": {
+    "anime": {
+     "again": "42698883",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "42698883",
+     "lumaStd": 61.86,
+     "newPipeline": false,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
+    "animeLut": {
+     "again": "a1d33737",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "a1d33737",
+     "lumaStd": 65.74,
+     "newPipeline": true,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
+    "animeLut85": {
+     "again": "a92d57c7",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "a92d57c7",
+     "lumaStd": 65.14,
+     "newPipeline": false,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
+    "animeNoGrain": {
+     "again": "311fdc52",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "311fdc52",
+     "lumaStd": 61.91,
+     "newPipeline": false,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
+    "animeOverlays": {
+     "again": "526821bc",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "526821bc",
+     "lumaStd": 62.59,
+     "newPipeline": false,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
+    "animeShallow": {
+     "again": "dd4851cc",
+     "colours": 4096,
+     "firstEqualsAgain": true,
+     "hash": "dd4851cc",
+     "lumaStd": 60.05,
+     "newPipeline": false,
+     "passes": [
+      "scene(MSAA4)",
+      "normals(override, full res)",
+      "characterMask(layer 2, ½ res)",
+      "edges(custom TSL)",
+      "dof(pmndrs port)",
+      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+      "chromaticAberration(custom TSL)"
+     ]
+    },
+    "clean": {
+     "again": "d3d6aac8",
+     "colours": 3899,
+     "firstEqualsAgain": true,
+     "hash": "d3d6aac8",
+     "lumaStd": 63.63,
+     "newPipeline": true,
+     "passes": [
+      "scene(MSAA4)",
+      "merged(bloom(mipmap 8)+toneMapping())"
+     ]
+    },
+    "none": {
+     "again": "63be6d9a",
+     "colours": 2911,
+     "firstEqualsAgain": true,
+     "hash": "63be6d9a",
+     "lumaStd": 64.02,
+     "newPipeline": true,
+     "passes": []
+    }
+   },
+   "mode": "post",
+   "origin": "loopback",
+   "size": [
+    1920,
+    1080
+   ],
+   "stack": "r",
+   "still": 420,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=post&renderer=webgpu&again=1",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "costMs": {
+    "anime": 1.18,
     "none": 0.42
    },
    "exports": {
@@ -927,307 +1372,12 @@
       "EffectPass(ChromaticAberrationEffect)"
      ]
     },
-    "animeNoGrain": {
-     "again": "dad8c7ae",
+    "animeLut85": {
+     "again": "447f66be",
      "colours": 4096,
      "firstEqualsAgain": true,
-     "hash": "dad8c7ae",
-     "lumaStd": 61.94,
-     "newPipeline": false,
-     "passes": [
-      "RenderPass",
-      "NormalPass",
-      "EffectPass(EdgeEffect)",
-      "EffectPass(DepthOfFieldEffect)",
-      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
-      "EffectPass(ChromaticAberrationEffect)"
-     ]
-    },
-    "animeOverlays": {
-     "again": "b67b7a23",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "b67b7a23",
-     "lumaStd": 62.61,
-     "newPipeline": false,
-     "passes": [
-      "RenderPass",
-      "NormalPass",
-      "EffectPass(EdgeEffect)",
-      "EffectPass(DepthOfFieldEffect)",
-      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
-      "EffectPass(ChromaticAberrationEffect)"
-     ]
-    },
-    "animeShallow": {
-     "again": "c0ef44a1",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "c0ef44a1",
-     "lumaStd": 60.05,
-     "newPipeline": false,
-     "passes": [
-      "RenderPass",
-      "NormalPass",
-      "EffectPass(EdgeEffect)",
-      "EffectPass(DepthOfFieldEffect)",
-      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
-      "EffectPass(ChromaticAberrationEffect)"
-     ]
-    },
-    "clean": {
-     "again": "13d28421",
-     "colours": 3865,
-     "firstEqualsAgain": true,
-     "hash": "13d28421",
-     "lumaStd": 63.64,
-     "newPipeline": false,
-     "passes": [
-      "RenderPass",
-      "EffectPass(BloomEffect+ToneMappingEffect)"
-     ]
-    },
-    "none": {
-     "again": "75b4f5a8",
-     "colours": 2928,
-     "firstEqualsAgain": true,
-     "hash": "75b4f5a8",
-     "lumaStd": 64.09,
-     "newPipeline": false,
-     "passes": []
-    }
-   },
-   "mode": "post",
-   "origin": "loopback",
-   "size": [
-    1280,
-    485
-   ],
-   "stack": "tce",
-   "still": 420,
-   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
-   "case": "mode=post&renderer=webgl",
-   "errors": [],
-   "timedOut": false
-  },
-  {
-   "backend": "webgpu",
-   "costMs": {
-    "anime": 3.76,
-    "none": 2.92
-   },
-   "exports": {
-    "a": [
-     "f62efd8c",
-     "c27d01f5",
-     "6dbfbca2",
-     "90e620bd",
-     "edb7c5a0"
-    ],
-    "b": [
-     "f62efd8c",
-     "c27d01f5",
-     "6dbfbca2",
-     "90e620bd",
-     "edb7c5a0"
-    ],
-    "distinct": 5,
-    "frame0": {
-     "colours": 4096,
-     "lumaStd": 55.74
-    },
-    "identical": true,
-    "pipelinesBuiltByA": 1
-   },
-   "frames": [
-    300,
-    301,
-    302,
-    303,
-    304
-   ],
-   "isWebGPUBackend": true,
-   "looks": {
-    "anime": {
-     "again": "42698883",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "42698883",
-     "lumaStd": 61.86,
-     "newPipeline": false,
-     "passes": [
-      "scene(MSAA4)",
-      "normals(override, full res)",
-      "characterMask(layer 2, ½ res)",
-      "edges(custom TSL)",
-      "dof(pmndrs port)",
-      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
-      "chromaticAberration(custom TSL)"
-     ]
-    },
-    "animeLut": {
-     "again": "a1d33737",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "a1d33737",
-     "lumaStd": 65.74,
-     "newPipeline": true,
-     "passes": [
-      "scene(MSAA4)",
-      "normals(override, full res)",
-      "characterMask(layer 2, ½ res)",
-      "edges(custom TSL)",
-      "dof(pmndrs port)",
-      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
-      "chromaticAberration(custom TSL)"
-     ]
-    },
-    "animeNoGrain": {
-     "again": "311fdc52",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "311fdc52",
-     "lumaStd": 61.91,
-     "newPipeline": false,
-     "passes": [
-      "scene(MSAA4)",
-      "normals(override, full res)",
-      "characterMask(layer 2, ½ res)",
-      "edges(custom TSL)",
-      "dof(pmndrs port)",
-      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
-      "chromaticAberration(custom TSL)"
-     ]
-    },
-    "animeOverlays": {
-     "again": "526821bc",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "526821bc",
-     "lumaStd": 62.59,
-     "newPipeline": false,
-     "passes": [
-      "scene(MSAA4)",
-      "normals(override, full res)",
-      "characterMask(layer 2, ½ res)",
-      "edges(custom TSL)",
-      "dof(pmndrs port)",
-      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
-      "chromaticAberration(custom TSL)"
-     ]
-    },
-    "animeShallow": {
-     "again": "dd4851cc",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "dd4851cc",
-     "lumaStd": 60.05,
-     "newPipeline": false,
-     "passes": [
-      "scene(MSAA4)",
-      "normals(override, full res)",
-      "characterMask(layer 2, ½ res)",
-      "edges(custom TSL)",
-      "dof(pmndrs port)",
-      "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
-      "chromaticAberration(custom TSL)"
-     ]
-    },
-    "clean": {
-     "again": "d3d6aac8",
-     "colours": 3899,
-     "firstEqualsAgain": true,
-     "hash": "d3d6aac8",
-     "lumaStd": 63.63,
-     "newPipeline": true,
-     "passes": [
-      "scene(MSAA4)",
-      "merged(bloom(mipmap 8)+toneMapping())"
-     ]
-    },
-    "none": {
-     "again": "63be6d9a",
-     "colours": 2911,
-     "firstEqualsAgain": true,
-     "hash": "63be6d9a",
-     "lumaStd": 64.02,
-     "newPipeline": true,
-     "passes": []
-    }
-   },
-   "mode": "post",
-   "origin": "loopback",
-   "size": [
-    1280,
-    485
-   ],
-   "stack": "Ne",
-   "still": 420,
-   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
-   "case": "mode=post&renderer=webgpu&again=1",
-   "errors": [],
-   "timedOut": false
-  },
-  {
-   "backend": "webgl",
-   "costMs": {
-    "anime": 1.02,
-    "none": 0.4
-   },
-   "exports": {
-    "a": [
-     "56ac8615",
-     "0090b0e0",
-     "ff734f43",
-     "ded322c0",
-     "4a17d698"
-    ],
-    "b": [
-     "56ac8615",
-     "0090b0e0",
-     "ff734f43",
-     "ded322c0",
-     "4a17d698"
-    ],
-    "distinct": 5,
-    "frame0": {
-     "colours": 4096,
-     "lumaStd": 55.75
-    },
-    "identical": true,
-    "pipelinesBuiltByA": null
-   },
-   "frames": [
-    300,
-    301,
-    302,
-    303,
-    304
-   ],
-   "isWebGPUBackend": false,
-   "looks": {
-    "anime": {
-     "again": "f87da800",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "f87da800",
-     "lumaStd": 61.88,
-     "newPipeline": false,
-     "passes": [
-      "RenderPass",
-      "NormalPass",
-      "EffectPass(EdgeEffect)",
-      "EffectPass(DepthOfFieldEffect)",
-      "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
-      "EffectPass(ChromaticAberrationEffect)"
-     ]
-    },
-    "animeLut": {
-     "again": "7ff2d726",
-     "colours": 4096,
-     "firstEqualsAgain": true,
-     "hash": "7ff2d726",
-     "lumaStd": 65.76,
+     "hash": "447f66be",
+     "lumaStd": 65.16,
      "newPipeline": false,
      "passes": [
       "RenderPass",
@@ -1311,8 +1461,8 @@
    "mode": "post",
    "origin": "loopback",
    "size": [
-    1280,
-    485
+    1920,
+    1080
    ],
    "stack": "tce",
    "still": 420,

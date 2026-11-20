@@ -9,7 +9,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
-import { Scene, PerspectiveCamera, MeshBasicNodeMaterial, HalfFloatType, Vector2 } from 'three/webgpu';
+import { Scene, PerspectiveCamera, MeshBasicNodeMaterial, HalfFloatType, Vector2, RenderPipeline } from 'three/webgpu';
 import { TSLPostStack, MAPPING, BLOOM_LEVELS, lutFromCubeTSL } from '@vrmxg/post/tsl';
 import { EFFECTS, ORDER, CHARACTER_LAYER, makePostStack, PostStack } from '@vrmxg/post';
 
@@ -21,24 +21,31 @@ const threeSrc = (p) => fs.readFileSync(`${threeDir}${p}`, 'utf8');
 function standIn(w = 1920, h = 1080) {
   return { isWebGPURenderer: true, toneMapping: 4, outputColorSpace: 'srgb', coordinateSystem: 2001, size: [w, h], getDrawingBufferSize(v) { return v.set(this.size[0], this.size[1]); } };
 }
-/** Build the current structure the way render() does, without drawing. */
-function built(stack, scene = new Scene(), camera = new PerspectiveCamera()) {
-  if (!stack.built) { stack.built = stack.cache.get(stack.key) ?? stack.build(scene, camera); stack.cache.set(stack.key, stack.built); }
-  return stack.built;
+// Node can't draw: a RenderPipeline's own draw is stubbed (counted), so render() runs everything else for real — the
+// structure key, the cache and its eviction, building, sizing, retargeting the passes and the uniforms.
+RenderPipeline.prototype.render = function () { this.drawn = (this.drawn ?? 0) + 1; };
+const defaultScene = new Scene(), defaultCamera = new PerspectiveCamera();
+/** One frame through the stack's real render(); returns the pipeline it drew with. */
+function draw(stack, scene = defaultScene, camera = defaultCamera) { stack.render(scene, camera, 0); return stack.built; }
+/** Every render target a built pipeline owns, with the shared passes', each with a dispose spy. */
+function spyTargets(stack, b) {
+  const ts = [...TSLPostStack.ownTargets(b).map((t) => t.renderTarget), ...Object.values(stack.shared).filter(Boolean).map((p) => p.renderTarget)];
+  for (const t of ts) if (!t.spied) { const real = t.dispose.bind(t); t.spied = true; t.disposed = false; t.dispose = () => { t.disposed = true; real(); }; }
+  return ts;
 }
 
 test('the same effects, in the same order, as the WebGL stack; every effect says what it is under TSL', () => {
   for (const e of Object.keys(EFFECTS)) assert.ok(MAPPING[e], `MAPPING.${e}`);
   const stack = new TSLPostStack(standIn());
   stack.configure('anime');
-  const { passes } = built(stack);
+  const { passes } = draw(stack);
   assert.deepEqual(passes.map((p) => p.split('(')[0]), ['scene', 'normals', 'characterMask', 'edges', 'dof', 'merged', 'chromaticAberration']);
   const merged = passes.find((p) => p.startsWith('merged'));
   const at = (n) => merged.indexOf(n);
   assert.ok(at('bloom') < at('hueSaturation') && at('hueSaturation') < at('brightnessContrast') && at('brightnessContrast') < at('toneMapping') && at('toneMapping') < at('vignette') && at('vignette') < at('grain') && at('grain') < at('anime'), merged);
   // a list in any order runs in ORDER, as normalizePost sorts it for both stacks
   stack.configure([{ effect: 'vignette' }, { effect: 'chromaticAberration' }, { effect: 'bloom' }]);
-  assert.deepEqual(built(stack).passes.map((p) => p.split('(')[0]), ['scene', 'merged', 'chromaticAberration']);
+  assert.deepEqual(draw(stack).passes.map((p) => p.split('(')[0]), ['scene', 'merged', 'chromaticAberration']);
   assert.equal(ORDER.indexOf('bloom') < ORDER.indexOf('vignette'), true);
   assert.equal(stack.renderer.toneMapping, 0, 'the renderer\'s own tone mapping is off while the stack runs (NoToneMapping)');
 });
@@ -46,7 +53,7 @@ test('the same effects, in the same order, as the WebGL stack; every effect says
 test('gotcha 4: every pass and texture is sized to the drawing buffer when the pipeline is built, before any frame', () => {
   const stack = new TSLPostStack(standIn(1280, 720));
   stack.configure('anime');
-  const { nodes } = built(stack);
+  const { nodes } = draw(stack);
   assert.deepEqual([nodes.scenePass.renderTarget.width, nodes.scenePass.renderTarget.height], [1280, 720], 'the scene pass (DOF sizes itself from it: a 1×1 one drew one flat colour)');
   assert.deepEqual([nodes.normalPass.renderTarget.width, nodes.normalPass.renderTarget.height], [1280, 720]);
   assert.deepEqual([nodes.maskPass.renderTarget.width, nodes.maskPass.renderTarget.height], [640, 360], 'the mask at ½ resolution');
@@ -70,35 +77,85 @@ test('canary for gotcha 4: r187\'s DepthOfFieldNode still sizes itself from its 
   assert.match(dof, /updateBefore\( frame \) \{[\s\S]*?const map = this\.textureNode\.value;\s*this\.setSize\( map\.image\.width, map\.image\.height \);/, 'if three fixed #35620, recheck whether pipelines still need sizing at build');
 });
 
-test('gotcha 4: one pipeline per structure — a structure that comes back reuses its pipeline; values and cameras never rebuild', () => {
+test('gotcha 4: render() keeps one pipeline per structure — one that comes back is reused; values and cameras never rebuild', () => {
   const stack = new TSLPostStack(standIn());
+  let builds = 0; const build = stack.build.bind(stack); stack.build = (...a) => { builds++; return build(...a); };
   const scene = new Scene(), cam = new PerspectiveCamera(), cam2 = new PerspectiveCamera();
   stack.configure('anime');
-  const anime = built(stack, scene, cam);
+  const anime = draw(stack, scene, cam);
   stack.setParams({ 'anime.speedLines': 0.9, 'bloom.intensity': 2 });
-  assert.equal(stack.built, anime, 'values only update uniforms');
+  assert.equal(draw(stack, scene, cam), anime, 'values only update uniforms');
   assert.equal(stack.u.speed.value, 0.9); assert.equal(stack.u.bloomIntensity.value, 2);
   stack.configure('clean');
-  const clean = built(stack, scene, cam);
+  const clean = draw(stack, scene, cam);
   assert.notEqual(clean, anime);
+  assert.equal(clean.nodes.scenePass, anime.nodes.scenePass, 'one MSAA scene pass, shared by every structure');
   stack.configure('anime');
-  assert.equal(built(stack, scene, cam), anime, 'the anime pipeline from the cache: it has already drawn its first frame');
-  assert.equal(stack.cache.size, 2);
-  // another camera (a cut, a new load): the passes retarget, nothing is built
-  const before = stack.cache.size;
-  stack.built = anime; anime.pipeline.render = () => {};
-  stack.render(scene, cam2, 0);
-  assert.equal(stack.cache.size, before);
-  assert.equal(anime.nodes.scenePass.camera, cam2); assert.equal(anime.nodes.maskPass.camera, cam2); assert.equal(anime.nodes.normalPass.camera, cam2);
+  assert.equal(draw(stack, scene, cam), anime, 'the anime pipeline from the cache: it has already drawn its first frame');
+  assert.equal(builds, 2);
+  assert.equal(anime.pipeline.drawn, 3);
+  // another camera (a cut, a new load): the shared passes retarget, nothing is built
+  draw(stack, scene, cam2);
+  assert.equal(builds, 2);
+  for (const p of Object.values(stack.shared)) assert.equal(p.camera, cam2);
   // the tone mapping is part of the structure (it's a node, not a uniform)
   stack.configure('anime', { toneMapping: 'agx' });
   assert.notEqual(stack.key, anime.key);
 });
 
+test('the cache is an LRU of cacheSize structures: the least recently drawn is disposed with every target it owns, and rebuilds sized', () => {
+  const stack = new TSLPostStack(standIn(1280, 720)); // cacheSize 2
+  stack.configure('anime'); const anime = draw(stack);
+  stack.configure('clean'); const clean = draw(stack);
+  const animeTargets = TSLPostStack.ownTargets(anime).map((t) => t.renderTarget);
+  for (const t of animeTargets) { t.disposed = false; const real = t.dispose.bind(t); t.dispose = () => { t.disposed = true; real(); }; }
+  let pipelineDisposed = false; const realDispose = anime.pipeline.dispose.bind(anime.pipeline); anime.pipeline.dispose = () => { pipelineDisposed = true; realDispose(); };
+  stack.configure([{ effect: 'bloom' }, { effect: 'vignette' }]); draw(stack);
+  assert.deepEqual([...stack.cache.values()].map((b) => b.key), [clean.key, stack.key], 'anime (least recently drawn) evicted');
+  assert.equal(pipelineDisposed, true);
+  assert.equal(animeTargets.length, 2 * BLOOM_LEVELS + 10 + 3, 'bloom 16, DOF 10, and the textures of the edges, the DOF and the merged pass');
+  assert.ok(animeTargets.every((t) => t.disposed), 'every target it owned is freed');
+  assert.ok(!stack.shared.scenePass.renderTarget.disposed, 'the shared passes stay');
+  // drawing clean promotes it; anime comes back rebuilt, sized at build like any new pipeline
+  stack.configure('clean'); assert.equal(draw(stack), clean);
+  stack.configure('anime'); const again = draw(stack);
+  assert.notEqual(again, anime);
+  assert.deepEqual(again.nodes.dof.full.map((t) => t.renderTarget.width), [1280, 1280, 1280]);
+  assert.equal(stack.cache.size, 2);
+  const big = new TSLPostStack(standIn(), { cacheSize: 4 });
+  for (const look of ['anime', 'clean', [{ effect: 'bloom' }], [{ effect: 'vignette' }], [{ effect: 'grain' }]]) { big.configure(look); draw(big); }
+  assert.equal(big.cache.size, 4);
+});
+
+test('a LUT\'s arrival evicts the look without it (it won\'t come back)', async () => {
+  const cube = fs.readFileSync(new URL('../../../../content/sample/looks/morning.cube', import.meta.url), 'utf8');
+  let release;
+  const stack = new TSLPostStack(standIn(), { loadLut: () => new Promise((r) => { release = () => r(cube); }) });
+  stack.configure([{ effect: 'bloom' }, { effect: 'lut', file: 'looks/morning.cube' }]);
+  const without = draw(stack);
+  const owned = spyTargets(stack, without).slice(0, TSLPostStack.ownTargets(without).length);
+  release(); await stack.settle();
+  assert.ok(!stack.cache.has(without.key), 'the lut:false pipeline is gone');
+  assert.ok(owned.every((t) => t.disposed));
+  assert.ok(draw(stack).passes.join().includes('lut3D(sRGB)'));
+});
+
+test('dispose() frees every render target: each cached pipeline\'s own (bloom, DOF, textures) and the shared passes', () => {
+  const stack = new TSLPostStack(standIn(), { cacheSize: 3 });
+  const all = [];
+  for (const look of ['anime', 'clean', [{ effect: 'chromaticAberration' }]]) { stack.configure(look); all.push(...spyTargets(stack, draw(stack))); }
+  const unique = [...new Set(all)];
+  assert.equal(unique.length, (2 * BLOOM_LEVELS + 10 + 3) + 2 * BLOOM_LEVELS + 1 + 3, 'anime 29, clean 16, aberration 1, shared scene/normal/mask 3');
+  stack.dispose();
+  assert.deepEqual(unique.filter((t) => !t.disposed).length, 0);
+  assert.equal(stack.cache.size, 0);
+  assert.deepEqual(Object.values(stack.shared), [null, null, null]);
+});
+
 test('gotcha 5: the character mask is a ½-resolution pass of the character layer with an override material; no material mrtNode', () => {
   const stack = new TSLPostStack(standIn());
   stack.configure([{ effect: 'edges' }]);
-  const { nodes } = built(stack);
+  const { nodes } = draw(stack);
   assert.equal(nodes.maskPass._layers.mask, 1 << CHARACTER_LAYER, 'only the character layer (Views.markCharacters puts characters on it)');
   assert.ok(nodes.maskPass.overrideMaterial instanceof MeshBasicNodeMaterial);
   assert.equal(nodes.maskPass._resolutionScale, 0.5);
@@ -116,7 +173,7 @@ test('canary for gotcha 5: r187 has no MRTNode.isCompatible, so a material mrtNo
 test('gotcha 5\'s pass draws without the scene\'s background, environment and fog, and puts them back', () => {
   const stack = new TSLPostStack(standIn());
   stack.configure([{ effect: 'edges' }]);
-  const { nodes } = built(stack);
+  const { nodes } = draw(stack);
   const scene = nodes.maskPass.scene;
   scene.background = 'sky'; scene.environment = 'room'; scene.fog = 'fog';
   const seen = [];
@@ -131,10 +188,29 @@ test('gotcha 5\'s pass draws without the scene\'s background, environment and fo
   assert.deepEqual([scene.background, scene.environment, scene.fog], ['sky', 'room', 'fog']);
 });
 
-test('gotcha 7: r187\'s toneMapping() returns a vec4 (the stack hands it the vec4, not .rgb)', () => {
+test('canary for gotcha 7: r187\'s toneMapping() returns a vec4 whatever it is given', () => {
   const tm = threeSrc('src/nodes/display/ToneMappingNode.js');
   assert.match(tm, /outputNode = vec4\( toneMappingFn\( colorNode\.rgb, this\.exposureNode \), colorNode\.a \)/);
-  assert.match(fs.readFileSync(new URL('../src/tsl.js', import.meta.url), 'utf8'), /c = toneMapping\([^)]*u\.exposure, c\)/);
+});
+
+test('gotcha 7: in the built graph, toneMapping() takes the vec4 and is never joined into another vec4', () => {
+  // a vec4(toneMapping(…, c.rgb), c.a) was five components: "Length of parameters exceeds maximum length of function vec4()",
+  // and the pipeline drew one flat colour from its second frame
+  const stack = new TSLPostStack(standIn());
+  stack.configure([{ effect: 'bloom' }, { effect: 'grade' }, { effect: 'vignette' }]);
+  const out = draw(stack).pipeline.outputNode;
+  const type = (n) => n?.constructor?.type;
+  const tone = [], joined = [], seen = new Set();
+  const walk = (n) => {
+    if (!n || seen.has(n)) return; seen.add(n);
+    if (type(n) === 'ToneMappingNode') tone.push(n);
+    if (type(n) === 'JoinNode' && n.nodes.some((c) => type(c) === 'ToneMappingNode')) joined.push(n);
+    for (const c of n.getChildren?.() ?? []) walk(c);
+  };
+  walk(out);
+  assert.equal(tone.length, 1, 'the tone mapping is in the graph');
+  assert.notEqual(type(tone[0].colorNode), 'SplitNode', 'given the whole vec4, not c.rgb');
+  assert.equal(joined.length, 0, 'its vec4 is used as it is');
 });
 
 test('gotcha 1: an offline frame advances three\'s node frame before the stack draws, so its passes redraw', async () => {
@@ -182,10 +258,12 @@ test('LUTs: settle() waits for the .cube; its arrival is a new structure; a fail
   const cube = fs.readFileSync(new URL('../../../../content/sample/looks/morning.cube', import.meta.url), 'utf8');
   let release;
   const stack = new TSLPostStack(standIn(), { loadLut: (file) => (file === 'bad.cube' ? Promise.reject(new Error('missing')) : new Promise((r) => { release = () => r(cube); })) });
-  stack.configure([{ effect: 'lut', file: 'looks/morning.cube' }]);
+  stack.configure([{ effect: 'lut', file: 'looks/morning.cube', intensity: 0.85 }]);
+  assert.equal(stack.u.lutIntensity.value, 0.85, 'the intensity mixes, as on WebGL');
+  stack.setParams({ 'lut.intensity': 1.4 }); assert.equal(stack.u.lutIntensity.value, 1, 'clamped to 0…1');
   const without = stack.key;
   assert.match(without, /lut:false/);
-  assert.ok(!built(stack).passes.join().includes('lut3D'), 'a live view draws without it until it arrives');
+  assert.ok(!draw(stack).passes.join().includes('lut3D'), 'a live view draws without it until it arrives');
   let settled = false;
   const p = stack.settle().then(() => { settled = true; });
   await new Promise((r) => setTimeout(r, 5));
@@ -193,7 +271,7 @@ test('LUTs: settle() waits for the .cube; its arrival is a new structure; a fail
   release(); await p;
   assert.match(stack.key, /lut:true/);
   assert.equal(stack.built, null, 'rebuilt on the next frame, with the LUT');
-  assert.ok(built(stack).passes.join().includes('lut3D(sRGB)'));
+  assert.ok(draw(stack).passes.join().includes('lut3D(sRGB)'));
   const lut = stack.luts.get('looks/morning.cube');
   assert.equal(lut.size, 17); assert.equal(lut.texture3D.type, HalfFloatType, 'HalfFloat: filterable on every WebGPU device');
   const warn = console.warn; console.warn = () => {};

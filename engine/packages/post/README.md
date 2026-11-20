@@ -59,15 +59,21 @@ direction and grain's noise, get a flipped uv on WebGPU.
 | `dof` | A port of pmndrs' `DepthOfFieldEffect`: CoC from the distance to the camera, the near CoC Kawase-blurred at ½ res, the far field masked by its CoC, and per field a 64-tap average and a 16-tap max (Vogel kernel). Composited by CoC × bokeh scale | three's `dof()` ports the same bokeh but blurs the far field unmasked, so in-focus edges bleed into the blur (SSIM 0.983 against 0.996 with the port). Its first frame is flat when it's newly built (gotcha 4, #35620) |
 | `bloom` | pmndrs' luminance threshold and 8-level mipmap blur (13-tap down, 9-tap tent up, radius), SCREEN-blended | `bloom()` is UnrealBloom's blur, a different look |
 | `grade` | pmndrs' hue matrix and saturation-on-average (clamped to 1), then brightness/contrast in sRGB | `hue()` and `saturation()` use other formulas |
-| `lut` | `lut3D()` on a HalfFloat 3D texture (`lutFromCubeTSL`), looked up in sRGB | (used) |
+| `lut` | `lut3D()` on a HalfFloat 3D texture (`lutFromCubeTSL`), looked up in sRGB; `intensity` (0…1) mixes it in. `PostStack` honours it too: below 1 its LUT3DEffect blends NORMAL at that opacity, and at 1 it keeps pmndrs' SRC, so a full-strength grade draws exactly as before | (used) |
 | `toneMapping` | `toneMapping()` mid-chain; the pipeline's output transform does sRGB only | (used) |
 | `vignette`, `anime`, `chromaticAberration` | Custom TSL, ports of pmndrs' and `AnimeEffect` | No vignette node; `chromaticAberration()` has no px unit |
 | `grain` | pmndrs' `NoiseEffect` (three's `rand`, premultiplied, SCREEN) on the frame's presentation time | `film()` takes the renderer's global time |
 | `smaa` | `smaa()`, only without MSAA, as on WebGL | (used) |
 
-**Pipelines are cached per structure.** The structure is which effects (and the LUT file), whether that LUT has
-arrived, the tone mapping and the sampling. A structure that comes back reuses its pipeline. A new camera or scene
-retargets the passes, and values only update uniforms. Every pass and texture is sized to the drawing buffer when the
+**Pipelines are cached per structure, in a small LRU.** The structure is which effects (and the LUT file), whether that
+LUT has arrived, the tone mapping and the sampling. A structure that comes back reuses its pipeline. A new camera or
+scene retargets the passes, and values only update uniforms.
+- **Shared passes:** every structure shares one MSAA scene pass, and one normal pass and one mask pass once a structure
+  has edges.
+- **What a pipeline owns:** its own targets are its bloom chain (16), its DOF (10) and its intermediate textures.
+- **Eviction:** the cache keeps `cacheSize` structures (2 by default: the look and the one before it). The least
+  recently drawn is disposed with every target it owns. A LUT look's `lut:false` pipeline goes when the LUT arrives.
+- **`dispose()`** frees every pipeline, every target and the shared passes. Every pass and texture is sized to the drawing buffer when the
 pipeline is built (gotcha 4: a node that sizes itself from its input on its first frame saw a 1×1 target and drew one
 flat colour).
 
@@ -82,10 +88,10 @@ of the recorded walk at 1920×1080, `apps/playground` `?mode=post`).**
 - **SSIM against WebGL** (luma, 8×8 windows) per look. WebGPU's frame is compared with WebGL's in the same engine
   (`results/post-chromium.json`, `post-wkwebview.json`):
 
-  | Look | none | clean | anime | anime, no grain | + LUT | + overlays | shallow focus |
-  |---|---|---|---|---|---|---|---|
-  | Chromium | 0.994 | 0.997 | 0.961 | 0.996 | 0.996 | 0.996 | 0.995 |
-  | WKWebView (loopback) | 0.994 | 0.997 | 0.961 | 0.996 | 0.996 | 0.996 | 0.995 |
+  | Look | none | clean | anime | anime, no grain | + LUT | + LUT at 0.85 | + overlays | shallow focus |
+  |---|---|---|---|---|---|---|---|---|
+  | Chromium and WKWebView (loopback) | 0.994 | 0.997 | 0.961 | 0.996 | 0.996 | 0.996 | 0.996 | 0.995 |
+  | the same at ¼ size (4×4 means) | 0.997 | 1.000 | 0.993 | 0.996 | 0.996 | 0.996 | 0.996 | 0.997 |
 
 - **The cost of a 1080p frame** (median of 20, GPU work included; WebGPU waits on `onSubmittedWorkDone()`, which
   adds its own round trip, so read the difference): in WKWebView over loopback, the anime stack takes WebGPU from
@@ -94,14 +100,16 @@ of the recorded walk at 1920×1080, `apps/playground` `?mode=post`).**
 
   The only effect that can't match is **grain**: its noise is `fract(sin(dot(uv, k)) × 43758)`, and uv differences
   around 1e-6 (each backend's interpolation) pick other noise. Statistically it's the same grain, but pixel by pixel it
-  isn't. M2's check 11 already measured grain apart (0.951) for the same reason. What's left elsewhere is silhouettes
+  isn't. M2's check 11 already measured grain apart (0.951) for the same reason. At ¼ size, where the noise averages
+out, the anime look with grain is 0.993. What's left elsewhere is silhouettes
   and edge lines, mostly MSAA resolve, which is there without post too.
 
 Tests (`npm test`): spec normalisation (presets, defaults, order, unknown effects refused), structure keys, and the
 layout of viewports. `test/tsl.test.mjs` builds `TSLPostStack`'s graph against a stand-in renderer (TSL builds without
 a GPU) and has one test per r187 gotcha the stack leans on, each with a canary that reads three itself. Gotcha 1: an
 offline frame advances the node frame before the stack draws. Gotcha 4: every pass and texture is sized at build, and
-one pipeline is kept per structure. Gotcha 5: the mask is a layer pass with no material `mrtNode`. Gotcha 7:
-`toneMapping()` returns a vec4. Further tests cover the order, `setParams`, LUTs and `settle()`, resolution-independent
+`render()`'s own cache keeps one pipeline per structure (the LRU's eviction frees every target, and the rebuild is
+sized; `dispose()` frees all). Gotcha 5: the mask is a layer pass with no material `mrtNode`. Gotcha 7: in the built
+graph, `toneMapping()` takes the vec4 and is never joined into another vec4. Further tests cover the order, `setParams`, LUTs and `settle()`, resolution-independent
 lengths, pmndrs' grade factors and `makePostStack`. The rendered checks run in the browsers (`acceptance/`, and
 `apps/playground`'s `?mode=post`).

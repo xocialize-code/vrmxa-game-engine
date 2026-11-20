@@ -41,7 +41,7 @@ export const MAPPING = {
   dof: { tsl: 'custom', with: 'pmndrs\' DepthOfFieldEffect: CoC from the distance to the camera, the near CoC Kawase-blurred at ½ res, the far field masked by its CoC, 64-tap average + 16-tap max per field (Vogel kernel), composited by CoC × bokeh scale', note: 'three\'s dof() is a port of the same bokeh but blurs the far field unmasked (in-focus edges bleed into the blur) and blends by min(CoC, ½) × 2; its first frame is flat when built (gotcha 4, #35620)' },
   bloom: { tsl: 'custom', with: 'pmndrs\' luminance threshold and its 8-level mipmap blur (13-tap downsample, 9-tap tent upsample, radius), SCREEN-blended', note: 'three\'s bloom() is a different blur (UnrealBloom\'s); the port keeps the WebGL look' },
   grade: { tsl: 'custom', note: 'pmndrs HueSaturationEffect (hue matrix, saturation on the average, min 1) and BrightnessContrastEffect (in sRGB, as pmndrs converts for it); three\'s hue()/saturation() use other formulas' },
-  lut: { tsl: 'lut3D()', with: 'three/addons LUTCubeLoader → a HalfFloat 3D texture; looked up in sRGB as pmndrs\' LUT3DEffect does', note: 'same .cube files; intensity mixes (pmndrs ignores it: 1 is the same)' },
+  lut: { tsl: 'lut3D()', with: 'three/addons LUTCubeLoader → a HalfFloat 3D texture; looked up in sRGB as pmndrs\' LUT3DEffect does', note: 'same .cube files; intensity mixes in sRGB, as PostStack now does (NORMAL blend below 1)' },
   toneMapping: { tsl: 'toneMapping()', note: 'mid-chain as in pmndrs; the pipeline\'s own output transform does only sRGB (renderer.toneMapping = NoToneMapping)' },
   vignette: { tsl: 'custom', note: 'no vignette node in r187; pmndrs\' default technique' },
   grain: { tsl: 'custom', note: 'film() takes the renderer\'s global time; this is pmndrs\' NoiseEffect (three\'s rand, premultiplied, SCREEN) on the frame\'s presentation time' },
@@ -93,16 +93,24 @@ export function lutFromCubeTSL(cube) {
 export class TSLPostStack {
   /**
    * @param {any} renderer a WebGPURenderer (initialised)
-   * @param {{ multisampling?: number, loadLut?: (file: string) => Promise<string | { size: number, texture3D: any }> }} [o]
-   *   loadLut: a .cube's text (or a parsed LUT) for a file the spec names
+   * @param {{ multisampling?: number, loadLut?: (file: string) => Promise<string | { size: number, texture3D: any }>, cacheSize?: number }} [o]
+   *   loadLut: a .cube's text (or a parsed LUT) for a file the spec names. cacheSize: how many structures keep their
+   *   pipeline (2: the look and the one before it; the least recently drawn is disposed beyond that)
    */
-  constructor(renderer, { multisampling = 4, loadLut } = {}) {
+  constructor(renderer, { multisampling = 4, loadLut, cacheSize = 2 } = {}) {
     this.renderer = renderer;
     this.multisampling = multisampling;
     this.loadLut = loadLut ?? null;
     /** file → the load in flight */ this.loading = new Map();
     /** file → { size, texture3D } (null: the load failed) */ this.luts = new Map();
-    /** structure key → the built pipeline and its nodes (gotcha 4: one pipeline per structure, built once) */ this.cache = new Map();
+    /**
+     * structure key → the built pipeline and its own targets, least recently drawn first (gotcha 4: a structure that comes
+     * back within `cacheSize` reuses its pipeline; one that was evicted is rebuilt, sized at build, so it draws right too)
+     */
+    this.cache = new Map();
+    this.cacheSize = Math.max(1, cacheSize);
+    /** The passes every structure shares (one MSAA scene pass; the normal and mask passes once a structure has edges). */
+    this.shared = { scenePass: null, normalPass: null, maskPass: null };
     this.built = null;
     this.spec = []; this.key = '';
     this.scene = null; this.camera = null;
@@ -142,7 +150,12 @@ export class TSLPostStack {
     for (const e of spec) {
       if (e.effect !== 'lut' || !e.file || this.luts.has(e.file) || this.loading.has(e.file) || !this.loadLut) continue;
       const file = e.file;
-      this.loading.set(file, this.loadLut(file).then((cube) => { this.luts.set(file, lutFromCubeTSL(cube)); this.rekey(); })
+      this.loading.set(file, this.loadLut(file).then((cube) => {
+        this.luts.set(file, lutFromCubeTSL(cube));
+        const before = this.key;
+        this.rekey();
+        if (before !== this.key && before.includes('|lut:false|')) this.evict(before); // the look without its LUT won't come back
+      })
         .catch((err) => { this.luts.set(file, null); console.warn(`[post] LUT ${file}: ${err?.message ?? err}`); })
         .finally(() => this.loading.delete(file)));
     }
@@ -171,24 +184,28 @@ export class TSLPostStack {
     // pmndrs' patterns (speed lines, the aberration's direction, grain's noise) are in GL's uv, y up; WebGPU's is y down
     const flip = this.renderer.coordinateSystem === WebGPUCoordinateSystem;
     const glUV = () => (flip ? vec2(uv().x, float(1).sub(uv().y)) : uv());
-    const passes = [], nodes = { scenePass: null, normalPass: null, maskPass: null, auto: [], bloom: [] };
-    const scenePass = (nodes.scenePass = pass(scene, camera, { samples: this.multisampling }));
+    const passes = [], nodes = { scenePass: null, normalPass: null, maskPass: null, auto: [], bloom: [], dof: null };
+    const sh = this.shared;
+    const scenePass = (nodes.scenePass = sh.scenePass ??= pass(scene, camera, { samples: this.multisampling }));
     passes.push(`scene(MSAA${this.multisampling})`);
     /** A texture of a node (an RTT at the drawing buffer's size), sized now so nothing downstream sees 1×1 (gotcha 4). */
     const tex = (n) => { if (n.isTextureNode) return n; const t = rtt(n, null, null, { type: HalfFloatType, depthBuffer: false }); nodes.auto.push(t); return t; };
 
     let col = scenePass.getTextureNode('output');
     if (has('edges')) {
-      const normalPass = (nodes.normalPass = new ClearPassNode(scene, camera, { samples: 0 }, 0x7777ff));
-      const nm = (this.normalMaterial ??= new MeshBasicNodeMaterial());
-      nm.colorNode = vec4(packNormalToRGB(normalView), 1); nm.fog = false; // raw packed normals, as pmndrs' NormalPass (MeshNormalMaterial) stores them
-      normalPass.overrideMaterial = nm;
-      const maskPass = (nodes.maskPass = new ClearPassNode(scene, camera, { samples: 0 }, 0x000000));
-      const layers = new Layers(); layers.set(CHARACTER_LAYER);
-      maskPass.setLayers(layers);
-      const mm = (this.maskMaterial ??= new MeshBasicNodeMaterial({ color: 0xffffff })); mm.fog = false;
-      maskPass.overrideMaterial = mm;
-      maskPass.setResolutionScale(0.5);
+      if (!sh.normalPass) {
+        const normalPass = (sh.normalPass = new ClearPassNode(scene, camera, { samples: 0 }, 0x7777ff));
+        const nm = (this.normalMaterial ??= new MeshBasicNodeMaterial());
+        nm.colorNode = vec4(packNormalToRGB(normalView), 1); nm.fog = false; // raw packed normals, as pmndrs' NormalPass (MeshNormalMaterial) stores them
+        normalPass.overrideMaterial = nm;
+        const maskPass = (sh.maskPass = new ClearPassNode(scene, camera, { samples: 0 }, 0x000000));
+        const layers = new Layers(); layers.set(CHARACTER_LAYER);
+        maskPass.setLayers(layers);
+        const mm = (this.maskMaterial ??= new MeshBasicNodeMaterial({ color: 0xffffff })); mm.fog = false;
+        maskPass.overrideMaterial = mm;
+        maskPass.setResolutionScale(0.5);
+      }
+      const normalPass = (nodes.normalPass = sh.normalPass), maskPass = (nodes.maskPass = sh.maskPass);
       passes.push('normals(override, full res)', `characterMask(layer ${CHARACTER_LAYER}, ½ res)`);
       const nTex = normalPass.getTextureNode('output'), mTex = maskPass.getTextureNode('output'), dTex = scenePass.getTextureNode('depth'), src = col;
       col = Fn(() => {
@@ -284,7 +301,7 @@ export class TSLPostStack {
     if (has('smaa') && !this.multisampling) { out = smaa(tex(out)); passes.push('smaa()'); }
     const pipeline = new RenderPipeline(this.renderer, out);
     pipeline.outputColorTransform = true; // sRGB only: renderer.toneMapping is NoToneMapping while the stack runs
-    const built = { pipeline, passes, nodes, scene, camera, size: new Vector2() };
+    const built = { pipeline, passes, nodes, key: this.key, size: new Vector2() };
     this.sizeNodes(built, this.bufferSize());
     return built;
   }
@@ -415,7 +432,7 @@ export class TSLPostStack {
           u.bright.value = e.brightness; u.contrastK.value = e.contrast > 0 ? 1 / (1 - e.contrast) : 1 + e.contrast;
           break;
         }
-        case 'lut': u.lutIntensity.value = e.intensity ?? 1; break;
+        case 'lut': u.lutIntensity.value = Math.min(1, Math.max(0, e.intensity ?? 1)); break; // mixed in sRGB, as PostStack's NORMAL blend
         case 'vignette': u.vigOffset.value = e.offset; u.vigDark.value = e.darkness; break;
         case 'grain': u.grain.value = e.amount; break;
         case 'anime': u.speed.value = e.speedLines; u.focusLines.value = e.focusLines; u.impact.value = e.impact; u.seed.value = e.seed; u.centre.value.set(e.centre[0], e.centre[1]); break;
@@ -452,13 +469,12 @@ export class TSLPostStack {
     if (!this.built) {
       const hit = this.cache.get(this.key);
       this.built = hit ?? this.build(scene, camera);
-      if (!hit) this.cache.set(this.key, this.built);
+      this.cache.delete(this.key); this.cache.set(this.key, this.built); // most recently drawn last
+      for (const k of [...this.cache.keys()]) if (this.cache.size > this.cacheSize && k !== this.key) this.evict(k);
     }
     const b = this.built;
-    if (b.scene !== scene || b.camera !== camera) { // the same structure on another scene or camera: retarget, don't rebuild
-      for (const p of [b.nodes.scenePass, b.nodes.normalPass, b.nodes.maskPass]) if (p) { p.scene = scene; p.camera = camera; }
-      b.scene = scene; b.camera = camera;
-    }
+    // another scene or camera (a cut, a new load): the shared passes retarget, nothing is rebuilt
+    for (const p of Object.values(this.shared)) if (p && (p.scene !== scene || p.camera !== camera)) { p.scene = scene; p.camera = camera; }
     if (b.size.x !== this.size.x || b.size.y !== this.size.y) this.sizeNodes(b, this.size);
     this.scene = scene; this.camera = camera; this.passes = b.passes;
     const pe = camera.projectionMatrix.elements;
@@ -468,9 +484,23 @@ export class TSLPostStack {
     b.pipeline.render();
   }
 
+  /** The render targets a built pipeline owns (the shared passes aren't its own). */
+  static ownTargets(b) { return [...b.nodes.auto, ...b.nodes.bloom, ...(b.nodes.dof ? [...b.nodes.dof.full, ...b.nodes.dof.half] : [])]; }
+
+  /** Drop a structure's pipeline and free what it owns. */
+  evict(key) {
+    const b = this.cache.get(key);
+    if (!b) return;
+    this.cache.delete(key);
+    if (this.built === b) this.built = null;
+    b.pipeline.dispose();
+    for (const t of TSLPostStack.ownTargets(b)) t.dispose();
+  }
+
   dispose() {
-    for (const b of this.cache.values()) { b.pipeline.dispose(); for (const p of [b.nodes.scenePass, b.nodes.normalPass, b.nodes.maskPass]) p?.dispose?.(); }
-    this.cache.clear(); this.built = null;
+    for (const k of [...this.cache.keys()]) this.evict(k);
+    for (const [k, p] of Object.entries(this.shared)) { p?.dispose(); this.shared[k] = null; }
+    this.built = null;
     this.maskMaterial?.dispose(); this.normalMaterial?.dispose();
     for (const l of this.luts.values()) l?.texture3D?.dispose?.();
   }
