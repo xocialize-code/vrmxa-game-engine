@@ -1,9 +1,16 @@
 # VRMXG M4 plan: the anime creator, on WebGPU
 
-**Status (2026-11-19): approved by the operator, start deferred.** M4 waits on the Avatar Studio, which must first be
-able to create the `.vrmxa` characters this plan casts (checks 2 and 12). A spike costs moving the studio onto the
-engine (`spike-avatar-studio/`). The plan and its tasks get filed on the bridge when M4 starts, adjusted by what that
-spike decides.
+**Status (2026-11-20): started.** The Avatar Studio can now make the characters M4 casts:
+- its spike (`spike-avatar-studio/`) found the studio needn't move onto the engine for M4;
+- `0.1.0-preview.1` is tagged and published, and plan 0.2's agent tools (A1–A3, `vrmxa mcp`) are merged;
+- Hana and Mira exist as `.vrmxa` files built with its command-line tool from licensed VRoid Hub pieces
+  (`../vrmxa-avatar-studio/content/characters/`, approved by the operator 2026-11-19). They replace the 0.34 fixtures
+  in W12.
+
+Their voices wait on AB-A-0323 (a persona naming a Kokoro preset voice). Until it's answered, casting (W6) maps a role
+to a preset as the sample does now.
+
+*Filed as plan AB-P-0018: tasks W0–W13 are AB-T-0572 to AB-T-0585 (W0 and W4 can start at once), decisions 1–7 are AB-D-0270 to AB-D-0276.*
 
 *Draft, 2026-11-19. M4 picks from the PRD's "M4 Later" row (§8): WebGPU, networking, WebXR, the anime creator and the
 game UI app. It builds on M3 (done 2026-11-19: [acceptance/](acceptance/README.md), receipts AB-R-1038 to 1046 and
