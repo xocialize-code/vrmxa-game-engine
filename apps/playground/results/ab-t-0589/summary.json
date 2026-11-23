@@ -134,6 +134,21 @@
    }
   },
   {
+   "file": "quiet100-wkwebview.json",
+   "about": "quiet (nothing else of ours on the GPU): WKWebView loopback, whole film with sound, 34 loads x 3 = 102 exports, keepTile=72; GPU load recorded per load (gpuLoad)",
+   "exports": 102,
+   "frames": 1080,
+   "oddExports": 0,
+   "digests": {
+    "aa30672928beb2b1": 102
+   },
+   "gpuUtilMedianRange": [
+    8,
+    13
+   ],
+   "gpuUtilMax": 23
+  },
+  {
    "file": "sameframe-ab-base-1.json",
    "about": "baseline interleaved with the @invariant runs",
    "draws": 20000,

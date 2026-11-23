@@ -1,0 +1,268 @@
+{
+ "query": "iters=20000",
+ "runs": [
+  {
+   "pass": true,
+   "iters": 20000,
+   "cull": "none",
+   "size": [
+    1920,
+    1080
+   ],
+   "modes": {
+    "msaa": {
+     "differ": 0,
+     "distinct": 1,
+     "firstDiff": null,
+     "covered": 4389
+    },
+    "one": {
+     "differ": 0,
+     "distinct": 1,
+     "firstDiff": null,
+     "covered": 4261
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "triangles": 39782,
+   "firstDrawDiffers": {
+    "msaa": true,
+    "one": false
+   },
+   "ms": 120958,
+   "observation": "msaa: 0 of 19999 draws differ from the first (1 distinct); one: 0 of 19999 draws differ from the first (1 distinct)",
+   "gpuLoad": {
+    "samples": 10,
+    "gpuUtil": {
+     "min": 16,
+     "median": 16,
+     "max": 20
+    },
+    "seen": {
+     "node:node": 33.2,
+     "chromium:Google Chrome for Testing": 10.6,
+     "chromium:Google Chrome for Testing Helper (GPU)": 10.3,
+     "chromium:Google Chrome for Testing Helper": 0.7,
+     "webkit:com.apple.WebKit.GPU": 0,
+     "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+     "webkit:com.apple.WebKit.WebContent": 0,
+     "chromium:Google Chrome for Testing Helper (Renderer)": 92.8
+    },
+    "first": {
+     "at": 1795421304598,
+     "gpuUtil": 20,
+     "processes": [
+      "node:node 33.2%",
+      "chromium:Google Chrome for Testing 10.6%"
+     ],
+     "otherGpuHelpers": 1
+    },
+    "last": {
+     "at": 1795421426050,
+     "gpuUtil": 16,
+     "processes": [
+      "chromium:Google Chrome for Testing Helper (GPU) 4.7%"
+     ],
+     "otherGpuHelpers": 1
+    }
+   }
+  },
+  {
+   "pass": true,
+   "iters": 20000,
+   "cull": "none",
+   "size": [
+    1920,
+    1080
+   ],
+   "modes": {
+    "msaa": {
+     "differ": 0,
+     "distinct": 1,
+     "firstDiff": null,
+     "covered": 4389
+    },
+    "one": {
+     "differ": 0,
+     "distinct": 1,
+     "firstDiff": null,
+     "covered": 4261
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "triangles": 39782,
+   "firstDrawDiffers": {
+    "msaa": true,
+    "one": false
+   },
+   "ms": 121041,
+   "observation": "msaa: 0 of 19999 draws differ from the first (1 distinct); one: 0 of 19999 draws differ from the first (1 distinct)",
+   "gpuLoad": {
+    "samples": 10,
+    "gpuUtil": {
+     "min": 0,
+     "median": 16,
+     "max": 16
+    },
+    "seen": {
+     "node:node": 2.7,
+     "chromium:Google Chrome for Testing": 7.2,
+     "chromium:Google Chrome for Testing Helper (GPU)": 10,
+     "chromium:Google Chrome for Testing Helper": 0.5,
+     "webkit:com.apple.WebKit.GPU": 0,
+     "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+     "webkit:com.apple.WebKit.WebContent": 0,
+     "chromium:Google Chrome for Testing Helper (Renderer)": 92.4
+    },
+    "first": {
+     "at": 1795421426097,
+     "gpuUtil": 0,
+     "processes": [
+      "node:node 2.7%",
+      "chromium:Google Chrome for Testing 7.2%",
+      "chromium:Google Chrome for Testing Helper (GPU) 5.4%"
+     ],
+     "otherGpuHelpers": 1
+    },
+    "last": {
+     "at": 1795421547507,
+     "gpuUtil": 15,
+     "processes": [
+      "chromium:Google Chrome for Testing Helper (GPU) 4.8%"
+     ],
+     "otherGpuHelpers": 1
+    }
+   }
+  },
+  {
+   "pass": false,
+   "iters": 20000,
+   "cull": "none",
+   "size": [
+    1920,
+    1080
+   ],
+   "modes": {
+    "msaa": {
+     "differ": 1,
+     "distinct": 2,
+     "firstDiff": {
+      "iter": 10098,
+      "values": 39,
+      "at": [
+       {
+        "x": 1072,
+        "y": 527,
+        "ch": 0,
+        "here": 48,
+        "first": 53
+       },
+       {
+        "x": 1072,
+        "y": 527,
+        "ch": 1,
+        "here": 44,
+        "first": 49
+       },
+       {
+        "x": 1072,
+        "y": 527,
+        "ch": 2,
+        "here": 40,
+        "first": 44
+       },
+       {
+        "x": 1066,
+        "y": 529,
+        "ch": 0,
+        "here": 63,
+        "first": 61
+       },
+       {
+        "x": 1066,
+        "y": 529,
+        "ch": 1,
+        "here": 58,
+        "first": 56
+       },
+       {
+        "x": 1066,
+        "y": 529,
+        "ch": 2,
+        "here": 53,
+        "first": 51
+       },
+       {
+        "x": 1048,
+        "y": 530,
+        "ch": 0,
+        "here": 96,
+        "first": 98
+       },
+       {
+        "x": 1048,
+        "y": 530,
+        "ch": 1,
+        "here": 91,
+        "first": 93
+       }
+      ]
+     },
+     "covered": 4389,
+     "oddHashes": {
+      "709bdc31": 1
+     },
+     "likeFirstDraw": 1
+    },
+    "one": {
+     "differ": 0,
+     "distinct": 1,
+     "firstDiff": null,
+     "covered": 4261
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "triangles": 39782,
+   "firstDrawDiffers": {
+    "msaa": true,
+    "one": false
+   },
+   "ms": 120827,
+   "observation": "msaa: 1 of 19999 draws differ from the first (2 distinct); one: 0 of 19999 draws differ from the first (1 distinct)",
+   "gpuLoad": {
+    "samples": 10,
+    "gpuUtil": {
+     "min": 0,
+     "median": 16,
+     "max": 30
+    },
+    "seen": {
+     "node:node": 0.1,
+     "chromium:Google Chrome for Testing": 0.2,
+     "chromium:Google Chrome for Testing Helper (GPU)": 10.3,
+     "chromium:Google Chrome for Testing Helper": 0,
+     "webkit:com.apple.WebKit.GPU": 0,
+     "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+     "webkit:com.apple.WebKit.WebContent": 0,
+     "chromium:Google Chrome for Testing Helper (Renderer)": 92.8
+    },
+    "first": {
+     "at": 1795421547554,
+     "gpuUtil": 0,
+     "processes": [
+      "chromium:Google Chrome for Testing Helper (GPU) 4.8%"
+     ],
+     "otherGpuHelpers": 1
+    },
+    "last": {
+     "at": 1795421668942,
+     "gpuUtil": 0,
+     "processes": [
+      "chromium:Google Chrome for Testing Helper (GPU) 3.2%"
+     ],
+     "otherGpuHelpers": 1
+    }
+   }
+  }
+ ]
+}

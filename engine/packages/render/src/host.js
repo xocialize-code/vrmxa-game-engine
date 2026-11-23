@@ -197,6 +197,7 @@ export class RenderHost {
     if (this._room !== undefined) return this._room;
     if (this.renderer.isWebGPURenderer && this._webgpu) {
       const { pmrem, texture, target } = roomPMREM(this.renderer, this._webgpu.PMREMGenerator);
+      this._roomTarget?.dispose();
       this._pmrem = pmrem; this._roomTarget = target; // kept with its texture, as the spike measured it (disposed with the host)
       return (this._room = texture);
     }
@@ -319,6 +320,12 @@ export class RenderHost {
     this.last.renderMs = (typeof performance !== 'undefined' ? performance.now() : 0) - t0;
   }
 
+  /**
+   * The room environment's PMREM render target on WebGPU (null before roomEnvironment() made it, and on WebGL, whose
+   * generator is disposed after use): a check can read it back (AB-T-0589 hashes it per export).
+   */
+  get roomTarget() { return this._roomTarget ?? null; }
+
   /** The Camera node the view renders through (null when the host's own camera overrides it). */
   cameraNode() { return this.camera ? null : this.tree?.services.get('cameras')?.current ?? null; }
 
@@ -326,7 +333,9 @@ export class RenderHost {
     this.post?.dispose?.();
     this.detach();
     this.views.dispose(); this.debug.dispose();
-    this._room?.dispose(); this._pmrem?.dispose();
+    // the WebGPU room texture is its target's: disposing the target frees both
+    if (this._roomTarget) this._roomTarget.dispose(); else this._room?.dispose();
+    this._roomTarget = null; this._pmrem?.dispose();
     this.renderer.dispose?.();
   }
 }

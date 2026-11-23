@@ -28,8 +28,9 @@ different: a handful of pixels, by 1 to 10 levels. Two copies of the attached to
   draws were exactly this first-draw image.
 
 We found this through WebGPU, in WKWebView (WebKit) and in Chromium (Dawn): exports of an animation that must be
-identical on every render had a frame differing in a few pixels. The attached native Metal tool reproduces it without
-WebKit or Dawn, and gives the identical odd image that WebGPU gives.
+identical on every render had a frame differing in a few pixels, while other GPU work was running. The same mesh drawn
+through WebGPU reproduces it in both engines. The attached native Metal tool reproduces it without WebKit or Dawn, and
+gives the identical odd image that WebGPU gives.
 
 ## Steps to reproduce
 
@@ -59,11 +60,14 @@ Every draw after the first, in both modes, gives the same bytes. The first MSAA 
 | One copy, a WKWebView app rendering with WebGPU at the same time | 13 / 120,000, all the first-draw image (hash `709bdc31`) | 0 / 120,000 |
 | One copy, nothing else deliberately running (GPU ~18% busy, the tool included) | 1 / 60,000 and 2 / 60,000, the first-draw image | 0 / 120,000 |
 | The same mesh through WebGPU in Chromium 156, with the WKWebView app running | 4 / 120,000, the same first-draw image | 0 / 120,000 |
+| The same through WebGPU, two copies of the native tool running | Chromium 12 / 60,000; WKWebView 7 / 60,000 | 0 / 60,000 each |
 
 In every run, the first MSAA draw into new targets differed from the steady state; the first one-sample draw didn't.
 
-The odd pixels are on the mesh's top surface, around small parts close to it (the cups on top of the machine): the
-same few pixels every time, with slightly different values, as if those samples were shaded or covered differently.
+The odd pixels are on the mesh's top surface, around small parts close to it (the cups on top of the machine): the same
+small region in every odd draw of this tool, with slightly different values, as if those samples were shaded or covered
+differently. Under the lighter load, every odd MSAA draw was exactly the first-draw image; with two copies at once there
+are a dozen or so variants in that region.
 
 ## Configuration
 

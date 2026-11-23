@@ -9,6 +9,7 @@ import http from 'node:http';
 import path from 'node:path';
 import os from 'node:os';
 import { createRequire } from 'node:module';
+import { snapshot, summarise } from './gpu-load.mjs';
 
 const here = import.meta.dirname, dist = path.join(here, '../dist'), results = path.join(here, '../results');
 const require = createRequire(path.join(here, '../../../spike-determinism/web/package.json'));
@@ -32,6 +33,8 @@ fs.mkdirSync(shots, { recursive: true });
 const query = `?mode=frames&renderer=${renderer}&parts=${part}${extra}`;
 const out = { query, loads: [], ua: null, os: os.release() };
 for (let load = 1; load <= loads; load++) {
+  // what else uses the GPU meanwhile (gpu-load.mjs; the 'chromium' processes include this runner's own browser)
+  const samples = [snapshot()], sampler = setInterval(() => samples.push(snapshot()), 15000);
   const page = await browser.newPage({ viewport: { width: 1280, height: 860 } });
   const errors = [];
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text().slice(0, 400)); });
@@ -40,10 +43,12 @@ for (let load = 1; load <= loads; load++) {
   await page.waitForFunction(() => /** @type {any} */ (window).READY === true, null, { timeout: 3600000, polling: 1000 });
   const r = await page.evaluate(() => /** @type {any} */ (window).__result);
   await page.close();
+  clearInterval(sampler); samples.push(snapshot());
+  const gpuLoad = summarise(samples, samples[0].at, samples.at(-1).at);
   out.ua ??= r.ua;
   if (part === 'sameFrame') {
     const sf = r.sameFrame ?? {};
-    out.loads.push({ load, backend: r.backend, errors, ...sf });
+    out.loads.push({ load, backend: r.backend, errors, gpuLoad, ...sf });
     console.log(`load ${load}: frame ${sf.frame} drawn ${sf.repeat} times: ${sf.distinct} distinct frames, ${sf.tileDistinct} distinct tiles ${JSON.stringify(sf.counts)} (${sf.ms} ms)`, sf.firstOdd ?? '', errors.slice(0, 2));
     continue;
   }
@@ -54,7 +59,7 @@ for (let load = 1; load <= loads; load++) {
     delete d.png;
   }
   for (const [k, s] of Object.entries(fr.refShots ?? {})) { fs.writeFileSync(path.join(shots, `${name}-load${load}-ref-frame${k}.png`), Buffer.from(s.png.split(',')[1], 'base64')); delete s.png; }
-  out.loads.push({ load, backend: r.backend, ms: r.ms, errors, ...fr });
+  out.loads.push({ load, backend: r.backend, ms: r.ms, errors, gpuLoad, ...fr });
   console.log(`load ${load}:`, (fr.runs ?? []).map((x) => `${x.digest}${x.diffs.length ? ` (${x.diffs.length} differ: ${x.diffs.map((d) => `${d.frame}[${d.tiles}]`).join(' ')})` : ''}${x.wgsl ? ` wgsl ${x.wgsl.digest}/${x.wgsl.modules}${x.wgsl.notInFirst.length ? ` +${x.wgsl.notInFirst.length}` : ''}` : ''}`).join(' | '), errors.slice(0, 2));
 }
 await browser.close(); server.close();

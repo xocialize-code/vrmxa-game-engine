@@ -38,18 +38,23 @@ THREE_DEV=/tmp/three-dev sh spike-webgpu-render/repros/run.sh    # every page ×
 
 No three.js in either. Each draws one static frame again and again, reads it back and hashes it, so every hash must equal
 the first. `node spike-webgpu-render/repros/under-load.mjs --runs 3 [--page 5-machine-under-load.html] 'iters=20000'` runs
-one in headless Chromium; run it while another process loads the GPU (the playground's `scripts/repeat-wkwebview.sh`
-exporting the film). Results are in `results/`.
+one in headless Chromium, and `spike-webgpu-render/repros/wkwebview.sh 3 <name> 'iters=20000'` runs repro 5 in WKWebView.
+Both record what else used the GPU meanwhile (`gpuLoad`). Run them alone for the quiet numbers, or while another process
+loads the GPU. Results are in `results/`.
 - **4** (3,000 random triangles into rgba16float, MSAA 4× with the hardware resolve, a shader resolve, or 1 sample, then
   tone-mapped to rgba8): 0 of 72,000 draws differed, under load.
 - **5** (the sample's espresso machine, 39,782 double-sided triangles, from the film's frame-72 camera in
-  `5-machine-frame72.json`, three-like shading, 1920×1080): under load, 4 of 120,000 MSAA 4× draws differed from the
-  rest, all four the same 39 values in the same pixels (the machine's top right, where the playground's exports
-  differed). The second set compared them with the first MSAA draw on fresh targets, which always differs from the
-  draws after it: its two were exactly that image. At 1 sample, 0 of 120,000. Quiet, every draw after the
-  first is the same. So on this Mac (M5 Max, macOS 27.3) WebGPU's MSAA output has two states, and another process's GPU
-  load occasionally brings back the first. WebKit shows it too (the playground's exports), so it's below both browsers:
-  Metal's driver or the GPU.
+  `5-machine-frame72.json`, three-like shading, 1920×1080). The first MSAA draw on fresh targets always differs from the
+  draws after it, in both engines.
+  - Chromium, with WKWebView exporting the film alongside: 4 of 120,000 MSAA draws differed, all the same 39 values in
+    the same pixels (the machine's top right). The second set checked them against the first-draw image: exact.
+  - With two native Metal copies running: Chromium 12 of 60,000, WKWebView 7 of 60,000 MSAA draws (the WKWebView half
+    is measured, not inferred).
+  - At 1 sample, 0 of 240,000 across all of these.
+  - Quiet, with the GPU load recorded (nothing else drawing besides this Mac's idle apps; GPU at a median 16–18% with
+    the repro running): Chromium 1 of 60,000 MSAA draws (the first-draw image again), WKWebView 0 of 60,000; 0 of
+    120,000 at 1 sample (`5-machine-chromium-quiet.json`, `5-machine-wkwebview-quiet.json`). Quiet lowers the rate; it
+    doesn't make it zero.
 - **Native Metal** (`metal/machine.swift`: the same mesh, camera, shading and passes as 5, in one Swift file, no WebGPU):
   it reproduces, and the odd image is byte-identical to WebGPU's.
   - With WKWebView exporting the film alongside: 13 of 120,000 MSAA draws differed, all the first-draw image (`709bdc31`,
@@ -59,9 +64,13 @@ exporting the film). Results are in `results/`.
   - One copy with nothing else deliberately running (GPU ~18% busy, this Mac's other apps and the tool): 1 and 2 of
     60,000 MSAA draws, 0 at 1 sample. Quiet isn't zero.
   - Images: `results/metal-images/` (reference, odd, 8× crops and a diff for each case). Counts: `results/metal-machine-*.json`.
-  So it's Metal or the GPU on macOS 27.3 beta (26C5047e), M5 Max (Mac17,14). Decision AB-D-0278: report it to Apple
-  (draft: [FEEDBACK-AB-T-0589.md](FEEDBACK-AB-T-0589.md), filed by the operator), build no export mitigation for now,
-  run exact-frame checks on a quiet GPU.
+  So the MSAA case is Metal or the GPU on macOS 27.3 beta (26C5047e), M5 Max (Mac17,14). Repro 5's WebGPU path never
+  showed a one-sample difference (0 of 240,000) while native Metal did under two copies, and three's scene did with no
+  MSAA at all (`apps/playground/results/ab-t-0589/sameframe-noaa-noAA.json`): the no-MSAA case is likely the same
+  driver behaviour, but that isn't shown.
+
+  Decision AB-D-0278: report it to Apple (draft: [FEEDBACK-AB-T-0589.md](FEEDBACK-AB-T-0589.md), filed by the
+  operator), build no export mitigation for now, run exact-frame checks on a quiet GPU.
 
 **Re-test on each new macOS beta** (AB-D-0278). Two copies at once; the bug is gone when both report `"differ" : 0` in
 both modes over 40,000 draws:

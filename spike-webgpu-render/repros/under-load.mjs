@@ -7,6 +7,7 @@ import http from 'node:http';
 import path from 'node:path';
 import os from 'node:os';
 import { createRequire } from 'node:module';
+import { snapshot, summarise } from '../../apps/playground/scripts/gpu-load.mjs';
 
 const root = path.resolve(import.meta.dirname, '../..');
 const require = createRequire(path.join(root, 'spike-determinism/web/package.json'));
@@ -24,11 +25,15 @@ const exe = path.join(os.homedir(), 'Library/Caches/ms-playwright/chromium-1248/
 const browser = await chromium.launch({ executablePath: exe, headless: true, args: ['--enable-unsafe-webgpu', '--enable-gpu', '--ignore-gpu-blocklist', '--use-angle=metal'] });
 const all = [];
 for (let i = 1; i <= runs; i++) {
+  // what else uses the GPU meanwhile (the 'chromium' processes include this runner's own browser)
+  const samples = [snapshot()], sampler = setInterval(() => samples.push(snapshot()), 15000);
   const page = await browser.newPage();
   await page.goto(`http://127.0.0.1:${server.address().port}/spike-webgpu-render/repros/${pageName}?${query}`);
   await page.waitForFunction(() => /** @type {any} */ (window).READY === true, null, { timeout: 1800000, polling: 500 });
   const r = await page.evaluate(() => /** @type {any} */ (window).__result);
   await page.close();
+  clearInterval(sampler); samples.push(snapshot());
+  r.gpuLoad = summarise(samples, samples[0].at, samples.at(-1).at);
   all.push(r);
   console.log(`run ${i}: ${r.pass ? 'PASS' : 'FAIL'} ${r.observation ?? r.error} (${r.ms} ms)`);
   for (const [m, o] of Object.entries(r.modes ?? {})) if (o.firstDiff) console.log(`   ${m} first diff at iteration ${o.firstDiff.iter}: hdr ${JSON.stringify(o.firstDiff.hdr)} ldr ${JSON.stringify(o.firstDiff.ldr)}`);

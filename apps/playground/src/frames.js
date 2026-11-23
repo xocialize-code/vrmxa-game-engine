@@ -318,7 +318,7 @@ export async function framesCheck({ R, sample, opts, backend, post, view, canvas
  * differs from the first export's comes back with the tiles that differ, its image, and the same frame's image from a
  * later export (with three exports, the odd one out is the wrong one).
  */
-export async function filmRepeat({ R, sample, opts, backend, post = null, view = null, size = '1080p', fps = '24', frames = null, repeat = 3, audio = false, tileHashes = true, keepTile = 72, presHash = false, jitter = 0, lag = 1, serial = false }) {
+export async function filmRepeat({ R, sample, opts, backend, post = null, view = null, size = '1080p', fps = '24', frames = null, repeat = 3, audio = false, tileHashes = true, keepTile = null, presHash = false, jitter = 0, lag = 1, serial = false }) {
   const [width, height] = SIZES[size], rate = RATES[fps];
   const S = await loadSample(sample.bytes, 'sequences/cafe-morning.vrmxs');
   const TX = 16, TY = 9, tw = width / TX, th = height / TY;
@@ -331,6 +331,7 @@ export async function filmRepeat({ R, sample, opts, backend, post = null, view =
     return out;
   };
   const runs = [], wanted = new Set(), refShots = {};
+  const wallStart = Date.now(); // wall clock, for the runners' GPU-load samples only (nothing drawn depends on it)
   let ref = null;
   for (let i = 0; i < repeat; i++) {
     const host = await offlineHost(backend, post);
@@ -367,19 +368,21 @@ export async function filmRepeat({ R, sample, opts, backend, post = null, view =
     const pres = [], f64 = new Float64Array(16), u8 = new Uint8Array(f64.buffer), presOf = (k) => pres[k];
     const hashMat = (h, m) => { f64.set(m.elements); for (let b = 0; b < 128; b++) h = Math.imul(h ^ u8[b], 0x01000193); return h; };
     let presK = 0;
-    // hashed right after the frame's draw (wrapping the post stack's render, or the renderer's), so nothing is updated
-    // that the draw itself didn't: the camera's matrices, every visible mesh's world matrix, the bone matrices uploaded
+    // hashed right after the frame's draw, so nothing is updated that the draw itself didn't: the camera's matrices, every
+    // visible mesh's world matrix, the bone matrices uploaded. Whichever draws the frame is wrapped: the post stack's
+    // render, or the renderer's when no post stack is active (the renderer's calls inside the post stack are skipped)
     const hashArr = (h, a) => { for (let i = 0; i < a.length; i++) { f64[0] = a[i]; for (let b = 0; b < 8; b++) h = Math.imul(h ^ u8[b], 0x01000193); } return h; };
     if (presHash) {
-      const target = host.post ?? host.renderer, orig = target.render.bind(target);
-      target.render = (scene, camera, ...rest) => {
-        const out = orig(scene, camera, ...rest);
+      const hashNow = (scene, camera) => {
         let h = hashMat(hashMat(hashMat(0x811c9dc5, camera.matrixWorld), camera.projectionMatrix), camera.matrixWorldInverse);
         let hm = 0x811c9dc5, hb = 0x811c9dc5;
         scene.traverseVisible((o) => { if (o.isMesh || o.isSkinnedMesh || o.isPoints || o.isSprite) hm = hashMat(hm, o.matrixWorld); if (o.isSkinnedMesh && o.skeleton.boneMatrices) hb = hashArr(hb, o.skeleton.boneMatrices); });
         pres[presK] = `${(h >>> 0).toString(16)}.${(hm >>> 0).toString(16)}.${(hb >>> 0).toString(16)}`;
-        return out;
       };
+      let inPost = false;
+      if (host.post) { const orig = host.post.render.bind(host.post); host.post.render = (scene, camera, ...rest) => { inPost = true; try { return orig(scene, camera, ...rest); } finally { inPost = false; hashNow(scene, camera); } }; }
+      const origR = host.renderer.render.bind(host.renderer);
+      host.renderer.render = (scene, camera, ...rest) => { const out = origR(scene, camera, ...rest); if (!inPost && scene === host.scene) hashNow(scene, camera); return out; };
     }
     const nf = host.renderer._nodes?.nodeFrame, gaps = [], viewCalls = [];
     let lastId = nf?.frameId ?? 0, lastView = view?.renderer?.info?.calls ?? 0;
@@ -391,13 +394,15 @@ export async function filmRepeat({ R, sample, opts, backend, post = null, view =
     // ?serial=1: each frame waits for the GPU to finish everything before it (no overlap of consecutive frames on the GPU)
     if (serial && host.renderer.isWebGPURenderer) { const fa = host.frameAt.bind(host), q = host.renderer.backend.device.queue; host.frameAt = async (...a) => { await q.onSubmittedWorkDone(); return fa(...a); }; }
     const r = await exportTake({ tree: w.tree, host, fps: rate, frames: n, width, height, sink, audio, now, onFrame, lag });
+    // every frame must have been hashed: a comparison of two missing hashes would say "same" having checked nothing
+    if (presHash) { const missing = []; for (let k = 0; k < n; k++) if (pres[k] === undefined) missing.push(k); if (missing.length) throw new Error(`pres=1: ${missing.length} frames weren't hashed (first ${missing[0]}): neither the post stack nor the renderer drew them through the wrapped calls`); }
     for (const d of diffs) { d.presentSame = presHash && ref?.pres ? pres[d.frame] === ref.pres[d.frame] : null; if (presHash) d.present = { here: pres[d.frame], first: ref?.pres?.[d.frame] }; }
     for (const d of diffs) d.at = { gap: gaps[d.frame], viewCalls: viewCalls[d.frame], gapBefore: gaps[d.frame - 1], viewCallsBefore: viewCalls[d.frame - 1] };
     const hist = (a) => { const h = {}; for (const x of a) if (x !== undefined) h[x] = (h[x] ?? 0) + 1; return h; };
     const timing = { gaps: hist(gaps), viewCallsPerFrame: hist(viewCalls), gapsByFrame: gaps.join('') };
     // the room environment's PMREM as this export's renderer made it (AB-T-0589: a per-renderer input that differs?)
     let pmrem = null;
-    const rt = host._roomTarget;
+    const rt = host.roomTarget;
     if (rt && host.renderer.readRenderTargetPixelsAsync) { const px = await host.renderer.readRenderTargetPixelsAsync(rt, 0, 0, rt.width, rt.height); pmrem = hashFrame(new Uint8Array(px.buffer, px.byteOffset, px.byteLength)); }
     const mods = WGSL.get(host.renderer.backend?.device) ?? null;
     dropHost(host);
@@ -417,7 +422,7 @@ export async function filmRepeat({ R, sample, opts, backend, post = null, view =
       }) };
     }
   }
-  return { size: [width, height], repeat, tiles: [TX, TY], runs, refShots };
+  return { size: [width, height], repeat, tiles: [TX, TY], runs, refShots, wall: { start: wallStart, end: Date.now() } };
 }
 
 /**
@@ -467,8 +472,8 @@ export async function sameFrame({ R, sample, opts, backend, post = null, size = 
     counts.set(h, (counts.get(h) ?? 0) + 1); tiles.set(t, (tiles.get(t) ?? 0) + 1);
     if (ref === null) ref = h; else if (h !== ref && firstOdd.length < 5) firstOdd.push({ iter: i, tile: t });
   }
-  const ms = Math.round(now() - t0);
+  const ms = Math.round(now() - t0), wall = { start: Date.now() - ms, end: Date.now() };
   rb.release(); dropHost(host);
-  return { frame: frames, repeat, ms, mvp, switches: { noShadows, noPost, noMsaa, noAA, hide, frontSide, split }, distinct: counts.size, counts: Object.fromEntries(counts), tileDistinct: tiles.size, tiles: Object.fromEntries(tiles), firstOdd };
+  return { frame: frames, repeat, ms, wall, mvp, switches: { noShadows, noPost, noMsaa, noAA, hide, frontSide, split }, distinct: counts.size, counts: Object.fromEntries(counts), tileDistinct: tiles.size, tiles: Object.fromEntries(tiles), firstOdd };
 }
 const framesToStep = (n, rate) => frameToStep(n, rate);

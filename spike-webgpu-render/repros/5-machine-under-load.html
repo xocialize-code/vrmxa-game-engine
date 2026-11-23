@@ -7,7 +7,7 @@
      hash must equal the first. The shading is three-like: a texture sampled with implicit derivatives (mipmapped), the
      normal flipped on back faces, dpdx/dpdy of the normal for a geometry roughness, a directional light and a highlight.
      Modes, interleaved per iteration:  msaa  4 samples resolved (as three's framebuffer target)   one  1 sample
-     ?iters=N (3000)  ?cull=none|back (none: the glb is double-sided)  ?modes=msaa,one
+     ?iters=N (3000)  ?cull=none|back (none: the glb is double-sided)  ?modes=msaa,one  ?glb=URL  ?camera=URL
      Run it alone and while another process loads the GPU (the playground's WKWebView film export). -->
 <body style="margin:0;background:#fff">
 <pre id="out" style="font:12px monospace"></pre>
@@ -17,8 +17,9 @@ const W = 1920, H = 1080, ITERS = +(q.get('iters') ?? 3000), CULL = q.get('cull'
 const log = (s) => { document.getElementById('out').textContent += s + '\n'; };
 const result = { pass: false, iters: ITERS, cull: CULL, size: [W, H], modes: {}, ua: navigator.userAgent };
 try {
-  const cam = await (await fetch('5-machine-frame72.json')).json();
-  const glb = new Uint8Array(await (await fetch('../../content/sample/props/espresso-machine.glb')).arrayBuffer());
+  // ?camera=…&glb=…: other locations for the two files (the WKWebView runner serves them beside the page)
+  const cam = await (await fetch(q.get('camera') ?? '5-machine-frame72.json')).json();
+  const glb = new Uint8Array(await (await fetch(q.get('glb') ?? '../../content/sample/props/espresso-machine.glb')).arrayBuffer());
   const dv = new DataView(glb.buffer), jsonLen = dv.getUint32(12, true);
   const json = JSON.parse(new TextDecoder().decode(glb.subarray(20, 20 + jsonLen)));
   const binStart = 20 + jsonLen + 8;
