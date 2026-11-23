@@ -1,0 +1,42 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Only until the students wake up.",
+ "audio": "cafe-order-hana-1-says-3-af-heart-11b84882.wav",
+ "sampleRate": 24000,
+ "duration": 2.375,
+ "source": "kokoro-82m af_heart (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "Only",
+   "start": 0.33,
+   "duration": 0.3625
+  },
+  {
+   "text": "until",
+   "start": 0.6925,
+   "duration": 0.25
+  },
+  {
+   "text": "the",
+   "start": 0.9425,
+   "duration": 0.0875
+  },
+  {
+   "text": "students",
+   "start": 1.03,
+   "duration": 0.425
+  },
+  {
+   "text": "wake",
+   "start": 1.455,
+   "duration": 0.25
+  },
+  {
+   "text": "up",
+   "start": 1.705,
+   "duration": 0.45
+  }
+ ]
+}

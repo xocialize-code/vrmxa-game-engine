@@ -69,9 +69,15 @@ const tc = (frame, fps) => {
   return `${p(h)}:${p(m)}:${p(s)},${p(f, 3)}`;
 };
 
-/** SRT subtitles from the dialogue tracks (speaker names from `names`, node id → name). */
+/**
+ * SRT subtitles from the dialogue tracks (speaker names from `names`, node id → name). A baked line (M4 W7: its `words`,
+ * seconds from the clip's start) is shown until its last word ends when that is later than the clip's end, so a line
+ * that outlasts its clip keeps its subtitle; the WAV's trailing silence doesn't count.
+ */
 export function subtitles(seq, names = {}) {
-  const lines = (seq.tracks ?? []).filter((t) => t.type === 'dialogue').flatMap((t) => (t.clips ?? []).filter((c) => c.text).map((c) => ({ ...c, who: names[t.target] ?? t.target })));
+  const framesUp = (seconds) => Math.ceil(Math.round(seconds * seq.fps * 1000) / 1000); // 1.1 s × 30 fps is 33, not 34
+  const endOf = (c) => { const w = c.words?.at(-1); return w ? Math.max(c.end, c.start + framesUp(w.start + w.duration)) : c.end; };
+  const lines = (seq.tracks ?? []).filter((t) => t.type === 'dialogue').flatMap((t) => (t.clips ?? []).filter((c) => c.text).map((c) => ({ ...c, end: endOf(c), who: names[t.target] ?? t.target })));
   lines.sort((a, b) => a.start - b.start);
   return lines.map((l, i) => `${i + 1}\n${tc(l.start, seq.fps)} --> ${tc(l.end, seq.fps)}\n${l.who ? `${l.who}: ` : ''}${l.text}\n`).join('\n');
 }

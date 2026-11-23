@@ -105,6 +105,12 @@ onMounted(async () => {
     catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
     ui.loading = false; refresh(); window.READY = true; return;
   }
+  // M4 W7: ?mode=voicing: the voiced sample sequence replayed from its baked track (acceptance/m4/voicing.mjs)
+  if (mode === 'voicing') {
+    try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await pg.voicingCheck()) }; ui.notes = `voicing: ${window.__result.lines.length} lines, final ${window.__result.final}`; }
+    catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
+    ui.loading = false; refresh(); window.READY = true; return;
+  }
   // M4 W1: ?mode=post&renderer=webgpu|webgl draws every post look offline on that backend (scripts/post-chromium.mjs, WKWebView)
   if (mode === 'post') {
     try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await postCheck(pg)) }; ui.notes = `post: ${window.__result.stack}, exports ${window.__result.exports.identical ? 'identical' : 'DIFFER'}`; }

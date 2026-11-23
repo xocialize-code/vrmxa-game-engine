@@ -5,6 +5,6 @@
 // sequence bytes in every engine.
 export { readCharacter, cardOf, resolveVoice, allowedExpressions, pickWardrobe, KOKORO, KOKORO_PRESETS, EXPRESSIONS } from './card.js';
 export { rolesOf, roleOf, ROLE_TYPE } from './roles.js';
-export { castRole, withBake, clipFor, voicesFor, linesToBake, expressionsUsed, applyOps } from './cast.js';
+export { castRole, withBake, clipFor, lineId, voicesFor, linesToBake, expressionsUsed, applyOps } from './cast.js';
 export { applyCast } from './editor.js';
 export { dressCast } from './dress.js';

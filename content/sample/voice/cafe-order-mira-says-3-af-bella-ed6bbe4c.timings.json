@@ -1,0 +1,22 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Thank you!",
+ "audio": "cafe-order-mira-says-3-af-bella-ed6bbe4c.wav",
+ "sampleRate": 24000,
+ "duration": 1.475,
+ "source": "kokoro-82m af_bella (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "Thank",
+   "start": 0.43,
+   "duration": 0.275
+  },
+  {
+   "text": "you",
+   "start": 0.705,
+   "duration": 0.45
+  }
+ ]
+}
