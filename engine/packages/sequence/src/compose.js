@@ -37,6 +37,8 @@ export function composeSequence(seq, set) {
   for (const [id, r] of Object.entries(roles)) {
     if (!ids.has(id)) throw new Error(`sequence "${seq.id}": roles names "${id}", which isn't in the set (${seq.set})`);
     if (r?.asset && !assets.has(r.asset)) throw new Error(`sequence "${seq.id}": role "${id}" is cast from asset "${r.asset}", which neither the sequence nor the set has`);
+    const type = set.nodes.find((n) => n.id === id)?.type;
+    if (r?.asset && type !== 'Character') throw new Error(`sequence "${seq.id}": role "${id}" is a ${type}, not a Character: only characters are cast`);
   }
   const recast = (n) => {
     const c = cast[n.id], role = roles[n.id];

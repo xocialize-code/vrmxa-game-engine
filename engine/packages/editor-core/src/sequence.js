@@ -145,7 +145,8 @@ export class SequenceCommands {
     if (!String(text).trim()) throw new Error('a line needs words');
     const r = await speak({ text, voice });
     let h = 0x811c9dc5;
-    for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 0x01000193);
+    const key = voice ? `${voice}\n${text}` : text; // by voice too, so a new voice never overwrites a clip undo can bring back
+    for (let i = 0; i < key.length; i++) h = Math.imul(h ^ key.charCodeAt(i), 0x01000193);
     const clip = ref ?? `voice/${slug(this.session.doc.id ?? 'sequence')}-${slug(trackId)}-${index + 1}-${(h >>> 0).toString(16).padStart(8, '0')}.wav`;
     const words = r.words ?? [];
     await write(clip, r.wav);
@@ -154,6 +155,7 @@ export class SequenceCommands {
     return this.edit(`Regenerate line "${text.length > 32 ? `${text.slice(0, 31)}…` : text}"`, (s) => {
       const c = s.tracks.find((x) => x.id === trackId).clips[index];
       c.text = text; c.clip = clip;
+      if (voice) c.voice = voice; else delete c.voice; // the voice it was baked in (@vrmxg/cast reads it); unknown when the provider chose
       if (seconds) c.end = c.start + Math.max(1, Math.ceil(seconds * s.fps));
       return clip;
     });

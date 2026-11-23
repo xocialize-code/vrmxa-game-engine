@@ -101,6 +101,7 @@ test('bakePlan lists the text-only dialogue (stable ids, voices by speaker); app
   const baked = applyBake(doc, plan);
   assert.equal(baked.sequence.tracks[0].clips[1].clip, 'voice/morning-hana-says-2.wav');
   assert.equal(baked.sequence.tracks[0].clips[1].text, 'Coming right up!', 'the text stays, as the caption');
+  assert.equal(baked.sequence.tracks[0].clips[1].voice, 'af_heart', 'the voice it was baked in is recorded');
   assert.equal(baked.connections[0].args.clip, 'voice/morning-say-kai-1.wav');
   assert.equal(doc.sequence.tracks[1].clips[0].clip, undefined, 'the input is left alone');
   assert.deepEqual(bakePlan(baked), [], 'nothing left to bake');

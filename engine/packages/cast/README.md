@@ -18,21 +18,23 @@ import { readCharacter, rolesOf, applyCast, voicesFor } from '@vrmxg/cast';
 const vrmxa = { ...core, ...voice, ...persona, ...closet };
 const mira = await readCharacter(bytes, { ref: 'characters/mira.vrmxa', vrmxa }); // the shell's binary open gives the bytes
 rolesOf(session.doc);                         // [{ id: 'hana-1', cue: 'HANA', lines, performance: ['hana-1-act', …] }, …]
-const r = applyCast(session, 'HANA', mira, {  // one undo step: "Recast HANA: Hana → Mira"
+const r = await applyCast(session, 'HANA', mira, {   // one undo step: "Recast HANA: Hana → Mira", re-bake and all
   presets: { 'hana-1': 'af_heart', mira: 'af_bella' },   // for characters whose persona names no Kokoro preset
-  rebake: (lines, { role }) => bakeLines(lines),         // W7's hook: the lines to bake in the new voice
+  rebake: async (lines) => speakAndWrite(lines),         // W7's hook: write each line's clip, answer its bake fields
 });
-bakePlan(session.doc, { voices: voicesFor(session.doc) }); // @vrmxg/voice finds the same lines
 ```
 
 `castRole(doc, role, card, opts)` is the pure form: it returns `{ doc, ops, label, role, rebake, warnings }`, and the
-editor runs the same `ops`, so the two agree byte for byte.
+editor runs the same `ops`, so the two agree byte for byte. `withBake(r, bakes)` folds a bake into it.
 
 ## Roles
 
-A role is a speaking character: the set's node that the script's cue maps to (the title page's `Cast: HANA = hana-1`,
-else the set's Character by name). Its id is that node id, which the script keeps stable when re-scripting. A role can
-also be named by its cue.
+A role is a character: the set's node that the script's cue maps to (the title page's `Cast: HANA = hana-1`, else the
+set's Character by name). Its id is that node id, which the script keeps stable when re-scripting. A role can also be
+named by its cue. The roles are the nodes the dialogue speaks for, the ones already cast, and `sequence.cast` entries
+whose node is a `Character`. Given the set (`rolesOf(doc, { set })`), a node of another type is never a role:
+cafe-morning casts its music player, and `castRole(doc, 'music', …)` is refused. `composeSequence` refuses a role cast
+on a node that isn't a Character too.
 - **Lines:** the dialogue clips the script made for the role (`src: "<beat>#say"`).
 - **Performance:** every other track aimed at the role: gestures and talk, expressions, looks, moves.
 
@@ -62,7 +64,7 @@ A recast removes an asset that the old casting added and nothing uses any more.
 
 | Field | From |
 |---|---|
-| `voice` | In order: a preset picked by hand (`voice`, from `"pick"`); the persona's voice (`voice_id`, else the voices document's default) when it names `engines["kokoro-82m"].preset` (AB-A-0323; from `"persona"`); the role → preset map (`presets`, the sample's, from `"map"`); the first of `KOKORO_PRESETS` no other role has (from `"default"`). A persona voice the shell can't speak yet (a designed or cloned voice with no Kokoro preset) falls through, with a warning |
+| `voice` | In order: a preset picked by hand (`voice`, from `"pick"`); the persona's voice (`voice_id`, else the voices document's default) when it names `engines["kokoro-82m"].preset` (AB-A-0323; from `"persona"`); the role → preset map (`presets`, the sample's, from `"map"`); the first of `KOKORO_PRESETS` no other role has (from `"default"`). A persona voice the shell can't speak yet (a designed or cloned voice with no Kokoro preset) falls through, with a warning. A role cast again from the same file keeps the default voice it was handed, even once another role has taken it. Whatever the source, a voice another role of the sequence already speaks in (its casting's, else the map's) is warned about: two roles may share a voice, but never silently |
 | `expressions` | The persona's `allowed_expressions` in VRMXA's order, with `neutral` always added; `null` without a persona (all allowed). The performance is kept as it is, so a face it wears that the persona doesn't allow is reported, not changed |
 | `rest` | The persona's `rest_expression` |
 | `wardrobe` | What her closet says she has on, or one of her outfits picked by id or name (`outfit`; one she lacks is an error). At play, `dressCast(tree, doc)` asks the closet service (`@vrmxg/closet` `applyOutfit`) to put it on. That service swaps the body on a fixed later step, so a replay lands the swap on the same step |
@@ -79,26 +81,40 @@ the script's `BAKE_FIELDS` (`clip`, `timings`, `visemes`, `words`, `voice`, `aud
 changes. The line is then listed in `rebake`, and it speaks from its text, live, until W7 bakes it. The script's merge
 doesn't count a missing bake as a hand edit, so a re-script after a recast still updates those lines.
 
+Only the clip's own record says which voice a line was baked in: its `voice` field. `applyBake` (`@vrmxg/voice`),
+`regenerateLine` (`@vrmxg/editor-core`) and a bake folded into a cast all write it. A guess from the map or the old
+casting could keep a line in the wrong voice, so neither is used.
+
 | Case | What happens |
 |---|---|
-| Baked in the new voice already (`clip.voice`, else the old casting's voice, else `presets`) | Kept, not listed |
+| Baked in the new voice already (`clip.voice`) | Kept, not listed |
 | Baked in another voice | The bake goes; listed with `reason: "recast"` |
-| Baked before any casting, in a voice nobody recorded | Kept, with a warning to re-bake it if it isn't the new voice |
+| Baked in a voice nobody recorded (no `clip.voice`: an older bake) | Kept, with a warning to re-bake it if it isn't the new voice; with `unknown: 'rebake'`, the bake goes and it is listed with `reason: "unknown"` |
 | Never baked | Listed with `reason: "unbaked"` |
 
 Each listed line has `bakePlan`'s `id`, `where`, `speaker` and `text` (the test checks that `bakePlan` finds the same
-lines with `voicesFor`). It also has the new `voice` and `engine`, the line's script beat, and a clip path named by
-voice (`voice/cafe-order-hana-1-says-1-af-bella.wav`). Undo puts the old bake back, so a re-bake must write a new file
-rather than over the old one. `linesToBake(doc, { role })` lists a role's unbaked lines at any time.
+lines with `voicesFor`). It also has the new `voice` and `engine`, the line's script beat, and the clip to write,
+`clipFor(dir, id, voice, text)`: the line, the voice and a short FNV-1a of voice and words
+(`voice/cafe-order-hana-1-says-1-af-bella-61ddca1a.wav`). Undo puts the old bake back, so a re-bake must never write
+over a file undo can bring back. That rules out `bakePlan`'s `voice/<line>.wav`, which is the same in every voice:
+**a cast role is baked from this list, not from `bakePlan`'s names.** `bakePlan` stays as it is for the sample's tool.
+`linesToBake(doc, { role })` lists a role's unbaked lines, with the same names, at any time.
 
-**W7's hook:** `applyCast(session, role, card, { rebake })` calls `rebake(lines, { role, doc, label })` after the cast
-lands. It runs outside the cast's undo step, so the bake it starts is an undo step of its own ("regenerating every line
-of one character is one undo step"). With no hook, the list is only returned.
+**W7's hook:** `await applyCast(session, role, card, { rebake })` calls `rebake(lines, { role, doc, label })` before the
+cast lands. The hook writes each line's audio to `line.clip` (and its timings) and answers each line with its bake
+fields (`{ clip, timings?, words?, visemes?, audio? }`, the script's `BAKE_FIELDS`), or `null` to leave it speaking live.
+`withBake` puts those fields, and each clip's `voice`, into the cast's own edit. **One undo takes back the recast and its
+re-bake together** (M4 done-check 2), as `regenerateLine` writes its file first and then makes one step. The hook may be
+async. If it fails, nothing is cast. If the document changes while it runs, the cast is refused. The result's `baked`
+counts the lines baked, and `rebake` lists those still to bake. With no hook, the cast lands with its lines listed.
 
 ## One undo step; the same bytes
 
-`applyCast` runs the cast as one `session.run(label, ops)`. The ops are `addAsset` and `setDoc sequence`, then a
-`removeAsset` when an old asset goes. One undo takes the whole cast or recast back, and the test checks the exact bytes
+`applyCast` runs the cast as one `session.run(label, ops)`. The ops are `addAsset` (or `setAsset`, below) and `setDoc
+sequence`, then a `removeAsset` when an old asset goes. When a file the sequence already has changed since (a new
+`sha256`, or none recorded, as `addFromAsset` leaves it), its entry is updated in place with `setAsset`, an op added to
+`@vrmxg/scene`'s editor for this. Nodes that use the asset keep naming it, where removing and re-adding it would be
+refused. One undo takes the whole cast or recast back, and the test checks the exact bytes
 on undo and redo. Casting a role exactly as she is changes nothing and adds no step. Roles are written sorted by id.
 `serialize` (`@vrmxg/scene`) sorts the keys inside the block, and the golden hash in `test/cast.test.mjs` pins the
 output of a cast, a cast and a recast on the sample.
@@ -107,9 +123,11 @@ output of a cast, a cast and a recast on the sample.
 
 `npm test` runs these:
 - **cast:** the roles of the sample sequence; a cast from a picked card; reusing the set's asset; recasting, which
-  keeps the performance byte for byte and lists the lines matching `bakePlan`; same-voice and hand-picked voices; a
-  pre-cast bake; the editor's one undo step with exact bytes and the hook; the same bytes twice and the golden hash;
-  re-scripting after a cast; the voice order; allowed expressions; wardrobe and `dressCast`; errors. Cards here are
+  keeps the performance byte for byte and lists the lines (and their files) against `bakePlan`; same-voice and
+  hand-picked voices; recorded, wrong and unknown bake voices; the editor's one undo step for a cast and its re-bake,
+  with exact bytes; the hook's failures; the same bytes twice and the golden hash; re-scripting after a cast; the
+  voice order and shared voices; keeping a default voice; the asset updated in place under a node; only characters as
+  roles; allowed expressions; wardrobe and `dressCast`; `readCharacter` on a stand-in vrmxa-core; errors. Cards here are
   plain data, so these run in CI.
 - **read:** `readCharacter` on the sample's Mira and Hana, and the studio's when they are built. A recast world loads in
   `CharacterLibrary` with the new character's persona. These need vrmxa-core beside the repository, and skip (saying so)
@@ -121,7 +139,7 @@ node engine/packages/cast/demo/cast-sample.mjs --studio   # the studio's Hana an
 ```
 
 The demo builds `scripts/cafe-order.fountain` and reads the characters. It casts HANA and MIRA, recasts HANA with Mira's
-file, and prints each step's label, voice, warnings and lines to re-bake. It then undoes the recast and checks the
+file, and prints each step's label, voice, warnings and the lines its stand-in hook baked (file names only, no audio). It then undoes the recast and checks the
 bytes, and loads the composed world in the character library. It writes nothing in `content/`, and `--out` writes the
 sequence where you say.
 

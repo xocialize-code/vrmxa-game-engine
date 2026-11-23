@@ -57,20 +57,22 @@ s.setDoc = set;
 const report = (r) => {
   console.log(`\n${r.label}  (asset ${r.role.asset}, voice ${r.role.voice.preset} from ${r.role.voice.from}, expressions ${r.role.expressions?.join(' ') ?? 'all'})`);
   for (const w of r.warnings) console.log(`  ! ${w}`);
-  for (const l of r.rebake) console.log(`  bake ${l.reason.padEnd(7)} ${l.clip}  "${l.text}"`);
+  for (const l of heard.splice(0)) console.log(`  baked ${l.reason.padEnd(7)} ${l.clip}  "${l.text}"`);
+  for (const l of r.rebake) console.log(`  to bake ${l.reason.padEnd(7)} ${l.clip}  "${l.text}"`);
+  if (r.baked) console.log(`  (${r.baked} lines baked in the cast's own undo step)`);
 };
-const bakeHook = (lines, { role }) => `${lines.length} lines of ${role} for W7`;
-report(applyCast(s, 'HANA', hana, { presets: PRESETS, rebake: bakeHook }));
-report(applyCast(s, 'MIRA', mira, { presets: PRESETS, rebake: bakeHook }));
+// W7's hook stands in here: it would speak each line and write its clip; this one only names the files (no audio)
+const heard = [];
+const bakeHook = (lines) => { heard.push(...lines); return lines.map((l) => ({ clip: l.clip })); };
+report(await applyCast(s, 'HANA', hana, { presets: PRESETS, rebake: bakeHook }));
+report(await applyCast(s, 'MIRA', mira, { presets: PRESETS, rebake: bakeHook }));
 const cast = s.text();
-const re = applyCast(s, 'HANA', mira, { presets: PRESETS, rebake: bakeHook });
-report(re);
-console.log(`  hook: ${re.hooked}`);
+report(await applyCast(s, 'HANA', mira, { presets: PRESETS, rebake: bakeHook }));
 const recast = s.text();
 console.log(`\nvoices now: ${JSON.stringify(voicesFor(s.doc, { presets: PRESETS }))}`);
 console.log(`undo history: ${s.history().undo}  (depth ${s.history().undoDepth})`);
 s.undo();
-console.log(`undo → the cast before the recast, byte for byte: ${s.text() === cast}`);
+console.log(`undo → the cast before the recast (and its re-bake), byte for byte: ${s.text() === cast}`);
 s.redo();
 console.log(`redo → the recast again: ${s.text() === recast}; sequence sha256 ${sha(recast)}`);
 
