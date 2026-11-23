@@ -285,7 +285,9 @@ for (const [cell, checks] of Object.entries(canonical.cells ?? {})) if (checks.f
 const blessed = { cells: {} };
 const summary = { task: 'AB-T-0575', started: new Date().toISOString(), commit: null, machine: null, cells: {}, incidents: [], failures: [], gpuLock: [] };
 try { summary.commit = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(); } catch { /* not a checkout */ }
-summary.dirty = (() => { try { return execFileSync('git', ['status', '--porcelain', '--untracked-files=no'], { cwd: root, encoding: 'utf8' }).trim().length > 0; } catch { return null; } })();
+// tracked files changed since the commit, the matrix's own outputs (canonical.json, results/m4-w3) aside
+summary.dirtyFiles = (() => { try { return execFileSync('git', ['status', '--porcelain', '--untracked-files=no', '--', '.', ':!acceptance/canonical.json', ':!acceptance/results'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((l) => l.slice(3)); } catch { return null; } })();
+summary.dirty = summary.dirtyFiles ? summary.dirtyFiles.length > 0 : null;
 summary.machine = { model: execFileSync('sysctl', ['-n', 'hw.model'], { encoding: 'utf8' }).trim(), chip: execFileSync('sysctl', ['-n', 'machdep.cpu.brand_string'], { encoding: 'utf8' }).trim(), macOS: `${execFileSync('sw_vers', ['-productVersion'], { encoding: 'utf8' }).trim()} (${execFileSync('sw_vers', ['-buildVersion'], { encoding: 'utf8' }).trim()})` };
 
 fs.mkdirSync(out, { recursive: true });
@@ -402,7 +404,7 @@ cells: for (const runtime of RUNTIMES) for (const backend of BACKENDS) {
       if (check === 'acceptance' && use) writeAcceptance(runtime, backend, use);
       if (check === 'post' && good) looksFor[cell] = { looks: Object.fromEntries(Object.entries(good.result?.looks ?? {}).map(([k, l]) => [k, l.png])), mask: good.result?.mask?.png ?? null };
       if (BLESS && ref && res.ok && res.allLoadsMatch && good) {
-        const entry = { digest: ref.digest, items: ref.items, made: { at: new Date().toISOString(), commit: summary.commit, dirty: summary.dirty, loads: primaries.length, runtime, backend } };
+        const entry = { digest: ref.digest, items: ref.items, made: { at: new Date().toISOString(), commit: summary.commit, dirty: summary.dirty, dirtyFiles: summary.dirtyFiles, loads: primaries.length, runtime, backend } };
         if (check === 'frames') entry.film = good.result?.film?.frameHashes ?? null;
         (blessed.cells[cell] ??= {})[check] = entry;
       }
@@ -511,7 +513,7 @@ if (CHECK_NAMES.includes('budget')) {
 
 if (BLESS && !stopped) {
   const cells = blessed.cells; // each entry carries its own made: { at, commit, dirty, loads, runtime, backend }
-  const merged = { ...canonical, made: { at: new Date().toISOString(), commit: summary.commit, dirty: summary.dirty, machine: summary.machine, note: 'every entry comes from a --bless run in which every load of that check agreed; see each entry\'s made' }, cells: { ...(canonical.cells ?? {}) } };
+  const merged = { ...canonical, made: { at: new Date().toISOString(), commit: summary.commit, dirty: summary.dirty, dirtyFiles: summary.dirtyFiles, machine: summary.machine, note: 'every entry comes from a --bless run in which every load of that check agreed; see each entry\'s made' }, cells: { ...(canonical.cells ?? {}) } };
   for (const [cell, checks] of Object.entries(cells)) merged.cells[cell] = { ...(merged.cells[cell] ?? {}), ...checks };
   fs.writeFileSync(canonFile, JSON.stringify(merged, null, 1) + '\n');
   log(`blessed ${Object.keys(cells).length} cells into acceptance/canonical.json`);
