@@ -187,19 +187,21 @@ AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for th
 
 - **Check 3, the lines are voiced** (W7, AB-T-0579): every line of the sample script's sequence
   (`sequences/cafe-order.vrmxs`) is baked into its dialogue track in its character's voice: Hana in `af_heart`, Mira in
-  `af_bella`, through `content/sample/tools/bake-lines.mjs` (`@vrmxg/voice`'s voicing layer, Kokoro through the
-  loopback stand-in). The sequence then replays from the baked track, with no renderer, for 1,903 steps. It checks:
+  `af_bella`, through `content/sample/tools/bake-lines.mjs --fit` (`@vrmxg/voicing`, Kokoro through the loopback
+  stand-in). Three lines were lengthened to their speech and re-scripted, so nobody talks over anybody. The sequence
+  then replays from the baked track, with no renderer, for 1,951 steps. It checks:
   - each step's world hashes and both mouths' weights;
   - the line each character starts;
-  - a snapshot taken mid-line, restored into a fresh world.
+  - a snapshot taken mid-line, restored into a fresh world;
+  - no line's speech running into another's.
 
-  Regenerating one line or one character is one undo step: `engine/packages/voice/test/voicing.test.mjs`.
+  Regenerating one line or one character is one undo step: `engine/packages/voicing/test/voicing.test.mjs`.
   ```sh
   (cd apps/playground && npx vite build) && node acceptance/m4/voicing.mjs   # Node and headless Chromium: results/m4-voicing.json
   acceptance/m4/voicing-wkwebview.sh                                         # WKWebView, scheme and loopback: results/m4-voicing-wkwebview.json
   ```
-  Node, Chromium and WKWebView (scheme and loopback, two loads each) all give final d67ec0db2f91dcb2 and mouths
-  0ece9eb97f63f868, and the mid-line restore ends the same (AB-R-1075; Kokoro's audio isn't byte-reproducible, AB-L-0375).
+  Node, Chromium and WKWebView (scheme and loopback, two loads each) all give final e68bfb9a96f255c5 and mouths
+  58b2c9d48f735177, and the mid-line restore ends the same (AB-R-1077; Kokoro's audio isn't byte-reproducible, AB-L-0375).
 
 - **W2, particles and readback on WebGPU** (AB-T-0574): check 13 drawn on both backends, the morning film exported
   twice, stills and the readback's cost, in the playground's `?mode=frames` (`apps/playground/README.md`, "Particles and

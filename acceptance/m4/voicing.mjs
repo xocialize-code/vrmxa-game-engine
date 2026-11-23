@@ -25,7 +25,7 @@ const behaviours = new Map(Object.entries(projectBehaviours).filter(([, v]) => t
 const closet = await import(PATHS.core.replace(/index\.js$/, 'closet/index.js'));
 const opts = { vrmxaCore: await vrmxaCore(), closet, behaviours, stubTextures: true };
 const node = { runtime: 'node', version: process.version, ...(await voicingCheck({ R: await loadRapier(), bytes, opts })) };
-const brief = (r) => ({ runtime: r.runtime, final: r.final, mouthHash: r.mouthHash, steps: r.steps, everyLineBaked: r.everyLineBaked, inTheirVoices: r.inTheirVoices, leftToVoice: r.leftToVoice, playsFromTrack: r.playsFromTrack, everyLineSpoken: r.everyLineSpoken, mouthOpens: r.mouthOpens, restored: r.restored, errors: r.errors });
+const brief = (r) => ({ runtime: r.runtime, final: r.final, mouthHash: r.mouthHash, steps: r.steps, everyLineBaked: r.everyLineBaked, inTheirVoices: r.inTheirVoices, leftToVoice: r.leftToVoice, playsFromTrack: r.playsFromTrack, everyLineSpoken: r.everyLineSpoken, overlaps: r.overlaps, mouthOpens: r.mouthOpens, restored: r.restored, errors: r.errors });
 console.log(JSON.stringify(brief(node), null, 1));
 
 let chromium = null;
@@ -41,8 +41,7 @@ if (!argv.includes('--node-only')) {
   });
   await new Promise((r) => server.listen(0, '127.0.0.1', r));
   const require = createRequire(path.join(here, '../../spike-determinism/web/package.json'));
-  let pw;
-  try { pw = require('playwright-core'); } catch { pw = createRequire('/Volumes/Satechi/Development/vrmxa-game-engine/spike-determinism/web/package.json')('playwright-core'); }
+  const pw = require('playwright-core');
   const exe = path.join(os.homedir(), 'Library/Caches/ms-playwright/chromium-1248/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing');
   const browser = await pw.chromium.launch({ executablePath: exe, headless: true });
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
@@ -60,7 +59,7 @@ if (!argv.includes('--node-only')) {
 
 // the per-step run is compared whole here, and kept as a digest (every step's hashes, ~1 MB a runtime, aren't committed)
 const digest = (run) => createHash('sha256').update(JSON.stringify(run)).digest('hex');
-const ok = (r) => r.everyLineBaked && r.inTheirVoices && r.leftToVoice === 0 && r.playsFromTrack && r.everyLineSpoken && r.mouthOpens > 0.3 && r.restored.same && r.restored.mouthsSame;
+const ok = (r) => r.overlaps?.length === 0 && r.everyLineBaked && r.inTheirVoices && r.leftToVoice === 0 && r.playsFromTrack && r.everyLineSpoken && r.mouthOpens > 0.3 && r.restored.same && r.restored.mouthsSame;
 const same = !chromium || (chromium.final === node.final && chromium.mouthHash === node.mouthHash && JSON.stringify(chromium.run) === JSON.stringify(node.run) && chromium.restored?.final === node.restored.final);
 const pass = ok(node) && (!chromium || (ok(chromium) && same && !chromium.errors.length));
 const keep = (r) => r && (({ run, ...rest }) => ({ ...rest, runDigest: digest(run) }))(r);

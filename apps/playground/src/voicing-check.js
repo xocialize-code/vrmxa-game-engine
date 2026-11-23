@@ -4,10 +4,12 @@
 // when, and a snapshot taken mid-line restored into a fresh world that plays on to the same end. Node runs it directly
 // (acceptance/m4/voicing.mjs), browsers through the playground's ?mode=voicing; the runner compares the hashes.
 // What it checks the track for: every line baked, in its role's voice, playing from its baked words and visemes (the
-// voice service's timings for the clip carry the track's visemes), and lasting its baked length.
+// voice service's timings for the clip carry the track's visemes), lasting its baked length, and nobody talking over
+// anybody (@vrmxg/voicing speechOverlaps).
 import { captureWorld, restoreWorld, worldHashes, hashValue, packRun } from '@vrmxg/snapshot';
 import { parse } from '@vrmxg/scene';
-import { VOWELS, voicingPlan } from '@vrmxg/voice';
+import { VOWELS } from '@vrmxg/voice';
+import { voicingPlan, speechOverlaps } from '@vrmxg/voicing';
 import { buildWorld, loadSample } from './world.js';
 
 export const VOICED = 'sequences/cafe-order.vrmxs';
@@ -61,7 +63,7 @@ export async function voicingCheck({ R, bytes, opts, snapshotLine = 4 }) {
   return {
     sequence: VOICED, steps: end, final, mouthHash, components: Object.keys(run[0].h).length, run: packRun(run),
     lines: lines.map((l) => ({ ...l, spokeAt: spoke.find((s) => s.who === l.speaker && s.text === l.text)?.step ?? null, endedAt: ended.find((s) => s.who === l.speaker && s.text === l.text)?.step ?? null })),
-    everyLineBaked: lines.every((l) => l.baked), inTheirVoices: inVoice, leftToVoice: left.length, playsFromTrack: fromTrack,
+    everyLineBaked: lines.every((l) => l.baked), inTheirVoices: inVoice, leftToVoice: left.length, playsFromTrack: fromTrack, overlaps: speechOverlaps(raw).map((x) => x.message),
     everyLineSpoken: lines.every((l) => spoke.some((s) => s.who === l.speaker && s.text === l.text)), mouthOpens: +open.toFixed(3), restored,
   };
 }
