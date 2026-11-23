@@ -45,11 +45,13 @@ export class ScriptDesk {
 
   /**
    * Apply the pane's text (or `text`): one undo step when the sequence changes, nothing when the script has errors or
-   * builds the same document. → { ok, changed, label?, errors, warnings }
+   * builds the same document. `session`: the session the step is made through (the agent's, which marks it: M4 W11).
+   * → { ok, changed, label?, errors, warnings }
+   * @param {string} [text] @param {{ session?: any }} [o]
    */
-  apply(text = this.text) {
+  apply(text = this.text, { session = this.session } = {}) {
     this.text = text;
-    const r = applyScript(this.session, text, { marks: this.marks, coverage: coverageFor(this.short) });
+    const r = applyScript(session, text, { marks: this.marks, coverage: coverageFor(this.short) });
     this.errors = r.ok ? [] : r.errors; this.warnings = r.warnings ?? [];
     if (!r.ok) return { ok: false, changed: false, errors: r.errors, warnings: this.warnings };
     this.parsed = r.parsed; this.applied = text;
