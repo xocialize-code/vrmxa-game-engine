@@ -1,0 +1,31 @@
+{
+  "name": "@vrmxg/cast",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG casting (M4 W6): the roles a script gives a sequence, each cast from a .vrmxa (read through vrmxa-core, injected), its voice (a persona's Kokoro preset, else a role → preset map) and allowed expressions from the persona, its wardrobe through the closet; recasting that swaps the character, keeps the role's performance byte for byte and lists its lines to re-bake in the new voice; each cast one undoable edit; deterministic output.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/script": "0.1.0"
+  },
+  "devDependencies": {
+    "@vrmxg/character": "0.1.0",
+    "@vrmxg/editor-core": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/scene": "0.1.0",
+    "@vrmxg/sequence": "0.1.0",
+    "@vrmxg/voice": "0.1.0"
+  },
+  "vrmxg": {
+    "determinism": "simulation"
+  }
+}

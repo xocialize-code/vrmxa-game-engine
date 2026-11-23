@@ -10,6 +10,9 @@
 // Casting (M2 W11): sequence.cast { setNodeId: { props?, behaviours?, transform? } } recasts the set's own nodes for the
 // whole film: props merged over the set's, behaviours and transform replaced (Hana serving with a brain instead of
 // wandering, the set's music held for the sequence's own cue). The set's file is untouched.
+// Roles (M4 W6, @vrmxg/cast): sequence.roles { setNodeId: { asset, … } } casts a character from another .vrmxa: the
+// node takes that asset (one of the sequence's assets, or the set's), so recasting swaps who plays the role and keeps
+// everything aimed at the node id.
 
 /** True for a sequence document. */
 export const isSequence = (doc) => typeof doc?.set === 'string' && !!doc.sequence;
@@ -30,10 +33,19 @@ export function composeSequence(seq, set) {
   const root = set.nodes.find((n) => n.parent === undefined)?.id;
   const cast = seq.sequence?.cast ?? {};
   for (const id of Object.keys(cast)) if (!ids.has(id)) throw new Error(`sequence "${seq.id}": cast names "${id}", which isn't in the set (${seq.set})`);
+  const roles = seq.sequence?.roles ?? {};
+  for (const [id, r] of Object.entries(roles)) {
+    if (!ids.has(id)) throw new Error(`sequence "${seq.id}": roles names "${id}", which isn't in the set (${seq.set})`);
+    if (r?.asset && !assets.has(r.asset)) throw new Error(`sequence "${seq.id}": role "${id}" is cast from asset "${r.asset}", which neither the sequence nor the set has`);
+    const type = set.nodes.find((n) => n.id === id)?.type;
+    if (r?.asset && type !== 'Character') throw new Error(`sequence "${seq.id}": role "${id}" is a ${type}, not a Character: only characters are cast`);
+  }
   const recast = (n) => {
-    const c = cast[n.id];
-    if (!c) return n;
+    const c = cast[n.id], role = roles[n.id];
+    if (!c && !role?.asset) return n;
     const out = structuredClone(n);
+    if (role?.asset) out.asset = role.asset;
+    if (!c) return out;
     if (c.props) out.props = { ...(n.props ?? {}), ...structuredClone(c.props) };
     if (c.behaviours) out.behaviours = structuredClone(c.behaviours);
     if (c.transform) out.transform = structuredClone(c.transform);

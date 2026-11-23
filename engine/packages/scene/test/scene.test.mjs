@@ -137,3 +137,17 @@ test('a batch (an asset and the node using it) is one undo step, all or nothing;
   ed.redo();
   assert.deepEqual(doc.nodes.map((n) => n.id), ['root', 'set']);
 });
+
+test('setAsset replaces an asset entry in place, even one a node uses; undo puts the old entry back', async () => {
+  const { m0Registry } = await import('@vrmxg/registry/m0');
+  const { createEditor, serialize } = await import('../src/index.js');
+  const doc = { format: 'vrmxs', version: 1, id: 't', assets: [{ id: 'a', type: 'glb', ref: 'a.glb' }, { id: 'hana', type: 'vrmxa', ref: 'characters/hana.vrmxa', sha256: 'old' }], nodes: [{ id: 'hana-1', type: 'Character', asset: 'hana' }] };
+  const before = serialize(doc);
+  const ed = createEditor(m0Registry(), doc);
+  ed.apply({ op: 'setAsset', id: 'hana', asset: { type: 'vrmxa', ref: 'characters/hana.vrmxa', sha256: 'new' } });
+  assert.deepEqual(doc.assets[1], { id: 'hana', type: 'vrmxa', ref: 'characters/hana.vrmxa', sha256: 'new' });
+  assert.throws(() => ed.apply({ op: 'setAsset', id: 'hana', asset: { id: 'other', type: 'vrmxa', ref: 'x' } }), /keeps the asset's id/);
+  assert.throws(() => ed.apply({ op: 'setAsset', id: 'nope', asset: { type: 'glb', ref: 'x' } }), /no asset "nope"/);
+  ed.undo();
+  assert.equal(serialize(doc), before);
+});

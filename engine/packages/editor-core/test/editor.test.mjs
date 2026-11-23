@@ -152,6 +152,7 @@ test('regenerating a line (M3 W4): spoken, its clip and timings written, then on
   assert.deepEqual(JSON.parse(written[ref.replace('.wav', '.timings.json')]).words.length, 2);
   const c = s.doc.sequence.tracks[0].clips[0];
   assert.deepEqual([c.text, c.clip, c.end], ['Good morning!', ref, 100 + 27], 'text, clip and subtitle length (1.1 s at 24 fps)');
+  assert.equal(c.voice, 'af_heart', 'the voice it was baked in is recorded (@vrmxg/cast reads it)');
   assert.equal(s.history().undoDepth - before, 1, 'one undo step');
   assert.equal(s.history().undo, 'Regenerate line "Good morning!"');
   s.undo();

@@ -29,12 +29,15 @@ export function bakePlan(doc, { voices = {}, voice = 'af_heart', dir = 'voice' }
   return out;
 }
 
-/** The document with each planned line pointing at its baked clip (the text stays, as the caption). */
+/**
+ * The document with each planned line pointing at its baked clip (the text stays, as the caption). A dialogue clip also
+ * records the voice it was baked in (`voice`), so casting (@vrmxg/cast) knows whether a recast must re-bake it.
+ */
 export function applyBake(doc, plan) {
   const d = structuredClone(doc);
   for (const p of plan) {
     const m = /^tracks\.(.+)\.clips\[(\d+)\]$/.exec(p.where);
-    if (m) { const t = d.sequence.tracks.find((x) => x.id === m[1]); if (t?.clips?.[+m[2]]) t.clips[+m[2]].clip = p.clip; continue; }
+    if (m) { const t = d.sequence.tracks.find((x) => x.id === m[1]); const c = t?.clips?.[+m[2]]; if (c) { c.clip = p.clip; if (p.voice) c.voice = p.voice; } continue; }
     const c = /^connections\[(\d+)\]$/.exec(p.where);
     if (c && d.connections?.[+c[1]]) d.connections[+c[1]].args.clip = p.clip;
   }

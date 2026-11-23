@@ -1,5 +1,5 @@
 // Edits on a .vrmxs document: add, remove (with its subtree), set a value at a path, reparent,
-// connect / disconnect, add / remove an asset entry, and a batch of these as one step. Each edit is checked against the registry before it applies, returns its
+// connect / disconnect, add / remove / replace an asset entry, and a batch of these as one step. Each edit is checked against the registry before it applies, returns its
 // inverse, and goes on an undo stack, so an MCP agent's change is as undoable as a user's.
 import { Ajv2020 } from 'ajv/dist/2020.js';
 import { nodeSchema } from './schema.js';
@@ -139,6 +139,15 @@ export function createEditor(reg, doc, { prefabs } = {}) {
       if (users.length) throw new Error(`asset "${id}" is used by ${users.join(', ')}`);
       const [a] = doc.assets.splice(i, 1);
       return { op: 'addAsset', asset: a, index: i };
+    },
+    setAsset({ id, asset }) { // replace an asset entry in place (same id, same index), e.g. a file's new sha256; nodes keep naming it
+      if (!asset?.type || !asset?.ref) throw new Error('setAsset needs asset.type and asset.ref');
+      if (asset.id !== undefined && asset.id !== id) throw new Error(`setAsset keeps the asset's id ("${id}", not "${asset.id}")`);
+      const i = (doc.assets ?? []).findIndex((a) => a.id === id);
+      if (i < 0) throw new Error(`no asset "${id}"`);
+      const before = doc.assets[i];
+      doc.assets[i] = { ...clone(asset), id };
+      return { op: 'setAsset', id, asset: before };
     },
     batch({ ops, label }) { // several edits as one undo step; all or nothing
       const done = [];
