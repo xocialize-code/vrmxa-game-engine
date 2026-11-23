@@ -248,8 +248,9 @@ AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for th
   backend: cafe-order 1080p `2b22bd5a4a461080` / 4K `8ef069d9fe5648e7` (WebGPU), `48e228afa392d691` / `bd329ec3c8922ca0`
   (WebGL); the-regular 4K `459255e681a6087d` (WebGPU), `198615bc571ad04e` (WebGL, the same whether the view or only the
   export is on WebGL). The one-minute short at 4K: the film in 26–27 s, the whole delivery in 34–37 s, against the
-  4-minute target. The opt-in redraw check (each frame drawn twice) costs 1.98× a frame at 4K and found no odd draw in
-  4,593 frames.
+  4-minute target. The opt-in redraw check (each frame drawn twice) costs 1.98× a frame at 4K. It found no odd draw in
+  these 4,593 frames, and in the creator's hand test it outvoted one (frame 58, the first draw) and delivered the
+  canonical film (AB-R-1081 timing, AB-R-1082 identity).
 
 - **W2, particles and readback on WebGPU** (AB-T-0574): check 13 drawn on both backends, the morning film exported
   twice, stills and the readback's cost, in the playground's `?mode=frames` (`apps/playground/README.md`, "Particles and
