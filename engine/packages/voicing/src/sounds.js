@@ -26,18 +26,19 @@ export function busFor(ref) {
 /**
  * Put a sound on its bus's audio track (made, named after the bus, if the sequence has none).
  * @param {any} doc a sequence document
- * @param {{ ref: string, start: number, end: number, bus?: string, gain?: number, offset?: number }} s ref: the sound
+ * @param {{ ref: string, start: number, end: number, bus?: string, gain?: number, offset?: number, extend?: boolean }} s ref: the sound
  *   file (an audio clip names its file); start, end: frames; bus: music, sfx or ambience (default: busFor(ref));
- *   offset: seconds into the file
+ *   offset: seconds into the file; extend: lengthen the sequence to the sound's end (else a sound past the end is refused)
  * @returns {{ doc: any, ops: any[], label: string, track: string, bus: string }}
  */
-export function placeSound(doc, { ref, start, end, bus = busFor(ref), gain, offset }) {
+export function placeSound(doc, { ref, start, end, bus = busFor(ref), gain, offset, extend = false }) {
   if (!doc?.sequence) throw new Error('a sound goes in a sequence document');
   if (!ref) throw new Error('a sound names its file (ref)');
   if (!SOUND_BUSES.includes(bus)) throw new Error(`a sound goes on ${SOUND_BUSES.join(', ')}${bus === 'voice' ? ' (lines are voiced through the dialogue track)' : ''}, not "${bus}"`);
   if (!(Number.isInteger(start) && Number.isInteger(end) && end > start && start >= 0)) throw new Error(`a sound's start and end are frames, the end after the start (${start}, ${end})`);
   const seq = structuredClone(doc.sequence);
-  let t = seq.tracks.find((x) => x.type === 'audio' && (x.bus ?? 'sfx') === bus && !x.target);
+  if (end > seq.duration && !extend) throw new Error(`the sound ends at frame ${end}, after the sequence (${seq.duration} frames): shorten it, or pass extend: true to lengthen the sequence`);
+  let t = seq.tracks.find((x) => x.type === 'audio' && (x.bus ?? 'sfx') === bus && !x.target && !x.muted); // never onto a muted track: it wouldn't be heard
   if (!t) {
     const taken = new Set(seq.tracks.map((x) => x.id));
     let id = bus;

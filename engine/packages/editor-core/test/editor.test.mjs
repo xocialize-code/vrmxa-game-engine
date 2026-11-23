@@ -159,3 +159,28 @@ test('regenerating a line (M3 W4): spoken, its clip and timings written, then on
   assert.deepEqual(s.doc.sequence.tracks[0].clips[0], { start: 100, end: 160, text: 'Morning, Mira!', clip: 'voice/old.wav' }, 'undo puts the old line back');
   await assert.rejects(s.seq.regenerateLine('hana-1-says', 3, 'x', { speak, write }), /no line 3/);
 });
+
+test('M4 W7: new words take a voiced line\'s whole bake with them: regenerateLine and a text edit; other edits keep it', async () => {
+  const { BAKE_FIELDS } = await import('../src/sequence.js');
+  const script = await import('@vrmxg/script');
+  assert.deepEqual(BAKE_FIELDS, script.BAKE_FIELDS, 'the same fields as the script\'s');
+  const text = fs.readFileSync(path.join(import.meta.dirname, '../../../../content/sample/sequences/cafe-order.vrmxs'), 'utf8');
+  const s = new EditorSession({ registry: m0Registry(), text });
+  const clipOf = () => s.doc.sequence.tracks.find((t) => t.id === 'mira-says').clips[1];
+  const voiced = structuredClone(clipOf());
+  assert.ok(voiced.words.length && voiced.visemes.length && voiced.audio && voiced.timings, 'the committed sample is voiced');
+  const speak = async () => ({ wav: new Uint8Array(44), words: [{ text: 'Quiet', start: 0.2, duration: 0.3 }, { text: 'today', start: 0.5, duration: 0.4 }] });
+  await s.seq.regenerateLine('mira-says', 1, 'Quiet today?', { speak, write: async () => {}, voice: 'af_bella' });
+  const c = clipOf();
+  for (const f of ['words', 'visemes', 'audio', 'timings']) assert.equal(c[f], undefined, `the old ${f} went`);
+  assert.deepEqual([c.text, c.voice], ['Quiet today?', 'af_bella']);
+  assert.notEqual(c.clip, voiced.clip);
+  s.undo();
+  assert.deepEqual(clipOf(), voiced, 'undo puts the voiced line back whole');
+  s.seq.setClip('mira-says', 1, { start: voiced.start + 2 });
+  assert.deepEqual(clipOf().visemes, voiced.visemes, 'moving the line keeps its voice');
+  s.seq.setClip('mira-says', 1, { text: 'Quiet today, is it?' });
+  for (const f of script.BAKE_FIELDS) assert.equal(clipOf()[f], undefined, `a text edit drops ${f}: the line speaks its new words until it is voiced again`);
+  s.undo(); s.undo();
+  assert.deepEqual(clipOf(), voiced);
+});

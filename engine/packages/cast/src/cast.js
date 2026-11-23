@@ -94,7 +94,6 @@ export function castRole(doc, roleId, card, o = {}) {
   // Only the clip's own record (`voice`, which applyBake, regenerateLine and a folded bake write) says what a line was
   // baked in: a guess from the map or the old casting could keep a line in the wrong voice.
   const rebake = [];
-  const base = slug(doc.id ?? 'scene');
   for (const line of role.lines) {
     const clip = next.tracks.find((t) => t.id === line.track).clips[line.index];
     let reason = /** @type {Rebake['reason']} */ ('unbaked');
@@ -105,8 +104,8 @@ export function castRole(doc, roleId, card, o = {}) {
       for (const f of BAKE_FIELDS) delete clip[f];
       reason = bakedIn === null ? 'unknown' : 'recast';
     }
-    const id = `${base}-${slug(line.track)}-${line.index + 1}`;
-    rebake.push({ id, where: `tracks.${line.track}.clips[${line.index}]`, speaker: role.id, text: line.text, voice: v.voice.preset, engine: v.voice.engine, clip: clipFor(dir, id, v.voice.preset, line.text), beat: line.beat, src: line.src, track: line.track, index: line.index, start: line.start, end: line.end, reason });
+    const id = lineId(doc, line.track, line.index);
+    rebake.push({ id, where: `tracks.${line.track}.clips[${line.index}]`, speaker: role.id, text: line.text, voice: v.voice.preset, engine: v.voice.engine, clip: clipFor(dir, id, v.voice.preset, line.text, v.voice.engine), beat: line.beat, src: line.src, track: line.track, index: line.index, start: line.start, end: line.end, reason });
   }
 
   // allowed expressions: the performance is kept as it is, so a face the persona doesn't allow is only reported
@@ -156,15 +155,30 @@ export function withBake(r, bakes) {
 }
 
 /**
- * Where a line's bake goes: by line, voice and words (a short FNV-1a of the voice and text), so a recast, a re-script or
- * a voice picked by hand never writes over a clip that undo can bring back.
- * @param {string} dir @param {string} id the line's id (bakePlan's) @param {string} voice @param {string} text
+ * Where a line's bake goes: by line, voice and words (a short FNV-1a of the TTS engine, the voice and the text), so a
+ * recast, a re-script, a voice picked by hand or another engine never writes over a clip that undo can bring back.
+ * @param {string} dir @param {string} id the line's id (lineId) @param {string} voice @param {string} text
+ * @param {string} [engine] the TTS engine (kokoro-82m)
  */
-export function clipFor(dir, id, voice, text) {
-  const key = `${voice}\n${text}`;
+export function clipFor(dir, id, voice, text, engine = 'kokoro-82m') {
+  return `${dir}/${id}-${slug(voice)}-${fnv(`${engine}\n${voice}\n${text}`)}.wav`;
+}
+
+/**
+ * A dialogue line's id: `<sequence>-<track>-<n>` (bakePlan's form). Track ids that slug alike (mira-says, mira_says)
+ * get a short hash of the track id as well, so every line of a sequence has its own id and its own files.
+ * @param {any} doc @param {string} track @param {number} index
+ */
+export function lineId(doc, track, index) {
+  const s = slug(track);
+  const clash = (doc.sequence?.tracks ?? []).some((t) => t.type === 'dialogue' && t.id !== track && slug(t.id) === s);
+  return `${slug(doc.id ?? 'scene')}-${s}${clash ? `-${fnv(track).slice(0, 4)}` : ''}-${index + 1}`;
+}
+
+function fnv(key) {
   let h = 0x811c9dc5;
   for (let i = 0; i < key.length; i++) h = Math.imul(h ^ key.charCodeAt(i), 0x01000193);
-  return `${dir}/${id}-${slug(voice)}-${(h >>> 0).toString(16).padStart(8, '0')}.wav`;
+  return (h >>> 0).toString(16).padStart(8, '0');
 }
 
 /**
@@ -184,14 +198,14 @@ export function voicesFor(doc, { presets = {}, set = null } = {}) {
 
 /** The lines still to bake for a role (or every role): text-only lines, with the role's voice and clipFor's file. */
 export function linesToBake(doc, { presets = {}, dir = 'voice', role: only = null, set = null } = {}) {
-  const voices = voicesFor(doc, { presets, set }), base = slug(doc.id ?? 'scene'), out = [];
+  const voices = voicesFor(doc, { presets, set }), out = [];
   for (const r of rolesOf(doc, { set })) {
     if (only && r.id !== only && r.cue !== only) continue;
     const role = doc.sequence.roles?.[r.id];
     for (const l of r.lines) {
       if (l.baked || !voices[r.id]) continue;
-      const id = `${base}-${slug(l.track)}-${l.index + 1}`;
-      out.push({ id, where: `tracks.${l.track}.clips[${l.index}]`, speaker: r.id, text: l.text, voice: voices[r.id], engine: role?.voice?.engine ?? 'kokoro-82m', clip: clipFor(dir, id, voices[r.id], l.text), beat: l.beat, src: l.src, track: l.track, index: l.index, start: l.start, end: l.end, reason: 'unbaked' });
+      const id = lineId(doc, l.track, l.index), engine = role?.voice?.engine ?? 'kokoro-82m';
+      out.push({ id, where: `tracks.${l.track}.clips[${l.index}]`, speaker: r.id, text: l.text, voice: voices[r.id], engine, clip: clipFor(dir, id, voices[r.id], l.text, engine), beat: l.beat, src: l.src, track: l.track, index: l.index, start: l.start, end: l.end, reason: 'unbaked' });
     }
   }
   return out;

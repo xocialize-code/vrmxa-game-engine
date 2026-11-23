@@ -137,6 +137,18 @@ test('a hand-trimmed line gives the line its length; a baked voice is kept while
   const c = build(SMALL.replace('A latte, please.', 'A tea, please.'), b.doc);
   const tea = clip(c.doc, 'mira-says', (x) => x.src === `${next}#say`);
   assert.deepEqual([tea.text, tea.clip], ['A tea, please.', undefined], 'new words: the old voice is stale and goes');
+  // M4 W7: the length stays the person's on every later re-script, not only the first (the record says "-L")
+  const d = build(SMALL, b.doc), e = build(SMALL, d.doc);
+  for (const r of [d, e]) {
+    assert.equal(clip(r.doc, 'hana-1-says', (x) => x.src === `${id}#say`).end - clip(r.doc, 'hana-1-says', (x) => x.src === `${id}#say`).start, say.end - say.start, 'still a second longer');
+    assert.equal(nb(r, next).start - nb(a, next).start, 24, 'and the next line still waits for it');
+  }
+  assert.equal(text(e.doc), text(d.doc), 'a re-script of an unchanged script changes nothing');
+  // a line only reworded by hand (its times as the script gave them) keeps taking the script's length
+  const w = structuredClone(a.doc);
+  clip(w, 'hana-1-says', (x) => x.src === `${id}#say`).text = 'Morning!';
+  const f = build(SMALL, build(SMALL, w).doc);
+  assert.equal(nb(f, next).start, nb(a, next).start, 'no hand length from a reworded line');
 });
 
 test('hand-set shots and duration are kept; generated shots give way', () => {

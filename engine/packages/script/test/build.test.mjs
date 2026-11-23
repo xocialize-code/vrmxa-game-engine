@@ -74,13 +74,14 @@ test('deterministic: the same script gives the same bytes, and re-scripting an u
   const again = build(sample, { previous: build().doc });
   assert.equal(text(again.doc), a);
   assert.deepEqual(again.report.added, []);
-  // the committed sample sequence is this build (content/sample/tools/make-script-sequence.mjs writes it), voiced since
-  // M4 W7 (tools/bake-lines.mjs): without its bake it is the build byte for byte, and re-scripting it keeps the bake
+  // the committed sample sequence is this build (content/sample/tools/make-script-sequence.mjs writes it), voiced and
+  // fitted to its speech since M4 W7 (tools/bake-lines.mjs --fit): re-scripting it changes nothing, its bake and its
+  // hand lengths stay, and only dialogue lengths and what they moved differ from the build
   const committed = fs.readFileSync(path.join(SAMPLE, 'sequences/cafe-order.vrmxs'), 'utf8'), voiced = JSON.parse(committed);
-  const unbaked = structuredClone(voiced);
-  for (const t of unbaked.sequence.tracks) if (t.type === 'dialogue') for (const c of t.clips) for (const f of BAKE_FIELDS) delete c[f];
-  assert.equal(text(unbaked), a);
   assert.equal(text(build(sample, { previous: voiced }).doc), committed, 're-scripting the voiced sample changes nothing');
+  assert.ok(voiced.sequence.tracks.filter((t) => t.type === 'dialogue').every((t) => t.clips.every((c) => BAKE_FIELDS.every((f) => c[f] !== undefined))), 'every line baked');
+  const words = (d) => d.sequence.tracks.filter((t) => t.type === 'dialogue').map((t) => t.clips.map((c) => [c.src, c.text]));
+  assert.deepEqual(words(voiced), words(JSON.parse(a)), 'the same lines, in the same order');
   // golden: a deliberate change to the build changes this, in Node, Chromium and WKWebView alike (acceptance/m4)
   assert.equal(sha(a), JSON.parse(fs.readFileSync(path.join(import.meta.dirname, 'golden.json'), 'utf8')).sample);
 });

@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { serialize } from '@vrmxg/scene';
-import { BAKE_FIELDS } from '@vrmxg/script';
+import { buildSequence } from '@vrmxg/script';
 import { cardOf } from '../src/index.js';
 
 export const SAMPLE = path.resolve(import.meta.dirname, '../../../../content/sample');
@@ -13,12 +13,8 @@ export const set = JSON.parse(fs.readFileSync(path.join(SAMPLE, 'cafe.vrmxs'), '
 export const prefabs = new Map(fs.readdirSync(path.join(SAMPLE, 'prefabs')).map((f) => [`prefabs/${f}`, JSON.parse(fs.readFileSync(path.join(SAMPLE, 'prefabs', f), 'utf8'))]));
 export const script = fs.readFileSync(path.join(SAMPLE, 'scripts/cafe-order.fountain'), 'utf8');
 export const marks = JSON.parse(fs.readFileSync(path.join(SAMPLE, 'scripts/cafe-marks.json'), 'utf8')).marks;
-/** The sample sequence as the script built it: the committed file is voiced since M4 W7, so its bake is left out here. */
-export const sampleText = (() => {
-  const d = JSON.parse(fs.readFileSync(path.join(SAMPLE, 'sequences/cafe-order.vrmxs'), 'utf8'));
-  for (const t of d.sequence.tracks) if (t.type === 'dialogue') for (const c of t.clips) for (const f of BAKE_FIELDS) delete c[f];
-  return serialize(d);
-})();
+/** The sample sequence as the script builds it: the committed file is voiced and fitted to its speech since M4 W7. */
+export const sampleText = serialize(buildSequence(script, { set, marks, id: 'cafe-order', source: 'scripts/cafe-order.fountain' }).doc);
 export const sequence = () => JSON.parse(sampleText);
 export const sha = (s) => createHash('sha256').update(s).digest('hex');
 export const text = (doc) => serialize(doc);

@@ -101,7 +101,7 @@ export function buildSequence(text, o = {}) {
   for (const n of G.nodes) if (setIds.has(n.id)) throw new Error(`the set already has a node "${n.id}", which the script's build places in the sequence`);
 
   const live = new Set(plan.beats.map((b) => b.id));
-  const m = merge(previous, G, { oldRows, beats: plan.beats, live, duration: plan.duration, release });
+  const m = merge(previous, G, { oldRows, beats: plan.beats, live, duration: plan.duration, release, lengths });
   warnings.push(...m.warnings);
 
   // ---------------------------------------------------------------- the document
