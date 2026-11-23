@@ -7,3 +7,4 @@ export { createTools } from './headless.js';
 export { EditorBridge } from './bridge.js';
 export { toolList, createHandlers, caller } from './tools.js';
 export { LiveView } from './live.js';
+export { shortToolList, createShortHandlers, CommandRegistry, checkArgs, asAgent, asContent, SHORT_INSTRUCTIONS, AGENT_MARK, CONTENT_NOTE } from './shorts.js';

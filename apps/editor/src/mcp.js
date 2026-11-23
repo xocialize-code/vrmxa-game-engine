@@ -83,12 +83,13 @@ export function editorTarget(ed) {
   };
 }
 
-/** The page's end of the bridge: poll, run, answer. */
+/** The page's end of the bridge: poll, run, answer. The creator (M4 W11) brings its own tools (`call`) and name. */
 export class McpLink {
-  /** @param {import('./host.js').EditorHost} ed @param {{ url?: string, onChange?: () => void }} [o] */
-  constructor(ed, { url = 'http://127.0.0.1:5183', onChange } = {}) {
+  /** @param {import('./host.js').EditorHost} ed @param {{ url?: string, onChange?: () => void, call?: (name: string, args: any) => Promise<any>, app?: string, hello?: () => object }} [o] */
+  constructor(ed, { url = 'http://127.0.0.1:5183', onChange, call = null, app = 'VRMXG Editor', hello = null } = {}) {
     this.ed = ed; this.url = `${url.replace(/\/$/, '')}/vrmxg-mcp/exchange`; this.onChange = onChange;
-    this.call = caller(createHandlers(m0Registry(), editorTarget(ed)));
+    this.app = app; this.helloInfo = hello;
+    this.call = call ?? caller(createHandlers(m0Registry(), editorTarget(ed)));
     this.state = 'off'; this.last = null; this.calls = 0; this.running = false;
     this.id = Math.random().toString(36).slice(2, 10); // which editor this is, so the bridge serves one at a time
   }
@@ -102,11 +103,11 @@ export class McpLink {
     while (this.running) {
       let msg;
       try {
-        const body = JSON.stringify({ editor: this.id, reply, hello: hello ? { app: 'VRMXG Editor', project: this.ed.project?.name ?? null, scene: this.ed.sceneRef ?? null } : null });
+        const body = JSON.stringify({ editor: this.id, reply, hello: hello ? { app: this.app, project: this.ed.project?.name ?? null, scene: this.ed.sceneRef ?? null, ...(this.helloInfo?.() ?? {}) } : null });
         const res = await fetch(this.url, { method: 'POST', body, headers: { 'Content-Type': 'text/plain' } });
         msg = await res.json();
         reply = null; hello = false; wait = 1000;
-        if (msg.taken) { hello = true; this.set('taken', 'another editor has the link'); await sleep(3000); continue; }
+        if (msg.taken) { hello = true; this.set('taken', `another ${this.app} has the link`); await sleep(3000); continue; }
         if (this.state === 'off' || this.state === 'taken') this.set('connected', null);
       } catch {
         // no server (yet): try again, slowly; a reply that didn't get through is lost with the server that asked
