@@ -49,8 +49,24 @@ export class VoiceService {
     return this;
   }
 
-  /** Read one line's clip into the audio library and its word timings (estimated from the timings' text if missing). */
-  async preload(clip) {
+  /**
+   * Read one line's clip into the audio library and its word timings (estimated from the timings' text if missing).
+   * A baked line (M4 W7, voicing.js) brings its own: `baked` is the dialogue clip's words, visemes and audio length, and
+   * they are what the line plays, with no timings file read and no lip-sync rule run: the mouth is sampled from the
+   * baked visemes and the line ends at the baked length, so a replay from the track is the same wherever it runs.
+   * @param {string} clip @param {{ words?: any[], visemes?: any[], audio?: { duration?: number }, text?: string } | null} [baked]
+   */
+  async preload(clip, baked = null) {
+    if (baked?.words) {
+      const audio = this.tree.services.get('audio');
+      if (audio) await audio.library.add(clip);
+      const words = baked.words.map((w) => ({ text: w.text, start: w.start, duration: w.duration }));
+      const last = words.at(-1);
+      const t = { words, text: baked.text ?? words.map((w) => w.text).join(' '), duration: Math.max(baked.audio?.duration ?? 0, last ? last.start + last.duration : 0), estimated: false, visemes: baked.visemes ?? null };
+      this.timings.set(clip, t);
+      this.tracks.delete(clip);
+      return t;
+    }
     if (this.timings.has(clip)) return this.timings.get(clip);
     const audio = this.tree.services.get('audio');
     const info = audio ? await audio.library.add(clip) : null;
@@ -94,7 +110,8 @@ export class VoiceService {
   wordsOf(line) { return line.clip ? this.timings.get(line.clip).words : line.words; }
   trackOf(line) {
     const key = line.clip ?? `text:${line.text}`;
-    if (!this.tracks.has(key)) this.tracks.set(key, buildTrack(this.wordsOf(line)));
+    const baked = line.clip ? this.timings.get(line.clip)?.visemes : null; // a baked line's own visemes (preload)
+    if (!this.tracks.has(key)) this.tracks.set(key, baked ? baked.map(([viseme, t0, t1, t2, level]) => ({ viseme, t0, t1, t2, level })) : buildTrack(this.wordsOf(line)));
     return this.tracks.get(key);
   }
 

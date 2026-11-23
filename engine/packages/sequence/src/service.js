@@ -45,7 +45,8 @@ export class SequenceService {
     this.tree.services.get('cameras')?.fixAspect?.(ASPECT);
     const voice = this.tree.services.get('voice'), audio = this.tree.services.get('audio');
     for (const t of this.tracks) for (const c of t.clips ?? []) {
-      if (t.type === 'dialogue' && c.clip && voice) await voice.preload(c.clip);
+      // a baked line (M4 W7) plays its own words, visemes and length: the track, not the WAV's decoder or the lip-sync rules
+      if (t.type === 'dialogue' && c.clip && voice) await voice.preload(c.clip, c.words ? { words: c.words, visemes: c.visemes ?? null, audio: c.audio ?? null, text: c.text } : null);
       if (t.type === 'audio' && c.asset && audio) await audio.library.add(c.asset);
     }
     if (this.seq.autoplay !== false) this.play({});

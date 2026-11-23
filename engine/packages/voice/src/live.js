@@ -20,15 +20,23 @@ const b64 = (s) => {
 };
 const decode = (r) => ({ wav: typeof r.wav === 'string' ? b64(r.wav) : r.wav, words: r.words ?? null, sampleRate: r.sampleRate ?? null });
 
+// offsetApplied (M4 W7): the seconds a provider has already added to every word it times. Kokoro's own timings run
+// about 30 ms early (AB-R-0888): MLXEngine's tts.speak answers them as they are, while the loopback stand-ins
+// (tts-server.py, voice-server.py) add the +0.03 s themselves. A bake (voicing.js) adds only what is left.
+
 /** The Mac shell's bridge (window.vrmxgNative or the shell's `native` object). */
 export function shellTTS(native) {
-  return { name: 'shell', async speak({ text, voice }) { return decode(await native.call('tts.speak', { text, voice })); } };
+  return { name: 'shell', offsetApplied: 0, async speak({ text, voice }) { return decode(await native.call('tts.speak', { text, voice })); } };
 }
 
-/** A loopback TTS server: POST { text, voice } → { wav (base64), sampleRate, words }. */
-export function httpTTS(url, { fetch: f = globalThis.fetch } = {}) {
+/**
+ * A loopback TTS server: POST { text, voice } → { wav (base64), sampleRate, words }.
+ * @param {string} url @param {{ fetch?: typeof fetch, offsetApplied?: number }} [o] offsetApplied: what the server adds
+ *   to its words (the sample's stand-ins add Kokoro's 0.03 s)
+ */
+export function httpTTS(url, { fetch: f = globalThis.fetch, offsetApplied = 0.03 } = {}) {
   return {
-    name: `http ${url}`,
+    name: `http ${url}`, offsetApplied,
     async speak({ text, voice }) {
       const r = await f(url, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ text, voice }) });
       if (!r.ok) throw new Error(`${url}: ${r.status} ${await r.text()}`);

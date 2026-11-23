@@ -1,9 +1,11 @@
-// @vrmxg/voice — M1 W6 (AB-T-0518).
+// @vrmxg/voice — M1 W6 (AB-T-0518). Voicing a sequence (M4 W7, AB-T-0579): voicing.js, sounds.js.
 import { VoiceService } from './service.js';
 export { VoiceService } from './service.js';
 export { LiveLines, shellTTS, httpTTS } from './live.js';
 export { EnergyVAD, listenTo, microphone, encodeWav, decodeWav, wavFrames, shellSTT, shellListen, httpSTT } from './listen.js';
 export { bakePlan, applyBake } from './bake.js';
+export { voicingPlan, bakeLines, applyVoicing, voiceLines, rebakeWith, TIMING_OFFSETS } from './voicing.js';
+export { placeSound, addSound, soundProblems, busFor, SOUND_BUSES } from './sounds.js';
 export { buildTrack, sampleMouth, wordAt, estimateWords, VOWELS, OCULUS_TO_VRM } from './lipsync.js';
 
 /**

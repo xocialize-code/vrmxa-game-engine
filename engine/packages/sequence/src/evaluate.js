@@ -69,9 +69,13 @@ const tc = (frame, fps) => {
   return `${p(h)}:${p(m)}:${p(s)},${p(f, 3)}`;
 };
 
-/** SRT subtitles from the dialogue tracks (speaker names from `names`, node id → name). */
+/**
+ * SRT subtitles from the dialogue tracks (speaker names from `names`, node id → name). A baked line (M4 W7: `audio`,
+ * its length in seconds) is shown until its audio ends when that is later than the clip's end: the line plays to its end.
+ */
 export function subtitles(seq, names = {}) {
-  const lines = (seq.tracks ?? []).filter((t) => t.type === 'dialogue').flatMap((t) => (t.clips ?? []).filter((c) => c.text).map((c) => ({ ...c, who: names[t.target] ?? t.target })));
+  const endOf = (c) => (c.audio?.duration ? Math.max(c.end, c.start + Math.ceil(c.audio.duration * seq.fps)) : c.end);
+  const lines = (seq.tracks ?? []).filter((t) => t.type === 'dialogue').flatMap((t) => (t.clips ?? []).filter((c) => c.text).map((c) => ({ ...c, end: endOf(c), who: names[t.target] ?? t.target })));
   lines.sort((a, b) => a.start - b.start);
   return lines.map((l, i) => `${i + 1}\n${tc(l.start, seq.fps)} --> ${tc(l.end, seq.fps)}\n${l.who ? `${l.who}: ` : ''}${l.text}\n`).join('\n');
 }

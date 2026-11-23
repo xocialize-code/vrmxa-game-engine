@@ -20,7 +20,7 @@ const mira = await readCharacter(bytes, { ref: 'characters/mira.vrmxa', vrmxa })
 rolesOf(session.doc);                         // [{ id: 'hana-1', cue: 'HANA', lines, performance: ['hana-1-act', …] }, …]
 const r = await applyCast(session, 'HANA', mira, {   // one undo step: "Recast HANA: Hana → Mira", re-bake and all
   presets: { 'hana-1': 'af_heart', mira: 'af_bella' },   // for characters whose persona names no Kokoro preset
-  rebake: async (lines) => speakAndWrite(lines),         // W7's hook: write each line's clip, answer its bake fields
+  rebake: rebakeWith({ tts, write, read }),               // W7's hook (@vrmxg/voice): speak each line, answer its bake fields
 });
 ```
 
@@ -100,7 +100,7 @@ over a file undo can bring back. That rules out `bakePlan`'s `voice/<line>.wav`,
 **a cast role is baked from this list, not from `bakePlan`'s names.** `bakePlan` stays as it is for the sample's tool.
 `linesToBake(doc, { role })` lists a role's unbaked lines, with the same names, at any time.
 
-**W7's hook:** `await applyCast(session, role, card, { rebake })` calls `rebake(lines, { role, doc, label })` before the
+**W7's hook** (`rebakeWith` in `@vrmxg/voice`, M4 W7): `await applyCast(session, role, card, { rebake })` calls `rebake(lines, { role, doc, label })` before the
 cast lands. The hook writes each line's audio to `line.clip` (and its timings) and answers each line with its bake
 fields (`{ clip, timings?, words?, visemes?, audio? }`, the script's `BAKE_FIELDS`), or `null` to leave it speaking live.
 `withBake` puts those fields, and each clip's `voice`, into the cast's own edit. **One undo takes back the recast and its
