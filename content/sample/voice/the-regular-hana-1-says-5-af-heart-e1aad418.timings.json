@@ -1,0 +1,42 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "So, no more mornings here, then.",
+ "audio": "the-regular-hana-1-says-5-af-heart-e1aad418.wav",
+ "sampleRate": 24000,
+ "duration": 2.275,
+ "source": "kokoro-82m af_heart (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "So",
+   "start": 0.33,
+   "duration": 0.225
+  },
+  {
+   "text": "no",
+   "start": 0.605,
+   "duration": 0.1625
+  },
+  {
+   "text": "more",
+   "start": 0.7675,
+   "duration": 0.1625
+  },
+  {
+   "text": "mornings",
+   "start": 0.93,
+   "duration": 0.35
+  },
+  {
+   "text": "here",
+   "start": 1.28,
+   "duration": 0.175
+  },
+  {
+   "text": "then",
+   "start": 1.505,
+   "duration": 0.55
+  }
+ ]
+}

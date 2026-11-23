@@ -19,9 +19,12 @@ test('slugs and title pages', () => {
   assert.deepEqual(titlePage('INT. ROOM\n\nNothing.'), { title: null, set: null });
 });
 
-test('the sample has one short, found from its script: the committed sequence keeps its cameras', () => {
+test('the sample\'s shorts, found from its scripts: a committed sequence keeps its cameras', () => {
   const shorts = readShorts(files, null, { 'scripts/cafe-order.fountain': script });
-  assert.deepEqual(shorts, [{ id: 'cafe-order', title: 'The Order', script: 'scripts/cafe-order.fountain', sequence: 'sequences/cafe-order.vrmxs', marks: 'scripts/cafe-marks.json', set: 'cafe.vrmxs', coverage: 'default' }]);
+  assert.deepEqual(shorts[0], { id: 'cafe-order', title: 'The Order', script: 'scripts/cafe-order.fountain', sequence: 'sequences/cafe-order.vrmxs', marks: 'scripts/cafe-marks.json', set: 'cafe.vrmxs', coverage: 'default' });
+  // M4 W12's short is found too, and without shorts.json it would keep the script's default cameras: so the sample
+  // lists it in shorts.json, with its cameras by rule (sample-short.test.mjs)
+  assert.deepEqual(shorts.slice(1).map((s) => [s.id, s.coverage]), [['the-regular', 'default']]);
   const fresh = shortFor('scripts/new-scene.fountain', { files, text: script });
   assert.equal(fresh.coverage, 'rule', 'a new short is covered by rule');
   assert.equal(fresh.marks, 'scripts/cafe-marks.json', 'the set\'s marks');
@@ -29,7 +32,7 @@ test('the sample has one short, found from its script: the committed sequence ke
 });
 
 test('shorts.json round-trips and is checked', () => {
-  const shorts = readShorts(files, null, { 'scripts/cafe-order.fountain': script });
+  const shorts = readShorts(files, null, { 'scripts/cafe-order.fountain': script }).filter((s) => s.id === 'cafe-order');
   const text = shortsManifest(upsertShort(shorts, { id: 'second', title: 'Second', script: 'scripts/second.fountain', sequence: 'sequences/second.vrmxs', marks: null, set: null, coverage: 'rule' }));
   assert.ok(text.endsWith('\n'));
   const back = readShorts(files, text);

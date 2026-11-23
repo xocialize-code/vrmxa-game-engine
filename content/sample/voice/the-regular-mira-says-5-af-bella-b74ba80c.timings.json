@@ -1,0 +1,52 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Are you kidding? I'll be in every weekend.",
+ "audio": "the-regular-mira-says-5-af-bella-b74ba80c.wav",
+ "sampleRate": 24000,
+ "duration": 3.225,
+ "source": "kokoro-82m af_bella (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "Are",
+   "start": 0.405,
+   "duration": 0.125
+  },
+  {
+   "text": "you",
+   "start": 0.53,
+   "duration": 0.15
+  },
+  {
+   "text": "kidding",
+   "start": 0.68,
+   "duration": 0.55
+  },
+  {
+   "text": "I'll",
+   "start": 1.355,
+   "duration": 0.1375
+  },
+  {
+   "text": "be",
+   "start": 1.4925,
+   "duration": 0.1375
+  },
+  {
+   "text": "in",
+   "start": 1.63,
+   "duration": 0.1375
+  },
+  {
+   "text": "every",
+   "start": 1.7675,
+   "duration": 0.3375
+  },
+  {
+   "text": "weekend",
+   "start": 2.105,
+   "duration": 0.85
+  }
+ ]
+}

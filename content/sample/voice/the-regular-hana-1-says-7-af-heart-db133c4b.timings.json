@@ -1,0 +1,37 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Tell your new office that.",
+ "audio": "the-regular-hana-1-says-7-af-heart-db133c4b.wav",
+ "sampleRate": 24000,
+ "duration": 1.9,
+ "source": "kokoro-82m af_heart (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "Tell",
+   "start": 0.305,
+   "duration": 0.1875
+  },
+  {
+   "text": "your",
+   "start": 0.4925,
+   "duration": 0.1125
+  },
+  {
+   "text": "new",
+   "start": 0.605,
+   "duration": 0.1875
+  },
+  {
+   "text": "office",
+   "start": 0.7925,
+   "duration": 0.3875
+  },
+  {
+   "text": "that",
+   "start": 1.18,
+   "duration": 0.5
+  }
+ ]
+}

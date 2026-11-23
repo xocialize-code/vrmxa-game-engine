@@ -1,0 +1,94 @@
+{
+ "generated": "2026-11-23",
+ "prompt": "a wooden park bench with dark green cast iron legs and armrests, slatted seat and back, front view, product photo, centered, whole object in frame, plain light grey background, soft even studio light",
+ "size_m": 1.7,
+ "image": {
+  "id": "job_05e394bvbhfajz772ekw",
+  "operation": "image.generate",
+  "model": "z-image-turbo",
+  "effective": {
+   "count": 1,
+   "model_params": {
+    "model": "z-image-turbo",
+    "prompt_enhancement": {
+     "applied": false,
+     "outcome": "no_profile"
+    },
+    "steps": 8,
+    "x-gaea.worker": {
+     "effective": {
+      "count": 1,
+      "seed": 21,
+      "size": {
+       "height": 1024,
+       "width": 1024
+      },
+      "x-zimage.steps": 8
+     },
+     "lane": "int4",
+     "operation": "image.generate",
+     "plugin": "com.xocialize.gaea.z-image",
+     "prepare_seconds": 4.856,
+     "seconds": 11.276,
+     "version": "0.2.1"
+    }
+   },
+   "quality": "standard",
+   "seed": 21,
+   "size": {
+    "height": 1024,
+    "width": 1024
+   },
+   "x-zimage.steps": 8
+  },
+  "licence": {
+   "commercial_use": true,
+   "spdx": "Apache-2.0",
+   "terms_url": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  "warnings": []
+ },
+ "mesh": {
+  "id": "job_ytn38xx401yb5t4cn45m",
+  "operation": "mesh.generate",
+  "model": "trellis2-512",
+  "effective": {
+   "background": "remove",
+   "max_faces": 40000,
+   "model_params": {
+    "x-gaea.worker": {
+     "effective": {
+      "background": "remove",
+      "max_faces": 40000,
+      "resolution": 512,
+      "seed": 7,
+      "texture": "atlas",
+      "texture_size": 1024
+     },
+     "lane": "bf16",
+     "operation": "mesh.generate",
+     "plugin": "com.xocialize.gaea.trellis2",
+     "prepare_seconds": 3.065,
+     "seconds": 30.085,
+     "version": "0.1.0"
+    }
+   },
+   "placement": "centered",
+   "quality": "standard",
+   "resolution": 512,
+   "seed": 7,
+   "size_m": 1.7,
+   "texture": "atlas",
+   "texture_size": 1024
+  },
+  "licence": {
+   "attribution": "Built with DINOv3",
+   "commercial_use": true,
+   "notice": "TRELLIS.2 is MIT; its DINOv3 image conditioner is under Meta's DINOv3 License, which asks for \"Built with DINOv3\" wherever it ships.",
+   "spdx": "LicenseRef-DINOv3",
+   "terms_url": "https://ai.meta.com/resources/models-and-libraries/dinov3-license/"
+  },
+  "warnings": []
+ },
+ "glbBytes": 3778560
+}

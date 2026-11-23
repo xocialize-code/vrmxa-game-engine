@@ -1,0 +1,47 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Then the croissant is on the house.",
+ "audio": "the-regular-hana-1-says-6-af-heart-d91f02e6.wav",
+ "sampleRate": 24000,
+ "duration": 2.375,
+ "source": "kokoro-82m af_heart (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "Then",
+   "start": 0.33,
+   "duration": 0.1375
+  },
+  {
+   "text": "the",
+   "start": 0.4675,
+   "duration": 0.0875
+  },
+  {
+   "text": "croissant",
+   "start": 0.555,
+   "duration": 0.65
+  },
+  {
+   "text": "is",
+   "start": 1.205,
+   "duration": 0.1125
+  },
+  {
+   "text": "on",
+   "start": 1.3175,
+   "duration": 0.125
+  },
+  {
+   "text": "the",
+   "start": 1.4425,
+   "duration": 0.0875
+  },
+  {
+   "text": "house",
+   "start": 1.53,
+   "duration": 0.625
+  }
+ ]
+}
