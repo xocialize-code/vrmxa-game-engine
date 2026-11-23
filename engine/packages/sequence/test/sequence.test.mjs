@@ -86,6 +86,20 @@ test('casting (M2 W11): sequence.cast recasts set nodes for the film (props merg
   assert.throws(() => composeSequence({ ...SEQ, sequence: { ...SEQ.sequence, cast: { nobody: { props: {} } } } }, SET), /cast names "nobody"/);
 });
 
+test('roles (M4 W6, @vrmxg/cast): a role cast from another .vrmxa gives its node that asset, with the cast as well; the set is untouched', () => {
+  const seq = { ...SEQ, assets: [{ id: 'cast-aiko', type: 'vrmxa', ref: 'characters/aiko.vrmxa' }], sequence: { ...SEQ.sequence, cast: { hana: { transform: { p: [1, 0, 1] } } }, roles: { hana: { cue: 'HANA', asset: 'cast-aiko' }, mira: { cue: 'MIRA' } } } };
+  const before = JSON.stringify(SET);
+  const d = composeSequence(seq, SET);
+  const h = d.nodes.find((n) => n.id === 'hana'), m = d.nodes.find((n) => n.id === 'mira');
+  assert.equal(h.asset, 'cast-aiko');
+  assert.deepEqual(h.transform, { p: [1, 0, 1] }, 'the cast entry still applies');
+  assert.equal(m.asset, SET.nodes.find((n) => n.id === 'mira').asset, 'a role with no asset keeps the set\'s character');
+  assert.ok(d.assets.some((a) => a.id === 'cast-aiko'));
+  assert.equal(JSON.stringify(SET), before);
+  assert.throws(() => composeSequence({ ...seq, sequence: { ...seq.sequence, roles: { nobody: { asset: 'cast-aiko' } } } }, SET), /roles names "nobody"/);
+  assert.throws(() => composeSequence({ ...seq, assets: [] }, SET), /role "hana" is cast from asset "cast-aiko", which neither the sequence nor the set has/);
+});
+
 test('checks, clips, post values and SRT subtitles', () => {
   const ids = new Set(composeSequence(SEQ, SET).nodes.map((n) => n.id));
   assert.deepEqual(checkSequence(SEQ.sequence, { nodeIds: ids }), []);
