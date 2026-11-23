@@ -262,8 +262,10 @@ export class EditorHost {
    * A world from a document. The edit view (play false) is never stepped, so it skips the run-time closet and reuses
    * the project's read bundles and clips between rebuilds; Play builds the full world, as the game does. `cache: true`
    * lets a play world share those read bundles and clips too (they are never written to: the creator's thumbnails).
+   * `mtoonMaterial`: the MToon class of the host that will draw the world (M4 W10: a WebGL export from a WebGPU view
+   * needs WebGL's MToon; WebGL can't draw MToonNodeMaterial); the view's by default.
    */
-  async buildFrom(doc, { play = false, heard = play, cache = !play } = {}) {
+  async buildFrom(doc, { play = false, heard = play, cache = !play, mtoonMaterial = this.host.mtoonMaterial } = {}) {
     const p = this.project;
     if (this.cacheFor !== p) {
       this.cacheFor = p; this.characterCache = { sources: new Map(), clips: new Map() }; this.animCache = await p.animations();
@@ -274,7 +276,7 @@ export class EditorHost {
     const sample = { scene: this.sceneRef, doc, prefabs: this.session.prefabs, animations: this.animCache, bytes: (ref) => p.bytes(ref), personas: this.personasCache ?? null };
     this.buildTimings = {};
     if (heard && !this.audio) this.audio = new AudioOutput(); // made on the first Play: that click is the gesture that lets it sound
-    return buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial: this.host.mtoonMaterial });
+    return buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial });
   }
 
   /** Each scene node's object, for picking: inner nodes of a prefab instance pick the instance. */
@@ -551,14 +553,14 @@ export class EditorHost {
   }
 
   /** A take as a world at step 0 with its input replaying: { world, seconds }. Sound is recorded, not heard. */
-  async takeWorld(id, seqDoc = null) {
+  async takeWorld(id, seqDoc = null, { mtoonMaterial = this.host.mtoonMaterial } = {}) {
     let doc, input;
     if (id === 'sequence') {
       // the sequence as the runtimes play it from its first frame, exactly as the timeline's preview builds it; seqDoc:
       // a snapshot of it taken earlier (the creator's render queue renders a short as it was queued, M4 W5)
       const src = seqDoc ?? parse(this.session.text());
       const seq = src.sequence;
-      const world = await this.buildFrom(src, { play: true, heard: false });
+      const world = await this.buildFrom(src, { play: true, heard: false, mtoonMaterial });
       return { world, seconds: seq.duration / seq.fps };
     }
     let ai = [], steps = null;
@@ -573,7 +575,7 @@ export class EditorHost {
         input = file.input; ai = file.ai ?? []; steps = file.steps;
       } else input = file; // a bare input recording (M1)
     }
-    const world = await this.buildFrom(structuredClone(doc), { play: true, heard: false });
+    const world = await this.buildFrom(structuredClone(doc), { play: true, heard: false, mtoonMaterial });
     if (input) world.input.replay(structuredClone(input));
     if (ai.length) world.ai?.replay(ai);
     return { world, seconds: (steps ?? input?.frames?.length ?? 0) / 60 };
@@ -643,11 +645,12 @@ export class EditorHost {
     let world = null;
     try {
       const seqDoc = take === 'sequence' ? (doc ?? parse(this.session.text())) : null;
-      const built = await this.takeWorld(take, seqDoc);
+      // the export's host first: its world is built with that host's MToon (another backend's, when the job says)
+      this.exportHost ??= await this.offlineHost(backend);
+      const built = await this.takeWorld(take, seqDoc, { mtoonMaterial: this.exportHost.mtoonMaterial });
       world = built.world;
       const frames = framesFor(seconds ?? built.seconds, rate);
       this.exporting.frames = frames;
-      this.exportHost ??= await this.offlineHost(backend);
       const ext = CODECS[codec].ext;
       const topDown = !!this.exportHost.renderer.isWebGPURenderer;
       const base = (name || `${(this.sceneRef ?? 'scene').replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-')}-${size}${fps.replace('.', '')}`).replace(/\.(mp4|mov)$/, '');

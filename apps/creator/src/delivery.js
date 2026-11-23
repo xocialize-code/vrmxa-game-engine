@@ -177,10 +177,10 @@ async function turntable(host, doc, id, { path, toDisk, width, height, rate, cod
   host.exporting = { n: 0, frames: 0, phase: `turntable ${id}` }; host.changed('export');
   let world = null, th = null, restore = null;
   try {
-    ({ world } = await host.takeWorld('sequence', doc));
+    th = await host.offlineHost(backend); // first: the world is built with its MToon (WebGL's for a WebGL job)
+    ({ world } = await host.takeWorld('sequence', doc, { mtoonMaterial: th.mtoonMaterial }));
     const tree = world.tree;
     while (tree.clock.step < TURNTABLE_STEP) while (!tree.step()) await tree.settle();
-    th = await host.offlineHost(backend);
     restore = isolate(tree, id);
     const frames = framesFor(TURNTABLE_SECONDS, rate), aspect = width / height;
     const framing = turntableFraming(tree.find(id).object3d, aspect);
