@@ -1,0 +1,51 @@
+{
+  "name": "@vrmxg/creator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The VRMXG anime creator (M4 W5): a project of shorts, the script pane (Fountain, re-scripted as one undo step with hand edits kept), the storyboard strip, the timeline shared with the editor, the viewport on WebGPU or WebGL, casting and the render queue.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/ai": "0.1.0",
+    "@vrmxg/audio": "0.1.0",
+    "@vrmxg/camera": "0.1.0",
+    "@vrmxg/cast": "0.1.0",
+    "@vrmxg/character": "0.1.0",
+    "@vrmxg/closet": "0.1.0",
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/coverage": "0.1.0",
+    "@vrmxg/director": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/editor-core": "0.1.0",
+    "@vrmxg/editor-ui": "0.1.0",
+    "@vrmxg/export": "0.1.0",
+    "@vrmxg/input": "0.1.0",
+    "@vrmxg/interact": "0.1.0",
+    "@vrmxg/item": "0.1.0",
+    "@vrmxg/mcp": "0.1.0",
+    "@vrmxg/model": "0.1.0",
+    "@vrmxg/nav": "0.1.0",
+    "@vrmxg/particles": "0.1.0",
+    "@vrmxg/persona": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/post": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/render": "0.1.0",
+    "@vrmxg/save": "0.1.0",
+    "@vrmxg/scene": "0.1.0",
+    "@vrmxg/script": "0.1.0",
+    "@vrmxg/sequence": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0",
+    "@vrmxg/tracks": "0.1.0",
+    "@vrmxg/voice": "0.1.0",
+    "camera-controls": "3.1.2",
+    "vue": "3.5.45"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "6.0.11"
+  }
+}
