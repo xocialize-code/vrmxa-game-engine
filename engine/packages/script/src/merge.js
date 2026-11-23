@@ -41,10 +41,11 @@ const cmp = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 /**
  * @param {any} prev the sequence document as it is now (null for a first build)
  * @param {any} G generate()'s output
- * @param {{ oldRows: any[], beats: any[], live: Set<string>, duration: number, release?: Set<string> }} o
- *   beats: the new layout's beats; live: the new beat ids
+ * @param {{ oldRows: any[], beats: any[], live: Set<string>, duration: number, release?: Set<string>, lengths?: Map<string, number> }} o
+ *   beats: the new layout's beats; live: the new beat ids; lengths: the beats laid out with a hand-retimed line's
+ *   length (handLengths), whose lines are recorded as retimed ("-L"), so the next re-script keeps their length too
  */
-export function merge(prev, G, { oldRows, beats, live, duration, release = new Set() }) {
+export function merge(prev, G, { oldRows, beats, live, duration, release = new Set(), lengths = new Map() }) {
   const seq = prev?.sequence ?? {};
   const S = seq.script ?? {};
   const gen = S.gen ?? {};
@@ -129,7 +130,8 @@ export function merge(prev, G, { oldRows, beats, live, duration, release = new S
     if (fixed) fit(out, fresh);
     out.sort(byStart);
     for (const c of fresh) if (out.includes(c)) next.gen[`${coll}|${c.src}`] = record(fpItem(c, type), c);
-    for (const [src, nu] of handTimes) next.gen[`${coll}|${src}`] = record('-', nu);
+    // a hand line whose length the layout took (retimed by hand) stays retimed: "-L", which handLengths reads next time
+    for (const [src, nu] of handTimes) next.gen[`${coll}|${src}`] = record(type === 'dialogue' && lengths.has(beatOf(src)) ? '-L' : '-', nu);
     return { items: out, fresh };
   }
   // generated spans give way to kept ones (shots and cameras don't overlap)
@@ -280,7 +282,9 @@ export function handLengths(prev) {
       if (typeof c.src !== 'string' || !c.src.endsWith('#say')) continue;
       const r = S.gen?.[`${t.id}|${c.src}`];
       const edited = c.hand || fpOf(r) !== fpItem(c, 'dialogue');
-      if (edited && !sameTimes(r, c)) out.set(beatOf(c.src), c.end - c.start); // retimed by hand, not only reworded
+      // retimed by hand, not only reworded: its times differ from the script's, or an earlier re-script laid it out with
+      // its own length ("-L": its times are the script's since, because the script took its length)
+      if (edited && (!sameTimes(r, c) || fpOf(r) === '-L')) out.set(beatOf(c.src), c.end - c.start);
     }
   }
   return out;

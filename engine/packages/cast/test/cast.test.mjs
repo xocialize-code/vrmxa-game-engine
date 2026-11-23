@@ -98,7 +98,7 @@ test('recasting swaps the character, keeps the role\'s performance byte for byte
   // her lines: the old bake goes, and each is listed for re-bake in the new voice, under a new file name
   assert.ok(track(b.doc, 'hana-1-says').clips.every((c) => c.clip === undefined && c.voice === undefined));
   assert.deepEqual(b.rebake.map((l) => [l.text, l.voice, l.reason]), track(doc, 'hana-1-says').clips.map((c) => [c.text, 'af_bella', 'recast']));
-  assert.deepEqual(b.rebake.map((l) => l.clip), ['voice/cafe-order-hana-1-says-1-af-bella-61ddca1a.wav', 'voice/cafe-order-hana-1-says-2-af-bella-27256c04.wav', 'voice/cafe-order-hana-1-says-3-af-bella-ff7f9b59.wav', 'voice/cafe-order-hana-1-says-4-af-bella-e6a54a56.wav']);
+  assert.deepEqual(b.rebake.map((l) => l.clip), ['voice/cafe-order-hana-1-says-1-af-bella-12d0e8ff.wav', 'voice/cafe-order-hana-1-says-2-af-bella-f0c2b1df.wav', 'voice/cafe-order-hana-1-says-3-af-bella-5a9d2b56.wav', 'voice/cafe-order-hana-1-says-4-af-bella-274a65cf.wav']);
   assert.deepEqual(b.rebake.map((l) => l.clip), b.rebake.map((l) => clipFor('voice', l.id, 'af_bella', l.text)));
   // the same lines @vrmxg/voice's bakePlan finds with the cast's voices; but its file is voice/<line>.wav, the same
   // name in every voice, which a re-bake would write over while undo still points at it: W7 bakes a cast role from
@@ -362,4 +362,17 @@ test('readCharacter: a card from vrmxa-core\'s readers (a stand-in module here, 
   assert.deepEqual([bare.name, bare.vrmxaId, bare.persona, bare.voices, bare.wardrobe.worn], ['x', null, null, [], []]);
   await assert.rejects(readCharacter(bytes, { ref: 'characters/x.vrmxa', vrmxa: { ...vrmxa, closetOf: undefined } }), /needs vrmxa-core's closetOf/);
   await assert.rejects(readCharacter(bytes, { vrmxa }), /needs the file's ref/);
+});
+
+test('on the committed sample, voiced (M4 W7): a cast in the voice its lines were baked in keeps them; a recast lists them, and leaves the other role\'s', () => {
+  const voiced = JSON.parse(fs.readFileSync(path.join(SAMPLE, 'sequences/cafe-order.vrmxs'), 'utf8'));
+  const roles = rolesOf(voiced, { set });
+  assert.ok(roles.every((r) => r.lines.every((l) => l.baked && l.voice === PRESETS[r.id])), 'every line baked, in the sample\'s voices');
+  const same = castRole(voiced, 'HANA', studioHana, { ...opts, set });
+  assert.deepEqual(same.rebake, [], 'Hana\'s persona speaks af_heart: her baked lines are kept');
+  assert.deepEqual(track(same.doc, 'hana-1-says').clips, track(voiced, 'hana-1-says').clips);
+  const re = castRole(voiced, 'HANA', studioMira, { ...opts, set });
+  assert.deepEqual(re.rebake.map((l) => [l.reason, l.voice]), [['recast', 'af_bella'], ['recast', 'af_bella'], ['recast', 'af_bella'], ['recast', 'af_bella']]);
+  assert.ok(track(re.doc, 'hana-1-says').clips.every((c) => c.clip === undefined && c.words === undefined && c.visemes === undefined && c.audio === undefined), 'the af_heart bake goes whole');
+  assert.deepEqual(track(re.doc, 'mira-says'), track(voiced, 'mira-says'), 'Mira\'s voiced lines are untouched');
 });

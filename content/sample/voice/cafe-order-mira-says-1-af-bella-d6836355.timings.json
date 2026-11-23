@@ -1,0 +1,57 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Hmm. A latte, please. And one of those croissants.",
+ "audio": "cafe-order-mira-says-1-af-bella-d6836355.wav",
+ "sampleRate": 24000,
+ "duration": 3.925,
+ "source": "kokoro-82m af_bella (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "Hmm",
+   "start": 0.43,
+   "duration": 0.3
+  },
+  {
+   "text": "A",
+   "start": 0.855,
+   "duration": 0.1
+  },
+  {
+   "text": "latte",
+   "start": 0.955,
+   "duration": 0.425
+  },
+  {
+   "text": "please",
+   "start": 1.43,
+   "duration": 0.6
+  },
+  {
+   "text": "And",
+   "start": 2.0925,
+   "duration": 0.125
+  },
+  {
+   "text": "one",
+   "start": 2.2175,
+   "duration": 0.125
+  },
+  {
+   "text": "of",
+   "start": 2.3425,
+   "duration": 0.075
+  },
+  {
+   "text": "those",
+   "start": 2.4175,
+   "duration": 0.2125
+  },
+  {
+   "text": "croissants",
+   "start": 2.63,
+   "duration": 1.05
+  }
+ ]
+}

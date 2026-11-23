@@ -1,4 +1,4 @@
-// @vrmxg/voice — M1 W6 (AB-T-0518).
+// @vrmxg/voice — M1 W6 (AB-T-0518). Voicing a sequence (M4 W7) is authoring: @vrmxg/voicing.
 import { VoiceService } from './service.js';
 export { VoiceService } from './service.js';
 export { LiveLines, shellTTS, httpTTS } from './live.js';

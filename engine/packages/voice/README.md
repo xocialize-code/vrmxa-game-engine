@@ -29,7 +29,7 @@ lag within ±50 ms; a run with dialogue identical twice and restored from a snap
 
 | Piece | What |
 |---|---|
-| Baked | `bakePlan(doc, { voices })` lists a sequence's text-only dialogue (and text-only `say` connections), each with the clip it becomes (`voice/<scene>-<track>-<n>.wav`); `applyBake(doc, plan)` points the dialogue at the clips, the text kept as the caption, and records on each dialogue clip the `voice` it was baked in (`@vrmxg/cast` reads it to know whether a recast must re-bake the line; a cast role is baked from the cast's list, whose files are named by voice and words). `content/sample/tools/bake-lines.mjs` runs both around `make-voice.py` (Kokoro-82M through mlx-audio, `voice/lines.json`), so a shot replays and exports with the voice it was cut to |
+| Baked | `bakePlan(doc, { voices })` lists a sequence's text-only dialogue (and text-only `say` connections), each with the clip it becomes (`voice/<scene>-<track>-<n>.wav`); `applyBake(doc, plan)` points the dialogue at the clips, the text kept as the caption, and records on each dialogue clip the `voice` it was baked in (`@vrmxg/cast` reads it to know whether a recast must re-bake the line; a cast role is baked from the cast's list, whose files are named by voice and words). `content/sample/tools/bake-lines.mjs` ran both around `make-voice.py` (Kokoro-82M through mlx-audio, `voice/lines.json`), so a shot replays and exports with the voice it was cut to. Since M4 W7 the tool runs `@vrmxg/voicing` (it still uses `bakePlan` / `applyBake` for a scene's `say` connections) |
 | Live | `voice.useLive(provider, { voices, now })`: text-only lines are heard while playing, as presentation only. The simulation runs a text line on its estimated timings with or without a provider (length, mouth, `lineEnded`), so replays, snapshots and exports don't change; the clip, when it arrives, plays from the speaker's head from the step it arrived on (nothing cut off). While the audio service records (an export), live clips are left out. A provider that fails three times is given up |
 | Providers | `httpTTS(url)`: a loopback TTS server (`content/sample/tools/tts-server.py`, Kokoro). `shellTTS(native)`: the Mac shell's `tts.speak`, an MLXEngine endpoint asked of the mlx-engine area (AB-A-0308); until it exists, use the loopback server. Both answer `{ wav (base64), sampleRate, words }`. The playground takes `?tts=<url>` or `?tts=shell` |
 
@@ -38,6 +38,15 @@ lines in two voices, median 38 ms, p90 89 ms (3 and 6 steps late at 60 Hz), real
 In Chromium a live line asked for at step 176 was heard from step 180. Tests (`test/live.test.mjs`): the same hashes
 step by step with and without a provider, heard from its arrival step in the speaker's voice, nothing while recording,
 a failing provider given up, httpTTS's request and decoding, bakePlan / applyBake.
+
+## Baked lines play from the track (M4 W7, AB-T-0579)
+
+Voicing a sequence is authoring, so it lives in `@vrmxg/voicing`, which this package doesn't import. What this package
+does is play the result. `@vrmxg/sequence` hands a baked dialogue clip's `words`, `visemes` and `audio` to
+`preload(clip, baked)`. The service then samples the mouth from the baked visemes and ends the line at the baked length:
+it reads no timings file, and neither the WAV's decoder nor the lip-sync rules run at play time. So a replay from the
+track gives the same hashes everywhere. Providers say what timing offset they have already applied (`offsetApplied`):
+the loopback stand-ins add Kokoro's 0.03 s, and the shell's `tts.speak` adds nothing.
 
 ## Listening (M3 W3, AB-T-0542)
 

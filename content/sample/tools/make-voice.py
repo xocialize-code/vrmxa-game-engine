@@ -1,6 +1,6 @@
 """The sample's voice lines (M1 W6, M2 W10): Kokoro-82M (Apache-2.0) with its built-in voices, through mlx-audio, at
-24 kHz. The lines are listed in voice/lines.json ([{ id, voice, text }]; tools/bake-lines.mjs adds a sequence's
-text-only dialogue there). Each is written as voice/<id>.wav (16-bit PCM mono) and voice/<id>.timings.json: the words
+24 kHz. The lines are listed in voice/lines.json ([{ id, voice, text }]: M1 to M3's lines; since M4 W7
+tools/bake-lines.mjs voices sequences itself, through tools/tts-server.py, and no longer adds lines here). Each is written as voice/<id>.wav (16-bit PCM mono) and voice/<id>.timings.json: the words
 with their start and duration in seconds, from Kokoro's own predicted durations, the shape the engine's lip sync reads.
 
 Lines that already have a clip are left alone (a new run doesn't change committed audio); --all remakes every one,

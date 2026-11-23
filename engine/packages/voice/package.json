@@ -7,7 +7,9 @@
   "exports": {
     ".": "./src/index.js"
   },
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "sideEffects": false,
   "scripts": {
     "test": "node --test test/"
@@ -22,5 +24,7 @@
     "@vrmxg/registry": "0.1.0",
     "@vrmxg/snapshot": "0.1.0"
   },
-  "vrmxg": { "determinism": "simulation" }
+  "vrmxg": {
+    "determinism": "simulation"
+  }
 }

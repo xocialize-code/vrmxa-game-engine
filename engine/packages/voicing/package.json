@@ -1,0 +1,31 @@
+{
+  "name": "@vrmxg/voicing",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG voicing (M4 W7): a sequence's lines spoken in each role's voice and baked into the dialogue track (audio, words, visemes, length), per line or per character, each regeneration one undo step; music and sound effects on their buses. Authoring: the runtime that plays the bake is @vrmxg/voice.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/cast": "0.1.0",
+    "@vrmxg/script": "0.1.0",
+    "@vrmxg/voice": "0.1.0"
+  },
+  "devDependencies": {
+    "@vrmxg/editor-core": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/scene": "0.1.0",
+    "@vrmxg/sequence": "0.1.0"
+  },
+  "vrmxg": {
+    "determinism": "simulation"
+  }
+}

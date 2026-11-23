@@ -26,6 +26,7 @@ import { withTwoPlayers, playerLayout } from './split.js';
 import { withCamera, shellCamera, recordedFrames, connectCamera } from '@vrmxg/sense';
 import { framesCheck } from './frames.js';
 import { coverageCheck } from './coverage-check.js';
+import { voicingCheck } from './voicing-check.js';
 import { withCrowd } from './budget.js';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
@@ -469,6 +470,15 @@ export class Playground {
     const R = await loadRapier();
     const post = { loadCube: async (file) => new TextDecoder().decode(await bytes(file)) };
     return coverageCheck({ R, bytes, opts: { vrmxaCore, closet, behaviours }, backend: this.host.backend, post, ...o });
+  }
+
+  /**
+   * M4 W7 (?mode=voicing): the voiced sample sequence replayed from its baked track, no renderer involved
+   * (voicing-check.js); acceptance/m4/voicing.mjs compares it with Node's.
+   */
+  async voicingCheck(o = {}) {
+    await this.ready;
+    return voicingCheck({ R: await loadRapier(), bytes, opts: { vrmxaCore, closet, behaviours }, ...o });
   }
 
   /**
