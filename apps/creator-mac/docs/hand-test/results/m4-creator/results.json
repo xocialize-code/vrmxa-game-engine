@@ -1,0 +1,935 @@
+{
+  "checklist" : "apps/creator-mac/docs/HAND-TEST-M4-CREATOR.md",
+  "rows" : [
+    {
+      "checklist_line" : 13,
+      "checks" : [
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 6524aa77b809145a\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short cafe-order \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project project\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 6524aa77b809145a\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Storyboard 11 shots, 11 thumbnails\"",
+          "check" : "find(\"id=sb-status\").0.name == \"Storyboard 11 shots, 11 thumbnails\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short The Order (cafe-order)\"",
+          "check" : "find(\"id=short-cafe-order\").0.name == \"Short The Order (cafe-order)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-shots\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 24 step 60 alpha 0 world a269857fbc388a47\"",
+          "check" : "find(\"id=tl-scrub\").0.name matches \"^Showing frame 24 step 60 \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Creator pid 14046, log ~/Library/Caches/AppProbe/logs/VRMXGCreator-2026-11-23T185720Z.log",
+        "28: wait id=open-project enabled=true timeout_ms=60000 → found after 278 ms: button \"Open project\" #open-project [W:VRMXG Creator/0/0/0/0/0/1@4649] (284 ms)",
+        "29: until find(\"id=doc-state\").0.name matches \"^Short cafe-order \" timeout=60000 → ok (1288 ms)",
+        "30: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":109,\"x\":3213,\"y\":337},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (3228 ms)",
+        "31: until find(\"id=project-name\").0.name == \"Project project\" → ok (1157 ms)",
+        "32: until find(\"id=doc-state\").0.name matches \"^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid \" timeout=60000 → ok (2814 ms)",
+        "33: until find(\"id=sb-status\").0.name == \"Storyboard 11 shots, 11 thumbnails\" timeout=120000 → ok (21 ms)",
+        "34: expect find(\"id=short-cafe-order\").0.name == \"Short The Order (cafe-order)\" → ok (26 ms)",
+        "35: expect find(\"id=tl-head-shots\").count == 1 → ok (21 ms)",
+        "36: expect find(\"id=undo\").0.name == \"Undo\" → ok (21 ms)",
+        "37: until find(\"id=tl-scrub\").0.name matches \"^Showing frame 24 step 60 \" timeout=60000 → ok (23 ms)"
+      ],
+      "message" : null,
+      "ms" : 9382,
+      "notes" : [
+
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The project opens with its short, and the short with its sequence, storyboard and timeline; nothing is an undo step.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 14,
+      "checks" : [
+        {
+          "actual" : "\"Opened first-light.fountain (script) → short first-light\"",
+          "check" : "find(\"id=open-result\").0.name == \"Opened first-light.fountain (script) → short first-light\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash e15e556b55feeefe\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short first-light sequences/first-light.vrmxs [0-9]+ nodes unsaved changes valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Storyboard 5 shots, 5 thumbnails\"",
+          "check" : "find(\"id=sb-status\").0.name == \"Storyboard 5 shots, 5 thumbnails\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=coverage-rule\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Clip vc-est-int-cafe-dawn 0 to 48' exact=true\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-mira-says\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short First Light (first-light), not saved\"",
+          "check" : "find(\"id=short-first-light\").0.name == \"Short First Light (first-light), not saved\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 24 step 60 alpha 0 world eb7d399a790bfd2f\"",
+          "check" : "find(\"id=tl-scrub\").0.name matches \"^Showing frame 24 \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "42: menu \"File › Open…\" press → pressed File › Open… (152 ms)",
+        "43: until find(\"id=open-result\").0.name == \"Opened first-light.fountain (script) → short first-light\" timeout=30000 → ok (640 ms)",
+        "44: until find(\"id=doc-state\").0.name matches \"^Short first-light sequences/first-light.vrmxs [0-9]+ nodes unsaved changes valid \" timeout=60000 → ok (1696 ms)",
+        "45: until find(\"id=sb-status\").0.name == \"Storyboard 5 shots, 5 thumbnails\" timeout=120000 → ok (723 ms)",
+        "46: expect find(\"id=coverage-rule\").0.value == \"1\" → ok (19 ms)",
+        "47: expect find(\"role=button name='Clip vc-est-int-cafe-dawn 0 to 48' exact=true\").count == 1 → ok (22 ms)",
+        "48: expect find(\"id=tl-head-mira-says\").count == 1 → ok (18 ms)",
+        "49: expect find(\"id=short-first-light\").0.name == \"Short First Light (first-light), not saved\" → ok (18 ms)",
+        "50: until find(\"id=tl-scrub\").0.name matches \"^Showing frame 24 \" timeout=60000 → ok (50 ms)",
+        "52: shot \"opened\" (219 ms)"
+      ],
+      "message" : null,
+      "ms" : 4814,
+      "notes" : [
+        "shot 1: opened"
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M4-CREATOR.scenario-2026-11-23T185720Z/shots/r2-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "File › Open… opens a Fountain script from outside the project: a new short, built with cameras by rule, shows its sequence, storyboard and timeline.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 15,
+      "checks" : [
+        {
+          "actual" : "\"Undo Move clip hana-1-act 1\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Move clip hana-1-act 1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Clip greet 213 to 249' exact=true\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "57: act role=button name=\"Clip greet 203 to 239\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":23,\"w\":48,\"x\":3545,\"y\":1123},\"help\":\"\",\"name\":\"Clip greet 203 to 239\",\"ref\":\"W:VRMXG Creator/0/ (24 ms)",
+        "58: keys shift+right → {\"sent\":true} (112 ms)",
+        "59: until find(\"id=undo\").0.name == \"Undo Move clip hana-1-act 1\" → ok (262 ms)",
+        "60: expect find(\"role=button name='Clip greet 213 to 249' exact=true\").count == 1 → ok (961 ms)"
+      ],
+      "message" : null,
+      "ms" : 2675,
+      "notes" : [
+
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A hand edit on the timeline is one undo step.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 16,
+      "checks" : [
+        {
+          "actual" : "\"first cup today.\"",
+          "check" : "find(\"id=script-find\").0.value == \"first cup today.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"first cup of the day.\"",
+          "check" : "find(\"id=script-replace\").0.value == \"first cup of the day.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Re-script (1 changed)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Clip greet 213 to 249' exact=true\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='first cup of the day.'\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Script scripts/first-light.fountain applied unsaved\"",
+          "check" : "find(\"id=script-state\").0.name matches \"applied unsaved$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Move clip hana-1-act 1\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Move clip hana-1-act 1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 6836bea1bfa4b5df\"",
+          "check" : "find(\"id=doc-state\").0.name == $before",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=script value='first cup today.'\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\"",
+          "check" : "find(\"id=doc-state\").0.name == $after",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=script value='first cup of the day.'\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "65: set before = find(\"id=doc-state\").0.name → \"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 6836bea1bfa4b5df\" (20 ms)",
+        "66: act id=script-find action=set_value value=\"first cup today.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":130,\"x\":3100,\"y\":484},\"help\":\"\",\"id\":\"script-find\",\"name\":\"Find in script\",\"ref\":\"W: (428 ms)",
+        "66: until find(\"id=script-find\").0.value == \"first cup today.\" do act id=script-find action=set_value value=\"first cup today.\" tries=3 → ok after 1 (735 ms)",
+        "67: act id=script-replace action=set_value value=\"first cup of the day.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":131,\"x\":3234,\"y\":484},\"help\":\"\",\"id\":\"script-replace\",\"name\":\"Replace with\",\"ref\":\"W (441 ms)",
+        "67: until find(\"id=script-replace\").0.value == \"first cup of the day.\" do act id=script-replace action=set_value value=\"first cup of the day.\" tries=3 → ok after 1 (754 ms)",
+        "68: act id=script-replace-all action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":67,\"x\":3368,\"y\":483},\"help\":\"\",\"id\":\"script-replace-all\",\"name\":\"Replace all in script\", (31 ms)",
+        "69: until find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\" → ok (37 ms)",
+        "70: expect find(\"role=button name='Clip greet 213 to 249' exact=true\").count == 1 → ok (56 ms)",
+        "71: expect find(\"role=button name='first cup of the day.'\").count == 1 → ok (184 ms)",
+        "72: expect find(\"id=script-state\").0.name matches \"applied unsaved$\" → ok (960 ms)",
+        "73: set after = find(\"id=doc-state\").0.name → \"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\" (1403 ms)",
+        "74: menu \"Edit › Undo\" press → pressed Edit › Undo (153 ms)",
+        "75: until find(\"id=undo\").0.name == \"Undo Move clip hana-1-act 1\" → ok (42 ms)",
+        "76: expect find(\"id=doc-state\").0.name == $before → ok (211 ms)",
+        "77: expect find(\"id=script value='first cup today.'\").count == 1 → ok (555 ms)",
+        "78: menu \"Edit › Redo\" press → pressed Edit › Redo (147 ms)",
+        "79: until find(\"id=doc-state\").0.name == $after → ok (2874 ms)",
+        "80: expect find(\"id=script value='first cup of the day.'\").count == 1 → ok (629 ms)"
+      ],
+      "message" : null,
+      "ms" : 9017,
+      "notes" : [
+
+      ],
+      "row" : 4,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Editing the script re-scripts the sequence as one undo step and keeps the hand edit; Edit › Undo and Redo bring the script back with the document.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 17,
+      "checks" : [
+        {
+          "actual" : "\"[[greet]]\"",
+          "check" : "find(\"id=script-find\").0.value == \"[[greet]]\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"[[gret]]\"",
+          "check" : "find(\"id=script-replace\").0.value == \"[[gret]]\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=script-errors\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Error at line 17: [[gret]]'\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\"",
+          "check" : "find(\"id=doc-state\").0.name == $after",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Re-script (1 changed)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"[[gret]]\"",
+          "check" : "find(\"id=script-find\").0.value == \"[[gret]]\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"[[greet]]\"",
+          "check" : "find(\"id=script-replace\").0.value == \"[[greet]]\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=script-errors\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Script scripts/first-light.fountain applied unsaved\"",
+          "check" : "find(\"id=script-state\").0.name matches \" applied \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\"",
+          "check" : "find(\"id=doc-state\").0.name == $after",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Re-script (1 changed)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "85: set after = find(\"id=doc-state\").0.name → \"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\" (19 ms)",
+        "86: act id=script-find action=set_value value=\"[[greet]]\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":102,\"x\":3100,\"y\":484},\"help\":\"\",\"id\":\"script-find\",\"name\":\"Find in script\",\"ref\":\"W: (427 ms)",
+        "86: until find(\"id=script-find\").0.value == \"[[greet]]\" do act id=script-find action=set_value value=\"[[greet]]\" tries=3 → ok after 1 (728 ms)",
+        "87: act id=script-replace action=set_value value=\"[[gret]]\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":103,\"x\":3206,\"y\":484},\"help\":\"\",\"id\":\"script-replace\",\"name\":\"Replace with\",\"ref\":\"W (430 ms)",
+        "87: until find(\"id=script-replace\").0.value == \"[[gret]]\" do act id=script-replace action=set_value value=\"[[gret]]\" tries=3 → ok after 1 (744 ms)",
+        "88: act id=script-replace-all action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":67,\"x\":3312,\"y\":483},\"help\":\"\",\"id\":\"script-replace-all\",\"name\":\"Replace all in script\", (28 ms)",
+        "89: until find(\"id=script-errors\").count == 1 → ok (31 ms)",
+        "90: expect find(\"role=button name='Error at line 17: [[gret]]'\").count == 1 → ok (19 ms)",
+        "91: expect find(\"id=doc-state\").0.name == $after → ok (26 ms)",
+        "92: expect find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\" → ok (21 ms)",
+        "93: act id=script-find action=set_value value=\"[[gret]]\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":102,\"x\":3100,\"y\":484},\"help\":\"\",\"id\":\"script-find\",\"name\":\"Find in script\",\"ref\":\"W: (435 ms)",
+        "93: until find(\"id=script-find\").0.value == \"[[gret]]\" do act id=script-find action=set_value value=\"[[gret]]\" tries=3 → ok after 1 (751 ms)",
+        "94: act id=script-replace action=set_value value=\"[[greet]]\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":103,\"x\":3206,\"y\":484},\"help\":\"\",\"id\":\"script-replace\",\"name\":\"Replace with\",\"ref\":\"W (432 ms)",
+        "94: until find(\"id=script-replace\").0.value == \"[[greet]]\" do act id=script-replace action=set_value value=\"[[greet]]\" tries=3 → ok after 1 (746 ms)",
+        "95: act id=script-replace-all action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":67,\"x\":3312,\"y\":483},\"help\":\"\",\"id\":\"script-replace-all\",\"name\":\"Replace all in script\", (28 ms)",
+        "96: until find(\"id=script-errors\").count == 0 → ok (28 ms)",
+        "97: until find(\"id=script-state\").0.name matches \" applied \" → ok (21 ms)",
+        "98: expect find(\"id=doc-state\").0.name == $after → ok (23 ms)",
+        "99: expect find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\" → ok (19 ms)"
+      ],
+      "message" : null,
+      "ms" : 3446,
+      "notes" : [
+
+      ],
+      "row" : 5,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A script with an error changes nothing and points at its line; fixing it changes nothing either.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 18,
+      "checks" : [
+        {
+          "actual" : "\"Undo Re-script (1 added)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Re-script (1 added)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Script scripts/first-light.fountain applied unsaved\"",
+          "check" : "find(\"id=script-state\").0.name matches \" applied unsaved$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Redo Re-script (1 changed)\"",
+          "check" : "find(\"id=redo\").0.name == \"Redo Re-script (1 changed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Re-script (1 added)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Re-script (1 added)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Redo Re-script (1 changed)\"",
+          "check" : "find(\"id=redo\").0.name == \"Redo Re-script (1 changed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\"",
+          "check" : "find(\"id=doc-state\").0.name == $start",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=script value='Hana smiles.'\").count == 0",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "104: set start = find(\"id=doc-state\").0.name → \"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\" (20 ms)",
+        "105: act id=script action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":427,\"w\":325,\"x\":3124,\"y\":514},\"help\":\"\",\"id\":\"script\",\"name\":\"Script\",\"ref\":\"W:VRMXG Creator/0/ (22 ms)",
+        "106: keys keys=\"cmd+down return return\" → {\"sent\":true} (332 ms)",
+        "107: keys text=\"Hana smiles.\" → {\"sent\":true} (18 ms)",
+        "108: until find(\"id=undo\").0.name == \"Undo Re-script (1 added)\" → ok (1323 ms)",
+        "109: expect find(\"id=script-state\").0.name matches \" applied unsaved$\" → ok (2279 ms)",
+        "110: keys text=\" She waves.\" → {\"sent\":true} (18 ms)",
+        "111: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":4421,\"y\":337},\"help\":\"Re-script (1 added)\",\"id\":\"undo\",\"name\":\"Undo Re-script (1  (35 ms)",
+        "112: until find(\"id=redo\").0.name == \"Redo Re-script (1 changed)\" → ok (30 ms)",
+        "114: expect find(\"id=undo\").0.name == \"Undo Re-script (1 added)\" → ok (25 ms)",
+        "115: expect find(\"id=redo\").0.name == \"Redo Re-script (1 changed)\" → ok (22 ms)",
+        "116: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":4421,\"y\":337},\"help\":\"Re-script (1 added)\",\"id\":\"undo\",\"name\":\"Undo Re-script (1  (24 ms)",
+        "117: until find(\"id=doc-state\").0.name == $start → ok (30 ms)",
+        "118: expect find(\"id=script value='Hana smiles.'\").count == 0 → ok (182 ms)"
+      ],
+      "message" : null,
+      "ms" : 8340,
+      "notes" : [
+
+      ],
+      "row" : 6,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Typing in the script pane applies once typing stops, as one undo step; Undo while typing is still unapplied takes the typing back, and nothing applies after it.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 19,
+      "checks" : [
+        {
+          "actual" : "\"Undo Cast HANA: Mira\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Cast HANA: Mira\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Role HANA (hana-1), 2 lines, cast characters/mira-guest.vrmxa, voice af_heart\"",
+          "check" : "find(\"id=role-hana-1\").0.name matches \"cast characters/mira-guest\\.vrmxa\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Cast Mira as hana-1: Cast HANA: Mira (Mira's voice \\\"Mira\\\" (designed) names no kokoro-82m preset, so the shell can't speak it yet; hana-1 takes a Kokoro preset instead)\"",
+          "check" : "find(\"id=cast-result\").0.name matches \"^Cast Mira as hana-1: Cast HANA: Mira\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "123: act id=role-hana-1 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":287,\"x\":4297,\"y\":447},\"help\":\"\",\"id\":\"role-hana-1\",\"name\":\"Role HANA (hana-1), 2 lines,  (30 ms)",
+        "opened ~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/inbox/mira-guest.vrmxa in pid 14046",
+        "125: until find(\"id=undo\").0.name == \"Undo Cast HANA: Mira\" timeout=30000 → ok (1856 ms)",
+        "126: expect find(\"id=role-hana-1\").0.name matches \"cast characters/mira-guest\\.vrmxa\" → ok (1299 ms)",
+        "127: expect find(\"id=cast-result\").0.name matches \"^Cast Mira as hana-1: Cast HANA: Mira\" → ok (29 ms)"
+      ],
+      "message" : null,
+      "ms" : 3430,
+      "notes" : [
+
+      ],
+      "row" : 7,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A character opened from the Finder is cast in the selected role, as one undo step.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 20,
+      "checks" : [
+        {
+          "actual" : "\"Saved sequences/first-light.vrmxs · 7425 bytes · defaa25fe07c366c · scripts/first-light.fountain\"",
+          "check" : "find(\"id=saved\").0.name matches \"^Saved sequences/first-light.vrmxs · [0-9]+ bytes · [0-9a-f]{16} · scripts/first-light.fountain$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes saved valid hash defaa25fe07c366c\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" saved valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Script scripts/first-light.fountain applied saved\"",
+          "check" : "find(\"id=script-state\").0.name matches \"applied saved$\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "132: menu \"File › Save\" press → pressed File › Save (153 ms)",
+        "133: until find(\"id=saved\").0.name matches \"^Saved sequences/first-light.vrmxs · [0-9]+ bytes · [0-9a-f]{16} · scripts/first-light.fountain$\" → ok (42 ms)",
+        "134: expect find(\"id=doc-state\").0.name matches \" saved valid \" → ok (20 ms)",
+        "135: expect find(\"id=script-state\").0.name matches \"applied saved$\" → ok (26 ms)"
+      ],
+      "message" : null,
+      "ms" : 450,
+      "notes" : [
+
+      ],
+      "row" : 8,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Save writes the short into the project: its sequence, its script and shorts.json.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 21,
+      "checks" : [
+        {
+          "actual" : "\"job-1 starting\"",
+          "check" : "find(\"id=q-job-1-status\").0.name matches \"^job-1 (rendering|starting)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-1 done: 397 frames · first-light-720p24.mp4 · frames 83e834f6feeb3835\"",
+          "check" : "find(\"id=q-job-1-status\").0.name matches \"^job-1 (done|failed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-1 done: 397 frames · first-light-720p24.mp4 · frames 83e834f6feeb3835\"",
+          "check" : "find(\"id=q-job-1-status\").0.name matches \"^job-1 done: 397 frames · first-light-720p24\\\\.mp4 · frames [0-9a-f]{16}$\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "140: menu \"File › Export…\" press → pressed File › Export… (149 ms)",
+        "141: until find(\"id=q-job-1-status\").0.name matches \"^job-1 (rendering|starting)\" timeout=30000 → ok (71 ms)",
+        "142: until find(\"id=q-job-1-status\").0.name matches \"^job-1 (done|failed)\" timeout=300000 → ok (3877 ms)",
+        "143: expect find(\"id=q-job-1-status\").0.name matches \"^job-1 done: 397 frames · first-light-720p24\\\\.mp4 · frames [0-9a-f]{16}$\" → ok (23 ms)",
+        "144: shot \"exported\" (213 ms)"
+      ],
+      "message" : null,
+      "ms" : 4556,
+      "notes" : [
+        "shot 1: exported"
+      ],
+      "row" : 9,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M4-CREATOR.scenario-2026-11-23T185720Z/shots/r9-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "File › Export… queues the short and renders it through the shell.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 22,
+      "checks" : [
+        {
+          "actual" : "\"job-2 queued\"",
+          "check" : "find(\"id=q-job-2-status\").0.name == \"job-2 queued\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-2 starting\"",
+          "check" : "find(\"id=q-job-2-status\").0.name == \"job-2 starting\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-2 cancelled\"",
+          "check" : "find(\"id=q-job-2-status\").0.name == \"job-2 cancelled\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-3 queued\"",
+          "check" : "find(\"id=q-job-3-status\").0.name == \"job-3 queued\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-4 done: 397 frames · first-light-720p24.mp4 · frames 83e834f6feeb3835\"",
+          "check" : "find(\"id=q-job-4-status\").0.name matches \"^job-4 done: 397 frames\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-3 queued\"",
+          "check" : "find(\"id=q-job-3-status\").0.name == \"job-3 queued\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "149: act id=q-preset-master action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":61,\"x\":4402,\"y\":697},\"help\":\"Master 1080p ProRes 4444\",\"id\":\"q-preset-master\",\"name\":\"Pr (30 ms)",
+        "150: act id=q-add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":4470,\"y\":729},\"help\":\"\",\"id\":\"q-add\",\"name\":\"Add the short to the queue\",\"ref\":\"W (27 ms)",
+        "151: until find(\"id=q-job-2-status\").0.name == \"job-2 queued\" → ok (28 ms)",
+        "152: act id=q-run action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":62,\"x\":4518,\"y\":729},\"help\":\"\",\"id\":\"q-run\",\"name\":\"Render the queue\",\"ref\":\"W:VRMXG Cre (27 ms)",
+        "153: until find(\"id=q-job-2-status\").0.name == \"job-2 starting\" timeout=30000 → ok (64 ms)",
+        "154: act role=button name=\"Cancel job-2\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":51,\"x\":4530,\"y\":843},\"help\":\"\",\"name\":\"Cancel job-2\",\"ref\":\"W:VRMXG Creator/0/0/0/0/3/1/ (1551 ms)",
+        "155: until find(\"id=q-job-2-status\").0.name == \"job-2 cancelled\" timeout=60000 → ok (336 ms)",
+        "156: act id=q-preset-draft action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":47,\"x\":4300,\"y\":697},\"help\":\"Draft 720p H.264\",\"id\":\"q-preset-draft\",\"name\":\"Preset Draf (30 ms)",
+        "157: act id=q-add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":4470,\"y\":729},\"help\":\"\",\"id\":\"q-add\",\"name\":\"Add the short to the queue\",\"ref\":\"W (26 ms)",
+        "158: until find(\"id=q-job-3-status\").0.name == \"job-3 queued\" → ok (27 ms)",
+        "159: menu \"File › Export…\" press → pressed File › Export… (151 ms)",
+        "160: until find(\"id=q-job-4-status\").0.name matches \"^job-4 done: 397 frames\" timeout=300000 → ok (3918 ms)",
+        "161: expect find(\"id=q-job-3-status\").0.name == \"job-3 queued\" → ok (22 ms)"
+      ],
+      "message" : null,
+      "ms" : 6462,
+      "notes" : [
+
+      ],
+      "row" : 10,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Cancel stops a running render and leaves no movie behind; File › Export… renders only the job it adds.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 23,
+      "checks" : [
+        {
+          "actual" : "true",
+          "check" : "menu(\"File › New Short\").enabled == true",
+          "ok" : true
+        },
+        {
+          "actual" : "true",
+          "check" : "menu(\"File › Open Script…\").enabled == true",
+          "ok" : true
+        },
+        {
+          "actual" : "true",
+          "check" : "menu(\"File › Open Character…\").enabled == true",
+          "ok" : true
+        },
+        {
+          "actual" : "true",
+          "check" : "menu(\"File › Open Set…\").enabled == true",
+          "ok" : true
+        },
+        {
+          "actual" : "true",
+          "check" : "menu(\"File › Export…\").enabled == true",
+          "ok" : true
+        },
+        {
+          "actual" : "true",
+          "check" : "menu(\"Short › Apply Script\").enabled == true",
+          "ok" : true
+        },
+        {
+          "actual" : "true",
+          "check" : "menu(\"Short › Render Queue\").enabled == true",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "166: expect menu(\"File › New Short\").enabled == true → ok (152 ms)",
+        "167: expect menu(\"File › Open Script…\").enabled == true → ok (153 ms)",
+        "168: expect menu(\"File › Open Character…\").enabled == true → ok (133 ms)",
+        "169: expect menu(\"File › Open Set…\").enabled == true → ok (137 ms)",
+        "170: expect menu(\"File › Export…\").enabled == true → ok (160 ms)",
+        "171: expect menu(\"Short › Apply Script\").enabled == true → ok (154 ms)",
+        "172: expect menu(\"Short › Render Queue\").enabled == true → ok (130 ms)"
+      ],
+      "message" : null,
+      "ms" : 1248,
+      "notes" : [
+
+      ],
+      "row" : 11,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The File and Short menus carry the creator's own items.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 24,
+      "checks" : [
+        {
+          "actual" : "\"Then you'd better come in.\"",
+          "check" : "find(\"id=script-find\").0.value == \"Then you'd better come in.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Come in, then.\"",
+          "check" : "find(\"id=script-replace\").0.value == \"Come in, then.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Re-script (1 changed)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"First Light has changes that aren't saved.\"",
+          "check" : "find(\"id=ask-text\").0.name == \"First Light has changes that aren't saved.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=ask\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 2344451c9a6119e9\"",
+          "check" : "find(\"id=doc-state\").0.name == $edited",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=ask\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 6524aa77b809145a\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes saved valid hash defaa25fe07c366c\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short first-light sequences/first-light.vrmxs [0-9]+ nodes saved valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=ask\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=script value='better come in.'\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short First Light (first-light)\"",
+          "check" : "find(\"id=short-first-light\").0.name == \"Short First Light (first-light)\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "177: act id=script-find action=set_value value=\"Then you'd better come in.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":102,\"x\":3100,\"y\":484},\"help\":\"\",\"id\":\"script-find\",\"name\":\"Find in script\",\"ref\":\"W: (451 ms)",
+        "177: until find(\"id=script-find\").0.value == \"Then you'd better come in.\" do act id=script-find action=set_value value=\"Then you'd better come in.\" tries=3 → ok after 1 (777 ms)",
+        "178: act id=script-replace action=set_value value=\"Come in, then.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":103,\"x\":3206,\"y\":484},\"help\":\"\",\"id\":\"script-replace\",\"name\":\"Replace with\",\"ref\":\"W (428 ms)",
+        "178: until find(\"id=script-replace\").0.value == \"Come in, then.\" do act id=script-replace action=set_value value=\"Come in, then.\" tries=3 → ok after 1 (759 ms)",
+        "179: act id=script-replace-all action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":67,\"x\":3312,\"y\":483},\"help\":\"\",\"id\":\"script-replace-all\",\"name\":\"Replace all in script\", (34 ms)",
+        "180: until find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\" → ok (33 ms)",
+        "181: set edited = find(\"id=doc-state\").0.name → \"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 2344451c9a6119e9\" (222 ms)",
+        "182: act id=short-cafe-order action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":76,\"x\":3162,\"y\":408},\"help\":\"\",\"id\":\"short-cafe-order\",\"name\":\"Short The Order (cafe-ord (415 ms)",
+        "183: until find(\"id=ask-text\").0.name == \"First Light has changes that aren't saved.\" → ok (2004 ms)",
+        "184: act id=ask-cancel action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":61,\"x\":3970,\"y\":514},\"help\":\"\",\"id\":\"ask-cancel\",\"name\":\"Cancel\",\"ref\":\"W:VRMXG Creator/ (24 ms)",
+        "185: until find(\"id=ask\").count == 0 → ok (27 ms)",
+        "186: expect find(\"id=doc-state\").0.name == $edited → ok (24 ms)",
+        "187: act id=short-cafe-order action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":76,\"x\":3162,\"y\":408},\"help\":\"\",\"id\":\"short-cafe-order\",\"name\":\"Short The Order (cafe-ord (24 ms)",
+        "188: until find(\"id=ask\").count == 1 → ok (25 ms)",
+        "189: act id=ask-discard action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":85,\"x\":3878,\"y\":514},\"help\":\"\",\"id\":\"ask-discard\",\"name\":\"Don't Save\",\"ref\":\"W:VRMXG Cre (24 ms)",
+        "190: until find(\"id=doc-state\").0.name matches \"^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid \" timeout=60000 → ok (695 ms)",
+        "191: act id=short-first-light action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":76,\"x\":3241,\"y\":408},\"help\":\"\",\"id\":\"short-first-light\",\"name\":\"Short First Light (first (3179 ms)",
+        "192: until find(\"id=doc-state\").0.name matches \"^Short first-light sequences/first-light.vrmxs [0-9]+ nodes saved valid \" timeout=60000 → ok (755 ms)",
+        "193: expect find(\"id=ask\").count == 0 → ok (2533 ms)",
+        "194: expect find(\"id=script value='better come in.'\").count == 1 → ok (25 ms)",
+        "195: expect find(\"id=short-first-light\").0.name == \"Short First Light (first-light)\" → ok (21 ms)"
+      ],
+      "message" : null,
+      "ms" : 11821,
+      "notes" : [
+
+      ],
+      "row" : 12,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Leaving a short with unsaved changes asks first: Cancel stays, Don't Save goes back to the saved short.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 25,
+      "checks" : [
+        {
+          "actual" : "\"Third Take\"",
+          "check" : "find(\"id=new-short-title\").0.value == \"Third Take\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short third-take sequences/third-take.vrmxs 3 nodes unsaved changes valid hash 6518fd04ac95913e\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short third-take sequences/third-take.vrmxs [0-9]+ nodes unsaved changes \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Storyboard 2 shots, 5 thumbnails\"",
+          "check" : "find(\"id=sb-status\").0.name matches \"^Storyboard 2 shots\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short Third Take (third-take), not saved\"",
+          "check" : "find(\"id=short-third-take\").0.name == \"Short Third Take (third-take), not saved\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=script value='Set: cafe.vrmxs'\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "200: act id=new-short-title action=set_value value=\"Third Take\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":129,\"x\":3457,\"y\":337},\"help\":\"\",\"id\":\"new-short-title\",\"name\":\"New short title\",\"ref (440 ms)",
+        "200: until find(\"id=new-short-title\").0.value == \"Third Take\" do act id=new-short-title action=set_value value=\"Third Take\" tries=3 → ok after 1 (784 ms)",
+        "201: act id=set-cafe-vrmxs action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":45,\"x\":3996,\"y\":337},\"help\":\"\",\"id\":\"set-cafe-vrmxs\",\"name\":\"Set cafe.vrmxs\",\"ref\":\"W:VR (39 ms)",
+        "202: act id=new-short action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":83,\"x\":4048,\"y\":337},\"help\":\"\",\"id\":\"new-short\",\"name\":\"New short\",\"ref\":\"W:VRMXG Creato (24 ms)",
+        "203: until find(\"id=doc-state\").0.name matches \"^Short third-take sequences/third-take.vrmxs [0-9]+ nodes unsaved changes \" timeout=60000 → ok (621 ms)",
+        "204: until find(\"id=sb-status\").0.name matches \"^Storyboard 2 shots\" timeout=60000 → ok (47 ms)",
+        "205: expect find(\"id=short-third-take\").0.name == \"Short Third Take (third-take), not saved\" → ok (2170 ms)",
+        "206: expect find(\"id=script value='Set: cafe.vrmxs'\").count == 1 → ok (15 ms)"
+      ],
+      "message" : null,
+      "ms" : 3907,
+      "notes" : [
+
+      ],
+      "row" : 13,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "New Short makes a short in the chosen set from a script template.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "apps/creator-mac/docs/hand-test/HAND-TEST-M4-CREATOR.scenario.md",
+  "summary" : "13 rows: 13 passed, 0 failed, 0 need you; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}

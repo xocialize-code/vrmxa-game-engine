@@ -403,3 +403,57 @@ func sineWAV(seconds: Double, rate: Int = 48000) -> Data {
         if let s = d.statusItem { NSStatusBar.system.removeStatusItem(s) }
     }
 }
+
+@Suite @MainActor struct AppMenuTests {
+    @Test func appItemsInFileAndAppMenusSendTheirEvents() throws {
+        let config = ShellConfiguration(appName: "Creator", scheme: "vrmxg-test-\(UUID().uuidString.prefix(8).lowercased())", pageUndo: true,
+                                        fileItems: [ShellMenuItem("New Short", event: "newShort", key: "n"), .separator, ShellMenuItem("Open Script…", event: "openScript")],
+                                        menus: [ShellMenu("Short", [ShellMenuItem("Apply Script", event: "applyScript", key: "\r")])])
+        let d = ShellAppDelegate(config: config)
+        let main = d.buildMenu()
+        #expect(main.items.compactMap { $0.submenu?.title } == ["Creator", "File", "Edit", "View", "Short", "Window"], "the app's menu between View and Window")
+        let file = try #require(main.items[1].submenu)
+        #expect(file.items.map { $0.isSeparatorItem ? "-" : $0.title } == ["Open…", "Open Project…", "-", "New Short", "-", "Open Script…", "-", "Save", "Save As…", "-", "Close Window"])
+        let new = try #require(file.item(withTitle: "New Short"))
+        #expect(new.representedObject as? String == "newShort" && new.keyEquivalent == "n" && new.target === d)
+        let apply = try #require(main.items[4].submenu?.item(withTitle: "Apply Script"))
+        #expect(apply.representedObject as? String == "applyScript" && apply.action == #selector(ShellAppDelegate.menuOwn(_:)))
+        // an app with none keeps the shell's menus as they were
+        let plain = ShellAppDelegate(config: ShellConfiguration(appName: "Editor", scheme: "vrmxg-test-plain")).buildMenu()
+        #expect(plain.items[1].submenu?.items.map { $0.isSeparatorItem ? "-" : $0.title } == ["Open…", "Open Project…", "-", "Save", "Save As…", "-", "Close Window"])
+        #expect(plain.items.compactMap { $0.submenu?.title } == ["Editor", "File", "Edit", "View", "Window"])
+    }
+
+    @Test func anOpenedDocumentIsServedLikeABinaryOpen() throws {
+        let dir = try tempDir(["web/index.html": "<p>", "cafe order.fountain": "INT. CAFE\n\nHi."])
+        let roots = WebRoots(app: dir.appendingPathComponent("web"))
+        let f = FileMethods(roots: roots, env: [:])
+        let out = try f.opened(dir.appendingPathComponent("cafe order.fountain"))
+        let url = try #require(out["url"] as? String)
+        #expect(out["name"] as? String == "cafe order.fountain" && url.hasSuffix("/cafe%20order.fountain"))
+        #expect(String(decoding: roots.read(path: url).data, as: UTF8.self) == "INT. CAFE\n\nHi.")
+        #expect(f.granted.contains(dir.appendingPathComponent("cafe order.fountain")), "writing back to it needs no panel")
+    }
+}
+
+@Suite @MainActor struct OpenDocumentsTests {
+    @Test func onlyAnAppThatNamesTypesTakesOpenDocuments() throws {
+        let sel = #selector(NSApplicationDelegate.application(_:open:))
+        let editor = ShellAppDelegate(config: ShellConfiguration(appName: "Editor", scheme: "vrmxg-test-ed"))
+        #expect(!editor.responds(to: sel), "no openTypes: AppKit's own answer, nothing granted")
+        #expect(editor.responds(to: #selector(NSApplicationDelegate.applicationDidFinishLaunching(_:))), "other delegate methods unchanged")
+        let creator = ShellAppDelegate(config: ShellConfiguration(appName: "Creator", scheme: "vrmxg-test-cr", openTypes: ["fountain", "VRMXA"]))
+        #expect(creator.responds(to: sel))
+        let urls = ["a.fountain", "b.vrmxa", "c.txt", "d.Fountain"].map { URL(fileURLWithPath: "/tmp/\($0)") }
+        #expect(creator.acceptedOpens(urls).map(\.lastPathComponent) == ["a.fountain", "b.vrmxa", "d.Fountain"])
+    }
+
+    @Test func filesOpenedDuringAReloadWaitForThePage() throws {
+        let d = ShellAppDelegate(config: ShellConfiguration(appName: "Creator", scheme: "vrmxg-test-rl", openTypes: ["fountain"]))
+        d.webView = WKWebView(frame: NSRect(x: 0, y: 0, width: 100, height: 100))
+        d.pageLoaded = true
+        d.webView(d.webView, didStartProvisionalNavigation: nil)   // a reload starts
+        d.application(NSApplication.shared, open: [URL(fileURLWithPath: "/tmp/x.fountain"), URL(fileURLWithPath: "/tmp/y.png")])
+        #expect(d.pendingOpens.map(\.lastPathComponent) == ["x.fountain"], "held for the new page; the .png refused")
+    }
+}

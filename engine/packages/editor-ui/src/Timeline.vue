@@ -3,11 +3,13 @@
 // frame + the first visible frame), so they can't drift apart. Keys, clips and shots move by drag (snapping to frames,
 // markers, shot edges, other keys and the playhead, within 8 px at any zoom) or by the arrow keys; each move is one undo
 // step, committed on release. The panel holds no engine objects: it reads plain data (`data`) and emits commands.
+// Shared by the editor and the creator (M4 W5, @vrmxg/editor-ui); what an edit becomes is in timeline-ui.js, tested in Node.
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { TimelineGeometry, snapTargets, snapFrame, SNAP_PX, timecode, CLIP_TRACKS, CHANNEL_TRACKS } from '@vrmxg/editor-core';
+import { TRACK_TYPES, EASES, needsTarget, itemLabel, selectionOf, isSelected, moveCommand, removeCommand, fieldCommand, trackSpec, clipSpec, keyCommand, nudgeCommand } from './timeline-ui.js';
 
 const props = defineProps({ data: { type: Object, default: null }, disabled: { type: Boolean, default: false } });
-const emit = defineEmits(['cmd', 'scrub', 'transport']);
+const emit = defineEmits(['cmd', 'scrub', 'transport', 'select']);
 
 const HEAD = 190, ROW = 30, RULER = 26;
 const lanes = ref(null);
@@ -35,9 +37,9 @@ const selectedItem = computed(() => {
   if (sel.value.kind === 'key') { const ks = sel.value.channel ? t.keys?.[sel.value.channel] : t.keys; return ks?.[sel.value.index] ?? null; }
   return null;
 });
-const keyedTypes = ['property', 'transform', 'expression', 'event', 'post'];
-const types = ['camera', 'animation', 'expression', 'dialogue', 'lookAt', 'property', 'event', 'audio', 'post', 'simulation'];
-const needsTarget = (t) => ['animation', 'expression', 'dialogue', 'lookAt', 'property', 'transform'].includes(t);
+const types = TRACK_TYPES;
+const send = (c) => { if (c) emit('cmd', ...c); };
+watch(sel, (s) => emit('select', s ? { ...s } : null)); // the creator's storyboard follows the selected shot
 
 function measure() { if (lanes.value) width.value = lanes.value.clientWidth - HEAD; }
 let ro = null;
@@ -66,7 +68,7 @@ function onItemDown(e, row, item, mode = 'move') {
   if (props.disabled) return;
   e.stopPropagation();
   e.target.setPointerCapture(e.pointerId);
-  sel.value = { row: row.id, kind: item.kind, index: item.index, channel: item.channel ?? null, id: item.id };
+  sel.value = selectionOf(row, item);
   const except = item.kind === 'shot' ? { shot: item.id } : { track: row.id, index: item.index, channel: item.channel ?? null };
   drag.value = { item, row, mode, from: frameOfEvent(e), start: item.start, end: item.end, targets: snapTargets(d.value.seq, { except, playhead: d.value.playhead }), moved: false };
 }
@@ -93,13 +95,7 @@ function onUp() {
   commitMove(dr.row, dr.item, dr.start, dr.end, dr.mode);
 }
 
-function commitMove(row, item, start, end, mode = 'move') {
-  if (item.kind === 'key') { if (start !== item.start) emit('cmd', 'moveKey', row.id, item.index, start, { channel: item.channel ?? null }); return; }
-  const span = mode === 'start' ? { start } : mode === 'end' ? { end } : { start, end };
-  if (span.start === item.start && (span.end === undefined || span.end === item.end)) return;
-  if (item.kind === 'shot') emit('cmd', 'moveShot', item.id, span);
-  else emit('cmd', 'moveClip', row.id, item.index, span);
-}
+function commitMove(row, item, start, end, mode = 'move') { send(moveCommand(row, item, start, end, mode)); }
 
 function onWheel(e) {
   if (e.ctrlKey || e.metaKey) { // pinch, or ⌘ + wheel: zoom about the pointer
@@ -114,7 +110,7 @@ const spanOf = (row, item) => {
   if (dr && dr.moved && dr.item.key === item.key) return { start: dr.start, end: dr.end ?? item.end };
   return { start: item.start, end: item.end };
 };
-const isSel = (row, item) => !!sel.value && sel.value.row === row.id && sel.value.kind === item.kind && (item.kind === 'shot' ? sel.value.id === item.id : sel.value.index === item.index && (sel.value.channel ?? null) === (item.channel ?? null));
+const isSel = (row, item) => isSelected(sel.value, row, item);
 
 // ---------------------------------------------------------------- keys: arrows nudge the selection, Delete removes it
 const typing = () => /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName ?? '');
@@ -126,8 +122,7 @@ function onKey(e) {
   if (!item) return;
   if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
     e.preventDefault();
-    const by = (e.key === 'ArrowLeft' ? -1 : 1) * (e.shiftKey ? 10 : 1);
-    commitMove(row, item, Math.max(0, item.start + by), item.end !== undefined ? Math.max(1, item.end + by) : undefined);
+    send(nudgeCommand(row, item, e.key === 'ArrowLeft' ? -1 : 1, e.shiftKey));
   } else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); removeSelected(); }
   else if (e.key === 'Escape') sel.value = null;
 }
@@ -137,56 +132,26 @@ const ph = () => Math.round(d.value?.playhead ?? 0);
 // the frame field keeps what is being typed: a re-render while it has focus (the preview rebuilding) must not reset it
 const frameText = ref('0'), frameFocus = ref(false);
 watch(() => d.value?.playhead, () => { if (!frameFocus.value) frameText.value = String(ph()); }, { immediate: true });
-const parseValue = (v) => { try { return JSON.parse(v); } catch { return v; } };
 function addTrack() {
   if (needsTarget(form.type) && form.type !== 'property' && form.type !== 'transform' && !d.value.characters.includes(form.target)) form.target = d.value.characters[0] ?? '';
-  const t = { type: form.type };
-  if (needsTarget(form.type)) t.target = form.target;
-  if (form.type === 'property') t.path = form.path;
-  emit('cmd', 'addTrack', t);
+  emit('cmd', 'addTrack', trackSpec(form));
 }
 function addShot() { const s = ph(); emit('cmd', 'addShot', { start: s, end: s + Number(form.shotLen), camera: form.camera || undefined, name: `Shot ${(d.value?.seq.shots.length ?? 0) + 1}` }); }
-function addKey() {
-  const t = selectedTrack.value; if (!t || CLIP_TRACKS.has(t.type)) return;
-  emit('cmd', 'addKey', t.id, ph(), t.type === 'event' ? parseValue(form.value) : parseValue(form.value), CHANNEL_TRACKS.has(t.type) ? { channel: form.channel } : {});
-}
+function addKey() { send(keyCommand(selectedTrack.value, form, ph())); }
 function addClip() {
-  const t = selectedTrack.value; if (!t || !CLIP_TRACKS.has(t.type)) return;
-  const c = { start: ph(), end: ph() + Number(form.clipLen) };
-  if (t.type === 'camera') c.camera = form.camera;
-  if (t.type === 'animation') { c.slot = String(form.value) === '1' ? 'talk' : String(form.value); c.blendIn = 6; c.blendOut = 6; }
-  if (t.type === 'dialogue') c.text = String(form.value) === '1' ? 'Hello!' : String(form.value);
-  if (t.type === 'lookAt') c.at = form.camera === 'camera' ? 'camera' : (d.value.characters.find((x) => x !== t.target) ?? 'camera');
-  if (t.type === 'simulation') c.mode = 'live';
-  if (t.type === 'audio') c.asset = String(form.value);
-  emit('cmd', 'addClip', t.id, c);
+  const t = selectedTrack.value; if (!t) return;
+  const c = clipSpec(t, form, ph(), d.value.characters);
+  if (c) emit('cmd', 'addClip', t.id, c);
 }
-function removeSelected() {
-  const s = sel.value; if (!s) return;
-  if (s.kind === 'shot') emit('cmd', 'removeShot', s.id);
-  else if (s.kind === 'clip') emit('cmd', 'removeClip', s.row, s.index);
-  else if (s.kind === 'key') emit('cmd', 'removeKey', s.row, s.index, { channel: s.channel });
-  sel.value = null;
-}
-function setField(field, raw) {
-  const s = sel.value; if (!s) return;
-  const num = ['start', 'end', 'frame'].includes(field), v = num ? Number(raw) : raw;
-  if (s.kind === 'shot') { if (num) emit('cmd', 'moveShot', s.id, { [field]: v }); else emit('cmd', 'setShot', s.id, { [field]: v }); }
-  else if (s.kind === 'clip') { if (num) emit('cmd', 'moveClip', s.row, s.index, { [field]: v }); else emit('cmd', 'setClip', s.row, s.index, { [field]: v }); }
-  else if (s.kind === 'key') {
-    if (field === 'frame') emit('cmd', 'moveKey', s.row, s.index, v, { channel: s.channel });
-    else if (field === 'value') emit('cmd', 'setKey', s.row, s.index, { value: parseValue(raw) }, { channel: s.channel });
-    else if (field === 'ease') emit('cmd', 'setKey', s.row, s.index, { ease: raw || null }, { channel: s.channel });
-  }
-}
+function removeSelected() { send(removeCommand(sel.value)); sel.value = null; }
+function setField(field, raw) { send(fieldCommand(sel.value, field, raw)); }
 /** Select an item without dragging it (a click, or an accessibility press). */
 // picking an item leaves any field being typed in, so the arrows nudge it (an accessibility press focuses nothing)
 const pick = (row, item) => {
   if (drag.value) return;
-  sel.value = { row: row.id, kind: item.kind, index: item.index, channel: item.channel ?? null, id: item.id };
+  sel.value = selectionOf(row, item);
   if (typing()) /** @type {HTMLElement} */ (document.activeElement).blur();
 };
-const itemLabel = (item) => (item.kind === 'key' ? `Key ${item.label ? `${item.label} ` : ''}at ${item.start}` : `${item.kind === 'shot' ? 'Shot' : 'Clip'} ${item.label} ${item.start} to ${item.end}`);
 defineExpose({ fit, select: (s) => { sel.value = s; } });
 </script>
 
@@ -280,7 +245,7 @@ defineExpose({ fit, select: (s) => { sel.value = s; } });
           <template v-if="sel.kind === 'key'">
             <label class="field">Frame <input id="tl-sel-frame" type="number" :value="selectedItem[0]" aria-label="Key frame" :disabled="disabled" @change="setField('frame', $event.target.value)"></label>
             <label class="field">Value <input id="tl-sel-value" :value="JSON.stringify(selectedItem[1])" aria-label="Key value" :disabled="disabled" @change="setField('value', $event.target.value)"></label>
-            <label class="field">Ease <select id="tl-sel-ease" :value="selectedItem[2] ?? ''" aria-label="Key ease" :disabled="disabled" @change="setField('ease', $event.target.value)"><option v-for="e in ['', 'linear', 'easeIn', 'easeOut', 'easeInOut', 'step']" :key="e" :value="e">{{ e || '(linear)' }}</option></select></label>
+            <label class="field">Ease <select id="tl-sel-ease" :value="selectedItem[2] ?? ''" aria-label="Key ease" :disabled="disabled" @change="setField('ease', $event.target.value)"><option v-for="e in EASES" :key="e" :value="e">{{ e || '(linear)' }}</option></select></label>
           </template>
           <template v-else>
             <label class="field">Start <input id="tl-sel-start" type="number" :value="selectedItem.start" aria-label="Start frame" :disabled="disabled" @change="setField('start', $event.target.value)"></label>
@@ -302,7 +267,7 @@ defineExpose({ fit, select: (s) => { sel.value = s; } });
 </template>
 
 <style>
-.timeline { grid-area: assets; display: flex; flex-direction: column; background: var(--panel); border-top: 1px solid var(--line); min-height: 0; min-width: 0; overflow: hidden; user-select: none; }
+.timeline { display: flex; flex-direction: column; background: var(--panel); border-top: 1px solid var(--line); min-height: 0; min-width: 0; overflow: hidden; user-select: none; }
 .tl-bar { display: flex; align-items: center; gap: 6px; padding: 4px 8px; border-bottom: 1px solid var(--line); flex-wrap: nowrap; overflow-x: auto; }
 .tl-bar input[type=number], .tl-bar input.num { width: 64px; }
 .tl-bar output { white-space: nowrap; font-size: 12px; }

@@ -132,3 +132,11 @@ test('a take is exported at its world\'s fixed aspect (M3 W4, AB-T-0538): anothe
   const tree = world();
   await assert.rejects(exportTake({ tree, host: new RenderHost({ renderer: fakeRenderer(tree), dprCap: 1 }), fps: 30, frames: 2, width: 8, height: 8, sink: hashSink(), audio: false }), /fixed aspect of 1\.7778; 8×8/);
 });
+
+test('a cancel at the last frame still stops the export before the sink finishes the file (M4 W5)', async () => {
+  const tree = world(), host = new RenderHost({ renderer: fakeRenderer(tree), dprCap: 1 }), sink = recordingSink();
+  const signal = { aborted: false };
+  // frames 0..10: the last frame's progress (n 10) is where the cancel lands; the frame loop has no frame left to check it
+  await assert.rejects(exportTake({ tree, host, fps: 30, frames: 11, width: 16, height: 9, sink, audio: false, signal, onProgress: (p) => { if (p.n === 10 && p.phase === 'frames') signal.aborted = true; } }), /cancelled/);
+  assert.ok(sink.cancelled && !sink.ended, 'the sink cancelled (the shell removes the file), never ended');
+});

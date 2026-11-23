@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleExecutable</key><string>VRMXGCreator</string>
+	<key>CFBundleIdentifier</key><string>com.xocialize.vrmxg-creator</string>
+	<key>CFBundleName</key><string>VRMXG Creator</string>
+	<key>CFBundleDisplayName</key><string>VRMXG Creator</string>
+	<key>CFBundlePackageType</key><string>APPL</string>
+	<key>CFBundleShortVersionString</key><string>0.1.0</string>
+	<key>CFBundleVersion</key><string>1</string>
+	<key>LSMinimumSystemVersion</key><string>15.0</string>
+	<key>NSHighResolutionCapable</key><true/>
+	<key>NSPrincipalClass</key><string>NSApplication</string>
+	<key>CFBundleDocumentTypes</key><array>
+		<!-- what File › Open and the Finder hand the creator (it opens them, it never claims to be their default app) -->
+		<dict>
+			<key>CFBundleTypeName</key><string>Fountain Script</string>
+			<key>CFBundleTypeExtensions</key><array><string>fountain</string></array>
+			<key>CFBundleTypeRole</key><string>Editor</string>
+			<key>LSHandlerRank</key><string>Alternate</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key><string>VRMXA Character</string>
+			<key>CFBundleTypeExtensions</key><array><string>vrmxa</string></array>
+			<key>CFBundleTypeRole</key><string>Viewer</string>
+			<key>LSHandlerRank</key><string>Alternate</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key><string>VRMXG Scene</string>
+			<key>CFBundleTypeExtensions</key><array><string>vrmxs</string></array>
+			<key>CFBundleTypeRole</key><string>Viewer</string>
+			<key>LSHandlerRank</key><string>Alternate</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key><string>glTF Binary Set</string>
+			<key>CFBundleTypeExtensions</key><array><string>glb</string></array>
+			<key>CFBundleTypeRole</key><string>Viewer</string>
+			<key>LSHandlerRank</key><string>Alternate</string>
+		</dict>
+		<!-- a movie's subtitles (.srt) are written beside it in the sandbox as a related item (apps/shell FrameExport.swift) -->
+		<dict>
+			<key>CFBundleTypeName</key><string>SubRip Subtitles</string>
+			<key>CFBundleTypeExtensions</key><array><string>srt</string></array>
+			<key>CFBundleTypeRole</key><string>Editor</string>
+			<key>NSIsRelatedItemType</key><true/>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -9,6 +9,10 @@ const here = (p) => path.resolve(import.meta.dirname, p);
 const sample = here('../../content/sample');
 const listing = () => JSON.stringify(fs.readdirSync(sample, { recursive: true }).map(String).filter((f) => !f.split(path.sep).some((s) => s.startsWith('.')) && fs.statSync(path.join(sample, f)).isFile()).map((f) => f.split(path.sep).join('/')).sort());
 const shim = fs.readFileSync(here('static/vrmxg-core.js'), 'utf8');
+// vrmxa-core beside the repository, and its real path: Vite checks served files by real path, and a worktree reaches the
+// studio through a symlink (M4 W5)
+const core = here('../../../vrmxa-avatar-studio/packages/vrmxa-core');
+const coreReal = fs.existsSync(core) ? fs.realpathSync(core) : core;
 
 /** project-files.json (the bundled project's files) and the import map's shim, in dev and in the build. */
 const projectFiles = () => ({
@@ -33,5 +37,5 @@ export default defineConfig({
   optimizeDeps: { exclude: ['sql.js'] },
   resolve: { alias: { '@vrmxa-core': here('../../../vrmxa-avatar-studio/packages/vrmxa-core/src') }, dedupe: ['three'] },
   build: { outDir: here('dist'), emptyOutDir: true, target: 'safari16', chunkSizeWarningLimit: 4000 },
-  server: { port: 5182, fs: { allow: [here('../..'), here('../../../vrmxa-avatar-studio/packages/vrmxa-core')] } },
+  server: { port: 5182, fs: { allow: [here('../..'), core, coreReal] } },
 });

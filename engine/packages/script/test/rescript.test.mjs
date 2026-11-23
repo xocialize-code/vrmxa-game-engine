@@ -137,6 +137,18 @@ test('a hand-trimmed line gives the line its length; a baked voice is kept while
   const c = build(SMALL.replace('A latte, please.', 'A tea, please.'), b.doc);
   const tea = clip(c.doc, 'mira-says', (x) => x.src === `${next}#say`);
   assert.deepEqual([tea.text, tea.clip], ['A tea, please.', undefined], 'new words: the old voice is stale and goes');
+  // M4 W7: the length stays the person's on every later re-script, not only the first (the record says "-L")
+  const d = build(SMALL, b.doc), e = build(SMALL, d.doc);
+  for (const r of [d, e]) {
+    assert.equal(clip(r.doc, 'hana-1-says', (x) => x.src === `${id}#say`).end - clip(r.doc, 'hana-1-says', (x) => x.src === `${id}#say`).start, say.end - say.start, 'still a second longer');
+    assert.equal(nb(r, next).start - nb(a, next).start, 24, 'and the next line still waits for it');
+  }
+  assert.equal(text(e.doc), text(d.doc), 'a re-script of an unchanged script changes nothing');
+  // a line only reworded by hand (its times as the script gave them) keeps taking the script's length
+  const w = structuredClone(a.doc);
+  clip(w, 'hana-1-says', (x) => x.src === `${id}#say`).text = 'Morning!';
+  const f = build(SMALL, build(SMALL, w).doc);
+  assert.equal(nb(f, next).start, nb(a, next).start, 'no hand length from a reworded line');
 });
 
 test('hand-set shots and duration are kept; generated shots give way', () => {
@@ -319,4 +331,15 @@ test('generated nodes: a moved mark moves the wide; a cast member cut entirely l
   assert.equal(out.changed, true);
   assert.equal(s.text(), text(b.doc));
   s.undo(); assert.equal(s.text(), before);
+});
+
+test('a sequence opened from its file, re-scripted with the same script, is unchanged (keys in the file\'s order)', async () => {
+  const fs = await import('node:fs'), path = await import('node:path');
+  const sample = path.join(import.meta.dirname, '../../../../content/sample');
+  const s = new EditorSession({ registry: m0Registry(), text: fs.readFileSync(path.join(sample, 'sequences/cafe-order.vrmxs'), 'utf8') });
+  s.setDoc = set;
+  const out = applyScript(s, fs.readFileSync(path.join(sample, 'scripts/cafe-order.fountain'), 'utf8'), { marks });
+  assert.equal(out.ok, true);
+  assert.equal(out.changed, false);
+  assert.equal(s.history().undo, null, 'no undo step');
 });

@@ -38,7 +38,8 @@
     "@vrmxg/voice": "0.1.0",
     "vue": "3.5.45",
     "@vrmxg/coverage": "0.1.0",
-    "@vrmxg/script": "0.1.0"
+    "@vrmxg/script": "0.1.0",
+    "@vrmxg/voicing": "0.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "6.0.11"

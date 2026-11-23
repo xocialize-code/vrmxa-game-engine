@@ -44,3 +44,15 @@ the selection, the edit view never stepped).
 
 `@vrmxg/scene` serializes a sequence block line by line (its scalars, then one shot, marker and track per line), so
 moving a key changes one line, and saving then reopening gives the same bytes.
+
+## The render queue (M4 W5, AB-T-0577)
+
+`queue.js`: `RenderQueue({ runner, onChange })` renders jobs one at a time through a runner, and owns their order and
+state (`queued`, `running`, `done`, `failed`, `cancelled`). `add({ short, ref, preset | size, fps, codec, audio,
+subtitles, seconds, name })` takes a preset's values (`PRESETS`: draft 720p H.264, review 1080p H.264, master 1080p
+ProRes 4444; `fps: null` is the sequence's own rate); `run()`, `cancel(id)` (a queued job never runs; the running one
+sees its `AbortSignal`), `retry`, `remove`, `move`, `list()` (copies). A runner is `{ name, run(job, { progress,
+signal }) }`. A runner error with `code: 'cancelled'` (a closed save panel) ends the job cancelled, not failed.
+`stubRunner` renders nothing and reports the frames it would draw. **W10 fills this interface** with delivery export;
+the creator's runner until then is the editor's M2 export through the shell (`apps/creator/src/host.js`). Tests:
+`test/queue.test.mjs`.

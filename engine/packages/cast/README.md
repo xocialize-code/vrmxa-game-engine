@@ -20,7 +20,7 @@ const mira = await readCharacter(bytes, { ref: 'characters/mira.vrmxa', vrmxa })
 rolesOf(session.doc);                         // [{ id: 'hana-1', cue: 'HANA', lines, performance: ['hana-1-act', …] }, …]
 const r = await applyCast(session, 'HANA', mira, {   // one undo step: "Recast HANA: Hana → Mira", re-bake and all
   presets: { 'hana-1': 'af_heart', mira: 'af_bella' },   // for characters whose persona names no Kokoro preset
-  rebake: async (lines) => speakAndWrite(lines),         // W7's hook: write each line's clip, answer its bake fields
+  rebake: rebakeWith({ tts, write, read }),               // W7's hook (@vrmxg/voicing): speak each line, answer its bake fields
 });
 ```
 
@@ -94,13 +94,13 @@ casting could keep a line in the wrong voice, so neither is used.
 
 Each listed line has `bakePlan`'s `id`, `where`, `speaker` and `text` (the test checks that `bakePlan` finds the same
 lines with `voicesFor`). It also has the new `voice` and `engine`, the line's script beat, and the clip to write,
-`clipFor(dir, id, voice, text)`: the line, the voice and a short FNV-1a of voice and words
-(`voice/cafe-order-hana-1-says-1-af-bella-61ddca1a.wav`). Undo puts the old bake back, so a re-bake must never write
+`clipFor(dir, id, voice, text, engine)`: the line, the voice and a short FNV-1a of the TTS engine, voice and words
+(`voice/cafe-order-hana-1-says-1-af-bella-12d0e8ff.wav`). A line's id is `lineId(doc, track, index)`, `<sequence>-<track>-<n>`, with a short hash of the track id when two track ids slug alike. Undo puts the old bake back, so a re-bake must never write
 over a file undo can bring back. That rules out `bakePlan`'s `voice/<line>.wav`, which is the same in every voice:
 **a cast role is baked from this list, not from `bakePlan`'s names.** `bakePlan` stays as it is for the sample's tool.
 `linesToBake(doc, { role })` lists a role's unbaked lines, with the same names, at any time.
 
-**W7's hook:** `await applyCast(session, role, card, { rebake })` calls `rebake(lines, { role, doc, label })` before the
+**W7's hook** (`rebakeWith` in `@vrmxg/voicing`, M4 W7): `await applyCast(session, role, card, { rebake })` calls `rebake(lines, { role, doc, label })` before the
 cast lands. The hook writes each line's audio to `line.clip` (and its timings) and answers each line with its bake
 fields (`{ clip, timings?, words?, visemes?, audio? }`, the script's `BAKE_FIELDS`), or `null` to leave it speaking live.
 `withBake` puts those fields, and each clip's `voice`, into the cast's own edit. **One undo takes back the recast and its

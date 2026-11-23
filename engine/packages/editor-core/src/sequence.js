@@ -6,6 +6,11 @@ import { CLIP_TRACKS, CHANNEL_TRACKS } from './timeline.js';
 import { uniqueId, slug } from './assets.js';
 
 const clone = (v) => structuredClone(v);
+/**
+ * A dialogue line's baked voice: @vrmxg/script's BAKE_FIELDS (kept equal by the tests; this package doesn't depend on the
+ * script). Since M4 W7 a clip's words, visemes and audio are what plays, so new words must take the whole bake with them.
+ */
+export const BAKE_FIELDS = ['clip', 'timings', 'visemes', 'words', 'voice', 'audio'];
 const sortKeys = (ks) => ks.sort((a, b) => a[0] - b[0]);
 
 /** A new sequence document filming a set. */
@@ -118,10 +123,12 @@ export class SequenceCommands {
       return t.clips.indexOf(c);
     });
   }
+  /** Set a clip's fields. A dialogue line given new words loses its baked voice (unless the same edit gives one): it speaks its text until it is voiced again. */
   setClip(trackId, index, fields) {
     return this.edit(`Set clip ${trackId} ${index}`, (s) => {
-      const c = (s.tracks.find((x) => x.id === trackId) ?? this.track(trackId)).clips[index];
+      const t = s.tracks.find((x) => x.id === trackId) ?? this.track(trackId), c = t.clips[index];
       if (!c) throw new Error(`${trackId}: no clip ${index}`);
+      if (t.type === 'dialogue' && 'text' in fields && fields.text !== c.text) for (const f of BAKE_FIELDS) if (!(f in fields)) delete c[f];
       for (const [k, v] of Object.entries(fields)) { if (v === undefined || v === null || v === '') delete c[k]; else c[k] = clone(v); }
     });
   }
@@ -130,7 +137,8 @@ export class SequenceCommands {
   /**
    * Regenerate one dialogue line (M3 W4, AB-T-0543): new text spoken by a TTS provider, its clip and word timings
    * written into the project, then the clip's text, audio and subtitle length changed as one undo step. Undo puts the
-   * old clip back (its file is still there).
+   * old clip back (its file is still there). The old bake goes whole (its words, visemes, audio and timings file), so the
+   * new clip plays from its own timings file; @vrmxg/voice's voiceLines({ line, text }) bakes words and visemes too.
    * @param {string} trackId @param {number} index
    * @param {string} text
    * @param {{ speak: (o: { text: string, voice?: string }) => Promise<{ wav: Uint8Array, words?: any[], duration?: number }>,
@@ -154,6 +162,7 @@ export class SequenceCommands {
     const seconds = r.duration ?? (words.length ? words.at(-1).start + words.at(-1).duration : null);
     return this.edit(`Regenerate line "${text.length > 32 ? `${text.slice(0, 31)}…` : text}"`, (s) => {
       const c = s.tracks.find((x) => x.id === trackId).clips[index];
+      for (const f of BAKE_FIELDS) delete c[f]; // the old bake goes whole: its words, visemes and length would play (M4 W7)
       c.text = text; c.clip = clip;
       if (voice) c.voice = voice; else delete c.voice; // the voice it was baked in (@vrmxg/cast reads it); unknown when the provider chose
       if (seconds) c.end = c.start + Math.max(1, Math.ceil(seconds * s.fps));
