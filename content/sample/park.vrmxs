@@ -1,0 +1,27 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "park",
+  "assets": [
+    {"id":"park","type":"glb","ref":"sets/park.glb"},
+    {"id":"bench","type":"glb","ref":"props/bench.glb"},
+    {"id":"street-lamp","type":"glb","ref":"props/street-lamp.glb"},
+    {"id":"planter-tree","type":"glb","ref":"props/planter-tree.glb"},
+    {"id":"vending-machine","type":"glb","ref":"props/vending-machine.glb"},
+    {"id":"mira","type":"vrmxa","ref":"characters/mira.vrmxa"},
+    {"id":"hana","type":"vrmxa","ref":"characters/hana.vrmxa"}
+  ],
+  "nodes": [
+    {"id":"root","type":"Node3D","name":"Park"},
+    {"id":"env","type":"Environment","parent":"root","props":{"ambientIntensity":0.6,"background":"gradient","environmentIntensity":0.45,"skyHorizonColor":"#eef1f4","skyTopColor":"#8fb3d9"}},
+    {"id":"set","type":"Model","parent":"root","asset":"park"},
+    {"id":"bench","type":"Model","parent":"root","name":"Bench","asset":"bench","transform":{"p":[0,0.4726,-3.3],"q":[0,-0.7071068,0,0.7071068]},"props":{"colliders":"none"}},
+    {"id":"street-lamp","type":"Model","parent":"root","name":"Street lamp","asset":"street-lamp","transform":{"p":[-2.4,1.7,-3.6]},"props":{"colliders":"none"}},
+    {"id":"planter-tree","type":"Model","parent":"root","name":"Tree in a planter","asset":"planter-tree","transform":{"p":[2.9,1.45,-3.3],"q":[0,0.1736482,0,0.9848078]},"props":{"colliders":"none"}},
+    {"id":"vending-machine","type":"Model","parent":"root","name":"Vending machine","asset":"vending-machine","transform":{"p":[-4.2,0.925,-0.4]},"props":{"colliders":"none"}},
+    {"id":"sun","type":"DirectionalLight","parent":"root","transform":{"q":[-0.38,0.28,0.12,0.873]},"props":{"intensity":2.6,"shadowExtent":9,"shadowPreset":"high"}},
+    {"id":"mira","type":"Character","parent":"root","name":"Mira","asset":"mira","transform":{"p":[1.4,0,1.2],"q":[0,0.9848078,0,-0.1736482]}},
+    {"id":"hana-1","type":"Character","parent":"root","name":"Hana","asset":"hana","transform":{"p":[0.5,0,-2.4]}},
+    {"id":"cam","type":"Camera","parent":"root","transform":{"p":[0,1.6,6.5]},"props":{"focalLength":30}}
+  ]
+}

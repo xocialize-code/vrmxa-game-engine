@@ -65,3 +65,19 @@ test('The Regular\'s take is hand-keyed: its clips carry no src, so the script k
   assert.equal(take.length, 6);
   for (const c of take) assert.equal(c.src, undefined, `${c.track} ${c.slot} is the person's`);
 });
+
+test('the park, the set made with Gaea, films a script: New Short over park.vrmxs builds by rule, valid, on its marks', async () => {
+  const { buildShort } = await import('../src/desk.js');
+  const { shortFor } = await import('../src/shorts.js');
+  const park = parse(read('park.vrmxs'));
+  assert.ok(park.assets.filter((a) => a.type === 'glb' && a.ref.startsWith('props/')).every((a) => files.includes(a.ref)), 'the Gaea props are in the project');
+  const text = 'Title: In the Park\nSet: park.vrmxs\nMarks:\n    HANA = by-the-bench\n    MIRA = on-the-path\n\nEXT. PARK - DAY\n\nMira crosses the square to the bench.\n\nMIRA\nThere you are!\n\nHANA\n(smiling)\nI saved you a seat.\n';
+  const s = shortFor('scripts/in-the-park.fountain', { files, text, coverage: 'rule' });
+  assert.equal(s.marks, 'scripts/park-marks.json', 'the set\'s marks are found for it');
+  const r = buildShort(text, { short: s, set: park, marks: JSON.parse(read(s.marks)).marks });
+  assert.equal(r.ok, true, JSON.stringify(r.errors));
+  assert.deepEqual(checkSequence(r.doc.sequence, { nodeIds: new Set([...park.nodes, ...r.doc.nodes].map((n) => n.id)) }), []);
+  assert.deepEqual(lintLine(r.doc, { set: park }).issues, []);
+  assert.deepEqual(Object.keys(r.doc.sequence.cast).sort(), ['hana-1', 'mira']);
+  assert.deepEqual(r.doc.sequence.cast.mira.transform.p, [1.4, 0, 1.2], 'Mira on her mark');
+});
