@@ -1,0 +1,2190 @@
+{
+ "cell": "chromium-webgl",
+ "runtime": "chromium",
+ "backend": "webgl",
+ "ua": "156.0.8078.4",
+ "started": "2026-11-23T20:02:54.500Z",
+ "checks": {
+  "editor": {
+   "query": "mode=check-export&renderer=webgl",
+   "canonical": "59bbb42baa90cecb",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "59bbb42baa90cecb",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "scrubSame": true,
+      "forwardSame": true
+     },
+     "ms": 14469,
+     "wall": {
+      "start": 1795464190047,
+      "end": 1795464204516
+     },
+     "gpuLoad": {
+      "samples": 5,
+      "gpuUtil": {
+       "min": 0,
+       "median": 40,
+       "max": 53
+      },
+      "seen": {
+       "node:node": 2.8,
+       "chromium:Google Chrome for Testing": 46.4,
+       "chromium:chrome_crashpad_handler": 0.7,
+       "chromium:Google Chrome for Testing Helper (GPU)": 22.6,
+       "chromium:Google Chrome for Testing Helper": 12.1,
+       "chromium:Google Chrome for Testing Helper (Alerts)": 7.4,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 135
+      },
+      "first": {
+       "at": 1795464190047,
+       "gpuUtil": 0,
+       "processes": [
+        "node:node 2.1%",
+        "chromium:Google Chrome for Testing 46.4%",
+        "chromium:Google Chrome for Testing Helper (GPU) 12.4%",
+        "chromium:Google Chrome for Testing Helper 12.1%",
+        "chromium:Google Chrome for Testing Helper 7.9%",
+        "chromium:Google Chrome for Testing Helper (Alerts) 7.4%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795464202104,
+       "gpuUtil": 40,
+       "processes": [
+        "chromium:Google Chrome for Testing Helper (GPU) 8.3%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 105.1%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": "1080p",
+     "frames": 1080,
+     "exportMs": 8505,
+     "scrub": {
+      "frames": 26,
+      "same": 26
+     },
+     "subtitles": {
+      "lines": 4,
+      "bytes": 272
+     },
+     "rows": [
+      {
+       "frame": 0,
+       "step": 0,
+       "alpha": 0,
+       "restored": 0,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 84,
+       "step": 210,
+       "alpha": 0,
+       "restored": 120,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 120,
+       "step": 300,
+       "alpha": 0,
+       "restored": 240,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 167,
+       "step": 417,
+       "alpha": 0.5,
+       "restored": 360,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 168,
+       "step": 420,
+       "alpha": 0,
+       "restored": 360,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 252,
+       "step": 630,
+       "alpha": 0,
+       "restored": 600,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 335,
+       "step": 837,
+       "alpha": 0.5,
+       "restored": 720,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 336,
+       "step": 840,
+       "alpha": 0,
+       "restored": 720,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 400,
+       "step": 1000,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 408,
+       "step": 1020,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 410,
+       "step": 1025,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 468,
+       "step": 1170,
+       "alpha": 0,
+       "restored": 1080,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 470,
+       "step": 1175,
+       "alpha": 0,
+       "restored": 1080,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 556,
+       "step": 1390,
+       "alpha": 0,
+       "restored": 1320,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 560,
+       "step": 1400,
+       "alpha": 0,
+       "restored": 1320,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 599,
+       "step": 1497,
+       "alpha": 0.5,
+       "restored": 1440,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 600,
+       "step": 1500,
+       "alpha": 0,
+       "restored": 1440,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 699,
+       "step": 1747,
+       "alpha": 0.5,
+       "restored": 1680,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 735,
+       "step": 1837,
+       "alpha": 0.5,
+       "restored": 1800,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 869,
+       "step": 2172,
+       "alpha": 0.5,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 870,
+       "step": 2175,
+       "alpha": 0,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 904,
+       "step": 2260,
+       "alpha": 0,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 975,
+       "step": 2437,
+       "alpha": 0.5,
+       "restored": 2400,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1000,
+       "step": 2500,
+       "alpha": 0,
+       "restored": 2400,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1010,
+       "step": 2525,
+       "alpha": 0,
+       "restored": 2520,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1079,
+       "step": 2697,
+       "alpha": 0.5,
+       "restored": 2640,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      }
+     ],
+     "kind": "clean"
+    },
+    {
+     "load": 2,
+     "label": "load 2",
+     "ok": true,
+     "digest": "59bbb42baa90cecb",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "scrubSame": true,
+      "forwardSame": true
+     },
+     "ms": 14546,
+     "wall": {
+      "start": 1795464204516,
+      "end": 1795464219062
+     },
+     "gpuLoad": {
+      "samples": 10,
+      "gpuUtil": {
+       "min": 0,
+       "median": 46,
+       "max": 68
+      },
+      "seen": {
+       "node:node": 6.4,
+       "chromium:Google Chrome for Testing": 46.4,
+       "chromium:chrome_crashpad_handler": 0.7,
+       "chromium:Google Chrome for Testing Helper (GPU)": 22.6,
+       "chromium:Google Chrome for Testing Helper": 12.1,
+       "chromium:Google Chrome for Testing Helper (Alerts)": 7.4,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 135
+      },
+      "first": {
+       "at": 1795464190047,
+       "gpuUtil": 0,
+       "processes": [
+        "node:node 2.1%",
+        "chromium:Google Chrome for Testing 46.4%",
+        "chromium:Google Chrome for Testing Helper (GPU) 12.4%",
+        "chromium:Google Chrome for Testing Helper 12.1%",
+        "chromium:Google Chrome for Testing Helper 7.9%",
+        "chromium:Google Chrome for Testing Helper (Alerts) 7.4%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795464217111,
+       "gpuUtil": 27,
+       "processes": [
+        "node:node 5.4%",
+        "chromium:Google Chrome for Testing 2.5%",
+        "chromium:Google Chrome for Testing Helper (GPU) 10.7%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 108%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": "1080p",
+     "frames": 1080,
+     "exportMs": 8606,
+     "scrub": {
+      "frames": 26,
+      "same": 26
+     },
+     "subtitles": {
+      "lines": 4,
+      "bytes": 272
+     },
+     "rows": [
+      {
+       "frame": 0,
+       "step": 0,
+       "alpha": 0,
+       "restored": 0,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 84,
+       "step": 210,
+       "alpha": 0,
+       "restored": 120,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 120,
+       "step": 300,
+       "alpha": 0,
+       "restored": 240,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 167,
+       "step": 417,
+       "alpha": 0.5,
+       "restored": 360,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 168,
+       "step": 420,
+       "alpha": 0,
+       "restored": 360,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 252,
+       "step": 630,
+       "alpha": 0,
+       "restored": 600,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 335,
+       "step": 837,
+       "alpha": 0.5,
+       "restored": 720,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 336,
+       "step": 840,
+       "alpha": 0,
+       "restored": 720,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 400,
+       "step": 1000,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 408,
+       "step": 1020,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 410,
+       "step": 1025,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 468,
+       "step": 1170,
+       "alpha": 0,
+       "restored": 1080,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 470,
+       "step": 1175,
+       "alpha": 0,
+       "restored": 1080,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 556,
+       "step": 1390,
+       "alpha": 0,
+       "restored": 1320,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 560,
+       "step": 1400,
+       "alpha": 0,
+       "restored": 1320,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 599,
+       "step": 1497,
+       "alpha": 0.5,
+       "restored": 1440,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 600,
+       "step": 1500,
+       "alpha": 0,
+       "restored": 1440,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 699,
+       "step": 1747,
+       "alpha": 0.5,
+       "restored": 1680,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 735,
+       "step": 1837,
+       "alpha": 0.5,
+       "restored": 1800,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 869,
+       "step": 2172,
+       "alpha": 0.5,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 870,
+       "step": 2175,
+       "alpha": 0,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 904,
+       "step": 2260,
+       "alpha": 0,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 975,
+       "step": 2437,
+       "alpha": 0.5,
+       "restored": 2400,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1000,
+       "step": 2500,
+       "alpha": 0,
+       "restored": 2400,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1010,
+       "step": 2525,
+       "alpha": 0,
+       "restored": 2520,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1079,
+       "step": 2697,
+       "alpha": 0.5,
+       "restored": 2640,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      }
+     ],
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  },
+  "acceptance": {
+   "query": "mode=acceptance&renderer=webgl",
+   "canonical": "78ab33e0d7508476",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "78ab33e0d7508476",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "sameAsNode": true,
+      "renderedSameAsHeadless": true,
+      "snapshot": true,
+      "backend": true
+     },
+     "ms": 30029,
+     "wall": {
+      "start": 1795464219063,
+      "end": 1795464249092
+     },
+     "gpuLoad": {
+      "samples": 15,
+      "gpuUtil": {
+       "min": 0,
+       "median": 9,
+       "max": 71
+      },
+      "seen": {
+       "node:node": 13.6,
+       "chromium:Google Chrome for Testing": 13,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 43.6,
+       "chromium:Google Chrome for Testing Helper": 3.4,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 236.4,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+      },
+      "first": {
+       "at": 1795464205110,
+       "gpuUtil": 68,
+       "processes": [
+        "node:node 6.4%",
+        "chromium:Google Chrome for Testing 13%",
+        "chromium:Google Chrome for Testing Helper (GPU) 14.3%",
+        "chromium:Google Chrome for Testing Helper 3.4%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 8.2%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 2.6%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 134.2%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795464247128,
+       "gpuUtil": 41,
+       "processes": [
+        "node:node 13.2%",
+        "chromium:Google Chrome for Testing 2%",
+        "chromium:Google Chrome for Testing Helper (GPU) 43.6%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 98.5%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "final": "fe69bad3406ab5f6",
+     "rendered": {
+      "frames": 600,
+      "renderMs": {
+       "mean": 0.583,
+       "p95": 0.7
+      },
+      "sameAsHeadless": true,
+      "calls": 245,
+      "triangles": 218572,
+      "debug": {
+       "colliders": 62,
+       "sensors": 14,
+       "capsules": 2
+      },
+      "post": {
+       "passes": [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(EdgeEffect)",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+       ],
+       "costMs": {
+        "none1080p": 0.5,
+        "none4k": 0.6,
+        "anime1080p": 1.4,
+        "anime4k": 1.4
+       },
+       "ssim": {
+        "noGrain": 0.9861,
+        "grain": 0.9507
+       },
+       "views4Ms": 1.3
+      }
+     },
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  },
+  "backends": {
+   "query": "mode=backends&renderer=webgl",
+   "canonical": "4c6c9ea72ddc5163",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "4c6c9ea72ddc5163",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "distinctFrames": true
+     },
+     "ms": 1558,
+     "wall": {
+      "start": 1795464249109,
+      "end": 1795464250667
+     },
+     "gpuLoad": {
+      "samples": 6,
+      "gpuUtil": {
+       "min": 0,
+       "median": 0,
+       "max": 69
+      },
+      "seen": {
+       "node:node": 13.2,
+       "chromium:Google Chrome for Testing": 7,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 43.6,
+       "chromium:Google Chrome for Testing Helper": 3,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 131.1,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+      },
+      "first": {
+       "at": 1795464235117,
+       "gpuUtil": 0,
+       "processes": [
+        "node:node 11.6%",
+        "chromium:Google Chrome for Testing 5.8%",
+        "chromium:Google Chrome for Testing Helper 3%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 131.1%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795464250129,
+       "gpuUtil": 69,
+       "processes": [
+        "node:node 4.7%",
+        "chromium:Google Chrome for Testing 6.3%",
+        "chromium:Google Chrome for Testing Helper (GPU) 18.5%",
+        "chromium:Google Chrome for Testing Helper 1.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 1.8%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 115.3%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": [
+      1280,
+      720
+     ],
+     "stillMsWithRead": 30.8,
+     "kind": "clean"
+    },
+    {
+     "load": 2,
+     "label": "load 2",
+     "ok": true,
+     "digest": "4c6c9ea72ddc5163",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "distinctFrames": true
+     },
+     "ms": 1566,
+     "wall": {
+      "start": 1795464250668,
+      "end": 1795464252234
+     },
+     "gpuLoad": {
+      "samples": 5,
+      "gpuUtil": {
+       "min": 0,
+       "median": 0,
+       "max": 69
+      },
+      "seen": {
+       "node:node": 13.2,
+       "chromium:Google Chrome for Testing": 7,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 43.6,
+       "chromium:Google Chrome for Testing Helper": 2.4,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 122,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+      },
+      "first": {
+       "at": 1795464238119,
+       "gpuUtil": 0,
+       "processes": [
+        "node:node 11.7%",
+        "chromium:Google Chrome for Testing 3%",
+        "chromium:Google Chrome for Testing Helper 2%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 107.9%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795464250129,
+       "gpuUtil": 69,
+       "processes": [
+        "node:node 4.7%",
+        "chromium:Google Chrome for Testing 6.3%",
+        "chromium:Google Chrome for Testing Helper (GPU) 18.5%",
+        "chromium:Google Chrome for Testing Helper 1.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 1.8%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 115.3%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": [
+      1280,
+      720
+     ],
+     "stillMsWithRead": 30.6,
+     "kind": "clean"
+    },
+    {
+     "load": 3,
+     "label": "load 3",
+     "ok": true,
+     "digest": "4c6c9ea72ddc5163",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "distinctFrames": true
+     },
+     "ms": 1573,
+     "wall": {
+      "start": 1795464252234,
+      "end": 1795464253807
+     },
+     "gpuLoad": {
+      "samples": 6,
+      "gpuUtil": {
+       "min": 0,
+       "median": 9,
+       "max": 69
+      },
+      "seen": {
+       "node:node": 13.2,
+       "chromium:Google Chrome for Testing": 8.8,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 43.6,
+       "chromium:Google Chrome for Testing Helper": 2.8,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 122,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+      },
+      "first": {
+       "at": 1795464238119,
+       "gpuUtil": 0,
+       "processes": [
+        "node:node 11.7%",
+        "chromium:Google Chrome for Testing 3%",
+        "chromium:Google Chrome for Testing Helper 2%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 107.9%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795464253129,
+       "gpuUtil": 9,
+       "processes": [
+        "node:node 10.1%",
+        "chromium:Google Chrome for Testing 8.8%",
+        "chromium:Google Chrome for Testing Helper (GPU) 2.3%",
+        "chromium:Google Chrome for Testing Helper 2.8%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 2.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 118%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": [
+      1280,
+      720
+     ],
+     "stillMsWithRead": 29.9,
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  },
+  "frames": {
+   "query": "mode=frames&renderer=webgl&canon=chromium-webgl",
+   "canonical": "70a6468d5263c04b",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "70a6468d5263c04b",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "particlesSameAsHeadless": true,
+      "particlesDrawnByHost": true,
+      "particlesDistinctFrames": true,
+      "restoredSame": true,
+      "filmTwiceIdentical": true,
+      "stillMatchesCanvas": true,
+      "readbackHasContent": true,
+      "exportAfterStillSame": true,
+      "alphaPremultiplied": true,
+      "noErrors": true,
+      "backend": true,
+      "notTimedOut": true
+     },
+     "ms": 32850,
+     "wall": {
+      "start": 1795464253807,
+      "end": 1795464286657
+     },
+     "gpuLoad": {
+      "samples": 16,
+      "gpuUtil": {
+       "min": 0,
+       "median": 37,
+       "max": 69
+      },
+      "seen": {
+       "node:node": 13.2,
+       "chromium:Google Chrome for Testing": 8.8,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 43.6,
+       "chromium:Google Chrome for Testing Helper": 2.8,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 150.5,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+      },
+      "first": {
+       "at": 1795464241117,
+       "gpuUtil": 0,
+       "processes": [
+        "node:node 6.6%",
+        "chromium:Google Chrome for Testing 2.7%",
+        "chromium:Google Chrome for Testing Helper 1.2%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 112.2%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795464286151,
+       "gpuUtil": 49,
+       "processes": [
+        "node:node 2.8%",
+        "chromium:Google Chrome for Testing 2.2%",
+        "chromium:Google Chrome for Testing Helper (GPU) 42.2%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 82.1%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "particles": {
+      "final": "09ef4d21b00189d1",
+      "distinctFrames": 361,
+      "batch": {
+       "renderer": "three.quarks",
+       "batches": 3,
+       "particles": 1149
+      }
+     },
+     "film": {
+      "frames": 1080,
+      "first": {
+       "frames": 1080,
+       "audioBytes": 8640044,
+       "fps": [
+        24,
+        1
+       ],
+       "seconds": 45,
+       "width": 1920,
+       "height": 1080,
+       "backend": "webgl",
+       "steps": 2700,
+       "audioHash": "7a6ff838",
+       "ms": {
+        "total": 9796.9,
+        "begin": 0,
+        "render": 1862.2,
+        "readback": 2663.1,
+        "wait": 0.6,
+        "audio": 206.9,
+        "end": 0
+       },
+       "perFrameMs": {
+        "render": 1.72,
+        "readback": 2.47,
+        "wait": 0,
+        "total": 9.07
+       },
+       "framesPerSecond": 110.24,
+       "steamDrawn": true,
+       "digest": "46a23bf918eb4da7",
+       "distinct": 1080,
+       "worldDigest": "ac743fcb5a5572b3"
+      },
+      "second": {
+       "frames": 1080,
+       "audioBytes": 8640044,
+       "fps": [
+        24,
+        1
+       ],
+       "seconds": 45,
+       "width": 1920,
+       "height": 1080,
+       "backend": "webgl",
+       "steps": 2700,
+       "audioHash": "7a6ff838",
+       "ms": {
+        "total": 9690.8,
+        "begin": 0,
+        "render": 1775.1,
+        "readback": 2669.6,
+        "wait": 0.4,
+        "audio": 199.9,
+        "end": 0
+       },
+       "perFrameMs": {
+        "render": 1.64,
+        "readback": 2.47,
+        "wait": 0,
+        "total": 8.97
+       },
+       "framesPerSecond": 111.45,
+       "steamDrawn": true,
+       "digest": "46a23bf918eb4da7",
+       "distinct": 1080,
+       "worldDigest": "ac743fcb5a5572b3"
+      },
+      "framesDiffer": [],
+      "odd": []
+     },
+     "readback": {
+      "still640": {
+       "content": 1
+      },
+      "1080p": {
+       "renderMs": {
+        "median": 0.5,
+        "p95": 0.7,
+        "min": 0.4,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 2.5,
+        "p95": 3.7,
+        "min": 2.4,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 2.7,
+        "p95": 2.8,
+        "min": 2.4,
+        "n": 30
+       },
+       "hash": "985eb7f629ba0133",
+       "content": 1
+      },
+      "4k": {
+       "renderMs": {
+        "median": 0.5,
+        "p95": 0.7,
+        "min": 0.4,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 8.7,
+        "p95": 13.3,
+        "min": 8.5,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 10.3,
+        "p95": 10.9,
+        "min": 9.6,
+        "n": 30
+       },
+       "hash": "337eac7ace895766",
+       "content": 1
+      },
+      "1366x768": {
+       "renderMs": {
+        "median": 0.5,
+        "p95": 0.6,
+        "min": 0.3,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 1.4,
+        "p95": 1.8,
+        "min": 1.3,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 1.9,
+        "p95": 2.2,
+        "min": 1.6,
+        "n": 30
+       },
+       "hash": "4ad3dee98049a634",
+       "content": 1
+      }
+     },
+     "alpha": {
+      "raw": [
+       127,
+       0,
+       0,
+       128
+      ],
+      "toImageRGBA": [
+       253,
+       0,
+       0,
+       128
+      ],
+      "clearCorner": [
+       127,
+       0,
+       0,
+       128
+      ]
+     },
+     "kind": "clean"
+    },
+    {
+     "load": 2,
+     "label": "load 2",
+     "ok": true,
+     "digest": "70a6468d5263c04b",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "particlesSameAsHeadless": true,
+      "particlesDrawnByHost": true,
+      "particlesDistinctFrames": true,
+      "restoredSame": true,
+      "filmTwiceIdentical": true,
+      "stillMatchesCanvas": true,
+      "readbackHasContent": true,
+      "exportAfterStillSame": true,
+      "alphaPremultiplied": true,
+      "noErrors": true,
+      "backend": true,
+      "notTimedOut": true
+     },
+     "ms": 32860,
+     "wall": {
+      "start": 1795464286659,
+      "end": 1795464319519
+     },
+     "gpuLoad": {
+      "samples": 16,
+      "gpuUtil": {
+       "min": 12,
+       "median": 37,
+       "max": 49
+      },
+      "seen": {
+       "node:node": 6.7,
+       "chromium:Google Chrome for Testing": 4.6,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 53.9,
+       "chromium:Google Chrome for Testing Helper": 2.3,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 128.2,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+      },
+      "first": {
+       "at": 1795464274141,
+       "gpuUtil": 35,
+       "processes": [
+        "chromium:Google Chrome for Testing 1%",
+        "chromium:Google Chrome for Testing Helper (GPU) 13.7%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 96.2%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795464319163,
+       "gpuUtil": 49,
+       "processes": [
+        "node:node 2.8%",
+        "chromium:Google Chrome for Testing 1.5%",
+        "chromium:Google Chrome for Testing Helper (GPU) 53.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 76.6%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "particles": {
+      "final": "09ef4d21b00189d1",
+      "distinctFrames": 361,
+      "batch": {
+       "renderer": "three.quarks",
+       "batches": 3,
+       "particles": 1149
+      }
+     },
+     "film": {
+      "frames": 1080,
+      "first": {
+       "frames": 1080,
+       "audioBytes": 8640044,
+       "fps": [
+        24,
+        1
+       ],
+       "seconds": 45,
+       "width": 1920,
+       "height": 1080,
+       "backend": "webgl",
+       "steps": 2700,
+       "audioHash": "7a6ff838",
+       "ms": {
+        "total": 9827.6,
+        "begin": 0,
+        "render": 1885.6,
+        "readback": 2678.6,
+        "wait": 0.6,
+        "audio": 204.5,
+        "end": 0
+       },
+       "perFrameMs": {
+        "render": 1.75,
+        "readback": 2.48,
+        "wait": 0,
+        "total": 9.1
+       },
+       "framesPerSecond": 109.89,
+       "steamDrawn": true,
+       "digest": "46a23bf918eb4da7",
+       "distinct": 1080,
+       "worldDigest": "ac743fcb5a5572b3"
+      },
+      "second": {
+       "frames": 1080,
+       "audioBytes": 8640044,
+       "fps": [
+        24,
+        1
+       ],
+       "seconds": 45,
+       "width": 1920,
+       "height": 1080,
+       "backend": "webgl",
+       "steps": 2700,
+       "audioHash": "7a6ff838",
+       "ms": {
+        "total": 9690.8,
+        "begin": 0,
+        "render": 1772.4,
+        "readback": 2672.4,
+        "wait": 0.4,
+        "audio": 203.2,
+        "end": 0
+       },
+       "perFrameMs": {
+        "render": 1.64,
+        "readback": 2.47,
+        "wait": 0,
+        "total": 8.97
+       },
+       "framesPerSecond": 111.45,
+       "steamDrawn": true,
+       "digest": "46a23bf918eb4da7",
+       "distinct": 1080,
+       "worldDigest": "ac743fcb5a5572b3"
+      },
+      "framesDiffer": [],
+      "odd": []
+     },
+     "readback": {
+      "still640": {
+       "content": 1
+      },
+      "1080p": {
+       "renderMs": {
+        "median": 0.6,
+        "p95": 0.7,
+        "min": 0.5,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 2.5,
+        "p95": 3.7,
+        "min": 2.4,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 2.8,
+        "p95": 2.9,
+        "min": 2.4,
+        "n": 30
+       },
+       "hash": "985eb7f629ba0133",
+       "content": 1
+      },
+      "4k": {
+       "renderMs": {
+        "median": 0.5,
+        "p95": 0.6,
+        "min": 0.4,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 8.6,
+        "p95": 13.7,
+        "min": 8.4,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 10.3,
+        "p95": 10.4,
+        "min": 10.2,
+        "n": 30
+       },
+       "hash": "337eac7ace895766",
+       "content": 1
+      },
+      "1366x768": {
+       "renderMs": {
+        "median": 0.5,
+        "p95": 0.6,
+        "min": 0.4,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 1.5,
+        "p95": 1.8,
+        "min": 1.3,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 1.9,
+        "p95": 2.2,
+        "min": 1.7,
+        "n": 30
+       },
+       "hash": "4ad3dee98049a634",
+       "content": 1
+      }
+     },
+     "alpha": {
+      "raw": [
+       127,
+       0,
+       0,
+       128
+      ],
+      "toImageRGBA": [
+       253,
+       0,
+       0,
+       128
+      ],
+      "clearCorner": [
+       127,
+       0,
+       0,
+       128
+      ]
+     },
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  },
+  "post": {
+   "query": "mode=post&renderer=webgl",
+   "canonical": "321c6f7bcbeef402",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "321c6f7bcbeef402",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "exportsIdentical": true,
+      "exportsDistinct": true,
+      "notFlat": true,
+      "looksFirstEqualsAgain": true,
+      "mask": true
+     },
+     "ms": 4314,
+     "wall": {
+      "start": 1795464319520,
+      "end": 1795464323834
+     },
+     "gpuLoad": {
+      "samples": 6,
+      "gpuUtil": {
+       "min": 23,
+       "median": 37,
+       "max": 49
+      },
+      "seen": {
+       "node:node": 25.1,
+       "chromium:Google Chrome for Testing": 15.9,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 53.9,
+       "chromium:Google Chrome for Testing Helper": 0.7,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 97.5,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+      },
+      "first": {
+       "at": 1795464307158,
+       "gpuUtil": 37,
+       "processes": [
+        "chromium:Google Chrome for Testing Helper (GPU) 13.4%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 95.3%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795464322162,
+       "gpuUtil": 23,
+       "processes": [
+        "node:node 25.1%",
+        "chromium:Google Chrome for Testing 15.9%",
+        "chromium:Google Chrome for Testing Helper (GPU) 27.7%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 91.9%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "stack": "ZD",
+     "size": [
+      1920,
+      1080
+     ],
+     "costMs": {
+      "none": 0.5,
+      "anime": 1.4
+     },
+     "mask": {
+      "pixels": 336,
+      "share": 0.00016,
+      "hidden": 11,
+      "objects": [
+       "Face_(merged)(Clone)_1:N00_000_00_EyeIris_00_EYE (Instance)",
+       "Face_(merged)(Clone)_2:N00_000_00_EyeHighlight_00_EYE (Instance)",
+       "Face_(merged)(Clone)_5:N00_000_00_FaceBrow_00_FACE (Instance)",
+       "Face_(merged)(Clone)_6:N00_000_00_FaceEyelash_00_FACE (Instance)",
+       "Face_(merged)(Clone)_7:N00_000_00_FaceEyeline_00_FACE (Instance)",
+       "LineSegments:LineBasicMaterial"
+      ]
+     },
+     "looks": {
+      "none": {
+       "hash": "dc246979",
+       "again": "dc246979",
+       "firstEqualsAgain": true,
+       "lumaStd": 64.09,
+       "colours": 2910,
+       "newPipeline": false,
+       "passes": []
+      },
+      "clean": {
+       "hash": "38fb13bc",
+       "again": "38fb13bc",
+       "firstEqualsAgain": true,
+       "lumaStd": 63.65,
+       "colours": 3843,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "EffectPass(BloomEffect+ToneMappingEffect)"
+       ]
+      },
+      "anime": {
+       "hash": "50c3ce9d",
+       "again": "50c3ce9d",
+       "firstEqualsAgain": true,
+       "lumaStd": 61.88,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(EdgeEffect)",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+       ]
+      },
+      "animeNoGrain": {
+       "hash": "183568c3",
+       "again": "183568c3",
+       "firstEqualsAgain": true,
+       "lumaStd": 61.94,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(EdgeEffect)",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+       ]
+      },
+      "animeLut": {
+       "hash": "620e9412",
+       "again": "620e9412",
+       "firstEqualsAgain": true,
+       "lumaStd": 65.77,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(EdgeEffect)",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+       ]
+      },
+      "animeLut85": {
+       "hash": "14190e5f",
+       "again": "14190e5f",
+       "firstEqualsAgain": true,
+       "lumaStd": 65.16,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(EdgeEffect)",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+       ]
+      },
+      "animeOverlays": {
+       "hash": "5fe5eefe",
+       "again": "5fe5eefe",
+       "firstEqualsAgain": true,
+       "lumaStd": 62.61,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(EdgeEffect)",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+       ]
+      },
+      "animeShallow": {
+       "hash": "956df4ca",
+       "again": "956df4ca",
+       "firstEqualsAgain": true,
+       "lumaStd": 60.05,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(EdgeEffect)",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+       ]
+      }
+     },
+     "kind": "clean"
+    },
+    {
+     "load": 2,
+     "label": "load 2",
+     "ok": true,
+     "digest": "321c6f7bcbeef402",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "exportsIdentical": true,
+      "exportsDistinct": true,
+      "notFlat": true,
+      "looksFirstEqualsAgain": true,
+      "mask": true
+     },
+     "ms": 4342,
+     "wall": {
+      "start": 1795464323835,
+      "end": 1795464328177
+     },
+     "gpuLoad": {
+      "samples": 7,
+      "gpuUtil": {
+       "min": 23,
+       "median": 36,
+       "max": 49
+      },
+      "seen": {
+       "node:node": 50.9,
+       "chromium:Google Chrome for Testing": 28.2,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 53.9,
+       "chromium:Google Chrome for Testing Helper": 0.7,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 200.4,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+      },
+      "first": {
+       "at": 1795464310158,
+       "gpuUtil": 36,
+       "processes": [
+        "chromium:Google Chrome for Testing Helper (GPU) 12.4%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 97.5%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795464328166,
+       "gpuUtil": 28,
+       "processes": [
+        "node:node 50.9%",
+        "chromium:Google Chrome for Testing 28.2%",
+        "chromium:Google Chrome for Testing Helper (GPU) 14.3%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 97%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "stack": "ZD",
+     "size": [
+      1920,
+      1080
+     ],
+     "costMs": {
+      "none": 0.5,
+      "anime": 1.4
+     },
+     "mask": {
+      "pixels": 336,
+      "share": 0.00016,
+      "hidden": 11,
+      "objects": [
+       "Face_(merged)(Clone)_1:N00_000_00_EyeIris_00_EYE (Instance)",
+       "Face_(merged)(Clone)_2:N00_000_00_EyeHighlight_00_EYE (Instance)",
+       "Face_(merged)(Clone)_5:N00_000_00_FaceBrow_00_FACE (Instance)",
+       "Face_(merged)(Clone)_6:N00_000_00_FaceEyelash_00_FACE (Instance)",
+       "Face_(merged)(Clone)_7:N00_000_00_FaceEyeline_00_FACE (Instance)",
+       "LineSegments:LineBasicMaterial"
+      ]
+     },
+     "looks": {
+      "none": {
+       "hash": "dc246979",
+       "again": "dc246979",
+       "firstEqualsAgain": true,
+       "lumaStd": 64.09,
+       "colours": 2910,
+       "newPipeline": false,
+       "passes": []
+      },
+      "clean": {
+       "hash": "38fb13bc",
+       "again": "38fb13bc",
+       "firstEqualsAgain": true,
+       "lumaStd": 63.65,
+       "colours": 3843,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "EffectPass(BloomEffect+ToneMappingEffect)"
+       ]
+      },
+      "anime": {
+       "hash": "50c3ce9d",
+       "again": "50c3ce9d",
+       "firstEqualsAgain": true,
+       "lumaStd": 61.88,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(EdgeEffect)",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+       ]
+      },
+      "animeNoGrain": {
+       "hash": "183568c3",
+       "again": "183568c3",
+       "firstEqualsAgain": true,
+       "lumaStd": 61.94,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(EdgeEffect)",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+       ]
+      },
+      "animeLut": {
+       "hash": "620e9412",
+       "again": "620e9412",
+       "firstEqualsAgain": true,
+       "lumaStd": 65.77,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(EdgeEffect)",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+       ]
+      },
+      "animeLut85": {
+       "hash": "14190e5f",
+       "again": "14190e5f",
+       "firstEqualsAgain": true,
+       "lumaStd": 65.16,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(EdgeEffect)",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+LUT3DEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+       ]
+      },
+      "animeOverlays": {
+       "hash": "5fe5eefe",
+       "again": "5fe5eefe",
+       "firstEqualsAgain": true,
+       "lumaStd": 62.61,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(EdgeEffect)",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+       ]
+      },
+      "animeShallow": {
+       "hash": "956df4ca",
+       "again": "956df4ca",
+       "firstEqualsAgain": true,
+       "lumaStd": 60.05,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "RenderPass",
+        "NormalPass",
+        "EffectPass(EdgeEffect)",
+        "EffectPass(DepthOfFieldEffect)",
+        "EffectPass(BloomEffect+HueSaturationEffect+BrightnessContrastEffect+ToneMappingEffect+VignetteEffect+NoiseEffect+AnimeEffect)",
+        "EffectPass(ChromaticAberrationEffect)"
+       ]
+      }
+     },
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  },
+  "coverage": {
+   "query": "mode=coverage&renderer=webgl",
+   "canonical": "a99d0123ae22e674",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "a99d0123ae22e674",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "sameFromSnapshots": true,
+      "no180Issues": true,
+      "thumbnails": true
+     },
+     "ms": 3174,
+     "wall": {
+      "start": 1795464328178,
+      "end": 1795464331352
+     },
+     "gpuLoad": {
+      "samples": 6,
+      "gpuUtil": {
+       "min": 21,
+       "median": 29,
+       "max": 49
+      },
+      "seen": {
+       "node:node": 50.9,
+       "chromium:Google Chrome for Testing": 28.2,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 53.9,
+       "chromium:Google Chrome for Testing Helper": 0.7,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 200.4,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+      },
+      "first": {
+       "at": 1795464316160,
+       "gpuUtil": 36,
+       "processes": [
+        "node:node 3.1%",
+        "chromium:Google Chrome for Testing 1.2%",
+        "chromium:Google Chrome for Testing Helper (GPU) 36.8%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 95.8%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795464331169,
+       "gpuUtil": 21,
+       "processes": [
+        "chromium:Google Chrome for Testing Helper (GPU) 33.1%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 113.1%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "shots": 11,
+     "sequenceHash": "00aa93b391faab2e",
+     "restoredInReverse": 10,
+     "kind": "clean"
+    },
+    {
+     "load": 2,
+     "label": "load 2",
+     "ok": true,
+     "digest": "a99d0123ae22e674",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "sameFromSnapshots": true,
+      "no180Issues": true,
+      "thumbnails": true
+     },
+     "ms": 3165,
+     "wall": {
+      "start": 1795464331352,
+      "end": 1795464334517
+     },
+     "gpuLoad": {
+      "samples": 6,
+      "gpuUtil": {
+       "min": 12,
+       "median": 28,
+       "max": 49
+      },
+      "seen": {
+       "node:node": 50.9,
+       "chromium:Google Chrome for Testing": 28.2,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 53.9,
+       "chromium:Google Chrome for Testing Helper": 0.7,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 200.4,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+      },
+      "first": {
+       "at": 1795464319163,
+       "gpuUtil": 49,
+       "processes": [
+        "node:node 2.8%",
+        "chromium:Google Chrome for Testing 1.5%",
+        "chromium:Google Chrome for Testing Helper (GPU) 53.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 76.6%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795464334172,
+       "gpuUtil": 12,
+       "processes": [
+        "chromium:Google Chrome for Testing Helper (GPU) 37.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 92.7%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "shots": 11,
+     "sequenceHash": "00aa93b391faab2e",
+     "restoredInReverse": 10,
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  }
+ },
+ "preflight": {
+  "quiet": true,
+  "waitedMs": 15269,
+  "util": 0,
+  "why": "quiet"
+ },
+ "gpuLoad": {
+  "samples": 49,
+  "gpuUtil": {
+   "min": 0,
+   "median": 36,
+   "max": 71
+  },
+  "seen": {
+   "node:node": 50.9,
+   "chromium:Google Chrome for Testing": 46.4,
+   "chromium:chrome_crashpad_handler": 0.7,
+   "chromium:Google Chrome for Testing Helper (GPU)": 53.9,
+   "chromium:Google Chrome for Testing Helper": 12.1,
+   "chromium:Google Chrome for Testing Helper (Alerts)": 7.4,
+   "webkit:com.apple.WebKit.GPU": 0,
+   "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+   "chromium:Google Chrome for Testing Helper (Renderer)": 236.4
+  },
+  "first": {
+   "at": 1795464190047,
+   "gpuUtil": 0,
+   "processes": [
+    "node:node 2.1%",
+    "chromium:Google Chrome for Testing 46.4%",
+    "chromium:Google Chrome for Testing Helper (GPU) 12.4%",
+    "chromium:Google Chrome for Testing Helper 12.1%",
+    "chromium:Google Chrome for Testing Helper 7.9%",
+    "chromium:Google Chrome for Testing Helper (Alerts) 7.4%"
+   ],
+   "otherGpuHelpers": 1
+  },
+  "last": {
+   "at": 1795464334172,
+   "gpuUtil": 12,
+   "processes": [
+    "chromium:Google Chrome for Testing Helper (GPU) 37.9%",
+    "chromium:Google Chrome for Testing Helper (Renderer) 92.7%"
+   ],
+   "otherGpuHelpers": 1
+  }
+ },
+ "ended": "2026-11-23T20:05:34.518Z"
+}

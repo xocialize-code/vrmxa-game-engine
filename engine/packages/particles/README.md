@@ -21,6 +21,7 @@ await particles.prepare(doc);                            // reads project effect
 | Effect documents | `{ "format": "vrmxg-effect", "version": 1, "systems": [...] }`, one quarks system each: life, speed, size, start angle, colours, rate and bursts, a shape (point, sphere, hemisphere, cone, circle; cones point up by default), gravity and force, size / speed / colour / opacity over life, spin, an atlas tile, blending, billboard or stretched rendering. `checkEffect` names what's wrong |
 | Drawing | One quarks `BatchedRenderer` per tree draws every emitter, one draw per material and render mode. The 8-tile atlas is drawn from pixel maths (dot, puff, spark, flash, ring, line, drop, star), so there are no image files. quarks disposes a system whose root isn't a `Scene`, so a tree outside a render host hangs under a private Scene until a host takes it |
 | The renderer's batch (M4 W2) | The `BatchedRenderer` class comes from the render host (`host.particleRenderer`), never from here: three.quarks' own on WebGL, `three.quarks/webgpu`'s `WebGPUBatchedRenderer` (TSL node materials) on WebGPU. `RenderHost.attach` calls the service's `attachHost(host)`; a host on the other backend moves every system to a new batch (`useRenderer`). Headless nothing draws, so there is no batch. quarks' simulation never reads the batch (a system only tells it when its look changes), so the particles hash the same with WebGL's, WebGPU's or none. `installParticles(tree, { BatchedRenderer })` gives one before any host (tests). A service installed after the host attached takes the host from `tree.renderHost`, when installed or at its first emitter |
+| Colours on WebGPU (AB-T-0590) | A WebGPU host hands over `@vrmxg/particles/webgpu`'s `BatchedRenderer`, a subclass of quarks' `WebGPUBatchedRenderer` (it loads `three/tsl`, so only WebGPU pages import it). quarks treats a particle's colour as a display (sRGB) value, as its WebGL batch does: decoded to linear when drawn straight to an sRGB output, as it is inside a linear target (a post stack's scene pass). quarks picks that while compiling, and r187 keeps the first compile for every later draw on the renderer (its cache key has no colour space). So the first draw decided the colour of every later frame: an export (frame 0 has no look yet) drew the steam decoded inside the TSL scene pass, a scrub didn't. The subclass builds quarks' "display" materials and decodes per draw with a uniform that follows `renderer.outputColorSpace`: one shader for both, the same frame whatever was drawn before |
 
 Measured (acceptance check 13: 43 emitters, up to 1,207 particles in the cafe): identical at every step in Node,
 Chromium and WKWebView, a snapshot mid-effect re-simulates identically, and the particle step costs 0.12–0.22 ms.
@@ -38,7 +39,9 @@ Tests (`npm test`):
 - presentation emitters staying out of the hash;
 - batching;
 - the batch renderer from the host: none headless, WebGL's or WebGPU's, swapped mid-run, the same hashes with each;
-- a service installed after its host attached still draws.
+- a service installed after its host attached still draws;
+- on WebGPU, one shader for an sRGB output and a linear target (r187's WGSL builder, run in Node), the decode following
+  the renderer, and rebuilt materials and batches keeping it.
 
 Not yet: collisions (quarks' `ApplyCollision` with Rapier), sub-emitters and trails in effect documents, interpolated
 particle positions between steps (they draw at the last step), soft particles.

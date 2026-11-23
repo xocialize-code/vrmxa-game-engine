@@ -1,0 +1,824 @@
+{
+ "task": "AB-T-0575",
+ "started": "2026-11-23T20:00:02.668Z",
+ "commit": "f7d971f",
+ "machine": {
+  "model": "Mac17,14",
+  "chip": "Apple M5 Max",
+  "macOS": "27.3 (26C5047e)"
+ },
+ "cells": {
+  "chromium-webgpu": {
+   "editor": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "c069a63fd75279a2",
+    "canonical": "c069a63fd75279a2",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "acceptance": {
+    "ok": true,
+    "pinned": true,
+    "loads": 1,
+    "digest": "78ab33e0d7508476",
+    "canonical": "78ab33e0d7508476",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "backends": {
+    "ok": true,
+    "pinned": true,
+    "loads": 3,
+    "digest": "d34ebf75e93190ff",
+    "canonical": "d34ebf75e93190ff",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "frames": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "189535cb0648738e",
+    "canonical": "189535cb0648738e",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "post": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "c6a9dc4b14918c84",
+    "canonical": "c6a9dc4b14918c84",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "coverage": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "a1fb834203a54644",
+    "canonical": "a1fb834203a54644",
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "chromium-webgl": {
+   "editor": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "59bbb42baa90cecb",
+    "canonical": "59bbb42baa90cecb",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "acceptance": {
+    "ok": true,
+    "pinned": true,
+    "loads": 1,
+    "digest": "78ab33e0d7508476",
+    "canonical": "78ab33e0d7508476",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "backends": {
+    "ok": true,
+    "pinned": true,
+    "loads": 3,
+    "digest": "4c6c9ea72ddc5163",
+    "canonical": "4c6c9ea72ddc5163",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "frames": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "70a6468d5263c04b",
+    "canonical": "70a6468d5263c04b",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "post": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "321c6f7bcbeef402",
+    "canonical": "321c6f7bcbeef402",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "coverage": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "a99d0123ae22e674",
+    "canonical": "a99d0123ae22e674",
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "wkwebview-scheme-webgpu": {
+   "editor": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "db9d4acecc331de9",
+    "canonical": "db9d4acecc331de9",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "acceptance": {
+    "ok": true,
+    "pinned": true,
+    "loads": 1,
+    "digest": "78ab33e0d7508476",
+    "canonical": "78ab33e0d7508476",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "backends": {
+    "ok": true,
+    "pinned": true,
+    "loads": 3,
+    "digest": "72ee142295cd642f",
+    "canonical": "72ee142295cd642f",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "frames": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "053b9501c1af7fb5",
+    "canonical": "053b9501c1af7fb5",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "post": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "8defe4bdef17decd",
+    "canonical": "8defe4bdef17decd",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "coverage": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "de0ac1cdc8032a40",
+    "canonical": "de0ac1cdc8032a40",
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "wkwebview-scheme-webgl": {
+   "editor": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "b6f43f9836ea3441",
+    "canonical": "b6f43f9836ea3441",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "acceptance": {
+    "ok": true,
+    "pinned": true,
+    "loads": 1,
+    "digest": "78ab33e0d7508476",
+    "canonical": "78ab33e0d7508476",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "backends": {
+    "ok": true,
+    "pinned": true,
+    "loads": 3,
+    "digest": "1cd4c92e626a4202",
+    "canonical": "1cd4c92e626a4202",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "frames": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "0911935ad1563cc0",
+    "canonical": "0911935ad1563cc0",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "post": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "2327291e0578459e",
+    "canonical": "2327291e0578459e",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "coverage": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "104c9bf9e83de230",
+    "canonical": "104c9bf9e83de230",
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "wkwebview-loopback-webgpu": {
+   "editor": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "db9d4acecc331de9",
+    "canonical": "db9d4acecc331de9",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "acceptance": {
+    "ok": true,
+    "pinned": true,
+    "loads": 1,
+    "digest": "78ab33e0d7508476",
+    "canonical": "78ab33e0d7508476",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "backends": {
+    "ok": true,
+    "pinned": true,
+    "loads": 3,
+    "digest": "72ee142295cd642f",
+    "canonical": "72ee142295cd642f",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "frames": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "053b9501c1af7fb5",
+    "canonical": "053b9501c1af7fb5",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "post": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "8defe4bdef17decd",
+    "canonical": "8defe4bdef17decd",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "coverage": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "de0ac1cdc8032a40",
+    "canonical": "de0ac1cdc8032a40",
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "wkwebview-loopback-webgl": {
+   "editor": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "b6f43f9836ea3441",
+    "canonical": "b6f43f9836ea3441",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "acceptance": {
+    "ok": true,
+    "pinned": true,
+    "loads": 1,
+    "digest": "78ab33e0d7508476",
+    "canonical": "78ab33e0d7508476",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "backends": {
+    "ok": true,
+    "pinned": true,
+    "loads": 3,
+    "digest": "1cd4c92e626a4202",
+    "canonical": "1cd4c92e626a4202",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "frames": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "0911935ad1563cc0",
+    "canonical": "0911935ad1563cc0",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "post": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "2327291e0578459e",
+    "canonical": "2327291e0578459e",
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "coverage": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "104c9bf9e83de230",
+    "canonical": "104c9bf9e83de230",
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  }
+ },
+ "incidents": [],
+ "failures": [],
+ "gpuLock": [
+  {
+   "cell": "chromium-webgpu",
+   "waitedMs": 1
+  },
+  {
+   "cell": "chromium-webgl",
+   "waitedMs": 0
+  },
+  {
+   "cell": "wkwebview-scheme-webgpu",
+   "waitedMs": 0
+  },
+  {
+   "cell": "wkwebview-scheme-webgl",
+   "waitedMs": 0
+  },
+  {
+   "cell": "wkwebview-loopback-webgpu",
+   "waitedMs": 1
+  },
+  {
+   "cell": "wkwebview-loopback-webgl",
+   "waitedMs": 0
+  }
+ ],
+ "dirtyFiles": [],
+ "dirty": false,
+ "compare": {
+  "webgpu": {
+   "exit": 0,
+   "passed": 20,
+   "of": 20,
+   "failed": []
+  },
+  "webgl": {
+   "exit": 0,
+   "passed": 20,
+   "of": 20,
+   "failed": []
+  }
+ },
+ "simulationIndependentOfBackend": {
+  "node": "fe69bad3406ab5f6",
+  "finals": {
+   "chromium-webgpu": "fe69bad3406ab5f6",
+   "chromium-webgl": "fe69bad3406ab5f6",
+   "wkwebview-scheme-webgpu": "fe69bad3406ab5f6",
+   "wkwebview-scheme-webgl": "fe69bad3406ab5f6",
+   "wkwebview-loopback-webgpu": "fe69bad3406ab5f6",
+   "wkwebview-loopback-webgl": "fe69bad3406ab5f6"
+  },
+  "same": true
+ },
+ "ssim": {
+  "chromium": {
+   "none": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.994,
+    "ssimQuarter": 0.997,
+    "meanMaxChannel": 0.41,
+    "over8": 0.00797,
+    "max": 160,
+    "masked": 0.00017,
+    "ssimMasked": 0.994,
+    "ssimQuarterMasked": 0.997,
+    "meanMaxChannelMasked": 0.409,
+    "over8Masked": 0.00797
+   },
+   "clean": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9971,
+    "ssimQuarter": 0.9997,
+    "meanMaxChannel": 0.158,
+    "over8": 0.00311,
+    "max": 160,
+    "masked": 0.00017,
+    "ssimMasked": 0.9971,
+    "ssimQuarterMasked": 0.9997,
+    "meanMaxChannelMasked": 0.158,
+    "over8Masked": 0.00311
+   },
+   "anime": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9611,
+    "ssimQuarter": 0.9933,
+    "meanMaxChannel": 2.49,
+    "over8": 0.01311,
+    "max": 170,
+    "masked": 0.00017,
+    "ssimMasked": 0.9611,
+    "ssimQuarterMasked": 0.9933,
+    "meanMaxChannelMasked": 2.49,
+    "over8Masked": 0.0131
+   },
+   "animeNoGrain": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.996,
+    "ssimQuarter": 0.996,
+    "meanMaxChannel": 0.548,
+    "over8": 0.01286,
+    "max": 166,
+    "masked": 0.00017,
+    "ssimMasked": 0.996,
+    "ssimQuarterMasked": 0.9961,
+    "meanMaxChannelMasked": 0.548,
+    "over8Masked": 0.01285
+   },
+   "animeLut": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9958,
+    "ssimQuarter": 0.9959,
+    "meanMaxChannel": 0.647,
+    "over8": 0.01292,
+    "max": 180,
+    "masked": 0.00017,
+    "ssimMasked": 0.9958,
+    "ssimQuarterMasked": 0.996,
+    "meanMaxChannelMasked": 0.646,
+    "over8Masked": 0.01292
+   },
+   "animeLut85": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9958,
+    "ssimQuarter": 0.9959,
+    "meanMaxChannel": 0.63,
+    "over8": 0.01287,
+    "max": 178,
+    "masked": 0.00017,
+    "ssimMasked": 0.9958,
+    "ssimQuarterMasked": 0.996,
+    "meanMaxChannelMasked": 0.63,
+    "over8Masked": 0.01287
+   },
+   "animeOverlays": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9961,
+    "ssimQuarter": 0.9962,
+    "meanMaxChannel": 0.503,
+    "over8": 0.01201,
+    "max": 166,
+    "masked": 0.00017,
+    "ssimMasked": 0.9962,
+    "ssimQuarterMasked": 0.9963,
+    "meanMaxChannelMasked": 0.502,
+    "over8Masked": 0.012
+   },
+   "animeShallow": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.995,
+    "ssimQuarter": 0.9973,
+    "meanMaxChannel": 0.751,
+    "over8": 0.03012,
+    "max": 140,
+    "masked": 0.00017,
+    "ssimMasked": 0.995,
+    "ssimQuarterMasked": 0.9974,
+    "meanMaxChannelMasked": 0.751,
+    "over8Masked": 0.03011
+   }
+  },
+  "wkwebview-scheme": {
+   "anime": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9611,
+    "ssimQuarter": 0.9933,
+    "meanMaxChannel": 2.49,
+    "over8": 0.01312,
+    "max": 170,
+    "masked": 0.00017,
+    "ssimMasked": 0.9611,
+    "ssimQuarterMasked": 0.9933,
+    "meanMaxChannelMasked": 2.49,
+    "over8Masked": 0.01311
+   },
+   "animeLut": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9958,
+    "ssimQuarter": 0.9959,
+    "meanMaxChannel": 0.648,
+    "over8": 0.01293,
+    "max": 180,
+    "masked": 0.00017,
+    "ssimMasked": 0.9958,
+    "ssimQuarterMasked": 0.996,
+    "meanMaxChannelMasked": 0.647,
+    "over8Masked": 0.01292
+   },
+   "animeLut85": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9958,
+    "ssimQuarter": 0.9959,
+    "meanMaxChannel": 0.631,
+    "over8": 0.01288,
+    "max": 178,
+    "masked": 0.00017,
+    "ssimMasked": 0.9958,
+    "ssimQuarterMasked": 0.996,
+    "meanMaxChannelMasked": 0.631,
+    "over8Masked": 0.01287
+   },
+   "animeNoGrain": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.996,
+    "ssimQuarter": 0.996,
+    "meanMaxChannel": 0.549,
+    "over8": 0.01287,
+    "max": 166,
+    "masked": 0.00017,
+    "ssimMasked": 0.996,
+    "ssimQuarterMasked": 0.9961,
+    "meanMaxChannelMasked": 0.549,
+    "over8Masked": 0.01286
+   },
+   "animeOverlays": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9961,
+    "ssimQuarter": 0.9962,
+    "meanMaxChannel": 0.503,
+    "over8": 0.01202,
+    "max": 166,
+    "masked": 0.00017,
+    "ssimMasked": 0.9961,
+    "ssimQuarterMasked": 0.9962,
+    "meanMaxChannelMasked": 0.503,
+    "over8Masked": 0.01201
+   },
+   "animeShallow": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.995,
+    "ssimQuarter": 0.9973,
+    "meanMaxChannel": 0.751,
+    "over8": 0.03011,
+    "max": 140,
+    "masked": 0.00017,
+    "ssimMasked": 0.995,
+    "ssimQuarterMasked": 0.9974,
+    "meanMaxChannelMasked": 0.751,
+    "over8Masked": 0.03011
+   },
+   "clean": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9971,
+    "ssimQuarter": 0.9997,
+    "meanMaxChannel": 0.159,
+    "over8": 0.00313,
+    "max": 160,
+    "masked": 0.00017,
+    "ssimMasked": 0.9971,
+    "ssimQuarterMasked": 0.9997,
+    "meanMaxChannelMasked": 0.159,
+    "over8Masked": 0.00312
+   },
+   "none": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9939,
+    "ssimQuarter": 0.997,
+    "meanMaxChannel": 0.406,
+    "over8": 0.00799,
+    "max": 160,
+    "masked": 0.00017,
+    "ssimMasked": 0.994,
+    "ssimQuarterMasked": 0.997,
+    "meanMaxChannelMasked": 0.406,
+    "over8Masked": 0.00798
+   }
+  },
+  "wkwebview-loopback": {
+   "anime": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9611,
+    "ssimQuarter": 0.9933,
+    "meanMaxChannel": 2.49,
+    "over8": 0.01312,
+    "max": 170,
+    "masked": 0.00017,
+    "ssimMasked": 0.9611,
+    "ssimQuarterMasked": 0.9933,
+    "meanMaxChannelMasked": 2.49,
+    "over8Masked": 0.01311
+   },
+   "animeLut": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9958,
+    "ssimQuarter": 0.9959,
+    "meanMaxChannel": 0.648,
+    "over8": 0.01293,
+    "max": 180,
+    "masked": 0.00017,
+    "ssimMasked": 0.9958,
+    "ssimQuarterMasked": 0.996,
+    "meanMaxChannelMasked": 0.647,
+    "over8Masked": 0.01292
+   },
+   "animeLut85": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9958,
+    "ssimQuarter": 0.9959,
+    "meanMaxChannel": 0.631,
+    "over8": 0.01288,
+    "max": 178,
+    "masked": 0.00017,
+    "ssimMasked": 0.9958,
+    "ssimQuarterMasked": 0.996,
+    "meanMaxChannelMasked": 0.631,
+    "over8Masked": 0.01287
+   },
+   "animeNoGrain": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.996,
+    "ssimQuarter": 0.996,
+    "meanMaxChannel": 0.549,
+    "over8": 0.01287,
+    "max": 166,
+    "masked": 0.00017,
+    "ssimMasked": 0.996,
+    "ssimQuarterMasked": 0.9961,
+    "meanMaxChannelMasked": 0.549,
+    "over8Masked": 0.01286
+   },
+   "animeOverlays": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9961,
+    "ssimQuarter": 0.9962,
+    "meanMaxChannel": 0.503,
+    "over8": 0.01202,
+    "max": 166,
+    "masked": 0.00017,
+    "ssimMasked": 0.9961,
+    "ssimQuarterMasked": 0.9962,
+    "meanMaxChannelMasked": 0.503,
+    "over8Masked": 0.01201
+   },
+   "animeShallow": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.995,
+    "ssimQuarter": 0.9973,
+    "meanMaxChannel": 0.751,
+    "over8": 0.03011,
+    "max": 140,
+    "masked": 0.00017,
+    "ssimMasked": 0.995,
+    "ssimQuarterMasked": 0.9974,
+    "meanMaxChannelMasked": 0.751,
+    "over8Masked": 0.03011
+   },
+   "clean": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9971,
+    "ssimQuarter": 0.9997,
+    "meanMaxChannel": 0.159,
+    "over8": 0.00313,
+    "max": 160,
+    "masked": 0.00017,
+    "ssimMasked": 0.9971,
+    "ssimQuarterMasked": 0.9997,
+    "meanMaxChannelMasked": 0.159,
+    "over8Masked": 0.00312
+   },
+   "none": {
+    "size": [
+     1920,
+     1080
+    ],
+    "ssim": 0.9939,
+    "ssimQuarter": 0.997,
+    "meanMaxChannel": 0.406,
+    "over8": 0.00799,
+    "max": 160,
+    "masked": 0.00017,
+    "ssimMasked": 0.994,
+    "ssimQuarterMasked": 0.997,
+    "meanMaxChannelMasked": 0.406,
+    "over8Masked": 0.00798
+   }
+  }
+ },
+ "ssimVerdict": {
+  "tolerance": 0.98,
+  "maxMasked": 0.01,
+  "below": [],
+  "errors": [],
+  "ok": true
+ },
+ "ended": "2026-11-23T20:18:38.296Z",
+ "stopped": null,
+ "unpinned": [],
+ "ok": true,
+ "runtimes": [
+  "chromium",
+  "wkwebview-scheme",
+  "wkwebview-loopback"
+ ],
+ "backends": [
+  "webgpu",
+  "webgl"
+ ],
+ "checks": [
+  "editor",
+  "acceptance",
+  "backends",
+  "frames",
+  "post",
+  "coverage"
+ ]
+}

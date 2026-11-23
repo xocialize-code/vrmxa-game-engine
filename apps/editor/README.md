@@ -38,11 +38,12 @@ default is `auto`, M4 check 8). The render host is made asynchronously (`RenderH
 it (`ready`). The status bar's **Renderer** readout says which backend drew. Exports and Check Against Scrub draw on
 offline hosts of the view's backend, each with that backend's post stack (pmndrs on WebGL, TSL on WebGPU) and readback
 (`readbackFor`: WebGL's pixel pack, WebGPU's output target).
-- **Known: Check Against Scrub on WebGPU** gives 24 of 26 (frames 735 and 869 differ, by up to 12 and 2 levels; the
-  world's hash is the same and drawing forward matches the export). It happens only with the TSL post stack on (any
-  look, tone mapping alone included; with no post every frame matches) and only on frames that show the espresso's steam;
-  redrawing the scrubbed frame gives the same wrong image. WebGL gives 26 of 26. The export itself is exact on both. See
-  `acceptance/README.md` (M4 W3) and the follow-up task AB-T-0590.
+- **Check Against Scrub on WebGPU** (AB-T-0590, fixed) gave 24 of 26: frames 735 and 869, the espresso's steam, TSL
+  post on. three.quarks' WebGPU materials decode a particle's colour only when compiled for an sRGB output, and r187
+  keeps the first compile for every later draw. An export draws frame 0 without its look, so the steam was compiled
+  decoded; the scrub compiled it inside the TSL scene pass. `@vrmxg/particles/webgpu` now decodes per draw (its README).
+  The check also draws one throwaway frame on its fresh host before the first row: under GPU load a fresh WebGPU host's
+  first post frame could differ (frame 1079, the first row, in 7 of 8 loads; 0 of 8 after the throwaway draw).
 
 ## Takes into sequences (M3 W4, AB-T-0543)
 
