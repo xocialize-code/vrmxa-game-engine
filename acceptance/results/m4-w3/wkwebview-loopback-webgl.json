@@ -3,11 +3,12 @@
  "runtime": "wkwebview-loopback",
  "backend": "webgl",
  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
- "started": "2026-11-23T15:26:46.771Z",
+ "started": "2026-11-23T17:24:46.312Z",
  "checks": {
   "acceptance": {
    "query": "mode=acceptance&renderer=webgl",
    "canonical": "78ab33e0d7508476",
+   "pinned": true,
    "loads": [
     {
      "load": 1,
@@ -24,38 +25,41 @@
       "snapshot": true,
       "backend": true
      },
-     "ms": 40539,
+     "ms": 39762,
      "wall": {
-      "start": 1795447606771,
-      "end": 1795447647310
+      "start": 1795454701633,
+      "end": 1795454741395
      },
      "gpuLoad": {
       "samples": 14,
       "gpuUtil": {
        "min": 0,
-       "median": 27,
-       "max": 84
+       "median": 0,
+       "max": 67
       },
       "seen": {
-       "node:node": 3.1,
-       "webkit:com.apple.WebKit.GPU": 98.3,
+       "browser:Microsoft Edge": 0,
+       "browser:msedge_crashpad_handler": 0,
+       "browser:Microsoft Edge Helper": 0.1,
+       "browser:Microsoft Edge Helper (Renderer)": 0,
+       "webkit:com.apple.WebKit.GPU": 91.1,
+       "webkit:com.apple.WebKit.WebContent": 125.2,
        "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "webkit:com.apple.WebKit.WebContent": 127.8,
-       "harness:CinematicsSpike": 2.9
+       "node:node": 2.1,
+       "harness:CinematicsSpike": 2.6
       },
       "first": {
-       "at": 1795447606771,
-       "gpuUtil": 84,
+       "at": 1795454701633,
+       "gpuUtil": 0,
        "processes": [],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795447645839,
-       "gpuUtil": 76,
+       "at": 1795454740698,
+       "gpuUtil": 67,
        "processes": [
-        "node:node 3.1%",
-        "webkit:com.apple.WebKit.GPU 98.3%",
-        "webkit:com.apple.WebKit.WebContent 34.7%"
+        "webkit:com.apple.WebKit.GPU 91.1%",
+        "webkit:com.apple.WebKit.WebContent 34.1%"
        ],
        "otherGpuHelpers": 1
       }
@@ -70,8 +74,8 @@
      "rendered": {
       "frames": 600,
       "renderMs": {
-       "mean": 0.687,
-       "p95": 0.96
+       "mean": 1.017,
+       "p95": 1.46
       },
       "sameAsHeadless": true,
       "calls": 244,
@@ -83,10 +87,10 @@
       },
       "post": {
        "costMs": {
-        "anime4k": 3.48,
-        "anime1080p": 1.64,
-        "none4k": 0.28,
-        "none1080p": 0.28
+        "anime4k": 2.54,
+        "anime1080p": 1.26,
+        "none4k": 0.26,
+        "none1080p": 0.26
        },
        "passes": [
         "RenderPass",
@@ -100,13 +104,13 @@
         "grain": 0.9507,
         "noGrain": 0.9861
        },
-       "views4Ms": 1
+       "views4Ms": 0.84
       }
-     }
+     },
+     "kind": "clean"
     }
    ],
-   "rerun": null,
-   "incident": null,
+   "incidents": [],
    "failure": null,
    "ok": true,
    "allLoadsMatch": true
@@ -114,6 +118,7 @@
   "backends": {
    "query": "mode=backends&renderer=webgl",
    "canonical": "1cd4c92e626a4202",
+   "pinned": true,
    "loads": [
     {
      "load": 1,
@@ -129,40 +134,44 @@
       "webgpuBackend": true,
       "distinctFrames": true
      },
-     "ms": 2386,
+     "ms": 2232,
      "wall": {
-      "start": 1795447647326,
-      "end": 1795447649712
+      "start": 1795454741412,
+      "end": 1795454743644
      },
      "gpuLoad": {
-      "samples": 6,
+      "samples": 5,
       "gpuUtil": {
        "min": 0,
-       "median": 72,
-       "max": 76
+       "median": 0,
+       "max": 67
       },
       "seen": {
-       "node:node": 3.1,
-       "harness:CinematicsSpike": 3.8,
-       "webkit:com.apple.WebKit.GPU": 98.3,
-       "webkit:com.apple.WebKit.WebContent": 108.9,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+       "browser:Microsoft Edge": 0,
+       "browser:msedge_crashpad_handler": 0,
+       "browser:Microsoft Edge Helper": 0,
+       "browser:Microsoft Edge Helper (Renderer)": 0,
+       "webkit:com.apple.WebKit.GPU": 91.1,
+       "webkit:com.apple.WebKit.WebContent": 106.2,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0,
+       "harness:CinematicsSpike": 2.4
       },
       "first": {
-       "at": 1795447633830,
+       "at": 1795454728693,
        "gpuUtil": 0,
        "processes": [
-        "harness:CinematicsSpike 2.9%",
-        "webkit:com.apple.WebKit.WebContent 101.1%"
+        "harness:CinematicsSpike 1%",
+        "webkit:com.apple.WebKit.WebContent 106.2%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795447648841,
-       "gpuUtil": 73,
+       "at": 1795454740698,
+       "gpuUtil": 67,
        "processes": [
-        "harness:CinematicsSpike 3.8%",
-        "webkit:com.apple.WebKit.WebContent 102.9%"
+        "webkit:com.apple.WebKit.GPU 91.1%",
+        "webkit:com.apple.WebKit.WebContent 34.1%"
        ],
        "otherGpuHelpers": 1
       }
@@ -177,7 +186,8 @@
       1280,
       720
      ],
-     "stillMsWithRead": 35.2
+     "stillMsWithRead": 32.4,
+     "kind": "clean"
     },
     {
      "load": 2,
@@ -193,41 +203,42 @@
       "webgpuBackend": true,
       "distinctFrames": true
      },
-     "ms": 2350,
+     "ms": 2226,
      "wall": {
-      "start": 1795447649712,
-      "end": 1795447652062
+      "start": 1795454743644,
+      "end": 1795454745870
      },
      "gpuLoad": {
       "samples": 6,
       "gpuUtil": {
-       "min": 30,
-       "median": 73,
-       "max": 76
+       "min": 0,
+       "median": 0,
+       "max": 67
       },
       "seen": {
-       "node:node": 3.1,
-       "harness:CinematicsSpike": 3.8,
-       "webkit:com.apple.WebKit.GPU": 98.3,
-       "webkit:com.apple.WebKit.WebContent": 186.1,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+       "browser:Microsoft Edge": 0,
+       "browser:msedge_crashpad_handler": 0,
+       "browser:Microsoft Edge Helper": 0.1,
+       "browser:Microsoft Edge Helper (Renderer)": 0,
+       "webkit:com.apple.WebKit.GPU": 91.1,
+       "webkit:com.apple.WebKit.WebContent": 106.2,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0,
+       "harness:CinematicsSpike": 2.4
       },
       "first": {
-       "at": 1795447636839,
-       "gpuUtil": 30,
+       "at": 1795454728693,
+       "gpuUtil": 0,
        "processes": [
-        "webkit:com.apple.WebKit.WebContent 103.2%"
+        "harness:CinematicsSpike 1%",
+        "webkit:com.apple.WebKit.WebContent 106.2%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795447651843,
-       "gpuUtil": 73,
-       "processes": [
-        "harness:CinematicsSpike 3%",
-        "webkit:com.apple.WebKit.GPU 30.7%",
-        "webkit:com.apple.WebKit.WebContent 186.1%"
-       ],
+       "at": 1795454743713,
+       "gpuUtil": 9,
+       "processes": [],
        "otherGpuHelpers": 1
       }
      },
@@ -241,7 +252,8 @@
       1280,
       720
      ],
-     "stillMsWithRead": 33.9
+     "stillMsWithRead": 32.7,
+     "kind": "clean"
     },
     {
      "load": 3,
@@ -257,41 +269,45 @@
       "webgpuBackend": true,
       "distinctFrames": true
      },
-     "ms": 2391,
+     "ms": 2222,
      "wall": {
-      "start": 1795447652062,
-      "end": 1795447654453
+      "start": 1795454745870,
+      "end": 1795454748092
      },
      "gpuLoad": {
-      "samples": 5,
+      "samples": 6,
       "gpuUtil": {
-       "min": 65,
-       "median": 73,
-       "max": 76
+       "min": 0,
+       "median": 0,
+       "max": 67
       },
       "seen": {
-       "node:node": 3.1,
-       "harness:CinematicsSpike": 3.8,
-       "webkit:com.apple.WebKit.GPU": 98.3,
-       "webkit:com.apple.WebKit.WebContent": 186.1,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+       "browser:Microsoft Edge": 0.1,
+       "browser:msedge_crashpad_handler": 0,
+       "browser:Microsoft Edge Helper": 0.1,
+       "browser:Microsoft Edge Helper (Renderer)": 0,
+       "webkit:com.apple.WebKit.GPU": 91.1,
+       "webkit:com.apple.WebKit.WebContent": 112.7,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0,
+       "harness:CinematicsSpike": 9.8
       },
       "first": {
-       "at": 1795447639835,
-       "gpuUtil": 65,
+       "at": 1795454731693,
+       "gpuUtil": 0,
        "processes": [
-        "harness:CinematicsSpike 1.8%",
-        "webkit:com.apple.WebKit.WebContent 108.9%"
+        "harness:CinematicsSpike 1.7%",
+        "webkit:com.apple.WebKit.WebContent 102.7%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795447651843,
-       "gpuUtil": 73,
+       "at": 1795454746700,
+       "gpuUtil": 0,
        "processes": [
-        "harness:CinematicsSpike 3%",
-        "webkit:com.apple.WebKit.GPU 30.7%",
-        "webkit:com.apple.WebKit.WebContent 186.1%"
+        "harness:CinematicsSpike 9.8%",
+        "webkit:com.apple.WebKit.GPU 7.5%",
+        "webkit:com.apple.WebKit.WebContent 112.7%"
        ],
        "otherGpuHelpers": 1
       }
@@ -306,11 +322,11 @@
       1280,
       720
      ],
-     "stillMsWithRead": 35.3
+     "stillMsWithRead": 32.4,
+     "kind": "clean"
     }
    ],
-   "rerun": null,
-   "incident": null,
+   "incidents": [],
    "failure": null,
    "ok": true,
    "allLoadsMatch": true
@@ -318,6 +334,7 @@
   "frames": {
    "query": "mode=frames&renderer=webgl&canon=wkwebview-loopback-webgl",
    "canonical": "0911935ad1563cc0",
+   "pinned": true,
    "loads": [
     {
      "load": 1,
@@ -340,41 +357,45 @@
       "backend": true,
       "notTimedOut": true
      },
-     "ms": 37118,
+     "ms": 36372,
      "wall": {
-      "start": 1795447654453,
-      "end": 1795447691571
+      "start": 1795454748093,
+      "end": 1795454784465
      },
      "gpuLoad": {
-      "samples": 18,
+      "samples": 17,
       "gpuUtil": {
-       "min": 15,
-       "median": 58,
-       "max": 77
+       "min": 0,
+       "median": 33,
+       "max": 67
       },
       "seen": {
-       "node:node": 3.1,
-       "harness:CinematicsSpike": 43.5,
-       "webkit:com.apple.WebKit.GPU": 98.3,
-       "webkit:com.apple.WebKit.WebContent": 186.1,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+       "browser:Microsoft Edge": 0.1,
+       "browser:msedge_crashpad_handler": 0,
+       "browser:Microsoft Edge Helper": 0.1,
+       "browser:Microsoft Edge Helper (Renderer)": 0.1,
+       "webkit:com.apple.WebKit.GPU": 91.1,
+       "webkit:com.apple.WebKit.WebContent": 113.8,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0.4,
+       "harness:CinematicsSpike": 9.8
       },
       "first": {
-       "at": 1795447639835,
-       "gpuUtil": 65,
+       "at": 1795454734694,
+       "gpuUtil": 0,
        "processes": [
-        "harness:CinematicsSpike 1.8%",
-        "webkit:com.apple.WebKit.WebContent 108.9%"
+        "harness:CinematicsSpike 1.6%",
+        "webkit:com.apple.WebKit.WebContent 102.9%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795447690850,
-       "gpuUtil": 32,
+       "at": 1795454782713,
+       "gpuUtil": 30,
        "processes": [
-        "harness:CinematicsSpike 3%",
-        "webkit:com.apple.WebKit.GPU 4.8%",
-        "webkit:com.apple.WebKit.WebContent 99.5%"
+        "harness:CinematicsSpike 1.1%",
+        "webkit:com.apple.WebKit.GPU 31.9%",
+        "webkit:com.apple.WebKit.WebContent 91.2%"
        ],
        "otherGpuHelpers": 1
       }
@@ -407,21 +428,21 @@
         1
        ],
        "frames": 1080,
-       "framesPerSecond": 103.71,
+       "framesPerSecond": 106.07,
        "height": 1080,
        "ms": {
-        "audio": 753.8,
+        "audio": 766.68,
         "begin": 0.02,
-        "end": 0.04,
-        "readback": 2578.9,
-        "render": 1959.3,
-        "total": 10413.96,
-        "wait": 0.66
+        "end": 0.02,
+        "readback": 2760.24,
+        "render": 1646.68,
+        "total": 10181.92,
+        "wait": 0.46
        },
        "perFrameMs": {
-        "readback": 2.39,
-        "render": 1.81,
-        "total": 9.64,
+        "readback": 2.56,
+        "render": 1.52,
+        "total": 9.43,
         "wait": 0
        },
        "seconds": 45,
@@ -441,21 +462,21 @@
         1
        ],
        "frames": 1080,
-       "framesPerSecond": 105.91,
+       "framesPerSecond": 106.67,
        "height": 1080,
        "ms": {
-        "audio": 774.26,
-        "begin": 0,
+        "audio": 789.6,
+        "begin": 0.02,
         "end": 0.02,
-        "readback": 2606.06,
-        "render": 1761.64,
-        "total": 10197.54,
-        "wait": 0.54
+        "readback": 2780.4,
+        "render": 1570.26,
+        "total": 10124.66,
+        "wait": 0.48
        },
        "perFrameMs": {
-        "readback": 2.41,
-        "render": 1.63,
-        "total": 9.44,
+        "readback": 2.57,
+        "render": 1.45,
+        "total": 9.37,
         "wait": 0
        },
        "seconds": 45,
@@ -470,307 +491,66 @@
      "readback": {
       "4k": {
        "afterFrameMs": {
-        "median": 5.88,
-        "min": 5.52,
+        "median": 5.82,
+        "min": 5.44,
         "n": 30,
-        "p95": 6.4
+        "p95": 6.34
        },
        "content": 1,
        "exportLoopMs": {
-        "median": 5.98,
-        "min": 3.68,
+        "median": 5.88,
+        "min": 3.54,
         "n": 30,
-        "p95": 7.26
+        "p95": 8.08
        },
        "hash": "a4493723bee672b1",
        "renderMs": {
-        "median": 0.5,
-        "min": 0.42,
+        "median": 0.48,
+        "min": 0.4,
         "n": 30,
-        "p95": 0.66
+        "p95": 0.68
        }
       },
       "1080p": {
        "afterFrameMs": {
-        "median": 1.8,
-        "min": 1.72,
+        "median": 1.76,
+        "min": 1.68,
         "n": 30,
-        "p95": 3.18
+        "p95": 4.04
        },
        "content": 1,
        "exportLoopMs": {
-        "median": 1.8,
-        "min": 0.94,
+        "median": 1.92,
+        "min": 0.92,
         "n": 30,
-        "p95": 2.88
+        "p95": 2.4
        },
        "hash": "4f42c2eaf55cc4a2",
        "renderMs": {
-        "median": 0.52,
-        "min": 0.38,
+        "median": 0.5,
+        "min": 0.42,
         "n": 30,
-        "p95": 0.72
+        "p95": 0.76
        }
       },
       "1366x768": {
        "afterFrameMs": {
         "median": 1.22,
-        "min": 1.2,
+        "min": 1.16,
         "n": 30,
-        "p95": 3.18
+        "p95": 3.24
        },
        "content": 1,
        "exportLoopMs": {
-        "median": 1.08,
-        "min": 0.64,
+        "median": 1.06,
+        "min": 0.54,
         "n": 30,
-        "p95": 1.24
+        "p95": 1.18
        },
        "hash": "990d8710e4dabdb4",
        "renderMs": {
         "median": 0.34,
         "min": 0.32,
-        "n": 30,
-        "p95": 0.42
-       }
-      },
-      "still640": {
-       "content": 1
-      }
-     },
-     "alpha": {
-      "clearCorner": [
-       127,
-       0,
-       0,
-       128
-      ],
-      "raw": [
-       127,
-       0,
-       0,
-       128
-      ],
-      "toImageRGBA": [
-       253,
-       0,
-       0,
-       128
-      ]
-     }
-    },
-    {
-     "load": 2,
-     "label": "load 2",
-     "ok": true,
-     "digest": "0911935ad1563cc0",
-     "match": true,
-     "differ": [],
-     "verdicts": {
-      "particlesSameAsHeadless": true,
-      "particlesDrawnByHost": true,
-      "particlesDistinctFrames": true,
-      "restoredSame": true,
-      "filmTwiceIdentical": true,
-      "stillMatchesCanvas": true,
-      "readbackHasContent": true,
-      "exportAfterStillSame": true,
-      "alphaPremultiplied": true,
-      "noErrors": true,
-      "backend": true,
-      "notTimedOut": true
-     },
-     "ms": 36449,
-     "wall": {
-      "start": 1795447691571,
-      "end": 1795447728020
-     },
-     "gpuLoad": {
-      "samples": 17,
-      "gpuUtil": {
-       "min": 5,
-       "median": 35,
-       "max": 41
-      },
-      "seen": {
-       "node:node": 1.9,
-       "harness:CinematicsSpike": 3.5,
-       "webkit:com.apple.WebKit.GPU": 52.7,
-       "webkit:com.apple.WebKit.WebContent": 107,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
-      },
-      "first": {
-       "at": 1795447678847,
-       "gpuUtil": 38,
-       "processes": [
-        "webkit:com.apple.WebKit.GPU 16.2%",
-        "webkit:com.apple.WebKit.WebContent 79.7%"
-       ],
-       "otherGpuHelpers": 1
-      },
-      "last": {
-       "at": 1795447726863,
-       "gpuUtil": 28,
-       "processes": [
-        "node:node 1.9%",
-        "harness:CinematicsSpike 2.6%",
-        "webkit:com.apple.WebKit.GPU 16.9%",
-        "webkit:com.apple.WebKit.WebContent 99.8%"
-       ],
-       "otherGpuHelpers": 1
-      }
-     },
-     "underLoad": {
-      "loaded": false,
-      "why": "quiet"
-     },
-     "errors": [],
-     "timedOut": false,
-     "particles": {
-      "final": "09ef4d21b00189d1",
-      "distinctFrames": 361,
-      "batch": {
-       "batches": 3,
-       "particles": 1149,
-       "renderer": "three.quarks"
-      }
-     },
-     "film": {
-      "frames": 1080,
-      "first": {
-       "audioBytes": 8640044,
-       "audioHash": "b69c46ab",
-       "backend": "webgl",
-       "digest": "64caa818cf9d37ef",
-       "distinct": 1080,
-       "fps": [
-        24,
-        1
-       ],
-       "frames": 1080,
-       "framesPerSecond": 105.75,
-       "height": 1080,
-       "ms": {
-        "audio": 781.66,
-        "begin": 0.02,
-        "end": 0.04,
-        "readback": 2791.48,
-        "render": 1632.46,
-        "total": 10212.3,
-        "wait": 0.4
-       },
-       "perFrameMs": {
-        "readback": 2.58,
-        "render": 1.51,
-        "total": 9.46,
-        "wait": 0
-       },
-       "seconds": 45,
-       "steamDrawn": true,
-       "steps": 2700,
-       "width": 1920,
-       "worldDigest": "ac743fcb5a5572b3"
-      },
-      "second": {
-       "audioBytes": 8640044,
-       "audioHash": "b69c46ab",
-       "backend": "webgl",
-       "digest": "64caa818cf9d37ef",
-       "distinct": 1080,
-       "fps": [
-        24,
-        1
-       ],
-       "frames": 1080,
-       "framesPerSecond": 106.79,
-       "height": 1080,
-       "ms": {
-        "audio": 793.16,
-        "begin": 0,
-        "end": 0.02,
-        "readback": 2779.72,
-        "render": 1561.56,
-        "total": 10113.04,
-        "wait": 0.46
-       },
-       "perFrameMs": {
-        "readback": 2.57,
-        "render": 1.45,
-        "total": 9.36,
-        "wait": 0
-       },
-       "seconds": 45,
-       "steamDrawn": true,
-       "steps": 2700,
-       "width": 1920,
-       "worldDigest": "ac743fcb5a5572b3"
-      },
-      "framesDiffer": [],
-      "odd": []
-     },
-     "readback": {
-      "4k": {
-       "afterFrameMs": {
-        "median": 6,
-        "min": 5.5,
-        "n": 30,
-        "p95": 6.38
-       },
-       "content": 1,
-       "exportLoopMs": {
-        "median": 5.84,
-        "min": 3.48,
-        "n": 30,
-        "p95": 7.4
-       },
-       "hash": "a4493723bee672b1",
-       "renderMs": {
-        "median": 0.48,
-        "min": 0.42,
-        "n": 30,
-        "p95": 0.64
-       }
-      },
-      "1080p": {
-       "afterFrameMs": {
-        "median": 1.82,
-        "min": 1.68,
-        "n": 30,
-        "p95": 3.28
-       },
-       "content": 1,
-       "exportLoopMs": {
-        "median": 1.8,
-        "min": 0.9,
-        "n": 30,
-        "p95": 2.18
-       },
-       "hash": "4f42c2eaf55cc4a2",
-       "renderMs": {
-        "median": 0.5,
-        "min": 0.42,
-        "n": 30,
-        "p95": 0.78
-       }
-      },
-      "1366x768": {
-       "afterFrameMs": {
-        "median": 1.3,
-        "min": 1.2,
-        "n": 30,
-        "p95": 2.28
-       },
-       "content": 1,
-       "exportLoopMs": {
-        "median": 1.1,
-        "min": 0.68,
-        "n": 30,
-        "p95": 1.3
-       },
-       "hash": "990d8710e4dabdb4",
-       "renderMs": {
-        "median": 0.34,
-        "min": 0.3,
         "n": 30,
         "p95": 0.4
        }
@@ -798,11 +578,256 @@
        0,
        128
       ]
-     }
+     },
+     "kind": "clean"
+    },
+    {
+     "load": 2,
+     "label": "load 2",
+     "ok": true,
+     "digest": "0911935ad1563cc0",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "particlesSameAsHeadless": true,
+      "particlesDrawnByHost": true,
+      "particlesDistinctFrames": true,
+      "restoredSame": true,
+      "filmTwiceIdentical": true,
+      "stillMatchesCanvas": true,
+      "readbackHasContent": true,
+      "exportAfterStillSame": true,
+      "alphaPremultiplied": true,
+      "noErrors": true,
+      "backend": true,
+      "notTimedOut": true
+     },
+     "ms": 36421,
+     "wall": {
+      "start": 1795454784465,
+      "end": 1795454820886
+     },
+     "gpuLoad": {
+      "samples": 17,
+      "gpuUtil": {
+       "min": 6,
+       "median": 34,
+       "max": 41
+      },
+      "seen": {
+       "browser:Microsoft Edge": 0,
+       "browser:msedge_crashpad_handler": 0,
+       "browser:Microsoft Edge Helper": 0.2,
+       "browser:Microsoft Edge Helper (Renderer)": 0.1,
+       "webkit:com.apple.WebKit.GPU": 37.7,
+       "webkit:com.apple.WebKit.WebContent": 110.3,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0.4,
+       "harness:CinematicsSpike": 3.5
+      },
+      "first": {
+       "at": 1795454770708,
+       "gpuUtil": 33,
+       "processes": [
+        "webkit:com.apple.WebKit.GPU 17.1%",
+        "webkit:com.apple.WebKit.WebContent 83.2%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795454818722,
+       "gpuUtil": 22,
+       "processes": [
+        "harness:CinematicsSpike 3%",
+        "webkit:com.apple.WebKit.GPU 5.1%",
+        "webkit:com.apple.WebKit.WebContent 99.4%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "particles": {
+      "final": "09ef4d21b00189d1",
+      "distinctFrames": 361,
+      "batch": {
+       "batches": 3,
+       "particles": 1149,
+       "renderer": "three.quarks"
+      }
+     },
+     "film": {
+      "frames": 1080,
+      "first": {
+       "audioBytes": 8640044,
+       "audioHash": "b69c46ab",
+       "backend": "webgl",
+       "digest": "64caa818cf9d37ef",
+       "distinct": 1080,
+       "fps": [
+        24,
+        1
+       ],
+       "frames": 1080,
+       "framesPerSecond": 105.92,
+       "height": 1080,
+       "ms": {
+        "audio": 782.24,
+        "begin": 0.02,
+        "end": 0.02,
+        "readback": 2773.48,
+        "render": 1634.24,
+        "total": 10196.14,
+        "wait": 0.42
+       },
+       "perFrameMs": {
+        "readback": 2.57,
+        "render": 1.51,
+        "total": 9.44,
+        "wait": 0
+       },
+       "seconds": 45,
+       "steamDrawn": true,
+       "steps": 2700,
+       "width": 1920,
+       "worldDigest": "ac743fcb5a5572b3"
+      },
+      "second": {
+       "audioBytes": 8640044,
+       "audioHash": "b69c46ab",
+       "backend": "webgl",
+       "digest": "64caa818cf9d37ef",
+       "distinct": 1080,
+       "fps": [
+        24,
+        1
+       ],
+       "frames": 1080,
+       "framesPerSecond": 106.77,
+       "height": 1080,
+       "ms": {
+        "audio": 799.4,
+        "begin": 0,
+        "end": 0.02,
+        "readback": 2772,
+        "render": 1556.36,
+        "total": 10115.3,
+        "wait": 0.36
+       },
+       "perFrameMs": {
+        "readback": 2.57,
+        "render": 1.44,
+        "total": 9.37,
+        "wait": 0
+       },
+       "seconds": 45,
+       "steamDrawn": true,
+       "steps": 2700,
+       "width": 1920,
+       "worldDigest": "ac743fcb5a5572b3"
+      },
+      "framesDiffer": [],
+      "odd": []
+     },
+     "readback": {
+      "4k": {
+       "afterFrameMs": {
+        "median": 5.98,
+        "min": 5.64,
+        "n": 30,
+        "p95": 6.42
+       },
+       "content": 1,
+       "exportLoopMs": {
+        "median": 5.82,
+        "min": 3.44,
+        "n": 30,
+        "p95": 7.26
+       },
+       "hash": "a4493723bee672b1",
+       "renderMs": {
+        "median": 0.5,
+        "min": 0.38,
+        "n": 30,
+        "p95": 0.68
+       }
+      },
+      "1080p": {
+       "afterFrameMs": {
+        "median": 1.88,
+        "min": 1.72,
+        "n": 30,
+        "p95": 3.28
+       },
+       "content": 1,
+       "exportLoopMs": {
+        "median": 2.02,
+        "min": 1,
+        "n": 30,
+        "p95": 2.36
+       },
+       "hash": "4f42c2eaf55cc4a2",
+       "renderMs": {
+        "median": 0.54,
+        "min": 0.42,
+        "n": 30,
+        "p95": 0.7
+       }
+      },
+      "1366x768": {
+       "afterFrameMs": {
+        "median": 1.24,
+        "min": 1.18,
+        "n": 30,
+        "p95": 2.54
+       },
+       "content": 1,
+       "exportLoopMs": {
+        "median": 1.08,
+        "min": 0.52,
+        "n": 30,
+        "p95": 1.24
+       },
+       "hash": "990d8710e4dabdb4",
+       "renderMs": {
+        "median": 0.34,
+        "min": 0.3,
+        "n": 30,
+        "p95": 0.38
+       }
+      },
+      "still640": {
+       "content": 1
+      }
+     },
+     "alpha": {
+      "clearCorner": [
+       127,
+       0,
+       0,
+       128
+      ],
+      "raw": [
+       127,
+       0,
+       0,
+       128
+      ],
+      "toImageRGBA": [
+       253,
+       0,
+       0,
+       128
+      ]
+     },
+     "kind": "clean"
     }
    ],
-   "rerun": null,
-   "incident": null,
+   "incidents": [],
    "failure": null,
    "ok": true,
    "allLoadsMatch": true
@@ -810,6 +835,7 @@
   "post": {
    "query": "mode=post&renderer=webgl",
    "canonical": "2327291e0578459e",
+   "pinned": true,
    "loads": [
     {
      "load": 1,
@@ -829,41 +855,44 @@
       "looksFirstEqualsAgain": true,
       "mask": true
      },
-     "ms": 6355,
+     "ms": 6564,
      "wall": {
-      "start": 1795447728020,
-      "end": 1795447734375
+      "start": 1795454820886,
+      "end": 1795454827450
      },
      "gpuLoad": {
       "samples": 7,
       "gpuUtil": {
-       "min": 9,
-       "median": 31,
+       "min": 0,
+       "median": 30,
        "max": 41
       },
       "seen": {
-       "node:node": 1.9,
-       "harness:CinematicsSpike": 2.6,
-       "webkit:com.apple.WebKit.GPU": 39.9,
-       "webkit:com.apple.WebKit.WebContent": 182,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+       "browser:Microsoft Edge": 0.1,
+       "browser:msedge_crashpad_handler": 0,
+       "browser:Microsoft Edge Helper": 0.2,
+       "browser:Microsoft Edge Helper (Renderer)": 0.1,
+       "webkit:com.apple.WebKit.GPU": 45,
+       "webkit:com.apple.WebKit.WebContent": 103.7,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0,
+       "harness:CinematicsSpike": 9.9
       },
       "first": {
-       "at": 1795447714860,
-       "gpuUtil": 37,
+       "at": 1795454806720,
+       "gpuUtil": 30,
        "processes": [
-        "webkit:com.apple.WebKit.GPU 16.7%",
-        "webkit:com.apple.WebKit.WebContent 86.1%"
+        "webkit:com.apple.WebKit.GPU 21.2%",
+        "webkit:com.apple.WebKit.WebContent 81.5%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795447732863,
-       "gpuUtil": 29,
+       "at": 1795454824728,
+       "gpuUtil": 17,
        "processes": [
-        "harness:CinematicsSpike 1.7%",
-        "webkit:com.apple.WebKit.GPU 7.2%",
-        "webkit:com.apple.WebKit.WebContent 94.6%"
+        "webkit:com.apple.WebKit.GPU 45%",
+        "webkit:com.apple.WebKit.WebContent 62.6%"
        ],
        "otherGpuHelpers": 1
       }
@@ -1014,7 +1043,8 @@
        "newPipeline": false,
        "passes": []
       }
-     }
+     },
+     "kind": "clean"
     },
     {
      "load": 2,
@@ -1034,41 +1064,44 @@
       "looksFirstEqualsAgain": true,
       "mask": true
      },
-     "ms": 6342,
+     "ms": 6368,
      "wall": {
-      "start": 1795447734375,
-      "end": 1795447740717
+      "start": 1795454827450,
+      "end": 1795454833818
      },
      "gpuLoad": {
-      "samples": 7,
+      "samples": 8,
       "gpuUtil": {
-       "min": 9,
-       "median": 29,
-       "max": 52
+       "min": 0,
+       "median": 22,
+       "max": 41
       },
       "seen": {
-       "node:node": 1.9,
-       "harness:CinematicsSpike": 4.7,
-       "webkit:com.apple.WebKit.GPU": 39.9,
-       "webkit:com.apple.WebKit.WebContent": 182,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+       "browser:Microsoft Edge": 0.3,
+       "browser:msedge_crashpad_handler": 0,
+       "browser:Microsoft Edge Helper": 0.2,
+       "browser:Microsoft Edge Helper (Renderer)": 0.1,
+       "webkit:com.apple.WebKit.GPU": 45,
+       "webkit:com.apple.WebKit.WebContent": 103.7,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 8.3,
+       "harness:CinematicsSpike": 36.3
       },
       "first": {
-       "at": 1795447720862,
+       "at": 1795454812721,
        "gpuUtil": 41,
        "processes": [
-        "webkit:com.apple.WebKit.GPU 16.7%",
-        "webkit:com.apple.WebKit.WebContent 76.6%"
+        "webkit:com.apple.WebKit.GPU 15.7%",
+        "webkit:com.apple.WebKit.WebContent 77.1%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795447738866,
-       "gpuUtil": 24,
+       "at": 1795454833728,
+       "gpuUtil": 23,
        "processes": [
-        "harness:CinematicsSpike 4.7%",
-        "webkit:com.apple.WebKit.GPU 24.8%",
-        "webkit:com.apple.WebKit.WebContent 79.7%"
+        "webkit:com.apple.WebKit.GPU 20.7%",
+        "webkit:com.apple.WebKit.WebContent 96.4%"
        ],
        "otherGpuHelpers": 1
       }
@@ -1219,11 +1252,11 @@
        "newPipeline": false,
        "passes": []
       }
-     }
+     },
+     "kind": "clean"
     }
    ],
-   "rerun": null,
-   "incident": null,
+   "incidents": [],
    "failure": null,
    "ok": true,
    "allLoadsMatch": true
@@ -1231,6 +1264,7 @@
   "coverage": {
    "query": "mode=coverage&renderer=webgl",
    "canonical": "104c9bf9e83de230",
+   "pinned": true,
    "loads": [
     {
      "load": 1,
@@ -1247,43 +1281,45 @@
       "no180Issues": true,
       "thumbnails": true
      },
-     "ms": 3892,
+     "ms": 3913,
      "wall": {
-      "start": 1795447740717,
-      "end": 1795447744609
+      "start": 1795454833819,
+      "end": 1795454837732
      },
      "gpuLoad": {
       "samples": 6,
       "gpuUtil": {
        "min": 0,
-       "median": 28,
-       "max": 52
+       "median": 17,
+       "max": 23
       },
       "seen": {
-       "node:node": 1.9,
-       "harness:CinematicsSpike": 4.7,
-       "webkit:com.apple.WebKit.GPU": 39.9,
-       "webkit:com.apple.WebKit.WebContent": 182,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+       "browser:Microsoft Edge": 0.3,
+       "browser:msedge_crashpad_handler": 0,
+       "browser:Microsoft Edge Helper": 0.1,
+       "browser:Microsoft Edge Helper (Renderer)": 0,
+       "webkit:com.apple.WebKit.GPU": 45,
+       "webkit:com.apple.WebKit.WebContent": 107,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 8.3,
+       "harness:CinematicsSpike": 36.3
       },
       "first": {
-       "at": 1795447726863,
-       "gpuUtil": 28,
+       "at": 1795454821726,
+       "gpuUtil": 0,
        "processes": [
-        "node:node 1.9%",
-        "harness:CinematicsSpike 2.6%",
-        "webkit:com.apple.WebKit.GPU 16.9%",
-        "webkit:com.apple.WebKit.WebContent 99.8%"
+        "harness:CinematicsSpike 9.9%",
+        "webkit:com.apple.WebKit.GPU 10%",
+        "webkit:com.apple.WebKit.WebContent 103.7%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795447741867,
-       "gpuUtil": 0,
+       "at": 1795454836729,
+       "gpuUtil": 7,
        "processes": [
-        "harness:CinematicsSpike 4.1%",
-        "webkit:com.apple.WebKit.GPU 2.1%",
-        "webkit:com.apple.WebKit.WebContent 106%"
+        "harness:CinematicsSpike 1.3%",
+        "webkit:com.apple.WebKit.WebContent 107%"
        ],
        "otherGpuHelpers": 1
       }
@@ -1296,7 +1332,8 @@
      "timedOut": false,
      "shots": 11,
      "sequenceHash": "00aa93b391faab2e",
-     "restoredInReverse": 10
+     "restoredInReverse": 10,
+     "kind": "clean"
     },
     {
      "load": 2,
@@ -1313,39 +1350,44 @@
       "no180Issues": true,
       "thumbnails": true
      },
-     "ms": 3887,
+     "ms": 3897,
      "wall": {
-      "start": 1795447744610,
-      "end": 1795447748497
+      "start": 1795454837732,
+      "end": 1795454841629
      },
      "gpuLoad": {
-      "samples": 7,
+      "samples": 6,
       "gpuUtil": {
        "min": 0,
-       "median": 24,
-       "max": 52
+       "median": 17,
+       "max": 23
       },
       "seen": {
-       "node:node": 0.6,
-       "harness:CinematicsSpike": 18,
-       "webkit:com.apple.WebKit.GPU": 39.9,
-       "webkit:com.apple.WebKit.WebContent": 182,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+       "browser:Microsoft Edge": 0.3,
+       "browser:msedge_crashpad_handler": 0,
+       "browser:Microsoft Edge Helper": 0.1,
+       "browser:Microsoft Edge Helper (Renderer)": 0,
+       "webkit:com.apple.WebKit.GPU": 45,
+       "webkit:com.apple.WebKit.WebContent": 164.1,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 8.3,
+       "harness:CinematicsSpike": 36.3
       },
       "first": {
-       "at": 1795447729866,
-       "gpuUtil": 9,
+       "at": 1795454824728,
+       "gpuUtil": 17,
        "processes": [
-        "webkit:com.apple.WebKit.GPU 39.9%",
-        "webkit:com.apple.WebKit.WebContent 182%"
+        "webkit:com.apple.WebKit.GPU 45%",
+        "webkit:com.apple.WebKit.WebContent 62.6%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795447747875,
-       "gpuUtil": 38,
+       "at": 1795454839733,
+       "gpuUtil": 7,
        "processes": [
-        "webkit:com.apple.WebKit.WebContent 133.6%"
+        "webkit:com.apple.WebKit.GPU 31.8%",
+        "webkit:com.apple.WebKit.WebContent 164.1%"
        ],
        "otherGpuHelpers": 1
       }
@@ -1358,11 +1400,11 @@
      "timedOut": false,
      "shots": 11,
      "sequenceHash": "00aa93b391faab2e",
-     "restoredInReverse": 10
+     "restoredInReverse": 10,
+     "kind": "clean"
     }
    ],
-   "rerun": null,
-   "incident": null,
+   "incidents": [],
    "failure": null,
    "ok": true,
    "allLoadsMatch": true
@@ -1370,6 +1412,7 @@
   "budget": {
    "query": "mode=budget&renderer=webgl",
    "canonical": null,
+   "pinned": true,
    "loads": [
     {
      "load": 1,
@@ -1382,42 +1425,49 @@
       "noErrors": true,
       "notTimedOut": true,
       "backend": true,
-      "characters": true
+      "webgpuBackend": true,
+      "characters": true,
+      "stepUnder5ms": true
      },
-     "ms": 9996,
+     "ms": 10008,
      "wall": {
-      "start": 1795447748497,
-      "end": 1795447758493
+      "start": 1795454841629,
+      "end": 1795454851637
      },
      "gpuLoad": {
       "samples": 8,
       "gpuUtil": {
        "min": 0,
-       "median": 24,
-       "max": 53
+       "median": 7,
+       "max": 23
       },
       "seen": {
-       "node:node": 0.6,
-       "harness:CinematicsSpike": 18,
-       "webkit:com.apple.WebKit.GPU": 46.2,
-       "webkit:com.apple.WebKit.WebContent": 139.8,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+       "browser:Microsoft Edge": 0.3,
+       "browser:msedge_crashpad_handler": 0,
+       "browser:Microsoft Edge Helper": 0.2,
+       "browser:Microsoft Edge Helper (Renderer)": 0.2,
+       "webkit:com.apple.WebKit.GPU": 68.9,
+       "webkit:com.apple.WebKit.WebContent": 164.1,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 8.3,
+       "harness:CinematicsSpike": 36.3
       },
       "first": {
-       "at": 1795447735868,
-       "gpuUtil": 52,
+       "at": 1795454827743,
+       "gpuUtil": 0,
        "processes": [
-        "harness:CinematicsSpike 1.7%",
-        "webkit:com.apple.WebKit.WebContent 99.2%"
+        "node:node 8.3%",
+        "harness:CinematicsSpike 36.3%",
+        "webkit:com.apple.WebKit.GPU 4.4%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795447756877,
-       "gpuUtil": 53,
+       "at": 1795454848736,
+       "gpuUtil": 1,
        "processes": [
-        "webkit:com.apple.WebKit.GPU 46.2%",
-        "webkit:com.apple.WebKit.WebContent 139.8%"
+        "webkit:com.apple.WebKit.GPU 68.9%",
+        "webkit:com.apple.WebKit.WebContent 56.8%"
        ],
        "otherGpuHelpers": 1
       }
@@ -1436,16 +1486,16 @@
      "characters": 20,
      "drawCalls": 639,
      "drawMs": {
-      "max": 3.54,
-      "mean": 2.453,
-      "p50": 2.3,
-      "p95": 3.16
+      "max": 3.86,
+      "mean": 2.553,
+      "p50": 2.58,
+      "p95": 3.34
      },
      "frameMs": {
-      "max": 5.92,
-      "mean": 4.14,
-      "p50": 4.1,
-      "p95": 4.8
+      "max": 5.62,
+      "mean": 4.232,
+      "p50": 4.4,
+      "p95": 4.9
      },
      "isWebGPUBackend": false,
      "size": [
@@ -1453,18 +1503,18 @@
       1080
      ],
      "stepMs": {
-      "max": 2.56,
-      "mean": 1.684,
+      "max": 2.26,
+      "mean": 1.677,
       "p50": 1.66,
-      "p95": 1.98
+      "p95": 1.96
      },
      "steps": 480,
      "triangles": 1457608,
-     "warm": 120
+     "warm": 120,
+     "kind": "clean"
     }
    ],
-   "rerun": null,
-   "incident": null,
+   "incidents": [],
    "failure": null,
    "ok": true,
    "allLoadsMatch": false
@@ -1472,6 +1522,7 @@
   "editor": {
    "query": "mode=check-export&renderer=webgl",
    "canonical": "b6f43f9836ea3441",
+   "pinned": true,
    "loads": [
     {
      "load": 1,
@@ -1488,39 +1539,45 @@
       "scrubSame": true,
       "forwardSame": true
      },
-     "ms": 16838,
+     "ms": 16880,
      "wall": {
-      "start": 1795447758493,
-      "end": 1795447775331
+      "start": 1795454851637,
+      "end": 1795454868517
      },
      "gpuLoad": {
       "samples": 11,
       "gpuUtil": {
        "min": 0,
-       "median": 43,
-       "max": 76
+       "median": 18,
+       "max": 58
       },
       "seen": {
-       "node:node": 0.6,
-       "harness:CinematicsSpike": 18,
-       "webkit:com.apple.WebKit.GPU": 46.7,
-       "webkit:com.apple.WebKit.WebContent": 139.8,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+       "browser:Microsoft Edge": 0.5,
+       "browser:msedge_crashpad_handler": 0,
+       "browser:Microsoft Edge Helper": 0.2,
+       "browser:Microsoft Edge Helper (Renderer)": 0.2,
+       "webkit:com.apple.WebKit.GPU": 68.9,
+       "webkit:com.apple.WebKit.WebContent": 164.1,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0.5,
+       "harness:CinematicsSpike": 5.6
       },
       "first": {
-       "at": 1795447744883,
-       "gpuUtil": 0,
+       "at": 1795454836729,
+       "gpuUtil": 7,
        "processes": [
-        "harness:CinematicsSpike 18%"
+        "harness:CinematicsSpike 1.3%",
+        "webkit:com.apple.WebKit.WebContent 107%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795447774881,
-       "gpuUtil": 76,
+       "at": 1795454866741,
+       "gpuUtil": 18,
        "processes": [
-        "webkit:com.apple.WebKit.GPU 46.7%",
-        "webkit:com.apple.WebKit.WebContent 68.3%"
+        "harness:CinematicsSpike 1.5%",
+        "webkit:com.apple.WebKit.GPU 10.9%",
+        "webkit:com.apple.WebKit.WebContent 104%"
        ],
        "otherGpuHelpers": 1
       }
@@ -1533,7 +1590,7 @@
      "timedOut": false,
      "size": "1080p",
      "frames": 1080,
-     "exportMs": 9232,
+     "exportMs": 9285,
      "scrub": {
       "frames": 26,
       "same": 26
@@ -1803,7 +1860,8 @@
        "forwardSame": true,
        "forwardWorld": true
       }
-     ]
+     ],
+     "kind": "clean"
     },
     {
      "load": 2,
@@ -1820,41 +1878,45 @@
       "scrubSame": true,
       "forwardSame": true
      },
-     "ms": 16476,
+     "ms": 16735,
      "wall": {
-      "start": 1795447775331,
-      "end": 1795447791807
+      "start": 1795454868517,
+      "end": 1795454885252
      },
      "gpuLoad": {
-      "samples": 10,
+      "samples": 11,
       "gpuUtil": {
-       "min": 10,
-       "median": 51,
-       "max": 76
+       "min": 0,
+       "median": 46,
+       "max": 75
       },
       "seen": {
+       "browser:Microsoft Edge": 0,
+       "browser:msedge_crashpad_handler": 0,
+       "browser:Microsoft Edge Helper": 0.2,
+       "browser:Microsoft Edge Helper (Renderer)": 0.1,
+       "webkit:com.apple.WebKit.GPU": 47.5,
+       "webkit:com.apple.WebKit.WebContent": 125.8,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
        "node:node": 0,
-       "harness:CinematicsSpike": 2.3,
-       "webkit:com.apple.WebKit.GPU": 46.7,
-       "webkit:com.apple.WebKit.WebContent": 130.2,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0
+       "harness:CinematicsSpike": 3.7
       },
       "first": {
-       "at": 1795447762877,
-       "gpuUtil": 43,
+       "at": 1795454854741,
+       "gpuUtil": 53,
        "processes": [
-        "webkit:com.apple.WebKit.GPU 25.3%",
-        "webkit:com.apple.WebKit.WebContent 101.8%"
+        "harness:CinematicsSpike 2.3%",
+        "webkit:com.apple.WebKit.GPU 3.9%",
+        "webkit:com.apple.WebKit.WebContent 105.6%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795447789883,
-       "gpuUtil": 10,
+       "at": 1795454884755,
+       "gpuUtil": 75,
        "processes": [
-        "harness:CinematicsSpike 2.1%",
-        "webkit:com.apple.WebKit.GPU 2.6%",
-        "webkit:com.apple.WebKit.WebContent 99.5%"
+        "webkit:com.apple.WebKit.GPU 47.5%",
+        "webkit:com.apple.WebKit.WebContent 75.6%"
        ],
        "otherGpuHelpers": 1
       }
@@ -1867,7 +1929,7 @@
      "timedOut": false,
      "size": "1080p",
      "frames": 1080,
-     "exportMs": 9242,
+     "exportMs": 9243,
      "scrub": {
       "frames": 26,
       "same": 26
@@ -2137,46 +2199,55 @@
        "forwardSame": true,
        "forwardWorld": true
       }
-     ]
+     ],
+     "kind": "clean"
     }
    ],
-   "rerun": null,
-   "incident": null,
+   "incidents": [],
    "failure": null,
    "ok": true,
    "allLoadsMatch": true
   }
  },
+ "preflight": {
+  "quiet": true,
+  "waitedMs": 15273,
+  "util": 0,
+  "why": "quiet"
+ },
  "gpuLoad": {
   "samples": 62,
   "gpuUtil": {
    "min": 0,
-   "median": 36,
-   "max": 84
+   "median": 19,
+   "max": 75
   },
   "seen": {
-   "node:node": 3.1,
-   "webkit:com.apple.WebKit.GPU": 98.3,
+   "browser:Microsoft Edge": 0.5,
+   "browser:msedge_crashpad_handler": 0,
+   "browser:Microsoft Edge Helper": 0.2,
+   "browser:Microsoft Edge Helper (Renderer)": 0.2,
+   "webkit:com.apple.WebKit.GPU": 91.1,
+   "webkit:com.apple.WebKit.WebContent": 164.1,
    "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-   "webkit:com.apple.WebKit.WebContent": 186.1,
-   "harness:CinematicsSpike": 43.5
+   "node:node": 8.3,
+   "harness:CinematicsSpike": 36.3
   },
   "first": {
-   "at": 1795447606771,
-   "gpuUtil": 84,
+   "at": 1795454701633,
+   "gpuUtil": 0,
    "processes": [],
    "otherGpuHelpers": 1
   },
   "last": {
-   "at": 1795447789883,
-   "gpuUtil": 10,
+   "at": 1795454884755,
+   "gpuUtil": 75,
    "processes": [
-    "harness:CinematicsSpike 2.1%",
-    "webkit:com.apple.WebKit.GPU 2.6%",
-    "webkit:com.apple.WebKit.WebContent 99.5%"
+    "webkit:com.apple.WebKit.GPU 47.5%",
+    "webkit:com.apple.WebKit.WebContent 75.6%"
    ],
    "otherGpuHelpers": 1
   }
  },
- "ended": "2026-11-23T15:29:51.808Z"
+ "ended": "2026-11-23T17:28:05.253Z"
 }

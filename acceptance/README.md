@@ -119,52 +119,58 @@ luma, 8×8 windows every 4 px).
 
 ### Result (2026-11-23, M5 Max, macOS 27.3 beta 26C5047e, Chrome for Testing 156.0.8078.4 headless on Metal)
 
-Two full runs at the W3 commit: a bless pass (`--bless --keep-going`, which made `canonical.json`) and a verify pass
-against it (`--keep-going`); receipts AB-R-1070 (the matrix), AB-R-1071 (the look), AB-R-1072 (the budget) and
-AB-R-1073 (repro 5 on this beta). The verify pass's files are `results/m4-w3/`; the bless pass's summary and its one quiet
-odd frame are in `results/m4-w3/bless/`. Every cell held the GPU lock; no other GPU-using process was seen in any load.
+Two full runs at 73d48dd with a clean tree, on a quiet GPU (every cell's pre-flight passed). First a bless pass
+(`--bless --keep-going`), which wrote every entry of `canonical.json`, each with its own `made`. Then a verify pass
+against it (`--keep-going`). The verify pass's files are `results/m4-w3/`, and the bless pass's summary is
+`results/m4-w3/bless/summary.json`. Receipts: AB-R-1070 (the matrix), AB-R-1071 (the look), AB-R-1072 (the budget),
+AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for the two reasons under "Not green".
 
 | Cell | acceptance | backends (3 loads) | frames (2) | post (2) | coverage (2) | budget | editor (2) |
 |---|---|---|---|---|---|---|---|
-| Chromium, WebGPU | ✔ | ✔ `d34ebf75` | ✔ `31fd2949` | ✔ `c6a9dc4b` | ✔ `a1fb8342` | ✔ | ✖ scrub 24/26 |
+| Chromium, WebGPU | ✔ | ✔ `d34ebf75` | ✔ `31fd2949` | ✔ `c6a9dc4b` | ✔ `a1fb8342` | ✔ | ✖ scrub 24/26, unpinned |
 | Chromium, WebGL | ✔ | ✔ `4c6c9ea7` | ✔ `70a6468d` | ✔ `321c6f7b` | ✔ `a99d0123` | ✔ | ✔ `59bbb42b` |
-| WKWebView scheme, WebGPU | ✔ | ✔ `72ee1422` | ✔ `48000a47` | ✔ `8defe4bd` | ✔ `de0ac1cd` | — | ✖ scrub 24/26 |
+| WKWebView scheme, WebGPU | ✔ | ✔ `72ee1422` | ✔ `48000a47` | ✔ `8defe4bd` | ✔ `de0ac1cd` | — | ✖ scrub 24/26, unpinned |
 | WKWebView scheme, WebGL | ✔ | ✔ `1cd4c92e` | ✔ `0911935a` | ✔ `2327291e` | ✔ `104c9bf9` | — | ✔ `b6f43f98` |
-| WKWebView loopback, WebGPU | ✔ | ✔ `72ee1422` | ✔ `48000a47` | ✔ `8defe4bd` | ✔ `de0ac1cd` | ✔ | ✖ scrub 24/26 |
+| WKWebView loopback, WebGPU | ✔ | ✔ `72ee1422` | ✖ one quiet odd frame | ✔ `8defe4bd` | ✔ `de0ac1cd` | ✔ | ✖ scrub 24/26, unpinned |
 | WKWebView loopback, WebGL | ✔ | ✔ `1cd4c92e` | ✔ `0911935a` | ✔ `2327291e` | ✔ `104c9bf9` | ✔ | ✔ `b6f43f98` |
 
-- **Every load matched its canonical digest** in the verify pass, with no rerun and no incident, except the editor on
-  WebGPU (below). Scheme and loopback give the same digests on both backends.
+- **Every other load matched its canonical digest.** The bless pass gave the same digests as two earlier full runs, and
+  scheme and loopback give the same digests on both backends. No load was AB-T-0589 (0 incidents).
 - **The simulation doesn't depend on the renderer.** `compare.mjs` passes 20 of 20 on each backend against the one Node
-  run. Every check's final is the same in all six cells and Node (simulation `fe69bad3406ab5f6`).
+  run, and every check's final is the same in all six cells and Node (simulation `fe69bad3406ab5f6`).
 - **The films** digest to `af463f8e404b4e2b` (Chromium) and `aa30672928beb2b1` (WebKit) on WebGPU, W2's values. On WebGL
   they digest to `46a23bf918eb4da7` and `64caa818cf9d37ef`. W2's file (recorded before W1's merge) has `4c2265c8` and
   `696295fc`; what moved them since isn't traced. Particles' final is `09ef4d21b00189d1` everywhere.
-- **The look:** every look's masked SSIM is 0.994–0.997 in all three runtimes. Grain is 0.961 at full size, 0.993 at
-  ¼, as M2's 4K check found for grain. The mask is 0.017 % of the frame.
+- **The look:** every look's masked SSIM is 0.994–0.997 in all three runtimes. The anime look with grain is 0.961 at
+  full size and 0.993 at ¼. The mask is 0.017 % of the frame.
 - **The budget** (20 characters, the cafe plus 18 wanderers, each step drawn at 1080p):
 
   | Runtime | Backend | Step ms (mean, p95) | Draw, CPU ms (mean) | Frame with the GPU's work, ms (mean, p95, max) |
   |---|---|---|---|---|
-  | WKWebView loopback | WebGPU | 2.20, 2.48 | 6.85 | 13.13, 15.92, 20.4 |
-  | WKWebView loopback | WebGL | 1.68, 1.98 | 2.45 | 4.14, 4.80, 5.92 |
-  | Chromium | WebGPU | 2.17, 2.5 | 5.79 | 11.88, 12.5, 13.3 |
-  | Chromium | WebGL | 1.99, 2.3 | 3.00 | 5.00, 5.4, 5.9 |
+  | WKWebView loopback | WebGPU | 2.12, 2.38 | 6.77 | 13.04, 16.46, 20.34 |
+  | WKWebView loopback | WebGL | 1.68, 1.96 | 2.55 | 4.23, 4.90, 5.62 |
+  | Chromium | WebGPU | 2.19, 2.5 | 5.73 | 11.82, 12.5, 13.5 |
+  | Chromium | WebGL | 1.97, 2.3 | 3.02 | 4.99, 5.4, 6.0 |
 
-  The step stays under M0's 5 ms on both backends. WebGPU's draw costs more than twice WebGL's CPU time in both engines.
-  Its frame time includes `onSubmittedWorkDone`'s own round trip, so it overstates the GPU time. In WKWebView the
-  frame's p95 is just under 16.7 ms. A base M-series Mac is still unmeasured (AB-T-0511).
+  The step stays under M0's 5 ms on both backends (a verdict now). WebGPU's draw costs more than twice WebGL's CPU time
+  in both engines. Its frame time includes `onSubmittedWorkDone`'s own round trip, so it overstates the GPU time. A base
+  M-series Mac is still unmeasured (AB-T-0511).
 - **Not green:**
-  - **The editor's Check Against Scrub on WebGPU:** 24 of 26 in all three runtimes, on every load and rerun. Frames 735
-    and 869 differ; their world hash matches, and drawing forward matches the export. It happens only with the TSL post
-    stack on and on frames with the espresso's steam (`apps/editor/README.md`). WebGL gives 26 of 26. The export itself
-    is exact on WebGPU. Follow-up: AB-T-0590.
-  - **One quiet odd frame (bless pass).** In WKWebView over the scheme on WebGPU, load 2's first film export differed at
-    frame 670 and its second export didn't. The GPU was quiet (only WebKit's own processes, utilisation 36–45 %). The
-    rerun matched, so by the rules it counts as a failure, not AB-T-0589. Repro 5 re-run quietly on the same beta
-    (26C5047e, `spike-webgpu-render/repros/results/5-machine-chromium-quiet-w3.json`) gave 1 odd MSAA draw in 19,999 and
-    0 at one sample. That is the beta's Metal issue showing on a quiet GPU, as AB-T-0589 measured (quiet isn't zero).
-    The verify pass had no odd frame in 12 WebGPU film exports.
+  - **The editor's Check Against Scrub on WebGPU:** 24 of 26 in all three runtimes, on every load and rerun (frames 735
+    and 869). Their world hash matches, and drawing forward matches the export. It happens only with the TSL post stack
+    on and on frames with the espresso's steam (`apps/editor/README.md`). It's a functional failure, never blessed, so
+    the check is unpinned. WebGL gives 26 of 26, and the export itself is exact on WebGPU. Follow-up: AB-T-0590.
+  - **One quiet odd frame:** WKWebView over loopback on WebGPU, load 1, the film's second export, **frame 656**. It
+    differed in tiles 89–90 (x 1080–1320, y 600–720): 630 pixels, by at most 8 levels, on the espresso machine's base
+    (`results/m4-w3/odd-frame656.png`: the failed frame, the rerun's and their difference ×30, at 2×). The rerun was
+    clean. The GPU was quiet: the pre-flight passed at 0 %, and no other GPU-using process was over 5 % CPU (Microsoft
+    Edge was open at under 3 %). By decision AB-D-0279 that is a failure, not AB-T-0589. It fits the beta's Metal issue:
+    it's the same mesh, and repro 5 re-run quietly on this beta (26C5047e) gave 1 odd MSAA draw in 19,999. The re-test
+    on the macOS release build is AB-T-0591.
+- **Earlier runs, for the record:**
+  - Two earlier full runs gave the same digests.
+  - Their "quiet" odd film frames (frame 670 in WKWebView, one in Chromium) ran while the operator's Chrome held the GPU
+    at about 65 %. Its "Google Chrome Helper (Aperitif)" wasn't in gpu-load.mjs's list then.
 
 ## M4's checks as they land
 
