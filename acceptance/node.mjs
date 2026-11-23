@@ -33,5 +33,6 @@ const ragdoll = await runRagdoll(R, sample, opts, { now: () => performance.now()
 const vehicle = await runVehicle(R, sample, opts, { now: () => performance.now() });
 const split = await runSplit(R, sample, opts, { now: () => performance.now() });
 const out = { runtime: 'node', version: process.version, simulation, devices, items, cinematic, sequence, particles, brains, save, film, conversation, ragdoll, vehicle, split };
-fs.writeFileSync(path.join(here, 'results/node.json'), JSON.stringify(out) + '\n');
+// ACCEPTANCE_OUT (M4 W3's matrix): write node.json there instead
+fs.writeFileSync(path.join(process.env.ACCEPTANCE_OUT ?? path.join(here, 'results'), 'node.json'), JSON.stringify(out) + '\n');
 console.log(JSON.stringify({ final: simulation.final, components: simulation.components, snapshot: simulation.snapshot, play: simulation.play, stepMs: simulation.stepMs, devices, items: { ...items, run: undefined }, cinematic: { ...cinematic, run: undefined }, sequence: { ...sequence, run: undefined }, particles: { ...particles, run: undefined }, brains: { ...brains, run: undefined }, save: { ...save, run: undefined }, film: { ...film, run: undefined, subtitles: undefined }, conversation: { ...conversation, run: undefined }, ragdoll: { ...ragdoll, run: undefined }, vehicle: { ...vehicle, run: undefined }, split: { ...split, run: undefined } }, null, 1));

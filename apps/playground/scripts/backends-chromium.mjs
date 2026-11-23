@@ -11,6 +11,9 @@ import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { acquireGpuLock, sayWaiting } from '../../../acceptance/gpu-lock.mjs';
+
+await acquireGpuLock({ who: 'apps/playground/scripts/backends-chromium.mjs', onWait: sayWaiting('apps/playground/scripts/backends-chromium.mjs') }); // M4 W3: one GPU runner at a time on this machine (acceptance/README.md)
 
 const here = import.meta.dirname, dist = path.join(here, '../dist'), results = path.join(here, '../results');
 const require = createRequire(path.join(here, '../../../spike-determinism/web/package.json'));

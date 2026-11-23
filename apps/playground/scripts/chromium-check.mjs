@@ -6,6 +6,9 @@ import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { acquireGpuLock, sayWaiting } from '../../../acceptance/gpu-lock.mjs';
+
+await acquireGpuLock({ who: 'apps/playground/scripts/chromium-check.mjs', onWait: sayWaiting('apps/playground/scripts/chromium-check.mjs') }); // M4 W3: it draws (Play)
 
 const here = import.meta.dirname, dist = path.join(here, '../dist');
 const require = createRequire(path.join(here, '../../../spike-determinism/web/package.json'));

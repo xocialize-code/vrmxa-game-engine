@@ -8,22 +8,26 @@
 //      the same drawn twice and on another load of the page.
 // Needs the playground's dev server (npm --prefix apps/playground run dev, port 5181).
 // Writes acceptance/results/m3-dialogue-chromium.json.
-//   node acceptance/m3/dialogue-chromium.mjs [--url http://localhost:5181]
+//   node acceptance/m3/dialogue-chromium.mjs [--url http://localhost:5181] [--renderer webgl|webgpu]
+// --renderer (M4 W3): the apps default to WebGPU now; this check runs on WebGL unless told otherwise, as its M3 receipt did (troika's bubbles are WebGL-only).
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { acquireGpuLock, sayWaiting } from '../gpu-lock.mjs';
+
+await acquireGpuLock({ who: 'acceptance/m3/dialogue-chromium.mjs', onWait: sayWaiting('acceptance/m3/dialogue-chromium.mjs') }); // M4 W3: one GPU runner at a time on this machine (acceptance/README.md)
 
 const here = import.meta.dirname, argv = process.argv.slice(2), opt = (k, d) => { const i = argv.indexOf(k); return i < 0 ? d : argv[i + 1]; };
 const require = createRequire(path.join(here, '../../spike-determinism/web/package.json'));
 const { chromium } = require('playwright-core');
 const exe = path.join(process.env.HOME, 'Library/Caches/ms-playwright/chromium-1248/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing');
-const url = opt('--url', 'http://localhost:5181'), res = (f) => path.join(here, '../results', f);
+const url = opt('--url', 'http://localhost:5181'), renderer = opt('--renderer', 'webgl'), res = (f) => path.join(here, '../results', f);
 const browser = await chromium.launch({ executablePath: exe, headless: true, args: ['--use-angle=metal', '--enable-gpu'] });
 const errors = [];
 const open = async (q) => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   page.on('pageerror', (e) => errors.push(e.message));
-  await page.goto(`${url}/?${q}`);
+  await page.goto(`${url}/?${q}&renderer=${renderer}`);
   await page.waitForFunction(() => window.__playground?.tree && !document.querySelector('.overlay:not(.error)'), null, { timeout: 300000 });
   return page;
 };

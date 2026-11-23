@@ -3,6 +3,9 @@
 # at ?mode=check-export over the custom scheme and loopback (apps/editor/src/checkmode.js): the film exported as frame
 # hashes, checked against scrubbing, and rendered forward on a fresh world. Writes results/m2-editor-wkwebview-<origin>.json.
 set -e
+# M4 W3: one GPU runner at a time on this machine: re-run under acceptance/gpu-lock.mjs (acceptance/README.md)
+gpulock="$(cd "$(dirname "$0")" && pwd)/../../acceptance/gpu-lock.mjs"
+node "$gpulock" held || exec node "$gpulock" run --who "$0" -- "$0" "$@" # held: VRMXG_GPU_LOCK_HELD names the live owner
 here=$(cd "$(dirname "$0")" && pwd)
 src="$here/../../spike-cinematics/mac/build/CinematicsSpike.app"
 dist="$here/../../apps/editor/dist"
@@ -14,7 +17,8 @@ rm -rf "$app/Contents/Resources/web"; cp -R "$dist" "$app/Contents/Resources/web
 codesign --force --sign - --preserve-metadata=entitlements "$app" 2>/dev/null
 tmp="$HOME/Library/Containers/com.xocialize.vrmxg-cinematics-spike/Data/tmp"
 rm -f "$tmp/wkwebview-shots.json"
-SPIKE_CASES="mode=check-export" SPIKE_ORIGINS="${ORIGINS:-both}" SPIKE_TIMEOUT="${SPIKE_TIMEOUT:-900}" "$app/Contents/MacOS/CinematicsSpike"
+# RENDERER (M4 W3): the editor defaults to WebGPU now; WebGL unless told otherwise, as the M2 receipt (matrix.mjs runs both)
+SPIKE_CASES="mode=check-export&renderer=${RENDERER:-webgl}" SPIKE_ORIGINS="${ORIGINS:-both}" SPIKE_TIMEOUT="${SPIKE_TIMEOUT:-900}" "$app/Contents/MacOS/CinematicsSpike"
 node -e '
 const fs = require("fs"), [file, out] = process.argv.slice(1);
 for (const r of JSON.parse(fs.readFileSync(file, "utf8"))) {

@@ -1,0 +1,140 @@
+{
+ "query": "iters=20000",
+ "runs": [
+  {
+   "pass": false,
+   "iters": 20000,
+   "cull": "none",
+   "size": [
+    1920,
+    1080
+   ],
+   "modes": {
+    "msaa": {
+     "differ": 1,
+     "distinct": 2,
+     "firstDiff": {
+      "iter": 11320,
+      "values": 39,
+      "at": [
+       {
+        "x": 1072,
+        "y": 527,
+        "ch": 0,
+        "here": 48,
+        "first": 53
+       },
+       {
+        "x": 1072,
+        "y": 527,
+        "ch": 1,
+        "here": 44,
+        "first": 49
+       },
+       {
+        "x": 1072,
+        "y": 527,
+        "ch": 2,
+        "here": 40,
+        "first": 44
+       },
+       {
+        "x": 1066,
+        "y": 529,
+        "ch": 0,
+        "here": 63,
+        "first": 61
+       },
+       {
+        "x": 1066,
+        "y": 529,
+        "ch": 1,
+        "here": 58,
+        "first": 56
+       },
+       {
+        "x": 1066,
+        "y": 529,
+        "ch": 2,
+        "here": 53,
+        "first": 51
+       },
+       {
+        "x": 1048,
+        "y": 530,
+        "ch": 0,
+        "here": 96,
+        "first": 98
+       },
+       {
+        "x": 1048,
+        "y": 530,
+        "ch": 1,
+        "here": 91,
+        "first": 93
+       }
+      ]
+     },
+     "covered": 4389,
+     "oddHashes": {
+      "709bdc31": 1
+     },
+     "likeFirstDraw": 1
+    },
+    "one": {
+     "differ": 0,
+     "distinct": 1,
+     "firstDiff": null,
+     "covered": 4261
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "triangles": 39782,
+   "firstDrawDiffers": {
+    "msaa": true,
+    "one": false
+   },
+   "ms": 120072,
+   "observation": "msaa: 1 of 19999 draws differ from the first (2 distinct); one: 0 of 19999 draws differ from the first (1 distinct)",
+   "gpuLoad": {
+    "samples": 10,
+    "gpuUtil": {
+     "min": 0,
+     "median": 15,
+     "max": 20
+    },
+    "seen": {
+     "node:node": 23,
+     "chromium:Google Chrome for Testing": 30.9,
+     "chromium:Google Chrome for Testing Helper (GPU)": 10.8,
+     "chromium:Google Chrome for Testing Helper": 7.7,
+     "webkit:com.apple.WebKit.GPU": 0,
+     "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+     "webkit:com.apple.WebKit.WebContent": 0,
+     "chromium:Google Chrome for Testing Helper (Renderer)": 98.5
+    },
+    "first": {
+     "at": 1795447933640,
+     "gpuUtil": 12,
+     "processes": [
+      "node:node 4.4%",
+      "node:node 23%",
+      "chromium:Google Chrome for Testing 30.9%",
+      "chromium:Google Chrome for Testing Helper (GPU) 8.1%",
+      "chromium:Google Chrome for Testing Helper 7.7%",
+      "chromium:Google Chrome for Testing Helper 3.3%"
+     ],
+     "otherGpuHelpers": 1
+    },
+    "last": {
+     "at": 1795448054088,
+     "gpuUtil": 0,
+     "processes": [
+      "chromium:Google Chrome for Testing Helper (GPU) 6.5%"
+     ],
+     "otherGpuHelpers": 1
+    }
+   }
+  }
+ ]
+}

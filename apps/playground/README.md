@@ -27,8 +27,9 @@ too. "Replay demo walk" plays `content/sample/input/walk-in.json`.
 ## Renderer (M4 W0, AB-T-0572)
 
 **`?renderer=webgpu`** draws the playground with three's `WebGPURenderer` (`?renderer=auto`: WebGPU where the page has
-it, else WebGL). Without the switch it stays on WebGL until M4 W3 flips the default; `?mode=acceptance` stays on WebGL
-until W3 runs it on both. The Renderer readout says which backend drew. The host is made asynchronously, so the controls
+it, else WebGL). **Since M4 W3 that is the default** (AB-T-0575, M4 check 8): without the switch the playground draws
+with WebGPU where the page has it; `?renderer=webgl` forces WebGL. Every check mode, `?mode=acceptance` included, runs on
+either backend (`acceptance/matrix.mjs` runs them all on both). The Renderer readout says which backend drew. The host is made asynchronously, so the controls
 that need the world stay disabled until it and the scene are there; a forced `?renderer=webgpu` where WebGPU fails shows
 the error and leaves them disabled (`backends-chromium.mjs` checks that too).
 - **On WebGPU** the cafe and its characters render (Mira and Hana with the patched `MToonNodeMaterial`), with shadows

@@ -32,3 +32,10 @@ __pycache__/
 # AB-T-0589 native Metal repro: the built tool and its frame dumps
 spike-webgpu-render/repros/metal/machine
 spike-webgpu-render/repros/metal/out/
+
+# M4 W3 matrix: a failed load's images beside its rerun's (acceptance/matrix.mjs)
+acceptance/results/m4-w3/odd/
+# and its per-step runs (5 MB each; compare.mjs's summary.json per backend and the cell JSONs keep the hashes)
+acceptance/results/m4-w3/node.json
+acceptance/results/m4-w3/acceptance/*/*.json
+!acceptance/results/m4-w3/acceptance/*/summary.json

@@ -31,6 +31,19 @@ A project's own modules (`behaviours.js`) import `@vrmxg/core` by name; the page
 `static/vrmxg-core.js`, which hands them the editor's own engine. Not yet: dragging several timeline items at once, curve editing of keys, a shot list separate from the shot row, MCP tools for sequences (W11), multi-selection gizmos, copy and paste,
 connections in the inspector, WebCodecs export in a browser (the spike chose it as a fallback only).
 
+## Renderer (M4 W3, AB-T-0575)
+
+The editor draws with WebGPU where the page has it, else WebGL: `?renderer=webgl|webgpu|auto` forces either (the
+default is `auto`, M4 check 8). The render host is made asynchronously (`RenderHost.create`), so `openProject` waits for
+it (`ready`). The status bar's **Renderer** readout says which backend drew. Exports and Check Against Scrub draw on
+offline hosts of the view's backend, each with that backend's post stack (pmndrs on WebGL, TSL on WebGPU) and readback
+(`readbackFor`: WebGL's pixel pack, WebGPU's output target).
+- **Known: Check Against Scrub on WebGPU** gives 24 of 26 (frames 735 and 869 differ, by up to 12 and 2 levels; the
+  world's hash is the same and drawing forward matches the export). It happens only with the TSL post stack on (any
+  look, tone mapping alone included; with no post every frame matches) and only on frames that show the espresso's steam;
+  redrawing the scrubbed frame gives the same wrong image. WebGL gives 26 of 26. The export itself is exact on both. See
+  `acceptance/README.md` (M4 W3) and the follow-up task AB-T-0590.
+
 ## Takes into sequences (M3 W4, AB-T-0543)
 
 - **A Play's take** keeps the ai log beside its input: everything injected, from a director's requests and decisions

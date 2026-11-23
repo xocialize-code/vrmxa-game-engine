@@ -1,7 +1,7 @@
 // What else is using the GPU (AB-T-0589): a result that must be exact is only as good as the load it ran under, so the
 // runners record it. A snapshot is the GPU's utilisation (IOAccelerator's "Device Utilization %") and the processes of
 // the kinds that draw or compute on it: WebKit (WebContent, GPU), Chromium and Chrome (and their GPU helpers), python, MLX,
-// our harnesses (CinematicsSpike, the native Metal repro `machine`) and node. Other apps' GPU helpers ("… Helper (GPU)")
+// our harnesses (CinematicsSpike, the native Metal repro `machine`), node, and (M4 W3) the person's own browsers with every helper. Other apps' GPU helpers ("… Helper (GPU)")
 // are counted, not named. Process names only, no paths or arguments.
 //   import { snapshot, summarise } from './gpu-load.mjs'
 //   node apps/playground/scripts/gpu-load.mjs sample <file.jsonl> [seconds]   append a snapshot every N seconds (15) until killed
@@ -10,7 +10,10 @@ import fs from 'node:fs';
 
 const KINDS = [
   ['webkit', /com\.apple\.WebKit\.(WebContent|GPU)/],
-  ['chromium', /Chrom(e|ium)( for Testing)?( Helper( \((GPU|Renderer)\))?)?$/],
+  // Chrome for Testing (the runners' headless browser) and Chromium, every helper; matched on the executable's path
+  ['chromium', /Chrome for Testing|Chromium( Helper( \([^)]*\))?)?$/],
+  // M4 W3: the person's own browsers, every helper (a busy "Google Chrome Helper (Aperitif)" loaded the GPU ~65 % unseen)
+  ['browser', /Google Chrome( Helper( \([^)]*\))?)?$|Microsoft Edge|Brave Browser|Arc( Helper( \([^)]*\))?)?$|Firefox|plugin-container/],
   ['python', /(^|\/)python[0-9.]*$/i],
   ['mlx', /mlx/i],
   ['harness', /CinematicsSpike|RepeatHarness|AcceptanceHarness/],
@@ -30,7 +33,7 @@ export function snapshot() {
     const [, pid, cpu, comm] = m, kind = KINDS.find(([, re]) => re.test(comm))?.[0];
     const name = comm.split('/').pop();
     if (kind) processes.push({ kind, name, pid: +pid, cpu: +cpu });
-    else if (/Helper \(GPU\)$/.test(name)) otherGpuHelpers++;
+    else if (/Helper \(GPU\)$/.test(name)) { otherGpuHelpers++; if (+cpu >= 1) processes.push({ kind: 'gpu-helper', name, pid: +pid, cpu: +cpu }); } // M4 W3: other apps' GPU helpers when busy
   }
   return { at: Date.now(), gpuUtil, processes, otherGpuHelpers };
 }

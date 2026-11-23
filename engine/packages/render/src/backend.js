@@ -12,10 +12,11 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 /**
  * The query switch: `?renderer=webgpu|webgl|auto`. Anything else (or nothing) gives `fallback`.
  * @param {string | URLSearchParams | null | undefined} search location.search, or its params
- * @param {BackendChoice} [fallback] the app's default ('webgl' until M4 W3)
+ * @param {BackendChoice} [fallback] the app's default: 'auto' since M4 W3 (WebGPU where the page has it, else WebGL;
+ *   AB-T-0575, M4 check 8)
  * @returns {BackendChoice}
  */
-export function backendFromQuery(search, fallback = 'webgl') {
+export function backendFromQuery(search, fallback = 'auto') {
   const q = typeof search === 'string' || search == null ? new URLSearchParams(search ?? '') : search;
   const v = q.get('renderer');
   return v === 'webgpu' || v === 'webgl' || v === 'auto' ? v : fallback;

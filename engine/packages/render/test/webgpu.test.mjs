@@ -74,13 +74,13 @@ function cafeTree() {
 
 // ---------------------------------------------------------------- the backend choice
 
-test('the ?renderer= switch: webgpu, webgl, auto; anything else is the app\'s default (WebGL until M4 W3)', () => {
+test('the ?renderer= switch: webgpu, webgl, auto; anything else is the app\'s default (auto since M4 W3)', () => {
   assert.equal(backendFromQuery('?renderer=webgpu'), 'webgpu');
   assert.equal(backendFromQuery('?renderer=webgl&x=1'), 'webgl');
   assert.equal(backendFromQuery(new URLSearchParams('renderer=auto')), 'auto');
-  assert.equal(backendFromQuery('?renderer=vulkan'), 'webgl');
-  assert.equal(backendFromQuery(''), 'webgl');
-  assert.equal(backendFromQuery(undefined, 'auto'), 'auto');
+  assert.equal(backendFromQuery('?renderer=vulkan'), 'auto');
+  assert.equal(backendFromQuery(''), 'auto');
+  assert.equal(backendFromQuery(undefined, 'webgl'), 'webgl');
 });
 
 test('auto takes WebGPU where navigator.gpu gives an adapter, and falls back to WebGL otherwise; a forced webgpu throws without it', async () => {

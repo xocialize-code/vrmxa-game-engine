@@ -8,6 +8,7 @@
 //     built at its frame 0, the second from the cached one. Their hashes must be equal;
 //   - the cost of a frame without post and with the anime preset.
 // The runners (scripts/post-chromium.mjs, post-wkwebview.sh) compare the looks across backends (SSIM, scripts/post-compare.mjs).
+import { NormalBlending, NoBlending } from 'three';
 import { PRESETS } from '@vrmxg/post';
 
 const anime = PRESETS.anime;
@@ -40,6 +41,39 @@ async function pixels(url) {
   }
   const n = d.length / 4, mean = s / n;
   return { hash: h.toString(16).padStart(8, '0'), size: [c.width, c.height], lumaStd: +Math.sqrt(Math.max(0, s2 / n - mean * mean)).toFixed(2), colours: colours.size };
+}
+
+/** A material that blends with what is behind it (alpha cut-outs don't: alphaTest is opaque or nothing). */
+const translucent = (m) => !!m && (m.transparent === true || (m.blending !== NormalBlending && m.blending !== NoBlending));
+
+/**
+ * M4 W3: where translucency shows in a frame, for the backend look check (AB-D-0273: WebGPU blends translucency in linear
+ * light, WebGL in sRGB where no post runs, so translucent pixels differ by design). The frame is drawn with no post,
+ * once as it is and once with every visible object that has a translucent material hidden; the pixels that differ are
+ * the mask: translucent surfaces in view (not those behind opaque ones) and the shadows they cast. Returns the mask as
+ * a PNG (white where translucent), its share of the frame and what was hidden.
+ * @param {any} host @param {() => void} drawSame redraws the current frame, no step @param {() => string} lastShot
+ */
+async function translucencyMask(host, drawSame, lastShot) {
+  drawSame(); const withAll = lastShot();
+  const hidden = [];
+  host.scene.traverse((o) => { if (o.visible && o.material && (Array.isArray(o.material) ? o.material : [o.material]).some(translucent)) hidden.push(o); });
+  for (const o of hidden) o.visible = false;
+  drawSame(); const without = lastShot();
+  for (const o of hidden) o.visible = true;
+  const read = async (url) => { const img = new Image(); img.src = url; await img.decode(); const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(img, 0, 0); return g.getImageData(0, 0, c.width, c.height); };
+  const A = await read(withAll), B = await read(without);
+  const c = document.createElement('canvas'); c.width = A.width; c.height = A.height;
+  const g = c.getContext('2d'), out = g.createImageData(A.width, A.height);
+  let n = 0;
+  for (let i = 0; i < A.data.length; i += 4) {
+    const on = A.data[i] !== B.data[i] || A.data[i + 1] !== B.data[i + 1] || A.data[i + 2] !== B.data[i + 2];
+    const v = on ? 255 : 0; if (on) n++;
+    out.data[i] = out.data[i + 1] = out.data[i + 2] = v; out.data[i + 3] = 255;
+  }
+  g.putImageData(out, 0, 0);
+  const names = [...new Set(hidden.map((o) => `${o.name || o.type}:${(Array.isArray(o.material) ? o.material : [o.material]).filter(translucent).map((m) => m.name || m.type).join('+')}`))].sort();
+  return { png: c.toDataURL('image/png'), pixels: n, share: +(n / (A.width * A.height)).toFixed(5), hidden: hidden.length, objects: names.slice(0, 40) };
 }
 
 /**
@@ -89,6 +123,9 @@ export async function postCheck(pg, { frames = [300, 301, 302, 303, 304], still 
       const p1 = await pixels(first), p2 = await pixels(last);
       shots[look] = { png: first, hash: p1.hash, again: p2.hash, firstEqualsAgain: p1.hash === p2.hash, lumaStd: p1.lumaStd, colours: p1.colours, newPipeline: cached === false, passes: host.post?.active ? [...host.post.passes] : [] };
     }
+    // M4 W3: the translucency mask on the looks' frame (no post), for the backend look check
+    await setLook('none');
+    const mask = await translucencyMask(host, () => { host.advanceNodeFrame(); host.render(0.5, false); }, () => last);
     // the cost of a frame (median of 20) without post and with the anime preset, GPU work included
     const gl = host.renderer.isWebGLRenderer ? host.renderer.getContext() : null, device = host.renderer.backend?.device;
     const cost = async (look) => {
@@ -115,7 +152,7 @@ export async function postCheck(pg, { frames = [300, 301, 302, 303, 304], still 
         distinct: new Set(a.map((p) => p.hash)).size, frame0: { lumaStd: a[0].lumaStd, colours: a[0].colours },
         pipelinesBuiltByA: builtA == null ? null : builtA - built0,
       },
-      looks: shots, costMs,
+      looks: shots, mask, costMs,
     };
   } finally { // even when a draw throws: the host's own render, the page's pixel ratio and size, then the page's layout
     if (draw && host) host.render = draw;

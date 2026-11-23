@@ -5,6 +5,7 @@ import { onMounted, ref, reactive } from 'vue';
 import { Playground, PRESETS, POST_PRESETS } from './engine.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 import { postCheck } from './post-check.js';
+import { budgetCheck } from './budget.js';
 
 const canvas = ref(null);
 const ui = reactive({ shell: '', file: '', loading: true, error: '', playing: false, step: 0, frame: '—', sim: '—', render: '—', cameras: [], camera: '', preset: '', timeScale: 1, interpolate: true, debug: { colliders: false, sensors: false, capsules: false, rays: false }, scene: new URLSearchParams(location.search).get('scene') ?? 'cafe.vrmxs', notes: '', prompt: null, wearing: '', buses: null, audioOn: false, captions: [], slot: 'slot-1', saves: [], saveNote: '', bubbles: [], choices: [], chatText: '', hasDirector: false, mic: null, fall: false, split: false, sense: null, cameraDevices: [], cameraDevice: '', showBubbles: true, showCaptions: true, showNames: false, backend: '—', ready: false, post: 'scene' });
@@ -74,8 +75,8 @@ async function load() {
 
 const mode = new URLSearchParams(location.search).get('mode');
 onMounted(async () => {
-  // the acceptance stays on WebGL until M4 W3 runs it on both backends; elsewhere ?renderer=webgpu|webgl|auto (M4 W0)
-  pg = new Playground(canvas.value, { preserveDrawingBuffer: mode === 'acceptance', ...(mode === 'acceptance' ? { backend: 'webgl' } : {}) });
+  // ?renderer=webgpu|webgl|auto (M4 W0); the acceptance runs on either since M4 W3 (acceptance/matrix.mjs)
+  pg = new Playground(canvas.value, { preserveDrawingBuffer: mode === 'acceptance' });
   pg.onChange = refresh; window.__playground = pg;
   // M4 W0: ?mode=backends&renderer=webgpu|webgl draws the cafe offline on that backend (scripts/backends-chromium.mjs, WKWebView)
   if (mode === 'backends') {
@@ -87,7 +88,14 @@ onMounted(async () => {
   // (scripts/frames-chromium.mjs, frames-wkwebview.sh); &parts=particles,film,still,readback picks some
   if (mode === 'frames') {
     const q = new URLSearchParams(location.search), parts = q.get('parts')?.split(',');
-    try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await pg.framesCheck({ ...(parts ? { parts } : {}), ...(q.get('frames') ? { film: { frames: +q.get('frames'), ...(q.get('repeat') ? { repeat: +q.get('repeat') } : {}), ...(q.has('audio') ? { audio: q.get('audio') === '1' } : {}), ...(q.has('tiles') ? { tileHashes: q.get('tiles') === '1' } : {}), ...(q.has('pres') ? { presHash: q.get('pres') === '1' } : {}), ...(q.has('jitter') ? { jitter: +q.get('jitter') } : {}), ...(q.has('keepTile') ? { keepTile: +q.get('keepTile') } : {}), ...(q.has('lag') ? { lag: +q.get('lag') } : {}), ...(q.has('serial') ? { serial: q.get('serial') === '1' } : {}), ...Object.fromEntries(['noShadows', 'noPost', 'noMsaa', 'noAA'].filter((k) => q.get(k) === '1').map((k) => [k, true])), ...Object.fromEntries(['hide', 'frontSide', 'split'].filter((k) => q.has(k)).map((k) => [k, q.get(k)])) } } : {}) })) }; ui.notes = `frames: ${window.__result.backend}`; }
+    // M4 W3 (acceptance/matrix.mjs): &canon=<cell> checks the film's frames against acceptance-canon.json's hashes for
+    // that cell; &keepFrames=k,… returns those frames' images
+    try {
+      // a missing or bad acceptance-canon.json, or no entry for the cell, fails the load at once (READY is still set)
+      let canon = null;
+      if (q.get('canon')) { const r = await fetch('acceptance-canon.json'); if (!r.ok) throw new Error(`acceptance-canon.json: ${r.status}`); canon = (await r.json())[q.get('canon')]?.film ?? null; if (!canon) throw new Error(`acceptance-canon.json has no film for ${q.get('canon')}`); }
+      const filmCanon = { ...(canon ? { canon } : {}), ...(q.get('keepFrames') ? { keepFrames: q.get('keepFrames').split(',').map(Number) } : {}) };
+      window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await pg.framesCheck({ ...(parts ? { parts } : {}), ...(q.get('frames') ? { film: { ...filmCanon, frames: +q.get('frames'), ...(q.get('repeat') ? { repeat: +q.get('repeat') } : {}), ...(q.has('audio') ? { audio: q.get('audio') === '1' } : {}), ...(q.has('tiles') ? { tileHashes: q.get('tiles') === '1' } : {}), ...(q.has('pres') ? { presHash: q.get('pres') === '1' } : {}), ...(q.has('jitter') ? { jitter: +q.get('jitter') } : {}), ...(q.has('keepTile') ? { keepTile: +q.get('keepTile') } : {}), ...(q.has('lag') ? { lag: +q.get('lag') } : {}), ...(q.has('serial') ? { serial: q.get('serial') === '1' } : {}), ...Object.fromEntries(['noShadows', 'noPost', 'noMsaa', 'noAA'].filter((k) => q.get(k) === '1').map((k) => [k, true])), ...Object.fromEntries(['hide', 'frontSide', 'split'].filter((k) => q.has(k)).map((k) => [k, q.get(k)])) } } : { film: filmCanon }) })) }; ui.notes = `frames: ${window.__result.backend}`; }
     catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
     ui.loading = false; refresh(); window.READY = true; return;
   }
@@ -100,6 +108,12 @@ onMounted(async () => {
   // M4 W1: ?mode=post&renderer=webgpu|webgl draws every post look offline on that backend (scripts/post-chromium.mjs, WKWebView)
   if (mode === 'post') {
     try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await postCheck(pg)) }; ui.notes = `post: ${window.__result.stack}, exports ${window.__result.exports.identical ? 'identical' : 'DIFFER'}`; }
+    catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
+    ui.loading = false; refresh(); window.READY = true; return;
+  }
+  // M4 W3: ?mode=budget&renderer=webgpu|webgl: 20 characters stepped and drawn at 1080p, timed (budget.js)
+  if (mode === 'budget') {
+    try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await budgetCheck(pg)) }; ui.notes = `budget: ${window.__result.backend}, ${window.__result.characters} characters, step ${window.__result.stepMs.mean} ms, frame ${window.__result.frameMs.mean} ms`; }
     catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
     ui.loading = false; refresh(); window.READY = true; return;
   }
