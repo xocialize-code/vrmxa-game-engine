@@ -1,0 +1,47 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "I start on Monday. It's across town.",
+ "audio": "the-regular-mira-says-4-af-bella-a5e21406.wav",
+ "sampleRate": 24000,
+ "duration": 3.15,
+ "source": "kokoro-82m af_bella (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "I",
+   "start": 0.405,
+   "duration": 0.15
+  },
+  {
+   "text": "start",
+   "start": 0.555,
+   "duration": 0.2375
+  },
+  {
+   "text": "on",
+   "start": 0.7925,
+   "duration": 0.1375
+  },
+  {
+   "text": "Monday",
+   "start": 0.93,
+   "duration": 0.55
+  },
+  {
+   "text": "It's",
+   "start": 1.605,
+   "duration": 0.1375
+  },
+  {
+   "text": "across",
+   "start": 1.7425,
+   "duration": 0.3375
+  },
+  {
+   "text": "town",
+   "start": 2.08,
+   "duration": 0.8
+  }
+ ]
+}

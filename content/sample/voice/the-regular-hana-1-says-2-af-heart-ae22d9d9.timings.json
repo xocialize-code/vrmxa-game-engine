@@ -1,0 +1,82 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "An oat latte, extra hot, and you'll pretend you don't want the last croissant.",
+ "audio": "the-regular-hana-1-says-2-af-heart-ae22d9d9.wav",
+ "sampleRate": 24000,
+ "duration": 5.175,
+ "source": "kokoro-82m af_heart (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "An",
+   "start": 0.305,
+   "duration": 0.1375
+  },
+  {
+   "text": "oat",
+   "start": 0.4425,
+   "duration": 0.2625
+  },
+  {
+   "text": "latte",
+   "start": 0.705,
+   "duration": 0.6
+  },
+  {
+   "text": "extra",
+   "start": 1.405,
+   "duration": 0.4
+  },
+  {
+   "text": "hot",
+   "start": 1.805,
+   "duration": 0.575
+  },
+  {
+   "text": "and",
+   "start": 2.48,
+   "duration": 0.1125
+  },
+  {
+   "text": "you'll",
+   "start": 2.5925,
+   "duration": 0.1125
+  },
+  {
+   "text": "pretend",
+   "start": 2.705,
+   "duration": 0.45
+  },
+  {
+   "text": "you",
+   "start": 3.155,
+   "duration": 0.1
+  },
+  {
+   "text": "don't",
+   "start": 3.255,
+   "duration": 0.2
+  },
+  {
+   "text": "want",
+   "start": 3.455,
+   "duration": 0.1875
+  },
+  {
+   "text": "the",
+   "start": 3.6425,
+   "duration": 0.0875
+  },
+  {
+   "text": "last",
+   "start": 3.73,
+   "duration": 0.325
+  },
+  {
+   "text": "croissant",
+   "start": 4.055,
+   "duration": 0.9
+  }
+ ]
+}

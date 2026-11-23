@@ -15,7 +15,8 @@
 //        [--voices hana-1=af_heart,mira=af_bella]   voices for roles not cast (default: the sample's map)
 //        [--fallback af_heart]                      the voice for a speaker with none, with a warning (default af_heart)
 //        [--fit --marks scripts/cafe-marks.json]    lengthen lines whose speech outlasts them, and re-script
-//                                                   (sequence.script.source) so what follows moves
+//                                                   (sequence.script.source) so what follows moves; a short in
+//                                                   shorts.json re-scripts with its marks and cameras (--marks optional)
 //        [--tts http://127.0.0.1:5190/speak]        a running loopback TTS server; without it the tool starts
 //        [--python <venv>/bin/python]               tools/tts-server.py with this Python (or $VRMXG_TTS_PYTHON) and stops it
 //        [--plan]                                   list the lines, change nothing
@@ -31,6 +32,7 @@ import { voicingPlan, bakeLines, applyVoicing, speechOverlaps, fitToSpeech } fro
 import { clipFor } from '@vrmxg/cast';
 import { buildSequence, formatErrors } from '@vrmxg/script';
 import { acquireGpuLock, sayWaiting } from '../../../acceptance/gpu-lock.mjs';
+import { shortOfSequence, coverageOf } from './make-script-sequence.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const argv = process.argv.slice(2);
@@ -97,13 +99,14 @@ if (all.length) {
 }
 
 if (argv.includes('--fit') && out.sequence) {
-  const source = out.sequence.script?.source, marksFile = opt('--marks');
-  if (!source || !marksFile) { console.error('--fit re-scripts the sequence: it needs the script it was built from (sequence.script.source) and --marks <file>'); process.exit(2); }
+  // a short in shorts.json re-scripts with its own marks and cameras (coverage by rule or the script's default)
+  const short = shortOfSequence(ref), source = out.sequence.script?.source, marksFile = opt('--marks') ?? short?.marks, coverage = coverageOf(short);
+  if (!source || !marksFile) { console.error('--fit re-scripts the sequence: it needs the script it was built from (sequence.script.source) and --marks <file> (or a short in shorts.json with marks)'); process.exit(2); }
   const set = parse(fs.readFileSync(path.join(root, out.set), 'utf8'));
   const { marks } = JSON.parse(fs.readFileSync(path.join(root, marksFile), 'utf8'));
   const script = fs.readFileSync(path.join(root, source), 'utf8');
   let failed = null;
-  const f = fitToSpeech(out, { rescript: (d) => { const r = buildSequence(script, { previous: d, set, marks, id: d.id, source }); if (!r.ok) failed = formatErrors(r.errors, source); return r.ok ? r.doc : d; } });
+  const f = fitToSpeech(out, { rescript: (d) => { const r = buildSequence(script, { previous: d, set, marks, id: d.id, source, coverage }); if (!r.ok) failed = formatErrors(r.errors, source); return r.ok ? r.doc : d; } });
   if (failed) { console.error(failed); process.exit(1); }
   for (const l of f.lines) console.log(`fit ${l.track}[${l.index}]: end ${l.from} → ${l.to}`);
   out = f.doc;

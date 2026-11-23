@@ -17,18 +17,19 @@ export const VOICED = 'sequences/cafe-order.vrmxs';
 export const SAMPLE_VOICES = { 'hana-1': 'af_heart', mira: 'af_bella' };
 
 /**
- * @param {{ R: any, bytes: (ref: string) => Promise<Uint8Array>, opts: any, snapshotLine?: number }} o snapshotLine: the
- *   line (0-based, in order of start) a third of the way into which the snapshot is taken
+ * @param {{ R: any, bytes: (ref: string) => Promise<Uint8Array>, opts: any, snapshotLine?: number, sequence?: string }} o
+ *   snapshotLine: the line (0-based, in order of start) a third of the way into which the snapshot is taken; sequence:
+ *   another voiced sequence of the sample to check (M4 W12's short), cafe-order's by default
  */
-export async function voicingCheck({ R, bytes, opts, snapshotLine = 4 }) {
-  const raw = parse(new TextDecoder().decode(await bytes(VOICED)));
+export async function voicingCheck({ R, bytes, opts, snapshotLine = 4, sequence = VOICED }) {
+  const raw = parse(new TextDecoder().decode(await bytes(sequence)));
   const dialogue = raw.sequence.tracks.filter((t) => t.type === 'dialogue');
   const lines = dialogue.flatMap((t) => t.clips.map((c, i) => ({ track: t.id, index: i, speaker: t.target, text: c.text, start: c.start, voice: c.voice ?? null, clip: c.clip ?? null, baked: !!(c.clip && c.words && c.visemes && c.audio), audio: c.audio?.duration ?? null })));
   lines.sort((a, b) => a.start - b.start);
   const left = voicingPlan(raw, {}, { presets: SAMPLE_VOICES }); // nothing still to voice, in the voices the roles have
   const inVoice = lines.every((l) => l.voice === (raw.sequence.roles?.[l.speaker]?.voice?.preset ?? SAMPLE_VOICES[l.speaker]));
 
-  const S = await loadSample(bytes, VOICED);
+  const S = await loadSample(bytes, sequence);
   const A = await buildWorld(R, S, opts);
   const svc = A.sequence, end = svc.stepOf(svc.duration).step + 1;
   const speakers = [...new Set(lines.map((l) => l.speaker))];
@@ -61,7 +62,7 @@ export async function voicingCheck({ R, bytes, opts, snapshotLine = 4 }) {
   restored.same = restored.final === hashValue(worldHashes(A.tree, { physicsBytes: true }));
 
   return {
-    sequence: VOICED, steps: end, final, mouthHash, components: Object.keys(run[0].h).length, run: packRun(run),
+    sequence, steps: end, final, mouthHash, components: Object.keys(run[0].h).length, run: packRun(run),
     lines: lines.map((l) => ({ ...l, spokeAt: spoke.find((s) => s.who === l.speaker && s.text === l.text)?.step ?? null, endedAt: ended.find((s) => s.who === l.speaker && s.text === l.text)?.step ?? null })),
     everyLineBaked: lines.every((l) => l.baked), inTheirVoices: inVoice, leftToVoice: left.length, playsFromTrack: fromTrack, overlaps: speechOverlaps(raw).map((x) => x.message),
     everyLineSpoken: lines.every((l) => spoke.some((s) => s.who === l.speaker && s.text === l.text)), mouthOpens: +open.toFixed(3), restored,

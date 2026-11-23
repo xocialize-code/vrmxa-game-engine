@@ -12,7 +12,7 @@ import { ShortList, readShorts, shortFor, slugOf, placeFile, freeRef, sameBytes,
 const sample = path.join(import.meta.dirname, '../../../content/sample');
 const files = fs.readdirSync(sample, { recursive: true }).map((f) => String(f).split(path.sep).join('/'));
 const read = (f) => fs.readFileSync(path.join(sample, f), 'utf8');
-const list = () => new ShortList(readShorts(files, null, { 'scripts/cafe-order.fountain': read('scripts/cafe-order.fountain') }));
+const list = () => new ShortList(readShorts(files, null, { 'scripts/cafe-order.fountain': read('scripts/cafe-order.fountain') }).filter((s) => s.id === 'cafe-order'));
 
 test('New Short "Morning" and Save As "Morning" never take sequences/morning.vrmxs (hand-made, 288 frames)', () => {
   assert.ok(files.includes('sequences/morning.vrmxs'));
