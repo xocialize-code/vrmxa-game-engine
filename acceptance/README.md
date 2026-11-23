@@ -1,4 +1,4 @@
-# M0, M1, M2 and M3 acceptance
+# M0, M1, M2 and M3 acceptance, and M4's backend matrix
 
 M0 W9 (AB-T-0510): the six exit checks of [M0-PLAN.md](../M0-PLAN.md) ("What M0 is done looking like"), run on the
 sample cafe (`content/sample`) at one commit, in every runtime, and filed as receipts.
@@ -15,6 +15,134 @@ node acceptance/compare.mjs       # evaluates the six checks: results/summary.js
 that need no renderer; the playground's acceptance mode adds the rendered pass (the walk rendered frame by frame,
 every camera preset, debug draw). Check 4 re-runs the W6 harness (`engine/packages/snapshot/harness`); check 5 is a
 Claude Code session with the MCP server (`results/mcp-session.json`).
+
+## M4 W3: the backend matrix (AB-T-0575)
+
+Every rendering check runs on both backends, WebGPU and WebGL, in headless Chromium and in WKWebView over the custom
+scheme and over loopback: 3 runtimes × 2 backends, 6 cells. One entry point runs the matrix and writes one results JSON
+per cell.
+
+```sh
+(cd apps/playground && npx vite build) && (cd apps/editor && npx vite build)   # and spike-cinematics/mac/scripts/build.sh once
+node acceptance/matrix.mjs                  # the whole matrix: results/m4-w3/<runtime>-<backend>.json and summary.json
+node acceptance/matrix.mjs --runtimes chromium --backends webgpu --checks backends,post --loads 2   # a part: summary-partial.json
+node acceptance/matrix.mjs --bless          # write acceptance/canonical.json from this run (every load must agree)
+node acceptance/matrix.mjs --keep-going     # record a failure and carry on (diagnosis only: the run still fails)
+```
+
+**The checks** are the playground's and the editor's own check modes, so the same code runs in every cell:
+
+| Check | Mode | Loads per cell | What one load must show | What its digest covers |
+|---|---|---|---|---|
+| acceptance | playground `?mode=acceptance` | 1 | M0–M3's exit checks; scored by `compare.mjs` per backend against the one Node run | every check's simulation final (backend-independent: the same in all six cells and Node) |
+| backends | `?mode=backends` | 3 | five distinct offline frames and a still at 1280×720 | each frame and the still (and on WebGL the `gl.readPixels` hashes) |
+| frames | `?mode=frames` | 2 | particles as headless and restored, the film exported twice the same, stills, readback at every size, alpha | particles, both films, sound, still, readback per size, alpha; the film frame by frame (`canonical.json`) |
+| post | `?mode=post` | 2 | every look at 1080p (a new pipeline's first frame = its next), two exports the same | every look (first and again) and both exports' frames |
+| coverage | `?mode=coverage` | 2 | a thumbnail per shot, the same from snapshots in either order | the sequence and every thumbnail |
+| budget | `?mode=budget` | 1 (Chromium, WKWebView loopback) | 20 characters, each step drawn at 1080p | none (timings) |
+| editor | editor `?mode=check-export` | 2 | the film exported, then 26 frames scrubbed to from snapshots and drawn forward: all equal to the export | the export's digest, sound and the checked frames |
+
+Every cell asks for its backend explicitly (`&renderer=webgpu|webgl`). The budget runs where timings mean something: the
+scheme origin's timer resolves 1 ms (AB-L-0346), and each WKWebView load is a fresh web view.
+
+### Exactness (AB-D-0278, AB-T-0589)
+
+- **The GPU lock.** Exact frames only hold on a quiet GPU: on macOS 27.3 beta, Metal draws a rare odd MSAA frame while
+  another process loads the GPU (AB-T-0589). [`gpu-lock.mjs`](gpu-lock.mjs) is a machine-level lock: `mkdir
+  /tmp/vrmxg-gpu.lock` (atomic) with `owner.json` (pid, who, since). A lock whose pid is gone is stale and is taken over;
+  one without `owner.json` is stale after a minute. **Every runner that draws for a result takes it, from any repository
+  or session:**
+  ```sh
+  node acceptance/gpu-lock.mjs run --who my-runner -- <command> [args…]   # hold it while a command runs
+  node acceptance/gpu-lock.mjs status                                     # who holds it
+  ```
+  or `import { acquireGpuLock } from '…/acceptance/gpu-lock.mjs'; const release = await acquireGpuLock({ who });`. A
+  child of a holder (`VRMXG_GPU_LOCK_HELD` names the holder's pid) doesn't take it again, so a locked runner can call
+  other locked runners. The matrix takes it per cell. Every Chromium and WKWebView runner in this repository takes it
+  too (`acceptance/*.mjs`, `m2/`, `m3/`, and `apps/playground/scripts/*-chromium.mjs` and `*-wkwebview.sh`, which re-run
+  themselves under it). `VRMXG_GPU_LOCK` moves the directory.
+- **The GPU's load in every result.** Each load records `gpuLoad` (`apps/playground/scripts/gpu-load.mjs`, sampled
+  every 3 s): the GPU's utilisation (min, median, max) and every GPU-using process seen (WebKit, Chromium, python, MLX,
+  the harnesses, the native Metal repro, other apps' busy GPU helpers), names only. Utilisation counts our own drawing
+  too (a quiet post load in Chromium sits at a median 30–55 %), so it is recorded, not judged. A load ran **under load**
+  when another GPU-using process was at ≥ 5 % CPU: anything but our own runtime's processes (Chromium in a Chromium
+  cell; WebKit and the harness this runner started in a WKWebView cell, so a busy Safari would pass unseen: close it).
+- **Every load must match the canonical digest** for its backend and runtime ([`canonical.json`](canonical.json), made by
+  `--bless` from a run in which every load agreed). Without a canonical digest, load 1 is the reference.
+- **On a mismatch, one rerun at most.** The failed load is logged in its cell's JSON (`incident` or `failure`): the items
+  that differ, its verdicts, its GPU load, and the frames that differ from the canonical frame hashes (the film checks
+  every frame against `canonical.json` in the page and keeps the odd frames' images). The rerun keeps the same frames,
+  and the runner compares the two images: the 16 × 9 tiles that differ, how many pixels, the largest difference and the
+  first 32 pixels. Images go to `results/m4-w3/odd/` (git-ignored).
+  - The rerun matches and the failed load ran under load: **AB-T-0589** (the beta's Metal issue), reported in the summary's
+    `incidents`; the cell passes.
+  - The rerun fails too, or the GPU was quiet: a **failure**. The matrix stops there (`--keep-going` records it and carries
+    on) and exits 1.
+
+### The look between backends: SSIM ≥ 0.98 at 1080p, translucency aside
+
+The post check draws every look on the same frame of the recorded walk (step 420) at 1920×1080 on each backend; the
+matrix compares each look's WebGPU frame with its WebGL frame (`apps/playground/scripts/post-compare.mjs`: SSIM on
+luma, 8×8 windows every 4 px).
+- **What is masked:** the pixels where translucency shows. The post check draws the frame twice with no post, once as it
+  is and once with every visible object whose material blends (`transparent`, or blending other than normal or none;
+  alpha cut-outs are opaque) hidden. The pixels that differ are the mask: translucent surfaces in view (not those hidden
+  behind opaque ones) and the shadows they cast. Each backend makes its own mask; their union is left out, and every 8×8
+  window that touches it is dropped from the SSIM. On the walk's frame that is the VRoid characters' eye iris and
+  highlight, eyebrows, eyelashes and eyeliner (blended face materials), 0.017 % of the frame. Mask previews:
+  `results/m4-w3/mask-*.png`.
+- **Why:** translucency blends in linear light on WebGPU, which is three's design and the physically correct blend, and
+  in sRGB on WebGL where no post runs (AB-D-0273, M4 decision 4). Translucent pixels differ by design.
+- **Grain** is per-pixel noise each backend's stack draws differently, so the `anime` look (grain 0.18) is judged at ¼ size
+  (4×4 means), where noise averages out and the look doesn't. Every other look is judged at full size.
+
+### Result (2026-11-23, M5 Max, macOS 27.3 beta 26C5047e, Chrome for Testing 156.0.8078.4 headless on Metal)
+
+Two full runs at the W3 commit: a bless pass (`--bless --keep-going`, which made `canonical.json`) and a verify pass
+against it (`--keep-going`). The verify pass's files are `results/m4-w3/`; the bless pass's summary and its one quiet
+odd frame are in `results/m4-w3/bless/`. Every cell held the GPU lock; no other GPU-using process was seen in any load.
+
+| Cell | acceptance | backends (3 loads) | frames (2) | post (2) | coverage (2) | budget | editor (2) |
+|---|---|---|---|---|---|---|---|
+| Chromium, WebGPU | ✔ | ✔ `d34ebf75` | ✔ `31fd2949` | ✔ `c6a9dc4b` | ✔ `a1fb8342` | ✔ | ✖ scrub 24/26 |
+| Chromium, WebGL | ✔ | ✔ `4c6c9ea7` | ✔ `70a6468d` | ✔ `321c6f7b` | ✔ `a99d0123` | ✔ | ✔ `59bbb42b` |
+| WKWebView scheme, WebGPU | ✔ | ✔ `72ee1422` | ✔ `48000a47` | ✔ `8defe4bd` | ✔ `de0ac1cd` | — | ✖ scrub 24/26 |
+| WKWebView scheme, WebGL | ✔ | ✔ `1cd4c92e` | ✔ `0911935a` | ✔ `2327291e` | ✔ `104c9bf9` | — | ✔ `b6f43f98` |
+| WKWebView loopback, WebGPU | ✔ | ✔ `72ee1422` | ✔ `48000a47` | ✔ `8defe4bd` | ✔ `de0ac1cd` | ✔ | ✖ scrub 24/26 |
+| WKWebView loopback, WebGL | ✔ | ✔ `1cd4c92e` | ✔ `0911935a` | ✔ `2327291e` | ✔ `104c9bf9` | ✔ | ✔ `b6f43f98` |
+
+- **Every load matched its canonical digest** in the verify pass, with no rerun and no incident, except the editor on
+  WebGPU (below). Scheme and loopback give the same digests on both backends.
+- **The simulation doesn't depend on the renderer.** `compare.mjs` passes 20 of 20 on each backend against the one Node
+  run. Every check's final is the same in all six cells and Node (simulation `fe69bad3406ab5f6`).
+- **The films** digest to `af463f8e404b4e2b` (Chromium) and `aa30672928beb2b1` (WebKit) on WebGPU, W2's values. On WebGL
+  they digest to `46a23bf918eb4da7` and `64caa818cf9d37ef`. W2's file (recorded before W1's merge) has `4c2265c8` and
+  `696295fc`; what moved them since isn't traced. Particles' final is `09ef4d21b00189d1` everywhere.
+- **The look:** every look's masked SSIM is 0.994–0.997 in all three runtimes. Grain is 0.961 at full size, 0.993 at
+  ¼, as M2's 4K check found for grain. The mask is 0.017 % of the frame.
+- **The budget** (20 characters, the cafe plus 18 wanderers, each step drawn at 1080p):
+
+  | Runtime | Backend | Step ms (mean, p95) | Draw, CPU ms (mean) | Frame with the GPU's work, ms (mean, p95, max) |
+  |---|---|---|---|---|
+  | WKWebView loopback | WebGPU | 2.20, 2.48 | 6.85 | 13.13, 15.92, 20.4 |
+  | WKWebView loopback | WebGL | 1.68, 1.98 | 2.45 | 4.14, 4.80, 5.92 |
+  | Chromium | WebGPU | 2.17, 2.5 | 5.79 | 11.88, 12.5, 13.3 |
+  | Chromium | WebGL | 1.99, 2.3 | 3.00 | 5.00, 5.4, 5.9 |
+
+  The step stays under M0's 5 ms on both backends. WebGPU's draw costs more than twice WebGL's CPU time in both engines.
+  Its frame time includes `onSubmittedWorkDone`'s own round trip, so it overstates the GPU time. In WKWebView the
+  frame's p95 is just under 16.7 ms. A base M-series Mac is still unmeasured (AB-T-0511).
+- **Not green:**
+  - **The editor's Check Against Scrub on WebGPU:** 24 of 26 in all three runtimes, on every load and rerun. Frames 735
+    and 869 differ; their world hash matches, and drawing forward matches the export. It happens only with the TSL post
+    stack on and on frames with the espresso's steam (`apps/editor/README.md`). WebGL gives 26 of 26. The export itself
+    is exact on WebGPU.
+  - **One quiet odd frame (bless pass).** In WKWebView over the scheme on WebGPU, load 2's first film export differed at
+    frame 670 and its second export didn't. The GPU was quiet (only WebKit's own processes, utilisation 36–45 %). The
+    rerun matched, so by the rules it counts as a failure, not AB-T-0589. Repro 5 re-run quietly on the same beta
+    (26C5047e, `spike-webgpu-render/repros/results/5-machine-chromium-quiet-w3.json`) gave 1 odd MSAA draw in 19,999 and
+    0 at one sample. That is the beta's Metal issue showing on a quiet GPU, as AB-T-0589 measured (quiet isn't zero).
+    The verify pass had no odd frame in 12 WebGPU film exports.
 
 ## M4's checks as they land
 

@@ -30,7 +30,7 @@ export function snapshot() {
     const [, pid, cpu, comm] = m, kind = KINDS.find(([, re]) => re.test(comm))?.[0];
     const name = comm.split('/').pop();
     if (kind) processes.push({ kind, name, pid: +pid, cpu: +cpu });
-    else if (/Helper \(GPU\)$/.test(name)) otherGpuHelpers++;
+    else if (/Helper \(GPU\)$/.test(name)) { otherGpuHelpers++; if (+cpu >= 1) processes.push({ kind: 'gpu-helper', name, pid: +pid, cpu: +cpu }); } // M4 W3: other apps' GPU helpers when busy
   }
   return { at: Date.now(), gpuUtil, processes, otherGpuHelpers };
 }

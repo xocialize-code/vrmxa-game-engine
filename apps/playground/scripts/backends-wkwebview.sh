@@ -6,6 +6,8 @@
 # every load and both origins (AB-T-0587: WebGL's two image sets were the check drawing at the page's layout size).
 #   (cd apps/playground && npx vite build) && LOADS=16 apps/playground/scripts/backends-wkwebview.sh
 set -e
+# M4 W3: one GPU runner at a time on this machine: re-run under acceptance/gpu-lock.mjs (acceptance/README.md)
+[ -n "$VRMXG_GPU_LOCK_HELD" ] || exec node "$(cd "$(dirname "$0")" && pwd)/../../../acceptance/gpu-lock.mjs" run --who "$0" -- "$0" "$@"
 here=$(cd "$(dirname "$0")" && pwd)
 root="$here/../../.."
 src="$root/spike-cinematics/mac/build/CinematicsSpike.app"

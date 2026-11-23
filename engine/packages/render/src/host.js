@@ -105,7 +105,7 @@ export class RenderHost {
   }
 
   /**
-   * A host on the backend `backend` asks for (M4 W0): 'webgl' (the default until M4 W3), 'webgpu' (throws without
+   * A host on the backend `backend` asks for (M4 W0): 'webgl' (RenderHost's own default; apps default to 'auto' through backendFromQuery since M4 W3), 'webgpu' (throws without
    * WebGPU) or 'auto' (WebGPU where the page has it, else WebGL). `backendFromQuery(location.search)` reads the
    * `?renderer=` switch. For WebGPU it first warms the page up (warmUpWebGPU, AB-T-0554 gotcha 6), then creates and
    * initialises the view's WebGPURenderer, and loads the patched MToonNodeMaterial for characters. The other options
@@ -231,6 +231,19 @@ export class RenderHost {
     const nf = this.renderer._nodes?.nodeFrame;
     if (typeof nf?.update !== 'function') throw new Error('RenderHost: WebGPURenderer._nodes.nodeFrame.update is gone (three upgraded?): offline frames would repeat; see AB-T-0554 gotcha 1');
     nf.update();
+  }
+
+  /**
+   * Wait for the GPU to finish the work submitted so far (M4 W3: timings that include the GPU, on either backend):
+   * `gl.finish()` on WebGL, `device.queue.onSubmittedWorkDone()` on WebGPU (which adds its own round trip). Resolves at
+   * once on a stand-in renderer that has neither.
+   * @returns {Promise<void>}
+   */
+  async finish() {
+    const r = this.renderer;
+    if (r.isWebGLRenderer) { r.getContext().finish(); return; }
+    const device = r.backend?.device;
+    if (device) await device.queue.onSubmittedWorkDone();
   }
 
   /** The output's size in CSS pixels; cameras fit their lens to the aspect. */

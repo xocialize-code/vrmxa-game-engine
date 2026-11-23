@@ -6,6 +6,8 @@
 #   (cd apps/playground && npx vite build) && apps/playground/scripts/repeat-wkwebview.sh [loads] [name] [query extras] [origins]
 #   e.g. apps/playground/scripts/repeat-wkwebview.sh 6 repeat-wkwebview 'frames=1080&repeat=3&audio=1&tiles=1' loopback
 set -e
+# M4 W3: one GPU runner at a time on this machine: re-run under acceptance/gpu-lock.mjs (acceptance/README.md)
+[ -n "$VRMXG_GPU_LOCK_HELD" ] || exec node "$(cd "$(dirname "$0")" && pwd)/../../../acceptance/gpu-lock.mjs" run --who "$0" -- "$0" "$@"
 here=$(cd "$(dirname "$0")" && pwd)
 root="$here/../../.."
 loads=${1:-6}; name=${2:-repeat-wkwebview}; extra=${3:-frames=1080&repeat=3&audio=1&tiles=1}; origins=${4:-loopback}

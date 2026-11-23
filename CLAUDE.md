@@ -42,7 +42,7 @@ git-ignored; commit only what this session owns, staging by path. `npm run check
 | `apps/playground/`, `apps/playground-mac/` | The M0 playground (Vue) and its Mac app on the shell; AppProbe scenario in `apps/playground-mac/docs/hand-test/` |
 | `apps/editor/`, `apps/editor-mac/` | The editor (M1 W7: tree, inspector, gizmos, asset list, undo, save, play in place) over `engine/packages/editor-core`, and its Mac app on the shell; AppProbe scenario in `apps/editor-mac/docs/hand-test/` |
 | `engine/patches/`, `scripts/patch-three-vrm.mjs` | The three-vrm patch for `MToonNodeMaterial` on r187 (AB-D-0274): AB-T-0553's six lines plus patch 5, shadows in the toon shading (AB-T-0586), applied to `node_modules` on install; `--check --require-patched` in CI fails when three-vrm changes the file or the install didn't patch it. WebGPU's host is in `@vrmxg/render` (M4 W0), its post stack in `@vrmxg/post/tsl` (M4 W1, `TSLPostStack`) |
-| `acceptance/` | M0's exit checks (W9): `node.mjs`, `chromium.mjs`, `wkwebview.sh`, `compare.mjs`; results and receipts AB-R-0946 to 0951 |
+| `acceptance/` | M0's exit checks (W9): `node.mjs`, `chromium.mjs`, `wkwebview.sh`, `compare.mjs`; results and receipts AB-R-0946 to 0951. M4 W3's backend matrix: `matrix.mjs` (every rendering check on WebGPU and WebGL, Chromium and WKWebView scheme and loopback; `canonical.json`). **Every GPU runner takes `gpu-lock.mjs`** (README, "Exactness") |
 | `content/sample/` | The sample project (cafe, doors, Mira, Hana, clips, demo walk). Every file needs a row in `LICENCES.md` (CI checks) |
 | `spike-physics/` | Rapier in the real stack, plus the WKWebView wrapper the other spikes copy (AB-R-0923) |
 | `spike-determinism/` | Character determinism and the `dmath` shim (AB-R-0924) |

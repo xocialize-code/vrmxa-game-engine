@@ -4,6 +4,8 @@
 # web view over the custom scheme and over loopback. Writes results/wkwebview-{scheme,loopback}.json and the
 # canvas of the last frame (debug draw on) as .png.
 set -e
+# M4 W3: one GPU runner at a time on this machine: re-run under acceptance/gpu-lock.mjs (acceptance/README.md)
+[ -n "$VRMXG_GPU_LOCK_HELD" ] || exec node "$(cd "$(dirname "$0")" && pwd)/../acceptance/gpu-lock.mjs" run --who "$0" -- "$0" "$@"
 here=$(cd "$(dirname "$0")" && pwd)
 src="$here/../spike-cinematics/mac/build/CinematicsSpike.app"
 dist="$here/../apps/playground/dist"
@@ -15,7 +17,8 @@ rm -rf "$app/Contents/Resources/web"; cp -R "$dist" "$app/Contents/Resources/web
 codesign --force --sign - --preserve-metadata=entitlements "$app" 2>/dev/null
 tmp="$HOME/Library/Containers/com.xocialize.vrmxg-cinematics-spike/Data/tmp"
 rm -f "$tmp/wkwebview-shots.json" "$tmp"/mode_acceptance*.png
-SPIKE_CASES="mode=acceptance" SPIKE_ORIGINS="${ORIGINS:-both}" "$app/Contents/MacOS/CinematicsSpike"
+# RENDERER (M4 W3): the playground defaults to WebGPU now; WebGL unless told otherwise, as M0–M3's receipts (matrix.mjs runs both)
+SPIKE_CASES="mode=acceptance&renderer=${RENDERER:-webgl}" SPIKE_ORIGINS="${ORIGINS:-both}" "$app/Contents/MacOS/CinematicsSpike"
 node -e '
 const fs = require("fs"), [file, out, tmp] = process.argv.slice(1);
 for (const r of JSON.parse(fs.readFileSync(file, "utf8"))) {

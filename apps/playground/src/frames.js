@@ -128,18 +128,39 @@ export async function particlesRendered({ R, sample, opts, backend, post = null,
 
 /**
  * The morning film exported twice through exportTake (hash sink), each on a fresh host and a fresh world.
- * @param {{ R: any, sample: any, opts: any, backend: string, post?: any, size?: string, fps?: string, frames?: number | null, audio?: boolean }} o
+ * M4 W3 (acceptance/matrix.mjs): `canon`, the canonical frame hashes for this backend and runtime; a frame of either
+ * export that differs from its canonical hash comes back in `odd` (which export, the frame, both hashes, its 16 × 9 tile
+ * hashes and its image at full size; four per export at most). `keepFrames` returns those frames' images from both exports
+ * whatever their hashes (a rerun's, to set beside the odd ones). `frameHashes` is the first export's list.
+ * @param {{ R: any, sample: any, opts: any, backend: string, post?: any, size?: string, fps?: string, frames?: number | null, audio?: boolean, canon?: string[] | null, keepFrames?: number[] }} o
  */
-export async function filmExport({ R, sample, opts, backend, post = null, size = '1080p', fps = '24', frames = null, audio = true }) {
+export async function filmExport({ R, sample, opts, backend, post = null, size = '1080p', fps = '24', frames = null, audio = true, canon = null, keepFrames = [] }) {
   const [width, height] = SIZES[size], rate = RATES[fps];
   const S = await loadSample(sample.bytes, 'sequences/cafe-morning.vrmxs');
   let shot = null;
-  const once = async (keepAt = -1) => {
+  const odd = [], kept = [], keep = new Set(keepFrames);
+  const TX = 16, TY = 9, tw = width / TX, th = height / TY;
+  const tiles = (bytes) => {
+    const u = new Uint32Array(bytes.buffer, bytes.byteOffset, bytes.byteLength >> 2), out = new Uint32Array(TX * TY);
+    for (let y = 0; y < height; y++) { const ty = Math.floor(y / th) * TX; for (let x = 0; x < width; x++) { const t = ty + Math.floor(x / tw); out[t] = Math.imul(out[t] ^ u[y * width + x], 0x01000193); } }
+    return [...out].map((v) => (v >>> 0).toString(16));
+  };
+  const once = async (keepAt = -1, which = 'first') => {
     const host = await offlineHost(backend, post);
     const w = await buildWorld(R, S, { ...opts, mtoonMaterial: host.mtoonMaterial });
     const n = frames ?? framesFor(w.sequence.duration / w.sequence.fps, rate);
     const hs = hashSink(), worldAt = [];
-    const sink = { ...hs, frame(k, bytes) { if (k === keepAt) shot = pngOf(bytes, width, height, hs.job.topDown, 0.5); return hs.frame(k, bytes); } };
+    let oddHere = 0;
+    const sink = { ...hs, frame(k, bytes) {
+      if (k === keepAt) shot = pngOf(bytes, width, height, hs.job.topDown, 0.5);
+      if (canon || keep.size) {
+        const h = hashFrame(bytes), isOdd = !!canon && canon[k] !== undefined && h !== canon[k];
+        if (isOdd && oddHere < 4) { oddHere++; odd.push({ export: which, frame: k, hash: h, canonical: canon[k], tiles: tiles(bytes), topDown: hs.job.topDown, png: pngOf(bytes, width, height, hs.job.topDown) }); }
+        else if (isOdd) odd.push({ export: which, frame: k, hash: h, canonical: canon[k] });
+        if (keep.has(k)) kept.push({ export: which, frame: k, hash: h, tiles: tiles(bytes), png: pngOf(bytes, width, height, hs.job.topDown) });
+      }
+      return hs.frame(k, bytes);
+    } };
     const r = await exportTake({ tree: w.tree, host, fps: rate, frames: n, width, height, sink, audio, now,
       onFrame: (k) => { if (k % 24 === 0) worldAt.push(hashValue(worldHashes(w.tree, { physicsBytes: true }))); } });
     const steamDrawn = !!w.particles.batch && w.particles.batch.constructor === host.particleRenderer && w.particles.batch.batches.length > 0;
@@ -147,13 +168,14 @@ export async function filmExport({ R, sample, opts, backend, post = null, size =
     w.audio?.dispose?.();
     return { ...r, worldAt, steamDrawn };
   };
-  const x = await once(Math.min(600, (frames ?? 1e9) - 1)), y = await once();
+  const x = await once(Math.min(600, (frames ?? 1e9) - 1)), y = await once(-1, 'second');
   const differ = x.frameHashes.map((h, i) => (h === y.frameHashes[i] ? -1 : i)).filter((i) => i >= 0);
   const pick = ({ frameHashes, began, worldAt, ...r }) => ({ ...r, digest: hashValue(frameHashes.join(',')), distinct: new Set(frameHashes).size, worldDigest: hashValue(worldAt.join(',')) });
   return {
     size: [width, height], fps, frames: x.frames, first: pick(x), second: pick(y),
     identical: !differ.length && x.frameHashes.length === y.frameHashes.length && x.audioHash === y.audioHash,
     framesDiffer: differ.slice(0, 20), worldSame: x.worldAt.join() === y.worldAt.join(), shot,
+    frameHashes: x.frameHashes, ...(canon ? { canonChecked: true, odd } : {}), ...(keep.size ? { kept } : {}),
   };
 }
 

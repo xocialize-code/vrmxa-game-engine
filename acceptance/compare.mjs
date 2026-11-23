@@ -6,7 +6,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { compareRuns, unpackRun } from '@vrmxg/snapshot';
 
-const here = import.meta.dirname, res = (f) => path.join(here, 'results', f);
+// ACCEPTANCE_RESULTS (M4 W3's matrix): read the runtimes' results from that folder and write its summary.json there; the
+// files a run doesn't make (mcp-session.json, lipsync.json) come from results/
+const here = import.meta.dirname, dir = process.env.ACCEPTANCE_RESULTS ?? path.join(here, 'results');
+const res = (f) => { const p = path.join(dir, f); return ['mcp-session.json', 'lipsync.json'].includes(f) && !fs.existsSync(p) ? path.join(here, 'results', f) : p; };
 const load = (f) => (fs.existsSync(res(f)) ? JSON.parse(fs.readFileSync(res(f), 'utf8')) : null);
 const node = load('node.json'), chromium = load('chromium.json'), scheme = load('wkwebview-scheme.json'), loopback = load('wkwebview-loopback.json');
 const browsers = { chromium, 'wkwebview-scheme': scheme, 'wkwebview-loopback': loopback };

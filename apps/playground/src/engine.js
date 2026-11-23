@@ -26,6 +26,7 @@ import { withTwoPlayers, playerLayout } from './split.js';
 import { withCamera, shellCamera, recordedFrames, connectCamera } from '@vrmxg/sense';
 import { framesCheck } from './frames.js';
 import { coverageCheck } from './coverage-check.js';
+import { withCrowd } from './budget.js';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
@@ -51,7 +52,7 @@ export class Playground {
   /**
    * @param {HTMLCanvasElement} canvas
    * @param {{ preserveDrawingBuffer?: boolean, backend?: 'webgpu' | 'webgl' | 'auto' }} [opts] backend: the renderer
-   *   (M4 W0); by default the `?renderer=webgpu|webgl|auto` switch, else WebGL until M4 W3 flips the default
+   *   (M4 W0); by default the `?renderer=webgpu|webgl|auto` switch, else auto: WebGPU where the page has it (M4 W3)
    */
   constructor(canvas, { preserveDrawingBuffer = false, backend = backendFromQuery(location.search) } = {}) {
     this.canvas = canvas;
@@ -103,7 +104,11 @@ export class Playground {
    * Load a scene of the sample project (a path under the site root). `text`: the scene's own JSON instead of the
    * file at that path (a scene opened through the Mac shell); its asset refs still resolve against the site.
    */
-  async load(scene = 'cafe.vrmxs', { text } = {}) {
+  /**
+   * @param {string} [scene] @param {{ text?: string, crowd?: number }} [o] text: the scene's own text in place of its
+   *   file; crowd: that many more wandering characters (M4 W3's budget; also `?crowd=N`)
+   */
+  async load(scene = 'cafe.vrmxs', { text, crowd } = {}) {
     await this.ready;
     this.pause();
     const R = await loadRapier();
@@ -122,6 +127,9 @@ export class Playground {
     // M3 W7: ?fall puts a flight of stairs outside the cafe with Mira and Hana on its landing (knockDown() shoves them)
     // M3 W8: ?cart puts a cart on the pavement with Mira beside its driver's door (E gets in and out, WASD drives)
     if (params.has('cart')) this.sample = { ...this.sample, doc: withCart(this.sample.doc) };
+    // M4 W3: ?crowd=N (or load's crowd) adds N wandering characters, Mira's and Hana's models in turn (the budget's 20)
+    const crowdN = crowd ?? (params.has('crowd') ? +(params.get('crowd') || 18) : 0);
+    if (crowdN > 0) this.sample = { ...this.sample, doc: withCrowd(this.sample.doc, crowdN) };
     // M3 W9: ?split, two players side by side (Mira on WASD and the mouse, Hana on the arrows or a gamepad)
     if (params.has('split')) this.sample = { ...this.sample, doc: withTwoPlayers(this.sample.doc) };
     // a scene with player cameras (cafe-split.vrmxs, or ?split) plays in split screen: their layout, two players' map
@@ -249,7 +257,8 @@ export class Playground {
       scene, frames, renderMs: { mean: +(sorted.reduce((a, b) => a + b, 0) / sorted.length).toFixed(3), p95: +sorted[Math.floor(sorted.length * 0.95)].toFixed(3) },
       sameAsHeadless: h600 === headless600, h600, headless600,
       doorSignals: signals.filter((s) => s.signal === 'stateChanged').map(({ step, node, to }) => ({ step, node, to })),
-      presets, debug, calls: host.renderer.info.render.calls, triangles: host.renderer.info.render.triangles,
+      // WebGPU's info.render.calls counts render calls since the start; its drawCalls is WebGL's calls (this frame's draws)
+      presets, debug, calls: host.renderer.isWebGPURenderer ? host.renderer.info.render.drawCalls : host.renderer.info.render.calls, triangles: host.renderer.info.render.triangles,
     };
   }
 
@@ -261,14 +270,15 @@ export class Playground {
     const host = this.host, tree = this.tree, env = tree.find('env'), post = host.post;
     const now = () => performance.now();
     const debug = { ...host.debug.show }; host.debug.set(false); // debug wireframes are 1 px at any size: not the look
-    const time = (n) => { const ms = []; for (let i = 0; i < n; i++) { const t0 = now(); host.render(1, false); host.renderer.getContext().finish(); ms.push(now() - t0); } ms.sort((a, b) => a - b); return +ms[n >> 1].toFixed(3); };
-    const at = (w, h, fn) => { const r = host.renderer, pr = r.getPixelRatio(), gl = r.getContext(), cw = gl.drawingBufferWidth / pr, ch = gl.drawingBufferHeight / pr; r.setPixelRatio(1); host.resize(w, h); const out = fn(); r.setPixelRatio(pr); host.resize(cw, ch); return out; };
-    const cost = (label) => ({ [label + '1080p']: at(1920, 1080, () => time(30)), [label + '4k']: at(3840, 2160, () => time(20)) });
+    // GPU work included on either backend (host.finish: gl.finish on WebGL, onSubmittedWorkDone on WebGPU, M4 W3)
+    const time = async (n) => { const ms = []; for (let i = 0; i < n; i++) { const t0 = now(); host.advanceNodeFrame(); host.render(1, false); await host.finish(); ms.push(now() - t0); } ms.sort((a, b) => a - b); return +ms[n >> 1].toFixed(3); };
+    const at = async (w, h, fn) => { const r = host.renderer, pr = r.getPixelRatio(), buf = host.drawingBufferSize(), cw = buf.width / pr, ch = buf.height / pr; r.setPixelRatio(1); host.resize(w, h); const out = await fn(); r.setPixelRatio(pr); host.resize(cw, ch); return out; };
+    const cost = async (label) => ({ [label + '1080p']: await at(1920, 1080, () => time(30)), [label + '4k']: await at(3840, 2160, () => time(20)) });
     env.props.post = null; host.views.update(tree);
-    const none = cost('none');
+    const none = await cost('none');
     env.props.post = 'anime'; host.views.update(tree);
     host.render(1, false);
-    const anime = cost('anime');
+    const anime = await cost('anime');
     const ssim = async (grain) => {
       post.setParams({ 'grain.amount': grain ? 0.18 : 0 });
       const a = await captureStill(host, { width: 1920, height: 1080 }), b = await captureStill(host, { width: 3840, height: 2160 });
@@ -279,10 +289,10 @@ export class Playground {
     const cam = tree.services.get('cameras').current.camera;
     const cams = [cam, ...[0, 1, 2].map((i) => { const c = cam.clone(); const a = (i / 3) * Math.PI * 2; c.position.set(-1.5 + Math.sin(a) * 4, 1.6, -3 + Math.cos(a) * 4); c.lookAt(-1.5, 1.2, -3); c.updateMatrixWorld(); return c; })];
     const views = gridLayout(4).map((v, i) => ({ camera: cams[i], ...v }));
-    const viewMs = at(1920, 1080, () => { const ms = []; for (let i = 0; i < 20; i++) { const t0 = now(); renderViews(host.renderer, host.scene, views); host.renderer.getContext().finish(); ms.push(now() - t0); } ms.sort((x, y) => x - y); return +ms[10].toFixed(3); });
+    const viewMs = await at(1920, 1080, async () => { const ms = []; for (let i = 0; i < 20; i++) { const t0 = now(); host.advanceNodeFrame(); renderViews(host.renderer, host.scene, views); await host.finish(); ms.push(now() - t0); } ms.sort((x, y) => x - y); return +ms[10].toFixed(3); });
     env.props.post = null; host.views.update(tree);
     host.debug.set(debug);
-    return { passes: post.passes, costMs: { ...none, ...anime }, ssim: { noGrain: ssimNoGrain, grain: ssimGrain }, views4Ms: viewMs };
+    return { passes: post.passes ? [...post.passes] : null, costMs: { ...none, ...anime }, ssim: { noGrain: ssimNoGrain, grain: ssimGrain }, views4Ms: viewMs };
   }
 
   /** The running scene as a .vrmxs document (canonical JSON), for saving. */

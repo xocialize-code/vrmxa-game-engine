@@ -9,8 +9,8 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { installPortableMath } from '@vrmxg/dmath';
 import { loadRapier } from '@vrmxg/physics';
 import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
-import { RenderHost } from '@vrmxg/render';
-import { PostStack, lutFromCube, renderViews, gridLayout } from '@vrmxg/post';
+import { RenderHost, backendFromQuery } from '@vrmxg/render';
+import { renderViews, gridLayout } from '@vrmxg/post';
 import { composeSequence, isSequence, SequencePlayer, subtitles } from '@vrmxg/sequence';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { m0Registry } from '@vrmxg/registry/m0';
@@ -20,7 +20,7 @@ import { shellTTS, httpTTS } from '@vrmxg/voice';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { EditorSession, assetList, newSequenceDoc, rowsOf } from '@vrmxg/editor-core';
 import { AudioOutput } from '@vrmxg/audio';
-import { exportTake, shellSink, hashSink, hashFrame, Readback, captureStill, encodePNG, toBase64, SIZES, RATES, CODECS, framesFor, secondsOf } from '@vrmxg/export';
+import { exportTake, shellSink, hashSink, hashFrame, readbackFor, captureStill, encodePNG, toBase64, SIZES, RATES, CODECS, framesFor, secondsOf } from '@vrmxg/export';
 import { inShell, call } from '../../shell/js/shell.js';
 import * as vrmxaMain from '@vrmxa-core/index.js';
 import * as vrmxaAnim from '@vrmxa-core/anim/index.js';
@@ -48,13 +48,17 @@ function download(bytes, name, type) {
 export { SIZES, RATES, CODECS, secondsOf };
 
 export class EditorHost {
-  /** @param {HTMLCanvasElement} canvas */
-  constructor(canvas) {
+  /**
+   * @param {HTMLCanvasElement} canvas
+   * @param {{ backend?: 'webgpu' | 'webgl' | 'auto' }} [o] the renderer (M4 W3): by default `?renderer=webgpu|webgl|auto`,
+   *   else auto (WebGPU where the page has it, else WebGL)
+   */
+  constructor(canvas, { backend = backendFromQuery(location.search) } = {}) {
     this.canvas = canvas;
-    this.host = new RenderHost({ canvas, preserveDrawingBuffer: true, post: (r) => this.postStack(r) });
+    /** The render host, made asynchronously (a WebGPURenderer needs `await init()`); openProject waits for it. */
+    this.host = null;
     this.camera = new PerspectiveCamera(50, 16 / 9, 0.05, 500);
     this.camera.position.set(9, 7, 14);
-    this.host.camera = this.camera;
     this.cameraMode = 'orbit';
     // camera-controls (yomotsu, MIT; M2 W5): orbit, dolly to the cursor and truck, with smooth transitions
     this.orbit = new CameraControls(this.camera, canvas);
@@ -64,10 +68,8 @@ export class EditorHost {
     this.gizmo = new TransformControls(this.camera, canvas);
     this.gizmo.setTranslationSnap(SNAP.translate); this.gizmo.setRotationSnap((SNAP.rotate * Math.PI) / 180); this.gizmo.setScaleSnap(SNAP.scale);
     this.snap = true;
-    this.host.scene.add(this.gizmo.getHelper());
     this.gizmo.addEventListener('dragging-changed', (e) => { this.orbit.enabled = !e.value && this.cameraMode === 'orbit'; if (!e.value) this.commitGizmo(); });
     this.box = new BoxHelper(undefined, 0x2f8cff); this.box.visible = false;
-    this.host.scene.add(this.box);
     this.ray = new Raycaster();
     this.registry = registry;
     this.project = null; this.sceneRef = null; this.session = null;
@@ -75,7 +77,7 @@ export class EditorHost {
     this.playWorld = null;
     this.devices = null;
     this.debug = { colliders: false, sensors: false, capsules: false, rays: false };
-    this.stats = { frameMs: 0, fps: 0, renderMs: 0, step: 0, buildMs: 0 };
+    this.stats = { frameMs: 0, fps: 0, renderMs: 0, step: 0, buildMs: 0, backend: '' };
     this.error = '';
     this.onChange = null;
     this.busy = 0;
@@ -94,11 +96,27 @@ export class EditorHost {
     this._scrubWant = null; this._scrubbing = null; this._previewBuilding = null; this._previewTimer = null; this._angleCams = [];
     canvas.addEventListener('pointerdown', (e) => { this._downAt = [e.clientX, e.clientY]; });
     canvas.addEventListener('pointerup', (e) => this.onClick(e));
+    this.ready = this._makeHost(backend);
     this.loop();
   }
 
-  /** The post stack for a renderer (M2 W3): LUTs read from the open project. */
-  postStack(renderer) { return new PostStack(renderer, { loadLut: async (file) => lutFromCube(await this.project.text(file)) }); }
+  /** The view's render host on the chosen backend, with the edit camera, the gizmo and the selection box in its scene. */
+  async _makeHost(backend) {
+    const host = await RenderHost.create({ canvas: this.canvas, backend, preserveDrawingBuffer: true, post: this.postOptions() });
+    host.camera = this.camera;
+    host.scene.add(this.gizmo.getHelper());
+    host.scene.add(this.box);
+    this.host = host;
+    this.stats.backend = host.backend;
+    this.changed();
+    return host;
+  }
+
+  /** The post stack's options (M2 W3, M4 W1): the backend's own stack, LUTs read from the open project. */
+  postOptions() { return { loadCube: (file) => this.project.text(file) }; }
+
+  /** An offline host on the view's backend (exports, checks): its own canvas, pixel ratio 1. */
+  offlineHost() { return RenderHost.create({ canvas: document.createElement('canvas'), backend: this.host.backend, dprCap: 1, post: this.postOptions() }); }
 
   /** Tell the UI: 'stats' for the readouts only (every few frames), anything else for the panels. */
   changed(kind = 'all') { this.onChange?.(kind); }
@@ -106,6 +124,7 @@ export class EditorHost {
   // ---------------------------------------------------------------- project and scene
 
   async openProject(project, sceneRef) {
+    await this.ready;
     this.project = project;
     this.R ??= await loadRapier();
     const scene = sceneRef ?? project.scenes().find((s) => !s.startsWith('prefabs/')) ?? null;
@@ -254,7 +273,7 @@ export class EditorHost {
     const sample = { scene: this.sceneRef, doc, prefabs: this.session.prefabs, animations: this.animCache, bytes: (ref) => p.bytes(ref), personas: this.personasCache ?? null };
     this.buildTimings = {};
     if (heard && !this.audio) this.audio = new AudioOutput(); // made on the first Play: that click is the gesture that lets it sound
-    return buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: play ? null : this.characterCache, audioOutput: heard ? this.audio : null });
+    return buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: play ? null : this.characterCache, audioOutput: heard ? this.audio : null, mtoonMaterial: this.host.mtoonMaterial });
   }
 
   /** Each scene node's object, for picking: inner nodes of a prefab instance pick the instance. */
@@ -617,7 +636,7 @@ export class EditorHost {
       world = built.world;
       const frames = framesFor(seconds ?? built.seconds, rate);
       this.exporting.frames = frames;
-      this.exportHost ??= new RenderHost({ canvas: document.createElement('canvas'), dprCap: 1, post: (r) => this.postStack(r) });
+      this.exportHost ??= await this.offlineHost();
       const ext = CODECS[codec].ext;
       const base = (name || `${(this.sceneRef ?? 'scene').replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-')}-${size}${fps.replace('.', '')}`).replace(/\.(mp4|mov)$/, '');
       const sink = sinkIn ?? (hashOnly ? hashSink() : shellSink({ call })); // a sink passed in: checks, other transports
@@ -676,9 +695,10 @@ export class EditorHost {
     try {
       ({ world } = await this.takeWorld('sequence'));
       const player = new SequencePlayer(world.tree, { every: 120 });
-      host = new RenderHost({ canvas: document.createElement('canvas'), dprCap: 1, post: (r) => this.postStack(r) });
+      host = await this.offlineHost();
       host.attach(world.tree); host.resize(width, height);
-      const gl = host.renderer.getContext(), rb = new Readback(gl, width, height), buf = new Uint8Array(width * height * 4);
+      // the export's readback on either backend (M4 W3): WebGL's pixel pack, WebGPU's output target and map buffers
+      const rb = readbackFor(host, width, height), buf = new Uint8Array(width * height * 4);
       // the first jump plays the sequence through once (the snapshots); the others restore
       await player.seekStep(world.sequence.stepOf(n - 1).step);
       const rows = [];
@@ -686,8 +706,8 @@ export class EditorHost {
         const { step, alpha } = world.sequence.stepOf(f);
         const t0 = performance.now();
         const r = await player.seekStep(Math.max(0, step - 1));
-        await host.frameAt(step, alpha);
-        rb.readNow(buf); // synchronous: a pixel-pack read taken back at once can come back stale in WebKit
+        await rb.draw(() => host.frameAt(step, alpha));
+        await rb.readNow(buf); // WebGL: synchronous (a pixel-pack read taken back at once can come back stale in WebKit)
         const hash = hashFrame(buf), wh = hashValue(worldHashes(world.tree, { physicsBytes: true }));
         rows.push({ frame: f, step, alpha: +alpha.toFixed(3), restored: r.restored, ms: +(performance.now() - t0).toFixed(1), scrub: hash, exported: x.frameHashes[f], same: hash === x.frameHashes[f], world: wh, worldSame: x.worldAt ? wh === x.worldAt[f] : null });
         this.exporting = { n: rows.length, frames: order.length, phase: 'checking' }; this.changed('export');
@@ -919,7 +939,7 @@ export class EditorHost {
   loop() {
     const tick = (t) => {
       requestAnimationFrame(tick);
-      const tree = this.host.tree;
+      const tree = this.host?.tree;
       if (!tree) return;
       const dt = this._last === null ? 0 : Math.min(0.25, (t - this._last) / 1000);
       if (this._last !== null) this._frames.push(t - this._last);

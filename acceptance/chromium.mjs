@@ -4,6 +4,9 @@ import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { acquireGpuLock } from './gpu-lock.mjs';
+
+await acquireGpuLock({ who: 'acceptance/chromium.mjs' }); // M4 W3: one GPU runner at a time on this machine (acceptance/README.md)
 
 const here = import.meta.dirname, dist = path.join(here, '../apps/playground/dist');
 const require = createRequire(path.join(here, '../spike-determinism/web/package.json'));
@@ -21,7 +24,8 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 const consoleLines = [];
 page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') consoleLines.push(`${m.type()}: ${m.text()}`); });
 page.on('pageerror', (e) => consoleLines.push(`pageerror: ${e.message}`));
-await page.goto(`http://127.0.0.1:${server.address().port}/?mode=acceptance`);
+// RENDERER (M4 W3): the playground defaults to WebGPU now; WebGL unless told otherwise, as M0–M3's receipts (matrix.mjs runs both)
+await page.goto(`http://127.0.0.1:${server.address().port}/?mode=acceptance&renderer=${process.env.RENDERER ?? 'webgl'}`);
 await page.waitForFunction(() => window.READY === true, null, { timeout: 300000 });
 const out = await page.evaluate(() => ({ result: window.__result ?? null, errors: window.__errors, warnings: window.__warnings }));
 await page.screenshot({ path: path.join(here, 'results/chromium.png') });
