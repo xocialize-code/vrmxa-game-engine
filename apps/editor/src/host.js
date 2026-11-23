@@ -702,6 +702,11 @@ export class EditorHost {
       const buf = new Uint8Array(width * height * 4);
       // the first jump plays the sequence through once (the snapshots); the others restore
       await player.seekStep(world.sequence.stepOf(n - 1).step);
+      // one throwaway frame first (AB-T-0590): a fresh WebGPU host's first frame through the post stack can differ under
+      // GPU load (frame 1079, the scrub's first row, failed in 7 of 8 loads with the operator's browsers loading the GPU,
+      // and in 0 of 8 after this draw). The check compares restored worlds with the export, not a cold host's first
+      // frame; the editor's own scrub always draws on its warm view host
+      { const { step: ws, alpha: wa } = world.sequence.stepOf(n - 1); await rb.draw(() => host.frameAt(ws, wa)); await rb.readNow(buf); }
       const rows = [];
       for (const f of order) {
         const { step, alpha } = world.sequence.stepOf(f);
