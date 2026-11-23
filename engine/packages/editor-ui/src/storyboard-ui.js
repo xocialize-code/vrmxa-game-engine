@@ -1,6 +1,6 @@
 // What the storyboard strip and the render queue panel show (M4 W5), as plain functions over plain data: the strip's
 // cards from @vrmxg/coverage's storyboard() and the thumbnails rendered for it, and a job's one-line status.
-import { timecode, PRESETS } from '@vrmxg/editor-core';
+import { timecode, PRESETS, resolveCheck } from '@vrmxg/editor-core';
 
 /**
  * The strip's cards, one per shot in film order.
@@ -51,14 +51,27 @@ export function jobStatus(job) {
 }
 
 /**
- * What the queue panel's form asks the app to queue (M4 W10): the preset and name, the backend (null: the view's), the
- * redraw check, and for a delivery preset the extras as ticked. Plain, so it is tested in Node.
- * @param {{ preset: string, name: string, backend: string, check: boolean, stills: boolean, thumbnails: boolean, turntable: boolean }} form
+ * Whether the queue form's redraw check is ticked: as the person ticked it, or (`check: null`, untouched since the preset
+ * or backend changed) the preset's default on the backend the job will draw on: on for a delivery drawn on WebGPU
+ * (AB-D-0280), off otherwise. `viewBackend`: the view's, for a job that draws on the view's.
+ * @param {{ preset: string, backend: string, check: boolean | null }} form @param {string} [viewBackend]
  */
-export function queueSpec(form) {
+export function checkTicked(form, viewBackend = 'webgpu') {
+  if (form.check !== null && form.check !== undefined) return !!form.check;
+  return !!resolveCheck({ check: PRESETS[form.preset]?.check ?? null }, form.backend || viewBackend);
+}
+
+/**
+ * What the queue panel's form asks the app to queue (M4 W10): the preset and name, the backend (null: the view's), the
+ * redraw check as the box shows it (checkTicked), and for a delivery preset the extras as ticked. Plain, so it is
+ * tested in Node.
+ * @param {{ preset: string, name: string, backend: string, check: boolean | null, stills: boolean, thumbnails: boolean, turntable: boolean }} form
+ * @param {string} [viewBackend]
+ */
+export function queueSpec(form, viewBackend = 'webgpu') {
   const delivery = !!PRESETS[form.preset]?.delivery;
   return {
-    preset: form.preset, name: form.name.trim() || null, backend: form.backend || null, check: form.check ? 'redraw' : null,
+    preset: form.preset, name: form.name.trim() || null, backend: form.backend || null, check: checkTicked(form, viewBackend) ? 'redraw' : null,
     ...(delivery ? { extras: { stills: !!form.stills, thumbnails: !!form.thumbnails, turntable: !!form.turntable } } : {}),
   };
 }

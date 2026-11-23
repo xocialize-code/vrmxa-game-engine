@@ -412,16 +412,17 @@ export class CreatorHost extends EditorHost {
 
   /**
    * Queue the open short as it is now (a snapshot: edits after this don't change the job). M4 W10: a delivery preset
-   * renders its extras too; backend draws on that backend instead of the view's; check: 'redraw' draws each frame twice;
+   * renders its extras too; backend draws on that backend instead of the view's; check: 'redraw' draws each frame twice,
+   * null draws once, and left out the preset decides (a delivery on WebGPU checks: AB-D-0280);
    * extras overrides the preset's ({ stills, thumbnails, turntable }); seconds overrides the short's length (a timing run).
    */
-  queueShort({ preset = 'draft', name = null, backend = null, check = null, extras = undefined, seconds = undefined } = {}) {
+  queueShort({ preset = 'draft', name = null, backend = null, check = undefined, extras = undefined, seconds = undefined } = {}) {
     if (!this.short || !this.session?.isSequence) throw new Error('open a short to queue it');
     // typing not yet applied goes in first; an applied script isn't built again, which would add a step and put a
     // line's re-voiced words back to the script's (M4 W11: found by the agent's session)
     if (this.desk?.pending) this.applyScript();
     const seq = this.session.doc.sequence;
-    const job = this.queue.add({ short: this.short.id, title: this.short.title, ref: this.short.sequence, preset, name, seconds: seconds ?? seq.duration / seq.fps, backend, check, ...(extras !== undefined ? { extras } : {}) });
+    const job = this.queue.add({ short: this.short.id, title: this.short.title, ref: this.short.sequence, preset, name, seconds: seconds ?? seq.duration / seq.fps, backend, ...(check !== undefined ? { check } : {}), ...(extras !== undefined ? { extras } : {}) });
     this.snapshots.set(job.id, { text: this.session.text(), set: this.setScene?.ref ?? null });
     return job;
   }

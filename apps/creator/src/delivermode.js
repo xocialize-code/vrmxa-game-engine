@@ -4,7 +4,9 @@
 // match frame for frame), renders them one after another through the queue's own runner, and writes what happened to
 // deliveries/run-<preset>-<backend>.json in the project (and window.__result).
 //   seconds=60     render this long (a one-minute timing run over a shorter short: the last shot holds)
-//   backend=webgl  draw on WebGL instead of the view's backend; check=redraw: draw each frame twice
+//   backend=webgl  draw on WebGL instead of the view's backend
+//   check=redraw   draw each frame twice; check=off draws once; left out, the preset decides (a delivery on WebGPU
+//                  checks: AB-D-0280)
 //   extras=none    the film alone; also stills, thumbnails, turntable as a comma list
 import { openProjectFolder } from './project.js';
 import { inShell, call } from '../../shell/js/shell.js';
@@ -18,9 +20,12 @@ export function deliverOptions(search) {
   const extras = list === null ? undefined : list === 'none' ? null : Object.fromEntries(['stills', 'thumbnails', 'turntable'].map((k) => [k, list.split(',').includes(k)]));
   return {
     preset, short: q.get('short'), repeat: Math.max(1, Number(q.get('repeat') ?? 2) | 0), seconds: q.has('seconds') ? Number(q.get('seconds')) : undefined,
-    backend: q.get('backend') || null, check: q.get('check') || null, extras,
+    backend: q.get('backend') || null, check: checkOf(q.get('check')), extras,
   };
 }
+
+/** ?check=: left out, the preset's (undefined); off or none, null; else as given. */
+const checkOf = (v) => (v === null || v === '' ? undefined : v === 'off' || v === 'none' ? null : v);
 
 /** What two or more runs of the same job agree on: the film's frames, its sound, every still, thumbnail and turntable. */
 export function compareRuns(results, manifests) {
@@ -56,7 +61,7 @@ export async function runDeliverMode(cr, o) {
   }
   const result = {
     format: 'vrmxg-delivery-run', version: 1, ua: navigator.userAgent, origin: location.protocol.replace(':', ''), shell: info ? { scheme: info.scheme ?? null } : null,
-    preset: o.preset, short: cr.short?.id ?? null, backend: o.backend ?? cr.host.backend, check: o.check, seconds: o.seconds ?? null,
+    preset: o.preset, short: cr.short?.id ?? null, backend: o.backend ?? cr.host.backend, check: o.check === undefined ? 'preset' : o.check, checked: done.some((j) => !!j.result?.check), seconds: o.seconds ?? null,
     jobs: done.map((j) => ({ id: j.id, label: j.label, state: j.state, error: j.error, result: j.result })),
     manifests: manifests.filter(Boolean).map(({ stills, thumbnails, ...m }) => ({ ...m, stills: stills.map((s) => ({ shot: s.shot, frame: s.frame, hash: s.hash, bytes: s.bytes })), thumbnails: thumbnails.map((s) => ({ shot: s.shot, hash: s.hash })) })),
     same: compareRuns(done.filter((j) => j.state === 'done').map((j) => j.result), manifests.filter(Boolean)),

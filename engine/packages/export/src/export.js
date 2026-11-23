@@ -10,7 +10,8 @@
 //
 // M4 W10 (AB-T-0582): the frame loop is shared (pumpFrames) with exportTurntable, an orbit around a held world; and
 // `check: 'redraw'` draws every frame twice and compares the two readbacks, with a third draw to break a tie (the rare odd
-// WebGPU frame on the macOS 27.3 beta, AB-D-0279): opt-in, never the default without the coordinator.
+// WebGPU frame on the macOS 27.3 beta, AB-D-0279). Off here unless asked; the creator's delivery presets ask for it when
+// they draw on WebGPU (AB-D-0280, until AB-T-0591's release-OS re-test).
 //
 // Nothing here reads a clock except the caller's `now`, for the timings it reports. Frames depend only on the world
 // and the frame rate: two exports of a take give the same pixels, frame for frame.

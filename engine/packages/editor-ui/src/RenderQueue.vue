@@ -4,19 +4,23 @@
 // renders is the app's choice (the creator's delivery through the shell, or the stub).
 // M4 W10: the presets in two groups (the film alone; deliveries at 24 fps with stills, thumbnails and turntables), the
 // extras a delivery renders, the backend a job draws on (the view's, or WebGL as a per-export choice) and the redraw
-// check (each frame drawn twice and compared: slower, opt-in).
-import { reactive, computed } from 'vue';
+// check (each frame drawn twice and compared: slower; ticked by default for a delivery drawn on WebGPU, AB-D-0280).
+import { reactive, computed, watch } from 'vue';
 import { PRESETS } from '@vrmxg/editor-core';
-import { jobStatus, queueSpec } from './storyboard-ui.js';
+import { jobStatus, queueSpec, checkTicked } from './storyboard-ui.js';
 
 const props = defineProps({
   jobs: { type: Array, default: () => [] },
   runner: { type: String, default: '' },
   canAdd: { type: Boolean, default: true },
   disabled: { type: Boolean, default: false },
+  viewBackend: { type: String, default: 'webgpu' }, // the view's backend: what "view's backend" draws on (the check's default)
 });
 const emit = defineEmits(['add', 'run', 'cancel', 'remove', 'retry', 'move']);
-const form = reactive({ preset: 'draft', name: '', backend: '', check: false, stills: true, thumbnails: true, turntable: true });
+// check: null until the person ticks or unticks it, so the box shows the preset's default for the backend (checkTicked)
+const form = reactive({ preset: 'draft', name: '', backend: '', check: null, stills: true, thumbnails: true, turntable: true });
+watch(() => [form.preset, form.backend], () => { form.check = null; });
+const ticked = computed(() => checkTicked(form, props.viewBackend));
 const film = Object.keys(PRESETS).filter((k) => !PRESETS[k].delivery);
 // the delivery presets as a grid, a row per codec and a column per size (the panel is narrow)
 const CODEC_NAMES = { h264: 'H.264', hevc: 'HEVC', prores4444: 'ProRes 4444 α' };
@@ -54,10 +58,10 @@ const queued = () => props.jobs.some((j) => j.state === 'queued');
         <span class="seg" role="radiogroup" aria-label="Draw on" title="The backend the job draws on (WebKit's popup menus can't be picked over accessibility: buttons)">
           <button v-for="[b, name] in backends" :id="`q-backend-${b || 'view'}`" :key="b" type="button" role="radio" :aria-checked="form.backend === b" :aria-label="`Draw on ${name}`" :class="{ on: form.backend === b }" :disabled="disabled" @click="form.backend = b">{{ name }}</button>
         </span>
-        <label class="q-opt" title="Draw every frame twice and compare the two (a third draw breaks a tie): slower; for the rare odd WebGPU frame"><input id="q-check" v-model="form.check" type="checkbox" :disabled="disabled" aria-label="Redraw check, each frame drawn twice"> redraw check</label>
+        <label class="q-opt" title="Draw every frame twice and compare the two (a third draw breaks a tie): slower; for the rare odd WebGPU frame, so on by default for a delivery drawn on WebGPU"><input id="q-check" :checked="ticked" type="checkbox" :disabled="disabled" aria-label="Redraw check, each frame drawn twice" @change="form.check = $event.target.checked"> redraw check</label>
       </div>
       <input id="q-name" v-model="form.name" aria-label="Export file name" placeholder="file name (automatic)" :disabled="disabled" @focus="$event.target.select()">
-      <button id="q-add" type="button" aria-label="Add the short to the queue" :disabled="disabled || !canAdd" @click="emit('add', queueSpec(form))">Add</button>
+      <button id="q-add" type="button" aria-label="Add the short to the queue" :disabled="disabled || !canAdd" @click="emit('add', queueSpec(form, viewBackend))">Add</button>
       <button id="q-run" type="button" class="play" :aria-label="running() ? 'Rendering' : 'Render the queue'" :disabled="disabled || running() || !queued()" @click="emit('run')">{{ running() ? 'Rendering…' : 'Render' }}</button>
     </div>
     <ol class="q-jobs" aria-label="Jobs">

@@ -8,7 +8,8 @@
 # the comparison. Each preset's per-frame hashes and manifests are kept in the container's tmp/delivery-keep/.
 #   apps/creator-mac/scripts/build.sh && acceptance/m4/delivery-wkwebview.sh
 #   PRESETS="h264-4k24" SECONDS_=60 REPEAT=1 EXTRAS=none acceptance/m4/delivery-wkwebview.sh   # the one-minute 4K timing
-#   RENDERER=webgl (the view and its exports on WebGL); BACKEND=webgl (the export alone on WebGL); CHECK=redraw; TAG=x
+#   RENDERER=webgl (the view and its exports on WebGL); BACKEND=webgl (the export alone on WebGL); TAG=x
+#   CHECK=redraw (always) or CHECK=off (never); left out, the preset decides: a delivery on WebGPU checks (AB-D-0280)
 set -e
 # one GPU runner at a time on this machine: re-run under acceptance/gpu-lock.mjs (acceptance/README.md)
 gpulock="$(cd "$(dirname "$0")" && pwd)/../gpu-lock.mjs"

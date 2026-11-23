@@ -230,7 +230,7 @@ if (inShell) {
         </ul>
         <output v-if="ui.cast" id="cast-result" class="muted small" :aria-label="`Cast ${ui.cast}`">{{ ui.cast }}</output>
       </section>
-      <RenderQueue :jobs="ui.jobs" :runner="ui.runner" :can-add="!!ui.short" :disabled="ui.loading || ui.mode !== 'editing'" @add="queueAdd" @run="queueRun" @cancel="(id) => queueDo('cancel', id)" @remove="(id) => queueDo('remove', id)" @retry="(id) => queueDo('retry', id)" @move="(id, d) => queueDo('move', id, d)" />
+      <RenderQueue :jobs="ui.jobs" :runner="ui.runner" :view-backend="ui.renderer === 'WebGL' ? 'webgl' : 'webgpu'" :can-add="!!ui.short" :disabled="ui.loading || ui.mode !== 'editing'" @add="queueAdd" @run="queueRun" @cancel="(id) => queueDo('cancel', id)" @remove="(id) => queueDo('remove', id)" @retry="(id) => queueDo('retry', id)" @move="(id, d) => queueDo('move', id, d)" />
     </aside>
 
     <StoryboardStrip class="board" :board="ui.board" :thumbs="ui.thumbs" :beats="ui.beats" :playhead="ui.tl?.playhead ?? -1" :selected="ui.selectedShot" :status="ui.thumbState" @pick="pickShot" @line="goToLine" />
