@@ -159,7 +159,8 @@ AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for th
   - **The editor's Check Against Scrub on WebGPU:** 24 of 26 in all three runtimes, on every load and rerun (frames 735
     and 869). Their world hash matches, and drawing forward matches the export. It happens only with the TSL post stack
     on and on frames with the espresso's steam (`apps/editor/README.md`). It's a functional failure, never blessed, so
-    the check is unpinned. WebGL gives 26 of 26, and the export itself is exact on WebGPU. Follow-up: AB-T-0590.
+    the check is unpinned. WebGL gives 26 of 26, and the export itself is exact on WebGPU. Fixed and pinned by AB-T-0590
+    (below).
   - **One quiet odd frame:** WKWebView over loopback on WebGPU, load 1, the film's second export, **frame 656**. It
     differed in tiles 89–90 (x 1080–1320, y 600–720): 630 pixels, by at most 8 levels, on the espresso machine's base
     (`results/m4-w3/odd-frame656.png`: the failed frame, the rerun's and their difference ×30, at 2×). The rerun was
@@ -171,6 +172,32 @@ AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for th
   - Two earlier full runs gave the same digests.
   - Their "quiet" odd film frames (frame 670 in WKWebView, one in Chromium) ran while the operator's Chrome held the GPU
     at about 65 %. Its "Google Chrome Helper (Aperitif)" wasn't in gpu-load.mjs's list then.
+
+### AB-T-0590: the editor's scrub on WebGPU fixed and pinned (2026-11-23, same machine and beta)
+
+- **The cause:** three.quarks' WebGPU materials decode a particle's colour (sRGB to linear) only when compiled for an
+  sRGB output. r187 keeps the first compile for every later draw: its cache key has no colour space. An export draws
+  frame 0 without its look (AB-T-0595), so the steam was compiled decoded and kept that inside the TSL scene pass. The
+  scrub compiled it inside the pass, undecoded.
+- **The fix:** `@vrmxg/particles/webgpu` decodes per draw, with a uniform that follows `renderer.outputColorSpace`
+  (`engine/packages/particles/README.md`).
+- **The check's warm-up:** Check Against Scrub also draws one throwaway frame on its fresh host first. Under GPU load, a
+  fresh WebGPU host's first post frame could differ: frame 1079, the scrub's first row, in 7 of 8 loads. The cause is
+  AB-T-0596.
+- **The bless:** one runtime at a time (`--bless --runtimes <r> --backends webgpu`) for every WebGPU digest check, at
+  f7d971f (main 171b262 with the fix), clean tree, quiet GPU. Every load agreed.
+- **The verify pass:** the whole matrix but the budget (`--checks editor,acceptance,backends,frames,post,coverage`),
+  same commit, quiet GPU.
+- **Results:** **`ok: true`**. Every load matched its canonical digest with no rerun, and there were 0 AB-T-0589
+  incidents. `compare.mjs` gives 20/20 on each backend, the simulation is `fe69bad3406ab5f6` in all six cells, and every
+  look's masked SSIM is ≥ 0.98. Files: `results/ab-t-0590/` (`verify/`, and `bless/` for the WebGPU cells).
+- **What moved:**
+  - The editor check on WebGPU is pinned: 26 of 26 on every load. Chromium `c069a63f`; WKWebView `db9d4ace` over the
+    scheme and over loopback.
+  - The `frames` check's film on WebGPU moved in exactly frames 701–869, the espresso steam's life (its event fires at
+    699). Chromium `31fd2949` → `189535cb`; WKWebView `48000a47` → `053b9501`.
+  - Nothing else moved: acceptance, backends, post and coverage are the same entries on both backends, and WebGL is
+    unchanged.
 
 ## M4's checks as they land
 
