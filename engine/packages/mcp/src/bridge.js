@@ -6,9 +6,9 @@
 import http from 'node:http';
 
 export class EditorBridge {
-  /** @param {{ port?: number, connectTimeoutMs?: number, callTimeoutMs?: number, holdMs?: number }} [o] */
-  constructor({ port = 5183, connectTimeoutMs = 15000, callTimeoutMs = 180000, holdMs = 20000 } = {}) {
-    this.port = port; this.connectTimeoutMs = connectTimeoutMs; this.callTimeoutMs = callTimeoutMs; this.holdMs = holdMs;
+  /** @param {{ port?: number, connectTimeoutMs?: number, callTimeoutMs?: number, holdMs?: number, app?: string }} [o] app: what polls it, for messages ('editor', 'creator') */
+  constructor({ port = 5183, connectTimeoutMs = 15000, callTimeoutMs = 180000, holdMs = 20000, app = 'editor' } = {}) {
+    this.app = app; this.port = port; this.connectTimeoutMs = connectTimeoutMs; this.callTimeoutMs = callTimeoutMs; this.holdMs = holdMs;
     this.queue = []; this.waiting = null; this.calls = new Map(); this.nextId = 1;
     this.seen = 0; this.editor = null; this.owner = null;
   }
@@ -59,10 +59,10 @@ export class EditorBridge {
   async call(name, args) {
     const until = Date.now() + this.connectTimeoutMs;
     while (!this.connected && Date.now() < until) await new Promise((r) => setTimeout(r, 200));
-    if (!this.connected) return { isError: true, text: `no VRMXG editor is connected: open the editor (it polls http://127.0.0.1:${this.port}/vrmxg-mcp/exchange; in a browser add ?mcp=${this.port} if it isn't the default)` };
+    if (!this.connected) return { isError: true, text: `no VRMXG ${this.app} is connected: open the ${this.app} (it polls http://127.0.0.1:${this.port}/vrmxg-mcp/exchange; in a browser add ?mcp=${this.port} if it isn't the default)` };
     const id = this.nextId++;
     return new Promise((resolve) => {
-      const timer = setTimeout(() => { this.calls.delete(id); resolve({ isError: true, text: `the editor didn't answer ${name} within ${this.callTimeoutMs / 1000} s` }); }, this.callTimeoutMs);
+      const timer = setTimeout(() => { this.calls.delete(id); resolve({ isError: true, text: `the ${this.app} didn't answer ${name} within ${this.callTimeoutMs / 1000} s` }); }, this.callTimeoutMs);
       this.calls.set(id, { resolve: (r) => { clearTimeout(timer); resolve(r); }, reject: (e) => { clearTimeout(timer); resolve({ isError: true, text: e.message }); } });
       this.queue.push({ id, name, args });
       this.flush();

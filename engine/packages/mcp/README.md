@@ -130,3 +130,28 @@ Both load the project's `personas.json` with the scene's overrides.
 The first session run found that the scene schema refused the M3 presets (`host`, `conversationPartner`, `follower`).
 The second found that the editor never loaded `personas.json`, and that a profile undo left an empty object behind.
 All three are fixed.
+
+## Shorts in the creator (M4 W11, AB-T-0583)
+
+```sh
+node engine/packages/mcp/src/server.js --creator [--port 5184]
+claude mcp add vrmxg-creator -- node "$PWD/engine/packages/mcp/src/server.js" --creator
+```
+
+`--creator` relays calls to the open VRMXG creator through the same bridge (`EditorBridge({ app: 'creator' })`, port
+5184 by default, so the editor and the creator can both be linked). Its tools are `@vrmxg/mcp/shorts`
+(`shortToolList`, `createShortHandlers`), page-safe like `@vrmxg/mcp/tools`:
+
+| Tool | What |
+|---|---|
+| `short` | The open short: outline, script, lines (with ids and voices), roles, shots (cameras per shot), cameras, queue, history |
+| `describe`, `command` | The app's commands from a `CommandRegistry`: names and summaries, one command's JSON Schema, and a run checked against it (`checkArgs`). Adding a command adds nothing to the tool list |
+| `render` | A frame of the short as the export draws it, with its shot, world hash and a blank-frame check |
+| `read` | The project's files, or one text file |
+| `undo`, `redo` | The app's own history |
+
+Seven tools, about 420 tokens, and four rules at initialize (`SHORT_INSTRUCTIONS`). Every edit goes through
+`asAgent(session)`, which adds " (MCP)" to the label of the one step a command makes, and `command` refuses an edit
+command that made more than one. Text from files comes back as `{ content: { ref, … }, note }` (`asContent`,
+`CONTENT_NOTE`): data to read, never instructions. The creator's commands and target are in `apps/creator/src/agent.js`;
+`test/shorts.test.mjs` covers the list's size and schemas, the registry, the mark, content and the `--creator` relay.
