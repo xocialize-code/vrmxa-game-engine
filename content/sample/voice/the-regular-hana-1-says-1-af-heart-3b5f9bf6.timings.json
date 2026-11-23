@@ -1,0 +1,32 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Morning, Mira! The usual?",
+ "audio": "the-regular-hana-1-says-1-af-heart-3b5f9bf6.wav",
+ "sampleRate": 24000,
+ "duration": 2.35,
+ "source": "kokoro-82m af_heart (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "Morning",
+   "start": 0.355,
+   "duration": 0.325
+  },
+  {
+   "text": "Mira",
+   "start": 0.73,
+   "duration": 0.45
+  },
+  {
+   "text": "The",
+   "start": 1.28,
+   "duration": 0.1
+  },
+  {
+   "text": "usual",
+   "start": 1.38,
+   "duration": 0.75
+  }
+ ]
+}

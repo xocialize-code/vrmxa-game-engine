@@ -1,0 +1,51 @@
+{
+ "note": "Marks for scripts filmed in the park (M4 W12): where the cast stands. The build places each as a Marker node in the sequence.",
+ "marks": {
+  "by-the-bench": {
+   "p": [
+    0.5,
+    0,
+    -2.4
+   ]
+  },
+  "bench-side": {
+   "p": [
+    -1.1,
+    0,
+    -2.2
+   ],
+   "q": [
+    0,
+    0.5,
+    0,
+    0.8660254
+   ]
+  },
+  "by-the-machine": {
+   "p": [
+    -3.1,
+    0,
+    -0.4
+   ],
+   "q": [
+    0,
+    -0.7071068,
+    0,
+    0.7071068
+   ]
+  },
+  "on-the-path": {
+   "p": [
+    1.4,
+    0,
+    1.2
+   ],
+   "q": [
+    0,
+    0.9848078,
+    0,
+    -0.1736482
+   ]
+  }
+ }
+}

@@ -1,0 +1,42 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "I saved it for you anyway.",
+ "audio": "the-regular-hana-1-says-3-af-heart-79114956.wav",
+ "sampleRate": 24000,
+ "duration": 2.05,
+ "source": "kokoro-82m af_heart (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "I",
+   "start": 0.305,
+   "duration": 0.175
+  },
+  {
+   "text": "saved",
+   "start": 0.48,
+   "duration": 0.3125
+  },
+  {
+   "text": "it",
+   "start": 0.7925,
+   "duration": 0.0875
+  },
+  {
+   "text": "for",
+   "start": 0.88,
+   "duration": 0.125
+  },
+  {
+   "text": "you",
+   "start": 1.005,
+   "duration": 0.15
+  },
+  {
+   "text": "anyway",
+   "start": 1.155,
+   "duration": 0.65
+  }
+ ]
+}

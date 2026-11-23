@@ -1,0 +1,52 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "The one at the studio? Mira, that's wonderful!",
+ "audio": "the-regular-hana-1-says-4-af-heart-63c0f963.wav",
+ "sampleRate": 24000,
+ "duration": 3.2,
+ "source": "kokoro-82m af_heart (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "The",
+   "start": 0.28,
+   "duration": 0.075
+  },
+  {
+   "text": "one",
+   "start": 0.355,
+   "duration": 0.1875
+  },
+  {
+   "text": "at",
+   "start": 0.5425,
+   "duration": 0.075
+  },
+  {
+   "text": "the",
+   "start": 0.6175,
+   "duration": 0.0875
+  },
+  {
+   "text": "studio",
+   "start": 0.705,
+   "duration": 0.675
+  },
+  {
+   "text": "Mira",
+   "start": 1.5425,
+   "duration": 0.3875
+  },
+  {
+   "text": "that's",
+   "start": 1.9675,
+   "duration": 0.2625
+  },
+  {
+   "text": "wonderful",
+   "start": 2.23,
+   "duration": 0.75
+  }
+ ]
+}

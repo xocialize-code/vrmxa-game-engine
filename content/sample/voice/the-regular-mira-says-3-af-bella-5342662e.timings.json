@@ -1,0 +1,52 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "I have news, actually. I got the job.",
+ "audio": "the-regular-mira-says-3-af-bella-5342662e.wav",
+ "sampleRate": 24000,
+ "duration": 3.15,
+ "source": "kokoro-82m af_bella (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "I",
+   "start": 0.405,
+   "duration": 0.125
+  },
+  {
+   "text": "have",
+   "start": 0.53,
+   "duration": 0.2
+  },
+  {
+   "text": "news",
+   "start": 0.73,
+   "duration": 0.275
+  },
+  {
+   "text": "actually",
+   "start": 1.055,
+   "duration": 0.625
+  },
+  {
+   "text": "I",
+   "start": 1.805,
+   "duration": 0.1125
+  },
+  {
+   "text": "got",
+   "start": 1.9175,
+   "duration": 0.15
+  },
+  {
+   "text": "the",
+   "start": 2.0675,
+   "duration": 0.1
+  },
+  {
+   "text": "job",
+   "start": 2.1675,
+   "duration": 0.7125
+  }
+ ]
+}

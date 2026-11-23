@@ -1,0 +1,92 @@
+{
+ "generated": "2026-11-23",
+ "prompt": "a small leafy maple tree growing in a square concrete planter box, full height, product photo, centered, whole object in frame, plain light grey background, soft even studio light",
+ "size_m": 2.9,
+ "image": {
+  "id": "job_6kgm64jcyhgqwc7aabz2",
+  "operation": "image.generate",
+  "model": "z-image-turbo",
+  "effective": {
+   "count": 1,
+   "model_params": {
+    "model": "z-image-turbo",
+    "prompt_enhancement": {
+     "applied": false,
+     "outcome": "no_profile"
+    },
+    "steps": 8,
+    "x-gaea.worker": {
+     "effective": {
+      "count": 1,
+      "seed": 23,
+      "size": {
+       "height": 1024,
+       "width": 1024
+      },
+      "x-zimage.steps": 8
+     },
+     "lane": "int4",
+     "operation": "image.generate",
+     "plugin": "com.xocialize.gaea.z-image",
+     "seconds": 11.318,
+     "version": "0.2.1"
+    }
+   },
+   "quality": "standard",
+   "seed": 23,
+   "size": {
+    "height": 1024,
+    "width": 1024
+   },
+   "x-zimage.steps": 8
+  },
+  "licence": {
+   "commercial_use": true,
+   "spdx": "Apache-2.0",
+   "terms_url": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  "warnings": []
+ },
+ "mesh": {
+  "id": "job_vrpyz3cmr4vatapws86d",
+  "operation": "mesh.generate",
+  "model": "trellis2-512",
+  "effective": {
+   "background": "remove",
+   "max_faces": 40000,
+   "model_params": {
+    "x-gaea.worker": {
+     "effective": {
+      "background": "remove",
+      "max_faces": 40000,
+      "resolution": 512,
+      "seed": 7,
+      "texture": "atlas",
+      "texture_size": 1024
+     },
+     "lane": "bf16",
+     "operation": "mesh.generate",
+     "plugin": "com.xocialize.gaea.trellis2",
+     "seconds": 33.173,
+     "version": "0.1.0"
+    }
+   },
+   "placement": "centered",
+   "quality": "standard",
+   "resolution": 512,
+   "seed": 7,
+   "size_m": 2.9,
+   "texture": "atlas",
+   "texture_size": 1024
+  },
+  "licence": {
+   "attribution": "Built with DINOv3",
+   "commercial_use": true,
+   "notice": "TRELLIS.2 is MIT; its DINOv3 image conditioner is under Meta's DINOv3 License, which asks for \"Built with DINOv3\" wherever it ships.",
+   "spdx": "LicenseRef-DINOv3",
+   "terms_url": "https://ai.meta.com/resources/models-and-libraries/dinov3-license/"
+  },
+  "warnings": []
+ },
+ "glbBytes": 4952436
+}

@@ -1,0 +1,47 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Still the best latte in the city.",
+ "audio": "the-regular-mira-says-6-af-bella-135ef0b0.wav",
+ "sampleRate": 24000,
+ "duration": 2.575,
+ "source": "kokoro-82m af_bella (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "Still",
+   "start": 0.405,
+   "duration": 0.2125
+  },
+  {
+   "text": "the",
+   "start": 0.6175,
+   "duration": 0.0875
+  },
+  {
+   "text": "best",
+   "start": 0.705,
+   "duration": 0.3
+  },
+  {
+   "text": "latte",
+   "start": 1.005,
+   "duration": 0.4375
+  },
+  {
+   "text": "in",
+   "start": 1.4425,
+   "duration": 0.075
+  },
+  {
+   "text": "the",
+   "start": 1.5175,
+   "duration": 0.1
+  },
+  {
+   "text": "city",
+   "start": 1.6175,
+   "duration": 0.7125
+  }
+ ]
+}

@@ -1,0 +1,24 @@
+{
+  "format": "vrmxg-shorts",
+  "version": 1,
+  "shorts": [
+    {
+      "id": "cafe-order",
+      "title": "The Order",
+      "script": "scripts/cafe-order.fountain",
+      "sequence": "sequences/cafe-order.vrmxs",
+      "marks": "scripts/cafe-marks.json",
+      "set": "cafe.vrmxs",
+      "coverage": "default"
+    },
+    {
+      "id": "the-regular",
+      "title": "The Regular",
+      "script": "scripts/the-regular.fountain",
+      "sequence": "sequences/the-regular.vrmxs",
+      "marks": "scripts/cafe-marks.json",
+      "set": "cafe.vrmxs",
+      "coverage": "rule"
+    }
+  ]
+}
