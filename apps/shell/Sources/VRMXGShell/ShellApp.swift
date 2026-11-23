@@ -1,7 +1,26 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.6.0"
+public let vrmxgShellVersion = "0.7.0"
+
+/// An app's own menu item (shell 0.7.0, M4 W5): choosing it sends the page `menu.<event>`. A title of "-" is a separator.
+public struct ShellMenuItem: Sendable {
+    public var title: String
+    public var event: String
+    public var key: String
+    public var modifiers: NSEvent.ModifierFlags
+    public init(_ title: String, event: String, key: String = "", modifiers: NSEvent.ModifierFlags = .command) {
+        self.title = title; self.event = event; self.key = key; self.modifiers = modifiers
+    }
+    public static let separator = ShellMenuItem("-", event: "")
+}
+
+/// An app's own menu, placed between View and Window.
+public struct ShellMenu: Sendable {
+    public var title: String
+    public var items: [ShellMenuItem]
+    public init(_ title: String, _ items: [ShellMenuItem]) { self.title = title; self.items = items }
+}
 
 /// One app's shell: its name, URL scheme, window and any bridge methods of its own.
 public struct ShellConfiguration {
@@ -25,10 +44,16 @@ public struct ShellConfiguration {
     /// Runs once the shell's own methods are registered, before the page loads: an optional product (the voice methods,
     /// apps/shell/Voice) registers its methods on `router` and keeps itself in `keepAlive`.
     public var setUp: (@MainActor (ShellAppDelegate) -> Void)?
+    /// Items of the app's own in the File menu, after Open Project… (shell 0.7.0).
+    public var fileItems: [ShellMenuItem]
+    /// Menus of the app's own, between View and Window (shell 0.7.0).
+    public var menus: [ShellMenu]
     public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = [], pageUndo: Bool = false,
-                statusItem: StatusItemConfiguration? = nil, closeKeepsRunning: Bool = false, dockIcon: Bool = true, setUp: (@MainActor (ShellAppDelegate) -> Void)? = nil) {
+                statusItem: StatusItemConfiguration? = nil, closeKeepsRunning: Bool = false, dockIcon: Bool = true, setUp: (@MainActor (ShellAppDelegate) -> Void)? = nil,
+                fileItems: [ShellMenuItem] = [], menus: [ShellMenu] = []) {
         self.appName = appName; self.scheme = scheme; self.size = size; self.webFolder = webFolder; self.methods = methods; self.pageUndo = pageUndo
         self.statusItem = statusItem; self.closeKeepsRunning = closeKeepsRunning; self.dockIcon = dockIcon; self.setUp = setUp
+        self.fileItems = fileItems; self.menus = menus
     }
 }
 
@@ -61,6 +86,9 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     var statusItem: NSStatusItem?
     /// Objects an app's setUp registered handlers on, held for the app's life (their handlers capture them unowned, AB-L-0363).
     public var keepAlive: [AnyObject] = []
+    /// Files from Open Documents events (the Finder, `open`, AppProbe's open step) waiting for the page to load (shell 0.7.0).
+    var pendingOpens: [URL] = []
+    var pageLoaded = false
 
     public init(config: ShellConfiguration) {
         self.config = config
@@ -135,8 +163,13 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         menu(config.appName, [item("About \(config.appName)", #selector(NSApplication.orderFrontStandardAboutPanel(_:))), .separator(),
                               item("Hide \(config.appName)", #selector(NSApplication.hide(_:)), "h"), .separator(),
                               item("Quit \(config.appName)", #selector(NSApplication.terminate(_:)), "q")])
-        menu("File", [item("Open…", #selector(menuOpen), "o", target: self), item("Open Project…", #selector(menuOpenProject), "o", [.command, .shift], target: self), .separator(),
-                      item("Save", #selector(menuSave), "s", target: self), item("Save As…", #selector(menuSaveAs), "s", [.command, .shift], target: self), .separator(),
+        func own(_ i: ShellMenuItem) -> NSMenuItem {
+            if i.title == "-" { return .separator() }
+            let m = item(i.title, #selector(menuOwn(_:)), i.key, i.modifiers, target: self); m.representedObject = i.event; return m
+        }
+        let fileOwn = config.fileItems.isEmpty ? [] : config.fileItems.map(own) + [.separator()]
+        menu("File", [item("Open…", #selector(menuOpen), "o", target: self), item("Open Project…", #selector(menuOpenProject), "o", [.command, .shift], target: self), .separator()] + fileOwn +
+                     [item("Save", #selector(menuSave), "s", target: self), item("Save As…", #selector(menuSaveAs), "s", [.command, .shift], target: self), .separator(),
                       item("Close Window", #selector(NSWindow.performClose(_:)), "w")])
         let undo = config.pageUndo ? item("Undo", #selector(menuUndo), "z", target: self) : item("Undo", Selector(("undo:")), "z")
         let redo = config.pageUndo ? item("Redo", #selector(menuRedo), "z", [.command, .shift], target: self) : item("Redo", Selector(("redo:")), "z", [.command, .shift])
@@ -144,6 +177,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
                       item("Cut", #selector(NSText.cut(_:)), "x"), item("Copy", #selector(NSText.copy(_:)), "c"), item("Paste", #selector(NSText.paste(_:)), "v"),
                       item("Select All", #selector(NSText.selectAll(_:)), "a")])
         menu("View", [item("Reload", #selector(reload), "r", target: self)])
+        for m in config.menus { menu(m.title, m.items.map(own)) }
         menu("Window", [item("Minimize", #selector(NSWindow.performMiniaturize(_:)), "m")])
         return main
     }
@@ -155,6 +189,26 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     @objc func menuUndo() { emit("menu.undo") }
     @objc func menuRedo() { emit("menu.redo") }
     @objc func reload() { webView.reload() }
+    /// An app's own menu item: the page hears `menu.<event>`.
+    @objc func menuOwn(_ sender: NSMenuItem) { if let e = sender.representedObject as? String { emit("menu.\(e)") } }
+
+    /// Open Documents (shell 0.7.0): each file is served as `file.open { serve: true }` serves one, and the page hears
+    /// `file.opened` with `{ path, name, size, url }`. Files that arrive before the page has loaded wait for it.
+    public func application(_ sender: NSApplication, open urls: [URL]) {
+        guard pageLoaded else { pendingOpens += urls; return }
+        for u in urls { emitOpened(u) }
+    }
+
+    func emitOpened(_ url: URL) {
+        do { emit("file.opened", try files.opened(url)) }
+        catch { print("[shell] couldn't open \(url.lastPathComponent): \(error)") }
+    }
+
+    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        pageLoaded = true
+        let waiting = pendingOpens; pendingOpens = []
+        for u in waiting { emitOpened(u) }
+    }
 
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) { print("[shell] load failed: \(error)") }
     public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { print("[shell] web content process ended; reloading"); webView.reload() }

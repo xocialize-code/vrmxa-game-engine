@@ -75,6 +75,12 @@ public final class FileMethods {
         return out
     }
 
+    /// A file from an Open Documents event (the system already granted it): served, as `file.open { serve: true }` answers.
+    func opened(_ file: URL) throws -> [String: Any] {
+        granted.insert(file)
+        return try describe(file, BridgeParams(["serve": true]))
+    }
+
     static func bookmarkKey(_ key: String) -> String { "vrmxg.shell.remembered.\(key)" }
 
     /// A security-scoped bookmark in the sandbox (a plain one where there's no sandbox, as in tests).

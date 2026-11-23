@@ -403,3 +403,35 @@ func sineWAV(seconds: Double, rate: Int = 48000) -> Data {
         if let s = d.statusItem { NSStatusBar.system.removeStatusItem(s) }
     }
 }
+
+@Suite @MainActor struct AppMenuTests {
+    @Test func appItemsInFileAndAppMenusSendTheirEvents() throws {
+        let config = ShellConfiguration(appName: "Creator", scheme: "vrmxg-test-\(UUID().uuidString.prefix(8).lowercased())", pageUndo: true,
+                                        fileItems: [ShellMenuItem("New Short", event: "newShort", key: "n"), .separator, ShellMenuItem("Open Script…", event: "openScript")],
+                                        menus: [ShellMenu("Short", [ShellMenuItem("Apply Script", event: "applyScript", key: "\r")])])
+        let d = ShellAppDelegate(config: config)
+        let main = d.buildMenu()
+        #expect(main.items.compactMap { $0.submenu?.title } == ["Creator", "File", "Edit", "View", "Short", "Window"], "the app's menu between View and Window")
+        let file = try #require(main.items[1].submenu)
+        #expect(file.items.map { $0.isSeparatorItem ? "-" : $0.title } == ["Open…", "Open Project…", "-", "New Short", "-", "Open Script…", "-", "Save", "Save As…", "-", "Close Window"])
+        let new = try #require(file.item(withTitle: "New Short"))
+        #expect(new.representedObject as? String == "newShort" && new.keyEquivalent == "n" && new.target === d)
+        let apply = try #require(main.items[4].submenu?.item(withTitle: "Apply Script"))
+        #expect(apply.representedObject as? String == "applyScript" && apply.action == #selector(ShellAppDelegate.menuOwn(_:)))
+        // an app with none keeps the shell's menus as they were
+        let plain = ShellAppDelegate(config: ShellConfiguration(appName: "Editor", scheme: "vrmxg-test-plain")).buildMenu()
+        #expect(plain.items[1].submenu?.items.map { $0.isSeparatorItem ? "-" : $0.title } == ["Open…", "Open Project…", "-", "Save", "Save As…", "-", "Close Window"])
+        #expect(plain.items.compactMap { $0.submenu?.title } == ["Editor", "File", "Edit", "View", "Window"])
+    }
+
+    @Test func anOpenedDocumentIsServedLikeABinaryOpen() throws {
+        let dir = try tempDir(["web/index.html": "<p>", "cafe order.fountain": "INT. CAFE\n\nHi."])
+        let roots = WebRoots(app: dir.appendingPathComponent("web"))
+        let f = FileMethods(roots: roots, env: [:])
+        let out = try f.opened(dir.appendingPathComponent("cafe order.fountain"))
+        let url = try #require(out["url"] as? String)
+        #expect(out["name"] as? String == "cafe order.fountain" && url.hasSuffix("/cafe%20order.fountain"))
+        #expect(String(decoding: roots.read(path: url).data, as: UTF8.self) == "INT. CAFE\n\nHi.")
+        #expect(f.granted.contains(dir.appendingPathComponent("cafe order.fountain")), "writing back to it needs no panel")
+    }
+}
