@@ -25,6 +25,7 @@ import crypto from 'node:crypto';
 import { execFileSync, spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { acquireGpuLock } from './gpu-lock.mjs';
+import { classifyLoad, classifyRerun } from './classify.mjs';
 import { snapshot, summarise } from '../apps/playground/scripts/gpu-load.mjs';
 import { compareStills } from '../apps/playground/scripts/post-compare.mjs';
 import { verdicts as framesVerdicts } from '../apps/playground/scripts/frames-verdicts.mjs';
@@ -47,7 +48,7 @@ const CHECKS = {
   frames: { loads: 2, timeout: 1800 },
   post: { loads: 2, timeout: 900 },
   coverage: { loads: 2, timeout: 900 },
-  budget: { loads: 1, timeout: 900, runtimes: ['chromium', 'wkwebview-loopback'] },
+  budget: { loads: 1, timeout: 900, runtimes: ['chromium', 'wkwebview-loopback'], timings: true }, // timings: no digest to pin
   // the editor's check-export (M2 checks 2 and 5): the film exported as frame hashes, checked against scrubbing
   editor: { loads: 2, timeout: 1500, app: 'editor', query: 'mode=check-export' },
 };
@@ -118,7 +119,8 @@ const EVALUATE = {
     (x.exports?.b ?? []).forEach((h, i) => { items[`exportB${i}`] = h; });
     const looksOk = Object.values(x.looks ?? {}).every((l) => l.firstEqualsAgain && l.lumaStd >= 5);
     return {
-      verdicts: { noErrors: !r.errors.length, notTimedOut: !r.timedOut, backend: x.backend === backend, webgpuBackend: backend !== 'webgpu' || !!x.isWebGPUBackend, exportsIdentical: !!x.exports?.identical, exportsDistinct: x.exports?.distinct === x.frames?.length, notFlat: (x.exports?.frame0?.lumaStd ?? 0) >= 5, looksFirstEqualsAgain: looksOk, mask: !!x.mask?.png },
+      // the mask may hide at most 1 % of the frame (a broken mask must not hide the look)
+      verdicts: { noErrors: !r.errors.length, notTimedOut: !r.timedOut, backend: x.backend === backend, webgpuBackend: backend !== 'webgpu' || !!x.isWebGPUBackend, exportsIdentical: !!x.exports?.identical, exportsDistinct: x.exports?.distinct === x.frames?.length, notFlat: (x.exports?.frame0?.lumaStd ?? 0) >= 5, looksFirstEqualsAgain: looksOk, mask: !!x.mask?.png && x.mask.share <= 0.01 },
       items, images,
     };
   },
@@ -140,7 +142,8 @@ const EVALUATE = {
   },
   budget(r, backend) {
     const x = r.result ?? {};
-    return { verdicts: { noErrors: !r.errors.length, notTimedOut: !r.timedOut, backend: x.backend === backend, characters: x.characters === 20 }, items: null, images: {} };
+    // M0 check 4's budget: 20 characters plus physics under 5 ms a step (mean)
+    return { verdicts: { noErrors: !r.errors.length, notTimedOut: !r.timedOut, backend: x.backend === backend, webgpuBackend: backend !== 'webgpu' || !!x.isWebGPUBackend, characters: x.characters === 20, stepUnder5ms: (x.stepMs?.mean ?? Infinity) < 5 }, items: null, images: {} };
   },
 };
 
@@ -183,6 +186,7 @@ const ourHarness = new Set();
 // ------------------------------------------------------------------------------------------------ runtimes
 let browser = null, server = null, base = '', canonForPage = {};
 async function startChromium() {
+  if (server) { browser = await chromium.launch({ executablePath: exe, headless: true, args: ['--enable-unsafe-webgpu', '--enable-gpu', '--ignore-gpu-blocklist', '--use-angle=metal'] }); return; }
   const types = { '.html': 'text/html', '.js': 'text/javascript', '.wasm': 'application/wasm', '.json': 'application/json', '.css': 'text/css' };
   server = http.createServer((req, res) => {
     const p = new URL(req.url, 'http://x').pathname;
@@ -294,30 +298,31 @@ const ctx = { node };
 
 if (RUNTIMES.some((r) => r.startsWith('wkwebview'))) for (const [k, a] of Object.entries(APPS)) if (k === 'playground' || CHECK_NAMES.includes(k)) prepareHarness(a);
 
-/** The cell's raw post looks (load 1), kept for the SSIM step: { cell: { look: png, mask } } */
+/** The cell's raw post looks (from its first clean load), kept for the SSIM step: { cell: { looks: { look: png }, mask } } */
 const looksFor = {};
 
 cells: for (const runtime of RUNTIMES) for (const backend of BACKENDS) {
   const cell = `${runtime}-${backend}`;
-  // Chromium runs only while its cells do: an idle headless Chromium's GPU helper stays busy (58 % CPU seen) and would
-  // load the GPU under the WKWebView cells
-  if (runtime === 'chromium' && !browser) await startChromium();
-  if (runtime !== 'chromium' && browser) { await browser.close(); browser = null; }
   const checks = CHECK_NAMES.filter((c) => !CHECKS[c].runtimes || CHECKS[c].runtimes.includes(runtime));
   if (!checks.length) continue;
+  // Chromium runs only while its own cells do, and only under the lock: an idle headless Chromium's GPU helper stays busy
+  // (58 % CPU seen) and would load another holder's run, or this matrix's WKWebView cells
+  if (browser) { await browser.close(); browser = null; }
   const waitStart = Date.now();
   const release = await acquireGpuLock({ who: `acceptance/matrix.mjs ${cell}`, onWait: (h) => log(`gpu-lock: waiting for pid ${h?.pid} (${h?.who})`) });
   summary.gpuLock.push({ cell, waitedMs: Date.now() - waitStart });
-  startSampling();
   const cellOut = { cell, runtime, backend, ua: null, started: new Date().toISOString(), checks: {} };
   try {
+    if (runtime === 'chromium') await startChromium();
+    startSampling();
     for (const check of checks) {
       const n = +(LOADS ?? CHECKS[check].loads), timeout = CHECKS[check].timeout;
       const canon = BLESS ? null : canonical.cells?.[cell]?.[check] ?? null;
       const query = `${CHECKS[check].query ?? `mode=${check}`}&renderer=${backend}${check === 'frames' && canon?.film ? `&canon=${cell}` : ''}`;
-      const res = { query, canonical: canon?.digest ?? null, loads: [], rerun: null, incident: null, failure: null };
+      // unpinned: no canonical digest outside --bless; load 1 is the reference for this run, and the matrix can't pass
+      const res = { query, canonical: canon?.digest ?? null, pinned: !!canon || BLESS || !!CHECKS[check].timings, loads: [], incidents: [], failure: null };
       cellOut.checks[check] = res;
-      let ref = canon ? { digest: canon.digest, items: canon.items } : null;
+      let ref = canon ? { digest: canon.digest, items: canon.items } : null, good = null, firstR = null;
       for (let load = 1; load <= n; load++) {
         const one = async (q, label) => {
           const t0 = Date.now();
@@ -330,25 +335,25 @@ cells: for (const runtime of RUNTIMES) for (const backend of BACKENDS) {
           const ok = Object.values(e.verdicts).every(Boolean);
           const differ = ref && e.items ? Object.keys({ ...ref.items, ...e.items }).filter((k) => ref.items[k] !== e.items[k]) : [];
           const row = { load, label, ok, digest, match: ref && digest ? digest === ref.digest : null, differ, verdicts: e.verdicts, ms: t1 - t0, wall: { start: t0, end: t1 }, gpuLoad: g, underLoad: underLoad(t0, t1, runtime), errors: r.errors.slice(0, 5), timedOut: r.timedOut, ...brief(check, r) };
+          row.kind = classifyLoad(row).kind;
           log(`${cell} ${check} ${label}: ${ok ? 'ok' : 'VERDICTS FAIL'} digest ${digest ?? '-'}${row.match === false ? ` ≠ canonical ${ref.digest} (${differ.length} items: ${differ.slice(0, 6).join(', ')})` : row.match ? (ref.fromLoad ? ` = load ${ref.fromLoad}` : ' = canonical') : ''} · ${(row.ms / 1000).toFixed(1)} s · GPU ${g?.gpuUtil ? `${g.gpuUtil.min}/${g.gpuUtil.median}/${g.gpuUtil.max}%` : '?'} ${row.underLoad.why}${r.errors.length ? ` · ${r.errors[0].slice(0, 160)}` : ''}`);
           return { r, e, row };
         };
         const first = await one(query, `load ${load}`);
-        if (check === 'acceptance') writeAcceptance(runtime, backend, first.r);
-        if (check === 'post' && load === 1) looksFor[cell] = { looks: Object.fromEntries(Object.entries(first.r.result?.looks ?? {}).map(([k, l]) => [k, l.png])), mask: first.r.result?.mask?.png ?? null };
-        if (check === 'frames' && BLESS && load === 1) (blessed.cells[cell] ??= {}).filmFrames = first.r.result?.film?.frameHashes ?? null;
+        firstR ??= first.r;
         res.loads.push(first.row);
-        if (!ref && first.e.items && first.row.ok) { ref = { digest: first.row.digest, items: first.e.items, fromLoad: load }; continue; }
-        if (first.row.ok && first.row.match !== false) continue;
-        // ---- a load that fails its own verdicts or differs from the canonical digest: log it, rerun once
-        const failed = { load, digest: first.row.digest, differ: first.row.differ, verdicts: Object.entries(first.row.verdicts).filter(([, v]) => !v).map(([k]) => k), gpuLoad: first.row.gpuLoad, underLoad: first.row.underLoad, errors: first.row.errors };
+        // unpinned (or blessing): the first load that passes every verdict becomes the reference
+        if (!ref && first.e.items && first.row.ok) { ref = { digest: first.row.digest, items: first.e.items, fromLoad: load }; first.row.match = true; first.row.kind = 'clean'; }
+        if (first.row.kind === 'clean') { good ??= first.r; continue; }
+        // ---- a load that isn't clean: log it, rerun once, classify (classify.mjs)
+        const failed = { load, kind: first.row.kind, digest: first.row.digest, differ: first.row.differ, verdicts: Object.entries(first.row.verdicts).filter(([, v]) => !v).map(([k]) => k), gpuLoad: first.row.gpuLoad, underLoad: first.row.underLoad, errors: first.row.errors };
         const oddFrames = first.e.film?.odd ?? [];
         const keep = [...new Set([...oddFrames.map((o) => o.frame), ...(first.e.film?.framesDiffer ?? []).slice(0, 4)])];
         const tag = `${cell}-${check}-load${load}`;
         for (const k of first.row.differ) if (first.e.images[k]) savePng(path.join(oddDir, `${tag}-failed-${k}.png`), first.e.images[k]);
         for (const o of oddFrames) if (o.png) savePng(path.join(oddDir, `${tag}-failed-${o.export}-frame${o.frame}.png`), o.png);
         failed.oddFrames = oddFrames.map(({ png, ...o }) => o);
-        log(`${cell} ${check}: load ${load} ${failed.verdicts.length ? `fails ${failed.verdicts.join(', ')}` : 'differs'}; the GPU was ${first.row.underLoad.why}; rerunning once`);
+        log(`${cell} ${check}: load ${load} ${failed.verdicts.length ? `fails ${failed.verdicts.join(', ')}` : 'differs'} (${first.row.kind}); the GPU was ${first.row.underLoad.why}; rerunning once`);
         const again = await one(`${query}${keep.length ? `&keepFrames=${keep.join(',')}` : ''}`, `rerun of load ${load}`);
         res.loads.push(again.row);
         // the differing pixels: the failed load's images against the rerun's, item by item and frame by frame
@@ -356,35 +361,47 @@ cells: for (const runtime of RUNTIMES) for (const backend of BACKENDS) {
         for (const k of first.row.differ) if (first.e.images[k] && again.e.images[k]) pixels[k] = await pixelDiff(first.e.images[k], again.e.images[k]);
         for (const o of oddFrames) { const twin = again.e.film?.kept?.find((x) => x.frame === o.frame && x.hash === o.canonical) ?? again.e.film?.kept?.find((x) => x.frame === o.frame); if (o.png && twin?.png) { pixels[`${o.export}-frame${o.frame}`] = await pixelDiff(o.png, twin.png); savePng(path.join(oddDir, `${tag}-rerun-frame${o.frame}.png`), twin.png); } }
         failed.pixels = pixels;
-        res.rerun = { ok: again.row.ok, digest: again.row.digest, match: again.row.match, gpuLoad: again.row.gpuLoad };
-        const rerunGood = again.row.ok && again.row.match !== false;
-        if (rerunGood && first.row.underLoad.loaded) {
-          res.incident = { kind: 'AB-T-0589', note: 'the failed load ran while another process loaded the GPU; the rerun matched the canonical digest (the macOS beta Metal issue, AB-D-0278)', failed };
-          summary.incidents.push({ cell, check, ...res.incident });
-          log(`${cell} ${check}: AB-T-0589 (the rerun matched; the failed load ran under load: ${first.row.underLoad.why})`);
+        failed.rerun = { kind: again.row.kind, ok: again.row.ok, digest: again.row.digest, match: again.row.match, gpuLoad: again.row.gpuLoad };
+        const verdict = classifyRerun({ verdicts: first.row.verdicts, match: first.row.match, loaded: first.row.underLoad.loaded }, { verdicts: again.row.verdicts, match: again.row.match });
+        if (verdict.outcome === 'incident') {
+          if (again.row.kind === 'clean') good ??= again.r;
+          const incident = { kind: 'AB-T-0589', load, why: verdict.why, failed };
+          res.incidents.push(incident); // one per load: a second odd load in the same check is a second incident
+          summary.incidents.push({ cell, check, ...incident });
+          log(`${cell} ${check}: AB-T-0589 for load ${load} (${verdict.why}; ${first.row.underLoad.why})`);
           continue;
         }
-        res.failure = { why: rerunGood ? `the rerun matched, but the GPU was ${first.row.underLoad.loaded === null ? 'not sampled' : 'quiet'} during the failed load: not AB-T-0589` : 'the rerun failed too', failed };
+        res.failure = { load, why: verdict.why, failed };
         summary.failures.push({ cell, check, ...res.failure });
-        if (KEEP_GOING) { log(`${cell} ${check}: FAILURE (${res.failure.why}); --keep-going`); break; }
-        stopped = { cell, check, why: res.failure.why };
-        log(`${cell} ${check}: FAILURE (${res.failure.why}); stopping the matrix`);
+        if (KEEP_GOING) { log(`${cell} ${check}: FAILURE (${verdict.why}); --keep-going`); break; }
+        stopped = { cell, check, why: verdict.why };
+        log(`${cell} ${check}: FAILURE (${verdict.why}); stopping the matrix`);
         break;
       }
-      // the check's verdict for this cell: every load matched (or was an AB-T-0589 incident with a good rerun)
-      res.ok = !res.failure && res.loads.every((l) => l.ok || res.incident) && res.loads.length > 0;
-      res.allLoadsMatch = !!ref && res.loads.filter((l) => !l.label.startsWith('rerun')).every((l) => l.digest === ref.digest || (res.incident && l.load === res.incident.failed.load));
-      if (BLESS && ref && res.ok && res.allLoadsMatch) (blessed.cells[cell] ??= {})[check] = { digest: ref.digest, items: ref.items };
+      // the check passes in this cell when there's no failure and every load was clean or is its own AB-T-0589 incident
+      const primaries = res.loads.filter((l) => !l.label.startsWith('rerun'));
+      res.ok = !res.failure && primaries.length === n && primaries.every((l) => l.kind === 'clean' || res.incidents.some((i) => i.load === l.load));
+      res.allLoadsMatch = !!ref && primaries.every((l) => l.digest === ref.digest);
+      // what later steps read comes from a clean load (the first one, or a clean rerun), never from a failed one
+      const use = good ?? firstR;
+      if (check === 'acceptance' && use) writeAcceptance(runtime, backend, use);
+      if (check === 'post' && good) looksFor[cell] = { looks: Object.fromEntries(Object.entries(good.result?.looks ?? {}).map(([k, l]) => [k, l.png])), mask: good.result?.mask?.png ?? null };
+      if (BLESS && ref && res.ok && res.allLoadsMatch && good) {
+        const entry = { digest: ref.digest, items: ref.items, made: { at: new Date().toISOString(), commit: summary.commit, dirty: summary.dirty, loads: primaries.length, runtime, backend } };
+        if (check === 'frames') entry.film = good.result?.film?.frameHashes ?? null;
+        (blessed.cells[cell] ??= {})[check] = entry;
+      }
       if (stopped) break;
     }
   } finally {
     stopSampling();
     cellOut.gpuLoad = samples.length ? summarise(samples, samples[0].at, samples.at(-1).at) : null;
     cellOut.ended = new Date().toISOString();
+    if (browser) { await browser.close(); browser = null; } // closed before the lock goes
     release();
   }
   fs.writeFileSync(path.join(out, `${cell}.json`), JSON.stringify(cellOut, null, 1) + '\n');
-  summary.cells[cell] = Object.fromEntries(Object.entries(cellOut.checks).map(([k, c]) => [k, { ok: c.ok, loads: c.loads.length, digest: c.loads[0]?.digest, canonical: c.canonical, allLoadsMatch: c.allLoadsMatch, incident: !!c.incident }]));
+  summary.cells[cell] = Object.fromEntries(Object.entries(cellOut.checks).map(([k, c]) => [k, { ok: c.ok, pinned: c.pinned, loads: c.loads.length, digest: c.loads[0]?.digest, canonical: c.canonical, allLoadsMatch: c.allLoadsMatch, incidents: c.incidents.length }]));
   if (stopped) break cells;
 }
 
@@ -415,13 +432,15 @@ if (!stopped && CHECK_NAMES.includes('acceptance') && node) {
     if (code) console.log(text.split('\n').filter((l) => l.startsWith('✖')).join('\n'));
   }
   // the simulation's finals in every cell: the renderer must not change them
-  const finals = Object.fromEntries(RUNTIMES.flatMap((rt) => BACKENDS.map((b) => [`${rt}-${b}`, readJSON(path.join(out, `${rt}-${b}.json`))?.checks?.acceptance?.loads?.[0]?.final])).filter(([, f]) => f));
+  const finals = Object.fromEntries(RUNTIMES.flatMap((rt) => BACKENDS.map((b) => [`${rt}-${b}`, readJSON(path.join(out, `${rt}-${b}.json`))?.checks?.acceptance?.loads?.find((l) => l.kind === 'clean')?.final])).filter(([, f]) => f));
   summary.simulationIndependentOfBackend = { node: node.simulation.final, finals, same: Object.values(finals).every((f) => f === node.simulation.final) };
 }
 
 if (!stopped && CHECK_NAMES.includes('post')) {
-  if (!browser) await startChromium(); // after every cell: nothing else draws for a result now
-  // the look tolerance between backends: SSIM ≥ 0.98 at 1080p, translucency masked (both backends' masks, united)
+  // the look tolerance between backends: SSIM ≥ 0.98 at 1080p, translucency masked (both backends' masks, united). It
+  // decodes images in Chromium, so it holds the lock too
+  const releaseSsim = await acquireGpuLock({ who: 'acceptance/matrix.mjs ssim', onWait: (h) => log(`gpu-lock: waiting for pid ${h?.pid} (${h?.who})`) });
+  await startChromium();
   summary.ssim = {};
   for (const runtime of RUNTIMES) {
     const a = looksFor[`${runtime}-webgl`], b = looksFor[`${runtime}-webgpu`];
@@ -439,22 +458,24 @@ if (!stopped && CHECK_NAMES.includes('post')) {
   }
   // the verdict: every look's masked SSIM ≥ 0.98, except grain (per-pixel noise drawn differently per backend), judged at ¼ size
   const rows = Object.entries(summary.ssim).flatMap(([rt, looks]) => Object.entries(looks).map(([k, c]) => ({ rt, k, value: k === 'anime' ? c.ssimQuarterMasked : c.ssimMasked, measure: k === 'anime' ? 'ssimQuarterMasked (grain)' : 'ssimMasked' })));
-  summary.ssimVerdict = { tolerance: 0.98, below: rows.filter((r) => !(r.value >= 0.98)), ok: rows.length > 0 && rows.every((r) => r.value >= 0.98) };
-  for (const [rt, looks] of Object.entries(summary.ssim)) for (const [k, c] of Object.entries(looks)) log(`SSIM ${rt} ${k.padEnd(13)} ${c.ssim} masked ${c.ssimMasked} (¼ ${c.ssimQuarterMasked}; masked share ${c.masked}; >8 levels ${c.over8Masked})`);
+  const errors = Object.entries(summary.ssim).flatMap(([rt, looks]) => Object.entries(looks).filter(([, c]) => c.error).map(([k, c]) => ({ rt, k, error: c.error })));
+  summary.ssimVerdict = { tolerance: 0.98, maxMasked: 0.01, below: rows.filter((r) => !(r.value >= 0.98)), errors, ok: rows.length > 0 && !errors.length && rows.every((r) => r.value >= 0.98) };
+  for (const [rt, looks] of Object.entries(summary.ssim)) for (const [k, c] of Object.entries(looks)) log(`SSIM ${rt} ${k.padEnd(13)} ${c.ssim} masked ${c.ssimMasked} (¼ ${c.ssimQuarterMasked}; masked share ${c.masked}; >8 levels ${c.over8Masked})${c.error ? ` ERROR ${c.error}` : ''}`);
+  await browser.close(); browser = null;
+  releaseSsim();
 }
 
 if (CHECK_NAMES.includes('budget')) {
   summary.budget = {};
   for (const runtime of RUNTIMES) for (const backend of BACKENDS) {
     const l = readJSON(path.join(out, `${runtime}-${backend}.json`))?.checks?.budget?.loads?.[0];
-    if (l) summary.budget[`${runtime}-${backend}`] = { characters: l.characters, size: l.size, stepMs: l.stepMs, drawMs: l.drawMs, frameMs: l.frameMs, drawCalls: l.drawCalls, ok: l.ok && l.stepMs?.mean < 5 };
+    if (l) summary.budget[`${runtime}-${backend}`] = { characters: l.characters, size: l.size, stepMs: l.stepMs, drawMs: l.drawMs, frameMs: l.frameMs, drawCalls: l.drawCalls, ok: l.ok }; // l.ok includes the step < 5 ms verdict
   }
 }
 
 if (BLESS && !stopped) {
-  const cells = {};
-  for (const [cell, c] of Object.entries(blessed.cells)) { const { filmFrames, ...checks } = c; cells[cell] = checks; if (checks.frames && filmFrames) checks.frames.film = filmFrames; }
-  const merged = { ...canonical, made: { at: new Date().toISOString(), commit: summary.commit, machine: summary.machine }, cells: { ...(canonical.cells ?? {}) } };
+  const cells = blessed.cells; // each entry carries its own made: { at, commit, dirty, loads, runtime, backend }
+  const merged = { ...canonical, made: { at: new Date().toISOString(), commit: summary.commit, dirty: summary.dirty, machine: summary.machine, note: 'every entry comes from a --bless run in which every load of that check agreed; see each entry\'s made' }, cells: { ...(canonical.cells ?? {}) } };
   for (const [cell, checks] of Object.entries(cells)) merged.cells[cell] = { ...(merged.cells[cell] ?? {}), ...checks };
   fs.writeFileSync(canonFile, JSON.stringify(merged, null, 1) + '\n');
   log(`blessed ${Object.keys(cells).length} cells into acceptance/canonical.json`);
@@ -462,7 +483,8 @@ if (BLESS && !stopped) {
 
 summary.ended = new Date().toISOString();
 summary.stopped = stopped;
-summary.ok = !stopped && !summary.failures.length && Object.values(summary.cells).every((c) => Object.values(c).every((x) => x.ok)) && (!summary.compare || Object.values(summary.compare).every((c) => !c.exit)) && (!summary.ssimVerdict || summary.ssimVerdict.ok) && (!summary.simulationIndependentOfBackend || summary.simulationIndependentOfBackend.same);
+summary.unpinned = Object.entries(summary.cells).flatMap(([cell, c]) => Object.entries(c).filter(([, x]) => !x.pinned).map(([k]) => `${cell} ${k}`));
+summary.ok = !stopped && !summary.failures.length && !summary.unpinned.length && Object.values(summary.cells).every((c) => Object.values(c).every((x) => x.ok)) && (!summary.compare || Object.values(summary.compare).every((c) => !c.exit)) && (!summary.ssimVerdict || summary.ssimVerdict.ok) && (!summary.simulationIndependentOfBackend || summary.simulationIndependentOfBackend.same);
 // a partial run (some runtimes, backends or checks) writes its own summary beside the full one
 const full = RUNTIMES.length === 3 && BACKENDS.length === 2 && CHECK_NAMES.length === Object.keys(CHECKS).length;
 fs.writeFileSync(path.join(out, full ? 'summary.json' : `summary-partial.json`), JSON.stringify({ ...summary, runtimes: RUNTIMES, backends: BACKENDS, checks: CHECK_NAMES }, null, 1) + '\n');

@@ -691,14 +691,15 @@ export class EditorHost {
     const order = want.filter((f) => f >= 0 && f < n).sort((a, b) => b - a); // backwards: each jump is a restore
     const [width, height] = SIZES[x.size];
     this.exporting = { n: 0, frames: order.length, phase: 'checking' }; this.changed();
-    let world = null, host = null;
+    let world = null, host = null, rb = null;
     try {
       ({ world } = await this.takeWorld('sequence'));
       const player = new SequencePlayer(world.tree, { every: 120 });
       host = await this.offlineHost();
       host.attach(world.tree); host.resize(width, height);
       // the export's readback on either backend (M4 W3): WebGL's pixel pack, WebGPU's output target and map buffers
-      const rb = readbackFor(host, width, height), buf = new Uint8Array(width * height * 4);
+      rb = readbackFor(host, width, height);
+      const buf = new Uint8Array(width * height * 4);
       // the first jump plays the sequence through once (the snapshots); the others restore
       await player.seekStep(world.sequence.stepOf(n - 1).step);
       const rows = [];
@@ -717,6 +718,7 @@ export class EditorHost {
       return x.scrubCheck;
     } catch (err) { this.error = String(err?.message ?? err); throw err; }
     finally {
+      rb?.release(); // the readback's map buffers (WebGPU), as exportTake releases its own
       if (host) { host.dispose(); host.renderer.forceContextLoss?.(); }
       world?.audio?.dispose();
       this.exporting = null; this.changed();

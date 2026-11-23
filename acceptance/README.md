@@ -39,7 +39,7 @@ node acceptance/matrix.mjs --keep-going     # record a failure and carry on (dia
 | frames | `?mode=frames` | 2 | particles as headless and restored, the film exported twice the same, stills, readback at every size, alpha | particles, both films, sound, still, readback per size, alpha; the film frame by frame (`canonical.json`) |
 | post | `?mode=post` | 2 | every look at 1080p (a new pipeline's first frame = its next), two exports the same | every look (first and again) and both exports' frames |
 | coverage | `?mode=coverage` | 2 | a thumbnail per shot, the same from snapshots in either order | the sequence and every thumbnail |
-| budget | `?mode=budget` | 1 (Chromium, WKWebView loopback) | 20 characters, each step drawn at 1080p | none (timings) |
+| budget | `?mode=budget` | 1 (Chromium, WKWebView loopback) | 20 characters, each step drawn at 1080p; the step under 5 ms (mean) | none (timings) |
 | editor | editor `?mode=check-export` | 2 | the film exported, then 26 frames scrubbed to from snapshots and drawn forward: all equal to the export | the export's digest, sound and the checked frames |
 
 Every cell asks for its backend explicitly (`&renderer=webgpu|webgl`). The budget runs where timings mean something: the
@@ -58,26 +58,38 @@ scheme origin's timer resolves 1 ms (AB-L-0346), and each WKWebView load is a fr
   ```
   or `import { acquireGpuLock } from '…/acceptance/gpu-lock.mjs'; const release = await acquireGpuLock({ who });`. A
   child of a holder (`VRMXG_GPU_LOCK_HELD` names the holder's pid) doesn't take it again, so a locked runner can call
-  other locked runners. The matrix takes it per cell. Every Chromium and WKWebView runner in this repository takes it
-  too (`acceptance/*.mjs`, `m2/`, `m3/`, and `apps/playground/scripts/*-chromium.mjs` and `*-wkwebview.sh`, which re-run
-  themselves under it). `VRMXG_GPU_LOCK` moves the directory.
+  other locked runners (`node acceptance/gpu-lock.mjs held` exits 0 when `VRMXG_GPU_LOCK_HELD` names the live owner;
+  the shell runners check that before re-running themselves under the lock). Taking over a stale lock is serialised by
+  `<lock>.takeover`, and a taker reads `owner.json` back, so two waiters that saw the same dead owner can't both hold it
+  (`acceptance/test/gpu-lock.test.mjs`). The matrix takes it per cell, starting its Chromium only once it holds it, and
+  again for the SSIM step. Every runner here that draws takes it too: `acceptance/chromium.mjs`, `wkwebview.sh`, `m2/`,
+  `m3/`, and `apps/playground/scripts/` (`chromium-check.mjs`, every `*-chromium.mjs`, and every `*-wkwebview.sh`).
+  `VRMXG_GPU_LOCK` moves the directory.
 - **The GPU's load in every result.** Each load records `gpuLoad` (`apps/playground/scripts/gpu-load.mjs`, sampled
   every 3 s): the GPU's utilisation (min, median, max) and every GPU-using process seen (WebKit, Chromium, python, MLX,
   the harnesses, the native Metal repro, other apps' busy GPU helpers), names only. Utilisation counts our own drawing
   too (a quiet post load in Chromium sits at a median 30–55 %), so it is recorded, not judged. A load ran **under load**
   when another GPU-using process was at ≥ 5 % CPU: anything but our own runtime's processes (Chromium in a Chromium
   cell; WebKit and the harness this runner started in a WKWebView cell, so a busy Safari would pass unseen: close it).
-- **Every load must match the canonical digest** for its backend and runtime ([`canonical.json`](canonical.json), made by
-  `--bless` from a run in which every load agreed). Without a canonical digest, load 1 is the reference.
-- **On a mismatch, one rerun at most.** The failed load is logged in its cell's JSON (`incident` or `failure`): the items
-  that differ, its verdicts, its GPU load, and the frames that differ from the canonical frame hashes (the film checks
-  every frame against `canonical.json` in the page and keeps the odd frames' images). The rerun keeps the same frames,
-  and the runner compares the two images: the 16 × 9 tiles that differ, how many pixels, the largest difference and the
-  first 32 pixels. Images go to `results/m4-w3/odd/` (git-ignored).
-  - The rerun matches and the failed load ran under load: **AB-T-0589** (the beta's Metal issue), reported in the summary's
-    `incidents`; the cell passes.
-  - The rerun fails too, or the GPU was quiet: a **failure**. The matrix stops there (`--keep-going` records it and carries
-    on) and exits 1.
+- **Every load must match the canonical digest** for its backend and runtime ([`canonical.json`](canonical.json)). Every
+  entry is written by `--bless`, and only for a check in which every load passed and agreed; each entry records its own
+  `made` (time, commit, whether the tree was dirty, loads, runtime and backend). Outside `--bless`, a check with no
+  canonical entry is **unpinned**: its first passing load is the reference for that run, it is listed in the summary's
+  `unpinned`, and the matrix can't pass.
+- **A load that isn't clean is rerun once** (a clean load passes every verdict and matches the canonical digest). The
+  failed load is logged in its cell's JSON (`incidents` or `failure`): the items that differ, its verdicts, its GPU load,
+  and the frames that differ from the canonical frame hashes (the film checks every frame against `canonical.json` in the
+  page and keeps the odd frames' images). The rerun keeps the same frames, and the runner compares the two images: the
+  16 × 9 tiles that differ, how many pixels, the largest difference and the first 32 pixels. Images go to
+  `results/m4-w3/odd/` (git-ignored). Then ([`classify.mjs`](classify.mjs), tested in `test/classify.test.mjs`):
+  - **A functional verdict failed** (an error, a time-out, the wrong backend or a silent fall-back to WebGL, frames that
+    repeat, a flat frame, the scrub, the budget): a **failure**, whatever the rerun did.
+  - **Only pixels differed** (the digest, or the verdicts that compare a load's own frames with each other: the film's two
+    exports, the post exports, a look's first frame and its next, a restored or reused host's frames), the rerun is clean
+    and the failed load ran under load: **AB-T-0589** (the beta's Metal issue), one incident per load in the summary's
+    `incidents`; that load counts.
+  - Otherwise (the rerun isn't clean, or the GPU was quiet): a **failure**. The matrix stops there (`--keep-going` records
+    it and carries on) and exits 1.
 
 ### The look between backends: SSIM ≥ 0.98 at 1080p, translucency aside
 
@@ -88,7 +100,8 @@ luma, 8×8 windows every 4 px).
   is and once with every visible object whose material blends (`transparent`, or blending other than normal or none;
   alpha cut-outs are opaque) hidden. The pixels that differ are the mask: translucent surfaces in view (not those hidden
   behind opaque ones) and the shadows they cast. Each backend makes its own mask; their union is left out, and every 8×8
-  window that touches it is dropped from the SSIM. On the walk's frame that is the VRoid characters' eye iris and
+  window that touches it is dropped from the SSIM. A mask over 1 % of the frame is an error (a broken mask mustn't hide
+  the look). On the walk's frame that is the VRoid characters' eye iris and
   highlight, eyebrows, eyelashes and eyeliner (blended face materials), 0.017 % of the frame. Mask previews:
   `results/m4-w3/mask-*.png`.
 - **Why:** translucency blends in linear light on WebGPU, which is three's design and the physically correct blend, and

@@ -9,9 +9,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { acquireGpuLock } from '../gpu-lock.mjs';
+import { acquireGpuLock, sayWaiting } from '../gpu-lock.mjs';
 
-await acquireGpuLock({ who: 'acceptance/m3/ragdoll-chromium.mjs' }); // M4 W3: one GPU runner at a time on this machine (acceptance/README.md)
+await acquireGpuLock({ who: 'acceptance/m3/ragdoll-chromium.mjs', onWait: sayWaiting('acceptance/m3/ragdoll-chromium.mjs') }); // M4 W3: one GPU runner at a time on this machine (acceptance/README.md)
 
 const here = import.meta.dirname, argv = process.argv.slice(2), opt = (k, d) => { const i = argv.indexOf(k); return i < 0 ? d : argv[i + 1]; };
 const require = createRequire(path.join(here, '../../spike-determinism/web/package.json'));

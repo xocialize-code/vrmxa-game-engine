@@ -6,7 +6,8 @@
 #   (cd apps/playground && npx vite build) && apps/playground/scripts/post-wkwebview.sh
 set -e
 # M4 W3: one GPU runner at a time on this machine: re-run under acceptance/gpu-lock.mjs (acceptance/README.md)
-[ -n "$VRMXG_GPU_LOCK_HELD" ] || exec node "$(cd "$(dirname "$0")" && pwd)/../../../acceptance/gpu-lock.mjs" run --who "$0" -- "$0" "$@"
+gpulock="$(cd "$(dirname "$0")" && pwd)/../../../acceptance/gpu-lock.mjs"
+node "$gpulock" held || exec node "$gpulock" run --who "$0" -- "$0" "$@" # held: VRMXG_GPU_LOCK_HELD names the live owner
 here=$(cd "$(dirname "$0")" && pwd)
 root="$here/../../.."
 src="$root/spike-cinematics/mac/build/CinematicsSpike.app"

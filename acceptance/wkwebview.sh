@@ -5,7 +5,8 @@
 # canvas of the last frame (debug draw on) as .png.
 set -e
 # M4 W3: one GPU runner at a time on this machine: re-run under acceptance/gpu-lock.mjs (acceptance/README.md)
-[ -n "$VRMXG_GPU_LOCK_HELD" ] || exec node "$(cd "$(dirname "$0")" && pwd)/../acceptance/gpu-lock.mjs" run --who "$0" -- "$0" "$@"
+gpulock="$(cd "$(dirname "$0")" && pwd)/../acceptance/gpu-lock.mjs"
+node "$gpulock" held || exec node "$gpulock" run --who "$0" -- "$0" "$@" # held: VRMXG_GPU_LOCK_HELD names the live owner
 here=$(cd "$(dirname "$0")" && pwd)
 src="$here/../spike-cinematics/mac/build/CinematicsSpike.app"
 dist="$here/../apps/playground/dist"

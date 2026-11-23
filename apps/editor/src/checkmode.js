@@ -28,6 +28,7 @@ export async function runCheckMode(ed, { size = '1080p', scene = 'sequences/cafe
     await rb.readNow(buf);
     forward[f] = { pixels: hashFrame(buf), world: hashValue(worldHashes(world.tree, { physicsBytes: true })) };
   }
+  rb.release(); // the readback's map buffers (WebGPU), as exportTake releases its own
   host.dispose(); host.renderer.forceContextLoss?.(); world.audio?.dispose();
   // and a scrub on that same host's world, backwards from the end, to tell a fresh host from a history of jumps
   const rows = c.rows.map((r) => ({ ...r, forward: forward[r.frame].pixels, forwardSame: forward[r.frame].pixels === r.exported, forwardWorld: forward[r.frame].world === r.world }));

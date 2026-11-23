@@ -13,7 +13,8 @@ const here = import.meta.dirname;
 /**
  * @param {any} browser a playwright browser
  * @param {([string, string] | [string, string, string[]])[]} pairs PNG data URLs; a third element (M4 W3) lists masks
- *   (white where translucent, from post-check's translucencyMask): their union is left out, and the result adds
+ *   (white where translucent, from post-check's translucencyMask): their union is left out (at most 1 % of the frame, or
+ *   the result is an error), and the result adds
  *   `ssimMasked` (every 8×8 window that touches a masked pixel dropped), `masked` (the union's share of the frame) and
  *   the unmasked pixels' `meanMaxChannelMasked` and `over8Masked`
  */
@@ -59,6 +60,8 @@ export async function compareStills(browser, pairs) {
       const out = { size: [w, h], ssim: +ssim(la, lb, w, h).toFixed(4), ssimQuarter: +ssim(down(la), down(lb), qw, qh).toFixed(4), meanMaxChannel: +(sum / n).toFixed(3), over8: +(over8 / n).toFixed(5), max };
       if (M) {
         let masked = 0; for (let p = 0; p < n; p++) masked += M[p];
+        // a mask that hides more than 1 % of the frame is broken: it must not be able to hide the look
+        if (masked / n > 0.01) return { ...out, masked: +(masked / n).toFixed(5), error: `the mask covers ${(100 * masked / n).toFixed(2)} % of the frame (more than 1 %)` };
         const mq = new Uint8Array(qw * qh); for (let y = 0; y < qh * 4; y++) for (let x = 0; x < qw * 4; x++) if (M[y * w + x]) mq[(y >> 2) * qw + (x >> 2)] = 1;
         Object.assign(out, { masked: +(masked / n).toFixed(5), ssimMasked: +ssim(la, lb, w, h, M).toFixed(4), ssimQuarterMasked: +ssim(down(la), down(lb), qw, qh, mq).toFixed(4), meanMaxChannelMasked: +(sumU / Math.max(1, nU)).toFixed(3), over8Masked: +(over8U / Math.max(1, nU)).toFixed(5) });
       }
