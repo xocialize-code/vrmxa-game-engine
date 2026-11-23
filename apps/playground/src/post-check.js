@@ -50,70 +50,78 @@ export async function postCheck(pg, { frames = [300, 301, 302, 303, 304], still 
   const walk = JSON.parse(new TextDecoder().decode(await (await fetch('input/walk-in.json')).arrayBuffer()));
   const env = () => pg.tree.all().find((n) => n.type === 'Environment');
   let host = null, last = null, draw = null;
+  await pg.ready;
+  const ratio = pg.host.renderer.getPixelRatio(), buf = pg.host.drawingBufferSize(), cssW = buf.width / ratio, cssH = buf.height / ratio;
   pg.offline = true; // the check owns the canvas: no paused-loop draws, no resize back to the page's layout
-  /** A fresh load at 1080p with the walk replayed from its first step; draws are read in their own task. */
-  const fresh = async () => {
-    await pg.load(pg.scene ?? 'cafe.vrmxs');
-    pg.pause(); pg.setBubbles(false);
-    host = pg.host;
-    host.debug.set(false);
-    host.renderer.setPixelRatio(1); host.resize(width, height);
-    pg.input.replay({ ...walk, start: pg.tree.clock.step });
-    if (!draw) { draw = host.render.bind(host); host.render = (alpha, stepped) => { draw(alpha, stepped); last = pg.canvas.toDataURL('image/png'); }; }
-  };
-  const setLook = async (look) => { env().props.post = structuredClone(LOOKS[look]); host.views.update(pg.tree); await host.post?.settle?.(); };
-  const exportFrames = async () => {
-    await fresh();
-    await setLook('anime');
-    const out = [];
-    for (const s of frames) { await host.frameAt(s, 0.5); out.push((await pixels(last))); }
-    return out;
-  };
+  try {
+    /** A fresh load at 1080p with the walk replayed from its first step; draws are read in their own task. */
+    const fresh = async () => {
+      await pg.load(pg.scene ?? 'cafe.vrmxs');
+      pg.pause(); pg.setBubbles(false);
+      host = pg.host;
+      host.debug.set(false);
+      host.renderer.setPixelRatio(1); host.resize(width, height);
+      pg.input.replay({ ...walk, start: pg.tree.clock.step });
+      if (!draw) { draw = host.render.bind(host); host.render = (alpha, stepped) => { draw(alpha, stepped); last = pg.canvas.toDataURL('image/png'); }; }
+    };
+    const setLook = async (look) => { env().props.post = structuredClone(LOOKS[look]); host.views.update(pg.tree); await host.post?.settle?.(); };
+    const exportFrames = async () => {
+      await fresh();
+      await setLook('anime');
+      const out = [];
+      for (const s of frames) { await host.frameAt(s, 0.5); out.push((await pixels(last))); }
+      return out;
+    };
 
-  // export A: the anime pipeline is built at its frame 0 (the first frame after the look is set)
-  const built0 = host?.post?.cache?.size ?? 0;
-  const a = await exportFrames();
-  const builtA = host.post?.cache?.size;
-  // the looks, on one frame of the walk: each the first frame of a pipeline built for it, then the same frame again
-  await host.frameAt(still, 0.5);
-  const shots = {};
-  for (const look of looks) {
-    await setLook(look);
-    const cached = host.post?.cache ? host.post.cache.has(host.post.key) : null;
-    host.advanceNodeFrame(); host.render(0.5, false);
-    const first = last;
-    host.advanceNodeFrame(); host.render(0.5, false);
-    const p1 = await pixels(first), p2 = await pixels(last);
-    shots[look] = { png: first, hash: p1.hash, again: p2.hash, firstEqualsAgain: p1.hash === p2.hash, lumaStd: p1.lumaStd, colours: p1.colours, newPipeline: cached === false, passes: host.post?.active ? [...host.post.passes] : [] };
-  }
-  // the cost of a frame (median of 20) without post and with the anime preset, GPU work included
-  const gl = host.renderer.isWebGLRenderer ? host.renderer.getContext() : null, device = host.renderer.backend?.device;
-  const cost = async (look) => {
-    await setLook(look); host.advanceNodeFrame(); draw(0.5, false);
-    const ms = [];
-    for (let i = 0; i < 20; i++) {
-      const t0 = performance.now();
-      host.advanceNodeFrame(); draw(0.5, false);
-      if (gl) gl.finish(); else await device.queue.onSubmittedWorkDone();
-      ms.push(performance.now() - t0);
+    // export A: the anime pipeline is built at its frame 0 (the first frame after the look is set)
+    const built0 = host?.post?.cache?.size ?? 0;
+    const a = await exportFrames();
+    const builtA = host.post?.cache?.size;
+    // the looks, on one frame of the walk: each the first frame of a pipeline built for it, then the same frame again
+    await host.frameAt(still, 0.5);
+    const shots = {};
+    for (const look of looks) {
+      await setLook(look);
+      const cached = host.post?.cache ? host.post.cache.has(host.post.key) : null;
+      host.advanceNodeFrame(); host.render(0.5, false);
+      const first = last;
+      host.advanceNodeFrame(); host.render(0.5, false);
+      const p1 = await pixels(first), p2 = await pixels(last);
+      shots[look] = { png: first, hash: p1.hash, again: p2.hash, firstEqualsAgain: p1.hash === p2.hash, lumaStd: p1.lumaStd, colours: p1.colours, newPipeline: cached === false, passes: host.post?.active ? [...host.post.passes] : [] };
     }
-    ms.sort((x, y) => x - y);
-    return +ms[10].toFixed(3);
-  };
-  const costMs = { none: await cost('none'), anime: await cost('anime') };
-  // export B: a fresh load, the anime pipeline from the cache
-  const b = await exportFrames();
-  host.render = draw;
-  const size = [pg.canvas.width, pg.canvas.height]; // the stills' size, before the page takes the canvas back
-  pg.offline = false;
-  return {
-    backend: host.backend, isWebGPUBackend: !!host.renderer.backend?.isWebGPUBackend, stack: host.post?.constructor?.name ?? null,
-    size, frames, still,
-    exports: {
-      a: a.map((p) => p.hash), b: b.map((p) => p.hash), identical: a.map((p) => p.hash).join() === b.map((p) => p.hash).join(),
-      distinct: new Set(a.map((p) => p.hash)).size, frame0: { lumaStd: a[0].lumaStd, colours: a[0].colours },
-      pipelinesBuiltByA: builtA == null ? null : builtA - built0,
-    },
-    looks: shots, costMs,
-  };
+    // the cost of a frame (median of 20) without post and with the anime preset, GPU work included
+    const gl = host.renderer.isWebGLRenderer ? host.renderer.getContext() : null, device = host.renderer.backend?.device;
+    const cost = async (look) => {
+      await setLook(look); host.advanceNodeFrame(); draw(0.5, false);
+      const ms = [];
+      for (let i = 0; i < 20; i++) {
+        const t0 = performance.now();
+        host.advanceNodeFrame(); draw(0.5, false);
+        if (gl) gl.finish(); else await device.queue.onSubmittedWorkDone();
+        ms.push(performance.now() - t0);
+      }
+      ms.sort((x, y) => x - y);
+      return +ms[10].toFixed(3);
+    };
+    const costMs = { none: await cost('none'), anime: await cost('anime') };
+    // export B: a fresh load, the anime pipeline from the cache
+    const b = await exportFrames();
+    const size = [pg.canvas.width, pg.canvas.height]; // the stills' size, before the page takes the canvas back
+    return {
+      backend: host.backend, isWebGPUBackend: !!host.renderer.backend?.isWebGPUBackend, stack: host.post?.constructor?.name ?? null,
+      size, frames, still,
+      exports: {
+        a: a.map((p) => p.hash), b: b.map((p) => p.hash), identical: a.map((p) => p.hash).join() === b.map((p) => p.hash).join(),
+        distinct: new Set(a.map((p) => p.hash)).size, frame0: { lumaStd: a[0].lumaStd, colours: a[0].colours },
+        pipelinesBuiltByA: builtA == null ? null : builtA - built0,
+      },
+      looks: shots, costMs,
+    };
+  } finally { // even when a draw throws: the host's own render, the page's pixel ratio and size, then the page's layout
+    if (draw && host) host.render = draw;
+    const h = host ?? pg.host;
+    h.renderer.setPixelRatio(ratio);
+    if (cssW && cssH) h.resize(cssW, cssH);
+    pg.offline = false;
+  }
 }

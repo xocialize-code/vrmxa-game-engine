@@ -13,7 +13,7 @@
   "isWebGPUBackend": false,
   "size": [
    1280,
-   653
+   720
   ],
   "steps": [
    300,
@@ -23,17 +23,25 @@
    304
   ],
   "frames": [
-   "ab251b3b",
-   "1c41c663",
-   "29e68665",
-   "e573dd8e",
-   "029b3d09"
+   "eed36c3f",
+   "f3106090",
+   "32cd44f9",
+   "c2d1d2ad",
+   "12aa910f"
   ],
   "distinct": 5,
   "still": 420,
-  "stillHash": "df6b9781",
-  "stillMsWithRead": 27.6,
+  "stillHash": "43fd5c5b",
+  "stillMsWithRead": 30.3,
   "diff": null,
+  "glFrames": [
+   "5729890b29bdb289",
+   "9a057387ca63c580",
+   "33ef5199cfc5abab",
+   "e2f1d8258da27e03",
+   "7ece1fc62f60c83d"
+  ],
+  "glStill": "d481ec5b02407560",
   "materials": [
    "MeshBasicMaterial",
    "ShaderMaterial"
@@ -47,7 +55,7 @@
   "isWebGPUBackend": true,
   "size": [
    1280,
-   653
+   720
   ],
   "steps": [
    300,
@@ -57,20 +65,20 @@
    304
   ],
   "frames": [
-   "bcded41c",
-   "68f68984",
-   "552231cf",
-   "56f66e1e",
-   "c38dbc11"
+   "76297950",
+   "6c78e78c",
+   "8590dfc6",
+   "378d178c",
+   "68507f9e"
   ],
   "distinct": 5,
   "still": 420,
-  "stillHash": "7676dc42",
-  "stillMsWithRead": 27.4,
+  "stillHash": "1cb60ee5",
+  "stillMsWithRead": 28.1,
   "diff": {
-   "meanMaxChannel": 0.483,
-   "over8": 0.01044,
-   "max": 160
+   "meanMaxChannel": 0.49,
+   "over8": 0.01029,
+   "max": 191
   },
   "materials": [
    "MeshBasicMaterial",
