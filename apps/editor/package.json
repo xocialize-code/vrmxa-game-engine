@@ -18,6 +18,7 @@
     "@vrmxg/core": "0.1.0",
     "@vrmxg/dmath": "0.1.0",
     "@vrmxg/editor-core": "0.1.0",
+    "@vrmxg/editor-ui": "0.1.0",
     "@vrmxg/export": "0.1.0",
     "@vrmxg/input": "0.1.0",
     "@vrmxg/interact": "0.1.0",

@@ -1,0 +1,26 @@
+Title: First Light
+Credit: A hand-test script for the VRMXG creator (M4 W5)
+Set: cafe.vrmxs
+Cast:
+    HANA = hana-1
+    MIRA = mira
+Marks:
+    HANA = behind-counter
+    MIRA = counter-front
+
+INT. CAFE - DAWN
+
+The cafe is still dark. Hana switches on the lights as Mira knocks on the glass.
+
+HANA
+(smiling)
+We're not open yet! [[greet]]
+
+MIRA
+I know. I just wanted the first cup today.
+
+HANA
+(laughs)
+Then you'd better come in.
+
+FADE OUT.

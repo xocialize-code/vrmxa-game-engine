@@ -4,7 +4,7 @@ Run `apps/editor-mac/scripts/build.sh`, launch the app once, then `apps/editor-m
 fresh copy of the sample project, opened through the shell's `VRMXG_SHELL_PROJECT` hook), then
 `appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M2-TIMELINE.scenario.md`. The timeline's controls
 have ids (`#tl-add-shot`, `#tl-type-animation`, `#tl-head-<track>`); readouts carry their value in their accessible
-name (`#tl-scrub`: `Showing frame 130 step 325 alpha 0 world 5e65acbe356561f1`).
+name (`#tl-scrub`: `Showing frame 130 step 325 alpha 0 world 9a4aa4e6ff8e16d5`).
 
 ```scenario
 app: VRMXG Editor
@@ -17,7 +17,7 @@ fresh: false
 - [ ] A new sequence films the cafe: it opens with an empty timeline and a CameraBrain on the set's camera.
   ```steps
   wait id=open-project enabled=true timeout_ms=40000
-  until find("id=doc-state").0.name matches "^Scene cafe.vrmxs"
+  until find("id=doc-state").0.name matches "^Scene cafe"   # the bundled sample's first scene (cafe-cart.vrmxs since M3 W12)
   act id=open-project action=press
   until find("id=project-name").0.name == "Project project"
   act id=seq-name action=set_value value=sequences/hand-test.vrmxs
@@ -113,11 +113,11 @@ fresh: false
   act id=open-file action=press   # WebKit's popup menus can't be picked over accessibility: open by name
   until find("id=doc-state").0.name matches "^Scene sequences/morning.vrmxs "
   act id=tl-frame action=set_value value=130
-  until find("id=tl-scrub").0.name == "Showing frame 130 step 325 alpha 0 world 5e65acbe356561f1" timeout=60000   # acceptance/results: sequence.scrub, frame 130
+  until find("id=tl-scrub").0.name == "Showing frame 130 step 325 alpha 0 world 9a4aa4e6ff8e16d5" timeout=60000   # acceptance/results/node.json: sequence.scrub, frame 130 (re-baselined with the M3 content, 2026-11-19)
   act id=tl-frame action=set_value value=40
-  until find("id=tl-scrub").0.name == "Showing frame 40 step 100 alpha 0 world f0ef4e430dc29757"   # backwards, from a snapshot
+  until find("id=tl-scrub").0.name == "Showing frame 40 step 100 alpha 0 world 32b88490608b5ce2"   # backwards, from a snapshot
   act id=tl-frame action=set_value value=200
-  until find("id=tl-scrub").0.name == "Showing frame 200 step 500 alpha 0 world d8f38c6b9d156da1"
+  until find("id=tl-scrub").0.name == "Showing frame 200 step 500 alpha 0 world 3d22b0435f761522"
   shot "scrubbed"
   ```
 

@@ -2,6 +2,7 @@
 // sequence block, and the nodes the build adds, updates or removes). The
 // session is duck-typed (doc, setDoc, isSequence, run), so this package doesn't depend on editor-core.
 import { buildSequence } from './build.js';
+import { canonical } from './hash.js';
 
 /**
  * Re-script the session's sequence from a script: the new sequence block and any nodes the build places (cameras,
@@ -15,7 +16,8 @@ export function applyScript(session, text, o = {}) {
   if (!session.isSequence) throw new Error('re-scripting needs a sequence document (a set it films and a sequence block)');
   const r = buildSequence(text, { ...o, previous: session.doc, set: o.set ?? session.setDoc ?? null });
   if (!r.ok) return { ...r, changed: false };
-  const same = JSON.stringify(r.doc.sequence) === JSON.stringify(session.doc.sequence) && !r.addNodes.length && !r.setNodes.length && !r.removeNodes.length;
+  // canonically: a sequence read back from its file has its keys in the file's order, not the build's (M4 W5)
+  const same = canonical(r.doc.sequence) === canonical(session.doc.sequence) && !r.addNodes.length && !r.setNodes.length && !r.removeNodes.length;
   if (same) return { ...r, changed: false };
   const { added, removed, changed } = r.report;
   const parts = [added.length && `${added.length} added`, changed.length && `${changed.length} changed`, removed.length && `${removed.length} cut`].filter(Boolean);
