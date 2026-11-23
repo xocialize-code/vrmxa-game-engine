@@ -10,16 +10,17 @@ import { EditorSession, RenderQueue, stubRunner } from '@vrmxg/editor-core';
 import { deliveryRunner } from './delivery.js';
 import { storyboard } from '@vrmxg/coverage';
 import { renderThumbnails } from '@vrmxg/coverage/thumbnails';
-import { readCharacter, rolesOf, applyCast } from '@vrmxg/cast';
+import { readCharacter, rolesOf } from '@vrmxg/cast';
 import * as vrmxaMain from '@vrmxa-core/index.js';
 import * as vrmxaVoice from '@vrmxa-core/voice/index.js';
 import * as vrmxaPersona from '@vrmxa-core/persona/index.js';
 import * as vrmxaCloset from '@vrmxa-core/closet/index.js';
 import { EditorHost, SIZES, RATES, CODECS } from '../../editor/src/host.js';
-import { inShell } from '../../shell/js/shell.js';
+import { inShell, call } from '../../shell/js/shell.js';
 import { ScriptDesk, buildShort } from './desk.js';
 import { SHORTS_FILE, ShortList, readShorts, shortFor, titlePage, slugOf, kindOf, sceneKind, missingRefs, setForModel, scriptTemplate, placeFile } from './shorts.js';
 import { disposeWorld } from './dispose.js';
+import { castAndVoice, lazyTTS, projectIO } from './voicing.js';
 
 export { SIZES, RATES, CODECS };
 const vrmxa = { ...vrmxaMain, ...vrmxaVoice, ...vrmxaPersona, ...vrmxaCloset };
@@ -267,20 +268,40 @@ export class CreatorHost extends EditorHost {
     return p;
   }
 
+  /** A character file in the project, read as a cast card through vrmxa-core. */
+  async cardFor(ref) { return readCharacter(await this.project.bytes(ref), { ref, vrmxa }); }
+
+  /**
+   * The project as @vrmxg/voicing's files (exclusive creates; takes found and reused) and the TTS, asked only when a
+   * line has no take: the Mac shell's tts.speak, or a loopback server (?tts=…/speak).
+   */
+  voicingIO() { return projectIO(this.project, (this._lazyTTS ??= lazyTTS(() => this.voiceProvider()))); }
+
+  /** The TTS: ?tts=…/speak (VRMXG_QUERY in the Mac app), else the shell's tts.speak when this shell has it. */
+  async voiceProvider() {
+    if (!new URLSearchParams(globalThis.location?.search ?? '').get('tts') && inShell) {
+      const info = await call('shell.info');
+      if (!info?.methods?.includes('tts.speak')) throw new Error('no TTS voice here: this shell has no tts.speak (launch with VRMXG_QUERY=tts=http://127.0.0.1:5190/speak and tools/tts-server.py)');
+    }
+    return this.ttsProvider();
+  }
+
   /**
    * Cast a character file into a role: the .vrmxa goes into the project (characters/, asking first if a different file
-   * has its name), its card is read from those same bytes through vrmxa-core, and the cast is one undo step. W7
-   * (voicing) adds the re-bake of the role's lines to the same step.
+   * has its name), its card is read from those same bytes through vrmxa-core, and the cast and the re-voicing of the
+   * role's lines in the new voice are one undo step (@vrmxg/voicing's rebakeWith through applyCast's rebake). With no
+   * TTS here, the takes already in the project serve; lines that would need speaking are cast unvoiced and listed.
+   * `session`: the session the step goes through (the agent's marks it, M4 W11).
    */
-  async castFile(name, bytes, roleId, { onClash = null } = {}) {
+  async castFile(name, bytes, roleId, { onClash = null, session = this.session } = {}) {
     if (!this.session?.isSequence) throw new Error('open a short to cast it');
     const role = roleId ?? this.roles()[0]?.id;
     if (!role) throw new Error('this short has no roles to cast (no one speaks in its script)');
     const p = await this.placeOpened(`characters/${name}`, bytes, onClash);
     if (!p) return null;
     const card = await readCharacter(bytes, { ref: p.ref, vrmxa });
-    const r = await applyCast(this.session, role, card);
-    this.lastCast = { role, ref: p.ref, changed: r.changed, label: r.label ?? null, warnings: r.warnings ?? [], title: card.title ?? card.name, file: p.same ? 'same' : p.replaced ? 'replaced' : p.renamed ? 'renamed' : 'new' };
+    const r = await castAndVoice(session, role, card, { io: this.voicingIO() });
+    this.lastCast = { role, ref: p.ref, changed: r.changed, label: r.label ?? null, warnings: r.warnings ?? [], title: card.title ?? card.name, file: p.same ? 'same' : p.replaced ? 'replaced' : p.renamed ? 'renamed' : 'new', revoiced: r.voiced ? r.baked ?? 0 : 0 };
     this.changed();
     return this.lastCast;
   }
@@ -359,7 +380,7 @@ export class CreatorHost extends EditorHost {
    */
   async saveShort(asTitle = null) {
     if (!this.short) return this.save();
-    this.applyScript();
+    if (this.desk?.pending) this.applyScript(); // typing not yet applied; an applied script isn't built again (M4 W11)
     if (asTitle) {
       const old = this.short;
       const id = this.shorts.freeId(slugOf(asTitle), this.project.files);
@@ -396,7 +417,9 @@ export class CreatorHost extends EditorHost {
    */
   queueShort({ preset = 'draft', name = null, backend = null, check = null, extras = undefined, seconds = undefined } = {}) {
     if (!this.short || !this.session?.isSequence) throw new Error('open a short to queue it');
-    this.applyScript();
+    // typing not yet applied goes in first; an applied script isn't built again, which would add a step and put a
+    // line's re-voiced words back to the script's (M4 W11: found by the agent's session)
+    if (this.desk?.pending) this.applyScript();
     const seq = this.session.doc.sequence;
     const job = this.queue.add({ short: this.short.id, title: this.short.title, ref: this.short.sequence, preset, name, seconds: seconds ?? seq.duration / seq.fps, backend, check, ...(extras !== undefined ? { extras } : {}) });
     this.snapshots.set(job.id, { text: this.session.text(), set: this.setScene?.ref ?? null });

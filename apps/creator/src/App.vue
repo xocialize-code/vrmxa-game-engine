@@ -11,6 +11,7 @@ import { bundledProject, openProjectFolder, pickFile, fetchOpened, readPicked } 
 import { kindOf } from './shorts.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 import ScriptPane from './ScriptPane.vue';
+import { creatorLink, CREATOR_MCP_PORT } from './mcp.js';
 
 const canvas = ref(null), pane = ref(null), picker = ref(null), timeline = ref(null);
 const ui = reactive({
@@ -21,6 +22,7 @@ const ui = reactive({
   board: null, thumbs: {}, beats: {}, thumbState: '', selectedShot: null,
   tl: null, roles: [], role: '', cast: '', opened: '', saved: '', jobs: [], runner: '', coverage: 'default', unsaved: [],
   ask: null, // { title, text, options: [{ id, label }] }: the window's question (unsaved changes, a name clash)
+  mcp: '', // the agent's link (M4 W11)
 });
 /** @type {CreatorHost} */ let cr = null; // never reactive
 let started; const ready = new Promise((r) => { started = r; }); // the first project is open (files opened at launch wait)
@@ -63,6 +65,12 @@ const act = async (fn) => { try { ui.error = ''; await fn(); } catch (e) { ui.er
 onMounted(async () => {
   cr = new CreatorHost(canvas.value);
   cr.onChange = refresh; window.__creator = cr;
+  // MCP (M4 W11): on in the Mac app, or with ?mcp (=port, or =off) in a browser; vrmxg-mcp --creator listens on 127.0.0.1:5184
+  const q = new URLSearchParams(location.search).get('mcp');
+  if ((inShell && q !== 'off') || (q && q !== 'off')) {
+    const link = creatorLink(cr, { url: `http://127.0.0.1:${/^\d+$/.test(q ?? '') ? q : CREATOR_MCP_PORT}`, onChange: () => { ui.mcp = link.state === 'off' ? 'MCP: waiting for vrmxg-mcp --creator' : link.state === 'taken' ? 'MCP: another creator has the link' : `MCP ${link.state}${link.last ? ` · ${link.last}` : ''} · ${link.calls} calls`; } });
+    window.__mcp = link; link.onChange(); link.start();
+  }
   await act(async () => cr.openProject(await bundledProject()));
   ui.loading = false;
   started();
@@ -245,6 +253,7 @@ if (inShell) {
       <output v-if="ui.unsaved.length" id="memory-files" class="muted" :aria-label="`In memory: ${ui.unsaved.join(', ')}`">in memory: {{ ui.unsaved.join(', ') }}</output>
       <output id="build-time" :aria-label="`Build ${ui.build}`">build {{ ui.build }}</output>
       <output id="renderer" :aria-label="`Renderer ${ui.renderer}`">{{ ui.renderer }}</output>
+      <output v-if="ui.mcp" id="mcp-state" :aria-label="ui.mcp">{{ ui.mcp }}</output>
       <span v-if="ui.shell" class="muted" :aria-label="`Shell ${ui.shell}`">{{ ui.shell }}</span>
     </footer>
   </div>
