@@ -42,6 +42,9 @@ test('a turntable frames the character\'s box: centred on it, far enough to fit'
   assert.deepEqual(f.center.map((v) => +v.toFixed(3)), [1, 0.8, 2]);
   assert.ok(f.radius > 3 && f.radius < 5, `a 1.6 m figure in a 30° lens stands ${f.radius.toFixed(2)} m off`);
   assert.ok(Math.abs(f.height - 1.6 * 0.08) < 1e-6, "a little above the middle");
+  assert.equal(f.start, 0, 'facing +Z: start at +Z, in front');
+  s.mira.rotation.y = Math.PI / 2; // facing +X
+  assert.ok(Math.abs(turntableFraming(s.mira, 16 / 9).start - Math.PI / 2) < 1e-9, 'start where it faces');
   assert.throws(() => turntableFraming(new Group(), 1), /nothing to frame/);
 });
 

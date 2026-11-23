@@ -12,6 +12,7 @@
 import { PerspectiveCamera, Box3, Vector3 } from 'three';
 import { parse } from '@vrmxg/scene';
 import { hashValue } from '@vrmxg/snapshot';
+import { atan2 } from '@vrmxg/dmath';
 import { exportTurntable, shellSink, hashSink, toImageRGBA, encodePNG, toBase64, stillFrames, boxDown, orbitPose, fitDistance, deliveryFiles, slug, framesFor, THUMB, SIZES, RATES, CODECS } from '@vrmxg/export';
 import { inShell, call } from '../../shell/js/shell.js';
 import { disposeWorld } from './dispose.js';
@@ -59,12 +60,15 @@ export function isolate(tree, id) {
   return () => { for (const [o, v] of was) o.visible = v; };
 }
 
-/** Where a turntable looks and how far it stands: the character's box, framed in the lens with room round it. */
+/** Where a turntable looks, how far it stands and where it starts: the character's box, framed in the lens with room round it, from in front. */
 export function turntableFraming(object3d, aspect, fov = TURNTABLE_FOV) {
   object3d.updateMatrixWorld(true);
   const box = new Box3().setFromObject(object3d), size = box.getSize(new Vector3()), c = box.getCenter(new Vector3());
   if (box.isEmpty() || !(size.y > 0)) throw new Error('the character has nothing to frame');
-  return { center: [c.x, c.y, c.z], radius: fitDistance(size.y, Math.max(size.x, size.z), fov, aspect), height: size.y * 0.08 };
+  // start in front of the character: the way its root faces (a character faces its root's +Z, as the engine's do)
+  const f = object3d.getWorldDirection(new Vector3());
+  const start = Math.abs(f.x) + Math.abs(f.z) > 1e-6 ? atan2(f.x, f.z) : 0;
+  return { center: [c.x, c.y, c.z], radius: fitDistance(size.y, Math.max(size.x, size.z), fov, aspect), height: size.y * 0.08, start };
 }
 
 /**
@@ -189,7 +193,7 @@ async function turntable(host, doc, id, { path, toDisk, width, height, rate, cod
       onProgress: (p) => { host.exporting = { ...p, phase: `turntable ${id}` }; progress(p.n, p.frames); host.changed('export'); },
     });
     const hashes = r.frameHashes ?? null;
-    return { character: id, path, frames: r.frames, seconds: r.seconds, frameDigest: digestOf(hashes), framing: { center: framing.center.map((v) => +v.toFixed(4)), radius: +framing.radius.toFixed(4) }, ms: r.ms, check: r.check, written: toDisk };
+    return { character: id, path, frames: r.frames, seconds: r.seconds, frameDigest: digestOf(hashes), framing: { center: framing.center.map((v) => +v.toFixed(4)), radius: +framing.radius.toFixed(4), start: +framing.start.toFixed(4) }, ms: r.ms, check: r.check, written: toDisk };
   } finally {
     restore?.();
     if (th) { th.dispose(); th.renderer.forceContextLoss?.(); }
