@@ -199,7 +199,7 @@ AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for th
   acceptance/m4/voicing-wkwebview.sh                                         # WKWebView, scheme and loopback: results/m4-voicing-wkwebview.json
   ```
   Node, Chromium and WKWebView (scheme and loopback, two loads each) all give final d67ec0db2f91dcb2 and mouths
-  0ece9eb97f63f868, and the mid-line restore ends the same.
+  0ece9eb97f63f868, and the mid-line restore ends the same (AB-R-1075; Kokoro's audio isn't byte-reproducible, AB-L-0375).
 
 - **W2, particles and readback on WebGPU** (AB-T-0574): check 13 drawn on both backends, the morning film exported
   twice, stills and the readback's cost, in the playground's `?mode=frames` (`apps/playground/README.md`, "Particles and
