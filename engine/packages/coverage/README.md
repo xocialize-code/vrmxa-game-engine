@@ -32,9 +32,9 @@ The first rule that applies picks the shot's camera:
 
 | # | Rule | When | Camera |
 |---|---|---|---|
-| 1 | establishing | a scene heading's shot | `vc-est` (then `vc-est-2` …): a wide of everyone on their marks, on `twoShot` with `aim.size` 0.4, further back and higher (2.2 m) than the two-shot |
+| 1 | establishing | a scene heading's shot | `vc-est-<heading>` (`vc-est-int-cafe-morning`): a wide of everyone on their marks, on `twoShot` with `aim.size` 0.4, further back and higher (2.2 m) than the two-shot |
 | 2 | two-shot | overlapping lines (dual dialogue, `^`) | `vc-two-<a>-<b>`: the speakers together, on `twoShot` |
-| 3 | close-up | a beat: a `(beat)` or `(pause)` in the line, or an expression the line or an action gives someone (`(smiling)`, `(warmly)`, `[[happy]]`, `[[HANA happy]]`) | `vc-cu-<id>`: a clean single on `closeUp` with a fixed body and its aim raised to the eyes (`offset` 7 cm above the head bone), about 1.5 m from her and up to 1 m down her eyeline. It stands on the scene's side of the line, and the one she plays to stays behind the camera |
+| 3 | close-up | a beat: a `(beat)` or `(pause)` in the line, or an expression the line or an action gives someone (`(smiling)`, `(warmly)`, `[[happy]]`, `[[HANA happy]]`) | `vc-cu-<id>-to-<other>` (`vc-cu-<id>` when she plays to nobody): a clean single on `closeUp` with a fixed body and its aim raised to the eyes (`offset` 7 cm above the head bone), about 1.5 m from her and up to 1 m down her eyeline. It stands on the scene's side of the line, and the one she plays to stays behind the camera |
 | 4 | shot / reverse | a line spoken to someone on a mark | `vc-ots-<speaker>-<listener>`: over the listener's shoulder onto the speaker, placed by M2's `shotReverse()`. The speaker is framed away from the shoulder (`aim.screen[0]` ±0.2), and the reverse mirrors it |
 | 5 | master | anything else (action, voice-over) | `vc-two`: the two-shot of the whole cast. A lone speaker with nobody on a mark to play to gets a frontal close-up instead |
 
@@ -44,10 +44,20 @@ establishing, master, CU Hana, Mira over Hana, Hana over Mira, master, Mira over
 
 **The 180° line.** Each scene is shot from one side of its line, the line between its first two people at its first
 shot. That side is `side` (`+1`: the side the line's normal `[dz, −dx]` points to), or by default the side that faces
-`room` (the set's origin, which is the middle of most sets). Every other line takes the side its master camera stands
-on: another pair's line, or the same pair's after a move. So no cut between two of these cameras crosses a line. People
-who move between marks (`[[MIRA at: window-table]]`) get cameras placed for where they stand at the shot's middle frame.
-A second placement of the same setup is suffixed `-2`.
+`room` (the set's origin, which is the middle of most sets). From then on each pair's side is kept from camera to
+camera: a new camera on a pair stands on the side of their line that the last camera on that pair stood on, judged
+against the line as it ran just before the cut. So when a move swings the line round (Mira crosses to Hana's far side),
+whoever was screen-left stays screen-left, and no cut between two of these cameras crosses a line.
+
+**Moves.** The script's moves between marks (`[[MIRA at: window-table]]`) are step keys, cuts in the world. A move that
+lands inside a shot is a cut in the film too: the shot is filmed in pieces, each with its camera placed for where people
+stand in it (the hook's `splits`, a clip `<beat>#cam:2` of its own). A move on a shot's cut needs nothing more.
+
+**Ids.** A camera's id says what it films: its kind, its people, whom a close-up plays to, and where they stand when that
+isn't their first mark (`vc-ots-mira-hana-1-mira-at-window-table`). The same id is the same camera from build to build,
+so a camera a person put on a shot is still the one they chose after a re-script, even when the rules stop making it
+(the build keeps a node something still uses). Only two different cameras with the same description in one build (the
+same people on the same marks shot from both sides, or two scenes with one heading) take `-2`, `-3` by first use.
 
 **Options** (`coverByRule(options)`): `side`, `room`, `estSize` (0.4), `otsScreen` (0.2).
 
@@ -61,23 +71,30 @@ parentheticals) and `numbers`. These are additive: existing coverage functions s
 camera track:
 - **The people.** Each camera plays to its subjects (aim target or targets, body target). A lone subject's eyeline
   (her lookAt track) adds the one she looks at.
+- **The cuts.** A cut is where a camera track's live clip changes (`clipAt`), so a clip laid over a longer one cuts in
+  and back out.
 - **The line.** The line kept is each pair both shots play to. When they share no pair, it is the line between the two
-  people they show. It runs between where they stand at the cut: cast transforms, transform tracks and shot overrides.
-- **The cameras.** Each camera's place comes from its body: fixed, follow, thirdPerson, orbit, firstPerson or hardLock,
-  from the rig preset under its props.
+  people they show. The outgoing camera is held against the line as it ran on the frame before the cut, the incoming
+  one against the line on the cut, so a move that lands on the cut is judged by what each shot shows. Where people
+  stand comes from cast transforms, the live shot's overrides and transform tracks sampled as they play.
+- **The cameras.** Each camera's place comes from its body: fixed (its transform, with its transform tracks and the
+  shot's overrides), follow, thirdPerson, orbit, firstPerson or hardLock, from the rig preset under its props and the
+  shot's prop overrides.
 - **The verdict.** A cut is flagged when its two cameras are off the line (more than `margin`, 5 cm) on opposite sides.
 
 These cuts are not flagged:
 - a neutral camera standing on the line, which is the way across;
-- a shot with `"crossLine": true`, which crosses on purpose.
+- a cut into or inside a shot with `"crossLine": true`, which crosses on purpose.
 
-A camera whose place can't be known, such as a dolly on a path, isn't checked. `unchecked` lists those cuts.
+A camera whose place can't be known isn't checked: a dolly on a path, or a turntable (an orbit whose `yawSpeed` turns
+it, so where it stands depends on how long it has run). `unchecked` lists those cuts.
 
 ## Replacing a shot's camera
 
 `replaceShotCamera(session, shot, camera)` takes a shot id or number, plus an existing VirtualCamera's id or a new
 VirtualCamera node (`cameraOnRig` makes one on a rig preset). It is one `session.run` step: the node is added and the
-sequence is set. Undo takes both back, and the text is exact on undo and redo. The session is duck-typed like
+sequence is set. The shot's clips are those that start inside it (a shot cut at a move has two); when the clip live at
+its start began earlier, a clip is laid over it for the shot. Undo takes both back, and the text is exact on undo and redo. The session is duck-typed like
 `applyScript`'s: `doc`, `setDoc`, `run`. Unknown cameras, nodes that aren't cameras, ids already taken and no-op swaps
 are refused without a step. The clip keeps its `src`, so on the next re-script the merge marks it `hand`. It stays the
 person's camera and follows its shot's new timing (the script README's rule 2).
@@ -85,12 +102,12 @@ person's camera and follows its shot's new timing (the script README's rule 2).
 ## Storyboard and thumbnails
 
 `storyboard(doc, { set })` returns `{ fps, duration, shots }`. Each shot carries:
-- its id, number, start, end and camera;
+- its id, number, start, end and camera (the one live on its thumbnail frame), and `cameras`, every camera live in it;
 - the thumbnail **frame**: the shot's middle, or after the blend into it when that runs longer;
 - the camera's rig, lens and subjects;
 - the script beat it came from;
 - whether its camera is a hand edit;
-- the lint's message when the cut into it crosses the line.
+- the lint's message when a cut into it or inside it crosses the line.
 
 This is the data the creator's storyboard strip (W5) shows.
 
@@ -104,9 +121,12 @@ below).
 
 `npm test`:
 - **rules:** the sample's eleven shots; one establishing wide per scene; shot / reverse on one side of the line, with
-  `side` as a choice; three people; every beat kind; overlap, voice-over and a lone speaker; moves between marks. Also
+  `side` as a choice; three people; every beat kind; overlap, voice-over and a lone speaker; moves between marks; a
+  move inside a shot that swings the line (cut in two, lint clean) and one on a cut. Also
   the same bytes twice, under portable maths, and against `test/golden.json`.
-- **edit:** the lint on hand-swapped, neutral, deliberate, follow and dolly cameras; one-edit replacement with undo and
+- **edit:** the lint on hand-swapped, neutral, deliberate, follow and dolly cameras, shot overrides (transform and
+  props), a camera's transform track, a turntable, and a clip laid over a longer one; ids that keep a person's pick
+  through a re-script with three people; one-edit replacement with undo and
   redo (existing and new cameras, refusals); a replaced camera kept through a re-script; the storyboard.
 
 The playground demo, `?mode=coverage&renderer=webgl|webgpu` (`apps/playground/src/coverage-check.js`), works like this:

@@ -72,15 +72,16 @@ export function singlePlace(p, to, side, face) {
 }
 
 /**
- * Where a VirtualCamera is on the floor at a moment, from its body and the people's transforms then: fixed (its own
- * transform), follow and thirdPerson (from the target, as virtual.js steps them), orbit, firstPerson and hardLock. A
- * dolly (on a Path3D) or a body without what it needs: null (it can't be checked).
+ * Where a VirtualCamera is on the floor at a moment, from its body and the transforms then: fixed (its own transform at
+ * that moment, so its transform tracks and the shot's overrides count), follow and thirdPerson (from the target, as
+ * virtual.js steps them), orbit, firstPerson and hardLock. A dolly (on a Path3D), a turntable (an orbit whose yawSpeed
+ * turns it: where it is depends on how long it has run) or a body without what it needs: null (it can't be checked).
  * @param {any} node the VirtualCamera @param {any} body its settings' body (rig defaults under its props)
  * @param {(id: string) => any} tfOf a node's transform at that moment
  */
 export function cameraPoint(node, body, tfOf) {
   const type = body.type ?? 'fixed';
-  if (type === 'fixed') return node.transform?.p ?? [0, 0, 0];
+  if (type === 'fixed') return (tfOf(node.id) ?? node.transform)?.p ?? [0, 0, 0];
   const t = body.target ? tfOf(body.target.split('#')[0]) : null;
   if (!t) return null;
   const p = t.p ?? [0, 0, 0];
@@ -97,6 +98,7 @@ export function cameraPoint(node, body, tfOf) {
     return [p[0] - rx * sh + dx * arm, p[1] + EYE + dy * arm, p[2] - rz * sh + dz * arm];
   }
   if (type === 'orbit') {
+    if (body.yawSpeed) return null;
     const DEG = Math.PI / 180, yaw = (body.yaw ?? 0) * DEG, pitch = (body.pitch ?? 15) * DEG, r = body.radius ?? 4;
     return [p[0] + sin(yaw) * cos(pitch) * r, p[1] + EYE + sin(pitch) * r, p[2] + cos(yaw) * cos(pitch) * r];
   }

@@ -1,8 +1,9 @@
 // M4 W8 (AB-T-0580): the playground's ?mode=coverage on both backends in headless Chromium (Metal), each on two loads of
 // the page: the sample script's coverage by rule, and a thumbnail per shot rendered from snapshots, in film order and
 // last shot first (the same pixels both ways). Across loads: the sequence and every thumbnail the same.
-// Writes results/coverage-chromium.json and results/coverage/<backend>-<shot>.png plus <backend>-strip.png (the
-// storyboard strip). Exit 1 on a page error, a 180° issue, or thumbnails that differ.
+// Writes results/coverage-chromium.json (every thumbnail's hash) and results/coverage-<backend>-strip.png (the storyboard
+// strip, committed), and each thumbnail as results/coverage/chromium-<backend>-<shot>.png (git-ignored). Exit 1 on a page
+// error, a 180° issue, or thumbnails that differ.
 //   (cd apps/playground && npx vite build) && node apps/playground/scripts/coverage-chromium.mjs
 import fs from 'node:fs';
 import http from 'node:http';
@@ -43,8 +44,8 @@ const runs = [];
 for (const renderer of backends) for (const load of [1, 2]) {
   const r = await run(renderer);
   if (load === 1 && r.thumbs) {
-    for (const t of r.thumbs) save(path.join(results, 'coverage', `${r.backend}-${t.name}.png`), t.png);
-    save(path.join(results, 'coverage', `${r.backend}-strip.png`), r.strip);
+    for (const t of r.thumbs) save(path.join(results, 'coverage', `chromium-${r.backend}-${t.name}.png`), t.png);
+    save(path.join(results, `coverage-${r.backend}-strip.png`), r.strip);
   }
   const { thumbs = [], strip, board, ...rest } = r;
   runs.push({ load, ...rest, board: load === 1 ? board : undefined, thumbs: thumbs.map(({ png, ...t }) => t) });

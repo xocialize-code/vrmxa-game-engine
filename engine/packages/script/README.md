@@ -47,7 +47,7 @@ expressions.
 - *beat* (0.5 s) and *pause* (1 s) add silence;
 - *to Mira* points the speaker's look.
 
-The full list is `PAREN_WORDS` in `src/vocab.js`.
+The full list is `PAREN_WORDS` in `src/vocab.js`. Its tables have no prototype, so a word such as `constructor` looks up nothing.
 
 ## Stable ids
 
@@ -77,7 +77,7 @@ A changed speaker makes a new beat. A new beat never reuses an id that a hand ed
 | Dialogue | A `dialogue` track per speaker (`hana-1-says`), a clip per line with its text, ready for W7's bake (`@vrmxg/voice` `bakePlan`) |
 | Look-at | A `lookAt` track per character (`hana-1-eyes`). The speaker looks at the one she speaks to: `[[look]]`, then `(to …)`, then the speaker before, then the speaker after. The others look at the speaker. A voice-over line has no looks |
 | Performance | An `animation` track per character on twos (`hana-1-act`): talk under every line (not off screen, not voice-over), and gestures from tags and parentheticals blending in over it (talk blends back after). An `expression` track (`hana-1-face`): a rise over 8 frames to 0.7, a hold to the end of the beat and a fall over 16 frames; overlapping runs of one expression join |
-| Cameras | `coverage(ctx) → { nodes, cuts }` is the hook W8 fills: `@vrmxg/coverage`'s `coverByRule()` gives cameras by rule (its README). Since W8 the hook's `ctx` also carries `markTf` (mark id → transform, for moves), `parsed` (the parsed script) and `numbers` (beat id → shot number), beside `plan`, `shots`, `cast` and `marks`. `defaultCoverage` uses a wide (`vc-wide`, group framing, placed off the line between the first two marks) for headings, action, overlaps and voice-over, and a close-up per speaker (`vc-hana-1`, M2's closeUp rig) for lines. A CameraBrain (`brain`) drives the set's Camera. `DISSOLVE TO:` blends into the next shot's camera over 12 frames; other transitions cut (fades wait for W8/post) |
+| Cameras | `coverage(ctx) → { nodes, cuts }` is the hook W8 fills: `@vrmxg/coverage`'s `coverByRule()` gives cameras by rule (its README). Since W8 the hook's `ctx` also carries `markTf` (mark id → transform, for moves), `parsed` (the parsed script) and `numbers` (beat id → shot number), beside `plan`, `shots`, `cast` and `marks`. A cut may also carry `splits: [{ frame, camera }]` to cut to another camera inside its shot (coverage by rule cuts where a move lands, since moves are step keys): each piece is a clip of its own, src `<beat>#cam:2` and on. `defaultCoverage` uses a wide (`vc-wide`, group framing, placed off the line between the first two marks) for headings, action, overlaps and voice-over, and a close-up per speaker (`vc-hana-1`, M2's closeUp rig) for lines. A CameraBrain (`brain`) drives the set's Camera. `DISSOLVE TO:` blends into the next shot's camera over 12 frames; other transitions cut (fades wait for W8/post) |
 | Markers | One per scene heading |
 | Nodes | The build's nodes (brain, cameras, marks it places) follow the item rules, recorded in `script.nodes`: added when missing; replaced by the new build's while untouched (a mark changed on the title page moves its Marker and the wide camera); the person's once edited (a moved camera stays where they put it); removed when no longer placed, if untouched and nothing in the sequence names them (a character whose lines are all cut loses her close-up) |
 

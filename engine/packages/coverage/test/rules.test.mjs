@@ -9,8 +9,8 @@ import { createValidator } from '@vrmxg/scene';
 import { checkSequence, composeSequence } from '@vrmxg/sequence';
 import { RIGS } from '@vrmxg/camera/rigs';
 import { withPortableMath } from '@vrmxg/dmath';
-import { lintLine, sideOf } from '../src/index.js';
-import { build, ruleByShot, cams, node, set, sample, sha, text, SAMPLE } from './helpers.mjs';
+import { lintLine, sideOf, sceneAt } from '../src/index.js';
+import { build, ruleByShot, cams, node, set, sample, marks, sha, text, SAMPLE } from './helpers.mjs';
 
 const valid = (doc) => assert.deepEqual(checkSequence(doc.sequence, { nodeIds: new Set([...set.nodes, ...doc.nodes].map((n) => n.id)) }), []);
 const pos = (doc, id) => doc.sequence.cast[id].transform.p;
@@ -39,11 +39,11 @@ test('the sample gets coverage by rule: establishing, master, close-ups on beats
     '110': 'closeUp', //      MIRA (warmly) Thank you!
   });
   const { doc } = r;
-  assert.deepEqual(cams(doc).map((c) => c.camera), ['vc-est', 'vc-two', 'vc-cu-hana-1', 'vc-ots-mira-hana-1', 'vc-ots-hana-1-mira', 'vc-two', 'vc-ots-mira-hana-1', 'vc-cu-hana-1', 'vc-cu-hana-1', 'vc-ots-hana-1-mira', 'vc-cu-mira']);
+  assert.deepEqual(cams(doc).map((c) => c.camera), ['vc-est-int-cafe-morning', 'vc-two', 'vc-cu-hana-1-to-mira', 'vc-ots-mira-hana-1', 'vc-ots-hana-1-mira', 'vc-two', 'vc-ots-mira-hana-1', 'vc-cu-hana-1-to-mira', 'vc-cu-hana-1-to-mira', 'vc-ots-hana-1-mira', 'vc-cu-mira-to-hana-1']);
   assert.deepEqual(cams(doc).find((c) => c.blend)?.blend, { frames: 12, style: 'easeInOut' }, 'DISSOLVE TO: still blends');
   // every camera is a VirtualCamera on one of M2's rig presets
   const vcs = doc.nodes.filter((n) => n.type === 'VirtualCamera');
-  assert.deepEqual(vcs.map((n) => n.id), ['vc-est', 'vc-two', 'vc-cu-hana-1', 'vc-ots-mira-hana-1', 'vc-ots-hana-1-mira', 'vc-cu-mira']);
+  assert.deepEqual(vcs.map((n) => n.id), ['vc-est-int-cafe-morning', 'vc-two', 'vc-cu-hana-1-to-mira', 'vc-ots-mira-hana-1', 'vc-ots-hana-1-mira', 'vc-cu-mira-to-hana-1']);
   for (const n of vcs) assert.ok(RIGS[n.props.rig], `${n.id} is on a rig preset`);
   assert.deepEqual(vcs.map((n) => n.props.rig), ['twoShot', 'twoShot', 'closeUp', 'shotReverse', 'shotReverse', 'closeUp']);
   assert.deepEqual(node(doc, 'vc-ots-mira-hana-1').props.aim.target, 'mira', 'over Hana\'s shoulder onto Mira');
@@ -64,21 +64,21 @@ EXT. CAFE - LATER
 Mira waves from the street.
 `);
   assert.deepEqual(ruleByShot(r), { '010': 'establishing', '020': 'master', '030': 'establishing', '040': 'master' });
-  assert.deepEqual(cams(r.doc).map((c) => c.camera), ['vc-est', 'vc-two', 'vc-est-2', 'vc-two']);
-  assert.equal(node(r.doc, 'vc-est-2').name, 'Establishing: EXT. CAFE - LATER');
-  const est = node(r.doc, 'vc-est').transform.p, two = node(r.doc, 'vc-two').transform.p;
+  assert.deepEqual(cams(r.doc).map((c) => c.camera), ['vc-est-int-cafe-morning', 'vc-two', 'vc-est-ext-cafe-later', 'vc-two']);
+  assert.equal(node(r.doc, 'vc-est-ext-cafe-later').name, 'Establishing: EXT. CAFE - LATER');
+  const est = node(r.doc, 'vc-est-int-cafe-morning').transform.p, two = node(r.doc, 'vc-two').transform.p;
   assert.ok(est[1] > two[1], 'higher');
   const mid = [0.6, 0, -3.95];
   const d = (p) => Math.sqrt((p[0] - mid[0]) * (p[0] - mid[0]) + (p[2] - mid[2]) * (p[2] - mid[2]));
   assert.ok(d(est) > d(two), 'further back');
-  assert.equal(node(r.doc, 'vc-est').props.aim.size, 0.4);
+  assert.equal(node(r.doc, 'vc-est-int-cafe-morning').props.aim.size, 0.4);
 });
 
 test('shot / reverse: both setups on the side of the 180° line the scene is shot from; the side is a choice', () => {
   for (const side of [undefined, 1, -1]) {
     const r = build(sample, side ? { coverage: { side } } : {});
     const a = pos(r.doc, 'hana-1'), b = pos(r.doc, 'mira');
-    const sides = ['vc-est', 'vc-two', 'vc-ots-mira-hana-1', 'vc-ots-hana-1-mira', 'vc-cu-hana-1', 'vc-cu-mira'].map((id) => sideOf(a, b, node(r.doc, id).transform.p));
+    const sides = ['vc-est-int-cafe-morning', 'vc-two', 'vc-ots-mira-hana-1', 'vc-ots-hana-1-mira', 'vc-cu-hana-1-to-mira', 'vc-cu-mira-to-hana-1'].map((id) => sideOf(a, b, node(r.doc, id).transform.p));
     assert.equal(new Set(sides).size, 1, `one side (${sides})`);
     assert.equal(sides[0], side ?? -1, 'by default the side facing the middle of the set (the cafe\'s origin is at −x of the line)');
     // the shot frames its speaker away from the listener's shoulder: the reverse mirrors it
@@ -118,10 +118,10 @@ Hello, Kai.
 `;
   const r = build(src, { set: trio });
   assert.deepEqual(ruleByShot(r), { '010': 'establishing', '020': 'shotReverse', '030': 'shotReverse', '040': 'shotReverse', '050': 'shotReverse' });
-  assert.deepEqual(cams(r.doc).map((c) => c.camera), ['vc-est', 'vc-ots-hana-1-mira', 'vc-ots-mira-hana-1', 'vc-ots-kai-hana-1', 'vc-ots-hana-1-kai']);
+  assert.deepEqual(cams(r.doc).map((c) => c.camera), ['vc-est-int-cafe-morning', 'vc-ots-hana-1-mira', 'vc-ots-mira-hana-1', 'vc-ots-kai-hana-1', 'vc-ots-hana-1-kai']);
   assert.deepEqual(lintLine(r.doc, { set: trio }).issues, []);
   // the pair Hana–Kai is shot from the side of their line the master stands on
-  const master = node(r.doc, 'vc-est').transform.p, h = pos(r.doc, 'hana-1'), k = pos(r.doc, 'kai');
+  const master = node(r.doc, 'vc-est-int-cafe-morning').transform.p, h = pos(r.doc, 'hana-1'), k = pos(r.doc, 'kai');
   assert.equal(sideOf(h, k, node(r.doc, 'vc-ots-kai-hana-1').transform.p), sideOf(h, k, master));
   assert.equal(sideOf(h, k, node(r.doc, 'vc-ots-hana-1-kai').transform.p), sideOf(h, k, master));
 });
@@ -150,10 +150,10 @@ Sure.
 Mira looks up. [[MIRA happy]]
 `);
   assert.deepEqual(ruleByShot(r), { '010': 'establishing', '020': 'closeUp', '030': 'closeUp', '040': 'closeUp', '050': 'closeUp', '060': 'shotReverse', '070': 'closeUp' });
-  assert.deepEqual(cams(r.doc).map((c) => c.camera), ['vc-est', 'vc-cu-hana-1', 'vc-cu-mira', 'vc-cu-hana-1', 'vc-cu-mira', 'vc-ots-hana-1-mira', 'vc-cu-mira']);
+  assert.deepEqual(cams(r.doc).map((c) => c.camera), ['vc-est-int-cafe-morning', 'vc-cu-hana-1-to-mira', 'vc-cu-mira-to-hana-1', 'vc-cu-hana-1-to-mira', 'vc-cu-mira-to-hana-1', 'vc-ots-hana-1-mira', 'vc-cu-mira-to-hana-1']);
   assert.deepEqual(r.rules.get(r.doc.sequence.shots[1].src.split('#')[0]).why, 'a beat in the line');
   // a clean single: on the scene's side of her eyeline, the one she plays to behind the camera
-  const cu = node(r.doc, 'vc-cu-hana-1');
+  const cu = node(r.doc, 'vc-cu-hana-1-to-mira');
   assert.deepEqual(cu.props, { rig: 'closeUp', body: { type: 'fixed' }, aim: { target: 'hana-1', offset: [0, 0.07, 0] } });
   assert.deepEqual(cu.transform.p, [-0.5, 1.5, -3.625]);
   assert.deepEqual(lintLine(r.doc, { set }).issues, []);
@@ -208,10 +208,60 @@ Anything else?
 MIRA
 No, thanks.
 `);
-  assert.deepEqual(cams(r.doc).map((c) => c.camera), ['vc-est', 'vc-ots-hana-1-mira', 'vc-ots-mira-hana-1', 'vc-two', 'vc-ots-hana-1-mira-2', 'vc-ots-mira-hana-1-2']);
-  assert.notDeepEqual(node(r.doc, 'vc-ots-hana-1-mira-2').transform, node(r.doc, 'vc-ots-hana-1-mira').transform);
+  // a camera's id says where its people stand when it isn't their first mark
+  assert.deepEqual(cams(r.doc).map((c) => c.camera), ['vc-est-int-cafe-morning', 'vc-ots-hana-1-mira', 'vc-ots-mira-hana-1', 'vc-two-mira-at-window-table', 'vc-ots-hana-1-mira-mira-at-window-table', 'vc-ots-mira-hana-1-mira-at-window-table']);
+  assert.notDeepEqual(node(r.doc, 'vc-ots-hana-1-mira-mira-at-window-table').transform, node(r.doc, 'vc-ots-hana-1-mira').transform);
   valid(r.doc);
   assert.deepEqual(lintLine(r.doc, { set }).issues, [], 'the lint reads the move (a transform track) too');
+});
+
+// Mira crosses to the far side of Hana: the line between them swings round, and whoever was screen-left must stay so
+const across = { ...marks, east: { p: [3, 0, -4.6], q: [0, -0.7071068, 0, 0.7071068] }, west: { p: [-1.8, 0, -4.6], q: [0, 0.7071068, 0, 0.7071068] } };
+const moving = (where, midLine) => `${HEAD}
+HANA
+What can I get you?
+
+MIRA
+${midLine ? `A latte. I will wait over there by the far wall then. [[at: ${where}]] Okay?` : 'A latte.'}
+${midLine ? '' : `\nMira walks. [[MIRA at: ${where}]]\n`}
+HANA
+Anything else?
+
+MIRA
+No, thanks.
+`;
+
+test('a move inside a shot is a cut: the shot is filmed in two pieces, each placed for where people stand, and the line holds', () => {
+  for (const where of ['east', 'west', 'window-table']) {
+    const r = build(moving(where, true), { marks: across });
+    const shot = r.doc.sequence.shots.find((s) => s.name === '030');
+    const move = r.doc.sequence.tracks.find((t) => t.target === 'mira' && t.type === 'transform').keys[1][0];
+    assert.ok(move > shot.start && move < shot.end, 'the move lands inside Mira\'s line');
+    const inShot = cams(r.doc).filter((c) => c.start >= shot.start && c.start < shot.end);
+    assert.deepEqual(inShot.map((c) => [c.start, c.end, c.camera, c.src]), [
+      [shot.start, move, 'vc-ots-mira-hana-1', `${shot.src.split('#')[0]}#cam`],
+      [move, shot.end, `vc-ots-mira-hana-1-mira-at-${where}`, `${shot.src.split('#')[0]}#cam:2`],
+    ]);
+    assert.deepEqual(r.rules.get(shot.src.split('#')[0]).splits, [{ frame: move, camera: `vc-ots-mira-hana-1-mira-at-${where}` }]);
+    valid(r.doc);
+    assert.deepEqual(lintLine(r.doc, { set }), { issues: [], unchecked: [] }, `${where}: no cut crosses the line`);
+    // the swing: east and west put Mira on the other side of Hana, so the cameras after the move change sides of the
+    // line's old run with it (sideOf against the new line agrees with the camera before the cut against the old one)
+    const h = pos(r.doc, 'hana-1'), m0 = pos(r.doc, 'mira'), m1 = sceneAt(r.doc, set).posAt('mira', move);
+    const before = sideOf(h, m0, node(r.doc, 'vc-ots-mira-hana-1').transform.p), after = sideOf(h, m1, node(r.doc, `vc-ots-mira-hana-1-mira-at-${where}`).transform.p);
+    assert.equal(after, before);
+    // a re-script of the same script changes nothing, the second piece included
+    assert.equal(text(build(moving(where, true), { marks: across, previous: JSON.parse(text(r.doc)) }).doc), text(r.doc));
+  }
+});
+
+test('a move on a cut: the camera after it keeps the side the camera before it was on', () => {
+  for (const where of ['east', 'west']) {
+    const r = build(moving(where, false), { marks: across });
+    const shot = r.doc.sequence.shots.find((s) => s.name === '040');
+    assert.equal(r.doc.sequence.tracks.find((t) => t.target === 'mira' && t.type === 'transform').keys[1][0], shot.start, 'the move lands on the cut');
+    assert.deepEqual(lintLine(r.doc, { set }), { issues: [], unchecked: [] });
+  }
 });
 
 test('deterministic: the same script and marks give the same cameras, byte for byte, under native or portable maths', () => {

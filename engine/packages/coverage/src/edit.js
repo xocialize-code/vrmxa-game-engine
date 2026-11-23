@@ -1,11 +1,12 @@
-// Replacing a shot's camera (M4 W8): one edit, one undo step. The shot's camera clip (the clip on a camera track that
-// starts with the shot) takes the new camera, and a new VirtualCamera, when one is given, is added in the same step.
+// Replacing a shot's camera (M4 W8): one edit, one undo step. The shot's camera clips (those that start inside it, or
+// a clip laid over the one live at its start when that began earlier) take the new camera, and a new VirtualCamera,
+// when one is given, is added in the same step.
 // In a script's sequence the clip keeps its src, so the re-script merge sees a hand edit: the person's camera stays
 // through later re-scripts and still follows its shot's timing (@vrmxg/script README, rule 2).
 //
 // The session is duck-typed like @vrmxg/script's applyScript (doc, setDoc?, run(label, ops)), so this package doesn't
 // depend on editor-core.
-import { checkSequence } from '@vrmxg/sequence';
+import { checkSequence, clipAt } from '@vrmxg/sequence';
 import { rigDefaults, RIGS } from '@vrmxg/camera/rigs';
 import { allNodes } from './lint.js';
 
@@ -55,17 +56,27 @@ export function replaceShotCamera(session, shotRef, camera) {
   const next = structuredClone(seq);
   let tracks = next.tracks.filter((t) => t.type === 'camera');
   if (!tracks.length) { const t = { id: 'cameras', type: 'camera', clips: [] }; next.tracks.unshift(t); tracks = [t]; }
-  const clips = tracks.flatMap((t) => (t.clips ?? []).filter((c) => c.start === shot.start));
-  let previous = null;
-  if (clips.length) {
-    previous = clips[0].camera ?? null;
-    if (previous === id && !add && (shot.camera ?? id) === id) throw new Error(`shot ${shot.name ?? shot.id} already shows ${id}`);
-    for (const c of clips) c.camera = id;
-  } else {
-    tracks[0].clips ??= [];
-    tracks[0].clips.push({ start: shot.start, end: shot.end, camera: id });
-    tracks[0].clips.sort((a, b) => a.start - b.start);
+  // the shot's camera clips: every clip that starts inside it (a shot cut at a move has more than one), and, when the
+  // clip live at its start began before it, a clip laid over that one for the shot (clipAt takes the later start)
+  let previous = null, same = true;
+  for (const t of tracks) {
+    t.clips ??= [];
+    const live = clipAt(t, shot.start);
+    if (t === tracks[0] || live) previous ??= live?.camera ?? null;
+    const inside = t.clips.filter((c) => c.start >= shot.start && c.start < shot.end);
+    for (const c of inside) { if (c.camera !== id) same = false; c.camera = id; }
+    if (live && live.start < shot.start) {
+      same = false;
+      const end = Math.min(shot.end, ...inside.map((c) => c.start));
+      t.clips.push({ start: shot.start, end, camera: id });
+      t.clips.sort((a, b) => a.start - b.start);
+    } else if (!live && !inside.length && t === tracks[0]) {
+      same = false;
+      t.clips.push({ start: shot.start, end: shot.end, camera: id });
+      t.clips.sort((a, b) => a.start - b.start);
+    }
   }
+  if (same && !add && (shot.camera ?? id) === id) throw new Error(`shot ${shot.name ?? shot.id} already shows ${id}`);
   const ns = next.shots.find((s) => s.id === shot.id);
   if (ns.camera !== undefined) { previous ??= ns.camera; ns.camera = id; }
   if (session.setDoc) {

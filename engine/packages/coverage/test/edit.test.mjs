@@ -55,7 +55,98 @@ test('the lint places cameras by their bodies: follow close-ups from their targe
   at('040').camera = 'vc-follow-far';
   assert.deepEqual(lintLine(d, { set }).issues.map((x) => x.shots), [['030', '040'], ['040', '050']]);
   at('040').camera = 'vc-dolly';
-  assert.deepEqual(lintLine(d, { set }), { issues: [], unchecked: [{ frame: 225, cameras: ['vc-cu-hana-1', 'vc-dolly'] }, { frame: 310, cameras: ['vc-dolly', 'vc-ots-hana-1-mira'] }] });
+  assert.deepEqual(lintLine(d, { set }), { issues: [], unchecked: [{ frame: 225, cameras: ['vc-cu-hana-1-to-mira', 'vc-dolly'] }, { frame: 310, cameras: ['vc-dolly', 'vc-ots-hana-1-mira'] }] });
+});
+
+test('the lint reads what plays: a shot\'s override and a transform track move a camera, a turntable is unchecked', () => {
+  const { doc } = build();
+  const shot = (d, n) => d.sequence.shots.find((x) => x.name === n);
+  const mirror = (p) => [1.2 - p[0], p[1], p[2]];
+  const across = [['040', '050'], ['050', '060']];
+  // shot 050's override moves its own camera across the line (only while 050 plays: 090 → 100 → 110 is untouched)
+  const o = structuredClone(doc);
+  shot(o, '050').overrides = { 'vc-ots-hana-1-mira': { transform: { p: mirror(node(o, 'vc-ots-hana-1-mira').transform.p) } } };
+  assert.deepEqual(lintLine(o, { set }).issues.map((x) => x.shots), across);
+  // a prop override that turns it into another kind of camera counts too: a follow close-up on Mira's far side
+  const po = structuredClone(doc);
+  shot(po, '050').overrides = { 'vc-ots-hana-1-mira': { props: { rig: 'closeUp', aim: { target: 'mira' }, body: { target: 'mira', offset: [-1.2, 1.55, 0.9] } } } };
+  assert.deepEqual(lintLine(po, { set }).issues.map((x) => x.shots), across);
+  // a transform track on the camera, eased across the line over shot 050 (sampled as it plays, not as a step)
+  const t = structuredClone(doc), s050 = shot(t, '050'), p0 = node(t, 'vc-ots-hana-1-mira').transform.p;
+  t.sequence.tracks.push({ id: 'cam-move', type: 'transform', target: 'vc-ots-hana-1-mira', keys: [[s050.start - 40, { p: p0 }], [s050.start + 40, { p: mirror(p0) }]] });
+  const L = lintLine(t, { set }).issues.map((x) => x.shots);
+  assert.deepEqual(L.slice(0, 1), [['050', '060']], 'at 040 → 050 it is only half way: on the line, neutral; at 050 → 060 it is across');
+  // a turntable: where it stands depends on how long it has turned, so its cuts aren't checked
+  const d = structuredClone(doc);
+  d.nodes.push({ id: 'vc-turn', type: 'VirtualCamera', props: { rig: 'turntable', aim: { target: 'mira' }, body: { target: 'mira', yaw: 90 } } });
+  cams(d).find((x) => x.start === shot(d, '050').start).camera = 'vc-turn';
+  assert.deepEqual(lintLine(d, { set }), { issues: [], unchecked: [{ frame: 310, cameras: ['vc-ots-mira-hana-1', 'vc-turn'] }, { frame: 349, cameras: ['vc-turn', 'vc-two'] }] });
+  // the same orbit standing still is placed and checked
+  node(d, 'vc-turn').props.body.yawSpeed = 0;
+  assert.deepEqual(lintLine(d, { set }).unchecked, []);
+});
+
+test('cuts are where the live clip changes: a clip laid over a longer one cuts in and back out', () => {
+  const { doc } = build();
+  const d = structuredClone(doc);
+  const sh = (n) => d.sequence.shots.find((s) => s.name === n);
+  // a hand edit: 040's clip runs on through 060 (050's and 060's clips removed)
+  const track = d.sequence.tracks.find((t) => t.type === 'camera');
+  track.clips.find((c) => c.start === sh('040').start).end = sh('060').end;
+  track.clips = track.clips.filter((c) => !(c.start === sh('050').start || c.start === sh('060').start));
+  // then 050 gets a camera from across the line: laid over the long clip for 050 alone
+  const s = session(d);
+  const out = replaceShotCamera(s, '050', mirrored(node(d, 'vc-ots-hana-1-mira'), 'vc-wrong'));
+  assert.equal(out.previous, 'vc-ots-mira-hana-1');
+  const t = s.doc.sequence.tracks.find((x) => x.type === 'camera');
+  assert.deepEqual(t.clips.filter((c) => c.start >= sh('040').start && c.start < sh('060').end).map((c) => [c.start, c.end, c.camera]), [[225, sh('060').end, 'vc-ots-mira-hana-1'], [310, 349, 'vc-wrong']]);
+  assert.deepEqual(lintLine(s.doc, { set }).issues.map((x) => [x.frame, x.cameras]), [[310, ['vc-ots-mira-hana-1', 'vc-wrong']], [349, ['vc-wrong', 'vc-ots-mira-hana-1']]]);
+  const board = storyboard(s.doc, { set });
+  assert.deepEqual(board.shots.filter((x) => ['040', '050', '060'].includes(x.name)).map((x) => [x.name, x.camera, !!x.crossesLine]), [['040', 'vc-ots-mira-hana-1', false], ['050', 'vc-wrong', true], ['060', 'vc-ots-mira-hana-1', true]]);
+  s.undo();
+  assert.equal(s.text(), text(d));
+});
+
+test('a camera id says what it films: a person\'s pick is still that camera after a re-script', () => {
+  const trio = structuredClone(set);
+  trio.nodes.push({ id: 'kai', type: 'Character', name: 'Kai', transform: { p: [-0.6, 0, -3.3] } });
+  const S1 = `Title: Three
+Set: cafe.vrmxs
+Marks:
+    HANA = behind-counter
+    MIRA = counter-front
+    KAI = window-table
+
+INT. CAFE - MORNING
+
+HANA
+(to Mira)
+(smiling)
+Morning, Mira.
+
+MIRA
+Morning! This is Kai.
+
+HANA
+(to Kai)
+(beat)
+Hello, Kai.
+
+KAI
+Hi.
+`;
+  const r = build(S1, { set: trio });
+  assert.deepEqual(cams(r.doc).map((c) => c.camera), ['vc-est-int-cafe-morning', 'vc-cu-hana-1-to-mira', 'vc-ots-mira-hana-1', 'vc-cu-hana-1-to-kai', 'vc-ots-kai-hana-1']);
+  const s = new EditorSession({ registry: m0Registry(), text: text(r.doc) }); s.setDoc = trio;
+  replaceShotCamera(s, '050', 'vc-cu-hana-1-to-mira');
+  const chosen = structuredClone(node(s.doc, 'vc-cu-hana-1-to-mira'));
+  // the first line loses its (smiling): the rules no longer make Hana's Mira-facing close-up, but no other camera takes
+  // its id, and the person's clip keeps it (with what it was)
+  applyScript(s, S1.replace('(to Mira)\n(smiling)\n', '(to Mira)\n'), { marks, coverage: coverByRule(), set: trio });
+  const sh = s.doc.sequence.shots.find((x) => x.name === '050');
+  assert.equal(cams(s.doc).find((c) => c.start === sh.start).camera, 'vc-cu-hana-1-to-mira');
+  assert.deepEqual(node(s.doc, 'vc-cu-hana-1-to-mira'), chosen);
+  assert.deepEqual(node(s.doc, 'vc-cu-hana-1-to-kai').transform.p, node(r.doc, 'vc-cu-hana-1-to-kai').transform.p);
 });
 
 test('replacing a shot\'s camera is one edit: one undo step, exact bytes on undo and redo, a new camera in the same step', () => {
@@ -64,7 +155,7 @@ test('replacing a shot\'s camera is one edit: one undo step, exact bytes on undo
   const before = s.text(), depth = s.history().undoDepth;
   // an existing camera, by shot number
   const out = replaceShotCamera(s, '030', 'vc-two');
-  assert.deepEqual(out, { label: 'Shot 030: camera vc-two', camera: 'vc-two', shot: 'shot-ln-cd2c6011', previous: 'vc-cu-hana-1' });
+  assert.deepEqual(out, { label: 'Shot 030: camera vc-two', camera: 'vc-two', shot: 'shot-ln-cd2c6011', previous: 'vc-cu-hana-1-to-mira' });
   assert.equal(s.history().undo, out.label);
   assert.equal(s.history().undoDepth, depth + 1);
   assert.equal(cams(s.doc)[2].camera, 'vc-two');
@@ -118,7 +209,7 @@ test('the storyboard: a thumbnail frame per shot, its camera, rig and people, an
   const board = storyboard(doc, { set });
   assert.equal(board.shots.length, 11);
   assert.deepEqual(board.shots.map((x) => x.frame), [24, 102, 190, 267, 329, 378, 445, 521, 594, 653, 718]);
-  assert.deepEqual(board.shots[3], { id: 'shot-ln-f31ec2ee', name: '040', start: 225, end: 310, frame: 267, camera: 'vc-ots-mira-hana-1', rig: 'shotReverse', lens: 50, subjects: ['mira'], beat: 'ln-f31ec2ee', hand: false, crossesLine: null });
+  assert.deepEqual(board.shots[3], { id: 'shot-ln-f31ec2ee', name: '040', start: 225, end: 310, frame: 267, camera: 'vc-ots-mira-hana-1', cameras: ['vc-ots-mira-hana-1'], rig: 'shotReverse', lens: 50, subjects: ['mira'], beat: 'ln-f31ec2ee', hand: false, crossesLine: null });
   // after a dissolve, the frame waits for the blend; never past the shot
   assert.equal(thumbFrame({ start: 100, end: 120 }, { blend: { frames: 16 } }), 116);
   assert.equal(thumbFrame({ start: 100, end: 110 }, { blend: { frames: 16 } }), 109);
