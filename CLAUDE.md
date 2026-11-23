@@ -56,7 +56,7 @@ git-ignored; commit only what this session owns, staging by path. `npm run check
 | `spike-camera/` | Camera capture: native AVCapture + Vision in the shell beats in-page MediaPipe (main-thread cost); the scheme origin is a secure context for getUserMedia (M3 W5, AB-T-0544) |
 | `spike-avatar-studio/` | Moving the Avatar Studio onto the engine: not needed for M4, and it wouldn't close the UI gaps (same stack). The CLI makes a character the engine casts as is; by hand, the UI lacks a library with a starter wardrobe (U1) and MCP (U2) first. Then the shell (M4 W5) and the stage (after M4 W0) |
 | `spike-registry/` | Node registry → `.vrmxs` schema, lint, undoable edits, generic MCP tools (AB-R-0933); the seed of `engine/packages/registry`, `scene` and `mcp` |
-| `research/` | `cinematics.md` (sequencer, cameras, post, viewports), `npc-ai.md` (behaviour trees, utility, LLM director) |
+| `research/` | `cinematics.md` (sequencer, cameras, post, viewports), `npc-ai.md` (behaviour trees, utility, LLM director), `playcanvas-comparison.md` (VRMXG against PlayCanvas; why not their editor or PCUI; eleven recommendations, AB-T-0599 to 0609) |
 | `reference/` | Godot 4.8-beta source and other reference repos. Read-only |
 | `../VRMXA_Specification/` | The VRMXA / VRMXW specs and the closet protocol (owned elsewhere) |
 | `../vrmxa-companion/` | The companion app (M3 W11, AB-D-0262): its own project and bridge area, on `apps/shell` and the engine's packages by path |
