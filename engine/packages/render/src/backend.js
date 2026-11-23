@@ -52,9 +52,10 @@ export const loadWebGPU = () => (webgpuModule ??= import('three/webgpu').catch((
 /**
  * three.quarks/webgpu's BatchedRenderer (WebGPUBatchedRenderer: TSL node materials), the particle renderer a WebGPU host
  * hands to the particles service (M4 W2; spike-webgpu-render: the same particle hashes, AB-R-1006). Loaded with
- * three/webgpu, never by a WebGL page; WebGL's comes from three.quarks itself.
+ * three/webgpu, never by a WebGL page; WebGL's comes from three.quarks itself. It is @vrmxg/particles/webgpu's subclass
+ * (AB-T-0590): particle colours decoded per draw, so a frame doesn't depend on which draw first compiled the batch.
  */
-export const loadParticleRenderer = async () => (await import('three.quarks/webgpu')).BatchedRenderer;
+export const loadParticleRenderer = async () => (await import('@vrmxg/particles/webgpu')).BatchedRenderer;
 
 /** One warm-up per three/webgpu module (one per page; a test's stand-in module gets its own). */
 const warmUps = new WeakMap();

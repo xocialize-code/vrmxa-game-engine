@@ -3,6 +3,8 @@
 // presentation emitters outside the hash, and the batch renderer's buffers filling.
 // M4 W2 (AB-T-0574): the batch renderer comes from the host (WebGL's or three.quarks/webgpu's, or none headless), and
 // the particles hash the same with each.
+// AB-T-0590: @vrmxg/particles/webgpu's batch renderer compiles one shader whatever the output colour space, and decodes a
+// particle's display colour per draw (a frame no longer depends on which draw first compiled the batch).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { installPortableMath } from '@vrmxg/dmath';
@@ -12,6 +14,8 @@ import { captureWorld, restoreWorld, worldHashes, hashValue } from '@vrmxg/snaps
 import { installParticles, BUILTIN, checkEffect, atlasPixels, TILES } from '@vrmxg/particles';
 import { BatchedRenderer as WebGLBatchedRenderer } from 'three.quarks';
 import { BatchedRenderer as WebGPUBatchedRenderer } from 'three.quarks/webgpu';
+import { BatchedRenderer as DecodeAtDrawRenderer, displayDecode } from '@vrmxg/particles/webgpu';
+import * as W from 'three/webgpu';
 
 installPortableMath();
 
@@ -153,4 +157,58 @@ test('a particles service installed after a host attached the tree still draws w
   t2.renderHost = host;
   t2.instantiate({ format: 'vrmxs', version: 1, id: 'p', nodes: [{ id: 'root', type: 'Node3D' }, { id: 'cup', type: 'ParticleEmitter', parent: 'root', props: { effect: 'steam' } }] });
   assert.ok(p2.batch instanceof WebGPUBatchedRenderer && p2.batch.batches.length > 0, 'on its first emitter');
+});
+
+// ---------------------------------------------------------------- AB-T-0590: colours decoded per draw on WebGPU
+
+/** A WebGPU batch's fragment shader as r187's WGSL builder writes it for a renderer whose output is in `colorSpace`. */
+function fragmentWGSL(batch, colorSpace) {
+  const library = new W.BasicNodeLibrary();
+  const renderer = {
+    library, nodes: { library }, outputColorSpace: colorSpace, toneMapping: W.NoToneMapping, coordinateSystem: W.WebGPUCoordinateSystem,
+    backend: { isWebGPUBackend: true, compatibilityMode: false, hasFeature: () => false, device: { limits: {} }, utils: { getTextureSampleData: () => ({ primarySamples: 1 }) } },
+    contextNode: new W.ContextNode(), getRenderTarget: () => null, getMRT: () => null, getOutputRenderTarget: () => null, getCanvasTarget: () => null,
+    hasFeature: () => false, xr: { enabled: false }, highPrecision: false, logarithmicDepthBuffer: false, reversedDepthBuffer: false,
+    getColorBufferType: () => W.HalfFloatType, debug: { diagnostics: { keywords: false } },
+  };
+  const b = new W.WGSLNodeBuilder(batch, renderer);
+  b.material = batch.material; b.scene = new W.Scene(); b.camera = new W.PerspectiveCamera();
+  b.build();
+  return b.fragmentShader;
+}
+const steamBatch = (R) => {
+  const tree = new SceneTree({ registry: m0Registry(), seed: 5 });
+  const particles = installParticles(tree, { BatchedRenderer: R });
+  tree.instantiate({ format: 'vrmxs', version: 1, id: 'p', nodes: [{ id: 'root', type: 'Node3D' }, { id: 'cup', type: 'ParticleEmitter', parent: 'root', props: { effect: 'steam' } }] });
+  return { batch: particles.batch.batches[0], particles };
+};
+
+test('WebGPU: a batch compiles to one shader whatever the output colour space, so the first draw to compile it decides nothing', () => {
+  // the cause (three.quarks 0.18 on r187): quarks' own materials decode the colour only when compiled for an sRGB output,
+  // and r187 keeps the first compile for every later draw (its cache key has no colour space)
+  const raw = steamBatch(WebGPUBatchedRenderer).batch;
+  assert.notEqual(fragmentWGSL(raw, W.SRGBColorSpace), fragmentWGSL(raw, W.LinearSRGBColorSpace), 'three.quarks\' own WebGPU materials compile differently per output colour space (if this fails, quarks changed: revisit @vrmxg/particles/webgpu)');
+  const { batch, particles } = steamBatch(DecodeAtDrawRenderer);
+  assert.ok(particles.batch instanceof WebGPUBatchedRenderer, 'still three.quarks\' WebGPU batch renderer');
+  const srgb = fragmentWGSL(batch, W.SRGBColorSpace);
+  assert.equal(fragmentWGSL(batch, W.LinearSRGBColorSpace), srgb, 'the same shader for an sRGB output and a linear target');
+  assert.match(srgb, /vrmxgParticleColour/, 'the colour wrapped in the draw-time decode');
+  assert.equal((srgb.match(/textureSample\(/g) ?? []).length, 1, 'one sample of the atlas, no branch');
+});
+
+test('WebGPU: the decode follows the renderer drawing (1 for an sRGB output, 0 inside a linear pass), and survives rebuilt materials and batches', () => {
+  displayDecode.update({ renderer: { outputColorSpace: W.SRGBColorSpace } });
+  assert.equal(displayDecode.value, 1, 'straight to an sRGB output: the display colour decodes to linear, as quarks intends');
+  displayDecode.update({ renderer: { outputColorSpace: W.LinearSRGBColorSpace } });
+  assert.equal(displayDecode.value, 0, 'into a linear target (a RenderPipeline\'s scene pass): the colour as it is, as WebGL\'s batch draws it');
+  const { batch, particles } = steamBatch(DecodeAtDrawRenderer);
+  const wrapped = (m) => m.userData.vrmxgDecodeAtDraw === true;
+  assert.ok(particles.batch.batches.every((b) => wrapped(b.material)), 'every batch\'s material');
+  batch.rebuildMaterial(); // what quarks does for a depth texture or an environment map arriving
+  assert.ok(wrapped(batch.material), 'a rebuilt material too');
+  const before = fragmentWGSL(batch, W.SRGBColorSpace);
+  particles.batch.setProfile({}); // rebuilds every batch: the display colour mode must stay
+  assert.ok(particles.batch.batches.length > 0 && particles.batch.batches.every((b) => wrapped(b.material)), 'and rebuilt batches');
+  assert.equal(particles.batch.profile.colorSpaceMode, 'display');
+  assert.equal(fragmentWGSL(particles.batch.batches[0], W.LinearSRGBColorSpace), before);
 });

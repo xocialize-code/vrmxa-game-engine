@@ -105,8 +105,10 @@ test('RenderHost.create on WebGPU: an initialised WebGPURenderer on the canvas, 
   assert.equal(host.renderer.opts.canvas, canvas);
   assert.equal(host.mtoonMaterial?.name, 'MToonNodeMaterial');
   // M4 W2: particles draw with three.quarks/webgpu's batch renderer (TSL); WebGL hosts keep three.quarks' own
-  const quarksGPU = await import('three.quarks/webgpu'), quarksGL = await import('three.quarks');
-  assert.equal(host.particleRenderer, quarksGPU.WebGPUBatchedRenderer);
+  // AB-T-0590: through @vrmxg/particles/webgpu's subclass, which decodes particle colours per draw
+  const quarksGPU = await import('three.quarks/webgpu'), quarksGL = await import('three.quarks'), particlesGPU = await import('@vrmxg/particles/webgpu');
+  assert.equal(host.particleRenderer, particlesGPU.BatchedRenderer);
+  assert.ok(host.particleRenderer.prototype instanceof quarksGPU.WebGPUBatchedRenderer);
   const gl = new RenderHost({ renderer: { isWebGLRenderer: true, setPixelRatio() {}, shadowMap: {}, render() {}, dispose() {}, getContext: () => ({ drawingBufferWidth: 1, drawingBufferHeight: 1 }) } });
   assert.equal(gl.particleRenderer, quarksGL.BatchedRenderer);
   assert.equal(new RenderHost({ renderer: { setPixelRatio() {}, shadowMap: {}, render() {}, dispose() {} } }).particleRenderer, null, 'a stand-in draws none');
