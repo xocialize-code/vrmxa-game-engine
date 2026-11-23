@@ -320,3 +320,14 @@ test('generated nodes: a moved mark moves the wide; a cast member cut entirely l
   assert.equal(s.text(), text(b.doc));
   s.undo(); assert.equal(s.text(), before);
 });
+
+test('a sequence opened from its file, re-scripted with the same script, is unchanged (keys in the file\'s order)', async () => {
+  const fs = await import('node:fs'), path = await import('node:path');
+  const sample = path.join(import.meta.dirname, '../../../../content/sample');
+  const s = new EditorSession({ registry: m0Registry(), text: fs.readFileSync(path.join(sample, 'sequences/cafe-order.vrmxs'), 'utf8') });
+  s.setDoc = set;
+  const out = applyScript(s, fs.readFileSync(path.join(sample, 'scripts/cafe-order.fountain'), 'utf8'), { marks });
+  assert.equal(out.ok, true);
+  assert.equal(out.changed, false);
+  assert.equal(s.history().undo, null, 'no undo step');
+});

@@ -120,7 +120,7 @@ Generated clips, shots, markers and cast entries carry `src: "<beat>#<role>"` (`
 `release: [beatId]` gives a beat back to the script. A beat's id is in the `src` of everything it made
 (`ln-cd2c6011#say`), and `parsed.beats` from a build maps script lines to ids. Its hand-edited items, deletions and hand keys go, and it is
 generated afresh. In the editor, `applyScript(session, text)` makes the new sequence block and any missing nodes one
-undo step. A script with errors changes nothing, and neither does a build that gives the same document.
+undo step. A script with errors changes nothing, and neither does a build that gives the same document (compared canonically, so a sequence read back from its file, with its keys in the file's order, counts as the same).
 
 ## Tests and checks
 

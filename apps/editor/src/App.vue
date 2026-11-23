@@ -8,7 +8,7 @@ import { McpLink } from './mcp.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 import TreeItem from './TreeItem.vue';
 import Inspector from './Inspector.vue';
-import Timeline from './Timeline.vue';
+import Timeline from '@vrmxg/editor-ui/Timeline.vue'; // shared with the creator (M4 W5)
 
 const canvas = ref(null);
 const ui = reactive({
@@ -313,6 +313,7 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
 html, body, #app { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 13px/1.4 -apple-system, system-ui, sans-serif; }
 .app { display: grid; height: 100%; grid-template: "bar bar bar" auto "left stage right" 1fr "left assets right" 200px "status status status" auto / 280px 1fr 300px; }
 .app.with-timeline { grid-template-rows: auto 1fr 300px auto; }
+.app > .timeline { grid-area: assets; }
 .bar { grid-area: bar; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 10px; background: var(--panel); border-bottom: 1px solid var(--line); }
 .status { grid-area: status; border-top: 1px solid var(--line); border-bottom: 0; font-size: 12px; gap: 14px; }
 .title { margin-right: 4px; }
