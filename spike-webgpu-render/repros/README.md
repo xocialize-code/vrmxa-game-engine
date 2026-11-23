@@ -10,6 +10,9 @@
 | [2-mrtnode-no-mrt.html](2-mrtnode-no-mrt.html) | FAIL (canvas, render target) | PASS | [#35373](https://github.com/mrdoob/three.js/issues/35373), fixed by [#35376](https://github.com/mrdoob/three.js/pull/35376) on 2026-11-08, after r187 | Don't file. The fix ships in r188 |
 | [3-offline-nodeframe.html](3-offline-nodeframe.html) | FAIL | FAIL | Filed as [#35621](https://github.com/mrdoob/three.js/issues/35621) (a feature request: three has no public call for this) | Watch it |
 | First-renderer WGSL order (spike gotcha 6) | not reproduced | not tried | none | Kept out (see the end of this file) |
+| [4-msaa-resolve-under-load.html](4-msaa-resolve-under-load.html) (raw WebGPU, AB-T-0589) | n/a | n/a | none | Negative: random triangles stay exact under load |
+| [5-machine-under-load.html](5-machine-under-load.html) (raw WebGPU, AB-T-0589) | n/a | n/a | not filed | Under another process's GPU load, a rare MSAA draw reverts to the first draw's image |
+| [metal/machine.swift](metal/machine.swift) (native Metal, AB-T-0589) | n/a | n/a | Apple Feedback draft: [FEEDBACK-AB-T-0589.md](FEEDBACK-AB-T-0589.md) (the operator files it) | Reproduces without WebGPU; two copies at once: ~1 MSAA draw in 900 differs |
 
 ### What changed from the spike's account
 
@@ -30,6 +33,56 @@ git clone --depth 1 --filter=blob:none --sparse https://github.com/mrdoob/three.
 THREE_DEV=/tmp/three-dev node spike-webgpu-render/repros/serve.mjs
 THREE_DEV=/tmp/three-dev sh spike-webgpu-render/repros/run.sh    # every page × {r187, dev} → results/<page>-<build>.json
 ```
+
+### Repros 4 and 5: identical draws under GPU load (AB-T-0589, 2026-11-22)
+
+No three.js in either. Each draws one static frame again and again, reads it back and hashes it, so every hash must equal
+the first. `node spike-webgpu-render/repros/under-load.mjs --runs 3 [--page 5-machine-under-load.html] 'iters=20000'` runs
+one in headless Chromium, and `spike-webgpu-render/repros/wkwebview.sh 3 <name> 'iters=20000'` runs repro 5 in WKWebView.
+Both record what else used the GPU meanwhile (`gpuLoad`). Run them alone for the quiet numbers, or while another process
+loads the GPU. Results are in `results/`.
+- **4** (3,000 random triangles into rgba16float, MSAA 4× with the hardware resolve, a shader resolve, or 1 sample, then
+  tone-mapped to rgba8): 0 of 72,000 draws differed, under load.
+- **5** (the sample's espresso machine, 39,782 double-sided triangles, from the film's frame-72 camera in
+  `5-machine-frame72.json`, three-like shading, 1920×1080). The first MSAA draw on fresh targets always differs from the
+  draws after it, in both engines.
+  - Chromium, with WKWebView exporting the film alongside: 4 of 120,000 MSAA draws differed, all the same 39 values in
+    the same pixels (the machine's top right). The second set checked them against the first-draw image: exact.
+  - With two native Metal copies running: Chromium 12 of 60,000, WKWebView 7 of 60,000 MSAA draws (the WKWebView half
+    is measured, not inferred).
+  - At 1 sample, 0 of 240,000 across all of these.
+  - Quiet, with the GPU load recorded (nothing else drawing besides this Mac's idle apps; GPU at a median 16–18% with
+    the repro running): Chromium 1 of 60,000 MSAA draws (the first-draw image again), WKWebView 0 of 60,000; 0 of
+    120,000 at 1 sample (`5-machine-chromium-quiet.json`, `5-machine-wkwebview-quiet.json`). Quiet lowers the rate; it
+    doesn't make it zero.
+- **Native Metal** (`metal/machine.swift`: the same mesh, camera, shading and passes as 5, in one Swift file, no WebGPU):
+  it reproduces, and the odd image is byte-identical to WebGPU's.
+  - With WKWebView exporting the film alongside: 13 of 120,000 MSAA draws differed, all the first-draw image (`709bdc31`,
+    the hash repro 5 got in Chromium). 0 of 120,000 at 1 sample.
+  - **Two copies of the tool at once** (no browser at all): 40 and 51 of 40,000 MSAA draws differed (about a dozen
+    distinct images, the commonest shared by both processes), and 5 and 4 of 40,000 one-sample draws too.
+  - One copy with nothing else deliberately running (GPU ~18% busy, this Mac's other apps and the tool): 1 and 2 of
+    60,000 MSAA draws, 0 at 1 sample. Quiet isn't zero.
+  - Images: `results/metal-images/` (reference, odd, 8× crops and a diff for each case). Counts: `results/metal-machine-*.json`.
+  So the MSAA case is Metal or the GPU on macOS 27.3 beta (26C5047e), M5 Max (Mac17,14). Repro 5's WebGPU path never
+  showed a one-sample difference (0 of 240,000) while native Metal did under two copies, and three's scene did with no
+  MSAA at all (`apps/playground/results/ab-t-0589/sameframe-noaa-noAA.json`): the no-MSAA case is likely the same
+  driver behaviour, but that isn't shown.
+
+  Decision AB-D-0278: report it to Apple (draft: [FEEDBACK-AB-T-0589.md](FEEDBACK-AB-T-0589.md), filed by the
+  operator), build no export mitigation for now, run exact-frame checks on a quiet GPU.
+
+**Re-test on each new macOS beta** (AB-D-0278). Two copies at once; the bug is gone when both report `"differ" : 0` in
+both modes over 40,000 draws:
+
+```bash
+swiftc -O spike-webgpu-render/repros/metal/machine.swift -o spike-webgpu-render/repros/metal/machine
+spike-webgpu-render/repros/metal/machine --iters 40000 --out /tmp/a.json & spike-webgpu-render/repros/metal/machine --iters 40000 --out /tmp/b.json; wait
+```
+
+Then the playground's exports (`apps/playground/scripts/repeat-wkwebview.sh 6 retest 'frames=1080&repeat=3&audio=1&tiles=1'`
+alongside `node apps/playground/scripts/repeat-chromium.mjs --loads 3 --name retest-chromium 'frames=1080&repeat=3&audio=1&tiles=1'`)
+should give no differing frame.
 
 `three-map.js` writes the import map for `?three=` and collects console errors. It also defines `report()`. For an upstream issue, replace it with a CDN import map (the drafts below do).
 

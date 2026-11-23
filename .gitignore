@@ -18,6 +18,7 @@ spike-frame-export/out/
 
 # The post check's full-size stills (apps/playground scripts/post-*.mjs; 960-px previews are committed beside them)
 apps/playground/results/post/
+apps/playground/results/repeat/
 
 # The sample content's generated CC0 clips are committed (content/sample/LICENCES.md)
 !content/sample/animations/clips/*.vrma
@@ -25,3 +26,7 @@ apps/playground/results/post/
 # SwiftPM build folders (apps/shell, apps/*-mac)
 .build/
 __pycache__/
+
+# AB-T-0589 native Metal repro: the built tool and its frame dumps
+spike-webgpu-render/repros/metal/machine
+spike-webgpu-render/repros/metal/out/

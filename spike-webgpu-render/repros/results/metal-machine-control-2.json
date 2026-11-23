@@ -1,0 +1,96 @@
+{
+  "device" : "Apple M5 Max",
+  "firstDrawDiffers" : {
+    "msaa" : true,
+    "one" : false
+  },
+  "iters" : 60000,
+  "modes" : {
+    "msaa" : {
+      "covered" : 4389,
+      "differ" : 1,
+      "firstDiff" : {
+        "at" : [
+          {
+            "ch" : 0,
+            "first" : 53,
+            "here" : 48,
+            "x" : 1072,
+            "y" : 527
+          },
+          {
+            "ch" : 1,
+            "first" : 49,
+            "here" : 44,
+            "x" : 1072,
+            "y" : 527
+          },
+          {
+            "ch" : 2,
+            "first" : 44,
+            "here" : 40,
+            "x" : 1072,
+            "y" : 527
+          },
+          {
+            "ch" : 0,
+            "first" : 61,
+            "here" : 63,
+            "x" : 1066,
+            "y" : 529
+          },
+          {
+            "ch" : 1,
+            "first" : 56,
+            "here" : 58,
+            "x" : 1066,
+            "y" : 529
+          },
+          {
+            "ch" : 2,
+            "first" : 51,
+            "here" : 53,
+            "x" : 1066,
+            "y" : 529
+          },
+          {
+            "ch" : 0,
+            "first" : 98,
+            "here" : 96,
+            "x" : 1048,
+            "y" : 530
+          },
+          {
+            "ch" : 1,
+            "first" : 93,
+            "here" : 91,
+            "x" : 1048,
+            "y" : 530
+          }
+        ],
+        "iter" : 53417,
+        "values" : 39
+      },
+      "likeFirstDraw" : 1,
+      "odd" : {
+        "709bdc31" : 1
+      }
+    },
+    "one" : {
+      "covered" : 4261,
+      "differ" : 0,
+      "likeFirstDraw" : 0,
+      "odd" : {
+
+      }
+    }
+  },
+  "ms" : 285114,
+  "os" : "Version 27.3 (Build 26C5047e)",
+  "pass" : false,
+  "size" : [
+    1920,
+    1080
+  ],
+  "triangles" : 39782
+}

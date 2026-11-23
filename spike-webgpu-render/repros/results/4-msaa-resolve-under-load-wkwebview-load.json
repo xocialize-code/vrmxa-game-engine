@@ -1,0 +1,110 @@
+{
+ "query": "iters=8000",
+ "runs": [
+  {
+   "pass": true,
+   "iters": 8000,
+   "tris": 3000,
+   "size": [
+    1024,
+    576
+   ],
+   "modes": {
+    "hw": {
+     "hdrDistinct": 1,
+     "ldrDistinct": 1,
+     "hdrDiffer": 0,
+     "ldrDiffer": 0,
+     "firstDiff": null
+    },
+    "shader": {
+     "hdrDistinct": 1,
+     "ldrDistinct": 1,
+     "hdrDiffer": 0,
+     "ldrDiffer": 0,
+     "firstDiff": null
+    },
+    "none": {
+     "hdrDistinct": 1,
+     "ldrDistinct": 1,
+     "hdrDiffer": 0,
+     "ldrDiffer": 0,
+     "firstDiff": null
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "ms": 66791,
+   "observation": "hw: 0 of 7999 hdr and 0 ldr read-backs differ from the first; shader: 0 of 7999 hdr and 0 ldr read-backs differ from the first; none: 0 of 7999 hdr and 0 ldr read-backs differ from the first"
+  },
+  {
+   "pass": true,
+   "iters": 8000,
+   "tris": 3000,
+   "size": [
+    1024,
+    576
+   ],
+   "modes": {
+    "hw": {
+     "hdrDistinct": 1,
+     "ldrDistinct": 1,
+     "hdrDiffer": 0,
+     "ldrDiffer": 0,
+     "firstDiff": null
+    },
+    "shader": {
+     "hdrDistinct": 1,
+     "ldrDistinct": 1,
+     "hdrDiffer": 0,
+     "ldrDiffer": 0,
+     "firstDiff": null
+    },
+    "none": {
+     "hdrDistinct": 1,
+     "ldrDistinct": 1,
+     "hdrDiffer": 0,
+     "ldrDiffer": 0,
+     "firstDiff": null
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "ms": 63266,
+   "observation": "hw: 0 of 7999 hdr and 0 ldr read-backs differ from the first; shader: 0 of 7999 hdr and 0 ldr read-backs differ from the first; none: 0 of 7999 hdr and 0 ldr read-backs differ from the first"
+  },
+  {
+   "pass": true,
+   "iters": 8000,
+   "tris": 3000,
+   "size": [
+    1024,
+    576
+   ],
+   "modes": {
+    "hw": {
+     "hdrDistinct": 1,
+     "ldrDistinct": 1,
+     "hdrDiffer": 0,
+     "ldrDiffer": 0,
+     "firstDiff": null
+    },
+    "shader": {
+     "hdrDistinct": 1,
+     "ldrDistinct": 1,
+     "hdrDiffer": 0,
+     "ldrDiffer": 0,
+     "firstDiff": null
+    },
+    "none": {
+     "hdrDistinct": 1,
+     "ldrDistinct": 1,
+     "hdrDiffer": 0,
+     "ldrDiffer": 0,
+     "firstDiff": null
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "ms": 63448,
+   "observation": "hw: 0 of 7999 hdr and 0 ldr read-backs differ from the first; shader: 0 of 7999 hdr and 0 ldr read-backs differ from the first; none: 0 of 7999 hdr and 0 ldr read-backs differ from the first"
+  }
+ ]
+}

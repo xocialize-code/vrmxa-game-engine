@@ -1,0 +1,415 @@
+{
+ "task": "AB-T-0589",
+ "machine": "M5 Max (Mac17,14), macOS 27.3; Chrome for Testing 156 headless (Metal); WKWebView",
+ "rows": [
+  {
+   "file": "burner-wkwebview.json",
+   "about": "Chromium running repro 4 alongside; WKWebView whole film 6 x 3",
+   "exports": 18,
+   "frames": 1080,
+   "oddExports": 2,
+   "digests": {
+    "aa30672928beb2b1": 16,
+    "8e99739b6319fc56": 1,
+    "042b6ec3c076ee49": 1
+   }
+  },
+  {
+   "file": "burner2-wkwebview.json",
+   "about": "Chromium sameFrame alongside; WKWebView whole film 6 x 3",
+   "exports": 18,
+   "frames": 1080,
+   "oddExports": 1,
+   "digests": {
+    "aa30672928beb2b1": 17,
+    "1e30c4c8808849aa": 1
+   }
+  },
+  {
+   "file": "burner3-wkwebview.json",
+   "about": "Chromium sameFrame (noShadows/noMsaa/noPost/base) alongside; 14 x 3",
+   "exports": 42,
+   "frames": 1080,
+   "oddExports": 0,
+   "digests": {
+    "aa30672928beb2b1": 42
+   }
+  },
+  {
+   "file": "burner4-wkwebview.json",
+   "about": "Chromium sameFrame (invariant A/B, WebGL) alongside; 16 x 3",
+   "exports": 48,
+   "frames": 1080,
+   "oddExports": 1,
+   "digests": {
+    "aa30672928beb2b1": 47,
+    "bf1a316a67030424": 1
+   }
+  },
+  {
+   "file": "burner5-wkwebview.json",
+   "about": "Chromium sameFrame (hide/frontSide) alongside; 16 x 3",
+   "exports": 48,
+   "frames": 1080,
+   "oddExports": 1,
+   "digests": {
+    "aa30672928beb2b1": 47,
+    "51e6f603357855e4": 1
+   }
+  },
+  {
+   "file": "burner6-dedupe-wkwebview.json",
+   "about": "BUILD WITH THE COINCIDENT-TRIANGLE CLEANUP (reverted); Chromium sameFrame alongside; 16 x 3",
+   "exports": 48,
+   "frames": 1080,
+   "oddExports": 5,
+   "digests": {
+    "e054248a3cb19ac4": 43,
+    "a492a36266cd8637": 1,
+    "84b1b82b8342cefb": 1,
+    "accdfe88b59b8f1e": 1,
+    "7e5ad1045160ad6f": 1,
+    "ae672e7e1739e0bb": 1
+   }
+  },
+  {
+   "file": "burner7-dedupe-wkwebview.json",
+   "about": "BUILD WITH THE COINCIDENT-TRIANGLE CLEANUP (reverted); Chromium repro 5 alongside; 12 loads, stopped early",
+   "exports": 36,
+   "frames": 1080,
+   "oddExports": 1,
+   "digests": {
+    "e054248a3cb19ac4": 35,
+    "ba3a173c5fe31591": 1
+   }
+  },
+  {
+   "file": "hunt-chromium-audio.json",
+   "about": "quiet; Chromium filmRepeat, 3 x 3 x 360 frames, sound on, WGSL logged",
+   "exports": 9,
+   "frames": 360,
+   "oddExports": 0,
+   "digests": {
+    "01bb67509bc89b9c": 9
+   }
+  },
+  {
+   "file": "hunt-chromium-baseline.json",
+   "about": "quiet; Chromium filmRepeat with TSL post, 3 loads x 3 exports x 120 frames, WGSL logged",
+   "exports": 9,
+   "frames": 120,
+   "oddExports": 0,
+   "digests": {
+    "383a710ac3b04a8b": 9
+   }
+  },
+  {
+   "file": "hunt-wkwebview-audio.json",
+   "about": "quiet; WKWebView loopback, whole film with sound, 6 loads x 3 exports, WGSL logged",
+   "exports": 18,
+   "frames": 1080,
+   "oddExports": 0,
+   "digests": {
+    "aa30672928beb2b1": 18
+   }
+  },
+  {
+   "file": "jitter-chromium.json",
+   "about": "quiet; 0-30 ms random wait after each frame; 3 x 3 x 360",
+   "exports": 9,
+   "frames": 360,
+   "oddExports": 0,
+   "digests": {
+    "01bb67509bc89b9c": 9
+   }
+  },
+  {
+   "file": "lag2-chromium.json",
+   "about": "quiet; exportTake lag 2 (CPU a frame further ahead); 3 x 3 x 360",
+   "exports": 9,
+   "frames": 360,
+   "oddExports": 0,
+   "digests": {
+    "01bb67509bc89b9c": 9
+   }
+  },
+  {
+   "file": "quiet100-wkwebview.json",
+   "about": "quiet (nothing else of ours on the GPU): WKWebView loopback, whole film with sound, 34 loads x 3 = 102 exports, keepTile=72; GPU load recorded per load (gpuLoad)",
+   "exports": 102,
+   "frames": 1080,
+   "oddExports": 0,
+   "digests": {
+    "aa30672928beb2b1": 102
+   },
+   "gpuUtilMedianRange": [
+    8,
+    13
+   ],
+   "gpuUtilMax": 23
+  },
+  {
+   "file": "sameframe-ab-base-1.json",
+   "about": "baseline interleaved with the @invariant runs",
+   "draws": 20000,
+   "odd": 1,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-ab-base-2.json",
+   "about": "as base-1",
+   "draws": 20000,
+   "odd": 1,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-ab-base-3.json",
+   "about": "as base-1",
+   "draws": 20000,
+   "odd": 6,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-ab-inv-1.json",
+   "about": "sameFrame with every vertex position @invariant (experiment, removed), under load",
+   "draws": 20000,
+   "odd": 3,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-ab-inv-2.json",
+   "about": "as inv-1",
+   "draws": 20000,
+   "odd": 2,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-ab-inv-3.json",
+   "about": "as inv-1",
+   "draws": 20000,
+   "odd": 0,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-base.json",
+   "about": "sameFrame baseline in the same burner window",
+   "draws": 40000,
+   "odd": 3,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-dedupe-1.json",
+   "about": "BUILD WITH THE COINCIDENT-TRIANGLE CLEANUP (reverted): sameFrame baseline, under load",
+   "draws": 20000,
+   "odd": 5,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-dedupe-2.json",
+   "about": "as dedupe-1",
+   "draws": 20000,
+   "odd": 2,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-dedupe-3.json",
+   "about": "as dedupe-1",
+   "draws": 20000,
+   "odd": 3,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-dedupe-4.json",
+   "about": "as dedupe-1",
+   "draws": 20000,
+   "odd": 4,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-dedupe-split-base.json",
+   "about": "cleanup build; baseline in the same window",
+   "draws": 20000,
+   "odd": 0,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-dedupe-split-front.json",
+   "about": "cleanup build; the machine single-sided: 4 odd",
+   "draws": 20000,
+   "odd": 4,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-dedupe-split-split.json",
+   "about": "cleanup build; the machine as two culled draws (second run overwrote the first: 2 then 1 odd)",
+   "draws": 20000,
+   "odd": 1,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-load.json",
+   "about": "frame 72 redrawn 20,000 times per load, WKWebView loading the GPU (loads 1-2; load 3 after it finished)",
+   "draws": 60000,
+   "odd": 8,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-noMsaa.json",
+   "about": "sameFrame, the post scene pass at 1 sample (renderer framebuffer still MSAA), under load",
+   "draws": 40000,
+   "odd": 5,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-noPost.json",
+   "about": "sameFrame, no post stack, under load",
+   "draws": 40000,
+   "odd": 5,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-noShadows.json",
+   "about": "sameFrame, shadow maps off, under load",
+   "draws": 40000,
+   "odd": 1,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-noaa-base.json",
+   "about": "baseline between the two noAA runs",
+   "draws": 20000,
+   "odd": 2,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-noaa-noAA.json",
+   "about": "sameFrame with no MSAA anywhere, under load (the first of two runs, 3 odd, was overwritten by this one)",
+   "draws": 20000,
+   "odd": 1,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-scene-base.json",
+   "about": "baseline in the same window",
+   "draws": 20000,
+   "odd": 4,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-scene-front.json",
+   "about": "sameFrame, the machine single-sided, under load (second run overwrote the first: both 0)",
+   "draws": 20000,
+   "odd": 0,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-scene-hide.json",
+   "about": "sameFrame, the espresso machine hidden, under load (second run overwrote the first: both 0)",
+   "draws": 20000,
+   "odd": 0,
+   "backend": "webgpu"
+  },
+  {
+   "file": "sameframe-webgl-1.json",
+   "about": "sameFrame on WebGL, under load: never differs",
+   "draws": 20000,
+   "odd": 0,
+   "backend": "webgl"
+  },
+  {
+   "file": "sameframe-webgl-2.json",
+   "about": "as webgl-1",
+   "draws": 20000,
+   "odd": 0,
+   "backend": "webgl"
+  },
+  {
+   "file": "stress-chromium-audio.json",
+   "about": "WKWebView exporting alongside; Chromium whole film 3 x 3; WGSL identical in odd exports",
+   "exports": 9,
+   "frames": 1080,
+   "oddExports": 4,
+   "digests": {
+    "b071b27dab9f0daf": 1,
+    "ee0f3b0701ecf117": 1,
+    "b702c944db855c65": 1,
+    "d5319f85dfcacc5f": 1,
+    "af463f8e404b4e2b": 5
+   }
+  },
+  {
+   "file": "stress2-chromium.json",
+   "about": "WKWebView alongside; Chromium 5 x 4 x 170 frames; exact pixels and PMREM hashes",
+   "exports": 20,
+   "frames": 170,
+   "oddExports": 1,
+   "digests": {
+    "b8bf3b42de8f76ca": 19,
+    "e1ea955300144280": 1
+   }
+  },
+  {
+   "file": "stress3a-chromium.json",
+   "about": "a second Chromium as the load (no WKWebView); whole film 3 x 3; presentation hashed (onPresent, intrusive)",
+   "exports": 9,
+   "frames": 1080,
+   "oddExports": 0,
+   "digests": {
+    "af463f8e404b4e2b": 9
+   }
+  },
+  {
+   "file": "stress3b-chromium.json",
+   "about": "the other Chromium of stress3a",
+   "exports": 9,
+   "frames": 1080,
+   "oddExports": 0,
+   "digests": {
+    "af463f8e404b4e2b": 9
+   }
+  },
+  {
+   "file": "stress4-chromium.json",
+   "about": "WKWebView alongside; whole film 3 x 3; tiles at 4x kept (results/repeat/, git-ignored)",
+   "exports": 9,
+   "frames": 1080,
+   "oddExports": 1,
+   "digests": {
+    "3f33cf42cb712afa": 1,
+    "af463f8e404b4e2b": 8
+   }
+  },
+  {
+   "file": "stress4-wkwebview.json",
+   "about": "Chromium alongside; WKWebView whole film 6 x 3",
+   "exports": 18,
+   "frames": 1080,
+   "oddExports": 0,
+   "digests": {
+    "aa30672928beb2b1": 18
+   }
+  },
+  {
+   "file": "stress5-chromium.json",
+   "about": "WKWebView alongside; whole film 3 x 3 with pres=1: presentation hash equal at the odd frame",
+   "exports": 9,
+   "frames": 1080,
+   "oddExports": 1,
+   "digests": {
+    "af463f8e404b4e2b": 8,
+    "2afc4f818908ab81": 1
+   }
+  },
+  {
+   "file": "stress5-wkwebview.json",
+   "about": "Chromium alongside; WKWebView whole film 6 x 3 with pres=1: presentation hash equal at the odd frame",
+   "exports": 18,
+   "frames": 1080,
+   "oddExports": 1,
+   "digests": {
+    "aa30672928beb2b1": 17,
+    "6e12464aa9463455": 1
+   }
+  }
+ ]
+}

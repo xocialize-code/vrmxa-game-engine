@@ -1,0 +1,31 @@
+{
+ "query": "?mode=frames&renderer=webgl&parts=sameFrame&frames=72&repeat=20000",
+ "loads": [
+  {
+   "load": 1,
+   "backend": "webgl",
+   "errors": [],
+   "frame": 72,
+   "repeat": 20000,
+   "ms": 145071,
+   "switches": {
+    "noShadows": false,
+    "noPost": false,
+    "noMsaa": false
+   },
+   "distinct": 1,
+   "counts": {
+    "d74feb0cb75a0ce4": 20000
+   },
+   "tileDistinct": 1,
+   "tiles": {
+    "9eb3f771": 20000
+   },
+   "firstOdd": []
+  }
+ ],
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "os": "27.3.0",
+ "exports": 0,
+ "allIdentical": true
+}

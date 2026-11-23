@@ -1,0 +1,79 @@
+{
+ "query": "?mode=frames&renderer=webgpu&parts=sameFrame&frames=72&repeat=20000&noMsaa=1",
+ "loads": [
+  {
+   "load": 1,
+   "backend": "webgpu",
+   "errors": [],
+   "frame": 72,
+   "repeat": 20000,
+   "ms": 108609,
+   "switches": {
+    "noShadows": false,
+    "noPost": false,
+    "noMsaa": true
+   },
+   "distinct": 2,
+   "counts": {
+    "a5822857ea82254d": 19998,
+    "530730d86345d66f": 2
+   },
+   "tileDistinct": 2,
+   "tiles": {
+    "7569ced6": 19998,
+    "791f492f": 2
+   },
+   "firstOdd": [
+    {
+     "iter": 11399,
+     "tile": "791f492f"
+    },
+    {
+     "iter": 17250,
+     "tile": "791f492f"
+    }
+   ]
+  },
+  {
+   "load": 2,
+   "backend": "webgpu",
+   "errors": [],
+   "frame": 72,
+   "repeat": 20000,
+   "ms": 107311,
+   "switches": {
+    "noShadows": false,
+    "noPost": false,
+    "noMsaa": true
+   },
+   "distinct": 2,
+   "counts": {
+    "a5822857ea82254d": 19997,
+    "530730d86345d66f": 3
+   },
+   "tileDistinct": 2,
+   "tiles": {
+    "7569ced6": 19997,
+    "791f492f": 3
+   },
+   "firstOdd": [
+    {
+     "iter": 8764,
+     "tile": "791f492f"
+    },
+    {
+     "iter": 18336,
+     "tile": "791f492f"
+    },
+    {
+     "iter": 19644,
+     "tile": "791f492f"
+    }
+   ]
+  }
+ ],
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "os": "27.3.0",
+ "exports": 0,
+ "allIdentical": false
+}

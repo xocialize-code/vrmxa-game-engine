@@ -1,0 +1,117 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>repro 5: the espresso machine under load</title>
+<!-- Raw WebGPU, no three.js (AB-T-0589). The sample's espresso machine (content/sample/props/espresso-machine.glb: 39,782
+     triangles, double-sided) drawn from the morning film's frame-72 camera (5-machine-frame72.json, taken from the
+     playground) at 1920x1080, again and again, each frame read back and hashed. Nothing changes between draws, so every
+     hash must equal the first. The shading is three-like: a texture sampled with implicit derivatives (mipmapped), the
+     normal flipped on back faces, dpdx/dpdy of the normal for a geometry roughness, a directional light and a highlight.
+     Modes, interleaved per iteration:  msaa  4 samples resolved (as three's framebuffer target)   one  1 sample
+     ?iters=N (3000)  ?cull=none|back (none: the glb is double-sided)  ?modes=msaa,one  ?glb=URL  ?camera=URL
+     Run it alone and while another process loads the GPU (the playground's WKWebView film export). -->
+<body style="margin:0;background:#fff">
+<pre id="out" style="font:12px monospace"></pre>
+<script type="module">
+const q = new URLSearchParams(location.search);
+const W = 1920, H = 1080, ITERS = +(q.get('iters') ?? 3000), CULL = q.get('cull') ?? 'none', MODES = (q.get('modes') ?? 'msaa,one').split(',');
+const log = (s) => { document.getElementById('out').textContent += s + '\n'; };
+const result = { pass: false, iters: ITERS, cull: CULL, size: [W, H], modes: {}, ua: navigator.userAgent };
+try {
+  // ?camera=…&glb=…: other locations for the two files (the WKWebView runner serves them beside the page)
+  const cam = await (await fetch(q.get('camera') ?? '5-machine-frame72.json')).json();
+  const glb = new Uint8Array(await (await fetch(q.get('glb') ?? '../../content/sample/props/espresso-machine.glb')).arrayBuffer());
+  const dv = new DataView(glb.buffer), jsonLen = dv.getUint32(12, true);
+  const json = JSON.parse(new TextDecoder().decode(glb.subarray(20, 20 + jsonLen)));
+  const binStart = 20 + jsonLen + 8;
+  const view = (i) => { const a = json.accessors[i], bv = json.bufferViews[a.bufferView], n = a.count * { SCALAR: 1, VEC2: 2, VEC3: 3 }[a.type];
+    const T = { 5126: Float32Array, 5125: Uint32Array, 5123: Uint16Array }[a.componentType];
+    return new T(glb.buffer.slice(binStart + (bv.byteOffset ?? 0) + (a.byteOffset ?? 0), binStart + (bv.byteOffset ?? 0) + (a.byteOffset ?? 0) + n * T.BYTES_PER_ELEMENT)); };
+  const prim = json.meshes[0].primitives[0];
+  const pos = view(prim.attributes.POSITION), nrm = view(prim.attributes.NORMAL), uv = view(prim.attributes.TEXCOORD_0), idx = new Uint32Array(view(prim.indices));
+  const verts = pos.length / 3, inter = new Float32Array(verts * 8);
+  for (let i = 0; i < verts; i++) inter.set([pos[3 * i], pos[3 * i + 1], pos[3 * i + 2], nrm[3 * i], nrm[3 * i + 1], nrm[3 * i + 2], uv[2 * i], uv[2 * i + 1]], 8 * i);
+  result.triangles = idx.length / 3;
+  const adapter = await navigator.gpu.requestAdapter(), device = await adapter.requestDevice();
+  device.onuncapturederror = (e) => { result.error ??= String(e.error?.message ?? e.error); };
+  const buf = (data, usage) => { const b = device.createBuffer({ size: Math.ceil(data.byteLength / 4) * 4, usage: usage | GPUBufferUsage.COPY_DST }); device.queue.writeBuffer(b, 0, data); return b; };
+  const vbuf = buf(inter, GPUBufferUsage.VERTEX), ibuf = buf(idx, GPUBufferUsage.INDEX);
+  // a uniform block: model, view, projection (column-major, as three's), the camera position
+  const u = new Float32Array(16 * 3 + 4); u.set(cam.model, 0); u.set(cam.view, 16); u.set(cam.projection, 32); u.set(cam.cameraPosition, 48);
+  const ubuf = buf(u, GPUBufferUsage.UNIFORM);
+  // a mipmapped texture made on the CPU (a fine pattern, so the mip level matters)
+  const TS = 256, levels = 9, tex = device.createTexture({ size: [TS, TS], format: 'rgba8unorm', mipLevelCount: levels, usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST });
+  let lv = new Uint8Array(TS * TS * 4);
+  for (let y = 0; y < TS; y++) for (let x = 0; x < TS; x++) { const o = (y * TS + x) * 4, c = ((x >> 2) ^ (y >> 2)) & 1 ? 230 : 60; lv.set([c, c * 0.9, c * 0.8, 255], o); }
+  for (let l = 0, s = TS; l < levels; l++, s >>= 1) {
+    device.queue.writeTexture({ texture: tex, mipLevel: l }, lv, { bytesPerRow: s * 4 }, [s, s]);
+    if (s > 1) { const n = s >> 1, next = new Uint8Array(n * n * 4); for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) for (let c = 0; c < 4; c++) next[(y * n + x) * 4 + c] = (lv[((2 * y) * s + 2 * x) * 4 + c] + lv[((2 * y) * s + 2 * x + 1) * 4 + c] + lv[((2 * y + 1) * s + 2 * x) * 4 + c] + lv[((2 * y + 1) * s + 2 * x + 1) * 4 + c] + 2) >> 2; lv = next; }
+  }
+  const sampler = device.createSampler({ magFilter: 'linear', minFilter: 'linear', mipmapFilter: 'linear', addressModeU: 'repeat', addressModeV: 'repeat' });
+  const code = /* wgsl */`
+    diagnostic(off, derivative_uniformity);
+    struct U { model: mat4x4f, view: mat4x4f, projection: mat4x4f, eye: vec4f };
+    @group(0) @binding(0) var<uniform> u: U;
+    @group(0) @binding(1) var t: texture_2d<f32>;
+    @group(0) @binding(2) var s: sampler;
+    struct O { @builtin(position) p: vec4f, @location(0) n: vec3f, @location(1) uv: vec2f, @location(2) w: vec3f };
+    @vertex fn vs(@location(0) p: vec3f, @location(1) n: vec3f, @location(2) uv: vec2f) -> O {
+      var o: O; let w = u.model * vec4f(p, 1); o.p = u.projection * u.view * w; o.n = (u.model * vec4f(n, 0)).xyz; o.uv = uv; o.w = w.xyz; return o; }
+    @fragment fn fs(i: O, @builtin(front_facing) ff: bool) -> @location(0) vec4f {
+      let base = textureSample(t, s, i.uv * 8.0).rgb;
+      var n = normalize(i.n); if (!ff) { n = -n; }
+      let dxy = max(abs(dpdx(n)), abs(dpdy(n)));
+      let rough = clamp(0.3 + max(max(dxy.x, dxy.y), dxy.z), 0.0, 1.0);
+      let l = normalize(vec3f(0.4, 1.0, 0.6)); let v = normalize(u.eye.xyz - i.w); let h = normalize(l + v);
+      let spec = pow(max(dot(n, h), 0.0), mix(64.0, 4.0, rough));
+      let c = base * (0.25 + 0.75 * max(dot(n, l), 0.0)) + vec3f(spec * 0.6);
+      return vec4f(c / (1.0 + c), 1.0);
+    }`;
+  const module = device.createShaderModule({ code });
+  const layout = [{ arrayStride: 32, attributes: [{ shaderLocation: 0, offset: 0, format: 'float32x3' }, { shaderLocation: 1, offset: 12, format: 'float32x3' }, { shaderLocation: 2, offset: 24, format: 'float32x2' }] }];
+  const pipe = (samples) => device.createRenderPipeline({ layout: 'auto', vertex: { module, buffers: layout }, fragment: { module, targets: [{ format: 'rgba8unorm' }] },
+    primitive: { topology: 'triangle-list', cullMode: CULL }, depthStencil: { format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'less' }, multisample: { count: samples } });
+  const pipes = { msaa: pipe(4), one: pipe(1) };
+  const groups = Object.fromEntries(Object.entries(pipes).map(([k, p]) => [k, device.createBindGroup({ layout: p.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: ubuf } }, { binding: 1, resource: tex.createView() }, { binding: 2, resource: sampler }] })]));
+  const att = (format, samples, usage = GPUTextureUsage.RENDER_ATTACHMENT) => device.createTexture({ size: [W, H], format, sampleCount: samples, usage });
+  const T = { msColor: att('rgba8unorm', 4), msDepth: att('depth24plus', 4), depth: att('depth24plus', 1), out: att('rgba8unorm', 1, GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC) };
+  const rb = device.createBuffer({ size: W * H * 4, usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST });
+  const fnv = (u8) => { const u = new Uint32Array(u8.buffer, u8.byteOffset, u8.byteLength >> 2); let h = 0x811c9dc5; for (let i = 0; i < u.length; i++) h = Math.imul(h ^ u[i], 0x01000193); return (h >>> 0).toString(16).padStart(8, '0'); };
+  async function frame(mode) {
+    const enc = device.createCommandEncoder();
+    const color = mode === 'msaa' ? { view: T.msColor.createView(), resolveTarget: T.out.createView(), loadOp: 'clear', storeOp: 'discard', clearValue: [0.5, 0.5, 0.5, 1] } : { view: T.out.createView(), loadOp: 'clear', storeOp: 'store', clearValue: [0.5, 0.5, 0.5, 1] };
+    const p = enc.beginRenderPass({ colorAttachments: [color], depthStencilAttachment: { view: (mode === 'msaa' ? T.msDepth : T.depth).createView(), depthClearValue: 1, depthLoadOp: 'clear', depthStoreOp: 'discard' } });
+    p.setPipeline(pipes[mode]); p.setBindGroup(0, groups[mode]); p.setVertexBuffer(0, vbuf); p.setIndexBuffer(ibuf, 'uint32'); p.drawIndexed(idx.length); p.end();
+    enc.copyTextureToBuffer({ texture: T.out }, { buffer: rb, bytesPerRow: W * 4 }, [W, H]);
+    device.queue.submit([enc.finish()]);
+    await rb.mapAsync(GPUMapMode.READ);
+    const px = new Uint8Array(rb.getMappedRange()).slice(); rb.unmap();
+    return px;
+  }
+  // one warm-up draw per mode: the first MSAA draw after creating its targets comes out differently from every later one
+  // (seen in Chromium; deterministic, and not what this page hunts)
+  result.firstDrawDiffers = {}; const firstDraw = {};
+  for (const m of MODES) { const a = fnv(await frame(m)), b = fnv(await frame(m)); result.firstDrawDiffers[m] = a !== b; firstDraw[m] = a; }
+  const ref = {}, t0 = performance.now();
+  for (const m of MODES) result.modes[m] = { differ: 0, distinct: new Set(), firstDiff: null };
+  for (let i = 0; i < ITERS; i++) {
+    for (const m of MODES) {
+      const px = await frame(m), h = fnv(px), o = result.modes[m];
+      o.distinct.add(h);
+      if (!ref[m]) { ref[m] = { px, h }; let c = 0; for (let k = 0; k < px.length; k += 4) if (px[k] !== 128 || px[k + 1] !== 128) c++; o.covered = c; continue; }
+      if (h !== ref[m].h) {
+        o.differ++;
+        (o.oddHashes ??= {})[h] = (o.oddHashes[h] ?? 0) + 1;
+        if (h === firstDraw[m]) o.likeFirstDraw = (o.likeFirstDraw ?? 0) + 1;
+        if (!o.firstDiff) { const at = []; let n = 0; for (let k = 0; k < px.length; k++) if (px[k] !== ref[m].px[k]) { n++; if (at.length < 8) { const p4 = k >> 2; at.push({ x: p4 % W, y: Math.floor(p4 / W), ch: k & 3, here: px[k], first: ref[m].px[k] }); } } o.firstDiff = { iter: i, values: n, at }; }
+      }
+    }
+    if (i % 500 === 0) log(`${i}: ${MODES.map((m) => `${m} ${result.modes[m].differ}`).join('  ')}`);
+  }
+  result.ms = Math.round(performance.now() - t0);
+  for (const m of MODES) result.modes[m].distinct = result.modes[m].distinct.size;
+  result.pass = MODES.every((m) => result.modes[m].differ === 0);
+  result.observation = MODES.map((m) => `${m}: ${result.modes[m].differ} of ${ITERS - 1} draws differ from the first (${result.modes[m].distinct} distinct)`).join('; ');
+} catch (e) { result.error = String(e?.stack ?? e); }
+log(JSON.stringify(result, null, 1));
+window.__result = result; window.READY = true;
+</script>

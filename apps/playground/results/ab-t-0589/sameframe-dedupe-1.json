@@ -1,0 +1,60 @@
+{
+ "query": "?mode=frames&renderer=webgpu&parts=sameFrame&frames=72&repeat=20000",
+ "loads": [
+  {
+   "load": 1,
+   "backend": "webgpu",
+   "errors": [],
+   "frame": 72,
+   "repeat": 20000,
+   "ms": 106771,
+   "switches": {
+    "noShadows": false,
+    "noPost": false,
+    "noMsaa": false,
+    "hide": null,
+    "frontSide": null
+   },
+   "distinct": 4,
+   "counts": {
+    "34a9352c8c404d44": 19995,
+    "2fa240359eab90c7": 1,
+    "6586b2805320e8a1": 3,
+    "3a5b4bcfac30a565": 1
+   },
+   "tileDistinct": 4,
+   "tiles": {
+    "c19e6775": 19995,
+    "4269850f": 1,
+    "b4e2617a": 3,
+    "4d7070a7": 1
+   },
+   "firstOdd": [
+    {
+     "iter": 3981,
+     "tile": "4269850f"
+    },
+    {
+     "iter": 7451,
+     "tile": "b4e2617a"
+    },
+    {
+     "iter": 8098,
+     "tile": "b4e2617a"
+    },
+    {
+     "iter": 12512,
+     "tile": "b4e2617a"
+    },
+    {
+     "iter": 13116,
+     "tile": "4d7070a7"
+    }
+   ]
+  }
+ ],
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "os": "27.3.0",
+ "exports": 0,
+ "allIdentical": false
+}

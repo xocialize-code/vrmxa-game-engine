@@ -1,0 +1,414 @@
+{
+ "engine": "WKWebView",
+ "runs": [
+  {
+   "case": "iters=20000&glb=espresso-machine.glb&camera=5-machine-frame72.json&run=1",
+   "timedOut": false,
+   "errors": [],
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "gpuLoad": {
+    "samples": 14,
+    "gpuUtil": {
+     "min": 13,
+     "median": 28,
+     "max": 34
+    },
+    "seen": {
+     "webkit:com.apple.WebKit.GPU": 26.5,
+     "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+     "webkit:com.apple.WebKit.WebContent": 74.2,
+     "node:node": 0.2,
+     "metal-repro:machine": 85.6,
+     "harness:CinematicsSpike": 0.1
+    },
+    "first": {
+     "at": 1795419760709,
+     "gpuUtil": 13,
+     "processes": [
+      "metal-repro:machine 85.6%",
+      "metal-repro:machine 84.3%"
+     ],
+     "otherGpuHelpers": 1
+    },
+    "last": {
+     "at": 1795419955789,
+     "gpuUtil": 27,
+     "processes": [
+      "metal-repro:machine 84.8%",
+      "metal-repro:machine 84.7%",
+      "webkit:com.apple.WebKit.GPU 26.1%",
+      "webkit:com.apple.WebKit.WebContent 72.7%"
+     ],
+     "otherGpuHelpers": 1
+    }
+   },
+   "cull": "none",
+   "firstDrawDiffers": {
+    "msaa": true,
+    "one": false
+   },
+   "iters": 20000,
+   "modes": {
+    "msaa": {
+     "covered": 4389,
+     "differ": 3,
+     "distinct": 4,
+     "firstDiff": {
+      "at": [
+       {
+        "ch": 0,
+        "first": 87,
+        "here": 86,
+        "x": 1068,
+        "y": 525
+       },
+       {
+        "ch": 0,
+        "first": 61,
+        "here": 62,
+        "x": 1076,
+        "y": 577
+       },
+       {
+        "ch": 1,
+        "first": 57,
+        "here": 58,
+        "x": 1076,
+        "y": 577
+       },
+       {
+        "ch": 2,
+        "first": 52,
+        "here": 53,
+        "x": 1076,
+        "y": 577
+       },
+       {
+        "ch": 1,
+        "first": 53,
+        "here": 52,
+        "x": 1069,
+        "y": 582
+       },
+       {
+        "ch": 2,
+        "first": 48,
+        "here": 47,
+        "x": 1069,
+        "y": 582
+       },
+       {
+        "ch": 1,
+        "first": 51,
+        "here": 52,
+        "x": 1069,
+        "y": 585
+       },
+       {
+        "ch": 0,
+        "first": 46,
+        "here": 44,
+        "x": 1074,
+        "y": 585
+       }
+      ],
+      "iter": 305,
+      "values": 14
+     },
+     "oddHashes": {
+      "5cc158c7": 1,
+      "422d6bb8": 1,
+      "c6e77241": 1
+     }
+    },
+    "one": {
+     "covered": 4261,
+     "differ": 0,
+     "distinct": 1,
+     "firstDiff": null
+    }
+   },
+   "ms": 188590,
+   "observation": "msaa: 3 of 19999 draws differ from the first (4 distinct); one: 0 of 19999 draws differ from the first (1 distinct)",
+   "pass": false,
+   "size": [
+    1920,
+    1080
+   ],
+   "triangles": 39782
+  },
+  {
+   "case": "iters=20000&glb=espresso-machine.glb&camera=5-machine-frame72.json&run=2",
+   "timedOut": false,
+   "errors": [],
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "gpuLoad": {
+    "samples": 15,
+    "gpuUtil": {
+     "min": 26,
+     "median": 28,
+     "max": 31
+    },
+    "seen": {
+     "webkit:com.apple.WebKit.GPU": 26.2,
+     "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+     "webkit:com.apple.WebKit.WebContent": 74.5,
+     "node:node": 0.2,
+     "metal-repro:machine": 85.8,
+     "harness:CinematicsSpike": 0.1
+    },
+    "first": {
+     "at": 1795419940786,
+     "gpuUtil": 29,
+     "processes": [
+      "metal-repro:machine 84.8%",
+      "metal-repro:machine 84.8%",
+      "webkit:com.apple.WebKit.GPU 25.8%",
+      "webkit:com.apple.WebKit.WebContent 72.8%"
+     ],
+     "otherGpuHelpers": 1
+    },
+    "last": {
+     "at": 1795420150813,
+     "gpuUtil": 29,
+     "processes": [
+      "webkit:com.apple.WebKit.WebContent 73.7%",
+      "metal-repro:machine 85.3%",
+      "metal-repro:machine 85.8%",
+      "webkit:com.apple.WebKit.GPU 25.5%"
+     ],
+     "otherGpuHelpers": 1
+    }
+   },
+   "cull": "none",
+   "firstDrawDiffers": {
+    "msaa": true,
+    "one": false
+   },
+   "iters": 20000,
+   "modes": {
+    "msaa": {
+     "covered": 4389,
+     "differ": 3,
+     "distinct": 3,
+     "firstDiff": {
+      "at": [
+       {
+        "ch": 0,
+        "first": 98,
+        "here": 96,
+        "x": 1048,
+        "y": 530
+       },
+       {
+        "ch": 1,
+        "first": 93,
+        "here": 91,
+        "x": 1048,
+        "y": 530
+       },
+       {
+        "ch": 2,
+        "first": 86,
+        "here": 84,
+        "x": 1048,
+        "y": 530
+       },
+       {
+        "ch": 0,
+        "first": 108,
+        "here": 109,
+        "x": 1049,
+        "y": 530
+       },
+       {
+        "ch": 2,
+        "first": 98,
+        "here": 99,
+        "x": 1049,
+        "y": 530
+       },
+       {
+        "ch": 0,
+        "first": 99,
+        "here": 106,
+        "x": 1048,
+        "y": 531
+       },
+       {
+        "ch": 1,
+        "first": 93,
+        "here": 101,
+        "x": 1048,
+        "y": 531
+       },
+       {
+        "ch": 2,
+        "first": 87,
+        "here": 96,
+        "x": 1048,
+        "y": 531
+       }
+      ],
+      "iter": 7878,
+      "values": 22
+     },
+     "oddHashes": {
+      "0cfd905c": 1,
+      "c6e77241": 2
+     }
+    },
+    "one": {
+     "covered": 4261,
+     "differ": 0,
+     "distinct": 1,
+     "firstDiff": null
+    }
+   },
+   "ms": 188930,
+   "observation": "msaa: 3 of 19999 draws differ from the first (3 distinct); one: 0 of 19999 draws differ from the first (1 distinct)",
+   "pass": false,
+   "size": [
+    1920,
+    1080
+   ],
+   "triangles": 39782
+  },
+  {
+   "case": "iters=20000&glb=espresso-machine.glb&camera=5-machine-frame72.json&run=3",
+   "timedOut": false,
+   "errors": [],
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "gpuLoad": {
+    "samples": 13,
+    "gpuUtil": {
+     "min": 27,
+     "median": 28,
+     "max": 30
+    },
+    "seen": {
+     "webkit:com.apple.WebKit.GPU": 26.4,
+     "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+     "webkit:com.apple.WebKit.WebContent": 74,
+     "node:node": 0.4,
+     "metal-repro:machine": 85.8,
+     "harness:CinematicsSpike": 0.1
+    },
+    "first": {
+     "at": 1795420135810,
+     "gpuUtil": 30,
+     "processes": [
+      "metal-repro:machine 85%",
+      "metal-repro:machine 85.1%",
+      "webkit:com.apple.WebKit.GPU 26.2%",
+      "webkit:com.apple.WebKit.WebContent 73%"
+     ],
+     "otherGpuHelpers": 1
+    },
+    "last": {
+     "at": 1795420315831,
+     "gpuUtil": 29,
+     "processes": [
+      "webkit:com.apple.WebKit.WebContent 73.4%",
+      "metal-repro:machine 85.5%",
+      "metal-repro:machine 85.5%",
+      "webkit:com.apple.WebKit.GPU 25.9%"
+     ],
+     "otherGpuHelpers": 1
+    }
+   },
+   "cull": "none",
+   "firstDrawDiffers": {
+    "msaa": true,
+    "one": false
+   },
+   "iters": 20000,
+   "modes": {
+    "msaa": {
+     "covered": 4389,
+     "differ": 1,
+     "distinct": 2,
+     "firstDiff": {
+      "at": [
+       {
+        "ch": 0,
+        "first": 98,
+        "here": 96,
+        "x": 1048,
+        "y": 530
+       },
+       {
+        "ch": 1,
+        "first": 93,
+        "here": 91,
+        "x": 1048,
+        "y": 530
+       },
+       {
+        "ch": 2,
+        "first": 86,
+        "here": 84,
+        "x": 1048,
+        "y": 530
+       },
+       {
+        "ch": 0,
+        "first": 108,
+        "here": 109,
+        "x": 1049,
+        "y": 530
+       },
+       {
+        "ch": 2,
+        "first": 98,
+        "here": 99,
+        "x": 1049,
+        "y": 530
+       },
+       {
+        "ch": 0,
+        "first": 99,
+        "here": 106,
+        "x": 1048,
+        "y": 531
+       },
+       {
+        "ch": 1,
+        "first": 93,
+        "here": 101,
+        "x": 1048,
+        "y": 531
+       },
+       {
+        "ch": 2,
+        "first": 87,
+        "here": 96,
+        "x": 1048,
+        "y": 531
+       }
+      ],
+      "iter": 8673,
+      "values": 22
+     },
+     "oddHashes": {
+      "c6e77241": 1
+     }
+    },
+    "one": {
+     "covered": 4261,
+     "differ": 0,
+     "distinct": 1,
+     "firstDiff": null
+    }
+   },
+   "ms": 188955,
+   "observation": "msaa: 1 of 19999 draws differ from the first (2 distinct); one: 0 of 19999 draws differ from the first (1 distinct)",
+   "pass": false,
+   "size": [
+    1920,
+    1080
+   ],
+   "triangles": 39782
+  }
+ ]
+}

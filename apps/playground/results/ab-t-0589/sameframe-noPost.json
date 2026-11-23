@@ -1,0 +1,82 @@
+{
+ "query": "?mode=frames&renderer=webgpu&parts=sameFrame&frames=72&repeat=20000&noPost=1",
+ "loads": [
+  {
+   "load": 1,
+   "backend": "webgpu",
+   "errors": [],
+   "frame": 72,
+   "repeat": 20000,
+   "ms": 95498,
+   "switches": {
+    "noShadows": false,
+    "noPost": true,
+    "noMsaa": false
+   },
+   "distinct": 3,
+   "counts": {
+    "b55458b16802bed5": 19997,
+    "c0636461751207e5": 1,
+    "028e70a65d3f8bb3": 2
+   },
+   "tileDistinct": 3,
+   "tiles": {
+    "20c8cb80": 19997,
+    "dec3c42f": 1,
+    "55239bfd": 2
+   },
+   "firstOdd": [
+    {
+     "iter": 1405,
+     "tile": "dec3c42f"
+    },
+    {
+     "iter": 7402,
+     "tile": "55239bfd"
+    },
+    {
+     "iter": 10568,
+     "tile": "55239bfd"
+    }
+   ]
+  },
+  {
+   "load": 2,
+   "backend": "webgpu",
+   "errors": [],
+   "frame": 72,
+   "repeat": 20000,
+   "ms": 94924,
+   "switches": {
+    "noShadows": false,
+    "noPost": true,
+    "noMsaa": false
+   },
+   "distinct": 3,
+   "counts": {
+    "b55458b16802bed5": 19998,
+    "33e2bd4b6b6fa27d": 1,
+    "61168d2e9060daa5": 1
+   },
+   "tileDistinct": 2,
+   "tiles": {
+    "20c8cb80": 19998,
+    "2ea81784": 2
+   },
+   "firstOdd": [
+    {
+     "iter": 10117,
+     "tile": "2ea81784"
+    },
+    {
+     "iter": 13349,
+     "tile": "2ea81784"
+    }
+   ]
+  }
+ ],
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "os": "27.3.0",
+ "exports": 0,
+ "allIdentical": false
+}

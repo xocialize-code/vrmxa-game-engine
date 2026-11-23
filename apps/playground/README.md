@@ -141,7 +141,24 @@ frame back through `@vrmxg/export`'s `readbackFor` and hashes it. `&parts=` pick
 - **reuse:** a 640×360 still, then 24 film frames at 1080p on the same host, against a fresh host's: equal, with content.
 - **alpha:** a red quad at opacity 0.5 over nothing; its middle pixel as read back, and after `toImageRGBA`.
 - **filmRepeat** (not in the default parts, for AB-T-0589): `&frames=1080&repeat=3&audio=1&tiles=1` exports the film
-  three times per page and returns any frame that differs, with the tiles that differ and its images.
+  three times per page and returns any frame that differs, with the tiles that differ and its images. With
+  `&keepTile=72` it keeps that tile of every frame of the first export (about 62 MB a whole film), so a differing frame
+  lists its exact pixels there and comes with both tiles at 4×. It records the node-frame ids and the view's draws
+  between frames (`timing`), each export's room PMREM hash, and wall-clock bounds (for the runners' GPU-load samples).
+  `&pres=1` hashes what the CPU hands the GPU right after each draw (the camera's matrices, every visible mesh's world
+  matrix, the uploaded bone matrices), and throws if any frame went unhashed; `&wgsl=1` records every shader module per export and lists
+  any the first export didn't compile; `&jitter=N`, `&lag=N` and `&serial=1` vary the timing between offline frames.
+- **sameFrame** (AB-T-0589): `&frames=72&repeat=20000` draws the film's frame 72 again and again on one host, with
+  nothing stepped or changed between draws, and counts the distinct images (and tile 72's). Switches: `noShadows`,
+  `noPost`, `noMsaa` (the post's scene pass at 1 sample), `noAA` (no MSAA anywhere), `hide=<node>`,
+  `frontSide=<node>`, `split=<node>` (a double-sided node as two culled draws).
+
+AB-T-0589's runners: `scripts/repeat-chromium.mjs` (`--loads N --name X [--part sameFrame] [--renderer webgl]
+'query'`) and `scripts/repeat-wkwebview.sh loads name 'query' [origins]`, which runs the harness as an app and bundle id of
+its own per run name, so two runs at once can't delete each other's app or overwrite each other's results. Both record
+what else used the GPU during each load (`gpuLoad`, from `scripts/gpu-load.mjs`: the GPU's utilisation, and the WebKit,
+Chromium, python, MLX and harness processes). Both write `results/<name>.json` and put images and load logs in
+`results/repeat/` (git-ignored); AB-T-0589's runs are in `results/ab-t-0589/`.
 
 ```sh
 (cd apps/playground && npx vite build)
@@ -160,13 +177,51 @@ apps/playground/scripts/frames-wkwebview.sh          # WKWebView, scheme and loo
   `696295fc68b0fa12`. With W1 merged, WebGPU exports carry TSL post (the film's anime look with grain): `af463f8e404b4e2b`
   in Chromium and `aa30672928beb2b1` in WKWebView, on both origins, and every frame distinct (1,080, as on WebGL, where
   grain also makes every frame distinct). The sound hashes the same in every run.
-- **One frame, now and then, with sound.** In WKWebView a WebGPU export sometimes has one or two frames that differ from
-  the page's other exports, by 1 level in a couple of pixels. It happened in the first and the second full run (frames 10
-  and 153). Hunting it, with sound recording, 4 of 18 exports had one (frames 140–142, 747, 1032), against 0 of 18 with
-  sound off (`results/frames-wkwebview-repeats.json`). The world hash is the same at those frames, so it's presentation.
-  The kept pair differs near the espresso machine's edge. With W1's TSL post in the exports, Chromium shows it too: a
-  hunt found single frames off in 5 of 9 exports, always one pixel by 1 level in the middle tile, though the full runner
-  then passed on both loads. On the merged tree WKWebView had one more (frame 4). The cause isn't found (AB-T-0589).
+- **One frame, now and then: the GPU, under another process's load (AB-T-0589).** A WebGPU export sometimes had one
+  frame that differed from the page's other exports, in a few pixels by 1–10 levels.
+  - **What was hashed, and what wasn't.** In an odd export, at the odd frame and over the whole film, the camera's
+    matrices, every visible mesh's world matrix and the uploaded bone matrices hash the same as in the others (`pres=1`,
+    both engines). The normalised shader modules (`wgsl=1`) and the room PMREM are the same too. Not hashed:
+    - morph-target influences, and material uniforms (colours, MToon parameters, UV-animation offsets)
+    - light uniforms and the shadow cameras' matrices
+    - the particles' instance buffers, the post stack's uniforms, and texture uploads
+    - the contents of earlier passes' targets, and three's node-frame time (no node in the scene or the post stack reads it)
+
+    `normWGSL` renames `nodeUniform*` / `nodeVar*` and the `@binding` numbers, so a change in binding layout alone
+    wouldn't show. "The engine's inputs are equal" holds for what was hashed.
+  - **Where.** 11 of the 13 odd frames on the normal build differed only in tile 72 at 1080p (the espresso machine's
+    top right). Frame 1059 (`burner4`) differed in tile 70, and frame 848 (`burner5`) in tiles 24, 25 and 40; those two
+    have no pixel detail (`keepTile` was 72), so how big their difference was isn't known.
+  - **When.** It shows while another process loads the GPU. With WKWebView exporting alongside Chromium, 6 of 210
+    WKWebView exports and 7 of 47 Chromium exports had one. A second Chromium as the load (18 whole-film exports), jitter
+    of 0–30 ms between frames, or `lag=2` (9 shorter exports each) didn't bring it on. **Quiet:** 0 in 102 whole-film WKWebView
+    exports with sound (`quiet100-wkwebview.json`: the GPU at a median 8–13% per load, max 23%, and no Chromium, python
+    or MLX process seen), 0 in 120 with the earlier 18. If quiet ran at the loaded rate, seeing none would have about a
+    3% chance, so quiet is rarer; but the 95% upper bound is still ~2.5% per export, and quiet repro 5 and native Metal
+    show it isn't zero (about 1 MSAA draw in 60,000).
+  - **sameFrame.** Drawing one frame 20,000 times on one host with nothing changed gives a second image 1–6 times under
+    that load, and never in WebGL (0 in 40,000).
+    - These each left it there: shadows off, post off, the scene pass's MSAA off, declaring positions `@invariant`,
+      dropping the machine's 153 coincident triangles.
+    - **No MSAA anywhere doesn't make it exact either** (`sameframe-noaa-noAA`: the renderer, the post scene pass and
+      the readback target all at 1 sample): 1 odd draw in 20,000, plus 3 in a run that was overwritten.
+    - Hiding the machine, or drawing it single-sided, gave 0 in 40,000 once, but 4 in 20,000 single-sided once the
+      coincident triangles went: the sensitive pixels move with the geometry.
+  - **Raw WebGPU, no three.js** (`spike-webgpu-render/repros/5-machine-under-load.html`, the machine's mesh from frame
+    72's camera) reproduces the MSAA case, measured in both engines.
+    - Chromium: 4 of 120,000 MSAA draws with WKWebView exporting alongside, all the first-draw image; 12 of 60,000 with
+      two native Metal copies running.
+    - WKWebView: 7 of 60,000 with the two native Metal copies running.
+    - At 1 sample: 0 of 240,000 in all.
+  - **Native Metal** (`spike-webgpu-render/repros/metal/machine.swift`, no WebGPU) gives the byte-identical odd MSAA
+    image. With two copies at once it reproduces at 1 sample too (9 of 80,000).
+  - **So** the MSAA case is below the engine, three and both browsers: Metal or the GPU on macOS 27.3 beta. The no-MSAA
+    odd draws in three's scene are **not explained**. Repro 5's WebGPU path never showed one at 1 sample, while native
+    Metal and three's scene did, so the same driver behaviour is likely but not shown.
+  - **Decision AB-D-0278:** report it to Apple; no export mitigation for now; run the exact-frames checks with nothing
+    else on the GPU; re-test on each beta (the repros README has the command). If it outlives the betas, W10's delivery
+    export could take a verified readback (each frame drawn twice and compared, a third time when they differ).
+    `results/ab-t-0589/` has the runs.
 - **Stills match the canvas** pixel for pixel on both backends: 230,400 of 230,400 pixels at 640×360 (a flipped still
   would differ in 160,114). The view kept drawing at its own size after the stills.
 - **Every size reads back** on both backends after a 640×360 still on the same renderer: 1080p, 4K and 1366×768 all

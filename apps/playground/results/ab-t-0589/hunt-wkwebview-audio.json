@@ -1,0 +1,308 @@
+{
+ "query": "frames=1080&repeat=3&audio=1&tiles=1&wgsl=1",
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+ "exports": 18,
+ "allIdentical": true,
+ "loads": [
+  {
+   "load": 1,
+   "origin": "loopback",
+   "timedOut": false,
+   "errors": [],
+   "backend": "webgpu",
+   "ms": 59725,
+   "refShots": {},
+   "repeat": 3,
+   "runs": [
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    },
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    },
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    }
+   ],
+   "size": [
+    1920,
+    1080
+   ],
+   "tiles": [
+    16,
+    9
+   ]
+  },
+  {
+   "load": 2,
+   "origin": "loopback",
+   "timedOut": false,
+   "errors": [],
+   "backend": "webgpu",
+   "ms": 57134,
+   "refShots": {},
+   "repeat": 3,
+   "runs": [
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    },
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    },
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    }
+   ],
+   "size": [
+    1920,
+    1080
+   ],
+   "tiles": [
+    16,
+    9
+   ]
+  },
+  {
+   "load": 3,
+   "origin": "loopback",
+   "timedOut": false,
+   "errors": [],
+   "backend": "webgpu",
+   "ms": 58331,
+   "refShots": {},
+   "repeat": 3,
+   "runs": [
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    },
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    },
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    }
+   ],
+   "size": [
+    1920,
+    1080
+   ],
+   "tiles": [
+    16,
+    9
+   ]
+  },
+  {
+   "load": 4,
+   "origin": "loopback",
+   "timedOut": false,
+   "errors": [],
+   "backend": "webgpu",
+   "ms": 59301,
+   "refShots": {},
+   "repeat": 3,
+   "runs": [
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    },
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    },
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    }
+   ],
+   "size": [
+    1920,
+    1080
+   ],
+   "tiles": [
+    16,
+    9
+   ]
+  },
+  {
+   "load": 5,
+   "origin": "loopback",
+   "timedOut": false,
+   "errors": [],
+   "backend": "webgpu",
+   "ms": 55329,
+   "refShots": {},
+   "repeat": 3,
+   "runs": [
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    },
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    },
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    }
+   ],
+   "size": [
+    1920,
+    1080
+   ],
+   "tiles": [
+    16,
+    9
+   ]
+  },
+  {
+   "load": 6,
+   "origin": "loopback",
+   "timedOut": false,
+   "errors": [],
+   "backend": "webgpu",
+   "ms": 57646,
+   "refShots": {},
+   "repeat": 3,
+   "runs": [
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    },
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    },
+    {
+     "diffs": [],
+     "digest": "aa30672928beb2b1",
+     "frames": 1080,
+     "wgsl": {
+      "digest": "ded2d26e",
+      "modules": 74,
+      "notInFirst": []
+     }
+    }
+   ],
+   "size": [
+    1920,
+    1080
+   ],
+   "tiles": [
+    16,
+    9
+   ]
+  }
+ ]
+}
