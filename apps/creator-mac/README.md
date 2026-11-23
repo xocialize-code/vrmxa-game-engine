@@ -33,6 +33,10 @@ apps/creator-mac/scripts/hand-test-fixtures.sh    # a fresh sample project and a
    re-scripted lines. A running job cancelled leaves no movie, and Export… renders only the job it adds.
 8. Leaving a short with unsaved changes asks: Cancel stays, Don't Save goes back to the saved short.
 9. The menus carry the creator's items, and New Short builds a draft short from the template.
+10. M4 W10, delivery: a delivery preset renders into the project's `deliveries/<name>/` (film with sound, `.srt`, a still
+    and a thumbnail per shot, a turntable per character, `delivery.json`), and the job's line says how many files the
+    runner then found on disk (15). ProRes 4444 4K draws on WebGL when the job says so; H.264 4K with the redraw check
+    outvoted one odd WebGPU draw in the final run. 15 of 15 rows ([report](docs/hand-test/results/m4-w10-delivery/report.md)).
 
 Screenshots in `docs/hand-test/shots/`. Typed values are checked and retried in the scenario: in the first run, keys
 sent while the page was busy (a rebuild after Redo, an export) were dropped. A cancel during the frames themselves is
