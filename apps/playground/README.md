@@ -157,10 +157,13 @@ apps/playground/scripts/frames-wkwebview.sh          # WKWebView, scheme and loo
   after the triangles went). A raw WebGPU page with no three.js
   (`spike-webgpu-render/repros/5-machine-under-load.html`: the machine's mesh from frame 72's camera) does it too: under
   load, 4 of 120,000 MSAA draws came out different, all the same image, which is the one the first MSAA draw on fresh
-  targets makes; at 1 sample, 0 of 120,000. So it's below the engine and three: WebGPU on this Mac's Metal driver, in WebKit and
-  Chromium alike. `results/ab-t-0589/` has the runs. Until a driver fixes it: run the exact-frames checks with nothing
-  else on the GPU, and give W10's delivery export a verified readback (each frame drawn twice and compared, a third time
-  when they differ).
+  targets makes; at 1 sample, 0 of 120,000. A native Metal tool with the same mesh and passes
+  (`spike-webgpu-render/repros/metal/machine.swift`) reproduces it with no WebGPU at all, with the byte-identical odd
+  image, and two copies of it at once make about 1 MSAA draw in 900 differ. So it's below the engine, three and both
+  browsers: Metal or the GPU on macOS 27.3 beta. `results/ab-t-0589/` has the runs. Decision AB-D-0278: report it to
+  Apple, no export mitigation for now, run the exact-frames checks with nothing else on the GPU, and re-test on each beta
+  (the repros README has the command). If it outlives the betas, W10's delivery export could take a verified readback
+  (each frame drawn twice and compared, a third time when they differ).
 - **Stills match the canvas** pixel for pixel on both backends: 230,400 of 230,400 pixels at 640×360 (a flipped still
   would differ in 160,114). The view kept drawing at its own size after the stills.
 - **Every size reads back** on both backends after a 640×360 still on the same renderer: 1080p, 4K and 1366×768 all

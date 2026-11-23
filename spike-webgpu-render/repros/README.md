@@ -12,6 +12,7 @@
 | First-renderer WGSL order (spike gotcha 6) | not reproduced | not tried | none | Kept out (see the end of this file) |
 | [4-msaa-resolve-under-load.html](4-msaa-resolve-under-load.html) (raw WebGPU, AB-T-0589) | n/a | n/a | none | Negative: random triangles stay exact under load |
 | [5-machine-under-load.html](5-machine-under-load.html) (raw WebGPU, AB-T-0589) | n/a | n/a | not filed | Under another process's GPU load, a rare MSAA draw reverts to the first draw's image |
+| [metal/machine.swift](metal/machine.swift) (native Metal, AB-T-0589) | n/a | n/a | Apple Feedback draft: [FEEDBACK-AB-T-0589.md](FEEDBACK-AB-T-0589.md) (the operator files it) | Reproduces without WebGPU; two copies at once: ~1 MSAA draw in 900 differs |
 
 ### What changed from the spike's account
 
@@ -49,6 +50,30 @@ exporting the film). Results are in `results/`.
   first is the same. So on this Mac (M5 Max, macOS 27.3) WebGPU's MSAA output has two states, and another process's GPU
   load occasionally brings back the first. WebKit shows it too (the playground's exports), so it's below both browsers:
   Metal's driver or the GPU.
+- **Native Metal** (`metal/machine.swift`: the same mesh, camera, shading and passes as 5, in one Swift file, no WebGPU):
+  it reproduces, and the odd image is byte-identical to WebGPU's.
+  - With WKWebView exporting the film alongside: 13 of 120,000 MSAA draws differed, all the first-draw image (`709bdc31`,
+    the hash repro 5 got in Chromium). 0 of 120,000 at 1 sample.
+  - **Two copies of the tool at once** (no browser at all): 40 and 51 of 40,000 MSAA draws differed (about a dozen
+    distinct images, the commonest shared by both processes), and 5 and 4 of 40,000 one-sample draws too.
+  - One copy with nothing else deliberately running (GPU ~18% busy, this Mac's other apps and the tool): 1 and 2 of
+    60,000 MSAA draws, 0 at 1 sample. Quiet isn't zero.
+  - Images: `results/metal-images/` (reference, odd, 8× crops and a diff for each case). Counts: `results/metal-machine-*.json`.
+  So it's Metal or the GPU on macOS 27.3 beta (26C5047e), M5 Max (Mac17,14). Decision AB-D-0278: report it to Apple
+  (draft: [FEEDBACK-AB-T-0589.md](FEEDBACK-AB-T-0589.md), filed by the operator), build no export mitigation for now,
+  run exact-frame checks on a quiet GPU.
+
+**Re-test on each new macOS beta** (AB-D-0278). Two copies at once; the bug is gone when both report `"differ" : 0` in
+both modes over 40,000 draws:
+
+```bash
+swiftc -O spike-webgpu-render/repros/metal/machine.swift -o spike-webgpu-render/repros/metal/machine
+spike-webgpu-render/repros/metal/machine --iters 40000 --out /tmp/a.json & spike-webgpu-render/repros/metal/machine --iters 40000 --out /tmp/b.json; wait
+```
+
+Then the playground's exports (`apps/playground/scripts/repeat-wkwebview.sh 6 retest 'frames=1080&repeat=3&audio=1&tiles=1'`
+alongside `node apps/playground/scripts/repeat-chromium.mjs --loads 3 --name retest-chromium 'frames=1080&repeat=3&audio=1&tiles=1'`)
+should give no differing frame.
 
 `three-map.js` writes the import map for `?three=` and collects console errors. It also defines `report()`. For an upstream issue, replace it with a CDN import map (the drafts below do).
 

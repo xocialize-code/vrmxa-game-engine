@@ -26,3 +26,7 @@ apps/playground/results/repeat/
 # SwiftPM build folders (apps/shell, apps/*-mac)
 .build/
 __pycache__/
+
+# AB-T-0589 native Metal repro: the built tool and its frame dumps
+spike-webgpu-render/repros/metal/machine
+spike-webgpu-render/repros/metal/out/
