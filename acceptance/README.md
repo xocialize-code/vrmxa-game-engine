@@ -99,7 +99,8 @@ luma, 8×8 windows every 4 px).
 ### Result (2026-11-23, M5 Max, macOS 27.3 beta 26C5047e, Chrome for Testing 156.0.8078.4 headless on Metal)
 
 Two full runs at the W3 commit: a bless pass (`--bless --keep-going`, which made `canonical.json`) and a verify pass
-against it (`--keep-going`). The verify pass's files are `results/m4-w3/`; the bless pass's summary and its one quiet
+against it (`--keep-going`); receipts AB-R-1070 (the matrix), AB-R-1071 (the look), AB-R-1072 (the budget) and
+AB-R-1073 (repro 5 on this beta). The verify pass's files are `results/m4-w3/`; the bless pass's summary and its one quiet
 odd frame are in `results/m4-w3/bless/`. Every cell held the GPU lock; no other GPU-using process was seen in any load.
 
 | Cell | acceptance | backends (3 loads) | frames (2) | post (2) | coverage (2) | budget | editor (2) |
@@ -136,7 +137,7 @@ odd frame are in `results/m4-w3/bless/`. Every cell held the GPU lock; no other 
   - **The editor's Check Against Scrub on WebGPU:** 24 of 26 in all three runtimes, on every load and rerun. Frames 735
     and 869 differ; their world hash matches, and drawing forward matches the export. It happens only with the TSL post
     stack on and on frames with the espresso's steam (`apps/editor/README.md`). WebGL gives 26 of 26. The export itself
-    is exact on WebGPU.
+    is exact on WebGPU. Follow-up: AB-T-0590.
   - **One quiet odd frame (bless pass).** In WKWebView over the scheme on WebGPU, load 2's first film export differed at
     frame 670 and its second export didn't. The GPU was quiet (only WebKit's own processes, utilisation 36–45 %). The
     rerun matched, so by the rules it counts as a failure, not AB-T-0589. Repro 5 re-run quietly on the same beta

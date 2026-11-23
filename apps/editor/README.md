@@ -42,7 +42,7 @@ offline hosts of the view's backend, each with that backend's post stack (pmndrs
   world's hash is the same and drawing forward matches the export). It happens only with the TSL post stack on (any
   look, tone mapping alone included; with no post every frame matches) and only on frames that show the espresso's steam;
   redrawing the scrubbed frame gives the same wrong image. WebGL gives 26 of 26. The export itself is exact on both. See
-  `acceptance/README.md` (M4 W3) and the follow-up task.
+  `acceptance/README.md` (M4 W3) and the follow-up task AB-T-0590.
 
 ## Takes into sequences (M3 W4, AB-T-0543)
 
