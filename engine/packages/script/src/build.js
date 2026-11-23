@@ -96,7 +96,7 @@ export function buildSequence(text, o = {}) {
   const shotBeats = plan.beats.filter((b) => b.shot);
   const numbers = numberShots(shotBeats, new Map(oldRows.filter((r) => r.number).map((r) => [r.id, r.number])), { renumber, warn: (w) => { warnings.push(w); } });
   const setCamera = setNodes.find((n) => n.type === 'Camera')?.id ?? null;
-  const G = generate(plan, { numbers, initial, titled, markTf, markNodes, setCamera, coverage, behaviours });
+  const G = generate(plan, { numbers, initial, titled, markTf, markNodes, setCamera, coverage, behaviours, parsed });
   const setIds = new Set(setNodes.map((n) => n.id));
   for (const n of G.nodes) if (setIds.has(n.id)) throw new Error(`the set already has a node "${n.id}", which the script's build places in the sequence`);
 

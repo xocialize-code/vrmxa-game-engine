@@ -1,0 +1,33 @@
+{
+  "name": "@vrmxg/coverage",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG coverage cameras (M4 W8): cameras for a script's shots by rule from the script and the marks (an establishing wide per scene, shot / reverse shot on the 180° line, close-ups on beats, two-shots for overlap), each a VirtualCamera on one of M2's rig presets; the 180° rule as a lint; replacing a shot's camera as one undoable edit; the storyboard's data and thumbnails per shot rendered from snapshots. Deterministic: the same script and marks give the same cameras, byte for byte.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./thumbnails": "./src/thumbnails.js"
+  },
+  "files": [
+    "src"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/camera": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/export": "0.1.0",
+    "@vrmxg/script": "0.1.0",
+    "@vrmxg/sequence": "0.1.0"
+  },
+  "devDependencies": {
+    "@vrmxg/editor-core": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/scene": "0.1.0"
+  },
+  "vrmxg": {
+    "determinism": "simulation"
+  }
+}

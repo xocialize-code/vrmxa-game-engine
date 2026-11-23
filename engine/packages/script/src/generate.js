@@ -100,16 +100,18 @@ const round = (v) => Math.round(v * 1000) / 1000;
 /**
  * Generate from a layout.
  * @param {any} plan layout()'s result
- * @param {{ numbers: Map<string, string>, initial: Map<string, string>, titled: Set<string>, markTf: Map<string, any>, markNodes: any[], setCamera: string | null, coverage?: Function, behaviours?: boolean }} o
+ * @param {{ numbers: Map<string, string>, initial: Map<string, string>, titled: Set<string>, markTf: Map<string, any>, markNodes: any[], setCamera: string | null, coverage?: Function, behaviours?: boolean, parsed?: any }} o
  *   initial: character id → the mark she starts on (titled: placed by the title page, not by her first [[at]] tag);
- *   markTf: mark node id → its transform; markNodes: Marker nodes the build adds
+ *   markTf: mark node id → its transform; markNodes: Marker nodes the build adds; parsed: parseScript's result. The
+ *   coverage hook gets { plan, shots, cast, marks } and, since M4 W8, markTf (for moves between marks), parsed (the
+ *   beats' parentheticals) and numbers (beat id → shot number)
  */
-export function generate(plan, { numbers, initial, titled, markTf, markNodes, setCamera, coverage = defaultCoverage, behaviours = false }) {
+export function generate(plan, { numbers, initial, titled, markTf, markNodes, setCamera, coverage = defaultCoverage, behaviours = false, parsed = null }) {
   const marks = new Map([...initial].map(([c, m]) => [c, markTf.get(m)]));
   const T = plan.timing, F = plan.F;
   const shotBeats = plan.beats.filter((b) => b.shot);
   const shots = shotBeats.map((b, i) => ({ beat: b.id, start: b.start, end: i + 1 < shotBeats.length ? shotBeats[i + 1].start : plan.duration }));
-  const cov = coverage({ plan, shots, cast: plan.characters, marks });
+  const cov = coverage({ plan, shots, cast: plan.characters, marks, markTf, parsed, numbers });
 
   const out = { shots: [], markers: [], cast: [], tracks: [], nodes: [] };
   for (const s of shots) {
