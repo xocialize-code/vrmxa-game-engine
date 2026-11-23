@@ -43,7 +43,9 @@ the error and leaves them disabled (`backends-chromium.mjs` checks that too).
   task that drew it (`Playground.backendCheck`). It replays the recorded walk, draws five consecutive frames with
   `frameAt` and a still, hashes them, and sets `window.__result`. On WebGL it also hashes each frame through
   `gl.readPixels`, as exports do (`glFrames`, `glStill`). The check owns the canvas at 1280×720, pixel ratio 1
-  (`Playground.offline`, since AB-T-0587), and fails if the drawing buffer changes size during it.
+  (`Playground.offline`, since AB-T-0587), and fails if the drawing buffer changes size during it. On WebGL,
+  `stillMsWithRead` now includes the `gl.readPixels` read as well as `toDataURL`, so it can't be compared with
+  timings from before AB-T-0587.
 
 ```sh
 (cd apps/playground && npx vite build)
@@ -80,11 +82,16 @@ LOADS=16 apps/playground/scripts/backends-wkwebview.sh  # the same in WKWebView,
   layout's ResizeObserver brought it to 485 only after the frames: d60fac47 (`results/ab-t-0587-old-*.png`). Pinning
   the old check to 1280×561 gives a third hash (4f0d6881): the fractional box's aspect differs from the whole pixels'
   (`results/ab-t-0587-d60fac47-vs-whole-561.png`). With the canvas's CSS height changing every 7 ms during the load,
-  the old check gives five image sets in 16 loads.
+  the old check gives four distinct image sets in 16 loads.
 - **Fixed in the check:** it owns the canvas (`offline`: no resize from the layout, no paused-loop draws) at
-  1280×720, pixel ratio 1. **WebGL in WKWebView now repeats exactly:** 106 fresh loads per origin (32, then 50 with
-  the per-frame record, 8 with the CSS height changing every 7 ms, and 16 in `backends-wkwebview.sh`), every one
-  028f66d0, by `toDataURL` and by `gl.readPixels` (04a7ce64b0d04506). WebGPU repeats too (e380a3a2, 16 loads per origin), and Chromium repeats on
+  1280×720, pixel ratio 1. **WebGL in WKWebView now repeats exactly:** 106 fresh loads per origin, every one
+  028f66d0, by `toDataURL` and by `gl.readPixels` (04a7ce64b0d04506). All of them draw the frames the same way. The 16
+  in `backends-wkwebview.sh` ran the check as committed in 89c3759. The review fixes after it change only what happens
+  once the frames are read (restoring the page's size even when the canvas has no box), and haven't had a browser run.
+  The other 90 ran working versions that differ only in what they recorded or what they did after the frames:
+  - **32 loads:** an earlier version that didn't restore the pixel ratio and size afterwards.
+  - **50 loads:** with uncommitted hooks that recorded the buffer, camera and world hash for every frame drawn.
+  - **8 loads:** with an uncommitted hook that changed the canvas's CSS height every 7 ms. WebGPU repeats too (e380a3a2, 16 loads per origin), and Chromium repeats on
   both. At 1280×720 the two backends' stills differ by 0.49 levels on average, with 1.03% of pixels over 8, in both
   engines.
 - **Not before W0:** the check came with W0. M3's acceptance never hashed the page canvas's pixels across loads. Any

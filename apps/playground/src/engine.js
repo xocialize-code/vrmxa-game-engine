@@ -464,10 +464,15 @@ export class Playground {
    */
   async backendCheck({ steps = [300, 301, 302, 303, 304], still = 420, compareWith = null, width = 1280, height = 720 } = {}) {
     await this.ready;
-    const ratio = this.host.renderer.getPixelRatio();
+    const ratio = this.host.renderer.getPixelRatio(), buf = this.host.drawingBufferSize();
+    const cssW = buf.width / ratio, cssH = buf.height / ratio; // as at() in _postChecks: restored even if the canvas has no box
     this.offline = true;
     try { return await this._backendCheck({ steps, still, compareWith, width, height }); }
-    finally { this.host.renderer.setPixelRatio(ratio); this.offline = false; } // back to the page's layout
+    finally {
+      this.host.renderer.setPixelRatio(ratio);
+      if (cssW && cssH) this.host.resize(cssW, cssH);
+      this.offline = false; // back to the page's layout, when the canvas has one (a hidden page keeps the size above)
+    }
   }
 
   /** @param {{ steps: number[], still: number, compareWith: string | null, width: number, height: number }} o */

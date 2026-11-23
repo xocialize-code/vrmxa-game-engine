@@ -27,7 +27,7 @@ done
 SPIKE_CASES="$cases" SPIKE_ORIGINS=both SPIKE_TIMEOUT=300 "$app/Contents/MacOS/CinematicsSpike" > /dev/null
 mkdir -p "$here/../results"
 node -e '
-const fs = require("fs"), [file, out] = process.argv.slice(1);
+const fs = require("fs"), [file, out, want] = process.argv.slice(1);
 const rows = JSON.parse(fs.readFileSync(file, "utf8")), runs = [];
 let bad = false;
 for (const r of rows) {
@@ -46,8 +46,11 @@ const repeat = { webgpu: same("webgpu"), webgl: same("webgl"), webgpuVariants: v
   loads: { webgpu: { scheme: loads("webgpu", "scheme"), loopback: loads("webgpu", "loopback") }, webgl: { scheme: loads("webgl", "scheme"), loopback: loads("webgl", "loopback") } } };
 console.log("repeatable", JSON.stringify(repeat));
 fs.writeFileSync(`${out}/backends-wkwebview.json`, JSON.stringify({ repeat, runs }, null, 1) + "\n");
-process.exitCode = bad || !repeat.webgpu || !repeat.webgl ? 1 : 0;
-' "$tmp/wkwebview-shots.json" "$here/../results"
+// every backend and origin must have run all LOADS loads: a load that never reported could hide a second image
+const short = Object.values(repeat.loads).some((o) => Object.values(o).some((n) => n < +want));
+if (short) console.log("fewer than", want, "loads ran for a backend and origin:", JSON.stringify(repeat.loads));
+process.exitCode = bad || short || !repeat.webgpu || !repeat.webgl ? 1 : 0;
+' "$tmp/wkwebview-shots.json" "$here/../results" "${LOADS:-16}"
 # the two backends' loopback stills, compared as backends-chromium.mjs compares Chromium's
 diff=$(node "$here/compare-stills.mjs" "$here/../results/playground-wkwebview-webgl.png" "$here/../results/playground-wkwebview-webgpu.png")
 echo "WebGL vs WebGPU stills: $diff"
