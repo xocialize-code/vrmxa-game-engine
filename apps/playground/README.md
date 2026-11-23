@@ -108,7 +108,21 @@ frame back through `@vrmxg/export`'s `readbackFor` and hashes it. `&parts=` pick
 - **reuse:** a 640×360 still, then 24 film frames at 1080p on the same host, against a fresh host's: equal, with content.
 - **alpha:** a red quad at opacity 0.5 over nothing; its middle pixel as read back, and after `toImageRGBA`.
 - **filmRepeat** (not in the default parts, for AB-T-0589): `&frames=1080&repeat=3&audio=1&tiles=1` exports the film
-  three times per page and returns any frame that differs, with the tiles that differ and its images.
+  three times per page and returns any frame that differs, with the tiles that differ and its images. It also keeps
+  tile 72 of every frame of the first export (`keepTile`), so a differing frame lists its exact pixels there and comes
+  with both tiles at 4×; records the node-frame ids and the view's draws between frames (`timing`); and hashes each
+  export's room PMREM. `&pres=1` hashes what the CPU hands the GPU right after each draw (the camera's matrices, every
+  visible mesh's world matrix, the uploaded bone matrices); `&wgsl=1` records every shader module per export and lists
+  any the first export didn't compile; `&jitter=N`, `&lag=N` and `&serial=1` vary the timing between offline frames.
+- **sameFrame** (AB-T-0589): `&frames=72&repeat=20000` draws the film's frame 72 again and again on one host, with
+  nothing stepped or changed between draws, and counts the distinct images (and tile 72's). Switches: `noShadows`,
+  `noPost`, `noMsaa` (the post's scene pass at 1 sample), `noAA` (no MSAA anywhere), `hide=<node>`,
+  `frontSide=<node>`, `split=<node>` (a double-sided node as two culled draws).
+
+AB-T-0589's runners: `scripts/repeat-chromium.mjs` (`--loads N --name X [--part sameFrame] [--renderer webgl]
+'query'`) and `scripts/repeat-wkwebview.sh loads name 'query' [origins]`, which runs the harness under its own bundle id
+so two runners can't overwrite each other's results. Both write `results/<name>.json` and put images in
+`results/repeat/` (git-ignored); AB-T-0589's runs are in `results/ab-t-0589/`.
 
 ```sh
 (cd apps/playground && npx vite build)
@@ -127,13 +141,26 @@ apps/playground/scripts/frames-wkwebview.sh          # WKWebView, scheme and loo
   `696295fc68b0fa12`. With W1 merged, WebGPU exports carry TSL post (the film's anime look with grain): `af463f8e404b4e2b`
   in Chromium and `aa30672928beb2b1` in WKWebView, on both origins, and every frame distinct (1,080, as on WebGL, where
   grain also makes every frame distinct). The sound hashes the same in every run.
-- **One frame, now and then, with sound.** In WKWebView a WebGPU export sometimes has one or two frames that differ from
-  the page's other exports, by 1 level in a couple of pixels. It happened in the first and the second full run (frames 10
-  and 153). Hunting it, with sound recording, 4 of 18 exports had one (frames 140–142, 747, 1032), against 0 of 18 with
-  sound off (`results/frames-wkwebview-repeats.json`). The world hash is the same at those frames, so it's presentation.
-  The kept pair differs near the espresso machine's edge. With W1's TSL post in the exports, Chromium shows it too: a
-  hunt found single frames off in 5 of 9 exports, always one pixel by 1 level in the middle tile, though the full runner
-  then passed on both loads. On the merged tree WKWebView had one more (frame 4). The cause isn't found (AB-T-0589).
+- **One frame, now and then: the GPU, under another process's load (AB-T-0589).** A WebGPU export sometimes had one or
+  two frames that differed from the page's other exports, in a few pixels by 1–10 levels. It was never the engine's
+  inputs: in the odd export the camera, every mesh's world matrix and the uploaded bone matrices hash the same as in the
+  others at that frame (and over the whole film, in both engines); the shader modules are the same; the room PMREM is the
+  same. On a quiet machine it didn't happen (18 whole-film WKWebView exports with sound, 18 shorter Chromium ones). It
+  happens while another process loads the GPU: with WKWebView exporting alongside Chromium, 6 of 210 WKWebView exports
+  and 7 of 47 Chromium exports had one, always at the same pixels, the espresso machine's top right (tile 72 at 1080p).
+  A second Chromium as the load (18 whole-film exports), jitter of 0–30 ms between frames or `lag=2` (9 shorter
+  exports each) didn't bring it on.
+  Drawing one frame 20,000 times on one host with nothing changed (`sameFrame`) gives a second image 1–6 times under that
+  load, and never in WebGL (0 in 40,000). Turning off the shadows, the post stack, the scene pass's MSAA or all MSAA,
+  declaring positions `@invariant`, or dropping the machine's 153 coincident triangles each left it there; hiding the
+  machine or drawing it single-sided moved the sensitive pixels rather than curing it (0 in 40,000 once, 4 in 20,000
+  after the triangles went). A raw WebGPU page with no three.js
+  (`spike-webgpu-render/repros/5-machine-under-load.html`: the machine's mesh from frame 72's camera) does it too: under
+  load, 4 of 120,000 MSAA draws came out different, all the same image, which is the one the first MSAA draw on fresh
+  targets makes; at 1 sample, 0 of 120,000. So it's below the engine and three: WebGPU on this Mac's Metal driver, in WebKit and
+  Chromium alike. `results/ab-t-0589/` has the runs. Until a driver fixes it: run the exact-frames checks with nothing
+  else on the GPU, and give W10's delivery export a verified readback (each frame drawn twice and compared, a third time
+  when they differ).
 - **Stills match the canvas** pixel for pixel on both backends: 230,400 of 230,400 pixels at 640×360 (a flipped still
   would differ in 160,114). The view kept drawing at its own size after the stills.
 - **Every size reads back** on both backends after a 640×360 still on the same renderer: 1080p, 4K and 1366×768 all

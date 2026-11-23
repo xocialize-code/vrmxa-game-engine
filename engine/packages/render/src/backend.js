@@ -99,6 +99,6 @@ export const isWebGPUBackend = (renderer) => !!(renderer?.isWebGPURenderer && re
  * @param {any} renderer @param {any} PMREMGenerator the class that matches the renderer
  */
 export function roomPMREM(renderer, PMREMGenerator) {
-  const pmrem = new PMREMGenerator(renderer);
-  return { pmrem, texture: pmrem.fromScene(new RoomEnvironment(), 0.04).texture };
+  const pmrem = new PMREMGenerator(renderer), target = pmrem.fromScene(new RoomEnvironment(), 0.04);
+  return { pmrem, texture: target.texture, target };
 }

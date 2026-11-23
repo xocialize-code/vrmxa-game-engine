@@ -1,0 +1,153 @@
+{
+ "query": "?mode=frames&renderer=webgpu&parts=filmRepeat&frames=120&repeat=3&audio=0&tiles=1&wgsl=1",
+ "loads": [
+  {
+   "load": 1,
+   "backend": "webgpu",
+   "ms": 6757,
+   "errors": [],
+   "size": [
+    1920,
+    1080
+   ],
+   "repeat": 3,
+   "tiles": [
+    16,
+    9
+   ],
+   "runs": [
+    {
+     "digest": "383a710ac3b04a8b",
+     "frames": 120,
+     "diffs": [],
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    },
+    {
+     "digest": "383a710ac3b04a8b",
+     "frames": 120,
+     "diffs": [],
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    },
+    {
+     "digest": "383a710ac3b04a8b",
+     "frames": 120,
+     "diffs": [],
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    }
+   ],
+   "refShots": {}
+  },
+  {
+   "load": 2,
+   "backend": "webgpu",
+   "ms": 6871,
+   "errors": [],
+   "size": [
+    1920,
+    1080
+   ],
+   "repeat": 3,
+   "tiles": [
+    16,
+    9
+   ],
+   "runs": [
+    {
+     "digest": "383a710ac3b04a8b",
+     "frames": 120,
+     "diffs": [],
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    },
+    {
+     "digest": "383a710ac3b04a8b",
+     "frames": 120,
+     "diffs": [],
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    },
+    {
+     "digest": "383a710ac3b04a8b",
+     "frames": 120,
+     "diffs": [],
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    }
+   ],
+   "refShots": {}
+  },
+  {
+   "load": 3,
+   "backend": "webgpu",
+   "ms": 6918,
+   "errors": [],
+   "size": [
+    1920,
+    1080
+   ],
+   "repeat": 3,
+   "tiles": [
+    16,
+    9
+   ],
+   "runs": [
+    {
+     "digest": "383a710ac3b04a8b",
+     "frames": 120,
+     "diffs": [],
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    },
+    {
+     "digest": "383a710ac3b04a8b",
+     "frames": 120,
+     "diffs": [],
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    },
+    {
+     "digest": "383a710ac3b04a8b",
+     "frames": 120,
+     "diffs": [],
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    }
+   ],
+   "refShots": {}
+  }
+ ],
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "os": "27.3.0",
+ "exports": 9,
+ "allIdentical": true
+}

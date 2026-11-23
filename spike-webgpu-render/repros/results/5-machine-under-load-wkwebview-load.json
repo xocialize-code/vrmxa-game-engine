@@ -1,0 +1,220 @@
+{
+ "query": "iters=20000",
+ "runs": [
+  {
+   "pass": false,
+   "iters": 20000,
+   "cull": "none",
+   "size": [
+    1920,
+    1080
+   ],
+   "modes": {
+    "msaa": {
+     "differ": 1,
+     "distinct": 2,
+     "firstDiff": {
+      "iter": 14913,
+      "values": 39,
+      "at": [
+       {
+        "x": 1072,
+        "y": 527,
+        "ch": 0,
+        "here": 48,
+        "first": 53
+       },
+       {
+        "x": 1072,
+        "y": 527,
+        "ch": 1,
+        "here": 44,
+        "first": 49
+       },
+       {
+        "x": 1072,
+        "y": 527,
+        "ch": 2,
+        "here": 40,
+        "first": 44
+       },
+       {
+        "x": 1066,
+        "y": 529,
+        "ch": 0,
+        "here": 63,
+        "first": 61
+       },
+       {
+        "x": 1066,
+        "y": 529,
+        "ch": 1,
+        "here": 58,
+        "first": 56
+       },
+       {
+        "x": 1066,
+        "y": 529,
+        "ch": 2,
+        "here": 53,
+        "first": 51
+       },
+       {
+        "x": 1048,
+        "y": 530,
+        "ch": 0,
+        "here": 96,
+        "first": 98
+       },
+       {
+        "x": 1048,
+        "y": 530,
+        "ch": 1,
+        "here": 91,
+        "first": 93
+       }
+      ]
+     },
+     "covered": 4389
+    },
+    "one": {
+     "differ": 0,
+     "distinct": 1,
+     "firstDiff": null,
+     "covered": 4261
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "triangles": 39782,
+   "firstDrawDiffers": {
+    "msaa": true,
+    "one": false
+   },
+   "ms": 125303,
+   "observation": "msaa: 1 of 19999 draws differ from the first (2 distinct); one: 0 of 19999 draws differ from the first (1 distinct)"
+  },
+  {
+   "pass": false,
+   "iters": 20000,
+   "cull": "none",
+   "size": [
+    1920,
+    1080
+   ],
+   "modes": {
+    "msaa": {
+     "differ": 1,
+     "distinct": 2,
+     "firstDiff": {
+      "iter": 1994,
+      "values": 39,
+      "at": [
+       {
+        "x": 1072,
+        "y": 527,
+        "ch": 0,
+        "here": 48,
+        "first": 53
+       },
+       {
+        "x": 1072,
+        "y": 527,
+        "ch": 1,
+        "here": 44,
+        "first": 49
+       },
+       {
+        "x": 1072,
+        "y": 527,
+        "ch": 2,
+        "here": 40,
+        "first": 44
+       },
+       {
+        "x": 1066,
+        "y": 529,
+        "ch": 0,
+        "here": 63,
+        "first": 61
+       },
+       {
+        "x": 1066,
+        "y": 529,
+        "ch": 1,
+        "here": 58,
+        "first": 56
+       },
+       {
+        "x": 1066,
+        "y": 529,
+        "ch": 2,
+        "here": 53,
+        "first": 51
+       },
+       {
+        "x": 1048,
+        "y": 530,
+        "ch": 0,
+        "here": 96,
+        "first": 98
+       },
+       {
+        "x": 1048,
+        "y": 530,
+        "ch": 1,
+        "here": 91,
+        "first": 93
+       }
+      ]
+     },
+     "covered": 4389
+    },
+    "one": {
+     "differ": 0,
+     "distinct": 1,
+     "firstDiff": null,
+     "covered": 4261
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "triangles": 39782,
+   "firstDrawDiffers": {
+    "msaa": true,
+    "one": false
+   },
+   "ms": 125543,
+   "observation": "msaa: 1 of 19999 draws differ from the first (2 distinct); one: 0 of 19999 draws differ from the first (1 distinct)"
+  },
+  {
+   "pass": true,
+   "iters": 20000,
+   "cull": "none",
+   "size": [
+    1920,
+    1080
+   ],
+   "modes": {
+    "msaa": {
+     "differ": 0,
+     "distinct": 1,
+     "firstDiff": null,
+     "covered": 4389
+    },
+    "one": {
+     "differ": 0,
+     "distinct": 1,
+     "firstDiff": null,
+     "covered": 4261
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "triangles": 39782,
+   "firstDrawDiffers": {
+    "msaa": true,
+    "one": false
+   },
+   "ms": 125891,
+   "observation": "msaa: 0 of 19999 draws differ from the first (1 distinct); one: 0 of 19999 draws differ from the first (1 distinct)"
+  }
+ ]
+}

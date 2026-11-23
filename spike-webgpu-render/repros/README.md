@@ -10,6 +10,8 @@
 | [2-mrtnode-no-mrt.html](2-mrtnode-no-mrt.html) | FAIL (canvas, render target) | PASS | [#35373](https://github.com/mrdoob/three.js/issues/35373), fixed by [#35376](https://github.com/mrdoob/three.js/pull/35376) on 2026-11-08, after r187 | Don't file. The fix ships in r188 |
 | [3-offline-nodeframe.html](3-offline-nodeframe.html) | FAIL | FAIL | Filed as [#35621](https://github.com/mrdoob/three.js/issues/35621) (a feature request: three has no public call for this) | Watch it |
 | First-renderer WGSL order (spike gotcha 6) | not reproduced | not tried | none | Kept out (see the end of this file) |
+| [4-msaa-resolve-under-load.html](4-msaa-resolve-under-load.html) (raw WebGPU, AB-T-0589) | n/a | n/a | none | Negative: random triangles stay exact under load |
+| [5-machine-under-load.html](5-machine-under-load.html) (raw WebGPU, AB-T-0589) | n/a | n/a | not filed | Under another process's GPU load, a rare MSAA draw reverts to the first draw's image |
 
 ### What changed from the spike's account
 
@@ -30,6 +32,23 @@ git clone --depth 1 --filter=blob:none --sparse https://github.com/mrdoob/three.
 THREE_DEV=/tmp/three-dev node spike-webgpu-render/repros/serve.mjs
 THREE_DEV=/tmp/three-dev sh spike-webgpu-render/repros/run.sh    # every page × {r187, dev} → results/<page>-<build>.json
 ```
+
+### Repros 4 and 5: identical draws under GPU load (AB-T-0589, 2026-11-22)
+
+No three.js in either. Each draws one static frame again and again, reads it back and hashes it, so every hash must equal
+the first. `node spike-webgpu-render/repros/under-load.mjs --runs 3 [--page 5-machine-under-load.html] 'iters=20000'` runs
+one in headless Chromium; run it while another process loads the GPU (the playground's `scripts/repeat-wkwebview.sh`
+exporting the film). Results are in `results/`.
+- **4** (3,000 random triangles into rgba16float, MSAA 4× with the hardware resolve, a shader resolve, or 1 sample, then
+  tone-mapped to rgba8): 0 of 72,000 draws differed, under load.
+- **5** (the sample's espresso machine, 39,782 double-sided triangles, from the film's frame-72 camera in
+  `5-machine-frame72.json`, three-like shading, 1920×1080): under load, 4 of 120,000 MSAA 4× draws differed from the
+  rest, all four the same 39 values in the same pixels (the machine's top right, where the playground's exports
+  differed). The second set compared them with the first MSAA draw on fresh targets, which always differs from the
+  draws after it: its two were exactly that image. At 1 sample, 0 of 120,000. Quiet, every draw after the
+  first is the same. So on this Mac (M5 Max, macOS 27.3) WebGPU's MSAA output has two states, and another process's GPU
+  load occasionally brings back the first. WebKit shows it too (the playground's exports), so it's below both browsers:
+  Metal's driver or the GPU.
 
 `three-map.js` writes the import map for `?three=` and collects console errors. It also defines `report()`. For an upstream issue, replace it with a CDN import map (the drafts below do).
 

@@ -1,0 +1,55 @@
+{
+ "query": "?mode=frames&renderer=webgpu&parts=sameFrame&frames=72&repeat=20000&frontSide=espresso",
+ "loads": [
+  {
+   "load": 1,
+   "backend": "webgpu",
+   "errors": [],
+   "frame": 72,
+   "repeat": 20000,
+   "ms": 107109,
+   "switches": {
+    "noShadows": false,
+    "noPost": false,
+    "noMsaa": false,
+    "hide": null,
+    "frontSide": "espresso",
+    "split": null
+   },
+   "distinct": 3,
+   "counts": {
+    "74d1e8808c4bf9b6": 19996,
+    "1ae68f76337ecc69": 3,
+    "8bfcb4c6285a4d7f": 1
+   },
+   "tileDistinct": 3,
+   "tiles": {
+    "84bfd329": 19996,
+    "d8f03848": 3,
+    "c632f3a2": 1
+   },
+   "firstOdd": [
+    {
+     "iter": 13543,
+     "tile": "d8f03848"
+    },
+    {
+     "iter": 14081,
+     "tile": "d8f03848"
+    },
+    {
+     "iter": 15016,
+     "tile": "d8f03848"
+    },
+    {
+     "iter": 15507,
+     "tile": "c632f3a2"
+    }
+   ]
+  }
+ ],
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "os": "27.3.0",
+ "exports": 0,
+ "allIdentical": false
+}

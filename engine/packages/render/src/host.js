@@ -196,8 +196,8 @@ export class RenderHost {
   roomEnvironment() {
     if (this._room !== undefined) return this._room;
     if (this.renderer.isWebGPURenderer && this._webgpu) {
-      const { pmrem, texture } = roomPMREM(this.renderer, this._webgpu.PMREMGenerator);
-      this._pmrem = pmrem; // kept with its texture, as the spike measured it (disposed with the host)
+      const { pmrem, texture, target } = roomPMREM(this.renderer, this._webgpu.PMREMGenerator);
+      this._pmrem = pmrem; this._roomTarget = target; // kept with its texture, as the spike measured it (disposed with the host)
       return (this._room = texture);
     }
     if (!this.renderer.isWebGLRenderer) return (this._room = null);

@@ -1,0 +1,33 @@
+{
+ "query": "?mode=frames&renderer=webgpu&parts=sameFrame&frames=72&repeat=20000&hide=espresso",
+ "loads": [
+  {
+   "load": 1,
+   "backend": "webgpu",
+   "errors": [],
+   "frame": 72,
+   "repeat": 20000,
+   "ms": 105320,
+   "switches": {
+    "noShadows": false,
+    "noPost": false,
+    "noMsaa": false,
+    "hide": "espresso",
+    "frontSide": null
+   },
+   "distinct": 1,
+   "counts": {
+    "d5f39a5ce8bfa79a": 20000
+   },
+   "tileDistinct": 1,
+   "tiles": {
+    "8546e180": 20000
+   },
+   "firstOdd": []
+  }
+ ],
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "os": "27.3.0",
+ "exports": 0,
+ "allIdentical": true
+}

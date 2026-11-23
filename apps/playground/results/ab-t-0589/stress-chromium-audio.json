@@ -1,0 +1,351 @@
+{
+ "query": "?mode=frames&renderer=webgpu&parts=filmRepeat&frames=1080&repeat=3&audio=1&tiles=1&wgsl=1",
+ "loads": [
+  {
+   "load": 1,
+   "backend": "webgpu",
+   "ms": 44077,
+   "errors": [],
+   "size": [
+    1920,
+    1080
+   ],
+   "repeat": 3,
+   "tiles": [
+    16,
+    9
+   ],
+   "runs": [
+    {
+     "digest": "b071b27dab9f0daf",
+     "frames": 1080,
+     "diffs": [],
+     "timing": {
+      "gaps": {
+       "1": 284,
+       "2": 776,
+       "3": 19,
+       "5": 1
+      },
+      "viewCallsPerFrame": {
+       "0": 284,
+       "3": 776,
+       "6": 19,
+       "9": 1
+      }
+     },
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    },
+    {
+     "digest": "ee0f3b0701ecf117",
+     "frames": 1080,
+     "diffs": [
+      {
+       "frame": 43,
+       "tiles": [
+        72
+       ],
+       "at": {
+        "gap": 2,
+        "viewCalls": 3,
+        "gapBefore": 2,
+        "viewCallsBefore": 3
+       }
+      },
+      {
+       "frame": 116,
+       "tiles": [
+        72
+       ],
+       "at": {
+        "gap": 2,
+        "viewCalls": 3,
+        "gapBefore": 2,
+        "viewCallsBefore": 3
+       }
+      }
+     ],
+     "timing": {
+      "gaps": {
+       "1": 294,
+       "2": 770,
+       "3": 15,
+       "4": 1
+      },
+      "viewCallsPerFrame": {
+       "0": 294,
+       "3": 770,
+       "6": 16
+      }
+     },
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    },
+    {
+     "digest": "b702c944db855c65",
+     "frames": 1080,
+     "diffs": [
+      {
+       "frame": 116,
+       "tiles": [
+        72
+       ],
+       "at": {
+        "gap": 2,
+        "viewCalls": 3,
+        "gapBefore": 1,
+        "viewCallsBefore": 0
+       }
+      },
+      {
+       "frame": 119,
+       "tiles": [
+        72
+       ],
+       "at": {
+        "gap": 2,
+        "viewCalls": 3,
+        "gapBefore": 2,
+        "viewCallsBefore": 3
+       }
+      }
+     ],
+     "timing": {
+      "gaps": {
+       "1": 282,
+       "2": 774,
+       "3": 23,
+       "4": 1
+      },
+      "viewCallsPerFrame": {
+       "0": 282,
+       "3": 774,
+       "6": 24
+      }
+     },
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    }
+   ],
+   "refShots": {
+    "43": {
+     "from": 2
+    }
+   }
+  },
+  {
+   "load": 2,
+   "backend": "webgpu",
+   "ms": 41216,
+   "errors": [],
+   "size": [
+    1920,
+    1080
+   ],
+   "repeat": 3,
+   "tiles": [
+    16,
+    9
+   ],
+   "runs": [
+    {
+     "digest": "d5319f85dfcacc5f",
+     "frames": 1080,
+     "diffs": [],
+     "timing": {
+      "gaps": {
+       "1": 269,
+       "2": 796,
+       "3": 14,
+       "4": 1
+      },
+      "viewCallsPerFrame": {
+       "0": 269,
+       "3": 796,
+       "6": 15
+      }
+     },
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    },
+    {
+     "digest": "af463f8e404b4e2b",
+     "frames": 1080,
+     "diffs": [
+      {
+       "frame": 93,
+       "tiles": [
+        72
+       ],
+       "at": {
+        "gap": 2,
+        "viewCalls": 3,
+        "gapBefore": 2,
+        "viewCallsBefore": 3
+       }
+      }
+     ],
+     "timing": {
+      "gaps": {
+       "1": 355,
+       "2": 723,
+       "3": 1,
+       "4": 1
+      },
+      "viewCallsPerFrame": {
+       "0": 355,
+       "3": 723,
+       "6": 2
+      }
+     },
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    },
+    {
+     "digest": "af463f8e404b4e2b",
+     "frames": 1080,
+     "diffs": [
+      {
+       "frame": 93,
+       "tiles": [
+        72
+       ],
+       "at": {
+        "gap": 2,
+        "viewCalls": 3,
+        "gapBefore": 1,
+        "viewCallsBefore": 0
+       }
+      }
+     ],
+     "timing": {
+      "gaps": {
+       "1": 352,
+       "2": 724,
+       "3": 3,
+       "4": 1
+      },
+      "viewCallsPerFrame": {
+       "0": 352,
+       "3": 724,
+       "6": 4
+      }
+     },
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    }
+   ],
+   "refShots": {}
+  },
+  {
+   "load": 3,
+   "backend": "webgpu",
+   "ms": 39945,
+   "errors": [],
+   "size": [
+    1920,
+    1080
+   ],
+   "repeat": 3,
+   "tiles": [
+    16,
+    9
+   ],
+   "runs": [
+    {
+     "digest": "af463f8e404b4e2b",
+     "frames": 1080,
+     "diffs": [],
+     "timing": {
+      "gaps": {
+       "1": 328,
+       "2": 749,
+       "3": 2,
+       "4": 1
+      },
+      "viewCallsPerFrame": {
+       "0": 328,
+       "3": 749,
+       "6": 3
+      }
+     },
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    },
+    {
+     "digest": "af463f8e404b4e2b",
+     "frames": 1080,
+     "diffs": [],
+     "timing": {
+      "gaps": {
+       "1": 345,
+       "2": 730,
+       "3": 4,
+       "4": 1
+      },
+      "viewCallsPerFrame": {
+       "0": 345,
+       "3": 730,
+       "6": 5
+      }
+     },
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    },
+    {
+     "digest": "af463f8e404b4e2b",
+     "frames": 1080,
+     "diffs": [],
+     "timing": {
+      "gaps": {
+       "1": 366,
+       "2": 712,
+       "3": 1,
+       "4": 1
+      },
+      "viewCallsPerFrame": {
+       "0": 366,
+       "3": 712,
+       "6": 2
+      }
+     },
+     "wgsl": {
+      "modules": 74,
+      "digest": "ded2d26e",
+      "notInFirst": []
+     }
+    }
+   ],
+   "refShots": {}
+  }
+ ],
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "os": "27.3.0",
+ "exports": 9,
+ "allIdentical": false
+}

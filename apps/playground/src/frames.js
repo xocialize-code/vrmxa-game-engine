@@ -15,10 +15,27 @@
 // runtime with itself (two loads, and WKWebView's two origins).
 import { PerspectiveCamera, Scene, Mesh, PlaneGeometry, MeshBasicMaterial } from 'three';
 import { RenderHost } from '@vrmxg/render';
+import { frameToStep } from '@vrmxg/core';
 import { exportTake, hashSink, hashFrame, readbackFor, captureStill, toImageRGBA, framesFor, RATES, SIZES } from '@vrmxg/export';
 import { captureWorld, restoreWorld, worldHashes, hashValue, packRun } from '@vrmxg/snapshot';
 import { buildWorld, loadSample } from './world.js';
 import { runParticles, withParticleLoad, PARTICLE_STEPS, PARTICLE_SNAPSHOT_AT } from './acceptance.js';
+
+// ?wgsl=1 (AB-T-0589): every shader module each device compiles (label, code), so filmRepeat can say whether an odd
+// export compiled anything the others didn't (the spike's gotcha 6 hunt)
+const WGSL = new Map(); // device → [{ label, code }]
+if (typeof window !== 'undefined') window.__wgsl = WGSL; // the runners can dump them
+if (typeof location !== 'undefined' && new URLSearchParams(location.search).get('wgsl') === '1' && typeof GPUDevice !== 'undefined') {
+  const create = GPUDevice.prototype.createShaderModule;
+  GPUDevice.prototype.createShaderModule = function (d) {
+    if (!WGSL.has(this)) WGSL.set(this, []);
+    WGSL.get(this).push({ label: d.label ?? '', code: d.code });
+    return create.call(this, d);
+  };
+}
+/** Names normalised (nodeUniform12 → U, nodeVar3 → V, bindings): what is left is a real difference in order or arithmetic. */
+const normWGSL = (c) => c.replace(/nodeUniform\d+/g, 'U').replace(/nodeVar\d+/g, 'V').replace(/@binding\( ?\d+ ?\)/g, '@binding(n)');
+const strHash = (s) => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 0x01000193); return (h >>> 0).toString(16).padStart(8, '0'); };
 
 const now = () => performance.now();
 const r3 = (x) => +x.toFixed(3);
@@ -33,7 +50,7 @@ function pngOf(bytes, width, height, topDown, scale = 1) {
   c.getContext('2d').putImageData(new ImageData(toImageRGBA(bytes, width, height, { topDown }), width, height), 0, 0);
   if (scale === 1) return c.toDataURL('image/png');
   const d = document.createElement('canvas'); d.width = Math.round(width * scale); d.height = Math.round(height * scale);
-  d.getContext('2d').drawImage(c, 0, 0, d.width, d.height);
+  const g = d.getContext('2d'); g.imageSmoothingEnabled = scale < 1; g.drawImage(c, 0, 0, d.width, d.height);
   return d.toDataURL('image/png');
 }
 const offlineHost = (backend, post) => RenderHost.create({ canvas: document.createElement('canvas'), backend, dprCap: 1, post });
@@ -274,7 +291,8 @@ export async function framesCheck({ R, sample, opts, backend, post, view, canvas
   const t0 = now();
   if (parts.includes('particles')) res.particles = await particlesRendered({ R, sample, opts, backend, post });
   if (parts.includes('film')) res.film = await filmExport({ R, sample, opts, backend, post, ...film });
-  if (parts.includes('filmRepeat')) res.filmRepeat = await filmRepeat({ R, sample, opts, backend, post, ...film });
+  if (parts.includes('filmRepeat')) res.filmRepeat = await filmRepeat({ R, sample, opts, backend, post, view, ...film });
+  if (parts.includes('sameFrame')) res.sameFrame = await sameFrame({ R, sample, opts, backend, post, ...film });
   if (parts.includes('still')) res.still = await stillCheck(view, canvas, { keep: true });
   if (parts.includes('readback')) {
     const host = await offlineHost(backend, post);
@@ -300,10 +318,13 @@ export async function framesCheck({ R, sample, opts, backend, post, view, canvas
  * differs from the first export's comes back with the tiles that differ, its image, and the same frame's image from a
  * later export (with three exports, the odd one out is the wrong one).
  */
-export async function filmRepeat({ R, sample, opts, backend, post = null, size = '1080p', fps = '24', frames = null, repeat = 3, audio = false, tileHashes = true }) {
+export async function filmRepeat({ R, sample, opts, backend, post = null, view = null, size = '1080p', fps = '24', frames = null, repeat = 3, audio = false, tileHashes = true, keepTile = 72, presHash = false, jitter = 0, lag = 1, serial = false }) {
   const [width, height] = SIZES[size], rate = RATES[fps];
   const S = await loadSample(sample.bytes, 'sequences/cafe-morning.vrmxs');
   const TX = 16, TY = 9, tw = width / TX, th = height / TY;
+  // tile `keepTile` of every frame of the first export, raw, so a later export's differing pixels there can be listed exactly
+  const tileBytes = (bytes, t) => { const x0 = (t % TX) * tw, y0 = Math.floor(t / TX) * th, out = new Uint8Array(tw * th * 4); for (let y = 0; y < th; y++) out.set(bytes.subarray(((y0 + y) * width + x0) * 4, ((y0 + y) * width + x0 + tw) * 4), y * tw * 4); return out; };
+  const refTile = [];
   const tiles = (bytes) => {
     const u = new Uint32Array(bytes.buffer, bytes.byteOffset, bytes.byteLength >> 2), out = new Uint32Array(TX * TY);
     for (let y = 0; y < height; y++) { const ty = Math.floor(y / th) * TX; for (let x = 0; x < width; x++) { const t = ty + Math.floor(x / tw); out[t] = Math.imul(out[t] ^ u[y * width + x], 0x01000193); } }
@@ -320,18 +341,134 @@ export async function filmRepeat({ R, sample, opts, backend, post = null, size =
     const sink = { ...hs, frame(k, bytes) {
       const h = hashFrame(bytes); hashes[k] = h;
       const t = tileHashes ? tiles(bytes) : null; tileSets[k] = t;
+      if (!ref && keepTile !== null) refTile[k] = tileBytes(bytes, keepTile);
       if (ref && h !== ref.hashes[k]) {
         const differ = []; if (t) for (let j = 0; j < t.length; j++) if (t[j] !== ref.tiles[k][j]) differ.push(j);
-        diffs.push({ frame: k, tiles: differ, png: pngOf(bytes, width, height, hs.job.topDown, 0.5) });
+        let pixels;
+        if (keepTile !== null && differ.includes(keepTile) && refTile[k]) {
+          const a = tileBytes(bytes, keepTile), b = refTile[k], x0 = (keepTile % TX) * tw, y0 = Math.floor(keepTile / TX) * th; pixels = [];
+          for (let p = 0; p < a.length && pixels.length < 16; p += 4) if (a[p] !== b[p] || a[p + 1] !== b[p + 1] || a[p + 2] !== b[p + 2] || a[p + 3] !== b[p + 3]) pixels.push({ x: x0 + ((p >> 2) % tw), y: y0 + Math.floor((p >> 2) / tw), here: [...a.subarray(p, p + 4)], first: [...b.subarray(p, p + 4)] });
+        }
+        // the tile itself, here and in the first export, 4x (top-down rows: WebGPU's readback)
+        const tilePng = (t) => pngOf(t, tw, th, true, 4);
+        const zoom = pixels ? { tilePng: tilePng(tileBytes(bytes, keepTile)), refTilePng: tilePng(refTile[k]) } : {};
+        diffs.push({ frame: k, tiles: differ, ...(pixels ? { pixels } : {}), ...zoom, png: pngOf(bytes, width, height, hs.job.topDown, 0.5) });
         wanted.add(k);
       } else if (wanted.has(k) && !refShots[k]) refShots[k] = { from: i, png: pngOf(bytes, width, height, hs.job.topDown, 0.5) };
-      return hs.frame(k, bytes);
+      const done = hs.frame(k, bytes);
+      // ?jitter=N: wait 0 to N ms after each frame (Math.random: the harness, not the film), so the page's other work (the
+      // renderers' rAF loops, the view's draws) lands between offline frames a varying number of times
+      return jitter ? Promise.resolve(done).then(() => new Promise((r) => setTimeout(r, Math.floor(Math.random() * (jitter + 1))))) : done;
     } };
-    const r = await exportTake({ tree: w.tree, host, fps: rate, frames: n, width, height, sink, audio, now });
+    // per frame: the export renderer's node-frame ids that went by since the last frame (rAF ticks + its own advance) and
+    // the page view's render calls meanwhile (its paused loop draws every rAF), to set beside the frames that differ
+    // per frame: what the CPU hands the GPU, hashed as the frame draws (the blend applied): the camera's matrices and every
+    // visible mesh's world matrix, bit for bit. Equal where pixels differ: the difference is on the GPU side
+    const pres = [], f64 = new Float64Array(16), u8 = new Uint8Array(f64.buffer), presOf = (k) => pres[k];
+    const hashMat = (h, m) => { f64.set(m.elements); for (let b = 0; b < 128; b++) h = Math.imul(h ^ u8[b], 0x01000193); return h; };
+    let presK = 0;
+    // hashed right after the frame's draw (wrapping the post stack's render, or the renderer's), so nothing is updated
+    // that the draw itself didn't: the camera's matrices, every visible mesh's world matrix, the bone matrices uploaded
+    const hashArr = (h, a) => { for (let i = 0; i < a.length; i++) { f64[0] = a[i]; for (let b = 0; b < 8; b++) h = Math.imul(h ^ u8[b], 0x01000193); } return h; };
+    if (presHash) {
+      const target = host.post ?? host.renderer, orig = target.render.bind(target);
+      target.render = (scene, camera, ...rest) => {
+        const out = orig(scene, camera, ...rest);
+        let h = hashMat(hashMat(hashMat(0x811c9dc5, camera.matrixWorld), camera.projectionMatrix), camera.matrixWorldInverse);
+        let hm = 0x811c9dc5, hb = 0x811c9dc5;
+        scene.traverseVisible((o) => { if (o.isMesh || o.isSkinnedMesh || o.isPoints || o.isSprite) hm = hashMat(hm, o.matrixWorld); if (o.isSkinnedMesh && o.skeleton.boneMatrices) hb = hashArr(hb, o.skeleton.boneMatrices); });
+        pres[presK] = `${(h >>> 0).toString(16)}.${(hm >>> 0).toString(16)}.${(hb >>> 0).toString(16)}`;
+        return out;
+      };
+    }
+    const nf = host.renderer._nodes?.nodeFrame, gaps = [], viewCalls = [];
+    let lastId = nf?.frameId ?? 0, lastView = view?.renderer?.info?.calls ?? 0;
+    const onFrame = (k) => {
+      presK = k + 1; // onPresent fires inside frame k + 1's draw
+      if (nf) { gaps[k] = nf.frameId - lastId; lastId = nf.frameId; }
+      const vc = view?.renderer?.info?.calls ?? 0; viewCalls[k] = vc - lastView; lastView = vc;
+    };
+    // ?serial=1: each frame waits for the GPU to finish everything before it (no overlap of consecutive frames on the GPU)
+    if (serial && host.renderer.isWebGPURenderer) { const fa = host.frameAt.bind(host), q = host.renderer.backend.device.queue; host.frameAt = async (...a) => { await q.onSubmittedWorkDone(); return fa(...a); }; }
+    const r = await exportTake({ tree: w.tree, host, fps: rate, frames: n, width, height, sink, audio, now, onFrame, lag });
+    for (const d of diffs) { d.presentSame = presHash && ref?.pres ? pres[d.frame] === ref.pres[d.frame] : null; if (presHash) d.present = { here: pres[d.frame], first: ref?.pres?.[d.frame] }; }
+    for (const d of diffs) d.at = { gap: gaps[d.frame], viewCalls: viewCalls[d.frame], gapBefore: gaps[d.frame - 1], viewCallsBefore: viewCalls[d.frame - 1] };
+    const hist = (a) => { const h = {}; for (const x of a) if (x !== undefined) h[x] = (h[x] ?? 0) + 1; return h; };
+    const timing = { gaps: hist(gaps), viewCallsPerFrame: hist(viewCalls), gapsByFrame: gaps.join('') };
+    // the room environment's PMREM as this export's renderer made it (AB-T-0589: a per-renderer input that differs?)
+    let pmrem = null;
+    const rt = host._roomTarget;
+    if (rt && host.renderer.readRenderTargetPixelsAsync) { const px = await host.renderer.readRenderTargetPixelsAsync(rt, 0, 0, rt.width, rt.height); pmrem = hashFrame(new Uint8Array(px.buffer, px.byteOffset, px.byteLength)); }
+    const mods = WGSL.get(host.renderer.backend?.device) ?? null;
     dropHost(host);
     w.audio?.dispose?.();
-    if (!ref) ref = { hashes, tiles: tileSets };
-    runs.push({ digest: hashValue(r.frameHashes.join(',')), frames: n, diffs });
+    if (!ref) ref = { hashes, tiles: tileSets, pres };
+    runs.push({ digest: hashValue(r.frameHashes.join(',')), frames: n, diffs, timing, pmrem, ...(presHash ? { presDigest: hashValue(pres.join(',')) } : {}), presDiffer: presHash && ref && ref.pres !== pres ? pres.reduce((a, h, k) => (h !== ref.pres[k] ? a.concat(k) : a), []).slice(0, 20) : [], ...(mods ? { wgsl: mods.map((m) => ({ label: m.label, code: normWGSL(m.code) })) } : {}) });
+  }
+  // ?wgsl=1: per export, the modules (normalised) the first export didn't compile, and a line diff against its module of the same label
+  if (runs[0]?.wgsl) {
+    const first = runs[0].wgsl, have = new Set(first.map((m) => m.code));
+    for (const run of runs) {
+      const mods = run.wgsl;
+      run.wgsl = { modules: mods.length, digest: strHash(mods.map((m) => strHash(m.code)).sort().join(',')), notInFirst: mods.filter((m) => !have.has(m.code)).slice(0, 8).map((m) => {
+        const twin = first.find((f) => f.label === m.label), la = m.code.split('\n'), lb = twin?.code.split('\n') ?? [], lines = [];
+        for (let i = 0; i < Math.max(la.length, lb.length) && lines.length < 30; i++) if (la[i] !== lb[i]) lines.push({ line: i, here: la[i]?.slice(0, 400), first: lb[i]?.slice(0, 400) });
+        return { label: m.label, lines };
+      }) };
+    }
   }
   return { size: [width, height], repeat, tiles: [TX, TY], runs, refShots };
 }
+
+/**
+ * AB-T-0589's fast hunt (?mode=frames&parts=sameFrame&frames=K&repeat=N): the morning film's frame K drawn N times on one
+ * host, nothing stepped in between (a fresh node frame each time, as an offline frame gets), each read back and hashed
+ * whole and in tile `keepTile`. Every draw has the same inputs, so every hash must be the same. Switches, to find the GPU
+ * stage that varies: noShadows (no shadow maps), noPost (no post stack), noMsaa (the post's scene pass at 1 sample).
+ */
+export async function sameFrame({ R, sample, opts, backend, post = null, size = '1080p', fps = '24', frames = 72, repeat = 2000, keepTile = 72, noShadows = false, noPost = false, noMsaa = false, noAA = false, hide = null, frontSide = null, split = null }) {
+  const [width, height] = SIZES[size], rate = RATES[fps];
+  const S = await loadSample(sample.bytes, 'sequences/cafe-morning.vrmxs');
+  // ?noAA=1: no MSAA anywhere (the renderer's own framebuffer target and the post stack's scene pass)
+  const host = noAA ? await RenderHost.create({ canvas: document.createElement('canvas'), backend, dprCap: 1, post: noPost ? null : post, antialias: false }) : await offlineHost(backend, noPost ? null : post);
+  if ((noMsaa || noAA) && host.post) host.post.multisampling = 0;
+  if (noShadows) host.renderer.shadowMap.enabled = false;
+  const w = await buildWorld(R, S, { ...opts, mtoonMaterial: host.mtoonMaterial });
+  host.attach(w.tree); host.resize(width, height);
+  // ?hide=<node id>: that node not drawn; ?frontSide=<node id>: its materials single-sided (the scene, to find what varies)
+  if (hide) w.tree.find(hide).object3d.visible = false;
+  if (frontSide) w.tree.find(frontSide).object3d.traverse((o) => { for (const m of [o.material].flat()) if (m) { m.side = 0; m.needsUpdate = true; } });
+  // ?split=<node id>: its double-sided meshes drawn as two culled draws, back faces first, then front faces
+  if (split) {
+    const meshes = []; w.tree.find(split).object3d.traverse((o) => { if (o.isMesh && o.material?.side === 2) meshes.push(o); });
+    for (const o of meshes) {
+      const back = new o.constructor(o.geometry, o.material.clone()); back.material.side = 1; back.renderOrder = o.renderOrder - 1;
+      back.castShadow = o.castShadow; back.receiveShadow = o.receiveShadow; o.material.side = 0; o.material.needsUpdate = true; o.add(back);
+    }
+  }
+  const rb = readbackFor(host, width, height), buf = new Uint8Array(width * height * 4);
+  // to frame K as an export reaches it (frame by frame, each drawn)
+  for (let n = 0; n <= frames; n++) { const { step, alpha } = framesToStep(n, rate); await rb.draw(() => host.frameAt(step, alpha)); }
+  const { alpha } = framesToStep(frames, rate);
+  // the machine's world matrix and the camera's view-projection at this frame (repro 5 draws the same with raw WebGPU)
+  let mvp = null;
+  { const cam = w.tree.services.get('cameras')?.current?.camera, m = w.tree.find('espresso')?.object3d; let mesh = null; m?.traverse((o) => { if (o.isMesh && !mesh) mesh = o; });
+    if (cam && mesh) { host.scene.updateMatrixWorld(); cam.updateMatrixWorld(); mvp = { model: [...mesh.matrixWorld.elements], view: [...cam.matrixWorldInverse.elements], projection: [...cam.projectionMatrix.elements], cameraPosition: cam.getWorldPosition(mesh.position.clone()).toArray() }; } }
+  const TX = 16, tw = width / TX, th = height / 9, x0 = (keepTile % TX) * tw, y0 = Math.floor(keepTile / TX) * th;
+  const tileHash = () => { let h = 0x811c9dc5; for (let y = 0; y < th; y++) for (let x = 0; x < tw * 4; x++) h = Math.imul(h ^ buf[((y0 + y) * width + x0) * 4 + x], 0x01000193); return (h >>> 0).toString(16); };
+  const counts = new Map(), tiles = new Map(), firstOdd = [];
+  let ref = null;
+  const t0 = now();
+  for (let i = 0; i < repeat; i++) {
+    host.advanceNodeFrame();
+    await rb.draw(() => host.render(alpha, false));
+    await rb.readNow(buf);
+    const h = hashFrame(buf), t = tileHash();
+    counts.set(h, (counts.get(h) ?? 0) + 1); tiles.set(t, (tiles.get(t) ?? 0) + 1);
+    if (ref === null) ref = h; else if (h !== ref && firstOdd.length < 5) firstOdd.push({ iter: i, tile: t });
+  }
+  const ms = Math.round(now() - t0);
+  rb.release(); dropHost(host);
+  return { frame: frames, repeat, ms, mvp, switches: { noShadows, noPost, noMsaa, noAA, hide, frontSide, split }, distinct: counts.size, counts: Object.fromEntries(counts), tileDistinct: tiles.size, tiles: Object.fromEntries(tiles), firstOdd };
+}
+const framesToStep = (n, rate) => frameToStep(n, rate);

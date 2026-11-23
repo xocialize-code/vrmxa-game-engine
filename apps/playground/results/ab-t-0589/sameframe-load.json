@@ -1,0 +1,113 @@
+{
+ "query": "?mode=frames&renderer=webgpu&parts=sameFrame&frames=72&repeat=20000",
+ "loads": [
+  {
+   "load": 1,
+   "backend": "webgpu",
+   "errors": [],
+   "frame": 72,
+   "repeat": 20000,
+   "ms": 107014,
+   "switches": {
+    "noShadows": false,
+    "noPost": false,
+    "noMsaa": false
+   },
+   "distinct": 2,
+   "counts": {
+    "7553da7a2d1483c6": 19996,
+    "7d987e8660c3b31f": 4
+   },
+   "tileDistinct": 2,
+   "tiles": {
+    "62e00872": 19996,
+    "3376f56c": 4
+   },
+   "firstOdd": [
+    {
+     "iter": 4001,
+     "tile": "3376f56c"
+    },
+    {
+     "iter": 4933,
+     "tile": "3376f56c"
+    },
+    {
+     "iter": 12216,
+     "tile": "3376f56c"
+    },
+    {
+     "iter": 19191,
+     "tile": "3376f56c"
+    }
+   ]
+  },
+  {
+   "load": 2,
+   "backend": "webgpu",
+   "errors": [],
+   "frame": 72,
+   "repeat": 20000,
+   "ms": 106067,
+   "switches": {
+    "noShadows": false,
+    "noPost": false,
+    "noMsaa": false
+   },
+   "distinct": 2,
+   "counts": {
+    "7553da7a2d1483c6": 19996,
+    "7d987e8660c3b31f": 4
+   },
+   "tileDistinct": 2,
+   "tiles": {
+    "62e00872": 19996,
+    "3376f56c": 4
+   },
+   "firstOdd": [
+    {
+     "iter": 7749,
+     "tile": "3376f56c"
+    },
+    {
+     "iter": 9639,
+     "tile": "3376f56c"
+    },
+    {
+     "iter": 11623,
+     "tile": "3376f56c"
+    },
+    {
+     "iter": 16434,
+     "tile": "3376f56c"
+    }
+   ]
+  },
+  {
+   "load": 3,
+   "backend": "webgpu",
+   "errors": [],
+   "frame": 72,
+   "repeat": 20000,
+   "ms": 107713,
+   "switches": {
+    "noShadows": false,
+    "noPost": false,
+    "noMsaa": false
+   },
+   "distinct": 1,
+   "counts": {
+    "7553da7a2d1483c6": 20000
+   },
+   "tileDistinct": 1,
+   "tiles": {
+    "62e00872": 20000
+   },
+   "firstOdd": []
+  }
+ ],
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "os": "27.3.0",
+ "exports": 0,
+ "allIdentical": false
+}
