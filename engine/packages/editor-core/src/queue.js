@@ -1,21 +1,33 @@
 // The render queue's model (M4 W5), with no UI: jobs that render a short, one at a time, through a runner. The queue
 // owns order and state; the runner owns the rendering. M4 W5 ships two runners: the creator's, which exports through
 // the editor's M2 path (the shell's AVAssetWriter, or frame hashes in a browser), and `stubRunner` here, which renders
-// nothing. W10 (delivery export) fills the same interface with its formats (H.264, HEVC and ProRes 4444 at 1080p24 and
-// 4K24, sound, .srt, stills, a turntable, thumbnails), so neither the queue nor its panel changes.
+// nothing. W10 (delivery export, AB-T-0582) fills the same interface with its formats: the delivery presets below (H.264,
+// HEVC and ProRes 4444 with alpha at 1080p24 and 4K24, each with sound, an .srt, stills, thumbnails and a turntable), and
+// per job the backend that draws it (the view's, or WebGL as a per-export choice) and the opt-in redraw check.
 
 /** A job's states, in the order a job moves through them. */
 export const JOB_STATES = Object.freeze(['queued', 'running', 'done', 'failed', 'cancelled']);
 
+/** What a delivery preset adds to the film: a still and a thumbnail per shot, and a turntable per character. */
+export const DELIVERY_EXTRAS = Object.freeze({ stills: true, thumbnails: true, turntable: true });
+
 /**
- * Delivery presets the queue offers. `fps: null` renders at the sequence's own rate. W10 adds its own (4K24 ProRes …);
- * a job keeps the preset's values, so a later change to a preset doesn't change a queued job.
+ * Presets the queue offers. `fps: null` renders at the sequence's own rate. The delivery ones (M4 W10: `delivery: true`)
+ * render at 24 fps with the extras; a job keeps the preset's values, so a later change to a preset doesn't change a
+ * queued job.
  */
 export const PRESETS = Object.freeze({
-  draft: Object.freeze({ label: 'Draft 720p H.264', size: '720p', fps: null, codec: 'h264', audio: true, subtitles: true }),
-  review: Object.freeze({ label: 'Review 1080p H.264', size: '1080p', fps: null, codec: 'h264', audio: true, subtitles: true }),
-  master: Object.freeze({ label: 'Master 1080p ProRes 4444', size: '1080p', fps: null, codec: 'prores4444', audio: true, subtitles: true }),
+  draft: Object.freeze({ label: 'Draft 720p H.264', size: '720p', fps: null, codec: 'h264', audio: true, subtitles: true, extras: null }),
+  review: Object.freeze({ label: 'Review 1080p H.264', size: '1080p', fps: null, codec: 'h264', audio: true, subtitles: true, extras: null }),
+  master: Object.freeze({ label: 'Master 1080p ProRes 4444', size: '1080p', fps: null, codec: 'prores4444', audio: true, subtitles: true, extras: null }),
+  ...Object.fromEntries([['h264', 'H.264'], ['hevc', 'HEVC'], ['prores4444', 'ProRes 4444 with alpha']].flatMap(([codec, name]) => [['1080p', '1080p24'], ['4k', '4K24']].map(([size, what]) => [
+    `${codec === 'prores4444' ? 'prores' : codec}-${size}24`,
+    Object.freeze({ label: `Delivery ${what} ${name}`, size, fps: 24, codec, audio: true, subtitles: true, extras: DELIVERY_EXTRAS, delivery: true }),
+  ]))),
 });
+
+/** Backends a job can draw on: the view's (null), or one by name (WebGL export from a WebGPU view: the plan's risk table). */
+export const JOB_BACKENDS = Object.freeze([null, 'webgpu', 'webgl']);
 
 /**
  * What a runner is: `run(job, { progress, signal })` renders one job and resolves with its result (plain data: what
@@ -23,7 +35,9 @@ export const PRESETS = Object.freeze({
  * @typedef {{ name: string, run: (job: Job, ctx: { progress: (n: number, total: number, phase?: string) => void, signal: AbortSignal }) => Promise<any> }} Runner
  *
  * @typedef {{ short: string, title?: string, ref: string, preset?: string, size: string, fps: number | null, codec: string,
- *   audio: boolean, subtitles: boolean, seconds?: number | null, name?: string | null }} JobSpec
+ *   audio: boolean, subtitles: boolean, seconds?: number | null, name?: string | null,
+ *   extras?: { stills?: boolean, thumbnails?: boolean, turntable?: boolean } | null, backend?: string | null, check?: 'redraw' | null }} JobSpec
+ *   (extras: what a delivery adds to the film; backend: null for the view's; check: 'redraw' draws each frame twice, M4 W10)
  * @typedef {{ id: string, label: string, spec: JobSpec, state: string, progress: { n: number, total: number, phase: string },
  *   result: any, error: string | null, lateCancel?: boolean }} Job (lateCancel: cancelled after the runner could still stop)
  */
@@ -61,8 +75,10 @@ export class RenderQueue {
     if (!spec?.short || !spec.ref) throw new Error('a render job needs the short and its sequence (short, ref)');
     const p = spec.preset ? PRESETS[spec.preset] : null;
     if (spec.preset && !p) throw new Error(`no preset ${spec.preset} (${Object.keys(PRESETS).join(', ')})`);
-    const full = /** @type {JobSpec} */ ({ size: '1080p', fps: null, codec: 'h264', audio: true, subtitles: true, seconds: null, name: null, ...(p ? { size: p.size, fps: p.fps, codec: p.codec, audio: p.audio, subtitles: p.subtitles } : {}), ...spec });
-    const job = { id: `job-${this._next++}`, label: `${full.title ?? full.short} · ${p?.label ?? `${full.size} ${full.codec}`}`, spec: full, state: 'queued', progress: { n: 0, total: 0, phase: '' }, result: null, error: null, lateCancel: false };
+    const full = /** @type {JobSpec} */ ({ size: '1080p', fps: null, codec: 'h264', audio: true, subtitles: true, seconds: null, name: null, extras: null, backend: null, check: null, ...(p ? { size: p.size, fps: p.fps, codec: p.codec, audio: p.audio, subtitles: p.subtitles, extras: p.extras ? { ...p.extras } : null } : {}), ...spec });
+    if (!JOB_BACKENDS.includes(full.backend ?? null)) throw new Error(`no backend ${full.backend} (webgpu, webgl, or null for the view's)`);
+    if (full.check != null && full.check !== 'redraw') throw new Error(`check is 'redraw' or null, not ${full.check}`);
+    const job = { id: `job-${this._next++}`, label: `${full.title ?? full.short} · ${p?.label ?? `${full.size} ${full.codec}`}${full.backend ? ` · ${full.backend === 'webgl' ? 'WebGL' : 'WebGPU'}` : ''}${full.check ? ' · checked' : ''}`, spec: full, state: 'queued', progress: { n: 0, total: 0, phase: '' }, result: null, error: null, lateCancel: false };
     this.jobs.push(job);
     this.changed();
     return job;

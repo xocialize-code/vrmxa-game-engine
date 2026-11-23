@@ -1,0 +1,49 @@
+{
+ "format": "vrmxg-delivery-run",
+ "version": 1,
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+ "origin": "loopback",
+ "shell": {
+  "scheme": "vrmxg-creator://app/"
+ },
+ "preset": "h264-4k24",
+ "short": "cafe-order",
+ "backend": "webgpu",
+ "check": null,
+ "seconds": 60,
+ "jobs": [
+  {
+   "id": "job-1",
+   "label": "The Order · Delivery 4K24 H.264",
+   "state": "done",
+   "error": null,
+   "result": {
+    "frames": 1440,
+    "seconds": 60,
+    "name": "cafe-order-4k24.mp4",
+    "path": "~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/delivery-exports/cafe-order-4k24.mp4",
+    "hashesDigest": "fb7268cdb978fbad",
+    "hashOnly": false,
+    "ms": 23082.76,
+    "backend": "webgpu",
+    "audioHash": "abd50c66",
+    "check": null,
+    "subtitles": {
+     "lines": 7,
+     "path": "~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/delivery-exports/cafe-order-4k24.srt",
+     "error": null
+    }
+   }
+  }
+ ],
+ "manifests": [],
+ "same": {
+  "runs": 1,
+  "frames": true,
+  "audio": true,
+  "stills": null,
+  "thumbnails": null,
+  "turntables": null
+ },
+ "ms": 29248
+}

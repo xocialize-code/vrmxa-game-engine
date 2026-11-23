@@ -115,8 +115,8 @@ export class EditorHost {
   /** The post stack's options (M2 W3, M4 W1): the backend's own stack, LUTs read from the open project. */
   postOptions() { return { loadCube: (file) => this.project.text(file) }; }
 
-  /** An offline host on the view's backend (exports, checks): its own canvas, pixel ratio 1. */
-  offlineHost() { return RenderHost.create({ canvas: document.createElement('canvas'), backend: this.host.backend, dprCap: 1, post: this.postOptions() }); }
+  /** An offline host on the view's backend, or the one named (exports, checks): its own canvas, pixel ratio 1. */
+  offlineHost(backend = null) { return RenderHost.create({ canvas: document.createElement('canvas'), backend: backend ?? this.host.backend, dprCap: 1, post: this.postOptions() }); }
 
   /** Tell the UI: 'stats' for the readouts only (every few frames), anything else for the panels. */
   changed(kind = 'all') { this.onChange?.(kind); }
@@ -262,8 +262,10 @@ export class EditorHost {
    * A world from a document. The edit view (play false) is never stepped, so it skips the run-time closet and reuses
    * the project's read bundles and clips between rebuilds; Play builds the full world, as the game does. `cache: true`
    * lets a play world share those read bundles and clips too (they are never written to: the creator's thumbnails).
+   * `mtoonMaterial`: the MToon class of the host that will draw the world (M4 W10: a WebGL export from a WebGPU view
+   * needs WebGL's MToon; WebGL can't draw MToonNodeMaterial); the view's by default.
    */
-  async buildFrom(doc, { play = false, heard = play, cache = !play } = {}) {
+  async buildFrom(doc, { play = false, heard = play, cache = !play, mtoonMaterial = this.host.mtoonMaterial } = {}) {
     const p = this.project;
     if (this.cacheFor !== p) {
       this.cacheFor = p; this.characterCache = { sources: new Map(), clips: new Map() }; this.animCache = await p.animations();
@@ -274,7 +276,7 @@ export class EditorHost {
     const sample = { scene: this.sceneRef, doc, prefabs: this.session.prefabs, animations: this.animCache, bytes: (ref) => p.bytes(ref), personas: this.personasCache ?? null };
     this.buildTimings = {};
     if (heard && !this.audio) this.audio = new AudioOutput(); // made on the first Play: that click is the gesture that lets it sound
-    return buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial: this.host.mtoonMaterial });
+    return buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial });
   }
 
   /** Each scene node's object, for picking: inner nodes of a prefab instance pick the instance. */
@@ -551,14 +553,14 @@ export class EditorHost {
   }
 
   /** A take as a world at step 0 with its input replaying: { world, seconds }. Sound is recorded, not heard. */
-  async takeWorld(id, seqDoc = null) {
+  async takeWorld(id, seqDoc = null, { mtoonMaterial = this.host.mtoonMaterial } = {}) {
     let doc, input;
     if (id === 'sequence') {
       // the sequence as the runtimes play it from its first frame, exactly as the timeline's preview builds it; seqDoc:
       // a snapshot of it taken earlier (the creator's render queue renders a short as it was queued, M4 W5)
       const src = seqDoc ?? parse(this.session.text());
       const seq = src.sequence;
-      const world = await this.buildFrom(src, { play: true, heard: false });
+      const world = await this.buildFrom(src, { play: true, heard: false, mtoonMaterial });
       return { world, seconds: seq.duration / seq.fps };
     }
     let ai = [], steps = null;
@@ -573,7 +575,7 @@ export class EditorHost {
         input = file.input; ai = file.ai ?? []; steps = file.steps;
       } else input = file; // a bare input recording (M1)
     }
-    const world = await this.buildFrom(structuredClone(doc), { play: true, heard: false });
+    const world = await this.buildFrom(structuredClone(doc), { play: true, heard: false, mtoonMaterial });
     if (input) world.input.replay(structuredClone(input));
     if (ai.length) world.ai?.replay(ai);
     return { world, seconds: (steps ?? input?.frames?.length ?? 0) / 60 };
@@ -629,9 +631,13 @@ export class EditorHost {
    * doc: for the sequence take, a snapshot of the sequence document to render instead of the open one (M4 W5);
    * subtitles: false leaves the .srt out; signal: an AbortSignal that stops the export between frames (the shell's writer
    * removes the partial file).
-   * @param {{ take: string, seconds?: number, size: string, fps: string, codec: string, audio: boolean, name?: string, hash?: boolean, hashOnly?: boolean, sink?: any, doc?: any, subtitles?: boolean, signal?: AbortSignal }} o
+   * M4 W10 (delivery): backend draws on that backend instead of the view's (WebGL export from a WebGPU view); check:
+   * 'redraw' draws each frame twice and compares; onBytes sees each frame's read-back bytes (stills); projectPath writes
+   * the movie into the open project (a delivery's folder) instead of asking where.
+   * @param {{ take: string, seconds?: number, size: string, fps: string, codec: string, audio: boolean, name?: string, hash?: boolean, hashOnly?: boolean, sink?: any, doc?: any, subtitles?: boolean, signal?: AbortSignal,
+   *   backend?: string | null, check?: 'redraw' | null, onBytes?: (n: number, bytes: Uint8Array, topDown: boolean) => void, projectPath?: string | null }} o
    */
-  async exportVideo({ take, seconds, size, fps, codec, audio, name, hash = true, hashOnly = !inShell, sink: sinkIn = null, doc = null, subtitles: withSubs = true, signal = undefined }) {
+  async exportVideo({ take, seconds, size, fps, codec, audio, name, hash = true, hashOnly = !inShell, sink: sinkIn = null, doc = null, subtitles: withSubs = true, signal = undefined, backend = null, check = null, onBytes = undefined, projectPath = null }) {
     if (this.exporting) throw new Error('an export is already running');
     if (this.session?.mode !== 'editing') throw new Error('stop playing before exporting');
     const [width, height] = SIZES[size], rate = RATES[fps];
@@ -639,12 +645,14 @@ export class EditorHost {
     let world = null;
     try {
       const seqDoc = take === 'sequence' ? (doc ?? parse(this.session.text())) : null;
-      const built = await this.takeWorld(take, seqDoc);
+      // the export's host first: its world is built with that host's MToon (another backend's, when the job says)
+      this.exportHost ??= await this.offlineHost(backend);
+      const built = await this.takeWorld(take, seqDoc, { mtoonMaterial: this.exportHost.mtoonMaterial });
       world = built.world;
       const frames = framesFor(seconds ?? built.seconds, rate);
       this.exporting.frames = frames;
-      this.exportHost ??= await this.offlineHost();
       const ext = CODECS[codec].ext;
+      const topDown = !!this.exportHost.renderer.isWebGPURenderer;
       const base = (name || `${(this.sceneRef ?? 'scene').replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-')}-${size}${fps.replace('.', '')}`).replace(/\.(mp4|mov)$/, '');
       const sink = sinkIn ?? (hashOnly ? hashSink() : shellSink({ call })); // a sink passed in: checks, other transports
       // a sequence's dialogue goes beside the movie as <name>.srt (the shell writes it; hash-only keeps the text)
@@ -654,8 +662,9 @@ export class EditorHost {
       const r = await exportTake({
         tree: world.tree, host: this.exportHost, fps: rate, frames, width, height, sink, audio,
         onFrame: worldAt ? (n) => { worldAt[n] = hashValue(worldHashes(world.tree, { physicsBytes: true })); } : undefined,
-        job: { codec, suggestedName: `${base}.${ext}`, hash, title: 'Export Video', ...(srt ? { subtitles: srt } : {}) },
+        job: { codec, suggestedName: `${base}.${ext}`, hash, title: 'Export Video', ...(srt ? { subtitles: srt } : {}), ...(projectPath ? { projectPath } : {}) },
         onProgress: (p) => { this.exporting = { ...p }; this.changed('export'); }, now: () => performance.now(), signal,
+        check, onBytes: onBytes ? (n, bytes) => onBytes(n, bytes, topDown) : undefined,
       });
       const { frameHashes, ...rest } = r;
       const subs = srt ? { lines: srt ? srt.split('\n\n').filter(Boolean).length : 0, bytes: srt.length, path: rest.subtitles ?? null, error: rest.subtitlesError ?? null, text: hashOnly ? srt : undefined } : null;

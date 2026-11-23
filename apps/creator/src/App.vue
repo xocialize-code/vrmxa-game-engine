@@ -74,6 +74,11 @@ onMounted(async () => {
   await act(async () => cr.openProject(await bundledProject()));
   ui.loading = false;
   started();
+  // ?deliver=<preset> (M4 W10): render deliveries by itself for the acceptance and the timing receipt (delivermode.js)
+  if (new URLSearchParams(location.search).has('deliver')) {
+    const dm = await import('./delivermode.js');
+    await act(async () => { try { window.__result = await dm.runDeliverMode(cr, dm.deliverOptions(location.search)); } catch (e) { window.__errors.push(String(e?.stack ?? e)); throw e; } });
+  }
 });
 
 // ---------------------------------------------------------------- the window's questions

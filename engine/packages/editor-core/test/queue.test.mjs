@@ -1,7 +1,7 @@
 // The render queue's model (M4 W5): order, states, presets, cancel and retry, with the stub runner and fakes.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { RenderQueue, stubRunner, PRESETS, JOB_STATES } from '../src/index.js';
+import { RenderQueue, stubRunner, PRESETS, JOB_STATES, DELIVERY_EXTRAS, JOB_BACKENDS } from '../src/index.js';
 
 const spec = (o = {}) => ({ short: 'cafe-order', title: 'The Order', ref: 'sequences/cafe-order.vrmxs', seconds: 2, ...o });
 
@@ -16,7 +16,7 @@ test('a preset fills the job and explicit fields win; ids count up', () => {
   assert.deepEqual([b.spec.size, b.spec.codec], ['4k', 'prores4444']);
   assert.throws(() => q.add(spec({ preset: 'nope' })), /no preset nope/);
   assert.throws(() => q.add({ short: 'x' }), /short and its sequence/);
-  assert.deepEqual(Object.keys(PRESETS), ['draft', 'review', 'master']);
+  assert.deepEqual(Object.keys(PRESETS), ['draft', 'review', 'master', 'h264-1080p24', 'h264-4k24', 'hevc-1080p24', 'hevc-4k24', 'prores-1080p24', 'prores-4k24']);
   assert.deepEqual(JOB_STATES, ['queued', 'running', 'done', 'failed', 'cancelled']);
 });
 
@@ -106,4 +106,26 @@ test('a runner that finishes although Cancel came too late leaves a done job tha
   release();
   await run;
   assert.deepEqual([q.jobs[0].state, q.jobs[0].lateCancel], ['done', true]);
+});
+
+test('delivery presets (M4 W10): every codec at 1080p24 and 4K24 with the extras; a backend and the redraw check per job', () => {
+  const q = new RenderQueue();
+  for (const [k, p] of Object.entries(PRESETS).filter(([, x]) => x.delivery)) {
+    const j = q.add(spec({ preset: k }));
+    assert.equal(j.spec.fps, 24, k);
+    assert.deepEqual(j.spec.extras, { ...DELIVERY_EXTRAS }, `${k}: stills, thumbnails, a turntable`);
+    assert.ok(['1080p', '4k'].includes(j.spec.size) && ['h264', 'hevc', 'prores4444'].includes(j.spec.codec), k);
+    assert.equal(j.label, `The Order · ${p.label}`);
+  }
+  assert.equal(PRESETS['prores-4k24'].label, 'Delivery 4K24 ProRes 4444 with alpha');
+  assert.equal(q.add(spec({ preset: 'draft' })).spec.extras, null, 'a draft is the film alone');
+  const gl = q.add(spec({ preset: 'h264-4k24', backend: 'webgl', check: 'redraw' }));
+  assert.equal(gl.label, 'The Order · Delivery 4K24 H.264 · WebGL · checked');
+  assert.deepEqual([gl.spec.backend, gl.spec.check], ['webgl', 'redraw']);
+  assert.deepEqual(JOB_BACKENDS, [null, 'webgpu', 'webgl']);
+  assert.throws(() => q.add(spec({ preset: 'draft', backend: 'metal' })), /no backend metal/);
+  assert.throws(() => q.add(spec({ preset: 'draft', check: 'twice' })), /check is 'redraw' or null/);
+  const extras = q.add(spec({ preset: 'hevc-1080p24' })).spec.extras;
+  extras.turntable = false;
+  assert.equal(PRESETS['hevc-1080p24'].extras.turntable, true, 'a job\'s extras are its own copy');
 });

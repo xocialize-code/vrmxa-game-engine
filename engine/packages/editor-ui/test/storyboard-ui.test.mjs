@@ -1,7 +1,7 @@
 // The storyboard strip's cards and the queue's status lines (M4 W5).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { storyCards, jobStatus } from '../src/index.js';
+import { storyCards, jobStatus, queueSpec } from '../src/index.js';
 
 const board = { fps: 24, duration: 96, shots: [
   { id: 's1', name: '010', start: 0, end: 48, frame: 24, camera: 'vc-est', cameras: ['vc-est'], subjects: [], beat: 'sc-1', hand: false, crossesLine: null },
@@ -29,6 +29,18 @@ test('job status lines', () => {
   assert.equal(jobStatus(j('running', { progress: { n: 12, total: 96, phase: 'frames' } })), 'rendering 12 of 96 (frames)');
   assert.equal(jobStatus(j('done', { result: { stub: true, frames: 96 } })), 'done: 96 frames counted, nothing rendered (stub)');
   assert.equal(jobStatus(j('done', { result: { frames: 96, name: 'the-order.mp4', hashesDigest: 'abcd' } })), 'done: 96 frames · the-order.mp4 · frames abcd');
+  const delivered = { frames: 1080, name: 'cafe-order-4k24-prores.mov', hashesDigest: 'abcd', delivery: { stills: 11, thumbnails: 11, turntables: 2 } };
+  assert.equal(jobStatus(j('done', { result: delivered })), 'done: 1080 frames · cafe-order-4k24-prores.mov · frames abcd · 11 stills · 11 thumbnails · 2 turntables');
+  assert.equal(jobStatus(j('done', { result: { ...delivered, delivery: { stills: 1, thumbnails: 0, turntables: 1 }, check: { mode: 'redraw', frames: 1080, odd: [{ n: 9, odd: 'first' }] } } })), 'done: 1080 frames · cafe-order-4k24-prores.mov · frames abcd · 1 stills · 0 thumbnails · 1 turntable · redraw check: 1 odd draw outvoted');
+  assert.equal(jobStatus(j('done', { result: { frames: 2, check: { mode: 'redraw', frames: 2, odd: [] } } })), 'done: 2 frames · redraw check: every frame twice the same');
+  assert.equal(jobStatus(j('done', { result: { frames: 2, delivery: { stills: 1, thumbnails: 1, turntables: 1, files: 6, missing: [] } } })), 'done: 2 frames · 1 stills · 1 thumbnails · 1 turntable · 6 files on disk');
+  assert.equal(jobStatus(j('done', { result: { frames: 2, delivery: { stills: 1, thumbnails: 1, turntables: 0, files: 5, missing: ['d/a.png'] } } })), 'done: 2 frames · 1 stills · 1 thumbnails · 0 turntables · missing on disk: d/a.png');
   assert.equal(jobStatus(j('failed', { error: 'no encoder' })), 'failed: no encoder');
   assert.equal(jobStatus(j('cancelled')), 'cancelled');
+});
+
+test('the queue form: a delivery preset carries its extras as ticked; the backend and the redraw check per job (M4 W10)', () => {
+  const form = { preset: 'prores-4k24', name: '  ', backend: '', check: false, stills: true, thumbnails: false, turntable: true };
+  assert.deepEqual(queueSpec(form), { preset: 'prores-4k24', name: null, backend: null, check: null, extras: { stills: true, thumbnails: false, turntable: true } });
+  assert.deepEqual(queueSpec({ ...form, preset: 'draft', name: ' cut 2 ', backend: 'webgl', check: true }), { preset: 'draft', name: 'cut 2', backend: 'webgl', check: 'redraw' }, 'a film preset has no extras');
 });

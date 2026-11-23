@@ -53,3 +53,25 @@ Tests: `node --test test/` (the frame plan, the loop against a stand-in renderer
 one target per renderer resized for each size, a still then frames at another size, the probe refusing a target that
 receives no draw, release mid-map, a slot being taken not handed to a still, a failed copy unmapping, and `exportTake`
 and `captureStill` on a WebGPU host). Real WebGPU: the playground's `?mode=frames`.
+
+## Delivery (M4 W10, AB-T-0582)
+
+The creator's render queue renders deliveries through this package (`apps/creator/src/delivery.js`). What it adds:
+
+| Piece | What |
+|---|---|
+| `pumpFrames` | The frame loop `exportTake` and `exportTurntable` share: draw frame n, start its readback, hand frame n − lag to the sink with at most `inflight` outstanding. `onBytes(n, bytes)` sees each frame's bytes before the sink does (the buffer is reused: copy what you keep) |
+| `check: 'redraw'` | Opt-in, on `exportTake` and `exportTurntable`. After frame n is drawn and read, the same moment is drawn again (`advanceNodeFrame` and `render`, no step) and read; equal readbacks send the frame on, different ones get a third draw, and the frame two draws agree on goes out (three different pictures throw). Each frame is read at once, so the mode gives up the one-frame lag. The result's `check` counts the frames and lists each odd draw (`{ n, odd: 'first' \| 'second' }`). It is the double-draw readback AB-D-0279 and AB-T-0591 mention; it isn't the default |
+| `exportTurntable` | The world held still (never stepped) while a camera orbits once: `pose(n)` gives the camera, the host's camera is put back after. `warm: true` draws frame 0 once first and throws it away (a fresh WebGPU host's first frame through the TSL post stack can differ under GPU load, AB-T-0596) |
+| `stillFrames(seq, frames, fps)` | Each shot's middle frame in the export's frames (one per frame, in order; no shots: the middle frame). The creator keeps those frames' bytes as they pass through the film's readback, so a still is the delivered frame, not a second render |
+| `boxDown(rgba, w, h, tw, th)` | A box filter in integers (1080p and 4K to 480×270 are whole 4×4 and 8×8 boxes; any size works), so thumbnails are the same bytes on every engine |
+| `orbitPose`, `fitDistance` | The turntable's camera on dmath's sines (portable: AB-L-0345), and how far a lens must stand to fit a figure |
+| `deliveryFiles` | A delivery's names under `deliveries/<name>/`: the film, its `.srt`, `stills/`, `thumbnails/`, `turntables/`, `delivery.json` |
+
+Sound at lag 0: the WAV `mixTake` makes is exactly the frames' length and starts at frame 0; the shell muxes it as AAC
+with the encoder's priming trimmed. `apps/shell`'s `soundAtLagZero` test puts a click at a frame's time and finds it in
+the decoded file within 2 samples, for H.264 and HEVC in `.mp4` and ProRes 4444 in `.mov`.
+
+Alpha: ProRes 4444 carries the frame's alpha, unpremultiplied by the shell (readback is premultiplied on both backends).
+A short drawn in a set is opaque, so its alpha is 255 everywhere; a matte (the characters over nothing) is not part of
+W10.
