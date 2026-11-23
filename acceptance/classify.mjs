@@ -7,7 +7,8 @@
 //   - a load whose only faults are pixels that differ (its digest, or the verdicts that compare a load's own frames with
 //     each other: the film's two exports, the post exports, a look's first frame against its next, a restored or reused
 //     host's frames) may be AB-T-0589, the macOS beta's Metal issue: only when the rerun is clean and the failed load ran
-//     while another process loaded the GPU. With a quiet GPU it is a failure.
+//     while another process loaded the GPU. With a quiet GPU it is a failure (decision AB-D-0279; re-test on the macOS
+//     release build: AB-T-0591).
 
 /**
  * Verdicts that compare pixels within one load: an odd draw shows as one of these. The editor's scrub (scrubSame) is not

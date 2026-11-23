@@ -95,7 +95,9 @@ scheme origin's timer resolves 1 ms (AB-L-0346), and each WKWebView load is a fr
     and the failed load ran under load: **AB-T-0589** (the beta's Metal issue), one incident per load in the summary's
     `incidents`; that load counts.
   - Otherwise (the rerun isn't clean, or the GPU was quiet): a **failure**. The matrix stops there (`--keep-going` records
-    it and carries on) and exits 1.
+    it and carries on) and exits 1. A quiet-GPU odd frame whose rerun matches is a failure, not AB-T-0589, by decision
+    **AB-D-0279** (the operator, 2026-11-23), even though repro 5 shows the beta's issue on a quiet GPU too; the re-test
+    on the macOS release build is AB-T-0591.
 
 ### The look between backends: SSIM ≥ 0.98 at 1080p, translucency aside
 
