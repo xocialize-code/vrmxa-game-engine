@@ -7,6 +7,7 @@
 //   node acceptance/matrix.mjs --runtimes chromium --backends webgpu --checks backends,post --loads 2
 //   node acceptance/matrix.mjs --bless              # write acceptance/canonical.json from this run (every load must agree)
 //   node acceptance/matrix.mjs --keep-going         # record a failure and carry on (diagnosis; the run still fails)
+//   node acceptance/matrix.mjs --quiet-wait 20      # minutes to wait for a quiet GPU before each cell (--allow-load: carry on anyway)
 //
 // The checks are the playground's own modes: acceptance (M0–M3's exit checks, scored by compare.mjs per backend), backends
 // (offline frames and a still), frames (particles, the film exported twice, stills, readback, alpha), post (every look at
@@ -57,6 +58,12 @@ const LOADS = opt('loads', null);
 const BLESS = flag('bless');
 /** --keep-going: a failure is recorded and the matrix carries on (for diagnosis: the run still fails). */
 const KEEP_GOING = flag('keep-going');
+/**
+ * Before each cell, with the lock held and nothing of ours running, the GPU must be quiet: utilisation ≤ 30 % and no
+ * GPU-using process at ≥ 5 % CPU (sampled every 5 s; three quiet samples in a row). The matrix waits up to --quiet-wait
+ * minutes (20), then stops (--allow-load records the load and carries on: such a run can't pass).
+ */
+const QUIET_UTIL = 30, QUIET_WAIT = +opt('quiet-wait', 20), ALLOW_LOAD = flag('allow-load');
 /** A load counts as run under load when another process drew on the GPU meanwhile (see underLoad). */
 const FOREIGN_CPU = 5;
 
@@ -313,6 +320,14 @@ cells: for (const runtime of RUNTIMES) for (const backend of BACKENDS) {
   summary.gpuLock.push({ cell, waitedMs: Date.now() - waitStart });
   const cellOut = { cell, runtime, backend, ua: null, started: new Date().toISOString(), checks: {} };
   try {
+    cellOut.preflight = await waitForQuiet(cell);
+    if (!cellOut.preflight.quiet && !ALLOW_LOAD) {
+      stopped = { cell, check: 'preflight', why: `the GPU wasn't quiet for ${QUIET_WAIT} min: ${cellOut.preflight.why}` };
+      summary.failures.push({ cell, check: 'preflight', why: stopped.why });
+      log(`${cell}: ${stopped.why}; stopping the matrix (close what loads the GPU, or --allow-load)`);
+      break cells;
+    }
+    if (!cellOut.preflight.quiet) (summary.notQuiet ??= []).push(cell); // --allow-load: recorded, and the run can't pass
     if (runtime === 'chromium') await startChromium();
     startSampling();
     for (const check of checks) {
@@ -405,6 +420,27 @@ cells: for (const runtime of RUNTIMES) for (const backend of BACKENDS) {
   if (stopped) break cells;
 }
 
+/**
+ * Waits until the GPU is quiet (see QUIET_UTIL): three samples in a row, 5 s apart, with utilisation ≤ 30 % and no
+ * GPU-using process (any kind gpu-load.mjs knows, but node) at ≥ 5 % CPU. Nothing of this runner's draws meanwhile.
+ * @returns {Promise<{ quiet: boolean, waitedMs: number, util: number | null, why: string }>}
+ */
+async function waitForQuiet(cell) {
+  const t0 = Date.now();
+  let streak = 0, last = null, told = false;
+  for (;;) {
+    const s = snapshot();
+    const foreign = s.processes.filter((p) => p.kind !== 'node' && p.cpu >= FOREIGN_CPU).map((p) => `${p.kind}:${p.name} ${p.cpu}%`);
+    const quiet = (s.gpuUtil ?? 0) <= QUIET_UTIL && !foreign.length;
+    last = { util: s.gpuUtil, why: quiet ? 'quiet' : [...foreign, ...((s.gpuUtil ?? 0) > QUIET_UTIL ? [`GPU at ${s.gpuUtil}%`] : [])].join(', ') };
+    streak = quiet ? streak + 1 : 0;
+    if (streak >= 3) return { quiet: true, waitedMs: Date.now() - t0, util: s.gpuUtil, why: 'quiet' };
+    if (!quiet && !told) { told = true; log(`${cell}: waiting for a quiet GPU (${last.why})`); }
+    if (Date.now() - t0 > QUIET_WAIT * 60000) return { quiet: false, waitedMs: Date.now() - t0, ...last };
+    await new Promise((r) => setTimeout(r, 5000));
+  }
+}
+
 /** compare.mjs's input: the acceptance results per backend, in the file names and shape it reads. */
 function writeAcceptance(runtime, backend, r) {
   const dir = path.join(out, 'acceptance', backend);
@@ -484,7 +520,7 @@ if (BLESS && !stopped) {
 summary.ended = new Date().toISOString();
 summary.stopped = stopped;
 summary.unpinned = Object.entries(summary.cells).flatMap(([cell, c]) => Object.entries(c).filter(([, x]) => !x.pinned).map(([k]) => `${cell} ${k}`));
-summary.ok = !stopped && !summary.failures.length && !summary.unpinned.length && Object.values(summary.cells).every((c) => Object.values(c).every((x) => x.ok)) && (!summary.compare || Object.values(summary.compare).every((c) => !c.exit)) && (!summary.ssimVerdict || summary.ssimVerdict.ok) && (!summary.simulationIndependentOfBackend || summary.simulationIndependentOfBackend.same);
+summary.ok = !stopped && !summary.failures.length && !summary.unpinned.length && !summary.notQuiet?.length && Object.values(summary.cells).every((c) => Object.values(c).every((x) => x.ok)) && (!summary.compare || Object.values(summary.compare).every((c) => !c.exit)) && (!summary.ssimVerdict || summary.ssimVerdict.ok) && (!summary.simulationIndependentOfBackend || summary.simulationIndependentOfBackend.same);
 // a partial run (some runtimes, backends or checks) writes its own summary beside the full one
 const full = RUNTIMES.length === 3 && BACKENDS.length === 2 && CHECK_NAMES.length === Object.keys(CHECKS).length;
 fs.writeFileSync(path.join(out, full ? 'summary.json' : `summary-partial.json`), JSON.stringify({ ...summary, runtimes: RUNTIMES, backends: BACKENDS, checks: CHECK_NAMES }, null, 1) + '\n');

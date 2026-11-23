@@ -65,9 +65,15 @@ scheme origin's timer resolves 1 ms (AB-L-0346), and each WKWebView load is a fr
   again for the SSIM step. Every runner here that draws takes it too: `acceptance/chromium.mjs`, `wkwebview.sh`, `m2/`,
   `m3/`, and `apps/playground/scripts/` (`chromium-check.mjs`, every `*-chromium.mjs`, and every `*-wkwebview.sh`).
   `VRMXG_GPU_LOCK` moves the directory.
+- **A quiet GPU before each cell.** With the lock held and nothing of the matrix's running, it waits for three samples in
+  a row (5 s apart) with the GPU's utilisation ≤ 30 % and no GPU-using process at ≥ 5 % CPU. It waits up to
+  `--quiet-wait` minutes (20), then stops; `--allow-load` carries on, records the cell in `notQuiet`, and the run can't
+  pass. Each cell's JSON has its `preflight`. (On 2026-11-23 the person's own Chrome, with a busy "Google Chrome Helper
+  (Aperitif)", held the GPU at ~65 % with nothing else running; gpu-load.mjs didn't know that helper's name until then.)
 - **The GPU's load in every result.** Each load records `gpuLoad` (`apps/playground/scripts/gpu-load.mjs`, sampled
-  every 3 s): the GPU's utilisation (min, median, max) and every GPU-using process seen (WebKit, Chromium, python, MLX,
-  the harnesses, the native Metal repro, other apps' busy GPU helpers), names only. Utilisation counts our own drawing
+  every 3 s): the GPU's utilisation (min, median, max) and every GPU-using process seen (WebKit, Chrome for Testing, the
+  person's own browsers with every helper, python, MLX, the harnesses, the native Metal repro, other apps' busy GPU
+  helpers), names only. Utilisation counts our own drawing
   too (a quiet post load in Chromium sits at a median 30–55 %), so it is recorded, not judged. A load ran **under load**
   when another GPU-using process was at ≥ 5 % CPU: anything but our own runtime's processes (Chromium in a Chromium
   cell; WebKit and the harness this runner started in a WKWebView cell, so a busy Safari would pass unseen: close it).
