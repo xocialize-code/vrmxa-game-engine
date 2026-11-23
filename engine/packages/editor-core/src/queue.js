@@ -3,7 +3,8 @@
 // the editor's M2 path (the shell's AVAssetWriter, or frame hashes in a browser), and `stubRunner` here, which renders
 // nothing. W10 (delivery export, AB-T-0582) fills the same interface with its formats: the delivery presets below (H.264,
 // HEVC and ProRes 4444 with alpha at 1080p24 and 4K24, each with sound, an .srt, stills, thumbnails and a turntable), and
-// per job the backend that draws it (the view's, or WebGL as a per-export choice) and the opt-in redraw check.
+// per job the backend that draws it (the view's, or WebGL as a per-export choice) and the redraw check: on by default for
+// a delivery drawn on WebGPU (AB-D-0280), off for the film presets and for WebGL.
 
 /** A job's states, in the order a job moves through them. */
 export const JOB_STATES = Object.freeze(['queued', 'running', 'done', 'failed', 'cancelled']);
@@ -12,17 +13,34 @@ export const JOB_STATES = Object.freeze(['queued', 'running', 'done', 'failed', 
 export const DELIVERY_EXTRAS = Object.freeze({ stills: true, thumbnails: true, turntable: true });
 
 /**
+ * The redraw check a job asks for: 'redraw' (draw each frame twice and compare, a third draw breaking a tie), null (draw
+ * once), or 'auto', the delivery presets' default: redraw when the job draws on WebGPU, where the macOS 27.3 beta draws
+ * a rare odd frame (AB-D-0279), and draw once on WebGL, which has never shown one. The operator's decision AB-D-0280,
+ * until AB-T-0591's re-test on the release OS.
+ */
+export const JOB_CHECKS = Object.freeze([null, 'auto', 'redraw']);
+
+/**
+ * What a job's check comes to on the backend that draws it. @param {{ check?: string | null }} spec
+ * @param {string} backend 'webgpu' or 'webgl' (the job's, else the view's) @returns {'redraw' | null}
+ */
+export function resolveCheck(spec, backend) {
+  if (spec.check === 'redraw') return 'redraw';
+  return spec.check === 'auto' && backend === 'webgpu' ? 'redraw' : null;
+}
+
+/**
  * Presets the queue offers. `fps: null` renders at the sequence's own rate. The delivery ones (M4 W10: `delivery: true`)
- * render at 24 fps with the extras; a job keeps the preset's values, so a later change to a preset doesn't change a
- * queued job.
+ * render at 24 fps with the extras and the redraw check on WebGPU (`check: 'auto'`); a job keeps the preset's values,
+ * so a later change to a preset doesn't change a queued job.
  */
 export const PRESETS = Object.freeze({
-  draft: Object.freeze({ label: 'Draft 720p H.264', size: '720p', fps: null, codec: 'h264', audio: true, subtitles: true, extras: null }),
-  review: Object.freeze({ label: 'Review 1080p H.264', size: '1080p', fps: null, codec: 'h264', audio: true, subtitles: true, extras: null }),
-  master: Object.freeze({ label: 'Master 1080p ProRes 4444', size: '1080p', fps: null, codec: 'prores4444', audio: true, subtitles: true, extras: null }),
+  draft: Object.freeze({ label: 'Draft 720p H.264', size: '720p', fps: null, codec: 'h264', audio: true, subtitles: true, extras: null, check: null }),
+  review: Object.freeze({ label: 'Review 1080p H.264', size: '1080p', fps: null, codec: 'h264', audio: true, subtitles: true, extras: null, check: null }),
+  master: Object.freeze({ label: 'Master 1080p ProRes 4444', size: '1080p', fps: null, codec: 'prores4444', audio: true, subtitles: true, extras: null, check: null }),
   ...Object.fromEntries([['h264', 'H.264'], ['hevc', 'HEVC'], ['prores4444', 'ProRes 4444 with alpha']].flatMap(([codec, name]) => [['1080p', '1080p24'], ['4k', '4K24']].map(([size, what]) => [
     `${codec === 'prores4444' ? 'prores' : codec}-${size}24`,
-    Object.freeze({ label: `Delivery ${what} ${name}`, size, fps: 24, codec, audio: true, subtitles: true, extras: DELIVERY_EXTRAS, delivery: true }),
+    Object.freeze({ label: `Delivery ${what} ${name}`, size, fps: 24, codec, audio: true, subtitles: true, extras: DELIVERY_EXTRAS, check: 'auto', delivery: true }),
   ]))),
 });
 
@@ -36,8 +54,8 @@ export const JOB_BACKENDS = Object.freeze([null, 'webgpu', 'webgl']);
  *
  * @typedef {{ short: string, title?: string, ref: string, preset?: string, size: string, fps: number | null, codec: string,
  *   audio: boolean, subtitles: boolean, seconds?: number | null, name?: string | null,
- *   extras?: { stills?: boolean, thumbnails?: boolean, turntable?: boolean } | null, backend?: string | null, check?: 'redraw' | null }} JobSpec
- *   (extras: what a delivery adds to the film; backend: null for the view's; check: 'redraw' draws each frame twice, M4 W10)
+ *   extras?: { stills?: boolean, thumbnails?: boolean, turntable?: boolean } | null, backend?: string | null, check?: 'redraw' | 'auto' | null }} JobSpec
+ *   (extras: what a delivery adds to the film; backend: null for the view's; check: JOB_CHECKS, M4 W10)
  * @typedef {{ id: string, label: string, spec: JobSpec, state: string, progress: { n: number, total: number, phase: string },
  *   result: any, error: string | null, lateCancel?: boolean }} Job (lateCancel: cancelled after the runner could still stop)
  */
@@ -75,10 +93,10 @@ export class RenderQueue {
     if (!spec?.short || !spec.ref) throw new Error('a render job needs the short and its sequence (short, ref)');
     const p = spec.preset ? PRESETS[spec.preset] : null;
     if (spec.preset && !p) throw new Error(`no preset ${spec.preset} (${Object.keys(PRESETS).join(', ')})`);
-    const full = /** @type {JobSpec} */ ({ size: '1080p', fps: null, codec: 'h264', audio: true, subtitles: true, seconds: null, name: null, extras: null, backend: null, check: null, ...(p ? { size: p.size, fps: p.fps, codec: p.codec, audio: p.audio, subtitles: p.subtitles, extras: p.extras ? { ...p.extras } : null } : {}), ...spec });
+    const full = /** @type {JobSpec} */ ({ size: '1080p', fps: null, codec: 'h264', audio: true, subtitles: true, seconds: null, name: null, extras: null, backend: null, check: null, ...(p ? { size: p.size, fps: p.fps, codec: p.codec, audio: p.audio, subtitles: p.subtitles, extras: p.extras ? { ...p.extras } : null, check: p.check ?? null } : {}), ...spec });
     if (!JOB_BACKENDS.includes(full.backend ?? null)) throw new Error(`no backend ${full.backend} (webgpu, webgl, or null for the view's)`);
-    if (full.check != null && full.check !== 'redraw') throw new Error(`check is 'redraw' or null, not ${full.check}`);
-    const job = { id: `job-${this._next++}`, label: `${full.title ?? full.short} · ${p?.label ?? `${full.size} ${full.codec}`}${full.backend ? ` · ${full.backend === 'webgl' ? 'WebGL' : 'WebGPU'}` : ''}${full.check ? ' · checked' : ''}`, spec: full, state: 'queued', progress: { n: 0, total: 0, phase: '' }, result: null, error: null, lateCancel: false };
+    if (!JOB_CHECKS.includes(full.check ?? null)) throw new Error(`check is 'redraw', 'auto' or null, not ${full.check}`);
+    const job = { id: `job-${this._next++}`, label: `${full.title ?? full.short} · ${p?.label ?? `${full.size} ${full.codec}`}${full.backend ? ` · ${full.backend === 'webgl' ? 'WebGL' : 'WebGPU'}` : ''}${resolveCheck(full, full.backend) ? ' · checked' : ''}`, spec: full, state: 'queued', progress: { n: 0, total: 0, phase: '' }, result: null, error: null, lateCancel: false };
     this.jobs.push(job);
     this.changed();
     return job;

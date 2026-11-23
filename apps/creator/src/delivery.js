@@ -14,6 +14,7 @@ import { parse } from '@vrmxg/scene';
 import { hashValue } from '@vrmxg/snapshot';
 import { atan2 } from '@vrmxg/dmath';
 import { exportTurntable, shellSink, hashSink, toImageRGBA, encodePNG, toBase64, stillFrames, boxDown, orbitPose, fitDistance, deliveryFiles, slug, framesFor, THUMB, SIZES, RATES, CODECS } from '@vrmxg/export';
+import { resolveCheck } from '@vrmxg/editor-core';
 import { inShell, call } from '../../shell/js/shell.js';
 import { disposeWorld } from './dispose.js';
 
@@ -91,6 +92,8 @@ async function deliver(host, job, { progress, signal }) {
   const doc = parse(snap.text), seq = doc.sequence, fps = String(spec.fps ?? seq.fps);
   if (!RATES[fps]) throw new Error(`no export rate ${fps}`);
   const extras = spec.extras ?? null; // a delivery preset: its folder and manifest, whichever extras are ticked
+  // the redraw check: a delivery drawn on WebGPU checks by default (the presets' 'auto', AB-D-0280); a job can say otherwise
+  const check = resolveCheck(spec, spec.backend ?? host.host.backend);
   const toDisk = inShell && !!host.project?.writable;
   if (extras && inShell && !toDisk) throw new Error('open a project folder to deliver into (its files go into deliveries/)');
   const base = baseName(spec, fps), ext = CODECS[spec.codec].ext;
@@ -117,7 +120,7 @@ async function deliver(host, job, { progress, signal }) {
   try {
     film = await host.exportVideo({
       take: 'sequence', doc, subtitles: spec.subtitles !== false, signal, seconds: frames / (rate.num / rate.den), size: spec.size, fps, codec: spec.codec, audio: spec.audio,
-      name: base, backend: spec.backend ?? null, check: spec.check ?? null, onBytes, projectPath: files && toDisk ? files.film : null,
+      name: base, backend: spec.backend ?? null, check, onBytes, projectPath: files && toDisk ? files.film : null,
     });
   } finally { host._queueProgress = null; }
   const tFilm = now() - t0;
@@ -132,7 +135,7 @@ async function deliver(host, job, { progress, signal }) {
   const write = (ref, bytes) => host.project.writeBase64(ref, toBase64(bytes));
   const manifest = {
     format: 'vrmxg-delivery', version: 1, short: spec.short, title: spec.title ?? null, preset: spec.preset ?? null,
-    size: [width, height], fps: [rate.num, rate.den], codec: spec.codec, backend: film.backend, check: spec.check ?? null,
+    size: [width, height], fps: [rate.num, rate.den], codec: spec.codec, backend: film.backend, check,
     film: { path: files.film, frames: film.frames, frameDigest: film.hashesDigest, audioHash: film.audioHash ?? null, ms: film.ms ?? null, perFrameMs: film.perFrameMs ?? null, check: film.check ?? null, written: toDisk },
     subtitles: film.subs ? { path: files.subtitles, lines: film.subs.lines, hash: film.subs.text ? hashBytes(new TextEncoder().encode(film.subs.text)) : null } : null,
     stills: [], thumbnails: [], turntables: [], ms: { film: Math.round(tFilm) },
@@ -152,7 +155,7 @@ async function deliver(host, job, { progress, signal }) {
   const t2 = now();
   for (let i = 0; i < ids.length; i++) {
     stop();
-    manifest.turntables.push(await turntable(host, doc, ids[i], { path: files.turntables[i], toDisk, width, height, rate, codec: spec.codec, base, backend: spec.backend ?? null, check: spec.check ?? null, signal, progress: (n, total) => progress(n, total, `turntable ${ids[i]}`) }));
+    manifest.turntables.push(await turntable(host, doc, ids[i], { path: files.turntables[i], toDisk, width, height, rate, codec: spec.codec, base, backend: spec.backend ?? null, check, signal, progress: (n, total) => progress(n, total, `turntable ${ids[i]}`) }));
   }
   manifest.ms.turntables = Math.round(now() - t2);
   manifest.ms.total = Math.round(now() - t0);

@@ -1,7 +1,7 @@
 // The storyboard strip's cards and the queue's status lines (M4 W5).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { storyCards, jobStatus, queueSpec } from '../src/index.js';
+import { storyCards, jobStatus, queueSpec, checkTicked } from '../src/index.js';
 
 const board = { fps: 24, duration: 96, shots: [
   { id: 's1', name: '010', start: 0, end: 48, frame: 24, camera: 'vc-est', cameras: ['vc-est'], subjects: [], beat: 'sc-1', hand: false, crossesLine: null },
@@ -41,6 +41,19 @@ test('job status lines', () => {
 
 test('the queue form: a delivery preset carries its extras as ticked; the backend and the redraw check per job (M4 W10)', () => {
   const form = { preset: 'prores-4k24', name: '  ', backend: '', check: false, stills: true, thumbnails: false, turntable: true };
-  assert.deepEqual(queueSpec(form), { preset: 'prores-4k24', name: null, backend: null, check: null, extras: { stills: true, thumbnails: false, turntable: true } });
+  assert.deepEqual(queueSpec(form), { preset: 'prores-4k24', name: null, backend: null, check: null, extras: { stills: true, thumbnails: false, turntable: true } }, 'unticked by the person: no check');
   assert.deepEqual(queueSpec({ ...form, preset: 'draft', name: ' cut 2 ', backend: 'webgl', check: true }), { preset: 'draft', name: 'cut 2', backend: 'webgl', check: 'redraw' }, 'a film preset has no extras');
+});
+
+test('the queue form\'s redraw check: ticked by default for a delivery drawn on WebGPU, as the person leaves it otherwise (AB-D-0280)', () => {
+  const form = { preset: 'h264-4k24', name: '', backend: '', check: null, stills: false, thumbnails: false, turntable: false };
+  assert.equal(checkTicked(form), true, 'a delivery on the view\'s WebGPU');
+  assert.equal(checkTicked(form, 'webgl'), false, 'a delivery on the view\'s WebGL');
+  assert.equal(checkTicked({ ...form, backend: 'webgl' }), false, 'a delivery drawn on WebGL');
+  assert.equal(checkTicked({ ...form, backend: 'webgpu' }, 'webgl'), true, 'a delivery drawn on WebGPU from a WebGL view');
+  assert.equal(checkTicked({ ...form, preset: 'draft' }), false, 'a film preset');
+  assert.equal(checkTicked({ ...form, check: false }), false, 'unticked by the person');
+  assert.equal(checkTicked({ ...form, preset: 'draft', check: true }), true, 'ticked by the person');
+  assert.equal(queueSpec(form).check, 'redraw');
+  assert.equal(queueSpec(form, 'webgl').check, null);
 });

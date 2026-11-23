@@ -1,7 +1,7 @@
 // The render queue's model (M4 W5): order, states, presets, cancel and retry, with the stub runner and fakes.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { RenderQueue, stubRunner, PRESETS, JOB_STATES, DELIVERY_EXTRAS, JOB_BACKENDS } from '../src/index.js';
+import { RenderQueue, stubRunner, PRESETS, JOB_STATES, DELIVERY_EXTRAS, JOB_BACKENDS, JOB_CHECKS, resolveCheck } from '../src/index.js';
 
 const spec = (o = {}) => ({ short: 'cafe-order', title: 'The Order', ref: 'sequences/cafe-order.vrmxs', seconds: 2, ...o });
 
@@ -115,7 +115,8 @@ test('delivery presets (M4 W10): every codec at 1080p24 and 4K24 with the extras
     assert.equal(j.spec.fps, 24, k);
     assert.deepEqual(j.spec.extras, { ...DELIVERY_EXTRAS }, `${k}: stills, thumbnails, a turntable`);
     assert.ok(['1080p', '4k'].includes(j.spec.size) && ['h264', 'hevc', 'prores4444'].includes(j.spec.codec), k);
-    assert.equal(j.label, `The Order · ${p.label}`);
+    assert.equal(j.label, `The Order · ${p.label}`, 'drawn on the view\'s backend: the check is decided when it renders');
+    assert.equal(j.spec.check, 'auto', `${k}: the redraw check on WebGPU by default (AB-D-0280)`);
   }
   assert.equal(PRESETS['prores-4k24'].label, 'Delivery 4K24 ProRes 4444 with alpha');
   assert.equal(q.add(spec({ preset: 'draft' })).spec.extras, null, 'a draft is the film alone');
@@ -124,8 +125,21 @@ test('delivery presets (M4 W10): every codec at 1080p24 and 4K24 with the extras
   assert.deepEqual([gl.spec.backend, gl.spec.check], ['webgl', 'redraw']);
   assert.deepEqual(JOB_BACKENDS, [null, 'webgpu', 'webgl']);
   assert.throws(() => q.add(spec({ preset: 'draft', backend: 'metal' })), /no backend metal/);
-  assert.throws(() => q.add(spec({ preset: 'draft', check: 'twice' })), /check is 'redraw' or null/);
+  assert.throws(() => q.add(spec({ preset: 'draft', check: 'twice' })), /check is 'redraw', 'auto' or null/);
   const extras = q.add(spec({ preset: 'hevc-1080p24' })).spec.extras;
   extras.turntable = false;
   assert.equal(PRESETS['hevc-1080p24'].extras.turntable, true, 'a job\'s extras are its own copy');
+});
+
+test('the redraw check by default for a delivery drawn on WebGPU, never for a film preset or WebGL (AB-D-0280)', () => {
+  const q = new RenderQueue();
+  assert.deepEqual(JOB_CHECKS, [null, 'auto', 'redraw']);
+  const film = q.add(spec({ preset: 'master' })), del = q.add(spec({ preset: 'prores-4k24' }));
+  assert.deepEqual([film.spec.check, del.spec.check], [null, 'auto']);
+  assert.deepEqual([resolveCheck(del.spec, 'webgpu'), resolveCheck(del.spec, 'webgl')], ['redraw', null], 'auto: WebGPU checks, WebGL draws once');
+  assert.deepEqual([resolveCheck(film.spec, 'webgpu'), resolveCheck({ check: 'redraw' }, 'webgl')], [null, 'redraw'], 'a film preset draws once; an explicit redraw always checks');
+  assert.equal(q.add(spec({ preset: 'h264-4k24', backend: 'webgpu' })).label, 'The Order · Delivery 4K24 H.264 · WebGPU · checked');
+  assert.equal(q.add(spec({ preset: 'h264-4k24', backend: 'webgl' })).label, 'The Order · Delivery 4K24 H.264 · WebGL');
+  const off = q.add(spec({ preset: 'h264-4k24', backend: 'webgpu', check: null }));
+  assert.deepEqual([off.spec.check, resolveCheck(off.spec, 'webgpu'), off.label], [null, null, 'The Order · Delivery 4K24 H.264 · WebGPU'], 'a job that says null draws once');
 });

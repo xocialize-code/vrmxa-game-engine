@@ -57,7 +57,9 @@ test('the runner refuses a job whose short isn\'t open, or whose snapshot is gon
 
 test('deliver mode: options from the query, and what two runs must agree on', () => {
   assert.equal(deliverOptions('?mode=x'), null);
-  assert.deepEqual(deliverOptions('?deliver=h264-4k24&seconds=60&extras=none&backend=webgl'), { preset: 'h264-4k24', short: null, repeat: 2, seconds: 60, backend: 'webgl', check: null, extras: null });
+  assert.deepEqual(deliverOptions('?deliver=h264-4k24&seconds=60&extras=none&backend=webgl'), { preset: 'h264-4k24', short: null, repeat: 2, seconds: 60, backend: 'webgl', check: undefined, extras: null }, 'no check= : the preset decides');
+  assert.equal(deliverOptions('?deliver=h264-4k24&check=off').check, null);
+  assert.equal(deliverOptions('?deliver=h264-4k24&check=redraw').check, 'redraw');
   assert.deepEqual(deliverOptions('?deliver=prores-1080p24&short=cafe-order&repeat=1&check=redraw&extras=stills,turntable').extras, { stills: true, thumbnails: false, turntable: true });
   assert.equal(deliverOptions('?deliver=draft').extras, undefined, 'the preset decides');
   const r = { hashesDigest: 'a', audioHash: 'w' }, m = { stills: [{ hash: '1' }], thumbnails: [{ hash: '2' }], turntables: [{ frameDigest: 't' }] };
