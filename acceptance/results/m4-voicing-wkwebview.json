@@ -1,0 +1,98 @@
+{
+ "check": "M4 check 3: replay from the baked track, WKWebView scheme and loopback against Node",
+ "pass": true,
+ "node": {
+  "final": "d67ec0db2f91dcb2",
+  "mouthHash": "0ece9eb97f63f868"
+ },
+ "runs": [
+  {
+   "origin": "scheme",
+   "case": "mode=voicing&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "final": "d67ec0db2f91dcb2",
+   "mouthHash": "0ece9eb97f63f868",
+   "steps": 1903,
+   "restored": {
+    "at": 1280,
+    "final": "fd17a14db6952eb3",
+    "line": "Only until the students wake up.",
+    "mouthsSame": true,
+    "same": true
+   },
+   "everyLineBaked": true,
+   "inTheirVoices": true,
+   "playsFromTrack": true,
+   "everyLineSpoken": true,
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "scheme",
+   "case": "mode=voicing&renderer=webgl&again=1",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "final": "d67ec0db2f91dcb2",
+   "mouthHash": "0ece9eb97f63f868",
+   "steps": 1903,
+   "restored": {
+    "at": 1280,
+    "final": "fd17a14db6952eb3",
+    "line": "Only until the students wake up.",
+    "mouthsSame": true,
+    "same": true
+   },
+   "everyLineBaked": true,
+   "inTheirVoices": true,
+   "playsFromTrack": true,
+   "everyLineSpoken": true,
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "loopback",
+   "case": "mode=voicing&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "final": "d67ec0db2f91dcb2",
+   "mouthHash": "0ece9eb97f63f868",
+   "steps": 1903,
+   "restored": {
+    "at": 1280,
+    "final": "fd17a14db6952eb3",
+    "line": "Only until the students wake up.",
+    "mouthsSame": true,
+    "same": true
+   },
+   "everyLineBaked": true,
+   "inTheirVoices": true,
+   "playsFromTrack": true,
+   "everyLineSpoken": true,
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "loopback",
+   "case": "mode=voicing&renderer=webgl&again=1",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "final": "d67ec0db2f91dcb2",
+   "mouthHash": "0ece9eb97f63f868",
+   "steps": 1903,
+   "restored": {
+    "at": 1280,
+    "final": "fd17a14db6952eb3",
+    "line": "Only until the students wake up.",
+    "mouthsSame": true,
+    "same": true
+   },
+   "everyLineBaked": true,
+   "inTheirVoices": true,
+   "playsFromTrack": true,
+   "everyLineSpoken": true,
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  }
+ ]
+}

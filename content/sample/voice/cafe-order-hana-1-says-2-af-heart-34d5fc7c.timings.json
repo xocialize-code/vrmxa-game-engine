@@ -1,0 +1,27 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Coming right up!",
+ "audio": "cafe-order-hana-1-says-2-af-heart-34d5fc7c.wav",
+ "sampleRate": 24000,
+ "duration": 1.6,
+ "source": "kokoro-82m af_heart (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "Coming",
+   "start": 0.355,
+   "duration": 0.3
+  },
+  {
+   "text": "right",
+   "start": 0.655,
+   "duration": 0.225
+  },
+  {
+   "text": "up",
+   "start": 0.88,
+   "duration": 0.475
+  }
+ ]
+}

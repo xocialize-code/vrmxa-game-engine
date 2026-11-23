@@ -1,0 +1,52 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Is it always this quiet in the morning?",
+ "audio": "cafe-order-mira-says-2-af-bella-c46fc8f4.wav",
+ "sampleRate": 24000,
+ "duration": 2.7,
+ "source": "kokoro-82m af_bella (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "Is",
+   "start": 0.38,
+   "duration": 0.1375
+  },
+  {
+   "text": "it",
+   "start": 0.5175,
+   "duration": 0.0875
+  },
+  {
+   "text": "always",
+   "start": 0.605,
+   "duration": 0.375
+  },
+  {
+   "text": "this",
+   "start": 0.98,
+   "duration": 0.2
+  },
+  {
+   "text": "quiet",
+   "start": 1.18,
+   "duration": 0.3625
+  },
+  {
+   "text": "in",
+   "start": 1.5425,
+   "duration": 0.075
+  },
+  {
+   "text": "the",
+   "start": 1.6175,
+   "duration": 0.0875
+  },
+  {
+   "text": "morning",
+   "start": 1.705,
+   "duration": 0.75
+  }
+ ]
+}

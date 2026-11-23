@@ -1,0 +1,47 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Good morning! What can I get you?",
+ "audio": "cafe-order-hana-1-says-1-af-heart-47e63ab2.wav",
+ "sampleRate": 24000,
+ "duration": 2.3,
+ "source": "kokoro-82m af_heart (http)",
+ "offset": 0,
+ "words": [
+  {
+   "text": "Good",
+   "start": 0.305,
+   "duration": 0.15
+  },
+  {
+   "text": "morning",
+   "start": 0.455,
+   "duration": 0.5
+  },
+  {
+   "text": "What",
+   "start": 1.055,
+   "duration": 0.1375
+  },
+  {
+   "text": "can",
+   "start": 1.1925,
+   "duration": 0.1
+  },
+  {
+   "text": "I",
+   "start": 1.2925,
+   "duration": 0.0875
+  },
+  {
+   "text": "get",
+   "start": 1.38,
+   "duration": 0.225
+  },
+  {
+   "text": "you",
+   "start": 1.605,
+   "duration": 0.425
+  }
+ ]
+}
