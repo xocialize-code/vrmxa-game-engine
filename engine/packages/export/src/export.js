@@ -201,7 +201,9 @@ function sameBytes(a, b) {
  * A turntable (M4 W10): the world held still (never stepped here) while a camera orbits a point once, `frames` frames
  * at `fps`, through the same readback and sink as a take. The caller sets up what is seen (isolating a character) and
  * gives `pose(n)` → { position: [x, y, z], target: [x, y, z] } (orbitPose: portable sines, so two runs agree). The host's
- * camera is put back afterwards. No sound.
+ * camera is put back afterwards. No sound. `warm`: draw and read back frame 0 once first, thrown away: a fresh WebGPU
+ * host's first frame through the TSL post stack can differ under GPU load (AB-T-0596), and a turntable's frame 0 is
+ * that frame (a film's frame 0 draws without its look today, AB-T-0595, so a film never met it).
  * @param {object} o
  * @param {any} o.tree @param {any} o.host @param {any} o.camera a three PerspectiveCamera to draw through
  * @param {number | { num: number, den: number }} o.fps @param {number} o.frames @param {number} o.width @param {number} o.height
@@ -209,9 +211,9 @@ function sameBytes(a, b) {
  * @param {any} o.sink @param {object} [o.job] @param {'redraw' | null} [o.check]
  * @param {(n: number, bytes: Uint8Array) => void} [o.onBytes]
  * @param {(p: { n: number, frames: number, phase: string }) => void} [o.onProgress] @param {{ aborted: boolean }} [o.signal]
- * @param {() => number} [o.now] @param {number} [o.inflight] @param {number} [o.lag]
+ * @param {() => number} [o.now] @param {number} [o.inflight] @param {number} [o.lag] @param {boolean} [o.warm]
  */
-export async function exportTurntable({ tree, host, camera, fps, frames, width, height, pose, sink, job = {}, check = null, onBytes, onProgress, signal, now = () => 0, inflight = 2, lag = 1 }) {
+export async function exportTurntable({ tree, host, camera, fps, frames, width, height, pose, sink, job = {}, check = null, onBytes, onProgress, signal, now = () => 0, inflight = 2, lag = 1, warm = false }) {
   const rate = rationalFps(fps);
   host.attach(tree);
   host.resize(width, height);
@@ -224,6 +226,7 @@ export async function exportTurntable({ tree, host, camera, fps, frames, width, 
   const place = (n) => { const p = pose(n); camera.position.set(p.position[0], p.position[1], p.position[2]); camera.lookAt(p.target[0], p.target[1], p.target[2]); camera.updateMatrixWorld(true); };
   const alpha = host.last?.alpha ?? 1;
   try {
+    if (warm) { await rb.draw(() => { place(0); host.advanceNodeFrame(); host.render(alpha, false); }); await rb.readNow(new Uint8Array(width * height * 4)); }
     const began = await sink.begin({ width, height, fps: [rate.num, rate.den], frames, audio: false, topDown: rb.topDown, ...job });
     t.begin = now() - t0;
     const pumped = await pumpFrames({

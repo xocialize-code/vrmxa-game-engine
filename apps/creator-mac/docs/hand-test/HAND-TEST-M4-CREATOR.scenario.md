@@ -161,6 +161,50 @@ fresh: false
   expect find("id=q-job-3-status").0.name == "job-3 queued"   # Export… rendered its own job only
   ```
 
+- [ ] A delivery preset renders the film for delivery into the project's deliveries folder: sound, an .srt, a still and a thumbnail per shot, a turntable per character and delivery.json, every file read back from the disk.
+  ```steps
+  act role=button name="Remove job-3" exact=true action=press   # Render runs every queued job: row 10's leftover goes first
+  until find("id=q-job-3").count == 0
+  act id=q-preset-hevc-1080p24 action=press
+  until find("id=q-stills").count == 1   # a delivery preset shows its extras, all ticked
+  expect find("id=q-stills").0.value == "1"
+  expect find("id=q-thumbnails").0.value == "1"
+  expect find("id=q-turntable").0.value == "1"
+  act id=q-add action=press
+  until find("id=q-job-5-status").0.name == "job-5 queued"
+  expect find("id=q-job-5-label").0.name == "job-5 First Light · Delivery 1080p24 HEVC"
+  act id=q-run action=press
+  until find("id=q-job-5-status").0.name matches "^job-5 rendering [0-9]+ of 120 \\(turntable " timeout=300000   # the film done, a turntable rendering
+  until find("id=q-job-5-status").0.name matches "^job-5 (done|failed)" timeout=600000
+  expect find("id=q-job-5-status").0.name matches "^job-5 done: 397 frames · first-light-1080p24-hevc\\.mp4 · frames [0-9a-f]{16} · 5 stills · 5 thumbnails · 2 turntables · 15 files on disk$"   # film, .srt, 5 + 5 PNGs, 2 turntables, delivery.json
+  shot "delivered"
+  ```
+
+- [ ] ProRes 4444 at 4K draws on WebGL when the job says so, the extras as ticked; H.264 at 4K with the redraw check draws every frame twice.
+  ```steps
+  act id=q-preset-prores-4k24 action=press
+  act id=q-turntable action=press   # untick: stills and thumbnails only
+  until find("id=q-turntable").0.value == "0"
+  act id=q-backend-webgl action=press
+  act id=q-add action=press
+  until find("id=q-job-6-status").0.name == "job-6 queued"
+  expect find("id=q-job-6-label").0.name == "job-6 First Light · Delivery 4K24 ProRes 4444 with alpha · WebGL"
+  act id=q-preset-h264-4k24 action=press
+  act id=q-stills action=press
+  act id=q-thumbnails action=press
+  act id=q-backend-view action=press
+  act id=q-check action=press
+  until find("id=q-check").0.value == "1"
+  act id=q-add action=press
+  until find("id=q-job-7-status").0.name == "job-7 queued"
+  expect find("id=q-job-7-label").0.name == "job-7 First Light · Delivery 4K24 H.264 · checked"
+  act id=q-run action=press
+  until find("id=q-job-7-status").0.name matches "^job-7 (done|failed)" timeout=900000
+  expect find("id=q-job-6-status").0.name matches "^job-6 done: 397 frames · first-light-4k24-prores\\.mov · frames [0-9a-f]{16} · 5 stills · 5 thumbnails · 0 turntables · 13 files on disk$"
+  expect find("id=q-job-7-status").0.name matches "^job-7 done: 397 frames · first-light-4k24-h264\\.mp4 · frames [0-9a-f]{16} · 0 stills · 0 thumbnails · 0 turntables · 3 files on disk · redraw check: (every frame twice the same|[0-9]+ odd draws? outvoted)$"
+  act id=q-check action=press   # off again
+  ```
+
 - [ ] The File and Short menus carry the creator's own items.
   ```steps
   expect menu("File › New Short").enabled == true

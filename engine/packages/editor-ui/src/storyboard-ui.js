@@ -38,7 +38,8 @@ export function jobStatus(job) {
     case 'done': {
       const r = job.result ?? {};
       const d = r.delivery, odd = r.check?.odd?.length;
-      const extras = d ? ` · ${d.stills} stills · ${d.thumbnails} thumbnails · ${d.turntables} turntable${d.turntables === 1 ? '' : 's'}` : '';
+      const disk = !d?.missing ? '' : d.missing.length ? ` · missing on disk: ${d.missing.join(', ')}` : ` · ${d.files} files on disk`;
+      const extras = d ? ` · ${d.stills} stills · ${d.thumbnails} thumbnails · ${d.turntables} turntable${d.turntables === 1 ? '' : 's'}${disk}` : '';
       const checked = r.check ? ` · redraw check: ${odd ? `${odd} odd draw${odd === 1 ? '' : 's'} outvoted` : 'every frame twice the same'}` : '';
       const what = r.stub ? `${r.frames} frames counted, nothing rendered (stub)` : `${r.frames ?? '?'} frames${r.name ? ` · ${r.name}` : ''}${r.hashesDigest ? ` · frames ${r.hashesDigest}` : ''}${extras}${checked}`;
       return `done: ${what}${job.lateCancel ? ' (Cancel came after the file was finished)' : ''}`;

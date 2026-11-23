@@ -92,6 +92,12 @@ test('a turntable orbits a held world once and puts the host\'s camera back', as
     assert.equal(seen[n][0], seen[0][0], 'the world held still');
   }
   assert.ok(Math.abs(camera.aspect - 32 / 18) < 1e-12);
+  // warm: one frame drawn and thrown away first (AB-T-0596); the frames sent are the same
+  const before = host.renderer.gl.renders, warmSeen = [];
+  const warmSink = { ...sink, frame(n, b) { warmSeen[n] = new DataView(b.buffer, b.byteOffset).getFloat64(8); } };
+  await exportTurntable({ tree, host, camera, fps: RATES['24'], frames, width: 32, height: 18, sink: warmSink, warm: true, pose: (n) => orbitPose(n, frames, { center, radius: 2 }) });
+  assert.equal(host.renderer.gl.renders - before, frames + 1, 'one extra draw');
+  assert.deepEqual(warmSeen, seen.map((x) => x[1]));
 });
 
 test('stills: each shot\'s middle frame, once, in order, scaled to the export rate', () => {

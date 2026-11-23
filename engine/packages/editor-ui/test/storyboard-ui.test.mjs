@@ -33,6 +33,8 @@ test('job status lines', () => {
   assert.equal(jobStatus(j('done', { result: delivered })), 'done: 1080 frames · cafe-order-4k24-prores.mov · frames abcd · 11 stills · 11 thumbnails · 2 turntables');
   assert.equal(jobStatus(j('done', { result: { ...delivered, delivery: { stills: 1, thumbnails: 0, turntables: 1 }, check: { mode: 'redraw', frames: 1080, odd: [{ n: 9, odd: 'first' }] } } })), 'done: 1080 frames · cafe-order-4k24-prores.mov · frames abcd · 1 stills · 0 thumbnails · 1 turntable · redraw check: 1 odd draw outvoted');
   assert.equal(jobStatus(j('done', { result: { frames: 2, check: { mode: 'redraw', frames: 2, odd: [] } } })), 'done: 2 frames · redraw check: every frame twice the same');
+  assert.equal(jobStatus(j('done', { result: { frames: 2, delivery: { stills: 1, thumbnails: 1, turntables: 1, files: 6, missing: [] } } })), 'done: 2 frames · 1 stills · 1 thumbnails · 1 turntable · 6 files on disk');
+  assert.equal(jobStatus(j('done', { result: { frames: 2, delivery: { stills: 1, thumbnails: 1, turntables: 0, files: 5, missing: ['d/a.png'] } } })), 'done: 2 frames · 1 stills · 1 thumbnails · 0 turntables · missing on disk: d/a.png');
   assert.equal(jobStatus(j('failed', { error: 'no encoder' })), 'failed: no encoder');
   assert.equal(jobStatus(j('cancelled')), 'cancelled');
 });

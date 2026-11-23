@@ -86,7 +86,7 @@ async function deliver(host, job, { progress, signal }) {
   if (host.short?.id !== spec.short || host.setScene?.ref !== snap.set) throw new Error(`open ${spec.title ?? spec.short} to render it (the queue renders the open short)`);
   const doc = parse(snap.text), seq = doc.sequence, fps = String(spec.fps ?? seq.fps);
   if (!RATES[fps]) throw new Error(`no export rate ${fps}`);
-  const extras = spec.extras && (spec.extras.stills || spec.extras.thumbnails || spec.extras.turntable) ? spec.extras : null;
+  const extras = spec.extras ?? null; // a delivery preset: its folder and manifest, whichever extras are ticked
   const toDisk = inShell && !!host.project?.writable;
   if (extras && inShell && !toDisk) throw new Error('open a project folder to deliver into (its files go into deliveries/)');
   const base = baseName(spec, fps), ext = CODECS[spec.codec].ext;
@@ -154,7 +154,11 @@ async function deliver(host, job, { progress, signal }) {
   manifest.ms.total = Math.round(now() - t0);
   stop();
   await host.project.write(files.manifest, `${JSON.stringify(manifest, null, 1)}\n`);
-  return { ...result, delivery: { dir: files.dir, manifest: files.manifest, stills: manifest.stills.length, thumbnails: manifest.thumbnails.length, turntables: manifest.turntables.length, ms: manifest.ms } };
+  // what the folder holds now, read back from the disk (the shell's project listing): every file the manifest names
+  const wanted = [manifest.film.path, manifest.subtitles?.path, ...manifest.stills.map((s) => s.path), ...manifest.thumbnails.map((s) => s.path), ...manifest.turntables.map((s) => s.path), files.manifest].filter(Boolean);
+  const listed = toDisk ? new Set(await call('project.list')) : null;
+  const missing = listed ? wanted.filter((f) => !listed.has(f)) : null;
+  return { ...result, delivery: { dir: files.dir, manifest: files.manifest, stills: manifest.stills.length, thumbnails: manifest.thumbnails.length, turntables: manifest.turntables.length, files: wanted.length, missing, ms: manifest.ms } };
 }
 
 /** The characters a short casts, by node id: the set's and the sequence's Character nodes, in document order. */
@@ -173,14 +177,13 @@ async function turntable(host, doc, id, { path, toDisk, width, height, rate, cod
     const tree = world.tree;
     while (tree.clock.step < TURNTABLE_STEP) while (!tree.step()) await tree.settle();
     th = await host.offlineHost(backend);
-    th.attach(tree); th.resize(width, height);
     restore = isolate(tree, id);
     const frames = framesFor(TURNTABLE_SECONDS, rate), aspect = width / height;
     const framing = turntableFraming(tree.find(id).object3d, aspect);
     const camera = new PerspectiveCamera(TURNTABLE_FOV, aspect, 0.05, 200);
     const sink = toDisk ? shellSink({ call }) : hashSink();
     const r = await exportTurntable({
-      tree, host: th, camera, fps: rate, frames, width, height, sink, check, signal, now: () => performance.now(),
+      tree, host: th, camera, fps: rate, frames, width, height, sink, check, signal, now: () => performance.now(), warm: true,
       pose: (n) => orbitPose(n, frames, framing),
       job: { codec, hash: true, suggestedName: `${base}-${slug(id)}.${CODECS[codec].ext}`, title: 'Export Turntable', ...(toDisk ? { projectPath: path } : {}) },
       onProgress: (p) => { host.exporting = { ...p, phase: `turntable ${id}` }; progress(p.n, p.frames); host.changed('export'); },

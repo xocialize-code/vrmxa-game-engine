@@ -19,6 +19,7 @@ const emit = defineEmits(['add', 'run', 'cancel', 'remove', 'retry', 'move']);
 const form = reactive({ preset: 'draft', name: '', backend: '', check: false, stills: true, thumbnails: true, turntable: true });
 const groups = [['Film', Object.keys(PRESETS).filter((k) => !PRESETS[k].delivery)], ['Delivery', Object.keys(PRESETS).filter((k) => PRESETS[k].delivery)]];
 const delivery = computed(() => !!PRESETS[form.preset]?.delivery);
+const backends = [['', 'view\'s backend'], ['webgpu', 'WebGPU'], ['webgl', 'WebGL']];
 const running = () => props.jobs.some((j) => j.state === 'running');
 const queued = () => props.jobs.some((j) => j.state === 'queued');
 </script>
@@ -38,9 +39,9 @@ const queued = () => props.jobs.some((j) => j.state === 'queued');
         <label v-if="delivery" class="q-opt"><input id="q-stills" v-model="form.stills" type="checkbox" :disabled="disabled" aria-label="Stills, one per shot"> stills</label>
         <label v-if="delivery" class="q-opt"><input id="q-thumbnails" v-model="form.thumbnails" type="checkbox" :disabled="disabled" aria-label="Thumbnails, one per shot"> thumbnails</label>
         <label v-if="delivery" class="q-opt"><input id="q-turntable" v-model="form.turntable" type="checkbox" :disabled="disabled" aria-label="A turntable per character"> turntable</label>
-        <select id="q-backend" v-model="form.backend" aria-label="Draw on" :disabled="disabled" title="The backend the job draws on">
-          <option value="">view's backend</option><option value="webgpu">WebGPU</option><option value="webgl">WebGL</option>
-        </select>
+        <span class="seg" role="radiogroup" aria-label="Draw on" title="The backend the job draws on (WebKit's popup menus can't be picked over accessibility: buttons)">
+          <button v-for="[b, name] in backends" :id="`q-backend-${b || 'view'}`" :key="b" type="button" role="radio" :aria-checked="form.backend === b" :aria-label="`Draw on ${name}`" :class="{ on: form.backend === b }" :disabled="disabled" @click="form.backend = b">{{ name }}</button>
+        </span>
         <label class="q-opt" title="Draw every frame twice and compare the two (a third draw breaks a tie): slower; for the rare odd WebGPU frame"><input id="q-check" v-model="form.check" type="checkbox" :disabled="disabled" aria-label="Redraw check, each frame drawn twice"> redraw check</label>
       </div>
       <input id="q-name" v-model="form.name" aria-label="Export file name" placeholder="file name (automatic)" :disabled="disabled" @focus="$event.target.select()">
@@ -49,7 +50,7 @@ const queued = () => props.jobs.some((j) => j.state === 'queued');
     </div>
     <ol class="q-jobs" aria-label="Jobs">
       <li v-for="j in jobs" :id="`q-${j.id}`" :key="j.id" class="q-job" :class="j.state">
-        <span class="q-label" :title="j.spec.ref">{{ j.label }}</span>
+        <span :id="`q-${j.id}-label`" class="q-label" :title="j.spec.ref" :aria-label="`${j.id} ${j.label}`">{{ j.label }}</span>
         <output :id="`q-${j.id}-status`" class="q-status" :aria-label="`${j.id} ${jobStatus(j)}`">{{ jobStatus(j) }}</output>
         <progress v-if="j.state === 'running'" :max="j.progress.total || 1" :value="j.progress.n" :aria-label="`${j.id} progress ${j.progress.n} of ${j.progress.total}`" />
         <span class="q-actions">
