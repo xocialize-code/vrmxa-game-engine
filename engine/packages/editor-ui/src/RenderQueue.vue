@@ -17,7 +17,12 @@ const props = defineProps({
 });
 const emit = defineEmits(['add', 'run', 'cancel', 'remove', 'retry', 'move']);
 const form = reactive({ preset: 'draft', name: '', backend: '', check: false, stills: true, thumbnails: true, turntable: true });
-const groups = [['Film', Object.keys(PRESETS).filter((k) => !PRESETS[k].delivery)], ['Delivery', Object.keys(PRESETS).filter((k) => PRESETS[k].delivery)]];
+const film = Object.keys(PRESETS).filter((k) => !PRESETS[k].delivery);
+// the delivery presets as a grid, a row per codec and a column per size (the panel is narrow)
+const CODEC_NAMES = { h264: 'H.264', hevc: 'HEVC', prores4444: 'ProRes 4444 α' };
+const deliveryRows = [...new Set(Object.values(PRESETS).filter((p) => p.delivery).map((p) => p.codec))]
+  .map((codec) => [codec, Object.keys(PRESETS).filter((k) => PRESETS[k].delivery && PRESETS[k].codec === codec)]);
+const sizeLabel = (k) => (PRESETS[k].size === '4k' ? '4K24' : `${PRESETS[k].size}24`);
 const delivery = computed(() => !!PRESETS[form.preset]?.delivery);
 const backends = [['', 'view\'s backend'], ['webgpu', 'WebGPU'], ['webgl', 'WebGL']];
 const running = () => props.jobs.some((j) => j.state === 'running');
@@ -31,9 +36,16 @@ const queued = () => props.jobs.some((j) => j.state === 'queued');
       <output id="q-runner" class="muted" :aria-label="`Runner ${runner}`">{{ runner }}</output>
     </div>
     <div class="q-form">
-      <div v-for="[group, keys] in groups" :key="group" class="seg" role="radiogroup" :aria-label="`${group} presets`">
-        <span class="q-group muted">{{ group }}</span>
-        <button v-for="k in keys" :id="`q-preset-${k}`" :key="k" type="button" role="radio" :aria-checked="form.preset === k" :aria-label="`Preset ${PRESETS[k].label}`" :title="PRESETS[k].label" :class="{ on: form.preset === k }" :disabled="disabled" @click="form.preset = k">{{ k }}</button>
+      <div class="seg" role="radiogroup" aria-label="Film presets">
+        <span class="q-group muted">Film</span>
+        <button v-for="k in film" :id="`q-preset-${k}`" :key="k" type="button" role="radio" :aria-checked="form.preset === k" :aria-label="`Preset ${PRESETS[k].label}`" :title="PRESETS[k].label" :class="{ on: form.preset === k }" :disabled="disabled" @click="form.preset = k">{{ k }}</button>
+      </div>
+      <div class="q-grid" role="radiogroup" aria-label="Delivery presets">
+        <span class="q-group muted">Delivery</span>
+        <template v-for="[codec, keys] in deliveryRows" :key="codec">
+          <span class="q-codec">{{ CODEC_NAMES[codec] ?? codec }}</span>
+          <button v-for="k in keys" :id="`q-preset-${k}`" :key="k" type="button" role="radio" :aria-checked="form.preset === k" :aria-label="`Preset ${PRESETS[k].label}`" :title="PRESETS[k].label" :class="{ on: form.preset === k }" :disabled="disabled" @click="form.preset = k">{{ sizeLabel(k) }}</button>
+        </template>
       </div>
       <div class="q-opts">
         <label v-if="delivery" class="q-opt"><input id="q-stills" v-model="form.stills" type="checkbox" :disabled="disabled" aria-label="Stills, one per shot"> stills</label>
@@ -72,6 +84,8 @@ const queued = () => props.jobs.some((j) => j.state === 'queued');
 .q-form { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 10px; border-bottom: 1px solid var(--line); }
 .q-form > input { flex: 1; min-width: 100px; }
 .q-form .seg { flex-wrap: wrap; } .q-group { font-size: 11px; padding: 0 4px; align-self: center; }
+.q-grid { display: grid; grid-template-columns: auto auto auto; gap: 3px 4px; align-items: center; width: 100%; font-size: 12px; }
+.q-grid .q-group { grid-column: 1 / -1; padding: 0; } .q-grid button { padding: 1px 8px; } .q-grid button.on { background: var(--accent, #3b82f6); color: #fff; }
 .q-opts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; width: 100%; font-size: 12px; } .q-opt { display: inline-flex; gap: 3px; align-items: center; }
 .q-jobs { list-style: none; margin: 0; padding: 4px 0; overflow: auto; }
 .q-job { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; padding: 5px 10px; border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent); font-size: 12px; }

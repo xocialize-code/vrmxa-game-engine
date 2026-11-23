@@ -230,6 +230,27 @@ AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for th
   Node, Chromium and WKWebView (scheme and loopback, two loads each) all give final e68bfb9a96f255c5 and mouths
   58b2c9d48f735177, and the mid-line restore ends the same (AB-R-1077; Kokoro's audio isn't byte-reproducible, AB-L-0375).
 
+- **Check 7, delivery** (W10, AB-T-0582): the creator's render queue renders each delivery preset (H.264, HEVC and
+  ProRes 4444 with alpha, at 1080p24 and 4K24) in the Mac app (WKWebView on the shell, AVAssetWriter): the film with
+  its sound and `.srt`, a still and a thumbnail per shot, a turntable per character and `delivery.json`, into the
+  project's `deliveries/`. Each preset is rendered twice in one app run, and the runs must agree on the film's frames
+  (the shell hashes each frame before encoding), its sound, every still and thumbnail, and the turntables' frames:
+  ```sh
+  apps/creator-mac/scripts/build.sh && acceptance/m4/delivery-wkwebview.sh    # every preset, WebGPU, loopback: results/m4-delivery/
+  RENDERER=webgl acceptance/m4/delivery-wkwebview.sh                          # the same on WebGL
+  SHORT=the-regular PRESETS=prores-4k24 acceptance/m4/delivery-wkwebview.sh   # the one-minute sample short
+  node acceptance/m4/delivery-summary.mjs                                     # results/m4-delivery/summary.json
+  ```
+  Measured 2026-11-23 on the M5 Max (macOS 27.3 beta 26C5047e): 56 films in 24 pairs of runs: sound, stills, thumbnails
+  and turntables agree in all 24, and the films' frames in 22. Both odd pairs are WebGPU, on a quiet GPU, and in the
+  first export after the app launched (one frame, frame 66 of the-regular, in the one with per-frame hashes): the
+  odd-frame case AB-D-0279 counts as a failure, rerun clean. WebGL's 16 films never differed. The frame digests per
+  backend: cafe-order 1080p `2b22bd5a4a461080` / 4K `8ef069d9fe5648e7` (WebGPU), `48e228afa392d691` / `bd329ec3c8922ca0`
+  (WebGL); the-regular 4K `459255e681a6087d` (WebGPU), `198615bc571ad04e` (WebGL, the same whether the view or only the
+  export is on WebGL). The one-minute short at 4K: the film in 26–27 s, the whole delivery in 34–37 s, against the
+  4-minute target. The opt-in redraw check (each frame drawn twice) costs 1.98× a frame at 4K and found no odd draw in
+  4,593 frames.
+
 - **W2, particles and readback on WebGPU** (AB-T-0574): check 13 drawn on both backends, the morning film exported
   twice, stills and the readback's cost, in the playground's `?mode=frames` (`apps/playground/README.md`, "Particles and
   readback"). The WebGL acceptance re-run at W2 (`node.mjs`, `chromium.mjs`, `wkwebview.sh`, `compare.mjs`) passes 20 of
