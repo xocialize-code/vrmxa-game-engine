@@ -11,6 +11,7 @@ inbox beside it, all inside the app's sandbox), then, under the GPU lock,
   accessible name (`#doc-state`: `Short first-light sequences/first-light.vrmxs 7 nodes saved valid hash …`).
 - **Typing:** each typed value is checked and the typing retried until the field holds it: keys sent while the page is
   busy (a rebuild after Redo, an export) were once dropped.
+- **Questions:** the window asks in a sheet of its own (`#ask`, buttons `#ask-save`, `#ask-discard`, `#ask-cancel`).
 - **Undo:** with `pageUndo`, Edit › Undo's title stays "Undo". The short's undo step is read from the toolbar's `#undo`.
 
 ```scenario
@@ -45,7 +46,7 @@ fresh: false
   expect find("id=coverage-rule").0.value == "1"   # a new short's cameras come by rule (M4 W8)
   expect find("role=button name='Clip vc-est-int-cafe-dawn 0 to 48' exact=true").count == 1   # the establishing camera on the first shot
   expect find("id=tl-head-mira-says").count == 1   # Mira's dialogue track
-  expect find("id=short-first-light").0.name == "Short First Light (first-light)"
+  expect find("id=short-first-light").0.name == "Short First Light (first-light), not saved"   # a draft until Save
   until find("id=tl-scrub").0.name matches "^Showing frame 24 " timeout=60000
   pause 1000
   shot "opened"
@@ -98,6 +99,25 @@ fresh: false
   expect find("id=undo").0.name == "Undo Re-script (1 changed)"
   ```
 
+- [ ] Typing in the script pane applies once typing stops, as one undo step; Undo while typing is still unapplied takes the typing back, and nothing applies after it.
+  ```steps
+  set start = find("id=doc-state").0.name
+  act id=script action=focus
+  keys keys="cmd+down return return"
+  keys text="Hana smiles."
+  until find("id=undo").0.name == "Undo Re-script (1 added)"   # applied 0.7 s after the last key, one step
+  expect find("id=script-state").0.name matches " applied unsaved$"
+  keys text=" She waves."
+  act id=undo action=press   # before the 0.7 s are up
+  until find("id=redo").0.name == "Redo Re-script (1 changed)"   # the unapplied typing became a step, and Undo took it back
+  pause 1500
+  expect find("id=undo").0.name == "Undo Re-script (1 added)"   # the apply timer didn't fire after the undo
+  expect find("id=redo").0.name == "Redo Re-script (1 changed)"   # and redo is still there
+  act id=undo action=press
+  until find("id=doc-state").0.name == $start   # back where the row started
+  expect find("id=script value='Hana smiles.'").count == 0
+  ```
+
 - [ ] A character opened from the Finder is cast in the selected role, as one undo step.
   ```steps
   act id=role-hana-1 action=press
@@ -124,6 +144,23 @@ fresh: false
   shot "exported"
   ```
 
+- [ ] Cancel stops a running render and leaves no movie behind; File › Export… renders only the job it adds.
+  ```steps
+  act id=q-preset-master action=press
+  act id=q-add action=press
+  until find("id=q-job-2-status").0.name == "job-2 queued"
+  act id=q-run action=press
+  until find("id=q-job-2-status").0.name == "job-2 starting" timeout=30000   # running: its world is being built (about 4 s; the frames themselves take about 2 s, too quick to catch here: export.test.mjs covers a cancel at and after the last frame)
+  act role=button name="Cancel job-2" exact=true action=press
+  until find("id=q-job-2-status").0.name == "job-2 cancelled" timeout=60000   # stopped between frames, not rendered to the end
+  act id=q-preset-draft action=press
+  act id=q-add action=press
+  until find("id=q-job-3-status").0.name == "job-3 queued"
+  menu "File › Export…" press
+  until find("id=q-job-4-status").0.name matches "^job-4 done: 397 frames" timeout=300000
+  expect find("id=q-job-3-status").0.name == "job-3 queued"   # Export… rendered its own job only
+  ```
+
 - [ ] The File and Short menus carry the creator's own items.
   ```steps
   expect menu("File › New Short").enabled == true
@@ -135,13 +172,36 @@ fresh: false
   expect menu("Short › Render Queue").enabled == true
   ```
 
+- [ ] Leaving a short with unsaved changes asks first: Cancel stays, Don't Save goes back to the saved short.
+  ```steps
+  until find("id=script-find").0.value == "Then you'd better come in." do act id=script-find action=set_value value="Then you'd better come in." tries=3
+  until find("id=script-replace").0.value == "Come in, then." do act id=script-replace action=set_value value="Come in, then." tries=3
+  act id=script-replace-all action=press
+  until find("id=undo").0.name == "Undo Re-script (1 changed)"
+  set edited = find("id=doc-state").0.name
+  act id=short-cafe-order action=press
+  until find("id=ask-text").0.name == "First Light has changes that aren't saved."
+  act id=ask-cancel action=press
+  until find("id=ask").count == 0
+  expect find("id=doc-state").0.name == $edited   # still First Light, the change still there
+  act id=short-cafe-order action=press
+  until find("id=ask").count == 1
+  act id=ask-discard action=press
+  until find("id=doc-state").0.name matches "^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid " timeout=60000
+  act id=short-first-light action=press   # The Order is unchanged: no question
+  until find("id=doc-state").0.name matches "^Short first-light sequences/first-light.vrmxs [0-9]+ nodes saved valid " timeout=60000
+  expect find("id=ask").count == 0
+  expect find("id=script value='better come in.'").count == 1   # the saved script, without the discarded change
+  expect find("id=short-first-light").0.name == "Short First Light (first-light)"   # saved in row 8: no longer a draft
+  ```
+
 - [ ] New Short makes a short in the chosen set from a script template.
   ```steps
   until find("id=new-short-title").0.value == "Third Take" do act id=new-short-title action=set_value value="Third Take" tries=3
   act id=set-cafe-vrmxs action=press
   act id=new-short action=press
-  until find("id=doc-state").0.name matches "^Short third-take sequences/third-take.vrmxs " timeout=60000
+  until find("id=doc-state").0.name matches "^Short third-take sequences/third-take.vrmxs [0-9]+ nodes unsaved changes " timeout=60000
   until find("id=sb-status").0.name matches "^Storyboard 2 shots" timeout=60000   # its heading and its action
-  expect find("id=short-third-take").0.name == "Short Third Take (third-take)"
+  expect find("id=short-third-take").0.name == "Short Third Take (third-take), not saved"   # a draft until saved
   expect find("id=script value='Set: cafe.vrmxs'").count == 1
   ```

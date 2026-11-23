@@ -435,3 +435,25 @@ func sineWAV(seconds: Double, rate: Int = 48000) -> Data {
         #expect(f.granted.contains(dir.appendingPathComponent("cafe order.fountain")), "writing back to it needs no panel")
     }
 }
+
+@Suite @MainActor struct OpenDocumentsTests {
+    @Test func onlyAnAppThatNamesTypesTakesOpenDocuments() throws {
+        let sel = #selector(NSApplicationDelegate.application(_:open:))
+        let editor = ShellAppDelegate(config: ShellConfiguration(appName: "Editor", scheme: "vrmxg-test-ed"))
+        #expect(!editor.responds(to: sel), "no openTypes: AppKit's own answer, nothing granted")
+        #expect(editor.responds(to: #selector(NSApplicationDelegate.applicationDidFinishLaunching(_:))), "other delegate methods unchanged")
+        let creator = ShellAppDelegate(config: ShellConfiguration(appName: "Creator", scheme: "vrmxg-test-cr", openTypes: ["fountain", "VRMXA"]))
+        #expect(creator.responds(to: sel))
+        let urls = ["a.fountain", "b.vrmxa", "c.txt", "d.Fountain"].map { URL(fileURLWithPath: "/tmp/\($0)") }
+        #expect(creator.acceptedOpens(urls).map(\.lastPathComponent) == ["a.fountain", "b.vrmxa", "d.Fountain"])
+    }
+
+    @Test func filesOpenedDuringAReloadWaitForThePage() throws {
+        let d = ShellAppDelegate(config: ShellConfiguration(appName: "Creator", scheme: "vrmxg-test-rl", openTypes: ["fountain"]))
+        d.webView = WKWebView(frame: NSRect(x: 0, y: 0, width: 100, height: 100))
+        d.pageLoaded = true
+        d.webView(d.webView, didStartProvisionalNavigation: nil)   // a reload starts
+        d.application(NSApplication.shared, open: [URL(fileURLWithPath: "/tmp/x.fountain"), URL(fileURLWithPath: "/tmp/y.png")])
+        #expect(d.pendingOpens.map(\.lastPathComponent) == ["x.fountain"], "held for the new page; the .png refused")
+    }
+}

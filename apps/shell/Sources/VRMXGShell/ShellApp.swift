@@ -48,12 +48,15 @@ public struct ShellConfiguration {
     public var fileItems: [ShellMenuItem]
     /// Menus of the app's own, between View and Window (shell 0.7.0).
     public var menus: [ShellMenu]
+    /// File extensions the app opens from the Finder (Open Documents, shell 0.7.0): each becomes a `file.opened` event.
+    /// Empty (the default): the shell doesn't take Open Documents at all, and AppKit answers as it would without it.
+    public var openTypes: [String]
     public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = [], pageUndo: Bool = false,
                 statusItem: StatusItemConfiguration? = nil, closeKeepsRunning: Bool = false, dockIcon: Bool = true, setUp: (@MainActor (ShellAppDelegate) -> Void)? = nil,
-                fileItems: [ShellMenuItem] = [], menus: [ShellMenu] = []) {
+                fileItems: [ShellMenuItem] = [], menus: [ShellMenu] = [], openTypes: [String] = []) {
         self.appName = appName; self.scheme = scheme; self.size = size; self.webFolder = webFolder; self.methods = methods; self.pageUndo = pageUndo
         self.statusItem = statusItem; self.closeKeepsRunning = closeKeepsRunning; self.dockIcon = dockIcon; self.setUp = setUp
-        self.fileItems = fileItems; self.menus = menus
+        self.fileItems = fileItems; self.menus = menus; self.openTypes = openTypes.map { $0.lowercased() }
     }
 }
 
@@ -192,12 +195,29 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     /// An app's own menu item: the page hears `menu.<event>`.
     @objc func menuOwn(_ sender: NSMenuItem) { if let e = sender.representedObject as? String { emit("menu.\(e)") } }
 
-    /// Open Documents (shell 0.7.0): each file is served as `file.open { serve: true }` serves one, and the page hears
-    /// `file.opened` with `{ path, name, size, url }`. Files that arrive before the page has loaded wait for it.
+    /// Open Documents (shell 0.7.0), for an app that names `openTypes`: each file of those types is served as
+    /// `file.open { serve: true }` serves one, and the page hears `file.opened` with `{ path, name, size, url }`. Files
+    /// that arrive before the page has loaded (at launch, during a reload) wait for it. Other files are refused, never
+    /// granted.
     public func application(_ sender: NSApplication, open urls: [URL]) {
-        guard pageLoaded else { pendingOpens += urls; return }
-        for u in urls { emitOpened(u) }
+        let accepted = acceptedOpens(urls)
+        if accepted.count < urls.count { print("[shell] not opened (not one of \(config.openTypes)): \(urls.filter { !accepted.contains($0) }.map(\.lastPathComponent))") }
+        guard pageLoaded else { pendingOpens += accepted; return }
+        for u in accepted { emitOpened(u) }
     }
+
+    /// The files of an Open Documents event the app takes, by extension.
+    func acceptedOpens(_ urls: [URL]) -> [URL] { urls.filter { config.openTypes.contains($0.pathExtension.lowercased()) } }
+
+    /// An app without `openTypes` doesn't answer Open Documents: AppKit then handles them as for any app without a
+    /// document controller (it says it can't open them), and nothing is granted.
+    public override func responds(to aSelector: Selector!) -> Bool {
+        if aSelector == #selector(NSApplicationDelegate.application(_:open:)) { return !config.openTypes.isEmpty }
+        return super.responds(to: aSelector)
+    }
+
+    /// A navigation started (a reload, a crash-reload): files opened until it finishes wait for the new page.
+    public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) { pageLoaded = false }
 
     func emitOpened(_ url: URL) {
         do { emit("file.opened", try files.opened(url)) }
@@ -211,7 +231,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     }
 
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) { print("[shell] load failed: \(error)") }
-    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { print("[shell] web content process ended; reloading"); webView.reload() }
+    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { print("[shell] web content process ended; reloading"); pageLoaded = false; webView.reload() }
 
     // <input type=file> in the page
     public func webView(_ webView: WKWebView, runOpenPanelWith parameters: WKOpenPanelParameters, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor ([URL]?) -> Void) {

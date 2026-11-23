@@ -75,6 +75,9 @@ export async function exportTake({ tree, host, fps, frames, width, height, sink,
     }
     for (let n = Math.max(0, frames - lag); n < frames; n++) await send(n);
     { const a = now(); await Promise.all(pending); t.wait += now() - a; }
+    // a cancel after the last frame still stops the export, up to the moment the sink is told to finish the file
+    const stop = () => { if (signal?.aborted) throw new Error('export cancelled'); };
+    stop();
     let mix = null;
     if (sound) {
       onProgress?.({ n: frames, frames, phase: 'audio' });
@@ -82,9 +85,11 @@ export async function exportTake({ tree, host, fps, frames, width, height, sink,
       const end = stepsFor(frames, rate);
       while (tree.clock.step < end) while (!tree.step()) await tree.settle(); // the sound under the last frame
       mix = await mixTake(sound, frames, rate, { OfflineAudioContext });
+      stop();
       await sink.audio(mix.wav);
       t.audio = now() - a;
     }
+    stop();
     onProgress?.({ n: frames, frames, phase: 'finishing' });
     const a = now();
     const r2 = (x) => Math.round(x * 100) / 100;

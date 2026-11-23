@@ -25,7 +25,7 @@ export const PRESETS = Object.freeze({
  * @typedef {{ short: string, title?: string, ref: string, preset?: string, size: string, fps: number | null, codec: string,
  *   audio: boolean, subtitles: boolean, seconds?: number | null, name?: string | null }} JobSpec
  * @typedef {{ id: string, label: string, spec: JobSpec, state: string, progress: { n: number, total: number, phase: string },
- *   result: any, error: string | null }} Job
+ *   result: any, error: string | null, lateCancel?: boolean }} Job (lateCancel: cancelled after the runner could still stop)
  */
 
 /** A runner that renders nothing (tests, a browser with no export, a queue W10 hasn't filled): it reports the frames it would draw. */
@@ -62,7 +62,7 @@ export class RenderQueue {
     const p = spec.preset ? PRESETS[spec.preset] : null;
     if (spec.preset && !p) throw new Error(`no preset ${spec.preset} (${Object.keys(PRESETS).join(', ')})`);
     const full = /** @type {JobSpec} */ ({ size: '1080p', fps: null, codec: 'h264', audio: true, subtitles: true, seconds: null, name: null, ...(p ? { size: p.size, fps: p.fps, codec: p.codec, audio: p.audio, subtitles: p.subtitles } : {}), ...spec });
-    const job = { id: `job-${this._next++}`, label: `${full.title ?? full.short} · ${p?.label ?? `${full.size} ${full.codec}`}`, spec: full, state: 'queued', progress: { n: 0, total: 0, phase: '' }, result: null, error: null };
+    const job = { id: `job-${this._next++}`, label: `${full.title ?? full.short} · ${p?.label ?? `${full.size} ${full.codec}`}`, spec: full, state: 'queued', progress: { n: 0, total: 0, phase: '' }, result: null, error: null, lateCancel: false };
     this.jobs.push(job);
     this.changed();
     return job;
@@ -105,21 +105,26 @@ export class RenderQueue {
   retry(id) {
     const j = this.get(id);
     if (!j || (j.state !== 'failed' && j.state !== 'cancelled')) return false;
-    Object.assign(j, { state: 'queued', progress: { n: 0, total: 0, phase: '' }, result: null, error: null });
+    Object.assign(j, { state: 'queued', progress: { n: 0, total: 0, phase: '' }, result: null, error: null, lateCancel: false });
     this.changed();
     return true;
   }
 
   get running() { return this.jobs.find((j) => j.state === 'running') ?? null; }
 
-  /** Render every queued job in order, one at a time. Resolves when the queue is idle. Calling it while it runs joins the run. */
-  run() {
-    this._running ??= (async () => {
-      try {
-        for (let j = this.jobs.find((x) => x.state === 'queued'); j; j = this.jobs.find((x) => x.state === 'queued')) await this._one(j);
-      } finally { this._running = null; }
-    })();
-    return this._running;
+  /**
+   * Render queued jobs in order, one at a time: every queued job, or only `only` (File › Export… renders the job it just
+   * added, not the rest). Resolves when they're done. A run asked for while another runs waits for it, so two jobs never
+   * render at once.
+   * @param {{ only?: string | null }} [o]
+   */
+  run({ only = null } = {}) {
+    const next = () => this.jobs.find((x) => x.state === 'queued' && (!only || x.id === only));
+    const go = async () => { for (let j = next(); j; j = next()) await this._one(j); };
+    const p = (this._running ?? Promise.resolve()).then(go);
+    this._running = p;
+    p.finally(() => { if (this._running === p) this._running = null; }).catch(() => {});
+    return p;
   }
 
   async _one(job) {
@@ -129,7 +134,9 @@ export class RenderQueue {
     try {
       const progress = (n, total, phase = '') => { job.progress = { n, total, phase }; this.changed(); };
       job.result = await this.runner.run(structuredClone(job), { progress, signal: abort.signal });
-      job.state = abort.signal.aborted ? 'cancelled' : 'done';
+      // the runner finished: its file is written, whatever came late. A cancel it couldn't act on any more is said, not hidden
+      job.state = 'done';
+      job.lateCancel = abort.signal.aborted;
     } catch (e) {
       // a cancel: the queue's own, or the runner's (the person closed the shell's save panel: ShellError 'cancelled')
       const cancelled = abort.signal.aborted || e?.code === 'cancelled';

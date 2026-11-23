@@ -82,3 +82,28 @@ test('a runner that reports a cancel (a closed save panel) ends its job cancelle
   await q.run();
   assert.deepEqual([q.jobs[0].state, q.jobs[0].error], ['cancelled', null]);
 });
+
+test('run({ only }) renders that job alone; a run asked for meanwhile waits its turn', async () => {
+  const order = [];
+  const q = new RenderQueue({ runner: { name: 'log', async run(job) { order.push(job.id); await Promise.resolve(); return {}; } } });
+  q.add(spec()); q.add(spec()); const c = q.add(spec());
+  await q.run({ only: c.id });
+  assert.deepEqual(order, ['job-3']);
+  assert.deepEqual(q.jobs.map((j) => j.state), ['queued', 'queued', 'done']);
+  const a = q.run(), b = q.run({ only: 'job-1' });
+  await Promise.all([a, b]);
+  assert.deepEqual(order, ['job-3', 'job-1', 'job-2'], 'one at a time, in order');
+});
+
+test('a runner that finishes although Cancel came too late leaves a done job that says so', async () => {
+  let release;
+  const gate = new Promise((r) => { release = r; });
+  const q = new RenderQueue({ runner: { name: 'late', async run() { await gate; return { frames: 3 }; } } });
+  q.add(spec());
+  const run = q.run();
+  await Promise.resolve(); await Promise.resolve();
+  q.cancel('job-1');
+  release();
+  await run;
+  assert.deepEqual([q.jobs[0].state, q.jobs[0].lateCancel], ['done', true]);
+});

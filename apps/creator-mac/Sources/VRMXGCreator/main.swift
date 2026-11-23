@@ -20,5 +20,6 @@ ShellApp.run(ShellConfiguration(
             ShellMenuItem("Apply Script", event: "applyScript", key: "\r"),
             ShellMenuItem("Render Queue", event: "renderQueue", key: "r", modifiers: [.command, .option]),
         ]),
-    ]
+    ],
+    openTypes: ["fountain", "vrmxa", "vrmxs", "glb"]
 ))

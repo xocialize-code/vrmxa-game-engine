@@ -8,6 +8,7 @@ import StoryboardStrip from '@vrmxg/editor-ui/StoryboardStrip.vue';
 import RenderQueue from '@vrmxg/editor-ui/RenderQueue.vue';
 import { CreatorHost } from './host.js';
 import { bundledProject, openProjectFolder, pickFile, fetchOpened, readPicked } from './project.js';
+import { kindOf } from './shorts.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 import ScriptPane from './ScriptPane.vue';
 
@@ -19,6 +20,7 @@ const ui = reactive({
   script: { text: '', file: '', errors: [], warnings: [], pending: false, dirty: false, last: '' },
   board: null, thumbs: {}, beats: {}, thumbState: '', selectedShot: null,
   tl: null, roles: [], role: '', cast: '', opened: '', saved: '', jobs: [], runner: '', coverage: 'default', unsaved: [],
+  ask: null, // { title, text, options: [{ id, label }] }: the window's question (unsaved changes, a name clash)
 });
 /** @type {CreatorHost} */ let cr = null; // never reactive
 let started; const ready = new Promise((r) => { started = r; }); // the first project is open (files opened at launch wait)
@@ -37,22 +39,22 @@ function refresh(kind = 'all') {
   ui.loading = cr.busy > 0;
   if (cr.error) ui.error = cr.error;
   ui.project = cr.project?.name ?? ''; ui.writable = !!cr.project?.writable;
-  ui.shorts = cr.shorts.map((x) => ({ id: x.id, title: x.title }));
+  ui.shorts = cr.shorts.all.map((x) => ({ id: x.id, title: x.title, saved: x.saved }));
   ui.short = cr.short ? { ...cr.short } : null; ui.coverage = cr.short?.coverage ?? 'default';
   ui.sets = cr.sets(); if (!ui.newSetPicked || !ui.sets.includes(ui.newSet)) ui.newSet = [cr.nextSet, cr.setScene?.ref].find((x) => ui.sets.includes(x)) ?? ui.sets[0] ?? '';
   ui.board = cr.board ? structuredClone(cr.board) : null; ui.beats = d ? d.beats() : {};
   ui.roles = cr.roles(); if (!ui.roles.some((r) => r.id === ui.role)) ui.role = ui.roles[0]?.id ?? '';
   const c = cr.lastCast;
-  ui.cast = c ? `${c.title} as ${c.role}: ${c.changed ? c.label : 'no change'}${c.warnings.length ? ` (${c.warnings.join('; ')})` : ''}` : '';
+  ui.cast = c ? `${c.title} as ${c.role}: ${c.changed ? c.label : 'no change'}${c.file === 'replaced' ? ` (replaced ${c.ref})` : c.file === 'renamed' ? ` (saved as ${c.ref})` : ''}${c.warnings.length ? ` (${c.warnings.join('; ')})` : ''}` : '';
   const o = cr.lastOpen;
-  ui.opened = o ? `${o.name} (${o.kind})${o.short ? ` → short ${o.short}` : ''}${o.set ? ` → set ${o.set}` : ''}${o.apply?.label ? ` · ${o.apply.label}` : o.apply ? ' · no change' : ''}` : '';
+  ui.opened = o ? `${o.name} (${o.kind})${o.cancelled ? ' · cancelled' : ''}${o.short ? ` → short ${o.short}` : ''}${o.set ? ` → set ${o.set}` : ''}${o.warnings?.length ? ` · ${o.warnings.join('; ')}` : ''}${o.apply?.label ? ` · ${o.apply.label}` : o.apply ? ' · no change' : ''}` : '';
   const sv = cr.lastSaveAll;
   ui.saved = sv ? `${sv.sequence.ref} · ${sv.sequence.bytes} bytes · ${sv.sequence.hash}${sv.script ? ` · ${sv.script}` : ''}${sv.memory ? ' · in memory (open a project folder to save to disk)' : ''}` : '';
   ui.unsaved = cr.project?.unsaved?.() ?? [];
   if (!s) return;
   ui.mode = s.mode;
   const h = s.history(); ui.undo = h.undo; ui.redo = h.redo;
-  ui.dirty = s.dirty || !!d?.dirty; ui.nodes = s.doc.nodes.length; ui.hash = s.hash();
+  ui.dirty = cr.isDirty(); ui.nodes = s.doc.nodes.length; ui.hash = s.hash();
   const v = s.validate(); ui.valid = v.ok; ui.problems = v.ok ? '' : v.errors.slice(0, 3).join('; ');
 }
 
@@ -66,22 +68,47 @@ onMounted(async () => {
   started();
 });
 
+// ---------------------------------------------------------------- the window's questions
+/** Ask in the window (a sheet over the page, which AppProbe can answer): → the chosen option's id. */
+let answer = null;
+const ask = (title, text, options) => new Promise((resolve) => { answer = resolve; ui.ask = { title, text, options }; });
+const reply = (id) => { const r = answer; answer = null; ui.ask = null; r?.(id); };
+/**
+ * Before the open short goes (another short, New Short, Open Project, a script that opens another short): unsaved work
+ * is saved, discarded or kept, as the person says. → true to go on
+ */
+async function guard() {
+  if (!cr?.isDirty()) return true;
+  const title = cr.short?.title ?? 'This short';
+  const c = await ask('Unsaved changes', `${title} has changes that aren't saved${cr.short && !cr.short.saved ? ' (it has never been saved)' : ''}.`, [{ id: 'save', label: 'Save' }, { id: 'discard', label: 'Don\'t Save' }, { id: 'cancel', label: 'Cancel' }]);
+  if (c === 'cancel') return false;
+  if (c === 'discard') { cr.discardChanges(); return true; }
+  try { await cr.saveShort(); return true; } catch (e) { ui.error = String(e?.message ?? e); return false; }
+}
+/** A file the project already holds by that name, with different bytes. */
+const onClash = (ref) => ask('A different file has this name', `The project already has ${ref}, and it isn't the same file.`, [{ id: 'rename', label: 'Keep Both' }, { id: 'replace', label: 'Replace' }, { id: 'cancel', label: 'Cancel' }]);
+
 // ---------------------------------------------------------------- commands
-const openProject = () => act(async () => cr.openProject(await openProjectFolder()));
-const openShort = (id) => act(() => cr.openShort(id));
-const newShort = () => act(() => { cr.nextSet = ui.newSet || null; return cr.newShort(ui.newTitle.trim() || 'Untitled'); });
+const openProject = () => act(async () => { const p = await openProjectFolder(); if (await guard()) await cr.openProject(p); });
+const openShort = (id) => act(async () => { if (id !== cr.short?.id && await guard()) await cr.openShort(id); });
+const newShort = () => act(async () => { if (!(await guard())) return; cr.nextSet = ui.newSet || null; await cr.newShort(ui.newTitle.trim() || 'Untitled'); });
 const save = () => act(() => cr.saveShort());
 const saveAs = () => act(() => cr.saveShort(ui.saveAsTitle.trim() || `${cr.short?.title ?? 'Short'} copy`));
-const undo = () => act(() => cr.session.undo());
-const redo = () => act(() => cr.session.redo());
+const undo = () => act(() => cr.undo());
+const redo = () => act(() => cr.redo());
+/** An opened file: a script that opens another short asks about unsaved work first. */
+async function openPicked(f) {
+  if (kindOf(f.name) === 'script' && cr.scriptOpensOtherShort(f.name) && !(await guard())) return;
+  await cr.openFile(f, { role: ui.role || null, onClash });
+}
 const setCoverage = (m) => act(() => cr.setCoverage(m));
 /** File › Open (any kind) or one kind: the shell's panel (binary open), or the page's file picker in a browser. */
 let pickKind = 'any';
 const openFile = (kind = 'any') => {
   if (!inShell) { pickKind = kind; picker.value.click(); return; }
-  return act(async () => cr.openFile(await pickFile(kind), { role: ui.role || null }));
+  return act(async () => openPicked(await pickFile(kind)));
 };
-const onPicked = (e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) act(async () => cr.openFile(await readPicked(f), { role: ui.role || null })); };
+const onPicked = (e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) act(async () => openPicked(await readPicked(f))); };
 const accept = () => ({ any: '.fountain,.vrmxa,.vrmxs,.glb', script: '.fountain', character: '.vrmxa', set: '.vrmxs,.glb' }[pickKind]);
 // the script pane
 const editScript = (t) => { cr.editScript(t); refresh('script'); };
@@ -106,7 +133,7 @@ const tlTransport = (what, v) => act(() => {
 const queueAdd = (o) => act(() => cr.queueShort(o));
 const queueRun = () => act(() => cr.queue.run());
 const queueDo = (what, id, d) => act(() => cr.queue[what](id, d));
-const exportShort = () => act(async () => { cr.queueShort({ preset: 'draft' }); await cr.queue.run(); });
+const exportShort = () => act(() => cr.exportShort()); // renders the job it adds, not the rest of the queue
 
 // keys: ⌘Z / ⇧⌘Z, ⌘S, ⌘O in a browser (in the Mac shell they come from the menus)
 const typing = () => /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName ?? '');
@@ -128,7 +155,7 @@ if (inShell) {
   on('menu.newShort', newShort); on('menu.applyScript', applyScript); on('menu.export', exportShort);
   on('menu.renderQueue', queueRun);
   // Open Documents (Finder, `open`, AppProbe's open step): the shell serves the file and says so
-  on('file.opened', (f) => act(async () => { await ready; await cr.openFile(await fetchOpened(f), { role: ui.role || null }); }));
+  on('file.opened', (f) => act(async () => { await ready; await openPicked(await fetchOpened(f)); }));
   on('menu.undo', () => (fieldUndo() ? document.execCommand('undo') : undo()));
   on('menu.redo', () => (fieldUndo() ? document.execCommand('redo') : redo()));
 }
@@ -167,7 +194,7 @@ if (inShell) {
     <aside class="dock left" aria-label="Short">
       <div class="shorts" role="radiogroup" aria-label="Shorts">
         <h2>Shorts</h2>
-        <button v-for="s in ui.shorts" :id="`short-${s.id}`" :key="s.id" type="button" role="radio" :aria-checked="ui.short?.id === s.id" :aria-label="`Short ${s.title} (${s.id})`" :class="{ on: ui.short?.id === s.id }" :disabled="ui.loading" @click="openShort(s.id)">{{ s.title }}</button>
+        <button v-for="s in ui.shorts" :id="`short-${s.id}`" :key="s.id" type="button" role="radio" :aria-checked="ui.short?.id === s.id" :aria-label="`Short ${s.title} (${s.id})${s.saved ? '' : ', not saved'}`" :class="{ on: ui.short?.id === s.id, draft: !s.saved }" :disabled="ui.loading" @click="openShort(s.id)">{{ s.title }}{{ s.saved ? '' : ' •' }}</button>
       </div>
       <ScriptPane ref="pane" v-bind="ui.script" :disabled="ui.loading || ui.mode !== 'editing'" @edit="editScript" @apply="applyScript" />
     </aside>
@@ -197,6 +224,14 @@ if (inShell) {
 
     <Timeline v-if="ui.tl" ref="timeline" class="tl" :data="ui.tl" :disabled="ui.mode !== 'editing' || ui.loading" @cmd="tlCmd" @scrub="tlScrub" @transport="tlTransport" @select="tlSelect" />
     <section v-else class="tl empty muted">No sequence: open a short.</section>
+
+    <div v-if="ui.ask" class="ask-back">
+      <section id="ask" class="ask" role="alertdialog" :aria-label="ui.ask.title" aria-modal="true">
+        <h2>{{ ui.ask.title }}</h2>
+        <p id="ask-text" :aria-label="ui.ask.text">{{ ui.ask.text }}</p>
+        <div class="row"><button v-for="(o, i) in ui.ask.options" :id="`ask-${o.id}`" :key="o.id" type="button" :class="{ play: i === 0 }" :aria-label="o.label" @click="reply(o.id)">{{ o.label }}</button></div>
+      </section>
+    </div>
 
     <footer class="bar status">
       <output id="doc-state" :aria-label="`Short ${ui.short?.id ?? 'none'} ${ui.short?.sequence ?? ''} ${ui.nodes} nodes ${ui.dirty ? 'unsaved changes' : 'saved'} ${ui.valid ? 'valid' : 'invalid'} hash ${ui.hash}`">{{ ui.short?.sequence ?? '' }} · {{ ui.nodes }} nodes · {{ ui.dirty ? 'unsaved changes' : 'saved' }} · {{ ui.valid ? 'valid' : `invalid: ${ui.problems}` }} · {{ ui.hash }}</output>
@@ -249,4 +284,9 @@ canvas { display: block; width: 100%; height: 100%; outline: none; }
 .tl { grid-area: tl; }
 .tl.empty { display: flex; align-items: center; justify-content: center; background: var(--panel); border-top: 1px solid var(--line); }
 output { font-variant-numeric: tabular-nums; }
+.shorts button.draft { font-style: italic; }
+.ask-back { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-start; justify-content: center; padding-top: 12vh; background: rgba(0, 0, 0, 0.3); }
+.ask { width: 380px; padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35); }
+.ask h2 { margin-bottom: 8px; color: var(--ink); text-transform: none; letter-spacing: 0; font-size: 14px; }
+.ask p { margin: 0 0 12px; } .ask .row { display: flex; justify-content: flex-end; gap: 8px; }
 </style>

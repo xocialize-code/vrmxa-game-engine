@@ -17,27 +17,32 @@ import * as vrmxaCloset from '@vrmxa-core/closet/index.js';
 import { EditorHost, SIZES, RATES, CODECS } from '../../editor/src/host.js';
 import { inShell } from '../../shell/js/shell.js';
 import { ScriptDesk, buildShort } from './desk.js';
-import { SHORTS_FILE, readShorts, shortFor, shortsManifest, upsertShort, titlePage, slugOf, kindOf, setForModel, scriptTemplate } from './shorts.js';
+import { SHORTS_FILE, ShortList, readShorts, shortFor, titlePage, slugOf, kindOf, sceneKind, missingRefs, setForModel, scriptTemplate, placeFile } from './shorts.js';
+import { disposeWorld } from './dispose.js';
 
 export { SIZES, RATES, CODECS };
 const vrmxa = { ...vrmxaMain, ...vrmxaVoice, ...vrmxaPersona, ...vrmxaCloset };
 const APPLY_MS = 700; // the script pane applies this long after typing stops
 
 /**
- * The creator's runner for the render queue: the open short's sequence through the editor's export (M2 W12), into the
- * shell's AVAssetWriter with its .srt beside it, or as frame hashes in a browser. W10 replaces it with delivery export.
+ * The creator's runner for the render queue: the short's sequence as it was when queued (a snapshot the host keeps by
+ * job id) through the editor's export (M2 W12), into the shell's AVAssetWriter with its .srt beside it (unless the job
+ * says no subtitles), or as frame hashes in a browser. Cancel stops it between frames and the shell removes the
+ * partial file. W10 replaces it with delivery export.
  * @param {CreatorHost} host @returns {import('@vrmxg/editor-core/src/queue.js').Runner}
  */
 export function exportRunner(host) {
   return {
     name: inShell ? 'export through the shell (M2 path; W10 adds delivery formats)' : 'frame hashes (a browser: video needs the Mac app)',
-    async run(job, { progress }) {
-      if (host.short?.id !== job.spec.short) throw new Error(`open ${job.spec.title ?? job.spec.short} to render it (the queue renders the open short)`);
-      const seq = host.session.doc.sequence, fps = String(job.spec.fps ?? seq.fps);
+    async run(job, { progress, signal }) {
+      const snap = host.snapshots.get(job.id);
+      if (!snap) throw new Error(`${job.id}: its sequence wasn't kept (queue it again)`);
+      if (host.short?.id !== job.spec.short || host.setScene?.ref !== snap.set) throw new Error(`open ${job.spec.title ?? job.spec.short} to render it (the queue renders the open short)`);
+      const doc = parse(snap.text), seq = doc.sequence, fps = String(job.spec.fps ?? seq.fps);
       if (!RATES[fps]) throw new Error(`no export rate ${fps}`);
       host._queueProgress = progress;
       try {
-        const x = await host.exportVideo({ take: 'sequence', seconds: seq.duration / seq.fps, size: job.spec.size, fps, codec: job.spec.codec, audio: job.spec.audio, name: job.spec.name ?? `${job.spec.short}-${job.spec.size}${fps.replace('.', '')}` });
+        const x = await host.exportVideo({ take: 'sequence', doc, subtitles: job.spec.subtitles !== false, signal, seconds: seq.duration / seq.fps, size: job.spec.size, fps, codec: job.spec.codec, audio: job.spec.audio, name: job.spec.name ?? `${job.spec.short}-${job.spec.size}${fps.replace('.', '')}` });
         return { frames: x.frames, seconds: x.seconds, name: x.name ?? x.began?.name ?? null, path: x.path ?? x.began?.path ?? null, hashesDigest: x.hashesDigest, hashOnly: x.hashOnly, ms: x.ms?.total ?? null, subtitles: x.subs ? { lines: x.subs.lines, path: x.subs.path, error: x.subs.error } : null };
       } finally { host._queueProgress = null; }
     },
@@ -47,10 +52,13 @@ export function exportRunner(host) {
 export class CreatorHost extends EditorHost {
   constructor(canvas, o = {}) {
     super(canvas, o);
-    this.shorts = []; this.short = null; this.desk = null;
-    this.board = null; this.thumbs = {}; this.thumbState = ''; this._thumbFor = null; this._thumbTimer = null; this._thumbHost = null;
+    this.shorts = new ShortList(); this.short = null; this.desk = null;
+    this.board = null; this.thumbs = {}; this.thumbState = '';
+    this._thumbTimer = null; this._thumbHost = null; this._thumbGen = 0; this._thumbChain = Promise.resolve(); this._thumbFor = null;
     this.selectedShot = null; this.lastCast = null; this.lastOpen = null; this.lastSaveAll = null; this.nextSet = null;
     this._applyTimer = null;
+    /** job id → { text, set }: the sequence as it was queued */
+    this.snapshots = new Map();
     const q = new URLSearchParams(location.search).get('queue');
     this.queue = new RenderQueue({ runner: q === 'stub' ? stubRunner : exportRunner(this), onChange: () => this.changed('queue') });
   }
@@ -70,9 +78,9 @@ export class CreatorHost extends EditorHost {
     this.R ??= await loadRapier();
     const texts = {};
     for (const f of project.files.filter((x) => /^scripts\/[^/]+\.fountain$/.test(x))) texts[f] = await project.text(f);
-    this.shorts = readShorts(project.files, project.has(SHORTS_FILE) ? await project.text(SHORTS_FILE) : null, texts);
+    this.shorts = new ShortList(readShorts(project.files, project.has(SHORTS_FILE) ? await project.text(SHORTS_FILE) : null, texts));
     this.short = null; this.desk = null;
-    const first = this.shorts.find((s) => s.id === shortId) ?? this.shorts[0];
+    const first = this.shorts.byId(shortId) ?? this.shorts.all[0];
     if (first) await this.openShort(first.id); else await this.newScene();
     this.changed();
   }
@@ -80,25 +88,37 @@ export class CreatorHost extends EditorHost {
   /** The sets a short can film: the project's scenes that aren't sequences or prefabs. */
   sets() { return (this.project?.scenes() ?? []).filter((s) => !s.startsWith('sequences/') && !s.startsWith('prefabs/')); }
 
+  /** Unsaved work the window must ask about before it goes: the sequence, the script, or a short never saved. */
+  isDirty() { return !!this.session && (this.session.dirty || !!this.desk?.dirty || (this.short ? !this.short.saved : false)); }
+
+  /** Throw away the open short's unsaved work (the window asked): a short never saved leaves the list. */
+  discardChanges() {
+    clearTimeout(this._applyTimer);
+    if (this.short && !this.short.saved) this.shorts.discard(this.short.id);
+  }
+
   /**
    * Open a short: its sequence (or, the first time, the sequence its script builds), the script beside it, and the
-   * preview at frame 0 through the shot camera.
-   * @param {string} id @param {{ text?: string }} [o] text: the script to use instead of the project's file (opened from elsewhere)
+   * preview on its first shot. The window asks about unsaved work before calling this.
+   * @param {string} id @param {{ text?: string }} [o] text: the script to use instead of the project's file (opened from elsewhere, or new)
    */
   async openShort(id, { text = null } = {}) {
-    const short = this.shorts.find((s) => s.id === id);
+    const short = this.shorts.byId(id);
     if (!short) throw new Error(`no short ${id}`);
+    if (text === null && !short.saved) throw new Error(`${short.title} was never saved: its script is only in memory`);
     if (this.session?.mode === 'playing') this.stop();
     clearTimeout(this._applyTimer);
+    if (this.short && this.short.id !== id && !this.short.saved) this.shorts.discard(this.short.id);
     this.busy++; this.changed();
     try {
       const script = text ?? await this.project.text(short.script);
       const marks = short.marks && this.project.has(short.marks) ? JSON.parse(await this.project.text(short.marks)).marks ?? null : null;
-      if (this.project.has(short.sequence)) await this.openScene(short.sequence);
+      // a saved short's sequence is its own; a draft's id is free of every project file (ShortList.freeId)
+      if (short.saved && this.project.has(short.sequence)) await this.openScene(short.sequence);
       else await this.buildNewShort(short, script, marks);
       this.short = short;
       this.desk = new ScriptDesk({ session: this.session, short, marks, text: script });
-      if (text !== null) this.desk.saved = null; // opened from elsewhere: the project's copy is written on Save
+      if (text !== null) this.desk.saved = null; // opened from elsewhere or new: the project's copy is written on Save
       // the script as it is now builds the sequence (one undo step if it changed since the sequence was saved)
       if (this.session.isSequence) this.desk.apply();
       this.board = this.session.isSequence ? storyboard(this.session.doc, { set: this.setScene?.doc ?? null }) : null;
@@ -136,17 +156,21 @@ export class CreatorHost extends EditorHost {
     } finally { this.busy--; this.changed(); }
   }
 
-  /** A new short filming a set: a script from the template, its sequence built and opened (saved on Save). */
-  async newShort(title, setRef = this.nextSet ?? this.sets()[0]) {
-    const id = this.uniqueShortId(slugOf(title || 'untitled'));
-    const text = scriptTemplate({ title: title || id, set: setRef });
-    const short = { ...shortFor(`scripts/${id}.fountain`, { files: this.project.files, text, coverage: 'rule' }), title: title || id, set: setRef };
-    this.shorts = upsertShort(this.shorts, short);
-    await this.openShort(id, { text });
-    return id;
+  /** Add a draft short and open it; if it can't be opened, it goes again. */
+  async openDraft(short, text) {
+    this.shorts.addDraft(short);
+    try { await this.openShort(short.id, { text }); }
+    catch (e) { this.shorts.discard(short.id); throw e; }
+    return short.id;
   }
 
-  uniqueShortId(base) { let id = base, n = 2; while (this.shorts.some((s) => s.id === id)) id = `${base}-${n++}`; return id; }
+  /** A new short filming a set: a script from the template, its sequence built and opened, unsaved until Save. */
+  async newShort(title, setRef = this.nextSet ?? this.sets()[0]) {
+    const id = this.shorts.freeId(slugOf(title || 'untitled'), this.project.files);
+    const text = scriptTemplate({ title: title || id, set: setRef });
+    const short = { ...shortFor(`scripts/${id}.fountain`, { files: this.project.files, text, coverage: 'rule' }), title: title || id, set: setRef };
+    return this.openDraft(short, text);
+  }
 
   // ---------------------------------------------------------------- the script pane
 
@@ -168,6 +192,22 @@ export class CreatorHost extends EditorHost {
     return r;
   }
 
+  /**
+   * Undo, with typing not yet applied: it is applied first (its own step), so Undo takes it back and Redo can bring it
+   * again; the apply timer never fires after the undo.
+   */
+  undo() {
+    if (this.desk?.pending) this.applyScript(); else clearTimeout(this._applyTimer);
+    return this.session.undo();
+  }
+
+  /** Redo. Typing not yet applied is a newer edit: it is applied instead, as typing ends a redo chain anywhere. */
+  redo() {
+    if (this.desk?.pending) { this.applyScript(); return false; }
+    clearTimeout(this._applyTimer);
+    return this.session.redo();
+  }
+
   /** After any edit, undo or redo: the script pane, the storyboard and its thumbnails follow the document. */
   onSession(e) {
     super.onSession(e);
@@ -184,32 +224,50 @@ export class CreatorHost extends EditorHost {
   /** Pick a shot on the strip: scrub to its thumbnail frame. */
   pickShot(id, frame) { this.selectedShot = id; this.scrubTo(frame); this.changed('timeline'); }
 
-  /** Thumbnails for the storyboard, drawn a moment after the document settles (a world of its own on an offline host). */
+  /** Thumbnails for the storyboard, drawn a moment after the document settles. */
   scheduleThumbs() {
     clearTimeout(this._thumbTimer);
-    this._thumbTimer = setTimeout(() => this.drawThumbs().catch((err) => { this.thumbState = `thumbnails failed: ${err?.message ?? err}`; this.changed('thumbs'); }), 400);
+    this._thumbTimer = setTimeout(() => { this.drawThumbs(); }, 400);
   }
 
-  async drawThumbs() {
+  /**
+   * Draw the thumbnails for the document as it is now. Draws run one at a time on the one offline host; a draw that a
+   * newer one has overtaken stops at its next step and its pictures are dropped. Each draw's world shares the edit view's
+   * read bundles and clips, and is disposed whole when the draw ends (physics, geometries, materials, textures).
+   */
+  drawThumbs() {
     const s = this.session;
-    if (!s?.isSequence || !this.board?.shots.length || s.mode !== 'editing') return;
+    if (!s?.isSequence || !this.board?.shots.length || s.mode !== 'editing') return this._thumbChain;
     const hash = s.hash();
-    if (this._thumbFor === hash) return;
+    if (this._thumbFor === hash) return this._thumbChain;
     this._thumbFor = hash;
-    const board = this.board;
+    const gen = ++this._thumbGen, text = s.text(), board = this.board;
+    this._thumbChain = this._thumbChain.then(() => this._drawThumbs(gen, text, board)).catch((err) => {
+      if (gen === this._thumbGen) { this.thumbState = `thumbnails failed: ${err?.message ?? err}`; this.changed('thumbs'); }
+    });
+    return this._thumbChain;
+  }
+
+  async _drawThumbs(gen, text, board) {
+    const stale = () => gen !== this._thumbGen;
+    if (stale()) return;
     this.thumbState = `drawing ${board.shots.length} thumbnails`; this.changed('thumbs');
-    const world = await this.buildFrom(parse(s.text()), { play: true, heard: false });
-    if (this._thumbFor !== hash) return; // the document changed meanwhile: a newer draw is coming
-    this._thumbHost ??= await this.offlineHost();
-    const { thumbs } = await renderThumbnails({ tree: world.tree, host: this._thumbHost, board, width: 320, height: 180, order: 'reverse' });
-    this._thumbHost.detach?.();
-    world.audio?.dispose?.();
-    if (this._thumbFor !== hash) return;
-    const out = {};
-    for (const t of thumbs) out[t.shot] = { url: toDataURL(t.rgba, t.width, t.height), frame: t.frame, hash: t.hash };
-    this.thumbs = out;
-    this.thumbState = `${thumbs.length} thumbnails`;
-    this.changed('thumbs');
+    let world = null;
+    try {
+      world = await this.buildFrom(parse(text), { play: true, heard: false, cache: true });
+      if (stale()) return;
+      this._thumbHost ??= await this.offlineHost();
+      const { thumbs } = await renderThumbnails({ tree: world.tree, host: this._thumbHost, board, width: 320, height: 180, order: 'reverse' });
+      if (stale()) return;
+      const out = {};
+      for (const t of thumbs) out[t.shot] = { url: toDataURL(t.rgba, t.width, t.height), frame: t.frame, hash: t.hash };
+      this.thumbs = out;
+      this.thumbState = `${thumbs.length} thumbnails`;
+      this.changed('thumbs');
+    } finally {
+      if (world && this._thumbHost?.tree === world.tree) this._thumbHost.detach();
+      disposeWorld(world);
+    }
   }
 
   // ---------------------------------------------------------------- casting
@@ -224,38 +282,55 @@ export class CreatorHost extends EditorHost {
     });
   }
 
+  /** Put an opened file into the project at `ref` (placeFile: new, the same bytes, or a clash the window asks about). → the ref, or null (cancelled) */
+  async placeOpened(ref, bytes, onClash) {
+    const p = await placeFile(ref, bytes, { files: this.project.files, read: (r) => this.project.bytes(r), onClash });
+    if (!p) return null;
+    if (p.write) await this.project.put(p.ref, bytes);
+    if (p.replaced) this.characterCache?.sources.delete(p.ref); // the read bundle of the file replaced
+    return p;
+  }
+
   /**
-   * Cast a character file into a role: the .vrmxa goes into the project (characters/), its card is read through
-   * vrmxa-core, and the cast is one undo step. W7 (voicing) adds the re-bake of the role's lines to the same step.
+   * Cast a character file into a role: the .vrmxa goes into the project (characters/, asking first if a different file
+   * has its name), its card is read from those same bytes through vrmxa-core, and the cast is one undo step. W7
+   * (voicing) adds the re-bake of the role's lines to the same step.
    */
-  async castFile(name, bytes, roleId) {
+  async castFile(name, bytes, roleId, { onClash = null } = {}) {
     if (!this.session?.isSequence) throw new Error('open a short to cast it');
     const role = roleId ?? this.roles()[0]?.id;
     if (!role) throw new Error('this short has no roles to cast (no one speaks in its script)');
-    const ref = `characters/${name}`;
-    if (!this.project.has(ref)) await this.project.put(ref, bytes);
-    const card = await readCharacter(bytes, { ref, vrmxa });
+    const p = await this.placeOpened(`characters/${name}`, bytes, onClash);
+    if (!p) return null;
+    const card = await readCharacter(bytes, { ref: p.ref, vrmxa });
     const r = await applyCast(this.session, role, card);
-    this.lastCast = { role, ref, changed: r.changed, label: r.label ?? null, warnings: r.warnings ?? [], title: card.title ?? card.name };
+    this.lastCast = { role, ref: p.ref, changed: r.changed, label: r.label ?? null, warnings: r.warnings ?? [], title: card.title ?? card.name, file: p.same ? 'same' : p.replaced ? 'replaced' : p.renamed ? 'renamed' : 'new' };
     this.changed();
     return this.lastCast;
   }
 
   // ---------------------------------------------------------------- File › Open
 
+  /** Would opening this script switch to another short (so the window asks about unsaved work first)? */
+  scriptOpensOtherShort(name) {
+    const s = this.shorts.forScript(`scripts/${slugOf(name)}.fountain`);
+    return !(s && s.id === this.short?.id);
+  }
+
   /**
-   * A file opened from outside the project: a script opens as a short (its own, if the project has one by that name,
-   * re-scripted from the opened text as one undo step); a character is cast into `role`; a set (or a .glb, wrapped in a
-   * set scene) joins the project as the set New Short films.
-   * @param {{ name: string, bytes: Uint8Array }} file @param {{ role?: string }} [o]
+   * A file opened from outside the project: a script opens as a short (the open short's own script re-scripts it as
+   * one undo step; another short's opens that short with it; otherwise a new short, unsaved, with a free id); a
+   * character is cast into `role`; a set (or a .glb, wrapped in a set scene) joins the project under sets/ as the set
+   * New Short films. `onClash(ref)` answers a name the project already holds with different bytes.
+   * @param {{ name: string, bytes: Uint8Array }} file @param {{ role?: string, onClash?: Function }} [o]
    */
-  async openFile({ name, bytes }, { role = null } = {}) {
+  async openFile({ name, bytes }, { role = null, onClash = null } = {}) {
     const kind = kindOf(name);
     if (!kind) throw new Error(`${name}: the creator opens scripts (.fountain), characters (.vrmxa) and sets (.vrmxs, .glb)`);
     let result;
     if (kind === 'script') result = await this.openScriptFile(name, new TextDecoder().decode(bytes));
-    else if (kind === 'character') result = { cast: await this.castFile(name, bytes, role) };
-    else result = { set: await this.addSet(name, bytes, kind) };
+    else if (kind === 'character') { const cast = await this.castFile(name, bytes, role, { onClash }); result = cast ? { cast } : { cancelled: true }; }
+    else { const set = await this.addSet(name, bytes, kind, { onClash }); result = set ?? { cancelled: true }; }
     this.lastOpen = { name, kind, ...result };
     this.changed();
     return this.lastOpen;
@@ -263,57 +338,66 @@ export class CreatorHost extends EditorHost {
 
   async openScriptFile(name, text) {
     const ref = `scripts/${slugOf(name)}.fountain`;
-    let short = this.shorts.find((s) => s.script === ref);
-    if (!short) {
-      short = shortFor(ref, { files: this.project.files, text });
-      this.shorts = upsertShort(this.shorts, short);
-    }
-    if (this.short?.id === short.id && this.desk) {
+    const own = this.shorts.forScript(ref);
+    if (own && this.short?.id === own.id && this.desk) {
       // the open short's script, from elsewhere: re-script the open sequence (one undo step), hand edits kept
       this.desk.saved = null;
       this.desk.text = text;
-      return { short: short.id, apply: this.applyScript() };
+      return { short: own.id, apply: this.applyScript() };
     }
-    await this.openShort(short.id, { text });
-    return { short: short.id };
+    if (own) { await this.openShort(own.id, { text }); return { short: own.id }; } // that short, with this text (unsaved)
+    const id = this.shorts.freeId(slugOf(name), this.project.files);
+    const short = shortFor(`scripts/${id}.fountain`, { files: this.project.files, text });
+    await this.openDraft(short, text);
+    return { short: id };
   }
 
-  async addSet(name, bytes, kind) {
+  /** A set from elsewhere: under sets/; a .glb gets a set scene beside it. → { set, warnings } or null (cancelled) */
+  async addSet(name, bytes, kind, { onClash = null } = {}) {
     const id = slugOf(name);
     if (kind === 'model') {
-      const model = `sets/${id}.glb`;
-      if (!this.project.has(model)) await this.project.put(model, bytes);
-      const ref = `${id}-set.vrmxs`;
-      if (!this.project.has(ref)) await this.project.write(ref, serialize(setForModel(model, `${id}-set`)));
-      this.nextSet = ref;
-      return ref;
+      const model = await this.placeOpened(`sets/${id}.glb`, bytes, onClash);
+      if (!model) return null;
+      const scene = new TextEncoder().encode(serialize(setForModel(model.ref, `${id}-set`)));
+      const p = await this.placeOpened(`sets/${id}-set.vrmxs`, scene, onClash);
+      if (!p) return null;
+      this.nextSet = p.ref;
+      return { set: p.ref, warnings: [] };
     }
-    const ref = `${id}.vrmxs`;
-    if (!this.project.has(ref)) await this.project.put(ref, bytes);
-    this.nextSet = ref;
-    return ref;
+    const doc = parse(new TextDecoder().decode(bytes));
+    const k = sceneKind(doc);
+    if (k !== 'set') throw new Error(`${name} is a ${k}, not a set: ${k === 'sequence' ? 'a short builds its own sequence from its script' : 'open it in the editor'}`);
+    const p = await this.placeOpened(`sets/${id}.vrmxs`, bytes, onClash);
+    if (!p) return null;
+    this.nextSet = p.ref;
+    const missing = missingRefs(doc, this.project.files);
+    return { set: p.ref, warnings: missing.length ? [`not in the project, so it won't draw: ${missing.join(', ')}`] : [] };
   }
 
   // ---------------------------------------------------------------- saving
 
   /**
-   * Save the short: its sequence, its script and the project's shorts.json. Save As gives it a new name (a new short
-   * beside the old one). → { sequence, script, shorts }
+   * Save the short: its sequence, its script and the project's shorts.json (saved shorts only). Save As gives it a new
+   * name with a free id (a new short beside the old one; a short never saved just takes the new name).
+   * → { sequence, script, shorts }
    */
   async saveShort(asTitle = null) {
     if (!this.short) return this.save();
     this.applyScript();
     if (asTitle) {
-      const id = this.uniqueShortId(slugOf(asTitle));
-      const short = { ...this.short, id, title: asTitle, script: `scripts/${id}.fountain`, sequence: `sequences/${id}.vrmxs` };
-      this.shorts = upsertShort(this.shorts, short);
-      this.short = short; this.desk.short = short; this.desk.saved = null;
+      const old = this.short;
+      const id = this.shorts.freeId(slugOf(asTitle), this.project.files);
+      const short = { ...old, id, title: asTitle, script: `scripts/${id}.fountain`, sequence: `sequences/${id}.vrmxs` };
+      this.shorts.addDraft(short);
+      if (!old.saved) this.shorts.discard(old.id);
+      this.short = this.shorts.byId(id); this.desk.short = this.short; this.desk.saved = null;
       this.session.path = short.sequence;
     }
     const seq = await this.save(this.short.sequence);
     let script = null;
     if (this.desk.dirty || !this.project.has(this.short.script)) { script = await this.project.write(this.short.script, this.desk.text); this.desk.markSaved(); }
-    const shorts = await this.project.write(SHORTS_FILE, shortsManifest(this.shorts));
+    this.short = this.shorts.markSaved(this.short.id); this.desk.short = this.short;
+    const shorts = await this.project.write(SHORTS_FILE, this.shorts.manifest());
     this.lastSaveAll = { short: this.short.id, sequence: { ref: this.short.sequence, bytes: seq.bytes, hash: seq.hash }, script: script ? this.short.script : null, shorts: !!shorts, memory: !this.project.writable || !inShell };
     this.changed();
     return this.lastSaveAll;
@@ -322,19 +406,28 @@ export class CreatorHost extends EditorHost {
   /** Change how the open short's cameras are made, and re-script with it (one undo step). */
   setCoverage(mode) {
     if (!this.short || this.short.coverage === mode) return null;
-    this.short = { ...this.short, coverage: mode };
-    this.shorts = upsertShort(this.shorts, this.short);
+    this.short = this.shorts.update(this.short.id, { coverage: mode });
     this.desk.short = this.short;
     return this.applyScript();
   }
 
   // ---------------------------------------------------------------- the render queue
 
-  /** Queue the open short. */
+  /** Queue the open short as it is now (a snapshot: edits after this don't change the job). */
   queueShort({ preset = 'draft', name = null } = {}) {
     if (!this.short || !this.session?.isSequence) throw new Error('open a short to queue it');
+    this.applyScript();
     const seq = this.session.doc.sequence;
-    return this.queue.add({ short: this.short.id, title: this.short.title, ref: this.short.sequence, preset, name, seconds: seq.duration / seq.fps });
+    const job = this.queue.add({ short: this.short.id, title: this.short.title, ref: this.short.sequence, preset, name, seconds: seq.duration / seq.fps });
+    this.snapshots.set(job.id, { text: this.session.text(), set: this.setScene?.ref ?? null });
+    return job;
+  }
+
+  /** File › Export…: queue the open short at the draft preset and render that job alone. */
+  async exportShort() {
+    const job = this.queueShort({ preset: 'draft' });
+    await this.queue.run({ only: job.id });
+    return this.queue.get(job.id);
   }
 }
 

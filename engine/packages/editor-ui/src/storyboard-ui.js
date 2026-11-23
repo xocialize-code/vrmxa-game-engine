@@ -38,7 +38,7 @@ export function jobStatus(job) {
     case 'done': {
       const r = job.result ?? {};
       const what = r.stub ? `${r.frames} frames counted, nothing rendered (stub)` : `${r.frames ?? '?'} frames${r.name ? ` · ${r.name}` : ''}${r.hashesDigest ? ` · frames ${r.hashesDigest}` : ''}`;
-      return `done: ${what}`;
+      return `done: ${what}${job.lateCancel ? ' (Cancel came after the file was finished)' : ''}`;
     }
     case 'failed': return `failed: ${job.error ?? 'unknown error'}`;
     case 'cancelled': return 'cancelled';

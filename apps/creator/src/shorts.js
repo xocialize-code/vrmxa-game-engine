@@ -53,7 +53,9 @@ export function readShorts(files, manifest = null, texts = {}) {
     return (m.shorts ?? []).map((s) => {
       if (!s.id || !s.script) throw new Error(`${SHORTS_FILE}: a short needs an id and a script`);
       if (s.coverage && !COVERAGE.includes(s.coverage)) throw new Error(`${SHORTS_FILE}: ${s.id}: coverage is ${COVERAGE.join(' or ')}`);
-      return { id: s.id, title: s.title ?? s.id, script: s.script, sequence: s.sequence ?? `sequences/${s.id}.vrmxs`, marks: s.marks ?? null, set: s.set ?? null, coverage: s.coverage ?? 'rule' };
+      const sequence = s.sequence ?? `sequences/${s.id}.vrmxs`;
+      // no coverage named: as for a discovered short, a sequence that exists keeps the cameras it was built with
+      return { id: s.id, title: s.title ?? s.id, script: s.script, sequence, marks: s.marks ?? null, set: s.set ?? null, coverage: s.coverage ?? (files.includes(sequence) ? 'default' : 'rule') };
     });
   }
   return files.filter((f) => /^scripts\/[^/]+\.fountain$/.test(f)).sort().map((f) => shortFor(f, { files, text: texts[f] ?? '' }));
@@ -103,7 +105,8 @@ export class ScriptHistory {
   }
 }
 
-/** What kind of file a name is, for File › Open: 'script', 'character', 'set', 'model' (a .glb set) or null. */
+/** What kind of file a name is, for File › Open: 'script', 'character', 'set', 'model' (a .glb set) or null. A .vrmxs is
+ * checked again once read (`sceneKind`): a sequence or a prefab isn't a set. */
 export function kindOf(name) {
   const ext = String(name).toLowerCase().split('.').pop();
   return { fountain: 'script', vrmxa: 'character', vrmxs: 'set', glb: 'model' }[ext] ?? null;
@@ -131,4 +134,87 @@ export function setForModel(modelRef, id) {
 /** A new short's script: a title page naming its set, and one scene to start from. */
 export function scriptTemplate({ title, set }) {
   return `Title: ${title}\nSet: ${set}\n\nINT. ${String(title).toUpperCase()} - DAY\n\nThe scene starts here.\n`;
+}
+
+/**
+ * The project's shorts, saved and unsaved (M4 W5 review). A short made in the creator (New Short, Save As, a script
+ * opened from elsewhere) is a draft until it is saved: it never goes into shorts.json, and switching away from it
+ * discards it (the window asks first). A new short's id is free of every short and of every project file it would
+ * write, so it can never open or overwrite a sequence or script that already exists.
+ */
+export class ShortList {
+  /** @param {any[]} shorts readShorts' result (all saved) */
+  constructor(shorts = []) { this.list = shorts.map((s) => ({ ...s, saved: true })); }
+  get all() { return this.list; }
+  byId(id) { return this.list.find((s) => s.id === id) ?? null; }
+  /** The short whose script is this ref, if any. */
+  forScript(ref) { return this.list.find((s) => s.script === ref) ?? null; }
+  /** An id no short has and whose sequences/<id>.vrmxs and scripts/<id>.fountain the project doesn't hold. */
+  freeId(base, files) {
+    const taken = (id) => this.list.some((s) => s.id === id || s.script === `scripts/${id}.fountain` || s.sequence === `sequences/${id}.vrmxs`) || files.includes(`sequences/${id}.vrmxs`) || files.includes(`scripts/${id}.fountain`);
+    let id = base || 'untitled', n = 2;
+    while (taken(id)) id = `${base || 'untitled'}-${n++}`;
+    return id;
+  }
+  /** Add an unsaved short (its id must be free: freeId). */
+  addDraft(short) {
+    if (this.byId(short.id)) throw new Error(`a short ${short.id} exists already`);
+    const d = { ...short, saved: false };
+    this.list = [...this.list, d];
+    return d;
+  }
+  /** Replace a short's fields, keeping its place. */
+  update(id, fields) { this.list = this.list.map((s) => (s.id === id ? { ...s, ...fields } : s)); return this.byId(id); }
+  markSaved(id) { return this.update(id, { saved: true }); }
+  /** Drop an unsaved short (a saved one stays: its files are on disk). → whether it went */
+  discard(id) {
+    const s = this.byId(id);
+    if (!s || s.saved) return false;
+    this.list = this.list.filter((x) => x !== s);
+    return true;
+  }
+  /** shorts.json's text: saved shorts only. */
+  manifest() { return shortsManifest(this.list.filter((s) => s.saved)); }
+}
+
+/** Two byte arrays the same? */
+export function sameBytes(a, b) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+
+/** A ref no project file has: characters/mira.vrmxa → characters/mira-2.vrmxa. */
+export function freeRef(ref, files) {
+  const i = ref.lastIndexOf('.'), base = i > ref.lastIndexOf('/') ? ref.slice(0, i) : ref, ext = i > ref.lastIndexOf('/') ? ref.slice(i) : '';
+  let out = ref, n = 2;
+  while (files.includes(out)) out = `${base}-${n++}${ext}`;
+  return out;
+}
+
+/** What a .vrmxs is: 'sequence' (a sequence block), 'prefab' (no Environment, Camera or light: parts to instance), or 'set'. */
+export function sceneKind(doc) {
+  if (doc?.sequence) return 'sequence';
+  const types = new Set((doc?.nodes ?? []).map((n) => n.type));
+  return ['Environment', 'Camera', 'DirectionalLight', 'SpotLight', 'PointLight'].some((t) => types.has(t)) ? 'set' : 'prefab';
+}
+
+/** The asset refs a scene names that the project doesn't hold. */
+export function missingRefs(doc, files) { return (doc?.assets ?? []).map((a) => a.ref).filter((r) => r && !files.includes(r)); }
+
+/**
+ * Where a file opened from elsewhere goes in the project (M4 W5 review). A new name is written; the same bytes under
+ * the same name are reused; different bytes under a name the project holds ask `onClash(ref)` → 'replace' (write over
+ * it), 'rename' (a free name beside it) or 'cancel' (→ null). Never a card read from one file and a render from another.
+ * @param {string} ref @param {Uint8Array} bytes
+ * @param {{ files: string[], read: (ref: string) => Promise<Uint8Array>, onClash?: (ref: string) => Promise<string> | string }} o
+ * @returns {Promise<{ ref: string, write: boolean, same?: boolean, replaced?: boolean, renamed?: boolean } | null>}
+ */
+export async function placeFile(ref, bytes, { files, read, onClash = null }) {
+  if (!files.includes(ref)) return { ref, write: true };
+  if (sameBytes(await read(ref), bytes)) return { ref, write: false, same: true };
+  const choice = (await onClash?.(ref)) ?? 'cancel';
+  if (choice === 'replace') return { ref, write: true, replaced: true };
+  if (choice === 'rename') return { ref: freeRef(ref, files), write: true, renamed: true };
+  return null;
 }
