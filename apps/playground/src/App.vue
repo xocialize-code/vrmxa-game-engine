@@ -91,6 +91,12 @@ onMounted(async () => {
     catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
     ui.loading = false; refresh(); window.READY = true; return;
   }
+  // M4 W8: ?mode=coverage&renderer=webgpu|webgl: the sample script's coverage and a thumbnail per shot (scripts/coverage-chromium.mjs)
+  if (mode === 'coverage') {
+    try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await pg.coverageCheck()) }; ui.notes = `coverage: ${window.__result.backend}, ${window.__result.shots} shots, thumbnails ${window.__result.sameFromSnapshots ? 'the same' : 'DIFFER'} from snapshots`; }
+    catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
+    ui.loading = false; refresh(); window.READY = true; return;
+  }
   // M4 W1: ?mode=post&renderer=webgpu|webgl draws every post look offline on that backend (scripts/post-chromium.mjs, WKWebView)
   if (mode === 'post') {
     try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await postCheck(pg)) }; ui.notes = `post: ${window.__result.stack}, exports ${window.__result.exports.identical ? 'identical' : 'DIFFER'}`; }

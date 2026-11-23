@@ -100,16 +100,19 @@ const round = (v) => Math.round(v * 1000) / 1000;
 /**
  * Generate from a layout.
  * @param {any} plan layout()'s result
- * @param {{ numbers: Map<string, string>, initial: Map<string, string>, titled: Set<string>, markTf: Map<string, any>, markNodes: any[], setCamera: string | null, coverage?: Function, behaviours?: boolean }} o
+ * @param {{ numbers: Map<string, string>, initial: Map<string, string>, titled: Set<string>, markTf: Map<string, any>, markNodes: any[], setCamera: string | null, coverage?: Function, behaviours?: boolean, parsed?: any }} o
  *   initial: character id → the mark she starts on (titled: placed by the title page, not by her first [[at]] tag);
- *   markTf: mark node id → its transform; markNodes: Marker nodes the build adds
+ *   markTf: mark node id → its transform; markNodes: Marker nodes the build adds; parsed: parseScript's result. The
+ *   coverage hook returns { nodes, cuts: Map<beat id, { camera, splits? }> }: splits ([{ frame, camera }], since M4 W8)
+ *   cut to another camera inside the shot. It gets { plan, shots, cast, marks } and, since M4 W8, markTf (for moves between marks), parsed (the
+ *   beats' parentheticals) and numbers (beat id → shot number)
  */
-export function generate(plan, { numbers, initial, titled, markTf, markNodes, setCamera, coverage = defaultCoverage, behaviours = false }) {
+export function generate(plan, { numbers, initial, titled, markTf, markNodes, setCamera, coverage = defaultCoverage, behaviours = false, parsed = null }) {
   const marks = new Map([...initial].map(([c, m]) => [c, markTf.get(m)]));
   const T = plan.timing, F = plan.F;
   const shotBeats = plan.beats.filter((b) => b.shot);
   const shots = shotBeats.map((b, i) => ({ beat: b.id, start: b.start, end: i + 1 < shotBeats.length ? shotBeats[i + 1].start : plan.duration }));
-  const cov = coverage({ plan, shots, cast: plan.characters, marks });
+  const cov = coverage({ plan, shots, cast: plan.characters, marks, markTf, parsed, numbers });
 
   const out = { shots: [], markers: [], cast: [], tracks: [], nodes: [] };
   for (const s of shots) {
@@ -131,7 +134,12 @@ export function generate(plan, { numbers, initial, titled, markTf, markNodes, se
   for (const s of shots) {
     const b = plan.beats.find((x) => x.id === s.beat), cut = cov.cuts.get(s.beat);
     if (!cut) continue;
-    cams.items.push({ role: `${s.beat}#cam`, item: { start: s.start, end: s.end, camera: cut.camera, ...(b.transition === 'dissolve' ? { blend: { frames: T.dissolve, style: 'easeInOut' } } : {}), src: `${s.beat}#cam` } });
+    // a cut inside the shot (since M4 W8: coverage cuts at a move, which is a step key) is a clip of its own, "#cam:2" …
+    const parts = [{ frame: s.start, camera: cut.camera }, ...(cut.splits ?? []).filter((x) => x.frame > s.start && x.frame < s.end).sort((x, y) => x.frame - y.frame)];
+    parts.forEach((x, i) => {
+      const role = i === 0 ? `${s.beat}#cam` : `${s.beat}#cam:${i + 1}`, end = parts[i + 1]?.frame ?? s.end;
+      cams.items.push({ role, item: { start: x.frame, end, camera: x.camera, ...(i === 0 && b.transition === 'dissolve' ? { blend: { frames: T.dissolve, style: 'easeInOut' } } : {}), src: role } });
+    });
   }
 
   const by = (char, type) => plan.events.filter((e) => e.char === char && e.type === type);

@@ -25,6 +25,7 @@ import { withCart } from './vehicle.js';
 import { withTwoPlayers, playerLayout } from './split.js';
 import { withCamera, shellCamera, recordedFrames, connectCamera } from '@vrmxg/sense';
 import { framesCheck } from './frames.js';
+import { coverageCheck } from './coverage-check.js';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
@@ -447,6 +448,17 @@ export class Playground {
     // export hosts get the view's post: each backend's own stack (pmndrs on WebGL, TSL on WebGPU since M4 W1)
     const post = { loadCube: async (file) => new TextDecoder().decode(await bytes(file)) };
     return framesCheck({ R, sample, opts: { vrmxaCore, closet, behaviours }, backend: this.host.backend, post, view: this.host, canvas: this.canvas, ...o });
+  }
+
+  /**
+   * M4 W8 (?mode=coverage&renderer=webgpu|webgl): the sample script's coverage by rule and a thumbnail per shot,
+   * rendered from snapshots on this page's backend (coverage-check.js).
+   */
+  async coverageCheck(o = {}) {
+    await this.ready;
+    const R = await loadRapier();
+    const post = { loadCube: async (file) => new TextDecoder().decode(await bytes(file)) };
+    return coverageCheck({ R, bytes, opts: { vrmxaCore, closet, behaviours }, backend: this.host.backend, post, ...o });
   }
 
   /**

@@ -5,7 +5,8 @@
   "description": "VRMXG cameras: the physical Camera node (focal length, sensor, focus, f-stop, thin-lens depth of field), rig presets stepped with the simulation (orbit, follow, over the shoulder, first person, fixed, free) with a spring arm, and picking (physics ray, three-mesh-bvh on skinned meshes).",
   "type": "module",
   "exports": {
-    ".": "./src/index.js"
+    ".": "./src/index.js",
+    "./rigs": "./src/rigs.js"
   },
   "files": ["src"],
   "sideEffects": false,

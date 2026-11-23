@@ -1,0 +1,959 @@
+{
+ "repeats": {
+  "webgpu": true,
+  "webgl": true
+ },
+ "chromium": {
+  "webgpu": {
+   "sequence": true,
+   "sameThumbnails": 0,
+   "of": 11
+  },
+  "webgl": {
+   "sequence": true,
+   "sameThumbnails": 0,
+   "of": 11
+  }
+ },
+ "sequenceHashes": [
+  "00aa93b391faab2e"
+ ],
+ "runs": [
+  {
+   "origin": "scheme",
+   "case": "mode=coverage&renderer=webgpu",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "sequenceHash": "00aa93b391faab2e",
+   "shots": 11,
+   "sameFromSnapshots": true,
+   "restoredInReverse": 10,
+   "lint": {
+    "issues": [],
+    "unchecked": []
+   },
+   "thumbs": [
+    {
+     "frame": 24,
+     "hash": "87a994c3a2a805a6",
+     "name": "010",
+     "restored": 0,
+     "reverseHash": "87a994c3a2a805a6",
+     "shot": "shot-sc-8296a3d8",
+     "step": 60
+    },
+    {
+     "frame": 102,
+     "hash": "523a2395c9260913",
+     "name": "020",
+     "restored": 240,
+     "reverseHash": "523a2395c9260913",
+     "shot": "shot-ac-f49f9062",
+     "step": 255
+    },
+    {
+     "frame": 190,
+     "hash": "ce3d56c6513b56bf",
+     "name": "030",
+     "restored": 360,
+     "reverseHash": "ce3d56c6513b56bf",
+     "shot": "shot-ln-cd2c6011",
+     "step": 475
+    },
+    {
+     "frame": 267,
+     "hash": "ea88ea3d4beaa6b4",
+     "name": "040",
+     "restored": 600,
+     "reverseHash": "ea88ea3d4beaa6b4",
+     "shot": "shot-ln-f31ec2ee",
+     "step": 667
+    },
+    {
+     "frame": 329,
+     "hash": "378d7a442719f666",
+     "name": "050",
+     "restored": 720,
+     "reverseHash": "378d7a442719f666",
+     "shot": "shot-ln-b97ebbcd",
+     "step": 822
+    },
+    {
+     "frame": 378,
+     "hash": "650b6c2e51fe852d",
+     "name": "060",
+     "restored": 840,
+     "reverseHash": "650b6c2e51fe852d",
+     "shot": "shot-ac-80efdce3",
+     "step": 945
+    },
+    {
+     "frame": 445,
+     "hash": "0a6989c33a35f1a9",
+     "name": "070",
+     "restored": 1080,
+     "reverseHash": "0a6989c33a35f1a9",
+     "shot": "shot-ln-740531c6",
+     "step": 1112
+    },
+    {
+     "frame": 521,
+     "hash": "bf32e373f288c58a",
+     "name": "080",
+     "restored": 1200,
+     "reverseHash": "bf32e373f288c58a",
+     "shot": "shot-ln-177853ab",
+     "step": 1302
+    },
+    {
+     "frame": 594,
+     "hash": "d7d616243229c930",
+     "name": "090",
+     "restored": 1440,
+     "reverseHash": "d7d616243229c930",
+     "shot": "shot-ac-f532a6d5",
+     "step": 1485
+    },
+    {
+     "frame": 653,
+     "hash": "70d86f4c176c825a",
+     "name": "100",
+     "restored": 1560,
+     "reverseHash": "70d86f4c176c825a",
+     "shot": "shot-ln-72861ffa",
+     "step": 1632
+    },
+    {
+     "frame": 718,
+     "hash": "7b35a48339d8edb8",
+     "name": "110",
+     "restored": null,
+     "reverseHash": "7b35a48339d8edb8",
+     "shot": "shot-ln-44615778",
+     "step": 1795
+    }
+   ],
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "scheme",
+   "case": "mode=coverage&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "sequenceHash": "00aa93b391faab2e",
+   "shots": 11,
+   "sameFromSnapshots": true,
+   "restoredInReverse": 10,
+   "lint": {
+    "issues": [],
+    "unchecked": []
+   },
+   "thumbs": [
+    {
+     "frame": 24,
+     "hash": "5dc56978003b94d0",
+     "name": "010",
+     "restored": 0,
+     "reverseHash": "5dc56978003b94d0",
+     "shot": "shot-sc-8296a3d8",
+     "step": 60
+    },
+    {
+     "frame": 102,
+     "hash": "90ef2b667f55462f",
+     "name": "020",
+     "restored": 240,
+     "reverseHash": "90ef2b667f55462f",
+     "shot": "shot-ac-f49f9062",
+     "step": 255
+    },
+    {
+     "frame": 190,
+     "hash": "f1e15b22221e04a9",
+     "name": "030",
+     "restored": 360,
+     "reverseHash": "f1e15b22221e04a9",
+     "shot": "shot-ln-cd2c6011",
+     "step": 475
+    },
+    {
+     "frame": 267,
+     "hash": "68c2ed7b1b3dd478",
+     "name": "040",
+     "restored": 600,
+     "reverseHash": "68c2ed7b1b3dd478",
+     "shot": "shot-ln-f31ec2ee",
+     "step": 667
+    },
+    {
+     "frame": 329,
+     "hash": "7098bbbec0cf3f00",
+     "name": "050",
+     "restored": 720,
+     "reverseHash": "7098bbbec0cf3f00",
+     "shot": "shot-ln-b97ebbcd",
+     "step": 822
+    },
+    {
+     "frame": 378,
+     "hash": "3d48fd15e294d3db",
+     "name": "060",
+     "restored": 840,
+     "reverseHash": "3d48fd15e294d3db",
+     "shot": "shot-ac-80efdce3",
+     "step": 945
+    },
+    {
+     "frame": 445,
+     "hash": "dd02ba74e3ed212e",
+     "name": "070",
+     "restored": 1080,
+     "reverseHash": "dd02ba74e3ed212e",
+     "shot": "shot-ln-740531c6",
+     "step": 1112
+    },
+    {
+     "frame": 521,
+     "hash": "aeb1274574a7bff1",
+     "name": "080",
+     "restored": 1200,
+     "reverseHash": "aeb1274574a7bff1",
+     "shot": "shot-ln-177853ab",
+     "step": 1302
+    },
+    {
+     "frame": 594,
+     "hash": "0c0f2edc6f1dc0e4",
+     "name": "090",
+     "restored": 1440,
+     "reverseHash": "0c0f2edc6f1dc0e4",
+     "shot": "shot-ac-f532a6d5",
+     "step": 1485
+    },
+    {
+     "frame": 653,
+     "hash": "17106aa2f34427ea",
+     "name": "100",
+     "restored": 1560,
+     "reverseHash": "17106aa2f34427ea",
+     "shot": "shot-ln-72861ffa",
+     "step": 1632
+    },
+    {
+     "frame": 718,
+     "hash": "4543e3102547dcc4",
+     "name": "110",
+     "restored": null,
+     "reverseHash": "4543e3102547dcc4",
+     "shot": "shot-ln-44615778",
+     "step": 1795
+    }
+   ],
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "scheme",
+   "case": "mode=coverage&renderer=webgpu&again=1",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "sequenceHash": "00aa93b391faab2e",
+   "shots": 11,
+   "sameFromSnapshots": true,
+   "restoredInReverse": 10,
+   "lint": {
+    "issues": [],
+    "unchecked": []
+   },
+   "thumbs": [
+    {
+     "frame": 24,
+     "hash": "87a994c3a2a805a6",
+     "name": "010",
+     "restored": 0,
+     "reverseHash": "87a994c3a2a805a6",
+     "shot": "shot-sc-8296a3d8",
+     "step": 60
+    },
+    {
+     "frame": 102,
+     "hash": "523a2395c9260913",
+     "name": "020",
+     "restored": 240,
+     "reverseHash": "523a2395c9260913",
+     "shot": "shot-ac-f49f9062",
+     "step": 255
+    },
+    {
+     "frame": 190,
+     "hash": "ce3d56c6513b56bf",
+     "name": "030",
+     "restored": 360,
+     "reverseHash": "ce3d56c6513b56bf",
+     "shot": "shot-ln-cd2c6011",
+     "step": 475
+    },
+    {
+     "frame": 267,
+     "hash": "ea88ea3d4beaa6b4",
+     "name": "040",
+     "restored": 600,
+     "reverseHash": "ea88ea3d4beaa6b4",
+     "shot": "shot-ln-f31ec2ee",
+     "step": 667
+    },
+    {
+     "frame": 329,
+     "hash": "378d7a442719f666",
+     "name": "050",
+     "restored": 720,
+     "reverseHash": "378d7a442719f666",
+     "shot": "shot-ln-b97ebbcd",
+     "step": 822
+    },
+    {
+     "frame": 378,
+     "hash": "650b6c2e51fe852d",
+     "name": "060",
+     "restored": 840,
+     "reverseHash": "650b6c2e51fe852d",
+     "shot": "shot-ac-80efdce3",
+     "step": 945
+    },
+    {
+     "frame": 445,
+     "hash": "0a6989c33a35f1a9",
+     "name": "070",
+     "restored": 1080,
+     "reverseHash": "0a6989c33a35f1a9",
+     "shot": "shot-ln-740531c6",
+     "step": 1112
+    },
+    {
+     "frame": 521,
+     "hash": "bf32e373f288c58a",
+     "name": "080",
+     "restored": 1200,
+     "reverseHash": "bf32e373f288c58a",
+     "shot": "shot-ln-177853ab",
+     "step": 1302
+    },
+    {
+     "frame": 594,
+     "hash": "d7d616243229c930",
+     "name": "090",
+     "restored": 1440,
+     "reverseHash": "d7d616243229c930",
+     "shot": "shot-ac-f532a6d5",
+     "step": 1485
+    },
+    {
+     "frame": 653,
+     "hash": "70d86f4c176c825a",
+     "name": "100",
+     "restored": 1560,
+     "reverseHash": "70d86f4c176c825a",
+     "shot": "shot-ln-72861ffa",
+     "step": 1632
+    },
+    {
+     "frame": 718,
+     "hash": "7b35a48339d8edb8",
+     "name": "110",
+     "restored": null,
+     "reverseHash": "7b35a48339d8edb8",
+     "shot": "shot-ln-44615778",
+     "step": 1795
+    }
+   ],
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "scheme",
+   "case": "mode=coverage&renderer=webgl&again=1",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "sequenceHash": "00aa93b391faab2e",
+   "shots": 11,
+   "sameFromSnapshots": true,
+   "restoredInReverse": 10,
+   "lint": {
+    "issues": [],
+    "unchecked": []
+   },
+   "thumbs": [
+    {
+     "frame": 24,
+     "hash": "5dc56978003b94d0",
+     "name": "010",
+     "restored": 0,
+     "reverseHash": "5dc56978003b94d0",
+     "shot": "shot-sc-8296a3d8",
+     "step": 60
+    },
+    {
+     "frame": 102,
+     "hash": "90ef2b667f55462f",
+     "name": "020",
+     "restored": 240,
+     "reverseHash": "90ef2b667f55462f",
+     "shot": "shot-ac-f49f9062",
+     "step": 255
+    },
+    {
+     "frame": 190,
+     "hash": "f1e15b22221e04a9",
+     "name": "030",
+     "restored": 360,
+     "reverseHash": "f1e15b22221e04a9",
+     "shot": "shot-ln-cd2c6011",
+     "step": 475
+    },
+    {
+     "frame": 267,
+     "hash": "68c2ed7b1b3dd478",
+     "name": "040",
+     "restored": 600,
+     "reverseHash": "68c2ed7b1b3dd478",
+     "shot": "shot-ln-f31ec2ee",
+     "step": 667
+    },
+    {
+     "frame": 329,
+     "hash": "7098bbbec0cf3f00",
+     "name": "050",
+     "restored": 720,
+     "reverseHash": "7098bbbec0cf3f00",
+     "shot": "shot-ln-b97ebbcd",
+     "step": 822
+    },
+    {
+     "frame": 378,
+     "hash": "3d48fd15e294d3db",
+     "name": "060",
+     "restored": 840,
+     "reverseHash": "3d48fd15e294d3db",
+     "shot": "shot-ac-80efdce3",
+     "step": 945
+    },
+    {
+     "frame": 445,
+     "hash": "dd02ba74e3ed212e",
+     "name": "070",
+     "restored": 1080,
+     "reverseHash": "dd02ba74e3ed212e",
+     "shot": "shot-ln-740531c6",
+     "step": 1112
+    },
+    {
+     "frame": 521,
+     "hash": "aeb1274574a7bff1",
+     "name": "080",
+     "restored": 1200,
+     "reverseHash": "aeb1274574a7bff1",
+     "shot": "shot-ln-177853ab",
+     "step": 1302
+    },
+    {
+     "frame": 594,
+     "hash": "0c0f2edc6f1dc0e4",
+     "name": "090",
+     "restored": 1440,
+     "reverseHash": "0c0f2edc6f1dc0e4",
+     "shot": "shot-ac-f532a6d5",
+     "step": 1485
+    },
+    {
+     "frame": 653,
+     "hash": "17106aa2f34427ea",
+     "name": "100",
+     "restored": 1560,
+     "reverseHash": "17106aa2f34427ea",
+     "shot": "shot-ln-72861ffa",
+     "step": 1632
+    },
+    {
+     "frame": 718,
+     "hash": "4543e3102547dcc4",
+     "name": "110",
+     "restored": null,
+     "reverseHash": "4543e3102547dcc4",
+     "shot": "shot-ln-44615778",
+     "step": 1795
+    }
+   ],
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "loopback",
+   "case": "mode=coverage&renderer=webgpu",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "sequenceHash": "00aa93b391faab2e",
+   "shots": 11,
+   "sameFromSnapshots": true,
+   "restoredInReverse": 10,
+   "lint": {
+    "issues": [],
+    "unchecked": []
+   },
+   "thumbs": [
+    {
+     "frame": 24,
+     "hash": "87a994c3a2a805a6",
+     "name": "010",
+     "restored": 0,
+     "reverseHash": "87a994c3a2a805a6",
+     "shot": "shot-sc-8296a3d8",
+     "step": 60
+    },
+    {
+     "frame": 102,
+     "hash": "523a2395c9260913",
+     "name": "020",
+     "restored": 240,
+     "reverseHash": "523a2395c9260913",
+     "shot": "shot-ac-f49f9062",
+     "step": 255
+    },
+    {
+     "frame": 190,
+     "hash": "ce3d56c6513b56bf",
+     "name": "030",
+     "restored": 360,
+     "reverseHash": "ce3d56c6513b56bf",
+     "shot": "shot-ln-cd2c6011",
+     "step": 475
+    },
+    {
+     "frame": 267,
+     "hash": "ea88ea3d4beaa6b4",
+     "name": "040",
+     "restored": 600,
+     "reverseHash": "ea88ea3d4beaa6b4",
+     "shot": "shot-ln-f31ec2ee",
+     "step": 667
+    },
+    {
+     "frame": 329,
+     "hash": "378d7a442719f666",
+     "name": "050",
+     "restored": 720,
+     "reverseHash": "378d7a442719f666",
+     "shot": "shot-ln-b97ebbcd",
+     "step": 822
+    },
+    {
+     "frame": 378,
+     "hash": "650b6c2e51fe852d",
+     "name": "060",
+     "restored": 840,
+     "reverseHash": "650b6c2e51fe852d",
+     "shot": "shot-ac-80efdce3",
+     "step": 945
+    },
+    {
+     "frame": 445,
+     "hash": "0a6989c33a35f1a9",
+     "name": "070",
+     "restored": 1080,
+     "reverseHash": "0a6989c33a35f1a9",
+     "shot": "shot-ln-740531c6",
+     "step": 1112
+    },
+    {
+     "frame": 521,
+     "hash": "bf32e373f288c58a",
+     "name": "080",
+     "restored": 1200,
+     "reverseHash": "bf32e373f288c58a",
+     "shot": "shot-ln-177853ab",
+     "step": 1302
+    },
+    {
+     "frame": 594,
+     "hash": "d7d616243229c930",
+     "name": "090",
+     "restored": 1440,
+     "reverseHash": "d7d616243229c930",
+     "shot": "shot-ac-f532a6d5",
+     "step": 1485
+    },
+    {
+     "frame": 653,
+     "hash": "70d86f4c176c825a",
+     "name": "100",
+     "restored": 1560,
+     "reverseHash": "70d86f4c176c825a",
+     "shot": "shot-ln-72861ffa",
+     "step": 1632
+    },
+    {
+     "frame": 718,
+     "hash": "7b35a48339d8edb8",
+     "name": "110",
+     "restored": null,
+     "reverseHash": "7b35a48339d8edb8",
+     "shot": "shot-ln-44615778",
+     "step": 1795
+    }
+   ],
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "loopback",
+   "case": "mode=coverage&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "sequenceHash": "00aa93b391faab2e",
+   "shots": 11,
+   "sameFromSnapshots": true,
+   "restoredInReverse": 10,
+   "lint": {
+    "issues": [],
+    "unchecked": []
+   },
+   "thumbs": [
+    {
+     "frame": 24,
+     "hash": "5dc56978003b94d0",
+     "name": "010",
+     "restored": 0,
+     "reverseHash": "5dc56978003b94d0",
+     "shot": "shot-sc-8296a3d8",
+     "step": 60
+    },
+    {
+     "frame": 102,
+     "hash": "90ef2b667f55462f",
+     "name": "020",
+     "restored": 240,
+     "reverseHash": "90ef2b667f55462f",
+     "shot": "shot-ac-f49f9062",
+     "step": 255
+    },
+    {
+     "frame": 190,
+     "hash": "f1e15b22221e04a9",
+     "name": "030",
+     "restored": 360,
+     "reverseHash": "f1e15b22221e04a9",
+     "shot": "shot-ln-cd2c6011",
+     "step": 475
+    },
+    {
+     "frame": 267,
+     "hash": "68c2ed7b1b3dd478",
+     "name": "040",
+     "restored": 600,
+     "reverseHash": "68c2ed7b1b3dd478",
+     "shot": "shot-ln-f31ec2ee",
+     "step": 667
+    },
+    {
+     "frame": 329,
+     "hash": "7098bbbec0cf3f00",
+     "name": "050",
+     "restored": 720,
+     "reverseHash": "7098bbbec0cf3f00",
+     "shot": "shot-ln-b97ebbcd",
+     "step": 822
+    },
+    {
+     "frame": 378,
+     "hash": "3d48fd15e294d3db",
+     "name": "060",
+     "restored": 840,
+     "reverseHash": "3d48fd15e294d3db",
+     "shot": "shot-ac-80efdce3",
+     "step": 945
+    },
+    {
+     "frame": 445,
+     "hash": "dd02ba74e3ed212e",
+     "name": "070",
+     "restored": 1080,
+     "reverseHash": "dd02ba74e3ed212e",
+     "shot": "shot-ln-740531c6",
+     "step": 1112
+    },
+    {
+     "frame": 521,
+     "hash": "aeb1274574a7bff1",
+     "name": "080",
+     "restored": 1200,
+     "reverseHash": "aeb1274574a7bff1",
+     "shot": "shot-ln-177853ab",
+     "step": 1302
+    },
+    {
+     "frame": 594,
+     "hash": "0c0f2edc6f1dc0e4",
+     "name": "090",
+     "restored": 1440,
+     "reverseHash": "0c0f2edc6f1dc0e4",
+     "shot": "shot-ac-f532a6d5",
+     "step": 1485
+    },
+    {
+     "frame": 653,
+     "hash": "17106aa2f34427ea",
+     "name": "100",
+     "restored": 1560,
+     "reverseHash": "17106aa2f34427ea",
+     "shot": "shot-ln-72861ffa",
+     "step": 1632
+    },
+    {
+     "frame": 718,
+     "hash": "4543e3102547dcc4",
+     "name": "110",
+     "restored": null,
+     "reverseHash": "4543e3102547dcc4",
+     "shot": "shot-ln-44615778",
+     "step": 1795
+    }
+   ],
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "loopback",
+   "case": "mode=coverage&renderer=webgpu&again=1",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "sequenceHash": "00aa93b391faab2e",
+   "shots": 11,
+   "sameFromSnapshots": true,
+   "restoredInReverse": 10,
+   "lint": {
+    "issues": [],
+    "unchecked": []
+   },
+   "thumbs": [
+    {
+     "frame": 24,
+     "hash": "87a994c3a2a805a6",
+     "name": "010",
+     "restored": 0,
+     "reverseHash": "87a994c3a2a805a6",
+     "shot": "shot-sc-8296a3d8",
+     "step": 60
+    },
+    {
+     "frame": 102,
+     "hash": "523a2395c9260913",
+     "name": "020",
+     "restored": 240,
+     "reverseHash": "523a2395c9260913",
+     "shot": "shot-ac-f49f9062",
+     "step": 255
+    },
+    {
+     "frame": 190,
+     "hash": "ce3d56c6513b56bf",
+     "name": "030",
+     "restored": 360,
+     "reverseHash": "ce3d56c6513b56bf",
+     "shot": "shot-ln-cd2c6011",
+     "step": 475
+    },
+    {
+     "frame": 267,
+     "hash": "ea88ea3d4beaa6b4",
+     "name": "040",
+     "restored": 600,
+     "reverseHash": "ea88ea3d4beaa6b4",
+     "shot": "shot-ln-f31ec2ee",
+     "step": 667
+    },
+    {
+     "frame": 329,
+     "hash": "378d7a442719f666",
+     "name": "050",
+     "restored": 720,
+     "reverseHash": "378d7a442719f666",
+     "shot": "shot-ln-b97ebbcd",
+     "step": 822
+    },
+    {
+     "frame": 378,
+     "hash": "650b6c2e51fe852d",
+     "name": "060",
+     "restored": 840,
+     "reverseHash": "650b6c2e51fe852d",
+     "shot": "shot-ac-80efdce3",
+     "step": 945
+    },
+    {
+     "frame": 445,
+     "hash": "0a6989c33a35f1a9",
+     "name": "070",
+     "restored": 1080,
+     "reverseHash": "0a6989c33a35f1a9",
+     "shot": "shot-ln-740531c6",
+     "step": 1112
+    },
+    {
+     "frame": 521,
+     "hash": "bf32e373f288c58a",
+     "name": "080",
+     "restored": 1200,
+     "reverseHash": "bf32e373f288c58a",
+     "shot": "shot-ln-177853ab",
+     "step": 1302
+    },
+    {
+     "frame": 594,
+     "hash": "d7d616243229c930",
+     "name": "090",
+     "restored": 1440,
+     "reverseHash": "d7d616243229c930",
+     "shot": "shot-ac-f532a6d5",
+     "step": 1485
+    },
+    {
+     "frame": 653,
+     "hash": "70d86f4c176c825a",
+     "name": "100",
+     "restored": 1560,
+     "reverseHash": "70d86f4c176c825a",
+     "shot": "shot-ln-72861ffa",
+     "step": 1632
+    },
+    {
+     "frame": 718,
+     "hash": "7b35a48339d8edb8",
+     "name": "110",
+     "restored": null,
+     "reverseHash": "7b35a48339d8edb8",
+     "shot": "shot-ln-44615778",
+     "step": 1795
+    }
+   ],
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "loopback",
+   "case": "mode=coverage&renderer=webgl&again=1",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "sequenceHash": "00aa93b391faab2e",
+   "shots": 11,
+   "sameFromSnapshots": true,
+   "restoredInReverse": 10,
+   "lint": {
+    "issues": [],
+    "unchecked": []
+   },
+   "thumbs": [
+    {
+     "frame": 24,
+     "hash": "5dc56978003b94d0",
+     "name": "010",
+     "restored": 0,
+     "reverseHash": "5dc56978003b94d0",
+     "shot": "shot-sc-8296a3d8",
+     "step": 60
+    },
+    {
+     "frame": 102,
+     "hash": "90ef2b667f55462f",
+     "name": "020",
+     "restored": 240,
+     "reverseHash": "90ef2b667f55462f",
+     "shot": "shot-ac-f49f9062",
+     "step": 255
+    },
+    {
+     "frame": 190,
+     "hash": "f1e15b22221e04a9",
+     "name": "030",
+     "restored": 360,
+     "reverseHash": "f1e15b22221e04a9",
+     "shot": "shot-ln-cd2c6011",
+     "step": 475
+    },
+    {
+     "frame": 267,
+     "hash": "68c2ed7b1b3dd478",
+     "name": "040",
+     "restored": 600,
+     "reverseHash": "68c2ed7b1b3dd478",
+     "shot": "shot-ln-f31ec2ee",
+     "step": 667
+    },
+    {
+     "frame": 329,
+     "hash": "7098bbbec0cf3f00",
+     "name": "050",
+     "restored": 720,
+     "reverseHash": "7098bbbec0cf3f00",
+     "shot": "shot-ln-b97ebbcd",
+     "step": 822
+    },
+    {
+     "frame": 378,
+     "hash": "3d48fd15e294d3db",
+     "name": "060",
+     "restored": 840,
+     "reverseHash": "3d48fd15e294d3db",
+     "shot": "shot-ac-80efdce3",
+     "step": 945
+    },
+    {
+     "frame": 445,
+     "hash": "dd02ba74e3ed212e",
+     "name": "070",
+     "restored": 1080,
+     "reverseHash": "dd02ba74e3ed212e",
+     "shot": "shot-ln-740531c6",
+     "step": 1112
+    },
+    {
+     "frame": 521,
+     "hash": "aeb1274574a7bff1",
+     "name": "080",
+     "restored": 1200,
+     "reverseHash": "aeb1274574a7bff1",
+     "shot": "shot-ln-177853ab",
+     "step": 1302
+    },
+    {
+     "frame": 594,
+     "hash": "0c0f2edc6f1dc0e4",
+     "name": "090",
+     "restored": 1440,
+     "reverseHash": "0c0f2edc6f1dc0e4",
+     "shot": "shot-ac-f532a6d5",
+     "step": 1485
+    },
+    {
+     "frame": 653,
+     "hash": "17106aa2f34427ea",
+     "name": "100",
+     "restored": 1560,
+     "reverseHash": "17106aa2f34427ea",
+     "shot": "shot-ln-72861ffa",
+     "step": 1632
+    },
+    {
+     "frame": 718,
+     "hash": "4543e3102547dcc4",
+     "name": "110",
+     "restored": null,
+     "reverseHash": "4543e3102547dcc4",
+     "shot": "shot-ln-44615778",
+     "step": 1795
+    }
+   ],
+   "errors": [],
+   "timedOut": false
+  }
+ ]
+}

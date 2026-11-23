@@ -7,23 +7,29 @@ export const EXPRESSIONS = ['happy', 'angry', 'sad', 'relaxed', 'surprised', 'ne
 /** Tags with an argument: look (a character, a mark or "camera"), at (a mark), hold (seconds). */
 export const KEYED_TAGS = ['look', 'at', 'hold'];
 
-/** Words in a parenthetical → what they do. Matched as whole words, lower case. */
+/** A table with no prototype: a word such as "constructor" or "valueOf" looks up nothing. */
+const words = (o) => Object.assign(Object.create(null), o);
+
+/**
+ * Words in a parenthetical → what they do. Matched as whole words, lower case. The tables have no prototype, so any
+ * word can be looked up safely.
+ */
 export const PAREN_WORDS = {
-  expression: {
+  expression: words({
     smiling: 'happy', smiles: 'happy', smile: 'happy', grinning: 'happy', grins: 'happy', happily: 'happy', cheerful: 'happy',
     cheerfully: 'happy', brightly: 'happy', beaming: 'happy', laughs: 'happy', laughing: 'happy',
     sad: 'sad', sadly: 'sad', sighs: 'sad', sighing: 'sad', tearful: 'sad',
     angry: 'angry', angrily: 'angry', annoyed: 'angry', frowning: 'angry', frowns: 'angry',
     surprised: 'surprised', startled: 'surprised', gasps: 'surprised', shocked: 'surprised',
     relaxed: 'relaxed', calm: 'relaxed', calmly: 'relaxed', warmly: 'relaxed', softly: 'relaxed', gently: 'relaxed',
-  },
-  gesture: {
+  }),
+  gesture: words({
     nods: 'nod', nodding: 'nod', nod: 'nod', shrugs: 'shrug', shrugging: 'shrug', shrug: 'shrug', waves: 'greet',
     waving: 'greet', wave: 'greet', points: 'point', pointing: 'point', laughs: 'laugh', laughing: 'laugh', laugh: 'laugh',
     cheers: 'cheer', sips: 'sip', sipping: 'sip',
-  },
+  }),
   /** Seconds of silence. */
-  pause: { beat: 0.5, pause: 1 },
+  pause: words({ beat: 0.5, pause: 1 }),
 };
 
 /** Timing defaults, in seconds unless named frames. */

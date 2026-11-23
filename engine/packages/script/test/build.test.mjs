@@ -94,6 +94,31 @@ test('the coverage hook replaces the default cameras; vocabularies narrow the ta
   assert.deepEqual(narrow.errors.map((e) => e.line), [17, 20, 34, 45]);
 });
 
+test('a coverage hook may cut inside a shot (splits, M4 W8): a clip of its own per piece, kept through a re-script', () => {
+  const coverage = (ctx) => {
+    const d = defaultCoverage(ctx);
+    const s = ctx.shots[3], mid = s.start + 20;
+    d.cuts.set(s.beat, { ...d.cuts.get(s.beat), splits: [{ frame: mid, camera: 'vc-wide' }, { frame: s.end + 5, camera: 'vc-wide' }] });
+    return d;
+  };
+  const r = build(sample, { coverage });
+  const shot = r.doc.sequence.shots[3], beat = shot.src.split('#')[0];
+  const clips = track(r.doc, 'cameras').clips.filter((c) => c.start >= shot.start && c.start < shot.end);
+  assert.deepEqual(clips.map((c) => [c.start, c.end, c.camera, c.src]), [[shot.start, shot.start + 20, 'vc-mira', `${beat}#cam`], [shot.start + 20, shot.end, 'vc-wide', `${beat}#cam:2`]], 'a split outside the shot is ignored');
+  assert.deepEqual(checkSequence(r.doc.sequence, { nodeIds: new Set([...set.nodes, ...r.doc.nodes].map((n) => n.id)) }), []);
+  assert.equal(text(build(sample, { coverage, previous: JSON.parse(text(r.doc)) }).doc), text(r.doc));
+  // without splits the build is as before
+  assert.equal(text(build(sample, { coverage: defaultCoverage }).doc), text(build().doc));
+});
+
+test('a parenthetical may hold any word: "constructor" or "valueOf" looks up nothing in the vocabularies', () => {
+  for (const p of ['(constructor)', '(valueOf, toString)', '(__proto__ hasOwnProperty)']) {
+    const r = build(`Title: T\nSet: cafe.vrmxs\nMarks:\n    HANA = behind-counter\n    MIRA = counter-front\n\nINT. CAFE - MORNING\n\nHANA\n${p}\nHello there.\n\nMIRA\nHi.\n`);
+    assert.ok(r.ok, JSON.stringify(r.errors));
+    assert.ok(!r.plan.events.some((e) => e.type === 'expression' || e.type === 'gesture'), p);
+  }
+});
+
 test('voice-over, off-screen and dual dialogue; marks moved by [[at]]; behaviours kept on request', () => {
   const src = `Title: Kinds
 Set: cafe.vrmxs
