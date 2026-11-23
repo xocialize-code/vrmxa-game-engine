@@ -115,8 +115,8 @@ export class EditorHost {
   /** The post stack's options (M2 W3, M4 W1): the backend's own stack, LUTs read from the open project. */
   postOptions() { return { loadCube: (file) => this.project.text(file) }; }
 
-  /** An offline host on the view's backend (exports, checks): its own canvas, pixel ratio 1. */
-  offlineHost() { return RenderHost.create({ canvas: document.createElement('canvas'), backend: this.host.backend, dprCap: 1, post: this.postOptions() }); }
+  /** An offline host on the view's backend, or the one named (exports, checks): its own canvas, pixel ratio 1. */
+  offlineHost(backend = null) { return RenderHost.create({ canvas: document.createElement('canvas'), backend: backend ?? this.host.backend, dprCap: 1, post: this.postOptions() }); }
 
   /** Tell the UI: 'stats' for the readouts only (every few frames), anything else for the panels. */
   changed(kind = 'all') { this.onChange?.(kind); }
@@ -629,9 +629,13 @@ export class EditorHost {
    * doc: for the sequence take, a snapshot of the sequence document to render instead of the open one (M4 W5);
    * subtitles: false leaves the .srt out; signal: an AbortSignal that stops the export between frames (the shell's writer
    * removes the partial file).
-   * @param {{ take: string, seconds?: number, size: string, fps: string, codec: string, audio: boolean, name?: string, hash?: boolean, hashOnly?: boolean, sink?: any, doc?: any, subtitles?: boolean, signal?: AbortSignal }} o
+   * M4 W10 (delivery): backend draws on that backend instead of the view's (WebGL export from a WebGPU view); check:
+   * 'redraw' draws each frame twice and compares; onBytes sees each frame's read-back bytes (stills); projectPath writes
+   * the movie into the open project (a delivery's folder) instead of asking where.
+   * @param {{ take: string, seconds?: number, size: string, fps: string, codec: string, audio: boolean, name?: string, hash?: boolean, hashOnly?: boolean, sink?: any, doc?: any, subtitles?: boolean, signal?: AbortSignal,
+   *   backend?: string | null, check?: 'redraw' | null, onBytes?: (n: number, bytes: Uint8Array, topDown: boolean) => void, projectPath?: string | null }} o
    */
-  async exportVideo({ take, seconds, size, fps, codec, audio, name, hash = true, hashOnly = !inShell, sink: sinkIn = null, doc = null, subtitles: withSubs = true, signal = undefined }) {
+  async exportVideo({ take, seconds, size, fps, codec, audio, name, hash = true, hashOnly = !inShell, sink: sinkIn = null, doc = null, subtitles: withSubs = true, signal = undefined, backend = null, check = null, onBytes = undefined, projectPath = null }) {
     if (this.exporting) throw new Error('an export is already running');
     if (this.session?.mode !== 'editing') throw new Error('stop playing before exporting');
     const [width, height] = SIZES[size], rate = RATES[fps];
@@ -643,8 +647,9 @@ export class EditorHost {
       world = built.world;
       const frames = framesFor(seconds ?? built.seconds, rate);
       this.exporting.frames = frames;
-      this.exportHost ??= await this.offlineHost();
+      this.exportHost ??= await this.offlineHost(backend);
       const ext = CODECS[codec].ext;
+      const topDown = !!this.exportHost.renderer.isWebGPURenderer;
       const base = (name || `${(this.sceneRef ?? 'scene').replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-')}-${size}${fps.replace('.', '')}`).replace(/\.(mp4|mov)$/, '');
       const sink = sinkIn ?? (hashOnly ? hashSink() : shellSink({ call })); // a sink passed in: checks, other transports
       // a sequence's dialogue goes beside the movie as <name>.srt (the shell writes it; hash-only keeps the text)
@@ -654,8 +659,9 @@ export class EditorHost {
       const r = await exportTake({
         tree: world.tree, host: this.exportHost, fps: rate, frames, width, height, sink, audio,
         onFrame: worldAt ? (n) => { worldAt[n] = hashValue(worldHashes(world.tree, { physicsBytes: true })); } : undefined,
-        job: { codec, suggestedName: `${base}.${ext}`, hash, title: 'Export Video', ...(srt ? { subtitles: srt } : {}) },
+        job: { codec, suggestedName: `${base}.${ext}`, hash, title: 'Export Video', ...(srt ? { subtitles: srt } : {}), ...(projectPath ? { projectPath } : {}) },
         onProgress: (p) => { this.exporting = { ...p }; this.changed('export'); }, now: () => performance.now(), signal,
+        check, onBytes: onBytes ? (n, bytes) => onBytes(n, bytes, topDown) : undefined,
       });
       const { frameHashes, ...rest } = r;
       const subs = srt ? { lines: srt ? srt.split('\n\n').filter(Boolean).length : 0, bytes: srt.length, path: rest.subtitles ?? null, error: rest.subtitlesError ?? null, text: hashOnly ? srt : undefined } : null;

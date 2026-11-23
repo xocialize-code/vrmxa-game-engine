@@ -1,6 +1,6 @@
 // What the storyboard strip and the render queue panel show (M4 W5), as plain functions over plain data: the strip's
 // cards from @vrmxg/coverage's storyboard() and the thumbnails rendered for it, and a job's one-line status.
-import { timecode } from '@vrmxg/editor-core';
+import { timecode, PRESETS } from '@vrmxg/editor-core';
 
 /**
  * The strip's cards, one per shot in film order.
@@ -37,11 +37,27 @@ export function jobStatus(job) {
     case 'running': return job.progress.total ? `rendering ${job.progress.n} of ${job.progress.total}${job.progress.phase ? ` (${job.progress.phase})` : ''}` : 'starting';
     case 'done': {
       const r = job.result ?? {};
-      const what = r.stub ? `${r.frames} frames counted, nothing rendered (stub)` : `${r.frames ?? '?'} frames${r.name ? ` · ${r.name}` : ''}${r.hashesDigest ? ` · frames ${r.hashesDigest}` : ''}`;
+      const d = r.delivery, odd = r.check?.odd?.length;
+      const extras = d ? ` · ${d.stills} stills · ${d.thumbnails} thumbnails · ${d.turntables} turntable${d.turntables === 1 ? '' : 's'}` : '';
+      const checked = r.check ? ` · redraw check: ${odd ? `${odd} odd draw${odd === 1 ? '' : 's'} outvoted` : 'every frame twice the same'}` : '';
+      const what = r.stub ? `${r.frames} frames counted, nothing rendered (stub)` : `${r.frames ?? '?'} frames${r.name ? ` · ${r.name}` : ''}${r.hashesDigest ? ` · frames ${r.hashesDigest}` : ''}${extras}${checked}`;
       return `done: ${what}${job.lateCancel ? ' (Cancel came after the file was finished)' : ''}`;
     }
     case 'failed': return `failed: ${job.error ?? 'unknown error'}`;
     case 'cancelled': return 'cancelled';
     default: return job.state;
   }
+}
+
+/**
+ * What the queue panel's form asks the app to queue (M4 W10): the preset and name, the backend (null: the view's), the
+ * redraw check, and for a delivery preset the extras as ticked. Plain, so it is tested in Node.
+ * @param {{ preset: string, name: string, backend: string, check: boolean, stills: boolean, thumbnails: boolean, turntable: boolean }} form
+ */
+export function queueSpec(form) {
+  const delivery = !!PRESETS[form.preset]?.delivery;
+  return {
+    preset: form.preset, name: form.name.trim() || null, backend: form.backend || null, check: form.check ? 'redraw' : null,
+    ...(delivery ? { extras: { stills: !!form.stills, thumbnails: !!form.thumbnails, turntable: !!form.turntable } } : {}),
+  };
 }

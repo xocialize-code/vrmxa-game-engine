@@ -365,12 +365,14 @@ func writeSidecar(_ data: Data, to url: URL, beside primary: URL) throws {
 }
 
 /// The export bridge methods and POST routes:
-///   export.begin { width, height, fps: [num, den], frames, codec, bitrate?, audio?, hash?, subtitles?, topDown?, suggestedName, path? } → { id, path, … }
+///   export.begin { width, height, fps: [num, den], frames, codec, bitrate?, audio?, hash?, subtitles?, topDown?, suggestedName, path?, projectPath? } → { id, path, … }
 ///   POST __export/frame?id=&n=   raw RGBA, row 0 at the bottom (WebGL's readPixels) or, with topDown, at the top (WebGPU), answered once encoded
 ///   POST __export/audio?id=      the mixed WAV
 ///   export.end { id } → the file and timings;  export.cancel { id }
-/// The destination comes from a save panel, a `path` the person already granted, or `VRMXG_SHELL_EXPORT` (a file, or a
-/// folder ending in "/" that takes `suggestedName`; relative paths are under the sandbox's temporary folder).
+/// The destination comes from a save panel, a `path` the person already granted, `projectPath` (M4 W10: a path inside
+/// the mounted project, such as a delivery's `deliveries/<name>/<name>.mov`, folders made as needed; the project folder
+/// was granted when it was opened, so a delivery's many files need no panel each), or `VRMXG_SHELL_EXPORT` (a file, or
+/// a folder ending in "/" that takes `suggestedName`; relative paths are under the sandbox's temporary folder).
 @MainActor
 public final class ExportMethods {
     let files: FileMethods
@@ -429,6 +431,13 @@ public final class ExportMethods {
         if (name as NSString).pathExtension.lowercased() != ext { name = (name as NSString).deletingPathExtension + ".\(ext)" }
         var url: URL?, automated = false
         if let path = p.string("path"), files.granted.contains(URL(fileURLWithPath: path)) { url = URL(fileURLWithPath: path) }
+        if url == nil, let rel = p.string("projectPath") {
+            var file = try files.projectFile(rel)
+            if file.pathExtension.lowercased() != ext { file = file.deletingPathExtension().appendingPathExtension(ext) }
+            try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+            url = file
+            automated = files.hook("VRMXG_SHELL_EXPORT") != nil // automation keeps its evidence beside the file
+        }
         if url == nil, let hook = files.hook("VRMXG_SHELL_EXPORT") {
             automated = true
             url = files.env["VRMXG_SHELL_EXPORT"]!.hasSuffix("/") ? hook.appendingPathComponent(name) : hook

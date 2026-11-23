@@ -7,6 +7,7 @@ import { parse, serialize } from '@vrmxg/scene';
 import { loadRapier } from '@vrmxg/physics';
 import { composeSequence } from '@vrmxg/sequence';
 import { EditorSession, RenderQueue, stubRunner } from '@vrmxg/editor-core';
+import { deliveryRunner } from './delivery.js';
 import { storyboard } from '@vrmxg/coverage';
 import { renderThumbnails } from '@vrmxg/coverage/thumbnails';
 import { readCharacter, rolesOf, applyCast } from '@vrmxg/cast';
@@ -24,31 +25,6 @@ export { SIZES, RATES, CODECS };
 const vrmxa = { ...vrmxaMain, ...vrmxaVoice, ...vrmxaPersona, ...vrmxaCloset };
 const APPLY_MS = 700; // the script pane applies this long after typing stops
 
-/**
- * The creator's runner for the render queue: the short's sequence as it was when queued (a snapshot the host keeps by
- * job id) through the editor's export (M2 W12), into the shell's AVAssetWriter with its .srt beside it (unless the job
- * says no subtitles), or as frame hashes in a browser. Cancel stops it between frames and the shell removes the
- * partial file. W10 replaces it with delivery export.
- * @param {CreatorHost} host @returns {import('@vrmxg/editor-core/src/queue.js').Runner}
- */
-export function exportRunner(host) {
-  return {
-    name: inShell ? 'export through the shell (M2 path; W10 adds delivery formats)' : 'frame hashes (a browser: video needs the Mac app)',
-    async run(job, { progress, signal }) {
-      const snap = host.snapshots.get(job.id);
-      if (!snap) throw new Error(`${job.id}: its sequence wasn't kept (queue it again)`);
-      if (host.short?.id !== job.spec.short || host.setScene?.ref !== snap.set) throw new Error(`open ${job.spec.title ?? job.spec.short} to render it (the queue renders the open short)`);
-      const doc = parse(snap.text), seq = doc.sequence, fps = String(job.spec.fps ?? seq.fps);
-      if (!RATES[fps]) throw new Error(`no export rate ${fps}`);
-      host._queueProgress = progress;
-      try {
-        const x = await host.exportVideo({ take: 'sequence', doc, subtitles: job.spec.subtitles !== false, signal, seconds: seq.duration / seq.fps, size: job.spec.size, fps, codec: job.spec.codec, audio: job.spec.audio, name: job.spec.name ?? `${job.spec.short}-${job.spec.size}${fps.replace('.', '')}` });
-        return { frames: x.frames, seconds: x.seconds, name: x.name ?? x.began?.name ?? null, path: x.path ?? x.began?.path ?? null, hashesDigest: x.hashesDigest, hashOnly: x.hashOnly, ms: x.ms?.total ?? null, subtitles: x.subs ? { lines: x.subs.lines, path: x.subs.path, error: x.subs.error } : null };
-      } finally { host._queueProgress = null; }
-    },
-  };
-}
-
 export class CreatorHost extends EditorHost {
   constructor(canvas, o = {}) {
     super(canvas, o);
@@ -60,7 +36,7 @@ export class CreatorHost extends EditorHost {
     /** job id → { text, set }: the sequence as it was queued */
     this.snapshots = new Map();
     const q = new URLSearchParams(location.search).get('queue');
-    this.queue = new RenderQueue({ runner: q === 'stub' ? stubRunner : exportRunner(this), onChange: () => this.changed('queue') });
+    this.queue = new RenderQueue({ runner: q === 'stub' ? stubRunner : deliveryRunner(this), onChange: () => this.changed('queue') });
   }
 
   /** Export progress reaches the running queue job too. */
@@ -413,14 +389,31 @@ export class CreatorHost extends EditorHost {
 
   // ---------------------------------------------------------------- the render queue
 
-  /** Queue the open short as it is now (a snapshot: edits after this don't change the job). */
-  queueShort({ preset = 'draft', name = null } = {}) {
+  /**
+   * Queue the open short as it is now (a snapshot: edits after this don't change the job). M4 W10: a delivery preset
+   * renders its extras too; backend draws on that backend instead of the view's; check: 'redraw' draws each frame twice;
+   * extras overrides the preset's ({ stills, thumbnails, turntable }); seconds overrides the short's length (a timing run).
+   */
+  queueShort({ preset = 'draft', name = null, backend = null, check = null, extras = undefined, seconds = undefined } = {}) {
     if (!this.short || !this.session?.isSequence) throw new Error('open a short to queue it');
     this.applyScript();
     const seq = this.session.doc.sequence;
-    const job = this.queue.add({ short: this.short.id, title: this.short.title, ref: this.short.sequence, preset, name, seconds: seq.duration / seq.fps });
+    const job = this.queue.add({ short: this.short.id, title: this.short.title, ref: this.short.sequence, preset, name, seconds: seconds ?? seq.duration / seq.fps, backend, check, ...(extras !== undefined ? { extras } : {}) });
     this.snapshots.set(job.id, { text: this.session.text(), set: this.setScene?.ref ?? null });
     return job;
+  }
+
+  /**
+   * Let go of the offline hosts the creator keeps between uses (the storyboard's thumbnail host), once its drawing is
+   * done, before a render queue job: a 4K render shouldn't share the GPU with idle renderers. The next thumbnails make
+   * a new one.
+   */
+  async releaseOffline() {
+    await this._thumbChain;
+    const h = this._thumbHost;
+    if (!h) return;
+    this._thumbHost = null;
+    h.dispose(); h.renderer.forceContextLoss?.();
   }
 
   /** File › Export…: queue the open short at the draft preset and render that job alone. */

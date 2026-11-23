@@ -5,7 +5,10 @@
 // never changes what a step does.
 // M4 W2 (AB-T-0574): WebGPU beside WebGL. readbackFor(host, w, h) gives the backend's readback (gpu-readback.js: an output
 // target per size, a ring of 3 map buffers, rows top-down); exportTake and captureStill draw and read through it.
-export { exportTake, mixTake } from './export.js';
+// M4 W10 (AB-T-0582): delivery. exportTurntable (an orbit around a held world), `check: 'redraw'` (each frame drawn
+// twice and compared, opt-in), and delivery.js: the stills and thumbnails a delivery keeps, the orbit, the file names.
+export { exportTake, exportTurntable, pumpFrames, mixTake } from './export.js';
+export { stillFrames, boxDown, orbitPose, fitDistance, slug, deliveryFiles, THUMB } from './delivery.js';
 export { shellSink, hashSink, hashFrame } from './sinks.js';
 export { Readback, toImageRGBA } from './readback.js';
 export { GPUReadback, readbackFor } from './gpu-readback.js';

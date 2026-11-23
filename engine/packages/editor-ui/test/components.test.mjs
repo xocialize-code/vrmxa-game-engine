@@ -60,6 +60,9 @@ test('the render queue panel lists jobs with their states', async () => {
   assert.match(html, /aria-label="Runner stub"/);
   assert.match(html, /aria-label="job-1 done: 48 frames counted, nothing rendered \(stub\)"/);
   assert.match(html, /aria-label="job-3 queued"/);
-  for (const id of ['q-preset-draft', 'q-preset-review', 'q-preset-master', 'q-add', 'q-run', 'q-job-2']) assert.match(html, new RegExp(`id="${id}"`), id);
+  for (const id of ['q-preset-draft', 'q-preset-review', 'q-preset-master', 'q-preset-h264-1080p24', 'q-preset-h264-4k24', 'q-preset-hevc-1080p24', 'q-preset-hevc-4k24', 'q-preset-prores-1080p24', 'q-preset-prores-4k24', 'q-backend', 'q-check', 'q-add', 'q-run', 'q-job-2']) assert.match(html, new RegExp(`id="${id}"`), id);
+  assert.match(html, /aria-label="Film presets"/); assert.match(html, /aria-label="Delivery presets"/);
+  assert.match(html, /aria-label="Preset Delivery 4K24 ProRes 4444 with alpha"/);
+  assert.doesNotMatch(html, /id="q-stills"/, 'the extras show for a delivery preset only (the form starts on draft)');
   assert.match(await render(Panel, { jobs: [] }), /Nothing queued\./);
 });

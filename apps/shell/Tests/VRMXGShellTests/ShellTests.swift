@@ -336,6 +336,88 @@ func sineWAV(seconds: Double, rate: Int = 48000) -> Data {
     }
 }
 
+/// A WAV that is silent but for one click at `at` samples (both channels), `seconds` long.
+func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
+    let n = Int(seconds * Double(rate)), ch = 2
+    var d = Data()
+    func u32(_ v: UInt32) { withUnsafeBytes(of: v.littleEndian) { d.append(contentsOf: $0) } }
+    func u16(_ v: UInt16) { withUnsafeBytes(of: v.littleEndian) { d.append(contentsOf: $0) } }
+    d.append(contentsOf: Array("RIFF".utf8)); u32(UInt32(36 + n * ch * 2)); d.append(contentsOf: Array("WAVEfmt ".utf8))
+    u32(16); u16(1); u16(UInt16(ch)); u32(UInt32(rate)); u32(UInt32(rate * ch * 2)); u16(UInt16(ch * 2)); u16(16)
+    d.append(contentsOf: Array("data".utf8)); u32(UInt32(n * ch * 2))
+    for i in 0..<n { let v: Int16 = i == at ? 30000 : 0; u16(UInt16(bitPattern: v)); u16(UInt16(bitPattern: v)) }
+    return d
+}
+
+/// M4 W10 (AB-T-0582): a delivery's files, and its sound against its pictures.
+@Suite struct DeliveryTests {
+    /// The decoded audio of a movie as mono floats at 48 kHz, from its start.
+    func decodedAudio(_ url: URL) async throws -> [Float] {
+        let asset = AVURLAsset(url: url)
+        let a = try #require(try await asset.loadTracks(withMediaType: .audio).first)
+        let reader = try AVAssetReader(asset: asset)
+        let out = AVAssetReaderTrackOutput(track: a, outputSettings: [AVFormatIDKey: kAudioFormatLinearPCM, AVLinearPCMBitDepthKey: 32, AVLinearPCMIsFloatKey: true,
+                                                                       AVLinearPCMIsBigEndianKey: false, AVLinearPCMIsNonInterleaved: false, AVSampleRateKey: 48000, AVNumberOfChannelsKey: 2])
+        reader.add(out); reader.startReading()
+        var all: [Float] = []
+        while let sb = out.copyNextSampleBuffer(), let block = CMSampleBufferGetDataBuffer(sb) {
+            var len = 0, ptr: UnsafeMutablePointer<CChar>?
+            CMBlockBufferGetDataPointer(block, atOffset: 0, lengthAtOffsetOut: nil, totalLengthOut: &len, dataPointerOut: &ptr)
+            ptr!.withMemoryRebound(to: Float.self, capacity: len / 4) { f in for i in stride(from: 0, to: len / 4, by: 2) { all.append(f[i]) } }
+        }
+        return all
+    }
+
+    /// Sound at lag 0: a click put at a frame's time in the page's WAV is heard at that time in the delivered file, for
+    /// each delivery codec (AAC in .mp4 for H.264 and HEVC, in .mov for ProRes 4444): the encoder's priming is trimmed.
+    @Test(arguments: ["h264", "hevc", "prores4444"]) func soundAtLagZero(codec: String) async throws {
+        let s = ExportSettings(width: 128, height: 72, fpsNum: 24, frames: 48, codec: codec, audio: true)
+        let out = FileManager.default.temporaryDirectory.appendingPathComponent("vrmxg-lag-\(UUID().uuidString).\(ExportSettings.fileExtension(codec))")
+        let session = try ExportSession(id: UUID().uuidString, settings: s, output: out)
+        for n in 0..<s.frames { await withCheckedContinuation { c in session.submit(n, syntheticFrame(n, s.width, s.height)) { e in #expect(e == nil); c.resume() } } }
+        let click = 36000 // frame 18 at 24 fps: 0.75 s
+        try session.setAudio(clickWAV(seconds: 2, at: click))
+        _ = try await session.finish()
+        let pcm = try await decodedAudio(out)
+        #expect(abs(pcm.count - 96000) <= 1024, "two seconds of sound: \(pcm.count) samples")
+        let peak = pcm.indices.max { abs(pcm[$0]) < abs(pcm[$1]) }!
+        #expect(abs(peak - click) <= 2, "\(codec): the click at sample \(peak), sent at \(click): lag \(peak - click) samples")
+    }
+
+    /// A delivery's film goes into the open project (`projectPath`) with no panel, its folder made and its extension the
+    /// codec's; a path outside the project, or no project, is refused.
+    @Test @MainActor func exportsIntoTheProject() async throws {
+        let dir = try tempDir(["proj/cafe.vrmxs": "{}"])
+        let roots = WebRoots(app: dir)
+        let files = FileMethods(roots: roots, env: [:])
+        let router = BridgeRouter(), posts = PostRouter()
+        files.register(on: router)
+        let exports = ExportMethods(files: files); exports.register(on: router, posts: posts)
+        let begin: [String: Any] = ["width": 64, "height": 36, "fps": [24, 1], "frames": 2, "codec": "prores4444", "hash": true,
+                                    "projectPath": "deliveries/cafe-4k/cafe-4k.mp4", "subtitles": "1\n00:00:00,000 --> 00:00:00,080\nHana: Hi\n"]
+        let refused = await router.handle(body: ["method": "export.begin", "params": begin])
+        #expect(refused.1?.contains("no project") == true, "no project open yet")
+        files.roots.mountProject(dir.appendingPathComponent("proj"))
+        let r = await router.handle(body: ["method": "export.begin", "params": begin])
+        let b = try #require(r.0 as? [String: Any])
+        let id = try #require(b["id"] as? String)
+        let want = dir.appendingPathComponent("proj/deliveries/cafe-4k/cafe-4k.mov").standardizedFileURL.path
+        #expect((b["path"] as? String).map { URL(fileURLWithPath: $0).standardizedFileURL.path } == want, "the codec's extension, in the project")
+        for n in 0..<2 {
+            let st: Int = await withCheckedContinuation { c in posts.handle(PostRequest(path: "/__export/frame", query: "id=\(id)&n=\(n)", body: syntheticFrame(n, 64, 36))) { s, _ in c.resume(returning: s) } }
+            #expect(st == 200)
+        }
+        let end = await router.handle(body: ["method": "export.end", "params": ["id": id]])
+        let e = try #require(end.0 as? [String: Any])
+        #expect((e["frameHashes"] as? [String])?.count == 2)
+        #expect(FileManager.default.fileExists(atPath: want))
+        #expect(FileManager.default.fileExists(atPath: want.replacingOccurrences(of: ".mov", with: ".srt")), "the subtitles beside it")
+        #expect(!FileManager.default.fileExists(atPath: want + ".frames.json"), "evidence only under automation")
+        let escape = await router.handle(body: ["method": "export.begin", "params": begin.merging(["projectPath": "../out.mov"]) { $1 }])
+        #expect(escape.1?.contains("outside the project") == true)
+    }
+}
+
 /// The microphone's permission (M3 W3). The test runner's bundle declares no usage descriptions, which is the case an
 /// app without them is in: request refuses, and the web view's getUserMedia is denied even for our own origin.
 @Suite @MainActor struct MicrophoneTests {

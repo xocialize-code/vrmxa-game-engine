@@ -1,10 +1,13 @@
 <script setup>
 // The render queue panel (M4 W5): queue the open short with a preset, run the queue, and see each job's state. It
 // draws @vrmxg/editor-core's RenderQueue (plain copies of its jobs) and emits what the person asks for; which runner
-// renders is the app's choice (the creator's export through the shell, or the stub until W10 fills the queue).
-import { reactive } from 'vue';
+// renders is the app's choice (the creator's delivery through the shell, or the stub).
+// M4 W10: the presets in two groups (the film alone; deliveries at 24 fps with stills, thumbnails and turntables), the
+// extras a delivery renders, the backend a job draws on (the view's, or WebGL as a per-export choice) and the redraw
+// check (each frame drawn twice and compared: slower, opt-in).
+import { reactive, computed } from 'vue';
 import { PRESETS } from '@vrmxg/editor-core';
-import { jobStatus } from './storyboard-ui.js';
+import { jobStatus, queueSpec } from './storyboard-ui.js';
 
 const props = defineProps({
   jobs: { type: Array, default: () => [] },
@@ -13,7 +16,9 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
 });
 const emit = defineEmits(['add', 'run', 'cancel', 'remove', 'retry', 'move']);
-const form = reactive({ preset: 'draft', name: '' });
+const form = reactive({ preset: 'draft', name: '', backend: '', check: false, stills: true, thumbnails: true, turntable: true });
+const groups = [['Film', Object.keys(PRESETS).filter((k) => !PRESETS[k].delivery)], ['Delivery', Object.keys(PRESETS).filter((k) => PRESETS[k].delivery)]];
+const delivery = computed(() => !!PRESETS[form.preset]?.delivery);
 const running = () => props.jobs.some((j) => j.state === 'running');
 const queued = () => props.jobs.some((j) => j.state === 'queued');
 </script>
@@ -25,11 +30,21 @@ const queued = () => props.jobs.some((j) => j.state === 'queued');
       <output id="q-runner" class="muted" :aria-label="`Runner ${runner}`">{{ runner }}</output>
     </div>
     <div class="q-form">
-      <div class="seg" role="radiogroup" aria-label="Preset">
-        <button v-for="(p, k) in PRESETS" :id="`q-preset-${k}`" :key="k" type="button" role="radio" :aria-checked="form.preset === k" :aria-label="`Preset ${p.label}`" :title="p.label" :class="{ on: form.preset === k }" :disabled="disabled" @click="form.preset = k">{{ k }}</button>
+      <div v-for="[group, keys] in groups" :key="group" class="seg" role="radiogroup" :aria-label="`${group} presets`">
+        <span class="q-group muted">{{ group }}</span>
+        <button v-for="k in keys" :id="`q-preset-${k}`" :key="k" type="button" role="radio" :aria-checked="form.preset === k" :aria-label="`Preset ${PRESETS[k].label}`" :title="PRESETS[k].label" :class="{ on: form.preset === k }" :disabled="disabled" @click="form.preset = k">{{ k }}</button>
+      </div>
+      <div class="q-opts">
+        <label v-if="delivery" class="q-opt"><input id="q-stills" v-model="form.stills" type="checkbox" :disabled="disabled" aria-label="Stills, one per shot"> stills</label>
+        <label v-if="delivery" class="q-opt"><input id="q-thumbnails" v-model="form.thumbnails" type="checkbox" :disabled="disabled" aria-label="Thumbnails, one per shot"> thumbnails</label>
+        <label v-if="delivery" class="q-opt"><input id="q-turntable" v-model="form.turntable" type="checkbox" :disabled="disabled" aria-label="A turntable per character"> turntable</label>
+        <select id="q-backend" v-model="form.backend" aria-label="Draw on" :disabled="disabled" title="The backend the job draws on">
+          <option value="">view's backend</option><option value="webgpu">WebGPU</option><option value="webgl">WebGL</option>
+        </select>
+        <label class="q-opt" title="Draw every frame twice and compare the two (a third draw breaks a tie): slower; for the rare odd WebGPU frame"><input id="q-check" v-model="form.check" type="checkbox" :disabled="disabled" aria-label="Redraw check, each frame drawn twice"> redraw check</label>
       </div>
       <input id="q-name" v-model="form.name" aria-label="Export file name" placeholder="file name (automatic)" :disabled="disabled" @focus="$event.target.select()">
-      <button id="q-add" type="button" aria-label="Add the short to the queue" :disabled="disabled || !canAdd" @click="emit('add', { preset: form.preset, name: form.name.trim() || null })">Add</button>
+      <button id="q-add" type="button" aria-label="Add the short to the queue" :disabled="disabled || !canAdd" @click="emit('add', queueSpec(form))">Add</button>
       <button id="q-run" type="button" class="play" :aria-label="running() ? 'Rendering' : 'Render the queue'" :disabled="disabled || running() || !queued()" @click="emit('run')">{{ running() ? 'Rendering…' : 'Render' }}</button>
     </div>
     <ol class="q-jobs" aria-label="Jobs">
@@ -54,7 +69,9 @@ const queued = () => props.jobs.some((j) => j.state === 'queued');
 .q-head { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid var(--line); }
 .q-head h2 { flex: 1; }
 .q-form { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 10px; border-bottom: 1px solid var(--line); }
-.q-form input { flex: 1; min-width: 100px; }
+.q-form > input { flex: 1; min-width: 100px; }
+.q-form .seg { flex-wrap: wrap; } .q-group { font-size: 11px; padding: 0 4px; align-self: center; }
+.q-opts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; width: 100%; font-size: 12px; } .q-opt { display: inline-flex; gap: 3px; align-items: center; }
 .q-jobs { list-style: none; margin: 0; padding: 4px 0; overflow: auto; }
 .q-job { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; padding: 5px 10px; border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent); font-size: 12px; }
 .q-job progress { grid-column: 1 / -1; width: 100%; }

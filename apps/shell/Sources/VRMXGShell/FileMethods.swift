@@ -160,12 +160,18 @@ public final class FileMethods {
         return out.sorted()
     }
 
-    /// Write a file inside the mounted project (a path relative to it): `text`, or `base64` for binary.
-    func writeProject(_ p: BridgeParams) throws -> Any? {
+    /// A path inside the mounted project (relative to it), refused if it leads outside.
+    func projectFile(_ rel: String) throws -> URL {
         guard let root = roots.projectFolder else { throw BridgeError("no_project", "no project is open") }
-        let rel = try p.require("path"), data = try Self.payload(p)
         let file = root.appendingPathComponent(rel).standardizedFileURL
         guard file.path.hasPrefix(root.standardizedFileURL.path + "/") else { throw BridgeError("bad_params", "\(rel) is outside the project") }
+        return file
+    }
+
+    /// Write a file inside the mounted project (a path relative to it): `text`, or `base64` for binary.
+    func writeProject(_ p: BridgeParams) throws -> Any? {
+        let rel = try p.require("path"), data = try Self.payload(p)
+        let file = try projectFile(rel)
         try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
         try data.write(to: file, options: .atomic)
         return ["path": rel, "bytes": data.count]
