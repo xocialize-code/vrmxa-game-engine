@@ -1,0 +1,1154 @@
+{
+ "task": "AB-T-0587",
+ "harness": "acceptance harness (spike-cinematics/mac CinematicsSpike) with the built playground, a fresh WKWebView per load, scheme and loopback origins",
+ "case": "?mode=backends&renderer=webgl",
+ "sets": [
+  {
+   "label": "base",
+   "code": "old",
+   "query": "",
+   "what": "the check as on main (e1dea7a) with both reads recorded (toDataURL and gl.readPixels) and paused-loop draws counted; 20 fresh loads per origin",
+   "loads": {
+    "scheme": 20,
+    "loopback": 20
+   },
+   "errors": 0,
+   "timedOut": 0,
+   "groups": [
+    {
+     "origin": "scheme",
+     "loads": 19,
+     "reportedSize": [
+      1280,
+      485
+     ],
+     "stillHash": "a46febe0",
+     "frames": [
+      "bfa591ae",
+      "45e64445",
+      "d2cc2e48",
+      "0ba2dc08",
+      "6586ec5c"
+     ],
+     "glStill": "deb52ff41729c68c",
+     "glFrames": [
+      "93780005d5921b39",
+      "a499c808557573f6",
+      "9d340ad882a1bf29",
+      "26cde6a57d1d370f",
+      "f63ce4279e342fee"
+     ],
+     "strayDraws": 0
+    },
+    {
+     "origin": "scheme",
+     "loads": 1,
+     "reportedSize": [
+      1280,
+      485
+     ],
+     "stillHash": "d60fac47",
+     "frames": [
+      "9dc6e520",
+      "c0458330",
+      "3118bfc6",
+      "cf84140d",
+      "651fdd6c"
+     ],
+     "glStill": "8d010621274ad390",
+     "glFrames": [
+      "29a2e5053e6c9355",
+      "992d18e7dcb55f8b",
+      "a74c9a1517cb6597",
+      "37c26f52b575be88",
+      "7cbf2beea181f3fe"
+     ],
+     "strayDraws": 0
+    },
+    {
+     "origin": "loopback",
+     "loads": 20,
+     "reportedSize": [
+      1280,
+      485
+     ],
+     "stillHash": "a46febe0",
+     "frames": [
+      "bfa591ae",
+      "45e64445",
+      "d2cc2e48",
+      "0ba2dc08",
+      "6586ec5c"
+     ],
+     "glStill": "deb52ff41729c68c",
+     "glFrames": [
+      "93780005d5921b39",
+      "a499c808557573f6",
+      "9d340ad882a1bf29",
+      "26cde6a57d1d370f",
+      "f63ce4279e342fee"
+     ],
+     "strayDraws": 0
+    }
+   ]
+  },
+  {
+   "label": "olddiag",
+   "code": "old",
+   "query": "",
+   "what": "the check as on main, recording per drawn frame the drawing buffer, the camera (local pose, fov, aspect), the world hash; 40 fresh loads per origin",
+   "loads": {
+    "scheme": 40,
+    "loopback": 40
+   },
+   "errors": 0,
+   "timedOut": 0,
+   "groups": [
+    {
+     "origin": "scheme",
+     "loads": 33,
+     "reportedSize": [
+      1280,
+      485
+     ],
+     "drawnAt": [
+      1280,
+      485
+     ],
+     "stillHash": "a46febe0",
+     "frames": [
+      "bfa591ae",
+      "45e64445",
+      "d2cc2e48",
+      "0ba2dc08",
+      "6586ec5c"
+     ],
+     "glStill": null,
+     "glFrames": null
+    },
+    {
+     "origin": "scheme",
+     "loads": 7,
+     "reportedSize": [
+      1280,
+      485
+     ],
+     "drawnAt": [
+      1280,
+      561
+     ],
+     "stillHash": "d60fac47",
+     "frames": [
+      "9dc6e520",
+      "c0458330",
+      "3118bfc6",
+      "cf84140d",
+      "651fdd6c"
+     ],
+     "glStill": null,
+     "glFrames": null
+    },
+    {
+     "origin": "loopback",
+     "loads": 40,
+     "reportedSize": [
+      1280,
+      485
+     ],
+     "drawnAt": [
+      1280,
+      485
+     ],
+     "stillHash": "a46febe0",
+     "frames": [
+      "bfa591ae",
+      "45e64445",
+      "d2cc2e48",
+      "0ba2dc08",
+      "6586ec5c"
+     ],
+     "glStill": null,
+     "glFrames": null
+    }
+   ],
+   "perFrame": {
+    "a46febe0": [
+     {
+      "buf": [
+       1280,
+       485
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       17.867928,
+       2.638835,
+       1
+      ],
+      "pr": 1,
+      "step": 300,
+      "world": "464ee0bbf212420c"
+     },
+     {
+      "buf": [
+       1280,
+       485
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       17.867928,
+       2.638835,
+       1
+      ],
+      "pr": 1,
+      "step": 301,
+      "world": "8e70f5e6deaf80df"
+     },
+     {
+      "buf": [
+       1280,
+       485
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       17.867928,
+       2.638835,
+       1
+      ],
+      "pr": 1,
+      "step": 302,
+      "world": "4ca89dc931aed324"
+     },
+     {
+      "buf": [
+       1280,
+       485
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       17.867928,
+       2.638835,
+       1
+      ],
+      "pr": 1,
+      "step": 303,
+      "world": "f3692eec069ed1ac"
+     },
+     {
+      "buf": [
+       1280,
+       485
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       17.867928,
+       2.638835,
+       1
+      ],
+      "pr": 1,
+      "step": 304,
+      "world": "94a0e3593b6b836c"
+     },
+     {
+      "buf": [
+       1280,
+       485
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       17.867928,
+       2.638835,
+       1
+      ],
+      "pr": 1,
+      "step": 420,
+      "world": "df18fd1ffe5937c0"
+     }
+    ],
+    "d60fac47": [
+     {
+      "buf": [
+       1280,
+       561
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       20.62492,
+       2.279862,
+       1
+      ],
+      "pr": 1,
+      "step": 300,
+      "world": "464ee0bbf212420c"
+     },
+     {
+      "buf": [
+       1280,
+       561
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       20.62492,
+       2.279862,
+       1
+      ],
+      "pr": 1,
+      "step": 301,
+      "world": "8e70f5e6deaf80df"
+     },
+     {
+      "buf": [
+       1280,
+       561
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       20.62492,
+       2.279862,
+       1
+      ],
+      "pr": 1,
+      "step": 302,
+      "world": "4ca89dc931aed324"
+     },
+     {
+      "buf": [
+       1280,
+       561
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       20.62492,
+       2.279862,
+       1
+      ],
+      "pr": 1,
+      "step": 303,
+      "world": "f3692eec069ed1ac"
+     },
+     {
+      "buf": [
+       1280,
+       561
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       20.62492,
+       2.279862,
+       1
+      ],
+      "pr": 1,
+      "step": 304,
+      "world": "94a0e3593b6b836c"
+     },
+     {
+      "buf": [
+       1280,
+       561
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       20.62492,
+       2.279862,
+       1
+      ],
+      "pr": 1,
+      "step": 420,
+      "world": "df18fd1ffe5937c0"
+     }
+    ]
+   }
+  },
+  {
+   "label": "old561d",
+   "code": "old",
+   "query": "&cssh=561",
+   "what": "the check as on main with the canvas pinned to 561 CSS px tall (diagnostic hook, not committed): a whole-pixel 1280x561 view",
+   "loads": {
+    "scheme": 2,
+    "loopback": 0
+   },
+   "errors": 0,
+   "timedOut": 0,
+   "groups": [
+    {
+     "origin": "scheme",
+     "loads": 2,
+     "reportedSize": [
+      1280,
+      561
+     ],
+     "drawnAt": [
+      1280,
+      561
+     ],
+     "stillHash": "4f0d6881",
+     "frames": [
+      "17bc9e17",
+      "e312c6df",
+      "1e36a759",
+      "6ee018fe",
+      "1d7643ec"
+     ],
+     "glStill": null,
+     "glFrames": null
+    }
+   ],
+   "perFrame": {
+    "4f0d6881": [
+     {
+      "buf": [
+       1280,
+       561
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       20.609193,
+       2.28164,
+       1
+      ],
+      "pr": 1,
+      "step": 300,
+      "world": "464ee0bbf212420c"
+     },
+     {
+      "buf": [
+       1280,
+       561
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       20.609193,
+       2.28164,
+       1
+      ],
+      "pr": 1,
+      "step": 301,
+      "world": "8e70f5e6deaf80df"
+     },
+     {
+      "buf": [
+       1280,
+       561
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       20.609193,
+       2.28164,
+       1
+      ],
+      "pr": 1,
+      "step": 302,
+      "world": "4ca89dc931aed324"
+     },
+     {
+      "buf": [
+       1280,
+       561
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       20.609193,
+       2.28164,
+       1
+      ],
+      "pr": 1,
+      "step": 303,
+      "world": "f3692eec069ed1ac"
+     },
+     {
+      "buf": [
+       1280,
+       561
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       20.609193,
+       2.28164,
+       1
+      ],
+      "pr": 1,
+      "step": 304,
+      "world": "94a0e3593b6b836c"
+     },
+     {
+      "buf": [
+       1280,
+       561
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       20.609193,
+       2.28164,
+       1
+      ],
+      "pr": 1,
+      "step": 420,
+      "world": "df18fd1ffe5937c0"
+     }
+    ]
+   }
+  },
+  {
+   "label": "oldjig",
+   "code": "old",
+   "query": "&jiggle=4000",
+   "what": "the check as on main while the canvas CSS height changes every 7 ms for 4 s (diagnostic hook, not committed)",
+   "loads": {
+    "scheme": 8,
+    "loopback": 8
+   },
+   "errors": 0,
+   "timedOut": 0,
+   "groups": [
+    {
+     "origin": "scheme",
+     "loads": 1,
+     "reportedSize": [
+      1280,
+      600
+     ],
+     "stillHash": "8de35129",
+     "frames": [
+      "cefa0d64",
+      "8ea5fbf2",
+      "350e679b",
+      "4d7d2858",
+      "17e1b565"
+     ],
+     "glStill": null,
+     "glFrames": null
+    },
+    {
+     "origin": "scheme",
+     "loads": 2,
+     "reportedSize": [
+      1280,
+      540
+     ],
+     "stillHash": "9e7025ab",
+     "frames": [
+      "309e8fb6",
+      "8838640e",
+      "3920d482",
+      "d697aab6",
+      "c088abaa"
+     ],
+     "glStill": null,
+     "glFrames": null
+    },
+    {
+     "origin": "scheme",
+     "loads": 2,
+     "reportedSize": [
+      1280,
+      480
+     ],
+     "stillHash": "9e7025ab",
+     "frames": [
+      "309e8fb6",
+      "8838640e",
+      "3920d482",
+      "d697aab6",
+      "c088abaa"
+     ],
+     "glStill": null,
+     "glFrames": null
+    },
+    {
+     "origin": "scheme",
+     "loads": 1,
+     "reportedSize": [
+      1263,
+      660
+     ],
+     "stillHash": "464ff063",
+     "frames": [
+      "fa85ac6e",
+      "22fbaede",
+      "b093b910",
+      "e8d8ecfd",
+      "87fc27c8"
+     ],
+     "glStill": null,
+     "glFrames": null
+    },
+    {
+     "origin": "scheme",
+     "loads": 1,
+     "reportedSize": [
+      1263,
+      660
+     ],
+     "stillHash": "9e7025ab",
+     "frames": [
+      "309e8fb6",
+      "8838640e",
+      "3920d482",
+      "d697aab6",
+      "c088abaa"
+     ],
+     "glStill": null,
+     "glFrames": null
+    },
+    {
+     "origin": "scheme",
+     "loads": 1,
+     "reportedSize": [
+      1280,
+      360
+     ],
+     "stillHash": "464ff063",
+     "frames": [
+      "fa85ac6e",
+      "22fbaede",
+      "b093b910",
+      "e8d8ecfd",
+      "87fc27c8"
+     ],
+     "glStill": null,
+     "glFrames": null
+    },
+    {
+     "origin": "loopback",
+     "loads": 1,
+     "reportedSize": [
+      1280,
+      480
+     ],
+     "stillHash": "9e7025ab",
+     "frames": [
+      "309e8fb6",
+      "8838640e",
+      "3920d482",
+      "d697aab6",
+      "c088abaa"
+     ],
+     "glStill": null,
+     "glFrames": null
+    },
+    {
+     "origin": "loopback",
+     "loads": 2,
+     "reportedSize": [
+      1263,
+      660
+     ],
+     "stillHash": "464ff063",
+     "frames": [
+      "fa85ac6e",
+      "22fbaede",
+      "b093b910",
+      "e8d8ecfd",
+      "87fc27c8"
+     ],
+     "glStill": null,
+     "glFrames": null
+    },
+    {
+     "origin": "loopback",
+     "loads": 2,
+     "reportedSize": [
+      1280,
+      600
+     ],
+     "stillHash": "9e7025ab",
+     "frames": [
+      "309e8fb6",
+      "8838640e",
+      "3920d482",
+      "d697aab6",
+      "c088abaa"
+     ],
+     "glStill": null,
+     "glFrames": null
+    },
+    {
+     "origin": "loopback",
+     "loads": 1,
+     "reportedSize": [
+      1280,
+      600
+     ],
+     "stillHash": "282cd81a",
+     "frames": [
+      "01a3611a",
+      "9aba22e9",
+      "5de1eb1d",
+      "ac3512f5",
+      "2f972b7c"
+     ],
+     "glStill": null,
+     "glFrames": null
+    },
+    {
+     "origin": "loopback",
+     "loads": 1,
+     "reportedSize": [
+      1280,
+      540
+     ],
+     "stillHash": "9e7025ab",
+     "frames": [
+      "309e8fb6",
+      "8838640e",
+      "3920d482",
+      "d697aab6",
+      "c088abaa"
+     ],
+     "glStill": null,
+     "glFrames": null
+    },
+    {
+     "origin": "loopback",
+     "loads": 1,
+     "reportedSize": [
+      1280,
+      540
+     ],
+     "stillHash": "282cd81a",
+     "frames": [
+      "01a3611a",
+      "9aba22e9",
+      "5de1eb1d",
+      "ac3512f5",
+      "2f972b7c"
+     ],
+     "glStill": null,
+     "glFrames": null
+    }
+   ]
+  },
+  {
+   "label": "fixed",
+   "code": "fixed",
+   "query": "",
+   "what": "the fixed check (owns the canvas at 1280x720, pixel ratio 1); 32 fresh loads per origin",
+   "loads": {
+    "scheme": 32,
+    "loopback": 32
+   },
+   "errors": 0,
+   "timedOut": 0,
+   "groups": [
+    {
+     "origin": "scheme",
+     "loads": 32,
+     "reportedSize": [
+      1280,
+      720
+     ],
+     "stillHash": "028f66d0",
+     "frames": [
+      "0955d7a3",
+      "1ad0af17",
+      "2591ad61",
+      "d317a753",
+      "7c4a44e6"
+     ],
+     "glStill": "04a7ce64b0d04506",
+     "glFrames": [
+      "b57398276376c722",
+      "2278d40c42ad45a5",
+      "f48ecee304fa3e67",
+      "645a2ba10a141b40",
+      "9859e0fa0afa0350"
+     ]
+    },
+    {
+     "origin": "loopback",
+     "loads": 32,
+     "reportedSize": [
+      1280,
+      720
+     ],
+     "stillHash": "028f66d0",
+     "frames": [
+      "0955d7a3",
+      "1ad0af17",
+      "2591ad61",
+      "d317a753",
+      "7c4a44e6"
+     ],
+     "glStill": "04a7ce64b0d04506",
+     "glFrames": [
+      "b57398276376c722",
+      "2278d40c42ad45a5",
+      "f48ecee304fa3e67",
+      "645a2ba10a141b40",
+      "9859e0fa0afa0350"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "fixdiag",
+   "code": "fixed",
+   "query": "",
+   "what": "the fixed check with the per-frame diagnostics; 50 fresh loads per origin",
+   "loads": {
+    "scheme": 50,
+    "loopback": 50
+   },
+   "errors": 0,
+   "timedOut": 0,
+   "groups": [
+    {
+     "origin": "scheme",
+     "loads": 50,
+     "reportedSize": [
+      1280,
+      720
+     ],
+     "drawnAt": [
+      1280,
+      720
+     ],
+     "stillHash": "028f66d0",
+     "frames": [
+      "0955d7a3",
+      "1ad0af17",
+      "2591ad61",
+      "d317a753",
+      "7c4a44e6"
+     ],
+     "glStill": "04a7ce64b0d04506",
+     "glFrames": [
+      "b57398276376c722",
+      "2278d40c42ad45a5",
+      "f48ecee304fa3e67",
+      "645a2ba10a141b40",
+      "9859e0fa0afa0350"
+     ]
+    },
+    {
+     "origin": "loopback",
+     "loads": 50,
+     "reportedSize": [
+      1280,
+      720
+     ],
+     "drawnAt": [
+      1280,
+      720
+     ],
+     "stillHash": "028f66d0",
+     "frames": [
+      "0955d7a3",
+      "1ad0af17",
+      "2591ad61",
+      "d317a753",
+      "7c4a44e6"
+     ],
+     "glStill": "04a7ce64b0d04506",
+     "glFrames": [
+      "b57398276376c722",
+      "2278d40c42ad45a5",
+      "f48ecee304fa3e67",
+      "645a2ba10a141b40",
+      "9859e0fa0afa0350"
+     ]
+    }
+   ],
+   "perFrame": {
+    "028f66d0": [
+     {
+      "buf": [
+       1280,
+       720
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       26.269177,
+       1.777778,
+       1
+      ],
+      "pr": 1,
+      "step": 300,
+      "world": "464ee0bbf212420c"
+     },
+     {
+      "buf": [
+       1280,
+       720
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       26.269177,
+       1.777778,
+       1
+      ],
+      "pr": 1,
+      "step": 301,
+      "world": "8e70f5e6deaf80df"
+     },
+     {
+      "buf": [
+       1280,
+       720
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       26.269177,
+       1.777778,
+       1
+      ],
+      "pr": 1,
+      "step": 302,
+      "world": "4ca89dc931aed324"
+     },
+     {
+      "buf": [
+       1280,
+       720
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       26.269177,
+       1.777778,
+       1
+      ],
+      "pr": 1,
+      "step": 303,
+      "world": "f3692eec069ed1ac"
+     },
+     {
+      "buf": [
+       1280,
+       720
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       26.269177,
+       1.777778,
+       1
+      ],
+      "pr": 1,
+      "step": 304,
+      "world": "94a0e3593b6b836c"
+     },
+     {
+      "buf": [
+       1280,
+       720
+      ],
+      "cam": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       1,
+       26.269177,
+       1.777778,
+       1
+      ],
+      "pr": 1,
+      "step": 420,
+      "world": "df18fd1ffe5937c0"
+     }
+    ]
+   }
+  },
+  {
+   "label": "fixjig",
+   "code": "fixed",
+   "query": "&jiggle=4000",
+   "what": "the fixed check while the canvas CSS height changes every 7 ms for 4 s",
+   "loads": {
+    "scheme": 8,
+    "loopback": 8
+   },
+   "errors": 0,
+   "timedOut": 0,
+   "groups": [
+    {
+     "origin": "scheme",
+     "loads": 8,
+     "reportedSize": [
+      1280,
+      720
+     ],
+     "stillHash": "028f66d0",
+     "frames": [
+      "0955d7a3",
+      "1ad0af17",
+      "2591ad61",
+      "d317a753",
+      "7c4a44e6"
+     ],
+     "glStill": "04a7ce64b0d04506",
+     "glFrames": [
+      "b57398276376c722",
+      "2278d40c42ad45a5",
+      "f48ecee304fa3e67",
+      "645a2ba10a141b40",
+      "9859e0fa0afa0350"
+     ]
+    },
+    {
+     "origin": "loopback",
+     "loads": 8,
+     "reportedSize": [
+      1280,
+      720
+     ],
+     "stillHash": "028f66d0",
+     "frames": [
+      "0955d7a3",
+      "1ad0af17",
+      "2591ad61",
+      "d317a753",
+      "7c4a44e6"
+     ],
+     "glStill": "04a7ce64b0d04506",
+     "glFrames": [
+      "b57398276376c722",
+      "2278d40c42ad45a5",
+      "f48ecee304fa3e67",
+      "645a2ba10a141b40",
+      "9859e0fa0afa0350"
+     ]
+    }
+   ]
+  }
+ ]
+}

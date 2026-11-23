@@ -2,7 +2,18 @@
  "repeat": {
   "webgpu": true,
   "webgl": true,
-  "webglVariants": 1
+  "webgpuVariants": 1,
+  "webglVariants": 1,
+  "loads": {
+   "webgpu": {
+    "scheme": 16,
+    "loopback": 16
+   },
+   "webgl": {
+    "scheme": 16,
+    "loopback": 16
+   }
+  }
  },
  "runs": [
   {
@@ -11,11 +22,11 @@
    "distinct": 5,
    "environment": true,
    "frames": [
-    "e04eb760",
-    "7a21b86c",
-    "7154d6a3",
-    "5e45b93d",
-    "d27d6a57"
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
    ],
    "isWebGPUBackend": true,
    "materials": [
@@ -26,7 +37,7 @@
    "origin": "scheme",
    "size": [
     1280,
-    485
+    720
    ],
    "steps": [
     300,
@@ -36,8 +47,8 @@
     304
    ],
    "still": 420,
-   "stillHash": "d16d5efe",
-   "stillMsWithRead": 31,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 36,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgpu",
    "errors": [],
@@ -49,12 +60,20 @@
    "distinct": 5,
    "environment": true,
    "frames": [
-    "bfa591ae",
-    "45e64445",
-    "d2cc2e48",
-    "0ba2dc08",
-    "6586ec5c"
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
    ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
    "isWebGPUBackend": false,
    "materials": [
     "MeshBasicMaterial",
@@ -64,7 +83,7 @@
    "origin": "scheme",
    "size": [
     1280,
-    485
+    720
    ],
    "steps": [
     300,
@@ -74,47 +93,47 @@
     304
    ],
    "still": 420,
-   "stillHash": "a46febe0",
-   "stillMsWithRead": 26,
-   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
-   "case": "mode=backends&renderer=webgl",
-   "errors": [],
-   "timedOut": false
-  },
-  {
-   "backend": "webgpu",
-   "diff": null,
-   "distinct": 5,
-   "environment": true,
-   "frames": [
-    "e04eb760",
-    "7a21b86c",
-    "7154d6a3",
-    "5e45b93d",
-    "d27d6a57"
-   ],
-   "isWebGPUBackend": true,
-   "materials": [
-    "MeshBasicMaterial",
-    "NodeMaterial"
-   ],
-   "mode": "backends",
-   "origin": "scheme",
-   "size": [
-    1280,
-    485
-   ],
-   "steps": [
-    300,
-    301,
-    302,
-    303,
-    304
-   ],
-   "still": 420,
-   "stillHash": "d16d5efe",
+   "stillHash": "028f66d0",
    "stillMsWithRead": 32,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 36,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgpu&again=1",
    "errors": [],
    "timedOut": false
@@ -125,12 +144,20 @@
    "distinct": 5,
    "environment": true,
    "frames": [
-    "bfa591ae",
-    "45e64445",
-    "d2cc2e48",
-    "0ba2dc08",
-    "6586ec5c"
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
    ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
    "isWebGPUBackend": false,
    "materials": [
     "MeshBasicMaterial",
@@ -140,7 +167,7 @@
    "origin": "scheme",
    "size": [
     1280,
-    485
+    720
    ],
    "steps": [
     300,
@@ -150,8 +177,8 @@
     304
    ],
    "still": 420,
-   "stillHash": "a46febe0",
-   "stillMsWithRead": 26,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgl&again=1",
    "errors": [],
@@ -163,11 +190,1187 @@
    "distinct": 5,
    "environment": true,
    "frames": [
-    "e04eb760",
-    "7a21b86c",
-    "7154d6a3",
-    "5e45b93d",
-    "d27d6a57"
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 34,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=2",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 33,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=2",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=3",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 33,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=3",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=4",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=4",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=5",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=5",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 34,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=6",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=6",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 34,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=7",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=7",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 34,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=8",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=8",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=9",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=9",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=10",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 33,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=10",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=11",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=11",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=12",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=12",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=13",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=13",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=14",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=14",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=15",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "scheme",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=15",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
    ],
    "isWebGPUBackend": true,
    "materials": [
@@ -178,7 +1381,7 @@
    "origin": "loopback",
    "size": [
     1280,
-    485
+    720
    ],
    "steps": [
     300,
@@ -188,8 +1391,8 @@
     304
    ],
    "still": 420,
-   "stillHash": "d16d5efe",
-   "stillMsWithRead": 31.6,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35.1,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgpu",
    "errors": [],
@@ -201,12 +1404,20 @@
    "distinct": 5,
    "environment": true,
    "frames": [
-    "bfa591ae",
-    "45e64445",
-    "d2cc2e48",
-    "0ba2dc08",
-    "6586ec5c"
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
    ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
    "isWebGPUBackend": false,
    "materials": [
     "MeshBasicMaterial",
@@ -216,7 +1427,7 @@
    "origin": "loopback",
    "size": [
     1280,
-    485
+    720
    ],
    "steps": [
     300,
@@ -226,8 +1437,8 @@
     304
    ],
    "still": 420,
-   "stillHash": "a46febe0",
-   "stillMsWithRead": 26.1,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32.7,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgl",
    "errors": [],
@@ -239,11 +1450,11 @@
    "distinct": 5,
    "environment": true,
    "frames": [
-    "e04eb760",
-    "7a21b86c",
-    "7154d6a3",
-    "5e45b93d",
-    "d27d6a57"
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
    ],
    "isWebGPUBackend": true,
    "materials": [
@@ -254,7 +1465,7 @@
    "origin": "loopback",
    "size": [
     1280,
-    485
+    720
    ],
    "steps": [
     300,
@@ -264,8 +1475,8 @@
     304
    ],
    "still": 420,
-   "stillHash": "d16d5efe",
-   "stillMsWithRead": 31.3,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35.1,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgpu&again=1",
    "errors": [],
@@ -277,12 +1488,20 @@
    "distinct": 5,
    "environment": true,
    "frames": [
-    "bfa591ae",
-    "45e64445",
-    "d2cc2e48",
-    "0ba2dc08",
-    "6586ec5c"
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
    ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
    "isWebGPUBackend": false,
    "materials": [
     "MeshBasicMaterial",
@@ -292,7 +1511,7 @@
    "origin": "loopback",
    "size": [
     1280,
-    485
+    720
    ],
    "steps": [
     300,
@@ -302,10 +1521,1186 @@
     304
    ],
    "still": 420,
-   "stillHash": "a46febe0",
-   "stillMsWithRead": 27.1,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 33.2,
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
    "case": "mode=backends&renderer=webgl&again=1",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 34.5,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=2",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32.3,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=2",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 34.4,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=3",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32.5,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=3",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35.1,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=4",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32.6,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=4",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=5",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32.5,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=5",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35.5,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=6",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32.8,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=6",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 34.1,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=7",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=7",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 34.3,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=8",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32.4,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=8",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 34.7,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=9",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32.7,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=9",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 33.4,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=10",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32.5,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=10",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35.1,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=11",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 33.3,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=11",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 34.2,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=12",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32.4,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=12",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 38.1,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=13",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 31.9,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=13",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35.6,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=14",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32.9,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=14",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgpu",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "b378a56f",
+    "2f8a01c0",
+    "af89f636",
+    "7b908b1f",
+    "d1e82f9c"
+   ],
+   "isWebGPUBackend": true,
+   "materials": [
+    "MeshBasicMaterial",
+    "NodeMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "e380a3a2",
+   "stillMsWithRead": 35.3,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgpu&again=15",
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "backend": "webgl",
+   "diff": null,
+   "distinct": 5,
+   "environment": true,
+   "frames": [
+    "0955d7a3",
+    "1ad0af17",
+    "2591ad61",
+    "d317a753",
+    "7c4a44e6"
+   ],
+   "glFrames": [
+    "b57398276376c722",
+    "2278d40c42ad45a5",
+    "f48ecee304fa3e67",
+    "645a2ba10a141b40",
+    "9859e0fa0afa0350"
+   ],
+   "glStill": "04a7ce64b0d04506",
+   "isWebGPUBackend": false,
+   "materials": [
+    "MeshBasicMaterial",
+    "ShaderMaterial"
+   ],
+   "mode": "backends",
+   "origin": "loopback",
+   "size": [
+    1280,
+    720
+   ],
+   "steps": [
+    300,
+    301,
+    302,
+    303,
+    304
+   ],
+   "still": 420,
+   "stillHash": "028f66d0",
+   "stillMsWithRead": 32.4,
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "case": "mode=backends&renderer=webgl&again=15",
    "errors": [],
    "timedOut": false
   }
@@ -313,10 +2708,10 @@
  "diff": {
   "size": [
    1280,
-   485
+   720
   ],
-  "meanMaxChannel": 0.511,
-  "over8": 0.01217,
-  "max": 160
+  "meanMaxChannel": 0.486,
+  "over8": 0.0103,
+  "max": 191
  }
 }

@@ -41,12 +41,14 @@ the error and leaves them disabled (`backends-chromium.mjs` checks that too).
   name tags (troika's shaders are WebGL's; the captions still show every line; the two checkboxes are disabled).
 - **`?mode=backends&renderer=…`** draws the cafe offline as an export does, and reads each frame with `toDataURL` in the
   task that drew it (`Playground.backendCheck`). It replays the recorded walk, draws five consecutive frames with
-  `frameAt` and a still, hashes them, and sets `window.__result`.
+  `frameAt` and a still, hashes them, and sets `window.__result`. On WebGL it also hashes each frame through
+  `gl.readPixels`, as exports do (`glFrames`, `glStill`). The check owns the canvas at 1280×720, pixel ratio 1
+  (`Playground.offline`, since AB-T-0587), and fails if the drawing buffer changes size during it.
 
 ```sh
 (cd apps/playground && npx vite build)
 node apps/playground/scripts/backends-chromium.mjs    # both backends, twice each; the stills compared: results/backends-chromium.json
-apps/playground/scripts/backends-wkwebview.sh         # the same in WKWebView, scheme and loopback: results/backends-wkwebview.json
+LOADS=16 apps/playground/scripts/backends-wkwebview.sh  # the same in WKWebView, 16 fresh loads per backend and origin: results/backends-wkwebview.json
 ```
 
 **Result (AB-R-1055, 2026-11-20, M5 Max, Chrome for Testing 156 headless on Metal, WKWebView on macOS 27.3).**
@@ -62,8 +64,32 @@ apps/playground/scripts/backends-wkwebview.sh         # the same in WKWebView, s
 - **WebKit reads a WebGPU canvas differently.** `drawImage` of a WebGPU canvas gives the last *presented* frame even
   right after `render()`, so offline frames read that way all looked the same. `toDataURL` in the drawing task gives
   the frame just drawn. Chromium gives the new frame either way (AB-L-0372).
-- **WebGL in WKWebView** came out as one of two images from load to load (3 of 16 loads gave the other), which W0 didn't
-  change. It's noted for W3 (AB-T-0587, blocking AB-T-0575).
+- **WebGL in WKWebView** came out as one of two images from load to load (3 of 16 loads gave the other). AB-T-0587
+  settled it below: the check, not the engine.
+
+**WebGL's second image in WKWebView (AB-T-0587, 2026-11-22, M5 Max, macOS 27.3).** Raw data:
+`results/backends-wkwebview-ab-t-0587.json`.
+- **The read wasn't the cause.** In the odd loads, `gl.readPixels` straight after the draw differed too, and agreed
+  with `toDataURL` on which image it was. No paused-loop draw landed during the check.
+- **The simulation is identical.** Recorded per drawn frame, the world hash matches between the two images at steps
+  300 to 304 and 420. The camera's pose matches too.
+- **The view size wasn't.** The check drew at whatever size the canvas had. Usually the page's layout had settled at
+  1280×485 (a46febe0). Sometimes, mostly over the scheme origin (7 of 40 loads there, 0 of 40 over loopback in one
+  run; W0 saw 3 of 16 on both), the check started while the canvas's box was still 1280×561.43 mid-layout. The
+  drawing buffer rounded to 1280×561, the lens refit to that box's aspect (fov 20.62° instead of 17.87°), and the
+  layout's ResizeObserver brought it to 485 only after the frames: d60fac47 (`results/ab-t-0587-old-*.png`). Pinning
+  the old check to 1280×561 gives a third hash (4f0d6881): the fractional box's aspect differs from the whole pixels'
+  (`results/ab-t-0587-d60fac47-vs-whole-561.png`). With the canvas's CSS height changing every 7 ms during the load,
+  the old check gives five image sets in 16 loads.
+- **Fixed in the check:** it owns the canvas (`offline`: no resize from the layout, no paused-loop draws) at
+  1280×720, pixel ratio 1. **WebGL in WKWebView now repeats exactly:** 106 fresh loads per origin (32, then 50 with
+  the per-frame record, 8 with the CSS height changing every 7 ms, and 16 in `backends-wkwebview.sh`), every one
+  028f66d0, by `toDataURL` and by `gl.readPixels` (04a7ce64b0d04506). WebGPU repeats too (e380a3a2, 16 loads per origin), and Chromium repeats on
+  both. At 1280×720 the two backends' stills differ by 0.49 levels on average, with 1.03% of pixels over 8, in both
+  engines.
+- **Not before W0:** the check came with W0. M3's acceptance never hashed the page canvas's pixels across loads. Any
+  check that does must own the canvas, as `?mode=post` and now `?mode=backends` do; the exports' own hosts
+  (`?mode=frames`) are sized already.
 
 ## Post on WebGPU (M4 W1, AB-T-0573)
 

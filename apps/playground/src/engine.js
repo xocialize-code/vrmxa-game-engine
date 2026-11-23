@@ -454,16 +454,30 @@ export class Playground {
    * from a fresh load; five consecutive offline frames (host.frameAt, no yield to rAF between them: AB-T-0554 gotcha 1)
    * and a still are read with toDataURL right after each draw, then decoded and hashed. In WKWebView, drawImage of a
    * WebGPU canvas gives the last *presented* frame even right after render(), so every offline frame looked the same;
-   * toDataURL in the drawing task gives the frame just drawn (Chromium gives it either way). Speech bubbles are off
+   * toDataURL in the drawing task gives the frame just drawn (Chromium gives it either way). On WebGL each draw is also
+   * read through gl.readPixels and hashed as exports hash theirs (`glFrames`, `glStill`). Speech bubbles are off
    * (troika's are WebGL-only for now). `compareWith`: another backend's still as a PNG data URL, compared pixel by pixel.
-   * @param {{ steps?: number[], still?: number, compareWith?: string | null }} [o]
+   * The check owns the canvas (AB-T-0587) at `width`×`height`, pixel ratio 1: no paused-loop draws, and no resize from
+   * the page's layout. Before, it drew at whatever size the canvas had, and in WKWebView the layout's ResizeObserver
+   * sometimes arrived only after the frames (1280×561 instead of 1280×485): the other image set, d60fac47.
+   * @param {{ steps?: number[], still?: number, compareWith?: string | null, width?: number, height?: number }} [o]
    */
-  async backendCheck({ steps = [300, 301, 302, 303, 304], still = 420, compareWith = null } = {}) {
+  async backendCheck({ steps = [300, 301, 302, 303, 304], still = 420, compareWith = null, width = 1280, height = 720 } = {}) {
+    await this.ready;
+    const ratio = this.host.renderer.getPixelRatio();
+    this.offline = true;
+    try { return await this._backendCheck({ steps, still, compareWith, width, height }); }
+    finally { this.host.renderer.setPixelRatio(ratio); this.offline = false; } // back to the page's layout
+  }
+
+  /** @param {{ steps: number[], still: number, compareWith: string | null, width: number, height: number }} o */
+  async _backendCheck({ steps, still, compareWith, width, height }) {
     await this.load(this.scene ?? 'cafe.vrmxs');
     this.pause();
     this.setBubbles(false);
-    this.input.replay({ ...(await json('input/walk-in.json')), start: this.tree.clock.step });
     const host = this.host;
+    host.renderer.setPixelRatio(1); host.resize(width, height);
+    this.input.replay({ ...(await json('input/walk-in.json')), start: this.tree.clock.step });
     /** A PNG data URL's pixels and their FNV-1a hash. */
     const pixels = async (url) => {
       const img = new Image(); img.src = url; await img.decode();
@@ -473,15 +487,27 @@ export class Playground {
       let h = 0x811c9dc5; for (let i = 0; i < d.length; i++) h = Math.imul(h ^ d[i], 0x01000193) >>> 0;
       return { hash: h.toString(16).padStart(8, '0'), data: d };
     };
-    let last = null;
+    const gl = host.backend === 'webgl' ? host.renderer.getContext() : null;
+    let last = null, lastGL = null;
+    const sizes = new Set();
     const draw = host.render.bind(host);
-    host.render = (alpha, stepped) => { draw(alpha, stepped); last = this.canvas.toDataURL('image/png'); }; // in the drawing task
-    const urls = [];
-    for (const s of steps) { await host.frameAt(s, 0.5); urls.push(last); }
-    const t0 = performance.now();
-    await host.frameAt(still, 0.5);
-    const ms = performance.now() - t0; // the frame and its toDataURL
-    host.render = draw;
+    host.render = (alpha, stepped) => { // read in the drawing task
+      draw(alpha, stepped);
+      last = this.canvas.toDataURL('image/png');
+      const { width: w, height: h } = host.drawingBufferSize();
+      sizes.add(`${w}x${h}`);
+      if (gl) { const b = new Uint8Array(w * h * 4); gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, b); lastGL = hashFrame(b); }
+    };
+    const urls = [], glFrames = [];
+    let ms = 0, glStill = null;
+    try {
+      for (const s of steps) { await host.frameAt(s, 0.5); urls.push(last); glFrames.push(lastGL); }
+      const t0 = performance.now();
+      await host.frameAt(still, 0.5);
+      ms = performance.now() - t0; // the frame and its reads
+      glStill = lastGL;
+    } finally { host.render = draw; }
+    if (sizes.size !== 1 || !sizes.has(`${width}x${height}`)) throw new Error(`backendCheck: the drawing buffer was ${[...sizes].join(', ')}, not ${width}x${height} throughout`);
     const png = last, shot = await pixels(png);
     const frames = []; for (const u of urls) frames.push((await pixels(u)).hash);
     let diff = null;
@@ -498,6 +524,7 @@ export class Playground {
     return {
       backend: host.backend, isWebGPUBackend: !!host.renderer.backend?.isWebGPUBackend, size: [this.canvas.width, this.canvas.height],
       steps, frames, distinct: new Set(frames).size, still, stillHash: shot.hash, stillMsWithRead: +ms.toFixed(1), png, diff,
+      ...(gl ? { glFrames, glStill } : {}),
       materials: [...materials], environment: !!host.scene.environment,
     };
   }
