@@ -4,7 +4,8 @@ import { test } from 'node:test';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { VirtualDevice } from '@vrmxg/input';
-import { readSettings, chosenBackend, SettingsStore, memoryStorage, defaultSettings, serializeSettings, SETTINGS_FORMAT } from '../src/settings.js';
+import { readSettings, chosenBackend, SettingsStore, memoryStorage, defaultSettings, serializeSettings, gameUiStore, SETTINGS_FORMAT } from '../src/settings.js';
+import { GameSettings } from '@vrmxg/game-ui';
 import { slotRows, latestSave, formatPlayed, saveName, PLAYER_SLOTS } from '../src/slots.js';
 import { PadNavigator, HeldGate, StepGate, nextIndex, keyCommand, padDirections, PAD } from '../src/nav.js';
 import { leaveQuestion, mayLeave } from '../src/closing.js';
@@ -13,12 +14,11 @@ import { leaveQuestion, mayLeave } from '../src/closing.js';
 
 test('settings: each field is read on its own, and a bad one costs only itself', () => {
   assert.deepEqual(readSettings(null).settings, defaultSettings());
-  const r = readSettings({ format: SETTINGS_FORMAT, version: 1, backend: 'vulkan', volume: { music: 0.25, sfx: 7, voice: 'loud' }, bindings: { jump: [{ key: 'KeyJ' }] } });
+  const ui = { version: 1, volumes: { music: { volume: 0.25, muted: false } }, bindings: { jump: [{ key: 'KeyJ' }] } };
+  const r = readSettings({ format: SETTINGS_FORMAT, version: 1, backend: 'vulkan', ui });
   assert.equal(r.settings.backend, 'auto');
-  assert.equal(r.settings.volume.music, 0.25);
-  assert.equal(r.settings.volume.sfx, 1, 'clamped to 1');
-  assert.equal(r.settings.volume.voice, 1, 'not a number: the default');
-  assert.deepEqual(r.settings.bindings, { jump: [{ key: 'KeyJ' }] }, 'kept as stored for W3');
+  assert.deepEqual(r.settings.ui, ui, 'game-ui\'s document, kept as stored: that package reads and checks it');
+  assert.equal(readSettings({ format: SETTINGS_FORMAT, version: 1, ui: 'loud' }).settings.ui, null, 'not a table: none');
   assert.match(r.problems.join(), /vulkan/);
   assert.match(readSettings({ hello: 1 }).problems[0], /not a settings document/);
   assert.equal(readSettings({ format: SETTINGS_FORMAT, version: 9, backend: 'webgl' }).settings.backend, 'webgl', 'a later version: the fields this one knows');
@@ -35,14 +35,14 @@ test('settings: a change applies at once and counts as saved only once written; 
   const slow = [], storage = { text: null, read: async () => storage.text, write: (t) => new Promise((ok) => slow.push(() => { storage.text = t; ok(); })) };
   const s = new SettingsStore(storage);
   await s.load();
-  const a = s.set({ backend: 'webgl' }), b = s.set({ volume: { music: 0.5 } });
-  assert.equal(s.value.backend, 'webgl'); assert.equal(s.value.volume.music, 0.5); assert.equal(s.saved, false);
+  const a = s.set({ backend: 'webgl' }), b = s.set({ ui: { version: 1, bindings: {} } });
+  assert.equal(s.value.backend, 'webgl'); assert.deepEqual(s.value.ui, { version: 1, bindings: {} }); assert.equal(s.saved, false);
   const tick = () => new Promise((r) => setImmediate(r));
   await tick(); assert.equal(slow.length, 1, 'one write at a time'); slow.shift()(); await a;
   assert.equal(s.saved, false, 'the first write is not the last change');
   await tick(); slow.shift()(); await b;
   assert.equal(s.saved, true);
-  assert.equal(JSON.parse(storage.text).volume.music, 0.5);
+  assert.deepEqual(JSON.parse(storage.text).ui, { version: 1, bindings: {} });
   assert.equal(JSON.parse(storage.text).backend, 'webgl');
 });
 
@@ -59,6 +59,22 @@ test('settings: a write that fails says so and leaves them unsaved; a store that
   const m = memoryStorage(serializeSettings({ ...defaultSettings(), backend: 'webgl' }));
   const u = new SettingsStore(m); await u.load();
   assert.equal(u.value.backend, 'webgl');
+});
+
+test('settings: game-ui\'s GameSettings keeps the player\'s volumes and bindings in the document\'s ui field, and a failed write says so', async () => {
+  const storage = memoryStorage(serializeSettings({ ...defaultSettings(), backend: 'webgl' }));
+  const store = new SettingsStore(storage); await store.load();
+  const player = await new GameSettings({ store: gameUiStore(store) }).load();
+  assert.equal(await player.setVolume('music', { volume: 0.4 }), true, 'saved');
+  const doc = JSON.parse(storage.text);
+  assert.equal(doc.backend, 'webgl', 'the backend is kept beside it');
+  assert.equal(doc.ui.volumes.music.volume, 0.4);
+  // a relaunch reads it back
+  const again = new SettingsStore(memoryStorage(storage.text)); await again.load();
+  assert.equal((await new GameSettings({ store: gameUiStore(again) }).load()).data.volumes.music.volume, 0.4);
+  // a store that can't write: the write throws, so GameSettings knows it wasn't kept
+  const failing = new SettingsStore({ read: async () => null, write: async () => { throw new Error('read-only'); } }); await failing.load();
+  await assert.rejects(gameUiStore(failing).write({ version: 1 }), /read-only/);
 });
 
 // ---------------------------------------------------------------- slots

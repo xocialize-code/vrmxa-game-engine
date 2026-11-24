@@ -18,7 +18,7 @@ import { GameSession, replaySession, firstDifference } from '../src/session.js';
 
 const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-avatar-studio beside the repository';
 
-test('the test game: title, level won at the counter, ending, title again; the log replays', { skip, timeout: 600000 }, async () => {
+test('the test game: title, Hana answered, level won at the counter, ending, title again; the log replays', { skip, timeout: 600000 }, async () => {
   installPortableMath();
   const p = testGameProject();
   const core = await vrmxaCore(), closet = await import(PATHS.core.replace(/index\.js$/, 'closet/index.js'));
@@ -41,7 +41,10 @@ test('the test game: title, level won at the counter, ending, title again; the l
     for (let i = 0; i < 40; i++) frames.push([[0, 0, 0, 0, 0], i === 20 ? 1 : 0]);
     frames.push(...walk.frames);
     while (frames.length < 1500) frames.push([[0, 0, 0, 0, 0], 0]);
-    session.tree.services.get('input').replay({ ...walk, start: 0, frames });
+    // Hana's question comes two seconds into the level (from step 21); the answer is a choice in the recording, as the
+    // overlay's input.choose leaves it (a frame's third entry, recording version 2)
+    frames[300] = [frames[300][0], frames[300][1], { 'dialogue.choose': 'ready' }];
+    session.tree.services.get('input').replay({ ...walk, version: 2, start: 0, frames });
     for (let i = 0; i < 1500; i++) { while (!session.advance()) await session.flow.settle(); session.flow.flush(); }
     await session.flow.settle(); session.flow.flush();
     const changes = events.filter((e) => e.type === 'scene').map((e) => `${e.from}→${e.to}@${e.step}`);
@@ -49,6 +52,8 @@ test('the test game: title, level won at the counter, ending, title again; the l
     assert.equal(events.find((e) => e.type === 'outcome')?.result, 'won', 'got to the counter in time');
     assert.ok(events.some((e) => e.type === 'checkpointWritten' && e.slot === 'door' && e.stored), 'the door\'s checkpoint, in the store');
     assert.equal(events.filter((e) => e.type === 'goal' && e.done).length, 1);
+    assert.ok(events.some((e) => e.type === 'flag' && e.flag === 'ready' && e.value === true), 'the choice took its branch: the flag it sets');
+    assert.equal(session.log().segments[0].recording.frames.filter((f) => f[2]).length, 1, 'the choice is in the log');
     const log = session.end();
     const replay = await replaySession(log, { digest: 'test-game', load, unload: freeWorld, scenes: docs.scenes, prefabs: docs.prefabs });
     assert.equal(firstDifference(replay, log.hashes), -1);

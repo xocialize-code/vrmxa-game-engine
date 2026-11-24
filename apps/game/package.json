@@ -20,6 +20,7 @@
     "@vrmxg/dmath": "0.1.0",
     "@vrmxg/editor-ui": "0.1.0",
     "@vrmxg/game": "0.1.0",
+    "@vrmxg/game-ui": "0.1.0",
     "@vrmxg/input": "0.1.0",
     "@vrmxg/interact": "0.1.0",
     "@vrmxg/item": "0.1.0",

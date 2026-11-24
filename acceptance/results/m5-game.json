@@ -6,50 +6,50 @@
  "build": {
   "game": "cafe-test",
   "files": 76,
-  "digest": "c53b3a236a744d798ab4a45410df5b5e1e4cf8b7ed71aec86f4474e98014fd9d",
-  "manifest": "28f82627d8e8da67acbf12f4e500e4607f324848feb013cfef498dc7b4f902e3"
+  "digest": "726bfc53f94acf6d70de6e621979618f6e99989b9a7239abbc128cc9ad55e38d",
+  "manifest": "4c612666a921580634554c8e6da7d3db786705a67c71176de888df0fbb7ba8a5"
  },
  "session": {
   "segments": [
    {
     "from": "game/title.vrmxs",
     "at": 0,
-    "steps": 430,
+    "steps": 655,
     "marks": [
      {
       "type": "save",
       "slot": "slot-1",
-      "step": 249
+      "step": 472
      }
     ]
    },
    {
     "from": "slot-1",
-    "at": 249,
-    "steps": 150,
+    "at": 472,
+    "steps": 151,
     "marks": []
    }
   ],
-  "steps": 580,
+  "steps": 806,
   "scenes": [
    "game/title.vrmxs",
    "game/level.vrmxs"
   ],
   "last": {
-   "step": 399,
+   "step": 623,
    "scene": "game/level.vrmxs",
-   "hash": "90741038b01f8ac0"
+   "hash": "32ea89c75df61c90"
   }
  },
  "replay": {
-  "steps": 580,
+  "steps": 806,
   "firstDifference": null
  },
  "checks": [
   {
    "name": "the test game exports with the game app as its runtime",
    "ok": true,
-   "detail": "76 files, digest c53b3a236a744d79"
+   "detail": "76 files, digest 726bfc53f94acf6d"
   },
   {
    "name": "the title menu, on WebGL when forced",
@@ -57,14 +57,24 @@
    "detail": "readout \"Renderer WebGL\", focus on #new-game"
   },
   {
+   "name": "the HUD shows the level's goal, score and clock",
+   "ok": true,
+   "detail": "{\"goal\":\"Goal: Get to the counter\",\"score\":\"Score 0\",\"timer\":\"Until the cafe opens 1:00\"}"
+  },
+  {
+   "name": "Hana asks, Enter on the first choice answers it, and the choice is a recorded input",
+   "ok": true,
+   "detail": "\"Hana: Then get to the counter, quick!\"; choices in the recording [{\"dialogue.choose\":\"ready\"}]"
+  },
+  {
    "name": "Escape pauses: nothing steps while the menu is open",
    "ok": true,
-   "detail": "paused at step 249 in game/level.vrmxs"
+   "detail": "paused at step 472 in game/level.vrmxs"
   },
   {
    "name": "Save Game → Slot 1 saves, and the slot says what it holds",
    "ok": true,
-   "detail": "\"Slot 1: The Cafe (test game) · level · Get to the counter, 0:04 · 2026-11-24 23:21\""
+   "detail": "\"Slot 1: The Cafe (test game) · level · Get to the counter, 0:07 · 2026-11-24 23:40\""
   },
   {
    "name": "Tab stays in a question: nothing behind the sheet can be reached",
@@ -74,27 +84,27 @@
   {
    "name": "Load Game over unsaved play asks first, then goes back to the save",
    "ok": true,
-   "detail": "asked \"Load over this game?\"; was at 430, back at 249 (saved at 249)"
+   "detail": "asked \"Load over this game?\"; was at 655, back at 472 (saved at 472)"
   },
   {
    "name": "Quit to Title asks first, and the session's log has both segments",
    "ok": true,
-   "detail": "asked \"Quit to Title without saving?\"; 2 segments, 580 steps hashed in the page, scenes game/title.vrmxs, game/level.vrmxs; goals before the load {\"reach-counter\":{\"done\":false,\"step\":null}}"
+   "detail": "asked \"Quit to Title without saving?\"; 2 segments, 806 steps hashed in the page, scenes game/title.vrmxs, game/level.vrmxs; goals before the load {\"reach-counter\":{\"done\":false,\"step\":null}}"
   },
   {
    "name": "the session played in Chromium replays in Node to the same hash after every step",
    "ok": true,
-   "detail": "580 steps, last 90741038b01f8ac0 at step 399"
+   "detail": "806 steps, last 32ea89c75df61c90 at step 623"
   },
   {
    "name": "a save an earlier export made is shown as such and can't be picked; Continue offers this build's",
    "ok": true,
-   "detail": "slot 6 \"Slot 6: made with another version of the game, can't be loaded, 0:04 · 2099-01-01 00:00\" (disabled: true); Continue \"Continue: Slot 1: The Cafe (test game) · level · Get to the counter, 0:04 · 2026-11-24 23:21\""
+   "detail": "slot 6 \"Slot 6: made with another version of the game, can't be loaded, 0:07 · 2099-01-01 00:00\" (disabled: true); Continue \"Continue: Slot 1: The Cafe (test game) · level · Get to the counter, 0:07 · 2026-11-24 23:40\""
   },
   {
    "name": "a fresh launch offers Continue, and Load Game → Slot 1 loads the save",
    "ok": true,
-   "detail": "Continue \"Continue: Slot 1: The Cafe (test game) · level · Get to the counter, 0:04 · 2026-11-24 23:21\"; loaded at step 249 (saved at 249)"
+   "detail": "Continue \"Continue: Slot 1: The Cafe (test game) · level · Get to the counter, 0:07 · 2026-11-24 23:40\"; loaded at step 472 (saved at 472)"
   },
   {
    "name": "every menu from a gamepad: Start pauses and resumes, the d-pad moves, A chooses, B goes back",
@@ -107,9 +117,14 @@
    "detail": "↓↓ → #load-game; Enter → load menu (focus #slot-1); ↑↑ → #settings; settings ↓ → #backend-webgpu; Escape → playing"
   },
   {
-   "name": "a backend chosen in Settings is kept",
+   "name": "a backend chosen in Settings and a key rebound there are kept, in one settings document",
    "ok": true,
-   "detail": "stored { \"format\": \"vrmxg-game-settings\", \"version\": 1, \"backend\": \"webgl\", \"volume\": { \"master\": 1, \"music\": 1, \"sfx\": 1, \"voice\": 1, \"ambience\": 1 }, \"bindings\": null } "
+   "detail": "stored { \"format\": \"vrmxg-game-settings\", \"version\": 1, \"backend\": \"webgl\", \"ui\": { \"version\": 1, \"volumes\": { \"master\": { \"volume\": 1, \"muted\": false }, \"music\": { \"volume\": 1, \"muted\": false }, \"sfx\": { \"volume\": 1, \"muted\": "
+  },
+  {
+   "name": "a fresh launch has the rebound key on the menus' input before any game starts",
+   "ok": true,
+   "detail": "Jump: KeyJ, pad 0"
   },
   {
    "name": "with no query the page draws on WebGPU where it has it, else WebGL; the stored setting is obeyed",

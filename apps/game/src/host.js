@@ -6,7 +6,7 @@
 // steps as the render host's own frame() does. While a menu is open nothing steps.
 import { RenderHost } from '@vrmxg/render';
 import { loadRapier } from '@vrmxg/physics';
-import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
+import { KeyboardDevice, MouseDevice, GamepadDevice, InputService } from '@vrmxg/input';
 import { AudioOutput } from '@vrmxg/audio';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { disposeWorld } from '../../editor/src/dispose.js';
@@ -28,8 +28,10 @@ export class GameHost {
    * @param {(command: string) => void} [o.onCommand] a gamepad's menu command, or 'pause' (Start while playing)
    * @param {(event: any) => void} [o.onEvent] the flow's events
    * @param {() => boolean} [o.hold] true while a menu or a question is up: nothing steps then, whatever else happens
+   * @param {any} [o.uiSettings] the player's volumes and bindings (@vrmxg/game-ui's GameSettings): put on every world's
+   *   input service before its first step, and on the audio output
    */
-  constructor({ canvas, build, backend, characters, shell, trace = false, onChange = () => {}, onCommand = () => {}, onEvent = () => {}, hold = () => false }) {
+  constructor({ canvas, build, backend, characters, shell, trace = false, onChange = () => {}, onCommand = () => {}, onEvent = () => {}, hold = () => false, uiSettings = null }) {
     this.canvas = canvas; this.build = build; this.game = build.game; this.shell = shell;
     this.characters = characters; this.onChange = onChange; this.onCommand = onCommand; this.onEvent = onEvent;
     this.render = /** @type {RenderHost | null} */ (null);
@@ -43,6 +45,11 @@ export class GameHost {
     this.gamepad = new HeldGate(new GamepadDevice());
     this.pad = new GamepadDevice(); this.nav = new PadNavigator();
     this.hold = hold;
+    this.uiSettings = uiSettings;
+    /** The input service whose devices a menu reads while no world is played (the title menu's settings): the game's map. */
+    this.menuInput = /** @type {InputService | null} */ (null);
+    /** The input service the menus hold (input.hold('menu')) while one is open, or null. */
+    this._claimed = /** @type {InputService | null} */ (null);
     this.stepping = new StepGate([this.keyboard, this.mouse, this.gamepad]);
     this.trace = trace;
     this.session = /** @type {GameSession | null} */ (null);
@@ -62,12 +69,18 @@ export class GameHost {
     const R = await loadRapier();
     this.audio = new AudioOutput(); this.audio.unlockOn(window);
     this.keyboard.device.attach(window); this.mouse.device.attach(this.canvas);
+    const actions = await build.actions();
+    // the menus' input while no world is played: the game's map with the app's devices, never stepped (a stand-in tree)
+    this.menuInput = new InputService(/** @type {any} */ ({ clock: { step: 0 } }), actions ? { actions } : {});
+    for (const d of [this.keyboard, this.mouse, this.gamepad]) this.menuInput.addDevice(d);
+    this.uiSettings?.applyTo({ input: this.menuInput, audio: this.audio });
     const load = worldLoader({
-      R, scenes, behaviours, actions: await build.actions(), ...this.characters,
+      R, scenes, behaviours, actions, ...this.characters,
       options: () => ({ mtoonMaterial: this.render.mtoonMaterial, audioOutput: this.audio, characterCache: this.characterCache }),
       onBuilt: (world) => {
         this.worlds.set(world.tree, world);
         for (const d of [this.keyboard, this.mouse, this.gamepad]) world.input.addDevice(d);
+        this.uiSettings?.applyTo({ input: world.input }); // the player's bindings, before the world's first step
       },
     });
     this.session = new GameSession({
@@ -147,7 +160,8 @@ export class GameHost {
   /** Ask for the pointer (mouse look) while playing: from a click on the canvas. */
   capturePointer() { if (this.state.playing) this.mouse.device.lock?.(); }
 
-  setVolume(volume) { for (const [bus, v] of Object.entries(volume ?? {})) { try { this.audio?.setBus(bus, { volume: v }); } catch { /* a bus this output doesn't have */ } } }
+  /** The input service the menus and the settings controls read: the world being played's, else the menus' own. */
+  input() { return this.session?.tree?.services.get('input') ?? this.menuInput; }
 
   async _busy(label, fn) {
     // one session change at a time: a second New Game or Load while one is under way (a double press) is refused
@@ -176,7 +190,9 @@ export class GameHost {
       const tree = this.session?.tree, render = this.render;
       if (!tree || !render || render.tree !== tree) { this._last = null; this.stepping.update(true); return; }
       // a menu or a question up (one opened while a save loaded, say), or not playing: nothing steps
-      const { step, resumed } = this.stepping.update(!this.state.playing || this.hold());
+      const held = !this.state.playing || this.hold();
+      const { step, resumed } = this.stepping.update(held);
+      this._claim(held);
       if (resumed) this._last = null; // no catching up on the time the menu was open
       const dt = this._last === null ? 0 : Math.min(0.25, (t - this._last) / 1000);
       this._last = t;
@@ -190,6 +206,20 @@ export class GameHost {
       if (this.session?.step !== shown || this.session?.held !== this.state.held) { shown = this.session?.step ?? -1; this._changed(); }
     };
     requestAnimationFrame(tick);
+  }
+
+  // While a menu or a question is up the menus hold the world's input with their own claim (input.hold('menu')), which
+  // the overlay's claim (a conversation) never releases, nor this one the overlay's. A new world (a load behind a menu)
+  // takes the claim with it (carryTo); it is released on the world being played when the menus close.
+  _claim(held) {
+    const input = this.session?.tree?.services.get('input') ?? null;
+    if (held && input) {
+      if (this._claimed !== input) { this._claimed?.release('menu'); input.hold('menu'); this._claimed = input; }
+    } else if (this._claimed) {
+      this._claimed.release('menu');
+      if (input && input !== this._claimed) input.release('menu');
+      this._claimed = null;
+    }
   }
 
   // Live play over the session: as RenderHost.frame, but each step goes through the flow (scene changes, checkpoints).

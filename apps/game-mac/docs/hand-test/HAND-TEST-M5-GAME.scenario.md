@@ -43,6 +43,20 @@ fresh: false
   shot "level"
   ```
 
+- [ ] The HUD shows the level's goal, score and clock, and Hana's question is answered from the keyboard.
+  ```steps
+  until find("id=hud-goal").count == 1 timeout=30000   # @vrmxg/game-ui's HUD, mounted at the app's seam
+  until find("text=Get to the counter").count >= 1 timeout=10000   # the goal's text (its "Goal:" is a visually hidden word)
+  expect find("text=Until the cafe opens").count >= 1   # the clock's label
+  wait id=dialogue timeout_ms=30000   # Hana's Dialogue starts on the level's first step
+  until find("id=dialogue-choice-ready").count == 1 timeout=15000   # she asks once her line is said (two seconds)
+  pause 500   # focus goes to the first choice when she asks
+  keys return   # Enter on "Let's do this.": input.choose('dialogue.choose', 'ready'), latched by the next step
+  until find("text=Then get to the counter, quick!").count >= 1 timeout=10000   # the branch the choice names
+  shot "answered"
+  until find("id=dialogue").count == 0 timeout=15000   # her answer said: the conversation is over
+  ```
+
 - [ ] Escape pauses (nothing steps while the menu is open), and Enter on Resume plays on.
   ```steps
   keys escape

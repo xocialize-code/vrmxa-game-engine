@@ -9,7 +9,10 @@ import { reactive, ref, shallowRef, computed, onMounted, onBeforeUnmount, nextTi
 import { inShell, call, onClosing, setEdited } from '../../shell/js/shell.js';
 import { questions } from '@vrmxg/editor-ui';
 import { GameHost } from './host.js';
-import { SettingsStore, localStorageFor, shellStorage, memoryStorage, chosenBackend, VOLUME_BUSES } from './settings.js';
+import { GameSettings } from '@vrmxg/game-ui';
+import VolumeControls from '@vrmxg/game-ui/VolumeControls.vue';
+import RebindList from '@vrmxg/game-ui/RebindList.vue';
+import { SettingsStore, localStorageFor, shellStorage, memoryStorage, chosenBackend, gameUiStore } from './settings.js';
 import { slotRows, latestSave, PLAYER_SLOTS } from './slots.js';
 import { mayLeave } from './closing.js';
 import MenuScreen from './MenuScreen.vue';
@@ -22,6 +25,8 @@ const query = new URLSearchParams(location.search);
 const canvas = ref(null), menu = ref(null), sheet = ref(null);
 const host = shallowRef(/** @type {GameHost | null} */ (null));
 const settings = shallowRef(/** @type {SettingsStore | null} */ (null));
+/** The player's volumes and bindings (@vrmxg/game-ui), kept in the settings document's `ui`. */
+const uiSettings = shallowRef(/** @type {GameSettings | null} */ (null));
 const ui = reactive({
   stack: ['title'], ready: false, starting: 'Loading…', fatal: '', message: '', version: 0,
   backend: '', step: 0, safeStep: 0, scene: null, held: null, loading: '', error: '', dirty: false, lastSlot: null,
@@ -39,16 +44,6 @@ const latest = computed(() => { const e = latestSave(ui.saves, { build: buildDig
 // Load Game opens when there is a save this build can load (Continue picks the newest of them)
 const loadable = computed(() => !!latest.value);
 const slotLabel = (s) => (PLAYER_SLOTS.includes(s) ? `Slot ${PLAYER_SLOTS.indexOf(s) + 1}` : s);
-const BUS_NAMES = { master: 'Master', music: 'Music', sfx: 'Effects', voice: 'Voices', ambience: 'Ambience' };
-const bindings = computed(() => Object.entries(game.input?.actions ?? {}).map(([name, a]) => ({ name, keys: (a.bindings ?? []).map(describeBinding).filter(Boolean).join(', ') })));
-function describeBinding(b) {
-  if (b.key) return b.key.replace(/^Key/, '').replace(/^Digit/, '');
-  if (b.mouseButton !== undefined) return `Mouse ${b.mouseButton + 1}`;
-  if (b.mouse) return `Mouse ${b.mouse}`;
-  if (b.gamepadButton !== undefined) return `Pad button ${b.gamepadButton}`;
-  if (b.gamepadAxis !== undefined) return `Pad stick ${b.gamepadAxis}`;
-  return '';
-}
 
 function sync() {
   const s = host.value?.state;
@@ -130,7 +125,6 @@ function quitApp() { quitting = true; call('app.quit').catch((e) => { quitting =
 
 const BACKEND_CHOICES = [{ id: 'auto', label: 'Automatic' }, { id: 'webgpu', label: 'WebGPU' }, { id: 'webgl', label: 'WebGL' }];
 function setBackend(backend) { settings.value.set({ backend }).then(noteSettings); }
-function setVolume(bus, e) { settings.value.set({ volume: { [bus]: +e.target.value / 100 } }).then(noteSettings); }
 function noteSettings() { const s = settings.value; ui.settingsNote = s.error ?? (s.saved ? 'Settings saved.' : 'Saving…'); }
 const backendNote = computed(() => {
   if (ui.choice.from === 'query') return `Set by the page's address (renderer=${ui.choice.backend}): the setting below applies without it.`;
@@ -147,6 +141,7 @@ function onCommand(c) {
   if (c === 'pause') { pause(); return; }
   if (ui.question) { sheet.value?.command(c); return; }
   if (c === 'start') { if (top.value === 'pause') resume(); return; }
+  if (top.value === 'settings') return; // the settings menu navigates with @vrmxg/game-ui's useNav, its gamepad included
   if (!playing.value) menu.value?.command(c);
 }
 function onKey(e) {
@@ -160,7 +155,8 @@ function onPointerLock() {
 }
 function beforeUnload(e) { if (host.value?.session?.dirty) { e.preventDefault(); e.returnValue = ''; } }
 
-const inputOf = () => host.value?.session?.tree?.services.get('input') ?? null;
+// the input service the settings controls read and rebind: the world being played's, else the menus' own (the title)
+const inputOf = () => host.value?.input() ?? null;
 
 onMounted(async () => {
   window.__game = { log: () => host.value?.session?.log() ?? null, lastLog: null, state: () => JSON.parse(JSON.stringify(ui)), host: () => host.value };
@@ -176,16 +172,20 @@ onMounted(async () => {
     if (store.error) say(store.error);
     settings.value = store;
     ui.values = store.value;
-    store.on((v) => { ui.values = { ...v, volume: { ...v.volume } }; host.value?.setVolume(v.volume); });
+    store.on((v) => { ui.values = { ...v }; });
+    // the player's volumes and bindings: W3's GameSettings over the `ui` field (a store that can't be read gives defaults)
+    const playerSettings = await new GameSettings({ store: gameUiStore(store) }).load();
+    if (playerSettings.loadError) say(`The volumes and controls couldn't be read: ${playerSettings.loadError}`);
+    uiSettings.value = playerSettings;
     ui.choice = chosenBackend(location.search, store.value);
     ui.starting = 'Starting the renderer…';
     const h = new GameHost({
       canvas: canvas.value, build: props.build, backend: ui.choice.backend, characters: props.characters, shell: { inShell, call }, trace: query.has('trace'), onChange: sync, onCommand,
       hold: () => ui.stack.length > 0 || !!ui.question, // nothing steps while a menu or a question is up
+      uiSettings: playerSettings,
     });
     host.value = h;
     await h.open(ui.choice.backend);
-    h.setVolume(store.value.volume);
     await refreshSaves();
     ui.ready = true;
     sync();
@@ -207,7 +207,7 @@ onBeforeUnmount(() => { removeEventListener('keydown', onKey); document.removeEv
 <template>
   <main class="game" :class="{ playing }">
     <canvas id="view" ref="canvas" tabindex="-1" aria-label="The game" @click="host?.capturePointer()" />
-    <GameOverlay :inert="ui.stack.length || ui.question ? '' : null" :session="host?.session ?? null" :input="inputOf" :settings="settings ?? {}" :version="ui.version" :playing="playing" />
+    <GameOverlay :inert="ui.stack.length || ui.question ? '' : null" :session="host?.session ?? null" :settings="uiSettings" :version="ui.version" />
 
     <div v-if="ui.fatal" id="fatal" class="fatal" role="alert">{{ ui.fatal }}</div>
     <div v-else-if="!ui.ready" class="starting" role="status">{{ ui.starting }}</div>
@@ -252,33 +252,28 @@ onBeforeUnmount(() => { removeEventListener('keydown', onKey); document.removeEv
         <button :id="`${top}-back`" type="button" class="back" @click="back">Back</button>
       </MenuScreen>
 
-      <MenuScreen v-else-if="top === 'settings'" id="settings-menu" ref="menu" title="Settings" @back="back">
+      <MenuScreen v-else-if="top === 'settings'" id="settings-menu" ref="menu" title="Settings" nav="game-ui" :input="inputOf" @back="back">
         <fieldset class="group">
           <legend>Display</legend>
           <div class="row choices" role="radiogroup" aria-label="Renderer setting">
             <span>Renderer</span>
-            <button v-for="b in BACKEND_CHOICES" :id="`backend-${b.id}`" :key="b.id" type="button" role="radio" :aria-checked="(ui.values?.backend ?? 'auto') === b.id" :aria-label="`Renderer ${b.label}`" :class="{ on: (ui.values?.backend ?? 'auto') === b.id }" @click="setBackend(b.id)">{{ b.label }}</button>
+            <button v-for="b in BACKEND_CHOICES" :id="`backend-${b.id}`" :key="b.id" data-nav type="button" role="radio" :aria-checked="(ui.values?.backend ?? 'auto') === b.id" :aria-label="`Renderer ${b.label}`" :class="{ on: (ui.values?.backend ?? 'auto') === b.id }" @click="setBackend(b.id)">{{ b.label }}</button>
           </div>
           <p class="note">Drawing with {{ backendName }}. {{ backendNote }}</p>
-          <button v-if="canRestart" id="restart" type="button" @click="restart">Restart Now</button>
+          <button v-if="canRestart" id="restart" data-nav type="button" @click="restart">Restart Now</button>
         </fieldset>
-        <!-- M5 W3's volume controls (@vrmxg/game-ui) take this group's place -->
-        <fieldset class="group" data-mount="game-ui-volume">
+        <!-- M5 W3's controls (@vrmxg/game-ui): volume per bus, and rebinding; they keep the player's settings in uiSettings -->
+        <fieldset class="group">
           <legend>Sound</legend>
-          <label v-for="bus in VOLUME_BUSES" :key="bus" class="row">{{ BUS_NAMES[bus] }}
-            <input :id="`volume-${bus}`" type="range" min="0" max="100" step="5" :value="Math.round((ui.values?.volume?.[bus] ?? 1) * 100)" :aria-label="`${BUS_NAMES[bus]} volume`" :aria-valuetext="`${Math.round((ui.values?.volume?.[bus] ?? 1) * 100)} percent`" @change="setVolume(bus, $event)">
-          </label>
+          <VolumeControls v-if="uiSettings" :settings="uiSettings" :audio="host?.audio" :input="inputOf" @back="back" />
         </fieldset>
-        <!-- M5 W3's rebinding controls (@vrmxg/game-ui) take this group's place -->
-        <fieldset class="group" data-mount="game-ui-controls">
+        <fieldset class="group">
           <legend>Controls</legend>
-          <dl class="bindings">
-            <template v-for="b in bindings" :key="b.name"><dt>{{ b.name }}</dt><dd>{{ b.keys }}</dd></template>
-          </dl>
+          <RebindList v-if="uiSettings" :input="inputOf" :settings="uiSettings" :hide="['look_x', 'look_y', 'zoom']" @back="back" />
           <p class="note">Escape or a gamepad's Start pauses.</p>
         </fieldset>
         <p id="settings-status" class="note" role="status" :aria-label="ui.settingsNote || 'Settings unchanged'">{{ ui.settingsNote }}</p>
-        <button id="settings-back" type="button" class="back" @click="back">Back</button>
+        <button id="settings-back" data-nav type="button" class="back" @click="back">Back</button>
       </MenuScreen>
     </div>
 

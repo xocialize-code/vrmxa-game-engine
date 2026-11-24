@@ -50,11 +50,12 @@
     {"id":"cam","type":"Camera","parent":"root","transform":{"p":[-0.5,1.6,12.5]},"props":{"focalLength":30,"preset":"follow","rig":{"yaw":180},"target":"mira"}},
     {"id":"entrance-zone","type":"Area","parent":"root","transform":{"p":[-0.5,1,4.5]},"props":{"shape":"box","size":[2,2,0.6]},"behaviours":[{"use":"playerZone"}]},
     {"id":"counter-zone","type":"Area","parent":"root","transform":{"p":[-0.5,1,0]},"props":{"shape":"box","size":[2,2,0.8]},"behaviours":[{"use":"playerZone"}]},
-    {"id":"rules","type":"GameRules","parent":"root","props":{"flags":{"reachedCounter":false},"lose":{"key":"timers.clock.done","test":"state"}}},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"flags":{"reachedCounter":false,"ready":false},"lose":{"key":"timers.clock.done","test":"state"}}},
     {"id":"score","type":"GameCounter","parent":"rules","props":{"label":"Score"}},
     {"id":"clock","type":"GameTimer","parent":"rules","props":{"label":"Until the cafe opens","seconds":60}},
     {"id":"reach-counter","type":"GameGoal","parent":"rules","props":{"text":"Get to the counter","when":{"key":"flags.reachedCounter","test":"state"}}},
-    {"id":"cp-door","type":"Checkpoint","parent":"rules","props":{"label":"Inside the cafe","once":true,"slot":"door"}}
+    {"id":"cp-door","type":"Checkpoint","parent":"rules","props":{"label":"Inside the cafe","once":true,"slot":"door"}},
+    {"id":"greeting","type":"Dialogue","parent":"root","props":{"autostart":true,"lines":[{"choices":[{"id":"ready","set":{"ready":true},"text":"Let's do this.","to":"go"},{"id":"coffee","set":{"ready":true},"text":"Coffee first.","to":"coffee"}],"seconds":2,"speaker":"hana-1","text":"Morning, Mira! Ready for the rush?"},{"id":"go","next":"end","seconds":1.5,"speaker":"hana-1","text":"Then get to the counter, quick!"},{"id":"coffee","seconds":1.5,"speaker":"hana-1","text":"Grab one at the counter, then."}]}}
   ],
   "connections": [
     {"from":"door-1","signal":"ready","to":"hana-1","call":"lookAt","args":{"target":"mira"}},

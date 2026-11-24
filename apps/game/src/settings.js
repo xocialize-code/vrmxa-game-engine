@@ -1,12 +1,12 @@
 // The game app's settings (M5 W1, AB-D-0286): one small document, kept per game.
 //
-//   { "format": "vrmxg-game-settings", "version": 1, "backend": "auto", "volume": { "master": 1, … }, "bindings": null }
+//   { "format": "vrmxg-game-settings", "version": 1, "backend": "auto", "ui": { …@vrmxg/game-ui's GameSettings… } }
 //
 //   backend   'auto' (WebGPU where the page has it, else WebGL), 'webgpu' or 'webgl'. The page's `renderer=` query wins
 //             over it (the switch every VRMXG app obeys); a change takes effect when the page is loaded again
-//   volume    0 to 1 per bus: master, music, sfx, voice, ambience (@vrmxg/audio's buses). Presentation only
-//   bindings  the player's own key and gamepad bindings: a place kept for @vrmxg/game-ui's rebinding controls (M5 W3).
-//             Nothing here reads it yet; what is stored is kept as it is
+//   ui        @vrmxg/game-ui's GameSettings document (volume per bus, the player's key and gamepad bindings), kept here as
+//             it is: that package reads and checks it (gameUiStore below hands it the field). The player's, never the
+//             simulation's
 //
 // Where it is kept: in a browser tab, localStorage under the game's id; in the Mac app, a file in the game's own
 // container, through the shell's settings.read and settings.write (the Mac app's loopback origin has another port on
@@ -18,13 +18,10 @@
 export const SETTINGS_FORMAT = 'vrmxg-game-settings';
 export const SETTINGS_VERSION = 1;
 export const BACKENDS = ['auto', 'webgpu', 'webgl'];
-export const VOLUME_BUSES = ['master', 'music', 'sfx', 'voice', 'ambience'];
 
 export function defaultSettings() {
-  return { format: SETTINGS_FORMAT, version: SETTINGS_VERSION, backend: 'auto', volume: Object.fromEntries(VOLUME_BUSES.map((b) => [b, 1])), bindings: null };
+  return { format: SETTINGS_FORMAT, version: SETTINGS_VERSION, backend: 'auto', ui: null };
 }
-
-const unit = (v, fallback) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : fallback);
 
 /**
  * Settings from whatever was stored: every field checked on its own, so one bad value costs only itself. A document of
@@ -36,16 +33,12 @@ export function readSettings(stored) {
   if (stored === null || stored === undefined) return { settings, problems };
   if (typeof stored !== 'object' || Array.isArray(stored) || stored.format !== SETTINGS_FORMAT) return { settings, problems: ['not a settings document: the defaults are used'] };
   if (stored.backend !== undefined) { if (BACKENDS.includes(stored.backend)) settings.backend = stored.backend; else problems.push(`backend "${stored.backend}" isn't one of ${BACKENDS.join(', ')}`); }
-  if (stored.volume !== undefined) {
-    if (stored.volume && typeof stored.volume === 'object') for (const b of VOLUME_BUSES) { if (Object.hasOwn(stored.volume, b)) settings.volume[b] = unit(stored.volume[b], settings.volume[b]); }
-    else problems.push('volume isn\'t a table of buses');
-  }
-  if (stored.bindings !== undefined && stored.bindings !== null) { if (typeof stored.bindings === 'object') settings.bindings = structuredClone(stored.bindings); else problems.push('bindings isn\'t a table'); }
+  if (stored.ui !== undefined && stored.ui !== null) { if (typeof stored.ui === 'object' && !Array.isArray(stored.ui)) settings.ui = structuredClone(stored.ui); else problems.push('ui isn\'t a table'); }
   return { settings, problems };
 }
 
 /** The settings document's text, as it is stored. */
-export const serializeSettings = (s) => `${JSON.stringify({ format: SETTINGS_FORMAT, version: SETTINGS_VERSION, backend: s.backend, volume: s.volume, bindings: s.bindings ?? null }, null, 1)}\n`;
+export const serializeSettings = (s) => `${JSON.stringify({ format: SETTINGS_FORMAT, version: SETTINGS_VERSION, backend: s.backend, ui: s.ui ?? null }, null, 1)}\n`;
 
 /**
  * The backend a page draws on: the `renderer=` query when it names one, else the stored setting.
@@ -90,10 +83,10 @@ export class SettingsStore {
   /**
    * Change settings: applied now (listeners hear it at once), then written. Resolves to whether the store has it.
    * Writes go one at a time and in order, so the store ends with the last change whatever each write took.
-   * @param {{ backend?: string, volume?: Record<string, number>, bindings?: any }} patch
+   * @param {{ backend?: string, ui?: any }} patch
    */
   set(patch) {
-    const next = readSettings({ ...this.value, ...patch, volume: { ...this.value.volume, ...(patch.volume ?? {}) }, format: SETTINGS_FORMAT }).settings;
+    const next = readSettings({ ...this.value, ...patch, format: SETTINGS_FORMAT }).settings;
     this.value = next; this.saved = false;
     const seq = ++this._seq, text = serializeSettings(next);
     this._tell();
@@ -108,6 +101,19 @@ export class SettingsStore {
   /** Hear every change (and every change of `saved` and `error`). → a function that stops it */
   on(fn) { this._listeners.add(fn); return () => this._listeners.delete(fn); }
   _tell() { for (const fn of [...this._listeners]) fn(this.value, this); }
+}
+
+/**
+ * The store @vrmxg/game-ui's GameSettings reads and writes (`{ read(), write(s) }`): the `ui` field of these settings,
+ * so the backend and the player's volumes and bindings are one document in one place. A write that doesn't reach the
+ * store throws, so GameSettings knows it wasn't kept.
+ * @param {SettingsStore} store
+ */
+export function gameUiStore(store) {
+  return {
+    read: () => store.value.ui ?? null,
+    write: async (s) => { if (!(await store.set({ ui: s }))) throw new Error(store.error ?? 'the settings could not be saved'); },
+  };
 }
 
 /** Settings in memory (tests; a page with no storage it may use). */

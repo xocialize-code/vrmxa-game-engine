@@ -102,6 +102,9 @@ export class HeldGate {
   /** The game takes over now: whatever is down at the next read stays hidden until it comes up. */
   arm() { this._arm = true; }
 
+  /** What the device holds now, for a menu (@vrmxg/input's peek): nothing hidden, nothing taken from the step. */
+  peek(out) { this.device.peek?.(out); }
+
   read(out) {
     this.device.read(out);
     if (this._arm) {

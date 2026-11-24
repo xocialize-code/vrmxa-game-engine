@@ -3,7 +3,7 @@
 M5 W1 (AB-T-0616, decision AB-D-0286). The runtime every game build is made with: a Vue page that opens the build
 beside it, steps a `GameFlow` session (`@vrmxg/game`) and draws its world on WebGPU, with the WebGL fallback and the
 `renderer=` switch, as the other apps do. It has the app's own screens: a title menu, pause, save slots and settings.
-Everything player-facing over the game (the HUD, prompts, dialogue) is M5 W3's `@vrmxg/game-ui`, and mounts in one place:
+Everything player-facing over the game (the HUD, prompts, dialogue, captions) is M5 W3's `@vrmxg/game-ui`, mounted in one place:
 `src/overlay/GameOverlay.vue`.
 
 ```sh
@@ -99,45 +99,64 @@ last slot used.
 | Settings | `localStorage['vrmxg.game.<id>.settings']` | the shell's `settings.read` / `settings.write` (shell 0.11.0): `Application Support/<bundle id>/settings.json` |
 
 Player slots are `slot-1` to `slot-6` (`flow.saveTo`); `auto-…` slots are the game's checkpoints, listed and loaded,
-never written from the menu. The settings document (`vrmxg-game-settings`, version 1: `backend`, `volume` per bus,
-`bindings` kept for W3) is read field by field, so one bad value costs only itself; a change applies at once and says
-"saved" only once written.
+never written from the menu. The settings document (`vrmxg-game-settings`, version 1: `backend`, and `ui`, `@vrmxg/game-ui`'s
+`GameSettings` document with the player's volumes and bindings, which that package reads and checks) is read field by
+field, so one bad value costs only itself; a change applies at once and says "saved" only once written. `gameUiStore`
+hands `GameSettings` the `ui` field, so the backend and the player's settings are one document in one place, and a write
+that doesn't reach the store throws, so `GameSettings` knows.
 
 ## The seam for `@vrmxg/game-ui` (M5 W3)
 
-`src/overlay/GameOverlay.vue` is handed the session (`session.flow`: `view()`, `on()`, `version`), the input service of
-the world being played (`input()`, where a dialogue choice becomes a latched, recorded input), the settings store, a
-`version` that changes with the game's view, and `playing`. It draws nothing yet. The settings menu has plain volume
-sliders and a read-only list of the controls in two groups marked `data-mount="game-ui-volume"` and
-`data-mount="game-ui-controls"`: W3's controls take their place.
+`src/overlay/GameOverlay.vue` mounts the package's `GameOverlay` (the HUD, the dialogue box with its choices, captions)
+over the canvas, bound to the session's `GameFlow`; a new game or a load from the title makes a new flow, and the
+overlay is mounted again for it. It is handed the player's `GameSettings`, which it puts on every world.
+- **The settings menu** holds the package's `VolumeControls` and `RebindList` beside the renderer choice, in one
+  `useNav` root (`MenuScreen nav="game-ui"`), so the keys and a gamepad move across all of them; the app's own gamepad
+  poll steps aside there. Every other menu is a nav root too (`data-nav-root`), so the overlay never takes the keys from
+  a menu opened over a conversation.
+- **Rebinding and volumes** are kept through the app's settings store (the `ui` field). The host puts them on every
+  world's input service before its first step and on the audio output. From the title, with no world yet, the menus have
+  an input service of their own (`host.menuInput`: the game's map with the app's devices, never stepped), so rebinding
+  works there too and the next game gets it.
+- **Who holds the devices.** While a menu or a question is up, the menus hold the world's input with their own claim
+  (`input.hold('menu')`, released when they close); the overlay holds it with its own while a conversation is on screen.
+  Neither releases the other's. Claims aren't in the snapshot, so they change no hash.
+- **Conversations** are scene data (`Dialogue` nodes, `@vrmxg/voice`): the shared world builder
+  (`apps/playground/src/world.js`) installs the dialogue service for a scene that has one, after input, voice and game,
+  so this runtime, the playground, the editor's Play and the bundle's `play.js` all run them (part of AB-T-0630; MCP's
+  engine is the rest). A scene without one gets no service, so no other scene's hashes move. A choice reaches the
+  simulation as `input.choose('dialogue.choose', id)`, latched by the next step and kept in the recording, so a session
+  with a choice replays in Node to the same hashes.
 
 ## The test game
 
 `test/fixtures/game`: the sample cafe with a title (three seconds of the cafe from the street, skipped by jump or
-interact), a level (`cafe.vrmxs` with rules: get to the counter within a minute; a checkpoint inside the door) and an
+interact), a level (`cafe.vrmxs` with rules: get to the counter within a minute; a checkpoint inside the door; Hana asks
+"Ready for the rush?" at the start, a `Dialogue` with two choices that set a flag) and an
 ending (five seconds, then the title as a new game). `scripts/test-game.mjs` reads it as a project (the sample's files,
 its own under `game/`, its `game.json`, its licence rows added) and exports it. It is a fixture to prove the app; the
 sample game itself is M5 W10.
 
 ## Checked
 
-- `npm test` here (34 tests; all but one need no models): a question up while a load ends holds the game, and what was
+- `npm test` here (37 tests; all but one need no models): the player's settings through `GameSettings` in the `ui` field; a question up while a load ends holds the game, and what was
   used on it doesn't reach the game; a save from another build, or one that doesn't say, is refused; a log replays only
   on its build; a second New Game or load during one is refused (in the session and in the host); a session through scene changes, a save and a load replays to
   the same per-step hashes; Continue in a fresh session; a checkpoint slot refused; a save or a checkpoint whose write
   fails stays unsaved; a save still being written when another loads, or a load that outlives its session (one test per
   finding of the independent review); the test game's whole loop (title, the level won with the door's checkpoint, the
-  ending, the title again) replayed (needs vrmxa-core, skipped on CI); settings read field by field, written in order, a failed write said; slot rows; the gamepad (edges, repeat on
+  ending, the title again) with Hana answered by a recorded choice, replayed (needs vrmxa-core, skipped on CI); settings read field by field, written in order, a failed write said; slot rows; the gamepad (edges, repeat on
   an injected clock, a button held when first seen); `HeldGate`; the question before progress is lost.
-- `node acceptance/m5/game.mjs` (13 checks, Chromium, under the GPU lock): the test game through the menus, the log
-  replayed in Node to the same hash after every step (AB-R-1116), a fresh launch loading the save, every menu from a stand-in
-  gamepad and from the keyboard, the backend readout.
+- `node acceptance/m5/game.mjs` (18 checks, Chromium, under the GPU lock): the test game through the menus; the HUD's
+  goal, score and clock; Hana's question answered with Enter on the overlay's first choice, the choice in the recording;
+  the log replayed in Node to the same hash after every step (AB-R-1116); a fresh launch loading the save; every menu
+  from a stand-in gamepad and from the keyboard; a key rebound in Settings kept, and on the menus' input after a
+  relaunch; the backend readout.
 - `acceptance/m5/build.mjs --chromium` and `build-wkwebview.sh`: M5 check 1 with this app as the runtime.
 - The Mac app: `apps/game-mac/docs/HAND-TEST-M5-GAME.md`.
 
 ## Known limits
 
-- No HUD, prompts or dialogue: W3's package mounts in the overlay.
-- The volume sliders and the controls list are placeholders for W3's controls; rebinding isn't there yet.
+- Speech bubbles and name tags are troika's (GLSL): none on WebGPU until AB-T-0556 (the box and captions say every line).
 - A real gamepad was not used: Chromium's runs use a stand-in pad (`navigator.getGamepads`), and AppProbe can't press one.
 - A backend change applies when the game starts again (Restart Now on the title menu).

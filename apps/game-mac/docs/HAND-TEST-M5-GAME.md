@@ -5,15 +5,17 @@ to play, pause and quit; its menus work from the keyboard; a save written from t
 launch; closing with unsaved progress asks. The game is the game app's test game (`apps/game/test/fixtures/game`: the
 sample cafe with a title, a level and an ending), built by `apps/game-mac/scripts/build.sh`.
 
-AppProbe runs it: `hand-test/HAND-TEST-M5-GAME.scenario.md` (rows 1 to 9, no query), then
-`hand-test/HAND-TEST-M5-GAME-webgl.scenario.md` (row 10, WebGL forced). Run `scripts/hand-test-fixtures.sh` first, and
+AppProbe runs it: `hand-test/HAND-TEST-M5-GAME.scenario.md` (rows 1 to 10, no query), then
+`hand-test/HAND-TEST-M5-GAME-webgl.scenario.md` (row 11, WebGL forced). Row 3 is the HUD and a conversation with a
+choice, through `@vrmxg/game-ui`'s overlay (M5 W3) at the app's seam. Run `scripts/hand-test-fixtures.sh` first, and
 hold the GPU lock while they draw (`node acceptance/gpu-lock.mjs run --who game-mac -- …`).
 
 Gamepads: AppProbe can't press a gamepad's buttons. `acceptance/m5/game.mjs` drives every menu from a stand-in gamepad in
-Chromium (the same page); row 11 is for a person with a real one.
+Chromium (the same page); row 12 is for a person with a real one.
 
 - [x] With no query the game draws on WebGPU, and its title menu has focus on New Game. *AppProbe 2026-11-24: `#renderer` read "Renderer WebGPU", New Game had focus, Load Game was disabled with no saves; no error shown.*
 - [x] New Game from the keyboard plays the game: the title scene, then the level. *AppProbe 2026-11-24: Return on New Game; `#scene` read the title, then `game/level.vrmxs` after the title's three seconds; the step count moved.*
+- [ ] The HUD shows the level's goal, score and clock, and Hana's question is answered from the keyboard.
 - [x] Escape pauses (nothing steps while the menu is open), and Enter on Resume plays on. *AppProbe 2026-11-24: Escape opened the pause menu with focus on Resume; the step count stayed put for 1.5 s; Return resumed and it moved again.*
 - [x] Save Game → Slot 1 from the pause menu saves, and the slot list says what the slot holds. *AppProbe 2026-11-24: "Saved to Slot 1 at step 357."; the slot read "Slot 1: The Cafe (test game) · level · Get to the counter, 0:05 · …"; `#progress` read "Nothing unsaved".*
 - [x] The pause menu from the keyboard alone: the arrows move, Enter chooses, Escape goes back. *AppProbe 2026-11-24: ↑↑ and Return opened Settings, Escape went back, ↓↓ and Return opened Load Game, Escape back, Escape resumed. Focus was followed through the screen each key led to, not read directly.*
@@ -32,4 +34,5 @@ Chromium (the same page); row 11 is for a person with a real one.
 | 2026-11-24 | same, after the independent review's fixes (pause refused while a game starts or loads, saves tied to their segment, the plist written safely) | 1–9, then 10 | 9 of 9 and 1 of 1 on the first run; the reports and shots in `hand-test/results/ab-t-0616/` are this run's |
 | 2026-11-24 | same, after the coordinator's review (nothing steps while any menu or question is up; saves carry and check their build; what is behind a sheet is inert; the runtime stamped with its sources; the game's own version in the app) | 1–9, then 10 | 9 of 9 and 1 of 1; the reports and shots in `hand-test/results/ab-t-0616/` are this run's |
 | 2026-11-24 | same, after the coordinator's second note (Continue and Load Game only for this build's saves; another build's save shown as such) | 1–9, then 10 | 9 of 9 and 1 of 1; the reports and shots in `hand-test/results/ab-t-0616/` are this run's. Another build's save in the slot list is checked in Chromium (`acceptance/m5/game.mjs`), not here |
-| 2026-11-24 | same | 11 | Not run: no gamepad |
+| 2026-11-24 | Rebased on main with W3 and W9; `@vrmxg/game-ui` wired in (the HUD and the dialogue overlay at the seam, its volume and rebinding controls in Settings) | 3 (new), and a re-run of 1–11 | **Not run**: the Mac's screen was locked (`CGSSessionScreenIsLocked` = Yes), and AppProbe can't read a window behind the lock. The same page passes in Chromium (`acceptance/m5/game.mjs` 18 of 18: the HUD, Hana's question answered with Enter on the overlay, the session replayed in Node). Rows 1–2 and 4–11 were last run on the build before the wiring |
+| 2026-11-24 | same | 12 (gamepad) | Not run: no gamepad |

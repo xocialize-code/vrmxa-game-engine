@@ -13,7 +13,7 @@ import { installItems } from '@vrmxg/item';
 import { installInteraction } from '@vrmxg/interact';
 import { installCloset } from '@vrmxg/closet';
 import { installAudio } from '@vrmxg/audio';
-import { installVoice } from '@vrmxg/voice';
+import { installVoice, installDialogue } from '@vrmxg/voice';
 import { installTracks } from '@vrmxg/tracks';
 import { installSequence, composeSequence, isSequence } from '@vrmxg/sequence';
 import { installParticles } from '@vrmxg/particles';
@@ -102,10 +102,13 @@ export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = n
   await ai.prepare(sample.doc); // brain documents named by path (M2 W11), and any voice clips they say
   for (const p of ai.presets.values()) await voice.prepare({ nodes: [{ id: 'brain', behaviours: [p] }] });
   const rules = game ? installGame(tree, { scene: sample.scene }) : null; // game flow (M5 W2), for a world a GameFlow plays
+  // conversations with choices (M5 W3, @vrmxg/voice), after input, voice and game, and only for a scene that has a
+  // Dialogue node: the service has state, which is in the world hashes, so no other scene's hashes move (AB-T-0630)
+  const dialogue = sample.doc.nodes.some((n) => n.type === 'Dialogue') ? installDialogue(tree) : null;
   const save = installSave(tree, { scene: { ref: sample.scene, doc: sample.doc } }); // save games (M2 W9): flags, save files
   const wardrobe = closet && vrmxaCore ? installCloset(tree, { vrmxaCore, closet, spec, stubTextures }) : null;
   await wardrobe?.prepare(sample.doc); lap('closet');
   tree.instantiate(structuredClone(sample.doc)); lap('instantiate');
   await wardrobe?.showWorn(); lap('showWorn');
-  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe, audio, voice, tracks, sequence, particles, nav, ai, save, personas, sense: camera, game: rules };
+  return { tree, input, models, items, lib, interact, inventory, closet: wardrobe, audio, voice, tracks, sequence, particles, nav, ai, save, personas, sense: camera, game: rules, dialogue };
 }

@@ -97,6 +97,18 @@ await screen(page, null);
 await steps(page, 30);
 await page.keyboard.down('Space'); await steps(page, 4); await page.keyboard.up('Space'); // the title scene's skip: a recorded input
 await until(page, () => /** @type {any} */ (window).__game.state().scene === 'game/level.vrmxs', null);
+// the HUD (@vrmxg/game-ui, mounted at the app's seam) from the level's rules, and Hana's question: the overlay holds the
+// devices while she talks, focus goes to the first choice when she asks, and Enter answers (a recorded choice)
+await page.waitForSelector('#hud-goal', { timeout: 30000 });
+const hud = await page.evaluate(() => ({ goal: document.querySelector('#hud-goal')?.textContent?.trim(), score: document.querySelector('#hud-score')?.textContent?.trim(), timer: document.querySelector('#hud-timer-clock')?.textContent?.trim() }));
+say('the HUD shows the level\'s goal, score and clock', hud.goal === 'Goal: Get to the counter' && /^Score 0/.test(hud.score ?? '') && /^Until the cafe opens /.test(hud.timer ?? ''), JSON.stringify(hud));
+await page.waitForSelector('#dialogue-choice-ready', { timeout: 30000 });
+await until(page, () => document.activeElement?.id === 'dialogue-choice-ready', null, 10000);
+await page.keyboard.press('Enter');
+await until(page, () => /** @type {any} */ (window).__game.host().session.view()?.flags?.ready === true, null, 10000);
+const answered = await page.evaluate(() => ({ line: document.querySelector('#dialogue-line')?.textContent?.trim() ?? null, chosen: /** @type {any} */ (window).__game.log().segments[0].recording.frames.filter((f) => f[2]).map((f) => f[2]) }));
+say('Hana asks, Enter on the first choice answers it, and the choice is a recorded input', answered.chosen.some((c) => c['dialogue.choose'] === 'ready') && answered.line === 'Hana: Then get to the counter, quick!', `"${answered.line}"; choices in the recording ${JSON.stringify(answered.chosen)}`);
+await page.waitForSelector('#dialogue', { state: 'detached', timeout: 15000 }); // her answer said: the devices are the game's again
 await page.keyboard.down('KeyW'); await steps(page, 200); // Mira walks in through the door
 await page.keyboard.press('Escape');
 await screen(page, 'pause');
@@ -205,8 +217,11 @@ await page.keyboard.press('Escape'); await screen(page, 'pause');
 await page.click('#settings'); await screen(page, 'settings');
 await page.click('#backend-webgl');
 await until(page, () => /** @type {any} */ (window).__game.state().settingsNote === 'Settings saved.', null);
+// and a key rebound there (@vrmxg/game-ui's RebindList, in the app's settings menu): Jump to J
+await page.focus('#rebind-jump-keyboard'); await page.keyboard.press('Enter'); await page.keyboard.press('KeyJ');
+await until(page, () => JSON.parse(localStorage.getItem('vrmxg.game.cafe-test.settings') ?? '{}')?.ui?.bindings?.jump?.[0]?.key === 'KeyJ', null, 10000);
 const stored = await page.evaluate(() => localStorage.getItem('vrmxg.game.cafe-test.settings'));
-say('a backend chosen in Settings is kept', JSON.parse(stored ?? '{}').backend === 'webgl', `stored ${stored?.replace(/\s+/g, ' ')}`);
+say('a backend chosen in Settings and a key rebound there are kept, in one settings document', JSON.parse(stored ?? '{}').backend === 'webgl' && JSON.parse(stored ?? '{}').ui?.bindings?.jump?.[0]?.key === 'KeyJ', `stored ${stored?.replace(/\s+/g, ' ').slice(0, 220)}`);
 await page.close();
 
 // ---------------------------------------------------------------- 8: the backend readout with no query, and after the setting
@@ -215,6 +230,8 @@ watch(plain);
 await plain.goto(base);
 await screen(plain, 'title');
 const plainReadout = await plain.getAttribute('#renderer', 'aria-label');
+const relaunchJump = await plain.evaluate(() => /** @type {any} */ (window).__game.host().input().bindings().jump.bindings.map((x) => x.key ?? `pad ${x.gamepadButton}`));
+say('a fresh launch has the rebound key on the menus\' input before any game starts', relaunchJump[0] === 'KeyJ', `Jump: ${relaunchJump.join(', ')}`);
 await plain.evaluate(() => localStorage.removeItem('vrmxg.game.cafe-test.settings'));
 await plain.reload(); await screen(plain, 'title');
 const autoReadout = await plain.getAttribute('#renderer', 'aria-label');
