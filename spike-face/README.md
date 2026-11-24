@@ -1,5 +1,7 @@
 # Spike: where a face take's face comes from (M4 W9, AB-T-0581)
 
+*Receipt AB-R-1085; decision AB-D-0281.*
+
 **Verdict: Vision's face landmarks, in the Mac shell.** They give a face take all five things it needs (blink, mouth,
 smile, brows, head) at 4 ms a frame off the page's thread, with nothing to ship: the shell already runs Vision for the
 camera (`spike-camera/`). MediaPipe's 52 blendshapes are affordable natively (3 ms a frame on the CPU: the page's

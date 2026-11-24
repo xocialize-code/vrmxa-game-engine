@@ -1,6 +1,6 @@
 # @vrmxg/takes
 
-M4 W9 (AB-T-0581; M4 check 5). Performance takes: one character's performance, recorded over a sequence while it
+M4 W9 (AB-T-0581; M4 check 5; receipts AB-R-1085 and AB-R-1086, decision AB-D-0281). Performance takes: one character's performance, recorded over a sequence while it
 plays, kept as ordinary tracks, and replayed exactly from its log. Three kinds:
 
 | Kind | The person | The log (the take's only input) | The tracks it becomes |
