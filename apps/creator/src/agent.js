@@ -87,6 +87,24 @@ export function creatorCommands() {
       return { changed: true, label: r.label, shot: r.shot, camera: r.camera, previous: r.previous };
     },
   });
+  reg.register('take', {
+    summary: 'Performance takes (a puppet, a director or a face, recorded by a person): list them, keep one from its log in the project, or remove one. Keeping or removing is one undo step.',
+    description: 'op: list (the takes kept in the short, and the take logs under performances/); apply (log: a take log\'s project ref, e.g. performances/the-regular/take-1.json: its tracks are added after the short\'s own, marked with the take); remove (id: a kept take, e.g. take-1: its tracks go, its log stays). A take\'s tracks are ordinary tracks: read them with short part=outline, edit them in the creator.',
+    schema: { type: 'object', required: ['op'], properties: { op: { type: 'string', enum: ['list', 'apply', 'remove'] }, log: { type: 'string', description: 'A take log in the project (op apply).' }, id: { type: 'string', description: 'A kept take\'s id (op remove).' } } },
+    async run({ op, log, id }, { cr, session }) {
+      const deck = cr.takes;
+      if (!deck) throw new Error('this creator has no take deck');
+      if (op === 'list') return { takes: deck.takes().map((t) => ({ id: t.id, kind: t.kind, who: t.target, from: Math.round(t.from), to: Math.round(t.to), tracks: t.tracks, log: t.log })), logs: cr.project.files.filter((f) => /^performances\/.+\.json$/.test(f)), changed: false };
+      if (op === 'apply') {
+        if (!log) throw new Error('apply needs log: a take log in the project (take op=list gives them)');
+        const r = await deck.applyLog(log, { session });
+        return { changed: true, label: r.label, take: r.take, tracks: r.tracks, from: Math.round(r.from), to: Math.round(r.to) };
+      }
+      if (!id) throw new Error('remove needs id: a kept take (take op=list gives them)');
+      const r = deck.remove(id, session);
+      return { changed: true, label: r.label, take: r.take };
+    },
+  });
   reg.register('queue_export', {
     edit: false,
     summary: 'Queue the short, as it is now, in the render queue at a delivery preset; run: true renders that job now.',

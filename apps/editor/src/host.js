@@ -93,6 +93,7 @@ export class EditorHost {
     this.view = 'edit';        // 'edit': the document's edit view; 'preview': the sequence played to the playhead
     this.playhead = 0; this.range = null; this.loopRange = true; this.previewPlaying = false;
     this.previewCamera = 'sequence'; this.angles = false; this.preview = null; this.scrubState = null;
+    /** A world the frame loop plays in real time while set: { world, tick } (the creator's takes; null otherwise). */ this.live = null;
     this._scrubWant = null; this._scrubbing = null; this._previewBuilding = null; this._previewTimer = null; this._angleCams = [];
     canvas.addEventListener('pointerdown', (e) => { this._downAt = [e.clientX, e.clientY]; });
     canvas.addEventListener('pointerup', (e) => this.onClick(e));
@@ -976,6 +977,10 @@ export class EditorHost {
           if (tree.services.get('voice')?.lines.size && this._frames.length % 6 === 0) this.changed('captions'); // word by word
           const pr = this.prompt(), key = pr?.text ?? null;
           if (key !== this._promptKey) { this._promptKey = key; this.changed('captions'); }
+        }
+        else if (this.live) { // a world played on in real time outside Play (the creator's takes, M4 W9): stepped, drawn, then its tick
+          if (this.fly) this.fly.update(dt); else this.orbit.update(dt);
+          this.host.frame(dt); this.stats.step = tree.clock.step; this.live.tick?.();
         }
         else if (this.view === 'preview') {
           if (this.fly) this.fly.update(dt); else this.orbit.update(dt);
