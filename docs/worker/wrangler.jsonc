@@ -10,8 +10,10 @@
   "$schema": "../node_modules/wrangler/config-schema.json",
   "name": "vrmxg-docs",
   "compatibility_date": "2026-11-23",
-  // served at vrmxg-docs.<account subdomain>.workers.dev; no per-version preview addresses
-  "workers_dev": true,
+  // served at docs.vrmxstudio.com, a custom domain (the zone is in the same account; Wrangler makes its DNS record).
+  // The workers.dev address is off: it carries the account's subdomain. No per-version preview addresses either.
+  "routes": [{ "pattern": "docs.vrmxstudio.com", "custom_domain": true }],
+  "workers_dev": false,
   "preview_urls": false,
   "assets": {
     "directory": "../.vitepress/dist",

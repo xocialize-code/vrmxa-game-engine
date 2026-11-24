@@ -1,15 +1,17 @@
 # The documentation Worker
 
-A Cloudflare Worker named `vrmxg-docs` that serves the built documentation site as static assets. It has no script:
+A Cloudflare Worker named `vrmxg-docs` that serves the built documentation site as static assets, at
+**https://docs.vrmxstudio.com**. It has no script:
 [`wrangler.jsonc`](wrangler.jsonc) points Workers static assets at `../.vitepress/dist`, and every request is answered
 from there.
 
 | Behaviour | How |
 |---|---|
+| Served at `docs.vrmxstudio.com` only | `routes` with `custom_domain: true` (Wrangler makes the DNS record); `workers_dev: false`, because that address carries the account's subdomain; `preview_urls: false` |
 | `/guide/determinism` serves `guide/determinism.html` | `html_handling: "auto-trailing-slash"` |
 | A path that isn't a file gets the site's `404.html` with a 404 status | `not_found_handling: "404-page"` |
 | Every page's Markdown is at its address plus `.md`; `llms.txt` and `llms-full.txt` are at the root | The site build copies them in (`../.vitepress/config.mjs`) |
-| Response headers | `../public/_headers`: no sniffing, no framing, a referrer policy, long caching for hashed assets, and `X-Robots-Tag: noindex` |
+| Response headers | `../public/_headers`: no sniffing, no framing, a referrer policy, long caching for hashed assets, UTF-8 for the Markdown and text files, and `X-Robots-Tag: noindex` |
 
 ## Locally
 
@@ -24,7 +26,8 @@ npm run worker:check    # wrangler deploy --dry-run: checks the config and lists
 
 ## Deploying
 
-Deploying is the operator's decision and isn't done by CI. Before a first deploy, two things are settled:
+Deploying is the operator's decision and isn't done by CI: nothing redeploys on a merge. First deployed 2026-11-23.
+Two things were settled first, and hold for every later deploy:
 
 1. **Public or sign-in only.** Decided 2026-11-23: **public**, with no Cloudflare Access in front of it. The
    repository is private, so what the site publishes is kept free of internal notes: the generator takes bridge ids,
@@ -43,8 +46,7 @@ npm run build
 CLOUDFLARE_ACCOUNT_ID=<the account's id> npx wrangler deploy --config worker/wrangler.jsonc
 ```
 
-That creates (or updates) one Worker, `vrmxg-docs`, with the files of `.vitepress/dist` as its assets, served at
-`vrmxg-docs.<the account's subdomain>.workers.dev`. It creates no other resource: no KV, no R2, no routes, no DNS, and
-no per-version preview addresses (`preview_urls: false`).
+That updates the one Worker, `vrmxg-docs`, with the files of `.vitepress/dist` as its assets, and its custom domain.
+It creates no other resource: no KV, no R2, no per-version preview addresses.
 
-No account id, token or address is kept in this repository.
+No account id or token is kept in this repository. The custom domain is.
