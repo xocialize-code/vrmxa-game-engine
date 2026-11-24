@@ -1,0 +1,61 @@
+{
+ "ok": true,
+ "expect": 5,
+ "takes": [
+  {
+   "take": "cafe-order-hana-1-says-1-af-nicole-f54a0ebf",
+   "source": "kokoro-82m af_nicole (shell)",
+   "text": "Good morning! What can I get you?",
+   "seconds": 3.3,
+   "sampleRate": 24000,
+   "words": 7,
+   "timed": true,
+   "offset": 0.03,
+   "wavBytes": 158444
+  },
+  {
+   "take": "cafe-order-hana-1-says-2-af-nicole-aca7c91f",
+   "source": "kokoro-82m af_nicole (shell)",
+   "text": "Coming right up!",
+   "seconds": 1.95,
+   "sampleRate": 24000,
+   "words": 3,
+   "timed": true,
+   "offset": 0.03,
+   "wavBytes": 93644
+  },
+  {
+   "take": "cafe-order-hana-1-says-3-af-nicole-b2530116",
+   "source": "kokoro-82m af_nicole (shell)",
+   "text": "Only until the students wake up.",
+   "seconds": 3.125,
+   "sampleRate": 24000,
+   "words": 6,
+   "timed": true,
+   "offset": 0.03,
+   "wavBytes": 150044
+  },
+  {
+   "take": "cafe-order-hana-1-says-4-af-nicole-6874380f",
+   "source": "kokoro-82m af_nicole (shell)",
+   "text": "Here you go. Enjoy!",
+   "seconds": 2.475,
+   "sampleRate": 24000,
+   "words": 4,
+   "timed": true,
+   "offset": 0.03,
+   "wavBytes": 118844
+  },
+  {
+   "take": "cafe-order-mira-says-2-af-bella-1c1f53e2",
+   "source": "kokoro-82m af_bella (shell)",
+   "text": "Is it always this quiet before nine?",
+   "seconds": 2.825,
+   "sampleRate": 24000,
+   "words": 7,
+   "timed": true,
+   "offset": 0.03,
+   "wavBytes": 135644
+  }
+ ]
+}

@@ -89,7 +89,8 @@ step with exact bytes on undo and redo, a recast re-voiced in its step, takes re
 re-script after the agent's camera keeping it. In the Mac app, `apps/creator-mac/scripts/mcp-session.mjs` ran a Claude
 Code session (Sonnet, the creator's tools only, Kokoro through `tts-server.py`): 19 calls, none failed, $0.17
 (`apps/creator-mac/docs/hand-test/results/mcp-creator-session.json`). AppProbe then walked its four steps back and forth
-in the creator's Undo (`apps/creator-mac/docs/HAND-TEST-M4-MCP.md`).
+in the creator's Undo (`apps/creator-mac/docs/HAND-TEST-M4-MCP.md`). Run again on 2026-11-24 with Kokoro in the Mac app
+itself (the shell's `tts.speak`, AB-T-0614; no server): 19 calls, none failed, and the same four steps.
 
 Tests (`node --test test/`, in `npm test`): the project of shorts (discovery, `shorts.json`, title pages, beats, file
 kinds, a set from a model, the template), and the script pane on the sample short (`desk.test.mjs`): opening it changes

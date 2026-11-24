@@ -1,0 +1,146 @@
+{
+  "checklist" : null,
+  "rows" : [
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short cafe-order \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project project\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Storyboard 11 shots, 11 thumbnails\"",
+          "check" : "find(\"id=sb-status\").0.name == \"Storyboard 11 shots, 11 thumbnails\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Opened first-light.fountain (script) → short first-light\"",
+          "check" : "find(\"id=open-result\").0.name == \"Opened first-light.fountain (script) → short first-light\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Storyboard 5 shots, 5 thumbnails\"",
+          "check" : "find(\"id=sb-status\").0.name == \"Storyboard 5 shots, 5 thumbnails\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Creator pid 54458, log ~/Library/Caches/AppProbe/logs/VRMXGCreator-2026-11-24T140919Z.log",
+        "13: wait id=open-project enabled=true timeout_ms=60000 → found after 276 ms: button \"Open project\" #open-project [W:VRMXG Creator/0/0/0/0/0/1@4649] (279 ms)",
+        "14: until find(\"id=doc-state\").0.name matches \"^Short cafe-order \" timeout=60000 → ok (1835 ms)",
+        "15: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":109,\"x\":3113,\"y\":328},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (2196 ms)",
+        "16: until find(\"id=project-name\").0.name == \"Project project\" → ok (1037 ms)",
+        "17: until find(\"id=sb-status\").0.name == \"Storyboard 11 shots, 11 thumbnails\" timeout=120000 → ok (2840 ms)",
+        "18: menu \"File › Open…\" press → pressed File › Open… (173 ms)",
+        "19: until find(\"id=open-result\").0.name == \"Opened first-light.fountain (script) → short first-light\" timeout=30000 → ok (581 ms)",
+        "20: until find(\"id=sb-status\").0.name == \"Storyboard 5 shots, 5 thumbnails\" timeout=120000 → ok (2467 ms)"
+      ],
+      "message" : null,
+      "ms" : 20271,
+      "notes" : [
+
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The project opens, a draft short opens from a script, then the app idles.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "\"Undo Cast HANA: Mira\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Cast HANA: Mira\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "26: act id=role-hana-1 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":287,\"x\":4397,\"y\":406},\"help\":\"\",\"id\":\"role-hana-1\",\"name\":\"Role HANA (hana-1), 2 lines,  (23 ms)",
+        "opened ~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/inbox/mira-guest.vrmxa in pid 54458",
+        "28: until find(\"id=undo\").0.name == \"Undo Cast HANA: Mira\" timeout=60000 → ok (2645 ms)"
+      ],
+      "message" : null,
+      "ms" : 23932,
+      "notes" : [
+
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A cast voices the role's lines through the shell, then the app idles for twenty seconds.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "\"job-1 done: 382 frames · first-light-720p24.mp4 · frames e15e7b3b7e75005a\"",
+          "check" : "find(\"id=q-job-1-status\").0.name matches \"^job-1 (done|failed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-1 done: 382 frames · first-light-720p24.mp4 · frames e15e7b3b7e75005a\"",
+          "check" : "find(\"id=q-job-1-status\").0.name matches \"^job-1 done\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "34: menu \"File › Export…\" press → pressed File › Export… (148 ms)",
+        "35: until find(\"id=q-job-1-status\").0.name matches \"^job-1 (done|failed)\" timeout=300000 → ok (3490 ms)",
+        "36: expect find(\"id=q-job-1-status\").0.name matches \"^job-1 done\" → ok (19 ms)"
+      ],
+      "message" : null,
+      "ms" : 12001,
+      "notes" : [
+
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "An export renders, then the app idles.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "/tmp/claude-501/-Volumes-Satechi-Development-vrmxa-game-engine/4a62f026-7cb5-42a4-9f47-ab4b92150e82/scratchpad/voice-release.scenario.md",
+  "summary" : "3 rows: 3 passed, 0 failed, 0 need you",
+  "uncovered" : [
+
+  ]
+}

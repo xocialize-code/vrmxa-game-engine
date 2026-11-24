@@ -1,0 +1,272 @@
+{
+  "checklist" : "apps/creator-mac/docs/HAND-TEST-M4-MCP.md",
+  "rows" : [
+    {
+      "checklist_line" : 19,
+      "checks" : [
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short cafe-order \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project project\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Storyboard 11 shots, 11 thumbnails\"",
+          "check" : "find(\"id=sb-status\").0.name == \"Storyboard 11 shots, 11 thumbnails\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"MCP: waiting for vrmxg-mcp --creator\"",
+          "check" : "find(\"id=mcp-state\").0.name matches \"^MCP\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Creator pid 52787, log ~/Library/Caches/AppProbe/logs/VRMXGCreator-2026-11-24T140228Z.log",
+        "23: wait id=open-project enabled=true timeout_ms=60000 → found after 268 ms: button \"Open project\" #open-project [W:VRMXG Creator/0/0/0/0/0/1@4649] (272 ms)",
+        "24: until find(\"id=doc-state\").0.name matches \"^Short cafe-order \" timeout=60000 → ok (1847 ms)",
+        "25: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":109,\"x\":3113,\"y\":328},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (2167 ms)",
+        "26: until find(\"id=project-name\").0.name == \"Project project\" → ok (1050 ms)",
+        "27: until find(\"id=doc-state\").0.name matches \"^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid \" timeout=60000 → ok (2549 ms)",
+        "28: until find(\"id=sb-status\").0.name == \"Storyboard 11 shots, 11 thumbnails\" timeout=120000 → ok (27 ms)",
+        "29: set opened = find(\"id=doc-state\").0.name → \"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\" (21 ms)",
+        "30: expect find(\"id=undo\").0.name == \"Undo\" → ok (22 ms)",
+        "31: expect find(\"id=mcp-state\").0.name matches \"^MCP\" → ok (24 ms)",
+        "32: shot \"opened\" (160 ms)"
+      ],
+      "message" : null,
+      "ms" : 9068,
+      "notes" : [
+        "shot 1: opened"
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M4-MCP.scenario-2026-11-24T140228Z/shots/r1-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The project opens on the sample short, linked to the agent's MCP server, with no undo step.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 20,
+      "checks" : [
+        {
+          "actual" : "\"MCP connected · short · 1 calls\"",
+          "check" : "find(\"id=mcp-state\").0.name matches \"calls\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Shot 030: camera vc-030-closeup (MCP)\"",
+          "check" : "find(\"id=undo\").0.name matches \"^Undo Shot 030: camera .* \\(MCP\\)$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=q-job-1-status\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Shot 030: camera vc-030-closeup (MCP)\"",
+          "check" : "find(\"id=undo\").0.name matches \"^Undo Shot 030: camera .* \\(MCP\\)$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 7 nodes unsaved changes valid hash fbc4b20d1015a846\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"unsaved changes\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "37: until find(\"id=mcp-state\").0.name matches \"calls\" timeout=1200000 → ok (6514 ms)",
+        "38: until find(\"id=undo\").0.name matches \"^Undo Shot 030: camera .* \\(MCP\\)$\" timeout=1200000 → ok (25789 ms)",
+        "39: until find(\"id=q-job-1-status\").count == 1 timeout=600000 → ok (2596 ms)",
+        "40: expect find(\"id=undo\").0.name matches \"^Undo Shot 030: camera .* \\(MCP\\)$\" → ok (25 ms)",
+        "41: expect find(\"id=doc-state\").0.name matches \"unsaved changes\" → ok (24 ms)",
+        "42: shot \"after the agent\" (82 ms)"
+      ],
+      "message" : null,
+      "ms" : 35235,
+      "notes" : [
+        "shot 1: after the agent"
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M4-MCP.scenario-2026-11-24T140228Z/shots/r2-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "An agent with only the creator's MCP tools makes the short's edits; the last one is in the creator's Undo, marked (MCP), and the export it queued is in the render queue.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 21,
+      "checks" : [
+        {
+          "actual" : "\"Undo Voice line \\\"Is it always this quiet before nine?\\\" (new words) (MCP)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Voice line \\\"Is it always this quiet before nine?\\\" (new words) (MCP)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Cast HANA: Minimal (MCP)\"",
+          "check" : "find(\"id=undo\").0.name matches \"^Undo Cast HANA: .* \\(MCP\\)$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Re-script (1 changed) (MCP)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Re-script (1 changed) (MCP)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\"",
+          "check" : "find(\"id=doc-state\").0.name == $opened",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Redo Re-script (1 changed) (MCP)\"",
+          "check" : "find(\"id=redo\").0.name == \"Redo Re-script (1 changed) (MCP)\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "47: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":4364,\"y\":328},\"help\":\"Shot 030: camera vc-030-closeup (MCP)\",\"id\":\"undo\",\"name\":\" (44 ms)",
+        "48: until find(\"id=undo\").0.name == \"Undo Voice line \\\"Is it always this quiet before nine?\\\" (new words) (MCP)\" timeout=30000 → ok (28 ms)",
+        "49: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":4364,\"y\":328},\"help\":\"Voice line \\\"Is it always this quiet before nine?\\\" (new wo (204 ms)",
+        "50: until find(\"id=undo\").0.name matches \"^Undo Cast HANA: .* \\(MCP\\)$\" timeout=30000 → ok (960 ms)",
+        "51: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":4364,\"y\":328},\"help\":\"Cast HANA: Minimal (MCP)\",\"id\":\"undo\",\"name\":\"Undo Cast HAN (2338 ms)",
+        "52: until find(\"id=undo\").0.name == \"Undo Re-script (1 changed) (MCP)\" timeout=30000 → ok (1607 ms)",
+        "53: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":4364,\"y\":328},\"help\":\"Re-script (1 changed) (MCP)\",\"id\":\"undo\",\"name\":\"Undo Re-sc (1604 ms)",
+        "54: until find(\"id=undo\").0.name == \"Undo\" timeout=30000 → ok (33 ms)",
+        "55: until find(\"id=doc-state\").0.name == $opened timeout=30000 → ok (188 ms)",
+        "56: expect find(\"id=redo\").0.name == \"Redo Re-script (1 changed) (MCP)\" → ok (524 ms)",
+        "57: shot \"after undo\" (85 ms)"
+      ],
+      "message" : null,
+      "ms" : 9566,
+      "notes" : [
+        "shot 1: after undo"
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M4-MCP.scenario-2026-11-24T140228Z/shots/r3-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Undo walks the agent's edits back one step at a time, each named for the agent: the shot's camera, the re-voiced line, the cast and its voices, the re-script; the short comes back to its opened hash.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 22,
+      "checks" : [
+        {
+          "actual" : "\"Undo Re-script (1 changed) (MCP)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Re-script (1 changed) (MCP)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Cast HANA: Minimal (MCP)\"",
+          "check" : "find(\"id=undo\").0.name matches \"^Undo Cast HANA: .* \\(MCP\\)$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Voice line \\\"Is it always this quiet before nine?\\\" (new words) (MCP)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Voice line \\\"Is it always this quiet before nine?\\\" (new words) (MCP)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Shot 030: camera vc-030-closeup (MCP)\"",
+          "check" : "find(\"id=undo\").0.name matches \"^Undo Shot 030: camera .* \\(MCP\\)$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Redo\"",
+          "check" : "find(\"id=redo\").0.name == \"Redo\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 7 nodes unsaved changes valid hash fbc4b20d1015a846\"",
+          "check" : "find(\"id=doc-state\").0.name != $opened",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "62: act id=redo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":50,\"x\":4423,\"y\":328},\"help\":\"Re-script (1 changed) (MCP)\",\"id\":\"redo\",\"name\":\"Redo Re-sc (23 ms)",
+        "63: until find(\"id=undo\").0.name == \"Undo Re-script (1 changed) (MCP)\" timeout=30000 → ok (32 ms)",
+        "64: act id=redo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":50,\"x\":4423,\"y\":328},\"help\":\"Cast HANA: Minimal (MCP)\",\"id\":\"redo\",\"name\":\"Redo Cast HAN (194 ms)",
+        "65: until find(\"id=undo\").0.name matches \"^Undo Cast HANA: .* \\(MCP\\)$\" timeout=30000 → ok (653 ms)",
+        "66: act id=redo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":50,\"x\":4423,\"y\":328},\"help\":\"Voice line \\\"Is it always this quiet before nine?\\\" (new wo (2471 ms)",
+        "67: until find(\"id=undo\").0.name == \"Undo Voice line \\\"Is it always this quiet before nine?\\\" (new words) (MCP)\" timeout=30000 → ok (835 ms)",
+        "68: act id=redo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":50,\"x\":4423,\"y\":328},\"help\":\"Shot 030: camera vc-030-closeup (MCP)\",\"id\":\"redo\",\"name\":\" (2504 ms)",
+        "69: until find(\"id=undo\").0.name matches \"^Undo Shot 030: camera .* \\(MCP\\)$\" timeout=30000 → ok (41 ms)",
+        "70: expect find(\"id=redo\").0.name == \"Redo\" → ok (396 ms)",
+        "71: expect find(\"id=doc-state\").0.name != $opened → ok (2676 ms)",
+        "72: shot \"after redo\" (82 ms)"
+      ],
+      "message" : null,
+      "ms" : 10133,
+      "notes" : [
+        "shot 1: after redo"
+      ],
+      "row" : 4,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M4-MCP.scenario-2026-11-24T140228Z/shots/r4-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Redo brings the agent's edits back, each still marked (MCP), to the same hash.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "apps/creator-mac/docs/hand-test/HAND-TEST-M4-MCP.scenario.md",
+  "summary" : "4 rows: 4 passed, 0 failed, 0 need you; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}

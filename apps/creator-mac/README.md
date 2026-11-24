@@ -47,7 +47,9 @@ cover a cancel at and after the last frame.
 **MCP (M4 W11, AB-T-0583).** The page links to `vrmxg-mcp --creator` (127.0.0.1:5184) whenever it runs in the app.
 `scripts/mcp-session.mjs` runs a Claude Code session with only the creator's tools against the open app, and
 [`docs/HAND-TEST-M4-MCP.md`](docs/HAND-TEST-M4-MCP.md) with its scenario checks that each of the agent's edits is a step
-of the creator's Undo marked "(MCP)": 4 of 4 rows passed on 2026-11-23 ([report](docs/hand-test/results/m4-mcp/report.md)).
+of the creator's Undo marked "(MCP)": 4 of 4 rows passed on 2026-11-23 ([report](docs/hand-test/results/m4-mcp/report.md)),
+and again on 2026-11-24 through the app's own voice, with no TTS server
+([results](docs/hand-test/results/ab-t-0614/README.md), AB-R-1098).
 The re-voicing speaks through the app's own `tts.speak` (below); `scripts/hand-test-fixtures.sh` puts Kokoro in the
 app's sandbox for `VRMXG_SHELL_MODELS=models`.
 
