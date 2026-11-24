@@ -29,6 +29,10 @@ missing piece is done: the creator's Mac app speaks through the shell's own `tts
 8's four AppProbe rows ran once the screen was unlocked, and passed (AB-R-1099). Both are marked in the table and under
 "Not green".
 
+**M4 was called done on 2026-11-24 with that result**, by the operator: checks 5 and 8 pass in part, and what they lack
+is carried on (a face take from a real camera, AB-T-0557; the companion on WebGPU, AB-A-0329; the base-Mac budget,
+AB-T-0511), with the beta's odd WebGPU frame (AB-T-0591).
+
 | # | Check | Result | Receipt |
 |---|---|---|---|
 | 1 | A script becomes a sequence | **Passed.** The sample script builds the same bytes in Node, Chromium and WKWebView over both origins (58cebece…f902, 11,207 bytes; the re-script after hand edits 490c1711…c991, 6,255 bytes). In the creator's Mac app a Fountain script opens as a short with its sequence, storyboard and timeline; an edit re-scripts as one undo step and keeps a hand edit; an error changes nothing and names its line (AppProbe 15 of 15) | AB-R-1088 |
