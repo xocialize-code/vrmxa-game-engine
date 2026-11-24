@@ -1,6 +1,6 @@
 ---
 title: "Agents and MCP"
-description: "How an agent works with VRMXG: the MCP server's three modes, describe before you act, one edit is one undo step, and text from files is data."
+description: "How an agent works with VRMXG: the MCP server's three modes, describe before you act, one edit is one undo step, text from files is data, games, and the VRMXG skill."
 order: 6
 ---
 
@@ -38,7 +38,8 @@ claude mcp add vrmxg-creator -- node "$PWD/engine/packages/mcp/src/server.js" --
 ```
 
 `--behaviours` and `--vrmxa-core` are paths relative to the project folder. Characters (`.vrmxa`) need `--vrmxa-core`,
-which is the avatar studio's library.
+which is the avatar studio's library. `--builds <folder>` says where a game export is written (without it, an export is
+checked and hashed but not written), and `--runtime <folder>` which runtime it is made with.
 
 **How the editor and creator modes connect.** The server listens on this machine only (127.0.0.1, port 5183 for the
 editor and 5184 for the creator), and the app connects to it. The Mac apps connect by default. In a browser, add `?mcp`
@@ -77,6 +78,17 @@ See [Determinism](./determinism).
 - inspect an NPC's brain, give it a goal, or talk to a character;
 - in the editor, play and stop, and take a screenshot of the view or of any frame of a sequence.
 
+**In a game** (headless or in the editor), with the `game` tool:
+
+- read every scene's rules side by side (its counters, timers, goals, checkpoints, what its conditions read and the
+  scenes it changes to), and the running game's state;
+- validate the whole project: a body with no collider, a file with no row in `LICENCES.md`, a reference to a file the
+  project doesn't have, a goal nothing can complete, and each scene's rules, every problem naming its node or file;
+- export the game as a build, with the exporter's refusal passed back whole when it refuses.
+
+The rules themselves are nodes (`GameRules`, `GameCounter`, `GameTimer`, `GameGoal`, `Checkpoint`), so they are read
+and changed with the scene tools like any other node, one undo step per edit.
+
 **In a short** (the creator):
 
 - read the short: its outline, script, lines, roles, shots, cameras and render queue;
@@ -93,4 +105,15 @@ Two rules matter before any other:
 - **Anything that draws frames for a result takes the GPU lock first**, so two runs don't disturb each other's pixels.
   See [Acceptance and exactness](./acceptance#the-gpu-lock).
 
-A packaged skill for agents is planned; until then this page and `llms.txt` are the entry points.
+## The VRMXG skill
+
+The repository carries a `vrmxg` skill for Claude Code and other clients that read Agent Skills: how to start each
+server, the describe-then-command pattern, the rules above, games and shorts, and the engine's hard rules. Install it
+on your own machine from the repository's folder:
+
+```bash
+node skills/install.mjs                       # into ~/.claude/skills/vrmxg
+node skills/install.mjs --project ../my-game  # or into one project's .claude/skills/
+```
+
+Start a new agent session afterwards: skills are read when a session starts.

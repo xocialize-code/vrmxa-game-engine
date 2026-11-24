@@ -1,0 +1,9 @@
+{
+ "format": "vrmxg-game",
+ "version": 1,
+ "id": "three-problems",
+ "title": "Three problems",
+ "entry": "level.vrmxs",
+ "scenes": ["level.vrmxs", "ending.vrmxs"],
+ "include": ["data/hints.json"]
+}

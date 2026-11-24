@@ -1,0 +1,275 @@
+{
+  "checklist" : "apps/editor-mac/docs/HAND-TEST-M5-MCP.md",
+  "rows" : [
+    {
+      "checklist_line" : 17,
+      "checks" : [
+        {
+          "actual" : "\"Scene cafe-cart.vrmxs 30 nodes saved valid hash 7636dc6e7e38e7e0\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project project-w9-mcp\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project-w9-mcp\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene cafe-cart.vrmxs 30 nodes saved valid hash 7636dc6e7e38e7e0\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene cafe.vrmxs 29 nodes saved valid hash 8fb64e11446af298\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe\\.vrmxs [0-9]+ nodes saved valid hash \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"MCP: waiting for vrmxg-mcp --editor\"",
+          "check" : "find(\"id=mcp-state\").0.name matches \"^MCP\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Editor pid 2474, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-24T220127Z.log",
+        "26: wait id=open-project enabled=true timeout_ms=60000 → found after 384 ms: button \"Open project\" #open-project [W:VRMXG Editor/0/0/0/0/0/1@4649] (387 ms)",
+        "27: until find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\" timeout=60000 → ok (1297 ms)",
+        "28: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":109,\"x\":2721,\"y\":162},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (35 ms)",
+        "29: until find(\"id=project-name\").0.name == \"Project project-w9-mcp\" timeout=30000 → ok (1298 ms)",
+        "30: until find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\" timeout=60000 → ok (32 ms)",
+        "31: act id=file-name action=set_value value=cafe.vrmxs → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":139,\"x\":3175,\"y\":162},\"help\":\"The file New and Save As use, in the project\",\"id\":\"fi (476 ms)",
+        "32: act id=open-file action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":3321,\"y\":162},\"help\":\"Open the scene or sequence named in the file field\",\"id\":\"o (39 ms)",
+        "33: until find(\"id=doc-state\").0.name matches \"^Scene cafe\\.vrmxs [0-9]+ nodes saved valid hash \" timeout=60000 → ok (747 ms)",
+        "34: set opened = find(\"id=doc-state\").0.name → \"Scene cafe.vrmxs 29 nodes saved valid hash 8fb64e11446af298\" (37 ms)",
+        "35: expect find(\"id=undo\").0.name == \"Undo\" → ok (30 ms)",
+        "36: expect find(\"id=mcp-state\").0.name matches \"^MCP\" → ok (30 ms)",
+        "37: shot \"opened\" (156 ms)"
+      ],
+      "message" : null,
+      "ms" : 5297,
+      "notes" : [
+        "shot 1: opened"
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M5-MCP.scenario-2026-11-24T220127Z/shots/r1-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The project opens on the cafe, linked to the agent's MCP server on its own port, with no undo step.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 18,
+      "checks" : [
+        {
+          "actual" : "\"MCP connected · game · 1 calls\"",
+          "check" : "find(\"id=mcp-state\").0.name matches \"calls\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add the serve goal (MCP)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add the serve goal (MCP)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene cafe.vrmxs 34 nodes saved valid hash 38f3e4939da32a16\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe\\.vrmxs [0-9]+ nodes saved valid hash \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Exported game cafe: 61 files, 22214893 bytes, entry cafe.vrmxs, runtime vrmxg-stepper 0.1.0 · build 9f61ebb9384d7ed3 · manifest 4df45e1634e8b89f · 33 files licensed by a pattern row · ~/Library/Containers/com.xocialize.…",
+          "check" : "find(\"id=export-game-result\").0.name matches \"^Exported game cafe: [0-9]+ files, [0-9]+ bytes, entry cafe\\.vrmxs, runtime .*/builds-w9/cafe$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"role=alert\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene cafe.vrmxs 34 nodes saved valid hash 38f3e4939da32a16\"",
+          "check" : "$agent != $opened",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "42: until find(\"id=mcp-state\").0.name matches \"calls\" timeout=1200000 → ok (20738 ms)",
+        "43: until find(\"id=undo\").0.name == \"Undo Add the serve goal (MCP)\" timeout=1200000 → ok (12766 ms)",
+        "44: until find(\"id=doc-state\").0.name matches \"^Scene cafe\\.vrmxs [0-9]+ nodes saved valid hash \" timeout=600000 → ok (3334 ms)",
+        "45: act id=export-open action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":59,\"x\":4501,\"y\":162},\"help\":\"\",\"id\":\"export-open\",\"name\":\"Export\",\"ref\":\"W:VRMXG Editor/ (38 ms)",
+        "46: wait id=export-game timeout_ms=5000 → found after 51 ms: button \"Export game\" #export-game help=\"The project as a playable build: the runtime, the game's files and a manifest of every file's hash an (51 ms)",
+        "47: until find(\"id=export-game-result\").0.name matches \"^Exported game cafe: [0-9]+ files, [0-9]+ bytes, entry cafe\\.vrmxs, runtime .*/builds-w9/cafe$\" timeout=600000 → ok (1704 ms)",
+        "48: expect find(\"role=alert\").count == 0 → ok (40 ms)",
+        "49: set agent = find(\"id=doc-state\").0.name → \"Scene cafe.vrmxs 34 nodes saved valid hash 38f3e4939da32a16\" (37 ms)",
+        "50: expect $agent != $opened → ok (0 ms)",
+        "51: shot \"after the agent\" (114 ms)"
+      ],
+      "message" : null,
+      "ms" : 39060,
+      "notes" : [
+        "shot 1: after the agent"
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M5-MCP.scenario-2026-11-24T220127Z/shots/r2-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "An agent with only the editor's MCP tools adds a customer and a goal, validates, saves and exports the game; its last edit is in the editor's Undo, marked (MCP), and the build is written.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 19,
+      "checks" : [
+        {
+          "actual" : "\"Undo Add a customer (MCP)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add a customer (MCP)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Redo Add the serve goal (MCP)\"",
+          "check" : "find(\"id=redo\").0.name == \"Redo Add the serve goal (MCP)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Redo Add a customer (MCP)\"",
+          "check" : "find(\"id=redo\").0.name == \"Redo Add a customer (MCP)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene cafe.vrmxs 29 nodes unsaved changes valid hash 8fb64e11446af298\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"unsaved changes\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene cafe.vrmxs 29 nodes saved valid hash 8fb64e11446af298\"",
+          "check" : "find(\"id=doc-state\").0.name == $opened",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Redo Add a customer (MCP)\"",
+          "check" : "find(\"id=redo\").0.name == \"Redo Add a customer (MCP)\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "57: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":4008,\"y\":162},\"help\":\"Add the serve goal (MCP)\",\"id\":\"undo\",\"name\":\"Undo Add the  (48 ms)",
+        "58: until find(\"id=undo\").0.name == \"Undo Add a customer (MCP)\" timeout=30000 → ok (71 ms)",
+        "59: expect find(\"id=redo\").0.name == \"Redo Add the serve goal (MCP)\" → ok (599 ms)",
+        "60: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":4008,\"y\":162},\"help\":\"Add a customer (MCP)\",\"id\":\"undo\",\"name\":\"Undo Add a custom (37 ms)",
+        "61: until find(\"id=undo\").0.name == \"Undo\" timeout=30000 → ok (86 ms)",
+        "62: expect find(\"id=redo\").0.name == \"Redo Add a customer (MCP)\" → ok (400 ms)",
+        "63: until find(\"id=doc-state\").0.name matches \"unsaved changes\" timeout=30000 → ok (33 ms)",
+        "64: act id=save action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":48,\"x\":3859,\"y\":162},\"help\":\"\",\"id\":\"save\",\"name\":\"Save\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (37 ms)",
+        "65: until find(\"id=doc-state\").0.name == $opened timeout=30000 → ok (39 ms)",
+        "66: expect find(\"id=redo\").0.name == \"Redo Add a customer (MCP)\" → ok (34 ms)",
+        "67: shot \"after undo\" (98 ms)"
+      ],
+      "message" : null,
+      "ms" : 1742,
+      "notes" : [
+        "shot 1: after undo"
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M5-MCP.scenario-2026-11-24T220127Z/shots/r3-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Undo walks the agent's edits back one step at a time, each named for the agent; saved, the scene is the one that opened.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 20,
+      "checks" : [
+        {
+          "actual" : "\"Undo Add a customer (MCP)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add a customer (MCP)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add the serve goal (MCP)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add the serve goal (MCP)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Redo\"",
+          "check" : "find(\"id=redo\").0.name == \"Redo\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene cafe.vrmxs 34 nodes saved valid hash 38f3e4939da32a16\"",
+          "check" : "find(\"id=doc-state\").0.name == $agent",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "72: act id=redo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":50,\"x\":4066,\"y\":162},\"help\":\"Add a customer (MCP)\",\"id\":\"redo\",\"name\":\"Redo Add a custom (35 ms)",
+        "73: until find(\"id=undo\").0.name == \"Undo Add a customer (MCP)\" timeout=30000 → ok (282 ms)",
+        "74: act id=redo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":50,\"x\":4066,\"y\":162},\"help\":\"Add the serve goal (MCP)\",\"id\":\"redo\",\"name\":\"Redo Add the  (293 ms)",
+        "75: until find(\"id=undo\").0.name == \"Undo Add the serve goal (MCP)\" timeout=30000 → ok (82 ms)",
+        "76: expect find(\"id=redo\").0.name == \"Redo\" → ok (480 ms)",
+        "77: act id=save action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":48,\"x\":3859,\"y\":162},\"help\":\"\",\"id\":\"save\",\"name\":\"Save\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (45 ms)",
+        "78: until find(\"id=doc-state\").0.name == $agent timeout=30000 → ok (43 ms)",
+        "79: shot \"after redo\" (98 ms)"
+      ],
+      "message" : null,
+      "ms" : 1607,
+      "notes" : [
+        "shot 1: after redo"
+      ],
+      "row" : 4,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M5-MCP.scenario-2026-11-24T220127Z/shots/r4-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Redo brings the agent's edits back, each still marked (MCP); saved, the scene is the agent's.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "apps/editor-mac/docs/hand-test/HAND-TEST-M5-MCP.scenario.md",
+  "summary" : "4 rows: 4 passed, 0 failed, 0 need you; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}

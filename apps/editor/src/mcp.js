@@ -42,6 +42,19 @@ export function editorTarget(ed) {
       ed.changed();
       return { paused: ed.paused, step: tree.clock.step };
     },
+    // the game as a whole (M5 W9): the project's files as Export Game reads them, and Export Game itself (in the Mac
+    // app the shell asks the person for the folder; in a browser the build is checked and hashed only)
+    project: () => { if (!ed.project) throw new Error('no project is open in the editor'); return { files: ed.project.files, read: (ref) => ed.project.bytes(ref), truncated: ed.project.truncated === true }; },
+    sceneRef: () => ed.sceneRef ?? null,
+    unsaved: () => !!session().dirty,
+    async exportGame({ name }) {
+      const r = await ed.exportGame({ name: name ?? '' });
+      if (!r) throw new Error('the export was cancelled (the folder panel was closed, or the window is closing): nothing was written');
+      if (r.refused) throw Object.assign(new Error(r.message), { name: 'BuildError', code: r.refused, files: r.files ?? [] });
+      const about = { ...r };
+      delete about.unsaved; // the tool refuses an export with unsaved changes before it gets here
+      return about;
+    },
     recording: async (ref) => JSON.parse(await ed.project.text(ref)),
     takes: async () => ed.project.takes().filter((f) => f.startsWith('takes/')),
     // the persona service of the play world, or of the editor's own view when not playing (profiles are edited there)

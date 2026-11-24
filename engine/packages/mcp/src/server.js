@@ -2,6 +2,8 @@
 // The VRMXG MCP server over stdio, for one scene of one project, or for the scene open in the VRMXG editor:
 //
 //   vrmxg-mcp <project-root> <scene.vrmxs> [--behaviours <module.js>] [--vrmxa-core <package dir>] [--seed N]
+//                                          [--builds <folder>] [--runtime <folder>]   where `game op=export` writes builds
+//                                          (without --builds an export is checked, not written), and the runtime it uses
 //   vrmxg-mcp --editor [--port 5183]
 //   vrmxg-mcp --creator [--port 5184]      the short open in the VRMXG creator (M4 W11)
 //
@@ -38,15 +40,15 @@ if (argv.includes('--creator')) {
 } else {
   const positional = argv.filter((a, i) => !a.startsWith('--') && !argv[i - 1]?.startsWith('--'));
   const [root, scene] = positional;
-  if (!root || !scene) { console.error('usage: vrmxg-mcp <project-root> <scene.vrmxs> [--behaviours m.js] [--vrmxa-core dir] [--seed N] | vrmxg-mcp --editor [--port N] | vrmxg-mcp --creator [--port N]'); process.exit(2); }
+  if (!root || !scene) { console.error('usage: vrmxg-mcp <project-root> <scene.vrmxs> [--behaviours m.js] [--vrmxa-core dir] [--seed N] [--builds dir] [--runtime dir] | vrmxg-mcp --editor [--port N] | vrmxg-mcp --creator [--port N]'); process.exit(2); }
   const { Project } = await import('./project.js');
   const { createTools } = await import('./headless.js');
   const project = new Project(root, { behaviours: opt('--behaviours'), vrmxaCore: opt('--vrmxa-core'), seed: opt('--seed') ? Number(opt('--seed')) : 1 });
-  ({ tools, call } = createTools({ registry: m0Registry(), project, scene }));
+  ({ tools, call } = createTools({ registry: m0Registry(), project, scene, builds: opt('--builds') ?? null, runtime: opt('--runtime') ?? null }));
 }
 
 instructions ??= (await import('./tools.js')).INSTRUCTIONS;
-const server = new Server({ name: 'vrmxg', version: '0.4.0' }, { capabilities: { tools: {} }, instructions });
+const server = new Server({ name: 'vrmxg', version: '0.5.0' }, { capabilities: { tools: {} }, instructions });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools }));
 server.setRequestHandler(CallToolRequestSchema, async (req) => {
   const { text, isError, image } = await call(req.params.name, req.params.arguments ?? {});

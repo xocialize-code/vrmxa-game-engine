@@ -78,17 +78,22 @@ export function sceneRefs(doc, registry) {
 /**
  * The files a game needs. `refs` are the paths a build gives them (normalised: NFC, in manifest order); `source` maps
  * each to the project's own file to read; `why` to the document that named it.
- * @param {{ game: import('./game.js').Game, files: string[], read: (ref: string) => Promise<Uint8Array>, registry?: any }} o
+ * @param {{ game: import('./game.js').Game, files: string[], read: (ref: string) => Promise<Uint8Array>, registry?: any, problems?: BuildError[] | null }} o
  *   files: every file of the project by ref; read: a file's bytes; registry: the node registry, which says which of a
- *   scene's props are asset references (without it only the asset table and a sequence's set are typed)
+ *   scene's props are asset references (without it only the asset table and a sequence's set are typed); problems: a
+ *   list that collects every refusal, carrying on past each (without it the first throws)
  * @returns {Promise<{ refs: string[], source: Map<string, string>, why: Map<string, string> }>}
  */
-export async function collect({ game, files, read, registry = null }) {
+export async function collect({ game, files, read, registry = null, problems = null }) {
+  // problems: a list to put each refusal in, carrying on past it (validate's collect-all mode); without it, the first
+  // refusal throws, as an export needs
+  const fail = (e) => { if (!problems) throw e; problems.push(e); };
+  const SEEN = Symbol('reported'); // find's answer when it has reported a reference in the wrong case
   // the listing by the spelling a build uses, and with case folded (to tell a wrong case from a missing file)
   const byRef = new Map(), byFold = new Map(), exts = new Set(), folders = new Set();
   for (const f of files) {
     const r = normRef(f);
-    if (byRef.has(r) && byRef.get(r) !== f) throw new BuildError('bad_path', `the project has ${JSON.stringify(byRef.get(r))} and ${JSON.stringify(f)}, the same name in two Unicode forms: a build can hold one`, [byRef.get(r), f]);
+    if (byRef.has(r) && byRef.get(r) !== f) { fail(new BuildError('bad_path', `the project has ${JSON.stringify(byRef.get(r))} and ${JSON.stringify(f)}, the same name in two Unicode forms: a build can hold one`, [byRef.get(r), f])); continue; }
     byRef.set(r, f);
     if (!byFold.has(r.toLowerCase())) byFold.set(r.toLowerCase(), r);
     const e = extOf(r); if (e) exts.add(e);
@@ -115,12 +120,13 @@ export async function collect({ game, files, read, registry = null }) {
     const other = byFold.get(r.toLowerCase());
     // a string that is a file's whole path but for its case, and ends in an extension the project has, is that file
     // misspelt, whether it has a space or not and wherever the file is
-    if (other !== undefined && (sure || (plain(s) && (exts.has(extOf(s) ?? '') || (!/\s/.test(s) && s.includes('/')))))) throw new BuildError('missing_file', `${by} ${verb} ${s}, and the project's file is ${other}: the case differs, and a build's files are found by their exact names${sure ? '' : ` (${hint(s)})`}`, [s, other]);
+    if (other !== undefined && (sure || (plain(s) && (exts.has(extOf(s) ?? '') || (!/\s/.test(s) && s.includes('/')))))) { fail(new BuildError('missing_file', `${by} ${verb} ${s}, and the project's file is ${other}: the case differs, and a build's files are found by their exact names${sure ? '' : ` (${hint(s)})`}`, [s, other])); return SEEN; }
     return null;
   };
   const need = (s, by, verb = 'names') => {
     const r = find(s, by, verb, true);
-    if (r === null) throw new BuildError('missing_file', `${by} ${verb} ${s}, which the project doesn't have`, [s]);
+    if (r === SEEN) return;
+    if (r === null) { fail(new BuildError('missing_file', `${by} ${verb} ${s}, which the project doesn't have`, [s])); return; }
     add(r, by);
   };
   // the roots
@@ -131,7 +137,7 @@ export async function collect({ game, files, read, registry = null }) {
   if (typeof game.input === 'string') need(game.input, GAME_FILE);
   for (const pattern of game.include) {
     const re = globRe(normRef(pattern)), hits = [...byRef.keys()].filter((f) => re.test(f));
-    if (!hits.length) throw new BuildError('missing_file', `${GAME_FILE} includes ${pattern}, which matches no file of the project`, [pattern]);
+    if (!hits.length) { fail(new BuildError('missing_file', `${GAME_FILE} includes ${pattern}, which matches no file of the project`, [pattern])); continue; }
     for (const f of hits) add(f, GAME_FILE);
   }
   // the trace
@@ -139,7 +145,7 @@ export async function collect({ game, files, read, registry = null }) {
     const ref = queue.shift();
     if (isJson(ref)) {
       let doc;
-      try { doc = JSON.parse(text(await read(byRef.get(ref)))); } catch (e) { throw new BuildError('bad_file', `${ref} (named by ${why.get(ref)}) is not JSON: ${e.message}`, [ref]); }
+      try { doc = JSON.parse(text(await read(byRef.get(ref)))); } catch (e) { fail(new BuildError('bad_file', `${ref} (named by ${why.get(ref)}) is not JSON: ${e.message}`, [ref])); continue; }
       if (ref === GAME_FILE) continue; // its refs are the roots above, and its `ignore` and `include` are not references
       // a scene's typed references, exactly; then every other string that reads as a path
       let found = new Set();
@@ -147,7 +153,8 @@ export async function collect({ game, files, read, registry = null }) {
         const { typed, loose } = sceneRefs(doc, registry);
         for (const t of typed) {
           const r = find(t.ref, ref, 'names', true);
-          if (r === null) throw new BuildError('missing_file', `${ref} names ${t.ref} (${t.where}), which the project doesn't have`, [t.ref]);
+          if (r === SEEN) continue;
+          if (r === null) { fail(new BuildError('missing_file', `${ref} names ${t.ref} (${t.where}), which the project doesn't have`, [t.ref])); continue; }
           if (r !== ref) add(r, ref);
         }
         found = loose;
@@ -156,21 +163,27 @@ export async function collect({ game, files, read, registry = null }) {
         if (ignore.has(s)) continue;
         // from the project's root, as the engine's services read a ref; or beside the document (a line's timings name
         // their clip by its file name alone)
-        const r = find(s, ref, 'names', false) ?? (dirOf(ref) && !s.startsWith('/') ? find(`${dirOf(ref)}/${s}`, ref, 'names', false) : null);
+        const r0 = find(s, ref, 'names', false);
+        if (r0 === SEEN) continue;
+        const r = r0 ?? (dirOf(ref) && !s.startsWith('/') ? find(`${dirOf(ref)}/${s}`, ref, 'names', false) : null);
+        if (r === SEEN) continue;
         if (r !== null) { if (r !== ref) add(r, ref); continue; }
-        if (looksLikeRef(s)) throw new BuildError('missing_file', `${ref} names ${s}, which the project doesn't have (${hint(s)})`, [s]);
+        if (looksLikeRef(s)) fail(new BuildError('missing_file', `${ref} names ${s}, which the project doesn't have (${hint(s)})`, [s]));
       }
     } else if (/\.wav$/i.test(ref)) {
       const timings = ref.replace(/\.wav$/i, '.timings.json');
       if (byRef.has(timings)) add(timings, ref);
     } else if (isModule(ref)) {
-      for (const spec of moduleImports(text(await read(byRef.get(ref))), ref)) {
+      let specs = [];
+      try { specs = moduleImports(text(await read(byRef.get(ref))), ref); } catch (e) { fail(e); }
+      for (const spec of specs) {
         if (spec === CORE) continue;
-        if (!/^\.{1,2}\//.test(spec)) throw new BuildError('bad_file', `${ref} imports ${spec}: a build gives a project's modules ${CORE} and their own relative imports, nothing else`, [ref]);
+        if (!/^\.{1,2}\//.test(spec)) { fail(new BuildError('bad_file', `${ref} imports ${spec}: a build gives a project's modules ${CORE} and their own relative imports, nothing else`, [ref])); continue; }
         const target = resolveFrom(ref, spec);
-        if (target === null) throw new BuildError('missing_file', `${ref} imports ${spec}, which is outside the project`, [spec]);
+        if (target === null) { fail(new BuildError('missing_file', `${ref} imports ${spec}, which is outside the project`, [spec])); continue; }
         const r = find(target, ref, 'imports', true);
-        if (r === null) throw new BuildError('missing_file', `${ref} imports ${spec}, which the project doesn't have`, [target]);
+        if (r === SEEN) continue;
+        if (r === null) { fail(new BuildError('missing_file', `${ref} imports ${spec}, which the project doesn't have`, [target])); continue; }
         add(r, ref);
       }
     }
