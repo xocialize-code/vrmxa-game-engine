@@ -33,7 +33,7 @@ table. None failed outright. Each check is filed as a receipt (task AB-T-0585); 
 | 5 | A performance can be acted | **Partly.** A puppet take, a director take and a face take each replay exactly from their logs in Node, Chromium and WKWebView (film 2fde5736d2e7edee, final e50ac8a7e928dc3f, 2,079 steps), and each is recorded, kept as one undo step and edited in the Mac app (AppProbe 8 of 8, with scripted keys, the demo model and a synthetic face). **Not run:** a face take from a real camera (AB-T-0557), and the rows a person makes at a real keyboard, model and camera | AB-R-1092 |
 | 6 | It renders on WebGPU | **Passed.** The one-minute short, The Regular (1,457 frames), exports to the same frames in 9 of 9 WebGPU pairs in WKWebView, over the scheme and over loopback, at 1080p and 4K. Check Against Scrub draws 70 of 70 frames exactly as exported, in the Mac editor over both origins and in Chromium on both backends. WebGL is within SSIM 0.9929 of WebGPU on every shot at 1080p, unmasked. The matrix was green in all six cells (AB-R-1087) | AB-R-1093 |
 | 7 | It exports for delivery | **Passed.** From the creator's render queue, every preset (H.264, HEVC, ProRes 4444 with alpha, at 1080p24 and 4K24) delivers twice the same: 29 of 29 pairs, 64 films. The files hold every frame at n/24 s, sound at lag 0, an `.srt` with all 13 lines, a still and a thumbnail per shot and a turntable per character. **The one-minute short at 4K takes 60 to 67 s as delivered** (redraw-checked), 32 to 37 s single draw, against 4 minutes | AB-R-1094 |
-| 8 | The engine is on WebGPU everywhere | **Partly.** The playground, the editor and the creator pick WebGPU, fall back to WebGL without it, and obey the query switch (24 of 24 loads). Every check runs on both backends in Chromium and WKWebView, with the same simulation and exact frames per backend (AB-R-1087). The 20-character step on WebGPU is 2.19 ms. **Not met:** the companion still draws on WebGL only (AB-A-0329). **Not run:** the base-Mac budget (AB-T-0511), and four AppProbe rows that read the renderer readout in the Mac apps | AB-R-1097 |
+| 8 | The engine is on WebGPU everywhere | **Partly.** The playground, the editor and the creator pick WebGPU, fall back to WebGL without it, and obey the query switch (24 of 24 loads). In the playground's and the editor's Mac apps the readout shows WebGPU with no query and WebGL when it is forced (AppProbe 4 of 4). Every check runs on both backends in Chromium and WKWebView, with the same simulation and exact frames per backend (AB-R-1087). The 20-character step on WebGPU is 2.19 ms. **Not met:** the companion still draws on WebGL only (AB-A-0329). **Not run:** the base-Mac budget (AB-T-0511) | AB-R-1097 |
 | 9 | Agents can make a short | **Passed.** A Claude Code session with only the creator's 7 MCP tools (about 415 tokens) patched the script, recast a role, re-voiced a line, changed a shot's camera, rendered a frame and queued an export: 20 calls, none failed. The creator's Undo and Redo walked its four edits, each marked (MCP) (AppProbe 4 of 4) | AB-R-1095 |
 | 10 | M0 to M3 still hold | **Passed.** `compare.mjs` gives 20 of 20 on each backend in Node, Chromium and WKWebView (AB-R-1087). `npm run check` passes (572 tests: 571 pass, and 1 is skipped for a git-ignored model this worktree lacks), as do the shell's 31 Swift tests. M2's and M3's Chromium checks pass on both backends. The M0 to M2 Mac scenarios pass, three of them only after their stale first step was fixed | AB-R-1096 |
 
@@ -57,11 +57,6 @@ loopback, a fresh launch per preset (AB-L-0346).
 - **Check 8: the companion.** `../vrmxa-companion` (b63b19a) still makes its host with `new RenderHost({ canvas })`,
   WebGL only. The ask to its area is open (AB-A-0329); nothing in this repository changes for it.
 - **Check 8: the base-Mac budget** on either backend wasn't taken: there is no base M-series Mac here (AB-T-0511).
-- **Check 8: four AppProbe rows weren't run.** `HAND-TEST-M4-BACKEND` reads the `#renderer` readout in the playground's
-  and the editor's Mac apps, with no query and with WebGL forced. The screen had locked by then, and AppProbe can't read
-  a window behind the lock. What stands in: the readout shows WebGPU in the screenshots of the scenarios that did run
-  (`results/m4-acceptance/hand-tests/*.jpg`), the creator's Mac app delivered 8 pairs on WebGL with `renderer=webgl`,
-  and the matrix's WKWebView cells force each backend by the same switch.
 - **The beta's odd frame is still there** (AB-T-0591, AB-D-0279). In 26,844 frames drawn once on WebGPU (24 films) none
   was odd. In 26,844 frames drawn twice by the delivery's redraw check, one first draw was odd: frame 24 of the first
   film after a launch. The check outvoted it, and the film delivered is the canonical one (AB-D-0280).
@@ -123,6 +118,7 @@ node acceptance/m4/voicing.mjs && acceptance/m4/voicing-wkwebview.sh
 appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M4-SHORT.scenario.md && node apps/editor-mac/scripts/check-short-exports.mjs
 appprobe checklist scenario=apps/creator-mac/docs/hand-test/HAND-TEST-M4-CREATOR.scenario.md   # and M4-TAKES, M4-MCP with mcp-session.mjs
 appprobe checklist scenario=apps/playground-mac/docs/hand-test/HAND-TEST-M0.scenario.md        # and the editor's M1 and M2 scenarios
+appprobe checklist scenario=apps/playground-mac/docs/hand-test/HAND-TEST-M4-BACKEND.scenario.md   # and -webgl, and the editor's two: at 14:12 UTC, once the screen was unlocked
 # the rest
 node acceptance/m4/backend-switch.mjs
 node acceptance/m3/conversation-export.mjs --url <the built editor> --renderer webgpu   # and m2/editor-chromium, m3/dialogue, split, ragdoll, on both backends

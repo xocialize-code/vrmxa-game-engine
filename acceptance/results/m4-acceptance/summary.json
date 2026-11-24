@@ -107,8 +107,7 @@
     "the companion still draws on WebGL only (AB-A-0329)"
    ],
    "notRun": [
-    "the base-Mac budget on either backend (AB-T-0511)",
-    "four AppProbe rows reading the renderer readout in the playground’s and editor’s Mac apps (the screen had locked)"
+    "the base-Mac budget on either backend (AB-T-0511)"
    ]
   },
   {
