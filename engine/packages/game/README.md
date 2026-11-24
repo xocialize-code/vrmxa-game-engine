@@ -35,18 +35,24 @@ edits them and MCP describes and sets them with the tools it has. The nodes decl
 
 | Node | Props | Signals | Actions |
 |---|---|---|---|
-| `GameRules` (one per scene) | `win`, `lose` (conditions), `flags` (the values a game starts with), `keepOutcome` | `won`, `lost`, `ended { result }`, `flagChanged` | `win`, `lose`, `setFlag { flag, value }`, `clearFlag`, `changeScene { to, after, reset }`, `restart` |
+| `GameRules` (one per scene) | `win`, `lose` (conditions), `flags` (the values a game starts with), `reads` (what its conditions read that another scene owns), `keepOutcome` | `won`, `lost`, `ended { result }`, `flagChanged` | `win`, `lose`, `setFlag { flag, value }`, `clearFlag`, `changeScene { to, after, reset }`, `restart` |
 | `GameCounter` | `key`, `start`, `min`, `max`, `label`, `scope` (game) | `changed { value, by }` | `add { by }`, `set { value }`, `reset` |
-| `GameTimer` | `key`, `seconds` (absent: a stopwatch), `autostart`, `label`, `scope` (scene) | `started`, `stopped`, `timeout` | `start`, `stop`, `reset`, `addTime { seconds }` |
+| `GameTimer` | `key`, `seconds` (above zero; absent: a stopwatch), `autostart`, `label`, `scope` (scene) | `started`, `stopped`, `timeout` | `start`, `stop`, `reset`, `addTime { seconds }` |
 | `GameGoal` | `key`, `text`, `when` (a condition), `optional`, `scope` (scene) | `completed` | `complete` |
 | `Checkpoint` | `slot`, `when` (a condition), `once`, `label` | `written { slot }` | `write` |
 
 - `key` is the name in the game state; it defaults to the node's id. **The score is the counter named `score`.**
 - `scope`: `game` values are kept across scene changes; `scene` values start again each time the scene is entered.
 - A rule is wired like a door: a signal, a connection, an action. The scene carries no code.
-- A `GameTimer` with `seconds` is a countdown, however few they are: with none left (`seconds: 0`, or `addTime` taking
-  it below nothing) it times out on its next tick. One without `seconds` is a stopwatch: no limit, never a timeout, and
-  `addTime` on it is an error, not a guess.
+- A `GameTimer` with `seconds` is a countdown, however few they are (at least one step): with none left (`addTime`
+  taking it below nothing) it times out on its next tick. One without `seconds` is a stopwatch: no limit, never a
+  timeout, and `addTime` on it is refused, not guessed at. `seconds: 0` is neither, and the schema and the scene's
+  start refuse it: it would lose a game on its first step.
+- **An action never throws inside the step.** What a scene's own connections get wrong is caught when the rules start
+  (`addTime` wired to a stopwatch; `setFlag` with no flag; `changeScene` with no `to`; `set` with no value), with an
+  error naming the connection. What can't be known then (a connection with no `args` passes its signal's payload) is
+  refused when it happens and said as a `refused` event; the step goes on. Code that calls the service directly
+  (`game.addTime(...)` from a behaviour) is still told at once, by an error.
 - Any name will do for a counter, a flag, a timer or a goal (`constructor` is a name like another) except `__proto__`.
 
 ```json
@@ -74,13 +80,23 @@ blackboard.
 
 A rule that is wrong must not win or lose a game by accident, so two things are stricter than a brain's test:
 
-- **A condition reads only what its own scene declares**, and that is checked when the rules start (once every node
-  is in, and again when one is added): `counters.<key>` needs a `GameCounter`, `flags.<flag>` an entry in the
-  `GameRules`' `flags`, `timers.<key>.<field>` a `GameTimer`, `goals.<key>.<field>` a `GameGoal`,
-  `checkpoints.<slot>` a `Checkpoint`. A key that names nothing stops the scene with an error naming the node and the
-  key (`GameRules "rules": lose reads "counters.livez": this scene has no counter "livez" (counters: lives)`), and so
-  does comparing a stopwatch's `left`. A value carried in from another scene is declared here too (a `GameCounter`
-  with the same key; the flag in `flags`), which is also what gives it a value when a game starts in this scene.
+- **A condition reads only what its scene declares or says it reads**, checked when the rules start (once every node
+  is in, and again when one is added; a refused `tree.add` leaves nothing behind).
+  - *Its own*: `counters.<key>` needs a `GameCounter`; `timers.<key>.<field>` a `GameTimer`; `goals.<key>.<field>` a
+    `GameGoal`; `checkpoints.<slot>` a `Checkpoint`; `flags.<flag>` an entry in the `GameRules`' `flags`, or a
+    connection in the scene that calls `setFlag` with it.
+  - *Another scene's*: listed in the `GameRules`' `reads`, by kind: `{ "counters": ["orders"], "flags": ["vip"],
+    "timers": ["clock"], "goals": ["serve"], "checkpoints": ["door"] }`. An ending that reads the level's goal lists
+    it there: it doesn't redeclare it, so it isn't one of the ending's objectives or part of its win. A flag only a
+    behaviour sets is listed there too.
+  - A key that names neither stops the scene, with an error naming the node and the key and saying both ways to
+    declare it: `GameRules "rules": lose reads "counters.livez": this scene has no counter "livez" (counters: lives).
+    Add a GameCounter with that key, or list it in GameRules' reads.counters if another scene counts it`. So does
+    comparing the time left on a stopwatch.
+  - **What a scene reads has to arrive.** When the game changes to it, every name in `reads` is checked against what
+    the game brought, and a clock read for its time left has to have arrived as a countdown; otherwise the change
+    fails, naming what is missing. A game that starts in the scene (or a reset) brings nothing: what it reads is then
+    absent, and comparisons with it are false.
 - **A comparison with nothing to compare is false**, whichever op: a key that isn't there, or a value that is `null`.
   Test for nothing with `unset`. A path goes through own properties only.
 
@@ -104,8 +120,11 @@ actions their connections called are in the state. In order:
 6. the checkpoints asked for are taken, unless 5 just decided the game.
 
 - **The `win` and `lose` actions ask; step 5 decides.** So a win and a loss on the same step is a win whatever asked
-  for each and wherever in the step it fired: a condition, a timeout's connection, a goal's, a contact's. Asked for
-  after the rules ran (by a later service, or by a tool between steps), it is decided by the next step's rules.
+  for each and wherever in the step it fired: a condition, a timeout's connection, a goal's, a contact's.
+- **Asked for after the rules ran** (by a service installed after the game, or by a tool between steps), a win or a
+  loss is decided by the next step's rules, or, when the scene changes first, as the world is left. Either way it is
+  the result of the step it was asked on, a win still beats a loss, and it is never lost: the order services are
+  installed in decides nothing.
 - **No checkpoint on or after the step the game is decided.** One asked for on that step is skipped (`checkpointSkipped`),
   so a checkpoint never holds a lost game.
 - A result holds the clocks that were running, and while the game is decided no goal is done and the first result
@@ -150,6 +169,7 @@ re-read the view when it does.
 | `checkpointSkipped` | `id`, `slot`, `reason`: asked for and not taken. `decided`: the game was decided on that step. `scene`: the scene changed while it waited for a step that could save |
 | `checkpointWritten` | `id`, `slot`, `step`, `stored`: the file exists (in `flow.checkpoints`; `stored`: and in the store). **Say "saved" on this one** |
 | `checkpointFailed` | `id`, `slot`, `step`, `error`: no file, or not in the store (the store's write failed; the world couldn't be saved at the boundary) |
+| `refused` | `id`, `action`, `reason`: a game node's action that couldn't be done (see above), not thrown |
 | `scene` | `from`, `to`, `reset`: the world changed |
 | `loaded` | `scene`, `step`, and `recording` when an input recording was in progress (it is stopped and handed over here) |
 | `restored` | A snapshot was restored |
@@ -195,10 +215,15 @@ is asked in finishes whole.
 
 - `flow.save(o)` is `@vrmxg/save`'s file of the world being played (taken between steps), with `extra.game` for a
   slot list: `{ scene, score, goal, outcome }`.
+- **`await flow.saveTo(slot, o)` is the player's save**: it writes that file into the store, and refuses a slot that
+  starts with `auto-`, with an error that says why. `await flow.loadFrom(slot)` loads any slot. A save menu uses
+  these two, so a player's save can never take a checkpoint's name and be overwritten by one.
 - `await flow.load(file)` reads the scene from the file, builds that world, restores it and plays it. A file that
   can't load leaves the world being played alone, and the error says why. A load jumps the clock, so an input
   recording in progress is stopped and handed over (the `loaded` event's and `onWorld`'s `recording`); replay one
-  again after it. `flow.step()` is held while a save loads, and `settle()` waits for it.
+  again after it. **Those are the only two places it is handed to**: with neither a listener nor `onWorld`, a
+  recording stopped by a load can't be reached, so stop it yourself first. `flow.step()` is held while a save loads,
+  and `settle()` waits for it.
 - A **checkpoint** is a `Checkpoint` node: by its action (a trigger's connection) or when its condition becomes true.
   The step's rules take it (step 6 above); the flow saves the world at the boundary after that step.
   - **Never a decided game**: none is taken on or after the step the game is won or lost.
@@ -207,8 +232,8 @@ is asked in finishes whole.
   - **State, file and events agree.** The state says a checkpoint was taken only once the rules took it;
     `checkpointWritten` follows when the file exists, or `checkpointFailed` when it doesn't.
 - **Where the files go.** `flow.checkpoints` has each slot's latest file. With a `store` they are also written there
-  under `CHECKPOINT_PREFIX` and the slot: `auto-checkpoint`. **A save menu keeps the player's saves out of `auto-`
-  names** and may list those slots as checkpoints.
+  under `CHECKPOINT_PREFIX` and the slot: `auto-checkpoint`. `flow.saveTo` keeps the player's saves out of `auto-`
+  names; a menu may list those slots as checkpoints.
 - `await flow.loadCheckpoint(slot)` loads this session's own latest file for the slot (whether or not the store has
   written it yet, or failed to), else the store's.
 - A save or a checkpoint taken before a scene change, loaded into a new session, goes on with the unbroken run's
@@ -227,7 +252,7 @@ stop a timer with its `stop` action, and slow the whole game with the clock, not
 with physics, recorded input and random streams) for 600 steps, through seven scene changes, two of them resets.
 - Every step's hashes are identical in Node 26, headless Chromium and WKWebView over the custom scheme and over
   loopback, with loading that takes nothing, a steady 4 ms and a varied 0 to 12 ms per world: final hash
-  `68a9e4b580a0e7bf`.
+  `cfe3f7e9828c49b1`.
 - A save taken at step 60 (before the change at 148) and the checkpoint the game wrote at step 67, each loaded into a
   new session, give the unbroken run's hashes to step 600 in all of them. Both are the same file in every runtime.
 
@@ -247,4 +272,8 @@ with physics, recorded input and random streams) for 600 steps, through seven sc
 - `edges.test.mjs`, one test per rule found in review: no checkpoint on a deciding step; `loadCheckpoint` with a slow
   and a failing store; a countdown driven to nothing; a stopwatch; any name but `__proto__`; a checkpoint that waits
   for a savable step, one a scene change overtakes, one the boundary can't save; a win and a loss on one step from
-  every source; a carry that throws; a recording across a load; waiting for a load.
+  every source; a carry that throws; a recording across a load; waiting for a load. And the second round: a win
+  asked for late in a step that changes scene, from a service installed after the game and before it; `saveTo`
+  refusing the reserved prefix; `reads` (what arrives, what doesn't, a stopwatch for a clock); a refused `tree.add`
+  leaving nothing; connections checked when the rules start and refused actions at run time; the schema refusing
+  `seconds: 0`.

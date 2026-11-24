@@ -280,7 +280,8 @@ export function m0Registry() {
     props: {
       win: when('The game is won when this holds. Absent: when every GameGoal that isn\'t optional is done.'),
       lose: when('The game is lost when this holds (a win on the same step beats it).'),
-      flags: { schema: { type: 'object', additionalProperties: { type: ['boolean', 'number', 'string'] }, description: 'Flags and the values they start a game with.' }, meta: { widget: 'json', sim: true } },
+      flags: { schema: { type: 'object', additionalProperties: { type: ['boolean', 'number', 'string'] }, description: 'Flags and the values they start a game with. A condition may read a flag started here, set by a connection in this scene, or listed in reads.' }, meta: { widget: 'json', sim: true } },
+      reads: { schema: { type: 'object', additionalProperties: false, description: 'What this scene\'s conditions read that another scene owns, by name: carried counters, flags, timers and goals, and other scenes\' checkpoint slots. Reading a goal doesn\'t make it one of this scene\'s objectives. Checked against what arrives when the game changes to this scene.', properties: Object.fromEntries(['counters', 'flags', 'timers', 'goals', 'checkpoints'].map((k) => [k, { type: 'array', items: { type: 'string', minLength: 1 }, uniqueItems: true }])) }, meta: { widget: 'json', sim: true } },
       keepOutcome: P.boolean({ default: false, sim: true, description: 'Arriving here keeps the last win or loss (an ending screen shows it). Otherwise the scene starts undecided.' }),
     },
     signals: {
@@ -304,7 +305,7 @@ export function m0Registry() {
   });
   r.define('GameTimer', {
     extends: 'Node3D', description: 'A clock counted in simulation steps: a countdown that times out, or a stopwatch (no length). It follows its node\'s pause and time scale, and stops when the game is won or lost.',
-    props: { key: key('timer'), seconds: P.number({ min: 0, unit: 's', sim: true, description: 'How long the countdown is. Absent: a stopwatch, with no limit, that never times out.' }), autostart: P.boolean({ default: true, sim: true, description: 'Running from the scene\'s start.' }), label: P.string({ description: 'What the HUD calls it.' }), scope: scope('scene') },
+    props: { key: key('timer'), seconds: { schema: { type: 'number', exclusiveMinimum: 0, description: 'How long the countdown is: above zero. Absent: a stopwatch, with no limit, that never times out.' }, meta: { unit: 's', widget: undefined, sim: true } }, autostart: P.boolean({ default: true, sim: true, description: 'Running from the scene\'s start.' }), label: P.string({ description: 'What the HUD calls it.' }), scope: scope('scene') },
     signals: { started: {}, stopped: {}, timeout: { description: 'The countdown reached zero.' } },
     actions: { start: { args: {}, description: 'Run (on from where it stopped).' }, stop: { args: {} }, reset: { args: {}, description: 'Back to its full length.' }, addTime: { args: { seconds: arg(P.number({ unit: 's' }), 'Time to add to the countdown (negative: take away; with none left it times out).') }, description: 'Lengthen or shorten a countdown (not a stopwatch).' } },
   });

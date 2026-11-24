@@ -190,6 +190,9 @@ export class GameFlow {
   _change(next, p) {
     const prev = this.tree, was = this.game, from = was.scene;
     const tree = next.tree, game = tree.services.get('game');
+    // A win or a loss asked for after the last step's rules ran (a service installed after the game) is decided here,
+    // in the world it was asked in, before the game is carried: it is never lost to the change, whatever the order.
+    was.decideAsked();
     try {
       was.carryTo(game, { reset: p.reset });
       // the services that go only when the game goes, then those that always go (input last: its hand-over moves a
@@ -241,10 +244,31 @@ export class GameFlow {
   }
 
   /**
+   * Save the session into a slot of the store: the player's own save (a menu's Save). Slots that start with
+   * CHECKPOINT_PREFIX ("auto-") are the game's: a Checkpoint node with slot "quick" writes "auto-quick", so a player's
+   * save there would be overwritten without a word. Such a name is refused. → the store's entry for the slot
+   * @param {string} slot @param {{ name?: string, savedAt?: string, note?: string, extra?: any }} [o]
+   */
+  async saveTo(slot, o = {}) {
+    if (!this.store) throw new Error('this flow has no store to save into (new GameFlow({ store }))');
+    if (typeof slot !== 'string' || slot === '') throw new Error('saveTo needs a slot: the save\'s name in the store');
+    if (slot.startsWith(CHECKPOINT_PREFIX)) throw new Error(`"${slot}" can't be a player's save: slots that start with "${CHECKPOINT_PREFIX}" are the game's checkpoints (a Checkpoint node's slot "${slot.slice(CHECKPOINT_PREFIX.length)}" is written there). Pick another name`);
+    return this.store.write(slot, this.save(o));
+  }
+
+  /** Load the save in a slot of the store (a player's, or a checkpoint's by its full name). → the step play goes on from */
+  async loadFrom(slot) {
+    if (!this.store) throw new Error('this flow has no store to load from (new GameFlow({ store }))');
+    return this.load(await this.store.read(slot));
+  }
+
+  /**
    * Load a save: build a world of the scene it was made in, restore it, and play that one. The world being played is
    * left as it is when the file can't load (the error says why). A load jumps the session's clock, so an input
    * recording in progress can't go on: it is stopped and handed over, in the `loaded` event and in onWorld's info
-   * (`recording`: the frames up to the load), never dropped. A replay isn't in a save: replay it again on flow.tree.
+   * (`recording`: the frames up to the load). Those are the only two places it is handed to: a caller with neither a
+   * listener nor onWorld stops the recording itself before it loads. A replay isn't in a save: replay it again on
+   * flow.tree.
    * → the step play goes on from
    */
   load(file) {

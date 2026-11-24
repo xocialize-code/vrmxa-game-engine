@@ -151,14 +151,17 @@ test('3. a countdown driven to nothing times out; a stopwatch is a timer without
   const { tree, game } = rulesWorld([
     { id: 'five', type: 'GameTimer', props: { seconds: 5 } },
     { id: 'tiny', type: 'GameTimer', props: { seconds: 0.008 } },
-    { id: 'zero', type: 'GameTimer', props: { seconds: 0 } },
     { id: 'watch', type: 'GameTimer' },
   ]);
   const out = [];
-  for (const id of ['five', 'tiny', 'zero', 'watch']) tree.find(id).on('timeout', () => out.push([id, tree.clock.step]));
-  assert.deepEqual(['five', 'tiny', 'zero', 'watch'].map((k) => [game.view().timers[k].limit, game.view().timers[k].steps, game.view().timers[k].left]), [[true, 300, 5], [true, 0, 0], [true, 0, 0], [false, null, null]]);
+  for (const id of ['five', 'tiny', 'watch']) tree.find(id).on('timeout', () => out.push([id, tree.clock.step]));
+  assert.deepEqual(['five', 'tiny', 'watch'].map((k) => [game.view().timers[k].limit, game.view().timers[k].steps]), [[true, 300], [true, 1], [false, null]]);
   tree.step();
-  assert.deepEqual(out, [['tiny', 0], ['zero', 0]], 'seconds too few to make a step, or none, is a countdown that is over: it times out at once');
+  assert.deepEqual(out, [['tiny', 0]], 'seconds too few to make a step is a countdown of one step, not a stopwatch');
+  // seconds: 0 is neither: it would lose a game on its first step. The schema and the scene's start both refuse it.
+  assert.throws(() => rulesWorld([{ id: 'zero', type: 'GameTimer', props: { seconds: 0 } }]), /GameTimer "zero": seconds is 0: a countdown needs seconds above zero \(leave seconds out for a stopwatch\)/);
+  assert.equal(m0Registry().get('GameTimer').props.seconds.schema.exclusiveMinimum, 0);
+  assert.match(describeRules(doc('z', [{ id: 'zero', type: 'GameTimer', props: { seconds: 0 } }])).problems.join(), /seconds above zero/);
   tree.run(9);
   tree.find('five').call('addTime', { seconds: -10 });
   assert.deepEqual([game.view().timers.five.limit, game.view().timers.five.steps, game.view().timers.five.left, game.view().timers.five.done], [true, 0, 0, false], 'taken below nothing it is still a countdown, with none left');
@@ -166,8 +169,8 @@ test('3. a countdown driven to nothing times out; a stopwatch is a timer without
   assert.deepEqual(out.at(-1), ['five', 10], 'and times out on its next tick');
   assert.equal(game.view().timers.five.done, true);
   tree.run(600);
-  assert.deepEqual([out.length, game.view().timers.watch.elapsedSteps, game.view().timers.watch.done], [3, 611, false], 'the stopwatch never does');
-  assert.throws(() => tree.find('watch').call('addTime', { seconds: 5 }), /timer "watch" is a stopwatch \(no seconds\): it has no time to add to/);
+  assert.deepEqual([out.length, game.view().timers.watch.elapsedSteps, game.view().timers.watch.done], [2, 611, false], 'the stopwatch never does');
+  assert.throws(() => game.addTime('watch', 5), /timer "watch" is a stopwatch \(no seconds\): it has no time to add to/);
   assert.equal(game.view().timers.watch.limit, false, 'and adding time doesn\'t make it a countdown');
   tree.find('five').call('reset');
   assert.deepEqual([game.view().timers.five.steps, game.view().timers.five.left], [300, 5], 'reset gives a countdown its length back');
@@ -203,7 +206,7 @@ test('4. a condition that reads what its scene doesn\'t declare stops the scene,
   assert.throws(start([{ id: 'rules', type: 'GameRules', props: { lose: state('counters.livez', 'ne', 3) } }, { id: 'lives', type: 'GameCounter', props: { start: 3 } }]),
     /GameRules "rules": lose reads "counters\.livez": this scene has no counter "livez" \(counters: lives\)/);
   assert.throws(start([{ id: 'rules', type: 'GameRules', props: { flags: { tillClosed: false } } }, { id: 'g', type: 'GameGoal', props: { when: state('flags.tilClosed') } }]),
-    /GameGoal "g": when reads "flags\.tilClosed": this scene's GameRules doesn't start a flag "tilClosed" \(flags: tillClosed\)/);
+    /GameGoal "g": when reads "flags\.tilClosed": nothing in this scene starts or sets a flag "tilClosed" \(flags: tillClosed\)\. Start it in GameRules' flags, or list it in GameRules' reads\.flags/);
   assert.throws(start([{ id: 'rules', type: 'GameRules', props: { lose: state('timers.watch.left', 'le', 0) } }, { id: 'watch', type: 'GameTimer' }]),
     /GameRules "rules": lose reads "timers\.watch\.left": "watch" is a stopwatch: it has no left to compare/);
   assert.throws(start([{ id: 'rules', type: 'GameRules', props: { win: state('self') } }]), /GameRules "rules": win reads "self": a condition can read score, outcome/);
@@ -405,4 +408,179 @@ test('waiting for a load: runAsync and settle wait for it instead of spinning', 
   await flow.settle();
   assert.equal(flow.held, null);
   flow.dispose();
+});
+
+// ---------------------------------------------------------------- the second round of review
+
+// A service that asks for things on a step: installed after the game (its afterNodes runs once the step's rules have)
+// or before it.
+const asker = (ask, { before = false } = {}) => (tree, req) => {
+  if (req.scene !== 'a.vrmxs') return;
+  const service = { afterNodes() { ask(tree.services.get('game'), tree.clock.step); } };
+  if (!before) { tree.services.set('asker', service); return; }
+  const rest = [...tree.services]; tree.services.clear(); tree.services.set('asker', service); for (const [k, v] of rest) tree.services.set(k, v);
+};
+
+test('a win or a loss asked for late in a step is never lost to a scene change on that step, whatever the service order', async () => {
+  const scenesFor = (keep) => ({
+    'a.vrmxs': doc('a', [{ id: 'rules', type: 'GameRules' }, { id: 'clock', type: 'GameTimer', props: { seconds: 9 } }]),
+    'b.vrmxs': doc('b', [{ id: 'rules', type: 'GameRules', props: { keepOutcome: keep } }]),
+  });
+  const play = async (ask, o, keep = true) => {
+    const { flow, events } = await miniFlow(scenesFor(keep), { install: asker(ask, o) });
+    await flow.runAsync(8); flow.flush();
+    const out = { view: flow.view(), events: events.filter((e) => ['outcome', 'scene', 'timer'].includes(e.type)) };
+    flow.dispose();
+    return out;
+  };
+  const winAndGo = (game, step) => { if (step === 4) { game.win(); game.changeScene({ to: 'b.vrmxs' }); } };
+  // the review's case: the asker after the game. The win is decided as the world is left, as of the step it was asked on
+  const after = await play(winAndGo);
+  assert.deepEqual(after.view.decided, { result: 'won', step: 4, scene: 'a.vrmxs' });
+  assert.deepEqual(after.events.map((e) => [e.type, e.step, e.result ?? e.event ?? e.to]), [['outcome', 4, 'won'], ['timer', 5, 'stopped'], ['scene', 5, 'b.vrmxs']]);
+  assert.equal(after.view.timers.clock.elapsedSteps, 5, 'the level\'s clock held where it was');
+  // installed before the game the same calls give the same game: the order of services decides nothing
+  const before = await play(winAndGo, { before: true });
+  assert.deepEqual(before.view, after.view);
+  assert.deepEqual(before.events.filter((e) => e.type !== 'timer'), after.events.filter((e) => e.type !== 'timer'));
+  // a loss, and a loss with a win (a win beats it), asked late
+  assert.deepEqual((await play((g, s) => { if (s === 4) { g.lose(); g.changeScene({ to: 'b.vrmxs' }); } })).view.decided, { result: 'lost', step: 4, scene: 'a.vrmxs' });
+  assert.equal((await play((g, s) => { if (s === 4) { g.lose(); g.win(); g.changeScene({ to: 'b.vrmxs' }); } })).view.outcome, 'won');
+  // into a scene that starts undecided the outcome isn't kept, as for any win: but it was decided, and said
+  const fresh = await play(winAndGo, {}, false);
+  assert.deepEqual([fresh.view.outcome, fresh.events.map((e) => e.type)], [null, ['outcome', 'timer', 'scene']]);
+  assert.deepEqual(fresh, await play(winAndGo, { before: true }, false).then((b) => ({ view: b.view, events: fresh.events })), 'and that too is the same from either side');
+  // with no scene change the next step's rules decide it, as of the step it was asked on
+  const stay = await play((g, s) => { if (s === 4) g.lose(); });
+  assert.deepEqual([stay.view.scene, stay.view.decided, stay.view.timers.clock.elapsedSteps], ['a.vrmxs', { result: 'lost', step: 4, scene: 'a.vrmxs' }, 6]);
+});
+
+test('a player\'s save can\'t take a checkpoint\'s name: saveTo refuses the reserved prefix and says why', async () => {
+  const docs = { 'a.vrmxs': doc('a', [{ id: 'cp', type: 'Checkpoint', props: { slot: 'quick', when: state('sceneSteps', 'ge', 5) } }]) };
+  const store = new MemoryStore();
+  const { flow } = await miniFlow(docs, { store });
+  flow.run(2);
+  await assert.rejects(flow.saveTo('auto-quick', { name: 'mine' }), /"auto-quick" can't be a player's save: slots that start with "auto-" are the game's checkpoints \(a Checkpoint node's slot "quick" is written there\)\. Pick another name/);
+  await assert.rejects(flow.saveTo('auto-'), /can't be a player's save/);
+  assert.deepEqual(await store.list(), []);
+  assert.equal((await flow.saveTo('quick', { name: 'mine' })).step, 2);
+  flow.run(6); await flow.settle();
+  assert.deepEqual((await store.list()).map((s) => [s.slot, s.name, s.step]), [['auto-quick', 'Checkpoint', 6], ['quick', 'mine', 2]], 'the player\'s save and the checkpoint side by side');
+  assert.equal(await flow.loadFrom('quick'), 2);
+  assert.equal(await flow.loadFrom('auto-quick'), 6);
+  await assert.rejects(new GameFlow({ load: () => null }).saveTo('x'), /has no store/);
+  flow.dispose();
+});
+
+test('a scene reads what another scene owns by listing it in its rules\' reads: checked when the game gets there', async () => {
+  const level = doc('level', [
+    { id: 'rules', type: 'GameRules' },
+    { id: 'orders', type: 'GameCounter' }, { id: 'clock', type: 'GameTimer', props: { seconds: 9, scope: 'game' } }, { id: 'watch', type: 'GameTimer', props: { scope: 'game' } },
+    { id: 'serve', type: 'GameGoal', props: { optional: true } }, { id: 'cp', type: 'Checkpoint', props: { slot: 'door' } },
+    { id: 'leave', type: 'GameTimer', props: { seconds: 0.1 } },
+  ], [{ from: 'leave', signal: 'timeout', to: 'rules', call: 'changeScene', args: { to: 'ending.vrmxs' } }, { from: 'leave', signal: 'started', to: 'rules', call: 'setFlag', args: { flag: 'left' } }]);
+  // the ending owns one goal of its own and reads the level's goal, counter, flag, clock and checkpoint
+  const ending = (rules = {}) => doc('ending', [
+    { id: 'rules', type: 'GameRules', props: { keepOutcome: true, reads: { counters: ['orders'], flags: ['vip'], timers: ['clock'], goals: ['serve'], checkpoints: ['door'] }, ...rules } },
+    { id: 'thanks', type: 'GameGoal', props: { text: 'Say thanks', when: { test: 'all', of: [state('goals.serve.done'), state('counters.orders', 'ge', 2), state('flags.vip'), state('timers.clock.left', 'gt', 0), state('checkpoints.door')] } } },
+  ]);
+  const { flow } = await miniFlow({ 'level.vrmxs': level, 'ending.vrmxs': ending() });
+  flow.game.add('orders', 2); flow.game.completeGoal('serve'); flow.game.setFlag('vip'); flow.tree.find('cp').call('write');
+  await flow.runAsync(12);
+  const v = flow.view();
+  assert.deepEqual([v.scene, v.goals.thanks.done, v.outcome], ['ending.vrmxs', true, 'won'], 'the ending\'s goal read all five and was done');
+  assert.deepEqual(v.objectives.map((o) => o.key), ['thanks'], 'reading the level\'s goal didn\'t make it one of the ending\'s objectives');
+  flow.dispose();
+
+  // a flag only ever set by a connection in the scene is the scene's own: no entry in flags needed
+  const set = rulesWorld([{ id: 'rules', type: 'GameRules', props: { win: state('flags.done') } }, { id: 't', type: 'GameTimer', props: { seconds: 0.05 } }], [{ from: 't', signal: 'timeout', to: 'rules', call: 'setFlag', args: { flag: 'done' } }]);
+  set.tree.run(5);
+  assert.equal(set.game.view().outcome, 'won');
+
+  // what a scene reads has to arrive: from a level that never had it the change fails, naming it, and play stays put
+  const bare = doc('level', [{ id: 'rules', type: 'GameRules' }, { id: 'leave', type: 'GameTimer', props: { seconds: 0.1 } }], [{ from: 'leave', signal: 'timeout', to: 'rules', call: 'changeScene', args: { to: 'ending.vrmxs' } }]);
+  const built = [], unloaded = [];
+  const b = await miniFlow({ 'level.vrmxs': bare, 'ending.vrmxs': ending() }, { built, unloaded });
+  b.flow.run(6); await b.flow.settle();
+  assert.throws(() => b.flow.step(), /the scene change to "ending\.vrmxs" failed: GameRules "rules" reads counters\.orders from another scene, and "level\.vrmxs" brought none \(it brought no counters\)\. Declare it in the scene the game comes from, or as this scene's own; GameRules "rules" reads flags\.vip/);
+  assert.deepEqual([b.flow.scene, built, unloaded], ['level.vrmxs', ['level.vrmxs', 'ending.vrmxs'], ['ending.vrmxs']]);
+  b.flow.dispose();
+
+  // a clock read for its time left has to arrive as a countdown: a stopwatch under that name fails the change the same way
+  const c = await miniFlow({ 'level.vrmxs': level, 'ending.vrmxs': doc('ending', [{ id: 'rules', type: 'GameRules', props: { reads: { timers: ['watch'] }, lose: state('timers.watch.left', 'le', 0) } }]) });
+  c.flow.run(6); await c.flow.settle();
+  assert.throws(() => c.flow.step(), /failed: GameRules "rules": lose reads "timers\.watch\.left": "watch" is a stopwatch/);
+  c.flow.dispose();
+
+  // a game that starts in such a scene has brought nothing: what it reads is absent, and a comparison with it is false
+  const alone = await miniFlow({ 'ending.vrmxs': ending() });
+  alone.flow.run(5);
+  assert.deepEqual([alone.flow.view().goals.thanks.done, alone.flow.view().counters], [false, {}]);
+  alone.flow.dispose();
+
+  // reads that aren't lists of names, or of a kind there isn't, stop the scene; describeRules says the same
+  assert.throws(() => rulesWorld([{ id: 'rules', type: 'GameRules', props: { reads: { scores: ['a'] } } }]), /GameRules "rules": reads has no "scores" \(counters, flags, timers, goals, checkpoints\)/);
+  assert.throws(() => rulesWorld([{ id: 'rules', type: 'GameRules', props: { reads: { counters: 'orders' } } }]), /reads\.counters is a list of names/);
+  const d = describeRules(ending());
+  assert.deepEqual([d.problems, d.rules.reads.goals, d.goals.map((g) => g.key)], [[], ['serve'], ['thanks']]);
+  assert.match(describeRules(doc('e', [{ id: 'g', type: 'GameGoal', props: { when: state('goals.serve.done') } }])).problems[0], /Add a GameGoal with that key, or list it in GameRules' reads\.goals if it is another scene's/);
+});
+
+test('a refused tree.add leaves nothing behind: no node, no declaration, no state', () => {
+  const { tree, game } = rulesWorld([{ id: 'rules', type: 'GameRules', props: { flags: { open: true } } }, { id: 'coins', type: 'GameCounter', props: { start: 3 } }]);
+  tree.run(3);
+  const before = JSON.stringify(captureWorld(tree));
+  assert.throws(() => tree.add({ id: 'late', type: 'GameGoal', parent: 'root', props: { when: state('counters.gems', 'ge', 1) } }), /GameGoal "late": when reads "counters\.gems"/);
+  assert.throws(() => tree.add({ id: 'gems', type: 'GameCounter', parent: 'root', props: { start: 5 } }, undefined) && tree.add({ id: 'bad', type: 'GameTimer', parent: 'root', props: { seconds: 0 } }), /seconds above zero/);
+  assert.deepEqual([tree.find('late') === null, tree.find('bad') === null, game.decl.goals.has('late'), Object.hasOwn(game.goals, 'late'), game.decl.timers.has('bad'), Object.hasOwn(game.timers, 'bad')], [true, true, false, false, false, false]);
+  tree.remove('gems');
+  delete game.counters.gems; // the counter that was added rightly, and its value, taken out again by hand to compare
+  assert.equal(JSON.stringify(captureWorld(tree)), before, 'the world is as it was');
+  // and what is right can be added after what was refused
+  tree.add({ id: 'gems', type: 'GameCounter', parent: 'root', props: { start: 1 } });
+  tree.add({ id: 'late', type: 'GameGoal', parent: 'root', props: { when: state('counters.gems', 'ge', 1) } });
+  tree.step();
+  assert.equal(game.view().goals.late.done, true);
+});
+
+test('a connection that asks a game node for what it can\'t do is caught when the rules start; at run time it is refused, not thrown', () => {
+  const start = (nodes, connections) => () => rulesWorld(nodes, connections);
+  const base = [{ id: 'rules', type: 'GameRules' }, { id: 'watch', type: 'GameTimer' }, { id: 'clock', type: 'GameTimer', props: { seconds: 0.05 } }, { id: 'coins', type: 'GameCounter' }, { id: 'g', type: 'GameGoal' }];
+  const wired = (call, to, args) => [{ from: 'g', signal: 'completed', to, call, ...(args !== undefined ? { args } : {}) }];
+  assert.throws(start(base, wired('addTime', 'watch', { seconds: 5 })), /the connection g\.completed → watch\.addTime: addTime is for a countdown, and this timer is a stopwatch \(it has no seconds\)/);
+  assert.throws(start(base, wired('addTime', 'watch')), /this timer is a stopwatch/, 'whatever the payload would be');
+  assert.throws(start(base, wired('setFlag', 'rules', { flag: '__proto__' })), /the connection g\.completed → rules\.setFlag: a flag can't be named "__proto__"/);
+  assert.throws(start(base, wired('setFlag', 'rules', { value: true })), /setFlag needs \{ flag \}/);
+  assert.throws(start(base, wired('setFlag', 'rules', { flag: 'x', value: { a: 1 } })), /setFlag's value is a boolean, a number or a string/);
+  assert.throws(start(base, wired('changeScene', 'rules', {})), /rules\.changeScene: changeScene needs \{ to \}/);
+  assert.throws(start(base, wired('changeScene', 'rules', { to: 'b.vrmxs', after: -1 })), /"after" is seconds, zero or more/);
+  assert.throws(start(base, wired('set', 'coins', { value: 'ten' })), /coins\.set: set needs \{ value \}: a number/);
+  assert.throws(start(base, wired('addTime', 'clock', {})), /clock\.addTime: addTime needs \{ seconds \}: a number/);
+  assert.match(describeRules(doc('w', base, wired('addTime', 'watch', { seconds: 5 }))).problems.join(), /g\.completed → watch\.addTime: addTime is for a countdown/);
+  assert.deepEqual(describeRules(doc('w', base, wired('addTime', 'clock', { seconds: 5 }))).problems, []);
+  // what can't be known then (a connection that passes its signal's payload on) is refused when it happens: an event,
+  // the step goes on, nothing is thrown inside it
+  const { tree, game } = rulesWorld(base, [{ from: 'clock', signal: 'timeout', to: 'rules', call: 'changeScene' }, { from: 'clock', signal: 'timeout', to: 'coins', call: 'set' }, { from: 'clock', signal: 'timeout', to: 'rules', call: 'setFlag' }, { from: 'clock', signal: 'timeout', to: 'coins', call: 'add' }]);
+  tree.run(10);
+  assert.deepEqual(game.flush().filter((e) => e.type === 'refused').map((e) => [e.id, e.action, e.step, e.reason]), [
+    ['rules', 'changeScene', 2, 'changeScene needs { to }: the scene\'s path in the project'],
+    ['coins', 'set', 2, 'set needs { value }'],
+    ['rules', 'setFlag', 2, 'a flag can\'t be named undefined'],
+  ]);
+  assert.deepEqual([game.pending, game.get('coins'), tree.clock.step], [null, 1, 10], 'the connection after the refused ones still ran, and the game played on');
+  // run-time misuse through a node's action, the same: time added to a stopwatch
+  tree.find('watch').call('addTime', { seconds: 3 });
+  assert.deepEqual(game.flush().map((e) => [e.type, e.action, e.reason]), [['refused', 'addTime', 'timer "watch" is a stopwatch (no seconds): it has no time to add to']]);
+});
+
+test('the scene schema refuses a countdown of no seconds, and takes reads', async () => {
+  const { createValidator } = await import('@vrmxg/scene');
+  const v = createValidator(m0Registry());
+  const check = (props, type = 'GameTimer') => v.check(doc('s', [{ id: 'n', type, props }]));
+  assert.equal(check({ seconds: 0 }).ok, false);
+  assert.equal(check({ seconds: -2 }).ok, false);
+  assert.deepEqual([check({ seconds: 0.5 }).ok, check({}).ok], [true, true]);
+  assert.equal(check({ reads: { goals: ['serve'], flags: ['vip'] } }, 'GameRules').ok, true);
+  assert.equal(check({ reads: { goals: 'serve' } }, 'GameRules').ok, false);
+  assert.equal(check({ reads: { scores: [] } }, 'GameRules').ok, false);
 });

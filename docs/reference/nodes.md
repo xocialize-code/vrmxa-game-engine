@@ -780,7 +780,8 @@ A scene's rules: when the game is won and lost, and the flags it starts with. On
 |---|---|---|---|---|
 | `win` | object |  | yes | The game is won when this holds. Absent: when every GameGoal that isn't optional is done. |
 | `lose` | object |  | yes | The game is lost when this holds (a win on the same step beats it). |
-| `flags` | object |  | yes | Flags and the values they start a game with. |
+| `flags` | object |  | yes | Flags and the values they start a game with. A condition may read a flag started here, set by a connection in this scene, or listed in reads. |
+| `reads` | object |  | yes | What this scene's conditions read that another scene owns, by name: carried counters, flags, timers and goals, and other scenes' checkpoint slots. Reading a goal doesn't make it one of this scene's objectives. Checked against what arrives when the game changes to this scene. |
 | `keepOutcome` | boolean | `false` | yes | Arriving here keeps the last win or loss (an ending screen shows it). Otherwise the scene starts undecided. |
 
 **Signals**
@@ -855,7 +856,7 @@ A clock counted in simulation steps: a countdown that times out, or a stopwatch 
 | Prop | Type | Default | Range, unit | Simulated | What |
 |---|---|---|---|---|---|
 | `key` | string |  |  | yes | The timer's name in the game state (default: the node's id). |
-| `seconds` | number |  | ≥ 0 s | yes | How long the countdown is. Absent: a stopwatch, with no limit, that never times out. |
+| `seconds` | number |  | s | yes | How long the countdown is: above zero. Absent: a stopwatch, with no limit, that never times out. |
 | `autostart` | boolean | `true` |  | yes | Running from the scene's start. |
 | `label` | string |  |  |  | What the HUD calls it. |
 | `scope` | `game`, `scene` | `"scene"` |  | yes | game: kept across scene changes. scene: starts again each time this scene is entered. |

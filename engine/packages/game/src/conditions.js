@@ -95,16 +95,17 @@ const SLOT_FIELDS = ['id', 'requested'];
 const list = (names) => ([...names].length ? [...names].join(', ') : 'none');
 
 /**
- * @typedef {{ counters: Set<string>, flags: Set<string>, timers: Map<string, boolean>, goals: Set<string>, slots: Set<string> }} Declared
- * What a scene declares: its counters, the flags its GameRules starts, its timers (true: a countdown, false: a
- * stopwatch), its goals and its checkpoints' slots, each by the name it has in the game state.
+ * @typedef {{ counters: Set<string>, flags: Set<string>, timers: Map<string, boolean | null>, goals: Set<string>, slots: Set<string> }} Declared
+ * What a scene's conditions may read, by the names the game state has: its own counters, the flags its GameRules
+ * starts or a connection here sets, its timers (true: a countdown, false: a stopwatch), its goals and its
+ * checkpoints' slots, and what its GameRules' `reads` lists as another scene's (a timer read from elsewhere is null
+ * here, countdown or stopwatch, until it arrives).
  */
 
 /**
  * Problems with the keys a condition reads, against what its scene declares (empty: every key is something the scene
- * has). A condition reads only what its own scene declares: a value carried from another scene is declared here too
- * (a GameCounter with the same key; the flag in GameRules' flags), which is also what gives it a value in a game that
- * starts in this scene.
+ * has, or says it reads). Each problem says how to declare what is missing: as this scene's own (a node, a flag's
+ * start), or in GameRules' `reads` when another scene owns it.
  * @param {any} c a condition whose shape is fine (checkCondition) @param {Declared} declared @param {string} [at]
  * @returns {string[]}
  */
@@ -122,25 +123,76 @@ export function checkKeys(c, declared, at = 'condition') {
   }
   if (root === 'counters') {
     if (parts.length !== 2) return say('a counter is read as "counters.<name>"');
-    return declared.counters.has(name) ? [] : say(`this scene has no counter "${name}" (counters: ${list(declared.counters)})`);
+    return declared.counters.has(name) ? [] : say(`this scene has no counter "${name}" (counters: ${list(declared.counters)}). Add a GameCounter with that key, or list it in GameRules' reads.counters if another scene counts it`);
   }
   if (root === 'flags') {
     if (parts.length !== 2) return say('a flag is read as "flags.<name>"');
-    return declared.flags.has(name) ? [] : say(`this scene's GameRules doesn't start a flag "${name}" (flags: ${list(declared.flags)})`);
+    return declared.flags.has(name) ? [] : say(`nothing in this scene starts or sets a flag "${name}" (flags: ${list(declared.flags)}). Start it in GameRules' flags, or list it in GameRules' reads.flags if another scene or a behaviour sets it`);
   }
   if (root === 'timers') {
     if (parts.length !== 3 || !TIMER_FIELDS.includes(field)) return say(`a timer is read as "timers.<name>.<field>" (${TIMER_FIELDS.join(', ')})`);
-    if (!declared.timers.has(name)) return say(`this scene has no timer "${name}" (timers: ${list(declared.timers.keys())})`);
-    if (!declared.timers.get(name) && LIMIT_FIELDS.has(field) && COMPARES.has(c.op)) return say(`"${name}" is a stopwatch: it has no ${field} to compare (give it seconds, or read elapsed)`);
+    if (!declared.timers.has(name)) return say(`this scene has no timer "${name}" (timers: ${list(declared.timers.keys())}). Add a GameTimer with that key, or list it in GameRules' reads.timers if another scene runs it`);
+    if (declared.timers.get(name) === false && LIMIT_FIELDS.has(field) && COMPARES.has(c.op)) return say(`"${name}" is a stopwatch: it has no ${field} to compare (give it seconds, or read elapsed)`);
     return [];
   }
   if (root === 'goals') {
     if (parts.length !== 3 || !GOAL_FIELDS.includes(field)) return say(`a goal is read as "goals.<name>.<field>" (${GOAL_FIELDS.join(', ')})`);
-    return declared.goals.has(name) ? [] : say(`this scene has no goal "${name}" (goals: ${list(declared.goals)})`);
+    return declared.goals.has(name) ? [] : say(`this scene has no goal "${name}" (goals: ${list(declared.goals)}). Add a GameGoal with that key, or list it in GameRules' reads.goals if it is another scene's (reading it doesn't make it one of this scene's objectives)`);
   }
   if (root === 'checkpoints') {
     if (parts.length < 2 || parts.length > 3 || (parts.length === 3 && !SLOT_FIELDS.includes(field))) return say(`a checkpoint is read as "checkpoints.<slot>" or "checkpoints.<slot>.<field>" (${SLOT_FIELDS.join(', ')})`);
-    return declared.slots.has(name) ? [] : say(`this scene has no checkpoint for the slot "${name}" (slots: ${list(declared.slots)})`);
+    return declared.slots.has(name) ? [] : say(`this scene has no checkpoint for the slot "${name}" (slots: ${list(declared.slots)}). Add a Checkpoint with that slot, or list it in GameRules' reads.checkpoints if another scene's writes it`);
   }
   return say(`a condition can read ${[...Object.keys(PLAIN), 'counters.<name>', 'flags.<name>', 'timers.<name>.<field>', 'goals.<name>.<field>', 'checkpoints.<slot>'].join(', ')}`);
+}
+
+// ---------------------------------------------------------------- what a scene reads from elsewhere, and its connections
+
+/** The kinds of value a GameRules' `reads` may list, and the game state's map each is in. */
+export const READS = { counters: 'counters', flags: 'flags', timers: 'timers', goals: 'goals', checkpoints: 'checkpoints' };
+
+/**
+ * A GameRules' `reads`, checked and filled in: { counters, flags, timers, goals, checkpoints }, each a list of names.
+ * @param {any} reads @returns {{ reads: Record<string, string[]>, problems: string[] }}
+ */
+export function readReads(reads) {
+  const out = { counters: [], flags: [], timers: [], goals: [], checkpoints: [] }, problems = [];
+  if (reads === undefined || reads === null) return { reads: out, problems };
+  if (typeof reads !== 'object' || Array.isArray(reads)) return { reads: out, problems: ['reads is { counters, flags, timers, goals, checkpoints }, each a list of names'] };
+  for (const [kind, names] of Object.entries(reads)) {
+    if (!Object.hasOwn(READS, kind)) { problems.push(`reads has no "${kind}" (${Object.keys(READS).join(', ')})`); continue; }
+    if (!Array.isArray(names) || names.some((n) => typeof n !== 'string' || n === '' || n === '__proto__')) { problems.push(`reads.${kind} is a list of names`); continue; }
+    out[kind] = [...names];
+  }
+  return { reads: out, problems };
+}
+
+/**
+ * What is wrong with a connection's call of a game node's action, where it can be known before the game runs (null:
+ * nothing). A connection without args passes its signal's payload, which isn't known here: only a call that can't be
+ * right whatever the payload is refused then.
+ * @param {'rules' | 'counter' | 'timer' | 'goal' | 'checkpoint'} kind the target @param {{ stopwatch?: boolean }} target
+ * @param {string} call @param {any} args the connection's own args, if it has any
+ * @returns {string | null}
+ */
+export function checkCall(kind, target, call, args) {
+  const given = args !== undefined && args !== null, num = (v) => typeof v === 'number' && Number.isFinite(v);
+  if (kind === 'timer' && call === 'addTime') {
+    if (target.stopwatch) return 'addTime is for a countdown, and this timer is a stopwatch (it has no seconds)';
+    if (given && !num(args.seconds)) return 'addTime needs { seconds }: a number';
+  }
+  if (kind === 'counter') {
+    if (call === 'set' && given && !num(args.value)) return 'set needs { value }: a number';
+    if (call === 'add' && given && args.by !== undefined && !num(args.by)) return 'add\'s "by" is not a number';
+  }
+  if (kind === 'rules') {
+    if ((call === 'setFlag' || call === 'clearFlag') && given) {
+      if (typeof args.flag !== 'string' || args.flag === '') return `${call} needs { flag }: the flag's name`;
+      if (args.flag === '__proto__') return 'a flag can\'t be named "__proto__"';
+      if (call === 'setFlag' && args.value !== undefined && !['boolean', 'number', 'string'].includes(typeof args.value)) return 'setFlag\'s value is a boolean, a number or a string';
+    }
+    if (call === 'changeScene' && given && (typeof args.to !== 'string' || args.to === '')) return 'changeScene needs { to }: the scene\'s path in the project';
+    if ((call === 'changeScene' || call === 'restart') && given && args.after !== undefined && !(num(args.after) && args.after >= 0)) return `${call}'s "after" is seconds, zero or more`;
+  }
+  return null;
 }

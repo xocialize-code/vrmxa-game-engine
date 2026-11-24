@@ -126,8 +126,11 @@ test('counters: the score is the counter "score"; min and max hold; a change is 
   assert.equal(game.get('coins'), 3, 'a connection without args passes the signal\'s payload: one more');
   tree.find('coins-node').call('reset');
   assert.equal(game.get('coins'), 2);
-  assert.throws(() => tree.find('coins-node').call('set', {}), /set needs \{ value \}/);
-  assert.throws(() => game.add('coins', NaN), /not a number/);
+  game.flush();
+  tree.find('coins-node').call('set', {}); // a connection's mistake is refused and said, not thrown inside the step
+  assert.deepEqual(game.flush(), [{ type: 'refused', id: 'coins-node', action: 'set', reason: 'set needs { value }', step: 0 }]);
+  assert.equal(game.get('coins'), 2);
+  assert.throws(() => game.add('coins', NaN), /not a number/, 'code that calls the service wrongly is told at once');
   assert.deepEqual(tree.unhandled, []);
 });
 
@@ -236,7 +239,7 @@ test('win and lose: a tie is a win; a timeout\'s connection can lose; once decid
   assert.deepEqual(late.game.view().checkpoints, {}, 'and no checkpoint is taken');
   late.tree.find('cp').call('write'); late.tree.run(2);
   assert.equal(late.game.checkpointSeq, 0, 'nor by its action');
-  assert.deepEqual(late.game.requests, { win: false, lose: false, checkpoints: [] }, 'what is asked of a decided game is forgotten');
+  assert.deepEqual(late.game.requests, { win: null, lose: null, checkpoints: [] }, 'what is asked of a decided game is forgotten');
 
   const lose = rulesWorld([{ id: 'rules', type: 'GameRules', props: { flags: { a: false, b: false }, win: state('flags.a'), lose: state('flags.b') } }]);
   lose.game.setFlag('b'); lose.tree.step();
@@ -290,7 +293,11 @@ test('a scene change is only recorded: at the next boundary, or after seconds; a
   assert.deepEqual(game.pending, { to: 'b.vrmxs', at: 35, reset: true });
   tree.find('rules').call('restart', {});
   assert.deepEqual(game.pending, { to: 'test.vrmxs', at: 5, reset: true });
-  assert.throws(() => tree.find('rules').call('changeScene', {}), /changeScene needs \{ to \}/);
+  game.flush();
+  tree.find('rules').call('changeScene', {});
+  assert.deepEqual(game.flush().map((e) => [e.type, e.action, e.reason]), [['refused', 'changeScene', 'changeScene needs { to }: the scene\'s path in the project']]);
+  assert.equal(game.pending.to, 'test.vrmxs', 'a refused request doesn\'t replace the one there');
+  assert.throws(() => game.changeScene({}), /changeScene needs \{ to \}/);
   tree.run(10); // nothing drives the change here: the world plays on, and the state says what is asked
   assert.equal(game.pending.to, 'test.vrmxs');
 });

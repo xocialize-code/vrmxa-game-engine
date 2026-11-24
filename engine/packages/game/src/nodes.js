@@ -12,46 +12,62 @@ class GameNode extends Node {
   get key() { return this.props.key ?? this.id; }
   get kind() { return /** @type {any} */ (this.constructor).kind; }
   // enterTree runs parent first, siblings in order: the declarations are in tree order, the order goals are checked in
-  enterTree() { this.game?.declare(this.kind, this); }
+  // A declaration that is refused (a name used twice, a condition that isn't one, a countdown of no seconds) takes
+  // its node back out of the tree before the error leaves: a refused tree.add leaves nothing behind.
+  enterTree() {
+    const tree = this.tree;
+    try { this.game?.declare(this.kind, this); } catch (e) { if (tree?.byId.get(this.id) === this) tree.remove(this.id); throw e; }
+  }
   // ready runs once every node of the scene has entered: the conditions can be checked against all it declares
   ready() { this.game?.checkRules(); }
   exitTree() { this.game?.undeclare(this.kind, this); }
+  /**
+   * Do one of this node's actions on the game. An action comes from a connection, inside a step: one that can't be
+   * done (no `to`, time added to a stopwatch, a flag with no name) is refused and said as an event (`refused`), never
+   * thrown there. What the scene's own connections get wrong is caught earlier, when the rules start (checkRules).
+   * @param {string} action @param {(game: import('./service.js').GameService) => void} fn
+   */
+  act(action, fn) {
+    const game = this.game;
+    if (!game) return;
+    try { fn(game); } catch (e) { game.refuse(this, action, e?.message ?? String(e)); }
+  }
 }
 
 export class GameRulesNode extends GameNode {
   static kind = 'rules';
-  win() { this.game?.win(); }
-  lose() { this.game?.lose(); }
-  setFlag(args) { this.game?.setFlag(args?.flag, args?.value ?? true); }
-  clearFlag(args) { this.game?.clearFlag(args?.flag); }
-  changeScene(args) { this.game?.changeScene({ to: args?.to, after: args?.after, reset: args?.reset }); }
-  restart(args) { this.game?.restart({ after: args?.after }); }
+  win() { this.act('win', (g) => g.win()); }
+  lose() { this.act('lose', (g) => g.lose()); }
+  setFlag(args) { this.act('setFlag', (g) => g.setFlag(args?.flag, args?.value ?? true)); }
+  clearFlag(args) { this.act('clearFlag', (g) => { if (typeof args?.flag !== 'string') throw new Error('clearFlag needs { flag }'); g.clearFlag(args.flag); }); }
+  changeScene(args) { this.act('changeScene', (g) => g.changeScene({ to: args?.to, after: args?.after, reset: args?.reset })); }
+  restart(args) { this.act('restart', (g) => g.restart({ after: args?.after })); }
 }
 
 export class GameCounterNode extends GameNode {
   static kind = 'counter';
   // a connection without args passes the signal's payload: `by` is then absent, and the counter goes up by one
-  add(args) { this.game?.add(this.key, typeof args?.by === 'number' ? args.by : 1); }
-  set(args) { if (typeof args?.value !== 'number') throw new Error(`GameCounter "${this.id}": set needs { value }`); this.game?.set(this.key, args.value); }
-  reset() { this.game?.set(this.key, Number(this.props.start ?? 0)); }
+  add(args) { this.act('add', (g) => g.add(this.key, typeof args?.by === 'number' ? args.by : 1)); }
+  set(args) { this.act('set', (g) => { if (typeof args?.value !== 'number') throw new Error('set needs { value }'); g.set(this.key, args.value); }); }
+  reset() { this.act('reset', (g) => g.set(this.key, Number(this.props.start ?? 0))); }
 }
 
 export class GameTimerNode extends GameNode {
   static kind = 'timer';
-  start() { this.game?.startTimer(this.key); }
-  stop() { this.game?.stopTimer(this.key); }
-  reset() { this.game?.resetTimer(this.key); }
-  addTime(args) { if (typeof args?.seconds !== 'number') throw new Error(`GameTimer "${this.id}": addTime needs { seconds }`); this.game?.addTime(this.key, args.seconds); }
+  start() { this.act('start', (g) => g.startTimer(this.key)); }
+  stop() { this.act('stop', (g) => g.stopTimer(this.key)); }
+  reset() { this.act('reset', (g) => g.resetTimer(this.key)); }
+  addTime(args) { this.act('addTime', (g) => { if (typeof args?.seconds !== 'number') throw new Error('addTime needs { seconds }'); g.addTime(this.key, args.seconds); }); }
 }
 
 export class GameGoalNode extends GameNode {
   static kind = 'goal';
-  complete() { this.game?.completeGoal(this.key); }
+  complete() { this.act('complete', (g) => g.completeGoal(this.key)); }
 }
 
 export class CheckpointNode extends GameNode {
   static kind = 'checkpoint';
-  write() { this.game?.takeCheckpoint(this); }
+  write() { this.act('write', (g) => g.takeCheckpoint(this)); }
 }
 
 /** Node classes by registry type. */
