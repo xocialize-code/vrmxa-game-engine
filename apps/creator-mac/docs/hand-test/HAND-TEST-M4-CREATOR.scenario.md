@@ -11,6 +11,13 @@ inbox beside it, all inside the app's sandbox), then, under the GPU lock,
   accessible name (`#doc-state`: `Short first-light sequences/first-light.vrmxs 7 nodes saved valid hash …`).
 - **Typing:** each typed value is checked and the typing retried until the field holds it: keys sent while the page is
   busy (a rebuild after Redo, an export) were once dropped.
+- **Typing over old text** (AB-T-0598). AppProbe's `set_value` focuses the field, presses ⌘A and types. ⌘A selects only
+  while the Creator is the active app: with another app in front (yours, once you click back into it during a run),
+  nothing is selected and the new text is appended (`first cup today.[[greet]]`). So the find and replace fields select
+  their text when they take focus, as a find bar does, and typing replaces it whichever app is in front (New Short's
+  title does the same). That is not the whole of it: in a run where another app stayed in front from start to end,
+  rows 14 and 15 still failed, with nothing typed reaching their fields. **Leave the launched Creator in front for the
+  run's two minutes.** AppProbe's side is AB-T-0612.
 - **Questions:** the window asks in a sheet of its own (`#ask`, buttons `#ask-save`, `#ask-discard`, `#ask-cancel`).
 - **Undo:** with `pageUndo`, Edit › Undo's title stays "Undo". The short's undo step is read from the toolbar's `#undo`.
 

@@ -21,7 +21,7 @@ const cards = computed(() => storyCards(props.board, { thumbs: props.thumbs, bea
   <section class="storyboard" aria-label="Storyboard">
     <div class="sb-head"><h2>Storyboard</h2><output id="sb-status" class="muted" :aria-label="`Storyboard ${cards.length} shots${status ? `, ${status}` : ''}`">{{ cards.length }} shots{{ status ? ` · ${status}` : '' }}</output></div>
     <ol class="sb-strip" role="listbox" aria-label="Shots" aria-orientation="horizontal">
-      <li v-for="c in cards" :id="`sb-${c.id}`" :key="c.id" class="sb-card" :class="{ current: c.current, sel: c.selected, hand: c.hand, warn: !!c.crossesLine }" role="option" :aria-selected="c.selected" :aria-label="c.label" tabindex="0"
+      <li v-for="c in cards" :id="`sb-${c.id}`" :key="c.id" class="sb-card" :class="{ current: c.current, sel: c.selected, hand: c.hand, warn: !!(c.crossesLine || c.inGeometry) }" role="option" :aria-selected="c.selected" :aria-label="c.label" tabindex="0"
         @click="emit('pick', c.id, c.frame)" @keydown.enter="emit('pick', c.id, c.frame)">
         <div class="sb-thumb">
           <img v-if="c.thumb" :src="c.thumb" :alt="`Shot ${c.name} at frame ${c.frame}`">
@@ -30,7 +30,7 @@ const cards = computed(() => storyCards(props.board, { thumbs: props.thumbs, bea
         </div>
         <div class="sb-meta">
           <span class="sb-time">{{ c.time }}</span>
-          <span v-if="c.notes.length" class="sb-notes" :title="c.crossesLine ?? ''">{{ c.notes.join(' · ') }}</span>
+          <span v-if="c.notes.length" class="sb-notes" :title="[c.crossesLine, c.inGeometry].filter(Boolean).join('; ')">{{ c.notes.join(' · ') }}</span>
         </div>
         <button v-if="c.line" type="button" class="sb-line" :aria-label="`Script line ${c.line} for shot ${c.name}`" :title="c.text" @click.stop="emit('line', c.line)">{{ c.line }}: {{ c.text }}</button>
       </li>

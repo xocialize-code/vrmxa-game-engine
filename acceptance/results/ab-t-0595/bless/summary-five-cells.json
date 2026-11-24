@@ -1,0 +1,397 @@
+{
+ "task": "AB-T-0575",
+ "started": "2026-11-24T01:48:50.464Z",
+ "commit": "1ac8f24",
+ "machine": {
+  "model": "Mac17,14",
+  "chip": "Apple M5 Max",
+  "macOS": "27.3 (26C5047e)"
+ },
+ "cells": {
+  "chromium-webgpu": {
+   "frames": {
+    "ok": false,
+    "pinned": true,
+    "loads": 2,
+    "digest": "234621d872f67852",
+    "canonical": null,
+    "allLoadsMatch": false,
+    "incidents": 0
+   },
+   "editor": {
+    "ok": false,
+    "pinned": true,
+    "loads": 2,
+    "digest": "8d9ab54914096695",
+    "canonical": null,
+    "allLoadsMatch": false,
+    "incidents": 0
+   }
+  },
+  "chromium-webgl": {
+   "frames": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "28e3089104291f3f",
+    "canonical": null,
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "editor": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "582bf85ae977e517",
+    "canonical": null,
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "wkwebview-scheme-webgpu": {
+   "frames": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "04966d261a42b86b",
+    "canonical": null,
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "editor": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "540ef4041209d64c",
+    "canonical": null,
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "wkwebview-scheme-webgl": {
+   "frames": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "86c02b57ce66e867",
+    "canonical": null,
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "editor": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "500f6ed85a4d27b0",
+    "canonical": null,
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "wkwebview-loopback-webgpu": {
+   "frames": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "04966d261a42b86b",
+    "canonical": null,
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "editor": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "540ef4041209d64c",
+    "canonical": null,
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "wkwebview-loopback-webgl": {
+   "frames": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "86c02b57ce66e867",
+    "canonical": null,
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "editor": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "500f6ed85a4d27b0",
+    "canonical": null,
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  }
+ },
+ "incidents": [],
+ "failures": [
+  {
+   "cell": "chromium-webgpu",
+   "check": "frames",
+   "load": 1,
+   "why": "the rerun is clean, but the GPU was quiet during the failed load: not AB-T-0589",
+   "failed": {
+    "load": 1,
+    "kind": "pixels",
+    "digest": "234621d872f67852",
+    "differ": [],
+    "verdicts": [
+     "filmTwiceIdentical"
+    ],
+    "gpuLoad": {
+     "samples": 9,
+     "gpuUtil": {
+      "min": 9,
+      "median": 36,
+      "max": 53
+     },
+     "seen": {
+      "node:node": 116.8,
+      "chromium:Google Chrome for Testing": 11.3,
+      "chromium:chrome_crashpad_handler": 1.3,
+      "chromium:Google Chrome for Testing Helper (GPU)": 58.6,
+      "chromium:Google Chrome for Testing Helper": 2.5,
+      "chromium:Google Chrome for Testing Helper (Alerts)": 0,
+      "webkit:com.apple.WebKit.GPU": 0,
+      "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+      "webkit:com.apple.WebKit.WebContent": 0.2,
+      "chromium:Google Chrome for Testing Helper (Renderer)": 129.8
+     },
+     "first": {
+      "at": 1795484946607,
+      "gpuUtil": 9,
+      "processes": [
+       "node:node 2.1%",
+       "chromium:Google Chrome for Testing 11.3%",
+       "chromium:chrome_crashpad_handler 1.3%"
+      ],
+      "otherGpuHelpers": 1
+     },
+     "last": {
+      "at": 1795484970673,
+      "gpuUtil": 53,
+      "processes": [
+       "node:node 12%",
+       "chromium:Google Chrome for Testing 4.8%",
+       "chromium:Google Chrome for Testing Helper (GPU) 8.2%",
+       "chromium:Google Chrome for Testing Helper 2.2%",
+       "chromium:Google Chrome for Testing Helper (Renderer) 114.8%",
+       "node:node 16.7%"
+      ],
+      "otherGpuHelpers": 1
+     }
+    },
+    "underLoad": {
+     "loaded": false,
+     "why": "quiet"
+    },
+    "errors": [],
+    "oddFrames": [],
+    "pixels": {},
+    "rerun": {
+     "kind": "clean",
+     "ok": true,
+     "digest": "d6784fc3c3d16a2f",
+     "match": null,
+     "gpuLoad": {
+      "samples": 15,
+      "gpuUtil": {
+       "min": 23,
+       "median": 36,
+       "max": 53
+      },
+      "seen": {
+       "node:node": 143.3,
+       "chromium:Google Chrome for Testing": 8.3,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 58.6,
+       "chromium:Google Chrome for Testing Helper": 3.2,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 152.8,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "webkit:com.apple.WebKit.WebContent": 0.1
+      },
+      "first": {
+       "at": 1795484958671,
+       "gpuUtil": 35,
+       "processes": [
+        "chromium:Google Chrome for Testing Helper (GPU) 52.8%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 112.6%",
+        "node:node 116.8%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795485000694,
+       "gpuUtil": 42,
+       "processes": [
+        "node:node 3.8%",
+        "chromium:Google Chrome for Testing 2.8%",
+        "chromium:Google Chrome for Testing Helper (GPU) 34.1%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 119.6%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     }
+    }
+   }
+  },
+  {
+   "cell": "chromium-webgpu",
+   "check": "editor",
+   "load": 1,
+   "why": "the load failed forwardSame: not a pixel difference, so not AB-T-0589",
+   "failed": {
+    "load": 1,
+    "kind": "broken",
+    "digest": "8d9ab54914096695",
+    "differ": [],
+    "verdicts": [
+     "forwardSame"
+    ],
+    "gpuLoad": {
+     "samples": 10,
+     "gpuUtil": {
+      "min": 24,
+      "median": 36,
+      "max": 80
+     },
+     "seen": {
+      "node:node": 7.1,
+      "chromium:Google Chrome for Testing": 7.4,
+      "chromium:chrome_crashpad_handler": 0,
+      "chromium:Google Chrome for Testing Helper (GPU)": 49.2,
+      "chromium:Google Chrome for Testing Helper": 1.2,
+      "chromium:Google Chrome for Testing Helper (Renderer)": 146.8,
+      "webkit:com.apple.WebKit.GPU": 0,
+      "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+      "webkit:com.apple.WebKit.WebContent": 0
+     },
+     "first": {
+      "at": 1795484988692,
+      "gpuUtil": 37,
+      "processes": [
+       "chromium:Google Chrome for Testing Helper (GPU) 39.8%",
+       "chromium:Google Chrome for Testing Helper (Renderer) 106.4%"
+      ],
+      "otherGpuHelpers": 1
+     },
+     "last": {
+      "at": 1795485015720,
+      "gpuUtil": 80,
+      "processes": [
+       "chromium:Google Chrome for Testing Helper (GPU) 40.8%",
+       "chromium:Google Chrome for Testing Helper (Renderer) 44.7%"
+      ],
+      "otherGpuHelpers": 1
+     }
+    },
+    "underLoad": {
+     "loaded": false,
+     "why": "quiet"
+    },
+    "errors": [],
+    "oddFrames": [],
+    "pixels": {},
+    "rerun": {
+     "kind": "clean",
+     "ok": true,
+     "digest": "8d9ab54914096695",
+     "match": null,
+     "gpuLoad": {
+      "samples": 9,
+      "gpuUtil": {
+       "min": 24,
+       "median": 35,
+       "max": 80
+      },
+      "seen": {
+       "node:node": 7.1,
+       "chromium:Google Chrome for Testing": 7.4,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 80.4,
+       "chromium:Google Chrome for Testing Helper": 1.4,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 157,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "webkit:com.apple.WebKit.WebContent": 0
+      },
+      "first": {
+       "at": 1795485003692,
+       "gpuUtil": 32,
+       "processes": [
+        "node:node 7.1%",
+        "chromium:Google Chrome for Testing 7.4%",
+        "chromium:Google Chrome for Testing Helper (GPU) 14.8%",
+        "chromium:Google Chrome for Testing Helper 1.1%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 146.8%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795485027712,
+       "gpuUtil": 49,
+       "processes": [
+        "node:node 3.1%",
+        "chromium:Google Chrome for Testing Helper (GPU) 80.4%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 123.4%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     }
+    }
+   }
+  }
+ ],
+ "gpuLock": [
+  {
+   "cell": "chromium-webgpu",
+   "waitedMs": 0
+  },
+  {
+   "cell": "chromium-webgl",
+   "waitedMs": 0
+  },
+  {
+   "cell": "wkwebview-scheme-webgpu",
+   "waitedMs": 0
+  },
+  {
+   "cell": "wkwebview-scheme-webgl",
+   "waitedMs": 1
+  },
+  {
+   "cell": "wkwebview-loopback-webgpu",
+   "waitedMs": 0
+  },
+  {
+   "cell": "wkwebview-loopback-webgl",
+   "waitedMs": 0
+  }
+ ],
+ "dirtyFiles": [],
+ "dirty": false,
+ "ended": "2026-11-24T02:05:42.321Z",
+ "stopped": null,
+ "unpinned": [],
+ "ok": false,
+ "runtimes": [
+  "chromium",
+  "wkwebview-scheme",
+  "wkwebview-loopback"
+ ],
+ "backends": [
+  "webgpu",
+  "webgl"
+ ],
+ "checks": [
+  "frames",
+  "editor"
+ ]
+}

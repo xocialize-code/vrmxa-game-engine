@@ -1,0 +1,2680 @@
+{
+ "cell": "wkwebview-loopback-webgpu",
+ "runtime": "wkwebview-loopback",
+ "backend": "webgpu",
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+ "started": "2026-11-24T03:11:01.166Z",
+ "checks": {
+  "acceptance": {
+   "query": "mode=acceptance&renderer=webgpu",
+   "canonical": "78ab33e0d7508476",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "78ab33e0d7508476",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "sameAsNode": true,
+      "renderedSameAsHeadless": true,
+      "snapshot": true,
+      "backend": true
+     },
+     "ms": 43376,
+     "wall": {
+      "start": 1795489871416,
+      "end": 1795489914792
+     },
+     "gpuLoad": {
+      "samples": 15,
+      "gpuUtil": {
+       "min": 0,
+       "median": 4,
+       "max": 62
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 136.3,
+       "webkit:com.apple.WebKit.GPU": 101,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 1.4,
+       "harness:CinematicsSpike": 3.8
+      },
+      "first": {
+       "at": 1795489871416,
+       "gpuUtil": 14,
+       "processes": [
+        "node:node 1.4%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795489913499,
+       "gpuUtil": 62,
+       "processes": [
+        "harness:CinematicsSpike 1.8%",
+        "webkit:com.apple.WebKit.GPU 101%",
+        "webkit:com.apple.WebKit.WebContent 134.7%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "final": "fe69bad3406ab5f6",
+     "rendered": {
+      "frames": 600,
+      "renderMs": {
+       "mean": 0.506,
+       "p95": 0.72
+      },
+      "sameAsHeadless": true,
+      "calls": 61631,
+      "triangles": 92259735,
+      "debug": {
+       "colliders": 62,
+       "sensors": 14,
+       "capsules": 2
+      },
+      "post": {
+       "costMs": {
+        "anime4k": 8.76,
+        "anime1080p": 5.34,
+        "none4k": 2.18,
+        "none1080p": 1.72
+       },
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ],
+       "ssim": {
+        "grain": 0.9489,
+        "noGrain": 0.9843
+       },
+       "views4Ms": 4.54
+      }
+     },
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  },
+  "backends": {
+   "query": "mode=backends&renderer=webgpu",
+   "canonical": "72ee142295cd642f",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "72ee142295cd642f",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "distinctFrames": true
+     },
+     "ms": 2344,
+     "wall": {
+      "start": 1795489914813,
+      "end": 1795489917157
+     },
+     "gpuLoad": {
+      "samples": 6,
+      "gpuUtil": {
+       "min": 0,
+       "median": 6,
+       "max": 62
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 134.7,
+       "webkit:com.apple.WebKit.GPU": 101,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0,
+       "harness:CinematicsSpike": 1.8
+      },
+      "first": {
+       "at": 1795489901487,
+       "gpuUtil": 0,
+       "processes": [
+        "webkit:com.apple.WebKit.WebContent 106.5%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795489916504,
+       "gpuUtil": 46,
+       "processes": [
+        "harness:CinematicsSpike 1%",
+        "webkit:com.apple.WebKit.GPU 33.7%",
+        "webkit:com.apple.WebKit.WebContent 119.3%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": [
+      1280,
+      720
+     ],
+     "stillMsWithRead": 35.6,
+     "kind": "clean"
+    },
+    {
+     "load": 2,
+     "label": "load 2",
+     "ok": true,
+     "digest": "72ee142295cd642f",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "distinctFrames": true
+     },
+     "ms": 2355,
+     "wall": {
+      "start": 1795489917157,
+      "end": 1795489919512
+     },
+     "gpuLoad": {
+      "samples": 6,
+      "gpuUtil": {
+       "min": 0,
+       "median": 38,
+       "max": 62
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 134.7,
+       "webkit:com.apple.WebKit.GPU": 101,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0,
+       "harness:CinematicsSpike": 1.8
+      },
+      "first": {
+       "at": 1795489904486,
+       "gpuUtil": 6,
+       "processes": [
+        "harness:CinematicsSpike 1.2%",
+        "webkit:com.apple.WebKit.GPU 1.6%",
+        "webkit:com.apple.WebKit.WebContent 101.9%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795489919501,
+       "gpuUtil": 38,
+       "processes": [
+        "harness:CinematicsSpike 1.2%",
+        "webkit:com.apple.WebKit.GPU 34.7%",
+        "webkit:com.apple.WebKit.WebContent 123.9%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": [
+      1280,
+      720
+     ],
+     "stillMsWithRead": 35,
+     "kind": "clean"
+    },
+    {
+     "load": 3,
+     "label": "load 3",
+     "ok": true,
+     "digest": "72ee142295cd642f",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "distinctFrames": true
+     },
+     "ms": 2313,
+     "wall": {
+      "start": 1795489919512,
+      "end": 1795489921825
+     },
+     "gpuLoad": {
+      "samples": 5,
+      "gpuUtil": {
+       "min": 0,
+       "median": 38,
+       "max": 62
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 134.7,
+       "webkit:com.apple.WebKit.GPU": 101,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0,
+       "harness:CinematicsSpike": 1.8
+      },
+      "first": {
+       "at": 1795489907488,
+       "gpuUtil": 0,
+       "processes": [
+        "harness:CinematicsSpike 1.3%",
+        "webkit:com.apple.WebKit.WebContent 104.2%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795489919501,
+       "gpuUtil": 38,
+       "processes": [
+        "harness:CinematicsSpike 1.2%",
+        "webkit:com.apple.WebKit.GPU 34.7%",
+        "webkit:com.apple.WebKit.WebContent 123.9%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": [
+      1280,
+      720
+     ],
+     "stillMsWithRead": 36.7,
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  },
+  "frames": {
+   "query": "mode=frames&renderer=webgpu&canon=wkwebview-loopback-webgpu",
+   "canonical": "04966d261a42b86b",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": false,
+     "digest": "b081c4d6f92167b0",
+     "match": false,
+     "differ": [
+      "film"
+     ],
+     "verdicts": {
+      "particlesSameAsHeadless": true,
+      "particlesDrawnByHost": true,
+      "particlesDistinctFrames": true,
+      "restoredSame": true,
+      "filmTwiceIdentical": false,
+      "stillMatchesCanvas": true,
+      "readbackHasContent": true,
+      "exportAfterStillSame": false,
+      "alphaPremultiplied": true,
+      "noErrors": true,
+      "backend": true,
+      "notTimedOut": true
+     },
+     "ms": 43994,
+     "wall": {
+      "start": 1795489921826,
+      "end": 1795489965820
+     },
+     "gpuLoad": {
+      "samples": 20,
+      "gpuUtil": {
+       "min": 0,
+       "median": 40,
+       "max": 62
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 141.3,
+       "webkit:com.apple.WebKit.GPU": 101,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0,
+       "harness:CinematicsSpike": 22.7
+      },
+      "first": {
+       "at": 1795489907488,
+       "gpuUtil": 0,
+       "processes": [
+        "harness:CinematicsSpike 1.3%",
+        "webkit:com.apple.WebKit.WebContent 104.2%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795489964520,
+       "gpuUtil": 42,
+       "processes": [
+        "harness:CinematicsSpike 3.4%",
+        "webkit:com.apple.WebKit.GPU 33%",
+        "webkit:com.apple.WebKit.WebContent 112.4%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "particles": {
+      "final": "09ef4d21b00189d1",
+      "distinctFrames": 361,
+      "batch": {
+       "batches": 3,
+       "particles": 1149,
+       "renderer": "three.quarks/webgpu"
+      }
+     },
+     "film": {
+      "frames": 1080,
+      "first": {
+       "audioBytes": 8640044,
+       "audioHash": "b69c46ab",
+       "backend": "webgpu",
+       "check": null,
+       "digest": "2c0359642d44471a",
+       "distinct": 1080,
+       "fps": [
+        24,
+        1
+       ],
+       "frames": 1080,
+       "framesPerSecond": 85.62,
+       "height": 1080,
+       "ms": {
+        "audio": 798.18,
+        "begin": 327.88,
+        "end": 0.04,
+        "readback": 3430.02,
+        "render": 2780.08,
+        "total": 12614.26,
+        "wait": 1.38
+       },
+       "perFrameMs": {
+        "readback": 3.18,
+        "render": 2.57,
+        "total": 11.68,
+        "wait": 0
+       },
+       "seconds": 45,
+       "steamDrawn": true,
+       "steps": 2700,
+       "width": 1920,
+       "worldDigest": "639c5bf78f575379"
+      },
+      "second": {
+       "audioBytes": 8640044,
+       "audioHash": "b69c46ab",
+       "backend": "webgpu",
+       "check": null,
+       "digest": "92ac29aaab51a27a",
+       "distinct": 1080,
+       "fps": [
+        24,
+        1
+       ],
+       "frames": 1080,
+       "framesPerSecond": 86.98,
+       "height": 1080,
+       "ms": {
+        "audio": 797.5,
+        "begin": 274.06,
+        "end": 0.02,
+        "readback": 3479.72,
+        "render": 2703.12,
+        "total": 12416.46,
+        "wait": 1.32
+       },
+       "perFrameMs": {
+        "readback": 3.22,
+        "render": 2.5,
+        "total": 11.5,
+        "wait": 0
+       },
+       "seconds": 45,
+       "steamDrawn": true,
+       "steps": 2700,
+       "width": 1920,
+       "worldDigest": "639c5bf78f575379"
+      },
+      "framesDiffer": [
+       578
+      ],
+      "odd": [
+       {
+        "canonical": "8071960cab594394",
+        "export": "first",
+        "frame": 578,
+        "hash": "e008feff54ebbf3c",
+        "topDown": true
+       }
+      ]
+     },
+     "readback": {
+      "4k": {
+       "afterFrameMs": {
+        "median": 7.56,
+        "min": 7.04,
+        "n": 30,
+        "p95": 8.54
+       },
+       "content": 1,
+       "exportLoopMs": {
+        "median": 8.14,
+        "min": 6.66,
+        "n": 30,
+        "p95": 9.1
+       },
+       "hash": "33b1693ba65e89b1",
+       "renderMs": {
+        "median": 3.94,
+        "min": 2.3,
+        "n": 30,
+        "p95": 6.56
+       }
+      },
+      "1080p": {
+       "afterFrameMs": {
+        "median": 2.1,
+        "min": 1.94,
+        "n": 30,
+        "p95": 2.66
+       },
+       "content": 1,
+       "exportLoopMs": {
+        "median": 1.98,
+        "min": 1.8,
+        "n": 30,
+        "p95": 3.38
+       },
+       "hash": "dce370960ace74ca",
+       "renderMs": {
+        "median": 2.62,
+        "min": 1.9,
+        "n": 30,
+        "p95": 4.56
+       }
+      },
+      "1366x768": {
+       "afterFrameMs": {
+        "median": 1.3,
+        "min": 1.2,
+        "n": 30,
+        "p95": 1.44
+       },
+       "content": 1,
+       "exportLoopMs": {
+        "median": 1.24,
+        "min": 1.1,
+        "n": 30,
+        "p95": 2.44
+       },
+       "hash": "aeac7b42708e0147",
+       "renderMs": {
+        "median": 1.62,
+        "min": 1.34,
+        "n": 30,
+        "p95": 2.44
+       }
+      },
+      "still640": {
+       "content": 1
+      }
+     },
+     "alpha": {
+      "clearCorner": [
+       127,
+       0,
+       0,
+       128
+      ],
+      "raw": [
+       127,
+       0,
+       0,
+       128
+      ],
+      "toImageRGBA": [
+       253,
+       0,
+       0,
+       128
+      ]
+     },
+     "kind": "pixels"
+    },
+    {
+     "load": 1,
+     "label": "rerun of load 1",
+     "ok": true,
+     "digest": "04966d261a42b86b",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "particlesSameAsHeadless": true,
+      "particlesDrawnByHost": true,
+      "particlesDistinctFrames": true,
+      "restoredSame": true,
+      "filmTwiceIdentical": true,
+      "stillMatchesCanvas": true,
+      "readbackHasContent": true,
+      "exportAfterStillSame": true,
+      "alphaPremultiplied": true,
+      "noErrors": true,
+      "backend": true,
+      "notTimedOut": true
+     },
+     "ms": 42548,
+     "wall": {
+      "start": 1795489965825,
+      "end": 1795490008373
+     },
+     "gpuLoad": {
+      "samples": 19,
+      "gpuUtil": {
+       "min": 9,
+       "median": 36,
+       "max": 56
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 141.3,
+       "webkit:com.apple.WebKit.GPU": 50,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0,
+       "harness:CinematicsSpike": 4.4
+      },
+      "first": {
+       "at": 1795489952519,
+       "gpuUtil": 40,
+       "processes": [
+        "harness:CinematicsSpike 1.5%",
+        "webkit:com.apple.WebKit.GPU 42.3%",
+        "webkit:com.apple.WebKit.WebContent 125.8%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795490006539,
+       "gpuUtil": 44,
+       "processes": [
+        "harness:CinematicsSpike 1%",
+        "webkit:com.apple.WebKit.GPU 46.6%",
+        "webkit:com.apple.WebKit.WebContent 109.1%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "particles": {
+      "final": "09ef4d21b00189d1",
+      "distinctFrames": 361,
+      "batch": {
+       "batches": 3,
+       "particles": 1149,
+       "renderer": "three.quarks/webgpu"
+      }
+     },
+     "film": {
+      "frames": 1080,
+      "first": {
+       "audioBytes": 8640044,
+       "audioHash": "b69c46ab",
+       "backend": "webgpu",
+       "check": null,
+       "digest": "92ac29aaab51a27a",
+       "distinct": 1080,
+       "fps": [
+        24,
+        1
+       ],
+       "frames": 1080,
+       "framesPerSecond": 88.94,
+       "height": 1080,
+       "ms": {
+        "audio": 777.78,
+        "begin": 321.1,
+        "end": 0.04,
+        "readback": 3329.62,
+        "render": 2561.3,
+        "total": 12143.58,
+        "wait": 1.1
+       },
+       "perFrameMs": {
+        "readback": 3.08,
+        "render": 2.37,
+        "total": 11.24,
+        "wait": 0
+       },
+       "seconds": 45,
+       "steamDrawn": true,
+       "steps": 2700,
+       "width": 1920,
+       "worldDigest": "639c5bf78f575379"
+      },
+      "second": {
+       "audioBytes": 8640044,
+       "audioHash": "b69c46ab",
+       "backend": "webgpu",
+       "check": null,
+       "digest": "92ac29aaab51a27a",
+       "distinct": 1080,
+       "fps": [
+        24,
+        1
+       ],
+       "frames": 1080,
+       "framesPerSecond": 89.7,
+       "height": 1080,
+       "ms": {
+        "audio": 770.26,
+        "begin": 261.02,
+        "end": 0.02,
+        "readback": 3372.72,
+        "render": 2522.02,
+        "total": 12040.54,
+        "wait": 1.12
+       },
+       "perFrameMs": {
+        "readback": 3.12,
+        "render": 2.34,
+        "total": 11.15,
+        "wait": 0
+       },
+       "seconds": 45,
+       "steamDrawn": true,
+       "steps": 2700,
+       "width": 1920,
+       "worldDigest": "639c5bf78f575379"
+      },
+      "framesDiffer": [],
+      "odd": []
+     },
+     "readback": {
+      "4k": {
+       "afterFrameMs": {
+        "median": 7.76,
+        "min": 7.22,
+        "n": 30,
+        "p95": 8.18
+       },
+       "content": 1,
+       "exportLoopMs": {
+        "median": 8.22,
+        "min": 6.84,
+        "n": 30,
+        "p95": 10.42
+       },
+       "hash": "33b1693ba65e89b1",
+       "renderMs": {
+        "median": 3.94,
+        "min": 2.26,
+        "n": 30,
+        "p95": 5.98
+       }
+      },
+      "1080p": {
+       "afterFrameMs": {
+        "median": 1.98,
+        "min": 1.84,
+        "n": 30,
+        "p95": 3.04
+       },
+       "content": 1,
+       "exportLoopMs": {
+        "median": 1.78,
+        "min": 1.66,
+        "n": 30,
+        "p95": 4.04
+       },
+       "hash": "dce370960ace74ca",
+       "renderMs": {
+        "median": 1.94,
+        "min": 1.36,
+        "n": 30,
+        "p95": 2.88
+       }
+      },
+      "1366x768": {
+       "afterFrameMs": {
+        "median": 1.32,
+        "min": 1.2,
+        "n": 30,
+        "p95": 1.5
+       },
+       "content": 1,
+       "exportLoopMs": {
+        "median": 1.2,
+        "min": 1.06,
+        "n": 30,
+        "p95": 2.44
+       },
+       "hash": "aeac7b42708e0147",
+       "renderMs": {
+        "median": 2.1,
+        "min": 1.48,
+        "n": 30,
+        "p95": 2.96
+       }
+      },
+      "still640": {
+       "content": 1
+      }
+     },
+     "alpha": {
+      "clearCorner": [
+       127,
+       0,
+       0,
+       128
+      ],
+      "raw": [
+       127,
+       0,
+       0,
+       128
+      ],
+      "toImageRGBA": [
+       253,
+       0,
+       0,
+       128
+      ]
+     },
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": {
+    "load": 1,
+    "why": "the rerun is clean, but the GPU was quiet during the failed load: not AB-T-0589",
+    "failed": {
+     "load": 1,
+     "kind": "pixels",
+     "digest": "b081c4d6f92167b0",
+     "differ": [
+      "film"
+     ],
+     "verdicts": [
+      "filmTwiceIdentical",
+      "exportAfterStillSame"
+     ],
+     "gpuLoad": {
+      "samples": 20,
+      "gpuUtil": {
+       "min": 0,
+       "median": 40,
+       "max": 62
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 141.3,
+       "webkit:com.apple.WebKit.GPU": 101,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0,
+       "harness:CinematicsSpike": 22.7
+      },
+      "first": {
+       "at": 1795489907488,
+       "gpuUtil": 0,
+       "processes": [
+        "harness:CinematicsSpike 1.3%",
+        "webkit:com.apple.WebKit.WebContent 104.2%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795489964520,
+       "gpuUtil": 42,
+       "processes": [
+        "harness:CinematicsSpike 3.4%",
+        "webkit:com.apple.WebKit.GPU 33%",
+        "webkit:com.apple.WebKit.WebContent 112.4%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "oddFrames": [
+      {
+       "canonical": "8071960cab594394",
+       "export": "first",
+       "frame": 578,
+       "hash": "e008feff54ebbf3c",
+       "tiles": [
+        "7e60026e",
+        "9435b8de",
+        "da44c67",
+        "5a06060c",
+        "47611214",
+        "cbbd6d4f",
+        "acb5ae1c",
+        "5f32955c",
+        "f0b51932",
+        "46560bca",
+        "9ab1c6e7",
+        "16a6b5e",
+        "c4fb01a",
+        "20ed4c9e",
+        "57b4c858",
+        "7eafc421",
+        "cea297c0",
+        "8aae434e",
+        "8ccd1399",
+        "caec83cf",
+        "d531d3ff",
+        "f0184037",
+        "b6cd85f9",
+        "9648054e",
+        "fc154ccf",
+        "e8a077ae",
+        "6dfa9ea9",
+        "79a6e93f",
+        "2316edc2",
+        "4d5346ac",
+        "7eaee66c",
+        "4c3274e",
+        "e092b051",
+        "42a37a55",
+        "252ead1a",
+        "a71d9076",
+        "25a504cc",
+        "ece4b2e",
+        "1aca13a0",
+        "156ef63b",
+        "24550d78",
+        "904e2511",
+        "4d73e304",
+        "b6742a78",
+        "3ed2ddc1",
+        "51afc48b",
+        "d7788f80",
+        "6c687acb",
+        "ac06a303",
+        "e952ac20",
+        "fedbdef2",
+        "5ac1e603",
+        "769243da",
+        "53f8818e",
+        "e33b6ce6",
+        "cfaa64d9",
+        "b86d356c",
+        "e032896d",
+        "3d55b341",
+        "b64090b2",
+        "4ba5132f",
+        "1e4c65e5",
+        "bcff8be2",
+        "c32462bc",
+        "92a13b42",
+        "9b72cfaf",
+        "9ad3a14b",
+        "9778e06e",
+        "90d1ef4b",
+        "938c7c45",
+        "f7ca4963",
+        "a0dded28",
+        "545371f3",
+        "a626adaa",
+        "2bc96397",
+        "f5f4f876",
+        "3fc62e2c",
+        "92e9b65b",
+        "937851ff",
+        "7900afff",
+        "22757390",
+        "55a66068",
+        "bcd1ab84",
+        "e15fef5",
+        "a020ac",
+        "94040470",
+        "5c4102eb",
+        "23398edd",
+        "826306e9",
+        "20e552b3",
+        "35cba09f",
+        "67fcf646",
+        "e5131643",
+        "1e803702",
+        "7dc60231",
+        "67054cab",
+        "43decd4a",
+        "33090d1f",
+        "8aef768f",
+        "acda1812",
+        "35547229",
+        "439e387e",
+        "5c7899e1",
+        "280667be",
+        "ffda7f73",
+        "e1872c24",
+        "d73ccbfe",
+        "3da61ce1",
+        "d583c0c",
+        "306d25f",
+        "c6a9aa21",
+        "93dbc525",
+        "db95235c",
+        "a0c1fa8c",
+        "4fc4e6a9",
+        "22707525",
+        "84bc4277",
+        "5c545888",
+        "877e5209",
+        "2720b007",
+        "cfe812b0",
+        "84810318",
+        "5e4ae0d8",
+        "b92cbca3",
+        "4e8265d",
+        "4f8f29b8",
+        "888a473b",
+        "7f26f800",
+        "85f60505",
+        "ae4f1378",
+        "5dc6ba21",
+        "d2d225fc",
+        "17e5f751",
+        "ed5d37a6",
+        "8750dcc4",
+        "44d6670b",
+        "7429f28e",
+        "8a9d4b6e",
+        "389be8cb",
+        "4ac619af",
+        "abf20bc9",
+        "1bf1e016",
+        "9f59ef1f",
+        "6c2aeba2"
+       ],
+       "topDown": true
+      }
+     ],
+     "pixels": {
+      "first-frame578": {
+       "size": [
+        1920,
+        1080
+       ],
+       "tiles": [
+        26,
+        42
+       ],
+       "count": 5,
+       "max": 1,
+       "pixels": [
+        {
+         "x": 1311,
+         "y": 202,
+         "failed": [
+          23,
+          10,
+          42,
+          255
+         ],
+         "rerun": [
+          23,
+          9,
+          42,
+          255
+         ]
+        },
+        {
+         "x": 1313,
+         "y": 202,
+         "failed": [
+          52,
+          37,
+          76,
+          255
+         ],
+         "rerun": [
+          52,
+          38,
+          76,
+          255
+         ]
+        },
+        {
+         "x": 1249,
+         "y": 255,
+         "failed": [
+          8,
+          2,
+          24,
+          255
+         ],
+         "rerun": [
+          8,
+          1,
+          24,
+          255
+         ]
+        },
+        {
+         "x": 1268,
+         "y": 258,
+         "failed": [
+          7,
+          1,
+          23,
+          255
+         ],
+         "rerun": [
+          8,
+          1,
+          23,
+          255
+         ]
+        },
+        {
+         "x": 1301,
+         "y": 310,
+         "failed": [
+          81,
+          79,
+          79,
+          255
+         ],
+         "rerun": [
+          81,
+          80,
+          79,
+          255
+         ]
+        }
+       ]
+      }
+     },
+     "rerun": {
+      "kind": "clean",
+      "ok": true,
+      "digest": "04966d261a42b86b",
+      "match": true,
+      "gpuLoad": {
+       "samples": 19,
+       "gpuUtil": {
+        "min": 9,
+        "median": 36,
+        "max": 56
+       },
+       "seen": {
+        "webkit:com.apple.WebKit.WebContent": 141.3,
+        "webkit:com.apple.WebKit.GPU": 50,
+        "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+        "node:node": 0,
+        "harness:CinematicsSpike": 4.4
+       },
+       "first": {
+        "at": 1795489952519,
+        "gpuUtil": 40,
+        "processes": [
+         "harness:CinematicsSpike 1.5%",
+         "webkit:com.apple.WebKit.GPU 42.3%",
+         "webkit:com.apple.WebKit.WebContent 125.8%"
+        ],
+        "otherGpuHelpers": 1
+       },
+       "last": {
+        "at": 1795490006539,
+        "gpuUtil": 44,
+        "processes": [
+         "harness:CinematicsSpike 1%",
+         "webkit:com.apple.WebKit.GPU 46.6%",
+         "webkit:com.apple.WebKit.WebContent 109.1%"
+        ],
+        "otherGpuHelpers": 1
+       }
+      }
+     }
+    }
+   },
+   "ok": false,
+   "allLoadsMatch": false
+  },
+  "post": {
+   "query": "mode=post&renderer=webgpu",
+   "canonical": "8defe4bdef17decd",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "8defe4bdef17decd",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "exportsIdentical": true,
+      "exportsDistinct": true,
+      "notFlat": true,
+      "looksFirstEqualsAgain": true,
+      "mask": true
+     },
+     "ms": 5979,
+     "wall": {
+      "start": 1795490008979,
+      "end": 1795490014958
+     },
+     "gpuLoad": {
+      "samples": 7,
+      "gpuUtil": {
+       "min": 21,
+       "median": 33,
+       "max": 44
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 109.1,
+       "webkit:com.apple.WebKit.GPU": 46.6,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 5.4,
+       "harness:CinematicsSpike": 24.1
+      },
+      "first": {
+       "at": 1795489994531,
+       "gpuUtil": 36,
+       "processes": [
+        "harness:CinematicsSpike 1.9%",
+        "webkit:com.apple.WebKit.GPU 46.4%",
+        "webkit:com.apple.WebKit.WebContent 90.6%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795490012537,
+       "gpuUtil": 21,
+       "processes": [
+        "webkit:com.apple.WebKit.GPU 19.1%",
+        "webkit:com.apple.WebKit.WebContent 108.8%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "stack": "l",
+     "size": [
+      1920,
+      1080
+     ],
+     "costMs": {
+      "anime": 4.24,
+      "none": 2.28
+     },
+     "mask": {
+      "pixels": 346,
+      "share": 0.00017,
+      "hidden": 11,
+      "objects": [
+       "Face_(merged)(Clone)_1:N00_000_00_EyeIris_00_EYE (Instance)",
+       "Face_(merged)(Clone)_2:N00_000_00_EyeHighlight_00_EYE (Instance)",
+       "Face_(merged)(Clone)_5:N00_000_00_FaceBrow_00_FACE (Instance)",
+       "Face_(merged)(Clone)_6:N00_000_00_FaceEyelash_00_FACE (Instance)",
+       "Face_(merged)(Clone)_7:N00_000_00_FaceEyeline_00_FACE (Instance)",
+       "LineSegments:LineBasicMaterial"
+      ]
+     },
+     "looks": {
+      "anime": {
+       "again": "42698883",
+       "colours": 4096,
+       "firstEqualsAgain": true,
+       "hash": "42698883",
+       "lumaStd": 61.86,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeLut": {
+       "again": "a1d33737",
+       "colours": 4096,
+       "firstEqualsAgain": true,
+       "hash": "a1d33737",
+       "lumaStd": 65.74,
+       "newPipeline": true,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeLut85": {
+       "again": "a92d57c7",
+       "colours": 4096,
+       "firstEqualsAgain": true,
+       "hash": "a92d57c7",
+       "lumaStd": 65.14,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeNoGrain": {
+       "again": "311fdc52",
+       "colours": 4096,
+       "firstEqualsAgain": true,
+       "hash": "311fdc52",
+       "lumaStd": 61.91,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeOverlays": {
+       "again": "526821bc",
+       "colours": 4096,
+       "firstEqualsAgain": true,
+       "hash": "526821bc",
+       "lumaStd": 62.59,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeShallow": {
+       "again": "dd4851cc",
+       "colours": 4096,
+       "firstEqualsAgain": true,
+       "hash": "dd4851cc",
+       "lumaStd": 60.05,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "clean": {
+       "again": "d3d6aac8",
+       "colours": 3899,
+       "firstEqualsAgain": true,
+       "hash": "d3d6aac8",
+       "lumaStd": 63.63,
+       "newPipeline": true,
+       "passes": [
+        "scene(MSAA4)",
+        "merged(bloom(mipmap 8)+toneMapping())"
+       ]
+      },
+      "none": {
+       "again": "63be6d9a",
+       "colours": 2911,
+       "firstEqualsAgain": true,
+       "hash": "63be6d9a",
+       "lumaStd": 64.02,
+       "newPipeline": true,
+       "passes": []
+      }
+     },
+     "kind": "clean"
+    },
+    {
+     "load": 2,
+     "label": "load 2",
+     "ok": true,
+     "digest": "8defe4bdef17decd",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "exportsIdentical": true,
+      "exportsDistinct": true,
+      "notFlat": true,
+      "looksFirstEqualsAgain": true,
+      "mask": true
+     },
+     "ms": 6014,
+     "wall": {
+      "start": 1795490014959,
+      "end": 1795490020973
+     },
+     "gpuLoad": {
+      "samples": 7,
+      "gpuUtil": {
+       "min": 21,
+       "median": 31,
+       "max": 46
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 111.3,
+       "webkit:com.apple.WebKit.GPU": 46.6,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 5.4,
+       "harness:CinematicsSpike": 24.8
+      },
+      "first": {
+       "at": 1795490000534,
+       "gpuUtil": 36,
+       "processes": [
+        "harness:CinematicsSpike 1.7%",
+        "webkit:com.apple.WebKit.GPU 45.6%",
+        "webkit:com.apple.WebKit.WebContent 97.7%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795490018539,
+       "gpuUtil": 21,
+       "processes": [
+        "webkit:com.apple.WebKit.GPU 19.4%",
+        "webkit:com.apple.WebKit.WebContent 111.3%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "stack": "l",
+     "size": [
+      1920,
+      1080
+     ],
+     "costMs": {
+      "anime": 3.44,
+      "none": 2.28
+     },
+     "mask": {
+      "pixels": 346,
+      "share": 0.00017,
+      "hidden": 11,
+      "objects": [
+       "Face_(merged)(Clone)_1:N00_000_00_EyeIris_00_EYE (Instance)",
+       "Face_(merged)(Clone)_2:N00_000_00_EyeHighlight_00_EYE (Instance)",
+       "Face_(merged)(Clone)_5:N00_000_00_FaceBrow_00_FACE (Instance)",
+       "Face_(merged)(Clone)_6:N00_000_00_FaceEyelash_00_FACE (Instance)",
+       "Face_(merged)(Clone)_7:N00_000_00_FaceEyeline_00_FACE (Instance)",
+       "LineSegments:LineBasicMaterial"
+      ]
+     },
+     "looks": {
+      "anime": {
+       "again": "42698883",
+       "colours": 4096,
+       "firstEqualsAgain": true,
+       "hash": "42698883",
+       "lumaStd": 61.86,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeLut": {
+       "again": "a1d33737",
+       "colours": 4096,
+       "firstEqualsAgain": true,
+       "hash": "a1d33737",
+       "lumaStd": 65.74,
+       "newPipeline": true,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeLut85": {
+       "again": "a92d57c7",
+       "colours": 4096,
+       "firstEqualsAgain": true,
+       "hash": "a92d57c7",
+       "lumaStd": 65.14,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeNoGrain": {
+       "again": "311fdc52",
+       "colours": 4096,
+       "firstEqualsAgain": true,
+       "hash": "311fdc52",
+       "lumaStd": 61.91,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeOverlays": {
+       "again": "526821bc",
+       "colours": 4096,
+       "firstEqualsAgain": true,
+       "hash": "526821bc",
+       "lumaStd": 62.59,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeShallow": {
+       "again": "dd4851cc",
+       "colours": 4096,
+       "firstEqualsAgain": true,
+       "hash": "dd4851cc",
+       "lumaStd": 60.05,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "clean": {
+       "again": "d3d6aac8",
+       "colours": 3899,
+       "firstEqualsAgain": true,
+       "hash": "d3d6aac8",
+       "lumaStd": 63.63,
+       "newPipeline": true,
+       "passes": [
+        "scene(MSAA4)",
+        "merged(bloom(mipmap 8)+toneMapping())"
+       ]
+      },
+      "none": {
+       "again": "63be6d9a",
+       "colours": 2911,
+       "firstEqualsAgain": true,
+       "hash": "63be6d9a",
+       "lumaStd": 64.02,
+       "newPipeline": true,
+       "passes": []
+      }
+     },
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  },
+  "coverage": {
+   "query": "mode=coverage&renderer=webgpu",
+   "canonical": "de0ac1cdc8032a40",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "de0ac1cdc8032a40",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "sameFromSnapshots": true,
+      "no180Issues": true,
+      "thumbnails": true
+     },
+     "ms": 4438,
+     "wall": {
+      "start": 1795490020973,
+      "end": 1795490025411
+     },
+     "gpuLoad": {
+      "samples": 7,
+      "gpuUtil": {
+       "min": 21,
+       "median": 31,
+       "max": 46
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 129.7,
+       "webkit:com.apple.WebKit.GPU": 46.6,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 5.4,
+       "harness:CinematicsSpike": 25.2
+      },
+      "first": {
+       "at": 1795490006539,
+       "gpuUtil": 44,
+       "processes": [
+        "harness:CinematicsSpike 1%",
+        "webkit:com.apple.WebKit.GPU 46.6%",
+        "webkit:com.apple.WebKit.WebContent 109.1%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795490024541,
+       "gpuUtil": 31,
+       "processes": [
+        "webkit:com.apple.WebKit.GPU 1.4%",
+        "webkit:com.apple.WebKit.WebContent 129.7%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "shots": 11,
+     "sequenceHash": "00aa93b391faab2e",
+     "restoredInReverse": 10,
+     "kind": "clean"
+    },
+    {
+     "load": 2,
+     "label": "load 2",
+     "ok": true,
+     "digest": "de0ac1cdc8032a40",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "sameFromSnapshots": true,
+      "no180Issues": true,
+      "thumbnails": true
+     },
+     "ms": 4408,
+     "wall": {
+      "start": 1795490025411,
+      "end": 1795490029819
+     },
+     "gpuLoad": {
+      "samples": 6,
+      "gpuUtil": {
+       "min": 21,
+       "median": 42,
+       "max": 46
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 183.4,
+       "webkit:com.apple.WebKit.GPU": 34.9,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 3,
+       "harness:CinematicsSpike": 25.2
+      },
+      "first": {
+       "at": 1795490012537,
+       "gpuUtil": 21,
+       "processes": [
+        "webkit:com.apple.WebKit.GPU 19.1%",
+        "webkit:com.apple.WebKit.WebContent 108.8%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795490027545,
+       "gpuUtil": 42,
+       "processes": [
+        "webkit:com.apple.WebKit.GPU 24.3%",
+        "webkit:com.apple.WebKit.WebContent 183.4%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "shots": 11,
+     "sequenceHash": "00aa93b391faab2e",
+     "restoredInReverse": 10,
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  },
+  "budget": {
+   "query": "mode=budget&renderer=webgpu",
+   "canonical": null,
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": null,
+     "match": null,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "characters": true,
+      "stepUnder5ms": true
+     },
+     "ms": 15753,
+     "wall": {
+      "start": 1795490029819,
+      "end": 1795490045572
+     },
+     "gpuLoad": {
+      "samples": 11,
+      "gpuUtil": {
+       "min": 0,
+       "median": 36,
+       "max": 53
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 183.4,
+       "webkit:com.apple.WebKit.GPU": 78.2,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 3,
+       "harness:CinematicsSpike": 25.2
+      },
+      "first": {
+       "at": 1795490015539,
+       "gpuUtil": 46,
+       "processes": [
+        "node:node 2%",
+        "harness:CinematicsSpike 24.8%",
+        "webkit:com.apple.WebKit.GPU 34.9%",
+        "webkit:com.apple.WebKit.WebContent 71.9%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795490045552,
+       "gpuUtil": 36,
+       "processes": [
+        "harness:CinematicsSpike 2.2%",
+        "webkit:com.apple.WebKit.GPU 50.6%",
+        "webkit:com.apple.WebKit.WebContent 77.1%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "backend": "webgpu",
+     "budget": {
+      "frameMs": 16.666666666666668,
+      "stepMs": 5
+     },
+     "characters": 20,
+     "drawCalls": null,
+     "drawMs": {
+      "max": 8.3,
+      "mean": 7.136,
+      "p50": 7.1,
+      "p95": 7.54
+     },
+     "frameMs": {
+      "max": 20.82,
+      "mean": 13.519,
+      "p50": 13.38,
+      "p95": 15.88
+     },
+     "isWebGPUBackend": true,
+     "size": [
+      1920,
+      1080
+     ],
+     "stepMs": {
+      "max": 2.72,
+      "mean": 2.255,
+      "p50": 2.24,
+      "p95": 2.54
+     },
+     "steps": 480,
+     "triangles": null,
+     "warm": 120,
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": false
+  },
+  "editor": {
+   "query": "mode=check-export&renderer=webgpu",
+   "canonical": "540ef4041209d64c",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "e11493c6be3f5b0f",
+     "match": false,
+     "differ": [
+      "digest"
+     ],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "scrubSame": true,
+      "forwardSame": true
+     },
+     "ms": 19871,
+     "wall": {
+      "start": 1795490045572,
+      "end": 1795490065443
+     },
+     "gpuLoad": {
+      "samples": 11,
+      "gpuUtil": {
+       "min": 0,
+       "median": 40,
+       "max": 53
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 155.6,
+       "webkit:com.apple.WebKit.GPU": 95.5,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0,
+       "harness:CinematicsSpike": 2.6
+      },
+      "first": {
+       "at": 1795490033545,
+       "gpuUtil": 0,
+       "processes": [
+        "harness:CinematicsSpike 1.2%",
+        "webkit:com.apple.WebKit.WebContent 102.4%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795490063560,
+       "gpuUtil": 41,
+       "processes": [
+        "webkit:com.apple.WebKit.GPU 95.5%",
+        "webkit:com.apple.WebKit.WebContent 155.6%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": "1080p",
+     "frames": 1080,
+     "exportMs": 11241,
+     "scrub": {
+      "frames": 26,
+      "same": 26
+     },
+     "subtitles": {
+      "bytes": 272,
+      "lines": 4
+     },
+     "rows": [
+      {
+       "frame": 0,
+       "step": 0,
+       "alpha": 0,
+       "restored": 0,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 84,
+       "step": 210,
+       "alpha": 0,
+       "restored": 120,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 120,
+       "step": 300,
+       "alpha": 0,
+       "restored": 240,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 167,
+       "step": 417,
+       "alpha": 0.5,
+       "restored": 360,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 168,
+       "step": 420,
+       "alpha": 0,
+       "restored": 360,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 252,
+       "step": 630,
+       "alpha": 0,
+       "restored": 600,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 335,
+       "step": 837,
+       "alpha": 0.5,
+       "restored": 720,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 336,
+       "step": 840,
+       "alpha": 0,
+       "restored": 720,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 400,
+       "step": 1000,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 408,
+       "step": 1020,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 410,
+       "step": 1025,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 468,
+       "step": 1170,
+       "alpha": 0,
+       "restored": 1080,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 470,
+       "step": 1175,
+       "alpha": 0,
+       "restored": 1080,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 556,
+       "step": 1390,
+       "alpha": 0,
+       "restored": 1320,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 560,
+       "step": 1400,
+       "alpha": 0,
+       "restored": 1320,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 599,
+       "step": 1497,
+       "alpha": 0.5,
+       "restored": 1440,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 600,
+       "step": 1500,
+       "alpha": 0,
+       "restored": 1440,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 699,
+       "step": 1747,
+       "alpha": 0.5,
+       "restored": 1680,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 735,
+       "step": 1837,
+       "alpha": 0.5,
+       "restored": 1800,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 869,
+       "step": 2172,
+       "alpha": 0.5,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 870,
+       "step": 2175,
+       "alpha": 0,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 904,
+       "step": 2260,
+       "alpha": 0,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 975,
+       "step": 2437,
+       "alpha": 0.5,
+       "restored": 2400,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1000,
+       "step": 2500,
+       "alpha": 0,
+       "restored": 2400,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1010,
+       "step": 2525,
+       "alpha": 0,
+       "restored": 2520,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1079,
+       "step": 2697,
+       "alpha": 0.5,
+       "restored": 2640,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      }
+     ],
+     "kind": "pixels"
+    },
+    {
+     "load": 1,
+     "label": "rerun of load 1",
+     "ok": true,
+     "digest": "540ef4041209d64c",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "scrubSame": true,
+      "forwardSame": true
+     },
+     "ms": 19791,
+     "wall": {
+      "start": 1795490065444,
+      "end": 1795490085235
+     },
+     "gpuLoad": {
+      "samples": 12,
+      "gpuUtil": {
+       "min": 23,
+       "median": 40,
+       "max": 76
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 156.9,
+       "webkit:com.apple.WebKit.GPU": 111.5,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0,
+       "harness:CinematicsSpike": 6.2
+      },
+      "first": {
+       "at": 1795490051555,
+       "gpuUtil": 40,
+       "processes": [
+        "harness:CinematicsSpike 2.2%",
+        "webkit:com.apple.WebKit.GPU 56.5%",
+        "webkit:com.apple.WebKit.WebContent 100.6%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795490084564,
+       "gpuUtil": 76,
+       "processes": [
+        "webkit:com.apple.WebKit.GPU 111.5%",
+        "webkit:com.apple.WebKit.WebContent 130.9%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": "1080p",
+     "frames": 1080,
+     "exportMs": 11239,
+     "scrub": {
+      "frames": 26,
+      "same": 26
+     },
+     "subtitles": {
+      "bytes": 272,
+      "lines": 4
+     },
+     "rows": [
+      {
+       "frame": 0,
+       "step": 0,
+       "alpha": 0,
+       "restored": 0,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 84,
+       "step": 210,
+       "alpha": 0,
+       "restored": 120,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 120,
+       "step": 300,
+       "alpha": 0,
+       "restored": 240,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 167,
+       "step": 417,
+       "alpha": 0.5,
+       "restored": 360,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 168,
+       "step": 420,
+       "alpha": 0,
+       "restored": 360,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 252,
+       "step": 630,
+       "alpha": 0,
+       "restored": 600,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 335,
+       "step": 837,
+       "alpha": 0.5,
+       "restored": 720,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 336,
+       "step": 840,
+       "alpha": 0,
+       "restored": 720,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 400,
+       "step": 1000,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 408,
+       "step": 1020,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 410,
+       "step": 1025,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 468,
+       "step": 1170,
+       "alpha": 0,
+       "restored": 1080,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 470,
+       "step": 1175,
+       "alpha": 0,
+       "restored": 1080,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 556,
+       "step": 1390,
+       "alpha": 0,
+       "restored": 1320,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 560,
+       "step": 1400,
+       "alpha": 0,
+       "restored": 1320,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 599,
+       "step": 1497,
+       "alpha": 0.5,
+       "restored": 1440,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 600,
+       "step": 1500,
+       "alpha": 0,
+       "restored": 1440,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 699,
+       "step": 1747,
+       "alpha": 0.5,
+       "restored": 1680,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 735,
+       "step": 1837,
+       "alpha": 0.5,
+       "restored": 1800,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 869,
+       "step": 2172,
+       "alpha": 0.5,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 870,
+       "step": 2175,
+       "alpha": 0,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 904,
+       "step": 2260,
+       "alpha": 0,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 975,
+       "step": 2437,
+       "alpha": 0.5,
+       "restored": 2400,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1000,
+       "step": 2500,
+       "alpha": 0,
+       "restored": 2400,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1010,
+       "step": 2525,
+       "alpha": 0,
+       "restored": 2520,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1079,
+       "step": 2697,
+       "alpha": 0.5,
+       "restored": 2640,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      }
+     ],
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": {
+    "load": 1,
+    "why": "the rerun is clean, but the GPU was quiet during the failed load: not AB-T-0589",
+    "failed": {
+     "load": 1,
+     "kind": "pixels",
+     "digest": "e11493c6be3f5b0f",
+     "differ": [
+      "digest"
+     ],
+     "verdicts": [],
+     "gpuLoad": {
+      "samples": 11,
+      "gpuUtil": {
+       "min": 0,
+       "median": 40,
+       "max": 53
+      },
+      "seen": {
+       "webkit:com.apple.WebKit.WebContent": 155.6,
+       "webkit:com.apple.WebKit.GPU": 95.5,
+       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+       "node:node": 0,
+       "harness:CinematicsSpike": 2.6
+      },
+      "first": {
+       "at": 1795490033545,
+       "gpuUtil": 0,
+       "processes": [
+        "harness:CinematicsSpike 1.2%",
+        "webkit:com.apple.WebKit.WebContent 102.4%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795490063560,
+       "gpuUtil": 41,
+       "processes": [
+        "webkit:com.apple.WebKit.GPU 95.5%",
+        "webkit:com.apple.WebKit.WebContent 155.6%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "oddFrames": [],
+     "pixels": {},
+     "rerun": {
+      "kind": "clean",
+      "ok": true,
+      "digest": "540ef4041209d64c",
+      "match": true,
+      "gpuLoad": {
+       "samples": 12,
+       "gpuUtil": {
+        "min": 23,
+        "median": 40,
+        "max": 76
+       },
+       "seen": {
+        "webkit:com.apple.WebKit.WebContent": 156.9,
+        "webkit:com.apple.WebKit.GPU": 111.5,
+        "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+        "node:node": 0,
+        "harness:CinematicsSpike": 6.2
+       },
+       "first": {
+        "at": 1795490051555,
+        "gpuUtil": 40,
+        "processes": [
+         "harness:CinematicsSpike 2.2%",
+         "webkit:com.apple.WebKit.GPU 56.5%",
+         "webkit:com.apple.WebKit.WebContent 100.6%"
+        ],
+        "otherGpuHelpers": 1
+       },
+       "last": {
+        "at": 1795490084564,
+        "gpuUtil": 76,
+        "processes": [
+         "webkit:com.apple.WebKit.GPU 111.5%",
+         "webkit:com.apple.WebKit.WebContent 130.9%"
+        ],
+        "otherGpuHelpers": 1
+       }
+      }
+     }
+    }
+   },
+   "ok": false,
+   "allLoadsMatch": false
+  }
+ },
+ "preflight": {
+  "quiet": true,
+  "waitedMs": 10200,
+  "util": 20,
+  "why": "quiet"
+ },
+ "gpuLoad": {
+  "samples": 72,
+  "gpuUtil": {
+   "min": 0,
+   "median": 36,
+   "max": 76
+  },
+  "seen": {
+   "webkit:com.apple.WebKit.WebContent": 183.4,
+   "webkit:com.apple.WebKit.GPU": 111.5,
+   "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
+   "node:node": 5.4,
+   "harness:CinematicsSpike": 25.2
+  },
+  "first": {
+   "at": 1795489871416,
+   "gpuUtil": 14,
+   "processes": [
+    "node:node 1.4%"
+   ],
+   "otherGpuHelpers": 1
+  },
+  "last": {
+   "at": 1795490084564,
+   "gpuUtil": 76,
+   "processes": [
+    "webkit:com.apple.WebKit.GPU 111.5%",
+    "webkit:com.apple.WebKit.WebContent 130.9%"
+   ],
+   "otherGpuHelpers": 1
+  }
+ },
+ "ended": "2026-11-24T03:14:45.235Z"
+}

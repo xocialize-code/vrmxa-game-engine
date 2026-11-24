@@ -1,6 +1,7 @@
 // Exporting a take (M1 W8, AB-T-0520). A take is a world built from step 0 (a scene, plus recorded input replayed);
 // the export steps it offline at the shot's frame rate (frame n shows frameToStep(n) blended at α, exactly what live
-// play would have shown at n / fps), renders each frame at the export size, reads it back asynchronously (one frame
+// play would have shown at n / fps; frame 0 shows the first step as simulated, since step 0 is the world before anything
+// ran: RenderHost.frameAt, AB-T-0595), renders each frame at the export size, reads it back asynchronously (one frame
 // behind, a pixel-pack buffer) and hands it to a sink with at most `inflight` frames outstanding. Then it runs on to
 // the end of the last frame for the sound, mixes what was recorded offline and hands the sink a WAV.
 //
@@ -34,15 +35,18 @@ import { stepsFor, audioSamples, secondsOf } from './plan.js';
  * @param {number} [o.lag] how many frames behind the render readback is copied out (1; 2 measured no faster at 4K: the cost
  *   is the 33 MB copy out of WebKit's GPU process, not the GPU finishing). WebGPU's ring of 3 allows up to 2
  * @param {(p: { n: number, frames: number, phase: string }) => void} [o.onProgress]
- * @param {(n: number, step: number, alpha: number) => void} [o.onFrame] after frame n is drawn (a check hashing the world)
+ * @param {(n: number, step: number, alpha: number) => void} [o.onFrame] after frame n is drawn (a check hashing the world),
+ *   with the step and α it was drawn at
  * @param {{ aborted: boolean }} [o.signal]
  * @param {() => number} [o.now] a wall clock, for the timings only
  * @param {any} [o.OfflineAudioContext]
  * @param {'redraw' | null} [o.check] 'redraw': draw each frame again after reading it and compare (see pumpFrames)
  * @param {(n: number, bytes: Uint8Array) => void} [o.onBytes] frame n's read-back bytes, before the sink has them (stills;
  *   the buffer is reused for the next frame: copy what you keep)
+ * @param {boolean} [o.warm] draw and read frame 0 once before the film and throw it away (default: on WebGPU, where a
+ *   fresh host's first draw can differ, AB-T-0596; off on WebGL)
  */
-export async function exportTake({ tree, host, fps, frames, width, height, sink, job = {}, audio = true, inflight = 2, lag = 1, onProgress, onFrame, signal, now = () => 0, OfflineAudioContext, check = null, onBytes }) {
+export async function exportTake({ tree, host, fps, frames, width, height, sink, job = {}, audio = true, inflight = 2, lag = 1, onProgress, onFrame, signal, now = () => 0, OfflineAudioContext, check = null, onBytes, warm = undefined }) {
   const rate = rationalFps(fps);
   const sound = audio ? tree.services.get('audio') : null;
   if (audio && !sound) throw new Error('this world has no audio service; export with audio: false');
@@ -62,11 +66,23 @@ export async function exportTake({ tree, host, fps, frames, width, height, sink,
   t.begin = now() - t0;
   try {
     const plan = (n) => frameToStep(n, rate);
+    // Frame 0 is the first thing a fresh host draws, and on WebGPU a host's first draw of what is in view can come out
+    // different each time (AB-T-0596: one tile of the cafe's frame 0, the espresso machine, in every export measured).
+    // Until AB-T-0595 a film's frame 0 was the world before anything ran, seen from the set's camera: nobody looked at
+    // it, and it warmed the host for frame 1. So frame 0 is drawn and read once, thrown away, and then drawn for the
+    // film: the same step again, no simulation in between
+    if (warm ?? host.backend === 'webgpu') {
+      const { step, alpha } = plan(0), a = now();
+      await rb.draw(() => host.frameAt(step, alpha));
+      await rb.readNow(new Uint8Array(width * height * 4));
+      t.begin += now() - a;
+    }
     const pumped = await pumpFrames({
       rb, sink, frames, width, height, inflight, lag, signal, now, t, onProgress, check, onBytes,
       draw: (n) => { const { step, alpha } = plan(n); return host.frameAt(step, alpha); },
-      redraw: (n) => { host.advanceNodeFrame(); host.render(plan(n).alpha, false); },
-      onFrame: onFrame ? (n) => { const { step, alpha } = plan(n); onFrame(n, step, alpha); } : undefined,
+      // what the host drew, which for a film's first frames is step 1 as simulated, not the plan's blend (AB-T-0595)
+      redraw: () => { host.advanceNodeFrame(); host.render(host.last.alpha, false); },
+      onFrame: onFrame ? (n) => onFrame(n, tree.clock.step, host.last.alpha) : undefined,
     });
     // a cancel after the last frame still stops the export, up to the moment the sink is told to finish the file
     const stop = () => { if (signal?.aborted) throw new Error('export cancelled'); };
@@ -204,7 +220,8 @@ function sameBytes(a, b) {
  * gives `pose(n)` → { position: [x, y, z], target: [x, y, z] } (orbitPose: portable sines, so two runs agree). The host's
  * camera is put back afterwards. No sound. `warm`: draw and read back frame 0 once first, thrown away: a fresh WebGPU
  * host's first frame through the TSL post stack can differ under GPU load (AB-T-0596), and a turntable's frame 0 is
- * that frame (a film's frame 0 draws without its look today, AB-T-0595, so a film never met it).
+ * that frame. (So is a film's, now that its frame 0 draws with its look, AB-T-0595: exportTake warms the same way by
+ * default on WebGPU.)
  * @param {object} o
  * @param {any} o.tree @param {any} o.host @param {any} o.camera a three PerspectiveCamera to draw through
  * @param {number | { num: number, den: number }} o.fps @param {number} o.frames @param {number} o.width @param {number} o.height

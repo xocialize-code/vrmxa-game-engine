@@ -23,21 +23,37 @@
 // inside a shot cuts it in pieces (the hook's splits), each placed for where people stand then; ids name the marks
 // people stand on when they aren't their first (vc-ots-mira-hana-1-mira-at-window-table).
 //
+// The set (AB-T-0597). With `blockers` (the set's solid boxes: blockers.js), every camera stands clear of them and sees
+// the heads it films. A group shot the set leaves no room for on the line's side (less than 0.7 of its distance) takes
+// the other side when there is more room there; otherwise it is pulled in towards the group, and its lens widens to hold
+// them. A shot / reverse or a close-up that isn't clear is pulled in the same way. And a close-up of someone who plays
+// to a person more than `far` metres away must show at least three-quarters of her face (the camera within 45° of where
+// she faces): people that far apart rarely face each other, and the line's side can leave her in profile, so it takes
+// the other side when that shows her face. A camera that changes sides this way crosses the line on purpose: its shot is
+// marked "crossLine": true (the lint lets it pass), and the pair's side is the new one from then on.
+//
 // Deterministic: plain arithmetic and square roots, positions rounded to the millimetre, ids from what each camera
-// films. The same script and marks give the same cameras, byte for byte.
+// films. The same script, marks and blockers give the same cameras, byte for byte.
 import { shotReverse } from '@vrmxg/camera/rigs';
 import { PAREN_WORDS } from '@vrmxg/script';
-import { EYE, mm, facing, sideOf, groupPlace, singlePlace } from './geometry.js';
+import { EYE, mm, facing, sideOf, groupPlace, singlePlace, blocked, pullIn, faceOn } from './geometry.js';
 
 export const RULES = ['establishing', 'twoShot', 'closeUp', 'shotReverse', 'master'];
 /** A close-up aims at the eyes: the head bone it targets sits about 7 cm below them, at the jaw (the sample's VRMs). */
 const EYES = 0.07;
 
+/** A group shot keeps the line's side while the set leaves it this much of its distance. */
+const KEEP = 0.7;
+/** Three-quarters of a face: the camera within 45° of where she faces (the cosine). */
+const FACE = Math.SQRT1_2;
+
 /**
- * @typedef {{ side?: 1 | -1, room?: number[], estSize?: number, otsScreen?: number }} CoverageOptions
+ * @typedef {{ side?: 1 | -1, room?: number[], estSize?: number, otsScreen?: number, blockers?: { p: number[], q?: number[], size: number[], name?: string }[], far?: number }} CoverageOptions
  *   side: which side of each scene's line to shoot from (default: the side facing `room`); room: [x, y, z] (default the
  *   origin); estSize: the establishing wide's share of the frame height (0.4); otsScreen: how far off centre a shot /
- *   reverse frames the speaker (0.2 of the half-width, away from the listener's shoulder)
+ *   reverse frames the speaker (0.2 of the half-width, away from the listener's shoulder); blockers: the set's solid
+ *   boxes (setBlockers), which no camera stands in or behind; far: beyond this many metres between two people, a
+ *   close-up is placed for her face (3)
  */
 
 /**
@@ -52,11 +68,13 @@ export function coverByRule(options = {}) {
  * Coverage for a laid-out script. `ctx` is what @vrmxg/script's build hands its coverage hook.
  * @param {{ plan: any, shots: { beat: string, start: number, end: number }[], cast: string[], marks: Map<string, any>, markTf?: Map<string, any>, parsed?: any, numbers?: Map<string, string> }} ctx
  * @param {CoverageOptions} [options]
- * @returns {{ nodes: any[], cuts: Map<string, { camera: string, splits?: { frame: number, camera: string }[] }>, rules: Map<string, { rule: string, subjects: string[], camera: string, splits?: { frame: number, camera: string }[], why: string }> }}
+ * @returns {{ nodes: any[], cuts: Map<string, { camera: string, splits?: { frame: number, camera: string }[], crossLine?: boolean }>, rules: Map<string, { rule: string, subjects: string[], camera: string, splits?: { frame: number, camera: string }[], crossLine?: boolean, why: string }> }}
  */
 export function planCoverage(ctx, options = {}) {
   const { plan, shots, cast, marks, markTf = new Map(), parsed = null } = ctx;
   const room = options.room ?? [0, 0, 0], estSize = options.estSize ?? 0.4, otsScreen = options.otsScreen ?? 0.2;
+  const blockers = options.blockers ?? [], far = options.far ?? 3;
+  const head = (p) => [p[0], EYE, p[2]];
   const beatOf = new Map(plan.beats.map((b) => [b.id, b]));
   const parsedOf = new Map((parsed?.beats ?? []).map((b) => [b.id, b]));
   const order = new Map(cast.map((c, i) => [c, i]));
@@ -118,6 +136,26 @@ export function planCoverage(ctx, options = {}) {
     for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++) refs.set(pairKey(ps[i], ps[j]), p);
   };
 
+  /** A camera's place made clear of the set: as it is when it is, else pulled in towards `anchor` (what it films). */
+  const clearOf = (p, anchor, heads) => (blockers.length && blocked(p, heads, blockers) ? pullIn(p, anchor, heads, blockers)?.p ?? p : p);
+  /**
+   * A group shot's place: the line's side while the set leaves room for it there, else the side with more room (a
+   * cross: `crossed`), pulled in as far as the set asks.
+   */
+  const placeGroup = (ps, side, kind) => {
+    const want = groupPlace(ps, side, kind);
+    if (!blockers.length) return { p: want, crossed: false };
+    let x = 0, z = 0; for (const q of ps) { x += q[0]; z += q[2]; }
+    const anchor = [x / ps.length, want[1], z / ps.length], heads = ps.map(head);
+    const a = pullIn(want, anchor, heads, blockers);
+    if (a && a.t >= KEEP) return { p: a.p, crossed: false };
+    const b = pullIn(groupPlace(ps, -side, kind), anchor, heads, blockers);
+    if (b && (!a || b.t > a.t)) return { p: b.p, crossed: true };
+    return { p: a ? a.p : want, crossed: false };
+  };
+  /** Was this pair filmed already in this scene? (A camera can only cross a line that a camera before it drew.) */
+  const drawn = (x, y) => refs.has(pairKey(x, y));
+
   const group = (kind, ids, frame, prev) => {
     let here = ids.filter((c) => posAt(c, frame)).sort(byOrder);
     // the line the group shot is placed by: a pair the camera before it played to, when it shares one, so the cut keeps it
@@ -125,9 +163,9 @@ export function planCoverage(ctx, options = {}) {
     if (shared.length >= 2) here = [...shared.slice(0, 2), ...here.filter((c) => !shared.slice(0, 2).includes(c))];
     const ps = here.map((c) => posAt(c, frame));
     const est = kind === 'establishing';
-    let p;
-    if (ps.length >= 2) p = groupPlace(ps, sideFor(here[0], here[1], frame), kind);
-    else if (ps.length === 1) p = [mm(ps[0][0]), est ? 2.2 : EYE, mm(ps[0][2] + (est ? 4.5 : 3))];
+    let p, crossed = false;
+    if (ps.length >= 2) { const g = placeGroup(ps, sideFor(here[0], here[1], frame), kind); p = g.p; crossed = g.crossed && drawn(here[0], here[1]); }
+    else if (ps.length === 1) p = clearOf([mm(ps[0][0]), est ? 2.2 : EYE, mm(ps[0][2] + (est ? 4.5 : 3))], [ps[0][0], est ? 2.2 : EYE, ps[0][2]], [head(ps[0])]);
     else p = [0, est ? 2.2 : EYE, est ? 6 : 4];
     const targets = (here.length ? [...here].sort(byOrder) : [...ids].sort(byOrder));
     const all = targets.length === cast.length && targets.every((c, i) => c === [...cast].sort(byOrder)[i]);
@@ -135,16 +173,40 @@ export function planCoverage(ctx, options = {}) {
       ? camera(`vc-est-${slug(scene.heading)}`, targets, frame, { name: `Establishing: ${scene.heading}`, transform: { p }, props: { rig: 'twoShot', aim: { targets, size: estSize } } })
       : camera(all ? 'vc-two' : `vc-two-${targets.join('-')}`, targets, frame, { name: `Two-shot: ${targets.join(', ')}`, transform: { p }, props: { rig: 'twoShot', aim: { targets } } });
     seen(id, targets);
-    return { id, people: targets };
+    return { id, people: targets, crossed };
+  };
+  /**
+   * A close-up's place: the line's side as singlePlace has it when that is clear of the set and, for people far apart,
+   * shows three-quarters of her face; else the other side when that does (a cross); else whichever clear place shows
+   * the most of her face, pulled in towards her.
+   */
+  const placeSingle = (p, q, side, face) => {
+    const want = singlePlace(p, q, side, face);
+    const apart = q ? Math.sqrt((q[0] - p[0]) * (q[0] - p[0]) + (q[2] - p[2]) * (q[2] - p[2])) > far : false;
+    if (!blockers.length && !apart) return { p: want, crossed: false };
+    const h = head(p);
+    const good = (c) => !(blockers.length && blocked(c, [h], blockers)) && (!apart || faceOn(p, face, c) >= FACE);
+    if (good(want)) return { p: want, crossed: false };
+    const other = q ? singlePlace(p, q, -side, face) : null;
+    if (other && good(other)) return { p: other, crossed: true };
+    // neither is right as the rule has it: the clear places on the way in towards her, the one with the most of her face
+    const tries = [{ c: want, crossed: false }, ...(other ? [{ c: other, crossed: true }] : [])].map(({ c, crossed }) => {
+      const r = blockers.length ? pullIn(c, h, [h], blockers) : { p: c };
+      return r ? { p: r.p, crossed, face: faceOn(p, face, r.p) } : null;
+    }).filter((t) => t !== null);
+    if (!tries.length) return { p: want, crossed: false };
+    const best = tries.length === 2 && apart && tries[1].face > tries[0].face && tries[0].face < FACE ? tries[1] : tries[0];
+    return { p: best.p, crossed: best.crossed };
   };
   const single = (who, to, frame) => {
     const p = posAt(who, frame);
     if (!p) return { id: camera(`vc-cu-${who}`, [], frame, { name: `${who}, close`, props: { rig: 'closeUp', aim: { target: who }, body: { target: who } } }), people: [who] }; // M2's follow close-up
     const q = to ? posAt(to, frame) : null;
-    const at = singlePlace(p, q, q ? sideFor(who, to, frame) : 1, facing(tfAt(who, frame)));
+    const g = placeSingle(p, q, q ? sideFor(who, to, frame) : 1, facing(tfAt(who, frame)));
+    const at = g.p, crossed = !!q && g.crossed && drawn(who, to);
     const id = camera(`vc-cu-${who}${q ? `-to-${to}` : ''}`, q ? [who, to] : [who], frame, { name: `${who}, close${q ? ` (to ${to})` : ''}`, transform: { p: at }, props: { rig: 'closeUp', body: { type: 'fixed' }, aim: { target: who, offset: [0, EYES, 0] } } });
     if (q) seen(id, [who, to]);
-    return { id, people: q ? [who, to] : [who] };
+    return { id, people: q ? [who, to] : [who], crossed };
   };
   const overShoulder = (speaker, listener, frame) => {
     const [a, b] = [speaker, listener].sort(byOrder);
@@ -153,7 +215,9 @@ export function planCoverage(ctx, options = {}) {
     const reverse = speaker === a;
     const r = shotReverse(pa, pb, { side: -s, reverse, height: EYE });
     const sx = reverse ? s * otsScreen : -s * otsScreen; // the speaker away from the listener's shoulder
-    const id = camera(`vc-ots-${speaker}-${listener}`, [speaker, listener], frame, { name: `${speaker} over ${listener}`, transform: { p: r.p.map(mm) }, props: { rig: 'shotReverse', aim: { target: speaker, screen: [mm(sx), 0.15] } } });
+    // behind the listener's shoulder there may be a wall: then the camera comes in towards the listener
+    const at = clearOf(r.p.map(mm), head(reverse ? pb : pa), [head(reverse ? pa : pb)]);
+    const id = camera(`vc-ots-${speaker}-${listener}`, [speaker, listener], frame, { name: `${speaker} over ${listener}`, transform: { p: at }, props: { rig: 'shotReverse', aim: { target: speaker, screen: [mm(sx), 0.15] } } });
     seen(id, [speaker, listener]);
     return { id, people: [speaker, listener] };
   };
@@ -196,14 +260,17 @@ export function planCoverage(ctx, options = {}) {
     }
 
     const pieces = [];
+    let crossLine = false;
     for (const f of at) {
-      const { id, people } = shoot(f);
+      const { id, people, crossed } = shoot(f);
       if (pieces.at(-1)?.camera !== id) pieces.push({ frame: f, camera: id });
+      if (crossed) crossLine = true;
       prev = people;
     }
     const [first, ...rest] = pieces;
-    cuts.set(s.beat, { camera: first.camera, ...(rest.length ? { splits: rest } : {}) });
-    rules.set(s.beat, { rule, subjects: subjects(s.start), camera: first.camera, ...(rest.length ? { splits: rest } : {}), why: rest.length ? `${why}; cut at the move${rest.length > 1 ? 's' : ''}` : why });
+    const more = { ...(rest.length ? { splits: rest } : {}), ...(crossLine ? { crossLine: true } : {}) };
+    cuts.set(s.beat, { camera: first.camera, ...more });
+    rules.set(s.beat, { rule, subjects: subjects(s.start), camera: first.camera, ...more, why: `${why}${rest.length ? `; cut at the move${rest.length > 1 ? 's' : ''}` : ''}${crossLine ? '; crosses the line (the set, or her face, asks for the other side)' : ''}` });
   }
   return { nodes, cuts, rules };
 }

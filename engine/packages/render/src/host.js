@@ -281,11 +281,19 @@ export class RenderHost {
    * Offline (frame export, scrubbing forward): run the tree up to `step`, waiting out any step a service holds (a
    * closet redraw), then draw at α, exactly as live play would have shown that moment: the blend of the last two
    * steps. `frameToStep(n, fps)` from @vrmxg/core gives frame n's step and α. Nothing here reads a clock.
+   *
+   * The first moment that can be shown is step 1 as simulated (AB-T-0595). At step 0 nothing has run: characters stand in
+   * their bind pose, no rig or brain has placed the camera, and a sequence's tracks (its look, its first shot's camera
+   * and overrides) apply in the step. So a blend that would reach back to step 0 (α < 1 on step 0 or 1: a film's frame 0,
+   * and at 48 fps and up the frames after it that fall in the first step) draws step 1 as it is: `last.alpha` is then 1.
+   * The simulation is untouched: the world steps exactly as before, and every later frame is the same. α = 1 asks for a
+   * step as simulated and is drawn as asked, step 0 included (a check that draws every step).
    * @param {number} step @param {number} alpha
    * @param {(step: number) => void} [afterStep]
    */
   async frameAt(step, alpha, afterStep) {
     const tree = this.tree;
+    if (alpha < 1 && step <= 1) { step = 1; alpha = 1; }
     if (step < tree.clock.step) throw new Error(`frameAt(${step}): the tree is already at step ${tree.clock.step}; offline frames only go forward`);
     const steps = step - tree.clock.step;
     for (let i = 0; i < steps; i++) {
@@ -310,9 +318,13 @@ export class RenderHost {
     return this.last;
   }
 
-  /** Draw the tree at α (1 = the last step as simulated). */
+  /**
+   * Draw the tree at α (1 = the last step as simulated). On step 1 there is nothing to blend from (step 0 is the world
+   * before anything ran: see frameAt), so the step is drawn as simulated whatever α says.
+   */
   render(alpha = 1, stepped = true) {
     const tree = this.tree;
+    if (alpha < 1 && tree.clock.step === 1) alpha = 1;
     const t0 = typeof performance !== 'undefined' ? performance.now() : 0;
     this.views.update(tree);
     // a sequence's post tracks (M2 W1): presentation values at this frame and α, after the Environment configured the stack

@@ -18,10 +18,14 @@
 // Cuts are where the live camera clip changes (clipAt), so a clip laid over a longer one cuts in and back out. A cut
 // inside or into a shot with "crossLine": true crosses on purpose and isn't flagged. A camera whose place can't be
 // known (a dolly on a path, a turntable that turns) isn't checked; `unchecked` lists those cuts.
+//
+// The set (AB-T-0597): with `blockers` (the set's solid boxes, blockers.js), every camera clip is also checked where it
+// starts: a camera standing in a box ("inside the set's geometry") or with a box between it and someone it films
+// ("behind the set's geometry") is an issue of `kind: 'geometry'`, whoever placed it. People are seen at eye height.
 import { rigDefaults } from '@vrmxg/camera/rigs';
 import { clipAt, shotAt } from '@vrmxg/sequence';
 import { evaluateTrack } from '@vrmxg/tracks';
-import { cameraPoint, sideOf } from './geometry.js';
+import { cameraPoint, sideOf, blocked, EYE } from './geometry.js';
 
 /** Every node of a document, nested children included. */
 export function allNodes(doc) {
@@ -124,14 +128,33 @@ function linesOf(a, b) {
 }
 
 /**
- * Check the 180° rule at every cut.
- * @param {any} doc the sequence document @param {{ set?: any, margin?: number }} [o]
- * @returns {{ issues: { frame: number, shots: [string | null, string | null], cameras: [string, string], line: [string, string], sides: [number, number], message: string }[], unchecked: { frame: number, cameras: [string, string] }[] }}
+ * Check the 180° rule at every cut and, with `blockers`, that every camera stands clear of the set and sees its people.
+ * @param {any} doc the sequence document @param {{ set?: any, margin?: number, blockers?: any[] | null }} [o]
+ *   blockers: setBlockers(set, …); a geometry issue has `kind: 'geometry'`, `what` ('inside' | 'behind'), the box's name
+ *   in `blocker`, both `shots` and both `cameras` the same, and no `line` or `sides`
+ * @returns {{ issues: { frame: number, shots: [string | null, string | null], cameras: [string, string], line?: [string, string], sides?: [number, number], kind?: 'geometry', what?: string, blocker?: string, message: string }[], unchecked: { frame: number, cameras: [string, string] }[] }}
  */
-export function lintLine(doc, { set = null, margin = 0.05 } = {}) {
+export function lintLine(doc, { set = null, margin = 0.05, blockers = null } = {}) {
   const S = sceneAt(doc, set);
   const issues = [], unchecked = [];
   const shotName = (f) => { const s = shotAt(S.seq, f); return s ? s.name ?? s.id : null; };
+  for (const t of S.seq.tracks ?? []) {
+    if (t.type !== 'camera' || !blockers?.length) continue;
+    const starts = [...new Set((t.clips ?? []).map((c) => c.start))].sort((a, b) => a - b);
+    for (const f of starts) {
+      const c = clipAt(t, f);
+      if (!c?.camera || !S.byId.get(c.camera)) continue;
+      const at = S.cameraAt(c.camera, f);
+      if (!at) continue; // a dolly, a turntable: its place isn't known
+      const who = subjectsOf(S.byId.get(c.camera), S.overAt(c.camera, f)?.props ?? null).filter((id) => S.people.has(id) && S.posAt(id, f));
+      const heads = who.map((id) => { const p = S.posAt(id, f); return [p[0], p[1] + EYE, p[2]]; });
+      const b = blocked(at, heads, blockers, 0);
+      if (!b) continue;
+      const name = shotName(f), seen = b.head ? who[heads.indexOf(b.head)] : null;
+      issues.push({ frame: f, shots: [name, name], cameras: [c.camera, c.camera], kind: 'geometry', what: b.what, blocker: b.box.name ?? 'a collider',
+        message: `frame ${f}${name ? ` (${name})` : ''}: camera ${c.camera} is ${b.what === 'inside' ? 'inside' : 'behind'} the set's geometry (${b.box.name ?? 'a collider'}${seen ? `, between it and ${seen}` : ''})` });
+    }
+  }
   for (const t of S.seq.tracks ?? []) {
     if (t.type !== 'camera') continue;
     for (const [f, A, B] of cutsOf(t)) {

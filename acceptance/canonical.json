@@ -47,13 +47,13 @@
     }
    },
    "frames": {
-    "digest": "189535cb0648738e",
+    "digest": "d6784fc3c3d16a2f",
     "items": {
      "particlesFinal": "09ef4d21b00189d1",
      "particlesFrames": "908e259af2c6aab5",
      "particlesLast": "a38f400fe7660542",
-     "film": "a68717eff086aa3f",
-     "filmSecond": "a68717eff086aa3f",
+     "film": "50d3922419201ff4",
+     "filmSecond": "50d3922419201ff4",
      "filmAudio": "7a6ff838",
      "still": "0f15bc0ddf1851dd",
      "readback-1080p": "4c1ad7c1dbc06059",
@@ -62,8 +62,8 @@
      "alpha": "127,0,0,128"
     },
     "made": {
-     "at": "2026-11-23T19:49:09.658Z",
-     "commit": "f7d971f",
+     "at": "2026-11-24T02:13:35.795Z",
+     "commit": "1e3f921",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -71,7 +71,7 @@
      "backend": "webgpu"
     },
     "film": [
-     "6784a9d115c93c80",
+     "59d79e2bfb5b17b0",
      "94ea58bb540a8d66",
      "368d393c1d754917",
      "aa602152dde1d626",
@@ -1220,11 +1220,11 @@
     }
    },
    "editor": {
-    "digest": "c069a63fd75279a2",
+    "digest": "8d9ab54914096695",
     "items": {
-     "digest": "a68717eff086aa3f",
+     "digest": "50d3922419201ff4",
      "audio": "7a6ff838",
-     "frame0": "6784a9d115c93c80",
+     "frame0": "59d79e2bfb5b17b0",
      "frame84": "f706d23a80f0d4a0",
      "frame120": "2ba0c372761708d1",
      "frame167": "14e4c7cd0249d28a",
@@ -1252,8 +1252,8 @@
      "frame1079": "589c32c230255879"
     },
     "made": {
-     "at": "2026-11-23T19:47:46.647Z",
-     "commit": "f7d971f",
+     "at": "2026-11-24T02:14:03.360Z",
+     "commit": "1e3f921",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -1315,13 +1315,13 @@
     }
    },
    "frames": {
-    "digest": "70a6468d5263c04b",
+    "digest": "28e3089104291f3f",
     "items": {
      "particlesFinal": "09ef4d21b00189d1",
      "particlesFrames": "16c4913d2bbbc4bb",
      "particlesLast": "c9613a1f209caf91",
-     "film": "46a23bf918eb4da7",
-     "filmSecond": "46a23bf918eb4da7",
+     "film": "38a9f72fab0d521c",
+     "filmSecond": "38a9f72fab0d521c",
      "filmAudio": "7a6ff838",
      "still": "6fb7d276fe6be5b7",
      "readback-1080p": "985eb7f629ba0133",
@@ -1330,8 +1330,8 @@
      "alpha": "127,0,0,128"
     },
     "made": {
-     "at": "2026-11-23T16:54:02.093Z",
-     "commit": "73d48dd",
+     "at": "2026-11-24T01:51:43.422Z",
+     "commit": "1ac8f24",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -1339,7 +1339,7 @@
      "backend": "webgl"
     },
     "film": [
-     "da834908394f379e",
+     "dd425a58abbf1c7c",
      "3868ceb3a31cb940",
      "f1f5c5af4b6f977d",
      "b999d8ca12672b56",
@@ -2488,11 +2488,11 @@
     }
    },
    "editor": {
-    "digest": "59bbb42baa90cecb",
+    "digest": "582bf85ae977e517",
     "items": {
-     "digest": "46a23bf918eb4da7",
+     "digest": "38a9f72fab0d521c",
      "audio": "7a6ff838",
-     "frame0": "da834908394f379e",
+     "frame0": "dd425a58abbf1c7c",
      "frame84": "56573571472d3e79",
      "frame120": "cd0b3d9723154a9f",
      "frame167": "6350af5d3ec3229d",
@@ -2520,8 +2520,8 @@
      "frame1079": "277b5aa158d86edb"
     },
     "made": {
-     "at": "2026-11-23T16:54:55.036Z",
-     "commit": "73d48dd",
+     "at": "2026-11-24T01:52:12.956Z",
+     "commit": "1ac8f24",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -2643,13 +2643,13 @@
     }
    },
    "frames": {
-    "digest": "053b9501c1af7fb5",
+    "digest": "04966d261a42b86b",
     "items": {
      "particlesFinal": "09ef4d21b00189d1",
      "particlesFrames": "1a9aa3e8ff15500e",
      "particlesLast": "14c86ea05ef19deb",
-     "film": "099f33bd891d6851",
-     "filmSecond": "099f33bd891d6851",
+     "film": "92ac29aaab51a27a",
+     "filmSecond": "92ac29aaab51a27a",
      "filmAudio": "b69c46ab",
      "still": "e8d21191dc8d24e1",
      "readback-4k": "33b1693ba65e89b1",
@@ -2658,8 +2658,8 @@
      "alpha": "127,0,0,128"
     },
     "made": {
-     "at": "2026-11-23T19:53:42.870Z",
-     "commit": "f7d971f",
+     "at": "2026-11-24T01:56:33.845Z",
+     "commit": "1ac8f24",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -2667,7 +2667,7 @@
      "backend": "webgpu"
     },
     "film": [
-     "a9fc143db2b74a3c",
+     "1d3e3ff562609d34",
      "c646dae0e5e4c02a",
      "61b3c6dd4974942e",
      "fe4c3cb89f0f86ac",
@@ -3750,11 +3750,11 @@
     ]
    },
    "editor": {
-    "digest": "db9d4acecc331de9",
+    "digest": "540ef4041209d64c",
     "items": {
-     "digest": "099f33bd891d6851",
+     "digest": "92ac29aaab51a27a",
      "audio": "b69c46ab",
-     "frame0": "a9fc143db2b74a3c",
+     "frame0": "1d3e3ff562609d34",
      "frame84": "202a3458e8a8203a",
      "frame120": "e14361b4b845ede5",
      "frame167": "0c87f7fd7d401e35",
@@ -3782,8 +3782,8 @@
      "frame1079": "589c32c230255879"
     },
     "made": {
-     "at": "2026-11-23T19:51:40.202Z",
-     "commit": "f7d971f",
+     "at": "2026-11-24T01:57:12.660Z",
+     "commit": "1ac8f24",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -3845,13 +3845,13 @@
     }
    },
    "frames": {
-    "digest": "0911935ad1563cc0",
+    "digest": "86c02b57ce66e867",
     "items": {
      "particlesFinal": "09ef4d21b00189d1",
      "particlesFrames": "c6140913d73b8586",
      "particlesLast": "405ff713a0e1f702",
-     "film": "64caa818cf9d37ef",
-     "filmSecond": "64caa818cf9d37ef",
+     "film": "6124f8145c82c57c",
+     "filmSecond": "6124f8145c82c57c",
      "filmAudio": "b69c46ab",
      "still": "e30da10b650e57c1",
      "readback-4k": "a4493723bee672b1",
@@ -3860,8 +3860,8 @@
      "alpha": "127,0,0,128"
     },
     "made": {
-     "at": "2026-11-23T17:00:13.873Z",
-     "commit": "73d48dd",
+     "at": "2026-11-24T01:59:03.885Z",
+     "commit": "1ac8f24",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -3869,7 +3869,7 @@
      "backend": "webgl"
     },
     "film": [
-     "74e40e78c941f388",
+     "f36199f78aa993bd",
      "d9982d221c83ffd7",
      "e01734963661d46c",
      "d40d0e311a97a062",
@@ -5018,11 +5018,11 @@
     }
    },
    "editor": {
-    "digest": "b6f43f9836ea3441",
+    "digest": "500f6ed85a4d27b0",
     "items": {
-     "digest": "64caa818cf9d37ef",
+     "digest": "6124f8145c82c57c",
      "audio": "b69c46ab",
-     "frame0": "74e40e78c941f388",
+     "frame0": "f36199f78aa993bd",
      "frame84": "8e236171601b6ed2",
      "frame120": "69f9ba97c7f7df55",
      "frame167": "6714de74be6861de",
@@ -5050,8 +5050,8 @@
      "frame1079": "277b5aa158d86edb"
     },
     "made": {
-     "at": "2026-11-23T17:01:07.019Z",
-     "commit": "73d48dd",
+     "at": "2026-11-24T01:59:36.757Z",
+     "commit": "1ac8f24",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -5107,13 +5107,13 @@
     }
    },
    "frames": {
-    "digest": "053b9501c1af7fb5",
+    "digest": "04966d261a42b86b",
     "items": {
      "particlesFinal": "09ef4d21b00189d1",
      "particlesFrames": "1a9aa3e8ff15500e",
      "particlesLast": "14c86ea05ef19deb",
-     "film": "099f33bd891d6851",
-     "filmSecond": "099f33bd891d6851",
+     "film": "92ac29aaab51a27a",
+     "filmSecond": "92ac29aaab51a27a",
      "filmAudio": "b69c46ab",
      "still": "e8d21191dc8d24e1",
      "readback-4k": "33b1693ba65e89b1",
@@ -5122,8 +5122,8 @@
      "alpha": "127,0,0,128"
     },
     "made": {
-     "at": "2026-11-23T19:58:17.786Z",
-     "commit": "f7d971f",
+     "at": "2026-11-24T02:01:56.190Z",
+     "commit": "1ac8f24",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -5131,7 +5131,7 @@
      "backend": "webgpu"
     },
     "film": [
-     "a9fc143db2b74a3c",
+     "1d3e3ff562609d34",
      "c646dae0e5e4c02a",
      "61b3c6dd4974942e",
      "fe4c3cb89f0f86ac",
@@ -6280,11 +6280,11 @@
     }
    },
    "editor": {
-    "digest": "db9d4acecc331de9",
+    "digest": "540ef4041209d64c",
     "items": {
-     "digest": "099f33bd891d6851",
+     "digest": "92ac29aaab51a27a",
      "audio": "b69c46ab",
-     "frame0": "a9fc143db2b74a3c",
+     "frame0": "1d3e3ff562609d34",
      "frame84": "202a3458e8a8203a",
      "frame120": "e14361b4b845ede5",
      "frame167": "0c87f7fd7d401e35",
@@ -6312,8 +6312,8 @@
      "frame1079": "589c32c230255879"
     },
     "made": {
-     "at": "2026-11-23T19:56:11.718Z",
-     "commit": "f7d971f",
+     "at": "2026-11-24T02:02:35.349Z",
+     "commit": "1ac8f24",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -6375,13 +6375,13 @@
     }
    },
    "frames": {
-    "digest": "0911935ad1563cc0",
+    "digest": "86c02b57ce66e867",
     "items": {
      "particlesFinal": "09ef4d21b00189d1",
      "particlesFrames": "c6140913d73b8586",
      "particlesLast": "405ff713a0e1f702",
-     "film": "64caa818cf9d37ef",
-     "filmSecond": "64caa818cf9d37ef",
+     "film": "6124f8145c82c57c",
+     "filmSecond": "6124f8145c82c57c",
      "filmAudio": "b69c46ab",
      "still": "e30da10b650e57c1",
      "readback-4k": "a4493723bee672b1",
@@ -6390,8 +6390,8 @@
      "alpha": "127,0,0,128"
     },
     "made": {
-     "at": "2026-11-23T17:06:44.434Z",
-     "commit": "73d48dd",
+     "at": "2026-11-24T02:05:08.974Z",
+     "commit": "1ac8f24",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -6399,7 +6399,7 @@
      "backend": "webgl"
     },
     "film": [
-     "74e40e78c941f388",
+     "f36199f78aa993bd",
      "d9982d221c83ffd7",
      "e01734963661d46c",
      "d40d0e311a97a062",
@@ -7548,11 +7548,11 @@
     }
    },
    "editor": {
-    "digest": "b6f43f9836ea3441",
+    "digest": "500f6ed85a4d27b0",
     "items": {
-     "digest": "64caa818cf9d37ef",
+     "digest": "6124f8145c82c57c",
      "audio": "b69c46ab",
-     "frame0": "74e40e78c941f388",
+     "frame0": "f36199f78aa993bd",
      "frame84": "8e236171601b6ed2",
      "frame120": "69f9ba97c7f7df55",
      "frame167": "6714de74be6861de",
@@ -7580,8 +7580,8 @@
      "frame1079": "277b5aa158d86edb"
     },
     "made": {
-     "at": "2026-11-23T17:07:48.449Z",
-     "commit": "73d48dd",
+     "at": "2026-11-24T02:05:42.316Z",
+     "commit": "1ac8f24",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -7592,8 +7592,8 @@
   }
  },
  "made": {
-  "at": "2026-11-23T19:58:40.486Z",
-  "commit": "f7d971f",
+  "at": "2026-11-24T02:14:03.430Z",
+  "commit": "1e3f921",
   "dirty": false,
   "dirtyFiles": [],
   "machine": {

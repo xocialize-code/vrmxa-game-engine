@@ -38,6 +38,13 @@ async function goToLine(n) {
   sync();
 }
 
+/**
+ * A find or replace field selects what it holds when it takes focus, as a browser's find bar does: typing a new term
+ * replaces the old one. Tabbing in already did this; focus given by assistive technology (and AppProbe) did not, so new
+ * text was appended whenever Select All couldn't reach the field: ⌘A acts only while the app is active (AB-T-0598).
+ */
+function selectAll(e) { e.target.select(); }
+
 /** Replace every match of the find field (plain text), as one edit. */
 function replaceAll() {
   const f = find.value;
@@ -60,8 +67,8 @@ defineExpose({ goToLine });
       <button id="script-apply" type="button" aria-label="Apply script" title="Re-script the sequence now (⌘↩); typing applies on its own a moment after you stop" :disabled="disabled || !pending" @click="emit('apply')">Apply</button>
     </div>
     <div class="sp-find" role="search" aria-label="Find and replace">
-      <input id="script-find" v-model="find" aria-label="Find in script" placeholder="Find" :disabled="disabled">
-      <input id="script-replace" v-model="replace" aria-label="Replace with" placeholder="Replace" :disabled="disabled">
+      <input id="script-find" v-model="find" aria-label="Find in script" placeholder="Find" :disabled="disabled" @focus="selectAll">
+      <input id="script-replace" v-model="replace" aria-label="Replace with" placeholder="Replace" :disabled="disabled" @focus="selectAll">
       <button id="script-replace-all" type="button" aria-label="Replace all in script" :disabled="disabled || !find" @click="replaceAll">Replace</button>
       <output id="script-found" class="muted" :aria-label="found ? `Find: ${found}` : 'Find'">{{ found }}</output>
     </div>

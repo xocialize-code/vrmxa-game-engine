@@ -160,7 +160,7 @@ async function rewordLine({ cr, session }, { line, text, voice, newTake }) {
   // the re-script and the voicing, each made on a copy, then run as one step
   let ops = [], next = doc;
   const shadow = { get doc() { return next; }, setDoc, isSequence: true, run: (_, o) => { ops = [...ops, ...o]; } };
-  const rs = applyScript(shadow, script, { marks: desk.marks, coverage: coverageFor(cr.short) });
+  const rs = applyScript(shadow, script, { marks: desk.marks, coverage: coverageFor(cr.short, desk.blockers) });
   if (!rs.ok) throw new Error(`the reworded script has errors, so nothing changed:\n${rs.errors.map((e) => `line ${e.line}: ${e.message}`).join('\n')}`);
   if (rs.changed) next = rs.doc;
   const vr = await revoice(shadow, { line }, { io: cr.voicingIO(), voice, newTake, set: setDoc });

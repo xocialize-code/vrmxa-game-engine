@@ -6,24 +6,30 @@ import { applyScript, buildSequence, parseScript } from '@vrmxg/script';
 import { coverByRule } from '@vrmxg/coverage';
 import { ScriptHistory, beatIndex, errorLines } from './shorts.js';
 
-/** The coverage hook a short's setting asks for (undefined: the script's default cameras). */
-export const coverageFor = (short) => (short?.coverage === 'rule' ? coverByRule() : undefined);
+/**
+ * The coverage hook a short's setting asks for (undefined: the script's default cameras). `blockers`: the set's solid
+ * boxes (@vrmxg/coverage setBlockers), which cameras by rule keep clear of (AB-T-0597); the sample's tools pass the same
+ * (content/sample/tools/make-script-sequence.mjs), so a short opens to the cameras it was built with.
+ * @param {any} short @param {any[] | null} [blockers]
+ */
+export const coverageFor = (short, blockers = null) => (short?.coverage === 'rule' ? coverByRule(blockers ? { blockers } : {}) : undefined);
 
 /**
  * Build a new short's sequence from its script (no session yet). → buildSequence's result
- * @param {string} text @param {{ short: any, set: any, marks?: any }} o
+ * @param {string} text @param {{ short: any, set: any, marks?: any, blockers?: any[] | null }} o
  */
-export function buildShort(text, { short, set, marks = null }) {
-  return buildSequence(text, { set, marks, id: short.id, source: short.script, coverage: coverageFor(short) });
+export function buildShort(text, { short, set, marks = null, blockers = null }) {
+  return buildSequence(text, { set, marks, id: short.id, source: short.script, coverage: coverageFor(short, blockers) });
 }
 
 export class ScriptDesk {
   /**
-   * @param {{ session: any, short: any, marks?: any, text: string }} o session: an EditorSession on the short's sequence
-   *   (with setDoc, as the editor host adopts it); text: the script as saved (or as opened)
+   * @param {{ session: any, short: any, marks?: any, blockers?: any[] | null, text: string }} o session: an EditorSession
+   *   on the short's sequence (with setDoc, as the editor host adopts it); text: the script as saved (or as opened);
+   *   blockers: the set's solid boxes, for cameras by rule
    */
-  constructor({ session, short, marks = null, text }) {
-    this.session = session; this.short = short; this.marks = marks;
+  constructor({ session, short, marks = null, blockers = null, text }) {
+    this.session = session; this.short = short; this.marks = marks; this.blockers = blockers;
     this.history = new ScriptHistory();
     this.text = text;           // what the pane holds
     this.applied = text;        // the text the sequence was last built from
@@ -51,7 +57,7 @@ export class ScriptDesk {
    */
   apply(text = this.text, { session = this.session } = {}) {
     this.text = text;
-    const r = applyScript(session, text, { marks: this.marks, coverage: coverageFor(this.short) });
+    const r = applyScript(session, text, { marks: this.marks, coverage: coverageFor(this.short, this.blockers) });
     this.errors = r.ok ? [] : r.errors; this.warnings = r.warnings ?? [];
     if (!r.ok) return { ok: false, changed: false, errors: r.errors, warnings: this.warnings };
     this.parsed = r.parsed; this.applied = text;

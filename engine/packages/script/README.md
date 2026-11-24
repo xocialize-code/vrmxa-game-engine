@@ -77,7 +77,7 @@ A changed speaker makes a new beat. A new beat never reuses an id that a hand ed
 | Dialogue | A `dialogue` track per speaker (`hana-1-says`), a clip per line with its text, ready for W7's bake (`@vrmxg/voice` `bakePlan`) |
 | Look-at | A `lookAt` track per character (`hana-1-eyes`). The speaker looks at the one she speaks to: `[[look]]`, then `(to …)`, then the speaker before, then the speaker after. The others look at the speaker. A voice-over line has no looks |
 | Performance | An `animation` track per character on twos (`hana-1-act`): talk under every line (not off screen, not voice-over), and gestures from tags and parentheticals blending in over it (talk blends back after). An `expression` track (`hana-1-face`): a rise over 8 frames to 0.7, a hold to the end of the beat and a fall over 16 frames; overlapping runs of one expression join |
-| Cameras | `coverage(ctx) → { nodes, cuts }` is the hook W8 fills: `@vrmxg/coverage`'s `coverByRule()` gives cameras by rule (its README). Since W8 the hook's `ctx` also carries `markTf` (mark id → transform, for moves), `parsed` (the parsed script) and `numbers` (beat id → shot number), beside `plan`, `shots`, `cast` and `marks`. A cut may also carry `splits: [{ frame, camera }]` to cut to another camera inside its shot (coverage by rule cuts where a move lands, since moves are step keys): each piece is a clip of its own, src `<beat>#cam:2` and on. `defaultCoverage` uses a wide (`vc-wide`, group framing, placed off the line between the first two marks) for headings, action, overlaps and voice-over, and a close-up per speaker (`vc-hana-1`, M2's closeUp rig) for lines. A CameraBrain (`brain`) drives the set's Camera. `DISSOLVE TO:` blends into the next shot's camera over 12 frames; other transitions cut (fades wait for W8/post) |
+| Cameras | `coverage(ctx) → { nodes, cuts }` is the hook W8 fills: `@vrmxg/coverage`'s `coverByRule()` gives cameras by rule (its README). Since W8 the hook's `ctx` also carries `markTf` (mark id → transform, for moves), `parsed` (the parsed script) and `numbers` (beat id → shot number), beside `plan`, `shots`, `cast` and `marks`. A cut may also carry `splits: [{ frame, camera }]` to cut to another camera inside its shot (coverage by rule cuts where a move lands, since moves are step keys): each piece is a clip of its own, src `<beat>#cam:2` and on. A cut with `crossLine: true` marks its shot as crossing the 180° line on purpose (coverage by rule, when the set or a face asks for the other side). `defaultCoverage` uses a wide (`vc-wide`, group framing, placed off the line between the first two marks) for headings, action, overlaps and voice-over, and a close-up per speaker (`vc-hana-1`, M2's closeUp rig) for lines. A CameraBrain (`brain`) drives the set's Camera. `DISSOLVE TO:` blends into the next shot's camera over 12 frames; other transitions cut (fades wait for W8/post) |
 | Markers | One per scene heading |
 | Nodes | The build's nodes (brain, cameras, marks it places) follow the item rules, recorded in `script.nodes`: added when missing; replaced by the new build's while untouched (a mark changed on the title page moves its Marker and the wide camera); the person's once edited (a moved camera stays where they put it); removed when no longer placed, if untouched and nothing in the sequence names them (a character whose lines are all cut loses her close-up) |
 
@@ -102,7 +102,8 @@ Generated clips, shots, markers and cast entries carry `src: "<beat>#<role>"` (`
    is a generated track (`script.dropped`).
 4. **Keys are marked by group.** A key in an array can't carry a mark, so keyed channels (expressions, moves) work by
    group. A group of keys a beat generated that isn't all still there as generated is the person's from then on, and
-   `script.hand` lists it. Every key not generated is kept.
+   `script.hand` lists it. Every key not generated is kept. The record of what the script generated stays with a hand
+   group (`script.gen`, re-made as its keys move), so the script can still tell its own keys from yours (rule 8).
 5. **Your own items are left alone.** Items a person made (no `src`) are kept as they are and not marked.
 6. **Kept items move with the script.** A kept item made by a beat (and retimed by hand) shifts as that beat shifts. Any other item (a hand
    key, your own track, marker or shot) shifts with the beat it fell in, or after the last beat before it. So an event
@@ -111,9 +112,13 @@ Generated clips, shots, markers and cast entries carry `src: "<beat>#<role>"` (`
    a warning says so. Its length becomes the line's length. A baked voice (`clip`, `timings` …) isn't a hand edit: it
    stays while the words are unchanged and goes when they change, so the bake picks the line up again.
 8. **A cut beat takes its hand edits with it.** When a beat leaves the script, its hand-edited items go too: dialogue,
-   looks, gestures, shots, cameras, and the hand keys in its span. Its words are gone from the script, so its edits
-   have no line to belong to. A warning names the beat and how many items went. Items a person made themselves (no
-   `src`) are never dropped this way; they move to the beat before.
+   looks, gestures, shots, cameras, and the keys it generated, whether they are still as generated or you changed them
+   in place (the frame the script keyed, another value: a bigger smile, a nudged move). Its words are gone from the
+   script, so its edits have no line to belong to. A warning names the beat and how many items went. Items a person
+   made themselves (no `src`) are never dropped this way; they move to the beat before. That holds for keys too
+   (AB-T-0588): a key at a frame the script never keyed is one you added, or one of the script's that you dragged to
+   another frame, and it is kept however near the cut line it sits. A generated key is told from yours by its frame,
+   not by a span around the line, so no margin in frames is involved.
 9. **Overlaps give way.** Generated shots and camera clips give way to kept ones, since shots don't overlap.
 10. **Duration.** A hand-set duration is kept, with a warning when the script runs longer or shorter.
 
@@ -130,7 +135,7 @@ undo step. A script with errors changes nothing, and neither does a build that g
   cafe (`checkSequence`, `composeSequence`, the scene schema), the same bytes twice and against
   `content/sample/sequences/cafe-order.vrmxs`, and the golden hash. Also the coverage hook, vocabularies, V.O., O.S.,
   dual dialogue and moves;
-- **rescript:** thirteen hand-edit cases (among them a reworded line beside a cut one, a cut line's hand edits, and the build's nodes), including the editor's one undo step with exact bytes on undo and redo.
+- **rescript:** fifteen hand-edit cases (among them a reworded line beside a cut one, a cut line's hand edits, the keys a person added near a cut line or a cut move, and the build's nodes), including the editor's one undo step with exact bytes on undo and redo.
 
 `acceptance/m4/script-chromium.mjs` and `script-wkwebview.sh` hash the sample and a re-script after hand edits in Node,
 Chromium and WKWebView (scheme and loopback). All four agree (`acceptance/results/m4-script*.json`).

@@ -4,11 +4,12 @@
 // kept), the storyboard from @vrmxg/coverage with thumbnails drawn on an offline host, casting a .vrmxa into a role
 // (@vrmxg/cast, one undo step), files opened from outside the project, and the render queue.
 import { parse, serialize } from '@vrmxg/scene';
-import { loadRapier } from '@vrmxg/physics';
+import { loadRapier, readPhysics } from '@vrmxg/physics';
+import { readGLBJson } from '@vrmxg/model';
 import { composeSequence } from '@vrmxg/sequence';
 import { EditorSession, RenderQueue, stubRunner } from '@vrmxg/editor-core';
 import { deliveryRunner } from './delivery.js';
-import { storyboard } from '@vrmxg/coverage';
+import { storyboard, loadSetBlockers } from '@vrmxg/coverage';
 import { renderThumbnails } from '@vrmxg/coverage/thumbnails';
 import { readCharacter, rolesOf } from '@vrmxg/cast';
 import * as vrmxaMain from '@vrmxa-core/index.js';
@@ -98,27 +99,36 @@ export class CreatorHost extends EditorHost {
     try {
       const script = text ?? await this.project.text(short.script);
       const marks = short.marks && this.project.has(short.marks) ? JSON.parse(await this.project.text(short.marks)).marks ?? null : null;
+      // cameras by rule keep clear of the set's colliders (AB-T-0597): read once per open, from the set's own files
+      const blockers = short.coverage === 'rule' ? await this.blockersFor(short.set ?? titlePage(script).set ?? this.sets()[0]) : null;
       // a saved short's sequence is its own; a draft's id is free of every project file (ShortList.freeId)
       if (short.saved && this.project.has(short.sequence)) await this.openScene(short.sequence);
-      else await this.buildNewShort(short, script, marks);
+      else await this.buildNewShort(short, script, marks, blockers);
       this.short = short;
-      this.desk = new ScriptDesk({ session: this.session, short, marks, text: script });
+      this.desk = new ScriptDesk({ session: this.session, short, marks, blockers, text: script });
       if (text !== null) this.desk.saved = null; // opened from elsewhere or new: the project's copy is written on Save
       // the script as it is now builds the sequence (one undo step if it changed since the sequence was saved)
       if (this.session.isSequence) this.desk.apply();
-      this.board = this.session.isSequence ? storyboard(this.session.doc, { set: this.setScene?.doc ?? null }) : null;
+      this.board = this.session.isSequence ? storyboard(this.session.doc, { set: this.setScene?.doc ?? null, blockers: this.desk?.blockers ?? null }) : null;
       this.thumbs = {}; this._thumbFor = null; this.selectedShot = null;
     } finally { this.busy--; this.changed(); }
     // the first view: the first shot at its thumbnail frame, as the storyboard shows it
     if (this.session.isSequence) { this.scrubTo(this.board?.shots[0]?.frame ?? 0); this.scheduleThumbs(); }
   }
 
+  /** A set's solid boxes (its Collider nodes and its Models' colliders, read from the project's .glb files); null without the set. */
+  async blockersFor(setRef) {
+    if (!setRef || !this.project.has(setRef)) return null;
+    const set = parse(await this.project.text(setRef));
+    return loadSetBlockers(set, { bytes: (ref) => this.project.bytes(ref), readColliders: (b) => readPhysics(readGLBJson(b)).colliders });
+  }
+
   /** A short with no sequence yet: build it from the script and open it unsaved (an empty sequence when the script has errors). */
-  async buildNewShort(short, script, marks) {
+  async buildNewShort(short, script, marks, blockers = null) {
     const setRef = short.set ?? titlePage(script).set ?? this.sets()[0];
     if (!setRef || !this.project.has(setRef)) throw new Error(`${short.script}: its set ${setRef ?? '(none named)'} isn't in the project (Set: on the title page)`);
     const set = parse(await this.project.text(setRef));
-    const r = buildShort(script, { short, set, marks });
+    const r = buildShort(script, { short, set, marks, blockers });
     if (!r.ok) { await this.newSequence(short.sequence, setRef); return; } // the pane lists the errors; fixing them builds it
     await this.openDoc(short.sequence, r.doc);
   }
@@ -199,7 +209,7 @@ export class CreatorHost extends EditorHost {
     if (e.kind === 'select' || e.kind === 'play' || e.kind === 'stop' || e.kind === 'save') return;
     if (this.desk && this.session.isSequence) {
       this.desk.follow();
-      this.board = storyboard(this.session.doc, { set: this.setScene?.doc ?? null });
+      this.board = storyboard(this.session.doc, { set: this.setScene?.doc ?? null, blockers: this.desk?.blockers ?? null });
       this.scheduleThumbs();
     }
   }

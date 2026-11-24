@@ -6,10 +6,10 @@
  "node": "v26.12.1",
  "run1": {
   "sequence": "sequences/the-regular.vrmxs",
-  "steps": 3683,
-  "final": "64542064522704e5",
-  "mouthHash": "b02553ff401941f0",
-  "components": 88,
+  "steps": 3643,
+  "final": "66e107d42e930d7e",
+  "mouthHash": "8727b2356ce4bd72",
+  "components": 90,
   "everyLineBaked": true,
   "inTheirVoices": true,
   "leftToVoice": 0,
@@ -20,19 +20,19 @@
   "restored": {
    "at": 1372,
    "line": "I saved it for you anyway.",
-   "final": "f12c63ceb4b196cf",
+   "final": "c79b5afd8782296a",
    "same": true,
    "mouthsSame": true
   },
-  "runDigest": "159f63fd875d9428e7890bf9a5de86451606b2edfa52796311e8794c98d46309",
-  "ms": 3023
+  "runDigest": "10ba2b99b082fb26a7d483821eb1de4a88ec24fba824da2eb1e3b3bf037cfb17",
+  "ms": 3089
  },
  "run2": {
   "sequence": "sequences/the-regular.vrmxs",
-  "steps": 3683,
-  "final": "64542064522704e5",
-  "mouthHash": "b02553ff401941f0",
-  "components": 88,
+  "steps": 3643,
+  "final": "66e107d42e930d7e",
+  "mouthHash": "8727b2356ce4bd72",
+  "components": 90,
   "everyLineBaked": true,
   "inTheirVoices": true,
   "leftToVoice": 0,
@@ -43,12 +43,12 @@
   "restored": {
    "at": 1372,
    "line": "I saved it for you anyway.",
-   "final": "f12c63ceb4b196cf",
+   "final": "c79b5afd8782296a",
    "same": true,
    "mouthsSame": true
   },
-  "runDigest": "159f63fd875d9428e7890bf9a5de86451606b2edfa52796311e8794c98d46309",
-  "ms": 3012
+  "runDigest": "10ba2b99b082fb26a7d483821eb1de4a88ec24fba824da2eb1e3b3bf037cfb17",
+  "ms": 3060
  },
  "lines": [
   {
