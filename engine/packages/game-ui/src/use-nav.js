@@ -62,7 +62,7 @@ export function useNav(root, { input = () => null, onBack = null, grab = () => f
   }
 
   // the root may come and go (a menu shown with v-if): it is marked whenever it appears, and keys are heard on the document
-  watch(root, (el) => el?.setAttribute('data-nav-root', ''), { immediate: true, flush: 'post' });
+  watch(() => root.value, (el) => el?.setAttribute('data-nav-root', ''), { immediate: true, flush: 'post' });
   onMounted(() => { document.addEventListener('keydown', onKeydown); if (typeof requestAnimationFrame !== 'undefined') raf = requestAnimationFrame(poll); });
   onBeforeUnmount(() => { document.removeEventListener('keydown', onKeydown); if (raf) cancelAnimationFrame(raf); });
 
