@@ -10,27 +10,27 @@
    "version": "0.1.0",
    "contract": 1,
    "entry": "index.html",
-   "digest": "fac19d0ee1ba9b26de808df7191787a4c14071bdf84bdbd0a749b9fe77a29438"
+   "digest": "6af9ce90655fd228e5238ee1d9dab5b574988c2ea084862c32ca5732f93a2909"
   },
   "files": 60,
   "projectFiles": 50,
   "runtimeFiles": 10,
-  "bytes": 22176386,
-  "digest": "4248061ad864482ead546fd716b50b6987bfe01372c8233de83522fbfe7d02c7",
-  "manifestSha256": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a"
+  "bytes": 22177637,
+  "digest": "b230ba73a7611b738f39e86bc0ff5c94af5676fb283a3cae9a9240068d9183d1",
+  "manifestSha256": "6918c8ef42cea5f7d01cad517f26862cf9cda662e655fd96fcefd7cf0e70b875"
  },
  "nodeRuns": [
   {
-   "manifest": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a",
-   "digest": "4248061ad864482ead546fd716b50b6987bfe01372c8233de83522fbfe7d02c7",
+   "manifest": "6918c8ef42cea5f7d01cad517f26862cf9cda662e655fd96fcefd7cf0e70b875",
+   "digest": "b230ba73a7611b738f39e86bc0ff5c94af5676fb283a3cae9a9240068d9183d1",
    "files": 60,
-   "bytes": 22176386
+   "bytes": 22177637
   },
   {
-   "manifest": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a",
-   "digest": "4248061ad864482ead546fd716b50b6987bfe01372c8233de83522fbfe7d02c7",
+   "manifest": "6918c8ef42cea5f7d01cad517f26862cf9cda662e655fd96fcefd7cf0e70b875",
+   "digest": "b230ba73a7611b738f39e86bc0ff5c94af5676fb283a3cae9a9240068d9183d1",
    "files": 60,
-   "bytes": 22176386
+   "bytes": 22177637
   }
  ],
  "refusal": {
@@ -62,7 +62,7 @@
   "version": "156.0.8078.4",
   "final": "fe69bad3406ab5f6",
   "steps": 600,
-  "digest": "4248061ad864482ead546fd716b50b6987bfe01372c8233de83522fbfe7d02c7",
+  "digest": "b230ba73a7611b738f39e86bc0ff5c94af5676fb283a3cae9a9240068d9183d1",
   "verified": 48,
   "firstDifference": null,
   "errors": []
@@ -71,7 +71,7 @@
   {
    "name": "game-a",
    "ok": true,
-   "manifest": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a",
+   "manifest": "6918c8ef42cea5f7d01cad517f26862cf9cda662e655fd96fcefd7cf0e70b875",
    "differ": [],
    "missing": [],
    "extra": []
@@ -79,7 +79,7 @@
   {
    "name": "game-b",
    "ok": true,
-   "manifest": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a",
+   "manifest": "6918c8ef42cea5f7d01cad517f26862cf9cda662e655fd96fcefd7cf0e70b875",
    "differ": [],
    "missing": [],
    "extra": []
@@ -87,7 +87,7 @@
   {
    "name": "game-c",
    "ok": true,
-   "manifest": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a",
+   "manifest": "6918c8ef42cea5f7d01cad517f26862cf9cda662e655fd96fcefd7cf0e70b875",
    "differ": [],
    "missing": [],
    "extra": []
@@ -95,7 +95,7 @@
   {
    "name": "game-d",
    "ok": true,
-   "manifest": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a",
+   "manifest": "6918c8ef42cea5f7d01cad517f26862cf9cda662e655fd96fcefd7cf0e70b875",
    "differ": [],
    "missing": [],
    "extra": []
@@ -120,7 +120,7 @@
   {
    "name": "two Node exports are the same bytes",
    "ok": true,
-   "detail": "61 files, manifest 22e106b1ecdbd602"
+   "detail": "61 files, manifest 6918c8ef42cea5f7"
   },
   {
    "name": "each folder is what its manifest lists",
@@ -130,7 +130,7 @@
   {
    "name": "the manifest lists every file with its hash and licence",
    "ok": true,
-   "detail": "50 project files, 10 runtime files, 22176386 bytes"
+   "detail": "50 project files, 10 runtime files, 22177637 bytes"
   },
   {
    "name": "a file with no licence row stops the export, by name",
@@ -160,22 +160,22 @@
   {
    "name": "the Mac editor's build game-a is Node's, byte for byte",
    "ok": true,
-   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 22e106b1ecdbd602"
+   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 6918c8ef42cea5f7"
   },
   {
    "name": "the Mac editor's build game-b is Node's, byte for byte",
    "ok": true,
-   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 22e106b1ecdbd602"
+   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 6918c8ef42cea5f7"
   },
   {
    "name": "the Mac editor's build game-c is Node's, byte for byte",
    "ok": true,
-   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 22e106b1ecdbd602"
+   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 6918c8ef42cea5f7"
   },
   {
    "name": "the Mac editor's build game-d is Node's, byte for byte",
    "ok": true,
-   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 22e106b1ecdbd602"
+   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 6918c8ef42cea5f7"
   },
   {
    "name": "the Mac editor's refused export game-refused wrote nothing",

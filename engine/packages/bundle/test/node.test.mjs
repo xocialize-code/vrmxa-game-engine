@@ -8,9 +8,9 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { Behaviour } from '@vrmxg/core';
 import { BUILD_FILE } from '@vrmxg/bundle';
-import { exportToFolder, openFolder, checkFolder, compareFolders, planFolder, stageFolder, scanFolder, folderReader, behavioursImporter, listFolder, STAGING } from '@vrmxg/bundle/node';
+import { exportToFolder, openFolder, checkFolder, compareFolders, planFolder, stageFolder, scanFolder, recoverFolder, folderReader, behavioursImporter, listFolder, STAGING } from '@vrmxg/bundle/node';
 import { exportBuild, serializeManifest, parseManifest } from '@vrmxg/bundle';
-import { project, runtime, GAME } from './helpers.mjs';
+import { project, runtime, GAME, LICENCES } from './helpers.mjs';
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-bundle-test-'));
 test.after(() => fs.rmSync(tmp, { recursive: true, force: true }));
@@ -152,27 +152,135 @@ test('an export that fails on the way leaves the earlier build whole and the fol
   await assert.rejects(s2.write('late.txt', new Uint8Array([1])), (e) => e.code === 'no_build', 'and nothing is written after it has ended');
 });
 
-test('a staged build: pieces of a file, paths that leave the folder, a build with no manifest, and one cut short while moving in', async () => {
-  const d = path.join(tmp, 'staged'), s = stageFolder(d);
+/** An export of the fixture project staged into `dir` and left uncommitted: the stage, and what was exported. */
+async function staged(dir, mem = null, o = {}) {
+  const src = mem ?? folderReader(P), stage = stageFolder(dir);
+  const r = await exportBuild({ project: { files: src.files, read: src.read }, runtime: folderReader(R), write: (p, b) => stage.write(p, b), ...o });
+  return { stage, r };
+}
+
+test('a file in pieces: each names where it begins, and one sent twice or out of turn is refused', async () => {
+  const d = path.join(tmp, 'pieces'), s = stageFolder(d);
   await s.write('assets/big.bin', new Uint8Array([1, 2, 3]));
-  await s.write('assets/big.bin', new Uint8Array([4, 5]), { append: true });
+  await s.write('assets/big.bin', new Uint8Array([4, 5]), { offset: 3 });
+  await assert.rejects(s.write('assets/big.bin', new Uint8Array([4, 5]), { offset: 3 }), (e) => e.code === 'bad_path' && /a piece at 3, and the file has 5 bytes/.test(e.message), 'the same piece again');
+  await assert.rejects(s.write('assets/big.bin', new Uint8Array([9]), { offset: 7 }), (e) => e.code === 'bad_path', 'a gap');
   await assert.rejects(s.write('assets/big.bin', new Uint8Array([9])), (e) => e.code === 'bad_path' && /written twice/.test(e.message));
-  await assert.rejects(s.write('other.bin', new Uint8Array([9]), { append: true }), (e) => e.code === 'bad_path');
-  for (const p of ['../evil.txt', '/abs.txt', 'a/../../evil.txt', 'a\\b']) await assert.rejects(s.write(p, new Uint8Array([1])), (e) => e.code === 'bad_path', p);
+  await assert.rejects(s.write('other.bin', new Uint8Array([9]), { offset: 4 }), (e) => e.code === 'bad_path' && /not begun/.test(e.message));
+  for (const p of ['../evil.txt', '/abs.txt', 'a/../../evil.txt', 'a\\b', `${STAGING}zz/vrmxg-build.json`, `project/${STAGING}x/y`, '.vrmxg-export/x']) await assert.rejects(s.write(p, new Uint8Array([1])), (e) => e.code === 'bad_path', p);
   assert.ok(!fs.existsSync(path.join(tmp, 'evil.txt')));
   assert.throws(() => s.commit(), (e) => e.code === 'bad_manifest', 'a build with no manifest is not moved in');
-  s.abort();
-  // an export cut short while its files were moving in: some in place, the rest and the manifest still staged
-  const cut = path.join(tmp, 'cut-short');
-  const r = await exportToFolder({ project: P, runtime: R, out: cut });
-  const staging = path.join(cut, `${STAGING}interrupted`);
-  fs.mkdirSync(staging);
-  fs.renameSync(path.join(cut, 'vrmxg-build.json'), path.join(staging, 'vrmxg-build.json'));
-  fs.mkdirSync(path.join(staging, 'project')); fs.renameSync(path.join(cut, 'project/level.vrmxs'), path.join(staging, 'project/level.vrmxs'));
-  assert.equal(planFolder(cut).old.length, r.files - 1, 'the files already moved in are known by the staged manifest');
-  assert.equal((await exportToFolder({ project: P, runtime: R, out: cut })).sha256, r.sha256, 'and the next export finishes the job');
-  assert.ok(checkFolder(cut).ok);
-  assert.deepEqual(scanFolder(cut).stale, []);
+  assert.ok(!fs.existsSync(d), 'and the folder made for it is taken away');
+});
+
+test('at the end the staged files are checked against the manifest before anything moves', async () => {
+  // one file where the manifest lists fifteen
+  const a = path.join(tmp, 'end-missing');
+  const whole = await exportToFolder({ project: P, runtime: R, out: a }), before = snapshot(a);
+  const s1 = stageFolder(a);
+  await s1.write('vrmxg-build.json', new TextEncoder().encode(whole.text));
+  await s1.write('index.html', fs.readFileSync(path.join(a, 'index.html')));
+  assert.throws(() => s1.commit(), (e) => e.code === 'bad_manifest' && /14 missing/.test(e.message));
+  assert.deepEqual(snapshot(a), before, 'the earlier build is untouched, and the staging folder is gone');
+  // a file that is not the one the manifest lists (a piece lost, or sent twice)
+  const { stage: s2 } = await staged(a, null, { write: undefined });
+  const src = folderReader(R), all = new Map();
+  await exportBuild({ project: { files: folderReader(P).files, read: folderReader(P).read }, runtime: src, write: async (p, b) => { all.set(p, b); } });
+  for (const [p, b] of all) await s2.write(p, p === 'project/props/door.glb' ? Uint8Array.from([...b, ...b]) : b);
+  assert.throws(() => s2.commit(), (e) => e.code === 'changed' && e.files.join() === 'project/props/door.glb');
+  assert.deepEqual(snapshot(a), before);
+  // a file the manifest doesn't list
+  const s3 = stageFolder(a);
+  for (const [p, b] of all) await s3.write(p, b);
+  await s3.write('project/extra.txt', new Uint8Array([1]));
+  assert.throws(() => s3.commit(), (e) => e.code === 'bad_manifest' && /1 not listed: project\/extra\.txt/.test(e.message));
+  assert.deepEqual(snapshot(a), before);
+});
+
+test('a commit leaves the earlier build or the new one, never neither', async () => {
+  // a path that was a folder and is a file now, one that was a file and is a folder now, and a folder whose name
+  // changed only by case
+  const d = path.join(tmp, 'reshaped');
+  const lic = (rows) => `${LICENCES}${rows.map((r) => `| \`${r}\` | Ours | |\n`).join('')}`;
+  const upper = project({ 'game.json': JSON.stringify({ ...GAME, include: ['thing/inner.txt', 'other.txt', 'Extras/readme.txt'] }), 'thing/inner.txt': 'a', 'other.txt': 'b', 'Extras/readme.txt': 'c', 'LICENCES.md': lic(['thing/inner.txt', 'other.txt', 'Extras/readme.txt']) });
+  upper.map.delete('extras/readme.txt'); // the fixture's own, in lower case: a Mac's disk would keep that name for both
+  const one = onDisk('project-shape-1', upper);
+  const two = onDisk('project-shape-2', project({ 'game.json': JSON.stringify({ ...GAME, include: ['thing', 'other.txt/inner.txt', 'extras/readme.txt'] }), thing: 'a file now', 'other.txt/inner.txt': 'a folder now', 'extras/readme.txt': 'c', 'LICENCES.md': lic(['thing', 'other.txt/inner.txt', 'extras/readme.txt']) }));
+  await exportToFolder({ project: one, runtime: R, out: d });
+  const r2 = await exportToFolder({ project: two, runtime: R, out: d });
+  const c = checkFolder(d);
+  assert.deepEqual([c.ok, c.manifest, c.missing, c.extra], [true, r2.sha256, [], []], 'the folder is the new build: file-for-folder, folder-for-file, and the folder under its new name');
+  assert.ok(scanFolder(d).dirs.includes('project/extras') && !scanFolder(d).dirs.includes('project/Extras'));
+  const fresh = path.join(tmp, 'reshaped-fresh');
+  await exportToFolder({ project: two, runtime: R, out: fresh });
+  assert.equal(compareFolders(d, fresh).same, true, 'the same folder as a fresh export of it');
+  await exportToFolder({ project: one, runtime: R, out: d }); // and back again
+  assert.ok(checkFolder(d).ok);
+
+  // a move that fails half way: the earlier build is put back whole, nothing of the new one or of staging is left
+  const e = path.join(tmp, 'rollback');
+  const first = await exportToFolder({ project: one, runtime: R, out: e }), before = snapshot(e);
+  // moves in a commit: each old file held aside, then the manifest, then each new file in. Fail at the first hold, the
+  // last hold, the manifest, a new file early on, and the very last new file
+  const holds = first.files, moves = holds + 1 + r2.files;
+  for (const failAt of [1, holds, holds + 1, holds + 3, moves]) {
+    const { stage } = await staged(e, folderReader(two));
+    const rename = fs.renameSync; let n = 0;
+    fs.renameSync = (...a) => { if (++n === failAt) throw new Error('the disk said no'); return rename(...a); };
+    try { assert.throws(() => stage.commit(), /the disk said no/, `failing at move ${failAt}`); } finally { fs.renameSync = rename; }
+    assert.deepEqual(snapshot(e), before, `after failing at move ${failAt} the folder is the earlier build, byte for byte`);
+    assert.deepEqual([checkFolder(e).ok, checkFolder(e).manifest, scanFolder(e).stale], [true, first.sha256, []]);
+  }
+  assert.equal((await exportToFolder({ project: two, runtime: R, out: e })).sha256, r2.sha256, 'and the next export goes through');
+  assert.ok(checkFolder(e).ok);
+});
+
+test('nothing in a staging folder is licence to delete or overwrite anything outside it', async () => {
+  // a planted staging manifest that lists the folder's own files
+  const d = path.join(tmp, 'planted');
+  fs.mkdirSync(path.join(d, `${STAGING}old`), { recursive: true });
+  fs.writeFileSync(path.join(d, 'index.html'), 'my own page'); fs.writeFileSync(path.join(d, 'thesis.txt'), 'years of work');
+  const some = await exportBuild({ project: { files: folderReader(P).files, read: folderReader(P).read }, runtime: folderReader(R) });
+  const m = structuredClone(some.manifest);
+  m.files.push({ path: 'thesis.txt', role: 'runtime', bytes: 13, sha256: '0'.repeat(64), licence: 'x' });
+  m.files.sort((a, b) => (a.path < b.path ? -1 : 1)); m.digest = (await import('@vrmxg/bundle')).filesDigest(m.files); m.bytes += 13;
+  fs.writeFileSync(path.join(d, `${STAGING}old`, 'vrmxg-build.json'), serializeManifest(m));
+  const before = snapshot(d);
+  await assert.rejects(exportToFolder({ project: P, runtime: R, out: d }), (e) => e.code === 'not_empty' && /holds files that aren't a build's \(index\.html, thesis\.txt\)/.test(e.message));
+  assert.deepEqual(snapshot(d), before, 'nothing was deleted, and the planted folder was not acted on');
+  // a manifest may not list a path under the staging prefix, so a build can't carry one in
+  const bad = structuredClone(some.manifest);
+  bad.files.unshift({ path: `${STAGING}zz/vrmxg-build.json`, role: 'runtime', bytes: 1, sha256: '0'.repeat(64), licence: 'x' });
+  bad.digest = (await import('@vrmxg/bundle')).filesDigest(bad.files);
+  assert.throws(() => parseManifest(serializeManifest(bad)), (e) => e.code === 'bad_manifest' && /a name an export keeps/.test(e.message));
+});
+
+test('what a cut-short export left is cleared away, and only what the folder\'s own manifest vouches for is moved in', async () => {
+  // killed while the new build's files were moving in: its manifest is in place, some files still staged
+  const a = path.join(tmp, 'cut-in');
+  const r = await exportToFolder({ project: P, runtime: R, out: a });
+  const left = path.join(a, `${STAGING}killed`);
+  fs.mkdirSync(path.join(left, 'project'), { recursive: true });
+  fs.renameSync(path.join(a, 'project/level.vrmxs'), path.join(left, 'project/level.vrmxs'));
+  fs.renameSync(path.join(a, 'index.html'), path.join(left, 'index.html'));
+  fs.writeFileSync(path.join(left, 'vrmxg-core.js'), 'not the file the manifest lists'); // a staged file that disagrees: not moved in
+  fs.writeFileSync(path.join(left, 'thesis.txt'), 'planted'); // nor one the manifest doesn't list
+  assert.equal(checkFolder(a).ok, false);
+  assert.deepEqual(recoverFolder(a), { moved: ['index.html', 'project/level.vrmxs'], removed: [`${STAGING}killed`] });
+  assert.deepEqual([checkFolder(a).ok, checkFolder(a).manifest], [true, r.sha256], 'the build is whole again');
+  assert.ok(!fs.existsSync(path.join(a, 'thesis.txt')));
+  // killed while the earlier build's files were on their way out: its manifest is still in place, its files held
+  const b = path.join(tmp, 'cut-out');
+  await exportToFolder({ project: P, runtime: R, out: b });
+  const held = path.join(b, `${STAGING}killed`, '.held');
+  for (const f of listFolder(b, { hidden: true }).filter((x) => x !== 'vrmxg-build.json')) { fs.mkdirSync(path.dirname(path.join(held, f)), { recursive: true }); fs.renameSync(path.join(b, f), path.join(held, f)); }
+  const again = await exportToFolder({ project: P, runtime: R, out: b }); // the next export puts it right first, then replaces it
+  assert.deepEqual([checkFolder(b).ok, again.sha256, scanFolder(b).stale], [true, r.sha256, []]);
+  // staging folders don't pile up: after refusals and failures there is none
+  const c = path.join(tmp, 'no-pile');
+  await exportToFolder({ project: P, runtime: R, out: c });
+  for (let k = 0; k < 3; k++) { const s = stageFolder(c); await s.write('index.html', new Uint8Array([1])); assert.throws(() => s.commit()); }
+  assert.deepEqual(scanFolder(c).stale, []);
 });
 
 test('a refused export leaves the earlier build as it was', async () => {

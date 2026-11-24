@@ -6,6 +6,7 @@ import { sha256 } from './sha256.js';
 import { BuildError, checkPath, caseClash, isHidden } from './paths.js';
 import { GAME_FILE, checkGame } from './game.js';
 import { LICENCES_FILE, parseLicences, licenceOf } from './licences.js';
+import { m0Registry } from '@vrmxg/registry/m0';
 import { collect } from './collect.js';
 import { RUNTIME_FILE, PROJECT_DIR, checkRuntime } from './runtime.js';
 import { BUILD_FILE, makeManifest, serializeManifest } from './manifest.js';
@@ -27,12 +28,14 @@ const text = (b) => new TextDecoder().decode(b);
  *   called once every check has passed, before the first write: where a caller asks for the folder, so a refused
  *   export asks for none
  * @param {((done: number, total: number, path: string) => void) | null} [o.onProgress]
+ * @param {any} [o.registry] the node registry, which says which of a scene's props are asset references (default: the
+ *   engine's own, @vrmxg/registry/m0; null: only a scene's asset table and a sequence's set are taken as typed)
  * @returns {Promise<{ manifest: import('./manifest.js').Manifest, text: string, sha256: string, files: number, bytes: number, byPattern: string[] }>}
  *   the manifest, its file's text and that text's SHA-256 (two builds are the same bytes exactly when it matches), how
  *   many files and bytes the build holds beside the manifest, and the project's files that no row of LICENCES.md names
  *   one by one (a pattern row licensed them)
  */
-export async function exportBuild({ project, runtime, game = null, write = null, ready = null, onProgress = null }) {
+export async function exportBuild({ project, runtime, game = null, write = null, ready = null, onProgress = null, registry = undefined }) {
   if (project.truncated) throw new BuildError('too_many_files', `the project's listing was cut short at ${project.files.length} files: an export needs every file's name, so nothing was exported`);
   const files = project.files.filter((f) => !isHidden(f));
   // what the game is
@@ -44,7 +47,7 @@ export async function exportBuild({ project, runtime, game = null, write = null,
   // what it needs, and whether each file may ship. Only the files the game uses are held to a build's rules for
   // paths: a file it doesn't use can be named anything
   if (!files.includes(LICENCES_FILE)) throw new BuildError('no_licence', `the project has no ${LICENCES_FILE}: every file in a build needs a row in it`, [LICENCES_FILE]);
-  const { refs, source } = await collect({ game, files, read: project.read });
+  const { refs, source } = await collect({ game, files, read: project.read, registry: registry === undefined ? m0Registry() : registry });
   for (const ref of refs) checkPath(ref, 'the project file');
   const clash = caseClash(refs);
   if (clash) throw new BuildError('bad_path', `${clash[0]} and ${clash[1]} differ only by case: a Mac's disk can't hold both`, clash);

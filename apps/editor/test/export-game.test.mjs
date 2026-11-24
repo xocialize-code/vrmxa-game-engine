@@ -35,7 +35,7 @@ function runtime() {
 function shell({ failAt = null, cancel = false } = {}) {
   const s = { inShell: true, calls: [], folder: new Map(), stage: null, id: null, n: 0, largest: 0 };
   s.call = async (method, p = {}) => {
-    s.calls.push(method === 'build.write' ? `write ${p.path}${p.append ? ' +' : ''}` : method);
+    s.calls.push(method === 'build.write' ? `write ${p.path}${p.offset ? ` @${p.offset}` : ''}` : method);
     if (method === 'build.begin') {
       if (cancel) throw Object.assign(new Error('nothing was exported'), { code: 'cancelled' });
       s.id = `export-${++s.n}`; s.stage = new Map();
@@ -46,8 +46,8 @@ function shell({ failAt = null, cancel = false } = {}) {
       if (p.path === failAt) throw new Error('the disk is full');
       const bytes = Uint8Array.from(atob(p.base64), (c) => c.charCodeAt(0));
       s.largest = Math.max(s.largest, bytes.length);
-      if (!!p.append !== s.stage.has(p.path)) throw new Error(`${p.path}: append out of turn`);
-      s.stage.set(p.path, p.append ? Uint8Array.from([...s.stage.get(p.path), ...bytes]) : bytes);
+      if (p.offset !== (s.stage.get(p.path)?.length ?? 0) || (p.offset === 0 && s.stage.has(p.path))) throw new Error(`${p.path}: a piece at ${p.offset} out of turn`);
+      s.stage.set(p.path, p.offset ? Uint8Array.from([...s.stage.get(p.path), ...bytes]) : bytes);
       return { path: p.path, bytes: bytes.length };
     }
     if (method === 'build.end') { s.folder = s.stage; s.stage = null; s.id = null; return { path: '/builds/test-game', name: 'test-game', files: s.folder.size - 1 }; }
@@ -75,7 +75,7 @@ test('an export asks for the folder once every check has passed, writes each fil
 test('a file larger than one piece crosses the bridge in pieces, in order', async () => {
   const s = shell();
   await exportGame(project(), { shell: s, runtime: runtime(), chunk: 1000 });
-  assert.deepEqual(s.calls.filter((c) => c.includes('big.glb')), ['write project/props/big.glb', 'write project/props/big.glb +', 'write project/props/big.glb +']);
+  assert.deepEqual(s.calls.filter((c) => c.includes('big.glb')), ['write project/props/big.glb', 'write project/props/big.glb @1000', 'write project/props/big.glb @2000'], 'each piece says where it begins');
   assert.ok(s.largest <= 1000, `no message carried more than a piece (${s.largest})`);
   assert.deepEqual(s.folder.get('project/props/big.glb'), big);
 });

@@ -18,6 +18,9 @@
     "test": "node --test test/",
     "build:runtime": "vite build --config runtime/vite.config.js"
   },
+  "dependencies": {
+    "@vrmxg/registry": "0.1.0"
+  },
   "devDependencies": {
     "@vrmxg/core": "0.1.0",
     "@vrmxg/dmath": "0.1.0",

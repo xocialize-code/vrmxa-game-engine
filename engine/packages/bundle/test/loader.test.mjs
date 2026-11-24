@@ -1,7 +1,7 @@
 // The loader: a build opened, its files handed out by ref, and what it refuses.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { exportBuild, openBuild, serializeManifest, filesDigest, BUILD_FILE } from '@vrmxg/bundle';
+import { exportBuild, openBuild, serializeManifest, filesDigest, sha256, BUILD_FILE } from '@vrmxg/bundle';
 import { project, runtime, sink, enc, dec, GAME } from './helpers.mjs';
 
 async function built(p = project(), o = {}) {
@@ -89,6 +89,21 @@ test('every module the behaviours import is checked before any of them runs', as
   gone.out.map.set(BUILD_FILE, enc(serializeManifest(m)));
   const without = await openBuild(gone.read);
   await assert.rejects(without.behaviours(async () => ({})), (e) => e.code === 'not_in_build' && /behaviours\.js imports \.\/lib\/maths\.js, which is not in this build/.test(e.message));
+});
+
+test('a module the loader can\'t read for certain is not imported', async () => {
+  // the build is made by hand, as someone editing a folder would: a module whose imports depend on how a "/" is read
+  const { out, read, build } = await built();
+  const odd = enc("export const twice = (n) => n * 2; if (twice) /'/.test(''); import './hidden.js';\n");
+  const m = structuredClone(build.manifest);
+  const row = m.files.find((f) => f.path === 'project/lib/maths.js');
+  row.bytes = odd.length; row.sha256 = sha256(odd);
+  m.bytes = m.files.reduce((n, f) => n + f.bytes, 0); m.digest = filesDigest(m.files);
+  out.map.set('project/lib/maths.js', odd); out.map.set(BUILD_FILE, enc(serializeManifest(m)));
+  const again = await openBuild(read);
+  let imported = false;
+  await assert.rejects(again.behaviours(async () => { imported = true; return {}; }), (e) => e.code === 'bad_file' && /^lib\/maths\.js can't be read for certain/.test(e.message));
+  assert.equal(imported, false);
 });
 
 test('a ref is found as the exporter spelled it: ./ and the Unicode form don\'t matter, case does', async () => {

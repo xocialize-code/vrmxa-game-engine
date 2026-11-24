@@ -48,7 +48,7 @@ never compiles**:
 
 ```
 <build>/
-  vrmxg-build.json          the manifest, written last: a folder without it is an unfinished build
+  vrmxg-build.json          the manifest: every file in the folder is one it lists
   index.html                the runtime's entry: what a browser or the Mac shell opens
   assets/…, vrmxg-core.js   the rest of the runtime, at the runtime's own paths
   THIRD-PARTY-LICENCES.txt  the licence texts of what the runtime includes
@@ -126,21 +126,32 @@ The exporter traces the game's files from its documents (`collect`):
 3. A `.wav` brings the `.timings.json` beside it. A module (`.js`, `.mjs`) brings its relative imports.
 
 **A reference that names no file stops the export**, and the error names the document and the reference
-(`level.vrmxs names props/dor.glb, which the project doesn't have`):
+(`level.vrmxs names props/dor.glb (asset "door"), which the project doesn't have`):
 
-- A string is taken for a reference when it is one word (no space) ending in an extension the project's files have,
-  and isn't a URL. One that only looks like a file goes in the game's `ignore`.
+- **In a scene, what the schema types as a file is taken exactly, spaces and all** (`sceneRefs`): the asset table's
+  `ref`s, a sequence's `set`, and any prop, behaviour parameter or action argument the registry declares as an asset
+  reference (`P.assetRef`). Such a reference must name a file of the project. Today the registry types only the asset
+  table: no prop uses `P.assetRef` yet, and the props that carry a path (`say`'s `clip`, an emitter's `effect`, a
+  brain's `preset`) are plain strings, so they fall under the next rule until the registry types them (AB-T-0628).
+  Props the registry types as a choice, a colour, a node or a number are never references, nor are ids and names.
+- **Any other string** (a scene's plain-string props, and every string of a JSON document that has no schema) is
+  taken for a reference when it reads as a path: it ends in an extension the project's files have, isn't a URL, and
+  is one word or names a folder the project has (`voice/hello there.wav`). A sentence is not a path. One that only
+  looks like a file (`intro.wav` as text) stops the export, and the message gives the line to add:
+  `"ignore": ["intro.wav"]` in `game.json`.
 - **Case counts.** `Props/Door.glb` for `props/door.glb` opens on a Mac's disk and would not in a build served from
   anywhere, so it stops the export and the error gives both spellings.
 - `./props/door.glb` and the Unicode form of a name are normalised (`normRef`: NFC, no leading `./`). A build names
   each file once, in NFC, and the loader normalises what the engine asks for the same way. Two files whose names
   differ only in Unicode form can't both go in.
 - A module may import `@vrmxg/core` and its own relative files. Any other import stops the export: a build has
-  nothing else to give it. Imports are read as code (`moduleImports`): one that is commented out is not one, and
-  `import"./x.js"` needs no space.
+  nothing else to give it. Imports are read as code (`moduleImports`): comments, templates and regular expressions
+  are skipped, a call of a function named `from` is not an import, and `import"./x.js"` needs no space. The scanner
+  is not a parser, so **it fails closed**: where a `/` could divide or begin a regular expression (after `)` or `}`)
+  the module is read both ways, and if the two readings import different things the module is refused, by the
+  exporter and by the loader.
 
-What nothing names goes in `include`: a file read from a path a behaviour builds at run time, or a reference with a
-space in it that is misspelt (the one word rule above doesn't see it). **The loader refuses a ref the manifest
+What nothing names goes in `include`: a file read from a path a behaviour builds at run time. **The loader refuses a ref the manifest
 doesn't list, by name**, so such a file fails on the first play and says which file. Hidden files (a segment starting
 with `.`) are never part of a project. Only the files a game uses are held to a build's rules for names; a file it
 doesn't use can be called anything. A project whose listing was cut short (the Mac shell lists at most 20,000 files,
@@ -205,7 +216,7 @@ same project then differs only in the runtime's rows.
 | `build.has(ref)`, `info(ref)`, `refs()`, `path(ref)` | What the build holds; a file's row; its path under the build's root |
 | `build.actions()` | The game's action map, or null for the engine's default: pass it to `installInput(tree, { actions })` |
 | `build.modules(ref)` | A module and every module it imports relatively, each read and checked against the manifest |
-| `build.behaviours(importModule)` | The project's behaviours by the names its scenes use. Every module of the graph is checked first (`modules`): a changed module, or one that imports a file the build doesn't hold, stops here, before any of them runs |
+| `build.behaviours(importModule)` | The project's behaviours by the names its scenes use. Every module of the graph is checked first (`modules`): a changed module, one that imports a file the build doesn't hold, or one whose imports can't be read for certain stops here, before any of them runs |
 | `build.verifyAll()` | Reads every file, the runtime's too, against the manifest |
 
 What the engine needs to play a build is those four things: the game, a resolver, the input map and the behaviours.
@@ -229,20 +240,39 @@ row.
 
 **The folder is as it was until the export is whole.** In Node (`stageFolder`) and in the Mac shell (`build.*`,
 `apps/shell`'s `BuildFolder.swift`) the files are written into a staging folder inside the build's folder
-(`.vrmxg-export-<id>`) and moved into place at the end, after the earlier build's files are taken away, the manifest
-last. An export that fails, is aborted, or loses its page leaves an earlier build whole and the folder free for the
-next try. One cut short while its files were moving in (the app quit) is finished by the next export: the staged
-manifest says which files are a build's.
+(`.vrmxg-export-<id>`). An export that fails, is aborted, or loses its page leaves an earlier build whole and the
+folder free for the next try, with no staging folder left behind.
+
+**The end leaves the earlier build or the new one, never neither** (`commit()`, `build.end`):
+
+1. Every staged file is checked against the staged manifest: the same files, each with its size and SHA-256. A piece
+   that went missing, a file the manifest doesn't list, or one file where fifteen are listed stops here.
+2. The folder is decided on again (below). Nothing of the earlier build has been touched yet.
+3. The earlier build's files are held aside in the staging folder, not deleted, and its folders are removed. So a
+   path that was a folder can be a file now, and a folder renamed only by case gets its new name on disk.
+4. The new manifest replaces the old in one step, then the new files move in.
+5. If any step fails, what moved in is taken out and the earlier build is put back as it was.
+
+At every instant the folder's own manifest lists every file in the folder. If the process is killed in the middle,
+the next export first puts that right (`recoverFolder`): a file the folder's manifest lists, with the size and hash
+it lists, that is missing from the folder and present in a leftover staging folder, is moved in. That finishes a
+build whose files were on their way in, or restores one whose files were on their way out.
+
+**Nothing in a staging folder is licence to delete or overwrite anything outside it.** Only the folder's own
+`vrmxg-build.json` says what a build wrote. A leftover staging folder is removed (links in it are unlinked, never
+followed), and nothing is taken from it but files the committed manifest vouches for by hash. No path of a build, a
+runtime or a project may have a segment that starts with `.vrmxg-export`, so a page can't write into one.
 
 **What an export may replace** (`planFolder`, and the same rule in Swift). The folder may be absent, empty, or hold
-an earlier build, every file in it one that build's manifest lists. It is refused, before anything is removed, when:
+an earlier build, every file in it one that build's manifest lists. It is refused, before anything is touched, when:
 
 - it holds a file the manifest doesn't list (the earlier build is not deleted first);
 - it holds a symbolic link or a special file anywhere (a link named `project` is not an empty folder, and nothing is
   written or deleted through it);
 - its manifest is not a build's, or is of a version this exporter doesn't read, or lists a path that leaves the folder.
 
-Only regular files a manifest lists are ever removed: a row that names a folder deletes nothing in it. The folder
+Only regular files a manifest lists are ever removed: a row that names a folder deletes nothing in it. The one
+exception is the Finder's `.DS_Store` inside a folder of the earlier build, removed with the folder. The folder
 itself may be reached through a link, since the person named it. `checkFolder` counts a link as a file the build
 doesn't list.
 
@@ -250,22 +280,26 @@ doesn't list.
 
 | | |
 |---|---|
-| `build.begin { name }` → `{ id, path, name }` | A folder panel (or `VRMXG_SHELL_BUILD`). The folder is checked and a staging folder made; nothing is removed. `id` is the page's handle on its export: a page that reloaded has none and can write nothing. A second `begin` drops an export the page gave up on |
-| `build.write { id, path, base64, append? }` | One file, or with `append` the next piece of one. The editor sends a file in pieces of at most 4 MiB (`CHUNK` in `apps/editor/src/export-game.js`), so no bridge message outgrows that whatever the file's size |
-| `build.end { id }` → `{ path, name, files, bytes }` | The folder is checked again, the earlier build's files removed and this one moved in. A build with no manifest is not moved in |
+| `build.begin { name }` → `{ id, path, name }` | A folder panel (or `VRMXG_SHELL_BUILD`). The folder is checked and a staging folder made; nothing of an earlier build is touched. `id` is the page's handle on its export: a page that reloaded has none and can write nothing. A second `begin` drops an export the page gave up on |
+| `build.write { id, path, base64, offset? }` | One file, or the piece of one that begins at `offset`. A piece that leaves a gap or lands on bytes already written (one sent twice) is refused. The editor sends a file in pieces of at most 4 MiB (`CHUNK` in `apps/editor/src/export-game.js`), so no bridge message outgrows that whatever the file's size |
+| `build.end { id }` → `{ path, name, files, bytes }` | The five steps above. The shell hashes natively (CryptoKit) |
 | `build.abort { id }` | Drops what this export wrote. The editor calls it when anything fails after `begin` |
 
-The page decides every byte; the shell owns only where they go. The editor asks for the folder only once every
-check has passed (`exportBuild`'s `ready`), and reads and hashes each file once, as it is written.
+The page decides every byte; the shell owns where they go and checks that what arrived is what the page's manifest
+lists. The editor asks for the folder only once every check has passed (`exportBuild`'s `ready`), and reads and
+hashes each file once, as it is written.
 
 ## Checked
 
-- `node --test test/` (58 tests): the hash against `node:crypto`; the licence table; the trace (a reference in the
-  wrong case, to no file, in another Unicode form, beside its document; imports read as code); the exporter (the
-  manifest, the same bytes from a listing in another order, each refusal, `ready` after every check, each file read
-  once); the loader (every module checked before any runs); folders (links, a stray file beside a build, an old
-  manifest of another version, a row naming a folder, a failed export, one cut short) and the command line; the Vite
-  plugin; the sample's build replayed against the project (240 steps; skipped without vrmxa-avatar-studio).
+- `node --test test/` (67 tests): the hash against `node:crypto`; the licence table; the trace (typed references taken
+  exactly, a reference in the wrong case, to no file, in another Unicode form, beside its document; what reads as a
+  path and what doesn't; imports read as code, regular expressions skipped, an unreadable module refused); the
+  exporter (the manifest, the same bytes from a listing in another order, each refusal, `ready` after every check,
+  each file read once); the loader (every module checked before any runs); folders (links, a stray file beside a
+  build, an old manifest of another version, a row naming a folder, pieces and their offsets, the staged files checked
+  against the manifest, a commit failed at each of its stages and rolled back, a folder reshaped and renamed by case,
+  a planted staging manifest, what a killed export left) and the command line; the Vite plugin; the sample's build
+  replayed against the project (240 steps; skipped without vrmxa-avatar-studio).
 - `node --test test/` in `apps/editor` (6 tests): Export Game's page side against a stand-in shell. `swift test` in
   `apps/shell`: `BuildFolderTests`, the real folder.
 - `node acceptance/m5/build.mjs --chromium --mac … --refused …`, then `acceptance/m5/build-wkwebview.sh`: M5's exit
@@ -277,13 +311,16 @@ check has passed (`exportBuild`'s `ready`), and reads and hashes each file once,
 
 - **A build has no signature.** See "What is verified, and what is not" above. Signing and notarising a game are
   outside M5 (M5-PLAN decision 2).
-- **The trace follows documents, not code.** A ref a behaviour computes needs `include`. A reference with a space in
-  it is followed when it names a file, and goes unnoticed at export when it is misspelt: the loader names it at play.
+- **The trace follows documents, not code.** A ref a behaviour computes needs `include`.
+- **Most of a scene's path-carrying props are untyped today.** The registry declares `clip`, `effect` and `preset` as
+  plain strings, so they are found by reading as a path, not by type (AB-T-0628). A misspelt one with a space in it,
+  in a folder the project doesn't have, is the case that reaches play before it is named (by the loader).
 - **The licence check doesn't read the licence** (AB-D-0284, above).
-- **Imports are scanned, not parsed.** A regular expression literal that holds a quote can hide an import that
-  follows it on the same line, and `import()` of a computed path can't be traced.
+- **Imports are scanned, not parsed.** The scanner refuses a module it can't read for certain rather than guess, so
+  an unusual line (`if (x) /'/.test(y); import './a.js'`) can stop an export that a parser would pass. `import()` of a
+  computed path can't be traced.
 - **A whole file is in memory while it is hashed and written**, in the page and in Node. Only the bridge message is
   bounded (4 MiB pieces). A project file of several hundred megabytes would need a streaming reader.
 - **Two exports into one folder at once** are not guarded against each other beyond the checks at the start and the
-  end of each.
+  end of each, and a folder changed by something else between a check and the move that follows it is not detected.
 - No compression or packing of the project's files: they ship as they are.

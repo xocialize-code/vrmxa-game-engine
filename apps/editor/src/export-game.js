@@ -5,7 +5,7 @@
 // checked and hashed only, as a video export is.
 //
 // Every check runs before a folder is asked for, each file is read and hashed once, and the shell stages what is
-// written and moves it in at the end. An export that fails on the way is aborted (`build.abort`), which leaves the
+// written, checks it against the manifest (each file's size and SHA-256) and moves it in at the end. An export that fails on the way is aborted (`build.abort`), which leaves the
 // folder as it was: an earlier build whole, and the same folder free for the next try.
 import { exportBuild, defaultGame, fetchReader, GAME_FILE } from '@vrmxg/bundle';
 import { toBase64 } from '@vrmxg/export';
@@ -31,8 +31,9 @@ export async function exportGame(project, { scene = null, name = '', onProgress 
   }
   let id = null; // the shell's handle on this export, once a folder is chosen
   const write = async (path, bytes) => {
-    for (let at = 0, first = true; first || at < bytes.length; at += chunk, first = false) {
-      await shell.call('build.write', { id, path, base64: toBase64(bytes.subarray(at, at + chunk)), ...(first ? {} : { append: true }) });
+    // each piece says where it begins, so the shell refuses one that arrives twice or out of turn
+    for (let at = 0; at === 0 || at < bytes.length; at += chunk) {
+      await shell.call('build.write', { id, path, base64: toBase64(bytes.subarray(at, at + chunk)), offset: at });
     }
   };
   try {

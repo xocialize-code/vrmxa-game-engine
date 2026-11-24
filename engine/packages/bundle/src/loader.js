@@ -71,7 +71,7 @@ export class Build {
   async modules(ref) {
     const seen = [normRef(ref)];
     for (let i = 0; i < seen.length; i++) {
-      for (const spec of moduleImports(await this.text(seen[i]))) {
+      for (const spec of moduleImports(await this.text(seen[i]), seen[i])) { // refuses a module it can't read for certain
         if (!/^\.{1,2}\//.test(spec)) continue; // '@vrmxg/core': the runtime's own, through its import map
         const target = resolveFrom(seen[i], spec);
         if (target === null || !this.has(target)) throw new BuildError('not_in_build', `${seen[i]} imports ${spec}, which is not in this build`, [target ?? spec]);

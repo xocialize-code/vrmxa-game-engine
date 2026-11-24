@@ -28,13 +28,13 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
   node acceptance/m5/build.mjs --chromium --mac <builds…> --refused <folder> --kept <folder>
   ```
   **Passed, 14 of 14 and 4 of 4** (M5 Max, macOS 27.3 beta, Node 26.12.1, Chrome for Testing 156.0.8078.4). First run at
-  48881a4 (receipt AB-R-1102); run again after the review's fixes, which changed the manifest and the runtime, so the
-  digests below are the later run's:
-  - **The build:** 60 files, 22,176,386 bytes: 50 of the project's files under `project/` and the runtime's
-    10 (`vrmxg-stepper 0.1.0`, digest `fac19d0ee1ba9b26…`); build digest `4248061ad864482e…`.
+  48881a4 (receipt AB-R-1102), again at 0c3beda after the first review's fixes (AB-R-1106), and again after the
+  second's. Each round changed the runtime, so the digests below are the last run's:
+  - **The build:** 60 files, 22,177,637 bytes: 50 of the project's files under `project/` and the runtime's
+    10 (`vrmxg-stepper 0.1.0`, digest `6af9ce90655fd228…`); build digest `b230ba73a7611b73…`.
   - **The same bytes from Node and from the Mac editor.** Two exports in two Node processes, and four from the Mac
     editor's Export Game (the bundled sample twice, the same project opened as a folder, and File › Export Game…): all
-    six folders are the same, byte for byte, 61 files each with the manifest (SHA-256 `22e106b1ecdbd602…5e9a`), and each holds
+    six folders are the same, byte for byte, 61 files each with the manifest (SHA-256 `6918c8ef42cea5f7…b875`), and each holds
     exactly what its manifest lists. One of the four was then exported over again in the Mac editor (an earlier build
     replaced, staged and moved in whole) and is still Node's build, with no staging folder left.
   - **Every file has its hash and licence** in the manifest: a project file's licence is its row in the project's
