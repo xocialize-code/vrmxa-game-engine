@@ -1,6 +1,6 @@
 # Response headers for the documentation's static assets (Workers static assets read this file; it is not served).
-# The repository is private and nobody has decided to list the site in search engines: remove the X-Robots-Tag line to
-# allow indexing.
+# The site is public, but nobody has decided to list it in search engines: remove the X-Robots-Tag line to allow
+# indexing.
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY

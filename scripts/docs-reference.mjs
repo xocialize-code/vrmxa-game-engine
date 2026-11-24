@@ -72,12 +72,34 @@ const slugOf = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
 const oneLine = (s) => String(s ?? '').replace(/\s+/g, ' ').trim();
 
 /**
+ * The site is public and the repository is not. Descriptions in the code carry notes that only mean something inside
+ * the project: bridge record ids (AB-T-0611), milestone and workstream tags (M3 W5), a pull request in a private
+ * repository. They are taken out of everything this script publishes, without changing the code they come from.
+ */
+function publicText(text) {
+  return text
+    .replace(/,?\s*under review in [\w.-]+\/[\w.-]+#\d+/g, '')                          // ", under review in owner/repo#1"
+    .replace(/\s*\((?:(?:decision )?AB-[A-Z]-\d+(?:(?:[,;]| to| and) )?)+\)/g, '')         // " (AB-R-0926)", " (AB-T-0599 to AB-T-0607)"
+    .replace(/[,;]\s*(?:decision )?AB-[A-Z]-\d+/g, '')                                    // "…0.21.0, AB-R-0923)"
+    .replace(/\s*\(M\d+ W\d+\)/g, '')                                                   // " (M2 W7)"
+    .replace(/\(M\d+ W\d+[,;:] /g, '(')                                                  // "(M3 W5, @vrmxg/sense)"
+    .replace(/\bsince M\d+ W\d+\b,?/g, 'now')                                           // "since M4 W0 a WebGPU one"
+    .replace(/([;,(] ?)M\d+: /g, '$1')                                                   // "wanderer; M3: host, …"
+    .replace(/\s*\(W\d+\)/g, '')                                                        // "casting (W6)"
+    .replace(/\bM\d+ W\d+[:,]? ?/g, '')                                                  // any left
+    .replace(/\bAB-[A-Z]-\d+\b[:,]? ?/g, '')
+    .replace(/ ?\(\s*\)/g, '');
+}
+/** The same, through every description of a schema. */
+const publicSchema = (v) => (Array.isArray(v) ? v.map(publicSchema) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, k === 'description' && typeof x === 'string' ? publicText(x) : publicSchema(x)])) : v);
+
+/**
  * Text from code goes into pages a Vue compiler reads, so outside code spans and fences a `<` is escaped (a description
  * may say "<clip>.timings.json") and so is `{{`.
  */
 function safe(md) {
   return md.split(/(^```[\s\S]*?^```[^\n]*$)/m).map((part, i) => (i % 2 ? part
-    : part.split(/(`+[\s\S]*?`+)/).map((p, k) => (k % 2 ? p : p.replace(/(?<!\\)</g, '\\<').replace(/\{\{/g, '&#123;&#123;'))).join(''))).join('');
+    : publicText(part).split(/(`+[\s\S]*?`+)/).map((p, k) => (k % 2 ? p : p.replace(/(?<!\\)</g, '\\<').replace(/\{\{/g, '&#123;&#123;'))).join(''))).join('');
 }
 
 const GENERATED = (from) => `> Generated from ${from} by \`scripts/docs-reference.mjs\`. Don't edit it: change the code and run \`npm run docs:reference\`.`;
@@ -303,7 +325,7 @@ const SCHEMA_FILE = 'schemas/vrmxs-1.schema.json';
 
 /** The schema as text: readable at the top, one node type or behaviour per line below, so a change is a small diff. */
 function schemaText() {
-  const { $defs, ...top } = schema;
+  const { $defs, ...top } = publicSchema(schema);
   const head = JSON.stringify(top, null, 2).replace(/\n\}$/, '');
   const defs = Object.entries($defs).map(([k, v]) => `    ${JSON.stringify(k)}: ${JSON.stringify(v)}`).join(',\n');
   return `${head},\n  "$defs": {\n${defs}\n  }\n}\n`;
@@ -705,7 +727,7 @@ function llms() {
     `- [${SHORTS_FILE}](reference/shorts-json.md): A project's list of shorts`,
     '- [delivery.json](reference/delivery-json.md): The manifest of a delivery folder');
   out.push('', '## Packages', '', ...pkgs.map((p) => `- [${p.name}](reference/packages.md): ${p.line}`));
-  return `${out.join('\n')}\n`;
+  return `${publicText(out.join('\n'))}\n`;
 }
 function meta0(text) { const m = meta(text); return { title: m.title, description: m.description }; }
 files.set('llms.txt', llms());

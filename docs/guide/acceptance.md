@@ -41,8 +41,7 @@ node acceptance/compare.mjs       # scores the checks; exits 1 on a failure
 node acceptance/matrix.mjs        # every rendering check on both renderers, in every browser
 ```
 
-The browser runs are made on the development Mac: they need WKWebView, the avatar studio beside the repository, and
-a GPU to themselves.
+The browser runs need a Mac: WKWebView, the avatar studio beside the repository, and a GPU to themselves.
 
 ## Exact frames
 

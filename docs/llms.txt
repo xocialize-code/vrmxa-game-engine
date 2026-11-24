@@ -65,8 +65,8 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [greet](reference/behaviours.md#greet): Says a line to someone who comes close (looking at them), then waits a while before greeting again.
 - [switchedBy](reference/behaviours.md#switchedby): Shown while an item is in a state (a lamp lit while its switch is on), hidden otherwise.
 - [hinge](reference/behaviours.md#hinge): A door hinge: a revolute joint with limits and a motor.
-- [noticeViewer](reference/behaviours.md#noticeviewer): Sees the person at the camera (M3 W5, @vrmxg/sense): looks at them when they appear and away when they leave, answers a wave and a nod with animation slots, and can say lines. Needs the sense service and the scene's viewer node.
-- [brain](reference/behaviours.md#brain): An NPC brain (M2 W7): perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; M3: host, conversationPartner, follower, which a director can talk with), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan.
+- [noticeViewer](reference/behaviours.md#noticeviewer): Sees the person at the camera (@vrmxg/sense): looks at them when they appear and away when they leave, answers a wave and a nod with animation slots, and can say lines. Needs the sense service and the scene's viewer node.
+- [brain](reference/behaviours.md#brain): An NPC brain: perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; host, conversationPartner, follower, which a director can talk with), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan.
 - [player](reference/behaviours.md#player): Drives a Character from the move / jump / run actions, relative to the current camera (split screen: its player's actions and camera).
 - [pickup](reference/behaviours.md#pickup): Can be picked up; equips a VRMXW if the item names one.
 
@@ -146,16 +146,16 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [@vrmxg/export](reference/packages.md): Offline frame export, the pipeline spike-frame-export chose.
 - [@vrmxg/input](reference/packages.md): Named actions bound to keys, mouse and gamepads, latched once per simulation step, recorded and replayed; and the player controller.
 - [@vrmxg/interact](reference/packages.md): Characters interacting with VRMXI items: focus, prompts, the verbs `use`, `take`, `talk`, `sit` and `stand`, and an inventory for items that can't go into a closet.
-- [@vrmxg/item](reference/packages.md): VRMXI game items in the engine, on the draft specification (`VRMXA_Specification/VRMXI-base-draft.md`, under review in xocialize-code/vrmxa-spec#1): read and check `.vrmxi` files, Item nodes with their bodies …
+- [@vrmxg/item](reference/packages.md): VRMXI game items in the engine, on the draft specification (`VRMXA_Specification/VRMXI-base-draft.md`): read and check `.vrmxi` files, Item nodes with their bodies …
 - [@vrmxg/mcp](reference/packages.md): The VRMXG MCP server: describe node types from the registry, edit a `.vrmxs` scene with undo, and inspect and drive it, either in a headless engine running in Node or in the open VRMXG editor.
 - [@vrmxg/model](reference/packages.md): Model nodes: glTF sets and props, parsed once per file before the scene is instantiated and cloned into every node that uses them (geometry and materials shared) …
 - [@vrmxg/nav](reference/packages.md): Navigation. It uses [navcat](https://github.com/isaac-mason/navcat) 0.4.1 (MIT), a pure-JS Recast/Detour, behind the engine's adapter, as `spike-navigation/` chose; recast-navigation-js stays the fallback.
 - [@vrmxg/particles](reference/packages.md): Particles: [three.quarks](https://github.com/Alchemist0823/three.quarks) 0.18.0 (MIT) behind the deterministic adapter `spike-particles/` proved.
 - [@vrmxg/persona](reference/packages.md): Who each character is, for the director and the brains, from VRMXA §10–§11.
-- [@vrmxg/physics](reference/packages.md): Physics for the engine: an engine-neutral adapter implemented on Rapier's deterministic build (`@dimforge/rapier3d-deterministic-compat` 0.21.0, AB-R-0923), the RigidBody, Collider and Area nodes, the hinge behaviour …
+- [@vrmxg/physics](reference/packages.md): Physics for the engine: an engine-neutral adapter implemented on Rapier's deterministic build (`@dimforge/rapier3d-deterministic-compat` 0.21.0), the RigidBody, Collider and Area nodes, the hinge behaviour …
 - [@vrmxg/post](reference/packages.md): The post stack and the anime look, as scene data: an `Environment` node's `post` is a preset name or a list of effects, and the render host draws through it.
 - [@vrmxg/registry](reference/packages.md): The VRMXG node registry: node types with typed props, signals and actions, and behaviours. Schemas, validation, the inspector and MCP tools are generated from it.
-- [@vrmxg/render](reference/packages.md): The render host: a three.js WebGL renderer (and since M4 W0 a WebGPU one: see "WebGPU" below) set up for MToon, presentation interpolated at the clock's α without touching simulated state …
+- [@vrmxg/render](reference/packages.md): The render host: a three.js WebGL renderer (and now a WebGPU one: see "WebGPU" below) set up for MToon, presentation interpolated at the clock's α without touching simulated state …
 - [@vrmxg/save](reference/packages.md): Save games. A save is the world snapshot (`@vrmxg/snapshot`) in a versioned file.
 - [@vrmxg/scene](reference/packages.md): VRMXG .vrmxs scenes: JSON Schema from the registry, canonical line-stable I/O, lint, prefab flattening, and edits with undo.
 - [@vrmxg/script](reference/packages.md): Scripts for the anime creator.

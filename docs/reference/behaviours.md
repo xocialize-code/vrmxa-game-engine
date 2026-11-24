@@ -21,8 +21,8 @@ project can add its own (the sample project's `behaviours.js`).
 | [`greet`](#greet) | [Character](./nodes#character) | Says a line to someone who comes close (looking at them), then waits a while before greeting again. |
 | [`switchedBy`](#switchedby) | [Node3D](./nodes#node3d) | Shown while an item is in a state (a lamp lit while its switch is on), hidden otherwise. |
 | [`hinge`](#hinge) | [RigidBody](./nodes#rigidbody) | A door hinge: a revolute joint with limits and a motor. |
-| [`noticeViewer`](#noticeviewer) | [Character](./nodes#character) | Sees the person at the camera (M3 W5, @vrmxg/sense): looks at them when they appear and away when they leave, answers a wave and a nod with animation slots, and can say lines. Needs the sense service and the scene's viewer node. |
-| [`brain`](#brain) | [Character](./nodes#character) | An NPC brain (M2 W7): perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; M3: host, conversationPartner, follower, which a director can talk with), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan. |
+| [`noticeViewer`](#noticeviewer) | [Character](./nodes#character) | Sees the person at the camera (@vrmxg/sense): looks at them when they appear and away when they leave, answers a wave and a nod with animation slots, and can say lines. Needs the sense service and the scene's viewer node. |
+| [`brain`](#brain) | [Character](./nodes#character) | An NPC brain: perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; host, conversationPartner, follower, which a director can talk with), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan. |
 | [`player`](#player) | [Character](./nodes#character) | Drives a Character from the move / jump / run actions, relative to the current camera (split screen: its player's actions and camera). |
 | [`pickup`](#pickup) | [Instance](./nodes#instance), [Model](./nodes#model), [RigidBody](./nodes#rigidbody) | Can be picked up; equips a VRMXW if the item names one. |
 
@@ -99,7 +99,7 @@ A door hinge: a revolute joint with limits and a motor.
 
 ## noticeViewer
 
-Sees the person at the camera (M3 W5, @vrmxg/sense): looks at them when they appear and away when they leave, answers a wave and a nod with animation slots, and can say lines. Needs the sense service and the scene's viewer node.
+Sees the person at the camera (@vrmxg/sense): looks at them when they appear and away when they leave, answers a wave and a nod with animation slots, and can say lines. Needs the sense service and the scene's viewer node.
 
 - **Attaches to:** [Character](./nodes#character) (and types that extend them)
 
@@ -113,7 +113,7 @@ Sees the person at the camera (M3 W5, @vrmxg/sense): looks at them when they app
 
 ## brain
 
-An NPC brain (M2 W7): perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; M3: host, conversationPartner, follower, which a director can talk with), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan.
+An NPC brain: perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; host, conversationPartner, follower, which a director can talk with), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan.
 
 - **Attaches to:** [Character](./nodes#character) (and types that extend them)
 
@@ -139,7 +139,7 @@ Drives a Character from the move / jump / run actions, relative to the current c
 |---|---|---|---|---|
 | `walkSpeed` | number | `1.4` | ≥ 0 m/s |  |
 | `runSpeed` | number | `4` | ≥ 0 m/s |  |
-| `player` | number | `1` | 1 to 4 | Which player (M3 W9): 2 reads the p2.* actions and player 2's camera. |
+| `player` | number | `1` | 1 to 4 | Which player: 2 reads the p2.* actions and player 2's camera. |
 
 ## pickup
 

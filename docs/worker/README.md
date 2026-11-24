@@ -26,9 +26,12 @@ npm run worker:check    # wrangler deploy --dry-run: checks the config and lists
 
 Deploying is the operator's decision and isn't done by CI. Before a first deploy, two things are settled:
 
-1. **Public or sign-in only.** The repository is private. The Worker's `workers.dev` address is public unless
-   Cloudflare Access protects it. Access is switched on in the Cloudflare dashboard (the Worker's settings, or a
-   Zero Trust application for its hostname), not in `wrangler.jsonc`.
+1. **Public or sign-in only.** Decided 2026-11-23: **public**, with no Cloudflare Access in front of it. The
+   repository is private, so what the site publishes is kept free of internal notes: the generator takes bridge ids,
+   milestone tags and private pull-request references out of text it lifts from the code, and the link check fails
+   the build on a bridge id, a home or volume path or an email address anywhere in the built site. (To go back to
+   sign-in only, switch Access on in the Cloudflare dashboard: the Worker's settings, or a Zero Trust application
+   for its hostname. It is not a `wrangler.jsonc` setting.)
 2. **The account.** `npx wrangler whoami` lists the accounts the signed-in login can reach. Deploy only to the
    intended one. When the login reaches more than one, name it for that one command with `CLOUDFLARE_ACCOUNT_ID`;
    the id is not written into `wrangler.jsonc`.

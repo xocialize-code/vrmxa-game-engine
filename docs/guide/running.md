@@ -12,7 +12,7 @@ guides come later, once their interfaces settle.
 ## What you need
 
 - **Node 26** or newer.
-- **The repository**, and **`vrmxa-avatar-studio` checked out beside it** (the two folders side by side). The apps read
+- **Access to the VRMXG repository.** It is not public. And **`vrmxa-avatar-studio` checked out beside it** (the two folders side by side). The apps read
   the character library, `vrmxa-core`, from there; without it they don't build.
 - **A Mac** for the Mac apps: macOS 15 or newer for the editor and the creator, macOS 26 for the playground (it links
   the shell's voice). They build with Swift Package Manager; there is no Xcode project.
@@ -103,5 +103,5 @@ npm test                         # every package, then the acceptance's own test
 npm test -w @vrmxg/core          # one package
 ```
 
-Some character tests need models that are not in the repository; they run on the development Mac only. The checks
+Some character tests need models that are not in the repository, so they don't run in CI. The checks
 that prove a scene replays the same in every browser are described in [Acceptance and exactness](./acceptance).

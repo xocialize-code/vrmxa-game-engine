@@ -34,7 +34,7 @@ cheer, sip, use, sit, stand), and `[[happy]]` an expression (happy, angry, sad, 
 tags take a value: `[[look: MIRA]]` (a cast name, `camera` or a mark), `[[at: counter]]` (a mark) and `[[hold: 3]]` (an
 action's seconds). In dialogue, a tag acts at its word, for the speaker. In action, it names who first
 (`[[HANA happy]]`) and acts from the start of the sentence it follows. An unknown one-word tag is an error, because it
-is far more likely a typo than a note. `vocab` narrows the lists, as casting (W6) will to a persona's allowed
+is far more likely a typo than a note. `vocab` narrows the lists, as casting will to a persona's allowed
 expressions.
 
 **Parentheticals** are read word by word:

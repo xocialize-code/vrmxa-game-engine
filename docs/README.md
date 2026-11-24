@@ -43,9 +43,12 @@ npm run worker                # the built site through the Worker, locally (wran
 - Link other pages relatively (`./determinism`, `../reference/nodes#character`). The build fails on a dead link, and
   `npm run links` checks anchors too.
 - Something that can be generated from the code belongs in `scripts/docs-reference.mjs`, not in `guide/`.
+- **The site is public and the repository is not.** No bridge ids (AB-T-…), milestone tags (M4 W9), names, email
+  addresses or machine paths in a page. `npm run links` fails the build on the ones it can recognise.
 
 ## What `npm run check` and CI hold
 
 - The generated reference, `llms.txt` and the schema are what the code produces now.
 - The site builds on Node 26 from a clean checkout (`docs/package-lock.json`, exact versions).
-- Every internal link and anchor resolves.
+- Every internal link and anchor resolves, and the built site holds no bridge id, home or volume path, or email
+  address.

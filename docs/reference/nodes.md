@@ -296,7 +296,7 @@ Also, from Node3D: `ready`.
 | `lookAt` | `target` (node id): Node to look at; omit to stop |  |
 | `knockDown` | `impulse` (vec3 `[x, y, z]`, N·s): A shove in world space, on the torso (or `part`); `part` (string): The humanoid bone whose part takes the shove (spine); `getUp` (boolean): Get up once settled (true); false stays down until getUp | Fall as a ragdoll (capsules and joints from the humanoid), then get up, blending back into animation. |
 | `getUp` |  | Get up from a ragdoll lying still. |
-| `face` | `target` (node id): Turn to face this node; `point` (vec3 `[x, y, z]`, m): Or this point; `rate` (number, rad/s): How fast (4) | Turn the body to face a node or a point, in place (M3 W12); look-at alone stops about 100° from the facing. |
+| `face` | `target` (node id): Turn to face this node; `point` (vec3 `[x, y, z]`, m): Or this point; `rate` (number, rad/s): How fast (4) | Turn the body to face a node or a point, in place; look-at alone stops about 100° from the facing. |
 
 Also, from Node3D: `show`, `hide`.
 
@@ -322,7 +322,7 @@ A physical camera: lens, sensor and focus, as the cinematics research specifies.
 | `near` | number | `0.1` | ≥ 0.001 m |  |  |
 | `far` | number | `500` | ≥ 0.1 m |  |  |
 | `preset` | `free`, `fixed`, `orbit`, `follow`, `overShoulder`, `firstPerson` | `"free"` |  | yes | Rig preset; switchable at run time (setPreset, nextPreset). |
-| `player` | number |  | 1 to 4 | yes | Split screen (M3 W9): this camera is that player's, takes that player's look input and draws in their viewport. |
+| `player` | number |  | 1 to 4 | yes | Split screen: this camera is that player's, takes that player's look input and draws in their viewport. |
 | `rig` | object |  |  | yes | Rig overrides: distance, height, side (m); yaw, pitch (degrees): the starting view, yaw 0 looking along +Z. |
 | `target` | node id |  |  |  | Follow / orbit target. |
 
@@ -593,7 +593,7 @@ How the world looks around everything: background, environment lighting, ambient
 | `fogDensity` | number | `0.02` | ≥ 0 |  |
 | `toneMapping` | `neutral`, `agx`, `aces`, `none` | `"neutral"` |  | Neutral keeps MToon's authored colours. |
 | `exposure` | number | `1` | ≥ 0 |  |
-| `post` | any |  |  | The post stack (M2 W3): a preset ("anime", "clean") or a list of effects [{ effect: edges \| dof \| bloom \| grade \| lut \| toneMapping \| vignette \| grain \| anime \| chromaticAberration \| smaa, …params }]. Lengths in px at 1080p. |
+| `post` | any |  |  | The post stack: a preset ("anime", "clean") or a list of effects [{ effect: edges \| dof \| bloom \| grade \| lut \| toneMapping \| vignette \| grain \| anime \| chromaticAberration \| smaa, …params }]. Lengths in px at 1080p. |
 | `ground` | boolean | `false` |  | A shadow-receiving ground plane at y = 0. |
 | `groundColor` | colour `#rrggbb` | `"#9aa3ad"` |  |  |
 | `groundSize` | number | `40` | ≥ 1 m |  |
@@ -641,7 +641,7 @@ Also, from Node3D: `ready`.
 |---|---|---|
 | `enterState` | `state` (string): One of the item's states | Move the item to a state (joints, shown meshes, morphs, animations, sensors). |
 | `perform` | `verb` (string): A verb the item offers in its current state; `by` (node id): The character doing it | Do one of the item's verbs. |
-| `drive` | `throttle` (number): Forward (1) to reverse (−1); `steer` (number): Right (1) to left (−1) | A vehicle's driving while a non-player sits in its driver's seat (M3 W8): a script or a brain. |
+| `drive` | `throttle` (number): Forward (1) to reverse (−1); `steer` (number): Right (1) to left (−1) | A vehicle's driving while a non-player sits in its driver's seat: a script or a brain. |
 
 Also, from Node3D: `show`, `hide`.
 
