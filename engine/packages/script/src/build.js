@@ -1,10 +1,11 @@
 // A script → a sequence document over a set, or a re-script of one (previous), keeping hand edits (merge.js).
 import { parseScript } from './parse.js';
 import { layout } from './plan.js';
-import { generate, numberShots, defaultCoverage } from './generate.js';
+import { generate, numberShots, defaultCoverage, faceShapes, moveShapes } from './generate.js';
 import { merge, handLengths, beatOf } from './merge.js';
 import { readRow, writeRow } from './ids.js';
 import { fnv, fingerprint, canonical } from './hash.js';
+import { TIMING } from './vocab.js';
 
 export const SCRIPT_RECORD_VERSION = 1;
 
@@ -101,7 +102,11 @@ export function buildSequence(text, o = {}) {
   for (const n of G.nodes) if (setIds.has(n.id)) throw new Error(`the set already has a node "${n.id}", which the script's build places in the sequence`);
 
   const live = new Set(plan.beats.map((b) => b.id));
-  const m = merge(previous, G, { oldRows, beats: plan.beats, live, duration: plan.duration, release, lengths });
+  // what a generated key can be, for telling a generated key changed in place from one a person added (merge, rule 4):
+  // expressions at this build's weight and the default one, moves to any mark the build, the set or the sequence knows
+  const markShapes = [...markTf.values(), ...Object.values(markDefs), ...[...prevNodes, ...setNodes].filter((n) => n.type === 'Marker').map((n) => n.transform ?? { p: [0, 0, 0] })];
+  const shapes = { expression: [...faceShapes(plan.timing), ...faceShapes(TIMING)], transform: markShapes.flatMap(moveShapes) };
+  const m = merge(previous, G, { oldRows, beats: plan.beats, live, duration: plan.duration, release, lengths, shapes });
   warnings.push(...m.warnings);
 
   // ---------------------------------------------------------------- the document

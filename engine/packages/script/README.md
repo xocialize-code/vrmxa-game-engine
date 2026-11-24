@@ -102,7 +102,8 @@ Generated clips, shots, markers and cast entries carry `src: "<beat>#<role>"` (`
    is a generated track (`script.dropped`).
 4. **Keys are marked by group.** A key in an array can't carry a mark, so keyed channels (expressions, moves) work by
    group. A group of keys a beat generated that isn't all still there as generated is the person's from then on, and
-   `script.hand` lists it. Every key not generated is kept.
+   `script.hand` lists it. Every key not generated is kept. The record of what the script generated stays with a hand
+   group (`script.gen`, re-made as its keys move), so the script can still tell its own keys from yours (rule 8).
 5. **Your own items are left alone.** Items a person made (no `src`) are kept as they are and not marked.
 6. **Kept items move with the script.** A kept item made by a beat (and retimed by hand) shifts as that beat shifts. Any other item (a hand
    key, your own track, marker or shot) shifts with the beat it fell in, or after the last beat before it. So an event
@@ -111,9 +112,13 @@ Generated clips, shots, markers and cast entries carry `src: "<beat>#<role>"` (`
    a warning says so. Its length becomes the line's length. A baked voice (`clip`, `timings` …) isn't a hand edit: it
    stays while the words are unchanged and goes when they change, so the bake picks the line up again.
 8. **A cut beat takes its hand edits with it.** When a beat leaves the script, its hand-edited items go too: dialogue,
-   looks, gestures, shots, cameras, and the hand keys in its span. Its words are gone from the script, so its edits
-   have no line to belong to. A warning names the beat and how many items went. Items a person made themselves (no
-   `src`) are never dropped this way; they move to the beat before.
+   looks, gestures, shots, cameras, and the keys it generated, whether they are still as generated or you changed them
+   in place (the frame the script keyed, another value: a bigger smile, a nudged move). Its words are gone from the
+   script, so its edits have no line to belong to. A warning names the beat and how many items went. Items a person
+   made themselves (no `src`) are never dropped this way; they move to the beat before. That holds for keys too
+   (AB-T-0588): a key at a frame the script never keyed is one you added, or one of the script's that you dragged to
+   another frame, and it is kept however near the cut line it sits. A generated key is told from yours by its frame,
+   not by a span around the line, so no margin in frames is involved.
 9. **Overlaps give way.** Generated shots and camera clips give way to kept ones, since shots don't overlap.
 10. **Duration.** A hand-set duration is kept, with a warning when the script runs longer or shorter.
 
@@ -130,7 +135,7 @@ undo step. A script with errors changes nothing, and neither does a build that g
   cafe (`checkSequence`, `composeSequence`, the scene schema), the same bytes twice and against
   `content/sample/sequences/cafe-order.vrmxs`, and the golden hash. Also the coverage hook, vocabularies, V.O., O.S.,
   dual dialogue and moves;
-- **rescript:** thirteen hand-edit cases (among them a reworded line beside a cut one, a cut line's hand edits, and the build's nodes), including the editor's one undo step with exact bytes on undo and redo.
+- **rescript:** fifteen hand-edit cases (among them a reworded line beside a cut one, a cut line's hand edits, the keys a person added near a cut line or a cut move, and the build's nodes), including the editor's one undo step with exact bytes on undo and redo.
 
 `acceptance/m4/script-chromium.mjs` and `script-wkwebview.sh` hash the sample and a re-script after hand edits in Node,
 Chromium and WKWebView (scheme and loopback). All four agree (`acceptance/results/m4-script*.json`).

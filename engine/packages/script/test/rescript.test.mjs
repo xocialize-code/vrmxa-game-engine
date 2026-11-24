@@ -302,6 +302,75 @@ test('a cut line takes its hand-edited dialogue, look, shot and face keys with i
   valid(b.doc);
 });
 
+// AB-T-0588: rule 4, "every key not generated is kept", holds when the line is cut
+test('cutting a line takes the keys the script generated for it, changed or not, and keeps the keys the person added near it', () => {
+  const src = `${SMALL}\nMIRA\n(smiling)\nThanks!\n`;
+  const a = build(src);
+  const thanks = lineId(a, 'Thanks'), row = a.plan.beats.find((x) => x.id === thanks);
+  const edit = (doc) => {
+    const face = track(doc, 'mira-face'), gen = face.keys.happy.map((k) => [...k]);
+    face.keys.happy[1] = [gen[1][0], 1, 'easeOut'];                       // the generated peak, changed in place
+    const own = [[gen[1][0] + 3, 0.3], [row.end + 20, 0], [gen.at(-1)[0] + 6, 0.2, 'easeIn']]; // their own: inside the line, within a second of its end, after the fall
+    face.keys.happy = [...face.keys.happy, ...own].sort((x, y) => x[0] - y[0]);
+    face.keys.surprised = [[row.start + 2, 0], [row.start + 6, 0.6]];     // and a channel the script never keyed
+    return { gen, own };
+  };
+  const cut = src.replace('MIRA\n(smiling)\nThanks!\n', '');
+
+  // edited and cut in one re-script
+  const doc = structuredClone(a.doc), e = edit(doc);
+  const b = build(cut, doc);
+  const end = b.plan.duration; // the cut line was the last beat: its keys now follow the last beat left
+  const face = track(b.doc, 'mira-face');
+  assert.ok(face, 'her face track stays: it has her own keys');
+  const frames = face.keys.happy.map((k) => k[0]);
+  assert.deepEqual(face.keys.happy.map((k) => k.slice(1)), e.own.map((k) => k.slice(1)), 'exactly the three keys the person added, in order');
+  assert.ok(!face.keys.happy.some((k) => k[1] === 1), 'the generated peak they raised went with the line');
+  assert.deepEqual(face.keys.surprised.map((k) => k.slice(1)), [[0], [0.6]], 'the other channel is untouched');
+  assert.ok(frames.every((f) => f >= 0 && f <= end + 64), 'moved with the beat before');
+  const w = b.warnings.filter((x) => x.includes(thanks));
+  assert.ok(w.length === 1 && /took 1 hand-edited item with it/.test(w[0]), `one hand edit went (the raised peak), not the person's keys: ${b.warnings.join(' / ')}`);
+  assert.equal(b.doc.sequence.script.hand, undefined);
+  assert.ok(!Object.keys(b.doc.sequence.script.gen).some((k) => k.includes(thanks)), 'nothing recorded for the cut line');
+  valid(b.doc);
+
+  // edited, re-scripted with the line still there but later (its keys move), then cut: the same keys go
+  const doc2 = structuredClone(a.doc), e2 = edit(doc2);
+  const later = build(src.replace('Hana wipes the counter.', 'Hana wipes the counter slowly, humming to herself.'), doc2);
+  const shift = later.plan.beats.find((x) => x.id === thanks).start - row.start;
+  assert.ok(shift > 0);
+  assert.deepEqual(later.doc.sequence.script.hand, [`mira-face|${thanks}#x:happy`]);
+  assert.equal(track(later.doc, 'mira-face').keys.happy.length, e2.gen.length + e2.own.length, 'while the line lives, all of it is kept');
+  const c = build(cut.replace('Hana wipes the counter.', 'Hana wipes the counter slowly, humming to herself.'), later.doc);
+  assert.deepEqual(track(c.doc, 'mira-face').keys.happy.map((k) => k.slice(1)), e2.own.map((k) => k.slice(1)), 'the record followed the keys: the script\'s four go, the person\'s three stay');
+  assert.ok(c.warnings.some((x) => x.includes(thanks) && /took 1 hand-edited item with it/.test(x)), c.warnings.join(' / '));
+  valid(c.doc);
+
+  // a generated key the person dragged to another frame is theirs: nothing says it was the script's
+  const doc3 = structuredClone(a.doc), happy3 = track(doc3, 'mira-face').keys.happy;
+  happy3[1] = [happy3[1][0] + 2, happy3[1][1], happy3[1][2]];
+  const d = build(cut, doc3);
+  assert.deepEqual(track(d.doc, 'mira-face').keys.happy.map((k) => k.slice(1)), [[0.7, 'easeOut']], 'the moved key stays; the three still as generated go');
+  assert.ok(!d.warnings.some((x) => x.includes(thanks)), 'and no hand edit was taken');
+});
+
+test('cutting an action with a move takes the move the script keyed (even nudged) and keeps a key the person added on the track', () => {
+  const src = `${SMALL}\nMira crosses to the window. [[MIRA at: window-table]]\n\nHANA\nEnjoy!\n`;
+  const a = build(src);
+  const doc = structuredClone(a.doc);
+  const mv = track(doc, 'mira-moves');
+  assert.equal(mv.keys.length, 2, 'the first mark and the move');
+  const at = mv.keys[1][0];
+  mv.keys[1] = [at, { ...mv.keys[1][1], p: [-3.2, 0, 1.4] }, 'step'];      // the script's move, nudged in place
+  mv.keys.push([at + 30, { p: [-2, 0, 0.5] }, 'step']);                    // and a move of their own, a little later
+  const b = build(src.replace('Mira crosses to the window. [[MIRA at: window-table]]\n\n', ''), doc);
+  const keys = track(b.doc, 'mira-moves').keys;
+  assert.ok(!keys.some((k) => k[1].p?.[0] === -3.2), 'the nudged move went with its action');
+  assert.equal(keys.filter((k) => k[1].p?.[0] === -2).length, 1, 'their own move is kept');
+  assert.ok(b.warnings.some((x) => /took 1 hand-edited item with it/.test(x)), b.warnings.join(' / '));
+  valid(b.doc);
+});
+
 // should-fix 4: the build's nodes follow the script too
 test('generated nodes: a moved mark moves the wide; a cast member cut entirely loses her camera; hand-moved nodes stay', () => {
   const a = build(SMALL);

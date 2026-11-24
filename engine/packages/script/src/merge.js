@@ -13,6 +13,10 @@
 //     A generated track that is gone stays gone (script.dropped).
 //  4. Keyed channels (expressions, moves) can't carry a mark per key: a group of keys a beat generated that is no longer
 //     all there as generated is the person's from then on (script.hand lists it), and every key not generated is kept.
+//     The record of what the script generated stays with a hand group, so that when its beat is cut the keys the script
+//     made go with it: those still as generated, and those changed in place (the generated key's frame, another value,
+//     found by trying the shapes the build generates at that frame against the record). A key at a frame the script
+//     never keyed is one the person added or moved: it is kept (AB-T-0588).
 //  5. Items a person made (no src) are kept as they are.
 //  6. Everything kept moves with the script: a kept item made by a beat shifts as that beat does; any other item shifts
 //     with the beat it fell in (or the last beat before it), so a hand-made key on a line stays on that line when lines
@@ -41,11 +45,12 @@ const cmp = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 /**
  * @param {any} prev the sequence document as it is now (null for a first build)
  * @param {any} G generate()'s output
- * @param {{ oldRows: any[], beats: any[], live: Set<string>, duration: number, release?: Set<string>, lengths?: Map<string, number> }} o
+ * @param {{ oldRows: any[], beats: any[], live: Set<string>, duration: number, release?: Set<string>, lengths?: Map<string, number>, shapes?: { expression?: any[][], transform?: any[][] } }} o
  *   beats: the new layout's beats; live: the new beat ids; lengths: the beats laid out with a hand-retimed line's
- *   length (handLengths), whose lines are recorded as retimed ("-L"), so the next re-script keeps their length too
+ *   length (handLengths), whose lines are recorded as retimed ("-L"), so the next re-script keeps their length too;
+ *   shapes: per keyed track type, what a generated key can be after its frame (generate.js's faceShapes, moveShapes)
  */
-export function merge(prev, G, { oldRows, beats, live, duration, release = new Set(), lengths = new Map() }) {
+export function merge(prev, G, { oldRows, beats, live, duration, release = new Set(), lengths = new Map(), shapes = {} }) {
   const seq = prev?.sequence ?? {};
   const S = seq.script ?? {};
   const gen = S.gen ?? {};
@@ -55,8 +60,8 @@ export function merge(prev, G, { oldRows, beats, live, duration, release = new S
   const released = (src) => release.has(beatOf(src));
   const oldRemoved = new Set((S.removed ?? []).filter((k) => isLive(k.split('|')[1]) && !released(k.split('|')[1])));
   const oldHand = new Set((S.hand ?? []).filter((k) => isLive(k.split('|')[1]) && !released(k.split('|')[1])));
+  const wasHand = new Set(S.hand ?? []);
   // a cut beat takes its hand-edited items with it (its words are gone from the script, so its edits have no line)
-  const deadHand = (S.hand ?? []).filter((k) => !isLive(k.split('|')[1]));
   const cutDropped = new Map();
   const cutDrop = (src, n = 1) => { const b = beatOf(src); cutDropped.set(b, (cutDropped.get(b) ?? 0) + n); };
 
@@ -147,7 +152,31 @@ export function merge(prev, G, { oldRows, beats, live, duration, release = new S
   // ---------------------------------------------------------------- keyed channels
   function mergeKeyed(coll, cur, groups, channelled) {
     const out = channelled ? {} : [];
-    const cutSpans = [];
+    const kept = new Map(); // hand groups of live beats → the record of what the script generated for them
+    /** The key standing on a generated key's frame with another value (changed in place), and the shape it was generated in. */
+    const inPlace = (fp, have) => {
+      for (const x of have) {
+        if (x.taken) continue;
+        const shape = made0.find((s) => fingerprint([x.k[0], ...s]) === fp);
+        if (shape) return { x, shape };
+      }
+      return null;
+    };
+    /**
+     * A hand group's record for the next re-script: the generated keys' fingerprints at the frames the kept keys move to
+     * (a key's frame is in its fingerprint). A generated key that was moved or deleted leaves nothing to recognise.
+     */
+    const movedRecord = (want, found, have) => {
+      const rec = [];
+      for (const fp of want) {
+        const h = found.find((x) => x.fp === fp);
+        if (h) { rec.push(fingerprint([warp(h.k[0]), ...h.k.slice(1)])); continue; }
+        const e = inPlace(fp, have);
+        if (e) rec.push(fingerprint([warp(e.x.k[0]), ...e.shape]));
+      }
+      return rec.join(' ');
+    };
+    const made0 = shapes[channelled ? 'expression' : 'transform'] ?? [];
     const curBy = channelled ? Object.entries(cur ?? {}) : [[null, cur ?? []]];
     const chans = new Set([...curBy.map(([c]) => c), ...groups.map((g) => g.channel)]);
     for (const ch of [...chans].sort((a, b) => cmp(a ?? '', b ?? ''))) {
@@ -159,19 +188,24 @@ export function merge(prev, G, { oldRows, beats, live, duration, release = new S
         const want = fps.split(' ');
         const found = [];
         for (const fp of want) { const h = have.find((x) => !x.taken && !found.includes(x) && x.fp === fp); if (h) found.push(h); }
-        if (found.length === want.length || released(role)) for (const h of found) h.taken = true; // the script's: replaced below
-        else if (isLive(role)) next.hand.add(key);
-        else { for (const h of found) h.taken = true; cutSpans.push(role); } // edited, and its beat was cut
-      }
-      for (const k of oldHand) if (k.startsWith(`${coll}|`) && (channelOf(k.slice(coll.length + 1)) ?? null) === ch) next.hand.add(k);
-      for (const k of deadHand) if (k.startsWith(`${coll}|`) && (channelOf(k.slice(coll.length + 1)) ?? null) === ch) cutSpans.push(k.slice(coll.length + 1));
-      // a cut beat's hand keys: those in its old span (to the end of an expression's fall)
-      for (const role of cutSpans.splice(0)) {
-        const r = oldBy.get(beatOf(role)); if (!r) continue;
+        // the script's (all there as generated, and not a group the person already has), or given back: replaced below
+        if (released(role) || (found.length === want.length && !wasHand.has(key))) { for (const h of found) h.taken = true; continue; }
+        // the person's from now on; the record of what the script generated stays with the group, for the day its beat is cut
+        if (isLive(role)) { next.hand.add(key); kept.set(key, movedRecord(want, found, have)); continue; }
+        // edited, and its beat was cut. What the script generated goes with the beat: the keys still as generated, and
+        // the ones changed in place (a key on a generated key's frame, which one of the build's shapes there shows by
+        // matching the record). Every other key is one the person added or moved, and stays (rule 4)
+        for (const h of found) h.taken = true;
         let n = 0;
-        for (const h of have) if (!h.taken && h.k[0] >= r.start && h.k[0] <= r.end + 24) { h.taken = true; n++; }
+        for (const fp of want) {
+          if (found.some((h) => h.fp === fp)) continue;
+          const h = inPlace(fp, have);
+          if (h) { h.x.taken = true; n++; }
+        }
         if (n) cutDrop(role, n);
       }
+      // a hand group recorded before the record was kept with it (no gen entry): still the person's while its beat is live
+      for (const k of oldHand) if (k.startsWith(`${coll}|`) && (channelOf(k.slice(coll.length + 1)) ?? null) === ch) next.hand.add(k);
       const keep = moveKeys(have.filter((x) => !x.taken).map((x) => x.k));
       if (release.size) { // a released beat's own hand keys go with it
         for (const b of release) {
@@ -191,6 +225,8 @@ export function merge(prev, G, { oldRows, beats, live, duration, release = new S
         made.push(...ks);
         next.gen[key] = fpKeys(ks);
       }
+      for (const [key, fps] of kept) if (fps && next.hand.has(key)) next.gen[key] = fps;
+      kept.clear();
       const all = [...keep, ...made].sort((a, b) => a[0] - b[0]);
       if (channelled) { if (all.length) out[ch] = all; } else out.push(...all);
     }

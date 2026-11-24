@@ -171,7 +171,8 @@ export function generate(plan, { numbers, initial, titled, markTf, markNodes, se
         if (last && e.start <= last.end + T.fall + T.rise) last.end = Math.max(last.end, end);
         else runs.push({ beat: e.beat, start: e.start, end });
       }
-      for (const r of runs) face.items.push({ role: `${r.beat}#x:${name}`, channel: name, keys: [[r.start, 0], [r.start + T.rise, T.weight, 'easeOut'], ...(r.end > r.start + T.rise ? [[r.end, T.weight]] : []), [Math.max(r.end, r.start + T.rise) + T.fall, 0, 'easeIn']] });
+      const [rest, rise, hold, fall] = faceShapes(T);
+      for (const r of runs) face.items.push({ role: `${r.beat}#x:${name}`, channel: name, keys: [[r.start, ...rest], [r.start + T.rise, ...rise], ...(r.end > r.start + T.rise ? [[r.end, ...hold]] : []), [Math.max(r.end, r.start + T.rise) + T.fall, ...fall]] });
     }
 
     const eyes = track(`${id}-eyes`, 'lookAt', { target: id });
@@ -181,13 +182,23 @@ export function generate(plan, { numbers, initial, titled, markTf, markNodes, se
     const moves = by(id, 'mark').filter((m, k) => !(k === 0 && initial.get(id) === m.mark && !titled.has(id)));
     if (moves.length && initial.has(id)) {
       const mv = track(`${id}-moves`, 'transform', { target: id, keyed: true });
-      mv.items.push({ role: `cast#${id}#at`, channel: null, keys: [[0, structuredClone(markTf.get(initial.get(id)))]] });
+      mv.items.push({ role: `cast#${id}#at`, channel: null, keys: [[0, ...structuredClone(moveShapes(markTf.get(initial.get(id)))[0])]] });
       const count2 = new Map();
       for (const m of moves) {
         const k = `${m.beat}#at:${m.mark}`, n = (count2.get(k) ?? 0) + 1; count2.set(k, n);
-        mv.items.push({ role: n === 1 ? k : `${k}:${n}`, channel: null, keys: [[m.frame, structuredClone(markTf.get(m.mark)), 'step']] });
+        mv.items.push({ role: n === 1 ? k : `${k}:${n}`, channel: null, keys: [[m.frame, ...structuredClone(moveShapes(markTf.get(m.mark))[1])]] });
       }
     }
   }
   return out;
 }
+
+/**
+ * What a generated key is after its frame. An expression's four keys: at rest, risen to the weight, held, fallen. A
+ * move's two: the first mark's key, and a step key to a later mark. generate() builds its keys from these, and merge()
+ * tries them at a key's frame to tell a generated key a person changed in place from a key they added (AB-T-0588).
+ * @param {{ weight: number }} T the build's timing
+ */
+export function faceShapes(T) { return [[0], [T.weight, 'easeOut'], [T.weight], [0, 'easeIn']]; }
+/** @param {any} tf a mark's transform */
+export function moveShapes(tf) { return [[tf], [tf, 'step']]; }
