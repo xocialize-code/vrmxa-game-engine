@@ -1,6 +1,6 @@
 ---
 title: "Creator commands"
-description: "The 7 commands an agent runs in the creator through the command tool, each with its JSON Schema."
+description: "The 8 commands an agent runs in the creator through the command tool, each with its JSON Schema."
 order: 40
 ---
 
@@ -22,6 +22,7 @@ A command that doesn't edit (queueing an export, saving) makes no undo step.
 | [`recast`](#recast) | yes | Cast a character file (.vrmxa in the project) into a role, keeping the performance; the role's lines are re-voiced in the new voice in the same undo step. |
 | [`revoice`](#revoice) | yes | Voice lines again: one line (with new words if given), one role's lines, or all; another voice or a new take. One undo step, none if nothing changes. |
 | [`shot_camera`](#shot-camera) | yes | Put a camera on a shot: an existing virtual camera, or a new one on a rig preset. One undo step; the camera stays through re-scripts. |
+| [`take`](#take) | yes | Performance takes (a puppet, a director or a face, recorded by a person): list them, keep one from its log in the project, or remove one. Keeping or removing is one undo step. |
 | [`queue_export`](#queue-export) | no | Queue the short, as it is now, in the render queue at a delivery preset; run: true renders that job now. |
 | [`save`](#save) | no | Save the short: its sequence, its script and shorts.json (in memory when the project is read-only). |
 
@@ -202,6 +203,32 @@ shot: id or number ("030"). camera: an existing VirtualCamera id (short part=cam
     "lens": { "type": "object" },
     "id": { "type": "string" },
     "name": { "type": "string" }
+  }
+}
+```
+
+## take
+
+Performance takes (a puppet, a director or a face, recorded by a person): list them, keep one from its log in the project, or remove one. Keeping or removing is one undo step.
+
+op: list (the takes kept in the short, and the take logs under performances/); apply (log: a take log's project ref, e.g. performances/the-regular/take-1.json: its tracks are added after the short's own, marked with the take); remove (id: a kept take, e.g. take-1: its tracks go, its log stays). A take's tracks are ordinary tracks: read them with short part=outline, edit them in the creator.
+
+- **Edits the short:** yes, as one undo step
+
+**Arguments**
+
+```json
+{
+  "additionalProperties": false,
+  "type": "object",
+  "required": ["op"],
+  "properties": {
+    "op": { "type": "string", "enum": ["list", "apply", "remove"] },
+    "log": {
+      "type": "string",
+      "description": "A take log in the project (op apply)."
+    },
+    "id": { "type": "string", "description": "A kept take's id (op remove)." }
   }
 }
 ```

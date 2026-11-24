@@ -54,9 +54,10 @@ task that changes it. This is the documentation session's reading of the open ta
 | `save` | G | `engine/packages/save/README.md` | Stable | line |
 | `scene` | A G C | The code: `engine/packages/scene/src/` (no README); PRD §4.1 | Stable | generated (`.vrmxs`); page (the scene format) |
 | `script` | S A | `engine/packages/script/README.md`; `src/vocab.js` | Stable | generated (the Fountain subset) |
-| `sense` | G | `engine/packages/sense/README.md` | Moving: W9's face takes (AB-T-0581), the re-test in good light (AB-T-0557) | line |
+| `sense` | G | `engine/packages/sense/README.md` | Moving a little: the re-test in good light (AB-T-0557) | line |
 | `sequence` | S A G | `engine/packages/sequence/README.md` | Stable | line; page (the scene format, sequences) |
 | `snapshot` | C G | `engine/packages/snapshot/README.md` | Stable | line; page (determinism: snapshots, replay) |
+| `takes` | S A | `engine/packages/takes/README.md` | Moving a little: the face filter's thresholds wait on a session with a real camera (AB-T-0557) | line |
 | `text` | G S | `engine/packages/text/README.md` | Moving: our own text renderer replaces troika (AB-T-0556) | line |
 | `tracks` | S G | `engine/packages/tracks/README.md` | Stable | line |
 | `voice` | S G | `engine/packages/voice/README.md` | Stable | line |
@@ -73,7 +74,7 @@ Also in the workspace:
 
 | App | Readers | Source of truth today | Stable? | Phase 1 |
 |---|---|---|---|---|
-| `creator` (the anime creator) | S A | `apps/creator/README.md` | Moving: performance takes (W9, AB-T-0581), the unsaved-changes sheet (AB-T-0593), the inspector work (AB-T-0599 to 0607) | **later**: the guide waits for the UI. Its MCP commands and `shorts.json` are generated; how to run it is on the running page |
+| `creator` (the anime creator) | S A | `apps/creator/README.md` | Moving: the unsaved-changes sheet (AB-T-0593), the inspector work (AB-T-0599 to 0607). Performance takes are in (W9, AB-T-0581); their live check with a camera waits (AB-T-0557) | **later**: the guide waits for the UI. Its MCP commands and `shorts.json` are generated; how to run it is on the running page |
 | `creator-mac` | S | `apps/creator-mac/README.md`; the AppProbe scenario in `docs/hand-test/` | Moving with the creator | later, with the creator's guide |
 | `editor` | G A | `apps/editor/README.md` | Moving: AB-T-0599 to 0607 rework the inspector, the viewport and the assets panel; AB-T-0592 | **later**: the guide waits for the UI. How to run it is on the running page |
 | `editor-mac` | G | `apps/editor-mac/README.md`; the AppProbe scenarios | Moving with the editor | later, with the editor's guide |
@@ -93,7 +94,8 @@ Also in the workspace:
 | `.vrmxa`, `.vrmxw` | S G | `VRMXA_Specification` (owned by another area) | Draft specs, owned elsewhere | page (the format family), linking out; never copied here |
 | `.vrmxi` | G | `VRMXI-base-draft.md` in `VRMXA_Specification`; `@vrmxg/item` | Moving: draft 0.1 under review (AB-T-0513) | page (the format family) names it; its reference and editor are phase 2 |
 | Marks (`scripts/*-marks.json`) | S | `@vrmxg/script`'s build, `content/sample/scripts/cafe-marks.json` | Stable | later (with the script-to-film tutorial) |
-| Takes (`vrmxg-take`), input recordings | G S | `@vrmxg/director`, `@vrmxg/input` READMEs | Moving: W9 | later |
+| Takes (`vrmxg-take`), input recordings | G S | `@vrmxg/director`, `@vrmxg/input` READMEs | Stable | later |
+| Performance take logs (`vrmxg-performance`, in `performances/`) | S A | `engine/packages/takes/README.md` | Stable (version 1); the face take's settings may be tuned (AB-T-0557) | later (with the creator's guide) |
 | Brains (`vrmxg-brain`) | G A | `engine/packages/ai/README.md` | Stable | later |
 | Personas (`vrmxg-personas`, `vrmxa-persona`) | G A | `engine/packages/persona/README.md`; VRMXA §10–§11 | Stable | later |
 | Effects (`vrmxg-effect`) | G S | `engine/packages/particles/README.md` | Stable | later |

@@ -22,7 +22,7 @@ project can add its own (the sample project's `behaviours.js`).
 | [`switchedBy`](#switchedby) | [Node3D](./nodes#node3d) | Shown while an item is in a state (a lamp lit while its switch is on), hidden otherwise. |
 | [`hinge`](#hinge) | [RigidBody](./nodes#rigidbody) | A door hinge: a revolute joint with limits and a motor. |
 | [`noticeViewer`](#noticeviewer) | [Character](./nodes#character) | Sees the person at the camera (@vrmxg/sense): looks at them when they appear and away when they leave, answers a wave and a nod with animation slots, and can say lines. Needs the sense service and the scene's viewer node. |
-| [`brain`](#brain) | [Character](./nodes#character) | An NPC brain: perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; host, conversationPartner, follower, which a director can talk with), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan. |
+| [`brain`](#brain) | [Character](./nodes#character) | An NPC brain: perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; host, conversationPartner, follower, which a director can talk with; actor, who does only what she is directed to), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan. |
 | [`player`](#player) | [Character](./nodes#character) | Drives a Character from the move / jump / run actions, relative to the current camera (split screen: its player's actions and camera). |
 | [`pickup`](#pickup) | [Instance](./nodes#instance), [Model](./nodes#model), [RigidBody](./nodes#rigidbody) | Can be picked up; equips a VRMXW if the item names one. |
 
@@ -113,7 +113,7 @@ Sees the person at the camera (@vrmxg/sense): looks at them when they appear and
 
 ## brain
 
-An NPC brain: perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; host, conversationPartner, follower, which a director can talk with), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan.
+An NPC brain: perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; host, conversationPartner, follower, which a director can talk with; actor, who does only what she is directed to), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan.
 
 - **Attaches to:** [Character](./nodes#character) (and types that extend them)
 

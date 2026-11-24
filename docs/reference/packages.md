@@ -1,6 +1,6 @@
 ---
 title: "Packages"
-description: "The 35 engine packages, one line each, and which side of the determinism boundary each is on."
+description: "The 36 engine packages, one line each, and which side of the determinism boundary each is on."
 order: 90
 ---
 
@@ -8,7 +8,7 @@ order: 90
 
 > Generated from every `engine/packages/*`: its `package.json` and the opening of its README by `scripts/docs-reference.mjs`. Don't edit it: change the code and run `npm run docs:reference`.
 
-The engine is 35 packages under `engine/packages/`, each with its own tests. Until a package has pages of its own
+The engine is 36 packages under `engine/packages/`, each with its own tests. Until a package has pages of its own
 here, its README in the repository is its manual.
 
 **Boundary** says which side of the determinism boundary a package's code is on ([Determinism](../guide/determinism)):
@@ -48,6 +48,7 @@ rest are presentation or run outside the 60 Hz step.
 | `@vrmxg/sense` | 0.1.0 | simulation | The person in front of the camera, as part of the world. | `engine/packages/sense/README.md` |
 | `@vrmxg/sequence` | 0.1.0 | simulation | Sequences: a `.vrmxs` of its own that films a set scene, with shots, shot overrides, markers and tracks, played **inside the simulation step** so a shot replays and exports bit for bit; exact scrubbing from snapshots … | `engine/packages/sequence/README.md` |
 | `@vrmxg/snapshot` | 0.1.0 | simulation | One snapshot of a whole world, per-step hashes, and the harness that proves a scene replays bit-identically in Node, Chromium and WKWebView. | `engine/packages/snapshot/README.md` |
+| `@vrmxg/takes` | 0.1.0 | simulation | Performance takes: one character's performance, recorded over a sequence while it plays, kept as ordinary tracks, and replayed exactly from its log. | `engine/packages/takes/README.md` |
 | `@vrmxg/text` | 0.1.0 |  | Text inside the canvas: speech bubbles and name tags in the world, drawn with troika-three-text 0.53.1. | `engine/packages/text/README.md` |
 | `@vrmxg/tracks` | 0.1.0 | simulation | The track core: keyed tracks evaluated as a **pure function of the frame**, and the `AnimationPlayer` node that plays them inside the simulation step. | `engine/packages/tracks/README.md` |
 | `@vrmxg/voice` | 0.1.0 | simulation | Characters say lines, blink and glance. | `engine/packages/voice/README.md` |
