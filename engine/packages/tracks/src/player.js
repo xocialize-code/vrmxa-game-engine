@@ -6,7 +6,7 @@
 // fire as playback crosses their frames. Playing is simulation: deterministic, and in the snapshot (the node's
 // getState), so a door an AnimationPlayer opens replays bit for bit.
 import { Node } from '@vrmxg/core';
-import { evaluateTrack, eventsBetween, sampleAnimation, sampleAudio, checkTrack } from './evaluate.js';
+import { evaluateTrack, eventsBetween, sampleAnimation, sampleAudio, checkTrack, heldFrame } from './evaluate.js';
 
 /** Set a value at a dotted path on a node: "visible" shows or hides it; "props.x.y" sets a prop. */
 export function setNodePath(node, path, value) {
@@ -26,7 +26,14 @@ export function applyTrack(tree, track, frame, fps) {
   if (track.type === 'event' || track.type === 'audio') return;
   const node = /** @type {any} */ (tree.find(track.target));
   if (!node) return;
-  if (track.type === 'animation') { node.trackAnimation = sampleAnimation(track, frame, fps); return; }
+  if (track.type === 'animation') {
+    const a = sampleAnimation(track, frame, fps);
+    if (!track.release) node.trackAnimation = a;
+    else if (a) node.trackAnimation = overAnimation(node.trackAnimation, a); // a release track plays over what was set before it
+    return;
+  }
+  const f = heldFrame(track, frame);
+  if (track.release && track.type !== 'expression' && !withinKeys(track.keys, f)) return;
   const v = evaluateTrack(track, frame, fps);
   if (v === undefined) return;
   if (track.type === 'property') setNodePath(node, track.path, v);
@@ -36,8 +43,34 @@ export function applyTrack(tree, track, frame, fps) {
     if (v.q) o.quaternion.set(v.q[0], v.q[1], v.q[2], v.q[3]);
     if (v.s) o.scale.set(v.s[0], v.s[1], v.s[2]);
   } else if (track.type === 'expression') {
-    for (const [name, w] of Object.entries(v)) if (w !== undefined) (node.setExpression ? node.setExpression(name, w) : node.vrm?.expressionManager?.setValue(name, w));
+    for (const [name, w] of Object.entries(v)) {
+      if (w === undefined || (track.release && !withinKeys(track.keys[name], f))) continue;
+      if (node.setExpression) node.setExpression(name, w); else node.vrm?.expressionManager?.setValue(name, w);
+    }
   }
+}
+
+/** True from a keyed channel's first key to its last: where a `release` track holds its target. */
+export function withinKeys(keys, frame) { return !!keys?.length && frame >= keys[0][0] && frame <= keys[keys.length - 1][0]; }
+
+/**
+ * One animation sample over another (a `release` animation track over the track before it): `over` takes its weight of
+ * the whole, and what was under keeps the rest. → { weight, clips } as sampleAnimation gives.
+ */
+export function overAnimation(under, over) {
+  if (!under || !under.clips.length || over.weight >= 1) return over;
+  const w = Math.max(0, over.weight), total = under.weight + (1 - under.weight) * w;
+  if (!(total > 0)) return under;
+  const ku = (under.weight * (1 - w)) / total, ko = w / total;
+  return { weight: total, clips: [...under.clips.map((c) => ({ ...c, weight: c.weight * ku })), ...over.clips.map((c) => ({ ...c, weight: c.weight * ko }))].filter((c) => c.weight > 0) };
+}
+
+/**
+ * Before a step's tracks are applied: characters a `release` animation track plays on start the step with no track
+ * animation, so that track plays over this step's tracks and never over the last step's.
+ */
+export function beginTracks(tree, tracks) {
+  for (const t of tracks) if (t.type === 'animation' && t.release) { const n = /** @type {any} */ (tree.find(t.target)); if (n) n.trackAnimation = null; }
 }
 
 export class AnimationPlayerNode extends Node {
@@ -94,7 +127,7 @@ export class AnimationPlayerNode extends Node {
     if (done) { pb.playing = false; this.release(); this.tree.emit(this, 'finished', { stopped: false }); }
   }
 
-  applyAt(frame) { for (const t of this.tracks) applyTrack(this.tree, t, frame, this.fps); }
+  applyAt(frame) { beginTracks(this.tree, this.tracks); for (const t of this.tracks) applyTrack(this.tree, t, frame, this.fps); }
 
   /** Events in (from, to]: call an action on a node, or emit a signal from the player. */
   fire(from, to) {

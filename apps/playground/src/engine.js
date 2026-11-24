@@ -27,6 +27,7 @@ import { withCamera, shellCamera, recordedFrames, connectCamera } from '@vrmxg/s
 import { framesCheck } from './frames.js';
 import { coverageCheck } from './coverage-check.js';
 import { voicingCheck } from './voicing-check.js';
+import { takesCheck } from './takes-check.js';
 import { withCrowd } from './budget.js';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
@@ -479,6 +480,15 @@ export class Playground {
   async voicingCheck(o = {}) {
     await this.ready;
     return voicingCheck({ R: await loadRapier(), bytes, opts: { vrmxaCore, closet, behaviours }, ...o });
+  }
+
+  /**
+   * M4 W9 (?mode=takes): the sample's three take logs made into tracks and the film played with them, no renderer
+   * involved (takes-check.js); acceptance/m4/takes.mjs compares it with Node's.
+   */
+  async takesCheck() {
+    await this.ready;
+    return takesCheck({ R: await loadRapier(), bytes, opts: { vrmxaCore, closet, behaviours } });
   }
 
   /**

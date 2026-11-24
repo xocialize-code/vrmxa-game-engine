@@ -4,7 +4,7 @@
 import { AnimationPlayerNode, TracksService } from './player.js';
 export { TRACK_TYPES, evaluateTrack, sampleKeys, sampleAnimation, sampleAudio, eventsBetween, heldFrame, blend, blendTransform, checkTrack } from './evaluate.js';
 export { EASES, eased, cubicBezier } from './ease.js';
-export { AnimationPlayerNode, TracksService, applyTrack, setNodePath } from './player.js';
+export { AnimationPlayerNode, TracksService, applyTrack, setNodePath, withinKeys, overAnimation, beginTracks } from './player.js';
 
 /** Give a tree AnimationPlayers and the "tracks" service. Install after audio (audio tracks are one of its sources). */
 export function installTracks(tree) {
