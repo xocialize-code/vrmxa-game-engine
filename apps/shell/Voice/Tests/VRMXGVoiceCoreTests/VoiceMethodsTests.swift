@@ -7,11 +7,15 @@ import Testing
 @MainActor
 final class FakeBackend: VoiceBackend {
     let names = ["tts": "fake-tts", "llm": "fake-llm", "stt": "fake-stt"]
-    var prepares = 0, spoken: [String] = [], asked: [(messages: [VoiceMessage], json: Bool, seed: UInt64?)] = [], heard: [[Float]] = []
+    var prepares = 0, releases = 0, parts: Set<VoicePart> = [], spoken: [String] = [], asked: [(messages: [VoiceMessage], json: Bool, seed: UInt64?)] = [], heard: [[Float]] = []
     var onEvent: (@MainActor (VoiceListenEvent) -> Void)?
-    func prepare(models: URL) async throws { prepares += 1 }
+    /// Set to hold a call to speak until it is resumed (a line being spoken while something else is asked).
+    var hold: CheckedContinuation<Void, Never>?, holdSpeak = false
+    func prepare(models: URL, parts: Set<VoicePart>) async throws { prepares += 1; self.parts = parts }
+    func release() async { releases += 1 }
     func speak(_ text: String, voice: String) async throws -> VoiceAudio {
         spoken.append(text)
+        if holdSpeak { await withCheckedContinuation { hold = $0 } }
         // 0.5 s at 1 kHz per piece, one word at 0.1 s
         return VoiceAudio(pcm16: Data(repeating: 1, count: 1000), sampleRate: 1000, words: [VoiceWord(text: String(text.prefix(5)), start: 0.1, duration: 0.2)])
     }
@@ -28,11 +32,11 @@ final class FakeBackend: VoiceBackend {
 }
 
 @Suite @MainActor struct VoiceMethodTests {
-    func setUp(_ env: [String: String] = ["VRMXG_SHELL_MODELS": "/tmp/models"]) -> (BridgeRouter, FakeBackend, VoiceMethods, () -> [(String, [String: Any])]) {
+    func setUp(_ env: [String: String] = ["VRMXG_SHELL_MODELS": "/tmp/models"], parts: Set<VoicePart> = Set(VoicePart.allCases)) -> (BridgeRouter, FakeBackend, VoiceMethods, () -> [(String, [String: Any])]) {
         let backend = FakeBackend()
         var events: [(String, [String: Any])] = []
         let suite = "vrmxg-voice-test-\(UUID().uuidString)"
-        let methods = VoiceMethods(backend: backend, defaults: UserDefaults(suiteName: suite)!, env: env, emit: { events.append(($0, $1)) })
+        let methods = VoiceMethods(backend: backend, parts: parts, defaults: UserDefaults(suiteName: suite)!, env: env, emit: { events.append(($0, $1)) })
         let router = BridgeRouter(); methods.register(on: router)
         return (router, backend, methods, { events })
     }
@@ -46,6 +50,56 @@ final class FakeBackend: VoiceBackend {
         #expect(backend.prepares == 1)
         let s1 = try #require(await router.handle(body: ["method": "voice.status"]).0 as? [String: Any])
         #expect(s1["prepared"] as? Bool == true)
+        withExtendedLifetime(methods) {}
+    }
+
+    // AB-T-0614: the creator takes speech out alone.
+    @Test func anAppThatOnlySpeaksRegistersAndLoadsOnlyTheVoice() async throws {
+        let (router, backend, methods, _) = setUp(parts: [.tts])
+        let s = try #require(await router.handle(body: ["method": "voice.status"]).0 as? [String: Any])
+        #expect(s["backends"] as? [String: String] == ["tts": "fake-tts"], "status names only the parts the app took")
+        _ = try #require(await router.handle(body: ["method": "tts.speak", "params": ["text": "Hi."]]).0 as? [String: Any])
+        #expect(backend.prepares == 1 && backend.parts == [.tts])
+        for method in ["llm.respond", "stt.transcribe", "stt.listen", "stt.stop"] {
+            let r = await router.handle(body: ["method": method, "params": ["messages": [["role": "user", "content": "x"]], "wav": ""]])
+            #expect(r.1?.contains("unknown_method") == true, "\(method) isn't there")
+        }
+        withExtendedLifetime(methods) {}
+    }
+
+    @Test func releaseUnloadsAndTheNextLineLoadsAgain() async throws {
+        let (router, backend, methods, _) = setUp(parts: [.tts])
+        let none = try #require(await router.handle(body: ["method": "voice.release"]).0 as? [String: Any])
+        #expect(none["released"] as? Bool == false && backend.releases == 0, "nothing was loaded")
+        _ = await router.handle(body: ["method": "tts.speak", "params": ["text": "One."]])
+        let r = try #require(await router.handle(body: ["method": "voice.release"]).0 as? [String: Any])
+        #expect(r["released"] as? Bool == true && backend.releases == 1)
+        let s = try #require(await router.handle(body: ["method": "voice.status"]).0 as? [String: Any])
+        #expect(s["prepared"] as? Bool == false && s["models"] as? String == "/tmp/models", "unloaded; the folder stays chosen")
+        _ = try #require(await router.handle(body: ["method": "tts.speak", "params": ["text": "Two."]]).0 as? [String: Any])
+        #expect(backend.prepares == 2 && backend.spoken == ["One.", "Two."])
+        withExtendedLifetime(methods) {}
+    }
+
+    @Test func releaseLeavesTheModelsWhileALineIsSpoken() async throws {
+        let (router, backend, methods, _) = setUp(parts: [.tts])
+        _ = await router.handle(body: ["method": "voice.prepare"])
+        backend.holdSpeak = true
+        let speaking = Task { @MainActor in await router.handle(body: ["method": "tts.speak", "params": ["text": "Slowly."]]).0 != nil }
+        while backend.hold == nil { await Task.yield() }
+        let busy = try #require(await router.handle(body: ["method": "voice.release"]).0 as? [String: Any])
+        #expect(busy["released"] as? Bool == false && busy["busy"] as? Bool == true && backend.releases == 0)
+        backend.holdSpeak = false; backend.hold?.resume()
+        #expect(await speaking.value, "the line was spoken")
+        let after = try #require(await router.handle(body: ["method": "voice.release"]).0 as? [String: Any])
+        #expect(after["released"] as? Bool == true)
+        withExtendedLifetime(methods) {}
+    }
+
+    @Test func aRelativeModelsFolderIsInTheAppsTemporaryFolder() async throws {
+        let (router, _, methods, _) = setUp(["VRMXG_SHELL_MODELS": "models"])
+        let s = try #require(await router.handle(body: ["method": "voice.status"]).0 as? [String: Any])
+        #expect(s["models"] as? String == URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("models").path)
         withExtendedLifetime(methods) {}
     }
 

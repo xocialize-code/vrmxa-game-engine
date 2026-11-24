@@ -7,8 +7,9 @@
 //     480×270 thumbnail of each (boxed down in integers), a turntable per character (the world held one second in, the
 //     character alone, the camera once round it), and delivery.json with every file's hash and the timings.
 //   - Cancel stops it between frames (the shell removes the partial movie) and between files.
-// Before a job renders, the storyboard's thumbnail host is let go: the creator keeps no voice models (it voices through
-// the shell's tts.speak or the loopback stand-in), so the offline hosts are what a 4K render competes with.
+// Before a job renders, the storyboard's thumbnail host and the shell's voice model are let go (host.releaseOffline,
+// host.releaseVoice: the Mac app's tts.speak keeps Kokoro loaded after a line is voiced), so a 4K render has the GPU
+// and the memory to itself. The next thumbnails and the next voiced line bring them back.
 import { PerspectiveCamera, Box3, Vector3 } from 'three';
 import { parse } from '@vrmxg/scene';
 import { hashValue } from '@vrmxg/snapshot';
@@ -101,6 +102,7 @@ async function deliver(host, job, { progress, signal }) {
   const frames = framesFor(spec.seconds ?? seq.duration / seq.fps, rate);
   const stop = () => { if (signal.aborted) throw Object.assign(new Error('cancelled'), { code: 'cancelled' }); };
   await host.releaseOffline?.();
+  await host.releaseVoice?.();
 
   // the stills and thumbnails, from the film's own bytes as they pass (each encoded as soon as it is taken)
   const picks = extras && (extras.stills || extras.thumbnails) ? stillFrames(seq, frames, rate) : [];

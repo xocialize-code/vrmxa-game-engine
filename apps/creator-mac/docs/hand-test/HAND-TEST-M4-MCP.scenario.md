@@ -1,7 +1,7 @@
 # Creator hand test (M4 W11): an agent makes the short, AppProbe scenario
 
-Run `apps/creator-mac/scripts/build.sh`, then `apps/creator-mac/scripts/hand-test-fixtures.sh`, with the TTS server on
-127.0.0.1:5190 under the GPU lock (`../HAND-TEST-M4-MCP.md`). Then
+Run `apps/creator-mac/scripts/build.sh`, then `apps/creator-mac/scripts/hand-test-fixtures.sh` (it puts Kokoro where
+the app's `tts.speak` reads it: no TTS server, AB-T-0614), under the GPU lock (`../HAND-TEST-M4-MCP.md`). Then
 `appprobe checklist scenario=apps/creator-mac/docs/hand-test/HAND-TEST-M4-MCP.scenario.md`, and once row 1 has
 passed, `node apps/creator-mac/scripts/mcp-session.mjs` (row 2 waits up to 20 minutes for the agent).
 - **The agent's steps** are read from the toolbar's `#undo` (`Undo <label>`): with `pageUndo`, Edit › Undo's title
@@ -14,7 +14,7 @@ passed, `node apps/creator-mac/scripts/mcp-session.mjs` (row 2 waits up to 20 mi
 app: VRMXG Creator
 launch: ../../build/VRMXGCreator.app
 checklist: ../HAND-TEST-M4-MCP.md
-env: {"VRMXG_SHELL_PROJECT": "project", "VRMXG_QUERY": "tts=http://127.0.0.1:5190/speak"}
+env: {"VRMXG_SHELL_PROJECT": "project", "VRMXG_SHELL_MODELS": "models"}
 fresh: false
 ```
 

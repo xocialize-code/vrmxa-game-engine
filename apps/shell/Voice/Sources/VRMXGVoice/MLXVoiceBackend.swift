@@ -21,6 +21,8 @@ public final class MLXVoiceBackend: VoiceBackend {
     let llmModel: QwenModel
     let sttRightContext: Int
     var listener: VoiceListener?
+    /// The parts whose packages the engine knows (registered once: eviction keeps a registration) and the ones loaded.
+    var registered: Set<VoicePart> = [], resident: Set<VoicePart> = []
 
     public let names: [String: String]
 
@@ -31,18 +33,41 @@ public final class MLXVoiceBackend: VoiceBackend {
         names = ["tts": "Kokoro-82M (mlx-kokoro-tts-swift)", "llm": "Qwen3.5-4B-4bit (mlx-qwen-llm-swift)", "stt": "Nemotron 3.5 ASR 0.6B (mlx-nemotron-stt-swift)"]
     }
 
-    public func prepare(models: URL) async throws {
-        await engine.useModelStore(ModelStore(root: models))
-        try await engine.register(KokoroTTSPackage.registration, configuration: KokoroConfiguration())
-        try await engine.register(NemotronSTTPackage.registration, configuration: NemotronSTTConfiguration(attContextSize: [56, sttRightContext]))
-        try await engine.register(QwenLLMPackage.registration, configuration: QwenLLMConfiguration(model: llmModel))
-        try await engine.prepare(.tts)
-        try await engine.prepare(.stt)
-        try await engine.prepare(.llm)
+    public func prepare(models: URL, parts: Set<VoicePart>) async throws {
+        if registered.isEmpty {
+            await engine.useModelStore(ModelStore(root: models))
+            // Kokoro's G2P model comes through the hub client, whose cache follows HF_HUB_CACHE, not the model store.
+            // Point it at the same folder: the one place a sandboxed app is sure to reach. An inherited HF_HUB_CACHE
+            // names a folder outside the sandbox, and the load then fails on its lock file (AB-T-0614's hand test).
+            setenv("HF_HUB_CACHE", models.path, 1)
+        }
+        for part in [VoicePart.tts, .stt, .llm] where parts.contains(part) && !registered.contains(part) {
+            switch part {
+            case .tts: try await engine.register(KokoroTTSPackage.registration, configuration: KokoroConfiguration())
+            case .stt: try await engine.register(NemotronSTTPackage.registration, configuration: NemotronSTTConfiguration(attContextSize: [56, sttRightContext]))
+            case .llm: try await engine.register(QwenLLMPackage.registration, configuration: QwenLLMConfiguration(model: llmModel))
+            }
+            registered.insert(part)
+        }
+        for part in [VoicePart.tts, .stt, .llm] where parts.contains(part) {
+            try await engine.prepare(Self.capability(part))
+            resident.insert(part)
+        }
         // Warm each path once, so the first spoken turn isn't the one that pays for compilation.
-        _ = try? await speak("Hello.", voice: "af_heart")
-        _ = try? await respond([VoiceMessage(role: "user", content: "Say hi.")], maxTokens: 4, temperature: 0, seed: 1, json: false)
-        _ = try? await transcribe([Float](repeating: 0, count: 16_000))
+        if parts.contains(.tts) { _ = try? await speak("Hello.", voice: "af_heart") }
+        if parts.contains(.llm) { _ = try? await respond([VoiceMessage(role: "user", content: "Say hi.")], maxTokens: 4, temperature: 0, seed: 1, json: false) }
+        if parts.contains(.stt) { _ = try? await transcribe([Float](repeating: 0, count: 16_000)) }
+    }
+
+    /// Every loaded model leaves memory (the engine's evict: unload, and its budget back); the registrations stay.
+    public func release() async {
+        listener?.cancel(); listener = nil
+        for part in resident { await engine.evict(Self.capability(part)) }
+        resident = []
+    }
+
+    static func capability(_ part: VoicePart) -> Capability {
+        switch part { case .tts: .tts; case .llm: .llm; case .stt: .stt }
     }
 
     public func speak(_ text: String, voice: String) async throws -> VoiceAudio {
@@ -95,7 +120,13 @@ public final class MLXVoiceBackend: VoiceBackend {
 
 extension VoiceMethods {
     /// The voice methods on MLXEngine, for an app's `ShellConfiguration(setUp:)`.
-    public static func mlx(on shell: ShellAppDelegate) {
-        VoiceMethods(backend: MLXVoiceBackend(), emit: { [unowned shell] name, payload in shell.emit(name, payload) }).install(on: shell)
+    public static func mlx(on shell: ShellAppDelegate) { mlx(parts: Set(VoicePart.allCases))(shell) }
+
+    /// The same for an app that takes some of the parts: `setUp: VoiceMethods.mlx(parts: [.tts])` registers tts.speak
+    /// and loads Kokoro alone (the creator, AB-T-0614).
+    public static func mlx(parts: Set<VoicePart>) -> @MainActor (ShellAppDelegate) -> Void {
+        { shell in
+            VoiceMethods(backend: MLXVoiceBackend(), parts: parts, emit: { [unowned shell] name, payload in shell.emit(name, payload) }).install(on: shell)
+        }
     }
 }

@@ -381,13 +381,30 @@ export class CreatorHost extends EditorHost {
    */
   voicingIO() { return projectIO(this.project, (this._lazyTTS ??= lazyTTS(() => this.voiceProvider()))); }
 
-  /** The TTS: ?tts=…/speak (VRMXG_QUERY in the Mac app), else the shell's tts.speak when this shell has it. */
+  /**
+   * The TTS: ?tts=…/speak when the page names one (a browser, or VRMXG_QUERY in the Mac app), else the shell's
+   * tts.speak (the Mac app, AB-T-0614). The shell loads its voice from a folder the person picks once: with none
+   * chosen yet, its folder panel asks here, the first time a line needs speaking.
+   */
   async voiceProvider() {
     if (!new URLSearchParams(globalThis.location?.search ?? '').get('tts') && inShell) {
       const info = await call('shell.info');
-      if (!info?.methods?.includes('tts.speak')) throw new Error('no TTS voice here: this shell has no tts.speak (launch with VRMXG_QUERY=tts=http://127.0.0.1:5190/speak and tools/tts-server.py)');
+      if (!info?.methods?.includes('tts.speak')) throw new Error('no TTS voice here: this shell was built without tts.speak (apps/shell/Voice); launch with VRMXG_QUERY=tts=http://127.0.0.1:5190/speak and tools/tts-server.py instead');
+      if (!(await call('voice.status'))?.models) await call('voice.chooseModels');
     }
     return this.ttsProvider();
+  }
+
+  /**
+   * Let the shell's voice model go before a render queue job (M4-PLAN's memory risk: a 4K render shouldn't share the
+   * memory with a resident voice). The next line that needs speaking loads it again. → true when a model was unloaded.
+   */
+  async releaseVoice() {
+    if (!inShell) return false;
+    try {
+      if (!(await call('shell.info'))?.methods?.includes('voice.release')) return false;
+      return !!(await call('voice.release'))?.released;
+    } catch { return false; } // a render never fails for this
   }
 
   /**

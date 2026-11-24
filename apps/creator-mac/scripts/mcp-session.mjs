@@ -4,8 +4,9 @@
 // export. Its tool calls are recorded in docs/hand-test/results/mcp-creator-session.json. Afterwards each edit is a step
 // of the creator's own Undo marked "(MCP)" (HAND-TEST-M4-MCP.scenario.md walks them back and forth).
 //   node apps/creator-mac/scripts/mcp-session.mjs [--model sonnet]
-// The creator needs a TTS for the re-voicing: launch it with VRMXG_QUERY=tts=http://127.0.0.1:5190/speak and
-// content/sample/tools/tts-server.py running (Kokoro through mlx-audio: hold the GPU lock).
+// The re-voicing speaks through the Mac app's own tts.speak (Kokoro on MLXEngine, AB-T-0614): launch it with
+// VRMXG_SHELL_MODELS=models after scripts/hand-test-fixtures.sh, or choose the models folder once in the app. In a
+// browser, ?tts=http://127.0.0.1:5190/speak and content/sample/tools/tts-server.py.
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';

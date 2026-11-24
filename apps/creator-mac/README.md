@@ -1,8 +1,9 @@
 # VRMXG creator for the Mac
 
 M4 W5 (AB-T-0577). The creator's web build on the shared shell (`apps/shell`, AB-D-0253), with `pageUndo` so Edit ›
-Undo / Redo reach the short's history. No Xcode project: `scripts/build.sh` runs the Vite build, `swift build` and an ad
-hoc signature.
+Undo / Redo reach the short's history, and the speaking part of the shell's voice product (`apps/shell/Voice`,
+AB-T-0614) so lines are voiced in the app. No Xcode project: `scripts/build.sh` runs the Vite build, `swift build`
+(Swift Build, for MLX's metallib) and an ad hoc signature. macOS 26 or later.
 
 ```sh
 apps/creator-mac/scripts/build.sh                 # build/VRMXGCreator.app (SKIP_WEB=1 reuses apps/creator/dist)
@@ -47,6 +48,17 @@ cover a cancel at and after the last frame.
 `scripts/mcp-session.mjs` runs a Claude Code session with only the creator's tools against the open app, and
 [`docs/HAND-TEST-M4-MCP.md`](docs/HAND-TEST-M4-MCP.md) with its scenario checks that each of the agent's edits is a step
 of the creator's Undo marked "(MCP)": 4 of 4 rows passed on 2026-11-23 ([report](docs/hand-test/results/m4-mcp/report.md)).
-Launch with `VRMXG_QUERY=tts=http://127.0.0.1:5190/speak` (and `content/sample/tools/tts-server.py`) for the voicing;
-the shell has no `tts.speak` yet, so without it a recast re-voices only from takes already in the project and lists the
-lines left to voice.
+The re-voicing speaks through the app's own `tts.speak` (below); `scripts/hand-test-fixtures.sh` puts Kokoro in the
+app's sandbox for `VRMXG_SHELL_MODELS=models`.
+
+**Voice (AB-T-0614).** The app links `VRMXGShellVoice` with `VoiceMethods.mlx(parts: [.tts])`: `tts.speak` (Kokoro-82M
+with word timings, on MLXEngine in the app's process) and the `voice.*` methods, and nothing of the microphone or the
+director's model.
+- **When it speaks:** a recast or a re-voiced line asks it only for a line that has no take in the project. The first
+  such line loads Kokoro.
+- **Where the model is:** a folder picked once. With none chosen, the first line that needs speaking opens the shell's
+  folder panel (`voice.chooseModels`); cancelling it casts unvoiced and lists the lines left to voice.
+- **Before a render:** the page calls `voice.release` before each render queue job, so a 4K render doesn't share the
+  memory with the voice. The next voiced line loads it again.
+- **Another TTS:** `VRMXG_QUERY=tts=http://127.0.0.1:5190/speak` (with `content/sample/tools/tts-server.py`) still
+  takes over when given.
