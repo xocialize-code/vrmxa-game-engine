@@ -7,7 +7,8 @@
 //   const behaviours = await build.behaviours((url) => import(new URL(url, location.href).href));
 //   const scene = parse(await build.text(build.game.entry));          // then build the world with build.bytes as resolve
 import { sha256 } from './sha256.js';
-import { BuildError, normRef, moduleImports, resolveFrom } from './paths.js';
+import { BuildError, normRef, resolveFrom } from './paths.js';
+import { moduleImports } from './modules.js';
 import { BUILD_FILE, parseManifest } from './manifest.js';
 import { PROJECT_DIR } from './runtime.js';
 
@@ -42,7 +43,10 @@ export class Build {
 
   /** One file of the build by its path, checked against its row the first time it is read. @param {import('./manifest.js').BuildFile} f */
   async file(f) {
-    const bytes = await this.read(f.path);
+    let bytes;
+    // a file the manifest lists that can't be read: the folder is not the whole build (an export cut short after its
+    // manifest was in place, or a folder copied in part)
+    try { bytes = await this.read(f.path); } catch (e) { throw new BuildError('incomplete', `this build is incomplete: ${f.path}, which its manifest lists, is not there (${e?.message ?? e}). Its export was cut short, or the folder was copied in part: export again`, [f.path]); }
     if (this.verify && !this.checked.has(f.path)) {
       if (bytes.length !== f.bytes || sha256(bytes) !== f.sha256) throw new BuildError('changed', `${f.path} is not the file this build was exported with`, [f.path]);
       this.checked.add(f.path);

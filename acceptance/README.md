@@ -27,15 +27,15 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
   # the Mac editor: apps/editor-mac/docs/hand-test/HAND-TEST-M5-EXPORT-GAME.scenario.md, then
   node acceptance/m5/build.mjs --chromium --mac <builds…> --refused <folder> --kept <folder>
   ```
-  **Passed, 14 of 14 and 4 of 4** (M5 Max, macOS 27.3 beta, Node 26.12.1, Chrome for Testing 156.0.8078.4). First run before
-  any review (receipt AB-R-1102), again after each of two review rounds (AB-R-1106, AB-R-1108), and again once the
-  branch was rebased over W2 and W8, whose registry nodes are in the runtime. Each changed the runtime, so the digests
+  **Passed, 16 of 16 and 4 of 4** (M5 Max, macOS 27.3 beta, Node 26.12.1, Chrome for Testing 156.0.8078.4). First run before
+  any review (receipt AB-R-1102), again after each of two review rounds (AB-R-1106, AB-R-1108), again once the branch
+  was rebased over W2 and W8 (AB-R-1109), and again after a third review. Each changed the runtime, so the digests
   below are the last run's:
-  - **The build:** 60 files, 22,184,604 bytes: 50 of the project's files under `project/` and the runtime's
-    10 (`vrmxg-stepper 0.1.0`, digest `22bcd36f4b360642…`); build digest `756ed1c77a29c89c…`.
+  - **The build:** 60 files, 22,211,863 bytes: 50 of the project's files under `project/` and the runtime's
+    10 (`vrmxg-stepper 0.1.0`, digest `2e08d965b6837eb4…`); build digest `d03301c5fe1744dc…`.
   - **The same bytes from Node and from the Mac editor.** Two exports in two Node processes, and four from the Mac
     editor's Export Game (the bundled sample twice, the same project opened as a folder, and File › Export Game…): all
-    six folders are the same, byte for byte, 61 files each with the manifest (SHA-256 `ee682184e9715cbd…c47a`), and each holds
+    six folders are the same, byte for byte, 61 files each with the manifest (SHA-256 `e6b6c09e6584ea8e…6ed6`), and each holds
     exactly what its manifest lists. One of the four was then exported over again in the Mac editor (an earlier build
     replaced, staged and moved in whole) and is still Node's build, with no staging folder left.
   - **Every file has its hash and licence** in the manifest: a project file's licence is its row in the project's
@@ -52,6 +52,11 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
     from its folder, the build through the loader in Node, the build's own runtime in Chromium, and in WKWebView over
     the scheme and over loopback (two fresh web views each) all give the same 601 hashes, final `fe69bad3406ab5f6`. The loader
     read 48 files and checked each against the manifest; a ref the manifest doesn't list is refused by name.
+
+  - **What a module imports is read the same in every engine.** Fourteen awkward modules (division after `x--`, a
+    `/*` inside a regular expression, a brace in a template's string, minified code, computed imports that must be
+    refused) go through the lexer in Node, Chromium and WKWebView on both origins: the same reading in all, and the
+    game's own module graph the same. The exporter runs in one engine and the loader in another.
 
   **Not checked:** the folder panel a person sees (the hook `VRMXG_SHELL_BUILD` stood in for it), and a build made on
   another machine or by CI. The runtime in the build is the minimal one (`vrmxg-stepper`, no renderer) until the game

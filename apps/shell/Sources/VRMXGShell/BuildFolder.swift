@@ -20,7 +20,10 @@ import CryptoKit
 /// **`build.end` leaves the earlier build or the new one, never neither.** Every staged file is first checked against
 /// the staged manifest (size and SHA-256), and the folder is decided on again. Then the earlier build's files are held
 /// aside (not deleted), its folders pruned, the new manifest put over the old in one step and the new files moved in.
-/// If a step fails, what moved in is taken out and the earlier build is put back.
+/// If a step fails, what moved in is taken out and the earlier build is put back; a file that can't be put back stays
+/// held in the staging folder (never deleted with it), the error says so, and the next export restores it. If the
+/// earlier manifest itself can't be put back, nothing is undone: the folder is the new build's, incomplete, and the next
+/// export finishes it from the staging folder.
 ///
 /// **What an export may replace.** The folder may be absent, empty, or hold an earlier build, every file in it one that
 /// build's `vrmxg-build.json` lists. It is refused, before anything is touched, when it holds a file the manifest
@@ -46,6 +49,9 @@ final class BuildFolder {
     private(set) var written: [String] = []
     private var sizes: [String: Int] = [:]
     private var closed = false
+    /// Called at points of a commit ("swapped": the new manifest is in place; "undoing": a failed commit begins to undo
+    /// itself): the tests' way in between one step and the next.
+    var onStep: ((String) -> Void)?
 
     struct Scan { var files: [String] = [], dirs: [String] = [], foreign: [String] = [], stale: [String] = [], junk: [String] = [] }
     struct Row { let path: String, bytes: Int, sha256: String }
@@ -268,6 +274,7 @@ final class BuildFolder {
             //    the new build's, and every file in the folder is one it lists
             guard rename(stage.appendingPathComponent(Self.manifest).path, manifestURL.path) == 0 else { throw BridgeError("failed", "the manifest could not be put in place") }
             replaced = true
+            onStep?("swapped")
             for rel in written where rel != Self.manifest {
                 try Self.folders(root, rel, made: &made)
                 let to = root.appendingPathComponent(rel)
@@ -275,18 +282,31 @@ final class BuildFolder {
                 try fm.moveItem(at: stage.appendingPathComponent(rel), to: to); arrived.append(rel)
             }
         } catch {
-            // put the earlier build back as it was
+            onStep?("undoing")
+            let why = (error as? BridgeError)?.message ?? error.localizedDescription
+            // Undo it. The manifest first, because it decides which build the folder is: if the earlier one can't be
+            // put back over the new, the folder stays the new build's, half moved in, with the rest of its files (and
+            // the earlier build's, held) left in the staging folder, and the next export into it finishes the new build
+            if replaced, now.hasManifest {
+                guard rename(held.appendingPathComponent(Self.manifest).path, manifestURL.path) == 0 else {
+                    closed = true
+                    throw BridgeError("failed", "\(why); and the earlier build's manifest could not be put back, so the folder is the new build's, incomplete: the rest of it is kept in \(stage.lastPathComponent), and the next export into this folder finishes it")
+                }
+            } else if replaced { try? fm.removeItem(at: manifestURL) }
+            // then the earlier build's files, as they were
             for rel in arrived { try? fm.removeItem(at: root.appendingPathComponent(rel)) }
             for d in made.reversed() { _ = rmdir(d.path) }
-            if replaced {
-                if now.hasManifest { _ = rename(held.appendingPathComponent(Self.manifest).path, manifestURL.path) } else { try? fm.removeItem(at: manifestURL) }
-            }
+            var kept: [String] = [] // what of the earlier build could not be put back
             for f in away {
                 var ignored: [URL] = []
-                if (try? Self.folders(root, f, made: &ignored)) != nil { try? fm.moveItem(at: held.appendingPathComponent(f), to: root.appendingPathComponent(f)) }
+                do { try Self.folders(root, f, made: &ignored); try fm.moveItem(at: held.appendingPathComponent(f), to: root.appendingPathComponent(f)) } catch { kept.append(f) }
             }
-            drop()
-            throw error
+            guard !kept.isEmpty else { drop(); throw error }
+            // what couldn't be put back stays where it is held: dropping the staging folder now would delete it. The next
+            // export into this folder moves in whatever the folder's manifest vouches for (recover), so the folder still
+            // ends as one build or the other
+            closed = true
+            throw BridgeError("failed", "\(why); and \(kept.count) file\(kept.count == 1 ? "" : "s") of the earlier build could not be put back (\(Self.few(kept))): kept in \(stage.lastPathComponent), and restored by the next export into this folder")
         }
         drop()
         return ["path": root.path, "name": root.lastPathComponent, "files": written.count - 1, "bytes": total]

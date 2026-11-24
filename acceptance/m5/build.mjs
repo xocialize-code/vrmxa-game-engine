@@ -16,7 +16,8 @@
 //      file in another case than the project has it;
 //   4  the loader opens the build, and its scene plays to the same per-step hashes as the project played straight
 //      from its folder (the recorded walk, 600 steps; needs vrmxa-avatar-studio beside the repository);
-//   5  (--chromium) the build's own runtime plays it in a browser to those hashes;
+//   5  (--chromium) the build's own runtime plays it in a browser to those hashes, and the browser's lexer reads a set of
+//      awkward modules as Node's does (the exporter and the loader may run in different engines);
 //   6  (--mac) every build from the Mac editor is the same bytes as Node's.
 // Then acceptance/m5/build-wkwebview.sh plays the build in WKWebView, over the scheme and over loopback, against this
 // run's hashes.
@@ -31,7 +32,8 @@ import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { installPortableMath } from '@vrmxg/dmath';
 import { loadRapier } from '@vrmxg/physics';
-import { exportBuild, parseLicences, licenceOf, sha256Text, RUNTIME_FILE, BUILD_FILE, GAME_FILE } from '@vrmxg/bundle';
+import { exportBuild, parseLicences, licenceOf, sha256Text, moduleImports, RUNTIME_FILE, BUILD_FILE, GAME_FILE } from '@vrmxg/bundle';
+import { LEXER_CASES, readLexerCases } from '../../engine/packages/bundle/runtime/lexer-cases.js';
 import { folderReader, openFolder, checkFolder, compareFolders, scanFolder, behavioursImporter } from '@vrmxg/bundle/node';
 import { playScene } from '../../engine/packages/bundle/runtime/play.js';
 import { vrmxaCore, PATHS } from '../../engine/packages/character/test/fixtures.mjs';
@@ -87,8 +89,13 @@ try {
 } catch (e) { wrongCase = { code: e.code, message: e.message, files: e.files }; }
 say('a reference in another case than the file stops the export, naming the scene', wrongCase?.code === 'missing_file' && wrongCase.message.startsWith(`${game.entry} names `) && wrongCase.files.length === 2 && wrote === 0, wrongCase ? `"${wrongCase.message}"` : 'the export went through');
 
+// 3c: what a module imports, read by the lexer: a set of awkward modules (the ones a hand-written scanner got wrong
+// in review) read as expected here; step 5 and build-wkwebview.sh compare the browsers' readings with this one
+const lexer = readLexerCases(moduleImports), lexerOk = LEXER_CASES.every((c, k) => JSON.stringify(lexer[k]) === JSON.stringify(c.imports));
+say('the lexer reads every awkward module as expected', lexerOk, `${LEXER_CASES.length} modules, ${lexer.filter((x) => x === 'refused').length} refused`);
+
 // 4: the build through the loader against the project played directly
-let replay = { skipped: 'needs vrmxa-avatar-studio beside the repository' }, direct = null;
+let replay = { skipped: 'needs vrmxa-avatar-studio beside the repository' }, direct = null, modules = null;
 if (fs.existsSync(PATHS.core)) {
   installPortableMath();
   const R = await loadRapier(), core = await vrmxaCore(), closet = await import(PATHS.core.replace(/index\.js$/, 'closet/index.js'));
@@ -97,6 +104,7 @@ if (fs.existsSync(PATHS.core)) {
   const build = await openFolder(dirs[0]);
   const viaBuild = await playScene({ R, bytes: build.bytes, scene: build.game.entry, behaviours: await build.behaviours(behavioursImporter(dirs[0])), actions: await build.actions(), vrmxaCore: core, closet, take: TAKE, steps: STEPS });
   const firstDiff = direct.hashes.findIndex((h, i) => h !== viaBuild.hashes[i]);
+  modules = await build.modules(build.game.behaviours);
   replay = { steps: STEPS, take: TAKE, components: direct.components, final: direct.final, hashesDigest: sha256Text(direct.hashes.join('\n')), viaBuild: viaBuild.final, firstDifference: firstDiff < 0 ? null : firstDiff, filesRead: build.checked.size };
   say('the loaded build plays to the project\'s per-step hashes', firstDiff < 0 && viaBuild.hashes.length === STEPS + 1, `${STEPS} steps, ${direct.components} components, final ${direct.final}; ${build.checked.size} files read and checked`);
   // and nothing outside the build is reachable through the loader
@@ -127,7 +135,9 @@ if (args.includes('--chromium')) {
   const version = browser.version();
   await browser.close(); server.close();
   const firstDiff = direct && r.hashes ? direct.hashes.findIndex((h, i) => h !== r.hashes[i]) : 0;
-  chromium = { version, final: r.final ?? null, steps: r.steps ?? null, digest: r.digest ?? null, verified: r.verified ?? null, firstDifference: firstDiff < 0 ? null : firstDiff, errors: [...errors, ...(r.errors ?? [])] };
+  const sameLexer = JSON.stringify(r.lexer) === JSON.stringify(lexer) && JSON.stringify(r.modules) === JSON.stringify(modules);
+  chromium = { version, final: r.final ?? null, steps: r.steps ?? null, digest: r.digest ?? null, verified: r.verified ?? null, firstDifference: firstDiff < 0 ? null : firstDiff, sameLexer, errors: [...errors, ...(r.errors ?? [])] };
+  say('Chromium\'s lexer reads the awkward modules, and the game\'s own, as Node\'s does', sameLexer, `${r.lexer?.length ?? 0} modules; the game's graph ${JSON.stringify(r.modules)}`);
   say('the build\'s runtime plays it in Chromium to the same hashes', !!direct && firstDiff < 0 && r.hashes?.length === STEPS + 1 && r.digest === manifest.digest && !chromium.errors.length, `Chromium ${version}, final ${r.final}${chromium.errors.length ? `; errors: ${chromium.errors.join('; ')}` : ''}`);
 }
 
@@ -151,7 +161,7 @@ const result = {
   check: 'M5 exit check 1: a project exports as a game (AB-T-0615)', ok, node: process.version,
   build: { game: manifest.game.id, entry: manifest.game.entry, runtime: manifest.runtime, files: manifest.files.length, projectFiles: projectFiles.length, runtimeFiles: runtimeFiles.length, bytes: manifest.bytes, digest: manifest.digest, manifestSha256: runs[0].manifest },
   nodeRuns: runs.map((r) => ({ manifest: r.manifest, digest: r.digest, files: r.files, bytes: r.bytes })),
-  refusal, wrongCase, replay, chromium, mac: macBuilds, macRefused, macKept, checks,
+  refusal, wrongCase, lexer: { cases: LEXER_CASES.length, digest: sha256Text(JSON.stringify(lexer)), modules }, replay, chromium, mac: macBuilds, macRefused, macKept, checks,
 };
 fs.writeFileSync(path.join(here, '../results/m5-build.json'), `${JSON.stringify(result, null, 1)}\n`);
 console.log(`${ok ? 'passed' : 'FAILED'}: ${checks.filter((c) => c.ok).length} of ${checks.length}; build ${manifest.digest.slice(0, 16)}, manifest ${runs[0].manifest.slice(0, 16)}`);

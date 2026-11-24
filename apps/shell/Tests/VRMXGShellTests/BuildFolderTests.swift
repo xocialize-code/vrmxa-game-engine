@@ -213,6 +213,45 @@ import Testing
             #expect(r.1 != nil, "\(locked) read-only: the commit fails")
             #expect(snapshot(game) == before, "\(locked) read-only: the earlier build is back, byte for byte, with nothing of the new one and no staging folder")
         }
+        // the worst case: the commit fails, and then a file of the earlier build can't be put back either (something has
+        // appeared where it goes). It is not deleted with the staging folder: it stays held, the error says so, and the
+        // next export restores it
+        try fm.setAttributes([.posixPermissions: 0o555], ofItemAtPath: game.appendingPathComponent("project/a").path)
+        let b = try #require(id(await router.handle(body: ["method": "build.begin", "params": ["name": "game"]])))
+        let next = ["index.html": "the next build", "new.js": "1"]
+        for (p, t) in next { _ = await router.handle(body: ["method": "build.write", "params": ["id": b, "path": p, "text": t]]) }
+        _ = await router.handle(body: ["method": "build.write", "params": ["id": b, "path": "vrmxg-build.json", "text": manifest(next)]])
+        f.build?.onStep = { step in if step == "undoing" { try? Data("in the way".utf8).write(to: game.appendingPathComponent("zz.txt")) } }
+        let failed = await router.handle(body: ["method": "build.end", "params": ["id": b]])
+        try fm.setAttributes([.posixPermissions: 0o755], ofItemAtPath: game.appendingPathComponent("project/a").path)
+        #expect(failed.1?.contains("1 file of the earlier build could not be put back (zz.txt): kept in .vrmxg-export-") == true, "\(failed.1 ?? "it went through")")
+        let stale = BuildFolder.scan(game).stale
+        #expect(stale.count == 1, "the staging folder is kept: the held file is in it")
+        #expect(text(game.appendingPathComponent(stale.first ?? "").appendingPathComponent(".held/zz.txt")) == "old", "the earlier build's file is still held, not deleted")
+        try fm.removeItem(at: game.appendingPathComponent("zz.txt")) // what was in the way goes
+        BuildFolder.recover(game.resolvingSymlinksInPath())
+        #expect(snapshot(game) == before, "and the next export's first step puts the earlier build back whole")
+
+        // worse still: the commit fails after the new manifest is in place, and the earlier manifest can't be put back
+        // over it. Nothing is undone: the folder is the new build's, incomplete, and the next export finishes it
+        let c = try #require(id(await router.handle(body: ["method": "build.begin", "params": ["name": "game"]])))
+        for (p, t) in next { _ = await router.handle(body: ["method": "build.write", "params": ["id": c, "path": p, "text": t]]) }
+        _ = await router.handle(body: ["method": "build.write", "params": ["id": c, "path": "vrmxg-build.json", "text": manifest(next)]])
+        f.build?.onStep = { step in
+            if step == "swapped" { try? fm.createDirectory(at: game.appendingPathComponent("new.js"), withIntermediateDirectories: false) } // in the way of a file moving in
+            if step == "undoing" { try? fm.setAttributes([.posixPermissions: 0o555], ofItemAtPath: game.path) }                          // and the folder can't be written to
+        }
+        let stuck = await router.handle(body: ["method": "build.end", "params": ["id": c]])
+        try fm.setAttributes([.posixPermissions: 0o755], ofItemAtPath: game.path)
+        #expect(stuck.1?.contains("the earlier build's manifest could not be put back, so the folder is the new build's, incomplete") == true, "\(stuck.1 ?? "it went through")")
+        #expect(text(game.appendingPathComponent("vrmxg-build.json")) == manifest(next), "the folder's manifest is the new build's")
+        try fm.removeItem(at: game.appendingPathComponent("new.js")) // what was in the way goes
+        BuildFolder.recover(game.resolvingSymlinksInPath())
+        var whole = next; whole["vrmxg-build.json"] = manifest(next)
+        #expect(snapshot(game) == whole, "and the next export's first step finishes the new build from the staging folder")
+        #expect((try await export(router, earlier)).1 == nil) // back to the earlier build for what follows
+        #expect(snapshot(game) == before)
+
         // and with nothing in the way the same export goes through
         #expect((try await export(router, ["index.html": "the next build", "new.js": "1"])).1 == nil)
         #expect(snapshot(game) == ["index.html": "the next build", "new.js": "1", "vrmxg-build.json": manifest(["index.html": "the next build", "new.js": "1"])])

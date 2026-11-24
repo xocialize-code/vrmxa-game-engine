@@ -21,7 +21,8 @@
 // loader refuses a ref the manifest doesn't list, by name, so a missed file fails on the first play, never silently.
 import { GAME_FILE } from './game.js';
 import { LICENCES_FILE } from './licences.js';
-import { BuildError, globRe, resolveFrom, sortPaths, normRef, moduleImports, dirOf } from './paths.js';
+import { BuildError, globRe, resolveFrom, sortPaths, normRef, dirOf } from './paths.js';
+import { moduleImports } from './modules.js';
 
 const text = (b) => new TextDecoder().decode(b);
 const isJson = (p) => /\.(vrmxs|json)$/i.test(p);
@@ -112,7 +113,9 @@ export async function collect({ game, files, read, registry = null }) {
     const r = normRef(s);
     if (byRef.has(r)) return r;
     const other = byFold.get(r.toLowerCase());
-    if (other !== undefined && (sure || looksLikeRef(s) || (plain(s) && !/\s/.test(s) && s.includes('/')))) throw new BuildError('missing_file', `${by} ${verb} ${s}, and the project's file is ${other}: the case differs, and a build's files are found by their exact names${sure ? '' : ` (${hint(s)})`}`, [s, other]);
+    // a string that is a file's whole path but for its case, and ends in an extension the project has, is that file
+    // misspelt, whether it has a space or not and wherever the file is
+    if (other !== undefined && (sure || (plain(s) && (exts.has(extOf(s) ?? '') || (!/\s/.test(s) && s.includes('/')))))) throw new BuildError('missing_file', `${by} ${verb} ${s}, and the project's file is ${other}: the case differs, and a build's files are found by their exact names${sure ? '' : ` (${hint(s)})`}`, [s, other]);
     return null;
   };
   const need = (s, by, verb = 'names') => {

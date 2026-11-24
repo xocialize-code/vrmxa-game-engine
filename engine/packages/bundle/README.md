@@ -140,16 +140,20 @@ The exporter traces the game's files from its documents (`collect`):
   looks like a file (`intro.wav` as text) stops the export, and the message gives the line to add:
   `"ignore": ["intro.wav"]` in `game.json`.
 - **Case counts.** `Props/Door.glb` for `props/door.glb` opens on a Mac's disk and would not in a build served from
-  anywhere, so it stops the export and the error gives both spellings.
+  anywhere, so it stops the export and the error gives both spellings. Any string that is a file's whole path but for
+  its case, and ends in an extension the project has, is taken for that file misspelt, with or without a space and
+  wherever the file is.
 - `./props/door.glb` and the Unicode form of a name are normalised (`normRef`: NFC, no leading `./`). A build names
   each file once, in NFC, and the loader normalises what the engine asks for the same way. Two files whose names
   differ only in Unicode form can't both go in.
 - A module may import `@vrmxg/core` and its own relative files. Any other import stops the export: a build has
-  nothing else to give it. Imports are read as code (`moduleImports`): comments, templates and regular expressions
-  are skipped, a call of a function named `from` is not an import, and `import"./x.js"` needs no space. The scanner
-  is not a parser, so **it fails closed**: where a `/` could divide or begin a regular expression (after `)` or `}`)
-  the module is read both ways, and if the two readings import different things the module is refused, by the
-  exporter and by the loader.
+  nothing else to give it. **Imports are read by a real lexer** (`moduleImports`: `es-module-lexer` 3.0.5, MIT, its
+  pure-JavaScript build, which needs no WebAssembly and no start-up step). It knows where a `/` divides and where it
+  begins a regular expression, reads templates, comments and minified code, and is the same lexer in the exporter and
+  in the loader. **It fails closed:** a module that doesn't lex is refused, and so is one that imports a path it works
+  out as it runs (`import(name)`, a template with a hole), because neither the export nor the loader could know, hold
+  or check what that loads. The acceptance scripts read fourteen awkward modules (`runtime/lexer-cases.js`) in Node,
+  Chromium and WKWebView and compare the three.
 
 What nothing names goes in `include`: a file read from a path a behaviour builds at run time. **The loader refuses a ref the manifest
 doesn't list, by name**, so such a file fails on the first play and says which file. Hidden files (a segment starting
@@ -212,11 +216,11 @@ same project then differs only in the runtime's rows.
 | | |
 |---|---|
 | `build.game`, `build.runtime`, `build.manifest` | What the manifest says |
-| `build.bytes(ref)`, `text(ref)`, `json(ref)` | A project file by ref. `bytes` is bound, so it is the `resolve` every engine service takes. A ref is looked up as the exporter spelled it (NFC, no leading `./`). A ref the manifest doesn't list throws `not_in_build`, naming it. A file whose bytes aren't the ones the manifest hashed throws `changed` (checked the first time each file is read; `verify: false` turns it off) |
+| `build.bytes(ref)`, `text(ref)`, `json(ref)` | A project file by ref. `bytes` is bound, so it is the `resolve` every engine service takes. A ref is looked up as the exporter spelled it (NFC, no leading `./`). A ref the manifest doesn't list throws `not_in_build`, naming it. A file whose bytes aren't the ones the manifest hashed throws `changed` (checked the first time each file is read; `verify: false` turns it off). A file the manifest lists that isn't there throws `incomplete`, naming it: the folder is not the whole build |
 | `build.has(ref)`, `info(ref)`, `refs()`, `path(ref)` | What the build holds; a file's row; its path under the build's root |
 | `build.actions()` | The game's action map, or null for the engine's default: pass it to `installInput(tree, { actions })` |
 | `build.modules(ref)` | A module and every module it imports relatively, each read and checked against the manifest |
-| `build.behaviours(importModule)` | The project's behaviours by the names its scenes use. Every module of the graph is checked first (`modules`): a changed module, one that imports a file the build doesn't hold, or one whose imports can't be read for certain stops here, before any of them runs |
+| `build.behaviours(importModule)` | The project's behaviours by the names its scenes use. Every module of the graph is checked first (`modules`): a changed module, one that imports a file the build doesn't hold, one that doesn't lex, or one that imports a path it works out as it runs stops here, before any of them runs |
 | `build.verifyAll()` | Reads every file, the runtime's too, against the manifest |
 
 What the engine needs to play a build is those four things: the game, a resolver, the input map and the behaviours.
@@ -228,7 +232,7 @@ What the engine needs to play a build is those four things: the game, a resolver
 |---|---|
 | A project file read through `bytes`, `text` or `json` | Yes, the bytes that are returned |
 | The behaviours module and the modules it imports by a relative specifier | Yes, before any of them is imported. But the import then fetches each file again by its URL, so the bytes that run were checked a moment before they were loaded, not as they were loaded. A browser gives no way to import a module from bytes and keep its relative imports |
-| A module reached only by `import()` of a computed path | No: the loader can't know it |
+| A module reached only by `import()` of a computed path | There is none: a module that has such an import is refused, at export and by the loader |
 | The runtime's own files (`index.html`, its scripts, its WebAssembly) | No. They are what runs the loader, and the browser has loaded them before it starts. `verifyAll()` checks them afterwards, which finds damage, not a runtime that was replaced |
 | The manifest itself | No. A build has no signature |
 
@@ -251,10 +255,17 @@ folder free for the next try, with no staging folder left behind.
 3. The earlier build's files are held aside in the staging folder, not deleted, and its folders are removed. So a
    path that was a folder can be a file now, and a folder renamed only by case gets its new name on disk.
 4. The new manifest replaces the old in one step, then the new files move in.
-5. If any step fails, what moved in is taken out and the earlier build is put back as it was.
+5. If any step fails, the commit is undone, the manifest first, since it decides which build the folder is. The
+   earlier manifest goes back over the new one, what moved in is taken out, and the earlier build's files are put
+   back. A file that can't be put back stays held in the staging folder, which is then kept, not dropped: the error
+   says so, and the next export restores it. If the earlier manifest itself can't be put back, nothing is undone:
+   the folder is the new build's, incomplete, and the next export finishes it from the staging folder.
 
-At every instant the folder's own manifest lists every file in the folder. If the process is killed in the middle,
-the next export first puts that right (`recoverFolder`): a file the folder's manifest lists, with the size and hash
+At every instant the folder's own manifest lists every file in the folder. **A folder in the middle of that is not
+a build, and doesn't pass for one:** its manifest lists files that are not there yet, so `checkFolder` reports its
+`state` as `incomplete` (not `whole`), `vrmxg-export --verify` says so and exits 1, `openFolder` refuses it naming the
+missing files, and the loader in a page throws `incomplete` on the first listed file it can't read. If the process
+is killed in the middle, the next export first puts that right (`recoverFolder`): a file the folder's manifest lists, with the size and hash
 it lists, that is missing from the folder and present in a leftover staging folder, is moved in. That finishes a
 build whose files were on their way in, or restores one whose files were on their way out.
 
@@ -292,14 +303,15 @@ hashes each file once, as it is written.
 
 ## Checked
 
-- `node --test test/` (67 tests): the hash against `node:crypto`; the licence table; the trace (typed references taken
+- `node --test test/` (69 tests): the hash against `node:crypto`; the licence table; the trace (typed references taken
   exactly, a reference in the wrong case, to no file, in another Unicode form, beside its document; what reads as a
-  path and what doesn't; imports read as code, regular expressions skipped, an unreadable module refused); the
-  exporter (the manifest, the same bytes from a listing in another order, each refusal, `ready` after every check,
-  each file read once); the loader (every module checked before any runs); folders (links, a stray file beside a
-  build, an old manifest of another version, a row naming a folder, pieces and their offsets, the staged files checked
-  against the manifest, a commit failed at each of its stages and rolled back, a folder reshaped and renamed by case,
-  a planted staging manifest, what a killed export left) and the command line; the Vite plugin; the sample's build
+  path and what doesn't; fourteen awkward modules through the lexer, the repository's own minified bundles, computed
+  imports refused); the exporter (the manifest, the same bytes from a listing in another order, each refusal, `ready`
+  after every check, each file read once); the loader (every module checked before any runs; a listed file that
+  isn't there); folders (links, a stray file beside a build, an old manifest of another version, a row naming a
+  folder, pieces and their offsets, the staged files checked against the manifest, a commit failed at each of its
+  stages and rolled back, then failed again while undoing, a folder reshaped and renamed by case, a planted staging
+  manifest, what a killed export left, an incomplete folder) and the command line; the Vite plugin; the sample's build
   replayed against the project (240 steps; skipped without vrmxa-avatar-studio).
 - `node --test test/` in `apps/editor` (6 tests): Export Game's page side against a stand-in shell. `swift test` in
   `apps/shell`: `BuildFolderTests`, the real folder.
@@ -317,9 +329,10 @@ hashes each file once, as it is written.
   plain strings, so they are found by reading as a path, not by type (AB-T-0628). A misspelt one with a space in it,
   in a folder the project doesn't have, is the case that reaches play before it is named (by the loader).
 - **The licence check doesn't read the licence** (AB-D-0284, above).
-- **Imports are scanned, not parsed.** The scanner refuses a module it can't read for certain rather than guess, so
-  an unusual line (`if (x) /'/.test(y); import './a.js'`) can stop an export that a parser would pass. `import()` of a
-  computed path can't be traced.
+- **A module that works out what it imports as it runs can't be exported** (`import(name)`). Import by a literal
+  path. This is on purpose: the build couldn't hold or check what such an import loads.
+- **The lexer is a third party's** (`es-module-lexer`, pinned to 3.0.5): the exporter and the loader are only as right
+  about a module's imports as it is. Its licence ships in a build's `THIRD-PARTY-LICENCES.txt`.
 - **A whole file is in memory while it is hashed and written**, in the page and in Node. Only the bridge message is
   bounded (4 MiB pieces). A project file of several hundred megabytes would need a streaming reader.
 - **Two exports into one folder at once** are not guarded against each other beyond the checks at the start and the

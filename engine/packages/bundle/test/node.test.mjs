@@ -9,7 +9,7 @@ import { spawnSync } from 'node:child_process';
 import { Behaviour } from '@vrmxg/core';
 import { BUILD_FILE } from '@vrmxg/bundle';
 import { exportToFolder, openFolder, checkFolder, compareFolders, planFolder, stageFolder, scanFolder, recoverFolder, folderReader, behavioursImporter, listFolder, STAGING } from '@vrmxg/bundle/node';
-import { exportBuild, serializeManifest, parseManifest } from '@vrmxg/bundle';
+import { exportBuild, openBuild, serializeManifest, parseManifest } from '@vrmxg/bundle';
 import { project, runtime, GAME, LICENCES } from './helpers.mjs';
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-bundle-test-'));
@@ -231,8 +231,68 @@ test('a commit leaves the earlier build or the new one, never neither', async ()
     assert.deepEqual(snapshot(e), before, `after failing at move ${failAt} the folder is the earlier build, byte for byte`);
     assert.deepEqual([checkFolder(e).ok, checkFolder(e).manifest, scanFolder(e).stale], [true, first.sha256, []]);
   }
+  // the worst cases: the commit fails, and then the undoing fails too. Nothing held is deleted with the staging folder
+  const failing = async (block) => {
+    const { stage } = await staged(e, folderReader(two));
+    const rename = fs.renameSync; let n = 0, blocked = 0;
+    fs.renameSync = (from, to) => {
+      if (++n === holds + 3) throw new Error('the disk said no'); // a new file on its way in, after the manifest swap
+      if (n > holds + 3 && String(from).includes('.held') && block(String(from)) && blocked++ < 2) throw new Error('still no');
+      return rename(from, to);
+    };
+    try { stage.commit(); } catch (err) { return err; } finally { fs.renameSync = rename; }
+    return null;
+  };
+  // (a) two files of the earlier build can't be put back: they stay held, the error says so, and the next export
+  //     restores them by the folder's own manifest, which is the earlier build's again
+  const a = await failing((from) => !from.endsWith('vrmxg-build.json'));
+  assert.equal(a?.code, 'failed');
+  assert.match(a.message, /^the disk said no; and 2 files of the earlier build could not be put back \(.*\): kept in \.vrmxg-export-[0-9a-f-]+, and restored by the next export into this folder$/);
+  const left = scanFolder(e);
+  assert.equal(left.stale.length, 1, 'the staging folder is kept: the held files are in it');
+  for (const f of a.files) assert.ok(fs.existsSync(path.join(e, left.stale[0], '.held', f)), `${f} is still held`);
+  await assert.rejects(openFolder(e), (err) => err.code === 'incomplete', 'until then the folder does not pass for a build');
+  assert.deepEqual(recoverFolder(e).moved.sort(), [...a.files].sort());
+  assert.deepEqual(snapshot(e), before, 'and the earlier build is whole');
+  // (b) the earlier build's manifest can't be put back over the new one: nothing is undone, the folder is the new
+  //     build's, incomplete, and the next export finishes it from the staging folder
+  const b = await failing((from) => from.endsWith('vrmxg-build.json'));
+  assert.match(b?.message ?? '', /^the disk said no; and the earlier build's manifest could not be put back, so the folder is the new build's, incomplete/);
+  assert.deepEqual([checkFolder(e).state, checkFolder(e).manifest], ['incomplete', r2.sha256]);
+  await assert.rejects(openFolder(e), (err) => err.code === 'incomplete');
+  recoverFolder(e);
+  assert.deepEqual([checkFolder(e).ok, checkFolder(e).manifest, scanFolder(e).stale], [true, r2.sha256, []], 'finished: the folder is the new build, whole');
+  await exportToFolder({ project: one, runtime: R, out: e }); // back to the earlier build for what follows
+  assert.deepEqual(snapshot(e), before);
+
   assert.equal((await exportToFolder({ project: two, runtime: R, out: e })).sha256, r2.sha256, 'and the next export goes through');
   assert.ok(checkFolder(e).ok);
+});
+
+test('a folder whose manifest lists files that are not there is incomplete, and says so everywhere', async () => {
+  const d = path.join(tmp, 'incomplete');
+  const r = await exportToFolder({ project: P, runtime: R, out: d });
+  assert.equal(checkFolder(d).state, 'whole');
+  // as a kill after the manifest was put in place would leave it: the manifest, and only some of its files
+  fs.rmSync(path.join(d, 'project/level.vrmxs')); fs.rmSync(path.join(d, 'project/props/door.glb'));
+  const c = checkFolder(d);
+  assert.deepEqual([c.ok, c.state, c.missing], [false, 'incomplete', ['project/level.vrmxs', 'project/props/door.glb']]);
+  await assert.rejects(openFolder(d), (e) => e.code === 'incomplete' && /^this build is incomplete: 2 of the 15 files its manifest lists are not there \(project\/level\.vrmxs, project\/props\/door\.glb\)/.test(e.message) && e.files.length === 2);
+  // the loader over any reader (a page's fetch): the first listed file that isn't there says the same, by name
+  const build = await openBuild(folderReader(d).read);
+  await assert.rejects(build.bytes('props/door.glb'), (e) => e.code === 'incomplete' && /^this build is incomplete: project\/props\/door\.glb, which its manifest lists, is not there/.test(e.message) && e.files[0] === 'project/props/door.glb');
+  await assert.rejects(build.verifyAll(), (e) => e.code === 'incomplete');
+  // the command line
+  const v = spawnSync(process.execPath, [cli, '--verify', d], { encoding: 'utf8' });
+  assert.equal(v.status, 1);
+  assert.equal(JSON.parse(v.stdout).state, 'incomplete');
+  assert.match(v.stderr, /^incomplete: 2 of the 15 files the manifest lists are not there/);
+  // a file that is there and wrong is a different thing
+  fs.writeFileSync(path.join(d, 'project/level.vrmxs'), '{}'); fs.writeFileSync(path.join(d, 'project/props/door.glb'), 'x');
+  assert.equal(checkFolder(d).state, 'different');
+  // and the next export puts it right
+  assert.equal((await exportToFolder({ project: P, runtime: R, out: d })).sha256, r.sha256);
+  assert.equal(checkFolder(d).state, 'whole');
 });
 
 test('nothing in a staging folder is licence to delete or overwrite anything outside it', async () => {
@@ -265,7 +325,8 @@ test('what a cut-short export left is cleared away, and only what the folder\'s 
   fs.renameSync(path.join(a, 'index.html'), path.join(left, 'index.html'));
   fs.writeFileSync(path.join(left, 'vrmxg-core.js'), 'not the file the manifest lists'); // a staged file that disagrees: not moved in
   fs.writeFileSync(path.join(left, 'thesis.txt'), 'planted'); // nor one the manifest doesn't list
-  assert.equal(checkFolder(a).ok, false);
+  assert.deepEqual([checkFolder(a).ok, checkFolder(a).state], [false, 'incomplete']);
+  await assert.rejects(openFolder(a), (e) => e.code === 'incomplete' && /index\.html/.test(e.message), 'killed after the manifest swap, the folder does not pass for a build');
   assert.deepEqual(recoverFolder(a), { moved: ['index.html', 'project/level.vrmxs'], removed: [`${STAGING}killed`] });
   assert.deepEqual([checkFolder(a).ok, checkFolder(a).manifest], [true, r.sha256], 'the build is whole again');
   assert.ok(!fs.existsSync(path.join(a, 'thesis.txt')));

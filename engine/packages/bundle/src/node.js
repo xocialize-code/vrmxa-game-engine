@@ -76,7 +76,8 @@ export function scanFolder(dir) {
 }
 
 const few = (list) => `${list.slice(0, 3).join(', ')}${list.length > 3 ? `, and ${list.length - 3} more` : ''}`;
-const lstat = (f) => fs.lstatSync(f, { throwIfNoEntry: false });
+// what is at a path, a link not followed; undefined when nothing is, or when a file stands where a folder of the path would be
+const lstat = (f) => { try { return fs.lstatSync(f, { throwIfNoEntry: false }); } catch (e) { if (e?.code === 'ENOTDIR') return undefined; throw e; } };
 
 /**
  * Decide whether a folder can take a build, and change nothing. It may be absent, empty, or hold an earlier build:
@@ -226,13 +227,25 @@ export function stageFolder(dir) {
           fs.renameSync(path.join(staging, p), path.join(root, p)); arrived.push(p);
         }
       } catch (e) {
-        // put the earlier build back as it was
+        // Undo it. The manifest first, because it decides which build the folder is: if the earlier one can't be put
+        // back over the new, the folder stays the new build's, half moved in, with the rest of its files (and the
+        // earlier build's, held) left in the staging folder, and the next export into it finishes the new build
+        if (replacedManifest && now.old.includes(BUILD_FILE)) {
+          try { fs.renameSync(path.join(held, BUILD_FILE), path.join(root, BUILD_FILE)); } catch {
+            closed = true;
+            throw new BuildError('failed', `${e.message}; and the earlier build's manifest could not be put back, so the folder is the new build's, incomplete: the rest of it is kept in ${path.basename(staging)}, and the next export into this folder finishes it`, [BUILD_FILE]);
+          }
+        } else if (replacedManifest) fs.rmSync(path.join(root, BUILD_FILE), { force: true });
+        // then the earlier build's files, as they were
         for (const p of arrived) fs.rmSync(path.join(root, p), { force: true });
         for (const d of madeDirs.reverse()) { try { fs.rmdirSync(d); } catch { /* not empty */ } }
-        if (replacedManifest) { if (now.old.includes(BUILD_FILE)) fs.renameSync(path.join(held, BUILD_FILE), path.join(root, BUILD_FILE)); else fs.rmSync(path.join(root, BUILD_FILE), { force: true }); }
-        for (const f of away) { folders(root, f); fs.renameSync(path.join(held, f), path.join(root, f)); }
-        drop();
-        throw e;
+        const kept = []; // what of the earlier build could not be put back
+        for (const f of away) { try { folders(root, f); fs.renameSync(path.join(held, f), path.join(root, f)); } catch { kept.push(f); } }
+        if (!kept.length) { drop(); throw e; }
+        // what couldn't be put back stays where it is held: dropping the staging folder now would delete it. The next
+        // export into this folder moves in whatever the folder's manifest vouches for (recoverFolder)
+        closed = true;
+        throw new BuildError('failed', `${e.message}; and ${kept.length} file${kept.length === 1 ? '' : 's'} of the earlier build could not be put back (${few(kept)}): kept in ${path.basename(staging)}, and restored by the next export into this folder`, kept);
       }
       drop();
       return { path: root, files: written.size - 1 };
@@ -264,8 +277,17 @@ export async function exportToFolder({ project, runtime, out, game = null, onPro
   } catch (e) { stage?.abort(); throw e; }
 }
 
-/** The loader over a build folder. @param {string} dir @param {{ verify?: boolean }} [o] */
-export const openFolder = (dir, o) => openBuild(folderReader(dir).read, o);
+/**
+ * The loader over a build folder. A folder whose manifest lists files that are not there is refused as incomplete,
+ * naming them: an export cut short after its manifest was put in place must not pass for a build.
+ * @param {string} dir @param {{ verify?: boolean }} [o]
+ */
+export async function openFolder(dir, o) {
+  const root = path.resolve(dir), build = await openBuild(folderReader(root).read, o);
+  const missing = build.manifest.files.filter((f) => !lstat(path.join(root, f.path))?.isFile()).map((f) => f.path);
+  if (missing.length) throw new BuildError('incomplete', `this build is incomplete: ${missing.length} of the ${build.manifest.files.length} files its manifest lists ${missing.length === 1 ? 'is' : 'are'} not there (${few(missing)}). Its export was cut short, or the folder was copied in part: export again`, missing);
+  return build;
+}
 
 const hooked = new Map();
 /**
@@ -301,7 +323,10 @@ export function checkFolder(dir) {
   }
   there.delete(BUILD_FILE);
   const extra = sortPaths([...there, ...scan.foreign, ...scan.stale]); // a link is never a build's file, whatever it points at
-  return { ok: !missing.length && !changed.length && !extra.length, files: manifest.files.length, bytes: manifest.bytes, digest: manifest.digest, manifest: sha256(fs.readFileSync(path.join(root, BUILD_FILE))), missing, changed, extra };
+  // `state`: 'whole'; 'incomplete' when files the manifest lists are not there (an export cut short while its files were
+  // moving in, or a folder copied in part: the next export into it finishes or replaces it); else 'different'
+  const ok = !missing.length && !changed.length && !extra.length, state = ok ? 'whole' : missing.length ? 'incomplete' : 'different';
+  return { ok, state, files: manifest.files.length, bytes: manifest.bytes, digest: manifest.digest, manifest: sha256(fs.readFileSync(path.join(root, BUILD_FILE))), missing, changed, extra };
 }
 
 /** Two folders compared byte for byte, every file. @param {string} a @param {string} b */

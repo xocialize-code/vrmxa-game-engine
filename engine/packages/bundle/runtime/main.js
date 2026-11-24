@@ -13,7 +13,8 @@ import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
 import '../../../../apps/playground/src/sqljs.js'; // vrmxa-core's sql.js for bundles with a database (Mira's), as the apps load it
-import { openBuild, fetchReader } from '../src/index.js';
+import { openBuild, fetchReader, moduleImports } from '../src/index.js';
+import { readLexerCases } from './lexer-cases.js';
 import { playScene } from './play.js';
 
 window.__errors = [];
@@ -34,7 +35,10 @@ async function main() {
   const about = { game: game.id, entry: o.scene, runtime: `${manifest.runtime.name} ${manifest.runtime.version}`, digest: manifest.digest, files: manifest.files.length };
   if (q.has('check')) {
     const r = await playScene({ ...o, take: q.get('check') || null, steps: +(q.get('steps') ?? 600) });
-    window.__result = { ...about, take: q.get('check') || null, steps: r.steps, components: r.components, final: r.final, hashes: r.hashes, verified: build.checked.size, ua: navigator.userAgent };
+    // and how this engine's lexer reads a set of awkward modules, and the game's own module graph: the exporter may have
+    // run in another engine, and the two have to agree on what a module imports
+    window.__result = { ...about, take: q.get('check') || null, steps: r.steps, components: r.components, final: r.final, hashes: r.hashes, verified: build.checked.size,
+      lexer: readLexerCases(moduleImports), modules: game.behaviours ? await build.modules(game.behaviours) : [], ua: navigator.userAgent };
     say(`${game.title}: ${r.steps} steps of ${o.scene}, final ${r.final}`);
     return;
   }

@@ -91,19 +91,24 @@ test('every module the behaviours import is checked before any of them runs', as
   await assert.rejects(without.behaviours(async () => ({})), (e) => e.code === 'not_in_build' && /behaviours\.js imports \.\/lib\/maths\.js, which is not in this build/.test(e.message));
 });
 
-test('a module the loader can\'t read for certain is not imported', async () => {
-  // the build is made by hand, as someone editing a folder would: a module whose imports depend on how a "/" is read
-  const { out, read, build } = await built();
-  const odd = enc("export const twice = (n) => n * 2; if (twice) /'/.test(''); import './hidden.js';\n");
-  const m = structuredClone(build.manifest);
-  const row = m.files.find((f) => f.path === 'project/lib/maths.js');
-  row.bytes = odd.length; row.sha256 = sha256(odd);
-  m.bytes = m.files.reduce((n, f) => n + f.bytes, 0); m.digest = filesDigest(m.files);
-  out.map.set('project/lib/maths.js', odd); out.map.set(BUILD_FILE, enc(serializeManifest(m)));
-  const again = await openBuild(read);
-  let imported = false;
-  await assert.rejects(again.behaviours(async () => { imported = true; return {}; }), (e) => e.code === 'bad_file' && /^lib\/maths\.js can't be read for certain/.test(e.message));
-  assert.equal(imported, false);
+test('a module the loader can\'t account for is not imported', async () => {
+  // the build is made by hand, as someone editing a folder would: a module that imports a path worked out as it runs,
+  // and one that doesn't lex
+  for (const [body, why] of [["export const twice = (n) => n * 2; export const more = (name) => import(name);\n", /^lib\/maths\.js imports a path it works out as it runs/], ["export const twice = (n) => n * 2; const re = /[abc;\n", /^lib\/maths\.js can't be read as a module/]]) {
+    const { out, read, build } = await built();
+    const odd = enc(body), m = structuredClone(build.manifest);
+    const row = m.files.find((f) => f.path === 'project/lib/maths.js');
+    row.bytes = odd.length; row.sha256 = sha256(odd);
+    m.bytes = m.files.reduce((n, f) => n + f.bytes, 0); m.digest = filesDigest(m.files);
+    out.map.set('project/lib/maths.js', odd); out.map.set(BUILD_FILE, enc(serializeManifest(m)));
+    const again = await openBuild(read);
+    let imported = false;
+    await assert.rejects(again.behaviours(async () => { imported = true; return {}; }), (e) => e.code === 'bad_file' && why.test(e.message));
+    assert.equal(imported, false);
+  }
+  // and a module imported after a decrement and a division is in the graph the loader checks
+  const { build } = await built(project({ 'behaviours.js': "import { Behaviour } from '@vrmxg/core';\nlet t = 9; t-- / 3;\nexport const m = await import('./lib/maths.js');\nexport class patrol extends Behaviour {}\n" }));
+  assert.deepEqual(await build.modules('behaviours.js'), ['behaviours.js', 'lib/maths.js']);
 });
 
 test('a ref is found as the exporter spelled it: ./ and the Unicode form don\'t matter, case does', async () => {

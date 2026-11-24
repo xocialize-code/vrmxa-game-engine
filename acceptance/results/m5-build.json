@@ -10,27 +10,27 @@
    "version": "0.1.0",
    "contract": 1,
    "entry": "index.html",
-   "digest": "22bcd36f4b360642e80c1b3b96c3732889186189704ade87d5ee65d74496e8c0"
+   "digest": "2e08d965b6837eb4ca0be9c819168c7c91754d823a121ab0a741973a41f8e318"
   },
   "files": 60,
   "projectFiles": 50,
   "runtimeFiles": 10,
-  "bytes": 22184604,
-  "digest": "756ed1c77a29c89c8149994053ebf5c0cac817d152dc0c912befe95cb7e76e49",
-  "manifestSha256": "ee682184e9715cbdb55304a41357141a9904e90e97966cbbccdd8e2887c1c47a"
+  "bytes": 22211863,
+  "digest": "d03301c5fe1744dce27cf2f28273693556e553d3d47b613c43d0d7a76b772dea",
+  "manifestSha256": "e6b6c09e6584ea8e18391ce13786373583180d90a5b085fce32526a7d68d6ed6"
  },
  "nodeRuns": [
   {
-   "manifest": "ee682184e9715cbdb55304a41357141a9904e90e97966cbbccdd8e2887c1c47a",
-   "digest": "756ed1c77a29c89c8149994053ebf5c0cac817d152dc0c912befe95cb7e76e49",
+   "manifest": "e6b6c09e6584ea8e18391ce13786373583180d90a5b085fce32526a7d68d6ed6",
+   "digest": "d03301c5fe1744dce27cf2f28273693556e553d3d47b613c43d0d7a76b772dea",
    "files": 60,
-   "bytes": 22184604
+   "bytes": 22211863
   },
   {
-   "manifest": "ee682184e9715cbdb55304a41357141a9904e90e97966cbbccdd8e2887c1c47a",
-   "digest": "756ed1c77a29c89c8149994053ebf5c0cac817d152dc0c912befe95cb7e76e49",
+   "manifest": "e6b6c09e6584ea8e18391ce13786373583180d90a5b085fce32526a7d68d6ed6",
+   "digest": "d03301c5fe1744dce27cf2f28273693556e553d3d47b613c43d0d7a76b772dea",
    "files": 60,
-   "bytes": 22184604
+   "bytes": 22211863
   }
  ],
  "refusal": {
@@ -48,6 +48,13 @@
    "sets/cafe.glb"
   ]
  },
+ "lexer": {
+  "cases": 14,
+  "digest": "84abc6cb6dec04f56f6c7e410e6b79bcb2ac7d02b6bed75adb7ab09ccd8f7eba",
+  "modules": [
+   "behaviours.js"
+  ]
+ },
  "replay": {
   "steps": 600,
   "take": "input/walk-in.json",
@@ -62,16 +69,17 @@
   "version": "156.0.8078.4",
   "final": "fe69bad3406ab5f6",
   "steps": 600,
-  "digest": "756ed1c77a29c89c8149994053ebf5c0cac817d152dc0c912befe95cb7e76e49",
+  "digest": "d03301c5fe1744dce27cf2f28273693556e553d3d47b613c43d0d7a76b772dea",
   "verified": 48,
   "firstDifference": null,
+  "sameLexer": true,
   "errors": []
  },
  "mac": [
   {
    "name": "game-a",
    "ok": true,
-   "manifest": "ee682184e9715cbdb55304a41357141a9904e90e97966cbbccdd8e2887c1c47a",
+   "manifest": "e6b6c09e6584ea8e18391ce13786373583180d90a5b085fce32526a7d68d6ed6",
    "differ": [],
    "missing": [],
    "extra": []
@@ -79,7 +87,7 @@
   {
    "name": "game-b",
    "ok": true,
-   "manifest": "ee682184e9715cbdb55304a41357141a9904e90e97966cbbccdd8e2887c1c47a",
+   "manifest": "e6b6c09e6584ea8e18391ce13786373583180d90a5b085fce32526a7d68d6ed6",
    "differ": [],
    "missing": [],
    "extra": []
@@ -87,7 +95,7 @@
   {
    "name": "game-c",
    "ok": true,
-   "manifest": "ee682184e9715cbdb55304a41357141a9904e90e97966cbbccdd8e2887c1c47a",
+   "manifest": "e6b6c09e6584ea8e18391ce13786373583180d90a5b085fce32526a7d68d6ed6",
    "differ": [],
    "missing": [],
    "extra": []
@@ -95,7 +103,7 @@
   {
    "name": "game-d",
    "ok": true,
-   "manifest": "ee682184e9715cbdb55304a41357141a9904e90e97966cbbccdd8e2887c1c47a",
+   "manifest": "e6b6c09e6584ea8e18391ce13786373583180d90a5b085fce32526a7d68d6ed6",
    "differ": [],
    "missing": [],
    "extra": []
@@ -120,7 +128,7 @@
   {
    "name": "two Node exports are the same bytes",
    "ok": true,
-   "detail": "61 files, manifest ee682184e9715cbd"
+   "detail": "61 files, manifest e6b6c09e6584ea8e"
   },
   {
    "name": "each folder is what its manifest lists",
@@ -130,7 +138,7 @@
   {
    "name": "the manifest lists every file with its hash and licence",
    "ok": true,
-   "detail": "50 project files, 10 runtime files, 22184604 bytes"
+   "detail": "50 project files, 10 runtime files, 22211863 bytes"
   },
   {
    "name": "a file with no licence row stops the export, by name",
@@ -143,6 +151,11 @@
    "detail": "\"cafe.vrmxs names Sets/cafe.glb, and the project's file is sets/cafe.glb: the case differs, and a build's files are found by their exact names\""
   },
   {
+   "name": "the lexer reads every awkward module as expected",
+   "ok": true,
+   "detail": "14 modules, 3 refused"
+  },
+  {
    "name": "the loaded build plays to the project's per-step hashes",
    "ok": true,
    "detail": "600 steps, 65 components, final fe69bad3406ab5f6; 48 files read and checked"
@@ -153,6 +166,11 @@
    "detail": "not_in_build"
   },
   {
+   "name": "Chromium's lexer reads the awkward modules, and the game's own, as Node's does",
+   "ok": true,
+   "detail": "14 modules; the game's graph [\"behaviours.js\"]"
+  },
+  {
    "name": "the build's runtime plays it in Chromium to the same hashes",
    "ok": true,
    "detail": "Chromium 156.0.8078.4, final fe69bad3406ab5f6"
@@ -160,22 +178,22 @@
   {
    "name": "the Mac editor's build game-a is Node's, byte for byte",
    "ok": true,
-   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest ee682184e9715cbd"
+   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest e6b6c09e6584ea8e"
   },
   {
    "name": "the Mac editor's build game-b is Node's, byte for byte",
    "ok": true,
-   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest ee682184e9715cbd"
+   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest e6b6c09e6584ea8e"
   },
   {
    "name": "the Mac editor's build game-c is Node's, byte for byte",
    "ok": true,
-   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest ee682184e9715cbd"
+   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest e6b6c09e6584ea8e"
   },
   {
    "name": "the Mac editor's build game-d is Node's, byte for byte",
    "ok": true,
-   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest ee682184e9715cbd"
+   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest e6b6c09e6584ea8e"
   },
   {
    "name": "the Mac editor's refused export game-refused wrote nothing",

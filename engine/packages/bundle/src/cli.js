@@ -20,6 +20,8 @@ try {
   if (verify !== null) {
     const r = checkFolder(verify);
     console.log(JSON.stringify(r, null, 1));
+    if (r.state === 'incomplete') console.error(`incomplete: ${r.missing.length} of the ${r.files} files the manifest lists are not there. The export was cut short, or the folder was copied in part: export again`);
+    else if (!r.ok) console.error(`not the build its manifest describes: ${r.changed.length} changed, ${r.extra.length} not listed`);
     process.exit(r.ok ? 0 : 1);
   }
   const [project, out] = rest;
