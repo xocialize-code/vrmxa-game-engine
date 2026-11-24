@@ -21,6 +21,7 @@ import { inShell, call } from '../../shell/js/shell.js';
 import { ScriptDesk, buildShort } from './desk.js';
 import { SHORTS_FILE, ShortList, readShorts, shortFor, titlePage, slugOf, kindOf, sceneKind, missingRefs, setForModel, scriptTemplate, placeFile } from './shorts.js';
 import { disposeWorld } from './dispose.js';
+import { saveShortFiles, shortDirty, discardShort } from './saving.js';
 import { castAndVoice, lazyTTS, projectIO } from './voicing.js';
 import { KeyboardDevice, GamepadDevice, VirtualDevice } from '@vrmxg/input';
 import { demoModel, httpModel, shellModel } from '@vrmxg/director';
@@ -74,12 +75,12 @@ export class CreatorHost extends EditorHost {
   sets() { return (this.project?.scenes() ?? []).filter((s) => !s.startsWith('sequences/') && !s.startsWith('prefabs/')); }
 
   /** Unsaved work the window must ask about before it goes: the sequence, the script, or a short never saved. */
-  isDirty() { return !!this.session && (this.session.dirty || !!this.desk?.dirty || (this.short ? !this.short.saved : false)); }
+  isDirty() { return shortDirty(this); }
 
   /** Throw away the open short's unsaved work (the window asked): a short never saved leaves the list. */
   discardChanges() {
     clearTimeout(this._applyTimer);
-    if (this.short && !this.short.saved) this.shorts.discard(this.short.id);
+    discardShort(this); // a draft leaves the list; a saved short gets back the fields shorts.json holds (saving.js)
   }
 
   /**
@@ -508,21 +509,7 @@ export class CreatorHost extends EditorHost {
    */
   async saveShort(asTitle = null) {
     if (!this.short) return this.save();
-    if (this.desk?.pending) this.applyScript(); // typing not yet applied; an applied script isn't built again (M4 W11)
-    if (asTitle) {
-      const old = this.short;
-      const id = this.shorts.freeId(slugOf(asTitle), this.project.files);
-      const short = { ...old, id, title: asTitle, script: `scripts/${id}.fountain`, sequence: `sequences/${id}.vrmxs` };
-      this.shorts.addDraft(short);
-      if (!old.saved) this.shorts.discard(old.id);
-      this.short = this.shorts.byId(id); this.desk.short = this.short; this.desk.saved = null;
-      this.session.path = short.sequence;
-    }
-    const seq = await this.save(this.short.sequence);
-    let script = null;
-    if (this.desk.dirty || !this.project.has(this.short.script)) { script = await this.project.write(this.short.script, this.desk.text); this.desk.markSaved(); }
-    this.short = this.shorts.markSaved(this.short.id); this.desk.short = this.short;
-    const shorts = await this.project.write(SHORTS_FILE, this.shorts.manifest());
+    const { sequence: seq, script, shorts } = await saveShortFiles(this, asTitle); // saved only once every file is written (saving.js)
     this.lastSaveAll = { short: this.short.id, sequence: { ref: this.short.sequence, bytes: seq.bytes, hash: seq.hash }, script: script ? this.short.script : null, shorts: !!shorts, memory: !this.project.writable || !inShell };
     this.changed();
     return this.lastSaveAll;

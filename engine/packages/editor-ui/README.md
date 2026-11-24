@@ -17,11 +17,20 @@ import { moveCommand, clipSpec, storyCards, jobStatus } from '@vrmxg/editor-ui';
 | `StoryboardStrip.vue` | `board` (`storyboard(doc, { set })`), `thumbs` (by shot id: `{ url, frame }`; one drawn for another frame is stale and not shown), `beats` (the script's beats by id: `{ line, text }`), `playhead`, `selected`, `status` → `pick(shotId, frame)`, `line(scriptLine)`. Cards read as `Shot 020, 48 frames from 48, camera vc-cu-hana then vc-two, hand edit` |
 | `RenderQueue.vue` | `jobs` (`RenderQueue.list()`), `runner` (its name), `canAdd`, `disabled` → `add({ preset, name })`, `run`, `cancel(id)`, `remove(id)`, `retry(id)`, `move(id, delta)`. Each job's status reads `job-1 done: 397 frames · first-light-720p24.mp4 · frames 83e834f6feeb3835` |
 
+`closingQuestion({ dirty, canSave, memory, title, neverSaved, project, reason })` (M5 W8, AB-T-0593) is what a window
+asks before it closes or the app quits, as plain data for the app's own sheet: null when nothing would be lost; Save,
+Don't Save and Cancel where Save reaches the disk; Cancel and Close Anyway (or Quit Anyway) where it can't, as in the
+bundled sample. The Mac shell asks the page first (`apps/shell`, `onClosing`); the editor and the creator answer with it.
+`questions(show)` is the window's sheet: `ask(title, text, options)` resolves with the chosen option's id, `reply(id)`
+answers it, and a second `ask` while one is up resolves `"cancel"` at once without being shown, so every question is
+answered (a close that is waiting for its answer can't be orphaned by another one).
+
 Ids are stable for AppProbe scenarios: the timeline's `#tl-*` (as in the editor's M2 scenario), the strip's `#sb-status` and
 `#sb-<shot>`, the queue's `#q-preset-<name>`, `#q-add`, `#q-run`, `#q-<job>-status`.
 
 Tests (`node --test test/`): every command the timeline emits for a move, trim, nudge, delete, form and field
-(`timeline-ui.test.mjs`); the strip's cards and the queue's status lines (`storyboard-ui.test.mjs`); and the three
+(`timeline-ui.test.mjs`); the strip's cards and the queue's status lines (`storyboard-ui.test.mjs`); the closing
+question's three cases (`closing-ui.test.mjs`); one question at a time (`questions.test.mjs`); and the three
 components compiled from their `.vue` files (`vue/compiler-sfc`) and rendered on the server (`vue/server-renderer`) with
 sample data, checking their ids and accessible names (`components.test.mjs`, `sfc.mjs`). Compiled files go to
 `test/.build/` (ignored) and are removed after import.

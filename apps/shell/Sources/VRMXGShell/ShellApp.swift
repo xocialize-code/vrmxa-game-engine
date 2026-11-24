@@ -1,7 +1,7 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.8.0"
+public let vrmxgShellVersion = "0.9.0"
 
 /// An app's own menu item (shell 0.7.0, M4 W5): choosing it sends the page `menu.<event>`. A title of "-" is a separator.
 public struct ShellMenuItem: Sendable {
@@ -51,12 +51,20 @@ public struct ShellConfiguration {
     /// File extensions the app opens from the Finder (Open Documents, shell 0.7.0): each becomes a `file.opened` event.
     /// Empty (the default): the shell doesn't take Open Documents at all, and AppKit answers as it would without it.
     public var openTypes: [String]
+    /// The page is asked before the window closes or the app quits (shell 0.9.0, AB-T-0593; CloseQuestion.swift): it
+    /// hears `window.closing` and answers `window.closeReply`, so it can show its unsaved-changes sheet. false (the
+    /// default): the shell closes and quits without consulting the page, as before.
+    public var asksBeforeClosing: Bool
+    /// Seconds the page has to answer `window.closing` before the shell closes anyway (a hung page can't block quitting).
+    public var closeTimeout: TimeInterval
     public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = [], pageUndo: Bool = false,
                 statusItem: StatusItemConfiguration? = nil, closeKeepsRunning: Bool = false, dockIcon: Bool = true, setUp: (@MainActor (ShellAppDelegate) -> Void)? = nil,
-                fileItems: [ShellMenuItem] = [], menus: [ShellMenu] = [], openTypes: [String] = []) {
+                fileItems: [ShellMenuItem] = [], menus: [ShellMenu] = [], openTypes: [String] = [],
+                asksBeforeClosing: Bool = false, closeTimeout: TimeInterval = 5) {
         self.appName = appName; self.scheme = scheme; self.size = size; self.webFolder = webFolder; self.methods = methods; self.pageUndo = pageUndo
         self.statusItem = statusItem; self.closeKeepsRunning = closeKeepsRunning; self.dockIcon = dockIcon; self.setUp = setUp
         self.fileItems = fileItems; self.menus = menus; self.openTypes = openTypes.map { $0.lowercased() }
+        self.asksBeforeClosing = asksBeforeClosing; self.closeTimeout = closeTimeout
     }
 }
 
@@ -92,6 +100,19 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     /// Files from Open Documents events (the Finder, `open`, AppProbe's open step) waiting for the page to load (shell 0.7.0).
     var pendingOpens: [URL] = []
     var pageLoaded = false
+    /// The question to the page before a close or a quit (shell 0.9.0), for an app with `asksBeforeClosing`.
+    lazy var closing = makeCloseQuestion()
+    /// The page said to go on closing: the quit that follows the last window isn't asked again.
+    var closeApproved = false
+    /// Answers a quit that waited for the page (`.terminateLater`); a test replaces it.
+    var replyToTerminate: (Bool) -> Void = { NSApp.reply(toApplicationShouldTerminate: $0) }
+    /// Asks the person in the shell's own alert (CloseQuestion.swift: a page that isn't answering, a question asked
+    /// again); a test replaces it.
+    lazy var confirmStuck: (CloseQuestion.Stuck, CloseQuestion.Reason, @escaping @MainActor (Bool) -> Void) -> Void = { [unowned self] why, reason, done in
+        self.presentStuckAlert(why, reason, done)
+    }
+    /// The shell's alert while it is up.
+    var closeAlert: NSAlert?
 
     public init(config: ShellConfiguration) {
         self.config = config
@@ -165,7 +186,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         }
         menu(config.appName, [item("About \(config.appName)", #selector(NSApplication.orderFrontStandardAboutPanel(_:))), .separator(),
                               item("Hide \(config.appName)", #selector(NSApplication.hide(_:)), "h"), .separator(),
-                              item("Quit \(config.appName)", #selector(NSApplication.terminate(_:)), "q")])
+                              item("Quit \(config.appName)", #selector(menuQuit(_:)), "q", target: self)])
         func own(_ i: ShellMenuItem) -> NSMenuItem {
             if i.title == "-" { return .separator() }
             let m = item(i.title, #selector(menuOwn(_:)), i.key, i.modifiers, target: self); m.representedObject = i.event; return m
@@ -217,7 +238,15 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     }
 
     /// A navigation started (a reload, a crash-reload): files opened until it finishes wait for the new page.
-    public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) { pageLoaded = false }
+    public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) { pageLoaded = false; pageGone() }
+
+    /// The page reloads or its process ended: a close or quit that was waiting for its answer goes on.
+    func pageGone() {
+        guard config.asksBeforeClosing else { return }
+        closing.pageGone()
+        closing.unsaved = false // a new page has nothing unsaved until it says so
+        window?.isDocumentEdited = false
+    }
 
     func emitOpened(_ url: URL) {
         do { emit("file.opened", try files.opened(url)) }
@@ -231,7 +260,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     }
 
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) { print("[shell] load failed: \(error)") }
-    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { print("[shell] web content process ended; reloading"); pageLoaded = false; webView.reload() }
+    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { print("[shell] web content process ended; reloading"); pageLoaded = false; pageGone(); webView.reload() }
 
     // <input type=file> in the page
     public func webView(_ webView: WKWebView, runOpenPanelWith parameters: WKOpenPanelParameters, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor ([URL]?) -> Void) {
@@ -247,6 +276,20 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     }
 
     public func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { !config.closeKeepsRunning }
+
+    /// Quit (the menu, ⌘Q, the Dock, log out). An app that asks its page (`asksBeforeClosing`) answers later, when the
+    /// page has: CloseQuestion.swift. Any other app quits at once, as before.
+    public func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        guard asksPage else { return .terminateNow }
+        if !window.isVisible || window.isMiniaturized { showWindow() } // the page's sheet has to be seen
+        // With a question open already: asked again (CloseQuestion.swift). A quit that is waiting stays the one quit.
+        // Over a close whose question is up in the page (or in the shell's own alert) this quit is dropped: the
+        // alert's Close Anyway closes the window, and the app with it.
+        let open = closing.pending, alertUp = closing.confirming != nil
+        closing.ask(.quit)
+        if let open, open.reason == .close, open.waiting || alertUp { return .terminateCancel }
+        return .terminateLater
+    }
 }
 
 public enum ShellApp {

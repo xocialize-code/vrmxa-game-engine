@@ -20,12 +20,38 @@ apps/editor-mac/scripts/build.sh        # the Mac app, where Open Project… mou
 | MCP (M1 W9) | `vrmxg-mcp --editor` drives the open editor (`src/mcp.js`): the link polls 127.0.0.1:5183, on by default in the Mac app and with `?mcp` in a browser (`?mcp=<port>`, `?mcp=off`). Edits go through the session's command log ("Undo Add cam (MCP)"), play / step / input / interact / cues act on the play world, screenshot is the view; the status bar shows the link and the last call |
 | Timeline (M2 W5; shared since M4 W5) | `@vrmxg/editor-ui/Timeline.vue`, the same component the creator uses (what each edit emits is `@vrmxg/editor-ui`'s `timeline-ui.js`, tested in Node). Shown for a sequence document (a `.vrmxs` filming a set): transport (start, frame back and on, play / pause, a Frame field, timecode, In / Out / clear range, Loop), the preview camera (the shot, through the CameraBrain, or the editor's), Angles (the shot and every VirtualCamera in a grid, W3's viewports), Edit view, Fit. The ruler, headers and lanes all read one `TimelineGeometry` (pixels per frame + first visible frame): ⌘-wheel or pinch zooms about the pointer, the wheel scrolls; the ruler scrubs. Keys (diamonds), clips and shots move by drag (an edge trims) with snapping to frames, markers, shot edges, other keys and the playhead within 8 px at any zoom, or by ← → (⇧: 10 frames); Delete removes. The side panel adds tracks (type and target as buttons), shots (on a camera, which also puts a clip on the camera track), markers, keys and clips at the playhead, Camera from view (a VirtualCamera where the editor's view is), and edits the selected item's fields. Every edit is one undo step (`@vrmxg/editor-core`'s `SequenceCommands`) |
 | Preview (M2 W5) | A scrub shows the frame exactly as an export renders it: a full world of the sequence in its set, put on the frame's step from snapshots every 2 s (`@vrmxg/sequence`'s `SequencePlayer`), then the render host's `frameAt`. The status shows the frame, step, α, how it got there and the world's hash, which is the hash Node, Chromium and WKWebView record for that frame. An edit rebuilds the preview (a second or two) and scrubs back to the playhead; Play follows the wall clock and skips frames the scrub can't keep up with |
-| Status | Node count, saved or not, valid or not, the document's hash; after a save its size and hash, and Reopen & compare (read back from disk: same bytes, valid); after Stop, whether the scene and the edit view are as before Play; frame and build times; debug draw toggles |
+| Status | Node count, saved or not, valid or not, the document's hash; after a save its size and hash, and Reopen & compare (read back from disk: same bytes, valid); after Stop, whether the scene and the edit view are as before Play; frame and build times; what the app holds (`#holds`: "2 worlds of 74 built, 66 geometries, 58 textures": the worlds alive and the view renderer's GPU objects, AB-T-0592: a count that keeps climbing while the document is only edited is a leak, and the timeline hand test checks it); debug draw toggles |
 
 Edits that only move nodes are applied to the edit view in place; anything else rebuilds it (about 300 ms for the
 cafe in a browser: the characters' VRMs are parsed again, their bundles and clips kept between builds; the run-time
 closet is left out of the edit view). Play builds the full world from a copy of the document, as the game does, with
 the scene's camera and the keyboard, mouse and gamepad.
+
+**Worlds are let go of, not dropped (AB-T-0592).** The edit view, the timeline's preview, Play and an export's take are
+each a full world: physics in WASM memory, vertex data in typed arrays, and models, VRMs and textures in GPU memory,
+about a third of a gigabyte a world in the Mac app. A world that is replaced is retired (`EditorHost.retire`): disposed
+at once (`src/dispose.js`), or, while the view still shows it or a scrub is working on it, by the frame loop as soon as
+it is free. Disposing is: sound, the Rapier world, every geometry, material and texture; and, given back by hand because
+WebKit's collector can't be waited for, the characters' vertex data (their buffers are detached) and the textures'
+decoded images (their `ImageBitmap`s are closed). Before, every rebuild kept its world for good, and the timeline hand
+test took the web process to 25 GB; now every row of it ends under 2.3 GB on WebGPU and on WebGL (3.3 GB and 2.1 GB
+at most, for a moment, while a world is built), and 478 rebuilds in a row stay flat. The numbers, and what each step
+of the fix bought, are in
+[`apps/editor-mac/docs/hand-test/results/ab-t-0592/`](../editor-mac/docs/hand-test/results/ab-t-0592/README.md).
+The bookkeeping is `src/worlds.js` (`RetiredWorlds`: `retire`, `sweep`, `use`), tested in
+`apps/creator/test/worlds.test.mjs`: **whatever builds a world owes it a `retire`**. Not covered yet: what leaves a
+world's root while it runs (a body the closet replaced, a node removed during play) isn't reached by the dispose, which
+walks the root; those wait for the collector (AB-T-0626).
+
+**Closing asks first (the Mac app, shell 0.9.0, AB-T-0593).** With unsaved changes, File › Close Window, the close
+button and Quit show a sheet in the window: Save (saves, then closes), Don't Save or Cancel. The bundled sample is
+read-only, so there the sheet says the changes can't be kept and offers Cancel or Close Anyway. The question is
+`@vrmxg/editor-ui`'s `closingQuestion`; opening another scene over unsaved changes still doesn't ask. The answer is
+`src/closing.js` (`editorClosing`), and the window asks one question at a time (`questions`), so every close gets an
+answer. **A scene is marked saved only once its write has succeeded** (`src/saving.js`, the session's `text()` then
+`markSaved()`): a Save that fails (the folder gone, a full disk) keeps the window, shows why, and leaves the scene
+unsaved, so the next close asks again. The page tells the shell whenever its unsaved state changes (`setEdited`): the
+close button shows the dot, and a close the page is too busy to answer asks the person instead of closing.
 
 A project's own modules (`behaviours.js`) import `@vrmxg/core` by name; the page's import map points that at
 `static/vrmxg-core.js`, which hands them the editor's own engine. Not yet: dragging several timeline items at once, curve editing of keys, a shot list separate from the shot row, MCP tools for sequences (W11), multi-selection gizmos, copy and paste,

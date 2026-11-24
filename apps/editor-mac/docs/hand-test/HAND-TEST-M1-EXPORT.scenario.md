@@ -48,7 +48,7 @@ fresh: false
   act id=fps-60 action=press
   act id=export-name action=set_value value=take-4k60
   act id=export-run action=press
-  until find("id=export-result").0.name matches "^Exported take-4k60.mp4: 600 frames, 10.000 s, H.264 4k 60 fps"   # timeout covers a slow machine
+  until find("id=export-result").0.name matches "^Exported take-4k60.mp4: 600 frames, 10.000 s, H.264 4k 60 fps" timeout=60000   # covers a slow or busy machine: 12.6 s on WebGPU with other sessions drawing (2026-11-24), over the default 10 s
   ```
 
 - [ ] ProRes 4444 twice: the decoded frames are identical.

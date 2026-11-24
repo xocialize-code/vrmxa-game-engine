@@ -5,7 +5,9 @@ import { onMounted, reactive, ref } from 'vue';
 import { EditorHost, ADDABLE, SIZES, RATES, CODECS } from './host.js';
 import { bundledProject, openProjectFolder } from './project.js';
 import { McpLink } from './mcp.js';
-import { inShell, call, on } from '../../shell/js/shell.js';
+import { inShell, call, on, onClosing, setEdited } from '../../shell/js/shell.js';
+import { questions } from '@vrmxg/editor-ui';
+import { editorClosing } from './closing.js';
 import TreeItem from './TreeItem.vue';
 import Inspector from './Inspector.vue';
 import Timeline from '@vrmxg/editor-ui/Timeline.vue'; // shared with the creator (M4 W5)
@@ -15,8 +17,9 @@ const ui = reactive({
   shell: '', project: '', writable: false, scenes: [], scene: '', loading: true, error: '', mode: 'editing',
   tree: [], selected: [], inspector: null, assets: [], undo: null, redo: null, dirty: false, valid: true, problems: '',
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
-  debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', renderer: '—', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
+  debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', renderer: '—', holds: '', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
   mcp: '', tl: null, gameSlot: 'slot-1', gameNote: '', paused: false, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
+  ask: null, // { title, text, options: [{ id, label }] }: the window's question before it closes (M5 W8)
   ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '', check: '', canCheck: false, scene: '', checkRows: '' },
 });
 /** @type {EditorHost} */ let ed = null; // never reactive
@@ -30,6 +33,7 @@ function refresh(kind = 'all') {
   ui.build = ed.stats.buildMs ? `${ed.stats.buildMs.toFixed(0)} ms` : '—';
   ui.renderer = ed.stats.backend === 'webgpu' ? 'WebGPU' : ed.stats.backend === 'webgl' ? 'WebGL' : '—'; // M4 W3: which backend draws
   ui.step = ed.stats.step;
+  { const m = ed.memory(); ui.holds = `${m.worlds} worlds of ${m.built} built, ${m.geometries} geometries, ${m.textures} textures`; } // AB-T-0592: what is alive
   ui.captions = ed.captions();
   ui.prompt = ed.prompt();
   if (ed.exporting) Object.assign(ui.ex, { n: ed.exporting.n, frames: ed.exporting.frames, phase: ed.exporting.phase, running: true });
@@ -48,6 +52,7 @@ function refresh(kind = 'all') {
   ui.inspector = ed.inspect();
   const h = s.history(); ui.undo = h.undo; ui.redo = h.redo;
   ui.dirty = s.dirty; ui.nodes = s.doc.nodes.length; ui.hash = s.hash();
+  setEdited(ui.dirty); // the shell knows there is unsaved work even when the page can't answer it (the window's dot too)
   const v = s.validate(); ui.valid = v.ok; ui.problems = v.ok ? `${v.warnings.length} warnings` : v.errors.slice(0, 3).join('; ');
   ui.saved = ed.lastSave ? `${ed.lastSave.ref} · ${ed.lastSave.bytes} bytes · ${ed.lastSave.hash}` : '';
   ui.verify = ed.lastVerify ? `${ed.lastVerify.ref}: ${ed.lastVerify.same ? 'same bytes as saved' : 'DIFFERS from what was saved'}, ${ed.lastVerify.valid ? 'valid' : `invalid: ${ed.lastVerify.errors.join('; ')}`}` : '';
@@ -176,6 +181,19 @@ if (inShell) {
   on('menu.undo', () => (typing() ? document.execCommand('undo') : undo()));
   on('menu.redo', () => (typing() ? document.execCommand('redo') : redo()));
 }
+
+// Before the window closes or the app quits (the Mac shell asks, shell 0.9.0, AB-T-0593): a scene with unsaved changes
+// gets a sheet in the window (closing.js: Save, Don't Save or Cancel in a project folder; Cancel or Close Anyway in the
+// read-only sample). One question at a time, every one answered (@vrmxg/editor-ui questions).
+const sheet = questions((q) => { ui.ask = q; });
+const reply = (id) => sheet.reply(id);
+const closing = async (reason) => {
+  ui.error = '';
+  const go = await editorClosing(ed, { ask: sheet.ask, asking: () => sheet.asking, reason, onError: (e) => { ui.error = String(e?.message ?? e); } });
+  if (ed?.session) refresh();
+  return go;
+};
+if (inShell) onClosing(closing);
 const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase().includes(ui.assetFilter.toLowerCase()));
 </script>
 
@@ -288,6 +306,14 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       </ul>
     </section>
 
+    <div v-if="ui.ask" class="ask-back">
+      <section id="ask" class="ask" role="alertdialog" :aria-label="ui.ask.title" aria-modal="true">
+        <h2>{{ ui.ask.title }}</h2>
+        <p id="ask-text" :aria-label="ui.ask.text">{{ ui.ask.text }}</p>
+        <div class="row"><button v-for="(o, i) in ui.ask.options" :id="`ask-${o.id}`" :key="o.id" type="button" :class="{ play: i === 0 }" :aria-label="o.label" @click="reply(o.id)">{{ o.label }}</button></div>
+      </section>
+    </div>
+
     <footer class="bar status">
       <fieldset class="toggles"><legend>Debug</legend>
         <label v-for="k in ['colliders', 'sensors', 'capsules', 'rays']" :key="k"><input v-model="ui.debug[k]" type="checkbox" :aria-label="k" @change="setDebug"> {{ k }}</label>
@@ -302,6 +328,7 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       <output id="frame-time" :aria-label="`Frame time ${ui.frame}`">{{ ui.frame }}</output>
       <output id="build-time" :aria-label="`Build ${ui.build}`">build {{ ui.build }}</output>
       <output id="renderer" :aria-label="`Renderer ${ui.renderer}`">{{ ui.renderer }}</output>
+      <output id="holds" class="muted" :aria-label="`Holds ${ui.holds}`" title="Worlds alive (the edit view, the preview, Play), and the view's GPU objects: a count that keeps climbing is a leak">{{ ui.holds }}</output>
       <span v-if="ui.shell" class="muted" :aria-label="`Shell ${ui.shell}`">{{ ui.shell }}</span>
     </footer>
   </div>
@@ -368,4 +395,8 @@ output { font-variant-numeric: tabular-nums; }
 .export .field { justify-content: space-between; margin: 6px 0; gap: 8px; } .export .seg button { padding: 3px 6px; font-size: 12px; } .export .field select, .export .field input:not([type=checkbox]) { width: 180px; box-sizing: border-box; }
 .export .row { display: flex; align-items: center; gap: 8px; margin: 8px 0; } .export progress { flex: 1; }
 .export output { display: block; font-size: 12px; color: var(--muted); word-break: break-word; }
+.ask-back { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-start; justify-content: center; padding-top: 12vh; background: rgba(0, 0, 0, 0.3); }
+.ask { width: 380px; padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35); }
+.ask h2 { margin-bottom: 8px; color: var(--ink); text-transform: none; letter-spacing: 0; font-size: 14px; }
+.ask p { margin: 0 0 12px; } .ask .row { display: flex; justify-content: flex-end; gap: 8px; }
 </style>

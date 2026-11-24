@@ -6,6 +6,8 @@ which the shell's `VRMXG_SHELL_PROJECT` hook opens without the panel), then
 `appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M1-EDITOR.scenario.md`. Readouts carry their value
 in their accessible name (`Scene built-cafe.vrmxs 6 nodes unsaved changes valid hash …`, `Undo Move mira`); WebKit's
 element ids read as identifiers (`#doc-state`, `#node-mira`, `#pos-x`, `#prop-walkSpeed`, `#add-sets-cafe-glb`).
+Rows 8 and 9 close and quit (shell 0.9.0, AB-T-0593): File › Close Window is enabled only while the app is in front, so
+they `activate` first; a row can't look at an app that has quit (AB-T-0625), so each relaunches and reads the project.
 
 ```scenario
 app: VRMXG Editor
@@ -70,7 +72,7 @@ fresh: false
   act id=node-cafe-door action=press
   until find("id=inspector-id").0.name == "Node cafe-door"
   act id=field-parent action=press
-  act role=menuitem name=node3d exact=true surface=app action=press
+  act role=menuitem name=node3d exact=true action=press
   until find("id=undo").0.name == "Undo Move cafe-door under node3d"
   act id=node-node3d action=press
   act id=delete action=press
@@ -116,4 +118,59 @@ fresh: false
   act id=play action=press
   until find("id=stop-result").0.name matches "^Stopped: scene as before Play \\([0-9a-f]{16}\\), view unchanged$"
   expect find("id=doc-state").0.name == $before   # the document byte for byte as before Play
+  ```
+
+- [ ] With unsaved changes, File › Close Window and Quit ask first: Cancel keeps the window and the change; Don't Save quits without saving.
+  ```steps
+  partial: that the app has gone isn't seen here (AppProbe can't look at an app that has quit, and its relaunch would end one that hadn't); what a fresh launch finds in the project is
+  set saved = find("id=doc-state").0.name   # the scene as row 6 saved it
+  act id=add-node action=press   # a Node3D: unsaved changes
+  until find("id=doc-state").0.name matches " unsaved changes valid "
+  set edited = find("id=doc-state").0.name
+  activate   # File › Close Window is the key window's item: enabled only while the app is in front
+  menu "File › Close Window" press
+  until find("id=ask-text").0.name == "built-cafe.vrmxs has changes that aren't saved."
+  menu "File › Close Window" press   # asked again with the sheet up: the shell's own alert, the way out of a question that never ends
+  until find("role=button name='Close Anyway' exact=true").count == 1
+  act role=button name="Go Back" exact=true action=press
+  until find("role=button name='Close Anyway' exact=true").count == 0
+  expect find("id=ask").count == 1   # Go Back: the page's question is still up
+  act id=ask-cancel action=press
+  until find("id=ask").count == 0
+  expect find("id=doc-state").0.name == $edited   # the window is still there, with the change
+  menu "App › Quit*" press
+  until find("id=ask").count == 1
+  act id=ask-cancel action=press
+  until find("id=ask").count == 0
+  pause 6500   # longer than the shell's 5 s timeout: Cancel was an answer, so nothing quits later
+  expect find("id=doc-state").0.name == $edited
+  menu "App › Quit*" press
+  until find("id=ask").count == 1
+  act id=ask-discard action=press
+  pause 3000   # it quits here
+  relaunch   # a fresh launch reads what the project holds
+  wait id=open-project enabled=true timeout_ms=40000
+  act id=open-project action=press
+  until find("id=project-name").0.name == "Project project"
+  act id=open-file action=press   # the file field starts on built-cafe.vrmxs
+  until find("id=doc-state").0.name == $saved timeout=40000   # as saved: the node added before Don't Save isn't in it
+  ```
+
+- [ ] Save in the sheet saves the scene and then closes the window.
+  ```steps
+  partial: that the app has gone isn't seen here (AppProbe can't look at an app that has quit, and its relaunch would end one that hadn't); what a fresh launch finds in the project is
+  act id=add-node action=press
+  until find("id=doc-state").0.name matches " unsaved changes valid "
+  activate
+  menu "File › Close Window" press
+  until find("id=ask").count == 1
+  act id=ask-save action=press
+  pause 3000   # it saves, the window closes, and the app quits with its last window
+  relaunch
+  wait id=open-project enabled=true timeout_ms=40000
+  act id=open-project action=press
+  until find("id=project-name").0.name == "Project project"
+  act id=open-file action=press
+  until find("id=doc-state").0.name matches "^Scene built-cafe.vrmxs [0-9]+ nodes saved valid " timeout=40000
+  expect find("id=doc-state").0.name != $saved   # not the scene of row 6 any more: it has the node added before Save
   ```

@@ -81,6 +81,6 @@ export class ScriptDesk {
     return this.text;
   }
 
-  /** The script was written to disk. */
-  markSaved() { this.saved = this.text; }
+  /** The script was written to disk (`text`: what was written; typing since then stays unsaved). */
+  markSaved(text = this.text) { this.saved = text; }
 }

@@ -66,6 +66,15 @@ test('building the cafe from the asset list: add, move, edit, reparent, delete; 
   assert.ok(s.validate().ok, s.validate().errors.join('; '));
   // save, reopen: the same bytes, still valid
   assert.ok(s.dirty);
+  const text = s.text(); // a write that can fail: the text first, saved only once it is written
+  assert.ok(s.dirty, 'taking the text marks nothing');
+  s.markSaved(text, 'elsewhere.vrmxs');
+  assert.ok(!s.dirty);
+  assert.equal(s.path, 'elsewhere.vrmxs');
+  s.rename(s.doc.nodes[0].id, 'renamed while it was being written');
+  s.markSaved(text);
+  assert.ok(s.dirty, 'saved as of the text that was written, not of what the document is now');
+  s.undo();
   const saved = s.save('built-cafe.vrmxs');
   assert.ok(!s.dirty);
   const again = new EditorSession({ registry: reg, text: saved, prefabs });
