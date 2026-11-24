@@ -205,3 +205,35 @@ test('keeping a take is one undo step; undo gives the film back byte for byte; r
   assert.throws(() => withTake(s.doc, { ...sampleTakes[2], target: 'nobody' }, { nodeIds: s.targetIds() }), /target "nobody" isn't in the scene/);
   assert.equal(withoutTake(withTake(parse(base), sampleTakes[2]), 'take-3').sequence.tracks.length, parse(base).sequence.tracks.length);
 });
+
+test('a director take\'s brain: given only to a character who has none, and only that brain is taken away again', () => {
+  const base = parse(read('sequences/the-regular.vrmxs')), director = sampleTakes[1];
+  const brainOf = (doc) => doc.sequence.cast['hana-1'].behaviours, decisions = (doc, id) => doc.sequence.tracks.find((t) => t.take === id && t.type === 'decisions');
+  // she has no brain: the take gives her the actor's and says so on its decisions track
+  const kept = withTake(base, director);
+  assert.deepEqual(brainOf(kept), [{ use: 'brain', preset: 'actor' }]);
+  assert.equal(decisions(kept, 'take-2').cast, 'actor');
+  assert.deepEqual(brainOf(withoutTake(kept, 'take-2')), [], 'removed with the take that gave it');
+  assert.equal(serialize(withoutTake(kept, 'take-2')), serialize(base));
+  assert.equal(decisions(withTake(kept, director), 'take-2').cast, 'actor', 'kept again, the take still answers for the brain');
+  // she already has the actor's brain (the person cast her so): the take leaves it, and so does removing the take
+  const own = structuredClone(base);
+  own.sequence.cast['hana-1'].behaviours = [{ use: 'brain', preset: 'actor' }];
+  const over = withTake(own, director);
+  assert.equal(decisions(over, 'take-2').cast, undefined, 'the take did not give her this brain');
+  assert.deepEqual(brainOf(withoutTake(over, 'take-2')), [{ use: 'brain', preset: 'actor' }], 'her own brain is still hers');
+  assert.equal(serialize(withoutTake(over, 'take-2')), serialize(own));
+  // another brain altogether is never touched either
+  const host = structuredClone(base);
+  host.sequence.cast['hana-1'].behaviours = [{ use: 'brain', preset: 'host' }];
+  assert.deepEqual(brainOf(withoutTake(withTake(host, director), 'take-2')), [{ use: 'brain', preset: 'host' }]);
+  // two director takes: the first gave the brain; removing it hands the brain to the second, and removing that takes it away
+  const second = { ...structuredClone(director), id: 'take-7' };
+  const two = withTake(kept, second);
+  assert.equal(decisions(two, 'take-2').cast, 'actor'); assert.equal(decisions(two, 'take-7').cast, undefined);
+  const one = withoutTake(two, 'take-2');
+  assert.deepEqual(brainOf(one), [{ use: 'brain', preset: 'actor' }], 'the second take\'s decisions still need it');
+  assert.equal(decisions(one, 'take-7').cast, 'actor', 'and it answers for the brain now');
+  assert.deepEqual(brainOf(withoutTake(one, 'take-7')), []);
+  assert.deepEqual(brainOf(withoutTake(two, 'take-7')), [{ use: 'brain', preset: 'actor' }], 'removing the second first leaves the first\'s brain');
+});

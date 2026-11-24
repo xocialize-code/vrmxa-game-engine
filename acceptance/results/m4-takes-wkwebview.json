@@ -5,9 +5,9 @@
   "takes": [
    "take-1 puppet mira 239-759 log 726275474b61b08f tracks 97c2d455764d4d6e [mira-walk-take-1:move,mira-gaze-take-1:property,mira-act-take-1:animation] cast ",
    "take-2 director hana-1 749-1349 log 6e4029d3b2e3eba4 tracks eda5a9adf6e6b2a0 [hana-1-says-take-2:dialogue,hana-1-face-take-2:expression,hana-1-act-take-2:animation,hana-1-decisions-take-2:decisions] cast hana-1",
-   "take-3 face mira 1399-1959 log 4d3ee650b95c59fe tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
+   "take-3 face mira 1399-1959 log 52c96ba90bffa20d tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
   ],
-  "filmHash": "6c23dc078323ce52",
+  "filmHash": "7314d57e8b7a5b5c",
   "final": "42bc50c5a9e11f0f",
   "runDigest": "994d4b168b30b1bebc155f721501146ea4c802f131d59b9a8bc4987074d9c83a"
  },
@@ -19,9 +19,9 @@
    "takes": [
     "take-1 puppet mira 239-759 log 726275474b61b08f tracks 97c2d455764d4d6e [mira-walk-take-1:move,mira-gaze-take-1:property,mira-act-take-1:animation] cast ",
     "take-2 director hana-1 749-1349 log 6e4029d3b2e3eba4 tracks eda5a9adf6e6b2a0 [hana-1-says-take-2:dialogue,hana-1-face-take-2:expression,hana-1-act-take-2:animation,hana-1-decisions-take-2:decisions] cast hana-1",
-    "take-3 face mira 1399-1959 log 4d3ee650b95c59fe tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
+    "take-3 face mira 1399-1959 log 52c96ba90bffa20d tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
    ],
-   "filmHash": "6c23dc078323ce52",
+   "filmHash": "7314d57e8b7a5b5c",
    "final": "42bc50c5a9e11f0f",
    "steps": 2079,
    "twice": true,
@@ -65,9 +65,9 @@
    "takes": [
     "take-1 puppet mira 239-759 log 726275474b61b08f tracks 97c2d455764d4d6e [mira-walk-take-1:move,mira-gaze-take-1:property,mira-act-take-1:animation] cast ",
     "take-2 director hana-1 749-1349 log 6e4029d3b2e3eba4 tracks eda5a9adf6e6b2a0 [hana-1-says-take-2:dialogue,hana-1-face-take-2:expression,hana-1-act-take-2:animation,hana-1-decisions-take-2:decisions] cast hana-1",
-    "take-3 face mira 1399-1959 log 4d3ee650b95c59fe tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
+    "take-3 face mira 1399-1959 log 52c96ba90bffa20d tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
    ],
-   "filmHash": "6c23dc078323ce52",
+   "filmHash": "7314d57e8b7a5b5c",
    "final": "42bc50c5a9e11f0f",
    "steps": 2079,
    "twice": true,
@@ -111,9 +111,9 @@
    "takes": [
     "take-1 puppet mira 239-759 log 726275474b61b08f tracks 97c2d455764d4d6e [mira-walk-take-1:move,mira-gaze-take-1:property,mira-act-take-1:animation] cast ",
     "take-2 director hana-1 749-1349 log 6e4029d3b2e3eba4 tracks eda5a9adf6e6b2a0 [hana-1-says-take-2:dialogue,hana-1-face-take-2:expression,hana-1-act-take-2:animation,hana-1-decisions-take-2:decisions] cast hana-1",
-    "take-3 face mira 1399-1959 log 4d3ee650b95c59fe tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
+    "take-3 face mira 1399-1959 log 52c96ba90bffa20d tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
    ],
-   "filmHash": "6c23dc078323ce52",
+   "filmHash": "7314d57e8b7a5b5c",
    "final": "42bc50c5a9e11f0f",
    "steps": 2079,
    "twice": true,
@@ -157,9 +157,9 @@
    "takes": [
     "take-1 puppet mira 239-759 log 726275474b61b08f tracks 97c2d455764d4d6e [mira-walk-take-1:move,mira-gaze-take-1:property,mira-act-take-1:animation] cast ",
     "take-2 director hana-1 749-1349 log 6e4029d3b2e3eba4 tracks eda5a9adf6e6b2a0 [hana-1-says-take-2:dialogue,hana-1-face-take-2:expression,hana-1-act-take-2:animation,hana-1-decisions-take-2:decisions] cast hana-1",
-    "take-3 face mira 1399-1959 log 4d3ee650b95c59fe tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
+    "take-3 face mira 1399-1959 log 52c96ba90bffa20d tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
    ],
-   "filmHash": "6c23dc078323ce52",
+   "filmHash": "7314d57e8b7a5b5c",
    "final": "42bc50c5a9e11f0f",
    "steps": 2079,
    "twice": true,

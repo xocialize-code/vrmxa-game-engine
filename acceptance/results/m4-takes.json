@@ -46,7 +46,7 @@
     "target": "mira",
     "start": 1399,
     "end": 1959,
-    "log": "4d3ee650b95c59fe",
+    "log": "52c96ba90bffa20d",
     "tracks": [
      "mira-face-take-3:expression",
      "mira-head-take-3:property"
@@ -55,8 +55,8 @@
     "cast": []
    }
   ],
-  "filmHash": "6c23dc078323ce52",
-  "filmBytes": 43056,
+  "filmHash": "7314d57e8b7a5b5c",
+  "filmBytes": 43071,
   "steps": 2079,
   "final": "42bc50c5a9e11f0f",
   "components": 88,
@@ -140,7 +140,7 @@
     "target": "mira",
     "start": 1399,
     "end": 1959,
-    "log": "4d3ee650b95c59fe",
+    "log": "52c96ba90bffa20d",
     "tracks": [
      "mira-face-take-3:expression",
      "mira-head-take-3:property"
@@ -149,8 +149,8 @@
     "cast": []
    }
   ],
-  "filmHash": "6c23dc078323ce52",
-  "filmBytes": 43056,
+  "filmHash": "7314d57e8b7a5b5c",
+  "filmBytes": 43071,
   "steps": 2079,
   "final": "42bc50c5a9e11f0f",
   "components": 88,

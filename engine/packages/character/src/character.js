@@ -294,6 +294,7 @@ export class CharacterNode extends Node {
     const c = this.ctrl;
     const head = this.props.head;
     if (Array.isArray(head) && (head[0] || head[1] || head[2])) this.turnHead(/** @type {any} */ (head));
+    else if (c.headTurned) this.restHead(); // the turn is over: a bone no clip animates would keep it
     if (this.vrm.lookAt) {
       // props.gaze (a performance take's eyes, M4 W9) comes before the look-at target: a direction from her own facing
       const gaze = Array.isArray(this.props.gaze) ? this.props.gaze : null;
@@ -404,7 +405,9 @@ export class CharacterNode extends Node {
   /**
    * props.head (M4 W9: a face take, or keyed by hand): [yaw, pitch, roll] in radians over whatever the animation gave,
    * half on the neck and half on the head. Yaw turns to her left, pitch looks up, roll tips her head to her left
-   * shoulder. A bone no clip animates starts from its rest pose each step, so the turn never accumulates.
+   * shoulder. A bone no clip animates starts from its rest pose each step, so the turn never accumulates; nothing
+   * else writes such a bone, so `ctrl.headTurned` (state) remembers it holds a turn, and restHead puts it back on the
+   * step the head returns to rest (a released track's last key, a take stopping).
    */
   turnHead([yaw, pitch, roll]) {
     const h = this.vrm.humanoid;
@@ -412,9 +415,16 @@ export class CharacterNode extends Node {
     for (const name of ['neck', 'head']) {
       const b = h?.getNormalizedBoneNode(name);
       if (!b) continue;
-      if (!this.animated?.has(b.name)) b.quaternion.identity();
+      if (!this.animated?.has(b.name)) { b.quaternion.identity(); this.ctrl.headTurned = true; }
       b.quaternion.multiply(_turn);
     }
+  }
+
+  /** The head back at rest: the neck and head bones no clip animates go back to their rest pose (the mixer has the others). */
+  restHead() {
+    const h = this.vrm.humanoid;
+    for (const name of ['neck', 'head']) { const b = h?.getNormalizedBoneNode(name); if (b && !this.animated?.has(b.name)) b.quaternion.identity(); }
+    delete this.ctrl.headTurned;
   }
 
   /**

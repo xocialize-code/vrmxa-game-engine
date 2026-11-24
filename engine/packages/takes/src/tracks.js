@@ -7,6 +7,10 @@
 // the script (@vrmxg/script, rule 5) treats its tracks as the person's own: a re-script keeps them and moves them with
 // the beats they fall in.
 //
+// A director take that gave her a goal needs her to have a brain in the film. If she has none, keeping the take casts
+// her with the `actor` preset and marks the take's decisions track `cast: "actor"`; removing the take then takes that
+// brain away again (or hands the mark to another take whose decisions still need it). A brain she already had is hers.
+//
 // The log stays in the project beside the film (takeRef); the film never reads it to play. Replaying a take is building
 // the film it was performed over with takeTracks(log) added, in any engine: replayDoc.
 import { checkSequence } from '@vrmxg/sequence';
@@ -70,6 +74,8 @@ export function withTake(doc, take, { nodeIds = null } = {}) {
   const { tracks, cast } = takeTracks(take);
   if (!tracks.length) throw new Error(`take ${take.id} recorded nothing to keep`);
   const out = structuredClone(doc), seq = out.sequence;
+  // kept again (the same id): if its last keeping gave her the actor's brain, this one still answers for it
+  const answered = new Set((seq.tracks ?? []).filter((t) => t.take === take.id && t.cast === ACTOR.preset).map((t) => t.target));
   seq.tracks = [...(seq.tracks ?? []).filter((t) => t.take !== take.id), ...tracks];
   const taken = new Set(seq.tracks.slice(0, -tracks.length).map((t) => t.id));
   for (const t of tracks) if (taken.has(t.id)) throw new Error(`take ${take.id}: the sequence already has a track "${t.id}"`);
@@ -77,9 +83,11 @@ export function withTake(doc, take, { nodeIds = null } = {}) {
     seq.cast = { ...(seq.cast ?? {}) };
     for (const [id, c] of Object.entries(cast)) {
       const had = seq.cast[id] ?? {};
-      // she keeps a brain she already has (a set's own, or an earlier take's); one with none gets the actor's
+      // she keeps a brain she already has (a set's own, the person's, or an earlier take's); one with none gets the
+      // actor's, and the take's decisions track says so (`cast: "actor"`): only a brain a take gave is ever taken away
       const brained = (had.behaviours ?? []).some((b) => b.use === 'brain');
-      seq.cast[id] = brained ? had : { ...had, behaviours: [...(had.behaviours ?? []), ...structuredClone(c.behaviours)] };
+      if (!brained) seq.cast[id] = { ...had, behaviours: [...(had.behaviours ?? []), ...structuredClone(c.behaviours)] };
+      if (!brained || answered.has(id)) for (const t of tracks) if (t.type === 'decisions' && t.target === id) t.cast = ACTOR.preset;
     }
   }
   const { to } = spanOf(tracks);
@@ -89,16 +97,21 @@ export function withTake(doc, take, { nodeIds = null } = {}) {
   return out;
 }
 
-/** A sequence document without a take (pure): its tracks gone, and the actor's brain when no take needs it any more. */
+/**
+ * A sequence document without a take (pure): its tracks gone. The actor's brain goes with it only when this take's
+ * keeping gave it to her (its decisions track says `cast: "actor"`) and no other take's decisions need it; if another
+ * take's do, that take answers for the brain from then on. A brain she had before any take is never touched.
+ */
 export function withoutTake(doc, id) {
   const out = structuredClone(doc), seq = out.sequence;
   const mine = (seq.tracks ?? []).filter((t) => t.take === id);
   if (!mine.length) throw new Error(`no take "${id}" in this sequence`);
   seq.tracks = seq.tracks.filter((t) => t.take !== id);
-  for (const target of new Set(mine.filter((t) => t.type === 'decisions').map((t) => t.target))) {
-    if (seq.tracks.some((t) => t.type === 'decisions' && t.target === target)) continue;
+  for (const target of new Set(mine.filter((t) => t.type === 'decisions' && t.cast === ACTOR.preset).map((t) => t.target))) {
+    const heir = seq.tracks.find((t) => t.type === 'decisions' && t.target === target && typeof t.take === 'string');
+    if (heir) { heir.cast = ACTOR.preset; continue; }
     const c = seq.cast?.[target];
-    if (c?.behaviours?.some((b) => b.use === 'brain' && b.preset === ACTOR.preset)) c.behaviours = c.behaviours.filter((b) => !(b.use === 'brain' && b.preset === ACTOR.preset));
+    if (c?.behaviours) c.behaviours = c.behaviours.filter((b) => !(b.use === 'brain' && b.preset === ACTOR.preset));
   }
   return out;
 }

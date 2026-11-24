@@ -97,9 +97,10 @@ through, as the player controller has it, which is why the log carries the camer
 - `emote` becomes expression keys: up over a third of a second, held for the line, down again;
 - `gesture` becomes an animation clip, and `lookAt` a lookAt clip until she looks elsewhere or the take ends;
 - a goal, or `goTo`, `follow`, `interact`, `wait`, becomes a key on a `decisions` track, which her brain takes on the
-  same step in the film. Only then does the film need her to have a brain: `keepTake` casts her with the `actor`
-  preset (`@vrmxg/ai`: she stands where she is and does only what she is directed to), and `removeTake` takes it away
-  when no take needs it.
+  same step in the film. Only then does the film need her to have a brain. If she has none, `keepTake` casts her with
+  the `actor` preset (`@vrmxg/ai`: she stands where she is and does only what she is directed to) and marks the take's
+  decisions track `cast: "actor"`. `removeTake` takes away only a brain a take gave her, once no other take's
+  decisions need it; a brain she already had stays.
 
 **Face** (`face.js`). A face sample is `{ step, blinkL, blinkR, jaw, smile, browUp, browDown, yaw, pitch, roll }`: 0 to 1
 and radians, the person's own left and right. Which capture made it doesn't matter: `faceFromFeatures` reads the Mac

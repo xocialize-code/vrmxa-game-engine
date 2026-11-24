@@ -249,7 +249,7 @@ AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for th
   acceptance/m4/takes-wkwebview.sh                                         # WKWebView, scheme and loopback: results/m4-takes-wkwebview.json
   ```
   Node, Chromium and WKWebView (scheme and loopback, two loads each) all give the same tracks from each log, film
-  6c23dc078323ce52 (43,056 bytes), final 42bc50c5a9e11f0f and the same per-step run, and the restore ends the
+  7314d57e8b7a5b5c (43,071 bytes), final 42bc50c5a9e11f0f and the same per-step run, and the restore ends the
   same (AB-R-1086). The face take's source is the spike's verdict (`spike-face/README.md`, AB-R-1085, AB-D-0281); a
   real camera waits on AB-T-0557.
 
