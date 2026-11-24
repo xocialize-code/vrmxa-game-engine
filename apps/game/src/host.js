@@ -145,6 +145,8 @@ export class GameHost {
   setVolume(volume) { for (const [bus, v] of Object.entries(volume ?? {})) { try { this.audio?.setBus(bus, { volume: v }); } catch { /* a bus this output doesn't have */ } } }
 
   async _busy(label, fn) {
+    // one session change at a time: a second New Game or Load while one is under way (a double press) is refused
+    if (this.state.loading) throw new Error(`${this.state.loading.replace(/…$/, '')} already`);
     this.state.loading = label; this.state.error = null; this._changed();
     try { return await fn(); } catch (e) { this.state.error = String(e?.message ?? e); console.error(e); throw e; } finally { this.state.loading = ''; this._changed(); }
   }

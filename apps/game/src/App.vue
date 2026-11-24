@@ -181,7 +181,11 @@ onMounted(async () => {
     await refreshSaves();
     ui.ready = true;
     sync();
-    if (inShell) onClosing((reason) => mayLeave(h.session, { what: reason, ask: ask.ask, asking: () => ask.asking, lastSlot: ui.lastSlot, slotLabel, quitting, onError: (e) => say(`Not saved: ${e?.message ?? e}`) }));
+    // the game doesn't play on behind the question (and nothing more becomes unsaved while it is asked)
+    if (inShell) onClosing((reason) => {
+      if (h.session?.dirty && playing.value) pause();
+      return mayLeave(h.session, { what: reason, ask: ask.ask, asking: () => ask.asking, lastSlot: ui.lastSlot, slotLabel, quitting, onError: (e) => say(`Not saved: ${e?.message ?? e}`) });
+    });
     nextTick(() => menu.value?.focusFirst());
   } catch (e) {
     console.error(e);

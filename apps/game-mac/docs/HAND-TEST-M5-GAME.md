@@ -12,19 +12,21 @@ hold the GPU lock while they draw (`node acceptance/gpu-lock.mjs run --who game-
 Gamepads: AppProbe can't press a gamepad's buttons. `acceptance/m5/game.mjs` drives every menu from a stand-in gamepad in
 Chromium (the same page); row 11 is for a person with a real one.
 
-- [ ] With no query the game draws on WebGPU, and its title menu has focus on New Game.
-- [ ] New Game from the keyboard plays the game: the title scene, then the level.
-- [ ] Escape pauses (nothing steps while the menu is open), and Enter on Resume plays on.
-- [ ] Save Game → Slot 1 from the pause menu saves, and the slot list says what the slot holds.
-- [ ] The pause menu from the keyboard alone: the arrows move, Enter chooses, Escape goes back.
-- [ ] Quit to Title with unsaved progress asks first: Keep Playing stays, Quit Without Saving goes to the title.
-- [ ] A save written from the menu loads from the menu in a fresh launch, at the step it was saved.
-- [ ] Closing the window with unsaved progress asks first; Keep Playing keeps the game.
-- [ ] The renderer chosen in Settings is kept and used the next time the game starts.
-- [ ] With `renderer=webgl` in the query the game draws on WebGL, and it plays.
-- [ ] (A person, with a real gamepad) Start pauses and resumes, the d-pad moves through every menu, A chooses, B goes back.
+- [x] With no query the game draws on WebGPU, and its title menu has focus on New Game. *AppProbe 2026-11-24: `#renderer` read "Renderer WebGPU", New Game had focus, Load Game was disabled with no saves; no error shown.*
+- [x] New Game from the keyboard plays the game: the title scene, then the level. *AppProbe 2026-11-24: Return on New Game; `#scene` read the title, then `game/level.vrmxs` after the title's three seconds; the step count moved.*
+- [x] Escape pauses (nothing steps while the menu is open), and Enter on Resume plays on. *AppProbe 2026-11-24: Escape opened the pause menu with focus on Resume; the step count stayed put for 1.5 s; Return resumed and it moved again.*
+- [x] Save Game → Slot 1 from the pause menu saves, and the slot list says what the slot holds. *AppProbe 2026-11-24: "Saved to Slot 1 at step 353."; the slot read "Slot 1: The Cafe (test game) · level · Get to the counter, 0:05 · …" (the run before the scene was taken out of the detail); `#progress` read "Nothing unsaved".*
+- [x] The pause menu from the keyboard alone: the arrows move, Enter chooses, Escape goes back. *AppProbe 2026-11-24: ↑↑ and Return opened Settings, Escape went back, ↓↓ and Return opened Load Game, Escape back, Escape resumed. Focus was followed through the screen each key led to, not read directly.*
+- [x] Quit to Title with unsaved progress asks first: Keep Playing stays, Quit Without Saving goes to the title. *AppProbe 2026-11-24: the question "Quit to Title without saving?"; Keep Playing kept the pause menu; Quit to Title Without Saving went to the title, which offered Continue.*
+- [x] A save written from the menu loads from the menu in a fresh launch, at the step it was saved. *AppProbe 2026-11-24, partly: the title's Quit ended the app (not watched: AppProbe can't look at an app that has quit); after the relaunch Load Game → Slot 1 said "Loaded Slot 1 at step N." and `#safe-step` read the step row 4's save held, in `game/level.vrmxs`.*
+- [x] Closing the window with unsaved progress asks first; Keep Playing keeps the game. *AppProbe 2026-11-24, partly: File › Close Window asked "Close without saving?"; Keep Playing kept the level; asked again, Close Without Saving closed it, and the relaunch came up on the title menu.*
+- [x] The renderer chosen in Settings is kept and used the next time the game starts. *AppProbe 2026-11-24: Renderer WebGL in Settings, "Settings saved." (after the shell's settings.write returned), Restart Now: "Renderer WebGL"; back to Automatic, Restart Now: "Renderer WebGPU".*
+- [x] With `renderer=webgl` in the query the game draws on WebGL, and it plays. *AppProbe 2026-11-24 (`VRMXG_QUERY=renderer=webgl`): "Renderer WebGL"; New Game reached the level and the step count moved; no error.*
+- [ ] (A person, with a real gamepad) Start pauses and resumes, the d-pad moves through every menu, A chooses, B goes back. *Not run: no gamepad here. `acceptance/m5/game.mjs` drives the same page's menus from a stand-in gamepad in Chromium.*
 
 ## Results
 
-| Row | Step | What happened |
-|---|---|---|
+| Date | Build | Rows | Result |
+|---|---|---|---|
+| 2026-11-24 | Release, ad hoc signed (`scripts/build.sh`), shell 0.11.0, under the GPU lock | 1–9, then 10 | First runs failed: the corner readouts were hidden from accessibility while a menu was open (`aria-modal`: dropped), the first run's app was left asking about unsaved progress so the next launch handed over to it (killed: an app AppProbe launched ignores SIGTERM), a note with quotes didn't parse, and WebKit's `<select>` showed AppProbe no options (the renderer choice is three buttons now). Then 9 of 9 and 1 of 1. Reports and shots in `hand-test/results/ab-t-0616/` |
+| 2026-11-24 | same | 11 | Not run: no gamepad |

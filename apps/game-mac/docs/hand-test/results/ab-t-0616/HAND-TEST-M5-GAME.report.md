@@ -1,0 +1,22 @@
+# The game app on the Mac (M5 W1): AppProbe scenario: run of Nov 24, 2026 at 2:28 PM
+
+- **App:** The Cafe (test game) 0.1.0 (1), <repo>/apps/game-mac/build/cafe-test.app
+- **Scenario:** `<repo>/apps/game-mac/docs/hand-test/HAND-TEST-M5-GAME.scenario.md`
+- **Checklist:** `<repo>/apps/game-mac/docs/HAND-TEST-M5-GAME.md`
+- **Result:** 9 rows: 9 passed, 0 failed, 0 need you; 2 checklist rows have no steps
+
+## Passed
+
+- **1. With no query the game draws on WebGPU, and its title menu has focus on New Game** (checklist line 15): find("id=renderer").0.name == "Renderer WebGPU"; find("id=screen").0.name == "Screen title"; find("id=load-game enabled=false").count == 1; find("role=alert").count == 0 (1258 ms)
+- **2. New Game from the keyboard plays the game: the title scene, then the level** (checklist line 16): find("id=screen").0.name == "Screen playing"; find("id=scene").0.name == "Scene game/title.vrmxs"; find("id=scene").0.name == "Scene game/level.vrmxs"; find("id=step-count").0.name != $before (5814 ms)
+- **3. Escape pauses (nothing steps while the menu is open), and Enter on Resume plays on** (checklist line 17): find("id=screen").0.name == "Screen pause"; find("id=step-count").0.name == $paused; find("id=screen").0.name == "Screen playing"; find("id=step-count").0.name != $paused (3167 ms)
+- **4. Save Game → Slot 1 from the pause menu saves, and the slot list says what the slot holds** (checklist line 18): find("id=screen").0.name == "Screen pause"; find("id=screen").0.name == "Screen save"; find("id=slot-1").0.name == "Slot 1: empty"; find("id=message").0.name matches "^Saved to Slot 1 at step [0-9]+\\.$"; find("id=slot-1").0.name matches "^Slot 1: The Cafe \\(test game\\) · level · Get to the counter, level · 0:[0-9]{2} · "; find("id=progress").0.name == "Nothing unsaved" (851 ms)
+- **5. The pause menu from the keyboard alone: the arrows move, Enter chooses, Escape goes back** (checklist line 19): find("id=screen").0.name == "Screen pause"; find("id=screen").0.name == "Screen settings"; find("id=screen").0.name == "Screen pause"; find("id=screen").0.name == "Screen load"; find("id=screen").0.name == "Screen pause"; find("id=screen").0.name == "Screen playing" (1321 ms)
+- **6. Quit to Title with unsaved progress asks first: Keep Playing stays, Quit Without Saving g…** (checklist line 20): find("id=progress").0.name == "Unsaved progress"; find("id=screen").0.name == "Screen pause"; find("id=question").0.name == "Quit to Title without saving?"; find("id=question").count == 0; find("id=screen").0.name == "Screen pause"; find("id=screen").0.name == "Screen title"; find("id=continue").0.name matches "^Continue: Slot 1: " (1373 ms)
+- **7. A save written from the menu loads from the menu in a fresh launch, at the step it was sa…** (checklist line 21) ◐: partly checked, not: that the app has gone isn't seen here (AppProbe can't look at an app that has quit); what a fresh launch finds is; find("id=screen").0.name == "Screen load"; find("id=message").0.name matches "^Loaded Slot 1 at step [0-9]+\\.$"; find("id=scene").0.name == "Scene game/level.vrmxs"; find("id=safe-step").0.name == $safe (8597 ms)
+- **8. Closing the window with unsaved progress asks first; Keep Playing keeps the game** (checklist line 22) ◐: partly checked, not: Close Without Saving ends the app, which AppProbe can't watch; the relaunch shows it went; find("id=progress").0.name == "Unsaved progress"; find("id=question").0.name == "Close without saving?"; find("id=question").count == 0; $kept == "Scene game/level.vrmxs"; find("id=screen").0.name == "Screen title" (6199 ms)
+- **9. The renderer chosen in Settings is kept and used the next time the game starts** (checklist line 23): find("id=screen").0.name == "Screen settings"; find("id=settings-status").0.name == "Settings saved."; find("id=renderer").0.name == "Renderer WebGL"; find("id=screen").0.name == "Screen settings"; find("id=settings-status").0.name == "Settings saved."; find("id=renderer").0.name == "Renderer WebGPU" (615 ms)
+## Checklist rows with no steps (2, unticked)
+
+- line 24, The game app on the Mac (M5 W1, AB-T-0616): With `renderer=webgl` in the query the game draws on WebGL, and it plays.
+- line 25, The game app on the Mac (M5 W1, AB-T-0616): (A person, with a real gamepad) Start pauses and resumes, the d-pad moves through every menu, A chooses, B goe
