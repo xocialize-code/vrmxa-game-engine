@@ -59,7 +59,9 @@ export class OverlayBinding {
 
   /** Let go of the devices and stop listening (the overlay is unmounted). */
   dispose() {
-    this._input?.release(this);
+    // the input it last saw, and whichever the session has now: a scene change carries this claim to the next world's
+    // input, and the overlay may go before it has seen that world
+    for (const input of new Set([this._input, this.input])) input?.release(this);
     this._off?.(); this._off = null;
     this.hud.dispose();
   }

@@ -64,7 +64,9 @@ settings.applyTo({ input: flow.tree.services.get('input'), audio: output }); // 
 | `RebindList.vue` | `input` (the input service, or a getter), `settings`, `labels` (a game's names for its actions), `hide` → `back`. Exposes `focusFirst()` |
 
 **What AppProbe and a screen reader read.** The readouts and the line are visible text, never `aria-hidden`.
-Visually hidden words make each one say its value whole, and the line and the prompt are in polite live regions. Controls
+Visually hidden words make each one say its value whole. The prompt's live region and the line's (`#dialogue-live`)
+are mounted for as long as the HUD and the overlay are, so a line or a prompt that appears is a change in a region a
+screen reader already knows, not a region arriving full. Controls
 carry accessible names.
 
 | Id | Reads |
@@ -77,7 +79,8 @@ carry accessible names.
 | `#hud-prompt` | "Press E or Gamepad X to Take Key", live |
 | `#hud-outcome`, `#hud-notice-<id>` | "You won", "Saved" |
 | `#dialogue` | `role="dialog"`, "Conversation with Hana" |
-| `#dialogue-line` | "Hana: …", live |
+| `#dialogue-line` | "Hana: …" (the box's visible line) |
+| `#dialogue-live` | the overlay's polite live region, mounted for its whole life (empty between conversations): each line goes into it, so a conversation's first line is announced too |
 | `#dialogue-choice-<id>` | a button: "Choice 1 of 3: …" |
 | `#dialogue-continue` | a button: "Continue" |
 | `#captions`, `#caption-<actor>` | "Hana: …" |
@@ -126,10 +129,12 @@ installs it in the game app.
 Navigation is the UI's own action map (`UI_ACTIONS`, read through `@vrmxg/input`'s `ActionMap`): arrows or WASD and the
 d-pad or left stick move between controls (left and right change a slider), Enter or Space and A press, Escape or
 Backspace and B are `back`. The digits 1 to 9 pick a choice. A focused button's Enter and Space stay the browser's own
-click, and a slider keeps its own arrows, so nothing is pressed twice. **A held key acts once**: a repeat is ignored,
-and a keyboard activation reaches only the control its key went down on (`ActivationGuard`). So Enter or Space held from
-Continue can't pick the first choice when it appears under it: a choice needs a fresh press. Mouse clicks, a gamepad's
-A and scripted clicks are never stopped. The gamepad is polled once a frame through
+click, and a slider keeps its own arrows, so nothing is pressed twice. **A held key acts once** on the overlays' controls: a repeat is ignored,
+and a keyboard activation reaches a control only when its key went down on it (`ActivationGuard`). So Enter or Space
+held from Continue, or Space held to jump, can't pick the first choice when it appears under it: a choice needs a fresh
+press. The guard judges only controls under a nav root (the overlay, and an app menu that uses `useNav`) that aren't
+text fields, and only keyboard clicks: text fields type as usual, and mouse clicks, a gamepad's A and scripted clicks
+are never stopped. The gamepad is polled once a frame through
 `input.peek()`, which reads the devices without taking anything from the step; a held direction repeats after 24
 frames, every 6.
 

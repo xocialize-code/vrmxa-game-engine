@@ -258,3 +258,21 @@ test('a voiced line ends on the same step with and without the audio service: it
   assert.equal(withAudio.asked, Math.floor((0.85 + 0.25) * 60) + 2, 'after the last word and the tail (the first step past it, read at the next boundary), not after the WAV');
   assert.equal(compareRuns(withAudio.run, without.run), null, 'the same hashes on every step, the voice lines included');
 });
+
+test('a clip with no timings file is timed by its text, not the tail alone (review)', async () => {
+  const CLIP = 'voice/untimed.wav', text = 'This line has a clip and no timings file beside it.';
+  const tree = new SceneTree({ registry: m0Registry(), seed: 5 });
+  installInput(tree);
+  const voice = installVoice(tree, { resolve: () => { throw new Error('no such file'); }, faces: false });
+  installGame(tree, { scene: 'v.vrmxs' });
+  const dialogue = installDialogue(tree);
+  const doc = { format: 'vrmxs', version: 1, id: 'v', nodes: [{ id: 'root', type: 'Node3D' }, { id: 'hana', type: 'Node3D', parent: 'root' }, { id: 'rules', type: 'GameRules', parent: 'root' }, { id: 'talk', type: 'Dialogue', parent: 'root', props: { autostart: true, lines: [{ speaker: 'hana', text, clip: CLIP }] } }] };
+  await voice.prepare(doc);
+  tree.instantiate(doc);
+  assert.deepEqual(voice.timings.get(CLIP).words, [], 'voice has the clip with no words');
+  tree.step();
+  const { estimateWords } = await import('../src/index.js');
+  const last = estimateWords(text).at(-1);
+  assert.equal(dialogue.view().duration, last.start + last.duration + 0.2, 'the text\'s estimate');
+  assert.ok(dialogue.view().duration > 3);
+});

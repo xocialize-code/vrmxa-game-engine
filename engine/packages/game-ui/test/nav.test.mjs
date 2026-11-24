@@ -70,3 +70,20 @@ test('a held or repeated Enter or Space never activates a control it didn\'t go 
   g.keydown('Enter', false, cont); g.clear();
   assert.equal(g.click(choice), false, 'focus left the page: nothing held');
 });
+
+test('the guard judges only the overlays\' controls and keyboard clicks: text fields and pointer clicks are left alone (review)', () => {
+  const later = []; const g = new ActivationGuard({ later: (fn) => later.push(fn) });
+  const field = { id: 'name' }, canvas = { id: 'canvas' }, choice = { id: 'choice-1' };
+  // Space or Enter held in a text field (not scoped): every repeat types
+  g.keydown('Space', false, field, false);
+  assert.equal(g.keydown('Space', true, field, false), false);
+  assert.equal(g.keydown('Enter', true, field, false), false);
+  g.keyup('Space'); for (const fn of later.splice(0)) fn();
+  // Space held to jump (down on the canvas): a mouse click on an overlay button is never stopped
+  g.keydown('Space', false, canvas, false);
+  assert.equal(g.click(choice, { keyboard: false, scoped: true }), false, 'a pointer click passes');
+  // but a keyboard click on a choice while Space, pressed elsewhere, is still down is stopped
+  assert.equal(g.click(choice, { keyboard: true, scoped: true }), true);
+  // and a keyboard click outside the overlays isn't judged
+  assert.equal(g.click(field, { keyboard: true, scoped: false }), false);
+});

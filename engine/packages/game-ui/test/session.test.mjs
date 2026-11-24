@@ -152,3 +152,17 @@ test('"Saved" shows after a store that takes longer than the notice lasts (revie
   assert.deepEqual(saved, ['Saved'], 'shown when the write finished, though the checkpoint is 400 steps old');
   b.dispose();
 });
+
+test('unmounted between a scene change and its next read, the overlay releases its claim from the new world\'s input too (review)', async () => {
+  const a = await startFlow(R, scenes), b = await startFlow(R, scenes);
+  const session = { tree: a.tree, view: () => a.view(), get version() { return a.version; }, held: null, on: () => () => {} }; // a session whose events this overlay never hears
+  const binding = new OverlayBinding(session);
+  a.step(); binding.read();
+  const oldInput = a.tree.services.get('input'), newInput = b.tree.services.get('input');
+  assert.equal(oldInput.holders.has(binding), true);
+  oldInput.carryTo(newInput);           // the scene change carries the claim to the next world's input…
+  session.tree = b.tree;                // …and the session plays that world, before the overlay reads it again
+  binding.dispose();
+  assert.equal(newInput.holders.has(binding), false, 'released from the input that holds it now');
+  assert.equal(oldInput.holders.has(binding), false);
+});

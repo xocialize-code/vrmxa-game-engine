@@ -65,7 +65,9 @@ defineExpose({ sync, choose: onChoose, advance: onAdvance });
 <template>
   <div ref="root" class="gu-overlay" role="region" aria-label="Game">
     <Hud v-if="hud" :model="state.hud" />
-    <Captions v-if="captions && state.captions.length" :lines="state.captions" />
+    <Captions v-if="captions" :lines="state.captions" />
+    <!-- mounted for the overlay's life, empty between conversations: each line is a change a screen reader announces -->
+    <p id="dialogue-live" class="gu-sr" aria-live="polite">{{ state.dialogue ? state.dialogue.label : '' }}</p>
     <DialogueBox v-if="state.dialogue" :model="state.dialogue" @choose="onChoose" @advance="onAdvance" />
   </div>
 </template>
@@ -73,4 +75,5 @@ defineExpose({ sync, choose: onChoose, advance: onAdvance });
 <style>
 .gu-overlay { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .gu-overlay button { pointer-events: auto; }
+.gu-overlay .gu-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 </style>

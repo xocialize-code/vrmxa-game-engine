@@ -50,7 +50,7 @@ test('the dialogue box: the speaker and line, numbered choices as buttons with w
   const html = await render(Box, { model: asking });
   assert.match(html, /id="dialogue"[^>]*role="dialog"[^>]*aria-label="Conversation with Hana"/);
   assert.equal(textOf(html, 'dialogue-line'), 'Hana: What can I get you?', 'the line is text, the speaker first');
-  assert.match(html, /aria-live="polite"><p id="dialogue-line"/, 'in a polite live region');
+  assert.doesNotMatch(html, /aria-live/, 'the box comes and goes: the overlay\'s own region, mounted all along, announces the line');
   assert.doesNotMatch(html, /<p [^>]*aria-(label|hidden)/);
   assert.match(html, /id="dialogue-choice-latte"[^>]*data-nav[^>]*aria-label="Choice 1 of 2: A latte, please."/);
   assert.match(html, /id="dialogue-choice-tea"[^>]*aria-label="Choice 2 of 2: Just tea."/);
@@ -66,7 +66,11 @@ test('the root overlay draws the HUD, captions and the dialogue from one model',
   const html = await render(Overlay, { flow: {}, model: { hud, dialogue: asking, captions: [{ actor: 'guest', name: 'Guest', text: 'Hello?', label: 'Guest: Hello?' }], holding: true } });
   assert.match(html, /class="gu-overlay"[^>]*role="region"[^>]*aria-label="Game"/);
   for (const id of ['hud-goal', 'hud-prompt', 'dialogue', 'dialogue-choice-latte', 'captions', 'caption-guest']) assert.match(html, new RegExp(`id="${id}"`), id);
-  assert.match(await render(Overlay, { flow: {} }), /aria-label="Game status"/, 'renders with nothing to show yet');
+  assert.match(html, /<p id="dialogue-live" class="gu-sr" aria-live="polite">Hana: What can I get you\?<\/p>/, 'the line goes into the overlay\'s live region');
+  const empty = await render(Overlay, { flow: {} });
+  assert.match(empty, /aria-label="Game status"/, 'renders with nothing to show yet');
+  assert.match(empty, /<p id="dialogue-live" class="gu-sr" aria-live="polite"><\/p>/, 'the live region is there, empty, before any conversation');
+  assert.match(empty, /id="captions"[^>]*aria-live="polite"/, 'and so is the captions\' list');
 });
 
 test('the settings controls: a slider and a mute button per bus; a key and a button slot per action; all navigable', async () => {

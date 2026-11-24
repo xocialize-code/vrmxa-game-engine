@@ -80,18 +80,24 @@ export function navTarget(action, { count, index, kind = null }) {
 export const ACTIVATION_KEYS = ['Enter', 'NumpadEnter', 'Space'];
 
 /**
- * A key held never activates something new (M5 W3 review): a repeat of Enter or Space is no activation, and a keyboard
- * activation reaches only the control the key went down on. So Enter held after Continue can't pick the first choice
- * when it appears under it, and Space pressed on Continue and let go on a choice doesn't pick it. A click with no
- * activation key down (the mouse, a gamepad's A, a script) is never stopped. Plain logic; use-nav wires it to the page.
+ * A key held never activates something new (M5 W3 review), on the overlays' own controls: a repeat of Enter or Space is
+ * no activation there, and a keyboard activation of one reaches it only when its key went down on it. So Enter held
+ * after Continue can't pick the first choice when it appears under it, and Space held to jump and let go on a choice
+ * doesn't pick it. It never touches text fields or anything outside the overlays (and the menus that opt in), and never
+ * a pointer click: only `scoped` events (on a control under a nav root, not a text field) and keyboard clicks are
+ * judged. Plain logic; use-nav wires it to the page.
  */
 export class ActivationGuard {
   /** @param {{ later?: (fn: () => void) => void }} [o] later: runs fn after the current event's default action (setTimeout) */
   constructor({ later = (fn) => setTimeout(fn, 0) } = {}) { this.later = later; /** code → the element it went down on */ this.down = new Map(); }
-  /** A key went down on `target`. → true when the event must be stopped (a repeat of an activation key) */
-  keydown(code, repeat, target) {
+  /**
+   * A key went down on `target`, anywhere (a key held from the canvas counts too). → true when the event must be
+   * stopped: a repeat of an activation key on a scoped control
+   * @param {string} code @param {boolean} repeat @param {any} target @param {boolean} [scoped]
+   */
+  keydown(code, repeat, target, scoped = true) {
     if (!ACTIVATION_KEYS.includes(code)) return false;
-    if (repeat) return true;
+    if (repeat) return scoped;
     this.down.set(code, target);
     return false;
   }
@@ -101,8 +107,13 @@ export class ActivationGuard {
     const was = this.down.get(code);
     this.later(() => { if (this.down.get(code) === was) this.down.delete(code); });
   }
-  /** A click on `target`. → true when it must be stopped: an activation key is down that went down somewhere else */
-  click(target) {
+  /**
+   * A click on `target`. → true when it must be stopped: a keyboard click on a scoped control while an activation key is
+   * down that went down somewhere else. A pointer click (or one from a script or a gamepad, with no key down) never is.
+   * @param {any} target @param {{ keyboard?: boolean, scoped?: boolean }} [o]
+   */
+  click(target, { keyboard = true, scoped = true } = {}) {
+    if (!keyboard || !scoped) return false;
     for (const el of this.down.values()) if (el !== target) return true;
     return false;
   }

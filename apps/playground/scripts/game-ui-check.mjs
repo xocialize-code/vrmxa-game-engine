@@ -53,7 +53,7 @@ const unnamed = () => page.evaluate(() => [...document.querySelectorAll('button,
 await page.goto(url);
 await page.waitForSelector('#hud-goal', { timeout: 60000 });
 check('the HUD shows the goal, the score and the clock, as text', (await text('#hud-goal')) === 'Goal: Take Hana\'s order' && (await text('#hud-score')) === 'Score 0' && /^Until closing 0:(20|19|18)/.test(await text('#hud-timer-clock')), [await text('#hud-goal'), await text('#hud-score'), await text('#hud-timer-clock')].join(' | '));
-check('the line is text in a polite live region', /^Hana: Good morning! What can I get you\?$/.test(await text('#dialogue-line')) && (await page.$eval('#dialogue-line', (e) => e.parentElement.getAttribute('aria-live'))) === 'polite', await text('#dialogue-line'));
+check('the line is text, and goes into the overlay\'s polite live region', /^Hana: Good morning! What can I get you\?$/.test(await text('#dialogue-line')) && (await text('#dialogue-live')) === 'Hana: Good morning! What can I get you?' && (await page.getAttribute('#dialogue-live', 'aria-live')) === 'polite', `${await text('#dialogue-line')} | ${await text('#dialogue-live')}`);
 // Enter on Continue skips the line; held, it doesn't also pick the first choice when the choices appear under it (review)
 await page.waitForFunction(() => document.activeElement?.id === 'dialogue-continue', null, { timeout: 10000 });
 await page.keyboard.down('Enter');
@@ -120,6 +120,13 @@ const run = await page.evaluate(() => window.__demo.input.bindings().run.binding
 check('a gamepad capture takes B, and the menu stays open', !!(await page.$('[aria-label="Settings"]')) && JSON.stringify(run) === JSON.stringify([{ key: 'ShiftLeft' }, { key: 'ShiftRight' }, { gamepadButton: 1 }]), JSON.stringify(run));
 await page.waitForTimeout(100);
 check('no capture is left waiting after it (the slot clicked twice)', (await label('#rebind-run-gamepad')) === 'Run, gamepad: Gamepad B. Change', await label('#rebind-run-gamepad'));
+// Space held from the canvas (a jump): a mouse click on a button still goes through, and Space's release on it doesn't click it again (review)
+await page.focus('canvas');
+await page.keyboard.down('Space');
+await page.click('#mute-music');
+await page.keyboard.up('Space');
+await page.waitForTimeout(100);
+check('with Space held from the canvas, a mouse click works, and the release is no second click', (await page.evaluate(() => window.__demo.settings.data.volumes.music.muted)) === true, String(await page.evaluate(() => window.__demo.settings.data.volumes.music.muted)));
 const shot2 = path.join(out, 'game-ui-check-settings.png');
 await page.screenshot({ path: shot2 });
 await press(1);
@@ -128,6 +135,7 @@ check('B closes the settings', !(await page.$('[aria-label="Settings"]')));
 // the next step uses it: J pressed is a jump on the game's input (once Hana is done: the overlay holds the keys while she talks)
 await page.waitForSelector('#dialogue', { state: 'detached', timeout: 15000 });
 check('the conversation over, the overlay lets go of the keys', await page.evaluate(() => window.__demo.input.muted === false));
+check('the live region stays, empty, after the conversation', (await page.$('#dialogue-live')) !== null && (await text('#dialogue-live')) === '');
 await page.keyboard.down('KeyJ'); await page.waitForTimeout(100);
 const jumping = await page.evaluate(() => window.__demo.input.isDown('jump'));
 await page.keyboard.up('KeyJ');

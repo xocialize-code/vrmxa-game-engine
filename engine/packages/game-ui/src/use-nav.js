@@ -12,15 +12,19 @@ import { onMounted, onBeforeUnmount, watch } from 'vue';
 import { ActionMap } from '@vrmxg/input';
 import { UI_ACTIONS, NavPad, keyAction, navTarget, ActivationGuard } from './nav.js';
 
-// One guard for the page (ActivationGuard): a held or repeated Enter or Space never activates a control it didn't go
-// down on. Installed with the first useNav, in the capture phase, so it sees every key and click first.
+// One guard for the page (ActivationGuard), installed with the first useNav in the capture phase. It judges only the
+// overlays' own controls (under a nav root: the overlay, and an app menu that uses useNav), never a text field, and never
+// a pointer click (a keyboard's click has no click count: event.detail is 0).
 let guard = null;
+const TEXT = new Set(['text', 'search', 'email', 'url', 'tel', 'password', 'number', 'date', 'time', 'datetime-local', 'month', 'week']);
+const isTextField = (el) => !!el && (el.isContentEditable || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || (el.tagName === 'INPUT' && TEXT.has(String(el.type).toLowerCase())));
+const scopedTarget = (el) => !!el?.closest?.('[data-nav-root]') && !isTextField(el);
 function installGuard() {
   if (guard || typeof document === 'undefined') return;
   guard = new ActivationGuard();
-  document.addEventListener('keydown', (e) => { if (guard.keydown(e.code, e.repeat, e.target)) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+  document.addEventListener('keydown', (e) => { if (guard.keydown(e.code, e.repeat, e.target, scopedTarget(e.target))) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
   document.addEventListener('keyup', (e) => guard.keyup(e.code), true);
-  document.addEventListener('click', (e) => { if (guard.click(e.target)) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+  document.addEventListener('click', (e) => { if (guard.click(e.target, { keyboard: e.detail === 0, scoped: scopedTarget(e.target) })) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
   addEventListener('blur', () => guard.clear());
 }
 

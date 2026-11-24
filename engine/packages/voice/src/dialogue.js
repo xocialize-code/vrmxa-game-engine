@@ -232,17 +232,15 @@ export class DialogueService {
   /**
    * A line's length in seconds, from data every runtime has, never from a decoded clip (the audio service knows a WAV's
    * length only where it is installed, and the steps a line ends on must be the same in every runtime): the line's own
-   * `seconds`; else a clip's word timings (a baked line's stored length, or its last word and VOICED_TAIL); else its
-   * text's estimated timings, as the voice service times a text line.
+   * `seconds`; else a clip's word timings (a baked line's stored length, or its last word and VOICED_TAIL); else (no
+   * timings file, or one with no words) its text's estimated timings, as the voice service times a text line.
    */
   lineSeconds(line) {
     if (line.seconds !== null) return line.seconds;
     const t = line.clip ? this.tree.services.get('voice')?.timings?.get(line.clip) : null;
-    if (t) {
-      if (t.visemes) return t.duration; // baked (@vrmxg/voicing): the length stored with the track
-      const last = t.words.at(-1);
-      return last ? last.start + last.duration + VOICED_TAIL : VOICED_TAIL;
-    }
+    if (t?.visemes) return t.duration; // baked (@vrmxg/voicing): the length stored with the track
+    const timed = t?.estimated === false ? t.words.at(-1) : null; // a timings file's words (none: the text decides)
+    if (timed) return timed.start + timed.duration + VOICED_TAIL;
     const last = estimateWords(line.text).at(-1);
     return last ? last.start + last.duration + 0.2 : 0;
   }

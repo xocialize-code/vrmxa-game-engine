@@ -1,7 +1,8 @@
 <script setup>
 // The dialogue box (M5 W3): who is speaking, the line word by word as it is said, and the choices once the line asks.
-// The line is text in a polite live region (a screen reader says it once, whole; the words only change colour as they
-// are said), with the speaker's name first. Plain data in (dialogueModel), events out: `choose` with the choice's id and `advance`. The parent hands them to the
+// The line is text, the speaker's name first (the words only change colour as they are said). It is announced by the
+// overlay's own live region (GameOverlay's #dialogue-live), which is mounted for the overlay's life: a region that
+// arrives already holding text often isn't announced, and this box comes and goes with each conversation. Plain data in (dialogueModel), events out: `choose` with the choice's id and `advance`. The parent hands them to the
 // simulation as recorded inputs; this component changes nothing itself. Choices are buttons in a list, numbered (a digit
 // key picks one), with accessible names that say which of how many.
 defineProps({ model: { type: Object, required: true } });
@@ -10,7 +11,7 @@ const emit = defineEmits(['choose', 'advance']);
 
 <template>
   <section id="dialogue" class="gu-dialogue" role="dialog" aria-modal="false" :aria-label="model.name ? `Conversation with ${model.name}` : 'Conversation'">
-    <div class="gu-line-area" aria-live="polite">
+    <div class="gu-line-area">
       <p id="dialogue-line" class="gu-line"><strong v-if="model.name" class="gu-name">{{ model.name }}<span class="gu-sr">: </span></strong><span v-for="(w, i) in model.words" :key="i" :class="i < model.spoken ? 'said' : 'unsaid'">{{ i + 1 < model.words.length ? `${w} ` : w }}</span></p>
     </div>
     <ol v-if="model.asking" id="dialogue-choices" class="gu-choices" aria-label="Choices">
