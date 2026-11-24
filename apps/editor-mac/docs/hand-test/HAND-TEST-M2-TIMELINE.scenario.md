@@ -97,6 +97,7 @@ fresh: false
   expect find("id=doc-state").0.name matches "^Scene sequences/hand-test.vrmxs 1 nodes "   # back to the brain alone
   until find("id=doc-state").0.name == $built do menu "Edit › Redo*" press tries=20   # the same document, hash and all
   expect find("id=redo").0.enabled == false
+  until find("id=holds").0.name matches "^Holds [12] worlds of [0-9]+ built" timeout=20000   # every world the undos and redos replaced was let go of (AB-T-0592): only the edit view's and the preview's are alive
   ```
 
 - [ ] Save writes the sequence into the project; reopening it from disk gives the same bytes, and it validates.
@@ -131,6 +132,7 @@ fresh: false
   expect find("id=tl-frame").0.value >= 130   # about 48 frames in 2 s at 24 fps (frames the scrub can't keep up with are skipped)
   act id=tl-angles action=press
   until find("name='Angles: shot, vc-wide, vc-hana, vc-ots, vc-two' exact=true").count >= 1   # the shot, then every virtual camera (a group and its text: two elements)
+  until find("id=holds").0.name matches "^Holds [12] worlds of [0-9]+ built" timeout=20000   # playing built no world and kept none (AB-T-0592)
   shot "angles"
   judge: human
   ```

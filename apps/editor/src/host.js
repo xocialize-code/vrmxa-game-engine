@@ -26,6 +26,7 @@ import * as vrmxaMain from '@vrmxa-core/index.js';
 import * as vrmxaAnim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
 import { buildWorld } from '../../playground/src/world.js';
+import { disposeWorld, disposed } from './dispose.js';
 import '../../playground/src/sqljs.js'; // vrmxa-core's sql.js for bundles with a database (Mira's)
 
 installPortableMath(); // before anything parses a VRM or steps a world
@@ -74,10 +75,13 @@ export class EditorHost {
     this.registry = registry;
     this.project = null; this.sceneRef = null; this.session = null;
     this.edit = null;          // { tree, objects: Map<Object3D, nodeId>, shape }
+    this.editWorld = null;     // the world this.edit was made from, kept until its replacement is shown, then retired
     this.playWorld = null;
+    this._retired = [];        // worlds let go of (AB-T-0592), waiting for the view or a scrub to stop using them
     this.devices = null;
     this.debug = { colliders: false, sensors: false, capsules: false, rays: false };
     this.stats = { frameMs: 0, fps: 0, renderMs: 0, step: 0, buildMs: 0, backend: '' };
+    this._built = 0;           // worlds built (AB-T-0592): the status shows how many are still alive
     this.error = '';
     this.onChange = null;
     this.busy = 0;
@@ -121,6 +125,31 @@ export class EditorHost {
 
   /** Tell the UI: 'stats' for the readouts only (every few frames), anything else for the panels. */
   changed(kind = 'all') { this.onChange?.(kind); }
+
+  /**
+   * Let a world go (AB-T-0592): sound, physics and every geometry, material and texture (dispose.js). A world that is
+   * only dropped keeps its WASM and GPU memory for good, and every edit builds another. A world the view still shows
+   * (the old edit view while its replacement builds) or that a scrub is working on waits here: the frame loop disposes
+   * it once it is free (`sweep`), so nothing is drawn or stepped after its physics has gone.
+   */
+  retire(world) {
+    if (!world || world.disposed) return;
+    if (!this._retired.includes(world)) this._retired.push(world);
+    this.sweep();
+  }
+
+  /** Dispose the retired worlds nothing uses any more. */
+  sweep() {
+    if (!this._retired.length) return;
+    this._retired = this._retired.filter((w) => {
+      if (w.inUse > 0 || this.host?.tree === w.tree) return true;
+      disposeWorld(w);
+      return false;
+    });
+  }
+
+  /** The timeline's preview world goes (a new session, a new document for it). */
+  dropPreview() { const p = this.preview; this.preview = null; if (p) this.retire(p.world); }
 
   // ---------------------------------------------------------------- project and scene
 
@@ -171,7 +200,7 @@ export class EditorHost {
     const set = this.setScene;
     this.session.targetIds = set ? () => new Set(set.doc.nodes.map((n) => n.id)) : null;
     this.session.setDoc = set?.doc ?? null;
-    this.preview = null; this.scrubState = null; this.previewPlaying = false; this.playhead = 0; this.range = null; this.view = 'edit';
+    this.dropPreview(); this.scrubState = null; this.previewPlaying = false; this.playhead = 0; this.range = null; this.view = 'edit';
     this.host.camera = this.camera;
   }
 
@@ -249,10 +278,13 @@ export class EditorHost {
     const t0 = performance.now();
     const doc = parse(this.session.text());
     const world = await this.buildFrom(doc);
-    if (gen !== this._gen) return; // a newer edit started another build
-    if (this.session.mode === 'playing') return;
+    // a newer edit started another build, or Play began meanwhile: this world is never shown
+    if (gen !== this._gen || this.session.mode === 'playing') { this.retire(world); return; }
+    const old = this.editWorld;
+    this.editWorld = world;
     this.edit = { tree: world.tree, objects: this.objectMap(world.tree), shape: this.shapeOf(doc), personas: world.personas ?? null };
     if (this.view === 'edit') { this.host.attach(world.tree); this.host.debug.set(this.debug); }
+    this.retire(old); // the edit view it replaces (still shown until here, so the view never goes blank)
     this.stats.buildMs = performance.now() - t0;
     this.error = '';
     this.attachGizmo();
@@ -277,7 +309,19 @@ export class EditorHost {
     const sample = { scene: this.sceneRef, doc, prefabs: this.session.prefabs, animations: this.animCache, bytes: (ref) => p.bytes(ref), personas: this.personasCache ?? null };
     this.buildTimings = {};
     if (heard && !this.audio) this.audio = new AudioOutput(); // made on the first Play: that click is the gesture that lets it sound
-    return buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial });
+    const world = await buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial });
+    this._built++;
+    return world;
+  }
+
+  /**
+   * What the app holds (AB-T-0592): the worlds alive (built and not yet disposed: the edit view, the preview, a play
+   * or export world, and one being replaced) and the view renderer's geometries and textures. A count that keeps
+   * climbing while the document is only edited is a leak.
+   */
+  memory() {
+    const m = this.host?.renderer.info?.memory ?? {};
+    return { worlds: this._built - disposed.worlds, built: this._built, geometries: m.geometries ?? 0, textures: m.textures ?? 0 };
   }
 
   /** Each scene node's object, for picking: inner nodes of a prefab instance pick the instance. */
@@ -505,6 +549,7 @@ export class EditorHost {
     this.host.camera = this.camera;
     this.orbit.enabled = this.cameraMode === 'orbit';
     if (this.edit) { this.host.attach(this.edit.tree); this.host.debug.set(this.debug); }
+    this.retire(world); // the play world: its take is kept as input, not as a world
     const after = this.edit ? hashValue(worldHashes(this.edit.tree)) : null;
     this.lastStop = { ...r, viewSame: after === this.editHash };
     this.attachGizmo();
@@ -675,7 +720,7 @@ export class EditorHost {
     finally {
       // a fresh renderer per export: the take's world goes, and its GPU resources with it
       if (this.exportHost) { this.exportHost.dispose(); this.exportHost.renderer.forceContextLoss?.(); this.exportHost = null; }
-      world?.audio?.dispose();
+      disposeWorld(world); // its sound and its physics too (AB-T-0592)
       this.exporting = null; this.changed();
     }
   }
@@ -742,7 +787,7 @@ export class EditorHost {
     finally {
       rb?.release(); // the readback's map buffers (WebGPU), as exportTake releases its own
       if (host) { host.dispose(); host.renderer.forceContextLoss?.(); }
-      world?.audio?.dispose();
+      disposeWorld(world);
       this.exporting = null; this.changed();
     }
   }
@@ -824,6 +869,7 @@ export class EditorHost {
       const world = await this.buildFrom(parse(this.session.text()), { play: true, heard: false });
       const old = this.preview; this.preview = { hash, world, player: new SequencePlayer(world.tree, { every: 120 }), buildMs: performance.now() - t0 };
       if (old && this.host.tree === old.world.tree) this.host.detach();
+      if (old) this.retire(old.world); // the preview of the document as it was (AB-T-0592)
       return this.preview;
     })();
     this._previewBuilding = { hash, promise };
@@ -845,17 +891,22 @@ export class EditorHost {
         while (this._scrubWant !== null) {
           const f = this._scrubWant; this._scrubWant = null;
           const p = await this.previewWorld();
-          const { step, alpha } = p.world.sequence.stepOf(Math.floor(f));
-          const t0 = performance.now();
-          const r = await p.player.seekStep(Math.max(0, step - 1));
-          if (this.host.tree !== p.world.tree) { this.host.attach(p.world.tree); this.host.debug.set(this.debug); }
-          this.gizmo.detach(); this.box.visible = false;
-          this.view = 'preview';
-          this.host.camera = this.previewCamera === 'sequence' ? null : this.camera;
-          await this.host.frameAt(step, alpha);
-          this.scrubState = { frame: Math.floor(f), step, alpha: +alpha.toFixed(3), restored: r.restored, stepped: r.stepped + (step > r.step ? step - r.step : 0), ms: +(performance.now() - t0).toFixed(1), hash: hashValue(worldHashes(p.world.tree, { physicsBytes: true })) };
-          this.drawAngles();
-          this.changed('timeline');
+          if (p !== this.preview) continue; // another scene was opened while it was built: nothing to show of this one
+          p.world.inUse = (p.world.inUse ?? 0) + 1; // a world being stepped and drawn isn't disposed under the scrub
+          try {
+            const { step, alpha } = p.world.sequence.stepOf(Math.floor(f));
+            const t0 = performance.now();
+            const r = await p.player.seekStep(Math.max(0, step - 1));
+            if (p !== this.preview) continue; // another scene was opened meanwhile: this world isn't shown
+            if (this.host.tree !== p.world.tree) { this.host.attach(p.world.tree); this.host.debug.set(this.debug); }
+            this.gizmo.detach(); this.box.visible = false;
+            this.view = 'preview';
+            this.host.camera = this.previewCamera === 'sequence' ? null : this.camera;
+            await this.host.frameAt(step, alpha);
+            this.scrubState = { frame: Math.floor(f), step, alpha: +alpha.toFixed(3), restored: r.restored, stepped: r.stepped + (step > r.step ? step - r.step : 0), ms: +(performance.now() - t0).toFixed(1), hash: hashValue(worldHashes(p.world.tree, { physicsBytes: true })) };
+            this.drawAngles();
+            this.changed('timeline');
+          } finally { p.world.inUse--; }
         }
       } catch (err) { this.error = String(err?.stack ?? err); this.changed(); }
       finally { this._scrubbing = null; }
@@ -963,6 +1014,7 @@ export class EditorHost {
   loop() {
     const tick = (t) => {
       requestAnimationFrame(tick);
+      this.sweep(); // retired worlds the view has stopped showing (AB-T-0592)
       const tree = this.host?.tree;
       if (!tree) return;
       const dt = this._last === null ? 0 : Math.min(0.25, (t - this._last) / 1000);

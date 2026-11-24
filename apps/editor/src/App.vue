@@ -15,7 +15,7 @@ const ui = reactive({
   shell: '', project: '', writable: false, scenes: [], scene: '', loading: true, error: '', mode: 'editing',
   tree: [], selected: [], inspector: null, assets: [], undo: null, redo: null, dirty: false, valid: true, problems: '',
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
-  debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', renderer: '—', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
+  debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', renderer: '—', holds: '', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
   mcp: '', tl: null, gameSlot: 'slot-1', gameNote: '', paused: false, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
   ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '', check: '', canCheck: false, scene: '', checkRows: '' },
 });
@@ -30,6 +30,7 @@ function refresh(kind = 'all') {
   ui.build = ed.stats.buildMs ? `${ed.stats.buildMs.toFixed(0)} ms` : '—';
   ui.renderer = ed.stats.backend === 'webgpu' ? 'WebGPU' : ed.stats.backend === 'webgl' ? 'WebGL' : '—'; // M4 W3: which backend draws
   ui.step = ed.stats.step;
+  { const m = ed.memory(); ui.holds = `${m.worlds} worlds of ${m.built} built, ${m.geometries} geometries, ${m.textures} textures`; } // AB-T-0592: what is alive
   ui.captions = ed.captions();
   ui.prompt = ed.prompt();
   if (ed.exporting) Object.assign(ui.ex, { n: ed.exporting.n, frames: ed.exporting.frames, phase: ed.exporting.phase, running: true });
@@ -302,6 +303,7 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       <output id="frame-time" :aria-label="`Frame time ${ui.frame}`">{{ ui.frame }}</output>
       <output id="build-time" :aria-label="`Build ${ui.build}`">build {{ ui.build }}</output>
       <output id="renderer" :aria-label="`Renderer ${ui.renderer}`">{{ ui.renderer }}</output>
+      <output id="holds" class="muted" :aria-label="`Holds ${ui.holds}`" title="Worlds alive (the edit view, the preview, Play), and the view's GPU objects: a count that keeps climbing is a leak">{{ ui.holds }}</output>
       <span v-if="ui.shell" class="muted" :aria-label="`Shell ${ui.shell}`">{{ ui.shell }}</span>
     </footer>
   </div>
