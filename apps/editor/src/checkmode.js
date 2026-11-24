@@ -21,6 +21,9 @@ export async function runCheckMode(ed, { size = '1080p', scene = 'sequences/cafe
   host.attach(world.tree); host.resize(w, h);
   const rb = readbackFor(host, w, h), buf = new Uint8Array(w * h * 4), last = Math.max(...want);
   const forward = {};
+  // as the export goes, its warm-up included: on WebGPU a fresh host's first draw is thrown away (exportTake's `warm`,
+  // AB-T-0596), or frame 0 here would be that draw and differ from the export's
+  if (host.backend === 'webgpu') { const { step, alpha } = world.sequence.stepOf(0); await rb.draw(() => host.frameAt(step, alpha)); await rb.readNow(buf); }
   for (let f = 0; f <= last; f++) {
     const { step, alpha } = world.sequence.stepOf(f);
     if (!want.has(f)) { await host.frameAt(step, alpha); continue; }
