@@ -60,7 +60,7 @@ export function shellFaceCamera({ call, on }, { fps = 30, device = null } = {}) 
 export class TakeDeck {
   /**
    * @param {any} cr the CreatorHost, or a stand-in with: session, short, project, playhead, desk?, applyScript?, setScene,
-   *   takeWorld(doc) → world, beginLive(world, tick), endLive(), scrubTo(frame), changed(kind)
+   *   liveWorld(doc) → world, beginLive(world, tick), endLive(), scrubTo(frame), changed(kind)
    * @param {{ devices?: () => Promise<{ devices: any[], release?: () => void }> | { devices: any[], release?: () => void },
    *   model?: () => Promise<any> | any, camera?: (o: { device?: string | null }) => Promise<any> | any }} [env] the page's side
    */
@@ -123,7 +123,7 @@ export class TakeDeck {
       const end = stepOfFrame(doc.sequence.duration, fps);
       let start = stepOfFrame(Math.max(0, Math.floor(from)), fps);
       if (start >= end - 30) start = 0; // the playhead at the film's end: from the top
-      world = await cr.takeWorld(doc);
+      world = await cr.liveWorld(doc);
       const tree = world.tree;
       while (tree.clock.step < start) while (!tree.step()) await tree.settle();
       const id = nextTakeId(s.doc.sequence, this.logged());

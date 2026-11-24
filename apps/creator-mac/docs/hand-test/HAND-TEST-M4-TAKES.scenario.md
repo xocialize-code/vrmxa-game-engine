@@ -13,8 +13,8 @@ node acceptance/gpu-lock.mjs run --who creator-takes-hand-test -- sh -c 'apps/cr
   tracks and the log files; what a real keyboard, model and camera feel like is the operator's (`../HAND-TEST-M4-TAKES.md`).
 - **Readouts.** `#take-status` carries the deck's state in its accessible name (`Take 1 recording: puppet, mira, 3.2 s`,
   `Take 1 recorded: … 3 tracks; keep or discard`, `Take: Kept Take 1: Mira, puppet (7.1 s): 3 tracks, log performances/…`).
-  A kept take is `#take-item-take-1`; its tracks are timeline rows (`#tl-head-mira-walk-take-1`). The undo step is read
-  from the toolbar's `#undo`.
+  A kept take is `#take-item-take-1`; its tracks are timeline rows (`#tl-head-mira-walk-take-1`). A director take's
+  conversation is `#take-said-0`, `#take-said-1` …. The undo step is read from the toolbar's `#undo`.
 
 ```scenario
 app: VRMXG Creator
@@ -97,9 +97,8 @@ fresh: false
   until find("id=take-say").count == 1
   until find("id=take-say").0.value == "Good morning, Hana!" do act id=take-say action=set_value value="Good morning, Hana!" tries=3
   act id=take-say-send action=press
-  until find("id=take-said").count == 1
-  until find("role=listitem name='Hana: Good morning! Lovely to see you.'").count == 1 timeout=30000   # the model's line, said by her
-  expect find("role=listitem name='You: Good morning, Hana!'").count == 1
+  until find("id=take-said-0").0.name == "You: Good morning, Hana!"
+  until find("id=take-said-1").0.name == "Hana: Good morning! Lovely to see you." timeout=30000   # the model's line, said by her
   pause 3000   # her face and her wave follow the line
   act id=take-stop action=press
   until find("id=take-status").0.name matches "^Take 2 recorded: director, hana-1, [0-9.]+ s, 3 tracks; keep or discard$" timeout=30000

@@ -92,7 +92,7 @@ export function creatorCommands() {
     description: 'op: list (the takes kept in the short, and the take logs under performances/); apply (log: a take log\'s project ref, e.g. performances/the-regular/take-1.json: its tracks are added after the short\'s own, marked with the take); remove (id: a kept take, e.g. take-1: its tracks go, its log stays). A take\'s tracks are ordinary tracks: read them with short part=outline, edit them in the creator.',
     schema: { type: 'object', required: ['op'], properties: { op: { type: 'string', enum: ['list', 'apply', 'remove'] }, log: { type: 'string', description: 'A take log in the project (op apply).' }, id: { type: 'string', description: 'A kept take\'s id (op remove).' } } },
     async run({ op, log, id }, { cr, session }) {
-      const deck = cr.takes;
+      const deck = cr.takeDeck;
       if (!deck) throw new Error('this creator has no take deck');
       if (op === 'list') return { takes: deck.takes().map((t) => ({ id: t.id, kind: t.kind, who: t.target, from: Math.round(t.from), to: Math.round(t.to), tracks: t.tracks, log: t.log })), logs: cr.project.files.filter((f) => /^performances\/.+\.json$/.test(f)), changed: false };
       if (op === 'apply') {
@@ -184,7 +184,7 @@ export function creatorTarget(cr, { render = null, commands = creatorCommands() 
   const setDoc = () => cr.setScene?.doc ?? null;
   return {
     commands,
-    context: () => { if (cr.takes?.busy) throw new Error('a take is being recorded in the creator: the short can\'t be edited until it is stopped'); return { cr, session: asAgent(session()) }; },
+    context: () => { if (cr.takeDeck?.busy) throw new Error('a take is being recorded in the creator: the short can\'t be edited until it is stopped'); return { cr, session: asAgent(session()) }; },
     history: () => (cr.session ? cr.session.history() : { undo: null, redo: null, undoDepth: 0, redoDepth: 0 }),
     async undo() { session(); const ok = cr.undo(); cr.changed?.(); return ok; },
     async redo() { session(); const ok = cr.redo(); cr.changed?.(); return ok; },

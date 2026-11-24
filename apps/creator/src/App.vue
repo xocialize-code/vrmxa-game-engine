@@ -38,9 +38,9 @@ function refresh(kind = 'all') {
   if (kind === 'thumbs' || kind === 'all') { ui.thumbs = { ...cr.thumbs }; ui.thumbState = cr.thumbState; }
   if (kind === 'timeline' || kind === 'all') { ui.tl = cr.timeline(); ui.selectedShot = cr.selectedShot; }
   if (kind === 'take' || kind === 'all') {
-    ui.take = cr.takes.status(); ui.takeLine = takeLine(ui.take);
-    if (cr.session) ui.mode = cr.takes.busy ? 'take' : cr.session.mode; // a take is being recorded: the short isn't edited meanwhile
-    if (ui.tl && cr.takes.busy) ui.tl.playhead = cr.playhead; // the playhead follows the take
+    ui.take = cr.takeDeck.status(); ui.takeLine = takeLine(ui.take);
+    if (cr.session) ui.mode = cr.takeDeck.busy ? 'take' : cr.session.mode; // a take is being recorded: the short isn't edited meanwhile
+    if (ui.tl && cr.takeDeck.busy) ui.tl.playhead = cr.playhead; // the playhead follows the take
   }
   const d = cr.desk;
   if (d && (kind === 'script' || kind === 'all')) Object.assign(ui.script, { text: d.text, file: cr.short?.script ?? '', errors: d.errorList(), warnings: [...d.warnings], pending: d.pending, dirty: d.dirty, last: d.lastLabel ?? '' });
@@ -62,7 +62,7 @@ function refresh(kind = 'all') {
   ui.saved = sv ? `${sv.sequence.ref} · ${sv.sequence.bytes} bytes · ${sv.sequence.hash}${sv.script ? ` · ${sv.script}` : ''}${sv.memory ? ' · in memory (open a project folder to save to disk)' : ''}` : '';
   ui.unsaved = cr.project?.unsaved?.() ?? [];
   if (!s) return;
-  ui.mode = cr.takes.busy ? 'take' : s.mode;
+  ui.mode = cr.takeDeck.busy ? 'take' : s.mode;
   const h = s.history(); ui.undo = h.undo; ui.redo = h.redo;
   ui.dirty = cr.isDirty(); ui.nodes = s.doc.nodes.length; ui.hash = s.hash();
   const v = s.validate(); ui.valid = v.ok; ui.problems = v.ok ? '' : v.errors.slice(0, 3).join('; ');
@@ -157,14 +157,14 @@ const queueRun = () => act(() => cr.queue.run());
 const queueDo = (what, id, d) => act(() => cr.queue[what](id, d));
 const exportShort = () => act(() => cr.exportShort()); // renders the job it adds, not the rest of the queue
 // performance takes (M4 W9)
-const takeSet = (key, v) => { cr.takes[key] = v; refresh('take'); };
-const takeChannel = (c, on) => { cr.takes.channels = on ? [...new Set([...cr.takes.channels, c])] : cr.takes.channels.filter((x) => x !== c); refresh('take'); };
-const takeStart = () => act(() => cr.takes.start());
-const takeStop = () => act(() => cr.takes.stop());
-const takeKeep = () => act(() => cr.takes.keep());
-const takeDiscard = () => act(() => cr.takes.discard());
-const takeRemove = (id) => act(() => cr.takes.remove(id));
-const takeSay = (text) => act(() => cr.takes.say(text));
+const takeSet = (key, v) => { cr.takeDeck[key] = v; refresh('take'); };
+const takeChannel = (c, on) => { cr.takeDeck.channels = on ? [...new Set([...cr.takeDeck.channels, c])] : cr.takeDeck.channels.filter((x) => x !== c); refresh('take'); };
+const takeStart = () => act(() => cr.takeDeck.start());
+const takeStop = () => act(() => cr.takeDeck.stop());
+const takeKeep = () => act(() => cr.takeDeck.keep());
+const takeDiscard = () => act(() => cr.takeDeck.discard());
+const takeRemove = (id) => act(() => cr.takeDeck.remove(id));
+const takeSay = (text) => act(() => cr.takeDeck.say(text));
 
 // keys: ⌘Z / ⇧⌘Z, ⌘S, ⌘O in a browser (in the Mac shell they come from the menus)
 const typing = () => /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName ?? '');

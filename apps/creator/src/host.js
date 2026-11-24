@@ -43,8 +43,8 @@ export class CreatorHost extends EditorHost {
     this.snapshots = new Map();
     const q = new URLSearchParams(location.search).get('queue');
     this.queue = new RenderQueue({ runner: q === 'stub' ? stubRunner : deliveryRunner(this), onChange: () => this.changed('queue') });
-    /** Performance takes (M4 W9): record, stop, keep or discard. */
-    this.takes = new TakeDeck(this, this.takeEnv());
+    /** Performance takes (M4 W9): record, stop, keep or discard. (Not `takes`: that is the editor host's list of takes to export.) */
+    this.takeDeck = new TakeDeck(this, this.takeEnv());
   }
 
   /** Export progress reaches the running queue job too. */
@@ -90,7 +90,7 @@ export class CreatorHost extends EditorHost {
     const short = this.shorts.byId(id);
     if (!short) throw new Error(`no short ${id}`);
     if (text === null && !short.saved) throw new Error(`${short.title} was never saved: its script is only in memory`);
-    await this.takes.abandon(); // a take belongs to the short it was performed in
+    await this.takeDeck.abandon(); // a take belongs to the short it was performed in
     if (this.session?.mode === 'playing') this.stop();
     clearTimeout(this._applyTimer);
     if (this.short && this.short.id !== id && !this.short.saved) this.shorts.discard(this.short.id);
@@ -299,8 +299,11 @@ export class CreatorHost extends EditorHost {
     return (await call('camera.devices')).devices ?? [];
   }
 
-  /** A take's world: the short (as the deck gives it, the performer cast for the take) as the runtimes play it, heard. */
-  async takeWorld(doc) {
+  /**
+   * A take's world: the short (as the deck gives it, the performer cast for the take) as the runtimes play it, heard.
+   * (Not `takeWorld`: that is the editor host's, a take as a world for an export.)
+   */
+  async liveWorld(doc) {
     this.audio?.ctx.resume?.();
     const world = await this.buildFrom(doc, { play: true, heard: true });
     this.audio?.ctx.resume?.();

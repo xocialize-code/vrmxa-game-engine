@@ -1,0 +1,702 @@
+{
+  "checklist" : "apps/creator-mac/docs/HAND-TEST-M4-TAKES.md",
+  "rows" : [
+    {
+      "checklist_line" : 13,
+      "checks" : [
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short cafe-order \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project project\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Storyboard 11 shots, 11 thumbnails\"",
+          "check" : "find(\"id=sb-status\").0.name == \"Storyboard 11 shots, 11 thumbnails\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 24 step 60 alpha 0 world a269857fbc388a47\"",
+          "check" : "find(\"id=tl-scrub\").0.name matches \"^Showing frame 24 step 60 \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Take: ready (0 kept)\"",
+          "check" : "find(\"id=take-status\").0.name == \"Take: ready (0 kept)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Mira performs\"",
+          "check" : "find(\"id=take-who-mira\").0.name == \"Mira performs\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Hana performs\"",
+          "check" : "find(\"id=take-who-hana-1\").0.name == \"Hana performs\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=take-kind-puppet\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Creator pid 16690, log AppProbe logs/VRMXGCreator-2026-11-24T011616Z.log",
+        "29: wait id=open-project enabled=true timeout_ms=60000 → found after 272 ms: button \"Open project\" #open-project [W:VRMXG Creator/0/0/0/0/0/1@4649] (279 ms)",
+        "30: until find(\"id=doc-state\").0.name matches \"^Short cafe-order \" timeout=60000 → ok (1881 ms)",
+        "31: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":109,\"x\":3213,\"y\":337},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (2237 ms)",
+        "32: until find(\"id=project-name\").0.name == \"Project project\" → ok (1051 ms)",
+        "33: until find(\"id=doc-state\").0.name matches \"^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid \" timeout=60000 → ok (2577 ms)",
+        "34: until find(\"id=sb-status\").0.name == \"Storyboard 11 shots, 11 thumbnails\" timeout=120000 → ok (23 ms)",
+        "35: until find(\"id=tl-scrub\").0.name matches \"^Showing frame 24 step 60 \" timeout=60000 → ok (24 ms)",
+        "36: set opened = find(\"id=doc-state\").0.name → \"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\" (24 ms)",
+        "37: expect find(\"id=take-status\").0.name == \"Take: ready (0 kept)\" → ok (27 ms)",
+        "38: expect find(\"id=take-who-mira\").0.name == \"Mira performs\" → ok (22 ms)",
+        "39: expect find(\"id=take-who-hana-1\").0.name == \"Hana performs\" → ok (24 ms)",
+        "40: expect find(\"id=take-kind-puppet\").0.value == \"1\" → ok (25 ms)",
+        "41: expect find(\"id=undo\").0.name == \"Undo\" → ok (28 ms)"
+      ],
+      "message" : null,
+      "ms" : 8684,
+      "notes" : [
+
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The project opens on the sample short with the take panel ready: its characters can perform, and nothing is an undo step.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 14,
+      "checks" : [
+        {
+          "actual" : "\"Take 1 recording: puppet, mira, 0.0 s\"",
+          "check" : "find(\"id=take-status\").0.name matches \"^Take 1 recording: puppet, mira, \"",
+          "ok" : true
+        },
+        {
+          "actual" : "false",
+          "check" : "find(\"id=undo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Take 1 recording: puppet, mira, 6.1 s\"",
+          "check" : "find(\"id=take-status\").0.name matches \"^Take 1 recording: puppet, mira, (6|7|8)\\.[0-9] s$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Take 1 recorded: puppet, mira, 6.2 s, 3 tracks; keep or discard\"",
+          "check" : "find(\"id=take-status\").0.name matches \"^Take 1 recorded: puppet, mira, [0-9.]+ s, 3 tracks; keep or discard$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\"",
+          "check" : "find(\"id=doc-state\").0.name == $opened",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=take-keep\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=take-discard\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "46: act id=take-who-mira action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":44,\"x\":4300,\"y\":624},\"help\":\"\",\"id\":\"take-who-mira\",\"name\":\"Mira performs\",\"ref\":\"W:VRMX (24 ms)",
+        "47: act id=take-record action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":79,\"x\":4501,\"y\":553},\"help\":\"Record from the playhead\",\"id\":\"take-record\",\"name\":\"Record (29 ms)",
+        "48: until find(\"id=take-status\").0.name matches \"^Take 1 recording: puppet, mira, \" timeout=60000 → ok (1236 ms)",
+        "49: expect find(\"id=undo\").0.enabled == false → ok (28 ms)",
+        "50: until find(\"id=take-status\").0.name matches \"^Take 1 recording: puppet, mira, (6|7|8)\\.[0-9] s$\" timeout=30000 → ok (5928 ms)",
+        "51: act id=take-stop action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":64,\"x\":4517,\"y\":553},\"help\":\"\",\"id\":\"take-stop\",\"name\":\"Stop the take\",\"ref\":\"W:VRMXG Cr (31 ms)",
+        "52: until find(\"id=take-status\").0.name matches \"^Take 1 recorded: puppet, mira, [0-9.]+ s, 3 tracks; keep or discard$\" timeout=30000 → ok (147 ms)",
+        "53: expect find(\"id=doc-state\").0.name == $opened → ok (28 ms)",
+        "54: expect find(\"id=undo\").0.name == \"Undo\" → ok (22 ms)",
+        "55: expect find(\"id=take-keep\").count == 1 → ok (26 ms)",
+        "56: expect find(\"id=take-discard\").count == 1 → ok (23 ms)",
+        "57: shot \"puppet-review\" (223 ms)"
+      ],
+      "message" : null,
+      "ms" : 7983,
+      "notes" : [
+        "shot 1: puppet-review"
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+        "shots/r2-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A puppet take records from the playhead while the film plays, and Stop leaves it waiting: nothing is in the short yet.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 15,
+      "checks" : [
+        {
+          "actual" : "\"Undo Take 1: Mira, puppet (6.2 s)\"",
+          "check" : "find(\"id=undo\").0.name matches \"^Undo Take 1: Mira, puppet \\([0-9.]+ s\\)$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Take: Kept Take 1: Mira, puppet (6.2 s): 3 tracks, log performances/cafe-order/take-1.json\"",
+          "check" : "find(\"id=take-status\").0.name matches \"^Take: Kept Take 1: Mira, puppet \\([0-9.]+ s\\): 3 tracks, log performances/cafe-order/take-1\\.json$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Take 1: puppet, mira, frames 32 to 181, 3 tracks\"",
+          "check" : "find(\"id=take-item-take-1\").0.name matches \"^Take 1: puppet, mira, frames [0-9]+ to [0-9]+, 3 tracks$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-mira-walk-take-1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-mira-gaze-take-1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-mira-act-take-1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes unsaved changes valid hash 1009f7add695c0a7\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" unsaved changes valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 32 step 80 alpha 0 world 2a00413a1bb9516b\"",
+          "check" : "find(\"id=tl-scrub\").0.name matches \"^Showing frame \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "62: act id=take-keep action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":49,\"x\":4301,\"y\":715},\"help\":\"\",\"id\":\"take-keep\",\"name\":\"Keep take 1\",\"ref\":\"W:VRMXG Crea (31 ms)",
+        "63: until find(\"id=undo\").0.name matches \"^Undo Take 1: Mira, puppet \\([0-9.]+ s\\)$\" timeout=30000 → ok (734 ms)",
+        "64: expect find(\"id=take-status\").0.name matches \"^Take: Kept Take 1: Mira, puppet \\([0-9.]+ s\\): 3 tracks, log performances/cafe-order/take-1\\.json$\" → ok (2071 ms)",
+        "65: expect find(\"id=take-item-take-1\").0.name matches \"^Take 1: puppet, mira, frames [0-9]+ to [0-9]+, 3 tracks$\" → ok (26 ms)",
+        "66: expect find(\"id=tl-head-mira-walk-take-1\").count == 1 → ok (24 ms)",
+        "67: expect find(\"id=tl-head-mira-gaze-take-1\").count == 1 → ok (23 ms)",
+        "68: expect find(\"id=tl-head-mira-act-take-1\").count == 1 → ok (27 ms)",
+        "69: expect find(\"id=doc-state\").0.name matches \" unsaved changes valid \" → ok (23 ms)",
+        "70: set kept = find(\"id=doc-state\").0.name → \"Short cafe-order sequences/cafe-order.vrmxs 6 nodes unsaved changes valid hash 1009f7add695c0a7\" (25 ms)",
+        "71: until find(\"id=tl-scrub\").0.name matches \"^Showing frame \" timeout=60000 → ok (23 ms)",
+        "72: shot \"puppet-kept\" (215 ms)"
+      ],
+      "message" : null,
+      "ms" : 3442,
+      "notes" : [
+        "shot 1: puppet-kept"
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+        "shots/r3-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Keep adds the take as one undo step: its tracks are timeline rows after the film's own, and its log is in the project.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 16,
+      "checks" : [
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\"",
+          "check" : "find(\"id=doc-state\").0.name == $opened",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=take-item-take-1\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=tl-head-mira-walk-take-1\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes unsaved changes valid hash 1009f7add695c0a7\"",
+          "check" : "find(\"id=doc-state\").0.name == $kept",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=take-item-take-1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Move clip mira-act-take-1 0\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Move clip mira-act-take-1 0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes unsaved changes valid hash 1009f7add695c0a7\"",
+          "check" : "find(\"id=doc-state\").0.name == $kept",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "77: menu \"Edit › Undo\" press → pressed Edit › Undo (146 ms)",
+        "78: until find(\"id=doc-state\").0.name == $opened → ok (40 ms)",
+        "79: expect find(\"id=take-item-take-1\").count == 0 → ok (205 ms)",
+        "80: expect find(\"id=tl-head-mira-walk-take-1\").count == 0 → ok (832 ms)",
+        "81: menu \"Edit › Redo\" press → pressed Edit › Redo (153 ms)",
+        "82: until find(\"id=doc-state\").0.name == $kept → ok (1612 ms)",
+        "83: expect find(\"id=take-item-take-1\").count == 1 → ok (1695 ms)",
+        "84: act role=button name=\"Clip nod 104 to\" action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":23,\"w\":32,\"x\":3412,\"y\":1402},\"help\":\"\",\"name\":\"Clip nod 104 to 128\",\"ref\":\"W:VRMXG Creator/0/0/ (30 ms)",
+        "85: keys shift+right → {\"sent\":true} (115 ms)",
+        "86: until find(\"id=undo\").0.name == \"Undo Move clip mira-act-take-1 0\" → ok (640 ms)",
+        "87: menu \"Edit › Undo\" press → pressed Edit › Undo (154 ms)",
+        "88: until find(\"id=doc-state\").0.name == $kept → ok (1732 ms)"
+      ],
+      "message" : null,
+      "ms" : 9248,
+      "notes" : [
+
+      ],
+      "row" : 4,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Edit › Undo takes the whole take out and Redo brings it back; the take's tracks are edited like any others.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 17,
+      "checks" : [
+        {
+          "actual" : "\"Take 2 recording: director, hana-1, 0.0 s, 0 events\"",
+          "check" : "find(\"id=take-status\").0.name matches \"^Take 2 recording: director, hana-1, \"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=take-say\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Good morning, Hana!\"",
+          "check" : "find(\"id=take-say\").0.value == \"Good morning, Hana!\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"You: Good morning, Hana!\"",
+          "check" : "find(\"id=take-said-0\").0.name == \"You: Good morning, Hana!\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Hana: Good morning! Lovely to see you.\"",
+          "check" : "find(\"id=take-said-1\").0.name == \"Hana: Good morning! Lovely to see you.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Take 2 recorded: director, hana-1, 4.8 s, 3 tracks; keep or discard\"",
+          "check" : "find(\"id=take-status\").0.name matches \"^Take 2 recorded: director, hana-1, [0-9.]+ s, 3 tracks; keep or discard$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Take 2: Hana, director (4.8 s)\"",
+          "check" : "find(\"id=undo\").0.name matches \"^Undo Take 2: Hana, director \\([0-9.]+ s\\)$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-hana-1-says-take-2\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-hana-1-face-take-2\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-hana-1-act-take-2\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Good morning! Lovely to see you.'\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "93: act id=take-kind-director action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":68,\"x\":4360,\"y\":590},\"help\":\"\",\"id\":\"take-kind-director\",\"name\":\"Director take\",\"ref\":\"W (27 ms)",
+        "94: act id=take-who-hana-1 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":50,\"x\":4343,\"y\":624},\"help\":\"\",\"id\":\"take-who-hana-1\",\"name\":\"Hana performs\",\"ref\":\"W:VR (33 ms)",
+        "95: act id=take-record action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":79,\"x\":4501,\"y\":553},\"help\":\"Record from the playhead\",\"id\":\"take-record\",\"name\":\"Record (33 ms)",
+        "96: until find(\"id=take-status\").0.name matches \"^Take 2 recording: director, hana-1, \" timeout=60000 → ok (1389 ms)",
+        "97: until find(\"id=take-say\").count == 1 → ok (35 ms)",
+        "98: act id=take-say action=set_value value=\"Good morning, Hana!\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":216,\"x\":4301,\"y\":715},\"help\":\"\",\"id\":\"take-say\",\"name\":\"What you tell her\",\"ref\":\"W: (442 ms)",
+        "98: until find(\"id=take-say\").0.value == \"Good morning, Hana!\" do act id=take-say action=set_value value=\"Good morning, Hana!\" tries=3 → ok after 1 (763 ms)",
+        "99: act id=take-say-send action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":41,\"x\":4522,\"y\":715},\"help\":\"\",\"id\":\"take-say-send\",\"name\":\"Say it to her\",\"ref\":\"W:VRMX (34 ms)",
+        "100: until find(\"id=take-said-0\").0.name == \"You: Good morning, Hana!\" → ok (41 ms)",
+        "101: until find(\"id=take-said-1\").0.name == \"Hana: Good morning! Lovely to see you.\" timeout=30000 → ok (621 ms)",
+        "103: act id=take-stop action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":64,\"x\":4500,\"y\":553},\"help\":\"\",\"id\":\"take-stop\",\"name\":\"Stop the take\",\"ref\":\"W:VRMXG Cr (48 ms)",
+        "104: until find(\"id=take-status\").0.name matches \"^Take 2 recorded: director, hana-1, [0-9.]+ s, 3 tracks; keep or discard$\" timeout=30000 → ok (172 ms)",
+        "105: act id=take-keep action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":49,\"x\":4301,\"y\":752},\"help\":\"\",\"id\":\"take-keep\",\"name\":\"Keep take 2\",\"ref\":\"W:VRMXG Crea (32 ms)",
+        "106: until find(\"id=undo\").0.name matches \"^Undo Take 2: Hana, director \\([0-9.]+ s\\)$\" timeout=30000 → ok (744 ms)",
+        "107: expect find(\"id=tl-head-hana-1-says-take-2\").count == 1 → ok (2201 ms)",
+        "108: expect find(\"id=tl-head-hana-1-face-take-2\").count == 1 → ok (28 ms)",
+        "109: expect find(\"id=tl-head-hana-1-act-take-2\").count == 1 → ok (26 ms)",
+        "110: expect find(\"role=button name='Good morning! Lovely to see you.'\").count == 1 → ok (28 ms)",
+        "111: shot \"director-kept\" (208 ms)"
+      ],
+      "message" : null,
+      "ms" : 9792,
+      "notes" : [
+        "shot 1: director-kept"
+      ],
+      "row" : 5,
+      "section" : "",
+      "shots" : [
+        "shots/r5-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A director take: what is typed is said to her, her answer is the take, and Keep adds her line as a dialogue clip.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 18,
+      "checks" : [
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=take-ch-blink\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=take-ch-head\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Take 3 recording: face, mira, 0.0 s, 0 face samples (hold still)\"",
+          "check" : "find(\"id=take-status\").0.name matches \"^Take 3 recording: face, mira, [0-9.]+ s, [0-9]+ face samples \\(hold still\\)$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Take 3 recording: face, mira, 7.1 s, 107 face samples\"",
+          "check" : "find(\"id=take-status\").0.name matches \"^Take 3 recording: face, mira, (7|8|9)\\.[0-9] s, [0-9]+ face samples$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Take 3 recorded: face, mira, 7.4 s, 2 tracks; keep or discard\"",
+          "check" : "find(\"id=take-status\").0.name matches \"^Take 3 recorded: face, mira, [0-9.]+ s, 2 tracks; keep or discard$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Take 3: Mira, face (7.4 s)\"",
+          "check" : "find(\"id=undo\").0.name matches \"^Undo Take 3: Mira, face \\([0-9.]+ s\\)$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-mira-face-take-3\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-mira-head-take-3\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes unsaved changes valid hash d1afccbd1e5f1e99\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" unsaved changes valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "116: act id=take-kind-face action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":48,\"x\":4426,\"y\":590},\"help\":\"\",\"id\":\"take-kind-face\",\"name\":\"Face take\",\"ref\":\"W:VRMXG C (35 ms)",
+        "117: act id=take-who-mira action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":44,\"x\":4300,\"y\":624},\"help\":\"\",\"id\":\"take-who-mira\",\"name\":\"Mira performs\",\"ref\":\"W:VRMX (44 ms)",
+        "118: expect find(\"id=take-ch-blink\").0.value == \"1\" → ok (29 ms)",
+        "119: expect find(\"id=take-ch-head\").0.value == \"1\" → ok (29 ms)",
+        "120: act id=take-record action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":79,\"x\":4484,\"y\":553},\"help\":\"Record from the playhead\",\"id\":\"take-record\",\"name\":\"Record (41 ms)",
+        "121: until find(\"id=take-status\").0.name matches \"^Take 3 recording: face, mira, [0-9.]+ s, [0-9]+ face samples \\(hold still\\)$\" timeout=60000 → ok (1235 ms)",
+        "122: until find(\"id=take-status\").0.name matches \"^Take 3 recording: face, mira, (7|8|9)\\.[0-9] s, [0-9]+ face samples$\" timeout=30000 → ok (6976 ms)",
+        "123: shot \"face-recording\" (214 ms)",
+        "124: act id=take-stop action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":64,\"x\":4500,\"y\":553},\"help\":\"\",\"id\":\"take-stop\",\"name\":\"Stop the take\",\"ref\":\"W:VRMXG Cr (48 ms)",
+        "125: until find(\"id=take-status\").0.name matches \"^Take 3 recorded: face, mira, [0-9.]+ s, 2 tracks; keep or discard$\" timeout=30000 → ok (154 ms)",
+        "126: act id=take-keep action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":49,\"x\":4301,\"y\":763},\"help\":\"\",\"id\":\"take-keep\",\"name\":\"Keep take 3\",\"ref\":\"W:VRMXG Crea (36 ms)",
+        "127: until find(\"id=undo\").0.name matches \"^Undo Take 3: Mira, face \\([0-9.]+ s\\)$\" timeout=30000 → ok (1043 ms)",
+        "128: expect find(\"id=tl-head-mira-face-take-3\").count == 1 → ok (1904 ms)",
+        "129: expect find(\"id=tl-head-mira-head-take-3\").count == 1 → ok (33 ms)",
+        "130: expect find(\"id=doc-state\").0.name matches \" unsaved changes valid \" → ok (33 ms)"
+      ],
+      "message" : null,
+      "ms" : 12096,
+      "notes" : [
+        "shot 1: face-recording"
+      ],
+      "row" : 6,
+      "section" : "",
+      "shots" : [
+        "shots/r6-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A face take (the synthetic session): it waits for a resting face, then her face and head follow; Keep adds an expression track and a head track.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 19,
+      "checks" : [
+        {
+          "actual" : "\"Take 4 recording: puppet, mira, 2.2 s\"",
+          "check" : "find(\"id=take-status\").0.name matches \"^Take 4 recording: puppet, mira, (2|3)\\.[0-9] s$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Take 4 recorded: puppet, mira, 2.3 s, 2 tracks; keep or discard\"",
+          "check" : "find(\"id=take-status\").0.name matches \"^Take 4 recorded: puppet, mira, \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Take: Discarded take 4\"",
+          "check" : "find(\"id=take-status\").0.name == \"Take: Discarded take 4\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes unsaved changes valid hash d1afccbd1e5f1e99\"",
+          "check" : "find(\"id=doc-state\").0.name == $three",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Take 3: Mira, face (7.4 s)\"",
+          "check" : "find(\"id=undo\").0.name matches \"^Undo Take 3: Mira, face \"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=take-item-take-4\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Remove take 2\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Remove take 2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=take-item-take-2\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=tl-head-hana-1-says-take-2\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=take-item-take-1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=take-item-take-3\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes unsaved changes valid hash d1afccbd1e5f1e99\"",
+          "check" : "find(\"id=doc-state\").0.name == $three",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=take-item-take-2\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "135: set three = find(\"id=doc-state\").0.name → \"Short cafe-order sequences/cafe-order.vrmxs 6 nodes unsaved changes valid hash d1afccbd1e5f1e99\" (37 ms)",
+        "136: act id=take-kind-puppet action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":61,\"x\":4300,\"y\":584},\"help\":\"\",\"id\":\"take-kind-puppet\",\"name\":\"Puppet take\",\"ref\":\"W:VRM (41 ms)",
+        "137: act id=take-record action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":79,\"x\":4484,\"y\":547},\"help\":\"Record from the playhead\",\"id\":\"take-record\",\"name\":\"Record (41 ms)",
+        "138: until find(\"id=take-status\").0.name matches \"^Take 4 recording: puppet, mira, (2|3)\\.[0-9] s$\" timeout=60000 → ok (3334 ms)",
+        "139: act id=take-stop action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":64,\"x\":4500,\"y\":547},\"help\":\"\",\"id\":\"take-stop\",\"name\":\"Stop the take\",\"ref\":\"W:VRMXG Cr (41 ms)",
+        "140: until find(\"id=take-status\").0.name matches \"^Take 4 recorded: puppet, mira, \" timeout=30000 → ok (164 ms)",
+        "141: act id=take-discard action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":65,\"x\":4355,\"y\":709},\"help\":\"\",\"id\":\"take-discard\",\"name\":\"Discard take 4\",\"ref\":\"W:VRMX (35 ms)",
+        "142: until find(\"id=take-status\").0.name == \"Take: Discarded take 4\" → ok (38 ms)",
+        "143: expect find(\"id=doc-state\").0.name == $three → ok (33 ms)",
+        "144: expect find(\"id=undo\").0.name matches \"^Undo Take 3: Mira, face \" → ok (33 ms)",
+        "145: expect find(\"id=take-item-take-4\").count == 0 → ok (33 ms)",
+        "146: act id=take-remove-take-2 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":60,\"x\":4504,\"y\":756},\"help\":\"Take its tracks out of the short (one undo step); its log s (34 ms)",
+        "147: until find(\"id=undo\").0.name == \"Undo Remove take 2\" → ok (75 ms)",
+        "148: expect find(\"id=take-item-take-2\").count == 0 → ok (692 ms)",
+        "149: expect find(\"id=tl-head-hana-1-says-take-2\").count == 0 → ok (2149 ms)",
+        "150: expect find(\"id=take-item-take-1\").count == 1 → ok (32 ms)",
+        "151: expect find(\"id=take-item-take-3\").count == 1 → ok (31 ms)",
+        "152: menu \"Edit › Undo\" press → pressed Edit › Undo (149 ms)",
+        "153: until find(\"id=doc-state\").0.name == $three → ok (210 ms)",
+        "154: expect find(\"id=take-item-take-2\").count == 1 → ok (829 ms)"
+      ],
+      "message" : null,
+      "ms" : 10325,
+      "notes" : [
+
+      ],
+      "row" : 7,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Discard throws a take away: nothing is written and nothing is an undo step. Remove takes a kept take out as one step.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 20,
+      "checks" : [
+        {
+          "actual" : "\"Saved sequences/cafe-order.vrmxs · 21902 bytes · d1afccbd1e5f1e99\"",
+          "check" : "find(\"id=saved\").0.name matches \"^Saved sequences/cafe-order.vrmxs · [0-9]+ bytes · [0-9a-f]{16}\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash d1afccbd1e5f1e99\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" saved valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=memory-files\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Take 1: puppet, mira, frames 32 to 181, 3 tracks\"",
+          "check" : "find(\"id=take-item-take-1\").0.name matches \", 3 tracks$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Take 3: face, mira, frames 90 to 247, 2 tracks\"",
+          "check" : "find(\"id=take-item-take-3\").0.name matches \", 2 tracks$\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "159: menu \"File › Save\" press → pressed File › Save (147 ms)",
+        "160: until find(\"id=saved\").0.name matches \"^Saved sequences/cafe-order.vrmxs · [0-9]+ bytes · [0-9a-f]{16}\" timeout=30000 → ok (80 ms)",
+        "161: expect find(\"id=doc-state\").0.name matches \" saved valid \" → ok (32 ms)",
+        "162: expect find(\"id=memory-files\").count == 0 → ok (32 ms)",
+        "163: expect find(\"id=take-item-take-1\").0.name matches \", 3 tracks$\" → ok (36 ms)",
+        "164: expect find(\"id=take-item-take-3\").0.name matches \", 2 tracks$\" → ok (32 ms)",
+        "165: shot \"saved\" (213 ms)"
+      ],
+      "message" : null,
+      "ms" : 824,
+      "notes" : [
+        "shot 1: saved"
+      ],
+      "row" : 8,
+      "section" : "",
+      "shots" : [
+        "shots/r8-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Save writes the short with its takes; the logs are in the project folder.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "apps/creator-mac/docs/hand-test/HAND-TEST-M4-TAKES.scenario.md",
+  "summary" : "8 rows: 8 passed, 0 failed, 0 need you; 3 checklist rows have no steps",
+  "uncovered" : [
+    {
+      "line" : 33,
+      "text" : "**Puppet, by hand.** Open The Regular, put the playhead on shot 020, pick Mira, Puppet, Record. Walk her with"
+    },
+    {
+      "line" : 37,
+      "text" : "**Director, with a real model.** Launch with `--env VRMXG_QUERY=director=http://127.0.0.1:8080/v1/chat/completions`"
+    },
+    {
+      "line" : 42,
+      "text" : "**Face, with the camera.** In good light, pick Mira, Face, choose the display's camera in the panel (the default"
+    }
+  ]
+}

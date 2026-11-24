@@ -56,14 +56,14 @@ async function creator(env = {}) {
     written,
     changed() { cr.changes++; },
     applyScript() { return cr.desk.apply(); },
-    async takeWorld(doc) { const S = await loadSample(bytes, short.set); S.doc = composeSequence(doc, set); return buildWorld(R, S, { vrmxaCore: core, closet, behaviours, stubTextures: true }); },
+    async liveWorld(doc) { const S = await loadSample(bytes, short.set); S.doc = composeSequence(doc, set); return buildWorld(R, S, { vrmxaCore: core, closet, behaviours, stubTextures: true }); },
     beginLive(world, tick) { cr.live = { world, tick }; },
     endLive() { cr.live = null; },
     async scrubTo(frame) { cr.scrubbed.push(frame); },
   };
   cr.desk = new ScriptDesk({ session, short: cr.short, marks: JSON.parse(read(short.marks)).marks, text: read(short.script) });
   session.on((e) => { if (!['select', 'play', 'stop', 'save'].includes(e.kind)) cr.desk.follow(); });
-  cr.takes = new TakeDeck(cr, env);
+  cr.takeDeck = new TakeDeck(cr, env);
   /** The frame loop's part: step the live world n times, the deck's tick after each. */
   cr.run = async (n, each = () => {}) => { for (let k = 0; k < n && cr.live; k++) { each(k); const live = cr.live; while (!live.world.tree.step()) await live.world.tree.settle(); live.tick(); await flush(); } };
   return cr;
@@ -72,7 +72,7 @@ async function creator(env = {}) {
 test('a puppet take: Record at the playhead, Stop, Keep is one undo step with its log in the project; Discard writes nothing', { skip }, async () => {
   const keys = new VirtualDevice(); let released = 0;
   const cr = await creator({ devices: () => ({ devices: [keys], release: () => { released++; } }) });
-  const deck = cr.takes, base = cr.session.text();
+  const deck = cr.takeDeck, base = cr.session.text();
   assert.deepEqual(deck.performers(), [{ id: 'mira', name: 'Mira' }, { id: 'hana-1', name: 'Hana' }]);
   assert.equal(takeLine(deck.status()), 'Take: ready (0 kept)');
   // the sample project holds three take logs (take-1 to take-3, not kept in the film): a new take is numbered past them
@@ -126,7 +126,7 @@ test('a puppet take: Record at the playhead, Stop, Keep is one undo step with it
 
 test('a director take and a face take: what she is told and answers, a synthetic face, each kept in one step; a re-script keeps them', { skip }, async () => {
   const cr = await creator({ model: () => sampleModel(), camera: () => syntheticCamera() });
-  const deck = cr.takes, base = cr.session.text();
+  const deck = cr.takeDeck, base = cr.session.text();
   await assert.rejects(deck.start({ kind: 'mime' }), /a take is one of puppet, director, face/);
   await deck.start({ kind: 'director', target: 'hana-1', from: 300 });
   assert.throws(() => deck.say('  '), /say something to her/);

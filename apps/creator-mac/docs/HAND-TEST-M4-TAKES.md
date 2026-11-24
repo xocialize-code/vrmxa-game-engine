@@ -10,14 +10,14 @@ AppProbe, with scripted stand-ins for the person at the keys, the model and the 
 node acceptance/gpu-lock.mjs run --who creator-takes-hand-test -- sh -c 'apps/creator-mac/scripts/hand-test-fixtures.sh && appprobe checklist scenario=apps/creator-mac/docs/hand-test/HAND-TEST-M4-TAKES.scenario.md'
 ```
 
-- [ ] The project opens on the sample short with the take panel ready: its characters can perform, and nothing is an undo step.
-- [ ] A puppet take records from the playhead while the film plays, and Stop leaves it waiting: nothing is in the short yet.
-- [ ] Keep adds the take as one undo step: its tracks are timeline rows after the film's own, and its log is in the project.
-- [ ] Edit › Undo takes the whole take out and Redo brings it back; the take's tracks are edited like any others.
-- [ ] A director take: what is typed is said to her, her answer is the take, and Keep adds her line as a dialogue clip.
-- [ ] A face take (the synthetic session): it waits for a resting face, then her face and head follow; Keep adds an expression track and a head track.
-- [ ] Discard throws a take away: nothing is written and nothing is an undo step. Remove takes a kept take out as one step.
-- [ ] Save writes the short with its takes; the logs are in the project folder.
+- [x] The project opens on the sample short with the take panel ready: its characters can perform, and nothing is an undo step. *AppProbe 2026-11-23: The Order, Mira and Hana offered, Puppet chosen, "Take: ready (0 kept)".*
+- [x] A puppet take records from the playhead while the film plays, and Stop leaves it waiting: nothing is in the short yet. *AppProbe 2026-11-23: Record at frame 24 with the scripted keys (`puppet=demo`), Undo disabled while it recorded, stopped past 6 s: "Take 1 recorded: puppet, mira, … 3 tracks; keep or discard", the document's hash unchanged. Real keys and a gamepad weren't pressed: the operator's row below.*
+- [x] Keep adds the take as one undo step: its tracks are timeline rows after the film's own, and its log is in the project. *AppProbe 2026-11-23: "Undo Take 1: Mira, puppet (… s)"; rows mira-walk-take-1, mira-gaze-take-1 and mira-act-take-1; the log performances/cafe-order/take-1.json read on disk after the run.*
+- [x] Edit › Undo takes the whole take out and Redo brings it back; the take's tracks are edited like any others. *AppProbe 2026-11-23: the same document hash after Undo as when opened, and after Redo as when kept; her nod clip moved a frame with ⇧→: "Move clip mira-act-take-1 0".*
+- [x] A director take: what is typed is said to her, her answer is the take, and Keep adds her line as a dialogue clip. *AppProbe 2026-11-23: "Good morning, Hana!" typed and said; the demo model's "Good morning! Lovely to see you." came back as her line; kept as hana-1-says-take-2, hana-1-face-take-2 and hana-1-act-take-2. A real model wasn't asked: the operator's row below.*
+- [x] A face take (the synthetic session): it waits for a resting face, then her face and head follow; Keep adds an expression track and a head track. *AppProbe 2026-11-23: "(hold still)" for the first second, then about 15 samples a second from the synthetic session; kept as mira-face-take-3 and mira-head-take-3. The shell listed its cameras in the panel without asking for one. No camera was used: the operator's row below.*
+- [x] Discard throws a take away: nothing is written and nothing is an undo step. Remove takes a kept take out as one step. *AppProbe 2026-11-23: take 4 recorded and discarded, the document and the undo step as before; "Remove take 2" took Hana's three tracks out and Undo brought them back.*
+- [x] Save writes the short with its takes; the logs are in the project folder. *AppProbe 2026-11-23: saved; nothing left in memory; take-1.json (puppet), take-2.json (director) and take-3.json (face, source synthetic) read on disk after the run, and the saved sequence has the eight take tracks.*
 
 ## By a person (waiting on the operator)
 
@@ -51,3 +51,5 @@ open -n --env VRMXG_SHELL_PROJECT=project apps/creator-mac/build/VRMXGCreator.ap
 
 | Row | Step | What happened | Undo |
 |---|---|---|---|
+| 1–8 | The scenario, 2026-11-23, shell 0.8.0, WebGPU | 8 of 8 passed (`hand-test/results/m4-w9-takes/`; pictures in `hand-test/shots/takes/`). The first run after a fresh build found no app (a launch race in the runner); the next runs launched it. A run before the fix below failed the existing creator scenario's export rows | Take 1, Take 2, Take 3, Remove take 2 |
+| — | The creator scenario (`HAND-TEST-M4-CREATOR`), re-run with takes in the app | First run: rows 9 to 12 failed, "job-1 failed: undefined is not an object (evaluating 'a of e.nodes')": the creator host's new take-world method had the editor host's `takeWorld` name, which exports call. Renamed (`liveWorld`; the deck is `takeDeck`, not `takes`). Second run: 15 of 15 (`hand-test/results/m4-w9-creator/`) | — |

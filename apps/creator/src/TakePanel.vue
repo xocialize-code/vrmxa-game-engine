@@ -48,7 +48,7 @@ function say() { const t = words.value.trim(); if (!t) return; emit('say', t); w
       <button id="take-say-send" type="submit" aria-label="Say it to her" :disabled="!words.trim()">Say</button>
     </form>
     <ol v-if="st.said.length" id="take-said" class="said small" aria-label="The conversation">
-      <li v-for="(l, i) in st.said" :key="i" :aria-label="`${l.who}: ${l.text}`"><strong>{{ l.who }}</strong> {{ l.text }}</li>
+      <li v-for="(l, i) in st.said" :key="i"><span :id="`take-said-${i}`" :aria-label="`${l.who}: ${l.text}`"><strong>{{ l.who }}</strong> {{ l.text }}</span></li>
     </ol>
     <div v-if="st.state === 'review'" class="take-row">
       <button id="take-keep" type="button" class="play" :aria-label="`Keep take ${n(st.pending.id)}`" @click="emit('keep')">Keep</button>
