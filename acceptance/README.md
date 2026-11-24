@@ -21,7 +21,7 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
 - **Check 1, a project exports as a game** (W0, AB-T-0615, 2026-11-24): the sample project (`content/sample`, its
   `game.json`) exported with `@vrmxg/bundle`. The build's contract is that package's README (AB-D-0282).
   ```sh
-  npm run build:runtime -w @vrmxg/bundle     # the runtime a build is made with
+  npm run build -w @vrmxg/game-app           # the runtime a build is made with (the game app since M5 W1; before it, @vrmxg/bundle's minimal one)
   node acceptance/m5/build.mjs --chromium    # Node and headless Chromium: results/m5-build.json
   acceptance/m5/build-wkwebview.sh           # the build played in WKWebView, scheme and loopback (under the runner lock): results/m5-build-wkwebview.json
   # the Mac editor: apps/editor-mac/docs/hand-test/HAND-TEST-M5-EXPORT-GAME.scenario.md, then

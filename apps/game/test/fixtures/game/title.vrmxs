@@ -1,0 +1,33 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "title",
+  "assets": [
+    {"id":"cafe","type":"glb","ref":"sets/cafe.glb"},
+    {"id":"espresso","type":"glb","ref":"props/espresso-machine.glb"},
+    {"id":"ambience","type":"audio","ref":"sounds/cafe-ambience.wav"}
+  ],
+  "nodes": [
+    {"id":"root","type":"Node3D","name":"Title"},
+    {"id":"env","type":"Environment","parent":"root","props":{"ambientIntensity":0.5,"background":"gradient","environmentIntensity":0.35,"skyHorizonColor":"#e6ecf2","skyTopColor":"#7aa6d6"}},
+    {"id":"set","type":"Model","parent":"root","asset":"cafe"},
+    {"id":"espresso","type":"Model","parent":"root","name":"Espresso machine","asset":"espresso","transform":{"p":[1.2,1.25,-4.3]},"props":{"colliders":"none"}},
+    {"id":"sun","type":"DirectionalLight","parent":"root","transform":{"q":[-0.354,0.354,0.146,0.854]},"props":{"intensity":2.4,"shadowExtent":10,"shadowPreset":"high"}},
+    {"id":"ambience","type":"AudioPlayer","parent":"root","name":"Room tone","asset":"ambience","props":{"autoplay":true,"bus":"ambience","loop":true,"volume":0.6}},
+    {"id":"look-at","type":"Marker","parent":"root","transform":{"p":[0,1.6,6]}},
+    {"id":"cam","type":"Camera","parent":"root","transform":{"p":[3.5,1.8,14]},"props":{"focalLength":28,"preset":"fixed","target":"look-at"}},
+    {"id":"rules","type":"GameRules","parent":"root","props":{}},
+    {"id":"intro","type":"GameTimer","parent":"rules","props":{"label":"Title","seconds":3}},
+    {"id":"start","type":"Node3D","parent":"root","behaviours":[{"actions":["jump","interact"],"use":"onAction"}]}
+  ],
+  "connections": [
+    {"from":"intro","signal":"timeout","to":"rules","call":"changeScene","args":{"to":"game/level.vrmxs"}},
+    {"from":"start","signal":"pressed","to":"rules","call":"changeScene","args":{"to":"game/level.vrmxs"}}
+  ],
+  "settings": {
+    "physics": {
+      "build": "deterministic",
+      "hz": 60
+    }
+  }
+}

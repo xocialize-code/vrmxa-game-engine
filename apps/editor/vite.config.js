@@ -10,9 +10,9 @@ const sample = here('../../content/sample');
 const listing = () => JSON.stringify(fs.readdirSync(sample, { recursive: true }).map(String).filter((f) => !f.split(path.sep).some((s) => s.startsWith('.')) && fs.statSync(path.join(sample, f)).isFile()).map((f) => f.split(path.sep).join('/')).sort());
 const shim = fs.readFileSync(here('static/vrmxg-core.js'), 'utf8');
 // The runtime Export Game builds with (M5 W0, AB-D-0282): a prebuilt folder with its table (vrmxg-runtime.json), copied
-// into the editor's build as game-runtime/ exactly as it is, and served from where it was built in dev. Until the game
-// app exists (M5 W1) it is @vrmxg/bundle's minimal runtime: `npm run build:runtime -w @vrmxg/bundle` first.
-const gameRuntime = here('../../engine/packages/bundle/runtime/dist');
+// into the editor's build as game-runtime/ exactly as it is, and served from where it was built in dev. It is the game
+// app (M5 W1, AB-D-0286): `npm run build -w @vrmxg/game-app` first.
+const gameRuntime = here('../game/dist');
 // vrmxa-core beside the repository, and its real path: Vite checks served files by real path, and a worktree reaches the
 // studio through a symlink (M4 W5)
 const core = here('../../../vrmxa-avatar-studio/packages/vrmxa-core');
@@ -49,7 +49,7 @@ const runtimeFiles = () => ({
   },
   closeBundle() {
     if (fs.existsSync(path.join(gameRuntime, 'vrmxg-runtime.json'))) fs.cpSync(gameRuntime, here('dist/game-runtime'), { recursive: true });
-    else console.warn('vrmxg-game-runtime: no runtime at engine/packages/bundle/runtime/dist, so this editor cannot export a game (npm run build:runtime -w @vrmxg/bundle)');
+    else console.warn('vrmxg-game-runtime: no runtime at apps/game/dist, so this editor cannot export a game (npm run build -w @vrmxg/game-app)');
   },
 });
 

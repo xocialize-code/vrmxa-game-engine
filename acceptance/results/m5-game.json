@@ -1,0 +1,115 @@
+{
+ "check": "M5 W1: the game app plays a build from the title menu; menus from the keyboard and a gamepad; a save loads in a fresh launch; a session replays in Node (AB-T-0616)",
+ "ok": true,
+ "node": "v26.12.1",
+ "chromium": "156.0.8078.4",
+ "build": {
+  "game": "cafe-test",
+  "files": 76,
+  "digest": "481fcbed29e5ebca61c4114015249e6f24e180f45ecd6b9779056c04eed735ce",
+  "manifest": "9edfb9e13fa42cfe4eb3252455671b0e4b2c4e36d69682ff3aacf52b57edb6dd"
+ },
+ "session": {
+  "segments": [
+   {
+    "from": "game/title.vrmxs",
+    "at": 0,
+    "steps": 429,
+    "marks": [
+     {
+      "type": "save",
+      "slot": "slot-1",
+      "step": 248
+     }
+    ]
+   },
+   {
+    "from": "slot-1",
+    "at": 248,
+    "steps": 149,
+    "marks": []
+   }
+  ],
+  "steps": 578,
+  "scenes": [
+   "game/title.vrmxs",
+   "game/level.vrmxs"
+  ],
+  "last": {
+   "step": 397,
+   "scene": "game/level.vrmxs",
+   "hash": "01ae0ef8f670240b"
+  }
+ },
+ "replay": {
+  "steps": 578,
+  "firstDifference": null
+ },
+ "checks": [
+  {
+   "name": "the test game exports with the game app as its runtime",
+   "ok": true,
+   "detail": "76 files, digest 481fcbed29e5ebca"
+  },
+  {
+   "name": "the title menu, on WebGL when forced",
+   "ok": true,
+   "detail": "readout \"Renderer WebGL\", focus on #new-game"
+  },
+  {
+   "name": "Escape pauses: nothing steps while the menu is open",
+   "ok": true,
+   "detail": "paused at step 248 in game/level.vrmxs"
+  },
+  {
+   "name": "Save Game → Slot 1 saves, and the slot says what it holds",
+   "ok": true,
+   "detail": "\"Slot 1: The Cafe (test game) · level · Get to the counter, level · 0:04 · 2026-11-24 22:18\""
+  },
+  {
+   "name": "Load Game over unsaved play asks first, then goes back to the save",
+   "ok": true,
+   "detail": "asked \"Load over this game?\"; was at 429, back at 248 (saved at 248)"
+  },
+  {
+   "name": "Quit to Title asks first, and the session's log has both segments",
+   "ok": true,
+   "detail": "asked \"Quit to Title without saving?\"; 2 segments, 578 steps hashed in the page, scenes game/title.vrmxs, game/level.vrmxs; goals before the load {\"reach-counter\":{\"done\":false,\"step\":null}}"
+  },
+  {
+   "name": "the session played in Chromium replays in Node to the same hash after every step",
+   "ok": true,
+   "detail": "578 steps, last 01ae0ef8f670240b at step 397"
+  },
+  {
+   "name": "a fresh launch offers Continue, and Load Game → Slot 1 loads the save",
+   "ok": true,
+   "detail": "Continue \"Continue: Slot 1: The Cafe (test game) · level · Get to the counter, level · 0:04 · 2026-11-24 22:18\"; loaded at step 248 (saved at 248)"
+  },
+  {
+   "name": "every menu from a gamepad: Start pauses and resumes, the d-pad moves, A chooses, B goes back",
+   "ok": true,
+   "detail": "Start → pause (focus #resume); down → #save-game; A → save menu (focus #slot-1); B → pause; down ×3 → #settings; A → settings (focus #backend-choice); Start → playing"
+  },
+  {
+   "name": "every menu from the keyboard: arrows move, Enter chooses, Escape goes back and resumes",
+   "ok": true,
+   "detail": "↓↓ → #load-game; Enter → load menu (focus #slot-1); ↑↑ → #settings; settings ↓ → #volume-master; Escape → playing"
+  },
+  {
+   "name": "a backend chosen in Settings is kept",
+   "ok": true,
+   "detail": "stored { \"format\": \"vrmxg-game-settings\", \"version\": 1, \"backend\": \"webgl\", \"volume\": { \"master\": 1, \"music\": 1, \"sfx\": 1, \"voice\": 1, \"ambience\": 1 }, \"bindings\": null } "
+  },
+  {
+   "name": "with no query the page draws on WebGPU where it has it, else WebGL; the stored setting is obeyed",
+   "ok": true,
+   "detail": "with the setting webgl: \"Renderer WebGL\"; with no setting: \"Renderer WebGPU\" (this Chromium has WebGPU: true)"
+  },
+  {
+   "name": "no errors in the page",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

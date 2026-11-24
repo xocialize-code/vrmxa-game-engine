@@ -8,8 +8,8 @@ mac=${here:h}
 web=${mac:h}/editor
 app=$mac/build/VRMXGEditor.app
 
-# the runtime Export Game builds with (M5 W0) goes into the web app as game-runtime/, so it is built first
-if [[ "${SKIP_WEB:-0}" != 1 ]]; then (cd ${mac:h:h} && npm run build:runtime -w @vrmxg/bundle) && (cd $web && npx vite build); fi
+# the runtime Export Game builds with (the game app, M5 W1) goes into the web app as game-runtime/, so it is built first
+if [[ "${SKIP_WEB:-0}" != 1 ]]; then (cd ${mac:h:h} && npm run build -w @vrmxg/game-app) && (cd $web && npx vite build); fi
 swift build -c release --package-path $mac --product VRMXGEditor
 rm -rf $app
 mkdir -p $app/Contents/MacOS $app/Contents/Resources

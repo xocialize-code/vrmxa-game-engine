@@ -1,6 +1,6 @@
 // Builds on disk, for Node: tools, tests, the MCP server, the command line. Not in a browser bundle (node:fs).
 //
-//   const r = await exportToFolder({ project: 'content/sample', runtime: 'engine/packages/bundle/runtime/dist', out });
+//   const r = await exportToFolder({ project: 'content/sample', runtime: 'apps/game/dist', out });   // the game app (M5 W1)
 //   const build = await openFolder(out);                                  // the loader over a folder
 //   const behaviours = await build.behaviours(behavioursImporter(out));   // '@vrmxg/core' handed to the project's modules
 //   checkFolder(out)            the folder holds exactly what its manifest lists, each file with its hash

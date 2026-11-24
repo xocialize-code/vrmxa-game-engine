@@ -204,11 +204,18 @@ What a runtime keeps, so any build can sit around it:
 4. It has no file named `vrmxg-build.json` or `vrmxg-runtime.json` and none under `project/`. Every file has a
    licence in its table.
 
-**The runtime in the slot today** is `runtime/` (`vrmxg-stepper`): it opens the build, builds the entry scene's
-world and steps it at 60 Hz with no renderer, showing the step and the world's hash. `?check=<take>&steps=<n>` replays
-recorded input from the build and publishes a hash of the world after every step, which is how the acceptance checks
-play a build in Chromium and WKWebView. **M5 W1 replaces it**: build `apps/game` with `vrmxgRuntime`, and point the
-editor's `gameRuntime` (`apps/editor/vite.config.js`) and the command line's `--runtime` at its output.
+**The runtime a game is made with is the game app** (`apps/game`, `vrmxg-game`; M5 W1, decision AB-D-0286): `npm run
+build -w @vrmxg/game-app` writes `apps/game/dist` with its table, and `vrmxg-export`'s `--runtime` and the editor's
+`gameRuntime` (`apps/editor/vite.config.js`) default to it. `vrmxg-export` stops, and says how to build it, when it isn't
+built: it never takes another runtime in its place. The game app opens the build, steps a `GameFlow` session and draws it
+(title menu, pause, save slots, settings). It keeps the harness mode the minimal runtime had: `?check=<take>&steps=<n>`
+makes no renderer and no menus, replays recorded input from the build in its entry scene and publishes a hash of the
+world after every step (`window.__result`, `READY`), which is how `acceptance/m5/build.mjs` and `build-wkwebview.sh`
+play a build in Chromium and WKWebView.
+
+`runtime/` (`vrmxg-stepper`: the build's entry scene stepped at 60 Hz with no renderer) stays as this package's small
+reference runtime and goes into a build only when `--runtime` names its folder (`npm run build:runtime -w
+@vrmxg/bundle`).
 
 The runtime's bytes are part of a build's identity. Two Vite builds of the same sources give the same table (checked
 here: the table's SHA-256 after two builds). A build made with another runtime says so in `runtime.digest`, and the

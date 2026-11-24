@@ -40,6 +40,17 @@ func tempDir(_ files: [String: String]) throws -> URL {
         r.mountProject(nil)
         #expect(r.read(path: "/project/cafe.vrmxs").status == 404)
     }
+
+    @Test func aGameBuildsOwnProjectFolderWhenNothingIsMounted() throws {
+        // a game build is the app's web content (apps/game-mac): its project's files are under the web root's project/
+        let app = try tempDir(["index.html": "game", "project/level.vrmxs": "{\"id\":\"level\"}"]), proj = try tempDir(["level.vrmxs": "{}"])
+        let r = WebRoots(app: app)
+        #expect(String(decoding: r.read(path: "/project/level.vrmxs").data, as: UTF8.self) == "{\"id\":\"level\"}")
+        #expect(r.read(path: "/project/../index.html").status == 200, "standardised to /index.html, inside the web root")
+        #expect(r.read(path: "/project/../../x").status == 404)
+        r.mountProject(proj)
+        #expect(String(decoding: r.read(path: "/project/level.vrmxs").data, as: UTF8.self) == "{}", "a mounted project wins")
+    }
 }
 
 @Suite struct LoopbackTests {
@@ -147,6 +158,34 @@ func tempDir(_ files: [String: String]) throws -> URL {
         _ = await next.handle(body: ["method": "file.forget", "params": ["key": "character"]])
         #expect(await next.handle(body: ["method": "file.reopen", "params": ["key": "character"]]).0 is NSNull)
         withExtendedLifetime((first, second)) {}
+    }
+}
+
+@Suite @MainActor struct SettingsMethodTests {
+    @Test func readsNothingThenWhatWasWritten() async throws {
+        let dir = try tempDir([:])
+        let file = dir.appendingPathComponent("Game/settings.json")
+        let settings = SettingsMethods(appName: "Test", env: ["VRMXG_SHELL_SETTINGS": file.path])
+        let router = BridgeRouter(); settings.register(on: router)
+        let first = await router.handle(body: ["method": "settings.read"])
+        #expect((first.0 as? [String: Any])?["text"] is NSNull, "nothing saved yet")
+        let w = await router.handle(body: ["method": "settings.write", "params": ["text": "{\"backend\":\"webgl\"}"]])
+        #expect((w.0 as? [String: Any])?["bytes"] as? Int == 19)
+        let r = await router.handle(body: ["method": "settings.read"])
+        #expect((r.0 as? [String: Any])?["text"] as? String == "{\"backend\":\"webgl\"}")
+        #expect(FileManager.default.fileExists(atPath: file.path), "the folder is made on the first write")
+    }
+
+    @Test func refusesNoTextAndTooMuch() async throws {
+        let dir = try tempDir([:])
+        let settings = SettingsMethods(appName: "Test", env: ["VRMXG_SHELL_SETTINGS": dir.appendingPathComponent("s.json").path])
+        let router = BridgeRouter(); settings.register(on: router)
+        let none = await router.handle(body: ["method": "settings.write", "params": [:]])
+        #expect(none.1 != nil)
+        let big = await router.handle(body: ["method": "settings.write", "params": ["text": String(repeating: "x", count: SettingsMethods.maxBytes + 1)]])
+        #expect(big.1 != nil)
+        let after = await router.handle(body: ["method": "settings.read"])
+        #expect((after.0 as? [String: Any])?["text"] is NSNull, "a refused write leaves nothing")
     }
 }
 
@@ -605,7 +644,7 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
         #expect((j["blinkR"] as? Double ?? 0) > 0.9, "the picture's left is the person's right eye")
         #expect((j["blinkL"] as? Double ?? 1) < 0.25)
         #expect(((j["geo"] as? [String: Any])?["earL"] as? Double ?? 1) < 0.1, "geo keeps the picture's sides")
-        #expect(vrmxgShellVersion == "0.10.0")
+        #expect(vrmxgShellVersion == "0.11.0")
     }
 }
 
