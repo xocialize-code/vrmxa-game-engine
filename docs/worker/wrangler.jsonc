@@ -1,0 +1,23 @@
+// The Worker that serves VRMXG's documentation (AB-T-0611): the site VitePress builds into ../.vitepress/dist, as
+// static assets. There is no Worker script: every request is answered from the assets, so nothing runs per request and
+// there is nothing to log (add "main" and "observability" together if a script is ever needed).
+//
+//   npm run build && npm run worker     (from docs/) the built site through the Worker, locally
+//   npm run worker:check                a dry run of the deploy: checks this file and what would be uploaded
+//
+// Deploying is the operator's step: see README.md beside this file.
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "vrmxg-docs",
+  "compatibility_date": "2026-11-23",
+  // served at vrmxg-docs.<account subdomain>.workers.dev; no per-version preview addresses
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {
+    "directory": "../.vitepress/dist",
+    // /guide/determinism is served from guide/determinism.html; /reference/ from reference/index.html
+    "html_handling": "auto-trailing-slash",
+    // anything else gets the site's 404.html, with a 404 status
+    "not_found_handling": "404-page"
+  }
+}

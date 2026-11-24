@@ -1,0 +1,12 @@
+# Response headers for the documentation's static assets (Workers static assets read this file; it is not served).
+# The repository is private and nobody has decided to list the site in search engines: remove the X-Robots-Tag line to
+# allow indexing.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Robots-Tag: noindex
+
+# VitePress names these files by their content's hash, so they never change under a name.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

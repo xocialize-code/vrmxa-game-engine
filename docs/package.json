@@ -1,0 +1,21 @@
+{
+  "name": "vrmxg-docs",
+  "private": true,
+  "description": "VRMXG's documentation site: Markdown in this folder, built with VitePress and served by a Cloudflare Worker (worker/). Installed apart from the engine workspace, with exact versions.",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev --port 5186",
+    "build": "vitepress build",
+    "links": "node ../scripts/docs-links.mjs .vitepress/dist",
+    "worker": "wrangler dev --config worker/wrangler.jsonc",
+    "worker:check": "wrangler deploy --dry-run --config worker/wrangler.jsonc"
+  },
+  "engines": {
+    "node": ">=26"
+  },
+  "devDependencies": {
+    "vite": "8.3.8",
+    "vitepress": "2.0.0-alpha.21",
+    "wrangler": "4.167.0"
+  }
+}
