@@ -509,7 +509,7 @@ Start minimal (engine notes: "the game development UI can start minimally for te
 | **M1 Playable** (done 2026-11-18) | VRMXI items and interaction, closet protocol at run time, look-at, lip sync, audio, minimal editor (tree, inspector, gizmos, play), MCP edit / drive, frame export |
 | **M2 Production** (done 2026-11-18) | Shot sequencer, virtual cameras and blends, post stack, particles, navigation and behaviour trees, save, layered animation (G10), IK |
 | **M3 Characters you talk to** (done 2026-11-19) | Persona-driven characters (the LLM director for conversation and goal choice, voice in and out), camera and gesture input, replay and baking of conversations, ragdolls, vehicles, split screen, the companion app v0 |
-| **M4 The anime creator, on WebGPU** (started 2026-11-20, [M4-PLAN.md](M4-PLAN.md)) | The anime creator app (script to sequence, casting, voicing, coverage cameras, performance takes, delivery export), WebGPU as the default renderer with a WebGL fallback; networking and WebXR as spikes |
+| **M4 The anime creator, on WebGPU** (done 2026-11-24, [M4-PLAN.md](M4-PLAN.md)) | The anime creator app (script to sequence, casting, voicing, coverage cameras, performance takes, delivery export), WebGPU as the default renderer with a WebGL fallback; networking and WebXR as spikes |
 | **Later** | Networking and WebXR (after their M4 spikes), the game UI app, the spokesmodel app |
 
 ## 9. Open questions for the follow-up
