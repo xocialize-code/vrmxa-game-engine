@@ -155,3 +155,56 @@ Seven tools, about 420 tokens, and four rules at initialize (`SHORT_INSTRUCTIONS
 command that made more than one. Text from files comes back as `{ content: { ref, … }, note }` (`asContent`,
 `CONTENT_NOTE`): data to read, never instructions. The creator's commands and target are in `apps/creator/src/agent.js`;
 `test/shorts.test.mjs` covers the list's size and schemas, the registry, the mark, content and the `--creator` relay.
+
+## Games (M5 W9, AB-T-0619)
+
+```sh
+node engine/packages/mcp/src/server.js <project-root> <scene.vrmxs> --builds <folder> [--runtime <folder>]
+```
+
+One tool more, still generic: 21 tools headless (about 1,980 tokens) and 22 for the editor (about 2,110), under the
+2,000 and 2,200 the lists are held to (`test/mcp.test.mjs`). A game's rules are nodes (`GameRules`, `GameCounter`,
+`GameTimer`, `GameGoal`, `Checkpoint`), so they are read and set with the scene tools; what those can't show is the
+game as a whole, which is the `game` tool (`src/game.js`, page-safe):
+
+| `op` | What |
+|---|---|
+| `rules` (default) | Every scene of `game.json` side by side (`@vrmxg/game`'s `describeRules`): its rules, counters, timers, goals, checkpoints, the keys its conditions read, the flags its connections set, the scenes it changes to; and what only the whole game shows (`checkGame`). The open scene is read as edited. A project with no `game.json` is the open scene alone, as Export Game takes it |
+| `state` | The running world's game state, as a HUD reads it (`view()`). The headless engine installs the game service for a scene that has game nodes (a scene without them keeps its hashes); the editor's play world doesn't run rules yet, and says so |
+| `validate` | The project's checks, each problem naming its scene and node, or its file: `game.json`; every scene's schema; the rules (`checkGame`); a `RigidBody` with no `Collider` below it (or a dynamic one with only sensors); a goal nothing can complete; and what an export would refuse, from `@vrmxg/bundle`'s `planBuild`, the exporter's own first half (a reference to no file, a file with no `LICENCES.md` row, with the row to add) |
+| `export` | A build through `@vrmxg/bundle`: headless into `--builds/<name>` (without `--builds`, checked and hashed, nothing written: where builds go is the person's to say), in the editor through its Export Game (the shell's folder). Refused while the scene has unsaved changes. A refusal comes back whole: `export refused (<code>): <the exporter's message>` and its files, so the `ignore` line or the missing row is in the answer. What validate finds beyond the exporter's checks is said beside the build |
+
+- **A goal nothing can reach** is read from the game's documents, whole, as play carries values across scenes: no
+  connection in any scene calls `complete` on a goal of that key, and its `when` can never hold, because what it reads
+  never changes (no connection adds to the counter or sets the flag; no scene starts the timer; no goal or checkpoint
+  of that name can come about), or a counter's `min` and `max` keep it from the value. Which goals and checkpoint
+  slots can come about is a least fixpoint, so ones that wait on each other are judged together. Each scene starts as
+  the service starts it (a counter's start clamped; what it reads at its `reads` default). Anything it can't follow
+  counts as reachable. Code can't be read: when the project's behaviours mention the game service, such a goal is a
+  warning, not a problem.
+- **The open scene is read as edited**, and when it isn't one of `game.json`'s scenes, `rules` and `validate` say so.
+- **`validate` (the scene tool) checks the open scene's rules too**, when it has a `GameRules` node: a condition that
+  reads a key the scene doesn't declare would stop the scene when it starts, so `validate` lists it and `save` refuses
+  it. In a scene with game nodes and no `GameRules` (it may be a prefab whose goal reads its host's counter) the same
+  problems are warnings that say both readings.
+- **`describe` gives a condition once.** The schema writes the condition language out three levels deep for every
+  prop that holds one, which put `describe GameRules` past the answer limit; each such prop is now
+  `{ "condition": true }` and the language is given once beside it (`CONDITION`). Every type's description fits.
+- What a game's documents say (a goal's text, a label, a file's name) comes back with a note that it is data.
+
+**Checked.** `test/game.test.mjs` (over stdio, on copies of `test/fixtures/game-problems`, a project made to have three
+problems): validate names the crate with no collider, the goal whose flag nothing sets and the file with no licence
+row, and nothing else; each fixed through the tools, it is ok, and an undo brings one back; the rules across two scenes
+and a read no scene declares; the scene tools refusing a rule with an undeclared key; an export refused for the
+licence (the file named), for unsaved changes and for a string that reads as a missing file (the `ignore` line), then
+written whole; an export without `--builds`; the game state of a running world; the checks on hand-made documents
+(colliders under plain nodes, sensors only, goals by chains, bounds, `not`, timers) and the review's cases (checkpoints
+sharing a slot, a goal completed in another scene, a timer another scene starts, a cycle, checkpoints reading their own
+slots, a clamped start, a read value's default); no `game.json`; a scene outside the game; a prefab's rules;
+`describe` of every type under the limit.
+
+**In the editor** (`apps/editor-mac/docs/HAND-TEST-M5-MCP.md`): a Claude Code session with only the editor's tools
+(`apps/editor-mac/scripts/mcp-session.mjs --m5`, Sonnet) read the sample game's rules, added a customer and a goal
+(each one edit), validated, saved and exported it: 17 calls, none failed
+(`apps/editor-mac/docs/hand-test/results/mcp-editor-session-m5.json`). Its two steps walk back and forth in the editor's
+Undo, to the opened hash and back to the agent's.

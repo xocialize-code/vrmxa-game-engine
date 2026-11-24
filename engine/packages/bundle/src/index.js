@@ -16,5 +16,5 @@ export { collect, sceneRefs } from './collect.js';
 export { moduleImports } from './modules.js';
 export { RUNTIME_FILE, RUNTIME_FORMAT, RUNTIME_VERSION, RUNTIME_CONTRACT, PROJECT_DIR, checkRuntime, runtimeTable, serializeRuntime, filesDigest } from './runtime.js';
 export { BUILD_FILE, BUILD_FORMAT, BUILD_VERSION, makeManifest, serializeManifest, parseManifest } from './manifest.js';
-export { exportBuild } from './export.js';
+export { exportBuild, planBuild } from './export.js';
 export { Build, openBuild, fetchReader } from './loader.js';

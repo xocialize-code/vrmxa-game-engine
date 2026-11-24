@@ -1,0 +1,11 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "ending",
+  "assets": [],
+  "nodes": [
+    {"id":"root","type":"Node3D"},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"keepOutcome":true,"reads":{"goals":["take-order"]}}}
+  ],
+  "connections": []
+}

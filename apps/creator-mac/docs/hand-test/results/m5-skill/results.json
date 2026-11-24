@@ -1,0 +1,142 @@
+{
+  "checklist" : "apps/creator-mac/docs/HAND-TEST-M5-SKILL.md",
+  "rows" : [
+    {
+      "checklist_line" : 18,
+      "checks" : [
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short cafe-order \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project project-w9-skill\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project-w9-skill\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Storyboard 11 shots, 11 thumbnails\"",
+          "check" : "find(\"id=sb-status\").0.name == \"Storyboard 11 shots, 11 thumbnails\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"MCP: waiting for vrmxg-mcp --creator\"",
+          "check" : "find(\"id=mcp-state\").0.name matches \"^MCP\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Creator pid 12351, log ~/Library/Caches/AppProbe/logs/VRMXGCreator-2026-11-24T221711Z.log",
+        "21: wait id=open-project enabled=true timeout_ms=60000 → found after 265 ms: button \"Open project\" #open-project [W:VRMXG Creator/0/0/0/0/0/1@4649] (268 ms)",
+        "22: until find(\"id=doc-state\").0.name matches \"^Short cafe-order \" timeout=60000 → ok (2052 ms)",
+        "23: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":109,\"x\":3113,\"y\":328},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (2236 ms)",
+        "24: until find(\"id=project-name\").0.name == \"Project project-w9-skill\" → ok (1176 ms)",
+        "25: until find(\"id=doc-state\").0.name matches \"^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid \" timeout=60000 → ok (2624 ms)",
+        "26: until find(\"id=sb-status\").0.name == \"Storyboard 11 shots, 11 thumbnails\" timeout=120000 → ok (27 ms)",
+        "27: set opened = find(\"id=doc-state\").0.name → \"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\" (23 ms)",
+        "28: expect find(\"id=undo\").0.name == \"Undo\" → ok (25 ms)",
+        "29: expect find(\"id=mcp-state\").0.name matches \"^MCP\" → ok (25 ms)",
+        "30: shot \"opened\" (172 ms)"
+      ],
+      "message" : null,
+      "ms" : 9146,
+      "notes" : [
+        "shot 1: opened"
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M5-SKILL.scenario-2026-11-24T221711Z/shots/r1-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The project opens on the sample short, linked to the agent's MCP server, with no undo step.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 19,
+      "checks" : [
+        {
+          "actual" : "\"MCP connected · short · 1 calls\"",
+          "check" : "find(\"id=mcp-state\").0.name matches \"calls\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Shot 030: camera vc-030-closeup (MCP)\"",
+          "check" : "find(\"id=undo\").0.name matches \"^Undo Shot 030: camera .* \\(MCP\\)$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=q-job-1-status\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Shot 030: camera vc-030-closeup (MCP)\"",
+          "check" : "find(\"id=undo\").0.name matches \"^Undo Shot 030: camera .* \\(MCP\\)$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 7 nodes unsaved changes valid hash c8f6806ebbee292c\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"unsaved changes\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"MCP connected · short · 20 calls\"",
+          "check" : "find(\"id=mcp-state\").0.name matches \"· short · [0-9]+ calls$\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "35: until find(\"id=mcp-state\").0.name matches \"calls\" timeout=1200000 → ok (5901 ms)",
+        "36: until find(\"id=undo\").0.name matches \"^Undo Shot 030: camera .* \\(MCP\\)$\" timeout=1200000 → ok (18990 ms)",
+        "37: until find(\"id=q-job-1-status\").count == 1 timeout=600000 → ok (27 ms)",
+        "38: expect find(\"id=undo\").0.name matches \"^Undo Shot 030: camera .* \\(MCP\\)$\" → ok (31 ms)",
+        "39: expect find(\"id=doc-state\").0.name matches \"unsaved changes\" → ok (24 ms)",
+        "40: until find(\"id=mcp-state\").0.name matches \"· short · [0-9]+ calls$\" timeout=300000 → ok (25 ms)",
+        "41: shot \"after the agent\" (93 ms)"
+      ],
+      "message" : null,
+      "ms" : 25312,
+      "notes" : [
+        "shot 1: after the agent"
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M5-SKILL.scenario-2026-11-24T221711Z/shots/r2-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "An agent with only the vrmxg skill and the creator's MCP tools makes the short's edits; the last one is in the creator's Undo, marked (MCP), and the export it queued is in the render queue.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "apps/creator-mac/docs/hand-test/HAND-TEST-M5-SKILL.scenario.md",
+  "summary" : "2 rows: 2 passed, 0 failed, 0 need you; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}

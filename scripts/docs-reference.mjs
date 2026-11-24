@@ -15,8 +15,13 @@
 //   shorts-json         apps/creator/src/shorts.js (the format, what a reader fills in, the sample's own file)
 //   delivery-json       @vrmxg/editor-core's presets, @vrmxg/export's deliveryFiles, and the manifest as
 //                       apps/creator/src/delivery.js writes it (quoted from the source)
+//   game-json           @vrmxg/bundle's checkGame (the keys, the defaults it fills in) over the sample's game.json,
+//                       and the game document's section of its README
+//   build-json          @vrmxg/bundle's manifest (makeManifest over a two-file build), its constants, and the layout and
+//                       manifest sections of its README
 //   packages            every engine/packages/*: its package.json and the first lines of its README
-//   llms.txt            every page of docs/ (front matter) and one line per type, behaviour, tool, command and package
+//   llms.txt            every page of docs/ (front matter) and one line per type, behaviour, tool, command and package,
+//                       and the vrmxg skill (skills/vrmxg/SKILL.md, its front matter)
 //
 // Anything read from source text (a README section, a line of server.js) is found by an anchor, and a missing anchor is
 // an error here, not a silently empty page.
@@ -33,6 +38,7 @@ import { KEYED_TAGS } from '../engine/packages/script/src/vocab.js';
 import { creatorCommands } from '../apps/creator/src/agent.js';
 import { SHORTS_FILE, SHORTS_FORMAT, COVERAGE, readShorts, shortsManifest } from '../apps/creator/src/shorts.js';
 import { readPages } from './docs-pages.mjs';
+import { GAME_FILE, GAME_FORMAT, GAME_VERSION, checkGame, BUILD_FILE, BUILD_FORMAT, BUILD_VERSION, RUNTIME_FILE, RUNTIME_CONTRACT, PROJECT_DIR, makeManifest, serializeManifest, runtimeTable, sha256 } from '@vrmxg/bundle';
 
 // a page that can't be generated is a message, not a stack trace
 process.on('uncaughtException', (e) => { console.error(`docs-reference: ${e.message}`); process.exit(1); });
@@ -614,6 +620,83 @@ function deliveryPage() {
  * A package's line: the opening of its README, without the milestone tag it starts with ("M2 W7 (AB-T-0530).") or
  * bridge ids in brackets, up to the first full stop that makes a sentence of some length.
  */
+const BUNDLE_README = 'engine/packages/bundle/README.md';
+
+function gameJsonPage() {
+  const sampleText = read(`content/sample/${GAME_FILE}`), checked = checkGame(JSON.parse(sampleText));
+  const body = section(BUNDLE_README, `The game document: \`${GAME_FILE}\``).replace(' (below)', '');
+  const out = [
+    body,
+    '',
+    'An export follows every string in the game\'s documents that reads as a path to one of the project\'s files; one that',
+    'names no file stops it, with the line to add. `ignore` lists the strings that only look like files (a line of text',
+    'that ends in `.wav`), so the export passes them by.',
+    '',
+    `\`format\` is always ${code(JSON.stringify(GAME_FORMAT))} and \`version\` ${code(String(GAME_VERSION))}; another version, or a key not in the table, is refused with a message naming it.`,
+    '',
+    '## How it is read',
+    '',
+    'The exporter checks the document and fills in its defaults before anything else (`checkGame` in `@vrmxg/bundle`). The',
+    'scenes come back sorted, with the entry among them; `include` and `ignore` sorted, each name once; the title trimmed.',
+    'What it reads from the sample project\'s file is what goes into a build\'s manifest as `game`:',
+    '',
+    json(checked),
+    '',
+    'The rules of a game are not here: they are nodes in its scenes (`GameRules`, `GameCounter`, `GameTimer`, `GameGoal`,',
+    '`Checkpoint`; see [Node types](./nodes)). The MCP `game` tool reads both together: every scene\'s rules, a check of',
+    'the whole project, and an export.',
+    '',
+    '## The sample project\'s',
+    '',
+    `\`content/sample/${GAME_FILE}\`:`,
+    '',
+    fence(sampleText, 'json'),
+  ];
+  return page({
+    title: GAME_FILE, order: 82, from: `\`@vrmxg/bundle\` (\`checkGame\`, its README) and the sample project`,
+    description: 'The game document: the scene a game starts in, the scenes it can reach, its behaviours, input map and the files no document names.',
+    body: out.join('\n'),
+  });
+}
+
+function buildJsonPage() {
+  const enc = (t) => new TextEncoder().encode(t);
+  const rt = runtimeTable({ name: 'my-runtime', runtimeVersion: '1.0.0', files: [{ path: 'index.html', bytes: enc('<!doctype html>'), licence: 'Ours' }] });
+  const project = enc('{"format":"vrmxg-game"}\n');
+  const manifest = makeManifest({
+    game: checkGame({ format: GAME_FORMAT, version: GAME_VERSION, id: 'my-game', entry: 'level.vrmxs' }),
+    runtime: rt,
+    files: [
+      { path: 'index.html', role: 'runtime', bytes: rt.files[0].bytes, sha256: rt.files[0].sha256, licence: 'Ours' },
+      { path: `${PROJECT_DIR}${GAME_FILE}`, role: 'project', bytes: project.length, sha256: sha256(project), licence: 'Ours' },
+    ],
+  });
+  const out = [
+    `A game build is a web folder: the runtime, the project's files under \`${PROJECT_DIR}\`, and \`${BUILD_FILE}\`, which lists`,
+    `every other file with its SHA-256 and its licence. \`format\` is ${code(JSON.stringify(BUILD_FORMAT))}, \`version\` ${code(String(BUILD_VERSION))}, and a`,
+    `runtime keeps contract ${RUNTIME_CONTRACT} (its own table is \`${RUNTIME_FILE}\`).`,
+    '',
+    '## Layout',
+    '',
+    section(BUNDLE_README, 'A build\'s layout'),
+    '',
+    '## The manifest',
+    '',
+    section(BUNDLE_README, `The manifest: \`${BUILD_FILE}\``).replace(/^```json\n[\s\S]*?\n```\n*/m, '').replace('filled in (below)', `filled in (see [${GAME_FILE}](./game-json))`),
+    '',
+    '## A whole manifest',
+    '',
+    'Of a build with one runtime file and one project file, as the exporter writes it (`makeManifest`, `serializeManifest`):',
+    '',
+    fence(serializeManifest(manifest), 'json'),
+  ];
+  return page({
+    title: BUILD_FILE, order: 84, from: `\`@vrmxg/bundle\` (\`makeManifest\`, its README)`,
+    description: 'A game build\'s manifest: the game, the runtime it was made with, and every file with its SHA-256 and licence.',
+    body: out.join('\n'),
+  });
+}
+
 function readmeLine(text) {
   const lines = text.split('\n');
   let i = lines.findIndex((l) => l.startsWith('# ')) + 1;
@@ -680,7 +763,7 @@ const pkgs = packages();
 const built = [
   ['nodes', nodesPage()], ['behaviours', behavioursPage()], ['mcp', mcpPage()], ['creator-commands', commandsPage()],
   ['vrmxs', vrmxsPage()], ['fountain', fountainPage()], ['shorts-json', shortsPage()], ['delivery-json', deliveryPage()],
-  ['packages', packagesPage(pkgs)],
+  ['game-json', gameJsonPage()], ['build-json', buildJsonPage()], ['packages', packagesPage(pkgs)],
 ];
 const meta = (text) => ({ title: JSON.parse(/^title: (.*)$/m.exec(text)[1]), description: JSON.parse(/^description: (.*)$/m.exec(text)[1]), from: /^> Generated from (.*) by `scripts/m.exec(text)[1] });
 /** @type {Map<string, string>} path under docs/ → content */
@@ -688,6 +771,14 @@ const files = new Map();
 files.set('reference/index.md', indexPage(built.map(([name, text]) => ({ name, ...meta(text) }))));
 for (const [name, text] of built) files.set(`reference/${name}.md`, text);
 files.set(`public/${SCHEMA_FILE}`, schemaText());
+
+// The skill's own description (its front matter), so the index and the skill say the same thing.
+const SKILL_FILE = 'skills/vrmxg/SKILL.md';
+const skillDescription = (() => {
+  const m = /^---\n[\s\S]*?^description: (.+)$/m.exec(read(SKILL_FILE));
+  if (!m) throw new Error(`${SKILL_FILE}: no description in its front matter (docs-reference.mjs quotes it)`);
+  return m[1].replace(/^["']|["']$/g, '');
+})();
 
 // llms.txt reads every page's front matter: the hand-written ones from disk, the generated ones as just built.
 function llms() {
@@ -708,6 +799,7 @@ function llms() {
     '- The creator tools\' own rules (sent at initialize): ' + SHORT_INSTRUCTIONS,
     '- Simulation code gets `sin`, `cos`, `pow` and the other transcendental functions from `@vrmxg/dmath` (installed over `Math` at boot, or imported), never from the JavaScript engine\'s own, and never uses the `**` operator: see guide/determinism.md.',
     '- Anything that draws frames for a result takes the GPU lock first (`node acceptance/gpu-lock.mjs run --who <name> -- <command>`): see guide/acceptance.md.',
+    `- The \`vrmxg\` skill (${SKILL_FILE} in the repository; install it with \`node skills/install.mjs\`) carries these rules, how to start each server and the describe-then-command pattern: ${skillDescription}`,
   ];
   for (const s of sections) out.push('', `## ${s.title}`, '', ...s.pages.map(link));
   out.push('', '## Node types', '', ...[...reg.types.values()].map((t) => `- [${t.name}](reference/nodes.md#${slugOf(t.name)}): ${t.description}`));
@@ -725,7 +817,9 @@ function llms() {
     `- [.vrmxs JSON Schema](${SCHEMA_FILE}): The schema a scene is checked against, generated from the node registry`,
     '- [Fountain subset](reference/fountain.md): The screenplay syntax a script is written in',
     `- [${SHORTS_FILE}](reference/shorts-json.md): A project's list of shorts`,
-    '- [delivery.json](reference/delivery-json.md): The manifest of a delivery folder');
+    '- [delivery.json](reference/delivery-json.md): The manifest of a delivery folder',
+    `- [${GAME_FILE}](reference/game-json.md): The game document: its entry scene, its scenes, behaviours, input map and extra files`,
+    `- [${BUILD_FILE}](reference/build-json.md): A game build's manifest: every file with its SHA-256 and licence`);
   out.push('', '## Packages', '', ...pkgs.map((p) => `- [${p.name}](reference/packages.md): ${p.line}`));
   return `${publicText(out.join('\n'))}\n`;
 }

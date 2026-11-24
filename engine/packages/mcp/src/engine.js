@@ -22,7 +22,8 @@ import { installAi } from '@vrmxg/ai';
 import { installPersonas } from '@vrmxg/persona';
 import { installDirector, demoModel, httpModel } from '@vrmxg/director';
 import { installSave } from '@vrmxg/save';
-import { parse } from '@vrmxg/scene';
+import { installGame } from '@vrmxg/game';
+import { parse, flatten } from '@vrmxg/scene';
 import { LiveView } from './live.js';
 
 export class EngineSession extends LiveView {
@@ -34,14 +35,20 @@ export class EngineSession extends LiveView {
    */
   constructor(project, { director = null } = {}) { super(); this.project = project; this.directorSpec = director; }
 
-  /** (Re)start from a scene document. */
-  async load(doc, prefabs) {
+  /** (Re)start from a scene document. @param {any} doc @param {Map<string, any>} prefabs @param {{ scene?: string | null }} [o] scene: its ref, as game.json and changeScene name it */
+  async load(doc, prefabs, { scene = null } = {}) {
     const p = this.project;
     // a sequence (M2 W1) runs in its set: compose them, and read the set's prefabs too
     if (isSequence(doc)) { doc = composeSequence(doc, parse(new TextDecoder().decode(p.bytes(doc.set)))); prefabs = p.prefabs(doc, new Map(prefabs)); }
     const tree = new SceneTree({ registry: m0Registry(), prefabs, behaviours: await p.behaviours(), seed: p.seed });
     installInput(tree);
     installPhysics(tree, await loadRapier());
+    // game rules (M5 W9), after physics as @vrmxg/game asks: only for a scene that has them, so a scene without rules
+    // keeps the hashes it had. No GameFlow here: a scene change asked for stays `pending` in the state, to be read.
+    const GAME = new Set(['GameRules', 'GameCounter', 'GameTimer', 'GameGoal', 'Checkpoint']);
+    let nodes = doc.nodes ?? [];
+    if (nodes.some((n) => n.type === 'Instance')) { try { nodes = flatten(doc, prefabs).nodes; } catch { /* instantiate names the prefab that isn't there */ } }
+    if (nodes.some((n) => GAME.has(n.type))) installGame(tree, { scene });
     const lib = installCharacters(tree, { resolve: (ref) => p.bytes(ref), vrmxaCore: await p.vrmxaCore(), stubTextures: true, prefabs, projectAnimations: p.animations() });
     installCameras(tree);
     const models = installModels(tree, { resolve: (ref) => p.bytes(ref), stubTextures: true });

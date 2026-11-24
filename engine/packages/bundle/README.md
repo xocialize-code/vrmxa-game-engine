@@ -15,7 +15,10 @@ const behaviours = await build.behaviours(behavioursImporter('build/cafe'));
 const scene = JSON.parse(await build.text(build.game.entry));       // build.bytes is the `resolve` engine services take
 ```
 
-`exportBuild({ project, runtime, game?, ready?, write?, onProgress? })` is the one exporter. Every check passes before
+`exportBuild({ project, runtime, game?, ready?, write?, onProgress? })` is the one exporter. Its first half,
+`planBuild({ project, game?, registry? })`, reads only the project: the game document checked, every file traced, each
+one's licence row; it throws the same refusals and returns what a build would hold. MCP's project check calls it, so a
+check and an export can't disagree about what is refused. Every check passes before
 `ready` is called and before the first `write`, so a caller that has to ask for a folder asks only then; `write: null`
 checks and hashes everything and writes nothing. It returns the manifest, its text, that text's SHA-256, and
 `byPattern`.

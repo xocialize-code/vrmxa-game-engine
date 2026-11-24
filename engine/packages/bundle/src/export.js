@@ -14,6 +14,42 @@ import { BUILD_FILE, makeManifest, serializeManifest } from './manifest.js';
 const text = (b) => new TextDecoder().decode(b);
 
 /**
+ * What a build of a project would hold, and whether it may be made: the game document checked, every file the game
+ * needs traced from its documents (a reference to no file stops here), and each of them found a row in LICENCES.md.
+ * It reads the project and nothing else: no runtime, no folder. `exportBuild` starts with it, and a tool that only
+ * checks a project (MCP's validate) calls it alone, so the two can never disagree about what an export refuses.
+ * @param {object} o
+ * @param {{ files: string[], read: (ref: string) => Promise<Uint8Array>, truncated?: boolean }} o.project as exportBuild takes it
+ * @param {any} [o.game] the game document; without it the project's game.json is read
+ * @param {any} [o.registry] as exportBuild takes it
+ * @returns {Promise<{ game: import('./game.js').Game, refs: string[], source: Map<string, string>, why: Map<string, string>,
+ *   licence: Map<string, { pattern: string, licence: string }> }>} refs: the files in manifest order; source: each one's
+ *   own file in the project; why: the document that named it; licence: each one's row
+ */
+export async function planBuild({ project, game = null, registry = undefined }) {
+  if (project.truncated) throw new BuildError('too_many_files', `the project's listing was cut short at ${project.files.length} files: an export needs every file's name, so nothing was exported`);
+  const files = project.files.filter((f) => !isHidden(f));
+  // what the game is
+  if (!game) {
+    if (!files.includes(GAME_FILE)) throw new BuildError('bad_game', `the project has no ${GAME_FILE}: it says which scene the game starts in`, [GAME_FILE]);
+    try { game = JSON.parse(text(await project.read(GAME_FILE))); } catch (e) { throw new BuildError('bad_game', `${GAME_FILE} is not JSON: ${e.message}`, [GAME_FILE]); }
+  }
+  game = checkGame(game);
+  // what it needs, and whether each file may ship. Only the files the game uses are held to a build's rules for
+  // paths: a file it doesn't use can be named anything
+  if (!files.includes(LICENCES_FILE)) throw new BuildError('no_licence', `the project has no ${LICENCES_FILE}: every file in a build needs a row in it`, [LICENCES_FILE]);
+  const { refs, source, why } = await collect({ game, files, read: project.read, registry: registry === undefined ? m0Registry() : registry });
+  for (const ref of refs) checkPath(ref, 'the project file');
+  const clash = caseClash(refs);
+  if (clash) throw new BuildError('bad_path', `${clash[0]} and ${clash[1]} differ only by case: a Mac's disk can't hold both`, clash);
+  const rows = parseLicences(text(await project.read(LICENCES_FILE)));
+  const licence = new Map(refs.map((ref) => [ref, licenceOf(rows, ref)]));
+  const unlicensed = refs.filter((ref) => !licence.get(ref));
+  if (unlicensed.length) throw new BuildError('no_licence', `no row in ${LICENCES_FILE} for ${unlicensed.join(', ')}: a file with no licence can't go into a build`, unlicensed);
+  return { game, refs, source, why, licence: /** @type {any} */ (licence) };
+}
+
+/**
  * Export a game.
  *
  * @param {object} o
@@ -36,25 +72,9 @@ const text = (b) => new TextDecoder().decode(b);
  *   one by one (a pattern row licensed them)
  */
 export async function exportBuild({ project, runtime, game = null, write = null, ready = null, onProgress = null, registry = undefined }) {
-  if (project.truncated) throw new BuildError('too_many_files', `the project's listing was cut short at ${project.files.length} files: an export needs every file's name, so nothing was exported`);
-  const files = project.files.filter((f) => !isHidden(f));
-  // what the game is
-  if (!game) {
-    if (!files.includes(GAME_FILE)) throw new BuildError('bad_game', `the project has no ${GAME_FILE}: it says which scene the game starts in`, [GAME_FILE]);
-    try { game = JSON.parse(text(await project.read(GAME_FILE))); } catch (e) { throw new BuildError('bad_game', `${GAME_FILE} is not JSON: ${e.message}`, [GAME_FILE]); }
-  }
-  game = checkGame(game);
-  // what it needs, and whether each file may ship. Only the files the game uses are held to a build's rules for
-  // paths: a file it doesn't use can be named anything
-  if (!files.includes(LICENCES_FILE)) throw new BuildError('no_licence', `the project has no ${LICENCES_FILE}: every file in a build needs a row in it`, [LICENCES_FILE]);
-  const { refs, source } = await collect({ game, files, read: project.read, registry: registry === undefined ? m0Registry() : registry });
-  for (const ref of refs) checkPath(ref, 'the project file');
-  const clash = caseClash(refs);
-  if (clash) throw new BuildError('bad_path', `${clash[0]} and ${clash[1]} differ only by case: a Mac's disk can't hold both`, clash);
-  const rows = parseLicences(text(await project.read(LICENCES_FILE)));
-  const licence = new Map(refs.map((ref) => [ref, licenceOf(rows, ref)]));
-  const unlicensed = refs.filter((ref) => !licence.get(ref));
-  if (unlicensed.length) throw new BuildError('no_licence', `no row in ${LICENCES_FILE} for ${unlicensed.join(', ')}: a file with no licence can't go into a build`, unlicensed);
+  const plan = await planBuild({ project, game, registry });
+  const { refs, source, licence } = plan;
+  game = plan.game;
   // the runtime, each file checked against its table
   let table;
   try { table = JSON.parse(text(await runtime.read(RUNTIME_FILE))); } catch (e) { throw new BuildError('bad_runtime', `the runtime has no readable ${RUNTIME_FILE} (${e.message}): build the runtime first`, [RUNTIME_FILE]); }

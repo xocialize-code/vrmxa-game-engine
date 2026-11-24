@@ -11,9 +11,9 @@
   ],
   "scripts": {
     "postinstall": "node scripts/patch-three-vrm.mjs",
-    "test": "npm test --workspaces --if-present && node --test acceptance/test/",
+    "test": "npm test --workspaces --if-present && node --test acceptance/test/ skills/test/",
     "typecheck": "tsc -p tsconfig.json",
-    "lint": "eslint engine tools scripts eslint.config.js content apps/playground/src apps/playground/scripts apps/playground/vite.config.js apps/editor/src apps/editor/static apps/editor/test apps/editor/vite.config.js apps/creator/src apps/creator/test apps/creator/vite.config.js acceptance apps/shell/js",
+    "lint": "eslint engine tools scripts skills eslint.config.js content apps/playground/src apps/playground/scripts apps/playground/vite.config.js apps/editor/src apps/editor/static apps/editor/test apps/editor/vite.config.js apps/creator/src apps/creator/test apps/creator/vite.config.js acceptance apps/shell/js",
     "docs:reference": "node scripts/docs-reference.mjs",
     "check": "npm run lint && npm run typecheck && npm test && node scripts/docs-reference.mjs --check"
   },

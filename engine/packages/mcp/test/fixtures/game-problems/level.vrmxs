@@ -1,0 +1,20 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "level",
+  "assets": [],
+  "nodes": [
+    {"id":"root","type":"Node3D"},
+    {"id":"floor","type":"Collider","parent":"root","transform":{"p":[0,-0.5,0]},"props":{"shape":"box","size":[20,1,20]}},
+    {"id":"crate","type":"RigidBody","parent":"root","transform":{"p":[0,2,0]},"props":{"mass":2}},
+    {"id":"gate","type":"Area","parent":"root","transform":{"p":[1.5,0.6,0]},"props":{"shape":"box","size":[0.2,1,2]}},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"flags":{"hasKey":false}}},
+    {"id":"orders","type":"GameCounter","parent":"rules","props":{"label":"Orders taken"}},
+    {"id":"take-order","type":"GameGoal","parent":"rules","props":{"text":"Take the order","when":{"key":"counters.orders","op":"ge","test":"state","value":1}}},
+    {"id":"find-key","type":"GameGoal","parent":"rules","props":{"text":"Find the key","when":{"key":"flags.hasKey","test":"state"}}}
+  ],
+  "connections": [
+    {"from":"gate","signal":"bodyEntered","to":"orders","call":"add"},
+    {"from":"rules","signal":"ended","to":"rules","call":"changeScene","args":{"after":0.5,"to":"ending.vrmxs"}}
+  ]
+}

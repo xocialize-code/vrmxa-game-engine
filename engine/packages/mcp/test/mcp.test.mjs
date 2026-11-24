@@ -42,14 +42,14 @@ const prefabFiles = { 'prefabs/door.vrmxs': path.join(coreFixtures, 'prefabs/doo
 const sample = path.join(here, '../../../../content/sample');
 const doorFiles = Object.fromEntries(['prefabs/door.vrmxs', 'prefabs/double-door.vrmxs', 'props/door-frame.glb', 'props/door-panel.glb'].map((f) => [f, path.join(sample, f)]));
 
-test('the tool list is generic and small: 20 tools under 2,000 tokens headless, 21 under 2,200 for the editor; instructions at initialize', async () => {
+test('the tool list is generic and small: 21 tools under 2,000 tokens headless, 22 under 2,200 for the editor; instructions at initialize', async () => {
   const dir = project('list', { 'cafe.vrmxs': path.join(coreFixtures, 'cafe.vrmxs'), ...prefabFiles });
   const { client } = await connect([dir, 'cafe.vrmxs']);
   const { tools } = await client.listTools();
   await client.close();
   const bytes = Buffer.byteLength(JSON.stringify(tools));
   const instructions = client.getInstructions();
-  assert.equal(tools.length, 20);
+  assert.equal(tools.length, 21);
   assert.ok(bytes / 4 < 2000, `${bytes} bytes ≈ ${Math.round(bytes / 4)} tokens`);
   assert.ok(instructions?.includes('describe') && instructions.length < 1000, `instructions: ${instructions}`);
   const editor = toolList(m0Registry(), 'editor'), eb = Buffer.byteLength(JSON.stringify(editor));
