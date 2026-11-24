@@ -1,6 +1,8 @@
-# Feedback Assistant draft (AB-T-0589)
+# Feedback Assistant report FB25710847 (AB-T-0589)
 
-*A draft for the operator to file from their own account (decision AB-D-0278). Nothing here has been filed or posted.
+*Filed by the operator from their own account on 2026-11-24 as **FB25710847** (decision AB-D-0278). This is the text
+as drafted; what was filed may differ in small ways. Later findings are added to the report only when significant: the
+re-test on the release macOS (AB-T-0591) is the next one expected.
 The numbers come from `results/metal-machine-*.json`; the attachments are listed at the end.*
 
 ---
