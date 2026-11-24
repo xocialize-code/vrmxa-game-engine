@@ -30,3 +30,19 @@ one of those four failures (this session's: the operator's app); for the coordin
 
 The fix is in the page (`apps/creator/src/ScriptPane.vue`): the find and replace fields select their text when they
 take focus, as a find bar does. AppProbe's side (select through accessibility instead of ⌘A) is AB-T-0612.
+
+## After merging main (W9's creator), 2026-11-23
+
+- `merged/`: the scenario run as the checklist says, the launched Creator left in front. **15 of 15.** The Creator was
+  the frontmost app in every sample of the run.
+- `other-app-in-front/`: the same build with another app (Music) put in front two seconds after launch, where it stayed
+  for the whole run. **13 of 15.** Rows 4 and 5 pass, so the select-on-focus fix holds. Rows 14 and 15 fail in another
+  way: after three tries each field holds what it held before (`[[gret]]`, and New Short's title `Second take`). The
+  typed text never arrived. Nothing was appended.
+
+So the page fix covers what AB-T-0598 was filed for, the appended text. It doesn't make the scenario independent of
+which app is in front: late in a run in which the Creator was never active, AppProbe's typing doesn't reach the page at
+all. In the earlier run above that isn't seen, because row 7's `open` step had brought the Creator forward by then;
+here it didn't. Which step stops the typing wasn't traced. It is AppProbe's side again (AB-T-0612, amended).
+
+**Run the scenario with the Creator left in front**, and don't click into another app during its two minutes.

@@ -1,0 +1,1032 @@
+{
+  "checklist" : "/Volumes/Satechi/Development/vrmxa-game-engine/.claude/worktrees/m4-w0-webgpu-host-165ee5/apps/creator-mac/docs/HAND-TEST-M4-CREATOR.md",
+  "rows" : [
+    {
+      "checklist_line" : 13,
+      "checks" : [
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short cafe-order \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project project\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short cafe-order sequences/cafe-order.vrmxs 6 nodes saved valid hash 374f01a3a4604494\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Storyboard 11 shots, 11 thumbnails\"",
+          "check" : "find(\"id=sb-status\").0.name == \"Storyboard 11 shots, 11 thumbnails\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short The Order (cafe-order)\"",
+          "check" : "find(\"id=short-cafe-order\").0.name == \"Short The Order (cafe-order)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-shots\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 24 step 60 alpha 0 world a269857fbc388a47\"",
+          "check" : "find(\"id=tl-scrub\").0.name matches \"^Showing frame 24 step 60 \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Creator pid 71979, log ~/Library/Caches/AppProbe/logs/VRMXGCreator-2026-11-24T032040Z.log",
+        "33: wait id=open-project enabled=true timeout_ms=60000 → found after 338 ms: button \"Open project\" #open-project [W:VRMXG Creator/0/0/0/0/0/1@4649] (344 ms)",
+        "34: until find(\"id=doc-state\").0.name matches \"^Short cafe-order \" timeout=60000 → ok (1883 ms)",
+        "35: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":109,\"x\":3113,\"y\":324},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (2313 ms)",
+        "36: until find(\"id=project-name\").0.name == \"Project project\" → ok (1059 ms)",
+        "37: until find(\"id=doc-state\").0.name matches \"^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid \" timeout=60000 → ok (1472 ms)",
+        "38: until find(\"id=sb-status\").0.name == \"Storyboard 11 shots, 11 thumbnails\" timeout=120000 → ok (1256 ms)",
+        "39: expect find(\"id=short-cafe-order\").0.name == \"Short The Order (cafe-order)\" → ok (29 ms)",
+        "40: expect find(\"id=tl-head-shots\").count == 1 → ok (22 ms)",
+        "41: expect find(\"id=undo\").0.name == \"Undo\" → ok (28 ms)",
+        "42: until find(\"id=tl-scrub\").0.name matches \"^Showing frame 24 step 60 \" timeout=60000 → ok (22 ms)"
+      ],
+      "message" : null,
+      "ms" : 9255,
+      "notes" : [
+
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The project opens with its short, and the short with its sequence, storyboard and timeline; nothing is an undo step.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 14,
+      "checks" : [
+        {
+          "actual" : "\"Opened first-light.fountain (script) → short first-light\"",
+          "check" : "find(\"id=open-result\").0.name == \"Opened first-light.fountain (script) → short first-light\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash e15e556b55feeefe\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Short first-light sequences/first-light.vrmxs [0-9]+ nodes unsaved changes valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Storyboard 5 shots, 5 thumbnails\"",
+          "check" : "find(\"id=sb-status\").0.name == \"Storyboard 5 shots, 5 thumbnails\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=coverage-rule\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Clip vc-est-int-cafe-dawn 0 to 48' exact=true\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-mira-says\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short First Light (first-light), not saved\"",
+          "check" : "find(\"id=short-first-light\").0.name == \"Short First Light (first-light), not saved\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 24 step 60 alpha 0 world eb7d399a790bfd2f\"",
+          "check" : "find(\"id=tl-scrub\").0.name matches \"^Showing frame 24 \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "47: menu \"File › Open…\" press → pressed File › Open… (150 ms)",
+        "48: until find(\"id=open-result\").0.name == \"Opened first-light.fountain (script) → short first-light\" timeout=30000 → ok (614 ms)",
+        "49: until find(\"id=doc-state\").0.name matches \"^Short first-light sequences/first-light.vrmxs [0-9]+ nodes unsaved changes valid \" timeout=60000 → ok (2252 ms)",
+        "50: until find(\"id=sb-status\").0.name == \"Storyboard 5 shots, 5 thumbnails\" timeout=120000 → ok (21 ms)",
+        "51: expect find(\"id=coverage-rule\").0.value == \"1\" → ok (25 ms)",
+        "52: expect find(\"role=button name='Clip vc-est-int-cafe-dawn 0 to 48' exact=true\").count == 1 → ok (23 ms)",
+        "53: expect find(\"id=tl-head-mira-says\").count == 1 → ok (19 ms)",
+        "54: expect find(\"id=short-first-light\").0.name == \"Short First Light (first-light), not saved\" → ok (22 ms)",
+        "55: until find(\"id=tl-scrub\").0.name matches \"^Showing frame 24 \" timeout=60000 → ok (19 ms)",
+        "57: shot \"opened\" (190 ms)"
+      ],
+      "message" : null,
+      "ms" : 4582,
+      "notes" : [
+        "shot 1: opened"
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M4-CREATOR.scenario-2026-11-24T032040Z/shots/r2-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "File › Open… opens a Fountain script from outside the project: a new short, built with cameras by rule, shows its sequence, storyboard and timeline.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 15,
+      "checks" : [
+        {
+          "actual" : "\"Undo Move clip hana-1-act 1\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Move clip hana-1-act 1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Clip greet 213 to 249' exact=true\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "62: act role=button name=\"Clip greet 203 to 239\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":23,\"w\":56,\"x\":3491,\"y\":1160},\"help\":\"\",\"name\":\"Clip greet 203 to 239\",\"ref\":\"W:VRMXG Creator/0/ (32 ms)",
+        "63: keys shift+right → {\"sent\":true} (126 ms)",
+        "64: until find(\"id=undo\").0.name == \"Undo Move clip hana-1-act 1\" → ok (260 ms)",
+        "65: expect find(\"role=button name='Clip greet 213 to 249' exact=true\").count == 1 → ok (1449 ms)"
+      ],
+      "message" : null,
+      "ms" : 2582,
+      "notes" : [
+
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A hand edit on the timeline is one undo step.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 16,
+      "checks" : [
+        {
+          "actual" : "\"first cup today.\"",
+          "check" : "find(\"id=script-find\").0.value == \"first cup today.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"first cup of the day.\"",
+          "check" : "find(\"id=script-replace\").0.value == \"first cup of the day.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Re-script (1 changed)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Clip greet 213 to 249' exact=true\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='first cup of the day.'\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Script scripts/first-light.fountain applied unsaved\"",
+          "check" : "find(\"id=script-state\").0.name matches \"applied unsaved$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Move clip hana-1-act 1\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Move clip hana-1-act 1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 6836bea1bfa4b5df\"",
+          "check" : "find(\"id=doc-state\").0.name == $before",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=script value='first cup today.'\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\"",
+          "check" : "find(\"id=doc-state\").0.name == $after",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=script value='first cup of the day.'\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "70: set before = find(\"id=doc-state\").0.name → \"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 6836bea1bfa4b5df\" (25 ms)",
+        "71: act id=script-find action=set_value value=\"first cup today.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":130,\"x\":3000,\"y\":438},\"help\":\"\",\"id\":\"script-find\",\"name\":\"Find in script\",\"ref\":\"W: (427 ms)",
+        "71: until find(\"id=script-find\").0.value == \"first cup today.\" do act id=script-find action=set_value value=\"first cup today.\" tries=3 → ok after 1 (761 ms)",
+        "72: act id=script-replace action=set_value value=\"first cup of the day.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":131,\"x\":3134,\"y\":438},\"help\":\"\",\"id\":\"script-replace\",\"name\":\"Replace with\",\"ref\":\"W (442 ms)",
+        "72: until find(\"id=script-replace\").0.value == \"first cup of the day.\" do act id=script-replace action=set_value value=\"first cup of the day.\" tries=3 → ok after 1 (765 ms)",
+        "73: act id=script-replace-all action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":67,\"x\":3268,\"y\":438},\"help\":\"\",\"id\":\"script-replace-all\",\"name\":\"Replace all in script\", (37 ms)",
+        "74: until find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\" → ok (31 ms)",
+        "75: expect find(\"role=button name='Clip greet 213 to 249' exact=true\").count == 1 → ok (209 ms)",
+        "76: expect find(\"role=button name='first cup of the day.'\").count == 1 → ok (384 ms)",
+        "77: expect find(\"id=script-state\").0.name matches \"applied unsaved$\" → ok (1842 ms)",
+        "78: set after = find(\"id=doc-state\").0.name → \"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\" (30 ms)",
+        "79: menu \"Edit › Undo\" press → pressed Edit › Undo (155 ms)",
+        "80: until find(\"id=undo\").0.name == \"Undo Move clip hana-1-act 1\" → ok (34 ms)",
+        "81: expect find(\"id=doc-state\").0.name == $before → ok (207 ms)",
+        "82: expect find(\"id=script value='first cup today.'\").count == 1 → ok (941 ms)",
+        "83: menu \"Edit › Redo\" press → pressed Edit › Redo (158 ms)",
+        "84: until find(\"id=doc-state\").0.name == $after → ok (1662 ms)",
+        "85: expect find(\"id=script value='first cup of the day.'\").count == 1 → ok (1283 ms)"
+      ],
+      "message" : null,
+      "ms" : 8749,
+      "notes" : [
+
+      ],
+      "row" : 4,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Editing the script re-scripts the sequence as one undo step and keeps the hand edit; Edit › Undo and Redo bring the script back with the document.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 17,
+      "checks" : [
+        {
+          "actual" : "\"[[greet]]\"",
+          "check" : "find(\"id=script-find\").0.value == \"[[greet]]\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"[[gret]]\"",
+          "check" : "find(\"id=script-replace\").0.value == \"[[gret]]\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=script-errors\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Error at line 17: [[gret]]'\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\"",
+          "check" : "find(\"id=doc-state\").0.name == $after",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Re-script (1 changed)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"[[gret]]\"",
+          "check" : "find(\"id=script-find\").0.value == \"[[gret]]\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"[[greet]]\"",
+          "check" : "find(\"id=script-replace\").0.value == \"[[greet]]\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=script-errors\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Script scripts/first-light.fountain applied unsaved\"",
+          "check" : "find(\"id=script-state\").0.name matches \" applied \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\"",
+          "check" : "find(\"id=doc-state\").0.name == $after",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Re-script (1 changed)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "90: set after = find(\"id=doc-state\").0.name → \"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\" (25 ms)",
+        "91: act id=script-find action=set_value value=\"[[greet]]\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":102,\"x\":3000,\"y\":438},\"help\":\"\",\"id\":\"script-find\",\"name\":\"Find in script\",\"ref\":\"W: (440 ms)",
+        "91: until find(\"id=script-find\").0.value == \"[[greet]]\" do act id=script-find action=set_value value=\"[[greet]]\" tries=3 → ok after 1 (748 ms)",
+        "92: act id=script-replace action=set_value value=\"[[gret]]\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":103,\"x\":3106,\"y\":438},\"help\":\"\",\"id\":\"script-replace\",\"name\":\"Replace with\",\"ref\":\"W (436 ms)",
+        "92: until find(\"id=script-replace\").0.value == \"[[gret]]\" do act id=script-replace action=set_value value=\"[[gret]]\" tries=3 → ok after 1 (769 ms)",
+        "93: act id=script-replace-all action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":67,\"x\":3212,\"y\":438},\"help\":\"\",\"id\":\"script-replace-all\",\"name\":\"Replace all in script\", (28 ms)",
+        "94: until find(\"id=script-errors\").count == 1 → ok (30 ms)",
+        "95: expect find(\"role=button name='Error at line 17: [[gret]]'\").count == 1 → ok (25 ms)",
+        "96: expect find(\"id=doc-state\").0.name == $after → ok (21 ms)",
+        "97: expect find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\" → ok (25 ms)",
+        "98: act id=script-find action=set_value value=\"[[gret]]\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":102,\"x\":3000,\"y\":438},\"help\":\"\",\"id\":\"script-find\",\"name\":\"Find in script\",\"ref\":\"W: (436 ms)",
+        "98: until find(\"id=script-find\").0.value == \"[[gret]]\" do act id=script-find action=set_value value=\"[[gret]]\" tries=3 → ok after 1 (755 ms)",
+        "99: act id=script-replace action=set_value value=\"[[greet]]\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":103,\"x\":3106,\"y\":438},\"help\":\"\",\"id\":\"script-replace\",\"name\":\"Replace with\",\"ref\":\"W (436 ms)",
+        "99: until find(\"id=script-replace\").0.value == \"[[greet]]\" do act id=script-replace action=set_value value=\"[[greet]]\" tries=3 → ok after 1 (745 ms)",
+        "100: act id=script-replace-all action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":67,\"x\":3212,\"y\":438},\"help\":\"\",\"id\":\"script-replace-all\",\"name\":\"Replace all in script\", (35 ms)",
+        "101: until find(\"id=script-errors\").count == 0 → ok (30 ms)",
+        "102: until find(\"id=script-state\").0.name matches \" applied \" → ok (21 ms)",
+        "103: expect find(\"id=doc-state\").0.name == $after → ok (20 ms)",
+        "104: expect find(\"id=undo\").0.name == \"Undo Re-script (1 changed)\" → ok (23 ms)"
+      ],
+      "message" : null,
+      "ms" : 3515,
+      "notes" : [
+
+      ],
+      "row" : 5,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A script with an error changes nothing and points at its line; fixing it changes nothing either.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 18,
+      "checks" : [
+        {
+          "actual" : "\"Undo Re-script (1 added)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Re-script (1 added)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Script scripts/first-light.fountain applied unsaved\"",
+          "check" : "find(\"id=script-state\").0.name matches \" applied unsaved$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Redo Re-script (1 changed)\"",
+          "check" : "find(\"id=redo\").0.name == \"Redo Re-script (1 changed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Re-script (1 added)\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Re-script (1 added)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Redo Re-script (1 changed)\"",
+          "check" : "find(\"id=redo\").0.name == \"Redo Re-script (1 changed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\"",
+          "check" : "find(\"id=doc-state\").0.name == $start",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=script value='Hana smiles.'\").count == 0",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "109: set start = find(\"id=doc-state\").0.name → \"Short first-light sequences/first-light.vrmxs 7 nodes unsaved changes valid hash 4a6414b16a0892f0\" (25 ms)",
+        "110: act id=script action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":509,\"w\":325,\"x\":3024,\"y\":469},\"help\":\"\",\"id\":\"script\",\"name\":\"Script\",\"ref\":\"W:VRMXG Creator/0/ (27 ms)",
+        "111: keys keys=\"cmd+down return return\" → {\"sent\":true} (332 ms)",
+        "112: keys text=\"Hana smiles.\" → {\"sent\":true} (19 ms)",
+        "113: until find(\"id=undo\").0.name == \"Undo Re-script (1 added)\" → ok (1150 ms)",
+        "114: expect find(\"id=script-state\").0.name matches \" applied unsaved$\" → ok (1342 ms)",
+        "115: keys text=\" She waves.\" → {\"sent\":true} (15 ms)",
+        "116: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":4364,\"y\":324},\"help\":\"Re-script (1 changed)\",\"id\":\"undo\",\"name\":\"Undo Re-script ( (2659 ms)",
+        "117: until find(\"id=redo\").0.name == \"Redo Re-script (1 changed)\" → ok (2171 ms)",
+        "119: expect find(\"id=undo\").0.name == \"Undo Re-script (1 added)\" → ok (30 ms)",
+        "120: expect find(\"id=redo\").0.name == \"Redo Re-script (1 changed)\" → ok (25 ms)",
+        "121: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":4364,\"y\":324},\"help\":\"Re-script (1 added)\",\"id\":\"undo\",\"name\":\"Undo Re-script (1  (29 ms)",
+        "122: until find(\"id=doc-state\").0.name == $start → ok (30 ms)",
+        "123: expect find(\"id=script value='Hana smiles.'\").count == 0 → ok (213 ms)"
+      ],
+      "message" : null,
+      "ms" : 11914,
+      "notes" : [
+
+      ],
+      "row" : 6,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Typing in the script pane applies once typing stops, as one undo step; Undo while typing is still unapplied takes the typing back, and nothing applies after it.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 19,
+      "checks" : [
+        {
+          "actual" : "\"Undo Cast HANA: Mira\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Cast HANA: Mira\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Role HANA (hana-1), 2 lines, cast characters/mira-guest.vrmxa, voice af_heart\"",
+          "check" : "find(\"id=role-hana-1\").0.name matches \"cast characters/mira-guest\\.vrmxa\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Cast Mira as hana-1: Cast HANA: Mira (Mira's voice \\\"Mira\\\" (designed) names no kokoro-82m preset, so the shell can't speak it yet; hana-1 takes a Kokoro preset instead; 2 lines left to voice: no TTS voice here: this shell has no tts.spea…",
+          "check" : "find(\"id=cast-result\").0.name matches \"^Cast Mira as hana-1: Cast HANA: Mira\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "128: act id=role-hana-1 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":287,\"x\":4397,\"y\":402},\"help\":\"\",\"id\":\"role-hana-1\",\"name\":\"Role HANA (hana-1), 2 lines,  (29 ms)",
+        "opened ~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/inbox/mira-guest.vrmxa in pid 71979",
+        "130: until find(\"id=undo\").0.name == \"Undo Cast HANA: Mira\" timeout=30000 → ok (1726 ms)",
+        "131: expect find(\"id=role-hana-1\").0.name matches \"cast characters/mira-guest\\.vrmxa\" → ok (1349 ms)",
+        "132: expect find(\"id=cast-result\").0.name matches \"^Cast Mira as hana-1: Cast HANA: Mira\" → ok (21 ms)"
+      ],
+      "message" : null,
+      "ms" : 3372,
+      "notes" : [
+
+      ],
+      "row" : 7,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A character opened from the Finder is cast in the selected role, as one undo step.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 20,
+      "checks" : [
+        {
+          "actual" : "\"Saved sequences/first-light.vrmxs · 7425 bytes · defaa25fe07c366c · scripts/first-light.fountain\"",
+          "check" : "find(\"id=saved\").0.name matches \"^Saved sequences/first-light.vrmxs · [0-9]+ bytes · [0-9a-f]{16} · scripts/first-light.fountain$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Short first-light sequences/first-light.vrmxs 7 nodes saved valid hash defaa25fe07c366c\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" saved valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Script scripts/first-light.fountain applied saved\"",
+          "check" : "find(\"id=script-state\").0.name matches \"applied saved$\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "137: menu \"File › Save\" press → pressed File › Save (151 ms)",
+        "138: until find(\"id=saved\").0.name matches \"^Saved sequences/first-light.vrmxs · [0-9]+ bytes · [0-9a-f]{16} · scripts/first-light.fountain$\" → ok (50 ms)",
+        "139: expect find(\"id=doc-state\").0.name matches \" saved valid \" → ok (22 ms)",
+        "140: expect find(\"id=script-state\").0.name matches \"applied saved$\" → ok (27 ms)"
+      ],
+      "message" : null,
+      "ms" : 447,
+      "notes" : [
+
+      ],
+      "row" : 8,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Save writes the short into the project: its sequence, its script and shorts.json.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 21,
+      "checks" : [
+        {
+          "actual" : "\"job-1 starting\"",
+          "check" : "find(\"id=q-job-1-status\").0.name matches \"^job-1 (rendering|starting)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-1 done: 397 frames · first-light-720p24.mp4 · frames 877a27d5cce4b177\"",
+          "check" : "find(\"id=q-job-1-status\").0.name matches \"^job-1 (done|failed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-1 done: 397 frames · first-light-720p24.mp4 · frames 877a27d5cce4b177\"",
+          "check" : "find(\"id=q-job-1-status\").0.name matches \"^job-1 done: 397 frames · first-light-720p24\\\\.mp4 · frames [0-9a-f]{16}$\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "145: menu \"File › Export…\" press → pressed File › Export… (143 ms)",
+        "146: until find(\"id=q-job-1-status\").0.name matches \"^job-1 (rendering|starting)\" timeout=30000 → ok (439 ms)",
+        "147: until find(\"id=q-job-1-status\").0.name matches \"^job-1 (done|failed)\" timeout=300000 → ok (3264 ms)",
+        "148: expect find(\"id=q-job-1-status\").0.name matches \"^job-1 done: 397 frames · first-light-720p24\\\\.mp4 · frames [0-9a-f]{16}$\" → ok (23 ms)",
+        "149: shot \"exported\" (91 ms)"
+      ],
+      "message" : null,
+      "ms" : 4201,
+      "notes" : [
+        "shot 1: exported"
+      ],
+      "row" : 9,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M4-CREATOR.scenario-2026-11-24T032040Z/shots/r9-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "File › Export… queues the short and renders it through the shell.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 22,
+      "checks" : [
+        {
+          "actual" : "\"job-2 queued\"",
+          "check" : "find(\"id=q-job-2-status\").0.name == \"job-2 queued\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-2 starting\"",
+          "check" : "find(\"id=q-job-2-status\").0.name == \"job-2 starting\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-2 cancelled\"",
+          "check" : "find(\"id=q-job-2-status\").0.name == \"job-2 cancelled\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-3 queued\"",
+          "check" : "find(\"id=q-job-3-status\").0.name == \"job-3 queued\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-4 done: 397 frames · first-light-720p24.mp4 · frames 877a27d5cce4b177\"",
+          "check" : "find(\"id=q-job-4-status\").0.name matches \"^job-4 done: 397 frames\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-3 queued\"",
+          "check" : "find(\"id=q-job-3-status\").0.name == \"job-3 queued\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "154: act id=q-preset-master action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":61,\"x\":4532,\"y\":805},\"help\":\"Master 1080p ProRes 4444\",\"id\":\"q-preset-master\",\"name\":\"Pr (24 ms)",
+        "155: act id=q-add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":4570,\"y\":986},\"help\":\"\",\"id\":\"q-add\",\"name\":\"Add the short to the queue\",\"ref\":\"W (23 ms)",
+        "156: until find(\"id=q-job-2-status\").0.name == \"job-2 queued\" → ok (28 ms)",
+        "157: act id=q-run action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":62,\"x\":4618,\"y\":927},\"help\":\"\",\"id\":\"q-run\",\"name\":\"Render the queue\",\"ref\":\"W:VRMXG Cre (30 ms)",
+        "158: until find(\"id=q-job-2-status\").0.name == \"job-2 starting\" timeout=30000 → ok (437 ms)",
+        "159: act role=button name=\"Cancel job-2\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":51,\"x\":4613,\"y\":1058},\"help\":\"\",\"name\":\"Cancel job-2\",\"ref\":\"W:VRMXG Creator/0/0/0/0/3/2 (1162 ms)",
+        "160: until find(\"id=q-job-2-status\").0.name == \"job-2 cancelled\" timeout=60000 → ok (347 ms)",
+        "161: act id=q-preset-draft action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":48,\"x\":4429,\"y\":746},\"help\":\"Draft 720p H.264\",\"id\":\"q-preset-draft\",\"name\":\"Preset Draf (28 ms)",
+        "162: act id=q-add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":4570,\"y\":927},\"help\":\"\",\"id\":\"q-add\",\"name\":\"Add the short to the queue\",\"ref\":\"W (31 ms)",
+        "163: until find(\"id=q-job-3-status\").0.name == \"job-3 queued\" → ok (28 ms)",
+        "164: menu \"File › Export…\" press → pressed File › Export… (155 ms)",
+        "165: until find(\"id=q-job-4-status\").0.name matches \"^job-4 done: 397 frames\" timeout=300000 → ok (3594 ms)",
+        "166: expect find(\"id=q-job-3-status\").0.name == \"job-3 queued\" → ok (22 ms)"
+      ],
+      "message" : null,
+      "ms" : 6143,
+      "notes" : [
+
+      ],
+      "row" : 10,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Cancel stops a running render and leaves no movie behind; File › Export… renders only the job it adds.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 23,
+      "checks" : [
+        {
+          "actual" : "0",
+          "check" : "find(\"id=q-job-3\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=q-stills\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=q-stills\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=q-thumbnails\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=q-turntable\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=q-check\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-5 queued\"",
+          "check" : "find(\"id=q-job-5-status\").0.name == \"job-5 queued\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-5 First Light · Delivery 1080p24 HEVC · checked\"",
+          "check" : "find(\"id=q-job-5-label\").0.name == \"job-5 First Light · Delivery 1080p24 HEVC · checked\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-5 rendering 30 of 120 (turntable mira)\"",
+          "check" : "find(\"id=q-job-5-status\").0.name matches \"^job-5 rendering [0-9]+ of 120 \\\\(turntable \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-5 done: 397 frames · first-light-1080p24-hevc.mp4 · frames ec14689a3de028df · 5 stills · 5 thumbnails · 2 turntables · 15 files on disk · redraw check: 1 odd draw outvoted\"",
+          "check" : "find(\"id=q-job-5-status\").0.name matches \"^job-5 (done|failed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-5 done: 397 frames · first-light-1080p24-hevc.mp4 · frames ec14689a3de028df · 5 stills · 5 thumbnails · 2 turntables · 15 files on disk · redraw check: 1 odd draw outvoted\"",
+          "check" : "find(\"id=q-job-5-status\").0.name matches \"^job-5 done: 397 frames · first-light-1080p24-hevc\\\\.mp4 · frames [0-9a-f]{16} · 5 stills · 5 thumbnails · 2 turntables · 15 files on disk · redraw check: (every frame twice the same|[0-9]+ odd draws? outvoted)$\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "171: act role=button name=\"Remove job-3\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":22,\"x\":4642,\"y\":1001},\"help\":\"\",\"name\":\"Remove job-3\",\"ref\":\"W:VRMXG Creator/0/0/0/0/3/2 (26 ms)",
+        "172: until find(\"id=q-job-3\").count == 0 → ok (27 ms)",
+        "173: act id=q-preset-hevc-1080p24 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":93,\"x\":4513,\"y\":820},\"help\":\"Delivery 1080p24 HEVC\",\"id\":\"q-preset-hevc-1080p24\",\"name\": (30 ms)",
+        "174: until find(\"id=q-stills\").count == 1 → ok (27 ms)",
+        "175: expect find(\"id=q-stills\").0.value == \"1\" → ok (27 ms)",
+        "176: expect find(\"id=q-thumbnails\").0.value == \"1\" → ok (26 ms)",
+        "177: expect find(\"id=q-turntable\").0.value == \"1\" → ok (23 ms)",
+        "178: expect find(\"id=q-check\").0.value == \"1\" → ok (26 ms)",
+        "179: act id=q-add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":4570,\"y\":953},\"help\":\"\",\"id\":\"q-add\",\"name\":\"Add the short to the queue\",\"ref\":\"W (29 ms)",
+        "180: until find(\"id=q-job-5-status\").0.name == \"job-5 queued\" → ok (27 ms)",
+        "181: expect find(\"id=q-job-5-label\").0.name == \"job-5 First Light · Delivery 1080p24 HEVC · checked\" → ok (27 ms)",
+        "182: act id=q-run action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":62,\"x\":4618,\"y\":942},\"help\":\"\",\"id\":\"q-run\",\"name\":\"Render the queue\",\"ref\":\"W:VRMXG Cre (27 ms)",
+        "183: until find(\"id=q-job-5-status\").0.name matches \"^job-5 rendering [0-9]+ of 120 \\\\(turntable \" timeout=300000 → ok (8510 ms)",
+        "184: until find(\"id=q-job-5-status\").0.name matches \"^job-5 (done|failed)\" timeout=600000 → ok (3469 ms)",
+        "185: expect find(\"id=q-job-5-status\").0.name matches \"^job-5 done: 397 frames · first-light-1080p24-hevc\\\\.mp4 · frames [0-9a-f]{16} · 5 stills · 5 thumbnails · 2 turntables · 15 files on disk · redraw check: (every frame twice the same|[0-9]+ odd draws? outvoted)$\" → ok (25 ms)",
+        "186: shot \"delivered\" (89 ms)"
+      ],
+      "message" : null,
+      "ms" : 12647,
+      "notes" : [
+        "shot 1: delivered"
+      ],
+      "row" : 11,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M4-CREATOR.scenario-2026-11-24T032040Z/shots/r11-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A delivery preset renders the film for delivery into the project's deliveries folder, drawn twice and checked on WebGPU by default: sound, an .srt, a still and a thumbnail per shot, a turntable per character and delivery.json, every file read back from the disk.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 24,
+      "checks" : [
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=q-turntable\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=q-check\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-6 queued\"",
+          "check" : "find(\"id=q-job-6-status\").0.name == \"job-6 queued\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-6 First Light · Delivery 4K24 ProRes 4444 with alpha · WebGL\"",
+          "check" : "find(\"id=q-job-6-label\").0.name == \"job-6 First Light · Delivery 4K24 ProRes 4444 with alpha · WebGL\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=q-check\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-7 queued\"",
+          "check" : "find(\"id=q-job-7-status\").0.name == \"job-7 queued\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-7 First Light · Delivery 4K24 H.264 · checked\"",
+          "check" : "find(\"id=q-job-7-label\").0.name == \"job-7 First Light · Delivery 4K24 H.264 · checked\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-7 done: 397 frames · first-light-4k24-h264.mp4 · frames fb6a8264c7871a6b · 0 stills · 0 thumbnails · 0 turntables · 3 files on disk · redraw check: 3 odd draws outvoted\"",
+          "check" : "find(\"id=q-job-7-status\").0.name matches \"^job-7 (done|failed)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-6 done: 397 frames · first-light-4k24-prores.mov · frames bb564ea463ae238c · 5 stills · 5 thumbnails · 0 turntables · 13 files on disk\"",
+          "check" : "find(\"id=q-job-6-status\").0.name matches \"^job-6 done: 397 frames · first-light-4k24-prores\\\\.mov · frames [0-9a-f]{16} · 5 stills · 5 thumbnails · 0 turntables · 13 files on disk$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"job-7 done: 397 frames · first-light-4k24-h264.mp4 · frames fb6a8264c7871a6b · 0 stills · 0 thumbnails · 0 turntables · 3 files on disk · redraw check: 3 odd draws outvoted\"",
+          "check" : "find(\"id=q-job-7-status\").0.name matches \"^job-7 done: 397 frames · first-light-4k24-h264\\\\.mp4 · frames [0-9a-f]{16} · 0 stills · 0 thumbnails · 0 turntables · 3 files on disk · redraw check: (every frame twice the same|[0-9]+ odd draws? outvoted)$\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "191: act id=q-preset-prores-4k24 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":72,\"x\":4608,\"y\":833},\"help\":\"Delivery 4K24 ProRes 4444 with alpha\",\"id\":\"q-preset-prores (31 ms)",
+        "192: act id=q-turntable action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":13,\"w\":13,\"x\":4545,\"y\":863},\"help\":\"\",\"id\":\"q-turntable\",\"name\":\"A turntable per character\",\"re (25 ms)",
+        "193: until find(\"id=q-turntable\").0.value == \"0\" → ok (25 ms)",
+        "194: act id=q-backend-webgl action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":60,\"x\":4571,\"y\":886},\"help\":\"\",\"id\":\"q-backend-webgl\",\"name\":\"Draw on WebGL\",\"ref\":\"W:VR (31 ms)",
+        "195: until find(\"id=q-check\").0.value == \"0\" → ok (23 ms)",
+        "196: act id=q-add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":4570,\"y\":942},\"help\":\"\",\"id\":\"q-add\",\"name\":\"Add the short to the queue\",\"ref\":\"W (26 ms)",
+        "197: until find(\"id=q-job-6-status\").0.name == \"job-6 queued\" → ok (28 ms)",
+        "198: expect find(\"id=q-job-6-label\").0.name == \"job-6 First Light · Delivery 4K24 ProRes 4444 with alpha · WebGL\" → ok (28 ms)",
+        "199: act id=q-preset-h264-4k24 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":72,\"x\":4608,\"y\":785},\"help\":\"Delivery 4K24 H.264\",\"id\":\"q-preset-h264-4k24\",\"name\":\"Pres (26 ms)",
+        "200: act id=q-stills action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":13,\"w\":12,\"x\":4403,\"y\":863},\"help\":\"\",\"id\":\"q-stills\",\"name\":\"Stills, one per shot\",\"ref\":\"W:VR (25 ms)",
+        "201: act id=q-thumbnails action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":13,\"w\":13,\"x\":4455,\"y\":863},\"help\":\"\",\"id\":\"q-thumbnails\",\"name\":\"Thumbnails, one per shot\",\"re (31 ms)",
+        "202: act id=q-backend-view action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":105,\"x\":4400,\"y\":886},\"help\":\"\",\"id\":\"q-backend-view\",\"name\":\"Draw on view's backend\",\"r (26 ms)",
+        "203: until find(\"id=q-check\").0.value == \"1\" → ok (23 ms)",
+        "204: act id=q-add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":4570,\"y\":942},\"help\":\"\",\"id\":\"q-add\",\"name\":\"Add the short to the queue\",\"ref\":\"W (26 ms)",
+        "205: until find(\"id=q-job-7-status\").0.name == \"job-7 queued\" → ok (29 ms)",
+        "206: expect find(\"id=q-job-7-label\").0.name == \"job-7 First Light · Delivery 4K24 H.264 · checked\" → ok (26 ms)",
+        "207: act id=q-run action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":62,\"x\":4618,\"y\":942},\"help\":\"\",\"id\":\"q-run\",\"name\":\"Render the queue\",\"ref\":\"W:VRMXG Cre (26 ms)",
+        "208: until find(\"id=q-job-7-status\").0.name matches \"^job-7 (done|failed)\" timeout=900000 → ok (24237 ms)",
+        "209: expect find(\"id=q-job-6-status\").0.name matches \"^job-6 done: 397 frames · first-light-4k24-prores\\\\.mov · frames [0-9a-f]{16} · 5 stills · 5 thumbnails · 0 turntables · 13 files on disk$\" → ok (24 ms)",
+        "210: expect find(\"id=q-job-7-status\").0.name matches \"^job-7 done: 397 frames · first-light-4k24-h264\\\\.mp4 · frames [0-9a-f]{16} · 0 stills · 0 thumbnails · 0 turntables · 3 files on disk · redraw check: (every frame twice the same|[0-9]+ odd draws? outvoted)$\" → ok (26 ms)"
+      ],
+      "message" : null,
+      "ms" : 24981,
+      "notes" : [
+
+      ],
+      "row" : 12,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "ProRes 4444 at 4K draws on WebGL when the job says so, the extras as ticked; H.264 at 4K on the view's WebGPU is checked by default and draws every frame twice.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 25,
+      "checks" : [
+        {
+          "actual" : "true",
+          "check" : "menu(\"File › New Short\").enabled == true",
+          "ok" : true
+        },
+        {
+          "actual" : "true",
+          "check" : "menu(\"File › Open Script…\").enabled == true",
+          "ok" : true
+        },
+        {
+          "actual" : "true",
+          "check" : "menu(\"File › Open Character…\").enabled == true",
+          "ok" : true
+        },
+        {
+          "actual" : "true",
+          "check" : "menu(\"File › Open Set…\").enabled == true",
+          "ok" : true
+        },
+        {
+          "actual" : "true",
+          "check" : "menu(\"File › Export…\").enabled == true",
+          "ok" : true
+        },
+        {
+          "actual" : "true",
+          "check" : "menu(\"Short › Apply Script\").enabled == true",
+          "ok" : true
+        },
+        {
+          "actual" : "true",
+          "check" : "menu(\"Short › Render Queue\").enabled == true",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "215: expect menu(\"File › New Short\").enabled == true → ok (146 ms)",
+        "216: expect menu(\"File › Open Script…\").enabled == true → ok (145 ms)",
+        "217: expect menu(\"File › Open Character…\").enabled == true → ok (158 ms)",
+        "218: expect menu(\"File › Open Set…\").enabled == true → ok (153 ms)",
+        "219: expect menu(\"File › Export…\").enabled == true → ok (136 ms)",
+        "220: expect menu(\"Short › Apply Script\").enabled == true → ok (137 ms)",
+        "221: expect menu(\"Short › Render Queue\").enabled == true → ok (162 ms)"
+      ],
+      "message" : null,
+      "ms" : 1260,
+      "notes" : [
+
+      ],
+      "row" : 13,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The File and Short menus carry the creator's own items.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 26,
+      "checks" : [
+        {
+          "actual" : "\"[[gret]]\"",
+          "check" : "find(\"id=script-find\").0.value == \"Then you'd better come in.\"",
+          "ok" : false
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "226: act id=script-find action=set_value value=\"Then you'd better come in.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":102,\"x\":3000,\"y\":438},\"help\":\"\",\"id\":\"script-find\",\"name\":\"Find in script\",\"ref\":\"W: (462 ms)",
+        "226: act id=script-find action=set_value value=\"Then you'd better come in.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":102,\"x\":3000,\"y\":438},\"help\":\"\",\"id\":\"script-find\",\"name\":\"Find in script\",\"ref\":\"W: (456 ms)",
+        "226: act id=script-find action=set_value value=\"Then you'd better come in.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":102,\"x\":3000,\"y\":438},\"help\":\"\",\"id\":\"script-find\",\"name\":\"Find in script\",\"ref\":\"W: (464 ms)"
+      ],
+      "message" : "after 3 tries, still not find(\"id=script-find\").0.value == \"Then you'd better come in.\": \"[[gret]]\"",
+      "ms" : 3476,
+      "notes" : [
+        "shot 1: end"
+      ],
+      "row" : 14,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M4-CREATOR.scenario-2026-11-24T032040Z/shots/r14-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "failed",
+      "text" : "Leaving a short with unsaved changes asks first: Cancel stays, Don't Save goes back to the saved short.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 27,
+      "checks" : [
+        {
+          "actual" : "\"Second take\"",
+          "check" : "find(\"id=new-short-title\").0.value == \"Third Take\"",
+          "ok" : false
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "249: act id=new-short-title action=set_value value=\"Third Take\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":129,\"x\":3357,\"y\":324},\"help\":\"\",\"id\":\"new-short-title\",\"name\":\"New short title\",\"ref (424 ms)",
+        "249: act id=new-short-title action=set_value value=\"Third Take\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":129,\"x\":3357,\"y\":324},\"help\":\"\",\"id\":\"new-short-title\",\"name\":\"New short title\",\"ref (440 ms)",
+        "249: act id=new-short-title action=set_value value=\"Third Take\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":129,\"x\":3357,\"y\":324},\"help\":\"\",\"id\":\"new-short-title\",\"name\":\"New short title\",\"ref (437 ms)"
+      ],
+      "message" : "after 3 tries, still not find(\"id=new-short-title\").0.value == \"Third Take\": \"Second take\"",
+      "ms" : 3379,
+      "notes" : [
+        "shot 1: end"
+      ],
+      "row" : 15,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M4-CREATOR.scenario-2026-11-24T032040Z/shots/r15-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "failed",
+      "text" : "New Short makes a short in the chosen set from a script template.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "/Volumes/Satechi/Development/vrmxa-game-engine/.claude/worktrees/m4-w0-webgpu-host-165ee5/apps/creator-mac/docs/hand-test/HAND-TEST-M4-CREATOR.scenario.md",
+  "summary" : "15 rows: 13 passed, 2 failed, 0 need you; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}
