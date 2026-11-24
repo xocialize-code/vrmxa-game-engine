@@ -93,11 +93,11 @@ A rule that is wrong must not win or lose a game by accident, so two things are 
     declare it: `GameRules "rules": lose reads "counters.livez": this scene has no counter "livez" (counters: lives).
     Add a GameCounter with that key, or list it in GameRules' reads.counters if another scene counts it`. So does
     comparing the time left on one of the scene's own stopwatches.
-- **What a scene reads and the game didn't bring has its starting value.** Whether the level's `foundKey` flag was
+- **What a scene reads and the game doesn't have is seen as its default.** Whether the level's `foundKey` flag was
   ever set, a checkpoint ever taken, or the ending reached by way of the level at all depends on how the game was
   played, so none of it can stop a game: a scene change never fails over a read value.
 
-  | Read | When the game brings none |
+  | Read | Seen as, while the game has none |
   |---|---|
   | a flag | `false` |
   | a goal | not done (`{ done: false, step: null }`) |
@@ -105,13 +105,22 @@ A rule that is wrong must not win or lose a game by accident, so two things are 
   | a timer | not there: nothing holds of it (`timers.clock.done` is not set; a comparison is false) |
   | a checkpoint slot | not taken: `checkpoints.door` is not set |
 
-  The first three are in the state from the scene's start (so `flags.foundKey eq false` holds), and what the game
-  does bring replaces them. A start, a reset and an arrival with nothing all read the same.
+  - **Seen, not stored.** The default is what a condition and the view see (so `flags.foundKey eq false` holds);
+    reading a value never makes it state. Only its owner's scene gives it a value: a hub that reads `lives` shows 0,
+    and the level that owns `lives` still starts it at 3 when the game gets there, hub first or level first.
+  - A start, a reset and an arrival with nothing all read the same.
+  - **A restart gives a scene what it reads back as it arrived.** `restart` starts everything of the scene's own
+    again; what it reads from elsewhere is not its own to reset, so a level entered with three lives restarts with
+    three, not with the default. (What arrived is in the snapshot, so this holds after a load. A game that started in
+    the scene brought nothing, and the default stands.)
 - **What a document can prove wrong is refused before the game runs**, by `checkGame(scenes)` over all the game's
   scenes: a `reads` entry that no scene declares (nothing could ever bring it), and a `changeScene` to a scene the
   game doesn't have. One scene can't know the others, so this isn't checked when a scene's rules start. Give the flow
-  the game's scenes (`new GameFlow({ scenes })`) and `start()` runs it and refuses such a game; without them it is a
-  tool's check to run (W9's project validation), and a flag that nobody sets is simply false for ever. A flag only a
+  the game's scenes and prefabs (`new GameFlow({ scenes, prefabs })`) and `start()` runs it and refuses such a game;
+  without them it is a tool's check to run (W9's project validation), and a flag that nobody sets is simply false for
+  ever. Game nodes inside prefab instances count once the scene is flattened, which `checkGame(scenes, { prefabs })`
+  does; a scene with instances it can't flatten isn't judged at all (it is named in `unchecked`, and in
+  `flow.unchecked`), so a valid game is never refused for what the check couldn't see. A flag only a
   behaviour's code sets is started in its own scene's `flags`, so that the documents show who owns it.
 - **A comparison with nothing to compare is false**, whichever op: a key that isn't there, or a value that is `null`.
   Test for nothing with `unset`. A path goes through own properties only.
@@ -298,4 +307,6 @@ with physics, recorded input and random streams) for 600 steps, through seven sc
   start and refused actions at run time; the schema refusing `seconds: 0`. And the third: a read value the game
   didn't bring (a flag never set, a checkpoint never taken, a goal from a scene not visited, a counter's default, a
   stopwatch for a clock) never stopping a scene change; `checkGame` and a flow given the game's scenes; a checkpoint
-  taken on the step a result is asked for late, skipped and taken back.
+  taken on the step a result is asked for late, skipped and taken back; a reader's default never standing in for the
+  owner's start (hub first and level first); a restart giving read values back as they arrived; prefab instances in
+  the whole-game check.

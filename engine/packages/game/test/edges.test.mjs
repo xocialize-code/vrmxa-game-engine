@@ -548,11 +548,10 @@ test('what a scene reads and the game didn\'t bring has its starting value: no w
 
   // a counter read with a default of its own; and what the game does bring wins over the default
   const lives = (n) => doc('next', [{ id: 'rules', type: 'GameRules', props: { reads: { counters: { lives: n } }, lose: state('counters.lives', 'le', 0) } }]);
-  const fresh = rulesWorld([]); // (the default is a value like any other in the state: in the snapshot)
-  assert.equal(fresh.game.get('lives'), 0);
   const b = await miniFlow({ 'next.vrmxs': lives(3) });
   b.flow.run(3);
-  assert.deepEqual([b.flow.view().counters, b.flow.view().outcome, captureWorld(b.flow.tree).services.game.data.counters], [{ lives: 3 }, null, { lives: 3 }]);
+  assert.deepEqual([b.flow.view().counters, b.flow.view().outcome], [{ lives: 3 }, null], 'seen as its default, and not lost');
+  assert.deepEqual([captureWorld(b.flow.tree).services.game.data.counters, b.flow.game.get('lives')], [{}, 0], 'seen, not stored: reading a value doesn\'t make it state');
   b.flow.dispose();
   const c = await miniFlow({ 'a.vrmxs': doc('a', [{ id: 'rules', type: 'GameRules' }, { id: 'lives', type: 'GameCounter', props: { start: 1 } }]), 'next.vrmxs': lives(3) });
   c.flow.game.changeScene({ to: 'next.vrmxs' });
@@ -565,6 +564,117 @@ test('what a scene reads and the game didn\'t bring has its starting value: no w
   await s.flow.runAsync(12);
   assert.deepEqual([s.flow.scene, s.flow.view().outcome, s.flow.view().timers.watch.left], ['ending.vrmxs', null, null]);
   s.flow.dispose();
+});
+
+test('a reader\'s default never stands in for the owner\'s start: hub first or level first, the level is the same', async () => {
+  // the review's case: the hub only reads `lives` and `doorOpen`; the level owns them (three lives, the door open)
+  const hub = doc('hub', [{ id: 'rules', type: 'GameRules', props: { reads: { counters: ['lives'], flags: ['doorOpen'], goals: ['escape'] } } }, { id: 'sign', type: 'GameGoal', props: { optional: true, when: state('flags.doorOpen') } }]);
+  const level = doc('level', [
+    { id: 'rules', type: 'GameRules', props: { flags: { doorOpen: true }, lose: state('counters.lives', 'le', 0) } },
+    { id: 'lives', type: 'GameCounter', props: { start: 3 } }, { id: 'escape', type: 'GameGoal', props: { optional: true } },
+  ]);
+  const docs = { 'hub.vrmxs': hub, 'level.vrmxs': level };
+  const state0 = (flow) => { const { counters, flags, goals, outcome } = captureWorld(flow.tree).services.game.data; return { counters, flags, goals, outcome }; };
+
+  const direct = await miniFlow({ 'level.vrmxs': level });
+  direct.flow.run(3);
+  const started = state0(direct.flow);
+  assert.deepEqual(started, { counters: { lives: 3 }, flags: { doorOpen: true }, goals: { escape: { done: false, step: null } }, outcome: null });
+  direct.flow.dispose();
+
+  const viaHub = await miniFlow(docs);
+  viaHub.flow.run(3);
+  assert.deepEqual([viaHub.flow.view().counters, viaHub.flow.view().flags, viaHub.flow.view().goals.sign.done], [{ lives: 0 }, { doorOpen: false }, false], 'in the hub they are seen as their defaults');
+  assert.deepEqual(state0(viaHub.flow), { counters: {}, flags: {}, goals: { sign: { done: false, step: null } }, outcome: null }, 'and are not state there');
+  viaHub.flow.game.changeScene({ to: 'level.vrmxs' });
+  await viaHub.flow.runAsync(4);
+  assert.deepEqual([viaHub.flow.scene, viaHub.flow.view().outcome], ['level.vrmxs', null], 'not lost on the level\'s first step');
+  assert.deepEqual({ ...state0(viaHub.flow), goals: { escape: state0(viaHub.flow).goals.escape } }, started, 'the level starts with three lives and the door open, as it does when the game starts there');
+
+  // and back in the hub the level's values are what it reads
+  viaHub.flow.game.add('lives', -1); viaHub.flow.game.changeScene({ to: 'hub.vrmxs' });
+  await viaHub.flow.runAsync(3);
+  assert.deepEqual([viaHub.flow.view().counters, viaHub.flow.view().flags, viaHub.flow.view().goals.sign.done, viaHub.flow.game.arrived], [{ lives: 2 }, { doorOpen: true }, true, { counters: { lives: 2 }, flags: { doorOpen: true }, goals: { escape: { done: false, step: null } } }]);
+  viaHub.flow.dispose();
+});
+
+test('a restart of a scene gives what it reads from elsewhere back as it arrived, not as nothing', async () => {
+  // the review's case: level 2 reads `lives` (the list form: default 0) and loses at none; the game arrives with three
+  const docs = {
+    'one.vrmxs': doc('one', [{ id: 'rules', type: 'GameRules', props: { flags: { hard: true } } }, { id: 'lives', type: 'GameCounter', props: { start: 3 } }]),
+    'two.vrmxs': doc('two', [
+      { id: 'rules', type: 'GameRules', props: { reads: { counters: ['lives'], flags: ['hard'] }, lose: state('counters.lives', 'le', 0) } },
+      { id: 'coins', type: 'GameCounter' }, { id: 'clock', type: 'GameTimer', props: { seconds: 30 } },
+    ]),
+  };
+  const { flow } = await miniFlow(docs);
+  flow.game.changeScene({ to: 'two.vrmxs' });
+  await flow.runAsync(5);
+  flow.game.add('lives', -2); flow.game.add('coins', 7); flow.game.setFlag('hard', false);
+  flow.run(3);
+  assert.deepEqual([flow.view().counters, flow.view().flags.hard, flow.view().timers.clock.elapsedSteps], [{ coins: 7, lives: 1 }, false, 7]);
+  flow.tree.find('rules').call('restart');
+  await flow.runAsync(3);
+  let v = flow.view();
+  assert.deepEqual([v.scene, v.arrivals, v.outcome, v.counters, v.flags.hard, v.timers.clock.elapsedSteps], ['two.vrmxs', 2, null, { coins: 0, lives: 3 }, true, 2], 'three lives again, as the game arrived with; the scene\'s own coins and clock start again');
+  // again, and through a save: what arrived is in the snapshot
+  flow.game.add('lives', -1);
+  const file = JSON.parse(JSON.stringify(flow.save()));
+  assert.deepEqual(captureWorld(flow.tree).services.game.data.arrived, { counters: { lives: 3 }, flags: { hard: true } });
+  await flow.load(file);
+  flow.tree.find('rules').call('restart');
+  await flow.runAsync(3);
+  v = flow.view();
+  assert.deepEqual([v.counters.lives, v.outcome, v.arrivals], [3, null, 3]);
+  // losing them all still loses; a restart from the loss plays again with three
+  flow.game.add('lives', -3); flow.run(1);
+  assert.equal(flow.view().outcome, 'lost');
+  flow.tree.find('rules').call('restart');
+  await flow.runAsync(3);
+  assert.deepEqual([flow.view().outcome, flow.view().counters.lives], [null, 3]);
+  flow.dispose();
+
+  // a game that starts in such a scene brought nothing: a restart has nothing to give back, and the default stands
+  const alone = await miniFlow({ 'two.vrmxs': doc('two', [{ id: 'rules', type: 'GameRules', props: { reads: { counters: { lives: 3 } }, lose: state('counters.lives', 'le', 0) } }]) });
+  alone.flow.run(2); alone.flow.game.restart();
+  await alone.flow.runAsync(3);
+  assert.deepEqual([alone.flow.view().counters, alone.flow.view().outcome, 'arrived' in captureWorld(alone.flow.tree).services.game.data], [{ lives: 3 }, null, false]);
+  alone.flow.dispose();
+});
+
+test('the whole-game check sees game nodes inside prefab instances, and never refuses what it couldn\'t read', async () => {
+  // the review's case: the counter the ending reads is declared inside a prefab the level places
+  const kit = { format: 'vrmxs', version: 1, id: 'kit', nodes: [{ id: 'lives', type: 'GameCounter', props: { key: 'lives', start: 3 } }, { id: 'key', type: 'Checkpoint', props: { slot: 'door' } }] };
+  const level = { format: 'vrmxs', version: 1, id: 'level', assets: [{ id: 'kit', type: 'vrmxs', ref: 'kit.vrmxs' }], nodes: [{ id: 'rules', type: 'GameRules' }, { id: 'kit-1', type: 'Instance', asset: 'kit' }], connections: [{ from: 'kit-1/key', signal: 'written', to: 'rules', call: 'changeScene', args: { to: 'ending.vrmxs' } }] };
+  const ending = doc('ending', [{ id: 'rules', type: 'GameRules', props: { reads: { counters: ['lives'], checkpoints: ['door'] }, win: state('counters.lives', 'ge', 1) } }]);
+  const scenesOf = { 'level.vrmxs': level, 'ending.vrmxs': ending }, prefabs = new Map([['kit.vrmxs', kit]]);
+
+  const flat = checkGame(scenesOf, { prefabs });
+  assert.deepEqual([flat.ok, flat.problems, flat.unchecked], [true, [], []]);
+  assert.deepEqual([flat.scenes['level.vrmxs'].counters.map((c) => [c.id, c.key]), flat.scenes['level.vrmxs'].scenes], [[['kit-1/lives', 'lives']], ['ending.vrmxs']], 'the prefab\'s counter and the connection from inside it are seen');
+  // without the prefabs the level can't be read whole: it is said, nothing is claimed about it, and nothing is refused
+  const blind = checkGame(scenesOf);
+  assert.deepEqual([blind.ok, blind.problems], [true, []]);
+  assert.match(blind.unchecked.join(), /^level\.vrmxs: it has prefab instances that couldn't be flattened \(prefab kit\.vrmxs not loaded\): pass the game's prefabs$/);
+  // what can still be proved is: with the prefabs, a read nothing declares is refused
+  const wrong = checkGame({ ...scenesOf, 'ending.vrmxs': doc('ending', [{ id: 'rules', type: 'GameRules', props: { reads: { counters: ['livez'] } } }]) }, { prefabs });
+  assert.deepEqual(wrong.problems, ['ending.vrmxs: GameRules "rules" reads counters.livez, and no scene of the game has a GameCounter with that key']);
+
+  // the flow: given the scenes and the prefabs it starts this game; given the scenes alone it starts it too, and says what it didn't check
+  const load = async (req) => {
+    const t = new SceneTree({ registry: m0Registry(), prefabs, seed: req.seed });
+    t.clock.step = req.step; installInput(t); installGame(t, { scene: req.scene }); installSave(t, { scene: { ref: req.scene, doc: scenesOf[req.scene] } });
+    return t.instantiate(structuredClone(scenesOf[req.scene]));
+  };
+  const withPrefabs = await new GameFlow({ load, scenes: scenesOf, prefabs }).start('level.vrmxs');
+  assert.deepEqual(withPrefabs.unchecked, []);
+  withPrefabs.tree.find('kit-1/key').call('write');
+  await withPrefabs.runAsync(4);
+  assert.deepEqual([withPrefabs.scene, withPrefabs.view().counters, withPrefabs.view().outcome], ['ending.vrmxs', { lives: 3 }, 'won'], 'and it plays: the prefab\'s counter reaches the ending');
+  withPrefabs.dispose();
+  const without = await new GameFlow({ load, scenes: scenesOf }).start('level.vrmxs');
+  assert.equal(without.unchecked.length, 1);
+  without.dispose();
 });
 
 test('what a document can prove wrong is refused before the game starts: a read no scene declares, a change to no scene', async () => {

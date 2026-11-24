@@ -1,6 +1,7 @@
 // A scene's rules read from its document, without running it: what tools (MCP's "read the rules", a project check)
 // and a scene list need. It reads top-level nodes only; game nodes inside a prefab are found once the scene is
 // flattened (pass flatten(doc, prefabs).nodes as `nodes`).
+import { flatten } from '@vrmxg/scene';
 import { checkCondition, checkKeys, checkCall, conditionKeys, readReads } from './conditions.js';
 
 const GAME_TYPES = new Set(['GameRules', 'GameCounter', 'GameTimer', 'GameGoal', 'Checkpoint']);
@@ -89,16 +90,27 @@ export function describeRules(doc) {
  *     ever bring it, so the condition reading it is wrong, whatever is played;
  *   - a connection that changes to a scene the game doesn't have.
  * Whether a value that some scene declares has arrived by the time another reads it depends on how the game is
- * played, and is not an error: a read value that didn't come has the value it starts with (a flag false, a goal not
- * done, a counter its default).
- * @param {Map<string, any> | Record<string, any>} scenes parsed documents by the name changeScene uses (flatten prefabs first)
- * @returns {{ ok: boolean, problems: string[], scenes: Record<string, ReturnType<typeof describeRules>> }}
+ * played, and is not an error: a read value that isn't there is seen as its default (a flag false, a goal not done,
+ * a counter 0 or the default given).
+ *
+ * Game nodes inside prefab instances count: with `prefabs` every scene is flattened first. A scene that has Instance
+ * nodes and can't be flattened (no prefabs given, or one missing) can't be read whole, so it isn't judged: it is
+ * listed in `unchecked` with the reason, none of its own problems are reported, and the check for reads that no
+ * scene declares is left out for the whole game (what it can't see might declare them). Never a valid game refused.
+ * @param {Map<string, any> | Record<string, any>} scenes parsed documents by the name changeScene uses
+ * @param {{ prefabs?: Map<string, any> | null }} [o] parsed prefab documents by ref, as SceneTree takes them
+ * @returns {{ ok: boolean, problems: string[], unchecked: string[], scenes: Record<string, ReturnType<typeof describeRules>> }}
  */
-export function checkGame(scenes) {
-  const docs = scenes instanceof Map ? [...scenes] : Object.entries(scenes), problems = [], described = {};
+export function checkGame(scenes, { prefabs = null } = {}) {
+  const docs = scenes instanceof Map ? [...scenes] : Object.entries(scenes), problems = [], unchecked = [], described = {};
   const has = { counters: new Set(), flags: new Set(), timers: new Set(), goals: new Set(), checkpoints: new Set() };
   for (const [name, doc] of docs) {
-    const d = described[name] = describeRules(doc);
+    let whole = doc;
+    if ((doc.nodes ?? []).some((n) => n.type === 'Instance')) {
+      try { whole = flatten(doc, prefabs ?? new Map()); } catch (e) { unchecked.push(`${name}: it has prefab instances that couldn't be flattened (${e?.message ?? e}): pass the game's prefabs`); whole = null; }
+    }
+    const d = described[name] = describeRules(whole ?? doc);
+    if (whole === null) { d.problems = []; continue; }
     for (const p of d.problems) problems.push(`${name}: ${p}`);
     for (const c of d.counters) has.counters.add(c.key);
     for (const t of d.timers) has.timers.add(t.key);
@@ -108,8 +120,8 @@ export function checkGame(scenes) {
   }
   const ONE = { counters: 'GameCounter with that key', timers: 'GameTimer with that key', goals: 'GameGoal with that key', flags: 'flag started in a GameRules\' flags or set by a connection', checkpoints: 'Checkpoint with that slot' };
   for (const [name, d] of Object.entries(described)) {
-    for (const kind of Object.keys(has)) for (const k of d.rules?.reads[kind] ?? []) if (!has[kind].has(k)) problems.push(`${name}: GameRules "${d.rules.id}" reads ${kind}.${k}, and no scene of the game has a ${ONE[kind]}`);
+    if (!unchecked.length) for (const kind of Object.keys(has)) for (const k of d.rules?.reads[kind] ?? []) if (!has[kind].has(k)) problems.push(`${name}: GameRules "${d.rules.id}" reads ${kind}.${k}, and no scene of the game has a ${ONE[kind]}`);
     for (const to of d.scenes) if (!Object.hasOwn(described, to)) problems.push(`${name}: a connection changes to "${to}", which isn't a scene of the game (${Object.keys(described).join(', ')})`);
   }
-  return { ok: problems.length === 0, problems, scenes: described };
+  return { ok: problems.length === 0, problems, unchecked, scenes: described };
 }

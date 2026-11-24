@@ -77,6 +77,14 @@ export class GameService {
     this.decl = { /** @type {any} */ rules: null, counters: new Map(), timers: new Map(), goals: new Map(), /** @type {any[]} */ checkpoints: [] };
     /** What this scene's GameRules says its conditions read that another scene owns (`reads`), by kind: names. */
     this.reads = readReads(null).reads;
+    /** @type {Record<string, number>} What a read counter is seen as while the game has none (reads.counters as a map; else 0). */
+    this.readDefaults = {};
+    /**
+     * The values this scene reads from elsewhere as the game brought them when it got here, by kind: what a restart
+     * of the scene gives them back as. State (a restart after a load needs it); absent from it while empty.
+     * @type {Record<string, Record<string, any>>}
+     */
+    this.arrived = {};
     this._unchecked = false; // declarations changed since checkRules last looked
     /** @type {Array<{ kind: string, node: any, made: Array<[string, string]> }>} what was declared since then, and the state it made */
     this._batch = [];
@@ -101,13 +109,9 @@ export class GameService {
       bad([...(p.win !== undefined ? checkCondition(p.win, 'win') : []), ...(p.lose !== undefined ? checkCondition(p.lose, 'lose') : []), ...reads.problems]);
       for (const [k, v] of Object.entries(p.flags ?? {})) { if (!FLAG_TYPES.has(typeof v)) bad([`flag "${k}" is not a boolean, a number or a string`]); name('a flag', k); }
       for (const [k, v] of Object.entries(p.flags ?? {})) if (!Object.hasOwn(this.flags, k)) { this.flags[k] = v; made.push(['flags', k]); }
-      // What the scene reads from another has a value from the start, the one it has when the game brings none: a
-      // flag is false, a goal isn't done, a counter is its default (0). A scene change then carries the real one
-      // over it, if there is one. So a start, a reset and an arrival with nothing all read the same, and none of
-      // them can stop a game. (A timer and a checkpoint that didn't come are simply not there: nothing holds of them.)
-      const start = { flags: () => false, goals: () => ({ done: false, step: null }), counters: (k) => reads.defaults[k] ?? 0 };
-      for (const [kind, value] of Object.entries(start)) for (const k of reads.reads[kind]) if (!Object.hasOwn(this[kind], k)) { this[kind][k] = value(k); made.push([kind, k]); }
-      this.decl.rules = node; this.reads = reads.reads;
+      // What the scene reads from another is NOT made state by being read: only its owner's scene gives it a value
+      // (its start, when that scene first arrives). While it is absent a condition and a HUD see its default (view()).
+      this.decl.rules = node; this.reads = reads.reads; this.readDefaults = reads.defaults;
     } else if (kind === 'checkpoint') {
       if (p.when !== undefined) bad(checkCondition(p.when, 'when'));
       name('a checkpoint', node.id); name('a checkpoint\'s slot', p.slot ?? 'checkpoint');
@@ -129,7 +133,7 @@ export class GameService {
 
   /** A game node left the tree: it declares nothing any more. Its value stays, as data. */
   undeclare(kind, node) {
-    if (kind === 'rules') { if (this.decl.rules === node) { this.decl.rules = null; this.reads = readReads(null).reads; } }
+    if (kind === 'rules') { if (this.decl.rules === node) { this.decl.rules = null; this.reads = readReads(null).reads; this.readDefaults = {}; } }
     else if (kind === 'checkpoint') { const i = this.decl.checkpoints.indexOf(node); if (i >= 0) this.decl.checkpoints.splice(i, 1); }
     else if (this.decl[KINDS[kind]].get(node.key) === node) this.decl[KINDS[kind]].delete(node.key);
     this.version++;
@@ -452,17 +456,24 @@ export class GameService {
         running: t.running && !t.held && node !== undefined, done: t.done, declared: node !== undefined, label: node?.props.label ?? null,
       };
     }
+    // What the scene reads from another and the game doesn't have (yet) is seen as its default: a flag false, a goal
+    // not done, a counter 0 or the default its `reads` gives. Seen, not stored: the state has it only once its owner does.
+    const absent = (map, kind) => this.reads[kind].filter((k) => !Object.hasOwn(map, k));
+    const counters = { ...this.counters }, flags = { ...this.flags }, seenGoals = { ...this.goals };
+    for (const k of absent(counters, 'counters')) counters[k] = own(this.readDefaults, k) ?? 0;
+    for (const k of absent(flags, 'flags')) flags[k] = false;
+    for (const k of absent(seenGoals, 'goals')) seenGoals[k] = { done: false, step: null };
     const goals = {};
-    for (const key of Object.keys(this.goals).sort()) goals[key] = { done: this.goals[key].done, step: this.goals[key].step };
+    for (const key of Object.keys(seenGoals).sort()) goals[key] = { done: seenGoals[key].done, step: seenGoals[key].step };
     const objectives = [...this.decl.goals].map(([key, node]) => ({ key, text: node.props.text ?? key, done: own(this.goals, key)?.done === true, optional: node.props.optional === true }));
     const slots = Object.keys(this.checkpoints).sort(), latest = slots.reduce((a, k) => (a === null || this.checkpoints[k].seq > this.checkpoints[a].seq ? k : a), /** @type {string | null} */ (null));
     const next = objectives.find((o) => !o.done && !o.optional) ?? objectives.find((o) => !o.done) ?? null;
     return {
       scene: this.scene, step, sceneSteps: step - this.enteredAt, arrivals: this.arrivals,
-      score: this.score,
-      counters: sortKeys(this.counters),
+      score: own(counters, 'score') ?? 0,
+      counters: sortKeys(counters),
       labels: Object.fromEntries([...this.decl.counters].filter(([, n]) => n.props.label !== undefined).map(([k, n]) => [k, n.props.label])),
-      flags: sortKeys(this.flags),
+      flags: sortKeys(flags),
       timers, goals, objectives,
       goal: next ? { key: next.key, text: next.text } : null,
       outcome: this.outcome ? this.outcome.result : null,
@@ -510,7 +521,8 @@ export class GameService {
    * A scene change: give the next world's game service this one's state (GameFlow does it, after the next world is
    * built and before its first step). What the next scene declares with scope "scene" starts fresh there; the rest is
    * carried, whether the next scene declares it or not (an ending's HUD shows the level's clock). `reset` carries
-   * nothing but the session: a new game. What was asked for and not decided (requests) stays behind: dropRequests.
+   * nothing but the session: a new game (and, into the same scene, what that scene reads from elsewhere as it
+   * arrived: a restart). What was asked for and not decided (requests) stays behind: dropRequests.
    * @param {GameService} next @param {{ reset?: boolean }} [o]
    */
   carryTo(next, { reset = false } = {}) {
@@ -531,6 +543,15 @@ export class GameService {
       next.outcome = next.decl.rules && next.decl.rules.props.keepOutcome !== true ? null : structuredClone(this.outcome);
       if (next.outcome === null) for (const t of Object.values(next.timers)) t.held = false; // undecided again: the game's clock runs on
       next.checkpoints = structuredClone(this.checkpoints);
+      // what the next scene reads from elsewhere, as the game brought it: what its restart gives back
+      const arrived = {};
+      for (const kind of Object.keys(READS)) for (const k of [...next.reads[kind]].sort()) if (Object.hasOwn(next[READS[kind]], k)) (arrived[kind] ??= {})[k] = structuredClone(next[READS[kind]][k]);
+      next.arrived = arrived;
+    } else if (next.scene === this.scene) {
+      // A restart: a new game in this scene. Everything of the scene's own starts again; what it reads from elsewhere
+      // is none of its own to reset, and comes back as it was when the game arrived here (three lives, not none).
+      for (const [kind, values] of Object.entries(this.arrived)) for (const [k, v] of Object.entries(values)) if (next.reads[kind].includes(k)) next[READS[kind]][k] = structuredClone(v);
+      next.arrived = structuredClone(this.arrived);
     }
     next.version++;
   }
@@ -541,6 +562,7 @@ export class GameService {
       counters: sortKeys(this.counters), flags: sortKeys(this.flags), timers: sortKeys(this.timers), goals: sortKeys(this.goals),
       outcome: this.outcome, pending: this.pending, checkpoints: sortKeys(this.checkpoints), checkpointSeq: this.checkpointSeq, fired: sortKeys(this.fired),
       requests: this.requests,
+      ...(Object.keys(this.arrived).length ? { arrived: this.arrived } : {}), // absent while empty, as `hidden` is in core's node record
     };
   }
 
@@ -549,7 +571,7 @@ export class GameService {
     this.scene = c.scene; this.seed = c.seed; this.arrivals = c.arrivals; this.enteredAt = c.enteredAt;
     this.counters = c.counters; this.flags = c.flags; this.timers = c.timers; this.goals = c.goals;
     this.outcome = c.outcome; this.pending = c.pending; this.checkpoints = c.checkpoints; this.checkpointSeq = c.checkpointSeq; this.fired = c.fired;
-    this.requests = c.requests;
+    this.requests = c.requests; this.arrived = c.arrived ?? {};
     this._event({ type: 'restored' });
   }
 }

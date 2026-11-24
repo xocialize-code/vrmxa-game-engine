@@ -60,10 +60,15 @@ export class GameFlow {
    *   uses. Given them, start() checks the game as a whole first (checkGame: a scene that reads what no scene
    *   declares, a change to a scene the game doesn't have) and refuses a game that can't be right. Without them
    *   nothing here knows the other scenes, and that check is a tool's to run.
+   * @param {Map<string, any>} [o.prefabs] the game's prefab documents by ref (as SceneTree takes them): with them the
+   *   check sees game nodes inside prefab instances. A scene with instances it can't flatten isn't judged at all, so
+   *   a valid game is never refused for what the check couldn't see (flow.unchecked says which scenes).
    */
-  constructor({ load, unload = null, onWorld = null, store = null, seed = 1, carry = ['save', 'inventory'], always = ['input'], stamp = null, scenes = null }) {
+  constructor({ load, unload = null, onWorld = null, store = null, seed = 1, carry = ['save', 'inventory'], always = ['input'], stamp = null, scenes = null, prefabs = null }) {
     if (typeof load !== 'function') throw new Error('GameFlow needs load: (request) => a world');
-    this.scenes = scenes;
+    this.scenes = scenes; this.prefabs = prefabs;
+    /** Scenes the start's check couldn't read whole (prefab instances with no prefabs given), each with the reason. @type {string[]} */
+    this.unchecked = [];
     this.loadWorld = load; this.unload = unload; this.onWorld = onWorld; this.store = store; this.stamp = stamp;
     this.seed = seed >>> 0;
     this.carry = carry; this.always = always;
@@ -95,7 +100,11 @@ export class GameFlow {
   /** Build the first scene's world. @param {string} scene */
   async start(scene) {
     if (this.tree) throw new Error('this flow has started: changeScene moves it on, load() restores a save');
-    if (this.scenes) { const game = checkGame(this.scenes); if (!game.ok) throw new Error(`this game can't start: ${game.problems.join('; ')}`); }
+    if (this.scenes) {
+      const game = checkGame(this.scenes, { prefabs: this.prefabs });
+      this.unchecked = game.unchecked;
+      if (!game.ok) throw new Error(`this game can't start: ${game.problems.join('; ')}`);
+    }
     const tree = await this._build({ scene, seed: worldSeed(this.seed, 0), step: 0, reason: 'start' });
     const game = tree.services.get('game');
     game.seed = this.seed; game.arrivals = 0;

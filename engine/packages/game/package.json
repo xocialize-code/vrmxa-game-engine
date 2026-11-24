@@ -15,6 +15,7 @@
   "dependencies": {
     "@vrmxg/ai": "0.1.0",
     "@vrmxg/core": "0.1.0",
+    "@vrmxg/scene": "0.1.0",
     "@vrmxg/snapshot": "0.1.0"
   },
   "devDependencies": {
@@ -22,8 +23,7 @@
     "@vrmxg/input": "0.1.0",
     "@vrmxg/physics": "0.1.0",
     "@vrmxg/registry": "0.1.0",
-    "@vrmxg/save": "0.1.0",
-    "@vrmxg/scene": "0.1.0"
+    "@vrmxg/save": "0.1.0"
   },
   "vrmxg": { "determinism": "simulation" }
 }

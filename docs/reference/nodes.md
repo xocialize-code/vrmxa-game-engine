@@ -781,7 +781,7 @@ A scene's rules: when the game is won and lost, and the flags it starts with. On
 | `win` | object |  | yes | The game is won when this holds. Absent: when every GameGoal that isn't optional is done. |
 | `lose` | object |  | yes | The game is lost when this holds (a win on the same step beats it). |
 | `flags` | object |  | yes | Flags and the values they start a game with. A condition may read a flag started here, set by a connection in this scene, or listed in reads. |
-| `reads` | object |  | yes | What this scene's conditions read that another scene owns, by name: carried counters, flags, timers and goals, and other scenes' checkpoint slots. Reading a goal doesn't make it one of this scene's objectives. What the game doesn't bring has its starting value: a flag false, a goal not done, a counter 0 (or the default given), a timer and a checkpoint not there. |
+| `reads` | object |  | yes | What this scene's conditions read that another scene owns, by name: carried counters, flags, timers and goals, and other scenes' checkpoint slots. Reading a goal doesn't make it one of this scene's objectives. What the game doesn't have is seen as its default (a flag false, a goal not done, a counter 0 or the default given; a timer and a checkpoint not there), without becoming state: its owner's scene gives it its value. |
 | `keepOutcome` | boolean | `false` | yes | Arriving here keeps the last win or loss (an ending screen shows it). Otherwise the scene starts undecided. |
 
 **Signals**
