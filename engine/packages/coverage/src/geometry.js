@@ -71,6 +71,78 @@ export function singlePlace(p, to, side, face) {
   return [mm(p[0] + (dx / len) * along + n[0] * 1.1), EYE, mm(p[2] + (dz / len) * along + n[1] * 1.1)];
 }
 
+// ---------------------------------------------------------------- the set's geometry (AB-T-0597)
+// A blocker is one of the set's solid boxes, in set space: { p: its centre, q?: its rotation, size: its extents, name? }
+// (blockers.js makes them from the set's colliders). A camera is clear when it stands outside every box, with room to
+// spare, and sees each head it films: the straight line between them touches no box. Plain arithmetic, as above.
+
+/** A point in a box's own space: p − centre, turned back by q. */
+function local(box, pt) {
+  const v = [pt[0] - box.p[0], pt[1] - box.p[1], pt[2] - box.p[2]], q = box.q;
+  return q && !(q[0] === 0 && q[1] === 0 && q[2] === 0) ? rotate([-q[0], -q[1], -q[2], q[3]], v) : v;
+}
+
+/** Is a point inside a box grown by `grow` metres on every side? */
+export function inBox(pt, box, grow = 0) {
+  const v = local(box, pt);
+  for (let i = 0; i < 3; i++) if (Math.abs(v[i]) > box.size[i] / 2 + grow) return false;
+  return true;
+}
+
+/**
+ * Where the segment a → b first meets a box grown by `grow`: the fraction of the way (0 at a, 1 at b), or null when it
+ * misses. A segment that starts inside meets it at 0.
+ */
+export function segmentHitsBox(a, b, box, grow = 0) {
+  const A = local(box, a), B = local(box, b);
+  let t0 = 0, t1 = 1;
+  for (let i = 0; i < 3; i++) {
+    const h = box.size[i] / 2 + grow, d = B[i] - A[i];
+    if (d === 0) { if (Math.abs(A[i]) > h) return null; continue; }
+    let lo = (-h - A[i]) / d, hi = (h - A[i]) / d;
+    if (lo > hi) { const x = lo; lo = hi; hi = x; }
+    if (lo > t0) t0 = lo;
+    if (hi < t1) t1 = hi;
+    if (t0 > t1) return null;
+  }
+  return t0;
+}
+
+/** How near a camera may stand to the set's geometry (m). */
+export const CLEARANCE = 0.25;
+
+/**
+ * What is wrong with a camera's place, or null when it is clear: `inside` (it stands in a box, or within `clearance`
+ * of one) or `behind` (a box is between it and a head it films), with the box.
+ * @param {number[]} cam @param {number[][]} heads the points it must see @param {any[]} blockers
+ * @returns {{ what: 'inside' | 'behind', box: any, head?: number[] } | null}
+ */
+export function blocked(cam, heads, blockers, clearance = CLEARANCE) {
+  for (const box of blockers) if (inBox(cam, box, clearance)) return { what: 'inside', box };
+  for (const head of heads) for (const box of blockers) if (segmentHitsBox(head, cam, box) !== null) return { what: 'behind', box, head };
+  return null;
+}
+
+/**
+ * The clear place nearest to where a camera was meant to stand, on the way back towards `anchor` (what it films): the
+ * camera is pulled in a twentieth of the way at a time, down to a quarter of the distance. → { p, t } (t: the fraction
+ * of the distance kept, 1 when it is clear where it is), or null when nowhere on the way is clear.
+ * @param {number[]} cam @param {number[]} anchor @param {number[][]} heads @param {any[]} blockers
+ */
+export function pullIn(cam, anchor, heads, blockers) {
+  for (let k = 20; k >= 5; k--) {
+    const t = k / 20, p = [mm(anchor[0] + (cam[0] - anchor[0]) * t), mm(anchor[1] + (cam[1] - anchor[1]) * t), mm(anchor[2] + (cam[2] - anchor[2]) * t)];
+    if (!blocked(p, heads, blockers)) return { p, t };
+  }
+  return null;
+}
+
+/** The angle between where someone faces and the camera, as its cosine: 1 full face, 0 a profile, −1 from behind. */
+export function faceOn(p, face, cam) {
+  const dx = cam[0] - p[0], dz = cam[2] - p[2], len = Math.sqrt(dx * dx + dz * dz);
+  return len < 1e-9 ? 1 : (dx * face[0] + dz * face[1]) / len;
+}
+
 /**
  * Where a VirtualCamera is on the floor at a moment, from its body and the transforms then: fixed (its own transform at
  * that moment, so its transform tracks and the shot's overrides count), follow and thirdPerson (from the target, as

@@ -4,7 +4,7 @@ import { timecode, PRESETS, resolveCheck } from '@vrmxg/editor-core';
 
 /**
  * The strip's cards, one per shot in film order.
- * @param {{ fps: number, shots: { id: string, name: string, start: number, end: number, frame: number, camera: string | null, cameras?: string[], subjects?: string[], beat: string | null, hand?: boolean, crossesLine?: string | null }[] } | null} board
+ * @param {{ fps: number, shots: { id: string, name: string, start: number, end: number, frame: number, camera: string | null, cameras?: string[], subjects?: string[], beat: string | null, hand?: boolean, crossesLine?: string | null, inGeometry?: string | null }[] } | null} board
  *   storyboard()'s result
  * @param {{ thumbs?: Record<string, { url: string, frame: number }>, beats?: Record<string, { line: number, text: string }>, playhead?: number, selected?: string | null }} [o]
  *   thumbs: by shot id (a thumbnail drawn for another frame than the shot's is stale and not shown); beats: the script's
@@ -16,14 +16,14 @@ export function storyCards(board, { thumbs = {}, beats = {}, playhead = -1, sele
   return board.shots.map((s) => {
     const t = thumbs[s.id], b = s.beat ? beats[s.beat] : null;
     const cams = s.cameras?.length ? s.cameras : s.camera ? [s.camera] : [];
-    const notes = [s.hand ? 'hand edit' : '', s.crossesLine ? 'crosses the line' : ''].filter(Boolean);
+    const notes = [s.hand ? 'hand edit' : '', s.crossesLine ? 'crosses the line' : '', s.inGeometry ? 'camera in the set' : ''].filter(Boolean);
     return {
       id: s.id, name: s.name, start: s.start, end: s.end, frame: s.frame,
       time: `${timecode(s.start, fps)}–${timecode(s.end, fps)}`, length: s.end - s.start,
       camera: cams.join(' → '), subjects: (s.subjects ?? []).join(', '),
       thumb: t && t.frame === s.frame ? t.url : null,
       line: b?.line ?? null, text: b?.text ?? '',
-      hand: !!s.hand, crossesLine: s.crossesLine ?? null, notes,
+      hand: !!s.hand, crossesLine: s.crossesLine ?? null, inGeometry: s.inGeometry ?? null, notes,
       current: playhead >= s.start && playhead < s.end, selected: selected === s.id,
       label: `Shot ${s.name}, ${s.end - s.start} frames from ${s.start}, camera ${cams.join(' then ') || 'none'}${notes.length ? `, ${notes.join(', ')}` : ''}`,
     };

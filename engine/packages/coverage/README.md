@@ -59,7 +59,45 @@ so a camera a person put on a shot is still the one they chose after a re-script
 (the build keeps a node something still uses). Only two different cameras with the same description in one build (the
 same people on the same marks shot from both sides, or two scenes with one heading) take `-2`, `-3` by first use.
 
-**Options** (`coverByRule(options)`): `side`, `room`, `estSize` (0.4), `otsScreen` (0.2).
+**The set** (AB-T-0597). Give the rules the set's solid boxes and no camera stands in the set's geometry or behind it:
+
+```js
+import { coverByRule, loadSetBlockers } from '@vrmxg/coverage';
+import { readGLBJson } from '@vrmxg/model';
+import { readPhysics } from '@vrmxg/physics';
+
+const blockers = await loadSetBlockers(set, { bytes: (ref) => project.bytes(ref), readColliders: (b) => readPhysics(readGLBJson(b)).colliders });
+buildSequence(text, { set, marks, coverage: coverByRule({ blockers }) });
+```
+
+- **Blockers** are the set's colliders as boxes in set space (`setBlockers(set, colliders)`): its Collider nodes, and
+  each Model's colliders from its asset. A sphere, capsule or cylinder counts as the box around it. Sensors, convex
+  hulls and triangle meshes are left out. This package reads no files: the app or tool reads each `.glb`
+  (`loadSetBlockers` does the walk with the caller's readers).
+- **Clear** means the camera is outside every box by 0.25 m, and the straight line from each head it films (at eye
+  height) to the camera touches no box. A camera through an open doorway is clear.
+- **A group shot** (the establishing wide, a two-shot, the master) stays on the line's side while the set leaves it at
+  least 0.7 of its distance there, pulled in a twentieth at a time; its lens widens to hold the group. With less room
+  than that, it takes the other side when there is more room there.
+- **A shot / reverse or a close-up** that isn't clear is pulled in towards the person it stands by.
+- **People far apart.** A close-up of someone who plays to a person more than `far` metres away (3) must show at least
+  three-quarters of her face: the camera within 45° of where she faces. People that far apart rarely face each other,
+  so the line's side can leave her in profile. Then the close-up takes the other side when that shows her face. This
+  rule needs no blockers.
+- **A cross on purpose.** A camera that changes sides this way crosses the line. Its shot is marked
+  `"crossLine": true` (the hook's cut carries `crossLine`, and `@vrmxg/script` writes it on the shot), so the lint
+  lets it pass, and the pair's side is the new one from then on. A scene's first camera on a pair crosses nothing.
+- **Where there was room, nothing changes.** The sample script's cameras are byte for byte the same with the cafe's
+  blockers as without.
+
+On the sample short, "The Regular": Mira moves to the window table, 4.25 m from Hana. The line's side then faces the
+back wall. Before, the closing master stood beyond that wall and both close-ups were profiles. Now the first close-up
+after the move takes the room's side (shot 150, marked), the others follow it, and the master stands in the cafe.
+
+Not done: the close-ups at the counter still crop a head when people stand close (shot 040 of the short). Their
+framing is as it was.
+
+**Options** (`coverByRule(options)`): `side`, `room`, `estSize` (0.4), `otsScreen` (0.2), `blockers`, `far` (3).
 
 **What the hook needs.** `planCoverage(ctx)` reads the build's plan (beats, events, characters) and the initial marks.
 It also reads three things W8 added to the hook's `ctx` in `@vrmxg/script`: `markTf` (for moves), `parsed` (the
@@ -88,6 +126,12 @@ These cuts are not flagged:
 
 A camera whose place can't be known isn't checked: a dolly on a path, or a turntable (an orbit whose `yawSpeed` turns
 it, so where it stands depends on how long it has run). `unchecked` lists those cuts.
+
+**A camera inside geometry.** With `blockers` (`lintLine(doc, { set, blockers })`), every camera clip is also checked
+where it starts, whoever placed the camera. A camera standing in one of the set's boxes, or with a box between it and
+someone it films, is an issue with `kind: 'geometry'`, `what` (`inside` or `behind`) and the box's name in `blocker`:
+`frame 322 (050): camera vc-ots-hana-1-mira is inside the set's geometry (set/wall-north)`. The storyboard carries it
+as `inGeometry` on the shot (`storyboard(doc, { set, blockers })`), and the creator's strip shows "camera in the set".
 
 ## Replacing a shot's camera
 
@@ -124,6 +168,10 @@ below).
   `side` as a choice; three people; every beat kind; overlap, voice-over and a lone speaker; moves between marks; a
   move inside a shot that swings the line (cut in two, lint clean) and one on a cut. Also
   the same bytes twice, under portable maths, and against `test/golden.json`.
+- **set:** boxes (a point in one, a segment through one, turned or not); the cafe's sixteen blockers and a turned
+  Model's; the cafe after the move to the window table (the master outside without the set, every camera clear with
+  it, the cross marked, the lint clean); close-ups of people far apart showing the face; a group shot pulled in or
+  sent to the other side; the lint and the storyboard on a camera put in a wall.
 - **edit:** the lint on hand-swapped, neutral, deliberate, follow and dolly cameras, shot overrides (transform and
   props), a camera's transform track, a turntable, and a clip laid over a longer one; ids that keep a person's pick
   through a re-script with three people; one-edit replacement with undo and

@@ -103,8 +103,8 @@ const round = (v) => Math.round(v * 1000) / 1000;
  * @param {{ numbers: Map<string, string>, initial: Map<string, string>, titled: Set<string>, markTf: Map<string, any>, markNodes: any[], setCamera: string | null, coverage?: Function, behaviours?: boolean, parsed?: any }} o
  *   initial: character id → the mark she starts on (titled: placed by the title page, not by her first [[at]] tag);
  *   markTf: mark node id → its transform; markNodes: Marker nodes the build adds; parsed: parseScript's result. The
- *   coverage hook returns { nodes, cuts: Map<beat id, { camera, splits? }> }: splits ([{ frame, camera }], since M4 W8)
- *   cut to another camera inside the shot. It gets { plan, shots, cast, marks } and, since M4 W8, markTf (for moves between marks), parsed (the
+ *   coverage hook returns { nodes, cuts: Map<beat id, { camera, splits?, crossLine? }> }: splits ([{ frame, camera }], since M4 W8)
+ *   cut to another camera inside the shot; crossLine marks the shot as crossing the 180° line on purpose. It gets { plan, shots, cast, marks } and, since M4 W8, markTf (for moves between marks), parsed (the
  *   beats' parentheticals) and numbers (beat id → shot number)
  */
 export function generate(plan, { numbers, initial, titled, markTf, markNodes, setCamera, coverage = defaultCoverage, behaviours = false, parsed = null }) {
@@ -117,7 +117,8 @@ export function generate(plan, { numbers, initial, titled, markTf, markNodes, se
   const out = { shots: [], markers: [], cast: [], tracks: [], nodes: [] };
   for (const s of shots) {
     const b = plan.beats.find((x) => x.id === s.beat);
-    out.shots.push({ role: `${s.beat}#shot`, item: { id: `shot-${s.beat}`, name: numbers.get(s.beat), start: s.start, end: s.end, src: `${s.beat}#shot` } });
+    // a shot whose coverage crosses the 180° line on purpose says so (coverage by rule, when the set leaves no room on the line's side)
+    out.shots.push({ role: `${s.beat}#shot`, item: { id: `shot-${s.beat}`, name: numbers.get(s.beat), start: s.start, end: s.end, ...(cov.cuts.get(s.beat)?.crossLine ? { crossLine: true } : {}), src: `${s.beat}#shot` } });
     if (b.kind === 'scene') out.markers.push({ role: `${s.beat}#marker`, item: { frame: s.start, name: b.heading, src: `${s.beat}#marker` } });
   }
   // the cast: on their first mark, standing for the camera (no brain, no player input) unless asked to keep them

@@ -10,7 +10,9 @@ import { parse } from '@vrmxg/scene';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { EditorSession } from '@vrmxg/editor-core';
 import { checkSequence } from '@vrmxg/sequence';
-import { lintLine, storyboard } from '@vrmxg/coverage';
+import { lintLine, storyboard, loadSetBlockers, blocked, inBox, sceneAt } from '@vrmxg/coverage';
+import { readGLBJson } from '@vrmxg/model';
+import { readPhysics } from '@vrmxg/physics';
 import { voicingPlan, speechOverlaps } from '@vrmxg/voicing';
 import { ScriptDesk } from '../src/desk.js';
 import { readShorts, SHORTS_FILE } from '../src/shorts.js';
@@ -21,6 +23,9 @@ const files = fs.readdirSync(sample, { recursive: true }).map((f) => String(f).s
 const shorts = readShorts(files, read(SHORTS_FILE));
 const short = shorts.find((s) => s.id === 'the-regular');
 const set = parse(read(short.set));
+// the set's solid boxes, read as CreatorHost.blockersFor reads them from the project (AB-T-0597)
+const blockersOf = (setDoc) => loadSetBlockers(setDoc, { bytes: (ref) => new Uint8Array(fs.readFileSync(path.join(sample, ref))), readColliders: (b) => readPhysics(readGLBJson(b)).colliders });
+const blockers = await blockersOf(set);
 
 test('the sample project lists its two shorts: The Order (default cameras) first, The Regular (by rule)', () => {
   assert.deepEqual(shorts.map((s) => [s.id, s.title, s.coverage]), [['cafe-order', 'The Order', 'default'], ['the-regular', 'The Regular', 'rule']]);
@@ -31,7 +36,7 @@ test('opening The Regular changes nothing: its script, covered by rule, builds t
   const text = read(short.sequence);
   const s = new EditorSession({ registry: m0Registry(), text, path: short.sequence });
   s.setDoc = set; s.targetIds = () => new Set(set.nodes.map((n) => n.id));
-  const desk = new ScriptDesk({ session: s, short, marks: JSON.parse(read(short.marks)).marks, text: read(short.script) });
+  const desk = new ScriptDesk({ session: s, short, marks: JSON.parse(read(short.marks)).marks, blockers, text: read(short.script) });
   const r = desk.apply();
   assert.equal(r.ok, true);
   assert.equal(r.changed, false, 'the-regular.vrmxs is what its script builds by rule, with the cast, the bake and the take kept');
@@ -52,10 +57,16 @@ test('The Regular: a minute long, valid in the cafe, every line voiced in its ro
   }
   assert.deepEqual(voicingPlan(doc, {}, {}), [], 'nothing left to voice');
   assert.deepEqual(speechOverlaps(doc), []);
-  assert.deepEqual(lintLine(doc, { set }).issues, []);
-  const board = storyboard(doc, { set }).shots;
+  assert.deepEqual(lintLine(doc, { set, blockers }).issues, [], 'no line crossed unmarked, no camera in or behind the set');
+  const board = storyboard(doc, { set, blockers }).shots;
   assert.equal(board.length, seq.shots.length);
-  assert.deepEqual(board.filter((b) => b.crossesLine), []);
+  assert.deepEqual(board.filter((b) => b.crossesLine || b.inGeometry), []);
+  // AB-T-0597: after Mira's move to the window table the film ends on the master of the two of them, inside the cafe
+  const S = sceneAt(doc, set), last = board.at(-1), at = S.cameraAt(last.camera, last.frame);
+  assert.equal(last.camera, 'vc-two-mira-at-window-table');
+  assert.ok(Math.abs(at[0]) < 6 && Math.abs(at[2]) < 6 && !blockers.some((b) => inBox(at, b)), `the closing master stands in the cafe (${at})`);
+  assert.equal(blocked(at, ['hana-1', 'mira'].map((id) => { const p = S.posAt(id, last.frame); return [p[0], 1.5, p[2]]; }), blockers), null, 'and sees them both');
+  assert.deepEqual(seq.shots.filter((x) => x.crossLine).map((x) => x.name), ['150'], 'the one cross, at the move, is marked');
   assert.deepEqual(Object.keys(seq.roles).sort(), ['hana-1', 'mira']);
 });
 
@@ -74,10 +85,12 @@ test('the park, the set made with Gaea, films a script: New Short over park.vrmx
   const text = 'Title: In the Park\nSet: park.vrmxs\nMarks:\n    HANA = by-the-bench\n    MIRA = on-the-path\n\nEXT. PARK - DAY\n\nMira crosses the square to the bench.\n\nMIRA\nThere you are!\n\nHANA\n(smiling)\nI saved you a seat.\n';
   const s = shortFor('scripts/in-the-park.fountain', { files, text, coverage: 'rule' });
   assert.equal(s.marks, 'scripts/park-marks.json', 'the set\'s marks are found for it');
-  const r = buildShort(text, { short: s, set: park, marks: JSON.parse(read(s.marks)).marks });
+  const parkBlockers = await blockersOf(park);
+  assert.ok(parkBlockers.some((b) => /bench/.test(b.name)) && parkBlockers.some((b) => /hedge/.test(b.name)), 'the park\'s hedges and props are its blockers');
+  const r = buildShort(text, { short: s, set: park, marks: JSON.parse(read(s.marks)).marks, blockers: parkBlockers });
   assert.equal(r.ok, true, JSON.stringify(r.errors));
   assert.deepEqual(checkSequence(r.doc.sequence, { nodeIds: new Set([...park.nodes, ...r.doc.nodes].map((n) => n.id)) }), []);
-  assert.deepEqual(lintLine(r.doc, { set: park }).issues, []);
+  assert.deepEqual(lintLine(r.doc, { set: park, blockers: parkBlockers }).issues, [], 'no line crossed, no camera in a hedge or behind the vending machine');
   assert.deepEqual(Object.keys(r.doc.sequence.cast).sort(), ['hana-1', 'mira']);
   assert.deepEqual(r.doc.sequence.cast.mira.transform.p, [1.4, 0, 1.2], 'Mira on her mark');
 });

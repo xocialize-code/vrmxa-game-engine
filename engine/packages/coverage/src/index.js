@@ -8,4 +8,5 @@ export { coverByRule, planCoverage, RULES } from './rules.js';
 export { lintLine, sceneAt, cameraSettings, subjectsOf, allNodes } from './lint.js';
 export { replaceShotCamera, cameraOnRig, findShot } from './edit.js';
 export { storyboard, thumbFrame } from './storyboard.js';
-export { rotate, facing, sideOf, normal, groupPlace, singlePlace, cameraPoint, mm, EYE } from './geometry.js';
+export { rotate, facing, sideOf, normal, groupPlace, singlePlace, cameraPoint, mm, EYE, inBox, segmentHitsBox, blocked, pullIn, faceOn, CLEARANCE } from './geometry.js';
+export { setBlockers, loadSetBlockers } from './blockers.js';

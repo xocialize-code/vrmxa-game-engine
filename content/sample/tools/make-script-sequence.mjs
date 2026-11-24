@@ -10,7 +10,9 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse, serialize } from '@vrmxg/scene';
 import { buildSequence, formatErrors } from '@vrmxg/script';
-import { coverByRule } from '@vrmxg/coverage';
+import { coverByRule, setBlockers } from '@vrmxg/coverage';
+import { readGLBJson } from '@vrmxg/model';
+import { readPhysics } from '@vrmxg/physics';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -19,8 +21,19 @@ export function sampleShorts() {
   return JSON.parse(fs.readFileSync(path.join(root, 'shorts.json'), 'utf8')).shorts;
 }
 
-/** The coverage hook a short's setting asks for (as the creator's coverageFor). */
-export const coverageOf = (short) => (short?.coverage === 'rule' ? coverByRule() : undefined);
+/**
+ * A set's solid boxes (its Collider nodes and its Models' colliders, read from their .glb), which cameras by rule keep
+ * clear of (AB-T-0597; the creator reads the same: apps/creator/src/desk.js).
+ */
+export function blockersOf(setRef) {
+  const set = parse(fs.readFileSync(path.join(root, setRef), 'utf8'));
+  const colliders = {};
+  for (const a of set.assets ?? []) if (/\.glb$/i.test(a.ref ?? '') && fs.existsSync(path.join(root, a.ref))) colliders[a.ref] = readPhysics(readGLBJson(new Uint8Array(fs.readFileSync(path.join(root, a.ref))))).colliders;
+  return setBlockers(set, colliders);
+}
+
+/** The coverage hook a short's setting asks for (as the creator's coverageFor): by rule, clear of the short's set. */
+export const coverageOf = (short) => (short?.coverage === 'rule' ? coverByRule({ blockers: blockersOf(short.set ?? 'cafe.vrmxs') }) : undefined);
 
 /** The short whose sequence is this ref, if shorts.json lists one. */
 export const shortOfSequence = (ref) => sampleShorts().find((s) => (s.sequence ?? `sequences/${s.id}.vrmxs`) === ref) ?? null;
