@@ -29,9 +29,11 @@ function say() { const t = words.value.trim(); if (!t) return; emit('say', t); w
       <div class="seg" role="radiogroup" aria-label="Kind of take">
         <button v-for="[k, label] in KINDS" :id="`take-kind-${k}`" :key="k" type="button" role="radio" :aria-checked="st.kind === k" :aria-label="`${label} take`" :class="{ on: st.kind === k }" :disabled="disabled || !idle()" @click="emit('kind', k)">{{ label }}</button>
       </div>
-      <select id="take-target" aria-label="Who performs" :value="st.target ?? st.performers[0]?.id ?? ''" :disabled="disabled || !idle()" @change="emit('target', $event.target.value)">
-        <option v-for="p in st.performers" :key="p.id" :value="p.id">{{ p.name }}</option>
-      </select>
+    </div>
+    <div class="take-row">
+      <div class="seg" role="radiogroup" aria-label="Who performs">
+        <button v-for="p in st.performers" :id="`take-who-${p.id}`" :key="p.id" type="button" role="radio" :aria-checked="(st.target ?? st.performers[0]?.id) === p.id" :aria-label="`${p.name} performs`" :class="{ on: (st.target ?? st.performers[0]?.id) === p.id }" :disabled="disabled || !idle()" @click="emit('target', p.id)">{{ p.name }}</button>
+      </div>
     </div>
     <div v-if="st.kind === 'face'" class="take-row wrap">
       <label v-for="[c, label] in CHANNELS" :key="c" class="check"><input :id="`take-ch-${c}`" type="checkbox" :aria-label="`Record her ${label.toLowerCase()}`" :checked="st.channels.includes(c)" :disabled="disabled || !idle()" @change="emit('channel', c, $event.target.checked)"> {{ label }}</label>

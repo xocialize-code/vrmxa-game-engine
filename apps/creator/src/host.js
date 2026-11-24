@@ -90,6 +90,7 @@ export class CreatorHost extends EditorHost {
     const short = this.shorts.byId(id);
     if (!short) throw new Error(`no short ${id}`);
     if (text === null && !short.saved) throw new Error(`${short.title} was never saved: its script is only in memory`);
+    await this.takes.abandon(); // a take belongs to the short it was performed in
     if (this.session?.mode === 'playing') this.stop();
     clearTimeout(this._applyTimer);
     if (this.short && this.short.id !== id && !this.short.saved) this.shorts.discard(this.short.id);

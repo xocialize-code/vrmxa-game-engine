@@ -227,6 +227,15 @@ export class TakeDeck {
     return { ...r, log: ref };
   }
 
+  /**
+   * The short is going (another short, another project): a take being recorded is stopped and dropped, and one waiting
+   * to be kept is forgotten. Nothing was written for either.
+   */
+  async abandon() {
+    if (this.state === 'recording') { try { this.rec?.stop(); } catch { /* its world goes anyway */ } this.rec = null; await this.release(); this.camera = null; this.cr.endLive(); this.world = null; }
+    this.pending = null; this.pendingTracks = []; this.said = []; this.last = ''; this.state = 'idle';
+  }
+
   /** Throw the take away: the short is as it was, and nothing was written. */
   discard() {
     if (this.state !== 'review' || !this.pending) throw new Error('no take is waiting');

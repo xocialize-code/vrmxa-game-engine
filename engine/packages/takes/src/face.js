@@ -13,8 +13,9 @@
 //     it is known her face stays as the film has it;
 //   - each value less its rest, past a dead zone, times a gain, smoothed over a few steps (a time constant in steps, so
 //     it is the same curve whatever rate the camera ran at);
-//   - blinks through a soft threshold, so an eye is open or shut and little between; both eyes together are `blink`, and
-//     only what one eye does beyond the other is a wink (`blinkLeft`, `blinkRight`);
+//   - blinks from each eye's own rest (some eyes are narrower, and a capture path may read an open eye as a third shut)
+//     through a soft threshold, so an eye is open or shut and little between, and the squint of a smile stays open; both
+//     eyes together are `blink`, and only what one eye does beyond the other is a wink (`blinkLeft`, `blinkRight`);
 //   - mirrored by default, as a mirror would show the person: their left eye is her right, and she turns the way their
 //     head turns on screen.
 // faceTracks keys what the filter gives on the step of each sample, thins the keys, and ends every channel at rest:
@@ -32,11 +33,16 @@ export const FACE_DEFAULTS = {
   mirror: true,
   channels: FACE_CHANNELS,
   /** samples the resting face is the median of (about a second at 15 a second) */ neutralSamples: 15,
-  /** the resting face, when the take brings its own: { jaw, smile, browUp, browDown, yaw, pitch, roll } */ neutral: null,
+  /** the resting face, when the take brings its own: { blinkL, blinkR, jaw, smile, browUp, browDown, yaw, pitch, roll } */ neutral: null,
   /** smoothing time constants, in steps (1/60 s) */ tau: { blink: 1.5, jaw: 2.5, smile: 5, brow: 5, head: 4 },
   /** below this much past rest, nothing */ dead: { jaw: 0.05, smile: 0.06, brow: 0.08 },
   gain: { jaw: 1.2, smile: 1.15, brow: 1.25, head: [1, 1, 1] },
-  /** how shut an eye reads open at, and shut at */ blink: [0.3, 0.7],
+  /**
+   * how far from its rest to shut an eye reads open at, and shut at. The spike's faces (spike-face/README.md): a smile
+   * narrows an eye 0.13 to 0.30 of the way with Vision (up to 0.18 with MediaPipe), and a blink shuts it 0.41 to 0.99
+   * of the way (0.28 to 0.77)
+   */
+  blink: [0.25, 0.55],
   /** how far the head turns: [yaw, pitch, roll] in rad */ limit: [0.7, 0.45, 0.4],
   /** the VRM expressions each part drives, and how strongly (VRM 1.0 presets; a character without one ignores it) */
   expressions: { blink: 'blink', blinkLeft: 'blinkLeft', blinkRight: 'blinkRight', jaw: 'aa', smile: 'happy', browUp: 'surprised', browDown: 'angry' },
@@ -52,7 +58,7 @@ export function faceSetup(setup = {}) {
   return o;
 }
 
-const REST = ['jaw', 'smile', 'browUp', 'browDown', 'yaw', 'pitch', 'roll'];
+const REST = ['blinkL', 'blinkR', 'jaw', 'smile', 'browUp', 'browDown', 'yaw', 'pitch', 'roll'];
 const median = (list) => { const a = [...list].sort((x, y) => x - y), m = a.length >> 1; return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2; };
 const num = (v) => (typeof v === 'number' && v === v ? v : 0);
 const soft = (v, lo, hi) => { const c = clamp((v - lo) / (hi - lo), 0, 1); return c * c * (3 - 2 * c); };
@@ -82,8 +88,9 @@ export class FaceFilter {
     this.at = s.step;
     const ease = (key, x, tau) => { const k = dt === null ? 1 : dt <= 0 ? 0 : 1 - exp(-dt / tau); this.v[key] += (x - this.v[key]) * k; };
     const past = (key, dead, gain) => { const r = this.rest[key], span = 1 - r - dead; return span > 0 ? clamp(((num(s[key]) - r - dead) / span) * gain, 0, 1) : 0; };
-    ease('blinkL', soft(num(s.blinkL), o.blink[0], o.blink[1]), o.tau.blink);
-    ease('blinkR', soft(num(s.blinkR), o.blink[0], o.blink[1]), o.tau.blink);
+    const shut = (key) => { const r = Math.min(0.8, this.rest[key]); return soft((num(s[key]) - r) / (1 - r), o.blink[0], o.blink[1]); };
+    ease('blinkL', shut('blinkL'), o.tau.blink);
+    ease('blinkR', shut('blinkR'), o.tau.blink);
     ease('jaw', past('jaw', o.dead.jaw, o.gain.jaw), o.tau.jaw);
     ease('smile', past('smile', o.dead.smile, o.gain.smile), o.tau.smile);
     ease('browUp', past('browUp', o.dead.brow, o.gain.brow), o.tau.brow);

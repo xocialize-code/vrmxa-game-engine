@@ -1,0 +1,2098 @@
+{
+ "made": "2026-11-24",
+ "faces": {
+  "identities": 4,
+  "pictures": 56,
+  "left_out": {
+   "a-wink.png": "both eyes shut",
+   "b-wink.png": "both eyes shut",
+   "c-wink.png": "both eyes shut",
+   "d-wink.png": "both eyes shut",
+   "c-tilt.png": "the head leans and turns but is not tipped to the shoulder (both detectors read no roll)"
+  }
+ },
+ "detectors": {
+  "vision": {
+   "detector": "Vision: VNDetectFaceRectanglesRequest rev 3 + VNDetectFaceLandmarksRequest rev 3",
+   "os": "Version 27.3 (Build 26C5047e)",
+   "size": [
+    640,
+    480
+   ],
+   "found": "56 of 56",
+   "ms": {
+    "rect": {
+     "mean": 3.044,
+     "median": 2.964,
+     "p90": 3.343
+    },
+    "rectAndLandmarks": {
+     "mean": 4.072,
+     "median": 3.977,
+     "p90": 4.476
+    }
+   },
+   "cpuMsPerFrame": {
+    "rect": 1.934,
+    "rectAndLandmarks": 2.681
+   },
+   "noise": {
+    "blink": 0.019,
+    "jaw": 0.012,
+    "smile": 0.02,
+    "browUp": 0.021,
+    "browDown": 0.021,
+    "yaw": 0.016,
+    "pitch": 0.016,
+    "roll": 0.014
+   },
+   "poses": {
+    "blink": {
+     "n": 4,
+     "response": 0.501,
+     "least": 0.255,
+     "crosstalk": 0.077,
+     "worst": {
+      "of": "browUp",
+      "by": 0.132
+     }
+    },
+    "wink": {
+     "n": 0,
+     "response": null,
+     "least": null,
+     "crosstalk": null,
+     "worst": null
+    },
+    "jaw": {
+     "n": 4,
+     "response": 0.925,
+     "least": 0.867,
+     "crosstalk": 0.18,
+     "worst": {
+      "of": "smile",
+      "by": -0.208
+     }
+    },
+    "smile": {
+     "n": 4,
+     "response": 0.629,
+     "least": 0.498,
+     "crosstalk": 0.237,
+     "worst": {
+      "of": "jaw",
+      "by": 0.277
+     }
+    },
+    "browUp": {
+     "n": 4,
+     "response": 0.342,
+     "least": 0.214,
+     "crosstalk": 0.342,
+     "worst": {
+      "of": "browDown",
+      "by": -0.544
+     }
+    },
+    "browDown": {
+     "n": 4,
+     "response": 0.356,
+     "least": 0.291,
+     "crosstalk": 0.356,
+     "worst": {
+      "of": "browUp",
+      "by": -0.418
+     }
+    },
+    "left15": {
+     "n": 4,
+     "response": 0.677,
+     "least": 0.625,
+     "crosstalk": 0.241,
+     "worst": {
+      "of": "browUp",
+      "by": 0.315
+     }
+    },
+    "right15": {
+     "n": 4,
+     "response": 0.354,
+     "least": 0.224,
+     "crosstalk": 0.242,
+     "worst": {
+      "of": "blink",
+      "by": -0.368
+     }
+    },
+    "left": {
+     "n": 4,
+     "response": 1.013,
+     "least": 0.953,
+     "crosstalk": 0.239,
+     "worst": {
+      "of": "blink",
+      "by": -0.35
+     }
+    },
+    "right": {
+     "n": 4,
+     "response": 0.491,
+     "least": 0.123,
+     "crosstalk": 0.455,
+     "worst": {
+      "of": "browUp",
+      "by": 0.624
+     }
+    },
+    "up": {
+     "n": 4,
+     "response": 0.614,
+     "least": 0.545,
+     "crosstalk": 0.108,
+     "worst": {
+      "of": "smile",
+      "by": 0.201
+     }
+    },
+    "down": {
+     "n": 4,
+     "response": 0.378,
+     "least": 0.271,
+     "crosstalk": 0.49,
+     "worst": {
+      "of": "blink",
+      "by": 0.579
+     }
+    },
+    "tilt": {
+     "n": 3,
+     "response": 0.785,
+     "least": 0.667,
+     "crosstalk": 0.31,
+     "worst": {
+      "of": "browUp",
+      "by": 0.477
+     }
+    }
+   },
+   "take": {
+    "onHer": {
+     "blink": {
+      "n": 4,
+      "her": "blink",
+      "reaches": 0.928,
+      "least": 0.712,
+      "stray": {
+       "of": "surprised",
+       "by": 0.054,
+       "mean": 0.017
+      }
+     },
+     "wink": {
+      "n": 0,
+      "her": "wink",
+      "reaches": null,
+      "least": null,
+      "stray": null
+     },
+     "jaw": {
+      "n": 4,
+      "her": "aa",
+      "reaches": 1,
+      "least": 1,
+      "stray": {
+       "of": "surprised",
+       "by": 0.057,
+       "mean": 0.014
+      }
+     },
+     "smile": {
+      "n": 4,
+      "her": "happy",
+      "reaches": 0.898,
+      "least": 0.898,
+      "stray": {
+       "of": "aa",
+       "by": 0.297,
+       "mean": 0.247
+      }
+     },
+     "browUp": {
+      "n": 4,
+      "her": "surprised",
+      "reaches": 0.366,
+      "least": 0.195,
+      "stray": {
+       "of": "happy",
+       "by": 0.001,
+       "mean": 0.001
+      }
+     },
+     "browDown": {
+      "n": 4,
+      "her": "angry",
+      "reaches": 0.438,
+      "least": 0.351,
+      "stray": {
+       "of": "surprised",
+       "by": 0.001,
+       "mean": 0.001
+      }
+     },
+     "left15": {
+      "n": 4,
+      "her": "yaw",
+      "reaches": 0.673,
+      "least": 0.636,
+      "stray": {
+       "of": "surprised",
+       "by": 0.371,
+       "mean": 0.189
+      }
+     },
+     "right15": {
+      "n": 4,
+      "her": "yaw",
+      "reaches": -0.38,
+      "least": -0.267,
+      "stray": {
+       "of": "surprised",
+       "by": 0.24,
+       "mean": 0.16
+      }
+     },
+     "left": {
+      "n": 4,
+      "her": "yaw",
+      "reaches": 0.7,
+      "least": 0.7,
+      "stray": {
+       "of": "happy",
+       "by": 0.344,
+       "mean": 0.128
+      }
+     },
+     "right": {
+      "n": 4,
+      "her": "yaw",
+      "reaches": -0.482,
+      "least": -0.125,
+      "stray": {
+       "of": "surprised",
+       "by": 0.499,
+       "mean": 0.43
+      }
+     },
+     "up": {
+      "n": 4,
+      "her": "pitch",
+      "reaches": 0.45,
+      "least": 0.45,
+      "stray": {
+       "of": "happy",
+       "by": 0.2,
+       "mean": 0.07
+      }
+     },
+     "down": {
+      "n": 4,
+      "her": "pitch",
+      "reaches": -0.358,
+      "least": -0.261,
+      "stray": {
+       "of": "blink",
+       "by": 1,
+       "mean": 1
+      }
+     },
+     "tilt": {
+      "n": 3,
+      "her": "roll",
+      "reaches": -0.4,
+      "least": -0.4,
+      "stray": {
+       "of": "surprised",
+       "by": 0.362,
+       "mean": 0.25
+      }
+     }
+    },
+    "atRest": {
+     "of": "happy",
+     "by": 0.025
+    }
+   },
+   "pictures": [
+    {
+     "file": "a-blink.png",
+     "identity": "a",
+     "pose": "blink",
+     "bad": null,
+     "target": "blink",
+     "response": 0.708,
+     "value": 0.981,
+     "rest": 0.274,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.061
+     }
+    },
+    {
+     "file": "a-wink.png",
+     "identity": "a",
+     "pose": "wink",
+     "bad": "both eyes shut",
+     "target": "wink",
+     "response": 0.025,
+     "value": 0.033,
+     "rest": 0.009,
+     "crosstalk": {
+      "of": "smile",
+      "by": -0.072
+     }
+    },
+    {
+     "file": "a-jaw.png",
+     "identity": "a",
+     "pose": "jaw",
+     "bad": null,
+     "target": "jaw",
+     "response": 0.914,
+     "value": 0.927,
+     "rest": 0.014,
+     "crosstalk": {
+      "of": "smile",
+      "by": -0.191
+     }
+    },
+    {
+     "file": "a-smile.png",
+     "identity": "a",
+     "pose": "smile",
+     "bad": null,
+     "target": "smile",
+     "response": 0.707,
+     "value": 0.966,
+     "rest": 0.259,
+     "crosstalk": {
+      "of": "jaw",
+      "by": 0.23
+     }
+    },
+    {
+     "file": "a-browUp.png",
+     "identity": "a",
+     "pose": "browUp",
+     "bad": null,
+     "target": "browUp",
+     "response": 0.264,
+     "value": 0.872,
+     "rest": 0.608,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.264
+     }
+    },
+    {
+     "file": "a-browDown.png",
+     "identity": "a",
+     "pose": "browDown",
+     "bad": null,
+     "target": "browDown",
+     "response": 0.418,
+     "value": 0.81,
+     "rest": 0.392,
+     "crosstalk": {
+      "of": "browUp",
+      "by": -0.418
+     }
+    },
+    {
+     "file": "a-left.png",
+     "identity": "a",
+     "pose": "left",
+     "bad": null,
+     "target": "yaw",
+     "response": 1.008,
+     "value": -0.991,
+     "rest": 0.017,
+     "crosstalk": {
+      "of": "smile",
+      "by": 0.281
+     }
+    },
+    {
+     "file": "a-right.png",
+     "identity": "a",
+     "pose": "right",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.819,
+     "value": 0.836,
+     "rest": 0.017,
+     "crosstalk": {
+      "of": "smile",
+      "by": 0.337
+     }
+    },
+    {
+     "file": "a-left15.png",
+     "identity": "a",
+     "pose": "left15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.673,
+     "value": -0.656,
+     "rest": 0.017,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.247
+     }
+    },
+    {
+     "file": "a-right15.png",
+     "identity": "a",
+     "pose": "right15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.374,
+     "value": 0.391,
+     "rest": 0.017,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.151
+     }
+    },
+    {
+     "file": "a-up.png",
+     "identity": "a",
+     "pose": "up",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.702,
+     "value": 0.548,
+     "rest": -0.153,
+     "crosstalk": {
+      "of": "smile",
+      "by": 0.201
+     }
+    },
+    {
+     "file": "a-down.png",
+     "identity": "a",
+     "pose": "down",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.271,
+     "value": -0.425,
+     "rest": -0.153,
+     "crosstalk": {
+      "of": "blink",
+      "by": 0.579
+     }
+    },
+    {
+     "file": "a-tilt.png",
+     "identity": "a",
+     "pose": "tilt",
+     "bad": null,
+     "target": "roll",
+     "response": 0.79,
+     "value": 0.778,
+     "rest": -0.012,
+     "crosstalk": {
+      "of": "jaw",
+      "by": 0.126
+     }
+    },
+    {
+     "file": "b-blink.png",
+     "identity": "b",
+     "pose": "blink",
+     "bad": null,
+     "target": "blink",
+     "response": 0.467,
+     "value": 0.859,
+     "rest": 0.392,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.094
+     }
+    },
+    {
+     "file": "b-wink.png",
+     "identity": "b",
+     "pose": "wink",
+     "bad": "both eyes shut",
+     "target": "wink",
+     "response": 0.008,
+     "value": 0.024,
+     "rest": 0.016,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.063
+     }
+    },
+    {
+     "file": "b-jaw.png",
+     "identity": "b",
+     "pose": "jaw",
+     "bad": null,
+     "target": "jaw",
+     "response": 0.995,
+     "value": 1,
+     "rest": 0.005,
+     "crosstalk": {
+      "of": "smile",
+      "by": -0.208
+     }
+    },
+    {
+     "file": "b-smile.png",
+     "identity": "b",
+     "pose": "smile",
+     "bad": null,
+     "target": "smile",
+     "response": 0.557,
+     "value": 0.985,
+     "rest": 0.428,
+     "crosstalk": {
+      "of": "jaw",
+      "by": 0.23
+     }
+    },
+    {
+     "file": "b-browUp.png",
+     "identity": "b",
+     "pose": "browUp",
+     "bad": null,
+     "target": "browUp",
+     "response": 0.544,
+     "value": 0.87,
+     "rest": 0.327,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.544
+     }
+    },
+    {
+     "file": "b-browDown.png",
+     "identity": "b",
+     "pose": "browDown",
+     "bad": null,
+     "target": "browDown",
+     "response": 0.327,
+     "value": 1,
+     "rest": 0.673,
+     "crosstalk": {
+      "of": "browUp",
+      "by": -0.327
+     }
+    },
+    {
+     "file": "b-left.png",
+     "identity": "b",
+     "pose": "left",
+     "bad": null,
+     "target": "yaw",
+     "response": 1.058,
+     "value": -0.982,
+     "rest": 0.075,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.35
+     }
+    },
+    {
+     "file": "b-right.png",
+     "identity": "b",
+     "pose": "right",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.123,
+     "value": 0.198,
+     "rest": 0.075,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.624
+     }
+    },
+    {
+     "file": "b-left15.png",
+     "identity": "b",
+     "pose": "left15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.625,
+     "value": -0.55,
+     "rest": 0.075,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.259
+     }
+    },
+    {
+     "file": "b-right15.png",
+     "identity": "b",
+     "pose": "right15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.307,
+     "value": 0.382,
+     "rest": 0.075,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.301
+     }
+    },
+    {
+     "file": "b-up.png",
+     "identity": "b",
+     "pose": "up",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.545,
+     "value": 0.435,
+     "rest": -0.11,
+     "crosstalk": {
+      "of": "smile",
+      "by": 0.042
+     }
+    },
+    {
+     "file": "b-down.png",
+     "identity": "b",
+     "pose": "down",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.353,
+     "value": -0.463,
+     "rest": -0.11,
+     "crosstalk": {
+      "of": "blink",
+      "by": 0.417
+     }
+    },
+    {
+     "file": "b-tilt.png",
+     "identity": "b",
+     "pose": "tilt",
+     "bad": null,
+     "target": "roll",
+     "response": 0.897,
+     "value": 0.999,
+     "rest": 0.101,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.477
+     }
+    },
+    {
+     "file": "c-blink.png",
+     "identity": "c",
+     "pose": "blink",
+     "bad": null,
+     "target": "blink",
+     "response": 0.575,
+     "value": 0.853,
+     "rest": 0.278,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.132
+     }
+    },
+    {
+     "file": "c-wink.png",
+     "identity": "c",
+     "pose": "wink",
+     "bad": "both eyes shut",
+     "target": "wink",
+     "response": -0.016,
+     "value": 0.004,
+     "rest": 0.021,
+     "crosstalk": {
+      "of": "smile",
+      "by": -0.038
+     }
+    },
+    {
+     "file": "c-jaw.png",
+     "identity": "c",
+     "pose": "jaw",
+     "bad": null,
+     "target": "jaw",
+     "response": 0.923,
+     "value": 0.931,
+     "rest": 0.009,
+     "crosstalk": {
+      "of": "smile",
+      "by": -0.132
+     }
+    },
+    {
+     "file": "c-smile.png",
+     "identity": "c",
+     "pose": "smile",
+     "bad": null,
+     "target": "smile",
+     "response": 0.755,
+     "value": 1,
+     "rest": 0.245,
+     "crosstalk": {
+      "of": "jaw",
+      "by": 0.277
+     }
+    },
+    {
+     "file": "c-browUp.png",
+     "identity": "c",
+     "pose": "browUp",
+     "bad": null,
+     "target": "browUp",
+     "response": 0.214,
+     "value": 0.699,
+     "rest": 0.485,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.214
+     }
+    },
+    {
+     "file": "c-browDown.png",
+     "identity": "c",
+     "pose": "browDown",
+     "bad": null,
+     "target": "browDown",
+     "response": 0.389,
+     "value": 0.903,
+     "rest": 0.515,
+     "crosstalk": {
+      "of": "browUp",
+      "by": -0.388
+     }
+    },
+    {
+     "file": "c-left.png",
+     "identity": "c",
+     "pose": "left",
+     "bad": null,
+     "target": "yaw",
+     "response": 1.031,
+     "value": -0.972,
+     "rest": 0.058,
+     "crosstalk": {
+      "of": "jaw",
+      "by": 0.094
+     }
+    },
+    {
+     "file": "c-right.png",
+     "identity": "c",
+     "pose": "right",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.322,
+     "value": 0.38,
+     "rest": 0.058,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.515
+     }
+    },
+    {
+     "file": "c-left15.png",
+     "identity": "c",
+     "pose": "left15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.68,
+     "value": -0.621,
+     "rest": 0.058,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.315
+     }
+    },
+    {
+     "file": "c-right15.png",
+     "identity": "c",
+     "pose": "right15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.224,
+     "value": 0.282,
+     "rest": 0.058,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.146
+     }
+    },
+    {
+     "file": "c-up.png",
+     "identity": "c",
+     "pose": "up",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.663,
+     "value": 0.482,
+     "rest": -0.181,
+     "crosstalk": {
+      "of": "blink",
+      "by": 0.141
+     }
+    },
+    {
+     "file": "c-down.png",
+     "identity": "c",
+     "pose": "down",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.356,
+     "value": -0.537,
+     "rest": -0.181,
+     "crosstalk": {
+      "of": "blink",
+      "by": 0.574
+     }
+    },
+    {
+     "file": "c-tilt.png",
+     "identity": "c",
+     "pose": "tilt",
+     "bad": "the head leans and turns but is not tipped to the shoulder (both detectors read no roll)",
+     "target": "roll",
+     "response": 0.002,
+     "value": 0.003,
+     "rest": 0.002,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.216
+     }
+    },
+    {
+     "file": "d-blink.png",
+     "identity": "d",
+     "pose": "blink",
+     "bad": null,
+     "target": "blink",
+     "response": 0.255,
+     "value": 0.64,
+     "rest": 0.386,
+     "crosstalk": {
+      "of": "smile",
+      "by": -0.021
+     }
+    },
+    {
+     "file": "d-wink.png",
+     "identity": "d",
+     "pose": "wink",
+     "bad": "both eyes shut",
+     "target": "wink",
+     "response": 0.014,
+     "value": 0.024,
+     "rest": 0.01,
+     "crosstalk": {
+      "of": "smile",
+      "by": -0.026
+     }
+    },
+    {
+     "file": "d-jaw.png",
+     "identity": "d",
+     "pose": "jaw",
+     "bad": null,
+     "target": "jaw",
+     "response": 0.867,
+     "value": 0.871,
+     "rest": 0.004,
+     "crosstalk": {
+      "of": "smile",
+      "by": -0.187
+     }
+    },
+    {
+     "file": "d-smile.png",
+     "identity": "d",
+     "pose": "smile",
+     "bad": null,
+     "target": "smile",
+     "response": 0.498,
+     "value": 1,
+     "rest": 0.502,
+     "crosstalk": {
+      "of": "jaw",
+      "by": 0.212
+     }
+    },
+    {
+     "file": "d-browUp.png",
+     "identity": "d",
+     "pose": "browUp",
+     "bad": null,
+     "target": "browUp",
+     "response": 0.347,
+     "value": 0.779,
+     "rest": 0.432,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.347
+     }
+    },
+    {
+     "file": "d-browDown.png",
+     "identity": "d",
+     "pose": "browDown",
+     "bad": null,
+     "target": "browDown",
+     "response": 0.291,
+     "value": 0.859,
+     "rest": 0.568,
+     "crosstalk": {
+      "of": "browUp",
+      "by": -0.291
+     }
+    },
+    {
+     "file": "d-left.png",
+     "identity": "d",
+     "pose": "left",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.953,
+     "value": -0.908,
+     "rest": 0.045,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.232
+     }
+    },
+    {
+     "file": "d-right.png",
+     "identity": "d",
+     "pose": "right",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.7,
+     "value": 0.744,
+     "rest": 0.045,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.343
+     }
+    },
+    {
+     "file": "d-left15.png",
+     "identity": "d",
+     "pose": "left15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.728,
+     "value": -0.683,
+     "rest": 0.045,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.141
+     }
+    },
+    {
+     "file": "d-right15.png",
+     "identity": "d",
+     "pose": "right15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.512,
+     "value": 0.557,
+     "rest": 0.045,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.368
+     }
+    },
+    {
+     "file": "d-up.png",
+     "identity": "d",
+     "pose": "up",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.545,
+     "value": 0.535,
+     "rest": -0.009,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.049
+     }
+    },
+    {
+     "file": "d-down.png",
+     "identity": "d",
+     "pose": "down",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.531,
+     "value": -0.54,
+     "rest": -0.009,
+     "crosstalk": {
+      "of": "blink",
+      "by": 0.389
+     }
+    },
+    {
+     "file": "d-tilt.png",
+     "identity": "d",
+     "pose": "tilt",
+     "bad": null,
+     "target": "roll",
+     "response": 0.667,
+     "value": 0.681,
+     "rest": 0.014,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.328
+     }
+    }
+   ]
+  },
+  "mediapipe": {
+   "detector": "MediaPipe Face Landmarker (mediapipe 1.2.3, Python 3.12.16, CPU delegate), face_landmarker.task float16",
+   "os": "macOS-27.3-arm64-arm-64bit",
+   "size": [
+    640,
+    480
+   ],
+   "found": "56 of 56",
+   "ms": {
+    "image": {
+     "mean": 3.367,
+     "median": 3.359,
+     "p90": 3.432
+    },
+    "video": {
+     "mean": 2.863,
+     "median": 2.854,
+     "p90": 2.918
+    }
+   },
+   "cpuMsPerFrame": {
+    "image": 3.715,
+    "video": 3.194
+   },
+   "noise": {
+    "blink": 0.009,
+    "jaw": 0.002,
+    "smile": 0.001,
+    "browUp": 0.02,
+    "browDown": 0.01,
+    "yaw": 0.004,
+    "pitch": 0.004,
+    "roll": 0.003
+   },
+   "poses": {
+    "blink": {
+     "n": 4,
+     "response": 0.452,
+     "least": 0.235,
+     "crosstalk": 0.113,
+     "worst": {
+      "of": "browUp",
+      "by": -0.196
+     }
+    },
+    "wink": {
+     "n": 0,
+     "response": null,
+     "least": null,
+     "crosstalk": null,
+     "worst": null
+    },
+    "jaw": {
+     "n": 4,
+     "response": 0.75,
+     "least": 0.634,
+     "crosstalk": 0.145,
+     "worst": {
+      "of": "browDown",
+      "by": -0.372
+     }
+    },
+    "smile": {
+     "n": 4,
+     "response": 0.916,
+     "least": 0.895,
+     "crosstalk": 0.129,
+     "worst": {
+      "of": "browUp",
+      "by": -0.274
+     }
+    },
+    "browUp": {
+     "n": 4,
+     "response": 0.711,
+     "least": 0.483,
+     "crosstalk": 0.194,
+     "worst": {
+      "of": "browDown",
+      "by": -0.437
+     }
+    },
+    "browDown": {
+     "n": 4,
+     "response": 0.415,
+     "least": 0.269,
+     "crosstalk": 0.144,
+     "worst": {
+      "of": "browUp",
+      "by": -0.42
+     }
+    },
+    "left15": {
+     "n": 4,
+     "response": 0.552,
+     "least": 0.529,
+     "crosstalk": 0.14,
+     "worst": {
+      "of": "browDown",
+      "by": -0.273
+     }
+    },
+    "right15": {
+     "n": 4,
+     "response": 0.479,
+     "least": 0.426,
+     "crosstalk": 0.175,
+     "worst": {
+      "of": "browUp",
+      "by": 0.243
+     }
+    },
+    "left": {
+     "n": 4,
+     "response": 0.732,
+     "least": 0.676,
+     "crosstalk": 0.275,
+     "worst": {
+      "of": "browDown",
+      "by": -0.389
+     }
+    },
+    "right": {
+     "n": 4,
+     "response": 0.683,
+     "least": 0.656,
+     "crosstalk": 0.171,
+     "worst": {
+      "of": "browUp",
+      "by": 0.259
+     }
+    },
+    "up": {
+     "n": 4,
+     "response": 0.574,
+     "least": 0.469,
+     "crosstalk": 0.444,
+     "worst": {
+      "of": "browUp",
+      "by": 0.826
+     }
+    },
+    "down": {
+     "n": 4,
+     "response": 0.382,
+     "least": 0.29,
+     "crosstalk": 0.441,
+     "worst": {
+      "of": "blink",
+      "by": 0.538
+     }
+    },
+    "tilt": {
+     "n": 3,
+     "response": 0.671,
+     "least": 0.622,
+     "crosstalk": 0.585,
+     "worst": {
+      "of": "browUp",
+      "by": 0.901
+     }
+    }
+   },
+   "take": {
+    "onHer": {
+     "blink": {
+      "n": 4,
+      "her": "blink",
+      "reaches": 0.755,
+      "least": 0.02,
+      "stray": {
+       "of": "angry",
+       "by": 0.059,
+       "mean": 0.019
+      }
+     },
+     "wink": {
+      "n": 0,
+      "her": "wink",
+      "reaches": null,
+      "least": null,
+      "stray": null
+     },
+     "jaw": {
+      "n": 4,
+      "her": "aa",
+      "reaches": 0.92,
+      "least": 0.785,
+      "stray": {
+       "of": "surprised",
+       "by": 0.013,
+       "mean": 0.005
+      }
+     },
+     "smile": {
+      "n": 4,
+      "her": "happy",
+      "reaches": 0.898,
+      "least": 0.898,
+      "stray": {
+       "of": "aa",
+       "by": 0.026,
+       "mean": 0.009
+      }
+     },
+     "browUp": {
+      "n": 4,
+      "her": "surprised",
+      "reaches": 0.464,
+      "least": 0.359,
+      "stray": {
+       "of": "happy",
+       "by": 0.001,
+       "mean": 0.001
+      }
+     },
+     "browDown": {
+      "n": 4,
+      "her": "angry",
+      "reaches": 0.321,
+      "least": 0.153,
+      "stray": {
+       "of": "surprised",
+       "by": 0.001,
+       "mean": 0.001
+      }
+     },
+     "left15": {
+      "n": 4,
+      "her": "yaw",
+      "reaches": 0.553,
+      "least": 0.525,
+      "stray": {
+       "of": "surprised",
+       "by": 0.1,
+       "mean": 0.025
+      }
+     },
+     "right15": {
+      "n": 4,
+      "her": "yaw",
+      "reaches": -0.479,
+      "least": -0.427,
+      "stray": {
+       "of": "surprised",
+       "by": 0.151,
+       "mean": 0.038
+      }
+     },
+     "left": {
+      "n": 4,
+      "her": "yaw",
+      "reaches": 0.696,
+      "least": 0.686,
+      "stray": {
+       "of": "surprised",
+       "by": 0.327,
+       "mean": 0.156
+      }
+     },
+     "right": {
+      "n": 4,
+      "her": "yaw",
+      "reaches": -0.685,
+      "least": -0.66,
+      "stray": {
+       "of": "surprised",
+       "by": 0.191,
+       "mean": 0.05
+      }
+     },
+     "up": {
+      "n": 4,
+      "her": "pitch",
+      "reaches": 0.45,
+      "least": 0.449,
+      "stray": {
+       "of": "surprised",
+       "by": 0.483,
+       "mean": 0.26
+      }
+     },
+     "down": {
+      "n": 4,
+      "her": "pitch",
+      "reaches": -0.342,
+      "least": -0.295,
+      "stray": {
+       "of": "blink",
+       "by": 1,
+       "mean": 0.871
+      }
+     },
+     "tilt": {
+      "n": 3,
+      "her": "roll",
+      "reaches": -0.4,
+      "least": -0.4,
+      "stray": {
+       "of": "surprised",
+       "by": 0.499,
+       "mean": 0.339
+      }
+     }
+    },
+    "atRest": {
+     "of": "happy",
+     "by": 0.025
+    }
+   },
+   "pictures": [
+    {
+     "file": "a-blink.png",
+     "identity": "a",
+     "pose": "blink",
+     "bad": null,
+     "target": "blink",
+     "response": 0.654,
+     "value": 0.713,
+     "rest": 0.059,
+     "crosstalk": {
+      "of": "browUp",
+      "by": -0.196
+     }
+    },
+    {
+     "file": "a-wink.png",
+     "identity": "a",
+     "pose": "wink",
+     "bad": "both eyes shut",
+     "target": "wink",
+     "response": -0.058,
+     "value": 0.003,
+     "rest": 0.061,
+     "crosstalk": {
+      "of": "browUp",
+      "by": -0.347
+     }
+    },
+    {
+     "file": "a-jaw.png",
+     "identity": "a",
+     "pose": "jaw",
+     "bad": null,
+     "target": "jaw",
+     "response": 0.804,
+     "value": 0.812,
+     "rest": 0.009,
+     "crosstalk": {
+      "of": "browUp",
+      "by": -0.06
+     }
+    },
+    {
+     "file": "a-smile.png",
+     "identity": "a",
+     "pose": "smile",
+     "bad": null,
+     "target": "smile",
+     "response": 0.912,
+     "value": 0.912,
+     "rest": 0,
+     "crosstalk": {
+      "of": "browUp",
+      "by": -0.274
+     }
+    },
+    {
+     "file": "a-browUp.png",
+     "identity": "a",
+     "pose": "browUp",
+     "bad": null,
+     "target": "browUp",
+     "response": 0.483,
+     "value": 0.974,
+     "rest": 0.49,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.057
+     }
+    },
+    {
+     "file": "a-browDown.png",
+     "identity": "a",
+     "pose": "browDown",
+     "bad": null,
+     "target": "browDown",
+     "response": 0.269,
+     "value": 0.27,
+     "rest": 0.002,
+     "crosstalk": {
+      "of": "browUp",
+      "by": -0.42
+     }
+    },
+    {
+     "file": "a-left.png",
+     "identity": "a",
+     "pose": "left",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.814,
+     "value": -0.831,
+     "rest": -0.017,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.31
+     }
+    },
+    {
+     "file": "a-right.png",
+     "identity": "a",
+     "pose": "right",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.689,
+     "value": 0.672,
+     "rest": -0.017,
+     "crosstalk": {
+      "of": "browUp",
+      "by": -0.015
+     }
+    },
+    {
+     "file": "a-left15.png",
+     "identity": "a",
+     "pose": "left15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.529,
+     "value": -0.546,
+     "rest": -0.017,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.045
+     }
+    },
+    {
+     "file": "a-right15.png",
+     "identity": "a",
+     "pose": "right15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.433,
+     "value": 0.416,
+     "rest": -0.017,
+     "crosstalk": {
+      "of": "browUp",
+      "by": -0.113
+     }
+    },
+    {
+     "file": "a-up.png",
+     "identity": "a",
+     "pose": "up",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.717,
+     "value": 0.653,
+     "rest": -0.064,
+     "crosstalk": {
+      "of": "blink",
+      "by": 0.161
+     }
+    },
+    {
+     "file": "a-down.png",
+     "identity": "a",
+     "pose": "down",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.321,
+     "value": -0.385,
+     "rest": -0.064,
+     "crosstalk": {
+      "of": "blink",
+      "by": 0.538
+     }
+    },
+    {
+     "file": "a-tilt.png",
+     "identity": "a",
+     "pose": "tilt",
+     "bad": null,
+     "target": "roll",
+     "response": 0.725,
+     "value": 0.71,
+     "rest": -0.014,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.445
+     }
+    },
+    {
+     "file": "b-blink.png",
+     "identity": "b",
+     "pose": "blink",
+     "bad": null,
+     "target": "blink",
+     "response": 0.421,
+     "value": 0.597,
+     "rest": 0.175,
+     "crosstalk": {
+      "of": "browDown",
+      "by": 0.126
+     }
+    },
+    {
+     "file": "b-wink.png",
+     "identity": "b",
+     "pose": "wink",
+     "bad": "both eyes shut",
+     "target": "wink",
+     "response": 0.04,
+     "value": 0.109,
+     "rest": 0.069,
+     "crosstalk": {
+      "of": "browDown",
+      "by": 0.147
+     }
+    },
+    {
+     "file": "b-jaw.png",
+     "identity": "b",
+     "pose": "jaw",
+     "bad": null,
+     "target": "jaw",
+     "response": 0.818,
+     "value": 0.838,
+     "rest": 0.02,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.372
+     }
+    },
+    {
+     "file": "b-smile.png",
+     "identity": "b",
+     "pose": "smile",
+     "bad": null,
+     "target": "smile",
+     "response": 0.895,
+     "value": 0.895,
+     "rest": 0.001,
+     "crosstalk": {
+      "of": "blink",
+      "by": 0.095
+     }
+    },
+    {
+     "file": "b-browUp.png",
+     "identity": "b",
+     "pose": "browUp",
+     "bad": null,
+     "target": "browUp",
+     "response": 0.888,
+     "value": 0.891,
+     "rest": 0.003,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.437
+     }
+    },
+    {
+     "file": "b-browDown.png",
+     "identity": "b",
+     "pose": "browDown",
+     "bad": null,
+     "target": "browDown",
+     "response": 0.444,
+     "value": 0.881,
+     "rest": 0.438,
+     "crosstalk": {
+      "of": "blink",
+      "by": 0.02
+     }
+    },
+    {
+     "file": "b-left.png",
+     "identity": "b",
+     "pose": "left",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.719,
+     "value": -0.703,
+     "rest": 0.016,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.389
+     }
+    },
+    {
+     "file": "b-right.png",
+     "identity": "b",
+     "pose": "right",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.656,
+     "value": 0.672,
+     "rest": 0.016,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.227
+     }
+    },
+    {
+     "file": "b-left15.png",
+     "identity": "b",
+     "pose": "left15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.545,
+     "value": -0.529,
+     "rest": 0.016,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.273
+     }
+    },
+    {
+     "file": "b-right15.png",
+     "identity": "b",
+     "pose": "right15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.531,
+     "value": 0.547,
+     "rest": 0.016,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.181
+     }
+    },
+    {
+     "file": "b-up.png",
+     "identity": "b",
+     "pose": "up",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.487,
+     "value": 0.501,
+     "rest": 0.014,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.408
+     }
+    },
+    {
+     "file": "b-down.png",
+     "identity": "b",
+     "pose": "down",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.617,
+     "value": -0.604,
+     "rest": 0.014,
+     "crosstalk": {
+      "of": "blink",
+      "by": 0.394
+     }
+    },
+    {
+     "file": "b-tilt.png",
+     "identity": "b",
+     "pose": "tilt",
+     "bad": null,
+     "target": "roll",
+     "response": 0.622,
+     "value": 0.661,
+     "rest": 0.039,
+     "crosstalk": {
+      "of": "browDown",
+      "by": -0.408
+     }
+    },
+    {
+     "file": "c-blink.png",
+     "identity": "c",
+     "pose": "blink",
+     "bad": null,
+     "target": "blink",
+     "response": 0.497,
+     "value": 0.575,
+     "rest": 0.078,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.101
+     }
+    },
+    {
+     "file": "c-wink.png",
+     "identity": "c",
+     "pose": "wink",
+     "bad": "both eyes shut",
+     "target": "wink",
+     "response": -0.01,
+     "value": 0.047,
+     "rest": 0.057,
+     "crosstalk": {
+      "of": "jaw",
+      "by": 0.008
+     }
+    },
+    {
+     "file": "c-jaw.png",
+     "identity": "c",
+     "pose": "jaw",
+     "bad": null,
+     "target": "jaw",
+     "response": 0.744,
+     "value": 0.751,
+     "rest": 0.008,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.015
+     }
+    },
+    {
+     "file": "c-smile.png",
+     "identity": "c",
+     "pose": "smile",
+     "bad": null,
+     "target": "smile",
+     "response": 0.941,
+     "value": 0.941,
+     "rest": 0,
+     "crosstalk": {
+      "of": "blink",
+      "by": 0.082
+     }
+    },
+    {
+     "file": "c-browUp.png",
+     "identity": "c",
+     "pose": "browUp",
+     "bad": null,
+     "target": "browUp",
+     "response": 0.554,
+     "value": 0.681,
+     "rest": 0.128,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.065
+     }
+    },
+    {
+     "file": "c-browDown.png",
+     "identity": "c",
+     "pose": "browDown",
+     "bad": null,
+     "target": "browDown",
+     "response": 0.352,
+     "value": 0.366,
+     "rest": 0.014,
+     "crosstalk": {
+      "of": "browUp",
+      "by": -0.111
+     }
+    },
+    {
+     "file": "c-left.png",
+     "identity": "c",
+     "pose": "left",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.718,
+     "value": -0.721,
+     "rest": -0.003,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.199
+     }
+    },
+    {
+     "file": "c-right.png",
+     "identity": "c",
+     "pose": "right",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.698,
+     "value": 0.695,
+     "rest": -0.003,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.259
+     }
+    },
+    {
+     "file": "c-left15.png",
+     "identity": "c",
+     "pose": "left15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.57,
+     "value": -0.573,
+     "rest": -0.003,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.055
+     }
+    },
+    {
+     "file": "c-right15.png",
+     "identity": "c",
+     "pose": "right15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.426,
+     "value": 0.423,
+     "rest": -0.003,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.243
+     }
+    },
+    {
+     "file": "c-up.png",
+     "identity": "c",
+     "pose": "up",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.621,
+     "value": 0.543,
+     "rest": -0.078,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.38
+     }
+    },
+    {
+     "file": "c-down.png",
+     "identity": "c",
+     "pose": "down",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.29,
+     "value": -0.369,
+     "rest": -0.078,
+     "crosstalk": {
+      "of": "blink",
+      "by": 0.529
+     }
+    },
+    {
+     "file": "c-tilt.png",
+     "identity": "c",
+     "pose": "tilt",
+     "bad": "the head leans and turns but is not tipped to the shoulder (both detectors read no roll)",
+     "target": "roll",
+     "response": -0.028,
+     "value": -0.034,
+     "rest": -0.005,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.283
+     }
+    },
+    {
+     "file": "d-blink.png",
+     "identity": "d",
+     "pose": "blink",
+     "bad": null,
+     "target": "blink",
+     "response": 0.235,
+     "value": 0.452,
+     "rest": 0.217,
+     "crosstalk": {
+      "of": "browDown",
+      "by": 0.029
+     }
+    },
+    {
+     "file": "d-wink.png",
+     "identity": "d",
+     "pose": "wink",
+     "bad": "both eyes shut",
+     "target": "wink",
+     "response": 0.102,
+     "value": 0.15,
+     "rest": 0.048,
+     "crosstalk": {
+      "of": "browDown",
+      "by": 0.108
+     }
+    },
+    {
+     "file": "d-jaw.png",
+     "identity": "d",
+     "pose": "jaw",
+     "bad": null,
+     "target": "jaw",
+     "response": 0.634,
+     "value": 0.638,
+     "rest": 0.005,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.133
+     }
+    },
+    {
+     "file": "d-smile.png",
+     "identity": "d",
+     "pose": "smile",
+     "bad": null,
+     "target": "smile",
+     "response": 0.917,
+     "value": 0.92,
+     "rest": 0.003,
+     "crosstalk": {
+      "of": "browDown",
+      "by": 0.064
+     }
+    },
+    {
+     "file": "d-browUp.png",
+     "identity": "d",
+     "pose": "browUp",
+     "bad": null,
+     "target": "browUp",
+     "response": 0.92,
+     "value": 0.942,
+     "rest": 0.022,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.216
+     }
+    },
+    {
+     "file": "d-browDown.png",
+     "identity": "d",
+     "pose": "browDown",
+     "bad": null,
+     "target": "browDown",
+     "response": 0.594,
+     "value": 0.726,
+     "rest": 0.131,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.026
+     }
+    },
+    {
+     "file": "d-left.png",
+     "identity": "d",
+     "pose": "left",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.676,
+     "value": -0.67,
+     "rest": 0.006,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.201
+     }
+    },
+    {
+     "file": "d-right.png",
+     "identity": "d",
+     "pose": "right",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.689,
+     "value": 0.694,
+     "rest": 0.006,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.182
+     }
+    },
+    {
+     "file": "d-left15.png",
+     "identity": "d",
+     "pose": "left15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.562,
+     "value": -0.557,
+     "rest": 0.006,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.185
+     }
+    },
+    {
+     "file": "d-right15.png",
+     "identity": "d",
+     "pose": "right15",
+     "bad": null,
+     "target": "yaw",
+     "response": 0.524,
+     "value": 0.53,
+     "rest": 0.006,
+     "crosstalk": {
+      "of": "blink",
+      "by": -0.162
+     }
+    },
+    {
+     "file": "d-up.png",
+     "identity": "d",
+     "pose": "up",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.469,
+     "value": 0.5,
+     "rest": 0.03,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.826
+     }
+    },
+    {
+     "file": "d-down.png",
+     "identity": "d",
+     "pose": "down",
+     "bad": null,
+     "target": "pitch",
+     "response": 0.299,
+     "value": -0.269,
+     "rest": 0.03,
+     "crosstalk": {
+      "of": "blink",
+      "by": 0.304
+     }
+    },
+    {
+     "file": "d-tilt.png",
+     "identity": "d",
+     "pose": "tilt",
+     "bad": null,
+     "target": "roll",
+     "response": 0.667,
+     "value": 0.683,
+     "rest": 0.016,
+     "crosstalk": {
+      "of": "browUp",
+      "by": 0.901
+     }
+    }
+   ]
+  }
+ }
+}

@@ -110,12 +110,12 @@ test('the tool list is generic and under budget: 7 tools under 2,000 tokens, obj
 test('commands come from a registry with schemas: describe lists them and gives each schema; bad args are refused with no step', async () => {
   const { json, call, session } = creator();
   const list = await json('describe');
-  assert.deepEqual(list.commands.map((c) => c.command), ['write_script', 'patch_script', 'recast', 'revoice', 'shot_camera', 'queue_export', 'save']);
+  assert.deepEqual(list.commands.map((c) => c.command), ['write_script', 'patch_script', 'recast', 'revoice', 'shot_camera', 'take', 'queue_export', 'save']);
   for (const { command } of list.commands) {
     const d = await json('describe', { command });
     assert.equal(d.schema.type, 'object'); assert.equal(d.schema.additionalProperties, false, `${command}: unknown args are refused`);
   }
-  assert.equal(creatorCommands().list().filter((c) => c.edit).length, 5, 'five commands edit');
+  assert.equal(creatorCommands().list().filter((c) => c.edit).length, 6, 'six commands edit (take: M4 W9)');
   for (const [args, want] of [
     [{ command: 'recast', args: { role: 'HANA' } }, /character is required/],
     [{ command: 'shot_camera', args: { shot: '030', rig: 'bogus' } }, /rig: one of/],

@@ -8,8 +8,11 @@ import Vision
 /// (`@vrmxg/sense` detect.js has the format). No image leaves the capture queue, and nothing is kept.
 ///   camera.status → { available, authorization, running, device }
 ///   camera.devices → { devices: [{ id, name, model, kind, isDefault }] }   kind: builtIn, external, continuity, deskView
-///   camera.start { fps? = 15, device? } → { running, fps, device, deviceId }   (macOS asks the person the first time)
+///   camera.start { fps? = 15, device?, face? } → { running, fps, device, deviceId, face }   (macOS asks the person the first time)
 /// `device` is an id from camera.devices; without it, the system's default camera (which may be a capture card).
+/// `face: true` (shell 0.8.0, M4 W9: face takes) also measures the face's shape from Vision's landmarks: each frame's
+/// `face.shape` is { blinkL, blinkR, jaw, smile, browUp, browDown, yaw, pitch, roll, geo } (FaceShape.swift), the eyes
+/// and the angles the person's own, and the hands are left out (a face take doesn't read them).
 ///   camera.stop → { running: false }
 /// An app that uses it needs `com.apple.security.device.camera` in its entitlements and NSCameraUsageDescription in its
 /// Info.plist; without the description camera.start refuses instead of the system ending the app.
@@ -25,7 +28,7 @@ public final class CameraMethods {
             ["available": AVCaptureDevice.default(for: .video) != nil, "authorization": Self.authorization(), "running": self.capture != nil, "device": (self.capture?.deviceName).map { $0 as Any } ?? NSNull()]
         }
         router.register("camera.devices") { _ in ["devices": Self.devices()] }
-        router.register("camera.start") { [unowned self] p in try await self.start(fps: p.number("fps") ?? 15, device: p.string("device")) }
+        router.register("camera.start") { [unowned self] p in try await self.start(fps: p.number("fps") ?? 15, device: p.string("device"), face: p.bool("face") ?? false) }
         router.register("camera.stop") { [unowned self] _ in self.stop(); return ["running": false] }
     }
 
@@ -49,7 +52,7 @@ public final class CameraMethods {
         }
     }
 
-    func start(fps: Double, device: String? = nil) async throws -> Any? {
+    func start(fps: Double, device: String? = nil, face: Bool = false) async throws -> Any? {
         guard Bundle.main.object(forInfoDictionaryKey: "NSCameraUsageDescription") != nil else {
             throw BridgeError("unavailable", "this app has no NSCameraUsageDescription: it can't use the camera")
         }
@@ -65,7 +68,7 @@ public final class CameraMethods {
             guard let d = AVCaptureDevice.default(for: .video) else { throw BridgeError("unavailable", "no camera") }
             chosen = d
         }
-        let c = CameraCapture(fps: max(1, min(30, fps)), device: chosen) { [weak self] json in
+        let c = CameraCapture(fps: max(1, min(30, fps)), device: chosen, shape: face) { [weak self] json in
             Task { @MainActor in
                 guard let self, self.capture != nil, let obj = try? JSONSerialization.jsonObject(with: json) as? [String: Any] else { return }
                 self.emit("camera.frame", ["frame": obj])
@@ -73,7 +76,7 @@ public final class CameraMethods {
         }
         try c.run()
         capture = c
-        return ["running": true, "fps": c.fps, "device": c.deviceName, "deviceId": chosen.uniqueID]
+        return ["running": true, "fps": c.fps, "device": c.deviceName, "deviceId": chosen.uniqueID, "face": face]
     }
 
     func stop() { capture?.stop(); capture = nil }
@@ -89,12 +92,16 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     let queue = DispatchQueue(label: "vrmxg.shell.camera")
     let face = VNDetectFaceRectanglesRequest()
     let hands = VNDetectHumanHandPoseRequest()
+    /// The face's landmarks, for its shape (M4 W9): run on the face the rectangles request found, only when asked for.
+    let landmarks = VNDetectFaceLandmarksRequest()
+    let shape: Bool
     var deviceName = ""
     var first: CMTime?
     var last: CMTime?
 
-    init(fps: Double, device: AVCaptureDevice, onFrame: @escaping @Sendable (Data) -> Void) {
-        self.fps = fps; self.device = device; self.onFrame = onFrame
+    init(fps: Double, device: AVCaptureDevice, shape: Bool = false, onFrame: @escaping @Sendable (Data) -> Void) {
+        self.fps = fps; self.device = device; self.shape = shape; self.onFrame = onFrame
+        landmarks.revision = VNDetectFaceLandmarksRequestRevision3
         face.revision = VNDetectFaceRectanglesRequestRevision3
         hands.maximumHandCount = 2
     }
@@ -135,12 +142,27 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
         let aspect = Double(CVPixelBufferGetHeight(buffer)) / Double(max(1, CVPixelBufferGetWidth(buffer)))
         let r4 = { (v: Double) in (v * 10000).rounded() / 10000 }
         let mirror = { (p: CGPoint) -> [Double] in [r4(1 - 2 * Double(p.x)), r4((2 * Double(p.y) - 1) * aspect)] }
-        try? VNImageRequestHandler(cvPixelBuffer: buffer, orientation: .up, options: [:]).perform([face, hands])
+        let handler = VNImageRequestHandler(cvPixelBuffer: buffer, orientation: .up, options: [:])
+        try? handler.perform(shape ? [face] : [face, hands])
         var out: [String: Any] = ["face": NSNull(), "hands": [[String: Any]]()]
         if let f = face.results?.first {
             let b = f.boundingBox, c = mirror(CGPoint(x: b.midX, y: b.midY))
-            out["face"] = ["x": c[0], "y": c[1], "w": r4(2 * Double(b.width)), "yaw": r4(f.yaw?.doubleValue ?? 0), "pitch": r4(f.pitch?.doubleValue ?? 0), "roll": r4(f.roll?.doubleValue ?? 0)]
+            var info: [String: Any] = ["x": c[0], "y": c[1], "w": r4(2 * Double(b.width)), "yaw": r4(f.yaw?.doubleValue ?? 0), "pitch": r4(f.pitch?.doubleValue ?? 0), "roll": r4(f.roll?.doubleValue ?? 0)]
+            if shape {
+                landmarks.inputFaceObservations = [f]
+                try? handler.perform([landmarks])
+                let size = CGSize(width: CVPixelBufferGetWidth(buffer), height: CVPixelBufferGetHeight(buffer))
+                if let lm = landmarks.results?.first?.landmarks, let s = Self.shape(of: lm, in: size, yaw: f.yaw?.doubleValue ?? 0, pitch: f.pitch?.doubleValue ?? 0) {
+                    var j = s.json
+                    // the person's own head: Vision's angles are the picture's (a head turned to the picture's right is
+                    // the person's left), and its pitch is positive looking down
+                    j["yaw"] = r4(f.yaw?.doubleValue ?? 0); j["pitch"] = r4(-(f.pitch?.doubleValue ?? 0)); j["roll"] = r4(-(f.roll?.doubleValue ?? 0))
+                    info["shape"] = j
+                }
+            }
+            out["face"] = info
         }
+        if shape { return out }
         let tips: [VNHumanHandPoseObservation.JointName] = [.thumbTip, .indexTip, .middleTip, .ringTip, .littleTip]
         let pips: [VNHumanHandPoseObservation.JointName] = [.thumbIP, .indexPIP, .middlePIP, .ringPIP, .littlePIP]
         var list: [[String: Any]] = []
@@ -152,5 +174,11 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
         }
         out["hands"] = list
         return out
+    }
+
+    /// Vision's landmarks → the face's shape. Vision names the eyes for the picture's sides as FaceShape does.
+    static func shape(of lm: VNFaceLandmarks2D, in size: CGSize, yaw: Double = 0, pitch: Double = 0) -> FaceShape? {
+        let pts = { (r: VNFaceLandmarkRegion2D?) -> [CGPoint] in r?.pointsInImage(imageSize: size) ?? [] }
+        return FaceShape.measure(.init(leftEye: pts(lm.leftEye), rightEye: pts(lm.rightEye), leftBrow: pts(lm.leftEyebrow), rightBrow: pts(lm.rightEyebrow), outerLips: pts(lm.outerLips), innerLips: pts(lm.innerLips)), yaw: yaw, pitch: pitch)
     }
 }

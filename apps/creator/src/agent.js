@@ -184,7 +184,7 @@ export function creatorTarget(cr, { render = null, commands = creatorCommands() 
   const setDoc = () => cr.setScene?.doc ?? null;
   return {
     commands,
-    context: () => ({ cr, session: asAgent(session()) }),
+    context: () => { if (cr.takes?.busy) throw new Error('a take is being recorded in the creator: the short can\'t be edited until it is stopped'); return { cr, session: asAgent(session()) }; },
     history: () => (cr.session ? cr.session.history() : { undo: null, redo: null, undoDepth: 0, redoDepth: 0 }),
     async undo() { session(); const ok = cr.undo(); cr.changed?.(); return ok; },
     async redo() { session(); const ok = cr.redo(); cr.changed?.(); return ok; },
