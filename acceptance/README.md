@@ -1,4 +1,4 @@
-# M0, M1, M2 and M3 acceptance, and M4's backend matrix
+# M0, M1, M2, M3 and M4 acceptance
 
 M0 W9 (AB-T-0510): the six exit checks of [M0-PLAN.md](../M0-PLAN.md) ("What M0 is done looking like"), run on the
 sample cafe (`content/sample`) at one commit, in every runtime, and filed as receipts.
@@ -15,6 +15,126 @@ node acceptance/compare.mjs       # evaluates the six checks: results/summary.js
 that need no renderer; the playground's acceptance mode adds the rendered pass (the walk rendered frame by frame,
 every camera preset, debug draw). Check 4 re-runs the W6 harness (`engine/packages/snapshot/harness`); check 5 is a
 Claude Code session with the MCP server (`results/mcp-session.json`).
+
+## Result: M4's acceptance (2026-11-24, M5 Max, macOS 27.3 beta 26C5047e)
+
+M4's ten exit checks ([M4-PLAN.md](../M4-PLAN.md) "What M4 is done looking like") were run at the M4 commit: main at
+7984207, which is 8c79fef (W0 to W12 and the four fixes before the acceptance) plus commits that hold only results.
+**Seven checks pass. Three pass in part (3, 5 and 8):** each has a piece that isn't met or wasn't run, listed under the
+table. None failed outright. Each check is filed as a receipt (task AB-T-0585); the files are in
+`results/m4-acceptance/`, with `summary.json` holding the verdicts.
+
+| # | Check | Result | Receipt |
+|---|---|---|---|
+| 1 | A script becomes a sequence | **Passed.** The sample script builds the same bytes in Node, Chromium and WKWebView over both origins (58cebece…f902, 11,207 bytes; the re-script after hand edits 490c1711…c991, 6,255 bytes). In the creator's Mac app a Fountain script opens as a short with its sequence, storyboard and timeline; an edit re-scripts as one undo step and keeps a hand edit; an error changes nothing and names its line (AppProbe 15 of 15) | AB-R-1088 |
+| 2 | You cast it | **Passed, on fixture characters.** A `.vrmxa` opened from the Finder is cast in the selected role as one undo step. A recast keeps the performance and re-voices the role's 4 lines in the new voice, one step. Persona voice, allowed expressions and the wardrobe through the closet: `@vrmxg/cast`, 22 of 22 tests, the studio's Hana and Mira among them. The sample's own two characters carry no usable persona voice, so their voices come from the role map (AB-A-0330) | AB-R-1089 |
+| 3 | The lines are voiced | **Partly.** The voiced sample replays exactly from its baked track in Node, Chromium and WKWebView (final e68bfb9a96f255c5, mouths 58b2c9d48f735177, 1,951 steps), and a regeneration is one undo step. **Not met:** in the creator's Mac app the shell has no `tts.speak`, so lines are spoken through the loopback Kokoro server, the browser's stand-in (AB-T-0614) | AB-R-1090 |
+| 4 | The cameras cover it | **Passed.** Cameras by rule cover both sample shorts (The Regular: 18 shots). A thumbnail per shot from snapshots is exact in all six matrix cells. In the Mac app a new short builds by rule with a thumbnail per shot, and a new camera on shot 030 is one undo step | AB-R-1091 |
+| 5 | A performance can be acted | **Partly.** A puppet take, a director take and a face take each replay exactly from their logs in Node, Chromium and WKWebView (film 2fde5736d2e7edee, final e50ac8a7e928dc3f, 2,079 steps), and each is recorded, kept as one undo step and edited in the Mac app (AppProbe 8 of 8, with scripted keys, the demo model and a synthetic face). **Not run:** a face take from a real camera (AB-T-0557), and the rows a person makes at a real keyboard, model and camera | AB-R-1092 |
+| 6 | It renders on WebGPU | **Passed.** The one-minute short, The Regular (1,457 frames), exports to the same frames in 9 of 9 WebGPU pairs in WKWebView, over the scheme and over loopback, at 1080p and 4K. Check Against Scrub draws 70 of 70 frames exactly as exported, in the Mac editor over both origins and in Chromium on both backends. WebGL is within SSIM 0.9929 of WebGPU on every shot at 1080p, unmasked. The matrix was green in all six cells (AB-R-1087) | AB-R-1093 |
+| 7 | It exports for delivery | **Passed.** From the creator's render queue, every preset (H.264, HEVC, ProRes 4444 with alpha, at 1080p24 and 4K24) delivers twice the same: 29 of 29 pairs, 64 films. The files hold every frame at n/24 s, sound at lag 0, an `.srt` with all 13 lines, a still and a thumbnail per shot and a turntable per character. **The one-minute short at 4K takes 60 to 67 s as delivered** (redraw-checked), 32 to 37 s single draw, against 4 minutes | AB-R-1094 |
+| 8 | The engine is on WebGPU everywhere | **Partly.** The playground, the editor and the creator pick WebGPU, fall back to WebGL without it, and obey the query switch (24 of 24 loads). Every check runs on both backends in Chromium and WKWebView, with the same simulation and exact frames per backend (AB-R-1087). The 20-character step on WebGPU is 2.19 ms. **Not met:** the companion still draws on WebGL only (AB-A-0329). **Not run:** the base-Mac budget (AB-T-0511), and four AppProbe rows that read the renderer readout in the Mac apps | AB-R-1097 |
+| 9 | Agents can make a short | **Passed.** A Claude Code session with only the creator's 7 MCP tools (about 415 tokens) patched the script, recast a role, re-voiced a line, changed a shot's camera, rendered a frame and queued an export: 20 calls, none failed. The creator's Undo and Redo walked its four edits, each marked (MCP) (AppProbe 4 of 4) | AB-R-1095 |
+| 10 | M0 to M3 still hold | **Passed.** `compare.mjs` gives 20 of 20 on each backend in Node, Chromium and WKWebView (AB-R-1087). `npm run check` passes (572 tests: 571 pass, and 1 is skipped for a git-ignored model this worktree lacks), as do the shell's 31 Swift tests. M2's and M3's Chromium checks pass on both backends. The M0 to M2 Mac scenarios pass, three of them only after their stale first step was fixed | AB-R-1096 |
+
+**The matrix was not run again.** It ran green on a quiet machine at 8c79fef on 2026-11-24 (AB-R-1087, "AB-T-0595" below,
+`results/ab-t-0595/verify-3/`). No file outside `acceptance/README.md` and `acceptance/results/` has changed since, so
+that run stands for check 8's matrix, check 4's thumbnails and check 10's re-run on both backends.
+
+**The quiet-machine runs** (the 4K time, every pair of exports, the scrub checks, takes, scripts, voicing) ran from 07:15
+to 07:58 UTC, an hour after a reboot, on a machine nobody was using. The GPU's load was sampled every 5 s: no GPU-using process
+but our own showed (`results/m4-acceptance/gpu-load.json`, `preflight.json`). Timings are from the Mac apps over
+loopback, a fresh launch per preset (AB-L-0346).
+
+### Not green
+
+- **Check 3: the creator's Mac app has no shell voice.** `apps/creator-mac` links `apps/shell` without its voice
+  product, so `tts.speak` isn't there and `CreatorHost.voiceProvider` says so. A recast or a re-voiced line in the Mac
+  app needs `content/sample/tools/tts-server.py` beside it. Task AB-T-0614.
+- **Check 5: no face take from a real face.** The face take is proven on `@vrmxg/takes`' synthetic session. The live
+  check waits on the operator at a camera (AB-T-0557), as do the three checklist rows of `HAND-TEST-M4-TAKES.md` that
+  have no steps.
+- **Check 8: the companion.** `../vrmxa-companion` (b63b19a) still makes its host with `new RenderHost({ canvas })`,
+  WebGL only. The ask to its area is open (AB-A-0329); nothing in this repository changes for it.
+- **Check 8: the base-Mac budget** on either backend wasn't taken: there is no base M-series Mac here (AB-T-0511).
+- **Check 8: four AppProbe rows weren't run.** `HAND-TEST-M4-BACKEND` reads the `#renderer` readout in the playground's
+  and the editor's Mac apps, with no query and with WebGL forced. The screen had locked by then, and AppProbe can't read
+  a window behind the lock. What stands in: the readout shows WebGPU in the screenshots of the scenarios that did run
+  (`results/m4-acceptance/hand-tests/*.jpg`), the creator's Mac app delivered 8 pairs on WebGL with `renderer=webgl`,
+  and the matrix's WKWebView cells force each backend by the same switch.
+- **The beta's odd frame is still there** (AB-T-0591, AB-D-0279). In 26,844 frames drawn once on WebGPU (24 films) none
+  was odd. In 26,844 frames drawn twice by the delivery's redraw check, one first draw was odd: frame 24 of the first
+  film after a launch. The check outvoted it, and the film delivered is the canonical one (AB-D-0280).
+
+### Found on the way
+
+- **Three of the editor's Mac scenarios had gone stale.** M1 editor, M1 export and M2 acceptance waited for the editor
+  to open `cafe.vrmxs` first. Since M3's content (2026-11-19) the sample's first scene is `cafe-cart.vrmxs`, so each
+  failed on its first step and the rows after it fell with it (`hand-tests/*-as-it-stood.md`). The waits are fixed, as
+  M2's timeline scenario already was, and the M1 export scenario now opens `cafe.vrmxs` itself. They then pass 7 of 7,
+  6 of 6 (14 of 14 file checks) and 5 of 5 (10 of 10 file checks). The app was not at fault.
+- **M3's split-screen cost check threw on WebGPU**: it called `gl.finish()` itself. It now waits through
+  `host.finish()`. Two views cost 0.8 ms against 0.5 for one on WebGL, and 2.3 against 1.2 on WebGPU.
+- **Check 1's re-script hash had moved** since W4 recorded it (7d761dd9…9180, 6,183 bytes): the script package changed
+  after it (W7 keeps a hand-retimed line's length; AB-T-0588 keeps what the script generated with a hand group), and
+  nobody had re-run the check. It isn't traced to one commit. All four runtimes agree, and the sample's hash is
+  unchanged.
+- **The creator has no Check Against Scrub of its own.** Check 6's scrub ran in the editor's Mac app on the short's
+  sequence, which is the same host code, and in the built creator in Chromium. The editor's export of the short is
+  frame for frame the creator's WebGPU delivery.
+- **Music and sound effects on their buses** (check 3) are shown by `@vrmxg/voicing`'s tests only: neither sample
+  short has a music track.
+
+### The one-minute short's delivery times
+
+The Regular at 24 fps, 1,457 frames, with 18 stills, 18 thumbnails and two turntables, in the creator's Mac app.
+
+| Size | Backend | Draws | Film, s | Whole delivery, s | Films |
+|---|---|---|---|---|---|
+| 4K | WebGPU | twice (the preset's check) | 49.5–53.7 | 60.2–66.9 | 9 |
+| 4K | WebGPU | once | 25.2–27.2 | 32.3–36.6 | 8 |
+| 4K | WebGL | once | 23.1–23.4 | 29.5–31.8 | 2 |
+| 1080p | WebGPU | twice | 19.8–20.5 | 28.9–30.5 | 3 |
+| 1080p | WebGPU | once | 11.9–12.0 | 16.3–19.6 | 4 |
+| 1080p | WebGL | once | 10.6–10.7 | 15.1–17.5 | 2 |
+
+The frames per backend: 4K `d6857616bf5cc6a6` and 1080p `67110d3e140b32f2` on WebGPU, over loopback and over the
+scheme; 4K `50d84453cb8356e4` and 1080p `97fbec1bd9a0af5f` on WebGL. At 4K with the check, the readback is 21 to 24 ms
+of a 34 to 37 ms frame. The Order's digests are in `results/m4-acceptance/delivery/summary.json`.
+
+### What ran
+
+```sh
+# the quiet-machine runs (each takes the GPU lock)
+OUT=$PWD/acceptance/results/m4-acceptance/delivery   # for every delivery run below
+SHORT=the-regular PRESETS="h264-4k24 hevc-4k24 prores-4k24" TAG=the-regular acceptance/m4/delivery-wkwebview.sh            # as delivered
+SHORT=the-regular PRESETS="h264-4k24 hevc-4k24 prores-4k24" CHECK=off TAG=the-regular-single acceptance/m4/delivery-wkwebview.sh
+SHORT=the-regular PRESETS=h264-1080p24 CHECK=off ORIGIN=scheme TAG=the-regular-single acceptance/m4/delivery-wkwebview.sh   # and loopback, and 4K over the scheme
+RENDERER=webgl SHORT=the-regular PRESETS="h264-4k24" TAG=the-regular acceptance/m4/delivery-wkwebview.sh                    # and 1080p
+acceptance/m4/delivery-wkwebview.sh; CHECK=off TAG=single acceptance/m4/delivery-wkwebview.sh; RENDERER=webgl acceptance/m4/delivery-wkwebview.sh
+FILES=1 REPEAT=1 SHORT=the-regular TAG=the-regular-files acceptance/m4/delivery-wkwebview.sh   # each preset's files read with ffprobe
+node acceptance/m4/delivery-summary.mjs acceptance/results/m4-acceptance/delivery
+node acceptance/m4/short-scrub.mjs --renderer webgpu   # and webgl: the short twice and Check Against Scrub, in Chromium
+node acceptance/m4/short-look.mjs <webgpu stills> <webgl stills>   # the 1080p deliveries' stills, shot by shot
+node acceptance/m4/takes.mjs && acceptance/m4/takes-wkwebview.sh
+node acceptance/m4/script-chromium.mjs && acceptance/m4/script-wkwebview.sh
+node acceptance/m4/voicing.mjs && acceptance/m4/voicing-wkwebview.sh
+# AppProbe, the launched app left in front (AB-T-0612): fixtures first, each under the GPU lock
+appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M4-SHORT.scenario.md && node apps/editor-mac/scripts/check-short-exports.mjs
+appprobe checklist scenario=apps/creator-mac/docs/hand-test/HAND-TEST-M4-CREATOR.scenario.md   # and M4-TAKES, M4-MCP with mcp-session.mjs
+appprobe checklist scenario=apps/playground-mac/docs/hand-test/HAND-TEST-M0.scenario.md        # and the editor's M1 and M2 scenarios
+# the rest
+node acceptance/m4/backend-switch.mjs
+node acceptance/m3/conversation-export.mjs --url <the built editor> --renderer webgpu   # and m2/editor-chromium, m3/dialogue, split, ragdoll, on both backends
+(cd apps/shell && swift test) && npm run check
+```
+
+M4's acceptance added `acceptance/m4/short-scrub.mjs`, `short-look.mjs`, `delivery-files.mjs` and `backend-switch.mjs`,
+`OUT` and `FILES` on `delivery-wkwebview.sh`, and the scenarios `HAND-TEST-M4-SHORT` (editor) and `HAND-TEST-M4-BACKEND`
+(playground and editor). No engine or app code changed.
+
+**Not run again from M0 to M3:** M3's live parts (the spoken conversation in the playground's Mac app, the camera, the
+companion app) and the editor's MCP sessions of M1 to M3.
 
 ## M4 W3: the backend matrix (AB-T-0575)
 
@@ -266,7 +386,9 @@ AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for th
   acceptance/m4/script-wkwebview.sh          # WKWebView, scheme and loopback: results/m4-script-wkwebview.json
   ```
   Node, Chromium, WKWebView scheme and loopback all give sample 58cebece…f902 (11,207 bytes) and re-script
-  7d761dd9…9180 (6,183 bytes). The package's tests hold the sample's hash too (`engine/packages/script/test/golden.json`).
+  490c1711…c991 (6,255 bytes) at the M4 commit (7d761dd9…9180, 6,183 bytes, when W4 recorded it: the script package
+  has changed since, see "Found on the way" above). The package's tests hold the sample's hash too
+  (`engine/packages/script/test/golden.json`).
 
 - **Check 3, the lines are voiced** (W7, AB-T-0579): every line of the sample script's sequence
   (`sequences/cafe-order.vrmxs`) is baked into its dialogue track in its character's voice: Hana in `af_heart`, Mira in
