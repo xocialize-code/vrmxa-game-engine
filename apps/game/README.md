@@ -76,6 +76,11 @@ is refused with a message saying so: every export of a game shares its bundle id
 or the engine, so such a file could load and then play on differently. `replaySession(log, { digest })` refuses a log
 played on another build.
 
+**So any re-export of a game refuses every earlier save.** The build's digest covers every file of the build: a changed
+texture, a scene, a behaviour, a `release` bump in `game.json`, or a newer runtime gives a new digest, and the saves the
+earlier build wrote are listed as "made with another version" and can't be loaded (Continue skips them). That is M5's
+rule, chosen as the safe one: a save loads only into exactly the build that made it.
+
 **Nothing steps while a menu or a question is up**, whatever else happens: a question that comes up while a save loads
 (the Mac shell's close question) holds the game after the load too (`StepGate` in `src/nav.js`). When stepping starts
 again, every key, button and stick still held, and the mouse's movement over the menu, are hidden from the game until let

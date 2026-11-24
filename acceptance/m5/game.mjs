@@ -152,9 +152,23 @@ const diff = firstDifference(replay, log.hashes);
 say('the session played in Chromium replays in Node to the same hash after every step', diff < 0 && replay.length === log.hashes.length && replay.length > 0, diff < 0 ? `${replay.length} steps, last ${replay.at(-1)?.hash} at step ${replay.at(-1)?.step}` : `first difference at index ${diff}: page ${JSON.stringify(log.hashes[diff])}, Node ${JSON.stringify(replay[diff])}`);
 
 // ---------------------------------------------------------------- 6: a fresh launch loads the save
+// and a save an earlier export of the game made (another build's digest; the same saves database) sits newest in slot 6
+await page.evaluate(() => new Promise((ok, fail) => {
+  const r = indexedDB.open('vrmxg-game-cafe-test', 1);
+  r.onsuccess = () => {
+    const t = r.result.transaction('saves', 'readwrite'), s = t.objectStore('saves'), g = s.get('slot-1');
+    g.onsuccess = () => { const doc = JSON.parse(g.result); doc.extra = { ...doc.extra, build: { digest: 'an-earlier-export', game: 'cafe-test' } }; doc.savedAt = '2099-01-01T00:00:00.000Z'; s.put(JSON.stringify(doc), 'slot-6'); };
+    t.oncomplete = () => ok(null); t.onerror = () => fail(t.error);
+  };
+  r.onerror = () => fail(r.error);
+}));
 await page.reload();
 await screen(page, 'title');
 const continueLabel = await page.getAttribute('#continue', 'aria-label').catch(() => null);
+await page.click('#load-game'); await screen(page, 'load');
+const otherLabel = await page.getAttribute('#slot-6', 'aria-label'), otherDisabled = await page.isDisabled('#slot-6');
+await page.keyboard.press('Escape'); await screen(page, 'title');
+say('a save an earlier export made is shown as such and can\'t be picked; Continue offers this build\'s', /^Slot 6: made with another version of the game, can't be loaded/.test(otherLabel ?? '') && otherDisabled && /^Continue: Slot 1: /.test(continueLabel ?? ''), `slot 6 "${otherLabel}" (disabled: ${otherDisabled}); Continue "${continueLabel}"`);
 await page.click('#load-game'); await screen(page, 'load');
 await page.click('#slot-1'); await screen(page, null);
 s = await state(page);

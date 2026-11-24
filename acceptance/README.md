@@ -75,9 +75,9 @@ npm run build -w @vrmxg/game-app
 node acceptance/m5/game.mjs        # Chromium, under the GPU lock: results/m5-game.json
 # the Mac app: apps/game-mac/docs/HAND-TEST-M5-GAME.md (AppProbe)
 ```
-**Passed, 14 of 14** (M5 Max, macOS 27.3 beta, Node 26, Chrome for Testing 156.0.8078.4): the title menu on WebGL when
+**Passed, 15 of 15** (M5 Max, macOS 27.3 beta, Node 26, Chrome for Testing 156.0.8078.4): the title menu on WebGL when
 forced; New Game, the title scene skipped with Space (a recorded input), the level played with W held; Escape pauses and
-nothing steps; Save Game → Slot 1; Load Game over unsaved play asks, then goes back to the save's step, and Tab can't leave the question; Quit to Title
+nothing steps; Save Game → Slot 1; Load Game over unsaved play asks, then goes back to the save's step, and Tab can't leave the question; a save an earlier export made is listed as such, can't be picked, and Continue skips it; Quit to Title
 asks; **the session's log, played in Chromium through the menus with a hash of the world after every step made in the
 page, replays in Node to the same hash on every step** (583 steps, two segments: the new game, and the save it loaded);
 a fresh launch offers Continue and loads the save at its step; every menu from a stand-in gamepad and from the keyboard;

@@ -11,7 +11,7 @@ export class FsStore {
   async list() {
     return fs.readdirSync(this.dir).filter((f) => f.endsWith('.vrmxgsave')).sort().map((f) => {
       const text = fs.readFileSync(path.join(this.dir, f), 'utf8'), d = JSON.parse(text);
-      return { slot: f.replace(/\.vrmxgsave$/, ''), name: d.name ?? null, savedAt: d.savedAt ?? null, step: d.summary?.step ?? null, seconds: d.summary?.seconds ?? null, scene: d.summary?.scene ?? null, bytes: text.length };
+      return { slot: f.replace(/\.vrmxgsave$/, ''), name: d.name ?? null, savedAt: d.savedAt ?? null, step: d.summary?.step ?? null, seconds: d.summary?.seconds ?? null, scene: d.summary?.scene ?? null, bytes: text.length, build: d.extra?.build?.digest ?? null };
     });
   }
   async read(slot) { return JSON.parse(fs.readFileSync(this.file(slot), 'utf8')); }

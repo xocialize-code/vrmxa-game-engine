@@ -216,7 +216,13 @@ play a build in Chromium and WKWebView.
 
 **A stale runtime is refused.** The game app's build writes a source stamp beside its dist (`apps/game/dist-sources.json`,
 git-ignored; `runtimeSources` in `@vrmxg/bundle/node`): every source file its bundle was built from with its SHA-256,
-the install's lock file, its config and this package's Vite plugin. Its runtime version carries the stamp's digest
+its page, its config, this package's Vite plugin, and the lock files of the two installs it takes packages from (this
+workspace's `package-lock.json`, and vrmxa-core's own `package.json` and `package-lock.json`, where sql.js comes from).
+**What the stamp doesn't cover:** the contents of `node_modules` (a package is seen only through its lock file, so a
+reinstall at the same versions, or a package edited by hand in `node_modules`, goes unnoticed; the three-vrm patch is
+applied there on install and is covered by CI's `--check --require-patched`, not by the stamp), files read at build time
+that aren't modules (an asset copied as a file is seen only through the lock file of the package it comes from), and
+the versions of Node and of the operating system the build ran on. Its runtime version carries the stamp's digest
 (`0.1.0+854dbd840f55`; the digest is of the contents only, so it is the same wherever the checkout is). `vrmxg-export`
 and the editor's build check the stamp (`checkRuntimeSources`) and refuse a dist whose sources changed since it was built,
 naming the files; the editor's dev server warns. `vrmxgRuntime`'s `version` may be a function, read once the bundle is

@@ -1,6 +1,7 @@
 // The menus' decisions: settings, slot rows, the gamepad and keyboard, what the game sees after a menu, and the question
 // before progress is lost.
 import { test } from 'node:test';
+import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { VirtualDevice } from '@vrmxg/input';
 import { readSettings, chosenBackend, SettingsStore, memoryStorage, defaultSettings, serializeSettings, SETTINGS_FORMAT } from '../src/settings.js';
@@ -78,6 +79,23 @@ test('slots: six player slots in order, the game\'s checkpoints newest first, no
   assert.deepEqual(checkpoints.map((r) => r.slot), ['auto-door', 'auto-checkpoint']);
   assert.equal(checkpoints[0].label, 'Checkpoint door');
   assert.equal(checkpoints[1].label, 'Checkpoint');
+});
+
+test('slots: a save another build made is shown as such, can\'t be loaded, and Continue never offers it', () => {
+  const list = [
+    { slot: 'slot-1', name: 'Mine', savedAt: '2026-11-24T10:00:00.000Z', step: 100, seconds: 1.7, scene: 'game/level.vrmxs', build: 'this' },
+    { slot: 'slot-2', name: 'Old', savedAt: '2026-11-24T11:00:00.000Z', step: 900, seconds: 15, scene: 'game/level.vrmxs', build: 'earlier' },
+    { slot: 'auto-door', name: 'Door', savedAt: '2026-11-24T12:00:00.000Z', step: 950, seconds: 15.8, scene: 'game/level.vrmxs', build: null },
+  ];
+  const { player, checkpoints } = slotRows(list, { build: 'this' });
+  assert.equal(player[0].other, false);
+  assert.equal(player[1].other, true);
+  assert.equal(player[1].name, 'Made with another version');
+  assert.equal(player[1].text, 'Slot 2: made with another version of the game, can\'t be loaded, 0:15 · 2026-11-24 11:00');
+  assert.equal(checkpoints[0].other, true, 'a save that names no build is another build\'s too');
+  assert.equal(latestSave(list, { build: 'this' }).slot, 'slot-1', 'the newest this build made, not the newest');
+  assert.equal(latestSave(list.slice(1), { build: 'this' }), null, 'only other builds\' saves: nothing to continue');
+  assert.equal(slotRows(list).player[1].other, false, 'no build to compare with: nothing marked');
 });
 
 test('slots: Continue is the newest save the menu knows', () => {
@@ -219,4 +237,19 @@ test('the answer: go on, stay, or save first; a save that fails keeps the game a
   assert.deepEqual(errors, ['the disk is full']);
   assert.equal(await mayLeave(session, { what: 'quit', ask: answer('cancel'), quitting: true }), true, 'the page asked to quit itself');
   assert.equal(await mayLeave(session, { what: 'quit', ask: answer('discard'), asking: () => true }), false, 'a question is up already');
+});
+
+test('the test game\'s exporter refuses a game runtime older than the checkout, as vrmxg-export does', { skip: !fs.existsSync(new URL('../dist-sources.json', import.meta.url)) && 'needs the game app built (npm run build -w @vrmxg/game-app)' }, async () => {
+  const { assertFreshRuntime, GAME_RUNTIME } = await import('../scripts/test-game.mjs');
+  const { checkRuntimeSources } = await import('@vrmxg/bundle/node');
+  const stamp = new URL('../dist-sources.json', import.meta.url), original = fs.readFileSync(stamp, 'utf8');
+  if (!checkRuntimeSources(stamp.pathname).ok) return; // a checkout edited since the build gets the refusal already
+  assert.doesNotThrow(() => assertFreshRuntime(GAME_RUNTIME));
+  try {
+    const doc = JSON.parse(original);
+    doc.files[1].sha256 = '0'.repeat(64);
+    fs.writeFileSync(stamp, JSON.stringify(doc));
+    assert.throws(() => assertFreshRuntime(GAME_RUNTIME), /is older than this checkout: 1 of its source files changed .*npm run build -w @vrmxg\/game-app/);
+    assert.doesNotThrow(() => assertFreshRuntime('/some/other/runtime'), 'another runtime folder isn\'t checked');
+  } finally { fs.writeFileSync(stamp, original); }
 });

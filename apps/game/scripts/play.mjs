@@ -12,7 +12,7 @@ import os from 'node:os';
 import http from 'node:http';
 import path from 'node:path';
 import { exportToFolder, checkFolder } from '@vrmxg/bundle/node';
-import { exportTestGame, GAME_RUNTIME } from './test-game.mjs';
+import { exportTestGame, assertFreshRuntime, GAME_RUNTIME } from './test-game.mjs';
 
 const args = process.argv.slice(2);
 const opt = (flag) => { const i = args.indexOf(flag); return i >= 0 ? args[i + 1] : null; };
@@ -24,6 +24,7 @@ if (args.includes('--test-game')) {
   console.log(JSON.stringify(await exportTestGame(dir)));
 } else if (opt('--project')) {
   dir = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-game-')), 'build');
+  assertFreshRuntime(GAME_RUNTIME);
   const r = await exportToFolder({ project: path.resolve(opt('--project')), runtime: GAME_RUNTIME, out: dir });
   console.log(JSON.stringify({ game: r.manifest.game.id, files: r.files, digest: r.manifest.digest, out: dir }));
 } else dir = path.resolve(args.find((a) => !a.startsWith('--')) ?? '');

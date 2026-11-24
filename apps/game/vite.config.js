@@ -44,8 +44,10 @@ const runtimeStamp = () => ({
   apply: 'build',
   generateBundle(_, bundle) {
     // the bundle's modules, and what shapes the bundle without being one: the shim, the page, this config and the plugin
-    // that writes the table, and the install's lock file (the packages in node_modules)
-    const files = new Set([here('../../engine/packages/bundle/runtime/vrmxg-core.js'), here('../../package-lock.json'), here('index.html'), here('vite.config.js'), here('../../engine/packages/bundle/src/vite.js')]);
+    // that writes the table, and the lock files of the installs it takes packages from (this workspace's, and
+    // vrmxa-core's own: sql.js and its WebAssembly come from there)
+    const files = new Set([here('../../engine/packages/bundle/runtime/vrmxg-core.js'), here('../../package-lock.json'), here('index.html'), here('vite.config.js'), here('../../engine/packages/bundle/src/vite.js'),
+      ...[path.join(core, 'package.json'), path.join(core, 'package-lock.json')].filter((f) => fs.existsSync(f))]);
     for (const chunk of Object.values(bundle)) {
       if (chunk.type !== 'chunk') continue;
       for (const id of /** @type {any} */ (chunk).moduleIds ?? []) {

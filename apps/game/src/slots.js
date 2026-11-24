@@ -35,19 +35,32 @@ export function formatSavedAt(savedAt) {
 }
 
 /**
- * @param {Array<{ slot: string, name?: string, savedAt?: string | null, step?: number | null, seconds?: number | null, scene?: string | null }>} list
- * @returns {{ player: any[], checkpoints: any[] }} player: every one of the six slots, in order, `empty` where the
- *   store has nothing; checkpoints: the game's own, newest first. Each row: { slot, label, empty, name, detail, text }
- *   (`text` is the row read out whole: its accessible name)
+ * A save another build of the game made (another export: every export of a game shares its saves folder). It can't be
+ * loaded (GameSession refuses it), so a menu shows it as such and Continue never offers it. With no build to compare
+ * with (null), nothing is another build's.
+ * @param {{ build?: string | null }} e a listing's entry @param {string | null} build this build's digest
  */
-export function slotRows(list) {
+export const otherBuild = (e, build) => !!build && e.build !== build;
+
+/**
+ * @param {Array<{ slot: string, name?: string, savedAt?: string | null, step?: number | null, seconds?: number | null, scene?: string | null, build?: string | null }>} list
+ * @param {{ build?: string | null }} [o] build: this build's digest (the manifest's): saves another build made are marked `other`
+ * @returns {{ player: any[], checkpoints: any[] }} player: every one of the six slots, in order, `empty` where the
+ *   store has nothing; checkpoints: the game's own, newest first. Each row: { slot, label, empty, other, name, detail,
+ *   text } (`text` is the row read out whole: its accessible name; `other`: made with another version, not loadable)
+ */
+export function slotRows(list, { build = null } = {}) {
   const by = new Map((list ?? []).map((e) => [e.slot, e]));
   const row = (slot, label, e) => {
-    if (!e) return { slot, label, empty: true, name: 'Empty', detail: '', text: `${label}: empty` };
+    if (!e) return { slot, label, empty: true, other: false, name: 'Empty', detail: '', text: `${label}: empty` };
+    if (otherBuild(e, build)) {
+      const detail = [formatPlayed(e.seconds), formatSavedAt(e.savedAt)].filter(Boolean).join(' · ');
+      return { slot, label, empty: false, other: true, name: 'Made with another version', detail, savedAt: e.savedAt ?? null, step: e.step ?? null, text: `${label}: made with another version of the game, can't be loaded${detail ? `, ${detail}` : ''}` };
+    }
     const name = e.name && e.name !== slot ? e.name : sceneName(e.scene) || 'Saved game';
     // where it is, when the name doesn't say; how long was played; when it was saved
     const detail = [name.includes(sceneName(e.scene)) ? '' : sceneName(e.scene), formatPlayed(e.seconds), formatSavedAt(e.savedAt)].filter(Boolean).join(' · ');
-    return { slot, label, empty: false, name, detail, savedAt: e.savedAt ?? null, step: e.step ?? null, text: `${label}: ${name}${detail ? `, ${detail}` : ''}` };
+    return { slot, label, empty: false, other: false, name, detail, savedAt: e.savedAt ?? null, step: e.step ?? null, text: `${label}: ${name}${detail ? `, ${detail}` : ''}` };
   };
   const player = PLAYER_SLOTS.map((slot, i) => row(slot, `Slot ${i + 1}`, by.get(slot)));
   const checkpoints = (list ?? []).filter((e) => e.slot.startsWith(CHECKPOINT_PREFIX)).sort(newestFirst)
@@ -64,10 +77,12 @@ function newestFirst(a, b) {
 }
 
 /**
- * What Continue loads: the newest save the store has that this menu knows (a player slot or a checkpoint), or null.
- * @param {Array<{ slot: string, savedAt?: string | null, step?: number | null }>} list
+ * What Continue loads: the newest save the store has that this menu knows (a player slot or a checkpoint) and this build
+ * made, or null.
+ * @param {Array<{ slot: string, savedAt?: string | null, step?: number | null, build?: string | null }>} list
+ * @param {{ build?: string | null }} [o] build: this build's digest
  */
-export function latestSave(list) {
-  const known = (list ?? []).filter((e) => PLAYER_SLOTS.includes(e.slot) || e.slot.startsWith(CHECKPOINT_PREFIX));
+export function latestSave(list, { build = null } = {}) {
+  const known = (list ?? []).filter((e) => (PLAYER_SLOTS.includes(e.slot) || e.slot.startsWith(CHECKPOINT_PREFIX)) && !otherBuild(e, build));
   return known.sort(newestFirst)[0] ?? null;
 }

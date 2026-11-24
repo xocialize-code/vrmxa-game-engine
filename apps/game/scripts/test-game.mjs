@@ -6,12 +6,25 @@
 //   node apps/game/scripts/test-game.mjs <out> [--runtime <folder>]   export it with the game app's runtime
 import fs from 'node:fs';
 import path from 'node:path';
-import { folderReader } from '@vrmxg/bundle/node';
+import { folderReader, checkRuntimeSources } from '@vrmxg/bundle/node';
 
 const root = path.resolve(import.meta.dirname, '../../..');
 export const SAMPLE = path.join(root, 'content/sample');
 export const FIXTURE = path.join(root, 'apps/game/test/fixtures/game');
 export const GAME_RUNTIME = path.join(root, 'apps/game/dist');
+
+/**
+ * Refuse the game app's dist when it is older than this checkout's sources (its stamp, apps/game/dist-sources.json), as
+ * vrmxg-export does: a build made with it would carry an old engine without a word. Another runtime folder isn't checked.
+ * @param {string} runtime
+ */
+export function assertFreshRuntime(runtime) {
+  if (path.resolve(runtime) !== GAME_RUNTIME) return;
+  const s = checkRuntimeSources(path.join(GAME_RUNTIME, '..', 'dist-sources.json'));
+  if (s.ok) return;
+  const changed = [...s.changed, ...s.missing];
+  throw new Error(`the game runtime at ${runtime} ${s.digest === null ? 'was built without its source stamp (apps/game/dist-sources.json)' : `is older than this checkout: ${changed.length} of its source files changed since it was built (${changed.slice(0, 4).join(', ')}${changed.length > 4 ? ', …' : ''})`}: build it again (npm run build -w @vrmxg/game-app)`);
+}
 
 /** @returns {{ files: string[], read: (ref: string) => Promise<Uint8Array>, game: any }} */
 export function testGameProject() {
@@ -32,6 +45,7 @@ export function testGameProject() {
 export async function exportTestGame(out, { runtime = GAME_RUNTIME } = {}) {
   const { exportBuild } = await import('@vrmxg/bundle');
   const { stageFolder } = await import('@vrmxg/bundle/node');
+  assertFreshRuntime(runtime);
   const p = testGameProject();
   let stage = null;
   try {

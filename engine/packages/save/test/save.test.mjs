@@ -85,10 +85,14 @@ test('stores keep, list and remove saves (memory and files)', async () => {
     const list = await store.list();
     assert.deepEqual(list.map((s) => s.slot), ['slot-1', 'slot-2']);
     assert.equal(list[0].step, 10);
+    assert.equal(list[0].build, null, 'no build named: null');
     assert.deepEqual(await store.read('slot-1'), JSON.parse(JSON.stringify(doc)));
     await store.remove('slot-2');
     assert.equal((await store.list()).length, 1);
   }
   fs.rmSync(dir, { recursive: true, force: true });
+  const stamped = new MemoryStore();
+  await stamped.write('slot-3', { ...doc, extra: { build: { digest: 'abc', game: 'cafe' } } });
+  assert.equal((await stamped.list())[0].build, 'abc', 'the build that made it, for a slot list (M5 W1)');
   await assert.rejects(new FsStore(fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-'))).write('../evil', doc), /a slot is/);
 });

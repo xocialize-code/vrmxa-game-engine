@@ -33,8 +33,11 @@ const ask = questions((q) => { ui.question = q; if (!q) nextTick(() => menu.valu
 const top = computed(() => ui.stack.at(-1) ?? null);
 const playing = computed(() => ui.ready && ui.stack.length === 0);
 const backendName = computed(() => ({ webgpu: 'WebGPU', webgl: 'WebGL' })[ui.backend] ?? 'starting');
-const rows = computed(() => slotRows(ui.saves));
-const latest = computed(() => { const e = latestSave(ui.saves); return e ? rows.value.player.concat(rows.value.checkpoints).find((r) => r.slot === e.slot) : null; });
+const buildDigest = props.build.manifest.digest; // saves another build made are shown as such, and never offered by Continue
+const rows = computed(() => slotRows(ui.saves, { build: buildDigest }));
+const latest = computed(() => { const e = latestSave(ui.saves, { build: buildDigest }); return e ? rows.value.player.concat(rows.value.checkpoints).find((r) => r.slot === e.slot) : null; });
+// Load Game opens when there is a save this build can load (Continue picks the newest of them)
+const loadable = computed(() => !!latest.value);
 const slotLabel = (s) => (PLAYER_SLOTS.includes(s) ? `Slot ${PLAYER_SLOTS.indexOf(s) + 1}` : s);
 const BUS_NAMES = { master: 'Master', music: 'Music', sfx: 'Effects', voice: 'Voices', ambience: 'Ambience' };
 const bindings = computed(() => Object.entries(game.input?.actions ?? {}).map(([name, a]) => ({ name, keys: (a.bindings ?? []).map(describeBinding).filter(Boolean).join(', ') })));
@@ -83,7 +86,7 @@ const newGame = () => run(async () => { ui.stack = []; say(''); try { await host
 const continueGame = () => latest.value && loadSlot(latest.value);
 
 async function loadSlot(row) {
-  if (row.empty) return;
+  if (row.empty || row.other) return;
   const go = await mayLeave(host.value.session, { what: 'load', ask: ask.ask, asking: () => ask.asking });
   if (!go) return;
   const was = ui.stack.slice();
@@ -215,7 +218,7 @@ onBeforeUnmount(() => { removeEventListener('keydown', onKey); document.removeEv
       <MenuScreen v-if="top === 'title'" id="title-menu" ref="menu" :title="game.title" :focus="latest ? '#continue' : '#new-game'" @back="back">
         <button v-if="latest" id="continue" type="button" :aria-label="`Continue: ${latest.text}`" @click="continueGame">Continue <small>{{ latest.name }}</small></button>
         <button id="new-game" type="button" @click="newGame">New Game</button>
-        <button id="load-game" type="button" :disabled="!ui.saves.length" @click="open('load')">Load Game</button>
+        <button id="load-game" type="button" :disabled="!loadable" @click="open('load')">Load Game</button>
         <button id="settings" type="button" @click="open('settings')">Settings</button>
         <button v-if="inShell" id="quit" type="button" @click="quitApp">Quit</button>
       </MenuScreen>
@@ -223,7 +226,7 @@ onBeforeUnmount(() => { removeEventListener('keydown', onKey); document.removeEv
       <MenuScreen v-else-if="top === 'pause'" id="pause-menu" ref="menu" title="Paused" focus="#resume" @back="back">
         <button id="resume" type="button" @click="resume">Resume</button>
         <button id="save-game" type="button" @click="open('save')">Save Game</button>
-        <button id="load-game" type="button" :disabled="!ui.saves.length" @click="open('load')">Load Game</button>
+        <button id="load-game" type="button" :disabled="!loadable" @click="open('load')">Load Game</button>
         <button id="settings" type="button" @click="open('settings')">Settings</button>
         <button id="quit-to-title" type="button" @click="quitToTitle">Quit to Title</button>
       </MenuScreen>
@@ -231,7 +234,7 @@ onBeforeUnmount(() => { removeEventListener('keydown', onKey); document.removeEv
       <MenuScreen v-else-if="top === 'save' || top === 'load'" :id="`${top}-menu`" ref="menu" :title="top === 'save' ? 'Save Game' : 'Load Game'" @back="back">
         <ul class="slots" :aria-label="top === 'save' ? 'Slots to save into' : 'Saves'">
           <li v-for="r in rows.player" :key="r.slot">
-            <button :id="r.slot" type="button" class="slot" :aria-label="r.text" :disabled="top === 'load' && r.empty" @click="top === 'save' ? saveSlot(r) : loadSlot(r)">
+            <button :id="r.slot" type="button" class="slot" :aria-label="r.text" :disabled="top === 'load' && (r.empty || r.other)" @click="top === 'save' ? saveSlot(r) : loadSlot(r)">
               <span class="slot-label">{{ r.label }}</span><span class="slot-name">{{ r.name }}</span><span class="slot-detail">{{ r.detail }}</span>
             </button>
           </li>
@@ -240,7 +243,7 @@ onBeforeUnmount(() => { removeEventListener('keydown', onKey); document.removeEv
           <h2 class="menu-sub">Checkpoints</h2>
           <ul class="slots" aria-label="Checkpoints">
             <li v-for="r in rows.checkpoints" :key="r.slot">
-              <button :id="`cp-${r.slot}`" type="button" class="slot" :aria-label="r.text" @click="loadSlot(r)">
+              <button :id="`cp-${r.slot}`" type="button" class="slot" :aria-label="r.text" :disabled="r.other" @click="loadSlot(r)">
                 <span class="slot-label">{{ r.label }}</span><span class="slot-name">{{ r.name }}</span><span class="slot-detail">{{ r.detail }}</span>
               </button>
             </li>
