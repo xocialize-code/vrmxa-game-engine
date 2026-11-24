@@ -57,6 +57,10 @@ await page.waitForTimeout(150);
 check('the conversation asks, and focus is on the first choice', (await focused()) === 'dialogue-choice-latte', await focused());
 const shot1 = path.join(out, 'game-ui-check-dialogue.png');
 await page.screenshot({ path: shot1 });
+// focus leaves the overlay (a click on the canvas): the keys still answer, while the overlay holds the devices
+await page.focus('canvas');
+await page.keyboard.press('ArrowDown');
+check('with focus on the canvas, an arrow key comes back to the choices', (await focused()) === 'dialogue-choice-latte', await focused());
 // the keyboard: down to the second choice, Enter answers
 await page.keyboard.press('ArrowDown');
 check('an arrow key moves to the next choice', (await focused()) === 'dialogue-choice-tea', await focused());
@@ -89,6 +93,14 @@ await page.keyboard.press('KeyJ');
 await page.waitForTimeout(100);
 const after = await page.evaluate(() => ({ overrides: window.__demo.input.overrides(), stored: JSON.parse(localStorage.getItem('vrmxg-game-ui-demo-settings')) }));
 check('the rebinding is on the game\'s input and in the app\'s store', JSON.stringify(after.overrides.jump) === JSON.stringify([{ key: 'KeyJ' }, { gamepadButton: 0 }]) && JSON.stringify(after.stored.bindings.jump) === JSON.stringify([{ key: 'KeyJ' }, { gamepadButton: 0 }]), JSON.stringify(after.overrides));
+// a gamepad capture inside the menu: B is taken as the new button, and doesn't also close the menu (review)
+await page.click('#rebind-run-gamepad'); await page.click('#rebind-run-gamepad'); // twice: one capture, not two
+await press(1);
+await page.waitForTimeout(100);
+const run = await page.evaluate(() => window.__demo.input.bindings().run.bindings);
+check('a gamepad capture takes B, and the menu stays open', !!(await page.$('[aria-label="Settings"]')) && JSON.stringify(run) === JSON.stringify([{ key: 'ShiftLeft' }, { key: 'ShiftRight' }, { gamepadButton: 1 }]), JSON.stringify(run));
+await press(0); await page.waitForTimeout(50);
+check('no capture is left waiting after it', (await label('#rebind-run-gamepad')) === 'Run, gamepad: Gamepad B. Change', await label('#rebind-run-gamepad'));
 const shot2 = path.join(out, 'game-ui-check-settings.png');
 await page.screenshot({ path: shot2 });
 await press(1);

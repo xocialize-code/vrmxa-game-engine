@@ -20,7 +20,7 @@
 //   a choice   is waited for after a line that offers any. It arrives as a latched, recorded input
 //              (@vrmxg/input: the UI calls input.choose('dialogue.choose', id), the step reads input.choice(…)), so a
 //              recording carries it and a replay takes the same branch on the same step. Nothing here hears from a UI;
-//   skipping   a line is the same kind of input ('dialogue.advance').
+//   skipping   a line is the same kind of input ('dialogue.advance', any value but false).
 // The UI (the box, the choices) reads view(), which is plain data, and writes nothing.
 import { Node } from '@vrmxg/core';
 import { holds, checkCondition } from '@vrmxg/game';
@@ -170,7 +170,7 @@ export class DialogueService {
     const line = this._script(node).lines[a.index];
     if (!line) { this._end(node); return; }
     if (a.phase === 'line') {
-      const skip = node.props.skippable !== false && input?.choice(ADVANCE) !== undefined;
+      const adv = input?.choice(ADVANCE), skip = node.props.skippable !== false && adv !== undefined && adv !== false;
       if (!skip && !((this.tree.clock.step - a.since) * DT > a.duration)) return;
       if (skip && line.speaker) this.tree.services.get('voice')?.hush(line.speaker);
       const view = this._conditions(line.choices);
@@ -181,9 +181,12 @@ export class DialogueService {
       node.emit('asked', { line: line.id, index: a.index, choices: offered.map((k) => line.choices[k].id) });
       return;
     }
+    // the lines may have been edited under the question (the editor's play, an MCP edit): only choices still there count
+    const offered = a.offered.filter((i) => i < line.choices.length);
+    if (!offered.length) { this._goto(node, line.next); return; }
     const picked = input?.choice(CHOOSE);
     if (picked === undefined) return;
-    const k = a.offered.find((i) => line.choices[i].id === String(picked));
+    const k = offered.find((i) => line.choices[i].id === String(picked));
     if (k === undefined) return; // not one of the choices on offer: the question stands
     const c = line.choices[k];
     this._set(node, c.set);
@@ -261,7 +264,7 @@ export class DialogueService {
     return {
       node: a.node, title: node.name ?? null, index: a.index, line: line.id, speaker: line.speaker, name: line.speaker ? speaker?.name ?? line.speaker : null,
       text: line.text, clip: line.clip, phase: a.phase, since: a.since, duration: a.duration, skippable: node.props.skippable !== false,
-      choices: a.phase === 'choice' ? a.offered.map((k) => ({ id: line.choices[k].id, text: line.choices[k].text })) : [],
+      choices: a.phase === 'choice' ? a.offered.filter((k) => k < line.choices.length).map((k) => ({ id: line.choices[k].id, text: line.choices[k].text })) : [],
     };
   }
 

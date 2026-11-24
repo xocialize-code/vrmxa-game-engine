@@ -38,7 +38,7 @@ export class InputService {
     /**
      * While true the devices give nothing to the actions (an overlay has the keyboard and the gamepad: a conversation's
      * answers, a menu). Choices still pass. A button held when it ends stays up until it is let go, so the press that
-     * picked an answer isn't also a jump. It gates the devices only: what is latched is recorded, and a replay never
+     * picked an answer isn't also a jump (an axis, a held direction, reads again at once). It gates the devices only: what is latched is recorded, and a replay never
      * looks at it.
      */
     this.muted = false;
@@ -71,7 +71,7 @@ export class InputService {
       const state = { keys: new Set(), mouse: { dx: 0, dy: 0, wheel: 0, buttons: new Set() }, gamepad: null };
       for (const d of this.devices) d.read(state);
       const { axes, buttons } = this.map.evaluate(state);
-      for (let k = 0; k < axes.length; k++) this.axes[k] = this.muted ? 0 : axes[k];
+      for (let k = 0; k < axes.length; k++) this.axes[k] = this.muted ? 0 : axes[k]; // an axis reads again as soon as it ends
       for (let k = 0; k < buttons.length; k++) {
         const raw = buttons[k] ? 1 : 0;
         if (this.muted) { this._held[k] = raw; this.down[k] = 0; }

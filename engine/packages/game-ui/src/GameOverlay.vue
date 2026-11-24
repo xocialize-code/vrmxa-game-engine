@@ -33,7 +33,7 @@ let binding = null, raf = 0;
 const inputNow = () => props.flow.tree?.services.get('input') ?? null;
 const nav = useNav(root, {
   input: inputNow,
-  grab: () => !!state.value.dialogue,
+  grab: () => state.value.holding, // only while the game's devices are the overlay's: never one key for both
   onKey: (e) => { const c = choiceForKey(state.value.dialogue, e.code); if (c) { onChoose(c.id); return true; } return false; },
 });
 
@@ -47,8 +47,9 @@ function sync(force = false) {
 function onChoose(id) { const input = inputNow(); if (input && choose(input, id)) emit('choose', id); }
 function onAdvance() { const input = inputNow(); if (input && advance(input)) emit('advance'); }
 
-// When the conversation asks, or a line starts, focus goes to its first control: a gamepad or the keys answer at once.
-watch(() => (state.value.dialogue ? `${state.value.dialogue.asking}|${state.value.dialogue.text}` : ''), async (k) => { if (k) { await nextTick(); nav.focusFirst(); } });
+// When the conversation asks, or a line starts, focus goes to its first control, while the overlay holds the devices:
+// a gamepad or the keys answer at once. (With hold 'choice' or 'never' the game has the keys meanwhile: no focus taken.)
+watch(() => (state.value.dialogue && state.value.holding ? `${state.value.dialogue.asking}|${state.value.dialogue.text}` : ''), async (k) => { if (k) { await nextTick(); nav.focusFirst(); } });
 
 function frame() { raf = requestAnimationFrame(frame); sync(); }
 onMounted(() => {

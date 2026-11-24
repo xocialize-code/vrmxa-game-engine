@@ -5,8 +5,9 @@
 //
 // One scope acts at a time: the OUTERMOST nav root around the focused control. So components that navigate on their
 // own (VolumeControls, RebindList) become one list when an app's settings menu wraps them in its own useNav root, and a
-// gamepad moves across all of them. With focus in no root (the canvas, the page), a root whose `grab()` says so acts:
-// the game overlay while a conversation is on screen.
+// gamepad moves across all of them. With focus in no root (the canvas, the page), a root whose `grab()` says so acts,
+// for the keys and the gamepad: the game overlay while it holds the devices. Nothing acts while focus is inside an
+// element marked `data-nav-paused` (a rebinding waiting for its key or button), in any scope.
 import { onMounted, onBeforeUnmount, watch } from 'vue';
 import { ActionMap } from '@vrmxg/input';
 import { UI_ACTIONS, NavPad, keyAction, navTarget } from './nav.js';
@@ -28,6 +29,7 @@ export function useNav(root, { input = () => null, onBack = null, grab = () => f
   const active = () => (typeof document !== 'undefined' ? document.activeElement : null);
   /** Does this root act for focus on `el`? */
   const mine = (el) => { const scope = scopeOf(el); return scope ? scope === root.value : grab(); };
+  const frozen = (el) => !!el?.closest?.('[data-nav-paused]');
 
   function apply(action) {
     const list = controls(), el = /** @type {any} */ (typeof document !== 'undefined' ? document.activeElement : null);
@@ -42,7 +44,7 @@ export function useNav(root, { input = () => null, onBack = null, grab = () => f
   }
 
   function onKeydown(e) {
-    if (e.defaultPrevented || !root.value?.contains(e.target) || paused() || !mine(e.target)) return;
+    if (e.defaultPrevented || !root.value || paused() || frozen(e.target) || !mine(e.target)) return;
     if (onKey?.(e)) { e.preventDefault(); return; }
     const action = keyAction(map, e.code);
     if (!action) return;
@@ -54,10 +56,10 @@ export function useNav(root, { input = () => null, onBack = null, grab = () => f
 
   function poll() {
     raf = requestAnimationFrame(poll);
-    if (paused()) { pad.reset(); return; }
-    const state = input()?.peek?.() ?? null;
-    const fired = pad.update(state);
-    if (!fired.length || !root.value || !mine(active())) return;
+    // the pad is read every frame, paused or not: a button held through a pause (the one a rebinding took) isn't a
+    // fresh press when the pause ends
+    const fired = pad.update(input()?.peek?.() ?? null);
+    if (!fired.length || paused() || !root.value || frozen(active()) || !mine(active())) return;
     for (const a of fired) apply(a);
   }
 

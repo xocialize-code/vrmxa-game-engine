@@ -97,3 +97,14 @@ test('capturing a key or a button rebinds one slot and keeps the rest', () => {
   assert.equal(captureButton(null, null), null);
   assert.deepEqual(conflicts(structuredClone(DEFAULT_ACTIONS), 'jump', { key: 'KeyE' }), ['interact']);
 });
+
+test('a write that fails is remembered and never stops the next one (review)', async () => {
+  const landed = []; let fail = true;
+  const flaky = { read: () => null, write: (d) => { if (fail) { fail = false; throw new Error('disk full'); } landed.push(d.volumes.music.volume); } };
+  const s = await new GameSettings({ store: flaky }).load();
+  assert.equal(await s.setVolume('music', { volume: 0.2 }), false, 'the failed write says so, without rejecting');
+  assert.match(String(s.error), /disk full/);
+  assert.equal(await s.setVolume('music', { volume: 0.7 }), true);
+  assert.deepEqual(landed, [0.7], 'the next write lands, with the latest settings');
+  assert.equal(s.error, null);
+});

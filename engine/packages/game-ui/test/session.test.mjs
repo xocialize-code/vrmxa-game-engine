@@ -116,3 +116,15 @@ test('settings go on a world a save loads into', async () => {
   b.dispose();
   assert.equal(flow.tree.services.get('input').muted, false, 'disposed: the devices are the game\'s again');
 });
+
+test('the overlay changes input.muted only when its own hold changes: an app\'s own muting stands (review)', async () => {
+  const flow = await startFlow(R, scenes);
+  const b = new OverlayBinding(flow, { hold: 'never' });
+  const input = flow.tree.services.get('input');
+  b.read();
+  input.muted = true;      // the app's pause menu, say
+  flow.step(); b.read(); b.read();
+  assert.equal(input.muted, true);
+  b.dispose();
+  assert.equal(input.muted, true, 'and disposing an overlay that never held leaves it alone');
+});

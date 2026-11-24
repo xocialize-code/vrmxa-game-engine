@@ -19,6 +19,7 @@ export class OverlayBinding {
     this.hud = new HudBinding(flow, { player });
     this._tree = null; this._key = null; this._model = null;
     this._input = null;
+    this._holding = null; // what this overlay last set: it changes input.muted only when that changes
     // a load (and a scene change) puts a new input service in place before its first step: settings go on it at once
     this._off = flow.on((e) => { if (e.type === 'loaded' || e.type === 'scene') this._adopt(); });
   }
@@ -32,6 +33,7 @@ export class OverlayBinding {
     this._tree = t;
     if (this._input && this._input !== this.input) this._input.muted = false; // the world left behind lets go
     this._input = this.input;
+    this._holding = null; // a new input service: set its hold afresh
     if (this._input) this.settings?.applyTo({ input: this._input });
   }
 
@@ -42,7 +44,7 @@ export class OverlayBinding {
     const captions = t?.services.get('voice')?.captions?.(1) ?? [];
     const holding = !!view && (this.hold === 'conversation' || (this.hold === 'choice' && view.phase === 'choice'));
     const input = this.input;
-    if (input && input.muted !== holding) input.muted = holding;
+    if (input && holding !== this._holding) { input.muted = holding; this._holding = holding; } // an app's own muting otherwise stands
     return { hud: this.hud.read(), dialogue: dialogueModel(view, captions), captions: captionsModel(captions, view), holding };
   }
 
@@ -58,7 +60,7 @@ export class OverlayBinding {
 
   /** Let go of the devices and stop listening (the overlay is unmounted). */
   dispose() {
-    if (this._input) this._input.muted = false;
+    if (this._input && this._holding) this._input.muted = false;
     this._off?.(); this._off = null;
     this.hud.dispose();
   }

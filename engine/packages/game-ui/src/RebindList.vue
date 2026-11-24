@@ -21,19 +21,21 @@ const nav = useNav(root, { input: inputNow, onBack: () => emit('back'), paused: 
 let raf = 0, before = null;
 
 function start(row, slot) {
+  if (capturing.value) stop(false); // one capture at a time: a second click replaces the first
   capturing.value = { row, slot }; note.value = '';
   if (slot === 'keyboard') addEventListener('keydown', onKey, true);
   else { before = inputNow().peek().gamepad; raf = requestAnimationFrame(pollPad); }
 }
-function stop() {
+function stop(refocus = true) {
   removeEventListener('keydown', onKey, true);
   if (raf) cancelAnimationFrame(raf);
   raf = 0; before = null;
   const was = capturing.value;
   capturing.value = null;
-  if (was) requestAnimationFrame(() => root.value?.querySelector(`#rebind-${was.row.id}-${was.slot}`)?.focus());
+  if (was && refocus) requestAnimationFrame(() => root.value?.querySelector(`#rebind-${was.row.id}-${was.slot}`)?.focus());
 }
 function take(binding) {
+  if (!capturing.value) return;
   const { row, slot } = capturing.value, input = inputNow();
   const also = conflicts(input.bindings(), row.action, binding);
   props.settings.rebind(input, row.action, applyCapture(input.bindings()[row.action].bindings, row, slot, binding));
@@ -47,9 +49,12 @@ function onKey(e) {
   if (b) take(b); else { note.value = 'Unchanged'; stop(); }
 }
 function pollPad() {
+  raf = 0;
+  if (!capturing.value) return;
   const now = inputNow().peek().gamepad, b = captureButton(before, now);
   if (b) { take(b); return; }
   before = now ?? before;
+  if (!capturing.value) return;
   raf = requestAnimationFrame(pollPad);
 }
 function reset() { props.settings.resetBindings(inputNow()); note.value = 'Every action is bound as the game has it'; version.value++; }
@@ -59,7 +64,7 @@ defineExpose({ focusFirst: () => nav.focusFirst() });
 </script>
 
 <template>
-  <section ref="root" class="gu-settings gu-rebind" aria-label="Controls">
+  <section ref="root" class="gu-settings gu-rebind" aria-label="Controls" :data-nav-paused="capturing ? '' : null">
     <table class="gu-rebind-table">
       <thead><tr><th scope="col">Action</th><th scope="col">Keyboard</th><th scope="col">Gamepad</th></tr></thead>
       <tbody>

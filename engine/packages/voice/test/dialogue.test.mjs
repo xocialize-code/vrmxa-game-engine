@@ -196,3 +196,26 @@ test('a snapshot taken while the conversation waits for an answer restores and g
   for (let i = at; i < 420; i++) { b.tree.step(); run.push({ step: b.tree.clock.step, h: worldHashes(b.tree) }); }
   assert.equal(compareRuns(live.run.filter((r) => r.step > at), run), null);
 });
+
+test('lines edited under a question (the editor\'s play, an MCP edit) never throw in the step (review)', () => {
+  const w = world();
+  untilAsked(w);
+  const node = w.tree.find('order');
+  node.props = { ...node.props, lines: [{ speaker: 'hana', text: 'Good morning!', choices: [{ id: 'latte', text: 'A latte.' }] }, { text: 'Bye.' }] };
+  assert.deepEqual(w.dialogue.view().choices.map((c) => c.id), ['latte'], 'only the choices still there');
+  assert.doesNotThrow(() => w.tree.step());
+  w.input.choose(CHOOSE, 'latte'); w.tree.step();
+  assert.equal(w.dialogue.view().text, 'Bye.');
+  // and a question whose choices all went: it moves on
+  const v = world(); untilAsked(v);
+  v.tree.find('order').props = { lines: [{ speaker: 'hana', text: 'Good morning!' }, { text: 'Next.' }] };
+  assert.doesNotThrow(() => v.tree.step());
+  assert.equal(v.dialogue.view().text, 'Next.');
+});
+
+test('advance false is no skip (review)', () => {
+  const w = world();
+  w.tree.run(2);
+  w.input.choose(ADVANCE, false); w.tree.step();
+  assert.equal(w.dialogue.view().phase, 'line');
+});

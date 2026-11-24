@@ -39,6 +39,8 @@ export class GameSettings {
     this.version = 0;
     /** What the last apply left out (stored bindings this game doesn't have, or doesn't take). */
     this.ignored = [];
+    /** The last write's error, or null once a write lands. A failed write never stops the next one. */
+    this.error = null;
     this._writing = Promise.resolve();
   }
 
@@ -56,11 +58,16 @@ export class GameSettings {
     return this;
   }
 
-  /** Write the settings to the store; writes land in the order they were asked for. */
+  /**
+   * Write the settings to the store; writes land in the order they were asked for. A write that fails is remembered in
+   * `error` and the next one is still made (the latest settings, whole). → resolves true when this write landed, false
+   * when it failed: never rejects, so a control that doesn't wait for it leaves nothing unhandled
+   */
   save() {
     const snapshot = structuredClone(this.data);
-    this._writing = this._writing.then(() => this.store.write(snapshot));
-    return this._writing;
+    const w = this._writing.then(() => this.store.write(snapshot)).then(() => { this.error = null; return true; }, (e) => { this.error = e; return false; });
+    this._writing = w;
+    return w;
   }
 
   /**
