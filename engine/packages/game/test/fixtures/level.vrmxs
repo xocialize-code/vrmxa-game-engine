@@ -1,0 +1,34 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "level",
+  "assets": [],
+  "nodes": [
+    {"id":"root","type":"Node3D"},
+    {"id":"floor","type":"Collider","parent":"root","transform":{"p":[0,-0.5,0]},"props":{"friction":0.6,"shape":"box","size":[40,1,40]}},
+    {"id":"ball","type":"RigidBody","parent":"root","transform":{"p":[0,0.25,0]},"props":{"linearDamping":0.5,"mass":1},"behaviours":[{"force":0.05,"use":"push"}]},
+    {"id":"ball-shape","type":"Collider","parent":"ball","props":{"radius":0.25,"shape":"sphere"}},
+    {"id":"crate-a","type":"RigidBody","parent":"root","transform":{"p":[-2,1.5,4]},"props":{"mass":2},"behaviours":[{"strength":0.4,"use":"jitter"}]},
+    {"id":"crate-a-shape","type":"Collider","parent":"crate-a","props":{"restitution":0.3,"shape":"box","size":[0.5,0.5,0.5]}},
+    {"id":"crate-b","type":"RigidBody","parent":"root","transform":{"p":[2,2.5,5]},"props":{"mass":3},"behaviours":[{"strength":0.6,"use":"jitter"}]},
+    {"id":"crate-b-shape","type":"Collider","parent":"crate-b","props":{"restitution":0.2,"shape":"box","size":[0.6,0.6,0.6]}},
+    {"id":"gate-order","type":"Area","parent":"root","transform":{"p":[1.5,0.6,0]},"props":{"shape":"box","size":[0.2,1,2]}},
+    {"id":"gate-till","type":"Area","parent":"root","transform":{"p":[3.5,0.6,0]},"props":{"shape":"box","size":[0.2,1,2]}},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"flags":{"tillClosed":false},"lose":{"key":"timers.clock.done","test":"state"}}},
+    {"id":"score","type":"GameCounter","parent":"rules","props":{"label":"Score"}},
+    {"id":"orders","type":"GameCounter","parent":"rules","props":{"label":"Orders taken","max":3,"scope":"scene"}},
+    {"id":"clock","type":"GameTimer","parent":"rules","props":{"label":"Until closing","seconds":6}},
+    {"id":"take-order","type":"GameGoal","parent":"rules","props":{"text":"Take the order","when":{"key":"counters.orders","op":"ge","test":"state","value":1}}},
+    {"id":"close-till","type":"GameGoal","parent":"rules","props":{"text":"Close the till before the clock runs out","when":{"of":[{"key":"goals.take-order.done","test":"state"},{"key":"flags.tillClosed","test":"state"}],"test":"all"}}},
+    {"id":"cp","type":"Checkpoint","parent":"gate-order","props":{"label":"At the counter"}},
+    {"id":"cp-order","type":"Checkpoint","parent":"rules","props":{"label":"Order taken","slot":"after-order","when":{"key":"goals.take-order.done","test":"state"}}}
+  ],
+  "connections": [
+    {"from":"gate-order","signal":"bodyEntered","to":"orders","call":"add"},
+    {"from":"gate-order","signal":"bodyEntered","to":"cp","call":"write"},
+    {"from":"take-order","signal":"completed","to":"score","call":"add","args":{"by":10}},
+    {"from":"gate-till","signal":"bodyEntered","to":"rules","call":"setFlag","args":{"flag":"tillClosed"}},
+    {"from":"close-till","signal":"completed","to":"score","call":"add","args":{"by":25}},
+    {"from":"rules","signal":"ended","to":"rules","call":"changeScene","args":{"after":0.5,"to":"ending.vrmxs"}}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "title",
+  "assets": [],
+  "nodes": [
+    {"id":"root","type":"Node3D"},
+    {"id":"floor","type":"Collider","parent":"root","transform":{"p":[0,-0.5,0]},"props":{"shape":"box","size":[20,1,20]}},
+    {"id":"crate","type":"RigidBody","parent":"root","transform":{"p":[0,2,0]},"props":{"mass":2}},
+    {"id":"crate-shape","type":"Collider","parent":"crate","props":{"restitution":0.4,"shape":"box","size":[0.5,0.5,0.5]}},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"flags":{"seenTitle":true},"keepOutcome":true}},
+    {"id":"idle","type":"GameTimer","parent":"root","props":{"label":"On the title"}},
+    {"id":"start","type":"Node3D","parent":"root","behaviours":[{"action":"jump","use":"onAction"}]}
+  ],
+  "connections": [
+    {"from":"start","signal":"pressed","to":"rules","call":"changeScene","args":{"to":"level.vrmxs"}}
+  ]
+}

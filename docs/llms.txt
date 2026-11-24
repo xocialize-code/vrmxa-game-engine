@@ -24,7 +24,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 ## Reference
 
 - [Overview](reference/index.md): What the generated reference covers, and what each page is generated from.
-- [Node types](reference/nodes.md): The 22 node types of a VRMXG scene, with each one's props, signals and actions.
+- [Node types](reference/nodes.md): The 27 node types of a VRMXG scene, with each one's props, signals and actions.
 - [Behaviours](reference/behaviours.md): The 8 behaviours the registry declares, with their params and the signals and actions they add.
 - [MCP servers and tools](reference/mcp.md): The vrmxg-mcp server's three modes (headless, editor, creator) and every tool with its input schema.
 - [Creator commands](reference/creator-commands.md): The 8 commands an agent runs in the creator through the command tool, each with its JSON Schema.
@@ -32,7 +32,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [The Fountain subset](reference/fountain.md): The screenplay syntax a VRMXG script is written in: elements, tags, parenthetical words and timing defaults.
 - [shorts.json](reference/shorts-json.md): The file that lists a project's shorts for the creator: each short's script, sequence, marks, set and cameras.
 - [delivery.json](reference/delivery-json.md): What a delivery folder holds, the render queue's presets, and the manifest that names every file with its hash.
-- [Packages](reference/packages.md): The 36 engine packages, one line each, and which side of the determinism boundary each is on.
+- [Packages](reference/packages.md): The 37 engine packages, one line each, and which side of the determinism boundary each is on.
 
 ## Node types
 
@@ -58,6 +58,11 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [Collider](reference/nodes.md#collider): A collision shape. Under a RigidBody it moves with it; otherwise it is fixed.
 - [Area](reference/nodes.md#area): A sensor volume: reports bodies entering and leaving (door triggers, pickups).
 - [BoneAttachment](reference/nodes.md#boneattachment): Rides on a humanoid bone of the Character it is inside (held and stowed items).
+- [GameRules](reference/nodes.md#gamerules): A scene's rules: when the game is won and lost, and the flags it starts with. One per scene. Its actions change the game state and move the game to another scene.
+- [GameCounter](reference/nodes.md#gamecounter): A number the game counts: the score (the counter named "score"), orders taken, coins.
+- [GameTimer](reference/nodes.md#gametimer): A clock counted in simulation steps: a countdown that times out, or a stopwatch (no length). It follows its node's pause and time scale, and stops when the game is won or lost.
+- [GameGoal](reference/nodes.md#gamegoal): Something to get done: the HUD shows the first one that isn't. Done when its condition first holds, or by its action.
+- [Checkpoint](reference/nodes.md#checkpoint): A point where the game saves by itself (into a slot of the save store): when its condition first holds, or by its action (a trigger's connection).
 
 ## Behaviours
 
@@ -145,6 +150,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [@vrmxg/editor-core](reference/packages.md): The editor's model without UI or three.js: a scene open for editing, its selection, undoable commands, assets placed as nodes, save, and play in place.
 - [@vrmxg/editor-ui](reference/packages.md): The Vue components the editor and the creator share, over `@vrmxg/editor-core`'s model.
 - [@vrmxg/export](reference/packages.md): Offline frame export, the pipeline spike-frame-export chose.
+- [@vrmxg/game](reference/packages.md): Game flow: what makes a scene a game.
 - [@vrmxg/input](reference/packages.md): Named actions bound to keys, mouse and gamepads, latched once per simulation step, recorded and replayed; and the player controller.
 - [@vrmxg/interact](reference/packages.md): Characters interacting with VRMXI items: focus, prompts, the verbs `use`, `take`, `talk`, `sit` and `stand`, and an inventory for items that can't go into a closet.
 - [@vrmxg/item](reference/packages.md): VRMXI game items in the engine, on the draft specification (`VRMXA_Specification/VRMXI-base-draft.md`): read and check `.vrmxi` files, Item nodes with their bodies …

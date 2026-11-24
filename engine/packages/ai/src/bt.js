@@ -57,10 +57,10 @@ const posOf = (ctx, t) => { if (Array.isArray(t)) return t; const n = t && ctx.t
 
 /** Tests (conditions, guards, until): name → (ctx, args) → boolean. */
 export const TESTS = {
-  /** a blackboard value: { key, op?: eq|ne|gt|lt|set|unset, value? } */
+  /** a blackboard value: { key, op?: eq|ne|gt|ge|lt|le|set|unset, value? } (@vrmxg/game's `state` test is this one, over the game state) */
   bb: (ctx, { key, op = 'set', value }) => {
     const v = resolve(`$${key}`, ctx);
-    switch (op) { case 'eq': return v === value; case 'ne': return v !== value; case 'gt': return v > value; case 'lt': return v < value; case 'unset': return v == null || v === false; default: return v != null && v !== false; }
+    switch (op) { case 'eq': return v === value; case 'ne': return v !== value; case 'gt': return v > value; case 'ge': return v >= value; case 'lt': return v < value; case 'le': return v <= value; case 'unset': return v == null || v === false; default: return v != null && v !== false; }
   },
   /** the agent's goal is `name` */
   goal: (ctx, { name }) => ctx.bb.goal?.name === name,

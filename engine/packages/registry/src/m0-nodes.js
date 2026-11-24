@@ -5,6 +5,31 @@ import { createRegistry, P } from './index.js';
 
 const arg = (p, description) => ({ ...p, schema: { ...p.schema, description } });
 
+/** The tests a game condition may use (@vrmxg/game's TESTS: its test checks the two lists are the same). */
+export const GAME_TESTS = ['state', 'all', 'any', 'not'];
+/** The comparisons of the `state` test (@vrmxg/ai's `bb` test has the same). */
+export const GAME_OPS = ['eq', 'ne', 'gt', 'ge', 'lt', 'le', 'set', 'unset'];
+/**
+ * JSON Schema of a game condition: { test: 'state', key, op?, value? } | { test: 'all' | 'any', of: [condition…] } |
+ * { test: 'not', of: condition }. Written out `depth` levels deep (a scene schema here has no recursive $ref); below
+ * that a condition is checked only for its shape, and @vrmxg/game's checkCondition checks it whole when the scene starts.
+ */
+export function conditionSchema(depth = 3) {
+  const inner = depth > 0 ? conditionSchema(depth - 1) : { type: 'object', required: ['test'], properties: { test: { enum: GAME_TESTS } } };
+  return {
+    type: 'object', required: ['test'],
+    properties: { test: { enum: GAME_TESTS } },
+    allOf: [
+      { if: { properties: { test: { const: 'state' } }, required: ['test'] }, then: {
+        required: ['key'], additionalProperties: false,
+        properties: { test: {}, key: { type: 'string', minLength: 1, description: 'A path into the game state, to something this scene declares: "score", "counters.orders", "flags.tillClosed", "timers.clock.left", "goals.serve.done", "outcome", "sceneSteps".' }, op: { enum: GAME_OPS, description: 'set (the default): there and not false. A comparison with a value that isn\'t there is false.' }, value: { type: ['number', 'string', 'boolean'] } },
+      } },
+      { if: { properties: { test: { enum: ['all', 'any'] } }, required: ['test'] }, then: { required: ['of'], additionalProperties: false, properties: { test: {}, of: { type: 'array', minItems: 1, items: inner } } } },
+      { if: { properties: { test: { const: 'not' } }, required: ['test'] }, then: { required: ['of'], additionalProperties: false, properties: { test: {}, of: inner } } },
+    ],
+  };
+}
+
 export function m0Registry() {
   const r = createRegistry();
 
@@ -242,6 +267,59 @@ export function m0Registry() {
   r.define('BoneAttachment', {
     extends: 'Node3D', description: 'Rides on a humanoid bone of the Character it is inside (held and stowed items).',
     props: { bone: P.string({ default: 'rightHand', description: 'VRM humanoid bone name.' }) },
+  });
+
+  // M5 W2: game rules (@vrmxg/game, AB-D-0283). These nodes declare; the live values are in the "game" service, which the
+  // world snapshot holds and a scene change carries. A condition is data in the shape @vrmxg/ai's tests have:
+  // { test, ...args }. What it triggers is a signal, wired to an action by a connection.
+  const when = (description) => ({ schema: { ...conditionSchema(), description }, meta: { widget: 'json', sim: true } });
+  const key = (what) => P.string({ pattern: '^[A-Za-z0-9_-]+$', sim: true, description: `The ${what}'s name in the game state (default: the node's id).` });
+  const scope = (def) => P.enum(['game', 'scene'], { default: def, sim: true, description: 'game: kept across scene changes. scene: starts again each time this scene is entered.' });
+  r.define('GameRules', {
+    extends: 'Node3D', description: 'A scene\'s rules: when the game is won and lost, and the flags it starts with. One per scene. Its actions change the game state and move the game to another scene.',
+    props: {
+      win: when('The game is won when this holds. Absent: when every GameGoal that isn\'t optional is done.'),
+      lose: when('The game is lost when this holds (a win on the same step beats it).'),
+      flags: { schema: { type: 'object', additionalProperties: { type: ['boolean', 'number', 'string'] }, description: 'Flags and the values they start a game with. A condition may read a flag started here, set by a connection in this scene, or listed in reads.' }, meta: { widget: 'json', sim: true } },
+      reads: { schema: { type: 'object', additionalProperties: false, description: 'What this scene\'s conditions read that another scene owns, by name: carried counters, flags, timers and goals, and other scenes\' checkpoint slots. Reading a goal doesn\'t make it one of this scene\'s objectives. Checked against what arrives when the game changes to this scene.', properties: Object.fromEntries(['counters', 'flags', 'timers', 'goals', 'checkpoints'].map((k) => [k, { type: 'array', items: { type: 'string', minLength: 1 }, uniqueItems: true }])) }, meta: { widget: 'json', sim: true } },
+      keepOutcome: P.boolean({ default: false, sim: true, description: 'Arriving here keeps the last win or loss (an ending screen shows it). Otherwise the scene starts undecided.' }),
+    },
+    signals: {
+      won: { description: 'The game was won.' }, lost: { description: 'The game was lost.' },
+      ended: { args: { result: P.enum(['won', 'lost']) }, description: 'Won or lost.' },
+      flagChanged: { args: { flag: P.string(), value: { schema: {}, meta: {} } } },
+    },
+    actions: {
+      win: { args: {}, description: 'Ask for a win: the game is decided once, at the end of the step\'s rules.' }, lose: { args: {}, description: 'Ask for a loss (a win asked for on the same step beats it).' },
+      setFlag: { args: { flag: arg(P.string(), 'The flag\'s name.'), value: { schema: { type: ['boolean', 'number', 'string'], description: 'Its value (true).' }, meta: {} } }, description: 'Set a flag.' },
+      clearFlag: { args: { flag: arg(P.string(), 'The flag\'s name.') }, description: 'Remove a flag.' },
+      changeScene: { args: { to: arg(P.string(), 'The scene to go to: its path in the project ("level.vrmxs").'), after: arg(P.number({ min: 0, unit: 's' }), 'Play on here this long first (0: the change is the next step).'), reset: arg(P.boolean(), 'Start a new game there: nothing is carried over.') }, description: 'Move the game to another scene. The game state goes with it.' },
+      restart: { args: { after: arg(P.number({ min: 0, unit: 's' }), 'Play on this long first.') }, description: 'Start this scene again as a new game.' },
+    },
+  });
+  r.define('GameCounter', {
+    extends: 'Node3D', description: 'A number the game counts: the score (the counter named "score"), orders taken, coins.',
+    props: { key: key('counter'), start: P.number({ default: 0, sim: true, description: 'What it starts at.' }), min: P.number({ sim: true }), max: P.number({ sim: true }), label: P.string({ description: 'What the HUD calls it.' }), scope: scope('game') },
+    signals: { changed: { args: { value: P.number(), by: P.number() } } },
+    actions: { add: { args: { by: arg(P.number(), 'How much (1).') }, description: 'Add to it.' }, set: { args: { value: arg(P.number(), 'The new value.') } }, reset: { args: {}, description: 'Back to its start.' } },
+  });
+  r.define('GameTimer', {
+    extends: 'Node3D', description: 'A clock counted in simulation steps: a countdown that times out, or a stopwatch (no length). It follows its node\'s pause and time scale, and stops when the game is won or lost.',
+    props: { key: key('timer'), seconds: { schema: { type: 'number', exclusiveMinimum: 0, description: 'How long the countdown is: above zero. Absent: a stopwatch, with no limit, that never times out.' }, meta: { unit: 's', widget: undefined, sim: true } }, autostart: P.boolean({ default: true, sim: true, description: 'Running from the scene\'s start.' }), label: P.string({ description: 'What the HUD calls it.' }), scope: scope('scene') },
+    signals: { started: {}, stopped: {}, timeout: { description: 'The countdown reached zero.' } },
+    actions: { start: { args: {}, description: 'Run (on from where it stopped).' }, stop: { args: {} }, reset: { args: {}, description: 'Back to its full length.' }, addTime: { args: { seconds: arg(P.number({ unit: 's' }), 'Time to add to the countdown (negative: take away; with none left it times out).') }, description: 'Lengthen or shorten a countdown (not a stopwatch).' } },
+  });
+  r.define('GameGoal', {
+    extends: 'Node3D', description: 'Something to get done: the HUD shows the first one that isn\'t. Done when its condition first holds, or by its action.',
+    props: { key: key('goal'), text: P.string({ description: 'What the HUD shows.' }), when: when('The goal is done when this first holds.'), optional: P.boolean({ default: false, sim: true, description: 'Not needed to win.' }), scope: scope('scene') },
+    signals: { completed: {} },
+    actions: { complete: { args: {}, description: 'Done, now.' } },
+  });
+  r.define('Checkpoint', {
+    extends: 'Node3D', description: 'A point where the game saves by itself (into a slot of the save store): when its condition first holds, or by its action (a trigger\'s connection).',
+    props: { slot: P.string({ default: 'checkpoint', pattern: '^[A-Za-z0-9_-]{1,59}$', sim: true, description: 'The checkpoint slot it writes (in the save store: "auto-" and this name).' }), when: when('Written when this becomes true.'), once: P.boolean({ default: true, sim: true, description: 'Only the first time.' }), label: P.string({ description: 'The save\'s name in a slot list.' }) },
+    signals: { written: { args: { slot: P.string() }, description: 'The checkpoint was taken (the file is written after the step). Not on a step that decides the game.' } },
+    actions: { write: { args: {}, description: 'Save now.' } },
   });
 
   // Behaviours: named code in the project, referenced from scenes by id (no code in scenes).

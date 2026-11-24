@@ -1,4 +1,4 @@
-# M0, M1, M2, M3 and M4 acceptance
+# M0, M1, M2, M3 and M4 acceptance, and M5's checks as they land
 
 M0 W9 (AB-T-0510): the six exit checks of [M0-PLAN.md](../M0-PLAN.md) ("What M0 is done looking like"), run on the
 sample cafe (`content/sample`) at one commit, in every runtime, and filed as receipts.
@@ -15,6 +15,27 @@ node acceptance/compare.mjs       # evaluates the six checks: results/summary.js
 that need no renderer; the playground's acceptance mode adds the rendered pass (the walk rendered frame by frame,
 every camera preset, debug draw). Check 4 re-runs the W6 harness (`engine/packages/snapshot/harness`); check 5 is a
 Claude Code session with the MCP server (`results/mcp-session.json`).
+
+## M5 W2: game flow (`m5/flow*`, AB-T-0617)
+
+M5's checks 3 and 6, ahead of M5's own acceptance (W11): a game that changes scene replays exactly, and a save or a
+checkpoint taken before a change goes on with the unbroken run's hashes across it. The game is `@vrmxg/game`'s test
+game (`engine/packages/game/test/fixtures`: a title, a level and an ending with physics, recorded input and random
+streams): 600 steps, seven scene changes, two of them resets. Nothing draws, so nothing here needs a quiet GPU; the
+WKWebView run still takes the runner lock, because every harness run writes the same file in the app's container.
+
+```sh
+node acceptance/m5/flow.mjs          # Node, and headless Chromium over loopback → results/m5-flow.json
+acceptance/m5/flow-wkwebview.sh      # WKWebView, scheme and loopback → results/m5-flow-wkwebview.json
+```
+
+**Result (AB-R-1107, 2026-11-24, M5 Max, macOS 27.3 beta; AB-R-1101 and AB-R-1105 are the runs before each of two review rounds changed the game state's shape, and with it the hashes).** Every one of the 600 steps hashes the same in Node
+26.12, Chromium 156 and WKWebView over the custom scheme and over loopback: final hash `cfe3f7e9828c49b1`. Each world's
+loading was given no delay (Node), a steady 4 ms and a varied 0 to 12 ms (both browsers, and Node again): the changes
+land on steps 11, 148, 208, 267, 404, 464 and 523 every time, with the step held at seven boundaries while a world
+loaded. The save taken at step 60 and the checkpoint the game wrote at step 67 are each the same file in every
+runtime, and loaded into a new session each gives the unbroken run's hashes to step 600 (540 and 533 steps, five
+scene changes).
 
 ## Result: M4's acceptance (2026-11-24, M5 Max, macOS 27.3 beta 26C5047e)
 

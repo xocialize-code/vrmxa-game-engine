@@ -1,0 +1,29 @@
+{
+  "name": "@vrmxg/game",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG game flow (M5 W2): the game-state service (score and counters, flags, step-driven timers, goals, win and lose) declared as scene data and held in the world snapshot; scene changes while playing that keep the state and land on the same step in every runtime; checkpoints the game writes by itself on @vrmxg/save.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/ai": "0.1.0",
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  },
+  "devDependencies": {
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/input": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/save": "0.1.0",
+    "@vrmxg/scene": "0.1.0"
+  },
+  "vrmxg": { "determinism": "simulation" }
+}
