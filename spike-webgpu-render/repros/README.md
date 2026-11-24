@@ -12,7 +12,7 @@
 | First-renderer WGSL order (spike gotcha 6) | not reproduced | not tried | none | Kept out (see the end of this file) |
 | [4-msaa-resolve-under-load.html](4-msaa-resolve-under-load.html) (raw WebGPU, AB-T-0589) | n/a | n/a | none | Negative: random triangles stay exact under load |
 | [5-machine-under-load.html](5-machine-under-load.html) (raw WebGPU, AB-T-0589) | n/a | n/a | not filed | Under another process's GPU load, a rare MSAA draw reverts to the first draw's image |
-| [metal/machine.swift](metal/machine.swift) (native Metal, AB-T-0589) | n/a | n/a | Apple Feedback draft: [FEEDBACK-AB-T-0589.md](FEEDBACK-AB-T-0589.md) (the operator files it) | Reproduces without WebGPU; two copies at once: ~1 MSAA draw in 900 differs |
+| [metal/machine.swift](metal/machine.swift) (native Metal, AB-T-0589) | n/a | n/a | Apple Feedback FB25710847, filed by the operator 2026-11-24: [FEEDBACK-AB-T-0589.md](FEEDBACK-AB-T-0589.md) | Reproduces without WebGPU; two copies at once: ~1 MSAA draw in 900 differs |
 
 ### What changed from the spike's account
 
@@ -69,8 +69,8 @@ loads the GPU. Results are in `results/`.
   MSAA at all (`apps/playground/results/ab-t-0589/sameframe-noaa-noAA.json`): the no-MSAA case is likely the same
   driver behaviour, but that isn't shown.
 
-  Decision AB-D-0278: report it to Apple (draft: [FEEDBACK-AB-T-0589.md](FEEDBACK-AB-T-0589.md), filed by the
-  operator), build no export mitigation for now, run exact-frame checks on a quiet GPU.
+  Decision AB-D-0278: report it to Apple ([FEEDBACK-AB-T-0589.md](FEEDBACK-AB-T-0589.md), filed by the
+  operator on 2026-11-24 as FB25710847), build no export mitigation for now, run exact-frame checks on a quiet GPU.
 
 **Re-test on each new macOS beta** (AB-D-0278). Two copies at once; the bug is gone when both report `"differ" : 0` in
 both modes over 40,000 draws:
