@@ -3,7 +3,7 @@
 // a slot, then the new key (Escape cancels) or the new gamepad button; it is used from the next step and saved through
 // the settings' store, so it survives a relaunch. A recording replays the same whatever the bindings are: it names
 // actions, not keys.
-import { ref, computed, onBeforeUnmount } from 'vue';
+import { ref, shallowRef, computed, onBeforeUnmount } from 'vue';
 import { rebindRows, rebindPlan, captureKey, captureButton, describeBinding } from './settings.js';
 import { useNav } from './use-nav.js';
 
@@ -16,7 +16,7 @@ const props = defineProps({
 const emit = defineEmits(['back']);
 const root = ref(null), version = ref(0), capturing = ref(null), note = ref('');
 /** A capture that would take a key from somewhere else, waiting for the player to confirm: { row, slot, binding, plan, text } */
-const pending = ref(null);
+const pending = shallowRef(null); // shallow: the plan stays plain data (a reactive proxy can't be cloned)
 const inputNow = () => (typeof props.input === 'function' ? props.input() : props.input);
 const rows = computed(() => { void version.value; return rebindRows(inputNow().bindings(), { labels: props.labels, hide: props.hide }); });
 const nav = useNav(root, { input: inputNow, onBack: () => { if (pending.value) keep(); else emit('back'); }, paused: () => capturing.value !== null });

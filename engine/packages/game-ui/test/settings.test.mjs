@@ -117,7 +117,8 @@ test('rebinding Move right to A, Move left\'s key: warned, and on confirm moved,
   assert.deepEqual(plan.changes.move_x, [{ key: 'KeyA', value: 1 }, { key: 'ArrowRight', value: 1 }, { key: 'ArrowLeft', value: -1 }, { gamepadAxis: 0, deadzone: 0.15 }], 'A moved to right, Right arrow kept, Left arrow still left');
   // applied (the player said "Move it"): holding A moves right, Left arrow moves left
   const store = memorySettingsStore(), w = world(), s = await new GameSettings({ store }).load();
-  await s.rebindAll(w.input, plan.changes);
+  const { reactive } = await import('vue');
+  await s.rebindAll(w.input, reactive(structuredClone(plan)).changes); // as a UI holds it: a reactive proxy, which structuredClone refuses
   w.dev.press('KeyA'); w.tree.step();
   assert.equal(w.input.axis('move_x'), 1, 'A is +1 only');
   w.dev.release('KeyA').press('ArrowRight'); w.tree.step();

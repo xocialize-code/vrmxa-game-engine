@@ -109,7 +109,8 @@ export class GameSettings {
    * @param {any} input @param {Record<string, any[]>} changes
    */
   rebindAll(input, changes) {
-    for (const [action, bindings] of Object.entries(changes)) input.rebind(action, bindings);
+    const plain = JSON.parse(JSON.stringify(changes)); // bindings are JSON; this also takes a UI framework's reactive copy
+    for (const [action, bindings] of Object.entries(plain)) input.rebind(action, bindings);
     this.data.bindings = input.overrides();
     this.version++;
     return this.save();
