@@ -1,0 +1,17 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "ending",
+  "assets": [],
+  "nodes": [
+    {"id":"root","type":"Node3D"},
+    {"id":"floor","type":"Collider","parent":"root","transform":{"p":[0,-0.5,0]},"props":{"shape":"box","size":[20,1,20]}},
+    {"id":"confetti","type":"RigidBody","parent":"root","transform":{"p":[0,3,0]},"props":{"mass":1},"behaviours":[{"strength":0.3,"use":"jitter"}]},
+    {"id":"confetti-shape","type":"Collider","parent":"confetti","props":{"radius":0.2,"restitution":0.6,"shape":"sphere"}},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"keepOutcome":true}},
+    {"id":"linger","type":"GameTimer","parent":"rules","props":{"seconds":1}}
+  ],
+  "connections": [
+    {"from":"linger","signal":"timeout","to":"rules","call":"changeScene","args":{"reset":true,"to":"title.vrmxs"}}
+  ]
+}

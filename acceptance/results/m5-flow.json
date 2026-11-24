@@ -1,0 +1,510 @@
+{
+ "check": "M5 W2: a run that changes scene gives the same per-step hashes in every runtime; a save and a checkpoint taken before a change load and go on with them",
+ "same": true,
+ "rapier": "@dimforge/rapier3d-deterministic-compat",
+ "node": {
+  "steps": 600,
+  "seed": 7,
+  "final": "c9086e75c7bf9973",
+  "all": "ea1875ab298f69e5",
+  "changes": [
+   [
+    11,
+    "level.vrmxs",
+    false
+   ],
+   [
+    148,
+    "ending.vrmxs",
+    false
+   ],
+   [
+    208,
+    "title.vrmxs",
+    true
+   ],
+   [
+    267,
+    "level.vrmxs",
+    false
+   ],
+   [
+    404,
+    "ending.vrmxs",
+    false
+   ],
+   [
+    464,
+    "title.vrmxs",
+    true
+   ],
+   [
+    523,
+    "level.vrmxs",
+    false
+   ]
+  ],
+  "worlds": [
+   [
+    0,
+    "title.vrmxs",
+    7
+   ],
+   [
+    11,
+    "level.vrmxs",
+    4139236332
+   ],
+   [
+    148,
+    "ending.vrmxs",
+    2902783164
+   ],
+   [
+    208,
+    "title.vrmxs",
+    1679835275
+   ],
+   [
+    267,
+    "level.vrmxs",
+    3510281238
+   ],
+   [
+    404,
+    "ending.vrmxs",
+    3855682533
+   ],
+   [
+    464,
+    "title.vrmxs",
+    2240373366
+   ],
+   [
+    523,
+    "level.vrmxs",
+    382534550
+   ]
+  ],
+  "outcomes": [
+   [
+    117,
+    "won"
+   ],
+   [
+    373,
+    "won"
+   ]
+  ],
+  "checkpoints": [
+   [
+    67,
+    "checkpoint",
+    "cp"
+   ],
+   [
+    67,
+    "after-order",
+    "cp-order"
+   ],
+   [
+    323,
+    "checkpoint",
+    "cp"
+   ],
+   [
+    323,
+    "after-order",
+    "cp-order"
+   ],
+   [
+    579,
+    "checkpoint",
+    "cp"
+   ],
+   [
+    579,
+    "after-order",
+    "cp-order"
+   ]
+  ],
+  "save": {
+   "from": 60,
+   "scene": "level.vrmxs",
+   "bytes": 16260,
+   "file": "abe9464a58982732",
+   "steps": 540,
+   "same": true,
+   "diverges": null,
+   "final": "c9086e75c7bf9973"
+  },
+  "checkpoint": {
+   "from": 67,
+   "scene": "level.vrmxs",
+   "bytes": 16633,
+   "file": "133e0858a1dca90e",
+   "steps": 533,
+   "same": true,
+   "diverges": null,
+   "final": "c9086e75c7bf9973"
+  },
+  "loading": {
+   "delays": [],
+   "heldBoundaries": 5
+  },
+  "delay": "none",
+  "version": "v26.12.1",
+  "score": 10,
+  "scene": "level.vrmxs"
+ },
+ "nodeWithSlowLoading": {
+  "same": true,
+  "problems": [],
+  "loading": {
+   "delays": [
+    9,
+    0,
+    12,
+    3,
+    7,
+    1
+   ],
+   "heldBoundaries": 7
+  }
+ },
+ "chromium": [
+  {
+   "delay": "steady",
+   "same": true,
+   "problems": [],
+   "errors": [],
+   "version": "156.0.8078.4",
+   "result": {
+    "steps": 600,
+    "seed": 7,
+    "final": "c9086e75c7bf9973",
+    "all": "ea1875ab298f69e5",
+    "changes": [
+     [
+      11,
+      "level.vrmxs",
+      false
+     ],
+     [
+      148,
+      "ending.vrmxs",
+      false
+     ],
+     [
+      208,
+      "title.vrmxs",
+      true
+     ],
+     [
+      267,
+      "level.vrmxs",
+      false
+     ],
+     [
+      404,
+      "ending.vrmxs",
+      false
+     ],
+     [
+      464,
+      "title.vrmxs",
+      true
+     ],
+     [
+      523,
+      "level.vrmxs",
+      false
+     ]
+    ],
+    "worlds": [
+     [
+      0,
+      "title.vrmxs",
+      7
+     ],
+     [
+      11,
+      "level.vrmxs",
+      4139236332
+     ],
+     [
+      148,
+      "ending.vrmxs",
+      2902783164
+     ],
+     [
+      208,
+      "title.vrmxs",
+      1679835275
+     ],
+     [
+      267,
+      "level.vrmxs",
+      3510281238
+     ],
+     [
+      404,
+      "ending.vrmxs",
+      3855682533
+     ],
+     [
+      464,
+      "title.vrmxs",
+      2240373366
+     ],
+     [
+      523,
+      "level.vrmxs",
+      382534550
+     ]
+    ],
+    "outcomes": [
+     [
+      117,
+      "won"
+     ],
+     [
+      373,
+      "won"
+     ]
+    ],
+    "checkpoints": [
+     [
+      67,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      67,
+      "after-order",
+      "cp-order"
+     ],
+     [
+      323,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      323,
+      "after-order",
+      "cp-order"
+     ],
+     [
+      579,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      579,
+      "after-order",
+      "cp-order"
+     ]
+    ],
+    "save": {
+     "from": 60,
+     "scene": "level.vrmxs",
+     "bytes": 16260,
+     "file": "abe9464a58982732",
+     "steps": 540,
+     "same": true,
+     "diverges": null,
+     "final": "c9086e75c7bf9973"
+    },
+    "checkpoint": {
+     "from": 67,
+     "scene": "level.vrmxs",
+     "bytes": 16633,
+     "file": "133e0858a1dca90e",
+     "steps": 533,
+     "same": true,
+     "diverges": null,
+     "final": "c9086e75c7bf9973"
+    },
+    "loading": {
+     "delays": [
+      4
+     ],
+     "heldBoundaries": 7
+    },
+    "delay": "steady",
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "score": 10,
+    "scene": "level.vrmxs"
+   }
+  },
+  {
+   "delay": "varied",
+   "same": true,
+   "problems": [],
+   "errors": [],
+   "version": "156.0.8078.4",
+   "result": {
+    "steps": 600,
+    "seed": 7,
+    "final": "c9086e75c7bf9973",
+    "all": "ea1875ab298f69e5",
+    "changes": [
+     [
+      11,
+      "level.vrmxs",
+      false
+     ],
+     [
+      148,
+      "ending.vrmxs",
+      false
+     ],
+     [
+      208,
+      "title.vrmxs",
+      true
+     ],
+     [
+      267,
+      "level.vrmxs",
+      false
+     ],
+     [
+      404,
+      "ending.vrmxs",
+      false
+     ],
+     [
+      464,
+      "title.vrmxs",
+      true
+     ],
+     [
+      523,
+      "level.vrmxs",
+      false
+     ]
+    ],
+    "worlds": [
+     [
+      0,
+      "title.vrmxs",
+      7
+     ],
+     [
+      11,
+      "level.vrmxs",
+      4139236332
+     ],
+     [
+      148,
+      "ending.vrmxs",
+      2902783164
+     ],
+     [
+      208,
+      "title.vrmxs",
+      1679835275
+     ],
+     [
+      267,
+      "level.vrmxs",
+      3510281238
+     ],
+     [
+      404,
+      "ending.vrmxs",
+      3855682533
+     ],
+     [
+      464,
+      "title.vrmxs",
+      2240373366
+     ],
+     [
+      523,
+      "level.vrmxs",
+      382534550
+     ]
+    ],
+    "outcomes": [
+     [
+      117,
+      "won"
+     ],
+     [
+      373,
+      "won"
+     ]
+    ],
+    "checkpoints": [
+     [
+      67,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      67,
+      "after-order",
+      "cp-order"
+     ],
+     [
+      323,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      323,
+      "after-order",
+      "cp-order"
+     ],
+     [
+      579,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      579,
+      "after-order",
+      "cp-order"
+     ]
+    ],
+    "save": {
+     "from": 60,
+     "scene": "level.vrmxs",
+     "bytes": 16260,
+     "file": "abe9464a58982732",
+     "steps": 540,
+     "same": true,
+     "diverges": null,
+     "final": "c9086e75c7bf9973"
+    },
+    "checkpoint": {
+     "from": 67,
+     "scene": "level.vrmxs",
+     "bytes": 16633,
+     "file": "133e0858a1dca90e",
+     "steps": 533,
+     "same": true,
+     "diverges": null,
+     "final": "c9086e75c7bf9973"
+    },
+    "loading": {
+     "delays": [
+      9,
+      0,
+      12,
+      3,
+      7,
+      1
+     ],
+     "heldBoundaries": 7
+    },
+    "delay": "varied",
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "score": 10,
+    "scene": "level.vrmxs"
+   }
+  }
+ ]
+}

@@ -77,6 +77,18 @@ export class InputService {
   }
   get isReplaying() { return this.replaying !== null; }
 
+  /**
+   * A scene change (@vrmxg/game's GameFlow, M5 W2): the next world's input service takes over where this one is. The
+   * latched frame goes with it (a button held across the change isn't pressed again), and so do a recording in
+   * progress and a replay: both count frames from the session's step, which carries on.
+   * @param {InputService} next
+   */
+  carryTo(next) {
+    next.setState(this.getState());
+    next.recording = this.recording; this.recording = null;
+    next.replaying = this.replaying;
+  }
+
   /** The input part of a world snapshot. */
   getState() { return { axes: Array.from(this.axes), down: Array.from(this.down), prev: Array.from(this.prev) }; }
   setState(s) { this.axes.set(s.axes); this.down.set(s.down); this.prev.set(s.prev); }

@@ -1,6 +1,6 @@
 ---
 title: "Packages"
-description: "The 36 engine packages, one line each, and which side of the determinism boundary each is on."
+description: "The 37 engine packages, one line each, and which side of the determinism boundary each is on."
 order: 90
 ---
 
@@ -8,7 +8,7 @@ order: 90
 
 > Generated from every `engine/packages/*`: its `package.json` and the opening of its README by `scripts/docs-reference.mjs`. Don't edit it: change the code and run `npm run docs:reference`.
 
-The engine is 36 packages under `engine/packages/`, each with its own tests. Until a package has pages of its own
+The engine is 37 packages under `engine/packages/`, each with its own tests. Until a package has pages of its own
 here, its README in the repository is its manual.
 
 **Boundary** says which side of the determinism boundary a package's code is on ([Determinism](../guide/determinism)):
@@ -30,6 +30,7 @@ rest are presentation or run outside the 60 Hz step.
 | `@vrmxg/editor-core` | 0.1.0 |  | The editor's model without UI or three.js: a scene open for editing, its selection, undoable commands, assets placed as nodes, save, and play in place. | `engine/packages/editor-core/README.md` |
 | `@vrmxg/editor-ui` | 0.1.0 |  | The Vue components the editor and the creator share, over `@vrmxg/editor-core`'s model. | `engine/packages/editor-ui/README.md` |
 | `@vrmxg/export` | 0.1.0 |  | Offline frame export, the pipeline spike-frame-export chose. | `engine/packages/export/README.md` |
+| `@vrmxg/game` | 0.1.0 | simulation | Game flow: what makes a scene a game. | `engine/packages/game/README.md` |
 | `@vrmxg/input` | 0.1.0 | simulation | Named actions bound to keys, mouse and gamepads, latched once per simulation step, recorded and replayed; and the player controller. | `engine/packages/input/README.md` |
 | `@vrmxg/interact` | 0.1.0 | simulation | Characters interacting with VRMXI items: focus, prompts, the verbs `use`, `take`, `talk`, `sit` and `stand`, and an inventory for items that can't go into a closet. | `engine/packages/interact/README.md` |
 | `@vrmxg/item` | 0.1.0 | simulation | VRMXI game items in the engine, on the draft specification (`VRMXA_Specification/VRMXI-base-draft.md`): read and check `.vrmxi` files, Item nodes with their bodies … | `engine/packages/item/README.md` |

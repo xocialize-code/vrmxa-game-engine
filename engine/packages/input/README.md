@@ -18,7 +18,7 @@ input.replay(rec);                                         // from rec.start on,
 |---|---|
 | `ActionMap` | `vrmxg.json` `input.actions`: axis or button actions with key, mouse (deltas, wheel, buttons) and gamepad (axes with deadzones, buttons) bindings. `DEFAULT_ACTIONS`: WASD/arrows, mouse look, Space jump, Shift run, E / click interact, C next camera, a standard gamepad |
 | Devices | `KeyboardDevice` (codes held; released on blur), `MouseDevice` (deltas accumulated between steps, wheel, buttons, pointer lock), `GamepadDevice` (the first standard-mapping pad, polled once per step; `rumble()` is output only), `VirtualDevice` (scriptable, for tests and tools) |
-| `InputService` (`input`) | Latches one frame per step: `axis(name)`, `isDown`, `pressed` (went down this step), `released`. `record()` / `stop()` / `replay(rec)`; a replay ignores live devices and refuses a recording made with a different action map. `getState()` for world snapshots |
+| `InputService` (`input`) | Latches one frame per step: `axis(name)`, `isDown`, `pressed` (went down this step), `released`. `record()` / `stop()` / `replay(rec)`; a replay ignores live devices and refuses a recording made with a different action map. `getState()` for world snapshots. `carryTo(next)` (M5 W2) hands the latched frame, a recording in progress and a replay to the next scene's input service, so one recording covers a session of several scenes |
 | `PlayerController` (`player`) | Move / run / jump → a Character's intent, relative to the current camera's yaw. One step (1/60 s) of latency: behaviours run after their node |
 
 Tests (`npm test`, no models needed): the map (keys, deadzones, unbounded mouse deltas, any-binding buttons); 10 s of

@@ -1,6 +1,6 @@
 ---
 title: "Node types"
-description: "The 22 node types of a VRMXG scene, with each one's props, signals and actions."
+description: "The 27 node types of a VRMXG scene, with each one's props, signals and actions."
 order: 10
 ---
 
@@ -18,7 +18,7 @@ tools are all generated from it, and so is this page.
 - An **action** is something a node can be told to do: by a connection, a behaviour, or `call_action` over MCP.
 - A type that **extends** another has everything its parent has.
 
-22 types:
+27 types:
 
 | Type | Extends | Asset | What |
 |---|---|---|---|
@@ -44,6 +44,11 @@ tools are all generated from it, and so is this page.
 | [Collider](#collider) | Node3D |  | A collision shape. Under a RigidBody it moves with it; otherwise it is fixed. |
 | [Area](#area) | Collider |  | A sensor volume: reports bodies entering and leaving (door triggers, pickups). |
 | [BoneAttachment](#boneattachment) | Node3D |  | Rides on a humanoid bone of the Character it is inside (held and stowed items). |
+| [GameRules](#gamerules) | Node3D |  | A scene's rules: when the game is won and lost, and the flags it starts with. One per scene. Its actions change the game state and move the game to another scene. |
+| [GameCounter](#gamecounter) | Node3D |  | A number the game counts: the score (the counter named "score"), orders taken, coins. |
+| [GameTimer](#gametimer) | Node3D |  | A clock counted in simulation steps: a countdown that times out, or a stopwatch (no length). It follows its node's pause and time scale, and stops when the game is won or lost. |
+| [GameGoal](#gamegoal) | Node3D |  | Something to get done: the HUD shows the first one that isn't. Done when its condition first holds, or by its action. |
+| [Checkpoint](#checkpoint) | Node3D |  | A point where the game saves by itself (into a slot of the save store): when its condition first holds, or by its action (a trigger's connection). |
 
 ## Node3D
 
@@ -759,5 +764,184 @@ Also, from Node3D: `ready`.
 **Actions**
 
 None of its own.
+
+Also, from Node3D: `show`, `hide`.
+
+## GameRules
+
+A scene's rules: when the game is won and lost, and the flags it starts with. One per scene. Its actions change the game state and move the game to another scene.
+
+- **Extends:** [Node3D](#node3d)
+- **Behaviours it accepts:** [`switchedBy`](./behaviours#switchedby)
+
+**Props**
+
+| Prop | Type | Default | Simulated | What |
+|---|---|---|---|---|
+| `win` | object |  | yes | The game is won when this holds. Absent: when every GameGoal that isn't optional is done. |
+| `lose` | object |  | yes | The game is lost when this holds (checked after win: a tie is a win). |
+| `flags` | object |  | yes | Flags and the values they start a game with. |
+| `keepOutcome` | boolean | `false` | yes | Arriving here keeps the last win or loss (an ending screen shows it). Otherwise the scene starts undecided. |
+
+**Signals**
+
+| Signal | Arguments | What |
+|---|---|---|
+| `won` |  | The game was won. |
+| `lost` |  | The game was lost. |
+| `ended` | `result` (`won`, `lost`) | Won or lost. |
+| `flagChanged` | `flag` (string); `value` (any) |  |
+
+Also, from Node3D: `ready`.
+
+**Actions**
+
+| Action | Arguments | What |
+|---|---|---|
+| `win` |  | Win now. |
+| `lose` |  | Lose now. |
+| `setFlag` | `flag` (string): The flag's name; `value` (boolean,number,string): Its value (true) | Set a flag. |
+| `clearFlag` | `flag` (string): The flag's name | Remove a flag. |
+| `changeScene` | `to` (string): The scene to go to: its path in the project ("level.vrmxs"); `after` (number, s): Play on here this long first (0: the change is the next step); `reset` (boolean): Start a new game there: nothing is carried over | Move the game to another scene. The game state goes with it. |
+| `restart` | `after` (number, s): Play on this long first | Start this scene again as a new game. |
+
+Also, from Node3D: `show`, `hide`.
+
+## GameCounter
+
+A number the game counts: the score (the counter named "score"), orders taken, coins.
+
+- **Extends:** [Node3D](#node3d)
+- **Behaviours it accepts:** [`switchedBy`](./behaviours#switchedby)
+
+**Props**
+
+| Prop | Type | Default | Simulated | What |
+|---|---|---|---|---|
+| `key` | string |  | yes | The counter's name in the game state (default: the node's id). |
+| `start` | number | `0` | yes | What it starts at. |
+| `min` | number |  | yes |  |
+| `max` | number |  | yes |  |
+| `label` | string |  |  | What the HUD calls it. |
+| `scope` | `game`, `scene` | `"game"` | yes | game: kept across scene changes. scene: starts again each time this scene is entered. |
+
+**Signals**
+
+| Signal | Arguments |
+|---|---|
+| `changed` | `value` (number); `by` (number) |
+
+Also, from Node3D: `ready`.
+
+**Actions**
+
+| Action | Arguments | What |
+|---|---|---|
+| `add` | `by` (number): How much (1) | Add to it. |
+| `set` | `value` (number): The new value |  |
+| `reset` |  | Back to its start. |
+
+Also, from Node3D: `show`, `hide`.
+
+## GameTimer
+
+A clock counted in simulation steps: a countdown that times out, or a stopwatch (no length). It follows its node's pause and time scale, and stops when the game is won or lost.
+
+- **Extends:** [Node3D](#node3d)
+- **Behaviours it accepts:** [`switchedBy`](./behaviours#switchedby)
+
+**Props**
+
+| Prop | Type | Default | Range, unit | Simulated | What |
+|---|---|---|---|---|---|
+| `key` | string |  |  | yes | The timer's name in the game state (default: the node's id). |
+| `seconds` | number | `0` | ≥ 0 s | yes | How long the countdown is (0: a stopwatch that never times out). |
+| `autostart` | boolean | `true` |  | yes | Running from the scene's start. |
+| `label` | string |  |  |  | What the HUD calls it. |
+| `scope` | `game`, `scene` | `"scene"` |  | yes | game: kept across scene changes. scene: starts again each time this scene is entered. |
+
+**Signals**
+
+| Signal | What |
+|---|---|
+| `started` |  |
+| `stopped` |  |
+| `timeout` | The countdown reached zero. |
+
+Also, from Node3D: `ready`.
+
+**Actions**
+
+| Action | Arguments | What |
+|---|---|---|
+| `start` |  | Run (on from where it stopped). |
+| `stop` |  |  |
+| `reset` |  | Back to its full length. |
+| `addTime` | `seconds` (number, s): Time to add to the countdown (negative: take away) |  |
+
+Also, from Node3D: `show`, `hide`.
+
+## GameGoal
+
+Something to get done: the HUD shows the first one that isn't. Done when its condition first holds, or by its action.
+
+- **Extends:** [Node3D](#node3d)
+- **Behaviours it accepts:** [`switchedBy`](./behaviours#switchedby)
+
+**Props**
+
+| Prop | Type | Default | Simulated | What |
+|---|---|---|---|---|
+| `key` | string |  | yes | The goal's name in the game state (default: the node's id). |
+| `text` | string |  |  | What the HUD shows. |
+| `when` | object |  | yes | The goal is done when this first holds. |
+| `optional` | boolean | `false` | yes | Not needed to win. |
+| `scope` | `game`, `scene` | `"scene"` | yes | game: kept across scene changes. scene: starts again each time this scene is entered. |
+
+**Signals**
+
+| Signal |
+|---|
+| `completed` |
+
+Also, from Node3D: `ready`.
+
+**Actions**
+
+| Action | What |
+|---|---|
+| `complete` | Done, now. |
+
+Also, from Node3D: `show`, `hide`.
+
+## Checkpoint
+
+A point where the game saves by itself (into a slot of the save store): when its condition first holds, or by its action (a trigger's connection).
+
+- **Extends:** [Node3D](#node3d)
+- **Behaviours it accepts:** [`switchedBy`](./behaviours#switchedby)
+
+**Props**
+
+| Prop | Type | Default | Simulated | What |
+|---|---|---|---|---|
+| `slot` | string | `"checkpoint"` | yes | The save slot it writes. |
+| `when` | object |  | yes | Written when this becomes true. |
+| `once` | boolean | `true` | yes | Only the first time. |
+| `label` | string |  |  | The save's name in a slot list. |
+
+**Signals**
+
+| Signal | Arguments | What |
+|---|---|---|
+| `written` | `slot` (string) | The checkpoint was taken (the file is written after the step). |
+
+Also, from Node3D: `ready`.
+
+**Actions**
+
+| Action | What |
+|---|---|
+| `write` | Save now. |
 
 Also, from Node3D: `show`, `hide`.

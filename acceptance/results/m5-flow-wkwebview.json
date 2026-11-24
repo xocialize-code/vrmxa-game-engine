@@ -1,0 +1,835 @@
+{
+ "check": "M5 W2 in WKWebView: the game flow run, the save and the checkpoint against Node's",
+ "same": true,
+ "node": {
+  "steps": 600,
+  "seed": 7,
+  "final": "c9086e75c7bf9973",
+  "all": "ea1875ab298f69e5",
+  "changes": [
+   [
+    11,
+    "level.vrmxs",
+    false
+   ],
+   [
+    148,
+    "ending.vrmxs",
+    false
+   ],
+   [
+    208,
+    "title.vrmxs",
+    true
+   ],
+   [
+    267,
+    "level.vrmxs",
+    false
+   ],
+   [
+    404,
+    "ending.vrmxs",
+    false
+   ],
+   [
+    464,
+    "title.vrmxs",
+    true
+   ],
+   [
+    523,
+    "level.vrmxs",
+    false
+   ]
+  ],
+  "worlds": [
+   [
+    0,
+    "title.vrmxs",
+    7
+   ],
+   [
+    11,
+    "level.vrmxs",
+    4139236332
+   ],
+   [
+    148,
+    "ending.vrmxs",
+    2902783164
+   ],
+   [
+    208,
+    "title.vrmxs",
+    1679835275
+   ],
+   [
+    267,
+    "level.vrmxs",
+    3510281238
+   ],
+   [
+    404,
+    "ending.vrmxs",
+    3855682533
+   ],
+   [
+    464,
+    "title.vrmxs",
+    2240373366
+   ],
+   [
+    523,
+    "level.vrmxs",
+    382534550
+   ]
+  ],
+  "outcomes": [
+   [
+    117,
+    "won"
+   ],
+   [
+    373,
+    "won"
+   ]
+  ],
+  "checkpoints": [
+   [
+    67,
+    "checkpoint",
+    "cp"
+   ],
+   [
+    67,
+    "after-order",
+    "cp-order"
+   ],
+   [
+    323,
+    "checkpoint",
+    "cp"
+   ],
+   [
+    323,
+    "after-order",
+    "cp-order"
+   ],
+   [
+    579,
+    "checkpoint",
+    "cp"
+   ],
+   [
+    579,
+    "after-order",
+    "cp-order"
+   ]
+  ],
+  "save": {
+   "from": 60,
+   "scene": "level.vrmxs",
+   "bytes": 16260,
+   "file": "abe9464a58982732",
+   "steps": 540,
+   "same": true,
+   "diverges": null,
+   "final": "c9086e75c7bf9973"
+  },
+  "checkpoint": {
+   "from": 67,
+   "scene": "level.vrmxs",
+   "bytes": 16633,
+   "file": "133e0858a1dca90e",
+   "steps": 533,
+   "same": true,
+   "diverges": null,
+   "final": "c9086e75c7bf9973"
+  },
+  "loading": {
+   "delays": [],
+   "heldBoundaries": 5
+  },
+  "delay": "none",
+  "version": "v26.12.1",
+  "score": 10,
+  "scene": "level.vrmxs"
+ },
+ "runs": [
+  {
+   "origin": "scheme",
+   "case": "check=flow&delay=steady",
+   "delay": "steady",
+   "timedOut": false,
+   "errors": [],
+   "same": true,
+   "problems": [],
+   "result": {
+    "all": "ea1875ab298f69e5",
+    "changes": [
+     [
+      11,
+      "level.vrmxs",
+      false
+     ],
+     [
+      148,
+      "ending.vrmxs",
+      false
+     ],
+     [
+      208,
+      "title.vrmxs",
+      true
+     ],
+     [
+      267,
+      "level.vrmxs",
+      false
+     ],
+     [
+      404,
+      "ending.vrmxs",
+      false
+     ],
+     [
+      464,
+      "title.vrmxs",
+      true
+     ],
+     [
+      523,
+      "level.vrmxs",
+      false
+     ]
+    ],
+    "checkpoint": {
+     "bytes": 16633,
+     "diverges": null,
+     "file": "133e0858a1dca90e",
+     "final": "c9086e75c7bf9973",
+     "from": 67,
+     "same": true,
+     "scene": "level.vrmxs",
+     "steps": 533
+    },
+    "checkpoints": [
+     [
+      67,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      67,
+      "after-order",
+      "cp-order"
+     ],
+     [
+      323,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      323,
+      "after-order",
+      "cp-order"
+     ],
+     [
+      579,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      579,
+      "after-order",
+      "cp-order"
+     ]
+    ],
+    "delay": "steady",
+    "final": "c9086e75c7bf9973",
+    "loading": {
+     "delays": [
+      4
+     ],
+     "heldBoundaries": 7
+    },
+    "outcomes": [
+     [
+      117,
+      "won"
+     ],
+     [
+      373,
+      "won"
+     ]
+    ],
+    "save": {
+     "bytes": 16260,
+     "diverges": null,
+     "file": "abe9464a58982732",
+     "final": "c9086e75c7bf9973",
+     "from": 60,
+     "same": true,
+     "scene": "level.vrmxs",
+     "steps": 540
+    },
+    "seed": 7,
+    "steps": 600,
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+    "worlds": [
+     [
+      0,
+      "title.vrmxs",
+      7
+     ],
+     [
+      11,
+      "level.vrmxs",
+      4139236332
+     ],
+     [
+      148,
+      "ending.vrmxs",
+      2902783164
+     ],
+     [
+      208,
+      "title.vrmxs",
+      1679835275
+     ],
+     [
+      267,
+      "level.vrmxs",
+      3510281238
+     ],
+     [
+      404,
+      "ending.vrmxs",
+      3855682533
+     ],
+     [
+      464,
+      "title.vrmxs",
+      2240373366
+     ],
+     [
+      523,
+      "level.vrmxs",
+      382534550
+     ]
+    ],
+    "score": 10,
+    "scene": "level.vrmxs"
+   }
+  },
+  {
+   "origin": "scheme",
+   "case": "check=flow&delay=varied",
+   "delay": "varied",
+   "timedOut": false,
+   "errors": [],
+   "same": true,
+   "problems": [],
+   "result": {
+    "all": "ea1875ab298f69e5",
+    "changes": [
+     [
+      11,
+      "level.vrmxs",
+      false
+     ],
+     [
+      148,
+      "ending.vrmxs",
+      false
+     ],
+     [
+      208,
+      "title.vrmxs",
+      true
+     ],
+     [
+      267,
+      "level.vrmxs",
+      false
+     ],
+     [
+      404,
+      "ending.vrmxs",
+      false
+     ],
+     [
+      464,
+      "title.vrmxs",
+      true
+     ],
+     [
+      523,
+      "level.vrmxs",
+      false
+     ]
+    ],
+    "checkpoint": {
+     "bytes": 16633,
+     "diverges": null,
+     "file": "133e0858a1dca90e",
+     "final": "c9086e75c7bf9973",
+     "from": 67,
+     "same": true,
+     "scene": "level.vrmxs",
+     "steps": 533
+    },
+    "checkpoints": [
+     [
+      67,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      67,
+      "after-order",
+      "cp-order"
+     ],
+     [
+      323,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      323,
+      "after-order",
+      "cp-order"
+     ],
+     [
+      579,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      579,
+      "after-order",
+      "cp-order"
+     ]
+    ],
+    "delay": "varied",
+    "final": "c9086e75c7bf9973",
+    "loading": {
+     "delays": [
+      9,
+      0,
+      12,
+      3,
+      7,
+      1
+     ],
+     "heldBoundaries": 7
+    },
+    "outcomes": [
+     [
+      117,
+      "won"
+     ],
+     [
+      373,
+      "won"
+     ]
+    ],
+    "save": {
+     "bytes": 16260,
+     "diverges": null,
+     "file": "abe9464a58982732",
+     "final": "c9086e75c7bf9973",
+     "from": 60,
+     "same": true,
+     "scene": "level.vrmxs",
+     "steps": 540
+    },
+    "seed": 7,
+    "steps": 600,
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+    "worlds": [
+     [
+      0,
+      "title.vrmxs",
+      7
+     ],
+     [
+      11,
+      "level.vrmxs",
+      4139236332
+     ],
+     [
+      148,
+      "ending.vrmxs",
+      2902783164
+     ],
+     [
+      208,
+      "title.vrmxs",
+      1679835275
+     ],
+     [
+      267,
+      "level.vrmxs",
+      3510281238
+     ],
+     [
+      404,
+      "ending.vrmxs",
+      3855682533
+     ],
+     [
+      464,
+      "title.vrmxs",
+      2240373366
+     ],
+     [
+      523,
+      "level.vrmxs",
+      382534550
+     ]
+    ],
+    "score": 10,
+    "scene": "level.vrmxs"
+   }
+  },
+  {
+   "origin": "loopback",
+   "case": "check=flow&delay=steady",
+   "delay": "steady",
+   "timedOut": false,
+   "errors": [],
+   "same": true,
+   "problems": [],
+   "result": {
+    "all": "ea1875ab298f69e5",
+    "changes": [
+     [
+      11,
+      "level.vrmxs",
+      false
+     ],
+     [
+      148,
+      "ending.vrmxs",
+      false
+     ],
+     [
+      208,
+      "title.vrmxs",
+      true
+     ],
+     [
+      267,
+      "level.vrmxs",
+      false
+     ],
+     [
+      404,
+      "ending.vrmxs",
+      false
+     ],
+     [
+      464,
+      "title.vrmxs",
+      true
+     ],
+     [
+      523,
+      "level.vrmxs",
+      false
+     ]
+    ],
+    "checkpoint": {
+     "bytes": 16633,
+     "diverges": null,
+     "file": "133e0858a1dca90e",
+     "final": "c9086e75c7bf9973",
+     "from": 67,
+     "same": true,
+     "scene": "level.vrmxs",
+     "steps": 533
+    },
+    "checkpoints": [
+     [
+      67,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      67,
+      "after-order",
+      "cp-order"
+     ],
+     [
+      323,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      323,
+      "after-order",
+      "cp-order"
+     ],
+     [
+      579,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      579,
+      "after-order",
+      "cp-order"
+     ]
+    ],
+    "delay": "steady",
+    "final": "c9086e75c7bf9973",
+    "loading": {
+     "delays": [
+      4
+     ],
+     "heldBoundaries": 7
+    },
+    "outcomes": [
+     [
+      117,
+      "won"
+     ],
+     [
+      373,
+      "won"
+     ]
+    ],
+    "save": {
+     "bytes": 16260,
+     "diverges": null,
+     "file": "abe9464a58982732",
+     "final": "c9086e75c7bf9973",
+     "from": 60,
+     "same": true,
+     "scene": "level.vrmxs",
+     "steps": 540
+    },
+    "seed": 7,
+    "steps": 600,
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+    "worlds": [
+     [
+      0,
+      "title.vrmxs",
+      7
+     ],
+     [
+      11,
+      "level.vrmxs",
+      4139236332
+     ],
+     [
+      148,
+      "ending.vrmxs",
+      2902783164
+     ],
+     [
+      208,
+      "title.vrmxs",
+      1679835275
+     ],
+     [
+      267,
+      "level.vrmxs",
+      3510281238
+     ],
+     [
+      404,
+      "ending.vrmxs",
+      3855682533
+     ],
+     [
+      464,
+      "title.vrmxs",
+      2240373366
+     ],
+     [
+      523,
+      "level.vrmxs",
+      382534550
+     ]
+    ],
+    "score": 10,
+    "scene": "level.vrmxs"
+   }
+  },
+  {
+   "origin": "loopback",
+   "case": "check=flow&delay=varied",
+   "delay": "varied",
+   "timedOut": false,
+   "errors": [],
+   "same": true,
+   "problems": [],
+   "result": {
+    "all": "ea1875ab298f69e5",
+    "changes": [
+     [
+      11,
+      "level.vrmxs",
+      false
+     ],
+     [
+      148,
+      "ending.vrmxs",
+      false
+     ],
+     [
+      208,
+      "title.vrmxs",
+      true
+     ],
+     [
+      267,
+      "level.vrmxs",
+      false
+     ],
+     [
+      404,
+      "ending.vrmxs",
+      false
+     ],
+     [
+      464,
+      "title.vrmxs",
+      true
+     ],
+     [
+      523,
+      "level.vrmxs",
+      false
+     ]
+    ],
+    "checkpoint": {
+     "bytes": 16633,
+     "diverges": null,
+     "file": "133e0858a1dca90e",
+     "final": "c9086e75c7bf9973",
+     "from": 67,
+     "same": true,
+     "scene": "level.vrmxs",
+     "steps": 533
+    },
+    "checkpoints": [
+     [
+      67,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      67,
+      "after-order",
+      "cp-order"
+     ],
+     [
+      323,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      323,
+      "after-order",
+      "cp-order"
+     ],
+     [
+      579,
+      "checkpoint",
+      "cp"
+     ],
+     [
+      579,
+      "after-order",
+      "cp-order"
+     ]
+    ],
+    "delay": "varied",
+    "final": "c9086e75c7bf9973",
+    "loading": {
+     "delays": [
+      9,
+      0,
+      12,
+      3,
+      7,
+      1
+     ],
+     "heldBoundaries": 7
+    },
+    "outcomes": [
+     [
+      117,
+      "won"
+     ],
+     [
+      373,
+      "won"
+     ]
+    ],
+    "save": {
+     "bytes": 16260,
+     "diverges": null,
+     "file": "abe9464a58982732",
+     "final": "c9086e75c7bf9973",
+     "from": 60,
+     "same": true,
+     "scene": "level.vrmxs",
+     "steps": 540
+    },
+    "seed": 7,
+    "steps": 600,
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+    "worlds": [
+     [
+      0,
+      "title.vrmxs",
+      7
+     ],
+     [
+      11,
+      "level.vrmxs",
+      4139236332
+     ],
+     [
+      148,
+      "ending.vrmxs",
+      2902783164
+     ],
+     [
+      208,
+      "title.vrmxs",
+      1679835275
+     ],
+     [
+      267,
+      "level.vrmxs",
+      3510281238
+     ],
+     [
+      404,
+      "ending.vrmxs",
+      3855682533
+     ],
+     [
+      464,
+      "title.vrmxs",
+      2240373366
+     ],
+     [
+      523,
+      "level.vrmxs",
+      382534550
+     ]
+    ],
+    "score": 10,
+    "scene": "level.vrmxs"
+   }
+  }
+ ]
+}
