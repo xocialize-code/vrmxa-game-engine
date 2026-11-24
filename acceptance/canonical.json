@@ -47,13 +47,13 @@
     }
    },
    "frames": {
-    "digest": "189535cb0648738e",
+    "digest": "d6784fc3c3d16a2f",
     "items": {
      "particlesFinal": "09ef4d21b00189d1",
      "particlesFrames": "908e259af2c6aab5",
      "particlesLast": "a38f400fe7660542",
-     "film": "a68717eff086aa3f",
-     "filmSecond": "a68717eff086aa3f",
+     "film": "50d3922419201ff4",
+     "filmSecond": "50d3922419201ff4",
      "filmAudio": "7a6ff838",
      "still": "0f15bc0ddf1851dd",
      "readback-1080p": "4c1ad7c1dbc06059",
@@ -62,8 +62,8 @@
      "alpha": "127,0,0,128"
     },
     "made": {
-     "at": "2026-11-23T19:49:09.658Z",
-     "commit": "f7d971f",
+     "at": "2026-11-24T02:13:35.795Z",
+     "commit": "1e3f921",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -71,7 +71,7 @@
      "backend": "webgpu"
     },
     "film": [
-     "6784a9d115c93c80",
+     "59d79e2bfb5b17b0",
      "94ea58bb540a8d66",
      "368d393c1d754917",
      "aa602152dde1d626",
@@ -1220,11 +1220,11 @@
     }
    },
    "editor": {
-    "digest": "c069a63fd75279a2",
+    "digest": "8d9ab54914096695",
     "items": {
-     "digest": "a68717eff086aa3f",
+     "digest": "50d3922419201ff4",
      "audio": "7a6ff838",
-     "frame0": "6784a9d115c93c80",
+     "frame0": "59d79e2bfb5b17b0",
      "frame84": "f706d23a80f0d4a0",
      "frame120": "2ba0c372761708d1",
      "frame167": "14e4c7cd0249d28a",
@@ -1252,8 +1252,8 @@
      "frame1079": "589c32c230255879"
     },
     "made": {
-     "at": "2026-11-23T19:47:46.647Z",
-     "commit": "f7d971f",
+     "at": "2026-11-24T02:14:03.360Z",
+     "commit": "1e3f921",
      "dirty": false,
      "dirtyFiles": [],
      "loads": 2,
@@ -7592,8 +7592,8 @@
   }
  },
  "made": {
-  "at": "2026-11-24T02:05:42.318Z",
-  "commit": "1ac8f24",
+  "at": "2026-11-24T02:14:03.430Z",
+  "commit": "1e3f921",
   "dirty": false,
   "dirtyFiles": [],
   "machine": {
