@@ -35,6 +35,7 @@ outright and shippable in our apps.
 | `scripts/park-marks.json` | Xocialize original | Marks in the park for scripts filmed there (by the bench, beside it, by the machine, on the path) |
 | `scripts/the-regular.fountain` | Xocialize original | "The Regular" (M4 W12, AB-T-0584): the M4 sample short, a one-minute script for Mira and Hana at the cafe in our Fountain subset (13 lines, a move to the window table) |
 | `sequences/the-regular.vrmxs` | Xocialize original | That script built into a sequence over `cafe.vrmxs` by `@vrmxg/script` with `@vrmxg/coverage`'s cameras by rule (`tools/make-script-sequence.mjs`), cast by `tools/cast-short.mjs`, voiced and fitted by `tools/bake-lines.mjs --fit`, and a hand-keyed take by `tools/make-short-take.mjs` |
+| `game.json` | Xocialize original | The cafe as a game (M5 W0, AB-T-0615): the game document Export Game reads (`@vrmxg/bundle`): the scene it starts in, its behaviours, animation sets and personas, the engine's default action map, and the recorded walk as an extra file |
 | `shorts.json` | Xocialize original | The sample project's shorts for the creator (M4 W12): "The Order" with the script's default cameras, "The Regular" with cameras by rule |
 | `brains/hana.json` | Xocialize original | Hana's behaviour tree for the film (M2 W11): serving, as a `vrmxg-brain` document |
 | `brains/customer.json` | Xocialize original | The customer's behaviour tree (M2 W11), a `vrmxg-brain` document |

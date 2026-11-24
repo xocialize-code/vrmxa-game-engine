@@ -19,6 +19,7 @@ rest are presentation or run outside the 60 Hz step.
 |---|---|---|---|---|
 | `@vrmxg/ai` | 0.1.0 | simulation | NPC brains, as `research/npc-ai.md` recommends. | `engine/packages/ai/README.md` |
 | `@vrmxg/audio` | 0.1.0 | simulation | Sound for VRMXG: what plays is simulation, what is heard is presentation. | `engine/packages/audio/README.md` |
+| `@vrmxg/bundle` | 0.1.0 | tooling | A project exported as a game build: a web folder with the runtime, the game's files and a manifest that lists every file with its SHA-256 and its licence. | `engine/packages/bundle/README.md` |
 | `@vrmxg/camera` | 0.1.0 | simulation | The physical Camera node, gameplay rig presets stepped with the simulation, a spring arm, cinematic VirtualCameras and CameraBrains, Path3D, the `cameras` service, and picking. | `engine/packages/camera/README.md` |
 | `@vrmxg/cast` | 0.1.0 | simulation | Casting for the anime creator. | `engine/packages/cast/README.md` |
 | `@vrmxg/character` | 0.1.0 | simulation | VRMXA and VRM characters for the scene tree, inside the determinism boundary. | `engine/packages/character/README.md` |

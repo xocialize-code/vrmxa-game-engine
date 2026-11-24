@@ -3,7 +3,7 @@ import UniformTypeIdentifiers
 
 /// The file and project bridge methods. Files come through the system panels (the sandbox grants what the person
 /// picks, for the life of the process); for automation, environment variables stand in for the panels:
-///   VRMXG_SHELL_OPEN=<file>   VRMXG_SHELL_SAVE=<file>   VRMXG_SHELL_PROJECT=<folder>
+///   VRMXG_SHELL_OPEN=<file>   VRMXG_SHELL_SAVE=<file>   VRMXG_SHELL_PROJECT=<folder>   VRMXG_SHELL_BUILD=<folder>
 /// (a relative path is under the app's temporary directory, inside its sandbox container).
 ///
 /// Binary files (AB-A-0314, shell 0.6.0): `file.open { types, serve: true }` serves the chosen file at a URL on both
@@ -20,6 +20,8 @@ public final class FileMethods {
     var granted: Set<URL> = []
     /// Files reopened from bookmarks, whose security scope stays open for the app's life.
     var scoped: Set<URL> = []
+    /// The game build being written (`build.begin` … `build.end`, BuildFolder.swift).
+    var build: BuildFolder?
     public init(roots: WebRoots, env: [String: String] = ProcessInfo.processInfo.environment, defaults: UserDefaults = .standard) {
         self.roots = roots; self.env = env; self.defaults = defaults
     }
@@ -37,6 +39,7 @@ public final class FileMethods {
         router.register("project.open") { [unowned self] p in try await self.openProject(p) }
         router.register("project.list") { [unowned self] _ in try self.listProject() }
         router.register("project.write") { [unowned self] p in try self.writeProject(p) }
+        registerBuild(on: router)
     }
 
     private func types(_ exts: [String]?) -> [UTType] {

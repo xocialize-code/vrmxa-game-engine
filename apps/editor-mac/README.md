@@ -6,7 +6,7 @@ into it (`project.write`). No Xcode project: `scripts/build.sh` runs the Vite bu
 signature.
 
 ```sh
-apps/editor-mac/scripts/build.sh                  # build/VRMXGEditor.app (SKIP_WEB=1 reuses apps/editor/dist)
+apps/editor-mac/scripts/build.sh                  # the game runtime, the editor, build/VRMXGEditor.app (SKIP_WEB=1 reuses apps/editor/dist)
 open apps/editor-mac/build/VRMXGEditor.app
 apps/editor-mac/scripts/hand-test-fixtures.sh     # a fresh copy of the sample project in the app's sandbox
 ```
@@ -17,3 +17,8 @@ items); position, rotation, name and a prop change in the inspector, each one na
 group and goes with it when the group is deleted; undo and redo from the Edit menu and the toolbar come back to the
 same scene by hash; Save writes it, and read back from disk it is the same bytes and valid; Play runs it and Stop leaves
 the scene and the edit view as before. Screenshots in `docs/hand-test/shots/`.
+
+**Export Game (M5 W0, AB-T-0615).** File › Export Game… (⇧⌘E) and the Export panel's Export Game… write the open
+project as a game build into a folder (`build.begin`, `build.write`, `build.end` in `apps/shell`). `scripts/build.sh`
+builds the runtime a game is exported with before the editor. [`docs/HAND-TEST-M5-EXPORT-GAME.md`](docs/HAND-TEST-M5-EXPORT-GAME.md)
+and its two scenarios run it, and `acceptance/m5/build.mjs --mac` compares the builds with Node's, byte for byte.

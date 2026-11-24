@@ -1,0 +1,69 @@
+{
+ "check": "M5 exit check 1: the build plays in WKWebView, scheme and loopback, to Node's per-step hashes (AB-T-0615)",
+ "pass": true,
+ "node": {
+  "build": "b7393df444599d85aaf80b9cfaef99357351a998f4a890d93b8c92cc78fa5c92",
+  "manifest": "179067b9b1554a6709c2561c3184fb4a3bcbcaf5251001ff7fbb723f84935535",
+  "steps": 600,
+  "final": "fe69bad3406ab5f6",
+  "hashesDigest": "08fbc831304b23181e6ccbac619d05931665b3c794e67df34c21e7f747c0e0a9"
+ },
+ "runs": [
+  {
+   "origin": "scheme",
+   "case": "check=input/walk-in.json&steps=600",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "build": "b7393df444599d85aaf80b9cfaef99357351a998f4a890d93b8c92cc78fa5c92",
+   "runtime": "vrmxg-stepper 0.1.0",
+   "steps": 600,
+   "final": "fe69bad3406ab5f6",
+   "hashesDigest": "08fbc831304b23181e6ccbac619d05931665b3c794e67df34c21e7f747c0e0a9",
+   "filesChecked": 48,
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "scheme",
+   "case": "check=input/walk-in.json&steps=600&again=1",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "build": "b7393df444599d85aaf80b9cfaef99357351a998f4a890d93b8c92cc78fa5c92",
+   "runtime": "vrmxg-stepper 0.1.0",
+   "steps": 600,
+   "final": "fe69bad3406ab5f6",
+   "hashesDigest": "08fbc831304b23181e6ccbac619d05931665b3c794e67df34c21e7f747c0e0a9",
+   "filesChecked": 48,
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "loopback",
+   "case": "check=input/walk-in.json&steps=600",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "build": "b7393df444599d85aaf80b9cfaef99357351a998f4a890d93b8c92cc78fa5c92",
+   "runtime": "vrmxg-stepper 0.1.0",
+   "steps": 600,
+   "final": "fe69bad3406ab5f6",
+   "hashesDigest": "08fbc831304b23181e6ccbac619d05931665b3c794e67df34c21e7f747c0e0a9",
+   "filesChecked": 48,
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "loopback",
+   "case": "check=input/walk-in.json&steps=600&again=1",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "build": "b7393df444599d85aaf80b9cfaef99357351a998f4a890d93b8c92cc78fa5c92",
+   "runtime": "vrmxg-stepper 0.1.0",
+   "steps": 600,
+   "final": "fe69bad3406ab5f6",
+   "hashesDigest": "08fbc831304b23181e6ccbac619d05931665b3c794e67df34c21e7f747c0e0a9",
+   "filesChecked": 48,
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  }
+ ]
+}

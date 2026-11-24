@@ -20,7 +20,7 @@ const ui = reactive({
   debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', renderer: '—', holds: '', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
   mcp: '', tl: null, gameSlot: 'slot-1', gameNote: '', paused: false, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
   ask: null, // { title, text, options: [{ id, label }] }: the window's question before it closes (M5 W8)
-  ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '', check: '', canCheck: false, scene: '', checkRows: '' },
+  ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '', check: '', canCheck: false, scene: '', checkRows: '', gameName: '', game: '', gameRunning: false, gameN: 0, gameTotal: 0 },
 });
 /** @type {EditorHost} */ let ed = null; // never reactive
 
@@ -37,6 +37,7 @@ function refresh(kind = 'all') {
   ui.captions = ed.captions();
   ui.prompt = ed.prompt();
   if (ed.exporting) Object.assign(ui.ex, { n: ed.exporting.n, frames: ed.exporting.frames, phase: ed.exporting.phase, running: true });
+  ui.ex.gameRunning = !!ed.gameExporting; if (ed.gameExporting) { ui.ex.gameN = ed.gameExporting.n; ui.ex.gameTotal = ed.gameExporting.total; }
   if (kind === 'timeline' || kind === 'all') ui.tl = ed.timeline();
   if (kind === 'stats' || kind === 'captions' || kind === 'export' || kind === 'timeline') return;
   const s = ed.session;
@@ -73,6 +74,8 @@ function refresh(kind = 'all') {
     : `Scrub differs from the export: ${c.frames - c.same} of ${c.frames} frames (${c.rows.filter((r) => !r.same).map((r) => `${r.frame}${r.worldSame === true ? ' same world' : r.worldSame === false ? ' other world' : ''}`).join(', ')})`;
   ui.ex.canCheck = x?.take === 'sequence' && !!x.frameHashes?.length;
   ui.ex.checkRows = c ? c.rows.map((r) => `${r.frame} ${r.scrub} ${r.exported}`).join('; ') : '';
+  const g = ed.lastGameExport; // Export Game (M5 W0)
+  ui.ex.game = g?.refused ? `Game export refused (${g.refused}): ${g.message}` : g ? `${g.written ? 'Exported' : 'Checked'} game ${g.id}: ${g.files} files, ${g.bytes} bytes, entry ${g.entry}, runtime ${g.runtime} · build ${g.digest.slice(0, 16)} · manifest ${g.manifest.slice(0, 16)}${g.written ? ` · ${g.path}` : ' · not written: a build folder needs the Mac app or vrmxg-export'}` : '';
   ui.ex.still = ed.lastStill ? `${ed.lastStill.thumbnail ? 'Thumbnail' : 'Still'} ${ed.lastStill.path ?? ed.lastStill.name} · ${ed.lastStill.bytes} bytes` : '';
   ui.stopped = ed.lastStop ? `scene ${ed.lastStop.restored && ed.lastStop.hash === ed.lastStop.before ? 'as before Play' : 'CHANGED'} (${ed.lastStop.hash}), view ${ed.lastStop.viewSame ? 'unchanged' : 'CHANGED'}` : '';
 }
@@ -122,6 +125,7 @@ function takeSeconds() {
 const checkScrub = () => act(() => ed.checkExportAgainstScrub());
 const bakeTake = () => act(async () => { const ref = await ed.bakeTake(ui.ex.take, ui.ex.name.trim() || null); ui.ex.open = false; await ed.openScene(ref); });
 const exportVideo = () => act(() => ed.exportVideo({ take: ui.ex.take, seconds: +ui.ex.seconds, size: ui.ex.size, fps: ui.ex.fps, codec: ui.ex.codec, audio: ui.ex.audio, name: ui.ex.name.trim() }));
+const exportGame = () => act(() => ed.exportGame({ name: ui.ex.gameName.trim() }));
 const saveStill = () => act(() => ed.saveStill(ui.ex.size));
 const thumbnail = () => act(() => ed.makeThumbnail());
 const select = (id, add) => act(() => ed.session.select([id], { add }));
@@ -178,6 +182,7 @@ addEventListener('keydown', (e) => {
 if (inShell) {
   call('shell.info').then((i) => { ui.shell = `${i.app} · shell ${i.shell} · ${i.origin}`; });
   on('menu.openProject', openProject); on('menu.save', save); on('menu.saveAs', saveAs);
+  on('menu.exportGame', exportGame); // File › Export Game… (M5 W0)
   on('menu.undo', () => (typing() ? document.execCommand('undo') : undo()));
   on('menu.redo', () => (typing() ? document.execCommand('redo') : redo()));
 }
@@ -286,6 +291,13 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
           <button id="thumbnail" type="button" aria-label="Make thumbnail" :disabled="ui.ex.running" @click="thumbnail">Thumbnail</button>
         </div>
         <output v-if="ui.ex.still" id="still-result" :aria-label="ui.ex.still">{{ ui.ex.still }}</output>
+        <h3>Game</h3>
+        <label class="field">Build name <input id="game-name" v-model="ui.ex.gameName" aria-label="Game build name" placeholder="the game's id" :disabled="ui.ex.gameRunning" @focus="$event.target.select()"></label>
+        <div class="row">
+          <button id="export-game" type="button" class="play" :disabled="ui.ex.running || ui.ex.gameRunning" :aria-label="ui.shell ? 'Export game' : 'Export game (checked only: a build folder needs the Mac app)'" title="The project as a playable build: the runtime, the game's files and a manifest of every file's hash and licence" @click="exportGame">{{ ui.shell ? 'Export Game…' : 'Export Game (check)' }}</button>
+          <progress v-if="ui.ex.gameRunning" id="export-game-progress" :max="ui.ex.gameTotal || 1" :value="ui.ex.gameN" :aria-label="`Exporting the game: file ${ui.ex.gameN} of ${ui.ex.gameTotal}`" />
+        </div>
+        <output v-if="ui.ex.game" id="export-game-result" :aria-label="ui.ex.game">{{ ui.ex.game }}</output>
       </section>
       <p v-if="ui.prompt" id="prompt" class="prompt" role="status" :aria-label="`Press ${ui.prompt.key} to ${ui.prompt.text}`"><kbd>{{ ui.prompt.key }}</kbd> {{ ui.prompt.text }}</p>
       <div v-if="ui.captions.length" id="captions" class="captions" role="status" aria-live="polite">

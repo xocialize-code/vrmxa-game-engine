@@ -1,0 +1,28 @@
+{
+  "name": "@vrmxg/bundle",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG game builds (M5 W0): a project exported as a playable web folder (a prebuilt runtime copied in by hash, the project's files beside it, and a manifest listing every file with its SHA-256 and its licence), the same bytes from Node and from the editor; a loader that opens a build and refuses what the manifest doesn't list; the Vite plugin that makes a runtime.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./node": "./src/node.js",
+    "./vite": "./src/vite.js"
+  },
+  "bin": {
+    "vrmxg-export": "./src/cli.js"
+  },
+  "files": ["src", "runtime"],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/",
+    "build:runtime": "vite build --config runtime/vite.config.js"
+  },
+  "devDependencies": {
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0"
+  },
+  "vrmxg": { "determinism": "tooling" }
+}
