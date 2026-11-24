@@ -30,6 +30,13 @@ stack's `settle()` before it draws, so a frame never depends on how long the pag
 restored without stepping (a scrub's first frame), the interpolator drops the pair it captured before the restore and
 draws the step as it is.
 
+**A film's frame 0** (AB-T-0595). Frame 0 maps to step 0 at α 0, and at step 0 nothing has run: characters stand in
+their bind pose, the output camera is where the set left it, and a sequence's look, first camera and shot overrides
+aren't applied yet (tracks apply in the step). So `frameAt` draws step 1 as simulated for any blend that would reach
+back to step 0 (α < 1 on step 0 or 1), and `render` does the same on step 1. That is frame 0 at every rate, and the
+frames after it inside the first step at 48 fps and up. `last.alpha` is then 1. The simulation doesn't change: only
+which moment those frames show. α = 1 still draws a step as simulated, step 0 included (`test/first-frame.test.mjs`).
+
 Tests (`npm test`, no models, so they run on CI): hashes headless / interpolated / plain over 600 recorded steps at a
 120 Hz frame rate; the walker moves 2.5 cm every frame interpolated, 0 / 5 cm without; the blend never stays in an object
 and fires no change callback; lights, shadow presets, frozen maps and the Environment follow nodes and prop edits; a wire

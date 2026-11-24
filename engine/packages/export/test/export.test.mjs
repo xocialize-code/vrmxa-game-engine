@@ -67,10 +67,11 @@ test('an export shows what live play shows, frame for frame, and never changes t
   assert.deepEqual(sink.frames.map((f) => f.n), [...Array(frames).keys()], 'in order, each once');
   assert.deepEqual(sink.job, { width: 64, height: 36, fps: [24, 1], frames, audio: false, topDown: false, codec: 'h264' });
   assert.ok(sink.ended && !sink.cancelled);
-  // frame n blends steps s − 1 and s at α: the box at 3 m/s × (s − 1 + α) / 60, exactly live play's lag
+  // frame n blends steps s − 1 and s at α: the box at 3 m/s × (s − 1 + α) / 60, exactly live play's lag. Frame 0 would
+  // reach back to step 0, the world before anything ran, so it shows step 1 as simulated (AB-T-0595)
   for (const f of sink.frames) {
     const { step, alpha } = frameToStep(f.n, fps);
-    const want = step === 0 ? 0 : (3 * (step - 1 + alpha)) / 60;
+    const want = (3 * Math.max(1, step - 1 + alpha)) / 60;
     assert.ok(Math.abs(f.x - want) < 1e-9, `frame ${f.n}: drawn at ${f.x}, want ${want}`);
   }
   assert.deepEqual(sink.frames.map((f) => f.render), [...Array(frames).keys()].map((n) => n + 1), 'one render per frame, read back in its own frame');
