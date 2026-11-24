@@ -32,6 +32,7 @@ async function mount(flow) {
       button.click();
       seen.clicked = button.getAttribute('aria-label');
     },
+    onStep: () => overlay.sync(), // as an app's frame loop does, once a frame: here once a step, so the live run is the same everywhere
     dom: () => seen,
     unmount: () => app.unmount(),
   };

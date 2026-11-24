@@ -18,8 +18,10 @@ export const DELAYS = { none: [], steady: [4], varied: [9, 0, 12, 3, 7, 1] };
 
 /**
  * @param {any} R Rapier @param {Map<string, any>} scenes the test game's parsed scenes by ref
- * @param {{ delays?: number[], sleep?: (ms: number) => Promise<void>, mount?: (flow: any) => Promise<{ answer: any, dom?: () => any, unmount?: () => void }> }} [o]
- *   mount: a page mounts the overlay over the session and answers through it
+ * @param {{ delays?: number[], sleep?: (ms: number) => Promise<void>, mount?: (flow: any) => Promise<{ answer: any, onStep?: () => void, dom?: () => any, unmount?: () => void }> }} [o]
+ *   mount: a page mounts the overlay over the session and answers through it; onStep: the overlay reads the session
+ *   before every step (its claim on the devices follows the conversation on the same steps in every runtime: an app's
+ *   frame loop does the same once a frame)
  */
 export async function runDialogueScenario(R, scenes, { delays = [], sleep = null, mount = null } = {}) {
   let n = 0;
@@ -30,7 +32,7 @@ export async function runDialogueScenario(R, scenes, { delays = [], sleep = null
   const ui = mount ? await mount(flow) : null;
   const events = [];
   flow.on((e) => events.push(e));
-  const live = await playSession(flow, { steps: STEPS, pick: PICK, answer: ui?.answer ?? null });
+  const live = await playSession(flow, { steps: STEPS, pick: PICK, answer: ui?.answer ?? null, onStep: ui?.onStep ?? null });
   const dom = ui?.dom?.() ?? null;
   ui?.unmount?.();
   flow.dispose();
