@@ -87,16 +87,32 @@ A rule that is wrong must not win or lose a game by accident, so two things are 
     connection in the scene that calls `setFlag` with it.
   - *Another scene's*: listed in the `GameRules`' `reads`, by kind: `{ "counters": ["orders"], "flags": ["vip"],
     "timers": ["clock"], "goals": ["serve"], "checkpoints": ["door"] }`. An ending that reads the level's goal lists
-    it there: it doesn't redeclare it, so it isn't one of the ending's objectives or part of its win. A flag only a
-    behaviour sets is listed there too.
+    it there: it doesn't redeclare it, so it isn't one of the ending's objectives or part of its win. A name is the
+    scene's own or in `reads`, not both.
   - A key that names neither stops the scene, with an error naming the node and the key and saying both ways to
     declare it: `GameRules "rules": lose reads "counters.livez": this scene has no counter "livez" (counters: lives).
     Add a GameCounter with that key, or list it in GameRules' reads.counters if another scene counts it`. So does
-    comparing the time left on a stopwatch.
-  - **What a scene reads has to arrive.** When the game changes to it, every name in `reads` is checked against what
-    the game brought, and a clock read for its time left has to have arrived as a countdown; otherwise the change
-    fails, naming what is missing. A game that starts in the scene (or a reset) brings nothing: what it reads is then
-    absent, and comparisons with it are false.
+    comparing the time left on one of the scene's own stopwatches.
+- **What a scene reads and the game didn't bring has its starting value.** Whether the level's `foundKey` flag was
+  ever set, a checkpoint ever taken, or the ending reached by way of the level at all depends on how the game was
+  played, so none of it can stop a game: a scene change never fails over a read value.
+
+  | Read | When the game brings none |
+  |---|---|
+  | a flag | `false` |
+  | a goal | not done (`{ done: false, step: null }`) |
+  | a counter | 0, or the default given: `"counters": { "lives": 3 }` in place of the list |
+  | a timer | not there: nothing holds of it (`timers.clock.done` is not set; a comparison is false) |
+  | a checkpoint slot | not taken: `checkpoints.door` is not set |
+
+  The first three are in the state from the scene's start (so `flags.foundKey eq false` holds), and what the game
+  does bring replaces them. A start, a reset and an arrival with nothing all read the same.
+- **What a document can prove wrong is refused before the game runs**, by `checkGame(scenes)` over all the game's
+  scenes: a `reads` entry that no scene declares (nothing could ever bring it), and a `changeScene` to a scene the
+  game doesn't have. One scene can't know the others, so this isn't checked when a scene's rules start. Give the flow
+  the game's scenes (`new GameFlow({ scenes })`) and `start()` runs it and refuses such a game; without them it is a
+  tool's check to run (W9's project validation), and a flag that nobody sets is simply false for ever. A flag only a
+  behaviour's code sets is started in its own scene's `flags`, so that the documents show who owns it.
 - **A comparison with nothing to compare is false**, whichever op: a key that isn't there, or a value that is `null`.
   Test for nothing with `unset`. A path goes through own properties only.
 
@@ -166,7 +182,7 @@ re-read the view when it does.
 | `outcome` | `result` |
 | `pending` | `to`, `at` |
 | `checkpoint` | `id`, `slot`: taken, in the step |
-| `checkpointSkipped` | `id`, `slot`, `reason`: asked for and not taken. `decided`: the game was decided on that step. `scene`: the scene changed while it waited for a step that could save |
+| `checkpointSkipped` | `id`, `slot`, `reason`: no checkpoint after all. `decided`: the game was decided on that step, or a result asked for on it was still to be decided. `scene`: the scene changed while it waited for a step that could save |
 | `checkpointWritten` | `id`, `slot`, `step`, `stored`: the file exists (in `flow.checkpoints`; `stored`: and in the store). **Say "saved" on this one** |
 | `checkpointFailed` | `id`, `slot`, `step`, `error`: no file, or not in the store (the store's write failed; the world couldn't be saved at the boundary) |
 | `refused` | `id`, `action`, `reason`: a game node's action that couldn't be done (see above), not thrown |
@@ -183,7 +199,8 @@ A tool that sets a value between steps (MCP, while paused) changes the run from 
 
 **The rules themselves** are node props: MCP reads and sets them as it does any node. `describeRules(doc)` reads a
 document without running it: the rules node, counters, timers, goals, checkpoints, the scenes its connections change
-to, the state keys its conditions read, and what would stop it starting.
+to, the flags they set, the state keys its conditions read, and what would stop it starting. `checkGame(scenes)` does
+that for every scene of a game and adds what only the whole shows (above).
 
 ## Scene changes
 
@@ -229,8 +246,11 @@ is asked in finishes whole.
   - **Never a decided game**: none is taken on or after the step the game is won or lost.
   - **Never a world that can't be saved**: while a closet redraw is in flight it stays asked for, in the state, and is
     taken on the first step that can save. If the scene changes first it is skipped, and says so.
+  - **Never a game with a result pending.** A win or a loss asked for after the step's rules took a checkpoint (a
+    service installed after the game) is decided as of that step: the checkpoint isn't written (`checkpointSkipped`),
+    and when the game is decided it takes the checkpoint back out of its state, leaving the slot's earlier one.
   - **State, file and events agree.** The state says a checkpoint was taken only once the rules took it;
-    `checkpointWritten` follows when the file exists, or `checkpointFailed` when it doesn't.
+    `checkpointWritten` follows when the file exists, or `checkpointFailed` or `checkpointSkipped` when it doesn't.
 - **Where the files go.** `flow.checkpoints` has each slot's latest file. With a `store` they are also written there
   under `CHECKPOINT_PREFIX` and the slot: `auto-checkpoint`. `flow.saveTo` keeps the player's saves out of `auto-`
   names; a menu may list those slots as checkpoints.
@@ -274,6 +294,8 @@ with physics, recorded input and random streams) for 600 steps, through seven sc
   for a savable step, one a scene change overtakes, one the boundary can't save; a win and a loss on one step from
   every source; a carry that throws; a recording across a load; waiting for a load. And the second round: a win
   asked for late in a step that changes scene, from a service installed after the game and before it; `saveTo`
-  refusing the reserved prefix; `reads` (what arrives, what doesn't, a stopwatch for a clock); a refused `tree.add`
-  leaving nothing; connections checked when the rules start and refused actions at run time; the schema refusing
-  `seconds: 0`.
+  refusing the reserved prefix; `reads`; a refused `tree.add` leaving nothing; connections checked when the rules
+  start and refused actions at run time; the schema refusing `seconds: 0`. And the third: a read value the game
+  didn't bring (a flag never set, a checkpoint never taken, a goal from a scene not visited, a counter's default, a
+  stopwatch for a clock) never stopping a scene change; `checkGame` and a flow given the game's scenes; a checkpoint
+  taken on the step a result is asked for late, skipped and taken back.

@@ -16,7 +16,7 @@ import { SceneTree } from '@vrmxg/core';
 import { captureWorld, restoreWorld } from '@vrmxg/snapshot';
 import { installSave, MemoryStore } from '@vrmxg/save';
 import { installInput } from '@vrmxg/input';
-import { GameFlow, installGame, holds, checkKeys, describeRules, CHECKPOINT_PREFIX } from '../src/index.js';
+import { GameFlow, installGame, holds, checkKeys, describeRules, checkGame, CHECKPOINT_PREFIX } from '../src/index.js';
 import { fixtureFlow, fixtureRecording } from './fixtures/world.js';
 import { R, rulesWorld, scenes, sleep } from './helpers.mjs';
 
@@ -472,23 +472,30 @@ test('a player\'s save can\'t take a checkpoint\'s name: saveTo refuses the rese
   flow.dispose();
 });
 
-test('a scene reads what another scene owns by listing it in its rules\' reads: checked when the game gets there', async () => {
-  const level = doc('level', [
-    { id: 'rules', type: 'GameRules' },
-    { id: 'orders', type: 'GameCounter' }, { id: 'clock', type: 'GameTimer', props: { seconds: 9, scope: 'game' } }, { id: 'watch', type: 'GameTimer', props: { scope: 'game' } },
-    { id: 'serve', type: 'GameGoal', props: { optional: true } }, { id: 'cp', type: 'Checkpoint', props: { slot: 'door' } },
-    { id: 'leave', type: 'GameTimer', props: { seconds: 0.1 } },
-  ], [{ from: 'leave', signal: 'timeout', to: 'rules', call: 'changeScene', args: { to: 'ending.vrmxs' } }, { from: 'leave', signal: 'started', to: 'rules', call: 'setFlag', args: { flag: 'left' } }]);
-  // the ending owns one goal of its own and reads the level's goal, counter, flag, clock and checkpoint
-  const ending = (rules = {}) => doc('ending', [
-    { id: 'rules', type: 'GameRules', props: { keepOutcome: true, reads: { counters: ['orders'], flags: ['vip'], timers: ['clock'], goals: ['serve'], checkpoints: ['door'] }, ...rules } },
-    { id: 'thanks', type: 'GameGoal', props: { text: 'Say thanks', when: { test: 'all', of: [state('goals.serve.done'), state('counters.orders', 'ge', 2), state('flags.vip'), state('timers.clock.left', 'gt', 0), state('checkpoints.door')] } } },
-  ]);
-  const { flow } = await miniFlow({ 'level.vrmxs': level, 'ending.vrmxs': ending() });
-  flow.game.add('orders', 2); flow.game.completeGoal('serve'); flow.game.setFlag('vip'); flow.tree.find('cp').call('write');
+// The level and the ending the tests below share. The level sets `foundKey` and `vip` only by connections a player may
+// never trigger; the ending owns one goal and reads the rest.
+const readsLevel = () => doc('level', [
+  { id: 'rules', type: 'GameRules' },
+  { id: 'orders', type: 'GameCounter' }, { id: 'clock', type: 'GameTimer', props: { seconds: 9, scope: 'game' } }, { id: 'watch', type: 'GameTimer', props: { scope: 'game' } },
+  { id: 'serve', type: 'GameGoal', props: { optional: true } }, { id: 'cp', type: 'Checkpoint', props: { slot: 'door' } },
+  { id: 'leave', type: 'GameTimer', props: { seconds: 0.1 } },
+], [
+  { from: 'leave', signal: 'timeout', to: 'rules', call: 'changeScene', args: { to: 'ending.vrmxs' } },
+  { from: 'serve', signal: 'completed', to: 'rules', call: 'setFlag', args: { flag: 'vip' } },
+  { from: 'cp', signal: 'written', to: 'rules', call: 'setFlag', args: { flag: 'foundKey' } },
+]);
+const readsEnding = (rules = {}, extra = []) => doc('ending', [
+  { id: 'rules', type: 'GameRules', props: { keepOutcome: true, reads: { counters: ['orders'], flags: ['vip', 'foundKey'], timers: ['clock'], goals: ['serve'], checkpoints: ['door'] }, ...rules } },
+  { id: 'thanks', type: 'GameGoal', props: { text: 'Say thanks', when: { test: 'all', of: [state('goals.serve.done'), state('counters.orders', 'ge', 2), state('flags.vip'), state('timers.clock.left', 'gt', 0), state('checkpoints.door')] } } },
+  ...extra,
+]);
+
+test('a scene reads what another scene owns by listing it in its rules\' reads, without owning it', async () => {
+  const { flow } = await miniFlow({ 'level.vrmxs': readsLevel(), 'ending.vrmxs': readsEnding() });
+  flow.game.add('orders', 2); flow.game.completeGoal('serve'); flow.tree.find('cp').call('write');
   await flow.runAsync(12);
   const v = flow.view();
-  assert.deepEqual([v.scene, v.goals.thanks.done, v.outcome], ['ending.vrmxs', true, 'won'], 'the ending\'s goal read all five and was done');
+  assert.deepEqual([v.scene, v.goals.thanks.done, v.outcome, v.flags], ['ending.vrmxs', true, 'won', { foundKey: true, vip: true }], 'the ending\'s goal read all five and was done');
   assert.deepEqual(v.objectives.map((o) => o.key), ['thanks'], 'reading the level\'s goal didn\'t make it one of the ending\'s objectives');
   flow.dispose();
 
@@ -497,33 +504,123 @@ test('a scene reads what another scene owns by listing it in its rules\' reads: 
   set.tree.run(5);
   assert.equal(set.game.view().outcome, 'won');
 
-  // what a scene reads has to arrive: from a level that never had it the change fails, naming it, and play stays put
-  const bare = doc('level', [{ id: 'rules', type: 'GameRules' }, { id: 'leave', type: 'GameTimer', props: { seconds: 0.1 } }], [{ from: 'leave', signal: 'timeout', to: 'rules', call: 'changeScene', args: { to: 'ending.vrmxs' } }]);
-  const built = [], unloaded = [];
-  const b = await miniFlow({ 'level.vrmxs': bare, 'ending.vrmxs': ending() }, { built, unloaded });
-  b.flow.run(6); await b.flow.settle();
-  assert.throws(() => b.flow.step(), /the scene change to "ending\.vrmxs" failed: GameRules "rules" reads counters\.orders from another scene, and "level\.vrmxs" brought none \(it brought no counters\)\. Declare it in the scene the game comes from, or as this scene's own; GameRules "rules" reads flags\.vip/);
-  assert.deepEqual([b.flow.scene, built, unloaded], ['level.vrmxs', ['level.vrmxs', 'ending.vrmxs'], ['ending.vrmxs']]);
-  b.flow.dispose();
-
-  // a clock read for its time left has to arrive as a countdown: a stopwatch under that name fails the change the same way
-  const c = await miniFlow({ 'level.vrmxs': level, 'ending.vrmxs': doc('ending', [{ id: 'rules', type: 'GameRules', props: { reads: { timers: ['watch'] }, lose: state('timers.watch.left', 'le', 0) } }]) });
-  c.flow.run(6); await c.flow.settle();
-  assert.throws(() => c.flow.step(), /failed: GameRules "rules": lose reads "timers\.watch\.left": "watch" is a stopwatch/);
-  c.flow.dispose();
-
-  // a game that starts in such a scene has brought nothing: what it reads is absent, and a comparison with it is false
-  const alone = await miniFlow({ 'ending.vrmxs': ending() });
-  alone.flow.run(5);
-  assert.deepEqual([alone.flow.view().goals.thanks.done, alone.flow.view().counters], [false, {}]);
-  alone.flow.dispose();
-
-  // reads that aren't lists of names, or of a kind there isn't, stop the scene; describeRules says the same
+  // reads that aren't lists of names, of a kind there isn't, or of what the scene declares itself, stop the scene
   assert.throws(() => rulesWorld([{ id: 'rules', type: 'GameRules', props: { reads: { scores: ['a'] } } }]), /GameRules "rules": reads has no "scores" \(counters, flags, timers, goals, checkpoints\)/);
-  assert.throws(() => rulesWorld([{ id: 'rules', type: 'GameRules', props: { reads: { counters: 'orders' } } }]), /reads\.counters is a list of names/);
-  const d = describeRules(ending());
+  assert.throws(() => rulesWorld([{ id: 'rules', type: 'GameRules', props: { reads: { flags: 'vip' } } }]), /reads\.flags is a list of names/);
+  assert.throws(() => rulesWorld([{ id: 'rules', type: 'GameRules', props: { reads: { counters: { orders: 'none' } } } }]), /reads\.counters is a list of names, or a map of name → the number/);
+  assert.throws(() => rulesWorld([{ id: 'rules', type: 'GameRules', props: { reads: { counters: ['coins'] } } }, { id: 'coins', type: 'GameCounter', props: { start: 3 } }]), /GameRules "rules": reads\.counters lists "coins", which this scene declares itself: take it out of reads/);
+  const d = describeRules(readsEnding());
   assert.deepEqual([d.problems, d.rules.reads.goals, d.goals.map((g) => g.key)], [[], ['serve'], ['thanks']]);
   assert.match(describeRules(doc('e', [{ id: 'g', type: 'GameGoal', props: { when: state('goals.serve.done') } }])).problems[0], /Add a GameGoal with that key, or list it in GameRules' reads\.goals if it is another scene's/);
+  assert.match(describeRules(doc('e', [{ id: 'rules', type: 'GameRules', props: { reads: { goals: ['g'] } } }, { id: 'g', type: 'GameGoal' }])).problems[0], /reads\.goals lists "g", which this scene declares itself/);
+});
+
+test('what a scene reads and the game didn\'t bring has its starting value: no way of playing can stop the game at a scene change', async () => {
+  // the review's cases, all in one play: the player never served (the `vip` flag's connection never fired), never
+  // reached the checkpoint (so `foundKey` was never set and the slot never written), and took no orders
+  const ending = () => readsEnding({ lose: { test: 'not', of: state('flags.foundKey') } }, [{ id: 'none', type: 'GameGoal', props: { optional: true, when: state('flags.foundKey', 'eq', false) } }]);
+  const played = await miniFlow({ 'level.vrmxs': readsLevel(), 'ending.vrmxs': ending() });
+  await played.flow.runAsync(12); played.flow.flush();
+  const v = played.flow.view();
+  assert.deepEqual([v.scene, v.arrivals], ['ending.vrmxs', 1], 'the change was made');
+  assert.deepEqual(v.flags, { foundKey: false, vip: false }, 'a flag nothing set is false');
+  assert.deepEqual([v.goals.serve, v.counters.orders, v.checkpoints], [{ done: false, step: null }, 0, {}], 'a goal not done, a counter 0, a checkpoint not taken');
+  assert.deepEqual([v.goals.none.done, v.goals.thanks.done, v.outcome], [true, false, 'lost'], 'conditions go by those values: "foundKey eq false" holds, and its absence loses');
+  played.flow.dispose();
+
+  // reached from a scene that has none of it (no goal, no counter, no clock): the same, and the clock is simply not there
+  const title = doc('title', [{ id: 'rules', type: 'GameRules' }, { id: 'go', type: 'GameTimer', props: { seconds: 0.05 } }], [{ from: 'go', signal: 'timeout', to: 'rules', call: 'changeScene', args: { to: 'ending.vrmxs' } }]);
+  const from = await miniFlow({ 'title.vrmxs': title, 'ending.vrmxs': readsEnding() });
+  await from.flow.runAsync(10);
+  const w = from.flow.view();
+  assert.deepEqual([w.scene, w.goals.serve.done, w.counters.orders, w.flags, 'clock' in w.timers, w.goals.thanks.done], ['ending.vrmxs', false, 0, { foundKey: false, vip: false }, false, false]);
+  from.flow.dispose();
+
+  // a start, a reset and an arrival with nothing read alike
+  const alone = await miniFlow({ 'ending.vrmxs': readsEnding() });
+  alone.flow.run(3);
+  const a = alone.flow.view();
+  assert.deepEqual([a.flags, a.goals.serve, a.counters, a.checkpoints], [w.flags, w.goals.serve, w.counters, w.checkpoints]);
+  alone.flow.game.changeScene({ to: 'ending.vrmxs', reset: true });
+  await alone.flow.runAsync(3);
+  assert.deepEqual([alone.flow.view().flags, alone.flow.view().counters, alone.flow.view().arrivals], [a.flags, a.counters, 1]);
+  alone.flow.dispose();
+
+  // a counter read with a default of its own; and what the game does bring wins over the default
+  const lives = (n) => doc('next', [{ id: 'rules', type: 'GameRules', props: { reads: { counters: { lives: n } }, lose: state('counters.lives', 'le', 0) } }]);
+  const fresh = rulesWorld([]); // (the default is a value like any other in the state: in the snapshot)
+  assert.equal(fresh.game.get('lives'), 0);
+  const b = await miniFlow({ 'next.vrmxs': lives(3) });
+  b.flow.run(3);
+  assert.deepEqual([b.flow.view().counters, b.flow.view().outcome, captureWorld(b.flow.tree).services.game.data.counters], [{ lives: 3 }, null, { lives: 3 }]);
+  b.flow.dispose();
+  const c = await miniFlow({ 'a.vrmxs': doc('a', [{ id: 'rules', type: 'GameRules' }, { id: 'lives', type: 'GameCounter', props: { start: 1 } }]), 'next.vrmxs': lives(3) });
+  c.flow.game.changeScene({ to: 'next.vrmxs' });
+  await c.flow.runAsync(3);
+  assert.equal(c.flow.view().counters.lives, 1, 'the one life the game brought, not the default three');
+  c.flow.dispose();
+
+  // a clock read for its time left that arrives as a stopwatch: nothing to compare, so the comparison is false; no failure
+  const s = await miniFlow({ 'level.vrmxs': readsLevel(), 'ending.vrmxs': doc('ending', [{ id: 'rules', type: 'GameRules', props: { reads: { timers: ['watch'] }, lose: state('timers.watch.left', 'le', 0) } }]) });
+  await s.flow.runAsync(12);
+  assert.deepEqual([s.flow.scene, s.flow.view().outcome, s.flow.view().timers.watch.left], ['ending.vrmxs', null, null]);
+  s.flow.dispose();
+});
+
+test('what a document can prove wrong is refused before the game starts: a read no scene declares, a change to no scene', async () => {
+  const good = { 'level.vrmxs': readsLevel(), 'ending.vrmxs': readsEnding() };
+  assert.deepEqual([checkGame(good).ok, checkGame(new Map(Object.entries(good))).problems], [true, []]);
+  assert.deepEqual(checkGame(good).scenes['ending.vrmxs'].rules.reads.flags, ['vip', 'foundKey']);
+  // nothing in the game could ever bring these: whatever is played, the conditions reading them are wrong
+  const bad = { 'level.vrmxs': readsLevel(), 'ending.vrmxs': readsEnding({ reads: { counters: ['ordrs'], flags: ['vip', 'foundKee'], timers: ['clock', 'stopwatch'], goals: ['serve'], checkpoints: ['window'] } }) };
+  const problems = checkGame(bad).problems;
+  assert.deepEqual(problems.filter((p) => p.includes('no scene of the game')), [
+    'ending.vrmxs: GameRules "rules" reads counters.ordrs, and no scene of the game has a GameCounter with that key',
+    'ending.vrmxs: GameRules "rules" reads flags.foundKee, and no scene of the game has a flag started in a GameRules\' flags or set by a connection',
+    'ending.vrmxs: GameRules "rules" reads timers.stopwatch, and no scene of the game has a GameTimer with that key',
+    'ending.vrmxs: GameRules "rules" reads checkpoints.window, and no scene of the game has a Checkpoint with that slot',
+  ]);
+  assert.ok(problems.some((p) => /ending\.vrmxs: GameGoal "thanks": when\.of\[1\] reads "counters\.orders"/.test(p)), 'and each scene\'s own problems, with its name');
+  assert.match(checkGame({ 'level.vrmxs': readsLevel() }).problems.join(), /level\.vrmxs: a connection changes to "ending\.vrmxs", which isn't a scene of the game \(level\.vrmxs\)/);
+  // a flow that is given the game's scenes refuses to start such a game; one that isn't can't know (a tool checks)
+  const { m0Registry: reg } = await import('@vrmxg/registry/m0');
+  const load = (docs) => async (req) => { const t = new SceneTree({ registry: reg(), seed: req.seed }); t.clock.step = req.step; installInput(t); installGame(t, { scene: req.scene }); installSave(t, { scene: { ref: req.scene, doc: docs[req.scene] } }); return t.instantiate(structuredClone(docs[req.scene])); };
+  await assert.rejects(new GameFlow({ load: load(bad), scenes: bad }).start('level.vrmxs'), /this game can't start: .*ending\.vrmxs: GameRules "rules" reads counters\.ordrs, and no scene of the game has a GameCounter with that key/);
+  const unknowing = await new GameFlow({ load: load({ 'level.vrmxs': readsLevel(), 'ending.vrmxs': doc('ending', [{ id: 'rules', type: 'GameRules', props: { reads: { flags: ['nobody'] }, win: state('flags.nobody') } }]) }) }).start('level.vrmxs');
+  await unknowing.runAsync(12);
+  assert.deepEqual([unknowing.scene, unknowing.view().flags.nobody], ['ending.vrmxs', false], 'unchecked, it plays: the flag nobody sets is false for ever');
+  unknowing.dispose();
+  const knowing = await new GameFlow({ load: load(good), scenes: good }).start('level.vrmxs');
+  assert.equal(knowing.scene, 'level.vrmxs');
+  knowing.dispose();
+});
+
+test('a checkpoint taken on the step a loss is asked for late is not written, and the game takes it back', async () => {
+  // the review's case: the rules take the checkpoint in step 5, then a service installed after the game asks for a loss
+  const docs = { 'a.vrmxs': doc('a', [{ id: 'rules', type: 'GameRules' }, { id: 'early', type: 'Checkpoint', props: { when: state('sceneSteps', 'ge', 2) } }, { id: 'cp', type: 'Checkpoint', props: { when: state('sceneSteps', 'ge', 5) } }]) };
+  const store = new MemoryStore();
+  const { flow, events } = await miniFlow(docs, { store, install: asker((game, step) => { if (step === 5) game.lose(); }) });
+  flow.run(3); await flow.settle(); // (the store has written the first before the second is taken)
+  flow.run(3); await flow.settle(); flow.flush();
+  assert.deepEqual(events.filter((e) => e.type.startsWith('checkpoint')).map((e) => [e.type, e.id, e.step, e.reason ?? null]), [
+    ['checkpoint', 'early', 2, null], ['checkpointWritten', 'early', 3, null],
+    ['checkpoint', 'cp', 5, null], ['checkpointSkipped', 'cp', 6, 'decided'],
+  ]);
+  assert.deepEqual([flow.checkpoints.get('checkpoint').summary.step, (await store.read(`${CHECKPOINT_PREFIX}checkpoint`)).summary.step], [3, 3], 'the file is still the earlier, good one');
+  assert.equal(flow.checkpoints.get('checkpoint').snapshot.services.game.data.requests.lose, null, 'and no file holds a loss in waiting');
+  flow.run(1);
+  assert.deepEqual([flow.view().decided, flow.view().checkpoint], [{ result: 'lost', step: 5, scene: 'a.vrmxs' }, { slot: 'checkpoint', id: 'early', requested: 2 }], 'lost as of step 5; the state names the checkpoint that has a file');
+  assert.equal(await flow.loadCheckpoint(), 3);
+  flow.run(1);
+  assert.equal(flow.view().outcome, null, 'loaded, it is a game still being played');
+  flow.dispose();
+
+  // with no earlier one the slot is empty again: state, file and events agree
+  const only = { 'a.vrmxs': doc('a', [{ id: 'rules', type: 'GameRules' }, { id: 'cp', type: 'Checkpoint', props: { when: state('sceneSteps', 'ge', 5) } }]) };
+  const b = await miniFlow(only, { store: new MemoryStore(), install: asker((game, step) => { if (step === 5) game.win(); }) });
+  b.flow.run(7); await b.flow.settle(); b.flow.flush();
+  assert.deepEqual([b.flow.view().outcome, b.flow.view().checkpoints, b.flow.checkpoints.size, b.events.filter((e) => e.type.startsWith('checkpoint')).map((e) => e.type)], ['won', {}, 0, ['checkpoint', 'checkpointSkipped']]);
+  b.flow.dispose();
 });
 
 test('a refused tree.add leaves nothing behind: no node, no declaration, no state', () => {

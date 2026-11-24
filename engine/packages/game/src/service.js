@@ -61,7 +61,7 @@ export class GameService {
     /** @type {null | { result: 'won' | 'lost', step: number, scene: string | null }} */ this.outcome = null;
     /** @type {null | { to: string, at: number, reset: boolean }} the scene change asked for: done at the boundary where the clock is `at` */
     this.pending = null;
-    /** @type {Record<string, { id: string, label: string | null, requested: number, seq: number }>} the last checkpoint taken into each slot; seq counts every one */
+    /** @type {Record<string, { id: string, label: string | null, requested: number, seq: number, was?: any }>} the last checkpoint taken into each slot (and, as `was`, the one it replaced); seq counts every one */
     this.checkpoints = {};
     /** How many checkpoints have been taken. */ this.checkpointSeq = 0;
     /** @type {Record<string, boolean>} checkpoint nodes of this scene: what their condition last was (true for good once taken, with `once`) */
@@ -75,7 +75,7 @@ export class GameService {
 
     // The scene's declarations: live nodes, in tree order. Not state: a world built from the same scene has the same.
     this.decl = { /** @type {any} */ rules: null, counters: new Map(), timers: new Map(), goals: new Map(), /** @type {any[]} */ checkpoints: [] };
-    /** What this scene's GameRules says its conditions read that another scene owns (`reads`), by kind. */
+    /** What this scene's GameRules says its conditions read that another scene owns (`reads`), by kind: names. */
     this.reads = readReads(null).reads;
     this._unchecked = false; // declarations changed since checkRules last looked
     /** @type {Array<{ kind: string, node: any, made: Array<[string, string]> }>} what was declared since then, and the state it made */
@@ -101,6 +101,12 @@ export class GameService {
       bad([...(p.win !== undefined ? checkCondition(p.win, 'win') : []), ...(p.lose !== undefined ? checkCondition(p.lose, 'lose') : []), ...reads.problems]);
       for (const [k, v] of Object.entries(p.flags ?? {})) { if (!FLAG_TYPES.has(typeof v)) bad([`flag "${k}" is not a boolean, a number or a string`]); name('a flag', k); }
       for (const [k, v] of Object.entries(p.flags ?? {})) if (!Object.hasOwn(this.flags, k)) { this.flags[k] = v; made.push(['flags', k]); }
+      // What the scene reads from another has a value from the start, the one it has when the game brings none: a
+      // flag is false, a goal isn't done, a counter is its default (0). A scene change then carries the real one
+      // over it, if there is one. So a start, a reset and an arrival with nothing all read the same, and none of
+      // them can stop a game. (A timer and a checkpoint that didn't come are simply not there: nothing holds of them.)
+      const start = { flags: () => false, goals: () => ({ done: false, step: null }), counters: (k) => reads.defaults[k] ?? 0 };
+      for (const [kind, value] of Object.entries(start)) for (const k of reads.reads[kind]) if (!Object.hasOwn(this[kind], k)) { this[kind][k] = value(k); made.push([kind, k]); }
       this.decl.rules = node; this.reads = reads.reads;
     } else if (kind === 'checkpoint') {
       if (p.when !== undefined) bad(checkCondition(p.when, 'when'));
@@ -142,11 +148,11 @@ export class GameService {
   /**
    * What this scene's conditions may read, by the names the game state has (conditions.js checkKeys): what it declares
    * with its nodes, the flags its GameRules starts or its connections set, and what its GameRules' `reads` lists as
-   * another scene's. With `arrived`, a read timer is what actually came (a countdown or a stopwatch), not unknown.
+   * another scene's (a read timer is neither countdown nor stopwatch here: that depends on the scene it comes from).
    */
-  declared({ arrived = false } = {}) {
+  declared() {
     const r = this.reads, sets = this._connections().filter((c) => c.to.kind === 'rules' && c.call === 'setFlag' && typeof c.args?.flag === 'string').map((c) => c.args.flag);
-    const timers = new Map(r.timers.map((k) => [k, arrived && own(this.timers, k) ? own(this.timers, k).steps !== null : null]));
+    const timers = new Map(r.timers.map((k) => [k, /** @type {boolean | null} */ (null)]));
     for (const [k, n] of this.decl.timers) timers.set(k, n.props.seconds !== undefined);
     return {
       counters: new Set([...this.decl.counters.keys(), ...r.counters]),
@@ -158,8 +164,11 @@ export class GameService {
   }
 
   /** What is wrong with the scene's rules as a whole: its conditions' keys, and its connections' calls of game nodes. */
-  rulesProblems(o) {
-    const d = this.decl, declared = this.declared(o), problems = [];
+  rulesProblems() {
+    const d = this.decl, declared = this.declared(), problems = [];
+    // a name is this scene's own or another's, not both: which value would it start with?
+    const mine = { counters: d.counters, timers: d.timers, goals: d.goals, flags: new Map(Object.keys(d.rules?.props.flags ?? {}).map((k) => [k, true])), checkpoints: new Map(d.checkpoints.map((n) => [n.props.slot ?? 'checkpoint', n])) };
+    for (const kind of Object.keys(READS)) for (const k of this.reads[kind]) if (mine[kind].has(k)) problems.push(`GameRules "${d.rules?.id}": reads.${kind} lists "${k}", which this scene declares itself: take it out of reads`);
     const check = (node, prop) => { for (const m of checkKeys(node.props[prop], declared, prop)) problems.push(`${node.type} "${node.id}": ${m}`); };
     if (d.rules) { check(d.rules, 'win'); check(d.rules, 'lose'); }
     for (const node of d.goals.values()) check(node, 'when');
@@ -188,21 +197,6 @@ export class GameService {
     for (const b of batch) if (this.tree.byId.get(b.node.id) === b.node) this.tree.remove(b.node.id);
     this._unchecked = false;
     throw new Error(problems.join('; '));
-  }
-
-  /**
-   * The values this scene reads from another, against what a scene change brought (carryTo calls it): a counter, flag,
-   * timer, goal or checkpoint slot listed in `reads` that didn't arrive fails the change, and so does comparing the
-   * time left on what arrived as a stopwatch. A game that starts here (or a reset) brings nothing: a read value is
-   * then absent, and a comparison with it is false.
-   */
-  checkArrived(from) {
-    const rules = this.decl.rules, problems = [];
-    for (const kind of Object.keys(READS)) for (const name of this.reads[kind]) {
-      if (!Object.hasOwn(this[READS[kind]], name)) problems.push(`GameRules "${rules?.id}" reads ${kind}.${name} from another scene, and "${from}" brought none (it brought ${Object.keys(this[READS[kind]]).join(', ') || 'no ' + kind}). Declare it in the scene the game comes from, or as this scene's own`);
-    }
-    problems.push(...this.rulesProblems({ arrived: true }));
-    if (problems.length) throw new Error(problems.join('; '));
   }
 
   _fresh(kind, node) {
@@ -298,6 +292,9 @@ export class GameService {
   lose() { if (this.outcome === null && this.requests.lose === null) this.requests.lose = this.tree.clock.step; }
   _decide(result, step = this.tree.clock.step) {
     this.outcome = { result, step, scene: this.scene };
+    // A result asked for late is of an earlier step: a checkpoint taken on that step or since was of a game already
+    // lost or won (GameFlow didn't write it: checkpointSkipped). It is taken back, so the state says what the files do.
+    for (const [slot, c] of Object.entries(this.checkpoints)) if (c.requested >= step) { if (c.was) this.checkpoints[slot] = c.was; else delete this.checkpoints[slot]; }
     this._event({ type: 'outcome', result, step }); // the step it is the result of (asked late, the step before this one)
     for (const [key, node] of this.decl.timers) { // the clocks hold
       const t = own(this.timers, key);
@@ -430,7 +427,8 @@ export class GameService {
     this.requests.checkpoints = [];
     for (const r of asked) {
       if (r.once) this.fired[r.id] = true;
-      this.checkpoints[r.slot] = { id: r.id, label: r.label, requested: this.tree.clock.step, seq: ++this.checkpointSeq };
+      const was = own(this.checkpoints, r.slot); // the slot's last one, kept in case this one has to be taken back
+      this.checkpoints[r.slot] = { id: r.id, label: r.label, requested: this.tree.clock.step, seq: ++this.checkpointSeq, ...(was ? { was: { id: was.id, label: was.label, requested: was.requested, seq: was.seq } } : {}) };
       this._event({ type: 'checkpoint', id: r.id, slot: r.slot });
       const node = this.tree.find(r.id);
       if (node && this.decl.checkpoints.includes(node)) node.emit('written', { slot: r.slot });
@@ -533,7 +531,6 @@ export class GameService {
       next.outcome = next.decl.rules && next.decl.rules.props.keepOutcome !== true ? null : structuredClone(this.outcome);
       if (next.outcome === null) for (const t of Object.values(next.timers)) t.held = false; // undecided again: the game's clock runs on
       next.checkpoints = structuredClone(this.checkpoints);
-      next.checkArrived(this.scene); // what the next scene says it reads from elsewhere is there
     }
     next.version++;
   }

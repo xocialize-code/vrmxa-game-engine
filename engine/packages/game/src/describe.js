@@ -8,23 +8,25 @@ const GAME_TYPES = new Set(['GameRules', 'GameCounter', 'GameTimer', 'GameGoal',
 /**
  * @param {{ nodes?: any[], connections?: any[] }} doc a .vrmxs document (or its flattened nodes and connections)
  * @returns {{
- *   rules: null | { id: string, win: any, lose: any, flags: Record<string, any>, reads: Record<string, string[]>, keepOutcome: boolean },
+ *   rules: null | { id: string, win: any, lose: any, flags: Record<string, any>, reads: Record<string, string[]>, defaults: Record<string, number>, keepOutcome: boolean },
  *   counters: Array<{ id: string, key: string, start: number, min: number | null, max: number | null, label: string | null, scope: string }>,
  *   timers: Array<{ id: string, key: string, seconds: number | null, autostart: boolean, label: string | null, scope: string }>,
  *   goals: Array<{ id: string, key: string, text: string, when: any, optional: boolean, scope: string }>,
  *   checkpoints: Array<{ id: string, slot: string, when: any, once: boolean, label: string | null }>,
  *   scenes: string[],
  *   reads: string[],
+ *   sets: string[],
  *   problems: string[],
- * }} scenes: every scene a connection here can change to; reads: every state key a condition here tests;
+ * }} scenes: every scene a connection here can change to; reads: every state key a condition here tests; sets:
+ *   the flags its connections set;
  *   timers' seconds: null for a stopwatch; problems: what would stop the rules starting (two GameRules, a duplicate
  *   name, a condition that isn't one, a condition that reads a counter, flag, timer or goal the scene neither declares
- *   nor lists in the rules' `reads`, a connection that calls a game node's action in a way it can't do). `reads` are
- *   checked against what arrives only when the game gets there.
+ *   nor lists in the rules' `reads`, a connection that calls a game node's action in a way it can't do). Whether
+ *   some scene of the game declares what this one reads is checkGame's to say: one document can't.
  */
 export function describeRules(doc) {
   const nodes = (doc.nodes ?? []).filter((n) => GAME_TYPES.has(n.type));
-  const out = { rules: null, counters: [], timers: [], goals: [], checkpoints: [], scenes: [], reads: [], problems: [] };
+  const out = { rules: null, counters: [], timers: [], goals: [], checkpoints: [], scenes: [], reads: [], sets: [], problems: [] };
   const reads = new Set(), seen = { GameCounter: new Map(), GameTimer: new Map(), GameGoal: new Map() };
   const conditions = []; // those whose shape is fine: their keys are checked once everything the scene declares is known
   const condition = (n, name) => {
@@ -50,7 +52,7 @@ export function describeRules(doc) {
       const reads = readReads(p.reads);
       for (const m of reads.problems) out.problems.push(`GameRules "${n.id}": ${m}`);
       for (const k of Object.keys(p.flags ?? {})) if (k === '__proto__') out.problems.push(`GameRules "${n.id}": a flag can't be named "__proto__"`);
-      out.rules = { id: n.id, win: condition(n, 'win'), lose: condition(n, 'lose'), flags: { ...(p.flags ?? {}) }, reads: reads.reads, keepOutcome: p.keepOutcome === true };
+      out.rules = { id: n.id, win: condition(n, 'win'), lose: condition(n, 'lose'), flags: { ...(p.flags ?? {}) }, reads: reads.reads, defaults: reads.defaults, keepOutcome: p.keepOutcome === true };
     } else if (n.type === 'GameCounter') out.counters.push({ id: n.id, key: named(n), start: p.start ?? 0, min: p.min ?? null, max: p.max ?? null, label: p.label ?? null, scope: p.scope ?? 'game' });
     else if (n.type === 'GameTimer') { if (p.seconds !== undefined && !(typeof p.seconds === 'number' && p.seconds > 0)) out.problems.push(`GameTimer "${n.id}": seconds is ${JSON.stringify(p.seconds)}: a countdown needs seconds above zero (leave seconds out for a stopwatch)`); out.timers.push({ id: n.id, key: named(n), seconds: p.seconds ?? null, autostart: p.autostart !== false, label: p.label ?? null, scope: p.scope ?? 'scene' }); }
     else if (n.type === 'GameGoal') out.goals.push({ id: n.id, key: named(n), text: p.text ?? (p.key ?? n.id), when: condition(n, 'when'), optional: p.optional === true, scope: p.scope ?? 'scene' });
@@ -65,6 +67,9 @@ export function describeRules(doc) {
     timers: new Map([...r.timers.map((k) => [k, null]), ...out.timers.map((t) => [t.key, t.seconds !== null])]), goals: new Set([...out.goals.map((g) => g.key), ...r.goals]),
     slots: new Set([...out.checkpoints.map((c) => c.slot), ...r.checkpoints]),
   };
+  const mine = { counters: out.counters.map((c) => c.key), timers: out.timers.map((t) => t.key), goals: out.goals.map((g) => g.key), flags: Object.keys(out.rules?.flags ?? {}), checkpoints: out.checkpoints.map((c) => c.slot) };
+  for (const kind of Object.keys(mine)) for (const k of r[kind]) if (mine[kind].includes(k)) out.problems.push(`GameRules "${rulesId}": reads.${kind} lists "${k}", which this scene declares itself: take it out of reads`);
+  out.sets = [...new Set(sets)].sort();
   for (const [n, name, c] of conditions) for (const p of checkKeys(c, declared, name)) out.problems.push(`${n.type} "${n.id}": ${p}`);
   for (const c of calls) {
     const to = byId.get(c.to), m = checkCall(KIND[to.type], { stopwatch: to.type === 'GameTimer' && to.props?.seconds === undefined }, c.call, c.args);
@@ -74,4 +79,37 @@ export function describeRules(doc) {
   for (const c of calls) if (c.to === rulesId && c.call === 'changeScene' && typeof c.args?.to === 'string') scenes.add(c.args.to);
   out.scenes = [...scenes].sort(); out.reads = [...reads].sort();
   return out;
+}
+
+/**
+ * A game as a whole, from its scenes' documents, without running it: what one scene alone can't show. Each scene's
+ * own problems (describeRules), and across them:
+ *   - a name in a scene's `reads` that no scene of the game declares (no GameCounter, GameTimer or GameGoal with that
+ *     key, no flag started in a GameRules' flags or set by a connection, no Checkpoint with that slot): nothing could
+ *     ever bring it, so the condition reading it is wrong, whatever is played;
+ *   - a connection that changes to a scene the game doesn't have.
+ * Whether a value that some scene declares has arrived by the time another reads it depends on how the game is
+ * played, and is not an error: a read value that didn't come has the value it starts with (a flag false, a goal not
+ * done, a counter its default).
+ * @param {Map<string, any> | Record<string, any>} scenes parsed documents by the name changeScene uses (flatten prefabs first)
+ * @returns {{ ok: boolean, problems: string[], scenes: Record<string, ReturnType<typeof describeRules>> }}
+ */
+export function checkGame(scenes) {
+  const docs = scenes instanceof Map ? [...scenes] : Object.entries(scenes), problems = [], described = {};
+  const has = { counters: new Set(), flags: new Set(), timers: new Set(), goals: new Set(), checkpoints: new Set() };
+  for (const [name, doc] of docs) {
+    const d = described[name] = describeRules(doc);
+    for (const p of d.problems) problems.push(`${name}: ${p}`);
+    for (const c of d.counters) has.counters.add(c.key);
+    for (const t of d.timers) has.timers.add(t.key);
+    for (const g of d.goals) has.goals.add(g.key);
+    for (const c of d.checkpoints) has.checkpoints.add(c.slot);
+    for (const f of [...Object.keys(d.rules?.flags ?? {}), ...d.sets]) has.flags.add(f);
+  }
+  const ONE = { counters: 'GameCounter with that key', timers: 'GameTimer with that key', goals: 'GameGoal with that key', flags: 'flag started in a GameRules\' flags or set by a connection', checkpoints: 'Checkpoint with that slot' };
+  for (const [name, d] of Object.entries(described)) {
+    for (const kind of Object.keys(has)) for (const k of d.rules?.reads[kind] ?? []) if (!has[kind].has(k)) problems.push(`${name}: GameRules "${d.rules.id}" reads ${kind}.${k}, and no scene of the game has a ${ONE[kind]}`);
+    for (const to of d.scenes) if (!Object.hasOwn(described, to)) problems.push(`${name}: a connection changes to "${to}", which isn't a scene of the game (${Object.keys(described).join(', ')})`);
+  }
+  return { ok: problems.length === 0, problems, scenes: described };
 }
