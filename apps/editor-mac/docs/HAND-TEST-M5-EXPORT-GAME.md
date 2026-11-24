@@ -18,6 +18,6 @@ then compares each build with Node's from outside the app, byte for byte.
 
 | Date | Build | Row | Result |
 |---|---|---|---|
-| 2026-11-24 | Release, ad hoc signed (`scripts/build.sh`), with W0's changes on main at ffe7c81 | 1–4 | All passed on the first run (`appprobe checklist`, 4 of 4); `acceptance/m5/build.mjs --chromium --mac … --refused …` 12 of 12 (`acceptance/results/m5-build.json`); reports in `hand-test/results/ab-t-0615/` |
+| 2026-11-24 | Release, ad hoc signed (`scripts/build.sh`), with W0's changes on main at ffe7c81 | 1–4 | All passed on the first run (`appprobe checklist`, 4 of 4); `acceptance/m5/build.mjs --chromium --mac … --refused …` 12 of 12 (`acceptance/results/m5-build.json`, receipt AB-R-1102); reports in `hand-test/results/ab-t-0615/` |
 | 2026-11-24 | same | 5 | Passed (the refusal's scenario, 1 of 1) |
 | 2026-11-24 | same | 6 | Not run: the system's folder panel can't be typed into through AppProbe, so a person has to try it |

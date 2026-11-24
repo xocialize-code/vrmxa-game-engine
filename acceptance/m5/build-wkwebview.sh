@@ -6,9 +6,12 @@
 # results/m5-build-wkwebview.json.
 #   node acceptance/m5/build.mjs && acceptance/m5/build-wkwebview.sh
 # HARNESS: a built CinematicsSpike.app elsewhere (a worktree has no build of its own).
-# The runtime in the build steps the world with no renderer, so this draws nothing and takes no GPU lock.
+# The runtime in the build steps the world with no renderer, so this draws nothing. It still runs under the runner lock
+# (acceptance/gpu-lock.mjs): every harness run writes the same file in the harness's container, and two at once would
+# read each other's rows.
 set -e
 here=$(cd "$(dirname "$0")" && pwd)
+node "$here/../gpu-lock.mjs" held || exec node "$here/../gpu-lock.mjs" run --who "$0" -- "$0" "$@"
 root="$here/../.."
 src="${HARNESS:-$root/spike-cinematics/mac/build/CinematicsSpike.app}"
 app="$root/acceptance/build/M5BuildHarness.app"

@@ -195,7 +195,8 @@ runs every check before it asks for a folder, so a refused export replaces nothi
   manifest, the same bytes from a listing in another order, each refusal); the loader; folders and the command line;
   the Vite plugin; the sample's build replayed against the project (240 steps; skipped without vrmxa-avatar-studio).
 - `node acceptance/m5/build.mjs --chromium --mac … --refused …`, then `acceptance/m5/build-wkwebview.sh`: M5's exit
-  check 1 on the sample project. Results and the receipt are in [acceptance/README.md](../../../acceptance/README.md).
+  check 1 on the sample project: 12 of 12 and 4 of 4 (AB-R-1102). The results are in
+  [acceptance/README.md](../../../acceptance/README.md).
 - The editor's Export Game in the Mac app: `apps/editor-mac/docs/HAND-TEST-M5-EXPORT-GAME.md`.
 
 ## Not here yet

@@ -23,11 +23,12 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
   ```sh
   npm run build:runtime -w @vrmxg/bundle     # the runtime a build is made with
   node acceptance/m5/build.mjs --chromium    # Node and headless Chromium: results/m5-build.json
-  acceptance/m5/build-wkwebview.sh           # the build played in WKWebView, scheme and loopback: results/m5-build-wkwebview.json
+  acceptance/m5/build-wkwebview.sh           # the build played in WKWebView, scheme and loopback (under the runner lock): results/m5-build-wkwebview.json
   # the Mac editor: apps/editor-mac/docs/hand-test/HAND-TEST-M5-EXPORT-GAME.scenario.md, then
   node acceptance/m5/build.mjs --chromium --mac <builds…> --refused <folder>
   ```
-  **Passed, 12 of 12 and 4 of 4** (M5 Max, macOS 27.3 beta, Node 26.12.1, Chrome for Testing 156.0.8078.4):
+  **Passed, 12 of 12 and 4 of 4, at 48881a4** (receipt AB-R-1102; M5 Max, macOS 27.3 beta, Node 26.12.1, Chrome for Testing
+  156.0.8078.4):
   - **The build:** 60 files, 22,172,602 bytes: 50 of the project's files under `project/` and the runtime's 10 (`vrmxg-stepper 0.1.0`, digest `86b614602b9bef26…`); build digest `b7393df444599d85…`.
   - **The same bytes from Node and from the Mac editor.** Two exports in two Node processes, and four from the Mac
     editor's Export Game (the bundled sample twice, the same project opened as a folder, and File › Export Game…): all
