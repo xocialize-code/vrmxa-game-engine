@@ -176,7 +176,8 @@ export class Director {
     if (r.part === 'line') {
       // her line alone; it goes into the step at once (she speaks while the verdict is asked for)
       const said = cleanLine(reply.text ?? reply.toolCalls?.find((c) => c.name === 'say')?.arguments?.text ?? '', r.name);
-      const v = validate({ toolCalls: [{ name: 'say', arguments: { text: said, to: 'user' } }] }, r.moment, { exists });
+      // said to the person, when they are someone in the scene (a director with no `user` speaks to her from outside it: M4 W9)
+      const v = validate({ toolCalls: [{ name: 'say', arguments: { text: said, ...(r.moment.user ? { to: 'user' } : {}) } }] }, r.moment, { exists });
       if ('errors' in v) { r.state = 'rejected'; r.errors = v.errors; this.stats.rejected++; this.decide(r, { failed: 'rejected', errors: v.errors, model: reply.model }); }
       else { r.state = 'answered'; r.calls = v.calls; this.stats.answered++; this.decide(r, { calls: v.calls, model: reply.model }); this.askVerdict(r, said); }
     } else if (r.part === 'verdict') {

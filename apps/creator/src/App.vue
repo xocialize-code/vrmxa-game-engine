@@ -11,6 +11,8 @@ import { bundledProject, openProjectFolder, pickFile, fetchOpened, readPicked } 
 import { kindOf } from './shorts.js';
 import { inShell, call, on } from '../../shell/js/shell.js';
 import ScriptPane from './ScriptPane.vue';
+import TakePanel from './TakePanel.vue';
+import { takeLine } from './takes.js';
 import { creatorLink, CREATOR_MCP_PORT } from './mcp.js';
 
 const canvas = ref(null), pane = ref(null), picker = ref(null), timeline = ref(null);
@@ -23,6 +25,7 @@ const ui = reactive({
   tl: null, roles: [], role: '', cast: '', opened: '', saved: '', jobs: [], runner: '', coverage: 'default', unsaved: [],
   ask: null, // { title, text, options: [{ id, label }] }: the window's question (unsaved changes, a name clash)
   mcp: '', // the agent's link (M4 W11)
+  take: null, takeLine: '', cameras: [], // performance takes (M4 W9): the deck's state, and the shell's cameras
 });
 /** @type {CreatorHost} */ let cr = null; // never reactive
 let started; const ready = new Promise((r) => { started = r; }); // the first project is open (files opened at launch wait)
@@ -34,6 +37,11 @@ function refresh(kind = 'all') {
   if (kind === 'queue' || kind === 'export' || kind === 'all') { ui.jobs = cr.queue.list(); ui.runner = cr.queue.runner.name; }
   if (kind === 'thumbs' || kind === 'all') { ui.thumbs = { ...cr.thumbs }; ui.thumbState = cr.thumbState; }
   if (kind === 'timeline' || kind === 'all') { ui.tl = cr.timeline(); ui.selectedShot = cr.selectedShot; }
+  if (kind === 'take' || kind === 'all') {
+    ui.take = cr.takeDeck.status(); ui.takeLine = takeLine(ui.take);
+    if (cr.session) ui.mode = cr.takeDeck.busy ? 'take' : cr.session.mode; // a take is being recorded: the short isn't edited meanwhile
+    if (ui.tl && cr.takeDeck.busy) ui.tl.playhead = cr.playhead; // the playhead follows the take
+  }
   const d = cr.desk;
   if (d && (kind === 'script' || kind === 'all')) Object.assign(ui.script, { text: d.text, file: cr.short?.script ?? '', errors: d.errorList(), warnings: [...d.warnings], pending: d.pending, dirty: d.dirty, last: d.lastLabel ?? '' });
   if (kind !== 'all') return;
@@ -54,7 +62,7 @@ function refresh(kind = 'all') {
   ui.saved = sv ? `${sv.sequence.ref} · ${sv.sequence.bytes} bytes · ${sv.sequence.hash}${sv.script ? ` · ${sv.script}` : ''}${sv.memory ? ' · in memory (open a project folder to save to disk)' : ''}` : '';
   ui.unsaved = cr.project?.unsaved?.() ?? [];
   if (!s) return;
-  ui.mode = s.mode;
+  ui.mode = cr.takeDeck.busy ? 'take' : s.mode;
   const h = s.history(); ui.undo = h.undo; ui.redo = h.redo;
   ui.dirty = cr.isDirty(); ui.nodes = s.doc.nodes.length; ui.hash = s.hash();
   const v = s.validate(); ui.valid = v.ok; ui.problems = v.ok ? '' : v.errors.slice(0, 3).join('; ');
@@ -74,6 +82,7 @@ onMounted(async () => {
   await act(async () => cr.openProject(await bundledProject()));
   ui.loading = false;
   started();
+  cr.cameras().then((list) => { ui.cameras = list.map((c) => ({ id: c.id, name: c.name })); }).catch(() => {});
   // ?deliver=<preset> (M4 W10): render deliveries by itself for the acceptance and the timing receipt (delivermode.js)
   if (new URLSearchParams(location.search).has('deliver')) {
     const dm = await import('./delivermode.js');
@@ -147,6 +156,15 @@ const queueAdd = (o) => act(() => cr.queueShort(o));
 const queueRun = () => act(() => cr.queue.run());
 const queueDo = (what, id, d) => act(() => cr.queue[what](id, d));
 const exportShort = () => act(() => cr.exportShort()); // renders the job it adds, not the rest of the queue
+// performance takes (M4 W9)
+const takeSet = (key, v) => { cr.takeDeck[key] = v; refresh('take'); };
+const takeChannel = (c, on) => { cr.takeDeck.channels = on ? [...new Set([...cr.takeDeck.channels, c])] : cr.takeDeck.channels.filter((x) => x !== c); refresh('take'); };
+const takeStart = () => act(() => cr.takeDeck.start());
+const takeStop = () => act(() => cr.takeDeck.stop());
+const takeKeep = () => act(() => cr.takeDeck.keep());
+const takeDiscard = () => act(() => cr.takeDeck.discard());
+const takeRemove = (id) => act(() => cr.takeDeck.remove(id));
+const takeSay = (text) => act(() => cr.takeDeck.say(text));
 
 // keys: ⌘Z / ⇧⌘Z, ⌘S, ⌘O in a browser (in the Mac shell they come from the menus)
 const typing = () => /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName ?? '');
@@ -230,6 +248,7 @@ if (inShell) {
         </ul>
         <output v-if="ui.cast" id="cast-result" class="muted small" :aria-label="`Cast ${ui.cast}`">{{ ui.cast }}</output>
       </section>
+      <TakePanel v-if="ui.take" :st="ui.take" :line="ui.takeLine" :cameras="ui.cameras" :disabled="ui.loading || !ui.short || (ui.mode !== 'editing' && ui.mode !== 'take')" @kind="(k) => takeSet('kind', k)" @target="(t) => takeSet('target', t)" @channel="takeChannel" @device="(d) => takeSet('device', d)" @start="takeStart" @stop="takeStop" @keep="takeKeep" @discard="takeDiscard" @remove="takeRemove" @say="takeSay" />
       <RenderQueue :jobs="ui.jobs" :runner="ui.runner" :view-backend="ui.renderer === 'WebGL' ? 'webgl' : 'webgpu'" :can-add="!!ui.short" :disabled="ui.loading || ui.mode !== 'editing'" @add="queueAdd" @run="queueRun" @cancel="(id) => queueDo('cancel', id)" @remove="(id) => queueDo('remove', id)" @retry="(id) => queueDo('retry', id)" @move="(id, d) => queueDo('move', id, d)" />
     </aside>
 
@@ -285,7 +304,7 @@ h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: 
 .dock-head h2 { flex: 1; }
 .shorts { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 6px 10px; border-bottom: 1px solid var(--line); }
 .shorts h2 { margin-right: 4px; } .shorts button { font-size: 12px; } .shorts button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
-.cast { border-bottom: 1px solid var(--line); max-height: 45%; overflow: auto; }
+.cast { border-bottom: 1px solid var(--line); max-height: 30%; overflow: auto; flex: none; }
 .roles { list-style: none; margin: 0; padding: 4px 6px; }
 .roles button { width: 100%; text-align: left; margin: 2px 0; } .roles button.on { border-color: var(--accent); box-shadow: inset 3px 0 var(--accent); }
 .cast output { display: block; padding: 4px 10px 6px; word-break: break-word; }

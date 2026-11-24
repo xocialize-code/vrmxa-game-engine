@@ -218,3 +218,41 @@ test('baking: a baked span replays the cached take even when the live simulation
   await steps(a.tree, 600 - 480); await steps(b.tree, 300);
   assert.deepEqual(b.tree.find('crate').object3d.position.toArray(), a.tree.find('crate').object3d.position.toArray(), 'after the span, the simulation carries on from the baked take');
 });
+
+test('a move track (M4 W9) is her walking intent from its first key to its last; a walk begun after a cut owns her place; lookAt tracks hand back', async () => {
+  const seq = structuredClone(SEQ);
+  seq.sequence.tracks.push(
+    { id: 'mira-moves', type: 'transform', target: 'mira', interp: 'step', keys: [[0, { p: [0, 0, 0] }], [200, { p: [5, 0, 5] }]] },
+    { id: 'mira-walk', type: 'move', target: 'mira', keys: [[20, [0, 1.4]], [30, [1, 1]], [40, [0, 0, 1]], [44, [0, 0]]] },
+    { id: 'mira-eyes', type: 'lookAt', target: 'mira', clips: [{ start: 0, end: 240, at: 'hana' }] },
+    { id: 'mira-eyes-take', type: 'lookAt', target: 'mira', clips: [{ start: 50, end: 60, at: 'lamp' }] },
+  );
+  assert.deepEqual(checkSequence(seq.sequence), []);
+  assert.match(checkSequence({ ...seq.sequence, tracks: [{ id: 'w', type: 'move', keys: [[0, [1]]] }] }).join(), /a move track needs a target.*a move key is \[frame, \[vx, vz\]\]/s);
+  assert.match(checkSequence({ ...seq.sequence, tracks: [{ id: 'w', type: 'move', target: 'mira', keys: [[9, [0, 0]], [3, [0, 0]]] }] }).join(), /move keys aren't in frame order/);
+  const { tree, sequence } = await world(seq);
+  const mira = /** @type {any} */ (tree.find('mira')), looks = [];
+  mira.input = { move: [9, 9], jump: false }; // a Marker stands in for a character: the service writes her intent
+  mira.lookAt = ({ target }) => looks.push([tree.clock.step, target ?? null]);
+  const seen = [];
+  for (let i = 0; i < 200; i++) {
+    if (i === 60) mira.object3d.position.set(1, 0, 2); // frame 24: her walk has begun, and took her here
+    tree.step();
+    seen.push({ step: i, frame: sequence.pb.frame, move: [...mira.input.move], jump: mira.input.jump, x: mira.object3d.position.x });
+    mira.input.jump = false;
+  }
+  const at = (frame) => seen.find((s) => s.frame >= frame);
+  assert.deepEqual(at(10).move, [9, 9], 'before its first key the track leaves her alone');
+  assert.deepEqual(at(20).move, [0, 1.4]); assert.deepEqual(seen.findLast((x) => x.frame < 30).move, [0, 1.4], 'held between keys');
+  assert.deepEqual(at(30).move, [1, 1]);
+  assert.deepEqual(seen.filter((s) => s.jump).map((s) => s.frame), [40], 'a jump on the step that crosses its key, once');
+  assert.deepEqual(at(44).move, [0, 0], 'the last key stops her');
+  mira.input.move = [3, 3];
+  tree.step();
+  assert.deepEqual(mira.input.move, [3, 3], 'and past it she is let go');
+  assert.equal(at(10).x, 0, 'before the walk the cut holds her on her mark');
+  assert.equal(at(60).x, 1, 'after it the walk owns her place: the earlier cut no longer puts her back');
+  while (sequence.pb.frame < 201) tree.step();
+  assert.equal(mira.object3d.position.x, 5, 'until the next cut, which takes her again');
+  assert.deepEqual(looks.map((l) => l[1]), ['hana', 'lamp', 'hana'], 'the take\'s look ends and the film\'s has her eyes again');
+});

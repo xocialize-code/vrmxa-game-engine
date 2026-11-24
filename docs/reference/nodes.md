@@ -269,6 +269,8 @@ A VRMXA character: VRM body, closet, animation sets, voice.
 | `layer` | string |  |  |  | Collision layer of the capsule. |
 | `mass` | number |  | ≥ 1 kg | yes | Shared among the ragdoll's parts when knocked down (60). |
 | `getUpSeconds` | number |  | 0.1 to 10 s | yes | How long getting up from a ragdoll blends back into animation (1.2). |
+| `head` | vec3 `[x, y, z]` |  | rad | yes | Turn the head over the animation: [yaw to her left, pitch up, roll to her left shoulder]. Keyed by a face take or by hand. |
+| `gaze` | list of number |  |  | yes | Where the eyes look, from her facing: [yaw to her left, pitch up] in radians. It comes before a look-at target; a puppet take keys it. |
 
 **Signals**
 

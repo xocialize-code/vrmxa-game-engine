@@ -5,6 +5,7 @@
 //   wanderer   wanders near home (a seeded reachable point, then a pause), sits on a free seat now and then
 //   customer   comes in, takes a free seat, asks the server over (setGoal), orders when asked, waits to be served,
 //              drinks, stands and leaves
+//   actor      (M4 W9) stands where she is and does only what a director gives her: goTo and follow goals
 //   server     greets newcomers it sees (even on its way somewhere: a greeting is short), takes an order when asked (walks over, asks, listens), makes it at the
 //              counter and brings it, and keeps to the counter between customers
 
@@ -213,6 +214,28 @@ Object.assign(PRESETS, {
     senses: { sight: { range: 8, fov: 140, every: 6 } },
     goals: [],
     tree: { type: 'utility', rate: 10, hysteresis: 0.2, children: [conversation({ face: true }), ...PRESETS.wanderer.tree.children] },
+  },
+
+  /**
+   * actor: a character in a film who does only what she is directed to (M4 W9: a director take, and the decisions track
+   * it becomes). On her own she stands where she is. Goals for the director: goTo { target } (walk over and stay) and
+   * follow { target }. She knows who is on the set wherever they stand (sight all round), so a director can name them.
+   */
+  actor: {
+    plan: {},
+    senses: { sight: { range: 40, fov: 360, every: 12 } },
+    goals: [
+      { name: 'goTo', description: 'walk over to someone or something and stay there (params: { "target": its id })' },
+      { name: 'follow', description: 'follow someone (params: { "target": their id })' },
+    ],
+    tree: {
+      type: 'utility', rate: 10, hysteresis: 0.2, children: [
+        { name: 'goTo', weight: 1.5, considerations: [{ input: 'goal', name: 'goTo', curve: { type: 'step', at: 0.5 } }], tree: {
+          type: 'sequence', children: [A('goTo', { target: '$goal.params.target', within: 1, timeout: 30 }), A('setGoal', { goal: '' })] } },
+        { name: 'follow', weight: 1.5, considerations: [{ input: 'goal', name: 'follow', curve: { type: 'step', at: 0.5 } }], tree: A('follow', { target: '$goal.params.target', distance: 1.4 }) },
+        { name: 'stand', weight: 0.2, considerations: [{ input: 'constant', value: 1, curve: { type: 'linear' } }], tree: A('wait', { seconds: 1 }) },
+      ],
+    },
   },
 
   /**

@@ -230,6 +230,29 @@ AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for th
   Node, Chromium and WKWebView (scheme and loopback, two loads each) all give final e68bfb9a96f255c5 and mouths
   58b2c9d48f735177, and the mid-line restore ends the same (AB-R-1077; Kokoro's audio isn't byte-reproducible, AB-L-0375).
 
+- **Check 5, a performance can be acted** (W9, AB-T-0581): a take is a log, and it replays exactly from it. The sample
+  has three take logs over "The Regular" (`content/sample/performances/the-regular/`, recorded in Node by
+  `tools/make-takes.mjs` with the real recorder: a puppet take of Mira from scripted keys, a director take of Hana
+  answered by a scripted model, a face take of Mira from a synthetic face session). `apps/playground/src/takes-check.js`
+  makes each log into tracks (`@vrmxg/takes`' pure function), keeps all three in the film, and plays it with no
+  renderer for 2,079 steps. It checks:
+  - each take's tracks and the film's canonical text, hashed;
+  - each step's world hashes (88 components);
+  - a snapshot taken while Mira walks, restored into a fresh world;
+  - that the takes do what was performed: Mira walks from her mark, hops and turns her eyes; Hana says the two
+    directed lines on their frames and walks over to her; Mira's face blinks, smiles, talks and turns.
+
+  Each kind recorded live, kept as one undo step and edited: `engine/packages/takes/test/`, `apps/creator/test/takes.test.mjs`
+  and the Mac app's `apps/creator-mac/docs/HAND-TEST-M4-TAKES.md`.
+  ```sh
+  (cd apps/playground && npx vite build) && node acceptance/m4/takes.mjs   # Node and headless Chromium: results/m4-takes.json
+  acceptance/m4/takes-wkwebview.sh                                         # WKWebView, scheme and loopback: results/m4-takes-wkwebview.json
+  ```
+  Node, Chromium and WKWebView (scheme and loopback, two loads each) all give the same tracks from each log, film
+  7314d57e8b7a5b5c (43,071 bytes), final 42bc50c5a9e11f0f and the same per-step run, and the restore ends the
+  same (AB-R-1086). The face take's source is the spike's verdict (`spike-face/README.md`, AB-R-1085, AB-D-0281); a
+  real camera waits on AB-T-0557.
+
 - **Check 7, delivery** (W10, AB-T-0582): the creator's render queue renders each delivery preset (H.264, HEVC and
   ProRes 4444 with alpha, at 1080p24 and 4K24) in the Mac app (WKWebView on the shell, AVAssetWriter): the film with
   its sound and `.srt`, a still and a thumbnail per shot, a turntable per character and `delivery.json`, into the

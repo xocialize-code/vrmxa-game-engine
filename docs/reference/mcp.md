@@ -605,4 +605,4 @@ Redo the last undone edit.
 { "type": "object", "properties": {} }
 ```
 
-The `command` tool runs one of the creator's 7 commands: see [Creator commands](./creator-commands).
+The `command` tool runs one of the creator's 8 commands: see [Creator commands](./creator-commands).

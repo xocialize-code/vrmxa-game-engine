@@ -6,7 +6,7 @@ import { installPortableMath } from '@vrmxg/dmath';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { SceneTree } from '@vrmxg/core';
 import { captureWorld, restoreWorld, worldHashes, hashValue } from '@vrmxg/snapshot';
-import { sampleKeys, sampleAnimation, evaluateTrack, eventsBetween, heldFrame, checkTrack, cubicBezier, installTracks } from '@vrmxg/tracks';
+import { sampleKeys, sampleAnimation, evaluateTrack, eventsBetween, heldFrame, checkTrack, cubicBezier, installTracks, applyTrack, beginTracks, overAnimation, withinKeys } from '@vrmxg/tracks';
 
 installPortableMath();
 const close = (a, b, eps = 1e-12) => assert.ok(Math.abs(a - b) < eps, `${a} ≠ ${b}`);
@@ -111,4 +111,40 @@ test('jumping to a frame shows what playing to it shows; snapshot and restore re
   const l = world({ loop: true }); l.tree.run(130);
   assert.equal(l.tree.find('player').playback.playing, true, 'a loop keeps playing');
   close(l.tree.find('player').playback.frame, 4.5, 1e-9);
+});
+
+test('release (M4 W9): a released track holds its target only between its keys; a released animation track plays over the one before', () => {
+  const lamp = { props: { level: 9 } }, face = { set: {}, setExpression(n, w) { this.set[n] = w; } }, actor = { trackAnimation: null };
+  const tree = /** @type {any} */ ({ find: (id) => ({ lamp, face, actor })[id] });
+  // a property: untouched before its first key and after its last, its own between them
+  const level = { id: 'l', type: 'property', target: 'lamp', path: 'props.level', release: true, keys: [[10, 1], [20, 3], [30, 0]] };
+  applyTrack(tree, level, 5, 24); assert.equal(lamp.props.level, 9, 'before its first key the lamp keeps what it had');
+  applyTrack(tree, level, 15, 24); assert.equal(lamp.props.level, 2);
+  applyTrack(tree, level, 30, 24); assert.equal(lamp.props.level, 0, 'its last key is applied');
+  lamp.props.level = 7;
+  applyTrack(tree, level, 31, 24); assert.equal(lamp.props.level, 7, 'after it, the lamp is let go');
+  applyTrack(tree, { ...level, release: false }, 31, 24); assert.equal(lamp.props.level, 0, 'without release a track holds its last key for ever');
+  assert.ok(withinKeys(level.keys, 10) && withinKeys(level.keys, 30) && !withinKeys(level.keys, 9.9) && !withinKeys([], 0));
+  // an expression: each channel over its own keys
+  const ex = { id: 'f', type: 'expression', target: 'face', release: true, keys: { happy: [[0, 0], [10, 1]], blink: [[20, 1], [24, 0]] } };
+  applyTrack(tree, ex, 5, 24); assert.deepEqual(face.set, { happy: 0.5 }, 'blink has not started: only happy is set');
+  face.set = {};
+  applyTrack(tree, ex, 22, 24); assert.deepEqual(face.set, { blink: 0.5 }, 'happy is over: only blink is set');
+  // animation: over what the track before it set this step, by its own weight; alone between its clips it sets nothing
+  const base = { id: 'a', type: 'animation', target: 'actor', clips: [{ start: 0, end: 100, slot: 'talk' }] };
+  const over = { id: 'b', type: 'animation', target: 'actor', release: true, clips: [{ start: 20, end: 40, slot: 'nod', blendIn: 10, blendOut: 10 }] };
+  const at = (frame) => { beginTracks(tree, [base, over]); applyTrack(tree, base, frame, 24); applyTrack(tree, over, frame, 24); return actor.trackAnimation; };
+  assert.deepEqual(at(10), { weight: 1, clips: [{ slot: 'talk', time: 10 / 24, loop: true, weight: 1 }] }, 'between its clips the track before it plays alone');
+  const mid = at(25);
+  assert.deepEqual(mid.clips.map((c) => [c.slot, c.weight]), [['talk', 0.5], ['nod', 0.5]], 'half way through its blend-in it has half');
+  assert.equal(mid.weight, 1);
+  assert.deepEqual(at(30).clips.map((c) => c.slot), ['nod'], 'at full weight it is the whole animation');
+  // over nothing (no track before it): its own weight against her locomotion, and nothing left from the last step
+  beginTracks(tree, [over]); applyTrack(tree, over, 25, 24);
+  assert.deepEqual([actor.trackAnimation.weight, actor.trackAnimation.clips.length], [0.5, 1]);
+  beginTracks(tree, [over]); applyTrack(tree, over, 50, 24);
+  assert.equal(actor.trackAnimation, null, 'past its clips she has her own animation back');
+  const u = { weight: 0.5, clips: [{ slot: 'talk', time: 0, weight: 1 }] }, o = { weight: 0.5, clips: [{ slot: 'nod', time: 0, weight: 1 }] }, m = overAnimation(u, o);
+  close(m.weight, 0.75); close(m.clips[0].weight * m.weight, 0.25); close(m.clips[1].weight * m.weight, 0.5);
+  assert.deepEqual(checkTrack({ ...level, release: 'yes' }), ['l: release is true or false']);
 });

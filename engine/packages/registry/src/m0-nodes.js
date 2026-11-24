@@ -78,6 +78,8 @@ export function m0Registry() {
       layer: P.string({ description: 'Collision layer of the capsule.' }),
       mass: P.number({ min: 1, unit: 'kg', sim: true, description: 'Shared among the ragdoll\'s parts when knocked down (60).' }),
       getUpSeconds: P.number({ min: 0.1, max: 10, unit: 's', sim: true, description: 'How long getting up from a ragdoll blends back into animation (1.2).' }),
+      head: P.vec3({ unit: 'rad', sim: true, description: 'Turn the head over the animation: [yaw to her left, pitch up, roll to her left shoulder]. Keyed by a face take (M4 W9) or by hand.' }),
+      gaze: P.list(P.number(), { sim: true, description: 'Where the eyes look, from her facing: [yaw to her left, pitch up] in radians. It comes before a look-at target; a puppet take keys it (M4 W9).' }),
     },
     signals: { arrived: { args: { target: P.nodeRef() } }, spoke: { args: { text: P.string() } }, lineEnded: { args: { text: P.string() } }, dressed: { args: { worn: P.list(P.string()) } }, knockedDown: {}, gettingUp: {}, gotUp: {}, faced: {} },
     actions: {
@@ -256,8 +258,8 @@ export function m0Registry() {
     say: { schema: { type: 'object', additionalProperties: { type: 'string' }, description: 'Camera event (appeared, wave, nod, shake, point) → a line to say.' }, meta: { widget: 'json' } },
     smile: P.string({ default: 'happy', description: 'The expression shown when someone appears.' }),
   } });
-  r.behaviour('brain', { description: 'An NPC brain (M2 W7): perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; M3: host, conversationPartner, follower, which a director can talk with), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan.', on: ['Character'], params: {
-    preset: { schema: { anyOf: [{ type: 'string', enum: ['server', 'customer', 'wanderer', 'host', 'conversationPartner', 'follower'] }, { type: 'string', pattern: '\\.json$' }, { type: 'object' }], default: 'wanderer', description: 'A role preset, a brain document\'s path, or a preset object ({ plan, senses, tree }).' }, meta: { widget: 'json' } },
+  r.behaviour('brain', { description: 'An NPC brain (M2 W7): perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; M3: host, conversationPartner, follower, which a director can talk with; M4: actor, who does only what she is directed to), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan.', on: ['Character'], params: {
+    preset: { schema: { anyOf: [{ type: 'string', enum: ['server', 'customer', 'wanderer', 'host', 'conversationPartner', 'follower', 'actor'] }, { type: 'string', pattern: '\\.json$' }, { type: 'object' }], default: 'wanderer', description: 'A role preset, a brain document\'s path, or a preset object ({ plan, senses, tree }).' }, meta: { widget: 'json' } },
     vars: { schema: { type: 'object', description: 'Blackboard values over the preset\'s plan.' }, meta: { widget: 'json' } },
     tickEvery: P.number({ min: 1, default: 1, description: 'Think every n steps (four times slower far from the player).' }),
     lodDistance: P.number({ min: 0, default: 25, unit: 'm' }),

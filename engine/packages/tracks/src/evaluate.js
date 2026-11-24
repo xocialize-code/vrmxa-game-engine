@@ -8,6 +8,10 @@
 //           a bezier [x1, y1, x2, y2], or 'step'); `interp: 'step'` holds every key
 //   step    hold on ones / twos / threes: the frame is floored to a multiple of `step` before evaluation (anime
 //           timing: a character moving on twos while the camera moves on ones)
+//   release true: the track holds its target only from its first key to its last (an expression track: each channel
+//           from its own first key to its last); an animation track plays over the animation track before it instead
+//           of replacing it, and leaves it alone between its clips. A performance take's tracks (M4 W9) are released,
+//           so a take covers its own span and the film's other tracks keep the rest
 //
 // Types:
 //   property    target + path ("props.intensity", "visible"); numbers, number arrays and #rrggbb colours blend,
@@ -153,5 +157,6 @@ export function checkTrack(track) {
     if (track.type === 'animation' && !c.slot === !c.clip) out.push(`${id}: an animation clip names a slot or a clip, one of them`);
   }
   if (track.step !== undefined && !(Number.isInteger(track.step) && track.step >= 1 && track.step <= 4)) out.push(`${id}: step is 1, 2, 3 or 4`);
+  if (track.release !== undefined && typeof track.release !== 'boolean') out.push(`${id}: release is true or false`);
   return out;
 }

@@ -27,12 +27,12 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [Node types](reference/nodes.md): The 22 node types of a VRMXG scene, with each one's props, signals and actions.
 - [Behaviours](reference/behaviours.md): The 8 behaviours the registry declares, with their params and the signals and actions they add.
 - [MCP servers and tools](reference/mcp.md): The vrmxg-mcp server's three modes (headless, editor, creator) and every tool with its input schema.
-- [Creator commands](reference/creator-commands.md): The 7 commands an agent runs in the creator through the command tool, each with its JSON Schema.
+- [Creator commands](reference/creator-commands.md): The 8 commands an agent runs in the creator through the command tool, each with its JSON Schema.
 - [The .vrmxs scene file](reference/vrmxs.md): Every field of a .vrmxs scene document, with the JSON Schema it is checked against.
 - [The Fountain subset](reference/fountain.md): The screenplay syntax a VRMXG script is written in: elements, tags, parenthetical words and timing defaults.
 - [shorts.json](reference/shorts-json.md): The file that lists a project's shorts for the creator: each short's script, sequence, marks, set and cameras.
 - [delivery.json](reference/delivery-json.md): What a delivery folder holds, the render queue's presets, and the manifest that names every file with its hash.
-- [Packages](reference/packages.md): The 35 engine packages, one line each, and which side of the determinism boundary each is on.
+- [Packages](reference/packages.md): The 36 engine packages, one line each, and which side of the determinism boundary each is on.
 
 ## Node types
 
@@ -66,7 +66,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [switchedBy](reference/behaviours.md#switchedby): Shown while an item is in a state (a lamp lit while its switch is on), hidden otherwise.
 - [hinge](reference/behaviours.md#hinge): A door hinge: a revolute joint with limits and a motor.
 - [noticeViewer](reference/behaviours.md#noticeviewer): Sees the person at the camera (@vrmxg/sense): looks at them when they appear and away when they leave, answers a wave and a nod with animation slots, and can say lines. Needs the sense service and the scene's viewer node.
-- [brain](reference/behaviours.md#brain): An NPC brain: perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; host, conversationPartner, follower, which a director can talk with), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan.
+- [brain](reference/behaviours.md#brain): An NPC brain: perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; host, conversationPartner, follower, which a director can talk with; actor, who does only what she is directed to), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan.
 - [player](reference/behaviours.md#player): Drives a Character from the move / jump / run actions, relative to the current camera (split screen: its player's actions and camera).
 - [pickup](reference/behaviours.md#pickup): Can be picked up; equips a VRMXW if the item names one.
 
@@ -118,6 +118,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [recast](reference/creator-commands.md#recast): Cast a character file (.vrmxa in the project) into a role, keeping the performance; the role's lines are re-voiced in the new voice in the same undo step.
 - [revoice](reference/creator-commands.md#revoice): Voice lines again: one line (with new words if given), one role's lines, or all; another voice or a new take. One undo step, none if nothing changes.
 - [shot_camera](reference/creator-commands.md#shot-camera): Put a camera on a shot: an existing virtual camera, or a new one on a rig preset. One undo step; the camera stays through re-scripts.
+- [take](reference/creator-commands.md#take): Performance takes (a puppet, a director or a face, recorded by a person): list them, keep one from its log in the project, or remove one. Keeping or removing is one undo step.
 - [queue_export](reference/creator-commands.md#queue-export): Queue the short, as it is now, in the render queue at a delivery preset; run: true renders that job now.
 - [save](reference/creator-commands.md#save): Save the short: its sequence, its script and shorts.json (in memory when the project is read-only).
 
@@ -162,6 +163,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [@vrmxg/sense](reference/packages.md): The person in front of the camera, as part of the world.
 - [@vrmxg/sequence](reference/packages.md): Sequences: a `.vrmxs` of its own that films a set scene, with shots, shot overrides, markers and tracks, played **inside the simulation step** so a shot replays and exports bit for bit; exact scrubbing from snapshots …
 - [@vrmxg/snapshot](reference/packages.md): One snapshot of a whole world, per-step hashes, and the harness that proves a scene replays bit-identically in Node, Chromium and WKWebView.
+- [@vrmxg/takes](reference/packages.md): Performance takes: one character's performance, recorded over a sequence while it plays, kept as ordinary tracks, and replayed exactly from its log.
 - [@vrmxg/text](reference/packages.md): Text inside the canvas: speech bubbles and name tags in the world, drawn with troika-three-text 0.53.1.
 - [@vrmxg/tracks](reference/packages.md): The track core: keyed tracks evaluated as a **pure function of the frame**, and the `AnimationPlayer` node that plays them inside the simulation step.
 - [@vrmxg/voice](reference/packages.md): Characters say lines, blink and glance.

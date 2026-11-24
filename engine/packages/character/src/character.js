@@ -10,7 +10,7 @@
 // pose; once it lies still the character gets up, the animation coming back over the lying pose.
 // Its whole state (every node's local transform, springs, look-at, expressions, graph, controller) is
 // getState() / setState(), through the vendored three-vrm's state API only.
-import { AnimationMixer, Object3D, Quaternion, Vector3 } from 'three';
+import { AnimationMixer, Euler, Object3D, Quaternion, Vector3 } from 'three';
 import { createVRMAnimationClip, VRMLookAtQuaternionProxy } from '@pixiv/three-vrm-animation';
 import { Node } from '@vrmxg/core';
 import { maskClip, maskedEntries } from './masks.js';
@@ -24,6 +24,7 @@ const ARRIVE = 0.3;   // m, goTo arrival radius
 /** Hip height above the feet when seated, for the generated `sit` clips: a seat point is where the hips go (VRMXI §8.2). */
 const SEATED_HIPS = 0.5;
 const _v = new Vector3(), _qa = new Quaternion(), _qb = new Quaternion();
+const _turn = new Quaternion(), _euler = new Euler();
 /** Ragdoll timing (steps at 60 Hz): the trunk still this long counts as lying; down this long before getting up; never longer than this falling. */
 const STILL_STEPS = 20, DOWN_STEPS = 40, MAX_FALL_STEPS = 360;
 
@@ -115,8 +116,10 @@ export class CharacterNode extends Node {
     this.actions = new Map();
     /** clip name → sha256, for tracks that name clips (@vrmxg/tracks) */ this.clipByName = new Map();
     const info = new Map();
+    /** names of the nodes some clip animates: the mixer writes these every step (turnHead builds on what it wrote) */ this.animated = new Set();
     for (const [sha, { anim, meta }] of prep.clips) {
       const clip = createVRMAnimationClip(anim, this.vrm);
+      for (const t of clip.tracks) this.animated.add(t.name.slice(0, t.name.lastIndexOf('.')));
       const action = this.mixer.clipAction(clip);
       action.play(); action.weight = 0; action.paused = true;
       this.actions.set(sha, action);
@@ -289,9 +292,14 @@ export class CharacterNode extends Node {
    */
   lookAndUpdate(dt) {
     const c = this.ctrl;
+    const head = this.props.head;
+    if (Array.isArray(head) && (head[0] || head[1] || head[2])) this.turnHead(/** @type {any} */ (head));
+    else if (c.headTurned) this.restHead(); // the turn is over: a bone no clip animates would keep it
     if (this.vrm.lookAt) {
-      const t = c.look ? this.tree.find(c.look) : null;
-      const at = t ? this.lookPointOf(t) : null;
+      // props.gaze (a performance take's eyes, M4 W9) comes before the look-at target: a direction from her own facing
+      const gaze = Array.isArray(this.props.gaze) ? this.props.gaze : null;
+      const t = !gaze && c.look ? this.tree.find(c.look) : null;
+      const at = gaze ? this.gazePoint(/** @type {any} */ (gaze)) : t ? this.lookPointOf(t) : null;
       if (at && c.lookOffset) { at.x += c.lookOffset[0]; at.y += c.lookOffset[1]; at.z += c.lookOffset[2]; }
       if (at && c.lookAway) { // thinking (M3 W2): the gaze goes 0.4 m to one side of the target and 0.3 m up
         const me = this.object3d.getWorldPosition(_v), dx = at.x - me.x, dz = at.z - me.z, len = Math.sqrt(dx * dx + dz * dz) || 1;
@@ -393,6 +401,46 @@ export class CharacterNode extends Node {
   }
   /** True while a line is being said. */
   get speaking() { return !!this.tree?.services.get('voice')?.speaking(this.id); }
+
+  /**
+   * props.head (M4 W9: a face take, or keyed by hand): [yaw, pitch, roll] in radians over whatever the animation gave,
+   * half on the neck and half on the head. Yaw turns to her left, pitch looks up, roll tips her head to her left
+   * shoulder. A bone no clip animates starts from its rest pose each step, so the turn never accumulates; nothing
+   * else writes such a bone, so `ctrl.headTurned` (state) remembers it holds a turn, and restHead puts it back on the
+   * step the head returns to rest (a released track's last key, a take stopping).
+   */
+  turnHead([yaw, pitch, roll]) {
+    const h = this.vrm.humanoid;
+    _turn.setFromEuler(_euler.set(-(pitch ?? 0) / 2, (yaw ?? 0) / 2, -(roll ?? 0) / 2, 'YXZ'));
+    for (const name of ['neck', 'head']) {
+      const b = h?.getNormalizedBoneNode(name);
+      if (!b) continue;
+      if (!this.animated?.has(b.name)) { b.quaternion.identity(); this.ctrl.headTurned = true; }
+      b.quaternion.multiply(_turn);
+    }
+  }
+
+  /** The head back at rest: the neck and head bones no clip animates go back to their rest pose (the mixer has the others). */
+  restHead() {
+    const h = this.vrm.humanoid;
+    for (const name of ['neck', 'head']) { const b = h?.getNormalizedBoneNode(name); if (b && !this.animated?.has(b.name)) b.quaternion.identity(); }
+    delete this.ctrl.headTurned;
+  }
+
+  /**
+   * Where props.gaze looks: [yaw, pitch] in radians from her facing (yaw to her left, pitch up), two metres out from her
+   * head (world space, a new vector).
+   */
+  gazePoint([yaw, pitch]) {
+    const head = this.vrm.humanoid?.getRawBoneNode('head') ?? this.object3d;
+    head.updateWorldMatrix(true, false);
+    const at = head.getWorldPosition(new Vector3());
+    const q = this.object3d.quaternion, fx = 2 * (q.x * q.z + q.w * q.y), fz = 1 - 2 * (q.x * q.x + q.y * q.y);
+    const cy = Math.cos(yaw ?? 0), sy = Math.sin(yaw ?? 0), cp = Math.cos(pitch ?? 0), sp = Math.sin(pitch ?? 0);
+    // forward (fx, fz) and her left (fz, −fx) on the ground
+    at.x += 2 * cp * (fx * cy + fz * sy); at.y += 2 * sp; at.z += 2 * cp * (fz * cy - fx * sy);
+    return at;
+  }
 
   /** Where to look at a node: a character's head, anything else's origin (world space, a new vector). */
   lookPointOf(node) {

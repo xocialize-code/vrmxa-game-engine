@@ -178,3 +178,38 @@ test('travel root motion blends from the speed asked for: a run input becomes a 
   step(60, [0, 2.7]);
   assert.ok(Math.abs(mira.graph.speed - 2.7) < 1e-9 && mira.graph.runWeight(2.7) > 0.4 && mira.graph.runWeight(2.7) < 0.6, 'between the clips: blended, at the speed asked');
 });
+
+test('props.head turns the head over the animation and lets go: on bones no clip animates the turn neither builds up nor stays (M4 W9)', { skip: SKIP }, async () => {
+  // the test set's clips move legs, arms and spine: nothing writes the neck or the head
+  const { tree, mira } = await setup({ doc: still() });
+  const neck = mira.vrm.humanoid.getNormalizedBoneNode('neck'), head = mira.vrm.humanoid.getNormalizedBoneNode('head');
+  assert.ok(!mira.animated.has(neck.name) && !mira.animated.has(head.name), 'no clip animates her neck or head');
+  const q = (b) => b.quaternion.toArray();
+  tree.run(5);
+  assert.deepEqual(q(neck), [0, 0, 0, 1]); assert.deepEqual(q(head), [0, 0, 0, 1]);
+  assert.equal(mira.getState().ctrl.headTurned, undefined, 'a character whose head was never turned has nothing new in her state');
+  mira.props.head = [0.4, 0.1, 0];
+  tree.run(1);
+  const turned = q(neck);
+  assert.ok(Math.abs(turned[1]) > 0.09 && Math.abs(turned[1]) < 0.11, `the neck takes half the yaw (${turned[1].toFixed(4)})`);
+  assert.deepEqual(q(head), turned, 'and the head the other half');
+  tree.run(30);
+  assert.deepEqual(q(neck), turned, 'thirty steps on it is the same turn: it does not build up');
+  assert.equal(mira.getState().ctrl.headTurned, true, 'her state knows an unanimated bone holds a turn');
+  // a snapshot mid-turn, restored into a fresh character, lets go the same way
+  const snap = mira.getState();
+  const other = await setup({ doc: still() });
+  other.mira.setState(structuredClone(snap));
+  for (const m of [mira, other.mira]) m.props.head = [0, 0, 0]; // a released track's last key, or a take stopping
+  tree.run(1); other.tree.run(1);
+  for (const m of [mira, other.mira]) {
+    assert.deepEqual(q(m.vrm.humanoid.getNormalizedBoneNode('neck')), [0, 0, 0, 1], 'back at rest on the step the head returns to zero');
+    assert.deepEqual(q(m.vrm.humanoid.getNormalizedBoneNode('head')), [0, 0, 0, 1]);
+    assert.equal(m.getState().ctrl.headTurned, undefined);
+  }
+  // and when the prop goes away altogether
+  mira.props.head = [0, -0.3, 0.2]; tree.run(2);
+  assert.notDeepEqual(q(neck), [0, 0, 0, 1]);
+  delete mira.props.head; tree.run(1);
+  assert.deepEqual(q(neck), [0, 0, 0, 1]); assert.deepEqual(q(head), [0, 0, 0, 1]);
+});

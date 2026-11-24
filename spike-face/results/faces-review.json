@@ -1,0 +1,15 @@
+{
+ "what": "The synthetic faces looked at by eye (contact sheets, 2026-11-23): pictures whose edit didn't do what was asked are left out of the scores.",
+ "bad": {
+  "a-wink.png": "both eyes shut",
+  "b-wink.png": "both eyes shut",
+  "c-wink.png": "both eyes shut",
+  "d-wink.png": "both eyes shut",
+  "c-tilt.png": "the head leans and turns but is not tipped to the shoulder (both detectors read no roll)"
+ },
+ "notes": [
+  "Every other edit did the one thing asked, and kept the person.",
+  "The head turns came out far stronger than asked: left and right are near profile (50 to 60 degrees by both detectors), up, down and tilt 30 to 45 degrees. They test the limits, not a person facing a camera.",
+  "Smiles show teeth (the mouth is a little open). Raised brows come with widened eyes, a frown with narrowed ones."
+ ]
+}

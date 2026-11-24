@@ -111,6 +111,12 @@ onMounted(async () => {
     catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
     ui.loading = false; refresh(); window.READY = true; return;
   }
+  // M4 W9: ?mode=takes: the sample's take logs replayed as the film's tracks (acceptance/m4/takes.mjs)
+  if (mode === 'takes') {
+    try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await pg.takesCheck()) }; ui.notes = `takes: ${window.__result.takes.length} takes, film ${window.__result.filmHash}, final ${window.__result.final}`; }
+    catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
+    ui.loading = false; refresh(); window.READY = true; return;
+  }
   // M4 W1: ?mode=post&renderer=webgpu|webgl draws every post look offline on that backend (scripts/post-chromium.mjs, WKWebView)
   if (mode === 'post') {
     try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await postCheck(pg)) }; ui.notes = `post: ${window.__result.stack}, exports ${window.__result.exports.identical ? 'identical' : 'DIFFER'}`; }

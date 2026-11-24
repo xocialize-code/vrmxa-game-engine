@@ -68,3 +68,18 @@ Two simulation tracks, written by `@vrmxg/director`'s `takeToSequence` (a conver
 - `input`: a `recording` from `@vrmxg/input`, replayed from the sequence's first step.
 
 `checkSequence` validates both.
+
+## Move tracks, and takes over the film (M4 W9, AB-T-0581)
+
+- `move`: a target and keys `[[frame, [vx, vz, jump?]]]`, held between keys. From its first key until the step that
+  reaches its last, the key is the character's walking intent (`input.move`, m/s on the ground in world x and z), so her
+  own controller walks her: collisions, turning and the walk animation are the simulation's. A third value of 1 is a
+  jump on the step that crosses the key. A puppet take (`@vrmxg/takes`) writes one.
+- **A walk begun after a cut owns her place.** A transform key on a character is a cut to a mark (`@vrmxg/script`'s
+  moves) and would put her back every step. Once a move track's first key has passed, later than the transform track's
+  last key, that transform track leaves her alone until its next key.
+- **A lookAt track that ends hands her eyes back** to another lookAt track on the same character with a clip live there
+  (a take's look over the script's), instead of leaving her looking at nothing.
+- Released tracks (`@vrmxg/tracks`' `release`) are how a take's tracks sit after the film's own.
+
+`test/sequence.test.mjs` covers the three; the film's world with takes is `@vrmxg/takes`' `test/world.test.mjs`.
