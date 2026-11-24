@@ -199,6 +199,51 @@ AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for th
   - Nothing else moved: acceptance, backends, post and coverage are the same entries on both backends, and WebGL is
     unchanged.
 
+### AB-T-0595: frame 0 of every film re-blessed (2026-11-23, same machine and beta)
+
+- **The cause:** a film's frame 0 maps to step 0 at α 0, and at step 0 nothing has run. Every film opened on a T-posed
+  character seen from the set's own camera, with no post stack (`results/ab-t-0595/frame0-before.png`, `frame0-after.png`).
+- **The fix:** `RenderHost.frameAt` draws step 1 as simulated for any blend that would reach back to step 0
+  (`engine/packages/render/README.md`). No step's hash changes: the simulation is `fe69bad3406ab5f6` in all six cells
+  and Node, as before.
+- **The warm-up:** frame 0 is now the first thing a fresh host draws, and on WebGPU that first draw differed from
+  export to export (four hashes in four exports in Chromium, one tile, the espresso machine: AB-T-0596). `exportTake`
+  now draws and reads frame 0 once and throws it away on WebGPU (`warm`), and the editor check's forward pass does the
+  same. With it frame 0 is the same in every export measured.
+- **The bless:** `--bless --keep-going --checks frames,editor`, clean tree. Five cells at 1ac8f24 (before main's W9
+  merge), Chromium on WebGPU at 1e3f921 (after it), second try. In every blessed check both loads agreed.
+- **What moved: frame 0 and nothing else.** In each cell exactly one of the film's 1080 frame hashes changed, index 0.
+  The scheme and loopback cells agree on both backends.
+
+  | Cell | Frame 0 | `frames` digest | `editor` digest |
+  |---|---|---|---|
+  | Chromium, WebGPU | `6784a9d1` → `59d79e2b` | `189535cb` → `d6784fc3` | `c069a63f` → `8d9ab549` |
+  | Chromium, WebGL | `da834908` → `dd425a58` | `70a6468d` → `28e30891` | `59bbb42b` → `582bf85a` |
+  | WKWebView (both origins), WebGPU | `a9fc143d` → `1d3e3ff5` | `053b9501` → `04966d26` | `db9d4ace` → `540ef404` |
+  | WKWebView (both origins), WebGL | `74e40e78` → `f36199f7` | `0911935a` → `86c02b57` | `b6f43f98` → `500f6ed8` |
+
+  The films' digests moved with it: WebGPU `a68717ef` → `50d39224` (Chromium) and `099f33bd` → `92ac29aa` (WebKit);
+  WebGL `46a23bf9` → `38a9f72f` and `64caa818` → `6124f814`. The acceptance, backends, post and coverage entries are
+  untouched.
+- **The verify: not green.** Three runs of the whole matrix at 177cb59 (main's W9 merged in), each cell's pre-flight
+  quiet. The first stopped at its first failure; the other two ran with `--keep-going`
+  (`results/ab-t-0595/verify/` and `verify-2/`).
+  - **What passed in both full runs:** every WebGL check in every load; acceptance, backends, post and coverage in all
+    six cells; the budget in its four; `compare.mjs` 20/20 on each backend; every look's masked SSIM ≥ 0.98; nothing
+    unpinned.
+  - **What failed:** odd frames in WebGPU films, which a quiet pre-flight makes a failure (AB-D-0279). Run 2:
+    WKWebView scheme, film frames 636 and 606, and the editor's export in one load. Run 3: Chromium, film frames 1079,
+    783 and 693; WKWebView loopback, film frame 578; the editor's export in one load of each WKWebView WebGPU cell.
+    Frame 636 differed from its own clean redraw in 39 pixels of one tile, by at most 3 levels. None was frame 0.
+  - **Every WebGPU `frames` and `editor` check did match canonical in clean loads** in one run or the other, so the
+    blessed digests stand. No single run was free of odd frames.
+  - **Why, as far as it is known:** this is the odd WebGPU frame of AB-T-0589 and AB-T-0591. The operator was working
+    on the machine during the runs (WindowServer at about 46 % CPU when looked at, which the pre-flight doesn't
+    count), and in single-cell reruns another session's headless Chrome showed in the load samples. Whether these
+    changes also raised the rate can't be told from these runs: the odd frames are of the same kind, and several in
+    the same shot (the espresso machine, frames 600 to 870), as the ones recorded before them.
+  - **Owed:** one green run on a machine nobody is using.
+
 ## M4's checks as they land
 
 - **Check 1, scripts** (W4, AB-T-0576): the same script gives the same sequence, byte for byte, in every runtime.

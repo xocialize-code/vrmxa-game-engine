@@ -1,0 +1,56 @@
+{
+ "task": "AB-T-0575",
+ "started": "2026-11-24T02:12:33.246Z",
+ "commit": "1e3f921",
+ "machine": {
+  "model": "Mac17,14",
+  "chip": "Apple M5 Max",
+  "macOS": "27.3 (26C5047e)"
+ },
+ "cells": {
+  "chromium-webgpu": {
+   "frames": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "d6784fc3c3d16a2f",
+    "canonical": null,
+    "allLoadsMatch": true,
+    "incidents": 0
+   },
+   "editor": {
+    "ok": true,
+    "pinned": true,
+    "loads": 2,
+    "digest": "8d9ab54914096695",
+    "canonical": null,
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  }
+ },
+ "incidents": [],
+ "failures": [],
+ "gpuLock": [
+  {
+   "cell": "chromium-webgpu",
+   "waitedMs": 1
+  }
+ ],
+ "dirtyFiles": [],
+ "dirty": false,
+ "ended": "2026-11-24T02:14:03.430Z",
+ "stopped": null,
+ "unpinned": [],
+ "ok": true,
+ "runtimes": [
+  "chromium"
+ ],
+ "backends": [
+  "webgpu"
+ ],
+ "checks": [
+  "frames",
+  "editor"
+ ]
+}
