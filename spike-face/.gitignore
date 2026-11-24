@@ -1,0 +1,3 @@
+# generated faces and the scratch Python environment stay out of the repository (faces/make-faces.mjs remakes them)
+faces/out/
+build/

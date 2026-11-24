@@ -21,6 +21,11 @@ import { ScriptDesk, buildShort } from './desk.js';
 import { SHORTS_FILE, ShortList, readShorts, shortFor, titlePage, slugOf, kindOf, sceneKind, missingRefs, setForModel, scriptTemplate, placeFile } from './shorts.js';
 import { disposeWorld } from './dispose.js';
 import { castAndVoice, lazyTTS, projectIO } from './voicing.js';
+import { KeyboardDevice, GamepadDevice, VirtualDevice } from '@vrmxg/input';
+import { demoModel, httpModel, shellModel } from '@vrmxg/director';
+import { PUPPET_ACTIONS } from '@vrmxg/takes';
+import { on } from '../../shell/js/shell.js';
+import { TakeDeck, syntheticCamera, shellFaceCamera } from './takes.js';
 
 export { SIZES, RATES, CODECS };
 const vrmxa = { ...vrmxaMain, ...vrmxaVoice, ...vrmxaPersona, ...vrmxaCloset };
@@ -38,6 +43,8 @@ export class CreatorHost extends EditorHost {
     this.snapshots = new Map();
     const q = new URLSearchParams(location.search).get('queue');
     this.queue = new RenderQueue({ runner: q === 'stub' ? stubRunner : deliveryRunner(this), onChange: () => this.changed('queue') });
+    /** Performance takes (M4 W9): record, stop, keep or discard. (Not `takes`: that is the editor host's list of takes to export.) */
+    this.takeDeck = new TakeDeck(this, this.takeEnv());
   }
 
   /** Export progress reaches the running queue job too. */
@@ -83,6 +90,7 @@ export class CreatorHost extends EditorHost {
     const short = this.shorts.byId(id);
     if (!short) throw new Error(`no short ${id}`);
     if (text === null && !short.saved) throw new Error(`${short.title} was never saved: its script is only in memory`);
+    await this.takeDeck.abandon(); // a take belongs to the short it was performed in
     if (this.session?.mode === 'playing') this.stop();
     clearTimeout(this._applyTimer);
     if (this.short && this.short.id !== id && !this.short.saved) this.shorts.discard(this.short.id);
@@ -212,7 +220,7 @@ export class CreatorHost extends EditorHost {
    * newer one has overtaken stops at its next step and its pictures are dropped. Each draw's world shares the edit view's
    * read bundles and clips, and is disposed whole when the draw ends (physics, geometries, materials, textures).
    */
-  drawThumbs() {
+  _drawThumbsNow() {
     const s = this.session;
     if (!s?.isSequence || !this.board?.shots.length || s.mode !== 'editing') return this._thumbChain;
     const hash = s.hash();
@@ -246,6 +254,92 @@ export class CreatorHost extends EditorHost {
       disposeWorld(world);
     }
   }
+
+  // ---------------------------------------------------------------- performance takes (M4 W9)
+
+  /**
+   * The page's side of a take (takes.js): the puppet's devices, the director's model and the face's camera.
+   * Query switches stand in for a person, a model and a camera (the hand test, a browser): ?puppet=demo presses a
+   * scripted performance's keys, ?director=demo answers from @vrmxg/director's demo model (or a chat URL, &model=),
+   * ?face=synthetic gives @vrmxg/takes' synthetic face session.
+   */
+  takeEnv() {
+    const q = () => new URLSearchParams(globalThis.location?.search ?? '');
+    return {
+      devices: () => {
+        // the keys are the puppet's while she is live: the page neither scrolls nor types with them
+        const codes = new Set(Object.values(PUPPET_ACTIONS).flatMap((a) => a.bindings.map((b) => b.key).filter(Boolean)));
+        const block = (e) => { if (codes.has(e.code) && !e.metaKey && !e.ctrlKey) e.preventDefault(); };
+        const keyboard = new KeyboardDevice().attach(window);
+        window.addEventListener('keydown', block, true);
+        /** @type {any} */ (document.activeElement)?.blur?.(); this.canvas.focus();
+        const devices = [keyboard, new GamepadDevice()];
+        if (q().get('puppet') === 'demo') devices.push(demoPuppet(() => this.live?.world.tree.clock.step ?? 0));
+        return { devices, release: () => { keyboard.detach(); window.removeEventListener('keydown', block, true); } };
+      },
+      model: async () => {
+        const d = q().get('director');
+        if (d === 'demo') return demoModel({ latency: 30 });
+        if (d) return httpModel(d, { model: q().get('model') ?? 'omni4', temperature: 0 });
+        if (inShell && (await call('shell.info'))?.methods?.includes('llm.respond')) return shellModel({ call });
+        throw new Error('no model to direct with: launch with VRMXG_QUERY=director=demo (a scripted one) or director=<a chat-completions URL>, or in a shell that has llm.respond');
+      },
+      camera: async ({ device = null } = {}) => {
+        const f = q().get('face');
+        if (f === 'synthetic') return syntheticCamera();
+        if (inShell && (await call('shell.info'))?.methods?.includes('camera.start')) return shellFaceCamera({ call, on }, { device });
+        throw new Error('no camera here: the Mac app\'s camera drives a face take (or ?face=synthetic for a synthetic session)');
+      },
+    };
+  }
+
+  /** The cameras a face take can use (the Mac shell's; the default can be a capture card, so the person picks). */
+  async cameras() {
+    if (!inShell || !(await call('shell.info'))?.methods?.includes('camera.devices')) return [];
+    return (await call('camera.devices')).devices ?? [];
+  }
+
+  /**
+   * A take's world: the short (as the deck gives it, the performer cast for the take) as the runtimes play it, heard.
+   * (Not `takeWorld`: that is the editor host's, a take as a world for an export.)
+   */
+  async liveWorld(doc) {
+    this.audio?.ctx.resume?.();
+    const world = await this.buildFrom(doc, { play: true, heard: true });
+    this.audio?.ctx.resume?.();
+    return world;
+  }
+
+  /** Show a take world and let the frame loop play it in real time; `tick` runs after each drawn frame. */
+  beginLive(world, tick) {
+    clearTimeout(this._previewTimer); clearTimeout(this._thumbTimer);
+    this.previewPlaying = false;
+    this.view = 'preview';
+    this.gizmo.detach(); this.box.visible = false;
+    this.host.camera = this.previewCamera === 'sequence' ? null : this.camera;
+    this.host.attach(world.tree); this.host.debug.set(this.debug);
+    const r = this.canvas.getBoundingClientRect(); if (r.width) this.host.resize(r.width, r.height);
+    this._last = null;
+    this.live = { world, tick };
+  }
+
+  /** The take is over: its world goes (sound, physics, GPU resources); the next scrub shows the preview again. */
+  endLive() {
+    const world = this.live?.world;
+    this.live = null;
+    this.disposeTakeWorld(world);
+  }
+
+  disposeTakeWorld(world) {
+    if (!world) return;
+    if (this.host.tree === world.tree) this.host.detach();
+    world.audio?.dispose?.();
+    disposeWorld(world);
+  }
+
+  /** While a take is live the view is its world: scrubbing, the preview and the thumbnails wait. */
+  scrubTo(frame) { return this.live ? Promise.resolve(null) : super.scrubTo(frame); }
+  drawThumbs() { return this.live ? this._thumbChain : this._drawThumbsNow(); }
 
   // ---------------------------------------------------------------- casting
 
@@ -454,4 +548,21 @@ function toDataURL(rgba, width, height) {
   c.width = width; c.height = height;
   c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(rgba.buffer, rgba.byteOffset, rgba.byteLength), width, height), 0, 0);
   return c.toDataURL('image/jpeg', 0.85);
+}
+
+/**
+ * A scripted puppet for ?puppet=demo (the hand test, with nobody at the keys): a virtual keyboard that walks her forward,
+ * turns her eyes, nods and waves, by the step since it was first read.
+ */
+function demoPuppet(stepNow) {
+  const keys = [[20, 110, 'KeyW'], [130, 190, 'ArrowLeft'], [200, 204, 'Digit2'], [240, 300, 'KeyD'], [320, 324, 'Digit1'], [340, 344, 'KeyR']];
+  const dev = new VirtualDevice();
+  let first = null;
+  const read = dev.read.bind(dev);
+  dev.read = (out) => {
+    const k = stepNow() - (first ??= stepNow());
+    for (const [a, b, code] of keys) { if (k >= a && k < b) dev.press(code); else dev.release(code); }
+    read(out);
+  };
+  return dev;
 }

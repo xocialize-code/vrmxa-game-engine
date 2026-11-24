@@ -9,7 +9,7 @@
 // host hands the post stack, and changes no hash. The playback state, the overrides' saved values and the lookAt state
 // are in getState(), so a snapshot of a sequence world restores mid-shot.
 import { frameToStep, rationalFps } from '@vrmxg/core';
-import { applyTrack, sampleAudio, eventsBetween, TRACK_TYPES } from '@vrmxg/tracks';
+import { applyTrack, beginTracks, sampleAudio, sampleKeys, eventsBetween, TRACK_TYPES } from '@vrmxg/tracks';
 import { clipAt, shotAt, samplePost, linesBetween } from './evaluate.js';
 
 const START = -1e-9;
@@ -83,14 +83,17 @@ export class SequenceService {
     pb.frame = frame;
     const held = done ? frame - 1e-6 : frame; // the last frame holds: its shot, camera and looks stay when the sequence ends
     this.applyShot(held);
+    beginTracks(this.tree, this.tracks);
     for (const t of this.tracks) {
       if (TRACK_TYPES.includes(t.type)) {
+        if (t.type === 'transform' && this.walked(t, frame)) continue; // she walked on from this cut: a move track has her
         applyTrack(this.tree, t, frame, this.fps);
         if (t.type === 'event') this.fire(t, prev, frame);
       } else if (t.type === 'camera') this.applyCamera(t, held);
       else if (t.type === 'lookAt') this.applyLook(t, held);
       else if (t.type === 'dialogue') for (const c of linesBetween(t, prev, frame)) this.say(t.target, c);
       else if (t.type === 'decisions') this.decide(t, prev, frame);
+      else if (t.type === 'move') this.applyMove(t, prev, frame);
     }
     if (done) {
       pb.playing = false;
@@ -134,6 +137,36 @@ export class SequenceService {
     for (const e of eventsBetween(track, from, to)) { const { frame, ...ev } = e; void frame; ai.inject({ ...ev, agent: track.target, step: this.tree.clock.step }); }
   }
 
+  /**
+   * A move track (M4 W9): a character's walking intent, as a puppet take recorded it. From its first key until the step
+   * that reaches its last, the held key is her `input.move` (m/s on the ground, world x and z), so her own controller
+   * walks her: collisions, turning and the walk animation are the simulation's. A key with a third value of 1 is a jump
+   * on the step that crosses it.
+   */
+  applyMove(track, prev, frame) {
+    const keys = track.keys ?? [];
+    if (!keys.length || frame < keys[0][0] || prev >= keys[keys.length - 1][0]) return;
+    const n = /** @type {any} */ (this.tree.find(track.target));
+    if (!n?.input) return;
+    const v = sampleKeys(keys, frame, { interp: 'step' });
+    n.input.move = [v[0], v[1]];
+    for (const [f, k] of keys) if (k[2] && f > prev && f <= frame) n.input.jump = true;
+  }
+
+  /**
+   * True when a move track has walked a transform track's target on from that track's last key: a transform key on a
+   * character is a cut to a mark (@vrmxg/script's moves), and a walk begun after the cut owns her place until the next.
+   */
+  walked(track, frame) {
+    let cut = -Infinity, any = false;
+    for (const m of this.tracks) {
+      if (m.type !== 'move' || m.target !== track.target || !m.keys?.length || m.keys[0][0] > frame) continue;
+      if (!any) { any = true; for (const [f] of track.keys ?? []) if (f <= frame && f > cut) cut = f; }
+      if (m.keys[0][0] > cut) return true;
+    }
+    return false;
+  }
+
   say(target, c) {
     const n = /** @type {any} */ (this.tree.find(target));
     if (n?.say) this.tree.call(n, 'say', c.clip ? { clip: c.clip, text: c.text } : { text: c.text });
@@ -162,6 +195,11 @@ export class SequenceService {
     if (at === 'camera') at = this.brainFor(track)?.props.camera ?? null;
     const had = this.looks[track.id] ?? null;
     if (at === had) return;
+    if (!at && had) {
+      // this track lets go: another lookAt track on her with a clip live here (a take over the script's eyes) has her again
+      const o = this.tracks.find((x) => x !== track && x.type === 'lookAt' && x.target === track.target && clipAt(x, frame));
+      if (o) { const oc = clipAt(o, frame); at = oc.at === 'camera' ? this.brainFor(o)?.props.camera ?? null : oc.at; n.lookAt({ target: at }); this.looks[track.id] = null; this.looks[o.id] = at; return; }
+    }
     if (at || had) { n.lookAt({ target: at }); this.looks[track.id] = at; }
   }
 

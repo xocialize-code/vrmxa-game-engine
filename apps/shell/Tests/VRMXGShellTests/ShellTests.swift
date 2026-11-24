@@ -539,3 +539,72 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
         #expect(d.pendingOpens.map(\.lastPathComponent) == ["x.fountain"], "held for the new page; the .png refused")
     }
 }
+
+/// The face's shape from its landmarks (M4 W9, shell 0.8.0): pure geometry, so tested on drawn faces.
+@Suite struct FaceShapeTests {
+    /// An eye, a brow or a mouth as an ellipse outline: `w` wide and `h` open, centred on `c`.
+    static func oval(_ c: CGPoint, w: Double, h: Double, n: Int = 8) -> [CGPoint] {
+        (0..<n).map { i in let a = 2 * Double.pi * Double(i) / Double(n); return CGPoint(x: Double(c.x) + w / 2 * cos(a), y: Double(c.y) + h / 2 * sin(a)) }
+    }
+    /// A face: eyes 100 apart (the unit), 30 wide; a mouth `mouth` wide and `open` open; brows `brow` above the eyes.
+    static func face(leftOpen: Double = 14, rightOpen: Double = 14, mouth: Double = 80, open: Double = 2, brow: Double = 30, turn: Double = 0, scale: Double = 1, at: CGPoint = .zero) -> FaceShape.Landmarks {
+        let move = { (p: CGPoint) -> CGPoint in
+            let x = Double(p.x) * scale, y = Double(p.y) * scale
+            return CGPoint(x: x * cos(turn) - y * sin(turn) + Double(at.x), y: x * sin(turn) + y * cos(turn) + Double(at.y))
+        }
+        let l = CGPoint(x: -50, y: 0), r = CGPoint(x: 50, y: 0)
+        return .init(
+            leftEye: oval(l, w: 30, h: leftOpen).map(move), rightEye: oval(r, w: 30, h: rightOpen).map(move),
+            leftBrow: [CGPoint(x: -65, y: brow), CGPoint(x: -50, y: brow + 3), CGPoint(x: -35, y: brow)].map(move),
+            rightBrow: [CGPoint(x: 35, y: brow), CGPoint(x: 50, y: brow + 3), CGPoint(x: 65, y: brow)].map(move),
+            outerLips: oval(CGPoint(x: 0, y: -90), w: mouth, h: 20 + open).map(move), innerLips: oval(CGPoint(x: 0, y: -90), w: mouth * 0.8, h: open).map(move))
+    }
+    func near(_ a: Double, _ b: Double, _ eps: Double = 1e-9) -> Bool { abs(a - b) < eps }
+
+    @Test func measuresEachPartOnItsOwn() throws {
+        let rest = try #require(FaceShape.measure(Self.face()))
+        #expect(rest.blinkL < 0.25 && rest.blinkR < 0.25, "open eyes read open (\(rest.blinkL))")
+        let narrow = try #require(FaceShape.measure(Self.face(leftOpen: 10, rightOpen: 10)))
+        #expect(narrow.blinkL > rest.blinkL && narrow.blinkL < 0.5, "eyes narrowed by a smile are well short of shut (\(narrow.blinkL))")
+        #expect(rest.jaw < 0.05)
+        let shut = try #require(FaceShape.measure(Self.face(leftOpen: 1, rightOpen: 1)))
+        #expect(shut.blinkL > 0.9 && shut.blinkR > 0.9, "a sliver of an eye is shut (\(shut.blinkL))")
+        let wink = try #require(FaceShape.measure(Self.face(leftOpen: 1)))
+        #expect(wink.blinkL > 0.9 && near(wink.blinkR, rest.blinkR), "one eye shut leaves the other as it was")
+        #expect(near(wink.jaw, rest.jaw) && near(wink.smile, rest.smile) && near(wink.browUp, rest.browUp))
+        let ah = try #require(FaceShape.measure(Self.face(open: 40)))
+        #expect(ah.jaw > 0.6 && near(ah.blinkL, rest.blinkL) && near(ah.browUp, rest.browUp), "a mouth open 0.4 eye distances is most of the way (\(ah.jaw))")
+        let grin = try #require(FaceShape.measure(Self.face(mouth: 105)))
+        #expect(grin.smile > rest.smile + 0.4 && near(grin.jaw, rest.jaw, 0.01))
+        let up = try #require(FaceShape.measure(Self.face(brow: 45))), down = try #require(FaceShape.measure(Self.face(brow: 20)))
+        #expect(up.browUp > rest.browUp + 0.3 && down.browDown > rest.browDown + 0.2, "brows up and brows down from the same rest")
+        #expect(near(up.browUp + up.browDown, 1))
+        #expect(FaceShape.measure(.init(leftEye: [], rightEye: [], leftBrow: [], rightBrow: [], outerLips: [], innerLips: [])) == nil, "no eyes, no shape")
+        // a head turned 50°: the eyes are closer together in the picture, and heights are put back by the turn's cosine
+        let squeeze = { (p: CGPoint) in CGPoint(x: Double(p.x) * cos(0.87), y: Double(p.y)) }
+        let f = Self.face(open: 20, brow: 35)
+        let turned = FaceShape.Landmarks(leftEye: f.leftEye.map(squeeze), rightEye: f.rightEye.map(squeeze), leftBrow: f.leftBrow.map(squeeze), rightBrow: f.rightBrow.map(squeeze), outerLips: f.outerLips.map(squeeze), innerLips: f.innerLips.map(squeeze))
+        let front = try #require(FaceShape.measure(f)), bare = try #require(FaceShape.measure(turned)), fixed = try #require(FaceShape.measure(turned, yaw: -0.87))
+        #expect(bare.browUp > front.browUp + 0.2, "uncorrected, a turned head reads as raised brows")
+        #expect(near(fixed.browUp, front.browUp, 1e-6) && near(fixed.jaw, front.jaw, 1e-6), "with the turn, the brows and the mouth read as they do from the front")
+    }
+
+    @Test func theSameFaceTiltedMovedOrFartherAwayReadsTheSame() throws {
+        let a = try #require(FaceShape.measure(Self.face(leftOpen: 4, mouth: 95, open: 18, brow: 40)))
+        for (turn, scale, at) in [(0.5, 1.0, CGPoint.zero), (-0.9, 0.35, CGPoint(x: 400, y: -120)), (0.0, 7.0, CGPoint(x: -3000, y: 80))] {
+            let b = try #require(FaceShape.measure(Self.face(leftOpen: 4, mouth: 95, open: 18, brow: 40, turn: turn, scale: scale, at: at)))
+            for (x, y) in [(a.blinkL, b.blinkL), (a.blinkR, b.blinkR), (a.jaw, b.jaw), (a.smile, b.smile), (a.browUp, b.browUp), (a.geo.earL, b.geo.earL), (a.geo.mouthWidth, b.geo.mouthWidth)] {
+                #expect(near(x, y, 1e-9), "turned \(turn), scaled \(scale): \(x) and \(y)")
+            }
+        }
+    }
+
+    @Test func thePageHearsThePersonsOwnEyes() throws {
+        let s = try #require(FaceShape.measure(Self.face(leftOpen: 1))) // the eye on the picture's left is shut
+        let j = s.json
+        #expect((j["blinkR"] as? Double ?? 0) > 0.9, "the picture's left is the person's right eye")
+        #expect((j["blinkL"] as? Double ?? 1) < 0.25)
+        #expect(((j["geo"] as? [String: Any])?["earL"] as? Double ?? 1) < 0.1, "geo keeps the picture's sides")
+        #expect(vrmxgShellVersion == "0.8.0")
+    }
+}

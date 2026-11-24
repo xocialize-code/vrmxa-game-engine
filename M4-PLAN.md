@@ -193,9 +193,10 @@ Taken from research as defaults (say so if any should change):
 
 ## Open questions that don't block M4's start
 
-- **Face capture's source.** Vision's landmarks are on the device and already in the shell, but they give geometry,
-  not blendshapes. MediaPipe's 52 blendshapes are better for anime faces, but the page couldn't afford them (AB-R-1029);
-  a native build might. W9's spike decides.
+- **Face capture's source.** *Decided 2026-11-23 (AB-D-0281, W9's spike, `spike-face/`, AB-R-1085): Vision's landmarks
+  in the shell.* They give blink, mouth, smile, brows and head at 4 ms a frame with nothing to ship. MediaPipe's 52
+  blendshapes run natively in 3 ms, but there is no MediaPipe build for a macOS Swift app; they stay the fallback if
+  the live session (AB-T-0557) shows Vision isn't enough.
 - **Episodes.** Do shorts chain sequences into episodes, with shared casting and continuity? Not in M4; asked again
   at M5.
 - **Where TTS voices come from in a browser build.** The loopback stand-in serves the acceptance, and the shell serves

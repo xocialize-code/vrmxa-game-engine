@@ -1,0 +1,681 @@
+{
+ "what": "The spike's synthetic faces: 4 identities × (neutral + 13 single changes). No real person.",
+ "framing": "webcam photo of a person sitting at a desk facing the camera, head and shoulders, face centred and filling about a third of the frame, neutral relaxed expression, mouth closed, eyes open looking at the camera, even indoor daylight, plain off-white wall behind, sharp focus, natural skin",
+ "identities": [
+  {
+   "id": "a",
+   "seed": 101,
+   "who": "a woman in her thirties with shoulder-length dark hair, no glasses"
+  },
+  {
+   "id": "b",
+   "seed": 202,
+   "who": "a man in his forties with short brown hair and light stubble, no glasses"
+  },
+  {
+   "id": "c",
+   "seed": 303,
+   "who": "a woman in her twenties with light skin and red hair tied back, no glasses"
+  },
+  {
+   "id": "d",
+   "seed": 404,
+   "who": "a man in his thirties with dark skin and very short black hair, no glasses"
+  }
+ ],
+ "poses": [
+  {
+   "id": "blink",
+   "truth": {
+    "blink": 1
+   },
+   "instruction": "Close both of the person's eyes fully, as in the middle of a blink. Keep everything else exactly the same: the same person, the same pose, the mouth closed."
+  },
+  {
+   "id": "wink",
+   "truth": {
+    "wink": 1
+   },
+   "instruction": "Make the person wink: close only the eye on the left side of the picture, keep the other eye open. Keep everything else exactly the same."
+  },
+  {
+   "id": "jaw",
+   "truth": {
+    "jaw": 1
+   },
+   "instruction": "Open the person's mouth wide, jaw dropped, as if saying \"ah\". Keep the eyes open and everything else exactly the same."
+  },
+  {
+   "id": "smile",
+   "truth": {
+    "smile": 1
+   },
+   "instruction": "Make the person smile broadly with a closed mouth, cheeks raised. Keep the eyes open and everything else exactly the same."
+  },
+  {
+   "id": "browUp",
+   "truth": {
+    "browUp": 1
+   },
+   "instruction": "Raise both of the person's eyebrows high, as in surprise, eyes open, mouth closed. Keep everything else exactly the same."
+  },
+  {
+   "id": "browDown",
+   "truth": {
+    "browDown": 1
+   },
+   "instruction": "Lower and draw together the person's eyebrows in a stern frown, eyes open, mouth closed. Keep everything else exactly the same."
+  },
+  {
+   "id": "left",
+   "truth": {
+    "yaw": -1
+   },
+   "instruction": "Turn the person's head about thirty degrees toward the left side of the picture, body unchanged, eyes following the head. Keep the expression neutral."
+  },
+  {
+   "id": "right",
+   "truth": {
+    "yaw": 1
+   },
+   "instruction": "Turn the person's head about thirty degrees toward the right side of the picture, body unchanged, eyes following the head. Keep the expression neutral."
+  },
+  {
+   "id": "left15",
+   "truth": {
+    "yaw": -1
+   },
+   "instruction": "Turn the person's face very slightly, only about ten degrees, toward the left side of the picture, as when glancing at something just beside the camera. Both eyes and both cheeks stay fully visible. Keep the expression neutral and everything else exactly the same."
+  },
+  {
+   "id": "right15",
+   "truth": {
+    "yaw": 1
+   },
+   "instruction": "Turn the person's face very slightly, only about ten degrees, toward the right side of the picture, as when glancing at something just beside the camera. Both eyes and both cheeks stay fully visible. Keep the expression neutral and everything else exactly the same."
+  },
+  {
+   "id": "up",
+   "truth": {
+    "pitch": 1
+   },
+   "instruction": "Tilt the person's head back so they look up toward the ceiling, chin raised about twenty degrees. Keep the expression neutral."
+  },
+  {
+   "id": "down",
+   "truth": {
+    "pitch": -1
+   },
+   "instruction": "Tilt the person's head forward so they look down at the desk, chin lowered about twenty degrees. Keep the expression neutral."
+  },
+  {
+   "id": "tilt",
+   "truth": {
+    "roll": 1
+   },
+   "instruction": "Tilt the person's head sideways toward their shoulder on the right side of the picture, about twenty degrees, still facing the camera. Keep the expression neutral."
+  }
+ ],
+ "size": {
+  "width": 1024,
+  "height": 768
+ },
+ "models": {
+  "z-image-turbo": "Apache-2.0",
+  "klein-4b": "Apache-2.0"
+ },
+ "files": [
+  {
+   "file": "a-neutral.png",
+   "identity": "a",
+   "pose": "neutral",
+   "truth": {},
+   "model": "z-image-turbo",
+   "seed": 101
+  },
+  {
+   "file": "a-blink.png",
+   "identity": "a",
+   "pose": "blink",
+   "truth": {
+    "blink": 1
+   },
+   "model": "klein-4b",
+   "seed": 102
+  },
+  {
+   "file": "a-wink.png",
+   "identity": "a",
+   "pose": "wink",
+   "truth": {
+    "wink": 1
+   },
+   "model": "klein-4b",
+   "seed": 102
+  },
+  {
+   "file": "a-jaw.png",
+   "identity": "a",
+   "pose": "jaw",
+   "truth": {
+    "jaw": 1
+   },
+   "model": "klein-4b",
+   "seed": 102
+  },
+  {
+   "file": "a-smile.png",
+   "identity": "a",
+   "pose": "smile",
+   "truth": {
+    "smile": 1
+   },
+   "model": "klein-4b",
+   "seed": 102
+  },
+  {
+   "file": "a-browUp.png",
+   "identity": "a",
+   "pose": "browUp",
+   "truth": {
+    "browUp": 1
+   },
+   "model": "klein-4b",
+   "seed": 102
+  },
+  {
+   "file": "a-browDown.png",
+   "identity": "a",
+   "pose": "browDown",
+   "truth": {
+    "browDown": 1
+   },
+   "model": "klein-4b",
+   "seed": 102
+  },
+  {
+   "file": "a-left.png",
+   "identity": "a",
+   "pose": "left",
+   "truth": {
+    "yaw": -1
+   },
+   "model": "klein-4b",
+   "seed": 102
+  },
+  {
+   "file": "a-right.png",
+   "identity": "a",
+   "pose": "right",
+   "truth": {
+    "yaw": 1
+   },
+   "model": "klein-4b",
+   "seed": 102
+  },
+  {
+   "file": "a-left15.png",
+   "identity": "a",
+   "pose": "left15",
+   "truth": {
+    "yaw": -1
+   },
+   "model": "klein-4b",
+   "seed": 102
+  },
+  {
+   "file": "a-right15.png",
+   "identity": "a",
+   "pose": "right15",
+   "truth": {
+    "yaw": 1
+   },
+   "model": "klein-4b",
+   "seed": 102
+  },
+  {
+   "file": "a-up.png",
+   "identity": "a",
+   "pose": "up",
+   "truth": {
+    "pitch": 1
+   },
+   "model": "klein-4b",
+   "seed": 102
+  },
+  {
+   "file": "a-down.png",
+   "identity": "a",
+   "pose": "down",
+   "truth": {
+    "pitch": -1
+   },
+   "model": "klein-4b",
+   "seed": 102
+  },
+  {
+   "file": "a-tilt.png",
+   "identity": "a",
+   "pose": "tilt",
+   "truth": {
+    "roll": 1
+   },
+   "model": "klein-4b",
+   "seed": 102
+  },
+  {
+   "file": "b-neutral.png",
+   "identity": "b",
+   "pose": "neutral",
+   "truth": {},
+   "model": "z-image-turbo",
+   "seed": 202
+  },
+  {
+   "file": "b-blink.png",
+   "identity": "b",
+   "pose": "blink",
+   "truth": {
+    "blink": 1
+   },
+   "model": "klein-4b",
+   "seed": 203
+  },
+  {
+   "file": "b-wink.png",
+   "identity": "b",
+   "pose": "wink",
+   "truth": {
+    "wink": 1
+   },
+   "model": "klein-4b",
+   "seed": 203
+  },
+  {
+   "file": "b-jaw.png",
+   "identity": "b",
+   "pose": "jaw",
+   "truth": {
+    "jaw": 1
+   },
+   "model": "klein-4b",
+   "seed": 203
+  },
+  {
+   "file": "b-smile.png",
+   "identity": "b",
+   "pose": "smile",
+   "truth": {
+    "smile": 1
+   },
+   "model": "klein-4b",
+   "seed": 203
+  },
+  {
+   "file": "b-browUp.png",
+   "identity": "b",
+   "pose": "browUp",
+   "truth": {
+    "browUp": 1
+   },
+   "model": "klein-4b",
+   "seed": 203
+  },
+  {
+   "file": "b-browDown.png",
+   "identity": "b",
+   "pose": "browDown",
+   "truth": {
+    "browDown": 1
+   },
+   "model": "klein-4b",
+   "seed": 203
+  },
+  {
+   "file": "b-left.png",
+   "identity": "b",
+   "pose": "left",
+   "truth": {
+    "yaw": -1
+   },
+   "model": "klein-4b",
+   "seed": 203
+  },
+  {
+   "file": "b-right.png",
+   "identity": "b",
+   "pose": "right",
+   "truth": {
+    "yaw": 1
+   },
+   "model": "klein-4b",
+   "seed": 203
+  },
+  {
+   "file": "b-left15.png",
+   "identity": "b",
+   "pose": "left15",
+   "truth": {
+    "yaw": -1
+   },
+   "model": "klein-4b",
+   "seed": 203
+  },
+  {
+   "file": "b-right15.png",
+   "identity": "b",
+   "pose": "right15",
+   "truth": {
+    "yaw": 1
+   },
+   "model": "klein-4b",
+   "seed": 203
+  },
+  {
+   "file": "b-up.png",
+   "identity": "b",
+   "pose": "up",
+   "truth": {
+    "pitch": 1
+   },
+   "model": "klein-4b",
+   "seed": 203
+  },
+  {
+   "file": "b-down.png",
+   "identity": "b",
+   "pose": "down",
+   "truth": {
+    "pitch": -1
+   },
+   "model": "klein-4b",
+   "seed": 203
+  },
+  {
+   "file": "b-tilt.png",
+   "identity": "b",
+   "pose": "tilt",
+   "truth": {
+    "roll": 1
+   },
+   "model": "klein-4b",
+   "seed": 203
+  },
+  {
+   "file": "c-neutral.png",
+   "identity": "c",
+   "pose": "neutral",
+   "truth": {},
+   "model": "z-image-turbo",
+   "seed": 303
+  },
+  {
+   "file": "c-blink.png",
+   "identity": "c",
+   "pose": "blink",
+   "truth": {
+    "blink": 1
+   },
+   "model": "klein-4b",
+   "seed": 304
+  },
+  {
+   "file": "c-wink.png",
+   "identity": "c",
+   "pose": "wink",
+   "truth": {
+    "wink": 1
+   },
+   "model": "klein-4b",
+   "seed": 304
+  },
+  {
+   "file": "c-jaw.png",
+   "identity": "c",
+   "pose": "jaw",
+   "truth": {
+    "jaw": 1
+   },
+   "model": "klein-4b",
+   "seed": 304
+  },
+  {
+   "file": "c-smile.png",
+   "identity": "c",
+   "pose": "smile",
+   "truth": {
+    "smile": 1
+   },
+   "model": "klein-4b",
+   "seed": 304
+  },
+  {
+   "file": "c-browUp.png",
+   "identity": "c",
+   "pose": "browUp",
+   "truth": {
+    "browUp": 1
+   },
+   "model": "klein-4b",
+   "seed": 304
+  },
+  {
+   "file": "c-browDown.png",
+   "identity": "c",
+   "pose": "browDown",
+   "truth": {
+    "browDown": 1
+   },
+   "model": "klein-4b",
+   "seed": 304
+  },
+  {
+   "file": "c-left.png",
+   "identity": "c",
+   "pose": "left",
+   "truth": {
+    "yaw": -1
+   },
+   "model": "klein-4b",
+   "seed": 304
+  },
+  {
+   "file": "c-right.png",
+   "identity": "c",
+   "pose": "right",
+   "truth": {
+    "yaw": 1
+   },
+   "model": "klein-4b",
+   "seed": 304
+  },
+  {
+   "file": "c-left15.png",
+   "identity": "c",
+   "pose": "left15",
+   "truth": {
+    "yaw": -1
+   },
+   "model": "klein-4b",
+   "seed": 304
+  },
+  {
+   "file": "c-right15.png",
+   "identity": "c",
+   "pose": "right15",
+   "truth": {
+    "yaw": 1
+   },
+   "model": "klein-4b",
+   "seed": 304
+  },
+  {
+   "file": "c-up.png",
+   "identity": "c",
+   "pose": "up",
+   "truth": {
+    "pitch": 1
+   },
+   "model": "klein-4b",
+   "seed": 304
+  },
+  {
+   "file": "c-down.png",
+   "identity": "c",
+   "pose": "down",
+   "truth": {
+    "pitch": -1
+   },
+   "model": "klein-4b",
+   "seed": 304
+  },
+  {
+   "file": "c-tilt.png",
+   "identity": "c",
+   "pose": "tilt",
+   "truth": {
+    "roll": 1
+   },
+   "model": "klein-4b",
+   "seed": 304
+  },
+  {
+   "file": "d-neutral.png",
+   "identity": "d",
+   "pose": "neutral",
+   "truth": {},
+   "model": "z-image-turbo",
+   "seed": 404
+  },
+  {
+   "file": "d-blink.png",
+   "identity": "d",
+   "pose": "blink",
+   "truth": {
+    "blink": 1
+   },
+   "model": "klein-4b",
+   "seed": 405
+  },
+  {
+   "file": "d-wink.png",
+   "identity": "d",
+   "pose": "wink",
+   "truth": {
+    "wink": 1
+   },
+   "model": "klein-4b",
+   "seed": 405
+  },
+  {
+   "file": "d-jaw.png",
+   "identity": "d",
+   "pose": "jaw",
+   "truth": {
+    "jaw": 1
+   },
+   "model": "klein-4b",
+   "seed": 405
+  },
+  {
+   "file": "d-smile.png",
+   "identity": "d",
+   "pose": "smile",
+   "truth": {
+    "smile": 1
+   },
+   "model": "klein-4b",
+   "seed": 405
+  },
+  {
+   "file": "d-browUp.png",
+   "identity": "d",
+   "pose": "browUp",
+   "truth": {
+    "browUp": 1
+   },
+   "model": "klein-4b",
+   "seed": 405
+  },
+  {
+   "file": "d-browDown.png",
+   "identity": "d",
+   "pose": "browDown",
+   "truth": {
+    "browDown": 1
+   },
+   "model": "klein-4b",
+   "seed": 405
+  },
+  {
+   "file": "d-left.png",
+   "identity": "d",
+   "pose": "left",
+   "truth": {
+    "yaw": -1
+   },
+   "model": "klein-4b",
+   "seed": 405
+  },
+  {
+   "file": "d-right.png",
+   "identity": "d",
+   "pose": "right",
+   "truth": {
+    "yaw": 1
+   },
+   "model": "klein-4b",
+   "seed": 405
+  },
+  {
+   "file": "d-left15.png",
+   "identity": "d",
+   "pose": "left15",
+   "truth": {
+    "yaw": -1
+   },
+   "model": "klein-4b",
+   "seed": 405
+  },
+  {
+   "file": "d-right15.png",
+   "identity": "d",
+   "pose": "right15",
+   "truth": {
+    "yaw": 1
+   },
+   "model": "klein-4b",
+   "seed": 405
+  },
+  {
+   "file": "d-up.png",
+   "identity": "d",
+   "pose": "up",
+   "truth": {
+    "pitch": 1
+   },
+   "model": "klein-4b",
+   "seed": 405
+  },
+  {
+   "file": "d-down.png",
+   "identity": "d",
+   "pose": "down",
+   "truth": {
+    "pitch": -1
+   },
+   "model": "klein-4b",
+   "seed": 405
+  },
+  {
+   "file": "d-tilt.png",
+   "identity": "d",
+   "pose": "tilt",
+   "truth": {
+    "roll": 1
+   },
+   "model": "klein-4b",
+   "seed": 405
+  }
+ ]
+}

@@ -11,6 +11,7 @@
 	<key>CFBundleVersion</key><string>1</string>
 	<key>LSMinimumSystemVersion</key><string>15.0</string>
 	<key>NSHighResolutionCapable</key><true/>
+	<key>NSCameraUsageDescription</key><string>A face take uses the camera so a character's blinks, mouth, smile, brows and head follow yours. The images stay on this Mac: only numbers about your face reach the short.</string>
 	<key>NSPrincipalClass</key><string>NSApplication</string>
 	<key>CFBundleDocumentTypes</key><array>
 		<!-- what File › Open and the Finder hand the creator (it opens them, it never claims to be their default app) -->

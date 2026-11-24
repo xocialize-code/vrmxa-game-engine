@@ -1,0 +1,36 @@
+{
+  "name": "@vrmxg/takes",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VRMXG performance takes (M4 W9): one character's performance recorded as a log (a puppet's input, a director's replies, a face from the camera), turned into ordinary sequence tracks by a pure function, kept as one undo step, and replayed exactly from the log with no device, model or camera.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@vrmxg/core": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
+    "@vrmxg/input": "0.1.0",
+    "@vrmxg/sequence": "0.1.0",
+    "@vrmxg/snapshot": "0.1.0",
+    "@vrmxg/tracks": "0.1.0"
+  },
+  "devDependencies": {
+    "@vrmxg/ai": "0.1.0",
+    "@vrmxg/director": "0.1.0",
+    "@vrmxg/editor-core": "0.1.0",
+    "@vrmxg/physics": "0.1.0",
+    "@vrmxg/registry": "0.1.0",
+    "@vrmxg/scene": "0.1.0"
+  },
+  "vrmxg": {
+    "determinism": "simulation"
+  }
+}

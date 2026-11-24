@@ -1,0 +1,191 @@
+{
+ "check": "M4 check 5: each take kind replays exactly from its log, in Node and the browser (the same tracks, the same world every step)",
+ "pass": true,
+ "same": true,
+ "node": {
+  "runtime": "node",
+  "version": "v26.12.1",
+  "sequence": "sequences/the-regular.vrmxs",
+  "takes": [
+   {
+    "id": "take-1",
+    "kind": "puppet",
+    "target": "mira",
+    "start": 239,
+    "end": 759,
+    "log": "726275474b61b08f",
+    "tracks": [
+     "mira-walk-take-1:move",
+     "mira-gaze-take-1:property",
+     "mira-act-take-1:animation"
+    ],
+    "tracksHash": "97c2d455764d4d6e",
+    "cast": []
+   },
+   {
+    "id": "take-2",
+    "kind": "director",
+    "target": "hana-1",
+    "start": 749,
+    "end": 1349,
+    "log": "6e4029d3b2e3eba4",
+    "tracks": [
+     "hana-1-says-take-2:dialogue",
+     "hana-1-face-take-2:expression",
+     "hana-1-act-take-2:animation",
+     "hana-1-decisions-take-2:decisions"
+    ],
+    "tracksHash": "eda5a9adf6e6b2a0",
+    "cast": [
+     "hana-1"
+    ]
+   },
+   {
+    "id": "take-3",
+    "kind": "face",
+    "target": "mira",
+    "start": 1399,
+    "end": 1959,
+    "log": "52c96ba90bffa20d",
+    "tracks": [
+     "mira-face-take-3:expression",
+     "mira-head-take-3:property"
+    ],
+    "tracksHash": "9100bfa271fe04df",
+    "cast": []
+   }
+  ],
+  "filmHash": "7314d57e8b7a5b5c",
+  "filmBytes": 43071,
+  "steps": 2079,
+  "final": "42bc50c5a9e11f0f",
+  "components": 88,
+  "twice": true,
+  "takesChangeTheFilm": true,
+  "restored": {
+   "at": 389,
+   "final": "42bc50c5a9e11f0f",
+   "same": true
+  },
+  "performed": {
+   "miraWalked": 1.0272,
+   "miraJumped": 1.02,
+   "miraLooked": 1,
+   "hanaWalked": 3.1882,
+   "hanaToMira": 1.9764,
+   "lines": [
+    {
+     "text": "The scones just came out, Mira!",
+     "frame": 313,
+     "spokeAt": 782
+    },
+    {
+     "text": "On my way.",
+     "frame": 389,
+     "spokeAt": 972
+    }
+   ],
+   "linesOnTheirFrames": true,
+   "blink": 1,
+   "smile": 0.864,
+   "mouth": 0.631,
+   "headTurn": 0.3561
+  },
+  "runDigest": "994d4b168b30b1bebc155f721501146ea4c802f131d59b9a8bc4987074d9c83a"
+ },
+ "chromium": {
+  "runtime": "chromium",
+  "version": "156.0.8078.4",
+  "mode": "takes",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "origin": "http:",
+  "sequence": "sequences/the-regular.vrmxs",
+  "takes": [
+   {
+    "id": "take-1",
+    "kind": "puppet",
+    "target": "mira",
+    "start": 239,
+    "end": 759,
+    "log": "726275474b61b08f",
+    "tracks": [
+     "mira-walk-take-1:move",
+     "mira-gaze-take-1:property",
+     "mira-act-take-1:animation"
+    ],
+    "tracksHash": "97c2d455764d4d6e",
+    "cast": []
+   },
+   {
+    "id": "take-2",
+    "kind": "director",
+    "target": "hana-1",
+    "start": 749,
+    "end": 1349,
+    "log": "6e4029d3b2e3eba4",
+    "tracks": [
+     "hana-1-says-take-2:dialogue",
+     "hana-1-face-take-2:expression",
+     "hana-1-act-take-2:animation",
+     "hana-1-decisions-take-2:decisions"
+    ],
+    "tracksHash": "eda5a9adf6e6b2a0",
+    "cast": [
+     "hana-1"
+    ]
+   },
+   {
+    "id": "take-3",
+    "kind": "face",
+    "target": "mira",
+    "start": 1399,
+    "end": 1959,
+    "log": "52c96ba90bffa20d",
+    "tracks": [
+     "mira-face-take-3:expression",
+     "mira-head-take-3:property"
+    ],
+    "tracksHash": "9100bfa271fe04df",
+    "cast": []
+   }
+  ],
+  "filmHash": "7314d57e8b7a5b5c",
+  "filmBytes": 43071,
+  "steps": 2079,
+  "final": "42bc50c5a9e11f0f",
+  "components": 88,
+  "twice": true,
+  "takesChangeTheFilm": true,
+  "restored": {
+   "at": 389,
+   "final": "42bc50c5a9e11f0f",
+   "same": true
+  },
+  "performed": {
+   "miraWalked": 1.0272,
+   "miraJumped": 1.02,
+   "miraLooked": 1,
+   "hanaWalked": 3.1882,
+   "hanaToMira": 1.9764,
+   "lines": [
+    {
+     "text": "The scones just came out, Mira!",
+     "frame": 313,
+     "spokeAt": 782
+    },
+    {
+     "text": "On my way.",
+     "frame": 389,
+     "spokeAt": 972
+    }
+   ],
+   "linesOnTheirFrames": true,
+   "blink": 1,
+   "smile": 0.864,
+   "mouth": 0.631,
+   "headTurn": 0.3561
+  },
+  "errors": [],
+  "runDigest": "994d4b168b30b1bebc155f721501146ea4c802f131d59b9a8bc4987074d9c83a"
+ }
+}

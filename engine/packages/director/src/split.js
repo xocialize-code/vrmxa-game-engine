@@ -117,7 +117,7 @@ export function normalizeVerdict(v, m, { userName = '', heard = '' } = {}) {
  * @returns {{ ok: true, calls: { name: string, args: any }[], dropped: string[] } | { ok: false, errors: string[] }}
  */
 export function salvage(line, verdict, m, { heard = '', userName = '', exists, validate }) {
-  const head = validate({ toolCalls: [{ name: 'say', arguments: { text: line, to: 'user' } }] }, m, { exists });
+  const head = validate({ toolCalls: [{ name: 'say', arguments: { text: line, ...(m.user ? { to: 'user' } : {}) } }] }, m, { exists }); // no `to` when the person isn't in the scene (M4 W9)
   if (!head.ok) return head;
   const p = verdictParts(verdict, m, { heard, userName, exists, validate });
   const say = { ...head.calls[0], args: { ...head.calls[0].args, ...p.face } };
@@ -135,7 +135,7 @@ export function verdictParts(verdict, m, { heard = '', userName = '', exists, va
   const v = normalizeVerdict(verdict, m, { userName, heard }), dropped = [], face = {};
   for (const k of ['emotion', 'gesture']) {
     if (typeof v[k] !== 'string') continue;
-    const r = validate({ toolCalls: [{ name: 'say', arguments: { text: 'x', to: 'user', [k]: v[k] } }] }, m, { exists });
+    const r = validate({ toolCalls: [{ name: 'say', arguments: { text: 'x', ...(m.user ? { to: 'user' } : {}), [k]: v[k] } }] }, m, { exists });
     if (r.ok) face[k] = v[k]; else dropped.push(`${k} ${v[k]}`);
   }
   const calls = [];
