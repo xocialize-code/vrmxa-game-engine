@@ -116,6 +116,10 @@ W8 safe to close ─────────────────────
 W0, W2 ───────────► W9 agents ─────────────────────────────────────┘
 ```
 
+**Progress (2026-11-24):** W0, W2 and W8 are done and merged (PRs #31 to #34; tasks AB-T-0615, 0617, 0592 and 0593;
+shell 0.10.0). W1, W3 and W9 can start now: the contracts they build on are in `engine/packages/bundle/README.md` and
+`engine/packages/game/README.md`. Left from their reviews: AB-T-0624 and AB-T-0626 to 0629.
+
 Five streams can start at once: W0, W2, W4, W5 and W7. W4 and W5 both change `apps/editor`, so they run one after
 the other unless their files are kept apart. W8 is small and can go first.
 
