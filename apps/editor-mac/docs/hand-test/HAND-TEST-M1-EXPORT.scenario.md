@@ -18,10 +18,13 @@ fresh: false
 - [ ] A 10 s take exports from the editor to H.264 1080p30 with sound: 300 frames, 10.000 s, the sound under it.
   ```steps
   wait id=open-project enabled=true timeout_ms=40000
-  until find("id=doc-state").0.name matches "^Scene cafe.vrmxs"
+  until find("id=doc-state").0.name matches "^Scene cafe"   # the bundled sample's first scene (cafe-cart.vrmxs since M3 W12)
   act id=open-project action=press
   until find("id=project-name").0.name == "Project project"
-  until find("id=doc-state").0.name matches "^Scene cafe.vrmxs [0-9]+ nodes saved"   # the project's cafe, loaded
+  until find("id=doc-state").0.name matches "^Scene cafe[^ ]* [0-9]+ nodes saved" timeout=60000   # the project's first scene
+  act id=file-name action=set_value value=cafe.vrmxs   # the cafe itself: the project's first scene is cafe-cart.vrmxs now
+  act id=open-file action=press
+  until find("id=doc-state").0.name matches "^Scene cafe.vrmxs [0-9]+ nodes saved" timeout=60000   # the project's cafe, loaded
   act id=export-open action=press
   wait id=export-run timeout_ms=5000
   expect find("id=export-take").0.value == "input/walk-in.json"   # the recorded walk is the default take
