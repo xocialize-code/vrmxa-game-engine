@@ -1,0 +1,679 @@
+{
+ "format": "vrmxg-delivery-run",
+ "version": 1,
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+ "origin": "loopback",
+ "shell": {
+  "scheme": "vrmxg-creator://app/"
+ },
+ "preset": "h264-1080p24",
+ "short": "the-regular",
+ "backend": "webgl",
+ "check": "preset",
+ "checked": false,
+ "seconds": null,
+ "jobs": [
+  {
+   "id": "job-1",
+   "label": "The Regular · Delivery 1080p24 H.264",
+   "state": "done",
+   "error": null,
+   "result": {
+    "frames": 1457,
+    "seconds": 60.708333333333336,
+    "name": "the-regular-h264-1080p24-webgl-run1.mp4",
+    "path": "~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/delivery-project/deliveries/the-regular-h264-1080p24-webgl-run1/the-regular-h264-1080p24-webgl-run1.mp4",
+    "hashesDigest": "97fbec1bd9a0af5f",
+    "hashOnly": false,
+    "ms": 10591.04,
+    "backend": "webgl",
+    "audioHash": "3293d5c7",
+    "check": null,
+    "subtitles": {
+     "lines": 13,
+     "path": "~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/delivery-project/deliveries/the-regular-h264-1080p24-webgl-run1/the-regular-h264-1080p24-webgl-run1.srt",
+     "error": null
+    },
+    "delivery": {
+     "dir": "deliveries/the-regular-h264-1080p24-webgl-run1",
+     "manifest": "deliveries/the-regular-h264-1080p24-webgl-run1/delivery.json",
+     "stills": 18,
+     "thumbnails": 18,
+     "turntables": 2,
+     "files": 41,
+     "missing": [],
+     "ms": {
+      "film": 14284,
+      "stills": 41,
+      "turntables": 3199,
+      "total": 17524
+     }
+    }
+   }
+  },
+  {
+   "id": "job-2",
+   "label": "The Regular · Delivery 1080p24 H.264",
+   "state": "done",
+   "error": null,
+   "result": {
+    "frames": 1457,
+    "seconds": 60.708333333333336,
+    "name": "the-regular-h264-1080p24-webgl-run2.mp4",
+    "path": "~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/delivery-project/deliveries/the-regular-h264-1080p24-webgl-run2/the-regular-h264-1080p24-webgl-run2.mp4",
+    "hashesDigest": "97fbec1bd9a0af5f",
+    "hashOnly": false,
+    "ms": 10701.3,
+    "backend": "webgl",
+    "audioHash": "3293d5c7",
+    "check": null,
+    "subtitles": {
+     "lines": 13,
+     "path": "~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/delivery-project/deliveries/the-regular-h264-1080p24-webgl-run2/the-regular-h264-1080p24-webgl-run2.srt",
+     "error": null
+    },
+    "delivery": {
+     "dir": "deliveries/the-regular-h264-1080p24-webgl-run2",
+     "manifest": "deliveries/the-regular-h264-1080p24-webgl-run2/delivery.json",
+     "stills": 18,
+     "thumbnails": 18,
+     "turntables": 2,
+     "files": 41,
+     "missing": [],
+     "ms": {
+      "film": 11662,
+      "stills": 48,
+      "turntables": 3364,
+      "total": 15075
+     }
+    }
+   }
+  }
+ ],
+ "manifests": [
+  {
+   "format": "vrmxg-delivery",
+   "version": 1,
+   "short": "the-regular",
+   "title": "The Regular",
+   "preset": "h264-1080p24",
+   "size": [
+    1920,
+    1080
+   ],
+   "fps": [
+    24,
+    1
+   ],
+   "codec": "h264",
+   "backend": "webgl",
+   "check": null,
+   "film": {
+    "path": "deliveries/the-regular-h264-1080p24-webgl-run1/the-regular-h264-1080p24-webgl-run1.mp4",
+    "frames": 1457,
+    "frameDigest": "97fbec1bd9a0af5f",
+    "audioHash": "3293d5c7",
+    "ms": {
+     "total": 10591.04,
+     "begin": 64.48,
+     "render": 2246.22,
+     "readback": 2813.96,
+     "wait": 848.14,
+     "audio": 2396.52,
+     "end": 214.6
+    },
+    "perFrameMs": {
+     "render": 1.54,
+     "readback": 1.93,
+     "wait": 0.58,
+     "total": 7.27
+    },
+    "check": null,
+    "written": true
+   },
+   "subtitles": {
+    "path": "deliveries/the-regular-h264-1080p24-webgl-run1/the-regular-h264-1080p24-webgl-run1.srt",
+    "lines": 13,
+    "hash": null
+   },
+   "turntables": [
+    {
+     "character": "mira",
+     "path": "deliveries/the-regular-h264-1080p24-webgl-run1/turntables/the-regular-h264-1080p24-webgl-run1-mira.mp4",
+     "frames": 120,
+     "seconds": 5,
+     "frameDigest": "3f8d4d0602a75a07",
+     "framing": {
+      "center": [
+       0.6,
+       0.8168,
+       -3.3504
+      ],
+      "radius": 3.7731,
+      "start": 3.1416
+     },
+     "ms": {
+      "total": 641.3,
+      "render": 50.44,
+      "readback": 233.08,
+      "wait": 62.34
+     },
+     "check": null,
+     "written": true
+    },
+    {
+     "character": "hana-1",
+     "path": "deliveries/the-regular-h264-1080p24-webgl-run1/turntables/the-regular-h264-1080p24-webgl-run1-hana-1.mp4",
+     "frames": 120,
+     "seconds": 5,
+     "frameDigest": "e0aa9841d4db5783",
+     "framing": {
+      "center": [
+       0.6,
+       0.814,
+       -4.6124
+      ],
+      "radius": 3.7198,
+      "start": 0
+     },
+     "ms": {
+      "total": 624.94,
+      "render": 40.06,
+      "readback": 232,
+      "wait": 56.7
+     },
+     "check": null,
+     "written": true
+    }
+   ],
+   "ms": {
+    "film": 14284,
+    "stills": 41,
+    "turntables": 3199,
+    "total": 17524
+   },
+   "stills": [
+    {
+     "shot": "shot-sc-8296a3d8",
+     "frame": 23,
+     "hash": "f5a4ec9b",
+     "bytes": 297982
+    },
+    {
+     "shot": "shot-ac-5d6c4e68",
+     "frame": 130,
+     "hash": "4f6693ee",
+     "bytes": 296117
+    },
+    {
+     "shot": "shot-ln-26f4764a",
+     "frame": 242,
+     "hash": "b1df0170",
+     "bytes": 521350
+    },
+    {
+     "shot": "shot-ln-c8c8a7ba",
+     "frame": 302,
+     "hash": "f9763271",
+     "bytes": 310536
+    },
+    {
+     "shot": "shot-ln-e39bddfa",
+     "frame": 396,
+     "hash": "7fdc0b56",
+     "bytes": 470108
+    },
+    {
+     "shot": "shot-ln-1c6a8fb9",
+     "frame": 489,
+     "hash": "e4e7268a",
+     "bytes": 345481
+    },
+    {
+     "shot": "shot-ln-200552e8",
+     "frame": 557,
+     "hash": "3455bbe0",
+     "bytes": 496782
+    },
+    {
+     "shot": "shot-ac-80efdce3",
+     "frame": 623,
+     "hash": "39ef02e6",
+     "bytes": 303766
+    },
+    {
+     "shot": "shot-ln-81751cb9",
+     "frame": 691,
+     "hash": "2f8c461b",
+     "bytes": 334065
+    },
+    {
+     "shot": "shot-ln-578cd8f9",
+     "frame": 768,
+     "hash": "51c74c21",
+     "bytes": 480011
+    },
+    {
+     "shot": "shot-ln-f3e65b0a",
+     "frame": 845,
+     "hash": "87f8e4a4",
+     "bytes": 333560
+    },
+    {
+     "shot": "shot-ln-6ffe2598",
+     "frame": 926,
+     "hash": "3adcc044",
+     "bytes": 482359
+    },
+    {
+     "shot": "shot-ln-ddb612bd",
+     "frame": 1008,
+     "hash": "f3a31203",
+     "bytes": 296984
+    },
+    {
+     "shot": "shot-ln-9df8bd9a",
+     "frame": 1081,
+     "hash": "6915e51a",
+     "bytes": 453323
+    },
+    {
+     "shot": "shot-ac-d1e338e7",
+     "frame": 1155,
+     "hash": "8a4da9b8",
+     "bytes": 401963
+    },
+    {
+     "shot": "shot-ln-28cde183",
+     "frame": 1229,
+     "hash": "bec3c9b9",
+     "bytes": 325613
+    },
+    {
+     "shot": "shot-ln-2c040d8b",
+     "frame": 1290,
+     "hash": "578cbdd5",
+     "bytes": 362859
+    },
+    {
+     "shot": "shot-ac-4e1f97f8",
+     "frame": 1387,
+     "hash": "7238d556",
+     "bytes": 240889
+    }
+   ],
+   "thumbnails": [
+    {
+     "shot": "shot-sc-8296a3d8",
+     "hash": "998d310b"
+    },
+    {
+     "shot": "shot-ac-5d6c4e68",
+     "hash": "2bf42c67"
+    },
+    {
+     "shot": "shot-ln-26f4764a",
+     "hash": "6f8895df"
+    },
+    {
+     "shot": "shot-ln-c8c8a7ba",
+     "hash": "4a5b4dca"
+    },
+    {
+     "shot": "shot-ln-e39bddfa",
+     "hash": "75370828"
+    },
+    {
+     "shot": "shot-ln-1c6a8fb9",
+     "hash": "31ac930c"
+    },
+    {
+     "shot": "shot-ln-200552e8",
+     "hash": "f367a7f9"
+    },
+    {
+     "shot": "shot-ac-80efdce3",
+     "hash": "f21cabaa"
+    },
+    {
+     "shot": "shot-ln-81751cb9",
+     "hash": "ffbbf76f"
+    },
+    {
+     "shot": "shot-ln-578cd8f9",
+     "hash": "a1ceead3"
+    },
+    {
+     "shot": "shot-ln-f3e65b0a",
+     "hash": "40e26139"
+    },
+    {
+     "shot": "shot-ln-6ffe2598",
+     "hash": "0f9f81c1"
+    },
+    {
+     "shot": "shot-ln-ddb612bd",
+     "hash": "0fc6e864"
+    },
+    {
+     "shot": "shot-ln-9df8bd9a",
+     "hash": "697ab9ab"
+    },
+    {
+     "shot": "shot-ac-d1e338e7",
+     "hash": "1fee0598"
+    },
+    {
+     "shot": "shot-ln-28cde183",
+     "hash": "54788418"
+    },
+    {
+     "shot": "shot-ln-2c040d8b",
+     "hash": "38d68043"
+    },
+    {
+     "shot": "shot-ac-4e1f97f8",
+     "hash": "eb54b33a"
+    }
+   ]
+  },
+  {
+   "format": "vrmxg-delivery",
+   "version": 1,
+   "short": "the-regular",
+   "title": "The Regular",
+   "preset": "h264-1080p24",
+   "size": [
+    1920,
+    1080
+   ],
+   "fps": [
+    24,
+    1
+   ],
+   "codec": "h264",
+   "backend": "webgl",
+   "check": null,
+   "film": {
+    "path": "deliveries/the-regular-h264-1080p24-webgl-run2/the-regular-h264-1080p24-webgl-run2.mp4",
+    "frames": 1457,
+    "frameDigest": "97fbec1bd9a0af5f",
+    "audioHash": "3293d5c7",
+    "ms": {
+     "total": 10701.3,
+     "begin": 13.44,
+     "render": 2296.12,
+     "readback": 2900.04,
+     "wait": 885.48,
+     "audio": 2376.76,
+     "end": 207.1
+    },
+    "perFrameMs": {
+     "render": 1.58,
+     "readback": 1.99,
+     "wait": 0.61,
+     "total": 7.34
+    },
+    "check": null,
+    "written": true
+   },
+   "subtitles": {
+    "path": "deliveries/the-regular-h264-1080p24-webgl-run2/the-regular-h264-1080p24-webgl-run2.srt",
+    "lines": 13,
+    "hash": null
+   },
+   "turntables": [
+    {
+     "character": "mira",
+     "path": "deliveries/the-regular-h264-1080p24-webgl-run2/turntables/the-regular-h264-1080p24-webgl-run2-mira.mp4",
+     "frames": 120,
+     "seconds": 5,
+     "frameDigest": "3f8d4d0602a75a07",
+     "framing": {
+      "center": [
+       0.6,
+       0.8168,
+       -3.3504
+      ],
+      "radius": 3.7731,
+      "start": 3.1416
+     },
+     "ms": {
+      "total": 687.68,
+      "render": 71.5,
+      "readback": 229.8,
+      "wait": 73.58
+     },
+     "check": null,
+     "written": true
+    },
+    {
+     "character": "hana-1",
+     "path": "deliveries/the-regular-h264-1080p24-webgl-run2/turntables/the-regular-h264-1080p24-webgl-run2-hana-1.mp4",
+     "frames": 120,
+     "seconds": 5,
+     "frameDigest": "e0aa9841d4db5783",
+     "framing": {
+      "center": [
+       0.6,
+       0.814,
+       -4.6124
+      ],
+      "radius": 3.7198,
+      "start": 0
+     },
+     "ms": {
+      "total": 678.6,
+      "render": 58.68,
+      "readback": 231.72,
+      "wait": 69.06
+     },
+     "check": null,
+     "written": true
+    }
+   ],
+   "ms": {
+    "film": 11662,
+    "stills": 48,
+    "turntables": 3364,
+    "total": 15075
+   },
+   "stills": [
+    {
+     "shot": "shot-sc-8296a3d8",
+     "frame": 23,
+     "hash": "f5a4ec9b",
+     "bytes": 297982
+    },
+    {
+     "shot": "shot-ac-5d6c4e68",
+     "frame": 130,
+     "hash": "4f6693ee",
+     "bytes": 296117
+    },
+    {
+     "shot": "shot-ln-26f4764a",
+     "frame": 242,
+     "hash": "b1df0170",
+     "bytes": 521350
+    },
+    {
+     "shot": "shot-ln-c8c8a7ba",
+     "frame": 302,
+     "hash": "f9763271",
+     "bytes": 310536
+    },
+    {
+     "shot": "shot-ln-e39bddfa",
+     "frame": 396,
+     "hash": "7fdc0b56",
+     "bytes": 470108
+    },
+    {
+     "shot": "shot-ln-1c6a8fb9",
+     "frame": 489,
+     "hash": "e4e7268a",
+     "bytes": 345481
+    },
+    {
+     "shot": "shot-ln-200552e8",
+     "frame": 557,
+     "hash": "3455bbe0",
+     "bytes": 496782
+    },
+    {
+     "shot": "shot-ac-80efdce3",
+     "frame": 623,
+     "hash": "39ef02e6",
+     "bytes": 303766
+    },
+    {
+     "shot": "shot-ln-81751cb9",
+     "frame": 691,
+     "hash": "2f8c461b",
+     "bytes": 334065
+    },
+    {
+     "shot": "shot-ln-578cd8f9",
+     "frame": 768,
+     "hash": "51c74c21",
+     "bytes": 480011
+    },
+    {
+     "shot": "shot-ln-f3e65b0a",
+     "frame": 845,
+     "hash": "87f8e4a4",
+     "bytes": 333560
+    },
+    {
+     "shot": "shot-ln-6ffe2598",
+     "frame": 926,
+     "hash": "3adcc044",
+     "bytes": 482359
+    },
+    {
+     "shot": "shot-ln-ddb612bd",
+     "frame": 1008,
+     "hash": "f3a31203",
+     "bytes": 296984
+    },
+    {
+     "shot": "shot-ln-9df8bd9a",
+     "frame": 1081,
+     "hash": "6915e51a",
+     "bytes": 453323
+    },
+    {
+     "shot": "shot-ac-d1e338e7",
+     "frame": 1155,
+     "hash": "8a4da9b8",
+     "bytes": 401963
+    },
+    {
+     "shot": "shot-ln-28cde183",
+     "frame": 1229,
+     "hash": "bec3c9b9",
+     "bytes": 325613
+    },
+    {
+     "shot": "shot-ln-2c040d8b",
+     "frame": 1290,
+     "hash": "578cbdd5",
+     "bytes": 362859
+    },
+    {
+     "shot": "shot-ac-4e1f97f8",
+     "frame": 1387,
+     "hash": "7238d556",
+     "bytes": 240889
+    }
+   ],
+   "thumbnails": [
+    {
+     "shot": "shot-sc-8296a3d8",
+     "hash": "998d310b"
+    },
+    {
+     "shot": "shot-ac-5d6c4e68",
+     "hash": "2bf42c67"
+    },
+    {
+     "shot": "shot-ln-26f4764a",
+     "hash": "6f8895df"
+    },
+    {
+     "shot": "shot-ln-c8c8a7ba",
+     "hash": "4a5b4dca"
+    },
+    {
+     "shot": "shot-ln-e39bddfa",
+     "hash": "75370828"
+    },
+    {
+     "shot": "shot-ln-1c6a8fb9",
+     "hash": "31ac930c"
+    },
+    {
+     "shot": "shot-ln-200552e8",
+     "hash": "f367a7f9"
+    },
+    {
+     "shot": "shot-ac-80efdce3",
+     "hash": "f21cabaa"
+    },
+    {
+     "shot": "shot-ln-81751cb9",
+     "hash": "ffbbf76f"
+    },
+    {
+     "shot": "shot-ln-578cd8f9",
+     "hash": "a1ceead3"
+    },
+    {
+     "shot": "shot-ln-f3e65b0a",
+     "hash": "40e26139"
+    },
+    {
+     "shot": "shot-ln-6ffe2598",
+     "hash": "0f9f81c1"
+    },
+    {
+     "shot": "shot-ln-ddb612bd",
+     "hash": "0fc6e864"
+    },
+    {
+     "shot": "shot-ln-9df8bd9a",
+     "hash": "697ab9ab"
+    },
+    {
+     "shot": "shot-ac-d1e338e7",
+     "hash": "1fee0598"
+    },
+    {
+     "shot": "shot-ln-28cde183",
+     "hash": "54788418"
+    },
+    {
+     "shot": "shot-ln-2c040d8b",
+     "hash": "38d68043"
+    },
+    {
+     "shot": "shot-ac-4e1f97f8",
+     "hash": "eb54b33a"
+    }
+   ]
+  }
+ ],
+ "same": {
+  "runs": 2,
+  "frames": true,
+  "audio": true,
+  "stills": true,
+  "thumbnails": true,
+  "turntables": true,
+  "frameDiffs": [
+   []
+  ]
+ },
+ "ms": 36167
+}

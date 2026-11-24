@@ -1,0 +1,236 @@
+{
+ "format": "vrmxg-short-look",
+ "version": 1,
+ "ok": true,
+ "tolerance": 0.98,
+ "shots": 18,
+ "masked": false,
+ "ssim": {
+  "min": 0.9929,
+  "mean": 0.995
+ },
+ "ssimQuarter": {
+  "min": 0.9942,
+  "mean": 0.9974
+ },
+ "underAtFullSize": [],
+ "under": [],
+ "rows": [
+  {
+   "shot": "shot-ac-4e1f97f8",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9965,
+   "ssimQuarter": 0.9979,
+   "meanMaxChannel": 2.038,
+   "over8": 0.0048,
+   "max": 196
+  },
+  {
+   "shot": "shot-ac-5d6c4e68",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9929,
+   "ssimQuarter": 0.9965,
+   "meanMaxChannel": 1.571,
+   "over8": 0.00563,
+   "max": 184
+  },
+  {
+   "shot": "shot-ac-80efdce3",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9931,
+   "ssimQuarter": 0.9969,
+   "meanMaxChannel": 1.567,
+   "over8": 0.00588,
+   "max": 183
+  },
+  {
+   "shot": "shot-ac-d1e338e7",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9947,
+   "ssimQuarter": 0.9985,
+   "meanMaxChannel": 0.377,
+   "over8": 0.00457,
+   "max": 150
+  },
+  {
+   "shot": "shot-ln-1c6a8fb9",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9929,
+   "ssimQuarter": 0.9942,
+   "meanMaxChannel": 0.546,
+   "over8": 0.00821,
+   "max": 204
+  },
+  {
+   "shot": "shot-ln-200552e8",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9955,
+   "ssimQuarter": 0.9989,
+   "meanMaxChannel": 0.326,
+   "over8": 0.00416,
+   "max": 130
+  },
+  {
+   "shot": "shot-ln-26f4764a",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9952,
+   "ssimQuarter": 0.999,
+   "meanMaxChannel": 0.338,
+   "over8": 0.00393,
+   "max": 160
+  },
+  {
+   "shot": "shot-ln-28cde183",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9952,
+   "ssimQuarter": 0.9968,
+   "meanMaxChannel": 0.396,
+   "over8": 0.00635,
+   "max": 139
+  },
+  {
+   "shot": "shot-ln-2c040d8b",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9962,
+   "ssimQuarter": 0.9988,
+   "meanMaxChannel": 0.282,
+   "over8": 0.00479,
+   "max": 152
+  },
+  {
+   "shot": "shot-ln-578cd8f9",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9955,
+   "ssimQuarter": 0.9988,
+   "meanMaxChannel": 0.322,
+   "over8": 0.00405,
+   "max": 130
+  },
+  {
+   "shot": "shot-ln-6ffe2598",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9956,
+   "ssimQuarter": 0.9989,
+   "meanMaxChannel": 0.319,
+   "over8": 0.00409,
+   "max": 130
+  },
+  {
+   "shot": "shot-ln-81751cb9",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9936,
+   "ssimQuarter": 0.9946,
+   "meanMaxChannel": 0.509,
+   "over8": 0.00777,
+   "max": 201
+  },
+  {
+   "shot": "shot-ln-9df8bd9a",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9947,
+   "ssimQuarter": 0.9964,
+   "meanMaxChannel": 0.433,
+   "over8": 0.00858,
+   "max": 215
+  },
+  {
+   "shot": "shot-ln-c8c8a7ba",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9966,
+   "ssimQuarter": 0.9981,
+   "meanMaxChannel": 0.308,
+   "over8": 0.00361,
+   "max": 212
+  },
+  {
+   "shot": "shot-ln-ddb612bd",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.997,
+   "ssimQuarter": 0.9988,
+   "meanMaxChannel": 0.28,
+   "over8": 0.00321,
+   "max": 194
+  },
+  {
+   "shot": "shot-ln-e39bddfa",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9935,
+   "ssimQuarter": 0.995,
+   "meanMaxChannel": 0.529,
+   "over8": 0.01046,
+   "max": 194
+  },
+  {
+   "shot": "shot-ln-f3e65b0a",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9942,
+   "ssimQuarter": 0.9967,
+   "meanMaxChannel": 0.476,
+   "over8": 0.00733,
+   "max": 194
+  },
+  {
+   "shot": "shot-sc-8296a3d8",
+   "size": [
+    1920,
+    1080
+   ],
+   "ssim": 0.9966,
+   "ssimQuarter": 0.999,
+   "meanMaxChannel": 1.391,
+   "over8": 0.00439,
+   "max": 213
+  }
+ ]
+}

@@ -17,7 +17,7 @@ fresh: false
 - [ ] Check 1: "Morning at the cafe" opens in the timeline with five shots on a 24 fps ruler and a track of every kind: camera cuts and blends, Hana's animation (held on twos), an expression, look-at, dialogue for both, event keys (steam, the music cue), property keys (the counter light, the music's fade, the look) and a post track.
   ```steps
   wait id=open-project enabled=true timeout_ms=40000
-  until find("id=doc-state").0.name matches "^Scene cafe.vrmxs"
+  until find("id=doc-state").0.name matches "^Scene cafe"   # the bundled sample's first scene (cafe-cart.vrmxs since M3 W12)
   act id=open-project action=press
   until find("id=project-name").0.name == "Project project"
   act id=file-name action=set_value value=sequences/cafe-morning.vrmxs

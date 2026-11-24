@@ -1,0 +1,539 @@
+{
+ "format": "vrmxg-delivery-run",
+ "version": 1,
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+ "origin": "loopback",
+ "shell": {
+  "scheme": "vrmxg-creator://app/"
+ },
+ "preset": "hevc-4k24",
+ "short": "cafe-order",
+ "backend": "webgl",
+ "check": "preset",
+ "checked": false,
+ "seconds": null,
+ "jobs": [
+  {
+   "id": "job-1",
+   "label": "The Order · Delivery 4K24 HEVC",
+   "state": "done",
+   "error": null,
+   "result": {
+    "frames": 780,
+    "seconds": 32.5,
+    "name": "cafe-order-hevc-4k24-webgl-run1.mp4",
+    "path": "~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/delivery-project/deliveries/cafe-order-hevc-4k24-webgl-run1/cafe-order-hevc-4k24-webgl-run1.mp4",
+    "hashesDigest": "31518a0d9603829f",
+    "hashOnly": false,
+    "ms": 12019.1,
+    "backend": "webgl",
+    "audioHash": "74f98d6e",
+    "check": null,
+    "subtitles": {
+     "lines": 7,
+     "path": "~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/delivery-project/deliveries/cafe-order-hevc-4k24-webgl-run1/cafe-order-hevc-4k24-webgl-run1.srt",
+     "error": null
+    },
+    "delivery": {
+     "dir": "deliveries/cafe-order-hevc-4k24-webgl-run1",
+     "manifest": "deliveries/cafe-order-hevc-4k24-webgl-run1/delivery.json",
+     "stills": 11,
+     "thumbnails": 11,
+     "turntables": 2,
+     "files": 27,
+     "missing": [],
+     "ms": {
+      "film": 14256,
+      "stills": 59,
+      "turntables": 4774,
+      "total": 19089
+     }
+    }
+   }
+  },
+  {
+   "id": "job-2",
+   "label": "The Order · Delivery 4K24 HEVC",
+   "state": "done",
+   "error": null,
+   "result": {
+    "frames": 780,
+    "seconds": 32.5,
+    "name": "cafe-order-hevc-4k24-webgl-run2.mp4",
+    "path": "~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/delivery-project/deliveries/cafe-order-hevc-4k24-webgl-run2/cafe-order-hevc-4k24-webgl-run2.mp4",
+    "hashesDigest": "31518a0d9603829f",
+    "hashOnly": false,
+    "ms": 12141.8,
+    "backend": "webgl",
+    "audioHash": "74f98d6e",
+    "check": null,
+    "subtitles": {
+     "lines": 7,
+     "path": "~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/delivery-project/deliveries/cafe-order-hevc-4k24-webgl-run2/cafe-order-hevc-4k24-webgl-run2.srt",
+     "error": null
+    },
+    "delivery": {
+     "dir": "deliveries/cafe-order-hevc-4k24-webgl-run2",
+     "manifest": "deliveries/cafe-order-hevc-4k24-webgl-run2/delivery.json",
+     "stills": 11,
+     "thumbnails": 11,
+     "turntables": 2,
+     "files": 27,
+     "missing": [],
+     "ms": {
+      "film": 13089,
+      "stills": 62,
+      "turntables": 5021,
+      "total": 18172
+     }
+    }
+   }
+  }
+ ],
+ "manifests": [
+  {
+   "format": "vrmxg-delivery",
+   "version": 1,
+   "short": "cafe-order",
+   "title": "The Order",
+   "preset": "hevc-4k24",
+   "size": [
+    3840,
+    2160
+   ],
+   "fps": [
+    24,
+    1
+   ],
+   "codec": "hevc",
+   "backend": "webgl",
+   "check": null,
+   "film": {
+    "path": "deliveries/cafe-order-hevc-4k24-webgl-run1/cafe-order-hevc-4k24-webgl-run1.mp4",
+    "frames": 780,
+    "frameDigest": "31518a0d9603829f",
+    "audioHash": "74f98d6e",
+    "ms": {
+     "total": 12019.1,
+     "begin": 73.52,
+     "render": 1406.38,
+     "readback": 5785.72,
+     "wait": 503.36,
+     "audio": 525.02,
+     "end": 148.88
+    },
+    "perFrameMs": {
+     "render": 1.8,
+     "readback": 7.42,
+     "wait": 0.65,
+     "total": 15.41
+    },
+    "check": null,
+    "written": true
+   },
+   "subtitles": {
+    "path": "deliveries/cafe-order-hevc-4k24-webgl-run1/cafe-order-hevc-4k24-webgl-run1.srt",
+    "lines": 7,
+    "hash": null
+   },
+   "turntables": [
+    {
+     "character": "mira",
+     "path": "deliveries/cafe-order-hevc-4k24-webgl-run1/turntables/cafe-order-hevc-4k24-webgl-run1-mira.mp4",
+     "frames": 120,
+     "seconds": 5,
+     "frameDigest": "291e80758ab9cb80",
+     "framing": {
+      "center": [
+       0.6,
+       0.814,
+       -3.3504
+      ],
+      "radius": 3.7731,
+      "start": 3.1416
+     },
+     "ms": {
+      "total": 1429.28,
+      "render": 51.38,
+      "readback": 670.88,
+      "wait": 107.04
+     },
+     "check": null,
+     "written": true
+    },
+    {
+     "character": "hana-1",
+     "path": "deliveries/cafe-order-hevc-4k24-webgl-run1/turntables/cafe-order-hevc-4k24-webgl-run1-hana-1.mp4",
+     "frames": 120,
+     "seconds": 5,
+     "frameDigest": "bacd3c1992e5dcda",
+     "framing": {
+      "center": [
+       0.6,
+       0.814,
+       -4.6124
+      ],
+      "radius": 3.7198,
+      "start": 0
+     },
+     "ms": {
+      "total": 1430.22,
+      "render": 45.4,
+      "readback": 676.06,
+      "wait": 108.36
+     },
+     "check": null,
+     "written": true
+    }
+   ],
+   "ms": {
+    "film": 14256,
+    "stills": 59,
+    "turntables": 4774,
+    "total": 19089
+   },
+   "stills": [
+    {
+     "shot": "shot-sc-8296a3d8",
+     "frame": 23,
+     "hash": "bb7b9ed8",
+     "bytes": 1089858
+    },
+    {
+     "shot": "shot-ac-f49f9062",
+     "frame": 101,
+     "hash": "aee81bdf",
+     "bytes": 1088364
+    },
+    {
+     "shot": "shot-ln-cd2c6011",
+     "frame": 190,
+     "hash": "d564ab28",
+     "bytes": 2113879
+    },
+    {
+     "shot": "shot-ln-f31ec2ee",
+     "frame": 272,
+     "hash": "7f44948a",
+     "bytes": 1591861
+    },
+    {
+     "shot": "shot-ln-b97ebbcd",
+     "frame": 339,
+     "hash": "4d65c1b9",
+     "bytes": 2379545
+    },
+    {
+     "shot": "shot-ac-80efdce3",
+     "frame": 387,
+     "hash": "b8085da3",
+     "bytes": 1096917
+    },
+    {
+     "shot": "shot-ln-740531c6",
+     "frame": 455,
+     "hash": "98427fa1",
+     "bytes": 1589374
+    },
+    {
+     "shot": "shot-ln-177853ab",
+     "frame": 530,
+     "hash": "73d4c5e9",
+     "bytes": 2472229
+    },
+    {
+     "shot": "shot-ac-f532a6d5",
+     "frame": 603,
+     "hash": "b52a39e3",
+     "bytes": 1099746
+    },
+    {
+     "shot": "shot-ln-72861ffa",
+     "frame": 665,
+     "hash": "22604d49",
+     "bytes": 2395905
+    },
+    {
+     "shot": "shot-ln-44615778",
+     "frame": 735,
+     "hash": "bfb6b2f2",
+     "bytes": 1579208
+    }
+   ],
+   "thumbnails": [
+    {
+     "shot": "shot-sc-8296a3d8",
+     "hash": "eb51de31"
+    },
+    {
+     "shot": "shot-ac-f49f9062",
+     "hash": "097b3cb2"
+    },
+    {
+     "shot": "shot-ln-cd2c6011",
+     "hash": "2f4c1ddc"
+    },
+    {
+     "shot": "shot-ln-f31ec2ee",
+     "hash": "f9c49942"
+    },
+    {
+     "shot": "shot-ln-b97ebbcd",
+     "hash": "0662aaaa"
+    },
+    {
+     "shot": "shot-ac-80efdce3",
+     "hash": "ccfee4fb"
+    },
+    {
+     "shot": "shot-ln-740531c6",
+     "hash": "215380d8"
+    },
+    {
+     "shot": "shot-ln-177853ab",
+     "hash": "a550d34d"
+    },
+    {
+     "shot": "shot-ac-f532a6d5",
+     "hash": "e825bdff"
+    },
+    {
+     "shot": "shot-ln-72861ffa",
+     "hash": "55a2fb3f"
+    },
+    {
+     "shot": "shot-ln-44615778",
+     "hash": "ac26ec31"
+    }
+   ]
+  },
+  {
+   "format": "vrmxg-delivery",
+   "version": 1,
+   "short": "cafe-order",
+   "title": "The Order",
+   "preset": "hevc-4k24",
+   "size": [
+    3840,
+    2160
+   ],
+   "fps": [
+    24,
+    1
+   ],
+   "codec": "hevc",
+   "backend": "webgl",
+   "check": null,
+   "film": {
+    "path": "deliveries/cafe-order-hevc-4k24-webgl-run2/cafe-order-hevc-4k24-webgl-run2.mp4",
+    "frames": 780,
+    "frameDigest": "31518a0d9603829f",
+    "audioHash": "74f98d6e",
+    "ms": {
+     "total": 12141.8,
+     "begin": 19.58,
+     "render": 1485.36,
+     "readback": 5811.36,
+     "wait": 560.3,
+     "audio": 540.58,
+     "end": 139.64
+    },
+    "perFrameMs": {
+     "render": 1.9,
+     "readback": 7.45,
+     "wait": 0.72,
+     "total": 15.57
+    },
+    "check": null,
+    "written": true
+   },
+   "subtitles": {
+    "path": "deliveries/cafe-order-hevc-4k24-webgl-run2/cafe-order-hevc-4k24-webgl-run2.srt",
+    "lines": 7,
+    "hash": null
+   },
+   "turntables": [
+    {
+     "character": "mira",
+     "path": "deliveries/cafe-order-hevc-4k24-webgl-run2/turntables/cafe-order-hevc-4k24-webgl-run2-mira.mp4",
+     "frames": 120,
+     "seconds": 5,
+     "frameDigest": "291e80758ab9cb80",
+     "framing": {
+      "center": [
+       0.6,
+       0.814,
+       -3.3504
+      ],
+      "radius": 3.7731,
+      "start": 3.1416
+     },
+     "ms": {
+      "total": 1516.34,
+      "render": 79.86,
+      "readback": 693.74,
+      "wait": 112.28
+     },
+     "check": null,
+     "written": true
+    },
+    {
+     "character": "hana-1",
+     "path": "deliveries/cafe-order-hevc-4k24-webgl-run2/turntables/cafe-order-hevc-4k24-webgl-run2-hana-1.mp4",
+     "frames": 120,
+     "seconds": 5,
+     "frameDigest": "bacd3c1992e5dcda",
+     "framing": {
+      "center": [
+       0.6,
+       0.814,
+       -4.6124
+      ],
+      "radius": 3.7198,
+      "start": 0
+     },
+     "ms": {
+      "total": 1502.22,
+      "render": 69.08,
+      "readback": 695.2,
+      "wait": 116.52
+     },
+     "check": null,
+     "written": true
+    }
+   ],
+   "ms": {
+    "film": 13089,
+    "stills": 62,
+    "turntables": 5021,
+    "total": 18172
+   },
+   "stills": [
+    {
+     "shot": "shot-sc-8296a3d8",
+     "frame": 23,
+     "hash": "bb7b9ed8",
+     "bytes": 1089858
+    },
+    {
+     "shot": "shot-ac-f49f9062",
+     "frame": 101,
+     "hash": "aee81bdf",
+     "bytes": 1088364
+    },
+    {
+     "shot": "shot-ln-cd2c6011",
+     "frame": 190,
+     "hash": "d564ab28",
+     "bytes": 2113879
+    },
+    {
+     "shot": "shot-ln-f31ec2ee",
+     "frame": 272,
+     "hash": "7f44948a",
+     "bytes": 1591861
+    },
+    {
+     "shot": "shot-ln-b97ebbcd",
+     "frame": 339,
+     "hash": "4d65c1b9",
+     "bytes": 2379545
+    },
+    {
+     "shot": "shot-ac-80efdce3",
+     "frame": 387,
+     "hash": "b8085da3",
+     "bytes": 1096917
+    },
+    {
+     "shot": "shot-ln-740531c6",
+     "frame": 455,
+     "hash": "98427fa1",
+     "bytes": 1589374
+    },
+    {
+     "shot": "shot-ln-177853ab",
+     "frame": 530,
+     "hash": "73d4c5e9",
+     "bytes": 2472229
+    },
+    {
+     "shot": "shot-ac-f532a6d5",
+     "frame": 603,
+     "hash": "b52a39e3",
+     "bytes": 1099746
+    },
+    {
+     "shot": "shot-ln-72861ffa",
+     "frame": 665,
+     "hash": "22604d49",
+     "bytes": 2395905
+    },
+    {
+     "shot": "shot-ln-44615778",
+     "frame": 735,
+     "hash": "bfb6b2f2",
+     "bytes": 1579208
+    }
+   ],
+   "thumbnails": [
+    {
+     "shot": "shot-sc-8296a3d8",
+     "hash": "eb51de31"
+    },
+    {
+     "shot": "shot-ac-f49f9062",
+     "hash": "097b3cb2"
+    },
+    {
+     "shot": "shot-ln-cd2c6011",
+     "hash": "2f4c1ddc"
+    },
+    {
+     "shot": "shot-ln-f31ec2ee",
+     "hash": "f9c49942"
+    },
+    {
+     "shot": "shot-ln-b97ebbcd",
+     "hash": "0662aaaa"
+    },
+    {
+     "shot": "shot-ac-80efdce3",
+     "hash": "ccfee4fb"
+    },
+    {
+     "shot": "shot-ln-740531c6",
+     "hash": "215380d8"
+    },
+    {
+     "shot": "shot-ln-177853ab",
+     "hash": "a550d34d"
+    },
+    {
+     "shot": "shot-ac-f532a6d5",
+     "hash": "e825bdff"
+    },
+    {
+     "shot": "shot-ln-72861ffa",
+     "hash": "55a2fb3f"
+    },
+    {
+     "shot": "shot-ln-44615778",
+     "hash": "ac26ec31"
+    }
+   ]
+  }
+ ],
+ "same": {
+  "runs": 2,
+  "frames": true,
+  "audio": true,
+  "stills": true,
+  "thumbnails": true,
+  "turntables": true,
+  "frameDiffs": [
+   []
+  ]
+ },
+ "ms": 40773
+}

@@ -1,0 +1,642 @@
+{
+ "format": "vrmxg-short-scrub",
+ "version": 1,
+ "runtime": "chromium",
+ "renderer": "webgl",
+ "size": "1080p",
+ "ok": true,
+ "failure": null,
+ "short": "the-regular",
+ "sequence": "sequences/the-regular.vrmxs",
+ "backend": "webgl",
+ "isWebGPUBackend": false,
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "shots": 18,
+ "tracks": 10,
+ "frames": 1457,
+ "seconds": 60.708333333333336,
+ "steps": 3642,
+ "exports": [
+  {
+   "digest": "889284df8db5d1a5",
+   "audioHash": "4436ef6c",
+   "ms": 14109
+  },
+  {
+   "digest": "889284df8db5d1a5",
+   "audioHash": "4436ef6c",
+   "ms": 10378
+  }
+ ],
+ "sameFrames": true,
+ "framesThatDiffer": [],
+ "sameAudio": true,
+ "distinctFrames": 1455,
+ "subtitles": {
+  "lines": 13,
+  "bytes": 994
+ },
+ "scrub": {
+  "frames": 70,
+  "same": 70,
+  "ms": 4045,
+  "differ": [],
+  "rows": [
+   {
+    "frame": 0,
+    "step": 0,
+    "restored": 0,
+    "same": true,
+    "worldSame": true,
+    "hash": "eb8b71b8ede9e8a2"
+   },
+   {
+    "frame": 24,
+    "step": 60,
+    "restored": 0,
+    "same": true,
+    "worldSame": true,
+    "hash": "dce392590b7a14c9"
+   },
+   {
+    "frame": 47,
+    "step": 117,
+    "restored": 0,
+    "same": true,
+    "worldSame": true,
+    "hash": "863ad6823f774a89"
+   },
+   {
+    "frame": 48,
+    "step": 120,
+    "restored": 0,
+    "same": true,
+    "worldSame": true,
+    "hash": "5d8a557c433a9437"
+   },
+   {
+    "frame": 60,
+    "step": 150,
+    "restored": 120,
+    "same": true,
+    "worldSame": true,
+    "hash": "bb89ff52625b4cf0"
+   },
+   {
+    "frame": 131,
+    "step": 327,
+    "restored": 240,
+    "same": true,
+    "worldSame": true,
+    "hash": "d8bfab6ee6218461"
+   },
+   {
+    "frame": 213,
+    "step": 532,
+    "restored": 480,
+    "same": true,
+    "worldSame": true,
+    "hash": "c47503afee82cccb"
+   },
+   {
+    "frame": 214,
+    "step": 535,
+    "restored": 480,
+    "same": true,
+    "worldSame": true,
+    "hash": "f9402f3c778c3e5d"
+   },
+   {
+    "frame": 240,
+    "step": 600,
+    "restored": 480,
+    "same": true,
+    "worldSame": true,
+    "hash": "fa1c3aeb543e555d"
+   },
+   {
+    "frame": 243,
+    "step": 607,
+    "restored": 600,
+    "same": true,
+    "worldSame": true,
+    "hash": "ae0f72503a70521a"
+   },
+   {
+    "frame": 271,
+    "step": 677,
+    "restored": 600,
+    "same": true,
+    "worldSame": true,
+    "hash": "195900c48c9b42e9"
+   },
+   {
+    "frame": 272,
+    "step": 680,
+    "restored": 600,
+    "same": true,
+    "worldSame": true,
+    "hash": "8a612672cce56707"
+   },
+   {
+    "frame": 292,
+    "step": 730,
+    "restored": 720,
+    "same": true,
+    "worldSame": true,
+    "hash": "c8ee6547f7e08f9c"
+   },
+   {
+    "frame": 302,
+    "step": 755,
+    "restored": 720,
+    "same": true,
+    "worldSame": true,
+    "hash": "52809a33f5c3b4af"
+   },
+   {
+    "frame": 303,
+    "step": 757,
+    "restored": 720,
+    "same": true,
+    "worldSame": true,
+    "hash": "4de5e609403e8f03"
+   },
+   {
+    "frame": 333,
+    "step": 832,
+    "restored": 720,
+    "same": true,
+    "worldSame": true,
+    "hash": "3c92d70ff75f788d"
+   },
+   {
+    "frame": 334,
+    "step": 835,
+    "restored": 720,
+    "same": true,
+    "worldSame": true,
+    "hash": "7f45031d39168cec"
+   },
+   {
+    "frame": 396,
+    "step": 990,
+    "restored": 960,
+    "same": true,
+    "worldSame": true,
+    "hash": "b384dd3b6c9eb380"
+   },
+   {
+    "frame": 458,
+    "step": 1145,
+    "restored": 1080,
+    "same": true,
+    "worldSame": true,
+    "hash": "6438ae193a60794f"
+   },
+   {
+    "frame": 459,
+    "step": 1147,
+    "restored": 1080,
+    "same": true,
+    "worldSame": true,
+    "hash": "6ee1d14655f3f60e"
+   },
+   {
+    "frame": 489,
+    "step": 1222,
+    "restored": 1200,
+    "same": true,
+    "worldSame": true,
+    "hash": "509ce16acee2d750"
+   },
+   {
+    "frame": 490,
+    "step": 1225,
+    "restored": 1200,
+    "same": true,
+    "worldSame": true,
+    "hash": "cafef83dc8ff9521"
+   },
+   {
+    "frame": 520,
+    "step": 1300,
+    "restored": 1200,
+    "same": true,
+    "worldSame": true,
+    "hash": "d14970aac351bc9d"
+   },
+   {
+    "frame": 521,
+    "step": 1302,
+    "restored": 1200,
+    "same": true,
+    "worldSame": true,
+    "hash": "d721088ad2ec93c8"
+   },
+   {
+    "frame": 533,
+    "step": 1332,
+    "restored": 1320,
+    "same": true,
+    "worldSame": true,
+    "hash": "841c7319f273c842"
+   },
+   {
+    "frame": 558,
+    "step": 1395,
+    "restored": 1320,
+    "same": true,
+    "worldSame": true,
+    "hash": "838973fb762b5f2d"
+   },
+   {
+    "frame": 594,
+    "step": 1485,
+    "restored": 1440,
+    "same": true,
+    "worldSame": true,
+    "hash": "b81817e8ae4f243d"
+   },
+   {
+    "frame": 595,
+    "step": 1487,
+    "restored": 1440,
+    "same": true,
+    "worldSame": true,
+    "hash": "97eccc84150730f7"
+   },
+   {
+    "frame": 624,
+    "step": 1560,
+    "restored": 1440,
+    "same": true,
+    "worldSame": true,
+    "hash": "b011c35ca9d4209a"
+   },
+   {
+    "frame": 639,
+    "step": 1597,
+    "restored": 1560,
+    "same": true,
+    "worldSame": true,
+    "hash": "9494dda266c96eaf"
+   },
+   {
+    "frame": 652,
+    "step": 1630,
+    "restored": 1560,
+    "same": true,
+    "worldSame": true,
+    "hash": "0386d093fe544711"
+   },
+   {
+    "frame": 653,
+    "step": 1632,
+    "restored": 1560,
+    "same": true,
+    "worldSame": true,
+    "hash": "4f61cfc66edff01f"
+   },
+   {
+    "frame": 659,
+    "step": 1647,
+    "restored": 1560,
+    "same": true,
+    "worldSame": true,
+    "hash": "265b85b2c6a55a0e"
+   },
+   {
+    "frame": 691,
+    "step": 1727,
+    "restored": 1680,
+    "same": true,
+    "worldSame": true,
+    "hash": "5450286038ef005e"
+   },
+   {
+    "frame": 729,
+    "step": 1822,
+    "restored": 1800,
+    "same": true,
+    "worldSame": true,
+    "hash": "95457a77156eaca6"
+   },
+   {
+    "frame": 730,
+    "step": 1825,
+    "restored": 1800,
+    "same": true,
+    "worldSame": true,
+    "hash": "26ab12337eabf82f"
+   },
+   {
+    "frame": 769,
+    "step": 1922,
+    "restored": 1920,
+    "same": true,
+    "worldSame": true,
+    "hash": "d9c58e074ed7803d"
+   },
+   {
+    "frame": 807,
+    "step": 2017,
+    "restored": 1920,
+    "same": true,
+    "worldSame": true,
+    "hash": "01f899e98a0a3294"
+   },
+   {
+    "frame": 808,
+    "step": 2020,
+    "restored": 1920,
+    "same": true,
+    "worldSame": true,
+    "hash": "a49899d74cda7b77"
+   },
+   {
+    "frame": 838,
+    "step": 2095,
+    "restored": 2040,
+    "same": true,
+    "worldSame": true,
+    "hash": "b3750c3ecc77f371"
+   },
+   {
+    "frame": 846,
+    "step": 2115,
+    "restored": 2040,
+    "same": true,
+    "worldSame": true,
+    "hash": "f57d979d029cc3ff"
+   },
+   {
+    "frame": 883,
+    "step": 2207,
+    "restored": 2160,
+    "same": true,
+    "worldSame": true,
+    "hash": "4526bffbf16ba2bb"
+   },
+   {
+    "frame": 884,
+    "step": 2210,
+    "restored": 2160,
+    "same": true,
+    "worldSame": true,
+    "hash": "bbbf5d8c4f229c90"
+   },
+   {
+    "frame": 908,
+    "step": 2270,
+    "restored": 2160,
+    "same": true,
+    "worldSame": true,
+    "hash": "19aefac50fc1f5c4"
+   },
+   {
+    "frame": 927,
+    "step": 2317,
+    "restored": 2280,
+    "same": true,
+    "worldSame": true,
+    "hash": "a661dbb399a5faeb"
+   },
+   {
+    "frame": 969,
+    "step": 2422,
+    "restored": 2400,
+    "same": true,
+    "worldSame": true,
+    "hash": "daf86bd11bdbf8a5"
+   },
+   {
+    "frame": 970,
+    "step": 2425,
+    "restored": 2400,
+    "same": true,
+    "worldSame": true,
+    "hash": "490ca1e7d5d71eda"
+   },
+   {
+    "frame": 1008,
+    "step": 2520,
+    "restored": 2400,
+    "same": true,
+    "worldSame": true,
+    "hash": "eecdd332476f8d86"
+   },
+   {
+    "frame": 1041,
+    "step": 2602,
+    "restored": 2520,
+    "same": true,
+    "worldSame": true,
+    "hash": "15946e408cbbe1d5"
+   },
+   {
+    "frame": 1046,
+    "step": 2615,
+    "restored": 2520,
+    "same": true,
+    "worldSame": true,
+    "hash": "a2cc3ac49c3eea2b"
+   },
+   {
+    "frame": 1047,
+    "step": 2617,
+    "restored": 2520,
+    "same": true,
+    "worldSame": true,
+    "hash": "c1f00cc3a258513c"
+   },
+   {
+    "frame": 1081,
+    "step": 2702,
+    "restored": 2640,
+    "same": true,
+    "worldSame": true,
+    "hash": "cd7bdb37c465b00d"
+   },
+   {
+    "frame": 1110,
+    "step": 2775,
+    "restored": 2760,
+    "same": true,
+    "worldSame": true,
+    "hash": "323d592f28c7b574"
+   },
+   {
+    "frame": 1115,
+    "step": 2787,
+    "restored": 2760,
+    "same": true,
+    "worldSame": true,
+    "hash": "3355448997c1bbb7"
+   },
+   {
+    "frame": 1116,
+    "step": 2790,
+    "restored": 2760,
+    "same": true,
+    "worldSame": true,
+    "hash": "8f022912b1bd83e9"
+   },
+   {
+    "frame": 1120,
+    "step": 2800,
+    "restored": 2760,
+    "same": true,
+    "worldSame": true,
+    "hash": "1b38db887e52f8a2"
+   },
+   {
+    "frame": 1155,
+    "step": 2887,
+    "restored": 2880,
+    "same": true,
+    "worldSame": true,
+    "hash": "355f4b00de25d46d"
+   },
+   {
+    "frame": 1194,
+    "step": 2985,
+    "restored": 2880,
+    "same": true,
+    "worldSame": true,
+    "hash": "517192eb354e90d2"
+   },
+   {
+    "frame": 1195,
+    "step": 2987,
+    "restored": 2880,
+    "same": true,
+    "worldSame": true,
+    "hash": "0eba4572882f1798"
+   },
+   {
+    "frame": 1229,
+    "step": 3072,
+    "restored": 3000,
+    "same": true,
+    "worldSame": true,
+    "hash": "56936ff07a185fca"
+   },
+   {
+    "frame": 1258,
+    "step": 3145,
+    "restored": 3120,
+    "same": true,
+    "worldSame": true,
+    "hash": "6702f62012a5cc7f"
+   },
+   {
+    "frame": 1263,
+    "step": 3157,
+    "restored": 3120,
+    "same": true,
+    "worldSame": true,
+    "hash": "3edbdfb63186318f"
+   },
+   {
+    "frame": 1264,
+    "step": 3160,
+    "restored": 3120,
+    "same": true,
+    "worldSame": true,
+    "hash": "a65ae94c2980fbeb"
+   },
+   {
+    "frame": 1291,
+    "step": 3227,
+    "restored": 3120,
+    "same": true,
+    "worldSame": true,
+    "hash": "20eb225baa2e9814"
+   },
+   {
+    "frame": 1312,
+    "step": 3280,
+    "restored": 3240,
+    "same": true,
+    "worldSame": true,
+    "hash": "cd8bf8af79d60adc"
+   },
+   {
+    "frame": 1317,
+    "step": 3292,
+    "restored": 3240,
+    "same": true,
+    "worldSame": true,
+    "hash": "7e3ce8b2be632070"
+   },
+   {
+    "frame": 1318,
+    "step": 3295,
+    "restored": 3240,
+    "same": true,
+    "worldSame": true,
+    "hash": "cc4a4efb6fd7b412"
+   },
+   {
+    "frame": 1348,
+    "step": 3370,
+    "restored": 3360,
+    "same": true,
+    "worldSame": true,
+    "hash": "c1117ce0314a4c34"
+   },
+   {
+    "frame": 1387,
+    "step": 3467,
+    "restored": 3360,
+    "same": true,
+    "worldSame": true,
+    "hash": "ef33140352b5255a"
+   },
+   {
+    "frame": 1456,
+    "step": 3640,
+    "restored": 3600,
+    "same": true,
+    "worldSame": true,
+    "hash": "00abe93a6a4c1a5e"
+   }
+  ]
+ },
+ "errors": [],
+ "creatorError": "",
+ "console": [],
+ "gpuLoad": {
+  "samples": 12,
+  "gpuUtil": {
+   "min": 0,
+   "median": 31,
+   "max": 37
+  },
+  "seen": {
+   "node:node": 32.9,
+   "chromium:Google Chrome for Testing": 2.4,
+   "chromium:chrome_crashpad_handler": 0,
+   "chromium:Google Chrome for Testing Helper (GPU)": 14.8,
+   "chromium:Google Chrome for Testing Helper": 1.5,
+   "chromium:Google Chrome for Testing Helper (Renderer)": 154.3
+  },
+  "first": {
+   "at": 1795505462372,
+   "gpuUtil": 0,
+   "processes": [
+    "node:node 32.9%"
+   ],
+   "otherGpuHelpers": 1
+  },
+  "last": {
+   "at": 1795505493415,
+   "gpuUtil": 6,
+   "processes": [
+    "node:node 9.9%"
+   ],
+   "otherGpuHelpers": 1
+  }
+ }
+}

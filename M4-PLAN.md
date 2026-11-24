@@ -1,6 +1,20 @@
 # VRMXG M4 plan: the anime creator, on WebGPU
 
-**Status (2026-11-20): started.** The Avatar Studio can now make the characters M4 casts:
+**M4's acceptance has run (2026-11-24): seven of the ten exit checks pass at 7984207, and three pass in part.** The
+verdicts are in [acceptance/](acceptance/README.md): receipts AB-R-1088 to 1097, with the backend matrix's AB-R-1087
+(task AB-T-0585). You can make a one-minute short in the creator from a script to an exported film on WebGPU: The
+Regular delivers at 4K in 60 to 67 s against the 4-minute target, twice to the same frames, and an agent can make its
+edits through MCP. What keeps M4 from being done by its own checks:
+- **check 3:** the creator's Mac app voices lines through the loopback Kokoro server, not the shell's `tts.speak`
+  (AB-T-0614);
+- **check 5:** the face take is proven on a synthetic face; a real camera waits on the operator (AB-T-0557);
+- **check 8:** the companion hasn't taken the WebGPU default (AB-A-0329), and the base-Mac budget isn't measured
+  (AB-T-0511).
+
+The beta's rare odd WebGPU frame is still open (AB-T-0591); deliveries redraw-check for it (AB-D-0280). Whether M4 is
+called done with these carried on, as M3 carried AB-T-0557, is the operator's call.
+
+*Started 2026-11-20.* The Avatar Studio can now make the characters M4 casts:
 - its spike (`spike-avatar-studio/`) found the studio needn't move onto the engine for M4;
 - `0.1.0-preview.1` is tagged and published, and plan 0.2's agent tools (A1–A3, `vrmxa mcp`) are merged;
 - Hana and Mira exist as `.vrmxa` files built with its command-line tool from licensed VRoid Hub pieces

@@ -18,7 +18,7 @@ fresh: false
 - [ ] The project opens from a folder (Open Project…): its name shows and its assets are listed.
   ```steps
   wait id=open-project enabled=true timeout_ms=40000
-  until find("id=doc-state").0.name matches "^Scene cafe.vrmxs"   # the bundled sample loaded first
+  until find("id=doc-state").0.name matches "^Scene cafe"   # the bundled sample's first scene (cafe-cart.vrmxs since M3 W12)
   act id=open-project action=press
   until find("id=project-name").0.name == "Project project"   # the folder mounted through project.open
   expect find("id=add-sets-cafe-glb").count == 1   # the asset list is the project's

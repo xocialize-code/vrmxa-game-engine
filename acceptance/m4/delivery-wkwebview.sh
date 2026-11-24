@@ -10,6 +10,8 @@
 #   PRESETS="h264-4k24" SECONDS_=60 REPEAT=1 EXTRAS=none acceptance/m4/delivery-wkwebview.sh   # the one-minute 4K timing
 #   RENDERER=webgl (the view and its exports on WebGL); BACKEND=webgl (the export alone on WebGL); TAG=x
 #   CHECK=redraw (always) or CHECK=off (never); left out, the preset decides: a delivery on WebGPU checks (AB-D-0280)
+#   OUT=<folder>: where the result files go (default results/m4-delivery); FILES=1: also check each delivery's files
+#   from outside the app (acceptance/m4/delivery-files.mjs, needs ffprobe and ffmpeg) into <OUT>/files.json
 set -e
 # one GPU runner at a time on this machine: re-run under acceptance/gpu-lock.mjs (acceptance/README.md)
 gpulock="$(cd "$(dirname "$0")" && pwd)/../gpu-lock.mjs"
@@ -19,7 +21,7 @@ root=$(cd "$here/../.." && pwd)
 app="$root/apps/creator-mac/build/VRMXGCreator.app"
 [ -d "$app" ] || { echo "build the creator first: apps/creator-mac/scripts/build.sh"; exit 1; }
 tmp="$HOME/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp"
-out="$root/acceptance/results/m4-delivery"
+out="${OUT:-$root/acceptance/results/m4-delivery}"   # OUT: another results folder (M4 W13 keeps its runs apart from W10's)
 mkdir -p "$tmp" "$out"
 PRESETS="${PRESETS:-h264-1080p24 hevc-1080p24 prores-1080p24 h264-4k24 hevc-4k24 prores-4k24}"
 renderer="${RENDERER:-webgpu}"
@@ -71,4 +73,7 @@ for (const j of r.jobs) {
 }
 console.log("  same:", JSON.stringify(r.same));
 ' "$run" "$out/$name-$origin.json" "$HOME" "$origin" "$keep"
+  # FILES=1 (M4 W13): the delivered files read from outside the app (ffprobe: frames, sound at lag 0, the .srt, stills,
+  # thumbnails, turntables), before the next preset clears the project: $out/files.json
+  if [ -n "$FILES" ]; then node "$here/delivery-files.mjs" "$tmp/delivery-project/deliveries" --sequence "content/sample/sequences/${SHORT:-cafe-order}.vrmxs" --out "$out/files.json" --append || true; fi
 done

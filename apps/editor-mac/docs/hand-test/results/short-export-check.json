@@ -1,0 +1,113 @@
+{
+ "format": "vrmxg-short-export-check",
+ "version": 1,
+ "ok": true,
+ "tag": null,
+ "results": {
+  "short-a.mp4": {
+   "decoded": 1457,
+   "nbFrames": 1457,
+   "seconds": 60.708333,
+   "maxPtsError": 3.333333342681044e-7,
+   "codec": "h264",
+   "size": [
+    1920,
+    1080
+   ],
+   "sound": {
+    "codec": "aac",
+    "rate": 48000,
+    "start": 0,
+    "seconds": 60.708333
+   },
+   "frameDigest": "d56e9b022851a169",
+   "subtitles": 13
+  },
+  "short-b.mp4": {
+   "decoded": 1457,
+   "nbFrames": 1457,
+   "seconds": 60.708333,
+   "maxPtsError": 3.333333342681044e-7,
+   "codec": "h264",
+   "size": [
+    1920,
+    1080
+   ],
+   "sound": {
+    "codec": "aac",
+    "rate": 48000,
+    "start": 0,
+    "seconds": 60.708333
+   },
+   "frameDigest": "d56e9b022851a169",
+   "subtitles": 13
+  }
+ },
+ "framesThatDiffer": [],
+ "checks": [
+  {
+   "title": "short-a.mp4: 1457 frames at 24 fps, every frame at n/24 s, 1920×1080 h264 with sound",
+   "ok": true,
+   "evidence": {
+    "decoded": 1457,
+    "nbFrames": 1457,
+    "seconds": 60.708333,
+    "maxPtsError": 3.333333342681044e-7,
+    "codec": "h264",
+    "size": [
+     1920,
+     1080
+    ],
+    "sound": {
+     "codec": "aac",
+     "rate": 48000,
+     "start": 0,
+     "seconds": 60.708333
+    },
+    "frameDigest": "d56e9b022851a169",
+    "subtitles": 13
+   }
+  },
+  {
+   "title": "short-a.srt: 13 subtitles",
+   "ok": true,
+   "evidence": "13 cues"
+  },
+  {
+   "title": "short-b.mp4: 1457 frames at 24 fps, every frame at n/24 s, 1920×1080 h264 with sound",
+   "ok": true,
+   "evidence": {
+    "decoded": 1457,
+    "nbFrames": 1457,
+    "seconds": 60.708333,
+    "maxPtsError": 3.333333342681044e-7,
+    "codec": "h264",
+    "size": [
+     1920,
+     1080
+    ],
+    "sound": {
+     "codec": "aac",
+     "rate": 48000,
+     "start": 0,
+     "seconds": 60.708333
+    },
+    "frameDigest": "d56e9b022851a169",
+    "subtitles": 13
+   }
+  },
+  {
+   "title": "short-b.srt: 13 subtitles",
+   "ok": true,
+   "evidence": "13 cues"
+  },
+  {
+   "title": "the two exports hold the same frames, frame for frame",
+   "ok": true,
+   "evidence": {
+    "frames": 1457,
+    "differ": []
+   }
+  }
+ ]
+}

@@ -1,0 +1,2224 @@
+{
+ "format": "vrmxg-delivery-summary",
+ "version": 1,
+ "runs": 35,
+ "films": {
+  "total": 64,
+  "webgpu": 48,
+  "webgl": 16,
+  "failed": 0
+ },
+ "pairs": {
+  "total": 29,
+  "framesSame": 29,
+  "odd": [],
+  "audioSame": 29,
+  "stillsSame": 29,
+  "turntablesSame": 29
+ },
+ "rows": [
+  {
+   "file": "h264-1080p24-webgl-loopback.json",
+   "short": "cafe-order",
+   "preset": "h264-1080p24",
+   "backend": "webgl",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 5.2,
+     "perFrameMs": {
+      "render": 1.66,
+      "readback": 2.07,
+      "wait": 0.56,
+      "total": 6.69
+     },
+     "totalS": 11.7,
+     "frameDigest": "87732706a2ff3010",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 5,
+     "perFrameMs": {
+      "render": 1.59,
+      "readback": 2.02,
+      "wait": 0.53,
+      "total": 6.44
+     },
+     "totalS": 9.1,
+     "frameDigest": "87732706a2ff3010",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "h264-1080p24-webgl-the-regular-loopback.json",
+   "short": "the-regular",
+   "preset": "h264-1080p24",
+   "backend": "webgl",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 10.6,
+     "perFrameMs": {
+      "render": 1.54,
+      "readback": 1.93,
+      "wait": 0.58,
+      "total": 7.27
+     },
+     "totalS": 17.5,
+     "frameDigest": "97fbec1bd9a0af5f",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 10.7,
+     "perFrameMs": {
+      "render": 1.58,
+      "readback": 1.99,
+      "wait": 0.61,
+      "total": 7.34
+     },
+     "totalS": 15.1,
+     "frameDigest": "97fbec1bd9a0af5f",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "h264-1080p24-webgpu-loopback.json",
+   "short": "cafe-order",
+   "preset": "h264-1080p24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 10.3,
+     "perFrameMs": {
+      "render": 2.92,
+      "readback": 6.81,
+      "wait": 0,
+      "total": 13.17
+     },
+     "totalS": 18,
+     "frameDigest": "0f0e4db693e72226",
+     "audio": "74f98d6e",
+     "check": {
+      "frames": 780,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 10.3,
+     "perFrameMs": {
+      "render": 2.95,
+      "readback": 6.84,
+      "wait": 0,
+      "total": 13.16
+     },
+     "totalS": 15.8,
+     "frameDigest": "0f0e4db693e72226",
+     "audio": "74f98d6e",
+     "check": {
+      "frames": 780,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "h264-1080p24-webgpu-single-loopback.json",
+   "short": "cafe-order",
+   "preset": "h264-1080p24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": null,
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 5.7,
+     "perFrameMs": {
+      "render": 2,
+      "readback": 2.33,
+      "wait": 0.27,
+      "total": 7.37
+     },
+     "totalS": 11.8,
+     "frameDigest": "0f0e4db693e72226",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 5.6,
+     "perFrameMs": {
+      "render": 1.96,
+      "readback": 2.36,
+      "wait": 0.22,
+      "total": 7.2
+     },
+     "totalS": 9.8,
+     "frameDigest": "0f0e4db693e72226",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "h264-1080p24-webgpu-the-regular-files-loopback.json",
+   "short": "the-regular",
+   "preset": "h264-1080p24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 20.5,
+     "perFrameMs": {
+      "render": 3.03,
+      "readback": 6.84,
+      "wait": 0,
+      "total": 14.08
+     },
+     "totalS": 30.5,
+     "frameDigest": "67110d3e140b32f2",
+     "audio": "3293d5c7",
+     "check": {
+      "frames": 1457,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 1,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true
+   }
+  },
+  {
+   "file": "h264-1080p24-webgpu-the-regular-single-loopback.json",
+   "short": "the-regular",
+   "preset": "h264-1080p24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": null,
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 11.9,
+     "perFrameMs": {
+      "render": 2.01,
+      "readback": 2.41,
+      "wait": 0.29,
+      "total": 8.17
+     },
+     "totalS": 19.4,
+     "frameDigest": "67110d3e140b32f2",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 12,
+     "perFrameMs": {
+      "render": 2.09,
+      "readback": 2.35,
+      "wait": 0.37,
+      "total": 8.22
+     },
+     "totalS": 16.4,
+     "frameDigest": "67110d3e140b32f2",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "h264-1080p24-webgpu-the-regular-single-scheme.json",
+   "short": "the-regular",
+   "preset": "h264-1080p24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "scheme",
+   "check": null,
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 12,
+     "perFrameMs": {
+      "render": 2.06,
+      "readback": 2.4,
+      "wait": 0.3,
+      "total": 8.23
+     },
+     "totalS": 19.6,
+     "frameDigest": "67110d3e140b32f2",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 12,
+     "perFrameMs": {
+      "render": 2.09,
+      "readback": 2.4,
+      "wait": 0.32,
+      "total": 8.22
+     },
+     "totalS": 16.3,
+     "frameDigest": "67110d3e140b32f2",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "h264-4k24-webgl-loopback.json",
+   "short": "cafe-order",
+   "preset": "h264-4k24",
+   "backend": "webgl",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 13.1,
+     "perFrameMs": {
+      "render": 1.74,
+      "readback": 7.45,
+      "wait": 1.87,
+      "total": 16.74
+     },
+     "totalS": 19,
+     "frameDigest": "31518a0d9603829f",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 12,
+     "perFrameMs": {
+      "render": 1.87,
+      "readback": 7.32,
+      "wait": 0.7,
+      "total": 15.37
+     },
+     "totalS": 18,
+     "frameDigest": "31518a0d9603829f",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "h264-4k24-webgl-the-regular-loopback.json",
+   "short": "the-regular",
+   "preset": "h264-4k24",
+   "backend": "webgl",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 23.1,
+     "perFrameMs": {
+      "render": 1.65,
+      "readback": 7.27,
+      "wait": 0.66,
+      "total": 15.84
+     },
+     "totalS": 31.8,
+     "frameDigest": "50d84453cb8356e4",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 23.4,
+     "perFrameMs": {
+      "render": 1.89,
+      "readback": 7.26,
+      "wait": 0.75,
+      "total": 16.03
+     },
+     "totalS": 29.5,
+     "frameDigest": "50d84453cb8356e4",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "h264-4k24-webgpu-loopback.json",
+   "short": "cafe-order",
+   "preset": "h264-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 27.1,
+     "perFrameMs": {
+      "render": 3.17,
+      "readback": 23.24,
+      "wait": 0.01,
+      "total": 34.75
+     },
+     "totalS": 39.4,
+     "frameDigest": "a3e8be795205363c",
+     "audio": "74f98d6e",
+     "check": {
+      "frames": 780,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 27.5,
+     "perFrameMs": {
+      "render": 3.68,
+      "readback": 23.14,
+      "wait": 0.01,
+      "total": 35.2
+     },
+     "totalS": 37.3,
+     "frameDigest": "a3e8be795205363c",
+     "audio": "74f98d6e",
+     "check": {
+      "frames": 780,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "h264-4k24-webgpu-single-loopback.json",
+   "short": "cafe-order",
+   "preset": "h264-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": null,
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 13.6,
+     "perFrameMs": {
+      "render": 1.96,
+      "readback": 8.81,
+      "wait": 0.84,
+      "total": 17.43
+     },
+     "totalS": 21.7,
+     "frameDigest": "a3e8be795205363c",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 13.4,
+     "perFrameMs": {
+      "render": 2.19,
+      "readback": 8.51,
+      "wait": 0.78,
+      "total": 17.16
+     },
+     "totalS": 20.1,
+     "frameDigest": "a3e8be795205363c",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "h264-4k24-webgpu-the-regular-files-loopback.json",
+   "short": "the-regular",
+   "preset": "h264-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 52.7,
+     "perFrameMs": {
+      "render": 3.43,
+      "readback": 23.16,
+      "wait": 0,
+      "total": 36.17
+     },
+     "totalS": 65.4,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": {
+      "frames": 1457,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 1,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true
+   }
+  },
+  {
+   "file": "h264-4k24-webgpu-the-regular-loopback.json",
+   "short": "the-regular",
+   "preset": "h264-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 52.4,
+     "perFrameMs": {
+      "render": 3.29,
+      "readback": 23.58,
+      "wait": 0,
+      "total": 35.97
+     },
+     "totalS": 66.9,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": {
+      "frames": 1457,
+      "odd": 1
+     },
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 53.7,
+     "perFrameMs": {
+      "render": 4,
+      "readback": 23.4,
+      "wait": 0,
+      "total": 36.83
+     },
+     "totalS": 64,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": {
+      "frames": 1457,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "h264-4k24-webgpu-the-regular-single-loopback.json",
+   "short": "the-regular",
+   "preset": "h264-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": null,
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 25.4,
+     "perFrameMs": {
+      "render": 2.24,
+      "readback": 8.09,
+      "wait": 0.87,
+      "total": 17.44
+     },
+     "totalS": 35.5,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 27.2,
+     "perFrameMs": {
+      "render": 2.57,
+      "readback": 9.13,
+      "wait": 0.69,
+      "total": 18.7
+     },
+     "totalS": 33.9,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "h264-4k24-webgpu-the-regular-single-scheme.json",
+   "short": "the-regular",
+   "preset": "h264-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "scheme",
+   "check": null,
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 25.8,
+     "perFrameMs": {
+      "render": 2.23,
+      "readback": 8.42,
+      "wait": 0.83,
+      "total": 17.72
+     },
+     "totalS": 36.6,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 26.6,
+     "perFrameMs": {
+      "render": 2.61,
+      "readback": 8.58,
+      "wait": 0.81,
+      "total": 18.27
+     },
+     "totalS": 33.2,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "hevc-1080p24-webgl-loopback.json",
+   "short": "cafe-order",
+   "preset": "hevc-1080p24",
+   "backend": "webgl",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 5.2,
+     "perFrameMs": {
+      "render": 1.68,
+      "readback": 2.04,
+      "wait": 0.56,
+      "total": 6.68
+     },
+     "totalS": 11.7,
+     "frameDigest": "87732706a2ff3010",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 5,
+     "perFrameMs": {
+      "render": 1.57,
+      "readback": 2.04,
+      "wait": 0.52,
+      "total": 6.42
+     },
+     "totalS": 9.1,
+     "frameDigest": "87732706a2ff3010",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "hevc-1080p24-webgpu-loopback.json",
+   "short": "cafe-order",
+   "preset": "hevc-1080p24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 10.3,
+     "perFrameMs": {
+      "render": 2.92,
+      "readback": 6.86,
+      "wait": 0,
+      "total": 13.24
+     },
+     "totalS": 18.1,
+     "frameDigest": "0f0e4db693e72226",
+     "audio": "74f98d6e",
+     "check": {
+      "frames": 780,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 10.3,
+     "perFrameMs": {
+      "render": 3.04,
+      "readback": 6.83,
+      "wait": 0,
+      "total": 13.22
+     },
+     "totalS": 15.7,
+     "frameDigest": "0f0e4db693e72226",
+     "audio": "74f98d6e",
+     "check": {
+      "frames": 780,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "hevc-1080p24-webgpu-single-loopback.json",
+   "short": "cafe-order",
+   "preset": "hevc-1080p24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": null,
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 5.8,
+     "perFrameMs": {
+      "render": 2.01,
+      "readback": 2.35,
+      "wait": 0.29,
+      "total": 7.43
+     },
+     "totalS": 11.9,
+     "frameDigest": "0f0e4db693e72226",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 5.6,
+     "perFrameMs": {
+      "render": 1.92,
+      "readback": 2.39,
+      "wait": 0.21,
+      "total": 7.16
+     },
+     "totalS": 9.8,
+     "frameDigest": "0f0e4db693e72226",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "hevc-1080p24-webgpu-the-regular-files-loopback.json",
+   "short": "the-regular",
+   "preset": "hevc-1080p24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 20.2,
+     "perFrameMs": {
+      "render": 2.9,
+      "readback": 6.77,
+      "wait": 0,
+      "total": 13.86
+     },
+     "totalS": 28.9,
+     "frameDigest": "67110d3e140b32f2",
+     "audio": "3293d5c7",
+     "check": {
+      "frames": 1457,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 1,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true
+   }
+  },
+  {
+   "file": "hevc-4k24-webgl-loopback.json",
+   "short": "cafe-order",
+   "preset": "hevc-4k24",
+   "backend": "webgl",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 12,
+     "perFrameMs": {
+      "render": 1.8,
+      "readback": 7.42,
+      "wait": 0.65,
+      "total": 15.41
+     },
+     "totalS": 19.1,
+     "frameDigest": "31518a0d9603829f",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 12.1,
+     "perFrameMs": {
+      "render": 1.9,
+      "readback": 7.45,
+      "wait": 0.72,
+      "total": 15.57
+     },
+     "totalS": 18.2,
+     "frameDigest": "31518a0d9603829f",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "hevc-4k24-webgpu-loopback.json",
+   "short": "cafe-order",
+   "preset": "hevc-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 27.1,
+     "perFrameMs": {
+      "render": 3.24,
+      "readback": 23.15,
+      "wait": 0.01,
+      "total": 34.76
+     },
+     "totalS": 39.6,
+     "frameDigest": "a3e8be795205363c",
+     "audio": "74f98d6e",
+     "check": {
+      "frames": 780,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 27.8,
+     "perFrameMs": {
+      "render": 3.74,
+      "readback": 23.61,
+      "wait": 0.01,
+      "total": 35.6
+     },
+     "totalS": 37.7,
+     "frameDigest": "a3e8be795205363c",
+     "audio": "74f98d6e",
+     "check": {
+      "frames": 780,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "hevc-4k24-webgpu-single-loopback.json",
+   "short": "cafe-order",
+   "preset": "hevc-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": null,
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 13.4,
+     "perFrameMs": {
+      "render": 2.13,
+      "readback": 8.49,
+      "wait": 0.78,
+      "total": 17.18
+     },
+     "totalS": 21.7,
+     "frameDigest": "a3e8be795205363c",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 13.4,
+     "perFrameMs": {
+      "render": 2.18,
+      "readback": 8.56,
+      "wait": 0.81,
+      "total": 17.23
+     },
+     "totalS": 20.2,
+     "frameDigest": "a3e8be795205363c",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "hevc-4k24-webgpu-the-regular-files-loopback.json",
+   "short": "the-regular",
+   "preset": "hevc-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 51.6,
+     "perFrameMs": {
+      "render": 3.46,
+      "readback": 23.06,
+      "wait": 0,
+      "total": 35.4
+     },
+     "totalS": 65.4,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": {
+      "frames": 1457,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 1,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true
+   }
+  },
+  {
+   "file": "hevc-4k24-webgpu-the-regular-loopback.json",
+   "short": "the-regular",
+   "preset": "hevc-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 51,
+     "perFrameMs": {
+      "render": 3.36,
+      "readback": 22.86,
+      "wait": 0,
+      "total": 35.02
+     },
+     "totalS": 65.3,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": {
+      "frames": 1457,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 52,
+     "perFrameMs": {
+      "render": 3.9,
+      "readback": 22.98,
+      "wait": 0,
+      "total": 35.68
+     },
+     "totalS": 62.2,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": {
+      "frames": 1457,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "hevc-4k24-webgpu-the-regular-single-loopback.json",
+   "short": "the-regular",
+   "preset": "hevc-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": null,
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 25.7,
+     "perFrameMs": {
+      "render": 2.25,
+      "readback": 8.31,
+      "wait": 0.82,
+      "total": 17.65
+     },
+     "totalS": 36.5,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 27,
+     "perFrameMs": {
+      "render": 2.49,
+      "readback": 8.98,
+      "wait": 0.79,
+      "total": 18.53
+     },
+     "totalS": 33.7,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "prores-1080p24-webgl-loopback.json",
+   "short": "cafe-order",
+   "preset": "prores-1080p24",
+   "backend": "webgl",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 5.3,
+     "perFrameMs": {
+      "render": 1.73,
+      "readback": 1.97,
+      "wait": 0.57,
+      "total": 6.77
+     },
+     "totalS": 11.5,
+     "frameDigest": "87732706a2ff3010",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 5.1,
+     "perFrameMs": {
+      "render": 1.64,
+      "readback": 2.01,
+      "wait": 0.53,
+      "total": 6.59
+     },
+     "totalS": 9.4,
+     "frameDigest": "87732706a2ff3010",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "prores-1080p24-webgpu-loopback.json",
+   "short": "cafe-order",
+   "preset": "prores-1080p24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 10.2,
+     "perFrameMs": {
+      "render": 2.92,
+      "readback": 6.44,
+      "wait": 0,
+      "total": 13.05
+     },
+     "totalS": 18,
+     "frameDigest": "0f0e4db693e72226",
+     "audio": "74f98d6e",
+     "check": {
+      "frames": 780,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 10.2,
+     "perFrameMs": {
+      "render": 3.03,
+      "readback": 6.45,
+      "wait": 0,
+      "total": 13.06
+     },
+     "totalS": 15.8,
+     "frameDigest": "0f0e4db693e72226",
+     "audio": "74f98d6e",
+     "check": {
+      "frames": 780,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "prores-1080p24-webgpu-single-loopback.json",
+   "short": "cafe-order",
+   "preset": "prores-1080p24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": null,
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 5.8,
+     "perFrameMs": {
+      "render": 1.98,
+      "readback": 2.26,
+      "wait": 0.31,
+      "total": 7.45
+     },
+     "totalS": 12.7,
+     "frameDigest": "0f0e4db693e72226",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 5.6,
+     "perFrameMs": {
+      "render": 1.92,
+      "readback": 2.31,
+      "wait": 0.23,
+      "total": 7.2
+     },
+     "totalS": 10.2,
+     "frameDigest": "0f0e4db693e72226",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "prores-1080p24-webgpu-the-regular-files-loopback.json",
+   "short": "the-regular",
+   "preset": "prores-1080p24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 19.8,
+     "perFrameMs": {
+      "render": 2.85,
+      "readback": 6.54,
+      "wait": 0,
+      "total": 13.56
+     },
+     "totalS": 29.7,
+     "frameDigest": "67110d3e140b32f2",
+     "audio": "3293d5c7",
+     "check": {
+      "frames": 1457,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 1,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true
+   }
+  },
+  {
+   "file": "prores-4k24-webgl-loopback.json",
+   "short": "cafe-order",
+   "preset": "prores-4k24",
+   "backend": "webgl",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 12.2,
+     "perFrameMs": {
+      "render": 1.77,
+      "readback": 7.49,
+      "wait": 0.65,
+      "total": 15.59
+     },
+     "totalS": 20.4,
+     "frameDigest": "31518a0d9603829f",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 12.3,
+     "perFrameMs": {
+      "render": 1.9,
+      "readback": 7.54,
+      "wait": 0.72,
+      "total": 15.78
+     },
+     "totalS": 18.6,
+     "frameDigest": "31518a0d9603829f",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "prores-4k24-webgpu-loopback.json",
+   "short": "cafe-order",
+   "preset": "prores-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 26.3,
+     "perFrameMs": {
+      "render": 3.11,
+      "readback": 22.17,
+      "wait": 0.01,
+      "total": 33.7
+     },
+     "totalS": 38.6,
+     "frameDigest": "a3e8be795205363c",
+     "audio": "74f98d6e",
+     "check": {
+      "frames": 780,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 26.6,
+     "perFrameMs": {
+      "render": 3.78,
+      "readback": 21.8,
+      "wait": 0.01,
+      "total": 34.07
+     },
+     "totalS": 36.4,
+     "frameDigest": "a3e8be795205363c",
+     "audio": "74f98d6e",
+     "check": {
+      "frames": 780,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "prores-4k24-webgpu-single-loopback.json",
+   "short": "cafe-order",
+   "preset": "prores-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": null,
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 13.8,
+     "perFrameMs": {
+      "render": 2.07,
+      "readback": 7.68,
+      "wait": 1.46,
+      "total": 17.71
+     },
+     "totalS": 20.8,
+     "frameDigest": "a3e8be795205363c",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 780,
+     "filmS": 12.9,
+     "perFrameMs": {
+      "render": 2.19,
+      "readback": 7.65,
+      "wait": 1.02,
+      "total": 16.59
+     },
+     "totalS": 19.6,
+     "frameDigest": "a3e8be795205363c",
+     "audio": "74f98d6e",
+     "check": null,
+     "extras": {
+      "stills": 11,
+      "thumbnails": 11,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "prores-4k24-webgpu-the-regular-files-loopback.json",
+   "short": "the-regular",
+   "preset": "prores-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 49.5,
+     "perFrameMs": {
+      "render": 3.35,
+      "readback": 21.74,
+      "wait": 0,
+      "total": 34
+     },
+     "totalS": 63.7,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": {
+      "frames": 1457,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 1,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true
+   }
+  },
+  {
+   "file": "prores-4k24-webgpu-the-regular-loopback.json",
+   "short": "the-regular",
+   "preset": "prores-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": "preset",
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 51,
+     "perFrameMs": {
+      "render": 3.27,
+      "readback": 21.84,
+      "wait": 0,
+      "total": 35.02
+     },
+     "totalS": 65.1,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": {
+      "frames": 1457,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 50,
+     "perFrameMs": {
+      "render": 3.81,
+      "readback": 21.32,
+      "wait": 0,
+      "total": 34.32
+     },
+     "totalS": 60.2,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": {
+      "frames": 1457,
+      "odd": 0
+     },
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  },
+  {
+   "file": "prores-4k24-webgpu-the-regular-single-loopback.json",
+   "short": "the-regular",
+   "preset": "prores-4k24",
+   "backend": "webgpu",
+   "jobBackend": null,
+   "origin": "loopback",
+   "check": null,
+   "seconds": null,
+   "jobs": [
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 25.2,
+     "perFrameMs": {
+      "render": 2.15,
+      "readback": 7.79,
+      "wait": 1.01,
+      "total": 17.32
+     },
+     "totalS": 35.8,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    },
+    {
+     "state": "done",
+     "error": null,
+     "frames": 1457,
+     "filmS": 25.7,
+     "perFrameMs": {
+      "render": 2.64,
+      "readback": 7.88,
+      "wait": 0.84,
+      "total": 17.65
+     },
+     "totalS": 32.3,
+     "frameDigest": "d6857616bf5cc6a6",
+     "audio": "3293d5c7",
+     "check": null,
+     "extras": {
+      "stills": 18,
+      "thumbnails": 18,
+      "turntables": 2
+     }
+    }
+   ],
+   "same": {
+    "runs": 2,
+    "frames": true,
+    "audio": true,
+    "stills": true,
+    "thumbnails": true,
+    "turntables": true,
+    "frameDiffs": [
+     []
+    ]
+   }
+  }
+ ]
+}

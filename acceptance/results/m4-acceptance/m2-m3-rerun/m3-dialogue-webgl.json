@@ -1,0 +1,99 @@
+{
+ "runtime": "chromium",
+ "typed": {
+  "choices": [
+   "Good morning, Hana!",
+   "Could I get a latte, please?",
+   "How's your morning going?",
+   "See you tomorrow!"
+  ],
+  "thinking": "Hana is thinking",
+  "line": "Hana says: Good morning! Lovely to see you.",
+  "caption": "Hana: Good morning! Lovely to see you.",
+  "order": "Hana says: One latte, coming right up!",
+  "goal": {
+   "name": "takeOrder",
+   "params": {
+    "customer": "mira",
+    "order": "latte"
+   },
+   "from": "director",
+   "step": 386
+  },
+  "canvasThinking": [
+   {
+    "actor": "hana-1",
+    "text": "…",
+    "thinking": true
+   }
+  ],
+  "canvasLine": [
+   {
+    "actor": "hana-1",
+    "text": "Good morning! Lovely to see you.",
+    "thinking": false
+   }
+  ]
+ },
+ "canvasFrames": {
+  "step": 3326,
+  "again": 3326,
+  "hashes": [
+   "5a3b68cdf95f628d",
+   "5a3b68cdf95f628d",
+   "5a3b68cdf95f628d",
+   "5a3b68cdf95f628d"
+  ],
+  "identical": true,
+  "shown": [
+   {
+    "actor": "hana-1",
+    "text": "Fresh beans this morning. Enjoy it.",
+    "thinking": false
+   }
+  ]
+ },
+ "presentation": {
+  "steps": 3000,
+  "samples": 10,
+  "same": true,
+  "linesSeen": [
+   "thinking",
+   "Morning, Mira! You are early today.",
+   "Of course. One latte, coming right up.",
+   "Here you go. Enjoy!",
+   "Welcome in!"
+  ],
+  "hashesWithUI": {
+   "300": "a77a0f80e97eb946",
+   "600": "043f4e2e030d7ea2",
+   "900": "b656c6bcdcd8cb58",
+   "1200": "78167896c31f3428",
+   "1500": "4a8958e6f5d1a0ec",
+   "1800": "8db3ec223f05a610",
+   "2100": "bbaac3379a8490b5",
+   "2400": "a76286ca2db9b22d",
+   "2700": "e0efdc5cf721ef85",
+   "3000": "b58b3033783c6c6c"
+  },
+  "hashesWithout": {
+   "300": "a77a0f80e97eb946",
+   "600": "043f4e2e030d7ea2",
+   "900": "b656c6bcdcd8cb58",
+   "1200": "78167896c31f3428",
+   "1500": "4a8958e6f5d1a0ec",
+   "1800": "8db3ec223f05a610",
+   "2100": "bbaac3379a8490b5",
+   "2400": "a76286ca2db9b22d",
+   "2700": "e0efdc5cf721ef85",
+   "3000": "b58b3033783c6c6c"
+  }
+ },
+ "screenshots": [
+  "m3-dialogue-thinking.png",
+  "m3-dialogue-typed.png",
+  "m3-dialogue-choice.png",
+  "m3-dialogue-take.png"
+ ],
+ "errors": []
+}

@@ -6,8 +6,8 @@
    "bytes": 11207
   },
   "rescript": {
-   "sha256": "7d761dd99f2aead2f77cfb80f39d6ba6b06baddd758350d97708b598a5bb9180",
-   "bytes": 6183
+   "sha256": "490c17116a614089a53acf4d403c6545c0fc74b6e35cadf84d637a801d78c991",
+   "bytes": 6255
   },
   "version": "v26.12.1"
  },
@@ -18,8 +18,8 @@
    "errors": [],
    "result": {
     "rescript": {
-     "bytes": 6183,
-     "sha256": "7d761dd99f2aead2f77cfb80f39d6ba6b06baddd758350d97708b598a5bb9180"
+     "bytes": 6255,
+     "sha256": "490c17116a614089a53acf4d403c6545c0fc74b6e35cadf84d637a801d78c991"
     },
     "sample": {
      "bytes": 11207,
@@ -35,8 +35,8 @@
    "errors": [],
    "result": {
     "rescript": {
-     "bytes": 6183,
-     "sha256": "7d761dd99f2aead2f77cfb80f39d6ba6b06baddd758350d97708b598a5bb9180"
+     "bytes": 6255,
+     "sha256": "490c17116a614089a53acf4d403c6545c0fc74b6e35cadf84d637a801d78c991"
     },
     "sample": {
      "bytes": 11207,

@@ -1,0 +1,139 @@
+{
+ "format": "vrmxg-m4-acceptance",
+ "version": 1,
+ "date": "2026-11-24",
+ "task": "AB-T-0585",
+ "plan": "AB-P-0018",
+ "commit": "79842073be5cf96cfe959ea3fd248e98f6e14f70",
+ "codeAsOf": "8c79fef (the commits since are results and a README note)",
+ "machine": {
+  "model": "Mac17,14",
+  "chip": "Apple M5 Max",
+  "macOS": "27.3 beta (26C5047e)"
+ },
+ "matrix": {
+  "receipt": "AB-R-1087",
+  "files": "acceptance/results/ab-t-0595/verify-3/",
+  "rerun": false,
+  "why": "no code changed since it ran green at 8c79fef"
+ },
+ "passed": [
+  1,
+  2,
+  4,
+  6,
+  7,
+  9,
+  10
+ ],
+ "partly": [
+  3,
+  5,
+  8
+ ],
+ "failed": [],
+ "checks": [
+  {
+   "check": 1,
+   "name": "A script becomes a sequence",
+   "verdict": "passed",
+   "receipt": "AB-R-1088",
+   "notMet": [],
+   "notRun": []
+  },
+  {
+   "check": 2,
+   "name": "You cast it",
+   "verdict": "passed",
+   "receipt": "AB-R-1089",
+   "notMet": [],
+   "notRun": [
+    "the sample’s characters are fixtures with no usable persona voice; the studio’s characters wait on AB-A-0330"
+   ]
+  },
+  {
+   "check": 3,
+   "name": "The lines are voiced",
+   "verdict": "partly",
+   "receipt": "AB-R-1090",
+   "notMet": [
+    "in the creator’s Mac app the shell has no tts.speak: lines are voiced through the loopback Kokoro server (AB-T-0614)"
+   ],
+   "notRun": [
+    "music and sound effects on their buses are shown by the package’s tests only"
+   ]
+  },
+  {
+   "check": 4,
+   "name": "The cameras cover it",
+   "verdict": "passed",
+   "receipt": "AB-R-1091",
+   "notMet": [],
+   "notRun": []
+  },
+  {
+   "check": 5,
+   "name": "A performance can be acted",
+   "verdict": "partly",
+   "receipt": "AB-R-1092",
+   "notMet": [],
+   "notRun": [
+    "a face take from a real camera (AB-T-0557)",
+    "the checklist rows a person makes at a real keyboard, model and camera"
+   ]
+  },
+  {
+   "check": 6,
+   "name": "It renders on WebGPU",
+   "verdict": "passed",
+   "receipt": "AB-R-1093",
+   "notMet": [],
+   "notRun": []
+  },
+  {
+   "check": 7,
+   "name": "It exports for delivery",
+   "verdict": "passed",
+   "receipt": "AB-R-1094",
+   "notMet": [],
+   "notRun": []
+  },
+  {
+   "check": 8,
+   "name": "The engine is on WebGPU everywhere",
+   "verdict": "partly",
+   "receipt": "AB-R-1097",
+   "notMet": [
+    "the companion still draws on WebGL only (AB-A-0329)"
+   ],
+   "notRun": [
+    "the base-Mac budget on either backend (AB-T-0511)",
+    "four AppProbe rows reading the renderer readout in the playground’s and editor’s Mac apps (the screen had locked)"
+   ]
+  },
+  {
+   "check": 9,
+   "name": "Agents can make a short",
+   "verdict": "passed",
+   "receipt": "AB-R-1095",
+   "notMet": [],
+   "notRun": []
+  },
+  {
+   "check": 10,
+   "name": "M0 to M3 still hold",
+   "verdict": "passed",
+   "receipt": "AB-R-1096",
+   "notMet": [],
+   "notRun": [
+    "M3’s live parts (the spoken conversation, the camera, the companion app)",
+    "the editor’s MCP sessions of M1 to M3"
+   ]
+  }
+ ],
+ "filed": {
+  "tasks": [
+   "AB-T-0614"
+  ]
+ }
+}
