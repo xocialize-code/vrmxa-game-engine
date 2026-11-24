@@ -1,0 +1,49 @@
+{
+ "format": "vrmxg-gpu-load",
+ "note": "apps/playground/scripts/gpu-load.mjs sampled every 5 s through the quiet-machine runs; process names only. Our own: WebKit (the creator and the harness), Chrome for Testing, node.",
+ "runs": {
+  "A: the short at 4K (checked, then single draw)": {
+   "samples": 128,
+   "everySeconds": 5,
+   "from": "2026-11-24T07:15:15.626Z",
+   "to": "2026-11-24T07:25:50.907Z",
+   "gpuUtil": {
+    "min": 7,
+    "median": 32,
+    "max": 51
+   },
+   "highestCpuByProcess": {
+    "node:node": 2.2,
+    "webkit:com.apple.WebKit.GPU": 50.9,
+    "webkit:com.apple.WebKit.WebContent": 152.3
+   },
+   "foreignAtOrOver5": [],
+   "otherGpuHelpersMax": 1
+  },
+  "B, C, D: both origins, WebGL, the scrub check, every preset, takes, scripts, voicing": {
+   "samples": 245,
+   "everySeconds": 5,
+   "from": "2026-11-24T07:25:58.858Z",
+   "to": "2026-11-24T07:46:19.343Z",
+   "gpuUtil": {
+    "min": 0,
+    "median": 33,
+    "max": 52
+   },
+   "highestCpuByProcess": {
+    "node:node": 138.8,
+    "webkit:com.apple.WebKit.GPU": 53,
+    "webkit:com.apple.WebKit.WebContent": 188.9,
+    "chromium:Google Chrome for Testing": 58.1,
+    "chromium:chrome_crashpad_handler": 0.7,
+    "chromium:Google Chrome for Testing Helper (GPU)": 32.7,
+    "chromium:Google Chrome for Testing Helper": 12,
+    "chromium:Google Chrome for Testing Helper (Renderer)": 216.9,
+    "harness:CinematicsSpike": 38.3,
+    "chromium:Google Chrome for Testing Helper (Alerts)": 12.9
+   },
+   "foreignAtOrOver5": [],
+   "otherGpuHelpersMax": 1
+  }
+ }
+}

@@ -1,36 +1,36 @@
 {
- "when": "2026-11-18T15:46:18.699Z",
+ "when": "2026-11-24T08:06:59.716Z",
  "dir": "~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/exports",
  "checks": [
   {
    "title": "take-a.mp4: 300 frames at 30/1 fps, every frame at n · 1/30 s, 1920×1080 h264 with sound",
    "ok": true,
-   "evidence": "300 frames decoded (nb_frames 300), video 10.000000 s, largest timestamp error 3.3e-7 s, yuv420p bt709/bt709, B-frames 2; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 7.5 MB"
+   "evidence": "300 frames decoded (nb_frames 300), video 10.000000 s, largest timestamp error 3.3e-7 s, yuv420p bt709/bt709, B-frames 2; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 7.4 MB"
   },
   {
    "title": "take-b.mp4: 300 frames at 30/1 fps, every frame at n · 1/30 s, 1920×1080 h264 with sound",
    "ok": true,
-   "evidence": "300 frames decoded (nb_frames 300), video 10.000000 s, largest timestamp error 3.3e-7 s, yuv420p bt709/bt709, B-frames 2; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 7.5 MB"
+   "evidence": "300 frames decoded (nb_frames 300), video 10.000000 s, largest timestamp error 3.3e-7 s, yuv420p bt709/bt709, B-frames 2; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 7.4 MB"
   },
   {
    "title": "take-4k60.mp4: 600 frames at 60/1 fps, every frame at n · 1/60 s, 3840×2160 h264 with sound",
    "ok": true,
-   "evidence": "600 frames decoded (nb_frames 600), video 10.000000 s, largest timestamp error 3.3e-7 s, yuv420p bt709/bt709, B-frames 2; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 47.6 MB"
+   "evidence": "600 frames decoded (nb_frames 600), video 10.000000 s, largest timestamp error 3.3e-7 s, yuv420p bt709/bt709, B-frames 2; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 48.0 MB"
   },
   {
    "title": "prores-a.mov: 300 frames at 30/1 fps, every frame at n · 1/30 s, 1920×1080 prores with sound",
    "ok": true,
-   "evidence": "300 frames decoded (nb_frames 300), video 10.000000 s, largest timestamp error 3.3e-7 s, yuva444p12le bt709/bt709, B-frames 0; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 193.7 MB"
+   "evidence": "300 frames decoded (nb_frames 300), video 10.000000 s, largest timestamp error 3.3e-7 s, yuva444p12le bt709/bt709, B-frames 0; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 194.4 MB"
   },
   {
    "title": "prores-b.mov: 300 frames at 30/1 fps, every frame at n · 1/30 s, 1920×1080 prores with sound",
    "ok": true,
-   "evidence": "300 frames decoded (nb_frames 300), video 10.000000 s, largest timestamp error 3.3e-7 s, yuva444p12le bt709/bt709, B-frames 0; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 193.7 MB"
+   "evidence": "300 frames decoded (nb_frames 300), video 10.000000 s, largest timestamp error 3.3e-7 s, yuva444p12le bt709/bt709, B-frames 0; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 194.4 MB"
   },
   {
    "title": "ntsc.mp4: 300 frames at 30000/1001 fps, every frame at n · 1001/30000 s, 1280×720 hevc with sound",
    "ok": true,
-   "evidence": "300 frames decoded (nb_frames 300), video 10.010000 s, largest timestamp error 3.3e-7 s, yuv420p bt709/bt709, B-frames 2; sound aac 48000 Hz ×2, starts 0.000000 s, 10.010000 s; 2.8 MB"
+   "evidence": "300 frames decoded (nb_frames 300), video 10.010000 s, largest timestamp error 3.3e-7 s, yuv420p bt709/bt709, B-frames 2; sound aac 48000 Hz ×2, starts 0.000000 s, 10.010000 s; 2.7 MB"
   },
   {
    "title": "take-a.mp4: the muxed sound lines up with the engine's mix (lag 0 samples)",
@@ -80,12 +80,12 @@
   {
    "title": "the still is a 1920×1080 PNG",
    "ok": true,
-   "evidence": "png 1920×1080, 123533 bytes"
+   "evidence": "png 1920×1080, 125982 bytes"
   },
   {
    "title": "the thumbnail is a 480×270 PNG",
    "ok": true,
-   "evidence": "png 480×270, 19684 bytes"
+   "evidence": "png 480×270, 19868 bytes"
   }
  ],
  "results": {
@@ -101,7 +101,7 @@
     "color_primaries": "bt709",
     "start_time": "0.000000",
     "duration": "10.000000",
-    "bit_rate": "5731780",
+    "bit_rate": "5648026",
     "nb_frames": "300"
    },
    "a": {
@@ -116,7 +116,7 @@
    },
    "format": {
     "duration": "10.000000",
-    "size": "7531531"
+    "size": "7426141"
    },
    "decoded": 300,
    "maxPtsError": 3.333333342681044e-7,
@@ -140,7 +140,7 @@
     "color_primaries": "bt709",
     "start_time": "0.000000",
     "duration": "10.000000",
-    "bit_rate": "5731780",
+    "bit_rate": "5648026",
     "nb_frames": "300"
    },
    "a": {
@@ -155,7 +155,7 @@
    },
    "format": {
     "duration": "10.000000",
-    "size": "7531531"
+    "size": "7426141"
    },
    "decoded": 300,
    "maxPtsError": 3.333333342681044e-7,
@@ -173,7 +173,7 @@
     "color_primaries": "bt709",
     "start_time": "0.000000",
     "duration": "10.000000",
-    "bit_rate": "37713041",
+    "bit_rate": "38004208",
     "nb_frames": "600"
    },
    "a": {
@@ -188,7 +188,7 @@
    },
    "format": {
     "duration": "10.000000",
-    "size": "47622000"
+    "size": "47987204"
    },
    "decoded": 600,
    "maxPtsError": 3.333333342681044e-7,
@@ -206,7 +206,7 @@
     "color_primaries": "bt709",
     "start_time": "0.000000",
     "duration": "10.000000",
-    "bit_rate": "154730240",
+    "bit_rate": "155242944",
     "nb_frames": "300"
    },
    "a": {
@@ -221,7 +221,7 @@
    },
    "format": {
     "duration": "10.000000",
-    "size": "193730322"
+    "size": "194371206"
    },
    "decoded": 300,
    "maxPtsError": 3.333333342681044e-7,
@@ -245,7 +245,7 @@
     "color_primaries": "bt709",
     "start_time": "0.000000",
     "duration": "10.000000",
-    "bit_rate": "154730240",
+    "bit_rate": "155242944",
     "nb_frames": "300"
    },
    "a": {
@@ -260,7 +260,7 @@
    },
    "format": {
     "duration": "10.000000",
-    "size": "193730322"
+    "size": "194371206"
    },
    "decoded": 300,
    "maxPtsError": 3.333333342681044e-7,
@@ -278,7 +278,7 @@
     "color_primaries": "bt709",
     "start_time": "0.000000",
     "duration": "10.010000",
-    "bit_rate": "1944477",
+    "bit_rate": "1890509",
     "nb_frames": "300"
    },
    "a": {
@@ -293,7 +293,7 @@
    },
    "format": {
     "duration": "10.010000",
-    "size": "2753581"
+    "size": "2686054"
    },
    "decoded": 300,
    "maxPtsError": 3.333333342681044e-7,

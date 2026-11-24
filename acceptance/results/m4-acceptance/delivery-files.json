@@ -1,0 +1,1102 @@
+{
+ "format": "vrmxg-delivery-files",
+ "version": 1,
+ "ok": true,
+ "sequence": {
+  "id": "the-regular",
+  "shots": 18,
+  "dialogueClips": 13
+ },
+ "deliveries": [
+  {
+   "delivery": "the-regular-1080p24-h264",
+   "short": "the-regular",
+   "preset": "h264-1080p24",
+   "backend": "webgpu",
+   "check": "redraw",
+   "frameDigest": "67110d3e140b32f2",
+   "ok": true,
+   "film": {
+    "codec": "h264",
+    "profile": "High",
+    "pixFmt": "yuv420p",
+    "size": [
+     1920,
+     1080
+    ],
+    "decoded": 1457,
+    "nbFrames": 1457,
+    "seconds": 60.708333,
+    "maxPtsError": 3.3e-7,
+    "bytes": 32993962
+   },
+   "sound": {
+    "codec": "aac",
+    "rate": 48000,
+    "channels": 2,
+    "start": 0,
+    "seconds": 60.708333
+   },
+   "alignment": {
+    "rate": 48000,
+    "mixSamples": 2914000,
+    "decodedSamples": 2914000,
+    "windowFromS": 9,
+    "lag": 0,
+    "correlation": 1
+   },
+   "subtitles": 13,
+   "stills": 18,
+   "thumbnails": 18,
+   "turntables": [
+    {
+     "character": "mira",
+     "codec": "h264",
+     "size": [
+      1920,
+      1080
+     ],
+     "frames": 120,
+     "manifestFrames": 120,
+     "seconds": 5
+    },
+    {
+     "character": "hana-1",
+     "codec": "h264",
+     "size": [
+      1920,
+      1080
+     ],
+     "frames": 120,
+     "manifestFrames": 120,
+     "seconds": 5
+    }
+   ],
+   "checks": [
+    {
+     "title": "the film: 1457 frames at 24/1 fps, every frame at n/24 s, 1920×1080 h264",
+     "ok": true,
+     "evidence": {
+      "codec": "h264",
+      "profile": "High",
+      "pixFmt": "yuv420p",
+      "size": [
+       1920,
+       1080
+      ],
+      "decoded": 1457,
+      "nbFrames": 1457,
+      "seconds": 60.708333,
+      "maxPtsError": 3.3e-7,
+      "bytes": 32993962
+     }
+    },
+    {
+     "title": "the film has its sound, starting at 0",
+     "ok": true,
+     "evidence": {
+      "codec": "aac",
+      "rate": 48000,
+      "channels": 2,
+      "start": 0,
+      "seconds": 60.708333
+     }
+    },
+    {
+     "title": "the muxed sound lines up with the engine's mix (lag 0 samples)",
+     "ok": true,
+     "evidence": {
+      "rate": 48000,
+      "mixSamples": 2914000,
+      "decodedSamples": 2914000,
+      "windowFromS": 9,
+      "lag": 0,
+      "correlation": 1
+     }
+    },
+    {
+     "title": "an .srt with every line: 13 cues, each inside the film",
+     "ok": true,
+     "evidence": {
+      "cues": 13,
+      "manifest": 13,
+      "first": {
+       "from": 8.917,
+       "to": 11.083,
+       "text": "Hana: Morning, Mira! The usual?"
+      },
+      "last": {
+       "from": 52.667,
+       "to": 54.667,
+       "text": "Hana: Tell your new office that."
+      }
+     }
+    },
+    {
+     "title": "a still per shot at the film's size: 18",
+     "ok": true,
+     "evidence": {
+      "stills": 18,
+      "sizes": [
+       "1920,1080"
+      ]
+     }
+    },
+    {
+     "title": "a thumbnail per shot: 18",
+     "ok": true,
+     "evidence": {
+      "thumbnails": 18,
+      "sizes": [
+       "480,270"
+      ]
+     }
+    },
+    {
+     "title": "a turntable per character: 2",
+     "ok": true,
+     "evidence": [
+      {
+       "character": "mira",
+       "codec": "h264",
+       "size": [
+        1920,
+        1080
+       ],
+       "frames": 120,
+       "manifestFrames": 120,
+       "seconds": 5
+      },
+      {
+       "character": "hana-1",
+       "codec": "h264",
+       "size": [
+        1920,
+        1080
+       ],
+       "frames": 120,
+       "manifestFrames": 120,
+       "seconds": 5
+      }
+     ]
+    },
+    {
+     "title": "every listed file is on disk: 40",
+     "ok": true,
+     "evidence": "40 files"
+    }
+   ]
+  },
+  {
+   "delivery": "the-regular-1080p24-hevc",
+   "short": "the-regular",
+   "preset": "hevc-1080p24",
+   "backend": "webgpu",
+   "check": "redraw",
+   "frameDigest": "67110d3e140b32f2",
+   "ok": true,
+   "film": {
+    "codec": "hevc",
+    "profile": "Main",
+    "pixFmt": "yuv420p",
+    "size": [
+     1920,
+     1080
+    ],
+    "decoded": 1457,
+    "nbFrames": 1457,
+    "seconds": 60.708333,
+    "maxPtsError": 3.3e-7,
+    "bytes": 19924224
+   },
+   "sound": {
+    "codec": "aac",
+    "rate": 48000,
+    "channels": 2,
+    "start": 0,
+    "seconds": 60.708333
+   },
+   "alignment": {
+    "rate": 48000,
+    "mixSamples": 2914000,
+    "decodedSamples": 2914000,
+    "windowFromS": 9,
+    "lag": 0,
+    "correlation": 1
+   },
+   "subtitles": 13,
+   "stills": 18,
+   "thumbnails": 18,
+   "turntables": [
+    {
+     "character": "mira",
+     "codec": "hevc",
+     "size": [
+      1920,
+      1080
+     ],
+     "frames": 120,
+     "manifestFrames": 120,
+     "seconds": 5
+    },
+    {
+     "character": "hana-1",
+     "codec": "hevc",
+     "size": [
+      1920,
+      1080
+     ],
+     "frames": 120,
+     "manifestFrames": 120,
+     "seconds": 5
+    }
+   ],
+   "checks": [
+    {
+     "title": "the film: 1457 frames at 24/1 fps, every frame at n/24 s, 1920×1080 hevc",
+     "ok": true,
+     "evidence": {
+      "codec": "hevc",
+      "profile": "Main",
+      "pixFmt": "yuv420p",
+      "size": [
+       1920,
+       1080
+      ],
+      "decoded": 1457,
+      "nbFrames": 1457,
+      "seconds": 60.708333,
+      "maxPtsError": 3.3e-7,
+      "bytes": 19924224
+     }
+    },
+    {
+     "title": "the film has its sound, starting at 0",
+     "ok": true,
+     "evidence": {
+      "codec": "aac",
+      "rate": 48000,
+      "channels": 2,
+      "start": 0,
+      "seconds": 60.708333
+     }
+    },
+    {
+     "title": "the muxed sound lines up with the engine's mix (lag 0 samples)",
+     "ok": true,
+     "evidence": {
+      "rate": 48000,
+      "mixSamples": 2914000,
+      "decodedSamples": 2914000,
+      "windowFromS": 9,
+      "lag": 0,
+      "correlation": 1
+     }
+    },
+    {
+     "title": "an .srt with every line: 13 cues, each inside the film",
+     "ok": true,
+     "evidence": {
+      "cues": 13,
+      "manifest": 13,
+      "first": {
+       "from": 8.917,
+       "to": 11.083,
+       "text": "Hana: Morning, Mira! The usual?"
+      },
+      "last": {
+       "from": 52.667,
+       "to": 54.667,
+       "text": "Hana: Tell your new office that."
+      }
+     }
+    },
+    {
+     "title": "a still per shot at the film's size: 18",
+     "ok": true,
+     "evidence": {
+      "stills": 18,
+      "sizes": [
+       "1920,1080"
+      ]
+     }
+    },
+    {
+     "title": "a thumbnail per shot: 18",
+     "ok": true,
+     "evidence": {
+      "thumbnails": 18,
+      "sizes": [
+       "480,270"
+      ]
+     }
+    },
+    {
+     "title": "a turntable per character: 2",
+     "ok": true,
+     "evidence": [
+      {
+       "character": "mira",
+       "codec": "hevc",
+       "size": [
+        1920,
+        1080
+       ],
+       "frames": 120,
+       "manifestFrames": 120,
+       "seconds": 5
+      },
+      {
+       "character": "hana-1",
+       "codec": "hevc",
+       "size": [
+        1920,
+        1080
+       ],
+       "frames": 120,
+       "manifestFrames": 120,
+       "seconds": 5
+      }
+     ]
+    },
+    {
+     "title": "every listed file is on disk: 40",
+     "ok": true,
+     "evidence": "40 files"
+    }
+   ]
+  },
+  {
+   "delivery": "the-regular-1080p24-prores",
+   "short": "the-regular",
+   "preset": "prores-1080p24",
+   "backend": "webgpu",
+   "check": "redraw",
+   "frameDigest": "67110d3e140b32f2",
+   "ok": true,
+   "film": {
+    "codec": "prores",
+    "profile": "4444",
+    "pixFmt": "yuva444p12le",
+    "size": [
+     1920,
+     1080
+    ],
+    "decoded": 1457,
+    "nbFrames": 1457,
+    "seconds": 60.708333,
+    "maxPtsError": 3.3e-7,
+    "bytes": 942405956
+   },
+   "sound": {
+    "codec": "aac",
+    "rate": 48000,
+    "channels": 2,
+    "start": 0,
+    "seconds": 60.708333
+   },
+   "alignment": {
+    "rate": 48000,
+    "mixSamples": 2914000,
+    "decodedSamples": 2914000,
+    "windowFromS": 9,
+    "lag": 0,
+    "correlation": 1
+   },
+   "subtitles": 13,
+   "stills": 18,
+   "thumbnails": 18,
+   "turntables": [
+    {
+     "character": "mira",
+     "codec": "prores",
+     "size": [
+      1920,
+      1080
+     ],
+     "frames": 120,
+     "manifestFrames": 120,
+     "seconds": 5
+    },
+    {
+     "character": "hana-1",
+     "codec": "prores",
+     "size": [
+      1920,
+      1080
+     ],
+     "frames": 120,
+     "manifestFrames": 120,
+     "seconds": 5
+    }
+   ],
+   "checks": [
+    {
+     "title": "the film: 1457 frames at 24/1 fps, every frame at n/24 s, 1920×1080 prores4444",
+     "ok": true,
+     "evidence": {
+      "codec": "prores",
+      "profile": "4444",
+      "pixFmt": "yuva444p12le",
+      "size": [
+       1920,
+       1080
+      ],
+      "decoded": 1457,
+      "nbFrames": 1457,
+      "seconds": 60.708333,
+      "maxPtsError": 3.3e-7,
+      "bytes": 942405956
+     }
+    },
+    {
+     "title": "ProRes 4444 with an alpha plane",
+     "ok": true,
+     "evidence": {
+      "pixFmt": "yuva444p12le",
+      "profile": "4444"
+     }
+    },
+    {
+     "title": "the film has its sound, starting at 0",
+     "ok": true,
+     "evidence": {
+      "codec": "aac",
+      "rate": 48000,
+      "channels": 2,
+      "start": 0,
+      "seconds": 60.708333
+     }
+    },
+    {
+     "title": "the muxed sound lines up with the engine's mix (lag 0 samples)",
+     "ok": true,
+     "evidence": {
+      "rate": 48000,
+      "mixSamples": 2914000,
+      "decodedSamples": 2914000,
+      "windowFromS": 9,
+      "lag": 0,
+      "correlation": 1
+     }
+    },
+    {
+     "title": "an .srt with every line: 13 cues, each inside the film",
+     "ok": true,
+     "evidence": {
+      "cues": 13,
+      "manifest": 13,
+      "first": {
+       "from": 8.917,
+       "to": 11.083,
+       "text": "Hana: Morning, Mira! The usual?"
+      },
+      "last": {
+       "from": 52.667,
+       "to": 54.667,
+       "text": "Hana: Tell your new office that."
+      }
+     }
+    },
+    {
+     "title": "a still per shot at the film's size: 18",
+     "ok": true,
+     "evidence": {
+      "stills": 18,
+      "sizes": [
+       "1920,1080"
+      ]
+     }
+    },
+    {
+     "title": "a thumbnail per shot: 18",
+     "ok": true,
+     "evidence": {
+      "thumbnails": 18,
+      "sizes": [
+       "480,270"
+      ]
+     }
+    },
+    {
+     "title": "a turntable per character: 2",
+     "ok": true,
+     "evidence": [
+      {
+       "character": "mira",
+       "codec": "prores",
+       "size": [
+        1920,
+        1080
+       ],
+       "frames": 120,
+       "manifestFrames": 120,
+       "seconds": 5
+      },
+      {
+       "character": "hana-1",
+       "codec": "prores",
+       "size": [
+        1920,
+        1080
+       ],
+       "frames": 120,
+       "manifestFrames": 120,
+       "seconds": 5
+      }
+     ]
+    },
+    {
+     "title": "every listed file is on disk: 40",
+     "ok": true,
+     "evidence": "40 files"
+    }
+   ]
+  },
+  {
+   "delivery": "the-regular-4k24-h264",
+   "short": "the-regular",
+   "preset": "h264-4k24",
+   "backend": "webgpu",
+   "check": "redraw",
+   "frameDigest": "d6857616bf5cc6a6",
+   "ok": true,
+   "film": {
+    "codec": "h264",
+    "profile": "High",
+    "pixFmt": "yuv420p",
+    "size": [
+     3840,
+     2160
+    ],
+    "decoded": 1457,
+    "nbFrames": 1457,
+    "seconds": 60.708333,
+    "maxPtsError": 3.3e-7,
+    "bytes": 74012776
+   },
+   "sound": {
+    "codec": "aac",
+    "rate": 48000,
+    "channels": 2,
+    "start": 0,
+    "seconds": 60.708333
+   },
+   "alignment": {
+    "rate": 48000,
+    "mixSamples": 2914000,
+    "decodedSamples": 2914000,
+    "windowFromS": 9,
+    "lag": 0,
+    "correlation": 1
+   },
+   "subtitles": 13,
+   "stills": 18,
+   "thumbnails": 18,
+   "turntables": [
+    {
+     "character": "mira",
+     "codec": "h264",
+     "size": [
+      3840,
+      2160
+     ],
+     "frames": 120,
+     "manifestFrames": 120,
+     "seconds": 5
+    },
+    {
+     "character": "hana-1",
+     "codec": "h264",
+     "size": [
+      3840,
+      2160
+     ],
+     "frames": 120,
+     "manifestFrames": 120,
+     "seconds": 5
+    }
+   ],
+   "checks": [
+    {
+     "title": "the film: 1457 frames at 24/1 fps, every frame at n/24 s, 3840×2160 h264",
+     "ok": true,
+     "evidence": {
+      "codec": "h264",
+      "profile": "High",
+      "pixFmt": "yuv420p",
+      "size": [
+       3840,
+       2160
+      ],
+      "decoded": 1457,
+      "nbFrames": 1457,
+      "seconds": 60.708333,
+      "maxPtsError": 3.3e-7,
+      "bytes": 74012776
+     }
+    },
+    {
+     "title": "the film has its sound, starting at 0",
+     "ok": true,
+     "evidence": {
+      "codec": "aac",
+      "rate": 48000,
+      "channels": 2,
+      "start": 0,
+      "seconds": 60.708333
+     }
+    },
+    {
+     "title": "the muxed sound lines up with the engine's mix (lag 0 samples)",
+     "ok": true,
+     "evidence": {
+      "rate": 48000,
+      "mixSamples": 2914000,
+      "decodedSamples": 2914000,
+      "windowFromS": 9,
+      "lag": 0,
+      "correlation": 1
+     }
+    },
+    {
+     "title": "an .srt with every line: 13 cues, each inside the film",
+     "ok": true,
+     "evidence": {
+      "cues": 13,
+      "manifest": 13,
+      "first": {
+       "from": 8.917,
+       "to": 11.083,
+       "text": "Hana: Morning, Mira! The usual?"
+      },
+      "last": {
+       "from": 52.667,
+       "to": 54.667,
+       "text": "Hana: Tell your new office that."
+      }
+     }
+    },
+    {
+     "title": "a still per shot at the film's size: 18",
+     "ok": true,
+     "evidence": {
+      "stills": 18,
+      "sizes": [
+       "3840,2160"
+      ]
+     }
+    },
+    {
+     "title": "a thumbnail per shot: 18",
+     "ok": true,
+     "evidence": {
+      "thumbnails": 18,
+      "sizes": [
+       "480,270"
+      ]
+     }
+    },
+    {
+     "title": "a turntable per character: 2",
+     "ok": true,
+     "evidence": [
+      {
+       "character": "mira",
+       "codec": "h264",
+       "size": [
+        3840,
+        2160
+       ],
+       "frames": 120,
+       "manifestFrames": 120,
+       "seconds": 5
+      },
+      {
+       "character": "hana-1",
+       "codec": "h264",
+       "size": [
+        3840,
+        2160
+       ],
+       "frames": 120,
+       "manifestFrames": 120,
+       "seconds": 5
+      }
+     ]
+    },
+    {
+     "title": "every listed file is on disk: 40",
+     "ok": true,
+     "evidence": "40 files"
+    }
+   ]
+  },
+  {
+   "delivery": "the-regular-4k24-hevc",
+   "short": "the-regular",
+   "preset": "hevc-4k24",
+   "backend": "webgpu",
+   "check": "redraw",
+   "frameDigest": "d6857616bf5cc6a6",
+   "ok": true,
+   "film": {
+    "codec": "hevc",
+    "profile": "Main",
+    "pixFmt": "yuv420p",
+    "size": [
+     3840,
+     2160
+    ],
+    "decoded": 1457,
+    "nbFrames": 1457,
+    "seconds": 60.708333,
+    "maxPtsError": 3.3e-7,
+    "bytes": 71352670
+   },
+   "sound": {
+    "codec": "aac",
+    "rate": 48000,
+    "channels": 2,
+    "start": 0,
+    "seconds": 60.708333
+   },
+   "alignment": {
+    "rate": 48000,
+    "mixSamples": 2914000,
+    "decodedSamples": 2914000,
+    "windowFromS": 9,
+    "lag": 0,
+    "correlation": 1
+   },
+   "subtitles": 13,
+   "stills": 18,
+   "thumbnails": 18,
+   "turntables": [
+    {
+     "character": "mira",
+     "codec": "hevc",
+     "size": [
+      3840,
+      2160
+     ],
+     "frames": 120,
+     "manifestFrames": 120,
+     "seconds": 5
+    },
+    {
+     "character": "hana-1",
+     "codec": "hevc",
+     "size": [
+      3840,
+      2160
+     ],
+     "frames": 120,
+     "manifestFrames": 120,
+     "seconds": 5
+    }
+   ],
+   "checks": [
+    {
+     "title": "the film: 1457 frames at 24/1 fps, every frame at n/24 s, 3840×2160 hevc",
+     "ok": true,
+     "evidence": {
+      "codec": "hevc",
+      "profile": "Main",
+      "pixFmt": "yuv420p",
+      "size": [
+       3840,
+       2160
+      ],
+      "decoded": 1457,
+      "nbFrames": 1457,
+      "seconds": 60.708333,
+      "maxPtsError": 3.3e-7,
+      "bytes": 71352670
+     }
+    },
+    {
+     "title": "the film has its sound, starting at 0",
+     "ok": true,
+     "evidence": {
+      "codec": "aac",
+      "rate": 48000,
+      "channels": 2,
+      "start": 0,
+      "seconds": 60.708333
+     }
+    },
+    {
+     "title": "the muxed sound lines up with the engine's mix (lag 0 samples)",
+     "ok": true,
+     "evidence": {
+      "rate": 48000,
+      "mixSamples": 2914000,
+      "decodedSamples": 2914000,
+      "windowFromS": 9,
+      "lag": 0,
+      "correlation": 1
+     }
+    },
+    {
+     "title": "an .srt with every line: 13 cues, each inside the film",
+     "ok": true,
+     "evidence": {
+      "cues": 13,
+      "manifest": 13,
+      "first": {
+       "from": 8.917,
+       "to": 11.083,
+       "text": "Hana: Morning, Mira! The usual?"
+      },
+      "last": {
+       "from": 52.667,
+       "to": 54.667,
+       "text": "Hana: Tell your new office that."
+      }
+     }
+    },
+    {
+     "title": "a still per shot at the film's size: 18",
+     "ok": true,
+     "evidence": {
+      "stills": 18,
+      "sizes": [
+       "3840,2160"
+      ]
+     }
+    },
+    {
+     "title": "a thumbnail per shot: 18",
+     "ok": true,
+     "evidence": {
+      "thumbnails": 18,
+      "sizes": [
+       "480,270"
+      ]
+     }
+    },
+    {
+     "title": "a turntable per character: 2",
+     "ok": true,
+     "evidence": [
+      {
+       "character": "mira",
+       "codec": "hevc",
+       "size": [
+        3840,
+        2160
+       ],
+       "frames": 120,
+       "manifestFrames": 120,
+       "seconds": 5
+      },
+      {
+       "character": "hana-1",
+       "codec": "hevc",
+       "size": [
+        3840,
+        2160
+       ],
+       "frames": 120,
+       "manifestFrames": 120,
+       "seconds": 5
+      }
+     ]
+    },
+    {
+     "title": "every listed file is on disk: 40",
+     "ok": true,
+     "evidence": "40 files"
+    }
+   ]
+  },
+  {
+   "delivery": "the-regular-4k24-prores",
+   "short": "the-regular",
+   "preset": "prores-4k24",
+   "backend": "webgpu",
+   "check": "redraw",
+   "frameDigest": "d6857616bf5cc6a6",
+   "ok": true,
+   "film": {
+    "codec": "prores",
+    "profile": "4444",
+    "pixFmt": "yuva444p12le",
+    "size": [
+     3840,
+     2160
+    ],
+    "decoded": 1457,
+    "nbFrames": 1457,
+    "seconds": 60.708333,
+    "maxPtsError": 3.3e-7,
+    "bytes": 2569485556
+   },
+   "sound": {
+    "codec": "aac",
+    "rate": 48000,
+    "channels": 2,
+    "start": 0,
+    "seconds": 60.708333
+   },
+   "alignment": {
+    "rate": 48000,
+    "mixSamples": 2914000,
+    "decodedSamples": 2914000,
+    "windowFromS": 9,
+    "lag": 0,
+    "correlation": 1
+   },
+   "subtitles": 13,
+   "stills": 18,
+   "thumbnails": 18,
+   "turntables": [
+    {
+     "character": "mira",
+     "codec": "prores",
+     "size": [
+      3840,
+      2160
+     ],
+     "frames": 120,
+     "manifestFrames": 120,
+     "seconds": 5
+    },
+    {
+     "character": "hana-1",
+     "codec": "prores",
+     "size": [
+      3840,
+      2160
+     ],
+     "frames": 120,
+     "manifestFrames": 120,
+     "seconds": 5
+    }
+   ],
+   "checks": [
+    {
+     "title": "the film: 1457 frames at 24/1 fps, every frame at n/24 s, 3840×2160 prores4444",
+     "ok": true,
+     "evidence": {
+      "codec": "prores",
+      "profile": "4444",
+      "pixFmt": "yuva444p12le",
+      "size": [
+       3840,
+       2160
+      ],
+      "decoded": 1457,
+      "nbFrames": 1457,
+      "seconds": 60.708333,
+      "maxPtsError": 3.3e-7,
+      "bytes": 2569485556
+     }
+    },
+    {
+     "title": "ProRes 4444 with an alpha plane",
+     "ok": true,
+     "evidence": {
+      "pixFmt": "yuva444p12le",
+      "profile": "4444"
+     }
+    },
+    {
+     "title": "the film has its sound, starting at 0",
+     "ok": true,
+     "evidence": {
+      "codec": "aac",
+      "rate": 48000,
+      "channels": 2,
+      "start": 0,
+      "seconds": 60.708333
+     }
+    },
+    {
+     "title": "the muxed sound lines up with the engine's mix (lag 0 samples)",
+     "ok": true,
+     "evidence": {
+      "rate": 48000,
+      "mixSamples": 2914000,
+      "decodedSamples": 2914000,
+      "windowFromS": 9,
+      "lag": 0,
+      "correlation": 1
+     }
+    },
+    {
+     "title": "an .srt with every line: 13 cues, each inside the film",
+     "ok": true,
+     "evidence": {
+      "cues": 13,
+      "manifest": 13,
+      "first": {
+       "from": 8.917,
+       "to": 11.083,
+       "text": "Hana: Morning, Mira! The usual?"
+      },
+      "last": {
+       "from": 52.667,
+       "to": 54.667,
+       "text": "Hana: Tell your new office that."
+      }
+     }
+    },
+    {
+     "title": "a still per shot at the film's size: 18",
+     "ok": true,
+     "evidence": {
+      "stills": 18,
+      "sizes": [
+       "3840,2160"
+      ]
+     }
+    },
+    {
+     "title": "a thumbnail per shot: 18",
+     "ok": true,
+     "evidence": {
+      "thumbnails": 18,
+      "sizes": [
+       "480,270"
+      ]
+     }
+    },
+    {
+     "title": "a turntable per character: 2",
+     "ok": true,
+     "evidence": [
+      {
+       "character": "mira",
+       "codec": "prores",
+       "size": [
+        3840,
+        2160
+       ],
+       "frames": 120,
+       "manifestFrames": 120,
+       "seconds": 5
+      },
+      {
+       "character": "hana-1",
+       "codec": "prores",
+       "size": [
+        3840,
+        2160
+       ],
+       "frames": 120,
+       "manifestFrames": 120,
+       "seconds": 5
+      }
+     ]
+    },
+    {
+     "title": "every listed file is on disk: 40",
+     "ok": true,
+     "evidence": "40 files"
+    }
+   ]
+  }
+ ]
+}

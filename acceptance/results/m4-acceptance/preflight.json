@@ -1,0 +1,37 @@
+{
+ "format": "vrmxg-preflight",
+ "at": "2026-11-24T07:14:38.076Z",
+ "commit": "79842073be5cf96cfe959ea3fd248e98f6e14f70",
+ "macOS": "27.3 (26C5047e)",
+ "machine": "Mac17,14, Apple M5 Max",
+ "uptimeMin": 59,
+ "loadavg": [
+  3.71,
+  3.21,
+  2.43
+ ],
+ "samples": [
+  {
+   "gpuUtil": 8,
+   "processes": [
+    "node:node 3%"
+   ],
+   "otherGpuHelpers": 1
+  },
+  {
+   "gpuUtil": 8,
+   "processes": [],
+   "otherGpuHelpers": 1
+  },
+  {
+   "gpuUtil": 7,
+   "processes": [],
+   "otherGpuHelpers": 1
+  },
+  {
+   "gpuUtil": 8,
+   "processes": [],
+   "otherGpuHelpers": 1
+  }
+ ]
+}

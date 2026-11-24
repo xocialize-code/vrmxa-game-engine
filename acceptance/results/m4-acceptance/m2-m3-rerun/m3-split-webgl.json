@@ -1,0 +1,36 @@
+{
+ "url": "http://127.0.0.1:5281/?split&renderer=webgl",
+ "size": [
+  1920,
+  1067
+ ],
+ "canvas": [
+  1920,
+  1068
+ ],
+ "split": {
+  "median": 0.8,
+  "p90": 1.2,
+  "calls": 241,
+  "triangles": 287968
+ },
+ "one": {
+  "median": 0.5,
+  "p90": 0.5,
+  "calls": 178,
+  "triangles": 178946
+ },
+ "ratio": 1.6,
+ "mira": [
+  -4.43,
+  0.02,
+  8.1
+ ],
+ "hana": [
+  4.07,
+  0.02,
+  8.1
+ ],
+ "step": 140,
+ "errors": []
+}
