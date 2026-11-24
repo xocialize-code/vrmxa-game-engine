@@ -9,8 +9,9 @@ import RenderQueue from '@vrmxg/editor-ui/RenderQueue.vue';
 import { CreatorHost } from './host.js';
 import { bundledProject, openProjectFolder, pickFile, fetchOpened, readPicked } from './project.js';
 import { kindOf } from './shorts.js';
-import { inShell, call, on, onClosing } from '../../shell/js/shell.js';
-import { closingQuestion } from '@vrmxg/editor-ui';
+import { inShell, call, on, onClosing, setEdited } from '../../shell/js/shell.js';
+import { questions } from '@vrmxg/editor-ui';
+import { guardShort, creatorClosing, unsavedWork } from './closing.js';
 import ScriptPane from './ScriptPane.vue';
 import TakePanel from './TakePanel.vue';
 import { takeLine } from './takes.js';
@@ -62,6 +63,7 @@ function refresh(kind = 'all') {
   const sv = cr.lastSaveAll;
   ui.saved = sv ? `${sv.sequence.ref} · ${sv.sequence.bytes} bytes · ${sv.sequence.hash}${sv.script ? ` · ${sv.script}` : ''}${sv.memory ? ' · in memory (open a project folder to save to disk)' : ''}` : '';
   ui.unsaved = cr.project?.unsaved?.() ?? [];
+  setEdited(unsavedWork(cr)); // the shell knows there is unsaved work even when the page can't answer it (the window's dot too)
   if (!s) return;
   ui.mode = cr.takeDeck.busy ? 'take' : s.mode;
   const h = s.history(); ui.undo = h.undo; ui.redo = h.redo;
@@ -92,36 +94,18 @@ onMounted(async () => {
 });
 
 // ---------------------------------------------------------------- the window's questions
-/** Ask in the window (a sheet over the page, which AppProbe can answer): → the chosen option's id. */
-let answer = null;
-const ask = (title, text, options) => new Promise((resolve) => { answer = resolve; ui.ask = { title, text, options }; });
-const reply = (id) => { const r = answer; answer = null; ui.ask = null; r?.(id); };
 /**
- * Before the open short goes (another short, New Short, Open Project, a script that opens another short): unsaved work
- * is saved, discarded or kept, as the person says. → true to go on
+ * Ask in the window (a sheet over the page, which AppProbe can answer): → the chosen option's id. One question at a
+ * time: a second one while a sheet is up is answered "cancel" and not shown (@vrmxg/editor-ui `questions`), so a
+ * close that is waiting for its answer always gets one.
  */
-async function guard() {
-  if (!cr?.isDirty()) return true;
-  const title = cr.short?.title ?? 'This short';
-  const c = await ask('Unsaved changes', `${title} has changes that aren't saved${cr.short && !cr.short.saved ? ' (it has never been saved)' : ''}.`, [{ id: 'save', label: 'Save' }, { id: 'discard', label: 'Don\'t Save' }, { id: 'cancel', label: 'Cancel' }]);
-  if (c === 'cancel') return false;
-  if (c === 'discard') { cr.discardChanges(); return true; }
-  try { await cr.saveShort(); return true; } catch (e) { ui.error = String(e?.message ?? e); return false; }
-}
-/**
- * Before the window closes or the app quits (the Mac shell asks, shell 0.9.0, AB-T-0593): the same sheet, when work
- * would be lost. In a project folder that is the unsaved-changes sheet every other leave shows (Save, Don't Save,
- * Cancel). The bundled sample saves only into memory, so there Save can't keep anything: the sheet says so and offers
- * to close anyway. → true to go on closing
- */
-async function closing(reason) {
-  if (ui.ask) return false; // a question is already open in the window: that one first
-  if (!cr?.session) return true;
-  const q = closingQuestion({ dirty: cr.isDirty(), canSave: !!cr.project?.writable, memory: cr.project?.unsaved?.() ?? [], title: cr.short?.title ?? 'This short', neverSaved: !!cr.short && !cr.short.saved, project: cr.project?.name, reason });
-  if (!q) return true;
-  if (q.options.some((o) => o.id === 'save')) { const go = await guard(); refresh(); return go; }
-  return (await ask(q.title, q.text, q.options)) === 'discard';
-}
+const sheet = questions((q) => { ui.ask = q; });
+const ask = sheet.ask, reply = (id) => sheet.reply(id);
+const onError = (e) => { ui.error = String(e?.message ?? e); };
+/** Before the open short goes (another short, New Short, Open Project, a script that opens another short): closing.js. */
+const guard = () => guardShort(cr, { ask, onError });
+/** Before the window closes or the app quits (the Mac shell asks, shell 0.9.0, AB-T-0593): closing.js. */
+const closing = async (reason) => { const go = await creatorClosing(cr, { ask, asking: () => sheet.asking, reason, onError }); if (cr?.session) refresh(); return go; };
 /** A file the project already holds by that name, with different bytes. */
 const onClash = (ref) => ask('A different file has this name', `The project already has ${ref}, and it isn't the same file.`, [{ id: 'rename', label: 'Keep Both' }, { id: 'replace', label: 'Replace' }, { id: 'cancel', label: 'Cancel' }]);
 

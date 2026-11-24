@@ -38,11 +38,20 @@ test took the web process to 25 GB; now every row of it ends under 2.3 GB on Web
 at most, for a moment, while a world is built), and 478 rebuilds in a row stay flat. The numbers, and what each step
 of the fix bought, are in
 [`apps/editor-mac/docs/hand-test/results/ab-t-0592/`](../editor-mac/docs/hand-test/results/ab-t-0592/README.md).
+The bookkeeping is `src/worlds.js` (`RetiredWorlds`: `retire`, `sweep`, `use`), tested in
+`apps/creator/test/worlds.test.mjs`: **whatever builds a world owes it a `retire`**. Not covered yet: what leaves a
+world's root while it runs (a body the closet replaced, a node removed during play) isn't reached by the dispose, which
+walks the root; those wait for the collector (AB-T-0626).
 
 **Closing asks first (the Mac app, shell 0.9.0, AB-T-0593).** With unsaved changes, File › Close Window, the close
 button and Quit show a sheet in the window: Save (saves, then closes), Don't Save or Cancel. The bundled sample is
 read-only, so there the sheet says the changes can't be kept and offers Cancel or Close Anyway. The question is
-`@vrmxg/editor-ui`'s `closingQuestion`; opening another scene over unsaved changes still doesn't ask.
+`@vrmxg/editor-ui`'s `closingQuestion`; opening another scene over unsaved changes still doesn't ask. The answer is
+`src/closing.js` (`editorClosing`), and the window asks one question at a time (`questions`), so every close gets an
+answer. **A scene is marked saved only once its write has succeeded** (`src/saving.js`, the session's `text()` then
+`markSaved()`): a Save that fails (the folder gone, a full disk) keeps the window, shows why, and leaves the scene
+unsaved, so the next close asks again. The page tells the shell whenever its unsaved state changes (`setEdited`): the
+close button shows the dot, and a close the page is too busy to answer asks the person instead of closing.
 
 A project's own modules (`behaviours.js`) import `@vrmxg/core` by name; the page's import map points that at
 `static/vrmxg-core.js`, which hands them the editor's own engine. Not yet: dragging several timeline items at once, curve editing of keys, a shot list separate from the shot row, MCP tools for sequences (W11), multi-selection gizmos, copy and paste,

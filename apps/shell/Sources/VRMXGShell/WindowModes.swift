@@ -100,7 +100,8 @@ extension ShellAppDelegate: NSWindowDelegate {
             }
         }
         menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "Quit \(config.appName)", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        let quit = NSMenuItem(title: "Quit \(config.appName)", action: #selector(menuQuit(_:)), keyEquivalent: "q"); quit.target = self
+        menu.addItem(quit)
         menu.delegate = self
         item.menu = menu
         statusItem = item
@@ -114,7 +115,7 @@ extension ShellAppDelegate: NSWindowDelegate {
     public func windowShouldClose(_ sender: NSWindow) -> Bool {
         if config.closeKeepsRunning { hideWindow(); return false }
         guard asksPage else { return true }
-        closing.ask(.close)
+        closing.ask(.close) // asked again with a question up: the shell's own alert (CloseQuestion.swift)
         return false
     }
 

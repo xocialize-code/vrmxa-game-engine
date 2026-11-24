@@ -173,8 +173,8 @@ export class ShortList {
     this.list = this.list.filter((x) => x !== s);
     return true;
   }
-  /** shorts.json's text: saved shorts only. */
-  manifest() { return shortsManifest(this.list.filter((s) => s.saved)); }
+  /** shorts.json's text: saved shorts only, and the one being saved (`saving`: its id), which is marked saved once this is written. */
+  manifest(saving = null) { return shortsManifest(this.list.filter((s) => s.saved || s.id === saving)); }
 }
 
 /** Two byte arrays the same? */

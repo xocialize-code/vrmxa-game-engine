@@ -56,3 +56,17 @@ export function onClosing(decide) {
     say(go ? 'close' : 'cancel');
   });
 }
+
+let edited = null;
+/**
+ * Tell the shell whether the window holds unsaved work (shell 0.9.0; an app with `asksBeforeClosing`). Call it whenever
+ * that may have changed: only a change is sent. The window shows the edited dot, and a close or quit the page can't
+ * answer in time (its main thread busy with a build, or hung) asks the person in an alert of the shell's own instead of
+ * closing. Does nothing outside the shell.
+ */
+export function setEdited(unsaved) {
+  const v = !!unsaved;
+  if (!handler || v === edited) return;
+  edited = v;
+  call('window.setEdited', { edited: v }).catch(() => { /* a shell without it: nothing to tell */ });
+}

@@ -5,7 +5,7 @@ import { test, before } from 'node:test';
 import assert from 'node:assert/strict';
 
 const sent = [];
-let onClosing;
+let onClosing, setEdited;
 const tick = () => new Promise((r) => setTimeout(r, 0));
 const ask = (id, reason = 'close') => dispatchEvent(new CustomEvent('vrmxg-shell', { detail: { name: 'window.closing', payload: { id, reason } } }));
 
@@ -14,8 +14,8 @@ before(async () => {
   globalThis.addEventListener = events.addEventListener.bind(events);
   globalThis.removeEventListener = events.removeEventListener.bind(events);
   globalThis.dispatchEvent = events.dispatchEvent.bind(events);
-  globalThis.webkit = { messageHandlers: { vrmxg: { postMessage: async (m) => { sent.push(`${m.method} ${m.params.id} ${m.params.answer}`); return { pending: true }; } } } };
-  ({ onClosing } = await import('../../shell/js/shell.js'));
+  globalThis.webkit = { messageHandlers: { vrmxg: { postMessage: async (m) => { sent.push(m.method === 'window.setEdited' ? `${m.method} ${m.params.edited}` : `${m.method} ${m.params.id} ${m.params.answer}`); return { pending: true }; } } } };
+  ({ onClosing, setEdited } = await import('../../shell/js/shell.js'));
 });
 
 test('the page says it is asking at once, then what the person decided', async () => {
@@ -57,4 +57,11 @@ test('a decision that fails, or isn\'t a plain yes, keeps the window', async () 
     assert.equal(sent.at(-1), 'window.closeReply close-5 cancel', 'only true closes');
     off();
   } finally { console.error = error; }
+});
+
+test('the page tells the shell when its unsaved state changes, and only then', async () => {
+  sent.length = 0;
+  setEdited(false); setEdited(false); setEdited(true); setEdited(1); setEdited(true); setEdited(null);
+  await tick();
+  assert.deepEqual(sent, ['window.setEdited false', 'window.setEdited true', 'window.setEdited false'], 'a refresh every frame costs nothing');
 });

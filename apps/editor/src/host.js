@@ -27,6 +27,8 @@ import * as vrmxaAnim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
 import { buildWorld } from '../../playground/src/world.js';
 import { disposeWorld, disposed } from './dispose.js';
+import { saveScene } from './saving.js';
+import { RetiredWorlds } from './worlds.js';
 import '../../playground/src/sqljs.js'; // vrmxa-core's sql.js for bundles with a database (Mira's)
 
 installPortableMath(); // before anything parses a VRM or steps a world
@@ -77,7 +79,7 @@ export class EditorHost {
     this.edit = null;          // { tree, objects: Map<Object3D, nodeId>, shape }
     this.editWorld = null;     // the world this.edit was made from, kept until its replacement is shown, then retired
     this.playWorld = null;
-    this._retired = [];        // worlds let go of (AB-T-0592), waiting for the view or a scrub to stop using them
+    this.worlds = new RetiredWorlds({ showing: () => this.host?.tree ?? null }); // worlds let go of (AB-T-0592, worlds.js)
     this.devices = null;
     this.debug = { colliders: false, sensors: false, capsules: false, rays: false };
     this.stats = { frameMs: 0, fps: 0, renderMs: 0, step: 0, buildMs: 0, backend: '' };
@@ -127,26 +129,13 @@ export class EditorHost {
   changed(kind = 'all') { this.onChange?.(kind); }
 
   /**
-   * Let a world go (AB-T-0592): sound, physics and every geometry, material and texture (dispose.js). A world that is
-   * only dropped keeps its WASM and GPU memory for good, and every edit builds another. A world the view still shows
-   * (the old edit view while its replacement builds) or that a scrub is working on waits here: the frame loop disposes
-   * it once it is free (`sweep`), so nothing is drawn or stepped after its physics has gone.
+   * Let a world go (AB-T-0592, worlds.js): disposed at once, or, while the view still shows it or a scrub is working
+   * on it, by the frame loop as soon as it is free. Whatever builds a world owes it this.
    */
-  retire(world) {
-    if (!world || world.disposed) return;
-    if (!this._retired.includes(world)) this._retired.push(world);
-    this.sweep();
-  }
+  retire(world) { this.worlds.retire(world); }
 
   /** Dispose the retired worlds nothing uses any more. */
-  sweep() {
-    if (!this._retired.length) return;
-    this._retired = this._retired.filter((w) => {
-      if (w.inUse > 0 || this.host?.tree === w.tree) return true;
-      disposeWorld(w);
-      return false;
-    });
-  }
+  sweep() { this.worlds.sweep(); }
 
   /** The timeline's preview world goes (a new session, a new document for it). */
   dropPreview() { const p = this.preview; this.preview = null; if (p) this.retire(p.world); }
@@ -231,8 +220,7 @@ export class EditorHost {
 
   /** Save into the project (the scene's own ref, or `ref` for Save As). → { path, bytes, hash } */
   async save(ref = this.sceneRef) {
-    const text = this.session.save(ref);
-    await this.project.write(ref, text);
+    const { text } = await saveScene(this.session, this.project, ref); // saved only once it is written (saving.js)
     this.sceneRef = ref;
     this.lastSave = { ref, hash: hashValue(text), bytes: new TextEncoder().encode(text).length };
     this.changed();
@@ -892,7 +880,7 @@ export class EditorHost {
           const f = this._scrubWant; this._scrubWant = null;
           const p = await this.previewWorld();
           if (p !== this.preview) continue; // another scene was opened while it was built: nothing to show of this one
-          p.world.inUse = (p.world.inUse ?? 0) + 1; // a world being stepped and drawn isn't disposed under the scrub
+          const release = this.worlds.use(p.world); // a world being stepped and drawn isn't disposed under the scrub
           try {
             const { step, alpha } = p.world.sequence.stepOf(Math.floor(f));
             const t0 = performance.now();
@@ -906,7 +894,7 @@ export class EditorHost {
             this.scrubState = { frame: Math.floor(f), step, alpha: +alpha.toFixed(3), restored: r.restored, stepped: r.stepped + (step > r.step ? step - r.step : 0), ms: +(performance.now() - t0).toFixed(1), hash: hashValue(worldHashes(p.world.tree, { physicsBytes: true })) };
             this.drawAngles();
             this.changed('timeline');
-          } finally { p.world.inUse--; }
+          } finally { release(); }
         }
       } catch (err) { this.error = String(err?.stack ?? err); this.changed(); }
       finally { this._scrubbing = null; }

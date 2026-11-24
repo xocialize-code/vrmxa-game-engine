@@ -188,12 +188,24 @@ export class EditorSession {
 
   // ---------------------------------------------------------------- files
 
-  /** Save: the canonical text (what to write). Marks the session saved. */
+  /**
+   * Save: the canonical text (what to write). Marks the session saved, so only for a caller whose write can't fail.
+   * One that writes to a disk takes `text()`, writes it, and calls `markSaved` once the write has succeeded: a failed
+   * save must leave the document unsaved, or the next close loses it without asking (AB-T-0593).
+   */
   save(path = this.path) {
     const text = this.text();
+    this.markSaved(text, path);
+    return text;
+  }
+
+  /**
+   * `text` has been written (to `path`): the session is saved as of that text. An edit made while it was being written
+   * stays unsaved.
+   */
+  markSaved(text, path = this.path) {
     this.savedText = text; this.path = path;
     this.emit({ kind: 'save' });
-    return text;
   }
 
   // ---------------------------------------------------------------- play in place

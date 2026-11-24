@@ -5,8 +5,9 @@ import { onMounted, reactive, ref } from 'vue';
 import { EditorHost, ADDABLE, SIZES, RATES, CODECS } from './host.js';
 import { bundledProject, openProjectFolder } from './project.js';
 import { McpLink } from './mcp.js';
-import { inShell, call, on, onClosing } from '../../shell/js/shell.js';
-import { closingQuestion } from '@vrmxg/editor-ui';
+import { inShell, call, on, onClosing, setEdited } from '../../shell/js/shell.js';
+import { questions } from '@vrmxg/editor-ui';
+import { editorClosing } from './closing.js';
 import TreeItem from './TreeItem.vue';
 import Inspector from './Inspector.vue';
 import Timeline from '@vrmxg/editor-ui/Timeline.vue'; // shared with the creator (M4 W5)
@@ -51,6 +52,7 @@ function refresh(kind = 'all') {
   ui.inspector = ed.inspect();
   const h = s.history(); ui.undo = h.undo; ui.redo = h.redo;
   ui.dirty = s.dirty; ui.nodes = s.doc.nodes.length; ui.hash = s.hash();
+  setEdited(ui.dirty); // the shell knows there is unsaved work even when the page can't answer it (the window's dot too)
   const v = s.validate(); ui.valid = v.ok; ui.problems = v.ok ? `${v.warnings.length} warnings` : v.errors.slice(0, 3).join('; ');
   ui.saved = ed.lastSave ? `${ed.lastSave.ref} · ${ed.lastSave.bytes} bytes · ${ed.lastSave.hash}` : '';
   ui.verify = ed.lastVerify ? `${ed.lastVerify.ref}: ${ed.lastVerify.same ? 'same bytes as saved' : 'DIFFERS from what was saved'}, ${ed.lastVerify.valid ? 'valid' : `invalid: ${ed.lastVerify.errors.join('; ')}`}` : '';
@@ -181,19 +183,16 @@ if (inShell) {
 }
 
 // Before the window closes or the app quits (the Mac shell asks, shell 0.9.0, AB-T-0593): a scene with unsaved changes
-// gets a sheet in the window. Save, Don't Save or Cancel in a project folder; the bundled sample can't be saved, so
-// there the sheet says so and offers to close anyway.
-let answer = null;
-const reply = (id) => { const r = answer; answer = null; ui.ask = null; r?.(id); };
-async function closing(reason) {
-  if (ui.ask) return false; // already asking
-  const s = ed?.session;
-  const q = s && closingQuestion({ dirty: s.dirty, canSave: !!ed.project?.writable, title: ed.sceneRef ?? 'This scene', project: ed.project?.name, reason });
-  if (!q) return true;
-  const c = await new Promise((resolve) => { answer = resolve; ui.ask = q; });
-  if (c !== 'save') return c === 'discard';
-  try { ui.error = ''; if (s.mode === 'playing') ed.stop(); await ed.save(); refresh(); return true; } catch (e) { ui.error = String(e?.message ?? e); refresh(); return false; } // not saved: the window stays
-}
+// gets a sheet in the window (closing.js: Save, Don't Save or Cancel in a project folder; Cancel or Close Anyway in the
+// read-only sample). One question at a time, every one answered (@vrmxg/editor-ui questions).
+const sheet = questions((q) => { ui.ask = q; });
+const reply = (id) => sheet.reply(id);
+const closing = async (reason) => {
+  ui.error = '';
+  const go = await editorClosing(ed, { ask: sheet.ask, asking: () => sheet.asking, reason, onError: (e) => { ui.error = String(e?.message ?? e); } });
+  if (ed?.session) refresh();
+  return go;
+};
 if (inShell) onClosing(closing);
 const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase().includes(ui.assetFilter.toLowerCase()));
 </script>

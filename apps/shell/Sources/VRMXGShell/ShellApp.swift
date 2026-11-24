@@ -106,6 +106,13 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     var closeApproved = false
     /// Answers a quit that waited for the page (`.terminateLater`); a test replaces it.
     var replyToTerminate: (Bool) -> Void = { NSApp.reply(toApplicationShouldTerminate: $0) }
+    /// Asks the person in the shell's own alert (CloseQuestion.swift: a page that isn't answering, a question asked
+    /// again); a test replaces it.
+    lazy var confirmStuck: (CloseQuestion.Stuck, CloseQuestion.Reason, @escaping @MainActor (Bool) -> Void) -> Void = { [unowned self] why, reason, done in
+        self.presentStuckAlert(why, reason, done)
+    }
+    /// The shell's alert while it is up.
+    var closeAlert: NSAlert?
 
     public init(config: ShellConfiguration) {
         self.config = config
@@ -179,7 +186,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         }
         menu(config.appName, [item("About \(config.appName)", #selector(NSApplication.orderFrontStandardAboutPanel(_:))), .separator(),
                               item("Hide \(config.appName)", #selector(NSApplication.hide(_:)), "h"), .separator(),
-                              item("Quit \(config.appName)", #selector(NSApplication.terminate(_:)), "q")])
+                              item("Quit \(config.appName)", #selector(menuQuit(_:)), "q", target: self)])
         func own(_ i: ShellMenuItem) -> NSMenuItem {
             if i.title == "-" { return .separator() }
             let m = item(i.title, #selector(menuOwn(_:)), i.key, i.modifiers, target: self); m.representedObject = i.event; return m
@@ -234,7 +241,12 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) { pageLoaded = false; pageGone() }
 
     /// The page reloads or its process ended: a close or quit that was waiting for its answer goes on.
-    func pageGone() { if config.asksBeforeClosing { closing.pageGone() } }
+    func pageGone() {
+        guard config.asksBeforeClosing else { return }
+        closing.pageGone()
+        closing.unsaved = false // a new page has nothing unsaved until it says so
+        window?.isDocumentEdited = false
+    }
 
     func emitOpened(_ url: URL) {
         do { emit("file.opened", try files.opened(url)) }
@@ -270,7 +282,12 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     public func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         guard asksPage else { return .terminateNow }
         if !window.isVisible || window.isMiniaturized { showWindow() } // the page's sheet has to be seen
+        // With a question open already: asked again (CloseQuestion.swift). A quit that is waiting stays the one quit.
+        // Over a close whose question is up in the page (or in the shell's own alert) this quit is dropped: the
+        // alert's Close Anyway closes the window, and the app with it.
+        let open = closing.pending, alertUp = closing.confirming != nil
         closing.ask(.quit)
+        if let open, open.reason == .close, open.waiting || alertUp { return .terminateCancel }
         return .terminateLater
     }
 }
