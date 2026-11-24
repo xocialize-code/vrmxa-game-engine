@@ -61,6 +61,7 @@ director's model.
 - **Where the model is:** a folder picked once. With none chosen, the first line that needs speaking opens the shell's
   folder panel (`voice.chooseModels`); cancelling it casts unvoiced and lists the lines left to voice.
 - **Before a render:** the page calls `voice.release` before each render queue job, so a 4K render doesn't share the
-  memory with the voice. The next voiced line loads it again.
+  memory with the voice (about 2.5 GB while loaded). The next voiced line loads it again, and so does a line voiced
+  while a render is still running.
 - **Another TTS:** `VRMXG_QUERY=tts=http://127.0.0.1:5190/speak` (with `content/sample/tools/tts-server.py`) still
   takes over when given.

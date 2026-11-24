@@ -397,13 +397,20 @@ export class CreatorHost extends EditorHost {
 
   /**
    * Let the shell's voice model go before a render queue job (M4-PLAN's memory risk: a 4K render shouldn't share the
-   * memory with a resident voice). The next line that needs speaking loads it again. → true when a model was unloaded.
+   * memory with a resident voice). The next line that needs speaking loads it again. The shell leaves the model while
+   * a line is being spoken (`busy`): that is waited out, for up to `wait` ms, since a line takes well under a second.
+   * A line voiced while the render runs loads the voice again; nothing here stops that.
+   * → true when a model was unloaded.
    */
-  async releaseVoice() {
+  async releaseVoice({ wait = 5000 } = {}) {
     if (!inShell) return false;
     try {
       if (!(await call('shell.info'))?.methods?.includes('voice.release')) return false;
-      return !!(await call('voice.release'))?.released;
+      for (let waited = 0; ; waited += 250) {
+        const r = await call('voice.release');
+        if (!r?.busy || waited >= wait) return !!r?.released;
+        await new Promise((done) => setTimeout(done, 250));
+      }
     } catch { return false; } // a render never fails for this
   }
 

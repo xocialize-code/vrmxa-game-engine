@@ -11,7 +11,11 @@ final class FakeBackend: VoiceBackend {
     var onEvent: (@MainActor (VoiceListenEvent) -> Void)?
     /// Set to hold a call to speak until it is resumed (a line being spoken while something else is asked).
     var hold: CheckedContinuation<Void, Never>?, holdSpeak = false
-    func prepare(models: URL, parts: Set<VoicePart>) async throws { prepares += 1; self.parts = parts }
+    var failPrepare = false
+    func prepare(models: URL, parts: Set<VoicePart>) async throws {
+        prepares += 1; self.parts = parts
+        if failPrepare { throw BridgeError("failed", "a model didn't load") }
+    }
     func release() async { releases += 1 }
     func speak(_ text: String, voice: String) async throws -> VoiceAudio {
         spoken.append(text)
@@ -70,10 +74,10 @@ final class FakeBackend: VoiceBackend {
     @Test func releaseUnloadsAndTheNextLineLoadsAgain() async throws {
         let (router, backend, methods, _) = setUp(parts: [.tts])
         let none = try #require(await router.handle(body: ["method": "voice.release"]).0 as? [String: Any])
-        #expect(none["released"] as? Bool == false && backend.releases == 0, "nothing was loaded")
+        #expect(none["released"] as? Bool == false, "nothing was loaded")
         _ = await router.handle(body: ["method": "tts.speak", "params": ["text": "One."]])
         let r = try #require(await router.handle(body: ["method": "voice.release"]).0 as? [String: Any])
-        #expect(r["released"] as? Bool == true && backend.releases == 1)
+        #expect(r["released"] as? Bool == true && backend.releases == 2, "the backend is asked each time, loaded or not")
         let s = try #require(await router.handle(body: ["method": "voice.status"]).0 as? [String: Any])
         #expect(s["prepared"] as? Bool == false && s["models"] as? String == "/tmp/models", "unloaded; the folder stays chosen")
         _ = try #require(await router.handle(body: ["method": "tts.speak", "params": ["text": "Two."]]).0 as? [String: Any])
@@ -86,13 +90,27 @@ final class FakeBackend: VoiceBackend {
         _ = await router.handle(body: ["method": "voice.prepare"])
         backend.holdSpeak = true
         let speaking = Task { @MainActor in await router.handle(body: ["method": "tts.speak", "params": ["text": "Slowly."]]).0 != nil }
-        while backend.hold == nil { await Task.yield() }
+        for _ in 0..<100_000 where backend.hold == nil { await Task.yield() }
+        try #require(backend.hold != nil, "the line reached the backend")
         let busy = try #require(await router.handle(body: ["method": "voice.release"]).0 as? [String: Any])
         #expect(busy["released"] as? Bool == false && busy["busy"] as? Bool == true && backend.releases == 0)
         backend.holdSpeak = false; backend.hold?.resume()
         #expect(await speaking.value, "the line was spoken")
         let after = try #require(await router.handle(body: ["method": "voice.release"]).0 as? [String: Any])
         #expect(after["released"] as? Bool == true)
+        withExtendedLifetime(methods) {}
+    }
+
+    @Test func releaseReachesTheBackendAfterAPrepareThatFailed() async throws {
+        let (router, backend, methods, _) = setUp()
+        backend.failPrepare = true
+        let failed = await router.handle(body: ["method": "tts.speak", "params": ["text": "Hi."]])
+        #expect(failed.1?.contains("didn't load") == true)
+        let r = try #require(await router.handle(body: ["method": "voice.release"]).0 as? [String: Any])
+        #expect(r["released"] as? Bool == false && r["busy"] == nil && backend.releases == 1, "not busy, and whatever part did load is let go")
+        backend.failPrepare = false
+        _ = try #require(await router.handle(body: ["method": "tts.speak", "params": ["text": "Hi."]]).0 as? [String: Any])
+        #expect(backend.prepares == 2, "the next line tries the load again")
         withExtendedLifetime(methods) {}
     }
 

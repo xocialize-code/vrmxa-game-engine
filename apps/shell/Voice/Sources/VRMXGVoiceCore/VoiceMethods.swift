@@ -148,11 +148,13 @@ public final class VoiceMethods {
         let t0 = Date()
         if let prepared { return ["prepared": true, "models": prepared.path, "ms": 0] }
         guard let folder = modelsFolder() else {
-            throw BridgeError("no_models", "no model folder: call voice.chooseModels (or set VRMXG_SHELL_MODELS outside the sandbox)")
+            throw BridgeError("no_models", "no model folder: call voice.chooseModels (or set VRMXG_SHELL_MODELS)")
         }
+        // counted as running, so voice.release leaves the models alone until every caller waiting here has its answer
+        running += 1; defer { running -= 1 }
         let task = preparing ?? Task { try await backend.prepare(models: folder, parts: parts) }
         preparing = task
-        defer { preparing = nil }
+        defer { if preparing == task { preparing = nil } } // a later prepare's task isn't this caller's to clear
         do { try await task.value } catch { throw BridgeError("failed", "the voice models didn't load: \(error)") }
         prepared = folder
         return ["prepared": true, "models": folder.path, "ms": ms(since: t0)]
@@ -165,10 +167,10 @@ public final class VoiceMethods {
     /// voice.release: the models leave memory; the folder stays chosen, and the next call that needs them loads them.
     func release() async -> Any? {
         if running > 0 || preparing != nil { return ["released": false, "busy": true] }
-        guard prepared != nil else { return ["released": false] }
+        let was = prepared != nil
         prepared = nil
-        await backend.release()
-        return ["released": true]
+        await backend.release() // asked even when nothing is marked loaded: a prepare that threw midway may have loaded a part
+        return ["released": was]
     }
 
     // MARK: tts.speak

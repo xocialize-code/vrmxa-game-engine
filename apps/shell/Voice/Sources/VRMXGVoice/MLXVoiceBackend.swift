@@ -34,12 +34,11 @@ public final class MLXVoiceBackend: VoiceBackend {
     }
 
     public func prepare(models: URL, parts: Set<VoicePart>) async throws {
+        // The store's root is stamped into each registration, so the folder is the one of the first prepare: a folder
+        // chosen later takes effect at the next launch.
         if registered.isEmpty {
             await engine.useModelStore(ModelStore(root: models))
-            // Kokoro's G2P model comes through the hub client, whose cache follows HF_HUB_CACHE, not the model store.
-            // Point it at the same folder: the one place a sandboxed app is sure to reach. An inherited HF_HUB_CACHE
-            // names a folder outside the sandbox, and the load then fails on its lock file (AB-T-0614's hand test).
-            setenv("HF_HUB_CACHE", models.path, 1)
+            Self.keepHubCacheReachable(models: models)
         }
         for part in [VoicePart.tts, .stt, .llm] where parts.contains(part) && !registered.contains(part) {
             switch part {
@@ -60,10 +59,26 @@ public final class MLXVoiceBackend: VoiceBackend {
     }
 
     /// Every loaded model leaves memory (the engine's evict: unload, and its budget back); the registrations stay.
+    /// Every registered part is evicted, not only the ones this class saw load: evicting what isn't loaded does nothing,
+    /// and a prepare that threw midway, or a run the engine admitted by itself, is then covered too.
     public func release() async {
         listener?.cancel(); listener = nil
-        for part in resident { await engine.evict(Self.capability(part)) }
+        for part in registered { await engine.evict(Self.capability(part)) }
         resident = []
+    }
+
+    /// Kokoro's G2P model comes through the hub client, whose cache follows HF_HUB_CACHE (else HF_HOME/hub, else the
+    /// app's own caches folder), not the model store. An app launched from a shell inherits those variables, and in the
+    /// sandbox they can name a folder it can't write to: the load then fails on the hub's lock file (AB-T-0614's hand
+    /// test). Only then is the cache moved, into the models folder, which the app can reach. A cache that works is left
+    /// where it is, so an app's earlier download is still found. Called before the hub client is first used.
+    static func keepHubCacheReachable(models: URL, env: [String: String] = ProcessInfo.processInfo.environment) {
+        guard let inherited = env["HF_HUB_CACHE"] ?? env["HF_HOME"].map({ $0 + "/hub" }), !inherited.isEmpty else { return }
+        let path = NSString(string: inherited).expandingTildeInPath
+        var dir = URL(fileURLWithPath: path)
+        // the nearest folder that exists: the hub client makes the rest
+        while !FileManager.default.fileExists(atPath: dir.path), dir.path != "/" { dir.deleteLastPathComponent() }
+        if !FileManager.default.isWritableFile(atPath: dir.path) { setenv("HF_HUB_CACHE", models.path, 1) }
     }
 
     static func capability(_ part: VoicePart) -> Capability {

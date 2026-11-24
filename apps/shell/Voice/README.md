@@ -39,7 +39,7 @@ microphone entitlement. The creator's Mac app does this, and its page calls `voi
   `VRMXG_SHELL_MODELS` names it instead: an absolute path outside the sandbox, or a path relative to the app's temporary
   folder (its container's `Data/tmp`, in the sandbox), which is how a hand test gives a sandboxed app its models.
 - **Launching:** launch the app through LaunchServices (`open`), or macOS answers the microphone request with its launcher's permission (AB-L-0370).
-- **Known gap AB-A-0321 (mlx-audio):** Kokoro fetches its ~9 MB G2P model on every prepare, into the model folder. It comes through the hub client, whose cache follows `HF_HUB_CACHE`: the backend sets that to the model folder when it prepares, because an inherited value names a folder a sandboxed app can't write to (AB-T-0614).
+- **Known gap AB-A-0321 (mlx-audio):** Kokoro fetches its ~9 MB G2P model on every prepare, into the model folder. It comes through the hub client, whose cache follows `HF_HUB_CACHE` (else `HF_HOME/hub`, else the app's own caches folder). An app launched from a shell inherits those, and in the sandbox they can name a folder it can't write to; only then does the backend move the cache into the model folder (AB-T-0614). A model folder chosen after the first prepare takes effect at the next launch.
 
 **Microphone in the Mac app:** use `stt.listen`, not the page's `getUserMedia`. In WKWebView, getUserMedia gave a live track and a running AudioContext but delivered no frames to an AudioWorklet (measured 2026-11-19, with AirPods). The native path has no echo cancellation: use headphones, or stop listening while the character speaks.
 
@@ -62,4 +62,4 @@ On the first launch after the models were chosen, prepare took 17 s, and two ear
 with Kokoro loaded and two lines spoken (a peak of 2,640 MB while loading); one second after `voice.release` it is at
 78 MB. A cast that loaded Kokoro and spoke two lines took about 3.9 s.
 
-Tests: `swift test --filter VRMXGVoiceCoreTests` checks the methods' encoding over a scripted backend, with no MLX: WAV, rate, duration and words; long lines split with offset timings; the line and the JSON verdict; tools refused; transcription resampled; listening events; an app that only speaks registers and loads the voice alone; release unloads, leaves a line that is being spoken alone, and the next line loads again; a relative models folder.
+Tests: `swift test --filter VRMXGVoiceCoreTests` checks the methods' encoding over a scripted backend, with no MLX: WAV, rate, duration and words; long lines split with offset timings; the line and the JSON verdict; tools refused; transcription resampled; listening events; an app that only speaks registers and loads the voice alone; release unloads, leaves a line that is being spoken alone, reaches the backend after a prepare that failed, and the next line loads again; a relative models folder.

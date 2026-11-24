@@ -11,7 +11,7 @@ web=${mac:h}/creator
 app=$mac/build/VRMXGCreator.app
 
 if [[ "${SKIP_WEB:-0}" != 1 ]]; then (cd $web && npx vite build); fi
-swift build -c release --build-system swiftbuild --package-path $mac --product VRMXGCreator 2>&1 | grep -v "Conflicting identity for mlx-swift"
+swift build -c release --build-system swiftbuild --package-path $mac --product VRMXGCreator 2>&1 | { grep -v "Conflicting identity for mlx-swift" || true; }
 bin=$mac/.build/out/Products/Release
 rm -rf $app
 mkdir -p $app/Contents/MacOS $app/Contents/Resources

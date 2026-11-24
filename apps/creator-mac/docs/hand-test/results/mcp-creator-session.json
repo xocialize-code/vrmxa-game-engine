@@ -23,10 +23,10 @@
   {
    "tool": "ToolSearch",
    "input": {
-    "query": "select:mcp__vrmxg-creator__command,mcp__vrmxg-creator__describe,mcp__vrmxg-creator__read,mcp__vrmxg-creator__render,mcp__vrmxg-creator__short,mcp__vrmxg-creator__undo,mcp__vrmxg-creator__redo",
+    "query": "select:mcp__vrmxg-creator__command,mcp__vrmxg-creator__describe,mcp__vrmxg-creator__read,mcp__vrmxg-creator__render,mcp__vrmxg-creator__short",
     "max_results": 10
    },
-   "result": "\n\n\n\n\n\n",
+   "result": "\n\n\n\n",
    "isError": false
   },
   {
@@ -116,6 +116,14 @@
    "isError": false
   },
   {
+   "tool": "mcp__vrmxg-creator__read",
+   "input": {
+    "dir": "characters"
+   },
+   "result": "{\"files\":[\"characters/hana.vrmxa\",\"characters/mira.vrmxa\"]}",
+   "isError": false
+  },
+  {
    "tool": "mcp__vrmxg-creator__command",
    "input": {
     "command": "recast",
@@ -129,6 +137,14 @@
    "isError": false
   },
   {
+   "tool": "mcp__vrmxg-creator__short",
+   "input": {
+    "part": "lines"
+   },
+   "result": "{\"content\":{\"ref\":\"sequences/cafe-order.vrmxs\",\"lines\":[{\"id\":\"cafe-order-hana-1-says-1\",\"role\":\"HANA\",\"start\":156,\"end\":219,\"voice\":\"af_nicole\",\"voiced\":true,\"text\":\"Good morning! What can I get you?\"},{\"id\":\"cafe-order-mira-says-1\",\"role\":\"MIRA\",\"start\":225,\"end\":314,\"voice\":null,\"voiced\":false,\"text\":\"Hmm. A latte, please. To go. And one of those croissants.\"},{\"id\":\"cafe-order-hana-1-says-2\",\"role\":\"HANA\",\"start\":320,\"end\":353,\"voice\":\"af_nicole\",\"voiced\":true,\"text\":\"Coming right up!\"},{\"id",
+   "isError": false
+  },
+  {
    "tool": "mcp__vrmxg-creator__command",
    "input": {
     "command": "revoice",
@@ -138,22 +154,6 @@
     }
    },
    "result": "{\"command\":\"revoice\",\"changed\":true,\"label\":\"Voice line \\\"Is it always this quiet before nine?\\\" (new words)\",\"lines\":[\"cafe-order-mira-says-2 (af_bella)\"],\"spoken\":1,\"script\":\"line 30 reworded\",\"warnings\":[],\"undo\":\"Undo Voice line \\\"Is it always this quiet before nine?\\\" (new words) (MCP)\"}",
-   "isError": false
-  },
-  {
-   "tool": "mcp__vrmxg-creator__short",
-   "input": {
-    "part": "shots"
-   },
-   "result": "[{\"id\":\"shot-sc-8296a3d8\",\"number\":\"010\",\"start\":0,\"end\":48,\"camera\":\"vc-wide\",\"cameras\":[\"vc-wide\"],\"rig\":\"twoShot\",\"lens\":35,\"subjects\":[\"hana-1\",\"mira\"],\"hand\":false},{\"id\":\"shot-ac-f49f9062\",\"number\":\"020\",\"start\":48,\"end\":156,\"camera\":\"vc-wide\",\"cameras\":[\"vc-wide\"],\"rig\":\"twoShot\",\"lens\":35,\"subjects\":[\"hana-1\",\"mira\"],\"hand\":false},{\"id\":\"shot-ln-cd2c6011\",\"number\":\"030\",\"start\":156,\"end\":225,\"camera\":\"vc-hana-1\",\"cameras\":[\"vc-hana-1\"],\"rig\":\"closeUp\",\"lens\":85,\"subjects\":[\"hana-1\"],\"han",
-   "isError": false
-  },
-  {
-   "tool": "mcp__vrmxg-creator__short",
-   "input": {
-    "part": "roles"
-   },
-   "result": "{\"roles\":[{\"id\":\"hana-1\",\"cue\":\"HANA\",\"lines\":4,\"asset\":\"characters/hana.vrmxa\",\"name\":\"Minimal\",\"voice\":\"af_nicole\"},{\"id\":\"mira\",\"cue\":\"MIRA\",\"lines\":3,\"asset\":null,\"name\":null,\"voice\":null}],\"characters\":[\"characters/hana.vrmxa\",\"characters/mira.vrmxa\"],\"voices\":[\"af_heart\",\"af_bella\",\"af_sky\",\"af_nicole\",\"am_adam\",\"am_michael\",\"bf_emma\",\"bm_george\"]}",
    "isError": false
   },
   {
@@ -198,12 +198,12 @@
    "input": {
     "part": "history"
    },
-   "result": "{\"undo\":\"Cast HANA: Minimal (MCP)\",\"redo\":\"Voice line \\\"Is it always this quiet before nine?\\\" (new words) (MCP)\",\"undoDepth\":2,\"redoDepth\":2}",
+   "result": "{\"undo\":\"Shot 030: camera vc-030-closeup (MCP)\",\"redo\":null,\"undoDepth\":4,\"redoDepth\":0}",
    "isError": false
   }
  ],
  "failed": 0,
- "costUsd": 0.19379290000000002,
+ "costUsd": 0.16806609999999997,
  "turns": 20,
- "report": "All eight steps ran, but the history doesn't match what I did. I made four edits, and the history shows only two on the undo side and two on the redo side. I didn't call undo or redo, and I didn't save.\n\n1. **Read:** \"The Order\" (`cafe-order`) is 780 frames at 24 fps (32.5 s), with 11 shots and 7 lines, all voiced. The roles are HANA (`hana-1`, 4 lines) and MIRA (`mira`, 3 lines). The script was clean, with 0 errors.\n2. **Patch script:** \"A latte, please.\" is now \"A latte, please. To go.\" The undo step is \"Undo Re-script (1 changed) (MCP)\". It warned that Mira's line at frame 225 had been edited by hand, so its words now follow the script.\n3. **Recast HANA:** `characters/hana.vrmxa` was cast in `af_nicole` (character name \"Minimal\"). 4 lines were re-voiced and there were no warnings. The undo step is \"Undo Cast HANA: Minimal (MCP)\".\n4. **Re-voice:** `cafe-order-mira-says-2` now reads \"Is it always this quiet before nine?\". It was spoken once, in `af_bella`, and the script line was reworded. The undo step is \"Undo Voice line \"Is it always this quiet before nine?\" (new words) (MCP)\".\n5. **Shot 030 camera:** The new camera `vc-030-closeup` (closeUp rig, target `mira`, 85 mm) replaced `vc-hana-1`. The undo step is \"Undo Shot 030: camera vc-030-closeup (MCP)\".\n6. **Render:** Frame 200 at 960×540 is in shot 030 (`shot-ln-cd2c6011`), world hash `62a8c99a347a9f8b`. It shows an extreme close-up of a face with purple eyes, a faint smile, bare shoulders, and a blurred cafe with a red mat behind. I didn't confirm whose face it is. It should be Mira's with the new camera, but the history problem below leaves that open.\n7. **Queue:** Job `job-1`, \"The Order · Review 1080p H.264\", is queued and not run.\n8. **History:** The history reports the next undo as \"Cast HANA: Minimal (MCP)\" and the next redo as the re-voice step. Undo depth is 2 and redo depth is 2. If that is accurate, the camera change and the re-voice are currently undone, and the render and queued export may not include them. The creator's undo history is shared with the person, so they may have undone steps in the app. Check the creator window, or tell me to read the shots and lines again to see the current state."
+ "report": "All eight steps ran. I did not undo or save anything.\n\n1. **Read:** \"The Order\" (`cafe-order`) runs 780 frames at 24 fps (32.5 s), with 11 shots, 7 dialogue lines and 2 roles (HANA and MIRA). The script has no errors. All 7 lines were voiced: Hana in af_heart and Mira in af_bella.\n\n2. **Script patch:** Mira's line now reads \"A latte, please. To go.\" The undo step is **\"Undo Re-script (1 changed) (MCP)\"**.\n   - **Warning:** that line had been edited by hand, so its words now follow the script.\n   - **Side effect:** this left the line unvoiced. It was still unvoiced when I last read the lines, after step 3, and I did not re-voice it because you didn't ask me to.\n\n3. **Recast HANA** with `characters/hana.vrmxa`:\n   - **Voice:** the new voice is **af_nicole**.\n   - **Lines re-voiced:** 4.\n   - **Warnings:** none.\n   - **Undo step:** \"Undo Cast HANA: Minimal (MCP)\".\n\n4. **Re-voice:** Mira's line (`cafe-order-mira-says-2`) now says \"Is it always this quiet before nine?\" in af_bella. One line was spoken, with no warnings. The script line was reworded at the same time. The undo step is \"Undo Voice line \"Is it always this quiet before nine?\" (new words) (MCP)\".\n\n5. **Camera:** shot 030 now uses the new camera `vc-030-closeup` (rig closeUp, target mira, 85 mm lens). It replaced `vc-hana-1`. The undo step is \"Undo Shot 030: camera vc-030-closeup (MCP)\".\n\n6. **Render of frame 200** at 960×540: it shows an extreme close-up of Mira's face, from the eyes down to her collarbone. She has purple eyes and a neutral, slightly closed mouth, with the cafe's brown walls and a red counter-top behind her.\n   - **Shot:** `shot-ln-cd2c6011` (shot 030).\n   - **World hash:** `62a8c99a347a9f8b`.\n   - The render tool reported luma 164±64.9.\n\n7. **Export queued:** `job-1`, \"The Order · Review 1080p H.264\", state queued. I did not run it.\n\n8. **History:** `undoDepth` is 4 and `redoDepth` is 0. The history call only names the newest step, so the four I made, oldest to newest, are:\n   1. Re-script (1 changed)\n   2. Cast HANA: Minimal\n   3. Voice line \"Is it always this quiet before nine?\" (new words)\n   4. Shot 030: camera vc-030-closeup\n\nThe short has unsaved changes. Mira's \"To go.\" line still needs re-voicing, which is `revoice` with `line: cafe-order-mira-says-1`. The queued export will use the short as it is now, so you may want to do that first."
 }
