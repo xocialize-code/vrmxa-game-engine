@@ -9,7 +9,8 @@ import RenderQueue from '@vrmxg/editor-ui/RenderQueue.vue';
 import { CreatorHost } from './host.js';
 import { bundledProject, openProjectFolder, pickFile, fetchOpened, readPicked } from './project.js';
 import { kindOf } from './shorts.js';
-import { inShell, call, on } from '../../shell/js/shell.js';
+import { inShell, call, on, onClosing } from '../../shell/js/shell.js';
+import { closingQuestion } from '@vrmxg/editor-ui';
 import ScriptPane from './ScriptPane.vue';
 import TakePanel from './TakePanel.vue';
 import { takeLine } from './takes.js';
@@ -107,6 +108,20 @@ async function guard() {
   if (c === 'discard') { cr.discardChanges(); return true; }
   try { await cr.saveShort(); return true; } catch (e) { ui.error = String(e?.message ?? e); return false; }
 }
+/**
+ * Before the window closes or the app quits (the Mac shell asks, shell 0.9.0, AB-T-0593): the same sheet, when work
+ * would be lost. In a project folder that is the unsaved-changes sheet every other leave shows (Save, Don't Save,
+ * Cancel). The bundled sample saves only into memory, so there Save can't keep anything: the sheet says so and offers
+ * to close anyway. → true to go on closing
+ */
+async function closing(reason) {
+  if (ui.ask) return false; // a question is already open in the window: that one first
+  if (!cr?.session) return true;
+  const q = closingQuestion({ dirty: cr.isDirty(), canSave: !!cr.project?.writable, memory: cr.project?.unsaved?.() ?? [], title: cr.short?.title ?? 'This short', neverSaved: !!cr.short && !cr.short.saved, project: cr.project?.name, reason });
+  if (!q) return true;
+  if (q.options.some((o) => o.id === 'save')) { const go = await guard(); refresh(); return go; }
+  return (await ask(q.title, q.text, q.options)) === 'discard';
+}
 /** A file the project already holds by that name, with different bytes. */
 const onClash = (ref) => ask('A different file has this name', `The project already has ${ref}, and it isn't the same file.`, [{ id: 'rename', label: 'Keep Both' }, { id: 'replace', label: 'Replace' }, { id: 'cancel', label: 'Cancel' }]);
 
@@ -189,6 +204,7 @@ if (inShell) {
   on('file.opened', (f) => act(async () => { await ready; await openPicked(await fetchOpened(f)); }));
   on('menu.undo', () => (fieldUndo() ? document.execCommand('undo') : undo()));
   on('menu.redo', () => (fieldUndo() ? document.execCommand('redo') : redo()));
+  onClosing(closing); // File › Close Window, the close button, Quit
 }
 </script>
 

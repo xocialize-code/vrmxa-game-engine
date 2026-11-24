@@ -605,6 +605,182 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
         #expect((j["blinkR"] as? Double ?? 0) > 0.9, "the picture's left is the person's right eye")
         #expect((j["blinkL"] as? Double ?? 1) < 0.25)
         #expect(((j["geo"] as? [String: Any])?["earL"] as? Double ?? 1) < 0.1, "geo keeps the picture's sides")
-        #expect(vrmxgShellVersion == "0.8.0")
+        #expect(vrmxgShellVersion == "0.9.0")
+    }
+}
+
+/// Asking the page before the window closes or the app quits (shell 0.9.0, AB-T-0593).
+@Suite @MainActor struct CloseQuestionTests {
+    final class Log { var events: [(name: String, payload: [String: Any])] = []; var outcomes: [String] = [] }
+
+    func question(timeout: TimeInterval = 30) -> (CloseQuestion, Log) {
+        let log = Log()
+        let q = CloseQuestion(timeout: timeout, emit: { log.events.append(($0, $1)) }, decided: { log.outcomes.append("\($0.rawValue) \($1 ? "goes on" : "kept")") })
+        return (q, log)
+    }
+
+    /// Waits (up to 5 s) for an outcome a timer brings.
+    func outcome(_ log: Log, count: Int = 1) async throws {
+        for _ in 0..<500 where log.outcomes.count < count { try await Task.sleep(for: .milliseconds(10)) }
+    }
+
+    @Test func thePageIsAskedAndItsAnswerDecides() throws {
+        let (q, log) = question()
+        q.ask(.close)
+        let id = try #require(q.pending?.id)
+        #expect(log.events.count == 1 && log.events[0].name == "window.closing")
+        #expect(log.events[0].payload["id"] as? String == id && log.events[0].payload["reason"] as? String == "close")
+        #expect(try q.answer(id: id, answer: "wait")["pending"] as? Bool == true, "the person is deciding")
+        #expect(log.outcomes.isEmpty)
+        #expect(try q.answer(id: id, answer: "cancel")["pending"] as? Bool == false)
+        #expect(log.outcomes == ["close kept"])
+        #expect(try q.answer(id: id, answer: "close")["pending"] as? Bool == false, "an answer to a question that is over does nothing")
+        #expect(log.outcomes == ["close kept"])
+        q.ask(.quit)
+        let next = try #require(q.pending?.id)
+        #expect(next != id && log.events[1].payload["reason"] as? String == "quit")
+        #expect(try q.answer(id: "close-99", answer: "close")["pending"] as? Bool == false, "not this question")
+        #expect(throws: BridgeError.self) { try q.answer(id: next, answer: "maybe") }
+        _ = try q.answer(id: next, answer: "close")
+        #expect(log.outcomes == ["close kept", "quit goes on"] && q.pending == nil)
+    }
+
+    @Test func aPageThatDoesNotAnswerCannotBlockQuitting() async throws {
+        let (q, log) = question(timeout: 0.05)
+        q.ask(.quit)
+        try await outcome(log)
+        #expect(log.outcomes == ["quit goes on"], "the timeout")
+        #expect(try q.answer(id: "close-1", answer: "cancel")["pending"] as? Bool == false, "a late answer changes nothing")
+        #expect(log.outcomes.count == 1)
+    }
+
+    @Test func waitHoldsForThePersonAndAskingAgainStartsTheTimeoutAgain() async throws {
+        let (q, log) = question(timeout: 0.05)
+        q.ask(.close)
+        let id = try #require(q.pending?.id)
+        _ = try q.answer(id: id, answer: "wait")
+        try await Task.sleep(for: .milliseconds(300))
+        #expect(log.outcomes.isEmpty && q.pending?.waiting == true, "no timeout while the person decides")
+        q.ask(.quit) // ⌘Q while the sheet is up: the same question again, now a quit
+        #expect(log.events.count == 2 && log.events[1].payload["id"] as? String == id && log.events[1].payload["reason"] as? String == "quit")
+        _ = try q.answer(id: id, answer: "wait") // the page is alive: it waits again
+        try await Task.sleep(for: .milliseconds(300))
+        #expect(log.outcomes.isEmpty)
+        q.ask(.close) // asked once more, and this time the page says nothing (it hung after "wait")
+        #expect(log.events[2].payload["reason"] as? String == "quit", "a quit stays a quit")
+        try await outcome(log)
+        #expect(log.outcomes == ["quit goes on"])
+    }
+
+    @Test func aPageThatHangsWhileItAsksCannotBlockEither() async throws {
+        // alive: every ping answered, however long the person takes
+        var pings = 0
+        let log = Log()
+        let alive = CloseQuestion(timeout: 0.03, emit: { log.events.append(($0, $1)) }, ping: { reply in pings += 1; reply() }, decided: { log.outcomes.append("\($0.rawValue) \($1 ? "goes on" : "kept")") })
+        alive.ask(.quit)
+        _ = try alive.answer(id: try #require(alive.pending?.id), answer: "wait")
+        try await Task.sleep(for: .milliseconds(300))
+        #expect(pings >= 3 && log.outcomes.isEmpty, "checked again and again, and it waits")
+        _ = try alive.answer(id: try #require(alive.pending?.id), answer: "cancel")
+        #expect(log.outcomes == ["quit kept"])
+        // hung after "wait": no ping comes back, and after two the quit goes on
+        var sent = 0
+        let hung = Log()
+        let q = CloseQuestion(timeout: 0.03, emit: { hung.events.append(($0, $1)) }, ping: { _ in sent += 1 }, decided: { hung.outcomes.append("\($0.rawValue) \($1 ? "goes on" : "kept")") })
+        q.ask(.quit)
+        _ = try q.answer(id: try #require(q.pending?.id), answer: "wait")
+        try await outcome(hung)
+        #expect(hung.outcomes == ["quit goes on"] && sent == 2, "two pings without a reply")
+    }
+
+    @Test func aPageThatGoesLetsTheCloseGoOn() throws {
+        let (q, log) = question()
+        q.pageGone()
+        #expect(log.outcomes.isEmpty, "nothing was asked")
+        q.ask(.close)
+        _ = try q.answer(id: try #require(q.pending?.id), answer: "wait")
+        q.pageGone() // a reload, or the web process ended
+        #expect(log.outcomes == ["close goes on"])
+    }
+
+    // The delegate's routing, on a real window and web view without launching the app.
+    func delegate(_ name: String, asks: Bool, closeKeepsRunning: Bool = false, timeout: TimeInterval = 30) -> ShellAppDelegate {
+        let d = ShellAppDelegate(config: ShellConfiguration(appName: name, scheme: "vrmxg-test-\(UUID().uuidString.prefix(8).lowercased())", closeKeepsRunning: closeKeepsRunning,
+                                                            asksBeforeClosing: asks, closeTimeout: timeout))
+        d.webView = WKWebView(frame: NSRect(x: 0, y: 0, width: 400, height: 300))
+        d.window = NSWindow(contentRect: d.webView.frame, styleMask: [.titled, .closable, .resizable, .miniaturizable], backing: .buffered, defer: true)
+        d.window.isReleasedWhenClosed = false // the test keeps reading it
+        d.window.contentView = d.webView
+        d.registerWindowMethods()
+        d.pageLoaded = true
+        return d
+    }
+    func reply(_ d: ShellAppDelegate, _ answer: String) async -> (Any?, String?) {
+        await d.router.handle(body: ["method": "window.closeReply", "params": ["id": d.closing.pending?.id ?? "", "answer": answer]])
+    }
+
+    @Test func closingTheWindowWaitsForThePagesAnswer() async throws {
+        let d = delegate("Creator", asks: true)
+        d.showWindow()
+        #expect(!d.windowShouldClose(d.window) && d.closing.pending?.reason == .close, "asked, not closed")
+        #expect(((await reply(d, "wait")).0 as? [String: Any])?["pending"] as? Bool == true)
+        _ = await reply(d, "cancel")
+        #expect(d.window.isVisible && d.closing.pending == nil && !d.closeApproved, "Cancel keeps the window")
+        #expect(!d.windowShouldClose(d.window))
+        _ = await reply(d, "close")
+        #expect(!d.window.isVisible && d.closeApproved, "Save or Don't Save: the page says close, and it closes")
+        #expect(d.applicationShouldTerminate(NSApplication.shared) == .terminateNow, "the quit after the last window isn't asked again")
+    }
+
+    @Test func quittingWaitsForThePagesAnswer() async throws {
+        let d = delegate("Creator", asks: true)
+        var replies: [Bool] = []
+        d.replyToTerminate = { replies.append($0) }
+        #expect(d.applicationShouldTerminate(NSApplication.shared) == .terminateLater && d.closing.pending?.reason == .quit)
+        #expect(d.window.isVisible, "a hidden window is shown, so the page's sheet is seen")
+        _ = await reply(d, "cancel")
+        #expect(replies == [false] && d.window.isVisible)
+        #expect(d.applicationShouldTerminate(NSApplication.shared) == .terminateLater)
+        _ = await reply(d, "close")
+        #expect(replies == [false, true])
+        let bad = await reply(d, "close")
+        #expect((bad.0 as? [String: Any])?["pending"] as? Bool == false && replies.count == 2, "nothing open: nothing happens")
+        d.window.orderOut(nil)
+    }
+
+    @Test func aHungPageCannotBlockTheDelegate() async throws {
+        let d = delegate("Creator", asks: true, timeout: 0.05)
+        var replies: [Bool] = []
+        d.replyToTerminate = { replies.append($0) }
+        #expect(d.applicationShouldTerminate(NSApplication.shared) == .terminateLater)
+        for _ in 0..<500 where replies.isEmpty { try await Task.sleep(for: .milliseconds(10)) }
+        #expect(replies == [true], "no answer in the timeout: the quit goes on")
+        // a page that reloads with the question open
+        let e = delegate("Editor", asks: true)
+        e.showWindow()
+        #expect(!e.windowShouldClose(e.window))
+        e.webView(e.webView, didStartProvisionalNavigation: nil)
+        #expect(!e.window.isVisible, "the page went: the close goes on")
+    }
+
+    @Test func anAppThatDoesNotAskClosesAsBefore() async throws {
+        let d = delegate("Playground", asks: false)
+        #expect(d.windowShouldClose(d.window) && d.applicationShouldTerminate(NSApplication.shared) == .terminateNow)
+        #expect(!d.router.methods.contains("window.closeReply"))
+        #expect((await d.router.handle(body: ["method": "window.closeReply", "params": ["id": "close-1", "answer": "close"]])).1?.contains("unknown_method") == true)
+        // an app that asks, before its page has loaded (or while it reloads): nobody to ask
+        let loading = delegate("Creator", asks: true)
+        loading.pageLoaded = false
+        #expect(loading.windowShouldClose(loading.window) && loading.applicationShouldTerminate(NSApplication.shared) == .terminateNow)
+        // a menu bar app: closing hides the window and asks nothing; quitting asks
+        let bar = delegate("Companion", asks: true, closeKeepsRunning: true)
+        var replies: [Bool] = []
+        bar.replyToTerminate = { replies.append($0) }
+        bar.showWindow()
+        #expect(!bar.windowShouldClose(bar.window) && !bar.window.isVisible && bar.closing.pending == nil, "hidden, not asked")
+        #expect(bar.applicationShouldTerminate(NSApplication.shared) == .terminateLater && bar.window.isVisible)
+        _ = await reply(bar, "close")
+        #expect(replies == [true])
+        bar.window.orderOut(nil)
     }
 }

@@ -35,6 +35,7 @@ extension ShellAppDelegate: NSWindowDelegate {
             self.setMode(mode, size: size, borderless: p.bool("borderless") ?? false)
             return self.windowState()
         }
+        registerCloseMethods() // window.closeReply, for an app that asks its page before closing (shell 0.9.0)
         window.delegate = self
         let nc = NotificationCenter.default
         for name in [NSWindow.didChangeOcclusionStateNotification, NSWindow.didMiniaturizeNotification, NSWindow.didDeminiaturizeNotification] {
@@ -108,10 +109,12 @@ extension ShellAppDelegate: NSWindowDelegate {
     @objc func statusToggleWindow() { windowVisible ? hideWindow() : showWindow() }
     @objc func statusAppItem(_ sender: NSMenuItem) { if let e = sender.representedObject as? String { emit("menu.\(e)") } }
 
-    // closeKeepsRunning: closing hides the window, the app stays (in the menu bar)
+    // closeKeepsRunning: closing hides the window, the app stays (in the menu bar). asksBeforeClosing (shell 0.9.0):
+    // the page is asked first, and the window closes when it says so (CloseQuestion.swift). Otherwise it closes.
     public func windowShouldClose(_ sender: NSWindow) -> Bool {
-        guard config.closeKeepsRunning else { return true }
-        hideWindow()
+        if config.closeKeepsRunning { hideWindow(); return false }
+        guard asksPage else { return true }
+        closing.ask(.close)
         return false
     }
 

@@ -256,3 +256,54 @@ fresh: false
   expect find("id=short-third-take").0.name == "Short Third Take (third-take), not saved"   # a draft until saved
   expect find("id=script value='Set: cafe.vrmxs'").count == 1
   ```
+
+- [ ] With unsaved changes, File › Close Window and Quit ask first: Cancel keeps the window and the work; Don't Save quits without saving.
+  ```steps
+  partial: that the app has gone isn't seen here (AppProbe can't look at an app that has quit, and its relaunch would end one that hadn't); what a fresh launch finds in the project is
+  set draft = find("id=doc-state").0.name
+  expect $draft matches "^Short third-take .* unsaved changes "   # row 15's draft, never saved
+  activate   # File › Close Window is the key window's item: enabled only while the app is in front
+  menu "File › Close Window" press
+  until find("id=ask-text").0.name == "Third Take has changes that aren't saved (it has never been saved)."
+  act id=ask-cancel action=press
+  until find("id=ask").count == 0
+  expect find("id=doc-state").0.name == $draft   # the window is still there, and the draft in it
+  menu "App › Quit*" press
+  until find("id=ask-text").0.name == "Third Take has changes that aren't saved (it has never been saved)."
+  act id=ask-cancel action=press
+  until find("id=ask").count == 0
+  pause 6500   # longer than the shell's 5 s timeout: Cancel was an answer, so nothing quits later
+  expect find("id=doc-state").0.name == $draft
+  expect menu("File › Save").enabled == true   # the app carries on after a cancelled quit: its menus answer
+  menu "App › Quit*" press
+  until find("id=ask").count == 1
+  act id=ask-discard action=press
+  pause 3000   # it quits here
+  relaunch   # a fresh launch reads what the project holds
+  wait id=open-project enabled=true timeout_ms=60000
+  until find("id=doc-state").0.name matches "^Short cafe-order " timeout=60000
+  act id=open-project action=press
+  until find("id=project-name").0.name == "Project project"
+  until find("id=doc-state").0.name matches "^Short cafe-order sequences/cafe-order.vrmxs [0-9]+ nodes saved valid " timeout=60000
+  expect find("id=short-third-take").count == 0   # the draft never reached the project
+  expect find("id=short-first-light").0.name == "Short First Light (first-light)"   # what row 8 saved is there
+  ```
+
+- [ ] Save in the sheet saves the short and then closes the window.
+  ```steps
+  partial: that the app has gone isn't seen here (AppProbe can't look at an app that has quit, and its relaunch would end one that hadn't); what a fresh launch finds in the project is
+  act id=new-short action=press   # a draft again: "Second take"
+  until find("id=doc-state").0.name matches "^Short second-take sequences/second-take.vrmxs [0-9]+ nodes unsaved changes " timeout=60000
+  activate
+  menu "File › Close Window" press
+  until find("id=ask-text").0.name == "Second take has changes that aren't saved (it has never been saved)."
+  act id=ask-save action=press
+  pause 4000   # it saves, the window closes, and the app quits with its last window
+  relaunch
+  wait id=open-project enabled=true timeout_ms=60000
+  until find("id=doc-state").0.name matches "^Short cafe-order " timeout=60000
+  act id=open-project action=press
+  until find("id=project-name").0.name == "Project project"
+  until find("id=short-second-take").count == 1 timeout=60000
+  expect find("id=short-second-take").0.name == "Short Second take (second-take)"   # saved before the window closed: in the project, no longer a draft
+  ```

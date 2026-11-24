@@ -6,6 +6,7 @@
 //   const f = await call('file.open', { types: ['vrmxs'] }); // { path, name, size, text }
 //   await call('file.save', { text, suggestedName: 'cafe.vrmxs' });
 //   on('menu.save', () => …);                               // File menu commands arrive as events
+//   onClosing(async (reason) => await askAboutUnsavedWork()); // before the window closes or the app quits (shell 0.9.0)
 const handler = globalThis.webkit?.messageHandlers?.vrmxg;
 
 /** True inside a VRMXG Mac app. */
@@ -33,4 +34,25 @@ export function on(name, fn) {
   const listener = (e) => { if (e.detail?.name === name) fn(e.detail.payload ?? {}); };
   addEventListener('vrmxg-shell', listener);
   return () => removeEventListener('vrmxg-shell', listener);
+}
+
+/**
+ * Answer the shell before the window closes or the app quits (shell 0.9.0, for an app whose ShellConfiguration sets
+ * `asksBeforeClosing`). `decide(reason)` (reason: 'close' or 'quit') resolves to true to go on, or false to keep the
+ * window: show the unsaved-changes sheet in it, save in it. The shell is told at once that the page is asking, so it
+ * waits as long as the person takes; a page that never says so (a hung page) is closed after the shell's timeout. Asked
+ * again while `decide` is still running (⌘Q with the sheet up), the page only says it is still asking. A `decide`
+ * that throws keeps the window. Returns an unsubscribe function.
+ */
+export function onClosing(decide) {
+  let deciding = false;
+  return on('window.closing', async ({ id, reason }) => {
+    const say = (answer) => call('window.closeReply', { id, answer }).catch(() => {});
+    say('wait');
+    if (deciding) return;
+    deciding = true;
+    let go = false;
+    try { go = (await decide(reason)) === true; } catch (e) { console.error(e); } finally { deciding = false; }
+    say(go ? 'close' : 'cancel');
+  });
 }

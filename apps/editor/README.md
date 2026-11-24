@@ -38,6 +38,11 @@ test took the web process to 25 GB; now it stays under 2 GB on WebGPU and on Web
 numbers, and what each step of the fix bought, are in
 [`apps/editor-mac/docs/hand-test/results/ab-t-0592/`](../editor-mac/docs/hand-test/results/ab-t-0592/README.md).
 
+**Closing asks first (the Mac app, shell 0.9.0, AB-T-0593).** With unsaved changes, File › Close Window, the close
+button and Quit show a sheet in the window: Save (saves, then closes), Don't Save or Cancel. The bundled sample is
+read-only, so there the sheet says the changes can't be kept and offers Cancel or Close Anyway. The question is
+`@vrmxg/editor-ui`'s `closingQuestion`; opening another scene over unsaved changes still doesn't ask.
+
 A project's own modules (`behaviours.js`) import `@vrmxg/core` by name; the page's import map points that at
 `static/vrmxg-core.js`, which hands them the editor's own engine. Not yet: dragging several timeline items at once, curve editing of keys, a shot list separate from the shot row, MCP tools for sequences (W11), multi-selection gizmos, copy and paste,
 connections in the inspector, WebCodecs export in a browser (the spike chose it as a fallback only).

@@ -5,7 +5,8 @@ import { onMounted, reactive, ref } from 'vue';
 import { EditorHost, ADDABLE, SIZES, RATES, CODECS } from './host.js';
 import { bundledProject, openProjectFolder } from './project.js';
 import { McpLink } from './mcp.js';
-import { inShell, call, on } from '../../shell/js/shell.js';
+import { inShell, call, on, onClosing } from '../../shell/js/shell.js';
+import { closingQuestion } from '@vrmxg/editor-ui';
 import TreeItem from './TreeItem.vue';
 import Inspector from './Inspector.vue';
 import Timeline from '@vrmxg/editor-ui/Timeline.vue'; // shared with the creator (M4 W5)
@@ -17,6 +18,7 @@ const ui = reactive({
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
   debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', renderer: '—', holds: '', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
   mcp: '', tl: null, gameSlot: 'slot-1', gameNote: '', paused: false, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
+  ask: null, // { title, text, options: [{ id, label }] }: the window's question before it closes (M5 W8)
   ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '', check: '', canCheck: false, scene: '', checkRows: '' },
 });
 /** @type {EditorHost} */ let ed = null; // never reactive
@@ -177,6 +179,22 @@ if (inShell) {
   on('menu.undo', () => (typing() ? document.execCommand('undo') : undo()));
   on('menu.redo', () => (typing() ? document.execCommand('redo') : redo()));
 }
+
+// Before the window closes or the app quits (the Mac shell asks, shell 0.9.0, AB-T-0593): a scene with unsaved changes
+// gets a sheet in the window. Save, Don't Save or Cancel in a project folder; the bundled sample can't be saved, so
+// there the sheet says so and offers to close anyway.
+let answer = null;
+const reply = (id) => { const r = answer; answer = null; ui.ask = null; r?.(id); };
+async function closing(reason) {
+  if (ui.ask) return false; // already asking
+  const s = ed?.session;
+  const q = s && closingQuestion({ dirty: s.dirty, canSave: !!ed.project?.writable, title: ed.sceneRef ?? 'This scene', project: ed.project?.name, reason });
+  if (!q) return true;
+  const c = await new Promise((resolve) => { answer = resolve; ui.ask = q; });
+  if (c !== 'save') return c === 'discard';
+  try { ui.error = ''; if (s.mode === 'playing') ed.stop(); await ed.save(); refresh(); return true; } catch (e) { ui.error = String(e?.message ?? e); refresh(); return false; } // not saved: the window stays
+}
+if (inShell) onClosing(closing);
 const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase().includes(ui.assetFilter.toLowerCase()));
 </script>
 
@@ -289,6 +307,14 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       </ul>
     </section>
 
+    <div v-if="ui.ask" class="ask-back">
+      <section id="ask" class="ask" role="alertdialog" :aria-label="ui.ask.title" aria-modal="true">
+        <h2>{{ ui.ask.title }}</h2>
+        <p id="ask-text" :aria-label="ui.ask.text">{{ ui.ask.text }}</p>
+        <div class="row"><button v-for="(o, i) in ui.ask.options" :id="`ask-${o.id}`" :key="o.id" type="button" :class="{ play: i === 0 }" :aria-label="o.label" @click="reply(o.id)">{{ o.label }}</button></div>
+      </section>
+    </div>
+
     <footer class="bar status">
       <fieldset class="toggles"><legend>Debug</legend>
         <label v-for="k in ['colliders', 'sensors', 'capsules', 'rays']" :key="k"><input v-model="ui.debug[k]" type="checkbox" :aria-label="k" @change="setDebug"> {{ k }}</label>
@@ -370,4 +396,8 @@ output { font-variant-numeric: tabular-nums; }
 .export .field { justify-content: space-between; margin: 6px 0; gap: 8px; } .export .seg button { padding: 3px 6px; font-size: 12px; } .export .field select, .export .field input:not([type=checkbox]) { width: 180px; box-sizing: border-box; }
 .export .row { display: flex; align-items: center; gap: 8px; margin: 8px 0; } .export progress { flex: 1; }
 .export output { display: block; font-size: 12px; color: var(--muted); word-break: break-word; }
+.ask-back { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-start; justify-content: center; padding-top: 12vh; background: rgba(0, 0, 0, 0.3); }
+.ask { width: 380px; padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35); }
+.ask h2 { margin-bottom: 8px; color: var(--ink); text-transform: none; letter-spacing: 0; font-size: 14px; }
+.ask p { margin: 0 0 12px; } .ask .row { display: flex; justify-content: flex-end; gap: 8px; }
 </style>
