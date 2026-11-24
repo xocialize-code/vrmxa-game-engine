@@ -1,6 +1,6 @@
 ---
 title: "Node types"
-description: "The 27 node types of a VRMXG scene, with each one's props, signals and actions."
+description: "The 28 node types of a VRMXG scene, with each one's props, signals and actions."
 order: 10
 ---
 
@@ -18,7 +18,7 @@ tools are all generated from it, and so is this page.
 - An **action** is something a node can be told to do: by a connection, a behaviour, or `call_action` over MCP.
 - A type that **extends** another has everything its parent has.
 
-27 types:
+28 types:
 
 | Type | Extends | Asset | What |
 |---|---|---|---|
@@ -49,6 +49,7 @@ tools are all generated from it, and so is this page.
 | [GameTimer](#gametimer) | Node3D |  | A clock counted in simulation steps: a countdown that times out, or a stopwatch (no length). It follows its node's pause and time scale, and stops when the game is won or lost. |
 | [GameGoal](#gamegoal) | Node3D |  | Something to get done: the HUD shows the first one that isn't. Done when its condition first holds, or by its action. |
 | [Checkpoint](#checkpoint) | Node3D |  | A point where the game saves by itself (into a slot of the save store): when its condition first holds, or by its action (a trigger's connection). |
+| [Dialogue](#dialogue) | Node3D |  | A conversation: lines said in order by the scene's characters, some offering choices that say which line comes next. One conversation runs at a time. |
 
 ## Node3D
 
@@ -944,5 +945,41 @@ Also, from Node3D: `ready`.
 | Action | What |
 |---|---|
 | `write` | Save now. |
+
+Also, from Node3D: `show`, `hide`.
+
+## Dialogue
+
+A conversation: lines said in order by the scene's characters, some offering choices that say which line comes next. One conversation runs at a time.
+
+- **Extends:** [Node3D](#node3d)
+- **Behaviours it accepts:** [`switchedBy`](./behaviours#switchedby)
+
+**Props**
+
+| Prop | Type | Default | Simulated | What |
+|---|---|---|---|---|
+| `lines` | list of object |  | yes | The lines, in order. A line's next, or a choice's to, jumps to another by id. |
+| `autostart` | boolean | `false` | yes | Starts when the scene starts. |
+| `skippable` | boolean | `true` | yes | The player may end a line early (the dialogue.advance input). |
+
+**Signals**
+
+| Signal | Arguments | What |
+|---|---|---|
+| `started` |  |  |
+| `ended` | `line` (string) |  |
+| `line` | `line` (string); `speaker` (string); `text` (string) | A line started. |
+| `asked` |  | A line's choices are on offer. |
+| `chose` | `line` (string); `choice` (string); `text` (string) | The player picked a choice. |
+
+Also, from Node3D: `ready`.
+
+**Actions**
+
+| Action | Arguments | What |
+|---|---|---|
+| `start` | `at` (string): Start at this line's id (default: the first) | Start the conversation (nothing happens while another is going on). |
+| `stop` |  | End it where it is. |
 
 Also, from Node3D: `show`, `hide`.
