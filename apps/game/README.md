@@ -104,12 +104,14 @@ sample game itself is M5 W10.
 
 ## Checked
 
-- `npm test` here (22 tests, no models needed): a session through scene changes, a save and a load replays to the same
-  per-step hashes; Continue in a fresh session; a checkpoint slot refused; a save or a checkpoint whose write fails stays
-  unsaved; settings read field by field, written in order, a failed write said; slot rows; the gamepad (edges, repeat on
+- `npm test` here (28 tests; all but one need no models): a session through scene changes, a save and a load replays to
+  the same per-step hashes; Continue in a fresh session; a checkpoint slot refused; a save or a checkpoint whose write
+  fails stays unsaved; a save still being written when another loads, or a load that outlives its session (one test per
+  finding of the independent review); the test game's whole loop (title, the level won with the door's checkpoint, the
+  ending, the title again) replayed (needs vrmxa-core, skipped on CI); settings read field by field, written in order, a failed write said; slot rows; the gamepad (edges, repeat on
   an injected clock, a button held when first seen); `HeldGate`; the question before progress is lost.
 - `node acceptance/m5/game.mjs` (13 checks, Chromium, under the GPU lock): the test game through the menus, the log
-  replayed in Node to the same hash after every step, a fresh launch loading the save, every menu from a stand-in
+  replayed in Node to the same hash after every step (AB-R-1116), a fresh launch loading the save, every menu from a stand-in
   gamepad and from the keyboard, the backend readout.
 - `acceptance/m5/build.mjs --chromium` and `build-wkwebview.sh`: M5 check 1 with this app as the runtime.
 - The Mac app: `apps/game-mac/docs/HAND-TEST-M5-GAME.md`.
