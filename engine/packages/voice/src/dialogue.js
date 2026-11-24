@@ -111,6 +111,13 @@ export class DialogueService {
      * @type {null | { node: string, index: number, phase: 'line' | 'choice', since: number, duration: number, offered: number[] }}
      */
     this.active = null;
+    /**
+     * Conversations that start by themselves (`autostart`), by node id, waiting for the world's first step. Not at
+     * `ready`: a world built for a scene change gets the game's state carried in after it is built, and a line's
+     * condition must read that state, not the defaults.
+     * @type {string[]}
+     */
+    this.queued = [];
     /** Goes up whenever view() would change: a UI re-reads it when it does. */
     this.version = 0;
     this._scripts = new WeakMap(); // node → { lines: the props' list it was read from, script }
@@ -155,6 +162,7 @@ export class DialogueService {
   // ---------------------------------------------------------------- the step
 
   physicsProcess() {
+    while (!this.active && this.queued.length) { const node = this.tree.find(this.queued.shift()); if (node) this.start(node); }
     const a = this.active;
     if (!a) return;
     const node = this.tree.find(a.node), input = this.tree.services.get('input');
@@ -259,8 +267,8 @@ export class DialogueService {
 
   // ---------------------------------------------------------------- snapshots
 
-  getState() { return { active: this.active ? { ...this.active, offered: [...this.active.offered] } : null }; }
-  setState(s) { this.active = s.active ? { ...s.active, offered: [...s.active.offered] } : null; this.version++; }
+  getState() { return { active: this.active ? { ...this.active, offered: [...this.active.offered] } : null, queued: [...this.queued] }; }
+  setState(s) { this.active = s.active ? { ...s.active, offered: [...s.active.offered] } : null; this.queued = [...(s.queued ?? [])]; this.version++; }
 }
 
 /** The Dialogue node: declares a conversation; its actions start and stop it. Without the service it is plain data. */
@@ -277,8 +285,9 @@ export class DialogueNode extends Node {
     if (tree?.byId.get(this.id) === this) tree.remove(this.id);
     throw new Error(`Dialogue "${this.id}": ${problems.join('; ')}`);
   }
-  ready() { if (this.props.autostart) this.dialogue?.start(this); }
-  exitTree() { this.dialogue?.stop(this); }
+  // autostart: on the world's first step (see DialogueService.queued), once the game's carried state is in
+  ready() { if (this.props.autostart && this.dialogue && !this.dialogue.queued.includes(this.id)) this.dialogue.queued.push(this.id); }
+  exitTree() { const d = this.dialogue; if (!d) return; d.queued = d.queued.filter((id) => id !== this.id); d.stop(this); }
   start(args) { this.dialogue?.start(this, { at: typeof args?.at === 'string' ? args.at : undefined }); }
   stop() { this.dialogue?.stop(this); }
 }

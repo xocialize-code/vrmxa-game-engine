@@ -120,11 +120,15 @@ test('a line ends early on the advance input, and only when the conversation is 
   assert.equal(fixed.dialogue.view().index, 0);
 });
 
-test('autostart starts the conversation as the scene starts', () => {
+test('autostart starts the conversation on the world\'s first step (after a scene change has carried the game in)', () => {
   const tree = new SceneTree({ registry: m0Registry() });
   installInput(tree); const dialogue = installDialogue(tree);
   tree.instantiate({ format: 'vrmxs', version: 1, id: 's', nodes: [{ id: 'root', type: 'Node3D' }, { id: 'd', type: 'Dialogue', parent: 'root', props: { autostart: true, lines: [{ text: 'Hello.' }] } }] });
+  assert.equal(dialogue.view(), null, 'not at ready');
+  assert.deepEqual(dialogue.getState().queued, ['d']);
+  tree.step();
   assert.equal(dialogue.view().text, 'Hello.');
+  assert.equal(dialogue.view().since, 0);
   assert.equal(dialogue.view().name, null, 'a line nobody says');
 });
 
