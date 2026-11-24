@@ -16,7 +16,8 @@
 // it replays the same whatever the bindings were or are.
 import { ActionMap } from './actions.js';
 
-const byName = ([a], [b]) => (a < b ? -1 : a > b ? 1 : 0);
+/** @param {[string, any]} x @param {[string, any]} y */
+const byName = (x, y) => (x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0);
 
 export class InputService {
   /**

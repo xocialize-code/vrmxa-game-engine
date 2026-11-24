@@ -5,7 +5,10 @@
 // input.peek(), which reads the devices without taking anything from the step.
 import { ActionMap } from '@vrmxg/input';
 
-/** The UI's actions. Up, down, left and right move between controls (left and right change a slider); accept clicks; back leaves. */
+/**
+ * The UI's actions. Up, down, left and right move between controls (left and right change a slider); accept clicks; back leaves.
+ * @type {Record<string, { type: 'axis' | 'button', bindings: any[] }>}
+ */
 export const UI_ACTIONS = {
   ui_up: { type: 'button', bindings: [{ key: 'ArrowUp' }, { key: 'KeyW' }, { gamepadButton: 12 }] },
   ui_down: { type: 'button', bindings: [{ key: 'ArrowDown' }, { key: 'KeyS' }, { gamepadButton: 13 }] },

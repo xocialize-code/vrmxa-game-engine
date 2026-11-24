@@ -17,7 +17,7 @@ const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
 /** Settings as stored, with every gap filled and every damaged value replaced: never throws, whatever the store held. */
 export function readSettings(raw) {
   const r = isObject(raw) ? raw : {};
-  const v = isObject(r.volumes) ? r.volumes : {};
+  /** @type {Record<string, any>} */ const v = isObject(r.volumes) ? r.volumes : {};
   const volumes = Object.fromEntries(VOLUME_BUSES.map((b) => [b, { volume: clamp01(v[b]?.volume ?? 1), muted: v[b]?.muted === true }]));
   const bindings = isObject(r.bindings) ? structuredClone(r.bindings) : {};
   return { version: SETTINGS_VERSION, volumes, bindings };
@@ -63,7 +63,10 @@ export class GameSettings {
     return this._writing;
   }
 
-  /** Set a bus's volume (0..1) and mute; applied at once and saved. */
+  /**
+   * Set a bus's volume (0..1) and mute; applied at once and saved.
+   * @param {string} bus @param {{ volume?: number, muted?: boolean }} [o] @param {{ setBus: (name: string, o: any) => void } | null} [audio]
+   */
   setVolume(bus, { volume, muted } = {}, audio = null) {
     if (!VOLUME_BUSES.includes(bus)) throw new Error(`no bus "${bus}" (${VOLUME_BUSES.join(', ')})`);
     const v = this.data.volumes[bus];
