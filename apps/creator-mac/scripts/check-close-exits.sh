@@ -1,7 +1,9 @@
 #!/bin/zsh
 # What the close-and-quit rows of the creator's and the editor's scenarios can't see (AB-T-0593; AppProbe can't look at
 # an app that has quit, AB-T-0625): that the process has gone after Save and after Don't Save, for Quit and for
-# File › Close Window; the sheet the read-only sample gets; and a quit with nothing unsaved. One line per check.
+# File › Close Window; the sheet the read-only sample gets; a Save that fails (the editor's project folder made
+# read-only: the window stays, the scene stays unsaved, the next Quit asks again); and a quit with nothing unsaved.
+# One line per check.
 # Build both Mac apps first, and run it under the GPU lock (the apps draw):
 #   node acceptance/gpu-lock.mjs run --who close-exits -- apps/creator-mac/scripts/check-close-exits.sh
 # APPPROBE names the appprobe binary (default: the one on PATH).
@@ -53,6 +55,26 @@ echo "Cancel: $(kill -0 $P 2>/dev/null && echo 'still running' || echo GONE), do
 $A menu app=$P path="App › Quit*" action=press > /dev/null; until_name $P ask-text "."
 $A act app=$P id=ask-discard action=press > /dev/null
 echo "Quit Anyway: $(gone $P)"
+
+echo "== editor, a project folder that can't be written: a change, Quit, Save"
+$root/apps/editor-mac/scripts/hand-test-fixtures.sh > /dev/null
+etmp=$HOME/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp
+P=$($A launch app=$root/apps/editor-mac/build/VRMXGEditor.app env='{"VRMXG_QUERY":"mcp=off","VRMXG_SHELL_PROJECT":"project"}' wait=40 --json | pidof)
+$A wait app=$P id=open-project enabled=true timeout_ms=60000 > /dev/null; until_name $P doc-state "nodes saved"
+$A act app=$P id=open-project action=press > /dev/null; until_name $P project-name "Project project"; until_name $P doc-state "nodes saved"
+scene=$(name $P doc-state | awk '{print $2}')
+$A act app=$P id=add-node action=press > /dev/null; until_name $P doc-state "unsaved changes"
+before=$(shasum $etmp/project/$scene | cut -c1-12)
+chmod -R a-w $etmp/project
+$A menu app=$P path="App › Quit*" action=press > /dev/null; until_name $P ask-text "."
+$A act app=$P id=ask-save action=press > /dev/null; sleep 2
+echo "Save fails: $(kill -0 $P 2>/dev/null && echo 'still running' || echo GONE), doc $(name $P doc-state | grep -o 'unsaved changes\|nodes saved'), file $( [ "$(shasum $etmp/project/$scene | cut -c1-12)" = "$before" ] && echo unchanged || echo CHANGED )"
+echo "error shown: $($A find app=$P text="permission to save" --json 2>/dev/null | python3 -c "import json,sys; d=json.load(sys.stdin).get('data') or []; print((d[0].get('name') or d[0].get('value') or '?')[:110] if d else '(none)')")"
+$A menu app=$P path="App › Quit*" action=press > /dev/null; until_name $P ask-text "."
+echo "Quit again: asks again: $(name $P ask-text)"
+chmod -R u+w $etmp/project
+$A act app=$P id=ask-save action=press > /dev/null
+echo "Save, the folder writable again: $(gone $P); file $( [ "$(shasum $etmp/project/$scene | cut -c1-12)" = "$before" ] && echo UNCHANGED || echo written )"
 
 echo "== editor, nothing unsaved: Quit"
 P=$($A launch app=$root/apps/editor-mac/build/VRMXGEditor.app env='{"VRMXG_QUERY":"mcp=off"}' wait=40 --json | pidof)

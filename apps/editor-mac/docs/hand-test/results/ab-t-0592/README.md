@@ -13,6 +13,7 @@ content process's `phys_footprint` sampled once a second by
 | [`dispose-only-webgl`](dispose-only-webgl/) | the same, `renderer=webgl` | the same | 15.87 GB | 1.64, 5.85, 14.12, 15.82 | 3.59 GB |
 | [`after-webgpu`](after-webgpu/) | the fix as committed (8b04b5e) | the same | **3.31 GB** (one sample; five of 67 over 2.2 GB) | 1.80, 1.37, 1.52, 1.74 | 0.66 GB |
 | [`after-webgl`](after-webgl/) | the same, `renderer=webgl` | the same | **2.09 GB** | 1.12, 1.16, 1.03, 1.65 | 0.58 GB |
+| [`after-review-webgpu`](after-review-webgpu/) | after the review of PR 33 (the bookkeeping moved to `worlds.js`) | the same | 2.30 GB | row 8: 1.81 | 0.65 GB |
 | [`soak-webgpu`](soak-webgpu/) | the fix; rows 1 to 5, then ten more passes of undo-all and redo-all (478 worlds built) | 15 of 15 | 1.87 GB | flat between 1.1 and 1.5 GB for five minutes | 0.75 GB |
 
 The peak moves from run to run: the build before the last one (the same editor code) peaked at 1.88 GB on WebGPU and
@@ -58,11 +59,16 @@ Not Play, and not WebKit: every world the editor built was kept for good.
 
 - The editor's status bar shows what it holds (`#holds`: "2 worlds of 74 built, 66 geometries, 58 textures"), and the
   timeline scenario waits for "1 or 2 worlds" after the undo and redo row and after Play.
+- `apps/creator/test/worlds.test.mjs`: the host's bookkeeping (`apps/editor/src/worlds.js`: `retire`, `sweep`, `use`).
+  A world nothing shows goes at once; one the view shows waits for the view to move on; one in use isn't disposed
+  under the work; a dispose that throws loses no other world.
 - `apps/creator/test/dispose.test.mjs`: a world's physics, geometries, materials and textures once each; a skinned
   mesh's index, attributes and morph targets detached, a static mesh's left alone; one `ImageBitmap` behind two
   textures closed once.
 
 ## Not measured
+- What leaves a world's root while it runs (a body the closet replaced, a node removed during play): the dispose walks
+  the root, so those wait for the collector. Read from the code, not measured; AB-T-0626.
 
 - The memory before the fix on WebGL (the baseline was taken on WebGPU, the default).
 - A world's cost in the creator (its own scenario wasn't sampled); it uses the same host and the same dispose.

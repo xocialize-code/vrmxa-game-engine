@@ -270,11 +270,24 @@ fresh: false
   activate   # File › Close Window is the key window's item: enabled only while the app is in front
   menu "File › Close Window" press
   until find("id=ask-text").0.name == "Third Take has changes that aren't saved (it has never been saved)."
+  menu "File › New Short" press   # another question over the close's sheet: refused, so the close keeps its sheet and its answer
+  pause 800
+  expect find("id=ask").count == 1   # one sheet
+  expect find("id=doc-state").0.name == $draft   # and no new short
+  menu "File › Close Window" press   # asked again with the sheet up: the shell's own alert, the way out of a question that never ends
+  until find("role=button name='Close Anyway' exact=true").count == 1
+  act role=button name="Go Back" exact=true action=press
+  until find("role=button name='Close Anyway' exact=true").count == 0
+  expect find("id=ask").count == 1   # Go Back: the page's question is still up
   act id=ask-cancel action=press
   until find("id=ask").count == 0
   expect find("id=doc-state").0.name == $draft   # the window is still there, and the draft in it
   menu "App › Quit*" press
   until find("id=ask-text").0.name == "Third Take has changes that aren't saved (it has never been saved)."
+  menu "App › Quit*" press   # Quit again while the quit waits: the shell's alert again
+  until find("role=button name='Quit Anyway' exact=true").count == 1
+  act role=button name="Go Back" exact=true action=press
+  until find("role=button name='Quit Anyway' exact=true").count == 0
   act id=ask-cancel action=press
   until find("id=ask").count == 0
   pause 6500   # longer than the shell's 5 s timeout: Cancel was an answer, so nothing quits later

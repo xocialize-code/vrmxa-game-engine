@@ -72,7 +72,7 @@ fresh: false
   act id=node-cafe-door action=press
   until find("id=inspector-id").0.name == "Node cafe-door"
   act id=field-parent action=press
-  act role=menuitem name=node3d exact=true surface=app action=press
+  act role=menuitem name=node3d exact=true action=press
   until find("id=undo").0.name == "Undo Move cafe-door under node3d"
   act id=node-node3d action=press
   act id=delete action=press
@@ -130,6 +130,11 @@ fresh: false
   activate   # File › Close Window is the key window's item: enabled only while the app is in front
   menu "File › Close Window" press
   until find("id=ask-text").0.name == "built-cafe.vrmxs has changes that aren't saved."
+  menu "File › Close Window" press   # asked again with the sheet up: the shell's own alert, the way out of a question that never ends
+  until find("role=button name='Close Anyway' exact=true").count == 1
+  act role=button name="Go Back" exact=true action=press
+  until find("role=button name='Close Anyway' exact=true").count == 0
+  expect find("id=ask").count == 1   # Go Back: the page's question is still up
   act id=ask-cancel action=press
   until find("id=ask").count == 0
   expect find("id=doc-state").0.name == $edited   # the window is still there, with the change

@@ -13,5 +13,10 @@ sheet: cafe-cart.vrmxs has changes that aren't saved. Sample (bundled) is read-o
 buttons: Cancel | Quit Anyway | save: (none)
 Cancel: still running, doc unsaved changes
 Quit Anyway: exited after 200 ms at most
+== editor, a project folder that can't be written: a change, Quit, Save
+Save fails: still running, doc unsaved changes, file unchanged
+error shown: You don’t have permission to save the file “cafe-cart.vrmxs” in the folder “project”.
+Quit again: asks again: cafe-cart.vrmxs has changes that aren't saved.
+Save, the folder writable again: exited after 200 ms at most; file written
 == editor, nothing unsaved: Quit
 Quit with nothing unsaved: exited after 200 ms at most (no sheet)
