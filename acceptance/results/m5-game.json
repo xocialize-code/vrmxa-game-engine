@@ -6,50 +6,50 @@
  "build": {
   "game": "cafe-test",
   "files": 76,
-  "digest": "481fcbed29e5ebca61c4114015249e6f24e180f45ecd6b9779056c04eed735ce",
-  "manifest": "9edfb9e13fa42cfe4eb3252455671b0e4b2c4e36d69682ff3aacf52b57edb6dd"
+  "digest": "2c107e8ea7af5ed4fb6d3ea15b9fe1a45565f893c56c8743736c3fa004146f0c",
+  "manifest": "9a1c52941c4e1b8cf7c462d9bda7bf35bd3ad0ddf9fdbca88a7aaab749e5b9a0"
  },
  "session": {
   "segments": [
    {
     "from": "game/title.vrmxs",
     "at": 0,
-    "steps": 429,
+    "steps": 432,
     "marks": [
      {
       "type": "save",
       "slot": "slot-1",
-      "step": 248
+      "step": 251
      }
     ]
    },
    {
     "from": "slot-1",
-    "at": 248,
-    "steps": 149,
+    "at": 251,
+    "steps": 151,
     "marks": []
    }
   ],
-  "steps": 578,
+  "steps": 583,
   "scenes": [
    "game/title.vrmxs",
    "game/level.vrmxs"
   ],
   "last": {
-   "step": 397,
+   "step": 402,
    "scene": "game/level.vrmxs",
-   "hash": "01ae0ef8f670240b"
+   "hash": "739d2cb1839c9cfc"
   }
  },
  "replay": {
-  "steps": 578,
+  "steps": 583,
   "firstDifference": null
  },
  "checks": [
   {
    "name": "the test game exports with the game app as its runtime",
    "ok": true,
-   "detail": "76 files, digest 481fcbed29e5ebca"
+   "detail": "76 files, digest 2c107e8ea7af5ed4"
   },
   {
    "name": "the title menu, on WebGL when forced",
@@ -59,42 +59,42 @@
   {
    "name": "Escape pauses: nothing steps while the menu is open",
    "ok": true,
-   "detail": "paused at step 248 in game/level.vrmxs"
+   "detail": "paused at step 251 in game/level.vrmxs"
   },
   {
    "name": "Save Game → Slot 1 saves, and the slot says what it holds",
    "ok": true,
-   "detail": "\"Slot 1: The Cafe (test game) · level · Get to the counter, level · 0:04 · 2026-11-24 22:18\""
+   "detail": "\"Slot 1: The Cafe (test game) · level · Get to the counter, 0:04 · 2026-11-24 22:43\""
   },
   {
    "name": "Load Game over unsaved play asks first, then goes back to the save",
    "ok": true,
-   "detail": "asked \"Load over this game?\"; was at 429, back at 248 (saved at 248)"
+   "detail": "asked \"Load over this game?\"; was at 432, back at 251 (saved at 251)"
   },
   {
    "name": "Quit to Title asks first, and the session's log has both segments",
    "ok": true,
-   "detail": "asked \"Quit to Title without saving?\"; 2 segments, 578 steps hashed in the page, scenes game/title.vrmxs, game/level.vrmxs; goals before the load {\"reach-counter\":{\"done\":false,\"step\":null}}"
+   "detail": "asked \"Quit to Title without saving?\"; 2 segments, 583 steps hashed in the page, scenes game/title.vrmxs, game/level.vrmxs; goals before the load {\"reach-counter\":{\"done\":false,\"step\":null}}"
   },
   {
    "name": "the session played in Chromium replays in Node to the same hash after every step",
    "ok": true,
-   "detail": "578 steps, last 01ae0ef8f670240b at step 397"
+   "detail": "583 steps, last 739d2cb1839c9cfc at step 402"
   },
   {
    "name": "a fresh launch offers Continue, and Load Game → Slot 1 loads the save",
    "ok": true,
-   "detail": "Continue \"Continue: Slot 1: The Cafe (test game) · level · Get to the counter, level · 0:04 · 2026-11-24 22:18\"; loaded at step 248 (saved at 248)"
+   "detail": "Continue \"Continue: Slot 1: The Cafe (test game) · level · Get to the counter, 0:04 · 2026-11-24 22:43\"; loaded at step 251 (saved at 251)"
   },
   {
    "name": "every menu from a gamepad: Start pauses and resumes, the d-pad moves, A chooses, B goes back",
    "ok": true,
-   "detail": "Start → pause (focus #resume); down → #save-game; A → save menu (focus #slot-1); B → pause; down ×3 → #settings; A → settings (focus #backend-choice); Start → playing"
+   "detail": "Start → pause (focus #resume); down → #save-game; A → save menu (focus #slot-1); B → pause; down ×3 → #settings; A → settings (focus #backend-auto); Start → playing"
   },
   {
    "name": "every menu from the keyboard: arrows move, Enter chooses, Escape goes back and resumes",
    "ok": true,
-   "detail": "↓↓ → #load-game; Enter → load menu (focus #slot-1); ↑↑ → #settings; settings ↓ → #volume-master; Escape → playing"
+   "detail": "↓↓ → #load-game; Enter → load menu (focus #slot-1); ↑↑ → #settings; settings ↓ → #backend-webgpu; Escape → playing"
   },
   {
    "name": "a backend chosen in Settings is kept",

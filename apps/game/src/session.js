@@ -44,6 +44,25 @@ export class GameSession {
   constructor({ game, digest = null, load, unload = null, store = null, stamp = null, seed = 1, scenes = null, prefabs = null, onWorld = null, onEvent = null, hashes = false }) {
     this.game = game; this.digest = digest;
     this.loadWorld = load; this.unload = unload; this.store = store; this.stamp = stamp;
+    /**
+     * Counts the segments begun and the sessions ended. A save or a checkpoint is written to the store outside the step
+     * and may land after the player has loaded another save or quit: it makes progress safe only for the segment it was
+     * started in. (A load keeps the same GameFlow, so comparing flows isn't enough.)
+     */
+    this.segment = 0;
+    // the store as the flow sees it: every write (a player's save, a checkpoint) moves safeStep once it has succeeded,
+    // and only if no other segment began meanwhile
+    this._store = store && {
+      read: (slot) => store.read(slot),
+      list: () => store.list(),
+      remove: (slot) => store.remove(slot),
+      write: async (slot, file) => {
+        const seg = this.segment;
+        const entry = await store.write(slot, file);
+        if (seg === this.segment && this.flow) this.safeStep = Math.max(this.safeStep, file?.summary?.step ?? 0);
+        return entry;
+      },
+    };
     this.seed = seed >>> 0; this.scenes = scenes; this.prefabs = prefabs;
     this.onWorld = onWorld; this.onEvent = onEvent; this.keepHashes = hashes;
     /** The flow being played, or null (the title menu). @type {GameFlow | null} */ this.flow = null;
@@ -54,6 +73,7 @@ export class GameSession {
     /** @type {Array<{ step: number, scene: string | null, hash: string }>} */ this.trace = [];
     /** The log of the session that ended last (Quit to title), for a runner to read. */ this.last = /** @type {any} */ (null);
     this._handed = null;
+    this._changing = false; // a New Game or a load under way
   }
 
   get active() { return !!this.flow; }
@@ -69,20 +89,17 @@ export class GameSession {
 
   _flow() {
     const flow = new GameFlow({
-      load: this.loadWorld, unload: this.unload, store: this.store, seed: this.seed, stamp: this.stamp, scenes: this.scenes, prefabs: this.prefabs,
+      load: this.loadWorld, unload: this.unload, store: this._store, seed: this.seed, stamp: this.stamp, scenes: this.scenes, prefabs: this.prefabs,
       onWorld: (tree, info) => { if (info.recording) this._handed = info.recording; this.onWorld?.(tree, info); },
     });
-    flow.on((e) => {
-      // a checkpoint is progress kept only once its file is in the store (the flow says so with `stored`)
-      if (e.type === 'checkpointWritten' && (e.stored || !this.store) && this.flow === flow && e.step <= this.step) this.safeStep = Math.max(this.safeStep, e.step);
-      this.onEvent?.(e);
-    });
+    flow.on((e) => this.onEvent?.(e)); // a checkpoint makes progress safe through the store's write (above), not its event
     return flow;
   }
 
   _begin(flow, from) { this.flow = flow; this.segments = []; this.trace = []; this._open(from); }
   _open(from) {
     const tree = this.flow.tree;
+    this.segment++;
     this.current = { from, at: tree.clock.step, marks: [] };
     tree.services.get('input').record(); // from the next step: every frame the simulation reads is in the log
     this.safeStep = tree.clock.step;
@@ -90,9 +107,11 @@ export class GameSession {
 
   /** New Game: a fresh session in the game's entry scene, at step 0. An earlier session ends first. */
   async newGame() {
+    if (this._changing) throw new Error('a game is starting or loading already');
     this.end();
     const flow = this._flow();
-    try { await flow.start(this.game.entry); } catch (e) { flow.dispose(); throw e; }
+    this._changing = true;
+    try { await flow.start(this.game.entry); } catch (e) { flow.dispose(); throw e; } finally { this._changing = false; }
     this._begin(flow, { start: this.game.entry, seed: this.seed });
     return this;
   }
@@ -104,6 +123,12 @@ export class GameSession {
    * @returns {Promise<number>} the step play goes on from
    */
   async loadFile(file, { slot = null } = {}) {
+    if (this._changing) throw new Error('a game is starting or loading already');
+    this._changing = true;
+    try { return await this._loadFile(file, slot); } finally { this._changing = false; }
+  }
+
+  async _loadFile(file, slot) {
     if (!this.flow) {
       const flow = this._flow();
       try { await flow.load(file); } catch (e) { flow.dispose(); throw e; }
@@ -111,7 +136,13 @@ export class GameSession {
       return this.step;
     }
     this._handed = null;
-    await this.flow.load(file);
+    const flow = this.flow, ended = this.segment;
+    await flow.load(file);
+    if (this.flow !== flow || this.segment !== ended) {
+      // the session ended while the save loaded (Quit to Title, a close): the world it built goes with the flow
+      flow.dispose();
+      throw new Error('the game ended while the save was loading');
+    }
     // the flow stopped the recording as it left the old world, and handed it to onWorld: the segment that just ended
     this.segments.push({ ...this.current, recording: this._handed });
     this._handed = null;
@@ -122,7 +153,10 @@ export class GameSession {
   /** Load a slot of the store: a player's save, or a checkpoint by its full name ("auto-…"). */
   async loadSlot(slot) {
     if (!this.store) throw new Error('this game has nowhere to load from');
-    return this.loadFile(await this.store.read(slot), { slot });
+    const seg = this.segment;
+    const file = await this.store.read(slot);
+    if (seg !== this.segment) throw new Error('the game ended while the save was loading'); // ended, or another load began, during the read
+    return this.loadFile(file, { slot });
   }
 
   /**
@@ -132,10 +166,11 @@ export class GameSession {
    */
   async saveSlot(slot, { name } = {}) {
     if (!this.flow) throw new Error('there is no game to save');
-    const flow = this.flow, step = this.step;
-    const entry = await flow.saveTo(slot, { name });
-    if (this.flow === flow) { this.safeStep = Math.max(this.safeStep, step); this.current.marks.push({ type: 'save', slot, step }); }
-    return entry;
+    const seg = this.segment, step = this.step;
+    const entry = await this.flow.saveTo(slot, { name }); // the store's write moves safeStep (see _store)
+    const kept = seg === this.segment; // still the segment it was saved in: not loaded over or ended meanwhile
+    if (kept) this.current.marks.push({ type: 'save', slot, step });
+    return { ...entry, kept };
   }
 
   /** Can a slot be written by the player? (Checkpoint slots are the game's.) */
@@ -173,6 +208,7 @@ export class GameSession {
     this.flow.tree.services.get('input')?.stop();
     this.flow.dispose();
     this.flow = null; this.current = null; this.segments = []; this.safeStep = 0;
+    this.segment++; // a write still in flight belongs to a session that has gone
     this.last = log;
     return log;
   }

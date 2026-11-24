@@ -114,6 +114,15 @@ test('a gamepad: a change counts, a held direction repeats on the frame clock, a
   assert.deepEqual(n.poll(null, 1.9), [], 'the pad gone');
 });
 
+test('a gamepad: after a stalled frame a held direction repeats once, not on every frame after it', () => {
+  const n = new PadNavigator({ delay: 0.4, every: 0.1 });
+  n.poll(pad(), 0);
+  assert.deepEqual(n.poll(pad([PAD.DOWN]), 1), ['down']);
+  assert.deepEqual(n.poll(pad([PAD.DOWN]), 3), ['down'], 'a two-second stall: one repeat');
+  assert.deepEqual(n.poll(pad([PAD.DOWN]), 3.016), [], 'the next frame: none');
+  assert.deepEqual(n.poll(pad([PAD.DOWN]), 3.1), ['down']);
+});
+
 test('a gamepad: the left stick past half-way is a direction', () => {
   assert.deepEqual([...padDirections(pad([], [0.9, -0.2]))], ['right']);
   assert.deepEqual([...padDirections(pad([], [-0.1, -0.8]))], ['up']);
@@ -149,6 +158,18 @@ test('after a menu, what was held when the game took over is hidden until it is 
   assert.ok(!o.keys.has('Space'), 'Space still held since Resume: still hidden');
 });
 
+test('after a menu, a stick still tilted is hidden until it is back near the middle', () => {
+  const v = new VirtualDevice(), gate = new HeldGate(v);
+  const read = () => { const out = { keys: new Set(), mouse: { dx: 0, dy: 0, wheel: 0, buttons: new Set() }, gamepad: null }; gate.read(out); return out; };
+  v.setGamepad([0, 0.9, 0, 0]); gate.arm();
+  assert.deepEqual(read().gamepad.axes, [0, 0, 0, 0], 'the stick that moved through the menu: hidden');
+  v.setGamepad([0, 0.4, 0, 0]);
+  assert.deepEqual(read().gamepad.axes, [0, 0, 0, 0], 'not back near the middle yet');
+  v.setGamepad([0, 0.1, 0, 0]); read();
+  v.setGamepad([0, 0.8, 0, 0]);
+  assert.deepEqual(read().gamepad.axes, [0, 0.8, 0, 0], 'let go and tilted again: the game sees it');
+});
+
 // ---------------------------------------------------------------- the question before progress is lost
 
 test('nothing unsaved: no question; unsaved: one that offers saving into the last slot', async () => {
@@ -157,6 +178,7 @@ test('nothing unsaved: no question; unsaved: one that offers saving into the las
   const q = leaveQuestion({ active: true, dirty: true, unsavedSteps: 60 * 75 }, { what: 'quit', lastSlot: 'slot-2', slotLabel: () => 'Slot 2' });
   assert.equal(q.title, 'Quit without saving?');
   assert.match(q.text, /^1 min 15 s of play/);
+  assert.match(leaveQuestion({ active: true, dirty: true, unsavedSteps: 12 }, { what: 'close' }).text, /^Less than a second of play/);
   assert.deepEqual(q.options.map((o) => o.id), ['cancel', 'save', 'discard']);
   assert.equal(q.options[1].label, 'Save to Slot 2 and Quit');
   assert.deepEqual(leaveQuestion({ active: true, dirty: true, unsavedSteps: 60 }, { what: 'load', lastSlot: 'slot-2' }).options.map((o) => o.id), ['cancel', 'discard']);
@@ -169,6 +191,9 @@ test('the answer: go on, stay, or save first; a save that fails keeps the game a
   assert.equal(await mayLeave(session, { what: 'close', ask: answer('cancel') }), false);
   assert.equal(await mayLeave(session, { what: 'close', ask: answer('save'), lastSlot: 'slot-1' }), true);
   assert.deepEqual(session.saved, ['slot-1']);
+  const named = [];
+  assert.equal(await mayLeave(session, { what: 'close', ask: answer('save'), lastSlot: 'slot-2', save: async (s) => named.push(s) }), true);
+  assert.deepEqual(named, ['slot-2'], 'the app\'s own save (the one that names the save) when given');
   const errors = [];
   const failing = { ...session, async saveSlot() { throw new Error('the disk is full'); } };
   assert.equal(await mayLeave(failing, { what: 'quit', ask: answer('save'), lastSlot: 'slot-1', onError: (e) => errors.push(e.message) }), false);

@@ -23,17 +23,24 @@ else
 fi
 node $root/engine/packages/bundle/src/cli.js --verify $build > /dev/null || { echo "$build is not a whole game build"; exit 1; }
 
-# the game's name and id, from its manifest
+# the game's id, and the app's Info.plist from the template with the game's name and id (escaped for XML), made before
+# anything of an earlier app is removed, so a title that can't go in stops here and leaves the earlier app whole
 id=$(node -e 'const m = JSON.parse(require("fs").readFileSync(process.argv[1] + "/vrmxg-build.json", "utf8")); process.stdout.write(m.game.id)' $build)
-title=$(node -e 'const m = JSON.parse(require("fs").readFileSync(process.argv[1] + "/vrmxg-build.json", "utf8")); process.stdout.write(m.game.title.replace(/[<>&]/g, ""))' $build)
-version=$(node -e 'const m = JSON.parse(require("fs").readFileSync(process.argv[1] + "/vrmxg-build.json", "utf8")); process.stdout.write(m.runtime.version)' $build)
+[[ "$id" =~ '^[a-z0-9][a-z0-9-]*$' ]] || { echo "not a game id: $id"; exit 1; }
+plist=$(node -e '
+  const fs = require("fs"), m = JSON.parse(fs.readFileSync(process.argv[1] + "/vrmxg-build.json", "utf8"));
+  const xml = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const t = fs.readFileSync(process.argv[2], "utf8");
+  process.stdout.write(t.replaceAll("__GAME_ID__", m.game.id).replaceAll("__GAME_TITLE__", xml(m.game.title)).replaceAll("__RUNTIME_VERSION__", xml(m.runtime.version)));
+' $build $mac/Config/Info.plist)
+title=$(node -e 'const m = JSON.parse(require("fs").readFileSync(process.argv[1] + "/vrmxg-build.json", "utf8")); process.stdout.write(m.game.title)' $build)
 app=$mac/build/$id.app
 
 swift build -c release --package-path $mac --product VRMXGGame
 rm -rf $app
 mkdir -p $app/Contents/MacOS $app/Contents/Resources
 cp "$(swift build -c release --package-path $mac --show-bin-path)/VRMXGGame" $app/Contents/MacOS/VRMXGGame
-sed -e "s|__GAME_ID__|$id|g" -e "s|__GAME_TITLE__|$title|g" -e "s|__RUNTIME_VERSION__|$version|g" $mac/Config/Info.plist > $app/Contents/Info.plist
+print -r -- "$plist" > $app/Contents/Info.plist
 cp -R $build $app/Contents/Resources/web
 codesign --force --sign - --entitlements $mac/Config/VRMXGGame.entitlements $app
 echo "built $app ($title, com.xocialize.vrmxg-game.$id)"

@@ -13,7 +13,8 @@
  */
 export function leaveQuestion(session, { what, lastSlot = null, slotLabel = (s) => s }) {
   if (!session?.active || !session.dirty) return null;
-  const secs = Math.round(session.unsavedSteps / 60), since = secs >= 60 ? `${Math.floor(secs / 60)} min ${secs % 60} s` : `${secs} s`;
+  const secs = Math.round(session.unsavedSteps / 60);
+  const since = secs >= 60 ? `${Math.floor(secs / 60)} min ${secs % 60} s` : secs >= 1 ? `${secs} s` : 'Less than a second';
   const verb = { close: 'Close', quit: 'Quit', title: 'Quit to Title', load: 'Load' }[what];
   const title = what === 'load' ? 'Load over this game?' : `${verb} without saving?`;
   const text = `${since} of play since the last save will be lost.`;
@@ -28,10 +29,11 @@ export function leaveQuestion(session, { what, lastSlot = null, slotLabel = (s) 
  * fails keeps the game and says why (onError), so nothing is lost without a word.
  * @param {any} session a GameSession
  * @param {{ what: 'close' | 'quit' | 'title' | 'load', ask: (title: string, text: string, options: any[]) => Promise<string>,
- *   asking?: () => boolean, lastSlot?: string | null, slotLabel?: (slot: string) => string, onError?: (e: any) => void, quitting?: boolean }} o
- *   asking: a question is up already (that one first); quitting: the page itself asked to quit (Quit on the title menu)
+ *   asking?: () => boolean, lastSlot?: string | null, slotLabel?: (slot: string) => string, save?: (slot: string) => Promise<any>, onError?: (e: any) => void, quitting?: boolean }} o
+ *   asking: a question is up already (that one first); save: how "Save and …" saves (the app's own save, which names
+ *   the save; by default the session's); quitting: the page itself asked to quit (Quit on the title menu)
  */
-export async function mayLeave(session, { what, ask, asking = () => false, lastSlot = null, slotLabel, onError = () => {}, quitting = false }) {
+export async function mayLeave(session, { what, ask, asking = () => false, lastSlot = null, slotLabel, save = (slot) => session.saveSlot(slot), onError = () => {}, quitting = false }) {
   if (quitting) return true;
   if (asking()) return false;
   const q = leaveQuestion(session, { what, lastSlot, slotLabel });
@@ -39,5 +41,5 @@ export async function mayLeave(session, { what, ask, asking = () => false, lastS
   const c = await ask(q.title, q.text, q.options);
   if (c === 'discard') return true;
   if (c !== 'save') return false;
-  try { await session.saveSlot(lastSlot); return true; } catch (e) { onError(e); return false; }
+  try { await save(lastSlot); return true; } catch (e) { onError(e); return false; }
 }

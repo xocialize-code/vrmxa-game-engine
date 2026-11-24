@@ -70,8 +70,7 @@ function back() {
   nextTick(() => menu.value?.focusFirst());
 }
 function pause() {
-  if (!playing.value) return;
-  host.value.pause();
+  if (!playing.value || !host.value.pause()) return; // not while a game starts or a save loads
   ui.stack = ['pause'];
   refreshSaves();
 }
@@ -110,13 +109,16 @@ async function saveSlot(row) {
 }
 
 async function quitToTitle() {
-  const go = await mayLeave(host.value.session, { what: 'title', ask: ask.ask, asking: () => ask.asking, lastSlot: ui.lastSlot, slotLabel, onError: (e) => say(`Not saved: ${e?.message ?? e}`) });
+  const go = await mayLeave(host.value.session, { what: 'title', ask: ask.ask, asking: () => ask.asking, lastSlot: ui.lastSlot, slotLabel, save: saveFor, onError: (e) => say(`Not saved: ${e?.message ?? e}`) });
   if (!go) return;
   window.__game.lastLog = host.value.quitToTitle();
   ui.stack = ['title'];
   await refreshSaves();
   nextTick(() => menu.value?.focusFirst());
 }
+
+// "Save to Slot N and …" in the questions: the menu's own save (its name, the slot list refreshed)
+async function saveFor(slot) { await host.value.saveSlot(slot); await refreshSaves(); }
 
 let quitting = false;
 function quitApp() { quitting = true; call('app.quit').catch((e) => { quitting = false; say(String(e?.message ?? e)); }); }
@@ -184,7 +186,7 @@ onMounted(async () => {
     // the game doesn't play on behind the question (and nothing more becomes unsaved while it is asked)
     if (inShell) onClosing((reason) => {
       if (h.session?.dirty && playing.value) pause();
-      return mayLeave(h.session, { what: reason, ask: ask.ask, asking: () => ask.asking, lastSlot: ui.lastSlot, slotLabel, quitting, onError: (e) => say(`Not saved: ${e?.message ?? e}`) });
+      return mayLeave(h.session, { what: reason, ask: ask.ask, asking: () => ask.asking, lastSlot: ui.lastSlot, slotLabel, save: saveFor, quitting, onError: (e) => say(`Not saved: ${e?.message ?? e}`) });
     });
     nextTick(() => menu.value?.focusFirst());
   } catch (e) {

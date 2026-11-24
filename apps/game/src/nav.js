@@ -55,7 +55,7 @@ export class PadNavigator {
       if (first) { this.next.set(d, Infinity); continue; } // held when first seen: let go first
       if (!was.dirs.has(d)) { out.push(d); this.next.set(d, now + this.delay); continue; }
       const at = this.next.get(d) ?? Infinity;
-      if (now >= at) { out.push(d); this.next.set(d, Math.max(at + this.every, now)); }
+      if (now >= at) { out.push(d); this.next.set(d, at + this.every > now ? at + this.every : now + this.every); } // after a stalled frame, once
     }
     for (const k of ['confirm', 'back', 'start']) if (buttons[k] && !was.buttons[k] && !first) out.push(k);
     return out;
@@ -94,6 +94,8 @@ export class HeldGate {
     /** @type {Set<string>} */ this.keys = new Set();
     /** @type {Set<number>} */ this.mouse = new Set();
     /** @type {Set<number>} */ this.buttons = new Set();
+    /** A stick was tilted when the game took over: the pad's axes read 0 until every one is back near the middle. */
+    this.sticks = false;
     this._arm = false;
   }
 
@@ -107,6 +109,11 @@ export class HeldGate {
       this.keys = new Set(out.keys ?? []);
       this.mouse = new Set(out.mouse?.buttons ?? []);
       this.buttons = new Set((out.gamepad?.buttons ?? []).flatMap((v, i) => (v > 0.5 ? [i] : [])));
+      this.sticks = (out.gamepad?.axes ?? []).some((v) => Math.abs(v) > 0.5); // a stick moves through menus too
+    }
+    if (this.sticks) {
+      if (!out.gamepad || out.gamepad.axes.every((v) => Math.abs(v) < 0.25)) this.sticks = false;
+      else out.gamepad = { ...out.gamepad, axes: out.gamepad.axes.map(() => 0) };
     }
     if (this.keys.size && out.keys) {
       for (const k of [...this.keys]) if (!out.keys.has(k)) this.keys.delete(k);

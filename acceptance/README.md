@@ -63,6 +63,31 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
   app exists (M5 W1), so nothing here draws a frame of the game. The digests are this branch's: the runtime bundles
   the engine, so they change whenever the engine does, and stay equal between Node and the editor.
 
+## M5 W1: the game app (`m5/game.mjs`, AB-T-0616)
+
+M5's checks 2, 4 (menus) and 6 (slots) in a browser, ahead of M5's own acceptance (W11). The game app (`apps/game`) is
+the runtime every build is made with since W1 (AB-D-0286), so check 1 above now plays builds made with it (in its
+`?check` harness mode: no renderer, no menus) and still gives the final hash `fe69bad3406ab5f6` in Node, Chromium and
+WKWebView on both origins. The game here is the app's test game (`apps/game/test/fixtures/game`: the sample cafe with a
+title, a level and an ending).
+```sh
+npm run build -w @vrmxg/game-app
+node acceptance/m5/game.mjs        # Chromium, under the GPU lock: results/m5-game.json
+# the Mac app: apps/game-mac/docs/HAND-TEST-M5-GAME.md (AppProbe)
+```
+**Passed, 13 of 13** (M5 Max, macOS 27.3 beta, Node 26, Chrome for Testing 156.0.8078.4): the title menu on WebGL when
+forced; New Game, the title scene skipped with Space (a recorded input), the level played with W held; Escape pauses and
+nothing steps; Save Game → Slot 1; Load Game over unsaved play asks, then goes back to the save's step; Quit to Title
+asks; **the session's log, played in Chromium through the menus with a hash of the world after every step made in the
+page, replays in Node to the same hash on every step** (583 steps, two segments: the new game, and the save it loaded);
+a fresh launch offers Continue and loads the save at its step; every menu from a stand-in gamepad and from the keyboard;
+the renderer setting kept; with no query the page draws on WebGPU where it has it. The Mac app's AppProbe checklist
+passes 9 of 9 and 1 of 1 (WebGL forced), a save written from the menu loading in a fresh launch at its step.
+
+**Not checked:** a real gamepad (Chromium's is a stand-in through `navigator.getGamepads`; AppProbe can't press one);
+the replay in WKWebView (the Mac app's session isn't read back: Chromium's is); a session that reaches the ending in the
+browser (the Node test `apps/game/test/test-game.test.mjs` plays the whole loop and replays it).
+
 ## M5 W2: game flow (`m5/flow*`, AB-T-0617)
 
 M5's checks 3 and 6, ahead of M5's own acceptance (W11): a game that changes scene replays exactly, and a save or a

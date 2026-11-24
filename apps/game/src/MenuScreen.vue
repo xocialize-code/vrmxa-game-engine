@@ -19,7 +19,11 @@ function onKey(e) {
   if (!c) return;
   // a select keeps its own arrows on the Mac only while its list is open; here up and down move between controls
   if ((c === 'left' || c === 'right') && e.target instanceof HTMLInputElement && e.target.type === 'range') return; // the slider's own
-  if (command(c)) { e.preventDefault(); e.stopPropagation(); }
+  if (!command(c)) return;
+  e.preventDefault();
+  // Escape stops here (the window's own Escape would pause again); the arrows go on to the window, so the game's
+  // keyboard device knows they are down and HeldGate can hide one still held when the menu closes
+  if (c === 'back') e.stopPropagation();
 }
 
 defineExpose({ command, focusFirst: () => root.value && focusFirst(root.value, props.focus) });

@@ -152,3 +152,61 @@ test('a replay refuses a log that isn\'t one, and one whose segment starts elsew
   log.segments[0].at = 3;
   await assert.rejects(replaySession(log, g), /starts at step 3/);
 });
+
+// ---------------------------------------------------------------- what the review found (one test per finding)
+
+/** A store whose writes wait until released: a slow shell write, so something can happen while one is in flight. */
+class HeldStore extends MemoryStore {
+  constructor() { super(); this.held = []; }
+  async write(slot, doc) { if (slot === 'slow') await new Promise((ok) => this.held.push(ok)); return super.write(slot, doc); }
+  release() { for (const ok of this.held.splice(0)) ok(); }
+}
+
+test('a save still being written when another one loads keeps the new timeline unsaved', async () => {
+  const store = new HeldStore();
+  const { session, device } = await ballSession({ store });
+  await session.newGame();
+  await play(session, 100, person(device));
+  await session.saveSlot('slot-1');                     // step 100
+  await play(session, 200, person(device));             // step 300
+  const writing = session.saveSlot('slow');             // step 300, its write held back
+  await new Promise((r) => setImmediate(r));
+  await session.loadSlot('slot-1');                     // back to step 100: a new segment
+  await play(session, 50, person(device));              // step 150, unsaved
+  assert.equal(session.dirty, true);
+  store.release();
+  const entry = await writing;
+  assert.equal(entry.kept, false, 'the save belongs to the segment that was loaded over');
+  assert.equal(session.safeStep, 100, 'the old timeline\'s save doesn\'t make step 150 safe');
+  assert.equal(session.dirty, true);
+  assert.deepEqual(session.log().segments[1].marks, [], 'no save mark from the old timeline in the new segment');
+  session.end();
+});
+
+test('a load that outlives its session (Quit to Title while it loads) frees its world and says so', async () => {
+  const { session } = await ballSession();
+  await session.newGame();
+  await play(session, 40);
+  await session.saveSlot('slot-1');
+  await play(session, 10);
+  // ended while the slot's file is read, and while its world is built
+  const reading = session.loadSlot('slot-1');
+  session.end();
+  await assert.rejects(reading, /ended while the save was loading/);
+  assert.equal(session.active, false, 'no session started from the title by a load meant for the one that ended');
+  await session.newGame();
+  await play(session, 5);
+  const building = session.loadFile(await session.store.read('slot-1'), { slot: 'slot-1' });
+  session.end();
+  await assert.rejects(building, /ended while the save was loading/);
+  assert.equal(session.active, false);
+});
+
+test('one session change at a time: a second New Game or load while one is under way is refused', async () => {
+  const { session } = await ballSession();
+  const first = session.newGame();
+  await assert.rejects(session.newGame(), /starting or loading already/);
+  await first;
+  assert.equal(session.step, 0);
+  session.end();
+});

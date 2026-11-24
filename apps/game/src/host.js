@@ -104,7 +104,7 @@ export class GameHost {
   /** Save the game being played into a player's slot. → the store's entry; throws what the store's write throws. */
   async saveSlot(slot) {
     const entry = await this.session.saveSlot(slot, { name: saveName({ title: this.game.title, view: this.session.view() }) });
-    this.state.lastSlot = slot;
+    if (entry.kept) this.state.lastSlot = slot; // not when another save was loaded, or the game ended, while it was written
     this._changed();
     return entry;
   }
@@ -113,12 +113,14 @@ export class GameHost {
   async slots() { return this.store.list(); }
 
   /** Stop stepping (a menu is open). */
+  /** Stop stepping (a menu is open). Not while a game starts or a save loads: play resumes by itself when that ends. */
   pause() {
-    if (!this.session?.active) return;
+    if (!this.session?.active || this.state.loading) return false;
     this.state.playing = false; this.state.paused = true;
     this.mouse.device.unlock?.();
     if (this.audio?.running) this.audio.ctx.suspend?.();
     this._changed();
+    return true;
   }
 
   /** Step again. What is held down now (the key or button that closed the menu) doesn't reach the game until let go. */
