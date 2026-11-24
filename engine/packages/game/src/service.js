@@ -63,6 +63,7 @@ export class GameService {
     this.version = 0;
     this._events = [];
     /** @type {Set<(event: any) => void>} */ this._listeners = new Set();
+    this._view = /** @type {any} */ (null); this._viewVersion = -1; this._viewStep = -1; // _rulesView's cache
   }
 
   // ---------------------------------------------------------------- declarations (the scene's game nodes)
@@ -250,13 +251,13 @@ export class GameService {
     for (const [key, node] of d.goals) {
       if (this.outcome !== null) break;
       if (!this.goals[key] || this.goals[key].done || node.props.when === undefined) continue;
-      if (holds(node.props.when, this.view())) this.completeGoal(key);
+      if (holds(node.props.when, this._rulesView())) this.completeGoal(key);
     }
     // 3. checkpoints: taken when their condition becomes true
     for (const node of d.checkpoints) {
       if (this.outcome !== null) break;
       if (node.props.when === undefined) continue;
-      const now = holds(node.props.when, this.view()), was = this.fired[node.id] === true;
+      const now = holds(node.props.when, this._rulesView()), was = this.fired[node.id] === true;
       if (now && !was) this.takeCheckpoint(node);
       if (node.props.once === false) this.fired[node.id] = now;
     }
@@ -264,14 +265,14 @@ export class GameService {
     if (this.outcome === null && d.rules) {
       const p = d.rules.props;
       let won;
-      if (p.win !== undefined) won = holds(p.win, this.view());
+      if (p.win !== undefined) won = holds(p.win, this._rulesView());
       else { const needed = [...d.goals].filter(([, n]) => n.props.optional !== true); won = needed.length > 0 && needed.every(([k]) => this.goals[k]?.done === true); }
       if (won) this.win();
     }
     // 5. timeouts: a signal says what happened, so it fires even when the same step was won
     for (const [key, node] of timedOut) { this._event({ type: 'timer', key, event: 'timeout' }); node.emit('timeout', {}); }
     // 6. lose
-    if (this.outcome === null && d.rules?.props.lose !== undefined && holds(d.rules.props.lose, this.view())) this.lose();
+    if (this.outcome === null && d.rules?.props.lose !== undefined && holds(d.rules.props.lose, this._rulesView())) this.lose();
   }
 
   // ---------------------------------------------------------------- what a HUD, a condition and a tool read
@@ -310,6 +311,14 @@ export class GameService {
       checkpoint: latest === null ? null : { slot: latest, id: this.checkpoints[latest].id, requested: this.checkpoints[latest].requested },
       checkpoints: Object.fromEntries(slots.map((k) => [k, { id: this.checkpoints[k].id, requested: this.checkpoints[k].requested }])),
     };
+  }
+
+  // The view the step's conditions read: built again only when something changed since the last one (a goal done, a
+  // counter a connection added to), so a scene with many conditions doesn't build one for each.
+  _rulesView() {
+    const step = this.tree.clock.step;
+    if (this._viewVersion !== this.version || this._viewStep !== step) { this._view = this.view(); this._viewVersion = this.version; this._viewStep = step; }
+    return this._view;
   }
 
   /**

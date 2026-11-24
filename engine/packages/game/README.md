@@ -175,7 +175,7 @@ is asked in finishes whole.
 
 ## Measured
 
-`acceptance/m5` (PENDING-RECEIPT, 2026-11-24, M5 Max): the test game in `test/fixtures` (a title, a level and an ending
+`acceptance/m5` (AB-R-1101, 2026-11-24, M5 Max): the test game in `test/fixtures` (a title, a level and an ending
 with physics, recorded input and random streams) for 600 steps, through seven scene changes, two of them resets.
 - Every step's hashes are identical in Node 26, headless Chromium and WKWebView over the custom scheme and over
   loopback, with loading that takes nothing, a steady 4 ms and a varied 0 to 12 ms per world: final hash
