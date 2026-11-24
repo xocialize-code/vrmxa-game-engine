@@ -1,6 +1,10 @@
 // Input devices. They only collect state from the browser (events, the Gamepad API); the input service
 // reads them once per simulation step, and from then on everything is recorded data. Nothing here reads
 // a clock. A VirtualDevice stands in for all three in tests and tools.
+//
+// read(out) is the step's: it takes what built up since the last step (mouse deltas are per step). peek(out) is for
+// what looks at the devices outside the step (menus, a settings list waiting for a key): it adds what is held now
+// and takes nothing.
 
 /** Keys held, by KeyboardEvent.code. */
 export class KeyboardDevice {
@@ -16,6 +20,7 @@ export class KeyboardDevice {
   }
   detach() { for (const off of this._on.splice(0)) off(); this.keys.clear(); }
   read(out) { out.keys = new Set(this.keys); }
+  peek(out) { out.keys = new Set([...(out.keys ?? []), ...this.keys]); }
 }
 
 /** Mouse movement deltas (accumulated between steps), wheel, buttons, and pointer lock. */
@@ -42,6 +47,7 @@ export class MouseDevice {
     out.mouse = { dx: this.dx, dy: this.dy, wheel: this.wheel, buttons: new Set(this.buttons) };
     this.dx = 0; this.dy = 0; this.wheel = 0; // deltas are per step
   }
+  peek(out) { out.mouse = { dx: 0, dy: 0, wheel: 0, ...(out.mouse ?? {}), buttons: new Set([...(out.mouse?.buttons ?? []), ...this.buttons]) }; }
 }
 
 /** The first connected standard-mapping gamepad, polled when read; rumble where supported. */
@@ -58,6 +64,7 @@ export class GamepadDevice {
     const p = this.pad();
     out.gamepad = p ? { axes: [...p.axes], buttons: p.buttons.map((b) => b.value) } : null;
   }
+  peek(out) { const p = this.pad(); if (p) out.gamepad = { axes: [...p.axes], buttons: p.buttons.map((b) => b.value) }; }
   /** Rumble (output only: never part of the simulation). */
   rumble(strong = 0.5, weak = 0.5, ms = 120) {
     return this.pad()?.vibrationActuator?.playEffect?.('dual-rumble', { duration: ms, strongMagnitude: strong, weakMagnitude: weak });
@@ -76,5 +83,10 @@ export class VirtualDevice {
     out.mouse = { dx: (out.mouse?.dx ?? 0) + this.dx, dy: (out.mouse?.dy ?? 0) + this.dy, wheel: (out.mouse?.wheel ?? 0) + this.wheel, buttons: new Set([...(out.mouse?.buttons ?? []), ...this.buttons]) };
     if (this.gamepad) out.gamepad = { axes: [...this.gamepad.axes], buttons: [...this.gamepad.buttons] };
     this.dx = 0; this.dy = 0; this.wheel = 0;
+  }
+  peek(out) {
+    out.keys = new Set([...(out.keys ?? []), ...this.keys]);
+    out.mouse = { dx: 0, dy: 0, wheel: 0, ...(out.mouse ?? {}), buttons: new Set([...(out.mouse?.buttons ?? []), ...this.buttons]) };
+    if (this.gamepad) out.gamepad = { axes: [...this.gamepad.axes], buttons: [...this.gamepad.buttons] };
   }
 }

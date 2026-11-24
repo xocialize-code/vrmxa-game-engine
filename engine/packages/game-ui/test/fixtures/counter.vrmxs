@@ -1,0 +1,38 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "counter",
+  "assets": [],
+  "nodes": [
+    {"id":"root","type":"Node3D"},
+    {"id":"floor","type":"Collider","parent":"root","transform":{"p":[0,-0.5,0]},"props":{"friction":0.6,"shape":"box","size":[40,1,40]}},
+    {"id":"ball","type":"RigidBody","parent":"root","transform":{"p":[0,0.25,0]},"props":{"linearDamping":0.5,"mass":1},"behaviours":[{"force":0.05,"use":"push"}]},
+    {"id":"ball-shape","type":"Collider","parent":"ball","props":{"radius":0.25,"shape":"sphere"}},
+    {"id":"crate","type":"RigidBody","parent":"root","transform":{"p":[-2,1.5,4]},"props":{"mass":2},"behaviours":[{"strength":0.4,"use":"jitter"}]},
+    {"id":"crate-shape","type":"Collider","parent":"crate","props":{"restitution":0.3,"shape":"box","size":[0.5,0.5,0.5]}},
+    {"id":"table","type":"Area","parent":"root","transform":{"p":[1.5,0.6,0]},"props":{"shape":"box","size":[0.2,1,2]}},
+    {"id":"hana","type":"Node3D","name":"Hana","parent":"root","transform":{"p":[0,0,2]}},
+    {"id":"mira","type":"Node3D","name":"Mira","parent":"root"},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"flags":{"order":""},"lose":{"key":"timers.clock.done","test":"state"}}},
+    {"id":"score","type":"GameCounter","parent":"rules","props":{"label":"Score"}},
+    {"id":"served","type":"GameCounter","parent":"rules","props":{"label":"Served","scope":"scene"}},
+    {"id":"clock","type":"GameTimer","parent":"rules","props":{"label":"Until closing","seconds":20}},
+    {"id":"take-order","type":"GameGoal","parent":"rules","props":{"text":"Take Hana's order","when":{"key":"flags.order","op":"ne","test":"state","value":""}}},
+    {"id":"serve","type":"GameGoal","parent":"rules","props":{"text":"Bring the order to the table","when":{"key":"counters.served","op":"ge","test":"state","value":1}}},
+    {"id":"cp","type":"Checkpoint","parent":"rules","props":{"label":"Order taken","when":{"key":"goals.take-order.done","test":"state"}}},
+    {"id":"order","type":"Dialogue","name":"The order","parent":"root","props":{"autostart":true,"lines":[
+      {"speaker":"hana","text":"Good morning! What can I get you?","choices":[
+        {"id":"latte","text":"A latte, please.","to":"latte","set":{"order":"latte"}},
+        {"id":"tea","text":"Just tea, thanks.","to":"tea","set":{"order":"tea"}},
+        {"id":"nothing","text":"Nothing yet.","to":"later"}]},
+      {"id":"latte","speaker":"hana","text":"One latte, coming up. Take it to the table?","next":"end"},
+      {"id":"tea","speaker":"hana","text":"Tea it is. The table by the window.","next":"end"},
+      {"id":"later","speaker":"hana","text":"Take your time.","next":"end"}]}}
+  ],
+  "connections": [
+    {"from":"table","signal":"bodyEntered","to":"served","call":"add"},
+    {"from":"take-order","signal":"completed","to":"score","call":"add","args":{"by":10}},
+    {"from":"serve","signal":"completed","to":"score","call":"add","args":{"by":25}},
+    {"from":"rules","signal":"ended","to":"rules","call":"changeScene","args":{"after":0.5,"to":"ending.vrmxs"}}
+  ]
+}

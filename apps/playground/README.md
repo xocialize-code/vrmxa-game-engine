@@ -272,3 +272,19 @@ Checked in headless Chromium by `acceptance/m3/dialogue-chromium.mjs` (`acceptan
 
 The text spike (AB-T-0536) chose troika for in-world text. Subtitles burned into exports, and title cards, are still to
 do.
+
+## The game UI demo (M5 W3, AB-T-0618)
+
+`game-ui.html` (http://localhost:5181/game-ui.html) is `@vrmxg/game-ui`'s overlay over a small game, without the game
+app (W1) and without models: Hana takes the order in a conversation with three choices, a ball to push to the table
+(collider wires), a 20 s clock, then an ending whose goodbye depends on the order (`engine/packages/game-ui/test/fixtures`).
+It is a page of its own, so this page and its checks don't move, and it imports engine packages only, so it builds
+without vrmxa-avatar-studio. Speech bubbles and name tags are `@vrmxg/text`'s, on the WebGL host. Escape (or a
+gamepad's Menu) opens a settings panel of the demo's own with the package's volume and rebinding controls; settings are
+kept in this browser's localStorage, the store the demo supplies.
+
+`node apps/playground/scripts/game-ui-check.mjs` builds only that page and drives it in headless Chromium: the HUD's
+goal, score and clock, and the line, as text a screen reader says; Enter held from Continue picking no choice; focus on the first choice when Hana asks; an arrow and Enter answer (the choice reaches the game
+as a recorded input); the gamepad's Menu, d-pad and A in the settings (an emulated standard pad); a slider turned down;
+the keys answering with focus on the canvas; a gamepad capture of B inside the menu (it rebinds and doesn't close the menu; a slot clicked twice leaves one capture); Move right rebound to A (warned that A is Move left, then moved on confirm, Right arrow kept); a mouse click working while Space is held from the canvas; a key rebound, used by the next steps, and still there after a reload; the line's live region mounted before and after the conversation; every control named. 27 checks, all passing in
+Chrome for Testing 156 (2026-11-24), no console errors. It draws, so it takes the GPU lock.

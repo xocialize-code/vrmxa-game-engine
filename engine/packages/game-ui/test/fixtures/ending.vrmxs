@@ -1,0 +1,17 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "ending",
+  "assets": [],
+  "nodes": [
+    {"id":"root","type":"Node3D"},
+    {"id":"floor","type":"Collider","parent":"root","transform":{"p":[0,-0.5,0]},"props":{"shape":"box","size":[20,1,20]}},
+    {"id":"hana","type":"Node3D","name":"Hana","parent":"root"},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"keepOutcome":true,"reads":{"flags":["order"]}}},
+    {"id":"bye","type":"Dialogue","name":"Goodbye","parent":"root","props":{"autostart":true,"skippable":false,"lines":[
+      {"speaker":"hana","text":"Enjoy your latte!","when":{"key":"flags.order","op":"eq","test":"state","value":"latte"},"next":"end"},
+      {"speaker":"hana","text":"Enjoy your tea!","when":{"key":"flags.order","op":"eq","test":"state","value":"tea"},"next":"end"},
+      {"speaker":"hana","text":"Come again!"}]}}
+  ],
+  "connections": []
+}

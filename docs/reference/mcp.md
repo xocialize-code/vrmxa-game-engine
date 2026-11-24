@@ -64,7 +64,7 @@ List node types and behaviours, or one type's JSON Schema, units, signals, actio
 {
   "type": "object",
   "properties": {
-    "type": { "type": "string", "enum": ["… 27 values: see the reference"] },
+    "type": { "type": "string", "enum": ["… 28 values: see the reference"] },
     "behaviour": {
       "type": "string",
       "enum": [
@@ -170,7 +170,7 @@ Add a node; props are checked against its type (see describe).
         "id": { "type": "string" },
         "type": {
           "type": "string",
-          "enum": ["… 27 values: see the reference"]
+          "enum": ["… 28 values: see the reference"]
         },
         "parent": { "type": "string" },
         "name": { "type": "string" },

@@ -322,6 +322,44 @@ export function m0Registry() {
     actions: { write: { args: {}, description: 'Save now.' } },
   });
 
+  // M5 W3: conversations with choices (@vrmxg/voice's dialogue service, AB-T-0618). The lines are data; a choice names
+  // the line that comes next, and arrives in the step as a recorded input, so a conversation replays as it was played.
+  const lineFlags = { type: 'object', additionalProperties: { type: ['boolean', 'number', 'string'] }, description: 'Game flags to set (@vrmxg/game), by name.' };
+  const choiceSchema = { type: 'object', required: ['text'], additionalProperties: false, properties: {
+    id: { type: 'string', pattern: '^[A-Za-z0-9_-]+$', description: 'What the choice is called in the input recording (default: its place in the list, "0", "1").' },
+    text: { type: 'string', minLength: 1, description: 'What the player picks.' },
+    to: { type: 'string', minLength: 1, description: 'The id of the line that comes next ("end" ends the conversation). Default: the line after this one.' },
+    when: { ...conditionSchema(2), description: 'Offered only when this holds (a game condition).' },
+    set: lineFlags,
+  } };
+  const lineSchema = { type: 'object', required: ['text'], additionalProperties: false, properties: {
+    id: { type: 'string', pattern: '^[A-Za-z0-9_-]+$', description: 'The name a next or a choice\'s to uses.' },
+    speaker: { type: 'string', minLength: 1, description: 'The id of the node that says it (a Character is heard and lip-synced; without one the line is a caption).' },
+    text: { type: 'string', minLength: 1, description: 'What is said: the caption, and the line itself without a clip.' },
+    clip: { type: 'string', description: 'A voice clip (.wav) with its timings beside it.' },
+    seconds: { type: 'number', exclusiveMinimum: 0, description: 'The line\'s length. Default: from its clip\'s word timings (the last word, plus a quarter second), or from its text. Set it to keep a clip\'s tail: a line never takes its length from the decoded audio, which only some hosts have.' },
+    pause: { type: 'number', minimum: 0, description: 'Seconds to wait after the line before its choices or the next line.' },
+    next: { type: 'string', minLength: 1, description: 'The id of the line after this one when it offers no choice ("end" ends the conversation). Default: the next in the list.' },
+    when: { ...conditionSchema(2), description: 'Said only when this holds; otherwise passed over to the next in the list.' },
+    set: lineFlags,
+    choices: { type: 'array', minItems: 1, items: choiceSchema, description: 'What the player may answer; the conversation waits for one.' },
+  } };
+  r.define('Dialogue', {
+    extends: 'Node3D', description: 'A conversation: lines said in order by the scene\'s characters, some offering choices that say which line comes next. One conversation runs at a time.',
+    props: {
+      lines: { schema: { type: 'array', minItems: 1, items: lineSchema, description: 'The lines, in order. A line\'s next, or a choice\'s to, jumps to another by id.' }, meta: { widget: 'json', sim: true } },
+      autostart: P.boolean({ default: false, sim: true, description: 'Starts when the scene starts.' }),
+      skippable: P.boolean({ default: true, sim: true, description: 'The player may end a line early (the dialogue.advance input).' }),
+    },
+    signals: {
+      started: {}, ended: { args: { line: P.string() } },
+      line: { args: { line: P.string(), speaker: P.string(), text: P.string() }, description: 'A line started.' },
+      asked: { description: 'A line\'s choices are on offer.' },
+      chose: { args: { line: P.string(), choice: P.string(), text: P.string() }, description: 'The player picked a choice.' },
+    },
+    actions: { start: { args: { at: arg(P.string(), 'Start at this line\'s id (default: the first).') }, description: 'Start the conversation (nothing happens while another is going on).' }, stop: { args: {}, description: 'End it where it is.' } },
+  });
+
   // Behaviours: named code in the project, referenced from scenes by id (no code in scenes).
   r.behaviour('wander', { description: 'Walk to random reachable points within a radius.', on: ['Character'], params: { radius: P.number({ min: 0, default: 4, unit: 'm' }), pause: P.number({ min: 0, default: 2, unit: 's' }) } });
   r.behaviour('greet', { description: 'Says a line to someone who comes close (looking at them), then waits a while before greeting again.', on: ['Character'], params: { target: P.nodeRef({ description: 'Who to greet (the player).' }), radius: P.number({ min: 0, default: 2, unit: 'm' }), clip: P.string({ description: 'A voice line (.wav) with its timings beside it.' }), text: P.string({ description: 'The caption (or the line, without a clip).' }), cooldown: P.number({ min: 0, default: 20, unit: 's' }) } });

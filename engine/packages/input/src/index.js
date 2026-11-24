@@ -1,11 +1,12 @@
 // @vrmxg/input — M0 W4 (AB-T-0505). Named actions from vrmxg.json bound to keys, mouse and gamepads,
 // latched once per simulation step by the "input" service, recorded and replayed as plain data; the
 // player controller behaviour. Inside the determinism boundary: devices are read once per step and only
-// the latched, recorded values reach the simulation.
+// the latched, recorded values reach the simulation. M5 W3 (AB-T-0618): a choice made in a menu or a conversation is a
+// latched, recorded value too (choose / choice), and actions can be rebound while playing (rebind / overrides).
 import { InputService } from './service.js';
 import { PlayerController } from './player.js';
 
-export { ActionMap, DEFAULT_ACTIONS, twoPlayerActions, playerPrefix } from './actions.js';
+export { ActionMap, DEFAULT_ACTIONS, twoPlayerActions, playerPrefix, BINDING_KINDS, bindingKind, checkBinding } from './actions.js';
 export { KeyboardDevice, MouseDevice, GamepadDevice, VirtualDevice } from './devices.js';
 export { InputService } from './service.js';
 export { PlayerController } from './player.js';

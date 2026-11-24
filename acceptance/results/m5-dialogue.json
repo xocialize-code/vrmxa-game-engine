@@ -1,0 +1,303 @@
+{
+ "check": "M5 W3: a conversation with a choice, played through the overlay, is in the input recording; replaying it takes the same branch with the same per-step hashes, in every runtime",
+ "same": true,
+ "rapier": "@dimforge/rapier3d-deterministic-compat",
+ "node": {
+  "steps": 520,
+  "seed": 11,
+  "pick": "latte",
+  "answeredBy": "the overlay's binding",
+  "final": "81eaec36719b1754",
+  "all": "ab0c1cd998b86b8c",
+  "recording": {
+   "version": 2,
+   "start": 0,
+   "frames": 520,
+   "hash": "18d8abae5119d424",
+   "choices": [
+    [
+     203,
+     {
+      "dialogue.choose": "latte"
+     }
+    ]
+   ]
+  },
+  "replay": {
+   "same": true,
+   "final": "81eaec36719b1754",
+   "diverges": null
+  },
+  "changes": [
+   [
+    470,
+    "ending.vrmxs",
+    false
+   ]
+  ],
+  "outcomes": [
+   [
+    439,
+    "won"
+   ]
+  ],
+  "asked": [
+   [
+    173,
+    [
+     "Choice 1 of 3: A latte, please.",
+     "Choice 2 of 3: Just tea, thanks.",
+     "Choice 3 of 3: Nothing yet."
+    ]
+   ]
+  ],
+  "lines": [
+   [
+    1,
+    "Hana",
+    "Good morning! What can I get you?"
+   ],
+   [
+    204,
+    "Hana",
+    "One latte, coming up. Take it to the table?"
+   ],
+   [
+    471,
+    "Hana",
+    "Enjoy your latte!"
+   ]
+  ],
+  "view": {
+   "scene": "ending.vrmxs",
+   "score": 35,
+   "flags": {
+    "order": "latte"
+   },
+   "outcome": "won"
+  },
+  "dom": null,
+  "loading": {
+   "delays": []
+  },
+  "delay": "none",
+  "version": "v26.12.1"
+ },
+ "nodeWithSlowLoading": {
+  "same": true,
+  "problems": []
+ },
+ "chromium": [
+  {
+   "delay": "steady",
+   "same": true,
+   "problems": [],
+   "errors": [],
+   "version": "156.0.8078.4",
+   "result": {
+    "steps": 520,
+    "seed": 11,
+    "pick": "latte",
+    "answeredBy": "the overlay's button",
+    "final": "81eaec36719b1754",
+    "all": "ab0c1cd998b86b8c",
+    "recording": {
+     "version": 2,
+     "start": 0,
+     "frames": 520,
+     "hash": "18d8abae5119d424",
+     "choices": [
+      [
+       203,
+       {
+        "dialogue.choose": "latte"
+       }
+      ]
+     ]
+    },
+    "replay": {
+     "same": true,
+     "final": "81eaec36719b1754",
+     "diverges": null
+    },
+    "changes": [
+     [
+      470,
+      "ending.vrmxs",
+      false
+     ]
+    ],
+    "outcomes": [
+     [
+      439,
+      "won"
+     ]
+    ],
+    "asked": [
+     [
+      173,
+      [
+       "Choice 1 of 3: A latte, please.",
+       "Choice 2 of 3: Just tea, thanks.",
+       "Choice 3 of 3: Nothing yet."
+      ]
+     ]
+    ],
+    "lines": [
+     [
+      1,
+      "Hana",
+      "Good morning! What can I get you?"
+     ],
+     [
+      204,
+      "Hana",
+      "One latte, coming up. Take it to the table?"
+     ],
+     [
+      471,
+      "Hana",
+      "Enjoy your latte!"
+     ]
+    ],
+    "view": {
+     "scene": "ending.vrmxs",
+     "score": 35,
+     "flags": {
+      "order": "latte"
+     },
+     "outcome": "won"
+    },
+    "dom": {
+     "clicked": "Choice 1 of 3: A latte, please.",
+     "labels": [
+      "Choice 1 of 3: A latte, please.",
+      "Choice 2 of 3: Just tea, thanks.",
+      "Choice 3 of 3: Nothing yet."
+     ],
+     "hud": [
+      "Goal: Take Hana's order",
+      "Score 0",
+      "Until closing 0:17"
+     ],
+     "focused": "dialogue-choice-latte"
+    },
+    "loading": {
+     "delays": [
+      4
+     ]
+    },
+    "delay": "steady",
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36"
+   }
+  },
+  {
+   "delay": "varied",
+   "same": true,
+   "problems": [],
+   "errors": [],
+   "version": "156.0.8078.4",
+   "result": {
+    "steps": 520,
+    "seed": 11,
+    "pick": "latte",
+    "answeredBy": "the overlay's button",
+    "final": "81eaec36719b1754",
+    "all": "ab0c1cd998b86b8c",
+    "recording": {
+     "version": 2,
+     "start": 0,
+     "frames": 520,
+     "hash": "18d8abae5119d424",
+     "choices": [
+      [
+       203,
+       {
+        "dialogue.choose": "latte"
+       }
+      ]
+     ]
+    },
+    "replay": {
+     "same": true,
+     "final": "81eaec36719b1754",
+     "diverges": null
+    },
+    "changes": [
+     [
+      470,
+      "ending.vrmxs",
+      false
+     ]
+    ],
+    "outcomes": [
+     [
+      439,
+      "won"
+     ]
+    ],
+    "asked": [
+     [
+      173,
+      [
+       "Choice 1 of 3: A latte, please.",
+       "Choice 2 of 3: Just tea, thanks.",
+       "Choice 3 of 3: Nothing yet."
+      ]
+     ]
+    ],
+    "lines": [
+     [
+      1,
+      "Hana",
+      "Good morning! What can I get you?"
+     ],
+     [
+      204,
+      "Hana",
+      "One latte, coming up. Take it to the table?"
+     ],
+     [
+      471,
+      "Hana",
+      "Enjoy your latte!"
+     ]
+    ],
+    "view": {
+     "scene": "ending.vrmxs",
+     "score": 35,
+     "flags": {
+      "order": "latte"
+     },
+     "outcome": "won"
+    },
+    "dom": {
+     "clicked": "Choice 1 of 3: A latte, please.",
+     "labels": [
+      "Choice 1 of 3: A latte, please.",
+      "Choice 2 of 3: Just tea, thanks.",
+      "Choice 3 of 3: Nothing yet."
+     ],
+     "hud": [
+      "Goal: Take Hana's order",
+      "Score 0",
+      "Until closing 0:17"
+     ],
+     "focused": "dialogue-choice-latte"
+    },
+    "loading": {
+     "delays": [
+      9,
+      0,
+      12,
+      3,
+      7,
+      1
+     ]
+    },
+    "delay": "varied",
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36"
+   }
+  }
+ ]
+}

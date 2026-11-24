@@ -25,7 +25,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 ## Reference
 
 - [Overview](reference/index.md): What the generated reference covers, and what each page is generated from.
-- [Node types](reference/nodes.md): The 27 node types of a VRMXG scene, with each one's props, signals and actions.
+- [Node types](reference/nodes.md): The 28 node types of a VRMXG scene, with each one's props, signals and actions.
 - [Behaviours](reference/behaviours.md): The 8 behaviours the registry declares, with their params and the signals and actions they add.
 - [MCP servers and tools](reference/mcp.md): The vrmxg-mcp server's three modes (headless, editor, creator) and every tool with its input schema.
 - [Creator commands](reference/creator-commands.md): The 8 commands an agent runs in the creator through the command tool, each with its JSON Schema.
@@ -35,7 +35,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [delivery.json](reference/delivery-json.md): What a delivery folder holds, the render queue's presets, and the manifest that names every file with its hash.
 - [game.json](reference/game-json.md): The game document: the scene a game starts in, the scenes it can reach, its behaviours, input map and the files no document names.
 - [vrmxg-build.json](reference/build-json.md): A game build's manifest: the game, the runtime it was made with, and every file with its SHA-256 and licence.
-- [Packages](reference/packages.md): The 38 engine packages, one line each, and which side of the determinism boundary each is on.
+- [Packages](reference/packages.md): The 39 engine packages, one line each, and which side of the determinism boundary each is on.
 
 ## Node types
 
@@ -66,6 +66,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [GameTimer](reference/nodes.md#gametimer): A clock counted in simulation steps: a countdown that times out, or a stopwatch (no length). It follows its node's pause and time scale, and stops when the game is won or lost.
 - [GameGoal](reference/nodes.md#gamegoal): Something to get done: the HUD shows the first one that isn't. Done when its condition first holds, or by its action.
 - [Checkpoint](reference/nodes.md#checkpoint): A point where the game saves by itself (into a slot of the save store): when its condition first holds, or by its action (a trigger's connection).
+- [Dialogue](reference/nodes.md#dialogue): A conversation: lines said in order by the scene's characters, some offering choices that say which line comes next. One conversation runs at a time.
 
 ## Behaviours
 
@@ -158,6 +159,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [@vrmxg/editor-ui](reference/packages.md): The Vue components the editor and the creator share, over `@vrmxg/editor-core`'s model.
 - [@vrmxg/export](reference/packages.md): Offline frame export, the pipeline spike-frame-export chose.
 - [@vrmxg/game](reference/packages.md): Game flow: what makes a scene a game.
+- [@vrmxg/game-ui](reference/packages.md): The player-facing overlays over the canvas, as DOM with accessible names, so AppProbe and a screen reader read them.
 - [@vrmxg/input](reference/packages.md): Named actions bound to keys, mouse and gamepads, latched once per simulation step, recorded and replayed; and the player controller.
 - [@vrmxg/interact](reference/packages.md): Characters interacting with VRMXI items: focus, prompts, the verbs `use`, `take`, `talk`, `sit` and `stand`, and an inventory for items that can't go into a closet.
 - [@vrmxg/item](reference/packages.md): VRMXI game items in the engine, on the draft specification (`VRMXA_Specification/VRMXI-base-draft.md`): read and check `.vrmxi` files, Item nodes with their bodies …
