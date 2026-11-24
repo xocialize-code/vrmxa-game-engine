@@ -242,7 +242,18 @@ AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for th
     count), and in single-cell reruns another session's headless Chrome showed in the load samples. Whether these
     changes also raised the rate can't be told from these runs: the odd frames are of the same kind, and several in
     the same shot (the espresso machine, frames 600 to 870), as the ones recorded before them.
-  - **Owed:** one green run on a machine nobody is using.
+  - **Owed then:** one green run on a machine nobody is using.
+- **The green run (2026-11-24, 06:22 to 06:41 UTC):** the whole matrix with `--keep-going` on main at 8c79fef (these
+  changes merged), clean tree, fresh builds of the playground, the editor and the harness, seven minutes after a
+  reboot with nothing else open, same machine and beta (26C5047e). **`ok: true`:** every load of every check in all
+  six cells matched its canonical digest with no rerun, 0 failures, 0 AB-T-0589 incidents; `compare.mjs` 20/20 on each
+  backend; the simulation `fe69bad3406ab5f6` in all six cells; the looks' SSIM verdict passes. Files:
+  `results/ab-t-0595/verify-3/`.
+  - **What it settles:** the blessed digests hold on a quiet machine, and the odd frames in the two runs above came
+    with the machine in use.
+  - **What it doesn't:** it is one run. It shows no sign that the warm-up draw raised the odd-frame rate, as main's
+    run before these changes showed none (AB-T-0590), but a rate that small needs many runs to compare. The beta's odd
+    frame itself is still AB-T-0591's.
 
 ## M4's checks as they land
 
