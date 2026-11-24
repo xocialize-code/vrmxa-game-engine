@@ -153,18 +153,28 @@ export const READS = { counters: 'counters', flags: 'flags', timers: 'timers', g
 
 /**
  * A GameRules' `reads`, checked and filled in: { counters, flags, timers, goals, checkpoints }, each a list of names.
- * @param {any} reads @returns {{ reads: Record<string, string[]>, problems: string[] }}
+ * `counters` may instead be a map of name → the value the counter has when the game brings none ({ "orders": 0 });
+ * as a list, that value is 0.
+ * @param {any} reads @returns {{ reads: Record<string, string[]>, defaults: Record<string, number>, problems: string[] }}
  */
 export function readReads(reads) {
-  const out = { counters: [], flags: [], timers: [], goals: [], checkpoints: [] }, problems = [];
-  if (reads === undefined || reads === null) return { reads: out, problems };
-  if (typeof reads !== 'object' || Array.isArray(reads)) return { reads: out, problems: ['reads is { counters, flags, timers, goals, checkpoints }, each a list of names'] };
-  for (const [kind, names] of Object.entries(reads)) {
+  const out = { counters: [], flags: [], timers: [], goals: [], checkpoints: [] }, defaults = {}, problems = [];
+  if (reads === undefined || reads === null) return { reads: out, defaults, problems };
+  if (typeof reads !== 'object' || Array.isArray(reads)) return { reads: out, defaults, problems: ['reads is { counters, flags, timers, goals, checkpoints }, each a list of names'] };
+  const names = (list) => Array.isArray(list) && list.every((n) => typeof n === 'string' && n !== '' && n !== '__proto__');
+  for (const [kind, value] of Object.entries(reads)) {
     if (!Object.hasOwn(READS, kind)) { problems.push(`reads has no "${kind}" (${Object.keys(READS).join(', ')})`); continue; }
-    if (!Array.isArray(names) || names.some((n) => typeof n !== 'string' || n === '' || n === '__proto__')) { problems.push(`reads.${kind} is a list of names`); continue; }
-    out[kind] = [...names];
+    if (kind === 'counters' && value !== null && typeof value === 'object' && !Array.isArray(value)) {
+      const entries = Object.entries(value);
+      if (!names(entries.map(([k]) => k)) || entries.some(([, v]) => typeof v !== 'number' || !Number.isFinite(v))) { problems.push('reads.counters is a list of names, or a map of name → the number it is when the game brings none'); continue; }
+      out.counters = entries.map(([k]) => k);
+      for (const [k, v] of entries) defaults[k] = v;
+      continue;
+    }
+    if (!names(value)) { problems.push(`reads.${kind} is a list of names`); continue; }
+    out[kind] = [...value];
   }
-  return { reads: out, problems };
+  return { reads: out, defaults, problems };
 }
 
 /**

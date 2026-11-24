@@ -8,7 +8,7 @@ export { GameService } from './service.js';
 export { GameFlow, recordFlow, worldSeed, CHECKPOINT_PREFIX } from './flow.js';
 export { GameRulesNode, GameCounterNode, GameTimerNode, GameGoalNode, CheckpointNode, GAME_NODES } from './nodes.js';
 export { TESTS, OPS, holds, readKey, checkCondition, checkKeys, checkCall, conditionKeys } from './conditions.js';
-export { describeRules } from './describe.js';
+export { describeRules, checkGame } from './describe.js';
 
 /**
  * Give a tree the game nodes (GameRules, GameCounter, GameTimer, GameGoal, Checkpoint) and the "game" service. Call
