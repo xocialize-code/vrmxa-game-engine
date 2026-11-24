@@ -27,14 +27,15 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
   # the Mac editor: apps/editor-mac/docs/hand-test/HAND-TEST-M5-EXPORT-GAME.scenario.md, then
   node acceptance/m5/build.mjs --chromium --mac <builds…> --refused <folder> --kept <folder>
   ```
-  **Passed, 14 of 14 and 4 of 4** (M5 Max, macOS 27.3 beta, Node 26.12.1, Chrome for Testing 156.0.8078.4). First run at
-  48881a4 (receipt AB-R-1102), again at 0c3beda after the first review's fixes (AB-R-1106), and again after the
-  second's. Each round changed the runtime, so the digests below are the last run's:
-  - **The build:** 60 files, 22,177,637 bytes: 50 of the project's files under `project/` and the runtime's
-    10 (`vrmxg-stepper 0.1.0`, digest `6af9ce90655fd228…`); build digest `b230ba73a7611b73…`.
+  **Passed, 14 of 14 and 4 of 4** (M5 Max, macOS 27.3 beta, Node 26.12.1, Chrome for Testing 156.0.8078.4). First run before
+  any review (receipt AB-R-1102), again after each of two review rounds (AB-R-1106, AB-R-1108), and again once the
+  branch was rebased over W2 and W8, whose registry nodes are in the runtime. Each changed the runtime, so the digests
+  below are the last run's:
+  - **The build:** 60 files, 22,184,604 bytes: 50 of the project's files under `project/` and the runtime's
+    10 (`vrmxg-stepper 0.1.0`, digest `22bcd36f4b360642…`); build digest `756ed1c77a29c89c…`.
   - **The same bytes from Node and from the Mac editor.** Two exports in two Node processes, and four from the Mac
     editor's Export Game (the bundled sample twice, the same project opened as a folder, and File › Export Game…): all
-    six folders are the same, byte for byte, 61 files each with the manifest (SHA-256 `6918c8ef42cea5f7…b875`), and each holds
+    six folders are the same, byte for byte, 61 files each with the manifest (SHA-256 `ee682184e9715cbd…c47a`), and each holds
     exactly what its manifest lists. One of the four was then exported over again in the Mac editor (an earlier build
     replaced, staged and moved in whole) and is still Node's build, with no staging folder left.
   - **Every file has its hash and licence** in the manifest: a project file's licence is its row in the project's

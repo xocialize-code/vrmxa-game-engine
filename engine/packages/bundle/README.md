@@ -276,7 +276,7 @@ exception is the Finder's `.DS_Store` inside a folder of the earlier build, remo
 itself may be reached through a link, since the person named it. `checkFolder` counts a link as a file the build
 doesn't list.
 
-**The Mac shell's side.** A page can't write a folder, so the editor writes through four bridge methods:
+**The Mac shell's side.** A page can't write a folder, so the editor writes through four bridge methods (shell 0.10.0):
 
 | | |
 |---|---|
@@ -286,7 +286,8 @@ doesn't list.
 | `build.abort { id }` | Drops what this export wrote. The editor calls it when anything fails after `begin` |
 
 The page decides every byte; the shell owns where they go and checks that what arrived is what the page's manifest
-lists. The editor asks for the folder only once every check has passed (`exportBuild`'s `ready`), and reads and
+lists. In the editor, closing the window or quitting while a build is being written asks first, and Stop and Close
+stops the export between two writes with `build.abort` (`exportClosing`, on the shell's close question). The editor asks for the folder only once every check has passed (`exportBuild`'s `ready`), and reads and
 hashes each file once, as it is written.
 
 ## Checked

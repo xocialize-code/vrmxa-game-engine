@@ -21,7 +21,7 @@ when one is out of date. If a page here disagrees with the engine, the build is 
 | [The Fountain subset](./fountain) | The screenplay syntax a VRMXG script is written in: elements, tags, parenthetical words and timing defaults. | `@vrmxg/script` (`src/vocab.js`, its README) and the sample script |
 | [shorts.json](./shorts-json) | The file that lists a project's shorts for the creator: each short's script, sequence, marks, set and cameras. | `apps/creator/src/shorts.js` and the sample project |
 | [delivery.json](./delivery-json) | What a delivery folder holds, the render queue's presets, and the manifest that names every file with its hash. | `@vrmxg/editor-core` (presets), `@vrmxg/export` (`deliveryFiles`) and `apps/creator/src/delivery.js` |
-| [Packages](./packages) | The 37 engine packages, one line each, and which side of the determinism boundary each is on. | every `engine/packages/*`: its `package.json` and the opening of its README |
+| [Packages](./packages) | The 38 engine packages, one line each, and which side of the determinism boundary each is on. | every `engine/packages/*`: its `package.json` and the opening of its README |
 
 For agents, [`llms.txt`](/llms.txt) indexes the whole site, and every page is also served as Markdown: add `.md` to
 its address.

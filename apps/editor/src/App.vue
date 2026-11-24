@@ -8,6 +8,7 @@ import { McpLink } from './mcp.js';
 import { inShell, call, on, onClosing, setEdited } from '../../shell/js/shell.js';
 import { questions } from '@vrmxg/editor-ui';
 import { editorClosing } from './closing.js';
+import { exportClosing } from './export-game.js';
 import TreeItem from './TreeItem.vue';
 import Inspector from './Inspector.vue';
 import Timeline from '@vrmxg/editor-ui/Timeline.vue'; // shared with the creator (M4 W5)
@@ -75,7 +76,7 @@ function refresh(kind = 'all') {
   ui.ex.canCheck = x?.take === 'sequence' && !!x.frameHashes?.length;
   ui.ex.checkRows = c ? c.rows.map((r) => `${r.frame} ${r.scrub} ${r.exported}`).join('; ') : '';
   const g = ed.lastGameExport; // Export Game (M5 W0)
-  ui.ex.game = g?.refused ? `Game export refused (${g.refused}): ${g.message}` : g ? `${g.written ? 'Exported' : 'Checked'} game ${g.id}: ${g.files} files, ${g.bytes} bytes, entry ${g.entry}, runtime ${g.runtime} · build ${g.digest.slice(0, 16)} · manifest ${g.manifest.slice(0, 16)}${g.byPattern ? ` · ${g.byPattern} files licensed by a pattern row` : ''}${g.written ? ` · ${g.path}` : ' · not written: a build folder needs the Mac app or vrmxg-export'}` : '';
+  ui.ex.game = g?.refused ? `Game export refused (${g.refused}): ${g.message}` : g ? `${g.written ? 'Exported' : 'Checked'} game ${g.id}: ${g.files} files, ${g.bytes} bytes, entry ${g.entry}, runtime ${g.runtime} · build ${g.digest.slice(0, 16)} · manifest ${g.manifest.slice(0, 16)}${g.byPattern ? ` · ${g.byPattern} files licensed by a pattern row` : ''}${g.unsaved ? ' · the open scene has unsaved changes, which are not in it' : ''}${g.written ? ` · ${g.path}` : ' · not written: a build folder needs the Mac app or vrmxg-export'}` : '';
   ui.ex.still = ed.lastStill ? `${ed.lastStill.thumbnail ? 'Thumbnail' : 'Still'} ${ed.lastStill.path ?? ed.lastStill.name} · ${ed.lastStill.bytes} bytes` : '';
   ui.stopped = ed.lastStop ? `scene ${ed.lastStop.restored && ed.lastStop.hash === ed.lastStop.before ? 'as before Play' : 'CHANGED'} (${ed.lastStop.hash}), view ${ed.lastStop.viewSame ? 'unchanged' : 'CHANGED'}` : '';
 }
@@ -125,7 +126,8 @@ function takeSeconds() {
 const checkScrub = () => act(() => ed.checkExportAgainstScrub());
 const bakeTake = () => act(async () => { const ref = await ed.bakeTake(ui.ex.take, ui.ex.name.trim() || null); ui.ex.open = false; await ed.openScene(ref); });
 const exportVideo = () => act(() => ed.exportVideo({ take: ui.ex.take, seconds: +ui.ex.seconds, size: ui.ex.size, fps: ui.ex.fps, codec: ui.ex.codec, audio: ui.ex.audio, name: ui.ex.name.trim() }));
-const exportGame = () => act(() => ed.exportGame({ name: ui.ex.gameName.trim() }));
+// not while the window is asking something (the close sheet, M5 W8): that question first, as the menu can't know of it
+const exportGame = () => (sheet.asking ? null : act(() => ed.exportGame({ name: ui.ex.gameName.trim() })));
 const saveStill = () => act(() => ed.saveStill(ui.ex.size));
 const thumbnail = () => act(() => ed.makeThumbnail());
 const select = (id, add) => act(() => ed.session.select([id], { add }));
@@ -194,6 +196,9 @@ const sheet = questions((q) => { ui.ask = q; });
 const reply = (id) => sheet.reply(id);
 const closing = async (reason) => {
   ui.error = '';
+  // a game export being written (M5 W0): the person is told it stops, and it stops cleanly, before the question about
+  // unsaved changes
+  if (!(await exportClosing(ed, { ask: sheet.ask, asking: () => sheet.asking }))) return false;
   const go = await editorClosing(ed, { ask: sheet.ask, asking: () => sheet.asking, reason, onError: (e) => { ui.error = String(e?.message ?? e); } });
   if (ed?.session) refresh();
   return go;

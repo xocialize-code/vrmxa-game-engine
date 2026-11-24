@@ -1,6 +1,6 @@
 ---
 title: "Packages"
-description: "The 37 engine packages, one line each, and which side of the determinism boundary each is on."
+description: "The 38 engine packages, one line each, and which side of the determinism boundary each is on."
 order: 90
 ---
 
@@ -8,7 +8,7 @@ order: 90
 
 > Generated from every `engine/packages/*`: its `package.json` and the opening of its README by `scripts/docs-reference.mjs`. Don't edit it: change the code and run `npm run docs:reference`.
 
-The engine is 37 packages under `engine/packages/`, each with its own tests. Until a package has pages of its own
+The engine is 38 packages under `engine/packages/`, each with its own tests. Until a package has pages of its own
 here, its README in the repository is its manual.
 
 **Boundary** says which side of the determinism boundary a package's code is on ([Determinism](../guide/determinism)):

@@ -32,7 +32,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [The Fountain subset](reference/fountain.md): The screenplay syntax a VRMXG script is written in: elements, tags, parenthetical words and timing defaults.
 - [shorts.json](reference/shorts-json.md): The file that lists a project's shorts for the creator: each short's script, sequence, marks, set and cameras.
 - [delivery.json](reference/delivery-json.md): What a delivery folder holds, the render queue's presets, and the manifest that names every file with its hash.
-- [Packages](reference/packages.md): The 37 engine packages, one line each, and which side of the determinism boundary each is on.
+- [Packages](reference/packages.md): The 38 engine packages, one line each, and which side of the determinism boundary each is on.
 
 ## Node types
 

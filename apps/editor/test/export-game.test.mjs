@@ -6,7 +6,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { runtimeTable, serializeRuntime, parseManifest, sha256, RUNTIME_FILE, BUILD_FILE } from '@vrmxg/bundle';
-import { exportGame } from '../src/export-game.js';
+import { questions } from '@vrmxg/editor-ui';
+import { exportGame, exportClosing } from '../src/export-game.js';
 
 const enc = (s) => new TextEncoder().encode(s);
 const LICENCES = '| `game.json` | Ours | |\n| `level.vrmxs` | Ours | |\n| `props/*.glb` | CC0-1.0 | |\n| `LICENCES.md` | Ours | |\n';
@@ -128,4 +129,42 @@ test('a project with no game.json exports the open scene, and with no scene says
   const r = await exportGame(p, { shell: s, runtime: runtime(), scene: 'level.vrmxs' });
   assert.deepEqual([r.id, r.entry], ['level', 'level.vrmxs']);
   await assert.rejects(exportGame(p, { shell: shell(), runtime: runtime() }), /no scene is open/);
+});
+
+test('an export stopped on the way (the window is closing) is aborted like a failed one', async () => {
+  const abort = new AbortController(), s = shell();
+  s.folder = new Map([['index.html', enc('the earlier build')]]);
+  const call = s.call;
+  s.call = async (method, p) => { if (method === 'build.write' && p.path === 'project/level.vrmxs') abort.abort(); return call(method, p); };
+  await assert.rejects(exportGame(project(), { shell: s, runtime: runtime(), signal: abort.signal }), (e) => e.code === 'aborted');
+  assert.equal(s.calls.at(-1), 'build.abort');
+  assert.ok(!s.calls.includes('build.end'), 'a stopped export is never moved in');
+  assert.equal(new TextDecoder().decode(s.folder.get('index.html')), 'the earlier build');
+  // stopped before a folder was asked for: nothing to abort, no folder asked for
+  const before = new AbortController(); before.abort();
+  const s2 = shell();
+  await assert.rejects(exportGame(project(), { shell: s2, runtime: runtime(), signal: before.signal }), (e) => e.code === 'aborted');
+  assert.deepEqual(s2.calls, []);
+});
+
+test('closing the window while a game is exported asks first, and Stop and Close waits for the export to let go', async () => {
+  let shown = null;
+  const sheet = questions((q) => { shown = q; });
+  const o = { ask: sheet.ask, asking: () => sheet.asking };
+  // nothing is being exported: no question
+  assert.equal(await exportClosing({ gameExporting: null }, o), true);
+  assert.equal(shown, null);
+  // Keep Exporting: the window stays, the export goes on
+  let cancelled = 0;
+  const ed = { gameExporting: { n: 3, total: 60 }, cancelGameExport: async () => { cancelled++; ed.gameExporting = null; } };
+  let answer = exportClosing(ed, o);
+  assert.deepEqual([shown.title, shown.options.map((x) => x.id)], ['A game is being exported', ['cancel', 'stop']]);
+  // the menu's Export Game while this sheet is up would be a second question: it is not asked (App.vue: sheet.asking)
+  assert.equal(await exportClosing(ed, o), false, 'a close asked again while the sheet is up waits for the first');
+  sheet.reply('cancel');
+  assert.deepEqual([await answer, cancelled, shown], [false, 0, null]);
+  // Stop and Close: the export is stopped and has settled before the close goes on
+  answer = exportClosing(ed, o);
+  sheet.reply('stop');
+  assert.deepEqual([await answer, cancelled, ed.gameExporting], [true, 1, null]);
 });
