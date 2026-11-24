@@ -7,7 +7,7 @@
 //   const behaviours = await build.behaviours((url) => import(new URL(url, location.href).href));
 //   const scene = parse(await build.text(build.game.entry));          // then build the world with build.bytes as resolve
 import { sha256 } from './sha256.js';
-import { BuildError } from './paths.js';
+import { BuildError, normRef, moduleImports, resolveFrom } from './paths.js';
 import { BUILD_FILE, parseManifest } from './manifest.js';
 import { PROJECT_DIR } from './runtime.js';
 
@@ -27,15 +27,15 @@ export class Build {
   /** The project's refs, in order. */
   refs() { return this.manifest.files.filter((f) => f.role === 'project').map((f) => f.path.slice(PROJECT_DIR.length)); }
   /** Whether the build holds a project file. @param {string} ref */
-  has(ref) { return this.byPath.has(PROJECT_DIR + ref); }
+  has(ref) { return this.byPath.has(PROJECT_DIR + normRef(ref)); }
   /** A project file's row (size, hash, licence), or null. @param {string} ref */
-  info(ref) { return this.byPath.get(PROJECT_DIR + ref) ?? null; }
+  info(ref) { return this.byPath.get(PROJECT_DIR + normRef(ref)) ?? null; }
   /** A project file's path under the build's root, for a URL or an import. @param {string} ref */
-  path(ref) { this.row(ref); return PROJECT_DIR + ref; }
+  path(ref) { return this.row(ref).path; }
 
-  /** @param {string} ref */
+  /** A ref is looked up as the exporter spelled it: NFC, no leading `./` (paths.js normRef). @param {string} ref */
   row(ref) {
-    const f = this.byPath.get(PROJECT_DIR + ref);
+    const f = this.byPath.get(PROJECT_DIR + normRef(ref));
     if (!f) throw new BuildError('not_in_build', `${ref} is not in this build: a document names it that the export didn't follow, so add it to "include" in game.json and export again`, [ref]);
     return f;
   }
@@ -64,16 +64,38 @@ export class Build {
   }
 
   /**
+   * A module and every module it imports by a relative specifier, each read and checked against the manifest, in the
+   * order they are found. A module that imports a file the build doesn't hold is refused before anything runs.
+   * @param {string} ref @returns {Promise<string[]>}
+   */
+  async modules(ref) {
+    const seen = [normRef(ref)];
+    for (let i = 0; i < seen.length; i++) {
+      for (const spec of moduleImports(await this.text(seen[i]))) {
+        if (!/^\.{1,2}\//.test(spec)) continue; // '@vrmxg/core': the runtime's own, through its import map
+        const target = resolveFrom(seen[i], spec);
+        if (target === null || !this.has(target)) throw new BuildError('not_in_build', `${seen[i]} imports ${spec}, which is not in this build`, [target ?? spec]);
+        if (!seen.includes(normRef(target))) seen.push(normRef(target));
+      }
+    }
+    return seen;
+  }
+
+  /**
    * The project's behaviours, by the names its scenes use: the functions its behaviours module exports. The module is
-   * imported from the build as the project wrote it; `importModule` gets its path under the build's root (and is where
-   * a runtime checks nothing else has been put in its place: `bytes` has already checked the file's hash).
+   * imported from the build as the project wrote it; `importModule` gets its path under the build's root.
+   *
+   * Before the import, the module and every module it imports relatively are read and checked against the manifest
+   * (`modules`), so a changed or missing module stops here, before any of them runs. What that does not give: the
+   * import itself fetches the files again by URL, so the bytes that run are checked a moment before they are loaded,
+   * not as they are loaded, and a module reached only by `import()` of a computed path is not checked at all.
    * @param {(path: string) => Promise<Record<string, any>>} importModule
    * @returns {Promise<Map<string, any>>}
    */
   async behaviours(importModule) {
     const ref = this.game.behaviours;
     if (!ref) return new Map();
-    await this.bytes(ref); // refuses a module that isn't the exported one, before it runs
+    await this.modules(ref);
     const mod = await importModule(this.path(ref));
     return new Map(Object.entries(mod).filter(([, v]) => typeof v === 'function'));
   }

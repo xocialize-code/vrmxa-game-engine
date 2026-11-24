@@ -5,13 +5,15 @@
 //   node acceptance/m5/build.mjs --mac <a> <b> …    and builds the Mac editor wrote (Export Game: HAND-TEST-M5-EXPORT-GAME),
 //                                                   each compared byte for byte with Node's
 //   … --refused <folder> …                          and where an export the editor refused would have gone: nothing is there
+//   … --kept <folder> …                             and a folder with someone's file in it that the editor refused: only that file is there
 //
 // What it checks:
 //   1  two exports in two Node processes give the same folder, byte for byte, and each folder holds exactly what its
 //      manifest lists;
 //   2  the manifest lists every file with its SHA-256 and its licence, and a project file's licence is its row in
 //      the project's LICENCES.md;
-//   3  a file with no row in LICENCES.md stops the export, and the error names it;
+//   3  a file with no row in LICENCES.md stops the export, and the error names it; so does a scene's reference to a
+//      file in another case than the project has it;
 //   4  the loader opens the build, and its scene plays to the same per-step hashes as the project played straight
 //      from its folder (the recorded walk, 600 steps; needs vrmxa-avatar-studio beside the repository);
 //   5  (--chromium) the build's own runtime plays it in a browser to those hashes;
@@ -30,7 +32,7 @@ import { createRequire } from 'node:module';
 import { installPortableMath } from '@vrmxg/dmath';
 import { loadRapier } from '@vrmxg/physics';
 import { exportBuild, parseLicences, licenceOf, sha256Text, RUNTIME_FILE, BUILD_FILE, GAME_FILE } from '@vrmxg/bundle';
-import { folderReader, openFolder, checkFolder, compareFolders, behavioursImporter } from '@vrmxg/bundle/node';
+import { folderReader, openFolder, checkFolder, compareFolders, scanFolder, behavioursImporter } from '@vrmxg/bundle/node';
 import { playScene } from '../../engine/packages/bundle/runtime/play.js';
 import { vrmxaCore, PATHS } from '../../engine/packages/character/test/fixtures.mjs';
 
@@ -39,7 +41,7 @@ const project = path.join(root, 'content/sample'), pkg = path.join(root, 'engine
 const runtime = path.join(pkg, 'runtime/dist'), cli = path.join(pkg, 'src/cli.js');
 const args = process.argv.slice(2), TAKE = 'input/walk-in.json', STEPS = 600;
 const list = (flag) => { const i = args.indexOf(flag); if (i < 0) return []; const rest = args.slice(i + 1), end = rest.findIndex((a) => a.startsWith('--')); return end < 0 ? rest : rest.slice(0, end); };
-const mac = list('--mac'), refused = list('--refused');
+const mac = list('--mac'), refused = list('--refused'), kept = list('--kept');
 const checks = [], say = (name, ok, detail) => { checks.push({ name, ok, detail }); console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${detail ? `: ${detail}` : ''}`); };
 
 // the runtime that goes into the build: built here when it isn't there (or with --rebuild)
@@ -73,6 +75,17 @@ try {
   });
 } catch (e) { refusal = { code: e.code, message: e.message, files: e.files }; }
 say('a file with no licence row stops the export, by name', refusal?.code === 'no_licence' && refusal.message.includes(extra) && refusal.files.includes(extra) && wrote === 0, refusal ? `"${refusal.message}"` : 'the export went through');
+
+// 3b: a scene that names a file in another case than the project has it stops the export too (a Mac's disk would open
+// it; a build served from anywhere would not), and the error names the scene and both spellings
+let wrongCase = null;
+try {
+  const scene = JSON.parse(new TextDecoder().decode(await src.read(game.entry)));
+  scene.assets[0].ref = scene.assets[0].ref.replace(/^[a-z]/, (c) => c.toUpperCase());
+  const body = new TextEncoder().encode(JSON.stringify(scene));
+  await exportBuild({ project: { files: src.files, read: (ref) => (ref === game.entry ? Promise.resolve(body) : src.read(ref)) }, runtime: folderReader(runtime), game, write: async () => { wrote++; } });
+} catch (e) { wrongCase = { code: e.code, message: e.message, files: e.files }; }
+say('a reference in another case than the file stops the export, naming the scene', wrongCase?.code === 'missing_file' && wrongCase.message.startsWith(`${game.entry} names `) && wrongCase.files.length === 2 && wrote === 0, wrongCase ? `"${wrongCase.message}"` : 'the export went through');
 
 // 4: the build through the loader against the project played directly
 let replay = { skipped: 'needs vrmxa-avatar-studio beside the repository' }, direct = null;
@@ -129,13 +142,16 @@ const macBuilds = mac.map((d) => {
 // and the folder of an export the editor refused: nothing was made there
 const macRefused = refused.map((d) => { const ok = !fs.existsSync(d); say(`the Mac editor's refused export ${path.basename(d)} wrote nothing`, ok, ok ? 'no folder' : 'a folder is there'); return { name: path.basename(d), ok }; });
 
+// and a folder that held someone's file, which the editor refused to export into: the file is there and nothing else
+const macKept = kept.map((d) => { const there = fs.existsSync(d) ? scanFolder(d) : null, all = there ? [...there.files, ...there.foreign, ...there.stale] : []; const ok = all.length === 1; say(`the Mac editor left ${path.basename(d)} as it was`, ok, there ? `holds ${all.join(', ') || 'nothing'}` : 'no folder'); return { name: path.basename(d), ok, holds: all }; });
+
 fs.rmSync(tmp, { recursive: true, force: true });
 const ok = checks.every((c) => c.ok);
 const result = {
   check: 'M5 exit check 1: a project exports as a game (AB-T-0615)', ok, node: process.version,
   build: { game: manifest.game.id, entry: manifest.game.entry, runtime: manifest.runtime, files: manifest.files.length, projectFiles: projectFiles.length, runtimeFiles: runtimeFiles.length, bytes: manifest.bytes, digest: manifest.digest, manifestSha256: runs[0].manifest },
   nodeRuns: runs.map((r) => ({ manifest: r.manifest, digest: r.digest, files: r.files, bytes: r.bytes })),
-  refusal, replay, chromium, mac: macBuilds, macRefused, checks,
+  refusal, wrongCase, replay, chromium, mac: macBuilds, macRefused, macKept, checks,
 };
 fs.writeFileSync(path.join(here, '../results/m5-build.json'), `${JSON.stringify(result, null, 1)}\n`);
 console.log(`${ok ? 'passed' : 'FAILED'}: ${checks.filter((c) => c.ok).length} of ${checks.length}; build ${manifest.digest.slice(0, 16)}, manifest ${runs[0].manifest.slice(0, 16)}`);

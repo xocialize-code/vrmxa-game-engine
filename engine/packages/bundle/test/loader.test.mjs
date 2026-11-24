@@ -1,7 +1,7 @@
 // The loader: a build opened, its files handed out by ref, and what it refuses.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { exportBuild, openBuild, serializeManifest, BUILD_FILE } from '@vrmxg/bundle';
+import { exportBuild, openBuild, serializeManifest, filesDigest, BUILD_FILE } from '@vrmxg/bundle';
 import { project, runtime, sink, enc, dec, GAME } from './helpers.mjs';
 
 async function built(p = project(), o = {}) {
@@ -69,6 +69,39 @@ test('the input map: inline, from a file, or none', async () => {
   const { build } = await built(p);
   assert.ok(build.has('input/actions.json'));
   assert.deepEqual(await build.actions(), actions);
+});
+
+test('every module the behaviours import is checked before any of them runs', async () => {
+  const { build, out } = await built();
+  assert.deepEqual(await build.modules('behaviours.js'), ['behaviours.js', 'lib/maths.js']);
+  // a module the entry imports is changed after the export: the entry itself is untouched
+  out.map.set('project/lib/maths.js', enc('export const twice = (n) => { globalThis.pwned = true; return n; };\n'));
+  const again = await openBuild(async (p) => out.map.get(p));
+  let imported = false;
+  await assert.rejects(again.behaviours(async () => { imported = true; return {}; }), (e) => e.code === 'changed' && e.files[0] === 'project/lib/maths.js');
+  assert.equal(imported, false, 'nothing was imported');
+  // a module that imports a file the build doesn't hold
+  const gone = await built();
+  gone.out.map.delete('project/lib/maths.js');
+  const m = structuredClone(gone.build.manifest);
+  m.files = m.files.filter((f) => f.path !== 'project/lib/maths.js');
+  m.bytes = m.files.reduce((n, f) => n + f.bytes, 0); m.digest = filesDigest(m.files);
+  gone.out.map.set(BUILD_FILE, enc(serializeManifest(m)));
+  const without = await openBuild(gone.read);
+  await assert.rejects(without.behaviours(async () => ({})), (e) => e.code === 'not_in_build' && /behaviours\.js imports \.\/lib\/maths\.js, which is not in this build/.test(e.message));
+});
+
+test('a ref is found as the exporter spelled it: ./ and the Unicode form don\'t matter, case does', async () => {
+  const nfc = 'props/café.glb', nfd = 'props/café.glb';
+  const p = project({ [nfd]: new Uint8Array([7]), 'game.json': JSON.stringify({ ...GAME, include: [nfc] }) });
+  p.map.set('LICENCES.md', enc(dec(p.map.get('LICENCES.md')) + `| \`${nfc}\` | Ours | A cafe |\n`));
+  const { build } = await built(p);
+  assert.deepEqual([...await build.bytes(nfd)], [7]);
+  assert.deepEqual([...await build.bytes(nfc)], [7]);
+  assert.deepEqual([...await build.bytes('./props/door.glb')].slice(0, 4), [0x67, 0x6c, 0x54, 0x46]);
+  assert.ok(build.has('./level.vrmxs') && !build.has('Level.vrmxs'));
+  assert.equal(build.path(nfd), `project/${nfc}`);
+  await assert.rejects(build.bytes('Props/Door.glb'), (e) => e.code === 'not_in_build');
 });
 
 test('behaviours come from the build\'s own module, checked before it runs', async () => {

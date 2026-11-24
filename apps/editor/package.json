@@ -6,7 +6,8 @@
   "description": "The VRMXG editor (M1 W7, M2 W5): open a project, build a scene from its assets, tree, inspector, gizmos, undo, save, play in place; sequences on a timeline with scrub, camera preview and multi-angle views.",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "test": "node --test test/"
   },
   "dependencies": {
     "@vrmxg/ai": "0.1.0",

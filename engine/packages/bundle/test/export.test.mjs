@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import { exportBuild, parseManifest, filesDigest, sha256, BUILD_FILE, RUNTIME_FILE, runtimeTable, serializeRuntime } from '@vrmxg/bundle';
+import { exportBuild, parseManifest, serializeManifest, filesDigest, sha256, BUILD_FILE, RUNTIME_FILE, runtimeTable, serializeRuntime } from '@vrmxg/bundle';
 import { folderReader } from '@vrmxg/bundle/node';
 import { project, runtime, sink, enc, dec, GAME, LICENCES } from './helpers.mjs';
 
@@ -99,6 +99,61 @@ test('a runtime may not use the build\'s own names, and every file of it needs a
   const ok = table([['index.html'], ['b.js'], ['a.js']]);
   assert.deepEqual(ok.files.map((f) => f.path), ['a.js', 'b.js', 'index.html'], 'in order');
   assert.equal(serializeRuntime(ok), serializeRuntime(table([['a.js'], ['index.html'], ['b.js']])), 'whatever order they came in');
+});
+
+test('ready is called once every check has passed, before the first write; a refused export never reaches it', async () => {
+  const events = [];
+  await exportBuild({ project: project(), runtime: runtime(), ready: (plan) => { events.push(`ready ${plan.game.id} ${plan.files} ${plan.runtime}`); }, write: async (p) => { events.push(p); } });
+  assert.equal(events[0], 'ready test-game 15 test-runtime 1.0.0');
+  assert.equal(events.length, 17, 'then the 15 files and the manifest');
+  for (const bad of [
+    project({ 'game.json': JSON.stringify({ ...GAME, include: ['notes/unlicensed.txt'] }) }),
+    project({ 'level.vrmxs': JSON.stringify({ assets: [{ ref: 'props/dor.glb' }] }) }),
+  ]) {
+    let asked = false;
+    await assert.rejects(exportBuild({ project: bad, runtime: runtime(), ready: () => { asked = true; }, write: async () => {} }));
+    assert.equal(asked, false);
+  }
+  const rt = runtime(); rt.map.set('assets/app.js', enc('tampered'));
+  let asked = false;
+  await assert.rejects(exportBuild({ project: project(), runtime: rt, ready: () => { asked = true; } }), (e) => e.code === 'bad_runtime');
+  assert.equal(asked, false);
+});
+
+test('each of the project\'s files is read once for its bytes', async () => {
+  const p = project(), reads = new Map(), read = p.read;
+  p.read = async (ref) => { reads.set(ref, (reads.get(ref) ?? 0) + 1); return read(ref); };
+  await run(p);
+  for (const ref of ['props/door.glb', 'voice/hello.wav', 'animations/clips/idle.vrma']) assert.equal(reads.get(ref), 1, ref);
+});
+
+test('a file licensed by a pattern row says so in the manifest; one named by its own row doesn\'t', async () => {
+  const { manifest, byPattern } = await run();
+  const of = (p) => manifest.files.find((f) => f.path === p);
+  assert.equal(of('project/voice/hello.wav').licenceFrom, 'voice/*.wav');
+  assert.equal(of('project/voice/hello.timings.json').licenceFrom, 'voice/*.timings.json');
+  assert.equal(of('project/animations/clips/idle.vrma').licenceFrom, 'animations/clips/*.vrma');
+  assert.ok(!('licenceFrom' in of('project/props/door.glb')) && !('licenceFrom' in of('index.html')));
+  assert.deepEqual(byPattern, ['animations/clips/idle.vrma', 'voice/hello.timings.json', 'voice/hello.wav']);
+  assert.deepEqual(parseManifest(serializeManifest(manifest)), manifest);
+});
+
+test('only the files a game uses are held to a build\'s rules for names; a listing cut short stops the export', async () => {
+  const p = project({ 'notes/2026:plan.txt': 'a name no build could hold, in a file no game uses', 'weird\\name.txt': 'x' });
+  await run(p);
+  const used = project({ 'brains/guard.json': JSON.stringify({ format: 'vrmxg-brain', reads: 'notes/2026:plan.txt' }), 'notes/2026:plan.txt': 'x' });
+  used.map.set('LICENCES.md', enc(`${LICENCES}| \`notes/2026:plan.txt\` | Ours | A plan |\n`));
+  await assert.rejects(run(used), (e) => e.code === 'bad_path' && /2026:plan\.txt/.test(e.message));
+  const cut = project(); cut.truncated = true;
+  await assert.rejects(run(cut), (e) => e.code === 'too_many_files' && /cut short at \d+ files/.test(e.message));
+});
+
+test('a manifest whose game is not a game document is refused as a manifest', async () => {
+  const { manifest } = await run();
+  for (const edit of [(m) => { m.game.scenes = 'level.vrmxs'; }, (m) => { m.game = null; }, (m) => { delete m.game.entry; }, (m) => { m.files[3].licenceFrom = 5; }]) {
+    const m = structuredClone(manifest); edit(m);
+    assert.throws(() => parseManifest(serializeManifest(m)), (e) => e.name === 'BuildError' && e.code === 'bad_manifest');
+  }
 });
 
 test('with no writer the export checks and hashes everything and writes nothing', async () => {

@@ -6,7 +6,8 @@
 //     "entry": "cafe.vrmxs", "scenes": ["cafe.vrmxs"],
 //     "behaviours": "behaviours.js", "animations": "animations.json", "personas": "personas.json",
 //     "input": { "actions": { … } },            // or a ref to a JSON file holding { "actions": … }; absent: the engine's default map
-//     "include": ["input/walk-in.json", "voice/*.wav"] }
+//     "include": ["input/walk-in.json", "voice/*.wav"],
+//     "ignore": ["report.json"] }                 // strings in the game's documents that look like files and aren't
 import { BuildError, pathProblem } from './paths.js';
 
 export const GAME_FILE = 'game.json';
@@ -23,7 +24,7 @@ const ref = (v, key, { glob = false } = {}) => {
 /**
  * @typedef {{ format: 'vrmxg-game', version: 1, id: string, title: string, entry: string, scenes: string[],
  *   behaviours: string | null, animations: string | null, personas: string | null,
- *   input: string | { actions: Record<string, any> } | null, include: string[] }} Game
+ *   input: string | { actions: Record<string, any> } | null, include: string[], ignore?: string[] }} Game
  */
 
 /**
@@ -50,12 +51,15 @@ export function checkGame(doc) {
   }
   if (doc.include !== undefined && !Array.isArray(doc.include)) throw bad('"include" is a list of refs');
   const include = [...new Set((doc.include ?? []).map((s) => ref(s, 'include', { glob: true })))].sort();
-  const known = new Set(['format', 'version', 'id', 'title', 'entry', 'scenes', 'behaviours', 'animations', 'personas', 'input', 'include']);
+  if (doc.ignore !== undefined && (!Array.isArray(doc.ignore) || doc.ignore.some((s) => typeof s !== 'string'))) throw bad('"ignore" is a list of strings');
+  const ignore = [...new Set(doc.ignore ?? [])].sort();
+  const known = new Set(['format', 'version', 'id', 'title', 'entry', 'scenes', 'behaviours', 'animations', 'personas', 'input', 'include', 'ignore']);
   const unknown = Object.keys(doc).filter((k) => !known.has(k));
   if (unknown.length) throw bad(`unknown ${unknown.length > 1 ? 'keys' : 'key'} ${unknown.map((k) => `"${k}"`).join(', ')}`);
   return {
     format: GAME_FORMAT, version: GAME_VERSION, id: doc.id, title: doc.title?.trim() ?? doc.id, entry, scenes,
     behaviours: optional('behaviours'), animations: optional('animations'), personas: optional('personas'), input, include,
+    ...(ignore.length ? { ignore } : {}),
   };
 }
 

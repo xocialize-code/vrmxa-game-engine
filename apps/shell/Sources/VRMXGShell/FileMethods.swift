@@ -148,19 +148,29 @@ public final class FileMethods {
         let folder = url!
         granted.insert(folder)
         roots.mountProject(folder)
-        return ["path": folder.path, "name": folder.lastPathComponent, "base": WebRoots.projectPrefix, "files": try listProject()]
+        let listing = try projectListing()
+        // `truncated`: the project has more files than the listing holds (M5 W0): what needs every file (Export Game) refuses
+        return ["path": folder.path, "name": folder.lastPathComponent, "base": WebRoots.projectPrefix, "files": listing.files, "truncated": listing.truncated]
     }
 
+    /// The most files a project's listing holds.
+    static var projectFileCap = 20_000
+
     /// Every file of the mounted project, as paths relative to it (hidden files skipped, at most 20,000).
-    func listProject() throws -> [String] {
+    func listProject() throws -> [String] { try projectListing().files }
+
+    /// The listing, and whether the project has more files than it holds.
+    func projectListing() throws -> (files: [String], truncated: Bool) {
         guard let root = roots.projectFolder else { throw BridgeError("no_project", "no project is open") }
-        var out: [String] = []
+        var out: [String] = [], truncated = false
         let base = root.standardizedFileURL.path + "/"
         let e = FileManager.default.enumerator(at: root, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles])
-        while let u = e?.nextObject() as? URL, out.count < 20_000 {
-            if (try? u.resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile == true { out.append(String(u.standardizedFileURL.path.dropFirst(base.count))) }
+        while let u = e?.nextObject() as? URL {
+            guard (try? u.resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile == true else { continue }
+            if out.count == Self.projectFileCap { truncated = true; break }
+            out.append(String(u.standardizedFileURL.path.dropFirst(base.count)))
         }
-        return out.sorted()
+        return (out.sorted(), truncated)
     }
 
     /// A path inside the mounted project (relative to it), refused if it leads outside.

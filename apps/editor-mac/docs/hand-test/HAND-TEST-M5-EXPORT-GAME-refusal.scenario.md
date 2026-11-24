@@ -25,6 +25,5 @@ fresh: false
   act id=game-name action=set_value value=game-refused
   act id=export-game action=press
   until find("id=export-game-result").0.name matches "^Game export refused \\(no_licence\\): no row in LICENCES.md for props/found-on-the-web.glb" timeout=120000   # the refusal names the file
-  shot "refused"
   partial: that no folder was made is checked by acceptance/m5/build.mjs --refused, outside the app
   ```

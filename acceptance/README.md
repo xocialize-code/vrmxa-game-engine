@@ -25,20 +25,27 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
   node acceptance/m5/build.mjs --chromium    # Node and headless Chromium: results/m5-build.json
   acceptance/m5/build-wkwebview.sh           # the build played in WKWebView, scheme and loopback (under the runner lock): results/m5-build-wkwebview.json
   # the Mac editor: apps/editor-mac/docs/hand-test/HAND-TEST-M5-EXPORT-GAME.scenario.md, then
-  node acceptance/m5/build.mjs --chromium --mac <builds…> --refused <folder>
+  node acceptance/m5/build.mjs --chromium --mac <builds…> --refused <folder> --kept <folder>
   ```
-  **Passed, 12 of 12 and 4 of 4, at 48881a4** (receipt AB-R-1102; M5 Max, macOS 27.3 beta, Node 26.12.1, Chrome for Testing
-  156.0.8078.4):
-  - **The build:** 60 files, 22,172,602 bytes: 50 of the project's files under `project/` and the runtime's 10 (`vrmxg-stepper 0.1.0`, digest `86b614602b9bef26…`); build digest `b7393df444599d85…`.
+  **Passed, 14 of 14 and 4 of 4** (M5 Max, macOS 27.3 beta, Node 26.12.1, Chrome for Testing 156.0.8078.4). First run at
+  48881a4 (receipt AB-R-1102); run again after the review's fixes, which changed the manifest and the runtime, so the
+  digests below are the later run's:
+  - **The build:** 60 files, 22,176,386 bytes: 50 of the project's files under `project/` and the runtime's
+    10 (`vrmxg-stepper 0.1.0`, digest `fac19d0ee1ba9b26…`); build digest `4248061ad864482e…`.
   - **The same bytes from Node and from the Mac editor.** Two exports in two Node processes, and four from the Mac
     editor's Export Game (the bundled sample twice, the same project opened as a folder, and File › Export Game…): all
-    six folders are the same, byte for byte, 61 files each with the manifest (SHA-256 `179067b9b1554a67…5535`), and each holds
-    exactly what its manifest lists.
+    six folders are the same, byte for byte, 61 files each with the manifest (SHA-256 `22e106b1ecdbd602…5e9a`), and each holds
+    exactly what its manifest lists. One of the four was then exported over again in the Mac editor (an earlier build
+    replaced, staged and moved in whole) and is still Node's build, with no staging folder left.
   - **Every file has its hash and licence** in the manifest: a project file's licence is its row in the project's
     `LICENCES.md`; a runtime file's names the packages bundled into it, whose licence texts ship in
-    `THIRD-PARTY-LICENCES.txt`.
+    `THIRD-PARTY-LICENCES.txt`. 33 of the 50 project files are licensed by a pattern row, and say so (`licenceFrom`).
   - **A file with no licence row stops the export**: `no row in LICENCES.md for props/found-on-the-web.glb`, with
-    nothing written. In the Mac editor the same refusal shows in the export's result line and no folder is made.
+    nothing written. In the Mac editor the same refusal shows in the export's result line and no folder is made. **So
+    does a reference in another case than the file**: `cafe.vrmxs names Sets/cafe.glb, and the project's file is
+    sets/cafe.glb`.
+  - **A folder that holds someone's file is refused and left alone**: in the Mac editor, an export into a folder
+    holding `notes.txt` is refused in the result line, and the folder holds `notes.txt` and nothing else afterwards.
   - **The loader opens the build and it plays as the project does.** The recorded walk (`input/walk-in.json`, 600
     steps, a hash of all 65 components after every step, Rapier's whole state every 60th): the project played straight
     from its folder, the build through the loader in Node, the build's own runtime in Chromium, and in WKWebView over
@@ -47,7 +54,8 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
 
   **Not checked:** the folder panel a person sees (the hook `VRMXG_SHELL_BUILD` stood in for it), and a build made on
   another machine or by CI. The runtime in the build is the minimal one (`vrmxg-stepper`, no renderer) until the game
-  app exists (M5 W1), so nothing here draws a frame of the game.
+  app exists (M5 W1), so nothing here draws a frame of the game. The digests are this branch's: the runtime bundles
+  the engine, so they change whenever the engine does, and stay equal between Node and the editor.
 
 ## M5 W2: game flow (`m5/flow*`, AB-T-0617)
 

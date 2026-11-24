@@ -75,7 +75,7 @@ function refresh(kind = 'all') {
   ui.ex.canCheck = x?.take === 'sequence' && !!x.frameHashes?.length;
   ui.ex.checkRows = c ? c.rows.map((r) => `${r.frame} ${r.scrub} ${r.exported}`).join('; ') : '';
   const g = ed.lastGameExport; // Export Game (M5 W0)
-  ui.ex.game = g?.refused ? `Game export refused (${g.refused}): ${g.message}` : g ? `${g.written ? 'Exported' : 'Checked'} game ${g.id}: ${g.files} files, ${g.bytes} bytes, entry ${g.entry}, runtime ${g.runtime} · build ${g.digest.slice(0, 16)} · manifest ${g.manifest.slice(0, 16)}${g.written ? ` · ${g.path}` : ' · not written: a build folder needs the Mac app or vrmxg-export'}` : '';
+  ui.ex.game = g?.refused ? `Game export refused (${g.refused}): ${g.message}` : g ? `${g.written ? 'Exported' : 'Checked'} game ${g.id}: ${g.files} files, ${g.bytes} bytes, entry ${g.entry}, runtime ${g.runtime} · build ${g.digest.slice(0, 16)} · manifest ${g.manifest.slice(0, 16)}${g.byPattern ? ` · ${g.byPattern} files licensed by a pattern row` : ''}${g.written ? ` · ${g.path}` : ' · not written: a build folder needs the Mac app or vrmxg-export'}` : '';
   ui.ex.still = ed.lastStill ? `${ed.lastStill.thumbnail ? 'Thumbnail' : 'Still'} ${ed.lastStill.path ?? ed.lastStill.name} · ${ed.lastStill.bytes} bytes` : '';
   ui.stopped = ed.lastStop ? `scene ${ed.lastStop.restored && ed.lastStop.hash === ed.lastStop.before ? 'as before Play' : 'CHANGED'} (${ed.lastStop.hash}), view ${ed.lastStop.viewSame ? 'unchanged' : 'CHANGED'}` : '';
 }

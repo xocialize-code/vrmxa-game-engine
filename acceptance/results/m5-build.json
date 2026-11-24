@@ -10,27 +10,27 @@
    "version": "0.1.0",
    "contract": 1,
    "entry": "index.html",
-   "digest": "86b614602b9bef26437442cbb67f4878cdd361af237c33d03f0b610feae35c19"
+   "digest": "fac19d0ee1ba9b26de808df7191787a4c14071bdf84bdbd0a749b9fe77a29438"
   },
   "files": 60,
   "projectFiles": 50,
   "runtimeFiles": 10,
-  "bytes": 22172602,
-  "digest": "b7393df444599d85aaf80b9cfaef99357351a998f4a890d93b8c92cc78fa5c92",
-  "manifestSha256": "179067b9b1554a6709c2561c3184fb4a3bcbcaf5251001ff7fbb723f84935535"
+  "bytes": 22176386,
+  "digest": "4248061ad864482ead546fd716b50b6987bfe01372c8233de83522fbfe7d02c7",
+  "manifestSha256": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a"
  },
  "nodeRuns": [
   {
-   "manifest": "179067b9b1554a6709c2561c3184fb4a3bcbcaf5251001ff7fbb723f84935535",
-   "digest": "b7393df444599d85aaf80b9cfaef99357351a998f4a890d93b8c92cc78fa5c92",
+   "manifest": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a",
+   "digest": "4248061ad864482ead546fd716b50b6987bfe01372c8233de83522fbfe7d02c7",
    "files": 60,
-   "bytes": 22172602
+   "bytes": 22176386
   },
   {
-   "manifest": "179067b9b1554a6709c2561c3184fb4a3bcbcaf5251001ff7fbb723f84935535",
-   "digest": "b7393df444599d85aaf80b9cfaef99357351a998f4a890d93b8c92cc78fa5c92",
+   "manifest": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a",
+   "digest": "4248061ad864482ead546fd716b50b6987bfe01372c8233de83522fbfe7d02c7",
    "files": 60,
-   "bytes": 22172602
+   "bytes": 22176386
   }
  ],
  "refusal": {
@@ -38,6 +38,14 @@
   "message": "no row in LICENCES.md for props/found-on-the-web.glb: a file with no licence can't go into a build",
   "files": [
    "props/found-on-the-web.glb"
+  ]
+ },
+ "wrongCase": {
+  "code": "missing_file",
+  "message": "cafe.vrmxs names Sets/cafe.glb, and the project's file is sets/cafe.glb: the case differs, and a build's files are found by their exact names",
+  "files": [
+   "Sets/cafe.glb",
+   "sets/cafe.glb"
   ]
  },
  "replay": {
@@ -54,7 +62,7 @@
   "version": "156.0.8078.4",
   "final": "fe69bad3406ab5f6",
   "steps": 600,
-  "digest": "b7393df444599d85aaf80b9cfaef99357351a998f4a890d93b8c92cc78fa5c92",
+  "digest": "4248061ad864482ead546fd716b50b6987bfe01372c8233de83522fbfe7d02c7",
   "verified": 48,
   "firstDifference": null,
   "errors": []
@@ -63,7 +71,7 @@
   {
    "name": "game-a",
    "ok": true,
-   "manifest": "179067b9b1554a6709c2561c3184fb4a3bcbcaf5251001ff7fbb723f84935535",
+   "manifest": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a",
    "differ": [],
    "missing": [],
    "extra": []
@@ -71,7 +79,7 @@
   {
    "name": "game-b",
    "ok": true,
-   "manifest": "179067b9b1554a6709c2561c3184fb4a3bcbcaf5251001ff7fbb723f84935535",
+   "manifest": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a",
    "differ": [],
    "missing": [],
    "extra": []
@@ -79,7 +87,7 @@
   {
    "name": "game-c",
    "ok": true,
-   "manifest": "179067b9b1554a6709c2561c3184fb4a3bcbcaf5251001ff7fbb723f84935535",
+   "manifest": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a",
    "differ": [],
    "missing": [],
    "extra": []
@@ -87,7 +95,7 @@
   {
    "name": "game-d",
    "ok": true,
-   "manifest": "179067b9b1554a6709c2561c3184fb4a3bcbcaf5251001ff7fbb723f84935535",
+   "manifest": "22e106b1ecdbd602a5ca54862f468e8d4f1eac45c036492248c64d53bbef5e9a",
    "differ": [],
    "missing": [],
    "extra": []
@@ -99,11 +107,20 @@
    "ok": true
   }
  ],
+ "macKept": [
+  {
+   "name": "game-stray",
+   "ok": true,
+   "holds": [
+    "notes.txt"
+   ]
+  }
+ ],
  "checks": [
   {
    "name": "two Node exports are the same bytes",
    "ok": true,
-   "detail": "61 files, manifest 179067b9b1554a67"
+   "detail": "61 files, manifest 22e106b1ecdbd602"
   },
   {
    "name": "each folder is what its manifest lists",
@@ -113,12 +130,17 @@
   {
    "name": "the manifest lists every file with its hash and licence",
    "ok": true,
-   "detail": "50 project files, 10 runtime files, 22172602 bytes"
+   "detail": "50 project files, 10 runtime files, 22176386 bytes"
   },
   {
    "name": "a file with no licence row stops the export, by name",
    "ok": true,
    "detail": "\"no row in LICENCES.md for props/found-on-the-web.glb: a file with no licence can't go into a build\""
+  },
+  {
+   "name": "a reference in another case than the file stops the export, naming the scene",
+   "ok": true,
+   "detail": "\"cafe.vrmxs names Sets/cafe.glb, and the project's file is sets/cafe.glb: the case differs, and a build's files are found by their exact names\""
   },
   {
    "name": "the loaded build plays to the project's per-step hashes",
@@ -138,27 +160,32 @@
   {
    "name": "the Mac editor's build game-a is Node's, byte for byte",
    "ok": true,
-   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 179067b9b1554a67"
+   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 22e106b1ecdbd602"
   },
   {
    "name": "the Mac editor's build game-b is Node's, byte for byte",
    "ok": true,
-   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 179067b9b1554a67"
+   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 22e106b1ecdbd602"
   },
   {
    "name": "the Mac editor's build game-c is Node's, byte for byte",
    "ok": true,
-   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 179067b9b1554a67"
+   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 22e106b1ecdbd602"
   },
   {
    "name": "the Mac editor's build game-d is Node's, byte for byte",
    "ok": true,
-   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 179067b9b1554a67"
+   "detail": "61 files, 0 differ, 0 missing, 0 extra; manifest 22e106b1ecdbd602"
   },
   {
    "name": "the Mac editor's refused export game-refused wrote nothing",
    "ok": true,
    "detail": "no folder"
+  },
+  {
+   "name": "the Mac editor left game-stray as it was",
+   "ok": true,
+   "detail": "holds notes.txt"
   }
  ]
 }

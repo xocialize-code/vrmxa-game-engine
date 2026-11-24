@@ -809,10 +809,13 @@ export class EditorHost {
     if (this.session?.mode !== 'editing') throw new Error('stop playing before exporting');
     this.gameExporting = { n: 0, total: 0, phase: 'checking' }; this.error = ''; this.changed('export');
     try {
-      this.lastGameExport = await exportGame(this.project, { scene: this.sceneRef, name, onProgress: (n, total, path, phase) => { this.gameExporting = { n, total, phase }; if (n % 8 === 0 || n === total) this.changed('export'); } });
+      this.lastGameExport = await exportGame(this.project, { scene: this.sceneRef, name, onProgress: (n, total) => { this.gameExporting = { n, total, phase: 'writing' }; if (n % 8 === 0 || n === total) this.changed('export'); } });
       return this.lastGameExport;
     } catch (e) {
-      if (e?.name !== 'BuildError') throw e; // a refusal is the export's answer, shown where its result is: which file, and why
+      if (e?.code === 'cancelled') return null; // the folder panel was cancelled: nothing was exported, and nothing is wrong
+      // a refusal is the export's answer, shown where its result is: which file, and why (the exporter's, or the shell's
+      // for a folder that holds something that isn't a build)
+      if (e?.name !== 'BuildError' && e?.code !== 'not_empty') throw e;
       this.lastGameExport = { refused: e.code, message: e.message, files: e.files };
       return this.lastGameExport;
     } finally { this.gameExporting = null; this.changed(); }

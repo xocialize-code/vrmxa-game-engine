@@ -3,6 +3,7 @@
 // everything but itself. There is no clock, path of the machine or user name in it: the same project and runtime give
 // the same bytes wherever the export runs.
 import { BuildError, pathProblem, sortPaths } from './paths.js';
+import { checkGame } from './game.js';
 import { PROJECT_DIR, filesDigest } from './runtime.js';
 
 export const BUILD_FILE = 'vrmxg-build.json';
@@ -14,7 +15,8 @@ const bad = (message, files = []) => new BuildError('bad_manifest', `${BUILD_FIL
 const HEX = /^[0-9a-f]{64}$/;
 
 /**
- * @typedef {{ path: string, role: 'runtime' | 'project', bytes: number, sha256: string, licence: string }} BuildFile
+ * @typedef {{ path: string, role: 'runtime' | 'project', bytes: number, sha256: string, licence: string, licenceFrom?: string }} BuildFile
+ *   licenceFrom: the pattern row of LICENCES.md that licensed the file (`voice/*.wav`), when no row names it by itself
  * @typedef {{ format: 'vrmxg-build', version: 1, game: import('./game.js').Game,
  *   runtime: { name: string, version: string, contract: number, entry: string, digest: string },
  *   hash: 'sha256', project: string, bytes: number, digest: string, files: BuildFile[] }} Manifest
@@ -29,7 +31,7 @@ const HEX = /^[0-9a-f]{64}$/;
 export function makeManifest({ game, runtime, files }) {
   const by = new Map(files.map((f) => [f.path, f]));
   if (by.size !== files.length) throw bad('a file is listed twice');
-  const rows = sortPaths(by.keys()).map((p) => { const f = by.get(p); return { path: f.path, role: f.role, bytes: f.bytes, sha256: f.sha256, licence: f.licence }; });
+  const rows = sortPaths(by.keys()).map((p) => { const f = by.get(p); return { path: f.path, role: f.role, bytes: f.bytes, sha256: f.sha256, licence: f.licence, ...(f.licenceFrom ? { licenceFrom: f.licenceFrom } : {}) }; });
   return {
     format: BUILD_FORMAT, version: BUILD_VERSION, game,
     runtime: { name: runtime.name, version: runtime.runtimeVersion, contract: runtime.contract, entry: runtime.entry, digest: filesDigest(runtime.files) },
@@ -53,7 +55,7 @@ export function parseManifest(text) {
   if (m.version !== BUILD_VERSION) throw bad(`"version" is ${JSON.stringify(m.version)}; this loader reads version ${BUILD_VERSION}`);
   if (m.hash !== HASH) throw bad(`"hash" is ${JSON.stringify(m.hash)}; this loader reads ${HASH}`);
   if (m.project !== PROJECT_DIR) throw bad(`"project" is ${JSON.stringify(m.project)}, not "${PROJECT_DIR}"`);
-  if (!m.game || typeof m.game.entry !== 'string') throw bad('"game" has no entry scene');
+  try { checkGame(m.game); } catch (e) { throw bad(`"game" is not a game document (${e.message})`); }
   if (!m.runtime || typeof m.runtime.entry !== 'string') throw bad('"runtime" has no entry');
   if (!Array.isArray(m.files)) throw bad('"files" is missing');
   let last = null;
@@ -66,10 +68,12 @@ export function parseManifest(text) {
     if ((f.role === 'project') !== f.path.startsWith(PROJECT_DIR)) throw bad(`${f.path} is a ${f.role} file in the wrong place`, [f.path]);
     if (!Number.isInteger(f.bytes) || f.bytes < 0 || !HEX.test(f.sha256 ?? '')) throw bad(`${f.path} has no size or no SHA-256`, [f.path]);
     if (typeof f.licence !== 'string' || !f.licence) throw bad(`${f.path} has no licence`, [f.path]);
+    if (f.licenceFrom !== undefined && (typeof f.licenceFrom !== 'string' || f.role !== 'project')) throw bad(`${f.path} has a licenceFrom that isn't a pattern of the project's licence table`, [f.path]);
+    if (f.path !== f.path.normalize('NFC')) throw bad(`${JSON.stringify(f.path)} is not in Unicode form NFC`, [f.path]);
   }
   if (m.digest !== filesDigest(m.files)) throw bad('"digest" is not the digest of "files"');
   const have = new Set(m.files.map((f) => f.path));
   if (!have.has(m.runtime.entry)) throw bad(`the runtime's entry ${m.runtime.entry} is not among the files`, [m.runtime.entry]);
-  for (const s of [m.game.entry, ...(m.game.scenes ?? [])]) if (!have.has(PROJECT_DIR + s)) throw bad(`the scene ${s} is not among the files`, [s]);
+  for (const s of [m.game.entry, ...m.game.scenes]) if (!have.has(PROJECT_DIR + s)) throw bad(`the scene ${s} is not among the files`, [s]);
   return m;
 }

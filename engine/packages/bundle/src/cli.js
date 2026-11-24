@@ -28,7 +28,7 @@ try {
   const r = check
     ? await exportBuild({ project: { files: src.files, read: src.read }, runtime: folderReader(runtime), write: null })
     : await exportToFolder({ project, runtime, out });
-  console.log(JSON.stringify({ game: r.manifest.game.id, entry: r.manifest.game.entry, runtime: `${r.manifest.runtime.name} ${r.manifest.runtime.version}`, files: r.files, bytes: r.bytes, digest: r.manifest.digest, manifest: r.sha256, ...(check ? {} : { out: /** @type {any} */ (r).out }) }, null, 1));
+  console.log(JSON.stringify({ game: r.manifest.game.id, entry: r.manifest.game.entry, runtime: `${r.manifest.runtime.name} ${r.manifest.runtime.version}`, files: r.files, bytes: r.bytes, digest: r.manifest.digest, manifest: r.sha256, licensedByPattern: r.byPattern, ...(check ? {} : { out: /** @type {any} */ (r).out }) }, null, 1));
 } catch (e) {
   if (e?.name !== 'BuildError') throw e;
   console.error(`export refused (${e.code}): ${e.message}`);

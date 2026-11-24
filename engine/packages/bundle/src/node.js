@@ -4,13 +4,14 @@
 //   const build = await openFolder(out);                                  // the loader over a folder
 //   const behaviours = await build.behaviours(behavioursImporter(out));   // '@vrmxg/core' handed to the project's modules
 //   checkFolder(out)            the folder holds exactly what its manifest lists, each file with its hash
+//   stageFolder(out)            where an export writes: staged, then moved in whole (planFolder decides, deleting nothing)
 //   compareFolders(a, b)        two folders byte for byte
 import fs from 'node:fs';
 import path from 'node:path';
 import { registerHooks } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import { sha256 } from './sha256.js';
-import { BuildError, sortPaths } from './paths.js';
+import { BuildError, sortPaths, checkPath } from './paths.js';
 import { exportBuild } from './export.js';
 import { openBuild } from './loader.js';
 import { BUILD_FILE, parseManifest } from './manifest.js';
@@ -48,50 +49,142 @@ export function folderReader(dir) {
   };
 }
 
+/** The folder inside a build's folder that an export writes into until it is whole (`.vrmxg-export-<id>`). */
+export const STAGING = '.vrmxg-export-';
+
 /**
- * Make a folder ready to take a build: it may be absent, empty, or hold an earlier build, whose files (the ones its
- * manifest lists, and nothing else) are removed. A folder holding anything else is refused: an export never deletes
- * what it didn't write.
+ * What a folder holds, without following a link: regular files, folders, and everything else (`foreign`: symbolic
+ * links, sockets, devices), as paths relative to it. `.DS_Store` files are left out. Top-level folders an interrupted
+ * export left (`.vrmxg-export-*`) are listed apart, as `stale`, and not looked into.
  * @param {string} dir
  */
-export function prepareFolder(dir) {
-  const root = path.resolve(dir);
-  if (!fs.existsSync(root)) { fs.mkdirSync(root, { recursive: true }); return root; }
-  const manifest = path.join(root, BUILD_FILE);
-  if (fs.existsSync(manifest)) {
-    const old = parseManifest(fs.readFileSync(manifest, 'utf8'));
-    for (const f of old.files) fs.rmSync(path.join(root, f.path), { force: true });
-    fs.rmSync(manifest);
-    const prune = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) if (e.isDirectory()) { prune(path.join(d, e.name)); } if (d !== root && !fs.readdirSync(d).filter((n) => n !== '.DS_Store').length) fs.rmSync(d, { recursive: true }); };
-    prune(root);
-  }
-  const left = listFolder(root, { hidden: true });
-  if (left.length) throw new BuildError('not_empty', `${dir} holds files that aren't a build's (${left.slice(0, 3).join(', ')}${left.length > 3 ? `, and ${left.length - 3} more` : ''}): export into an empty folder`, left);
-  return root;
+export function scanFolder(dir) {
+  const files = [], dirs = [], foreign = [], stale = [];
+  const walk = (d, rel) => {
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      const r = rel ? `${rel}/${e.name}` : e.name;
+      if (e.isSymbolicLink()) foreign.push(r);
+      else if (e.isDirectory()) { if (!rel && e.name.startsWith(STAGING)) stale.push(r); else { dirs.push(r); walk(path.join(d, e.name), r); } }
+      else if (e.isFile()) { if (e.name !== '.DS_Store') files.push(r); }
+      else foreign.push(r);
+    }
+  };
+  walk(dir, '');
+  return { files: sortPaths(files), dirs: sortPaths(dirs), foreign: sortPaths(foreign), stale: sortPaths(stale) };
 }
 
-/** Writes a build's files under a folder. @param {string} dir */
-export function folderWriter(dir) {
-  const root = path.resolve(dir);
-  return async (p, bytes) => {
-    const file = path.resolve(root, p);
-    if (!file.startsWith(root + path.sep)) throw new BuildError('bad_path', `${p} is outside ${dir}`, [p]);
-    fs.mkdirSync(path.dirname(file), { recursive: true });
-    fs.writeFileSync(file, bytes);
+const few = (list) => `${list.slice(0, 3).join(', ')}${list.length > 3 ? `, and ${list.length - 3} more` : ''}`;
+
+/**
+ * Decide whether a folder can take a build, and change nothing. It may be absent, empty, or hold an earlier build:
+ * then every file in it is one that build's manifest lists (those are `old`, to be replaced). It is refused when it
+ * holds a file the manifest doesn't list, a symbolic link or special file anywhere, or a manifest this exporter
+ * doesn't read: an export never deletes what a build didn't write, and never writes through a link out of the folder.
+ * @param {string} dir
+ * @returns {{ root: string, created: boolean, old: string[], dirs: string[], stale: string[] }}
+ */
+export function planFolder(dir) {
+  const at = path.resolve(dir), name = path.basename(at);
+  const refuse = (why, files = []) => new BuildError('not_empty', `${name} ${why}: export into an empty folder`, files);
+  if (!fs.existsSync(at)) {
+    if (fs.lstatSync(at, { throwIfNoEntry: false })) throw refuse('is a link that leads nowhere', [name]);
+    return { root: at, created: true, old: [], dirs: [], stale: [] };
+  }
+  const root = fs.realpathSync(at); // the folder the person named, wherever a link to it led
+  if (!fs.statSync(root).isDirectory()) throw refuse('is a file, not a folder', [name]);
+  const scan = scanFolder(root);
+  if (scan.foreign.length) throw refuse(`holds a link or a special file (${few(scan.foreign)})`, scan.foreign);
+  // what a build wrote here: the files its manifest lists, and the ones an export that was cut short had moved in
+  const listed = new Set([BUILD_FILE]);
+  const manifests = [path.join(root, BUILD_FILE), ...scan.stale.map((d) => path.join(root, d, BUILD_FILE))].filter((f) => fs.lstatSync(f, { throwIfNoEntry: false })?.isFile());
+  for (const f of manifests) {
+    let old;
+    try { old = parseManifest(fs.readFileSync(f, 'utf8')); } catch (e) { throw refuse(`has a ${BUILD_FILE} this exporter can't read (${e.message})`, [BUILD_FILE]); }
+    for (const row of old.files) listed.add(row.path);
+  }
+  const stray = scan.files.filter((f) => !listed.has(f));
+  if (stray.length) throw refuse(manifests.length ? `holds files its build doesn't list (${few(stray)})` : `holds files that aren't a build's (${few(stray)})`, stray);
+  return { root, created: false, old: scan.files, dirs: scan.dirs, stale: scan.stale };
+}
+
+/**
+ * Open a folder for a build. The files are written into a staging folder inside it and moved into place by
+ * `commit()`, which first takes the earlier build's files away: until then the folder is as it was, so an export that
+ * fails or is aborted leaves an earlier build whole and the folder free for another try.
+ * @param {string} dir
+ */
+export function stageFolder(dir) {
+  const plan = planFolder(dir), root = plan.root;
+  if (plan.created) fs.mkdirSync(root, { recursive: true });
+  const staging = path.join(root, STAGING + globalThis.crypto.randomUUID());
+  fs.mkdirSync(staging);
+  const written = new Set();
+  let moving = false, closed = false;
+  /** Folders from `base` down to `rel`'s folder, each made if missing; a link or a file in the way is refused. */
+  const folders = (base, rel) => {
+    let d = base;
+    for (const seg of rel.split('/').slice(0, -1)) {
+      d = path.join(d, seg);
+      const st = fs.lstatSync(d, { throwIfNoEntry: false });
+      if (!st) fs.mkdirSync(d);
+      else if (!st.isDirectory()) throw new BuildError('bad_path', `${rel}: ${path.relative(root, d)} is not a folder of the build's`, [rel]);
+    }
+  };
+  return {
+    root,
+    /** Write one file of the build, or with `append` add to one already begun. @param {string} p @param {Uint8Array} bytes @param {{ append?: boolean }} [o] */
+    write: async (p, bytes, { append = false } = {}) => {
+      if (closed) throw new BuildError('no_build', 'this export has ended');
+      checkPath(p, 'the build file');
+      const file = path.join(staging, p);
+      if (append !== written.has(p)) throw new BuildError('bad_path', append ? `${p} can't be added to before it is begun` : `${p} is written twice`, [p]);
+      folders(staging, p);
+      if (append) fs.appendFileSync(file, bytes); else fs.writeFileSync(file, bytes, { flag: 'wx' });
+      written.add(p);
+    },
+    /** Take the earlier build away and move this one into place, the manifest last. */
+    commit: () => {
+      if (closed) throw new BuildError('no_build', 'this export has ended');
+      if (!written.has(BUILD_FILE)) throw new BuildError('bad_manifest', `the export wrote no ${BUILD_FILE}`, [BUILD_FILE]);
+      const now = planFolder(root); // the folder as it is now: decided again before anything is removed
+      moving = true;
+      for (const f of now.old) fs.rmSync(path.join(root, f));
+      for (const p of [...[...written].filter((x) => x !== BUILD_FILE), BUILD_FILE]) {
+        folders(root, p);
+        if (fs.lstatSync(path.join(root, p), { throwIfNoEntry: false })) throw new BuildError('bad_path', `${p} is in the way in ${path.basename(root)}`, [p]);
+        fs.renameSync(path.join(staging, p), path.join(root, p));
+      }
+      for (const d of now.stale) fs.rmSync(path.join(root, d), { recursive: true, force: true }); // this export's staging, and any left by one cut short
+      for (const d of [...now.dirs].sort((a, b) => b.length - a.length)) { try { fs.rmdirSync(path.join(root, d)); } catch { /* still in use by the new build */ } }
+      closed = true;
+      return { path: root, files: written.size - 1 };
+    },
+    /** Drop what this export wrote. Once `commit` has begun moving files it does nothing: the next export finishes the job. */
+    abort: () => {
+      if (closed || moving) return;
+      closed = true;
+      fs.rmSync(staging, { recursive: true, force: true });
+      if (plan.created) { try { fs.rmdirSync(root); } catch { /* something else is in it now */ } }
+    },
   };
 }
 
 /**
- * Export a project folder as a build folder.
+ * Export a project folder as a build folder. Every check runs before the folder is touched, and the build is staged
+ * and moved in whole (`stageFolder`), so a refused or failed export leaves an earlier build as it was.
  * @param {{ project: string, runtime: string, out: string, game?: any, onProgress?: any }} o
  */
 export async function exportToFolder({ project, runtime, out, game = null, onProgress = null }) {
-  // every check runs before the folder is touched: a refused export leaves an earlier build as it was
-  const src = folderReader(project), files = src.files, rt = folderReader(runtime);
-  await exportBuild({ project: { files, read: src.read }, runtime: rt, game, write: null });
-  const root = prepareFolder(out);
-  const r = await exportBuild({ project: { files, read: src.read }, runtime: rt, game, write: folderWriter(root), onProgress });
-  return { ...r, out: root };
+  const src = folderReader(project);
+  let stage = null;
+  try {
+    const r = await exportBuild({
+      project: { files: src.files, read: src.read }, runtime: folderReader(runtime), game, onProgress,
+      ready: () => { stage = stageFolder(out); }, write: (p, bytes) => stage.write(p, bytes),
+    });
+    stage.commit();
+    return { ...r, out: stage.root };
+  } catch (e) { stage?.abort(); throw e; }
 }
 
 /** The loader over a build folder. @param {string} dir @param {{ verify?: boolean }} [o] */
@@ -123,25 +216,27 @@ export function behavioursImporter(dir, { core } = {}) {
 export function checkFolder(dir) {
   const root = path.resolve(dir);
   const manifest = parseManifest(fs.readFileSync(path.join(root, BUILD_FILE), 'utf8'));
-  const there = new Set(listFolder(root, { hidden: true })), missing = [], changed = [];
+  const scan = scanFolder(root), there = new Set(scan.files), missing = [], changed = [];
   for (const f of manifest.files) {
     if (!there.delete(f.path)) { missing.push(f.path); continue; }
     const bytes = fs.readFileSync(path.join(root, f.path));
     if (bytes.length !== f.bytes || sha256(bytes) !== f.sha256) changed.push(f.path);
   }
   there.delete(BUILD_FILE);
-  const extra = sortPaths(there);
+  const extra = sortPaths([...there, ...scan.foreign, ...scan.stale]); // a link is never a build's file, whatever it points at
   return { ok: !missing.length && !changed.length && !extra.length, files: manifest.files.length, bytes: manifest.bytes, digest: manifest.digest, manifest: sha256(fs.readFileSync(path.join(root, BUILD_FILE))), missing, changed, extra };
 }
 
 /** Two folders compared byte for byte, every file. @param {string} a @param {string} b */
 export function compareFolders(a, b) {
-  const la = listFolder(a, { hidden: true }), lb = new Set(listFolder(b, { hidden: true }));
-  const onlyA = [], differ = [];
+  const sa = scanFolder(a), sb = scanFolder(b);
+  const la = [...sa.files, ...sa.foreign, ...sa.stale], lb = new Set([...sb.files, ...sb.foreign, ...sb.stale]);
+  const fa = new Set(sa.files), fb = new Set(sb.files), onlyA = [], differ = [];
   for (const f of la) {
     if (!lb.delete(f)) { onlyA.push(f); continue; }
-    if (!fs.readFileSync(path.join(a, f)).equals(fs.readFileSync(path.join(b, f)))) differ.push(f);
+    // a link, or a folder left by an export cut short, is a difference, whatever is behind it
+    if (!fa.has(f) || !fb.has(f) || !fs.readFileSync(path.join(a, f)).equals(fs.readFileSync(path.join(b, f)))) differ.push(f);
   }
   const onlyB = sortPaths(lb);
-  return { same: !onlyA.length && !onlyB.length && !differ.length, files: la.length, onlyA, onlyB, differ };
+  return { same: !onlyA.length && !onlyB.length && !differ.length, files: la.length, onlyA: sortPaths(onlyA), onlyB, differ: sortPaths(differ) };
 }
