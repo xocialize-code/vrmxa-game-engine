@@ -25,3 +25,18 @@ Tests (`npm test`, no models needed): the map (keys, deadzones, unbounded mouse 
 scripted keyboard, mouse and gamepad recorded, saved as JSON and replayed to the identical state with live devices
 ignored; button edges; a mismatched recording refused. The character-level version is in `@vrmxg/camera`'s
 integration test.
+
+## Choices and rebinding (M5 W3, AB-T-0618, AB-D-0287)
+
+| Piece | What |
+|---|---|
+| Choices | `choose(name, value)` (a UI, at any time) hands a choice to the simulation: the next step latches it with the frame, game code reads it on that step only with `choice(name)`, and a recording keeps it as a third element of that frame (`{ name: value }`, sorted by name). A recording that holds one is version 2 (a version 1 reader would drop it); one without is version 1 as before. A replay ignores `choose`. Values are strings, numbers or booleans. `@vrmxg/voice`'s conversations use `dialogue.choose` and `dialogue.advance`. A click, a gamepad's accept and a screen reader's activation are the same choice, which is why it isn't a button action |
+| `muted` | An overlay that has the devices (a conversation's answers): the actions read nothing from them, choices still pass, and a button held when it ends stays up until let go (the press that answered isn't also a jump). It gates live devices only: what is latched is recorded, and a replay never looks at it |
+| `peek()` | What the devices hold now (`{ keys, mouse: { buttons }, gamepad }`), without taking anything from the step (mouse deltas stay for it). For menus and a settings list waiting for a key; game code reads the latched frame |
+| Rebinding | `rebind(action, bindings)` replaces what an action is bound to; the next step uses it. `bindings()`, `resetBindings(action?)`, `overrides()` (what differs from the project's map, for a settings store) and `applyOverrides(o)` (the project's map with these; what doesn't fit this game is left out and listed in `ignored`, never thrown). `checkBinding(type, b)` says what is wrong with a binding. The actions, their types and their order never change, so a recording, which names actions and holds values, replays the same whatever the bindings were or are. Bindings are the player's settings: not in the snapshot; carried across a scene change with a choice not yet latched and `muted` |
+
+`ActionMap` takes its own copy of the map it is given, so rebinding one world never changes `DEFAULT_ACTIONS` or another
+world. Tests: `test/choices.test.mjs` (latched for one step, in the recording, replayed on the same step with no UI, a
+choice handed over at a scene change, `muted`, `peek`) and `test/rebind.test.mjs` (the next step, overrides round trip,
+damaged overrides listed, a recording made before a rebinding replaying the same after it, bindings carried). No replay
+hash or recording of an existing scene changed: a step without a choice has the same state and frame as before.

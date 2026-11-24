@@ -94,3 +94,40 @@ Not yet:
 - streaming speech-to-text partials;
 - barge-in, which would stop her line when the person talks over it.
 
+
+## Conversations with choices (M5 W3, AB-T-0618, AB-D-0287)
+
+A conversation is scene data: a `Dialogue` node (in the registry, so the schema validates it, the editor's inspector
+edits it and MCP describes it). The `dialogue` service runs it inside the step, says its lines through this package's
+voice service (heard, lip-synced, captioned, a speech bubble), and waits for a choice that arrives as a recorded input.
+
+```js
+import { installDialogue } from '@vrmxg/voice';
+installDialogue(tree);                // after input, voice and game: the Dialogue node's class and the "dialogue" service
+// the UI: input.choose('dialogue.choose', choiceId)   (@vrmxg/game-ui's overlay does it)
+dialogue.view();                       // { name, text, phase: 'line' | 'choice', choices: [{ id, text }], … } or null
+```
+
+```json
+{ "id": "order", "type": "Dialogue", "props": { "autostart": true, "lines": [
+  { "speaker": "hana", "text": "Good morning! What can I get you?", "clip": "voice/hana-order.wav", "choices": [
+    { "id": "latte", "text": "A latte, please.", "to": "latte", "set": { "order": "latte" } },
+    { "id": "usual", "text": "The usual.", "to": "usual", "when": { "test": "state", "key": "flags.regular" } } ] },
+  { "id": "latte", "speaker": "hana", "text": "One latte, coming up.", "next": "end" },
+  { "id": "usual", "speaker": "hana", "text": "Of course." } ] } }
+```
+
+| Piece | What |
+|---|---|
+| A line | `text` (the caption, and the line itself without a clip), `speaker` (a node's id: a Character is heard and lip-synced; any other node gets the caption and a bubble; none: a caption only), `clip`, `pause` (seconds after it), `id`, `next` (the line after it when it offers no choice: an id, `end`, or by default the next in the list), `when` (said only when it holds; otherwise passed over to the next in the list), `set` (game flags to set as it starts), `choices` |
+| A choice | `text`, `id` (what the recording carries; default its place, `"0"`), `to` (the branch: a line's id or `end`; default the next line), `when` (offered only when it holds), `set` |
+| Conditions and flags | `@vrmxg/game`'s conditions over the game state (`{ test: 'state', key: 'flags.regular' }`), and its flags: a conversation reads and changes the game the way every other rule does. A flag the game refuses is said as its `refused` event, never thrown in the step |
+| The step | A line starts on a step and is over after its length (the voice line's, or its text's estimated timings), counted in steps. A line that offers choices then waits (`phase: 'choice'`) for `input.choice('dialogue.choose')` to name one on offer; any other value leaves the question standing. `dialogue.advance` ends a line early when `skippable` (default true). One conversation at a time; `start { at }` and `stop` are the node's actions; `autostart` starts on the world's first step (not at `ready`, so after a scene change its conditions read the state the game carried in) |
+| Signals | `started`, `line { line, index, speaker, text }`, `asked { choices }`, `chose { line, choice, text }`, `ended` |
+| Checked | `readDialogue` / `checkDialogue(props)`: a `next` or `to` naming no line, a duplicate id, `end` used as an id, a choice without text, a flag that isn't a boolean, number or string, a malformed condition: each named with its path. A node whose conversation can't be right is refused when it enters, and leaves nothing behind |
+| In the snapshot | The conversation going on (node, line, phase, the step it started, its length, what is on offer) and the conversations waiting to autostart |
+
+Tests (`test/dialogue.test.mjs`, no models: speakers are plain nodes): reading and checking; lines in order, the
+question waiting, a choice off offer ignored, the branch and its flags; conditions on choices and lines; skipping;
+autostart on the first step; one at a time, stop, a node leaving; a played conversation replayed from its recording to
+the same per-step hashes (and the other answer to another run); a snapshot taken while it waits for an answer.

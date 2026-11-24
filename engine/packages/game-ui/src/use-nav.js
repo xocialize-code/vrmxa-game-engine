@@ -1,8 +1,13 @@
-// Keyboard and gamepad navigation for an overlay (M5 W3): a Vue composable over nav.js. Controls are the elements under
-// the root with a `data-nav` attribute, in DOM order. The keyboard arrives as key events on the root (a focused
-// button's Enter and Space stay the browser's own click; a slider keeps its own arrows); the gamepad is polled once a
-// frame through input.peek(), and acts while focus is inside the root or while `grab()` says the overlay has it.
-import { onMounted, onBeforeUnmount } from 'vue';
+// Keyboard and gamepad navigation for an overlay (M5 W3): a Vue composable over nav.js. Its root is marked
+// `data-nav-root`; controls are the elements under it with a `data-nav` attribute, in DOM order. The keyboard arrives as
+// key events on the root (a focused button's Enter and Space stay the browser's own click; a slider keeps its own
+// arrows); the gamepad is polled once a frame through input.peek().
+//
+// One scope acts at a time: the OUTERMOST nav root around the focused control. So components that navigate on their
+// own (VolumeControls, RebindList) become one list when an app's settings menu wraps them in its own useNav root, and a
+// gamepad moves across all of them. With focus in no root (the canvas, the page), a root whose `grab()` says so acts:
+// the game overlay while a conversation is on screen.
+import { onMounted, onBeforeUnmount, watch } from 'vue';
 import { ActionMap } from '@vrmxg/input';
 import { UI_ACTIONS, NavPad, keyAction, navTarget } from './nav.js';
 
@@ -18,7 +23,11 @@ export function useNav(root, { input = () => null, onBack = null, grab = () => f
   const map = new ActionMap(UI_ACTIONS), pad = new NavPad();
   let raf = 0;
   const controls = () => (root.value ? [...root.value.querySelectorAll('[data-nav]')].filter((e) => !(/** @type {any} */ (e).disabled) && !e.closest('[hidden]')) : []);
-  const inside = () => !!root.value && typeof document !== 'undefined' && root.value.contains(document.activeElement);
+  // the outermost nav root around an element, or null
+  const scopeOf = (el) => { let scope = null; for (let n = el?.closest?.('[data-nav-root]'); n; n = n.parentElement?.closest('[data-nav-root]')) scope = n; return scope; };
+  const active = () => (typeof document !== 'undefined' ? document.activeElement : null);
+  /** Does this root act for focus on `el`? */
+  const mine = (el) => { const scope = scopeOf(el); return scope ? scope === root.value : grab(); };
 
   function apply(action) {
     const list = controls(), el = /** @type {any} */ (typeof document !== 'undefined' ? document.activeElement : null);
@@ -33,7 +42,7 @@ export function useNav(root, { input = () => null, onBack = null, grab = () => f
   }
 
   function onKeydown(e) {
-    if (paused()) return;
+    if (e.defaultPrevented || !root.value?.contains(e.target) || paused() || !mine(e.target)) return;
     if (onKey?.(e)) { e.preventDefault(); return; }
     const action = keyAction(map, e.code);
     if (!action) return;
@@ -48,12 +57,14 @@ export function useNav(root, { input = () => null, onBack = null, grab = () => f
     if (paused()) { pad.reset(); return; }
     const state = input()?.peek?.() ?? null;
     const fired = pad.update(state);
-    if (!fired.length || !(inside() || grab())) return;
+    if (!fired.length || !root.value || !mine(active())) return;
     for (const a of fired) apply(a);
   }
 
-  onMounted(() => { root.value?.addEventListener('keydown', onKeydown); if (typeof requestAnimationFrame !== 'undefined') raf = requestAnimationFrame(poll); });
-  onBeforeUnmount(() => { root.value?.removeEventListener('keydown', onKeydown); if (raf) cancelAnimationFrame(raf); });
+  // the root may come and go (a menu shown with v-if): it is marked whenever it appears, and keys are heard on the document
+  watch(root, (el) => el?.setAttribute('data-nav-root', ''), { immediate: true, flush: 'post' });
+  onMounted(() => { document.addEventListener('keydown', onKeydown); if (typeof requestAnimationFrame !== 'undefined') raf = requestAnimationFrame(poll); });
+  onBeforeUnmount(() => { document.removeEventListener('keydown', onKeydown); if (raf) cancelAnimationFrame(raf); });
 
   /** Focus the first control (when an overlay opens, or a conversation asks). */
   const focusFirst = () => { const first = /** @type {any} */ (controls()[0]); first?.focus(); return !!first; };

@@ -7,7 +7,7 @@ const KEYS = {
   Slash: '/', Backslash: '\\', Comma: ',', Period: '.', Semicolon: ';', Quote: '\'', BracketLeft: '[', BracketRight: ']', Minus: '-', Equal: '=', Backquote: '`',
 };
 /** A standard-mapping gamepad's buttons (the Gamepad API's order). */
-export const GAMEPAD_BUTTONS = ['A', 'B', 'X', 'Y', 'LB', 'RB', 'LT', 'RT', 'View', 'Menu', 'Left stick', 'Right stick', 'D-pad up', 'D-pad down', 'D-pad left', 'D-pad right', 'Home'];
+export const GAMEPAD_BUTTONS = ['A', 'B', 'X', 'Y', 'LB', 'RB', 'LT', 'RT', 'View', 'Menu', 'Left stick press', 'Right stick press', 'D-pad up', 'D-pad down', 'D-pad left', 'D-pad right', 'Home'];
 const GAMEPAD_AXES = ['Left stick X', 'Left stick Y', 'Right stick X', 'Right stick Y'];
 const MOUSE = { dx: 'Mouse X', dy: 'Mouse Y', wheel: 'Mouse wheel' };
 const MOUSE_BUTTONS = ['Left click', 'Middle click', 'Right click', 'Back button', 'Forward button'];
