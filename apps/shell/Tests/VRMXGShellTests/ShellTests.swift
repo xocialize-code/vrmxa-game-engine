@@ -609,19 +609,38 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
     }
 }
 
+/// The close question's clock in the tests: a timer sleeps until the test lets a timeout pass. Nothing waits on wall
+/// time, so the tests don't depend on how busy the machine is (run in parallel, real 30 to 50 ms timeouts starved).
+@MainActor final class Ticks {
+    private var sleepers: [CheckedContinuation<Void, Never>] = []
+    /// What `CloseQuestion` sleeps with.
+    func sleep(_ seconds: TimeInterval) async { await withCheckedContinuation { sleepers.append($0) } }
+    /// Wait, on the events and not on time, until `count` timers are sleeping (a timer's task has to get that far).
+    func sleeping(_ count: Int = 1) async { await until { self.sleepers.count >= count } }
+    /// One timeout passes for every timer now sleeping; each has run on to its next wait (or its end) on return.
+    func pass() async {
+        let woken = sleepers
+        sleepers = []
+        for c in woken { c.resume() }
+        for _ in 0..<8 { await Task.yield() } // the main actor runs its jobs in order: the woken timers come before this
+    }
+    deinit { for c in sleepers { c.resume() } }
+}
+
+/// Wait for something that is on its way (a task that has to be run), by yielding to it: no wall time.
+@MainActor func until(_ condition: () -> Bool, sourceLocation: SourceLocation = #_sourceLocation) async {
+    for _ in 0..<1_000_000 where !condition() { await Task.yield() }
+    if !condition() { Issue.record("it never came", sourceLocation: sourceLocation) }
+}
+
 /// Asking the page before the window closes or the app quits (shell 0.9.0, AB-T-0593).
 @Suite @MainActor struct CloseQuestionTests {
     final class Log { var events: [(name: String, payload: [String: Any])] = []; var outcomes: [String] = [] }
 
-    func question(timeout: TimeInterval = 30) -> (CloseQuestion, Log) {
+    func question(_ ticks: Ticks = Ticks(), ping: ((@escaping @MainActor () -> Void) -> Void)? = nil) -> (CloseQuestion, Log) {
         let log = Log()
-        let q = CloseQuestion(timeout: timeout, emit: { log.events.append(($0, $1)) }, decided: { log.outcomes.append("\($0.rawValue) \($1 ? "goes on" : "kept")") })
+        let q = CloseQuestion(timeout: 5, emit: { log.events.append(($0, $1)) }, ping: ping, sleep: ticks.sleep, decided: { log.outcomes.append("\($0.rawValue) \($1 ? "goes on" : "kept")") })
         return (q, log)
-    }
-
-    /// Waits (up to 5 s) for an outcome a timer brings.
-    func outcome(_ log: Log, count: Int = 1) async throws {
-        for _ in 0..<500 where log.outcomes.count < count { try await Task.sleep(for: .milliseconds(10)) }
     }
 
     @Test func thePageIsAskedAndItsAnswerDecides() throws {
@@ -646,50 +665,66 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
     }
 
     @Test func aPageThatDoesNotAnswerCannotBlockQuitting() async throws {
-        let (q, log) = question(timeout: 0.05)
+        let ticks = Ticks()
+        let (q, log) = question(ticks)
         q.ask(.quit)
-        try await outcome(log)
+        await ticks.sleeping()
+        #expect(log.outcomes.isEmpty, "inside the timeout: nothing yet")
+        await ticks.pass()
         #expect(log.outcomes == ["quit goes on"], "the timeout")
         #expect(try q.answer(id: "close-1", answer: "cancel")["pending"] as? Bool == false, "a late answer changes nothing")
         #expect(log.outcomes.count == 1)
     }
 
     @Test func waitHoldsForThePersonAndAskingAgainStartsTheTimeoutAgain() async throws {
-        let (q, log) = question(timeout: 0.05)
+        let ticks = Ticks()
+        let (q, log) = question(ticks)
         q.ask(.close)
         let id = try #require(q.pending?.id)
         _ = try q.answer(id: id, answer: "wait")
-        try await Task.sleep(for: .milliseconds(300))
-        #expect(log.outcomes.isEmpty && q.pending?.waiting == true, "no timeout while the person decides")
+        await ticks.sleeping()
+        await ticks.pass()
+        #expect(log.outcomes.isEmpty && q.pending?.waiting == true, "the timeout passes: nothing, while the person decides")
         q.ask(.quit) // ⌘Q while the sheet is up: the same question again, now a quit
         #expect(log.events.count == 2 && log.events[1].payload["id"] as? String == id && log.events[1].payload["reason"] as? String == "quit")
         _ = try q.answer(id: id, answer: "wait") // the page is alive: it waits again
-        try await Task.sleep(for: .milliseconds(300))
+        await ticks.sleeping()
+        await ticks.pass()
         #expect(log.outcomes.isEmpty)
         q.ask(.close) // asked once more, and this time the page says nothing (it hung after "wait")
         #expect(log.events[2].payload["reason"] as? String == "quit", "a quit stays a quit")
-        try await outcome(log)
+        await ticks.sleeping()
+        await ticks.pass()
         #expect(log.outcomes == ["quit goes on"])
     }
 
     @Test func aPageThatHangsWhileItAsksCannotBlockEither() async throws {
         // alive: every ping answered, however long the person takes
         var pings = 0
-        let log = Log()
-        let alive = CloseQuestion(timeout: 0.03, emit: { log.events.append(($0, $1)) }, ping: { reply in pings += 1; reply() }, decided: { log.outcomes.append("\($0.rawValue) \($1 ? "goes on" : "kept")") })
+        let ticks = Ticks()
+        let (alive, log) = question(ticks, ping: { reply in pings += 1; reply() })
         alive.ask(.quit)
         _ = try alive.answer(id: try #require(alive.pending?.id), answer: "wait")
-        try await Task.sleep(for: .milliseconds(300))
-        #expect(pings >= 3 && log.outcomes.isEmpty, "checked again and again, and it waits")
+        await ticks.sleeping(2) // the answer's deadline, and the first check
+        #expect(pings == 1)
+        for round in 1...5 {
+            await ticks.pass()
+            await ticks.sleeping() // the next check is out
+            #expect(pings == round + 1 && log.outcomes.isEmpty, "checked again and again, and it waits")
+        }
         _ = try alive.answer(id: try #require(alive.pending?.id), answer: "cancel")
         #expect(log.outcomes == ["quit kept"])
         // hung after "wait": no ping comes back, and after two the quit goes on
         var sent = 0
-        let hung = Log()
-        let q = CloseQuestion(timeout: 0.03, emit: { hung.events.append(($0, $1)) }, ping: { _ in sent += 1 }, decided: { hung.outcomes.append("\($0.rawValue) \($1 ? "goes on" : "kept")") })
+        let clock = Ticks()
+        let (q, hung) = question(clock, ping: { _ in sent += 1 })
         q.ask(.quit)
         _ = try q.answer(id: try #require(q.pending?.id), answer: "wait")
-        try await outcome(hung)
+        await clock.sleeping(2)
+        await clock.pass()
+        await clock.sleeping()
+        #expect(sent == 2 && hung.outcomes.isEmpty, "one check without a reply isn't enough")
+        await clock.pass()
         #expect(hung.outcomes == ["quit goes on"] && sent == 2, "two pings without a reply")
     }
 
@@ -701,24 +736,26 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
             if answers.isEmpty { pending = done } else { let a = answers.removeFirst(); Task { @MainActor in done(a) } }
         }
     }
-    func question(_ person: Person, timeout: TimeInterval = 0.05, ping: ((@escaping @MainActor () -> Void) -> Void)? = nil) -> (CloseQuestion, Log) {
+    func question(_ person: Person, _ ticks: Ticks = Ticks(), ping: ((@escaping @MainActor () -> Void) -> Void)? = nil) -> (CloseQuestion, Log) {
         let log = Log()
-        let q = CloseQuestion(timeout: timeout, emit: { log.events.append(($0, $1)) }, ping: ping, confirm: person.confirm, dismiss: { person.dismissed += 1 },
-                              decided: { log.outcomes.append("\($0.rawValue) \($1 ? "goes on" : "kept")") })
+        let q = CloseQuestion(timeout: 5, emit: { log.events.append(($0, $1)) }, ping: ping, confirm: person.confirm, dismiss: { person.dismissed += 1 },
+                              sleep: ticks.sleep, decided: { log.outcomes.append("\($0.rawValue) \($1 ? "goes on" : "kept")") })
         return (q, log)
     }
-    func settle(_ condition: () -> Bool) async throws { for _ in 0..<500 where !condition() { try await Task.sleep(for: .milliseconds(10)) } }
 
     @Test func aBusyPageWithUnsavedWorkIsNotClosedWithoutAsking() async throws {
-        let person = Person()
-        let (q, log) = question(person)
+        let person = Person(), ticks = Ticks()
+        let (q, log) = question(person, ticks)
         q.unsaved = true // the page said so (window.setEdited) before it went quiet
         person.answers = [false] // Wait
         q.ask(.close)
-        try await settle { log.events.count == 2 }
+        await ticks.sleeping()
+        await ticks.pass()
+        await until { log.events.count == 2 }
         #expect(person.asked == ["notAnswering close"] && log.outcomes.isEmpty, "no answer in the timeout: the person is asked, nothing closes")
         #expect(log.events.count == 2 && log.events[1].payload["id"] as? String == log.events[0].payload["id"] as? String, "Wait: the page is asked again")
-        try await settle { person.asked.count == 2 }
+        await ticks.sleeping()
+        await ticks.pass()
         #expect(person.asked.count == 2 && log.outcomes.isEmpty, "still nothing: asked again, as often as the person waits")
         let id = try #require(q.pending?.id)
         #expect(try q.answer(id: id, answer: "wait")["pending"] as? Bool == true)
@@ -728,30 +765,35 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
         _ = try q.answer(id: id, answer: "close")
         #expect(log.outcomes == ["close goes on"])
         // Close Anyway
-        let hasty = Person(); hasty.answers = [true]
-        let (r, rlog) = question(hasty)
+        let hasty = Person(), clock = Ticks()
+        hasty.answers = [true]
+        let (r, rlog) = question(hasty, clock)
         r.unsaved = true
         r.ask(.quit)
-        try await outcome(rlog)
+        await clock.sleeping()
+        await clock.pass()
+        await until { !rlog.outcomes.isEmpty }
         #expect(hasty.asked == ["notAnswering quit"] && rlog.outcomes == ["quit goes on"])
         // nothing unsaved: a page that doesn't answer is closed, as before
-        let nobody = Person()
-        let (c, clog) = question(nobody)
+        let nobody = Person(), third = Ticks()
+        let (c, clog) = question(nobody, third)
         c.ask(.quit)
-        try await outcome(clog)
+        await third.sleeping()
+        await third.pass()
         #expect(nobody.asked.isEmpty && clog.outcomes == ["quit goes on"])
     }
 
     @Test func askingAgainWhileThePageAsksIsThePersonsWayOut() async throws {
-        let person = Person()
+        let person = Person(), ticks = Ticks()
         var pings = 0
-        let (q, log) = question(person, ping: { reply in pings += 1; reply() }) // a page that answers every ping and never decides
+        let (q, log) = question(person, ticks, ping: { reply in pings += 1; reply() }) // a page that answers every ping and never decides
         q.unsaved = true
         q.ask(.close)
         let id = try #require(q.pending?.id)
         _ = try q.answer(id: id, answer: "wait")
-        try await Task.sleep(for: .milliseconds(250))
-        #expect(pings >= 2 && log.outcomes.isEmpty && person.asked.isEmpty, "alive and asking: the shell waits, and asks nothing itself")
+        await ticks.sleeping(2)
+        for _ in 1...3 { await ticks.pass(); await ticks.sleeping() }
+        #expect(pings == 4 && log.outcomes.isEmpty && person.asked.isEmpty, "alive and asking: the shell waits, and asks nothing itself")
         q.ask(.close) // ⌘W again
         #expect(person.asked == ["stillAsking close"] && log.events.count == 1, "the shell's alert, and the page isn't asked again")
         q.ask(.quit) // and ⌘Q with the alert up: nothing more
@@ -760,7 +802,7 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
         #expect(log.outcomes.isEmpty && q.pending?.waiting == true && q.confirming == nil, "the page's question stays up")
         person.answers = [true]
         q.ask(.quit) // again: Close Anyway
-        try await outcome(log)
+        await until { !log.outcomes.isEmpty }
         #expect(person.asked == ["stillAsking close", "stillAsking close"] && log.outcomes == ["close goes on"], "a way out, however the page behaves")
         // the page deciding while the alert is up takes the alert down
         let other = Person()
@@ -777,12 +819,18 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
     }
 
     @Test func aPageThatHangsWithItsQuestionUpAndUnsavedWorkAsksThePerson() async throws {
-        let person = Person(); person.answers = [true]
-        let (q, log) = question(person, timeout: 0.03, ping: { _ in }) // no ping comes back
+        let person = Person(), ticks = Ticks()
+        person.answers = [true]
+        let (q, log) = question(person, ticks, ping: { _ in }) // no ping comes back
         q.unsaved = true
         q.ask(.quit)
         _ = try q.answer(id: try #require(q.pending?.id), answer: "wait")
-        try await outcome(log)
+        await ticks.sleeping(2)
+        await ticks.pass()
+        await ticks.sleeping()
+        #expect(person.asked.isEmpty && log.outcomes.isEmpty)
+        await ticks.pass()
+        await until { !log.outcomes.isEmpty }
         #expect(person.asked == ["notAnswering quit"] && log.outcomes == ["quit goes on"])
     }
 
@@ -841,9 +889,10 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
     }
 
     // The delegate's routing, on a real window and web view without launching the app.
-    func delegate(_ name: String, asks: Bool, closeKeepsRunning: Bool = false, timeout: TimeInterval = 30) -> ShellAppDelegate {
+    func delegate(_ name: String, asks: Bool, closeKeepsRunning: Bool = false, ticks: Ticks = Ticks()) -> ShellAppDelegate {
         let d = ShellAppDelegate(config: ShellConfiguration(appName: name, scheme: "vrmxg-test-\(UUID().uuidString.prefix(8).lowercased())", closeKeepsRunning: closeKeepsRunning,
-                                                            asksBeforeClosing: asks, closeTimeout: timeout))
+                                                            asksBeforeClosing: asks))
+        d.closing = d.makeCloseQuestion(sleep: ticks.sleep) // the test's clock: no timer of the delegate's waits on wall time
         d.webView = WKWebView(frame: NSRect(x: 0, y: 0, width: 400, height: 300))
         d.window = NSWindow(contentRect: d.webView.frame, styleMask: [.titled, .closable, .resizable, .miniaturizable], backing: .buffered, defer: true)
         d.window.isReleasedWhenClosed = false // the test keeps reading it
@@ -886,11 +935,14 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
     }
 
     @Test func aHungPageCannotBlockTheDelegate() async throws {
-        let d = delegate("Creator", asks: true, timeout: 0.05)
+        let ticks = Ticks()
+        let d = delegate("Creator", asks: true, ticks: ticks)
         var replies: [Bool] = []
         d.replyToTerminate = { replies.append($0) }
         #expect(d.applicationShouldTerminate(NSApplication.shared) == .terminateLater)
-        for _ in 0..<500 where replies.isEmpty { try await Task.sleep(for: .milliseconds(10)) }
+        await ticks.sleeping()
+        #expect(replies.isEmpty)
+        await ticks.pass()
         #expect(replies == [true], "no answer in the timeout: the quit goes on")
         // a page that reloads with the question open
         let e = delegate("Editor", asks: true)

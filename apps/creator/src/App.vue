@@ -46,6 +46,10 @@ function refresh(kind = 'all') {
   }
   const d = cr.desk;
   if (d && (kind === 'script' || kind === 'all')) Object.assign(ui.script, { text: d.text, file: cr.short?.script ?? '', errors: d.errorList(), warnings: [...d.warnings], pending: d.pending, dirty: d.dirty, last: d.lastLabel ?? '' });
+  // The shell is told of unsaved work whenever it may have changed, typing in the script pane included (a refresh of
+  // kind 'script' returns below, and the typing is only applied 700 ms later): the window's dot, and what the shell
+  // goes by when the page can't answer a close in time.
+  if (kind === 'script' || kind === 'all') { setEdited(unsavedWork(cr)); if (cr.session) ui.dirty = cr.isDirty(); }
   if (kind !== 'all') return;
   const s = cr.session;
   ui.loading = cr.busy > 0;
@@ -63,7 +67,6 @@ function refresh(kind = 'all') {
   const sv = cr.lastSaveAll;
   ui.saved = sv ? `${sv.sequence.ref} · ${sv.sequence.bytes} bytes · ${sv.sequence.hash}${sv.script ? ` · ${sv.script}` : ''}${sv.memory ? ' · in memory (open a project folder to save to disk)' : ''}` : '';
   ui.unsaved = cr.project?.unsaved?.() ?? [];
-  setEdited(unsavedWork(cr)); // the shell knows there is unsaved work even when the page can't answer it (the window's dot too)
   if (!s) return;
   ui.mode = cr.takeDeck.busy ? 'take' : s.mode;
   const h = s.history(); ui.undo = h.undo; ui.redo = h.redo;

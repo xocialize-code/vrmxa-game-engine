@@ -14,7 +14,7 @@ import { saveScene } from '../../editor/src/saving.js';
 import { editorClosing } from '../../editor/src/closing.js';
 import { ScriptDesk } from '../src/desk.js';
 import { ShortList, readShorts, SHORTS_FILE } from '../src/shorts.js';
-import { saveShortFiles, shortDirty } from '../src/saving.js';
+import { saveShortFiles, shortDirty, discardShort } from '../src/saving.js';
 import { guardShort, creatorClosing, unsavedWork } from '../src/closing.js';
 
 const sample = path.join(import.meta.dirname, '../../../content/sample');
@@ -126,9 +126,9 @@ function creator() {
   const cr = {
     project, shorts, short, session, desk, discarded: 0,
     isDirty() { return shortDirty(this); },
-    discardChanges() { this.discarded++; },
+    discardChanges() { this.discarded++; discardShort(this); },
     applyScript() { return this.desk.apply(); },
-    async save(ref) { const { written } = await saveScene(this.session, this.project, ref); return written; },
+    setCoverage(mode) { this.short = this.shorts.update(this.short.id, { coverage: mode }); this.desk.short = this.short; return this.applyScript(); }, // as the host's
     saveShort(asTitle = null) { return saveShortFiles(this, asTitle); },
   };
   return { cr, project, session, desk, shorts };
@@ -160,15 +160,15 @@ test('the creator: a saved short with a sequence edit, Save fails: the window st
   assert.ok(!cr.isDirty() && !unsavedWork(cr));
 });
 
-test('the creator: each file is marked saved only once it is written: the script, then shorts.json for a new short', async () => {
+test('the creator: nothing is saved until every file of the save is written: the script fails, then shorts.json for a new short', async () => {
   const { cr, project, session, desk, shorts } = creator();
   // a typed script edit: the sequence writes, the script's write fails
   desk.text = `${desk.text.trimEnd()}\n\nHANA\nSee you tomorrow.\n`; // typed, not applied yet: Save applies it
-  assert.ok(desk.dirty && desk.pending);
+  assert.ok(desk.dirty && desk.pending && unsavedWork(cr), 'typing alone is unsaved work (the shell is told at once)');
   project.fail = (ref) => ref.endsWith('.fountain');
   await assert.rejects(cr.saveShort(), /cafe-order\.fountain: the volume has gone/);
-  assert.ok(!session.dirty, 'the sequence was written');
-  assert.ok(desk.dirty && cr.isDirty(), 'the script was not: still unsaved');
+  assert.equal(project.disk['sequences/cafe-order.vrmxs'], session.text(), 'the sequence reached the disk');
+  assert.ok(session.dirty && desk.dirty && cr.isDirty(), 'but the save didn\'t finish: none of it is saved');
   project.fail = () => false;
   await cr.saveShort();
   assert.ok(!cr.isDirty());
@@ -187,6 +187,61 @@ test('the creator: each file is marked saved only once it is written: the script
   assert.ok(JSON.parse(project.disk[SHORTS_FILE]).shorts.some((s) => s.id === 'second-take'));
   assert.equal(shorts.byId('second-take').saved, true);
   assert.ok(!cr.isDirty());
+});
+
+// The review's second round: the sequence was marked saved as soon as it was written, so a shorts.json that then failed
+// left a saved short clean, with its new coverage in the sequence on disk and the old one in shorts.json.
+test('the creator: a saved short, its coverage changed, shorts.json fails: still unsaved, and the next close asks', async () => {
+  const { cr, project, session } = creator();
+  await cr.saveShort(); // on disk as it is, coverage 'default'
+  assert.equal(JSON.parse(project.disk[SHORTS_FILE]).shorts[0].coverage, 'default');
+  cr.setCoverage('rule'); // cameras by rule: the sequence is re-scripted
+  assert.ok(session.dirty && cr.isDirty());
+  project.fail = (ref) => ref === SHORTS_FILE;
+  const errors = [], a = sheetOf();
+  const first = creatorClosing(cr, { ...a.on, onError: (e) => errors.push(e.message) });
+  await tick();
+  a.sheet.reply('save');
+  assert.equal(await first, false, 'the save didn\'t finish: the window stays');
+  assert.deepEqual(errors, ['shorts.json: the volume has gone']);
+  assert.equal(project.disk['sequences/cafe-order.vrmxs'], session.text(), 'the sequence did reach the disk');
+  assert.equal(JSON.parse(project.disk[SHORTS_FILE]).shorts[0].coverage, 'default', 'and shorts.json still has the old coverage');
+  assert.ok(cr.isDirty() && unsavedWork(cr), 'so the short is still unsaved');
+  const b = sheetOf();
+  const second = creatorClosing(cr, b.on);
+  await tick();
+  assert.equal(b.shown.length, 1, 'and the next close asks again (it went on with no question)');
+  project.fail = () => false;
+  b.sheet.reply('save');
+  assert.equal(await second, true);
+  assert.equal(JSON.parse(project.disk[SHORTS_FILE]).shorts[0].coverage, 'rule');
+  assert.ok(!cr.isDirty() && !cr.short.unwritten);
+});
+
+test('the creator: a saved short\'s own setting is unsaved work even with the sequence back as saved; Don\'t Save puts it back', async () => {
+  const { cr, project, session, shorts } = creator();
+  cr.setCoverage('rule');
+  while (session.undo());
+  assert.ok(!session.dirty, 'the re-script undone: the sequence is as saved');
+  assert.equal(cr.short.coverage, 'rule');
+  assert.ok(cr.isDirty(), 'but shorts.json doesn\'t hold the coverage yet');
+  const a = sheetOf();
+  const closing = creatorClosing(cr, a.on);
+  await tick();
+  assert.equal(a.shown.length, 1);
+  a.sheet.reply('discard');
+  assert.equal(await closing, true);
+  assert.equal(cr.short.coverage, 'default', 'Don\'t Save: the short is as shorts.json holds it');
+  assert.ok(!cr.isDirty() && !shorts.byId('cafe-order').unwritten);
+  assert.deepEqual(project.writes, []);
+  // Save As from a short with a changed setting: the copy takes it, the original stays as on disk
+  cr.setCoverage('rule');
+  await cr.saveShort('Second take');
+  assert.equal(cr.short.coverage, 'rule');
+  assert.equal(shorts.byId('cafe-order').coverage, 'default');
+  assert.ok(!shorts.byId('cafe-order').unwritten && !cr.isDirty());
+  const listed = Object.fromEntries(JSON.parse(project.disk[SHORTS_FILE]).shorts.map((s) => [s.id, s.coverage]));
+  assert.deepEqual([listed['cafe-order'], listed['second-take']], ['default', 'rule']);
 });
 
 test('the creator: another question while the close sheet is up is refused, and the close still gets its answer', async () => {

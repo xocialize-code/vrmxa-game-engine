@@ -164,8 +164,26 @@ export class ShortList {
     return d;
   }
   /** Replace a short's fields, keeping its place. */
-  update(id, fields) { this.list = this.list.map((s) => (s.id === id ? { ...s, ...fields } : s)); return this.byId(id); }
-  markSaved(id) { return this.update(id, { saved: true }); }
+  update(id, fields) {
+    this.list = this.list.map((s) => {
+      if (s.id !== id) return s;
+      // a saved short's entry in shorts.json doesn't hold the change yet: `unwritten` keeps what the file holds (the
+      // first value of each field changed), so the short counts as unsaved and Don't Save can put it back
+      const unwritten = s.saved ? { ...Object.fromEntries(Object.keys(fields).filter((k) => fields[k] !== s[k]).map((k) => [k, s[k]])), ...s.unwritten } : undefined;
+      return { ...s, ...fields, ...(unwritten && Object.keys(unwritten).length ? { unwritten } : {}) };
+    });
+    return this.byId(id);
+  }
+  /** shorts.json holds the short as it is now. */
+  markSaved(id) {
+    this.list = this.list.map((s) => { if (s.id !== id) return s; const { unwritten: _, ...rest } = s; return { ...rest, saved: true }; });
+    return this.byId(id);
+  }
+  /** Put a saved short's fields back to what shorts.json holds (Don't Save). */
+  revert(id) {
+    this.list = this.list.map((s) => { if (s.id !== id || !s.unwritten) return s; const { unwritten, ...rest } = s; return { ...rest, ...unwritten }; });
+    return this.byId(id);
+  }
   /** Drop an unsaved short (a saved one stays: its files are on disk). → whether it went */
   discard(id) {
     const s = this.byId(id);

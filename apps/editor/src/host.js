@@ -221,6 +221,11 @@ export class EditorHost {
   /** Save into the project (the scene's own ref, or `ref` for Save As). → { path, bytes, hash } */
   async save(ref = this.sceneRef) {
     const { text } = await saveScene(this.session, this.project, ref); // saved only once it is written (saving.js)
+    return this.sceneSaved(ref, text);
+  }
+
+  /** The scene's text is on disk as `ref` (the session already marked saved): what the status shows. → { ref, hash, bytes } */
+  sceneSaved(ref, text) {
     this.sceneRef = ref;
     this.lastSave = { ref, hash: hashValue(text), bytes: new TextEncoder().encode(text).length };
     this.changed();

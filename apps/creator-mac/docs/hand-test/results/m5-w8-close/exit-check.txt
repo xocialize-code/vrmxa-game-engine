@@ -8,7 +8,12 @@ pressed File › Close Window
 sheet: Fourth has changes that aren't saved (it has never been saved).
 Close Window, Don't Save: exited after 200 ms at most
 on disk: sequences/ has 0 file(s) named fourth
+== creator, the bundled sample: typing in the script pane reaches the shell at once (the close button's dot)
+the dot, nothing unsaved: false
+the dot 0.3 s after a typed character (applied only 0.7 s after typing stops): true; the pane: Script scripts/cafe-order.fountain typing unsaved
 == editor, the bundled sample (read-only): a change, Quit
+the dot, nothing unsaved: false
+the dot, a node added: true
 sheet: cafe-cart.vrmxs has changes that aren't saved. Sample (bundled) is read-only, so nothing can be saved to it: open a project folder to keep work. Quitting now loses this.
 buttons: Cancel | Quit Anyway | save: (none)
 Cancel: still running, doc unsaved changes
@@ -19,4 +24,4 @@ error shown: You don’t have permission to save the file “cafe-cart.vrmxs” 
 Quit again: asks again: cafe-cart.vrmxs has changes that aren't saved.
 Save, the folder writable again: exited after 200 ms at most; file written
 == editor, nothing unsaved: Quit
-Quit with nothing unsaved: exited after 200 ms at most (no sheet)
+Quit with nothing unsaved: exited after 300 ms at most (no sheet)

@@ -2,7 +2,8 @@
 # What the close-and-quit rows of the creator's and the editor's scenarios can't see (AB-T-0593; AppProbe can't look at
 # an app that has quit, AB-T-0625): that the process has gone after Save and after Don't Save, for Quit and for
 # File › Close Window; the sheet the read-only sample gets; a Save that fails (the editor's project folder made
-# read-only: the window stays, the scene stays unsaved, the next Quit asks again); and a quit with nothing unsaved.
+# read-only: the window stays, the scene stays unsaved, the next Quit asks again); the close button's dot, which is
+# what the page told the shell about unsaved work (window.setEdited), as typing starts; and a quit with nothing unsaved.
 # One line per check.
 # Build both Mac apps first, and run it under the GPU lock (the apps draw):
 #   node acceptance/gpu-lock.mjs run --who close-exits -- apps/creator-mac/scripts/check-close-exits.sh
@@ -43,10 +44,21 @@ $A act app=$P id=ask-discard action=press > /dev/null
 echo "Close Window, Don't Save: $(gone $P)"
 echo "on disk: sequences/ has $(ls $tmp/project/sequences | grep -c fourth) file(s) named fourth"
 
+echo "== creator, the bundled sample: typing in the script pane reaches the shell at once (the close button's dot)"
+edited() { osascript -e "tell application \"System Events\" to get value of attribute \"AXEdited\" of (first button of window 1 of (first process whose unix id is $1) whose subrole is \"AXCloseButton\")" 2>&1 | cut -c1-80; }
+P=$($A launch app=$root/apps/creator-mac/build/VRMXGCreator.app env='{"VRMXG_QUERY":"mcp=off"}' wait=40 --json | pidof)
+$A wait app=$P id=open-project enabled=true timeout_ms=60000 > /dev/null; until_name $P doc-state "nodes saved"; sleep 2
+echo "the dot, nothing unsaved: $(edited $P)"
+$A act app=$P id=script action=focus > /dev/null; $A keys app=$P text=" " > /dev/null; sleep 0.3
+echo "the dot 0.3 s after a typed character (applied only 0.7 s after typing stops): $(edited $P); the pane: $(name $P script-state)"
+kill -9 $P 2>/dev/null
+
 echo "== editor, the bundled sample (read-only): a change, Quit"
 P=$(VRMXG_QUERY=mcp=off $A launch app=$root/apps/editor-mac/build/VRMXGEditor.app env='{"VRMXG_QUERY":"mcp=off"}' wait=40 --json | pidof)
 $A wait app=$P id=add-node enabled=true timeout_ms=60000 > /dev/null; until_name $P doc-state "nodes saved"
-$A act app=$P id=add-node action=press > /dev/null; until_name $P doc-state "unsaved changes"
+echo "the dot, nothing unsaved: $(edited $P)"
+$A act app=$P id=add-node action=press > /dev/null; until_name $P doc-state "unsaved changes"; sleep 0.3
+echo "the dot, a node added: $(edited $P)"
 $A menu app=$P path="App › Quit*" action=press > /dev/null; until_name $P ask-text "."
 echo "sheet: $(name $P ask-text)"
 echo "buttons: $(name $P ask-cancel) | $(name $P ask-discard) | save: $(name $P ask-save)"

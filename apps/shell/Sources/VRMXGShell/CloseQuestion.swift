@@ -66,12 +66,16 @@ final class CloseQuestion {
     let dismiss: (() -> Void)?
     /// The outcome of a question: its reason, and whether to go on (close the window, quit).
     let decided: (Reason, Bool) -> Void
+    /// Waits `timeout` seconds (the answer's deadline, and the time between pings). The tests pass their own, which
+    /// returns when they say so, so none of them depends on how busy the machine is.
+    let sleep: @MainActor (TimeInterval) async -> Void
     private var asked = 0
 
     init(timeout: TimeInterval, emit: @escaping (String, [String: Any]) -> Void, ping: ((@escaping @MainActor () -> Void) -> Void)? = nil,
          confirm: ((Stuck, Reason, @escaping @MainActor (Bool) -> Void) -> Void)? = nil, dismiss: (() -> Void)? = nil,
+         sleep: @escaping @MainActor (TimeInterval) async -> Void = { try? await Task.sleep(for: .seconds($0)) },
          decided: @escaping (Reason, Bool) -> Void) {
-        self.timeout = timeout; self.emit = emit; self.ping = ping; self.confirm = confirm; self.dismiss = dismiss; self.decided = decided
+        self.timeout = timeout; self.emit = emit; self.ping = ping; self.confirm = confirm; self.dismiss = dismiss; self.sleep = sleep; self.decided = decided
     }
 
     /// The window is asked to close, or the app to quit. The page is asked. Asked again before the page has answered,
@@ -97,8 +101,8 @@ final class CloseQuestion {
         if !first { p.waiting = false; p.round += 1; pending = p }
         emit("window.closing", ["id": p.id, "reason": p.reason.rawValue])
         let (id, round) = (p.id, p.round)
-        Task { @MainActor [weak self] in
-            try? await Task.sleep(for: .seconds(self?.timeout ?? 0))
+        Task { @MainActor [weak self, sleep, timeout] in
+            await sleep(timeout)
             guard let self, let now = self.pending, now.id == id, now.round == round, !now.waiting else { return }
             self.notAnswering("the page didn't answer window.closing in \(self.timeout) s")
         }
@@ -155,13 +159,13 @@ final class CloseQuestion {
     /// a row with no reply the page isn't answering (`notAnswering`). Ends with the question (or its round).
     private func watch(id: String, round: Int) {
         guard let ping else { return }
-        Task { @MainActor [weak self] in
+        Task { @MainActor [weak self, sleep, timeout] in
             var missed = 0
             while missed < 2 {
                 final class Reply { var came = false }
                 let reply = Reply()
                 ping { reply.came = true }
-                try? await Task.sleep(for: .seconds(self?.timeout ?? 0))
+                await sleep(timeout)
                 guard let self, let now = self.pending, now.id == id, now.round == round, now.waiting else { return }
                 missed = reply.came ? 0 : missed + 1
             }
@@ -200,7 +204,8 @@ extension ShellAppDelegate {
         }
     }
 
-    func makeCloseQuestion() -> CloseQuestion {
+    /// `sleep`: the question's clock (a test passes its own).
+    func makeCloseQuestion(sleep: (@MainActor (TimeInterval) async -> Void)? = nil) -> CloseQuestion {
         // weak: a question's timers can outlive a delegate made for a test
         CloseQuestion(timeout: config.closeTimeout, emit: { [weak self] name, payload in self?.emit(name, payload) }, ping: { [weak self] reply in
             self?.webView.evaluateJavaScript("1") { _, _ in reply() } // any reply: the page's JavaScript is running
@@ -211,7 +216,7 @@ extension ShellAppDelegate {
             guard let self, let alert = self.closeAlert else { return }
             self.closeAlert = nil
             self.window.endSheet(alert.window)
-        }, decided: { [weak self] reason, goOn in
+        }, sleep: sleep ?? { try? await Task.sleep(for: .seconds($0)) }, decided: { [weak self] reason, goOn in
             guard let self else { return }
             if goOn { self.closeApproved = true }
             switch reason {

@@ -21,3 +21,4 @@ AppProbe runs them all (`hand-test/HAND-TEST-M1-EDITOR.scenario.md`); a person c
 | 2026-11-18 | Release, ad hoc signed (`scripts/build.sh`) | 1–7 | All passed (`appprobe checklist`, 19 s); screenshots in `hand-test/shots/` (r2 built, r3 edited, r6 saved, r7 playing) |
 | 2026-11-24 | Release, shell 0.9.0, WebGPU (8b04b5e) | 1–9 | All passed; rows 8 and 9 are new (AB-T-0593) and partly checked: the exit itself is watched from a script |
 | 2026-11-24 | Release, shell 0.9.0, WebGPU, after the review of PR 33 | 1–9 | All passed, with the shell's alert on a second ⌘W in row 8; the failing Save from `check-close-exits.sh` |
+| 2026-11-24 | Release, shell 0.9.0, WebGPU, after the second review round | 1–9 | All passed; from `check-close-exits.sh`, the close button's dot goes on with the first change (the page's `window.setEdited`) |

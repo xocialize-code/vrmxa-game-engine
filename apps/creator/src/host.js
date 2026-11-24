@@ -21,7 +21,7 @@ import { inShell, call } from '../../shell/js/shell.js';
 import { ScriptDesk, buildShort } from './desk.js';
 import { SHORTS_FILE, ShortList, readShorts, shortFor, titlePage, slugOf, kindOf, sceneKind, missingRefs, setForModel, scriptTemplate, placeFile } from './shorts.js';
 import { disposeWorld } from './dispose.js';
-import { saveShortFiles, shortDirty } from './saving.js';
+import { saveShortFiles, shortDirty, discardShort } from './saving.js';
 import { castAndVoice, lazyTTS, projectIO } from './voicing.js';
 import { KeyboardDevice, GamepadDevice, VirtualDevice } from '@vrmxg/input';
 import { demoModel, httpModel, shellModel } from '@vrmxg/director';
@@ -80,7 +80,7 @@ export class CreatorHost extends EditorHost {
   /** Throw away the open short's unsaved work (the window asked): a short never saved leaves the list. */
   discardChanges() {
     clearTimeout(this._applyTimer);
-    if (this.short && !this.short.saved) this.shorts.discard(this.short.id);
+    discardShort(this); // a draft leaves the list; a saved short gets back the fields shorts.json holds (saving.js)
   }
 
   /**
@@ -509,7 +509,7 @@ export class CreatorHost extends EditorHost {
    */
   async saveShort(asTitle = null) {
     if (!this.short) return this.save();
-    const { sequence: seq, script, shorts } = await saveShortFiles(this, asTitle); // each marked saved once written (saving.js)
+    const { sequence: seq, script, shorts } = await saveShortFiles(this, asTitle); // saved only once every file is written (saving.js)
     this.lastSaveAll = { short: this.short.id, sequence: { ref: this.short.sequence, bytes: seq.bytes, hash: seq.hash }, script: script ? this.short.script : null, shorts: !!shorts, memory: !this.project.writable || !inShell };
     this.changed();
     return this.lastSaveAll;

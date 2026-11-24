@@ -42,7 +42,8 @@ Tests: `swift test` in `apps/shell` (file serving and project mounts with path t
 405 and POST parsing, POST routing, bridge dispatch and errors as values, open / save / project through the automation
 hooks with binary writes; the close question: the page's three answers, the timeout, a question asked again, a page that
 hangs while it asks, a busy page with unsaved work (the shell's own alert: Wait, Close Anyway), asking again as the way
-out, the page's word on unsaved work, a page that goes, and the delegate's routing of a close and a quit with and without the opt-in (`CloseQuestionTests`); export: H.264 with sound frame-exact with the flip and swizzle checked on decoded pixels,
+out, the page's word on unsaved work, a page that goes (its timers run on the tests' own clock, `Ticks`, so none of it
+depends on how busy the machine is), and the delegate's routing of a close and a quit with and without the opt-in (`CloseQuestionTests`); export: H.264 with sound frame-exact with the flip and swizzle checked on decoded pixels,
 29.97 fps landing exactly, ProRes decoding identically across encodes with matching frame hashes, missing frames
 refused). `DeterminismExperiment.swift` is an env-gated probe of VideoToolbox's decoded-frame determinism (see there).
 Bridge replies must hold plain values only: WebKit refuses a reply with a Swift Optional inside ("the result value passed
