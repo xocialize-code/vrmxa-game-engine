@@ -1,0 +1,616 @@
+{
+  "checklist" : "apps/editor-mac/docs/HAND-TEST-M1-EDITOR.md",
+  "rows" : [
+    {
+      "checklist_line" : 7,
+      "checks" : [
+        {
+          "actual" : "\"Scene cafe-cart.vrmxs 30 nodes saved valid hash 7636dc6e7e38e7e0\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project project\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=add-sets-cafe-glb\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=add-items-sword-pickup-vrmxi\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Editor pid 51205, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-24T191026Z.log",
+        "22: wait id=open-project enabled=true timeout_ms=40000 → found after 429 ms: button \"Open project\" #open-project [W:VRMXG Editor/0/0/0/0/0/1@4649] (436 ms)",
+        "23: until find(\"id=doc-state\").0.name matches \"^Scene cafe\" → ok (1348 ms)",
+        "24: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":109,\"x\":2721,\"y\":162},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (44 ms)",
+        "25: until find(\"id=project-name\").0.name == \"Project project\" → ok (1311 ms)",
+        "26: expect find(\"id=add-sets-cafe-glb\").count == 1 → ok (32 ms)",
+        "27: expect find(\"id=add-items-sword-pickup-vrmxi\").count == 1 → ok (39 ms)"
+      ],
+      "message" : null,
+      "ms" : 3703,
+      "notes" : [
+
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The project opens from a folder (Open Project…): its name shows and its assets are listed.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 8,
+      "checks" : [
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 1 nodes saved valid hash 2eae4ea03f28ac68\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene built-cafe.vrmxs 1 nodes\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 2 nodes unsaved changes valid hash 47accdc1b72c99f2\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" 2 nodes \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 3 nodes unsaved changes valid hash 43e8d8dacd8d2293\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" 3 nodes \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 4 nodes unsaved changes valid hash 1260228bdebf671c\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" 4 nodes \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 5 nodes unsaved changes valid hash 0defcd83b952d4ea\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" 5 nodes \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 6 nodes unsaved changes valid hash 303ecde4c163f64d\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" 6 nodes unsaved changes valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add sword-pickup\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add sword-pickup\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"role=statictext text=Error\").count == 0",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "32: act id=new-scene action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":46,\"x\":3323,\"y\":162},\"help\":\"\",\"id\":\"new-scene\",\"name\":\"New scene\",\"ref\":\"W:VRMXG Editor (35 ms)",
+        "33: until find(\"id=doc-state\").0.name matches \"^Scene built-cafe.vrmxs 1 nodes\" → ok (218 ms)",
+        "34: act id=add-sets-cafe-glb action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":3769,\"y\":1807},\"help\":\"Add as Model\",\"id\":\"add-sets-cafe-glb\",\"name\":\"Add sets/ca (35 ms)",
+        "35: until find(\"id=doc-state\").0.name matches \" 2 nodes \" → ok (35 ms)",
+        "36: act id=add-characters-mira-vrmxa action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":3769,\"y\":1746},\"help\":\"Add as Character\",\"id\":\"add-characters-mira-vrmxa\",\"name\": (53 ms)",
+        "37: until find(\"id=doc-state\").0.name matches \" 3 nodes \" → ok (225 ms)",
+        "38: act id=add-characters-hana-vrmxa action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":3769,\"y\":1586},\"help\":\"Add as Character\",\"id\":\"add-characters-hana-vrmxa\",\"name\": (36 ms)",
+        "39: until find(\"id=doc-state\").0.name matches \" 4 nodes \" → ok (180 ms)",
+        "40: act id=add-items-cafe-door-vrmxi action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":3769,\"y\":1650},\"help\":\"Add as Item\",\"id\":\"add-items-cafe-door-vrmxi\",\"name\":\"Add  (162 ms)",
+        "41: until find(\"id=doc-state\").0.name matches \" 5 nodes \" → ok (312 ms)",
+        "42: act id=add-items-sword-pickup-vrmxi action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":3769,\"y\":1811},\"help\":\"Add as Item\",\"id\":\"add-items-sword-pickup-vrmxi\",\"name\":\"A (36 ms)",
+        "43: until find(\"id=doc-state\").0.name matches \" 6 nodes unsaved changes valid \" → ok (36 ms)",
+        "44: expect find(\"id=undo\").0.name == \"Undo Add sword-pickup\" → ok (314 ms)",
+        "46: expect find(\"role=statictext text=Error\").count == 0 → ok (41 ms)",
+        "47: shot \"built\" (181 ms)"
+      ],
+      "message" : null,
+      "ms" : 4728,
+      "notes" : [
+        "shot 1: built"
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+        "scratch/runs/final-editor-m1/report/shots/r2-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A new scene is built from the asset list: the set, two characters, two items, each one Add; nothing errors.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 9,
+      "checks" : [
+        {
+          "actual" : "\"Node mira\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node mira\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Move mira\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Move mira\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Rotate mira\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Rotate mira\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Node hana\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node hana\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Rename hana\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Rename hana\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Set hana.walkSpeed\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Set hana.walkSpeed\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "52: act id=node-mira action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":2609,\"y\":286},\"help\":\"\",\"id\":\"node-mira\",\"name\":\"mira, Character\",\"ref\":\"W:VRMXG (37 ms)",
+        "53: until find(\"id=inspector-id\").0.name == \"Node mira\" → ok (46 ms)",
+        "54: act id=pos-x action=set_value value=-0.5 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":89,\"x\":4784,\"y\":421},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (450 ms)",
+        "55: until find(\"id=undo\").0.name == \"Undo Move mira\" → ok (184 ms)",
+        "56: act id=pos-z action=set_value value=9.5 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":90,\"x\":4969,\"y\":421},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (453 ms)",
+        "57: act id=rot-y action=set_value value=180 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":90,\"x\":4876,\"y\":478},\"help\":\"\",\"id\":\"rot-y\",\"name\":\"Rotation Y\",\"ref\":\"W:VRMXG Edito (581 ms)",
+        "58: until find(\"id=undo\").0.name == \"Undo Rotate mira\" → ok (158 ms)",
+        "59: act id=node-hana action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":2609,\"y\":310},\"help\":\"\",\"id\":\"node-hana\",\"name\":\"hana, Character\",\"ref\":\"W:VRMXG (33 ms)",
+        "60: until find(\"id=inspector-id\").0.name == \"Node hana\" → ok (59 ms)",
+        "61: act id=field-name action=set_value value=Hana → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":338},\"help\":\"\",\"id\":\"field-name\",\"name\":\"Name\",\"ref\":\"W:VRMXG Edito (442 ms)",
+        "62: until find(\"id=undo\").0.name == \"Undo Rename hana\" → ok (170 ms)",
+        "63: act id=prop-walkSpeed action=set_value value=1.2 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":751},\"help\":\"\",\"id\":\"prop-walkSpeed\",\"name\":\"walkSpeed\",\"ref\":\"W:VR (447 ms)",
+        "64: until find(\"id=undo\").0.name == \"Undo Set hana.walkSpeed\" → ok (185 ms)",
+        "65: shot \"edited\" (95 ms)"
+      ],
+      "message" : null,
+      "ms" : 3588,
+      "notes" : [
+        "shot 1: edited"
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+        "scratch/runs/final-editor-m1/report/shots/r3-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Nodes move and change in the inspector: position, rotation, name and a prop, each one undo step named after it.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 10,
+      "checks" : [
+        {
+          "actual" : "\"Undo Add node3d\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add node3d\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Node cafe-door\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node cafe-door\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Move cafe-door under node3d\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Move cafe-door under node3d\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Delete node3d\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Delete node3d\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=node-cafe-door\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 5 nodes unsaved changes valid hash 9ac95c98a9dee75d\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" 5 nodes \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "70: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2772,\"y\":203},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (42 ms)",
+        "71: until find(\"id=undo\").0.name == \"Undo Add node3d\" → ok (39 ms)",
+        "72: act id=node-cafe-door action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":2609,\"y\":335},\"help\":\"\",\"id\":\"node-cafe-door\",\"name\":\"cafe-door, Item\",\"ref\":\"W: (288 ms)",
+        "73: until find(\"id=inspector-id\").0.name == \"Node cafe-door\" → ok (31 ms)",
+        "74: act id=field-parent action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":150,\"x\":4909,\"y\":387},\"help\":\"\",\"id\":\"field-parent\",\"name\":\"Parent\",\"ref\":\"W:VRMXG Edito (36 ms)",
+        "75: act role=menuitem name=node3d exact=true surface=app action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":150,\"x\":4896,\"y\":507},\"id\":\"_popUpItemAction:\",\"name\":\"node3d\",\"ref\":\"A/0/0/1/6@1645\",\"r (82 ms)",
+        "76: until find(\"id=undo\").0.name == \"Undo Move cafe-door under node3d\" → ok (668 ms)",
+        "77: act id=node-node3d action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":2609,\"y\":359},\"help\":\"\",\"id\":\"node-node3d\",\"name\":\"node3d, Node3D\",\"ref\":\"W:VRMX (30 ms)",
+        "78: act id=delete action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":58,\"x\":2820,\"y\":203},\"help\":\"\",\"id\":\"delete\",\"name\":\"Delete selection\",\"ref\":\"W:VRMXG Ed (33 ms)",
+        "79: until find(\"id=undo\").0.name == \"Undo Delete node3d\" → ok (29 ms)",
+        "80: expect find(\"id=node-cafe-door\").count == 0 → ok (283 ms)",
+        "81: expect find(\"id=doc-state\").0.name matches \" 5 nodes \" → ok (27 ms)"
+      ],
+      "message" : null,
+      "ms" : 1824,
+      "notes" : [
+
+      ],
+      "row" : 4,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The tree reparents and deletes: a door moves under a new group, deleting the group deletes the door with it.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 11,
+      "checks" : [
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-cafe-door\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Redo Move cafe-door under node3d\"",
+          "check" : "find(\"id=redo\").0.name == \"Redo Move cafe-door under node3d\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Redo Add node3d\"",
+          "check" : "find(\"id=redo\").0.name == \"Redo Add node3d\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 5 nodes unsaved changes valid hash 9ac95c98a9dee75d\"",
+          "check" : "find(\"id=doc-state\").0.name == $before",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-cafe-door\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "86: set before = find(\"id=doc-state\").0.name → \"Scene built-cafe.vrmxs 5 nodes unsaved changes valid hash 9ac95c98a9dee75d\" (24 ms)",
+        "87: menu \"Edit › Undo\" press → pressed Edit › Undo (151 ms)",
+        "88: until find(\"id=node-cafe-door\").count == 1 → ok (181 ms)",
+        "89: menu \"Edit › Undo\" press → pressed Edit › Undo (154 ms)",
+        "90: until find(\"id=redo\").0.name == \"Redo Move cafe-door under node3d\" → ok (313 ms)",
+        "91: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":3952,\"y\":162},\"help\":\"Add node3d\",\"id\":\"undo\",\"name\":\"Undo Add node3d\",\"ref\":\"W:V (25 ms)",
+        "92: until find(\"id=redo\").0.name == \"Redo Add node3d\" → ok (29 ms)",
+        "93: act id=redo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":50,\"x\":4010,\"y\":162},\"help\":\"Add node3d\",\"id\":\"redo\",\"name\":\"Redo Add node3d\",\"ref\":\"W:V (320 ms)",
+        "94: act id=redo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":50,\"x\":4010,\"y\":162},\"help\":\"Move cafe-door under node3d\",\"id\":\"redo\",\"name\":\"Redo Move  (35 ms)",
+        "95: act id=redo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":50,\"x\":4010,\"y\":162},\"help\":\"Delete node3d\",\"id\":\"redo\",\"name\":\"Redo Delete node3d\",\"ref (430 ms)",
+        "96: until find(\"id=doc-state\").0.name == $before → ok (35 ms)",
+        "97: menu \"Edit › Undo\" press → pressed Edit › Undo (152 ms)",
+        "98: until find(\"id=node-cafe-door\").count == 1 → ok (133 ms)"
+      ],
+      "message" : null,
+      "ms" : 2317,
+      "notes" : [
+
+      ],
+      "row" : 5,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Undo and redo walk the history from the Edit menu and the toolbar, and come back to exactly the same scene.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 12,
+      "checks" : [
+        {
+          "actual" : "\"Saved built-cafe.vrmxs · 1097 bytes · 4f46274e1db2d2a6\"",
+          "check" : "find(\"id=saved\").0.name matches \"^Saved built-cafe.vrmxs · [0-9]+ bytes · [0-9a-f]{16}$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 7 nodes saved valid hash 4f46274e1db2d2a6\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" saved valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Reopened built-cafe.vrmxs: same bytes as saved, valid\"",
+          "check" : "find(\"id=verify-result\").0.name == \"Reopened built-cafe.vrmxs: same bytes as saved, valid\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "103: act id=save action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":48,\"x\":3803,\"y\":162},\"help\":\"\",\"id\":\"save\",\"name\":\"Save\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (36 ms)",
+        "104: until find(\"id=saved\").0.name matches \"^Saved built-cafe.vrmxs · [0-9]+ bytes · [0-9a-f]{16}$\" → ok (35 ms)",
+        "105: until find(\"id=doc-state\").0.name matches \" saved valid \" → ok (27 ms)",
+        "106: act id=verify action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":127,\"x\":3509,\"y\":1743},\"help\":\"\",\"id\":\"verify\",\"name\":\"Reopen and compare\",\"ref\":\"W:VRMX (27 ms)",
+        "107: until find(\"id=verify-result\").0.name == \"Reopened built-cafe.vrmxs: same bytes as saved, valid\" → ok (213 ms)",
+        "108: shot \"saved\" (94 ms)"
+      ],
+      "message" : null,
+      "ms" : 667,
+      "notes" : [
+        "shot 1: saved"
+      ],
+      "row" : 6,
+      "section" : "",
+      "shots" : [
+        "scratch/runs/final-editor-m1/report/shots/r6-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Save writes the scene into the project; reopening it from disk gives the same bytes, and it validates.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 13,
+      "checks" : [
+        {
+          "actual" : "\"Stop\"",
+          "check" : "find(\"id=play\").0.name == \"Stop\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Stopped: scene as before Play (4f46274e1db2d2a6), view unchanged\"",
+          "check" : "find(\"id=stop-result\").0.name matches \"^Stopped: scene as before Play \\\\([0-9a-f]{16}\\\\), view unchanged$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 7 nodes saved valid hash 4f46274e1db2d2a6\"",
+          "check" : "find(\"id=doc-state\").0.name == $before",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "113: set before = find(\"id=doc-state\").0.name → \"Scene built-cafe.vrmxs 7 nodes saved valid hash 4f46274e1db2d2a6\" (28 ms)",
+        "114: act id=play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":79,\"x\":4605,\"y\":162},\"help\":\"\",\"id\":\"play\",\"name\":\"Play\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (33 ms)",
+        "115: until find(\"id=play\").0.name == \"Stop\" timeout=40000 → ok (1495 ms)",
+        "117: shot \"playing\" (99 ms)",
+        "118: act id=play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":79,\"x\":4843,\"y\":162},\"help\":\"\",\"id\":\"play\",\"name\":\"Stop\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (29 ms)",
+        "119: until find(\"id=stop-result\").0.name matches \"^Stopped: scene as before Play \\\\([0-9a-f]{16}\\\\), view unchanged$\" → ok (46 ms)",
+        "120: expect find(\"id=doc-state\").0.name == $before → ok (30 ms)"
+      ],
+      "message" : null,
+      "ms" : 4010,
+      "notes" : [
+        "shot 1: playing"
+      ],
+      "row" : 7,
+      "section" : "",
+      "shots" : [
+        "scratch/runs/final-editor-m1/report/shots/r7-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Play runs the scene; Stop leaves the scene exactly as before Play (same hash), and the edit view unchanged.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 14,
+      "checks" : [
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 8 nodes unsaved changes valid hash af3cb0806aa4a267\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" unsaved changes valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"built-cafe.vrmxs has changes that aren't saved.\"",
+          "check" : "find(\"id=ask-text\").0.name == \"built-cafe.vrmxs has changes that aren't saved.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=ask\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 8 nodes unsaved changes valid hash af3cb0806aa4a267\"",
+          "check" : "find(\"id=doc-state\").0.name == $edited",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=ask\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=ask\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 8 nodes unsaved changes valid hash af3cb0806aa4a267\"",
+          "check" : "find(\"id=doc-state\").0.name == $edited",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=ask\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project project\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 7 nodes saved valid hash 4f46274e1db2d2a6\"",
+          "check" : "find(\"id=doc-state\").0.name == $saved",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "126: set saved = find(\"id=doc-state\").0.name → \"Scene built-cafe.vrmxs 7 nodes saved valid hash 4f46274e1db2d2a6\" (28 ms)",
+        "127: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2772,\"y\":203},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (30 ms)",
+        "128: until find(\"id=doc-state\").0.name matches \" unsaved changes valid \" → ok (39 ms)",
+        "129: set edited = find(\"id=doc-state\").0.name → \"Scene built-cafe.vrmxs 8 nodes unsaved changes valid hash af3cb0806aa4a267\" (321 ms)",
+        "130: activate → frontmost (428 ms)",
+        "131: menu \"File › Close Window\" press → pressed File › Close Window (154 ms)",
+        "132: until find(\"id=ask-text\").0.name == \"built-cafe.vrmxs has changes that aren't saved.\" → ok (37 ms)",
+        "133: act id=ask-cancel action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":61,\"x\":3970,\"y\":423},\"help\":\"\",\"id\":\"ask-cancel\",\"name\":\"Cancel\",\"ref\":\"W:VRMXG Editor/0 (32 ms)",
+        "134: until find(\"id=ask\").count == 0 → ok (32 ms)",
+        "135: expect find(\"id=doc-state\").0.name == $edited → ok (29 ms)",
+        "136: menu \"App › Quit*\" press → pressed App › Quit* (136 ms)",
+        "137: until find(\"id=ask\").count == 1 → ok (38 ms)",
+        "138: act id=ask-cancel action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":61,\"x\":3970,\"y\":423},\"help\":\"\",\"id\":\"ask-cancel\",\"name\":\"Cancel\",\"ref\":\"W:VRMXG Editor/0 (28 ms)",
+        "139: until find(\"id=ask\").count == 0 → ok (31 ms)",
+        "141: expect find(\"id=doc-state\").0.name == $edited → ok (41 ms)",
+        "142: menu \"App › Quit*\" press → pressed App › Quit* (148 ms)",
+        "143: until find(\"id=ask\").count == 1 → ok (47 ms)",
+        "144: act id=ask-discard action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":85,\"x\":3878,\"y\":423},\"help\":\"\",\"id\":\"ask-discard\",\"name\":\"Don't Save\",\"ref\":\"W:VRMXG Edi (33 ms)",
+        "launched VRMXG Editor pid 51312, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-24T191058Z.log",
+        "146: relaunch (239 ms)",
+        "147: wait id=open-project enabled=true timeout_ms=40000 → found after 408 ms: button \"Open project\" #open-project [W:VRMXG Editor/0/0/0/0/0/1@4649] (413 ms)",
+        "148: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":109,\"x\":2721,\"y\":162},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (217 ms)",
+        "149: until find(\"id=project-name\").0.name == \"Project project\" → ok (1476 ms)",
+        "150: act id=open-file action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":3265,\"y\":162},\"help\":\"Open the scene or sequence named in the file field\",\"id\":\"o (28 ms)",
+        "151: until find(\"id=doc-state\").0.name == $saved timeout=40000 → ok (540 ms)"
+      ],
+      "message" : null,
+      "ms" : 14592,
+      "notes" : [
+
+      ],
+      "row" : 8,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "With unsaved changes, File › Close Window and Quit ask first: Cancel keeps the window and the change; Don't Save quits without saving.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 15,
+      "checks" : [
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 8 nodes unsaved changes valid hash af3cb0806aa4a267\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" unsaved changes valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=ask\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project project\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 8 nodes saved valid hash af3cb0806aa4a267\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene built-cafe.vrmxs [0-9]+ nodes saved valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene built-cafe.vrmxs 8 nodes saved valid hash af3cb0806aa4a267\"",
+          "check" : "find(\"id=doc-state\").0.name != $saved",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "157: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2772,\"y\":203},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (30 ms)",
+        "158: until find(\"id=doc-state\").0.name matches \" unsaved changes valid \" → ok (305 ms)",
+        "159: activate → frontmost (404 ms)",
+        "160: menu \"File › Close Window\" press → pressed File › Close Window (151 ms)",
+        "161: until find(\"id=ask\").count == 1 → ok (48 ms)",
+        "162: act id=ask-save action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":79,\"x\":3792,\"y\":423},\"help\":\"\",\"id\":\"ask-save\",\"name\":\"Save\",\"ref\":\"W:VRMXG Editor/0/0/0 (42 ms)",
+        "launched VRMXG Editor pid 51334, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-24T191105Z.log",
+        "164: relaunch (277 ms)",
+        "165: wait id=open-project enabled=true timeout_ms=40000 → found after 411 ms: button \"Open project\" #open-project [W:VRMXG Editor/0/0/0/0/0/1@4649] (416 ms)",
+        "166: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":109,\"x\":2721,\"y\":162},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (222 ms)",
+        "167: until find(\"id=project-name\").0.name == \"Project project\" → ok (1473 ms)",
+        "168: act id=open-file action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":52,\"x\":3265,\"y\":162},\"help\":\"Open the scene or sequence named in the file field\",\"id\":\"o (28 ms)",
+        "169: until find(\"id=doc-state\").0.name matches \"^Scene built-cafe.vrmxs [0-9]+ nodes saved valid \" timeout=40000 → ok (484 ms)",
+        "170: expect find(\"id=doc-state\").0.name != $saved → ok (33 ms)"
+      ],
+      "message" : null,
+      "ms" : 7200,
+      "notes" : [
+
+      ],
+      "row" : 9,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Save in the sheet saves the scene and then closes the window.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "apps/editor-mac/docs/hand-test/HAND-TEST-M1-EDITOR.scenario.md",
+  "summary" : "9 rows: 9 passed, 0 failed, 0 need you; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}

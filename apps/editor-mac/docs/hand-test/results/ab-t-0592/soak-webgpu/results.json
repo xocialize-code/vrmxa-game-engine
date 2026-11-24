@@ -1,0 +1,1112 @@
+{
+  "checklist" : null,
+  "rows" : [
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "\"Scene cafe-cart.vrmxs 30 nodes saved valid hash 7636dc6e7e38e7e0\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project project\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 1 nodes unsaved changes valid hash 91e63b477f886876\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene sequences/hand-test.vrmxs 1 nodes unsaved changes valid\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-shots\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"No preview\"",
+          "check" : "find(\"id=tl-scrub\").0.name == \"No preview\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Editor pid 42557, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-24T184314Z.log",
+        "18: wait id=open-project enabled=true timeout_ms=40000 → found after 474 ms: button \"Open project\" #open-project [W:VRMXG Editor/0/0/0/0/0/1@4649] (480 ms)",
+        "19: until find(\"id=doc-state\").0.name matches \"^Scene cafe\" → ok (1521 ms)",
+        "20: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":109,\"x\":2721,\"y\":162},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (39 ms)",
+        "21: until find(\"id=project-name\").0.name == \"Project project\" → ok (1321 ms)",
+        "22: act id=seq-name action=set_value value=sequences/hand-test.vrmxs → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":139,\"x\":3531,\"y\":162},\"help\":\"The new sequence's file\",\"id\":\"seq-name\",\"name\":\"Seque (513 ms)",
+        "23: act id=new-sequence action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":110,\"x\":3677,\"y\":162},\"help\":\"\",\"id\":\"new-sequence\",\"name\":\"New sequence\",\"ref\":\"W:VRMXG (44 ms)",
+        "24: until find(\"id=doc-state\").0.name matches \"^Scene sequences/hand-test.vrmxs 1 nodes unsaved changes valid\" → ok (845 ms)",
+        "25: expect find(\"id=tl-head-shots\").count == 1 → ok (13 ms)",
+        "26: expect find(\"id=tl-scrub\").0.name == \"No preview\" → ok (19 ms)"
+      ],
+      "message" : null,
+      "ms" : 5349,
+      "notes" : [
+
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A new sequence films the cafe: it opens with an empty timeline and a CameraBrain on the set's camera.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "\"Undo Add shot-cam from the view\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add shot-cam from the view\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add shot-cam-2 from the view\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add shot-cam-2 from the view\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add shot Shot 1\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add shot Shot 1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 48 step 120 alpha 0 world 87a3e160feecf9e9\"",
+          "check" : "find(\"id=tl-scrub\").0.name matches \"^Showing frame 48 step 120 \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add shot Shot 2\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add shot Shot 2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Showing frame 96 step 240 alpha 0 world 6497fa2cc028e10d\"",
+          "check" : "find(\"id=tl-scrub\").0.name matches \"^Showing frame 96 step 240 \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add shot Shot 3\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add shot Shot 3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Shot Shot 3 96 to 144' exact=true\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Clip shot-cam 96 to 144' exact=true\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "31: act id=tl-cam-from-view action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":128,\"x\":4503,\"y\":1609},\"help\":\"A virtual camera where the editor's view is\",\"id\":\"tl-cam (15 ms)",
+        "32: until find(\"id=undo\").0.name == \"Undo Add shot-cam from the view\" → ok (36 ms)",
+        "33: act id=tl-cam-from-view action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":128,\"x\":4503,\"y\":1628},\"help\":\"A virtual camera where the editor's view is\",\"id\":\"tl-cam (237 ms)",
+        "34: until find(\"id=undo\").0.name == \"Undo Add shot-cam-2 from the view\" → ok (552 ms)",
+        "35: act id=tl-cam-shot-cam action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":64,\"x\":4503,\"y\":1605},\"help\":\"\",\"id\":\"tl-cam-shot-cam\",\"name\":\"Camera shot-cam\",\"ref\":\"W (505 ms)",
+        "36: act id=tl-add-shot action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":73,\"x\":4666,\"y\":1658},\"help\":\"\",\"id\":\"tl-add-shot\",\"name\":\"Add shot at playhead\",\"ref\":\" (21 ms)",
+        "37: until find(\"id=undo\").0.name == \"Undo Add shot Shot 1\" → ok (35 ms)",
+        "38: act id=tl-frame action=set_value value=48 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":83,\"x\":3131,\"y\":1436},\"help\":\"\",\"id\":\"tl-frame\",\"name\":\"Frame\",\"ref\":\"W:VRMXG Editor (923 ms)",
+        "39: until find(\"id=tl-scrub\").0.name matches \"^Showing frame 48 step 120 \" → ok (1426 ms)",
+        "40: act id=tl-cam-shot-cam-2 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":77,\"x\":4570,\"y\":1605},\"help\":\"\",\"id\":\"tl-cam-shot-cam-2\",\"name\":\"Camera shot-cam-2\",\"ref (30 ms)",
+        "41: act id=tl-add-shot action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":73,\"x\":4666,\"y\":1658},\"help\":\"\",\"id\":\"tl-add-shot\",\"name\":\"Add shot at playhead\",\"ref\":\" (27 ms)",
+        "42: until find(\"id=undo\").0.name == \"Undo Add shot Shot 2\" → ok (36 ms)",
+        "43: act id=tl-frame action=set_value value=96 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":83,\"x\":3131,\"y\":1436},\"help\":\"\",\"id\":\"tl-frame\",\"name\":\"Frame\",\"ref\":\"W:VRMXG Editor (649 ms)",
+        "44: until find(\"id=tl-scrub\").0.name matches \"^Showing frame 96 step 240 \" → ok (1017 ms)",
+        "45: act id=tl-cam-shot-cam action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":64,\"x\":4503,\"y\":1605},\"help\":\"\",\"id\":\"tl-cam-shot-cam\",\"name\":\"Camera shot-cam\",\"ref\":\"W (29 ms)",
+        "46: act id=tl-add-shot action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":73,\"x\":4666,\"y\":1658},\"help\":\"\",\"id\":\"tl-add-shot\",\"name\":\"Add shot at playhead\",\"ref\":\" (29 ms)",
+        "47: until find(\"id=undo\").0.name == \"Undo Add shot Shot 3\" → ok (83 ms)",
+        "48: expect find(\"role=button name='Shot Shot 3 96 to 144' exact=true\").count == 1 → ok (199 ms)",
+        "49: expect find(\"role=button name='Clip shot-cam 96 to 144' exact=true\").count == 1 → ok (117 ms)"
+      ],
+      "message" : null,
+      "ms" : 6658,
+      "notes" : [
+
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Three shots are laid out from the timeline, each on a virtual camera, each one undo step that also puts a clip on the camera track.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-hana-1-animation\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add clip to hana-1-animation @96\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add clip to hana-1-animation @96\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-hana-1-expression\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Key hana-1-expression.happy @96\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Key hana-1-expression.happy @96\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=tl-head-hana-1-dialogue\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add clip to hana-1-dialogue @96\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add clip to hana-1-dialogue @96\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Clip Welcome in! 96 to 156' exact=true\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "54: act id=tl-type-animation action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":66,\"x\":4558,\"y\":1476},\"help\":\"\",\"id\":\"tl-type-animation\",\"name\":\"Track type animation\",\" (24 ms)",
+        "55: act id=tl-target-hana-1 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":51,\"x\":4542,\"y\":1544},\"help\":\"\",\"id\":\"tl-target-hana-1\",\"name\":\"Target hana-1\",\"ref\":\"W: (24 ms)",
+        "56: act id=tl-add-track action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":77,\"x\":4503,\"y\":1567},\"help\":\"\",\"id\":\"tl-add-track\",\"name\":\"Add track\",\"ref\":\"W:VRMXG Ed (22 ms)",
+        "57: until find(\"id=tl-head-hana-1-animation\").count == 1 → ok (87 ms)",
+        "58: act id=tl-head-hana-1-animation action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":89,\"x\":2959,\"y\":1560},\"help\":\"hana-1-animation · hana-1\",\"id\":\"tl-head-hana-1-animation\" (197 ms)",
+        "59: act id=tl-value action=set_value value=talk → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":111,\"x\":4542,\"y\":1726},\"help\":\"\",\"id\":\"tl-value\",\"name\":\"Key value or clip text\",\"re (813 ms)",
+        "60: act id=tl-clip-length action=set_value value=60 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":111,\"x\":4532,\"y\":1740},\"help\":\"\",\"id\":\"tl-clip-length\",\"name\":\"Clip length\",\"ref\":\"W (958 ms)",
+        "61: act id=tl-add-clip action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":42,\"x\":4694,\"y\":1695},\"help\":\"\",\"id\":\"tl-add-clip\",\"name\":\"Add clip at playhead\",\"ref\":\" (26 ms)",
+        "62: until find(\"id=undo\").0.name == \"Undo Add clip to hana-1-animation @96\" → ok (28 ms)",
+        "63: act id=tl-type-expression action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":72,\"x\":4626,\"y\":1415},\"help\":\"\",\"id\":\"tl-type-expression\",\"name\":\"Track type expression\" (198 ms)",
+        "64: act id=tl-add-track action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":77,\"x\":4503,\"y\":1567},\"help\":\"\",\"id\":\"tl-add-track\",\"name\":\"Add track\",\"ref\":\"W:VRMXG Ed (155 ms)",
+        "65: until find(\"id=tl-head-hana-1-expression\").count == 1 → ok (1358 ms)",
+        "66: act id=tl-head-hana-1-expression action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":89,\"x\":2959,\"y\":1591},\"help\":\"hana-1-expression · hana-1\",\"id\":\"tl-head-hana-1-expressio (51 ms)",
+        "67: act id=tl-value action=set_value value=1 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":111,\"x\":4542,\"y\":1726},\"help\":\"\",\"id\":\"tl-value\",\"name\":\"Key value or clip text\",\"re (1180 ms)",
+        "68: act id=tl-add-key action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":41,\"x\":4648,\"y\":1770},\"help\":\"\",\"id\":\"tl-add-key\",\"name\":\"Add key at playhead\",\"ref\":\"W: (125 ms)",
+        "69: until find(\"id=undo\").0.name == \"Undo Key hana-1-expression.happy @96\" → ok (25 ms)",
+        "70: act id=tl-type-dialogue action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":59,\"x\":4503,\"y\":1407},\"help\":\"\",\"id\":\"tl-type-dialogue\",\"name\":\"Track type dialogue\",\"re (198 ms)",
+        "71: act id=tl-add-track action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":77,\"x\":4503,\"y\":1567},\"help\":\"\",\"id\":\"tl-add-track\",\"name\":\"Add track\",\"ref\":\"W:VRMXG Ed (156 ms)",
+        "72: until find(\"id=tl-head-hana-1-dialogue\").count == 1 → ok (910 ms)",
+        "73: act id=tl-head-hana-1-dialogue action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":89,\"x\":2959,\"y\":1622},\"help\":\"hana-1-dialogue · hana-1\",\"id\":\"tl-head-hana-1-dialogue\",\" (467 ms)",
+        "74: act id=tl-value action=set_value value=\"Welcome in!\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":111,\"x\":4542,\"y\":1726},\"help\":\"\",\"id\":\"tl-value\",\"name\":\"Key value or clip text\",\"re (1078 ms)",
+        "75: act id=tl-add-clip action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":42,\"x\":4694,\"y\":1740},\"help\":\"\",\"id\":\"tl-add-clip\",\"name\":\"Add clip at playhead\",\"ref\":\" (261 ms)",
+        "76: until find(\"id=undo\").0.name == \"Undo Add clip to hana-1-dialogue @96\" → ok (32 ms)",
+        "77: expect find(\"role=button name='Clip Welcome in! 96 to 156' exact=true\").count == 1 → ok (56 ms)",
+        "79: shot \"built\" (179 ms)"
+      ],
+      "message" : null,
+      "ms" : 10875,
+      "notes" : [
+        "shot 1: built"
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+        "scratch/runs/soak-webgpu/report/shots/r3-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Animation, expression and dialogue tracks for Hana get a clip, a key and a line from the timeline.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "\"Undo Move key hana-1-expression.happy to 97\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Move key hana-1-expression.happy to 97\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Move key hana-1-expression.happy to 107\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Move key hana-1-expression.happy to 107\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"role=button name='Key happy at 107' exact=true\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "84: act role=button name=\"Key happy at 96\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":15,\"w\":16,\"x\":3629,\"y\":1595},\"help\":\"Key happy at 96\",\"name\":\"Key happy at 96\",\"ref\":\"W:VRMXG E (28 ms)",
+        "85: keys right → {\"sent\":true} (114 ms)",
+        "86: until find(\"id=undo\").0.name == \"Undo Move key hana-1-expression.happy to 97\" → ok (164 ms)",
+        "87: keys shift+right → {\"sent\":true} (112 ms)",
+        "88: until find(\"id=undo\").0.name == \"Undo Move key hana-1-expression.happy to 107\" → ok (1353 ms)",
+        "89: expect find(\"role=button name='Key happy at 107' exact=true\").count == 1 → ok (296 ms)"
+      ],
+      "message" : null,
+      "ms" : 3096,
+      "notes" : [
+
+      ],
+      "row" : 4,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A selected key moves with the arrow keys, one undo step per press.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "false",
+          "check" : "find(\"id=undo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 1 nodes unsaved changes valid hash 91e63b477f886876\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene sequences/hand-test.vrmxs 1 nodes \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\"",
+          "check" : "find(\"id=doc-state\").0.name == $built",
+          "ok" : true
+        },
+        {
+          "actual" : "false",
+          "check" : "find(\"id=redo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Holds 2 worlds of 72 built, 67 geometries, 107 textures\"",
+          "check" : "find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "94: set built = find(\"id=doc-state\").0.name → \"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\" (25 ms)",
+        "95: menu \"Edit › Undo*\" press → pressed Edit › Undo* (153 ms)",
+        "95: menu \"Edit › Undo*\" press → pressed Edit › Undo* (164 ms)",
+        "95: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "95: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "95: menu \"Edit › Undo*\" press → pressed Edit › Undo* (158 ms)",
+        "95: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "95: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "95: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "95: menu \"Edit › Undo*\" press → pressed Edit › Undo* (154 ms)",
+        "95: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "95: menu \"Edit › Undo*\" press → pressed Edit › Undo* (161 ms)",
+        "95: menu \"Edit › Undo*\" press → pressed Edit › Undo* (161 ms)",
+        "95: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "95: until find(\"id=undo\").0.enabled == false do menu \"Edit › Undo*\" press tries=20 → ok after 13 (17360 ms)",
+        "96: expect find(\"id=doc-state\").0.name matches \"^Scene sequences/hand-test.vrmxs 1 nodes \" → ok (174 ms)",
+        "97: menu \"Edit › Redo*\" press → pressed Edit › Redo* (148 ms)",
+        "97: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "97: menu \"Edit › Redo*\" press → pressed Edit › Redo* (166 ms)",
+        "97: menu \"Edit › Redo*\" press → pressed Edit › Redo* (151 ms)",
+        "97: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "97: menu \"Edit › Redo*\" press → pressed Edit › Redo* (161 ms)",
+        "97: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "97: menu \"Edit › Redo*\" press → pressed Edit › Redo* (149 ms)",
+        "97: menu \"Edit › Redo*\" press → pressed Edit › Redo* (152 ms)",
+        "97: menu \"Edit › Redo*\" press → pressed Edit › Redo* (148 ms)",
+        "97: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "97: menu \"Edit › Redo*\" press → pressed Edit › Redo* (150 ms)",
+        "97: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "97: until find(\"id=doc-state\").0.name == $built do menu \"Edit › Redo*\" press tries=20 → ok after 13 (12630 ms)",
+        "98: expect find(\"id=redo\").0.enabled == false → ok (54 ms)",
+        "99: until find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\" timeout=20000 → ok (114 ms)"
+      ],
+      "message" : null,
+      "ms" : 30842,
+      "notes" : [
+
+      ],
+      "row" : 5,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Undo walks the whole build back to the empty sequence, and redo returns it to the same document (same hash).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "false",
+          "check" : "find(\"id=undo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\"",
+          "check" : "find(\"id=doc-state\").0.name == $built",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Holds 2 worlds of 112 built, 67 geometries, 107 textures\"",
+          "check" : "find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "104: set built = find(\"id=doc-state\").0.name → \"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\" (15 ms)",
+        "105: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "105: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "105: menu \"Edit › Undo*\" press → pressed Edit › Undo* (161 ms)",
+        "105: menu \"Edit › Undo*\" press → pressed Edit › Undo* (148 ms)",
+        "105: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "105: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "105: menu \"Edit › Undo*\" press → pressed Edit › Undo* (148 ms)",
+        "105: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "105: menu \"Edit › Undo*\" press → pressed Edit › Undo* (153 ms)",
+        "105: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "105: menu \"Edit › Undo*\" press → pressed Edit › Undo* (154 ms)",
+        "105: menu \"Edit › Undo*\" press → pressed Edit › Undo* (157 ms)",
+        "105: menu \"Edit › Undo*\" press → pressed Edit › Undo* (153 ms)",
+        "105: until find(\"id=undo\").0.enabled == false do menu \"Edit › Undo*\" press tries=20 → ok after 13 (10454 ms)",
+        "106: menu \"Edit › Redo*\" press → pressed Edit › Redo* (149 ms)",
+        "106: menu \"Edit › Redo*\" press → pressed Edit › Redo* (153 ms)",
+        "106: menu \"Edit › Redo*\" press → pressed Edit › Redo* (149 ms)",
+        "106: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "106: menu \"Edit › Redo*\" press → pressed Edit › Redo* (147 ms)",
+        "106: menu \"Edit › Redo*\" press → pressed Edit › Redo* (150 ms)",
+        "106: menu \"Edit › Redo*\" press → pressed Edit › Redo* (150 ms)",
+        "106: menu \"Edit › Redo*\" press → pressed Edit › Redo* (149 ms)",
+        "106: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "106: menu \"Edit › Redo*\" press → pressed Edit › Redo* (153 ms)",
+        "106: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "106: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "106: menu \"Edit › Redo*\" press → pressed Edit › Redo* (152 ms)",
+        "106: until find(\"id=doc-state\").0.name == $built do menu \"Edit › Redo*\" press tries=20 → ok after 13 (11463 ms)",
+        "107: until find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\" timeout=20000 → ok (711 ms)",
+        "108: set holds = find(\"id=holds\").0.name → \"Holds 2 worlds of 112 built, 67 geometries, 107 textures\" (220 ms)"
+      ],
+      "message" : null,
+      "ms" : 24219,
+      "notes" : [
+
+      ],
+      "row" : 6,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Soak 1: undo the whole build and redo it again (about forty rebuilds).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "false",
+          "check" : "find(\"id=undo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\"",
+          "check" : "find(\"id=doc-state\").0.name == $built",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Holds 2 worlds of 152 built, 67 geometries, 107 textures\"",
+          "check" : "find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "113: set built = find(\"id=doc-state\").0.name → \"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\" (16 ms)",
+        "114: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "114: menu \"Edit › Undo*\" press → pressed Edit › Undo* (157 ms)",
+        "114: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "114: menu \"Edit › Undo*\" press → pressed Edit › Undo* (148 ms)",
+        "114: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "114: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "114: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "114: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "114: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "114: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "114: menu \"Edit › Undo*\" press → pressed Edit › Undo* (146 ms)",
+        "114: menu \"Edit › Undo*\" press → pressed Edit › Undo* (146 ms)",
+        "114: menu \"Edit › Undo*\" press → pressed Edit › Undo* (153 ms)",
+        "114: until find(\"id=undo\").0.enabled == false do menu \"Edit › Undo*\" press tries=20 → ok after 13 (10475 ms)",
+        "115: menu \"Edit › Redo*\" press → pressed Edit › Redo* (150 ms)",
+        "115: menu \"Edit › Redo*\" press → pressed Edit › Redo* (167 ms)",
+        "115: menu \"Edit › Redo*\" press → pressed Edit › Redo* (157 ms)",
+        "115: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "115: menu \"Edit › Redo*\" press → pressed Edit › Redo* (149 ms)",
+        "115: menu \"Edit › Redo*\" press → pressed Edit › Redo* (161 ms)",
+        "115: menu \"Edit › Redo*\" press → pressed Edit › Redo* (153 ms)",
+        "115: menu \"Edit › Redo*\" press → pressed Edit › Redo* (161 ms)",
+        "115: menu \"Edit › Redo*\" press → pressed Edit › Redo* (152 ms)",
+        "115: menu \"Edit › Redo*\" press → pressed Edit › Redo* (148 ms)",
+        "115: menu \"Edit › Redo*\" press → pressed Edit › Redo* (150 ms)",
+        "115: menu \"Edit › Redo*\" press → pressed Edit › Redo* (160 ms)",
+        "115: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "115: until find(\"id=doc-state\").0.name == $built do menu \"Edit › Redo*\" press tries=20 → ok after 13 (11615 ms)",
+        "116: until find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\" timeout=20000 → ok (696 ms)",
+        "117: set holds = find(\"id=holds\").0.name → \"Holds 2 worlds of 152 built, 67 geometries, 107 textures\" (214 ms)"
+      ],
+      "message" : null,
+      "ms" : 23601,
+      "notes" : [
+
+      ],
+      "row" : 7,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Soak 2: undo the whole build and redo it again (about forty rebuilds).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "false",
+          "check" : "find(\"id=undo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\"",
+          "check" : "find(\"id=doc-state\").0.name == $built",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Holds 2 worlds of 192 built, 67 geometries, 107 textures\"",
+          "check" : "find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "122: set built = find(\"id=doc-state\").0.name → \"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\" (21 ms)",
+        "123: menu \"Edit › Undo*\" press → pressed Edit › Undo* (151 ms)",
+        "123: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "123: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "123: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "123: menu \"Edit › Undo*\" press → pressed Edit › Undo* (147 ms)",
+        "123: menu \"Edit › Undo*\" press → pressed Edit › Undo* (157 ms)",
+        "123: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "123: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "123: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "123: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "123: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "123: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "123: menu \"Edit › Undo*\" press → pressed Edit › Undo* (154 ms)",
+        "123: until find(\"id=undo\").0.enabled == false do menu \"Edit › Undo*\" press tries=20 → ok after 13 (10321 ms)",
+        "124: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "124: menu \"Edit › Redo*\" press → pressed Edit › Redo* (151 ms)",
+        "124: menu \"Edit › Redo*\" press → pressed Edit › Redo* (144 ms)",
+        "124: menu \"Edit › Redo*\" press → pressed Edit › Redo* (153 ms)",
+        "124: menu \"Edit › Redo*\" press → pressed Edit › Redo* (166 ms)",
+        "124: menu \"Edit › Redo*\" press → pressed Edit › Redo* (169 ms)",
+        "124: menu \"Edit › Redo*\" press → pressed Edit › Redo* (162 ms)",
+        "124: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "124: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "124: menu \"Edit › Redo*\" press → pressed Edit › Redo* (157 ms)",
+        "124: menu \"Edit › Redo*\" press → pressed Edit › Redo* (150 ms)",
+        "124: menu \"Edit › Redo*\" press → pressed Edit › Redo* (152 ms)",
+        "124: menu \"Edit › Redo*\" press → pressed Edit › Redo* (150 ms)",
+        "124: until find(\"id=doc-state\").0.name == $built do menu \"Edit › Redo*\" press tries=20 → ok after 13 (11537 ms)",
+        "125: until find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\" timeout=20000 → ok (469 ms)",
+        "126: set holds = find(\"id=holds\").0.name → \"Holds 2 worlds of 192 built, 67 geometries, 107 textures\" (118 ms)"
+      ],
+      "message" : null,
+      "ms" : 22936,
+      "notes" : [
+
+      ],
+      "row" : 8,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Soak 3: undo the whole build and redo it again (about forty rebuilds).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "false",
+          "check" : "find(\"id=undo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\"",
+          "check" : "find(\"id=doc-state\").0.name == $built",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Holds 2 worlds of 232 built, 67 geometries, 107 textures\"",
+          "check" : "find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "131: set built = find(\"id=doc-state\").0.name → \"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\" (15 ms)",
+        "132: menu \"Edit › Undo*\" press → pressed Edit › Undo* (151 ms)",
+        "132: menu \"Edit › Undo*\" press → pressed Edit › Undo* (158 ms)",
+        "132: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "132: menu \"Edit › Undo*\" press → pressed Edit › Undo* (147 ms)",
+        "132: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "132: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "132: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "132: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "132: menu \"Edit › Undo*\" press → pressed Edit › Undo* (157 ms)",
+        "132: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "132: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "132: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "132: menu \"Edit › Undo*\" press → pressed Edit › Undo* (151 ms)",
+        "132: until find(\"id=undo\").0.enabled == false do menu \"Edit › Undo*\" press tries=20 → ok after 13 (10386 ms)",
+        "133: menu \"Edit › Redo*\" press → pressed Edit › Redo* (151 ms)",
+        "133: menu \"Edit › Redo*\" press → pressed Edit › Redo* (151 ms)",
+        "133: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "133: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "133: menu \"Edit › Redo*\" press → pressed Edit › Redo* (158 ms)",
+        "133: menu \"Edit › Redo*\" press → pressed Edit › Redo* (147 ms)",
+        "133: menu \"Edit › Redo*\" press → pressed Edit › Redo* (152 ms)",
+        "133: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "133: menu \"Edit › Redo*\" press → pressed Edit › Redo* (152 ms)",
+        "133: menu \"Edit › Redo*\" press → pressed Edit › Redo* (151 ms)",
+        "133: menu \"Edit › Redo*\" press → pressed Edit › Redo* (146 ms)",
+        "133: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "133: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "133: until find(\"id=doc-state\").0.name == $built do menu \"Edit › Redo*\" press tries=20 → ok after 13 (11512 ms)",
+        "134: until find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\" timeout=20000 → ok (668 ms)",
+        "135: set holds = find(\"id=holds\").0.name → \"Holds 2 worlds of 232 built, 67 geometries, 107 textures\" (215 ms)"
+      ],
+      "message" : null,
+      "ms" : 24065,
+      "notes" : [
+
+      ],
+      "row" : 9,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Soak 4: undo the whole build and redo it again (about forty rebuilds).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "false",
+          "check" : "find(\"id=undo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\"",
+          "check" : "find(\"id=doc-state\").0.name == $built",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Holds 2 worlds of 273 built, 67 geometries, 107 textures\"",
+          "check" : "find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "140: set built = find(\"id=doc-state\").0.name → \"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\" (15 ms)",
+        "141: menu \"Edit › Undo*\" press → pressed Edit › Undo* (154 ms)",
+        "141: menu \"Edit › Undo*\" press → pressed Edit › Undo* (154 ms)",
+        "141: menu \"Edit › Undo*\" press → pressed Edit › Undo* (157 ms)",
+        "141: menu \"Edit › Undo*\" press → pressed Edit › Undo* (166 ms)",
+        "141: menu \"Edit › Undo*\" press → pressed Edit › Undo* (148 ms)",
+        "141: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "141: menu \"Edit › Undo*\" press → pressed Edit › Undo* (153 ms)",
+        "141: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "141: menu \"Edit › Undo*\" press → pressed Edit › Undo* (151 ms)",
+        "141: menu \"Edit › Undo*\" press → pressed Edit › Undo* (148 ms)",
+        "141: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "141: menu \"Edit › Undo*\" press → pressed Edit › Undo* (158 ms)",
+        "141: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "141: until find(\"id=undo\").0.enabled == false do menu \"Edit › Undo*\" press tries=20 → ok after 13 (10898 ms)",
+        "142: menu \"Edit › Redo*\" press → pressed Edit › Redo* (152 ms)",
+        "142: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "142: menu \"Edit › Redo*\" press → pressed Edit › Redo* (150 ms)",
+        "142: menu \"Edit › Redo*\" press → pressed Edit › Redo* (151 ms)",
+        "142: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "142: menu \"Edit › Redo*\" press → pressed Edit › Redo* (151 ms)",
+        "142: menu \"Edit › Redo*\" press → pressed Edit › Redo* (153 ms)",
+        "142: menu \"Edit › Redo*\" press → pressed Edit › Redo* (153 ms)",
+        "142: menu \"Edit › Redo*\" press → pressed Edit › Redo* (149 ms)",
+        "142: menu \"Edit › Redo*\" press → pressed Edit › Redo* (161 ms)",
+        "142: menu \"Edit › Redo*\" press → pressed Edit › Redo* (152 ms)",
+        "142: menu \"Edit › Redo*\" press → pressed Edit › Redo* (149 ms)",
+        "142: menu \"Edit › Redo*\" press → pressed Edit › Redo* (149 ms)",
+        "142: until find(\"id=doc-state\").0.name == $built do menu \"Edit › Redo*\" press tries=20 → ok after 13 (12376 ms)",
+        "143: until find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\" timeout=20000 → ok (461 ms)",
+        "144: set holds = find(\"id=holds\").0.name → \"Holds 2 worlds of 274 built, 67 geometries, 107 textures\" (769 ms)"
+      ],
+      "message" : null,
+      "ms" : 24723,
+      "notes" : [
+
+      ],
+      "row" : 10,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Soak 5: undo the whole build and redo it again (about forty rebuilds).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "false",
+          "check" : "find(\"id=undo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\"",
+          "check" : "find(\"id=doc-state\").0.name == $built",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Holds 2 worlds of 314 built, 67 geometries, 107 textures\"",
+          "check" : "find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "149: set built = find(\"id=doc-state\").0.name → \"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\" (15 ms)",
+        "150: menu \"Edit › Undo*\" press → pressed Edit › Undo* (147 ms)",
+        "150: menu \"Edit › Undo*\" press → pressed Edit › Undo* (151 ms)",
+        "150: menu \"Edit › Undo*\" press → pressed Edit › Undo* (168 ms)",
+        "150: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "150: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "150: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "150: menu \"Edit › Undo*\" press → pressed Edit › Undo* (148 ms)",
+        "150: menu \"Edit › Undo*\" press → pressed Edit › Undo* (160 ms)",
+        "150: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "150: menu \"Edit › Undo*\" press → pressed Edit › Undo* (154 ms)",
+        "150: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "150: menu \"Edit › Undo*\" press → pressed Edit › Undo* (161 ms)",
+        "150: menu \"Edit › Undo*\" press → pressed Edit › Undo* (163 ms)",
+        "150: until find(\"id=undo\").0.enabled == false do menu \"Edit › Undo*\" press tries=20 → ok after 13 (11712 ms)",
+        "151: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "151: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "151: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "151: menu \"Edit › Redo*\" press → pressed Edit › Redo* (153 ms)",
+        "151: menu \"Edit › Redo*\" press → pressed Edit › Redo* (152 ms)",
+        "151: menu \"Edit › Redo*\" press → pressed Edit › Redo* (153 ms)",
+        "151: menu \"Edit › Redo*\" press → pressed Edit › Redo* (150 ms)",
+        "151: menu \"Edit › Redo*\" press → pressed Edit › Redo* (152 ms)",
+        "151: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "151: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "151: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "151: menu \"Edit › Redo*\" press → pressed Edit › Redo* (150 ms)",
+        "151: menu \"Edit › Redo*\" press → pressed Edit › Redo* (151 ms)",
+        "151: until find(\"id=doc-state\").0.name == $built do menu \"Edit › Redo*\" press tries=20 → ok after 13 (12019 ms)",
+        "152: until find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\" timeout=20000 → ok (272 ms)",
+        "153: set holds = find(\"id=holds\").0.name → \"Holds 2 worlds of 315 built, 67 geometries, 107 textures\" (705 ms)"
+      ],
+      "message" : null,
+      "ms" : 24926,
+      "notes" : [
+
+      ],
+      "row" : 11,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Soak 6: undo the whole build and redo it again (about forty rebuilds).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "false",
+          "check" : "find(\"id=undo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\"",
+          "check" : "find(\"id=doc-state\").0.name == $built",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Holds 2 worlds of 354 built, 67 geometries, 107 textures\"",
+          "check" : "find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "158: set built = find(\"id=doc-state\").0.name → \"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\" (16 ms)",
+        "159: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "159: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "159: menu \"Edit › Undo*\" press → pressed Edit › Undo* (145 ms)",
+        "159: menu \"Edit › Undo*\" press → pressed Edit › Undo* (154 ms)",
+        "159: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "159: menu \"Edit › Undo*\" press → pressed Edit › Undo* (151 ms)",
+        "159: menu \"Edit › Undo*\" press → pressed Edit › Undo* (153 ms)",
+        "159: menu \"Edit › Undo*\" press → pressed Edit › Undo* (153 ms)",
+        "159: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "159: menu \"Edit › Undo*\" press → pressed Edit › Undo* (159 ms)",
+        "159: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "159: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "159: menu \"Edit › Undo*\" press → pressed Edit › Undo* (154 ms)",
+        "159: until find(\"id=undo\").0.enabled == false do menu \"Edit › Undo*\" press tries=20 → ok after 13 (10313 ms)",
+        "160: menu \"Edit › Redo*\" press → pressed Edit › Redo* (149 ms)",
+        "160: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "160: menu \"Edit › Redo*\" press → pressed Edit › Redo* (153 ms)",
+        "160: menu \"Edit › Redo*\" press → pressed Edit › Redo* (149 ms)",
+        "160: menu \"Edit › Redo*\" press → pressed Edit › Redo* (150 ms)",
+        "160: menu \"Edit › Redo*\" press → pressed Edit › Redo* (151 ms)",
+        "160: menu \"Edit › Redo*\" press → pressed Edit › Redo* (149 ms)",
+        "160: menu \"Edit › Redo*\" press → pressed Edit › Redo* (152 ms)",
+        "160: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "160: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "160: menu \"Edit › Redo*\" press → pressed Edit › Redo* (160 ms)",
+        "160: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "160: menu \"Edit › Redo*\" press → pressed Edit › Redo* (158 ms)",
+        "160: until find(\"id=doc-state\").0.name == $built do menu \"Edit › Redo*\" press tries=20 → ok after 13 (11531 ms)",
+        "161: until find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\" timeout=20000 → ok (504 ms)",
+        "162: set holds = find(\"id=holds\").0.name → \"Holds 2 worlds of 354 built, 67 geometries, 107 textures\" (281 ms)"
+      ],
+      "message" : null,
+      "ms" : 23364,
+      "notes" : [
+
+      ],
+      "row" : 12,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Soak 7: undo the whole build and redo it again (about forty rebuilds).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "false",
+          "check" : "find(\"id=undo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\"",
+          "check" : "find(\"id=doc-state\").0.name == $built",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Holds 2 worlds of 396 built, 67 geometries, 107 textures\"",
+          "check" : "find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "167: set built = find(\"id=doc-state\").0.name → \"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\" (18 ms)",
+        "168: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "168: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "168: menu \"Edit › Undo*\" press → pressed Edit › Undo* (160 ms)",
+        "168: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "168: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "168: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "168: menu \"Edit › Undo*\" press → pressed Edit › Undo* (158 ms)",
+        "168: menu \"Edit › Undo*\" press → pressed Edit › Undo* (162 ms)",
+        "168: menu \"Edit › Undo*\" press → pressed Edit › Undo* (147 ms)",
+        "168: menu \"Edit › Undo*\" press → pressed Edit › Undo* (153 ms)",
+        "168: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "168: menu \"Edit › Undo*\" press → pressed Edit › Undo* (148 ms)",
+        "168: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "168: until find(\"id=undo\").0.enabled == false do menu \"Edit › Undo*\" press tries=20 → ok after 13 (11681 ms)",
+        "169: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "169: menu \"Edit › Redo*\" press → pressed Edit › Redo* (158 ms)",
+        "169: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "169: menu \"Edit › Redo*\" press → pressed Edit › Redo* (149 ms)",
+        "169: menu \"Edit › Redo*\" press → pressed Edit › Redo* (153 ms)",
+        "169: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "169: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "169: menu \"Edit › Redo*\" press → pressed Edit › Redo* (171 ms)",
+        "169: menu \"Edit › Redo*\" press → pressed Edit › Redo* (151 ms)",
+        "169: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "169: menu \"Edit › Redo*\" press → pressed Edit › Redo* (171 ms)",
+        "169: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "169: menu \"Edit › Redo*\" press → pressed Edit › Redo* (158 ms)",
+        "169: until find(\"id=doc-state\").0.name == $built do menu \"Edit › Redo*\" press tries=20 → ok after 13 (12612 ms)",
+        "170: until find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\" timeout=20000 → ok (664 ms)",
+        "171: set holds = find(\"id=holds\").0.name → \"Holds 2 worlds of 396 built, 67 geometries, 107 textures\" (118 ms)"
+      ],
+      "message" : null,
+      "ms" : 25561,
+      "notes" : [
+
+      ],
+      "row" : 13,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Soak 8: undo the whole build and redo it again (about forty rebuilds).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "false",
+          "check" : "find(\"id=undo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\"",
+          "check" : "find(\"id=doc-state\").0.name == $built",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Holds 2 worlds of 437 built, 67 geometries, 107 textures\"",
+          "check" : "find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "176: set built = find(\"id=doc-state\").0.name → \"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\" (17 ms)",
+        "177: menu \"Edit › Undo*\" press → pressed Edit › Undo* (148 ms)",
+        "177: menu \"Edit › Undo*\" press → pressed Edit › Undo* (151 ms)",
+        "177: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "177: menu \"Edit › Undo*\" press → pressed Edit › Undo* (154 ms)",
+        "177: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "177: menu \"Edit › Undo*\" press → pressed Edit › Undo* (151 ms)",
+        "177: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "177: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "177: menu \"Edit › Undo*\" press → pressed Edit › Undo* (154 ms)",
+        "177: menu \"Edit › Undo*\" press → pressed Edit › Undo* (153 ms)",
+        "177: menu \"Edit › Undo*\" press → pressed Edit › Undo* (156 ms)",
+        "177: menu \"Edit › Undo*\" press → pressed Edit › Undo* (151 ms)",
+        "177: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "177: until find(\"id=undo\").0.enabled == false do menu \"Edit › Undo*\" press tries=20 → ok after 13 (11052 ms)",
+        "178: menu \"Edit › Redo*\" press → pressed Edit › Redo* (152 ms)",
+        "178: menu \"Edit › Redo*\" press → pressed Edit › Redo* (148 ms)",
+        "178: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "178: menu \"Edit › Redo*\" press → pressed Edit › Redo* (159 ms)",
+        "178: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "178: menu \"Edit › Redo*\" press → pressed Edit › Redo* (158 ms)",
+        "178: menu \"Edit › Redo*\" press → pressed Edit › Redo* (161 ms)",
+        "178: menu \"Edit › Redo*\" press → pressed Edit › Redo* (163 ms)",
+        "178: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "178: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "178: menu \"Edit › Redo*\" press → pressed Edit › Redo* (159 ms)",
+        "178: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "178: menu \"Edit › Redo*\" press → pressed Edit › Redo* (156 ms)",
+        "178: until find(\"id=doc-state\").0.name == $built do menu \"Edit › Redo*\" press tries=20 → ok after 13 (12446 ms)",
+        "179: until find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\" timeout=20000 → ok (24 ms)",
+        "180: set holds = find(\"id=holds\").0.name → \"Holds 2 worlds of 437 built, 67 geometries, 107 textures\" (289 ms)"
+      ],
+      "message" : null,
+      "ms" : 25067,
+      "notes" : [
+
+      ],
+      "row" : 14,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Soak 9: undo the whole build and redo it again (about forty rebuilds).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : null,
+      "checks" : [
+        {
+          "actual" : "false",
+          "check" : "find(\"id=undo\").0.enabled == false",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\"",
+          "check" : "find(\"id=doc-state\").0.name == $built",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Holds 2 worlds of 478 built, 67 geometries, 107 textures\"",
+          "check" : "find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "185: set built = find(\"id=doc-state\").0.name → \"Scene sequences/hand-test.vrmxs 3 nodes unsaved changes valid hash e7ea412e64ce0412\" (15 ms)",
+        "186: menu \"Edit › Undo*\" press → pressed Edit › Undo* (143 ms)",
+        "186: menu \"Edit › Undo*\" press → pressed Edit › Undo* (153 ms)",
+        "186: menu \"Edit › Undo*\" press → pressed Edit › Undo* (154 ms)",
+        "186: menu \"Edit › Undo*\" press → pressed Edit › Undo* (151 ms)",
+        "186: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "186: menu \"Edit › Undo*\" press → pressed Edit › Undo* (152 ms)",
+        "186: menu \"Edit › Undo*\" press → pressed Edit › Undo* (150 ms)",
+        "186: menu \"Edit › Undo*\" press → pressed Edit › Undo* (939 ms)",
+        "186: menu \"Edit › Undo*\" press → pressed Edit › Undo* (159 ms)",
+        "186: menu \"Edit › Undo*\" press → pressed Edit › Undo* (149 ms)",
+        "186: menu \"Edit › Undo*\" press → pressed Edit › Undo* (154 ms)",
+        "186: menu \"Edit › Undo*\" press → pressed Edit › Undo* (155 ms)",
+        "186: menu \"Edit › Undo*\" press → pressed Edit › Undo* (142 ms)",
+        "186: until find(\"id=undo\").0.enabled == false do menu \"Edit › Undo*\" press tries=20 → ok after 13 (11266 ms)",
+        "187: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "187: menu \"Edit › Redo*\" press → pressed Edit › Redo* (157 ms)",
+        "187: menu \"Edit › Redo*\" press → pressed Edit › Redo* (157 ms)",
+        "187: menu \"Edit › Redo*\" press → pressed Edit › Redo* (163 ms)",
+        "187: menu \"Edit › Redo*\" press → pressed Edit › Redo* (150 ms)",
+        "187: menu \"Edit › Redo*\" press → pressed Edit › Redo* (144 ms)",
+        "187: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "187: menu \"Edit › Redo*\" press → pressed Edit › Redo* (155 ms)",
+        "187: menu \"Edit › Redo*\" press → pressed Edit › Redo* (151 ms)",
+        "187: menu \"Edit › Redo*\" press → pressed Edit › Redo* (154 ms)",
+        "187: menu \"Edit › Redo*\" press → pressed Edit › Redo* (153 ms)",
+        "187: menu \"Edit › Redo*\" press → pressed Edit › Redo* (157 ms)",
+        "187: menu \"Edit › Redo*\" press → pressed Edit › Redo* (151 ms)",
+        "187: until find(\"id=doc-state\").0.name == $built do menu \"Edit › Redo*\" press tries=20 → ok after 13 (11823 ms)",
+        "188: until find(\"id=holds\").0.name matches \"^Holds [12] worlds of [0-9]+ built\" timeout=20000 → ok (416 ms)",
+        "189: set holds = find(\"id=holds\").0.name → \"Holds 2 worlds of 478 built, 67 geometries, 107 textures\" (278 ms)"
+      ],
+      "message" : null,
+      "ms" : 25052,
+      "notes" : [
+
+      ],
+      "row" : 15,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Soak 10: undo the whole build and redo it again (about forty rebuilds).",
+      "undo" : null
+    }
+  ],
+  "scenario" : "scratch",
+  "summary" : "15 rows: 15 passed, 0 failed, 0 need you",
+  "uncovered" : [
+
+  ]
+}

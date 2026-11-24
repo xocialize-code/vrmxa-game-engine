@@ -19,6 +19,11 @@ inbox beside it, all inside the app's sandbox), then, under the GPU lock,
   rows 14 and 15 still failed, with nothing typed reaching their fields. **Leave the launched Creator in front for the
   run's two minutes.** AppProbe's side is AB-T-0612.
 - **Questions:** the window asks in a sheet of its own (`#ask`, buttons `#ask-save`, `#ask-discard`, `#ask-cancel`).
+- **Closing and quitting** (rows 16 and 17, shell 0.9.0, AB-T-0593). File › Close Window is enabled only while the app
+  is in front, so those rows `activate` first. A row can't look at an app that has quit, and a row that ends with the
+  app gone is an error to AppProbe (AB-T-0625), so each of those rows relaunches after the quit and reads what the
+  project holds; that the process went by itself was watched from a script (`apps/creator-mac/scripts/check-close-exits.sh`; its
+  output is `results/m5-w8-close/exit-check.txt`).
 - **Undo:** with `pageUndo`, Edit › Undo's title stays "Undo". The short's undo step is read from the toolbar's `#undo`.
 
 ```scenario

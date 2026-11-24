@@ -34,8 +34,9 @@ at once (`src/dispose.js`), or, while the view still shows it or a scrub is work
 it is free. Disposing is: sound, the Rapier world, every geometry, material and texture; and, given back by hand because
 WebKit's collector can't be waited for, the characters' vertex data (their buffers are detached) and the textures'
 decoded images (their `ImageBitmap`s are closed). Before, every rebuild kept its world for good, and the timeline hand
-test took the web process to 25 GB; now it stays under 2 GB on WebGPU and on WebGL, through 478 rebuilds too. The
-numbers, and what each step of the fix bought, are in
+test took the web process to 25 GB; now every row of it ends under 2.3 GB on WebGPU and on WebGL (3.3 GB and 2.1 GB
+at most, for a moment, while a world is built), and 478 rebuilds in a row stay flat. The numbers, and what each step
+of the fix bought, are in
 [`apps/editor-mac/docs/hand-test/results/ab-t-0592/`](../editor-mac/docs/hand-test/results/ab-t-0592/README.md).
 
 **Closing asks first (the Mac app, shell 0.9.0, AB-T-0593).** With unsaved changes, File › Close Window, the close

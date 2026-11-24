@@ -6,6 +6,8 @@ which the shell's `VRMXG_SHELL_PROJECT` hook opens without the panel), then
 `appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M1-EDITOR.scenario.md`. Readouts carry their value
 in their accessible name (`Scene built-cafe.vrmxs 6 nodes unsaved changes valid hash …`, `Undo Move mira`); WebKit's
 element ids read as identifiers (`#doc-state`, `#node-mira`, `#pos-x`, `#prop-walkSpeed`, `#add-sets-cafe-glb`).
+Rows 8 and 9 close and quit (shell 0.9.0, AB-T-0593): File › Close Window is enabled only while the app is in front, so
+they `activate` first; a row can't look at an app that has quit (AB-T-0625), so each relaunches and reads the project.
 
 ```scenario
 app: VRMXG Editor

@@ -1,0 +1,17 @@
+== creator, a project folder: a draft, Quit, Save
+sheet: Second take has changes that aren't saved (it has never been saved).
+Quit, Save: exited after 200 ms at most
+on disk: sequences/second-take.vrmxs present, shorts.json names second-take 3 time(s)
+== creator: a draft, File › Close Window, Don't Save
+draft: Short fourth sequences/fourth.vrmxs 3 nodes unsaved changes 
+pressed File › Close Window
+sheet: Fourth has changes that aren't saved (it has never been saved).
+Close Window, Don't Save: exited after 200 ms at most
+on disk: sequences/ has 0 file(s) named fourth
+== editor, the bundled sample (read-only): a change, Quit
+sheet: cafe-cart.vrmxs has changes that aren't saved. Sample (bundled) is read-only, so nothing can be saved to it: open a project folder to keep work. Quitting now loses this.
+buttons: Cancel | Quit Anyway | save: (none)
+Cancel: still running, doc unsaved changes
+Quit Anyway: exited after 200 ms at most
+== editor, nothing unsaved: Quit
+Quit with nothing unsaved: exited after 200 ms at most (no sheet)

@@ -11,9 +11,12 @@ AppProbe runs them all (`hand-test/HAND-TEST-M1-EDITOR.scenario.md`); a person c
 - [x] Undo and redo walk the history from the Edit menu and the toolbar, and come back to exactly the same scene. *AppProbe 2026-11-18: compared by the document's hash. ⌘Z itself wasn't pressed; Edit › Undo was.*
 - [x] Save writes the scene into the project; reopening it from disk gives the same bytes, and it validates. *AppProbe 2026-11-18: also checked from outside the app: the file in the container is canonical and valid, and its hash matches the app's.*
 - [x] Play runs the scene; Stop leaves the scene exactly as before Play (same hash), and the edit view unchanged. *AppProbe 2026-11-18: the built scene has no camera or lights, so Play shows it from the default camera; walking and items in play are M1 check 2 (W10).*
+- [x] With unsaved changes, File › Close Window and Quit ask first: Cancel keeps the window and the change; Don't Save quits without saving. *AppProbe 2026-11-24 (shell 0.9.0, AB-T-0593): the sheet on File › Close Window (the app in front) and on Quit, Cancel each time, the change still there 6.5 s later (past the shell's 5 s timeout); then Quit and Don't Save, and a fresh launch opens the scene exactly as row 6 saved it (same hash). The row can't see that the app has gone (AB-T-0625). The read-only sample's sheet (Cancel, Quit Anyway, no Save) and a quit with nothing unsaved were checked from a script, with the process watched (`apps/creator-mac/scripts/check-close-exits.sh`; its output is `apps/creator-mac/docs/hand-test/results/m5-w8-close/exit-check.txt`).*
+- [x] Save in the sheet saves the scene and then closes the window. *AppProbe 2026-11-24: a node added, File › Close Window, Save; a fresh launch opens the scene saved, and not the scene of row 6. Opening another scene over unsaved changes still doesn't ask: that isn't this row.*
 
 ## Results
 
 | Date | Build | Row | Result |
 |---|---|---|---|
 | 2026-11-18 | Release, ad hoc signed (`scripts/build.sh`) | 1–7 | All passed (`appprobe checklist`, 19 s); screenshots in `hand-test/shots/` (r2 built, r3 edited, r6 saved, r7 playing) |
+| 2026-11-24 | Release, shell 0.9.0, WebGPU (8b04b5e) | 1–9 | All passed; rows 8 and 9 are new (AB-T-0593) and partly checked: the exit itself is watched from a script |
