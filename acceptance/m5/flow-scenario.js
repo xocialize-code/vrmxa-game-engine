@@ -12,7 +12,7 @@
 // change lands on may not move.
 import { hashValue, packRun, compareRuns } from '@vrmxg/snapshot';
 import { MemoryStore } from '@vrmxg/save';
-import { GameFlow, recordFlow } from '@vrmxg/game';
+import { GameFlow, recordFlow, CHECKPOINT_PREFIX } from '@vrmxg/game';
 import { fixtureFlow, fixtureLoader, fixtureRecording, unloadWorld } from '../../engine/packages/game/test/fixtures/world.js';
 
 export const STEPS = 600, SAVE_AT = 60, SEED = 7;
@@ -39,7 +39,7 @@ export async function runFlowScenario(R, scenes, { delays = [], sleep = null } =
     if (flow.tree.clock.step === SAVE_AT) save = JSON.parse(JSON.stringify(flow.save({ name: 'before the ending' })));
     const part = await recordFlow(flow, 1, { onStep: () => { if (flow.held) held++; } });
     run.push(part[0]);
-    if (!checkpoint && flow.checkpoints.has('checkpoint')) { await flow.settle(); checkpoint = await store.read('checkpoint'); }
+    if (!checkpoint && flow.checkpoints.has('checkpoint')) { await flow.settle(); checkpoint = await store.read(`${CHECKPOINT_PREFIX}checkpoint`); }
   }
   await flow.settle(); flow.flush();
   const final = flow.view();

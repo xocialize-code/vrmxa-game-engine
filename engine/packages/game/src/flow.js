@@ -19,8 +19,12 @@
 // session's seed and the number of changes so far: a scene entered twice differs, a replay doesn't.
 //
 // Checkpoints. A Checkpoint node's trigger is recorded in the game state during the step; the save is taken here at
-// the boundary (@vrmxg/save, as any save) and written to the store outside the simulation.
+// the boundary (@vrmxg/save, as any save) and written to the store outside the simulation, under CHECKPOINT_PREFIX
+// and the node's slot, so a checkpoint never lands on a save the player made.
 import { worldHashes } from '@vrmxg/snapshot';
+
+/** Checkpoint slots in the save store: this and the Checkpoint node's `slot` ("auto-checkpoint"). A player's own saves use other names. */
+export const CHECKPOINT_PREFIX = 'auto-';
 
 /** A world's seed: the session's own for the first scene, then mixed with the number of scene changes (integer maths). */
 export function worldSeed(seed, arrivals) {
@@ -44,7 +48,7 @@ export class GameFlow {
    * @param {object} o
    * @param {(req: WorldRequest) => Promise<any> | any} o.load builds a world (see WorldRequest)
    * @param {(tree: any) => void} [o.unload] frees a world that is no longer played (Rapier's memory, GPU resources)
-   * @param {(tree: any, info: { reason: 'start' | 'change' | 'load', from: string | null, to: string }) => void} [o.onWorld]
+   * @param {(tree: any, info: { reason: 'start' | 'change' | 'load', from: string | null, to: string, recording?: any }) => void} [o.onWorld]
    *   the world being played changed: point the renderer at flow.tree
    * @param {{ write: (slot: string, file: any) => Promise<any>, read: (slot: string) => Promise<any> }} [o.store] where checkpoints go (one of the save package's stores)
    * @param {number} [o.seed] the session's seed
@@ -62,8 +66,8 @@ export class GameFlow {
     this.checkpoints = new Map();
     /** @type {null | { key: string, req: WorldRequest, tree: any, error: any, promise: Promise<void>, dropped: boolean }} */
     this._next = null;
-    this._seq = 0;       // the last checkpoint request written (GameService.checkpoint.seq)
-    this._busy = false;  // a load() is in progress
+    this._seq = 0;       // the last checkpoint handled (GameService.checkpointSeq)
+    /** @type {Promise<any> | null} */ this._loading = null; // a load() in progress
     /** @type {Set<Promise<any>>} */ this._writes = new Set();
     /** @type {Set<(event: any) => void>} */ this._listeners = new Set();
     this._relay = (e) => { for (const fn of [...this._listeners]) fn(e); };
@@ -76,7 +80,7 @@ export class GameFlow {
   get scene() { return this.game?.scene ?? null; }
   /** Why step() would do nothing now, or null. */
   get held() {
-    if (this._busy) return 'loading a save';
+    if (this._loading) return 'loading a save';
     const p = this.game?.pending;
     if (p && this.tree.clock.step >= p.at && !this._next?.tree) return `loading ${p.to}`;
     return null;
@@ -101,7 +105,7 @@ export class GameFlow {
    */
   step() {
     if (!this.tree) throw new Error('start() the flow first');
-    if (this._busy) return false;
+    if (this._loading) return false;
     const p = this.game.pending;
     if (p) {
       const next = this._prepare(p);
@@ -124,6 +128,7 @@ export class GameFlow {
 
   /** Resolves when nothing is pending: the next world's build, checkpoint writes, the tree's own services. */
   async settle() {
+    if (this._loading) await this._loading;
     if (this._next) await this._next.promise;
     await Promise.all([...this._writes]);
     await this.tree?.settle();
@@ -184,16 +189,27 @@ export class GameFlow {
 
   _change(next, p) {
     const prev = this.tree, was = this.game, from = was.scene;
-    was.flush(); // what the last step queued reaches the listeners before the world goes
     const tree = next.tree, game = tree.services.get('game');
-    this._next = null;
-    was.carryTo(game, { reset: p.reset });
-    for (const name of [...this.always, ...(p.reset ? [] : this.carry)]) {
-      const a = prev.services.get(name), b = tree.services.get(name);
-      if (!a || !b) continue;
-      if (typeof a.carryTo === 'function') a.carryTo(b);
-      else if (typeof a.getState === 'function' && typeof b.setState === 'function') b.setState(structuredClone(a.getState()));
+    try {
+      was.carryTo(game, { reset: p.reset });
+      // the services that go only when the game goes, then those that always go (input last: its hand-over moves a
+      // recording in progress, which must not happen unless everything before it did)
+      for (const name of [...(p.reset ? [] : this.carry), ...this.always]) {
+        const a = prev.services.get(name), b = tree.services.get(name);
+        if (!a || !b) continue;
+        if (typeof a.carryTo === 'function') a.carryTo(b);
+        else if (typeof a.getState === 'function' && typeof b.setState === 'function') b.setState(structuredClone(a.getState()));
+      }
+    } catch (e) {
+      // The session couldn't be carried over: the world built for it is freed once, and the request keeps its error,
+      // so every later step says the same without building it again. The world being played is untouched.
+      next.tree = null; next.error = e;
+      this.unload?.(tree);
+      throw new Error(`the scene change to "${p.to}" failed: ${e?.message ?? e}`, { cause: e });
     }
+    this._next = null;
+    was.dropRequests('scene'); // a checkpoint still waiting for a step that could save isn't taken, and says so
+    was.flush();               // what the last step queued reaches the listeners before the world goes
     tree.clock.timeScale = prev.clock.timeScale; tree.clock.paused = prev.clock.paused; // live play's speed is the session's
     tree.root.object3d.updateMatrixWorld(true); // a world that starts past step 0 steps from current matrices too (tree.step does this at 0)
     this._adopt(tree);
@@ -226,53 +242,69 @@ export class GameFlow {
 
   /**
    * Load a save: build a world of the scene it was made in, restore it, and play that one. The world being played is
-   * left as it is when the file can't load (the error says why). An input recording being replayed is not in a save:
-   * replay it again on flow.tree. → the step play goes on from
+   * left as it is when the file can't load (the error says why). A load jumps the session's clock, so an input
+   * recording in progress can't go on: it is stopped and handed over, in the `loaded` event and in onWorld's info
+   * (`recording`: the frames up to the load), never dropped. A replay isn't in a save: replay it again on flow.tree.
+   * → the step play goes on from
    */
-  async load(file) {
+  load(file) {
     const scene = file?.requires?.scene?.ref ?? file?.summary?.scene;
-    if (typeof scene !== 'string') throw new Error('this save doesn\'t name its scene (installSave(tree, { scene: { ref, doc } }) in the world that made it)');
-    if (this._busy) throw new Error('a save is loading already');
-    this._busy = true;
-    try {
-      const tree = await this._build({ scene, seed: this.seed, step: 0, reason: 'load' });
-      const save = tree.services.get('save');
-      try {
-        if (!save) throw new Error(`the world for "${scene}" has no save service`);
-        await save.load(file);
-      } catch (e) { this.unload?.(tree); throw e; }
-      const prev = this.tree, from = this.scene;
-      prev?.services.get('game')?.flush();
-      this._dropNext();
-      this._adopt(tree);
-      this.seed = this.game.seed;
-      if (prev) this.unload?.(prev);
-      this._relay({ type: 'loaded', scene, step: tree.clock.step });
-      this.onWorld?.(tree, { reason: 'load', from, to: scene });
-      return tree.clock.step;
-    } finally { this._busy = false; }
+    if (typeof scene !== 'string') return Promise.reject(new Error('this save doesn\'t name its scene (installSave(tree, { scene: { ref, doc } }) in the world that made it)'));
+    if (this._loading) return Promise.reject(new Error('a save is loading already'));
+    // cleared before the caller's await returns, so one load can follow another; what settle() waits for meanwhile
+    const done = (async () => { try { return await this._load(file, scene); } finally { this._loading = null; } })();
+    this._loading = done.catch(() => {});
+    return done;
   }
 
-  /** Load the checkpoint in a slot: from the store, else the one this session took. */
+  async _load(file, scene) {
+    const tree = await this._build({ scene, seed: this.seed, step: 0, reason: 'load' });
+    const save = tree.services.get('save');
+    try {
+      if (!save) throw new Error(`the world for "${scene}" has no save service`);
+      await save.load(file);
+    } catch (e) { this.unload?.(tree); throw e; }
+    const prev = this.tree, from = this.scene;
+    const input = prev?.services.get('input'), recording = input?.recording ? input.stop() : null;
+    prev?.services.get('game')?.flush();
+    this._dropNext();
+    this._adopt(tree);
+    this.seed = this.game.seed;
+    if (prev) this.unload?.(prev);
+    this._relay({ type: 'loaded', scene, step: tree.clock.step, ...(recording ? { recording } : {}) });
+    this.onWorld?.(tree, { reason: 'load', from, to: scene, ...(recording ? { recording } : {}) });
+    return tree.clock.step;
+  }
+
+  /**
+   * Load the checkpoint in a slot: the one this session took (the newest there is, whether or not the store has
+   * finished writing it, or failed to), else the store's.
+   */
   async loadCheckpoint(slot = 'checkpoint') {
-    const file = this.store ? await this.store.read(slot) : this.checkpoints.get(slot);
+    let file = this.checkpoints.get(slot);
+    if (!file && this.store) { try { file = await this.store.read(CHECKPOINT_PREFIX + slot); } catch { file = null; } }
     if (!file) throw new Error(`no checkpoint "${slot}"`);
     return this.load(file);
   }
 
   // The checkpoints the last step took (each slot's latest): one save of the world at this boundary, written to each.
+  // The game service takes a checkpoint only on a step that leaves the game undecided and the world savable, so the
+  // two refusals below are for what it can't see: something that began after its part of the step (a redraw started
+  // by a later service), or a driver that isn't the step. Either way no file is written and the listeners are told;
+  // a decided game is never saved over a good one.
   _checkpoint(game) {
     const tree = this.tree, save = tree.services.get('save'), step = tree.clock.step;
     const due = Object.entries(game.checkpoints).filter(([, c]) => c.seq > this._seq).sort((a, b) => a[1].seq - b[1].seq);
-    if (!save) { this._seq = game.checkpointSeq; for (const [slot, c] of due) this._relay({ type: 'checkpointFailed', id: c.id, slot, step, error: 'this world has no save service' }); return; }
-    if (save.cannotSave()) return; // a closet redraw is in flight: the checkpoint is taken at the first boundary that can save
     this._seq = game.checkpointSeq;
+    game.flush(); // the step's own `checkpoint` event reaches the listeners before what became of it
+    const why = !save ? 'this world has no save service' : game.outcome !== null ? `the game is ${game.outcome.result}` : save.cannotSave();
     for (const [slot, c] of due) {
       const info = { id: c.id, slot, step };
+      if (why) { this._relay({ type: 'checkpointFailed', ...info, error: why }); continue; }
       const file = this.save({ name: c.label ?? 'Checkpoint', note: `checkpoint ${c.id}` });
       this.checkpoints.set(slot, file);
       if (!this.store) { this._relay({ type: 'checkpointWritten', ...info, stored: false }); continue; }
-      const w = Promise.resolve().then(() => this.store.write(slot, file)).then(
+      const w = Promise.resolve().then(() => this.store.write(CHECKPOINT_PREFIX + slot, file)).then(
         () => { this._relay({ type: 'checkpointWritten', ...info, stored: true }); },
         (e) => { this._relay({ type: 'checkpointFailed', ...info, error: String(e?.message ?? e) }); },
       ).finally(() => { this._writes.delete(w); });
@@ -292,6 +324,8 @@ export class GameFlow {
    *   { type: 'scene', from, to, reset, step }      the world changed
    *   { type: 'loaded', scene, step }               a save was loaded
    *   { type: 'checkpointWritten', id, slot, step, stored } | { type: 'checkpointFailed', id, slot, step, error }
+   *   (written: the file exists, in flow.checkpoints and, with `stored`, in the store; failed: the store's write, or
+   *   a world that couldn't be saved. A HUD says "saved" on checkpointWritten, not on the game's `checkpoint`.)
    * → a function that stops it
    */
   on(fn) { this._listeners.add(fn); return () => this._listeners.delete(fn); }

@@ -779,7 +779,7 @@ A scene's rules: when the game is won and lost, and the flags it starts with. On
 | Prop | Type | Default | Simulated | What |
 |---|---|---|---|---|
 | `win` | object |  | yes | The game is won when this holds. Absent: when every GameGoal that isn't optional is done. |
-| `lose` | object |  | yes | The game is lost when this holds (checked after win: a tie is a win). |
+| `lose` | object |  | yes | The game is lost when this holds (a win on the same step beats it). |
 | `flags` | object |  | yes | Flags and the values they start a game with. |
 | `keepOutcome` | boolean | `false` | yes | Arriving here keeps the last win or loss (an ending screen shows it). Otherwise the scene starts undecided. |
 
@@ -798,8 +798,8 @@ Also, from Node3D: `ready`.
 
 | Action | Arguments | What |
 |---|---|---|
-| `win` |  | Win now. |
-| `lose` |  | Lose now. |
+| `win` |  | Ask for a win: the game is decided once, at the end of the step's rules. |
+| `lose` |  | Ask for a loss (a win asked for on the same step beats it). |
 | `setFlag` | `flag` (string): The flag's name; `value` (boolean,number,string): Its value (true) | Set a flag. |
 | `clearFlag` | `flag` (string): The flag's name | Remove a flag. |
 | `changeScene` | `to` (string): The scene to go to: its path in the project ("level.vrmxs"); `after` (number, s): Play on here this long first (0: the change is the next step); `reset` (boolean): Start a new game there: nothing is carried over | Move the game to another scene. The game state goes with it. |
@@ -855,7 +855,7 @@ A clock counted in simulation steps: a countdown that times out, or a stopwatch 
 | Prop | Type | Default | Range, unit | Simulated | What |
 |---|---|---|---|---|---|
 | `key` | string |  |  | yes | The timer's name in the game state (default: the node's id). |
-| `seconds` | number | `0` | ≥ 0 s | yes | How long the countdown is (0: a stopwatch that never times out). |
+| `seconds` | number |  | ≥ 0 s | yes | How long the countdown is. Absent: a stopwatch, with no limit, that never times out. |
 | `autostart` | boolean | `true` |  | yes | Running from the scene's start. |
 | `label` | string |  |  |  | What the HUD calls it. |
 | `scope` | `game`, `scene` | `"scene"` |  | yes | game: kept across scene changes. scene: starts again each time this scene is entered. |
@@ -877,7 +877,7 @@ Also, from Node3D: `ready`.
 | `start` |  | Run (on from where it stopped). |
 | `stop` |  |  |
 | `reset` |  | Back to its full length. |
-| `addTime` | `seconds` (number, s): Time to add to the countdown (negative: take away) |  |
+| `addTime` | `seconds` (number, s): Time to add to the countdown (negative: take away; with none left it times out) | Lengthen or shorten a countdown (not a stopwatch). |
 
 Also, from Node3D: `show`, `hide`.
 
@@ -925,7 +925,7 @@ A point where the game saves by itself (into a slot of the save store): when its
 
 | Prop | Type | Default | Simulated | What |
 |---|---|---|---|---|
-| `slot` | string | `"checkpoint"` | yes | The save slot it writes. |
+| `slot` | string | `"checkpoint"` | yes | The checkpoint slot it writes (in the save store: "auto-" and this name). |
 | `when` | object |  | yes | Written when this becomes true. |
 | `once` | boolean | `true` | yes | Only the first time. |
 | `label` | string |  |  | The save's name in a slot list. |
@@ -934,7 +934,7 @@ A point where the game saves by itself (into a slot of the save store): when its
 
 | Signal | Arguments | What |
 |---|---|---|
-| `written` | `slot` (string) | The checkpoint was taken (the file is written after the step). |
+| `written` | `slot` (string) | The checkpoint was taken (the file is written after the step). Not on a step that decides the game. |
 
 Also, from Node3D: `ready`.
 

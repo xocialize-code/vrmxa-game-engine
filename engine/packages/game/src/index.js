@@ -5,9 +5,9 @@ import { GameService } from './service.js';
 import { GAME_NODES } from './nodes.js';
 
 export { GameService } from './service.js';
-export { GameFlow, recordFlow, worldSeed } from './flow.js';
+export { GameFlow, recordFlow, worldSeed, CHECKPOINT_PREFIX } from './flow.js';
 export { GameRulesNode, GameCounterNode, GameTimerNode, GameGoalNode, CheckpointNode, GAME_NODES } from './nodes.js';
-export { TESTS, OPS, holds, checkCondition, conditionKeys } from './conditions.js';
+export { TESTS, OPS, holds, readKey, checkCondition, checkKeys, conditionKeys } from './conditions.js';
 export { describeRules } from './describe.js';
 
 /**

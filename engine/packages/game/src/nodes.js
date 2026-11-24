@@ -13,6 +13,8 @@ class GameNode extends Node {
   get kind() { return /** @type {any} */ (this.constructor).kind; }
   // enterTree runs parent first, siblings in order: the declarations are in tree order, the order goals are checked in
   enterTree() { this.game?.declare(this.kind, this); }
+  // ready runs once every node of the scene has entered: the conditions can be checked against all it declares
+  ready() { this.game?.checkRules(); }
   exitTree() { this.game?.undeclare(this.kind, this); }
 }
 

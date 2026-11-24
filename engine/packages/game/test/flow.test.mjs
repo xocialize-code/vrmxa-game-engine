@@ -7,7 +7,7 @@ import { compareRuns, assertSameRun, worldHashes, hashValue } from '@vrmxg/snaps
 import { MemoryStore, installSave } from '@vrmxg/save';
 import { SceneTree } from '@vrmxg/core';
 import { m0Registry } from '@vrmxg/registry/m0';
-import { GameFlow, recordFlow, worldSeed, installGame } from '../src/index.js';
+import { GameFlow, recordFlow, worldSeed, installGame, CHECKPOINT_PREFIX } from '../src/index.js';
 import { fixtureFlow, fixtureLoader, fixtureRecording, unloadWorld } from './fixtures/world.js';
 import { R, scenes, sleep, word } from './helpers.mjs';
 
@@ -162,15 +162,16 @@ test('a checkpoint is written at its declared point, by the game, and loads like
   // at the boundary after it, and the later playthroughs write the slots again (579 is the last).
   const written = events.filter((e) => e.type === 'checkpointWritten').map((e) => [e.step, e.slot, e.id, e.stored]);
   assert.deepEqual(written, [[67, 'checkpoint', 'cp', true], [67, 'after-order', 'cp-order', true], [323, 'checkpoint', 'cp', true], [323, 'after-order', 'cp-order', true], [579, 'checkpoint', 'cp', true], [579, 'after-order', 'cp-order', true]]);
-  assert.deepEqual((await store.list()).map((s) => [s.slot, s.name, s.step, s.scene]), [['after-order', 'Order taken', 579, 'level.vrmxs'], ['checkpoint', 'At the counter', 579, 'level.vrmxs']]);
-  assert.deepEqual(await store.read('checkpoint'), JSON.parse(JSON.stringify(checkpoints.get('checkpoint'))), 'the store has the file the flow took');
-  assert.equal((await store.read('checkpoint')).note, 'checkpoint cp');
+  assert.deepEqual((await store.list()).map((s) => [s.slot, s.name, s.step, s.scene]), [['auto-after-order', 'Order taken', 579, 'level.vrmxs'], ['auto-checkpoint', 'At the counter', 579, 'level.vrmxs']], 'in the store under the checkpoints\' prefix, apart from a player\'s saves');
+  assert.equal(CHECKPOINT_PREFIX, 'auto-');
+  assert.deepEqual(await store.read('auto-checkpoint'), JSON.parse(JSON.stringify(checkpoints.get('checkpoint'))), 'the store has the file the flow took');
+  assert.equal((await store.read('auto-checkpoint')).note, 'checkpoint cp');
 
   // the first one (step 67), kept by a run that stops there; loaded from the store into a new session
   const first = new MemoryStore();
   const a = await fixtureFlow(await R(), scenes(), { store: first, recording: fixtureRecording(STEPS) });
   await a.runAsync(80); await a.settle();
-  const file = await first.read('checkpoint');
+  const file = await first.read('auto-checkpoint');
   assert.deepEqual([file.summary.step, file.name, file.extra.game.score], [67, 'At the counter', 10]);
   a.dispose();
   let writes = 0;

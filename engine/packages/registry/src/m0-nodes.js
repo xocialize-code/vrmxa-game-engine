@@ -22,7 +22,7 @@ export function conditionSchema(depth = 3) {
     allOf: [
       { if: { properties: { test: { const: 'state' } }, required: ['test'] }, then: {
         required: ['key'], additionalProperties: false,
-        properties: { test: {}, key: { type: 'string', minLength: 1, description: 'A path into the game state: "score", "counters.orders", "flags.tillClosed", "timers.clock.left", "goals.serve.done", "outcome", "sceneSteps".' }, op: { enum: GAME_OPS, description: 'set (the default): there and not false.' }, value: { type: ['number', 'string', 'boolean', 'null'] } },
+        properties: { test: {}, key: { type: 'string', minLength: 1, description: 'A path into the game state, to something this scene declares: "score", "counters.orders", "flags.tillClosed", "timers.clock.left", "goals.serve.done", "outcome", "sceneSteps".' }, op: { enum: GAME_OPS, description: 'set (the default): there and not false. A comparison with a value that isn\'t there is false.' }, value: { type: ['number', 'string', 'boolean'] } },
       } },
       { if: { properties: { test: { enum: ['all', 'any'] } }, required: ['test'] }, then: { required: ['of'], additionalProperties: false, properties: { test: {}, of: { type: 'array', minItems: 1, items: inner } } } },
       { if: { properties: { test: { const: 'not' } }, required: ['test'] }, then: { required: ['of'], additionalProperties: false, properties: { test: {}, of: inner } } },
@@ -279,7 +279,7 @@ export function m0Registry() {
     extends: 'Node3D', description: 'A scene\'s rules: when the game is won and lost, and the flags it starts with. One per scene. Its actions change the game state and move the game to another scene.',
     props: {
       win: when('The game is won when this holds. Absent: when every GameGoal that isn\'t optional is done.'),
-      lose: when('The game is lost when this holds (checked after win: a tie is a win).'),
+      lose: when('The game is lost when this holds (a win on the same step beats it).'),
       flags: { schema: { type: 'object', additionalProperties: { type: ['boolean', 'number', 'string'] }, description: 'Flags and the values they start a game with.' }, meta: { widget: 'json', sim: true } },
       keepOutcome: P.boolean({ default: false, sim: true, description: 'Arriving here keeps the last win or loss (an ending screen shows it). Otherwise the scene starts undecided.' }),
     },
@@ -289,7 +289,7 @@ export function m0Registry() {
       flagChanged: { args: { flag: P.string(), value: { schema: {}, meta: {} } } },
     },
     actions: {
-      win: { args: {}, description: 'Win now.' }, lose: { args: {}, description: 'Lose now.' },
+      win: { args: {}, description: 'Ask for a win: the game is decided once, at the end of the step\'s rules.' }, lose: { args: {}, description: 'Ask for a loss (a win asked for on the same step beats it).' },
       setFlag: { args: { flag: arg(P.string(), 'The flag\'s name.'), value: { schema: { type: ['boolean', 'number', 'string'], description: 'Its value (true).' }, meta: {} } }, description: 'Set a flag.' },
       clearFlag: { args: { flag: arg(P.string(), 'The flag\'s name.') }, description: 'Remove a flag.' },
       changeScene: { args: { to: arg(P.string(), 'The scene to go to: its path in the project ("level.vrmxs").'), after: arg(P.number({ min: 0, unit: 's' }), 'Play on here this long first (0: the change is the next step).'), reset: arg(P.boolean(), 'Start a new game there: nothing is carried over.') }, description: 'Move the game to another scene. The game state goes with it.' },
@@ -304,9 +304,9 @@ export function m0Registry() {
   });
   r.define('GameTimer', {
     extends: 'Node3D', description: 'A clock counted in simulation steps: a countdown that times out, or a stopwatch (no length). It follows its node\'s pause and time scale, and stops when the game is won or lost.',
-    props: { key: key('timer'), seconds: P.number({ min: 0, default: 0, unit: 's', sim: true, description: 'How long the countdown is (0: a stopwatch that never times out).' }), autostart: P.boolean({ default: true, sim: true, description: 'Running from the scene\'s start.' }), label: P.string({ description: 'What the HUD calls it.' }), scope: scope('scene') },
+    props: { key: key('timer'), seconds: P.number({ min: 0, unit: 's', sim: true, description: 'How long the countdown is. Absent: a stopwatch, with no limit, that never times out.' }), autostart: P.boolean({ default: true, sim: true, description: 'Running from the scene\'s start.' }), label: P.string({ description: 'What the HUD calls it.' }), scope: scope('scene') },
     signals: { started: {}, stopped: {}, timeout: { description: 'The countdown reached zero.' } },
-    actions: { start: { args: {}, description: 'Run (on from where it stopped).' }, stop: { args: {} }, reset: { args: {}, description: 'Back to its full length.' }, addTime: { args: { seconds: arg(P.number({ unit: 's' }), 'Time to add to the countdown (negative: take away).') } } },
+    actions: { start: { args: {}, description: 'Run (on from where it stopped).' }, stop: { args: {} }, reset: { args: {}, description: 'Back to its full length.' }, addTime: { args: { seconds: arg(P.number({ unit: 's' }), 'Time to add to the countdown (negative: take away; with none left it times out).') }, description: 'Lengthen or shorten a countdown (not a stopwatch).' } },
   });
   r.define('GameGoal', {
     extends: 'Node3D', description: 'Something to get done: the HUD shows the first one that isn\'t. Done when its condition first holds, or by its action.',
@@ -316,8 +316,8 @@ export function m0Registry() {
   });
   r.define('Checkpoint', {
     extends: 'Node3D', description: 'A point where the game saves by itself (into a slot of the save store): when its condition first holds, or by its action (a trigger\'s connection).',
-    props: { slot: P.string({ default: 'checkpoint', pattern: '^[A-Za-z0-9_-]{1,64}$', sim: true, description: 'The save slot it writes.' }), when: when('Written when this becomes true.'), once: P.boolean({ default: true, sim: true, description: 'Only the first time.' }), label: P.string({ description: 'The save\'s name in a slot list.' }) },
-    signals: { written: { args: { slot: P.string() }, description: 'The checkpoint was taken (the file is written after the step).' } },
+    props: { slot: P.string({ default: 'checkpoint', pattern: '^[A-Za-z0-9_-]{1,59}$', sim: true, description: 'The checkpoint slot it writes (in the save store: "auto-" and this name).' }), when: when('Written when this becomes true.'), once: P.boolean({ default: true, sim: true, description: 'Only the first time.' }), label: P.string({ description: 'The save\'s name in a slot list.' }) },
+    signals: { written: { args: { slot: P.string() }, description: 'The checkpoint was taken (the file is written after the step). Not on a step that decides the game.' } },
     actions: { write: { args: {}, description: 'Save now.' } },
   });
 

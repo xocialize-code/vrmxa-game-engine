@@ -157,7 +157,7 @@ test('timers count steps: a countdown times out on its step; stop, start, reset 
   assert.deepEqual([game.view().timers.clock.leftSteps, game.view().timers.clock.done, out], [1, false, []]);
   tree.step();
   assert.deepEqual([game.view().timers.clock.leftSteps, game.view().timers.clock.done, game.view().timers.clock.running, out], [0, true, false, [29]]);
-  assert.deepEqual([game.view().timers.watch.elapsedSteps, game.view().timers.watch.left, game.view().timers.watch.seconds], [30, null, 0], 'a stopwatch never times out');
+  assert.deepEqual([game.view().timers.watch.elapsedSteps, game.view().timers.watch.left, game.view().timers.watch.seconds, game.view().timers.watch.limit], [30, null, null, false], 'a stopwatch has no limit and never times out');
   assert.equal(game.view().timers.later.elapsedSteps, 0, 'not started');
   tree.find('later').call('start'); tree.run(10);
   tree.find('later').call('stop'); tree.run(10);
@@ -206,7 +206,7 @@ test('goals are done in the scene\'s order when their condition holds; without a
 
 test('win and lose: a tie is a win; a timeout\'s connection can lose; once decided the result stands and the clock stops', () => {
   const tie = rulesWorld([
-    { id: 'rules', type: 'GameRules', props: { win: state('flags.done'), lose: state('timers.clock.done') } },
+    { id: 'rules', type: 'GameRules', props: { flags: { done: false }, win: state('flags.done'), lose: state('timers.clock.done') } },
     { id: 'clock', type: 'GameTimer', props: { seconds: 0.1 } },
   ], [{ from: 'clock', signal: 'timeout', to: 'rules', call: 'lose' }]);
   tie.tree.run(5);
@@ -215,7 +215,7 @@ test('win and lose: a tie is a win; a timeout\'s connection can lose; once decid
   assert.deepEqual([tie.game.view().outcome, tie.game.view().timers.clock.left], ['won', 0]);
 
   const late = rulesWorld([
-    { id: 'rules', type: 'GameRules', props: { win: state('flags.done') } },
+    { id: 'rules', type: 'GameRules', props: { flags: { done: false, late: false }, win: state('flags.done') } },
     { id: 'clock', type: 'GameTimer', props: { seconds: 0.1 } },
     { id: 'watch', type: 'GameTimer' },
     { id: 'after', type: 'GameTimer', props: { seconds: 0.2, autostart: false } },
@@ -234,10 +234,11 @@ test('win and lose: a tie is a win; a timeout\'s connection can lose; once decid
   assert.equal(late.game.view().timers.after.done, true, 'a timer started after the result runs (an ending\'s own)');
   assert.equal(late.game.view().goals.goal.done, false, 'no goal is done once the game is decided');
   assert.deepEqual(late.game.view().checkpoints, {}, 'and no checkpoint is taken');
-  assert.equal(late.tree.find('cp').call('write'), undefined);
-  assert.equal(late.game.checkpointSeq, 0);
+  late.tree.find('cp').call('write'); late.tree.run(2);
+  assert.equal(late.game.checkpointSeq, 0, 'nor by its action');
+  assert.deepEqual(late.game.requests, { win: false, lose: false, checkpoints: [] }, 'what is asked of a decided game is forgotten');
 
-  const lose = rulesWorld([{ id: 'rules', type: 'GameRules', props: { win: state('flags.a'), lose: state('flags.b') } }]);
+  const lose = rulesWorld([{ id: 'rules', type: 'GameRules', props: { flags: { a: false, b: false }, win: state('flags.a'), lose: state('flags.b') } }]);
   lose.game.setFlag('b'); lose.tree.step();
   assert.equal(lose.game.view().outcome, 'lost');
 });
@@ -254,7 +255,7 @@ test('what a HUD reads: the view is plain data, and events arrive outside the st
   assert.deepEqual(JSON.parse(JSON.stringify(view)), view, 'JSON carries it whole');
   assert.deepEqual(Object.keys(view), ['scene', 'step', 'sceneSteps', 'arrivals', 'score', 'counters', 'labels', 'flags', 'timers', 'goals', 'objectives', 'goal', 'outcome', 'decided', 'pending', 'checkpoint', 'checkpoints']);
   assert.deepEqual(view.labels, { score: 'Score' });
-  assert.deepEqual(view.timers.clock, { seconds: 2, elapsed: 0, left: 2, steps: 120, elapsedSteps: 0, leftSteps: 120, running: true, done: false, declared: true, label: 'Time' });
+  assert.deepEqual(view.timers.clock, { seconds: 2, elapsed: 0, left: 2, steps: 120, elapsedSteps: 0, leftSteps: 120, limit: true, running: true, done: false, declared: true, label: 'Time' });
   view.counters.score = 99;
   assert.equal(game.score, 0, 'changing the view changes nothing');
 
@@ -310,7 +311,7 @@ test('the game state is in the world snapshot and in every step\'s hashes', () =
   assert.notEqual(worldHashes(a.tree)['service:game'], h1, 'a point of score changes the hash');
   a.game.addScore(-1);
   const snap = structuredClone(captureWorld(a.tree));
-  assert.deepEqual(Object.keys(snap.services.game.data), ['scene', 'seed', 'arrivals', 'enteredAt', 'counters', 'flags', 'timers', 'goals', 'outcome', 'pending', 'checkpoints', 'checkpointSeq', 'fired']);
+  assert.deepEqual(Object.keys(snap.services.game.data), ['scene', 'seed', 'arrivals', 'enteredAt', 'counters', 'flags', 'timers', 'goals', 'outcome', 'pending', 'checkpoints', 'checkpointSeq', 'fired', 'requests']);
   const rest = play(a.tree, a.game, 30, 200);
   const b = rulesWorld(nodes);
   restoreWorld(b.tree, JSON.parse(JSON.stringify(snap)));
