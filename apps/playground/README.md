@@ -284,7 +284,7 @@ gamepad's Menu) opens a settings panel of the demo's own with the package's volu
 kept in this browser's localStorage, the store the demo supplies.
 
 `node apps/playground/scripts/game-ui-check.mjs` builds only that page and drives it in headless Chromium: the HUD's
-goal, score and clock; focus on the first choice when Hana asks; an arrow and Enter answer (the choice reaches the game
+goal, score and clock, and the line, as text a screen reader says; Enter held from Continue picking no choice; focus on the first choice when Hana asks; an arrow and Enter answer (the choice reaches the game
 as a recorded input); the gamepad's Menu, d-pad and A in the settings (an emulated standard pad); a slider turned down;
-the keys answering with focus on the canvas; a gamepad capture of B inside the menu (it rebinds and doesn't close the menu; a slot clicked twice leaves one capture); a key rebound, used by the next steps, and still there after a reload; every control named. 20 checks, all passing in
+the keys answering with focus on the canvas; a gamepad capture of B inside the menu (it rebinds and doesn't close the menu; a slot clicked twice leaves one capture); Move right rebound to A (warned that A is Move left, then moved on confirm, Right arrow kept); a key rebound, used by the next steps, and still there after a reload; every control named. 25 checks, all passing in
 Chrome for Testing 156 (2026-11-24), no console errors. It draws, so it takes the GPU lock.
