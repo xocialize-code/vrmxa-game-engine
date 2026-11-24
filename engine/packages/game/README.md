@@ -248,7 +248,7 @@ stop a timer with its `stop` action, and slow the whole game with the clock, not
 
 ## Measured
 
-`acceptance/m5` (AB-R-1105, 2026-11-24, M5 Max; AB-R-1101 was the first run, before review changed the state's shape): the test game in `test/fixtures` (a title, a level and an ending
+`acceptance/m5` (AB-R-1107, 2026-11-24, M5 Max; AB-R-1101 and AB-R-1105 were the runs before each review round changed the state's shape): the test game in `test/fixtures` (a title, a level and an ending
 with physics, recorded input and random streams) for 600 steps, through seven scene changes, two of them resets.
 - Every step's hashes are identical in Node 26, headless Chromium and WKWebView over the custom scheme and over
   loopback, with loading that takes nothing, a steady 4 ms and a varied 0 to 12 ms per world: final hash
