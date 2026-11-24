@@ -74,7 +74,7 @@ test('an export shows what live play shows, frame for frame, and never changes t
     const want = (3 * Math.max(1, step - 1 + alpha)) / 60;
     assert.ok(Math.abs(f.x - want) < 1e-9, `frame ${f.n}: drawn at ${f.x}, want ${want}`);
   }
-  assert.deepEqual(sink.frames.map((f) => f.render), [...Array(frames).keys()].map((n) => n + 1), 'one render per frame, read back in its own frame');
+  assert.deepEqual(sink.frames.map((f) => f.render), [...Array(frames).keys()].map((n) => n + 1), 'one render per frame, read back in its own frame (no warm-up draw off WebGPU)');
   assert.equal(r.steps, frameToStep(frames - 1, fps).step, 'no tail without sound');
   // the simulation after the export = a headless run of as many steps
   const headless = world(); headless.run(r.steps);

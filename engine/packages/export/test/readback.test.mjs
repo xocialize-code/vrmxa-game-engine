@@ -244,13 +244,19 @@ test('exportTake on WebGPU: every frame drawn into the output target, taken thro
   assert.equal(sink.job.topDown, true);
   assert.equal(res.backend, 'webgpu');
   assert.deepEqual(frames.map((x) => x.n), [...Array(12).keys()], 'frames reach the sink in order');
-  assert.deepEqual(frames.map((x) => x.f), [...Array(12).keys()].map((n) => n + 1), 'each frame is its own render');
+  // frame 0 is drawn and read once before the film and thrown away (the warm-up, on WebGPU by default: AB-T-0596), so
+  // the film's frames are renders 2 to 13
+  assert.deepEqual(frames.map((x) => x.f), [...Array(12).keys()].map((n) => n + 2), 'each frame is its own render, after the warm-up');
   assert.ok(frames.every((x) => x.top === 0 && x.bottom === 17), 'row 0 at the top');
   const ring = r.log.buffers.filter((b) => b.size === 256 * 18); // 32 × 4 bytes a row, padded to 256; the probe's are 256
   assert.equal(ring.length, 3, 'the ring of 3');
   assert.ok(r.log.buffers.every((b) => b.destroyed), 'released at the end');
   assert.equal(r.out, null, 'the canvas is the output again');
-  assert.equal(r._nodes.nodeFrame.frameId, 12, 'a node frame per offline frame');
+  assert.equal(r._nodes.nodeFrame.frameId, 13, 'a node frame per offline frame, the warm-up included');
+  // warm: false leaves it out (a caller that warmed its host already)
+  const cold = fakeGPU(), seen = [];
+  await exportTake({ tree: world(), host: gpuHost(cold), fps: 30, frames: 3, width: 32, height: 18, sink: { ...hashSink(), frame(n, bytes) { seen.push(bytes[2]); } }, audio: false, warm: false });
+  assert.deepEqual(seen, [1, 2, 3]);
   await assert.rejects(exportTake({ tree: world(), host: gpuHost(fakeGPU()), fps: 30, frames: 2, width: 32, height: 18, sink: hashSink(), audio: false, lag: 3 }), /lag 3 needs 4 readback slots; this backend's ring has 3/);
 });
 
