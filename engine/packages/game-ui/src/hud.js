@@ -39,6 +39,7 @@ export function hudModel(view, { prompts = [], player = null, names = () => null
   const prompt = p ? { actor: p.actor, item: p.item, name: names(p.item) ?? p.item, verb: p.verb, text: p.prompt || p.verb, keys: keysFor(bindings[interact]) } : null;
   if (prompt) {
     prompt.showName = !!prompt.name && !prompt.text.toLowerCase().includes(String(prompt.name).toLowerCase()); // "Open door" names it already
+    prompt.action = `${prompt.text}${prompt.showName ? ` ${prompt.name}` : ''}`; // what the prompt says after its keys
     prompt.label = promptLabel(prompt);
   }
   if (!view) return { ready: false, scene: null, step: 0, goal: null, objectives: [], score: null, counters: [], timers: [], carrying: [...carrying], prompt, outcome: null, loading, notices: [...notices] };
@@ -61,18 +62,19 @@ export function hudModel(view, { prompts = [], player = null, names = () => null
 }
 
 /**
- * Notices from the session's events, each lasting NOTICE_STEPS steps of the game's clock. "Saved" comes on
- * checkpointWritten (the file exists), never on the game's `checkpoint` (only taken).
+ * Notices from the session's events, each lasting NOTICE_STEPS steps of the game's clock from the step it arrived on.
+ * "Saved" comes on checkpointWritten (the file exists), never on the game's `checkpoint` (only taken); it counts from
+ * when the write finished, not from the checkpoint's own step, so a store that takes seconds still shows it.
  */
 export class Notices {
   constructor({ steps = NOTICE_STEPS } = {}) { this.steps = steps; /** @type {Array<{ id: string, text: string, until: number }>} */ this.list = []; this._n = 0; }
-  /** Take one of the session's events (flow.on). */
-  take(e) {
+  /** Take one of the session's events (flow.on). @param {any} e @param {number} [now] the game's step as it arrives */
+  take(e, now) {
     let text = null;
     if (e.type === 'checkpointWritten') text = 'Saved';
     else if (e.type === 'checkpointFailed') text = 'Couldn\'t save';
     if (!text) return false;
-    const step = typeof e.step === 'number' ? e.step : 0;
+    const step = typeof now === 'number' ? now : typeof e.step === 'number' ? e.step : 0;
     this.list.push({ id: `n${++this._n}`, text, until: step + this.steps });
     return true;
   }
@@ -92,7 +94,7 @@ export class HudBinding {
     this.flow = flow; this.player = player; this.interact = interact;
     this.notices = new Notices();
     this._key = null;
-    this._off = flow.on((e) => { if (this.notices.take(e)) this._key = null; });
+    this._off = flow.on((e) => { if (this.notices.take(e, flow.tree?.clock.step)) this._key = null; });
   }
 
   /** The world's services this reads, or null. */

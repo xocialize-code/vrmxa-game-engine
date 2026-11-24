@@ -44,6 +44,7 @@ page.on('pageerror', (e) => consoleLines.push(`pageerror: ${e.message}`));
 const checks = [];
 const check = (name, ok, detail = '') => checks.push({ name, ok: !!ok, detail });
 const label = (sel) => page.getAttribute(sel, 'aria-label').catch(() => null);
+const text = (sel) => page.$eval(sel, (e) => e.textContent).catch(() => null); // what a screen reader says of a readout
 const focused = () => page.evaluate(() => document.activeElement?.id ?? '');
 const press = async (i) => { await page.evaluate((b) => window.__pad(b, 1), i); await page.waitForTimeout(80); await page.evaluate((b) => window.__pad(b, 0), i); await page.waitForTimeout(80); };
 // every control a person can reach has a name a screen reader says
@@ -51,8 +52,17 @@ const unnamed = () => page.evaluate(() => [...document.querySelectorAll('button,
 
 await page.goto(url);
 await page.waitForSelector('#hud-goal', { timeout: 60000 });
-check('the HUD shows the goal, the score and the clock', (await label('#hud-goal')) === 'Goal: Take Hana\'s order' && /^Score 0$/.test(await label('#hud-score')) && /^Until closing 0:(20|19|18)/.test(await label('#hud-timer-clock')), [await label('#hud-goal'), await label('#hud-score'), await label('#hud-timer-clock')].join(' | '));
-await page.waitForSelector('#dialogue-choices', { timeout: 30000 });
+check('the HUD shows the goal, the score and the clock, as text', (await text('#hud-goal')) === 'Goal: Take Hana\'s order' && (await text('#hud-score')) === 'Score 0' && /^Until closing 0:(20|19|18)/.test(await text('#hud-timer-clock')), [await text('#hud-goal'), await text('#hud-score'), await text('#hud-timer-clock')].join(' | '));
+check('the line is text in a polite live region', /^Hana: Good morning! What can I get you\?$/.test(await text('#dialogue-line')) && (await page.$eval('#dialogue-line', (e) => e.parentElement.getAttribute('aria-live'))) === 'polite', await text('#dialogue-line'));
+// Enter on Continue skips the line; held, it doesn't also pick the first choice when the choices appear under it (review)
+await page.waitForFunction(() => document.activeElement?.id === 'dialogue-continue', null, { timeout: 10000 });
+await page.keyboard.down('Enter');
+await page.waitForSelector('#dialogue-choices', { timeout: 5000 });
+await page.waitForTimeout(150);
+for (let i = 0; i < 5; i++) { await page.keyboard.down('Enter'); await page.waitForTimeout(30); } // the key's repeats
+await page.keyboard.up('Enter');
+await page.waitForTimeout(200);
+check('Enter held from Continue picks no choice: a choice needs a fresh press', (await page.evaluate(() => window.__demo.flow.view().flags.order)) === '' && !!(await page.$('#dialogue-choices')), JSON.stringify(await page.evaluate(() => window.__demo.flow.view().flags)));
 await page.waitForTimeout(150);
 check('the conversation asks, and focus is on the first choice', (await focused()) === 'dialogue-choice-latte', await focused());
 const shot1 = path.join(out, 'game-ui-check-dialogue.png');
@@ -68,8 +78,8 @@ await page.keyboard.press('Enter');
 await page.waitForTimeout(300);
 const flags = await page.evaluate(() => window.__demo.flow.view().flags);
 check('Enter answers: the choice reached the game through a recorded input', flags.order === 'tea', JSON.stringify(flags));
-await page.waitForFunction(() => document.querySelector('#hud-goal')?.getAttribute('aria-label') === 'Goal: Bring the order to the table', null, { timeout: 10000 }).catch(() => {});
-check('the HUD follows the game: the next goal', (await label('#hud-goal')) === 'Goal: Bring the order to the table', await label('#hud-goal'));
+await page.waitForFunction(() => document.querySelector('#hud-goal')?.textContent === 'Goal: Bring the order to the table', null, { timeout: 10000 }).catch(() => {});
+check('the HUD follows the game: the next goal', (await text('#hud-goal')) === 'Goal: Bring the order to the table', await text('#hud-goal'));
 check('the overlay\'s controls all have accessible names', (await unnamed()).length === 0, JSON.stringify(await unnamed()));
 
 // the gamepad: Menu opens the settings, the d-pad moves, A presses
@@ -93,6 +103,15 @@ await page.keyboard.press('KeyJ');
 await page.waitForTimeout(100);
 const after = await page.evaluate(() => ({ overrides: window.__demo.input.overrides(), stored: JSON.parse(localStorage.getItem('vrmxg-game-ui-demo-settings')) }));
 check('the rebinding is on the game\'s input and in the app\'s store', JSON.stringify(after.overrides.jump) === JSON.stringify([{ key: 'KeyJ' }, { gamepadButton: 0 }]) && JSON.stringify(after.stored.bindings.jump) === JSON.stringify([{ key: 'KeyJ' }, { gamepadButton: 0 }]), JSON.stringify(after.overrides));
+// Move right to A, Move left's key: warned; on "Move it" A moves, and Right arrow stays (review)
+await page.click('#rebind-move_x\\+-keyboard');
+await page.keyboard.press('KeyA');
+await page.waitForSelector('#rebind-conflict', { timeout: 3000 });
+check('a key that is another direction\'s is warned about, not bound twice', (await text('#rebind-conflict')).startsWith('A is Move left now. Move it to Move right?') && JSON.stringify(await page.evaluate(() => window.__demo.input.bindings().move_x.bindings.filter((b) => b.key === 'KeyA'))) === JSON.stringify([{ key: 'KeyA', value: -1 }]), await text('#rebind-conflict'));
+await page.click('#rebind-confirm');
+await page.waitForTimeout(100);
+const moved = await page.evaluate(() => window.__demo.input.bindings().move_x.bindings);
+check('on "Move it" A moves to Move right, Right arrow kept, Left arrow still left', JSON.stringify(moved) === JSON.stringify([{ key: 'KeyA', value: 1 }, { key: 'ArrowRight', value: 1 }, { key: 'ArrowLeft', value: -1 }, { gamepadAxis: 0, deadzone: 0.15 }]), JSON.stringify(moved));
 // a gamepad capture inside the menu: B is taken as the new button, and doesn't also close the menu (review)
 await page.click('#rebind-run-gamepad'); await page.click('#rebind-run-gamepad'); // twice: one capture, not two
 await press(1);
@@ -113,6 +132,10 @@ await page.keyboard.down('KeyJ'); await page.waitForTimeout(100);
 const jumping = await page.evaluate(() => window.__demo.input.isDown('jump'));
 await page.keyboard.up('KeyJ');
 check('the next steps use the rebinding (J is down as Jump)', jumping === true);
+await page.keyboard.down('KeyA'); await page.waitForTimeout(100);
+const right = await page.evaluate(() => window.__demo.input.axis('move_x'));
+await page.keyboard.up('KeyA');
+check('A, moved, pushes right', right === 1, String(right));
 
 // a relaunch: the page again, the same browser storage
 await page.reload();

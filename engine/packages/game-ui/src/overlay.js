@@ -3,8 +3,9 @@
 // changed since the last call, else null. It also keeps two things true that the step must see the same way in a live
 // run and its replay, which is why they are inputs and settings, never simulation state:
 //   - the player's settings are on the world's input service (a load builds a world with the game's own bindings);
-//   - while a conversation is going on, the overlay holds the devices (input.muted), so the keys and the gamepad
-//     answer it and don't also walk the player away. What is latched is recorded either way.
+//   - while a conversation is going on, the overlay holds the devices (its own claim: input.hold(this)), so the keys
+//     and the gamepad answer it and don't also walk the player away. An app's own claim (its menu) is its own: neither
+//     lets go of the other's. What is latched is recorded either way.
 import { HudBinding } from './hud.js';
 import { dialogueModel, captionsModel } from './dialogue-ui.js';
 
@@ -19,7 +20,6 @@ export class OverlayBinding {
     this.hud = new HudBinding(flow, { player });
     this._tree = null; this._key = null; this._model = null;
     this._input = null;
-    this._holding = null; // what this overlay last set: it changes input.muted only when that changes
     // a load (and a scene change) puts a new input service in place before its first step: settings go on it at once
     this._off = flow.on((e) => { if (e.type === 'loaded' || e.type === 'scene') this._adopt(); });
   }
@@ -31,9 +31,8 @@ export class OverlayBinding {
     const t = this.tree;
     if (t === this._tree) return;
     this._tree = t;
-    if (this._input && this._input !== this.input) this._input.muted = false; // the world left behind lets go
+    if (this._input && this._input !== this.input) this._input.release(this); // the world left behind: this claim goes
     this._input = this.input;
-    this._holding = null; // a new input service: set its hold afresh
     if (this._input) this.settings?.applyTo({ input: this._input });
   }
 
@@ -44,7 +43,7 @@ export class OverlayBinding {
     const captions = t?.services.get('voice')?.captions?.(1) ?? [];
     const holding = !!view && (this.hold === 'conversation' || (this.hold === 'choice' && view.phase === 'choice'));
     const input = this.input;
-    if (input && holding !== this._holding) { input.muted = holding; this._holding = holding; } // an app's own muting otherwise stands
+    if (input) { if (holding) input.hold(this); else input.release(this); } // every read: whatever else held or let go meanwhile
     return { hud: this.hud.read(), dialogue: dialogueModel(view, captions), captions: captionsModel(captions, view), holding };
   }
 
@@ -60,7 +59,7 @@ export class OverlayBinding {
 
   /** Let go of the devices and stop listening (the overlay is unmounted). */
   dispose() {
-    if (this._input && this._holding) this._input.muted = false;
+    this._input?.release(this);
     this._off?.(); this._off = null;
     this.hud.dispose();
   }

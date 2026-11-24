@@ -27,7 +27,7 @@ async function mount(flow) {
       const button = /** @type {HTMLButtonElement | null} */ (document.querySelector(`#dialogue-choice-${id}`));
       if (!button) throw new Error(`no button for the choice "${id}" in the overlay`);
       seen.labels = [...document.querySelectorAll('#dialogue-choices button')].map((b) => b.getAttribute('aria-label'));
-      seen.hud = ['hud-goal', 'hud-score', 'hud-timer-clock'].map((i) => document.getElementById(i)?.getAttribute('aria-label') ?? null);
+      seen.hud = ['hud-goal', 'hud-score', 'hud-timer-clock'].map((i) => document.getElementById(i)?.textContent ?? null);
       seen.focused = document.activeElement?.id ?? null;
       button.click();
       seen.clicked = button.getAttribute('aria-label');

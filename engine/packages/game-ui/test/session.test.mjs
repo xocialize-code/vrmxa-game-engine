@@ -117,14 +117,38 @@ test('settings go on a world a save loads into', async () => {
   assert.equal(flow.tree.services.get('input').muted, false, 'disposed: the devices are the game\'s again');
 });
 
-test('the overlay changes input.muted only when its own hold changes: an app\'s own muting stands (review)', async () => {
+test('the overlay and the app each hold the devices with their own claim: neither lets go of the other\'s (review)', async () => {
   const flow = await startFlow(R, scenes);
-  const b = new OverlayBinding(flow, { hold: 'never' });
+  const b = new OverlayBinding(flow);
   const input = flow.tree.services.get('input');
-  b.read();
-  input.muted = true;      // the app's pause menu, say
-  flow.step(); b.read(); b.read();
+  flow.step(); b.read();
+  assert.equal(input.muted, true, 'the conversation: the overlay holds');
+  // the app lets go of its own (it never held): the overlay's claim stands, so one key can't answer and move the player
+  input.release('pause-menu'); input.muted = false; b.read();
+  assert.equal(input.muted, true);
+  // the app holds for its menu; the conversation ends: the app's claim stands
+  input.hold('pause-menu');
+  flow.tree.services.get('dialogue').stop(); b.read();
+  assert.deepEqual([...input.holders], ['pause-menu']);
   assert.equal(input.muted, true);
   b.dispose();
-  assert.equal(input.muted, true, 'and disposing an overlay that never held leaves it alone');
+  assert.equal(input.muted, true, 'disposing the overlay leaves the app\'s claim');
+  input.release('pause-menu');
+  assert.equal(input.muted, false);
+});
+
+test('"Saved" shows after a store that takes longer than the notice lasts (review)', async () => {
+  let release = null;
+  const store = new MemoryStore(), slow = { read: (k) => store.read(k), write: (k, f) => new Promise((ok) => { release = () => ok(store.write(k, f)); }) };
+  const flow = await startFlow(R, scenes, { store: slow });
+  const b = new OverlayBinding(flow);
+  flow.tree.services.get('dialogue').stop();
+  flow.tree.services.get('game').setFlag('order', 'tea'); // the order taken: the checkpoint is asked for
+  flow.run(2); await new Promise((ok) => setImmediate(ok)); // the checkpoint is taken and its write begins
+  assert.ok(release, 'the checkpoint is being written');
+  flow.run(400);                                            // 6.7 s of play while the store is still writing
+  release(); await flow.settle(); flow.flush();
+  const saved = b.read().hud.notices.map((n) => n.text);
+  assert.deepEqual(saved, ['Saved'], 'shown when the write finished, though the checkpoint is 400 steps old');
+  b.dispose();
 });

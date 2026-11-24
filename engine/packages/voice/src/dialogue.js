@@ -27,6 +27,8 @@ import { holds, checkCondition } from '@vrmxg/game';
 import { estimateWords } from './lipsync.js';
 
 const DT = 1 / 60;
+/** Seconds a voiced line runs past its last word when it doesn't say its own length (a clip's breath and room tone). */
+export const VOICED_TAIL = 0.25;
 /** The `next` / `to` that ends the conversation. */
 export const END = 'end';
 /** The input choice a conversation's answer arrives under: the offered choice's id. */
@@ -42,7 +44,7 @@ const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
  * A Dialogue node's lines as the service runs them: ids filled in (a choice without one takes its place in the list,
  * "0", "1"), and every `next` and `to` resolved to a line's index, or −1 for the end.
  * @param {any} props a Dialogue node's props
- * @returns {{ lines: Array<{ id: string | null, speaker: string | null, text: string, clip: string | null, pause: number, when: any, set: Record<string, any> | null, next: number, choices: Array<{ id: string, text: string, when: any, set: Record<string, any> | null, to: number }> }>, problems: string[] }}
+ * @returns {{ lines: Array<{ id: string | null, speaker: string | null, text: string, clip: string | null, seconds: number | null, pause: number, when: any, set: Record<string, any> | null, next: number, choices: Array<{ id: string, text: string, when: any, set: Record<string, any> | null, to: number }> }>, problems: string[] }}
  */
 export function readDialogue(props) {
   const problems = [], raw = Array.isArray(props?.lines) ? props.lines : [];
@@ -72,11 +74,12 @@ export function readDialogue(props) {
   const when = (v, at) => { if (v === undefined) return null; problems.push(...checkCondition(v, at)); return v; };
   const lines = raw.map((l, i) => {
     const at = `lines[${i}]`, following = i + 1 < raw.length ? i + 1 : -1;
-    if (!isObject(l)) { problems.push(`${at}: a line is { text, speaker, … }`); return { id: null, speaker: null, text: '', clip: null, pause: 0, when: null, set: null, next: following, choices: [] }; }
+    if (!isObject(l)) { problems.push(`${at}: a line is { text, speaker, … }`); return { id: null, speaker: null, text: '', clip: null, seconds: null, pause: 0, when: null, set: null, next: following, choices: [] }; }
     if (typeof l.text !== 'string' || l.text.trim() === '') problems.push(`${at}.text: a line says something`);
     if (l.speaker !== undefined && (typeof l.speaker !== 'string' || l.speaker === '')) problems.push(`${at}.speaker: the id of the node that says it`);
     if (l.clip !== undefined && typeof l.clip !== 'string') problems.push(`${at}.clip: a voice clip's path`);
     if (l.pause !== undefined && !(typeof l.pause === 'number' && l.pause >= 0 && Number.isFinite(l.pause))) problems.push(`${at}.pause: seconds, from 0`);
+    if (l.seconds !== undefined && !(typeof l.seconds === 'number' && l.seconds > 0 && Number.isFinite(l.seconds))) problems.push(`${at}.seconds: the line's length in seconds, above 0`);
     if (l.choices !== undefined && (!Array.isArray(l.choices) || l.choices.length === 0)) problems.push(`${at}.choices: a list of at least one choice`);
     const seen = new Set();
     const choices = (Array.isArray(l.choices) ? l.choices : []).map((c, k) => {
@@ -91,6 +94,7 @@ export function readDialogue(props) {
     });
     return {
       id: typeof l.id === 'string' ? l.id : null, speaker: typeof l.speaker === 'string' ? l.speaker : null, text: String(l.text ?? ''), clip: typeof l.clip === 'string' ? l.clip : null,
+      seconds: typeof l.seconds === 'number' && l.seconds > 0 ? l.seconds : null,
       pause: typeof l.pause === 'number' && l.pause >= 0 ? l.pause : 0, when: when(l.when, `${at}.when`), set: flags(l.set, `${at}.set`), next: target(l.next, `${at}.next`, following), choices,
     };
   });
@@ -225,17 +229,34 @@ export class DialogueService {
     if (this.active === a) node.emit('line', { line: line.id, index: i, speaker: line.speaker, text: line.text });
   }
 
-  // The speaker says the line through the voice service, when there is one and the speaker is in the world. → seconds
-  _say(line) {
-    const voice = this.tree.services.get('voice'), actor = line.speaker ? this.tree.find(line.speaker) : null;
-    if (voice && actor) {
-      // a clip that wasn't prepared is said as its text: nothing here throws inside the step
-      try { voice.say(actor, { text: line.text, ...(line.clip ? { clip: line.clip } : {}) }); } catch { voice.say(actor, { text: line.text }); }
-      const said = voice.lines.get(actor.id);
-      if (said) return said.duration;
+  /**
+   * A line's length in seconds, from data every runtime has, never from a decoded clip (the audio service knows a WAV's
+   * length only where it is installed, and the steps a line ends on must be the same in every runtime): the line's own
+   * `seconds`; else a clip's word timings (a baked line's stored length, or its last word and VOICED_TAIL); else its
+   * text's estimated timings, as the voice service times a text line.
+   */
+  lineSeconds(line) {
+    if (line.seconds !== null) return line.seconds;
+    const t = line.clip ? this.tree.services.get('voice')?.timings?.get(line.clip) : null;
+    if (t) {
+      if (t.visemes) return t.duration; // baked (@vrmxg/voicing): the length stored with the track
+      const last = t.words.at(-1);
+      return last ? last.start + last.duration + VOICED_TAIL : VOICED_TAIL;
     }
     const last = estimateWords(line.text).at(-1);
     return last ? last.start + last.duration + 0.2 : 0;
+  }
+
+  // The speaker says the line through the voice service, when there is one and the speaker is in the world, for the
+  // line's length (lineSeconds), so the voice line ends on the step the conversation moves on. → seconds
+  _say(line) {
+    const voice = this.tree.services.get('voice'), actor = line.speaker ? this.tree.find(line.speaker) : null;
+    const seconds = this.lineSeconds(line);
+    if (voice && actor) {
+      // a clip that wasn't prepared is said as its text: nothing here throws inside the step
+      try { voice.say(actor, { text: line.text, ...(line.clip ? { clip: line.clip } : {}), seconds }); } catch { voice.say(actor, { text: line.text, seconds }); }
+    }
+    return seconds;
   }
 
   _end(node) {

@@ -85,9 +85,12 @@ export class VoiceService {
 
   /**
    * A character starts a line (the Character's say action calls this).
-   * @param {any} actor @param {{ text?: string, clip?: string }} [line]
+   * `seconds` (M5 W3) fixes the line's length from data, for a caller whose timing must not depend on whether the
+   * audio service is installed (a clip's own length is known only when it is): @vrmxg/voice's conversations pass it.
+   * Without it the length is as it always was.
+   * @param {any} actor @param {{ text?: string, clip?: string, seconds?: number }} [line]
    */
-  say(actor, { text, clip } = {}) {
+  say(actor, { text, clip, seconds } = {}) {
     let line;
     if (clip) {
       const t = this.timings.get(clip);
@@ -98,6 +101,7 @@ export class VoiceService {
       const last = words.at(-1);
       line = { clip: null, text: text ?? '', startStep: this.tree.clock.step, duration: last ? last.start + last.duration + 0.2 : 0, words };
     }
+    if (typeof seconds === 'number' && Number.isFinite(seconds) && seconds >= 0) line.duration = seconds;
     this.lines.set(actor.id, line);
     if (!line.clip) this.live?.started(actor.id, line);
     actor.emit('spoke', { text: line.text });

@@ -4,7 +4,7 @@ export { VoiceService } from './service.js';
 export { LiveLines, shellTTS, httpTTS } from './live.js';
 export { EnergyVAD, listenTo, microphone, encodeWav, decodeWav, wavFrames, shellSTT, shellListen, httpSTT } from './listen.js';
 export { bakePlan, applyBake } from './bake.js';
-export { DialogueService, DialogueNode, installDialogue, readDialogue, checkDialogue, CHOOSE, ADVANCE, END } from './dialogue.js'; // M5 W3: conversations with choices
+export { DialogueService, DialogueNode, installDialogue, readDialogue, checkDialogue, CHOOSE, ADVANCE, END, VOICED_TAIL } from './dialogue.js'; // M5 W3: conversations with choices
 export { buildTrack, sampleMouth, wordAt, estimateWords, VOWELS, OCULUS_TO_VRM } from './lipsync.js';
 
 /**

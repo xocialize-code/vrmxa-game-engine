@@ -219,3 +219,42 @@ test('advance false is no skip (review)', () => {
   w.input.choose(ADVANCE, false); w.tree.step();
   assert.equal(w.dialogue.view().phase, 'line');
 });
+
+test('a voiced line ends on the same step with and without the audio service: its length is data, never the decoded WAV (review)', async () => {
+  const { installAudio } = await import('@vrmxg/audio');
+  const { encodeWav } = await import('../src/index.js');
+  const CLIP = 'voice/hana-hi.wav';
+  const timings = { words: [{ text: 'Hi', start: 0.1, duration: 0.3 }, { text: 'there', start: 0.45, duration: 0.4 }] }; // the last word ends at 0.85 s
+  const wav = encodeWav(new Float32Array(16000 * 3), 16000);                                                             // the clip runs 3 s
+  const files = { [CLIP]: wav, 'voice/hana-hi.timings.json': new TextEncoder().encode(JSON.stringify(timings)) };
+  const resolve = (ref) => { if (!files[ref]) throw new Error(`no ${ref}`); return files[ref]; };
+  const lines = [{ speaker: 'hana', text: 'Hi there', clip: CLIP, choices: [{ id: 'hi', text: 'Hello.' }] }, { speaker: 'hana', text: 'Bye.', clip: CLIP, seconds: 2 }];
+  const build = async (audio) => {
+    const tree = new SceneTree({ registry: m0Registry(), seed: 5 });
+    const input = installInput(tree);
+    if (audio) installAudio(tree, { resolve });
+    const voice = installVoice(tree, { resolve, faces: false });
+    installGame(tree, { scene: 'v.vrmxs' });
+    const dialogue = installDialogue(tree);
+    const doc = { format: 'vrmxs', version: 1, id: 'v', nodes: [{ id: 'root', type: 'Node3D' }, { id: 'hana', type: 'Node3D', name: 'Hana', parent: 'root' }, { id: 'rules', type: 'GameRules', parent: 'root' }, { id: 'talk', type: 'Dialogue', parent: 'root', props: { autostart: true, lines } }] };
+    await voice.prepare(doc);
+    tree.instantiate(doc);
+    return { tree, input, voice, dialogue };
+  };
+  const play = async (audio) => {
+    const w = await build(audio), run = [];
+    let asked = null;
+    for (let i = 0; i < 300; i++) {
+      if (w.dialogue.active?.phase === 'choice' && asked === null) { asked = w.tree.clock.step; w.input.choose(CHOOSE, 'hi'); }
+      w.tree.step();
+      run.push({ step: w.tree.clock.step, h: worldHashes(w.tree) });
+    }
+    return { run, asked, timings: w.voice.timings.get(CLIP) };
+  };
+  const withAudio = await play(true), without = await play(false);
+  assert.ok(withAudio.timings.duration >= 3, 'with audio the voice service knows the clip runs 3 s');
+  assert.ok(without.timings.duration < 1, 'without it, only the words');
+  assert.equal(withAudio.asked, without.asked, 'the question comes on the same step');
+  assert.equal(withAudio.asked, Math.floor((0.85 + 0.25) * 60) + 2, 'after the last word and the tail (the first step past it, read at the next boundary), not after the WAV');
+  assert.equal(compareRuns(withAudio.run, without.run), null, 'the same hashes on every step, the voice lines included');
+});

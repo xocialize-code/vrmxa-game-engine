@@ -4,7 +4,7 @@
 // the settings' store, so it survives a relaunch. A recording replays the same whatever the bindings are: it names
 // actions, not keys.
 import { ref, computed, onBeforeUnmount } from 'vue';
-import { rebindRows, applyCapture, captureKey, captureButton, conflicts } from './settings.js';
+import { rebindRows, rebindPlan, captureKey, captureButton, describeBinding } from './settings.js';
 import { useNav } from './use-nav.js';
 
 const props = defineProps({
@@ -15,13 +15,16 @@ const props = defineProps({
 });
 const emit = defineEmits(['back']);
 const root = ref(null), version = ref(0), capturing = ref(null), note = ref('');
+/** A capture that would take a key from somewhere else, waiting for the player to confirm: { row, slot, binding, plan, text } */
+const pending = ref(null);
 const inputNow = () => (typeof props.input === 'function' ? props.input() : props.input);
 const rows = computed(() => { void version.value; return rebindRows(inputNow().bindings(), { labels: props.labels, hide: props.hide }); });
-const nav = useNav(root, { input: inputNow, onBack: () => emit('back'), paused: () => capturing.value !== null });
+const nav = useNav(root, { input: inputNow, onBack: () => { if (pending.value) keep(); else emit('back'); }, paused: () => capturing.value !== null });
 let raf = 0, before = null;
 
 function start(row, slot) {
   if (capturing.value) stop(false); // one capture at a time: a second click replaces the first
+  pending.value = null;
   capturing.value = { row, slot }; note.value = '';
   if (slot === 'keyboard') addEventListener('keydown', onKey, true);
   else { before = inputNow().peek().gamepad; raf = requestAnimationFrame(pollPad); }
@@ -37,11 +40,35 @@ function stop(refocus = true) {
 function take(binding) {
   if (!capturing.value) return;
   const { row, slot } = capturing.value, input = inputNow();
-  const also = conflicts(input.bindings(), row.action, binding);
-  props.settings.rebind(input, row.action, applyCapture(input.bindings()[row.action].bindings, row, slot, binding));
-  note.value = `${row.label}: ${slot === 'keyboard' ? 'key' : 'button'} changed${also.length ? `; also bound to ${also.join(', ')}` : ''}`;
-  version.value++;
+  const plan = rebindPlan(input.bindings(), row, slot, binding, { labels: props.labels });
+  if (plan.conflicts.length) {
+    // the key works somewhere else (another action, the other direction of this one): say so, and move it only on a yes
+    const where = plan.conflicts.map((c) => c.label).join(' and ');
+    pending.value = { row, slot, binding, plan, text: `${describeBinding(binding)} is ${where} now. Move it to ${row.label}?` };
+    note.value = pending.value.text;
+    stop(false);
+    requestAnimationFrame(() => root.value?.querySelector('#rebind-confirm')?.focus());
+    return;
+  }
+  apply(row, slot, plan, '');
   stop();
+}
+function apply(row, slot, plan, moved) {
+  props.settings.rebindAll(inputNow(), plan.changes);
+  note.value = `${row.label}: ${slot === 'keyboard' ? 'key' : 'button'} changed${moved}`;
+  version.value++;
+}
+function confirm() {
+  const p = pending.value;
+  if (!p) return;
+  pending.value = null;
+  apply(p.row, p.slot, p.plan, `; ${describeBinding(p.binding)} moved from ${p.plan.conflicts.map((c) => c.label).join(' and ')}`);
+  requestAnimationFrame(() => root.value?.querySelector(`#rebind-${p.row.id}-${p.slot}`)?.focus());
+}
+function keep() {
+  const p = pending.value;
+  pending.value = null; note.value = 'Unchanged';
+  if (p) requestAnimationFrame(() => root.value?.querySelector(`#rebind-${p.row.id}-${p.slot}`)?.focus());
 }
 function onKey(e) {
   e.preventDefault(); e.stopPropagation();
@@ -57,7 +84,7 @@ function pollPad() {
   if (!capturing.value) return;
   raf = requestAnimationFrame(pollPad);
 }
-function reset() { props.settings.resetBindings(inputNow()); note.value = 'Every action is bound as the game has it'; version.value++; }
+function reset() { pending.value = null; props.settings.resetBindings(inputNow()); note.value = 'Every action is bound as the game has it'; version.value++; }
 const asking = (row, slot) => capturing.value?.row.id === row.id && capturing.value.slot === slot;
 onBeforeUnmount(stop);
 defineExpose({ focusFirst: () => nav.focusFirst() });
@@ -78,6 +105,7 @@ defineExpose({ focusFirst: () => nav.focusFirst() });
         </tr>
       </tbody>
     </table>
+    <p v-if="pending" id="rebind-conflict" class="gu-rebind-conflict" role="alert">{{ pending.text }} <button id="rebind-confirm" data-nav type="button" @click="confirm">Move it</button> <button id="rebind-keep" data-nav type="button" @click="keep">Keep</button></p>
     <p class="gu-rebind-foot"><button id="rebind-reset" data-nav type="button" aria-label="Reset every control to the game's" @click="reset">Reset all</button> <output id="rebind-note" aria-live="polite">{{ note }}</output></p>
   </section>
 </template>
@@ -88,4 +116,5 @@ defineExpose({ focusFirst: () => nav.focusFirst() });
 .gu-rebind-table thead th { font-size: 12px; opacity: 0.7; font-weight: 600; }
 .gu-rebind-table td button { min-width: 9em; text-align: left; }
 .gu-fixed { opacity: 0.6; font-size: 13px; }
+.gu-rebind-conflict { padding: 6px 10px; border-radius: 8px; background: rgba(255, 179, 92, 0.15); }
 </style>

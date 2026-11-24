@@ -11,20 +11,34 @@ const src = (f) => path.join(import.meta.dirname, '../src', f);
 const view = { scene: 'counter.vrmxs', step: 120, counters: { score: 10, served: 0 }, labels: { score: 'Score', served: 'Served' }, timers: { clock: { limit: true, leftSteps: 500, elapsedSteps: 700, running: true, done: false, declared: true, label: 'Until closing' } }, objectives: [], goal: { key: 'serve', text: 'Bring the order to the table' }, outcome: null };
 const hud = hudModel(view, { prompts: [{ actor: 'mira', item: 'key', verb: 'take', prompt: 'Take' }], names: () => 'Brass key', bindings: structuredClone(DEFAULT_ACTIONS), carrying: [{ id: 'coin', name: 'Coin' }], notices: [{ id: 'n1', text: 'Saved' }] });
 const asking = dialogueModel({ node: 'order', title: null, index: 0, line: null, speaker: 'hana', name: 'Hana', text: 'What can I get you?', clip: null, phase: 'choice', since: 0, duration: 2, skippable: true, choices: [{ id: 'latte', text: 'A latte, please.' }, { id: 'tea', text: 'Just tea.' }] });
+// the text an element says, as a screen reader gets it: its content with the tags taken out (nothing is aria-hidden)
+const textOf = (html, id) => {
+  const start = html.indexOf(`id="${id}"`);
+  if (start < 0) return null;
+  const open = html.lastIndexOf('<', start), tag = /^<(\w+)/.exec(html.slice(open))[1];
+  let depth = 0, i = open;
+  const re = new RegExp(`<(/?)${tag}\\b[^>]*>`, 'g'); re.lastIndex = open;
+  for (let m; (m = re.exec(html));) { depth += m[1] ? -1 : 1; if (depth === 0) { i = m.index; break; } }
+  return html.slice(html.indexOf('>', open) + 1, i).replace(/<!--[^]*?-->/g, '').replace(/<[^>]+>/g, '').replace(/&#39;/g, '\'').replace(/&amp;/g, '&');
+};
 const controls = (html) => [...html.matchAll(/<(button|input)\b[^>]*>/g)].map((m) => m[0]);
 
-test('the HUD: every readout carries its value in its accessible name', async () => {
+test('the HUD: every readout is text that says its value whole, nothing hidden from a screen reader', async () => {
   const Hud = await loadSFC(src('Hud.vue'));
   const html = await render(Hud, { model: hud });
-  assert.match(html, /id="hud-goal"[^>]*aria-label="Goal: Bring the order to the table"/);
-  assert.match(html, /id="hud-score"[^>]*aria-label="Score 10"/);
-  assert.match(html, /id="hud-counter-served"[^>]*aria-label="Served 0"/);
-  assert.match(html, /id="hud-timer-clock"[^>]*role="timer"[^>]*aria-label="Until closing 0:09, hurry"/);
+  assert.equal(textOf(html, 'hud-goal'), 'Goal: Bring the order to the table');
+  assert.equal(textOf(html, 'hud-score'), 'Score 10');
+  assert.equal(textOf(html, 'hud-counter-served'), 'Served 0');
+  assert.match(html, /id="hud-timer-clock"[^>]*role="timer"/);
+  assert.equal(textOf(html, 'hud-timer-clock'), 'Until closing 0:09, hurry');
   assert.match(html, /id="hud-carrying"[^>]*aria-label="Carrying: Coin"/);
-  assert.match(html, /id="hud-prompt"[^>]*aria-label="Press E or Gamepad X to Take Brass key"/);
+  assert.equal(textOf(html, 'hud-prompt'), 'Press E or Gamepad X to Take Brass key', 'the prompt says the whole sentence');
+  assert.equal(textOf(html, 'hud-prompt'), hud.prompt.label);
   assert.match(html, /<kbd[^>]*>E<\/kbd>/);
   assert.match(html, /id="hud-notice-n1"[^>]*>Saved</);
-  assert.match(html, /aria-live="polite"/, 'the prompt is announced when it changes');
+  assert.match(html, /aria-live="polite"><p id="hud-prompt"/, 'the prompt is visible text in a polite live region');
+  assert.doesNotMatch(html, /aria-hidden/);
+  assert.doesNotMatch(html, /<p [^>]*aria-label/, 'no names on paragraphs (ARIA doesn\'t allow them there)');
   assert.deepEqual(controls(html), [], 'the HUD has no controls');
   const won = await render(Hud, { model: { ...hud, outcome: 'won', prompt: null } });
   assert.match(won, /id="hud-outcome"[^>]*>You won</);
@@ -35,13 +49,16 @@ test('the dialogue box: the speaker and line, numbered choices as buttons with w
   const Box = await loadSFC(src('DialogueBox.vue'));
   const html = await render(Box, { model: asking });
   assert.match(html, /id="dialogue"[^>]*role="dialog"[^>]*aria-label="Conversation with Hana"/);
-  assert.match(html, /id="dialogue-line"[^>]*aria-label="Hana: What can I get you\?"/);
+  assert.equal(textOf(html, 'dialogue-line'), 'Hana: What can I get you?', 'the line is text, the speaker first');
+  assert.match(html, /aria-live="polite"><p id="dialogue-line"/, 'in a polite live region');
+  assert.doesNotMatch(html, /<p [^>]*aria-(label|hidden)/);
   assert.match(html, /id="dialogue-choice-latte"[^>]*data-nav[^>]*aria-label="Choice 1 of 2: A latte, please."/);
   assert.match(html, /id="dialogue-choice-tea"[^>]*aria-label="Choice 2 of 2: Just tea."/);
   assert.doesNotMatch(html, /dialogue-continue/);
   const line = await render(Box, { model: dialogueModel({ node: 'o', index: 0, line: null, speaker: 'hana', name: 'Hana', text: 'Good morning there', phase: 'line', skippable: true, choices: [] }, [{ actor: 'hana', words: ['Good', 'morning', 'there'], spoken: 1 }]) });
   assert.match(line, /id="dialogue-continue"[^>]*data-nav[^>]*aria-label="Continue"/);
   assert.match(line, /<span class="said">Good <\/span><span class="unsaid">morning <\/span><span class="unsaid">there<\/span>/, 'words appear as they are said, with the spaces between them');
+  assert.equal(textOf(line, 'dialogue-line'), 'Hana: Good morning there', 'the whole line is there for a screen reader, said or not');
 });
 
 test('the root overlay draws the HUD, captions and the dialogue from one model', async () => {

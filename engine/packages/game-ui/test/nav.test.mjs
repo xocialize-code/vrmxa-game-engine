@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { ActionMap } from '@vrmxg/input';
-import { UI_ACTIONS, NavPad, keyAction, navTarget } from '../src/index.js';
+import { UI_ACTIONS, NavPad, keyAction, navTarget, ActivationGuard } from '../src/index.js';
 
 const pad = (buttons = {}, axes = [0, 0, 0, 0]) => { const b = new Array(17).fill(0); for (const [i, v] of Object.entries(buttons)) b[Number(i)] = v; return { gamepad: { axes, buttons: b } }; };
 
@@ -42,4 +42,31 @@ test('what an action does to the controls: focus wraps, sliders step, accept cli
   assert.deepEqual(navTarget('ui_accept', { count: 3, index: -1 }), { focus: 0 });
   assert.deepEqual(navTarget('ui_back', { count: 0, index: -1 }), { back: true });
   assert.equal(navTarget('ui_down', { count: 0, index: -1 }), null);
+});
+
+test('a held or repeated Enter or Space never activates a control it didn\'t go down on (review)', () => {
+  const later = []; const g = new ActivationGuard({ later: (fn) => later.push(fn) });
+  const flush = () => { for (const fn of later.splice(0)) fn(); };
+  const cont = { id: 'continue' }, choice = { id: 'choice-1' };
+  // Enter on Continue: its press clicks Continue
+  assert.equal(g.keydown('Enter', false, cont), false);
+  assert.equal(g.click(cont), false, 'the press clicks what it went down on');
+  // still held: the choices appear, focus moves to the first; the repeats are stopped, and so would any click there be
+  assert.equal(g.keydown('Enter', true, choice), true, 'a repeat is no activation');
+  assert.equal(g.click(choice), true, 'nor a click on a control it didn\'t go down on');
+  g.keyup('Enter'); flush();
+  assert.equal(g.click(choice), false, 'let go: a fresh press (or the mouse) works');
+  // Space pressed on Continue, let go on a choice: the release's click is stopped (it is still down until that click ran)
+  g.keydown('Space', false, cont);
+  g.keyup('Space');
+  assert.equal(g.click(choice), true);
+  flush();
+  // a fresh Space on the choice: allowed
+  g.keydown('Space', false, choice); g.keyup('Space');
+  assert.equal(g.click(choice), false); flush();
+  // other keys, and clicks with nothing held (a gamepad's A, a script): never stopped
+  assert.equal(g.keydown('KeyW', true, cont), false);
+  assert.equal(g.click(choice), false);
+  g.keydown('Enter', false, cont); g.clear();
+  assert.equal(g.click(choice), false, 'focus left the page: nothing held');
 });

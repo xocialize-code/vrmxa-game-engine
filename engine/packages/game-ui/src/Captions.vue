@@ -6,7 +6,7 @@ defineProps({ lines: { type: Array, default: () => [] } });
 
 <template>
   <ul id="captions" class="gu-captions" aria-label="Captions" aria-live="polite">
-    <li v-for="l in lines" :id="`caption-${l.actor}`" :key="l.actor" :aria-label="l.label"><b aria-hidden="true">{{ l.name }}</b> <span aria-hidden="true">{{ l.text }}</span></li>
+    <li v-for="l in lines" :id="`caption-${l.actor}`" :key="l.actor"><b>{{ l.name }}<span class="gu-sr">:</span></b> {{ l.text }}</li>
   </ul>
 </template>
 
@@ -14,4 +14,5 @@ defineProps({ lines: { type: Array, default: () => [] } });
 .gu-captions { position: absolute; left: 0; right: 0; bottom: 12%; display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 0; padding: 0; list-style: none; pointer-events: none; }
 .gu-captions li { max-width: 70ch; padding: 4px 10px; border-radius: 6px; background: rgba(0, 0, 0, 0.72); color: #fff; font: 500 16px/1.4 system-ui, sans-serif; }
 .gu-captions b { color: #ffd27a; }
+.gu-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 </style>

@@ -63,13 +63,29 @@ settings.applyTo({ input: flow.tree.services.get('input'), audio: output }); // 
 | `VolumeControls.vue` | `settings`, `audio` (an `@vrmxg/audio` `AudioOutput`, or anything with `setBus`), `input` (for its gamepad) → `back`. Exposes `focusFirst()` |
 | `RebindList.vue` | `input` (the input service, or a getter), `settings`, `labels` (a game's names for its actions), `hide` → `back`. Exposes `focusFirst()` |
 
-**Ids and accessible names** (what AppProbe scenarios use): `#hud-goal` ("Goal: …"), `#hud-score` ("Score 10"),
-`#hud-counter-<key>`, `#hud-timer-<key>` (`role="timer"`, "Until closing 0:09, hurry"), `#hud-carrying` ("Carrying:
-…"), `#hud-prompt` ("Press E or Gamepad X to Take Key", in a polite live region), `#hud-outcome`, `#hud-notice-<id>`;
-`#dialogue` (`role="dialog"`, "Conversation with Hana"), `#dialogue-line` ("Hana: …", live), `#dialogue-choice-<id>`
-("Choice 1 of 3: …"), `#dialogue-continue`; `#captions`, `#caption-<actor>`; `#volume-<bus>` (a slider, "Music volume",
-value text "40 percent"), `#mute-<bus>` (`aria-pressed`); `#rebind-<row>-keyboard`, `#rebind-<row>-gamepad` ("Jump,
-keyboard: Space. Change"; while waiting: "Press a key for Jump, or Escape to cancel"), `#rebind-reset`, `#rebind-note`.
+**What AppProbe and a screen reader read.** The readouts and the line are visible text, never `aria-hidden`.
+Visually hidden words make each one say its value whole, and the line and the prompt are in polite live regions. Controls
+carry accessible names.
+
+| Id | Reads |
+|---|---|
+| `#hud-goal` | "Goal: …" |
+| `#hud-score` | "Score 10" |
+| `#hud-counter-<key>` | the counter's label and value |
+| `#hud-timer-<key>` | `role="timer"`: "Until closing 0:09, hurry" |
+| `#hud-carrying` | a list named "Carrying: …" |
+| `#hud-prompt` | "Press E or Gamepad X to Take Key", live |
+| `#hud-outcome`, `#hud-notice-<id>` | "You won", "Saved" |
+| `#dialogue` | `role="dialog"`, "Conversation with Hana" |
+| `#dialogue-line` | "Hana: …", live |
+| `#dialogue-choice-<id>` | a button: "Choice 1 of 3: …" |
+| `#dialogue-continue` | a button: "Continue" |
+| `#captions`, `#caption-<actor>` | "Hana: …" |
+| `#volume-<bus>` | a slider, "Music volume", value text "40 percent" |
+| `#mute-<bus>` | a button with `aria-pressed` |
+| `#rebind-<row>-keyboard`, `#rebind-<row>-gamepad` | "Jump, keyboard: Space. Change"; while waiting: "Press a key for Jump, or Escape to cancel" |
+| `#rebind-conflict` | `role="alert"`, with `#rebind-confirm` and `#rebind-keep` |
+| `#rebind-reset`, `#rebind-note` | |
 
 ## It updates from the step
 
@@ -77,8 +93,9 @@ keyboard: Space. Change"; while waiting: "Press a key for Jump, or Escape to can
 model only when the step, the game's version (`flow.version`), the conversation, the bindings or the settings changed,
 and redraws then. Nothing reads a wall clock: a timer is printed from its steps (a countdown rounded up, so it reads 0:00
 only when it is out; a stopwatch from `elapsedSteps`; which one from `limit`), and "Saved" lasts 150 steps of the game's
-clock. "Saved" comes on `checkpointWritten` (the file exists), never on the game's `checkpoint` (only taken);
-`checkpointFailed` says "Couldn't save".
+clock, counted from the step the write finished, so a slow store still shows it. "Saved" comes on
+`checkpointWritten` (the file exists), never on the game's `checkpoint` (only taken); `checkpointFailed` says "Couldn't
+save".
 
 `hudModel(view, { prompts, player, names, carrying, bindings, notices, loading })` is the HUD from `flow.view()` (the
 fields `@vrmxg/game`'s README tables), `interact.prompts()`, `inventory.list(player)` and `input.bindings()`:
@@ -95,16 +112,24 @@ branch, and a replay of the recording takes the same branch on the same step, wi
 `dialogue.advance`. The conversation itself is scene data, a `Dialogue` node run by `@vrmxg/voice`'s dialogue service
 (its README has the format).
 
-While a conversation is on screen the overlay holds the devices (`input.muted`): the keys and the gamepad answer it and
-don't also walk the player away, and a button held when it ends stays up until let go. This gates live devices only;
-what is latched is recorded, and a replay never looks at it.
+While a conversation is on screen the overlay holds the devices with its own claim (`input.hold(overlay)`): the keys and
+the gamepad answer it and don't also walk the player away, and a button held when it ends stays up until let go. An
+app's menu holds them with its own claim (`input.hold('pause-menu')`), so neither releases the other's. This gates live
+devices only; what is latched is recorded, and a replay never looks at it.
+
+**Hosts must install the dialogue service** (`installDialogue`, `@vrmxg/voice`) for scenes with a `Dialogue` node.
+Today only this package's test game does; the game runtime, the editor's Play and MCP's engine are AB-T-0630, and W1
+installs it in the game app.
 
 ## Keyboard and gamepad
 
 Navigation is the UI's own action map (`UI_ACTIONS`, read through `@vrmxg/input`'s `ActionMap`): arrows or WASD and the
 d-pad or left stick move between controls (left and right change a slider), Enter or Space and A press, Escape or
 Backspace and B are `back`. The digits 1 to 9 pick a choice. A focused button's Enter and Space stay the browser's own
-click, and a slider keeps its own arrows, so nothing is pressed twice. The gamepad is polled once a frame through
+click, and a slider keeps its own arrows, so nothing is pressed twice. **A held key acts once**: a repeat is ignored,
+and a keyboard activation reaches only the control its key went down on (`ActivationGuard`). So Enter or Space held from
+Continue can't pick the first choice when it appears under it: a choice needs a fresh press. Mouse clicks, a gamepad's
+A and scripted clicks are never stopped. The gamepad is polled once a frame through
 `input.peek()`, which reads the devices without taking anything from the step; a held direction repeats after 24
 frames, every 6.
 
@@ -119,7 +144,8 @@ the conversation asks.
 `GameSettings` holds the player's settings: `{ version, volumes: { master, music, sfx, voice, ambience: { volume,
 muted } }, bindings }` (bindings are `input.overrides()`: only what differs from the game's map). They are the
 player's, not the simulation's: never in a snapshot or a recording.
-- `load()` reads the store (a relaunch); `applyTo({ input, audio })` puts the bindings on an input service (the next
+- `load()` reads the store (a relaunch). A store that throws never stops the app: the settings are the defaults and
+  the error is in `loadError`. `applyTo({ input, audio })` puts the bindings on an input service (the next
   step uses them) and the volumes on an audio output.
 - `setVolume(bus, { volume, muted }, audio)` and `rebind(input, action, bindings)` / `resetBindings(input, action?)`
   apply at once and save. Writes land in the order they were asked for.
@@ -129,8 +155,15 @@ player's, not the simulation's: never in a snapshot or a recording.
 
 `rebindRows(input.bindings(), { labels, hide })`: a button action is one row with a keyboard slot and a gamepad slot;
 an axis is a row per direction for its keys and d-pad buttons; mouse movement and sticks are listed on the row, fixed.
-`applyCapture(bindings, row, slot, binding)` replaces one slot and keeps the rest; `captureKey(code)` and
-`captureButton(before, now)` read the new key or button; `conflicts` names the other actions a binding already does.
+`captureKey(code)` and `captureButton(before, now)` read the new key or button.
+- `applyCapture(bindings, row, slot, binding)` replaces the slot's first binding and keeps the rest ("D, Right" rebound
+  to L reads "L, Right").
+- **A key is never bound twice.** `rebindPlan(actions, row, slot, binding)` finds every place the key already works:
+  another action, or the other direction of the same axis. Rebinding Move right to A, which is Move left's, would make A
+  +1 and −1 at once, and holding it would move nothing.
+- The list says where the key is ("A is Move left now. Move it to Move right?") and waits. On "Move it" it applies the
+  plan's `changes` (`GameSettings.rebindAll`, one save), which take the key out of everywhere else; "Keep" changes
+  nothing.
 
 ## Not yet
 

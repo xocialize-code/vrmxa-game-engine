@@ -10,7 +10,19 @@
 // element marked `data-nav-paused` (a rebinding waiting for its key or button), in any scope.
 import { onMounted, onBeforeUnmount, watch } from 'vue';
 import { ActionMap } from '@vrmxg/input';
-import { UI_ACTIONS, NavPad, keyAction, navTarget } from './nav.js';
+import { UI_ACTIONS, NavPad, keyAction, navTarget, ActivationGuard } from './nav.js';
+
+// One guard for the page (ActivationGuard): a held or repeated Enter or Space never activates a control it didn't go
+// down on. Installed with the first useNav, in the capture phase, so it sees every key and click first.
+let guard = null;
+function installGuard() {
+  if (guard || typeof document === 'undefined') return;
+  guard = new ActivationGuard();
+  document.addEventListener('keydown', (e) => { if (guard.keydown(e.code, e.repeat, e.target)) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+  document.addEventListener('keyup', (e) => guard.keyup(e.code), true);
+  document.addEventListener('click', (e) => { if (guard.click(e.target)) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+  addEventListener('blur', () => guard.clear());
+}
 
 const kindOf = (el) => (el?.type === 'range' ? 'range' : el && (el.tagName === 'BUTTON' || el.type === 'checkbox') ? 'button' : el ? 'other' : null);
 
@@ -44,7 +56,7 @@ export function useNav(root, { input = () => null, onBack = null, grab = () => f
   }
 
   function onKeydown(e) {
-    if (e.defaultPrevented || !root.value || paused() || frozen(e.target) || !mine(e.target)) return;
+    if (e.defaultPrevented || e.repeat || !root.value || paused() || frozen(e.target) || !mine(e.target)) return; // a held key acts once
     if (onKey?.(e)) { e.preventDefault(); return; }
     const action = keyAction(map, e.code);
     if (!action) return;
@@ -65,7 +77,7 @@ export function useNav(root, { input = () => null, onBack = null, grab = () => f
 
   // the root may come and go (a menu shown with v-if): it is marked whenever it appears, and keys are heard on the document
   watch(() => root.value, (el) => el?.setAttribute('data-nav-root', ''), { immediate: true, flush: 'post' });
-  onMounted(() => { document.addEventListener('keydown', onKeydown); if (typeof requestAnimationFrame !== 'undefined') raf = requestAnimationFrame(poll); });
+  onMounted(() => { installGuard(); document.addEventListener('keydown', onKeydown); if (typeof requestAnimationFrame !== 'undefined') raf = requestAnimationFrame(poll); });
   onBeforeUnmount(() => { document.removeEventListener('keydown', onKeydown); if (raf) cancelAnimationFrame(raf); });
 
   /** Focus the first control (when an overlay opens, or a conversation asks). */

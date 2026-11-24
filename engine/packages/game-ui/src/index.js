@@ -8,6 +8,6 @@
 export { keyName, describeBinding, clock, timerText, isUrgent, GAMEPAD_BUTTONS } from './format.js';
 export { hudModel, keysFor, promptLabel, Notices, HudBinding, NOTICE_STEPS } from './hud.js';
 export { dialogueModel, captionsModel, choose, advance, choiceForKey } from './dialogue-ui.js';
-export { UI_ACTIONS, NavPad, keyAction, navTarget } from './nav.js';
+export { UI_ACTIONS, NavPad, keyAction, navTarget, ActivationGuard, ACTIVATION_KEYS } from './nav.js';
 export { OverlayBinding } from './overlay.js';
-export { GameSettings, readSettings, memorySettingsStore, volumeRows, rebindRows, applyCapture, captureKey, captureButton, conflicts, VOLUME_BUSES, SETTINGS_VERSION } from './settings.js';
+export { GameSettings, readSettings, memorySettingsStore, volumeRows, rebindRows, rowLabel, rebindPlan, applyCapture, captureKey, captureButton, conflicts, VOLUME_BUSES, SETTINGS_VERSION } from './settings.js';

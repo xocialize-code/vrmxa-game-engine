@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { SceneTree } from '@vrmxg/core';
 import { installInput, VirtualDevice, DEFAULT_ACTIONS } from '@vrmxg/input';
-import { GameSettings, readSettings, memorySettingsStore, volumeRows, rebindRows, applyCapture, captureKey, captureButton, conflicts, VOLUME_BUSES } from '../src/index.js';
+import { GameSettings, readSettings, memorySettingsStore, volumeRows, rebindRows, applyCapture, rebindPlan, captureKey, captureButton, conflicts, VOLUME_BUSES } from '../src/index.js';
 
 const world = () => { const tree = new SceneTree({ registry: m0Registry() }); const input = installInput(tree); const dev = input.addDevice(new VirtualDevice()); tree.instantiate({ format: 'vrmxs', version: 1, id: 't', nodes: [] }); return { tree, input, dev }; };
 const fakeAudio = () => { const set = []; return { set, setBus: (name, o) => set.push([name, { ...o }]) }; };
@@ -89,7 +89,7 @@ test('capturing a key or a button rebinds one slot and keeps the rest', () => {
   assert.deepEqual(applyCapture(jump, { type: 'button', direction: 0 }, 'gamepad', { gamepadButton: 3 }), [{ key: 'Space' }, { gamepadButton: 3 }]);
   const mx = DEFAULT_ACTIONS.move_x.bindings;
   const left = applyCapture(mx, { type: 'axis', direction: -1 }, 'keyboard', { key: 'KeyJ' });
-  assert.deepEqual(left, [{ key: 'KeyD', value: 1 }, { key: 'KeyJ', value: -1 }, { key: 'ArrowRight', value: 1 }, { gamepadAxis: 0, deadzone: 0.15 }], 'both left keys become J; right, and the stick, kept');
+  assert.deepEqual(left, [{ key: 'KeyD', value: 1 }, { key: 'KeyJ', value: -1 }, { key: 'ArrowRight', value: 1 }, { key: 'ArrowLeft', value: -1 }, { gamepadAxis: 0, deadzone: 0.15 }], 'the slot\'s first key becomes J; Left arrow, right and the stick kept');
   assert.deepEqual(applyCapture([{ key: 'KeyE' }], { type: 'button', direction: 0 }, 'gamepad', { gamepadButton: 2 }), [{ key: 'KeyE' }, { gamepadButton: 2 }], 'an empty slot is added to');
   assert.deepEqual(captureKey('KeyJ'), { key: 'KeyJ' }); assert.equal(captureKey('Escape'), null);
   assert.deepEqual(captureButton({ buttons: [1, 0, 0] }, { buttons: [1, 0, 1] }), { gamepadButton: 2 }, 'a button newly pressed, not one held all along');
@@ -107,4 +107,44 @@ test('a write that fails is remembered and never stops the next one (review)', a
   assert.equal(await s.setVolume('music', { volume: 0.7 }), true);
   assert.deepEqual(landed, [0.7], 'the next write lands, with the latest settings');
   assert.equal(s.error, null);
+});
+
+test('rebinding Move right to A, Move left\'s key: warned, and on confirm moved, never bound twice (review)', async () => {
+  const actions = structuredClone(DEFAULT_ACTIONS);
+  const right = rebindRows(actions).find((r) => r.id === 'move_x+');
+  const plan = rebindPlan(actions, right, 'keyboard', { key: 'KeyA' });
+  assert.deepEqual(plan.conflicts, [{ action: 'move_x', direction: -1, label: 'Move left' }], 'the other half of the same axis is a conflict');
+  assert.deepEqual(plan.changes.move_x, [{ key: 'KeyA', value: 1 }, { key: 'ArrowRight', value: 1 }, { key: 'ArrowLeft', value: -1 }, { gamepadAxis: 0, deadzone: 0.15 }], 'A moved to right, Right arrow kept, Left arrow still left');
+  // applied (the player said "Move it"): holding A moves right, Left arrow moves left
+  const store = memorySettingsStore(), w = world(), s = await new GameSettings({ store }).load();
+  await s.rebindAll(w.input, plan.changes);
+  w.dev.press('KeyA'); w.tree.step();
+  assert.equal(w.input.axis('move_x'), 1, 'A is +1 only');
+  w.dev.release('KeyA').press('ArrowRight'); w.tree.step();
+  assert.equal(w.input.axis('move_x'), 1, 'Right arrow still moves right');
+  w.dev.release('ArrowRight').press('ArrowLeft'); w.tree.step();
+  assert.equal(w.input.axis('move_x'), -1);
+  assert.deepEqual(JSON.parse(store.raw).bindings.move_x, plan.changes.move_x, 'one save');
+  // another action's key: warned by its name, and taken out of it
+  const jump = rebindRows(actions).find((r) => r.id === 'jump');
+  const p2 = rebindPlan(actions, jump, 'keyboard', { key: 'KeyE' });
+  assert.deepEqual(p2.conflicts.map((c) => c.label), ['Interact']);
+  assert.deepEqual(p2.changes.interact, [{ mouseButton: 0 }, { gamepadButton: 2 }]);
+  assert.deepEqual(p2.changes.jump, [{ key: 'KeyE' }, { gamepadButton: 0 }]);
+  // a key this slot already has as its second: no conflict, and no second copy
+  const p3 = rebindPlan(actions, right, 'keyboard', { key: 'ArrowRight' });
+  assert.deepEqual(p3.conflicts, []);
+  assert.deepEqual(p3.changes.move_x.filter((b) => b.key === 'ArrowRight'), [{ key: 'ArrowRight', value: 1 }]);
+  // a key nobody has: no conflict
+  assert.deepEqual(rebindPlan(actions, jump, 'keyboard', { key: 'KeyJ' }).conflicts, []);
+  // a gamepad button
+  assert.deepEqual(rebindPlan(actions, jump, 'gamepad', { gamepadButton: 2 }).conflicts.map((c) => c.action), ['interact']);
+});
+
+test('a store that fails to read never stops the app: defaults, and the error kept (review)', async () => {
+  const s = await new GameSettings({ store: { read: () => { throw new Error('no permission'); }, write: () => {} } }).load();
+  assert.match(String(s.loadError), /no permission/);
+  assert.deepEqual(s.data, readSettings(null));
+  const r = await new GameSettings({ store: { read: async () => { throw new Error('later'); }, write: () => {} } }).load();
+  assert.match(String(r.loadError), /later/);
 });

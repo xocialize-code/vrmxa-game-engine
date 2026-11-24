@@ -128,6 +128,19 @@ test('while an overlay holds the devices the actions read nothing, choices pass,
   assert.equal(me.jumps, 1, 'let go and pressed again: a jump');
 });
 
+test('holders: each claim is its own; the devices are the game\'s once nobody holds them; claims go with a scene change', () => {
+  const a = world(), b = world();
+  a.input.hold('overlay'); a.input.hold('menu');
+  a.input.release('overlay');
+  assert.equal(a.input.muted, true, 'the menu still holds');
+  a.input.muted = false;
+  assert.equal(a.input.muted, true, 'the one-owner form releases only its own claim');
+  a.input.carryTo(b.input);
+  assert.deepEqual([...b.input.holders], ['menu']);
+  b.input.release('menu');
+  assert.equal(b.input.muted, false);
+});
+
 test('peek reads what the devices hold without taking the step\'s mouse deltas', () => {
   const { tree, input, dev } = world();
   dev.press('KeyE').moveMouse(40, 0).setGamepad([0, 0, 0, 0], [1, 0, 0]);

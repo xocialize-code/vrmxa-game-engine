@@ -3,7 +3,7 @@
 // captions, bound to a @vrmxg/game GameFlow (it outlives worlds) through OverlayBinding. Once a frame it asks the binding
 // whether anything changed (the step, the game's version, the conversation, the bindings) and redraws only then: it
 // updates from the step, never from a wall clock. A choice the player makes goes to the simulation as a recorded input
-// (input.choose); while a conversation is going on the overlay has the keyboard and the gamepad (input.muted).
+// (input.choose); while a conversation is going on the overlay has the keyboard and the gamepad (its own claim on them: input.hold).
 //
 //   <GameOverlay :flow="flow" :settings="settings" />     (in a positioned box over the canvas)
 import { ref, shallowRef, nextTick, onMounted, onBeforeUnmount, watch } from 'vue';
@@ -34,7 +34,7 @@ const inputNow = () => props.flow.tree?.services.get('input') ?? null;
 const nav = useNav(root, {
   input: inputNow,
   grab: () => state.value.holding, // only while the game's devices are the overlay's: never one key for both
-  onKey: (e) => { const c = choiceForKey(state.value.dialogue, e.code); if (c) { onChoose(c.id); return true; } return false; },
+  onKey: (e) => { if (e.repeat) return false; const c = choiceForKey(state.value.dialogue, e.code); if (c) { onChoose(c.id); return true; } return false; },
 });
 
 /** Read the session now and redraw if anything changed (`force`: redraw anyway). → the model */

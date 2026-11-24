@@ -337,6 +337,7 @@ export function m0Registry() {
     speaker: { type: 'string', minLength: 1, description: 'The id of the node that says it (a Character is heard and lip-synced; without one the line is a caption).' },
     text: { type: 'string', minLength: 1, description: 'What is said: the caption, and the line itself without a clip.' },
     clip: { type: 'string', description: 'A voice clip (.wav) with its timings beside it.' },
+    seconds: { type: 'number', exclusiveMinimum: 0, description: 'The line\'s length. Default: from its clip\'s word timings (the last word, plus a quarter second), or from its text. Set it to keep a clip\'s tail: a line never takes its length from the decoded audio, which only some hosts have.' },
     pause: { type: 'number', minimum: 0, description: 'Seconds to wait after the line before its choices or the next line.' },
     next: { type: 'string', minLength: 1, description: 'The id of the line after this one when it offers no choice ("end" ends the conversation). Default: the next in the list.' },
     when: { ...conditionSchema(2), description: 'Said only when this holds; otherwise passed over to the next in the list.' },

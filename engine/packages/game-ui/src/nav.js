@@ -75,3 +75,37 @@ export function navTarget(action, { count, index, kind = null }) {
   if (!d) return null;
   return { focus: (index + d + count) % count };
 }
+
+/** The keys that activate a focused control (Enter on its press, Space on its release). */
+export const ACTIVATION_KEYS = ['Enter', 'NumpadEnter', 'Space'];
+
+/**
+ * A key held never activates something new (M5 W3 review): a repeat of Enter or Space is no activation, and a keyboard
+ * activation reaches only the control the key went down on. So Enter held after Continue can't pick the first choice
+ * when it appears under it, and Space pressed on Continue and let go on a choice doesn't pick it. A click with no
+ * activation key down (the mouse, a gamepad's A, a script) is never stopped. Plain logic; use-nav wires it to the page.
+ */
+export class ActivationGuard {
+  /** @param {{ later?: (fn: () => void) => void }} [o] later: runs fn after the current event's default action (setTimeout) */
+  constructor({ later = (fn) => setTimeout(fn, 0) } = {}) { this.later = later; /** code → the element it went down on */ this.down = new Map(); }
+  /** A key went down on `target`. → true when the event must be stopped (a repeat of an activation key) */
+  keydown(code, repeat, target) {
+    if (!ACTIVATION_KEYS.includes(code)) return false;
+    if (repeat) return true;
+    this.down.set(code, target);
+    return false;
+  }
+  /** A key came up: forgotten once this event's default action (Space's click) has run. */
+  keyup(code) {
+    if (!this.down.has(code)) return;
+    const was = this.down.get(code);
+    this.later(() => { if (this.down.get(code) === was) this.down.delete(code); });
+  }
+  /** A click on `target`. → true when it must be stopped: an activation key is down that went down somewhere else */
+  click(target) {
+    for (const el of this.down.values()) if (el !== target) return true;
+    return false;
+  }
+  /** Focus left the page: nothing is held any more. */
+  clear() { this.down.clear(); }
+}

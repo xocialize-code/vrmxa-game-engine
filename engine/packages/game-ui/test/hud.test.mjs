@@ -62,4 +62,10 @@ test('"Saved" comes on checkpointWritten, never on the game\'s checkpoint, and l
   assert.deepEqual(n.at(67).map((x) => x.text), ['Saved', 'Couldn\'t save']);
   assert.deepEqual(n.at(67 + NOTICE_STEPS).map((x) => x.text), ['Couldn\'t save'], 'gone after its steps, by the game\'s clock');
   assert.deepEqual(n.at(70 + NOTICE_STEPS), []);
+  // a slow store: the checkpoint was taken at 67, the write finished at 400. "Saved" counts from 400 (review)
+  const slow = new Notices();
+  slow.take({ type: 'checkpointWritten', id: 'cp', slot: 'checkpoint', step: 67, stored: true }, 400);
+  assert.deepEqual(slow.at(400).map((x) => x.text), ['Saved']);
+  assert.deepEqual(slow.at(400 + NOTICE_STEPS - 1).map((x) => x.text), ['Saved']);
+  assert.deepEqual(slow.at(400 + NOTICE_STEPS), []);
 });

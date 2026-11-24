@@ -41,11 +41,23 @@ export class GameSettings {
     this.ignored = [];
     /** The last write's error, or null once a write lands. A failed write never stops the next one. */
     this.error = null;
+    /** Why the last load read nothing from the store (it threw), or null. */
+    this.loadError = null;
     /** @type {Promise<any>} */ this._writing = Promise.resolve();
   }
 
-  /** Read the store (a relaunch). */
-  async load() { this.data = readSettings(await this.store.read()); this.version++; return this; }
+  /**
+   * Read the store (a relaunch). A store that fails to read never stops the app starting: the settings are the
+   * defaults, and the error is kept in `loadError` for the app to report.
+   */
+  async load() {
+    let raw = null;
+    this.loadError = null;
+    try { raw = await this.store.read(); } catch (e) { this.loadError = e; }
+    this.data = readSettings(raw);
+    this.version++;
+    return this;
+  }
 
   /**
    * Apply the settings: the bindings to an input service (the next step uses them) and the volumes to an audio output
@@ -92,6 +104,17 @@ export class GameSettings {
     return this.save();
   }
 
+  /**
+   * Several actions rebound at once (a rebindPlan's changes: a key moved from one action to another), one save.
+   * @param {any} input @param {Record<string, any[]>} changes
+   */
+  rebindAll(input, changes) {
+    for (const [action, bindings] of Object.entries(changes)) input.rebind(action, bindings);
+    this.data.bindings = input.overrides();
+    this.version++;
+    return this.save();
+  }
+
   /** One action's bindings back as the game has them, or every action's; saved. */
   resetBindings(input, action) {
     input.resetBindings(action);
@@ -128,7 +151,7 @@ export function rebindRows(actions, { labels = {}, hide = [] } = {}) {
   const rows = [];
   for (const [action, a] of Object.entries(actions)) {
     if (hide.includes(action)) continue;
-    const named = labels[action] ?? ACTION_LABELS[action] ?? action;
+    const named = rowLabel(action, 0, labels);
     const text = (list) => list.map(describeBinding).join(', ') || 'Not bound';
     if (a.type === 'button') {
       rows.push({ id: action, action, type: 'button', direction: 0, label: named, keyboard: text(a.bindings.filter(kbSlot)), gamepad: text(a.bindings.filter(padSlot)), fixed: [] });
@@ -138,7 +161,7 @@ export function rebindRows(actions, { labels = {}, hide = [] } = {}) {
     const dirs = a.bindings.some((b) => kbSlot(b) || padSlot(b)) ? [-1, 1] : [];
     if (!dirs.length) { rows.push({ id: action, action, type: 'axis', direction: 0, label: named, keyboard: '—', gamepad: '—', fixed }); continue; }
     for (const d of dirs) {
-      const label = labels[`${action}${d < 0 ? '-' : '+'}`] ?? DIRECTION_LABELS[action]?.[d < 0 ? 0 : 1] ?? `${named} ${d < 0 ? '−' : '+'}`;
+      const label = rowLabel(action, d, labels);
       const mine = a.bindings.filter((b) => sign(b) === d);
       rows.push({ id: `${action}${d < 0 ? '-' : '+'}`, action, type: 'axis', direction: d, label, keyboard: text(mine.filter(kbSlot)), gamepad: text(mine.filter(padSlot)), fixed: d > 0 ? fixed : [] });
     }
@@ -146,9 +169,17 @@ export function rebindRows(actions, { labels = {}, hide = [] } = {}) {
   return rows;
 }
 
+/** A row's name in the list: an action's ("Jump"), or one direction of an axis ("Move right"). */
+export function rowLabel(action, direction = 0, labels = {}) {
+  const named = labels[action] ?? ACTION_LABELS[action] ?? action;
+  if (!direction) return named;
+  return labels[`${action}${direction < 0 ? '-' : '+'}`] ?? DIRECTION_LABELS[action]?.[direction < 0 ? 0 : 1] ?? `${named} ${direction < 0 ? '−' : '+'}`;
+}
+
 /**
- * An action's new bindings with one slot rebound: the slot's bindings (on that row's direction, for an axis) are
- * replaced by `binding`; everything else the action has is kept as it was.
+ * An action's new bindings with one slot rebound: the slot's first binding (on that row's direction, for an axis) is
+ * replaced by `binding`, so a slot that reads "D, Right" rebound to L reads "L, Right"; everything else the action has
+ * is kept as it was. An empty slot gets the binding added.
  * @param {any[]} bindings the action's bindings now @param {{ type: 'axis' | 'button', direction: number }} row
  * @param {'keyboard' | 'gamepad'} slot @param {any} binding { key } or { gamepadButton }
  */
@@ -156,10 +187,45 @@ export function applyCapture(bindings, row, slot, binding) {
   const inSlot = slot === 'keyboard' ? kbSlot : padSlot;
   const here = (b) => inSlot(b) && (row.type === 'button' || sign(b) === row.direction);
   const b = row.type === 'axis' ? { ...binding, value: row.direction } : { ...binding };
-  const out = [], at = bindings.findIndex(here);
-  bindings.forEach((x, i) => { if (i === at) out.push(b); else if (!here(x)) out.push(structuredClone(x)); });
+  const at = bindings.findIndex(here);
+  const out = bindings.map((x, i) => (i === at ? b : structuredClone(x)));
   if (at < 0) out.push(b);
   return out;
+}
+
+const sameInput = (a, b) => (b.key !== undefined && a.key === b.key) || (b.gamepadButton !== undefined && a.gamepadButton === b.gamepadButton) || (b.mouseButton !== undefined && a.mouseButton === b.mouseButton);
+
+/**
+ * What rebinding one slot to `binding` changes, and where that key or button already works: in another action, or in
+ * the other direction of the same axis (rebinding Move right to A, which is Move left's: A would then be +1 and −1
+ * together, and holding it would move nothing). A key is never bound twice: applying the plan moves it here, out of
+ * everywhere else it was, the same action included (a second copy in this slot is dropped).
+ * @param {Record<string, { type: 'axis' | 'button', bindings: any[] }>} actions input.bindings()
+ * @param {{ action: string, type: 'axis' | 'button', direction: number }} row @param {'keyboard' | 'gamepad'} slot
+ * @param {any} binding { key } or { gamepadButton } @param {{ labels?: Record<string, string> }} [o]
+ * @returns {{ changes: Record<string, any[]>, conflicts: Array<{ action: string, direction: number, label: string }> }}
+ *   changes: each touched action's new bindings (GameSettings.rebindAll applies them); conflicts: where it is now,
+ *   to warn about and confirm before applying
+ */
+export function rebindPlan(actions, row, slot, binding, { labels = {} } = {}) {
+  const conflicts = [], changes = {};
+  for (const [name, a] of Object.entries(actions)) {
+    const hits = a.bindings.filter((b) => sameInput(b, binding));
+    if (!hits.length) continue;
+    if (name !== row.action) {
+      const dirs = a.type === 'axis' ? [...new Set(hits.map(sign))] : [0];
+      for (const d of dirs) conflicts.push({ action: name, direction: d, label: rowLabel(name, d, labels) });
+      changes[name] = a.bindings.filter((b) => !sameInput(b, binding)).map((b) => structuredClone(b));
+    } else if (row.type === 'axis') {
+      for (const d of [...new Set(hits.map(sign))]) if (d !== row.direction) conflicts.push({ action: name, direction: d, label: rowLabel(name, d, labels) });
+    }
+  }
+  // this action: the slot rebound, and any other place it had the same key (the other direction, a second copy) emptied
+  const mine = actions[row.action].bindings, placed = applyCapture(mine, row, slot, binding);
+  const at = mine.findIndex((b) => (slot === 'keyboard' ? kbSlot(b) : padSlot(b)) && (row.type === 'button' || sign(b) === row.direction));
+  const keep = at >= 0 ? at : placed.length - 1;
+  changes[row.action] = placed.filter((b, i) => i === keep || !sameInput(b, binding));
+  return { changes, conflicts };
 }
 
 /** The binding a pressed key gives, or null for keys that leave a capture (Escape) or can't be bound. */
@@ -175,10 +241,9 @@ export function captureButton(before, now) {
   return null;
 }
 
-/** The other actions a binding already does (a settings list warns: "also Interact"). */
+/** The other actions a binding already does, by name (rebindPlan says it per direction, the same action's included). */
 export function conflicts(actions, action, binding) {
-  const same = (b) => (binding.key !== undefined && b.key === binding.key) || (binding.gamepadButton !== undefined && b.gamepadButton === binding.gamepadButton);
-  return Object.entries(actions).filter(([name, a]) => name !== action && a.bindings.some(same)).map(([name]) => name);
+  return Object.entries(actions).filter(([name, a]) => name !== action && a.bindings.some((b) => sameInput(b, binding))).map(([name]) => name);
 }
 
-export { keyName };
+export { keyName, describeBinding };

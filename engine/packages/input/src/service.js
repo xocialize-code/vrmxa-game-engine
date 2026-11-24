@@ -36,12 +36,14 @@ export class InputService {
     /** Choices handed over since the last step: the next step latches them. @type {Map<string, string | number | boolean>} */
     this._queued = new Map();
     /**
-     * While true the devices give nothing to the actions (an overlay has the keyboard and the gamepad: a conversation's
-     * answers, a menu). Choices still pass. A button held when it ends stays up until it is let go, so the press that
-     * picked an answer isn't also a jump (an axis, a held direction, reads again at once). It gates the devices only: what is latched is recorded, and a replay never
-     * looks at it.
+     * Who holds the devices now (hold / release). While anyone does, the devices give nothing to the actions (an overlay
+     * has the keyboard and the gamepad: a conversation's answers, the app's menu). Choices still pass. A button held when
+     * the last claim goes stays up until it is let go, so the press that picked an answer isn't also a jump (an axis, a
+     * held direction, reads again at once). Each holder has its own claim, so neither lets go of the other's. It gates
+     * the live devices only: what is latched is recorded, and a replay never looks at it.
+     * @type {Set<any>}
      */
-    this.muted = false;
+    this.holders = new Set();
     this._held = new Uint8Array(this.map.buttons.length);
     /** @type {null | { version: 1 | 2, start: number, axes: string[], buttons: string[], frames: Array<[number[], number] | [number[], number, Record<string, string | number | boolean>]> }} */
     this.recording = null;
@@ -116,6 +118,16 @@ export class InputService {
     return true;
   }
 
+  // ---------------------------------------------------------------- holding the devices (overlays, menus)
+  /** Take the devices from the game for `owner` (any value: the overlay, 'pause-menu'). Idempotent. */
+  hold(owner) { this.holders.add(owner); }
+  /** Give back `owner`'s claim; the game has the devices again once nobody holds them. */
+  release(owner) { this.holders.delete(owner); }
+  /** Whether anyone holds the devices. */
+  get muted() { return this.holders.size > 0; }
+  /** The one-owner form: `muted = true` holds for the owner 'muted', `false` releases that claim (and only that one). */
+  set muted(on) { if (on) this.hold('muted'); else this.release('muted'); }
+
   // ---------------------------------------------------------------- the devices outside the step (a UI)
   /**
    * What the devices hold now, without taking it from the step: { keys, mouse: { buttons }, gamepad }. For menus and
@@ -159,7 +171,7 @@ export class InputService {
    * A scene change (@vrmxg/game's GameFlow, M5 W2): the next world's input service takes over where this one is. The
    * latched frame goes with it (a button held across the change isn't pressed again), and so do a recording in
    * progress and a replay: both count frames from the session's step, which carries on. So do the player's bindings,
-   * a choice handed over and not yet latched, and an overlay's hold on the devices (M5 W3).
+   * a choice handed over and not yet latched, and who holds the devices (M5 W3).
    * @param {InputService} next
    */
   carryTo(next) {
@@ -168,7 +180,7 @@ export class InputService {
     next.replaying = this.replaying;
     next.map.applyOverrides(this.map.overrides());
     next._queued = this._queued; this._queued = new Map();
-    next.muted = this.muted;
+    next.holders = new Set(this.holders);
     if (next._held.length === this._held.length) next._held.set(this._held);
   }
 
