@@ -34,7 +34,7 @@ export function imageStats(rgba) {
 }
 import { createValidator, flatten, describeType, describeBehaviour } from '@vrmxg/scene';
 import { describeRules, OPS } from '@vrmxg/game';
-import { gameRules, validateGame, refusal } from './game.js';
+import { gameRules, validateGame, refusal, GAME_NOTE } from './game.js';
 
 /**
  * The tool list for a target.
@@ -256,7 +256,7 @@ export function createHandlers(reg, target) {
       if (op === 'state') {
         const g = target.live().live.services.get('game');
         if (!g) throw new Error('the running world has no game service: the scene has no game nodes (GameRules, GameCounter, GameTimer, GameGoal, Checkpoint), or this app doesn\'t run rules');
-        return g.view();
+        return { state: g.view(), note: GAME_NOTE }; // goal texts and labels are the project's
       }
       if (!['rules', 'validate', 'export'].includes(op)) throw new Error(`op: rules, state, validate or export (not "${op}")`);
       if (!target.project) throw new Error('no project to read here');

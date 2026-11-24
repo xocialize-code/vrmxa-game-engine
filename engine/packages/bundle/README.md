@@ -17,8 +17,10 @@ const scene = JSON.parse(await build.text(build.game.entry));       // build.byt
 
 `exportBuild({ project, runtime, game?, ready?, write?, onProgress? })` is the one exporter. Its first half,
 `planBuild({ project, game?, registry? })`, reads only the project: the game document checked, every file traced, each
-one's licence row; it throws the same refusals and returns what a build would hold. MCP's project check calls it, so a
-check and an export can't disagree about what is refused. Every check passes before
+one's licence row; it throws the same refusals and returns what a build would hold. With `all: true` it carries on past
+each refusal and returns every one as `problems`, for a check that shows a person everything at once; `exportBuild`
+never asks for that, so a build is the same either way. MCP's project check calls it, so a check and an export can't
+disagree about what is refused. Every check passes before
 `ready` is called and before the first `write`, so a caller that has to ask for a folder asks only then; `write: null`
 checks and hashes everything and writes nothing. It returns the manifest, its text, that text's SHA-256, and
 `byPattern`.

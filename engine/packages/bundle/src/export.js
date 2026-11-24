@@ -22,11 +22,17 @@ const text = (b) => new TextDecoder().decode(b);
  * @param {{ files: string[], read: (ref: string) => Promise<Uint8Array>, truncated?: boolean }} o.project as exportBuild takes it
  * @param {any} [o.game] the game document; without it the project's game.json is read
  * @param {any} [o.registry] as exportBuild takes it
+ * @param {boolean} [o.all] collect every refusal instead of throwing the first: they come back as `problems` (each a
+ *   BuildError), with what could be traced. For a check that shows a person everything at once; an export never asks
+ *   for it, so what it builds is the same either way
  * @returns {Promise<{ game: import('./game.js').Game, refs: string[], source: Map<string, string>, why: Map<string, string>,
- *   licence: Map<string, { pattern: string, licence: string }> }>} refs: the files in manifest order; source: each one's
- *   own file in the project; why: the document that named it; licence: each one's row
+ *   licence: Map<string, { pattern: string, licence: string }>, problems: BuildError[] }>} refs: the files in manifest
+ *   order; source: each one's own file in the project; why: the document that named it; licence: each one's row;
+ *   problems: with `all`, every refusal (empty: the export would pass these checks)
  */
-export async function planBuild({ project, game = null, registry = undefined }) {
+export async function planBuild({ project, game = null, registry = undefined, all = false }) {
+  const problems = [];
+  const fail = (e) => { if (!all) throw e; problems.push(e); };
   if (project.truncated) throw new BuildError('too_many_files', `the project's listing was cut short at ${project.files.length} files: an export needs every file's name, so nothing was exported`);
   const files = project.files.filter((f) => !isHidden(f));
   // what the game is
@@ -37,16 +43,17 @@ export async function planBuild({ project, game = null, registry = undefined }) 
   game = checkGame(game);
   // what it needs, and whether each file may ship. Only the files the game uses are held to a build's rules for
   // paths: a file it doesn't use can be named anything
-  if (!files.includes(LICENCES_FILE)) throw new BuildError('no_licence', `the project has no ${LICENCES_FILE}: every file in a build needs a row in it`, [LICENCES_FILE]);
-  const { refs, source, why } = await collect({ game, files, read: project.read, registry: registry === undefined ? m0Registry() : registry });
-  for (const ref of refs) checkPath(ref, 'the project file');
+  const hasLicences = files.includes(LICENCES_FILE);
+  if (!hasLicences) fail(new BuildError('no_licence', `the project has no ${LICENCES_FILE}: every file in a build needs a row in it`, [LICENCES_FILE]));
+  const { refs, source, why } = await collect({ game, files, read: project.read, registry: registry === undefined ? m0Registry() : registry, problems: all ? problems : null });
+  for (const ref of refs) { try { checkPath(ref, 'the project file'); } catch (e) { fail(e); } }
   const clash = caseClash(refs);
-  if (clash) throw new BuildError('bad_path', `${clash[0]} and ${clash[1]} differ only by case: a Mac's disk can't hold both`, clash);
-  const rows = parseLicences(text(await project.read(LICENCES_FILE)));
+  if (clash) fail(new BuildError('bad_path', `${clash[0]} and ${clash[1]} differ only by case: a Mac's disk can't hold both`, clash));
+  const rows = hasLicences ? parseLicences(text(await project.read(LICENCES_FILE))) : [];
   const licence = new Map(refs.map((ref) => [ref, licenceOf(rows, ref)]));
-  const unlicensed = refs.filter((ref) => !licence.get(ref));
-  if (unlicensed.length) throw new BuildError('no_licence', `no row in ${LICENCES_FILE} for ${unlicensed.join(', ')}: a file with no licence can't go into a build`, unlicensed);
-  return { game, refs, source, why, licence: /** @type {any} */ (licence) };
+  const unlicensed = hasLicences ? refs.filter((ref) => !licence.get(ref)) : [];
+  if (unlicensed.length) fail(new BuildError('no_licence', `no row in ${LICENCES_FILE} for ${unlicensed.join(', ')}: a file with no licence can't go into a build`, unlicensed));
+  return { game, refs, source, why, licence: /** @type {any} */ (licence), problems };
 }
 
 /**

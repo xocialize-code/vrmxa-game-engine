@@ -50,7 +50,7 @@ test('install: into a folder, again over itself, never over someone else\'s, and
   fs.writeFileSync(path.join(other, 'vrmxg/notes.txt'), 'mine');
   const r = spawnSync(process.execPath, [install, '--dest', other], { encoding: 'utf8' });
   assert.equal(r.status, 1);
-  assert.match(r.stderr, /holds something else: left alone/);
+  assert.match(r.stderr, /holds a folder of something else: left alone/);
   assert.equal(fs.readFileSync(path.join(other, 'vrmxg/notes.txt'), 'utf8'), 'mine');
   const proj = path.join(work, 'game');
   execFileSync(process.execPath, [install, '--project', proj, '--link']);
@@ -64,11 +64,45 @@ test('install never removes its own source, and a folder option needs a folder',
   fs.cpSync(skills, path.join(copyRoot, 'skills'), { recursive: true });
   const r = spawnSync(process.execPath, [path.join(copyRoot, 'skills/install.mjs'), '--dest', path.join(copyRoot, 'skills')], { encoding: 'utf8' });
   assert.equal(r.status, 1);
-  assert.match(r.stderr, /this skill's own source: nothing installed/);
+  assert.match(r.stderr, /this skill's own source .*nothing installed there, --force or not/);
   assert.ok(fs.existsSync(path.join(copyRoot, 'skills/vrmxg/SKILL.md')), 'the source is still there');
   for (const k of ['--dest', '--project']) {
     const e = spawnSync(process.execPath, [install, k], { encoding: 'utf8' });
     assert.equal(e.status, 2);
     assert.match(e.stderr, new RegExp(`${k} needs a folder`));
   }
+});
+
+test('install refuses a target that contains its source (the repo cloned into the skills folder), even with --force', () => {
+  const skillsHome = path.join(work, 'clone-home');
+  const clone = path.join(skillsHome, 'vrmxg'); // the repository cloned as ~/.claude/skills/vrmxg
+  fs.cpSync(skills, path.join(clone, 'skills'), { recursive: true });
+  fs.writeFileSync(path.join(clone, 'README.md'), 'the rest of the repository');
+  const r = spawnSync(process.execPath, [path.join(clone, 'skills/install.mjs'), '--dest', skillsHome, '--force'], { encoding: 'utf8' });
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /contains this skill's own source .*--force or not/);
+  assert.ok(fs.existsSync(path.join(clone, 'README.md')) && fs.existsSync(path.join(clone, 'skills/vrmxg/SKILL.md')), 'the clone is untouched');
+});
+
+test('install: no home folder, a dangling link, and a copy with hand edits are each refused without --force', () => {
+  const cwd = fs.mkdtempSync(path.join(work, 'cwd-'));
+  const nohome = spawnSync(process.execPath, [install], { encoding: 'utf8', cwd, env: { ...process.env, HOME: '' } });
+  assert.equal(nohome.status, 2);
+  assert.match(nohome.stderr, /no home folder/);
+  assert.deepEqual(fs.readdirSync(cwd), [], 'nothing written where it was run');
+  const dest = path.join(work, 'edges');
+  fs.mkdirSync(dest, { recursive: true });
+  fs.symlinkSync(path.join(work, 'gone'), path.join(dest, 'vrmxg'));
+  const dangling = spawnSync(process.execPath, [install, '--dest', dest], { encoding: 'utf8' });
+  assert.equal(dangling.status, 1);
+  assert.match(dangling.stderr, /holds a link to nothing: left alone/);
+  execFileSync(process.execPath, [install, '--dest', dest, '--force']);
+  assert.equal(fs.readFileSync(path.join(dest, 'vrmxg/SKILL.md'), 'utf8'), text);
+  fs.appendFileSync(path.join(dest, 'vrmxg/SKILL.md'), '\nmy own note\n');
+  const edited = spawnSync(process.execPath, [install, '--dest', dest], { encoding: 'utf8' });
+  assert.equal(edited.status, 1);
+  assert.match(edited.stderr, /holds a copy of this skill with changes in it: left alone/);
+  assert.match(fs.readFileSync(path.join(dest, 'vrmxg/SKILL.md'), 'utf8'), /my own note/);
+  execFileSync(process.execPath, [install, '--dest', dest, '--force']);
+  assert.equal(fs.readFileSync(path.join(dest, 'vrmxg/SKILL.md'), 'utf8'), text);
 });

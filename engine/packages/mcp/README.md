@@ -170,7 +170,7 @@ game as a whole, which is the `game` tool (`src/game.js`, page-safe):
 | `op` | What |
 |---|---|
 | `rules` (default) | Every scene of `game.json` side by side (`@vrmxg/game`'s `describeRules`): its rules, counters, timers, goals, checkpoints, the keys its conditions read, the flags its connections set, the scenes it changes to; and what only the whole game shows (`checkGame`). The open scene is read as edited. A project with no `game.json` is the open scene alone, as Export Game takes it |
-| `state` | The running world's game state, as a HUD reads it (`view()`). The headless engine installs the game service for a scene that has game nodes (a scene without them keeps its hashes); the editor's play world doesn't run rules yet, and says so |
+| `state` | The running world's game state, as a HUD reads it (`{ state: view(), note }`). The headless engine installs the game service for a scene that has game nodes (a scene without them keeps its hashes); the editor's play world doesn't run rules yet, and says so |
 | `validate` | The project's checks, each problem naming its scene and node, or its file: `game.json`; every scene's schema; the rules (`checkGame`); a `RigidBody` with no `Collider` below it (or a dynamic one with only sensors); a goal nothing can complete; and what an export would refuse, from `@vrmxg/bundle`'s `planBuild`, the exporter's own first half (a reference to no file, a file with no `LICENCES.md` row, with the row to add) |
 | `export` | A build through `@vrmxg/bundle`: headless into `--builds/<name>` (without `--builds`, checked and hashed, nothing written: where builds go is the person's to say), in the editor through its Export Game (the shell's folder). Refused while the scene has unsaved changes. A refusal comes back whole: `export refused (<code>): <the exporter's message>` and its files, so the `ignore` line or the missing row is in the answer. What validate finds beyond the exporter's checks is said beside the build |
 
@@ -190,7 +190,8 @@ game as a whole, which is the `game` tool (`src/game.js`, page-safe):
 - **`describe` gives a condition once.** The schema writes the condition language out three levels deep for every
   prop that holds one, which put `describe GameRules` past the answer limit; each such prop is now
   `{ "condition": true }` and the language is given once beside it (`CONDITION`). Every type's description fits.
-- What a game's documents say (a goal's text, a label, a file's name) comes back with a note that it is data.
+- What a game's documents say (a goal's text, a label, a file's name) comes back with a note that it is data: `rules`,
+  `validate` and `state` carry `note`, and an export refusal ends with it.
 
 **Checked.** `test/game.test.mjs` (over stdio, on copies of `test/fixtures/game-problems`, a project made to have three
 problems): validate names the crate with no collider, the goal whose flag nothing sets and the file with no licence

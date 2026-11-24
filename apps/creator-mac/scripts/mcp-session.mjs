@@ -80,7 +80,7 @@ const home = os.homedir();
 const record = {
   date: new Date().toISOString().slice(0, 10), client: `claude -p (${init?.claude_code_version ? `Claude Code ${init.claude_code_version}` : 'Claude Code'}, ${model}), --mcp-config with vrmxg-mcp --creator`,
   exitCode: code, mcpServers: init?.mcp_servers ?? null, tools: (init?.tools ?? []).filter((t) => t.startsWith('mcp__') || t === 'Skill'),
-  ...(skill ? { skill: 'vrmxg, installed as the session folder\'s own (outside the repository); no file, shell or web tools', skills: init?.skills ?? null } : {}),
+  ...(skill ? { skill: 'vrmxg, installed as the session folder\'s own (outside the repository); no file, shell or web tools', skillsLoaded: { vrmxg: (init?.skills ?? []).includes('vrmxg'), others: (init?.skills ?? []).filter((k) => k !== 'vrmxg').length } } : {}), // not their names: which skills a machine has is its own
   prompt: skill ? promptSkill : prompt, calls,
   failed: calls.filter((c) => c.isError).length, costUsd: result?.total_cost_usd ?? null, turns: result?.num_turns ?? null, report: result?.result ?? null,
 };

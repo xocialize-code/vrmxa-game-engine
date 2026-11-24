@@ -18,6 +18,10 @@ node apps/creator-mac/scripts/mcp-session.mjs --skill --port 5194   # after row 
 - [x] The project opens on the sample short, linked to the agent's MCP server, with no undo step. *AppProbe 2026-11-24: Open Project on `project-w9-skill`; the sample short, 11 shots and thumbnails; no undo step; `#mcp-state` polling 5194.*
 - [x] An agent with only the vrmxg skill and the creator's MCP tools makes the short's edits; the last one is in the creator's Undo, marked (MCP), and the export it queued is in the render queue. *AppProbe 2026-11-24: `mcp-session.mjs --skill` (Sonnet; the session's folder outside the repository; its only personal skill `vrmxg`, which it loaded first; no file, shell or web tools): 22 calls, none failed, $0.13 ([record](hand-test/results/mcp-creator-session-skill.json)). It described each command before running it; patched Mira's first line (keeping its `[[point]]` tag) and voiced it; recast HANA in af_nicole (4 lines re-voiced); re-voiced the second line with its new words; put shot 030 on a new 85 mm close-up of Mira; rendered frame 200 (not blank); queued a review export, not run. Five undo steps, each "(MCP)"; the export queued in the render queue ([shot](hand-test/shots/m5-skill/r2-1.png)).*
 
+The records keep whether `vrmxg` was loaded and how many other skills the session had (`skillsLoaded`), not their
+names: which skills a machine has installed is its own. The first run had this machine's personal skills too (96
+others); every run since loads none (`--setting-sources project,local`: Claude Code's 22 built-in skills only).
+
 ## Results
 
 | Row | Step | What happened | Undo |

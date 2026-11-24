@@ -20,31 +20,10 @@
   "mcp__vrmxg-creator__undo"
  ],
  "skill": "vrmxg, installed as the session folder's own (outside the repository); no file, shell or web tools",
- "skills": [
-  "vrmxg",
-  "deep-research",
-  "design",
-  "slides",
-  "design-sync",
-  "dataviz",
-  "artifact-diagramming",
-  "artifact-capabilities",
-  "update-config",
-  "verify",
-  "debug",
-  "code-review",
-  "simplify",
-  "batch",
-  "fewer-permission-prompts",
-  "doctor",
-  "loop",
-  "schedule",
-  "claude-api",
-  "workflow-authoring",
-  "run",
-  "run-skill-generator",
-  "plugin-authoring"
- ],
+ "skillsLoaded": {
+  "vrmxg": true,
+  "others": 22
+ },
  "prompt": "The VRMXG creator is open on the sample short \"The Order\" (cafe-order): Hana runs a cafe and Mira orders. Use the vrmxg skill to work out how. Make these changes to the short:\n1. Mira's line \"A latte, please.\" becomes \"A latte, please. To go.\"\n2. Recast the role HANA with the character file characters/hana.vrmxa in the voice af_nicole.\n3. Re-voice Mira's line \"Is it always this quiet in the morning?\" with the new words \"Is it always this quiet before nine?\".\n4. Shot 030 gets a new camera: a close-up of Mira with an 85 mm lens.\n5. Render frame 200 at 960×540 and say what it shows.\n6. Queue an export of the short at the review preset, without running it.\nDon't undo or save. At the end, list the undo steps you made.",
  "calls": [
   {

@@ -307,16 +307,21 @@ export async function validateGame(project, { open = null, registry: reg, unsave
   const { check } = createValidator(reg);
   const flat = new Map();
   for (const [name, doc] of scenes) {
-    const v = check(doc, { prefabs });
-    for (const m of v.errors) problems.push({ check: 'scene', scene: name, message: m });
-    for (const m of v.warnings) warnings.push({ check: 'scene', scene: name, message: m });
+    const v = check(doc, { prefabs }), at = (m) => ({ scene: name, ...nodeOfPath(doc, m), file: name });
+    for (const m of v.errors) problems.push({ check: 'scene', ...at(m), message: m });
+    for (const m of v.warnings) warnings.push({ check: 'scene', ...at(m), message: m });
     const w = whole(doc, prefabs);
     if (w) flat.set(name, w);
   }
   if (open?.ref && game && !game.scenes.includes(open.ref)) warnings.push({ check: 'game', scene: open.ref, message: `the open scene, ${open.ref}, isn't one of the game's scenes (${game.scenes.join(', ')}): it isn't checked here. Add it to "scenes" in ${GAME_FILE} if it is part of the game` });
   const rules = checkRules(scenes, { prefabs });
-  for (const m of rules.problems) problems.push({ check: 'rules', scene: [...scenes.keys()].find((s) => m.startsWith(`${s}: `)), message: m });
-  for (const m of rules.unchecked) warnings.push({ check: 'rules', message: m });
+  const ruled = new Set(); // "scene\0node" of every node a rules problem names: it is reported once, as that
+  for (const m of rules.problems) {
+    const scene = [...scenes.keys()].find((x) => m.startsWith(`${x}: `)), node = nodeOfRule(m.slice(scene ? scene.length + 2 : 0));
+    if (node) ruled.add(`${scene}\0${node}`);
+    problems.push({ check: 'rules', ...(scene ? { scene } : {}), ...(node ? { node } : {}), file: scene ?? GAME_FILE, message: m });
+  }
+  for (const m of rules.unchecked) warnings.push({ check: 'rules', file: m.split(':')[0], message: m });
   for (const [name, w] of flat) {
     const c = colliderProblems(name, w.nodes, reg);
     problems.push(...c.problems); warnings.push(...c.warnings);
@@ -326,6 +331,7 @@ export async function validateGame(project, { open = null, registry: reg, unsave
     const stuck = unreachableGoals(flat);
     const code = stuck.length ? await codeMayChangeState(game, src) : false;
     for (const g of stuck) {
+      if (ruled.has(`${g.scene}\0${g.node}`)) continue; // its rules problem says why: the scene wouldn't start
       const fix = `Connect a signal to "${g.node}".complete, or to what its condition reads (describe GameGoal)`;
       if (code) warnings.push({ check: 'goal', scene: g.scene, node: g.node, message: `GameGoal "${g.node}": nothing in the game's scenes can complete it: ${g.why}. The project's behaviours use the game service, and code isn't read here: if none of them does it, this goal can't be reached. ${fix}` });
       else problems.push({ check: 'goal', scene: g.scene, node: g.node, message: `GameGoal "${g.node}": nothing can complete it: ${g.why}. ${fix}` });
@@ -333,10 +339,12 @@ export async function validateGame(project, { open = null, registry: reg, unsave
   }
   // what an export would refuse: the exporter's own first half, on the same files
   if (game) {
-    try { await planBuild({ project: src, game, registry: reg }); } catch (e) {
-      if (e?.name !== 'BuildError') throw e;
+    // every refusal at once (planBuild's collect-all mode, which an export doesn't use), each file its own entry
+    let found;
+    try { found = (await planBuild({ project: src, game, registry: reg, all: true })).problems; } catch (e) { if (e?.name !== 'BuildError') throw e; found = [e]; }
+    for (const e of found) {
       if (e.code === 'no_licence') for (const f of e.files) problems.push({ check: 'licence', file: f, message: f === 'LICENCES.md' ? e.message : `${f} has no row in LICENCES.md, so an export would refuse it. Add a table row: | \`${f}\` | its licence | its source |` });
-      else if (!problems.some((p) => p.check === 'reference' && p.file === e.files?.[0])) problems.push({ check: e.code === 'missing_file' ? 'reference' : 'export', ...(e.files?.length ? { file: e.files[0] } : {}), message: `an export would stop: ${e.message}` });
+      else if (!problems.some((p) => p.check === 'reference' && p.file === e.files?.[0])) problems.push({ check: e.code === 'missing_file' ? 'reference' : 'export', file: e.files?.[0] ?? GAME_FILE, message: `an export would stop: ${e.message}` });
     }
   }
   return {
@@ -349,7 +357,24 @@ export async function validateGame(project, { open = null, registry: reg, unsave
   };
 }
 
+/** The node a scene validator message is about ("/nodes/3 …", "/connections/0 …"), as { node }, or nothing. */
+function nodeOfPath(doc, m) {
+  const n = /^\/nodes\/(\d+)/.exec(m), c = /^\/connections\/(\d+)/.exec(m);
+  const id = n ? doc.nodes?.[Number(n[1])]?.id : c ? doc.connections?.[Number(c[1])]?.from : undefined;
+  return typeof id === 'string' ? { node: id } : {};
+}
+
+/** The node a rules problem names (@vrmxg/game's messages: `GameGoal "x": …`, a connection to it, a duplicate), or null. */
+function nodeOfRule(m) {
+  const own = /^(?:GameRules|GameCounter|GameTimer|GameGoal|Checkpoint) "([^"]+)"/.exec(m);
+  if (own) return own[1];
+  const conn = /^the connection [^ ]+ → ([^ .]+(?:\/[^ .]+)*)\./.exec(m);
+  if (conn) return conn[1];
+  const two = /^(?:two \w+ nodes named "[^"]*"|a scene has one GameRules node): "[^"]+" and "([^"]+)"/.exec(m);
+  return two ? two[1] : null;
+}
+
 /** A refused export as one text an agent can act on: the code, the exporter's message whole, and the files it names. */
 export function refusal(e) {
-  return `export refused (${e.code}): ${e.message}${e.files?.length ? `\nfiles: ${JSON.stringify(e.files)}` : ''}`;
+  return `export refused (${e.code}): ${e.message}${e.files?.length ? `\nfiles: ${JSON.stringify(e.files)}` : ''}\nnote: ${GAME_NOTE}`;
 }
