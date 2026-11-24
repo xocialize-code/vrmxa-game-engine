@@ -31,19 +31,21 @@ const out = await page.evaluate(async () => {
   let held = new Set();
   while (t.clock.step < 140) { const k = t.clock.step; const want = new Set(ROUTE.filter(([a, b]) => k >= a && k < b).flatMap(([, , keys]) => keys)); for (const x of held) if (!want.has(x)) key('keyup', x); for (const x of want) if (!held.has(x)) key('keydown', x); held = want; t.step(); }
   for (const x of held) key('keyup', x);
-  const gl = host.renderer.getContext(), canvas = host.renderer.domElement;
-  const size = [gl.drawingBufferWidth, gl.drawingBufferHeight];
+  const canvas = host.renderer.domElement;
+  const size = [canvas.width, canvas.height]; // the drawing buffer, on either backend
   // draw calls summed over the whole frame (three resets its counters on every render(), and split screen renders twice)
   const info = host.renderer.info;
-  const time = () => {
+  // the GPU's work included: host.finish() is gl.finish() on WebGL and onSubmittedWorkDone on WebGPU (M4 W13: the
+  // check called gl.finish() itself and threw on WebGPU)
+  const time = async () => {
     const ms = []; let calls = 0, triangles = 0;
-    for (let i = 0; i < 40; i++) { info.autoReset = false; info.reset(); const a = performance.now(); host.render(1, false); gl.finish(); ms.push(performance.now() - a); calls = info.render.calls; triangles = info.render.triangles; }
+    for (let i = 0; i < 40; i++) { info.autoReset = false; info.reset(); const a = performance.now(); host.render(1, false); await host.finish(); ms.push(performance.now() - a); calls = info.render.calls; triangles = info.render.triangles; }
     info.autoReset = true; ms.sort((x, y) => x - y);
     return { median: +ms[20].toFixed(3), p90: +ms[36].toFixed(3), calls, triangles };
   };
   const layout = host.layout;
-  const split = time();
-  host.layout = null; const one = time();
+  const split = await time();
+  host.layout = null; const one = await time();
   host.layout = layout; host.render(1, false);
   const p = (id) => t.find(id).object3d.position.toArray().map((v) => +v.toFixed(2));
   return { size, canvas: [canvas.clientWidth, canvas.clientHeight], split, one, ratio: +(split.median / one.median).toFixed(2), mira: p('mira'), hana: p('hana-1'), step: t.clock.step };

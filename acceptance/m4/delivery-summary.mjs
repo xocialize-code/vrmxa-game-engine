@@ -1,11 +1,11 @@
 // M4 W10 (AB-T-0582): one table of every delivery run in results/m4-delivery/ (acceptance/m4/delivery-wkwebview.sh):
 // per run file, the short, preset, backend, origin, each job's film time and per-frame costs, the delivery's total,
 // the frame digests and what the runs agreed on. Writes results/m4-delivery/summary.json and prints the table.
-//   node acceptance/m4/delivery-summary.mjs
+//   node acceptance/m4/delivery-summary.mjs [folder]     (default results/m4-delivery)
 import fs from 'node:fs';
 import path from 'node:path';
 
-const dir = path.join(import.meta.dirname, '../results/m4-delivery');
+const dir = process.argv[2] ? path.resolve(process.argv[2]) : path.join(import.meta.dirname, '../results/m4-delivery');
 const rows = [];
 for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.json') && x !== 'summary.json').sort()) {
   const r = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
@@ -27,5 +27,5 @@ const summary = {
   rows,
 };
 fs.writeFileSync(path.join(dir, 'summary.json'), `${JSON.stringify(summary, null, 1)}\n`);
-for (const r of rows) for (const [i, j] of r.jobs.entries()) console.log([r.file.replace('-loopback.json', '').padEnd(46), `job${i + 1}`, j.state, j.frames, `${j.filmS}s`, j.perFrameMs ? `${j.perFrameMs.total}ms/f` : '', j.totalS ? `delivery ${j.totalS}s` : '', j.frameDigest, j.check ? `check ${j.check.odd} odd` : ''].join(' '));
+for (const r of rows) for (const [i, j] of r.jobs.entries()) console.log([r.file.replace('.json', '').padEnd(56), `job${i + 1}`, j.state, j.frames, `${j.filmS}s`, j.perFrameMs ? `${j.perFrameMs.total}ms/f` : '', j.totalS ? `delivery ${j.totalS}s` : '', j.frameDigest, j.check ? `check ${j.check.odd} odd` : ''].join(' '));
 console.log(JSON.stringify({ films: summary.films, pairs: { ...summary.pairs } }));
