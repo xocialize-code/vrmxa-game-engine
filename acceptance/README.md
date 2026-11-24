@@ -237,7 +237,7 @@ AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for th
   makes each log into tracks (`@vrmxg/takes`' pure function), keeps all three in the film, and plays it with no
   renderer for 2,079 steps. It checks:
   - each take's tracks and the film's canonical text, hashed;
-  - each step's world hashes (88 components);
+  - each step's world hashes (90 components);
   - a snapshot taken while Mira walks, restored into a fresh world;
   - that the takes do what was performed: Mira walks from her mark, hops and turns her eyes; Hana says the two
     directed lines on their frames and walks over to her; Mira's face blinks, smiles, talks and turns.
@@ -249,8 +249,10 @@ AB-R-1073 (repro 5 on this beta). **The verify summary has `ok: false`**, for th
   acceptance/m4/takes-wkwebview.sh                                         # WKWebView, scheme and loopback: results/m4-takes-wkwebview.json
   ```
   Node, Chromium and WKWebView (scheme and loopback, two loads each) all give the same tracks from each log, film
-  7314d57e8b7a5b5c (43,071 bytes), final 42bc50c5a9e11f0f and the same per-step run, and the restore ends the
-  same (AB-R-1086). The face take's source is the spike's verdict (`spike-face/README.md`, AB-R-1085, AB-D-0281); a
+  2fde5736d2e7edee (43,177 bytes), final e50ac8a7e928dc3f and the same per-step run, and the restore ends the
+  same (AB-R-1086 has the numbers as first recorded: film 7314d57e8b7a5b5c, final 42bc50c5a9e11f0f. The Regular's
+  cameras after the window-table move changed with AB-T-0597, so the three logs were recorded again on purpose
+  on 2026-11-23: only the film's hash in each log changed, and each log gives the same tracks as before). The face take's source is the spike's verdict (`spike-face/README.md`, AB-R-1085, AB-D-0281); a
   real camera waits on AB-T-0557.
 
 - **Check 7, delivery** (W10, AB-T-0582): the creator's render queue renders each delivery preset (H.264, HEVC and
