@@ -29,7 +29,7 @@ node acceptance/m5/flow.mjs          # Node, and headless Chromium over loopback
 acceptance/m5/flow-wkwebview.sh      # WKWebView, scheme and loopback → results/m5-flow-wkwebview.json
 ```
 
-**Result (AB-R-1101, 2026-11-24, M5 Max, macOS 27.3 beta).** Every one of the 600 steps hashes the same in Node
+**Result (AB-R-1105, 2026-11-24, M5 Max, macOS 27.3 beta; AB-R-1101 is the first run, before review changed the game state's shape and with it the hashes).** Every one of the 600 steps hashes the same in Node
 26.12, Chromium 156 and WKWebView over the custom scheme and over loopback: final hash `68a9e4b580a0e7bf`. Each world's
 loading was given no delay (Node), a steady 4 ms and a varied 0 to 12 ms (both browsers, and Node again): the changes
 land on steps 11, 148, 208, 267, 404, 464 and 523 every time, with the step held at seven boundaries while a world
