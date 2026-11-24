@@ -61,13 +61,106 @@ export function twoPlayerActions() {
 
 const deadzone = (v, dz = 0) => (Math.abs(v) <= dz ? 0 : (Math.sign(v) * (Math.abs(v) - dz)) / (1 - dz));
 
+/** What a binding reads, by the one key that says so. */
+export const BINDING_KINDS = ['key', 'mouse', 'mouseButton', 'gamepadAxis', 'gamepadButton'];
+const MOUSE_AXES = ['dx', 'dy', 'wheel'];
+const KINDS_OF = { axis: ['key', 'mouse', 'gamepadAxis', 'gamepadButton'], button: ['key', 'mouseButton', 'gamepadButton'] };
+const isIndex = (v) => Number.isInteger(v) && v >= 0 && v < 64;
+const isNumber = (v) => typeof v === 'number' && Number.isFinite(v);
+
+/** A binding's kind (`key`, `mouse`, `mouseButton`, `gamepadAxis`, `gamepadButton`), or null when it names none or two. */
+export function bindingKind(b) {
+  if (b === null || typeof b !== 'object' || Array.isArray(b)) return null;
+  const kinds = BINDING_KINDS.filter((k) => b[k] !== undefined);
+  return kinds.length === 1 ? kinds[0] : null;
+}
+
+/**
+ * What is wrong with a binding for an action of this type, as a message, or null when it is fine. Rebinding checks
+ * with it, so a stored setting that is damaged or from another version of the game is refused, never evaluated.
+ * @param {'axis' | 'button'} type @param {any} b
+ */
+export function checkBinding(type, b) {
+  const kind = bindingKind(b);
+  if (!kind) return `a binding names one of ${BINDING_KINDS.join(', ')}`;
+  if (!KINDS_OF[type]?.includes(kind)) return `${type === 'button' ? 'a button' : 'an axis'} can't be bound to ${kind}`;
+  if (kind === 'key' && (typeof b.key !== 'string' || b.key === '')) return 'key is a KeyboardEvent.code ("KeyE")';
+  if (kind === 'mouse' && !MOUSE_AXES.includes(b.mouse)) return `mouse is one of ${MOUSE_AXES.join(', ')}`;
+  if ((kind === 'mouseButton' || kind === 'gamepadAxis' || kind === 'gamepadButton') && !isIndex(b[kind])) return `${kind} is a whole number from 0`;
+  for (const k of ['value', 'scale', 'deadzone']) if (b[k] !== undefined && !isNumber(b[k])) return `${k} is a number`;
+  if (b.deadzone !== undefined && !(b.deadzone >= 0 && b.deadzone < 1)) return 'deadzone is from 0 to below 1';
+  return null;
+}
+
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
 export class ActionMap {
-  /** @param {Record<string, { type: 'axis' | 'button', bindings: any[] }>} [actions] */
+  /** @param {Record<string, { type: 'axis' | 'button', bindings: any[] }>} [actions] the project's map: its own copy is taken */
   constructor(actions = DEFAULT_ACTIONS) {
-    this.actions = actions;
+    /** The map as the project gave it: what a reset goes back to, and what overrides() is measured against. */
+    this.defaults = structuredClone(actions);
+    this.actions = structuredClone(actions);
     this.names = Object.keys(actions);
     this.axes = this.names.filter((n) => actions[n].type === 'axis');
     this.buttons = this.names.filter((n) => actions[n].type === 'button');
+    /** Goes up whenever a binding changes (a settings list re-reads the map when it does). */
+    this.version = 0;
+  }
+
+  // ---------------------------------------------------------------- rebinding (M5 W3)
+  // The actions, their types and their order never change: only what each is bound to. So a recording, which names
+  // actions and holds their values, replays the same whatever the bindings were when it was made or are now.
+
+  /** An action's bindings now, as plain data (a copy). */
+  bindingsOf(name) {
+    if (!Object.hasOwn(this.actions, name)) throw new Error(`no action "${name}" (${this.names.join(', ')})`);
+    return structuredClone(this.actions[name].bindings);
+  }
+
+  /**
+   * Bind an action to something else: `bindings` replaces all of its bindings. The next evaluate() uses them.
+   * @param {string} name @param {any[]} bindings
+   */
+  rebind(name, bindings) {
+    if (!Object.hasOwn(this.actions, name)) throw new Error(`no action "${name}" (${this.names.join(', ')})`);
+    if (!Array.isArray(bindings)) throw new Error(`rebind("${name}") takes the action's bindings as a list`);
+    const type = this.actions[name].type;
+    bindings.forEach((b, i) => { const why = checkBinding(type, b); if (why) throw new Error(`"${name}" binding ${i}: ${why}`); });
+    this.actions[name] = { ...this.actions[name], bindings: structuredClone(bindings) };
+    this.version++;
+  }
+
+  /** Put one action's bindings back as the project has them, or every action's. */
+  reset(name) {
+    if (name !== undefined && !Object.hasOwn(this.actions, name)) throw new Error(`no action "${name}" (${this.names.join(', ')})`);
+    for (const n of name === undefined ? this.names : [name]) this.actions[n] = structuredClone(this.defaults[n]);
+    this.version++;
+  }
+
+  /** What differs from the project's map: { action: bindings }, for a settings store. Empty when nothing was rebound. */
+  overrides() {
+    const out = {};
+    for (const n of this.names) if (!same(this.actions[n].bindings, this.defaults[n].bindings)) out[n] = structuredClone(this.actions[n].bindings);
+    return out;
+  }
+
+  /**
+   * Make the map the project's with these overrides (as overrides() gave them, perhaps in another session or another
+   * version of the game). An action this map doesn't have, or bindings that aren't valid for it, are left out and
+   * listed: stored settings never stop a game starting.
+   * @param {Record<string, any[]> | null | undefined} overrides
+   * @returns {{ applied: string[], ignored: { action: string, reason: string }[] }}
+   */
+  applyOverrides(overrides) {
+    const applied = [], ignored = [];
+    for (const n of this.names) this.actions[n] = structuredClone(this.defaults[n]);
+    const o = overrides !== null && typeof overrides === 'object' && !Array.isArray(overrides) ? overrides : {};
+    for (const name of Object.keys(o)) {
+      if (!Object.hasOwn(this.actions, name)) { ignored.push({ action: name, reason: 'this game has no such action' }); continue; }
+      try { this.rebind(name, o[name]); applied.push(name); } catch (e) { ignored.push({ action: name, reason: String(e?.message ?? e) }); }
+    }
+    this.version++;
+    return { applied, ignored };
   }
 
   /**
