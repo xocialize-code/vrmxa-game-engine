@@ -53,3 +53,12 @@ jobs:
       - name: spike-registry
         working-directory: spike-registry
         run: npm ci && npm test && node scripts/mcp-client.mjs > /dev/null
+
+      - name: The generated reference and llms.txt are what the code produces (AB-T-0611)
+        run: node scripts/docs-reference.mjs --check
+
+      - name: The documentation site builds, its links and anchors resolve, and the Worker's config is valid
+        working-directory: docs
+        run: npm ci && npm run build && npm run links && npm run worker:check
+        env:
+          WRANGLER_SEND_METRICS: "false"

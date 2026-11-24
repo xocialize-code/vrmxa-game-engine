@@ -1,0 +1,6 @@
+# The root .gitignore ignores every folder named reference/ (the read-only reference repos). This one is the site's
+# generated reference, and it is committed.
+!/reference/
+
+.vitepress/cache/
+.wrangler/
