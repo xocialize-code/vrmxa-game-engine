@@ -32,7 +32,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [The Fountain subset](reference/fountain.md): The screenplay syntax a VRMXG script is written in: elements, tags, parenthetical words and timing defaults.
 - [shorts.json](reference/shorts-json.md): The file that lists a project's shorts for the creator: each short's script, sequence, marks, set and cameras.
 - [delivery.json](reference/delivery-json.md): What a delivery folder holds, the render queue's presets, and the manifest that names every file with its hash.
-- [Packages](reference/packages.md): The 37 engine packages, one line each, and which side of the determinism boundary each is on.
+- [Packages](reference/packages.md): The 38 engine packages, one line each, and which side of the determinism boundary each is on.
 
 ## Node types
 
@@ -139,6 +139,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 
 - [@vrmxg/ai](reference/packages.md): NPC brains, as `research/npc-ai.md` recommends.
 - [@vrmxg/audio](reference/packages.md): Sound for VRMXG: what plays is simulation, what is heard is presentation.
+- [@vrmxg/bundle](reference/packages.md): A project exported as a game build: a web folder with the runtime, the game's files and a manifest that lists every file with its SHA-256 and its licence.
 - [@vrmxg/camera](reference/packages.md): The physical Camera node, gameplay rig presets stepped with the simulation, a spring arm, cinematic VirtualCameras and CameraBrains, Path3D, the `cameras` service, and picking.
 - [@vrmxg/cast](reference/packages.md): Casting for the anime creator.
 - [@vrmxg/character](reference/packages.md): VRMXA and VRM characters for the scene tree, inside the determinism boundary.

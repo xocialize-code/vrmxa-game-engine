@@ -29,6 +29,7 @@ import { buildWorld } from '../../playground/src/world.js';
 import { disposeWorld, disposed } from './dispose.js';
 import { saveScene } from './saving.js';
 import { RetiredWorlds } from './worlds.js';
+import { exportGame } from './export-game.js';
 import '../../playground/src/sqljs.js'; // vrmxa-core's sql.js for bundles with a database (Mira's)
 
 installPortableMath(); // before anything parses a VRM or steps a world
@@ -93,6 +94,9 @@ export class EditorHost {
     this.paused = false;       // play paused (MCP): the frame loop draws but doesn't step; not the clock's own pause, which freezes pausable nodes
     this.exporting = null;     // { n, frames, phase } while an export runs
     this.lastExport = null; this.lastStill = null;
+    this.gameExporting = null; // { n, total, phase } while Export Game runs (M5 W0)
+    this._gameExport = null;   // its AbortController and a promise of its end, while it runs
+    this.lastGameExport = null;
     this.exportHost = null;
     // the timeline (M2 W5): the set a sequence films, the playhead, the play range, the preview world
     this.setScene = null;      // { ref, doc } for a sequence document
@@ -794,6 +798,41 @@ export class EditorHost {
     const still = await captureStill(this.host, { width, height, alpha: this.host.last.alpha ?? 1 });
     if (this._w) this.host.resize(this._w, this._h); // the viewport's own size, exactly
     return { png: await encodePNG(still), still };
+  }
+
+  /**
+   * Export Game (M5 W0): the open project as a game build (export-game.js; @vrmxg/bundle). In the Mac app it is written
+   * to a folder the person picks; in a browser it is checked and hashed only.
+   * @param {{ name?: string }} [o] name: the build folder's name (the game's id)
+   */
+  async exportGame({ name = '' } = {}) {
+    if (this.gameExporting || this.exporting) throw new Error('an export is already running');
+    if (this.session?.mode !== 'editing') throw new Error('stop playing before exporting');
+    this.gameExporting = { n: 0, total: 0, phase: 'checking' }; this.error = ''; this.changed('export');
+    const abort = new AbortController(), unsaved = !!this.session?.dirty; // the build is made from the project's saved files
+    let settle = () => {};
+    this._gameExport = { abort, done: new Promise((r) => { settle = r; }) };
+    try {
+      const r = await exportGame(this.project, { scene: this.sceneRef, name, signal: abort.signal, onProgress: (n, total) => { this.gameExporting = { n, total, phase: 'writing' }; if (n % 8 === 0 || n === total) this.changed('export'); } });
+      this.lastGameExport = { ...r, unsaved };
+      return this.lastGameExport;
+    } catch (e) {
+      // the folder panel was cancelled, or the window is closing (cancelGameExport): nothing was exported, nothing is wrong
+      if (e?.code === 'cancelled' || e?.code === 'aborted') return null;
+      // a refusal is the export's answer, shown where its result is: which file, and why (the exporter's, or the shell's
+      // for a folder that holds something that isn't a build)
+      if (e?.name !== 'BuildError' && e?.code !== 'not_empty') throw e;
+      this.lastGameExport = { refused: e.code, message: e.message, files: e.files };
+      return this.lastGameExport;
+    } finally { this.gameExporting = null; this._gameExport = null; settle(); this.changed(); }
+  }
+
+  /** Stop a game export between two writes (the window is closing); resolves once it has let go of its folder. */
+  async cancelGameExport() {
+    const run = this._gameExport;
+    if (!run) return;
+    run.abort.abort();
+    await run.done;
   }
 
   /** Save a still of the view: a save panel in the shell, a download in a browser. */

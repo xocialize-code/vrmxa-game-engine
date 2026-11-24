@@ -1,7 +1,7 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.9.0"
+public let vrmxgShellVersion = "0.10.0"
 
 /// An app's own menu item (shell 0.7.0, M4 W5): choosing it sends the page `menu.<event>`. A title of "-" is a separator.
 public struct ShellMenuItem: Sendable {

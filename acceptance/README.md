@@ -16,6 +16,53 @@ that need no renderer; the playground's acceptance mode adds the rendered pass (
 every camera preset, debug draw). Check 4 re-runs the W6 harness (`engine/packages/snapshot/harness`); check 5 is a
 Claude Code session with the MCP server (`results/mcp-session.json`).
 
+## M5's checks as they land
+
+- **Check 1, a project exports as a game** (W0, AB-T-0615, 2026-11-24): the sample project (`content/sample`, its
+  `game.json`) exported with `@vrmxg/bundle`. The build's contract is that package's README (AB-D-0282).
+  ```sh
+  npm run build:runtime -w @vrmxg/bundle     # the runtime a build is made with
+  node acceptance/m5/build.mjs --chromium    # Node and headless Chromium: results/m5-build.json
+  acceptance/m5/build-wkwebview.sh           # the build played in WKWebView, scheme and loopback (under the runner lock): results/m5-build-wkwebview.json
+  # the Mac editor: apps/editor-mac/docs/hand-test/HAND-TEST-M5-EXPORT-GAME.scenario.md, then
+  node acceptance/m5/build.mjs --chromium --mac <builds…> --refused <folder> --kept <folder>
+  ```
+  **Passed, 16 of 16 and 4 of 4** (M5 Max, macOS 27.3 beta, Node 26.12.1, Chrome for Testing 156.0.8078.4). First run before
+  any review (receipt AB-R-1102), again after each of two review rounds (AB-R-1106, AB-R-1108), again once the branch
+  was rebased over W2 and W8 (AB-R-1109), and again after a third review. Each changed the runtime, so the digests
+  below are the last run's:
+  - **The build:** 60 files, 22,211,863 bytes: 50 of the project's files under `project/` and the runtime's
+    10 (`vrmxg-stepper 0.1.0`, digest `2e08d965b6837eb4…`); build digest `d03301c5fe1744dc…`.
+  - **The same bytes from Node and from the Mac editor.** Two exports in two Node processes, and four from the Mac
+    editor's Export Game (the bundled sample twice, the same project opened as a folder, and File › Export Game…): all
+    six folders are the same, byte for byte, 61 files each with the manifest (SHA-256 `e6b6c09e6584ea8e…6ed6`), and each holds
+    exactly what its manifest lists. One of the four was then exported over again in the Mac editor (an earlier build
+    replaced, staged and moved in whole) and is still Node's build, with no staging folder left.
+  - **Every file has its hash and licence** in the manifest: a project file's licence is its row in the project's
+    `LICENCES.md`; a runtime file's names the packages bundled into it, whose licence texts ship in
+    `THIRD-PARTY-LICENCES.txt`. 33 of the 50 project files are licensed by a pattern row, and say so (`licenceFrom`).
+  - **A file with no licence row stops the export**: `no row in LICENCES.md for props/found-on-the-web.glb`, with
+    nothing written. In the Mac editor the same refusal shows in the export's result line and no folder is made. **So
+    does a reference in another case than the file**: `cafe.vrmxs names Sets/cafe.glb, and the project's file is
+    sets/cafe.glb`.
+  - **A folder that holds someone's file is refused and left alone**: in the Mac editor, an export into a folder
+    holding `notes.txt` is refused in the result line, and the folder holds `notes.txt` and nothing else afterwards.
+  - **The loader opens the build and it plays as the project does.** The recorded walk (`input/walk-in.json`, 600
+    steps, a hash of all 65 components after every step, Rapier's whole state every 60th): the project played straight
+    from its folder, the build through the loader in Node, the build's own runtime in Chromium, and in WKWebView over
+    the scheme and over loopback (two fresh web views each) all give the same 601 hashes, final `fe69bad3406ab5f6`. The loader
+    read 48 files and checked each against the manifest; a ref the manifest doesn't list is refused by name.
+
+  - **What a module imports is read the same in every engine.** Fourteen awkward modules (division after `x--`, a
+    `/*` inside a regular expression, a brace in a template's string, minified code, computed imports that must be
+    refused) go through the lexer in Node, Chromium and WKWebView on both origins: the same reading in all, and the
+    game's own module graph the same. The exporter runs in one engine and the loader in another.
+
+  **Not checked:** the folder panel a person sees (the hook `VRMXG_SHELL_BUILD` stood in for it), and a build made on
+  another machine or by CI. The runtime in the build is the minimal one (`vrmxg-stepper`, no renderer) until the game
+  app exists (M5 W1), so nothing here draws a frame of the game. The digests are this branch's: the runtime bundles
+  the engine, so they change whenever the engine does, and stay equal between Node and the editor.
+
 ## M5 W2: game flow (`m5/flow*`, AB-T-0617)
 
 M5's checks 3 and 6, ahead of M5's own acceptance (W11): a game that changes scene replays exactly, and a save or a
@@ -36,6 +83,7 @@ land on steps 11, 148, 208, 267, 404, 464 and 523 every time, with the step held
 loaded. The save taken at step 60 and the checkpoint the game wrote at step 67 are each the same file in every
 runtime, and loaded into a new session each gives the unbroken run's hashes to step 600 (540 and 533 steps, five
 scene changes).
+
 
 ## Result: M4's acceptance (2026-11-24, M5 Max, macOS 27.3 beta 26C5047e)
 

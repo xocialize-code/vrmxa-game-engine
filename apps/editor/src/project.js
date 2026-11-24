@@ -6,9 +6,11 @@ import * as core from '@vrmxg/core';
 import { inShell, call } from '../../shell/js/shell.js';
 
 export class Project {
-  /** @param {{ base: string, files: string[], name: string, path?: string | null, writable?: boolean }} o */
-  constructor({ base, files, name, path = null, writable = false }) {
+  /** @param {{ base: string, files: string[], name: string, path?: string | null, writable?: boolean, truncated?: boolean }} o */
+  constructor({ base, files, name, path = null, writable = false, truncated = false }) {
     this.base = base; this.files = files; this.name = name; this.path = path; this.writable = writable;
+    /** The shell's listing was cut short (more files than it holds): what needs every file, an export, refuses. */
+    this.truncated = truncated;
     this._behaviours = null;
   }
 
@@ -82,5 +84,5 @@ export async function bundledProject() {
 /** Open a project folder through the Mac shell (a panel, or VRMXG_SHELL_PROJECT in automation). */
 export async function openProjectFolder() {
   const r = await call('project.open', { title: 'Open Project' });
-  return new Project({ base: r.base, files: r.files, name: r.name, path: r.path, writable: true });
+  return new Project({ base: r.base, files: r.files, name: r.name, path: r.path, writable: true, truncated: r.truncated === true });
 }

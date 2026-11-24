@@ -3,7 +3,7 @@ import UniformTypeIdentifiers
 
 /// The file and project bridge methods. Files come through the system panels (the sandbox grants what the person
 /// picks, for the life of the process); for automation, environment variables stand in for the panels:
-///   VRMXG_SHELL_OPEN=<file>   VRMXG_SHELL_SAVE=<file>   VRMXG_SHELL_PROJECT=<folder>
+///   VRMXG_SHELL_OPEN=<file>   VRMXG_SHELL_SAVE=<file>   VRMXG_SHELL_PROJECT=<folder>   VRMXG_SHELL_BUILD=<folder>
 /// (a relative path is under the app's temporary directory, inside its sandbox container).
 ///
 /// Binary files (AB-A-0314, shell 0.6.0): `file.open { types, serve: true }` serves the chosen file at a URL on both
@@ -20,6 +20,8 @@ public final class FileMethods {
     var granted: Set<URL> = []
     /// Files reopened from bookmarks, whose security scope stays open for the app's life.
     var scoped: Set<URL> = []
+    /// The game build being written (`build.begin` … `build.end`, BuildFolder.swift).
+    var build: BuildFolder?
     public init(roots: WebRoots, env: [String: String] = ProcessInfo.processInfo.environment, defaults: UserDefaults = .standard) {
         self.roots = roots; self.env = env; self.defaults = defaults
     }
@@ -37,6 +39,7 @@ public final class FileMethods {
         router.register("project.open") { [unowned self] p in try await self.openProject(p) }
         router.register("project.list") { [unowned self] _ in try self.listProject() }
         router.register("project.write") { [unowned self] p in try self.writeProject(p) }
+        registerBuild(on: router)
     }
 
     private func types(_ exts: [String]?) -> [UTType] {
@@ -145,19 +148,29 @@ public final class FileMethods {
         let folder = url!
         granted.insert(folder)
         roots.mountProject(folder)
-        return ["path": folder.path, "name": folder.lastPathComponent, "base": WebRoots.projectPrefix, "files": try listProject()]
+        let listing = try projectListing()
+        // `truncated`: the project has more files than the listing holds (M5 W0): what needs every file (Export Game) refuses
+        return ["path": folder.path, "name": folder.lastPathComponent, "base": WebRoots.projectPrefix, "files": listing.files, "truncated": listing.truncated]
     }
 
+    /// The most files a project's listing holds.
+    static var projectFileCap = 20_000
+
     /// Every file of the mounted project, as paths relative to it (hidden files skipped, at most 20,000).
-    func listProject() throws -> [String] {
+    func listProject() throws -> [String] { try projectListing().files }
+
+    /// The listing, and whether the project has more files than it holds.
+    func projectListing() throws -> (files: [String], truncated: Bool) {
         guard let root = roots.projectFolder else { throw BridgeError("no_project", "no project is open") }
-        var out: [String] = []
+        var out: [String] = [], truncated = false
         let base = root.standardizedFileURL.path + "/"
         let e = FileManager.default.enumerator(at: root, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles])
-        while let u = e?.nextObject() as? URL, out.count < 20_000 {
-            if (try? u.resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile == true { out.append(String(u.standardizedFileURL.path.dropFirst(base.count))) }
+        while let u = e?.nextObject() as? URL {
+            guard (try? u.resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile == true else { continue }
+            if out.count == Self.projectFileCap { truncated = true; break }
+            out.append(String(u.standardizedFileURL.path.dropFirst(base.count)))
         }
-        return out.sorted()
+        return (out.sorted(), truncated)
     }
 
     /// A path inside the mounted project (relative to it), refused if it leads outside.
