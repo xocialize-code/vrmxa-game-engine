@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { VirtualDevice } from '@vrmxg/input';
 import { readSettings, chosenBackend, SettingsStore, memoryStorage, defaultSettings, serializeSettings, SETTINGS_FORMAT } from '../src/settings.js';
 import { slotRows, latestSave, formatPlayed, saveName, PLAYER_SLOTS } from '../src/slots.js';
-import { PadNavigator, HeldGate, nextIndex, keyCommand, padDirections, PAD } from '../src/nav.js';
+import { PadNavigator, HeldGate, StepGate, nextIndex, keyCommand, padDirections, PAD } from '../src/nav.js';
 import { leaveQuestion, mayLeave } from '../src/closing.js';
 
 // ---------------------------------------------------------------- settings
@@ -156,6 +156,25 @@ test('after a menu, what was held when the game took over is hidden until it is 
   v.setGamepad([0, 0, 0, 0], pad([PAD.A]).buttons); o = read();
   assert.equal(o.gamepad.buttons[PAD.A], 1, 'A pressed again: seen');
   assert.ok(!o.keys.has('Space'), 'Space still held since Resume: still hidden');
+});
+
+test('nothing steps while a menu or a question is up; when it closes, what was used on it doesn\'t reach the game', () => {
+  const v = new VirtualDevice(), gate = new HeldGate(v), stepping = new StepGate([gate]);
+  const read = () => { const out = { keys: new Set(), mouse: { dx: 0, dy: 0, wheel: 0, buttons: new Set() }, gamepad: null }; gate.read(out); return out; };
+  assert.deepEqual(stepping.update(false), { step: true, resumed: true }, 'the first frame of play arms the gates');
+  read();
+  // a question comes up while a save loads; the load ends and play resumes behind it: still nothing steps
+  assert.equal(stepping.update(true).step, false);
+  assert.equal(stepping.update(true).step, false);
+  v.press('Space'); v.moveMouse(40, -12); v.setGamepad([0, 0, 0, 0], pad([PAD.A]).buttons); // used on the question's buttons
+  const r = stepping.update(false);
+  assert.deepEqual(r, { step: true, resumed: true });
+  const o = read();
+  assert.deepEqual([...o.keys], [], 'Space held on the sheet: hidden');
+  assert.equal(o.mouse.dx, 0); assert.equal(o.mouse.dy, 0, 'the mouse moved over the sheet: dropped');
+  assert.equal(o.gamepad.buttons[PAD.A], 0, 'A held on the sheet: hidden');
+  v.moveMouse(5, 0);
+  assert.equal(read().mouse.dx, 5, 'movement after the question: the game\'s');
 });
 
 test('after a menu, a stick still tilted is hidden until it is back near the middle', () => {

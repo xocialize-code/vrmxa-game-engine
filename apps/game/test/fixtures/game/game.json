@@ -3,6 +3,7 @@
  "version": 1,
  "id": "cafe-test",
  "title": "The Cafe (test game)",
+ "release": "0.1.0",
  "entry": "game/title.vrmxs",
  "scenes": [
   "game/title.vrmxs",

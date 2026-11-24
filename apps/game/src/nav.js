@@ -106,6 +106,8 @@ export class HeldGate {
     this.device.read(out);
     if (this._arm) {
       this._arm = false;
+      // the mouse's movement and wheel since the last read happened over a menu: none of it reaches the game
+      if (out.mouse) out.mouse = { ...out.mouse, dx: 0, dy: 0, wheel: 0 };
       this.keys = new Set(out.keys ?? []);
       this.mouse = new Set(out.mouse?.buttons ?? []);
       this.buttons = new Set((out.gamepad?.buttons ?? []).flatMap((v, i) => (v > 0.5 ? [i] : [])));
@@ -127,5 +129,23 @@ export class HeldGate {
       for (const b of [...this.buttons]) if (!((out.gamepad.buttons[b] ?? 0) > 0.5)) this.buttons.delete(b);
       out.gamepad = { ...out.gamepad, buttons: out.gamepad.buttons.map((v, i) => (this.buttons.has(i) ? 0 : v)) };
     } else if (out.gamepad === null || out.gamepad === undefined) this.buttons.clear();
+  }
+}
+
+/**
+ * Whether the game steps this frame: never while a menu or a question is up, whatever else is going on (a save that
+ * finished loading behind a question resumes play, and still nothing steps until the question is answered). On the frame
+ * stepping starts again, every gate is armed, so a key or button used on the menu (Space or A on a button, an arrow, the
+ * mouse moved over it) doesn't reach the game.
+ */
+export class StepGate {
+  /** @param {HeldGate[]} gates */
+  constructor(gates) { this.gates = gates; this.held = true; }
+  /** @param {boolean} held a menu or question is up, or the game isn't playing → { step, resumed } */
+  update(held) {
+    const resumed = this.held && !held;
+    this.held = held;
+    if (resumed) for (const g of this.gates) g.arm();
+    return { step: !held, resumed };
   }
 }

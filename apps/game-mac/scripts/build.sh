@@ -23,7 +23,8 @@ else
 fi
 node $root/engine/packages/bundle/src/cli.js --verify $build > /dev/null || { echo "$build is not a whole game build"; exit 1; }
 
-# the game's id, and the app's Info.plist from the template with the game's name and id (escaped for XML), made before
+# the game's id, and the app's Info.plist from the template with the game's name, id and version (its game.json's
+# "release", else 1.0; escaped for XML), made before
 # anything of an earlier app is removed, so a title that can't go in stops here and leaves the earlier app whole
 id=$(node -e 'const m = JSON.parse(require("fs").readFileSync(process.argv[1] + "/vrmxg-build.json", "utf8")); process.stdout.write(m.game.id)' $build)
 [[ "$id" =~ '^[a-z0-9][a-z0-9-]*$' ]] || { echo "not a game id: $id"; exit 1; }
@@ -31,7 +32,7 @@ plist=$(node -e '
   const fs = require("fs"), m = JSON.parse(fs.readFileSync(process.argv[1] + "/vrmxg-build.json", "utf8"));
   const xml = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const t = fs.readFileSync(process.argv[2], "utf8");
-  process.stdout.write(t.replaceAll("__GAME_ID__", m.game.id).replaceAll("__GAME_TITLE__", xml(m.game.title)).replaceAll("__RUNTIME_VERSION__", xml(m.runtime.version)));
+  process.stdout.write(t.replaceAll("__GAME_ID__", m.game.id).replaceAll("__GAME_TITLE__", xml(m.game.title)).replaceAll("__GAME_RELEASE__", xml(m.game.release ?? "1.0")));
 ' $build $mac/Config/Info.plist)
 title=$(node -e 'const m = JSON.parse(require("fs").readFileSync(process.argv[1] + "/vrmxg-build.json", "utf8")); process.stdout.write(m.game.title)' $build)
 app=$mac/build/$id.app

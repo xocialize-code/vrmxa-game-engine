@@ -143,8 +143,10 @@ test('a module\'s imports are read by a lexer: every awkward case, and what must
   assert.throws(() => moduleImports("const re = /[abc;\nimport './g.js';\n", 'lib/odd.js'), (e) => e.code === 'bad_file' && /^lib\/odd\.js can't be read as a module \(a parse error at line \d+, column \d+\)/.test(e.message));
 });
 
-test('the repository\'s own built bundles lex: a minified module is read, not refused', { skip: !fs.existsSync(new URL('../runtime/dist/assets', import.meta.url)) && 'needs the built runtime (npm run build:runtime -w @vrmxg/bundle)' }, () => {
-  const dir = new URL('../runtime/dist/assets/', import.meta.url);
+// the runtime games ship with (the game app, M5 W1) when it is built, else this package's minimal one
+const builtAssets = [new URL('../../../../apps/game/dist/assets/', import.meta.url), new URL('../runtime/dist/assets/', import.meta.url)].find((u) => fs.existsSync(u));
+test('the repository\'s own built bundles lex: a minified module is read, not refused', { skip: !builtAssets && 'needs a built runtime (npm run build -w @vrmxg/game-app)' }, () => {
+  const dir = builtAssets;
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.js'));
   assert.ok(files.length >= 4);
   // some of them import a path worked out as it runs (a dynamic chunk): that is refused for what it is, by name, and

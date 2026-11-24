@@ -69,6 +69,18 @@ it anywhere; `acceptance/m5/game.mjs` plays the app in Chromium through its menu
 | Quit to Title | Ends the session |
 | What a game's own scene offers (the test game's "skip the title") | An action in the recorded input frame |
 
+**A save belongs to the build that made it.** Every file the session writes (a player's save, a checkpoint) carries the
+build's digest in `extra.build` (app data the save format already carries: no format change). A file from another build
+is refused with a message saying so: every export of a game shares its bundle id and so its Saves folder, and
+`@vrmxg/save` checks the scene document, the maths and the physics build, not the prefabs, the behaviours, the action map
+or the engine, so such a file could load and then play on differently. `replaySession(log, { digest })` refuses a log
+played on another build.
+
+**Nothing steps while a menu or a question is up**, whatever else happens: a question that comes up while a save loads
+(the Mac shell's close question) holds the game after the load too (`StepGate` in `src/nav.js`). When stepping starts
+again, every key, button and stick still held, and the mouse's movement over the menu, are hidden from the game until let
+go (`HeldGate`). Everything behind a question is `inert`, and Tab wraps round inside the top menu.
+
 Progress counts as kept only once the store has it: `safeStep` moves after a save's write succeeds, or once a
 checkpoint's file is in the store (`checkpointWritten` with `stored`). Closing the window, quitting (the Mac shell's
 close question), Quit to Title and loading over unsaved progress ask first (`src/closing.js`), offering to save into the
@@ -104,7 +116,9 @@ sample game itself is M5 W10.
 
 ## Checked
 
-- `npm test` here (28 tests; all but one need no models): a session through scene changes, a save and a load replays to
+- `npm test` here (34 tests; all but one need no models): a question up while a load ends holds the game, and what was
+  used on it doesn't reach the game; a save from another build, or one that doesn't say, is refused; a log replays only
+  on its build; a second New Game or load during one is refused (in the session and in the host); a session through scene changes, a save and a load replays to
   the same per-step hashes; Continue in a fresh session; a checkpoint slot refused; a save or a checkpoint whose write
   fails stays unsaved; a save still being written when another loads, or a load that outlives its session (one test per
   finding of the independent review); the test game's whole loop (title, the level won with the door's checkpoint, the

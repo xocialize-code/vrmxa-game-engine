@@ -24,7 +24,7 @@ const ref = (v, key, { glob = false } = {}) => {
 /**
  * @typedef {{ format: 'vrmxg-game', version: 1, id: string, title: string, entry: string, scenes: string[],
  *   behaviours: string | null, animations: string | null, personas: string | null,
- *   input: string | { actions: Record<string, any> } | null, include: string[], ignore?: string[] }} Game
+ *   input: string | { actions: Record<string, any> } | null, include: string[], ignore?: string[], release?: string }} Game
  */
 
 /**
@@ -53,13 +53,15 @@ export function checkGame(doc) {
   const include = [...new Set((doc.include ?? []).map((s) => ref(s, 'include', { glob: true })))].sort();
   if (doc.ignore !== undefined && (!Array.isArray(doc.ignore) || doc.ignore.some((s) => typeof s !== 'string'))) throw bad('"ignore" is a list of strings');
   const ignore = [...new Set(doc.ignore ?? [])].sort();
-  const known = new Set(['format', 'version', 'id', 'title', 'entry', 'scenes', 'behaviours', 'animations', 'personas', 'input', 'include', 'ignore']);
+  // the game's own version, as its players see it (a Mac app's version: up to three numbers with dots, M5 W1)
+  if (doc.release !== undefined && (typeof doc.release !== 'string' || !/^\d{1,9}(\.\d{1,9}){0,2}$/.test(doc.release))) throw bad(`"release" is the game's version, one to three numbers with dots such as "1.2.0" (${JSON.stringify(doc.release)})`);
+  const known = new Set(['format', 'version', 'id', 'title', 'entry', 'scenes', 'behaviours', 'animations', 'personas', 'input', 'include', 'ignore', 'release']);
   const unknown = Object.keys(doc).filter((k) => !known.has(k));
   if (unknown.length) throw bad(`unknown ${unknown.length > 1 ? 'keys' : 'key'} ${unknown.map((k) => `"${k}"`).join(', ')}`);
   return {
     format: GAME_FORMAT, version: GAME_VERSION, id: doc.id, title: doc.title?.trim() ?? doc.id, entry, scenes,
     behaviours: optional('behaviours'), animations: optional('animations'), personas: optional('personas'), input, include,
-    ...(ignore.length ? { ignore } : {}),
+    ...(ignore.length ? { ignore } : {}), ...(doc.release !== undefined ? { release: doc.release } : {}),
   };
 }
 

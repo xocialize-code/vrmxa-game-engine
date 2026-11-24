@@ -3,6 +3,7 @@ import path from 'node:path';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { vrmxgRuntime } from '@vrmxg/bundle/vite';
+import { runtimeSources } from '@vrmxg/bundle/node';
 // The game app, built as the runtime every game build is made with (M5 W1, AB-D-0286): `npm run build -w
 // @vrmxg/game-app` writes apps/game/dist with its table (vrmxg-runtime.json) and THIRD-PARTY-LICENCES.txt. vrmxg-export and
 // the editor's Export Game copy that folder into a build as it is. base './': a build is opened from wherever it is served.
@@ -31,6 +32,35 @@ const coreShim = () => ({
   generateBundle() { this.emitFile({ type: 'asset', fileName: 'vrmxg-core.js', source: shim }); },
 });
 
+/**
+ * The runtime's source stamp (apps/game/dist-sources.json, beside dist and git-ignored): every source file the bundle
+ * was built from with its hash, and the install's lock file. vrmxg-export and the editor's build refuse a dist whose
+ * sources have changed since; the runtime's version carries the stamp (0.1.0+<12 hex>), so a manifest says which
+ * sources made its runtime.
+ */
+const sources = { digest: null };
+const runtimeStamp = () => ({
+  name: 'vrmxg-runtime-sources',
+  apply: 'build',
+  generateBundle(_, bundle) {
+    // the bundle's modules, and what shapes the bundle without being one: the shim, the page, this config and the plugin
+    // that writes the table, and the install's lock file (the packages in node_modules)
+    const files = new Set([here('../../engine/packages/bundle/runtime/vrmxg-core.js'), here('../../package-lock.json'), here('index.html'), here('vite.config.js'), here('../../engine/packages/bundle/src/vite.js')]);
+    for (const chunk of Object.values(bundle)) {
+      if (chunk.type !== 'chunk') continue;
+      for (const id of /** @type {any} */ (chunk).moduleIds ?? []) {
+        const file = id.replace(/^\0/, '').split('?')[0];
+        if (path.isAbsolute(file) && fs.existsSync(file) && fs.statSync(file).isFile() && !file.includes(`${path.sep}node_modules${path.sep}`)) files.add(file);
+      }
+    }
+    const stamp = runtimeSources({ files: [...files], base: here('.'), runtime: `vrmxg-game ${pkg.version}` });
+    sources.digest = stamp.digest;
+    sources.doc = stamp;
+  },
+  closeBundle() { if (sources.doc) fs.writeFileSync(here('dist-sources.json'), `${JSON.stringify({ ...sources.doc, runtime: `vrmxg-game ${runtimeVersion()}` }, null, 1)}\n`); },
+});
+const runtimeVersion = () => (sources.digest ? `${pkg.version}+${sources.digest.slice(0, 12)}` : pkg.version);
+
 /** In dev: a build's manifest and project files, from VRMXG_BUILD. */
 const devBuild = () => ({
   name: 'vrmxg-dev-build',
@@ -49,7 +79,7 @@ const devBuild = () => ({
 
 export default defineConfig({
   root: here('.'), base: './', publicDir: false,
-  plugins: [vue(), coreShim(), devBuild(), vrmxgRuntime({ name: 'vrmxg-game', version: pkg.version, licence: 'Xocialize original', licences: [['assets/sql-wasm-*.wasm', sqlJsLicence], ['assets/sql-wasm-*.js', sqlJsLicence]] })],
+  plugins: [vue(), coreShim(), devBuild(), runtimeStamp(), vrmxgRuntime({ name: 'vrmxg-game', version: runtimeVersion, licence: 'Xocialize original', licences: [['assets/sql-wasm-*.wasm', sqlJsLicence], ['assets/sql-wasm-*.js', sqlJsLicence]] })],
   optimizeDeps: { exclude: ['sql.js'] },
   resolve: { alias: { '@vrmxa-core': path.join(core, 'src') }, dedupe: ['three'] },
   build: { outDir: here('dist'), emptyOutDir: true, target: 'safari16', chunkSizeWarningLimit: 8000 },

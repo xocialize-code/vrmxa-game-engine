@@ -115,6 +115,7 @@ What Export Game reads to know what the game is (`format: "vrmxg-game"`, `versio
 | `input` | The action map (`@vrmxg/input`'s `actions`): inline as `{ "actions": { … } }`, or a ref to a JSON file holding that. Absent: the engine's default map |
 | `include` | Files no document names, by ref or by pattern (`*` within one folder level) |
 | `ignore` | Strings in the game's documents that look like files and aren't: the export would otherwise stop on them (below) |
+| `release` | The game's own version, as its players see it: one to three numbers with dots (`"1.2.0"`). The Mac game app takes it as its version (M5 W1). Absent: none in the manifest |
 
 A project with no `game.json` can still be exported from the editor: the open scene is the entry, with the project's
 `behaviours.js`, `animations.json` and `personas.json` where it has them (`defaultGame`).
@@ -212,6 +213,14 @@ built: it never takes another runtime in its place. The game app opens the build
 makes no renderer and no menus, replays recorded input from the build in its entry scene and publishes a hash of the
 world after every step (`window.__result`, `READY`), which is how `acceptance/m5/build.mjs` and `build-wkwebview.sh`
 play a build in Chromium and WKWebView.
+
+**A stale runtime is refused.** The game app's build writes a source stamp beside its dist (`apps/game/dist-sources.json`,
+git-ignored; `runtimeSources` in `@vrmxg/bundle/node`): every source file its bundle was built from with its SHA-256,
+the install's lock file, its config and this package's Vite plugin. Its runtime version carries the stamp's digest
+(`0.1.0+854dbd840f55`; the digest is of the contents only, so it is the same wherever the checkout is). `vrmxg-export`
+and the editor's build check the stamp (`checkRuntimeSources`) and refuse a dist whose sources changed since it was built,
+naming the files; the editor's dev server warns. `vrmxgRuntime`'s `version` may be a function, read once the bundle is
+written, for a version like that.
 
 `runtime/` (`vrmxg-stepper`: the build's entry scene stepped at 60 Hz with no renderer) stays as this package's small
 reference runtime and goes into a build only when `--runtime` names its folder (`npm run build:runtime -w

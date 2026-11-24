@@ -7,30 +7,30 @@
   "entry": "cafe.vrmxs",
   "runtime": {
    "name": "vrmxg-game",
-   "version": "0.1.0",
+   "version": "0.1.0+5fc4ba774d73",
    "contract": 1,
    "entry": "index.html",
-   "digest": "3bd1219cc04c7d44a58c2605ec75c16eb2849f0dd26b8fe86e5c8bbcc3243168"
+   "digest": "9982612f1f6dc07f383e0871368ef33486313f822e7ed46e345e2029be84f235"
   },
   "files": 73,
   "projectFiles": 50,
   "runtimeFiles": 23,
-  "bytes": 23433906,
-  "digest": "d5f45e2756ce802a1d58ff6f36bbb6bfe6c0d2bb97d05c2c5d74e48f23fea01f",
-  "manifestSha256": "8b7d9af81c86f804fc92c551d01c558ad9afd5ad74dc7742fb185769c176ade0"
+  "bytes": 23435508,
+  "digest": "56fb87375176d2b669410fd8034a20cad22be5379de8b2cc385c8e4210d8c300",
+  "manifestSha256": "3e1060d7c9cd7846ff1fe3b0a6a281635bd17f8d436f0bf71aac9c2a0b81e865"
  },
  "nodeRuns": [
   {
-   "manifest": "8b7d9af81c86f804fc92c551d01c558ad9afd5ad74dc7742fb185769c176ade0",
-   "digest": "d5f45e2756ce802a1d58ff6f36bbb6bfe6c0d2bb97d05c2c5d74e48f23fea01f",
+   "manifest": "3e1060d7c9cd7846ff1fe3b0a6a281635bd17f8d436f0bf71aac9c2a0b81e865",
+   "digest": "56fb87375176d2b669410fd8034a20cad22be5379de8b2cc385c8e4210d8c300",
    "files": 73,
-   "bytes": 23433906
+   "bytes": 23435508
   },
   {
-   "manifest": "8b7d9af81c86f804fc92c551d01c558ad9afd5ad74dc7742fb185769c176ade0",
-   "digest": "d5f45e2756ce802a1d58ff6f36bbb6bfe6c0d2bb97d05c2c5d74e48f23fea01f",
+   "manifest": "3e1060d7c9cd7846ff1fe3b0a6a281635bd17f8d436f0bf71aac9c2a0b81e865",
+   "digest": "56fb87375176d2b669410fd8034a20cad22be5379de8b2cc385c8e4210d8c300",
    "files": 73,
-   "bytes": 23433906
+   "bytes": 23435508
   }
  ],
  "refusal": {
@@ -69,20 +69,66 @@
   "version": "156.0.8078.4",
   "final": "fe69bad3406ab5f6",
   "steps": 600,
-  "digest": "d5f45e2756ce802a1d58ff6f36bbb6bfe6c0d2bb97d05c2c5d74e48f23fea01f",
+  "digest": "56fb87375176d2b669410fd8034a20cad22be5379de8b2cc385c8e4210d8c300",
   "verified": 48,
   "firstDifference": null,
   "sameLexer": true,
   "errors": []
  },
- "mac": [],
- "macRefused": [],
- "macKept": [],
+ "mac": [
+  {
+   "name": "game-a",
+   "ok": true,
+   "manifest": "3e1060d7c9cd7846ff1fe3b0a6a281635bd17f8d436f0bf71aac9c2a0b81e865",
+   "differ": [],
+   "missing": [],
+   "extra": []
+  },
+  {
+   "name": "game-b",
+   "ok": true,
+   "manifest": "3e1060d7c9cd7846ff1fe3b0a6a281635bd17f8d436f0bf71aac9c2a0b81e865",
+   "differ": [],
+   "missing": [],
+   "extra": []
+  },
+  {
+   "name": "game-c",
+   "ok": true,
+   "manifest": "3e1060d7c9cd7846ff1fe3b0a6a281635bd17f8d436f0bf71aac9c2a0b81e865",
+   "differ": [],
+   "missing": [],
+   "extra": []
+  },
+  {
+   "name": "game-d",
+   "ok": true,
+   "manifest": "3e1060d7c9cd7846ff1fe3b0a6a281635bd17f8d436f0bf71aac9c2a0b81e865",
+   "differ": [],
+   "missing": [],
+   "extra": []
+  }
+ ],
+ "macRefused": [
+  {
+   "name": "game-refused",
+   "ok": true
+  }
+ ],
+ "macKept": [
+  {
+   "name": "game-stray",
+   "ok": true,
+   "holds": [
+    "notes.txt"
+   ]
+  }
+ ],
  "checks": [
   {
    "name": "two Node exports are the same bytes",
    "ok": true,
-   "detail": "74 files, manifest 8b7d9af81c86f804"
+   "detail": "74 files, manifest 3e1060d7c9cd7846"
   },
   {
    "name": "each folder is what its manifest lists",
@@ -92,7 +138,7 @@
   {
    "name": "the manifest lists every file with its hash and licence",
    "ok": true,
-   "detail": "50 project files, 23 runtime files, 23433906 bytes"
+   "detail": "50 project files, 23 runtime files, 23435508 bytes"
   },
   {
    "name": "a file with no licence row stops the export, by name",
@@ -128,6 +174,36 @@
    "name": "the build's runtime plays it in Chromium to the same hashes",
    "ok": true,
    "detail": "Chromium 156.0.8078.4, final fe69bad3406ab5f6"
+  },
+  {
+   "name": "the Mac editor's build game-a is Node's, byte for byte",
+   "ok": true,
+   "detail": "74 files, 0 differ, 0 missing, 0 extra; manifest 3e1060d7c9cd7846"
+  },
+  {
+   "name": "the Mac editor's build game-b is Node's, byte for byte",
+   "ok": true,
+   "detail": "74 files, 0 differ, 0 missing, 0 extra; manifest 3e1060d7c9cd7846"
+  },
+  {
+   "name": "the Mac editor's build game-c is Node's, byte for byte",
+   "ok": true,
+   "detail": "74 files, 0 differ, 0 missing, 0 extra; manifest 3e1060d7c9cd7846"
+  },
+  {
+   "name": "the Mac editor's build game-d is Node's, byte for byte",
+   "ok": true,
+   "detail": "74 files, 0 differ, 0 missing, 0 extra; manifest 3e1060d7c9cd7846"
+  },
+  {
+   "name": "the Mac editor's refused export game-refused wrote nothing",
+   "ok": true,
+   "detail": "no folder"
+  },
+  {
+   "name": "the Mac editor left game-stray as it was",
+   "ok": true,
+   "detail": "holds notes.txt"
   }
  ]
 }

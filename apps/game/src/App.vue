@@ -176,7 +176,10 @@ onMounted(async () => {
     store.on((v) => { ui.values = { ...v, volume: { ...v.volume } }; host.value?.setVolume(v.volume); });
     ui.choice = chosenBackend(location.search, store.value);
     ui.starting = 'Starting the renderer…';
-    const h = new GameHost({ canvas: canvas.value, build: props.build, backend: ui.choice.backend, characters: props.characters, shell: { inShell, call }, trace: query.has('trace'), onChange: sync, onCommand });
+    const h = new GameHost({
+      canvas: canvas.value, build: props.build, backend: ui.choice.backend, characters: props.characters, shell: { inShell, call }, trace: query.has('trace'), onChange: sync, onCommand,
+      hold: () => ui.stack.length > 0 || !!ui.question, // nothing steps while a menu or a question is up
+    });
     host.value = h;
     await h.open(ui.choice.backend);
     h.setVolume(store.value.volume);
@@ -201,13 +204,14 @@ onBeforeUnmount(() => { removeEventListener('keydown', onKey); document.removeEv
 <template>
   <main class="game" :class="{ playing }">
     <canvas id="view" ref="canvas" tabindex="-1" aria-label="The game" @click="host?.capturePointer()" />
-    <GameOverlay :session="host?.session ?? null" :input="inputOf" :settings="settings ?? {}" :version="ui.version" :playing="playing" />
+    <GameOverlay :inert="ui.stack.length || ui.question ? '' : null" :session="host?.session ?? null" :input="inputOf" :settings="settings ?? {}" :version="ui.version" :playing="playing" />
 
     <div v-if="ui.fatal" id="fatal" class="fatal" role="alert">{{ ui.fatal }}</div>
     <div v-else-if="!ui.ready" class="starting" role="status">{{ ui.starting }}</div>
     <div v-if="ui.loading || ui.held" id="loading" class="loading" role="status" :aria-label="ui.loading || 'Loading'">{{ ui.loading || 'Loading…' }}</div>
 
-    <div v-if="ui.ready && ui.stack.length" class="scrim" :class="{ title: top === 'title' || ui.stack[0] === 'title' }">
+    <!-- everything behind the top sheet is inert: Tab, clicks and screen readers reach only the question -->
+    <div v-if="ui.ready && ui.stack.length" class="scrim" :class="{ title: top === 'title' || ui.stack[0] === 'title' }" :inert="ui.question ? '' : null">
       <MenuScreen v-if="top === 'title'" id="title-menu" ref="menu" :title="game.title" :focus="latest ? '#continue' : '#new-game'" @back="back">
         <button v-if="latest" id="continue" type="button" :aria-label="`Continue: ${latest.text}`" @click="continueGame">Continue <small>{{ latest.name }}</small></button>
         <button id="new-game" type="button" @click="newGame">New Game</button>

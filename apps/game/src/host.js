@@ -12,7 +12,7 @@ import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { disposeWorld } from '../../editor/src/dispose.js';
 import { gameScenes, worldLoader } from './world.js';
 import { GameSession } from './session.js';
-import { HeldGate, PadNavigator } from './nav.js';
+import { HeldGate, PadNavigator, StepGate } from './nav.js';
 import { saveName } from './slots.js';
 
 export class GameHost {
@@ -27,8 +27,9 @@ export class GameHost {
    * @param {() => void} [o.onChange] the state changed (the UI re-reads it)
    * @param {(command: string) => void} [o.onCommand] a gamepad's menu command, or 'pause' (Start while playing)
    * @param {(event: any) => void} [o.onEvent] the flow's events
+   * @param {() => boolean} [o.hold] true while a menu or a question is up: nothing steps then, whatever else happens
    */
-  constructor({ canvas, build, backend, characters, shell, trace = false, onChange = () => {}, onCommand = () => {}, onEvent = () => {} }) {
+  constructor({ canvas, build, backend, characters, shell, trace = false, onChange = () => {}, onCommand = () => {}, onEvent = () => {}, hold = () => false }) {
     this.canvas = canvas; this.build = build; this.game = build.game; this.shell = shell;
     this.characters = characters; this.onChange = onChange; this.onCommand = onCommand; this.onEvent = onEvent;
     this.render = /** @type {RenderHost | null} */ (null);
@@ -41,6 +42,8 @@ export class GameHost {
     this.mouse = new HeldGate(new MouseDevice());
     this.gamepad = new HeldGate(new GamepadDevice());
     this.pad = new GamepadDevice(); this.nav = new PadNavigator();
+    this.hold = hold;
+    this.stepping = new StepGate([this.keyboard, this.mouse, this.gamepad]);
     this.trace = trace;
     this.session = /** @type {GameSession | null} */ (null);
     this._last = null; this._running = false;
@@ -171,11 +174,14 @@ export class GameHost {
       const pad = {}; this.pad.read(pad);
       for (const c of this.nav.poll(pad.gamepad ?? null, t / 1000)) this.onCommand(this.state.playing && c === 'start' ? 'pause' : c);
       const tree = this.session?.tree, render = this.render;
-      if (!tree || !render || render.tree !== tree) { this._last = null; return; }
+      if (!tree || !render || render.tree !== tree) { this._last = null; this.stepping.update(true); return; }
+      // a menu or a question up (one opened while a save loaded, say), or not playing: nothing steps
+      const { step, resumed } = this.stepping.update(!this.state.playing || this.hold());
+      if (resumed) this._last = null; // no catching up on the time the menu was open
       const dt = this._last === null ? 0 : Math.min(0.25, (t - this._last) / 1000);
       this._last = t;
       try {
-        if (this.state.playing) this._frame(tree, dt);
+        if (step) this._frame(tree, dt);
         else render.render(1, false);
       } catch (e) {
         this.state.error = String(e?.message ?? e); console.error(e);

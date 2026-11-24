@@ -30,7 +30,7 @@ fresh: false
   wait id=export-game timeout_ms=5000
   act id=game-name action=set_value value=game-a
   act id=export-game action=press
-  until find("id=export-game-result").0.name matches "^Exported game cafe: [0-9]+ files, [0-9]+ bytes, entry cafe.vrmxs, runtime vrmxg-game [0-9.]+ · build [0-9a-f]{16} · manifest [0-9a-f]{16} · .*/builds/game-a$" timeout=120000   # written through build.begin, build.write, build.end
+  until find("id=export-game-result").0.name matches "^Exported game cafe: [0-9]+ files, [0-9]+ bytes, entry cafe.vrmxs, runtime vrmxg-game [0-9.]+(\\+[0-9a-f]{12})? · build [0-9a-f]{16} · manifest [0-9a-f]{16} · .*/builds/game-a$" timeout=120000   # written through build.begin, build.write, build.end
   expect find("role=alert").count == 0   # no error line
   partial: the folder's files are checked against the manifest by acceptance/m5/build.mjs, outside the app
   ```

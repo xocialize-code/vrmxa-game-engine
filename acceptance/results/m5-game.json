@@ -6,27 +6,27 @@
  "build": {
   "game": "cafe-test",
   "files": 76,
-  "digest": "2c107e8ea7af5ed4fb6d3ea15b9fe1a45565f893c56c8743736c3fa004146f0c",
-  "manifest": "9a1c52941c4e1b8cf7c462d9bda7bf35bd3ad0ddf9fdbca88a7aaab749e5b9a0"
+  "digest": "b2e5c5792636edc9893126c2726ae045f9266dd55860fb22506a209649cbd26f",
+  "manifest": "28cd50d4a51b5902f73016d8108d1d5ddfd2667fe9ce2d2334c0f6a76959abda"
  },
  "session": {
   "segments": [
    {
     "from": "game/title.vrmxs",
     "at": 0,
-    "steps": 432,
+    "steps": 433,
     "marks": [
      {
       "type": "save",
       "slot": "slot-1",
-      "step": 251
+      "step": 252
      }
     ]
    },
    {
     "from": "slot-1",
-    "at": 251,
-    "steps": 151,
+    "at": 252,
+    "steps": 150,
     "marks": []
    }
   ],
@@ -38,7 +38,7 @@
   "last": {
    "step": 402,
    "scene": "game/level.vrmxs",
-   "hash": "739d2cb1839c9cfc"
+   "hash": "42c819497642b489"
   }
  },
  "replay": {
@@ -49,7 +49,7 @@
   {
    "name": "the test game exports with the game app as its runtime",
    "ok": true,
-   "detail": "76 files, digest 2c107e8ea7af5ed4"
+   "detail": "76 files, digest b2e5c5792636edc9"
   },
   {
    "name": "the title menu, on WebGL when forced",
@@ -59,17 +59,22 @@
   {
    "name": "Escape pauses: nothing steps while the menu is open",
    "ok": true,
-   "detail": "paused at step 251 in game/level.vrmxs"
+   "detail": "paused at step 252 in game/level.vrmxs"
   },
   {
    "name": "Save Game → Slot 1 saves, and the slot says what it holds",
    "ok": true,
-   "detail": "\"Slot 1: The Cafe (test game) · level · Get to the counter, 0:04 · 2026-11-24 22:43\""
+   "detail": "\"Slot 1: The Cafe (test game) · level · Get to the counter, 0:04 · 2026-11-24 23:08\""
+  },
+  {
+   "name": "Tab stays in a question: nothing behind the sheet can be reached",
+   "ok": true,
+   "detail": "Tab ×6 → #answer-discard, #answer-cancel, #answer-discard, #answer-cancel, #answer-discard, #answer-cancel"
   },
   {
    "name": "Load Game over unsaved play asks first, then goes back to the save",
    "ok": true,
-   "detail": "asked \"Load over this game?\"; was at 432, back at 251 (saved at 251)"
+   "detail": "asked \"Load over this game?\"; was at 433, back at 252 (saved at 252)"
   },
   {
    "name": "Quit to Title asks first, and the session's log has both segments",
@@ -79,12 +84,12 @@
   {
    "name": "the session played in Chromium replays in Node to the same hash after every step",
    "ok": true,
-   "detail": "583 steps, last 739d2cb1839c9cfc at step 402"
+   "detail": "583 steps, last 42c819497642b489 at step 402"
   },
   {
    "name": "a fresh launch offers Continue, and Load Game → Slot 1 loads the save",
    "ok": true,
-   "detail": "Continue \"Continue: Slot 1: The Cafe (test game) · level · Get to the counter, 0:04 · 2026-11-24 22:43\"; loaded at step 251 (saved at 251)"
+   "detail": "Continue \"Continue: Slot 1: The Cafe (test game) · level · Get to the counter, 0:04 · 2026-11-24 23:08\"; loaded at step 252 (saved at 252)"
   },
   {
    "name": "every menu from a gamepad: Start pauses and resumes, the d-pad moves, A chooses, B goes back",

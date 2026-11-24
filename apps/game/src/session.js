@@ -11,6 +11,12 @@
 //   Pause, Resume   the host takes no step while paused: nothing in the world changes, and nothing is recorded
 //   Quit to title   ends the session
 //
+// A save belongs to the build that made it. Every file this session writes (a player's save, a checkpoint) carries the
+// build's digest in its `extra.build`, and a file from another build (another export of the same game: the same bundle
+// id, so the same Saves folder) is refused with a message saying so: @vrmxg/save checks the scene document, the maths and
+// the physics build, not the prefabs, the behaviours, the action map or the engine, so such a file could load and then
+// play on differently. A session log names its build too, and replaySession refuses a log from another one.
+//
 // None of them is an input: the first two are where a segment of the log starts, and the rest never touch the world.
 // Whatever a game's own scenes offer (a title scene that waits for a button) is an action in the recorded input frame.
 // Nothing here runs inside a step: a menu's handler is a DOM event or an animation frame, so each lands on a boundary.
@@ -50,15 +56,17 @@ export class GameSession {
      * started in. (A load keeps the same GameFlow, so comparing flows isn't enough.)
      */
     this.segment = 0;
-    // the store as the flow sees it: every write (a player's save, a checkpoint) moves safeStep once it has succeeded,
-    // and only if no other segment began meanwhile
+    /** What every file written here says about the build that made it (null: no build, as in some tests). */
+    this.build = digest ? { digest, game: game.id } : null;
+    // the store as the flow sees it: every write (a player's save, a checkpoint) is stamped with the build, and moves
+    // safeStep once it has succeeded, only if no other segment began meanwhile
     this._store = store && {
       read: (slot) => store.read(slot),
       list: () => store.list(),
       remove: (slot) => store.remove(slot),
       write: async (slot, file) => {
         const seg = this.segment;
-        const entry = await store.write(slot, file);
+        const entry = await store.write(slot, this.build ? { ...file, extra: { ...(file?.extra ?? {}), build: this.build } } : file);
         if (seg === this.segment && this.flow) this.safeStep = Math.max(this.safeStep, file?.summary?.step ?? 0);
         return entry;
       },
@@ -124,6 +132,7 @@ export class GameSession {
    */
   async loadFile(file, { slot = null } = {}) {
     if (this._changing) throw new Error('a game is starting or loading already');
+    this.checkBuild(file);
     this._changing = true;
     try { return await this._loadFile(file, slot); } finally { this._changing = false; }
   }
@@ -148,6 +157,17 @@ export class GameSession {
     this._handed = null;
     this._open({ save: file, slot });
     return this.step;
+  }
+
+  /**
+   * Refuse a save another build made (see the top). A session with no build (tests) loads any file.
+   * @param {any} file
+   */
+  checkBuild(file) {
+    if (!this.build) return;
+    const b = file?.extra?.build;
+    if (!b?.digest) throw new Error('This save doesn\'t say which version of the game made it, so it can\'t be loaded safely.');
+    if (b.digest !== this.build.digest) throw new Error(`This save was made with another version of the game (build ${String(b.digest).slice(0, 12)}); this one is build ${this.build.digest.slice(0, 12)}. A save loads only into the version that made it.`);
   }
 
   /** Load a slot of the store: a player's save, or a checkpoint by its full name ("auto-…"). */
@@ -219,13 +239,16 @@ export class GameSession {
  * steps as it has frames, with a hash of the world after every step. The result is the app's `hashes` when the replay
  * is exact.
  * @param {any} log GameSession.log()
- * @param {{ load: (req: any) => Promise<any>, unload?: (tree: any) => void, scenes?: Map<string, any> | null, prefabs?: Map<string, any> | null }} o
- *   load, unload: this runtime's world builder (world.js); scenes, prefabs: the game's documents
+ * @param {{ digest: string, load: (req: any) => Promise<any>, unload?: (tree: any) => void, scenes?: Map<string, any> | null, prefabs?: Map<string, any> | null }} o
+ *   digest: the digest of the build it is replayed on (its manifest's): a log from another build is refused; load,
+ *   unload: this runtime's world builder (world.js); scenes, prefabs: the game's documents
  * @returns {Promise<Array<{ step: number, scene: string | null, hash: string }>>}
  */
-export async function replaySession(log, { load, unload = null, scenes = null, prefabs = null }) {
+export async function replaySession(log, { digest, load, unload = null, scenes = null, prefabs = null }) {
   if (log?.format !== SESSION_FORMAT) throw new Error(`not a session log (format "${log?.format}")`);
   if (log.version !== SESSION_VERSION) throw new Error(`session log version ${log.version}; this reads ${SESSION_VERSION}`);
+  if (typeof digest !== 'string' || !digest) throw new Error('replaySession needs the digest of the build it replays on');
+  if (log.game?.digest !== digest) throw new Error(`this log was played on build ${String(log.game?.digest).slice(0, 12)}; this is build ${digest.slice(0, 12)}: a log replays only on the build it was played on`);
   /** @type {GameFlow | null} */ let flow = null;
   const out = [];
   try {

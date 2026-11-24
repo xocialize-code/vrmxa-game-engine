@@ -33,7 +33,7 @@ test('the test game: title, level won at the counter, ending, title again; the l
     const docs = await scenes.documents();
     const load = worldLoader({ R: await loadRapier(), scenes, behaviours, actions: p.game.input.actions, vrmxaCore: core, closet, options: () => ({ stubTextures: true }) });
     const events = [];
-    const session = new GameSession({ game: p.game, load, unload: freeWorld, store: new MemoryStore(), scenes: docs.scenes, prefabs: docs.prefabs, hashes: true, onEvent: (e) => events.push(e) });
+    const session = new GameSession({ game: p.game, digest: 'test-game', load, unload: freeWorld, store: new MemoryStore(), scenes: docs.scenes, prefabs: docs.prefabs, hashes: true, onEvent: (e) => events.push(e) });
     await session.newGame();
     // the person: Space at step 20 skips the title; then the recorded walk into the cafe; then nothing
     const walk = JSON.parse(new TextDecoder().decode(await p.read('input/walk-in.json')));
@@ -50,7 +50,7 @@ test('the test game: title, level won at the counter, ending, title again; the l
     assert.ok(events.some((e) => e.type === 'checkpointWritten' && e.slot === 'door' && e.stored), 'the door\'s checkpoint, in the store');
     assert.equal(events.filter((e) => e.type === 'goal' && e.done).length, 1);
     const log = session.end();
-    const replay = await replaySession(log, { load, unload: freeWorld, scenes: docs.scenes, prefabs: docs.prefabs });
+    const replay = await replaySession(log, { digest: 'test-game', load, unload: freeWorld, scenes: docs.scenes, prefabs: docs.prefabs });
     assert.equal(firstDifference(replay, log.hashes), -1);
     assert.equal(replay.length, 1500);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }

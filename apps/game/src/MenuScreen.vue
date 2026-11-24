@@ -2,7 +2,7 @@
 // One menu screen (M5 W1): a dialog with a heading and real controls. Focus starts on its first control; the arrows (and
 // a gamepad, through `command`) move it, Escape (B) goes back. AppProbe and screen readers read the controls' names.
 import { ref, onMounted, nextTick } from 'vue';
-import { focusFirst, menuCommand } from './menus.js';
+import { focusFirst, menuCommand, controlsOf } from './menus.js';
 import { keyCommand } from './nav.js';
 
 const props = defineProps({ id: { type: String, required: true }, title: { type: String, required: true }, focus: { type: String, default: null } });
@@ -15,6 +15,12 @@ onMounted(async () => { await nextTick(); if (root.value) focusFirst(root.value,
 function command(c) { return root.value ? menuCommand(root.value, c, { back: () => emit('back') }) : false; }
 
 function onKey(e) {
+  // Tab wraps round inside the menu (what is behind a sheet is inert, so it would otherwise leave the page)
+  if (e.key === 'Tab' && root.value) {
+    const list = controlsOf(root.value), i = list.indexOf(/** @type {any} */ (document.activeElement));
+    if (list.length && (e.shiftKey ? i <= 0 : i === list.length - 1)) { e.preventDefault(); list[e.shiftKey ? list.length - 1 : 0].focus(); }
+    return;
+  }
   const c = keyCommand(e);
   if (!c) return;
   // a select keeps its own arrows on the Mac only while its list is open; here up and down move between controls

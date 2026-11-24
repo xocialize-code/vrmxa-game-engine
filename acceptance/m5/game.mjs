@@ -121,6 +121,10 @@ await page.click('#load-game'); await screen(page, 'load');
 await page.click('#slot-1');
 await until(page, () => !!(/** @type {any} */ (window).__game.state().question), null);
 const loadQuestion = (await state(page)).question;
+// Tab can't leave the question: everything behind it is inert
+const tabbed = [];
+for (let i = 0; i < 6; i++) { await page.keyboard.press('Tab'); tabbed.push(await focused(page)); }
+say('Tab stays in a question: nothing behind the sheet can be reached', tabbed.every((id) => /^answer-/.test(id ?? '')), `Tab ×6 → ${tabbed.map((id) => `#${id}`).join(', ')}`);
 await page.click('#answer-discard');
 await screen(page, null);
 const backAt = await loadedAt(page);
@@ -143,7 +147,7 @@ const core = await vrmxaCore(), closet = await import(PATHS.core.replace(/index\
 const scenes = gameScenes(build.bytes, build.game);
 const docs = await scenes.documents();
 const load = worldLoader({ R: await loadRapier(), scenes, behaviours: await build.behaviours(behavioursImporter(dir)), actions: await build.actions(), vrmxaCore: core, closet, options: () => ({ stubTextures: true }) });
-const replay = await replaySession(log, { load, unload: freeWorld, scenes: docs.scenes, prefabs: docs.prefabs });
+const replay = await replaySession(log, { digest: build.manifest.digest, load, unload: freeWorld, scenes: docs.scenes, prefabs: docs.prefabs });
 const diff = firstDifference(replay, log.hashes);
 say('the session played in Chromium replays in Node to the same hash after every step', diff < 0 && replay.length === log.hashes.length && replay.length > 0, diff < 0 ? `${replay.length} steps, last ${replay.at(-1)?.hash} at step ${replay.at(-1)?.step}` : `first difference at index ${diff}: page ${JSON.stringify(log.hashes[diff])}, Node ${JSON.stringify(replay[diff])}`);
 

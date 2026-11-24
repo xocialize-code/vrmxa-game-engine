@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { MemoryStore } from '@vrmxg/save';
 import { ballSession, ballGame, play, FailingStore } from './helpers.mjs';
 import { GameSession, replaySession, firstDifference, SESSION_FORMAT } from '../src/session.js';
+import { GAME } from './helpers.mjs';
 
 // the person: holds right (KeyD → move_x) from the start, taps Space (jump: the title's Start) at a few steps
 const person = (device) => (step) => {
@@ -52,7 +53,7 @@ test('a session through scene changes, a save and a load replays to the same per
 
   // replayed in a fresh runtime with no person: the log alone
   const g = await ballGame();
-  const replay = await replaySession(JSON.parse(JSON.stringify(log)), g);
+  const replay = await replaySession(JSON.parse(JSON.stringify(log)), { ...g, digest: 'test' });
   assert.equal(replay.length, log.hashes.length);
   assert.equal(firstDifference(replay, log.hashes), -1, 'every step the same');
 });
@@ -87,7 +88,7 @@ test('Continue from the title starts a session from a save, and it replays', asy
   assert.equal(log.segments.length, 1);
   assert.equal(log.segments[0].from.slot, 'slot-2');
   session.end();
-  const replay = await replaySession(log, await ballGame());
+  const replay = await replaySession(log, { ...(await ballGame()), digest: 'test' });
   assert.equal(firstDifference(replay, log.hashes), -1);
 });
 
@@ -143,14 +144,14 @@ test('a save that can\'t load leaves the game being played as it was', async () 
 
 test('a replay refuses a log that isn\'t one, and one whose segment starts elsewhere', async () => {
   const g = await ballGame();
-  await assert.rejects(replaySession({ format: 'x' }, g), /not a session log/);
+  await assert.rejects(replaySession({ format: 'x' }, { ...g, digest: 'test' }), /not a session log/);
   const { session } = await ballSession();
   await session.newGame();
   await play(session, 4);
   const log = session.log();
   session.end();
   log.segments[0].at = 3;
-  await assert.rejects(replaySession(log, g), /starts at step 3/);
+  await assert.rejects(replaySession(log, { ...g, digest: 'test' }), /starts at step 3/);
 });
 
 // ---------------------------------------------------------------- what the review found (one test per finding)
@@ -205,8 +206,53 @@ test('a load that outlives its session (Quit to Title while it loads) frees its 
 test('one session change at a time: a second New Game or load while one is under way is refused', async () => {
   const { session } = await ballSession();
   const first = session.newGame();
-  await assert.rejects(session.newGame(), /starting or loading already/);
+  await assert.rejects(session.newGame(), /starting or loading already/, 'New Game during New Game');
+  await assert.rejects(session.loadFile({}), /starting or loading already/, 'a load during New Game');
   await first;
-  assert.equal(session.step, 0);
+  await play(session, 20);
+  await session.saveSlot('slot-1');
+  const file = await session.store.read('slot-1');
+  const loading = session.loadFile(file);
+  await assert.rejects(session.loadFile(file), /starting or loading already/, 'a load during a load');
+  await assert.rejects(session.newGame(), /starting or loading already/, 'New Game during a load');
+  assert.equal(await loading, 20);
   session.end();
+});
+
+test('a save belongs to the build that made it: another build\'s save, or one that doesn\'t say, is refused', async () => {
+  const store = new MemoryStore();
+  const a = await ballSession({ store });
+  await a.session.newGame();
+  await play(a.session, 30);
+  await a.session.saveSlot('slot-1');
+  a.session.end();
+  const saved = await store.read('slot-1');
+  assert.deepEqual(saved.extra.build, { digest: 'test', game: 'ball-game' }, 'the save names its build');
+  // the same game exported again: another digest, the same store (one bundle id, one Saves folder)
+  const g = await ballGame();
+  const b = new GameSession({ game: GAME, digest: 'another-build', load: g.load, unload: g.unload, store, scenes: g.scenes, prefabs: g.prefabs });
+  await assert.rejects(b.loadSlot('slot-1'), /made with another version of the game \(build test\); this one is build another-buil/);
+  assert.equal(b.active, false, 'nothing started');
+  const unstamped = structuredClone(saved); delete unstamped.extra.build;
+  await assert.rejects(b.loadFile(unstamped), /doesn't say which version of the game made it/);
+  // a checkpoint the flow writes is stamped too
+  const c = await ballSession({ store });
+  await c.session.newGame();
+  const act = person(c.device);
+  for (let i = 0; i < 400 && !(await store.list()).some((e) => e.slot.startsWith('auto-')); i++) { await play(c.session, 1, act); await c.session.flow.settle(); }
+  const cp = (await store.list()).find((e) => e.slot.startsWith('auto-'));
+  assert.ok(cp, 'a checkpoint was written');
+  assert.equal((await store.read(cp.slot)).extra.build.digest, 'test');
+  c.session.end();
+});
+
+test('a log replays only on the build it was played on', async () => {
+  const { session } = await ballSession();
+  await session.newGame();
+  await play(session, 5);
+  const log = session.end();
+  const g = await ballGame();
+  await assert.rejects(replaySession(log, { ...g, digest: 'another-build' }), /played on build test; this is build another-buil/);
+  await assert.rejects(replaySession(log, g), /needs the digest of the build/);
+  assert.equal((await replaySession(log, { ...g, digest: 'test' })).length, 5);
 });

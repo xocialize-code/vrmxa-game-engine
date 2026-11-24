@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import { checkRuntimeSources } from '@vrmxg/bundle/node';
 // The editor ships the sample project as its starting project (the site's files, by their refs) and lists it in
 // project-files.json; a project opened in the Mac shell is served under /project/ instead. vrmxa-core is read from the
 // avatar studio beside this repository, in place (AB-D-0249). base './' for the shell's origins.
@@ -13,6 +14,12 @@ const shim = fs.readFileSync(here('static/vrmxg-core.js'), 'utf8');
 // into the editor's build as game-runtime/ exactly as it is, and served from where it was built in dev. It is the game
 // app (M5 W1, AB-D-0286): `npm run build -w @vrmxg/game-app` first.
 const gameRuntime = here('../game/dist');
+/** Is the game runtime the build of this checkout's sources (its stamp, apps/game/dist-sources.json)? → why not, or null */
+const staleRuntime = () => {
+  const s = checkRuntimeSources(here('../game/dist-sources.json'));
+  if (s.ok) return null;
+  return s.digest === null ? 'it was built without its source stamp' : `${s.changed.length + s.missing.length} of its source files changed since it was built (${[...s.changed, ...s.missing].slice(0, 3).join(', ')})`;
+};
 // vrmxa-core beside the repository, and its real path: Vite checks served files by real path, and a worktree reaches the
 // studio through a symlink (M4 W5)
 const core = here('../../../vrmxa-avatar-studio/packages/vrmxa-core');
@@ -39,7 +46,13 @@ const projectFiles = () => ({
 const runtimeFiles = () => ({
   name: 'vrmxg-game-runtime',
   configureServer(server) {
+    let warned = false;
     server.middlewares.use((req, res, next) => {
+      if (!warned && req.url.includes('/game-runtime/') && fs.existsSync(gameRuntime)) {
+        warned = true;
+        const why = staleRuntime();
+        if (why) console.warn(`vrmxg-game-runtime: apps/game/dist is older than this checkout (${why}): a game exported now gets the old runtime. npm run build -w @vrmxg/game-app`);
+      }
       const url = decodeURIComponent(req.url.split('?')[0]), at = url.indexOf('/game-runtime/');
       const file = at < 0 ? null : path.join(gameRuntime, url.slice(at + '/game-runtime/'.length));
       if (!file || !file.startsWith(gameRuntime + path.sep) || !fs.existsSync(file) || !fs.statSync(file).isFile()) { next(); return; }
@@ -48,7 +61,11 @@ const runtimeFiles = () => ({
     });
   },
   closeBundle() {
-    if (fs.existsSync(path.join(gameRuntime, 'vrmxg-runtime.json'))) fs.cpSync(gameRuntime, here('dist/game-runtime'), { recursive: true });
+    if (fs.existsSync(path.join(gameRuntime, 'vrmxg-runtime.json'))) {
+      const why = staleRuntime();
+      if (why) throw new Error(`vrmxg-game-runtime: apps/game/dist is older than this checkout (${why}): build it again first (npm run build -w @vrmxg/game-app), or every game this editor exports gets the old runtime`);
+      fs.cpSync(gameRuntime, here('dist/game-runtime'), { recursive: true });
+    }
     else console.warn('vrmxg-game-runtime: no runtime at apps/game/dist, so this editor cannot export a game (npm run build -w @vrmxg/game-app)');
   },
 });
