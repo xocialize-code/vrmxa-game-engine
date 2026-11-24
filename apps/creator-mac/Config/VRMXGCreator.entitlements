@@ -9,5 +9,7 @@
 	<key>com.apple.security.files.user-selected.read-write</key><true/>
 	<!-- The camera (M4 W9: face takes): the shell's camera.* methods; frames stay in the shell, only the face's shape (numbers) reaches the page. -->
 	<key>com.apple.security.device.camera</key><true/>
+	<!-- The voice models' folder (AB-T-0614: tts.speak): picked once with voice.chooseModels and remembered as a security-scoped bookmark. No microphone: the creator only speaks. -->
+	<key>com.apple.security.files.bookmarks.app-scope</key><true/>
 </dict>
 </plist>

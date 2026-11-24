@@ -5,9 +5,11 @@ import VRMXGShell
 // The shell's voice methods (M3 W3, AB-T-0542): the shapes the page's providers already speak (`@vrmxg/voice`
 // live.js shellTTS, listen.js shellSTT and shellListen, `@vrmxg/director` model.js shellModel), over a VoiceBackend.
 //
-//   voice.status → { prepared, preparing, models, backends: { tts, llm, stt } }
+//   voice.status → { prepared, preparing, models, backends: { tts, llm, stt } }   backends: the parts this app took
 //   voice.chooseModels → { path }            a folder panel; the choice is remembered (security-scoped bookmark)
-//   voice.prepare → { prepared, models, ms } loads all three models (once; later calls answer at once)
+//   voice.prepare → { prepared, models, ms } loads the app's models (once; later calls answer at once)
+//   voice.release → { released, busy? }      unloads them, for work that wants the memory (the creator's render queue);
+//                         the next call that needs them loads them again. busy: a call is running, nothing was unloaded
 //   tts.speak { text, voice? } → { wav (base64 16-bit mono WAV), sampleRate, duration, words: [{ text, start, duration }], ms }
 //                         lines past ~400 characters are spoken in pieces at sentence ends and joined, timings offset
 //   llm.respond { messages: [{ role, content }], maxTokens?, temperature?, seed?, json? } → { text, toolCalls: [], model, ms }
@@ -18,7 +20,13 @@ import VRMXGShell
 //                         the native microphone with VAD endpointing: `stt.event` events
 //                         { type: listening | speechStarted | partial | discarded | speechEnded | final | cancelled | failed, text? }
 //
-// The models live in a folder the person picks once (voice.chooseModels), or VRMXG_SHELL_MODELS outside the sandbox.
+// An app takes the parts it uses (`parts`): the creator takes speech out alone, so it registers tts.speak, loads Kokoro
+// and nothing else (AB-T-0614). The models live in a folder the person picks once (voice.chooseModels), or
+// VRMXG_SHELL_MODELS: an absolute path outside the sandbox, or a path relative to the app's temporary folder (its
+// container's, in the sandbox), as the shell's other hooks read theirs.
+
+/// The parts of the voice product: speech out (tts.speak), the director's model (llm.respond), speech in (stt.*).
+public enum VoicePart: String, Sendable, CaseIterable { case tts, llm, stt }
 
 public struct VoiceMessage: Sendable, Equatable {
     public let role: String
@@ -52,7 +60,10 @@ public enum VoiceListenEvent: Sendable, Equatable {
 public protocol VoiceBackend: AnyObject {
     /// Package names for voice.status: tts, llm, stt.
     var names: [String: String] { get }
-    func prepare(models: URL) async throws
+    /// Load and warm these parts' models. Called again after `release`.
+    func prepare(models: URL, parts: Set<VoicePart>) async throws
+    /// Unload every model that is loaded.
+    func release() async
     func speak(_ text: String, voice: String) async throws -> VoiceAudio
     func respond(_ messages: [VoiceMessage], maxTokens: Int, temperature: Double, seed: UInt64?, json: Bool) async throws -> (text: String, model: String)
     /// One utterance, mono Float32 at 16 kHz.
@@ -64,19 +75,21 @@ public protocol VoiceBackend: AnyObject {
 @MainActor
 public final class VoiceMethods {
     let backend: VoiceBackend
+    let parts: Set<VoicePart>
     let defaults: UserDefaults
     let env: [String: String]
     let emit: @MainActor (String, [String: Any]) -> Void
     var prepared: URL?
     var preparing: Task<Void, Error>?
-    var listening = false
+    /// Calls into the backend that haven't answered: voice.release leaves the models alone while there are any.
+    var running = 0
     static let modelsKey = "vrmxg.shell.voice.models"
     /// Characters per TTS call: Kokoro takes at most 510 phoneme tokens (~450–500 characters) in one call.
     public static let pieceLength = 400
 
-    public init(backend: VoiceBackend, defaults: UserDefaults = .standard, env: [String: String] = ProcessInfo.processInfo.environment,
-                emit: @escaping @MainActor (String, [String: Any]) -> Void) {
-        self.backend = backend; self.defaults = defaults; self.env = env; self.emit = emit
+    public init(backend: VoiceBackend, parts: Set<VoicePart> = Set(VoicePart.allCases), defaults: UserDefaults = .standard,
+                env: [String: String] = ProcessInfo.processInfo.environment, emit: @escaping @MainActor (String, [String: Any]) -> Void) {
+        self.backend = backend; self.parts = parts; self.defaults = defaults; self.env = env; self.emit = emit
     }
 
     /// Register on an app's shell: `ShellConfiguration(…, setUp: { VoiceMethods(…).install(on: $0) })` keeps it for the app's life.
@@ -87,23 +100,30 @@ public final class VoiceMethods {
 
     public func register(on router: BridgeRouter) {
         router.register("voice.status") { [unowned self] _ in
-            ["prepared": self.prepared != nil, "preparing": self.preparing != nil, "models": (self.modelsFolder()?.path).map { $0 as Any } ?? NSNull(), "backends": self.backend.names]
+            ["prepared": self.prepared != nil, "preparing": self.preparing != nil, "models": (self.modelsFolder()?.path).map { $0 as Any } ?? NSNull(),
+             "backends": self.backend.names.filter { name in VoicePart(rawValue: name.key).map(self.parts.contains) ?? false }]
         }
         router.register("voice.chooseModels") { [unowned self] _ in try self.chooseModels() }
         router.register("voice.prepare") { [unowned self] _ in try await self.prepare() }
-        router.register("tts.speak") { [unowned self] p in try await self.speak(p) }
-        router.register("llm.respond") { [unowned self] p in try await self.respond(p) }
-        router.register("stt.transcribe") { [unowned self] p in try await self.transcribe(p) }
-        router.register("stt.listen") { [unowned self] _ in try await self.listen() }
-        router.register("stt.stop") { [unowned self] p in
-            self.backend.stopListening(cancel: p.bool("cancel") ?? false); return ["listening": false]
+        router.register("voice.release") { [unowned self] _ in await self.release() }
+        if parts.contains(.tts) { router.register("tts.speak") { [unowned self] p in try await self.speak(p) } }
+        if parts.contains(.llm) { router.register("llm.respond") { [unowned self] p in try await self.respond(p) } }
+        if parts.contains(.stt) {
+            router.register("stt.transcribe") { [unowned self] p in try await self.transcribe(p) }
+            router.register("stt.listen") { [unowned self] _ in try await self.listen() }
+            router.register("stt.stop") { [unowned self] p in
+                self.backend.stopListening(cancel: p.bool("cancel") ?? false); return ["listening": false]
+            }
         }
     }
 
     // MARK: models
 
     func modelsFolder() -> URL? {
-        if let v = env["VRMXG_SHELL_MODELS"], !v.isEmpty { return URL(fileURLWithPath: v, isDirectory: true) }
+        if let v = env["VRMXG_SHELL_MODELS"], !v.isEmpty {
+            return v.hasPrefix("/") ? URL(fileURLWithPath: v, isDirectory: true)
+                : URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(v, isDirectory: true)
+        }
         guard let data = defaults.data(forKey: Self.modelsKey) else { return nil }
         var stale = false
         let url = (try? URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &stale))
@@ -128,11 +148,13 @@ public final class VoiceMethods {
         let t0 = Date()
         if let prepared { return ["prepared": true, "models": prepared.path, "ms": 0] }
         guard let folder = modelsFolder() else {
-            throw BridgeError("no_models", "no model folder: call voice.chooseModels (or set VRMXG_SHELL_MODELS outside the sandbox)")
+            throw BridgeError("no_models", "no model folder: call voice.chooseModels (or set VRMXG_SHELL_MODELS)")
         }
-        let task = preparing ?? Task { try await backend.prepare(models: folder) }
+        // counted as running, so voice.release leaves the models alone until every caller waiting here has its answer
+        running += 1; defer { running -= 1 }
+        let task = preparing ?? Task { try await backend.prepare(models: folder, parts: parts) }
         preparing = task
-        defer { preparing = nil }
+        defer { if preparing == task { preparing = nil } } // a later prepare's task isn't this caller's to clear
         do { try await task.value } catch { throw BridgeError("failed", "the voice models didn't load: \(error)") }
         prepared = folder
         return ["prepared": true, "models": folder.path, "ms": ms(since: t0)]
@@ -142,11 +164,21 @@ public final class VoiceMethods {
         if prepared == nil { _ = try await prepare() }
     }
 
+    /// voice.release: the models leave memory; the folder stays chosen, and the next call that needs them loads them.
+    func release() async -> Any? {
+        if running > 0 || preparing != nil { return ["released": false, "busy": true] }
+        let was = prepared != nil
+        prepared = nil
+        await backend.release() // asked even when nothing is marked loaded: a prepare that threw midway may have loaded a part
+        return ["released": was]
+    }
+
     // MARK: tts.speak
 
     func speak(_ p: BridgeParams) async throws -> Any? {
         let text = try p.require("text").trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { throw BridgeError("bad_params", "text is empty") }
+        running += 1; defer { running -= 1 }
         try await requirePrepared()
         let t0 = Date()
         var parts: [VoiceAudio] = []
@@ -218,6 +250,7 @@ public final class VoiceMethods {
             guard let role = m["role"] as? String, ["system", "user", "assistant"].contains(role) else { throw BridgeError("bad_params", "a message's role is system, user or assistant") }
             return VoiceMessage(role: role, content: m["content"] as? String ?? "")
         }
+        running += 1; defer { running -= 1 }
         try await requirePrepared()
         let t0 = Date()
         let seed = p.number("seed").map { UInt64(max(0, $0)) }
@@ -231,6 +264,7 @@ public final class VoiceMethods {
     func transcribe(_ p: BridgeParams) async throws -> Any? {
         guard let data = Data(base64Encoded: try p.require("wav")) else { throw BridgeError("bad_params", "wav does not decode") }
         let (samples, rate) = try Self.decodeWav(data)
+        running += 1; defer { running -= 1 }
         try await requirePrepared()
         let t0 = Date()
         let text = try await backend.transcribe(Self.resample(samples, from: rate, to: 16_000))

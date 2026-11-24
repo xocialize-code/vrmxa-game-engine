@@ -25,7 +25,7 @@ inbox beside it, all inside the app's sandbox), then, under the GPU lock,
 app: VRMXG Creator
 launch: ../../build/VRMXGCreator.app
 checklist: ../HAND-TEST-M4-CREATOR.md
-env: {"VRMXG_SHELL_PROJECT": "project", "VRMXG_SHELL_OPEN": "inbox/first-light.fountain", "VRMXG_SHELL_EXPORT": "exports/"}
+env: {"VRMXG_SHELL_PROJECT": "project", "VRMXG_SHELL_OPEN": "inbox/first-light.fountain", "VRMXG_SHELL_EXPORT": "exports/", "VRMXG_SHELL_MODELS": "models"}
 fixtures: ~/Library/Containers/com.xocialize.vrmxg-creator/Data/tmp/inbox
 fresh: false
 ```

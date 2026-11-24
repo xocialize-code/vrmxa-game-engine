@@ -7,11 +7,12 @@ row per launch: `hand-test/HAND-TEST-M4-BACKEND.scenario.md` (no query) and
 be shown in WKWebView on this Mac (it has WebGPU); `acceptance/m4/backend-switch.mjs` shows it in Chromium with
 `navigator.gpu` hidden.
 
-- [ ] With no query the editor draws on WebGPU, and the scene shows.
-- [ ] With `renderer=webgl` in the query the editor draws on WebGL, and the scene shows.
+- [x] With no query the editor draws on WebGPU, and the scene shows. *AppProbe 2026-11-24: `#renderer` read "Renderer WebGPU"; no error shown. The picture wasn't looked at.*
+- [x] With `renderer=webgl` in the query the editor draws on WebGL, and the scene shows. *AppProbe 2026-11-24: `#renderer` read "Renderer WebGL"; no error shown. The picture wasn't looked at.*
 
 ## Results
 
 | Row | Step | What happened |
 |---|---|---|
 | 1, 2 | the first `wait` | Not run on 2026-11-24 (M4's acceptance): the Mac's screen had locked, and AppProbe can't read a window behind the lock (the app launches, its window has no frame). The readout shows WebGPU in the screenshots of the scenarios run before the lock (`acceptance/results/m4-acceptance/hand-tests/`) |
+| 1, 2 | the whole row | Run later on 2026-11-24 with the screen unlocked, under the GPU lock: both passed (AB-R-1099; `acceptance/results/m4-acceptance/hand-tests/editor-m4-backend.md` and `-webgl.md`) |
