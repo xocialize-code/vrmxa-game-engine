@@ -41,7 +41,7 @@ export class GameSettings {
     this.ignored = [];
     /** The last write's error, or null once a write lands. A failed write never stops the next one. */
     this.error = null;
-    this._writing = Promise.resolve();
+    /** @type {Promise<any>} */ this._writing = Promise.resolve();
   }
 
   /** Read the store (a relaunch). */
