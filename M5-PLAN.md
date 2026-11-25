@@ -118,8 +118,10 @@ W0, W2 ───────────► W9 agents ────────�
 
 **Progress (2026-11-24):** W0, W2 and W8 are done and merged (PRs #31 to #34; tasks AB-T-0615, 0617, 0592 and 0593),
 then W1, W3 and W9 (PRs #36 to #38; tasks AB-T-0616, 0618, 0619 and 0608; shell 0.11.0). The game app plays an exported
-build with the HUD and dialogue UI wired in. Left: W4 to W7, W10 and W11. Left from the reviews: AB-T-0624, AB-T-0626 to
-0631 (AB-T-0631, saves across re-exports, is the operator's decision).
+build with the HUD and dialogue UI wired in. Then W4, W5 and W7 (PRs #40 to #42; tasks AB-T-0599 to 0602, 0604, 0605
+and 0609; shell 0.12.0): the inspector's widgets, the viewport's aids and handles, and masked character layers (carry
+while walking). Left: W6 (prefabs and assets), W10 (the sample game) and W11 (acceptance). Left from the reviews:
+AB-T-0624, AB-T-0626 to 0632, 0634 and 0635 (AB-T-0631, saves across re-exports, is the operator's decision).
 
 Five streams can start at once: W0, W2, W4, W5 and W7. W4 and W5 both change `apps/editor`, so they run one after
 the other unless their files are kept apart. W8 is small and can go first.
