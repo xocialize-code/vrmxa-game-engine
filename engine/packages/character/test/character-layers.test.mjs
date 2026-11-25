@@ -10,8 +10,8 @@ import { installPortableMath } from '@vrmxg/dmath';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { SceneTree, Behaviour } from '@vrmxg/core';
 import { loadRapier, installPhysics } from '@vrmxg/physics';
-import { installCharacters, layerDefs, slerpInto, sampleTrack, MASKS } from '@vrmxg/character';
-import { installTracks, applyTrack, checkTrack } from '@vrmxg/tracks';
+import { installCharacters, layerDefs, readLayers, slerpInto, sampleTrack, MASKS } from '@vrmxg/character';
+import { installTracks, applyTrack, checkTrack, setNodePath } from '@vrmxg/tracks';
 import { captureWorld, restoreWorld, worldHashes, hashValue } from '@vrmxg/snapshot';
 import { available, read, vrmxaCore, testAnimations } from './fixtures.mjs';
 
@@ -171,11 +171,15 @@ test('a sequence\'s animation track with a layer plays on that layer (a function
   assert.equal(checkTrack({ id: 't', type: 'property', target: 'x', path: 'props.y', layer: 'upperBody', keys: [] }).length, 1);
   const A = await setup(), B = await setup();
   const track = { id: 'wave', type: 'animation', target: 'mira', layer: 'upperBody', clips: [{ start: 60, end: 120, clip: 'greet', loop: false, blendIn: 10, blendOut: 10 }] };
+  let moved = 0;
   for (let k = 0; k < 140; k++) {
     applyTrack(B.tree, track, B.tree.clock.step, 60); // the frame is the step (60 fps)
     A.tree.step(); B.tree.step();
     assert.deepEqual(lower(B.mira), lower(A.mira));
+    const f = B.tree.clock.step - 1; // the frame this step applied
+    if (f > 60 && f < 120) moved = Math.max(moved, angle(q(B.mira, 'rightUpperArm'), q(A.mira, 'rightUpperArm')));
   }
+  assert.ok(moved > 1, `the track waved the right arm during frames 60 to 120 (up to ${moved.toFixed(2)} rad from walking's)`);
   assert.equal(B.mira.trackAnimation, null, 'the body is left to the graph');
   assert.deepEqual(q(B.mira, 'rightUpperArm'), q(A.mira, 'rightUpperArm'), 'over by frame 120');
   assert.equal(B.mira.getState().layers, undefined, 'a track layer is not character state');
@@ -206,4 +210,48 @@ test('the layers prop is read by value (an edit in place counts); a layer it dro
   let steps = 0;
   while (W.mira.layers.state.has('tray') && steps < 100) { W.tree.step(); steps++; }
   assert.equal(steps, 36, `gone after ${steps} steps`);
+});
+
+test('a bad layers value never throws inside the step: keyed onto a scene without the prop, the defaults play; a weight is clamped; it is said', { skip: SKIP }, async () => {
+  assert.deepEqual(readLayers({ 0: { weight: 0.5 } }).defs.map((d) => d.name), ['upperBody', 'arms', 'face', 'additive']);
+  assert.equal(readLayers({ 0: { weight: 0.5 } }).problems.length, 1);
+  assert.deepEqual(readLayers([{ name: 'a', weight: 1.4 }, { name: 'b', mask: 'tail' }, { name: 'c', weight: -0.2 }]).defs.map((d) => `${d.name}:${d.weight}`), ['a:1', 'c:0']);
+  const warn = console.warn, said = [];
+  console.warn = (m) => said.push(String(m));
+  try {
+    const W = await setup();
+    W.mira.playLayer({ layer: 'upperBody', slot: 'carry', fade: 0 });
+    W.tree.run(5);
+    setNodePath(W.mira, 'props.layers.0.weight', 0.5); // what a property track keying that path does on this scene
+    assert.doesNotThrow(() => W.tree.run(5));
+    assert.ok(W.mira.layers.playing('upperBody'), 'the default layers still play');
+    assert.equal(said.filter((m) => m.includes('layers prop')).length, 1, 'said once');
+    // a list whose weight a bezier ease overshoots: clamped
+    const V = await setup({ props: { layers: [{ name: 'tray', mask: 'upperBody' }] } });
+    V.mira.playLayer({ layer: 'tray', slot: 'carry', fade: 0 });
+    V.mira.props.layers[0].weight = 1.07;
+    assert.doesNotThrow(() => V.tree.run(3));
+    assert.equal(V.mira.layers.defs[0].weight, 1);
+    // a track on a layer she doesn't have plays nowhere and is said once
+    const track = { id: 't', type: 'animation', target: 'mira', layer: 'tail', clips: [{ start: 0, end: 30, clip: 'greet' }] };
+    for (let k = 0; k < 3; k++) { applyTrack(V.tree, track, V.tree.clock.step, 60); V.tree.step(); }
+    assert.equal(said.filter((m) => m.includes('"tail"')).length, 1);
+  } finally { console.warn = warn; }
+});
+
+test('a layer dropped from the prop between steps: the snapshot restored into a world of the edited document plays what the unbroken run plays', { skip: SKIP }, async () => {
+  const layers = [{ name: 'tray', mask: 'upperBody' }, { name: 'extra', mask: 'face' }];
+  const A = await setup({ props: { layers } });
+  A.mira.playLayer({ layer: 'tray', slot: 'carry', fade: 0.2 });
+  A.mira.playLayer({ layer: 'extra', clip: 'idle', fade: 0.2 });
+  A.tree.run(30);
+  A.mira.props.layers = [layers[0]]; // dropped between steps
+  const snap = captureWorld(A.tree);
+  assert.ok(snap.nodes.mira.layers.playing.extra, 'the snapshot still has it (nothing has stepped since)');
+  const B = await setup({ props: { layers: [layers[0]] } });
+  restoreWorld(B.tree, snap);
+  assert.equal(B.mira.layers.state.has('extra'), false, 'restored: what played on the dropped layer is gone');
+  const ha = [], hb = [];
+  for (let k = 0; k < 40; k++) { A.tree.step(); B.tree.step(); ha.push(hashValue(worldHashes(A.tree))); hb.push(hashValue(worldHashes(B.tree))); }
+  assert.deepEqual(hb, ha);
 });

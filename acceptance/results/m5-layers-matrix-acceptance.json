@@ -1,7 +1,7 @@
 {
  "task": "AB-T-0575",
- "started": "2026-11-25T00:37:40.713Z",
- "commit": "fb2a308",
+ "started": "2026-11-25T01:38:38.662Z",
+ "commit": "f7dded4",
  "machine": {
   "model": "Mac17,14",
   "chip": "Apple M5 Max",
@@ -80,23 +80,23 @@
  "gpuLock": [
   {
    "cell": "chromium-webgpu",
-   "waitedMs": 1
+   "waitedMs": 572789
   },
   {
    "cell": "chromium-webgl",
-   "waitedMs": 1
-  },
-  {
-   "cell": "wkwebview-scheme-webgpu",
    "waitedMs": 0
   },
   {
-   "cell": "wkwebview-scheme-webgl",
+   "cell": "wkwebview-scheme-webgpu",
    "waitedMs": 1
   },
   {
+   "cell": "wkwebview-scheme-webgl",
+   "waitedMs": 0
+  },
+  {
    "cell": "wkwebview-loopback-webgpu",
-   "waitedMs": 1
+   "waitedMs": 0
   },
   {
    "cell": "wkwebview-loopback-webgl",
@@ -104,21 +104,17 @@
   }
  ],
  "dirtyFiles": [
-  "apps/playground/src/App.vue",
-  "apps/playground/src/engine.js",
-  "content/sample/LICENCES.md",
-  "engine/packages/character/package.json",
+  "CLAUDE.md",
+  "docs/reference/nodes.md",
+  "engine/packages/character/LAYERS.md",
   "engine/packages/character/src/character.js",
   "engine/packages/character/src/index.js",
-  "engine/packages/character/test/fixtures.mjs",
+  "engine/packages/character/src/layers.js",
+  "engine/packages/character/test/character-layers.test.mjs",
   "engine/packages/interact/src/inventory.js",
   "engine/packages/interact/src/service.js",
   "engine/packages/interact/test/interact.test.mjs",
-  "engine/packages/registry/src/m0-nodes.js",
-  "engine/packages/sequence/src/service.js",
-  "engine/packages/tracks/src/evaluate.js",
-  "engine/packages/tracks/src/index.js",
-  "engine/packages/tracks/src/player.js"
+  "engine/packages/registry/src/m0-nodes.js"
  ],
  "dirty": true,
  "compare": {
@@ -147,7 +143,7 @@
   },
   "same": true
  },
- "ended": "2026-11-25T00:47:58.596Z",
+ "ended": "2026-11-25T01:55:04.090Z",
  "stopped": null,
  "unpinned": [],
  "ok": true,

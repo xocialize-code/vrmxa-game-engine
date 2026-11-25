@@ -10,8 +10,9 @@
 //            service when the item is takeable and one is installed (M1 W4), else into the inventory
 //   carry    (M5 W7) a `take` verb with `carry` (an animation slot or a clip name) puts the item in the inventory and
 //            plays that looped on the actor's `carryLayer` (upperBody), so she walks carrying it; release(actor, item)
-//            (the item's own id, as the inventory keeps it) takes it out
-//            of the inventory and lets the layer go once nothing she holds is carried
+//            (the item's own id, as the inventory keeps it; the Character's releaseCarry action for a scene connection)
+//            takes it out of the inventory and lets the layer go once nothing she holds is carried; after a scene
+//            change the carried pose is held again on the new world's first step (carryOnArrival)
 // NPCs and scripts use request(actor, item, verb). All of it is simulation: deterministic and in the snapshot.
 
 /** A verb's `carry` as playLayer's: a slot when what the actor has on fills one by that name, else a clip. */
@@ -41,6 +42,7 @@ export class InteractService {
   prefixOf(actor) { const n = actor.behaviours.find((b) => b.name === 'player')?.params.player ?? 1; return n > 1 ? `p${n}.` : ''; }
 
   physicsProcess() {
+    this.carryOnArrival();
     const input = this.tree.services.get('input');
     for (const actor of this.actors()) {
       const pre = this.prefixOf(actor);
@@ -145,7 +147,7 @@ export class InteractService {
       else {
         const entry = this.tree.services.get('inventory')?.add(actor.id, item);
         into = 'inventory';
-        if (carry && entry) { actor.playLayer(carry); entry.carry = carry.layer; }
+        if (carry && entry) { actor.playLayer(carry); entry.carry = carry.layer; entry.carryPose = v.carry; }
       }
       this.tree.remove(item.id); // the item leaves the world (VRMXI §9 rule 4)
       result = { ...result, into };
@@ -162,14 +164,35 @@ export class InteractService {
   }
 
   /**
-   * Take an item out of an actor's inventory (handed over, put down, used up: the game's rules say which). A carried
-   * item's layer fades out once nothing else she holds is carried on it. Returns the entry, or null.
+   * Take an item out of an actor's inventory (handed over, put down, used up: the game's rules say which; a scene
+   * connection calls the Character's `releaseCarry`). Without an item id, the last thing she carries. A carried item's
+   * layer fades out once nothing else she holds is carried on it. Returns the entry, or null.
    */
-  release(actorId, itemId, { fade = 0.3 } = {}) {
+  release(actorId, itemId = undefined, { fade = 0.3 } = {}) {
     const inv = this.tree.services.get('inventory'), actor = /** @type {any} */ (this.tree.find(actorId));
-    const entry = inv?.remove(actorId, itemId) ?? null;
-    if (entry?.carry && actor?.stopLayer && !inv.list(actorId).some((e) => e.carry === entry.carry)) actor.stopLayer({ layer: entry.carry, fade });
+    const id = itemId ?? inv?.list(actorId).findLast((e) => e.carry)?.id;
+    const entry = id === undefined ? null : inv?.remove(actorId, id) ?? null;
+    if (entry?.carry && actor?.layers?.playing(entry.carry) && !inv.list(actorId).some((e) => e.carry === entry.carry)) actor.stopLayer({ layer: entry.carry, fade });
     return entry;
+  }
+
+  /**
+   * The first step in a new scene (M5 W7): what the inventory carried over still carried (GameFlow carries the
+   * inventory, not the character's pose) is held again, at once, on its layer. The inventory marks those entries as it
+   * hands them over (carryTo), so this is state, and a save taken before the step restores to the same. A pose that can't
+   * play here (no such layer or clip in this scene) is said and left: never thrown inside the step.
+   */
+  carryOnArrival() {
+    const inv = this.tree.services.get('inventory');
+    if (!inv) return;
+    for (const [actorId, list] of inv.held) for (const e of list) {
+      if (!e.carryPending) continue;
+      delete e.carryPending;
+      const actor = /** @type {any} */ (this.tree.find(actorId));
+      if (!actor?.playLayer || !e.carryPose) continue;
+      const play = { layer: e.carry, ...carried(actor, e.carryPose), loop: true, fade: 0 };
+      try { actor.layers.check(play.layer, play); actor.playLayer(play); } catch (err) { console.warn(`[interact] ${actorId} can't carry ${e.id} here: ${err.message}`); }
+    }
   }
 
   standUp(actor) {

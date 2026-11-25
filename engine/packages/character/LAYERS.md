@@ -39,8 +39,13 @@ A `layers` prop on the Character node (scene data: the editor and MCP see and se
 `hands`, `face`) or a list of VRM 1.0 humanoid bone names; `blend` is `overwrite` (the default) or `additive`; `weight`
 (0 to 1, default 1) scales whatever plays on it, so a scene can tone a layer down. The prop has no default value, so a
 scene that doesn't write it is the same document, the same snapshot and the same hashes as before. The prop is read by
-value, so a track keying `props.layers.0.weight` takes effect (and a restored world, which gets a fresh copy of the props,
-agrees); what plays on a layer the list drops stops at once.
+value, so a track keying `props.layers.0.weight` takes effect on a scene that writes the prop (a restored world, which
+gets a fresh copy of the props, agrees); what plays on a layer the list drops stops at once, and a restored state that
+names a layer the list lacks drops it the same way. A bad value never throws inside the step: keyed onto a scene with no
+`layers` prop (which makes an object, not a list) the defaults play; an entry that is wrong is left out; a weight is
+clamped to [0, 1] (an ease overshooting). The character says what was wrong once, as a warning (presentation, never
+simulation), and scene validation reports an authored prop against the registry's schema. A track on a layer the
+character doesn't have plays nowhere and is said once the same way.
 
 **Masks** are VRM humanoid bone groups (`masks.js`, already G10's vocabulary). A layer writes the rotations of the
 masked bones it has tracks for, and the hips' position only when `hips` is in its mask. Expressions and look-at are not
@@ -59,7 +64,7 @@ three's `slerpFlat`, so the layer pass doesn't depend on the patched `Math` bein
 |---|---|
 | A behaviour, a brain, a script, MCP | `character.playLayer({ layer, clip \| slot, loop, rate, fade, weight, offset })`, `stopLayer({ layer, fade })`, `layerWeight({ layer, weight, fade })` (one argument, as every Character action takes; `layer` defaults to `upperBody`); the same three are registry actions on Character, so scripts, sequence event keys and MCP's `call` reach them |
 | VRMXA animation sets and slots | `slot` plays the slot as the character's equipped sets resolve it now, picking among its entries by weight from the character's random stream (as the graph does), so an item's set can bring its own carry or wave clip. The layer's mask wins over an entry's `mask` |
-| `@vrmxg/interact` (carry) | a `take` verb with `carry` (a slot or a clip name; `carryLayer`, default `upperBody`) puts the item in the inventory **and** plays `carry` looped on that layer; `interact.release(actor, itemId)` (the item's own id, as the inventory keeps it) takes it out of the inventory and stops the layer when nothing carried is left. The sample game's "carry an order to a table" is that verb plus `release` from its rules |
+| `@vrmxg/interact` (carry) | a `take` verb with `carry` (a slot or a clip name; `carryLayer`, default `upperBody`) puts the item in the inventory **and** plays `carry` looped on that layer; `interact.release(actor, itemId)` (the item's own id, as the inventory keeps it) takes it out of the inventory and stops the layer when nothing carried is left; a scene connection calls the Character's `releaseCarry({ item? })` action for it (without `item`, the last thing she carries). A scene change carries the inventory (GameFlow), and the next world's interaction service holds each carried pose again, at once, on its first step (`carryTo` marks the entries, so a save on the boundary restores the same). The sample game's "carry an order to a table" is that verb plus a connection to `releaseCarry` |
 | A sequence or an AnimationPlayer | an `animation` track with `layer: '<name>'` plays its clips on that layer instead of taking over the body: its clips cross-fade as they do today, and its blendIn and blendOut ramp the layer in and out. The track's sample is set on the character every step (`trackLayers`), a pure function of the frame, so a scrub lands on the same pose. "Wave on the upper body" in a film is one such track |
 | A director | its gesture calls keep M2's masked slots; a director that wants a layer calls `playLayer` |
 
@@ -68,7 +73,7 @@ running) to the new one over `fade`; during a cross-fade, from whichever of the 
 out: a small step in the pose, the price of one clip at a time). The loop already playing, asked for again without an
 `offset`, goes on from where it is (a second tray doesn't restart the carry). A one-shot (`loop: false`, `rate` above 0)
 fades out by itself over its last `fade` seconds of playback and the layer goes idle. Weights move by whole steps
-(`fade` seconds × 60 steps, linear), not by accumulated seconds. A carry that can't play (no such layer, clip or slot)
+(`fade` seconds × 60 steps, linear), not by accumulated seconds. A carry that can't play (no such layer or clip, an empty slot, or a slot naming a clip she doesn't have)
 refuses the take before anything changes.
 
 Every clip a layer plays is one of the mixer's clips, so every bone a layer writes is bound in the mixer, and the mixer

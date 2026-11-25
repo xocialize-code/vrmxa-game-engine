@@ -135,7 +135,7 @@ nothing of the layers is left in the character's state at the end. Stills: `m5-l
 `m5-layers-carry.png` (the tray over the walk), `m5-layers-wave.png` (a wave on the arms layer over the carry).
 
 **Nothing that doesn't use a layer moved:** on this branch, Node's runs of M0 to M3's checks give the eleven simulation
-digests in `canonical.json` (all six cells), `compare.mjs` passes 20 of 20 against them, the matrix's acceptance row gives the canonical digest `78ab33e0d7508476` in all six cells with `compare.mjs` 20 of 20 on each backend (`results/m5-layers-matrix-acceptance.json`), and the M4 takes and voicing
+digests in `canonical.json` (all six cells), `compare.mjs` passes 20 of 20 against them, the matrix's acceptance row gives the canonical digest `78ab33e0d7508476` in all six cells with `compare.mjs` 20 of 20 on each backend (`results/m5-layers-matrix-acceptance.json`, run after the coordinating review's fixes), and the M4 takes and voicing
 Node runs give their committed finals and run digests.
 
 ## Result: M4's acceptance (2026-11-24, M5 Max, macOS 27.3 beta 26C5047e)

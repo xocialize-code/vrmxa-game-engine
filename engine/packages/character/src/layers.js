@@ -20,25 +20,42 @@ const ALL_BONES = [...MASKS.lowerBody, ...MASKS.upperBody];
 const HZ = 60;
 
 /**
- * A `layers` prop (or the defaults) checked and filled in: [{ name, mask, blend, weight }].
+ * A `layers` prop as the character runs it, never throwing (it is read inside the step, and a track may key it):
+ * { defs, problems }. A pure function of the prop, so a restored world reads it the same. Without a list (none, or not
+ * a list: keying `props.layers.0.weight` on a scene that has no prop makes an object) the defaults; an entry that is
+ * wrong is left out; a weight is clamped to [0, 1] (an ease overshooting); `problems` says what was wrong.
+ * @param {any} prop @returns {{ defs: ReadonlyArray<{ name: string, mask: any, blend: string, weight: number }>, problems: string[] }}
+ */
+export function readLayers(prop) {
+  if (prop == null) return { defs: DEFAULT_LAYERS, problems: [] };
+  if (!Array.isArray(prop)) return { defs: DEFAULT_LAYERS, problems: ['a character\'s layers prop is a list of { name, mask, blend, weight }: the default layers play'] };
+  const seen = new Set(), defs = [], problems = [];
+  prop.forEach((l, i) => {
+    if (!l || typeof l.name !== 'string' || !l.name) { problems.push(`layer ${i} needs a name`); return; }
+    if (seen.has(l.name)) { problems.push(`two layers are named "${l.name}"`); return; }
+    const mask = l.mask ?? 'upperBody';
+    if (typeof mask === 'string' ? !(mask in MASKS) : !Array.isArray(mask) || mask.some((b) => typeof b !== 'string')) { problems.push(`layer "${l.name}": a mask is one of ${Object.keys(MASKS).join(', ')} or a list of humanoid bone names`); return; }
+    const blend = l.blend ?? 'overwrite';
+    if (!BLENDS.includes(blend)) { problems.push(`layer "${l.name}": blend is overwrite or additive, not "${blend}"`); return; }
+    const weight = l.weight ?? 1;
+    if (typeof weight !== 'number' || Number.isNaN(weight)) { problems.push(`layer "${l.name}": weight is a number from 0 to 1`); return; }
+    seen.add(l.name);
+    defs.push({ name: l.name, mask, blend, weight: Math.max(0, Math.min(1, weight)) });
+  });
+  return { defs, problems };
+}
+
+/**
+ * A `layers` prop (or the defaults) checked strictly, as an author writes it (the editor, MCP, tests): throws on the
+ * first problem, a weight outside [0, 1] included. [{ name, mask, blend, weight }]
  * @param {any} prop
  */
 export function layerDefs(prop) {
-  if (prop == null) return DEFAULT_LAYERS;
-  if (!Array.isArray(prop)) throw new Error('a character\'s layers prop is a list of { name, mask, blend, weight }');
-  const seen = new Set();
-  return prop.map((l, i) => {
-    if (!l || typeof l.name !== 'string' || !l.name) throw new Error(`layer ${i} needs a name`);
-    if (seen.has(l.name)) throw new Error(`two layers are named "${l.name}"`);
-    seen.add(l.name);
-    const mask = l.mask ?? 'upperBody';
-    if (typeof mask === 'string' ? !(mask in MASKS) : !Array.isArray(mask) || mask.some((b) => typeof b !== 'string')) throw new Error(`layer "${l.name}": a mask is one of ${Object.keys(MASKS).join(', ')} or a list of humanoid bone names`);
-    const blend = l.blend ?? 'overwrite';
-    if (!BLENDS.includes(blend)) throw new Error(`layer "${l.name}": blend is overwrite or additive, not "${blend}"`);
-    const weight = l.weight ?? 1;
-    if (typeof weight !== 'number' || !(weight >= 0 && weight <= 1)) throw new Error(`layer "${l.name}": weight is a number from 0 to 1`);
-    return { name: l.name, mask, blend, weight };
-  });
+  const { defs, problems } = readLayers(prop);
+  if (problems.length) throw new Error(problems[0]);
+  const bad = Array.isArray(prop) ? prop.find((l) => typeof l?.weight === 'number' && !(l.weight >= 0 && l.weight <= 1)) : null;
+  if (bad) throw new Error(`layer "${bad.name}": weight is a number from 0 to 1`);
+  return defs;
 }
 
 /** The humanoid bone names a mask covers. */
@@ -88,6 +105,7 @@ export class CharacterLayers {
   constructor(character) {
     this.ch = character;
     /** layer name → what plays on it (plain data, the snapshot's) */ this.state = new Map();
+    /** layer names a track asked for that she doesn't have, already warned about (presentation only) @type {Set<string>} */ this.unknownTrack = new Set();
     this.bind();
   }
 
@@ -99,7 +117,13 @@ export class CharacterLayers {
   bind() {
     const ch = this.ch, h = ch.vrm?.humanoid;
     this.key = JSON.stringify(ch.props.layers ?? null);
-    this.defs = layerDefs(ch.props.layers);
+    const { defs, problems } = readLayers(ch.props.layers);
+    this.defs = defs;
+    // what is wrong with the prop is said once (a warning: presentation, never simulation), never thrown inside the step;
+    // scene validation (lint, the editor, MCP) reports an authored prop against the registry's schema
+    const said = problems.join('; ');
+    if (said && said !== this.problems?.join('; ')) console.warn(`[character] ${ch.id}: ${said}`);
+    /** what is wrong with the layers prop now (empty: nothing) */ this.problems = problems;
     for (const name of [...this.state.keys()]) if (!this.defs.some((d) => d.name === name)) this.state.delete(name);
     /** layer name → its bones on this body: [{ node, hips }] */
     this.bones = new Map(this.defs.map((d) => {
@@ -168,8 +192,12 @@ export class CharacterLayers {
     this.def(name);
     if (!loop && !(rate > 0)) throw new Error('a one-shot on a layer plays forwards (rate > 0)');
     if (clip) this.resolve({ clip });
-    else if (slot) { if (!this.ch.graph?.slots?.[slot]?.clips?.length) throw new Error(`${this.ch.id}: the slot "${slot}" is empty in what she has on`); }
-    else throw new Error('a layer plays a clip or a slot');
+    else if (slot) {
+      // every entry the slot could pick must be one she has: the pick itself waits for play (it draws from the stream)
+      const list = this.ch.graph?.slots?.[slot]?.clips ?? [];
+      if (!list.length) throw new Error(`${this.ch.id}: the slot "${slot}" is empty in what she has on`);
+      if (list.some((e) => !this.ch.actions.has(e.clip))) throw new Error(`${this.ch.id}: the slot "${slot}" names a clip she doesn't have`);
+    } else throw new Error('a layer plays a clip or a slot');
   }
 
   /**
@@ -198,7 +226,6 @@ export class CharacterLayers {
     this.sync();
     const s = this.state.get(name);
     if (!s) { this.def(name); return; }
-    if (!s) return;
     s.stopping = true;
     fadeTo(s, 0, Math.max(0, Math.round(fade * HZ)));
   }
@@ -260,6 +287,12 @@ export class CharacterLayers {
       }
       if (groups.length) plan.push({ bones: this.bones.get(d.name) ?? [], blend: d.blend, groups });
     }
+    // a track asking for a layer she doesn't have plays nowhere, and says so once (a warning, as above)
+    if (trackLayers) for (const k of Object.keys(trackLayers)) {
+      if (!trackLayers[k] || this.defs.some((d) => d.name === k) || this.unknownTrack.has(k)) continue;
+      this.unknownTrack.add(k);
+      console.warn(`[character] ${ch.id}: a track plays on a layer "${k}" she doesn't have (${this.defs.map((d) => d.name).join(', ')})`);
+    }
     // Every clip a layer plays is one of the mixer's (resolve and resolveTrackClip ask for its action), so every bone a
     // layer writes is bound in the mixer, which writes it back to its value at rest whenever no clip weights it
     // (writeEveryBinding): nothing a layer wrote outlives the step it was written on.
@@ -285,7 +318,8 @@ export class CharacterLayers {
     return structuredClone({ playing: Object.fromEntries(this.state) });
   }
   setState(s) {
-    this.state = new Map(Object.entries(structuredClone(s?.playing ?? {})));
+    this.sync(); // the props come back before the nodes' states: what plays on a layer the restored list lacks stops, as bind() does
+    this.state = new Map(Object.entries(structuredClone(s?.playing ?? {})).filter(([name]) => this.defs.some((d) => d.name === name)));
   }
 }
 

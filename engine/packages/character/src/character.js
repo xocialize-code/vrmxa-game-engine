@@ -49,7 +49,7 @@ function writeEveryBinding(m) {
 }
 
 export class CharacterNode extends Node {
-  static actions = ['say', 'goTo', 'emote', 'lookAt', 'reach', 'knockDown', 'getUp', 'face', 'playLayer', 'stopLayer', 'layerWeight'];
+  static actions = ['say', 'goTo', 'emote', 'lookAt', 'reach', 'knockDown', 'getUp', 'face', 'playLayer', 'stopLayer', 'layerWeight', 'releaseCarry'];
 
   constructor(data, def) {
     super(data, def);
@@ -346,6 +346,12 @@ export class CharacterNode extends Node {
   stopLayer({ layer = 'upperBody', fade } = {}) { this.layers.stop(layer, { fade }); }
   /** Fade what plays on a layer to another weight. @param {{ layer?: string, weight?: number, fade?: number }} [o] */
   layerWeight({ layer = 'upperBody', weight = 1, fade } = {}) { this.layers.weight(layer, weight, { fade }); }
+  /**
+   * Hand over or put down something she carries (@vrmxg/interact's release: out of her inventory, the carry's layer
+   * fading out): a scene connection's way to end a carry. Without `item`, the last thing she carries.
+   * @param {{ item?: string, fade?: number }} [o] item: the item's own id, as the inventory keeps it
+   */
+  releaseCarry({ item, fade } = {}) { return this.tree.services.get('interact')?.release(this.id, item, { fade }) ?? null; }
 
   /** A track's clip ({ slot } | { clip: name or sha256 }, time in seconds, loop) → { clip: sha256, time in the clip }. */
   resolveTrackClip(c) {

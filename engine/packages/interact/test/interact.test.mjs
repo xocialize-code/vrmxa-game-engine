@@ -181,3 +181,52 @@ test('a carry that can\'t play refuses the take before anything changes (M5 W7)'
   assert.deepEqual(w.inventory.list('mira'), [], 'and not in her inventory');
   assert.notEqual(w.mira.graph.state, 'take', 'and she didn\'t start taking it');
 });
+
+test('a carry goes with the inventory to the next scene and is held there from its first step; a connection releases it (M5 W7)', { skip: SKIP }, async () => {
+  const carryAnims = await testAnimations(core, { actions: true, carry: true });
+  const build = async () => {
+    const tree = new SceneTree({ registry: m0Registry(), seed: 4 });
+    installInput(tree); installPhysics(tree, R);
+    const items = installItems(tree, { resolve: (ref) => files[ref], vrmxaCore: core, check, stubTextures: true });
+    const chars = installCharacters(tree, { resolve: () => read('spec'), stubTextures: true });
+    chars.setAnimations('spec.vrm', carryAnims);
+    const { interact, inventory } = installInteraction(tree);
+    const doc = scene();
+    await items.prepare(doc); await chars.prepare(doc);
+    tree.instantiate(doc);
+    return { tree, interact, inventory, mira: /** @type {any} */ (tree.find('mira')) };
+  };
+  const A = await build();
+  A.tree.find('key').verbs.find((v) => v.verb === 'take').carry = 'carry';
+  A.mira.placeAt(-3.2, 0, 0, -Math.PI / 2); A.tree.run(3);
+  A.interact.request('mira', 'key', 'take');
+  A.tree.run(10);
+  // the scene changes: GameFlow hands the inventory over with carryTo; the character in the new world starts with no layer
+  const B = await build();
+  A.inventory.carryTo(B.inventory);
+  assert.equal(B.mira.layers.playing('upperBody'), false);
+  const snap = captureWorld(B.tree); // a save on the boundary, before the new world's first step
+  B.tree.step();
+  assert.ok(B.mira.layers.playing('upperBody'), 'held again on the arrival step');
+  assert.equal(B.mira.layers.state.get('upperBody').w, 1, 'at once, as she was carrying it');
+  assert.equal(B.inventory.list('mira')[0].carryPending, undefined);
+  const C = await build();
+  restoreWorld(C.tree, snap);
+  C.tree.step();
+  assert.equal(JSON.stringify(C.mira.getState().layers), JSON.stringify(B.mira.getState().layers), 'the boundary save restores to the same');
+  // a scene connection ends the carry: the Character's releaseCarry action
+  const entry = B.tree.call(B.mira, 'releaseCarry', {});
+  assert.equal(entry?.carry, 'upperBody');
+  assert.deepEqual(B.inventory.list('mira'), []);
+  assert.equal(B.mira.layers.playing('upperBody'), false);
+});
+
+test('a carry slot naming a clip she doesn\'t have refuses the take before anything changes (M5 W7)', { skip: SKIP }, async () => {
+  const w = await world();
+  w.tree.find('key').verbs.find((v) => v.verb === 'take').carry = 'carry';
+  w.mira.graph.slots.carry = { clips: [{ clip: 'f'.repeat(64), weight: 1 }] }; // a slot whose clip isn't hers
+  w.mira.placeAt(-3.2, 0, 0, -Math.PI / 2); w.tree.run(3);
+  assert.throws(() => w.interact.request('mira', 'key', 'take'), /names a clip she doesn't have/);
+  assert.ok(w.tree.find('key'));
+  assert.deepEqual(w.inventory.list('mira'), []);
+});
