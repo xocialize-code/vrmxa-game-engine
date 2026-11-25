@@ -23,3 +23,10 @@ walk Mira to a table; the won ending is reached from Slot 1, a save the fixtures
 - [x] From the title menu, Load Game → Slot 1 (at the till, everyone served) and E close the till: the game is won, the won ending says so, and the title comes back.
 
 ## Results
+
+AppProbe, 2026-11-25, on the final build (digest 3dd9f1f3, runtime vrmxg-game 0.1.0+20e43b594e25), Release shell:
+**4 of 4** ([`hand-test/results/m5-rush/report.md`](hand-test/results/m5-rush/report.md)). Row 3 waited out the
+level's four minutes with the briefing answered and nobody served: "Ten o'clock, and the till is still open…", then the
+title. Row 4 loaded Slot 1 (the fixture: the recorded win replayed to step 5326, Mira at the open till) and one E won:
+"Not one mistake. Best morning rush ever, Mira!", then the title. An earlier build (b9667d97, before the review's
+replay fixes) passed the same four rows; its first run lost row 2 to an apostrophe in a query.
