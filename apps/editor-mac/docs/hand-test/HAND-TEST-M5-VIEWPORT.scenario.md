@@ -232,6 +232,7 @@ fresh: false
 
 - [ ] A scene drawn through the post stack: the edit view shows the scene under the aids, with the outline, handles and preview.
   ```steps
+  wait id=open-project enabled=true timeout_ms=40000   # the page is up (the row runs on its own too)
   act id=open-project action=press   # the fixture's project (VRMXG_SHELL_PROJECT), with cafe-post.vrmxs
   until find("id=project-name").0.name == "Project project-w5-viewport" timeout=20000
   act id=file-name action=set_value value=cafe-post.vrmxs
