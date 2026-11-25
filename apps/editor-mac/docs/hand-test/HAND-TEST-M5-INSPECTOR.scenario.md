@@ -5,7 +5,8 @@ Run `apps/editor-mac/scripts/build.sh`, launch the app once (its sandbox contain
 then `appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M5-INSPECTOR.scenario.md`, holding
 `acceptance/gpu-lock.mjs` while it runs. Fields carry their value in AX value and their state in their accessible
 name: `intensity (mixed values)`, `lines, 2 rows`, `Hidden by their conditions: shadowPreset, shadowUpdate`. Nested
-fields have ids from their path (`#prop-lines-1-text`, `#prop-lines-1-up`). No row types JSON.
+fields have ids from their path (`#prop-lines-1-text`, `#prop-lines-1-up`). No row types JSON. A web view's `<select>`
+doesn't open its menu for AppProbe's press, so rows choose an option by focusing it and typing its first letters.
 
 ```scenario
 app: VRMXG Editor
@@ -23,14 +24,19 @@ fresh: false
   act id=file-name action=set_value value=inspector.vrmxs
   act id=new-scene action=press
   until find("id=doc-state").0.name matches "^Scene inspector.vrmxs 1 nodes"
-  act role=popupbutton name="Node type to add" action=press
-  act role=menuitem name=PointLight exact=true action=press
+  act role=popupbutton name="Node type to add" action=focus   # a web view's select: its menu doesn't open headless, type-ahead picks
+  pause 1500   # the web view's type-ahead keeps what was typed for about a second: start a fresh search
+  keys text=Po
+  until find("role=popupbutton name='Node type to add'").0.value == "PointLight"
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add pointlight"
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add pointlight-2"
-  act role=popupbutton name="Node type to add" action=press
-  act role=menuitem name=Dialogue exact=true action=press
+  act id=file-name action=focus   # move focus off the menu first, so focusing it again takes
+  act role=popupbutton name="Node type to add" action=focus
+  pause 1500   # the web view's type-ahead keeps what was typed for about a second: start a fresh search
+  keys text=Dia
+  until find("role=popupbutton name='Node type to add'").0.value == "Dialogue"
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add dialogue"
   expect find("id=doc-state").0.name matches "^Scene inspector.vrmxs 4 nodes unsaved changes valid "   # root, two lights, the dialogue
@@ -59,7 +65,7 @@ fresh: false
   until find("id=undo").0.name == "Undo Set intensity on 2 nodes"   # one command for both
   expect find("id=prop-intensity").0.name == "intensity"
   expect find("id=prop-intensity").0.value == "6"
-  menu "Edit › Undo" press
+  act id=undo action=press   # the toolbar's Undo: after set_value, Edit › Undo would undo typing in the focused field
   until find("id=prop-intensity").0.name == "intensity (mixed values)"   # one Undo: both back
   act id=node-pointlight action=press
   until find("id=inspector-id").0.name == "Node pointlight"
@@ -67,8 +73,9 @@ fresh: false
   act id=node-pointlight-2 action=press
   until find("id=inspector-id").0.name == "Node pointlight-2"
   expect find("id=prop-intensity").0.value == "1"   # its default, as before
-  act id=inspector-also action=press   # "Also select": the other way to add to the selection
-  act role=menuitem name=pointlight exact=true action=press
+  act id=inspector-also action=focus   # "Also select": the other way to add to the selection
+  pause 1500   # the web view's type-ahead keeps what was typed for about a second: start a fresh search
+  keys text=pointlight
   until find("id=inspector-id").0.name == "2 nodes: pointlight-2, pointlight"
   ```
 
@@ -88,7 +95,7 @@ fresh: false
   until find("id=prop-lines-1-text").0.value == "A flat white, please."
   act id=prop-lines-1-up action=press   # move the second line up
   until find("id=prop-lines-0-text").0.value == "A flat white, please."
-  menu "Edit › Undo" press
+  act id=undo action=press   # the toolbar's Undo: after set_value, Edit › Undo would undo typing in the focused field
   until find("id=prop-lines-0-text").0.value == "Morning! What can I get you?"   # one Undo puts the move back, and only the move
   expect find("id=prop-lines-1-text").0.value == "A flat white, please."
   act id=prop-lines-0-choices-set action=press   # a nested list in a row: the first line offers a choice
@@ -97,7 +104,7 @@ fresh: false
   until find("id=prop-lines-0-choices-0-text").0.value == "Coffee, please"
   act id=prop-lines-1-remove action=press
   until find("id=prop-lines").0.name == "lines, 1 row"
-  menu "Edit › Undo" press
+  act id=undo action=press   # the toolbar's Undo: after set_value, Edit › Undo would undo typing in the focused field
   until find("id=prop-lines").0.name == "lines, 2 rows"   # the removed row back, as it was
   expect find("id=prop-lines-1-text").0.value == "A flat white, please."
   expect find("id=doc-state").0.name matches " valid "   # every step kept the scene valid
@@ -110,8 +117,9 @@ fresh: false
   expect find("id=props-hidden").0.name == "Hidden by their conditions: shadowPreset, shadowUpdate"   # a point light casts no shadow by default
   act id=prop-castShadow action=press
   until find("id=prop-shadowPreset").count == 1   # shadowPreset applies now (visibleIf: castShadow)
-  act id=prop-shadowPreset action=press
-  act role=menuitem name=high exact=true action=press
+  act id=prop-shadowPreset action=focus
+  pause 1500   # the web view's type-ahead keeps what was typed for about a second: start a fresh search
+  keys text=hi
   until find("id=undo").0.name == "Undo Set pointlight.shadowPreset"
   act id=prop-castShadow action=press
   until find("id=prop-shadowPreset").count == 0   # hidden again
