@@ -51,7 +51,7 @@
     {"id":"gametimer-2","type":"GameTimer","parent":"gamerules","transform":{"p":[0,0,1.983371]},"props":{"autostart":false,"key":"brew-1","seconds":6}},
     {"id":"gametimer-3","type":"GameTimer","parent":"gamerules","transform":{"p":[0,0,1.983371]},"props":{"autostart":false,"key":"brew-2","seconds":6}},
     {"id":"gametimer-4","type":"GameTimer","parent":"gamerules","transform":{"p":[0,0,1.983371]},"props":{"autostart":false,"key":"brew-3","seconds":6}},
-    {"id":"gamegoal","type":"GameGoal","parent":"gamerules","transform":{"p":[0,0,1.983371]},"props":{"key":"serve","text":"Serve the three regulars","when":{"key":"counters.served","op":"ge","test":"state","value":3}}},
+    {"id":"gamegoal","type":"GameGoal","parent":"gamerules","transform":{"p":[0,0,1.983371]},"props":{"key":"serve","text":"Serve the three regulars","when":{"of":[{"key":"counters.served","op":"ge","test":"state","value":3},{"key":"counters.mistakes","op":"lt","test":"state","value":2}],"test":"all"}}},
     {"id":"gamegoal-2","type":"GameGoal","parent":"gamerules","transform":{"p":[0,0,1.983371]},"props":{"key":"close-till","text":"Close the till","when":{"key":"flags.tillClosed","test":"state"}}},
     {"id":"checkpoint","type":"Checkpoint","parent":"gamerules","transform":{"p":[0,0,1.983371]},"props":{"label":"First order served","slot":"first-order","when":{"key":"counters.served","op":"ge","test":"state","value":1}}},
     {"id":"area","type":"Area","parent":"root","name":"Table 1","transform":{"p":[-1.45,1,1]},"props":{"size":[1.1,2,1.8]}},

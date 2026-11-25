@@ -32,16 +32,16 @@
 
       ],
       "log" : [
-        "launched The Morning Rush pid 23698, log ~/Library/Caches/AppProbe/logs/VRMXGGame-2026-11-25T184156Z.log",
-        "18: wait id=new-game enabled=true timeout_ms=60000 → found after 526 ms: button \"New Game\" #new-game [W:The Morning Rush/0/0/0/0/0/1/2@978d] (537 ms)",
-        "19: until find(\"id=renderer\").0.name == \"Renderer WebGPU\" timeout=30000 → ok (24 ms)",
+        "launched The Morning Rush pid 73044, log ~/Library/Caches/AppProbe/logs/VRMXGGame-2026-11-25T200722Z.log",
+        "18: wait id=new-game enabled=true timeout_ms=60000 → found after 543 ms: button \"New Game\" #new-game [W:The Morning Rush/0/0/0/0/0/1/2@978d] (547 ms)",
+        "19: until find(\"id=renderer\").0.name == \"Renderer WebGPU\" timeout=30000 → ok (5 ms)",
         "20: expect find(\"id=screen\").0.name == \"Screen title\" → ok (2 ms)",
         "21: expect find(\"id=load-game enabled=true\").count == 1 → ok (2 ms)",
         "22: expect find(\"role=alert\").count == 0 → ok (2 ms)",
-        "23: shot \"title\" (220 ms)"
+        "23: shot \"title\" (269 ms)"
       ],
       "message" : null,
-      "ms" : 1502,
+      "ms" : 1638,
       "notes" : [
         "shot 1: title"
       ],
@@ -106,21 +106,21 @@
 
       ],
       "log" : [
-        "28: act id=new-game action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":336,\"x\":3672,\"y\":786},\"help\":\"\",\"id\":\"new-game\",\"name\":\"New Game\",\"ref\":\"W:The Morning R (6 ms)",
-        "29: until find(\"id=screen\").0.name == \"Screen playing\" timeout=30000 → ok (9 ms)",
-        "30: until find(\"id=scene\").0.name == \"Scene game/title.vrmxs\" timeout=30000 → ok (279 ms)",
-        "31: until find(\"id=scene\").0.name == \"Scene game/level.vrmxs\" timeout=60000 → ok (8594 ms)",
-        "32: until find(\"id=hud-goal\").count == 1 timeout=30000 → ok (6 ms)",
-        "33: until find(\"text=Serve the three regulars\").count >= 1 timeout=10000 → ok (59 ms)",
-        "34: expect find(\"text=Until ten\").count >= 1 → ok (12 ms)",
-        "35: wait id=dialogue timeout_ms=30000 → found after 15 ms: group \"Conversation with Hana\" #dialogue [W:The Morning Rush/0/0/0/0/0/1/3@5e97] (15 ms)",
-        "36: until find(\"id=dialogue-choice-ready\").count == 1 timeout=20000 → ok (7182 ms)",
-        "38: keys return → {\"sent\":true} (106 ms)",
-        "39: until find(\"text=Here comes Aoi\").count >= 1 timeout=10000 → ok (4 ms)",
-        "40: shot \"briefed\" (220 ms)"
+        "28: act id=new-game action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":336,\"x\":3672,\"y\":786},\"help\":\"\",\"id\":\"new-game\",\"name\":\"New Game\",\"ref\":\"W:The Morning R (7 ms)",
+        "29: until find(\"id=screen\").0.name == \"Screen playing\" timeout=30000 → ok (10 ms)",
+        "30: until find(\"id=scene\").0.name == \"Scene game/title.vrmxs\" timeout=30000 → ok (268 ms)",
+        "31: until find(\"id=scene\").0.name == \"Scene game/level.vrmxs\" timeout=60000 → ok (8618 ms)",
+        "32: until find(\"id=hud-goal\").count == 1 timeout=30000 → ok (4 ms)",
+        "33: until find(\"text=Serve the three regulars\").count >= 1 timeout=10000 → ok (30 ms)",
+        "34: expect find(\"text=Until ten\").count >= 1 → ok (5 ms)",
+        "35: wait id=dialogue timeout_ms=30000 → found after 12 ms: group \"Conversation with Hana\" #dialogue [W:The Morning Rush/0/0/0/0/0/1/3@5e97] (12 ms)",
+        "36: until find(\"id=dialogue-choice-ready\").count == 1 timeout=20000 → ok (7232 ms)",
+        "38: keys return → {\"sent\":true} (114 ms)",
+        "39: until find(\"text=Here comes Aoi\").count >= 1 timeout=10000 → ok (11 ms)",
+        "40: shot \"briefed\" (213 ms)"
       ],
       "message" : null,
-      "ms" : 17206,
+      "ms" : 17210,
       "notes" : [
         "shot 1: briefed"
       ],
@@ -160,13 +160,13 @@
 
       ],
       "log" : [
-        "45: until find(\"id=scene\").0.name == \"Scene game/lost.vrmxs\" timeout=300000 → ok (234546 ms)",
-        "46: until find(\"text=and the till is still open\").count >= 1 timeout=20000 → ok (4 ms)",
-        "47: shot \"lost\" (265 ms)",
-        "48: until find(\"id=scene\").0.name == \"Scene game/title.vrmxs\" timeout=30000 → ok (11903 ms)"
+        "45: until find(\"id=scene\").0.name == \"Scene game/lost.vrmxs\" timeout=300000 → ok (234768 ms)",
+        "46: until find(\"text=and the till is still open\").count >= 1 timeout=20000 → ok (21 ms)",
+        "47: shot \"lost\" (211 ms)",
+        "48: until find(\"id=scene\").0.name == \"Scene game/title.vrmxs\" timeout=30000 → ok (11737 ms)"
       ],
       "message" : null,
-      "ms" : 246898,
+      "ms" : 246920,
       "notes" : [
         "shot 1: lost"
       ],
@@ -241,26 +241,26 @@
 
       ],
       "log" : [
-        "53: keys escape → {\"sent\":true} (113 ms)",
-        "54: until find(\"id=screen\").0.name == \"Screen pause\" → ok (3 ms)",
-        "55: act id=quit-to-title action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":320,\"x\":3680,\"y\":947},\"help\":\"\",\"id\":\"quit-to-title\",\"name\":\"Quit to Title\",\"ref\":\"W:The (8 ms)",
-        "56: until find(\"id=answer-discard\").count == 1 timeout=5000 → ok (7 ms)",
-        "57: act id=answer-discard action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":342,\"x\":3669,\"y\":884},\"help\":\"\",\"id\":\"answer-discard\",\"name\":\"Quit to Title Without Savi (6 ms)",
-        "58: until find(\"id=screen\").0.name == \"Screen title\" → ok (7 ms)",
+        "53: keys escape → {\"sent\":true} (111 ms)",
+        "54: until find(\"id=screen\").0.name == \"Screen pause\" → ok (4 ms)",
+        "55: act id=quit-to-title action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":320,\"x\":3680,\"y\":947},\"help\":\"\",\"id\":\"quit-to-title\",\"name\":\"Quit to Title\",\"ref\":\"W:The (6 ms)",
+        "56: until find(\"id=answer-discard\").count == 1 timeout=5000 → ok (8 ms)",
+        "57: act id=answer-discard action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":342,\"x\":3669,\"y\":884},\"help\":\"\",\"id\":\"answer-discard\",\"name\":\"Quit to Title Without Savi (4 ms)",
+        "58: until find(\"id=screen\").0.name == \"Screen title\" → ok (14 ms)",
         "59: act id=load-game action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":336,\"x\":3672,\"y\":839},\"help\":\"\",\"id\":\"load-game\",\"name\":\"Load Game\",\"ref\":\"W:The Morning (3 ms)",
-        "60: until find(\"id=screen\").0.name == \"Screen load\" → ok (5 ms)",
-        "61: act id=slot-1 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":64,\"w\":395,\"x\":3643,\"y\":679},\"help\":\"\",\"id\":\"slot-1\",\"name\":\"Slot 1: The Morning Rush · level · (8 ms)",
-        "62: until find(\"id=message\").0.name matches \"^Loaded Slot 1 at step [0-9]+\\\\.$\" timeout=60000 → ok (2044 ms)",
-        "63: until find(\"id=scene\").0.name == \"Scene game/level.vrmxs\" timeout=10000 → ok (8 ms)",
-        "64: until find(\"text=Close the till\").count >= 1 timeout=10000 → ok (18 ms)",
-        "66: keys e → {\"sent\":true} (110 ms)",
-        "67: until find(\"id=scene\").0.name == \"Scene game/won.vrmxs\" timeout=30000 → ok (3219 ms)",
-        "68: until find(\"text=Not one mistake. Best morning rush ever, Mira!\").count >= 1 timeout=20000 → ok (10 ms)",
-        "69: shot \"won\" (278 ms)",
-        "70: until find(\"id=scene\").0.name == \"Scene game/title.vrmxs\" timeout=40000 → ok (11658 ms)"
+        "60: until find(\"id=screen\").0.name == \"Screen load\" → ok (6 ms)",
+        "61: act id=slot-1 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":64,\"w\":395,\"x\":3643,\"y\":679},\"help\":\"\",\"id\":\"slot-1\",\"name\":\"Slot 1: The Morning Rush · level · (4 ms)",
+        "62: until find(\"id=message\").0.name matches \"^Loaded Slot 1 at step [0-9]+\\\\.$\" timeout=60000 → ok (2091 ms)",
+        "63: until find(\"id=scene\").0.name == \"Scene game/level.vrmxs\" timeout=10000 → ok (7 ms)",
+        "64: until find(\"text=Close the till\").count >= 1 timeout=10000 → ok (19 ms)",
+        "66: keys e → {\"sent\":true} (115 ms)",
+        "67: until find(\"id=scene\").0.name == \"Scene game/won.vrmxs\" timeout=30000 → ok (3149 ms)",
+        "68: until find(\"text=Not one mistake. Best morning rush ever, Mira!\").count >= 1 timeout=20000 → ok (3 ms)",
+        "69: shot \"won\" (216 ms)",
+        "70: until find(\"id=scene\").0.name == \"Scene game/title.vrmxs\" timeout=40000 → ok (11909 ms)"
       ],
       "message" : null,
-      "ms" : 18171,
+      "ms" : 18373,
       "notes" : [
         "shot 1: won"
       ],
