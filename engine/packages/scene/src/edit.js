@@ -17,9 +17,11 @@ const mustBeFinite = (what, v) => { const p = nonFinite(v); if (p) throw new Err
 /**
  * @param {import('@vrmxg/registry').Registry} reg
  * @param {any} doc the document to edit in place
- * @param {{ prefabs?: () => Map<string, object> }} [options] prefab documents, for connections into instances
+ * @param {{ prefabs?: () => Map<string, object>, ops?: Record<string, (op: any) => any> }} [options] prefab documents, for
+ *   connections into instances; ops: edits of the caller's own beside the document's (M5 W6: a prefab document written
+ *   by Apply), each returning its inverse like the built-in ones, so one undo step can span the scene and another file
  */
-export function createEditor(reg, doc, { prefabs } = {}) {
+export function createEditor(reg, doc, { prefabs, ops: extra = {} } = {}) {
   const ajv = new Ajv2020({ allErrors: true, strict: false });
   const nodeValidators = new Map([...reg.types.keys()].map((t) => [t, ajv.compile(nodeSchema(reg, t))]));
   const undoStack = [], redoStack = [];
@@ -167,7 +169,7 @@ export function createEditor(reg, doc, { prefabs } = {}) {
     },
   };
   function run(op) {
-    const fn = OPS[op.op];
+    const fn = Object.hasOwn(OPS, op.op) ? OPS[op.op] : Object.hasOwn(extra, op.op) ? extra[op.op] : null;
     if (!fn) throw new Error(`unknown op "${op.op}"`);
     return fn(op);
   }

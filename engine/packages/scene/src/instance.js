@@ -17,6 +17,15 @@ function mergeBehaviours(base = [], over = []) {
   return out;
 }
 
+/**
+ * A prefab node with one instance's override for it, as flattening makes it (behaviours by `use`, objects deeply, other
+ * values whole); its id, type and parent are the node's own. Used by the override view (overrides.js).
+ * @param {any} node @param {any} over
+ */
+export function mergeOverride(node, over) {
+  return over ? { ...deepMerge(node, over), id: node.id, type: node.type, ...(node.parent !== undefined ? { parent: node.parent } : {}) } : { ...node };
+}
+
 function deepMerge(base, over, key) {
   if (key === 'behaviours' && Array.isArray(over)) return mergeBehaviours(base, over);
   if (Array.isArray(over) || over === null || typeof over !== 'object') return over;

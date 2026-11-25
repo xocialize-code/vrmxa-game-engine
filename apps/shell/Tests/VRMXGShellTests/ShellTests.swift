@@ -123,6 +123,13 @@ func tempDir(_ files: [String: String]) throws -> URL {
         #expect(FileManager.default.fileExists(atPath: dir.appendingPathComponent("proj/scenes/new.vrmxs").path))
         let escape = await router.handle(body: ["method": "project.write", "params": ["path": "../evil.txt", "text": "x"]])
         #expect(escape.1?.contains("outside the project") == true)
+        // project.stat (shell 0.13.0): size and modification time of the project's files; others left out
+        let stat = await router.handle(body: ["method": "project.stat", "params": ["paths": ["sets/cafe.glb", "nope.glb", "../in.vrmxs", "sets"]]])
+        let stats = try #require((stat.0 as? [String: Any])?["stats"] as? [String: Any])
+        #expect(Array(stats.keys) == ["sets/cafe.glb"])
+        let one = try #require(stats["sets/cafe.glb"] as? [String: Any])
+        #expect(one["size"] as? Int == 4)
+        #expect((one["mtime"] as? Int ?? 0) > 1_600_000_000_000, "milliseconds since 1970")
     }
 }
 
@@ -186,6 +193,38 @@ func tempDir(_ files: [String: String]) throws -> URL {
         #expect(big.1 != nil)
         let after = await router.handle(body: ["method": "settings.read"])
         #expect((after.0 as? [String: Any])?["text"] is NSNull, "a refused write leaves nothing")
+    }
+}
+
+@Suite @MainActor struct CacheMethodTests {
+    @Test func missThenHitByAnyKey() async throws {
+        let dir = try tempDir([:])
+        let cache = CacheMethods(appName: "Test", env: ["VRMXG_SHELL_CACHE": dir.appendingPathComponent("Cache").path])
+        let router = BridgeRouter(); cache.register(on: router)
+        let key = "props/bench.glb\n96\n1764000000000\n5164"
+        let miss = await router.handle(body: ["method": "cache.read", "params": ["key": key]])
+        #expect((miss.0 as? [String: Any])?["base64"] is NSNull, "a miss is an answer")
+        let png = Data([0x89, 0x50, 0x4e, 0x47]).base64EncodedString()
+        let w = await router.handle(body: ["method": "cache.write", "params": ["key": key, "base64": png]])
+        #expect((w.0 as? [String: Any])?["bytes"] as? Int == 4)
+        let hit = await router.handle(body: ["method": "cache.read", "params": ["key": key]])
+        #expect((hit.0 as? [String: Any])?["base64"] as? String == png)
+        let other = await router.handle(body: ["method": "cache.read", "params": ["key": key + "x"]])
+        #expect((other.0 as? [String: Any])?["base64"] is NSNull)
+        let names = try FileManager.default.contentsOfDirectory(atPath: dir.appendingPathComponent("Cache").path)
+        #expect(names.count == 1 && names[0].count == 64, "named by the key's SHA-256: \(names)")
+    }
+
+    @Test func refusesBadAndBigEntries() async throws {
+        let dir = try tempDir([:])
+        let cache = CacheMethods(appName: "Test", env: ["VRMXG_SHELL_CACHE": dir.appendingPathComponent("Cache").path])
+        let router = BridgeRouter(); cache.register(on: router)
+        let none = await router.handle(body: ["method": "cache.write", "params": ["key": "k"]])
+        #expect(none.1 != nil)
+        let big = await router.handle(body: ["method": "cache.write", "params": ["key": "k", "base64": Data(count: CacheMethods.maxBytes + 1).base64EncodedString()]])
+        #expect(big.1 != nil)
+        let noKey = await router.handle(body: ["method": "cache.read", "params": [:]])
+        #expect(noKey.1 != nil)
     }
 }
 
@@ -557,6 +596,20 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
         #expect(edit.item(withTitle: "Copy")?.action == #selector(NSText.copy(_:)), "Copy and Paste stay WebKit's")
     }
 
+    @Test func appItemsInAHelpMenuAfterWindow() throws {
+        let config = ShellConfiguration(appName: "Editor", scheme: "vrmxg-test-\(UUID().uuidString.prefix(8).lowercased())", pageUndo: true,
+                                        helpItems: [ShellMenuItem("Keyboard Shortcuts", event: "shortcuts", key: "/")])
+        let d = ShellAppDelegate(config: config)
+        let main = d.buildMenu()
+        #expect(main.items.compactMap { $0.submenu?.title } == ["Editor", "File", "Edit", "View", "Window", "Help"])
+        let item = try #require(main.items.last?.submenu?.item(withTitle: "Keyboard Shortcuts"))
+        #expect(item.representedObject as? String == "shortcuts" && item.keyEquivalent == "/" && item.target === d)
+        #expect(d.helpMenu === main.items.last?.submenu, "kept for NSApp.helpMenu")
+        let plain = ShellAppDelegate(config: ShellConfiguration(appName: "Editor", scheme: "vrmxg-test-plain"))
+        _ = plain.buildMenu()
+        #expect(plain.helpMenu == nil, "no Help menu when the app has none")
+    }
+
     @Test func anOpenedDocumentIsServedLikeABinaryOpen() throws {
         let dir = try tempDir(["web/index.html": "<p>", "cafe order.fountain": "INT. CAFE\n\nHi."])
         let roots = WebRoots(app: dir.appendingPathComponent("web"))
@@ -656,7 +709,7 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
         #expect((j["blinkR"] as? Double ?? 0) > 0.9, "the picture's left is the person's right eye")
         #expect((j["blinkL"] as? Double ?? 1) < 0.25)
         #expect(((j["geo"] as? [String: Any])?["earL"] as? Double ?? 1) < 0.1, "geo keeps the picture's sides")
-        #expect(vrmxgShellVersion == "0.12.0")
+        #expect(vrmxgShellVersion == "0.13.0")
     }
 }
 

@@ -5,8 +5,10 @@ import VRMXGShell
 // page first (shell 0.9.0, AB-T-0593), so unsaved changes get the editor's sheet. File › Export Game… (M5 W0) sends
 // the page `menu.exportGame`: the open project as a game build, written through the shell's `build.*` methods. Edit ›
 // Duplicate (M5 W5, shell 0.12.0) sends `menu.duplicate`; Edit › Copy and Paste stay WebKit's, and the page takes them
-// as clipboard events when nodes rather than text are selected.
+// as clipboard events when nodes rather than text are selected. Help › Keyboard Shortcuts (M5 W6, shell 0.13.0) sends
+// `menu.shortcuts`: the sheet of every shortcut, drawn from apps/editor/src/shortcuts.js (which lists these menu keys).
 ShellApp.run(ShellConfiguration(appName: "VRMXG Editor", scheme: "vrmxg-editor", pageUndo: true,
                                 fileItems: [ShellMenuItem("Export Game…", event: "exportGame", key: "e", modifiers: [.command, .shift])],
                                 editItems: [ShellMenuItem("Duplicate", event: "duplicate", key: "d")],
-                                asksBeforeClosing: true))
+                                asksBeforeClosing: true,
+                                helpItems: [ShellMenuItem("Keyboard Shortcuts", event: "shortcuts", key: "/")]))

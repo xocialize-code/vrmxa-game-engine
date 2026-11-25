@@ -5,8 +5,11 @@
 // choice between an anyOf's branches. It recurses for rows and fields. Every edit emits the whole new value once
 // (`change`), so the app makes one undo step of it; a number drag emits `gesture` around its live changes.
 // Ids and accessible names come from the parent's: `prop-lines-0-text`, "lines 1 text" (./fields.js childOf).
+// M5 W6 (AB-T-0606): an asset slot (a prop naming a project file, `meta.assetTypes`) takes a file dragged from the assets
+// panel when its kind fits and refuses the rest; a node slot takes a row dragged from the scene tree (assets-ui.js's rules).
 import { computed, ref, watch } from 'vue';
 import NumberField from './NumberField.vue';
+import { draggedKind, dropVerdict, fileKind, ASSET_MIME, NODE_MIME } from './assets-ui.js';
 import {
   plain, widgetOf, fitBranch, branchesOf, branchIndex, defaultFor, matches, setIn, listAdd, listRemove, listMove, rowActions,
   mapRename, mapAdd, mapRemove, freshKey, structRows, rowTitle, curvePoints, nextCurveKey, childOf, schemaOfValue,
@@ -38,6 +41,22 @@ const emit = defineEmits(['change', 'gesture', 'axis']);
 const shown = computed(() => (props.value !== undefined ? props.value : props.fallback));
 const widget = computed(() => widgetOf(props.schema, props.meta, shown.value));
 const name = computed(() => (props.mixed ? `${props.label} (mixed values)` : props.label));
+// drops on an asset or node slot: the drag's kind decides while it hovers, the dropped data again on drop
+const slotOf = () => (widget.value === 'node' ? { slot: 'node' } : { slot: 'prop', types: props.meta?.assetTypes ?? [] });
+const refusing = ref('');
+function over(e) {
+  if (props.disabled) return;
+  const v = dropVerdict(draggedKind(e.dataTransfer?.types), slotOf());
+  refusing.value = v.ok ? '' : v.reason;
+  if (v.ok) { e.preventDefault(); e.dataTransfer.dropEffect = widget.value === 'node' ? 'link' : 'copy'; }
+}
+function dropped(e) {
+  refusing.value = '';
+  if (props.disabled) return;
+  if (widget.value === 'node') { const id = e.dataTransfer?.getData(NODE_MIME); if (id && (!props.nodes.length || props.nodes.includes(id))) setNode(id); return; }
+  const ref = e.dataTransfer?.getData(ASSET_MIME);
+  if (ref && dropVerdict(fileKind(ref), slotOf()).ok) setText(ref);
+}
 const child = (k) => childOf({ id: props.id, label: props.label }, k);
 const set = (v) => emit('change', plain(v));
 const gesture = (k) => emit('gesture', k);
@@ -143,13 +162,13 @@ const setKey = (i, j, v) => set(setIn(keys.value, [i, j], v));
 
   <input v-else-if="widget === 'color'" :id="id" type="color" :value="mixed ? '#808080' : (shown ?? '#ffffff')" :aria-label="name" :disabled="disabled" @change="set($event.target.value)">
 
-  <select v-else-if="widget === 'node'" :id="id" :value="mixed ? MIXED : (shown ?? '')" :aria-label="name" :disabled="disabled" @change="setNode($event.target.value)">
+  <select v-else-if="widget === 'node'" :id="id" :value="mixed ? MIXED : (shown ?? '')" :aria-label="name" :disabled="disabled" @change="setNode($event.target.value)" @dragenter="over" @dragover="over" @dragleave="refusing = ''" @drop.prevent="dropped">
     <option v-if="mixed" :value="MIXED">(mixed)</option>
     <option value="">(none)</option>
     <option v-for="n in nodes" :key="n" :value="n">{{ n }}</option>
   </select>
 
-  <input v-else-if="widget === 'asset'" :id="id" class="mono" :value="mixed ? '' : (shown ?? '')" :placeholder="mixed ? 'mixed' : 'project path'" :aria-label="name" :disabled="disabled" @change="setText($event.target.value)">
+  <input v-else-if="widget === 'asset'" :id="id" class="mono" :class="{ refusing }" :value="mixed ? '' : (shown ?? '')" :placeholder="mixed ? 'mixed' : 'project path'" :aria-label="refusing ? `${name}: refuses ${refusing}` : name" :title="refusing" :disabled="disabled" @change="setText($event.target.value)" @dragenter="over" @dragover="over" @dragleave="refusing = ''" @drop.prevent="dropped">
 
   <output v-else-if="widget === 'const'" :id="id" :aria-label="`${label} ${shown}`">{{ shown }}</output>
 

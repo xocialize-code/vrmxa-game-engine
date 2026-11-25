@@ -548,6 +548,7 @@ export class CreatorHost extends EditorHost {
    * a new one.
    */
   async releaseOffline() {
+    await this.releaseAssetThumbs?.(); // the editor host's asset thumbnails (M5 W6), if anything started them
     await this._thumbChain;
     const h = this._thumbHost;
     if (!h) return;
