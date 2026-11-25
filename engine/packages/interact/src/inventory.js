@@ -10,8 +10,27 @@ export class InventoryService {
     this.held.set(actorId, list);
     return list.at(-1);
   }
+  /** Take an item out of a character's inventory (the first entry with its id); the entry, or null. */
+  remove(actorId, itemId) {
+    const list = this.held.get(actorId) ?? [], i = list.findIndex((e) => e.id === itemId);
+    if (i < 0) return null;
+    const [entry] = list.splice(i, 1);
+    if (!list.length) this.held.delete(actorId);
+    return entry;
+  }
   list(actorId) { return [...(this.held.get(actorId) ?? [])]; }
   has(actorId, itemId) { return (this.held.get(actorId) ?? []).some((e) => e.id === itemId); }
+
+  /**
+   * GameFlow's hand-over to the next scene's inventory: the same entries, the carried ones marked so the next world's
+   * interaction service holds their pose again on its first step (M5 W7). Nothing else changes, so an inventory with
+   * nothing carried hands over exactly as getState/setState did.
+   */
+  carryTo(next) {
+    const s = this.getState();
+    for (const list of Object.values(s)) for (const e of list) if (e.carry) e.carryPending = true;
+    next.setState(s);
+  }
 
   getState() { return Object.fromEntries([...this.held].map(([k, v]) => [k, structuredClone(v)])); }
   setState(s) { this.held = new Map(Object.entries(structuredClone(s))); }

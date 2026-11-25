@@ -23,7 +23,9 @@
 //   animation   target (a Character); clips [{ start, end, slot | clip, speed?, offset?, loop?, blendIn?, blendOut? }]:
 //               [{ clip, time (seconds), weight }]; overlapping clips cross-fade by their blend-ins, and the track's
 //               weight against the character's own locomotion ramps over the first clip's blendIn and the last's
-//               blendOut
+//               blendOut. With `layer` (M5 W7: a layer the character has, upperBody by default) the clips play on that
+//               layer over the body's own animation instead of replacing it, the ramps fading the layer: a wave on the
+//               upper body while she walks
 import { Quaternion } from 'three';
 import { eased } from './ease.js';
 
@@ -158,5 +160,6 @@ export function checkTrack(track) {
   }
   if (track.step !== undefined && !(Number.isInteger(track.step) && track.step >= 1 && track.step <= 4)) out.push(`${id}: step is 1, 2, 3 or 4`);
   if (track.release !== undefined && typeof track.release !== 'boolean') out.push(`${id}: release is true or false`);
+  if (track.layer !== undefined && (track.type !== 'animation' || typeof track.layer !== 'string' || !track.layer)) out.push(`${id}: layer names one of a character's layers, on an animation track`);
   return out;
 }

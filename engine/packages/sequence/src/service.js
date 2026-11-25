@@ -9,7 +9,7 @@
 // host hands the post stack, and changes no hash. The playback state, the overrides' saved values and the lookAt state
 // are in getState(), so a snapshot of a sequence world restores mid-shot.
 import { frameToStep, rationalFps } from '@vrmxg/core';
-import { applyTrack, beginTracks, sampleAudio, sampleKeys, eventsBetween, TRACK_TYPES } from '@vrmxg/tracks';
+import { applyTrack, beginTracks, clearTrackAnimation, sampleAudio, sampleKeys, eventsBetween, TRACK_TYPES } from '@vrmxg/tracks';
 import { clipAt, shotAt, samplePost, linesBetween } from './evaluate.js';
 
 const START = -1e-9;
@@ -97,7 +97,7 @@ export class SequenceService {
     }
     if (done) {
       pb.playing = false;
-      for (const t of this.tracks) if (t.type === 'animation') { const n = /** @type {any} */ (this.tree.find(t.target)); if (n) n.trackAnimation = null; }
+      for (const t of this.tracks) if (t.type === 'animation') { const n = /** @type {any} */ (this.tree.find(t.target)); if (n) clearTrackAnimation(n, t); }
       this.tree.emit(this.tree.root, 'sequenceFinished', { frame });
     }
   }

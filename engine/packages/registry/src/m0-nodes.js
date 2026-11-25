@@ -105,6 +105,22 @@ export function m0Registry() {
       getUpSeconds: P.number({ min: 0.1, max: 10, unit: 's', sim: true, description: 'How long getting up from a ragdoll blends back into animation (1.2).' }),
       head: P.vec3({ unit: 'rad', sim: true, description: 'Turn the head over the animation: [yaw to her left, pitch up, roll to her left shoulder]. Keyed by a face take (M4 W9) or by hand.' }),
       gaze: P.list(P.number(), { sim: true, description: 'Where the eyes look, from her facing: [yaw to her left, pitch up] in radians. It comes before a look-at target; a puppet take keys it (M4 W9).' }),
+      layers: {
+        schema: {
+          type: 'array',
+          description: 'Animation layers over her locomotion (M5 W7), applied in order: each with a bone mask, overwrite or additive blending and a weight that scales what plays on it. Without this list she has upperBody, arms, face (overwrite) and additive (fullBody).',
+          items: {
+            type: 'object', required: ['name'], additionalProperties: false,
+            properties: {
+              name: { type: 'string', minLength: 1, description: 'What playLayer and a sequence\'s layer track call it.' },
+              mask: { anyOf: [{ enum: ['fullBody', 'upperBody', 'lowerBody', 'arms', 'hands', 'face'] }, { type: 'array', items: { type: 'string' } }], description: 'A group of VRM humanoid bones, or a list of bone names (upperBody).' },
+              blend: { enum: ['overwrite', 'additive'], description: 'Overwrite blends towards the layer\'s pose; additive adds its difference from the rest pose (overwrite).' },
+              weight: { type: 'number', minimum: 0, maximum: 1, description: 'Scales whatever plays on the layer (1).' },
+            },
+          },
+        },
+        meta: { sim: true },
+      },
     },
     signals: { arrived: { args: { target: P.nodeRef() } }, spoke: { args: { text: P.string() } }, lineEnded: { args: { text: P.string() } }, dressed: { args: { worn: P.list(P.string()) } }, knockedDown: {}, gettingUp: {}, gotUp: {}, faced: {} },
     actions: {
@@ -115,6 +131,10 @@ export function m0Registry() {
       lookAt: { args: { target: arg(P.nodeRef(), 'Node to look at; omit to stop.') } },
       knockDown: { args: { impulse: arg(P.vec3({ unit: 'N·s' }), 'A shove in world space, on the torso (or `part`).'), part: arg(P.string(), 'The humanoid bone whose part takes the shove (spine).'), getUp: arg(P.boolean(), 'Get up once settled (true); false stays down until getUp.') }, description: 'Fall as a ragdoll (capsules and joints from the humanoid), then get up, blending back into animation.' },
       getUp: { description: 'Get up from a ragdoll lying still.' },
+      playLayer: { args: { layer: arg(P.string(), 'Which layer (upperBody).'), clip: arg(P.string(), 'A clip by name.'), slot: arg(P.string(), 'Or an animation slot, as what she has on resolves it.'), loop: arg(P.boolean(), 'Loop it (true); a one-shot fades out at its end.'), rate: arg(P.number(), 'Playback rate (1).'), fade: arg(P.number({ min: 0, unit: 's' }), 'Fade in, and cross-fade from what played there (0.25).'), weight: arg(P.number({ min: 0, max: 1 }), 'The weight it fades to (1).'), offset: arg(P.number({ unit: 's' }), 'Start this far into the clip; the loop already playing, asked for again without it, goes on where it is.') }, description: 'Play a clip or a slot on one of her animation layers (M5 W7): a wave or a carried tray on the upper body while she walks.' },
+      stopLayer: { args: { layer: arg(P.string(), 'Which layer (upperBody).'), fade: arg(P.number({ min: 0, unit: 's' }), 'Fade out (0.25).') }, description: 'Fade a layer out.' },
+      releaseCarry: { args: { item: arg(P.string(), 'The carried item\'s own id (as her inventory keeps it); without it, the last thing she carries.'), fade: arg(P.number({ min: 0, unit: 's' }), 'Fade the carry out (0.3).') }, description: 'Hand over or put down something she carries: out of her inventory, the carry\'s layer fading out (a scene connection\'s way to end a carry, M5 W7).' },
+      layerWeight: { args: { layer: arg(P.string(), 'Which layer (upperBody).'), weight: arg(P.number({ min: 0, max: 1 }), 'The new weight.'), fade: arg(P.number({ min: 0, unit: 's' }), 'Over this long (0.25).') }, description: 'Fade what plays on a layer to another weight.' },
       face: { args: { target: arg(P.nodeRef(), 'Turn to face this node.'), point: arg(P.vec3({ unit: 'm' }), 'Or this point.'), rate: arg(P.number({ min: 0, unit: 'rad/s' }), 'How fast (4).') }, description: 'Turn the body to face a node or a point, in place (M3 W12); look-at alone stops about 100° from the facing.' },
     },
   });

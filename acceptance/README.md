@@ -110,6 +110,34 @@ runtime, and loaded into a new session each gives the unbroken run's hashes to s
 scene changes).
 
 
+## M5 W7: character layers (`m5/layers*`, AB-T-0609)
+
+Masked, layered blending over a character's animation (`engine/packages/character/LAYERS.md`, AB-D-0289), ahead of the
+sample game (W10). The scenario is `apps/playground/src/layers-check.js`: Mira walks the sample cafe on scripted input
+for 420 steps while a wave (the sample's `greet`) plays on her upper body, then the carried tray (`carry.vrma`, added to
+the animation document the check loads), a wave on her arms layer over the carry, breathing on the additive layer, and
+the tray put down. The same walk with no layer runs beside it. A hash of all 64 components after every step; a
+snapshot at step 215, mid cross-fade (the arms' wave fading in over the carry), restored into a fresh world.
+
+```sh
+(cd apps/playground && npx vite build)
+node acceptance/m5/layers.mjs        # Node, headless Chromium twice, and three stills → results/m5-layers.json, m5-layers-{walk,carry,wave}.png
+acceptance/m5/layers-wkwebview.sh    # WKWebView, scheme and loopback, twice each → results/m5-layers-wkwebview.json
+```
+
+**Result (2026-11-24, M5 Max, macOS 27.3 beta, Node 26.12.1, Chrome for Testing 156.0.8078.4).** Every step hashes the
+same in Node, in Chromium (two fresh pages) and in WKWebView over the scheme and over loopback (two fresh web views
+each): final `d14fcfab1e02d846` (the walk alone `1963599cbeda6559`; the per-step run's digest `d09da290f29a9421…`). Restored at step 215, every following step is the
+unbroken run's. The lower body (hips, legs, feet, toes) is the walk alone's, bit for bit, on all 303 steps the fullBody
+additive layer isn't playing; while it plays, breathing lifts the hips up to 8.5 mm. The wave turns the right upper arm
+up to 2.68 rad from walking's, the carry holds the left forearm 1.53 rad from rest, and the wave over the carry 2.66 rad;
+nothing of the layers is left in the character's state at the end. Stills: `m5-layers-walk.png` (no layer),
+`m5-layers-carry.png` (the tray over the walk), `m5-layers-wave.png` (a wave on the arms layer over the carry).
+
+**Nothing that doesn't use a layer moved:** on this branch, Node's runs of M0 to M3's checks give the eleven simulation
+digests in `canonical.json` (all six cells), `compare.mjs` passes 20 of 20 against them, the matrix's acceptance row gives the canonical digest `78ab33e0d7508476` in all six cells with `compare.mjs` 20 of 20 on each backend (`results/m5-layers-matrix-acceptance.json`, run after the coordinating review's fixes), and the M4 takes and voicing
+Node runs give their committed finals and run digests.
+
 ## Result: M4's acceptance (2026-11-24, M5 Max, macOS 27.3 beta 26C5047e)
 
 M4's ten exit checks ([M4-PLAN.md](../M4-PLAN.md) "What M4 is done looking like") were run at the M4 commit: main at

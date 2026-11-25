@@ -40,13 +40,15 @@ const mulq = ([ax, ay, az, aw], [bx, by, bz, bw]) => [aw * bx + ax * bw + ay * b
 // `shrug` lifts both arms a little and tilts the head; `point` holds the right arm out forward; `laugh` tips the head
 // back and shakes the spine; `kneel` (0 standing … 1 kneeling, hips 0.3 m up, thighs up, shins back, leaning forward) may
 // change over the clip (kneelTo): getting up from a fall. Idle gestures (AB-A-0315): `look` sweeps the head left and right;
-// `tilt` tips the head to one side.
-function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 0, crouch = 0, armsUp = 0, sit = 0, sitTo = sit, reach = 0, gesture = 0, nod = 0, cheer = 0, shrug = 0, point = 0, laugh = 0, kneel = 0, kneelTo = kneel, look = 0, tilt = 0 }) {
+// `tilt` tips the head to one side. Carrying (M5 W7): `carry` holds both forearms out in front at the waist, elbows
+// bent, as if under a tray (the only clip with lower-arm tracks, so the other clips' bytes don't change).
+export function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 0, crouch = 0, armsUp = 0, sit = 0, sitTo = sit, reach = 0, gesture = 0, nod = 0, cheer = 0, shrug = 0, point = 0, laugh = 0, kneel = 0, kneelTo = kneel, look = 0, tilt = 0, carry = 0 }) {
   const frames = Math.round(seconds * fps) + 1;
   const bones = {};
   const names = ['leftUpperLeg', 'rightUpperLeg', 'leftUpperArm', 'rightUpperArm', 'spine'];
   if (sit || sitTo || kneel || kneelTo) names.push('leftLowerLeg', 'rightLowerLeg');
   if (nod || shrug || laugh || look || tilt) names.push('neck', 'head');
+  if (carry) names.push('leftLowerArm', 'rightLowerArm');
   for (const b of names) bones[b] = new Float32Array(frames * 4);
   const hips = new Float32Array(frames * 3);
   for (let f = 0; f < frames; f++) {
@@ -64,9 +66,15 @@ function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 
     else if (shrug || laugh) { bones.neck.set(qx(-la * 0.2), f * 4); bones.head.set(mulq(qz(sh * 0.22), qx(-la * 0.3 + la * 0.06 * Math.sin(8 * ph))), f * 4); }
     else if (look || tilt) { bones.neck.set(qy(look * 0.35 * Math.sin(ph) * env), f * 4); bones.head.set(mulq(qy(look * 0.45 * Math.sin(ph) * env), qz(tilt * env)), f * 4); }
     bones.spine.set(qx(crouch * 0.3 + kn * 0.6 + la * 0.05 * Math.sin(10 * ph)), f * 4);
+    if (carry) { // upper arms nearly down, forearms forward and level, a little give at the elbows over the cycle
+      const give = 0.04 * Math.sin(ph);
+      bones.leftUpperArm.set(mulq(qx(-0.25 * carry), qz(-1.35 * carry)), f * 4); bones.rightUpperArm.set(mulq(qx(-0.25 * carry), qz(1.35 * carry)), f * 4);
+      bones.leftLowerArm.set(qy(-(1.5 + give) * carry), f * 4); bones.rightLowerArm.set(qy((1.5 + give) * carry), f * 4);
+      bones.spine.set(qx(-0.06 * carry), f * 4);
+    }
     hips.set([0, 0.95 + bob * Math.abs(Math.sin(ph)) - crouch * 0.2 - k * 0.45 - kn * 0.65, travel * t], f * 3);
   }
-  return core.writeVrma({ name, fps, frames, rest: REST, restHips: REST.hips, bones, hips, expressions: {}, custom: new Set(), lookAt: null, lookAtOffset: null, extras: { source: 'engine/packages/character/test/fixtures.mjs' } });
+  return core.writeVrma({ name, fps, frames, rest: carry ? { ...REST, leftLowerArm: [0.25, 0, 0], rightLowerArm: [-0.25, 0, 0] } : REST, restHips: REST.hips, bones, hips, expressions: {}, custom: new Set(), lookAt: null, lookAtOffset: null, extras: { source: 'engine/packages/character/test/fixtures.mjs' } });
 }
 
 /**
@@ -74,7 +82,7 @@ function makeClip(core, name, { seconds, fps = 30, swing = 0, bob = 0, travel = 
  * fall, land) and a "sword" set (priority 1, requires the tag "sword") that changes idle.
  * `travel: true` makes walk and run root-motion "travel" clips.
  */
-export async function testAnimations(core, { travel = false, actions = false, layers = false, emotes = false } = {}) {
+export async function testAnimations(core, { travel = false, actions = false, layers = false, emotes = false, carry = false } = {}) {
   const defs = [
     ['idle', { seconds: 2, swing: 0.03 }, { loops: true, rootMotion: 'inPlace' }],
     // idle variants (AB-A-0315): weighted beside idle in the default set, so standing still isn't one loop
@@ -101,6 +109,8 @@ export async function testAnimations(core, { travel = false, actions = false, la
   if (actions) defs.push(...ACTION_DEFS);
   // G10 layers (M2 W8): a wave for the masked `greet` gesture (the right arm raised high, waving)
   if (layers) defs.push(['greet', { seconds: 1.2, reach: 2.6, gesture: 0.35 }, { loops: false, rootMotion: 'inPlace' }]);
+  // M5 W7: a carried tray's pose (looped), for the upperBody layer
+  if (carry) defs.push(['carry', { seconds: 2, carry: 1 }, { loops: true, rootMotion: 'inPlace' }]);
   // emotes (M2 W11), masked one-shots: a nod (the head), a cheer (both arms), a sip from a cup (the right arm to the mouth)
   const EMOTES = [
     ['nod', { seconds: 1.0, nod: 0.35 }, { loops: false, rootMotion: 'inPlace' }, 'face'],
@@ -128,7 +138,7 @@ export async function testAnimations(core, { travel = false, actions = false, la
   const doc = {
     format: 'vrmxa-animations', version: 1, clips: entries,
     sets: [
-      { id: 'default', name: 'Default', default: true, priority: 0, requires: [], slots: { idle: [{ ...slot('idle')[0], weight: 3 }, { ...slot('idle-shift')[0], weight: 1 }, { ...slot('idle-breathe')[0], weight: 1 }], walk: slot('walk'), run: slot('run'), jump: slot('jump'), fall: slot('fall'), land: slot('land'), ...(actions ? Object.fromEntries(ACTION_DEFS.map(([n]) => [n, slot(n)])) : {}), ...(layers ? { greet: [{ ...slot('greet')[0], mask: 'arms' }], wave: [{ ...slot('greet')[0], mask: 'arms' }] } : {}), ...(emotes ? Object.fromEntries(EMOTES.map(([n, , , mask]) => [n, [{ ...slot(n)[0], mask }]])) : {}) } },
+      { id: 'default', name: 'Default', default: true, priority: 0, requires: [], slots: { idle: [{ ...slot('idle')[0], weight: 3 }, { ...slot('idle-shift')[0], weight: 1 }, { ...slot('idle-breathe')[0], weight: 1 }], walk: slot('walk'), run: slot('run'), jump: slot('jump'), fall: slot('fall'), land: slot('land'), ...(actions ? Object.fromEntries(ACTION_DEFS.map(([n]) => [n, slot(n)])) : {}), ...(layers ? { greet: [{ ...slot('greet')[0], mask: 'arms' }], wave: [{ ...slot('greet')[0], mask: 'arms' }] } : {}), ...(emotes ? Object.fromEntries(EMOTES.map(([n, , , mask]) => [n, [{ ...slot(n)[0], mask }]])) : {}), ...(carry ? { carry: slot('carry') } : {}) } },
       { id: 'sword', name: 'With a sword', priority: 1, requires: ['sword'], slots: { idle: slot('idle-sword'), ...(layers ? { hold: [{ ...slot('idle-sword')[0], mask: 'upperBody' }] } : {}) } },
     ],
   };

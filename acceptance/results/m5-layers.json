@@ -1,0 +1,208 @@
+{
+ "check": "M5 W7: character layers (a wave, the carried tray, a wave over the carry, additive breathing) replay exactly in Node and Chromium; the lower body is walking's; a snapshot mid-fade restores",
+ "pass": true,
+ "same": true,
+ "rapier": "@dimforge/rapier3d-deterministic-compat",
+ "script": [
+  [
+   40,
+   "playLayer",
+   {
+    "layer": "upperBody",
+    "clip": "greet",
+    "loop": false,
+    "fade": 0.2
+   }
+  ],
+  [
+   130,
+   "playLayer",
+   {
+    "layer": "upperBody",
+    "slot": "carry",
+    "fade": 0.3
+   }
+  ],
+  [
+   205,
+   "playLayer",
+   {
+    "layer": "arms",
+    "clip": "greet",
+    "loop": false,
+    "fade": 0.3
+   }
+  ],
+  [
+   260,
+   "playLayer",
+   {
+    "layer": "additive",
+    "clip": "idle-breathe",
+    "weight": 0.5,
+    "fade": 0.5
+   }
+  ],
+  [
+   330,
+   "stopLayer",
+   {
+    "layer": "upperBody",
+    "fade": 0.4
+   }
+  ],
+  [
+   360,
+   "stopLayer",
+   {
+    "layer": "additive",
+    "fade": 0.3
+   }
+  ]
+ ],
+ "node": {
+  "runtime": "node",
+  "version": "v26.12.1",
+  "steps": 420,
+  "final": "d14fcfab1e02d846",
+  "walkFinal": "1963599cbeda6559",
+  "components": 64,
+  "twice": true,
+  "layersChangeTheRun": true,
+  "restored": {
+   "at": 215,
+   "final": "d14fcfab1e02d846",
+   "same": true
+  },
+  "legs": {
+   "stepsChecked": 303,
+   "stepsDiffering": 0,
+   "sameAsWalkEveryStep": true
+  },
+  "turned": {
+   "wave": 2.6809,
+   "carryForearm": 1.5335,
+   "armsWaveOverCarry": 2.6642,
+   "breathLiftsHips": 0.0085
+  },
+  "stateSteps": 318,
+  "endState": null,
+  "walked": 0,
+  "runDigest": "d09da290f29a9421e59d59c8a24830de1a6171d21efd6bb47fa237070fca8c9c"
+ },
+ "chromium": [
+  {
+   "runtime": "chromium",
+   "load": 1,
+   "version": "156.0.8078.4",
+   "mode": "layers",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "origin": "http:",
+   "steps": 420,
+   "final": "d14fcfab1e02d846",
+   "walkFinal": "1963599cbeda6559",
+   "components": 64,
+   "twice": true,
+   "layersChangeTheRun": true,
+   "restored": {
+    "at": 215,
+    "final": "d14fcfab1e02d846",
+    "same": true
+   },
+   "legs": {
+    "stepsChecked": 303,
+    "stepsDiffering": 0,
+    "sameAsWalkEveryStep": true
+   },
+   "turned": {
+    "wave": 2.6809,
+    "carryForearm": 1.5335,
+    "armsWaveOverCarry": 2.6642,
+    "breathLiftsHips": 0.0085
+   },
+   "stateSteps": 318,
+   "endState": null,
+   "walked": 0,
+   "errors": [],
+   "runDigest": "d09da290f29a9421e59d59c8a24830de1a6171d21efd6bb47fa237070fca8c9c"
+  },
+  {
+   "runtime": "chromium",
+   "load": 2,
+   "version": "156.0.8078.4",
+   "mode": "layers",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "origin": "http:",
+   "steps": 420,
+   "final": "d14fcfab1e02d846",
+   "walkFinal": "1963599cbeda6559",
+   "components": 64,
+   "twice": true,
+   "layersChangeTheRun": true,
+   "restored": {
+    "at": 215,
+    "final": "d14fcfab1e02d846",
+    "same": true
+   },
+   "legs": {
+    "stepsChecked": 303,
+    "stepsDiffering": 0,
+    "sameAsWalkEveryStep": true
+   },
+   "turned": {
+    "wave": 2.6809,
+    "carryForearm": 1.5335,
+    "armsWaveOverCarry": 2.6642,
+    "breathLiftsHips": 0.0085
+   },
+   "stateSteps": 318,
+   "endState": null,
+   "walked": 0,
+   "errors": [],
+   "runDigest": "d09da290f29a9421e59d59c8a24830de1a6171d21efd6bb47fa237070fca8c9c"
+  }
+ ],
+ "stills": {
+  "walk": {
+   "step": 90,
+   "at": [
+    1.598,
+    0.025,
+    9.587
+   ],
+   "state": "move",
+   "layers": [],
+   "file": "acceptance/results/m5-layers-walk.png",
+   "errors": []
+  },
+  "carry": {
+   "step": 90,
+   "at": [
+    1.598,
+    0.025,
+    9.587
+   ],
+   "state": "move",
+   "layers": [
+    "upperBody"
+   ],
+   "file": "acceptance/results/m5-layers-carry.png",
+   "errors": []
+  },
+  "wave": {
+   "step": 100,
+   "at": [
+    1.831,
+    0.025,
+    9.597
+   ],
+   "state": "move",
+   "layers": [
+    "upperBody",
+    "arms"
+   ],
+   "file": "acceptance/results/m5-layers-wave.png",
+   "errors": []
+  }
+ }
+}
