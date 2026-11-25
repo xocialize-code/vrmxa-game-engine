@@ -14,6 +14,7 @@ import { split } from './rush-level.mjs';
 
 const root = path.resolve(import.meta.dirname, '../..');
 const SCENARIO = path.join(root, 'apps/editor-mac/docs/hand-test/HAND-TEST-M5-LEVEL.scenario.md');
+const SCENARIO_WEBGL = path.join(root, 'apps/editor-mac/docs/hand-test/HAND-TEST-M5-LEVEL-webgl.scenario.md');
 const CHECKLIST = path.join(root, 'apps/editor-mac/docs/HAND-TEST-M5-LEVEL.md');
 const { room, game, assetRef } = split();
 const taken = new Set(room.nodes.map((n) => n.id));
@@ -76,7 +77,7 @@ const rulesNode = byId('rules');
 row('The level\'s room opens: the set, the doors and stools, Mira, Hana and the three regulars, with no rules yet.');
 S('wait id=open-project enabled=true timeout_ms=40000', 'act id=open-project action=press', 'until find("id=project-name").0.name == "Project project-w10-level"');
 S('act id=file-name action=set_value value=game/rush-built.vrmxs', 'act id=open-file action=press', `until find("id=doc-state").0.name matches "^Scene game/rush-built.vrmxs ${room.nodes.length} nodes saved valid " timeout=90000`);
-S('expect find("id=node-aoi").count == 1', 'expect find("id=node-hana-1").count == 1', 'shot "the room"');
+S('expect find("id=renderer").0.name == "Renderer @RENDERER@"', 'expect find("id=node-aoi").count == 1', 'expect find("id=node-hana-1").count == 1', 'shot "the room"');
 
 // ---------------------------------------------------------------- 2: the rules
 row('The rules: a GameRules node with its seven flags (a map, key by key) and its lose condition (any of: the clock done, two wrong orders), built in the condition\'s menus and rows.');
@@ -143,16 +144,24 @@ areas.forEach((want, i) => { ids.set(want.id, areaIds[i]); select(areaIds[i]); t
 valid();
 
 // ---------------------------------------------------------------- 6: trays and till
-row('The three trays and the till from the asset list, each named, placed and given the state it starts in.');
+row('The till dragged from the assets panel onto the viewport (the real pointer), and the three trays added from the panel; each named, placed and given the state it starts in.');
+const fileId = (ref) => ref.replace(/[^A-Za-z0-9]+/g, '-');
 for (const want of game.filter((n) => n.type === 'Item')) {
   const ref = assetRef.get(want.asset), base = slug(path.basename(ref).replace(/\.[^.]+$/, ''));
   const id = uniqueId(base);
   ids.set(want.id, id);
-  S(`act id=add-${ref.replace(/[^A-Za-z0-9]+/g, '-')} action=press`, `until find("id=undo").0.name == "Undo Add ${id}" timeout=10000`);
+  const word = path.basename(ref).replace(/\.[^.]+$/, '');
+  S(`act id=assets-search action=set_value value=${word}   # the panel narrowed to this file`, `until find("id=asset-${fileId(ref)}").count == 1 timeout=10000`);
+  if (want.id === 'till') {
+    // an HTML drag from the tile to the viewport: only real mouse events start one (W6's row 4 does the same onto a slot)
+    S(`find id=asset-${fileId(ref)}`, 'set FROM = $.0.ref', 'find name=Viewport exact=true', 'set TO = $.0.ref', 'pointer drag ref="${FROM}" to_ref="${TO}" steps=30   # the till\'s tile dropped on the viewport: placed where it lands');
+  } else S(`act id=add-${fileId(ref)} action=press   # the panel's Add, for the trays`);
+  S(`until find("id=undo").0.name == "Undo Add ${id}" timeout=10000`);
   text('field-name', want.name);
   position(want.transform.p);
   text('prop-state', want.props.state);
 }
+S('act id=assets-search action=set_value value=" "   # a space: no words, the whole list again (set_value needs a value)');
 valid();
 
 // ---------------------------------------------------------------- 7, 8: the dialogues
@@ -193,13 +202,28 @@ for (const want of dialogues.slice(1)) {
 }
 
 // ---------------------------------------------------------------- 9: saved
+// ---------------------------------------------------------------- 10: a prefab override (W6)
+row('A door prefab placed from the assets panel; a prop of its hinge overridden in the inspector, marked as an override (the dot, the Overrides list), reverted by its dot; the door taken out again with Undo, so the level is as committed.');
+const door = uniqueId('door');
+S('act id=assets-search action=set_value value=door', 'until find("id=add-prefabs-door-vrmxs").count == 1 timeout=10000');
+S('act id=add-prefabs-door-vrmxs action=press   # the sample\'s own door prefab', `until find("id=undo").0.name == "Undo Add ${door}" timeout=10000`, `until find("id=node-${door}").0.name contains "inside" timeout=10000   # built: its prefab nodes are in the tree`);
+S(`act id=fold-${door} action=press`, `until find("id=node-${door}/hinge").count == 1`, `act id=node-${door}/hinge action=press`, 'until find("id=inspector-inner").count == 1   # the inspector edits a prefab node, as overrides');
+S('expect find("id=prop-mass").0.value == "12"   # the prefab\'s own mass', 'expect find("id=ov-mass").count == 0   # not overridden: no mark');
+S('act id=prop-mass action=set_value value=20', `until find("id=undo").0.name == "Undo Override ${door}/hinge.mass" timeout=5000   # one undo step, an override`);
+S('expect find("id=ov-mass").0.name == "mass overrides the prefab (prefab: 12): revert"   # the mark, with the prefab\'s value', `expect find("id=node-${door}").0.name contains "overridden"   # the tree marks the instance`, 'shot "the door\'s hinge mass overridden"');
+S('act id=ov-mass action=press   # the dot reverts', 'until find("id=ov-mass").count == 0', 'expect find("id=prop-mass").0.value == "12"', `expect find("id=undo").0.name == "Undo Revert ${door}/hinge.mass"`);
+S('act id=undo action=press', 'until find("id=ov-mass").count == 1   # Undo brings the override back', 'act id=undo action=press', 'until find("id=ov-mass").count == 0', 'act id=undo action=press   # and the door goes', `until find("id=node-${door}").count == 0 timeout=5000`);
+S('act id=assets-search action=set_value value=" "');
+taken.delete(door);
+valid();
+
 row('Saved, and read back from disk the same bytes, valid; the file is what rush-level.mjs compares with the committed level.');
 S('act id=save action=press', 'until find("id=saved").0.name matches "^Saved game/rush-built.vrmxs · [0-9]+ bytes · [0-9a-f]{16}$" timeout=20000');
 S('act id=verify action=press', 'until find("id=verify-result").0.name == "Reopened game/rush-built.vrmxs: same bytes as saved, valid" timeout=30000');
 S(`expect find("id=doc-state").0.name matches "^Scene game/rush-built.vrmxs ${room.nodes.length + game.length} nodes saved valid "`, 'shot "the level built"');
 
 // ---------------------------------------------------------------- write
-const header = `# The sample game's level, built in the editor (M5 W10): AppProbe scenario
+const header = `# The sample game's level, built in the editor (M5 W10): AppProbe scenario@TITLE@
 
 **Written by \`acceptance/m5/rush-level-scenario.mjs\` from \`content/sample/game/level.vrmxs\`: edit that, not this.**
 Run \`apps/editor-mac/scripts/build.sh\`, launch the app once (its container must exist), then
@@ -207,24 +231,29 @@ Run \`apps/editor-mac/scripts/build.sh\`, launch the app once (its container mus
 \`game/rush-built.vrmxs\`: the level's room, its game layer taken out), then, holding the GPU lock,
 \`appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M5-LEVEL.scenario.md\`, and last
 \`node acceptance/m5/rush-level.mjs compare <container>/tmp/project-w10-level/game/rush-built.vrmxs\`. No row types JSON:
-nodes come from the toolbar and the asset list, maps and lists are edited key by key and row by row, conditions through
-their test menus. The editor can't attach a behaviour or wire a connection (AB-T-0638), so the room keeps the behaviours
+nodes come from the toolbar and the assets panel (the till dragged onto the viewport with the real pointer, so the Mac
+must be unlocked), maps and lists are edited key by key and row by row, conditions through their test menus; a door
+prefab's override is made, seen and reverted. The editor can't attach a behaviour or wire a connection (AB-T-0638), so the room keeps the behaviours
 it has and the game layer's three \`tableZone\` behaviours and the level's connections are not built here.
 
 \`\`\`scenario
 app: VRMXG Editor
 launch: ../../build/VRMXGEditor.app
 checklist: ../HAND-TEST-M5-LEVEL.md
-env: {"VRMXG_SHELL_PROJECT": "project-w10-level"}
+env: {@QUERY@"VRMXG_SHELL_PROJECT": "project-w10-level", "VRMXG_SHELL_SETTINGS": "w10-settings.json", "VRMXG_SHELL_CACHE": "w10-cache@CACHE@"}
 fresh: false
 \`\`\`
 `;
-const scenario = `${header}\n${rows.map((r) => `- [ ] ${r.title}\n  \`\`\`steps\n${r.steps.map((s) => `  ${s}`).join('\n')}\n  \`\`\``).join('\n\n')}\n`;
+const body = `${header}\n${rows.map((r) => `- [ ] ${r.title}\n  \`\`\`steps\n${r.steps.map((s) => `  ${s}`).join('\n')}\n  \`\`\``).join('\n\n')}\n`;
+// the app's default renderer (WebGPU), and the same rows with WebGL forced (VRMXG_QUERY), each with its own thumbnail cache
+const scenario = body.replace('@TITLE@', '').replace('@QUERY@', '').replace('@CACHE@', '').replace('@RENDERER@', 'WebGPU');
+const scenarioWebGL = body.replace('@TITLE@', ', WebGL forced').replace('@QUERY@', '"VRMXG_QUERY": "renderer=webgl", ').replace('@CACHE@', '-webgl').replace('@RENDERER@', 'WebGL');
 const checklist = `# The sample game's level, built in the editor (M5 W10, AB-T-0620)
 
 M5's exit check 8 for the sample game: its level built in the Mac editor by hand, with no JSON typed. The scenario
 (\`hand-test/HAND-TEST-M5-LEVEL.scenario.md\`, written by \`acceptance/m5/rush-level-scenario.mjs\`) starts from the level's
-room and builds its game layer through the inspector (W4's widgets, W5's Duplicate); \`acceptance/m5/rush-level.mjs
+room and builds its game layer through the inspector (W4's widgets, W5's Duplicate, W6's assets panel and prefab
+overrides); \`acceptance/m5/rush-level.mjs
 compare\` then finds every game-layer node of the committed level in the saved file, with the same parent, props and
 place. Not built, because the editor can't yet: the three \`tableZone\` behaviours and the level's connections (AB-T-0638).
 
@@ -234,11 +263,11 @@ ${rows.map((r) => `- [ ] ${r.title}`).join('\n')}
 `;
 const check = process.argv.includes('--check');
 let stale = false;
-for (const [file, body] of [[SCENARIO, scenario], [CHECKLIST, checklist]]) {
+for (const [file, text] of [[SCENARIO, scenario], [SCENARIO_WEBGL, scenarioWebGL], [CHECKLIST, checklist]]) {
   const now = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
-  if (check) { if (file === SCENARIO && now !== body) stale = true; continue; }
+  if (check) { if (file !== CHECKLIST && now !== text) stale = true; continue; }
   if (file === CHECKLIST && now !== null) continue; // the checklist carries a run's results: written once
-  fs.writeFileSync(file, body);
+  fs.writeFileSync(file, text);
 }
 if (check) { console.log(stale ? 'the scenario is out of date: node acceptance/m5/rush-level-scenario.mjs' : 'the scenario is up to date'); process.exit(stale ? 1 : 0); }
 console.log(`${path.relative(root, SCENARIO)}: ${rows.length} rows, ${rows.reduce((a, r) => a + r.steps.length, 0)} steps; ids the editor gives: ${JSON.stringify(Object.fromEntries(ids))}`);

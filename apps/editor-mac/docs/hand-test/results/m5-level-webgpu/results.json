@@ -1,0 +1,2580 @@
+{
+  "checklist" : "apps/editor-mac/docs/HAND-TEST-M5-LEVEL.md",
+  "rows" : [
+    {
+      "checklist_line" : 10,
+      "checks" : [
+        {
+          "actual" : "\"Project project-w10-level\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project project-w10-level\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/rush-built.vrmxs 26 nodes saved valid hash acd8bd5737733ec0\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene game/rush-built.vrmxs 26 nodes saved valid \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Renderer WebGPU\"",
+          "check" : "find(\"id=renderer\").0.name == \"Renderer WebGPU\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-aoi\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-hana-1\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Editor pid 59169, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-25T192305Z.log",
+        "24: wait id=open-project enabled=true timeout_ms=40000 → found after 1003 ms: button \"Open project\" #open-project [W:VRMXG Editor/0/0/0/0/0/1@4649] (1008 ms)",
+        "25: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":44,\"w\":106,\"x\":2719,\"y\":162},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG (2030 ms)",
+        "26: until find(\"id=project-name\").0.name == \"Project project-w10-level\" → ok (631 ms)",
+        "27: act id=file-name action=set_value value=game/rush-built.vrmxs → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"fi (2258 ms)",
+        "28: act id=open-file action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":52,\"x\":3305,\"y\":171},\"help\":\"Open the scene or sequence named in the file field\",\"id\":\"o (310 ms)",
+        "29: until find(\"id=doc-state\").0.name matches \"^Scene game/rush-built.vrmxs 26 nodes saved valid \" timeout=90000 → ok (1444 ms)",
+        "30: expect find(\"id=renderer\").0.name == \"Renderer WebGPU\" → ok (56 ms)",
+        "31: expect find(\"id=node-aoi\").count == 1 → ok (49 ms)",
+        "32: expect find(\"id=node-hana-1\").count == 1 → ok (61 ms)",
+        "33: shot \"the room\" (218 ms)"
+      ],
+      "message" : null,
+      "ms" : 8875,
+      "notes" : [
+        "shot 1: the room"
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+        "apps/editor-mac/docs/hand-test/results/m5-level-webgpu/shots/r1-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The level's room opens: the set, the doors and stools, Mira, Hana and the three regulars, with no rules yet.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 11,
+      "checks" : [
+        {
+          "actual" : "\"GameRules\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"GameRules\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add gamerules\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add gamerules\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-flags-ordered1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-flags-ordered2\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-flags-ordered3\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-flags-right1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-flags-right2\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-flags-right3\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-flags-tillClosed\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"flags, 7 entries\"",
+          "check" : "find(\"id=prop-flags\").0.name == \"flags, 7 entries\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"any\"",
+          "check" : "find(\"id=prop-lose-test\").0.value == \"any\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lose-of-0\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"timers.clock.done\"",
+          "check" : "find(\"id=prop-lose-of-0-key\").0.value == \"timers.clock.done\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lose-of-1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"counters.mistakes\"",
+          "check" : "find(\"id=prop-lose-of-1-key\").0.value == \"counters.mistakes\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"ge\"",
+          "check" : "find(\"id=prop-lose-of-1-op\").0.value == \"ge\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"2\"",
+          "check" : "find(\"id=prop-lose-of-1-value\").0.value == \"2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"lose of, 2 rows\"",
+          "check" : "find(\"id=prop-lose-of\").0.name == \"lose of, 2 rows\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/rush-built.vrmxs 27 nodes unsaved changes valid hash dbe99bbbcdb44da4\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "38: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (54 ms)",
+        "39: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (59 ms)",
+        "41: keys down → {\"sent\":true} (112 ms)",
+        "42: act surface=app role=menuitem name=\"GameRules\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":583},\"id\":\"_popUpItemAction:\",\"name\":\"GameRules\",\"ref\":\"A/0/0/1/15@999b (85 ms)",
+        "43: until find(\"role=popupbutton name='Node type to add'\").0.value == \"GameRules\" timeout=5000 → ok (673 ms)",
+        "44: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (48 ms)",
+        "45: until find(\"id=undo\").0.name == \"Undo Add gamerules\" timeout=5000 → ok (1040 ms)",
+        "46: act id=prop-flags--newkey action=set_value value=ordered1 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":216,\"x\":4792,\"y\":849},\"help\":\"\",\"id\":\"prop-flags--newkey\",\"name\":\"New key in flags\", (459 ms)",
+        "47: act id=prop-flags--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":48,\"x\":5011,\"y\":849},\"help\":\"\",\"id\":\"prop-flags--addkey\",\"name\":\"Add a key to flags\",\"re (70 ms)",
+        "48: until find(\"id=prop-flags-ordered1\").count == 1 timeout=5000 → ok (998 ms)",
+        "49: act id=prop-flags--newkey action=set_value value=ordered2 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":216,\"x\":4792,\"y\":900},\"help\":\"\",\"id\":\"prop-flags--newkey\",\"name\":\"New key in flags\", (450 ms)",
+        "50: act id=prop-flags--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":48,\"x\":5011,\"y\":900},\"help\":\"\",\"id\":\"prop-flags--addkey\",\"name\":\"Add a key to flags\",\"re (65 ms)",
+        "51: until find(\"id=prop-flags-ordered2\").count == 1 timeout=5000 → ok (1001 ms)",
+        "52: act id=prop-flags--newkey action=set_value value=ordered3 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":216,\"x\":4792,\"y\":947},\"help\":\"\",\"id\":\"prop-flags--newkey\",\"name\":\"New key in flags\", (466 ms)",
+        "53: act id=prop-flags--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":48,\"x\":5011,\"y\":947},\"help\":\"\",\"id\":\"prop-flags--addkey\",\"name\":\"Add a key to flags\",\"re (63 ms)",
+        "54: until find(\"id=prop-flags-ordered3\").count == 1 timeout=5000 → ok (1021 ms)",
+        "55: act id=prop-flags--newkey action=set_value value=right1 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":216,\"x\":4792,\"y\":994},\"help\":\"\",\"id\":\"prop-flags--newkey\",\"name\":\"New key in flags\", (469 ms)",
+        "56: act id=prop-flags--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":48,\"x\":5011,\"y\":994},\"help\":\"\",\"id\":\"prop-flags--addkey\",\"name\":\"Add a key to flags\",\"re (63 ms)",
+        "57: until find(\"id=prop-flags-right1\").count == 1 timeout=5000 → ok (1055 ms)",
+        "58: act id=prop-flags--newkey action=set_value value=right2 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":216,\"x\":4792,\"y\":1041},\"help\":\"\",\"id\":\"prop-flags--newkey\",\"name\":\"New key in flags\" (471 ms)",
+        "59: act id=prop-flags--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":48,\"x\":5011,\"y\":1041},\"help\":\"\",\"id\":\"prop-flags--addkey\",\"name\":\"Add a key to flags\",\"r (66 ms)",
+        "60: until find(\"id=prop-flags-right2\").count == 1 timeout=5000 → ok (1046 ms)",
+        "61: act id=prop-flags--newkey action=set_value value=right3 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":216,\"x\":4792,\"y\":1088},\"help\":\"\",\"id\":\"prop-flags--newkey\",\"name\":\"New key in flags\" (486 ms)",
+        "62: act id=prop-flags--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":48,\"x\":5011,\"y\":1088},\"help\":\"\",\"id\":\"prop-flags--addkey\",\"name\":\"Add a key to flags\",\"r (70 ms)",
+        "63: until find(\"id=prop-flags-right3\").count == 1 timeout=5000 → ok (1102 ms)",
+        "64: act id=prop-flags--newkey action=set_value value=tillClosed → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":216,\"x\":4792,\"y\":1135},\"help\":\"\",\"id\":\"prop-flags--newkey\",\"name\":\"New key in flags\" (480 ms)",
+        "65: act id=prop-flags--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":48,\"x\":5011,\"y\":1135},\"help\":\"\",\"id\":\"prop-flags--addkey\",\"name\":\"Add a key to flags\",\"r (75 ms)",
+        "66: until find(\"id=prop-flags-tillClosed\").count == 1 timeout=5000 → ok (1136 ms)",
+        "67: until find(\"id=prop-flags\").0.name == \"flags, 7 entries\" → ok (72 ms)",
+        "68: act id=prop-lose-test action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":191,\"x\":4868,\"y\":770},\"help\":\"\",\"id\":\"prop-lose-test\",\"name\":\"lose test\",\"ref\":\"W:VRMXG  (67 ms)",
+        "70: keys down → {\"sent\":true} (114 ms)",
+        "71: act surface=app role=menuitem name=\"any\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":191,\"x\":4855,\"y\":817},\"id\":\"_popUpItemAction:\",\"name\":\"any\",\"ref\":\"A/0/0/1/2@78c0\",\"role (88 ms)",
+        "72: until find(\"id=prop-lose-test\").0.value == \"any\" timeout=5000 → ok (1482 ms)",
+        "73: until find(\"id=prop-lose-of-0\").count == 1 timeout=5000 → ok (72 ms)",
+        "75: act id=prop-lose-of-0-key action=set_value value=\"timers.clock.done\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":99,\"x\":4960,\"y\":844},\"help\":\"\",\"id\":\"prop-lose-of-0-key\",\"name\":\"lose of 1 key\",\"ref (484 ms)",
+        "76: until find(\"id=prop-lose-of-0-key\").0.value == \"timers.clock.done\" timeout=5000 → ok (827 ms)",
+        "77: act id=prop-lose-of--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4876,\"y\":954},\"help\":\"\",\"id\":\"prop-lose-of--add\",\"name\":\"Add a row to lose of\",\"r (69 ms)",
+        "78: until find(\"id=prop-lose-of-1\").count == 1 timeout=5000 → ok (899 ms)",
+        "80: act id=prop-lose-of-1-key action=set_value value=\"counters.mistakes\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":99,\"x\":4960,\"y\":999},\"help\":\"\",\"id\":\"prop-lose-of-1-key\",\"name\":\"lose of 2 key\",\"ref (475 ms)",
+        "81: until find(\"id=prop-lose-of-1-key\").0.value == \"counters.mistakes\" timeout=5000 → ok (796 ms)",
+        "82: act id=prop-lose-of-1-op action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":99,\"x\":4960,\"y\":1029},\"help\":\"\",\"id\":\"prop-lose-of-1-op\",\"name\":\"lose of 2 op\",\"ref\":\"W: (82 ms)",
+        "84: keys down → {\"sent\":true} (111 ms)",
+        "85: act surface=app role=menuitem name=\"ge\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":99,\"x\":4947,\"y\":1101},\"id\":\"_popUpItemAction:\",\"name\":\"ge\",\"ref\":\"A/0/0/1/3@989e\",\"role\" (87 ms)",
+        "86: until find(\"id=prop-lose-of-1-op\").0.value == \"ge\" timeout=5000 → ok (1384 ms)",
+        "87: act id=prop-lose-of-1-value action=set_value value=\"2\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":85,\"x\":4974,\"y\":1079},\"help\":\"\",\"id\":\"prop-lose-of-1-value\",\"name\":\"lose of 2 value\" (456 ms)",
+        "88: until find(\"id=prop-lose-of-1-value\").0.value == \"2\" timeout=5000 → ok (907 ms)",
+        "89: expect find(\"id=prop-lose-of\").0.name == \"lose of, 2 rows\" → ok (76 ms)",
+        "90: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (53 ms)"
+      ],
+      "message" : null,
+      "ms" : 24082,
+      "notes" : [
+
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The rules: a GameRules node with its seven flags (a map, key by key) and its lose condition (any of: the clock done, two wrong orders), built in the condition's menus and rows.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 12,
+      "checks" : [
+        {
+          "actual" : "\"GameCounter\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"GameCounter\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add gamecounter\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add gamecounter\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"gamerules\"",
+          "check" : "find(\"id=field-parent\").0.value == \"gamerules\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"score\"",
+          "check" : "find(\"id=prop-key\").0.value == \"score\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Score\"",
+          "check" : "find(\"id=prop-label\").0.value == \"Score\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"GameCounter\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"GameCounter\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add gamecounter-2\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add gamecounter-2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"gamerules\"",
+          "check" : "find(\"id=field-parent\").0.value == \"gamerules\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"served\"",
+          "check" : "find(\"id=prop-key\").0.value == \"served\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Served\"",
+          "check" : "find(\"id=prop-label\").0.value == \"Served\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"3\"",
+          "check" : "find(\"id=prop-max\").0.value == \"3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"GameCounter\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"GameCounter\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add gamecounter-3\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add gamecounter-3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"gamerules\"",
+          "check" : "find(\"id=field-parent\").0.value == \"gamerules\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"mistakes\"",
+          "check" : "find(\"id=prop-key\").0.value == \"mistakes\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Wrong orders\"",
+          "check" : "find(\"id=prop-label\").0.value == \"Wrong orders\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"GameTimer\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"GameTimer\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add gametimer\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add gametimer\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"gamerules\"",
+          "check" : "find(\"id=field-parent\").0.value == \"gamerules\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"clock\"",
+          "check" : "find(\"id=prop-key\").0.value == \"clock\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Until ten o'clock\"",
+          "check" : "find(\"id=prop-label\").0.value == \"Until ten o'clock\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"240\"",
+          "check" : "find(\"id=prop-seconds\").0.value == \"240\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/rush-built.vrmxs 31 nodes unsaved changes valid hash 287073e0abd054ad\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "95: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (59 ms)",
+        "96: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (72 ms)",
+        "98: keys down → {\"sent\":true} (112 ms)",
+        "99: act surface=app role=menuitem name=\"GameCounter\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":247},\"id\":\"_popUpItemAction:\",\"name\":\"GameCounter\",\"ref\":\"A/0/0/1/16@7e (71 ms)",
+        "100: until find(\"role=popupbutton name='Node type to add'\").0.value == \"GameCounter\" timeout=5000 → ok (703 ms)",
+        "101: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (55 ms)",
+        "102: until find(\"id=undo\").0.name == \"Undo Add gamecounter\" timeout=5000 → ok (1034 ms)",
+        "103: act id=field-parent action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":150,\"x\":4909,\"y\":387},\"help\":\"\",\"id\":\"field-parent\",\"name\":\"Parent\",\"ref\":\"W:VRMXG Edito (55 ms)",
+        "105: keys down → {\"sent\":true} (112 ms)",
+        "106: act surface=app role=menuitem name=\"gamerules\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":150,\"x\":4896,\"y\":1010},\"id\":\"_popUpItemAction:\",\"name\":\"gamerules\",\"ref\":\"A/0/0/1/27@e67 (78 ms)",
+        "107: until find(\"id=field-parent\").0.value == \"gamerules\" timeout=5000 → ok (1707 ms)",
+        "108: act id=prop-key action=set_value value=\"score\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":636},\"help\":\"\",\"id\":\"prop-key\",\"name\":\"key\",\"ref\":\"W:VRMXG Editor/0 (459 ms)",
+        "109: until find(\"id=prop-key\").0.value == \"score\" timeout=5000 → ok (883 ms)",
+        "110: act id=prop-label action=set_value value=\"Score\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":765},\"help\":\"\",\"id\":\"prop-label\",\"name\":\"label\",\"ref\":\"W:VRMXG Edit (477 ms)",
+        "111: until find(\"id=prop-label\").0.value == \"Score\" timeout=5000 → ok (837 ms)",
+        "112: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (70 ms)",
+        "113: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (66 ms)",
+        "115: keys down → {\"sent\":true} (109 ms)",
+        "116: act surface=app role=menuitem name=\"GameCounter\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":223},\"id\":\"_popUpItemAction:\",\"name\":\"GameCounter\",\"ref\":\"A/0/0/1/16@7e (73 ms)",
+        "117: until find(\"role=popupbutton name='Node type to add'\").0.value == \"GameCounter\" timeout=5000 → ok (58 ms)",
+        "118: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (66 ms)",
+        "119: until find(\"id=undo\").0.name == \"Undo Add gamecounter-2\" timeout=5000 → ok (1022 ms)",
+        "120: act id=field-parent action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":150,\"x\":4909,\"y\":392},\"help\":\"\",\"id\":\"field-parent\",\"name\":\"Parent\",\"ref\":\"W:VRMXG Edito (66 ms)",
+        "122: keys down → {\"sent\":true} (111 ms)",
+        "123: act surface=app role=menuitem name=\"gamerules\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":150,\"x\":4896,\"y\":1015},\"id\":\"_popUpItemAction:\",\"name\":\"gamerules\",\"ref\":\"A/0/0/1/27@e67 (80 ms)",
+        "124: until find(\"id=field-parent\").0.value == \"gamerules\" timeout=5000 → ok (1328 ms)",
+        "125: act id=prop-key action=set_value value=\"served\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":642},\"help\":\"\",\"id\":\"prop-key\",\"name\":\"key\",\"ref\":\"W:VRMXG Editor/0 (452 ms)",
+        "126: until find(\"id=prop-key\").0.value == \"served\" timeout=5000 → ok (817 ms)",
+        "127: act id=prop-label action=set_value value=\"Served\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":770},\"help\":\"\",\"id\":\"prop-label\",\"name\":\"label\",\"ref\":\"W:VRMXG Edit (482 ms)",
+        "128: until find(\"id=prop-label\").0.value == \"Served\" timeout=5000 → ok (818 ms)",
+        "129: act id=prop-max action=set_value value=\"1+2\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":136,\"x\":4923,\"y\":738},\"help\":\"\",\"id\":\"prop-max\",\"name\":\"max\",\"ref\":\"W:VRMXG Editor/0 (486 ms)",
+        "130: until find(\"id=prop-max\").0.value == \"3\" timeout=5000 → ok (817 ms)",
+        "131: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (72 ms)",
+        "132: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (68 ms)",
+        "134: keys down → {\"sent\":true} (115 ms)",
+        "135: act surface=app role=menuitem name=\"GameCounter\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":223},\"id\":\"_popUpItemAction:\",\"name\":\"GameCounter\",\"ref\":\"A/0/0/1/16@7e (78 ms)",
+        "136: until find(\"role=popupbutton name='Node type to add'\").0.value == \"GameCounter\" timeout=5000 → ok (58 ms)",
+        "137: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (61 ms)",
+        "138: until find(\"id=undo\").0.name == \"Undo Add gamecounter-3\" timeout=5000 → ok (1014 ms)",
+        "139: act id=field-parent action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":150,\"x\":4909,\"y\":392},\"help\":\"\",\"id\":\"field-parent\",\"name\":\"Parent\",\"ref\":\"W:VRMXG Edito (68 ms)",
+        "141: keys down → {\"sent\":true} (112 ms)",
+        "142: act surface=app role=menuitem name=\"gamerules\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":150,\"x\":4896,\"y\":1015},\"id\":\"_popUpItemAction:\",\"name\":\"gamerules\",\"ref\":\"A/0/0/1/27@e67 (77 ms)",
+        "143: until find(\"id=field-parent\").0.value == \"gamerules\" timeout=5000 → ok (1673 ms)",
+        "144: act id=prop-key action=set_value value=\"mistakes\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":642},\"help\":\"\",\"id\":\"prop-key\",\"name\":\"key\",\"ref\":\"W:VRMXG Editor/0 (465 ms)",
+        "145: until find(\"id=prop-key\").0.value == \"mistakes\" timeout=5000 → ok (863 ms)",
+        "146: act id=prop-label action=set_value value=\"Wrong orders\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":770},\"help\":\"\",\"id\":\"prop-label\",\"name\":\"label\",\"ref\":\"W:VRMXG Edit (482 ms)",
+        "147: until find(\"id=prop-label\").0.value == \"Wrong orders\" timeout=5000 → ok (842 ms)",
+        "148: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (63 ms)",
+        "149: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (55 ms)",
+        "151: keys down → {\"sent\":true} (111 ms)",
+        "152: act surface=app role=menuitem name=\"GameTimer\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":247},\"id\":\"_popUpItemAction:\",\"name\":\"GameTimer\",\"ref\":\"A/0/0/1/17@7926 (71 ms)",
+        "153: until find(\"role=popupbutton name='Node type to add'\").0.value == \"GameTimer\" timeout=5000 → ok (681 ms)",
+        "154: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (51 ms)",
+        "155: until find(\"id=undo\").0.name == \"Undo Add gametimer\" timeout=5000 → ok (862 ms)",
+        "156: act id=field-parent action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":150,\"x\":4909,\"y\":420},\"help\":\"\",\"id\":\"field-parent\",\"name\":\"Parent\",\"ref\":\"W:VRMXG Edito (55 ms)",
+        "158: keys down → {\"sent\":true} (110 ms)",
+        "159: act surface=app role=menuitem name=\"gamerules\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":150,\"x\":4896,\"y\":1044},\"id\":\"_popUpItemAction:\",\"name\":\"gamerules\",\"ref\":\"A/0/0/1/27@e67 (84 ms)",
+        "160: until find(\"id=field-parent\").0.value == \"gamerules\" timeout=5000 → ok (1318 ms)",
+        "161: act id=prop-key action=set_value value=\"clock\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":670},\"help\":\"\",\"id\":\"prop-key\",\"name\":\"key\",\"ref\":\"W:VRMXG Editor/0 (471 ms)",
+        "162: until find(\"id=prop-key\").0.value == \"clock\" timeout=5000 → ok (862 ms)",
+        "163: act id=prop-label action=set_value value=\"Until ten o'clock\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":759},\"help\":\"\",\"id\":\"prop-label\",\"name\":\"label\",\"ref\":\"W:VRMXG Edit (479 ms)",
+        "164: until find(\"id=prop-label\").0.value == \"Until ten o'clock\" timeout=5000 → ok (1118 ms)",
+        "165: act id=prop-seconds action=set_value value=\"4*60\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":136,\"x\":4923,\"y\":702},\"help\":\"\",\"id\":\"prop-seconds\",\"name\":\"seconds\",\"ref\":\"W:VRMXG  (549 ms)",
+        "166: until find(\"id=prop-seconds\").0.value == \"240\" timeout=5000 → ok (784 ms)",
+        "167: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (65 ms)"
+      ],
+      "message" : null,
+      "ms" : 30353,
+      "notes" : [
+
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The counters and the clock under the rules: keys, labels, a maximum typed as arithmetic, the clock's 240 seconds typed as 4*60.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 13,
+      "checks" : [
+        {
+          "actual" : "\"GameTimer\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"GameTimer\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add gametimer-2\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add gametimer-2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"gamerules\"",
+          "check" : "find(\"id=field-parent\").0.value == \"gamerules\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=prop-autostart\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-gametimer-3\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Duplicate gametimer-2\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Duplicate gametimer-2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-gametimer-4\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Duplicate gametimer-3\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Duplicate gametimer-3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Node gametimer-2\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node gametimer-2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"3 nodes: gametimer-2, gametimer-3, gametimer-4\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"3 nodes: gametimer-2, gametimer-3, gametimer-4\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Set seconds on 3 nodes\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Set seconds on 3 nodes\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"6\"",
+          "check" : "find(\"id=prop-seconds\").0.value == \"6\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Node gametimer-2\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node gametimer-2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"brew-1\"",
+          "check" : "find(\"id=prop-key\").0.value == \"brew-1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Node gametimer-3\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node gametimer-3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"brew-2\"",
+          "check" : "find(\"id=prop-key\").0.value == \"brew-2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Node gametimer-4\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node gametimer-4\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"brew-3\"",
+          "check" : "find(\"id=prop-key\").0.value == \"brew-3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/rush-built.vrmxs 34 nodes unsaved changes valid hash 932d8c577de33681\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "172: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (57 ms)",
+        "173: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (65 ms)",
+        "175: keys down → {\"sent\":true} (108 ms)",
+        "176: act surface=app role=menuitem name=\"GameTimer\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":223},\"id\":\"_popUpItemAction:\",\"name\":\"GameTimer\",\"ref\":\"A/0/0/1/17@7926 (84 ms)",
+        "177: until find(\"role=popupbutton name='Node type to add'\").0.value == \"GameTimer\" timeout=5000 → ok (60 ms)",
+        "178: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (59 ms)",
+        "179: until find(\"id=undo\").0.name == \"Undo Add gametimer-2\" timeout=5000 → ok (917 ms)",
+        "180: act id=field-parent action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":150,\"x\":4909,\"y\":425},\"help\":\"\",\"id\":\"field-parent\",\"name\":\"Parent\",\"ref\":\"W:VRMXG Edito (57 ms)",
+        "182: keys down → {\"sent\":true} (111 ms)",
+        "183: act surface=app role=menuitem name=\"gamerules\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":150,\"x\":4896,\"y\":1049},\"id\":\"_popUpItemAction:\",\"name\":\"gamerules\",\"ref\":\"A/0/0/1/27@e67 (69 ms)",
+        "184: until find(\"id=field-parent\").0.value == \"gamerules\" timeout=5000 → ok (1215 ms)",
+        "185: act id=prop-autostart action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":13,\"w\":150,\"x\":4907,\"y\":743},\"help\":\"\",\"id\":\"prop-autostart\",\"name\":\"autostart\",\"ref\":\"W:VRMXG  (64 ms)",
+        "186: until find(\"id=prop-autostart\").0.value == \"0\" timeout=5000 → ok (914 ms)",
+        "187: act id=duplicate action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":76,\"x\":2813,\"y\":221},\"help\":\"Duplicate (⌘D)\",\"id\":\"duplicate\",\"name\":\"Duplicate selectio (64 ms)",
+        "188: until find(\"id=node-gametimer-3\").count == 1 timeout=5000 → ok (948 ms)",
+        "189: expect find(\"id=undo\").0.name == \"Undo Duplicate gametimer-2\" → ok (60 ms)",
+        "190: act id=duplicate action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":76,\"x\":2813,\"y\":221},\"help\":\"Duplicate (⌘D)\",\"id\":\"duplicate\",\"name\":\"Duplicate selectio (65 ms)",
+        "191: until find(\"id=node-gametimer-4\").count == 1 timeout=5000 → ok (1079 ms)",
+        "192: expect find(\"id=undo\").0.name == \"Undo Duplicate gametimer-3\" → ok (40 ms)",
+        "193: act id=node-gametimer-2 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":2609,\"y\":1045},\"help\":\"\",\"id\":\"node-gametimer-2\",\"name\":\"gametimer-2, GameTimer\" (73 ms)",
+        "194: until find(\"id=inspector-id\").0.name == \"Node gametimer-2\" → ok (73 ms)",
+        "195: act id=inspector-also action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":152,\"x\":4784,\"y\":364},\"help\":\"Add a node to the selection (as Shift-click does), to edit (69 ms)",
+        "197: keys down → {\"sent\":true} (113 ms)",
+        "198: act surface=app role=menuitem name=\"gametimer-3\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":152,\"x\":4771,\"y\":1131},\"id\":\"_popUpItemAction:\",\"name\":\"gametimer-3\",\"ref\":\"A/0/0/1/32@9 (88 ms)",
+        "200: act id=inspector-also action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":152,\"x\":4784,\"y\":330},\"help\":\"Add a node to the selection (as Shift-click does), to edit (76 ms)",
+        "202: keys down → {\"sent\":true} (108 ms)",
+        "203: act surface=app role=menuitem name=\"gametimer-4\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":152,\"x\":4771,\"y\":1098},\"id\":\"_popUpItemAction:\",\"name\":\"gametimer-4\",\"ref\":\"A/0/0/1/32@e (81 ms)",
+        "205: until find(\"id=inspector-id\").0.name == \"3 nodes: gametimer-2, gametimer-3, gametimer-4\" timeout=5000 → ok (436 ms)",
+        "206: act id=prop-seconds action=set_value value=\"2*3\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":136,\"x\":4923,\"y\":615},\"help\":\"\",\"id\":\"prop-seconds\",\"name\":\"seconds\",\"ref\":\"W:VRMXG  (476 ms)",
+        "207: until find(\"id=undo\").0.name == \"Undo Set seconds on 3 nodes\" timeout=5000 → ok (880 ms)",
+        "208: expect find(\"id=prop-seconds\").0.value == \"6\" → ok (77 ms)",
+        "209: act id=node-gametimer-2 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":2609,\"y\":1045},\"help\":\"\",\"id\":\"node-gametimer-2\",\"name\":\"gametimer-2, GameTimer\" (54 ms)",
+        "210: until find(\"id=inspector-id\").0.name == \"Node gametimer-2\" → ok (145 ms)",
+        "211: act id=prop-key action=set_value value=\"brew-1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":675},\"help\":\"\",\"id\":\"prop-key\",\"name\":\"key\",\"ref\":\"W:VRMXG Editor/0 (473 ms)",
+        "212: until find(\"id=prop-key\").0.value == \"brew-1\" timeout=5000 → ok (851 ms)",
+        "213: act id=node-gametimer-3 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":2609,\"y\":1069},\"help\":\"\",\"id\":\"node-gametimer-3\",\"name\":\"gametimer-3, GameTimer\" (72 ms)",
+        "214: until find(\"id=inspector-id\").0.name == \"Node gametimer-3\" → ok (75 ms)",
+        "215: act id=prop-key action=set_value value=\"brew-2\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":675},\"help\":\"\",\"id\":\"prop-key\",\"name\":\"key\",\"ref\":\"W:VRMXG Editor/0 (474 ms)",
+        "216: until find(\"id=prop-key\").0.value == \"brew-2\" timeout=5000 → ok (965 ms)",
+        "217: act id=node-gametimer-4 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":2609,\"y\":1093},\"help\":\"\",\"id\":\"node-gametimer-4\",\"name\":\"gametimer-4, GameTimer\" (89 ms)",
+        "218: until find(\"id=inspector-id\").0.name == \"Node gametimer-4\" → ok (148 ms)",
+        "219: act id=prop-key action=set_value value=\"brew-3\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":675},\"help\":\"\",\"id\":\"prop-key\",\"name\":\"key\",\"ref\":\"W:VRMXG Editor/0 (580 ms)",
+        "220: until find(\"id=prop-key\").0.value == \"brew-3\" timeout=5000 → ok (1048 ms)",
+        "221: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (78 ms)"
+      ],
+      "message" : null,
+      "ms" : 15768,
+      "notes" : [
+
+      ],
+      "row" : 4,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Three brew timers: one made, Duplicated twice, then all three selected and their seconds typed once for all (one undo step); each given its key.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 14,
+      "checks" : [
+        {
+          "actual" : "\"GameGoal\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"GameGoal\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add gamegoal\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add gamegoal\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"gamerules\"",
+          "check" : "find(\"id=field-parent\").0.value == \"gamerules\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"serve\"",
+          "check" : "find(\"id=prop-key\").0.value == \"serve\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Serve the three regulars\"",
+          "check" : "find(\"id=prop-text\").0.value == \"Serve the three regulars\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"all\"",
+          "check" : "find(\"id=prop-when-test\").0.value == \"all\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"state\"",
+          "check" : "find(\"id=prop-when-test\").0.value == \"state\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"counters.served\"",
+          "check" : "find(\"id=prop-when-key\").0.value == \"counters.served\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"ge\"",
+          "check" : "find(\"id=prop-when-op\").0.value == \"ge\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"3\"",
+          "check" : "find(\"id=prop-when-value\").0.value == \"3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"GameGoal\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"GameGoal\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add gamegoal-2\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add gamegoal-2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"gamerules\"",
+          "check" : "find(\"id=field-parent\").0.value == \"gamerules\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"close-till\"",
+          "check" : "find(\"id=prop-key\").0.value == \"close-till\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Close the till\"",
+          "check" : "find(\"id=prop-text\").0.value == \"Close the till\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"all\"",
+          "check" : "find(\"id=prop-when-test\").0.value == \"all\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"state\"",
+          "check" : "find(\"id=prop-when-test\").0.value == \"state\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"flags.tillClosed\"",
+          "check" : "find(\"id=prop-when-key\").0.value == \"flags.tillClosed\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Checkpoint\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"Checkpoint\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add checkpoint\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add checkpoint\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"gamerules\"",
+          "check" : "find(\"id=field-parent\").0.value == \"gamerules\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"first-order\"",
+          "check" : "find(\"id=prop-slot\").0.value == \"first-order\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"First order served\"",
+          "check" : "find(\"id=prop-label\").0.value == \"First order served\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"all\"",
+          "check" : "find(\"id=prop-when-test\").0.value == \"all\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"state\"",
+          "check" : "find(\"id=prop-when-test\").0.value == \"state\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"counters.served\"",
+          "check" : "find(\"id=prop-when-key\").0.value == \"counters.served\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"ge\"",
+          "check" : "find(\"id=prop-when-op\").0.value == \"ge\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=prop-when-value\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/rush-built.vrmxs 37 nodes unsaved changes valid hash 917cb56822a66658\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "226: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (111 ms)",
+        "227: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (68 ms)",
+        "229: keys down → {\"sent\":true} (115 ms)",
+        "230: act surface=app role=menuitem name=\"GameGoal\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":247},\"id\":\"_popUpItemAction:\",\"name\":\"GameGoal\",\"ref\":\"A/0/0/1/18@fd9b\" (85 ms)",
+        "231: until find(\"role=popupbutton name='Node type to add'\").0.value == \"GameGoal\" timeout=5000 → ok (695 ms)",
+        "232: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (65 ms)",
+        "233: until find(\"id=undo\").0.name == \"Undo Add gamegoal\" timeout=5000 → ok (1055 ms)",
+        "234: act id=field-parent action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":150,\"x\":4909,\"y\":403},\"help\":\"\",\"id\":\"field-parent\",\"name\":\"Parent\",\"ref\":\"W:VRMXG Edito (71 ms)",
+        "236: keys down → {\"sent\":true} (109 ms)",
+        "237: act surface=app role=menuitem name=\"gamerules\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":150,\"x\":4896,\"y\":1027},\"id\":\"_popUpItemAction:\",\"name\":\"gamerules\",\"ref\":\"A/0/0/1/27@e67 (85 ms)",
+        "238: until find(\"id=field-parent\").0.value == \"gamerules\" timeout=5000 → ok (1617 ms)",
+        "239: act id=prop-key action=set_value value=\"serve\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":653},\"help\":\"\",\"id\":\"prop-key\",\"name\":\"key\",\"ref\":\"W:VRMXG Editor/0 (529 ms)",
+        "240: until find(\"id=prop-key\").0.value == \"serve\" timeout=5000 → ok (907 ms)",
+        "241: act id=prop-text action=set_value value=\"Serve the three regulars\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":685},\"help\":\"\",\"id\":\"prop-text\",\"name\":\"text\",\"ref\":\"W:VRMXG Editor (510 ms)",
+        "242: until find(\"id=prop-text\").0.value == \"Serve the three regulars\" timeout=5000 → ok (868 ms)",
+        "243: act id=prop-when-test action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":191,\"x\":4868,\"y\":738},\"help\":\"\",\"id\":\"prop-when-test\",\"name\":\"when test\",\"ref\":\"W:VRMXG  (76 ms)",
+        "245: keys down → {\"sent\":true} (107 ms)",
+        "246: act surface=app role=menuitem name=\"all\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":191,\"x\":4855,\"y\":761},\"id\":\"_popUpItemAction:\",\"name\":\"all\",\"ref\":\"A/0/0/1/1@d689\",\"role (76 ms)",
+        "247: until find(\"id=prop-when-test\").0.value == \"all\" timeout=5000 → ok (1611 ms)",
+        "248: act id=prop-when-test action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":191,\"x\":4868,\"y\":742},\"help\":\"\",\"id\":\"prop-when-test\",\"name\":\"when test\",\"ref\":\"W:VRMXG  (100 ms)",
+        "250: keys down → {\"sent\":true} (115 ms)",
+        "251: act surface=app role=menuitem name=\"state\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":191,\"x\":4855,\"y\":717},\"id\":\"_popUpItemAction:\",\"name\":\"state\",\"ref\":\"A/0/0/1/0@8955\",\"ro (81 ms)",
+        "252: until find(\"id=prop-when-test\").0.value == \"state\" timeout=5000 → ok (1773 ms)",
+        "254: act id=prop-when-key action=set_value value=\"counters.served\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":191,\"x\":4868,\"y\":767},\"help\":\"\",\"id\":\"prop-when-key\",\"name\":\"when key\",\"ref\":\"W:VRMX (524 ms)",
+        "255: until find(\"id=prop-when-key\").0.value == \"counters.served\" timeout=5000 → ok (1064 ms)",
+        "256: act id=prop-when-op action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":191,\"x\":4868,\"y\":797},\"help\":\"\",\"id\":\"prop-when-op\",\"name\":\"when op\",\"ref\":\"W:VRMXG Edit (74 ms)",
+        "258: keys down → {\"sent\":true} (114 ms)",
+        "259: act surface=app role=menuitem name=\"ge\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":191,\"x\":4855,\"y\":868},\"id\":\"_popUpItemAction:\",\"name\":\"ge\",\"ref\":\"A/0/0/1/3@989e\",\"role\" (102 ms)",
+        "260: until find(\"id=prop-when-op\").0.value == \"ge\" timeout=5000 → ok (1784 ms)",
+        "261: act id=prop-when-value action=set_value value=\"3\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":177,\"x\":4882,\"y\":847},\"help\":\"\",\"id\":\"prop-when-value\",\"name\":\"when value\",\"ref\":\"W: (602 ms)",
+        "262: until find(\"id=prop-when-value\").0.value == \"3\" timeout=5000 → ok (1323 ms)",
+        "263: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (180 ms)",
+        "264: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (150 ms)",
+        "266: keys down → {\"sent\":true} (116 ms)",
+        "267: act surface=app role=menuitem name=\"GameGoal\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":223},\"id\":\"_popUpItemAction:\",\"name\":\"GameGoal\",\"ref\":\"A/0/0/1/18@fd9b\" (147 ms)",
+        "268: until find(\"role=popupbutton name='Node type to add'\").0.value == \"GameGoal\" timeout=5000 → ok (97 ms)",
+        "269: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (106 ms)",
+        "270: until find(\"id=undo\").0.name == \"Undo Add gamegoal-2\" timeout=5000 → ok (1323 ms)",
+        "271: act id=field-parent action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":150,\"x\":4909,\"y\":409},\"help\":\"\",\"id\":\"field-parent\",\"name\":\"Parent\",\"ref\":\"W:VRMXG Edito (105 ms)",
+        "273: keys down → {\"sent\":true} (113 ms)",
+        "274: act surface=app role=menuitem name=\"gamerules\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":150,\"x\":4896,\"y\":1032},\"id\":\"_popUpItemAction:\",\"name\":\"gamerules\",\"ref\":\"A/0/0/1/27@e67 (247 ms)",
+        "275: until find(\"id=field-parent\").0.value == \"gamerules\" timeout=5000 → ok (1572 ms)",
+        "276: act id=prop-key action=set_value value=\"close-till\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":658},\"help\":\"\",\"id\":\"prop-key\",\"name\":\"key\",\"ref\":\"W:VRMXG Editor/0 (500 ms)",
+        "277: until find(\"id=prop-key\").0.value == \"close-till\" timeout=5000 → ok (972 ms)",
+        "278: act id=prop-text action=set_value value=\"Close the till\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":691},\"help\":\"\",\"id\":\"prop-text\",\"name\":\"text\",\"ref\":\"W:VRMXG Editor (503 ms)",
+        "279: until find(\"id=prop-text\").0.value == \"Close the till\" timeout=5000 → ok (878 ms)",
+        "280: act id=prop-when-test action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":191,\"x\":4868,\"y\":743},\"help\":\"\",\"id\":\"prop-when-test\",\"name\":\"when test\",\"ref\":\"W:VRMXG  (78 ms)",
+        "282: keys down → {\"sent\":true} (112 ms)",
+        "283: act surface=app role=menuitem name=\"all\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":191,\"x\":4855,\"y\":766},\"id\":\"_popUpItemAction:\",\"name\":\"all\",\"ref\":\"A/0/0/1/1@d689\",\"role (98 ms)",
+        "284: until find(\"id=prop-when-test\").0.value == \"all\" timeout=5000 → ok (1626 ms)",
+        "285: act id=prop-when-test action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":191,\"x\":4868,\"y\":747},\"help\":\"\",\"id\":\"prop-when-test\",\"name\":\"when test\",\"ref\":\"W:VRMXG  (166 ms)",
+        "287: keys down → {\"sent\":true} (115 ms)",
+        "288: act surface=app role=menuitem name=\"state\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":191,\"x\":4855,\"y\":722},\"id\":\"_popUpItemAction:\",\"name\":\"state\",\"ref\":\"A/0/0/1/0@8955\",\"ro (172 ms)",
+        "289: until find(\"id=prop-when-test\").0.value == \"state\" timeout=5000 → ok (1664 ms)",
+        "291: act id=prop-when-key action=set_value value=\"flags.tillClosed\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":191,\"x\":4868,\"y\":772},\"help\":\"\",\"id\":\"prop-when-key\",\"name\":\"when key\",\"ref\":\"W:VRMX (631 ms)",
+        "292: until find(\"id=prop-when-key\").0.value == \"flags.tillClosed\" timeout=5000 → ok (1003 ms)",
+        "293: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (79 ms)",
+        "294: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (83 ms)",
+        "296: keys down → {\"sent\":true} (112 ms)",
+        "297: act surface=app role=menuitem name=\"Checkpoint\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":247},\"id\":\"_popUpItemAction:\",\"name\":\"Checkpoint\",\"ref\":\"A/0/0/1/19@e9d (116 ms)",
+        "298: until find(\"role=popupbutton name='Node type to add'\").0.value == \"Checkpoint\" timeout=5000 → ok (457 ms)",
+        "299: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (75 ms)",
+        "300: until find(\"id=undo\").0.name == \"Undo Add checkpoint\" timeout=5000 → ok (1237 ms)",
+        "301: act id=field-parent action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":150,\"x\":4909,\"y\":403},\"help\":\"\",\"id\":\"field-parent\",\"name\":\"Parent\",\"ref\":\"W:VRMXG Edito (115 ms)",
+        "303: keys down → {\"sent\":true} (120 ms)",
+        "304: act surface=app role=menuitem name=\"gamerules\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":150,\"x\":4896,\"y\":1027},\"id\":\"_popUpItemAction:\",\"name\":\"gamerules\",\"ref\":\"A/0/0/1/27@e67 (131 ms)",
+        "305: until find(\"id=field-parent\").0.value == \"gamerules\" timeout=5000 → ok (1838 ms)",
+        "306: act id=prop-slot action=set_value value=\"first-order\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":653},\"help\":\"\",\"id\":\"prop-slot\",\"name\":\"slot\",\"ref\":\"W:VRMXG Editor (590 ms)",
+        "307: until find(\"id=prop-slot\").0.value == \"first-order\" timeout=5000 → ok (1115 ms)",
+        "308: act id=prop-label action=set_value value=\"First order served\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":789},\"help\":\"\",\"id\":\"prop-label\",\"name\":\"label\",\"ref\":\"W:VRMXG Edit (517 ms)",
+        "309: until find(\"id=prop-label\").0.value == \"First order served\" timeout=5000 → ok (1079 ms)",
+        "310: act id=prop-when-test action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":191,\"x\":4868,\"y\":706},\"help\":\"\",\"id\":\"prop-when-test\",\"name\":\"when test\",\"ref\":\"W:VRMXG  (98 ms)",
+        "312: keys down → {\"sent\":true} (110 ms)",
+        "313: act surface=app role=menuitem name=\"all\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":191,\"x\":4855,\"y\":729},\"id\":\"_popUpItemAction:\",\"name\":\"all\",\"ref\":\"A/0/0/1/1@d689\",\"role (137 ms)",
+        "314: until find(\"id=prop-when-test\").0.value == \"all\" timeout=5000 → ok (1940 ms)",
+        "315: act id=prop-when-test action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":191,\"x\":4868,\"y\":710},\"help\":\"\",\"id\":\"prop-when-test\",\"name\":\"when test\",\"ref\":\"W:VRMXG  (110 ms)",
+        "317: keys down → {\"sent\":true} (113 ms)",
+        "318: act surface=app role=menuitem name=\"state\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":191,\"x\":4855,\"y\":685},\"id\":\"_popUpItemAction:\",\"name\":\"state\",\"ref\":\"A/0/0/1/0@8955\",\"ro (101 ms)",
+        "319: until find(\"id=prop-when-test\").0.value == \"state\" timeout=5000 → ok (1575 ms)",
+        "321: act id=prop-when-key action=set_value value=\"counters.served\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":191,\"x\":4868,\"y\":735},\"help\":\"\",\"id\":\"prop-when-key\",\"name\":\"when key\",\"ref\":\"W:VRMX (508 ms)",
+        "322: until find(\"id=prop-when-key\").0.value == \"counters.served\" timeout=5000 → ok (1035 ms)",
+        "323: act id=prop-when-op action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":191,\"x\":4868,\"y\":765},\"help\":\"\",\"id\":\"prop-when-op\",\"name\":\"when op\",\"ref\":\"W:VRMXG Edit (88 ms)",
+        "325: keys down → {\"sent\":true} (114 ms)",
+        "326: act surface=app role=menuitem name=\"ge\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":191,\"x\":4855,\"y\":836},\"id\":\"_popUpItemAction:\",\"name\":\"ge\",\"ref\":\"A/0/0/1/3@989e\",\"role\" (92 ms)",
+        "327: until find(\"id=prop-when-op\").0.value == \"ge\" timeout=5000 → ok (1725 ms)",
+        "328: act id=prop-when-value action=set_value value=\"1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":177,\"x\":4882,\"y\":815},\"help\":\"\",\"id\":\"prop-when-value\",\"name\":\"when value\",\"ref\":\"W: (556 ms)",
+        "329: until find(\"id=prop-when-value\").0.value == \"1\" timeout=5000 → ok (1086 ms)",
+        "330: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (90 ms)"
+      ],
+      "message" : null,
+      "ms" : 52466,
+      "notes" : [
+
+      ],
+      "row" : 5,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The two goals in order and the checkpoint, each with its condition built in the condition's fields.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 15,
+      "checks" : [
+        {
+          "actual" : "\"Area\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"Area\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add area\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add area\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1.1\"",
+          "check" : "find(\"id=prop-size-x\").0.value == \"1.1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"2\"",
+          "check" : "find(\"id=prop-size-y\").0.value == \"2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1.8\"",
+          "check" : "find(\"id=prop-size-z\").0.value == \"1.8\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-area-2\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-area-3\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"3 nodes: area, area-2, area-3\"",
+          "check" : "find(\"id=inspector-id\").0.name matches \"^3 nodes: \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"size X\"",
+          "check" : "find(\"id=prop-size-x\").0.name != \"size X (mixed values)\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1.8\"",
+          "check" : "find(\"id=prop-size-z\").0.value == \"1.8\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Node area\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node area\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Table 1\"",
+          "check" : "find(\"id=field-name\").0.value == \"Table 1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"-1.45\"",
+          "check" : "find(\"id=pos-x\").0.value == \"-1.45\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=pos-y\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=pos-z\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Node area-2\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node area-2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Table 2\"",
+          "check" : "find(\"id=field-name\").0.value == \"Table 2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1.45\"",
+          "check" : "find(\"id=pos-x\").0.value == \"1.45\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=pos-y\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=pos-z\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Node area-3\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node area-3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Table 3\"",
+          "check" : "find(\"id=field-name\").0.value == \"Table 3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1.45\"",
+          "check" : "find(\"id=pos-x\").0.value == \"1.45\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=pos-y\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"-2\"",
+          "check" : "find(\"id=pos-z\").0.value == \"-2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/rush-built.vrmxs 40 nodes unsaved changes valid hash e7892a2b63ee8b8d\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "335: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (82 ms)",
+        "336: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (100 ms)",
+        "338: keys down → {\"sent\":true} (109 ms)",
+        "339: act surface=app role=menuitem name=\"Area\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":55},\"id\":\"_popUpItemAction:\",\"name\":\"Area\",\"ref\":\"A/0/0/1/12@e8da\",\"rol (102 ms)",
+        "340: until find(\"role=popupbutton name='Node type to add'\").0.value == \"Area\" timeout=5000 → ok (743 ms)",
+        "341: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (75 ms)",
+        "342: until find(\"id=undo\").0.name == \"Undo Add area\" timeout=5000 → ok (1267 ms)",
+        "343: act id=prop-size-x action=set_value value=\"1.1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":33,\"x\":4923,\"y\":663},\"help\":\"\",\"id\":\"prop-size-x\",\"name\":\"size X\",\"ref\":\"W:VRMXG Edi (493 ms)",
+        "344: until find(\"id=prop-size-x\").0.value == \"1.1\" timeout=5000 → ok (1176 ms)",
+        "345: act id=prop-size-y action=set_value value=\"2\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":34,\"x\":4943,\"y\":663},\"help\":\"\",\"id\":\"prop-size-y\",\"name\":\"size Y\",\"ref\":\"W:VRMXG Edi (519 ms)",
+        "346: until find(\"id=prop-size-y\").0.value == \"2\" timeout=5000 → ok (982 ms)",
+        "347: act id=prop-size-z action=set_value value=\"1.8\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":34,\"x\":4995,\"y\":663},\"help\":\"\",\"id\":\"prop-size-z\",\"name\":\"size Z\",\"ref\":\"W:VRMXG Edi (486 ms)",
+        "348: until find(\"id=prop-size-z\").0.value == \"1.8\" timeout=5000 → ok (931 ms)",
+        "349: act id=duplicate action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":76,\"x\":2813,\"y\":221},\"help\":\"Duplicate (⌘D)\",\"id\":\"duplicate\",\"name\":\"Duplicate selectio (76 ms)",
+        "350: until find(\"id=node-area-2\").count == 1 timeout=5000 → ok (1107 ms)",
+        "351: act id=duplicate action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":76,\"x\":2813,\"y\":221},\"help\":\"Duplicate (⌘D)\",\"id\":\"duplicate\",\"name\":\"Duplicate selectio (112 ms)",
+        "352: until find(\"id=node-area-3\").count == 1 timeout=5000 → ok (1210 ms)",
+        "353: act id=inspector-select-type action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":77,\"x\":4982,\"y\":327},\"help\":\"Select all 3 Area nodes, to edit them together\",\"id\":\"inspe (89 ms)",
+        "354: until find(\"id=inspector-id\").0.name matches \"^3 nodes: \" timeout=5000 → ok (368 ms)",
+        "355: expect find(\"id=prop-size-x\").0.name != \"size X (mixed values)\" → ok (82 ms)",
+        "356: expect find(\"id=prop-size-z\").0.value == \"1.8\" → ok (77 ms)",
+        "357: act id=node-area action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":2609,\"y\":1190},\"help\":\"\",\"id\":\"node-area\",\"name\":\"area, Area\",\"ref\":\"W:VRMXG Edi (84 ms)",
+        "358: until find(\"id=inspector-id\").0.name == \"Node area\" → ok (86 ms)",
+        "359: act id=field-name action=set_value value=\"Table 1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":360},\"help\":\"\",\"id\":\"field-name\",\"name\":\"Name\",\"ref\":\"W:VRMXG Edito (471 ms)",
+        "360: until find(\"id=field-name\").0.value == \"Table 1\" timeout=5000 → ok (1071 ms)",
+        "361: act id=pos-x action=set_value value=\"-1.45\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4798,\"y\":466},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (506 ms)",
+        "362: until find(\"id=pos-x\").0.value == \"-1.45\" timeout=5000 → ok (1018 ms)",
+        "363: act id=pos-y action=set_value value=\"1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4891,\"y\":466},\"help\":\"\",\"id\":\"pos-y\",\"name\":\"Position Y\",\"ref\":\"W:VRMXG Edito (486 ms)",
+        "364: until find(\"id=pos-y\").0.value == \"1\" timeout=5000 → ok (942 ms)",
+        "365: act id=pos-z action=set_value value=\"1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4984,\"y\":466},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (488 ms)",
+        "366: until find(\"id=pos-z\").0.value == \"1\" timeout=5000 → ok (1020 ms)",
+        "367: act id=node-area-2 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":2609,\"y\":1214},\"help\":\"\",\"id\":\"node-area-2\",\"name\":\"area-2, Area\",\"ref\":\"W:VRMXG (110 ms)",
+        "368: until find(\"id=inspector-id\").0.name == \"Node area-2\" → ok (88 ms)",
+        "369: act id=field-name action=set_value value=\"Table 2\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":360},\"help\":\"\",\"id\":\"field-name\",\"name\":\"Name\",\"ref\":\"W:VRMXG Edito (463 ms)",
+        "370: until find(\"id=field-name\").0.value == \"Table 2\" timeout=5000 → ok (771 ms)",
+        "371: act id=pos-x action=set_value value=\"1.45\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4798,\"y\":466},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (473 ms)",
+        "372: until find(\"id=pos-x\").0.value == \"1.45\" timeout=5000 → ok (886 ms)",
+        "373: act id=pos-y action=set_value value=\"1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4891,\"y\":466},\"help\":\"\",\"id\":\"pos-y\",\"name\":\"Position Y\",\"ref\":\"W:VRMXG Edito (484 ms)",
+        "374: until find(\"id=pos-y\").0.value == \"1\" timeout=5000 → ok (1010 ms)",
+        "375: act id=pos-z action=set_value value=\"1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4984,\"y\":466},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (485 ms)",
+        "376: until find(\"id=pos-z\").0.value == \"1\" timeout=5000 → ok (1009 ms)",
+        "377: act id=node-area-3 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":2609,\"y\":1239},\"help\":\"\",\"id\":\"node-area-3\",\"name\":\"area-3, Area\",\"ref\":\"W:VRMXG (71 ms)",
+        "378: until find(\"id=inspector-id\").0.name == \"Node area-3\" → ok (126 ms)",
+        "379: act id=field-name action=set_value value=\"Table 3\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":360},\"help\":\"\",\"id\":\"field-name\",\"name\":\"Name\",\"ref\":\"W:VRMXG Edito (474 ms)",
+        "380: until find(\"id=field-name\").0.value == \"Table 3\" timeout=5000 → ok (773 ms)",
+        "381: act id=pos-x action=set_value value=\"1.45\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4798,\"y\":466},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (478 ms)",
+        "382: until find(\"id=pos-x\").0.value == \"1.45\" timeout=5000 → ok (758 ms)",
+        "383: act id=pos-y action=set_value value=\"1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4891,\"y\":466},\"help\":\"\",\"id\":\"pos-y\",\"name\":\"Position Y\",\"ref\":\"W:VRMXG Edito (484 ms)",
+        "384: until find(\"id=pos-y\").0.value == \"1\" timeout=5000 → ok (833 ms)",
+        "385: act id=pos-z action=set_value value=\"-2\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4984,\"y\":466},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (466 ms)",
+        "386: until find(\"id=pos-z\").0.value == \"-2\" timeout=5000 → ok (1073 ms)",
+        "387: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (153 ms)"
+      ],
+      "message" : null,
+      "ms" : 28492,
+      "notes" : [
+
+      ],
+      "row" : 6,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The three table areas: one made and sized (a vector), Duplicated twice, then all three selected to see the size they share; each named and placed.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 16,
+      "checks" : [
+        {
+          "actual" : "1",
+          "check" : "find(\"id=asset-game-items-till-vrmxi\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add till\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add till\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Till\"",
+          "check" : "find(\"id=field-name\").0.value == \"Till\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"-1.65\"",
+          "check" : "find(\"id=pos-x\").0.value == \"-1.65\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1.06\"",
+          "check" : "find(\"id=pos-y\").0.value == \"1.06\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"-3.95\"",
+          "check" : "find(\"id=pos-z\").0.value == \"-3.95\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"locked\"",
+          "check" : "find(\"id=prop-state\").0.value == \"locked\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=asset-game-items-order-1-vrmxi\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add order-1\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add order-1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Order for table 1\"",
+          "check" : "find(\"id=field-name\").0.value == \"Order for table 1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"-0.9\"",
+          "check" : "find(\"id=pos-x\").0.value == \"-0.9\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1.06\"",
+          "check" : "find(\"id=pos-y\").0.value == \"1.06\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"-3.95\"",
+          "check" : "find(\"id=pos-z\").0.value == \"-3.95\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"waiting\"",
+          "check" : "find(\"id=prop-state\").0.value == \"waiting\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=asset-game-items-order-2-vrmxi\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add order-2\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add order-2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Order for table 2\"",
+          "check" : "find(\"id=field-name\").0.value == \"Order for table 2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"-0.1\"",
+          "check" : "find(\"id=pos-x\").0.value == \"-0.1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1.06\"",
+          "check" : "find(\"id=pos-y\").0.value == \"1.06\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"-3.95\"",
+          "check" : "find(\"id=pos-z\").0.value == \"-3.95\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"waiting\"",
+          "check" : "find(\"id=prop-state\").0.value == \"waiting\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=asset-game-items-order-3-vrmxi\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add order-3\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add order-3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Order for table 3\"",
+          "check" : "find(\"id=field-name\").0.value == \"Order for table 3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0.6\"",
+          "check" : "find(\"id=pos-x\").0.value == \"0.6\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1.06\"",
+          "check" : "find(\"id=pos-y\").0.value == \"1.06\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"-3.95\"",
+          "check" : "find(\"id=pos-z\").0.value == \"-3.95\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"waiting\"",
+          "check" : "find(\"id=prop-state\").0.value == \"waiting\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/rush-built.vrmxs 44 nodes unsaved changes valid hash 2b897b56b2bc0446\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "392: act id=assets-search action=set_value value=till → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":1315,\"x\":3446,\"y\":1538},\"help\":\"\",\"id\":\"assets-search\",\"name\":\"Search assets\",\"ref\": (484 ms)",
+        "393: until find(\"id=asset-game-items-till-vrmxi\").count == 1 timeout=10000 → ok (30 ms)",
+        "394: find id=asset-game-items-till-vrmxi → group \"Item game/items/till.vrmxi, thumbnail\" #asset-game-items-till-vrmxi help=\"game/items/till.vrmxi\" (3046,1577 108×165) [W:VRMXG Editor/0/0/0/0/4/1/3/0@bda7 (33 ms)",
+        "395: set FROM = $.0.ref → \"W:VRMXG Editor/0/0/0/0/4/1/3/0@bda7\" (0 ms)",
+        "396: find name=Viewport exact=true → image \"Viewport\" (2889,213 1882×1319) [W:VRMXG Editor/0/0/0/0/2/0@1bfb] (33 ms)",
+        "397: set TO = $.0.ref → \"W:VRMXG Editor/0/0/0/0/2/0@1bfb\" (0 ms)",
+        "398: pointer drag ref=\"W:VRMXG Editor/0/0/0/0/4/1/3/0@bda7\" to_ref=\"W:VRMXG Editor/0/0/0/0/2/0@1bfb\" steps=30 → {\"action\":\"drag\",\"activated\":false,\"at\":{\"x\":3100,\"y\":1659.5},\"probe_seq_before\":0} (907 ms)",
+        "399: until find(\"id=undo\").0.name == \"Undo Add till\" timeout=10000 → ok (1203 ms)",
+        "400: act id=field-name action=set_value value=\"Till\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":419},\"help\":\"\",\"id\":\"field-name\",\"name\":\"Name\",\"ref\":\"W:VRMXG Edito (457 ms)",
+        "401: until find(\"id=field-name\").0.value == \"Till\" timeout=5000 → ok (968 ms)",
+        "402: act id=pos-x action=set_value value=\"-1.65\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4798,\"y\":525},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (464 ms)",
+        "403: until find(\"id=pos-x\").0.value == \"-1.65\" timeout=5000 → ok (1225 ms)",
+        "404: act id=pos-y action=set_value value=\"1.06\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4891,\"y\":525},\"help\":\"\",\"id\":\"pos-y\",\"name\":\"Position Y\",\"ref\":\"W:VRMXG Edito (504 ms)",
+        "405: until find(\"id=pos-y\").0.value == \"1.06\" timeout=5000 → ok (1002 ms)",
+        "406: act id=pos-z action=set_value value=\"-3.95\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4984,\"y\":525},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (448 ms)",
+        "407: until find(\"id=pos-z\").0.value == \"-3.95\" timeout=5000 → ok (950 ms)",
+        "408: act id=prop-state action=set_value value=\"locked\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":701},\"help\":\"\",\"id\":\"prop-state\",\"name\":\"state\",\"ref\":\"W:VRMXG Edit (466 ms)",
+        "409: until find(\"id=prop-state\").0.value == \"locked\" timeout=5000 → ok (911 ms)",
+        "410: act id=assets-search action=set_value value=order-1 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":1315,\"x\":3446,\"y\":1538},\"help\":\"\",\"id\":\"assets-search\",\"name\":\"Search assets\",\"ref\": (458 ms)",
+        "411: until find(\"id=asset-game-items-order-1-vrmxi\").count == 1 timeout=10000 → ok (31 ms)",
+        "412: act id=add-game-items-order-1-vrmxi action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":98,\"x\":3051,\"y\":1717},\"help\":\"Add as Item\",\"id\":\"add-game-items-order-1-vrmxi\",\"name\":\"A (38 ms)",
+        "413: until find(\"id=undo\").0.name == \"Undo Add order-1\" timeout=10000 → ok (102 ms)",
+        "414: act id=field-name action=set_value value=\"Order for table 1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":419},\"help\":\"\",\"id\":\"field-name\",\"name\":\"Name\",\"ref\":\"W:VRMXG Edito (1761 ms)",
+        "415: until find(\"id=field-name\").0.value == \"Order for table 1\" timeout=5000 → ok (995 ms)",
+        "416: act id=pos-x action=set_value value=\"-0.9\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4798,\"y\":525},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (468 ms)",
+        "417: until find(\"id=pos-x\").0.value == \"-0.9\" timeout=5000 → ok (950 ms)",
+        "418: act id=pos-y action=set_value value=\"1.06\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4891,\"y\":525},\"help\":\"\",\"id\":\"pos-y\",\"name\":\"Position Y\",\"ref\":\"W:VRMXG Edito (465 ms)",
+        "419: until find(\"id=pos-y\").0.value == \"1.06\" timeout=5000 → ok (886 ms)",
+        "420: act id=pos-z action=set_value value=\"-3.95\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4984,\"y\":525},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (463 ms)",
+        "421: until find(\"id=pos-z\").0.value == \"-3.95\" timeout=5000 → ok (1134 ms)",
+        "422: act id=prop-state action=set_value value=\"waiting\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":701},\"help\":\"\",\"id\":\"prop-state\",\"name\":\"state\",\"ref\":\"W:VRMXG Edit (453 ms)",
+        "423: until find(\"id=prop-state\").0.value == \"waiting\" timeout=5000 → ok (989 ms)",
+        "424: act id=assets-search action=set_value value=order-2 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":1315,\"x\":3446,\"y\":1538},\"help\":\"\",\"id\":\"assets-search\",\"name\":\"Search assets\",\"ref\": (438 ms)",
+        "425: until find(\"id=asset-game-items-order-2-vrmxi\").count == 1 timeout=10000 → ok (33 ms)",
+        "426: act id=add-game-items-order-2-vrmxi action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":98,\"x\":3051,\"y\":1681},\"help\":\"Add as Item\",\"id\":\"add-game-items-order-2-vrmxi\",\"name\":\"A (41 ms)",
+        "427: until find(\"id=undo\").0.name == \"Undo Add order-2\" timeout=10000 → ok (92 ms)",
+        "428: act id=field-name action=set_value value=\"Order for table 2\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":419},\"help\":\"\",\"id\":\"field-name\",\"name\":\"Name\",\"ref\":\"W:VRMXG Edito (1352 ms)",
+        "429: until find(\"id=field-name\").0.value == \"Order for table 2\" timeout=5000 → ok (810 ms)",
+        "430: act id=pos-x action=set_value value=\"-0.1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4798,\"y\":525},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (447 ms)",
+        "431: until find(\"id=pos-x\").0.value == \"-0.1\" timeout=5000 → ok (837 ms)",
+        "432: act id=pos-y action=set_value value=\"1.06\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4891,\"y\":525},\"help\":\"\",\"id\":\"pos-y\",\"name\":\"Position Y\",\"ref\":\"W:VRMXG Edito (461 ms)",
+        "433: until find(\"id=pos-y\").0.value == \"1.06\" timeout=5000 → ok (1024 ms)",
+        "434: act id=pos-z action=set_value value=\"-3.95\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4984,\"y\":525},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (466 ms)",
+        "435: until find(\"id=pos-z\").0.value == \"-3.95\" timeout=5000 → ok (849 ms)",
+        "436: act id=prop-state action=set_value value=\"waiting\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":701},\"help\":\"\",\"id\":\"prop-state\",\"name\":\"state\",\"ref\":\"W:VRMXG Edit (464 ms)",
+        "437: until find(\"id=prop-state\").0.value == \"waiting\" timeout=5000 → ok (720 ms)",
+        "438: act id=assets-search action=set_value value=order-3 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":1315,\"x\":3446,\"y\":1538},\"help\":\"\",\"id\":\"assets-search\",\"name\":\"Search assets\",\"ref\": (443 ms)",
+        "439: until find(\"id=asset-game-items-order-3-vrmxi\").count == 1 timeout=10000 → ok (22 ms)",
+        "440: act id=add-game-items-order-3-vrmxi action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":98,\"x\":3051,\"y\":1681},\"help\":\"Add as Item\",\"id\":\"add-game-items-order-3-vrmxi\",\"name\":\"A (27 ms)",
+        "441: until find(\"id=undo\").0.name == \"Undo Add order-3\" timeout=10000 → ok (39 ms)",
+        "442: act id=field-name action=set_value value=\"Order for table 3\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":419},\"help\":\"\",\"id\":\"field-name\",\"name\":\"Name\",\"ref\":\"W:VRMXG Edito (1365 ms)",
+        "443: until find(\"id=field-name\").0.value == \"Order for table 3\" timeout=5000 → ok (1027 ms)",
+        "444: act id=pos-x action=set_value value=\"0.6\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4798,\"y\":525},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (458 ms)",
+        "445: until find(\"id=pos-x\").0.value == \"0.6\" timeout=5000 → ok (843 ms)",
+        "446: act id=pos-y action=set_value value=\"1.06\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4891,\"y\":525},\"help\":\"\",\"id\":\"pos-y\",\"name\":\"Position Y\",\"ref\":\"W:VRMXG Edito (456 ms)",
+        "447: until find(\"id=pos-y\").0.value == \"1.06\" timeout=5000 → ok (949 ms)",
+        "448: act id=pos-z action=set_value value=\"-3.95\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":75,\"x\":4984,\"y\":525},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (465 ms)",
+        "449: until find(\"id=pos-z\").0.value == \"-3.95\" timeout=5000 → ok (1069 ms)",
+        "450: act id=prop-state action=set_value value=\"waiting\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":701},\"help\":\"\",\"id\":\"prop-state\",\"name\":\"state\",\"ref\":\"W:VRMXG Edit (480 ms)",
+        "451: until find(\"id=prop-state\").0.value == \"waiting\" timeout=5000 → ok (1035 ms)",
+        "452: act id=assets-search action=set_value value=\" \" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":1315,\"x\":3446,\"y\":1538},\"help\":\"\",\"id\":\"assets-search\",\"name\":\"Search assets\",\"ref\": (466 ms)",
+        "453: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (66 ms)"
+      ],
+      "message" : null,
+      "ms" : 36876,
+      "notes" : [
+
+      ],
+      "row" : 7,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The till dragged from the assets panel onto the viewport (the real pointer), and the three trays added from the panel; each named, placed and given the state it starts in.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 17,
+      "checks" : [
+        {
+          "actual" : "\"Dialogue\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"Dialogue\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add dialogue\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add dialogue\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=prop-autostart\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"lines, 1 row\"",
+          "check" : "find(\"id=prop-lines\").0.name == \"lines, 1 row\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"hana-1\"",
+          "check" : "find(\"id=prop-lines-0-speaker\").0.value == \"hana-1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Morning, Mira! Three regulars are due. Take their orders, bring each one what I make, and close the till before ten.\"",
+          "check" : "find(\"id=prop-lines-0-text\").0.value == \"Morning, Mira! Three regulars are due. Take their orders, bring each one what I make, and close the till before ten.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"game/voice/hana-brief.wav\"",
+          "check" : "find(\"id=prop-lines-0-clip\").0.value == \"game/voice/hana-brief.wav\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-0\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"ready\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-id\").0.value == \"ready\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"On it!\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-text\").0.value == \"On it!\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"ready\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-to\").0.value == \"ready\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"coffee\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-id\").0.value == \"coffee\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Coffee first?\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-text\").0.value == \"Coffee first?\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"coffee\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-to\").0.value == \"coffee\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"lines, 2 rows\"",
+          "check" : "find(\"id=prop-lines\").0.name == \"lines, 2 rows\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"ready\"",
+          "check" : "find(\"id=prop-lines-1-id\").0.value == \"ready\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"hana-1\"",
+          "check" : "find(\"id=prop-lines-1-speaker\").0.value == \"hana-1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"That's the spirit. Here comes Aoi!\"",
+          "check" : "find(\"id=prop-lines-1-text\").0.value == \"That's the spirit. Here comes Aoi!\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"game/voice/hana-brief-ready.wav\"",
+          "check" : "find(\"id=prop-lines-1-clip\").0.value == \"game/voice/hana-brief-ready.wav\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"end\"",
+          "check" : "find(\"id=prop-lines-1-next\").0.value == \"end\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"lines, 3 rows\"",
+          "check" : "find(\"id=prop-lines\").0.name == \"lines, 3 rows\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"coffee\"",
+          "check" : "find(\"id=prop-lines-2-id\").0.value == \"coffee\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"hana-1\"",
+          "check" : "find(\"id=prop-lines-2-speaker\").0.value == \"hana-1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"After the rush! Here comes Aoi.\"",
+          "check" : "find(\"id=prop-lines-2-text\").0.value == \"After the rush! Here comes Aoi.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"game/voice/hana-brief-coffee.wav\"",
+          "check" : "find(\"id=prop-lines-2-clip\").0.value == \"game/voice/hana-brief-coffee.wav\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/rush-built.vrmxs 45 nodes unsaved changes valid hash 7d6126da4cd6d933\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "458: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (75 ms)",
+        "459: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (68 ms)",
+        "461: keys down → {\"sent\":true} (115 ms)",
+        "462: act surface=app role=menuitem name=\"Dialogue\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":415},\"id\":\"_popUpItemAction:\",\"name\":\"Dialogue\",\"ref\":\"A/0/0/1/20@80b9\" (80 ms)",
+        "463: until find(\"role=popupbutton name='Node type to add'\").0.value == \"Dialogue\" timeout=5000 → ok (732 ms)",
+        "464: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (62 ms)",
+        "465: until find(\"id=undo\").0.name == \"Undo Add dialogue\" timeout=5000 → ok (552 ms)",
+        "466: act id=prop-autostart action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":13,\"w\":150,\"x\":4907,\"y\":725},\"help\":\"\",\"id\":\"prop-autostart\",\"name\":\"autostart\",\"ref\":\"W:VRMXG  (56 ms)",
+        "467: until find(\"id=prop-autostart\").0.value == \"1\" timeout=5000 → ok (534 ms)",
+        "468: act id=prop-lines--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4792,\"y\":690},\"help\":\"\",\"id\":\"prop-lines--add\",\"name\":\"Add a row to lines\",\"ref\": (58 ms)",
+        "469: until find(\"id=prop-lines\").0.name == \"lines, 1 row\" timeout=5000 → ok (1076 ms)",
+        "471: act id=prop-lines-0-speaker action=set_value value=\"hana-1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":183,\"x\":4876,\"y\":744},\"help\":\"\",\"id\":\"prop-lines-0-speaker\",\"name\":\"lines 1 speaker\" (475 ms)",
+        "472: until find(\"id=prop-lines-0-speaker\").0.value == \"hana-1\" timeout=5000 → ok (1051 ms)",
+        "473: act id=prop-lines-0-text action=set_value value=\"Morning, Mira! Three regulars are due. Take their orders, bring each one what I make, and close the till before ten.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":183,\"x\":4876,\"y\":775},\"help\":\"\",\"id\":\"prop-lines-0-text\",\"name\":\"lines 1 text\",\"ref\" (574 ms)",
+        "474: until find(\"id=prop-lines-0-text\").0.value == \"Morning, Mira! Three regulars are due. Take their orders, bring each one what I make, and close the till before ten.\" timeout=5000 → ok (902 ms)",
+        "475: act id=prop-lines-0-clip action=set_value value=\"game/voice/hana-brief.wav\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":183,\"x\":4876,\"y\":805},\"help\":\"\",\"id\":\"prop-lines-0-clip\",\"name\":\"lines 1 clip\",\"ref\" (511 ms)",
+        "476: until find(\"id=prop-lines-0-clip\").0.value == \"game/voice/hana-brief.wav\" timeout=5000 → ok (885 ms)",
+        "477: act id=prop-lines-0-choices--set action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":69,\"x\":4876,\"y\":980},\"help\":\"\",\"id\":\"prop-lines-0-choices--set\",\"name\":\"Set lines 1 choi (80 ms)",
+        "478: until find(\"id=prop-lines-0-choices-0\").count == 1 timeout=5000 → ok (1101 ms)",
+        "480: act id=prop-lines-0-choices-0-id action=set_value value=\"ready\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1000},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-id\",\"name\":\"lines 1 cho (485 ms)",
+        "481: until find(\"id=prop-lines-0-choices-0-id\").0.value == \"ready\" timeout=5000 → ok (1042 ms)",
+        "482: act id=prop-lines-0-choices-0-text action=set_value value=\"On it!\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1030},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-text\",\"name\":\"lines 1 c (497 ms)",
+        "483: until find(\"id=prop-lines-0-choices-0-text\").0.value == \"On it!\" timeout=5000 → ok (908 ms)",
+        "484: act id=prop-lines-0-choices-0-to action=set_value value=\"ready\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1061},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-to\",\"name\":\"lines 1 cho (505 ms)",
+        "485: until find(\"id=prop-lines-0-choices-0-to\").0.value == \"ready\" timeout=5000 → ok (546 ms)",
+        "486: act id=prop-lines-0-choices--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4884,\"y\":1146},\"help\":\"\",\"id\":\"prop-lines-0-choices--add\",\"name\":\"Add a row to li (72 ms)",
+        "487: until find(\"id=prop-lines-0-choices-1\").count == 1 timeout=5000 → ok (757 ms)",
+        "489: act id=prop-lines-0-choices-1-id action=set_value value=\"coffee\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1166},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-id\",\"name\":\"lines 1 cho (478 ms)",
+        "490: until find(\"id=prop-lines-0-choices-1-id\").0.value == \"coffee\" timeout=5000 → ok (421 ms)",
+        "491: act id=prop-lines-0-choices-1-text action=set_value value=\"Coffee first?\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1196},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-text\",\"name\":\"lines 1 c (479 ms)",
+        "492: until find(\"id=prop-lines-0-choices-1-text\").0.value == \"Coffee first?\" timeout=5000 → ok (398 ms)",
+        "493: act id=prop-lines-0-choices-1-to action=set_value value=\"coffee\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1226},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-to\",\"name\":\"lines 1 cho (487 ms)",
+        "494: until find(\"id=prop-lines-0-choices-1-to\").0.value == \"coffee\" timeout=5000 → ok (391 ms)",
+        "495: act id=prop-lines--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4792,\"y\":1338},\"help\":\"\",\"id\":\"prop-lines--add\",\"name\":\"Add a row to lines\",\"ref\" (65 ms)",
+        "496: until find(\"id=prop-lines\").0.name == \"lines, 2 rows\" timeout=5000 → ok (501 ms)",
+        "498: act id=prop-lines-1-id action=set_value value=\"ready\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1358},\"help\":\"\",\"id\":\"prop-lines-1-id\",\"name\":\"lines 2 id\",\"ref\":\"W (479 ms)",
+        "499: until find(\"id=prop-lines-1-id\").0.value == \"ready\" timeout=5000 → ok (371 ms)",
+        "500: act id=prop-lines-1-speaker action=set_value value=\"hana-1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":166,\"x\":4876,\"y\":1389},\"help\":\"\",\"id\":\"prop-lines-1-speaker\",\"name\":\"lines 2 speaker (478 ms)",
+        "501: until find(\"id=prop-lines-1-speaker\").0.value == \"hana-1\" timeout=5000 → ok (373 ms)",
+        "502: act id=prop-lines-1-text action=set_value value=\"That's the spirit. Here comes Aoi!\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1419},\"help\":\"\",\"id\":\"prop-lines-1-text\",\"name\":\"lines 2 text\",\"ref (489 ms)",
+        "503: until find(\"id=prop-lines-1-text\").0.value == \"That's the spirit. Here comes Aoi!\" timeout=5000 → ok (367 ms)",
+        "504: act id=prop-lines-1-clip action=set_value value=\"game/voice/hana-brief-ready.wav\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1449},\"help\":\"\",\"id\":\"prop-lines-1-clip\",\"name\":\"lines 2 clip\",\"ref (493 ms)",
+        "505: until find(\"id=prop-lines-1-clip\").0.value == \"game/voice/hana-brief-ready.wav\" timeout=5000 → ok (380 ms)",
+        "506: act id=prop-lines-1-next action=set_value value=\"end\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1539},\"help\":\"\",\"id\":\"prop-lines-1-next\",\"name\":\"lines 2 next\",\"ref (485 ms)",
+        "507: until find(\"id=prop-lines-1-next\").0.value == \"end\" timeout=5000 → ok (341 ms)",
+        "508: act id=prop-lines--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4792,\"y\":1652},\"help\":\"\",\"id\":\"prop-lines--add\",\"name\":\"Add a row to lines\",\"ref\" (58 ms)",
+        "509: until find(\"id=prop-lines\").0.name == \"lines, 3 rows\" timeout=5000 → ok (453 ms)",
+        "511: act id=prop-lines-2-id action=set_value value=\"coffee\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1342},\"help\":\"\",\"id\":\"prop-lines-2-id\",\"name\":\"lines 3 id\",\"ref\":\"W (475 ms)",
+        "512: until find(\"id=prop-lines-2-id\").0.value == \"coffee\" timeout=5000 → ok (850 ms)",
+        "513: act id=prop-lines-2-speaker action=set_value value=\"hana-1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1372},\"help\":\"\",\"id\":\"prop-lines-2-speaker\",\"name\":\"lines 3 speaker (479 ms)",
+        "514: until find(\"id=prop-lines-2-speaker\").0.value == \"hana-1\" timeout=5000 → ok (897 ms)",
+        "515: act id=prop-lines-2-text action=set_value value=\"After the rush! Here comes Aoi.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1402},\"help\":\"\",\"id\":\"prop-lines-2-text\",\"name\":\"lines 3 text\",\"ref (515 ms)",
+        "516: until find(\"id=prop-lines-2-text\").0.value == \"After the rush! Here comes Aoi.\" timeout=5000 → ok (830 ms)",
+        "517: act id=prop-lines-2-clip action=set_value value=\"game/voice/hana-brief-coffee.wav\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1432},\"help\":\"\",\"id\":\"prop-lines-2-clip\",\"name\":\"lines 3 clip\",\"ref (510 ms)",
+        "518: until find(\"id=prop-lines-2-clip\").0.value == \"game/voice/hana-brief-coffee.wav\" timeout=5000 → ok (831 ms)",
+        "519: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (92 ms)"
+      ],
+      "message" : null,
+      "ms" : 30491,
+      "notes" : [
+
+      ],
+      "row" : 8,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Hana's briefing: a Dialogue that starts by itself, three lines (speaker, text, clip, ids and the line after), the first offering two choices that branch.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 18,
+      "checks" : [
+        {
+          "actual" : "\"Dialogue\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"Dialogue\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add dialogue-2\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add dialogue-2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Aoi's order\"",
+          "check" : "find(\"id=field-name\").0.value == \"Aoi's order\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"lines, 1 row\"",
+          "check" : "find(\"id=prop-lines\").0.name == \"lines, 1 row\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"aoi\"",
+          "check" : "find(\"id=prop-lines-0-speaker\").0.value == \"aoi\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Morning! Something warm and milky, please. Not too strong.\"",
+          "check" : "find(\"id=prop-lines-0-text\").0.value == \"Morning! Something warm and milky, please. Not too strong.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"game/voice/aoi-ask.wav\"",
+          "check" : "find(\"id=prop-lines-0-clip\").0.value == \"game/voice/aoi-ask.wav\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-0\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"latte\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-id\").0.value == \"latte\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"A latte, then.\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-text\").0.value == \"A latte, then.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"right\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-to\").0.value == \"right\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-0-set\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-0-set-ordered1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-set-ordered1\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-0-set-right1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-set-right1\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"espresso\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-id\").0.value == \"espresso\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"A double espresso?\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-text\").0.value == \"A double espresso?\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"wrong\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-to\").0.value == \"wrong\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-1-set\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-1-set-ordered1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-set-ordered1\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-1-set-right1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"lines, 2 rows\"",
+          "check" : "find(\"id=prop-lines\").0.name == \"lines, 2 rows\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"right\"",
+          "check" : "find(\"id=prop-lines-1-id\").0.value == \"right\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"aoi\"",
+          "check" : "find(\"id=prop-lines-1-speaker\").0.value == \"aoi\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Perfect. Thank you!\"",
+          "check" : "find(\"id=prop-lines-1-text\").0.value == \"Perfect. Thank you!\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"game/voice/aoi-right.wav\"",
+          "check" : "find(\"id=prop-lines-1-clip\").0.value == \"game/voice/aoi-right.wav\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"end\"",
+          "check" : "find(\"id=prop-lines-1-next\").0.value == \"end\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"lines, 3 rows\"",
+          "check" : "find(\"id=prop-lines\").0.name == \"lines, 3 rows\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"wrong\"",
+          "check" : "find(\"id=prop-lines-2-id\").0.value == \"wrong\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"aoi\"",
+          "check" : "find(\"id=prop-lines-2-speaker\").0.value == \"aoi\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Oh. Well, if you say so.\"",
+          "check" : "find(\"id=prop-lines-2-text\").0.value == \"Oh. Well, if you say so.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"game/voice/aoi-wrong.wav\"",
+          "check" : "find(\"id=prop-lines-2-clip\").0.value == \"game/voice/aoi-wrong.wav\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/rush-built.vrmxs 46 nodes unsaved changes valid hash a795226d8c191cb6\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "524: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (79 ms)",
+        "525: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (71 ms)",
+        "527: keys down → {\"sent\":true} (115 ms)",
+        "528: act surface=app role=menuitem name=\"Dialogue\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":223},\"id\":\"_popUpItemAction:\",\"name\":\"Dialogue\",\"ref\":\"A/0/0/1/20@80b9\" (78 ms)",
+        "529: until find(\"role=popupbutton name='Node type to add'\").0.value == \"Dialogue\" timeout=5000 → ok (61 ms)",
+        "530: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (69 ms)",
+        "531: until find(\"id=undo\").0.name == \"Undo Add dialogue-2\" timeout=5000 → ok (575 ms)",
+        "532: act id=field-name action=set_value value=\"Aoi's order\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":393},\"help\":\"\",\"id\":\"field-name\",\"name\":\"Name\",\"ref\":\"W:VRMXG Edito (470 ms)",
+        "533: until find(\"id=field-name\").0.value == \"Aoi's order\" timeout=5000 → ok (338 ms)",
+        "534: act id=prop-lines--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4792,\"y\":695},\"help\":\"\",\"id\":\"prop-lines--add\",\"name\":\"Add a row to lines\",\"ref\": (53 ms)",
+        "535: until find(\"id=prop-lines\").0.name == \"lines, 1 row\" timeout=5000 → ok (968 ms)",
+        "537: act id=prop-lines-0-speaker action=set_value value=\"aoi\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":183,\"x\":4876,\"y\":750},\"help\":\"\",\"id\":\"prop-lines-0-speaker\",\"name\":\"lines 1 speaker\" (475 ms)",
+        "538: until find(\"id=prop-lines-0-speaker\").0.value == \"aoi\" timeout=5000 → ok (816 ms)",
+        "539: act id=prop-lines-0-text action=set_value value=\"Morning! Something warm and milky, please. Not too strong.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":183,\"x\":4876,\"y\":780},\"help\":\"\",\"id\":\"prop-lines-0-text\",\"name\":\"lines 1 text\",\"ref\" (515 ms)",
+        "540: until find(\"id=prop-lines-0-text\").0.value == \"Morning! Something warm and milky, please. Not too strong.\" timeout=5000 → ok (873 ms)",
+        "541: act id=prop-lines-0-clip action=set_value value=\"game/voice/aoi-ask.wav\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":183,\"x\":4876,\"y\":810},\"help\":\"\",\"id\":\"prop-lines-0-clip\",\"name\":\"lines 1 clip\",\"ref\" (502 ms)",
+        "542: until find(\"id=prop-lines-0-clip\").0.value == \"game/voice/aoi-ask.wav\" timeout=5000 → ok (1136 ms)",
+        "543: act id=prop-lines-0-choices--set action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":69,\"x\":4876,\"y\":985},\"help\":\"\",\"id\":\"prop-lines-0-choices--set\",\"name\":\"Set lines 1 choi (110 ms)",
+        "544: until find(\"id=prop-lines-0-choices-0\").count == 1 timeout=5000 → ok (1100 ms)",
+        "546: act id=prop-lines-0-choices-0-id action=set_value value=\"latte\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1005},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-id\",\"name\":\"lines 1 cho (469 ms)",
+        "547: until find(\"id=prop-lines-0-choices-0-id\").0.value == \"latte\" timeout=5000 → ok (904 ms)",
+        "548: act id=prop-lines-0-choices-0-text action=set_value value=\"A latte, then.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1036},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-text\",\"name\":\"lines 1 c (496 ms)",
+        "549: until find(\"id=prop-lines-0-choices-0-text\").0.value == \"A latte, then.\" timeout=5000 → ok (863 ms)",
+        "550: act id=prop-lines-0-choices-0-to action=set_value value=\"right\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1066},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-to\",\"name\":\"lines 1 cho (498 ms)",
+        "551: until find(\"id=prop-lines-0-choices-0-to\").0.value == \"right\" timeout=5000 → ok (604 ms)",
+        "552: act id=prop-lines-0-choices-0-set--set action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":44,\"x\":4968,\"y\":1123},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--set\",\"name\":\"Set lines (114 ms)",
+        "553: until find(\"id=prop-lines-0-choices-0-set\").count == 1 timeout=5000 → ok (541 ms)",
+        "554: act id=prop-lines-0-choices-0-set--newkey action=set_value value=ordered1 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":18,\"x\":4976,\"y\":1123},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--newkey\",\"name\":\"Ne (477 ms)",
+        "555: act id=prop-lines-0-choices-0-set--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":47,\"x\":4998,\"y\":1123},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--addkey\",\"name\":\"Add a  (55 ms)",
+        "556: until find(\"id=prop-lines-0-choices-0-set-ordered1\").count == 1 timeout=5000 → ok (460 ms)",
+        "557: act id=prop-lines-0-choices-0-set-ordered1 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":10,\"w\":2,\"x\":5052,\"y\":1123},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set-ordered1\",\"name\":\"lines  (53 ms)",
+        "558: until find(\"id=prop-lines-0-choices-0-set-ordered1\").0.value == \"1\" timeout=5000 → ok (464 ms)",
+        "559: act id=prop-lines-0-choices-0-set--newkey action=set_value value=right1 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":18,\"x\":4976,\"y\":1170},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--newkey\",\"name\":\"Ne (470 ms)",
+        "560: act id=prop-lines-0-choices-0-set--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":47,\"x\":4998,\"y\":1170},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--addkey\",\"name\":\"Add a  (66 ms)",
+        "561: until find(\"id=prop-lines-0-choices-0-set-right1\").count == 1 timeout=5000 → ok (484 ms)",
+        "562: act id=prop-lines-0-choices-0-set-right1 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":10,\"w\":2,\"x\":5052,\"y\":1170},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set-right1\",\"name\":\"lines 1  (64 ms)",
+        "563: until find(\"id=prop-lines-0-choices-0-set-right1\").0.value == \"1\" timeout=5000 → ok (484 ms)",
+        "564: act id=prop-lines-0-choices--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4884,\"y\":1248},\"help\":\"\",\"id\":\"prop-lines-0-choices--add\",\"name\":\"Add a row to li (65 ms)",
+        "565: until find(\"id=prop-lines-0-choices-1\").count == 1 timeout=5000 → ok (504 ms)",
+        "567: act id=prop-lines-0-choices-1-id action=set_value value=\"espresso\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1268},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-id\",\"name\":\"lines 1 cho (479 ms)",
+        "568: until find(\"id=prop-lines-0-choices-1-id\").0.value == \"espresso\" timeout=5000 → ok (373 ms)",
+        "569: act id=prop-lines-0-choices-1-text action=set_value value=\"A double espresso?\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1298},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-text\",\"name\":\"lines 1 c (474 ms)",
+        "570: until find(\"id=prop-lines-0-choices-1-text\").0.value == \"A double espresso?\" timeout=5000 → ok (497 ms)",
+        "571: act id=prop-lines-0-choices-1-to action=set_value value=\"wrong\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1328},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-to\",\"name\":\"lines 1 cho (487 ms)",
+        "572: until find(\"id=prop-lines-0-choices-1-to\").0.value == \"wrong\" timeout=5000 → ok (442 ms)",
+        "573: act id=prop-lines-0-choices-1-set--set action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":44,\"x\":4968,\"y\":1386},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--set\",\"name\":\"Set lines (66 ms)",
+        "574: until find(\"id=prop-lines-0-choices-1-set\").count == 1 timeout=5000 → ok (566 ms)",
+        "575: act id=prop-lines-0-choices-1-set--newkey action=set_value value=ordered1 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":18,\"x\":4976,\"y\":1386},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--newkey\",\"name\":\"Ne (466 ms)",
+        "576: act id=prop-lines-0-choices-1-set--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":47,\"x\":4998,\"y\":1386},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--addkey\",\"name\":\"Add a  (87 ms)",
+        "577: until find(\"id=prop-lines-0-choices-1-set-ordered1\").count == 1 timeout=5000 → ok (534 ms)",
+        "578: act id=prop-lines-0-choices-1-set-ordered1 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":10,\"w\":2,\"x\":5052,\"y\":1386},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set-ordered1\",\"name\":\"lines  (80 ms)",
+        "579: until find(\"id=prop-lines-0-choices-1-set-ordered1\").0.value == \"1\" timeout=5000 → ok (562 ms)",
+        "580: act id=prop-lines-0-choices-1-set--newkey action=set_value value=right1 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":18,\"x\":4976,\"y\":1433},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--newkey\",\"name\":\"Ne (468 ms)",
+        "581: act id=prop-lines-0-choices-1-set--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":47,\"x\":4998,\"y\":1433},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--addkey\",\"name\":\"Add a  (68 ms)",
+        "582: until find(\"id=prop-lines-0-choices-1-set-right1\").count == 1 timeout=5000 → ok (530 ms)",
+        "583: act id=prop-lines--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4792,\"y\":1537},\"help\":\"\",\"id\":\"prop-lines--add\",\"name\":\"Add a row to lines\",\"ref\" (68 ms)",
+        "584: until find(\"id=prop-lines\").0.name == \"lines, 2 rows\" timeout=5000 → ok (568 ms)",
+        "586: act id=prop-lines-1-id action=set_value value=\"right\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1329},\"help\":\"\",\"id\":\"prop-lines-1-id\",\"name\":\"lines 2 id\",\"ref\":\"W (501 ms)",
+        "587: until find(\"id=prop-lines-1-id\").0.value == \"right\" timeout=5000 → ok (510 ms)",
+        "588: act id=prop-lines-1-speaker action=set_value value=\"aoi\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1359},\"help\":\"\",\"id\":\"prop-lines-1-speaker\",\"name\":\"lines 2 speaker (477 ms)",
+        "589: until find(\"id=prop-lines-1-speaker\").0.value == \"aoi\" timeout=5000 → ok (411 ms)",
+        "590: act id=prop-lines-1-text action=set_value value=\"Perfect. Thank you!\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1389},\"help\":\"\",\"id\":\"prop-lines-1-text\",\"name\":\"lines 2 text\",\"ref (483 ms)",
+        "591: until find(\"id=prop-lines-1-text\").0.value == \"Perfect. Thank you!\" timeout=5000 → ok (389 ms)",
+        "592: act id=prop-lines-1-clip action=set_value value=\"game/voice/aoi-right.wav\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1420},\"help\":\"\",\"id\":\"prop-lines-1-clip\",\"name\":\"lines 2 clip\",\"ref (493 ms)",
+        "593: until find(\"id=prop-lines-1-clip\").0.value == \"game/voice/aoi-right.wav\" timeout=5000 → ok (401 ms)",
+        "594: act id=prop-lines-1-next action=set_value value=\"end\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1510},\"help\":\"\",\"id\":\"prop-lines-1-next\",\"name\":\"lines 2 next\",\"ref (488 ms)",
+        "595: until find(\"id=prop-lines-1-next\").0.value == \"end\" timeout=5000 → ok (540 ms)",
+        "596: act id=prop-lines--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4792,\"y\":1623},\"help\":\"\",\"id\":\"prop-lines--add\",\"name\":\"Add a row to lines\",\"ref\" (128 ms)",
+        "597: until find(\"id=prop-lines\").0.name == \"lines, 3 rows\" timeout=5000 → ok (890 ms)",
+        "599: act id=prop-lines-2-id action=set_value value=\"wrong\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1329},\"help\":\"\",\"id\":\"prop-lines-2-id\",\"name\":\"lines 3 id\",\"ref\":\"W (584 ms)",
+        "600: until find(\"id=prop-lines-2-id\").0.value == \"wrong\" timeout=5000 → ok (1383 ms)",
+        "601: act id=prop-lines-2-speaker action=set_value value=\"aoi\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1359},\"help\":\"\",\"id\":\"prop-lines-2-speaker\",\"name\":\"lines 3 speaker (514 ms)",
+        "602: until find(\"id=prop-lines-2-speaker\").0.value == \"aoi\" timeout=5000 → ok (1232 ms)",
+        "603: act id=prop-lines-2-text action=set_value value=\"Oh. Well, if you say so.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1389},\"help\":\"\",\"id\":\"prop-lines-2-text\",\"name\":\"lines 3 text\",\"ref (567 ms)",
+        "604: until find(\"id=prop-lines-2-text\").0.value == \"Oh. Well, if you say so.\" timeout=5000 → ok (1284 ms)",
+        "605: act id=prop-lines-2-clip action=set_value value=\"game/voice/aoi-wrong.wav\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1419},\"help\":\"\",\"id\":\"prop-lines-2-clip\",\"name\":\"lines 3 clip\",\"ref (546 ms)",
+        "606: until find(\"id=prop-lines-2-clip\").0.value == \"game/voice/aoi-wrong.wav\" timeout=5000 → ok (1357 ms)",
+        "607: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (131 ms)"
+      ],
+      "message" : null,
+      "ms" : 39966,
+      "notes" : [
+
+      ],
+      "row" : 9,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Aoi's order: three lines, the regular's question offering two choices, each setting the order's flags (a map in a row of a list in a row of a list).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 19,
+      "checks" : [
+        {
+          "actual" : "\"Dialogue\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"Dialogue\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add dialogue-3\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add dialogue-3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Ren's order\"",
+          "check" : "find(\"id=field-name\").0.value == \"Ren's order\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"lines, 1 row\"",
+          "check" : "find(\"id=prop-lines\").0.name == \"lines, 1 row\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"ren\"",
+          "check" : "find(\"id=prop-lines-0-speaker\").0.value == \"ren\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Hi! Something cold, please? It's already warm out.\"",
+          "check" : "find(\"id=prop-lines-0-text\").0.value == \"Hi! Something cold, please? It's already warm out.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"game/voice/ren-ask.wav\"",
+          "check" : "find(\"id=prop-lines-0-clip\").0.value == \"game/voice/ren-ask.wav\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-0\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"chocolate\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-id\").0.value == \"chocolate\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"A hot chocolate.\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-text\").0.value == \"A hot chocolate.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"wrong\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-to\").0.value == \"wrong\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-0-set\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-0-set-ordered2\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-set-ordered2\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-0-set-right2\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"iced-tea\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-id\").0.value == \"iced-tea\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"An iced tea.\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-text\").0.value == \"An iced tea.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"right\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-to\").0.value == \"right\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-1-set\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-1-set-ordered2\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-set-ordered2\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-1-set-right2\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-set-right2\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"lines, 2 rows\"",
+          "check" : "find(\"id=prop-lines\").0.name == \"lines, 2 rows\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"right\"",
+          "check" : "find(\"id=prop-lines-1-id\").0.value == \"right\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"ren\"",
+          "check" : "find(\"id=prop-lines-1-speaker\").0.value == \"ren\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Lovely, thanks.\"",
+          "check" : "find(\"id=prop-lines-1-text\").0.value == \"Lovely, thanks.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"game/voice/ren-right.wav\"",
+          "check" : "find(\"id=prop-lines-1-clip\").0.value == \"game/voice/ren-right.wav\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"end\"",
+          "check" : "find(\"id=prop-lines-1-next\").0.value == \"end\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"lines, 3 rows\"",
+          "check" : "find(\"id=prop-lines\").0.name == \"lines, 3 rows\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"wrong\"",
+          "check" : "find(\"id=prop-lines-2-id\").0.value == \"wrong\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"ren\"",
+          "check" : "find(\"id=prop-lines-2-speaker\").0.value == \"ren\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Hot? Hm. All right, then.\"",
+          "check" : "find(\"id=prop-lines-2-text\").0.value == \"Hot? Hm. All right, then.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"game/voice/ren-wrong.wav\"",
+          "check" : "find(\"id=prop-lines-2-clip\").0.value == \"game/voice/ren-wrong.wav\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/rush-built.vrmxs 47 nodes unsaved changes valid hash 95029f93bc44107c\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "612: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (116 ms)",
+        "613: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (128 ms)",
+        "615: keys down → {\"sent\":true} (117 ms)",
+        "616: act surface=app role=menuitem name=\"Dialogue\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":223},\"id\":\"_popUpItemAction:\",\"name\":\"Dialogue\",\"ref\":\"A/0/0/1/20@80b9\" (210 ms)",
+        "617: until find(\"role=popupbutton name='Node type to add'\").0.value == \"Dialogue\" timeout=5000 → ok (123 ms)",
+        "618: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (130 ms)",
+        "619: until find(\"id=undo\").0.name == \"Undo Add dialogue-3\" timeout=5000 → ok (687 ms)",
+        "620: act id=field-name action=set_value value=\"Ren's order\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":393},\"help\":\"\",\"id\":\"field-name\",\"name\":\"Name\",\"ref\":\"W:VRMXG Edito (494 ms)",
+        "621: until find(\"id=field-name\").0.value == \"Ren's order\" timeout=5000 → ok (624 ms)",
+        "622: act id=prop-lines--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4792,\"y\":695},\"help\":\"\",\"id\":\"prop-lines--add\",\"name\":\"Add a row to lines\",\"ref\": (110 ms)",
+        "623: until find(\"id=prop-lines\").0.name == \"lines, 1 row\" timeout=5000 → ok (1900 ms)",
+        "625: act id=prop-lines-0-speaker action=set_value value=\"ren\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":183,\"x\":4876,\"y\":750},\"help\":\"\",\"id\":\"prop-lines-0-speaker\",\"name\":\"lines 1 speaker\" (648 ms)",
+        "626: until find(\"id=prop-lines-0-speaker\").0.value == \"ren\" timeout=5000 → ok (1222 ms)",
+        "627: act id=prop-lines-0-text action=set_value value=\"Hi! Something cold, please? It's already warm out.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":183,\"x\":4876,\"y\":780},\"help\":\"\",\"id\":\"prop-lines-0-text\",\"name\":\"lines 1 text\",\"ref\" (566 ms)",
+        "628: until find(\"id=prop-lines-0-text\").0.value == \"Hi! Something cold, please? It's already warm out.\" timeout=5000 → ok (1453 ms)",
+        "629: act id=prop-lines-0-clip action=set_value value=\"game/voice/ren-ask.wav\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":183,\"x\":4876,\"y\":810},\"help\":\"\",\"id\":\"prop-lines-0-clip\",\"name\":\"lines 1 clip\",\"ref\" (613 ms)",
+        "630: until find(\"id=prop-lines-0-clip\").0.value == \"game/voice/ren-ask.wav\" timeout=5000 → ok (1220 ms)",
+        "631: act id=prop-lines-0-choices--set action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":69,\"x\":4876,\"y\":985},\"help\":\"\",\"id\":\"prop-lines-0-choices--set\",\"name\":\"Set lines 1 choi (129 ms)",
+        "632: until find(\"id=prop-lines-0-choices-0\").count == 1 timeout=5000 → ok (1361 ms)",
+        "634: act id=prop-lines-0-choices-0-id action=set_value value=\"chocolate\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1005},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-id\",\"name\":\"lines 1 cho (512 ms)",
+        "635: until find(\"id=prop-lines-0-choices-0-id\").0.value == \"chocolate\" timeout=5000 → ok (1394 ms)",
+        "636: act id=prop-lines-0-choices-0-text action=set_value value=\"A hot chocolate.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1036},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-text\",\"name\":\"lines 1 c (578 ms)",
+        "637: until find(\"id=prop-lines-0-choices-0-text\").0.value == \"A hot chocolate.\" timeout=5000 → ok (1247 ms)",
+        "638: act id=prop-lines-0-choices-0-to action=set_value value=\"wrong\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1066},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-to\",\"name\":\"lines 1 cho (516 ms)",
+        "639: until find(\"id=prop-lines-0-choices-0-to\").0.value == \"wrong\" timeout=5000 → ok (503 ms)",
+        "640: act id=prop-lines-0-choices-0-set--set action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":44,\"x\":4968,\"y\":1123},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--set\",\"name\":\"Set lines (121 ms)",
+        "641: until find(\"id=prop-lines-0-choices-0-set\").count == 1 timeout=5000 → ok (648 ms)",
+        "642: act id=prop-lines-0-choices-0-set--newkey action=set_value value=ordered2 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":18,\"x\":4976,\"y\":1123},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--newkey\",\"name\":\"Ne (512 ms)",
+        "643: act id=prop-lines-0-choices-0-set--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":47,\"x\":4998,\"y\":1123},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--addkey\",\"name\":\"Add a  (98 ms)",
+        "644: until find(\"id=prop-lines-0-choices-0-set-ordered2\").count == 1 timeout=5000 → ok (802 ms)",
+        "645: act id=prop-lines-0-choices-0-set-ordered2 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":10,\"w\":2,\"x\":5052,\"y\":1123},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set-ordered2\",\"name\":\"lines  (81 ms)",
+        "646: until find(\"id=prop-lines-0-choices-0-set-ordered2\").0.value == \"1\" timeout=5000 → ok (657 ms)",
+        "647: act id=prop-lines-0-choices-0-set--newkey action=set_value value=right2 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":18,\"x\":4976,\"y\":1170},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--newkey\",\"name\":\"Ne (503 ms)",
+        "648: act id=prop-lines-0-choices-0-set--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":47,\"x\":4998,\"y\":1170},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--addkey\",\"name\":\"Add a  (90 ms)",
+        "649: until find(\"id=prop-lines-0-choices-0-set-right2\").count == 1 timeout=5000 → ok (592 ms)",
+        "650: act id=prop-lines-0-choices--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4884,\"y\":1248},\"help\":\"\",\"id\":\"prop-lines-0-choices--add\",\"name\":\"Add a row to li (66 ms)",
+        "651: until find(\"id=prop-lines-0-choices-1\").count == 1 timeout=5000 → ok (507 ms)",
+        "653: act id=prop-lines-0-choices-1-id action=set_value value=\"iced-tea\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1268},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-id\",\"name\":\"lines 1 cho (474 ms)",
+        "654: until find(\"id=prop-lines-0-choices-1-id\").0.value == \"iced-tea\" timeout=5000 → ok (330 ms)",
+        "655: act id=prop-lines-0-choices-1-text action=set_value value=\"An iced tea.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1298},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-text\",\"name\":\"lines 1 c (462 ms)",
+        "656: until find(\"id=prop-lines-0-choices-1-text\").0.value == \"An iced tea.\" timeout=5000 → ok (477 ms)",
+        "657: act id=prop-lines-0-choices-1-to action=set_value value=\"right\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1328},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-to\",\"name\":\"lines 1 cho (484 ms)",
+        "658: until find(\"id=prop-lines-0-choices-1-to\").0.value == \"right\" timeout=5000 → ok (385 ms)",
+        "659: act id=prop-lines-0-choices-1-set--set action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":44,\"x\":4968,\"y\":1386},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--set\",\"name\":\"Set lines (66 ms)",
+        "660: until find(\"id=prop-lines-0-choices-1-set\").count == 1 timeout=5000 → ok (522 ms)",
+        "661: act id=prop-lines-0-choices-1-set--newkey action=set_value value=ordered2 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":18,\"x\":4976,\"y\":1386},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--newkey\",\"name\":\"Ne (473 ms)",
+        "662: act id=prop-lines-0-choices-1-set--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":47,\"x\":4998,\"y\":1386},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--addkey\",\"name\":\"Add a  (81 ms)",
+        "663: until find(\"id=prop-lines-0-choices-1-set-ordered2\").count == 1 timeout=5000 → ok (602 ms)",
+        "664: act id=prop-lines-0-choices-1-set-ordered2 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":10,\"w\":2,\"x\":5052,\"y\":1386},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set-ordered2\",\"name\":\"lines  (74 ms)",
+        "665: until find(\"id=prop-lines-0-choices-1-set-ordered2\").0.value == \"1\" timeout=5000 → ok (554 ms)",
+        "666: act id=prop-lines-0-choices-1-set--newkey action=set_value value=right2 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":18,\"x\":4976,\"y\":1433},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--newkey\",\"name\":\"Ne (483 ms)",
+        "667: act id=prop-lines-0-choices-1-set--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":47,\"x\":4998,\"y\":1433},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--addkey\",\"name\":\"Add a  (84 ms)",
+        "668: until find(\"id=prop-lines-0-choices-1-set-right2\").count == 1 timeout=5000 → ok (599 ms)",
+        "669: act id=prop-lines-0-choices-1-set-right2 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":10,\"w\":2,\"x\":5052,\"y\":1433},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set-right2\",\"name\":\"lines 1  (49 ms)",
+        "670: until find(\"id=prop-lines-0-choices-1-set-right2\").0.value == \"1\" timeout=5000 → ok (578 ms)",
+        "671: act id=prop-lines--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4792,\"y\":1537},\"help\":\"\",\"id\":\"prop-lines--add\",\"name\":\"Add a row to lines\",\"ref\" (76 ms)",
+        "672: until find(\"id=prop-lines\").0.name == \"lines, 2 rows\" timeout=5000 → ok (731 ms)",
+        "674: act id=prop-lines-1-id action=set_value value=\"right\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1329},\"help\":\"\",\"id\":\"prop-lines-1-id\",\"name\":\"lines 2 id\",\"ref\":\"W (482 ms)",
+        "675: until find(\"id=prop-lines-1-id\").0.value == \"right\" timeout=5000 → ok (378 ms)",
+        "676: act id=prop-lines-1-speaker action=set_value value=\"ren\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1359},\"help\":\"\",\"id\":\"prop-lines-1-speaker\",\"name\":\"lines 2 speaker (471 ms)",
+        "677: until find(\"id=prop-lines-1-speaker\").0.value == \"ren\" timeout=5000 → ok (360 ms)",
+        "678: act id=prop-lines-1-text action=set_value value=\"Lovely, thanks.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1389},\"help\":\"\",\"id\":\"prop-lines-1-text\",\"name\":\"lines 2 text\",\"ref (473 ms)",
+        "679: until find(\"id=prop-lines-1-text\").0.value == \"Lovely, thanks.\" timeout=5000 → ok (497 ms)",
+        "680: act id=prop-lines-1-clip action=set_value value=\"game/voice/ren-right.wav\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1420},\"help\":\"\",\"id\":\"prop-lines-1-clip\",\"name\":\"lines 2 clip\",\"ref (510 ms)",
+        "681: until find(\"id=prop-lines-1-clip\").0.value == \"game/voice/ren-right.wav\" timeout=5000 → ok (368 ms)",
+        "682: act id=prop-lines-1-next action=set_value value=\"end\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1510},\"help\":\"\",\"id\":\"prop-lines-1-next\",\"name\":\"lines 2 next\",\"ref (476 ms)",
+        "683: until find(\"id=prop-lines-1-next\").0.value == \"end\" timeout=5000 → ok (381 ms)",
+        "684: act id=prop-lines--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4792,\"y\":1623},\"help\":\"\",\"id\":\"prop-lines--add\",\"name\":\"Add a row to lines\",\"ref\" (78 ms)",
+        "685: until find(\"id=prop-lines\").0.name == \"lines, 3 rows\" timeout=5000 → ok (562 ms)",
+        "687: act id=prop-lines-2-id action=set_value value=\"wrong\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1329},\"help\":\"\",\"id\":\"prop-lines-2-id\",\"name\":\"lines 3 id\",\"ref\":\"W (483 ms)",
+        "688: until find(\"id=prop-lines-2-id\").0.value == \"wrong\" timeout=5000 → ok (1001 ms)",
+        "689: act id=prop-lines-2-speaker action=set_value value=\"ren\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1359},\"help\":\"\",\"id\":\"prop-lines-2-speaker\",\"name\":\"lines 3 speaker (499 ms)",
+        "690: until find(\"id=prop-lines-2-speaker\").0.value == \"ren\" timeout=5000 → ok (425 ms)",
+        "691: act id=prop-lines-2-text action=set_value value=\"Hot? Hm. All right, then.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1389},\"help\":\"\",\"id\":\"prop-lines-2-text\",\"name\":\"lines 3 text\",\"ref (974 ms)",
+        "692: until find(\"id=prop-lines-2-text\").0.value == \"Hot? Hm. All right, then.\" timeout=5000 → ok (1188 ms)",
+        "693: act id=prop-lines-2-clip action=set_value value=\"game/voice/ren-wrong.wav\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1419},\"help\":\"\",\"id\":\"prop-lines-2-clip\",\"name\":\"lines 3 clip\",\"ref (594 ms)",
+        "694: until find(\"id=prop-lines-2-clip\").0.value == \"game/voice/ren-wrong.wav\" timeout=5000 → ok (1041 ms)",
+        "695: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (88 ms)"
+      ],
+      "message" : null,
+      "ms" : 43466,
+      "notes" : [
+
+      ],
+      "row" : 10,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Ren's order: three lines, the regular's question offering two choices, each setting the order's flags (a map in a row of a list in a row of a list).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 20,
+      "checks" : [
+        {
+          "actual" : "\"Dialogue\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"Dialogue\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add dialogue-4\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add dialogue-4\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Yuki's order\"",
+          "check" : "find(\"id=field-name\").0.value == \"Yuki's order\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"lines, 1 row\"",
+          "check" : "find(\"id=prop-lines\").0.name == \"lines, 1 row\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"yuki\"",
+          "check" : "find(\"id=prop-lines-0-speaker\").0.value == \"yuki\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Just a green tea for me, please.\"",
+          "check" : "find(\"id=prop-lines-0-text\").0.value == \"Just a green tea for me, please.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"game/voice/yuki-ask.wav\"",
+          "check" : "find(\"id=prop-lines-0-clip\").0.value == \"game/voice/yuki-ask.wav\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-0\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"green-tea\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-id\").0.value == \"green-tea\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Green tea, coming up.\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-text\").0.value == \"Green tea, coming up.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"right\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-to\").0.value == \"right\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-0-set\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-0-set-ordered3\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-set-ordered3\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-0-set-right3\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=prop-lines-0-choices-0-set-right3\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-1\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"coffee\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-id\").0.value == \"coffee\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"One black coffee.\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-text\").0.value == \"One black coffee.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"wrong\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-to\").0.value == \"wrong\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-1-set\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-1-set-ordered3\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=prop-lines-0-choices-1-set-ordered3\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=prop-lines-0-choices-1-set-right3\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"lines, 2 rows\"",
+          "check" : "find(\"id=prop-lines\").0.name == \"lines, 2 rows\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"right\"",
+          "check" : "find(\"id=prop-lines-1-id\").0.value == \"right\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"yuki\"",
+          "check" : "find(\"id=prop-lines-1-speaker\").0.value == \"yuki\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Thank you!\"",
+          "check" : "find(\"id=prop-lines-1-text\").0.value == \"Thank you!\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"game/voice/yuki-right.wav\"",
+          "check" : "find(\"id=prop-lines-1-clip\").0.value == \"game/voice/yuki-right.wav\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"end\"",
+          "check" : "find(\"id=prop-lines-1-next\").0.value == \"end\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"lines, 3 rows\"",
+          "check" : "find(\"id=prop-lines\").0.name == \"lines, 3 rows\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"wrong\"",
+          "check" : "find(\"id=prop-lines-2-id\").0.value == \"wrong\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"yuki\"",
+          "check" : "find(\"id=prop-lines-2-speaker\").0.value == \"yuki\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"That's not what I said. But fine.\"",
+          "check" : "find(\"id=prop-lines-2-text\").0.value == \"That's not what I said. But fine.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"game/voice/yuki-wrong.wav\"",
+          "check" : "find(\"id=prop-lines-2-clip\").0.value == \"game/voice/yuki-wrong.wav\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/rush-built.vrmxs 48 nodes unsaved changes valid hash c240420fa03f5244\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "700: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3159,\"y\":171},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (77 ms)",
+        "701: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":3,\"x\":2694,\"y\":223},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/1/ (89 ms)",
+        "703: keys down → {\"sent\":true} (110 ms)",
+        "704: act surface=app role=menuitem name=\"Dialogue\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":2681,\"y\":223},\"id\":\"_popUpItemAction:\",\"name\":\"Dialogue\",\"ref\":\"A/0/0/1/20@80b9\" (89 ms)",
+        "705: until find(\"role=popupbutton name='Node type to add'\").0.value == \"Dialogue\" timeout=5000 → ok (76 ms)",
+        "706: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":2702,\"y\":221},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (83 ms)",
+        "707: until find(\"id=undo\").0.name == \"Undo Add dialogue-4\" timeout=5000 → ok (552 ms)",
+        "708: act id=field-name action=set_value value=\"Yuki's order\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4909,\"y\":393},\"help\":\"\",\"id\":\"field-name\",\"name\":\"Name\",\"ref\":\"W:VRMXG Edito (485 ms)",
+        "709: until find(\"id=field-name\").0.value == \"Yuki's order\" timeout=5000 → ok (550 ms)",
+        "710: act id=prop-lines--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4792,\"y\":695},\"help\":\"\",\"id\":\"prop-lines--add\",\"name\":\"Add a row to lines\",\"ref\": (75 ms)",
+        "711: until find(\"id=prop-lines\").0.name == \"lines, 1 row\" timeout=5000 → ok (1374 ms)",
+        "713: act id=prop-lines-0-speaker action=set_value value=\"yuki\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":183,\"x\":4876,\"y\":750},\"help\":\"\",\"id\":\"prop-lines-0-speaker\",\"name\":\"lines 1 speaker\" (468 ms)",
+        "714: until find(\"id=prop-lines-0-speaker\").0.value == \"yuki\" timeout=5000 → ok (1070 ms)",
+        "715: act id=prop-lines-0-text action=set_value value=\"Just a green tea for me, please.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":183,\"x\":4876,\"y\":780},\"help\":\"\",\"id\":\"prop-lines-0-text\",\"name\":\"lines 1 text\",\"ref\" (538 ms)",
+        "716: until find(\"id=prop-lines-0-text\").0.value == \"Just a green tea for me, please.\" timeout=5000 → ok (1001 ms)",
+        "717: act id=prop-lines-0-clip action=set_value value=\"game/voice/yuki-ask.wav\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":183,\"x\":4876,\"y\":810},\"help\":\"\",\"id\":\"prop-lines-0-clip\",\"name\":\"lines 1 clip\",\"ref\" (499 ms)",
+        "718: until find(\"id=prop-lines-0-clip\").0.value == \"game/voice/yuki-ask.wav\" timeout=5000 → ok (1287 ms)",
+        "719: act id=prop-lines-0-choices--set action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":69,\"x\":4876,\"y\":985},\"help\":\"\",\"id\":\"prop-lines-0-choices--set\",\"name\":\"Set lines 1 choi (108 ms)",
+        "720: until find(\"id=prop-lines-0-choices-0\").count == 1 timeout=5000 → ok (1226 ms)",
+        "722: act id=prop-lines-0-choices-0-id action=set_value value=\"green-tea\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1005},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-id\",\"name\":\"lines 1 cho (483 ms)",
+        "723: until find(\"id=prop-lines-0-choices-0-id\").0.value == \"green-tea\" timeout=5000 → ok (1002 ms)",
+        "724: act id=prop-lines-0-choices-0-text action=set_value value=\"Green tea, coming up.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1036},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-text\",\"name\":\"lines 1 c (486 ms)",
+        "725: until find(\"id=prop-lines-0-choices-0-text\").0.value == \"Green tea, coming up.\" timeout=5000 → ok (1011 ms)",
+        "726: act id=prop-lines-0-choices-0-to action=set_value value=\"right\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1066},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-to\",\"name\":\"lines 1 cho (462 ms)",
+        "727: until find(\"id=prop-lines-0-choices-0-to\").0.value == \"right\" timeout=5000 → ok (618 ms)",
+        "728: act id=prop-lines-0-choices-0-set--set action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":44,\"x\":4968,\"y\":1123},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--set\",\"name\":\"Set lines (68 ms)",
+        "729: until find(\"id=prop-lines-0-choices-0-set\").count == 1 timeout=5000 → ok (630 ms)",
+        "730: act id=prop-lines-0-choices-0-set--newkey action=set_value value=ordered3 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":18,\"x\":4976,\"y\":1123},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--newkey\",\"name\":\"Ne (475 ms)",
+        "731: act id=prop-lines-0-choices-0-set--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":47,\"x\":4998,\"y\":1123},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--addkey\",\"name\":\"Add a  (72 ms)",
+        "732: until find(\"id=prop-lines-0-choices-0-set-ordered3\").count == 1 timeout=5000 → ok (569 ms)",
+        "733: act id=prop-lines-0-choices-0-set-ordered3 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":10,\"w\":2,\"x\":5052,\"y\":1123},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set-ordered3\",\"name\":\"lines  (104 ms)",
+        "734: until find(\"id=prop-lines-0-choices-0-set-ordered3\").0.value == \"1\" timeout=5000 → ok (581 ms)",
+        "735: act id=prop-lines-0-choices-0-set--newkey action=set_value value=right3 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":18,\"x\":4976,\"y\":1170},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--newkey\",\"name\":\"Ne (508 ms)",
+        "736: act id=prop-lines-0-choices-0-set--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":47,\"x\":4998,\"y\":1170},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set--addkey\",\"name\":\"Add a  (75 ms)",
+        "737: until find(\"id=prop-lines-0-choices-0-set-right3\").count == 1 timeout=5000 → ok (582 ms)",
+        "738: act id=prop-lines-0-choices-0-set-right3 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":10,\"w\":2,\"x\":5052,\"y\":1170},\"help\":\"\",\"id\":\"prop-lines-0-choices-0-set-right3\",\"name\":\"lines 1  (96 ms)",
+        "739: until find(\"id=prop-lines-0-choices-0-set-right3\").0.value == \"1\" timeout=5000 → ok (702 ms)",
+        "740: act id=prop-lines-0-choices--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4884,\"y\":1248},\"help\":\"\",\"id\":\"prop-lines-0-choices--add\",\"name\":\"Add a row to li (492 ms)",
+        "741: until find(\"id=prop-lines-0-choices-1\").count == 1 timeout=5000 → ok (839 ms)",
+        "743: act id=prop-lines-0-choices-1-id action=set_value value=\"coffee\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1268},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-id\",\"name\":\"lines 1 cho (475 ms)",
+        "744: until find(\"id=prop-lines-0-choices-1-id\").0.value == \"coffee\" timeout=5000 → ok (417 ms)",
+        "745: act id=prop-lines-0-choices-1-text action=set_value value=\"One black coffee.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1298},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-text\",\"name\":\"lines 1 c (487 ms)",
+        "746: until find(\"id=prop-lines-0-choices-1-text\").0.value == \"One black coffee.\" timeout=5000 → ok (470 ms)",
+        "747: act id=prop-lines-0-choices-1-to action=set_value value=\"wrong\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4968,\"y\":1328},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-to\",\"name\":\"lines 1 cho (474 ms)",
+        "748: until find(\"id=prop-lines-0-choices-1-to\").0.value == \"wrong\" timeout=5000 → ok (443 ms)",
+        "749: act id=prop-lines-0-choices-1-set--set action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":44,\"x\":4968,\"y\":1386},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--set\",\"name\":\"Set lines (80 ms)",
+        "750: until find(\"id=prop-lines-0-choices-1-set\").count == 1 timeout=5000 → ok (756 ms)",
+        "751: act id=prop-lines-0-choices-1-set--newkey action=set_value value=ordered3 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":18,\"x\":4976,\"y\":1386},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--newkey\",\"name\":\"Ne (503 ms)",
+        "752: act id=prop-lines-0-choices-1-set--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":47,\"x\":4998,\"y\":1386},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--addkey\",\"name\":\"Add a  (62 ms)",
+        "753: until find(\"id=prop-lines-0-choices-1-set-ordered3\").count == 1 timeout=5000 → ok (635 ms)",
+        "754: act id=prop-lines-0-choices-1-set-ordered3 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":10,\"w\":2,\"x\":5052,\"y\":1386},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set-ordered3\",\"name\":\"lines  (77 ms)",
+        "755: until find(\"id=prop-lines-0-choices-1-set-ordered3\").0.value == \"1\" timeout=5000 → ok (568 ms)",
+        "756: act id=prop-lines-0-choices-1-set--newkey action=set_value value=right3 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":18,\"x\":4976,\"y\":1433},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--newkey\",\"name\":\"Ne (468 ms)",
+        "757: act id=prop-lines-0-choices-1-set--addkey action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":47,\"x\":4998,\"y\":1433},\"help\":\"\",\"id\":\"prop-lines-0-choices-1-set--addkey\",\"name\":\"Add a  (76 ms)",
+        "758: until find(\"id=prop-lines-0-choices-1-set-right3\").count == 1 timeout=5000 → ok (525 ms)",
+        "759: act id=prop-lines--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4792,\"y\":1537},\"help\":\"\",\"id\":\"prop-lines--add\",\"name\":\"Add a row to lines\",\"ref\" (94 ms)",
+        "760: until find(\"id=prop-lines\").0.name == \"lines, 2 rows\" timeout=5000 → ok (606 ms)",
+        "762: act id=prop-lines-1-id action=set_value value=\"right\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1329},\"help\":\"\",\"id\":\"prop-lines-1-id\",\"name\":\"lines 2 id\",\"ref\":\"W (480 ms)",
+        "763: until find(\"id=prop-lines-1-id\").0.value == \"right\" timeout=5000 → ok (610 ms)",
+        "764: act id=prop-lines-1-speaker action=set_value value=\"yuki\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1359},\"help\":\"\",\"id\":\"prop-lines-1-speaker\",\"name\":\"lines 2 speaker (486 ms)",
+        "765: until find(\"id=prop-lines-1-speaker\").0.value == \"yuki\" timeout=5000 → ok (464 ms)",
+        "766: act id=prop-lines-1-text action=set_value value=\"Thank you!\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1389},\"help\":\"\",\"id\":\"prop-lines-1-text\",\"name\":\"lines 2 text\",\"ref (500 ms)",
+        "767: until find(\"id=prop-lines-1-text\").0.value == \"Thank you!\" timeout=5000 → ok (445 ms)",
+        "768: act id=prop-lines-1-clip action=set_value value=\"game/voice/yuki-right.wav\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1420},\"help\":\"\",\"id\":\"prop-lines-1-clip\",\"name\":\"lines 2 clip\",\"ref (505 ms)",
+        "769: until find(\"id=prop-lines-1-clip\").0.value == \"game/voice/yuki-right.wav\" timeout=5000 → ok (447 ms)",
+        "770: act id=prop-lines-1-next action=set_value value=\"end\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1510},\"help\":\"\",\"id\":\"prop-lines-1-next\",\"name\":\"lines 2 next\",\"ref (503 ms)",
+        "771: until find(\"id=prop-lines-1-next\").0.value == \"end\" timeout=5000 → ok (404 ms)",
+        "772: act id=prop-lines--add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":49,\"x\":4792,\"y\":1623},\"help\":\"\",\"id\":\"prop-lines--add\",\"name\":\"Add a row to lines\",\"ref\" (83 ms)",
+        "773: until find(\"id=prop-lines\").0.name == \"lines, 3 rows\" timeout=5000 → ok (625 ms)",
+        "775: act id=prop-lines-2-id action=set_value value=\"wrong\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1329},\"help\":\"\",\"id\":\"prop-lines-2-id\",\"name\":\"lines 3 id\",\"ref\":\"W (490 ms)",
+        "776: until find(\"id=prop-lines-2-id\").0.value == \"wrong\" timeout=5000 → ok (1255 ms)",
+        "777: act id=prop-lines-2-speaker action=set_value value=\"yuki\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1359},\"help\":\"\",\"id\":\"prop-lines-2-speaker\",\"name\":\"lines 3 speaker (526 ms)",
+        "778: until find(\"id=prop-lines-2-speaker\").0.value == \"yuki\" timeout=5000 → ok (1114 ms)",
+        "779: act id=prop-lines-2-text action=set_value value=\"That's not what I said. But fine.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1389},\"help\":\"\",\"id\":\"prop-lines-2-text\",\"name\":\"lines 3 text\",\"ref (530 ms)",
+        "780: until find(\"id=prop-lines-2-text\").0.value == \"That's not what I said. But fine.\" timeout=5000 → ok (1093 ms)",
+        "781: act id=prop-lines-2-clip action=set_value value=\"game/voice/yuki-wrong.wav\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":166,\"x\":4876,\"y\":1419},\"help\":\"\",\"id\":\"prop-lines-2-clip\",\"name\":\"lines 3 clip\",\"ref (512 ms)",
+        "782: until find(\"id=prop-lines-2-clip\").0.value == \"game/voice/yuki-wrong.wav\" timeout=5000 → ok (1051 ms)",
+        "783: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (104 ms)"
+      ],
+      "message" : null,
+      "ms" : 42340,
+      "notes" : [
+
+      ],
+      "row" : 11,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Yuki's order: three lines, the regular's question offering two choices, each setting the order's flags (a map in a row of a list in a row of a list).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 21,
+      "checks" : [
+        {
+          "actual" : "1",
+          "check" : "find(\"id=add-prefabs-door-vrmxs\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add door\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add door\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"door, Instance, 6 inside\"",
+          "check" : "find(\"id=node-door\").0.name contains \"inside\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-door/hinge\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=inspector-inner\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"12\"",
+          "check" : "find(\"id=prop-mass\").0.value == \"12\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=ov-mass\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Override door/hinge.mass\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Override door/hinge.mass\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"mass overrides the prefab (prefab: 12): revert\"",
+          "check" : "find(\"id=ov-mass\").0.name == \"mass overrides the prefab (prefab: 12): revert\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"door, Instance, overridden\"",
+          "check" : "find(\"id=node-door\").0.name contains \"overridden\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=ov-mass\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"12\"",
+          "check" : "find(\"id=prop-mass\").0.value == \"12\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Revert door/hinge.mass\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Revert door/hinge.mass\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=ov-mass\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=ov-mass\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=node-door\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/rush-built.vrmxs 48 nodes unsaved changes valid hash c240420fa03f5244\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "788: act id=assets-search action=set_value value=door → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":1315,\"x\":3446,\"y\":1538},\"help\":\"\",\"id\":\"assets-search\",\"name\":\"Search assets\",\"ref\": (497 ms)",
+        "789: until find(\"id=add-prefabs-door-vrmxs\").count == 1 timeout=10000 → ok (41 ms)",
+        "790: act id=add-prefabs-door-vrmxs action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":20,\"w\":99,\"x\":3392,\"y\":1681},\"help\":\"Add as Instance\",\"id\":\"add-prefabs-door-vrmxs\",\"name\":\"Add (44 ms)",
+        "791: until find(\"id=undo\").0.name == \"Undo Add door\" timeout=10000 → ok (1416 ms)",
+        "792: until find(\"id=node-door\").0.name contains \"inside\" timeout=10000 → ok (83 ms)",
+        "793: act id=fold-door action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":19,\"w\":14,\"x\":2631,\"y\":1459},\"help\":\"\",\"id\":\"fold-door\",\"name\":\"Expand door\",\"ref\":\"W:VRMXG Edi (48 ms)",
+        "794: until find(\"id=node-door/hinge\").count == 1 → ok (51 ms)",
+        "795: act id=node-door/hinge action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":2609,\"y\":1529},\"help\":\"\",\"id\":\"node-door/hinge\",\"name\":\"door/hinge, RigidBody, p (47 ms)",
+        "796: until find(\"id=inspector-inner\").count == 1 → ok (58 ms)",
+        "797: expect find(\"id=prop-mass\").0.value == \"12\" → ok (34 ms)",
+        "798: expect find(\"id=ov-mass\").count == 0 → ok (41 ms)",
+        "799: act id=prop-mass action=set_value value=20 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":136,\"x\":4923,\"y\":680},\"help\":\"\",\"id\":\"prop-mass\",\"name\":\"mass\",\"ref\":\"W:VRMXG Editor (456 ms)",
+        "800: until find(\"id=undo\").0.name == \"Undo Override door/hinge.mass\" timeout=5000 → ok (382 ms)",
+        "801: expect find(\"id=ov-mass\").0.name == \"mass overrides the prefab (prefab: 12): revert\" → ok (568 ms)",
+        "802: expect find(\"id=node-door\").0.name contains \"overridden\" → ok (62 ms)",
+        "803: shot \"the door's hinge mass overridden\" (273 ms)",
+        "804: act id=ov-mass action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":13,\"w\":13,\"x\":4784,\"y\":688},\"help\":\"Overridden: the prefab has 12. Click to revert.\",\"id\":\"ov-m (53 ms)",
+        "805: until find(\"id=ov-mass\").count == 0 → ok (54 ms)",
+        "806: expect find(\"id=prop-mass\").0.value == \"12\" → ok (572 ms)",
+        "807: expect find(\"id=undo\").0.name == \"Undo Revert door/hinge.mass\" → ok (797 ms)",
+        "808: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":52,\"x\":4010,\"y\":171},\"help\":\"Revert door/hinge.mass\",\"id\":\"undo\",\"name\":\"Undo Revert doo (64 ms)",
+        "809: until find(\"id=ov-mass\").count == 1 → ok (601 ms)",
+        "810: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":52,\"x\":4010,\"y\":171},\"help\":\"Override door/hinge.mass\",\"id\":\"undo\",\"name\":\"Undo Override (60 ms)",
+        "811: until find(\"id=ov-mass\").count == 0 → ok (589 ms)",
+        "812: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":52,\"x\":4010,\"y\":171},\"help\":\"Add door\",\"id\":\"undo\",\"name\":\"Undo Add door\",\"ref\":\"W:VRMXG (62 ms)",
+        "813: until find(\"id=node-door\").count == 0 timeout=5000 → ok (1321 ms)",
+        "814: act id=assets-search action=set_value value=\" \" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":1315,\"x\":3446,\"y\":1538},\"help\":\"\",\"id\":\"assets-search\",\"name\":\"Search assets\",\"ref\": (473 ms)",
+        "815: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (353 ms)"
+      ],
+      "message" : null,
+      "ms" : 9410,
+      "notes" : [
+        "shot 1: the door's hinge mass overridden"
+      ],
+      "row" : 12,
+      "section" : "",
+      "shots" : [
+        "apps/editor-mac/docs/hand-test/results/m5-level-webgpu/shots/r12-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "A door prefab placed from the assets panel; a prop of its hinge overridden in the inspector, marked as an override (the dot, the Overrides list), reverted by its dot; the door taken out again with Undo, so the level is as committed.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 22,
+      "checks" : [
+        {
+          "actual" : "\"Saved game/rush-built.vrmxs · 10800 bytes · c240420fa03f5244\"",
+          "check" : "find(\"id=saved\").0.name matches \"^Saved game/rush-built.vrmxs · [0-9]+ bytes · [0-9a-f]{16}$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Reopened game/rush-built.vrmxs: same bytes as saved, valid\"",
+          "check" : "find(\"id=verify-result\").0.name == \"Reopened game/rush-built.vrmxs: same bytes as saved, valid\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/rush-built.vrmxs 48 nodes saved valid hash c240420fa03f5244\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene game/rush-built.vrmxs 48 nodes saved valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "820: act id=save action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":47,\"x\":3867,\"y\":171},\"help\":\"\",\"id\":\"save\",\"name\":\"Save\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (32 ms)",
+        "821: until find(\"id=saved\").0.name matches \"^Saved game/rush-built.vrmxs · [0-9]+ bytes · [0-9a-f]{16}$\" timeout=20000 → ok (57 ms)",
+        "822: act id=verify action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":127,\"x\":3554,\"y\":1743},\"help\":\"\",\"id\":\"verify\",\"name\":\"Reopen and compare\",\"ref\":\"W:VRMX (43 ms)",
+        "823: until find(\"id=verify-result\").0.name == \"Reopened game/rush-built.vrmxs: same bytes as saved, valid\" timeout=30000 → ok (585 ms)",
+        "824: expect find(\"id=doc-state\").0.name matches \"^Scene game/rush-built.vrmxs 48 nodes saved valid \" → ok (23 ms)",
+        "825: shot \"the level built\" (269 ms)"
+      ],
+      "message" : null,
+      "ms" : 1235,
+      "notes" : [
+        "shot 1: the level built"
+      ],
+      "row" : 13,
+      "section" : "",
+      "shots" : [
+        "apps/editor-mac/docs/hand-test/results/m5-level-webgpu/shots/r13-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Saved, and read back from disk the same bytes, valid; the file is what rush-level.mjs compares with the committed level.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "apps/editor-mac/docs/hand-test/HAND-TEST-M5-LEVEL.scenario.md",
+  "summary" : "13 rows: 13 passed, 0 failed, 0 need you; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}

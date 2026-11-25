@@ -6,15 +6,16 @@ Run `apps/editor-mac/scripts/build.sh`, launch the app once (its container must 
 `game/rush-built.vrmxs`: the level's room, its game layer taken out), then, holding the GPU lock,
 `appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M5-LEVEL.scenario.md`, and last
 `node acceptance/m5/rush-level.mjs compare <container>/tmp/project-w10-level/game/rush-built.vrmxs`. No row types JSON:
-nodes come from the toolbar and the asset list, maps and lists are edited key by key and row by row, conditions through
-their test menus. The editor can't attach a behaviour or wire a connection (AB-T-0638), so the room keeps the behaviours
+nodes come from the toolbar and the assets panel (the till dragged onto the viewport with the real pointer, so the Mac
+must be unlocked), maps and lists are edited key by key and row by row, conditions through their test menus; a door
+prefab's override is made, seen and reverted. The editor can't attach a behaviour or wire a connection (AB-T-0638), so the room keeps the behaviours
 it has and the game layer's three `tableZone` behaviours and the level's connections are not built here.
 
 ```scenario
 app: VRMXG Editor
 launch: ../../build/VRMXGEditor.app
 checklist: ../HAND-TEST-M5-LEVEL.md
-env: {"VRMXG_SHELL_PROJECT": "project-w10-level"}
+env: {"VRMXG_SHELL_PROJECT": "project-w10-level", "VRMXG_SHELL_SETTINGS": "w10-settings.json", "VRMXG_SHELL_CACHE": "w10-cache"}
 fresh: false
 ```
 
@@ -26,6 +27,7 @@ fresh: false
   act id=file-name action=set_value value=game/rush-built.vrmxs
   act id=open-file action=press
   until find("id=doc-state").0.name matches "^Scene game/rush-built.vrmxs 26 nodes saved valid " timeout=90000
+  expect find("id=renderer").0.name == "Renderer WebGPU"
   expect find("id=node-aoi").count == 1
   expect find("id=node-hana-1").count == 1
   shot "the room"
@@ -385,9 +387,15 @@ fresh: false
   expect find("id=doc-state").0.name matches " valid "   # every edit kept the scene valid
   ```
 
-- [ ] The three trays and the till from the asset list, each named, placed and given the state it starts in.
+- [ ] The till dragged from the assets panel onto the viewport (the real pointer), and the three trays added from the panel; each named, placed and given the state it starts in.
   ```steps
-  act id=add-game-items-till-vrmxi action=press
+  act id=assets-search action=set_value value=till   # the panel narrowed to this file
+  until find("id=asset-game-items-till-vrmxi").count == 1 timeout=10000
+  find id=asset-game-items-till-vrmxi
+  set FROM = $.0.ref
+  find name=Viewport exact=true
+  set TO = $.0.ref
+  pointer drag ref="${FROM}" to_ref="${TO}" steps=30   # the till's tile dropped on the viewport: placed where it lands
   until find("id=undo").0.name == "Undo Add till" timeout=10000
   act id=field-name action=set_value value="Till"
   until find("id=field-name").0.value == "Till" timeout=5000
@@ -399,7 +407,9 @@ fresh: false
   until find("id=pos-z").0.value == "-3.95" timeout=5000
   act id=prop-state action=set_value value="locked"
   until find("id=prop-state").0.value == "locked" timeout=5000
-  act id=add-game-items-order-1-vrmxi action=press
+  act id=assets-search action=set_value value=order-1   # the panel narrowed to this file
+  until find("id=asset-game-items-order-1-vrmxi").count == 1 timeout=10000
+  act id=add-game-items-order-1-vrmxi action=press   # the panel's Add, for the trays
   until find("id=undo").0.name == "Undo Add order-1" timeout=10000
   act id=field-name action=set_value value="Order for table 1"
   until find("id=field-name").0.value == "Order for table 1" timeout=5000
@@ -411,7 +421,9 @@ fresh: false
   until find("id=pos-z").0.value == "-3.95" timeout=5000
   act id=prop-state action=set_value value="waiting"
   until find("id=prop-state").0.value == "waiting" timeout=5000
-  act id=add-game-items-order-2-vrmxi action=press
+  act id=assets-search action=set_value value=order-2   # the panel narrowed to this file
+  until find("id=asset-game-items-order-2-vrmxi").count == 1 timeout=10000
+  act id=add-game-items-order-2-vrmxi action=press   # the panel's Add, for the trays
   until find("id=undo").0.name == "Undo Add order-2" timeout=10000
   act id=field-name action=set_value value="Order for table 2"
   until find("id=field-name").0.value == "Order for table 2" timeout=5000
@@ -423,7 +435,9 @@ fresh: false
   until find("id=pos-z").0.value == "-3.95" timeout=5000
   act id=prop-state action=set_value value="waiting"
   until find("id=prop-state").0.value == "waiting" timeout=5000
-  act id=add-game-items-order-3-vrmxi action=press
+  act id=assets-search action=set_value value=order-3   # the panel narrowed to this file
+  until find("id=asset-game-items-order-3-vrmxi").count == 1 timeout=10000
+  act id=add-game-items-order-3-vrmxi action=press   # the panel's Add, for the trays
   until find("id=undo").0.name == "Undo Add order-3" timeout=10000
   act id=field-name action=set_value value="Order for table 3"
   until find("id=field-name").0.value == "Order for table 3" timeout=5000
@@ -435,6 +449,7 @@ fresh: false
   until find("id=pos-z").0.value == "-3.95" timeout=5000
   act id=prop-state action=set_value value="waiting"
   until find("id=prop-state").0.value == "waiting" timeout=5000
+  act id=assets-search action=set_value value=" "   # a space: no words, the whole list again (set_value needs a value)
   expect find("id=doc-state").0.name matches " valid "   # every edit kept the scene valid
   ```
 
@@ -765,6 +780,38 @@ fresh: false
   until find("id=prop-lines-2-text").0.value == "That's not what I said. But fine." timeout=5000
   act id=prop-lines-2-clip action=set_value value="game/voice/yuki-wrong.wav"
   until find("id=prop-lines-2-clip").0.value == "game/voice/yuki-wrong.wav" timeout=5000
+  expect find("id=doc-state").0.name matches " valid "   # every edit kept the scene valid
+  ```
+
+- [ ] A door prefab placed from the assets panel; a prop of its hinge overridden in the inspector, marked as an override (the dot, the Overrides list), reverted by its dot; the door taken out again with Undo, so the level is as committed.
+  ```steps
+  act id=assets-search action=set_value value=door
+  until find("id=add-prefabs-door-vrmxs").count == 1 timeout=10000
+  act id=add-prefabs-door-vrmxs action=press   # the sample's own door prefab
+  until find("id=undo").0.name == "Undo Add door" timeout=10000
+  until find("id=node-door").0.name contains "inside" timeout=10000   # built: its prefab nodes are in the tree
+  act id=fold-door action=press
+  until find("id=node-door/hinge").count == 1
+  act id=node-door/hinge action=press
+  until find("id=inspector-inner").count == 1   # the inspector edits a prefab node, as overrides
+  expect find("id=prop-mass").0.value == "12"   # the prefab's own mass
+  expect find("id=ov-mass").count == 0   # not overridden: no mark
+  act id=prop-mass action=set_value value=20
+  until find("id=undo").0.name == "Undo Override door/hinge.mass" timeout=5000   # one undo step, an override
+  expect find("id=ov-mass").0.name == "mass overrides the prefab (prefab: 12): revert"   # the mark, with the prefab's value
+  expect find("id=node-door").0.name contains "overridden"   # the tree marks the instance
+  shot "the door's hinge mass overridden"
+  act id=ov-mass action=press   # the dot reverts
+  until find("id=ov-mass").count == 0
+  expect find("id=prop-mass").0.value == "12"
+  expect find("id=undo").0.name == "Undo Revert door/hinge.mass"
+  act id=undo action=press
+  until find("id=ov-mass").count == 1   # Undo brings the override back
+  act id=undo action=press
+  until find("id=ov-mass").count == 0
+  act id=undo action=press   # and the door goes
+  until find("id=node-door").count == 0 timeout=5000
+  act id=assets-search action=set_value value=" "
   expect find("id=doc-state").0.name matches " valid "   # every edit kept the scene valid
   ```
 

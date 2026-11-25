@@ -131,7 +131,8 @@ Chromium and WKWebView (scheme and loopback), on WebGPU and WebGL (`acceptance/m
 Mac game app goes from its title to each ending (`apps/game-mac/docs/HAND-TEST-M5-RUSH.md`) and plays 12 minutes at
 1080p at 60.1 fps in steady play, web process at most 2.25 GB (AB-R-1137; a lost WebGPU device stops the game:
 AB-T-0639). The editor builds the level's game layer by hand with no JSON typed (`apps/editor-mac/docs/HAND-TEST-M5-LEVEL.md`,
-22 of 22 nodes as committed); it can't attach behaviours or wire connections (AB-T-0638), and W6's rows are to come.
+22 of 22 nodes as committed, W6's assets panel and prefab override included, on WebGPU and WebGL); it can't attach
+behaviours or wire connections (AB-T-0638), the one part of check 8 left.
 
 Five streams can start at once: W0, W2, W4, W5 and W7. W4 and W5 both change `apps/editor`, so they run one after
 the other unless their files are kept apart. W8 is small and can go first.
