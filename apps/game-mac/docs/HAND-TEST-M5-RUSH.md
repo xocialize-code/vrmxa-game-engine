@@ -30,3 +30,12 @@ level's four minutes with the briefing answered and nobody served: "Ten o'clock,
 title. Row 4 loaded Slot 1 (the fixture: the recorded win replayed to step 5326, Mira at the open till) and one E won:
 "Not one mistake. Best morning rush ever, Mira!", then the title. An earlier build (b9667d97, before the review's
 replay fixes) passed the same four rows; its first run lost row 2 to an apostrophe in a query.
+
+**Frame rate** (exit check 10, `acceptance/m5/rush-frames.sh`; receipt AB-R-1137): 758 s of the recorded sessions played
+back in this app at 1920×1080 on WebGPU, 8 replays and 24 scene changes. Steady play 60.1 fps (36,424 frames in
+606 s, 2.3 per mille over 25 ms); a world being built at a scene change hitches, worst 667 ms. Web process 0.46 to
+2.25 GB (median 1.53), falling back at every new game; GPU process 0.56 GB at most
+([`hand-test/results/m5-rush-frames/summary.json`](hand-test/results/m5-rush-frames/summary.json)). A second run on the
+final runtime stopped at 425 s when WebKit killed its GPU process after a Metal command buffer failed, while two other
+projects' GPU jobs ran outside the GPU lock ([`m5-rush-frames-gpu-crash/`](hand-test/results/m5-rush-frames-gpu-crash/));
+the game app has no recovery from a lost device yet (AB-T-0639).

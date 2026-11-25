@@ -128,8 +128,10 @@ AB-T-0624, AB-T-0626 to 0632, 0634 and 0635 (AB-T-0631, saves across re-exports,
 the upper-body layer, the till closed before a 240 s clock; lost on time or on two wrong orders. A scripted player wins
 and loses it through the game app in Chromium; both recorded sessions replay to the same per-step hashes in Node,
 Chromium and WKWebView (scheme and loopback), on WebGPU and WebGL (`acceptance/m5/rush.mjs`, `rush-wkwebview.sh`). The
-Mac game app goes from its title to each ending (`apps/game-mac/docs/HAND-TEST-M5-RUSH.md`). The editor can't attach
-behaviours or wire connections (AB-T-0638), so check 8's scenario builds the level's game layer and not those.
+Mac game app goes from its title to each ending (`apps/game-mac/docs/HAND-TEST-M5-RUSH.md`) and plays 12 minutes at
+1080p at 60.1 fps in steady play, web process at most 2.25 GB (AB-R-1137; a lost WebGPU device stops the game:
+AB-T-0639). The editor builds the level's game layer by hand with no JSON typed (`apps/editor-mac/docs/HAND-TEST-M5-LEVEL.md`,
+22 of 22 nodes as committed); it can't attach behaviours or wire connections (AB-T-0638), and W6's rows are to come.
 
 Five streams can start at once: W0, W2, W4, W5 and W7. W4 and W5 both change `apps/editor`, so they run one after
 the other unless their files are kept apart. W8 is small and can go first.

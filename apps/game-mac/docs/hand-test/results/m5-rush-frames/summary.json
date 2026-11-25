@@ -1,6 +1,8 @@
 {
  "check": "M5 exit check 10 (the sample game): ten minutes of play in the Mac game app at 1080p; the web process's memory once a second (AB-T-0620)",
  "canvas": "1920×1080",
+ "stoppedAt": 758,
+ "complete": true,
  "seconds": 758,
  "frames": 44494,
  "fps": 58.7,
