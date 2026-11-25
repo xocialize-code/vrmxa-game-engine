@@ -543,6 +543,18 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
         let plain = ShellAppDelegate(config: ShellConfiguration(appName: "Editor", scheme: "vrmxg-test-plain")).buildMenu()
         #expect(plain.items[1].submenu?.items.map { $0.isSeparatorItem ? "-" : $0.title } == ["Open…", "Open Project…", "-", "Save", "Save As…", "-", "Close Window"])
         #expect(plain.items.compactMap { $0.submenu?.title } == ["Editor", "File", "Edit", "View", "Window"])
+        #expect(plain.items[2].submenu?.items.map { $0.isSeparatorItem ? "-" : $0.title } == ["Undo", "Redo", "-", "Cut", "Copy", "Paste", "Select All"])
+    }
+
+    @Test func appItemsAtTheEndOfTheEditMenuSendTheirEvents() throws {
+        let config = ShellConfiguration(appName: "Editor", scheme: "vrmxg-test-\(UUID().uuidString.prefix(8).lowercased())", pageUndo: true,
+                                        editItems: [ShellMenuItem("Duplicate", event: "duplicate", key: "d")])
+        let d = ShellAppDelegate(config: config)
+        let edit = try #require(d.buildMenu().items[2].submenu)
+        #expect(edit.items.map { $0.isSeparatorItem ? "-" : $0.title } == ["Undo", "Redo", "-", "Cut", "Copy", "Paste", "Select All", "-", "Duplicate"])
+        let dup = try #require(edit.item(withTitle: "Duplicate"))
+        #expect(dup.representedObject as? String == "duplicate" && dup.keyEquivalent == "d" && dup.target === d && dup.action == #selector(ShellAppDelegate.menuOwn(_:)))
+        #expect(edit.item(withTitle: "Copy")?.action == #selector(NSText.copy(_:)), "Copy and Paste stay WebKit's")
     }
 
     @Test func anOpenedDocumentIsServedLikeABinaryOpen() throws {
@@ -644,7 +656,7 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
         #expect((j["blinkR"] as? Double ?? 0) > 0.9, "the picture's left is the person's right eye")
         #expect((j["blinkL"] as? Double ?? 1) < 0.25)
         #expect(((j["geo"] as? [String: Any])?["earL"] as? Double ?? 1) < 0.1, "geo keeps the picture's sides")
-        #expect(vrmxgShellVersion == "0.11.0")
+        #expect(vrmxgShellVersion == "0.12.0")
     }
 }
 

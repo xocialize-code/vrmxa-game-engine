@@ -31,6 +31,7 @@ import { disposeWorld, disposed } from './dispose.js';
 import { saveScene } from './saving.js';
 import { RetiredWorlds } from './worlds.js';
 import { exportGame } from './export-game.js';
+import { ViewportAids } from './viewport/viewport.js';
 import '../../playground/src/sqljs.js'; // vrmxa-core's sql.js for bundles with a database (Mira's)
 
 installPortableMath(); // before anything parses a VRM or steps a world
@@ -78,6 +79,12 @@ export class EditorHost {
     this.snap = true;
     this.gizmo.addEventListener('dragging-changed', (e) => { this.orbit.enabled = !e.value && this.cameraMode === 'orbit'; if (!e.value) this.commitGizmo(); });
     this.box = new BoxHelper(undefined, 0x2f8cff); this.box.visible = false;
+    this.box.material.depthTest = false; // drawn over the frame with the other aids
+    // the edit view's aids (M5 W5, viewport/): outline, shape handles, camera preview, view cube, rectangle select; the gizmo
+    // and the selection box are drawn in its overlay scene too, after the frame, never in the host's scene
+    this.aids = new ViewportAids(this);
+    this.aids.scene.add(this.gizmo.getHelper(), this.box);
+    /** The last nodes copied (a clip, @vrmxg/editor-core): it outlives the scene, so nodes paste into another. */ this.clipboard = null;
     this.ray = new Raycaster();
     this.registry = registry;
     this.project = null; this.sceneRef = null; this.session = null;
@@ -115,12 +122,10 @@ export class EditorHost {
     this.loop();
   }
 
-  /** The view's render host on the chosen backend, with the edit camera, the gizmo and the selection box in its scene. */
+  /** The view's render host on the chosen backend, with the edit camera (the gizmo and the selection box are the aids' overlay's). */
   async _makeHost(backend) {
     const host = await RenderHost.create({ canvas: this.canvas, backend, preserveDrawingBuffer: true, post: this.postOptions() });
     host.camera = this.camera;
-    host.scene.add(this.gizmo.getHelper());
-    host.scene.add(this.box);
     this.host = host;
     this.stats.backend = host.backend;
     this.changed();
@@ -359,6 +364,20 @@ export class EditorHost {
   }
 
   setGizmoMode(mode) { this.gizmo.setMode(mode); this.changed(); }
+
+  /** Turn one of the viewport's aids on or off: 'outline', 'handles' or 'preview' (M5 W5). */
+  setAid(kind, on) { if (kind in this.aids.show) this.aids.show[kind] = !!on; this.changed(); }
+  /** Box select on or off: a plain drag on the viewport draws the selection rectangle (⌘-drag always does). */
+  setBoxSelect(on) { this.aids.boxSelect = !!on; this.changed(); }
+
+  // ---------------------------------------------------------------- duplicate, copy, paste (M5 W5)
+
+  /** Copy the selection (with subtrees): kept as the editor's clipboard and returned, for the system clipboard. → clip or null */
+  copy() { const clip = this.session?.copy() ?? null; if (clip) { this.clipboard = clip; this.changed(); } return clip; }
+  /** Paste a clip (the editor's clipboard by default): fresh ids, one undo step. → the new roots' ids */
+  paste(clip = this.clipboard) { if (!clip) throw new Error('nothing to paste: copy nodes first'); return this.session.paste(clip); }
+  /** Duplicate the selection in place: fresh ids, one undo step. → the copies' ids */
+  duplicate() { return this.session.duplicate(); }
   get gizmoMode() { return this.gizmo.mode; }
 
   setSnap(on) {
@@ -1115,7 +1134,13 @@ export class EditorHost {
           if (this.previewPlaying) this.advancePreview();
           else if (!this._scrubbing && this.host.tree === this.preview?.world.tree) { this.host.render(this.host.last.alpha ?? 1, false); this.drawAngles(); }
         }
-        else { if (this.fly) this.fly.update(dt); else this.orbit.update(dt); if (this.box.visible) this.box.update(); this.host.render(1, false); }
+        else {
+          if (this.fly) this.fly.update(dt); else this.orbit.update(dt); if (this.box.visible) this.box.update();
+          this.aids.beginFrame(); // WebGPU through the post stack: the frame and the aids reach the canvas together (viewport/composite.js)
+          try { this.host.render(1, false); } catch (err) { this.aids.abortFrame(); throw err; }
+          this.aids.draw();
+        }
+        if (this.view !== 'edit' || this.session?.mode === 'playing' || this.live) this.aids.setPageShown(false);
         this.stats.renderMs = this.host.last.renderMs;
       } catch (err) { this.error = String(err?.stack ?? err); if (this.session?.mode === 'playing') this.stop(); console.error(err); }
       if (this._frames.length >= 20) {
