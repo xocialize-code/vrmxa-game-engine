@@ -1,0 +1,283 @@
+{
+  "checklist" : "apps/game-mac/docs/HAND-TEST-M5-RUSH.md",
+  "rows" : [
+    {
+      "checklist_line" : 20,
+      "checks" : [
+        {
+          "actual" : "\"Renderer WebGPU\"",
+          "check" : "find(\"id=renderer\").0.name == \"Renderer WebGPU\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Screen title\"",
+          "check" : "find(\"id=screen\").0.name == \"Screen title\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=load-game enabled=true\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"role=alert\").count == 0",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched The Morning Rush pid 52412, log ~/Library/Caches/AppProbe/logs/VRMXGGame-2026-11-25T171625Z.log",
+        "18: wait id=new-game enabled=true timeout_ms=60000 → found after 539 ms: button \"New Game\" #new-game [W:The Morning Rush/0/0/0/0/0/1/2@978d] (543 ms)",
+        "19: until find(\"id=renderer\").0.name == \"Renderer WebGPU\" timeout=30000 → ok (3 ms)",
+        "20: expect find(\"id=screen\").0.name == \"Screen title\" → ok (2 ms)",
+        "21: expect find(\"id=load-game enabled=true\").count == 1 → ok (2 ms)",
+        "22: expect find(\"role=alert\").count == 0 → ok (2 ms)",
+        "23: shot \"title\" (212 ms)"
+      ],
+      "message" : null,
+      "ms" : 1244,
+      "notes" : [
+        "shot 1: title"
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+        "apps/game-mac/docs/hand-test/results/m5-rush/shots/r1-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The sample game's title menu, on WebGPU, with a save in Slot 1.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 21,
+      "checks" : [
+        {
+          "actual" : "\"Screen playing\"",
+          "check" : "find(\"id=screen\").0.name == \"Screen playing\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/title.vrmxs\"",
+          "check" : "find(\"id=scene\").0.name == \"Scene game/title.vrmxs\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/level.vrmxs\"",
+          "check" : "find(\"id=scene\").0.name == \"Scene game/level.vrmxs\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=hud-goal\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "2",
+          "check" : "find(\"text=Serve the three regulars\").count >= 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"text=Until ten\").count >= 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=dialogue-choice-ready\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "2",
+          "check" : "find(\"text=Here comes Aoi\").count >= 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "28: act id=new-game action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":336,\"x\":3672,\"y\":706},\"help\":\"\",\"id\":\"new-game\",\"name\":\"New Game\",\"ref\":\"W:The Morning R (4 ms)",
+        "29: until find(\"id=screen\").0.name == \"Screen playing\" timeout=30000 → ok (8 ms)",
+        "30: until find(\"id=scene\").0.name == \"Scene game/title.vrmxs\" timeout=30000 → ok (261 ms)",
+        "31: until find(\"id=scene\").0.name == \"Scene game/level.vrmxs\" timeout=60000 → ok (8484 ms)",
+        "32: until find(\"id=hud-goal\").count == 1 timeout=30000 → ok (8 ms)",
+        "33: until find(\"text=Serve the three regulars\").count >= 1 timeout=10000 → ok (24 ms)",
+        "34: expect find(\"text=Until ten\").count >= 1 → ok (5 ms)",
+        "35: wait id=dialogue timeout_ms=30000 → found after 41 ms: group \"Conversation with Hana\" #dialogue [W:The Morning Rush/0/0/0/0/0/1/3@5e97] (41 ms)",
+        "36: until find(\"id=dialogue-choice-ready\").count == 1 timeout=20000 → ok (7069 ms)",
+        "38: keys return → {\"sent\":true} (113 ms)",
+        "39: until find(\"text=Here comes Aoi\").count >= 1 timeout=10000 → ok (6 ms)",
+        "40: shot \"briefed\" (205 ms)"
+      ],
+      "message" : null,
+      "ms" : 16910,
+      "notes" : [
+        "shot 1: briefed"
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+        "apps/game-mac/docs/hand-test/results/m5-rush/shots/r2-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "New Game plays the title scene, then the level; Hana's briefing is answered from the keyboard; the HUD shows the goal and the clock.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 22,
+      "checks" : [
+        {
+          "actual" : "\"Scene game/lost.vrmxs\"",
+          "check" : "find(\"id=scene\").0.name == \"Scene game/lost.vrmxs\"",
+          "ok" : true
+        },
+        {
+          "actual" : "2",
+          "check" : "find(\"text=and the till is still open\").count >= 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/title.vrmxs\"",
+          "check" : "find(\"id=scene\").0.name == \"Scene game/title.vrmxs\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "45: until find(\"id=scene\").0.name == \"Scene game/lost.vrmxs\" timeout=300000 → ok (234968 ms)",
+        "46: until find(\"text=and the till is still open\").count >= 1 timeout=20000 → ok (4 ms)",
+        "47: shot \"lost\" (317 ms)",
+        "48: until find(\"id=scene\").0.name == \"Scene game/title.vrmxs\" timeout=30000 → ok (11641 ms)"
+      ],
+      "message" : null,
+      "ms" : 247104,
+      "notes" : [
+        "shot 1: lost"
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+        "apps/game-mac/docs/hand-test/results/m5-rush/shots/r3-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Left alone, the clock runs out: the game is lost, the lost ending says so, and the title comes back as a new game.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 23,
+      "checks" : [
+        {
+          "actual" : "\"Screen pause\"",
+          "check" : "find(\"id=screen\").0.name == \"Screen pause\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=answer-discard\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Screen title\"",
+          "check" : "find(\"id=screen\").0.name == \"Screen title\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Screen load\"",
+          "check" : "find(\"id=screen\").0.name == \"Screen load\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Loaded Slot 1 at step 5326.\"",
+          "check" : "find(\"id=message\").0.name matches \"^Loaded Slot 1 at step [0-9]+\\\\.$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/level.vrmxs\"",
+          "check" : "find(\"id=scene\").0.name == \"Scene game/level.vrmxs\"",
+          "ok" : true
+        },
+        {
+          "actual" : "4",
+          "check" : "find(\"text=Close the till\").count >= 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/won.vrmxs\"",
+          "check" : "find(\"id=scene\").0.name == \"Scene game/won.vrmxs\"",
+          "ok" : true
+        },
+        {
+          "actual" : "2",
+          "check" : "find(\"text=Not one mistake. Best morning rush ever, Mira!\").count >= 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene game/title.vrmxs\"",
+          "check" : "find(\"id=scene\").0.name == \"Scene game/title.vrmxs\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "53: keys escape → {\"sent\":true} (115 ms)",
+        "54: until find(\"id=screen\").0.name == \"Screen pause\" → ok (7 ms)",
+        "55: act id=quit-to-title action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":320,\"x\":3680,\"y\":867},\"help\":\"\",\"id\":\"quit-to-title\",\"name\":\"Quit to Title\",\"ref\":\"W:The (3 ms)",
+        "56: until find(\"id=answer-discard\").count == 1 timeout=5000 → ok (5 ms)",
+        "57: act id=answer-discard action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":342,\"x\":3669,\"y\":804},\"help\":\"\",\"id\":\"answer-discard\",\"name\":\"Quit to Title Without Savi (7 ms)",
+        "58: until find(\"id=screen\").0.name == \"Screen title\" → ok (8 ms)",
+        "59: act id=load-game action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":45,\"w\":336,\"x\":3672,\"y\":759},\"help\":\"\",\"id\":\"load-game\",\"name\":\"Load Game\",\"ref\":\"W:The Morning (6 ms)",
+        "60: until find(\"id=screen\").0.name == \"Screen load\" → ok (7 ms)",
+        "61: act id=slot-1 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":64,\"w\":395,\"x\":3643,\"y\":541},\"help\":\"\",\"id\":\"slot-1\",\"name\":\"Slot 1: The Morning Rush · level · (5 ms)",
+        "62: until find(\"id=message\").0.name matches \"^Loaded Slot 1 at step [0-9]+\\\\.$\" timeout=60000 → ok (2263 ms)",
+        "63: until find(\"id=scene\").0.name == \"Scene game/level.vrmxs\" timeout=10000 → ok (20 ms)",
+        "64: until find(\"text=Close the till\").count >= 1 timeout=10000 → ok (9 ms)",
+        "66: keys e → {\"sent\":true} (110 ms)",
+        "67: until find(\"id=scene\").0.name == \"Scene game/won.vrmxs\" timeout=30000 → ok (3229 ms)",
+        "68: until find(\"text=Not one mistake. Best morning rush ever, Mira!\").count >= 1 timeout=20000 → ok (4 ms)",
+        "69: shot \"won\" (266 ms)",
+        "70: until find(\"id=scene\").0.name == \"Scene game/title.vrmxs\" timeout=40000 → ok (11731 ms)"
+      ],
+      "message" : null,
+      "ms" : 18489,
+      "notes" : [
+        "shot 1: won"
+      ],
+      "row" : 4,
+      "section" : "",
+      "shots" : [
+        "apps/game-mac/docs/hand-test/results/m5-rush/shots/r4-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "From the title menu, Load Game → Slot 1 (at the till, everyone served) and E close the till: the game is won, the won ending says so, and the title comes back.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "apps/game-mac/docs/hand-test/HAND-TEST-M5-RUSH.scenario.md",
+  "summary" : "4 rows: 4 passed, 0 failed, 0 need you; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}

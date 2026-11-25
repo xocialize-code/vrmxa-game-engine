@@ -27,6 +27,6 @@ case "${1:-}" in
     echo "$app";;
   sample)
     out=${2:?usage: rush-frames.sh sample <out>}; mkdir -p "$out"
-    exec /usr/bin/python3 "$root/apps/editor-mac/scripts/web-footprint.py" --app M5RushFrames.app --out "$out/footprint.json" --every 1 --breakdown-every 15 --until-gone;;
+    exec /usr/bin/python3 "$root/apps/editor-mac/scripts/web-footprint.py" --app M5RushFrames.app --out "$out/footprint.json" --every 1 --breakdown-every 15;;
   *) echo "usage: rush-frames.sh prepare | sample <out>"; exit 2;;
 esac

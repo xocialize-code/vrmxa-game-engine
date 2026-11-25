@@ -31,19 +31,19 @@ fresh: false
   until find("id=scene").0.name == "Scene game/level.vrmxs" timeout=60000   # six seconds of the street, then the cafe
   until find("id=hud-goal").count == 1 timeout=30000
   until find("text=Serve the three regulars").count >= 1 timeout=10000
-  expect find("text=Until ten o'clock").count >= 1   # the clock's label
+  expect find("text=Until ten").count >= 1   # the clock's label, "Until ten o'clock" (a query can't hold an apostrophe)
   wait id=dialogue timeout_ms=30000   # Hana's briefing starts on the level's first step
   until find("id=dialogue-choice-ready").count == 1 timeout=20000   # she asks once her line is said (seven seconds)
   pause 500
   keys return   # "On it!": a recorded choice
-  until find("text=That's the spirit. Here comes Aoi!").count >= 1 timeout=10000
+  until find("text=Here comes Aoi").count >= 1 timeout=10000   # her answer: "That's the spirit. Here comes Aoi!"
   shot "briefed"
   ```
 
 - [ ] Left alone, the clock runs out: the game is lost, the lost ending says so, and the title comes back as a new game.
   ```steps
   until find("id=scene").0.name == "Scene game/lost.vrmxs" timeout=300000   # 240 s on the clock, then three seconds
-  until find("text=Ten o'clock, and the till is still open. We'll do better tomorrow.").count >= 1 timeout=20000
+  until find("text=and the till is still open").count >= 1 timeout=20000   # "Ten o'clock, and the till is still open. We'll do better tomorrow."
   shot "lost"
   until find("id=scene").0.name == "Scene game/title.vrmxs" timeout=30000   # twelve seconds, then the title as a new game
   ```

@@ -30,3 +30,9 @@ It is signed ad hoc; notarising a game for other Macs isn't part of M5.
 [`docs/HAND-TEST-M5-GAME.md`](docs/HAND-TEST-M5-GAME.md) and its scenarios in `docs/hand-test/`: run
 `scripts/build.sh`, launch the app once, `scripts/hand-test-fixtures.sh`, then the two scenarios under the GPU lock.
 Quit the app when done: an app AppProbe launched ignores SIGTERM, and one with unsaved progress asks before it quits.
+
+**The sample game** (M5 W10): `node engine/packages/bundle/src/cli.js content/sample apps/game-mac/build/rush --game
+game/game.json`, then `scripts/build.sh apps/game-mac/build/rush` (`build/morning-rush.app`). Its hand test, from the
+title to each ending, is [`docs/HAND-TEST-M5-RUSH.md`](docs/HAND-TEST-M5-RUSH.md) (fixtures:
+`scripts/hand-test-fixtures-rush.sh`); its frame-rate run is `acceptance/m5/rush-frames.sh` (a copy of the app with the
+recorded sessions beside its build, played back for ten minutes with `VRMXG_QUERY=replay=…&loop=600&stats`).

@@ -17,9 +17,9 @@ walk Mira to a table; the won ending is reached from Slot 1, a save the fixtures
 `acceptance/results/m5-rush/win.json` (`acceptance/m5/rush.mjs`), which the game app replays in WKWebView
 (`acceptance/m5/rush-wkwebview.sh`) and in this app for the frame-rate run (`acceptance/m5/rush-frames.sh`).
 
-- [ ] The sample game's title menu, on WebGPU, with a save in Slot 1.
-- [ ] New Game plays the title scene, then the level; Hana's briefing is answered from the keyboard; the HUD shows the goal and the clock.
-- [ ] Left alone, the clock runs out: the game is lost, the lost ending says so, and the title comes back as a new game.
-- [ ] From the title menu, Load Game → Slot 1 (at the till, everyone served) and E close the till: the game is won, the won ending says so, and the title comes back.
+- [x] The sample game's title menu, on WebGPU, with a save in Slot 1.
+- [x] New Game plays the title scene, then the level; Hana's briefing is answered from the keyboard; the HUD shows the goal and the clock.
+- [x] Left alone, the clock runs out: the game is lost, the lost ending says so, and the title comes back as a new game.
+- [x] From the title menu, Load Game → Slot 1 (at the till, everyone served) and E close the till: the game is won, the won ending says so, and the title comes back.
 
 ## Results
