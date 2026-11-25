@@ -19,6 +19,7 @@ import { makeTake, isTake, takeToSequence, installDirector, demoModel, httpModel
 import { shellTTS, httpTTS } from '@vrmxg/voice';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
 import { EditorSession, assetList, newSequenceDoc, rowsOf } from '@vrmxg/editor-core';
+import { inspectorFields, sharedFields, sharedAxes } from '@vrmxg/editor-ui';
 import { AudioOutput } from '@vrmxg/audio';
 import { exportTake, shellSink, hashSink, hashFrame, readbackFor, captureStill, encodePNG, toBase64, SIZES, RATES, CODECS, framesFor, secondsOf } from '@vrmxg/export';
 import { inShell, call } from '../../shell/js/shell.js';
@@ -38,10 +39,12 @@ const vrmxaCore = { ...vrmxaMain, ...vrmxaAnim };
 const registry = m0Registry();
 const SNAP = { translate: 0.25, rotate: 15, scale: 0.1 };
 /** Node types the Add menu offers (no asset needed). */
-export const ADDABLE = ['Node3D', 'DirectionalLight', 'PointLight', 'SpotLight', 'Environment', 'Camera', 'VirtualCamera', 'CameraBrain', 'Path3D', 'ParticleEmitter', 'Collider', 'RigidBody', 'Area', 'Marker'].filter((t) => registry.get(t) && !registry.get(t).abstract && !registry.get(t).asset?.required);
+export const ADDABLE = ['Node3D', 'DirectionalLight', 'PointLight', 'SpotLight', 'Environment', 'Camera', 'VirtualCamera', 'CameraBrain', 'Path3D', 'ParticleEmitter', 'Collider', 'RigidBody', 'Area', 'Marker', 'AnimationPlayer', 'GameRules', 'GameCounter', 'GameTimer', 'GameGoal', 'Checkpoint', 'Dialogue'] // M5 W4: the game nodes, whose lists and conditions the inspector now edits.filter((t) => registry.get(t) && !registry.get(t).abstract && !registry.get(t).asset?.required);
 
 /** A short digest of a list of frame hashes: two exports with the same digest have the same frames. */
 function digest(list) { return hashValue(list.join(',')); }
+/** A rotation in Euler degrees (Y, then X, then Z) as a quaternion's [x, y, z, w]. */
+const quatFromDeg = (r) => new Quaternion().setFromEuler(new Euler((r[0] * Math.PI) / 180, (r[1] * Math.PI) / 180, (r[2] * Math.PI) / 180, 'YXZ')).toArray();
 
 function download(bytes, name, type) {
   const a = document.createElement('a');
@@ -458,31 +461,54 @@ export class EditorHost {
 
   // ---------------------------------------------------------------- inspector data
 
-  /** The primary selection as the inspector shows it (plain data). */
+  /**
+   * The selection as the inspector shows it (plain data). One node: its fields (M5 W4: generated from the registry by
+   * @vrmxg/editor-ui's inspectorFields, with their conditions). Several (AB-T-0601): the props their types share, mixed
+   * where they differ, and each transform axis its common value or null.
+   */
   inspect() {
-    const n = this.session?.primary ? this.session.node(this.session.primary) : null;
-    if (!n) return null;
+    const s = this.session;
+    const nodes = (s?.selection ?? []).map((id) => s.node(id)).filter(Boolean);
+    if (!nodes.length) return null;
+    const n = nodes.at(-1); // the primary
     const d = describeType(registry, n.type);
-    const props = Object.entries(d.schema.properties.props.properties).map(([key, schema]) => {
-      const meta = d.propMeta[key] ?? {};
-      const widget = meta.nodeRef ? 'node' : meta.widget ?? (schema.enum ? 'enum' : schema.type === 'boolean' ? 'boolean' : schema.type === 'number' || schema.type === 'integer' ? 'number' : schema.type === 'string' ? 'string' : schema.type === 'array' ? 'json' : 'json');
-      return { key, widget, value: structuredClone(n.props?.[key]), default: structuredClone(schema.default), enum: schema.enum ?? null, min: schema.minimum, max: schema.maximum, unit: meta.unit ?? null, description: schema.description ?? '', set: n.props?.[key] !== undefined };
-    });
+    const props = sharedFields(nodes.map((x) => inspectorFields(x === n ? d : describeType(registry, x.type), x)));
+    const tr = nodes.map((x) => this.transformOf(x));
+    const asset = n.asset ? s.doc.assets.find((a) => a.id === n.asset) : null;
+    const types = [...new Set(nodes.map((x) => x.type))];
+    return {
+      id: n.id, ids: nodes.map((x) => x.id), multi: nodes.length > 1, type: n.type, types,
+      name: n.name ?? '', parent: n.parent ?? null, description: types.length === 1 ? d.description : '', asset: asset && nodes.length === 1 ? `${asset.ref} (${asset.type})` : null,
+      p: sharedAxes(tr.map((t) => t.p)), r: sharedAxes(tr.map((t) => t.r)), s: sharedAxes(tr.map((t) => t.s)), props, primaryProps: structuredClone(n.props ?? {}),
+      behaviours: nodes.length === 1 ? (n.behaviours ?? []).map((b) => b.use) : [], nodes: s.doc.nodes.map((x) => x.id),
+      sameType: types.length === 1 ? s.doc.nodes.filter((x) => x.type === n.type).map((x) => x.id) : [],
+    };
+  }
+
+  /** A node's transform as the inspector edits it: position, rotation in Euler degrees (YXZ), scale. */
+  transformOf(n) {
     const t = n.transform ?? {};
     const e = new Euler().setFromQuaternion(new Quaternion().fromArray(t.q ?? [0, 0, 0, 1]), 'YXZ');
     const deg = (r) => Math.round((r * 180) / Math.PI * 1000) / 1000;
-    const asset = n.asset ? this.session.doc.assets.find((a) => a.id === n.asset) : null;
-    return {
-      id: n.id, type: n.type, name: n.name ?? '', parent: n.parent ?? null, description: d.description, asset: asset ? `${asset.ref} (${asset.type})` : null,
-      p: t.p ?? [0, 0, 0], r: [deg(e.x), deg(e.y), deg(e.z)], s: t.s ?? [1, 1, 1], props,
-      behaviours: (n.behaviours ?? []).map((b) => b.use), nodes: this.session.doc.nodes.map((x) => x.id),
-    };
+    return { p: t.p ?? [0, 0, 0], r: [deg(e.x), deg(e.y), deg(e.z)], s: t.s ?? [1, 1, 1] };
   }
 
   /** Set the primary selection's rotation from Euler degrees (Y, then X, then Z: yaw, pitch, roll). */
   setRotationDeg(id, r) {
-    const q = new Quaternion().setFromEuler(new Euler((r[0] * Math.PI) / 180, (r[1] * Math.PI) / 180, (r[2] * Math.PI) / 180, 'YXZ'));
-    this.session.setTransform(id, { q: q.toArray() });
+    this.session.setTransform(id, { q: quatFromDeg(r) });
+  }
+
+  /**
+   * Set one axis of a transform part ('p', 'r' in degrees, 's') on several nodes, each keeping its other axes: one undo
+   * step ("Move 2 nodes"; one node: "Move mira", as before).
+   */
+  setAxisOn(ids, part, axis, value) {
+    const entries = ids.map((id) => {
+      const t = this.transformOf(this.session.node(id));
+      const v = [...t[part]]; v[axis] = value;
+      return { id, t: part === 'r' ? { q: quatFromDeg(v) } : { [part]: v } };
+    });
+    this.session.setTransforms(entries);
   }
 
   assets() { return this.project ? assetList(registry, this.project.files) : []; }

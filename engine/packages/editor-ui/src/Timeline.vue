@@ -6,10 +6,11 @@
 // Shared by the editor and the creator (M4 W5, @vrmxg/editor-ui); what an edit becomes is in timeline-ui.js, tested in Node.
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { TimelineGeometry, snapTargets, snapFrame, SNAP_PX, timecode, CLIP_TRACKS, CHANNEL_TRACKS } from '@vrmxg/editor-core';
+import NumberField from './NumberField.vue'; // M5 W4: frame fields you drag or type arithmetic into
 import { TRACK_TYPES, EASES, needsTarget, itemLabel, selectionOf, isSelected, moveCommand, removeCommand, fieldCommand, trackSpec, clipSpec, keyCommand, nudgeCommand } from './timeline-ui.js';
 
 const props = defineProps({ data: { type: Object, default: null }, disabled: { type: Boolean, default: false } });
-const emit = defineEmits(['cmd', 'scrub', 'transport', 'select']);
+const emit = defineEmits(['cmd', 'scrub', 'transport', 'select', 'gesture']); // gesture: a frame field's drag (M5 W4), one undo step
 
 const HEAD = 190, ROW = 30, RULER = 26;
 const lanes = ref(null);
@@ -230,26 +231,26 @@ defineExpose({ fit, select: (s) => { sel.value = s; } });
             <button v-for="c in d?.cameras ?? []" :id="`tl-cam-${c}`" :key="c" type="button" role="radio" :aria-checked="form.camera === c" :aria-label="`Camera ${c}`" :class="{ on: form.camera === c }" :disabled="disabled" @click="form.camera = c">{{ c }}</button>
           </div>
           <button id="tl-cam-from-view" type="button" aria-label="Camera from view" title="A virtual camera where the editor's view is" :disabled="disabled" @click="emit('transport', 'cameraFromView')">Camera from view</button>
-          <label class="field">Length <input id="tl-shot-length" @focus="$event.target.select()" v-model="form.shotLen" type="number" min="1" aria-label="Shot length" :disabled="disabled"></label>
+          <label class="field">Length <NumberField id="tl-shot-length" label="Shot length" :value="Number(form.shotLen)" :min="1" :step="1" integer :disabled="disabled" @change="form.shotLen = $event" /></label>
           <button id="tl-add-shot" type="button" aria-label="Add shot at playhead" :disabled="disabled" @click="addShot">Add shot</button>
           <button id="tl-add-marker" type="button" aria-label="Add marker at playhead" :disabled="disabled" @click="emit('cmd', 'addMarker', ph(), form.marker || 'marker')">Marker</button>
         </div>
         <div class="tl-form">
           <label class="field">Value <input id="tl-value" @focus="$event.target.select()" v-model="form.value" aria-label="Key value or clip text" :disabled="disabled"></label>
           <label v-if="selectedTrack && CHANNEL_TRACKS.has(selectedTrack.type)" class="field">Channel <input id="tl-channel" @focus="$event.target.select()" v-model="form.channel" aria-label="Channel" :disabled="disabled"></label>
-          <label class="field">Clip <input id="tl-clip-length" @focus="$event.target.select()" v-model="form.clipLen" type="number" min="1" aria-label="Clip length" :disabled="disabled"></label>
+          <label class="field">Clip <NumberField id="tl-clip-length" label="Clip length" :value="Number(form.clipLen)" :min="1" :step="1" integer :disabled="disabled" @change="form.clipLen = $event" /></label>
           <button id="tl-add-key" type="button" aria-label="Add key at playhead" :disabled="disabled || !selectedTrack || CLIP_TRACKS.has(selectedTrack.type)" @click="addKey">Key</button>
           <button id="tl-add-clip" type="button" aria-label="Add clip at playhead" :disabled="disabled || !selectedTrack || !CLIP_TRACKS.has(selectedTrack.type)" @click="addClip">Clip</button>
         </div>
         <div v-if="selectedItem" id="tl-selection" class="tl-form sel" role="group" :aria-label="`Selected ${sel.kind} in ${sel.row}`">
           <template v-if="sel.kind === 'key'">
-            <label class="field">Frame <input id="tl-sel-frame" type="number" :value="selectedItem[0]" aria-label="Key frame" :disabled="disabled" @change="setField('frame', $event.target.value)"></label>
+            <label class="field">Frame <NumberField id="tl-sel-frame" label="Key frame" :value="selectedItem[0]" :step="1" integer :disabled="disabled" @change="setField('frame', $event)" @gesture="emit('gesture', $event)" /></label>
             <label class="field">Value <input id="tl-sel-value" :value="JSON.stringify(selectedItem[1])" aria-label="Key value" :disabled="disabled" @change="setField('value', $event.target.value)"></label>
             <label class="field">Ease <select id="tl-sel-ease" :value="selectedItem[2] ?? ''" aria-label="Key ease" :disabled="disabled" @change="setField('ease', $event.target.value)"><option v-for="e in EASES" :key="e" :value="e">{{ e || '(linear)' }}</option></select></label>
           </template>
           <template v-else>
-            <label class="field">Start <input id="tl-sel-start" type="number" :value="selectedItem.start" aria-label="Start frame" :disabled="disabled" @change="setField('start', $event.target.value)"></label>
-            <label class="field">End <input id="tl-sel-end" type="number" :value="selectedItem.end" aria-label="End frame" :disabled="disabled" @change="setField('end', $event.target.value)"></label>
+            <label class="field">Start <NumberField id="tl-sel-start" label="Start frame" :value="selectedItem.start" :step="1" integer :disabled="disabled" @change="setField('start', $event)" @gesture="emit('gesture', $event)" /></label>
+            <label class="field">End <NumberField id="tl-sel-end" label="End frame" :value="selectedItem.end" :step="1" integer :disabled="disabled" @change="setField('end', $event)" @gesture="emit('gesture', $event)" /></label>
             <label v-if="sel.kind === 'shot'" class="field">Name <input id="tl-sel-name" :value="selectedItem.name ?? ''" aria-label="Shot name" :disabled="disabled" @change="setField('name', $event.target.value)"></label>
             <label v-if="selectedTrack?.type === 'camera'" class="field">Camera <select id="tl-sel-camera" :value="selectedItem.camera" aria-label="Clip camera" :disabled="disabled" @change="setField('camera', $event.target.value)"><option v-for="c in d?.cameras ?? []" :key="c" :value="c">{{ c }}</option></select></label>
             <label v-if="selectedTrack?.type === 'dialogue'" class="field">Text <input id="tl-sel-text" :value="selectedItem.text ?? ''" aria-label="Line text" :disabled="disabled" @change="setField('text', $event.target.value)"></label>

@@ -134,6 +134,8 @@ const select = (id, add) => act(() => ed.session.select([id], { add }));
 // the timeline (M2 W5): sequence commands are one undo step each; scrubs and transport are view state
 const newSequence = () => act(() => ed.newSequence(ui.seqName.endsWith('.vrmxs') ? ui.seqName : `${ui.seqName}.vrmxs`, ui.seqSet));
 const tlCmd = (name, ...args) => act(() => ed.session.seq[name](...args));
+// a frame field's drag (M5 W4): its live moves folded into one undo step on release
+const tlGesture = (kind) => act(() => { const s = ed.session; if (kind === 'begin') s.beginGesture(); else if (kind === 'end') s.endGesture(); else s.cancelGesture(); });
 const tlScrub = (f) => { ed.scrubTo(f); refresh('timeline'); };
 const tlTransport = (what, v) => act(() => {
   if (what === 'play') ed.playPreview();
@@ -155,13 +157,15 @@ const setGizmo = (m) => ed.setGizmoMode(m);
 const setSnap = () => ed.setSnap(ui.snap);
 const setCamera = () => ed.setCameraMode(ui.camera);
 const setDebug = () => ed.setDebug({ ...ui.debug });
+// The inspector edits the whole selection (M5 W4, AB-T-0601): a prop or a transform axis set on every selected node is
+// one undo step; a number field's drag is a gesture, its live edits folded into one step on release (AB-T-0600).
 const onInspector = {
   rename: (v) => act(() => ed.session.rename(ui.inspector.id, v)),
   parent: (p) => act(() => ed.session.reparent(ui.inspector.id, p)),
-  position: (p) => act(() => ed.session.setTransform(ui.inspector.id, { p })),
-  rotation: (r) => act(() => ed.setRotationDeg(ui.inspector.id, r)),
-  scale: (s) => act(() => ed.session.setTransform(ui.inspector.id, { s })),
-  prop: (k, v) => act(() => ed.session.setProp(ui.inspector.id, k, v)),
+  axis: (part, i, v) => act(() => ed.setAxisOn(ui.inspector.ids, part, i, v)),
+  prop: (k, v) => act(() => ed.session.setPropOn(ui.inspector.ids, k, v)),
+  select: (ids, add = true) => act(() => ed.session.select(ids, { add })), // the inspector's Also select and Select every <type>: multi-select without a modifier key
+  gesture: (kind) => act(() => { if (kind === 'begin') ed.session.beginGesture(); else if (kind === 'end') ed.session.endGesture(); else ed.session.cancelGesture(); }),
 };
 
 // drag an asset from the list onto the viewport
@@ -312,7 +316,7 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
 
     <aside class="dock right"><Inspector :data="ui.inspector" v-on="onInspector" /></aside>
 
-    <Timeline v-if="ui.tl" :data="ui.tl" :disabled="ui.mode !== 'editing' || ui.loading" @cmd="tlCmd" @scrub="tlScrub" @transport="tlTransport" />
+    <Timeline v-if="ui.tl" :data="ui.tl" :disabled="ui.mode !== 'editing' || ui.loading" @cmd="tlCmd" @gesture="tlGesture" @scrub="tlScrub" @transport="tlTransport" />
     <section v-else class="assets" aria-label="Assets">
       <div class="dock-head"><h2>Assets</h2><input v-model="ui.assetFilter" type="search" placeholder="Filter" aria-label="Filter assets"></div>
       <ul class="asset-list">

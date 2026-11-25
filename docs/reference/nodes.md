@@ -502,9 +502,9 @@ Sun-like light along the node's -Z. The shadow box is centred on the node.
 | `color` | colour `#rrggbb` | `"#ffffff"` |  |  |
 | `intensity` | number | `2` | ≥ 0 |  |
 | `castShadow` | boolean | `true` |  |  |
-| `shadowPreset` | `low`, `medium`, `high`, `ultra` | `"medium"` |  | Map size 512 / 1024 / 2048 / 4096, with matching bias. |
-| `shadowUpdate` | `always`, `once` | `"always"` |  | "once" renders the map once and keeps it (static sets). |
-| `shadowExtent` | number | `8` | ≥ 0.5 m | Half the width of the shadow box. |
+| `shadowPreset` | `low`, `medium`, `high`, `ultra` | `"medium"` |  | Map size 512 / 1024 / 2048 / 4096, with matching bias. Applies when `castShadow`. |
+| `shadowUpdate` | `always`, `once` | `"always"` |  | "once" renders the map once and keeps it (static sets). Applies when `castShadow`. |
+| `shadowExtent` | number | `8` | ≥ 0.5 m | Half the width of the shadow box. Applies when `castShadow`. |
 
 **Signals**
 
@@ -533,8 +533,8 @@ Omni light with range.
 | `intensity` | number | `1` | ≥ 0 cd |  |
 | `range` | number | `10` | ≥ 0 m |  |
 | `castShadow` | boolean | `false` |  |  |
-| `shadowPreset` | `low`, `medium`, `high`, `ultra` | `"medium"` |  | Map size 512 / 1024 / 2048 / 4096, with matching bias. |
-| `shadowUpdate` | `always`, `once` | `"always"` |  | "once" renders the map once and keeps it (static sets). |
+| `shadowPreset` | `low`, `medium`, `high`, `ultra` | `"medium"` |  | Map size 512 / 1024 / 2048 / 4096, with matching bias. Applies when `castShadow`. |
+| `shadowUpdate` | `always`, `once` | `"always"` |  | "once" renders the map once and keeps it (static sets). Applies when `castShadow`. |
 
 **Signals**
 
@@ -565,8 +565,8 @@ Cone light along the node's -Z.
 | `angle` | number | `30` | 1 to 89 deg | Half-angle of the cone. |
 | `penumbra` | number | `0.2` | 0 to 1 |  |
 | `castShadow` | boolean | `false` |  |  |
-| `shadowPreset` | `low`, `medium`, `high`, `ultra` | `"medium"` |  | Map size 512 / 1024 / 2048 / 4096, with matching bias. |
-| `shadowUpdate` | `always`, `once` | `"always"` |  | "once" renders the map once and keeps it (static sets). |
+| `shadowPreset` | `low`, `medium`, `high`, `ultra` | `"medium"` |  | Map size 512 / 1024 / 2048 / 4096, with matching bias. Applies when `castShadow`. |
+| `shadowUpdate` | `always`, `once` | `"always"` |  | "once" renders the map once and keeps it (static sets). Applies when `castShadow`. |
 
 **Signals**
 
@@ -592,24 +592,24 @@ How the world looks around everything: background, environment lighting, ambient
 | Prop | Type | Default | Range, unit | What |
 |---|---|---|---|---|
 | `background` | `color`, `gradient`, `environment`, `transparent` | `"color"` |  |  |
-| `backgroundColor` | colour `#rrggbb` | `"#c9d3df"` |  |  |
-| `skyTopColor` | colour `#rrggbb` | `"#6f9bd1"` |  |  |
-| `skyHorizonColor` | colour `#rrggbb` | `"#dfe7ef"` |  |  |
+| `backgroundColor` | colour `#rrggbb` | `"#c9d3df"` |  | Applies when `background == 'color'`. |
+| `skyTopColor` | colour `#rrggbb` | `"#6f9bd1"` |  | Applies when `background == 'gradient'`. |
+| `skyHorizonColor` | colour `#rrggbb` | `"#dfe7ef"` |  | Applies when `background == 'gradient'`. |
 | `environment` | `none`, `room` | `"room"` |  | Image-based lighting: none, or a neutral studio room. |
-| `environmentIntensity` | number | `0.4` | ≥ 0 |  |
+| `environmentIntensity` | number | `0.4` | ≥ 0 | Editable when `environment != 'none'`. |
 | `ambientColor` | colour `#rrggbb` | `"#ffffff"` |  |  |
 | `ambientIntensity` | number | `0.6` | ≥ 0 |  |
 | `fog` | `none`, `linear`, `exponential` | `"none"` |  |  |
-| `fogColor` | colour `#rrggbb` | `"#c9d3df"` |  |  |
-| `fogNear` | number | `10` | ≥ 0 m |  |
-| `fogFar` | number | `60` | ≥ 0 m |  |
-| `fogDensity` | number | `0.02` | ≥ 0 |  |
+| `fogColor` | colour `#rrggbb` | `"#c9d3df"` |  | Applies when `fog != 'none'`. |
+| `fogNear` | number | `10` | ≥ 0 m | Applies when `fog == 'linear'`. |
+| `fogFar` | number | `60` | ≥ 0 m | Applies when `fog == 'linear'`. |
+| `fogDensity` | number | `0.02` | ≥ 0 | Applies when `fog == 'exponential'`. |
 | `toneMapping` | `neutral`, `agx`, `aces`, `none` | `"neutral"` |  | Neutral keeps MToon's authored colours. |
 | `exposure` | number | `1` | ≥ 0 |  |
 | `post` | any |  |  | The post stack: a preset ("anime", "clean") or a list of effects [{ effect: edges \| dof \| bloom \| grade \| lut \| toneMapping \| vignette \| grain \| anime \| chromaticAberration \| smaa, …params }]. Lengths in px at 1080p. |
 | `ground` | boolean | `false` |  | A shadow-receiving ground plane at y = 0. |
-| `groundColor` | colour `#rrggbb` | `"#9aa3ad"` |  |  |
-| `groundSize` | number | `40` | ≥ 1 m |  |
+| `groundColor` | colour `#rrggbb` | `"#9aa3ad"` |  | Applies when `ground`. |
+| `groundSize` | number | `40` | ≥ 1 m | Applies when `ground`. |
 
 **Signals**
 
@@ -702,9 +702,9 @@ A collision shape. Under a RigidBody it moves with it; otherwise it is fixed.
 | Prop | Type | Default | Range, unit | Simulated | What |
 |---|---|---|---|---|---|
 | `shape` | `box`, `sphere`, `capsule`, `cylinder`, `convex`, `trimesh` | `"box"` |  | yes |  |
-| `size` | vec3 `[x, y, z]` |  | m | yes | Box extents. |
-| `radius` | number |  | ≥ 0 m | yes |  |
-| `height` | number |  | ≥ 0 m | yes |  |
+| `size` | vec3 `[x, y, z]` |  | m | yes | Box extents. Applies when `shape == 'box'`. |
+| `radius` | number |  | ≥ 0 m | yes | Applies when `shape == 'sphere' \|\| shape == 'capsule' \|\| shape == 'cylinder'`. |
+| `height` | number |  | ≥ 0 m | yes | Applies when `shape == 'capsule' \|\| shape == 'cylinder'`. |
 | `friction` | number | `0.5` | ≥ 0 | yes |  |
 | `restitution` | number | `0` | 0 to 1 | yes |  |
 

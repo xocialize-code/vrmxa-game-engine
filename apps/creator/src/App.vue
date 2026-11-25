@@ -142,6 +142,8 @@ const goToLine = (n) => pane.value?.goToLine(n);
 const pickShot = (id, frame) => { cr.pickShot(id, frame); timeline.value?.select({ row: 'shots', kind: 'shot', id }); refresh('timeline'); };
 const tlSelect = (s) => { cr.selectedShot = s?.kind === 'shot' ? s.id : null; ui.selectedShot = cr.selectedShot; };
 const tlCmd = (name, ...args) => act(() => cr.session.seq[name](...args));
+// a frame field's drag (M5 W4): its live moves folded into one undo step on release
+const tlGesture = (kind) => act(() => { const s = cr.session; if (kind === 'begin') s.beginGesture(); else if (kind === 'end') s.endGesture(); else s.cancelGesture(); });
 const tlScrub = (f) => { cr.scrubTo(f); refresh('timeline'); };
 const tlTransport = (what, v) => act(() => {
   if (what === 'play') cr.playPreview();
@@ -257,7 +259,7 @@ if (inShell) {
 
     <StoryboardStrip class="board" :board="ui.board" :thumbs="ui.thumbs" :beats="ui.beats" :playhead="ui.tl?.playhead ?? -1" :selected="ui.selectedShot" :status="ui.thumbState" @pick="pickShot" @line="goToLine" />
 
-    <Timeline v-if="ui.tl" ref="timeline" class="tl" :data="ui.tl" :disabled="ui.mode !== 'editing' || ui.loading" @cmd="tlCmd" @scrub="tlScrub" @transport="tlTransport" @select="tlSelect" />
+    <Timeline v-if="ui.tl" ref="timeline" class="tl" :data="ui.tl" :disabled="ui.mode !== 'editing' || ui.loading" @cmd="tlCmd" @gesture="tlGesture" @scrub="tlScrub" @transport="tlTransport" @select="tlSelect" />
     <section v-else class="tl empty muted">No sequence: open a short.</section>
 
     <div v-if="ui.ask" class="ask-back">
