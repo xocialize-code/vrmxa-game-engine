@@ -68,6 +68,9 @@ export class SelectionOutline {
       any = true;
       proxy.matrixWorld.copy(src.matrixWorld);
       proxy.layers.mask = src.layers.mask;
+      // a skinned mesh's bind matrices: 'attached' refreshes the inverse from its world matrix in updateMatrixWorld,
+      // which a stand-in never runs, so it takes the source's own each frame (else the character's placement counts twice)
+      if (proxy.isSkinnedMesh) { proxy.bindMode = src.bindMode; proxy.bindMatrix.copy(src.bindMatrix); proxy.bindMatrixInverse.copy(src.bindMatrixInverse); }
     }
     if (!any) return;
     renderer.getDrawingBufferSize(_size);

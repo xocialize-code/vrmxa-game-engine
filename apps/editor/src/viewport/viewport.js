@@ -67,6 +67,7 @@ export class ViewportAids {
       [stage, 'pointermove', (e) => this.onMove(e)],
       [stage, 'pointerup', (e) => this.onUp(e)],
       [stage, 'pointercancel', (e) => this.onUp(e, true)],
+      [stage, 'lostpointercapture', (e) => this.onUp(e, true)], // a release the page never heard (another app took the pointer)
     ];
     for (const [el, ev, fn] of this._listeners) el.addEventListener(ev, fn, { capture: true });
     this.canvas = canvas;
@@ -179,7 +180,11 @@ export class ViewportAids {
     if (!previewPose(node, this.pipCamera, r.width / r.height)) return;
     // renderViews' y runs up from the bottom on WebGL; WebGPU's viewport runs down from the top
     const y = ed.host.renderer.isWebGPURenderer ? (h - r.y - r.height) / h : r.y / h;
-    renderViews(ed.host.renderer, ed.host.scene, [{ camera: this.pipCamera, x: r.x / w, y, w: r.width / w, h: r.height / h }]);
+    // cleared inside its rectangle: the WebGL post stack leaves autoClear off for good, which would draw the preview over
+    // the frame and over depth left from earlier frames
+    const renderer = ed.host.renderer, auto = renderer.autoClear;
+    try { renderer.autoClear = true; renderViews(renderer, ed.host.scene, [{ camera: this.pipCamera, x: r.x / w, y, w: r.width / w, h: r.height / h }]); }
+    finally { renderer.autoClear = auto; }
     this.previewing = id;
     if (this.pipEl) {
       Object.assign(this.pipEl.style, { display: 'block', right: `${r.right}px`, bottom: `${r.bottom}px`, width: `${r.width}px`, height: `${r.height}px` });
@@ -246,6 +251,7 @@ export class ViewportAids {
   onMove(e) {
     const d = this.drag;
     if (!d) { this.hoverAt(e); return; }
+    if (e.buttons === 0) { this.onUp(e, true); return; } // the button came up where the page didn't hear it: the drag is dropped
     e.stopPropagation();
     if (d.kind === 'rect') { d.x1 = e.clientX; d.y1 = e.clientY; this.showRect(); return; }
     this.setRay(e);

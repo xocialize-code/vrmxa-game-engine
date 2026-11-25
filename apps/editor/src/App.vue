@@ -208,8 +208,10 @@ addEventListener('copy', (e) => {
 addEventListener('paste', (e) => {
   if (!nodeEdit()) return;
   let clip = null;
-  try { const v = JSON.parse(e.clipboardData?.getData('text/plain') ?? ''); if (isClip(v)) clip = v; } catch { /* not a clip */ }
-  if (!clip && !ed.clipboard) return;
+  const text = e.clipboardData?.getData('text/plain') ?? '';
+  try { const v = JSON.parse(text); if (isClip(v)) clip = v; } catch { /* not a clip */ }
+  // other text copied since (from another app): not ours to paste nodes over; an empty clipboard falls back to the editor's
+  if (!clip && (text.trim() || !ed.clipboard)) return;
   e.preventDefault();
   pasteNodes(clip ?? ed.clipboard);
 });

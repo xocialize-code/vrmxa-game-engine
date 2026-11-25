@@ -92,8 +92,16 @@ export function dragShape(shape, id, d, { snap = false, symmetric = false } = {}
     }
     case 'sphere': { const radius = len(shape.radius + d); return { shape: { ...shape, radius }, props: { radius }, shift }; }
     case 'capsule': case 'cylinder': {
-      if (id[0] === 'y') { const height = face(1, id[1] === '+' ? 1 : -1, shape.height); return { shape: { ...shape, height }, props: { height }, shift }; }
-      const radius = len(shape.radius + d);
+      // a capsule's height includes its two caps (physics: half-height max(0, height / 2 − radius)): it never gets
+      // shorter than its two caps, nor its radius wider than half its height, so the shape always changes as dragged
+      const capsule = shape.kind === 'capsule';
+      if (id[0] === 'y') {
+        const sign = id[1] === '+' ? 1 : -1, least = capsule ? 2 * shape.radius : 0;
+        const height = Math.max(face(1, sign, shape.height), clean(least));
+        if (!symmetric) shift[1] = clean((sign * (height - shape.height)) / 2);
+        return { shape: { ...shape, height }, props: { height }, shift };
+      }
+      const radius = capsule ? Math.min(len(shape.radius + d), clean(shape.height / 2)) : len(shape.radius + d);
       return { shape: { ...shape, radius }, props: { radius }, shift };
     }
     case 'point': { const range = len(shape.range + d); return { shape: { ...shape, range }, props: { range }, shift }; }

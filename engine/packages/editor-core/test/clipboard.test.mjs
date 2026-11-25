@@ -127,3 +127,20 @@ test('resizeShape: the props and the position in one undo step, rounded; the ins
   s.resizeShape('spot', { angle: 25, range: 6 });
   assert.deepEqual([s.node('spot').props.angle, s.node('spot').props.range, s.node('spot').transform], [25, 6, undefined]);
 });
+
+test('a copy takes the connections its nodes send, not those sent to them; a reference into a copied instance follows the copy', () => {
+  const s = cafe();
+  // light-switch → switch-sound (inside the copy) and door-1 → hana-1 (out of it); door-1 receives nothing
+  const [sw] = s.duplicate(['light-switch']);
+  assert.ok(s.doc.connections.some((c) => c.from === sw && c.to === 'switch-sound-2' && c.call === 'play'), 'the copy\'s switch plays the copy\'s sound');
+  const before = s.doc.connections.filter((c) => c.to === 'hana-1').length;
+  s.duplicate(['hana-1']); // door-1 → hana-1 comes from outside: the copy doesn't take it
+  assert.equal(s.doc.connections.filter((c) => c.to === 'hana-2').length, 0);
+  assert.equal(s.doc.connections.filter((c) => c.to === 'hana-1').length, before);
+  // a camera aimed at a part inside a prefab instance, copied with the instance, aims at the copy's part
+  s.addFromAsset('prefabs/door.vrmxs', { id: 'door-a' });
+  s.addNode('Camera', { id: 'peek', parent: 'door-a', props: { target: 'mira' } });
+  s.doc.nodes.find((n) => n.id === 'peek').props.target = 'door-a/hinge';
+  s.duplicate(['door-a']);
+  assert.equal(s.node('peek-2').props.target, 'door-a-2/hinge');
+});

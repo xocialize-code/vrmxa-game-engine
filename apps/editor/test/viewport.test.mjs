@@ -64,6 +64,13 @@ test('spheres, capsules, cylinders and lights', () => {
   assert.deepEqual(dragShape(cap, 'y+', 0.2), { shape: { ...cap, height: 2 }, props: { height: 2 }, shift: [0, 0.1, 0] });
   assert.deepEqual(dragShape(cap, 'rz-', 0.1).props, { radius: 0.4 });
   assert.deepEqual(dragShape({ kind: 'cylinder', radius: 0.5, height: 1 }, 'y-', 0.5).shift, [0, -0.25, 0]);
+  // a capsule is never shorter than its two caps nor wider than half its height (physics would stop changing it while
+  // the node still moved): the end that stays put stays put
+  const short = dragShape(cap, 'y+', -5);
+  assert.deepEqual([short.props.height, short.shift[1]], [0.6, -0.6]);
+  near(short.shift[1] - short.props.height / 2, -0.9); // the bottom end is where it was
+  assert.equal(dragShape(cap, 'rx+', 5).props.radius, 0.9);
+  assert.equal(dragShape({ kind: 'cylinder', radius: 0.5, height: 1 }, 'rx+', 5).props.radius, 5.5, 'a cylinder has no such limit');
   assert.deepEqual(dragShape({ kind: 'point', range: 10 }, 'rx+', -2.5).props, { range: 7.5 });
   const spot = { kind: 'spot', range: 4, angle: 30 };
   const [range, angle] = handlesOf(spot);

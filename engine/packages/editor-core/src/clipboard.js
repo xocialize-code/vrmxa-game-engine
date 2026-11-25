@@ -1,6 +1,6 @@
 // Copy, paste and duplicate of scene nodes (M5 W5, AB-T-0604), as plain functions the session's commands use. A clip
 // is plain JSON: the copied nodes with their subtrees (parents before children), the asset entries they name, and the
-// connections that touch them. Pasting gives every node a fresh id, keeps references inside the clip pointing inside
+// connections they send. Pasting gives every node a fresh id, keeps references inside the clip pointing inside
 // it (parents, node-reference props and behaviour params, connections), reuses the target document's asset entry for
 // the same file, and is one batch of edit ops: one undo step. A prefab instance is copied whole, its overrides with it.
 
@@ -41,7 +41,9 @@ export function copyNodes(doc, ids) {
   const used = new Set(nodes.map((n) => n.asset).filter(Boolean));
   const assets = (doc.assets ?? []).filter((a) => used.has(a.id)).map(clone);
   const base = (ref) => String(ref).split('/')[0];
-  const connections = (doc.connections ?? []).filter((c) => inClip.has(base(c.from)) || inClip.has(base(c.to))).map(clone);
+  // what the copied nodes send (to each other or to the rest of the scene); a signal from outside into them stays the
+  // original's, as a duplicate in Godot doesn't take the connections coming in
+  const connections = (doc.connections ?? []).filter((c) => inClip.has(base(c.from))).map(clone);
   return { format: CLIP_FORMAT, version: 1, roots, nodes, assets, connections };
 }
 
@@ -75,8 +77,9 @@ export function pasteOps(doc, reg, clip, { parent, defaultParent, after = false 
     takenAssets.add(id); assetIds.set(a.id, id);
     ops.push({ op: 'addAsset', asset: { ...clone(a), id } });
   }
-  const remap = (v) => (typeof v === 'string' && ids.has(v) ? ids.get(v) : v);
+  // a reference into the clip, a whole node ("door-1") or a node inside a prefab instance ("door-1/hinge"), follows the copy
   const remapRef = (ref) => { const [b, ...rest] = String(ref).split('/'); return ids.has(b) ? [ids.get(b), ...rest].join('/') : ref; };
+  const remap = (v) => (typeof v === 'string' ? remapRef(v) : v);
   const rootParent = (n) => (parent !== undefined ? parent ?? undefined : n.parent !== undefined && has(n.parent) ? n.parent : defaultParent);
   const made = clip.nodes.map((src) => {
     const n = clone(src);
@@ -102,7 +105,7 @@ export function pasteOps(doc, reg, clip, { parent, defaultParent, after = false 
       g.nodes.forEach((n, i) => ops.push({ op: 'add', node: n, ...(at !== undefined ? { index: at + i } : {}) }));
     }
   } else for (const g of groups) for (const n of g.nodes) ops.push({ op: 'add', node: n });
-  // connections that touch the clip: ends inside it move to the copies; an end outside it must be in this document
+  // the connections the clip sends: ends inside it move to the copies; an end outside it must be in this document
   const inside = (ref) => ids.has(String(ref).split('/')[0]);
   const exists = (ref) => inside(ref) || has(String(ref).split('/')[0]);
   for (const c of clip.connections ?? []) {
