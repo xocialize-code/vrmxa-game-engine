@@ -3,21 +3,22 @@
 // and the shape of its schema: a vector of three numbers pastes into another vector of three (a position into a
 // collider's size), a number into a number within its range, an enum value into an enum that has it; a list, struct or
 // map only into a field with the same schema.
-import { widgetOf } from './fields.js';
+import { widgetOf, plain } from './fields.js'; // plain: a JSON copy, which a reactive proxy survives (structuredClone refuses one)
 
 /** A field's type, as copy and paste compare it. @param {{ schema?: any, meta?: any, widget?: string, value?: any, default?: any }} f */
 export function fieldType(f) {
   const widget = f.widget ?? widgetOf(f.schema, f.meta, f.value ?? f.default);
   const s = f.schema ?? {};
   if (widget === 'vec') return `vec${s.minItems ?? (Array.isArray(f.value ?? f.default) ? (f.value ?? f.default).length : 3)}`;
-  if (widget === 'number' || widget === 'boolean' || widget === 'string' || widget === 'color' || widget === 'node' || widget === 'asset' || widget === 'enum') return widget;
+  if (widget === 'asset') return `asset:${[...(f.meta?.assetTypes ?? [])].sort().join(',')}`; // a sound's path isn't a clip's
+  if (widget === 'number' || widget === 'boolean' || widget === 'string' || widget === 'color' || widget === 'node' || widget === 'enum') return widget;
   return `schema:${JSON.stringify(s)}`;
 }
 
 /** A clip of one field's value (what it shows: its value, or its default). */
 export function copyField(f) {
   const value = f.value !== undefined ? f.value : f.default;
-  return { kind: 'field', type: fieldType(f), key: f.key, value: structuredClone(value) };
+  return { kind: 'field', type: fieldType(f), key: f.key, value: plain(value) };
 }
 
 /** A clip of a transform: position, rotation in degrees (YXZ), scale. @param {{ p: number[], r: number[], s: number[] }} t */
@@ -45,5 +46,5 @@ export function pasteVerdict(clip, f) {
   }
   if (type === 'enum' && !(f.enum ?? f.schema?.enum ?? []).includes(v)) return { ok: false, reason: `"${v}" isn't one of its values` };
   if (type === 'node' && f.nodes && v !== undefined && !f.nodes.includes(v)) return { ok: false, reason: `no node "${v}" here` };
-  return { ok: true, value: structuredClone(v) };
+  return { ok: true, value: plain(v) };
 }

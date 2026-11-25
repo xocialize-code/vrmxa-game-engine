@@ -245,6 +245,7 @@ export class EditorHost {
   /** Save into the project (the scene's own ref, or `ref` for Save As). → { path, bytes, hash } */
   async save(ref = this.sceneRef) {
     const { text } = await saveScene(this.session, this.project, ref); // saved only once it is written (saving.js)
+    if (this._assetThumbsWanted) this.startAssetThumbs().catch(() => {}); // a saved prefab (an Apply) draws again: its mtime moved
     return this.sceneSaved(ref, text);
   }
 
@@ -319,10 +320,18 @@ export class EditorHost {
   async buildFrom(doc, { play = false, heard = play, cache = !play, mtoonMaterial = this.host.mtoonMaterial, prefabs = this.session?.prefabs ?? new Map() } = {}) {
     const p = this.project;
     if (this.cacheFor !== p) {
-      this.cacheFor = p; this.characterCache = { sources: new Map(), clips: new Map() }; this.animCache = await p.animations();
-      // the project's app personas (M3 W1), when it has them: who each character is, for brains and directors
-      this.personasCache = p.files?.includes('personas.json') ? JSON.parse(await p.text('personas.json')) : null;
+      // filled once per project; every build waits for the same fill (M5 W6: thumbnails build beside the edit view, and a
+      // second build must not go on with the last project's caches while the first is still reading this one's)
+      this.cacheFor = p; this.characterCache = { sources: new Map(), clips: new Map() };
+      this._cacheFill = (async () => {
+        const anim = await p.animations();
+        // the project's app personas (M3 W1), when it has them: who each character is, for brains and directors
+        const personas = p.files?.includes('personas.json') ? JSON.parse(await p.text('personas.json')) : null;
+        if (this.cacheFor === p) { this.animCache = anim; this.personasCache = personas; }
+      })().catch((e) => { if (this.cacheFor === p) this.cacheFor = null; throw e; }); // a failed read is tried again by the next build
     }
+    await this._cacheFill;
+    if (this.cacheFor !== p) throw new Error('the project changed while a world was being built');
     if (this.setScene && isSequence(doc)) doc = composeSequence(doc, this.setScene.doc); // a sequence plays in its set
     const sample = { scene: this.sceneRef, doc, prefabs, animations: this.animCache, bytes: (ref) => p.bytes(ref), personas: this.personasCache ?? null };
     this.buildTimings = {};
@@ -589,7 +598,7 @@ export class EditorHost {
       return false;
     };
     for (const sc of p.scenes()) {
-      if (sc === this.sceneRef || sc === ref) continue;
+      if (sc === this.sceneRef || sc === ref || sc.startsWith('prefabs/')) continue; // scenes, not other prefabs (they're reached through scenes)
       for (const x of await usesOf(sc)) if (await reaches(x)) { out.push(sc); break; }
     }
     return out;
@@ -683,13 +692,16 @@ export class EditorHost {
   async startAssetThumbs() {
     const p = this.project;
     if (!p) return;
+    this._assetThumbsWanted = true; // the editor's window wants them: after an export or a save they start again
+    if (this.exporting) return; // an export has the GPU: it starts them again when it ends
+    const gen = this.assetThumbs.gen; // a release (an export starting) or a newer start while the files are read: this one stops
     const entries = this.assets().filter((e) => e.nodeType || e.kind === 'vrmxa');
     let stats = {};
     this._assetThumbCache = false;
     if (inShell && p.writable) { // a project folder: its files' size and modification time key the cache
       try { stats = (await call('project.stat', { paths: entries.map((e) => e.ref) })).stats ?? {}; this._assetThumbCache = true; } catch { stats = {}; }
     }
-    if (p !== this.project) return;
+    if (p !== this.project || gen !== this.assetThumbs.gen || this.exporting) return;
     return this.assetThumbs.load(entries, stats);
   }
 
@@ -932,6 +944,7 @@ export class EditorHost {
       if (this.exportHost) { this.exportHost.dispose(); this.exportHost.renderer.forceContextLoss?.(); this.exportHost = null; }
       disposeWorld(world); // its sound and its physics too (AB-T-0592)
       this.exporting = null; this.changed();
+      if (this._assetThumbsWanted) this.startAssetThumbs().catch(() => {}); // the thumbnails not drawn yet (M5 W6)
     }
   }
 
@@ -1000,6 +1013,7 @@ export class EditorHost {
       if (host) { host.dispose(); host.renderer.forceContextLoss?.(); }
       disposeWorld(world);
       this.exporting = null; this.changed();
+      if (this._assetThumbsWanted) this.startAssetThumbs().catch(() => {});
     }
   }
 

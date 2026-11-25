@@ -95,6 +95,9 @@ fresh: false
 
 - [ ] The assets panel shows a thumbnail for each placeable asset; filtering to Items lists only `.vrmxi` files; search narrows it.
   ```steps
+  wait id=open-project enabled=true timeout_ms=40000
+  act id=open-project action=press   # the fixture's project and scene, so the row also runs alone
+  until find("id=project-name").0.name == "Project project-w6-prefabs" timeout=30000
   act id=file-name action=set_value value=w6-doors.vrmxs
   act id=open-file action=press
   until find("id=doc-state").0.name matches "^Scene w6-doors.vrmxs 7 nodes" timeout=60000
@@ -117,7 +120,7 @@ fresh: false
   expect find("id=asset-prefabs-door-vrmxs").count == 1   # every word matches
   expect find("id=asset-prefabs-double-door-vrmxs").count == 1
   expect find("id=asset-items-cafe-door-vrmxi").count == 0   # an item named door isn't a prefab
-  act id=assets-search action=set_value value=""
+  act id=assets-search action=set_value value=" "   # a space: no words, the whole list (set_value needs a value)
   act id=assets-folder-prefabs action=press   # a folder of the project
   until find("id=asset-props-bench-glb").count == 0
   expect find("id=asset-prefabs-door-vrmxs").count == 1
@@ -127,6 +130,12 @@ fresh: false
 
 - [ ] A `.glb` dropped on a Model's asset slot sets it as one undo step; a `.wav` dropped there is refused; the picked file's Use does the same as a drop.
   ```steps
+  wait id=open-project enabled=true timeout_ms=40000
+  act id=open-project action=press   # the fixture's project and scene, so the row also runs alone
+  until find("id=project-name").0.name == "Project project-w6-prefabs" timeout=30000
+  act id=file-name action=set_value value=w6-doors.vrmxs
+  act id=open-file action=press
+  until find("id=doc-state").0.name matches "^Scene w6-doors.vrmxs 7 nodes" timeout=60000
   act id=node-bench action=press
   until find("id=slot-asset").0.name == "Asset slot: props/bench.glb; takes glb"   # the Model's asset slot and what it takes
   act id=assets-search action=set_value value=street-lamp   # one tile left, where the pointer can reach it
@@ -150,17 +159,21 @@ fresh: false
   expect find("id=undo").0.name == "Undo Set bench.asset"   # no step was made
   act id=assets-search action=set_value value=bench
   until find("id=asset-props-bench-glb").count == 1
-  act id=asset-props-bench-glb action=press   # pick the bench's file (no drag)
+  act id=pick-props-bench-glb action=press   # pick the bench's file (no drag)
   until find("id=slot-asset-use").0.name == "Use props/bench.glb as the asset"
   act id=slot-asset-use action=press
   until find("id=slot-asset").0.name matches "^Asset slot: props/bench.glb" timeout=5000
-  act id=asset-sounds-switch-wav action=press
-  pause 300
-  act id=assets-search action=set_value value=""
+  act id=assets-search action=set_value value=" "   # a space: no words, the whole list (set_value needs a value)
   ```
 
 - [ ] Tree search keeps the matches and their ancestors (an instance's inner nodes included) and clears back to the whole tree.
   ```steps
+  wait id=open-project enabled=true timeout_ms=40000
+  act id=open-project action=press   # the fixture's project and scene, so the row also runs alone
+  until find("id=project-name").0.name == "Project project-w6-prefabs" timeout=30000
+  act id=file-name action=set_value value=w6-doors.vrmxs
+  act id=open-file action=press
+  until find("id=doc-state").0.name matches "^Scene w6-doors.vrmxs 7 nodes" timeout=60000
   act id=tree-search action=set_value value=type:collider
   until find("id=tree-matches").0.name == "3 matching nodes"   # each door's panel
   expect find("id=node-door-c/panel").count == 1   # an inner node, shown though its instance is folded
@@ -169,7 +182,7 @@ fresh: false
   act id=tree-search action=set_value value=bench
   until find("id=tree-matches").0.name == "1 matching nodes"
   expect find("id=node-bench").0.name contains "matches the search"
-  act id=tree-search action=set_value value=""
+  act id=tree-search action=set_value value=" "   # a space: no words, the whole list (set_value needs a value)
   until find("id=tree-matches").count == 0
   expect find("id=node-sun").count == 1   # the whole tree again
   ```

@@ -7,7 +7,7 @@
 // Play in place: Play takes a snapshot of the document (its canonical text and hash) and hands a copy to the app's
 // world builder; the edited document is never touched while playing. Stop disposes the play world and checks the
 // document is exactly as it was before Play (text and hash), which is the promise the editor makes.
-import { createEditor, createValidator, parse, serialize, prefabNodes, mergeOverride, overrideEntries, withOverride, withoutOverride, applyToPrefab, prefabUsers } from '@vrmxg/scene';
+import { createEditor, createValidator, parse, serialize, prefabNodes, mergeOverride, overrideEntries, withOverride, withoutOverride, applyToPrefab, prefabUsers, fieldValue } from '@vrmxg/scene';
 import { hashValue } from '@vrmxg/snapshot';
 import { assetType, nodeTypeFor, slug, uniqueId } from './assets.js';
 import { SequenceCommands } from './sequence.js';
@@ -477,8 +477,14 @@ export class EditorSession {
     const inst = this.node(i.instance);
     let next = inst.overrides;
     for (const [field, value] of Object.entries(fields)) next = withOverride(next, i.target, field, value, i.base);
+    const merged = mergeOverride(i.base, next?.[i.target]);
+    // an override merges into the prefab's value (objects deeply, behaviours by name): it can set and replace, not take a
+    // key or a value away that the prefab has. Such an edit is refused, saying so, rather than kept without the change.
+    for (const [field, value] of Object.entries(fields)) {
+      if (!sameDeep(fieldValue(merged, field), value)) throw new Error(`${id}.${field.replace(/^props\./, '')}: an override can't take away what the prefab sets (${value === undefined ? 'clearing it' : 'a key or value it has'}); revert the override, or change the prefab itself`);
+    }
     if (sameJSON(next, inst.overrides)) return;
-    const errs = this.editor.checkNode({ ...mergeOverride(i.base, next?.[i.target]), id: i.target.replace(/\//g, '-') });
+    const errs = this.editor.checkNode({ ...merged, id: i.target.replace(/\//g, '-') });
     if (errs.length) throw new Error(`${id}: ${errs.join('; ')}`);
     this.run(labelText ?? `Override ${id}`, [{ op: 'set', id: i.instance, path: 'overrides', value: next }]);
   }
@@ -600,6 +606,9 @@ export class EditorSession {
 }
 
 const sameJSON = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const sortDeep = (v) => (Array.isArray(v) ? v.map(sortDeep) : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, sortDeep(v[k])])) : v);
+/** Equal as data, whatever the key order. */
+const sameDeep = (a, b) => JSON.stringify(sortDeep(a)) === JSON.stringify(sortDeep(b));
 const round = (v) => Math.round(v * 1e6) / 1e6; // a micrometre / a millionth: keeps files short and diffs stable
 /** The set op that gives node `n` the transform parts in `t`, the rest kept; identity parts dropped from the file. */
 function transformOp(n, t) {

@@ -1,5 +1,6 @@
 // Drawing one asset's thumbnail in the page (M5 W6, AB-T-0606), for the thumbnail queue (thumbs.js). A character
-// bundle carries its own (`thumbnail.png`, VRMXA §4); a sound is drawn as its waveform; a model, item or prefab is built
+// bundle carries its own (`thumbnail.png`, VRMXA §4); a scene (not a prefab) has the one the editor's Thumbnail button
+// saved as thumbnails/<scene>.png, or none; a sound is drawn as its waveform; a model, item or prefab is built
 // alone in a small world (the file, a key light and a studio environment) and drawn on the host's offline render host,
 // framed to its bounds. The world is retired as soon as it's drawn; nothing here touches the edit view, the play world or
 // an export, so a thumbnail never reaches an exported frame or a world hash.
@@ -101,6 +102,10 @@ export async function drawThumbnail(ed, entry, size) {
     if (own) return own;
   }
   if (entry.kind === 'audio') return waveformPNG(await p.bytes(entry.ref), size);
+  if (entry.kind === 'vrmxs' && entry.label !== 'Prefab') { // a whole scene: the picture the editor's Thumbnail button saved, if any
+    const own = `thumbnails/${entry.ref.replace(/\.vrmxs$/, '').replace(/^.*\//, '')}.png`;
+    return p.has(own) ? p.bytes(own) : null;
+  }
   if (!entry.nodeType) return null;
   const doc = thumbnailDoc(entry);
   const prefabs = entry.kind === 'vrmxs' ? await p.prefabs(doc) : new Map();

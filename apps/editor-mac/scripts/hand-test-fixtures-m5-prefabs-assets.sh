@@ -9,7 +9,7 @@ set -e
 here=$(cd "$(dirname "$0")" && pwd)
 tmp="$HOME/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp"
 mkdir -p "$tmp"
-rm -rf "$tmp/project-w6-prefabs" "$tmp/w6-cache" "$tmp/w6-settings.json"
+rm -rf "$tmp/project-w6-prefabs" "$tmp/w6-cache" "$tmp/w6-cache-webgl" "$tmp/w6-settings.json"
 cp -R "$here/../../../content/sample" "$tmp/project-w6-prefabs"
 # written in the scene format's canonical form (@vrmxg/scene's serialize), so the editor opens it as saved
 (cd "$here/../../.." && node --input-type=module -e '

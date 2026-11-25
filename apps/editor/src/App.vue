@@ -39,9 +39,8 @@ const shownTree = computed(() => {
   return { items: foldTree(f.items, { open: new Set(ui.treeOpen), closed: new Set(ui.treeClosed), searching: f.matches !== null }), matches: f.matches };
 });
 function fold(id) {
-  const inst = shownTree.value.items && findItem(ui.tree, id);
-  const isInstance = inst && inst.children.length > 0 && inst.children.every((c) => c.inner);
-  const list = isInstance ? 'treeOpen' : 'treeClosed';
+  const it = findItem(shownTree.value.items, id); // the row as foldTree drew it: its own word on whether it's an instance
+  const list = it?.instance ? 'treeOpen' : 'treeClosed';
   ui[list] = ui[list].includes(id) ? ui[list].filter((x) => x !== id) : [...ui[list], id];
 }
 const findItem = (items, id) => { for (const it of items) { if (it.id === id) return it; const f = findItem(it.children, id); if (f) return f; } return null; };
@@ -59,7 +58,7 @@ function refresh(kind = 'all') {
   if (ed.exporting) Object.assign(ui.ex, { n: ed.exporting.n, frames: ed.exporting.frames, phase: ed.exporting.phase, running: true });
   ui.ex.gameRunning = !!ed.gameExporting; if (ed.gameExporting) { ui.ex.gameN = ed.gameExporting.n; ui.ex.gameTotal = ed.gameExporting.total; }
   if (kind === 'timeline' || kind === 'all') ui.tl = ed.timeline();
-  if (kind === 'assetThumbs' || kind === 'all') { ui.thumbs = Object.fromEntries(ed.assetThumbs.urls); ui.thumbStatus = ed.assetThumbs.status(); }
+  if (kind === 'assetThumbs') { ui.thumbs = Object.fromEntries(ed.assetThumbs.urls); ui.thumbStatus = ed.assetThumbs.status(); } // only when one changes: 100 tiles' images aren't copied every refresh
   if (kind === 'stats' || kind === 'captions' || kind === 'export' || kind === 'timeline' || kind === 'assetThumbs') return;
   const s = ed.session;
   ui.loading = ed.busy > 0;
@@ -212,7 +211,7 @@ const onInspector = {
   // per-field copy and paste (AB-T-0607): a paste is one undo step, on the whole selection
   fieldCopy: (p) => { ui.fieldClip = copyField(p); ui.note = `Copied ${p.key}`; },
   fieldPaste: (p, value) => act(() => ed.setPropOn(ui.inspector.ids, p.key, value)),
-  xformCopy: (part) => { const d = ui.inspector; ui.fieldClip = part === 'all' ? copyTransform(d) : copyPart(part, d[part].map((v) => v ?? 0)); ui.note = part === 'all' ? 'Copied the transform' : `Copied ${{ p: 'position', r: 'rotation', s: 'scale' }[part]}`; },
+  xformCopy: (part) => { const d = ui.inspector; if ((part === 'all' ? ['p', 'r', 's'] : [part]).some((k) => d[k].includes(null))) return; ui.fieldClip = part === 'all' ? copyTransform(d) : copyPart(part, d[part]); ui.note = part === 'all' ? 'Copied the transform' : `Copied ${{ p: 'position', r: 'rotation', s: 'scale' }[part]}`; },
   xformPaste: (part) => act(() => { const c = ui.fieldClip; ed.pasteTransform(ui.inspector.ids, part === 'all' ? { p: c.p, r: c.r, s: c.s } : { [part]: c.value }); }),
 };
 

@@ -46,6 +46,16 @@ type), node)` is a node's fields (value, default, widget, range, step and precis
 whether its `visibleIf` / `enabledIf` hold); `sharedFields([...])` merges several nodes' into one inspector: the props
 they share with the same widget, mixed where their shown values differ, shown if any shows it, enabled if all do.
 
+## The assets panel and the polish (M5 W6, AB-T-0606, AB-T-0607)
+
+| Piece | What |
+|---|---|
+| `AssetsPanel.vue` | `entries` (`assetEntries(reg, files)` with each one's `thumb` URL or null), `picked`, `disabled`, `addable`, `status` → `add(ref)`, `pick(ref)`. Tiles with thumbnails, the type filters (All, Characters, Items, Sets, Props, Clips, Scenes, Sounds, with counts), a search field (every word, path or label) and the project's folders. A tile's drag carries its path and its kind (`dragTypes`), so a slot can refuse the wrong kind while it hovers. Ids: `#assets-filter-<id>`, `#assets-search`, `#assets-folder-<idPart(path)>` (`-all`), `#asset-<path>` and `#add-<path>` (non-alphanumerics as `-`, the editor's earlier list's ids) |
+| `assets-ui.js` | `assetCategory` (a model in a `sets` folder is a set, elsewhere a prop), `assetEntries`, `filterAssets`, `filterCounts`, `assetFolders`, and the drop rules: `dropVerdict(kind, slot)` for a node's asset slot (`{ slot: 'asset', types }`), a prop naming a file (`meta.assetTypes`), a node slot (takes a tree row) and the viewport; `ValueField`'s asset and node slots use them |
+| `tree-ui.js` | `filterTree(items, query)`: matches and their ancestors (words in name or id, `type:Light` as a prefix, `is:overridden`); `foldTree` (an instance's inner nodes start folded; nothing folds while searching) |
+| `panels.js` | Panels you resize and fold: `EDITOR_PANELS` (Scene, Inspector, Assets, Timeline with their ranges), `readLayout` (anything stored, checked: a bad value is the default), `resize`, `toggle`, `splitterKey` (arrows, Shift, Home, End, Return), `writeLayout` |
+| `fieldclip.js` | Per-field copy and paste: `copyField`, `copyPart`, `copyTransform`, and `pasteVerdict(clip, field)`: only into the same type (widget and schema shape: a vector of three into a vector of three, a number within range, an enum value it has) |
+
 Ids are stable for AppProbe scenarios: the timeline's `#tl-*` (as in the editor's M2 scenario), the strip's `#sb-status` and
 `#sb-<shot>`, the queue's `#q-preset-<name>`, `#q-add`, `#q-run`, `#q-<job>-status`.
 
@@ -55,5 +65,5 @@ question's three cases (`closing-ui.test.mjs`); the number field's arithmetic, c
 (`numbers.test.mjs`); every M0 prop's widget (none a JSON box), branches, valid new rows, edits that keep unknown keys,
 a node's fields with its conditions and several nodes' mixed fields (`fields.test.mjs`); one question at a time (`questions.test.mjs`); and the three
 components compiled from their `.vue` files (`vue/compiler-sfc`) and rendered on the server (`vue/server-renderer`) with
-sample data, checking their ids and accessible names (`components.test.mjs`, `sfc.mjs`). Compiled files go to
+sample data, checking their ids and accessible names (`components.test.mjs`, `sfc.mjs`); M5 W6's filters, drop rules, tree search, panel sizes, field paste and the assets panel's markup (`w6.test.mjs`). Compiled files go to
 `test/.build/` (ignored) and are removed after import.

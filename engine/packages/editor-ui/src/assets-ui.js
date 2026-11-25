@@ -37,12 +37,15 @@ export function assetCategory(ref) {
   return { vrmxa: 'characters', vrmxi: 'items', vrma: 'clips', vrmxs: 'scenes', audio: 'sounds', vrmxw: 'wearables' }[k] ?? null;
 }
 
+const ORDER = ['characters', 'items', 'props', 'sets', 'scenes', 'sounds', 'clips', 'wearables'];
+
 /** The folder a file is in ('' at the project's top). */
 export const folderOf = (ref) => String(ref).split('/').slice(0, -1).join('/');
 
 /**
  * The panel's entries: every file of a category, with its name, kind, label, folder, and the node type a drop of it
- * makes (null: not placed in a scene, as a clip or a wearable). Sorted by folder, then name.
+ * makes (null: not placed in a scene, as a clip or a wearable). Sorted by category (what has a picture first: characters,
+ * items, props, sets, scenes, sounds, then clips and wearables), then folder, then name.
  * @param {any} reg the registry @param {string[]} files paths in the project
  * @param {{ exclude?: (ref: string) => boolean }} [o]
  */
@@ -55,7 +58,7 @@ export function assetEntries(reg, files, { exclude } = {}) {
     const prefab = kind === 'vrmxs' && ref.startsWith('prefabs/');
     out.push({ ref, name: ref.split('/').pop().replace(/\.[^.]+$/, ''), kind, label: prefab ? 'Prefab' : LABEL[kind], category, folder: folderOf(ref), nodeType: type ? nodeTypeFor(reg, type) : null });
   }
-  return out.sort((a, b) => a.folder.localeCompare(b.folder) || a.name.localeCompare(b.name) || a.ref.localeCompare(b.ref));
+  return out.sort((a, b) => ORDER.indexOf(a.category) - ORDER.indexOf(b.category) || a.folder.localeCompare(b.folder) || a.name.localeCompare(b.name) || a.ref.localeCompare(b.ref));
 }
 
 /**

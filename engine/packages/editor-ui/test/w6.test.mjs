@@ -134,9 +134,25 @@ test('the assets panel draws tiles, filters, folders and Add buttons from plain 
   const Panel = await loadSFC(path.join(import.meta.dirname, '../src/AssetsPanel.vue'));
   const entries = assetEntries(reg, files).map((e) => ({ ...e, thumb: e.ref === 'props/bench.glb' ? 'data:image/png;base64,AA' : null }));
   const html = await render(Panel, { entries, picked: 'props/bench.glb', status: 'drawing 2 of 20' });
-  for (const id of ['assets-filter-items', 'assets-filter-all', 'assets-search', 'assets-folder-all', 'assets-folder-prefabs', 'asset-props-bench-glb', 'add-props-bench-glb', 'add-sets-cafe-glb', 'assets-status']) assert.match(html, new RegExp(`id="${id}"`), id);
+  for (const id of ['assets-filter-items', 'assets-filter-all', 'assets-search', 'assets-folder-all', 'assets-folder-prefabs', 'asset-props-bench-glb', 'pick-props-bench-glb', 'add-props-bench-glb', 'add-sets-cafe-glb', 'assets-status']) assert.match(html, new RegExp(`id="${id}"`), id);
   assert.match(html, /aria-label="Model props\/bench\.glb, thumbnail, picked"/);
   assert.match(html, /aria-label="Items \(\d+\)"/);
   assert.match(html, /id="add-animations-clips-[^"]*"[^>]*disabled/, 'a clip can\'t be added');
   assert.match(html, /<img src="data:image\/png;base64,AA"/);
+});
+
+test('copy and paste take values that arrive as reactive proxies (the inspector\'s), which structuredClone refuses', async () => {
+  const { reactive } = await import('vue');
+  const ui = reactive({ clip: null, field: { key: 'size', widget: 'vec', schema: { type: 'array', items: { type: 'number' }, minItems: 3, maxItems: 3 }, value: [1, 2, 3] } });
+  ui.clip = copyField(ui.field);
+  assert.deepEqual(pasteVerdict(ui.clip, { kind: 'part' }), { ok: true, value: [1, 2, 3] });
+  assert.deepEqual(copyTransform(reactive({ p: [1, 0, 0], r: [0, 0, 0], s: [1, 1, 1] })).p, [1, 0, 0]);
+});
+
+test('an asset field pastes only into one taking the same kinds of file', () => {
+  const sound = { key: 'sound', widget: 'asset', schema: { type: 'string' }, meta: { widget: 'asset', assetTypes: ['audio'] }, value: 'sounds/a.wav' };
+  const clip = { key: 'clip', widget: 'asset', schema: { type: 'string' }, meta: { widget: 'asset', assetTypes: ['vrma'] } };
+  const other = { key: 'other', widget: 'asset', schema: { type: 'string' }, meta: { widget: 'asset', assetTypes: ['audio'] } };
+  assert.equal(pasteVerdict(copyField(sound), clip).ok, false);
+  assert.equal(pasteVerdict(copyField(sound), other).ok, true);
 });

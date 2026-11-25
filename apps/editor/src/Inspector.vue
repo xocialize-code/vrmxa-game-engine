@@ -103,14 +103,14 @@ const pickedFits = () => !!props.picked && dropVerdict(fileKind(props.picked), s
       <div class="insp-row xform-head">
         <span class="muted small">Transform</span>
         <span class="clip-btns">
-          <button id="xform-copy" type="button" class="clip" aria-label="Copy the transform" title="Copy position, rotation and scale" @click="emit('xformCopy', 'all')">Copy</button>
+          <button id="xform-copy" type="button" class="clip" :disabled="['p', 'r', 's'].some((k) => data[k].includes(null))" :aria-label="['p', 'r', 's'].some((k) => data[k].includes(null)) ? 'Copy the transform (mixed values: select one node)' : 'Copy the transform'" title="Copy position, rotation and scale" @click="emit('xformCopy', 'all')">Copy</button>
           <button id="xform-paste" type="button" class="clip" :disabled="!canPasteAll().ok" :aria-label="canPasteAll().ok ? 'Paste the transform' : `Paste the transform (${canPasteAll().reason})`" @click="emit('xformPaste', 'all')">Paste</button>
         </span>
       </div>
       <fieldset v-for="x in XFORM" :key="x.part" class="xform"><legend>
         <button v-if="data.ov?.[x.part]" :id="`ov-${x.id}`" type="button" class="ov-dot" :aria-label="ovName(x.name, data.ov[x.part])" :title="`Overridden: the prefab has ${data.ov[x.part].base}. Click to revert.`" @click="emit('revert', XFIELD[x.part])">●</button>{{ x.legend }}
         <span class="clip-btns">
-          <button :id="`${x.id}-copy`" type="button" class="clip" :aria-label="`Copy ${x.name}`" @click="emit('xformCopy', x.part)">⧉</button>
+          <button :id="`${x.id}-copy`" type="button" class="clip" :disabled="data[x.part].includes(null)" :aria-label="data[x.part].includes(null) ? `Copy ${x.name} (mixed values)` : `Copy ${x.name}`" @click="emit('xformCopy', x.part)">⧉</button>
           <button :id="`${x.id}-paste`" type="button" class="clip" :disabled="!canPastePart().ok" :aria-label="canPastePart().ok ? `Paste into ${x.name}` : `Paste into ${x.name} (${canPastePart().reason})`" @click="emit('xformPaste', x.part)">⎘</button>
         </span>
       </legend>
@@ -133,7 +133,7 @@ const pickedFits = () => !!props.picked && dropVerdict(fileKind(props.picked), s
             :mixed="p.mixed" :axes="data.multi && p.widget === 'vec' ? p.axes : null" :disabled="!p.enabled" :nodes="data.nodes"
             @change="emit('prop', p.key, $event)" @axis="(i, v) => emit('propAxis', p.key, i, v)" @gesture="emit('gesture', $event)"
           />
-          <button v-if="p.set" type="button" class="reset" :aria-label="`Reset ${p.key}`" title="Back to the default" :disabled="!p.enabled" @click="emit('prop', p.key, undefined)">↺</button>
+          <button v-if="p.set && !data.inner" type="button" class="reset" :aria-label="`Reset ${p.key}`" title="Back to the default" :disabled="!p.enabled" @click="emit('prop', p.key, undefined)">↺</button>
         </div>
         <!-- a list or struct that differs between the selected nodes isn't edited as one: an edit would replace each node's whole value -->
         <p v-if="BLOCK.has(p.widget) && p.mixed" :id="`prop-${p.key}--mixed`" class="muted small" :aria-label="`${p.key} (mixed values): select one node to edit it`">Mixed values: select one node to edit {{ p.key }}.</p>
@@ -188,8 +188,10 @@ const pickedFits = () => !!props.picked && dropVerdict(fileKind(props.picked), s
 .insp-prop.block > .insp-row { margin-bottom: 2px; }
 .ov-dot { border: 0; background: none; color: var(--accent); padding: 0 4px 0 0; font-size: 10px; cursor: pointer; line-height: 1; }
 .clip-btns { display: inline-flex; gap: 2px; flex: none; }
-.clip { padding: 0 4px; font-size: 11px; line-height: 1.4; opacity: 0.35; }
-.insp-row:hover .clip, .xform legend:hover .clip, .clip:focus-visible, .insp-row:focus-within .clip { opacity: 1; }
+.clip { padding: 0 1px; font-size: 10px; line-height: 1.3; border: 0; background: none; color: var(--muted); opacity: 0.4; }
+.clip:disabled { opacity: 0.15; }
+.insp-row:hover .clip:not(:disabled), .xform legend:hover .clip:not(:disabled), .clip:focus-visible, .insp-row:focus-within .clip:not(:disabled) { opacity: 1; color: var(--ink); }
+.xform-head .clip { font-size: 11px; padding: 0 4px; }
 .xform legend { display: flex; align-items: center; gap: 4px; } .xform legend .clip-btns { margin-left: auto; }
 .inner-note { padding: 4px 6px; border-left: 2px solid var(--accent); background: color-mix(in srgb, var(--sel) 50%, transparent); }
 .slot { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 6px 0; padding: 4px 6px; border: 1px dashed var(--line); border-radius: 6px; }

@@ -152,3 +152,18 @@ test('a file into a node\'s asset slot: one undo step; the wrong kind is refused
   s.setNodeAsset(bench, 'props/bench.glb'); // the asset it has: no step
   assert.equal(s.text(), before);
 });
+
+test('an edit an override can\'t express (taking away a key or value the prefab has) is refused, not kept without the change', () => {
+  const s = doors();
+  const clean = s.text();
+  // a behaviour param removed: merging by name would keep it
+  assert.throws(() => s.setOverride('door/hinge', 'behaviours.hinge', { use: 'hinge', locked: true }), /can't take away what the prefab sets/);
+  // a prop the prefab sets, cleared: the prefab's value would stay
+  assert.throws(() => s.setOverride('door/hinge', 'props.mass', undefined), /clearing it/);
+  // a name the prefab has, cleared
+  assert.throws(() => s.setOverride('door/door', 'name', undefined), /can't take away/);
+  assert.equal(s.text(), clean, 'nothing written');
+  // a behaviour the prefab has, dropped: that one is said ({ remove: true })
+  s.setOverride('door/hinge', 'behaviours.hinge', undefined);
+  assert.deepEqual(s.node('door').overrides, { hinge: { behaviours: [{ use: 'hinge', remove: true }] } });
+});
