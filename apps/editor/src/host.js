@@ -14,12 +14,12 @@ import { renderViews, gridLayout } from '@vrmxg/post';
 import { composeSequence, isSequence, SequencePlayer, subtitles } from '@vrmxg/sequence';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { m0Registry } from '@vrmxg/registry/m0';
-import { parse, describeType, serialize } from '@vrmxg/scene';
+import { parse, describeType, serialize, overridesText, prefabNodes } from '@vrmxg/scene';
 import { makeTake, isTake, takeToSequence, installDirector, demoModel, httpModel } from '@vrmxg/director';
 import { shellTTS, httpTTS } from '@vrmxg/voice';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
-import { EditorSession, assetList, newSequenceDoc, rowsOf } from '@vrmxg/editor-core';
-import { inspectorFields, sharedFields, sharedAxes } from '@vrmxg/editor-ui';
+import { EditorSession, newSequenceDoc, rowsOf } from '@vrmxg/editor-core';
+import { inspectorFields, sharedFields, sharedAxes, assetEntries } from '@vrmxg/editor-ui';
 import { AudioOutput } from '@vrmxg/audio';
 import { exportTake, shellSink, hashSink, hashFrame, readbackFor, captureStill, encodePNG, toBase64, SIZES, RATES, CODECS, framesFor, secondsOf } from '@vrmxg/export';
 import { inShell, call } from '../../shell/js/shell.js';
@@ -32,6 +32,8 @@ import { saveScene } from './saving.js';
 import { RetiredWorlds } from './worlds.js';
 import { exportGame } from './export-game.js';
 import { ViewportAids } from './viewport/viewport.js';
+import { ThumbnailQueue } from './thumbs.js';
+import { drawThumbnail } from './thumbs-draw.js';
 import '../../playground/src/sqljs.js'; // vrmxa-core's sql.js for bundles with a database (Mira's)
 
 installPortableMath(); // before anything parses a VRM or steps a world
@@ -115,6 +117,15 @@ export class EditorHost {
     this.playhead = 0; this.range = null; this.loopRange = true; this.previewPlaying = false;
     this.previewCamera = 'sequence'; this.angles = false; this.preview = null; this.scrubState = null;
     /** A world the frame loop plays in real time while set: { world, tick } (the creator's takes; null otherwise). */ this.live = null;
+    // the assets panel's thumbnails (M5 W6, AB-T-0606): drawn on an offline host of their own, one at a time, cached in the
+    // shell's cache folder by path, size and modification time (only for a project folder, whose files have those)
+    this.vrmxaCore = vrmxaCore;
+    this._assetThumbHost = null; this._assetThumbCache = false;
+    this.assetThumbs = new ThumbnailQueue({
+      size: 96, toBase64, draw: (e, size) => drawThumbnail(this, e, size), onChange: () => this.changed('assetThumbs'),
+      onRelease: () => this.dropAssetThumbHost(),
+      store: { get: (key) => (this._assetThumbCache ? call('cache.read', { key }).then((r) => r?.base64 ?? null) : Promise.resolve(null)), put: (key, base64) => (this._assetThumbCache ? call('cache.write', { key, base64 }) : Promise.resolve()) },
+    });
     this._scrubWant = null; this._scrubbing = null; this._previewBuilding = null; this._previewTimer = null; this._angleCams = [];
     canvas.addEventListener('pointerdown', (e) => { this._downAt = [e.clientX, e.clientY]; });
     canvas.addEventListener('pointerup', (e) => this.onClick(e));
@@ -234,6 +245,7 @@ export class EditorHost {
   /** Save into the project (the scene's own ref, or `ref` for Save As). → { path, bytes, hash } */
   async save(ref = this.sceneRef) {
     const { text } = await saveScene(this.session, this.project, ref); // saved only once it is written (saving.js)
+    if (this._assetThumbsWanted) this.startAssetThumbs().catch(() => {}); // a saved prefab (an Apply) draws again: its mtime moved
     return this.sceneSaved(ref, text);
   }
 
@@ -260,7 +272,8 @@ export class EditorHost {
 
   /** What a rebuild is needed for: everything about the document except node transforms. */
   shapeOf(doc) {
-    return JSON.stringify({ a: doc.assets, c: doc.connections, s: doc.settings, q: doc.sequence, n: doc.nodes.map(({ transform, ...rest }) => rest) });
+    // pv: an Apply (or its undo) changed a prefab document, which every instance of it shows (M5 W6)
+    return JSON.stringify({ a: doc.assets, c: doc.connections, s: doc.settings, q: doc.sequence, n: doc.nodes.map(({ transform, ...rest }) => rest), pv: this.session?.prefabVersion ?? 0 });
   }
 
   onSession(e) {
@@ -304,18 +317,27 @@ export class EditorHost {
    * `mtoonMaterial`: the MToon class of the host that will draw the world (M4 W10: a WebGL export from a WebGPU view
    * needs WebGL's MToon; WebGL can't draw MToonNodeMaterial); the view's by default.
    */
-  async buildFrom(doc, { play = false, heard = play, cache = !play, mtoonMaterial = this.host.mtoonMaterial } = {}) {
+  async buildFrom(doc, { play = false, heard = play, cache = !play, mtoonMaterial = this.host.mtoonMaterial, prefabs = this.session?.prefabs ?? new Map(), timed = true } = {}) {
     const p = this.project;
     if (this.cacheFor !== p) {
-      this.cacheFor = p; this.characterCache = { sources: new Map(), clips: new Map() }; this.animCache = await p.animations();
-      // the project's app personas (M3 W1), when it has them: who each character is, for brains and directors
-      this.personasCache = p.files?.includes('personas.json') ? JSON.parse(await p.text('personas.json')) : null;
+      // filled once per project; every build waits for the same fill (M5 W6: thumbnails build beside the edit view, and a
+      // second build must not go on with the last project's caches while the first is still reading this one's)
+      this.cacheFor = p; this.characterCache = { sources: new Map(), clips: new Map() };
+      this._cacheFill = (async () => {
+        const anim = await p.animations();
+        // the project's app personas (M3 W1), when it has them: who each character is, for brains and directors
+        const personas = p.files?.includes('personas.json') ? JSON.parse(await p.text('personas.json')) : null;
+        if (this.cacheFor === p) { this.animCache = anim; this.personasCache = personas; }
+      })().catch((e) => { if (this.cacheFor === p) this.cacheFor = null; throw e; }); // a failed read is tried again by the next build
     }
+    await this._cacheFill;
+    if (this.cacheFor !== p) throw new Error('the project changed while a world was being built');
     if (this.setScene && isSequence(doc)) doc = composeSequence(doc, this.setScene.doc); // a sequence plays in its set
-    const sample = { scene: this.sceneRef, doc, prefabs: this.session.prefabs, animations: this.animCache, bytes: (ref) => p.bytes(ref), personas: this.personasCache ?? null };
-    this.buildTimings = {};
+    const sample = { scene: this.sceneRef, doc, prefabs, animations: this.animCache, bytes: (ref) => p.bytes(ref), personas: this.personasCache ?? null };
+    const timings = {}; // a thumbnail's build (timed: false) leaves the status line's timings alone
+    if (timed) this.buildTimings = timings;
     if (heard && !this.audio) this.audio = new AudioOutput(); // made on the first Play: that click is the gesture that lets it sound
-    const world = await buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial });
+    const world = await buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial });
     this._built++;
     return world;
   }
@@ -390,14 +412,23 @@ export class EditorHost {
   commitGizmo() {
     const id = this.session.primary, o = this.selectedObject();
     if (!id || !o) return;
-    const n = this.session.node(id), t = n.transform ?? {};
+    const inner = this.session.node(id) ? null : this.session.innerNode(id); // a prefab instance's inner node: its override (M5 W6)
+    const n = inner ? inner.node : this.session.node(id), t = n.transform ?? {};
     const p = o.position.toArray(), q = o.quaternion.toArray(), s = o.scale.toArray();
     const differs = (a, b, d) => a.some((v, i) => Math.abs(v - (b ?? d)[i]) > 1e-7);
     const change = {};
     if (differs(p, t.p, [0, 0, 0])) change.p = p;
     if (differs(q, t.q, [0, 0, 0, 1])) change.q = q;
     if (differs(s, t.s, [1, 1, 1])) change.s = s;
-    if (Object.keys(change).length) this.session.setTransform(id, change);
+    if (!Object.keys(change).length) return;
+    if (inner) this.setInnerTransform(id, change);
+    else this.session.setTransform(id, change);
+  }
+
+  /** Transform parts of an inner node (a gizmo drag), as its instance's overrides: one undo step. */
+  setInnerTransform(id, change) {
+    const r = (v) => v.map((x) => Math.round(x * 1e6) / 1e6);
+    this.session.setOverrides(id, Object.fromEntries(Object.entries(change).map(([k, v]) => [`transform.${k}`, r(v)])), `${Object.keys(change).length > 1 ? 'Transform' : { p: 'Move', q: 'Rotate', s: 'Scale' }[Object.keys(change)[0]]} ${id}`);
   }
 
   ndc(clientX, clientY) {
@@ -438,12 +469,22 @@ export class EditorHost {
   }
 
   /** Place an asset: dropped at a point of the viewport, or (from the list's Add button) where the view looks. */
-  addAsset(ref, clientX, clientY) {
+  async addAsset(ref, clientX, clientY) {
     // the first thing in an empty scene goes at the origin (a set); later ones where the view looks
     const empty = this.session.doc.nodes.every((n) => n.parent === undefined);
     const at = clientX !== undefined ? this.dropPoint(clientX, clientY) : empty ? [0, 0, 0] : this.lookPoint();
     const snapped = this.snap ? at.map((v) => Math.round(v / SNAP.translate) * SNAP.translate) : at;
+    await this.loadPrefab(ref);
     return this.session.addFromAsset(ref, { at: snapped });
+  }
+
+  /**
+   * A prefab the scene doesn't use yet, read into the session's prefabs (and the prefabs it places) before an instance of
+   * it is made (M5 W6): the session refuses one it hasn't loaded, as the edit view couldn't build it.
+   */
+  async loadPrefab(ref) {
+    if (!ref.endsWith('.vrmxs') || this.session.prefabs.has(ref) || !this.project?.has(ref)) return;
+    await this.project.prefabs({ assets: [{ type: 'vrmxs', ref }] }, this.session.prefabs);
   }
 
   /** The point of the ground the view centres on. */
@@ -488,6 +529,8 @@ export class EditorHost {
    */
   inspect() {
     const s = this.session;
+    const inner = s?.primary ? s.innerNode(s.primary) : null;
+    if (inner) return this.inspectInner(inner); // an inner node of a prefab instance: alone, its fields as overrides (M5 W6)
     const nodes = (s?.selection ?? []).map((id) => s.node(id)).filter(Boolean);
     if (!nodes.length) return null;
     const n = nodes.at(-1); // the primary
@@ -503,13 +546,118 @@ export class EditorHost {
       p: sharedAxes(tr.map((t) => t.p)), r: sharedAxes(tr.map((t) => t.r)), s: sharedAxes(tr.map((t) => t.s)), props,
       behaviours: nodes.length === 1 ? (n.behaviours ?? []).map((b) => b.use) : [], nodes: s.doc.nodes.map((x) => x.id),
       sameType: types.length === 1 ? s.doc.nodes.filter((x) => x.type === n.type).map((x) => x.id) : [],
+      inner: null, ov: null, overrides: nodes.length === 1 && n.type === 'Instance' ? this.overridesView(n.id) : null,
+      // the node's asset slot (M5 W6, AB-T-0606): what it names and the kinds of file it takes, for a drop from the assets panel
+      assetSlot: nodes.length === 1 && registry.get(n.type)?.asset ? { ref: asset?.ref ?? null, types: [...registry.get(n.type).asset.types] } : null,
     };
   }
 
+  /**
+   * An inner node of a prefab instance as the inspector shows it (M5 W6, AB-T-0603): its values with the instance's
+   * overrides applied, and on each field the instance overrides, the prefab's value (`ov`), for the mark and its Revert.
+   */
+  inspectInner(i) {
+    const s = this.session, n = i.node, d = describeType(registry, n.type);
+    const view = this.overridesView(i.instance);
+    const mine = new Map(view.entries.filter((e) => e.target === i.target).map((e) => [e.field, e]));
+    const props = sharedFields([inspectorFields(d, n)]).map((f) => ({ ...f, ov: mine.get(`props.${f.key}`) ?? null }));
+    const t = this.transformOf(n), b = this.transformOf(i.base);
+    // a node reference inside a prefab names a node of that prefab: the options (and a paste's check) are its ids, not the scene's
+    const at = i.target.includes('/') ? `${i.target.slice(0, i.target.lastIndexOf('/'))}/` : '';
+    let local = [];
+    try { local = [...prefabNodes(s.prefabOf(s.node(i.instance)), s.prefabs).keys()].filter((k) => k.startsWith(at) && !k.slice(at.length).includes('/')).map((k) => k.slice(at.length)); } catch { local = []; }
+    const part = (field, v) => (mine.has(field) ? { ...mine.get(field), base: v.map((x) => +x.toFixed(3)).join(', ') } : null);
+    return {
+      id: i.id, ids: [i.id], multi: false, type: n.type, types: [n.type], name: n.name ?? '', parent: null, description: d.description, asset: null,
+      p: t.p, r: t.r, s: t.s, props, behaviours: (n.behaviours ?? []).map((x) => x.use), nodes: local, sameType: [],
+      inner: { instance: i.instance, target: i.target, ref: i.ref }, assetSlot: null,
+      ov: { name: mine.get('name') ?? null, p: part('transform.p', b.p), r: part('transform.q', b.r), s: part('transform.s', b.s) },
+      overrides: view,
+    };
+  }
+
+  /**
+   * An instance's overrides as the inspector's Overrides list (the diff view): each field's prefab value and the
+   * instance's, as short text, and how many instances of the prefab this scene has.
+   */
+  overridesView(instanceId) {
+    const o = this.session.overridesOf(instanceId);
+    if (!o) return null;
+    const show = (v) => { if (v === undefined) return '(none)'; const t = JSON.stringify(v); return t.length > 48 ? `${t.slice(0, 47)}…` : t; };
+    const label = (f) => f.replace(/^props\./, '').replace(/^transform\.p$/, 'position').replace(/^transform\.q$/, 'rotation').replace(/^transform\.s$/, 'scale').replace(/^behaviours\./, 'behaviour ');
+    return {
+      id: instanceId, ref: o.ref, loaded: o.loaded, users: o.users.length, text: overridesText(o.entries, { instance: instanceId, ref: o.ref }),
+      entries: o.entries.map((e) => ({ key: `${e.target} ${e.field}`, target: e.target, field: e.field, label: label(e.field), change: e.change, base: show(e.base), value: show(e.value), missing: e.missing, same: e.same })),
+    };
+  }
+
+  /**
+   * The project's other scenes that use prefab `ref` (directly, or through another prefab): what an Apply changes beyond
+   * this scene. Reads the scenes' saved files. → their refs
+   */
+  async prefabScenes(ref) {
+    const p = this.project, out = [];
+    if (!p) return out;
+    const uses = new Map(); // prefab ref → the prefabs it uses, read once
+    const usesOf = async (r, depth = 0) => {
+      if (uses.has(r) || depth > 16) return uses.get(r) ?? [];
+      uses.set(r, []);
+      try { const d = parse(await p.text(r)); uses.set(r, (d.assets ?? []).filter((a) => a.type === 'vrmxs').map((a) => a.ref)); } catch { /* unreadable: none */ }
+      return uses.get(r);
+    };
+    const reaches = async (r, seen = new Set()) => {
+      if (r === ref) return true;
+      if (seen.has(r)) return false;
+      seen.add(r);
+      for (const x of await usesOf(r)) if (await reaches(x, seen)) return true;
+      return false;
+    };
+    for (const sc of p.scenes()) {
+      if (sc === this.sceneRef || sc === ref || sc.startsWith('prefabs/')) continue; // scenes, not other prefabs (they're reached through scenes)
+      for (const x of await usesOf(sc)) if (await reaches(x)) { out.push(sc); break; }
+    }
+    return out;
+  }
+
+  /** Set a prop on the selection: on an inner node of an instance, as the instance's override. One undo step. */
+  setPropOn(ids, key, value) {
+    if (ids.length === 1 && this.session.innerNode(ids[0])) return this.session.setOverride(ids[0], `props.${key}`, value);
+    return this.session.setPropOn(ids, key, value);
+  }
+
+  /** Rename a node; an inner node's name is an override. */
+  renameNode(id, name) {
+    if (this.session.innerNode(id)) return this.session.setOverride(id, 'name', name || undefined);
+    return this.session.rename(id, name);
+  }
+
+  /**
+   * Paste a transform (per-field paste, M5 W6, AB-T-0607): any of position, rotation in degrees and scale onto the
+   * selection, one undo step; an inner node's as its instance's override.
+   * @param {string[]} ids @param {{ p?: number[], r?: number[], s?: number[] }} t
+   */
+  pasteTransform(ids, t) {
+    const part = (x) => ({ ...(x.p ? { p: [...x.p] } : {}), ...(x.r ? { q: quatFromDeg(x.r) } : {}), ...(x.s ? { s: [...x.s] } : {}) });
+    if (ids.length === 1 && this.session.innerNode(ids[0])) return this.setInnerTransform(ids[0], part(t));
+    this.session.setTransforms(ids.map((id) => ({ id, t: part(t) })), `Paste ${Object.keys(t).length === 3 ? 'transform' : { p: 'position', r: 'rotation', s: 'scale' }[Object.keys(t)[0]]} on ${ids.length === 1 ? ids[0] : `${ids.length} nodes`}`);
+  }
+
+  /** A file from the assets panel into the primary node's asset slot: one undo step (refused for the wrong kind). */
+  async setNodeAsset(id, ref) { await this.loadPrefab(ref); return this.session.setNodeAsset(id, ref); }
+
+  /** A node of the document, or an inner node of an instance as the instance has it. */
+  nodeOf(id) { return this.session.node(id) ?? this.session.innerNode(id)?.node ?? null; }
+
   /** Set one axis of a vector prop (a collider's size) on several nodes, each keeping its other axes: one undo step. */
   setPropAxisOn(ids, key, axis, value) {
+    if (ids.length === 1 && this.session.innerNode(ids[0])) { // an inner node: its override
+      const n = this.nodeOf(ids[0]), p = registry.get(n.type)?.props[key];
+      const v = [...(n.props?.[key] ?? p?.schema.default ?? new Array(p?.schema.minItems ?? 3).fill(0))];
+      v[axis] = value;
+      return this.session.setOverride(ids[0], `props.${key}`, v);
+    }
     this.session.setPropEach(key, ids.map((id) => {
-      const n = this.session.node(id), p = registry.get(n.type)?.props[key];
+      const n = this.nodeOf(id), p = registry.get(n.type)?.props[key];
       const v = [...(n.props?.[key] ?? p?.schema.default ?? new Array(p?.schema.minItems ?? 3).fill(0))];
       v[axis] = value;
       return { id, value: v };
@@ -539,16 +687,44 @@ export class EditorHost {
     const g = this.session.gesture;
     if (g && this._dragEuler?.gesture !== g) this._dragEuler = { gesture: g, by: new Map() };
     const entries = ids.map((id) => {
-      const t = this.transformOf(this.session.node(id));
+      const t = this.transformOf(this.nodeOf(id));
       let v = [...t[part]];
       if (part === 'r' && g) { const by = this._dragEuler.by; if (!by.has(id)) by.set(id, v); v = [...by.get(id)]; v[axis] = value; by.set(id, v); }
       v[axis] = value;
       return { id, t: part === 'r' ? { q: quatFromDeg(v) } : { [part]: v } };
     });
+    if (entries.length === 1 && this.session.innerNode(entries[0].id)) return this.setInnerTransform(entries[0].id, entries[0].t); // M5 W6
     this.session.setTransforms(entries);
   }
 
-  assets() { return this.project ? assetList(registry, this.project.files) : []; }
+  /** The assets panel's entries (M5 W6: @vrmxg/editor-ui's assetEntries: category, folder, the node type a drop makes). */
+  assets() { return this.project ? assetEntries(registry, this.project.files) : []; }
+
+  /**
+   * Draw the assets panel's thumbnails for the open project, in the background (the editor's window starts it; the
+   * creator, which extends this host, doesn't). Files with something to show: models, characters, items, prefabs, sounds.
+   */
+  async startAssetThumbs() {
+    const p = this.project;
+    if (!p) return;
+    this._assetThumbsWanted = true; // the editor's window wants them: after an export or a save they start again
+    if (this.exporting) return; // an export has the GPU: it starts them again when it ends
+    const gen = this.assetThumbs.gen; // a release (an export starting) or a newer start while the files are read: this one stops
+    const entries = this.assets().filter((e) => e.nodeType || e.kind === 'vrmxa');
+    let stats = {};
+    this._assetThumbCache = false;
+    if (inShell && p.writable) { // a project folder: its files' size and modification time key the cache
+      try { stats = (await call('project.stat', { paths: entries.map((e) => e.ref) })).stats ?? {}; this._assetThumbCache = true; } catch { stats = {}; }
+    }
+    if (p !== this.project || gen !== this.assetThumbs.gen || this.exporting) return;
+    return this.assetThumbs.load(entries, stats, p.path ?? p.name); // cached per project, not only per path
+  }
+
+  /** The thumbnails' offline host (made on the first draw, let go by releaseAssetThumbs). */
+  async assetThumbHost() { return (this._assetThumbHost ??= await this.offlineHost()); }
+  dropAssetThumbHost() { const h = this._assetThumbHost; this._assetThumbHost = null; if (h) { h.dispose(); h.renderer.forceContextLoss?.(); } }
+  /** Let the thumbnails' host go once its draw is done (before an export: a render doesn't share the GPU with it). */
+  async releaseAssetThumbs() { await this.assetThumbs.release(); }
 
   // ---------------------------------------------------------------- play in place
 
@@ -750,6 +926,7 @@ export class EditorHost {
     this.exporting = { n: 0, frames: 0, phase: 'building' }; this.error = ''; this.changed();
     let world = null;
     try {
+      await this.releaseAssetThumbs(); // the thumbnails' host goes first (M5 W6), inside the try: a throw still ends the export
       const seqDoc = take === 'sequence' ? (doc ?? parse(this.session.text())) : null;
       // the export's host first: its world is built with that host's MToon (another backend's, when the job says)
       this.exportHost ??= await this.offlineHost(backend);
@@ -782,6 +959,7 @@ export class EditorHost {
       if (this.exportHost) { this.exportHost.dispose(); this.exportHost.renderer.forceContextLoss?.(); this.exportHost = null; }
       disposeWorld(world); // its sound and its physics too (AB-T-0592)
       this.exporting = null; this.changed();
+      if (this._assetThumbsWanted) this.startAssetThumbs().catch(() => {}); // the thumbnails not drawn yet (M5 W6)
     }
   }
 
@@ -815,6 +993,7 @@ export class EditorHost {
     this.exporting = { n: 0, frames: order.length, phase: 'checking' }; this.changed();
     let world = null, host = null, rb = null;
     try {
+      await this.releaseAssetThumbs(); // M5 W6: as before an export
       ({ world } = await this.takeWorld('sequence'));
       const player = new SequencePlayer(world.tree, { every: 120 });
       host = await this.offlineHost();
@@ -849,6 +1028,7 @@ export class EditorHost {
       if (host) { host.dispose(); host.renderer.forceContextLoss?.(); }
       disposeWorld(world);
       this.exporting = null; this.changed();
+      if (this._assetThumbsWanted) this.startAssetThumbs().catch(() => {});
     }
   }
 

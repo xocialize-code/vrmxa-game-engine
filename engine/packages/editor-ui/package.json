@@ -10,7 +10,8 @@
     "./StoryboardStrip.vue": "./src/StoryboardStrip.vue",
     "./RenderQueue.vue": "./src/RenderQueue.vue",
     "./NumberField.vue": "./src/NumberField.vue",
-    "./ValueField.vue": "./src/ValueField.vue"
+    "./ValueField.vue": "./src/ValueField.vue",
+    "./AssetsPanel.vue": "./src/AssetsPanel.vue"
   },
   "files": [
     "src"

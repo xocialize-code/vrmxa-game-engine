@@ -1,7 +1,7 @@
 // What the timeline panel emits (M4 W5): every command a move, trim, nudge, delete, form or field becomes.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { itemLabel, moveCommand, removeCommand, fieldCommand, trackSpec, clipSpec, keyCommand, nudgeCommand, isSelected, selectionOf, parseValue, needsTarget } from '../src/index.js';
+import { itemLabel, moveCommand, removeCommand, fieldCommand, trackSpec, clipSpec, keyCommand, nudgeCommand, isSelected, selectionOf, parseValue, needsTarget, timelineKey } from '../src/index.js';
 
 const shotRow = { id: 'shots' }, camRow = { id: 'cams' }, faceRow = { id: 'hana-1-face' };
 const shot = { kind: 'shot', id: 'shot-1', index: 0, start: 10, end: 58, label: '010' };
@@ -70,3 +70,19 @@ test('the forms: tracks, clips by type, keys by channel', () => {
   assert.equal(parseValue('nope'), 'nope');
   assert.ok(needsTarget('lookAt') && !needsTarget('camera'));
 });
+
+test('the timeline\'s keys: Delete removes a selected item even after the editor\'s window listener took the key (M5 W6 review)', () => {
+  const on = { active: true, selected: true };
+  // the editor's listener runs first and calls preventDefault on Delete: the timeline still removes its item
+  assert.deepEqual(timelineKey({ key: 'Delete', defaultPrevented: true }, on), { action: 'remove' });
+  assert.deepEqual(timelineKey({ key: 'Backspace' }, on), { action: 'remove' });
+  assert.deepEqual(timelineKey({ key: 'ArrowLeft' }, on), { action: 'nudge', dir: -1 });
+  assert.deepEqual(timelineKey({ key: 'ArrowRight' }, { active: true }), { action: 'scrub', dir: 1 });
+  assert.deepEqual(timelineKey({ key: ' ' }, { active: true }), { action: 'play' });
+  assert.deepEqual(timelineKey({ key: 'Escape' }, on), { action: 'clear' });
+  assert.equal(timelineKey({ key: 'Delete' }, { active: true }), null, 'nothing selected: not the timeline\'s');
+  assert.equal(timelineKey({ key: 'Delete' }, { ...on, typing: true }), null);
+  assert.equal(timelineKey({ key: 'Delete', metaKey: true }, on), null);
+  assert.equal(timelineKey({ key: 'Delete' }, { active: false, selected: true }), null);
+});
+

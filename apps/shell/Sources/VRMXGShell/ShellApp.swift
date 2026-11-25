@@ -1,7 +1,7 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.12.0"
+public let vrmxgShellVersion = "0.13.0"
 
 /// An app's own menu item (shell 0.7.0, M4 W5): choosing it sends the page `menu.<event>`. A title of "-" is a separator.
 public struct ShellMenuItem: Sendable {
@@ -50,6 +50,9 @@ public struct ShellConfiguration {
     public var editItems: [ShellMenuItem]
     /// Menus of the app's own, between View and Window (shell 0.7.0).
     public var menus: [ShellMenu]
+    /// Items of the app's own in a Help menu after Window (shell 0.13.0, M5 W6: the editor's Keyboard Shortcuts). Empty
+    /// (the default): no Help menu, as before.
+    public var helpItems: [ShellMenuItem]
     /// File extensions the app opens from the Finder (Open Documents, shell 0.7.0): each becomes a `file.opened` event.
     /// Empty (the default): the shell doesn't take Open Documents at all, and AppKit answers as it would without it.
     public var openTypes: [String]
@@ -62,11 +65,11 @@ public struct ShellConfiguration {
     public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = [], pageUndo: Bool = false,
                 statusItem: StatusItemConfiguration? = nil, closeKeepsRunning: Bool = false, dockIcon: Bool = true, setUp: (@MainActor (ShellAppDelegate) -> Void)? = nil,
                 fileItems: [ShellMenuItem] = [], editItems: [ShellMenuItem] = [], menus: [ShellMenu] = [], openTypes: [String] = [],
-                asksBeforeClosing: Bool = false, closeTimeout: TimeInterval = 5) {
+                asksBeforeClosing: Bool = false, closeTimeout: TimeInterval = 5, helpItems: [ShellMenuItem] = []) {
         self.appName = appName; self.scheme = scheme; self.size = size; self.webFolder = webFolder; self.methods = methods; self.pageUndo = pageUndo
         self.statusItem = statusItem; self.closeKeepsRunning = closeKeepsRunning; self.dockIcon = dockIcon; self.setUp = setUp
         self.fileItems = fileItems; self.editItems = editItems; self.menus = menus; self.openTypes = openTypes.map { $0.lowercased() }
-        self.asksBeforeClosing = asksBeforeClosing; self.closeTimeout = closeTimeout
+        self.asksBeforeClosing = asksBeforeClosing; self.closeTimeout = closeTimeout; self.helpItems = helpItems
     }
 }
 
@@ -88,6 +91,10 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     lazy var saves = SaveMethods(appName: config.appName, env: env)
     /// The app's settings document (shell 0.11.0, M5 W1); held for the app's life like the saves
     lazy var settings = SettingsMethods(appName: config.appName, env: env)
+    /// The page's cache in the sandbox (shell 0.13.0, M5 W6: the editor's thumbnails); held for the app's life like the saves
+    lazy var cache = CacheMethods(appName: config.appName, env: env)
+    /// The Help menu buildMenu made, if the app has one (NSApp.helpMenu: the system adds its search field there)
+    var helpMenu: NSMenu?
     /// The camera (M3 W5): feature frames to the page as `camera.frame` events
     lazy var camera = CameraMethods(emit: { [unowned self] name, payload in self.emit(name, payload) })
     /// The microphone's permission (M3 W3)
@@ -133,6 +140,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         files.register(on: router)
         saves.register(on: router) // save slots (M2 W9)
         settings.register(on: router) // the app's settings (shell 0.11.0, M5 W1)
+        cache.register(on: router) // the page's cache (shell 0.13.0, M5 W6)
         // The page quits the app (shell 0.11.0, M5 W1: a game's title menu has Quit). It is the menu's Quit: an app that
         // asks its page before quitting still asks, so the page answers its own question (it asked to go)
         router.register("app.quit") { [unowned self] _ in
@@ -161,6 +169,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         window.center()
         window.makeKeyAndOrderFront(nil)
         NSApp.mainMenu = buildMenu()
+        if let helpMenu { NSApp.helpMenu = helpMenu }
         NSApp.activate(ignoringOtherApps: true)
         registerWindowMethods() // window.* and, when configured, the status item (AB-A-0317)
 
@@ -214,6 +223,10 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         menu("View", [item("Reload", #selector(reload), "r", target: self)])
         for m in config.menus { menu(m.title, m.items.map(own)) }
         menu("Window", [item("Minimize", #selector(NSWindow.performMiniaturize(_:)), "m")])
+        if !config.helpItems.isEmpty {
+            menu("Help", config.helpItems.map(own))
+            helpMenu = main.items.last?.submenu
+        }
         return main
     }
 

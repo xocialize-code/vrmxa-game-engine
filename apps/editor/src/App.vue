@@ -1,33 +1,50 @@
 <script setup>
 // The editor's window: toolbar, scene tree, viewport, inspector, asset list, status. Engine objects stay in the
 // EditorHost (never reactive); this keeps plain copies of what the panels show, refreshed when the host says so.
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { EditorHost, ADDABLE, SIZES, RATES, CODECS } from './host.js';
 import { bundledProject, openProjectFolder } from './project.js';
 import { McpLink } from './mcp.js';
 import { inShell, call, on, onClosing, setEdited } from '../../shell/js/shell.js';
-import { questions } from '@vrmxg/editor-ui';
+import { questions, filterTree, foldTree, readLayout, writeLayout, resize as resizePanel, toggle as togglePanel, splitterKey, shownSize, EDITOR_PANELS, dropVerdict, dropEffectFor, draggedKind, ASSET_MIME, fileKind, copyField, copyTransform, copyPart } from '@vrmxg/editor-ui';
 import { isClip } from '@vrmxg/editor-core';
 import { editorClosing } from './closing.js';
 import { exportClosing } from './export-game.js';
 import TreeItem from './TreeItem.vue';
 import Inspector from './Inspector.vue';
 import Timeline from '@vrmxg/editor-ui/Timeline.vue'; // shared with the creator (M4 W5)
+import AssetsPanel from '@vrmxg/editor-ui/AssetsPanel.vue'; // M5 W6: thumbnails, filters, search, folders, typed drags
+import { shortcutFor, shortcutGroups } from './shortcuts.js';
 
 const canvas = ref(null);
 const ui = reactive({
   shell: '', project: '', writable: false, scenes: [], scene: '', loading: true, error: '', mode: 'editing',
   tree: [], selected: [], inspector: null, assets: [], undo: null, redo: null, dirty: false, valid: true, problems: '',
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
-  debug: { colliders: false, sensors: false, capsules: false, rays: false }, aids: { outline: true, handles: true, preview: true }, boxSelect: false, clip: 0, previewing: '', frame: '—', build: '—', renderer: '—', holds: '', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
+  debug: { colliders: false, sensors: false, capsules: false, rays: false }, aids: { outline: true, handles: true, preview: true }, boxSelect: false, clip: 0, previewing: '', frame: '—', build: '—', renderer: '—', holds: '', step: 0, prompt: null, fileName: 'built-cafe.vrmxs', captions: [],
   mcp: '', tl: null, gameSlot: 'slot-1', gameNote: '', paused: false, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
   ask: null, // { title, text, options: [{ id, label }] }: the window's question before it closes (M5 W8)
+  // M5 W6: the tree's search and folds, the assets panel's thumbnails and picked file, the panels' sizes, the field
+  // clipboard, the shortcuts sheet
+  docSel: 0, treeQuery: '', treeOpen: [], treeClosed: [], thumbs: {}, thumbStatus: '', picked: '', panels: readLayout(null), fieldClip: null, shortcuts: false, note: '',
   ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '', check: '', canCheck: false, scene: '', checkRows: '', gameName: '', game: '', gameRunning: false, gameN: 0, gameTotal: 0 },
 });
 /** @type {EditorHost} */ let ed = null; // never reactive
 
 const label = (n) => n.name ? `${n.name} (${n.id})` : n.id;
-const plainTree = (items) => items.map(({ node, children }) => ({ id: node.id, type: node.type, label: label(node), children: plainTree(children) }));
+const plainTree = (items) => items.map(({ node, children, inner, overridden }) => ({ id: node.id, type: node.type, label: label(node), children: plainTree(children), ...(inner ? { inner: true } : {}), ...(overridden ? { overridden: true } : {}) }));
+// the tree as drawn (M5 W6, AB-T-0607): a search's matches and their ancestors, rows folded (instances start folded)
+const shownTree = computed(() => {
+  const f = filterTree(ui.tree, ui.treeQuery);
+  return { items: foldTree(f.items, { open: new Set(ui.treeOpen), closed: new Set(ui.treeClosed), searching: f.matches !== null }), matches: f.matches };
+});
+function fold(id) {
+  const it = findItem(shownTree.value.items, id); // the row as foldTree drew it: its own word on whether it's an instance
+  const list = it?.instance ? 'treeOpen' : 'treeClosed';
+  ui[list] = ui[list].includes(id) ? ui[list].filter((x) => x !== id) : [...ui[list], id];
+}
+const findItem = (items, id) => { for (const it of items) { if (it.id === id) return it; const f = findItem(it.children, id); if (f) return f; } return null; };
+const tiles = computed(() => ui.assets.map((a) => ({ ...a, thumb: ui.thumbs[a.ref] ?? null })));
 
 let assetsOf = null; // the file list the asset list was made from: rebuilt only when it changes
 function refresh(kind = 'all') {
@@ -41,18 +58,24 @@ function refresh(kind = 'all') {
   if (ed.exporting) Object.assign(ui.ex, { n: ed.exporting.n, frames: ed.exporting.frames, phase: ed.exporting.phase, running: true });
   ui.ex.gameRunning = !!ed.gameExporting; if (ed.gameExporting) { ui.ex.gameN = ed.gameExporting.n; ui.ex.gameTotal = ed.gameExporting.total; }
   if (kind === 'timeline' || kind === 'all') ui.tl = ed.timeline();
-  if (kind === 'stats' || kind === 'captions' || kind === 'export' || kind === 'timeline') return;
+  if (kind === 'assetThumbs') { ui.thumbs = Object.fromEntries(ed.assetThumbs.urls); ui.thumbStatus = ed.assetThumbs.status(); } // only when one changes: 100 tiles' images aren't copied every refresh
+  if (kind === 'stats' || kind === 'captions' || kind === 'export' || kind === 'timeline' || kind === 'assetThumbs') return;
   const s = ed.session;
   ui.loading = ed.busy > 0;
   if (ed.error) ui.error = ed.error;
   ui.project = ed.project?.name ?? ''; ui.writable = !!ed.project?.writable; ui.scenes = ed.project?.scenes() ?? []; ui.scene = ed.sceneRef ?? '';
-  if (assetsOf !== ed.project?.files) { assetsOf = ed.project?.files; ui.assets = ed.assets().map((a) => ({ ...a })); }
+  if (assetsOf !== ed.project?.files) { // the project's files changed (opened, or a save wrote one): the panel and its thumbnails follow
+    assetsOf = ed.project?.files; ui.assets = ed.assets().map((a) => ({ ...a }));
+    if (ui.picked && !ui.assets.some((a) => a.ref === ui.picked)) ui.picked = '';
+    if (ed.project) ed.startAssetThumbs().catch((e) => console.warn('thumbnails', e));
+  }
   ui.gizmo = ed.gizmoMode; ui.snap = ed.snap; ui.camera = ed.cameraMode;
   ui.aids = { ...ed.aids.show }; ui.boxSelect = ed.aids.boxSelect; ui.clip = ed.clipboard?.roots.length ?? 0; ui.previewing = ed.aids.previewing ?? ''; // M5 W5
   if (!s) return;
   ui.mode = s.mode; ui.paused = !!ed.paused;
-  ui.tree = plainTree(s.tree());
+  ui.tree = plainTree(s.tree({ inner: true }));
   ui.selected = [...s.selection];
+  ui.docSel = s.selection.filter((id) => s.node(id)).length; // a prefab's inner nodes aren't deleted, duplicated or copied here (M5 W6)
   ui.inspector = ed.inspect();
   const h = s.history(); ui.undo = h.undo; ui.redo = h.redo;
   ui.dirty = s.dirty; ui.nodes = s.doc.nodes.length; ui.hash = s.hash();
@@ -94,6 +117,7 @@ onMounted(async () => {
     const link = new McpLink(ed, { url: `http://127.0.0.1:${/^\d+$/.test(q ?? '') ? q : 5183}`, onChange: () => { ui.mcp = link.state === 'off' ? 'MCP: waiting for vrmxg-mcp --editor' : link.state === 'taken' ? 'MCP: another editor has the link' : `MCP ${link.state}${link.last ? ` · ${link.last}` : ''} · ${link.calls} calls`; } });
     window.__mcp = link; link.onChange(); link.start();
   }
+  loadPanels(); // the panels' sizes as last left (M5 W6)
   await act(async () => ed.openProject(await bundledProject()));
   ui.loading = false;
   // a harness's check (M2 W12): export the film as frame hashes and check it against scrubbing
@@ -101,7 +125,7 @@ onMounted(async () => {
 });
 
 // ---------------------------------------------------------------- commands
-const openProject = () => act(async () => ed.openProject(await openProjectFolder()));
+const openProject = () => act(async () => { const p = await openProjectFolder(); await ed.releaseAssetThumbs(); await ed.openProject(p); }); // the last project's thumbnail draw ends first
 const openScene = () => act(() => (ui.scenes.includes(ui.scene) ? ed.openScene(ui.scene) : null));
 const fileName = () => { const n = ui.fileName.trim() || 'untitled.vrmxs'; return n.endsWith('.vrmxs') ? n : `${n}.vrmxs`; };
 const newScene = () => act(() => ed.newScene(fileName()));
@@ -149,11 +173,13 @@ const tlTransport = (what, v) => act(() => {
 });
 const setScenes = () => ui.scenes.filter((x) => !x.startsWith('prefabs/') && !x.startsWith('sequences/'));
 const reparent = (id, parent) => act(() => ed.session.reparent(id, parent));
-const remove = () => act(() => ed.session.remove());
+const innerOnly = () => ui.selected.length > 0 && !ui.docSel;
+const INNER_WHY = 'a prefab\'s node is edited through its instance\'s overrides: revert or apply them, or change the prefab';
+const remove = () => (innerOnly() ? (ui.note = `Not deleted: ${INNER_WHY}`) : act(() => ed.session.remove()));
 // Duplicate, Copy and Paste (M5 W5): commands on the session, one undo step each; a copy is also put on the system clipboard
 // (as text) by the page's copy event, so it pastes into another editor window
-const duplicate = () => act(() => ed.duplicate());
-const copyNodes = () => act(() => { if (!ed.copy()) throw new Error('select nodes to copy'); });
+const duplicate = () => (innerOnly() ? (ui.note = `Not duplicated: ${INNER_WHY}`) : act(() => ed.duplicate()));
+const copyNodes = () => (innerOnly() ? (ui.note = `Not copied: ${INNER_WHY}`) : act(() => { if (!ed.copy()) throw new Error('select nodes to copy'); }));
 const pasteNodes = (clip) => act(() => ed.paste(clip));
 const setAid = (kind) => ed.setAid(kind, ui.aids[kind]);
 const setBoxSelect = () => ed.setBoxSelect(ui.boxSelect);
@@ -168,38 +194,126 @@ const setDebug = () => ed.setDebug({ ...ui.debug });
 // one undo step; a number field's drag is a gesture, its live edits folded into one step on release (AB-T-0600).
 const live = (fn) => act(() => ed.session.withGesture(fn)); // during a drag, the edit belongs to it (an MCP edit meanwhile doesn't)
 const onInspector = {
-  rename: (v) => act(() => ed.session.rename(ui.inspector.id, v)),
+  rename: (v) => act(() => ed.renameNode(ui.inspector.id, v)), // an inner node's name is its instance's override (M5 W6)
   parent: (p) => act(() => ed.session.reparent(ui.inspector.id, p)),
   axis: (part, i, v) => live(() => ed.setAxisOn(ui.inspector.ids, part, i, v)),
-  prop: (k, v) => live(() => ed.session.setPropOn(ui.inspector.ids, k, v)),
+  prop: (k, v) => live(() => ed.setPropOn(ui.inspector.ids, k, v)),
   propAxis: (k, i, v) => live(() => ed.setPropAxisOn(ui.inspector.ids, k, i, v)), // one axis of a vector prop on a selection
   select: (ids, add = true) => act(() => ed.session.select(ids, { add })), // the inspector's Also select and Select every <type>: multi-select without a modifier key
   gesture: (kind) => act(() => { if (kind === 'begin') ed.session.beginGesture(); else if (kind === 'end') ed.session.endGesture(); else ed.session.cancelGesture(); }),
+  // prefab overrides (M5 W6, AB-T-0603): the dot reverts a field of the inner node shown; the Overrides list reverts and
+  // applies by field or all at once; each one undo step
+  revert: (field) => act(() => { const i = ui.inspector.inner; ed.session.revertOverride(i.instance, i.target, field); }),
+  ovRevert: (target, field) => act(() => ed.session.revertOverride(ui.inspector.overrides.id, target, field)),
+  ovRevertAll: () => act(() => ed.session.revertOverride(ui.inspector.overrides.id)),
+  ovApply: (target, field, what) => applyOverrides(target, field, `${target} ${what}`),
+  ovApplyAll: () => applyOverrides(undefined, undefined, 'every override'),
+  ovCopy: (text) => act(async () => { await copyText(text); ui.note = 'Overrides copied as text'; }),
+  // a file into the node's asset slot (AB-T-0606): dropped, or the picked one by Use; one undo step
+  slotAsset: (ref) => act(() => ed.setNodeAsset(ui.inspector.id, ref)),
+  // per-field copy and paste (AB-T-0607): a paste is one undo step, on the whole selection
+  fieldCopy: (p) => { ui.fieldClip = copyField(p); ui.note = `Copied ${p.key}`; },
+  fieldPaste: (p, value) => act(() => ed.setPropOn(ui.inspector.ids, p.key, value)),
+  xformCopy: (part) => { const d = ui.inspector; if ((part === 'all' ? ['p', 'r', 's'] : [part]).some((k) => d[k].includes(null))) return; ui.fieldClip = part === 'all' ? copyTransform(d) : copyPart(part, d[part]); ui.note = part === 'all' ? 'Copied the transform' : `Copied ${{ p: 'position', r: 'rotation', s: 'scale' }[part]}`; },
+  xformPaste: (part) => act(() => { const c = ui.fieldClip; ed.pasteTransform(ui.inspector.ids, part === 'all' ? { p: c.p, r: c.r, s: c.s } : { [part]: c.value }); }),
 };
 
-// drag an asset from the list onto the viewport
-const dragAsset = (e, ref) => { e.dataTransfer.setData('text/x-vrmxg-asset', ref); e.dataTransfer.effectAllowed = 'copy'; };
-const dropOnViewport = (e) => { const ref = e.dataTransfer.getData('text/x-vrmxg-asset'); if (ref) act(() => ed.addAsset(ref, e.clientX, e.clientY)); };
+/**
+ * Apply to the prefab (M5 W6): it writes the prefab's own file, so every scene with an instance of it changes. The sheet
+ * says which file, how many instances in this scene and which other scenes use it, before anything happens.
+ */
+async function applyOverrides(target, field, what) {
+  const o = ui.inspector?.overrides;
+  if (!o || sheet.asking) return;
+  ui.error = '';
+  let others = [];
+  try { others = await ed.prefabScenes(o.ref); } catch { others = []; }
+  const elsewhere = others.length ? ` ${others.length} other scene${others.length === 1 ? '' : 's'} of the project use${others.length === 1 ? 's' : ''} it too (${others.slice(0, 4).join(', ')}${others.length > 4 ? ', …' : ''}).` : ' No other scene of the project uses it.';
+  const text = `${what} of ${o.id} goes into ${o.ref}, and the override${field ? '' : 's'} go${field ? 'es' : ''}. Every instance of the prefab follows: ${o.users} in this scene.${elsewhere} This scene's other instances that set the same value lose that override and follow the prefab again. The prefab's file is written when you save; Undo puts it all back.`;
+  const c = await sheet.ask(`Apply to ${o.ref}?`, text, [{ id: 'apply', label: 'Apply to Prefab' }, { id: 'cancel', label: 'Cancel' }]);
+  if (c === 'apply') act(() => ed.session.applyOverride(o.id, target, field));
+}
+
+/** Put text on the system clipboard (a press is the gesture WebKit wants); a selected textarea's copy where the API isn't there. */
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return; } catch { /* fall back */ }
+  const t = document.createElement('textarea');
+  t.value = text; document.body.append(t); t.select(); document.execCommand('copy'); t.remove();
+}
+
+// ---------------------------------------------------------------- panels (M5 W6, AB-T-0607 item 2)
+// Scene, Inspector, Assets and Timeline resize from their inner edge (drag it, or focus it and use the arrow keys) and
+// fold to a rail; their sizes are kept in the app's settings (the Mac shell's settings.json, localStorage in a browser).
+const PANELS_KEY = 'vrmxg-editor-panels';
+let panelTimer = null;
+async function loadPanels() {
+  try {
+    if (inShell) { const r = await call('settings.read'); const doc = r?.text ? JSON.parse(r.text) : {}; ui.panels = readLayout(doc.panels ?? null); }
+    else ui.panels = readLayout(localStorage.getItem(PANELS_KEY));
+  } catch { ui.panels = readLayout(null); }
+}
+function savePanels() {
+  clearTimeout(panelTimer);
+  panelTimer = setTimeout(async () => {
+    const text = writeLayout(ui.panels);
+    try {
+      if (inShell) { // the settings document is the app's: keep what else is in it
+        const r = await call('settings.read'); let doc = {};
+        try { doc = r?.text ? JSON.parse(r.text) : {}; } catch { doc = {}; }
+        if (!doc || typeof doc !== 'object' || Array.isArray(doc)) doc = {};
+        doc.panels = JSON.parse(text);
+        await call('settings.write', { text: JSON.stringify(doc) });
+      } else localStorage.setItem(PANELS_KEY, text);
+    } catch (e) { console.warn('panel sizes not kept', e); }
+  }, 250);
+}
+const setPanels = (layout) => { if (layout) { ui.panels = layout; savePanels(); } };
+const bottomPanel = () => (ui.tl ? 'timeline' : 'assets');
+const gridStyle = computed(() => ({ '--left': `${shownSize(ui.panels, 'scene')}px`, '--right': `${shownSize(ui.panels, 'inspector')}px`, '--bottom': `${shownSize(ui.panels, bottomPanel())}px` }));
+// which way a pointer move grows each panel: the Scene's edge is on its right, the Inspector's on its left, the bottom's on top
+const GROWS = { scene: 1, inspector: -1, assets: -1, timeline: -1 };
+function dragSplit(e, name) {
+  if (e.button !== 0) return;
+  e.preventDefault();
+  const el = e.currentTarget, axis = EDITOR_PANELS[name].axis, start = axis === 'x' ? e.clientX : e.clientY, size = ui.panels[name].collapsed ? EDITOR_PANELS[name].min : ui.panels[name].size;
+  el.setPointerCapture?.(e.pointerId);
+  const move = (m) => { ui.panels = resizePanel(ui.panels, name, size + ((axis === 'x' ? m.clientX : m.clientY) - start) * GROWS[name]); };
+  const up = () => { el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up); savePanels(); };
+  el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+}
+// the edge's own keys stop here: the timeline and the window's shortcuts listen on the window for arrows too
+function keySplit(e, name) { const next = splitterKey(ui.panels, name, e, GROWS[name]); if (next) { e.preventDefault(); e.stopPropagation(); setPanels(next); } }
+const foldPanel = (name) => setPanels(togglePanel(ui.panels, name));
+
+// ---------------------------------------------------------------- drops on the viewport and node slots (M5 W6)
+const placeable = (kind) => ui.assets.some((a) => a.kind === kind && a.nodeType);
+
+// an asset from the panel onto the viewport: placed where it lands, if a node type places it (a clip or a wearable isn't)
+const overViewport = (e) => { const v = dropVerdict(draggedKind(e.dataTransfer?.types), { slot: 'viewport', placeable }); if (v.ok) { e.preventDefault(); e.dataTransfer.dropEffect = dropEffectFor({ slot: 'viewport' }); } };
+const dropOnViewport = (e) => { const ref = e.dataTransfer.getData(ASSET_MIME); if (ref && dropVerdict(fileKind(ref), { slot: 'viewport', placeable }).ok) act(() => ed.addAsset(ref, e.clientX, e.clientY)); };
 const dropOnScene = (e) => { const id = e.dataTransfer.getData('text/x-vrmxg-node'); if (id) reparent(id, null); };
 
-// keys: W E R gizmo, F frame, Delete, ⌘Z / ⇧⌘Z, ⌘S (in the Mac shell, Undo / Redo / Save come from the menus)
+// keys: the window's own come from shortcuts.js (M5 W6), the table the shortcuts sheet is drawn from; in the Mac shell,
+// Undo / Redo / Save / Duplicate come from the menus. The fly camera keeps its letters while it flies.
 const typing = () => /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName ?? '');
+const KEY_ACTIONS = {
+  undo: () => undo(), redo: () => redo(), save: () => save(), duplicate: () => duplicate(), remove: () => remove(),
+  gizmoMove: () => setGizmo('translate'), gizmoRotate: () => setGizmo('rotate'), gizmoScale: () => setGizmo('scale'), frame: () => frame(),
+  shortcuts: () => { ui.shortcuts = !ui.shortcuts; }, closeSheet: () => { ui.shortcuts = false; },
+};
 addEventListener('keydown', (e) => {
   if (!ed?.session || typing()) return;
-  const cmd = e.metaKey || e.ctrlKey;
-  if (cmd && e.key.toLowerCase() === 'z' && !inShell) { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
-  if (cmd && e.key.toLowerCase() === 's' && !inShell) { e.preventDefault(); save(); return; }
-  if (cmd && e.key.toLowerCase() === 'd' && !inShell && ed.session.mode === 'editing') { e.preventDefault(); duplicate(); return; } // the Mac shell: Edit › Duplicate
-  if (ed.session.mode !== 'editing' || cmd) return;
-  if (ed.cameraMode === 'fly' && !(e.key === 'Delete' || e.key === 'Backspace')) return; // WASD / R / F / Q / E fly the view
-  if (e.key === 'w') setGizmo('translate'); else if (e.key === 'e') setGizmo('rotate'); else if (e.key === 'r') setGizmo('scale');
-  else if (e.key === 'f') frame(); else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); remove(); }
+  const s = shortcutFor(e, { inShell, flying: ed.cameraMode === 'fly', editing: ed.session.mode === 'editing', sheet: ui.shortcuts });
+  if (!s) return;
+  if (s.action === 'remove' && !ui.selected.length) return; // nothing of the scene's selected: a timeline item's Delete
+  e.preventDefault();
+  KEY_ACTIONS[s.action]?.();
 });
 // Copy and Paste of nodes through the page's clipboard events: ⌘C / ⌘V in a browser, Edit › Copy / Paste in the Mac shell.
 // A text field keeps its own copy and paste. A paste of text that isn't a clip falls back to the editor's own clipboard.
 const nodeEdit = () => ed?.session?.mode === 'editing' && !typing() && !sheet.asking;
 addEventListener('copy', (e) => {
-  if (!nodeEdit() || !ui.selected.length || document.getSelection()?.toString()) return;
+  if (!nodeEdit() || !ui.docSel || document.getSelection()?.toString()) return;
   const clip = ed.copy();
   if (!clip) return;
   e.preventDefault();
@@ -218,13 +332,14 @@ addEventListener('paste', (e) => {
   pasteNodes(clip ?? ed.clipboard);
 });
 // WebKit enables Edit › Copy and Paste only when the page says it will handle them (its beforecopy / beforepaste events)
-addEventListener('beforecopy', (e) => { if (nodeEdit() && ui.selected.length && !document.getSelection()?.toString()) e.preventDefault(); });
+addEventListener('beforecopy', (e) => { if (nodeEdit() && ui.docSel && !document.getSelection()?.toString()) e.preventDefault(); });
 addEventListener('beforepaste', (e) => { if (nodeEdit()) e.preventDefault(); });
 if (inShell) {
   call('shell.info').then((i) => { ui.shell = `${i.app} · shell ${i.shell} · ${i.origin}`; });
   on('menu.openProject', openProject); on('menu.save', save); on('menu.saveAs', saveAs);
   on('menu.exportGame', exportGame); // File › Export Game… (M5 W0)
   on('menu.duplicate', () => (typing() ? null : duplicate())); // Edit › Duplicate (M5 W5)
+  on('menu.shortcuts', () => { ui.shortcuts = true; }); // Help › Keyboard Shortcuts (M5 W6, shell 0.13.0)
   on('menu.undo', () => (typing() ? document.execCommand('undo') : undo()));
   on('menu.redo', () => (typing() ? document.execCommand('redo') : redo()));
 }
@@ -244,11 +359,11 @@ const closing = async (reason) => {
   return go;
 };
 if (inShell) onClosing(closing);
-const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase().includes(ui.assetFilter.toLowerCase()));
+const sheetGroups = shortcutGroups();
 </script>
 
 <template>
-  <div class="app" :class="{ 'with-timeline': !!ui.tl }">
+  <div class="app" :class="{ 'with-timeline': !!ui.tl }" :style="gridStyle">
     <header class="bar" role="toolbar" aria-label="Editor controls">
       <strong class="title">VRMXG Editor</strong>
       <button v-if="ui.shell" id="open-project" type="button" aria-label="Open project" @click="openProject">Open Project…</button>
@@ -289,24 +404,32 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
         <button id="pause-game" type="button" :aria-label="ui.paused ? 'Resume' : 'Pause'" @click="resume">{{ ui.paused ? 'Resume' : 'Pause' }}</button>
       </template>
       <button id="load-game" type="button" :disabled="ui.loading" aria-label="Load game" title="Load the slot's save into a fresh play of this scene" @click="loadGame">Load Game</button>
+      <button id="shortcuts-open" type="button" aria-label="Keyboard shortcuts" title="Keyboard Shortcuts (⌘/)" @click="ui.shortcuts = true">?</button>
       <button id="play" type="button" class="play" :disabled="ui.loading && ui.mode === 'editing'" :aria-label="ui.mode === 'playing' ? 'Stop' : 'Play'" @click="play">{{ ui.mode === 'playing' ? '■ Stop' : '▶ Play' }}</button>
     </header>
 
-    <aside class="dock left" aria-label="Scene">
-      <div class="dock-head"><h2>Scene</h2>
+    <aside class="dock left" :class="{ folded: ui.panels.scene.collapsed }" aria-label="Scene">
+      <button v-if="ui.panels.scene.collapsed" id="panel-scene-expand" type="button" class="rail" aria-label="Expand the Scene panel" @click="foldPanel('scene')">Scene</button>
+      <template v-else>
+      <div class="dock-head"><button id="panel-scene-fold" type="button" class="fold" aria-label="Fold the Scene panel" title="Fold" @click="foldPanel('scene')">‹</button><h2>Scene</h2>
         <select v-model="ui.addType" aria-label="Node type to add" :disabled="ui.mode !== 'editing'"><option v-for="t in ADDABLE" :key="t" :value="t">{{ t }}</option></select>
         <button id="add-node" type="button" aria-label="Add node" :disabled="ui.mode !== 'editing'" @click="addNode">Add</button>
-        <button id="delete" type="button" aria-label="Delete selection" :disabled="!ui.selected.length || ui.mode !== 'editing'" @click="remove">Delete</button>
-        <button id="duplicate" type="button" aria-label="Duplicate selection" title="Duplicate (⌘D)" :disabled="!ui.selected.length || ui.mode !== 'editing'" @click="duplicate">Duplicate</button>
-        <button id="copy" type="button" aria-label="Copy selection" title="Copy (⌘C)" :disabled="!ui.selected.length || ui.mode !== 'editing'" @click="copyNodes">Copy</button>
+        <button id="delete" type="button" :aria-label="innerOnly() ? 'Delete selection (a prefab node: edit it through its instance)' : 'Delete selection'" :title="innerOnly() ? INNER_WHY : ''" :disabled="!ui.docSel || ui.mode !== 'editing'" @click="remove">Delete</button>
+        <button id="duplicate" type="button" :aria-label="innerOnly() ? 'Duplicate selection (a prefab node: edit it through its instance)' : 'Duplicate selection'" :title="innerOnly() ? INNER_WHY : 'Duplicate (⌘D)'" :disabled="!ui.docSel || ui.mode !== 'editing'" @click="duplicate">Duplicate</button>
+        <button id="copy" type="button" :aria-label="innerOnly() ? 'Copy selection (a prefab node: edit it through its instance)' : 'Copy selection'" :title="innerOnly() ? INNER_WHY : 'Copy (⌘C)'" :disabled="!ui.docSel || ui.mode !== 'editing'" @click="copyNodes">Copy</button>
         <button id="paste" type="button" :aria-label="ui.clip ? `Paste ${ui.clip} node${ui.clip > 1 ? 's' : ''}` : 'Paste'" title="Paste (⌘V)" :disabled="!ui.clip || ui.mode !== 'editing'" @click="pasteNodes()">Paste</button>
       </div>
+      <div class="tree-search">
+        <input id="tree-search" v-model="ui.treeQuery" type="search" placeholder="Search: name, id, type:Light, is:overridden" aria-label="Search the scene tree">
+        <output v-if="shownTree.matches !== null" id="tree-matches" :aria-label="`${shownTree.matches} matching nodes`">{{ shownTree.matches }}</output>
+      </div>
       <ul class="tree" role="tree" aria-label="Scene tree" @dragover.prevent @drop.prevent="dropOnScene">
-        <TreeItem v-for="item in ui.tree" :key="item.id" :item="item" :selected="ui.selected" @select="select" @reparent="reparent" />
+        <TreeItem v-for="item in shownTree.items" :key="item.id" :item="item" :selected="ui.selected" @select="select" @reparent="reparent" @fold="fold" />
       </ul>
+      </template>
     </aside>
 
-    <main class="stage" @dragover.prevent @drop.prevent="dropOnViewport">
+    <main class="stage" @dragenter="overViewport" @dragover="overViewport" @drop.prevent="dropOnViewport">
       <canvas ref="canvas" aria-label="Viewport" tabindex="0"></canvas>
       <p v-if="ui.loading" class="overlay">Loading…</p>
       <p v-if="ui.mode === 'playing'" class="overlay playing" role="status">Playing · step {{ ui.step }} · WASD move, E interact</p>
@@ -358,18 +481,39 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       </div>
     </main>
 
-    <aside class="dock right"><Inspector :data="ui.inspector" v-on="onInspector" /></aside>
+    <aside class="dock right" :class="{ folded: ui.panels.inspector.collapsed }">
+      <button v-if="ui.panels.inspector.collapsed" id="panel-inspector-expand" type="button" class="rail" aria-label="Expand the Inspector panel" @click="foldPanel('inspector')">Inspector</button>
+      <template v-else>
+        <button id="panel-inspector-fold" type="button" class="fold fold-corner" aria-label="Fold the Inspector panel" title="Fold" @click="foldPanel('inspector')">›</button>
+        <Inspector :data="ui.inspector" :clip="ui.fieldClip" :picked="ui.picked" v-on="onInspector" />
+      </template>
+    </aside>
 
-    <Timeline v-if="ui.tl" :data="ui.tl" :disabled="ui.mode !== 'editing' || ui.loading" @cmd="tlCmd" @scrub="tlScrub" @transport="tlTransport" />
-    <section v-else class="assets" aria-label="Assets">
-      <div class="dock-head"><h2>Assets</h2><input v-model="ui.assetFilter" type="search" placeholder="Filter" aria-label="Filter assets"></div>
-      <ul class="asset-list">
-        <li v-for="a in shown()" :key="a.ref" draggable="true" :title="a.ref" @dragstart="dragAsset($event, a.ref)">
-          <span class="kind">{{ a.kind }}</span><span class="aname">{{ a.ref }}</span>
-          <button :id="`add-${a.ref.replace(/[^A-Za-z0-9]+/g, '-')}`" type="button" :disabled="!a.nodeType || ui.mode !== 'editing'" :aria-label="`Add ${a.ref}`" :title="a.nodeType ? `Add as ${a.nodeType}` : 'Put on through a character\'s closet'" @click="addAsset(a.ref)">Add</button>
-        </li>
-      </ul>
+    <section class="bottom" :class="{ folded: ui.panels[bottomPanel()].collapsed }" :aria-label="ui.tl ? 'Timeline panel' : 'Assets panel'">
+      <button v-if="ui.panels[bottomPanel()].collapsed" :id="`panel-${bottomPanel()}-expand`" type="button" class="rail rail-h" :aria-label="`Expand the ${ui.tl ? 'Timeline' : 'Assets'} panel`" @click="foldPanel(bottomPanel())">{{ ui.tl ? 'Timeline' : 'Assets' }} ▴</button>
+      <template v-else>
+        <button :id="`panel-${bottomPanel()}-fold`" type="button" class="fold fold-corner" :aria-label="`Fold the ${ui.tl ? 'Timeline' : 'Assets'} panel`" title="Fold" @click="foldPanel(bottomPanel())">▾</button>
+        <Timeline v-if="ui.tl" :data="ui.tl" :disabled="ui.mode !== 'editing' || ui.loading" @cmd="tlCmd" @scrub="tlScrub" @transport="tlTransport" />
+        <AssetsPanel v-else class="assets" :entries="tiles" :picked="ui.picked" :disabled="ui.mode !== 'editing'" :status="ui.thumbStatus" @add="addAsset" @pick="(r) => { ui.picked = ui.picked === r ? '' : r; }" />
+      </template>
     </section>
+
+    <!-- the panels' edges (M5 W6): drag one, or focus it and use the arrow keys (Home / End, Return folds) -->
+    <div id="split-scene" class="split split-x edge-right" role="separator" aria-orientation="vertical" tabindex="0" :aria-label="`Scene panel width${ui.panels.scene.collapsed ? ', folded' : ''}`" :aria-valuenow="ui.panels.scene.size" :aria-valuemin="EDITOR_PANELS.scene.min" :aria-valuemax="EDITOR_PANELS.scene.max" @pointerdown="dragSplit($event, 'scene')" @keydown="keySplit($event, 'scene')" />
+    <div id="split-inspector" class="split split-x edge-left" role="separator" aria-orientation="vertical" tabindex="0" :aria-label="`Inspector panel width${ui.panels.inspector.collapsed ? ', folded' : ''}`" :aria-valuenow="ui.panels.inspector.size" :aria-valuemin="EDITOR_PANELS.inspector.min" :aria-valuemax="EDITOR_PANELS.inspector.max" @pointerdown="dragSplit($event, 'inspector')" @keydown="keySplit($event, 'inspector')" />
+    <div :id="`split-${bottomPanel()}`" class="split split-y edge-top" role="separator" aria-orientation="horizontal" tabindex="0" :aria-label="`${ui.tl ? 'Timeline' : 'Assets'} panel height${ui.panels[bottomPanel()].collapsed ? ', folded' : ''}`" :aria-valuenow="ui.panels[bottomPanel()].size" :aria-valuemin="EDITOR_PANELS[bottomPanel()].min" :aria-valuemax="EDITOR_PANELS[bottomPanel()].max" @pointerdown="dragSplit($event, bottomPanel())" @keydown="keySplit($event, bottomPanel())" />
+
+    <div v-if="ui.shortcuts" class="ask-back" @click.self="ui.shortcuts = false">
+      <section id="shortcuts" class="sheet" role="dialog" aria-label="Keyboard shortcuts" aria-modal="true">
+        <div class="row"><h2>Keyboard Shortcuts</h2><button id="shortcuts-close" type="button" aria-label="Close the shortcuts" @click="ui.shortcuts = false">Done</button></div>
+        <div class="sheet-cols">
+          <section v-for="g in sheetGroups" :key="g.group" :aria-label="g.group">
+            <h3>{{ g.group }}</h3>
+            <dl><template v-for="it in g.items" :key="it.label"><dt :aria-label="`${it.label}: ${it.keys}`">{{ it.label }}<span v-if="it.note" class="muted small"> ({{ it.note }})</span></dt><dd><kbd>{{ it.keys }}</kbd></dd></template></dl>
+          </section>
+        </div>
+      </section>
+    </div>
 
     <div v-if="ui.ask" class="ask-back">
       <section id="ask" class="ask" role="alertdialog" :aria-label="ui.ask.title" aria-modal="true">
@@ -390,6 +534,7 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       <output v-if="ui.stopped" id="stop-result" :aria-label="`Stopped: ${ui.stopped}`">Stopped: {{ ui.stopped }}</output>
       <output v-if="ui.gameNote" id="game-note" :aria-label="ui.gameNote">{{ ui.gameNote }}</output>
       <output v-if="ui.mcp" id="mcp-state" :aria-label="ui.mcp">{{ ui.mcp }}</output>
+      <output v-if="ui.note" id="note" :aria-label="ui.note">{{ ui.note }}</output>
       <output id="frame-time" :aria-label="`Frame time ${ui.frame}`">{{ ui.frame }}</output>
       <output id="build-time" :aria-label="`Build ${ui.build}`">build {{ ui.build }}</output>
       <output id="renderer" :aria-label="`Renderer ${ui.renderer}`">{{ ui.renderer }}</output>
@@ -403,9 +548,9 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
 :root { color-scheme: light dark; --bg: #f4f5f7; --panel: #ffffff; --ink: #1d2128; --muted: #5f6672; --line: #d9dde3; --accent: #2f6fde; --sel: #dbe7fd; }
 @media (prefers-color-scheme: dark) { :root { --bg: #15171b; --panel: #1e2127; --ink: #e8eaee; --muted: #9aa1ad; --line: #30353d; --accent: #5b8ff0; --sel: #24365a; } }
 html, body, #app { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 13px/1.4 -apple-system, system-ui, sans-serif; }
-.app { display: grid; height: 100%; grid-template: "bar bar bar" auto "left stage right" 1fr "left assets right" 200px "status status status" auto / 280px 1fr 300px; }
-.app.with-timeline { grid-template-rows: auto 1fr 300px auto; }
-.app > .timeline { grid-area: assets; }
+.app { display: grid; height: 100%; grid-template: "bar bar bar" auto "left stage right" 1fr "left assets right" var(--bottom, 200px) "status status status" auto / var(--left, 280px) 1fr var(--right, 300px); }
+.bottom { grid-area: assets; position: relative; min-height: 0; display: flex; flex-direction: column; background: var(--panel); border-top: 1px solid var(--line); }
+.bottom > .timeline, .bottom > .assets-panel { flex: 1; min-height: 0; }
 .bar { grid-area: bar; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 10px; background: var(--panel); border-bottom: 1px solid var(--line); }
 .status { grid-area: status; border-top: 1px solid var(--line); border-bottom: 0; font-size: 12px; gap: 14px; }
 .title { margin-right: 4px; }
@@ -420,7 +565,27 @@ button:disabled { opacity: 0.45; }
 button.play { background: var(--accent); color: #fff; border-color: var(--accent); min-width: 78px; }
 .seg { display: inline-flex; } .seg button { border-radius: 0; margin-left: -1px; } .seg button:first-child { border-radius: 6px 0 0 6px; } .seg button:last-child { border-radius: 0 6px 6px 0; }
 .seg button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
-.dock { background: var(--panel); overflow: auto; min-height: 0; }
+.dock { background: var(--panel); overflow: auto; min-height: 0; position: relative; }
+.split { z-index: 5; background: transparent; outline: none; position: relative; }
+.split:hover, .split:focus-visible { background: color-mix(in srgb, var(--accent) 45%, transparent); }
+.split-x { width: 6px; cursor: col-resize; align-self: stretch; } .edge-right { grid-area: left; justify-self: end; margin-right: -3px; } .edge-left { grid-area: right; justify-self: start; margin-left: -3px; }
+.split-y { height: 6px; cursor: row-resize; justify-self: stretch; } .edge-top { grid-area: assets; align-self: start; margin-top: -3px; }
+.rail { width: 100%; height: 100%; border: 0; border-radius: 0; writing-mode: vertical-rl; color: var(--muted); background: var(--panel); }
+.rail-h { writing-mode: horizontal-tb; height: auto; flex: 1; text-align: left; padding: 4px 10px; }
+.fold { padding: 0 6px; line-height: 1.4; }
+.fold-corner { position: absolute; right: 6px; top: 6px; z-index: 3; }
+.tree-search { display: flex; gap: 6px; align-items: center; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+.tree-search input { flex: 1; min-width: 0; }
+.tree .row.inner .name { font-style: italic; color: var(--muted); } .tree .row.inner.sel .name { color: var(--ink); }
+.tree .row.match .name { background: color-mix(in srgb, #ffd76a 45%, transparent); border-radius: 3px; }
+.tree .disc { border: 0; background: none; padding: 0 2px; width: 14px; color: var(--muted); } .tree .disc-space { display: inline-block; width: 18px; }
+.tree .ov-mark { color: var(--accent); font-size: 9px; } .tree .badge { font-size: 10px; color: var(--muted); border: 1px solid var(--line); border-radius: 8px; padding: 0 5px; }
+.tree .row .name { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.sheet { width: min(860px, 92vw); max-height: 76vh; overflow: auto; padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35); }
+.sheet > .row { display: flex; justify-content: space-between; align-items: center; } .sheet h2 { color: var(--ink); font-size: 14px; text-transform: none; letter-spacing: 0; }
+.sheet-cols { columns: 2 320px; column-gap: 24px; } .sheet-cols > section { break-inside: avoid; }
+.sheet dl { display: grid; grid-template-columns: 1fr auto; gap: 3px 12px; margin: 0; } .sheet dt { margin: 0; } .sheet dd { margin: 0; text-align: right; }
+.sheet kbd { font: 12px/1.4 -apple-system, system-ui, sans-serif; padding: 0 5px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; background: var(--bg); white-space: nowrap; }
 .left { grid-area: left; border-right: 1px solid var(--line); }
 .right { grid-area: right; border-left: 1px solid var(--line); }
 .dock-head { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 1; background: var(--panel); }
@@ -428,7 +593,7 @@ button.play { background: var(--accent); color: #fff; border-color: var(--accent
 h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin: 0; }
 h3 { font-size: 12px; color: var(--muted); margin: 14px 0 6px; }
 .tree, .tree ul { list-style: none; margin: 0; padding: 0; }
-.tree .row { display: flex; justify-content: space-between; gap: 8px; padding: 3px 8px; cursor: default; white-space: nowrap; }
+.tree .row { display: flex; align-items: center; gap: 4px; padding: 3px 8px; cursor: default; white-space: nowrap; }
 .tree .row:hover { background: color-mix(in srgb, var(--sel) 50%, transparent); }
 .tree .row.sel { background: var(--sel); } .tree .row.primary { box-shadow: inset 2px 0 var(--accent); }
 .tree .type { color: var(--muted); font-size: 11px; }
@@ -450,10 +615,6 @@ canvas { display: block; width: 100%; height: 100%; outline: none; }
 .reset { padding: 1px 6px; }
 .mono { font-family: ui-monospace, monospace; font-size: 11px; }
 .kind { margin: 6px 0 2px; } .small { font-size: 12px; } .muted { color: var(--muted); }
-.assets { grid-area: assets; background: var(--panel); border-top: 1px solid var(--line); overflow: auto; min-height: 0; }
-.asset-list { list-style: none; margin: 0; padding: 4px 0; columns: 2; column-gap: 0; }
-.asset-list li { display: flex; align-items: center; gap: 8px; padding: 3px 10px; break-inside: avoid; cursor: grab; }
-.asset-list .kind { width: 64px; color: var(--muted); font-size: 11px; } .asset-list .aname { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .toggles { display: flex; gap: 8px; border: 0; margin: 0; padding: 0; } .toggles legend { float: left; margin-right: 4px; color: var(--muted); }
 output { font-variant-numeric: tabular-nums; }
 .export { position: absolute; right: 12px; top: 8px; width: 320px; max-height: calc(100% - 24px); overflow: auto; padding: 10px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25); box-sizing: border-box; }

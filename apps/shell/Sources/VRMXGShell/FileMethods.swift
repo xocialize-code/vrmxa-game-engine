@@ -39,6 +39,7 @@ public final class FileMethods {
         router.register("project.open") { [unowned self] p in try await self.openProject(p) }
         router.register("project.list") { [unowned self] _ in try self.listProject() }
         router.register("project.write") { [unowned self] p in try self.writeProject(p) }
+        router.register("project.stat") { [unowned self] p in try self.statProject(p) }
         registerBuild(on: router)
     }
 
@@ -179,6 +180,22 @@ public final class FileMethods {
         let file = root.appendingPathComponent(rel).standardizedFileURL
         guard file.path.hasPrefix(root.standardizedFileURL.path + "/") else { throw BridgeError("bad_params", "\(rel) is outside the project") }
         return file
+    }
+
+    /// Each file's size and modification time (shell 0.13.0, M5 W6: the editor's thumbnails are cached by path, size and
+    /// modification time): `project.stat { paths }` → `{ stats: { <path>: { size, mtime } } }`, mtime in milliseconds since
+    /// 1970; a path that isn't a file of the project is left out. At most 20,000 paths a call.
+    func statProject(_ p: BridgeParams) throws -> Any? {
+        guard let paths = p.strings("paths") else { throw BridgeError("bad_params", "project.stat needs paths") }
+        guard paths.count <= Self.projectFileCap else { throw BridgeError("bad_params", "at most \(Self.projectFileCap) paths a call") }
+        var out: [String: Any] = [:]
+        for rel in paths {
+            guard let file = try? projectFile(rel),
+                  let v = try? file.resourceValues(forKeys: [.isRegularFileKey, .fileSizeKey, .contentModificationDateKey]),
+                  v.isRegularFile == true else { continue }
+            out[rel] = ["size": v.fileSize ?? 0, "mtime": Int(((v.contentModificationDate ?? .distantPast).timeIntervalSince1970 * 1000).rounded())]
+        }
+        return ["stats": out]
     }
 
     /// Write a file inside the mounted project (a path relative to it): `text`, or `base64` for binary.
