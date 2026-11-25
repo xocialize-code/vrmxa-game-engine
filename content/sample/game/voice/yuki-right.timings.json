@@ -1,0 +1,23 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Thank you!",
+ "audio": "yuki-right.wav",
+ "sampleRate": 24000,
+ "duration": 1.35,
+ "source": "Kokoro-82M af_sky (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Thank",
+   "start": 0.375,
+   "duration": 0.2875
+  },
+  {
+   "text": "you",
+   "start": 0.6625,
+   "duration": 0.4125
+  }
+ ]
+}

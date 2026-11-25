@@ -1,0 +1,43 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "After the rush! Here comes Aoi.",
+ "audio": "hana-brief-coffee.wav",
+ "sampleRate": 24000,
+ "duration": 2.625,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "After",
+   "start": 0.3,
+   "duration": 0.2625
+  },
+  {
+   "text": "the",
+   "start": 0.5625,
+   "duration": 0.0875
+  },
+  {
+   "text": "rush",
+   "start": 0.65,
+   "duration": 0.425
+  },
+  {
+   "text": "Here",
+   "start": 1.175,
+   "duration": 0.2
+  },
+  {
+   "text": "comes",
+   "start": 1.375,
+   "duration": 0.275
+  },
+  {
+   "text": "Aoi",
+   "start": 1.65,
+   "duration": 0.725
+  }
+ ]
+}

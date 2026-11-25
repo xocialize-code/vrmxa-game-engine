@@ -1,0 +1,107 @@
+[
+ {
+  "id": "hana-brief",
+  "voice": "af_heart",
+  "text": "Morning, Mira! Three regulars are due. Take their orders, bring each one what I make, and close the till before ten."
+ },
+ {
+  "id": "hana-brief-ready",
+  "voice": "af_heart",
+  "text": "That's the spirit. Here comes Aoi!"
+ },
+ {
+  "id": "hana-brief-coffee",
+  "voice": "af_heart",
+  "text": "After the rush! Here comes Aoi."
+ },
+ {
+  "id": "aoi-ask",
+  "voice": "af_sky",
+  "text": "Morning! Something warm and milky, please. Not too strong."
+ },
+ {
+  "id": "aoi-right",
+  "voice": "af_sky",
+  "text": "Perfect. Thank you!"
+ },
+ {
+  "id": "aoi-wrong",
+  "voice": "af_sky",
+  "text": "Oh. Well, if you say so."
+ },
+ {
+  "id": "ren-ask",
+  "voice": "af_bella",
+  "text": "Hi! Something cold, please? It's already warm out."
+ },
+ {
+  "id": "ren-right",
+  "voice": "af_bella",
+  "text": "Lovely, thanks."
+ },
+ {
+  "id": "ren-wrong",
+  "voice": "af_bella",
+  "text": "Hot? Hm. All right, then."
+ },
+ {
+  "id": "yuki-ask",
+  "voice": "af_sky",
+  "text": "Just a green tea for me, please."
+ },
+ {
+  "id": "yuki-right",
+  "voice": "af_sky",
+  "text": "Thank you!"
+ },
+ {
+  "id": "yuki-wrong",
+  "voice": "af_sky",
+  "text": "That's not what I said. But fine."
+ },
+ {
+  "id": "hana-up-1",
+  "voice": "af_heart",
+  "text": "Order up for table one!"
+ },
+ {
+  "id": "hana-up-2",
+  "voice": "af_heart",
+  "text": "Order up for table two!"
+ },
+ {
+  "id": "hana-up-3",
+  "voice": "af_heart",
+  "text": "Order up for table three!"
+ },
+ {
+  "id": "hana-close",
+  "voice": "af_heart",
+  "text": "That's everyone! Close the till, Mira."
+ },
+ {
+  "id": "hana-won-clean",
+  "voice": "af_heart",
+  "text": "Not one mistake. Best morning rush ever, Mira!"
+ },
+ {
+  "id": "hana-won-mixed",
+  "voice": "af_heart",
+  "text": "We made it! Even with a mix-up."
+ },
+ {
+  "id": "hana-won-bye",
+  "voice": "af_heart",
+  "text": "See you tomorrow."
+ },
+ {
+  "id": "hana-lost-time",
+  "voice": "af_heart",
+  "text": "Ten o'clock, and the till is still open. We'll do better tomorrow."
+ },
+ {
+  "id": "hana-lost-orders",
+  "voice": "af_heart",
+  "text": "Two orders wrong. Let's call it a morning, and try again tomorrow."
+ }
+]

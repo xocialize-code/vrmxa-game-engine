@@ -260,12 +260,30 @@ export function stageFolder(dir) {
 }
 
 /**
+ * A project folder exported as one of the games it holds (M5 W10): `gameFile` is a game document in the project
+ * (`game/game.json`), read as the project's game.json, so the build's own game.json is that document. Nothing is
+ * copied on disk.
+ * @param {string} dir @param {string} gameFile a project ref
+ * @returns {{ files: string[], read: (ref: string) => Promise<Uint8Array>, game: any }}
+ */
+export function projectWithGame(dir, gameFile) {
+  const src = folderReader(dir);
+  if (!src.files.includes(gameFile)) throw new BuildError('bad_game', `the project has no ${gameFile}`, [gameFile]);
+  const bytes = new Uint8Array(fs.readFileSync(path.join(path.resolve(dir), gameFile)));
+  let game;
+  try { game = JSON.parse(new TextDecoder().decode(bytes)); } catch (e) { throw new BuildError('bad_game', `${gameFile} is not JSON: ${e.message}`, [gameFile]); }
+  const files = src.files.includes('game.json') ? src.files : [...src.files, 'game.json'].sort();
+  return { files, read: async (ref) => (ref === 'game.json' ? bytes : src.read(ref)), game };
+}
+
+/**
  * Export a project folder as a build folder. Every check runs before the folder is touched, and the build is staged
  * and moved in whole (`stageFolder`), so a refused or failed export leaves an earlier build as it was.
- * @param {{ project: string, runtime: string, out: string, game?: any, onProgress?: any }} o
+ * @param {{ project: string, runtime: string, out: string, game?: any, gameFile?: string | null, onProgress?: any }} o gameFile: a game document in the project to export (M5 W10, `--game`), read as its game.json
  */
-export async function exportToFolder({ project, runtime, out, game = null, onProgress = null }) {
-  const src = folderReader(project);
+export async function exportToFolder({ project, runtime, out, game = null, gameFile = null, onProgress = null }) {
+  const src = gameFile ? projectWithGame(project, gameFile) : folderReader(project);
+  game ??= /** @type {any} */ (src).game ?? null;
   let stage = null;
   try {
     const r = await exportBuild({

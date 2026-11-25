@@ -30,7 +30,13 @@ npm run build:runtime -w @vrmxg/bundle                              # the runtim
 node engine/packages/bundle/src/cli.js content/sample out/cafe      # vrmxg-export <project> <out> [--runtime <folder>]
 node engine/packages/bundle/src/cli.js content/sample --check       # every check, the digests, nothing written
 node engine/packages/bundle/src/cli.js --verify out/cafe            # is the folder the build its manifest describes?
+node engine/packages/bundle/src/cli.js content/sample out/rush --game game/game.json   # another game the project holds
 ```
+
+`--game <ref>` (M5 W10) exports the game a document elsewhere in the project describes, read as the project's `game.json`
+(so the build's own `game.json` is that document): the sample project holds the cafe (`game.json`) and the sample game,
+"The Morning Rush" (`game/game.json`). `exportToFolder({ gameFile })` and `projectWithGame(dir, ref)` (a project reader,
+nothing copied) are the same from code.
 
 ## What "built in" means
 

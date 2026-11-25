@@ -47,7 +47,7 @@ HUD, menus, dialogue, save and settings. A recorded play session replays exactly
 10. **M0 to M4 still hold**, on both backends, at the M5 commit. The sample game holds 60 frames a second at 1080p on
     the M5 Max; the base-Mac number waits on the hardware (AB-T-0511).
 
-**The sample game** (a proposal, decided in W10): one room, the sample cafe, a few minutes long. You play Mira
+**The sample game** (decided in W10: "The Morning Rush", design AB-D-0293, `content/sample/game`): one room, the sample cafe, a few minutes long. You play Mira
 helping Hana through the morning rush: take each customer's order in a dialogue choice, carry what Hana makes to the
 right table, and close the till before the clock runs out. It uses what the engine already has (items and verbs, the
 inventory, the server and customer behaviour trees, doors, voiced lines) and needs each new piece once.
@@ -122,6 +122,17 @@ build with the HUD and dialogue UI wired in. Then W4, W5 and W7 (PRs #40 to #42;
 and 0609; shell 0.12.0): the inspector's widgets, the viewport's aids and handles, and masked character layers (carry
 while walking). Left: W6 (prefabs and assets), W10 (the sample game) and W11 (acceptance). Left from the reviews:
 AB-T-0624, AB-T-0626 to 0632, 0634 and 0635 (AB-T-0631, saves across re-exports, is the operator's decision).
+
+**W10 (2026-11-25, AB-T-0620):** "The Morning Rush" is `content/sample/game` (its own `game.json`; `vrmxg-export
+--game game/game.json`): title, level, won and lost scenes; three regulars ordered by dialogue choice, trays carried on
+the upper-body layer, the till closed before a 240 s clock; lost on time or on two wrong orders. A scripted player wins
+and loses it through the game app in Chromium; both recorded sessions replay to the same per-step hashes in Node,
+Chromium and WKWebView (scheme and loopback), on WebGPU and WebGL (`acceptance/m5/rush.mjs`, `rush-wkwebview.sh`). The
+Mac game app goes from its title to each ending (`apps/game-mac/docs/HAND-TEST-M5-RUSH.md`) and plays 12 minutes at
+1080p at 60.1 fps in steady play, web process at most 2.25 GB (AB-R-1137; a lost WebGPU device stops the game:
+AB-T-0639). The editor builds the level's game layer by hand with no JSON typed (`apps/editor-mac/docs/HAND-TEST-M5-LEVEL.md`,
+22 of 22 nodes as committed, W6's assets panel and prefab override included, on WebGPU and WebGL); it can't attach
+behaviours or wire connections (AB-T-0638), the one part of check 8 left.
 
 Five streams can start at once: W0, W2, W4, W5 and W7. W4 and W5 both change `apps/editor`, so they run one after
 the other unless their files are kept apart. W8 is small and can go first.

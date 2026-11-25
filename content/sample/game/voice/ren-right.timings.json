@@ -1,0 +1,23 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Lovely, thanks.",
+ "audio": "ren-right.wav",
+ "sampleRate": 24000,
+ "duration": 1.975,
+ "source": "Kokoro-82M af_bella (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Lovely",
+   "start": 0.425,
+   "duration": 0.45
+  },
+  {
+   "text": "thanks",
+   "start": 0.975,
+   "duration": 0.725
+  }
+ ]
+}

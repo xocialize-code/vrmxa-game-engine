@@ -1,0 +1,28 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "See you tomorrow.",
+ "audio": "hana-won-bye.wav",
+ "sampleRate": 24000,
+ "duration": 1.7,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "See",
+   "start": 0.375,
+   "duration": 0.175
+  },
+  {
+   "text": "you",
+   "start": 0.55,
+   "duration": 0.15
+  },
+  {
+   "text": "tomorrow",
+   "start": 0.7,
+   "duration": 0.7
+  }
+ ]
+}

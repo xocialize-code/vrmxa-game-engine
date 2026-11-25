@@ -1,0 +1,53 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Hi! Something cold, please? It's already warm out.",
+ "audio": "ren-ask.wav",
+ "sampleRate": 24000,
+ "duration": 3.725,
+ "source": "Kokoro-82M af_bella (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Hi",
+   "start": 0.4,
+   "duration": 0.275
+  },
+  {
+   "text": "Something",
+   "start": 0.725,
+   "duration": 0.3
+  },
+  {
+   "text": "cold",
+   "start": 1.025,
+   "duration": 0.3
+  },
+  {
+   "text": "please",
+   "start": 1.375,
+   "duration": 0.625
+  },
+  {
+   "text": "It's",
+   "start": 2.125,
+   "duration": 0.1375
+  },
+  {
+   "text": "already",
+   "start": 2.2625,
+   "duration": 0.3125
+  },
+  {
+   "text": "warm",
+   "start": 2.575,
+   "duration": 0.275
+  },
+  {
+   "text": "out",
+   "start": 2.85,
+   "duration": 0.6
+  }
+ ]
+}

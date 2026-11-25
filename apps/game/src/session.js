@@ -82,6 +82,7 @@ export class GameSession {
     /** The log of the session that ended last (Quit to title), for a runner to read. */ this.last = /** @type {any} */ (null);
     this._handed = null;
     this._changing = false; // a New Game or a load under way
+    /** A log being played back (replay), or null. */ this.replaying = /** @type {any} */ (null);
   }
 
   get active() { return !!this.flow; }
@@ -91,13 +92,13 @@ export class GameSession {
   /** What step() would wait for (a scene or a save loading), or null. */
   get held() { return this.flow?.held ?? null; }
   /** Steps played since the session was last safe in the store: what closing now would lose. */
-  get unsavedSteps() { return this.flow ? Math.max(0, this.step - this.safeStep) : 0; }
+  get unsavedSteps() { return this.flow && !this.replaying ? Math.max(0, this.step - this.safeStep) : 0; } // a replay is nobody's progress
   get dirty() { return this.unsavedSteps > 0; }
   view() { return this.flow?.view() ?? null; }
 
-  _flow() {
+  _flow({ store = this._store } = {}) {
     const flow = new GameFlow({
-      load: this.loadWorld, unload: this.unload, store: this._store, seed: this.seed, stamp: this.stamp, scenes: this.scenes, prefabs: this.prefabs,
+      load: this.loadWorld, unload: this.unload, store, seed: this.seed, stamp: this.stamp, scenes: this.scenes, prefabs: this.prefabs,
       onWorld: (tree, info) => { if (info.recording) this._handed = info.recording; this.onWorld?.(tree, info); },
     });
     flow.on((e) => this.onEvent?.(e)); // a checkpoint makes progress safe through the store's write (above), not its event
@@ -138,9 +139,14 @@ export class GameSession {
   }
 
   async _loadFile(file, slot) {
-    if (!this.flow) {
+    // from the title, or over a replay (the pause menu's Load during ?replay): a fresh flow with the player's store, and
+    // a fresh log. A replay's flow has no store and its segments aren't the player's, so neither is kept
+    if (!this.flow || this.replaying) {
       const flow = this._flow();
       try { await flow.load(file); } catch (e) { flow.dispose(); throw e; }
+      const replayed = this.replaying ? this.flow : null;
+      if (replayed) this._endReplay();
+      replayed?.dispose();
       this._begin(flow, { save: file, slot });
       return this.step;
     }
@@ -200,8 +206,65 @@ export class GameSession {
   advance() {
     const flow = this.flow;
     if (!flow) return false;
+    const r = this.replaying;
+    if (r && r.left <= 0) return false; // this segment's recorded frames are played: the host starts the next (replayNext)
     if (!flow.step()) return false;
+    if (r) r.left--;
     if (this.keepHashes) this.trace.push({ step: flow.tree.clock.step, scene: flow.scene, hash: stepHash(flow.tree) });
+    return true;
+  }
+
+  /**
+   * Play a session's log back (M5 W10): each segment's start (a new game, or its save file), then its recorded input,
+   * stepped by the host's own frame loop with everything drawn, as live play is. With `hashes` on, the trace is the
+   * hash after every step, which is the log's own `hashes` when the replay is exact. The host calls replayNext() when a
+   * segment's frames run out (`replaying.left` 0); `replaying.done` once every segment is played.
+   * @param {any} log GameSession.log() of a session played on this build
+   */
+  async replay(log) {
+    if (this._changing) throw new Error('a game is starting or loading already');
+    if (log?.format !== SESSION_FORMAT) throw new Error(`not a session log (format "${log?.format}")`);
+    if (log.version !== SESSION_VERSION) throw new Error(`session log version ${log.version}; this reads ${SESSION_VERSION}`);
+    if (this.digest && log.game?.digest !== this.digest) throw new Error(`this log was played on build ${String(log.game?.digest).slice(0, 12)}; this is build ${this.digest.slice(0, 12)}: a log replays only on the build it was played on`);
+    this.end();
+    this.trace = [];
+    this.replaying = { log, segment: -1, left: 0, done: false, seed: this.seed }; // the session's own seed, given back after
+    await this.replayNext();
+  }
+
+  /** A replay is over (ended, or a save loaded over it): the session's own seed back, and nothing of it kept. */
+  _endReplay() {
+    if (!this.replaying) return;
+    this.seed = this.replaying.seed;
+    this.replaying = null;
+  }
+
+  /** The next segment of the log being replayed (see replay). False when there is none left. */
+  async replayNext() {
+    const r = this.replaying;
+    if (!r || r.done) return false;
+    r.segment++;
+    const seg = r.log.segments[r.segment];
+    if (!seg) { r.done = true; r.left = 0; return false; }
+    this._changing = true;
+    try {
+      if (seg.from.start !== undefined) {
+        this.flow?.dispose();
+        this.flow = null; // a start that fails leaves no flow behind, not a disposed one
+        this.seed = (seg.from.seed ?? 1) >>> 0;
+        const flow = this._flow({ store: null }); // a replay writes no checkpoints into the player's store
+        try { await flow.start(seg.from.start); } catch (e) { flow.dispose(); throw e; }
+        this.flow = flow;
+      } else if (seg.from.save) {
+        this.flow ??= this._flow({ store: null });
+        await this.flow.load(seg.from.save);
+      } else throw new Error(`segment ${r.segment} doesn't say where it starts`);
+    } finally { this._changing = false; }
+    if (this.flow.tree.clock.step !== seg.at) throw new Error(`segment ${r.segment} starts at step ${seg.at}; the replay is at step ${this.flow.tree.clock.step}`);
+    this.current = { from: seg.from, at: seg.at, marks: [] };
+    const frames = seg.recording?.frames.length ?? 0;
+    if (frames) this.flow.tree.services.get('input').replay(seg.recording);
+    r.left = frames;
     return true;
   }
 
@@ -223,13 +286,15 @@ export class GameSession {
 
   /** End the session (Quit to title): its world is freed, and its log kept as `last`. Does nothing with none. */
   end() {
-    if (!this.flow) return null;
-    const log = this.log();
+    if (!this.flow) { this._endReplay(); return null; }
+    const replay = !!this.replaying;
+    const log = replay ? null : this.log();
     this.flow.tree.services.get('input')?.stop();
     this.flow.dispose();
     this.flow = null; this.current = null; this.segments = []; this.safeStep = 0;
+    this._endReplay();
     this.segment++; // a write still in flight belongs to a session that has gone
-    this.last = log;
+    if (!replay) this.last = log; // a replay is nobody's session: the last one played stays the last log
     return log;
   }
 }

@@ -32,6 +32,7 @@ const ui = reactive({
   backend: '', step: 0, safeStep: 0, scene: null, held: null, loading: '', error: '', dirty: false, lastSlot: null,
   saves: /** @type {any[]} */ ([]), question: /** @type {any} */ (null),
   choice: /** @type {any} */ ({ backend: 'auto', from: 'settings' }), values: /** @type {any} */ (null), settingsNote: '',
+  frames: '', // ?stats: the frame-time readout
 });
 const ask = questions((q) => { ui.question = q; if (!q) nextTick(() => menu.value?.focusFirst()); });
 
@@ -109,7 +110,8 @@ async function saveSlot(row) {
 async function quitToTitle() {
   const go = await mayLeave(host.value.session, { what: 'title', ask: ask.ask, asking: () => ask.asking, lastSlot: ui.lastSlot, slotLabel, save: saveFor, onError: (e) => say(`Not saved: ${e?.message ?? e}`) });
   if (!go) return;
-  window.__game.lastLog = host.value.quitToTitle();
+  const log = host.value.quitToTitle();
+  if (log) window.__game.lastLog = log; // a replay ended this way is nobody's session: the last log played stays
   ui.stack = ['title'];
   await refreshSaves();
   nextTick(() => menu.value?.focusFirst());
@@ -155,11 +157,39 @@ function onPointerLock() {
 }
 function beforeUnload(e) { if (host.value?.session?.dirty) { e.preventDefault(); e.returnValue = ''; } }
 
+// `?replay=<log>[,<log>…]` (M5 W10): play recorded sessions back with the renderer on, no menus, each log (a URL beside
+// the page) after the other; `&loop=<seconds>` starts them again until that long has passed. The result goes to
+// window.__result (and window.READY): each replay's per-step hashes, the frame times, the backend. A runner compares the
+// hashes with the log's own and with Node's.
+// ?loop=<seconds>: a number above zero, else no loop (a bare ?loop or loop=abc plays once, with its hashes)
+const LOOP_SECONDS = Math.max(0, Number(query.get('loop')) || 0);
+const replayed = { runs: 0, scenes: 0, last: null }; // ?replay with ?stats: what the readout counts (scenes sampled once a second)
+async function replayFromQuery(h) {
+  const urls = query.get('replay').split(',').filter(Boolean), loop = LOOP_SECONDS, runs = [];
+  const t0 = performance.now();
+  try {
+    const logs = await Promise.all(urls.map(async (u) => { const r = await fetch(new URL(u, location.href)); if (!r.ok) throw new Error(`${u}: ${r.status}`); return r.json(); }));
+    ui.stack = [];
+    do {
+      for (const [i, log] of logs.entries()) {
+        const trace = await new Promise((done, fail) => { h.replay(log, { onDone: done, onFail: fail }).catch(fail); });
+        // with loop the trace is empty (no per-step hashes): a run says only which log it played
+        runs.push({ log: urls[i], ...(loop ? {} : { steps: trace.length, final: trace.at(-1) ?? null, hashes: trace }) });
+        replayed.runs = runs.length;
+      }
+    } while (loop && (performance.now() - t0) / 1000 < loop);
+    window.__result = { mode: 'replay', backend: h.state.backend, runs, frames: h.frameStats(), seconds: (performance.now() - t0) / 1000, errors: window.__errors ?? [], ua: navigator.userAgent };
+  } catch (e) {
+    window.__result = { mode: 'replay', error: String(e?.message ?? e), runs, errors: window.__errors ?? [] };
+  }
+  window.READY = true;
+}
+
 // the input service the settings controls read and rebind: the world being played's, else the menus' own (the title)
 const inputOf = () => host.value?.input() ?? null;
 
 onMounted(async () => {
-  window.__game = { log: () => host.value?.session?.log() ?? null, lastLog: null, state: () => JSON.parse(JSON.stringify(ui)), host: () => host.value };
+  window.__game = { log: () => host.value?.session?.log() ?? null, lastLog: null, state: () => JSON.parse(JSON.stringify(ui)), host: () => host.value, frames: () => host.value?.frameStats() ?? null };
   addEventListener('keydown', onKey);
   document.addEventListener('pointerlockchange', onPointerLock);
   addEventListener('beforeunload', beforeUnload);
@@ -182,7 +212,7 @@ onMounted(async () => {
     ui.choice = chosenBackend(location.search, store.value);
     ui.starting = 'Starting the renderer…';
     const h = new GameHost({
-      canvas: canvas.value, build: props.build, backend: ui.choice.backend, characters: props.characters, shell: { inShell, call }, trace: query.has('trace'), onChange: sync, onCommand,
+      canvas: canvas.value, build: props.build, backend: ui.choice.backend, characters: props.characters, shell: { inShell, call }, trace: query.has('trace') || (query.has('replay') && !LOOP_SECONDS), onChange: sync, onCommand,
       hold: () => ui.stack.length > 0 || !!ui.question, // nothing steps while a menu or a question is up
       uiSettings: playerSettings,
     });
@@ -191,6 +221,11 @@ onMounted(async () => {
     await refreshSaves();
     ui.ready = true;
     sync();
+    if (query.has('stats') || query.has('replay')) {
+      h.keepFrameStats();
+      if (query.has('stats')) setInterval(() => { if (h.state.scene && h.state.scene !== replayed.last) { if (replayed.last) replayed.scenes++; replayed.last = h.state.scene; } const f = h.frameStats(); ui.frames = f && f.frames ? `${f.frames} frames in ${f.seconds.toFixed(0)} s: ${f.fps.toFixed(1)} fps, p99 ${f.p99.toFixed(1)} ms, max ${f.max.toFixed(1)} ms, ${f.over25} over 25 ms, at ${f.width}×${f.height}${query.has('replay') ? `; ${replayed.runs} replays played, ${replayed.scenes} scene changes` : ''}` : 'no frames yet'; }, 1000);
+    }
+    if (query.has('replay')) replayFromQuery(h);
     // the game doesn't play on behind the question (and nothing more becomes unsaved while it is asked)
     if (inShell) onClosing((reason) => {
       if (h.session?.dirty && playing.value) pause();
@@ -213,6 +248,7 @@ onBeforeUnmount(() => { removeEventListener('keydown', onKey); document.removeEv
 
     <div v-if="ui.fatal" id="fatal" class="fatal" role="alert">{{ ui.fatal }}</div>
     <div v-else-if="!ui.ready" class="starting" role="status">{{ ui.starting }}</div>
+    <div v-if="ui.frames" id="frame-stats" class="frame-stats" role="status">{{ ui.frames }}</div>
     <div v-if="ui.loading || ui.held" id="loading" class="loading" role="status" :aria-label="ui.loading || 'Loading'">{{ ui.loading || 'Loading…' }}</div>
 
     <!-- everything behind the top sheet is inert: Tab, clicks and screen readers reach only the question -->
@@ -303,6 +339,7 @@ onBeforeUnmount(() => { removeEventListener('keydown', onKey); document.removeEv
 </template>
 
 <style>
+.frame-stats { position: absolute; left: 8px; bottom: 8px; z-index: 5; padding: 2px 6px; font: 12px/1.4 ui-monospace, monospace; color: #fff; background: rgb(0 0 0 / 55%); border-radius: 4px; pointer-events: none; }
 :root { color-scheme: dark; --ink: #eef0f3; --muted: #a3a9b4; --panel: rgba(20, 23, 29, 0.92); --line: rgba(255, 255, 255, 0.14); --accent: #6ea0ff; }
 html, body, #app { margin: 0; height: 100%; background: #101216; color: var(--ink); font: 15px/1.45 -apple-system, system-ui, sans-serif; }
 .game { position: relative; width: 100%; height: 100%; overflow: hidden; }

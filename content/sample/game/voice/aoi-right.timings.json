@@ -1,0 +1,28 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Perfect. Thank you!",
+ "audio": "aoi-right.wav",
+ "sampleRate": 24000,
+ "duration": 1.95,
+ "source": "Kokoro-82M af_sky (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Perfect",
+   "start": 0.35,
+   "duration": 0.475
+  },
+  {
+   "text": "Thank",
+   "start": 0.875,
+   "duration": 0.3
+  },
+  {
+   "text": "you",
+   "start": 1.175,
+   "duration": 0.475
+  }
+ ]
+}

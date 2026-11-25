@@ -32,6 +32,9 @@ Node and the Mac editor still give the same bytes, since both copy the same fold
 | (none) | The game: title menu, play, pause, slots, settings |
 | `renderer=webgpu\|webgl\|auto` | The backend, over the setting (the switch every app obeys) |
 | `trace` | Also a hash of the world after every step, in the session's log (`window.__game.log()`, `__game.lastLog` after Quit to Title) |
+| `replay=<log>[,<log>…]` | (M5 W10) Plays recorded sessions back (`GameSession.log()` files, fetched beside the page): each segment from its start, the recorded input, everything drawn as live play draws it, no menus. `window.__result` (`READY`): each replay's per-step hashes (the log's own when the replay is exact), the frame times, the backend. A log from another build is refused. `acceptance/m5/rush.mjs` (Chromium) and `rush-wkwebview.sh` (WKWebView) compare the hashes |
+| `replay=…&loop=<s>` | The same, again and again until that many seconds have passed, without per-step hashes: the frame-rate run (`acceptance/m5/rush-frames.sh`) |
+| `stats` | A frame-time readout (`#frame-stats`, once a second: frames, fps, p99, the worst, how many over 25 ms, the canvas size; with `replay`, the replays played and scene changes seen). Presentation only |
 | `check=<take>&steps=<n>` | The harness mode the minimal runtime had: no renderer and no menus; recorded input replayed in the entry scene, a hash after every step (`window.__result`, `READY`). `acceptance/m5/build.mjs` and `build-wkwebview.sh` use it |
 
 ## Menus
@@ -58,6 +61,8 @@ button is still held (Space on Resume is the sample's jump; so is A) is hidden f
 `GameSession` wraps a `GameFlow` and keeps a log a replay needs: the build's digest, and segments, each with where it
 starts (a new game at the entry scene, or a save file) and the input recorded from there. `replaySession(log, …)` replays
 it anywhere; `acceptance/m5/game.mjs` plays the app in Chromium through its menus and replays the log in Node.
+`session.replay(log)` (M5 W10) plays a log back inside the app: the host's frame loop steps each segment's recorded
+frames (`replaying.left`) and starts the next (`replayNext`), so the replay is drawn and timed as play is.
 
 | Menu action | How it reaches the simulation |
 |---|---|

@@ -1,0 +1,213 @@
+{
+ "check": "M5 exit check 8 (the sample game's level built in the Mac editor, AB-T-0620): the game layer the scenario built against the committed level",
+ "ok": true,
+ "valid": true,
+ "nodes": [
+  {
+   "node": "till",
+   "sig": "Item:game/items/till.vrmxi",
+   "found": true,
+   "as": "till",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "tray-1",
+   "sig": "Item:game/items/order-1.vrmxi",
+   "found": true,
+   "as": "order-1",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "tray-2",
+   "sig": "Item:game/items/order-2.vrmxi",
+   "found": true,
+   "as": "order-2",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "tray-3",
+   "sig": "Item:game/items/order-3.vrmxi",
+   "found": true,
+   "as": "order-3",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "table-1",
+   "sig": "Area:Table 1",
+   "found": true,
+   "as": "area",
+   "same": true,
+   "diffs": [],
+   "behaviours": [
+    "tableZone"
+   ]
+  },
+  {
+   "node": "table-2",
+   "sig": "Area:Table 2",
+   "found": true,
+   "as": "area-2",
+   "same": true,
+   "diffs": [],
+   "behaviours": [
+    "tableZone"
+   ]
+  },
+  {
+   "node": "table-3",
+   "sig": "Area:Table 3",
+   "found": true,
+   "as": "area-3",
+   "same": true,
+   "diffs": [],
+   "behaviours": [
+    "tableZone"
+   ]
+  },
+  {
+   "node": "rules",
+   "sig": "GameRules",
+   "found": true,
+   "as": "gamerules",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "score",
+   "sig": "GameCounter:score",
+   "found": true,
+   "as": "gamecounter",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "served",
+   "sig": "GameCounter:served",
+   "found": true,
+   "as": "gamecounter-2",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "mistakes",
+   "sig": "GameCounter:mistakes",
+   "found": true,
+   "as": "gamecounter-3",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "clock",
+   "sig": "GameTimer:clock",
+   "found": true,
+   "as": "gametimer",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "brew-1",
+   "sig": "GameTimer:brew-1",
+   "found": true,
+   "as": "gametimer-2",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "brew-2",
+   "sig": "GameTimer:brew-2",
+   "found": true,
+   "as": "gametimer-3",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "brew-3",
+   "sig": "GameTimer:brew-3",
+   "found": true,
+   "as": "gametimer-4",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "serve",
+   "sig": "GameGoal:serve",
+   "found": true,
+   "as": "gamegoal",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "close-till",
+   "sig": "GameGoal:close-till",
+   "found": true,
+   "as": "gamegoal-2",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "cp-first",
+   "sig": "Checkpoint:first-order",
+   "found": true,
+   "as": "checkpoint",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "briefing",
+   "sig": "Dialogue:Morning, Mira! Three regulars are due. Take their orders, bring each one what I make, and close the till before ten.",
+   "found": true,
+   "as": "dialogue",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "order-1",
+   "sig": "Dialogue:Aoi's order",
+   "found": true,
+   "as": "dialogue-2",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "order-2",
+   "sig": "Dialogue:Ren's order",
+   "found": true,
+   "as": "dialogue-3",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  },
+  {
+   "node": "order-3",
+   "sig": "Dialogue:Yuki's order",
+   "found": true,
+   "as": "dialogue-4",
+   "same": true,
+   "diffs": [],
+   "behaviours": []
+  }
+ ],
+ "connections": 19,
+ "builtConnections": 0
+}

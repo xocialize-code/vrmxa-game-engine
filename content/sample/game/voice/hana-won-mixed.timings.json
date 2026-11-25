@@ -1,0 +1,48 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "We made it! Even with a mix-up.",
+ "audio": "hana-won-mixed.wav",
+ "sampleRate": 24000,
+ "duration": 2.375,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "We",
+   "start": 0.275,
+   "duration": 0.125
+  },
+  {
+   "text": "made",
+   "start": 0.4,
+   "duration": 0.225
+  },
+  {
+   "text": "it",
+   "start": 0.625,
+   "duration": 0.225
+  },
+  {
+   "text": "Even",
+   "start": 0.9625,
+   "duration": 0.3
+  },
+  {
+   "text": "with",
+   "start": 1.2625,
+   "duration": 0.1
+  },
+  {
+   "text": "a",
+   "start": 1.3625,
+   "duration": 0.0625
+  },
+  {
+   "text": "mix-up",
+   "start": 1.425,
+   "duration": 0.7
+  }
+ ]
+}
