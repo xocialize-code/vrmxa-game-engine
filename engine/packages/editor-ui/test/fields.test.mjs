@@ -204,3 +204,13 @@ test('several nodes: the props they share, mixed where they differ (AB-T-0601)',
   assert.equal(d.shadowPreset.visible, true, 'shown when it applies to any of them');
   assert.deepEqual(sharedAxes([[0, 1, 2], [0, 3, 2]]), [0, null, 2]);
 });
+
+test('several nodes\' vector props: each axis its common value, null where they differ', () => {
+  const a = fieldsOf({ id: 'a', type: 'Collider', props: { size: [1, 2, 3] } });
+  const b = fieldsOf({ id: 'b', type: 'Collider', props: { size: [4, 2, 3] } });
+  const size = sharedFields([a, b]).find((f) => f.key === 'size');
+  assert.equal(size.mixed, true);
+  assert.deepEqual(size.axes, [null, 2, 3]);
+  const c = fieldsOf({ id: 'c', type: 'Collider' });
+  assert.deepEqual(sharedFields([a, c]).find((f) => f.key === 'size').axes, [null, null, null], 'one unset: every axis differs');
+});

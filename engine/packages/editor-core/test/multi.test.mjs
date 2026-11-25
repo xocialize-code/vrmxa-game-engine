@@ -125,3 +125,25 @@ test('MCP edits are unaffected: setProp and run as before, one step each', () =>
   assert.equal(s.history().undoDepth, depth + 2);
   assert.equal(parse(s.text()).nodes.find((n) => n.id === 'lamp-a').props.intensity, 7);
 });
+
+test('the review\'s cases: an abandoned drag leaves nothing to redo; node references are checked on a node with no props; one axis on each node', () => {
+  const s = lights();
+  s.setProp('lamp-a', 'intensity', 2.5);
+  s.beginGesture(); s.setProp('lamp-a', 'intensity', 3); s.setProp('lamp-a', 'intensity', 4); s.cancelGesture();
+  assert.equal(s.node('lamp-a').props.intensity, 2.5);
+  assert.equal(s.history().redoDepth, 0, 'Escape: Redo doesn\'t replay the cancelled drag');
+  assert.equal(s.history().undo, 'Set lamp-a.intensity');
+  s.beginGesture(); s.setProp('lamp-a', 'intensity', 3); s.setProp('lamp-a', 'intensity', 2.5); s.endGesture();
+  assert.equal(s.history().redoDepth, 0, 'a drag back to where it began: nothing to redo either');
+  s.addNode('Camera', { id: 'cam' });
+  assert.equal(s.node('cam').props, undefined);
+  assert.throws(() => s.setProp('cam', 'target', 'ghost'), /must name an existing node/);
+  assert.throws(() => s.setPropOn(['cam', 'lamp-a'], 'target', 'ghost'));
+  assert.equal(s.node('cam').props, undefined, 'refused: nothing left behind');
+  s.addNode('Collider', { id: 'c1', props: { size: [1, 2, 3] } });
+  s.addNode('Collider', { id: 'c2', props: { size: [4, 2, 3] } });
+  s.setPropEach('size', [{ id: 'c1', value: [5, 2, 3] }, { id: 'c2', value: [5, 2, 3] }]);
+  assert.equal(s.history().undo, 'Set size on 2 nodes');
+  s.undo();
+  assert.deepEqual([s.node('c1').props.size, s.node('c2').props.size], [[1, 2, 3], [4, 2, 3]]);
+});

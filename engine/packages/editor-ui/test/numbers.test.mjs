@@ -61,3 +61,11 @@ test('shown values drop trailing zeros; the fill bar needs both ends', () => {
   assert.equal(fillOf(15, 0, 10), 1);
   assert.equal(fillOf(5, 0, undefined), null);
 });
+
+test('the review\'s cases: a fine drag stores what the field shows; an integer field stays whole at a fractional bound', () => {
+  assert.equal(dragTo(1, 2, { step: 0.05, precision: 2, shiftKey: true }), 1.01, 'hundredths (two pixels each), never 1.005 shown as 1');
+  assert.equal(dragTo(1, 4, { step: 0.05, precision: 2, shiftKey: true }), 1.02);
+  assert.equal(stepBy(1, 1, { step: 0.05, precision: 2, shiftKey: true }), 1.01);
+  assert.equal(constrain(0.4, { integer: true, min: 0.5 }), 1);
+  assert.equal(constrain(9.7, { integer: true, max: 9.5 }), 9);
+});

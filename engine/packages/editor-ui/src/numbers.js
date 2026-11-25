@@ -66,8 +66,8 @@ export function constrain(v, { min, max, integer = false, precision } = {}) {
   let x = v;
   if (integer) x = Math.round(x);
   else x = roundTo(x, precision ?? 6);
-  if (min !== undefined && min !== null && x < min) x = min;
-  if (max !== undefined && max !== null && x > max) x = max;
+  if (min !== undefined && min !== null && x < min) x = integer ? Math.ceil(min) : min;
+  if (max !== undefined && max !== null && x > max) x = integer ? Math.floor(max) : max;
   return Object.is(x, -0) ? 0 : x;
 }
 
@@ -88,8 +88,9 @@ export const stepMultiplier = ({ shiftKey = false, altKey = false } = {}) => (sh
  * @param {number} v @param {1 | -1} dir @param {{ step?: number, shiftKey?: boolean, altKey?: boolean, min?: number, max?: number, integer?: boolean, precision?: number }} o
  */
 export function stepBy(v, dir, o = {}) {
-  const step = o.step ?? 1;
-  return constrain((v ?? 0) + dir * step * stepMultiplier(o), { ...o, precision: Math.max(o.precision ?? 0, decimals(step * stepMultiplier(o))) });
+  // a fine step below what the field shows still moves it: at least one unit of its last decimal
+  const by = Math.max((o.step ?? 1) * stepMultiplier(o), o.precision !== undefined ? Math.pow(10, -o.precision) : 0);
+  return constrain((v ?? 0) + dir * by, { ...o, precision: o.precision ?? decimals(by) });
 }
 
 /**
@@ -98,10 +99,11 @@ export function stepBy(v, dir, o = {}) {
  */
 export function dragTo(start, dx, o = {}) {
   const step = o.step ?? 1;
-  return constrain((start ?? 0) + dx * step * stepMultiplier(o), { ...o, precision: Math.max(o.precision ?? 0, decimals(step * stepMultiplier(o))) });
+  return constrain((start ?? 0) + dx * step * stepMultiplier(o), { ...o, precision: o.precision ?? decimals(step * stepMultiplier(o)) });
 }
 
-/** How many decimals a step has (0.05 → 2), so a drag lands on its steps. */
+/** How many decimals a step has (0.05 → 2): a drag lands on its steps when the field gives no precision. A field's
+ * precision wins, so what is stored is what it shows (a Shift drag of a 2-decimal field moves in hundredths). */
 function decimals(step) {
   const s = String(roundTo(step, 10));
   return s.includes('e-') ? Number(s.split('e-')[1]) : (s.split('.')[1]?.length ?? 0);

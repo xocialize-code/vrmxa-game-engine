@@ -5,7 +5,7 @@
 // step. A real <input> with an id and an accessible name, so AppProbe's set_value commits it (the input's change event).
 // Several nodes with different values: `mixed` (empty, "—", and "(mixed values)" in its name); typing sets them all.
 // Its decisions are ./numbers.js.
-import { computed, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { DRAG_THRESHOLD, dragTo, fillOf, formatNumber, parseNumber, stepBy } from './numbers.js';
 
 const props = defineProps({
@@ -22,6 +22,8 @@ const props = defineProps({
   placeholder: { type: String, default: '' },
   disabled: { type: Boolean, default: false },
   grip: { type: String, default: '↔' },
+  /** Drag to change it (false: type and arrow keys only, for a value whose edit reorders what holds it). */
+  scrub: { type: Boolean, default: true },
 });
 const emit = defineEmits(['change', 'gesture']);
 
@@ -31,7 +33,9 @@ const input = ref(null);
 const focused = ref(false);
 const text = ref(shown());
 let committed = text.value; // the text the field last showed or committed: an unchanged field commits nothing
-watch(() => [props.value, props.mixed, props.precision], () => { if (!focused.value || drag) { text.value = shown(); committed = text.value; } });
+/** Show `t`, in the input at once too: a change or blur event that follows (Return, Escape) then sees nothing new. */
+function show(t) { text.value = t; committed = t; if (input.value) input.value.value = t; }
+watch(() => [props.value, props.mixed, props.precision], () => { if (!focused.value || drag) show(shown()); });
 
 const fill = computed(() => (props.mixed ? null : fillOf(props.value, props.min, props.max)));
 const name = computed(() => (props.mixed ? `${props.label} (mixed values)` : props.label));
@@ -40,21 +44,29 @@ const title = computed(() => (props.mixed ? 'Mixed values' : props.value === und
 function commit(raw) {
   if (raw === committed) return;
   const v = parseNumber(raw, opts());
-  if (v === null) { text.value = shown(); committed = text.value; return; }
-  text.value = formatNumber(v, opts().precision); committed = text.value;
+  if (v === null) { show(shown()); return; }
+  show(formatNumber(v, opts().precision));
   emit('change', v);
 }
 const onChange = (e) => commit(e.target.value);
 
 /** @type {null | { x: number, start: number, moved: boolean, fromInput: boolean, last: number }} */
 let drag = null;
+// Escape during a drag reaches the window, not the field (a grip drag never focuses it): listen there while dragging,
+// first, so an app's own Escape (the timeline's: clear the selection) doesn't unmount the field mid-drag.
+function onEscape(e) { if (e.key === 'Escape' && drag?.moved) { e.preventDefault(); e.stopImmediatePropagation(); endDrag('cancel'); } }
+function endDrag(kind) {
+  const d = drag; drag = null;
+  globalThis.removeEventListener?.('keydown', onEscape, true);
+  if (d?.moved) emit('gesture', kind);
+  return d;
+}
 function onDown(e, fromInput) {
-  if (props.disabled || e.button !== 0 || (fromInput && focused.value)) return;
+  if (!props.scrub || props.disabled || e.button !== 0 || (fromInput && focused.value)) return;
   if (props.mixed && !fromInput) return; // no common value to drag from: type one
   drag = { x: e.clientX, start: props.value ?? 0, moved: false, fromInput, last: props.value ?? 0 };
   e.currentTarget.setPointerCapture?.(e.pointerId);
   e.preventDefault(); // a press without a drag focuses the field on release
-
 }
 function onMove(e) {
   if (!drag) return;
@@ -62,40 +74,40 @@ function onMove(e) {
   if (!drag.moved) {
     if (Math.abs(dx) < DRAG_THRESHOLD || props.mixed) return;
     drag.moved = true;
+    globalThis.addEventListener?.('keydown', onEscape, true);
     emit('gesture', 'begin');
   }
   const v = dragTo(drag.start, dx, { ...opts(), shiftKey: e.shiftKey, altKey: e.altKey });
   if (v === drag.last) return;
   drag.last = v;
-  text.value = formatNumber(v, opts().precision); committed = text.value;
+  show(formatNumber(v, opts().precision));
   emit('change', v);
 }
 function onUp(e) {
   if (!drag) return;
-  const d = drag; drag = null;
   try { e.currentTarget.releasePointerCapture?.(e.pointerId); } catch { /* already released */ }
-  if (d.moved) { e.preventDefault(); emit('gesture', e.type === 'pointercancel' ? 'cancel' : 'end'); return; }
+  const d = endDrag(e.type === 'pointercancel' ? 'cancel' : 'end');
+  if (d.moved) { e.preventDefault(); return; }
   if (d.fromInput) { input.value?.focus(); input.value?.select(); }
 }
+// a field taken away mid-drag (its row removed, the selection changed) still closes its gesture
+onBeforeUnmount(() => { if (drag) endDrag('end'); });
 function onKey(e) {
-  if (drag && e.key === 'Escape') { // put the drag back: the app undoes its live edits
-    drag = null; emit('gesture', 'cancel'); return;
-  }
   if (e.key === 'Enter') { commit(e.target.value); e.target.blur(); }
-  else if (e.key === 'Escape') { text.value = shown(); committed = text.value; e.target.blur(); }
+  else if (e.key === 'Escape') { show(shown()); e.target.blur(); }
   else if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && !props.mixed) {
     e.preventDefault();
     const v = stepBy(props.value ?? 0, e.key === 'ArrowUp' ? 1 : -1, { ...opts(), shiftKey: e.shiftKey, altKey: e.altKey });
-    text.value = formatNumber(v, opts().precision); committed = text.value;
+    show(formatNumber(v, opts().precision));
     if (v !== props.value) emit('change', v);
   }
 }
 function onFocus() { focused.value = true; committed = text.value; }
-function onBlur(e) { commit(e.target.value); focused.value = false; text.value = shown(); committed = text.value; }
+function onBlur(e) { commit(e.target.value); focused.value = false; show(shown()); }
 </script>
 
 <template>
-  <span class="num" :class="{ mixed, disabled }" :title="title">
+  <span class="num" :class="{ mixed, disabled, still: !scrub }" :title="title">
     <span class="num-grip" aria-hidden="true" @pointerdown="onDown($event, false)" @pointermove="onMove" @pointerup="onUp" @pointercancel="onUp">{{ grip }}</span>
     <span v-if="fill !== null" class="num-fill" aria-hidden="true" :style="{ width: `calc((100% - 16px) * ${fill})` }" />
     <input
@@ -110,7 +122,8 @@ function onBlur(e) { commit(e.target.value); focused.value = false; text.value =
 <style>
 .num { position: relative; display: inline-flex; align-items: stretch; min-width: 0; }
 .num-grip { flex: 0 0 14px; display: flex; align-items: center; justify-content: center; cursor: ew-resize; color: var(--muted, #888); font-size: 10px; user-select: none; touch-action: none; }
-.num.mixed .num-grip, .num.disabled .num-grip { cursor: default; opacity: 0.5; }
+.num.mixed .num-grip, .num.disabled .num-grip, .num.still .num-grip { cursor: default; opacity: 0.5; }
+.num.still .num-input { cursor: text; }
 .num-fill { position: absolute; left: 16px; bottom: 1px; height: 2px; background: var(--accent, #4a8cff); opacity: 0.6; pointer-events: none; }
 .num-input { flex: 1 1 auto; min-width: 0; width: 100%; font-variant-numeric: tabular-nums; cursor: ew-resize; }
 .num-input:focus { cursor: text; }

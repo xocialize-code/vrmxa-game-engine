@@ -39,7 +39,8 @@ const vrmxaCore = { ...vrmxaMain, ...vrmxaAnim };
 const registry = m0Registry();
 const SNAP = { translate: 0.25, rotate: 15, scale: 0.1 };
 /** Node types the Add menu offers (no asset needed). */
-export const ADDABLE = ['Node3D', 'DirectionalLight', 'PointLight', 'SpotLight', 'Environment', 'Camera', 'VirtualCamera', 'CameraBrain', 'Path3D', 'ParticleEmitter', 'Collider', 'RigidBody', 'Area', 'Marker', 'AnimationPlayer', 'GameRules', 'GameCounter', 'GameTimer', 'GameGoal', 'Checkpoint', 'Dialogue'] // M5 W4: the game nodes, whose lists and conditions the inspector now edits.filter((t) => registry.get(t) && !registry.get(t).abstract && !registry.get(t).asset?.required);
+// M5 W4: the game nodes too, whose lists and conditions the inspector now edits
+export const ADDABLE = ['Node3D', 'DirectionalLight', 'PointLight', 'SpotLight', 'Environment', 'Camera', 'VirtualCamera', 'CameraBrain', 'Path3D', 'ParticleEmitter', 'Collider', 'RigidBody', 'Area', 'Marker', 'AnimationPlayer', 'GameRules', 'GameCounter', 'GameTimer', 'GameGoal', 'Checkpoint', 'Dialogue'].filter((t) => registry.get(t) && !registry.get(t).abstract && !registry.get(t).asset?.required);
 
 /** A short digest of a list of frame hashes: two exports with the same digest have the same frames. */
 function digest(list) { return hashValue(list.join(',')); }
@@ -472,7 +473,7 @@ export class EditorHost {
     if (!nodes.length) return null;
     const n = nodes.at(-1); // the primary
     const d = describeType(registry, n.type);
-    const props = sharedFields(nodes.map((x) => inspectorFields(x === n ? d : describeType(registry, x.type), x)));
+    const props = sharedFields([n, ...nodes.filter((x) => x !== n)].map((x) => inspectorFields(x === n ? d : describeType(registry, x.type), x))); // the primary's order, ranges and value first
     const tr = nodes.map((x) => this.transformOf(x));
     const asset = n.asset ? s.doc.assets.find((a) => a.id === n.asset) : null;
     const types = [...new Set(nodes.map((x) => x.type))];
@@ -483,6 +484,16 @@ export class EditorHost {
       behaviours: nodes.length === 1 ? (n.behaviours ?? []).map((b) => b.use) : [], nodes: s.doc.nodes.map((x) => x.id),
       sameType: types.length === 1 ? s.doc.nodes.filter((x) => x.type === n.type).map((x) => x.id) : [],
     };
+  }
+
+  /** Set one axis of a vector prop (a collider's size) on several nodes, each keeping its other axes: one undo step. */
+  setPropAxisOn(ids, key, axis, value) {
+    this.session.setPropEach(key, ids.map((id) => {
+      const n = this.session.node(id), p = registry.get(n.type)?.props[key];
+      const v = [...(n.props?.[key] ?? p?.schema.default ?? new Array(p?.schema.minItems ?? 3).fill(0))];
+      v[axis] = value;
+      return { id, value: v };
+    }));
   }
 
   /** A node's transform as the inspector edits it: position, rotation in Euler degrees (YXZ), scale. */

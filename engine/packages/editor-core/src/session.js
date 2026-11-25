@@ -179,7 +179,7 @@ export class EditorSession {
   }
 
   /** Set (or with undefined, clear back to its default) one prop. */
-  setProp(id, key, value) { const n = this.node(id); this.run(`Set ${id}.${key}`, [n ? propOp(n, key, value) : { op: 'set', id, path: `props.${key}`, value }].filter(Boolean)); }
+  setProp(id, key, value) { const n = this.node(id); this.run(`Set ${id}.${key}`, n ? propOps(n, key, value) : [{ op: 'set', id, path: `props.${key}`, value }]); }
   rename(id, name) { this.run(`Rename ${id}`, [{ op: 'set', id, path: 'name', value: name || undefined }]); }
 
   // ---------------------------------------------------------------- several nodes at once (M5 W4, AB-T-0601)
@@ -193,7 +193,18 @@ export class EditorSession {
     const list = [...new Set(ids)];
     for (const id of list) if (!this.node(id)) throw new Error(`no node ${id}`);
     if (list.length === 1) return this.setProp(list[0], key, value);
-    this.run(`Set ${key} on ${list.length} nodes`, list.map((id) => propOp(this.node(id), key, value)).filter(Boolean));
+    this.run(`Set ${key} on ${list.length} nodes`, list.flatMap((id) => propOps(this.node(id), key, value)));
+  }
+
+  /**
+   * Set one prop to a value of each node's own as one undo step: one axis of a vector prop on a selection, each node
+   * keeping its other axes. One entry is `setProp`'s step.
+   * @param {string} key @param {{ id: string, value: any }[]} entries
+   */
+  setPropEach(key, entries) {
+    for (const { id } of entries) if (!this.node(id)) throw new Error(`no node ${id}`);
+    if (entries.length === 1) return this.setProp(entries[0].id, key, entries[0].value);
+    this.run(`Set ${key} on ${entries.length} nodes`, entries.flatMap(({ id, value }) => propOps(this.node(id), key, value)));
   }
 
   /**
@@ -236,7 +247,7 @@ export class EditorSession {
     const label = labelOf(mine.at(-1));
     const before = this.text();
     for (let i = 0; i < mine.length; i++) this.editor.undo();
-    if (this.text() === before) { this.tidySelection(); this.emit({ kind: 'undo', label }); return null; } // back where it began
+    if (this.text() === before) { this.editor.dropRedo(); this.tidySelection(); this.emit({ kind: 'undo', label }); return null; } // back where it began: nothing to redo either
     const all = mine.flatMap((op) => (op.op === 'batch' ? op.ops : [op])).map(({ label: _l, ...o }) => o);
     // a drag sets the same paths over and over: keep each path's last set (in the order they were last set)
     const lastAt = new Map(all.map((o, i) => [o.op === 'set' ? `${o.id}\u0000${o.path}` : i, i]));
@@ -254,6 +265,7 @@ export class EditorSession {
     const mine = this.gestureSteps(g);
     if (!mine?.length) return;
     for (let i = 0; i < mine.length; i++) this.editor.undo();
+    this.editor.dropRedo(); // an abandoned drag isn't redone (its first edit had cleared any redo there was)
     this.tidySelection();
     this.emit({ kind: 'undo', label: labelOf(mine[0]) });
   }
@@ -345,15 +357,17 @@ function transformOp(n, t) {
   return { op: 'set', id: n.id, path: 'transform', value: Object.keys(next).length ? next : undefined };
 }
 /**
- * The set op that gives node `n` prop `key` (undefined clears it), or null when it holds that already. A node with no
- * props gets the whole props object, and clearing its last prop removes it, so undo gives back the node byte for byte.
+ * The set ops that give node `n` prop `key` (undefined clears it): none when it holds that already. A node with no props
+ * gets an empty props object first, and clearing its last prop removes the object after, so undo gives back the node
+ * byte for byte. The value itself always goes through `props.<key>`, where the scene editor checks node references.
  */
-function propOp(n, key, value) {
+function propOps(n, key, value) {
   const props = n.props;
-  if (JSON.stringify(props?.[key]) === JSON.stringify(value)) return null;
-  if (props === undefined) return { op: 'set', id: n.id, path: 'props', value: { [key]: value } };
-  if (value === undefined && Object.keys(props).length === 1 && Object.hasOwn(props, key)) return { op: 'set', id: n.id, path: 'props', value: undefined };
-  return { op: 'set', id: n.id, path: `props.${key}`, value };
+  if (JSON.stringify(props?.[key]) === JSON.stringify(value)) return [];
+  const set = { op: 'set', id: n.id, path: `props.${key}`, value };
+  if (props === undefined) return [{ op: 'set', id: n.id, path: 'props', value: {} }, set];
+  if (value === undefined && Object.keys(props).length === 1 && Object.hasOwn(props, key)) return [set, { op: 'set', id: n.id, path: 'props', value: undefined }];
+  return [set];
 }
 const transformKind = (t) => (t.p && !t.q && !t.s ? 'Move' : t.q && !t.p && !t.s ? 'Rotate' : t.s && !t.p && !t.q ? 'Scale' : 'Transform');
 const labelOf = (op) => label(op);

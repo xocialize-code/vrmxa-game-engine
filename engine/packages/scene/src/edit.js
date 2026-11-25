@@ -177,6 +177,8 @@ export function createEditor(reg, doc, { prefabs } = {}) {
     e.inverse = run(e.op); undoStack.push(e); return true;
   }
   /** The edits undo and redo would act on next (their ops, with any `label`), and how many of each there are. */
+  /** Forget what redo would do: a session that undid steps only to fold or abandon them (a drag) leaves nothing to redo. */
+  const dropRedo = () => { redoStack.length = 0; };
   const peek = () => ({ undo: undoStack.at(-1)?.op ?? null, redo: redoStack.at(-1)?.op ?? null, undoDepth: undoStack.length, redoDepth: redoStack.length });
-  return { apply, undo, redo, peek, doc, checkNode, history: () => undoStack.map((e) => e.op) };
+  return { apply, undo, redo, dropRedo, peek, doc, checkNode, history: () => undoStack.map((e) => e.op) };
 }

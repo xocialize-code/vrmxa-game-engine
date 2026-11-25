@@ -164,6 +164,7 @@ const onInspector = {
   parent: (p) => act(() => ed.session.reparent(ui.inspector.id, p)),
   axis: (part, i, v) => act(() => ed.setAxisOn(ui.inspector.ids, part, i, v)),
   prop: (k, v) => act(() => ed.session.setPropOn(ui.inspector.ids, k, v)),
+  propAxis: (k, i, v) => act(() => ed.setPropAxisOn(ui.inspector.ids, k, i, v)), // one axis of a vector prop on a selection
   select: (ids, add = true) => act(() => ed.session.select(ids, { add })), // the inspector's Also select and Select every <type>: multi-select without a modifier key
   gesture: (kind) => act(() => { if (kind === 'begin') ed.session.beginGesture(); else if (kind === 'end') ed.session.endGesture(); else ed.session.cancelGesture(); }),
 };

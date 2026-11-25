@@ -371,6 +371,7 @@ export function sharedFields(perNode) {
     const mixed = all.some((g) => !same(shownValue(g), shownValue(f)));
     out.push({
       ...f, mixed, value: mixed ? undefined : f.value, set: all.some((g) => g.set),
+      ...(f.widget === 'vec' ? { axes: vecAxes(all.map(shownValue)) } : {}),
       default: all.every((g) => same(g.default, f.default)) ? f.default : undefined,
       min: all.every((g) => g.min === f.min) ? f.min : Math.max(...all.map((g) => g.min ?? -Infinity)) === -Infinity ? undefined : Math.max(...all.map((g) => g.min ?? -Infinity)),
       max: all.every((g) => g.max === f.max) ? f.max : Math.min(...all.map((g) => g.max ?? Infinity)) === Infinity ? undefined : Math.min(...all.map((g) => g.max ?? Infinity)),
@@ -379,6 +380,12 @@ export function sharedFields(perNode) {
     });
   }
   return out;
+}
+
+/** Several vectors that may be unset: each axis its common value (undefined when all unset), null where they differ. */
+function vecAxes(values) {
+  const n = Math.max(0, ...values.map((v) => (Array.isArray(v) ? v.length : 0)));
+  return Array.from({ length: n }, (_, i) => { const a = values.map((v) => (Array.isArray(v) ? v[i] : undefined)); return a.every((x) => x === a[0]) ? a[0] : null; });
 }
 
 /** Several vectors (positions, say) as one: each axis its common value, or null where they differ. */

@@ -6,7 +6,9 @@
 // Shared by the editor and the creator (M4 W5, @vrmxg/editor-ui); what an edit becomes is in timeline-ui.js, tested in Node.
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { TimelineGeometry, snapTargets, snapFrame, SNAP_PX, timecode, CLIP_TRACKS, CHANNEL_TRACKS } from '@vrmxg/editor-core';
-import NumberField from './NumberField.vue'; // M5 W4: frame fields you drag or type arithmetic into
+// M5 W4: frame fields that take arithmetic and arrow keys; the selection's aren't dragged, since a move re-sorts keys and
+// clips and the selection keeps its index (a drag passing a neighbour would go on with the neighbour)
+import NumberField from './NumberField.vue';
 import { TRACK_TYPES, EASES, needsTarget, itemLabel, selectionOf, isSelected, moveCommand, removeCommand, fieldCommand, trackSpec, clipSpec, keyCommand, nudgeCommand } from './timeline-ui.js';
 
 const props = defineProps({ data: { type: Object, default: null }, disabled: { type: Boolean, default: false } });
@@ -244,13 +246,13 @@ defineExpose({ fit, select: (s) => { sel.value = s; } });
         </div>
         <div v-if="selectedItem" id="tl-selection" class="tl-form sel" role="group" :aria-label="`Selected ${sel.kind} in ${sel.row}`">
           <template v-if="sel.kind === 'key'">
-            <label class="field">Frame <NumberField id="tl-sel-frame" label="Key frame" :value="selectedItem[0]" :step="1" integer :disabled="disabled" @change="setField('frame', $event)" @gesture="emit('gesture', $event)" /></label>
+            <label class="field">Frame <NumberField id="tl-sel-frame" label="Key frame" :value="selectedItem[0]" :step="1" integer :scrub="false" :disabled="disabled" @change="setField('frame', $event)" /></label>
             <label class="field">Value <input id="tl-sel-value" :value="JSON.stringify(selectedItem[1])" aria-label="Key value" :disabled="disabled" @change="setField('value', $event.target.value)"></label>
             <label class="field">Ease <select id="tl-sel-ease" :value="selectedItem[2] ?? ''" aria-label="Key ease" :disabled="disabled" @change="setField('ease', $event.target.value)"><option v-for="e in EASES" :key="e" :value="e">{{ e || '(linear)' }}</option></select></label>
           </template>
           <template v-else>
-            <label class="field">Start <NumberField id="tl-sel-start" label="Start frame" :value="selectedItem.start" :step="1" integer :disabled="disabled" @change="setField('start', $event)" @gesture="emit('gesture', $event)" /></label>
-            <label class="field">End <NumberField id="tl-sel-end" label="End frame" :value="selectedItem.end" :step="1" integer :disabled="disabled" @change="setField('end', $event)" @gesture="emit('gesture', $event)" /></label>
+            <label class="field">Start <NumberField id="tl-sel-start" label="Start frame" :value="selectedItem.start" :step="1" integer :scrub="false" :disabled="disabled" @change="setField('start', $event)" /></label>
+            <label class="field">End <NumberField id="tl-sel-end" label="End frame" :value="selectedItem.end" :step="1" integer :scrub="false" :disabled="disabled" @change="setField('end', $event)" /></label>
             <label v-if="sel.kind === 'shot'" class="field">Name <input id="tl-sel-name" :value="selectedItem.name ?? ''" aria-label="Shot name" :disabled="disabled" @change="setField('name', $event.target.value)"></label>
             <label v-if="selectedTrack?.type === 'camera'" class="field">Camera <select id="tl-sel-camera" :value="selectedItem.camera" aria-label="Clip camera" :disabled="disabled" @change="setField('camera', $event.target.value)"><option v-for="c in d?.cameras ?? []" :key="c" :value="c">{{ c }}</option></select></label>
             <label v-if="selectedTrack?.type === 'dialogue'" class="field">Text <input id="tl-sel-text" :value="selectedItem.text ?? ''" aria-label="Line text" :disabled="disabled" @change="setField('text', $event.target.value)"></label>

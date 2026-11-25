@@ -2,7 +2,7 @@
 // `shape == 'box'`, `castShadow && kind != 'ambient'`. The inspector hides or disables the field; MCP's describe output
 // carries the text, so an agent knows when a prop matters. A hidden prop's data is kept, never dropped.
 //
-// The language: prop names, numbers, 'strings' or "strings", true, false, null; == != < <= > >=; && || !; parentheses.
+// The language: prop names, numbers (-1 too), 'strings' or "strings", true, false, null; == != < <= > >=; && || !; parentheses.
 // No calls, no member access, no assignment: a recursive-descent parser over a token list, never eval or new Function.
 // Modelled on PlayCanvas's script attribute expressions (@visibleif / @enabledif); written fresh, nothing copied.
 //
@@ -10,7 +10,7 @@
 // coercion: 1 == '1' is false); < and friends compare two numbers or two strings, anything else is false.
 // A malformed expression fails closed: `conditionHolds` says true, so the field is shown and editable.
 
-const TOKEN = /\s*(?:(\d+(?:\.\d*)?|\.\d+)|([A-Za-z_$][\w$]*)|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")|(==|!=|<=|>=|&&|\|\||[<>!()]))/y;
+const TOKEN = /\s*(?:(\d+(?:\.\d*)?|\.\d+)|([A-Za-z_$][\w$]*)|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")|(==|!=|<=|>=|&&|\|\||[<>!()-]))/y;
 
 /** @param {string} text @returns {{ t: 'num' | 'name' | 'str' | 'lit' | 'op', v: any }[]} */
 function tokenize(text) {
@@ -55,6 +55,7 @@ export function parseCondition(text) {
     if (!t) throw new Error('the condition ends too soon');
     if (isOp('(')) { i++; const e = or(); need(')'); return e; }
     i++;
+    if (t.t === 'op' && t.v === '-' && toks[i]?.t === 'num') return { k: 'lit', v: -toks[i++].v }; // a negative number
     if (t.t === 'num' || t.t === 'str' || t.t === 'lit') return { k: 'lit', v: t.v };
     if (t.t === 'name') return { k: 'name', v: t.v };
     throw new Error(`unexpected "${t.v}"`);
@@ -100,6 +101,7 @@ export function conditionHolds(text, values) {
   if (text === undefined || text === null) return true;
   let ast = cache.get(text);
   if (ast === undefined) {
+    if (cache.size > 1000) cache.clear(); // conditions come from type definitions: a handful, but never unbounded
     try { ast = parseCondition(text); } catch { ast = null; }
     cache.set(text, ast);
   }

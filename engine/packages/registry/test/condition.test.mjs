@@ -15,6 +15,8 @@ test('the evaluator: names, literals, comparisons, && || ! and parentheses', () 
   assert.equal(conditionHolds(undefined, v), true, 'no condition: applies');
   assert.equal(conditionHolds("kind == 'it\\'s'", { kind: "it's" }), true, 'escaped quotes');
   assert.equal(conditionHolds('a', (k) => (k === 'a' ? 1 : undefined)), true, 'a reader function');
+  assert.equal(conditionHolds('n > -1 && -2 < n', v), true, 'negative numbers');
+  assert.equal(conditionHolds('- n', v), true, 'a minus before a name is not a number: malformed, fails closed');
 });
 
 test('a malformed condition fails closed: the field is shown and editable', () => {

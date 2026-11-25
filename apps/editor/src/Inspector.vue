@@ -10,7 +10,7 @@ import NumberField from '@vrmxg/editor-ui/NumberField.vue';
 import ValueField from '@vrmxg/editor-ui/ValueField.vue';
 
 const props = defineProps({ data: Object });
-const emit = defineEmits(['rename', 'parent', 'axis', 'prop', 'gesture', 'select']);
+const emit = defineEmits(['rename', 'parent', 'axis', 'prop', 'propAxis', 'gesture', 'select']);
 const others = computed(() => (props.data ? props.data.nodes.filter((x) => !props.data.ids.includes(x)) : []));
 function also(e) { const id = e.target.value; e.target.value = ''; if (id) emit('select', [id], true); }
 const AXES = ['X', 'Y', 'Z'];
@@ -63,12 +63,13 @@ const why = (p) => [p.description, p.visibleIf ? `Shown when ${p.visibleIf}.` : 
         />
       </fieldset>
       <h3 v-if="data.props.length">Properties</h3>
-      <div v-for="p in shown" :key="p.key" class="insp-prop" :class="{ set: p.set, block: BLOCK.has(p.widget), off: !p.enabled, mixed: p.mixed }" :title="why(p)">
+      <div v-for="p in shown" :key="`${data.ids.join(',')}:${p.key}`" class="insp-prop" :class="{ set: p.set, block: BLOCK.has(p.widget), off: !p.enabled, mixed: p.mixed }" :title="why(p)">
         <div class="insp-row">
           <span class="insp-key">{{ p.key }}<span v-if="p.unit" class="muted"> ({{ p.unit }})</span><span v-if="p.mixed && BLOCK.has(p.widget)" class="muted"> · mixed: showing {{ data.id }}'s</span></span>
           <ValueField
             v-if="!BLOCK.has(p.widget)" :id="`prop-${p.key}`" :label="p.key" :schema="p.schema" :meta="p.meta" :value="p.value" :fallback="p.default"
-            :mixed="p.mixed" :disabled="!p.enabled" :nodes="data.nodes" @change="emit('prop', p.key, $event)" @gesture="emit('gesture', $event)"
+            :mixed="p.mixed" :axes="data.multi && p.widget === 'vec' ? p.axes : null" :disabled="!p.enabled" :nodes="data.nodes"
+            @change="emit('prop', p.key, $event)" @axis="(i, v) => emit('propAxis', p.key, i, v)" @gesture="emit('gesture', $event)"
           />
           <button v-if="p.set" type="button" class="reset" :aria-label="`Reset ${p.key}`" title="Back to the default" :disabled="!p.enabled" @click="emit('prop', p.key, undefined)">↺</button>
         </div>

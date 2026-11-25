@@ -5,7 +5,7 @@
 // choice between an anyOf's branches. It recurses for rows and fields. Every edit emits the whole new value once
 // (`change`), so the app makes one undo step of it; a number drag emits `gesture` around its live changes.
 // Ids and accessible names come from the parent's: `prop-lines-0-text`, "lines 1 text" (./fields.js childOf).
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import NumberField from './NumberField.vue';
 import {
   plain, widgetOf, fitBranch, branchesOf, branchIndex, defaultFor, matches, setIn, listAdd, listRemove, listMove, rowActions,
@@ -27,8 +27,13 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
   /** Node ids, for a node slot. */
   nodes: { type: Array, default: () => [] },
+  /**
+   * A vector on several nodes: each axis's common value, null where they differ. An axis edit then emits
+   * `axis(i, value)`, so each node keeps its own other axes, instead of `change` with one whole vector.
+   */
+  axes: { type: Array, default: null },
 });
-const emit = defineEmits(['change', 'gesture']);
+const emit = defineEmits(['change', 'gesture', 'axis']);
 
 const shown = computed(() => (props.value !== undefined ? props.value : props.fallback));
 const widget = computed(() => widgetOf(props.schema, props.meta, shown.value));
@@ -66,6 +71,7 @@ function setKind(t) {
 // a choice between anyOf branches; one whose new value wouldn't be valid waits for its first edit
 const branches = computed(() => branchesOf(props.schema));
 const picked = ref(null);
+watch(() => JSON.stringify(props.value), () => { picked.value = null; }); // another node or row: its own branch
 const branch = computed(() => picked.value ?? branchIndex(props.schema, shown.value));
 const branchSchema = computed(() => branches.value[branch.value]?.schema ?? {});
 const branchValue = computed(() => (matches(branchSchema.value, shown.value) || picked.value === null ? shown.value : undefined));
@@ -81,7 +87,9 @@ const setBranchValue = (v) => { picked.value = null; set(v); };
 const AXES = ['x', 'y', 'z', 'w'];
 const vecLen = computed(() => props.schema?.minItems ?? (Array.isArray(shown.value) ? shown.value.length : 3));
 const vecOf = () => (Array.isArray(shown.value) ? [...shown.value] : new Array(vecLen.value).fill(0));
-const setAxis = (i, v) => { const a = vecOf(); a[i] = v; set(a); };
+const setAxis = (i, v) => { if (props.axes) { emit('axis', i, v); return; } const a = vecOf(); a[i] = v; set(a); };
+const axisValue = (i) => (props.axes ? (props.axes[i] ?? undefined) : props.mixed ? undefined : vecOf()[i]);
+const axisMixed = (i) => (props.axes ? props.axes[i] === null : props.mixed);
 
 // lists
 const items = computed(() => (Array.isArray(shown.value) ? shown.value : []));
@@ -147,7 +155,7 @@ const setKey = (i, j, v) => set(setIn(keys.value, [i, j], v));
 
   <!-- a vector: one number field per axis -->
   <span v-else-if="widget === 'vec'" class="vf-vec" role="group" :aria-label="name">
-    <NumberField v-for="(a, i) in AXES.slice(0, vecLen)" :id="`${id}-${a}`" :key="a" :label="`${label} ${a.toUpperCase()}`" :grip="a.toUpperCase()" :value="mixed ? undefined : vecOf()[i]" :mixed="mixed" :step="meta.step ?? 0.01" :precision="meta.precision ?? 3" :unit="meta.unit ?? ''" :disabled="disabled" @change="setAxis(i, $event)" @gesture="gesture" />
+    <NumberField v-for="(a, i) in AXES.slice(0, vecLen)" :id="`${id}-${a}`" :key="a" :label="`${label} ${a.toUpperCase()}`" :grip="a.toUpperCase()" :value="axisValue(i)" :mixed="axisMixed(i)" :step="meta.step ?? 0.01" :precision="meta.precision ?? 3" :unit="meta.unit ?? ''" :disabled="disabled" @change="setAxis(i, $event)" @gesture="gesture" />
   </span>
 
   <!-- a value of one of several types -->
@@ -245,7 +253,7 @@ const setKey = (i, j, v) => set(setIn(keys.value, [i, j], v));
 .vf-req { color: var(--accent, #4a8cff); }
 .vf-addkey { display: flex; gap: 4px; }
 .vf-addkey input { flex: 1 1 auto; min-width: 0; }
-.vf-add { align-self: flex-start; font-size: 11px; }
+.vf-add, .vf-field > .vf-add { align-self: flex-start; flex: 0 0 auto; font-size: 11px; }
 .vf-curve-preview { width: 100%; height: 40px; color: var(--accent, #4a8cff); }
 .vf-key-row { flex-direction: row; gap: 4px; }
 .vf-key-row .num { flex: 1 1 0; }
