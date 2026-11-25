@@ -19,8 +19,9 @@ import { shapeOf, dragShape, closestOnLine } from './shapes.js';
 import { normRect, isDrag, screenBox, rectSelect } from './rect.js';
 import { makeViewCube, viewAngles } from './cube.js';
 import { pipRect, previewable, previewPose } from './preview.js';
+import { FrameComposite } from './composite.js';
 
-const _m = new Matrix4(), _p = new Vector3(), _q = new Quaternion(), _s = new Vector3(), _v = new Vector3(), _box = new Box3();
+const _m = new Matrix4(), _p = new Vector3(), _q = new Quaternion(), _s = new Vector3(), _v = new Vector3(), _box = new Box3(), _b2 = new Box3();
 const ONE = new Vector3(1, 1, 1);
 
 export class ViewportAids {
@@ -29,10 +30,13 @@ export class ViewportAids {
     this.ed = ed;
     this.scene = new Scene(); this.scene.name = 'editor-overlay';
     this.outline = new SelectionOutline();
+    this.composite = new FrameComposite(); // WebGPU through the post stack: the frame and the aids drawn to the canvas together (composite.js)
     this.handles = new ShapeHandles();
     this.scene.add(this.handles.group);
     /** Which aids are on (the toolbar's switches). */
     this.show = { outline: true, preview: true, handles: true };
+    /** Box select (M5 W5): a plain drag on the viewport draws the selection rectangle instead of turning the view. */
+    this.boxSelect = false;
     this.pipCamera = new PerspectiveCamera(40, 16 / 9, 0.1, 500);
     this.ray = new Raycaster();
     /** A drag in progress: { kind: 'handle', ... } | { kind: 'rect', ... } | null */ this.drag = null;
@@ -60,6 +64,14 @@ export class ViewportAids {
     this.pipCaption.style.cssText = 'position:absolute;left:0;top:0;padding:2px 6px;font:11px/1.4 system-ui,sans-serif;color:#fff;background:rgba(0,0,0,.55);';
     this.pipEl.append(this.pipCaption);
     layer.append(this.rectEl, this.pipEl);
+    // two named marks near the viewport's corners, inset a little, where a scripted Box select drag starts and ends
+    // (AppProbe aims at what the page names, never at coordinates it works out); they take no pointer events
+    for (const [id, label, css] of [['viewport-near-top-left', 'Near the viewport\'s top left corner', 'left:4%;top:6%;'], ['viewport-near-bottom-right', 'Near the viewport\'s bottom right corner', 'right:4%;bottom:6%;']]) {
+      const m = document.createElement('span');
+      m.id = id; m.setAttribute('role', 'img'); m.setAttribute('aria-label', label);
+      m.style.cssText = `position:absolute;${css}width:10px;height:10px;pointer-events:none;`;
+      layer.append(m);
+    }
     this.cube = makeViewCube(layer, (id) => this.viewFrom(id));
     const canvas = this.ed.canvas;
     this._listeners = [
@@ -68,6 +80,7 @@ export class ViewportAids {
       [stage, 'pointerup', (e) => this.onUp(e)],
       [stage, 'pointercancel', (e) => this.onUp(e, true)],
       [stage, 'lostpointercapture', (e) => this.onUp(e, true)], // a release the page never heard (another app took the pointer)
+      [window, 'keydown', (e) => { if (e.key === 'Escape' && this.drag) { e.preventDefault(); this.cancelDrag(); } }], // Escape drops a drag
     ];
     for (const [el, ev, fn] of this._listeners) el.addEventListener(ev, fn, { capture: true });
     this.canvas = canvas;
@@ -95,8 +108,30 @@ export class ViewportAids {
       this.outline.setObjects(objects, ++this._n);
     }
     camera.updateMatrixWorld();
-    if (this.show.outline && editing) this.outline.render(renderer, camera);
     this.updateHandles(editing);
+    // WebGPU through the post stack: the frame went into the composite's target (beginFrame); the aids go into another,
+    // and both are drawn to the canvas together (composite.js)
+    const via = this.composite.active;
+    if (via) this.composite.beginAids(renderer);
+    try { this.drawAids(renderer, camera, editing); } finally { if (via) this.composite.present(renderer); }
+    this.cube?.update(camera.quaternion.toArray());
+  }
+
+  /**
+   * Before the host draws the edit view's frame: on WebGPU with the post stack active, the frame is drawn into the
+   * composite's target, to go to the canvas with the aids in one pass (draw()). Call abortFrame if the frame fails.
+   */
+  beginFrame() {
+    const r = this.ed.host.renderer;
+    return r.isWebGPURenderer && !!this.ed.host.post?.active ? this.composite.beginFrame(r) : false;
+  }
+
+  /** The frame failed after beginFrame: back to the canvas. */
+  abortFrame() { this.composite.abort(this.ed.host.renderer); }
+
+  /** The outline, the overlay and the preview, over what the current target holds. */
+  drawAids(renderer, camera, editing) {
+    if (this.show.outline && editing) this.outline.render(renderer, camera);
     // the overlay: handles, gizmo, selection box, over the frame without clearing it or redrawing shadows
     const auto = renderer.autoClear, shadows = renderer.shadowMap?.autoUpdate;
     try {
@@ -105,7 +140,6 @@ export class ViewportAids {
       renderer.render(this.scene, camera);
     } finally { renderer.autoClear = auto; if (renderer.shadowMap) renderer.shadowMap.autoUpdate = shadows; }
     this.drawPreview(editing);
-    this.cube?.update(camera.quaternion.toArray());
   }
 
   /** The handles of the primary selection's shape (a drag's shape while dragging). */
@@ -183,8 +217,13 @@ export class ViewportAids {
     // cleared inside its rectangle: the WebGL post stack leaves autoClear off for good, which would draw the preview over
     // the frame and over depth left from earlier frames
     const renderer = ed.host.renderer, auto = renderer.autoClear;
-    try { renderer.autoClear = true; renderViews(renderer, ed.host.scene, [{ camera: this.pipCamera, x: r.x / w, y, w: r.width / w, h: r.height / h }]); }
-    finally { renderer.autoClear = auto; }
+    // into the composite's target (WebGPU through the post stack): a target draws through its own viewport, not the
+    // renderer's, so the preview is drawn whole into one of its own and placed in its corner
+    if (this.composite.active) this.composite.drawInset(renderer, ed.host.scene, this.pipCamera, r, w, h);
+    else {
+      try { renderer.autoClear = true; renderViews(renderer, ed.host.scene, [{ camera: this.pipCamera, x: r.x / w, y, w: r.width / w, h: r.height / h }]); }
+      finally { renderer.autoClear = auto; }
+    }
     this.previewing = id;
     if (this.pipEl) {
       Object.assign(this.pipEl.style, { display: 'block', right: `${r.right}px`, bottom: `${r.bottom}px`, width: `${r.width}px`, height: `${r.height}px` });
@@ -241,8 +280,10 @@ export class ViewportAids {
         return;
       }
     }
-    if (e.metaKey || e.ctrlKey) {
-      this.drag = { kind: 'rect', x0: e.clientX, y0: e.clientY, x1: e.clientX, y1: e.clientY, add: e.shiftKey };
+    // ⌘ (Ctrl) draws the rectangle; with Box select on, so does a plain press, except on the gizmo
+    const cmd = e.metaKey || e.ctrlKey;
+    if (cmd || (this.boxSelect && !this.ed.gizmo.axis)) {
+      this.drag = { kind: 'rect', x0: e.clientX, y0: e.clientY, x1: e.clientX, y1: e.clientY, add: e.shiftKey, cmd };
       this.take(e);
       this.showRect();
     }
@@ -258,6 +299,14 @@ export class ViewportAids {
     const t = closestOnLine(this.ray.ray.origin.toArray(), this.ray.ray.direction.toArray(), d.point.toArray(), d.axis.toArray());
     if (t === null) return;
     d.result = dragShape(d.shape, d.handle.id, t - d.t0, { snap: this.ed.snap, symmetric: e.altKey });
+  }
+
+  /** Drop the drag in progress (Escape): nothing is written, a handle's shape goes back to the document's. */
+  cancelDrag() {
+    const d = this.drag;
+    if (!d) return;
+    this.drag = null;
+    if (this.rectEl) this.rectEl.style.display = 'none';
   }
 
   onUp(e, cancelled = false) {
@@ -307,7 +356,11 @@ export class ViewportAids {
   /** The nodes wholly inside the rectangle, topmost only (a group, not its children too): selected, or added with ⇧. */
   finishRect(d) {
     const ed = this.ed, rect = normRect(d.x0, d.y0, d.x1, d.y1);
-    if (!isDrag(rect)) { const id = ed.pick(d.x0, d.y0); if (id) ed.session.select([id], { add: true }); return; } // a ⌘-click adds
+    if (!isDrag(rect)) { // a click: ⌘ adds what is under it; in Box select it picks as a plain click does (⇧ adds)
+      const id = ed.pick(d.x0, d.y0);
+      if (d.cmd) { if (id) ed.session.select([id], { add: true }); } else ed.session.select(id ? [id] : [], { add: d.add });
+      return;
+    }
     const ids = rectSelect(rect, this.screenItems());
     ed.session.select(topmost(ed.session.doc, ids), { add: d.add });
   }
@@ -322,8 +375,8 @@ export class ViewportAids {
     for (const n of ed.session.doc.nodes) {
       if (n.id === root) continue; // the scene's root holds everything; the rectangle picks what is in it
       const o = ed.edit.tree.find(n.id)?.object3d;
-      if (!o) continue;
-      _box.setFromObject(o);
+      if (!o || !SelectionOutline.shown(o)) continue; // a hidden node isn't picked
+      visibleBounds(o, _box);
       const pts = _box.isEmpty() ? [o.getWorldPosition(new Vector3())]
         : [0, 1, 2, 3, 4, 5, 6, 7].map((i) => new Vector3(i & 1 ? _box.max.x : _box.min.x, i & 2 ? _box.max.y : _box.min.y, i & 4 ? _box.max.z : _box.min.z));
       out.push({ id: n.id, box: screenBox(pts.map(project)) });
@@ -334,8 +387,21 @@ export class ViewportAids {
   dispose() {
     for (const [el, ev, fn] of this._listeners ?? []) el.removeEventListener(ev, fn, { capture: true });
     this.cube?.dispose(); this.layer?.remove();
-    this.outline.dispose(); this.handles.dispose();
+    this.outline.dispose(); this.handles.dispose(); this.composite.dispose();
   }
+}
+
+/** The world bounds of what is shown under `root` (hidden parts left out). */
+function visibleBounds(root, box) {
+  box.makeEmpty();
+  root.updateWorldMatrix(true, false);
+  const walk = (o) => {
+    if (!o.visible) return;
+    if (o.isMesh || o.isLine || o.isPoints) { if (o.geometry) { o.geometry.boundingBox ?? o.geometry.computeBoundingBox(); if (o.geometry.boundingBox) box.union(_b2.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld)); } }
+    for (const c of o.children) walk(c);
+  };
+  walk(root);
+  return box;
 }
 
 /** A shape's value for a prop a drag writes (to tell a drag that changed nothing). */

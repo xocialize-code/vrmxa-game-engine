@@ -19,7 +19,7 @@ const ui = reactive({
   shell: '', project: '', writable: false, scenes: [], scene: '', loading: true, error: '', mode: 'editing',
   tree: [], selected: [], inspector: null, assets: [], undo: null, redo: null, dirty: false, valid: true, problems: '',
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
-  debug: { colliders: false, sensors: false, capsules: false, rays: false }, aids: { outline: true, handles: true, preview: true }, clip: 0, previewing: '', frame: '—', build: '—', renderer: '—', holds: '', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
+  debug: { colliders: false, sensors: false, capsules: false, rays: false }, aids: { outline: true, handles: true, preview: true }, boxSelect: false, clip: 0, previewing: '', frame: '—', build: '—', renderer: '—', holds: '', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
   mcp: '', tl: null, gameSlot: 'slot-1', gameNote: '', paused: false, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
   ask: null, // { title, text, options: [{ id, label }] }: the window's question before it closes (M5 W8)
   ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '', check: '', canCheck: false, scene: '', checkRows: '', gameName: '', game: '', gameRunning: false, gameN: 0, gameTotal: 0 },
@@ -48,7 +48,7 @@ function refresh(kind = 'all') {
   ui.project = ed.project?.name ?? ''; ui.writable = !!ed.project?.writable; ui.scenes = ed.project?.scenes() ?? []; ui.scene = ed.sceneRef ?? '';
   if (assetsOf !== ed.project?.files) { assetsOf = ed.project?.files; ui.assets = ed.assets().map((a) => ({ ...a })); }
   ui.gizmo = ed.gizmoMode; ui.snap = ed.snap; ui.camera = ed.cameraMode;
-  ui.aids = { ...ed.aids.show }; ui.clip = ed.clipboard?.roots.length ?? 0; ui.previewing = ed.aids.previewing ?? ''; // M5 W5
+  ui.aids = { ...ed.aids.show }; ui.boxSelect = ed.aids.boxSelect; ui.clip = ed.clipboard?.roots.length ?? 0; ui.previewing = ed.aids.previewing ?? ''; // M5 W5
   if (!s) return;
   ui.mode = s.mode; ui.paused = !!ed.paused;
   ui.tree = plainTree(s.tree());
@@ -156,6 +156,7 @@ const duplicate = () => act(() => ed.duplicate());
 const copyNodes = () => act(() => { if (!ed.copy()) throw new Error('select nodes to copy'); });
 const pasteNodes = (clip) => act(() => ed.paste(clip));
 const setAid = (kind) => ed.setAid(kind, ui.aids[kind]);
+const setBoxSelect = () => ed.setBoxSelect(ui.boxSelect);
 const addNode = () => act(() => ed.session.addNode(ui.addType, { at: ed.lookPoint() }));
 const addAsset = (ref) => act(() => ed.addAsset(ref));
 const frame = () => ed.frameAll(ui.selected.length > 0);
@@ -209,7 +210,8 @@ addEventListener('paste', (e) => {
   if (!nodeEdit()) return;
   let clip = null;
   const text = e.clipboardData?.getData('text/plain') ?? '';
-  try { const v = JSON.parse(text); if (isClip(v)) clip = v; } catch { /* not a clip */ }
+  // the clipboard is data: at most 8 MB is read, and only a clip that checks out whole is pasted
+  if (text.length <= 8e6) try { const v = JSON.parse(text); if (isClip(v)) clip = v; } catch { /* not a clip */ }
   // other text copied since (from another app): not ours to paste nodes over; an empty clipboard falls back to the editor's
   if (!clip && (text.trim() || !ed.clipboard)) return;
   e.preventDefault();
@@ -276,6 +278,7 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       <label class="field" title="An outline round the selection"><input id="aid-outline" v-model="ui.aids.outline" type="checkbox" aria-label="Selection outline" @change="setAid('outline')"> Outline</label>
       <label class="field" title="Handles to size the selected collider, sensor or light by dragging (⌥ grows both sides)"><input id="aid-handles" v-model="ui.aids.handles" type="checkbox" aria-label="Shape handles" @change="setAid('handles')"> Handles</label>
       <label class="field" title="What the selected camera sees, picture in picture"><input id="aid-preview" v-model="ui.aids.preview" type="checkbox" aria-label="Camera preview" @change="setAid('preview')"> Preview</label>
+      <label class="field" title="Drag on the viewport to select what lies inside a rectangle (⌘-drag does it any time)"><input id="box-select" v-model="ui.boxSelect" type="checkbox" aria-label="Box select" @change="setBoxSelect"> Box</label>
       <span class="sep" />
       <button id="export-open" type="button" :aria-pressed="ui.ex.open" aria-label="Export" :disabled="ui.mode !== 'editing'" @click="ui.ex.open = !ui.ex.open">Export</button>
       <template v-if="ui.mode === 'playing'">

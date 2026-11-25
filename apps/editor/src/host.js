@@ -367,6 +367,8 @@ export class EditorHost {
 
   /** Turn one of the viewport's aids on or off: 'outline', 'handles' or 'preview' (M5 W5). */
   setAid(kind, on) { if (kind in this.aids.show) this.aids.show[kind] = !!on; this.changed(); }
+  /** Box select on or off: a plain drag on the viewport draws the selection rectangle (⌘-drag always does). */
+  setBoxSelect(on) { this.aids.boxSelect = !!on; this.changed(); }
 
   // ---------------------------------------------------------------- duplicate, copy, paste (M5 W5)
 
@@ -1132,7 +1134,12 @@ export class EditorHost {
           if (this.previewPlaying) this.advancePreview();
           else if (!this._scrubbing && this.host.tree === this.preview?.world.tree) { this.host.render(this.host.last.alpha ?? 1, false); this.drawAngles(); }
         }
-        else { if (this.fly) this.fly.update(dt); else this.orbit.update(dt); if (this.box.visible) this.box.update(); this.host.render(1, false); this.aids.draw(); }
+        else {
+          if (this.fly) this.fly.update(dt); else this.orbit.update(dt); if (this.box.visible) this.box.update();
+          this.aids.beginFrame(); // WebGPU through the post stack: the frame and the aids reach the canvas together (viewport/composite.js)
+          try { this.host.render(1, false); } catch (err) { this.aids.abortFrame(); throw err; }
+          this.aids.draw();
+        }
         if (this.view !== 'edit' || this.session?.mode === 'playing' || this.live) this.aids.setPageShown(false);
         this.stats.renderMs = this.host.last.renderMs;
       } catch (err) { this.error = String(err?.stack ?? err); if (this.session?.mode === 'playing') this.stop(); console.error(err); }

@@ -7,7 +7,7 @@ import { m0Registry } from '@vrmxg/registry/m0';
 import { SceneTree } from '@vrmxg/core';
 import { installCameras } from '@vrmxg/camera';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
-import { shapeOf, handlesOf, dragShape, coneAngle, closestOnLine, shapeLines, SNAP } from '../src/viewport/shapes.js';
+import { shapeOf, handlesOf, dragShape, coneAngle, closestOnLine, shapeLines, SNAP, MAX, CONE_DEPTH } from '../src/viewport/shapes.js';
 import { normRect, isDrag, screenBox, rectSelect } from '../src/viewport/rect.js';
 import { layout, viewAngles, intoCamera } from '../src/viewport/cube.js';
 import { pipRect, previewPose, previewable } from '../src/viewport/preview.js';
@@ -211,4 +211,31 @@ test('the outline\'s stand-ins skin and place every vertex where the selected me
   character.visible = false; prop.visible = false;
   assert.equal(o.sync(), false);
   o.dispose();
+});
+
+test('handle edge cases: short capsules, a spot light of range 0, wild drags, rays along the axis', () => {
+  // a capsule already shorter than its two caps (the schema allows it): a radius drag outward never shrinks it, and a
+  // small height drag moves by that much, not up to the caps
+  const squat = { kind: 'capsule', radius: 0.5, height: 0.6 };
+  assert.equal(dragShape(squat, 'rx+', 0.2).props.radius, 0.5, 'held at its own radius, not cut to height / 2');
+  assert.equal(dragShape(squat, 'rx+', -0.1).props.radius, 0.4, 'it can still be made thinner');
+  near(dragShape(squat, 'y+', 0.01).props.height, 0.61, 1e-9);
+  near(dragShape(squat, 'y+', -0.2).props.height, 0.6, 1e-9);
+  // a spot light of range 0: the cone handle sits CONE_DEPTH down the cone, and a small drag changes the angle a little
+  const flat = { kind: 'spot', range: 0, angle: 30 };
+  const [r0, a0] = handlesOf(flat);
+  assert.deepEqual(r0.at, [0, 0, -0]);
+  nearAll(a0.at, [CONE_DEPTH * Math.tan(Math.PI / 6), 0, -CONE_DEPTH]);
+  const a = dragShape(flat, 'angle', 0.01).props.angle;
+  assert.ok(a > 30 && a < 31, `a 1 cm drag: ${a}°`);
+  assert.equal(dragShape(flat, 'range', 2).props.range, 2);
+  assert.ok(shapeLines(flat).length > 0);
+  // drags are clamped: a billion metres is MAX.drag, a non-number is nothing, sizes stop at MAX.length
+  assert.deepEqual(dragShape({ kind: 'box', size: [1, 1, 1] }, 'x+', 1e9).props.size, [1 + MAX.drag, 1, 1]);
+  assert.deepEqual(dragShape({ kind: 'box', size: [1, 1, 1] }, 'x+', NaN).props.size, [1, 1, 1]);
+  assert.equal(dragShape({ kind: 'point', range: 990 }, 'rx+', 50).props.range, MAX.length);
+  // a ray within a few degrees of the handle's axis gives no answer (the drag waits) rather than a huge one
+  const nearlyAlong = [Math.sin(0.01), 0, -Math.cos(0.01)];
+  assert.equal(closestOnLine([0, 0, 10], nearlyAlong, [0, 0, 0], [0, 0, 1]), null);
+  assert.notEqual(closestOnLine([0, 0, 10], [Math.sin(0.2), 0, -Math.cos(0.2)], [0, 0, 0], [0, 0, 1]), null);
 });

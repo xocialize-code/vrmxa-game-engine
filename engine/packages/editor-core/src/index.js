@@ -4,4 +4,4 @@ export { assetList, assetType, nodeTypeFor, slug, uniqueId } from './assets.js';
 export { TimelineGeometry, timecode, rowsOf, keysOf, clipLabel, snapTargets, snapFrame, SNAP_PX, CLIP_TRACKS, CHANNEL_TRACKS } from './timeline.js';
 export { SequenceCommands, newSequenceDoc } from './sequence.js';
 export { RenderQueue, stubRunner, PRESETS, JOB_STATES, DELIVERY_EXTRAS, JOB_BACKENDS, JOB_CHECKS, resolveCheck } from './queue.js';
-export { copyNodes, pasteOps, isClip, freshId, topmost, CLIP_FORMAT } from './clipboard.js'; // M5 W5
+export { copyNodes, pasteOps, isClip, freshId, topmost, refPaths, mapRefs, CLIP_FORMAT, CLIP_LIMIT } from './clipboard.js'; // M5 W5

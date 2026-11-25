@@ -11,6 +11,12 @@
 export const SNAP = { length: 0.05, angle: 1 };
 /** The smallest size, radius or range a drag leaves. */
 export const MIN = { length: 0.01, angle: 1, maxAngle: 89 };
+/** The largest size, radius or range a drag gives, and the furthest one drag moves a handle (metres). */
+export const MAX = { length: 1000, drag: 100 };
+/** A spot light's cone handle sits at least this far down the cone (a light of range 0 still has a cone to drag). */
+export const CONE_DEPTH = 1;
+/** Where a spot light's cone handle sits: down the cone at the range (CONE_DEPTH at least), out at the rim. */
+export function coneDepth(shape) { return Math.max(shape.range, CONE_DEPTH); }
 /** Physics' own defaults for a collider's unset props (engine/packages/physics/src/world.js shapeDesc). */
 export const COLLIDER_DEFAULTS = { size: [1, 1, 1], sphere: 0.5, capsule: { radius: 0.3, height: 1.8 }, cylinder: { radius: 0.5, height: 1 } };
 
@@ -59,8 +65,8 @@ export function handlesOf(shape) {
       break;
     case 'point': six(shape.range, 'r'); break;
     case 'spot': {
-      const r = shape.range * Math.tan((shape.angle * Math.PI) / 180);
-      out.push({ id: 'range', at: [0, 0, -shape.range], axis: [0, 0, -1] }, { id: 'angle', at: [r, 0, -shape.range], axis: [1, 0, 0] });
+      const depth = coneDepth(shape), r = depth * Math.tan((shape.angle * Math.PI) / 180);
+      out.push({ id: 'range', at: [0, 0, -shape.range], axis: [0, 0, -1] }, { id: 'angle', at: [r, 0, -depth], axis: [1, 0, 0] });
       break;
     }
   }
@@ -77,7 +83,8 @@ const clean = (v) => Math.round(v * 1e6) / 1e6;
  * @param {{ snap?: boolean, symmetric?: boolean }} [o]
  */
 export function dragShape(shape, id, d, { snap = false, symmetric = false } = {}) {
-  const len = (v) => clean(Math.max(snap ? SNAP.length : MIN.length, snap ? snapTo(v, SNAP.length) : v));
+  d = Number.isFinite(d) ? Math.max(-MAX.drag, Math.min(MAX.drag, d)) : 0; // a ray nearly along the axis gives wild distances
+  const len = (v) => clean(Math.min(MAX.length, Math.max(snap ? SNAP.length : MIN.length, snap ? snapTo(v, SNAP.length) : v)));
   const shift = [0, 0, 0];
   const face = (k, sign, old) => { // a face along axis k moves by d; the far face stays unless symmetric
     const nu = len(symmetric ? old + 2 * d : old + d);
@@ -94,20 +101,21 @@ export function dragShape(shape, id, d, { snap = false, symmetric = false } = {}
     case 'capsule': case 'cylinder': {
       // a capsule's height includes its two caps (physics: half-height max(0, height / 2 − radius)): it never gets
       // shorter than its two caps, nor its radius wider than half its height, so the shape always changes as dragged
+      // (a capsule already shorter than its caps, as the schema allows, stays as short as it is, never jumping up)
       const capsule = shape.kind === 'capsule';
       if (id[0] === 'y') {
-        const sign = id[1] === '+' ? 1 : -1, least = capsule ? 2 * shape.radius : 0;
+        const sign = id[1] === '+' ? 1 : -1, least = capsule ? Math.min(2 * shape.radius, shape.height) : 0;
         const height = Math.max(face(1, sign, shape.height), clean(least));
         if (!symmetric) shift[1] = clean((sign * (height - shape.height)) / 2);
         return { shape: { ...shape, height }, props: { height }, shift };
       }
-      const radius = capsule ? Math.min(len(shape.radius + d), clean(shape.height / 2)) : len(shape.radius + d);
+      const radius = capsule ? Math.min(len(shape.radius + d), clean(Math.max(shape.radius, shape.height / 2))) : len(shape.radius + d);
       return { shape: { ...shape, radius }, props: { radius }, shift };
     }
     case 'point': { const range = len(shape.range + d); return { shape: { ...shape, range }, props: { range }, shift }; }
     case 'spot': {
       if (id === 'range') { const range = len(shape.range + d); return { shape: { ...shape, range }, props: { range }, shift }; }
-      const angle = coneAngle(shape.range, shape.range * Math.tan((shape.angle * Math.PI) / 180) + d, { snap });
+      const depth = coneDepth(shape), angle = coneAngle(depth, depth * Math.tan((shape.angle * Math.PI) / 180) + d, { snap });
       return { shape: { ...shape, angle }, props: { angle }, shift };
     }
   }
@@ -129,7 +137,7 @@ export function closestOnLine(o, r, p, dir) {
   const w = [p[0] - o[0], p[1] - o[1], p[2] - o[2]];
   const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
   const b = dot(dir, r), d = dot(dir, w), e = dot(r, w), denom = 1 - b * b;
-  if (Math.abs(denom) < 1e-9) return null;
+  if (Math.abs(denom) < 1e-3) return null; // within about 2.5° of the axis: no sound answer, the drag waits for a better ray
   return (b * e - d) / denom;
 }
 
@@ -162,9 +170,9 @@ export function shapeLines(shape) {
       break;
     }
     case 'spot': {
-      const R = shape.range * Math.tan((shape.angle * Math.PI) / 180), c = [0, 0, -shape.range];
+      const depth = coneDepth(shape), R = depth * Math.tan((shape.angle * Math.PI) / 180), c = [0, 0, -depth];
       circle(out, c, X, Y, R);
-      for (const [x, y] of [[R, 0], [-R, 0], [0, R], [0, -R]]) out.push(0, 0, 0, x, y, -shape.range);
+      for (const [x, y] of [[R, 0], [-R, 0], [0, R], [0, -R]]) out.push(0, 0, 0, x, y, -depth);
       break;
     }
   }

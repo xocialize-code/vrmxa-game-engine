@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { parse, flatten } from '@vrmxg/scene';
-import { EditorSession, freshId, isClip, copyNodes } from '../src/index.js';
+import { EditorSession, freshId, isClip, copyNodes, CLIP_LIMIT } from '../src/index.js';
 
 const reg = m0Registry();
 const SAMPLE = path.join(import.meta.dirname, '../../../../content/sample');
@@ -96,8 +96,18 @@ test('Copy and Paste: into the same scene (fresh ids) and into another (asset en
   assert.deepEqual(t.doc.assets, [{ id: 'cafe-door', type: 'vrmxi', ref: 'items/cafe-door.vrmxi' }]);
   assert.equal(t.doc.connections.length, 0, 'door-1 → hana-1 is dropped: hana-1 isn\'t in this scene');
   assert.ok(t.validate().ok, t.validate().errors.join('; '));
+  // a node reference to a node the other scene lacks is dropped (the prop back to its default), and the scene stays valid
+  const [c] = t.paste(copyNodes(cafe().doc, ['cam']));
+  assert.equal(t.node(c).props.target, undefined, 'cam\'s target, mira, isn\'t in this scene');
+  assert.equal(t.node(c).props.focalLength, 30, 'its other props come along');
+  assert.ok(t.validate().ok, t.validate().errors.join('; '));
+  // a behaviour param likewise: counter-light's switchedBy names light-switch, which isn't here
+  const [l] = t.paste(copyNodes(cafe().doc, ['counter-light']));
+  assert.equal(t.node(l).behaviours[0].params?.item, undefined);
+  assert.ok(t.validate().ok, t.validate().errors.join('; '));
+  const depth = t.history().undoDepth;
   assert.throws(() => t.paste({ hello: 1 }), /nothing to paste/);
-  assert.equal(t.history().undoDepth, 1, 'a refused paste changed nothing');
+  assert.equal(t.history().undoDepth, depth, 'a refused paste changed nothing');
 });
 
 test('Paste under a chosen parent, and refused while playing', async () => {
@@ -143,4 +153,62 @@ test('a copy takes the connections its nodes send, not those sent to them; a ref
   s.doc.nodes.find((n) => n.id === 'peek').props.target = 'door-a/hinge';
   s.duplicate(['door-a']);
   assert.equal(s.node('peek-2').props.target, 'door-a-2/hinge');
+});
+
+test('a clip from the clipboard is checked whole: cycles, duplicate ids, stray parents and oversize clips are not clips', () => {
+  const s = cafe();
+  const good = s.copy(['stool-1']);
+  assert.ok(isClip(good));
+  const bad = (f) => { const c = structuredClone(good); f(c); return c; };
+  const cycle = { format: 'vrmxg-nodes', version: 1, roots: ['a'], nodes: [{ id: 'a', type: 'Node3D' }, { id: 'b', type: 'Node3D', parent: 'c' }, { id: 'c', type: 'Node3D', parent: 'b' }] };
+  const loop = { format: 'vrmxg-nodes', version: 1, roots: ['a'], nodes: [{ id: 'a', type: 'Node3D', parent: 'b' }, { id: 'b', type: 'Node3D', parent: 'a' }] };
+  for (const [why, c] of [
+    ['a parent cycle beside the root', cycle],
+    ['a root inside a cycle', loop],
+    ['a duplicate id', bad((c) => c.nodes.push({ ...c.nodes[0] }))],
+    ['a node whose parent is nowhere', bad((c) => c.nodes.push({ id: 'x', type: 'Node3D', parent: 'nowhere' }))],
+    ['a root that isn\'t a node', bad((c) => c.roots.push('ghost'))],
+    ['an id with a slash', bad((c) => { c.nodes[0].id = 'a/b'; c.roots = ['a/b']; })],
+    ['props that aren\'t an object', bad((c) => { c.nodes[0].props = 'x'; })],
+    ['a connection without a signal', bad((c) => c.connections.push({ from: 'stool-1', to: 'x', call: 'y' }))],
+    ['too many nodes', bad((c) => { for (let i = 0; i < CLIP_LIMIT; i++) c.nodes.push({ id: `n${i}`, type: 'Node3D', parent: 'stool-1' }); })],
+    ['another format', bad((c) => { c.format = 'x'; })],
+  ]) {
+    assert.equal(isClip(c), false, why);
+    assert.throws(() => s.paste(c), /nothing to paste/, why);
+  }
+  assert.equal(s.history().undoDepth, 0, 'nothing was pasted');
+});
+
+test('references nested in object props and in prefab overrides follow the copy, and are dropped where the scene lacks them', () => {
+  const s = cafe();
+  s.addNode('Node3D', { id: 'rig' });
+  s.addNode('Marker', { id: 'mark', parent: 'rig' });
+  s.addNode('VirtualCamera', { id: 'shot', parent: 'rig', props: { body: { type: 'follow', target: 'mark' }, aim: { type: 'groupFraming', targets: ['mark', 'mira', 'hana-1#head'], target: 'mark#head' }, lens: { focalLength: 35, focusTarget: 'mira' } } });
+  const [r] = s.duplicate(['rig']);
+  assert.equal(r, 'rig-2');
+  const p = s.node('shot-2').props;
+  assert.equal(p.body.target, 'mark-2', 'into the copy');
+  assert.deepEqual(p.aim.targets, ['mark-2', 'mira', 'hana-1#head'], 'inside the copy remapped, outside kept: the scene has them');
+  assert.equal(p.aim.target, 'mark-2#head');
+  assert.equal(p.lens.focusTarget, 'mira');
+  assert.equal(s.node('shot').props.body.target, 'mark', 'the original untouched');
+  // into an empty scene: what isn't there is dropped, what was copied follows
+  const t = EditorSession.empty(reg, 'other');
+  t.paste(s.copy(['rig']));
+  const q = t.node('shot-2').props;
+  assert.deepEqual([q.body.target, q.aim.targets, q.aim.target, q.lens.focusTarget, q.lens.focalLength], ['mark-2', ['mark-2'], 'mark-2#head', undefined, 35]);
+  assert.ok(t.validate().ok, t.validate().errors.join('; '));
+  // a prefab instance's override values, by the inner node's type in the prefab
+  const watcher = { format: 'vrmxs', version: 1, id: 'watcher', assets: [], nodes: [{ id: 'base', type: 'Node3D' }, { id: 'eye', type: 'Camera', parent: 'base' }], connections: [] };
+  const u = cafe();
+  u.prefabs = new Map([...prefabs, ['prefabs/watcher.vrmxs', watcher]]);
+  u.run('asset', [{ op: 'addAsset', asset: { id: 'watcher', type: 'vrmxs', ref: 'prefabs/watcher.vrmxs' } }]);
+  u.run('add', [{ op: 'add', node: { id: 'w', type: 'Instance', asset: 'watcher', parent: 'root', overrides: { eye: { props: { target: 'w/base', focalLength: 85 } } } } }, { op: 'add', node: { id: 'w2', type: 'Instance', asset: 'watcher', parent: 'root', overrides: { eye: { props: { target: 'mira' } } } } }]);
+  const [wc] = u.duplicate(['w']);
+  assert.deepEqual(u.node(wc).overrides.eye.props, { target: 'w-2/base', focalLength: 85 }, 'the copy watches its own base');
+  const v = EditorSession.empty(reg, 'third');
+  v.prefabs = u.prefabs;
+  const [w2] = v.paste(u.copy(['w2']));
+  assert.deepEqual(v.node(w2).overrides.eye.props, {}, 'mira isn\'t in that scene: the override is dropped');
 });

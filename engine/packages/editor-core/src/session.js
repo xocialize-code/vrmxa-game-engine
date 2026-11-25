@@ -307,13 +307,14 @@ export class EditorSession {
   copy(ids = this.selection) { return copyNodes(this.doc, ids); }
 
   /**
-   * Paste a clip: fresh ids, references inside it kept inside it, one undo step. Selects what was pasted. → the new roots' ids
+   * Paste a clip: fresh ids, references inside it kept inside it and references to nodes this scene lacks dropped, one
+   * undo step. Selects what was pasted. → the new roots' ids
    * @param {any} clip @param {{ parent?: string | null }} [opts] parent: where the roots go (by default each one's own
    *   parent where this document has it, else the scene's root)
    */
   paste(clip, { parent } = {}) {
     this.mustEdit('Paste');
-    const { ops, roots } = pasteOps(this.doc, this.reg, clip, { parent, defaultParent: this.defaultParent() });
+    const { ops, roots } = pasteOps(this.doc, this.reg, clip, { parent, defaultParent: this.defaultParent(), prefabs: this.prefabs });
     this.run(roots.length === 1 ? `Paste ${roots[0]}` : `Paste ${roots.length} nodes`, ops);
     this.select(roots);
     return roots;
@@ -327,7 +328,7 @@ export class EditorSession {
     this.mustEdit('Duplicate');
     const clip = copyNodes(this.doc, ids);
     if (!clip) return [];
-    const { ops, roots } = pasteOps(this.doc, this.reg, clip, { defaultParent: this.defaultParent(), after: true });
+    const { ops, roots } = pasteOps(this.doc, this.reg, clip, { defaultParent: this.defaultParent(), after: true, prefabs: this.prefabs });
     this.run(clip.roots.length === 1 ? `Duplicate ${clip.roots[0]}` : `Duplicate ${clip.roots.length} nodes`, ops);
     this.select(roots);
     return roots;

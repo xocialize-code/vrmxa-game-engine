@@ -10,6 +10,8 @@ import { parseCondition, conditionRefs } from './condition.js';
 // Optional meta (only written when given, so a prop without them describes as before): `step` and `precision` for the
 // inspector's number field (AB-T-0600), `visibleIf` and `enabledIf`, conditions over the node's other props (AB-T-0602,
 // ./condition.js).
+// An object prop whose fields name nodes says which in `meta.nodeRefs` (M5 W5): dot paths into its value, `[]` for each
+// item of a list (`['target', 'targets[]']`); a value may be "id", "id/inner" or "id#head". Copy and paste remap them.
 const OPTIONAL_META = ['step', 'precision', 'visibleIf', 'enabledIf'];
 const base = (schema, opts = {}) => ({
   schema: { ...schema, ...(opts.description ? { description: opts.description } : {}), ...(opts.default !== undefined ? { default: opts.default } : {}) },
