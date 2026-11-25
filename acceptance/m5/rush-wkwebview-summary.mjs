@@ -1,13 +1,13 @@
 // M5 W10 (AB-T-0620): rush-wkwebview.sh's rows → results/m5-rush-wkwebview.json. Each row is the game app replaying one
 // recorded session (results/m5-rush/<name>.json) in WKWebView on one backend and origin; its per-step hashes are compared
 // with the log's own, the build it played with the build the log names. Exit 1 on an error, a time-out or a difference.
-//   node acceptance/m5/rush-wkwebview-summary.mjs <wkwebview-shots.json> <results dir> <the build's folder>
+//   node acceptance/m5/rush-wkwebview-summary.mjs <wkwebview-shots.json> <results dir> <the build's folder> <runs expected>
 import fs from 'node:fs';
 import path from 'node:path';
 import { checkFolder } from '@vrmxg/bundle/node';
 import { firstDifference } from '../../apps/game/src/session.js';
 
-const [file, out, build] = process.argv.slice(2);
+const [file, out, build, expected] = process.argv.slice(2);
 const rows = JSON.parse(fs.readFileSync(file, 'utf8'));
 const folder = checkFolder(build);
 let bad = !folder.ok;
@@ -23,7 +23,7 @@ const runs = rows.map((r) => {
   bad ||= !same || !!errors.length || !!r.timedOut;
   return { origin: r.origin, case: r.case, ua: r.ua, backend: x.backend ?? null, steps: run?.steps ?? null, final: run?.final ?? null, frames: x.frames ?? null, sameAsLog: same, errors, timedOut: !!r.timedOut, png: r.png ?? null };
 });
-const want = 4 * logs.size;
+const want = Number(expected); // the runs the script asked for: a case the harness dropped is a failure, not a smaller table
 const result = {
   check: 'M5 exit check 7 (the sample game): a session recorded in the game app replays in WKWebView, drawn, on WebGPU and WebGL, over the scheme and loopback, to the per-step hashes it was played with (AB-T-0620)',
   pass: !bad && runs.length === want && runs.length > 0,

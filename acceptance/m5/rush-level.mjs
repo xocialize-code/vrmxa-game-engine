@@ -43,8 +43,16 @@ export function compare(built) {
   const { doc, game, assetRef } = split();
   const bAsset = new Map(built.assets.map((a) => [a.id, a.ref]));
   const used = new Set();
-  // how a node is recognised: a game node by its key (or id when it has none), an Area or a Dialogue by its name, an Item by its asset
-  const sig = (n, refs) => n.type === 'Item' ? `Item:${refs.get(n.asset)}` : (n.type === 'Area' || n.type === 'Dialogue') ? `${n.type}:${n.name ?? n.id}` : n.type === 'GameRules' ? 'GameRules' : `${n.type}:${n.props?.key ?? n.id}`;
+  // how a node is recognised: a game node by its key (its id when it has none), an Area by its name, an Item by its asset
+  // (never by id: the editor gives its own). A Dialogue without a name by its first line, a Checkpoint by its slot.
+  const sig = (n, refs) => {
+    if (n.type === 'Item') return `Item:${refs.get(n.asset)}`;
+    if (n.type === 'Area') return `Area:${n.name ?? ''}`;
+    if (n.type === 'Dialogue') return `Dialogue:${n.name ?? n.props?.lines?.[0]?.text ?? ''}`;
+    if (n.type === 'Checkpoint') return `Checkpoint:${n.props?.slot ?? ''}`;
+    if (n.type === 'GameRules') return 'GameRules';
+    return `${n.type}:${n.props?.key ?? n.id}`;
+  };
   const byId = new Map(), rows = [];
   for (const want of game) {
     const s = sig(want, assetRef), got = built.nodes.find((n) => !used.has(n.id) && sig(n, bAsset) === s);
@@ -65,7 +73,8 @@ export function compare(built) {
     const def = (n, k) => (k === 'key' && KEYED.has(n.type) ? n.id : REG.get(n.type)?.props?.[k]?.schema?.default);
     const prop = (n, k) => n.props?.[k] ?? def(n, k);
     const keys = new Set([...Object.keys(want.props ?? {}), ...Object.keys(got.props ?? {})]);
-    for (const k of keys) if (!eq(prop(got, k), mapIds(prop(want, k)))) diffs.push(`props.${k}`);
+    // a node reference into the game layer is mapped to the built ids; a key is a name in the game state, not a reference
+    for (const k of keys) if (!eq(prop(got, k), k === 'key' ? prop(want, k) : mapIds(prop(want, k)))) diffs.push(`props.${k}`);
     return { node: want.id, sig: s, found: true, as: got.id, same: !diffs.length, diffs, behaviours: (want.behaviours ?? []).map((b) => b.use) };
   });
   const connections = doc.connections.length, builtConnections = (built.connections ?? []).length;

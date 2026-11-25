@@ -47,12 +47,22 @@ test('it exports: every file the game uses has a licence row (the exporter\'s ch
   for (const ref of ['game/level.vrmxs', 'game/behaviours.js', 'game/animations.json', 'game/items/till.vrmxi', 'game/voice/hana-brief.wav', 'game/voice/hana-brief.timings.json', 'animations/clips/carry.vrma']) assert.ok(plan.refs.includes(ref), `${ref} goes in`);
 });
 
-test('the scripted player wins, loses on two wrong orders, and loses on time (Node)', { skip: !available('core') && 'needs vrmxa-avatar-studio beside the repository', timeout: 300000 }, async () => {
+const RUNTIME = path.join(root, 'apps/game/dist/vrmxg-runtime.json');
+const skipPlay = !available('core') ? 'needs vrmxa-avatar-studio beside the repository' : !fs.existsSync(RUNTIME) ? 'needs the game runtime: npm run build -w @vrmxg/game-app' : false;
+test('the editor scenario that builds the level is up to date with the level (acceptance/m5/rush-level-scenario.mjs)', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const out = execFileSync(process.execPath, [path.join(root, 'acceptance/m5/rush-level-scenario.mjs'), '--check'], { encoding: 'utf8' });
+  assert.match(out, /up to date/);
+  const { compare } = await import('../m5/rush-level.mjs');
+  const r = compare(parse(read('game/level.vrmxs')));
+  assert.ok(r.nodes.every((n) => n.found && n.same), 'the committed level compares as itself');
+});
+
+test('the scripted player wins, loses on two wrong orders, and loses on time (Node)', { skip: skipPlay, timeout: 300000 }, async () => {
   const { exportRush, playRush, RUSH_PLANS } = await import('../m5/rush-node.mjs');
   const dir = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-rush-test-')), 'build');
-  if (!fs.existsSync(path.join(root, 'apps/game/dist/vrmxg-runtime.json'))) return; // no game runtime built
-  await exportRush(dir);
   try {
+    await exportRush(dir);
     const win = await playRush(dir, RUSH_PLANS.win);
     assert.equal(win.decided?.result, 'won', win.trail.join('\n'));
     assert.deepEqual(win.decided.counters, { mistakes: 0, score: 50, served: 3 });

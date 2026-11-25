@@ -35,8 +35,9 @@ fresh: false
   ```steps
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=GameR
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="GameRules" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameRules" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gamerules" timeout=5000
@@ -62,24 +63,28 @@ fresh: false
   act id=prop-flags--addkey action=press
   until find("id=prop-flags-tillClosed").count == 1 timeout=5000
   until find("id=prop-flags").0.name == "flags, 7 entries"
-  act id=prop-lose-test action=focus   # a web view's select: type-ahead picks
-  pause 1500
-  keys text=any
+  act id=prop-lose-test action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="any" exact=true action=press
   until find("id=prop-lose-test").0.value == "any" timeout=5000
-  act id=prop-lose-of--add action=press
   until find("id=prop-lose-of-0").count == 1 timeout=5000
+  pause 500   # a row just made: let it settle before its "new" placeholder is replaced (typed too soon, the value lands after it)
   act id=prop-lose-of-0-key action=set_value value="timers.clock.done"
   until find("id=prop-lose-of-0-key").0.value == "timers.clock.done" timeout=5000
   act id=prop-lose-of--add action=press
   until find("id=prop-lose-of-1").count == 1 timeout=5000
+  pause 500   # a row just made: let it settle before its "new" placeholder is replaced (typed too soon, the value lands after it)
   act id=prop-lose-of-1-key action=set_value value="counters.mistakes"
   until find("id=prop-lose-of-1-key").0.value == "counters.mistakes" timeout=5000
-  act id=prop-lose-of-1-op action=focus   # a web view's select: type-ahead picks
-  pause 1500
-  keys text=ge
+  act id=prop-lose-of-1-op action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="ge" exact=true action=press
   until find("id=prop-lose-of-1-op").0.value == "ge" timeout=5000
   act id=prop-lose-of-1-value action=set_value value="2"
   until find("id=prop-lose-of-1-value").0.value == "2" timeout=5000
+  expect find("id=prop-lose-of").0.name == "lose of, 2 rows"
   expect find("id=doc-state").0.name matches " valid "   # every edit kept the scene valid
   ```
 
@@ -87,14 +92,16 @@ fresh: false
   ```steps
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=GameC
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="GameCounter" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameCounter" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gamecounter" timeout=5000
-  act id=field-parent action=focus   # a web view's select: type-ahead picks
-  pause 1500
-  keys text=gamerules
+  act id=field-parent action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="gamerules" exact=true action=press
   until find("id=field-parent").0.value == "gamerules" timeout=5000
   act id=prop-key action=set_value value="score"
   until find("id=prop-key").0.value == "score" timeout=5000
@@ -102,14 +109,16 @@ fresh: false
   until find("id=prop-label").0.value == "Score" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=GameC
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="GameCounter" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameCounter" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gamecounter-2" timeout=5000
-  act id=field-parent action=focus   # a web view's select: type-ahead picks
-  pause 1500
-  keys text=gamerules
+  act id=field-parent action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="gamerules" exact=true action=press
   until find("id=field-parent").0.value == "gamerules" timeout=5000
   act id=prop-key action=set_value value="served"
   until find("id=prop-key").0.value == "served" timeout=5000
@@ -119,14 +128,16 @@ fresh: false
   until find("id=prop-max").0.value == "3" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=GameC
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="GameCounter" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameCounter" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gamecounter-3" timeout=5000
-  act id=field-parent action=focus   # a web view's select: type-ahead picks
-  pause 1500
-  keys text=gamerules
+  act id=field-parent action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="gamerules" exact=true action=press
   until find("id=field-parent").0.value == "gamerules" timeout=5000
   act id=prop-key action=set_value value="mistakes"
   until find("id=prop-key").0.value == "mistakes" timeout=5000
@@ -134,14 +145,16 @@ fresh: false
   until find("id=prop-label").0.value == "Wrong orders" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=GameT
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="GameTimer" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameTimer" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gametimer" timeout=5000
-  act id=field-parent action=focus   # a web view's select: type-ahead picks
-  pause 1500
-  keys text=gamerules
+  act id=field-parent action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="gamerules" exact=true action=press
   until find("id=field-parent").0.value == "gamerules" timeout=5000
   act id=prop-key action=set_value value="clock"
   until find("id=prop-key").0.value == "clock" timeout=5000
@@ -152,35 +165,41 @@ fresh: false
   expect find("id=doc-state").0.name matches " valid "   # every edit kept the scene valid
   ```
 
-- [ ] Three brew timers: one made, Duplicated twice from the Edit menu, then all three selected and their seconds typed once for all (one undo step); each given its key.
+- [ ] Three brew timers: one made, Duplicated twice, then all three selected and their seconds typed once for all (one undo step); each given its key.
   ```steps
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=GameT
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="GameTimer" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameTimer" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gametimer-2" timeout=5000
-  act id=field-parent action=focus   # a web view's select: type-ahead picks
-  pause 1500
-  keys text=gamerules
+  act id=field-parent action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="gamerules" exact=true action=press
   until find("id=field-parent").0.value == "gamerules" timeout=5000
   act id=prop-autostart action=press
   until find("id=prop-autostart").0.value == "0" timeout=5000
-  menu "Edit › Duplicate" press
+  act id=duplicate action=press   # the toolbar's Duplicate (Edit › Duplicate edits text while an inspector field has focus)
   until find("id=node-gametimer-3").count == 1 timeout=5000
   expect find("id=undo").0.name == "Undo Duplicate gametimer-2"
-  menu "Edit › Duplicate" press
+  act id=duplicate action=press   # the toolbar's Duplicate (Edit › Duplicate edits text while an inspector field has focus)
   until find("id=node-gametimer-4").count == 1 timeout=5000
   expect find("id=undo").0.name == "Undo Duplicate gametimer-3"
   act id=node-gametimer-2 action=press
   until find("id=inspector-id").0.name == "Node gametimer-2"
   act id=inspector-also action=focus
-  pause 1500
-  keys text=gametimer-3
+  pause 300
+  keys down   # "Also select": its menu
+  act surface=app role=menuitem name="gametimer-3" exact=true action=press
+  pause 300
   act id=inspector-also action=focus
-  pause 1500
-  keys text=gametimer-4
+  pause 300
+  keys down   # "Also select": its menu
+  act surface=app role=menuitem name="gametimer-4" exact=true action=press
+  pause 300
   until find("id=inspector-id").0.name == "3 nodes: gametimer-2, gametimer-3, gametimer-4" timeout=5000
   act id=prop-seconds action=set_value value="2*3"   # every selected timer, one command
   until find("id=undo").0.name == "Undo Set seconds on 3 nodes" timeout=5000
@@ -204,66 +223,105 @@ fresh: false
   ```steps
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=GameG
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="GameGoal" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameGoal" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gamegoal" timeout=5000
-  act id=field-parent action=focus   # a web view's select: type-ahead picks
-  pause 1500
-  keys text=gamerules
+  act id=field-parent action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="gamerules" exact=true action=press
   until find("id=field-parent").0.value == "gamerules" timeout=5000
   act id=prop-key action=set_value value="serve"
   until find("id=prop-key").0.value == "serve" timeout=5000
   act id=prop-text action=set_value value="Serve the three regulars"
   until find("id=prop-text").0.value == "Serve the three regulars" timeout=5000
+  act id=prop-when-test action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="all" exact=true action=press
+  until find("id=prop-when-test").0.value == "all" timeout=5000
+  act id=prop-when-test action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="state" exact=true action=press
+  until find("id=prop-when-test").0.value == "state" timeout=5000
+  pause 500   # a row just made: let it settle before its "new" placeholder is replaced (typed too soon, the value lands after it)
   act id=prop-when-key action=set_value value="counters.served"
   until find("id=prop-when-key").0.value == "counters.served" timeout=5000
-  act id=prop-when-op action=focus   # a web view's select: type-ahead picks
-  pause 1500
-  keys text=ge
+  act id=prop-when-op action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="ge" exact=true action=press
   until find("id=prop-when-op").0.value == "ge" timeout=5000
   act id=prop-when-value action=set_value value="3"
   until find("id=prop-when-value").0.value == "3" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=GameG
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="GameGoal" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameGoal" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gamegoal-2" timeout=5000
-  act id=field-parent action=focus   # a web view's select: type-ahead picks
-  pause 1500
-  keys text=gamerules
+  act id=field-parent action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="gamerules" exact=true action=press
   until find("id=field-parent").0.value == "gamerules" timeout=5000
   act id=prop-key action=set_value value="close-till"
   until find("id=prop-key").0.value == "close-till" timeout=5000
   act id=prop-text action=set_value value="Close the till"
   until find("id=prop-text").0.value == "Close the till" timeout=5000
+  act id=prop-when-test action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="all" exact=true action=press
+  until find("id=prop-when-test").0.value == "all" timeout=5000
+  act id=prop-when-test action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="state" exact=true action=press
+  until find("id=prop-when-test").0.value == "state" timeout=5000
+  pause 500   # a row just made: let it settle before its "new" placeholder is replaced (typed too soon, the value lands after it)
   act id=prop-when-key action=set_value value="flags.tillClosed"
   until find("id=prop-when-key").0.value == "flags.tillClosed" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=Che
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="Checkpoint" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Checkpoint" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add checkpoint" timeout=5000
-  act id=field-parent action=focus   # a web view's select: type-ahead picks
-  pause 1500
-  keys text=gamerules
+  act id=field-parent action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="gamerules" exact=true action=press
   until find("id=field-parent").0.value == "gamerules" timeout=5000
   act id=prop-slot action=set_value value="first-order"
   until find("id=prop-slot").0.value == "first-order" timeout=5000
   act id=prop-label action=set_value value="First order served"
   until find("id=prop-label").0.value == "First order served" timeout=5000
-  act id=prop-once action=press
-  until find("id=prop-once").0.value == "1" timeout=5000
+  act id=prop-when-test action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="all" exact=true action=press
+  until find("id=prop-when-test").0.value == "all" timeout=5000
+  act id=prop-when-test action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="state" exact=true action=press
+  until find("id=prop-when-test").0.value == "state" timeout=5000
+  pause 500   # a row just made: let it settle before its "new" placeholder is replaced (typed too soon, the value lands after it)
   act id=prop-when-key action=set_value value="counters.served"
   until find("id=prop-when-key").0.value == "counters.served" timeout=5000
-  act id=prop-when-op action=focus   # a web view's select: type-ahead picks
-  pause 1500
-  keys text=ge
+  act id=prop-when-op action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="ge" exact=true action=press
   until find("id=prop-when-op").0.value == "ge" timeout=5000
   act id=prop-when-value action=set_value value="1"
   until find("id=prop-when-value").0.value == "1" timeout=5000
@@ -274,8 +332,9 @@ fresh: false
   ```steps
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=Are
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="Area" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Area" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add area" timeout=5000
@@ -285,9 +344,9 @@ fresh: false
   until find("id=prop-size-y").0.value == "2" timeout=5000
   act id=prop-size-z action=set_value value="1.8"
   until find("id=prop-size-z").0.value == "1.8" timeout=5000
-  menu "Edit › Duplicate" press
+  act id=duplicate action=press   # the toolbar's Duplicate (Edit › Duplicate edits text while an inspector field has focus)
   until find("id=node-area-2").count == 1 timeout=5000
-  menu "Edit › Duplicate" press
+  act id=duplicate action=press   # the toolbar's Duplicate (Edit › Duplicate edits text while an inspector field has focus)
   until find("id=node-area-3").count == 1 timeout=5000
   act id=inspector-select-type action=press   # "Select every Area": several nodes at once without a modifier key
   until find("id=inspector-id").0.name matches "^3 nodes: " timeout=5000
@@ -383,8 +442,9 @@ fresh: false
   ```steps
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=Dia
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="Dialogue" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Dialogue" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add dialogue" timeout=5000
@@ -392,6 +452,7 @@ fresh: false
   until find("id=prop-autostart").0.value == "1" timeout=5000
   act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 1 row" timeout=5000
+  pause 500
   act id=prop-lines-0-speaker action=set_value value="hana-1"
   until find("id=prop-lines-0-speaker").0.value == "hana-1" timeout=5000
   act id=prop-lines-0-text action=set_value value="Morning, Mira! Three regulars are due. Take their orders, bring each one what I make, and close the till before ten."
@@ -400,6 +461,7 @@ fresh: false
   until find("id=prop-lines-0-clip").0.value == "game/voice/hana-brief.wav" timeout=5000
   act id=prop-lines-0-choices--set action=press
   until find("id=prop-lines-0-choices-0").count == 1 timeout=5000
+  pause 500
   act id=prop-lines-0-choices-0-id action=set_value value="ready"
   until find("id=prop-lines-0-choices-0-id").0.value == "ready" timeout=5000
   act id=prop-lines-0-choices-0-text action=set_value value="On it!"
@@ -408,6 +470,7 @@ fresh: false
   until find("id=prop-lines-0-choices-0-to").0.value == "ready" timeout=5000
   act id=prop-lines-0-choices--add action=press
   until find("id=prop-lines-0-choices-1").count == 1 timeout=5000
+  pause 500
   act id=prop-lines-0-choices-1-id action=set_value value="coffee"
   until find("id=prop-lines-0-choices-1-id").0.value == "coffee" timeout=5000
   act id=prop-lines-0-choices-1-text action=set_value value="Coffee first?"
@@ -416,6 +479,7 @@ fresh: false
   until find("id=prop-lines-0-choices-1-to").0.value == "coffee" timeout=5000
   act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 2 rows" timeout=5000
+  pause 500
   act id=prop-lines-1-id action=set_value value="ready"
   until find("id=prop-lines-1-id").0.value == "ready" timeout=5000
   act id=prop-lines-1-speaker action=set_value value="hana-1"
@@ -428,6 +492,7 @@ fresh: false
   until find("id=prop-lines-1-next").0.value == "end" timeout=5000
   act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 3 rows" timeout=5000
+  pause 500
   act id=prop-lines-2-id action=set_value value="coffee"
   until find("id=prop-lines-2-id").0.value == "coffee" timeout=5000
   act id=prop-lines-2-speaker action=set_value value="hana-1"
@@ -443,8 +508,9 @@ fresh: false
   ```steps
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=Dia
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="Dialogue" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Dialogue" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add dialogue-2" timeout=5000
@@ -452,6 +518,7 @@ fresh: false
   until find("id=field-name").0.value == "Aoi's order" timeout=5000
   act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 1 row" timeout=5000
+  pause 500
   act id=prop-lines-0-speaker action=set_value value="aoi"
   until find("id=prop-lines-0-speaker").0.value == "aoi" timeout=5000
   act id=prop-lines-0-text action=set_value value="Morning! Something warm and milky, please. Not too strong."
@@ -460,6 +527,7 @@ fresh: false
   until find("id=prop-lines-0-clip").0.value == "game/voice/aoi-ask.wav" timeout=5000
   act id=prop-lines-0-choices--set action=press
   until find("id=prop-lines-0-choices-0").count == 1 timeout=5000
+  pause 500
   act id=prop-lines-0-choices-0-id action=set_value value="latte"
   until find("id=prop-lines-0-choices-0-id").0.value == "latte" timeout=5000
   act id=prop-lines-0-choices-0-text action=set_value value="A latte, then."
@@ -480,6 +548,7 @@ fresh: false
   until find("id=prop-lines-0-choices-0-set-right1").0.value == "1" timeout=5000
   act id=prop-lines-0-choices--add action=press
   until find("id=prop-lines-0-choices-1").count == 1 timeout=5000
+  pause 500
   act id=prop-lines-0-choices-1-id action=set_value value="espresso"
   until find("id=prop-lines-0-choices-1-id").0.value == "espresso" timeout=5000
   act id=prop-lines-0-choices-1-text action=set_value value="A double espresso?"
@@ -498,6 +567,7 @@ fresh: false
   until find("id=prop-lines-0-choices-1-set-right1").count == 1 timeout=5000
   act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 2 rows" timeout=5000
+  pause 500
   act id=prop-lines-1-id action=set_value value="right"
   until find("id=prop-lines-1-id").0.value == "right" timeout=5000
   act id=prop-lines-1-speaker action=set_value value="aoi"
@@ -510,6 +580,7 @@ fresh: false
   until find("id=prop-lines-1-next").0.value == "end" timeout=5000
   act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 3 rows" timeout=5000
+  pause 500
   act id=prop-lines-2-id action=set_value value="wrong"
   until find("id=prop-lines-2-id").0.value == "wrong" timeout=5000
   act id=prop-lines-2-speaker action=set_value value="aoi"
@@ -525,8 +596,9 @@ fresh: false
   ```steps
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=Dia
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="Dialogue" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Dialogue" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add dialogue-3" timeout=5000
@@ -534,6 +606,7 @@ fresh: false
   until find("id=field-name").0.value == "Ren's order" timeout=5000
   act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 1 row" timeout=5000
+  pause 500
   act id=prop-lines-0-speaker action=set_value value="ren"
   until find("id=prop-lines-0-speaker").0.value == "ren" timeout=5000
   act id=prop-lines-0-text action=set_value value="Hi! Something cold, please? It's already warm out."
@@ -542,6 +615,7 @@ fresh: false
   until find("id=prop-lines-0-clip").0.value == "game/voice/ren-ask.wav" timeout=5000
   act id=prop-lines-0-choices--set action=press
   until find("id=prop-lines-0-choices-0").count == 1 timeout=5000
+  pause 500
   act id=prop-lines-0-choices-0-id action=set_value value="chocolate"
   until find("id=prop-lines-0-choices-0-id").0.value == "chocolate" timeout=5000
   act id=prop-lines-0-choices-0-text action=set_value value="A hot chocolate."
@@ -560,6 +634,7 @@ fresh: false
   until find("id=prop-lines-0-choices-0-set-right2").count == 1 timeout=5000
   act id=prop-lines-0-choices--add action=press
   until find("id=prop-lines-0-choices-1").count == 1 timeout=5000
+  pause 500
   act id=prop-lines-0-choices-1-id action=set_value value="iced-tea"
   until find("id=prop-lines-0-choices-1-id").0.value == "iced-tea" timeout=5000
   act id=prop-lines-0-choices-1-text action=set_value value="An iced tea."
@@ -580,6 +655,7 @@ fresh: false
   until find("id=prop-lines-0-choices-1-set-right2").0.value == "1" timeout=5000
   act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 2 rows" timeout=5000
+  pause 500
   act id=prop-lines-1-id action=set_value value="right"
   until find("id=prop-lines-1-id").0.value == "right" timeout=5000
   act id=prop-lines-1-speaker action=set_value value="ren"
@@ -592,6 +668,7 @@ fresh: false
   until find("id=prop-lines-1-next").0.value == "end" timeout=5000
   act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 3 rows" timeout=5000
+  pause 500
   act id=prop-lines-2-id action=set_value value="wrong"
   until find("id=prop-lines-2-id").0.value == "wrong" timeout=5000
   act id=prop-lines-2-speaker action=set_value value="ren"
@@ -607,8 +684,9 @@ fresh: false
   ```steps
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
-  pause 1500
-  keys text=Dia
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="Dialogue" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Dialogue" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add dialogue-4" timeout=5000
@@ -616,6 +694,7 @@ fresh: false
   until find("id=field-name").0.value == "Yuki's order" timeout=5000
   act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 1 row" timeout=5000
+  pause 500
   act id=prop-lines-0-speaker action=set_value value="yuki"
   until find("id=prop-lines-0-speaker").0.value == "yuki" timeout=5000
   act id=prop-lines-0-text action=set_value value="Just a green tea for me, please."
@@ -624,6 +703,7 @@ fresh: false
   until find("id=prop-lines-0-clip").0.value == "game/voice/yuki-ask.wav" timeout=5000
   act id=prop-lines-0-choices--set action=press
   until find("id=prop-lines-0-choices-0").count == 1 timeout=5000
+  pause 500
   act id=prop-lines-0-choices-0-id action=set_value value="green-tea"
   until find("id=prop-lines-0-choices-0-id").0.value == "green-tea" timeout=5000
   act id=prop-lines-0-choices-0-text action=set_value value="Green tea, coming up."
@@ -644,6 +724,7 @@ fresh: false
   until find("id=prop-lines-0-choices-0-set-right3").0.value == "1" timeout=5000
   act id=prop-lines-0-choices--add action=press
   until find("id=prop-lines-0-choices-1").count == 1 timeout=5000
+  pause 500
   act id=prop-lines-0-choices-1-id action=set_value value="coffee"
   until find("id=prop-lines-0-choices-1-id").0.value == "coffee" timeout=5000
   act id=prop-lines-0-choices-1-text action=set_value value="One black coffee."
@@ -662,6 +743,7 @@ fresh: false
   until find("id=prop-lines-0-choices-1-set-right3").count == 1 timeout=5000
   act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 2 rows" timeout=5000
+  pause 500
   act id=prop-lines-1-id action=set_value value="right"
   until find("id=prop-lines-1-id").0.value == "right" timeout=5000
   act id=prop-lines-1-speaker action=set_value value="yuki"
@@ -674,6 +756,7 @@ fresh: false
   until find("id=prop-lines-1-next").0.value == "end" timeout=5000
   act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 3 rows" timeout=5000
+  pause 500
   act id=prop-lines-2-id action=set_value value="wrong"
   until find("id=prop-lines-2-id").0.value == "wrong" timeout=5000
   act id=prop-lines-2-speaker action=set_value value="yuki"

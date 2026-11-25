@@ -111,12 +111,14 @@ export class GameHost {
   /**
    * Play a recorded session back (M5 W10, `?replay=`): its log's segments one after another, each world drawn as live
    * play draws it, the input from the recording (the devices are ignored). `onDone(trace)` once every segment is played.
-   * @param {any} log @param {{ onDone?: (trace: any[]) => void }} [o]
+   * `onFail(error)` when it can't go on (a segment that won't start, a step that throws, the game ended or a save loaded
+   * from the pause menu), so a caller waiting on it is never left waiting.
+   * @param {any} log @param {{ onDone?: (trace: any[]) => void, onFail?: (error: any) => void }} [o]
    */
-  async replay(log, { onDone = null } = {}) {
+  async replay(log, { onDone = null, onFail = null } = {}) {
     return this._busy('Replaying…', async () => {
       await this.session.replay(log);
-      this._replayDone = onDone; this._replayNext = null;
+      this._replayDone = onDone; this._replayFail = onFail; this._replayNext = null;
       this.state.lastSlot = null;
       this.resume();
     });
@@ -125,13 +127,16 @@ export class GameHost {
   // a replay whose segment's frames ran out: the next segment, or the end (between frames, never inside one)
   _replayStep() {
     const r = this.session?.replaying;
-    if (!r || r.left > 0 || this._replayNext) return;
+    if (!r) { if (this._replayDone) this._replayFailed(new Error('the replay was stopped: the game ended or a save was loaded')); return; }
+    if (r.left > 0 || this._replayNext) return;
     this._replayNext = this.session.replayNext().then((more) => {
       this._replayNext = null;
-      if (!more) { this.state.playing = false; const done = this._replayDone; this._replayDone = null; done?.(this.session.trace.slice()); }
+      if (!more) { this.state.playing = false; const done = this._replayDone; this._replayDone = this._replayFail = null; done?.(this.session.trace.slice()); }
       this._changed();
-    }, (e) => { this._replayNext = null; this.state.error = String(e?.message ?? e); console.error(e); this.pause(); });
+    }, (e) => { this._replayNext = null; this.state.error = String(e?.message ?? e); console.error(e); this.pause(); this._replayFailed(e); });
   }
+
+  _replayFailed(e) { const fail = this._replayFail; this._replayDone = this._replayFail = null; fail?.(e); }
 
   /**
    * Frame times from requestAnimationFrame (M5 W10, `?stats`): presentation only. `frames` drawn while playing, the
@@ -189,6 +194,7 @@ export class GameHost {
   /** Quit to Title: the session ends and its world is freed. → the session's log */
   quitToTitle() {
     const log = this.session?.end() ?? null;
+    if (this._replayDone) this._replayFailed(new Error('the replay was stopped: Quit to Title'));
     this.render?.detach();
     this.state.playing = false; this.state.paused = false; this.state.lastSlot = null;
     this._changed();
@@ -245,6 +251,7 @@ export class GameHost {
       } catch (e) {
         this.state.error = String(e?.message ?? e); console.error(e);
         this.pause();
+        if (this._replayDone) this._replayFailed(e);
       }
       if (this.session?.step !== shown || this.session?.held !== this.state.held) { shown = this.session?.step ?? -1; this._changed(); }
     };

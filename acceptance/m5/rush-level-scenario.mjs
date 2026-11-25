@@ -9,6 +9,7 @@
 //   node acceptance/m5/rush-level-scenario.mjs [--check]
 import fs from 'node:fs';
 import path from 'node:path';
+import { m0Registry } from '@vrmxg/registry/m0';
 import { split } from './rush-level.mjs';
 
 const root = path.resolve(import.meta.dirname, '../..');
@@ -19,6 +20,8 @@ const taken = new Set(room.nodes.map((n) => n.id));
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '') || 'node';
 const uniqueId = (base) => { if (!taken.has(base)) { taken.add(base); return base; } for (let i = 2; ; i++) if (!taken.has(`${base}-${i}`)) { taken.add(`${base}-${i}`); return `${base}-${i}`; } };
 const freshId = (id) => { const base = String(id).replace(/-\d+$/, '') || 'node'; for (let i = 2; ; i++) if (!taken.has(`${base}-${i}`)) { taken.add(`${base}-${i}`); return `${base}-${i}`; } };
+const REG = m0Registry();
+const defaultOf = (type, key) => REG.get(type)?.props?.[key]?.schema?.default;
 const q = (s) => `"${String(s).replace(/"/g, '\\"')}"`;
 const num = (x) => String(Math.round(x * 1e6) / 1e6);
 
@@ -27,11 +30,15 @@ let steps = [];
 const row = (title) => { steps = []; rows.push({ title, steps }); };
 const S = (...lines) => steps.push(...lines);
 const valid = () => S('expect find("id=doc-state").0.name matches " valid "   # every edit kept the scene valid');
-const pick = (id, text, want = text) => S(`act id=${id} action=focus   # a web view's select: type-ahead picks`, 'pause 1500', `keys text=${text}`, `until find("id=${id}").0.value == ${q(want)} timeout=5000`);
+// a web view's select: AppProbe's typing reaches its type-ahead one letter at a time (it cycles through the options that
+// start with the first letter), so open its menu (Down on the focused select) and press the item by name
+const choose = (target, find, want) => S(`act ${target} action=focus`, 'pause 300', 'keys down   # opens the select\'s menu', `act surface=app role=menuitem name=${q(want)} exact=true action=press`, `until find("${find}").0.value == ${q(want)} timeout=5000`);
+const pick = (id, text, want = text) => choose(`id=${id}`, `id=${id}`, want);
 const select = (id) => S(`act id=node-${id} action=press`, `until find("id=inspector-id").0.name == "Node ${id}"`);
 const addType = (type, typed) => {
   const id = uniqueId(slug(type));
-  S('act id=file-name action=focus   # off the menu first, so focusing it again takes', 'act role=popupbutton name="Node type to add" action=focus', 'pause 1500', `keys text=${typed}`, `until find("role=popupbutton name='Node type to add'").0.value == "${type}" timeout=5000`);
+  S('act id=file-name action=focus   # off the menu first, so focusing it again takes');
+  choose('role=popupbutton name="Node type to add"', "role=popupbutton name='Node type to add'", type);
   S('act id=add-node action=press', `until find("id=undo").0.name == "Undo Add ${id}" timeout=5000`);
   return id;
 };
@@ -42,9 +49,13 @@ const tick = (id) => S(`act id=${id} action=press`, `until find("id=${id}").0.va
 const uncheck = (id) => S(`act id=${id} action=press`, `until find("id=${id}").0.value == "0" timeout=5000`);
 const position = (p) => { if (!p) return; ['x', 'y', 'z'].forEach((a, i) => number(`pos-${a}`, num(p[i]), p[i])); };
 // a condition in a struct field: its test, then its own fields
-function condition(id, c) {
+function condition(id, c, { unset = false } = {}) {
+  // an unset condition shows its test as state but has no fields yet: picking another test and state again gives it them
+  if (unset && c.test === 'state') { pick(`${id}-test`, 'al', 'all'); pick(`${id}-test`, 'st', 'state'); }
   if (c.test !== 'state') pick(`${id}-test`, c.test);
-  if (c.test === 'any' || c.test === 'all') { c.of.forEach((x, i) => { S(`act id=${id}-of--add action=press`, `until find("id=${id}-of-${i}").count == 1 timeout=5000`); condition(`${id}-of-${i}`, x); }); return; }
+  // picking any or all makes its list with one row in it: rows after the first are added
+  if (c.test === 'any' || c.test === 'all') { c.of.forEach((x, i) => { if (i) S(`act id=${id}-of--add action=press`); S(`until find("id=${id}-of-${i}").count == 1 timeout=5000`); condition(`${id}-of-${i}`, x); }); S(`expect find("id=${id}-of").0.name == "${id.replace(/^prop-/, '').replace(/-/g, ' ')} of, ${c.of.length} rows"`); return; }
+  S('pause 500   # a row just made: let it settle before its "new" placeholder is replaced (typed too soon, the value lands after it)');
   text(`${id}-key`, c.key);
   if (c.op) pick(`${id}-op`, c.op);
   if (c.value !== undefined) { if (typeof c.value === 'number') number(`${id}-value`, String(c.value), c.value); else text(`${id}-value`, c.value); }
@@ -89,7 +100,7 @@ for (const want of game.filter((n) => n.type === 'GameCounter' || (n.type === 'G
 }
 valid();
 
-row('Three brew timers: one made, Duplicated twice from the Edit menu, then all three selected and their seconds typed once for all (one undo step); each given its key.');
+row('Three brew timers: one made, Duplicated twice, then all three selected and their seconds typed once for all (one undo step); each given its key.');
 const brews = game.filter((n) => n.type === 'GameTimer' && n.id.startsWith('brew-'));
 const first = addType('GameTimer', 'GameT');
 parent(rules);
@@ -97,11 +108,11 @@ uncheck('prop-autostart');
 const brewIds = [first];
 for (let i = 1; i < brews.length; i++) {
   const copy = freshId(brewIds.at(-1));
-  S(`menu "Edit › Duplicate" press`, `until find("id=node-${copy}").count == 1 timeout=5000`, `expect find("id=undo").0.name == "Undo Duplicate ${brewIds.at(-1)}"`);
+  S(`act id=duplicate action=press   # the toolbar's Duplicate (Edit › Duplicate edits text while an inspector field has focus)`, `until find("id=node-${copy}").count == 1 timeout=5000`, `expect find("id=undo").0.name == "Undo Duplicate ${brewIds.at(-1)}"`);
   brewIds.push(copy);
 }
 select(brewIds[0]);
-for (const id of brewIds.slice(1)) { S('act id=inspector-also action=focus', 'pause 1500', `keys text=${id}`); }
+for (const id of brewIds.slice(1)) S('act id=inspector-also action=focus', 'pause 300', 'keys down   # "Also select": its menu', `act surface=app role=menuitem name=${q(id)} exact=true action=press`, 'pause 300');
 S(`until find("id=inspector-id").0.name == "${brewIds.length} nodes: ${brewIds.join(', ')}" timeout=5000`);
 S(`act id=prop-seconds action=set_value value="2*3"   # every selected timer, one command`, `until find("id=undo").0.name == "Undo Set seconds on ${brewIds.length} nodes" timeout=5000`, `expect find("id=prop-seconds").0.value == "${brews[0].props.seconds}"`);
 brews.forEach((want, i) => { ids.set(want.id, brewIds[i]); select(brewIds[i]); text('prop-key', want.id); });
@@ -114,8 +125,8 @@ for (const want of game.filter((n) => n.type === 'GameGoal' || n.type === 'Check
   ids.set(want.id, id);
   parent(rules);
   if (want.type === 'GameGoal') { text('prop-key', want.props.key ?? want.id); text('prop-text', want.props.text); }
-  else { text('prop-slot', want.props.slot); text('prop-label', want.props.label); if (want.props.once) tick('prop-once'); }
-  condition('prop-when', want.props.when);
+  else { text('prop-slot', want.props.slot); text('prop-label', want.props.label); if (want.props.once !== defaultOf('Checkpoint', 'once')) (want.props.once ? tick : uncheck)('prop-once'); }
+  condition('prop-when', want.props.when, { unset: true });
 }
 valid();
 
@@ -126,7 +137,7 @@ const area = addType('Area', 'Are');
 const size = areas[0].props.size;
 ['x', 'y', 'z'].forEach((a, i) => number(`prop-size-${a}`, num(size[i]), size[i]));
 const areaIds = [area];
-for (let i = 1; i < areas.length; i++) { const copy = freshId(areaIds.at(-1)); S(`menu "Edit › Duplicate" press`, `until find("id=node-${copy}").count == 1 timeout=5000`); areaIds.push(copy); }
+for (let i = 1; i < areas.length; i++) { const copy = freshId(areaIds.at(-1)); S(`act id=duplicate action=press   # the toolbar's Duplicate (Edit › Duplicate edits text while an inspector field has focus)`, `until find("id=node-${copy}").count == 1 timeout=5000`); areaIds.push(copy); }
 S('act id=inspector-select-type action=press   # "Select every Area": several nodes at once without a modifier key', `until find("id=inspector-id").0.name matches "^${areaIds.length} nodes: " timeout=5000`, `expect find("id=prop-size-x").0.name != "size X (mixed values)"`, `expect find("id=prop-size-z").0.value == "${num(size[2])}"`);
 areas.forEach((want, i) => { ids.set(want.id, areaIds[i]); select(areaIds[i]); text('field-name', want.name); position(want.transform.p); });
 valid();
@@ -149,10 +160,11 @@ function dialogue(want) {
   const id = addType('Dialogue', 'Dia');
   ids.set(want.id, id);
   if (want.name) text('field-name', want.name);
-  if (want.props.autostart) tick('prop-autostart');
+  if (want.props.autostart !== undefined && want.props.autostart !== (defaultOf('Dialogue', 'autostart') ?? false)) (want.props.autostart ? tick : uncheck)('prop-autostart');
   want.props.lines.forEach((l, i) => {
     const L = `prop-lines-${i}`;
     S(`act id=prop-lines--add action=press`, `until find("id=prop-lines").0.name == "lines, ${i + 1} ${i ? 'rows' : 'row'}" timeout=5000`);
+    S('pause 500');
     if (l.id) text(`${L}-id`, l.id);
     text(`${L}-speaker`, l.speaker);
     text(`${L}-text`, l.text);
@@ -162,6 +174,7 @@ function dialogue(want) {
     (l.choices ?? []).forEach((c, k) => {
       const C = `${L}-choices-${k}`;
       S(k === 0 ? `act id=${L}-choices--set action=press` : `act id=${L}-choices--add action=press`, `until find("id=${C}").count == 1 timeout=5000`);
+      S('pause 500');
       text(`${C}-id`, c.id);
       text(`${C}-text`, c.text);
       if (c.to) text(`${C}-to`, c.to);

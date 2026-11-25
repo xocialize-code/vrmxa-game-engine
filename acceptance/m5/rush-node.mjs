@@ -17,6 +17,7 @@ import { openFolder, behavioursImporter, exportToFolder } from '@vrmxg/bundle/no
 import { vrmxaCore, PATHS } from '../../engine/packages/character/test/fixtures.mjs';
 import { gameScenes, worldLoader, freeWorld } from '../../apps/game/src/world.js';
 import { createRushPlayer } from './rush-player.js';
+import { assertFreshRuntime, GAME_RUNTIME } from '../../apps/game/scripts/test-game.mjs';
 
 const here = import.meta.dirname, root = path.join(here, '../..');
 export const RUSH_PLANS = {
@@ -25,9 +26,10 @@ export const RUSH_PLANS = {
   time: { orders: ['right', 'right', 'right'], stand: true },
 };
 
-/** Export the sample game into `out` with the game app's runtime. */
+/** Export the sample game into `out` with the game app's runtime (refused when apps/game/dist is older than the checkout). */
 export async function exportRush(out) {
-  return exportToFolder({ project: path.join(root, 'content/sample'), runtime: path.join(root, 'apps/game/dist'), out, gameFile: 'game/game.json' });
+  assertFreshRuntime(GAME_RUNTIME);
+  return exportToFolder({ project: path.join(root, 'content/sample'), runtime: GAME_RUNTIME, out, gameFile: 'game/game.json' });
 }
 
 /**

@@ -271,7 +271,7 @@ test('a session played back in the app (replay, M5 W10): each segment from its s
   device.release('KeyD');
 
   // the app's loop: advance until a segment's frames run out, then the next segment, until done; no one at the keys
-  const { session: back, device: idle } = await ballSession({ hashes: true });
+  const { session: back, device: idle, store } = await ballSession({ hashes: true });
   idle.press('KeyA'); // the devices are ignored while a log plays: a held key changes nothing
   await back.replay(log);
   assert.equal(back.replaying.segment, 0);
@@ -281,6 +281,8 @@ test('a session played back in the app (replay, M5 W10): each segment from its s
     else await back.flow.settle();
   }
   assert.ok(back.replaying.done, 'every segment played');
+  assert.equal(back.dirty, false, 'a replay is nobody\'s progress: nothing to save on closing');
+  assert.deepEqual(await store.list(), [], 'and it writes nothing into the player\'s store (the ball game\'s checkpoint included)');
   assert.equal(back.trace.length, log.hashes.length);
   assert.equal(firstDifference(back.trace, log.hashes), -1, 'every step the same as when it was played');
   assert.equal(back.advance(), false, 'nothing steps once the log is played');

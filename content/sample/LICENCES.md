@@ -144,7 +144,7 @@ voice clips is written by `tools/make-game.mjs`; the clips by `tools/make-game-v
 | `game/won.vrmxs` | Xocialize original | Hana's closing lines after a win (one for a clean run, one with a mix-up), then the title as a new game |
 | `game/lost.vrmxs` | Xocialize original | Hana's closing line after a loss (out of time, or two wrong orders), then the title as a new game |
 | `game/behaviours.js` | Xocialize original | The sample's behaviours, and the game's `pressToStart` and `tableZone` |
-| `game/brains/regular.json` | Xocialize original | The regulars' behaviour tree (`vrmxg-brain`): wait, walk in, sit, wait to be served, react, sip, leave |
+| `game/brains/regular.json` | Xocialize original | The regulars' behaviour tree (`vrmxg-brain`): wait outside, walk in, sit, wait to be served, react, then stay and sip |
 | `game/items/order-*.vrmxi` | Xocialize original | The three order trays, VRMXI pickups (waiting → ready, a take verb that carries), boxes with flat colours |
 | `game/items/till.vrmxi` | Xocialize original | The till, a VRMXI switch (locked → open → closed), boxes with flat colours |
 | `game/animations.json` | Xocialize original (CC0 clips) | The sample's animation set with the carry clip (`animations/clips/carry.vrma`) and a `carry` slot added; the sample's own `animations.json` is unchanged |

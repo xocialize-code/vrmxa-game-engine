@@ -34,6 +34,7 @@ try {
     else if (!r.ok) console.error(`not the build its manifest describes: ${r.changed.length} changed, ${r.extra.length} not listed`);
     process.exit(r.ok ? 0 : 1);
   }
+  if (gameFile === '') { console.error('--game needs a game document in the project: --game game/game.json'); process.exit(2); }
   const [project, out] = rest;
   if (!project || (!out && !check)) { console.error('usage: vrmxg-export <project> <out> [--runtime <folder>] [--game <ref>] | <project> --check [--game <ref>] | --verify <build>'); process.exit(2); }
   if (!fs.existsSync(path.join(runtime, 'vrmxg-runtime.json'))) {

@@ -30,5 +30,6 @@ for s in win lose; do
   for b in webgpu webgl; do cases="$cases${cases:+;}replay=logs/$s.json&renderer=$b"; done
 done
 SPIKE_TIMEOUT=900 SPIKE_CASES="$cases" SPIKE_ORIGINS=both "$app/Contents/MacOS/CinematicsSpike" > /dev/null
-node "$here/rush-wkwebview-summary.mjs" "$tmp/wkwebview-shots.json" "$root/acceptance/results" "$build"
+n=$(printf '%s' "$cases" | tr ';' '\n' | grep -c .)
+node "$here/rush-wkwebview-summary.mjs" "$tmp/wkwebview-shots.json" "$root/acceptance/results" "$build" $((n * 2))
 rm -rf "$(dirname "$build")"

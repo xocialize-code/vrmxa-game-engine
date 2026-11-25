@@ -169,8 +169,9 @@ async function replayFromQuery(h) {
     ui.stack = [];
     do {
       for (const [i, log] of logs.entries()) {
-        const trace = await new Promise((done, fail) => { h.replay(log, { onDone: done }).catch(fail); });
-        runs.push({ log: urls[i], steps: trace.length, final: trace.at(-1) ?? null, ...(runs.length < logs.length ? { hashes: trace } : {}) });
+        const trace = await new Promise((done, fail) => { h.replay(log, { onDone: done, onFail: fail }).catch(fail); });
+        // with loop the trace is empty (no per-step hashes): a run says only which log it played
+        runs.push({ log: urls[i], ...(loop ? {} : { steps: trace.length, final: trace.at(-1) ?? null, hashes: trace }) });
         replayed.runs = runs.length;
       }
     } while (loop && (performance.now() - t0) / 1000 < loop);

@@ -92,13 +92,13 @@ export class GameSession {
   /** What step() would wait for (a scene or a save loading), or null. */
   get held() { return this.flow?.held ?? null; }
   /** Steps played since the session was last safe in the store: what closing now would lose. */
-  get unsavedSteps() { return this.flow ? Math.max(0, this.step - this.safeStep) : 0; }
+  get unsavedSteps() { return this.flow && !this.replaying ? Math.max(0, this.step - this.safeStep) : 0; } // a replay is nobody's progress
   get dirty() { return this.unsavedSteps > 0; }
   view() { return this.flow?.view() ?? null; }
 
-  _flow() {
+  _flow({ store = this._store } = {}) {
     const flow = new GameFlow({
-      load: this.loadWorld, unload: this.unload, store: this._store, seed: this.seed, stamp: this.stamp, scenes: this.scenes, prefabs: this.prefabs,
+      load: this.loadWorld, unload: this.unload, store, seed: this.seed, stamp: this.stamp, scenes: this.scenes, prefabs: this.prefabs,
       onWorld: (tree, info) => { if (info.recording) this._handed = info.recording; this.onWorld?.(tree, info); },
     });
     flow.on((e) => this.onEvent?.(e)); // a checkpoint makes progress safe through the store's write (above), not its event
@@ -146,6 +146,7 @@ export class GameSession {
       return this.step;
     }
     this._handed = null;
+    this.replaying = null; // a save loaded over a replay (from the pause menu) ends the replay: what follows is play
     const flow = this.flow, ended = this.segment;
     await flow.load(file);
     if (this.flow !== flow || this.segment !== ended) {
@@ -238,12 +239,13 @@ export class GameSession {
     try {
       if (seg.from.start !== undefined) {
         this.flow?.dispose();
+        this.flow = null; // a start that fails leaves no flow behind, not a disposed one
         this.seed = (seg.from.seed ?? 1) >>> 0;
-        const flow = this._flow();
+        const flow = this._flow({ store: null }); // a replay writes no checkpoints into the player's store
         try { await flow.start(seg.from.start); } catch (e) { flow.dispose(); throw e; }
         this.flow = flow;
       } else if (seg.from.save) {
-        this.flow ??= this._flow();
+        this.flow ??= this._flow({ store: null });
         await this.flow.load(seg.from.save);
       } else throw new Error(`segment ${r.segment} doesn't say where it starts`);
     } finally { this._changing = false; }
