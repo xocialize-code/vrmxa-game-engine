@@ -5,6 +5,10 @@
 //   index.html?renderer=webgl|webgpu|auto       the backend, over the settings' choice (the switch every app obeys)
 //   index.html?trace                            and a hash of the world after every step, in the session's log
 //                                               (window.__game.log()): a runner replays it in Node
+//   index.html?replay=<log>[,<log>…][&loop=<s>]  (M5 W10) play recorded sessions back, drawn, no menus: their per-step
+//                                               hashes and the frame times in window.__result (READY); loop: again
+//                                               until that many seconds have passed (no per-step hashes then)
+//   index.html?stats                            a frame-time readout (#frame-stats), once a second
 //   index.html?check=<take>&steps=<n>           no renderer and no menus: replays recorded input from the build in the
 //                                               entry scene with a hash after every step (window.__result, READY), as
 //                                               the minimal runtime did; how acceptance/m5/build.mjs plays a build

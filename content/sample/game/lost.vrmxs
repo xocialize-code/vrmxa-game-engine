@@ -1,0 +1,34 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "lost",
+  "assets": [
+    {"id":"cafe","type":"glb","ref":"sets/cafe.glb"},
+    {"id":"espresso","type":"glb","ref":"props/espresso-machine.glb"},
+    {"id":"hana","type":"vrmxa","ref":"characters/hana.vrmxa"},
+    {"id":"ambience","type":"audio","ref":"sounds/cafe-ambience.wav"}
+  ],
+  "nodes": [
+    {"id":"root","type":"Node3D","name":"Lost"},
+    {"id":"env","type":"Environment","parent":"root","props":{"ambientIntensity":0.5,"background":"gradient","environmentIntensity":0.35,"skyHorizonColor":"#e6ecf2","skyTopColor":"#7aa6d6"}},
+    {"id":"set","type":"Model","parent":"root","asset":"cafe"},
+    {"id":"espresso","type":"Model","parent":"root","name":"Espresso machine","asset":"espresso","transform":{"p":[1.2,1.25,-4.3]},"props":{"colliders":"none"}},
+    {"id":"sun","type":"DirectionalLight","parent":"root","transform":{"q":[-0.354,0.354,0.146,0.854]},"props":{"intensity":2.4,"shadowExtent":10,"shadowPreset":"high"}},
+    {"id":"ambience","type":"AudioPlayer","parent":"root","name":"Room tone","asset":"ambience","props":{"autoplay":true,"bus":"ambience","loop":true,"volume":0.6}},
+    {"id":"hana-1","type":"Character","parent":"root","name":"Hana","asset":"hana","transform":{"p":[0.2,0,-3.3]},"props":{"controller":"npc"}},
+    {"id":"look-at","type":"Marker","parent":"root","transform":{"p":[0.2,-0.1,-3.3]}},
+    {"id":"cam","type":"Camera","parent":"root","transform":{"p":[0.9,1.6,-0.6]},"props":{"focalLength":35,"preset":"fixed","target":"look-at"}},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"reads":{"counters":["score","served","mistakes"]}}},
+    {"id":"outro","type":"GameTimer","parent":"rules","props":{"label":"Back to the title in","seconds":12}},
+    {"id":"closing","type":"Dialogue","parent":"root","props":{"autostart":true,"lines":[{"clip":"game/voice/hana-lost-orders.wav","id":"orders","next":"end","speaker":"hana-1","text":"Two orders wrong. Let's call it a morning, and try again tomorrow.","when":{"key":"counters.mistakes","op":"ge","test":"state","value":2}},{"clip":"game/voice/hana-lost-time.wav","id":"time","speaker":"hana-1","text":"Ten o'clock, and the till is still open. We'll do better tomorrow."}]}}
+  ],
+  "connections": [
+    {"from":"outro","signal":"timeout","to":"rules","call":"changeScene","args":{"reset":true,"to":"game/title.vrmxs"}}
+  ],
+  "settings": {
+    "physics": {
+      "build": "deterministic",
+      "hz": 60
+    }
+  }
+}

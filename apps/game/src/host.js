@@ -108,6 +108,44 @@ export class GameHost {
   /** New Game: the build's entry scene, from step 0. */
   async newGame() { return this._busy('Starting…', async () => { await this.session.newGame(); this.state.lastSlot = null; this.resume(); }); }
 
+  /**
+   * Play a recorded session back (M5 W10, `?replay=`): its log's segments one after another, each world drawn as live
+   * play draws it, the input from the recording (the devices are ignored). `onDone(trace)` once every segment is played.
+   * @param {any} log @param {{ onDone?: (trace: any[]) => void }} [o]
+   */
+  async replay(log, { onDone = null } = {}) {
+    return this._busy('Replaying…', async () => {
+      await this.session.replay(log);
+      this._replayDone = onDone; this._replayNext = null;
+      this.state.lastSlot = null;
+      this.resume();
+    });
+  }
+
+  // a replay whose segment's frames ran out: the next segment, or the end (between frames, never inside one)
+  _replayStep() {
+    const r = this.session?.replaying;
+    if (!r || r.left > 0 || this._replayNext) return;
+    this._replayNext = this.session.replayNext().then((more) => {
+      this._replayNext = null;
+      if (!more) { this.state.playing = false; const done = this._replayDone; this._replayDone = null; done?.(this.session.trace.slice()); }
+      this._changed();
+    }, (e) => { this._replayNext = null; this.state.error = String(e?.message ?? e); console.error(e); this.pause(); });
+  }
+
+  /**
+   * Frame times from requestAnimationFrame (M5 W10, `?stats`): presentation only. `frames` drawn while playing, the
+   * intervals between them (ms), how many took longer than 1.5 frames at 60 Hz (25 ms), and the worst.
+   */
+  frameStats() {
+    const f = this._frames;
+    if (!f) return null;
+    const sorted = f.intervals.slice().sort((a, b) => a - b), pct = (p) => sorted.length ? sorted[Math.min(sorted.length - 1, Math.floor(p * sorted.length))] : null;
+    const sum = f.intervals.reduce((a, b) => a + b, 0);
+    return { frames: f.intervals.length, seconds: sum / 1000, fps: sum ? (f.intervals.length * 1000) / sum : null, mean: f.intervals.length ? sum / f.intervals.length : null, p50: pct(0.5), p95: pct(0.95), p99: pct(0.99), max: sorted.at(-1) ?? null, over25: f.intervals.filter((x) => x > 25).length, over34: f.intervals.filter((x) => x > 34).length, width: this.canvas.width, height: this.canvas.height };
+  }
+  keepFrameStats() { this._frames = { intervals: [], last: null }; }
+
   /** Load a slot (a player's or a checkpoint's) and play on from it. */
   async loadSlot(slot) {
     return this._busy('Loading…', async () => {
@@ -196,8 +234,13 @@ export class GameHost {
       if (resumed) this._last = null; // no catching up on the time the menu was open
       const dt = this._last === null ? 0 : Math.min(0.25, (t - this._last) / 1000);
       this._last = t;
+      if (this._frames) {
+        const f = this._frames;
+        if (step && f.last !== null) f.intervals.push(t - f.last);
+        f.last = step ? t : null;
+      }
       try {
-        if (step) this._frame(tree, dt);
+        if (step) { this._frame(tree, dt); this._replayStep(); }
         else render.render(1, false);
       } catch (e) {
         this.state.error = String(e?.message ?? e); console.error(e);

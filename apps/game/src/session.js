@@ -82,6 +82,7 @@ export class GameSession {
     /** The log of the session that ended last (Quit to title), for a runner to read. */ this.last = /** @type {any} */ (null);
     this._handed = null;
     this._changing = false; // a New Game or a load under way
+    /** A log being played back (replay), or null. */ this.replaying = /** @type {any} */ (null);
   }
 
   get active() { return !!this.flow; }
@@ -200,8 +201,57 @@ export class GameSession {
   advance() {
     const flow = this.flow;
     if (!flow) return false;
+    const r = this.replaying;
+    if (r && r.left <= 0) return false; // this segment's recorded frames are played: the host starts the next (replayNext)
     if (!flow.step()) return false;
+    if (r) r.left--;
     if (this.keepHashes) this.trace.push({ step: flow.tree.clock.step, scene: flow.scene, hash: stepHash(flow.tree) });
+    return true;
+  }
+
+  /**
+   * Play a session's log back (M5 W10): each segment's start (a new game, or its save file), then its recorded input,
+   * stepped by the host's own frame loop with everything drawn, as live play is. With `hashes` on, the trace is the
+   * hash after every step, which is the log's own `hashes` when the replay is exact. The host calls replayNext() when a
+   * segment's frames run out (`replaying.left` 0); `replaying.done` once every segment is played.
+   * @param {any} log GameSession.log() of a session played on this build
+   */
+  async replay(log) {
+    if (this._changing) throw new Error('a game is starting or loading already');
+    if (log?.format !== SESSION_FORMAT) throw new Error(`not a session log (format "${log?.format}")`);
+    if (log.version !== SESSION_VERSION) throw new Error(`session log version ${log.version}; this reads ${SESSION_VERSION}`);
+    if (this.digest && log.game?.digest !== this.digest) throw new Error(`this log was played on build ${String(log.game?.digest).slice(0, 12)}; this is build ${this.digest.slice(0, 12)}: a log replays only on the build it was played on`);
+    this.end();
+    this.trace = [];
+    this.replaying = { log, segment: -1, left: 0, done: false };
+    await this.replayNext();
+  }
+
+  /** The next segment of the log being replayed (see replay). False when there is none left. */
+  async replayNext() {
+    const r = this.replaying;
+    if (!r || r.done) return false;
+    r.segment++;
+    const seg = r.log.segments[r.segment];
+    if (!seg) { r.done = true; r.left = 0; return false; }
+    this._changing = true;
+    try {
+      if (seg.from.start !== undefined) {
+        this.flow?.dispose();
+        this.seed = (seg.from.seed ?? 1) >>> 0;
+        const flow = this._flow();
+        try { await flow.start(seg.from.start); } catch (e) { flow.dispose(); throw e; }
+        this.flow = flow;
+      } else if (seg.from.save) {
+        this.flow ??= this._flow();
+        await this.flow.load(seg.from.save);
+      } else throw new Error(`segment ${r.segment} doesn't say where it starts`);
+    } finally { this._changing = false; }
+    if (this.flow.tree.clock.step !== seg.at) throw new Error(`segment ${r.segment} starts at step ${seg.at}; the replay is at step ${this.flow.tree.clock.step}`);
+    this.current = { from: seg.from, at: seg.at, marks: [] };
+    const frames = seg.recording?.frames.length ?? 0;
+    if (frames) this.flow.tree.services.get('input').replay(seg.recording);
+    r.left = frames;
     return true;
   }
 
@@ -227,7 +277,7 @@ export class GameSession {
     const log = this.log();
     this.flow.tree.services.get('input')?.stop();
     this.flow.dispose();
-    this.flow = null; this.current = null; this.segments = []; this.safeStep = 0;
+    this.flow = null; this.current = null; this.segments = []; this.safeStep = 0; this.replaying = null;
     this.segment++; // a write still in flight belongs to a session that has gone
     this.last = log;
     return log;

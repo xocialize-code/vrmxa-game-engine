@@ -1,0 +1,48 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Just a green tea for me, please.",
+ "audio": "yuki-ask.wav",
+ "sampleRate": 24000,
+ "duration": 2.65,
+ "source": "Kokoro-82M af_sky (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Just",
+   "start": 0.375,
+   "duration": 0.275
+  },
+  {
+   "text": "a",
+   "start": 0.65,
+   "duration": 0.1125
+  },
+  {
+   "text": "green",
+   "start": 0.7625,
+   "duration": 0.375
+  },
+  {
+   "text": "tea",
+   "start": 1.1375,
+   "duration": 0.2375
+  },
+  {
+   "text": "for",
+   "start": 1.375,
+   "duration": 0.1125
+  },
+  {
+   "text": "me",
+   "start": 1.4875,
+   "duration": 0.1375
+  },
+  {
+   "text": "please",
+   "start": 1.675,
+   "duration": 0.725
+  }
+ ]
+}

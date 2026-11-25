@@ -1,0 +1,43 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Oh. Well, if you say so.",
+ "audio": "aoi-wrong.wav",
+ "sampleRate": 24000,
+ "duration": 2.35,
+ "source": "Kokoro-82M af_sky (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Oh",
+   "start": 0.4,
+   "duration": 0.25
+  },
+  {
+   "text": "Well",
+   "start": 0.725,
+   "duration": 0.2
+  },
+  {
+   "text": "if",
+   "start": 0.9625,
+   "duration": 0.1125
+  },
+  {
+   "text": "you",
+   "start": 1.075,
+   "duration": 0.1375
+  },
+  {
+   "text": "say",
+   "start": 1.2125,
+   "duration": 0.275
+  },
+  {
+   "text": "so",
+   "start": 1.4875,
+   "duration": 0.5875
+  }
+ ]
+}

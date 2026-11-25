@@ -256,3 +256,41 @@ test('a log replays only on the build it was played on', async () => {
   await assert.rejects(replaySession(log, g), /needs the digest of the build/);
   assert.equal((await replaySession(log, { ...g, digest: 'test' })).length, 5);
 });
+
+test('a session played back in the app (replay, M5 W10): each segment from its start, the recorded input, the same per-step hashes', async () => {
+  const { session, device } = await ballSession();
+  const act = person(device);
+  await session.newGame();
+  await play(session, 150, act);
+  await session.saveSlot('slot-1');
+  await play(session, 60, act);
+  await session.loadSlot('slot-1');
+  await play(session, 120, act);
+  const log = JSON.parse(JSON.stringify(session.log()));
+  session.end();
+  device.release('KeyD');
+
+  // the app's loop: advance until a segment's frames run out, then the next segment, until done; no one at the keys
+  const { session: back, device: idle } = await ballSession({ hashes: true });
+  idle.press('KeyA'); // the devices are ignored while a log plays: a held key changes nothing
+  await back.replay(log);
+  assert.equal(back.replaying.segment, 0);
+  for (let guard = 0; guard < 10000 && !back.replaying.done; guard++) {
+    if (back.advance()) continue;
+    if (back.replaying.left <= 0) await back.replayNext();
+    else await back.flow.settle();
+  }
+  assert.ok(back.replaying.done, 'every segment played');
+  assert.equal(back.trace.length, log.hashes.length);
+  assert.equal(firstDifference(back.trace, log.hashes), -1, 'every step the same as when it was played');
+  assert.equal(back.advance(), false, 'nothing steps once the log is played');
+  back.end();
+  assert.equal(back.replaying, null);
+});
+
+test('a replay refuses a log from another build, and one that isn\'t a log', async () => {
+  const { session } = await ballSession();
+  await assert.rejects(session.replay({ format: 'something' }), /not a session log/);
+  const built = new GameSession({ ...(await ballGame()), game: GAME, digest: 'build-a' });
+  await assert.rejects(built.replay({ format: SESSION_FORMAT, version: 1, game: { digest: 'build-b' }, segments: [] }), /replays only on the build it was played on/);
+});

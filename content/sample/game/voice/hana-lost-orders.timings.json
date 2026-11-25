@@ -1,0 +1,73 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Two orders wrong. Let's call it a morning, and try again tomorrow.",
+ "audio": "hana-lost-orders.wav",
+ "sampleRate": 24000,
+ "duration": 4.35,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Two",
+   "start": 0.275,
+   "duration": 0.225
+  },
+  {
+   "text": "orders",
+   "start": 0.5,
+   "duration": 0.375
+  },
+  {
+   "text": "wrong",
+   "start": 0.875,
+   "duration": 0.6
+  },
+  {
+   "text": "Let's",
+   "start": 1.6125,
+   "duration": 0.2625
+  },
+  {
+   "text": "call",
+   "start": 1.875,
+   "duration": 0.2125
+  },
+  {
+   "text": "it",
+   "start": 2.0875,
+   "duration": 0.075
+  },
+  {
+   "text": "a",
+   "start": 2.1625,
+   "duration": 0.0625
+  },
+  {
+   "text": "morning",
+   "start": 2.225,
+   "duration": 0.425
+  },
+  {
+   "text": "and",
+   "start": 2.6875,
+   "duration": 0.1125
+  },
+  {
+   "text": "try",
+   "start": 2.8,
+   "duration": 0.275
+  },
+  {
+   "text": "again",
+   "start": 3.075,
+   "duration": 0.3
+  },
+  {
+   "text": "tomorrow",
+   "start": 3.375,
+   "duration": 0.675
+  }
+ ]
+}

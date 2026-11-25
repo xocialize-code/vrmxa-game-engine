@@ -1,0 +1,43 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "That's everyone! Close the till, Mira.",
+ "audio": "hana-close.wav",
+ "sampleRate": 24000,
+ "duration": 2.85,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "That's",
+   "start": 0.275,
+   "duration": 0.3
+  },
+  {
+   "text": "everyone",
+   "start": 0.575,
+   "duration": 0.625
+  },
+  {
+   "text": "Close",
+   "start": 1.3,
+   "duration": 0.2625
+  },
+  {
+   "text": "the",
+   "start": 1.5625,
+   "duration": 0.0875
+  },
+  {
+   "text": "till",
+   "start": 1.65,
+   "duration": 0.225
+  },
+  {
+   "text": "Mira",
+   "start": 1.9125,
+   "duration": 0.6625
+  }
+ ]
+}

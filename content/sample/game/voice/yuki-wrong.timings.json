@@ -1,0 +1,48 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "That's not what I said. But fine.",
+ "audio": "yuki-wrong.wav",
+ "sampleRate": 24000,
+ "duration": 2.675,
+ "source": "Kokoro-82M af_sky (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "That's",
+   "start": 0.375,
+   "duration": 0.3
+  },
+  {
+   "text": "not",
+   "start": 0.675,
+   "duration": 0.1875
+  },
+  {
+   "text": "what",
+   "start": 0.8625,
+   "duration": 0.125
+  },
+  {
+   "text": "I",
+   "start": 0.9875,
+   "duration": 0.15
+  },
+  {
+   "text": "said",
+   "start": 1.1375,
+   "duration": 0.2875
+  },
+  {
+   "text": "But",
+   "start": 1.475,
+   "duration": 0.1875
+  },
+  {
+   "text": "fine",
+   "start": 1.6625,
+   "duration": 0.7375
+  }
+ ]
+}

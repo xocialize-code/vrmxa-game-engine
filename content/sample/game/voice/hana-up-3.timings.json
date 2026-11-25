@@ -1,0 +1,38 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Order up for table three!",
+ "audio": "hana-up-3.wav",
+ "sampleRate": 24000,
+ "duration": 2.025,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Order",
+   "start": 0.3,
+   "duration": 0.2125
+  },
+  {
+   "text": "up",
+   "start": 0.5125,
+   "duration": 0.1875
+  },
+  {
+   "text": "for",
+   "start": 0.7,
+   "duration": 0.125
+  },
+  {
+   "text": "table",
+   "start": 0.825,
+   "duration": 0.3625
+  },
+  {
+   "text": "three",
+   "start": 1.1875,
+   "duration": 0.5625
+  }
+ ]
+}

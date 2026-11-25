@@ -1,0 +1,73 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Ten o'clock, and the till is still open. We'll do better tomorrow.",
+ "audio": "hana-lost-time.wav",
+ "sampleRate": 24000,
+ "duration": 4.15,
+ "source": "Kokoro-82M af_heart (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Ten",
+   "start": 0.275,
+   "duration": 0.2
+  },
+  {
+   "text": "o'clock",
+   "start": 0.475,
+   "duration": 0.45
+  },
+  {
+   "text": "and",
+   "start": 0.975,
+   "duration": 0.1125
+  },
+  {
+   "text": "the",
+   "start": 1.0875,
+   "duration": 0.0875
+  },
+  {
+   "text": "till",
+   "start": 1.175,
+   "duration": 0.2375
+  },
+  {
+   "text": "is",
+   "start": 1.4125,
+   "duration": 0.0875
+  },
+  {
+   "text": "still",
+   "start": 1.5,
+   "duration": 0.275
+  },
+  {
+   "text": "open",
+   "start": 1.775,
+   "duration": 0.6
+  },
+  {
+   "text": "We'll",
+   "start": 2.5,
+   "duration": 0.175
+  },
+  {
+   "text": "do",
+   "start": 2.675,
+   "duration": 0.175
+  },
+  {
+   "text": "better",
+   "start": 2.85,
+   "duration": 0.325
+  },
+  {
+   "text": "tomorrow",
+   "start": 3.175,
+   "duration": 0.7
+  }
+ ]
+}

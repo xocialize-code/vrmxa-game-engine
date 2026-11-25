@@ -1,0 +1,38 @@
+{
+ "format": "vrmxg-word-timings",
+ "version": 1,
+ "text": "Hot? Hm. All right, then.",
+ "audio": "ren-wrong.wav",
+ "sampleRate": 24000,
+ "duration": 2.4,
+ "source": "Kokoro-82M af_bella (mlx-audio join_timestamps)",
+ "offset": 0.03,
+ "offsetNote": "Kokoro predicted durations run about 30 ms early against a forced aligner (AB-R-0888); the engine adds this to every word",
+ "words": [
+  {
+   "text": "Hot",
+   "start": 0.4,
+   "duration": 0.4
+  },
+  {
+   "text": "Hm",
+   "start": 0.875,
+   "duration": 0.125
+  },
+  {
+   "text": "All",
+   "start": 1.075,
+   "duration": 0.175
+  },
+  {
+   "text": "right",
+   "start": 1.25,
+   "duration": 0.2
+  },
+  {
+   "text": "then",
+   "start": 1.4875,
+   "duration": 0.6125
+  }
+ ]
+}

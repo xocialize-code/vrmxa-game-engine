@@ -1,0 +1,168 @@
+{
+ "format": "vrmxg-brain",
+ "version": 1,
+ "name": "A regular",
+ "about": "The Morning Rush (M5 W10): a regular waits outside until her time ($arrive seconds), walks in through the left leaf of the double door ($door, $inside, then $entry), sits on her own stool ($seat), watches Mira until she is served (the goal \"served\", given by the table's tableZone behaviour with params.right), smiles and cheers or looks sad, and stays, sipping now and then. She doesn't leave: one doorway for coming and going jams the double door.",
+ "plan": {
+  "arrive": 0,
+  "door": [
+   -0.62,
+   0,
+   7.6
+  ],
+  "inside": [
+   -0.62,
+   0,
+   5
+  ],
+  "entry": [
+   -0.4,
+   0,
+   4
+  ],
+  "seat": null,
+  "watch": "mira"
+ },
+ "senses": {
+  "sight": {
+   "range": 8,
+   "fov": 140,
+   "every": 6
+  }
+ },
+ "tree": {
+  "type": "sequence",
+  "children": [
+   {
+    "type": "action",
+    "do": "wait",
+    "args": {
+     "seconds": "$arrive"
+    }
+   },
+   {
+    "type": "action",
+    "do": "goTo",
+    "args": {
+     "point": "$door",
+     "timeout": 40
+    }
+   },
+   {
+    "type": "action",
+    "do": "goTo",
+    "args": {
+     "point": "$inside",
+     "timeout": 40
+    }
+   },
+   {
+    "type": "action",
+    "do": "goTo",
+    "args": {
+     "point": "$entry",
+     "timeout": 40
+    }
+   },
+   {
+    "type": "action",
+    "do": "goTo",
+    "args": {
+     "target": "$seat",
+     "within": 0.9,
+     "timeout": 40
+    }
+   },
+   {
+    "type": "action",
+    "do": "interact",
+    "args": {
+     "item": "$seat",
+     "verb": "sit"
+    }
+   },
+   {
+    "type": "action",
+    "do": "lookAt",
+    "args": {
+     "target": "$watch"
+    }
+   },
+   {
+    "type": "until",
+    "test": "goal",
+    "name": "served",
+    "timeout": 900
+   },
+   {
+    "type": "selector",
+    "children": [
+     {
+      "type": "sequence",
+      "children": [
+       {
+        "type": "condition",
+        "test": "bb",
+        "key": "goal.params.right"
+       },
+       {
+        "type": "action",
+        "do": "emote",
+        "args": {
+         "name": "happy"
+        }
+       },
+       {
+        "type": "action",
+        "do": "gesture",
+        "args": {
+         "slot": "cheer"
+        }
+       }
+      ]
+     },
+     {
+      "type": "action",
+      "do": "emote",
+      "args": {
+       "name": "sad"
+      }
+     }
+    ]
+   },
+   {
+    "type": "action",
+    "do": "lookAt",
+    "args": {}
+   },
+   {
+    "type": "set",
+    "key": "served",
+    "value": true
+   },
+   {
+    "type": "repeat",
+    "child": {
+     "type": "sequence",
+     "children": [
+      {
+       "type": "action",
+       "do": "gesture",
+       "args": {
+        "slot": "sip"
+       }
+      },
+      {
+       "type": "action",
+       "do": "wait",
+       "args": {
+        "min": 4,
+        "max": 7
+       }
+      }
+     ]
+    }
+   }
+  ]
+ }
+}
