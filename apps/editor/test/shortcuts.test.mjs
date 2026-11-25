@@ -33,9 +33,12 @@ test('the window binds its keys only through the table', () => {
   }
 });
 
-test('a panel edge\'s arrow keys stop at the edge: the timeline (a window listener) skips a key already taken', () => {
-  assert.match(read('apps/editor/src/App.vue'), /function keySplit[^\n]*e\.preventDefault\(\); e\.stopPropagation\(\)/);
-  assert.match(read('engine/packages/editor-ui/src/Timeline.vue'), /function onKey\(e\) \{[^}]*e\.defaultPrevented\) return;/);
+test('a panel edge\'s arrow keys stop at the edge; the editor leaves Delete to the timeline when the scene has no selection', () => {
+  const app = read('apps/editor/src/App.vue');
+  assert.match(app, /function keySplit[^\n]*e\.preventDefault\(\); e\.stopPropagation\(\)/);
+  assert.match(app, /if \(s\.action === 'remove' && !ui\.selected\.length\) return;/);
+  // the timeline doesn't skip a key the editor's listener (registered first) already prevented: its Delete must still act
+  assert.doesNotMatch(read('engine/packages/editor-ui/src/Timeline.vue'), /defaultPrevented/);
 });
 
 test('every menu event the page hears and every menu key of the Mac app is listed', () => {
@@ -58,7 +61,7 @@ test('every menu event the page hears and every menu key of the Mac app is liste
 
 test('the number field, timeline, splitters, lists and fly camera list their keys', () => {
   const groups = {
-    number: 'engine/packages/editor-ui/src/NumberField.vue', timeline: 'engine/packages/editor-ui/src/Timeline.vue',
+    number: 'engine/packages/editor-ui/src/NumberField.vue', timeline: 'engine/packages/editor-ui/src/timeline-ui.js',
     splitter: 'engine/packages/editor-ui/src/panels.js', list: 'engine/packages/editor-ui/src/AssetsPanel.vue',
   };
   for (const [where, file] of Object.entries(groups)) for (const k of keysIn(read(file))) assert.ok(listed(where, k), `${file} binds "${k}": list it (where '${where}')`);

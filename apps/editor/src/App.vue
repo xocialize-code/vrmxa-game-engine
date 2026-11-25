@@ -305,6 +305,7 @@ addEventListener('keydown', (e) => {
   if (!ed?.session || typing()) return;
   const s = shortcutFor(e, { inShell, flying: ed.cameraMode === 'fly', editing: ed.session.mode === 'editing', sheet: ui.shortcuts });
   if (!s) return;
+  if (s.action === 'remove' && !ui.selected.length) return; // nothing of the scene's selected: a timeline item's Delete
   e.preventDefault();
   KEY_ACTIONS[s.action]?.();
 });

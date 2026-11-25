@@ -227,6 +227,15 @@ export class EditorSession {
     if (this.path && this.reaches(ref, this.path)) throw new Error(`${ref} ${ref === this.path ? 'is this scene itself' : `uses ${this.path}, this scene`}: an instance of it here would be a cycle`);
   }
 
+  /**
+   * The prefab this scene places that leads to `ref` (itself or through the prefabs it places), or null: saving the scene
+   * as `ref` would make it an instance of itself (Save As over a prefab it uses). The save refuses it.
+   */
+  cycleIfSavedAs(ref) {
+    for (const a of this.doc.assets) if (a.type === 'vrmxs' && this.reaches(a.ref, ref)) return a.ref;
+    return null;
+  }
+
   /** Does prefab `from` lead to `to` (itself, or through the prefabs it places)? */
   reaches(from, to, seen = new Set()) {
     if (from === to) return true;

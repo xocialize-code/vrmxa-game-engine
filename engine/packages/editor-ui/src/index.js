@@ -6,7 +6,7 @@
 //   import ValueField from '@vrmxg/editor-ui/ValueField.vue';        // M5 W4: a prop's editor from its JSON Schema
 //   import AssetsPanel from '@vrmxg/editor-ui/AssetsPanel.vue';      // M5 W6: thumbnails, type filters, search, folders, typed drags
 // This entry holds what they decide, as plain functions with no Vue or DOM.
-export { TARGET_TRACKS, TRACK_TYPES, EASES, needsTarget, parseValue, itemLabel, selectionOf, isSelected, moveCommand, removeCommand, fieldCommand, trackSpec, clipSpec, keyCommand, nudgeCommand } from './timeline-ui.js';
+export { TARGET_TRACKS, TRACK_TYPES, EASES, needsTarget, parseValue, itemLabel, selectionOf, isSelected, moveCommand, removeCommand, fieldCommand, trackSpec, clipSpec, keyCommand, nudgeCommand, timelineKey } from './timeline-ui.js';
 export { storyCards, jobStatus, queueSpec, checkTicked } from './storyboard-ui.js';
 export { closingQuestion } from './closing-ui.js'; // before a window closes or the app quits (M5 W8)
 export { questions } from './questions.js'; // a window's sheet: one question at a time, and every one answered

@@ -101,3 +101,24 @@ export function nudgeCommand(row, item, dir, shift = false) {
   const by = dir * (shift ? 10 : 1);
   return moveCommand(row, item, Math.max(0, item.start + by), item.end !== undefined ? Math.max(1, item.end + by) : undefined);
 }
+
+/**
+ * What a key does on the timeline (its window-level listener), as a plain function: 'play' (Space), 'scrub' with `dir`
+ * (← → with nothing selected), 'nudge' with `dir` (← → with an item selected), 'remove' (Delete, Backspace), 'clear'
+ * (Escape), or null. It doesn't look at `defaultPrevented`: the editor's own window listener runs first and takes Delete
+ * for the scene too, and the timeline's Delete must still remove its item (the M5 W6 review); a panel edge's arrows stop
+ * at the edge instead (stopPropagation).
+ * @param {{ key: string, metaKey?: boolean, ctrlKey?: boolean }} e
+ * @param {{ active: boolean, typing?: boolean, selected?: boolean }} s active: a sequence is shown and the timeline is enabled
+ * @returns {{ action: string, dir?: -1 | 1 } | null}
+ */
+export function timelineKey(e, { active, typing = false, selected = false }) {
+  if (!active || typing || e.metaKey || e.ctrlKey) return null;
+  if (e.key === ' ') return { action: 'play' };
+  const dir = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0;
+  if (!selected) return dir ? { action: 'scrub', dir } : null;
+  if (dir) return { action: 'nudge', dir };
+  if (e.key === 'Delete' || e.key === 'Backspace') return { action: 'remove' };
+  if (e.key === 'Escape') return { action: 'clear' };
+  return null;
+}

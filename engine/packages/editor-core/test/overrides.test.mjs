@@ -212,3 +212,10 @@ test('an instance whose prefab isn\'t there lists its overrides as unresolved, a
   s.revertOverride('door');
   assert.equal(s.node('door').overrides, undefined);
 });
+
+test('Save As can\'t make a cycle: a scene placing a prefab is refused as that prefab\'s file, or one it places', () => {
+  const s = doors(); // places door.vrmxs and double-door.vrmxs (which places door.vrmxs)
+  assert.equal(s.cycleIfSavedAs('prefabs/door.vrmxs'), 'prefabs/door.vrmxs');
+  assert.equal(s.cycleIfSavedAs('prefabs/double-door.vrmxs'), 'prefabs/double-door.vrmxs');
+  assert.equal(s.cycleIfSavedAs('cafe-copy.vrmxs'), null);
+});

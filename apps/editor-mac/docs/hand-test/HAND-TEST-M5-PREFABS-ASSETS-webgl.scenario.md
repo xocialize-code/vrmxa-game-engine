@@ -285,3 +285,20 @@ fresh: false
   act id=undo action=press
   until find("id=node-double-door").count == 0
   ```
+
+- [ ] With a sequence open, ⌫ deletes the selected timeline key (the editor leaves the key to the timeline when no scene node is selected).
+  ```steps
+  wait id=open-project enabled=true timeout_ms=40000
+  act id=open-project action=press
+  until find("id=project-name").0.name == "Project project-w6-prefabs" timeout=30000
+  act id=file-name action=set_value value=sequences/cafe-order.vrmxs
+  act id=open-file action=press
+  until find("id=doc-state").0.name matches "^Scene sequences/cafe-order.vrmxs" timeout=60000
+  until find("role=button name='Key happy at 156' exact=true").count == 1 timeout=30000
+  act role=button name="Key happy at 156" exact=true action=press   # select the key on the timeline (no scene node selected)
+  keys delete
+  until find("id=undo").0.name matches "^Undo Delete key .*happy" timeout=5000   # the timeline's Delete: one undo step
+  expect find("role=button name='Key happy at 156' exact=true").count == 0
+  act id=undo action=press
+  until find("role=button name='Key happy at 156' exact=true").count == 1   # Undo puts it back
+  ```

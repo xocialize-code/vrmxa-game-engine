@@ -9,7 +9,7 @@ import { TimelineGeometry, snapTargets, snapFrame, SNAP_PX, timecode, CLIP_TRACK
 // M5 W4: frame fields that take arithmetic and arrow keys; the selection's aren't dragged, since a move re-sorts keys and
 // clips and the selection keeps its index (a drag passing a neighbour would go on with the neighbour)
 import NumberField from './NumberField.vue';
-import { TRACK_TYPES, EASES, needsTarget, itemLabel, selectionOf, isSelected, moveCommand, removeCommand, fieldCommand, trackSpec, clipSpec, keyCommand, nudgeCommand } from './timeline-ui.js';
+import { TRACK_TYPES, EASES, needsTarget, itemLabel, selectionOf, isSelected, moveCommand, removeCommand, fieldCommand, trackSpec, clipSpec, keyCommand, nudgeCommand, timelineKey } from './timeline-ui.js';
 
 const props = defineProps({ data: { type: Object, default: null }, disabled: { type: Boolean, default: false } });
 const emit = defineEmits(['cmd', 'scrub', 'transport', 'select']);
@@ -118,17 +118,15 @@ const isSel = (row, item) => isSelected(sel.value, row, item);
 // ---------------------------------------------------------------- keys: arrows nudge the selection, Delete removes it
 const typing = () => /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName ?? '');
 function onKey(e) {
-  // a key something else already took (a panel's edge moving by arrows, M5 W6) isn't the timeline's
-  if (!d.value || props.disabled || typing() || e.metaKey || e.ctrlKey || e.defaultPrevented) return;
-  if (e.key === ' ') { e.preventDefault(); emit('transport', 'play'); return; }
-  if (!sel.value) { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); emit('scrub', Math.max(0, Math.round(d.value.playhead) + (e.key === 'ArrowLeft' ? -1 : 1))); } return; }
-  const row = selectedRow.value, item = row?.items.find((i) => isSel(row, i));
-  if (!item) return;
-  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-    e.preventDefault();
-    send(nudgeCommand(row, item, e.key === 'ArrowLeft' ? -1 : 1, e.shiftKey));
-  } else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); removeSelected(); }
-  else if (e.key === 'Escape') sel.value = null;
+  const row = sel.value ? selectedRow.value : null, item = row?.items.find((i) => isSel(row, i));
+  const k = timelineKey(e, { active: !!d.value && !props.disabled, typing: typing(), selected: !!sel.value }); // timeline-ui.js
+  if (!k || (sel.value && !item && k.action !== 'play')) return;
+  if (k.action !== 'clear') e.preventDefault();
+  if (k.action === 'play') emit('transport', 'play');
+  else if (k.action === 'scrub') emit('scrub', Math.max(0, Math.round(d.value.playhead) + k.dir));
+  else if (k.action === 'nudge') send(nudgeCommand(row, item, k.dir, e.shiftKey));
+  else if (k.action === 'remove') removeSelected();
+  else sel.value = null;
 }
 
 // ---------------------------------------------------------------- commands from the forms

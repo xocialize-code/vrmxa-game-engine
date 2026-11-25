@@ -9,6 +9,9 @@
  * @param {any} session an EditorSession @param {{ write: (ref: string, text: string) => Promise<any> }} project
  */
 export async function saveScene(session, project, ref) {
+  // Save As over a prefab this scene places (or one that leads to it): the file would be an instance of itself (M5 W6)
+  const loop = session.cycleIfSavedAs?.(ref);
+  if (loop) throw new Error(`${ref} can't be this scene's file: it places ${loop}${loop === ref ? '' : `, which leads to ${ref}`}, and an instance of itself would be a cycle`);
   for (const p of session.dirtyPrefabs?.() ?? []) {
     const t = session.prefabText(p);
     await project.write(p, t);
