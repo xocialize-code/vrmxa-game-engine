@@ -2,7 +2,7 @@
 // view cube's layout and angles, the preview's corner, and the preview leaving the edit world's cameras as it found them.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { Matrix4, PerspectiveCamera, Quaternion, Vector3, Euler } from 'three';
+import { Matrix4, PerspectiveCamera, Quaternion, Vector3, Euler, Bone, Skeleton, SkinnedMesh, BufferGeometry, BufferAttribute, Uint16BufferAttribute, Float32BufferAttribute, MeshBasicMaterial, Group, Mesh } from 'three';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { SceneTree } from '@vrmxg/core';
 import { installCameras } from '@vrmxg/camera';
@@ -11,6 +11,7 @@ import { shapeOf, handlesOf, dragShape, coneAngle, closestOnLine, shapeLines, SN
 import { normRect, isDrag, screenBox, rectSelect } from '../src/viewport/rect.js';
 import { layout, viewAngles, intoCamera } from '../src/viewport/cube.js';
 import { pipRect, previewPose, previewable } from '../src/viewport/preview.js';
+import { SelectionOutline } from '../src/viewport/outline.js';
 
 const reg = m0Registry();
 const near = (a, b, e = 1e-9) => assert.ok(Math.abs(a - b) <= e, `${a} ≉ ${b}`);
@@ -175,4 +176,39 @@ test('the preview poses a rigged Camera and a VirtualCamera and leaves the edit 
   assert.equal(cam.rig.distance, null, 'the rig\'s state as it was');
   assert.equal(shot.vstate.p, null);
   void Matrix4;
+});
+
+test('the outline\'s stand-ins skin and place every vertex where the selected meshes draw it (a character placed away from the origin)', () => {
+  const g = new BufferGeometry();
+  g.setAttribute('position', new BufferAttribute(new Float32Array([0, 0, 0, 0.5, 1, 0, -0.5, 1.5, 0.2]), 3));
+  g.setAttribute('skinIndex', new Uint16BufferAttribute([0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0], 4));
+  g.setAttribute('skinWeight', new Float32BufferAttribute([1, 0, 0, 0, 0.5, 0.5, 0, 0, 1, 0, 0, 0], 4));
+  const root = new Bone(), arm = new Bone(); arm.position.set(0, 1, 0); root.add(arm);
+  const body = new SkinnedMesh(g, new MeshBasicMaterial());
+  const character = new Group();
+  character.add(body, root);
+  character.updateMatrixWorld(true);
+  body.bind(new Skeleton([root, arm])); // bound where it loaded, at the origin, as a VRM is
+  character.position.set(4.15, 0, 11.9); character.quaternion.setFromAxisAngle(new Vector3(0, 1, 0), Math.PI); // then placed at its node
+  arm.rotation.z = 0.7; root.position.x = 0.2; // and posed
+  character.updateMatrixWorld(true);
+  const prop = new Mesh(new BufferGeometry().setAttribute('position', new BufferAttribute(new Float32Array([1, 2, 3]), 3)), new MeshBasicMaterial());
+  prop.position.set(-2, 0, 1); prop.updateMatrixWorld(true);
+  const o = new SelectionOutline();
+  o.setObjects([character, prop], 1);
+  assert.equal(o.pairs.length, 2);
+  assert.ok(o.sync());
+  for (const { src, proxy } of o.pairs) {
+    assert.equal(proxy.geometry, src.geometry, 'the same geometry, shared');
+    for (let i = 0; i < src.geometry.attributes.position.count; i++) {
+      const a = new Vector3().fromBufferAttribute(src.geometry.attributes.position, i), b = a.clone();
+      if (src.isSkinnedMesh) { src.applyBoneTransform(i, a); proxy.applyBoneTransform(i, b); }
+      a.applyMatrix4(src.matrixWorld); b.applyMatrix4(proxy.matrixWorld);
+      nearAll(b.toArray(), a.toArray(), 1e-9);
+    }
+  }
+  // hidden: nothing to draw
+  character.visible = false; prop.visible = false;
+  assert.equal(o.sync(), false);
+  o.dispose();
 });

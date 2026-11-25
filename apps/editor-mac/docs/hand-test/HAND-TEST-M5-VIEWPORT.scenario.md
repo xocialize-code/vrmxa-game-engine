@@ -6,14 +6,15 @@ Run `apps/editor-mac/scripts/build.sh`, then hold the GPU lock while the scenari
 node acceptance/gpu-lock.mjs run --who viewport-hand-test -- appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M5-VIEWPORT.scenario.md
 ```
 
-The scenario uses the bundled sample (read only, nothing is saved), so it needs no fixtures. The renderer is the app's
-default (WebGPU); `VRMXG_QUERY=renderer=webgl` in the scenario's `env` runs it on WebGL. The viewport's aids are drawn
+The scenario uses the bundled sample (read only, nothing is saved), so it needs no fixtures. It runs on the app's
+default renderer (WebGPU); `HAND-TEST-M5-VIEWPORT-webgl.scenario.md`, the same rows, launches it with
+`VRMXG_QUERY=renderer=webgl`. The viewport's aids are drawn
 in a canvas, so they are read through what the page says about them: the preview's frame is a figure named after the
 camera (`#camera-preview`, "Camera preview: cam"), and each shape handle has a named mark where it is drawn
 (`#handle-x-plus`, "Handle x+ of collider") with another half a metre out along the way it drags
 (`#handle-x-plus-out`). Row 5 drags with the **real pointer** (`pointer drag`): AppProbe's background clicks don't
-drag, and nothing else reaches a handle in a canvas. It brings the app forward and moves the cursor for about a
-second; the Mac must be unlocked.
+drag, and nothing else reaches a handle in a canvas. It brings the app forward and moves the cursor for about ten
+seconds (six drags); the Mac must be unlocked.
 
 ```scenario
 app: VRMXG Editor
@@ -25,10 +26,15 @@ fresh: false
 - [ ] Edit › Duplicate copies the selected node in place with a fresh id, as one undo step.
   ```steps
   wait id=open-project enabled=true timeout_ms=40000
-  act id=scene action=pick value=cafe.vrmxs
+  act id=file-name action=set_value value=cafe.vrmxs   # WebKit's popup menus can't be picked over accessibility: open by name
+  act id=open-file action=press
   until find("id=doc-state").0.name matches "^Scene cafe.vrmxs [0-9]+ nodes saved valid" timeout=60000
+  expect find("id=renderer").0.name == "Renderer WebGPU"   # the app's default backend
   act id=node-stool-1 action=press
   until find("id=inspector-id").0.name == "Node stool-1"
+  act id=frame action=press   # frame the stool: its outline, for the by-eye row
+  pause 800
+  shot "stool-1 selected: outline and gizmo"
   menu "Edit › Duplicate" press
   until find("id=node-stool-9").count == 1 timeout=5000   # the copy: stool-1 → stool-9, the first free number
   expect find("id=undo").0.name == "Undo Duplicate stool-1"   # one undo step, named for the original
@@ -82,12 +88,16 @@ fresh: false
   partial: what the preview shows is in the screenshot, for a person to look at
   ```
 
-- [ ] A box collider resized by dragging a face: the inspector follows, and the drag is one undo step.
+- [ ] A box collider resized by dragging each face: the inspector follows, and each drag is one undo step.
   ```steps
-  act name="Node type to add" action=pick value=Collider
-  act id=add-node action=press
-  until find("id=undo").0.name == "Undo Add collider"
-  act id=view-pz action=press   # the view cube: look from the front, so the right face's handle faces the camera
+  wait id=file-name timeout_ms=40000   # the page is up (the row runs on its own too)
+  act id=file-name action=set_value value=prefabs/door.vrmxs   # the door prefab: its panel is a box collider on the hinge's body
+  act id=open-file action=press
+  until find("id=doc-state").0.name matches "^Scene prefabs/door.vrmxs [0-9]+ nodes saved valid" timeout=60000
+  act id=node-panel action=press
+  until find("id=inspector-id").0.name == "Node panel"
+  expect find("id=prop-size").0.value == "[0.88,2,0.04]"   # the panel as the prefab has it
+  act id=view-pz action=press   # the view cube: look from the front, so the x and y faces' handles face the camera
   pause 1500
   until find("id=handle-x-plus").count == 1   # the right face's handle, where it is drawn
   set X0 = find("id=pos-x").0.value
@@ -95,10 +105,67 @@ fresh: false
   set FROM = $.0.ref
   find id=handle-x-plus-out
   set TO = $.0.ref
-  pointer drag ref=${FROM} to_ref=${TO} steps=30
-  until find("id=undo").0.name == "Undo Resize collider" timeout=5000   # one undo step for the whole drag
-  expect find("id=prop-size").0.value matches "^\\[1\\.(45|5|55),1,1\\]$"   # the inspector's size: the face moved half a metre (Snap rounds to 5 cm)
+  pointer drag ref="${FROM}" to_ref="${TO}" steps=30   # the real pointer: from the x + face's handle to half a metre out
+  until find("id=undo").0.name == "Undo Resize panel" timeout=5000   # one undo step for the whole drag
+  expect find("id=prop-size").0.value matches "^\\[1\\.(35|4|45),2,0\\.04\\]$"   # the inspector's size: the face moved half a metre (Snap rounds to 5 cm)
   expect find("id=pos-x").0.value != $X0   # the collider moved right by half the change, so its left face stayed put
+  shot "the panel after the drag: handles and outline"
   menu "Edit › Undo" press
-  until find("id=prop-size").0.value == ""   # one Undo: back to the default size (unset)
+  until find("id=prop-size").0.value == "[0.88,2,0.04]"   # one Undo: back as it was
+  expect find("id=pos-x").0.value == $X0
+  find id=handle-x-minus
+  set FROM = $.0.ref
+  find id=handle-x-minus-out
+  set TO = $.0.ref
+  pointer drag ref="${FROM}" to_ref="${TO}" steps=30   # the real pointer: from the x − face's handle to half a metre out
+  until find("id=undo").0.name == "Undo Resize panel" timeout=5000   # one undo step for the whole drag
+  expect find("id=prop-size").0.value matches "^\\[1\\.(35|4|45),2,0\\.04\\]$"   # the left face, out to the left
+  expect find("id=pos-x").0.value != $X0   # moved left this time
+  menu "Edit › Undo" press
+  until find("id=prop-size").0.value == "[0.88,2,0.04]"   # one Undo: back as it was
+  expect find("id=pos-x").0.value == $X0
+  find id=handle-y-plus
+  set FROM = $.0.ref
+  find id=handle-y-plus-out
+  set TO = $.0.ref
+  pointer drag ref="${FROM}" to_ref="${TO}" steps=30   # the real pointer: from the y + face's handle to half a metre out
+  until find("id=undo").0.name == "Undo Resize panel" timeout=5000   # one undo step for the whole drag
+  expect find("id=prop-size").0.value matches "^\\[0\\.88,2\\.(45|5|55),0\\.04\\]$"   # the top face, up
+  menu "Edit › Undo" press
+  until find("id=prop-size").0.value == "[0.88,2,0.04]"   # one Undo: back as it was
+  expect find("id=pos-x").0.value == $X0
+  find id=handle-y-minus
+  set FROM = $.0.ref
+  find id=handle-y-minus-out
+  set TO = $.0.ref
+  pointer drag ref="${FROM}" to_ref="${TO}" steps=30   # the real pointer: from the y − face's handle to half a metre out
+  until find("id=undo").0.name == "Undo Resize panel" timeout=5000   # one undo step for the whole drag
+  expect find("id=prop-size").0.value matches "^\\[0\\.88,2\\.(45|5|55),0\\.04\\]$"   # the bottom face, down
+  menu "Edit › Undo" press
+  until find("id=prop-size").0.value == "[0.88,2,0.04]"   # one Undo: back as it was
+  expect find("id=pos-x").0.value == $X0
+  act id=view-px action=press   # from the right side: the front and back faces' handles are to either side now
+  pause 1500
+  until find("id=handle-z-plus").count == 1
+  find id=handle-z-plus
+  set FROM = $.0.ref
+  find id=handle-z-plus-out
+  set TO = $.0.ref
+  pointer drag ref="${FROM}" to_ref="${TO}" steps=30   # the real pointer: from the z + face's handle to half a metre out
+  until find("id=undo").0.name == "Undo Resize panel" timeout=5000   # one undo step for the whole drag
+  expect find("id=prop-size").0.value matches "^\\[0\\.88,2,0\\.(5|55|6)\\]$"   # the front face, out (the panel is 4 cm thick)
+  menu "Edit › Undo" press
+  until find("id=prop-size").0.value == "[0.88,2,0.04]"   # one Undo: back as it was
+  expect find("id=pos-x").0.value == $X0
+  find id=handle-z-minus
+  set FROM = $.0.ref
+  find id=handle-z-minus-out
+  set TO = $.0.ref
+  pointer drag ref="${FROM}" to_ref="${TO}" steps=30   # the real pointer: from the z − face's handle to half a metre out
+  until find("id=undo").0.name == "Undo Resize panel" timeout=5000   # one undo step for the whole drag
+  expect find("id=prop-size").0.value matches "^\\[0\\.88,2,0\\.(5|55|6)\\]$"   # the back face, out
+  menu "Edit › Undo" press
+  until find("id=prop-size").0.value == "[0.88,2,0.04]"   # one Undo: back as it was
+  expect find("id=pos-x").0.value == $X0
+  partial: the sphere, capsule, cylinder and light handles are dragged by the Node tests' maths only (apps/editor/test/viewport.test.mjs)
   ```

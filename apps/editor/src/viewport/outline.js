@@ -58,9 +58,8 @@ export class SelectionOutline {
   /** A mesh drawn in the edit view: it and everything above it visible. */
   static shown(o) { for (let x = o; x; x = x.parent) if (!x.visible) return false; return true; }
 
-  /** Draw the outline over what the canvas holds now, as seen by `camera`. */
-  render(renderer, camera) {
-    if (!this.pairs.length) return;
+  /** Put each stand-in where its source is drawn this frame. → whether any is shown */
+  sync() {
     let any = false;
     for (const { src, proxy } of this.pairs) {
       proxy.visible = SelectionOutline.shown(src);
@@ -72,7 +71,12 @@ export class SelectionOutline {
       // which a stand-in never runs, so it takes the source's own each frame (else the character's placement counts twice)
       if (proxy.isSkinnedMesh) { proxy.bindMode = src.bindMode; proxy.bindMatrix.copy(src.bindMatrix); proxy.bindMatrixInverse.copy(src.bindMatrixInverse); }
     }
-    if (!any) return;
+    return any;
+  }
+
+  /** Draw the outline over what the canvas holds now, as seen by `camera`. */
+  render(renderer, camera) {
+    if (!this.pairs.length || !this.sync()) return;
     renderer.getDrawingBufferSize(_size);
     const w = Math.max(1, _size.x), h = Math.max(1, _size.y);
     if (!this.target || this.target.width !== w || this.target.height !== h) {
