@@ -16,6 +16,9 @@ const KINDS = [
   ['browser', /Google Chrome( Helper( \([^)]*\))?)?$|Microsoft Edge|Brave Browser|Arc( Helper( \([^)]*\))?)?$|Firefox|plugin-container/],
   ['python', /(^|\/)python[0-9.]*$/i],
   ['mlx', /mlx/i],
+  // M5 W11: Gaea and its ML plugin workers (another project's tests ran gaea-ace-step-worker at ~80 % CPU and the GPU at
+  // up to 99 %, and the load was classed quiet)
+  ['gaea', /(^|\/)Gaea$|gaea-[a-z0-9-]+-worker$|\.gaeaplugin\/|ace-step-inproc$/i],
   ['harness', /CinematicsSpike|RepeatHarness|AcceptanceHarness/],
   ['metal-repro', /repros\/metal\/machine$|(^|\/)machine$/],
   ['node', /(^|\/)node$/],
