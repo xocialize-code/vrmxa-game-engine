@@ -55,9 +55,14 @@ let drag = null;
 // Escape during a drag reaches the window, not the field (a grip drag never focuses it): listen there while dragging,
 // first, so an app's own Escape (the timeline's: clear the selection) doesn't unmount the field mid-drag.
 function onEscape(e) { if (e.key === 'Escape' && drag?.moved) { e.preventDefault(); e.stopImmediatePropagation(); endDrag('cancel'); } }
+// a release that never arrives (Cmd-Tab mid-drag, the capture taken away) still ends the drag: the window losing focus,
+// the pointer capture lost, or a move with no button held
+const onWindowBlur = () => { if (drag) endDrag('end'); };
+function onLost() { if (drag) endDrag('end'); }
 function endDrag(kind) {
   const d = drag; drag = null;
   globalThis.removeEventListener?.('keydown', onEscape, true);
+  globalThis.removeEventListener?.('blur', onWindowBlur);
   if (d?.moved) emit('gesture', kind);
   return d;
 }
@@ -70,11 +75,13 @@ function onDown(e, fromInput) {
 }
 function onMove(e) {
   if (!drag) return;
+  if (e.buttons === 0) { endDrag('end'); return; } // released somewhere we didn't hear
   const dx = e.clientX - drag.x;
   if (!drag.moved) {
     if (Math.abs(dx) < DRAG_THRESHOLD || props.mixed) return;
     drag.moved = true;
     globalThis.addEventListener?.('keydown', onEscape, true);
+    globalThis.addEventListener?.('blur', onWindowBlur);
     emit('gesture', 'begin');
   }
   const v = dragTo(drag.start, dx, { ...opts(), shiftKey: e.shiftKey, altKey: e.altKey });
@@ -85,8 +92,8 @@ function onMove(e) {
 }
 function onUp(e) {
   if (!drag) return;
+  const d = endDrag(e.type === 'pointercancel' ? 'cancel' : 'end'); // first: releasing the capture fires lostpointercapture
   try { e.currentTarget.releasePointerCapture?.(e.pointerId); } catch { /* already released */ }
-  const d = endDrag(e.type === 'pointercancel' ? 'cancel' : 'end');
   if (d.moved) { e.preventDefault(); return; }
   if (d.fromInput) { input.value?.focus(); input.value?.select(); }
 }
@@ -108,13 +115,13 @@ function onBlur(e) { commit(e.target.value); focused.value = false; show(shown()
 
 <template>
   <span class="num" :class="{ mixed, disabled, still: !scrub }" :title="title">
-    <span class="num-grip" aria-hidden="true" @pointerdown="onDown($event, false)" @pointermove="onMove" @pointerup="onUp" @pointercancel="onUp">{{ grip }}</span>
+    <span class="num-grip" aria-hidden="true" @pointerdown="onDown($event, false)" @pointermove="onMove" @pointerup="onUp" @pointercancel="onUp" @lostpointercapture="onLost">{{ grip }}</span>
     <span v-if="fill !== null" class="num-fill" aria-hidden="true" :style="{ width: `calc((100% - 16px) * ${fill})` }" />
     <input
       :id="id" ref="input" v-model="text" class="num-input" type="text" inputmode="decimal" spellcheck="false" autocomplete="off"
       :aria-label="name" :placeholder="mixed ? '—' : placeholder" :disabled="disabled"
       @focus="onFocus" @blur="onBlur" @change="onChange" @keydown="onKey"
-      @pointerdown="onDown($event, true)" @pointermove="onMove" @pointerup="onUp" @pointercancel="onUp"
+      @pointerdown="onDown($event, true)" @pointermove="onMove" @pointerup="onUp" @pointercancel="onUp" @lostpointercapture="onLost"
     >
   </span>
 </template>

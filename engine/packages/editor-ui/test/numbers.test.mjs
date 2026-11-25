@@ -69,3 +69,18 @@ test('the review\'s cases: a fine drag stores what the field shows; an integer f
   assert.equal(constrain(0.4, { integer: true, min: 0.5 }), 1);
   assert.equal(constrain(9.7, { integer: true, max: 9.5 }), 9);
 });
+
+test('the coordinator\'s review: a huge typed number is never committed as Infinity; an ambiguous comma is refused', () => {
+  assert.equal(parseNumber('1e307', { precision: 2 }), 1e307, 'huge but finite: kept, not rounded into Infinity');
+  assert.equal(parseNumber('9e305', { precision: 3 }), 9e305);
+  assert.equal(roundTo(1e307, 2), 1e307);
+  assert.equal(parseNumber('1e308 * 10'), null, 'Infinity: not committed');
+  assert.equal(parseNumber('-1e308 * 10'), null);
+  assert.equal(dragTo(1.7e308, 1, { step: 1e308 }), 1.7e308, 'a drag past the largest number stays where it was');
+  assert.equal(stepBy(1.7e308, 1, { step: 1e308 }), 1.7e308);
+  assert.equal(evalArithmetic('1,000'), null, 'a thousand, or one? refused');
+  assert.equal(evalArithmetic('1,000.5'), null);
+  assert.equal(evalArithmetic('1,5'), 1.5);
+  assert.equal(evalArithmetic('1,25'), 1.25);
+  assert.equal(evalArithmetic('1,2345'), 1.2345);
+});

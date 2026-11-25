@@ -70,7 +70,7 @@ test('a drag is one undo step: live edits while it moves, folded on release, lab
   const before = s.text(), depth = s.history().undoDepth;
   s.beginGesture();
   assert.equal(s.gesturing, true);
-  for (const v of [2.1, 2.2, 2.35, 2.5]) s.setProp('lamp-a', 'intensity', v); // the field's live changes
+  for (const v of [2.1, 2.2, 2.35, 2.5]) s.withGesture(() => s.setProp('lamp-a', 'intensity', v)); // the field's live changes
   assert.equal(s.node('lamp-a').props.intensity, 2.5, 'live');
   assert.equal(s.endGesture(), 'Set lamp-a.intensity');
   assert.equal(s.history().undoDepth, depth + 1, 'one step for the whole drag');
@@ -81,7 +81,7 @@ test('a drag is one undo step: live edits while it moves, folded on release, lab
   assert.equal(s.node('lamp-a').props.intensity, 2.5);
   // a drag of a transform on two nodes: one step
   s.beginGesture();
-  for (const x of [1, 2, 3]) s.setTransforms([{ id: 'lamp-a', t: { p: [x, 0, 0] } }, { id: 'lamp-b', t: { p: [x, 1, 0] } }]);
+  for (const x of [1, 2, 3]) s.withGesture(() => s.setTransforms([{ id: 'lamp-a', t: { p: [x, 0, 0] } }, { id: 'lamp-b', t: { p: [x, 1, 0] } }]));
   s.endGesture();
   assert.equal(s.history().undo, 'Move 2 nodes');
   assert.equal(s.history().undoDepth, depth + 2);
@@ -91,30 +91,51 @@ test('a drag is one undo step: live edits while it moves, folded on release, lab
   assert.equal(s.node('lamp-a').transform, undefined);
 });
 
-test('a drag that ends where it began leaves no step; Escape undoes it; an edit from elsewhere in between isn\'t folded', () => {
+test('a drag that ends where it began leaves no step; Escape undoes it', () => {
   const s = lights();
+  const live = (v) => s.withGesture(() => s.setProp('lamp-a', 'intensity', v));
   const before = s.text(), depth = s.history().undoDepth;
-  s.beginGesture();
-  s.setProp('lamp-a', 'intensity', 3);
-  s.setProp('lamp-a', 'intensity', 2);
+  s.beginGesture(); live(3); live(2);
   assert.equal(s.endGesture(), null);
   assert.equal(s.text(), before);
   assert.equal(s.history().undoDepth, depth);
-  s.beginGesture();
-  s.setProp('lamp-a', 'intensity', 3);
-  s.setProp('lamp-a', 'intensity', 3.5);
+  s.beginGesture(); live(3); live(3.5);
   s.cancelGesture();
   assert.equal(s.text(), before, 'cancelled: as before the drag');
   assert.equal(s.history().undoDepth, depth);
-  s.beginGesture();
-  s.setProp('lamp-a', 'intensity', 3);
-  s.run('Rename spot', [{ op: 'set', id: 'spot', path: 'name', value: 'Spot' }]); // an MCP edit lands mid-drag
-  s.gesture.ops.splice(s.gesture.ops.indexOf(s.editor.peek().undo), 1); // (an MCP edit isn't the gesture's: it arrives outside the field's calls)
-  s.setProp('lamp-a', 'intensity', 4);
-  s.endGesture();
-  assert.equal(s.history().undoDepth, depth + 3, 'left as three steps: the agent\'s rename is never folded into the drag');
-  assert.equal(s.node('spot').name, 'Spot');
   assert.equal(s.endGesture(), null, 'no gesture open: nothing happens');
+});
+
+test('an edit from elsewhere during a drag (MCP: the session\'s run, not the gesture\'s) stays its own step', () => {
+  const s = lights();
+  const live = (v) => s.withGesture(() => s.setProp('lamp-a', 'intensity', v));
+  const depth = s.history().undoDepth;
+  s.beginGesture(); live(3);
+  s.run('Rename spot', [{ op: 'set', id: 'spot', path: 'name', value: 'Spot' }]); // what MCP's apply does, mid-drag
+  live(4);
+  assert.equal(s.endGesture(), 'Set lamp-a.intensity');
+  assert.equal(s.history().undoDepth, depth + 2, 'the rename, then the folded drag');
+  assert.deepEqual([s.node('lamp-a').props.intensity, s.node('spot').name], [4, 'Spot']);
+  s.undo();
+  assert.deepEqual([s.node('lamp-a').props.intensity, s.node('spot').name], [2, 'Spot'], 'undoing the drag keeps the agent\'s rename');
+  assert.equal(s.history().undo, 'Rename spot');
+  s.undo();
+  assert.equal(s.node('spot').name, undefined);
+  // cancelled: the agent's edit stays
+  s.beginGesture(); live(5);
+  s.run('Set lamp-b.range', [{ op: 'set', id: 'lamp-b', path: 'props.range', value: 2 }]);
+  live(6);
+  s.cancelGesture();
+  assert.deepEqual([s.node('lamp-a').props.intensity, s.node('lamp-b').props.range], [2, 2]);
+  assert.equal(s.history().undo, 'Set lamp-b.range');
+  // the agent touched the dragged node: nothing is folded, every step stays as it was
+  const d2 = s.history().undoDepth;
+  s.beginGesture(); live(3);
+  s.run('Set lamp-a.range', [{ op: 'set', id: 'lamp-a', path: 'props.range', value: 4 }]);
+  live(4);
+  s.endGesture();
+  assert.equal(s.history().undoDepth, d2 + 3);
+  assert.deepEqual([s.node('lamp-a').props.intensity, s.node('lamp-a').props.range], [4, 4]);
 });
 
 test('MCP edits are unaffected: setProp and run as before, one step each', () => {
@@ -129,11 +150,11 @@ test('MCP edits are unaffected: setProp and run as before, one step each', () =>
 test('the review\'s cases: an abandoned drag leaves nothing to redo; node references are checked on a node with no props; one axis on each node', () => {
   const s = lights();
   s.setProp('lamp-a', 'intensity', 2.5);
-  s.beginGesture(); s.setProp('lamp-a', 'intensity', 3); s.setProp('lamp-a', 'intensity', 4); s.cancelGesture();
+  s.beginGesture(); s.withGesture(() => s.setProp('lamp-a', 'intensity', 3)); s.withGesture(() => s.setProp('lamp-a', 'intensity', 4)); s.cancelGesture();
   assert.equal(s.node('lamp-a').props.intensity, 2.5);
   assert.equal(s.history().redoDepth, 0, 'Escape: Redo doesn\'t replay the cancelled drag');
   assert.equal(s.history().undo, 'Set lamp-a.intensity');
-  s.beginGesture(); s.setProp('lamp-a', 'intensity', 3); s.setProp('lamp-a', 'intensity', 2.5); s.endGesture();
+  s.beginGesture(); s.withGesture(() => s.setProp('lamp-a', 'intensity', 3)); s.withGesture(() => s.setProp('lamp-a', 'intensity', 2.5)); s.endGesture();
   assert.equal(s.history().redoDepth, 0, 'a drag back to where it began: nothing to redo either');
   s.addNode('Camera', { id: 'cam' });
   assert.equal(s.node('cam').props, undefined);
@@ -146,4 +167,19 @@ test('the review\'s cases: an abandoned drag leaves nothing to redo; node refere
   assert.equal(s.history().undo, 'Set size on 2 nodes');
   s.undo();
   assert.deepEqual([s.node('c1').props.size, s.node('c2').props.size], [[1, 2, 3], [4, 2, 3]]);
+});
+
+test('a number that isn\'t finite is refused from any source: the session, the scene editor, the validator', () => {
+  const s = lights();
+  const text = s.text();
+  assert.throws(() => s.setProp('lamp-a', 'intensity', Infinity), /not a finite number/);
+  assert.throws(() => s.setPropOn(['lamp-a', 'lamp-b'], 'range', NaN), /not a finite number/);
+  assert.throws(() => s.setTransform('lamp-a', { p: [Infinity, 0, 0] }), /not a finite number/);
+  assert.throws(() => s.run('MCP set', [{ op: 'set', id: 'lamp-a', path: 'props', value: { intensity: -Infinity } }]), /not a finite number/);
+  assert.throws(() => s.addNode('PointLight', { id: 'x', props: { range: Infinity } }), /not a finite number/);
+  assert.equal(s.text(), text, 'nothing changed');
+  const doc = structuredClone(s.doc); doc.nodes[1].props.intensity = Infinity;
+  const v = s.validator.check(doc);
+  assert.equal(v.ok, false);
+  assert.match(v.errors[0], /\/nodes\/1\/props\/intensity is not a finite number/);
 });

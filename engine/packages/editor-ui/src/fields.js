@@ -317,9 +317,13 @@ export function nextCurveKey(keys, step = 10) {
 
 // ---------------------------------------------------------------- ids and names
 
-/** An element id part from a key: letters, digits, - and _ only. */
-export const idPart = (k) => String(k).replace(/[^A-Za-z0-9_-]+/g, '-');
-/** A child's id and accessible name: lists count from 1 in names, from 0 in ids. */
+/**
+ * An element id part from a key, one to one: letters and digits kept, any other character as _<hex>_ ("a b" → a_20_b,
+ * "a-b" → a_2d_b, "_" → _5f_). It never holds "-", so "-" can join path parts and "--" begin a control's suffix
+ * (`--add`, `--up`), which no key can produce.
+ */
+export const idPart = (k) => String(k).replace(/[^A-Za-z0-9]/g, (c) => `_${c.charCodeAt(0).toString(16)}_`);
+/** A child's id and accessible name: lists count from 1 in names, from 0 in ids. A field's own controls add "--…". */
 export function childOf(parent, k) {
   return typeof k === 'number' ? { id: `${parent.id}-${k}`, label: `${parent.label} ${k + 1}` } : { id: `${parent.id}-${idPart(k)}`, label: `${parent.label} ${k}` };
 }

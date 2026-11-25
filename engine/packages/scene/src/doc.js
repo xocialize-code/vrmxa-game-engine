@@ -7,6 +7,7 @@
 import { Ajv2020 } from 'ajv/dist/2020.js';
 import { documentSchema } from './schema.js';
 import { flatten } from './instance.js';
+import { nonFinite } from './edit.js';
 
 const TOP = ['format', 'version', 'id', 'set', 'assets', 'nodes', 'connections', 'settings', 'sequence'];
 // A sequence block (M2 W1/W5): its scalars, then one shot, marker and track per line, so moving a key changes one line
@@ -68,6 +69,7 @@ export function createValidator(reg) {
    */
   function check(doc, { prefabs } = {}) {
     const errors = [], warnings = [];
+    { const p = nonFinite(doc); if (p) errors.push(`${p} is not a finite number (a file can't hold Infinity or NaN)`); } // one built in memory
     if (!validate(doc)) for (const e of validate.errors) errors.push(`${e.instancePath || '/'} ${e.message}${e.params?.allowedValues ? ` (${e.params.allowedValues.join(', ')})` : ''}`);
     const nodes = Array.isArray(doc.nodes) ? doc.nodes : [];
     const byId = new Map();

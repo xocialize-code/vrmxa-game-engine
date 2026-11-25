@@ -5,7 +5,7 @@ Run `apps/editor-mac/scripts/build.sh`, launch the app once (its sandbox contain
 then `appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M5-INSPECTOR.scenario.md`, holding
 `acceptance/gpu-lock.mjs` while it runs. Fields carry their value in AX value and their state in their accessible
 name: `intensity (mixed values)`, `lines, 2 rows`, `Hidden by their conditions: shadowPreset, shadowUpdate`. Nested
-fields have ids from their path (`#prop-lines-1-text`, `#prop-lines-1-up`). No row types JSON. A web view's `<select>`
+fields have ids from their path, a field's own controls after `--` (`#prop-lines-1-text`, `#prop-lines-1--up`). No row types JSON. A web view's `<select>`
 doesn't open its menu for AppProbe's press, so rows choose an option by focusing it and typing its first letters.
 
 ```scenario
@@ -84,25 +84,25 @@ fresh: false
   act id=node-dialogue action=press
   until find("id=inspector-id").0.name == "Node dialogue"
   expect find("id=prop-lines").0.name == "lines, 0 rows"
-  act id=prop-lines-add action=press
+  act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 1 row"
   expect find("id=undo").0.name == "Undo Set dialogue.lines"
   act id=prop-lines-0-text action=set_value value="Morning! What can I get you?"
   until find("id=prop-lines-0-text").0.value == "Morning! What can I get you?"
-  act id=prop-lines-add action=press
+  act id=prop-lines--add action=press
   until find("id=prop-lines").0.name == "lines, 2 rows"
   act id=prop-lines-1-text action=set_value value="A flat white, please."
   until find("id=prop-lines-1-text").0.value == "A flat white, please."
-  act id=prop-lines-1-up action=press   # move the second line up
+  act id=prop-lines-1--up action=press   # move the second line up
   until find("id=prop-lines-0-text").0.value == "A flat white, please."
   act id=undo action=press   # the toolbar's Undo: after set_value, Edit › Undo would undo typing in the focused field
   until find("id=prop-lines-0-text").0.value == "Morning! What can I get you?"   # one Undo puts the move back, and only the move
   expect find("id=prop-lines-1-text").0.value == "A flat white, please."
-  act id=prop-lines-0-choices-set action=press   # a nested list in a row: the first line offers a choice
+  act id=prop-lines-0-choices--set action=press   # a nested list in a row: the first line offers a choice
   until find("id=prop-lines-0-choices-0-text").count == 1
   act id=prop-lines-0-choices-0-text action=set_value value="Coffee, please"
   until find("id=prop-lines-0-choices-0-text").0.value == "Coffee, please"
-  act id=prop-lines-1-remove action=press
+  act id=prop-lines-1--remove action=press
   until find("id=prop-lines").0.name == "lines, 1 row"
   act id=undo action=press   # the toolbar's Undo: after set_value, Edit › Undo would undo typing in the focused field
   until find("id=prop-lines").0.name == "lines, 2 rows"   # the removed row back, as it was

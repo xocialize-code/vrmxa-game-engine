@@ -11,14 +11,18 @@ export const DRAG_THRESHOLD = 3;
 
 /**
  * Evaluate typed arithmetic: numbers, + - * / %, unary minus, parentheses ("1.5 * 2 + 0.25", "90/2", "-(3 - 1)").
- * A comma alone is the decimal point ("1,5"). → the value, or null when the text isn't arithmetic or isn't finite.
+ * A comma is the decimal point when there is no "." ("1,5"); one followed by exactly three digits is refused as
+ * ambiguous ("1,000": a thousand, or one?). → the value, or null when the text isn't arithmetic or isn't finite.
  * @param {string} text
  */
 export function evalArithmetic(text) {
   if (typeof text !== 'string') return null;
   let s = text.trim();
   if (!s) return null;
-  if (!s.includes('.')) s = s.replace(/,/g, '.');
+  if (s.includes(',')) {
+    if (s.includes('.') || /,\d{3}(?!\d)/.test(s)) return null;
+    s = s.replace(/,/g, '.');
+  }
   const toks = [];
   const re = /\s*(?:(\d+(?:\.\d*)?(?:e[+-]?\d+)?|\.\d+(?:e[+-]?\d+)?)|([-+*/%()]))/iy;
   let at = 0;
@@ -53,8 +57,11 @@ export function evalArithmetic(text) {
 /** Round to `digits` decimals, without -0. */
 export function roundTo(v, digits) {
   if (digits === undefined || digits === null) return v;
+  if (!Number.isFinite(v)) return v;
   const k = Math.pow(10, Math.max(0, Math.min(12, digits)));
-  const r = Math.round(v * k) / k;
+  const scaled = v * k;
+  if (!Number.isFinite(scaled) || Math.abs(scaled) >= 9007199254740992) return v; // too large to have decimals left to round
+  const r = Math.round(scaled) / k;
   return Object.is(r, -0) ? 0 : r;
 }
 
@@ -72,12 +79,15 @@ export function constrain(v, { min, max, integer = false, precision } = {}) {
 }
 
 /**
- * Typed text → the value to commit, or null to keep the old one (not a number, not finite).
+ * Typed text → the value to commit, or null to keep the old one (not a number, not finite, before or after it is
+ * constrained: a file can't hold Infinity).
  * @param {string} text @param {{ min?: number, max?: number, integer?: boolean, precision?: number }} [o]
  */
 export function parseNumber(text, o = {}) {
   const v = evalArithmetic(text);
-  return v === null ? null : constrain(v, o);
+  if (v === null) return null;
+  const c = constrain(v, o);
+  return Number.isFinite(c) ? c : null;
 }
 
 /** The step's multiplier for the keys held: Shift fine (×0.1), Alt coarse (×10). */
@@ -90,7 +100,8 @@ export const stepMultiplier = ({ shiftKey = false, altKey = false } = {}) => (sh
 export function stepBy(v, dir, o = {}) {
   // a fine step below what the field shows still moves it: at least one unit of its last decimal
   const by = Math.max((o.step ?? 1) * stepMultiplier(o), o.precision !== undefined ? Math.pow(10, -o.precision) : 0);
-  return constrain((v ?? 0) + dir * by, { ...o, precision: o.precision ?? decimals(by) });
+  const next = constrain((v ?? 0) + dir * by, { ...o, precision: o.precision ?? decimals(by) });
+  return Number.isFinite(next) ? next : v ?? 0; // past the largest number: stays where it was
 }
 
 /**
@@ -99,7 +110,8 @@ export function stepBy(v, dir, o = {}) {
  */
 export function dragTo(start, dx, o = {}) {
   const step = o.step ?? 1;
-  return constrain((start ?? 0) + dx * step * stepMultiplier(o), { ...o, precision: o.precision ?? decimals(step * stepMultiplier(o)) });
+  const next = constrain((start ?? 0) + dx * step * stepMultiplier(o), { ...o, precision: o.precision ?? decimals(step * stepMultiplier(o)) });
+  return Number.isFinite(next) ? next : start ?? 0;
 }
 
 /** How many decimals a step has (0.05 → 2): a drag lands on its steps when the field gives no precision. A field's

@@ -12,7 +12,7 @@ import NumberField from './NumberField.vue';
 import { TRACK_TYPES, EASES, needsTarget, itemLabel, selectionOf, isSelected, moveCommand, removeCommand, fieldCommand, trackSpec, clipSpec, keyCommand, nudgeCommand } from './timeline-ui.js';
 
 const props = defineProps({ data: { type: Object, default: null }, disabled: { type: Boolean, default: false } });
-const emit = defineEmits(['cmd', 'scrub', 'transport', 'select', 'gesture']); // gesture: a frame field's drag (M5 W4), one undo step
+const emit = defineEmits(['cmd', 'scrub', 'transport', 'select']);
 
 const HEAD = 190, ROW = 30, RULER = 26;
 const lanes = ref(null);

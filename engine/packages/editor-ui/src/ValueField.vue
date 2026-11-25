@@ -160,7 +160,7 @@ const setKey = (i, j, v) => set(setIn(keys.value, [i, j], v));
 
   <!-- a value of one of several types -->
   <span v-else-if="widget === 'scalar'" class="vf-scalar">
-    <select :id="`${id}-kind`" :value="scalarKind" :aria-label="`${label} kind`" :disabled="disabled" @change="setKind($event.target.value)">
+    <select :id="`${id}--kind`" :value="scalarKind" :aria-label="`${label} kind`" :disabled="disabled" @change="setKind($event.target.value)">
       <option v-for="t in scalarKinds" :key="t" :value="t">{{ KINDS[t] }}</option>
     </select>
     <ValueField :id="id" :label="label" :schema="{ type: scalarKind }" :value="shown" :mixed="mixed" :optional="false" :disabled="disabled" @change="set" @gesture="gesture" />
@@ -168,7 +168,7 @@ const setKey = (i, j, v) => set(setIn(keys.value, [i, j], v));
 
   <!-- one of an anyOf's branches -->
   <div v-else-if="widget === 'choice'" class="vf-choice">
-    <select :id="`${id}-kind`" :value="String(branch)" :aria-label="`${label} kind`" :disabled="disabled" @change="pickBranch($event.target.value)">
+    <select :id="`${id}--kind`" :value="String(branch)" :aria-label="`${label} kind`" :disabled="disabled" @change="pickBranch($event.target.value)">
       <option v-for="b in branches" :key="b.index" :value="String(b.index)">{{ b.label }}</option>
     </select>
     <ValueField :id="id" :label="label" :schema="branchSchema" :value="branchValue" :mixed="mixed" :optional="optional" :disabled="disabled" :nodes="nodes" @change="setBranchValue" @gesture="gesture" />
@@ -181,40 +181,40 @@ const setKey = (i, j, v) => set(setIn(keys.value, [i, j], v));
         <span class="vf-row-title" :title="rowTitle(item, i)">{{ i + 1 }}. {{ rowIsBlock(item) ? rowTitle(item, i) : '' }}</span>
         <ValueField v-if="!rowIsBlock(item)" :id="child(i).id" :label="child(i).label" :schema="itemSchema(item)" :value="item" :optional="false" :disabled="disabled" :nodes="nodes" @change="set(setIn(items, [i], $event))" @gesture="gesture" />
         <span class="vf-row-tools">
-          <button :id="`${child(i).id}-up`" type="button" class="vf-tool" :aria-label="`Move ${child(i).label} up`" :disabled="disabled || !actions(i).up" @click="set(listMove(items, i, -1))">↑</button>
-          <button :id="`${child(i).id}-down`" type="button" class="vf-tool" :aria-label="`Move ${child(i).label} down`" :disabled="disabled || !actions(i).down" @click="set(listMove(items, i, 1))">↓</button>
-          <button :id="`${child(i).id}-remove`" type="button" class="vf-tool" :aria-label="`Remove ${child(i).label}`" :disabled="disabled || !actions(i).remove" @click="set(listRemove(items, i))">×</button>
+          <button :id="`${child(i).id}--up`" type="button" class="vf-tool" :aria-label="`Move ${child(i).label} up`" :disabled="disabled || !actions(i).up" @click="set(listMove(items, i, -1))">↑</button>
+          <button :id="`${child(i).id}--down`" type="button" class="vf-tool" :aria-label="`Move ${child(i).label} down`" :disabled="disabled || !actions(i).down" @click="set(listMove(items, i, 1))">↓</button>
+          <button :id="`${child(i).id}--remove`" type="button" class="vf-tool" :aria-label="`Remove ${child(i).label}`" :disabled="disabled || !actions(i).remove" @click="set(listRemove(items, i))">×</button>
         </span>
       </div>
       <ValueField v-if="rowIsBlock(item)" :id="child(i).id" :label="child(i).label" :schema="itemSchema(item)" :value="item" :optional="false" :disabled="disabled" :nodes="nodes" @change="set(setIn(items, [i], $event))" @gesture="gesture" />
     </div>
-    <button :id="`${id}-add`" type="button" class="vf-add" :aria-label="`Add a row to ${label}`" :disabled="disabled || (schema.maxItems !== undefined && items.length >= schema.maxItems)" @click="addRow">+ Add</button>
+    <button :id="`${id}--add`" type="button" class="vf-add" :aria-label="`Add a row to ${label}`" :disabled="disabled || (schema.maxItems !== undefined && items.length >= schema.maxItems)" @click="addRow">+ Add</button>
   </div>
 
   <!-- a struct: its fields, then keys the schema doesn't name (kept, editable, removable) -->
   <div v-else-if="widget === 'struct'" :id="id" class="vf-struct" role="group" :aria-label="name">
     <div v-for="r in struct.rows" :key="r.key" class="vf-field" :class="{ unknown: !r.known, unset: !r.set }">
       <span class="vf-key">{{ r.key }}<span v-if="r.required" class="vf-req" aria-hidden="true">*</span></span>
-      <button v-if="folded(r)" :id="`${child(r.key).id}-set`" type="button" class="vf-add" :aria-label="`Set ${child(r.key).label}`" :disabled="disabled" @click="unfold(r)">+ {{ r.key }}</button>
+      <button v-if="folded(r)" :id="`${child(r.key).id}--set`" type="button" class="vf-add" :aria-label="`Set ${child(r.key).label}`" :disabled="disabled" @click="unfold(r)">+ {{ r.key }}</button>
       <ValueField v-else :id="child(r.key).id" :label="child(r.key).label" :schema="r.schema" :value="structValue[r.key]" :fallback="r.schema.default" :optional="!r.required" :disabled="disabled" :nodes="nodes" @change="setField(r.key, $event)" @gesture="gesture" />
-      <button v-if="r.set && !r.required" :id="`${child(r.key).id}-clear`" type="button" class="vf-tool" :aria-label="`${r.known ? 'Clear' : 'Remove'} ${child(r.key).label}`" :disabled="disabled" @click="setField(r.key, undefined)">×</button>
+      <button v-if="r.set && !r.required" :id="`${child(r.key).id}--clear`" type="button" class="vf-tool" :aria-label="`${r.known ? 'Clear' : 'Remove'} ${child(r.key).label}`" :disabled="disabled" @click="setField(r.key, undefined)">×</button>
     </div>
     <div v-if="struct.open" class="vf-addkey">
-      <input :id="`${id}-newkey`" v-model="newKey" :aria-label="`New key in ${label}`" placeholder="new key" :disabled="disabled" @keydown.enter.prevent="addKey(false)">
-      <button :id="`${id}-addkey`" type="button" class="vf-add" :aria-label="`Add a key to ${label}`" :disabled="disabled" @click="addKey(false)">+ Key</button>
+      <input :id="`${id}--newkey`" v-model="newKey" :aria-label="`New key in ${label}`" placeholder="new key" :disabled="disabled" @keydown.enter.prevent="addKey(false)">
+      <button :id="`${id}--addkey`" type="button" class="vf-add" :aria-label="`Add a key to ${label}`" :disabled="disabled" @click="addKey(false)">+ Key</button>
     </div>
   </div>
 
   <!-- a map: renamable keys, one value schema -->
   <div v-else-if="widget === 'map'" :id="id" class="vf-map" role="group" :aria-label="`${name}, ${Object.keys(structValue).length} entries`">
     <div v-for="(v, k) in structValue" :key="k" class="vf-field">
-      <input :id="`${child(k).id}-key`" class="vf-mapkey" :value="k" :aria-label="`${child(k).label} key`" :disabled="disabled" @change="set(mapRename(structValue, k, $event.target.value.trim()))">
+      <input :id="`${child(k).id}--key`" class="vf-mapkey" :value="k" :aria-label="`${child(k).label} key`" :disabled="disabled" @change="set(mapRename(structValue, k, $event.target.value.trim()))">
       <ValueField :id="child(k).id" :label="child(k).label" :schema="schema.additionalProperties ?? schemaOfValue(v)" :value="v" :optional="false" :disabled="disabled" :nodes="nodes" @change="set(setIn(structValue, [k], $event))" @gesture="gesture" />
-      <button :id="`${child(k).id}-remove`" type="button" class="vf-tool" :aria-label="`Remove ${child(k).label}`" :disabled="disabled" @click="set(mapRemove(structValue, k))">×</button>
+      <button :id="`${child(k).id}--remove`" type="button" class="vf-tool" :aria-label="`Remove ${child(k).label}`" :disabled="disabled" @click="set(mapRemove(structValue, k))">×</button>
     </div>
     <div class="vf-addkey">
-      <input :id="`${id}-newkey`" v-model="newKey" :aria-label="`New key in ${label}`" placeholder="new key" :disabled="disabled" @keydown.enter.prevent="addKey(true)">
-      <button :id="`${id}-addkey`" type="button" class="vf-add" :aria-label="`Add a key to ${label}`" :disabled="disabled" @click="addKey(true)">+ Key</button>
+      <input :id="`${id}--newkey`" v-model="newKey" :aria-label="`New key in ${label}`" placeholder="new key" :disabled="disabled" @keydown.enter.prevent="addKey(true)">
+      <button :id="`${id}--addkey`" type="button" class="vf-add" :aria-label="`Add a key to ${label}`" :disabled="disabled" @click="addKey(true)">+ Key</button>
     </div>
   </div>
 
@@ -224,9 +224,9 @@ const setKey = (i, j, v) => set(setIn(keys.value, [i, j], v));
     <div v-for="(k, i) in keys" :key="i" class="vf-row vf-key-row">
       <NumberField :id="`${child(i).id}-x`" :label="`${child(i).label} frame`" grip="t" :value="k[0]" :step="1" :precision="3" :disabled="disabled" @change="setKey(i, 0, $event)" @gesture="gesture" />
       <NumberField :id="`${child(i).id}-y`" :label="`${child(i).label} value`" grip="v" :value="k[1]" :step="meta.step ?? 0.01" :precision="meta.precision ?? 3" :disabled="disabled" @change="setKey(i, 1, $event)" @gesture="gesture" />
-      <button :id="`${child(i).id}-remove`" type="button" class="vf-tool" :aria-label="`Remove ${child(i).label}`" :disabled="disabled" @click="set(listRemove(keys, i))">×</button>
+      <button :id="`${child(i).id}--remove`" type="button" class="vf-tool" :aria-label="`Remove ${child(i).label}`" :disabled="disabled" @click="set(listRemove(keys, i))">×</button>
     </div>
-    <button :id="`${id}-add`" type="button" class="vf-add" :aria-label="`Add a key to ${label}`" :disabled="disabled" @click="set(listAdd(keys, nextCurveKey(keys)))">+ Key</button>
+    <button :id="`${id}--add`" type="button" class="vf-add" :aria-label="`Add a key to ${label}`" :disabled="disabled" @click="set(listAdd(keys, nextCurveKey(keys)))">+ Key</button>
   </div>
 
   <!-- untyped and empty: nothing to go by but text -->

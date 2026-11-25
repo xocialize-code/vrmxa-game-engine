@@ -474,13 +474,14 @@ export class EditorHost {
     const n = nodes.at(-1); // the primary
     const d = describeType(registry, n.type);
     const props = sharedFields([n, ...nodes.filter((x) => x !== n)].map((x) => inspectorFields(x === n ? d : describeType(registry, x.type), x))); // the primary's order, ranges and value first
-    const tr = nodes.map((x) => this.transformOf(x));
+    const drag = this.session.gesture && this._dragEuler?.gesture === this.session.gesture ? this._dragEuler.by : null;
+    const tr = nodes.map((x) => { const t = this.transformOf(x); return drag?.has(x.id) ? { ...t, r: drag.get(x.id) } : t; }); // a rotation drag shows its own angles
     const asset = n.asset ? s.doc.assets.find((a) => a.id === n.asset) : null;
     const types = [...new Set(nodes.map((x) => x.type))];
     return {
       id: n.id, ids: nodes.map((x) => x.id), multi: nodes.length > 1, type: n.type, types,
       name: n.name ?? '', parent: n.parent ?? null, description: types.length === 1 ? d.description : '', asset: asset && nodes.length === 1 ? `${asset.ref} (${asset.type})` : null,
-      p: sharedAxes(tr.map((t) => t.p)), r: sharedAxes(tr.map((t) => t.r)), s: sharedAxes(tr.map((t) => t.s)), props, primaryProps: structuredClone(n.props ?? {}),
+      p: sharedAxes(tr.map((t) => t.p)), r: sharedAxes(tr.map((t) => t.r)), s: sharedAxes(tr.map((t) => t.s)), props,
       behaviours: nodes.length === 1 ? (n.behaviours ?? []).map((b) => b.use) : [], nodes: s.doc.nodes.map((x) => x.id),
       sameType: types.length === 1 ? s.doc.nodes.filter((x) => x.type === n.type).map((x) => x.id) : [],
     };
@@ -514,9 +515,15 @@ export class EditorHost {
    * step ("Move 2 nodes"; one node: "Move mira", as before).
    */
   setAxisOn(ids, part, axis, value) {
+    // During a drag, a rotation keeps the Euler angles the drag started from: read back from the quaternion each move,
+    // they jump past 90° of X (30, 0 → -150, 180) and the node would flip.
+    const g = this.session.gesture;
+    if (g && this._dragEuler?.gesture !== g) this._dragEuler = { gesture: g, by: new Map() };
     const entries = ids.map((id) => {
       const t = this.transformOf(this.session.node(id));
-      const v = [...t[part]]; v[axis] = value;
+      let v = [...t[part]];
+      if (part === 'r' && g) { const by = this._dragEuler.by; if (!by.has(id)) by.set(id, v); v = [...by.get(id)]; v[axis] = value; by.set(id, v); }
+      v[axis] = value;
       return { id, t: part === 'r' ? { q: quatFromDeg(v) } : { [part]: v } };
     });
     this.session.setTransforms(entries);

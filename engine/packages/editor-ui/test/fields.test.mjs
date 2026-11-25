@@ -162,7 +162,12 @@ test('ids and names: a row\'s id counts from 0, its name from 1', () => {
   const lines = { id: 'prop-lines', label: 'lines' };
   assert.deepEqual(childOf(lines, 0), { id: 'prop-lines-0', label: 'lines 1' });
   assert.deepEqual(childOf(childOf(lines, 0), 'text'), { id: 'prop-lines-0-text', label: 'lines 1 text' });
-  assert.deepEqual(childOf({ id: 'prop-flags', label: 'flags' }, 'till closed'), { id: 'prop-flags-till-closed', label: 'flags till closed' });
+  assert.deepEqual(childOf({ id: 'prop-flags', label: 'flags' }, 'till closed'), { id: 'prop-flags-till_20_closed', label: 'flags till closed' });
+  // one to one: keys that differ in punctuation, and keys named like a field's controls, never share an id
+  const ids = ['a b', 'a.b', 'a-b', 'a_b', 'a_2d_b', 'ab'].map((k) => childOf({ id: 'p', label: 'p' }, k).id);
+  assert.equal(new Set(ids).size, ids.length, ids.join(' '));
+  for (const k of ['up', 'down', 'remove', 'add', 'newkey', 'addkey', 'set', 'kind', 'key', 'clear', 'mixed']) assert.ok(!childOf({ id: 'p', label: 'p' }, k).id.includes('--'), 'a control\'s suffix starts with --, which no key gives');
+  assert.ok(ids.every((id) => !id.slice(2).includes('-')), 'a key\'s part holds no -');
   assert.equal(fieldName('intensity', true), 'intensity (mixed values)');
 });
 

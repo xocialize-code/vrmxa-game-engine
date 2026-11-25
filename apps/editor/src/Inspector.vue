@@ -65,7 +65,7 @@ const why = (p) => [p.description, p.visibleIf ? `Shown when ${p.visibleIf}.` : 
       <h3 v-if="data.props.length">Properties</h3>
       <div v-for="p in shown" :key="`${data.ids.join(',')}:${p.key}`" class="insp-prop" :class="{ set: p.set, block: BLOCK.has(p.widget), off: !p.enabled, mixed: p.mixed }" :title="why(p)">
         <div class="insp-row">
-          <span class="insp-key">{{ p.key }}<span v-if="p.unit" class="muted"> ({{ p.unit }})</span><span v-if="p.mixed && BLOCK.has(p.widget)" class="muted"> · mixed: showing {{ data.id }}'s</span></span>
+          <span class="insp-key">{{ p.key }}<span v-if="p.unit" class="muted"> ({{ p.unit }})</span></span>
           <ValueField
             v-if="!BLOCK.has(p.widget)" :id="`prop-${p.key}`" :label="p.key" :schema="p.schema" :meta="p.meta" :value="p.value" :fallback="p.default"
             :mixed="p.mixed" :axes="data.multi && p.widget === 'vec' ? p.axes : null" :disabled="!p.enabled" :nodes="data.nodes"
@@ -73,9 +73,11 @@ const why = (p) => [p.description, p.visibleIf ? `Shown when ${p.visibleIf}.` : 
           />
           <button v-if="p.set" type="button" class="reset" :aria-label="`Reset ${p.key}`" title="Back to the default" :disabled="!p.enabled" @click="emit('prop', p.key, undefined)">↺</button>
         </div>
+        <!-- a list or struct that differs between the selected nodes isn't edited as one: an edit would replace each node's whole value -->
+        <p v-if="BLOCK.has(p.widget) && p.mixed" :id="`prop-${p.key}--mixed`" class="muted small" :aria-label="`${p.key} (mixed values): select one node to edit it`">Mixed values: select one node to edit {{ p.key }}.</p>
         <ValueField
-          v-if="BLOCK.has(p.widget)" :id="`prop-${p.key}`" :label="p.mixed ? `${p.key} (mixed values)` : p.key" :schema="p.schema" :meta="p.meta"
-          :value="p.mixed ? data.primaryProps?.[p.key] : p.value" :fallback="p.default" :disabled="!p.enabled" :nodes="data.nodes"
+          v-else-if="BLOCK.has(p.widget)" :id="`prop-${p.key}`" :label="p.key" :schema="p.schema" :meta="p.meta"
+          :value="p.value" :fallback="p.default" :disabled="!p.enabled" :nodes="data.nodes"
           @change="emit('prop', p.key, $event)" @gesture="emit('gesture', $event)"
         />
       </div>

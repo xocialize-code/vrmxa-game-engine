@@ -33,7 +33,7 @@ export class EditorSession {
     this.savedText = text ?? serialize(this.doc);
     /** @type {string[]} selected node ids; the last is the primary (the inspector's) */ this.selection = [];
     /** 'editing' | 'playing' */ this.mode = 'editing';
-    /** An open gesture (a number field's drag): its edits fold into one undo step. @type {{ depth: number, ops: any[] } | null} */ this.gesture = null;
+    /** An open gesture (a number field's drag): its own edits fold into one undo step. @type {{ depth: number, ops: any[], recording: boolean } | null} */ this.gesture = null;
     this.play = null;
     this.listeners = new Set();
     /** Ids a sequence's tracks may target beyond the document's own (the set's nodes): the app sets it. @type {(() => Set<string>) | null} */
@@ -98,7 +98,7 @@ export class EditorSession {
     if (this.mode !== 'editing') throw new Error(`${label}: stop playing first`);
     if (!ops.length) return;
     this.editor.apply(ops.length === 1 && !ops[0].label ? { ...ops[0], label } : { op: 'batch', label, ops });
-    this.gesture?.ops.push(this.editor.peek().undo);
+    if (this.gesture?.recording) this.gesture.ops.push(this.editor.peek().undo); // one of the gesture's own edits
     this.tidySelection();
     this.emit({ kind: 'edit', label });
   }
@@ -222,60 +222,82 @@ export class EditorSession {
 
   // ---------------------------------------------------------------- gestures (M5 W4, AB-T-0600)
   // A number field's drag edits live (the view follows), and the whole drag is one undo step: beginGesture on the
-  // first move, the edits, endGesture on release, which folds the drag's steps into one with the last edit's label.
-  // An edit from elsewhere in between (MCP) isn't folded: the drag's steps then stay as they were.
+  // first move, its edits made through withGesture, endGesture on release, which folds them into one step labelled as
+  // the last. Only edits made through withGesture belong to it: another edit that lands meanwhile (an MCP agent's) stays
+  // its own step, put back after the drag's undone steps and before the folded one. When it touched a node the drag
+  // touched, nothing is folded: the steps are left as they were.
 
-  /** Start a gesture: the edits until endGesture become one undo step. */
+  /** Start a gesture: the edits made through `withGesture` until `endGesture` become one undo step. */
   beginGesture() {
     this.mustEdit('Edit');
-    this.gesture = { depth: this.editor.peek().undoDepth, ops: [] };
+    this.gesture = { depth: this.editor.peek().undoDepth, ops: [], recording: false };
   }
 
   /** Is a gesture open? */
   get gesturing() { return !!this.gesture; }
 
+  /** Run `fn` (one of the gesture's live edits): the steps it makes belong to the open gesture, if there is one. */
+  withGesture(fn) {
+    const g = this.gesture;
+    if (!g) return fn();
+    const was = g.recording; g.recording = true;
+    try { return fn(); } finally { g.recording = was; }
+  }
+
   /**
-   * End the gesture: its steps become one (labelled as its last), or none when the values came back to where they
-   * started. → the step's label, or null when nothing changed
+   * End the gesture: its steps become one (labelled as its last), or none when its values came back to where they
+   * started. → the step's label, or null when it changed nothing
    */
   endGesture() {
     const g = this.gesture; this.gesture = null;
     if (!g) return null;
-    const mine = this.gestureSteps(g);
-    if (!mine) return this.history().undo;
-    if (!mine.length) return null;
+    const u = this.unwindGesture(g);
+    if (!u) return g.ops.length ? this.history().undo : null; // left as its steps, or it had none
+    const { mine, before } = u;
     const label = labelOf(mine.at(-1));
-    const before = this.text();
-    for (let i = 0; i < mine.length; i++) this.editor.undo();
-    if (this.text() === before) { this.editor.dropRedo(); this.tidySelection(); this.emit({ kind: 'undo', label }); return null; } // back where it began: nothing to redo either
-    const all = mine.flatMap((op) => (op.op === 'batch' ? op.ops : [op])).map(({ label: _l, ...o }) => o);
+    const flat = mine.flatMap((op) => (op.op === 'batch' ? op.ops : [op])).map(({ label: _l, ...o }) => o);
     // a drag sets the same paths over and over: keep each path's last set (in the order they were last set)
-    const lastAt = new Map(all.map((o, i) => [o.op === 'set' ? `${o.id}\u0000${o.path}` : i, i]));
-    const ops = all.filter((o, i) => lastAt.get(o.op === 'set' ? `${o.id}\u0000${o.path}` : i) === i);
+    const keyOf = (o, i) => (o.op === 'set' ? `${o.id}\u0000${o.path}` : i);
+    const lastAt = new Map(flat.map((o, i) => [keyOf(o, i), i]));
+    const ops = flat.filter((o, i) => lastAt.get(keyOf(o, i)) === i);
+    const start = this.text();
     this.editor.apply({ op: 'batch', label, ops });
+    if (this.text() === start) { this.editor.undo(); this.editor.dropRedo(); this.tidySelection(); this.emit({ kind: 'undo', label }); return null; } // back where it began
+    if (this.text() !== before) throw new Error(`${label}: folding the drag changed the scene (never expected)`);
     this.tidySelection();
     this.emit({ kind: 'edit', label });
     return label;
   }
 
-  /** Abandon the gesture: its edits are undone (Escape during a drag). */
+  /** Abandon the gesture: its edits are undone (Escape during a drag); others' edits meanwhile stay. */
   cancelGesture() {
     const g = this.gesture; this.gesture = null;
-    if (!g) return;
-    const mine = this.gestureSteps(g);
-    if (!mine?.length) return;
-    for (let i = 0; i < mine.length; i++) this.editor.undo();
-    this.editor.dropRedo(); // an abandoned drag isn't redone (its first edit had cleared any redo there was)
+    const u = g && this.unwindGesture(g);
+    if (!u) return;
+    this.editor.dropRedo(); // an abandoned drag isn't redone
     this.tidySelection();
-    this.emit({ kind: 'undo', label: labelOf(mine[0]) });
+    this.emit({ kind: 'undo', label: labelOf(u.mine[0]) });
   }
 
-  /** The gesture's own steps, oldest first; null when another edit came in between (or an undo went below its start). */
-  gestureSteps(g) {
+  /**
+   * Undo everything since the gesture began and put back the steps that weren't its own, each as it was. → its own
+   * steps and the scene's text before unwinding, or null (nothing done) when it had no steps, an undo went below its
+   * start, or another step touched a node it touched.
+   */
+  unwindGesture(g) {
     const all = this.editor.history();
     if (all.length < g.depth) return null;
-    const mine = all.slice(g.depth);
-    return mine.every((op) => g.ops.includes(op)) ? mine : null;
+    const since = all.slice(g.depth);
+    const mine = since.filter((op) => g.ops.includes(op));
+    if (!mine.length) return null;
+    const foreign = since.filter((op) => !g.ops.includes(op));
+    const touched = (ops) => new Set(ops.flatMap((op) => (op.op === 'batch' ? op.ops : [op])).map((o) => o.id ?? o.node?.id ?? o.from ?? (o.op === 'setDoc' ? `\u0000doc:${o.path.split('.')[0]}` : '\u0000other')));
+    const theirs = touched(foreign);
+    if ([...touched(mine)].some((id) => theirs.has(id)) || theirs.has('\u0000other')) return null;
+    const before = this.text();
+    for (let i = 0; i < since.length; i++) this.editor.undo();
+    for (const op of foreign) this.editor.apply(op);
+    return { mine, before };
   }
 
   // ---------------------------------------------------------------- files
