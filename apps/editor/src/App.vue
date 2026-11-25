@@ -7,6 +7,7 @@ import { bundledProject, openProjectFolder } from './project.js';
 import { McpLink } from './mcp.js';
 import { inShell, call, on, onClosing, setEdited } from '../../shell/js/shell.js';
 import { questions } from '@vrmxg/editor-ui';
+import { isClip } from '@vrmxg/editor-core';
 import { editorClosing } from './closing.js';
 import { exportClosing } from './export-game.js';
 import TreeItem from './TreeItem.vue';
@@ -18,7 +19,7 @@ const ui = reactive({
   shell: '', project: '', writable: false, scenes: [], scene: '', loading: true, error: '', mode: 'editing',
   tree: [], selected: [], inspector: null, assets: [], undo: null, redo: null, dirty: false, valid: true, problems: '',
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
-  debug: { colliders: false, sensors: false, capsules: false, rays: false }, frame: '—', build: '—', renderer: '—', holds: '', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
+  debug: { colliders: false, sensors: false, capsules: false, rays: false }, aids: { outline: true, handles: true, preview: true }, clip: 0, previewing: '', frame: '—', build: '—', renderer: '—', holds: '', step: 0, prompt: null, assetFilter: '', fileName: 'built-cafe.vrmxs', captions: [],
   mcp: '', tl: null, gameSlot: 'slot-1', gameNote: '', paused: false, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
   ask: null, // { title, text, options: [{ id, label }] }: the window's question before it closes (M5 W8)
   ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '', check: '', canCheck: false, scene: '', checkRows: '', gameName: '', game: '', gameRunning: false, gameN: 0, gameTotal: 0 },
@@ -47,6 +48,7 @@ function refresh(kind = 'all') {
   ui.project = ed.project?.name ?? ''; ui.writable = !!ed.project?.writable; ui.scenes = ed.project?.scenes() ?? []; ui.scene = ed.sceneRef ?? '';
   if (assetsOf !== ed.project?.files) { assetsOf = ed.project?.files; ui.assets = ed.assets().map((a) => ({ ...a })); }
   ui.gizmo = ed.gizmoMode; ui.snap = ed.snap; ui.camera = ed.cameraMode;
+  ui.aids = { ...ed.aids.show }; ui.clip = ed.clipboard?.roots.length ?? 0; ui.previewing = ed.aids.previewing ?? ''; // M5 W5
   if (!s) return;
   ui.mode = s.mode; ui.paused = !!ed.paused;
   ui.tree = plainTree(s.tree());
@@ -148,6 +150,12 @@ const tlTransport = (what, v) => act(() => {
 const setScenes = () => ui.scenes.filter((x) => !x.startsWith('prefabs/') && !x.startsWith('sequences/'));
 const reparent = (id, parent) => act(() => ed.session.reparent(id, parent));
 const remove = () => act(() => ed.session.remove());
+// Duplicate, Copy and Paste (M5 W5): commands on the session, one undo step each; a copy is also put on the system clipboard
+// (as text) by the page's copy event, so it pastes into another editor window
+const duplicate = () => act(() => ed.duplicate());
+const copyNodes = () => act(() => { if (!ed.copy()) throw new Error('select nodes to copy'); });
+const pasteNodes = (clip) => act(() => ed.paste(clip));
+const setAid = (kind) => ed.setAid(kind, ui.aids[kind]);
 const addNode = () => act(() => ed.session.addNode(ui.addType, { at: ed.lookPoint() }));
 const addAsset = (ref) => act(() => ed.addAsset(ref));
 const frame = () => ed.frameAll(ui.selected.length > 0);
@@ -180,15 +188,39 @@ addEventListener('keydown', (e) => {
   const cmd = e.metaKey || e.ctrlKey;
   if (cmd && e.key.toLowerCase() === 'z' && !inShell) { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
   if (cmd && e.key.toLowerCase() === 's' && !inShell) { e.preventDefault(); save(); return; }
+  if (cmd && e.key.toLowerCase() === 'd' && !inShell && ed.session.mode === 'editing') { e.preventDefault(); duplicate(); return; } // the Mac shell: Edit › Duplicate
   if (ed.session.mode !== 'editing' || cmd) return;
   if (ed.cameraMode === 'fly' && !(e.key === 'Delete' || e.key === 'Backspace')) return; // WASD / R / F / Q / E fly the view
   if (e.key === 'w') setGizmo('translate'); else if (e.key === 'e') setGizmo('rotate'); else if (e.key === 'r') setGizmo('scale');
   else if (e.key === 'f') frame(); else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); remove(); }
 });
+// Copy and Paste of nodes through the page's clipboard events: ⌘C / ⌘V in a browser, Edit › Copy / Paste in the Mac shell.
+// A text field keeps its own copy and paste. A paste of text that isn't a clip falls back to the editor's own clipboard.
+const nodeEdit = () => ed?.session?.mode === 'editing' && !typing() && !sheet.asking;
+addEventListener('copy', (e) => {
+  if (!nodeEdit() || !ui.selected.length || document.getSelection()?.toString()) return;
+  const clip = ed.copy();
+  if (!clip) return;
+  e.preventDefault();
+  e.clipboardData?.setData('text/plain', JSON.stringify(clip));
+  refresh();
+});
+addEventListener('paste', (e) => {
+  if (!nodeEdit()) return;
+  let clip = null;
+  try { const v = JSON.parse(e.clipboardData?.getData('text/plain') ?? ''); if (isClip(v)) clip = v; } catch { /* not a clip */ }
+  if (!clip && !ed.clipboard) return;
+  e.preventDefault();
+  pasteNodes(clip ?? ed.clipboard);
+});
+// WebKit enables Edit › Copy and Paste only when the page says it will handle them (its beforecopy / beforepaste events)
+addEventListener('beforecopy', (e) => { if (nodeEdit() && ui.selected.length && !document.getSelection()?.toString()) e.preventDefault(); });
+addEventListener('beforepaste', (e) => { if (nodeEdit()) e.preventDefault(); });
 if (inShell) {
   call('shell.info').then((i) => { ui.shell = `${i.app} · shell ${i.shell} · ${i.origin}`; });
   on('menu.openProject', openProject); on('menu.save', save); on('menu.saveAs', saveAs);
   on('menu.exportGame', exportGame); // File › Export Game… (M5 W0)
+  on('menu.duplicate', () => (typing() ? null : duplicate())); // Edit › Duplicate (M5 W5)
   on('menu.undo', () => (typing() ? document.execCommand('undo') : undo()));
   on('menu.redo', () => (typing() ? document.execCommand('redo') : redo()));
 }
@@ -239,6 +271,10 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
       <select id="camera-mode" v-model="ui.camera" aria-label="View camera" title="Viewport camera" @change="setCamera"><option value="orbit">Orbit</option><option value="fly">Fly</option></select>
       <button id="frame" type="button" aria-label="Frame selection" @click="frame">Frame</button>
       <span class="sep" />
+      <label class="field" title="An outline round the selection"><input id="aid-outline" v-model="ui.aids.outline" type="checkbox" aria-label="Selection outline" @change="setAid('outline')"> Outline</label>
+      <label class="field" title="Handles to size the selected collider, sensor or light by dragging (⌥ grows both sides)"><input id="aid-handles" v-model="ui.aids.handles" type="checkbox" aria-label="Shape handles" @change="setAid('handles')"> Handles</label>
+      <label class="field" title="What the selected camera sees, picture in picture"><input id="aid-preview" v-model="ui.aids.preview" type="checkbox" aria-label="Camera preview" @change="setAid('preview')"> Preview</label>
+      <span class="sep" />
       <button id="export-open" type="button" :aria-pressed="ui.ex.open" aria-label="Export" :disabled="ui.mode !== 'editing'" @click="ui.ex.open = !ui.ex.open">Export</button>
       <template v-if="ui.mode === 'playing'">
         <div class="seg" role="radiogroup" aria-label="Save slot">
@@ -256,6 +292,9 @@ const shown = () => ui.assets.filter((a) => !ui.assetFilter || a.ref.toLowerCase
         <select v-model="ui.addType" aria-label="Node type to add" :disabled="ui.mode !== 'editing'"><option v-for="t in ADDABLE" :key="t" :value="t">{{ t }}</option></select>
         <button id="add-node" type="button" aria-label="Add node" :disabled="ui.mode !== 'editing'" @click="addNode">Add</button>
         <button id="delete" type="button" aria-label="Delete selection" :disabled="!ui.selected.length || ui.mode !== 'editing'" @click="remove">Delete</button>
+        <button id="duplicate" type="button" aria-label="Duplicate selection" title="Duplicate (⌘D)" :disabled="!ui.selected.length || ui.mode !== 'editing'" @click="duplicate">Duplicate</button>
+        <button id="copy" type="button" aria-label="Copy selection" title="Copy (⌘C)" :disabled="!ui.selected.length || ui.mode !== 'editing'" @click="copyNodes">Copy</button>
+        <button id="paste" type="button" :aria-label="ui.clip ? `Paste ${ui.clip} node${ui.clip > 1 ? 's' : ''}` : 'Paste'" title="Paste (⌘V)" :disabled="!ui.clip || ui.mode !== 'editing'" @click="pasteNodes()">Paste</button>
       </div>
       <ul class="tree" role="tree" aria-label="Scene tree" @dragover.prevent @drop.prevent="dropOnScene">
         <TreeItem v-for="item in ui.tree" :key="item.id" :item="item" :selected="ui.selected" @select="select" @reparent="reparent" />

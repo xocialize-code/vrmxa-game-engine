@@ -1,7 +1,7 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.11.0"
+public let vrmxgShellVersion = "0.12.0"
 
 /// An app's own menu item (shell 0.7.0, M4 W5): choosing it sends the page `menu.<event>`. A title of "-" is a separator.
 public struct ShellMenuItem: Sendable {
@@ -46,6 +46,8 @@ public struct ShellConfiguration {
     public var setUp: (@MainActor (ShellAppDelegate) -> Void)?
     /// Items of the app's own in the File menu, after Open Project… (shell 0.7.0).
     public var fileItems: [ShellMenuItem]
+    /// Items of the app's own at the end of the Edit menu, after Select All (shell 0.12.0, M5 W5: the editor's Duplicate).
+    public var editItems: [ShellMenuItem]
     /// Menus of the app's own, between View and Window (shell 0.7.0).
     public var menus: [ShellMenu]
     /// File extensions the app opens from the Finder (Open Documents, shell 0.7.0): each becomes a `file.opened` event.
@@ -59,11 +61,11 @@ public struct ShellConfiguration {
     public var closeTimeout: TimeInterval
     public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = [], pageUndo: Bool = false,
                 statusItem: StatusItemConfiguration? = nil, closeKeepsRunning: Bool = false, dockIcon: Bool = true, setUp: (@MainActor (ShellAppDelegate) -> Void)? = nil,
-                fileItems: [ShellMenuItem] = [], menus: [ShellMenu] = [], openTypes: [String] = [],
+                fileItems: [ShellMenuItem] = [], editItems: [ShellMenuItem] = [], menus: [ShellMenu] = [], openTypes: [String] = [],
                 asksBeforeClosing: Bool = false, closeTimeout: TimeInterval = 5) {
         self.appName = appName; self.scheme = scheme; self.size = size; self.webFolder = webFolder; self.methods = methods; self.pageUndo = pageUndo
         self.statusItem = statusItem; self.closeKeepsRunning = closeKeepsRunning; self.dockIcon = dockIcon; self.setUp = setUp
-        self.fileItems = fileItems; self.menus = menus; self.openTypes = openTypes.map { $0.lowercased() }
+        self.fileItems = fileItems; self.editItems = editItems; self.menus = menus; self.openTypes = openTypes.map { $0.lowercased() }
         self.asksBeforeClosing = asksBeforeClosing; self.closeTimeout = closeTimeout
     }
 }
@@ -208,7 +210,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         let redo = config.pageUndo ? item("Redo", #selector(menuRedo), "z", [.command, .shift], target: self) : item("Redo", Selector(("redo:")), "z", [.command, .shift])
         menu("Edit", [undo, redo, .separator(),
                       item("Cut", #selector(NSText.cut(_:)), "x"), item("Copy", #selector(NSText.copy(_:)), "c"), item("Paste", #selector(NSText.paste(_:)), "v"),
-                      item("Select All", #selector(NSText.selectAll(_:)), "a")])
+                      item("Select All", #selector(NSText.selectAll(_:)), "a")] + (config.editItems.isEmpty ? [] : [.separator()] + config.editItems.map(own)))
         menu("View", [item("Reload", #selector(reload), "r", target: self)])
         for m in config.menus { menu(m.title, m.items.map(own)) }
         menu("Window", [item("Minimize", #selector(NSWindow.performMiniaturize(_:)), "m")])

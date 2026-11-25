@@ -11,6 +11,7 @@ import { createEditor, createValidator, parse, serialize } from '@vrmxg/scene';
 import { hashValue } from '@vrmxg/snapshot';
 import { assetType, nodeTypeFor, slug, uniqueId } from './assets.js';
 import { SequenceCommands } from './sequence.js';
+import { copyNodes, pasteOps } from './clipboard.js';
 import { composeSequence } from '@vrmxg/sequence';
 
 const clone = (v) => structuredClone(v);
@@ -298,6 +299,56 @@ export class EditorSession {
     for (let i = 0; i < since.length; i++) this.editor.undo();
     for (const op of foreign) this.editor.apply(op);
     return { mine, before };
+  }
+
+  // ---------------------------------------------------------------- copy, paste, duplicate, resize (M5 W5)
+
+  /** Copy nodes (each with its subtree, their asset entries and connections) as a clip: plain JSON, no undo step. → clip or null */
+  copy(ids = this.selection) { return copyNodes(this.doc, ids); }
+
+  /**
+   * Paste a clip: fresh ids, references inside it kept inside it, one undo step. Selects what was pasted. → the new roots' ids
+   * @param {any} clip @param {{ parent?: string | null }} [opts] parent: where the roots go (by default each one's own
+   *   parent where this document has it, else the scene's root)
+   */
+  paste(clip, { parent } = {}) {
+    this.mustEdit('Paste');
+    const { ops, roots } = pasteOps(this.doc, this.reg, clip, { parent, defaultParent: this.defaultParent() });
+    this.run(roots.length === 1 ? `Paste ${roots[0]}` : `Paste ${roots.length} nodes`, ops);
+    this.select(roots);
+    return roots;
+  }
+
+  /**
+   * Duplicate nodes in place, each copy (a prefab instance with its overrides) right after its original under the same
+   * parent, with fresh ids: one undo step. Selects the copies. → their ids
+   */
+  duplicate(ids = this.selection) {
+    this.mustEdit('Duplicate');
+    const clip = copyNodes(this.doc, ids);
+    if (!clip) return [];
+    const { ops, roots } = pasteOps(this.doc, this.reg, clip, { defaultParent: this.defaultParent(), after: true });
+    this.run(clip.roots.length === 1 ? `Duplicate ${clip.roots[0]}` : `Duplicate ${clip.roots.length} nodes`, ops);
+    this.select(roots);
+    return roots;
+  }
+
+  /**
+   * A shape handle's drag (AB-T-0605): set the props it changed (a collider's size, radius or height, a light's range or
+   * angle) and, when one side of a shape moved, the node's position, as one undo step. Values are rounded as transforms are.
+   * @param {string} id @param {Record<string, any>} props @param {{ p?: number[] }} [t] the node's new local position
+   */
+  resizeShape(id, props, { p } = {}) {
+    const n = this.node(id);
+    if (!n) throw new Error(`no node ${id}`);
+    const r = (v) => (Array.isArray(v) ? v.map(round) : typeof v === 'number' ? round(v) : v);
+    const ops = Object.entries(props).map(([k, v]) => ({ op: 'set', id, path: `props.${k}`, value: r(v) }));
+    if (p) {
+      const next = { ...(n.transform ?? {}), p: p.map(round) };
+      if (next.p.every((v) => v === 0)) delete next.p;
+      ops.push({ op: 'set', id, path: 'transform', value: Object.keys(next).length ? next : undefined });
+    }
+    this.run(`Resize ${id}`, ops);
   }
 
   // ---------------------------------------------------------------- files
