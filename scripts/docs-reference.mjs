@@ -149,8 +149,10 @@ function typeOf(p) {
 const rangeOf = (s) => (s.minimum !== undefined && s.maximum !== undefined ? `${s.minimum} to ${s.maximum}` : s.minimum !== undefined ? `≥ ${s.minimum}` : s.maximum !== undefined ? `≤ ${s.maximum}` : '');
 const propRows = (props) => Object.entries(props).map(([k, p]) => [
   code(k), typeOf(p), p.schema?.default !== undefined ? code(JSON.stringify(p.schema.default)) : '', [rangeOf(p.schema ?? {}), p.meta?.unit ?? ''].filter(Boolean).join(' '),
-  p.meta?.sim ? 'yes' : '', p.schema?.description ?? '',
+  p.meta?.sim ? 'yes' : '', [p.schema?.description ?? '', conditionsOf(p)].filter(Boolean).join(' '),
 ]);
+/** When a prop applies (AB-T-0602): its visibleIf and enabledIf, as the inspector and MCP's describe read them. */
+const conditionsOf = (p) => [p.meta?.visibleIf ? `Applies when ${code(p.meta.visibleIf)}.` : '', p.meta?.enabledIf ? `Editable when ${code(p.meta.enabledIf)}.` : ''].filter(Boolean).join(' ');
 const PROP_HEAD = ['Prop', 'Type', 'Default', 'Range, unit', 'Simulated', 'What'];
 const argsOf = (args = {}) => Object.entries(args).map(([k, p]) => `${code(k)} (${typeOf(p)}${p.meta?.unit ? `, ${p.meta.unit}` : ''})${p.schema?.description ? `: ${p.schema.description.replace(/\.$/, '')}` : ''}`).join('; ');
 const memberRows = (members) => Object.entries(members).map(([k, v]) => [code(k), argsOf(v.args), v.description ?? '']);

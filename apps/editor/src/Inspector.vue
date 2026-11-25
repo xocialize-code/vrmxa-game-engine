@@ -1,20 +1,33 @@
 <script setup>
-// The inspector: generated from the registry for the selected node's type (its props' schemas and widgets), plus
-// name, parent and transform. Each field commits on change (Return or leaving it), so one edit is one undo step.
+// The inspector: generated from the registry for the selection's node types (their props' schemas, widgets and
+// conditions), plus name, parent and transform. M5 W4: each prop gets a real widget from @vrmxg/editor-ui (vectors, lists
+// of structs, maps, curves; no JSON boxes, AB-T-0599), numbers are fields you drag or type arithmetic into (AB-T-0600),
+// several selected nodes are edited at once with a mixed state where they differ (AB-T-0601), and a prop whose
+// visibleIf doesn't hold is hidden (its value kept) and one whose enabledIf doesn't is disabled (AB-T-0602).
+// Every edit commits once (Return, leaving a field, a press), so one edit is one undo step; a drag is one gesture.
+import { computed } from 'vue';
+import NumberField from '@vrmxg/editor-ui/NumberField.vue';
+import ValueField from '@vrmxg/editor-ui/ValueField.vue';
+
 const props = defineProps({ data: Object });
-const emit = defineEmits(['rename', 'parent', 'position', 'rotation', 'scale', 'prop']);
-const num = (v) => { const n = Number(v); return Number.isFinite(n) ? n : 0; };
-const vec = (arr, i, v) => arr.map((x, k) => (k === i ? num(v) : x));
-const axes = ['X', 'Y', 'Z'];
-function setProp(p, raw) {
-  let v = raw;
-  if (p.widget === 'number') v = raw === '' ? undefined : num(raw);
-  else if (p.widget === 'json') { try { v = raw === '' ? undefined : JSON.parse(raw); } catch { return; } }
-  else if (p.widget === 'node' || p.widget === 'enum' || p.widget === 'string' || p.widget === 'asset') v = raw === '' ? undefined : raw;
-  emit('prop', p.key, v);
-}
-const shown = (p) => (p.value !== undefined ? p.value : p.default);
-const jsonText = (p) => (shown(p) === undefined ? '' : JSON.stringify(shown(p)));
+const emit = defineEmits(['rename', 'parent', 'axis', 'prop', 'propAxis', 'gesture', 'select']);
+const others = computed(() => (props.data ? props.data.nodes.filter((x) => !props.data.ids.includes(x)) : []));
+function also(e) { const id = e.target.value; e.target.value = ''; if (id) emit('select', [id], true); }
+const AXES = ['X', 'Y', 'Z'];
+const XFORM = [
+  { part: 'p', legend: 'Position (m)', id: 'pos', name: 'Position', step: 0.01, precision: 3 },
+  { part: 'r', legend: 'Rotation (°)', id: 'rot', name: 'Rotation', step: 1, precision: 2 },
+  { part: 's', legend: 'Scale', id: 'scale', name: 'Scale', step: 0.01, precision: 3 },
+];
+const BLOCK = new Set(['list', 'struct', 'map', 'curve', 'choice']);
+const shown = computed(() => (props.data?.props ?? []).filter((p) => p.visible));
+const hidden = computed(() => (props.data?.props ?? []).filter((p) => !p.visible));
+const heading = computed(() => {
+  const d = props.data;
+  if (!d) return '';
+  return d.multi ? `${d.ids.length} nodes: ${d.ids.join(', ')}` : `Node ${d.id}`;
+});
+const why = (p) => [p.description, p.visibleIf ? `Shown when ${p.visibleIf}.` : '', !p.enabled && p.enabledIf ? `Editable when ${p.enabledIf}.` : ''].filter(Boolean).join(' ');
 </script>
 
 <template>
@@ -22,44 +35,73 @@ const jsonText = (p) => (shown(p) === undefined ? '' : JSON.stringify(shown(p)))
     <h2>Inspector</h2>
     <p v-if="!data" class="muted">Nothing selected.</p>
     <form v-else @submit.prevent>
-      <p class="kind"><strong id="inspector-id" :aria-label="`Node ${data.id}`">{{ data.id }}</strong> · {{ data.type }}</p>
-      <p class="muted small">{{ data.description }}</p>
+      <p class="kind"><strong id="inspector-id" :aria-label="heading">{{ data.multi ? `${data.ids.length} nodes` : data.id }}</strong> · {{ data.types.join(', ') }}</p>
+      <p v-if="data.multi" id="inspector-multi" class="muted small" :aria-label="`Editing ${data.ids.length} nodes: ${data.ids.join(', ')}`">Editing {{ data.ids.join(', ') }}: a change sets every one, as one undo step.</p>
+      <p v-else class="muted small">{{ data.description }}</p>
       <p v-if="data.asset" class="small" :aria-label="`Asset ${data.asset}`">Asset: {{ data.asset }}</p>
-      <label class="field">Name <input id="field-name" :value="data.name" aria-label="Name" @change="emit('rename', $event.target.value)"></label>
-      <label class="field">Parent
-        <select id="field-parent" :value="data.parent ?? ''" aria-label="Parent" @change="emit('parent', $event.target.value || null)">
-          <option value="">(scene)</option>
-          <option v-for="id in data.nodes.filter((x) => x !== data.id)" :key="id" :value="id">{{ id }}</option>
+      <div class="insp-row insp-select">
+        <select id="inspector-also" value="" aria-label="Also select" title="Add a node to the selection (as Shift-click does), to edit them together" @change="also">
+          <option value="">Also select…</option>
+          <option v-for="id in others" :key="id" :value="id">{{ id }}</option>
         </select>
-      </label>
-      <fieldset class="vec"><legend>Position (m)</legend>
-        <input v-for="(a, i) in axes" :id="`pos-${a.toLowerCase()}`" :key="a" type="number" step="0.05" :value="data.p[i]" :aria-label="`Position ${a}`" @change="emit('position', vec(data.p, i, $event.target.value))">
-      </fieldset>
-      <fieldset class="vec"><legend>Rotation (°)</legend>
-        <input v-for="(a, i) in axes" :id="`rot-${a.toLowerCase()}`" :key="a" type="number" step="5" :value="data.r[i]" :aria-label="`Rotation ${a}`" @change="emit('rotation', vec(data.r, i, $event.target.value))">
-      </fieldset>
-      <fieldset class="vec"><legend>Scale</legend>
-        <input v-for="(a, i) in axes" :id="`scale-${a.toLowerCase()}`" :key="a" type="number" step="0.1" :value="data.s[i]" :aria-label="`Scale ${a}`" @change="emit('scale', vec(data.s, i, $event.target.value))">
+        <button v-if="data.sameType.length > data.ids.length" id="inspector-select-type" type="button" :aria-label="`Select every ${data.type}`" :title="`Select all ${data.sameType.length} ${data.type} nodes, to edit them together`" @click="emit('select', data.sameType, false)">All {{ data.sameType.length }} {{ data.type }}</button>
+      </div>
+      <template v-if="!data.multi">
+        <label class="insp-row">Name <input id="field-name" :value="data.name" aria-label="Name" @change="emit('rename', $event.target.value)"></label>
+        <label class="insp-row">Parent
+          <select id="field-parent" :value="data.parent ?? ''" aria-label="Parent" @change="emit('parent', $event.target.value || null)">
+            <option value="">(scene)</option>
+            <option v-for="id in data.nodes.filter((x) => x !== data.id)" :key="id" :value="id">{{ id }}</option>
+          </select>
+        </label>
+      </template>
+      <fieldset v-for="x in XFORM" :key="x.part" class="xform"><legend>{{ x.legend }}</legend>
+        <NumberField
+          v-for="(a, i) in AXES" :id="`${x.id}-${a.toLowerCase()}`" :key="a" :label="`${x.name} ${a}`" :grip="a"
+          :value="data[x.part][i] ?? undefined" :mixed="data[x.part][i] === null" :step="x.step" :precision="x.precision"
+          @change="emit('axis', x.part, i, $event)" @gesture="emit('gesture', $event)"
+        />
       </fieldset>
       <h3 v-if="data.props.length">Properties</h3>
-      <div v-for="p in data.props" :key="p.key" class="prop" :class="{ set: p.set }" :title="p.description">
-        <label class="field">{{ p.key }}<span v-if="p.unit" class="muted"> ({{ p.unit }})</span>
-          <input :id="`prop-${p.key}`" v-if="p.widget === 'boolean'" type="checkbox" :checked="!!shown(p)" :aria-label="p.key" @change="emit('prop', p.key, $event.target.checked)">
-          <select :id="`prop-${p.key}`" v-else-if="p.widget === 'enum'" :value="shown(p) ?? ''" :aria-label="p.key" @change="setProp(p, $event.target.value)">
-            <option v-for="o in p.enum" :key="String(o)" :value="o">{{ o }}</option>
-          </select>
-          <select :id="`prop-${p.key}`" v-else-if="p.widget === 'node'" :value="shown(p) ?? ''" :aria-label="p.key" @change="setProp(p, $event.target.value)">
-            <option value="">(none)</option>
-            <option v-for="id in data.nodes" :key="id" :value="id">{{ id }}</option>
-          </select>
-          <input :id="`prop-${p.key}`" v-else-if="p.widget === 'color'" type="color" :value="shown(p) ?? '#ffffff'" :aria-label="p.key" @change="emit('prop', p.key, $event.target.value)">
-          <input :id="`prop-${p.key}`" v-else-if="p.widget === 'number'" type="number" :min="p.min" :max="p.max" step="any" :value="shown(p)" :aria-label="p.key" @change="setProp(p, $event.target.value)">
-          <input :id="`prop-${p.key}`" v-else-if="p.widget === 'string' || p.widget === 'asset'" :value="shown(p) ?? ''" :aria-label="p.key" @change="setProp(p, $event.target.value)">
-          <input :id="`prop-${p.key}`" v-else :value="jsonText(p)" class="mono" :aria-label="p.key" @change="setProp(p, $event.target.value)">
-        </label>
-        <button v-if="p.set" type="button" class="reset" :aria-label="`Reset ${p.key}`" title="Back to the default" @click="emit('prop', p.key, undefined)">↺</button>
+      <div v-for="p in shown" :key="`${data.ids.join(',')}:${p.key}`" class="insp-prop" :class="{ set: p.set, block: BLOCK.has(p.widget), off: !p.enabled, mixed: p.mixed }" :title="why(p)">
+        <div class="insp-row">
+          <span class="insp-key">{{ p.key }}<span v-if="p.unit" class="muted"> ({{ p.unit }})</span></span>
+          <ValueField
+            v-if="!BLOCK.has(p.widget)" :id="`prop-${p.key}`" :label="p.key" :schema="p.schema" :meta="p.meta" :value="p.value" :fallback="p.default"
+            :mixed="p.mixed" :axes="data.multi && p.widget === 'vec' ? p.axes : null" :disabled="!p.enabled" :nodes="data.nodes"
+            @change="emit('prop', p.key, $event)" @axis="(i, v) => emit('propAxis', p.key, i, v)" @gesture="emit('gesture', $event)"
+          />
+          <button v-if="p.set" type="button" class="reset" :aria-label="`Reset ${p.key}`" title="Back to the default" :disabled="!p.enabled" @click="emit('prop', p.key, undefined)">↺</button>
+        </div>
+        <!-- a list or struct that differs between the selected nodes isn't edited as one: an edit would replace each node's whole value -->
+        <p v-if="BLOCK.has(p.widget) && p.mixed" :id="`prop-${p.key}--mixed`" class="muted small" :aria-label="`${p.key} (mixed values): select one node to edit it`">Mixed values: select one node to edit {{ p.key }}.</p>
+        <ValueField
+          v-else-if="BLOCK.has(p.widget)" :id="`prop-${p.key}`" :label="p.key" :schema="p.schema" :meta="p.meta"
+          :value="p.value" :fallback="p.default" :disabled="!p.enabled" :nodes="data.nodes"
+          @change="emit('prop', p.key, $event)" @gesture="emit('gesture', $event)"
+        />
       </div>
+      <p v-if="hidden.length" id="props-hidden" class="muted small" :aria-label="`Hidden by their conditions: ${hidden.map((p) => p.key).join(', ')}`" :title="hidden.map((p) => `${p.key}: shown when ${p.visibleIf}`).join('\n')">
+        Hidden: {{ hidden.map((p) => p.key).join(', ') }} (their values are kept)
+      </p>
       <p v-if="data.behaviours.length" class="small">Behaviours: {{ data.behaviours.join(', ') }}</p>
     </form>
   </section>
 </template>
+
+<style>
+.inspector .xform { display: flex; gap: 4px; border: 0; padding: 0; margin: 8px 0; flex-wrap: wrap; min-width: 0; }
+.inspector .xform legend { color: var(--muted); padding: 0; margin-bottom: 4px; width: 100%; }
+.inspector .xform .num { flex: 1 1 0; min-width: 0; }
+.inspector .num-input { width: 100%; box-sizing: border-box; }
+.insp-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin: 6px 0; min-width: 0; }
+.insp-row > input, .insp-row > select { width: 150px; max-width: 60%; box-sizing: border-box; }
+.insp-prop .insp-row > .num, .insp-prop .insp-row > input:not([type=checkbox]), .insp-prop .insp-row > select, .insp-prop .insp-row > .vf-vec { flex: 0 1 150px; max-width: 60%; box-sizing: border-box; }
+.insp-select > select { flex: 1 1 auto; width: auto; max-width: none; }
+.insp-key { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.insp-prop.set .insp-key { color: var(--ink); }
+.insp-prop.off .insp-key { opacity: 0.55; }
+.insp-prop.block { margin-bottom: 8px; }
+.insp-prop.block > .insp-row { margin-bottom: 2px; }
+.inspector .vf-struct input, .inspector .vf-list input:not([type=checkbox]), .inspector .vf-map input, .inspector .vf-struct select, .inspector .vf-list select { width: 100%; min-width: 0; box-sizing: border-box; }
+</style>

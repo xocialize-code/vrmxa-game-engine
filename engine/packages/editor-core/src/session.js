@@ -33,6 +33,7 @@ export class EditorSession {
     this.savedText = text ?? serialize(this.doc);
     /** @type {string[]} selected node ids; the last is the primary (the inspector's) */ this.selection = [];
     /** 'editing' | 'playing' */ this.mode = 'editing';
+    /** An open gesture (a number field's drag): its own edits fold into one undo step. @type {{ depth: number, ops: any[], recording: boolean } | null} */ this.gesture = null;
     this.play = null;
     this.listeners = new Set();
     /** Ids a sequence's tracks may target beyond the document's own (the set's nodes): the app sets it. @type {(() => Set<string>) | null} */
@@ -97,6 +98,7 @@ export class EditorSession {
     if (this.mode !== 'editing') throw new Error(`${label}: stop playing first`);
     if (!ops.length) return;
     this.editor.apply(ops.length === 1 && !ops[0].label ? { ...ops[0], label } : { op: 'batch', label, ops });
+    if (this.gesture?.recording) this.gesture.ops.push(this.editor.peek().undo); // one of the gesture's own edits
     this.tidySelection();
     this.emit({ kind: 'edit', label });
   }
@@ -173,18 +175,130 @@ export class EditorSession {
   setTransform(id, t, labelText) {
     const n = this.node(id);
     if (!n) throw new Error(`no node ${id}`);
-    const next = { ...(n.transform ?? {}) };
-    for (const k of TRANSFORM_KEYS) if (t[k] !== undefined) next[k] = t[k].map(round);
-    if (next.p && next.p.every((v) => v === 0)) delete next.p;
-    if (next.q && next.q[0] === 0 && next.q[1] === 0 && next.q[2] === 0 && next.q[3] === 1) delete next.q;
-    if (next.s && next.s.every((v) => v === 1)) delete next.s;
-    const kind = t.p && !t.q && !t.s ? 'Move' : t.q && !t.p && !t.s ? 'Rotate' : t.s && !t.p && !t.q ? 'Scale' : 'Transform';
-    this.run(labelText ?? `${kind} ${id}`, [{ op: 'set', id, path: 'transform', value: Object.keys(next).length ? next : undefined }]);
+    this.run(labelText ?? `${transformKind(t)} ${id}`, [transformOp(n, t)]);
   }
 
   /** Set (or with undefined, clear back to its default) one prop. */
-  setProp(id, key, value) { this.run(`Set ${id}.${key}`, [{ op: 'set', id, path: `props.${key}`, value }]); }
+  setProp(id, key, value) { const n = this.node(id); this.run(`Set ${id}.${key}`, n ? propOps(n, key, value) : [{ op: 'set', id, path: `props.${key}`, value }]); }
   rename(id, name) { this.run(`Rename ${id}`, [{ op: 'set', id, path: 'name', value: name || undefined }]); }
+
+  // ---------------------------------------------------------------- several nodes at once (M5 W4, AB-T-0601)
+
+  /**
+   * Set (or with undefined, clear) one prop on several nodes as one undo step: "Set intensity on 2 nodes". One id is
+   * `setProp`'s step ("Set lamp.intensity"). Nodes already holding the value get no op; nothing to change, no step.
+   * @param {string[]} ids @param {string} key @param {any} value
+   */
+  setPropOn(ids, key, value) {
+    const list = [...new Set(ids)];
+    for (const id of list) if (!this.node(id)) throw new Error(`no node ${id}`);
+    if (list.length === 1) return this.setProp(list[0], key, value);
+    this.run(`Set ${key} on ${list.length} nodes`, list.flatMap((id) => propOps(this.node(id), key, value)));
+  }
+
+  /**
+   * Set one prop to a value of each node's own as one undo step: one axis of a vector prop on a selection, each node
+   * keeping its other axes. One entry is `setProp`'s step.
+   * @param {string} key @param {{ id: string, value: any }[]} entries
+   */
+  setPropEach(key, entries) {
+    for (const { id } of entries) if (!this.node(id)) throw new Error(`no node ${id}`);
+    if (entries.length === 1) return this.setProp(entries[0].id, key, entries[0].value);
+    this.run(`Set ${key} on ${entries.length} nodes`, entries.flatMap(({ id, value }) => propOps(this.node(id), key, value)));
+  }
+
+  /**
+   * Set several nodes' transforms (any of p, q, s each; unchanged parts kept) as one undo step: the inspector's
+   * Position X on a selection, each node keeping its own Y and Z. One entry is `setTransform`'s step.
+   * @param {{ id: string, t: { p?: number[], q?: number[], s?: number[] } }[]} entries @param {string} [labelText]
+   */
+  setTransforms(entries, labelText) {
+    for (const { id } of entries) if (!this.node(id)) throw new Error(`no node ${id}`);
+    if (entries.length === 1) return this.setTransform(entries[0].id, entries[0].t, labelText);
+    const kinds = new Set(entries.map((e) => transformKind(e.t)));
+    const kind = kinds.size === 1 ? [...kinds][0] : 'Transform';
+    this.run(labelText ?? `${kind} ${entries.length} nodes`, entries.map(({ id, t }) => transformOp(this.node(id), t)));
+  }
+
+  // ---------------------------------------------------------------- gestures (M5 W4, AB-T-0600)
+  // A number field's drag edits live (the view follows), and the whole drag is one undo step: beginGesture on the
+  // first move, its edits made through withGesture, endGesture on release, which folds them into one step labelled as
+  // the last. Only edits made through withGesture belong to it: another edit that lands meanwhile (an MCP agent's) stays
+  // its own step, put back after the drag's undone steps and before the folded one. When it touched a node the drag
+  // touched, nothing is folded: the steps are left as they were.
+
+  /** Start a gesture: the edits made through `withGesture` until `endGesture` become one undo step. */
+  beginGesture() {
+    this.mustEdit('Edit');
+    this.gesture = { depth: this.editor.peek().undoDepth, ops: [], recording: false };
+  }
+
+  /** Is a gesture open? */
+  get gesturing() { return !!this.gesture; }
+
+  /** Run `fn` (one of the gesture's live edits): the steps it makes belong to the open gesture, if there is one. */
+  withGesture(fn) {
+    const g = this.gesture;
+    if (!g) return fn();
+    const was = g.recording; g.recording = true;
+    try { return fn(); } finally { g.recording = was; }
+  }
+
+  /**
+   * End the gesture: its steps become one (labelled as its last), or none when its values came back to where they
+   * started. → the step's label, or null when it changed nothing
+   */
+  endGesture() {
+    const g = this.gesture; this.gesture = null;
+    if (!g) return null;
+    const u = this.unwindGesture(g);
+    if (!u) return g.ops.length ? this.history().undo : null; // left as its steps, or it had none
+    const { mine, before } = u;
+    const label = labelOf(mine.at(-1));
+    const flat = mine.flatMap((op) => (op.op === 'batch' ? op.ops : [op])).map(({ label: _l, ...o }) => o);
+    // a drag sets the same paths over and over: keep each path's last set (in the order they were last set)
+    const keyOf = (o, i) => (o.op === 'set' ? `${o.id}\u0000${o.path}` : i);
+    const lastAt = new Map(flat.map((o, i) => [keyOf(o, i), i]));
+    const ops = flat.filter((o, i) => lastAt.get(keyOf(o, i)) === i);
+    const start = this.text();
+    this.editor.apply({ op: 'batch', label, ops });
+    if (this.text() === start) { this.editor.undo(); this.editor.dropRedo(); this.tidySelection(); this.emit({ kind: 'undo', label }); return null; } // back where it began
+    if (this.text() !== before) throw new Error(`${label}: folding the drag changed the scene (never expected)`);
+    this.tidySelection();
+    this.emit({ kind: 'edit', label });
+    return label;
+  }
+
+  /** Abandon the gesture: its edits are undone (Escape during a drag); others' edits meanwhile stay. */
+  cancelGesture() {
+    const g = this.gesture; this.gesture = null;
+    const u = g && this.unwindGesture(g);
+    if (!u) return;
+    this.editor.dropRedo(); // an abandoned drag isn't redone
+    this.tidySelection();
+    this.emit({ kind: 'undo', label: labelOf(u.mine[0]) });
+  }
+
+  /**
+   * Undo everything since the gesture began and put back the steps that weren't its own, each as it was. → its own
+   * steps and the scene's text before unwinding, or null (nothing done) when it had no steps, an undo went below its
+   * start, or another step touched a node it touched.
+   */
+  unwindGesture(g) {
+    const all = this.editor.history();
+    if (all.length < g.depth) return null;
+    const since = all.slice(g.depth);
+    const mine = since.filter((op) => g.ops.includes(op));
+    if (!mine.length) return null;
+    const foreign = since.filter((op) => !g.ops.includes(op));
+    const touched = (ops) => new Set(ops.flatMap((op) => (op.op === 'batch' ? op.ops : [op])).map((o) => o.id ?? o.node?.id ?? o.from ?? (o.op === 'setDoc' ? `\u0000doc:${o.path.split('.')[0]}` : '\u0000other')));
+    const theirs = touched(foreign);
+    if ([...touched(mine)].some((id) => theirs.has(id)) || theirs.has('\u0000other')) return null;
+    const before = this.text();
+    for (let i = 0; i < since.length; i++) this.editor.undo();
+    for (const op of foreign) this.editor.apply(op);
+    return { mine, before };
+  }
 
   // ---------------------------------------------------------------- files
 
@@ -255,6 +369,30 @@ export class EditorSession {
 }
 
 const round = (v) => Math.round(v * 1e6) / 1e6; // a micrometre / a millionth: keeps files short and diffs stable
+/** The set op that gives node `n` the transform parts in `t`, the rest kept; identity parts dropped from the file. */
+function transformOp(n, t) {
+  const next = { ...(n.transform ?? {}) };
+  for (const k of TRANSFORM_KEYS) if (t[k] !== undefined) next[k] = t[k].map(round);
+  if (next.p && next.p.every((v) => v === 0)) delete next.p;
+  if (next.q && next.q[0] === 0 && next.q[1] === 0 && next.q[2] === 0 && next.q[3] === 1) delete next.q;
+  if (next.s && next.s.every((v) => v === 1)) delete next.s;
+  return { op: 'set', id: n.id, path: 'transform', value: Object.keys(next).length ? next : undefined };
+}
+/**
+ * The set ops that give node `n` prop `key` (undefined clears it): none when it holds that already. A node with no props
+ * gets an empty props object first, and clearing its last prop removes the object after, so undo gives back the node
+ * byte for byte. The value itself always goes through `props.<key>`, where the scene editor checks node references.
+ */
+function propOps(n, key, value) {
+  const props = n.props;
+  if (JSON.stringify(props?.[key]) === JSON.stringify(value)) return [];
+  const set = { op: 'set', id: n.id, path: `props.${key}`, value };
+  if (props === undefined) return [{ op: 'set', id: n.id, path: 'props', value: {} }, set];
+  if (value === undefined && Object.keys(props).length === 1 && Object.hasOwn(props, key)) return [set, { op: 'set', id: n.id, path: 'props', value: undefined }];
+  return [set];
+}
+const transformKind = (t) => (t.p && !t.q && !t.s ? 'Move' : t.q && !t.p && !t.s ? 'Rotate' : t.s && !t.p && !t.q ? 'Scale' : 'Transform');
+const labelOf = (op) => label(op);
 function transform(at, q) {
   const t = {};
   if (at && at.some((v) => v !== 0)) t.p = at.map(round);

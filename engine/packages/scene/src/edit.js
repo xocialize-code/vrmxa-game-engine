@@ -6,6 +6,13 @@ import { nodeSchema } from './schema.js';
 import { flatten } from './instance.js';
 
 const clone = (v) => (v === undefined ? undefined : structuredClone(v));
+/** The path of a number in `v` that isn't finite (Infinity, NaN: a file can't hold one), or null. */
+export function nonFinite(v, at = '') {
+  if (typeof v === 'number') return Number.isFinite(v) ? null : at || '/';
+  if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) { const p = nonFinite(x, `${at}/${k}`); if (p) return p; }
+  return null;
+}
+const mustBeFinite = (what, v) => { const p = nonFinite(v); if (p) throw new Error(`${what}: ${p === '/' ? 'the value' : p} is not a finite number`); };
 
 /**
  * @param {import('@vrmxg/registry').Registry} reg
@@ -47,6 +54,7 @@ export function createEditor(reg, doc, { prefabs } = {}) {
   const OPS = {
     add({ node, index: at }) {
       if (!node?.id || !node?.type) throw new Error('add needs node.id and node.type');
+      mustBeFinite(`add ${node.id}`, node);
       if (index(node.id) >= 0) throw new Error(`node "${node.id}" already exists`);
       if (node.parent !== undefined && index(node.parent) < 0) throw new Error(`parent "${node.parent}" does not exist`);
       const errs = checkNode(node); if (errs.length) throw new Error(errs.join('; '));
@@ -71,6 +79,7 @@ export function createEditor(reg, doc, { prefabs } = {}) {
     set({ id, path, value }) {
       if (!path || /^(id|type)$/.test(path)) throw new Error('set cannot change id or type; remove and add instead');
       if (path === 'parent') throw new Error('use reparent to change parent');
+      mustBeFinite(`${id}.${path}`, value);
       const i = need(id);
       const before = clone(getPath(doc.nodes[i], path));
       const next = clone(doc.nodes[i]); setPath(next, path, clone(value));
@@ -83,6 +92,7 @@ export function createEditor(reg, doc, { prefabs } = {}) {
     /** A value in the document itself, outside its nodes: the sequence block (M2 W5) or settings. */
     setDoc({ path, value }) {
       if (!/^(sequence|settings)(\.|$)/.test(path ?? '')) throw new Error(`setDoc edits the sequence or settings, not "${path}"`);
+      mustBeFinite(path, value);
       const before = clone(getPath(doc, path));
       if (value !== undefined && JSON.stringify(value) === undefined) throw new Error(`setDoc ${path}: not JSON`);
       setPath(doc, path, clone(value));
@@ -177,6 +187,8 @@ export function createEditor(reg, doc, { prefabs } = {}) {
     e.inverse = run(e.op); undoStack.push(e); return true;
   }
   /** The edits undo and redo would act on next (their ops, with any `label`), and how many of each there are. */
+  /** Forget what redo would do: a session that undid steps only to fold or abandon them (a drag) leaves nothing to redo. */
+  const dropRedo = () => { redoStack.length = 0; };
   const peek = () => ({ undo: undoStack.at(-1)?.op ?? null, redo: redoStack.at(-1)?.op ?? null, undoDepth: undoStack.length, redoDepth: redoStack.length });
-  return { apply, undo, redo, peek, doc, checkNode, history: () => undoStack.map((e) => e.op) };
+  return { apply, undo, redo, dropRedo, peek, doc, checkNode, history: () => undoStack.map((e) => e.op) };
 }

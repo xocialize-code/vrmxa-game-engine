@@ -155,13 +155,17 @@ const setGizmo = (m) => ed.setGizmoMode(m);
 const setSnap = () => ed.setSnap(ui.snap);
 const setCamera = () => ed.setCameraMode(ui.camera);
 const setDebug = () => ed.setDebug({ ...ui.debug });
+// The inspector edits the whole selection (M5 W4, AB-T-0601): a prop or a transform axis set on every selected node is
+// one undo step; a number field's drag is a gesture, its live edits folded into one step on release (AB-T-0600).
+const live = (fn) => act(() => ed.session.withGesture(fn)); // during a drag, the edit belongs to it (an MCP edit meanwhile doesn't)
 const onInspector = {
   rename: (v) => act(() => ed.session.rename(ui.inspector.id, v)),
   parent: (p) => act(() => ed.session.reparent(ui.inspector.id, p)),
-  position: (p) => act(() => ed.session.setTransform(ui.inspector.id, { p })),
-  rotation: (r) => act(() => ed.setRotationDeg(ui.inspector.id, r)),
-  scale: (s) => act(() => ed.session.setTransform(ui.inspector.id, { s })),
-  prop: (k, v) => act(() => ed.session.setProp(ui.inspector.id, k, v)),
+  axis: (part, i, v) => live(() => ed.setAxisOn(ui.inspector.ids, part, i, v)),
+  prop: (k, v) => live(() => ed.session.setPropOn(ui.inspector.ids, k, v)),
+  propAxis: (k, i, v) => live(() => ed.setPropAxisOn(ui.inspector.ids, k, i, v)), // one axis of a vector prop on a selection
+  select: (ids, add = true) => act(() => ed.session.select(ids, { add })), // the inspector's Also select and Select every <type>: multi-select without a modifier key
+  gesture: (kind) => act(() => { if (kind === 'begin') ed.session.beginGesture(); else if (kind === 'end') ed.session.endGesture(); else ed.session.cancelGesture(); }),
 };
 
 // drag an asset from the list onto the viewport

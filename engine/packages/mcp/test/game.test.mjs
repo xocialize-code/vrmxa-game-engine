@@ -210,6 +210,19 @@ test('describe fits every node type in one answer: a condition is given once, no
   assert.ok(!('condition' in JSON.parse((await call('describe', { type: 'Camera' })).text))); // only where there is one
 });
 
+test('describe says when a prop applies (M5 W4, AB-T-0602): a light\'s shadow settings, a collider\'s sizes', async () => {
+  const { createHandlers, caller } = await import('@vrmxg/mcp/tools');
+  const call = caller(createHandlers(m0Registry(), {}));
+  const light = JSON.parse((await call('describe', { type: 'PointLight' })).text);
+  assert.equal(light.propMeta.shadowPreset.visibleIf, 'castShadow');
+  assert.equal(light.propMeta.intensity.visibleIf, undefined, 'a prop that always applies has none');
+  const collider = JSON.parse((await call('describe', { type: 'Collider' })).text);
+  assert.equal(collider.propMeta.radius.visibleIf, "shape == 'sphere' || shape == 'capsule' || shape == 'cylinder'");
+  const env = JSON.parse((await call('describe', { type: 'Environment' })).text);
+  assert.equal(env.propMeta.environmentIntensity.enabledIf, "environment != 'none'");
+  assert.equal(light.schema.properties.props.properties.shadowPreset.visibleIf, undefined, 'the JSON Schema itself is unchanged: validation reads the same');
+});
+
 test('goals are judged across the whole game, as play carries values (the review\'s cases)', () => {
   const R = (props = {}) => ({ id: 'rules', type: 'GameRules', parent: 'root', props });
   const doc = (nodes, connections = []) => ({ nodes: [{ id: 'root', type: 'Node3D' }, ...nodes], connections });

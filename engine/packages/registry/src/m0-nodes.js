@@ -223,28 +223,28 @@ export function m0Registry() {
   // (static sets), re-rendered when the light or its props change.
   const shadow = (on) => ({
     castShadow: P.boolean({ default: on }),
-    shadowPreset: P.enum(['low', 'medium', 'high', 'ultra'], { default: 'medium', description: 'Map size 512 / 1024 / 2048 / 4096, with matching bias.' }),
-    shadowUpdate: P.enum(['always', 'once'], { default: 'always', description: '"once" renders the map once and keeps it (static sets).' }),
+    shadowPreset: P.enum(['low', 'medium', 'high', 'ultra'], { default: 'medium', visibleIf: 'castShadow', description: 'Map size 512 / 1024 / 2048 / 4096, with matching bias.' }),
+    shadowUpdate: P.enum(['always', 'once'], { default: 'always', visibleIf: 'castShadow', description: '"once" renders the map once and keeps it (static sets).' }),
   });
-  r.define('DirectionalLight', { extends: 'Node3D', description: 'Sun-like light along the node\'s -Z. The shadow box is centred on the node.', props: { color: P.color({ default: '#ffffff' }), intensity: P.number({ min: 0, default: 2 }), ...shadow(true), shadowExtent: P.number({ min: 0.5, unit: 'm', default: 8, description: 'Half the width of the shadow box.' }) } });
-  r.define('PointLight', { extends: 'Node3D', description: 'Omni light with range.', props: { color: P.color({ default: '#ffffff' }), intensity: P.number({ min: 0, default: 1, unit: 'cd' }), range: P.number({ min: 0, unit: 'm', default: 10 }), ...shadow(false) } });
-  r.define('SpotLight', { extends: 'Node3D', description: 'Cone light along the node\'s -Z.', props: { color: P.color({ default: '#ffffff' }), intensity: P.number({ min: 0, default: 10, unit: 'cd' }), range: P.number({ min: 0, unit: 'm', default: 10 }), angle: P.number({ min: 1, max: 89, unit: 'deg', default: 30, description: 'Half-angle of the cone.' }), penumbra: P.number({ min: 0, max: 1, default: 0.2 }), ...shadow(false) } });
+  r.define('DirectionalLight', { extends: 'Node3D', description: 'Sun-like light along the node\'s -Z. The shadow box is centred on the node.', props: { color: P.color({ default: '#ffffff' }), intensity: P.number({ min: 0, default: 2, step: 0.05, precision: 2 }), ...shadow(true), shadowExtent: P.number({ min: 0.5, unit: 'm', default: 8, step: 0.1, visibleIf: 'castShadow', description: 'Half the width of the shadow box.' }) } });
+  r.define('PointLight', { extends: 'Node3D', description: 'Omni light with range.', props: { color: P.color({ default: '#ffffff' }), intensity: P.number({ min: 0, default: 1, unit: 'cd', step: 0.05, precision: 2 }), range: P.number({ min: 0, unit: 'm', default: 10, step: 0.1 }), ...shadow(false) } });
+  r.define('SpotLight', { extends: 'Node3D', description: 'Cone light along the node\'s -Z.', props: { color: P.color({ default: '#ffffff' }), intensity: P.number({ min: 0, default: 10, unit: 'cd', step: 0.05, precision: 2 }), range: P.number({ min: 0, unit: 'm', default: 10, step: 0.1 }), angle: P.number({ min: 1, max: 89, unit: 'deg', default: 30, step: 0.5, precision: 1, description: 'Half-angle of the cone.' }), penumbra: P.number({ min: 0, max: 1, default: 0.2, step: 0.01, precision: 2 }), ...shadow(false) } });
   r.define('Environment', {
     extends: 'Node3D', description: 'How the world looks around everything: background, environment lighting, ambient, fog, tone mapping, exposure, an optional ground plane. One per scene (the first wins).',
     props: {
       background: P.enum(['color', 'gradient', 'environment', 'transparent'], { default: 'color' }),
-      backgroundColor: P.color({ default: '#c9d3df' }),
-      skyTopColor: P.color({ default: '#6f9bd1' }), skyHorizonColor: P.color({ default: '#dfe7ef' }),
+      backgroundColor: P.color({ default: '#c9d3df', visibleIf: "background == 'color'" }),
+      skyTopColor: P.color({ default: '#6f9bd1', visibleIf: "background == 'gradient'" }), skyHorizonColor: P.color({ default: '#dfe7ef', visibleIf: "background == 'gradient'" }),
       environment: P.enum(['none', 'room'], { default: 'room', description: 'Image-based lighting: none, or a neutral studio room.' }),
-      environmentIntensity: P.number({ min: 0, default: 0.4 }),
+      environmentIntensity: P.number({ min: 0, default: 0.4, step: 0.01, precision: 2, enabledIf: "environment != 'none'" }),
       ambientColor: P.color({ default: '#ffffff' }), ambientIntensity: P.number({ min: 0, default: 0.6 }),
       fog: P.enum(['none', 'linear', 'exponential'], { default: 'none' }),
-      fogColor: P.color({ default: '#c9d3df' }), fogNear: P.number({ min: 0, unit: 'm', default: 10 }), fogFar: P.number({ min: 0, unit: 'm', default: 60 }), fogDensity: P.number({ min: 0, default: 0.02 }),
+      fogColor: P.color({ default: '#c9d3df', visibleIf: "fog != 'none'" }), fogNear: P.number({ min: 0, unit: 'm', default: 10, visibleIf: "fog == 'linear'" }), fogFar: P.number({ min: 0, unit: 'm', default: 60, visibleIf: "fog == 'linear'" }), fogDensity: P.number({ min: 0, default: 0.02, step: 0.001, precision: 3, visibleIf: "fog == 'exponential'" }),
       toneMapping: P.enum(['neutral', 'agx', 'aces', 'none'], { default: 'neutral', description: 'Neutral keeps MToon\'s authored colours.' }),
       exposure: P.number({ min: 0, default: 1 }),
       post: { schema: { description: 'The post stack (M2 W3): a preset ("anime", "clean") or a list of effects [{ effect: edges | dof | bloom | grade | lut | toneMapping | vignette | grain | anime | chromaticAberration | smaa, …params }]. Lengths in px at 1080p.', anyOf: [{ type: 'string' }, { type: 'array', items: { type: 'object', required: ['effect'] } }] }, meta: { widget: 'json' } },
       ground: P.boolean({ default: false, description: 'A shadow-receiving ground plane at y = 0.' }),
-      groundColor: P.color({ default: '#9aa3ad' }), groundSize: P.number({ min: 1, unit: 'm', default: 40 }),
+      groundColor: P.color({ default: '#9aa3ad', visibleIf: 'ground' }), groundSize: P.number({ min: 1, unit: 'm', default: 40, visibleIf: 'ground' }),
     },
   });
   // A VRMXI game item (VRMXI-base-draft.md): model, bodies, colliders and sensors, joints, states and verbs come from
@@ -275,7 +275,8 @@ export function m0Registry() {
     extends: 'Node3D', description: 'A collision shape. Under a RigidBody it moves with it; otherwise it is fixed.',
     props: {
       shape: P.enum(['box', 'sphere', 'capsule', 'cylinder', 'convex', 'trimesh'], { default: 'box', sim: true }),
-      size: P.vec3({ unit: 'm', sim: true, description: 'Box extents.' }), radius: P.number({ min: 0, unit: 'm', sim: true }), height: P.number({ min: 0, unit: 'm', sim: true }),
+      // Which size props a shape reads (@vrmxg/physics: a box its size; a sphere its radius; a capsule and a cylinder both).
+      size: P.vec3({ unit: 'm', sim: true, visibleIf: "shape == 'box'", description: 'Box extents.' }), radius: P.number({ min: 0, unit: 'm', sim: true, step: 0.01, visibleIf: "shape == 'sphere' || shape == 'capsule' || shape == 'cylinder'" }), height: P.number({ min: 0, unit: 'm', sim: true, step: 0.01, visibleIf: "shape == 'capsule' || shape == 'cylinder'" }),
       friction: P.number({ min: 0, default: 0.5, sim: true }), restitution: P.number({ min: 0, max: 1, default: 0, sim: true }),
     },
   });

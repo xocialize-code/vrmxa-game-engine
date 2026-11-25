@@ -66,3 +66,63 @@ test('the render queue panel lists jobs with their states', async () => {
   assert.doesNotMatch(html, /id="q-stills"/, 'the extras show for a delivery preset only (the form starts on draft)');
   assert.match(await render(Panel, { jobs: [] }), /Nothing queued\./);
 });
+
+// M5 W4: the inspector's widgets (AB-T-0599, 0600), rendered from registry schemas
+test('the number field: a real input with its id, accessible name and value; mixed says so', async () => {
+  const NumberField = await loadSFC(src('NumberField.vue'));
+  const html = await render(NumberField, { id: 'pos-x', label: 'Position X', value: 1.23456, precision: 3, unit: 'm' });
+  assert.match(html, /<input id="pos-x"[^>]*aria-label="Position X"[^>]*value="1\.235"/);
+  assert.match(html, /title="1\.23456 m"/);
+  const mixed = await render(NumberField, { id: 'prop-intensity', label: 'intensity', value: 2, mixed: true, min: 0, max: 4 });
+  assert.match(mixed, /aria-label="intensity \(mixed values\)"/);
+  assert.match(mixed, /placeholder="—"/);
+  assert.match(mixed, /placeholder="—" value>/, "no value of its own");
+  assert.match(await render(NumberField, { id: 'n', label: 'n', value: 1, min: 0, max: 4 }), /class="num-fill"[^>]*width:calc\(\(100% - 16px\) \* 0\.25\)/);
+});
+
+test('generated fields: a dialogue\'s lines as rows with their own fields, a map, a vector, a condition, a choice', async () => {
+  const ValueField = await loadSFC(src('ValueField.vue'));
+  const { m0Registry } = await import('@vrmxg/registry/m0');
+  const reg = m0Registry();
+  const lines = reg.get('Dialogue').props.lines;
+  const html = await render(ValueField, { id: 'prop-lines', label: 'lines', schema: lines.schema, meta: lines.meta, value: [{ id: 'hi', speaker: 'hana', text: 'Morning!', choices: [{ text: 'Coffee', to: 'end' }] }, { text: 'Bye', future: 1 }], nodes: ['hana', 'mira'] });
+  assert.doesNotMatch(html, /\(JSON\)/, 'no JSON box anywhere');
+  assert.match(html, /id="prop-lines"[^>]*aria-label="lines, 2 rows"/);
+  assert.match(html, /<input id="prop-lines-0-text"[^>]*value="Morning!"[^>]*aria-label="lines 1 text"/);
+  assert.match(html, /id="prop-lines-0-choices-0-text"[^>]*value="Coffee"/, 'a nested list in a row');
+  assert.match(html, /id="prop-lines-1-future"[^>]*aria-label="lines 2 future"/, 'an unknown key is shown, and kept');
+  assert.match(html, /id="prop-lines-0--up"[^>]*aria-label="Move lines 1 up"[^>]*disabled/);
+  assert.match(html, /id="prop-lines-1--remove"[^>]*aria-label="Remove lines 2"/);
+  assert.match(html, /id="prop-lines--add"[^>]*aria-label="Add a row to lines"/);
+  assert.match(html, /id="prop-lines-0-when--set"[^>]*aria-label="Set lines 1 when"/, 'an unset condition waits behind a button');
+  assert.match(html, /id="prop-lines-1-choices--set"/);
+  assert.doesNotMatch(html, /id="prop-lines-0-when-test"/);
+  const ids = [...html.matchAll(/ id="([^"]+)"/g)].map((m) => m[1]);
+  assert.equal(new Set(ids).size, ids.length, 'no two elements share an id');
+  const flags = reg.get('GameRules').props.flags;
+  const map = await render(ValueField, { id: 'prop-flags', label: 'flags', schema: flags.schema, meta: flags.meta, value: { tillClosed: false, lives: 3 } });
+  assert.match(map, /aria-label="flags, 2 entries"/);
+  assert.match(map, /id="prop-flags-tillClosed--key"[^>]*value="tillClosed"/);
+  assert.match(map, /id="prop-flags-lives--kind"[^>]*aria-label="flags lives kind"/);
+  assert.match(map, /<input id="prop-flags-lives"[^>]*value="3"/);
+  const size = reg.get('Collider').props.size;
+  const vec = await render(ValueField, { id: 'prop-size', label: 'size', schema: size.schema, meta: size.meta, value: [1, 2, 0.5] });
+  assert.match(vec, /id="prop-size-z"[^>]*aria-label="size Z"[^>]*value="0\.5"/);
+  const win = reg.get('GameRules').props.win;
+  const cond = await render(ValueField, { id: 'prop-win', label: 'win', schema: win.schema, meta: win.meta, value: { test: 'state', key: 'score', op: 'ge', value: 10 } });
+  assert.match(cond, /id="prop-win-test"/);
+  assert.match(cond, /id="prop-win-key"[^>]*value="score"/);
+  assert.match(cond, /id="prop-win-op"/);
+  assert.doesNotMatch(cond, /id="prop-win--newkey"/, 'additionalProperties false: no new keys');
+  const post = reg.get('Environment').props.post;
+  const choice = await render(ValueField, { id: 'prop-post', label: 'post', schema: post.schema, meta: post.meta, value: [{ effect: 'bloom', strength: 0.4 }] });
+  assert.match(choice, /id="prop-post--kind"/);
+  assert.match(choice, /id="prop-post-0-effect"[^>]*value="bloom"/);
+  assert.match(choice, /id="prop-post-0-strength"[^>]*value="0\.4"/);
+  const keys = await render(ValueField, { id: 'k', label: 'keys', schema: {}, value: [[0, 0], [12, 1.5]] });
+  assert.match(keys, /aria-label="keys, 2 keys"/);
+  assert.match(keys, /id="k-1-y"[^>]*aria-label="keys 2 value"[^>]*value="1\.5"/);
+  assert.match(keys, /<polyline points="0,40 120,0"/);
+  const off = await render(ValueField, { id: 'prop-shadowExtent', label: 'shadowExtent', schema: { type: 'number' }, value: 8, disabled: true });
+  assert.match(off, /id="prop-shadowExtent"[^>]*disabled/);
+});
