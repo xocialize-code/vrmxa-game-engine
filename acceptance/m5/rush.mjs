@@ -204,7 +204,7 @@ fs.writeFileSync(path.join(RESULTS, 'm5-rush.json'), `${JSON.stringify({
   check: 'M5 W10: The Morning Rush won and lost through the game app in Chromium by a scripted player; each recorded session replayed in Node and in the game app on WebGPU and WebGL to the same per-step hashes (AB-T-0620, exit checks 7 and 10)',
   ok, node: process.version, chromium: version, build: { game: build.game.id, files: exported.files, bytes: exported.bytes, digest: exported.manifest.digest, manifest: exported.sha256, runtime: `${build.manifest.runtime.name} ${build.manifest.runtime.version}` },
   sessions: Object.fromEntries([...(only && prior ? Object.entries(prior.sessions ?? {}) : []), ...sessions.map((s) => [s.name, { steps: s.log.hashes.length, scenes: s.scenes, final: s.log.hashes.at(-1), seen: s.seen, tasks: s.tasks, log: `acceptance/results/m5-rush/${s.name}.json` }])]),
-  node, appReplays, checks,
+  nodeReplays: node, appReplays, checks,
 }, null, 1)}\n`);
 console.log(ok ? 'all checks pass' : 'some checks failed');
 process.exit(ok ? 0 : 1);

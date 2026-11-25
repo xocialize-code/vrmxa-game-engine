@@ -1,7 +1,7 @@
 // M5 W10 (AB-T-0620): a save for the Mac game app's hand test, taken from the recorded win session (rush.mjs) on the
 // build it was played on: the session replayed in Node until Mira stands at the open till with its prompt showing (every
-// regular served), then saved into a player's slot, as the app's Save Game does (GameSession.saveSlot, the build's
-// digest in the file). It is written as the shell's saves.write writes a slot (`<slot>.vrmxgsave` and
+// regular served), then saved into a player's slot as the app's Save Game saves (the flow's save file, the build's
+// digest in it). It is written as the shell's saves.write writes a slot (`<slot>.vrmxgsave` and
 // `<slot>.summary.json`), into the folder the hand test points VRMXG_SHELL_SAVES at. Loading it and pressing E wins.
 //
 //   node acceptance/m5/rush-save.mjs <build> <saves folder> [--log acceptance/results/m5-rush/win.json] [--slot slot-1]
@@ -48,6 +48,9 @@ for (;;) {
   if (!session.advance()) { if (session.replaying.left <= 0) break; await session.flow.settle(); }
 }
 if (at === null) { console.error('the session never stood at the open till'); process.exit(1); }
-const entry = await session.saveSlot(slot, { name: saveName({ title: build.game.title, view: session.view() }) });
+// a replay's flow has no store (it writes nothing of the player's), so the file is taken from the flow and written
+// through the session's store, which stamps it with the build as every save the app writes is
+const name = saveName({ title: build.game.title, view: session.view() });
+const entry = await session._store.write(slot, session.flow.save({ name }));
 console.log(JSON.stringify({ slot, step: at, scene: session.scene, build: build.manifest.digest.slice(0, 16), name: entry.name, out }));
 session.end();
