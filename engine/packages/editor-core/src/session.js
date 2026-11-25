@@ -7,7 +7,7 @@
 // Play in place: Play takes a snapshot of the document (its canonical text and hash) and hands a copy to the app's
 // world builder; the edited document is never touched while playing. Stop disposes the play world and checks the
 // document is exactly as it was before Play (text and hash), which is the promise the editor makes.
-import { createEditor, createValidator, parse, serialize, prefabNodes, mergeOverride, overrideEntries, withOverride, withoutOverride, applyToPrefab, prefabUsers, fieldValue } from '@vrmxg/scene';
+import { createEditor, createValidator, parse, serialize, prefabNodes, mergeOverride, overrideEntries, withOverride, withoutOverride, applyToPrefab, prefabUsers, fieldValue, innerIds, rawField } from '@vrmxg/scene';
 import { hashValue } from '@vrmxg/snapshot';
 import { assetType, nodeTypeFor, slug, uniqueId } from './assets.js';
 import { SequenceCommands } from './sequence.js';
@@ -152,6 +152,7 @@ export class EditorSession {
     if (!type) throw new Error(`${ref}: not a file the editor places`);
     const nodeType = nodeTypeFor(this.reg, type);
     if (!nodeType) throw new Error(`${ref}: a ${type} isn't placed in a scene (no node type takes it)`);
+    if (type === 'vrmxs') this.mustPlacePrefab(ref);
     const base = slug(name ?? ref.split('/').pop().replace(/\.[^.]+$/, ''));
     const ops = [];
     let asset = this.doc.assets.find((a) => a.ref === ref);
@@ -198,6 +199,7 @@ export class EditorSession {
     const t = this.reg.get(n.type), type = assetType(ref);
     if (!t?.asset) throw new Error(`a ${n.type} has no asset`);
     if (!type || !t.asset.types.includes(type)) throw new Error(`${ref}: a ${n.type} takes ${t.asset.types.join(' or ')}, not ${type ?? 'this file'}`);
+    if (type === 'vrmxs') this.mustPlacePrefab(ref);
     const ops = [];
     let asset = this.doc.assets.find((a) => a.ref === ref && a.type === type);
     if (asset?.id === n.asset) return;
@@ -206,8 +208,32 @@ export class EditorSession {
       ops.push({ op: 'addAsset', asset });
     }
     ops.push({ op: 'set', id, path: 'asset', value: asset.id });
+    // another prefab: the overrides that name nodes it doesn't have go, in the same step (the rest still apply)
+    if (n.type === 'Instance' && n.overrides) {
+      const ids = innerIds(this.prefabs.get(ref), this.prefabs);
+      const kept = Object.fromEntries(Object.entries(n.overrides).filter(([target]) => ids.has(target)));
+      if (Object.keys(kept).length !== Object.keys(n.overrides).length) ops.push({ op: 'set', id, path: 'overrides', value: Object.keys(kept).length ? kept : undefined });
+    }
     if (n.asset !== undefined && !this.doc.nodes.some((x) => x !== n && x.asset === n.asset)) ops.push({ op: 'removeAsset', id: n.asset });
     this.run(`Set ${id}.asset`, ops);
+  }
+
+  /**
+   * A prefab can be placed here: its document is loaded (the app reads it first: Project.prefabs), and it doesn't lead
+   * back to this scene's own file (an instance cycle a saved file couldn't load).
+   */
+  mustPlacePrefab(ref) {
+    if (!this.prefabs.has(ref)) throw new Error(`prefab ${ref} isn't loaded (the app reads it before placing it)`);
+    if (this.path && this.reaches(ref, this.path)) throw new Error(`${ref} ${ref === this.path ? 'is this scene itself' : `uses ${this.path}, this scene`}: an instance of it here would be a cycle`);
+  }
+
+  /** Does prefab `from` lead to `to` (itself, or through the prefabs it places)? */
+  reaches(from, to, seen = new Set()) {
+    if (from === to) return true;
+    if (seen.has(from)) return false;
+    seen.add(from);
+    const d = this.prefabs.get(from);
+    return (d?.assets ?? []).some((a) => a.type === 'vrmxs' && this.reaches(a.ref, to, seen));
   }
 
   /** Delete nodes (with their children); asset entries nothing uses any more go too. */
@@ -451,7 +477,7 @@ export class EditorSession {
     if (inst?.type !== 'Instance') return null;
     const ref = this.prefabRef(inst), prefab = this.prefabOf(inst);
     let entries = [];
-    try { entries = prefab ? overrideEntries(inst, prefab, this.prefabs) : []; } catch { entries = []; }
+    try { entries = overrideEntries(inst, prefab, this.prefabs); } catch { entries = []; } // no prefab: listed as unresolved
     return { id: instanceId, ref, loaded: !!prefab, entries, users: ref ? this.prefabUses(ref) : [] };
   }
 
@@ -507,7 +533,9 @@ export class EditorSession {
    * Apply overrides of an instance to its prefab: the instance's values are written into the prefab's document (every
    * instance of it, in every scene, follows once it's saved) and the overrides are dropped. One field, one inner node's,
    * or all (as revertOverride picks them); stale ones (no such node in the prefab) are left. One undo step that puts the
-   * prefab back too. Refused when the prefab would come out invalid. → what was written: { ref, fields }
+   * prefab back too. Refused when the prefab would come out invalid. This scene's other instances of the prefab that
+   * override an applied field with the value the prefab now has lose that override in the same step (they follow the
+   * prefab again). → what was written: { ref, fields, followed } (followed: those instances' ids)
    * @param {string} instanceId @param {string} [target] @param {string} [field]
    */
   applyOverride(instanceId, target, field) {
@@ -525,9 +553,23 @@ export class EditorSession {
     const had = new Set(this.validator.check(before, { prefabs: this.prefabs }).errors);
     const errs = this.validator.check(doc, { prefabs: trial }).errors.filter((e) => !had.has(e));
     if (errs.length) throw new Error(`Apply to ${o.ref} refused: the prefab would be invalid (${errs.slice(0, 3).join('; ')})`);
+    // this scene's other instances of the prefab that override an applied field with the value the prefab now has: those
+    // overrides go in the same step, so they follow the prefab again (an override that equals the prefab only pins it)
+    const nodes = prefabNodes(doc, trial), others = [];
+    const ops = [{ op: 'prefab', ref: o.ref, doc }, { op: 'set', id: instanceId, path: 'overrides', value: overrides }];
+    for (const n of this.doc.nodes) {
+      if (n.id === instanceId || n.type !== 'Instance' || !n.overrides || this.prefabRef(n) !== o.ref) continue;
+      let next = n.overrides;
+      for (const e of picked) {
+        const base = nodes.get(e.target);
+        if (!base || rawField(next?.[e.target], e.field) === undefined) continue;
+        if (sameDeep(fieldValue(mergeOverride(base, next[e.target]), e.field), fieldValue(base, e.field))) next = withoutOverride(next, e.target, e.field);
+      }
+      if (!sameJSON(next, n.overrides)) { ops.push({ op: 'set', id: n.id, path: 'overrides', value: next }); others.push(n.id); }
+    }
     const what = target === undefined ? `${instanceId}'s overrides` : field === undefined ? `${instanceId}/${target}` : `${instanceId}/${target}.${field.replace(/^props\./, '')}`;
-    this.run(`Apply ${what} to ${o.ref}`, [{ op: 'prefab', ref: o.ref, doc }, { op: 'set', id: instanceId, path: 'overrides', value: overrides }]);
-    return { ref: o.ref, fields: picked.length };
+    this.run(`Apply ${what} to ${o.ref}`, ops);
+    return { ref: o.ref, fields: picked.length, followed: others };
   }
 
   /** Prefabs an Apply has changed since they were read or saved: what Save writes beside the scene. */

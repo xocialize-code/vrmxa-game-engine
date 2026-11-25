@@ -81,7 +81,7 @@ test('Apply writes the prefab; every other instance follows; one undo step puts 
   s.setOverride('door/hinge', 'props.mass', 15);
   assert.ok(!s.dirtyPrefabs().length);
   const r = s.applyOverride('door', 'panel', 'props.size');
-  assert.deepEqual(r, { ref: 'prefabs/door.vrmxs', fields: 1 });
+  assert.deepEqual(r, { ref: 'prefabs/door.vrmxs', fields: 1, followed: [] });
   assert.equal(s.history().undo, 'Apply door/panel.size to prefabs/door.vrmxs');
   assert.deepEqual(s.node('door').overrides, { hinge: { props: { mass: 15 } } }, 'the applied override is dropped, the other kept');
   assert.deepEqual(s.dirtyPrefabs(), ['prefabs/door.vrmxs']);
@@ -166,4 +166,49 @@ test('an edit an override can\'t express (taking away a key or value the prefab 
   // a behaviour the prefab has, dropped: that one is said ({ remove: true })
   s.setOverride('door/hinge', 'behaviours.hinge', undefined);
   assert.deepEqual(s.node('door').overrides, { hinge: { behaviours: [{ use: 'hinge', remove: true }] } });
+});
+
+test('Apply: this scene\'s other instances that set the same value follow the prefab again, in the same undo step', () => {
+  const s = doors();
+  s.setOverride('door/hinge', 'props.mass', 20);
+  s.setOverride('door-2/hinge', 'props.mass', 20); // the same value
+  s.setOverride('door-3/hinge', 'props.mass', 30); // another value: kept
+  s.setOverride('door-2/panel', 'name', 'Pane'); // another field: kept
+  const r = s.applyOverride('door', 'hinge', 'props.mass');
+  assert.deepEqual(r.followed, ['door-2']);
+  assert.equal(s.node('door').overrides, undefined);
+  assert.deepEqual(s.node('door-2').overrides, { panel: { name: 'Pane' } });
+  assert.deepEqual(s.node('door-3').overrides, { hinge: { props: { mass: 30 } } });
+  s.undo();
+  assert.deepEqual(s.node('door-2').overrides, { hinge: { props: { mass: 20 } }, panel: { name: 'Pane' } }, 'one undo puts them back too');
+});
+
+test('placing a prefab: it must be loaded, and must not lead back to this scene; another prefab drops the overrides it can\'t resolve', () => {
+  const s = EditorSession.empty(reg, 'place');
+  assert.throws(() => s.addFromAsset('prefabs/door.vrmxs'), /isn't loaded/);
+  s.prefabs = loadPrefabs();
+  const d = s.addFromAsset('prefabs/door.vrmxs');
+  s.setOverride(`${d}/hinge`, 'props.mass', 20);
+  s.setOverride(`${d}/door`, 'name', 'Front');
+  s.setNodeAsset(d, 'prefabs/double-door.vrmxs');
+  assert.equal(s.node(d).overrides, undefined, 'hinge and door aren\'t nodes of the double door');
+  s.undo();
+  assert.deepEqual(s.node(d).overrides, { door: { name: 'Front' }, hinge: { props: { mass: 20 } } });
+  // the double door's own file, open as a scene: an instance of itself would be a cycle
+  const dd = new EditorSession({ registry: reg, text: read('prefabs/double-door.vrmxs'), prefabs: loadPrefabs(), path: 'prefabs/double-door.vrmxs' });
+  assert.throws(() => dd.setNodeAsset('left', 'prefabs/double-door.vrmxs'), /is this scene itself/);
+  assert.throws(() => dd.addFromAsset('prefabs/double-door.vrmxs'), /cycle/);
+  const door = new EditorSession({ registry: reg, text: read('prefabs/door.vrmxs'), prefabs: loadPrefabs(), path: 'prefabs/door.vrmxs' });
+  assert.throws(() => door.addFromAsset('prefabs/double-door.vrmxs'), /uses prefabs\/door\.vrmxs, this scene/);
+});
+
+test('an instance whose prefab isn\'t there lists its overrides as unresolved, and Revert clears them', () => {
+  const s = doors();
+  s.setOverride('door/hinge', 'props.mass', 20);
+  s.prefabs.delete('prefabs/door.vrmxs'); // renamed or missing
+  const o = s.overridesOf('door');
+  assert.equal(o.loaded, false);
+  assert.deepEqual(o.entries.map((e) => [e.target, e.field, e.missing, e.value]), [['hinge', 'props.mass', true, 20]]);
+  s.revertOverride('door');
+  assert.equal(s.node('door').overrides, undefined);
 });

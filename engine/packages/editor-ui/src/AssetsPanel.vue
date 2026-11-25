@@ -6,7 +6,7 @@
 // (no drag needed). Plain data in, events
 // out; the decisions are assets-ui.js's.
 import { computed, ref } from 'vue';
-import { ASSET_FILTERS, filterAssets, filterCounts, assetFolders, dragTypes } from './assets-ui.js';
+import { ASSET_FILTERS, ASSET_DRAG_ALLOWED, filterAssets, filterCounts, assetFolders, dragTypes } from './assets-ui.js';
 import { idPart } from './fields.js';
 
 const props = defineProps({
@@ -30,7 +30,7 @@ const tileId = (ref) => `asset-${ref.replace(/[^A-Za-z0-9]+/g, '-')}`;
 const pickId = (ref) => `pick-${ref.replace(/[^A-Za-z0-9]+/g, '-')}`;
 function dragStart(e, entry) {
   for (const [type, data] of Object.entries(dragTypes(entry))) e.dataTransfer.setData(type, data);
-  e.dataTransfer.effectAllowed = 'copy';
+  e.dataTransfer.effectAllowed = ASSET_DRAG_ALLOWED;
 }
 const tileName = (e) => `${e.label} ${e.ref}${e.nodeType ? '' : ' (not placed in a scene)'}${e.thumb ? ', thumbnail' : ''}${props.picked === e.ref ? ', picked' : ''}`;
 </script>

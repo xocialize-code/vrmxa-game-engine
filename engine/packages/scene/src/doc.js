@@ -123,6 +123,21 @@ export function createValidator(reg) {
       if (reg.get(from.type) && !reg.surface(from).signals[c.signal]) errors.push(`/connections/${i} ${from.type} "${c.from}" has no signal "${c.signal}" (has: ${Object.keys(reg.surface(from).signals).join(', ')})`);
       if (reg.get(to.type) && !reg.surface(to).actions[c.call]) errors.push(`/connections/${i} ${to.type} "${c.to}" has no action "${c.call}" (has: ${Object.keys(reg.surface(to).actions).join(', ')})`);
     }
+    // The connections inside prefab instances, as each instance's overrides leave its nodes (M5 W6): an override that drops
+    // a behaviour a prefab's own connection calls breaks that connection here, as an Apply of it would break the prefab.
+    if (prefabs && nodes.some((n) => n.type === 'Instance')) {
+      let flat = null;
+      try { flat = flatten(doc, prefabs); } catch { flat = null; } // a missing prefab or a cycle: reported where it is
+      if (flat) {
+        const fb = new Map(flat.nodes.map((n) => [n.id, n]));
+        for (const c of flat.connections.slice(0, flat.connections.length - (doc.connections?.length ?? 0))) { // the instances' own, before the scene's
+          const from = fb.get(c.from), to = fb.get(c.to);
+          if (!from || !to) continue;
+          if (reg.get(from.type) && !reg.surface(from).signals[c.signal]) errors.push(`prefab connection ${c.from} → ${c.to}: ${from.type} "${c.from}" has no signal "${c.signal}" here (an override removed it?)`);
+          if (reg.get(to.type) && !reg.surface(to).actions[c.call]) errors.push(`prefab connection ${c.from} → ${c.to}: ${to.type} "${c.to}" has no action "${c.call}" here (an override removed it?)`);
+        }
+      }
+    }
     return { ok: errors.length === 0, errors, warnings };
   }
   return { check, validateSchema: validate };

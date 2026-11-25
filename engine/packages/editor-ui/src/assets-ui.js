@@ -101,6 +101,23 @@ export function assetFolders(entries) {
 export const ASSET_MIME = 'text/x-vrmxg-asset';
 export const NODE_MIME = 'text/x-vrmxg-node';
 const KIND_PREFIX = 'application/x-vrmxg-kind-';
+/**
+ * The effects a drag allows (`effectAllowed`) and the one a drop target asks for (`dropEffect`) must agree, or the
+ * browser turns the drop into "none" and no drop event fires (the HTML drag-and-drop rules). A tree row's drag allows
+ * copy and move (it reparents with move; a node slot takes a copy of its id); an asset's allows copy. Never 'link':
+ * WebKit on macOS reports an in-page drag set to 'all' as 'copyMove' (measured in the Mac editor, M5 W6), so a slot
+ * asking for 'link' never gets its drop.
+ */
+export const NODE_DRAG_ALLOWED = 'copyMove', ASSET_DRAG_ALLOWED = 'copy';
+/** The dropEffect a slot asks for: every slot copies (a file's path, a node's id). */
+export const dropEffectFor = () => 'copy';
+/** Does an effectAllowed permit a dropEffect (the HTML rules: 'all', 'copyMove', 'copyLink', 'linkMove' or one effect)? */
+export function effectPermits(allowed, effect) {
+  if (effect === 'none') return true;
+  if (allowed === 'all' || allowed === 'uninitialized') return true;
+  return { copyMove: ['copy', 'move'], copyLink: ['copy', 'link'], linkMove: ['link', 'move'] }[allowed]?.includes(effect) ?? allowed === effect;
+}
+
 /** The drag's types for an entry (set them all on dragstart; only types, not data, are readable during dragover). */
 export const dragTypes = (entry) => ({ [ASSET_MIME]: entry.ref, [`${KIND_PREFIX}${entry.kind}`]: entry.ref });
 /** The asset kind a drag carries, from its types (dragover), or null; 'node' for a scene tree row. */

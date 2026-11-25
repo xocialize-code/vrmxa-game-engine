@@ -13,7 +13,7 @@
 import { computed, ref } from 'vue';
 import NumberField from '@vrmxg/editor-ui/NumberField.vue';
 import ValueField from '@vrmxg/editor-ui/ValueField.vue';
-import { idPart, pasteVerdict, draggedKind, dropVerdict, fileKind, ASSET_MIME } from '@vrmxg/editor-ui';
+import { idPart, pasteVerdict, draggedKind, dropVerdict, dropEffectFor, fileKind, ASSET_MIME } from '@vrmxg/editor-ui';
 
 const props = defineProps({
   data: Object,
@@ -52,7 +52,7 @@ const slot = () => ({ slot: 'asset', types: props.data?.assetSlot?.types ?? [] }
 function slotOver(e) {
   const v = dropVerdict(draggedKind(e.dataTransfer?.types), slot());
   slotState.value = v.ok ? 'takes' : `refuses: ${v.reason}`;
-  if (v.ok) { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; } else if (e.dataTransfer) e.dataTransfer.dropEffect = 'none';
+  if (v.ok) { e.preventDefault(); e.dataTransfer.dropEffect = dropEffectFor(slot()); } else if (e.dataTransfer) e.dataTransfer.dropEffect = 'none';
 }
 function slotDrop(e) {
   slotState.value = '';
@@ -151,6 +151,9 @@ const pickedFits = () => !!props.picked && dropVerdict(fileKind(props.picked), s
         <h3>Overrides <span class="muted">· {{ data.overrides.ref }}</span></h3>
         <p id="overrides-summary" class="muted small" :aria-label="`${data.overrides.id}: ${data.overrides.entries.length} overrides of ${data.overrides.ref}; ${data.overrides.users} instances of it in this scene`">
           {{ data.overrides.entries.length ? `${data.overrides.entries.length} override${data.overrides.entries.length === 1 ? '' : 's'}` : 'No overrides: the instance is the prefab as it is' }} · {{ data.overrides.users }} instance{{ data.overrides.users === 1 ? '' : 's' }} of it in this scene
+        </p>
+        <p v-if="!data.overrides.loaded" id="overrides-unresolved" class="small slot-why" role="status" :aria-label="`${data.overrides.ref ?? 'The prefab'} isn't in the project: its overrides are listed unresolved; Revert clears them`">
+          {{ data.overrides.ref ?? 'The prefab' }} isn't in the project (missing or renamed): the overrides below can't be shown against it. Revert clears them.
         </p>
         <ul class="ov-list">
           <li v-for="e in data.overrides.entries" :id="`ov-row-${rowId(e)}`" :key="e.key" :class="{ stale: e.missing }" :aria-label="`${e.target} ${e.label}: ${e.change === 'added' ? `added ${e.value}` : e.change === 'removed' ? `${e.base}, removed` : `${e.base} to ${e.value}`}${e.missing ? ' (the prefab has no such node)' : ''}`">

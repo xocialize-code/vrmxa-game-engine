@@ -14,7 +14,7 @@ import { renderViews, gridLayout } from '@vrmxg/post';
 import { composeSequence, isSequence, SequencePlayer, subtitles } from '@vrmxg/sequence';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { m0Registry } from '@vrmxg/registry/m0';
-import { parse, describeType, serialize, overridesText } from '@vrmxg/scene';
+import { parse, describeType, serialize, overridesText, prefabNodes } from '@vrmxg/scene';
 import { makeTake, isTake, takeToSequence, installDirector, demoModel, httpModel } from '@vrmxg/director';
 import { shellTTS, httpTTS } from '@vrmxg/voice';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
@@ -317,7 +317,7 @@ export class EditorHost {
    * `mtoonMaterial`: the MToon class of the host that will draw the world (M4 W10: a WebGL export from a WebGPU view
    * needs WebGL's MToon; WebGL can't draw MToonNodeMaterial); the view's by default.
    */
-  async buildFrom(doc, { play = false, heard = play, cache = !play, mtoonMaterial = this.host.mtoonMaterial, prefabs = this.session?.prefabs ?? new Map() } = {}) {
+  async buildFrom(doc, { play = false, heard = play, cache = !play, mtoonMaterial = this.host.mtoonMaterial, prefabs = this.session?.prefabs ?? new Map(), timed = true } = {}) {
     const p = this.project;
     if (this.cacheFor !== p) {
       // filled once per project; every build waits for the same fill (M5 W6: thumbnails build beside the edit view, and a
@@ -334,9 +334,10 @@ export class EditorHost {
     if (this.cacheFor !== p) throw new Error('the project changed while a world was being built');
     if (this.setScene && isSequence(doc)) doc = composeSequence(doc, this.setScene.doc); // a sequence plays in its set
     const sample = { scene: this.sceneRef, doc, prefabs, animations: this.animCache, bytes: (ref) => p.bytes(ref), personas: this.personasCache ?? null };
-    this.buildTimings = {};
+    const timings = {}; // a thumbnail's build (timed: false) leaves the status line's timings alone
+    if (timed) this.buildTimings = timings;
     if (heard && !this.audio) this.audio = new AudioOutput(); // made on the first Play: that click is the gesture that lets it sound
-    const world = await buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings: this.buildTimings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial });
+    const world = await buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial });
     this._built++;
     return world;
   }
@@ -468,12 +469,22 @@ export class EditorHost {
   }
 
   /** Place an asset: dropped at a point of the viewport, or (from the list's Add button) where the view looks. */
-  addAsset(ref, clientX, clientY) {
+  async addAsset(ref, clientX, clientY) {
     // the first thing in an empty scene goes at the origin (a set); later ones where the view looks
     const empty = this.session.doc.nodes.every((n) => n.parent === undefined);
     const at = clientX !== undefined ? this.dropPoint(clientX, clientY) : empty ? [0, 0, 0] : this.lookPoint();
     const snapped = this.snap ? at.map((v) => Math.round(v / SNAP.translate) * SNAP.translate) : at;
+    await this.loadPrefab(ref);
     return this.session.addFromAsset(ref, { at: snapped });
+  }
+
+  /**
+   * A prefab the scene doesn't use yet, read into the session's prefabs (and the prefabs it places) before an instance of
+   * it is made (M5 W6): the session refuses one it hasn't loaded, as the edit view couldn't build it.
+   */
+  async loadPrefab(ref) {
+    if (!ref.endsWith('.vrmxs') || this.session.prefabs.has(ref) || !this.project?.has(ref)) return;
+    await this.project.prefabs({ assets: [{ type: 'vrmxs', ref }] }, this.session.prefabs);
   }
 
   /** The point of the ground the view centres on. */
@@ -551,10 +562,14 @@ export class EditorHost {
     const mine = new Map(view.entries.filter((e) => e.target === i.target).map((e) => [e.field, e]));
     const props = sharedFields([inspectorFields(d, n)]).map((f) => ({ ...f, ov: mine.get(`props.${f.key}`) ?? null }));
     const t = this.transformOf(n), b = this.transformOf(i.base);
+    // a node reference inside a prefab names a node of that prefab: the options (and a paste's check) are its ids, not the scene's
+    const at = i.target.includes('/') ? `${i.target.slice(0, i.target.lastIndexOf('/'))}/` : '';
+    let local = [];
+    try { local = [...prefabNodes(s.prefabOf(s.node(i.instance)), s.prefabs).keys()].filter((k) => k.startsWith(at) && !k.slice(at.length).includes('/')).map((k) => k.slice(at.length)); } catch { local = []; }
     const part = (field, v) => (mine.has(field) ? { ...mine.get(field), base: v.map((x) => +x.toFixed(3)).join(', ') } : null);
     return {
       id: i.id, ids: [i.id], multi: false, type: n.type, types: [n.type], name: n.name ?? '', parent: null, description: d.description, asset: null,
-      p: t.p, r: t.r, s: t.s, props, behaviours: (n.behaviours ?? []).map((x) => x.use), nodes: s.doc.nodes.map((x) => x.id), sameType: [],
+      p: t.p, r: t.r, s: t.s, props, behaviours: (n.behaviours ?? []).map((x) => x.use), nodes: local, sameType: [],
       inner: { instance: i.instance, target: i.target, ref: i.ref }, assetSlot: null,
       ov: { name: mine.get('name') ?? null, p: part('transform.p', b.p), r: part('transform.q', b.r), s: part('transform.s', b.s) },
       overrides: view,
@@ -628,7 +643,7 @@ export class EditorHost {
   }
 
   /** A file from the assets panel into the primary node's asset slot: one undo step (refused for the wrong kind). */
-  setNodeAsset(id, ref) { return this.session.setNodeAsset(id, ref); }
+  async setNodeAsset(id, ref) { await this.loadPrefab(ref); return this.session.setNodeAsset(id, ref); }
 
   /** A node of the document, or an inner node of an instance as the instance has it. */
   nodeOf(id) { return this.session.node(id) ?? this.session.innerNode(id)?.node ?? null; }
@@ -702,7 +717,7 @@ export class EditorHost {
       try { stats = (await call('project.stat', { paths: entries.map((e) => e.ref) })).stats ?? {}; this._assetThumbCache = true; } catch { stats = {}; }
     }
     if (p !== this.project || gen !== this.assetThumbs.gen || this.exporting) return;
-    return this.assetThumbs.load(entries, stats);
+    return this.assetThumbs.load(entries, stats, p.path ?? p.name); // cached per project, not only per path
   }
 
   /** The thumbnails' offline host (made on the first draw, let go by releaseAssetThumbs). */
@@ -910,8 +925,8 @@ export class EditorHost {
     const [width, height] = SIZES[size], rate = RATES[fps];
     this.exporting = { n: 0, frames: 0, phase: 'building' }; this.error = ''; this.changed();
     let world = null;
-    await this.releaseAssetThumbs(); // the thumbnails' host goes first (M5 W6); the next startAssetThumbs makes a fresh one
     try {
+      await this.releaseAssetThumbs(); // the thumbnails' host goes first (M5 W6), inside the try: a throw still ends the export
       const seqDoc = take === 'sequence' ? (doc ?? parse(this.session.text())) : null;
       // the export's host first: its world is built with that host's MToon (another backend's, when the job says)
       this.exportHost ??= await this.offlineHost(backend);
@@ -977,8 +992,8 @@ export class EditorHost {
     const [width, height] = SIZES[x.size];
     this.exporting = { n: 0, frames: order.length, phase: 'checking' }; this.changed();
     let world = null, host = null, rb = null;
-    await this.releaseAssetThumbs(); // M5 W6: as before an export
     try {
+      await this.releaseAssetThumbs(); // M5 W6: as before an export
       ({ world } = await this.takeWorld('sequence'));
       const player = new SequencePlayer(world.tree, { every: 120 });
       host = await this.offlineHost();

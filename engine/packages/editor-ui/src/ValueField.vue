@@ -9,7 +9,7 @@
 // panel when its kind fits and refuses the rest; a node slot takes a row dragged from the scene tree (assets-ui.js's rules).
 import { computed, ref, watch } from 'vue';
 import NumberField from './NumberField.vue';
-import { draggedKind, dropVerdict, fileKind, ASSET_MIME, NODE_MIME } from './assets-ui.js';
+import { draggedKind, dropVerdict, dropEffectFor, fileKind, ASSET_MIME, NODE_MIME } from './assets-ui.js';
 import {
   plain, widgetOf, fitBranch, branchesOf, branchIndex, defaultFor, matches, setIn, listAdd, listRemove, listMove, rowActions,
   mapRename, mapAdd, mapRemove, freshKey, structRows, rowTitle, curvePoints, nextCurveKey, childOf, schemaOfValue,
@@ -44,11 +44,12 @@ const name = computed(() => (props.mixed ? `${props.label} (mixed values)` : pro
 // drops on an asset or node slot: the drag's kind decides while it hovers, the dropped data again on drop
 const slotOf = () => (widget.value === 'node' ? { slot: 'node' } : { slot: 'prop', types: props.meta?.assetTypes ?? [] });
 const refusing = ref('');
+
 function over(e) {
   if (props.disabled) return;
   const v = dropVerdict(draggedKind(e.dataTransfer?.types), slotOf());
   refusing.value = v.ok ? '' : v.reason;
-  if (v.ok) { e.preventDefault(); e.dataTransfer.dropEffect = widget.value === 'node' ? 'link' : 'copy'; }
+  if (v.ok) { e.preventDefault(); e.dataTransfer.dropEffect = dropEffectFor(slotOf()); } // one the drag allows (assets-ui.js)
 }
 function dropped(e) {
   refusing.value = '';

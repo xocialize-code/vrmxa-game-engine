@@ -156,3 +156,19 @@ test('an asset field pastes only into one taking the same kinds of file', () => 
   assert.equal(pasteVerdict(copyField(sound), clip).ok, false);
   assert.equal(pasteVerdict(copyField(sound), other).ok, true);
 });
+
+test('every drop target asks for an effect its drag allows (else the browser drops nothing): tree rows link to node slots', async () => {
+  const { NODE_DRAG_ALLOWED, ASSET_DRAG_ALLOWED, dropEffectFor, effectPermits } = await import('../src/index.js');
+  assert.equal(effectPermits('copyMove', 'link'), false, 'the pairing that lost every node-slot drop');
+  assert.ok(effectPermits(NODE_DRAG_ALLOWED, dropEffectFor({ slot: 'node' })), 'a tree row onto a node slot');
+  // what WebKit on macOS reports for an in-page drag whatever the page allowed ('all' read back as 'copyMove'): every slot must take it
+  for (const slot of [{ slot: 'node' }, { slot: 'asset' }, { slot: 'prop' }, { slot: 'viewport' }]) assert.ok(effectPermits('copyMove', dropEffectFor(slot)), `${slot.slot} under WebKit`);
+  assert.ok(effectPermits(NODE_DRAG_ALLOWED, 'move'), 'a tree row onto another row (reparent)');
+  for (const slot of [{ slot: 'asset' }, { slot: 'prop' }, { slot: 'viewport' }]) assert.ok(effectPermits(ASSET_DRAG_ALLOWED, dropEffectFor(slot)), slot.slot);
+  // and the components set them from these, never a literal of their own
+  const root = path.join(import.meta.dirname, '../../../..');
+  for (const f of ['apps/editor/src/TreeItem.vue', 'apps/editor/src/App.vue', 'apps/editor/src/Inspector.vue', 'engine/packages/editor-ui/src/ValueField.vue', 'engine/packages/editor-ui/src/AssetsPanel.vue']) {
+    const text = fs.readFileSync(path.join(root, f), 'utf8');
+    assert.doesNotMatch(text, /(effectAllowed|dropEffect)\s*=\s*'(?!none')/, `${f} sets an effect literally`);
+  }
+});

@@ -3,10 +3,11 @@
 // that node, or onto an inspector node slot. Plain data in, events out: the session lives in the host.
 // M5 W6: a prefab instance's inner nodes are rows too (`inner`: selected and edited as overrides, never moved), a dot
 // marks what an instance overrides, a row folds (an instance starts folded), and a search's matches are highlighted.
+import { NODE_DRAG_ALLOWED } from '@vrmxg/editor-ui';
 defineOptions({ name: 'TreeItem' });
 const props = defineProps({ item: Object, selected: Array, depth: { type: Number, default: 0 } });
 const emit = defineEmits(['select', 'reparent', 'fold']);
-const onDrag = (e) => { if (props.item.inner) { e.preventDefault(); return; } e.dataTransfer.setData('text/x-vrmxg-node', props.item.id); e.dataTransfer.effectAllowed = 'copyMove'; };
+const onDrag = (e) => { if (props.item.inner) { e.preventDefault(); return; } e.dataTransfer.setData('text/x-vrmxg-node', props.item.id); e.dataTransfer.effectAllowed = NODE_DRAG_ALLOWED; }; // a move onto a row, a copy of its id onto a node slot
 const onDrop = (e) => { const id = e.dataTransfer.getData('text/x-vrmxg-node'); if (id && id !== props.item.id && !props.item.inner) emit('reparent', id, props.item.id); };
 const name = () => `${props.item.label}, ${props.item.type}${props.item.inner ? ', prefab node' : ''}${props.item.overridden ? ', overridden' : ''}${props.item.folded ? `, ${props.item.folded} inside` : ''}${props.item.match ? ', matches the search' : ''}`;
 </script>

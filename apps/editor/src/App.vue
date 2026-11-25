@@ -6,7 +6,7 @@ import { EditorHost, ADDABLE, SIZES, RATES, CODECS } from './host.js';
 import { bundledProject, openProjectFolder } from './project.js';
 import { McpLink } from './mcp.js';
 import { inShell, call, on, onClosing, setEdited } from '../../shell/js/shell.js';
-import { questions, filterTree, foldTree, readLayout, writeLayout, resize as resizePanel, toggle as togglePanel, splitterKey, shownSize, EDITOR_PANELS, dropVerdict, draggedKind, ASSET_MIME, fileKind, copyField, copyTransform, copyPart } from '@vrmxg/editor-ui';
+import { questions, filterTree, foldTree, readLayout, writeLayout, resize as resizePanel, toggle as togglePanel, splitterKey, shownSize, EDITOR_PANELS, dropVerdict, dropEffectFor, draggedKind, ASSET_MIME, fileKind, copyField, copyTransform, copyPart } from '@vrmxg/editor-ui';
 import { isClip } from '@vrmxg/editor-core';
 import { editorClosing } from './closing.js';
 import { exportClosing } from './export-game.js';
@@ -26,7 +26,7 @@ const ui = reactive({
   ask: null, // { title, text, options: [{ id, label }] }: the window's question before it closes (M5 W8)
   // M5 W6: the tree's search and folds, the assets panel's thumbnails and picked file, the panels' sizes, the field
   // clipboard, the shortcuts sheet
-  treeQuery: '', treeOpen: [], treeClosed: [], thumbs: {}, thumbStatus: '', picked: '', panels: readLayout(null), fieldClip: null, shortcuts: false, note: '',
+  docSel: 0, treeQuery: '', treeOpen: [], treeClosed: [], thumbs: {}, thumbStatus: '', picked: '', panels: readLayout(null), fieldClip: null, shortcuts: false, note: '',
   ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '', check: '', canCheck: false, scene: '', checkRows: '', gameName: '', game: '', gameRunning: false, gameN: 0, gameTotal: 0 },
 });
 /** @type {EditorHost} */ let ed = null; // never reactive
@@ -75,6 +75,7 @@ function refresh(kind = 'all') {
   ui.mode = s.mode; ui.paused = !!ed.paused;
   ui.tree = plainTree(s.tree({ inner: true }));
   ui.selected = [...s.selection];
+  ui.docSel = s.selection.filter((id) => s.node(id)).length; // a prefab's inner nodes aren't deleted, duplicated or copied here (M5 W6)
   ui.inspector = ed.inspect();
   const h = s.history(); ui.undo = h.undo; ui.redo = h.redo;
   ui.dirty = s.dirty; ui.nodes = s.doc.nodes.length; ui.hash = s.hash();
@@ -172,11 +173,13 @@ const tlTransport = (what, v) => act(() => {
 });
 const setScenes = () => ui.scenes.filter((x) => !x.startsWith('prefabs/') && !x.startsWith('sequences/'));
 const reparent = (id, parent) => act(() => ed.session.reparent(id, parent));
-const remove = () => act(() => ed.session.remove());
+const innerOnly = () => ui.selected.length > 0 && !ui.docSel;
+const INNER_WHY = 'a prefab\'s node is edited through its instance\'s overrides: revert or apply them, or change the prefab';
+const remove = () => (innerOnly() ? (ui.note = `Not deleted: ${INNER_WHY}`) : act(() => ed.session.remove()));
 // Duplicate, Copy and Paste (M5 W5): commands on the session, one undo step each; a copy is also put on the system clipboard
 // (as text) by the page's copy event, so it pastes into another editor window
-const duplicate = () => act(() => ed.duplicate());
-const copyNodes = () => act(() => { if (!ed.copy()) throw new Error('select nodes to copy'); });
+const duplicate = () => (innerOnly() ? (ui.note = `Not duplicated: ${INNER_WHY}`) : act(() => ed.duplicate()));
+const copyNodes = () => (innerOnly() ? (ui.note = `Not copied: ${INNER_WHY}`) : act(() => { if (!ed.copy()) throw new Error('select nodes to copy'); }));
 const pasteNodes = (clip) => act(() => ed.paste(clip));
 const setAid = (kind) => ed.setAid(kind, ui.aids[kind]);
 const setBoxSelect = () => ed.setBoxSelect(ui.boxSelect);
@@ -226,7 +229,7 @@ async function applyOverrides(target, field, what) {
   let others = [];
   try { others = await ed.prefabScenes(o.ref); } catch { others = []; }
   const elsewhere = others.length ? ` ${others.length} other scene${others.length === 1 ? '' : 's'} of the project use${others.length === 1 ? 's' : ''} it too (${others.slice(0, 4).join(', ')}${others.length > 4 ? ', …' : ''}).` : ' No other scene of the project uses it.';
-  const text = `${what} of ${o.id} goes into ${o.ref}, and the override${field ? '' : 's'} go${field ? 'es' : ''}. Every instance of the prefab follows: ${o.users} in this scene.${elsewhere} The prefab's file is written when you save; Undo puts it back.`;
+  const text = `${what} of ${o.id} goes into ${o.ref}, and the override${field ? '' : 's'} go${field ? 'es' : ''}. Every instance of the prefab follows: ${o.users} in this scene.${elsewhere} This scene's other instances that set the same value lose that override and follow the prefab again. The prefab's file is written when you save; Undo puts it all back.`;
   const c = await sheet.ask(`Apply to ${o.ref}?`, text, [{ id: 'apply', label: 'Apply to Prefab' }, { id: 'cancel', label: 'Cancel' }]);
   if (c === 'apply') act(() => ed.session.applyOverride(o.id, target, field));
 }
@@ -278,14 +281,15 @@ function dragSplit(e, name) {
   const up = () => { el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up); savePanels(); };
   el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
 }
-function keySplit(e, name) { const next = splitterKey(ui.panels, name, e, GROWS[name]); if (next) { e.preventDefault(); setPanels(next); } }
+// the edge's own keys stop here: the timeline and the window's shortcuts listen on the window for arrows too
+function keySplit(e, name) { const next = splitterKey(ui.panels, name, e, GROWS[name]); if (next) { e.preventDefault(); e.stopPropagation(); setPanels(next); } }
 const foldPanel = (name) => setPanels(togglePanel(ui.panels, name));
 
 // ---------------------------------------------------------------- drops on the viewport and node slots (M5 W6)
 const placeable = (kind) => ui.assets.some((a) => a.kind === kind && a.nodeType);
 
 // an asset from the panel onto the viewport: placed where it lands, if a node type places it (a clip or a wearable isn't)
-const overViewport = (e) => { const v = dropVerdict(draggedKind(e.dataTransfer?.types), { slot: 'viewport', placeable }); if (v.ok) { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; } };
+const overViewport = (e) => { const v = dropVerdict(draggedKind(e.dataTransfer?.types), { slot: 'viewport', placeable }); if (v.ok) { e.preventDefault(); e.dataTransfer.dropEffect = dropEffectFor({ slot: 'viewport' }); } };
 const dropOnViewport = (e) => { const ref = e.dataTransfer.getData(ASSET_MIME); if (ref && dropVerdict(fileKind(ref), { slot: 'viewport', placeable }).ok) act(() => ed.addAsset(ref, e.clientX, e.clientY)); };
 const dropOnScene = (e) => { const id = e.dataTransfer.getData('text/x-vrmxg-node'); if (id) reparent(id, null); };
 
@@ -308,7 +312,7 @@ addEventListener('keydown', (e) => {
 // A text field keeps its own copy and paste. A paste of text that isn't a clip falls back to the editor's own clipboard.
 const nodeEdit = () => ed?.session?.mode === 'editing' && !typing() && !sheet.asking;
 addEventListener('copy', (e) => {
-  if (!nodeEdit() || !ui.selected.length || document.getSelection()?.toString()) return;
+  if (!nodeEdit() || !ui.docSel || document.getSelection()?.toString()) return;
   const clip = ed.copy();
   if (!clip) return;
   e.preventDefault();
@@ -327,7 +331,7 @@ addEventListener('paste', (e) => {
   pasteNodes(clip ?? ed.clipboard);
 });
 // WebKit enables Edit › Copy and Paste only when the page says it will handle them (its beforecopy / beforepaste events)
-addEventListener('beforecopy', (e) => { if (nodeEdit() && ui.selected.length && !document.getSelection()?.toString()) e.preventDefault(); });
+addEventListener('beforecopy', (e) => { if (nodeEdit() && ui.docSel && !document.getSelection()?.toString()) e.preventDefault(); });
 addEventListener('beforepaste', (e) => { if (nodeEdit()) e.preventDefault(); });
 if (inShell) {
   call('shell.info').then((i) => { ui.shell = `${i.app} · shell ${i.shell} · ${i.origin}`; });
@@ -409,9 +413,9 @@ const sheetGroups = shortcutGroups();
       <div class="dock-head"><button id="panel-scene-fold" type="button" class="fold" aria-label="Fold the Scene panel" title="Fold" @click="foldPanel('scene')">‹</button><h2>Scene</h2>
         <select v-model="ui.addType" aria-label="Node type to add" :disabled="ui.mode !== 'editing'"><option v-for="t in ADDABLE" :key="t" :value="t">{{ t }}</option></select>
         <button id="add-node" type="button" aria-label="Add node" :disabled="ui.mode !== 'editing'" @click="addNode">Add</button>
-        <button id="delete" type="button" aria-label="Delete selection" :disabled="!ui.selected.length || ui.mode !== 'editing'" @click="remove">Delete</button>
-        <button id="duplicate" type="button" aria-label="Duplicate selection" title="Duplicate (⌘D)" :disabled="!ui.selected.length || ui.mode !== 'editing'" @click="duplicate">Duplicate</button>
-        <button id="copy" type="button" aria-label="Copy selection" title="Copy (⌘C)" :disabled="!ui.selected.length || ui.mode !== 'editing'" @click="copyNodes">Copy</button>
+        <button id="delete" type="button" :aria-label="innerOnly() ? 'Delete selection (a prefab node: edit it through its instance)' : 'Delete selection'" :title="innerOnly() ? INNER_WHY : ''" :disabled="!ui.docSel || ui.mode !== 'editing'" @click="remove">Delete</button>
+        <button id="duplicate" type="button" :aria-label="innerOnly() ? 'Duplicate selection (a prefab node: edit it through its instance)' : 'Duplicate selection'" :title="innerOnly() ? INNER_WHY : 'Duplicate (⌘D)'" :disabled="!ui.docSel || ui.mode !== 'editing'" @click="duplicate">Duplicate</button>
+        <button id="copy" type="button" :aria-label="innerOnly() ? 'Copy selection (a prefab node: edit it through its instance)' : 'Copy selection'" :title="innerOnly() ? INNER_WHY : 'Copy (⌘C)'" :disabled="!ui.docSel || ui.mode !== 'editing'" @click="copyNodes">Copy</button>
         <button id="paste" type="button" :aria-label="ui.clip ? `Paste ${ui.clip} node${ui.clip > 1 ? 's' : ''}` : 'Paste'" title="Paste (⌘V)" :disabled="!ui.clip || ui.mode !== 'editing'" @click="pasteNodes()">Paste</button>
       </div>
       <div class="tree-search">

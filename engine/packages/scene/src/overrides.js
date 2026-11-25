@@ -57,15 +57,17 @@ export function prefabNodes(prefab, prefabs) {
 /**
  * An instance's overrides as a diff: one entry per field it overrides, with the prefab's value (`base`) and the value the
  * instance ends up with (`value`). `change` is 'changed', 'added' (a behaviour or value the prefab doesn't have) or
- * 'removed' (a behaviour the instance drops). `missing`: the prefab has no such node (a stale override: revert it).
+ * 'removed' (a behaviour the instance drops). `missing`: the prefab has no such node, or there is no prefab (a stale
+ * override: revert it). An instance whose prefab isn't loaded still lists its overrides, every one missing.
  * @param {any} instance the Instance node @param {any} prefab its prefab document @param {Map<string, any>} prefabs
  * @returns {Array<{ target: string, field: string, kind: string, change: string, value: any, base: any, missing: boolean, same: boolean }>}
  */
 export function overrideEntries(instance, prefab, prefabs) {
   const out = [];
   const overrides = instance?.overrides ?? {};
-  if (!prefab) return out;
-  const nodes = prefabNodes(prefab, prefabs);
+  // no prefab (missing, renamed, a cycle): the overrides are still the file's, listed as unresolved so they can be reverted
+  let nodes = new Map();
+  if (prefab) { try { nodes = prefabNodes(prefab, prefabs); } catch { nodes = new Map(); } }
   for (const target of Object.keys(overrides).sort()) {
     const over = overrides[target], base = nodes.get(target), merged = base ? mergeOverride(base, over) : null;
     for (const field of overrideFields(over)) {

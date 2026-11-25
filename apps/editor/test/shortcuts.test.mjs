@@ -11,7 +11,10 @@ import { SHORTCUTS, shortcutFor, shortcutGroups } from '../src/shortcuts.js';
 const root = path.join(import.meta.dirname, '../../..');
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 const listed = (where, code) => SHORTCUTS.some((s) => s.where === where && s.codes?.includes(code));
-/** Every `key === 'X'` / `case 'X'` / `@keydown.x` in a source, as KeyboardEvent.key values in lower case. */
+/**
+ * Every `key === 'X'` and `@keydown.x` in a source, as KeyboardEvent.key values in lower case. (A `switch (e.key)` with
+ * `case 'X'` isn't read: none of these sources binds keys that way; three's FlyControls, which does, is read below.)
+ */
 function keysIn(text) {
   const out = new Set();
   for (const m of text.matchAll(/key\s*===\s*'([^']+)'/g)) out.add(m[1].toLowerCase());
@@ -28,6 +31,11 @@ test('the window binds its keys only through the table', () => {
     if (!/keydown/.test(text)) continue;
     for (const k of keysIn(text)) assert.ok(listed('window', k) || listed('list', k), `${f} binds "${k}": list it in SHORTCUTS`);
   }
+});
+
+test('a panel edge\'s arrow keys stop at the edge: the timeline (a window listener) skips a key already taken', () => {
+  assert.match(read('apps/editor/src/App.vue'), /function keySplit[^\n]*e\.preventDefault\(\); e\.stopPropagation\(\)/);
+  assert.match(read('engine/packages/editor-ui/src/Timeline.vue'), /function onKey\(e\) \{[^}]*e\.defaultPrevented\) return;/);
 });
 
 test('every menu event the page hears and every menu key of the Mac app is listed', () => {

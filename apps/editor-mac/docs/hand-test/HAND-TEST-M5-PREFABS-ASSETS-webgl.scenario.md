@@ -236,3 +236,52 @@ fresh: false
   expect find("id=paste-castShadow").0.name matches "\\(a number doesn't paste into a boolean\\)$"   # refused: another type
   act id=undo action=press
   ```
+
+- [ ] A scene tree row dropped on a node slot sets it as one undo step.
+  ```steps
+  wait id=open-project enabled=true timeout_ms=40000
+  act id=open-project action=press   # the fixture's project and scene, so the row also runs alone
+  until find("id=project-name").0.name == "Project project-w6-prefabs" timeout=30000
+  act id=file-name action=set_value value=w6-doors.vrmxs
+  act id=open-file action=press
+  until find("id=doc-state").0.name matches "^Scene w6-doors.vrmxs" timeout=60000
+  act role=popupbutton name="Node type to add" action=focus   # a web view's select: its menu doesn't open headless, type-ahead picks
+  pause 1500
+  keys text=Cam
+  until find("role=popupbutton name='Node type to add'").0.value == "Camera"
+  act id=add-node action=press
+  until find("id=undo").0.name matches "^Undo Add camera"
+  until find("id=prop-target").count == 1   # the Camera's target: a node slot
+  find id=node-bench
+  set FROM = $.0.ref
+  find id=prop-target
+  set TO = $.0.ref
+  pointer drag ref="${FROM}" to_ref="${TO}" steps=30   # the real pointer: the bench's tree row onto the slot
+  until find("id=undo").0.name == "Undo Set camera.target" timeout=5000   # one undo step
+  expect find("id=prop-target").0.value == "bench"   # the slot names the dropped node
+  act id=undo action=press
+  until find("id=prop-target").0.value != "bench"
+  act id=undo action=press
+  until find("id=node-camera").count == 0   # and the camera goes
+  ```
+
+- [ ] A prefab the scene doesn't use yet is placed from the assets panel and builds, its nodes in the tree.
+  ```steps
+  wait id=open-project enabled=true timeout_ms=40000
+  act id=open-project action=press
+  until find("id=project-name").0.name == "Project project-w6-prefabs" timeout=30000
+  act id=file-name action=set_value value=w6-doors.vrmxs
+  act id=open-file action=press
+  until find("id=doc-state").0.name matches "^Scene w6-doors.vrmxs" timeout=60000
+  act id=assets-search action=set_value value=double-door
+  until find("id=add-prefabs-double-door-vrmxs").count == 1
+  act id=add-prefabs-double-door-vrmxs action=press   # the double door: the fixture's scene doesn't use it (it places door.vrmxs twice)
+  until find("id=undo").0.name == "Undo Add double-door" timeout=10000
+  until find("id=node-double-door").0.name contains "inside" timeout=10000   # built: its prefab nodes are in the tree
+  expect find("id=doc-state").0.name contains " valid "   # the prefab was read before the instance was made
+  act id=fold-double-door action=press
+  until find("id=node-double-door/pair").count == 1
+  act id=assets-search action=set_value value=" "   # a space: no words, the whole list (set_value needs a value)
+  act id=undo action=press
+  until find("id=node-double-door").count == 0
+  ```

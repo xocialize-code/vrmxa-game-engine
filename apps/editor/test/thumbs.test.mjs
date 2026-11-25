@@ -35,7 +35,7 @@ test('cached by path, size and modification time: a changed file is drawn again,
   const store = memStore();
   const { q, drawn } = setup({ store });
   await q.load(entries('a.glb'), { 'a.glb': { size: 10, mtime: 1 } });
-  assert.deepEqual([...store.m.keys()], ['a.glb\n64\n1\n10']);
+  assert.deepEqual([...store.m.keys()], ['\na.glb\n64\n1\n10']);
   const second = setup({ store }); // a relaunch: a fresh queue, the same cache
   await second.q.load(entries('a.glb'), { 'a.glb': { size: 10, mtime: 1 } });
   assert.deepEqual(second.drawn, [], 'read from the cache');
@@ -72,4 +72,13 @@ test('release waits for the draw in hand, stops the rest and lets the host go; t
   await q.load(entries('a.glb', 'b.glb'));
   assert.deepEqual(drawn, ['a.glb@64', 'a.glb@64', 'b.glb@64']);
   assert.equal(q.status(), '2 thumbnails');
+});
+
+test('the cache is per project: the same path and mtime in another project is drawn, not read', async () => {
+  const store = memStore();
+  const a = setup({ store }), b = setup({ store });
+  await a.q.load(entries('props/x.glb'), { 'props/x.glb': { size: 1, mtime: 1 } }, '/projects/one');
+  await b.q.load(entries('props/x.glb'), { 'props/x.glb': { size: 1, mtime: 1 } }, '/projects/two');
+  assert.deepEqual(b.drawn, ['props/x.glb@64']);
+  assert.equal(store.m.size, 2);
 });

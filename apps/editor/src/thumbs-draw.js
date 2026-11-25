@@ -112,7 +112,7 @@ export async function drawThumbnail(ed, entry, size) {
   const host = await ed.assetThumbHost();
   let world = null;
   try {
-    world = await ed.buildFrom(doc, { play: false, heard: false, cache: true, prefabs, mtoonMaterial: host.mtoonMaterial });
+    world = await ed.buildFrom(doc, { play: false, heard: false, cache: true, prefabs, mtoonMaterial: host.mtoonMaterial, timed: false });
     const o = world.tree.find('it')?.object3d;
     if (!o) return null;
     o.updateMatrixWorld(true);

@@ -118,7 +118,8 @@ const isSel = (row, item) => isSelected(sel.value, row, item);
 // ---------------------------------------------------------------- keys: arrows nudge the selection, Delete removes it
 const typing = () => /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName ?? '');
 function onKey(e) {
-  if (!d.value || props.disabled || typing() || e.metaKey || e.ctrlKey) return;
+  // a key something else already took (a panel's edge moving by arrows, M5 W6) isn't the timeline's
+  if (!d.value || props.disabled || typing() || e.metaKey || e.ctrlKey || e.defaultPrevented) return;
   if (e.key === ' ') { e.preventDefault(); emit('transport', 'play'); return; }
   if (!sel.value) { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); emit('scrub', Math.max(0, Math.round(d.value.playhead) + (e.key === 'ArrowLeft' ? -1 : 1))); } return; }
   const row = selectedRow.value, item = row?.items.find((i) => isSel(row, i));

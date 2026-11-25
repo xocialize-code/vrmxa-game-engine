@@ -124,3 +124,14 @@ test('an editor\'s own ops join the undo history beside the document\'s (one ste
   ed.redo(); assert.equal(other.value, 2);
   assert.throws(() => ed.apply({ op: 'toString' }), /unknown op/);
 });
+
+test('validate agrees with Apply: an override that drops a behaviour a prefab\'s own connection calls is an error', () => {
+  const prefabs = fresh(), d = read('cafe.vrmxs');
+  assert.deepEqual(check(d, { prefabs }).errors, []);
+  node(d, 'door-1').overrides = { hinge: { behaviours: [{ use: 'hinge', remove: true }] } };
+  const errs = check(d, { prefabs }).errors;
+  assert.ok(errs.some((e) => /prefab connection door-1\/trigger → door-1\/hinge: RigidBody "door-1\/hinge" has no action "open" here/.test(e)), errs.join('\n'));
+  // and Apply of the same refuses: the prefab alone has the broken connection
+  const door = applyToPrefab(prefabs.get('prefabs/door.vrmxs'), 'hinge', 'behaviours.hinge', undefined, prefabs);
+  assert.ok(check(door, { prefabs }).errors.some((e) => /no action "open"/.test(e)));
+});

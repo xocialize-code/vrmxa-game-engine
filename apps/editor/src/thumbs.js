@@ -25,17 +25,21 @@ export class ThumbnailQueue {
     this.gen = 0; this.chain = Promise.resolve(); this.total = 0; this.done = 0; this.drawn = 0; this.cached = 0;
   }
 
-  /** A file's cache key: its path, the thumbnail's size, and the file's modification time and size where known. */
-  key(entry, stat) { return [entry.ref, this.size, stat?.mtime ?? '', stat?.size ?? ''].join('\n'); }
+  /**
+   * A file's cache key: the project (`scope`: two projects can have a file at the same path), its path, the thumbnail's
+   * size, and the file's modification time and size where known. The cache isn't pruned: the system empties Caches.
+   */
+  key(entry, stat, scope = this.scope) { return [scope ?? '', entry.ref, this.size, stat?.mtime ?? '', stat?.size ?? ''].join('\n'); }
 
   /**
    * The files to show thumbnails for (assets-ui's entries; `drawable` ones only), with each file's { size, mtime }
    * where the project knows them. Files whose key hasn't changed keep their thumbnail; the rest are drawn (or read from
    * the cache) in the background. → a promise of the end of this drawing (or of its being overtaken)
-   * @param {any[]} entries @param {Record<string, { size: number, mtime: number }>} [stats]
+   * @param {any[]} entries @param {Record<string, { size: number, mtime: number }>} [stats] @param {string} [scope] the project
    */
-  load(entries, stats = {}) {
+  load(entries, stats = {}, scope = '') {
     const gen = ++this.gen;
+    this.scope = scope;
     const want = entries.map((e) => ({ entry: e, key: this.key(e, stats[e.ref]) }));
     const refs = new Set(entries.map((e) => e.ref));
     for (const r of new Set([...this.urls.keys(), ...this.keys.keys(), ...this.errors.keys()])) if (!refs.has(r)) { this.urls.delete(r); this.keys.delete(r); this.errors.delete(r); }
