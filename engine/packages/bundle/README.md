@@ -115,6 +115,7 @@ What Export Game reads to know what the game is (`format: "vrmxg-game"`, `versio
 | `input` | The action map (`@vrmxg/input`'s `actions`): inline as `{ "actions": { … } }`, or a ref to a JSON file holding that. Absent: the engine's default map |
 | `include` | Files no document names, by ref or by pattern (`*` within one folder level) |
 | `ignore` | Strings in the game's documents that look like files and aren't: the export would otherwise stop on them (below) |
+| `release` | The game's own version, as its players see it: one to three numbers with dots (`"1.2.0"`). The Mac game app takes it as its version (M5 W1). Absent: none in the manifest |
 
 A project with no `game.json` can still be exported from the editor: the open scene is the entry, with the project's
 `behaviours.js`, `animations.json` and `personas.json` where it has them (`defaultGame`).
@@ -204,11 +205,32 @@ What a runtime keeps, so any build can sit around it:
 4. It has no file named `vrmxg-build.json` or `vrmxg-runtime.json` and none under `project/`. Every file has a
    licence in its table.
 
-**The runtime in the slot today** is `runtime/` (`vrmxg-stepper`): it opens the build, builds the entry scene's
-world and steps it at 60 Hz with no renderer, showing the step and the world's hash. `?check=<take>&steps=<n>` replays
-recorded input from the build and publishes a hash of the world after every step, which is how the acceptance checks
-play a build in Chromium and WKWebView. **M5 W1 replaces it**: build `apps/game` with `vrmxgRuntime`, and point the
-editor's `gameRuntime` (`apps/editor/vite.config.js`) and the command line's `--runtime` at its output.
+**The runtime a game is made with is the game app** (`apps/game`, `vrmxg-game`; M5 W1, decision AB-D-0286): `npm run
+build -w @vrmxg/game-app` writes `apps/game/dist` with its table, and `vrmxg-export`'s `--runtime` and the editor's
+`gameRuntime` (`apps/editor/vite.config.js`) default to it. `vrmxg-export` stops, and says how to build it, when it isn't
+built: it never takes another runtime in its place. The game app opens the build, steps a `GameFlow` session and draws it
+(title menu, pause, save slots, settings). It keeps the harness mode the minimal runtime had: `?check=<take>&steps=<n>`
+makes no renderer and no menus, replays recorded input from the build in its entry scene and publishes a hash of the
+world after every step (`window.__result`, `READY`), which is how `acceptance/m5/build.mjs` and `build-wkwebview.sh`
+play a build in Chromium and WKWebView.
+
+**A stale runtime is refused.** The game app's build writes a source stamp beside its dist (`apps/game/dist-sources.json`,
+git-ignored; `runtimeSources` in `@vrmxg/bundle/node`): every source file its bundle was built from with its SHA-256,
+its page, its config, this package's Vite plugin, and the lock files of the two installs it takes packages from (this
+workspace's `package-lock.json`, and vrmxa-core's own `package.json` and `package-lock.json`, where sql.js comes from).
+**What the stamp doesn't cover:** the contents of `node_modules` (a package is seen only through its lock file, so a
+reinstall at the same versions, or a package edited by hand in `node_modules`, goes unnoticed; the three-vrm patch is
+applied there on install and is covered by CI's `--check --require-patched`, not by the stamp), files read at build time
+that aren't modules (an asset copied as a file is seen only through the lock file of the package it comes from), and
+the versions of Node and of the operating system the build ran on. Its runtime version carries the stamp's digest
+(`0.1.0+854dbd840f55`; the digest is of the contents only, so it is the same wherever the checkout is). `vrmxg-export`
+and the editor's build check the stamp (`checkRuntimeSources`) and refuse a dist whose sources changed since it was built,
+naming the files; the editor's dev server warns. `vrmxgRuntime`'s `version` may be a function, read once the bundle is
+written, for a version like that.
+
+`runtime/` (`vrmxg-stepper`: the build's entry scene stepped at 60 Hz with no renderer) stays as this package's small
+reference runtime and goes into a build only when `--runtime` names its folder (`npm run build:runtime -w
+@vrmxg/bundle`).
 
 The runtime's bytes are part of a build's identity. Two Vite builds of the same sources give the same table (checked
 here: the table's SHA-256 after two builds). A build made with another runtime says so in `runtime.digest`, and the

@@ -1,7 +1,7 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.10.0"
+public let vrmxgShellVersion = "0.11.0"
 
 /// An app's own menu item (shell 0.7.0, M4 W5): choosing it sends the page `menu.<event>`. A title of "-" is a separator.
 public struct ShellMenuItem: Sendable {
@@ -84,6 +84,8 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     lazy var exports = ExportMethods(files: files)
     /// Held for the app's life: its bridge handlers capture it unowned (a temporary here crashed the first saves.* call)
     lazy var saves = SaveMethods(appName: config.appName, env: env)
+    /// The app's settings document (shell 0.11.0, M5 W1); held for the app's life like the saves
+    lazy var settings = SettingsMethods(appName: config.appName, env: env)
     /// The camera (M3 W5): feature frames to the page as `camera.frame` events
     lazy var camera = CameraMethods(emit: { [unowned self] name, payload in self.emit(name, payload) })
     /// The microphone's permission (M3 W3)
@@ -128,6 +130,13 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         }
         files.register(on: router)
         saves.register(on: router) // save slots (M2 W9)
+        settings.register(on: router) // the app's settings (shell 0.11.0, M5 W1)
+        // The page quits the app (shell 0.11.0, M5 W1: a game's title menu has Quit). It is the menu's Quit: an app that
+        // asks its page before quitting still asks, so the page answers its own question (it asked to go)
+        router.register("app.quit") { [unowned self] _ in
+            DispatchQueue.main.async { self.menuQuit(nil) }
+            return ["quitting": true]
+        }
         camera.register(on: router) // the camera (M3 W5): needs the app's camera entitlement and usage description
         microphone.register(on: router) // the microphone's permission (M3 W3): needs the audio-input entitlement and usage description
         exports.register(on: router, posts: posts)

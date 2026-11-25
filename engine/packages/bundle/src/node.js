@@ -1,6 +1,6 @@
 // Builds on disk, for Node: tools, tests, the MCP server, the command line. Not in a browser bundle (node:fs).
 //
-//   const r = await exportToFolder({ project: 'content/sample', runtime: 'engine/packages/bundle/runtime/dist', out });
+//   const r = await exportToFolder({ project: 'content/sample', runtime: 'apps/game/dist', out });   // the game app (M5 W1)
 //   const build = await openFolder(out);                                  // the loader over a folder
 //   const behaviours = await build.behaviours(behavioursImporter(out));   // '@vrmxg/core' handed to the project's modules
 //   checkFolder(out)            the folder holds exactly what its manifest lists, each file with its hash
@@ -341,4 +341,40 @@ export function compareFolders(a, b) {
   }
   const onlyB = sortPaths(lb);
   return { same: !onlyA.length && !onlyB.length && !differ.length, files: la.length, onlyA: sortPaths(onlyA), onlyB, differ: sortPaths(differ) };
+}
+
+export const SOURCES_FORMAT = 'vrmxg-runtime-sources';
+
+/**
+ * A runtime's source stamp (M5 W1): every source file its bundle was built from, with its SHA-256, so a tool can tell a
+ * runtime folder built from older sources than the checkout's. The runtime's own version is a manifest field anyone can
+ * keep the same; this changes whenever a bundled file does. Paths are relative to `base` (the stamp file's folder).
+ * @param {{ files: string[], base: string, runtime?: string }} o files: absolute paths → { format, version, digest, runtime, files }
+ */
+export function runtimeSources({ files, base, runtime = null }) {
+  const rows = [...new Set(files)].map((f) => ({ path: path.relative(base, f).split(path.sep).join('/'), sha256: sha256(new Uint8Array(fs.readFileSync(f))) }));
+  rows.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+  // of the contents only, sorted: the same sources give the same digest wherever the checkout is (the paths to a package
+  // beside the repository differ between a worktree and the main checkout)
+  const digest = sha256(new TextEncoder().encode(rows.map((r) => r.sha256).sort().join('\n')));
+  return { format: SOURCES_FORMAT, version: 1, digest, runtime, files: rows };
+}
+
+/**
+ * Is a runtime still the build of the sources beside it? Reads a stamp file (runtimeSources' document) and hashes each
+ * file again. → { ok, digest, runtime, changed, missing } (paths as the stamp spells them); `missing: ['<stamp file>']`
+ * with ok false when there is no stamp to check.
+ * @param {string} file the stamp file
+ */
+export function checkRuntimeSources(file) {
+  if (!fs.existsSync(file)) return { ok: false, digest: null, runtime: null, changed: [], missing: [path.basename(file)] };
+  const doc = JSON.parse(fs.readFileSync(file, 'utf8'));
+  if (doc?.format !== SOURCES_FORMAT || doc.version !== 1 || !Array.isArray(doc.files)) throw new Error(`${file} is not a runtime's source stamp`);
+  const base = path.dirname(file), changed = [], missing = [];
+  for (const r of doc.files) {
+    const f = path.resolve(base, r.path);
+    if (!fs.existsSync(f)) missing.push(r.path);
+    else if (sha256(new Uint8Array(fs.readFileSync(f))) !== r.sha256) changed.push(r.path);
+  }
+  return { ok: !changed.length && !missing.length, digest: doc.digest, runtime: doc.runtime ?? null, changed, missing };
 }

@@ -53,8 +53,9 @@ function headerNotice(file) {
 }
 
 /**
- * @param {{ name: string, version: string, licence: string, licences?: [string, string][], entry?: string }} o
- *   name, version: the runtime's; licence: of the app's own files; licences: [pattern, licence] for files that differ
+ * @param {{ name: string, version: string | (() => string), licence: string, licences?: [string, string][], entry?: string }} o
+ *   name, version: the runtime's (version may be a function, read once the bundle is written: a version that carries a
+ *   stamp of the sources, as the game app's does); licence: of the app's own files; licences: [pattern, licence] for files that differ
  *   (`*` within one folder level); entry: the page a build opens (index.html)
  * @returns {import('vite').Plugin}
  */
@@ -113,7 +114,7 @@ export function vrmxgRuntime({ name, version, licence, licences = [], entry = 'i
             : names.length ? `${licence}; includes ${names.join(', ')}: see ${NOTICES_FILE}` : licence);
         return { path: p, bytes: new Uint8Array(fs.readFileSync(path.join(outDir, p))), licence: by };
       });
-      fs.writeFileSync(path.join(outDir, RUNTIME_FILE), serializeRuntime(runtimeTable({ name, runtimeVersion: version, entry, files })));
+      fs.writeFileSync(path.join(outDir, RUNTIME_FILE), serializeRuntime(runtimeTable({ name, runtimeVersion: typeof version === 'function' ? version() : version, entry, files })));
     },
   };
 }

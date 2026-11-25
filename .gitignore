@@ -39,3 +39,6 @@ acceptance/results/m4-w3/odd/
 acceptance/results/m4-w3/node.json
 acceptance/results/m4-w3/acceptance/*/*.json
 !acceptance/results/m4-w3/acceptance/*/summary.json
+
+# the game app's source stamp (apps/game/vite.config.js), made with its dist
+apps/game/dist-sources.json

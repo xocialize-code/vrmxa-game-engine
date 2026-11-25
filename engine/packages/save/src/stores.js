@@ -1,10 +1,12 @@
 // Where saves go (M2 W9). One shape for every store:
-//   list() → [{ slot, name, savedAt, step, seconds, scene, bytes }]   read(slot) → doc   write(slot, doc)   remove(slot)
+//   list() → [{ slot, name, savedAt, step, seconds, scene, bytes, build }]   read(slot) → doc   write(slot, doc)   remove(slot)
+//   build: the digest of the game build that made the save (an app's `extra.build.digest`, M5 W1), or null: a slot list
+//   can tell a save it can't load without reading it
 //   MemoryStore    tests, previews
 //   IndexedDBStore a browser (the playground, the editor in a browser)
 //   ShellStore     the Mac shell's saves folder (saves.* bridge methods: the app's own container, no panels)
 //   FsStore        Node (./node: files in a folder)
-const entry = (slot, doc, bytes) => ({ slot, name: doc.name ?? slot, savedAt: doc.savedAt ?? null, step: doc.summary?.step ?? null, seconds: doc.summary?.seconds ?? null, scene: doc.summary?.scene ?? null, bytes });
+const entry = (slot, doc, bytes) => ({ slot, name: doc.name ?? slot, savedAt: doc.savedAt ?? null, step: doc.summary?.step ?? null, seconds: doc.summary?.seconds ?? null, scene: doc.summary?.scene ?? null, bytes, build: doc.extra?.build?.digest ?? null });
 
 export class MemoryStore {
   constructor() { this.files = new Map(); }

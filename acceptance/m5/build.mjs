@@ -40,14 +40,15 @@ import { vrmxaCore, PATHS } from '../../engine/packages/character/test/fixtures.
 
 const here = import.meta.dirname, root = path.join(here, '../..');
 const project = path.join(root, 'content/sample'), pkg = path.join(root, 'engine/packages/bundle');
-const runtime = path.join(pkg, 'runtime/dist'), cli = path.join(pkg, 'src/cli.js');
+// the runtime a game is made with: the game app (M5 W1, AB-D-0286), in its harness mode here (?check: no renderer, no menus)
+const runtime = path.join(root, 'apps/game/dist'), cli = path.join(pkg, 'src/cli.js');
 const args = process.argv.slice(2), TAKE = 'input/walk-in.json', STEPS = 600;
 const list = (flag) => { const i = args.indexOf(flag); if (i < 0) return []; const rest = args.slice(i + 1), end = rest.findIndex((a) => a.startsWith('--')); return end < 0 ? rest : rest.slice(0, end); };
 const mac = list('--mac'), refused = list('--refused'), kept = list('--kept');
 const checks = [], say = (name, ok, detail) => { checks.push({ name, ok, detail }); console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${detail ? `: ${detail}` : ''}`); };
 
 // the runtime that goes into the build: built here when it isn't there (or with --rebuild)
-if (args.includes('--rebuild') || !fs.existsSync(path.join(runtime, RUNTIME_FILE))) execFileSync('npx', ['vite', 'build', '--config', path.join(pkg, 'runtime/vite.config.js')], { cwd: pkg, stdio: ['ignore', 'ignore', 'inherit'] });
+if (args.includes('--rebuild') || !fs.existsSync(path.join(runtime, RUNTIME_FILE))) execFileSync('npx', ['vite', 'build'], { cwd: path.join(root, 'apps/game'), stdio: ['ignore', 'ignore', 'inherit'] });
 
 // 1: two exports, two processes
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-m5-build-'));

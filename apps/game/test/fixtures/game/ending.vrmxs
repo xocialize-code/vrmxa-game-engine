@@ -1,0 +1,34 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "ending",
+  "assets": [
+    {"id":"cafe","type":"glb","ref":"sets/cafe.glb"},
+    {"id":"espresso","type":"glb","ref":"props/espresso-machine.glb"},
+    {"id":"switch","type":"vrmxi","ref":"items/switch.vrmxi"},
+    {"id":"music","type":"audio","ref":"sounds/music.wav"}
+  ],
+  "nodes": [
+    {"id":"root","type":"Node3D","name":"Ending"},
+    {"id":"env","type":"Environment","parent":"root","props":{"ambientIntensity":0.5,"background":"gradient","environmentIntensity":0.35,"skyHorizonColor":"#e6ecf2","skyTopColor":"#7aa6d6"}},
+    {"id":"set","type":"Model","parent":"root","asset":"cafe"},
+    {"id":"espresso","type":"Model","parent":"root","name":"Espresso machine","asset":"espresso","transform":{"p":[1.2,1.25,-4.3]},"props":{"colliders":"none"}},
+    {"id":"sun","type":"DirectionalLight","parent":"root","transform":{"q":[-0.354,0.354,0.146,0.854]},"props":{"intensity":2.4,"shadowExtent":10,"shadowPreset":"high"}},
+    {"id":"counter-light","type":"SpotLight","parent":"root","transform":{"p":[0,2.9,-3.2],"q":[-0.643,0,0,0.766]},"props":{"angle":40,"color":"#ffe2b0","intensity":18,"range":7}},
+    {"id":"light-switch","type":"Item","parent":"root","name":"Counter lights","asset":"switch","transform":{"p":[2.6,0,-5.95]},"props":{"state":"on"}},
+    {"id":"music","type":"AudioPlayer","parent":"root","name":"Music","asset":"music","props":{"autoplay":true,"bus":"music","loop":true,"volume":0.35}},
+    {"id":"look-at","type":"Marker","parent":"root","transform":{"p":[0,1.2,-4]}},
+    {"id":"cam","type":"Camera","parent":"root","transform":{"p":[-2,1.7,2]},"props":{"focalLength":32,"preset":"fixed","target":"look-at"}},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"keepOutcome":true}},
+    {"id":"linger","type":"GameTimer","parent":"rules","props":{"label":"The end","seconds":5}}
+  ],
+  "connections": [
+    {"from":"linger","signal":"timeout","to":"rules","call":"changeScene","args":{"reset":true,"to":"game/title.vrmxs"}}
+  ],
+  "settings": {
+    "physics": {
+      "build": "deterministic",
+      "hz": 60
+    }
+  }
+}

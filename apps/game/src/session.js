@@ -1,0 +1,282 @@
+// A play session (M5 W1, AB-D-0286): what the game app plays between the title menu and going back to it. It wraps a
+// GameFlow (@vrmxg/game) and keeps the session's log, so a session played through the app's menus replays to the same
+// per-step hashes anywhere (replaySession, below; acceptance/m5/game.mjs replays the app's log in Node).
+//
+// How each menu action reaches the simulation:
+//
+//   New Game        starts the session: flow.start(entry) at step 0, with input recorded from step 0
+//   Continue, Load  starts a segment from a save file: flow.load(file). The flow stops the recording in progress and
+//                   hands it over, and it is kept as the segment before; a new recording starts at the loaded step
+//   Save            flow.saveTo(slot), between two steps. It reads the world and changes nothing in it
+//   Pause, Resume   the host takes no step while paused: nothing in the world changes, and nothing is recorded
+//   Quit to title   ends the session
+//
+// A save belongs to the build that made it. Every file this session writes (a player's save, a checkpoint) carries the
+// build's digest in its `extra.build`, and a file from another build (another export of the same game: the same bundle
+// id, so the same Saves folder) is refused with a message saying so: @vrmxg/save checks the scene document, the maths and
+// the physics build, not the prefabs, the behaviours, the action map or the engine, so such a file could load and then
+// play on differently. A session log names its build too, and replaySession refuses a log from another one.
+//
+// None of them is an input: the first two are where a segment of the log starts, and the rest never touch the world.
+// Whatever a game's own scenes offer (a title scene that waits for a button) is an action in the recorded input frame.
+// Nothing here runs inside a step: a menu's handler is a DOM event or an animation frame, so each lands on a boundary.
+//
+// No DOM and no wall clock: the time a save is stamped with comes in as `stamp`.
+import { GameFlow, CHECKPOINT_PREFIX } from '@vrmxg/game';
+import { worldHashes, hashValue } from '@vrmxg/snapshot';
+
+export const SESSION_FORMAT = 'vrmxg-session';
+export const SESSION_VERSION = 1;
+/** Rapier's whole state goes into a step's hash every this many steps (as the engine's other per-step runs do). */
+const PHYSICS_BYTES_EVERY = 60;
+
+const stepHash = (tree) => hashValue(worldHashes(tree, { physicsBytes: tree.clock.step % PHYSICS_BYTES_EVERY === 0 }));
+
+export class GameSession {
+  /**
+   * @param {object} o
+   * @param {{ id: string, entry: string, title?: string }} o.game the build's game document
+   * @param {string | null} [o.digest] the build's digest (the log names the build it was played on)
+   * @param {(req: any) => Promise<any>} o.load builds a world (world.js `worldLoader`)
+   * @param {(tree: any) => void} [o.unload] frees one
+   * @param {any} [o.store] a @vrmxg/save store: the player's slots and the game's checkpoints
+   * @param {() => string} [o.stamp] the time a save is stamped with (the app's clock)
+   * @param {number} [o.seed] a new game's seed
+   * @param {Map<string, any> | null} [o.scenes] @param {Map<string, any> | null} [o.prefabs] the game's documents, for the flow's whole-game check
+   * @param {(tree: any, info: any) => void} [o.onWorld] the world being played changed (a host re-points its renderer)
+   * @param {(event: any) => void} [o.onEvent] the flow's events (the game's, and scene, loaded, checkpointWritten, …)
+   * @param {boolean} [o.hashes] keep a hash of the world after every step (an acceptance run; it costs a hash a step)
+   */
+  constructor({ game, digest = null, load, unload = null, store = null, stamp = null, seed = 1, scenes = null, prefabs = null, onWorld = null, onEvent = null, hashes = false }) {
+    this.game = game; this.digest = digest;
+    this.loadWorld = load; this.unload = unload; this.store = store; this.stamp = stamp;
+    /**
+     * Counts the segments begun and the sessions ended. A save or a checkpoint is written to the store outside the step
+     * and may land after the player has loaded another save or quit: it makes progress safe only for the segment it was
+     * started in. (A load keeps the same GameFlow, so comparing flows isn't enough.)
+     */
+    this.segment = 0;
+    /** What every file written here says about the build that made it (null: no build, as in some tests). */
+    this.build = digest ? { digest, game: game.id } : null;
+    // the store as the flow sees it: every write (a player's save, a checkpoint) is stamped with the build, and moves
+    // safeStep once it has succeeded, only if no other segment began meanwhile
+    this._store = store && {
+      read: (slot) => store.read(slot),
+      list: () => store.list(),
+      remove: (slot) => store.remove(slot),
+      write: async (slot, file) => {
+        const seg = this.segment;
+        const entry = await store.write(slot, this.build ? { ...file, extra: { ...(file?.extra ?? {}), build: this.build } } : file);
+        if (seg === this.segment && this.flow) this.safeStep = Math.max(this.safeStep, file?.summary?.step ?? 0);
+        return entry;
+      },
+    };
+    this.seed = seed >>> 0; this.scenes = scenes; this.prefabs = prefabs;
+    this.onWorld = onWorld; this.onEvent = onEvent; this.keepHashes = hashes;
+    /** The flow being played, or null (the title menu). @type {GameFlow | null} */ this.flow = null;
+    /** Finished segments of the log. @type {any[]} */ this.segments = [];
+    /** The segment being played: { from, at, marks }. Its recording is the input service's. */ this.current = /** @type {any} */ (null);
+    /** The step up to which the session is safe in the store (a save, a written checkpoint, or where it was loaded from). */
+    this.safeStep = 0;
+    /** @type {Array<{ step: number, scene: string | null, hash: string }>} */ this.trace = [];
+    /** The log of the session that ended last (Quit to title), for a runner to read. */ this.last = /** @type {any} */ (null);
+    this._handed = null;
+    this._changing = false; // a New Game or a load under way
+  }
+
+  get active() { return !!this.flow; }
+  get tree() { return this.flow?.tree ?? null; }
+  get step() { return this.flow?.tree?.clock.step ?? 0; }
+  get scene() { return this.flow?.scene ?? null; }
+  /** What step() would wait for (a scene or a save loading), or null. */
+  get held() { return this.flow?.held ?? null; }
+  /** Steps played since the session was last safe in the store: what closing now would lose. */
+  get unsavedSteps() { return this.flow ? Math.max(0, this.step - this.safeStep) : 0; }
+  get dirty() { return this.unsavedSteps > 0; }
+  view() { return this.flow?.view() ?? null; }
+
+  _flow() {
+    const flow = new GameFlow({
+      load: this.loadWorld, unload: this.unload, store: this._store, seed: this.seed, stamp: this.stamp, scenes: this.scenes, prefabs: this.prefabs,
+      onWorld: (tree, info) => { if (info.recording) this._handed = info.recording; this.onWorld?.(tree, info); },
+    });
+    flow.on((e) => this.onEvent?.(e)); // a checkpoint makes progress safe through the store's write (above), not its event
+    return flow;
+  }
+
+  _begin(flow, from) { this.flow = flow; this.segments = []; this.trace = []; this._open(from); }
+  _open(from) {
+    const tree = this.flow.tree;
+    this.segment++;
+    this.current = { from, at: tree.clock.step, marks: [] };
+    tree.services.get('input').record(); // from the next step: every frame the simulation reads is in the log
+    this.safeStep = tree.clock.step;
+  }
+
+  /** New Game: a fresh session in the game's entry scene, at step 0. An earlier session ends first. */
+  async newGame() {
+    if (this._changing) throw new Error('a game is starting or loading already');
+    this.end();
+    const flow = this._flow();
+    this._changing = true;
+    try { await flow.start(this.game.entry); } catch (e) { flow.dispose(); throw e; } finally { this._changing = false; }
+    this._begin(flow, { start: this.game.entry, seed: this.seed });
+    return this;
+  }
+
+  /**
+   * Play on from a save file. From the title it starts a session; in one, the world being played is left alone when the
+   * file can't load (the error says why), and otherwise the log gets a new segment that starts from the file.
+   * @param {any} file a @vrmxg/save file @param {{ slot?: string | null }} [o] the slot it came from, for the log
+   * @returns {Promise<number>} the step play goes on from
+   */
+  async loadFile(file, { slot = null } = {}) {
+    if (this._changing) throw new Error('a game is starting or loading already');
+    this.checkBuild(file);
+    this._changing = true;
+    try { return await this._loadFile(file, slot); } finally { this._changing = false; }
+  }
+
+  async _loadFile(file, slot) {
+    if (!this.flow) {
+      const flow = this._flow();
+      try { await flow.load(file); } catch (e) { flow.dispose(); throw e; }
+      this._begin(flow, { save: file, slot });
+      return this.step;
+    }
+    this._handed = null;
+    const flow = this.flow, ended = this.segment;
+    await flow.load(file);
+    if (this.flow !== flow || this.segment !== ended) {
+      // the session ended while the save loaded (Quit to Title, a close): the world it built goes with the flow
+      flow.dispose();
+      throw new Error('the game ended while the save was loading');
+    }
+    // the flow stopped the recording as it left the old world, and handed it to onWorld: the segment that just ended
+    this.segments.push({ ...this.current, recording: this._handed });
+    this._handed = null;
+    this._open({ save: file, slot });
+    return this.step;
+  }
+
+  /**
+   * Refuse a save another build made (see the top). A session with no build (tests) loads any file.
+   * @param {any} file
+   */
+  checkBuild(file) {
+    if (!this.build) return;
+    const b = file?.extra?.build;
+    if (!b?.digest) throw new Error('This save doesn\'t say which version of the game made it, so it can\'t be loaded safely.');
+    if (b.digest !== this.build.digest) throw new Error(`This save was made with another version of the game (build ${String(b.digest).slice(0, 12)}); this one is build ${this.build.digest.slice(0, 12)}. A save loads only into the version that made it.`);
+  }
+
+  /** Load a slot of the store: a player's save, or a checkpoint by its full name ("auto-…"). */
+  async loadSlot(slot) {
+    if (!this.store) throw new Error('this game has nowhere to load from');
+    const seg = this.segment;
+    const file = await this.store.read(slot);
+    if (seg !== this.segment) throw new Error('the game ended while the save was loading'); // ended, or another load began, during the read
+    return this.loadFile(file, { slot });
+  }
+
+  /**
+   * Save into one of the player's slots, between two steps. The session counts as saved only once the store has the
+   * file: a write that fails throws, and the progress stays unsaved. Checkpoint slots ("auto-…") are refused by the flow.
+   * @param {string} slot @param {{ name?: string }} [o] → the store's entry for the slot
+   */
+  async saveSlot(slot, { name } = {}) {
+    if (!this.flow) throw new Error('there is no game to save');
+    const seg = this.segment, step = this.step;
+    const entry = await this.flow.saveTo(slot, { name }); // the store's write moves safeStep (see _store)
+    const kept = seg === this.segment; // still the segment it was saved in: not loaded over or ended meanwhile
+    if (kept) this.current.marks.push({ type: 'save', slot, step });
+    return { ...entry, kept };
+  }
+
+  /** Can a slot be written by the player? (Checkpoint slots are the game's.) */
+  static playerSlot(slot) { return typeof slot === 'string' && slot !== '' && !slot.startsWith(CHECKPOINT_PREFIX); }
+
+  /** One simulation step (the host's frame loop calls this in place of flow.step()). False when it is held. */
+  advance() {
+    const flow = this.flow;
+    if (!flow) return false;
+    if (!flow.step()) return false;
+    if (this.keepHashes) this.trace.push({ step: flow.tree.clock.step, scene: flow.scene, hash: stepHash(flow.tree) });
+    return true;
+  }
+
+  /**
+   * The session so far as a log (plain data): the build it was played on, and its segments, each with where it starts
+   * and the input recorded from there. With `hashes` on, the hash of the world after every step, in order.
+   */
+  log() {
+    if (!this.flow) return this.last;
+    const recording = this.flow.tree.services.get('input').recording;
+    const segments = [...this.segments, { ...this.current, recording: recording ? { ...recording, frames: recording.frames.slice() } : null }];
+    return {
+      format: SESSION_FORMAT, version: SESSION_VERSION,
+      game: { id: this.game.id, entry: this.game.entry, digest: this.digest },
+      segments: segments.map((s) => ({ from: s.from, at: s.at, steps: s.recording?.frames.length ?? 0, marks: s.marks.slice(), recording: s.recording })),
+      ...(this.keepHashes ? { hashes: this.trace.slice() } : {}),
+    };
+  }
+
+  /** End the session (Quit to title): its world is freed, and its log kept as `last`. Does nothing with none. */
+  end() {
+    if (!this.flow) return null;
+    const log = this.log();
+    this.flow.tree.services.get('input')?.stop();
+    this.flow.dispose();
+    this.flow = null; this.current = null; this.segments = []; this.safeStep = 0;
+    this.segment++; // a write still in flight belongs to a session that has gone
+    this.last = log;
+    return log;
+  }
+}
+
+/**
+ * Replay a session's log: each segment's start (a new game, or its save file), then its recorded input for as many
+ * steps as it has frames, with a hash of the world after every step. The result is the app's `hashes` when the replay
+ * is exact.
+ * @param {any} log GameSession.log()
+ * @param {{ digest: string, load: (req: any) => Promise<any>, unload?: (tree: any) => void, scenes?: Map<string, any> | null, prefabs?: Map<string, any> | null }} o
+ *   digest: the digest of the build it is replayed on (its manifest's): a log from another build is refused; load,
+ *   unload: this runtime's world builder (world.js); scenes, prefabs: the game's documents
+ * @returns {Promise<Array<{ step: number, scene: string | null, hash: string }>>}
+ */
+export async function replaySession(log, { digest, load, unload = null, scenes = null, prefabs = null }) {
+  if (log?.format !== SESSION_FORMAT) throw new Error(`not a session log (format "${log?.format}")`);
+  if (log.version !== SESSION_VERSION) throw new Error(`session log version ${log.version}; this reads ${SESSION_VERSION}`);
+  if (typeof digest !== 'string' || !digest) throw new Error('replaySession needs the digest of the build it replays on');
+  if (log.game?.digest !== digest) throw new Error(`this log was played on build ${String(log.game?.digest).slice(0, 12)}; this is build ${digest.slice(0, 12)}: a log replays only on the build it was played on`);
+  /** @type {GameFlow | null} */ let flow = null;
+  const out = [];
+  try {
+    for (const [i, seg] of log.segments.entries()) {
+      if (seg.from.start !== undefined) {
+        flow?.dispose();
+        flow = new GameFlow({ load, unload, seed: seg.from.seed ?? 1, scenes, prefabs });
+        await flow.start(seg.from.start);
+      } else if (seg.from.save) {
+        flow ??= new GameFlow({ load, unload, scenes, prefabs });
+        await flow.load(seg.from.save);
+      } else throw new Error(`segment ${i} doesn't say where it starts`);
+      if (flow.tree.clock.step !== seg.at) throw new Error(`segment ${i} starts at step ${seg.at}; the replay is at step ${flow.tree.clock.step}`);
+      const rec = seg.recording;
+      if (!rec?.frames.length) continue;
+      flow.tree.services.get('input').replay(rec);
+      for (let k = 0; k < rec.frames.length; k++) {
+        while (!flow.step()) await flow.settle();
+        out.push({ step: flow.tree.clock.step, scene: flow.scene, hash: stepHash(flow.tree) });
+      }
+    }
+  } finally { flow?.dispose(); }
+  return out;
+}
+
+/** Where two per-step runs first differ (an index), or -1: the same steps, scenes and hashes. */
+export function firstDifference(a, b) {
+  const n = Math.max(a.length, b.length);
+  for (let i = 0; i < n; i++) if (a[i]?.step !== b[i]?.step || a[i]?.scene !== b[i]?.scene || a[i]?.hash !== b[i]?.hash) return i;
+  return -1;
+}

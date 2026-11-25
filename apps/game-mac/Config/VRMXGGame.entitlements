@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- The shell's sandbox (apps/shell): network.server for the loopback origin the page is served on, network.client
+	     for the page to reach it. A game reads only its own build and writes only its own container (saves, settings):
+	     no file panels, no camera, no microphone. -->
+	<key>com.apple.security.app-sandbox</key><true/>
+	<key>com.apple.security.network.client</key><true/>
+	<key>com.apple.security.network.server</key><true/>
+</dict>
+</plist>

@@ -2,6 +2,8 @@ import Foundation
 
 /// What the shell serves: the app's own web build at `/`, an opened project folder at `/project/` (so a page
 /// fetches project assets by URL on either origin), and single files the person opened at `/opened/<token>/<name>`.
+/// With no project folder mounted, `/project/` is the web build's own `project/` folder (shell 0.11.0, M5 W1): where a
+/// game build keeps its project's files, the build being the app's web content (apps/game-mac).
 /// Shared by the scheme handler and the loopback server.
 public final class WebRoots: @unchecked Sendable { // `project` and `opened` are guarded by `lock`
     public let app: URL
@@ -37,8 +39,7 @@ public final class WebRoots: @unchecked Sendable { // `project` and `opened` are
             guard let file = lock.withLock({ opened[token] }), let data = try? Data(contentsOf: file, options: .mappedIfSafe) else { return Self.notFound(path) }
             return (200, Self.mimeType(file.pathExtension), data)
         }
-        if path.hasPrefix(Self.projectPrefix) {
-            guard let p = projectFolder else { return Self.notFound(path) }
+        if path.hasPrefix(Self.projectPrefix), let p = projectFolder {
             root = p
             path = "/" + path.dropFirst(Self.projectPrefix.count)
         }
