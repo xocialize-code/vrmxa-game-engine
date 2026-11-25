@@ -296,3 +296,43 @@ test('a replay refuses a log from another build, and one that isn\'t a log', asy
   const built = new GameSession({ ...(await ballGame()), game: GAME, digest: 'build-a' });
   await assert.rejects(built.replay({ format: SESSION_FORMAT, version: 1, game: { digest: 'build-b' }, segments: [] }), /replays only on the build it was played on/);
 });
+
+test('a save loaded over a replay (the pause menu during ?replay) is the player\'s game again: their store, their seed, a log of its own', async () => {
+  const store = new MemoryStore();
+  const { session, device } = await ballSession({ store });
+  const act = person(device);
+  await session.newGame();
+  await play(session, 120, act);
+  await session.saveSlot('slot-1');
+  await play(session, 40, act);
+  const log = JSON.parse(JSON.stringify(session.log()));
+  const played = session.end();
+  device.release('KeyD');
+
+  const g = await ballGame();
+  const back = new GameSession({ ...g, game: GAME, digest: 'test', store, seed: 9, hashes: true, stamp: () => '2026-11-25T12:00:00.000Z' });
+  await back.replay(log);
+  assert.equal(back.seed, 1, 'the log\'s seed while it plays');
+  for (let i = 0; i < 30; i++) { while (!back.advance()) await back.flow.settle(); }
+  await back.loadSlot('slot-1');
+  assert.equal(back.replaying, null, 'the load ended the replay');
+  assert.equal(back.seed, 9, 'the session\'s own seed is back');
+  assert.equal(back.dirty, false, 'just loaded: nothing to lose');
+  for (let i = 0; i < 20; i++) { while (!back.advance()) await back.flow.settle(); }
+  const entry = await back.saveSlot('slot-2');
+  assert.ok(entry.kept && (await store.list()).some((e) => e.slot === 'slot-2'), 'Save Game writes into the player\'s store');
+  const mine = back.log();
+  assert.equal(mine.segments.length, 1, 'the replay\'s segments aren\'t in the player\'s log');
+  assert.equal(mine.segments[0].from.slot, 'slot-1');
+  assert.ok(mine.segments[0].recording, 'and its input is recorded');
+  back.end();
+
+  // a replay ended by Quit to Title leaves the last session's log alone, and the seed
+  const again = new GameSession({ ...g, game: GAME, digest: 'test', seed: 9, hashes: true });
+  again.last = played;
+  await again.replay(log);
+  for (let i = 0; i < 10; i++) { while (!again.advance()) await again.flow.settle(); }
+  assert.equal(again.end(), null, 'a replay ended gives no log');
+  assert.equal(again.last, played, 'the last session played stays the last log');
+  assert.equal(again.seed, 9);
+});

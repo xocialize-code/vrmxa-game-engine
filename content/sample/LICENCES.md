@@ -133,7 +133,8 @@ made by its fixture script. Their `avatar.vrm` is **Spec**, the VRMXA base model
 ## The sample game: "The Morning Rush" (`game/`, M5 W10)
 
 The cafe as a game (AB-T-0620, design AB-D-0293): a title, the level, a won and a lost ending. Everything here but the
-voice clips is written by `tools/make-game.mjs`; the clips by `tools/make-game-voice.py`. Export it with
+voice clips and `game/behaviours.js` (written by hand) is written by `tools/make-game.mjs`; the clips by
+`tools/make-game-voice.py`. Export it with
 `node engine/packages/bundle/src/cli.js content/sample <out> --game game/game.json`.
 
 | File | Licence | Source |

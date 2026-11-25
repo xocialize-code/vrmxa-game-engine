@@ -110,7 +110,8 @@ async function saveSlot(row) {
 async function quitToTitle() {
   const go = await mayLeave(host.value.session, { what: 'title', ask: ask.ask, asking: () => ask.asking, lastSlot: ui.lastSlot, slotLabel, save: saveFor, onError: (e) => say(`Not saved: ${e?.message ?? e}`) });
   if (!go) return;
-  window.__game.lastLog = host.value.quitToTitle();
+  const log = host.value.quitToTitle();
+  if (log) window.__game.lastLog = log; // a replay ended this way is nobody's session: the last log played stays
   ui.stack = ['title'];
   await refreshSaves();
   nextTick(() => menu.value?.focusFirst());
@@ -160,9 +161,11 @@ function beforeUnload(e) { if (host.value?.session?.dirty) { e.preventDefault();
 // the page) after the other; `&loop=<seconds>` starts them again until that long has passed. The result goes to
 // window.__result (and window.READY): each replay's per-step hashes, the frame times, the backend. A runner compares the
 // hashes with the log's own and with Node's.
+// ?loop=<seconds>: a number above zero, else no loop (a bare ?loop or loop=abc plays once, with its hashes)
+const LOOP_SECONDS = Math.max(0, Number(query.get('loop')) || 0);
 const replayed = { runs: 0, scenes: 0, last: null }; // ?replay with ?stats: what the readout counts (scenes sampled once a second)
 async function replayFromQuery(h) {
-  const urls = query.get('replay').split(',').filter(Boolean), loop = +(query.get('loop') ?? 0), runs = [];
+  const urls = query.get('replay').split(',').filter(Boolean), loop = LOOP_SECONDS, runs = [];
   const t0 = performance.now();
   try {
     const logs = await Promise.all(urls.map(async (u) => { const r = await fetch(new URL(u, location.href)); if (!r.ok) throw new Error(`${u}: ${r.status}`); return r.json(); }));
@@ -209,7 +212,7 @@ onMounted(async () => {
     ui.choice = chosenBackend(location.search, store.value);
     ui.starting = 'Starting the renderer…';
     const h = new GameHost({
-      canvas: canvas.value, build: props.build, backend: ui.choice.backend, characters: props.characters, shell: { inShell, call }, trace: query.has('trace') || (query.has('replay') && !query.has('loop')), onChange: sync, onCommand,
+      canvas: canvas.value, build: props.build, backend: ui.choice.backend, characters: props.characters, shell: { inShell, call }, trace: query.has('trace') || (query.has('replay') && !LOOP_SECONDS), onChange: sync, onCommand,
       hold: () => ui.stack.length > 0 || !!ui.question, // nothing steps while a menu or a question is up
       uiSettings: playerSettings,
     });

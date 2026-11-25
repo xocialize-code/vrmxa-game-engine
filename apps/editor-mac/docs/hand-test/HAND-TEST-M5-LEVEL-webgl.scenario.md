@@ -245,21 +245,30 @@ fresh: false
   keys down   # opens the select's menu
   act surface=app role=menuitem name="all" exact=true action=press
   until find("id=prop-when-test").0.value == "all" timeout=5000
-  act id=prop-when-test action=focus
-  pause 300
-  keys down   # opens the select's menu
-  act surface=app role=menuitem name="state" exact=true action=press
-  until find("id=prop-when-test").0.value == "state" timeout=5000
+  until find("id=prop-when-of-0").count == 1 timeout=5000
   pause 500   # a row just made: let it settle before its "new" placeholder is replaced (typed too soon, the value lands after it)
-  act id=prop-when-key action=set_value value="counters.served"
-  until find("id=prop-when-key").0.value == "counters.served" timeout=5000
-  act id=prop-when-op action=focus
+  act id=prop-when-of-0-key action=set_value value="counters.served"
+  until find("id=prop-when-of-0-key").0.value == "counters.served" timeout=5000
+  act id=prop-when-of-0-op action=focus
   pause 300
   keys down   # opens the select's menu
   act surface=app role=menuitem name="ge" exact=true action=press
-  until find("id=prop-when-op").0.value == "ge" timeout=5000
-  act id=prop-when-value action=set_value value="3"
-  until find("id=prop-when-value").0.value == "3" timeout=5000
+  until find("id=prop-when-of-0-op").0.value == "ge" timeout=5000
+  act id=prop-when-of-0-value action=set_value value="3"
+  until find("id=prop-when-of-0-value").0.value == "3" timeout=5000
+  act id=prop-when-of--add action=press
+  until find("id=prop-when-of-1").count == 1 timeout=5000
+  pause 500   # a row just made: let it settle before its "new" placeholder is replaced (typed too soon, the value lands after it)
+  act id=prop-when-of-1-key action=set_value value="counters.mistakes"
+  until find("id=prop-when-of-1-key").0.value == "counters.mistakes" timeout=5000
+  act id=prop-when-of-1-op action=focus
+  pause 300
+  keys down   # opens the select's menu
+  act surface=app role=menuitem name="lt" exact=true action=press
+  until find("id=prop-when-of-1-op").0.value == "lt" timeout=5000
+  act id=prop-when-of-1-value action=set_value value="2"
+  until find("id=prop-when-of-1-value").0.value == "2" timeout=5000
+  expect find("id=prop-when-of").0.name == "when of, 2 rows"
   act id=file-name action=focus   # off the menu first, so focusing it again takes
   act role=popupbutton name="Node type to add" action=focus
   pause 300

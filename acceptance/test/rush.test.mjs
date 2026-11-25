@@ -1,6 +1,7 @@
 // M5 W10 (AB-T-0620): the sample game, "The Morning Rush" (content/sample/game). Its scenes are valid and in canonical
 // form, the whole game passes @vrmxg/game's own check and the exporter's, and (with vrmxa-core beside the repository,
-// so not on CI) the scripted player wins it, loses it on two wrong orders and loses it on time, in Node.
+// so not on CI) the scripted player wins it, loses it on two wrong orders (the second of them the third delivery too)
+// and loses it on time, in Node.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -71,6 +72,12 @@ test('the scripted player wins, loses on two wrong orders, and loses on time (No
     assert.equal(lose.decided?.result, 'lost');
     assert.equal(lose.decided.counters.mistakes, 2);
     assert.equal(lose.ending?.scene, 'game/lost.vrmxs');
+    // the third delivery being the second wrong order loses on that step: the serve goal mustn't open the till then
+    let opened = null;
+    const third = await playRush(dir, { orders: ['wrong', 'right', 'wrong'] }, { onStep: (flow) => { if (opened === null && flow.tree.find('till')?.current === 'open') opened = flow.tree.clock.step; } });
+    assert.equal(third.decided?.result, 'lost');
+    assert.deepEqual(third.decided.counters, { mistakes: 2, score: 10, served: 3 });
+    assert.equal(opened, null, 'the till never opened, and Hana never said to close it');
     const time = await playRush(dir, RUSH_PLANS.time);
     assert.equal(time.decided?.result, 'lost');
     assert.equal(time.decided.step, 14760, 'the clock: 240 s after the level began');

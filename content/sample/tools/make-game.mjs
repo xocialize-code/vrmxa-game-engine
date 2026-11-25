@@ -1,10 +1,11 @@
-// The sample game, "The Morning Rush" (M5 W10, AB-T-0620, design AB-D-0293): everything under game/ that isn't a voice
-// clip. Re-run to regenerate; the outputs are committed, and a run that changes nothing writes the same bytes.
+// The sample game, "The Morning Rush" (M5 W10, AB-T-0620, design AB-D-0293): everything under game/ but the voice clips
+// (tools/make-game-voice.py) and the behaviours (game/behaviours.js, written by hand). Re-run to regenerate; the outputs
+// are committed, and a run that changes nothing writes the same bytes.
 //
 //   game/game.json                     the game document (vrmxg-game): title → level → won | lost → title
 //   game/title.vrmxs, level.vrmxs,     the four scenes, validated against the registry and in canonical form
 //     won.vrmxs, lost.vrmxs
-//   game/brains/regular.json           the regulars' brain: walk in, sit, wait to be served, react, sip, leave
+//   game/brains/regular.json           the regulars' brain: walk in, sit, wait to be served, react, then stay and sip
 //   game/items/order-{1,2,3}.vrmxi     the order trays (VRMXI pickups: waiting → ready, a take verb that carries)
 //   game/items/till.vrmxi              the till (locked → open → closed, a use verb that closes it)
 //   game/animations.json               the sample's animation set plus the carry clip and a `carry` slot (the sample's
@@ -250,7 +251,9 @@ const level = scene('level', [
   { id: 'mistakes', type: 'GameCounter', parent: 'rules', props: { label: 'Wrong orders' } },
   { id: 'clock', type: 'GameTimer', parent: 'rules', props: { label: 'Until ten o\'clock', seconds: CLOCK_SECONDS } },
   ...TABLES.map((t) => ({ id: `brew-${t.n}`, type: 'GameTimer', parent: 'rules', props: { autostart: false, seconds: BREW_SECONDS } })),
-  { id: 'serve', type: 'GameGoal', parent: 'rules', props: { text: 'Serve the three regulars', when: { key: 'counters.served', op: 'ge', test: 'state', value: 3 } } },
+  // served, and not by way of a second wrong order: that delivery loses the game, and on its step the goal mustn't open
+  // the till or have Hana say "close the till" (the goals are done before the step's result is decided)
+  { id: 'serve', type: 'GameGoal', parent: 'rules', props: { text: 'Serve the three regulars', when: { test: 'all', of: [{ key: 'counters.served', op: 'ge', test: 'state', value: 3 }, { key: 'counters.mistakes', op: 'lt', test: 'state', value: 2 }] } } },
   { id: 'close-till', type: 'GameGoal', parent: 'rules', props: { text: 'Close the till', when: { key: 'flags.tillClosed', test: 'state' } } },
   { id: 'cp-first', type: 'Checkpoint', parent: 'rules', props: { label: 'First order served', once: true, slot: 'first-order', when: { key: 'counters.served', op: 'ge', test: 'state', value: 1 } } },
   { id: 'briefing', type: 'Dialogue', parent: 'root', props: { autostart: true, lines: [
