@@ -28,6 +28,11 @@ export function applyTrack(tree, track, frame, fps) {
   if (!node) return;
   if (track.type === 'animation') {
     const a = sampleAnimation(track, frame, fps);
+    if (track.layer) { // M5 W7: a layer track plays on one of the character's layers, not on the whole body
+      const layers = node.trackLayers ?? (node.trackLayers = {});
+      layers[track.layer] = !track.release ? a : a ? overAnimation(layers[track.layer], a) : layers[track.layer] ?? null;
+      return;
+    }
     if (!track.release) node.trackAnimation = a;
     else if (a) node.trackAnimation = overAnimation(node.trackAnimation, a); // a release track plays over what was set before it
     return;
@@ -70,7 +75,13 @@ export function overAnimation(under, over) {
  * animation, so that track plays over this step's tracks and never over the last step's.
  */
 export function beginTracks(tree, tracks) {
-  for (const t of tracks) if (t.type === 'animation' && t.release) { const n = /** @type {any} */ (tree.find(t.target)); if (n) n.trackAnimation = null; }
+  for (const t of tracks) if (t.type === 'animation' && t.release) { const n = /** @type {any} */ (tree.find(t.target)); if (n) clearTrackAnimation(n, t); }
+}
+
+/** What an animation track set on its character, taken off: the whole body's (trackAnimation) or its layer's (M5 W7). */
+export function clearTrackAnimation(node, track) {
+  if (!track.layer) { node.trackAnimation = null; return; }
+  if (node.trackLayers) { delete node.trackLayers[track.layer]; if (!Object.keys(node.trackLayers).length) node.trackLayers = null; }
 }
 
 export class AnimationPlayerNode extends Node {
@@ -142,7 +153,7 @@ export class AnimationPlayerNode extends Node {
 
   /** Let characters this player animated go back to their own locomotion. */
   release() {
-    for (const t of this.tracks) if (t.type === 'animation') { const n = /** @type {any} */ (this.tree?.find(t.target)); if (n) n.trackAnimation = null; }
+    for (const t of this.tracks) if (t.type === 'animation') { const n = /** @type {any} */ (this.tree?.find(t.target)); if (n) clearTrackAnimation(n, t); }
   }
 
   /** Sounds the audio tracks play now (the audio service's provider). */

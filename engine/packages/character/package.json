@@ -17,6 +17,7 @@
   "dependencies": {
     "@pixiv/three-vrm-animation": "3.5.5",
     "@vrmxg/core": "0.1.0",
+    "@vrmxg/dmath": "0.1.0",
     "@vrmxg/scene": "0.1.0",
     "@vrmxg/three-vrm": "3.5.5-vrmxg.1",
     "three": "0.187.0"

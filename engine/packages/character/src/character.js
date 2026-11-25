@@ -3,7 +3,8 @@
 //   1. intent: `input` ({ move: [x, z] in m/s, jump }) or an active goTo,
 //   2. controller: gravity, jump, the physics kinematic controller (or flat ground without physics),
 //      facing towards the movement,
-//   3. animation graph on VRMXA slots → each action's time and weight → mixer.update(0),
+//   3. animation graph on VRMXA slots → each action's time and weight → mixer.update(0), then the character's
+//      layers over it (M5 W7, layers.js: masked overwrite and additive layers, in order),
 //   4. travel root motion stripped from the hips,
 //   5. vrm.update(dt): humanoid, look-at, expressions, node constraints, spring bones at the fixed step.
 // Knocked down (M3 W7), the body is a ragdoll (ragdoll.js): steps 1 to 4 give way to the bones taking the ragdoll's
@@ -16,6 +17,7 @@ import { Node } from '@vrmxg/core';
 import { maskClip, maskedEntries } from './masks.js';
 import { twoBoneIK } from './ik.js';
 import { LocomotionGraph } from './graph.js';
+import { CharacterLayers } from './layers.js';
 import { humanoidRagdoll, poseFromRagdoll, RAGDOLL_BONES } from './ragdoll.js';
 
 const GRAVITY = -9.81;
@@ -47,7 +49,7 @@ function writeEveryBinding(m) {
 }
 
 export class CharacterNode extends Node {
-  static actions = ['say', 'goTo', 'emote', 'lookAt', 'reach', 'knockDown', 'getUp', 'face'];
+  static actions = ['say', 'goTo', 'emote', 'lookAt', 'reach', 'knockDown', 'getUp', 'face', 'playLayer', 'stopLayer', 'layerWeight'];
 
   constructor(data, def) {
     super(data, def);
@@ -59,6 +61,8 @@ export class CharacterNode extends Node {
     this.ctrl = { vy: 0, grounded: true, yaw: 0, jumped: false, goTo: null, look: null, seat: null };
     /** What an animation track asks for this step ({ weight, clips }), set by @vrmxg/tracks before the nodes step; null: the graph alone. */
     this.trackAnimation = null;
+    /** What a sequence's layer tracks ask for this step ({ [layer]: { weight, clips } }), set by @vrmxg/tracks like trackAnimation (M5 W7). */
+    this.trackLayers = null;
     /** Tags of what is worn; animation slots follow them (VRMXA §8.3). (Node `tags` are the node's own.) */
     this.equipped = new Set();
     /** @type {any} */ this.physics = null;
@@ -137,6 +141,8 @@ export class CharacterNode extends Node {
       action.play(); action.weight = 0; action.paused = true;
       this.maskedActions.set(key, action);
     }
+    // the character's layers (M5 W7): bound to this body's bones; what plays on them survives a body swap
+    if (this.layers) this.layers.bind(); else this.layers = new CharacterLayers(this);
   }
 
   /**
@@ -246,6 +252,7 @@ export class CharacterNode extends Node {
 
     // 3. animation graph → pose
     this.graph.step(dt, { speed, grounded: c.grounded, verticalSpeed: c.vy, jumped: c.jumped });
+    this.layers.step(dt);
     for (const a of this.actions.values()) a.weight = 0;
     for (const a of this.maskedActions.values()) a.weight = 0;
     // An animation track (@vrmxg/tracks: an AnimationPlayer or a sequence, set before the nodes step) takes over by its
@@ -269,6 +276,8 @@ export class CharacterNode extends Node {
     if (this.ragdoll) this.setHumanPose(this.ragdoll.pre);
     writeEveryBinding(this.mixer);
     this.mixer.update(0);
+    // 3a. the character's layers (M5 W7) over the mixed pose: what plays on them, and a sequence's layer tracks
+    this.layers.apply(this.trackLayers);
 
     // 4. travel root motion: the clip's forward drift is the controller's job
     if (this.graph.state === 'move' && this.graph.moveRootMotion() === 'travel') {
@@ -325,6 +334,18 @@ export class CharacterNode extends Node {
 
   /** Play an action slot (use, take, talk, stand; sit through sitOn). Movement waits until it ends. */
   startAction(slot) { this.graph.act(slot); }
+
+  /**
+   * Play a clip or a slot on one of the character's layers (M5 W7, LAYERS.md): `upperBody`, `arms`, `face`, `additive`,
+   * or the ones the `layers` prop names. Its weight fades to `weight` over `fade` seconds; a one-shot (`loop: false`)
+   * fades out over its last `fade` seconds.
+   * @param {{ layer?: string, clip?: string, slot?: string, loop?: boolean, rate?: number, fade?: number, weight?: number, offset?: number }} [o]
+   */
+  playLayer({ layer = 'upperBody', ...o } = {}) { this.layers.play(layer, o); }
+  /** Fade a layer out over `fade` seconds. @param {{ layer?: string, fade?: number }} [o] */
+  stopLayer({ layer = 'upperBody', fade } = {}) { this.layers.stop(layer, { fade }); }
+  /** Fade what plays on a layer to another weight. @param {{ layer?: string, weight?: number, fade?: number }} [o] */
+  layerWeight({ layer = 'upperBody', weight = 1, fade } = {}) { this.layers.weight(layer, weight, { fade }); }
 
   /** A track's clip ({ slot } | { clip: name or sha256 }, time in seconds, loop) → { clip: sha256, time in the clip }. */
   resolveTrackClip(c) {
@@ -668,7 +689,7 @@ export class CharacterNode extends Node {
     const nodes = [];
     simTraverse(this.vrm.scene, (o) => { nodes.push(o.position.x, o.position.y, o.position.z, o.quaternion.x, o.quaternion.y, o.quaternion.z, o.quaternion.w, o.scale.x, o.scale.y, o.scale.z); });
     const em = this.vrm.expressionManager;
-    const p = this.object3d.position, q = this.object3d.quaternion;
+    const p = this.object3d.position, q = this.object3d.quaternion, layers = this.layers.getState();
     return {
       node: [p.x, p.y, p.z, q.x, q.y, q.z, q.w],
       pose: Float64Array.from(nodes),
@@ -679,6 +700,7 @@ export class CharacterNode extends Node {
       ctrl: { ...this.ctrl, move: [...this.input.move] },
       equipped: [...this.equipped],
       ...(this.ragdoll ? { ragdoll: structuredClone(this.ragdoll) } : {}), // only while knocked down: a standing character's state is as it was
+      ...(layers ? { layers } : {}), // only while a layer plays (M5 W7): a character that never plays one has the state it had
     };
   }
 
@@ -702,6 +724,7 @@ export class CharacterNode extends Node {
       this.graph.slots = this.lib.resolveSlots(this.animations, this.equipped);
     }
     this.graph.setState(s.graph);
+    this.layers.setState(s.layers ?? null);
     const { move, ...ctrl } = s.ctrl;
     this.ctrl = { ...ctrl };
     this.ragdoll = s.ragdoll ? structuredClone(s.ragdoll) : null; // its bodies come back with the physics snapshot

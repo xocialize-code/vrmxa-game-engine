@@ -277,6 +277,7 @@ A VRMXA character: VRM body, closet, animation sets, voice.
 | `getUpSeconds` | number |  | 0.1 to 10 s | yes | How long getting up from a ragdoll blends back into animation (1.2). |
 | `head` | vec3 `[x, y, z]` |  | rad | yes | Turn the head over the animation: [yaw to her left, pitch up, roll to her left shoulder]. Keyed by a face take or by hand. |
 | `gaze` | list of number |  |  | yes | Where the eyes look, from her facing: [yaw to her left, pitch up] in radians. It comes before a look-at target; a puppet take keys it. |
+| `layers` | list of object |  |  | yes | Animation layers over her locomotion, applied in order: each with a bone mask, overwrite or additive blending and a weight that scales what plays on it. Without this list she has upperBody, arms, face (overwrite) and additive (fullBody). |
 
 **Signals**
 
@@ -304,6 +305,9 @@ Also, from Node3D: `ready`.
 | `lookAt` | `target` (node id): Node to look at; omit to stop |  |
 | `knockDown` | `impulse` (vec3 `[x, y, z]`, N·s): A shove in world space, on the torso (or `part`); `part` (string): The humanoid bone whose part takes the shove (spine); `getUp` (boolean): Get up once settled (true); false stays down until getUp | Fall as a ragdoll (capsules and joints from the humanoid), then get up, blending back into animation. |
 | `getUp` |  | Get up from a ragdoll lying still. |
+| `playLayer` | `layer` (string): Which layer (upperBody); `clip` (string): A clip by name; `slot` (string): Or an animation slot, as what she has on resolves it; `loop` (boolean): Loop it (true); a one-shot fades out at its end; `rate` (number): Playback rate (1); `fade` (number, s): Fade in, and cross-fade from what played there (0.25); `weight` (number): The weight it fades to (1) | Play a clip or a slot on one of her animation layers: a wave or a carried tray on the upper body while she walks. |
+| `stopLayer` | `layer` (string): Which layer (upperBody); `fade` (number, s): Fade out (0.25) | Fade a layer out. |
+| `layerWeight` | `layer` (string): Which layer (upperBody); `weight` (number): The new weight; `fade` (number, s): Over this long (0.25) | Fade what plays on a layer to another weight. |
 | `face` | `target` (node id): Turn to face this node; `point` (vec3 `[x, y, z]`, m): Or this point; `rate` (number, rad/s): How fast (4) | Turn the body to face a node or a point, in place; look-at alone stops about 100° from the facing. |
 
 Also, from Node3D: `show`, `hide`.

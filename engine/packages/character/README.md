@@ -38,6 +38,18 @@ The feet's offsets and the reach are in the character's controller state, so the
 (`ctrl.emote = { name, until }`, cleared at the start of the step it ends on). It used to be a closure timer, which a
 snapshot can't hold, so a scrub into the film refused the world (M2 W12).
 
+## Character layers (M5 W7)
+
+Named layers over everything above (`layers.js`; the design is [LAYERS.md](LAYERS.md), decision AB-D-0289): each has a
+bone mask (a `masks.js` group or a list of VRM humanoid bones), a blend type and a weight, applied in order after the
+mixer, on the normalized bones. Without a `layers` prop a character has `upperBody`, `arms`, `face` (overwrite) and
+`additive` (fullBody). `playLayer({ layer, clip | slot, loop, rate, fade, weight })`, `stopLayer`, `layerWeight` (also
+registry actions); a sequence's animation track with `layer` plays there; `@vrmxg/interact` plays a take verb's
+`carry` on the upper body until `interact.release`. Overwrite slerps towards the layer's pose by its weight; additive
+multiplies in its rotation from rest (the identity on normalized bones) scaled by its weight. Weights fade by whole
+steps; the slerps go through `dmath`. What plays is in `getState().layers`, only while a layer plays, so characters
+without one hash as before (`acceptance/compare.mjs` 20 of 20, the canonical simulation digests unchanged).
+
 ## Rules it follows
 
 - **One VRM per node, never cloned.** `library.prepare(doc)` before `instantiate`; `prepareNode` before a runtime add.

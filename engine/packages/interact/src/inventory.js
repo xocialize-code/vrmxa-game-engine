@@ -10,6 +10,14 @@ export class InventoryService {
     this.held.set(actorId, list);
     return list.at(-1);
   }
+  /** Take an item out of a character's inventory (the first entry with its id); the entry, or null. */
+  remove(actorId, itemId) {
+    const list = this.held.get(actorId) ?? [], i = list.findIndex((e) => e.id === itemId);
+    if (i < 0) return null;
+    const [entry] = list.splice(i, 1);
+    if (!list.length) this.held.delete(actorId);
+    return entry;
+  }
   list(actorId) { return [...(this.held.get(actorId) ?? [])]; }
   has(actorId, itemId) { return (this.held.get(actorId) ?? []).some((e) => e.id === itemId); }
 

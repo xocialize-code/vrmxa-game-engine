@@ -8,6 +8,7 @@ import { CharacterNode, BoneAttachmentNode } from './character.js';
 export { parseVRM, parseVRMA } from './load.js';
 export { CharacterLibrary } from './library.js';
 export { LocomotionGraph } from './graph.js';
+export { CharacterLayers, DEFAULT_LAYERS, BLENDS, layerDefs, maskBones, slerpInto, sampleTrack } from './layers.js';
 export { CharacterNode, BoneAttachmentNode } from './character.js';
 
 /**

@@ -136,3 +136,48 @@ test('a run with interactions is identical twice, and restores from a snapshot t
   assert.equal(compareRuns(rest, recordRun(D.tree, 210, { onStep: script(D) })), null);
 });
 
+
+test('carry (M5 W7): a take verb with carry plays it on the upper-body layer while she walks; release lets it go', { skip: SKIP }, async () => {
+  const carryAnims = await testAnimations(core, { actions: true, carry: true });
+  const tree = new SceneTree({ registry: m0Registry(), seed: 4 });
+  const input = installInput(tree);
+  installPhysics(tree, R);
+  const items = installItems(tree, { resolve: (ref) => files[ref], vrmxaCore: core, check, stubTextures: true });
+  const chars = installCharacters(tree, { resolve: () => read('spec'), stubTextures: true });
+  chars.setAnimations('spec.vrm', carryAnims);
+  const { interact, inventory } = installInteraction(tree);
+  const doc = scene();
+  await items.prepare(doc); await chars.prepare(doc);
+  tree.instantiate(doc);
+  const mira = /** @type {any} */ (tree.find('mira')), key = /** @type {any} */ (tree.find('key'));
+  key.verbs.find((v) => v.verb === 'take').carry = 'carry'; // a tray's take verb would say so in its item
+  mira.placeAt(-3.2, 0, 0, -Math.PI / 2); tree.run(3);
+  assert.deepEqual(interact.request('mira', 'key', 'take').into, 'inventory');
+  assert.equal(inventory.list('mira')[0].carry, 'upperBody', 'the entry knows its layer');
+  assert.ok(mira.layers.playing('upperBody'), 'the carry slot plays on the upper body');
+  assert.equal(mira.layers.state.get('upperBody').clip, carryAnims.sha.carry);
+  const dev = input.addDevice(new VirtualDevice());
+  tree.run(70); // the take action ends
+  dev.press('KeyW'); tree.run(60);
+  assert.equal(mira.graph.state, 'move', 'walking');
+  assert.ok(mira.getState().layers, 'the carry is in her state');
+  const id = inventory.list('mira')[0].id; // the item's own id (VRMXI), as the inventory keeps it
+  const entry = interact.release('mira', id);
+  assert.equal(entry.carry, 'upperBody');
+  assert.deepEqual(inventory.list('mira'), []);
+  assert.equal(mira.layers.playing('upperBody'), false, 'released: the layer fades out');
+  tree.run(30);
+  assert.equal(mira.getState().layers, undefined, 'and leaves no state');
+  assert.equal(interact.release('mira', id), null, 'nothing left to release');
+});
+
+test('a carry that can\'t play refuses the take before anything changes (M5 W7)', { skip: SKIP }, async () => {
+  const w = await world();
+  const key = /** @type {any} */ (w.tree.find('key'));
+  Object.assign(key.verbs.find((v) => v.verb === 'take'), { carry: 'carry', carryLayer: 'tray' }); // no such layer
+  w.mira.placeAt(-3.2, 0, 0, -Math.PI / 2); w.tree.run(3);
+  assert.throws(() => w.interact.request('mira', 'key', 'take'), /no layer "tray"/);
+  assert.ok(w.tree.find('key'), 'the key is still in the world');
+  assert.deepEqual(w.inventory.list('mira'), [], 'and not in her inventory');
+  assert.notEqual(w.mira.graph.state, 'take', 'and she didn\'t start taking it');
+});

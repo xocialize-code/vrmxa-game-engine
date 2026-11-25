@@ -1,0 +1,166 @@
+{
+ "task": "AB-T-0575",
+ "started": "2026-11-25T00:37:40.713Z",
+ "commit": "fb2a308",
+ "machine": {
+  "model": "Mac17,14",
+  "chip": "Apple M5 Max",
+  "macOS": "27.3 (26C5047e)"
+ },
+ "cells": {
+  "chromium-webgpu": {
+   "acceptance": {
+    "ok": true,
+    "pinned": true,
+    "loads": 1,
+    "digest": "78ab33e0d7508476",
+    "canonical": "78ab33e0d7508476",
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "chromium-webgl": {
+   "acceptance": {
+    "ok": true,
+    "pinned": true,
+    "loads": 1,
+    "digest": "78ab33e0d7508476",
+    "canonical": "78ab33e0d7508476",
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "wkwebview-scheme-webgpu": {
+   "acceptance": {
+    "ok": true,
+    "pinned": true,
+    "loads": 1,
+    "digest": "78ab33e0d7508476",
+    "canonical": "78ab33e0d7508476",
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "wkwebview-scheme-webgl": {
+   "acceptance": {
+    "ok": true,
+    "pinned": true,
+    "loads": 1,
+    "digest": "78ab33e0d7508476",
+    "canonical": "78ab33e0d7508476",
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "wkwebview-loopback-webgpu": {
+   "acceptance": {
+    "ok": true,
+    "pinned": true,
+    "loads": 1,
+    "digest": "78ab33e0d7508476",
+    "canonical": "78ab33e0d7508476",
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  },
+  "wkwebview-loopback-webgl": {
+   "acceptance": {
+    "ok": true,
+    "pinned": true,
+    "loads": 1,
+    "digest": "78ab33e0d7508476",
+    "canonical": "78ab33e0d7508476",
+    "allLoadsMatch": true,
+    "incidents": 0
+   }
+  }
+ },
+ "incidents": [],
+ "failures": [],
+ "gpuLock": [
+  {
+   "cell": "chromium-webgpu",
+   "waitedMs": 1
+  },
+  {
+   "cell": "chromium-webgl",
+   "waitedMs": 1
+  },
+  {
+   "cell": "wkwebview-scheme-webgpu",
+   "waitedMs": 0
+  },
+  {
+   "cell": "wkwebview-scheme-webgl",
+   "waitedMs": 1
+  },
+  {
+   "cell": "wkwebview-loopback-webgpu",
+   "waitedMs": 1
+  },
+  {
+   "cell": "wkwebview-loopback-webgl",
+   "waitedMs": 1
+  }
+ ],
+ "dirtyFiles": [
+  "apps/playground/src/App.vue",
+  "apps/playground/src/engine.js",
+  "content/sample/LICENCES.md",
+  "engine/packages/character/package.json",
+  "engine/packages/character/src/character.js",
+  "engine/packages/character/src/index.js",
+  "engine/packages/character/test/fixtures.mjs",
+  "engine/packages/interact/src/inventory.js",
+  "engine/packages/interact/src/service.js",
+  "engine/packages/interact/test/interact.test.mjs",
+  "engine/packages/registry/src/m0-nodes.js",
+  "engine/packages/sequence/src/service.js",
+  "engine/packages/tracks/src/evaluate.js",
+  "engine/packages/tracks/src/index.js",
+  "engine/packages/tracks/src/player.js"
+ ],
+ "dirty": true,
+ "compare": {
+  "webgpu": {
+   "exit": 0,
+   "passed": 20,
+   "of": 20,
+   "failed": []
+  },
+  "webgl": {
+   "exit": 0,
+   "passed": 20,
+   "of": 20,
+   "failed": []
+  }
+ },
+ "simulationIndependentOfBackend": {
+  "node": "fe69bad3406ab5f6",
+  "finals": {
+   "chromium-webgpu": "fe69bad3406ab5f6",
+   "chromium-webgl": "fe69bad3406ab5f6",
+   "wkwebview-scheme-webgpu": "fe69bad3406ab5f6",
+   "wkwebview-scheme-webgl": "fe69bad3406ab5f6",
+   "wkwebview-loopback-webgpu": "fe69bad3406ab5f6",
+   "wkwebview-loopback-webgl": "fe69bad3406ab5f6"
+  },
+  "same": true
+ },
+ "ended": "2026-11-25T00:47:58.596Z",
+ "stopped": null,
+ "unpinned": [],
+ "ok": true,
+ "runtimes": [
+  "chromium",
+  "wkwebview-scheme",
+  "wkwebview-loopback"
+ ],
+ "backends": [
+  "webgpu",
+  "webgl"
+ ],
+ "checks": [
+  "acceptance"
+ ]
+}

@@ -117,6 +117,12 @@ onMounted(async () => {
     catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
     ui.loading = false; refresh(); window.READY = true; return;
   }
+  // M5 W7: ?mode=layers: Mira's character layers over her walk (acceptance/m5/layers.mjs)
+  if (mode === 'layers') {
+    try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await pg.layersCheck()) }; ui.notes = `layers: final ${window.__result.final}, restored ${window.__result.restored.same ? 'the same' : 'DIFFERENT'}, legs ${window.__result.legs.sameAsWalkEveryStep ? 'walking\'s' : 'DIFFERENT'}`; }
+    catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
+    ui.loading = false; refresh(); window.READY = true; return;
+  }
   // M4 W1: ?mode=post&renderer=webgpu|webgl draws every post look offline on that backend (scripts/post-chromium.mjs, WKWebView)
   if (mode === 'post') {
     try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await postCheck(pg)) }; ui.notes = `post: ${window.__result.stack}, exports ${window.__result.exports.identical ? 'identical' : 'DIFFER'}`; }

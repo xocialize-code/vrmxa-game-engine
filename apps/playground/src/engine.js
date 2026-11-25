@@ -28,6 +28,7 @@ import { framesCheck } from './frames.js';
 import { coverageCheck } from './coverage-check.js';
 import { voicingCheck } from './voicing-check.js';
 import { takesCheck } from './takes-check.js';
+import { layersCheck, withCarry } from './layers-check.js';
 import { withCrowd } from './budget.js';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
@@ -129,6 +130,8 @@ export class Playground {
     // M3 W7: ?fall puts a flight of stairs outside the cafe with Mira and Hana on its landing (knockDown() shoves them)
     // M3 W8: ?cart puts a cart on the pavement with Mira beside its driver's door (E gets in and out, WASD drives)
     if (params.has('cart')) this.sample = { ...this.sample, doc: withCart(this.sample.doc) };
+    // M5 W7: ?layers adds the carried-tray clip (a `carry` slot), so tree.find('mira').playLayer({ slot: 'carry' }) carries
+    if (params.has('layers')) this.sample = await withCarry(this.sample, read, vrmxaCore);
     // M4 W3: ?crowd=N (or load's crowd) adds N wandering characters, Mira's and Hana's models in turn (the budget's 20)
     const crowdN = crowd ?? (params.has('crowd') ? +(params.get('crowd') || 18) : 0);
     if (crowdN > 0) this.sample = { ...this.sample, doc: withCrowd(this.sample.doc, crowdN) };
@@ -489,6 +492,15 @@ export class Playground {
   async takesCheck() {
     await this.ready;
     return takesCheck({ R: await loadRapier(), bytes, opts: { vrmxaCore, closet, behaviours } });
+  }
+
+  /**
+   * M5 W7 (?mode=layers): Mira's layers over her walk in the cafe, no renderer involved (layers-check.js);
+   * acceptance/m5/layers.mjs compares it with Node's.
+   */
+  async layersCheck() {
+    await this.ready;
+    return layersCheck({ R: await loadRapier(), bytes, opts: { vrmxaCore, closet, behaviours } });
   }
 
   /**
