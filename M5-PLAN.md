@@ -116,11 +116,15 @@ W8 safe to close ─────────────────────
 W0, W2 ───────────► W9 agents ─────────────────────────────────────┘
 ```
 
-**Progress (2026-11-24):** W0, W2 and W8 are done and merged (PRs #31 to #34; tasks AB-T-0615, 0617, 0592 and 0593),
+**Progress (2026-11-25):** W0, W2 and W8 are done and merged (PRs #31 to #34; tasks AB-T-0615, 0617, 0592 and 0593),
 then W1, W3 and W9 (PRs #36 to #38; tasks AB-T-0616, 0618, 0619 and 0608; shell 0.11.0). The game app plays an exported
 build with the HUD and dialogue UI wired in. Then W4, W5 and W7 (PRs #40 to #42; tasks AB-T-0599 to 0602, 0604, 0605
 and 0609; shell 0.12.0): the inspector's widgets, the viewport's aids and handles, and masked character layers (carry
-while walking). Left: W6 (prefabs and assets), W10 (the sample game) and W11 (acceptance). Left from the reviews:
+while walking). Then, on 2026-11-25, W6 and W10 (PRs #44 and #45; tasks AB-T-0603, 0606, 0607 and 0620; shell 0.13.0):
+prefab overrides and the assets panel, and "The Morning Rush", the sample game (AB-D-0293; receipts AB-R-1137 and
+1140). W10's check 8 passes in part: the editor can't yet attach behaviours or wire connections (AB-T-0638). Its check
+10 comes from playing back the recorded sessions. Left: W11 (acceptance), and AB-T-0639 (recovering from a lost GPU
+device in the game app). Left from the reviews:
 AB-T-0624, AB-T-0626 to 0632, 0634 and 0635 (AB-T-0631, saves across re-exports, is the operator's decision).
 
 **W10 (2026-11-25, AB-T-0620):** "The Morning Rush" is `content/sample/game` (its own `game.json`; `vrmxg-export
