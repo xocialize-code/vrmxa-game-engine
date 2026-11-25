@@ -31,12 +31,17 @@ export function keyAction(map, code) {
 /**
  * Gamepad edges, once a frame: an action fires on the frame its button (or the left stick, past half way) goes down,
  * and a held direction repeats, after `delay` frames, every `every` frames. Counted in frames: presentation, no clock.
+ * Only a fresh press fires: what is already held on the first frame the pad is seen (a nav root that has just appeared,
+ * a pad plugged in) is noted and ignored until it is let go. So the A that opened an app's menu doesn't also press the
+ * control the menu focuses (M5 W1 review).
  */
 export class NavPad {
   constructor({ actions = UI_ACTIONS, delay = 24, every = 6 } = {}) {
     this.map = new ActionMap(actions);
     this.delay = delay; this.every = every;
     /** frames each action has been held */ this.held = new Map();
+    /** held when the pad was first seen: ignored until let go */ this.stale = new Set();
+    this.seen = false;
   }
 
   /** @param {{ gamepad: { axes: number[], buttons: number[] } | null }} state input.peek() @returns {string[]} the actions this frame */
@@ -46,9 +51,12 @@ export class NavPad {
     const sx = axes[this.map.axes.indexOf('ui_stick_x')] ?? 0, sy = axes[this.map.axes.indexOf('ui_stick_y')] ?? 0;
     if (sy > 0) down.add('ui_up'); if (sy < 0) down.add('ui_down');
     if (sx > 0) down.add('ui_right'); if (sx < 0) down.add('ui_left');
-    const fired = [];
+    const fired = [], first = !this.seen && !!state?.gamepad;
+    this.seen = !!state?.gamepad;
     for (const name of [...DIRS, 'ui_accept', 'ui_back']) {
-      if (!down.has(name)) { this.held.delete(name); continue; }
+      if (!down.has(name)) { this.held.delete(name); this.stale.delete(name); continue; }
+      if (first) this.stale.add(name);
+      if (this.stale.has(name)) continue;
       const n = (this.held.get(name) ?? 0) + 1;
       this.held.set(name, n);
       if (n === 1 || (DIRS.includes(name) && n > this.delay && (n - this.delay) % this.every === 0)) fired.push(name);

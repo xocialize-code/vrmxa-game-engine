@@ -23,10 +23,29 @@ export function defaultSettings() {
   return { format: SETTINGS_FORMAT, version: SETTINGS_VERSION, backend: 'auto', ui: null };
 }
 
+/** The volume buses the first form of this document kept (`volume`: 0 to 1 per bus), for the migration below. */
+const OLD_BUSES = ['master', 'music', 'sfx', 'voice', 'ambience'];
+
+/**
+ * The first form of this document (before @vrmxg/game-ui was wired in) kept `volume` (0 to 1 per bus) and `bindings`
+ * (the player's overrides) at the top. They become the `ui` document game-ui's GameSettings reads, once: a document that
+ * already has `ui` keeps it, and the old fields are dropped when it is written back. → the `ui` document, or null
+ * @param {any} stored
+ */
+export function migrateUi(stored) {
+  const vol = stored?.volume && typeof stored.volume === 'object' ? stored.volume : null;
+  const bind = stored?.bindings && typeof stored.bindings === 'object' && !Array.isArray(stored.bindings) ? stored.bindings : null;
+  if (!vol && !bind) return null;
+  const volumes = {};
+  for (const b of OLD_BUSES) if (vol && typeof vol[b] === 'number' && Number.isFinite(vol[b])) volumes[b] = { volume: Math.min(1, Math.max(0, vol[b])), muted: false };
+  return { version: 1, volumes, bindings: bind ? structuredClone(bind) : {} };
+}
+
 /**
  * Settings from whatever was stored: every field checked on its own, so one bad value costs only itself. A document of
  * a later version is read for the fields this version knows. Never throws.
- * @param {any} stored the parsed document, or anything else → { settings, problems }
+ * @param {any} stored the parsed document, or anything else → { settings, problems, migrated } (migrated: the first
+ *   form's volume and bindings moved into `ui`: write the document back)
  */
 export function readSettings(stored) {
   const settings = defaultSettings(), problems = [];
@@ -34,7 +53,9 @@ export function readSettings(stored) {
   if (typeof stored !== 'object' || Array.isArray(stored) || stored.format !== SETTINGS_FORMAT) return { settings, problems: ['not a settings document: the defaults are used'] };
   if (stored.backend !== undefined) { if (BACKENDS.includes(stored.backend)) settings.backend = stored.backend; else problems.push(`backend "${stored.backend}" isn't one of ${BACKENDS.join(', ')}`); }
   if (stored.ui !== undefined && stored.ui !== null) { if (typeof stored.ui === 'object' && !Array.isArray(stored.ui)) settings.ui = structuredClone(stored.ui); else problems.push('ui isn\'t a table'); }
-  return { settings, problems };
+  let migrated = false;
+  if (settings.ui === null) { const ui = migrateUi(stored); if (ui) { settings.ui = ui; migrated = true; } }
+  return { settings, problems, migrated };
 }
 
 /** The settings document's text, as it is stored. */
@@ -72,10 +93,12 @@ export class SettingsStore {
   async load() {
     try {
       const text = await this.storage.read();
-      const { settings, problems } = readSettings(text ? JSON.parse(text) : null);
+      const { settings, problems, migrated } = readSettings(text ? JSON.parse(text) : null);
       this.value = settings; this.problems = problems; this.error = null;
-    } catch (e) { this.value = defaultSettings(); this.error = `the settings couldn't be read: ${e?.message ?? e}`; }
-    this.saved = true;
+      this.saved = true;
+      // the first form's volume and bindings, moved into `ui`: written back once, so the next read finds the new form
+      if (migrated) { this.saved = false; await this.storage.write(serializeSettings(settings)).then(() => { this.saved = true; }, (e) => { this.error = `the settings couldn't be saved: ${e?.message ?? e}`; }); }
+    } catch (e) { this.value = defaultSettings(); this.error = `the settings couldn't be read: ${e?.message ?? e}`; this.saved = true; }
     this._tell();
     return this.value;
   }
@@ -101,6 +124,17 @@ export class SettingsStore {
   /** Hear every change (and every change of `saved` and `error`). → a function that stops it */
   on(fn) { this._listeners.add(fn); return () => this._listeners.delete(fn); }
   _tell() { for (const fn of [...this._listeners]) fn(this.value, this); }
+}
+
+/**
+ * What the settings menu's status line says after a change: why a write failed (the backend's, or a volume's or a
+ * rebinding's, which GameSettings writes through gameUiStore), else whether it is kept yet.
+ * @param {SettingsStore} store @param {{ error?: any } | null} [player] the player's GameSettings
+ */
+export function settingsNote(store, player = null) {
+  if (store?.error) return store.error;
+  if (player?.error) return `the volumes and controls couldn't be saved: ${player.error?.message ?? player.error}`;
+  return store?.saved ? 'Settings saved.' : 'Saving…';
 }
 
 /**

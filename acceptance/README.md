@@ -75,14 +75,14 @@ npm run build -w @vrmxg/game-app
 node acceptance/m5/game.mjs        # Chromium, under the GPU lock: results/m5-game.json
 # the Mac app: apps/game-mac/docs/HAND-TEST-M5-GAME.md (AppProbe)
 ```
-**Passed, 15 of 15** (M5 Max, macOS 27.3 beta, Node 26, Chrome for Testing 156.0.8078.4): the title menu on WebGL when
-forced; New Game, the title scene skipped with Space (a recorded input), the level played with W held; Escape pauses and
+**Passed, 19 of 19** (M5 Max, macOS 27.3 beta, Node 26, Chrome for Testing 156.0.8078.4): the title menu on WebGL when
+forced; New Game, the title scene skipped with Space (a recorded input); the HUD (`@vrmxg/game-ui`, mounted at the app's seam) and Hana's question answered with Enter on the overlay (a recorded choice); the level played with W held; Escape pauses and
 nothing steps; Save Game → Slot 1; Load Game over unsaved play asks, then goes back to the save's step, and Tab can't leave the question; a save an earlier export made is listed as such, can't be picked, and Continue skips it; Quit to Title
 asks; **the session's log, played in Chromium through the menus with a hash of the world after every step made in the
-page, replays in Node to the same hash on every step** (583 steps, two segments: the new game, and the save it loaded);
+page, replays in Node to the same hash on every step** (over 800 steps with Hana's choice, two segments: the new game, and the save it loaded);
 a fresh launch offers Continue and loads the save at its step; every menu from a stand-in gamepad and from the keyboard;
-the renderer setting kept; with no query the page draws on WebGPU where it has it. The Mac app's AppProbe checklist
-passes 9 of 9 and 1 of 1 (WebGL forced), a save written from the menu loading in a fresh launch at its step.
+the renderer setting and a rebound key kept (the key on the menus' input after a relaunch); the A that opens Settings not pressing the control it focuses; with no query the page draws on WebGPU where it has it. The Mac app's AppProbe checklist
+passes 10 of 10 and 1 of 1 (WebGL forced; the HUD and a conversation with a choice in row 3), a save written from the menu loading in a fresh launch at its step.
 
 **Not checked:** a real gamepad (Chromium's is a stand-in through `navigator.getGamepads`; AppProbe can't press one);
 the replay in WKWebView (the Mac app's session isn't read back: Chromium's is); a session that reaches the ending in the

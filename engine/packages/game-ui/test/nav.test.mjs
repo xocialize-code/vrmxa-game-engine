@@ -13,6 +13,7 @@ test('keys map to the UI\'s actions', () => {
 
 test('the gamepad: the d-pad and the stick move, A accepts, B goes back; edges once, held directions repeat by frames', () => {
   const p = new NavPad({ delay: 3, every: 2 });
+  assert.deepEqual(p.update(pad()), [], 'the pad seen, nothing held');
   assert.deepEqual(p.update(pad({ 13: 1 })), ['ui_down']);
   assert.deepEqual(p.update(pad({ 13: 1 })), [], 'held: not again at once');
   p.update(pad({ 13: 1 }));
@@ -27,6 +28,19 @@ test('the gamepad: the d-pad and the stick move, A accepts, B goes back; edges o
   assert.deepEqual(p.update(pad({}, [0.8, 0, 0, 0])), ['ui_right']);
   assert.deepEqual(p.update({ gamepad: null }), [], 'no pad: nothing');
   assert.deepEqual(new NavPad().update({ keys: new Set(['ArrowDown']), gamepad: null }), [], 'the keyboard comes as events, never polled');
+});
+
+test('the gamepad: what is held on the first frame the pad is seen is ignored until let go (the A that opened a menu)', () => {
+  const p = new NavPad({ delay: 3, every: 2 });
+  assert.deepEqual(p.update(pad({ 0: 1, 13: 1 })), [], 'A and down held as the menu appears: no press, no move');
+  for (let i = 0; i < 8; i++) assert.deepEqual(p.update(pad({ 0: 1, 13: 1 })), [], 'still held: never fires, never repeats');
+  assert.deepEqual(p.update(pad({ 13: 1 })), [], 'A let go; down still held');
+  assert.deepEqual(p.update(pad({ 0: 1 })), ['ui_accept'], 'a fresh press of A fires');
+  assert.deepEqual(p.update(pad()), []);
+  assert.deepEqual(p.update(pad({ 13: 1 })), ['ui_down'], 'a fresh press of down fires');
+  const q = new NavPad();
+  assert.deepEqual(q.update({ gamepad: null }), []);
+  assert.deepEqual(q.update(pad({ 0: 1 })), [], 'a pad plugged in with A down: its first frame, not a press');
 });
 
 test('what an action does to the controls: focus wraps, sliders step, accept clicks, back leaves', () => {

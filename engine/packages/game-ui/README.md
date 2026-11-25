@@ -136,7 +136,9 @@ press. The guard judges only controls under a nav root (the overlay, and an app 
 text fields, and only keyboard clicks: text fields type as usual, and mouse clicks, a gamepad's A and scripted clicks
 are never stopped. The gamepad is polled once a frame through
 `input.peek()`, which reads the devices without taking anything from the step; a held direction repeats after 24
-frames, every 6.
+frames, every 6. Only a fresh press acts: what is already held on the first frame a root sees the pad (a menu that has
+just opened, a pad plugged in) is ignored until let go, so the A that opened an app's menu doesn't also press the
+control the menu focuses (M5 W1).
 
 `useNav(root, { input, onBack, grab, paused, onKey })` marks its root `data-nav-root`; controls are the elements under it
 with `data-nav`. **One scope acts at a time: the outermost root around the focused control.** So the settings controls,

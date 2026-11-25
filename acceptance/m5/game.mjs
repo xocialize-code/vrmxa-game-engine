@@ -222,6 +222,16 @@ await page.focus('#rebind-jump-keyboard'); await page.keyboard.press('Enter'); a
 await until(page, () => JSON.parse(localStorage.getItem('vrmxg.game.cafe-test.settings') ?? '{}')?.ui?.bindings?.jump?.[0]?.key === 'KeyJ', null, 10000);
 const stored = await page.evaluate(() => localStorage.getItem('vrmxg.game.cafe-test.settings'));
 say('a backend chosen in Settings and a key rebound there are kept, in one settings document', JSON.parse(stored ?? '{}').backend === 'webgl' && JSON.parse(stored ?? '{}').ui?.bindings?.jump?.[0]?.key === 'KeyJ', `stored ${stored?.replace(/\s+/g, ' ').slice(0, 220)}`);
+// the gamepad's A that opens Settings doesn't also press the control Settings focuses (useNav's first frame): the stored
+// WebGL stays WebGL
+await page.keyboard.press('Escape'); await screen(page, 'pause');
+await page.waitForTimeout(200); // the pause menu focuses Resume as it comes back: then move focus to Settings
+await page.focus('#settings');
+await until(page, () => document.activeElement?.id === 'settings', null, 5000);
+await pad(page, [PAD.A]); await screen(page, 'settings');
+await page.waitForTimeout(400);
+const afterA = await page.evaluate(() => JSON.parse(localStorage.getItem('vrmxg.game.cafe-test.settings') ?? '{}').backend);
+say('the A that opens Settings doesn\'t press the control it focuses', afterA === 'webgl', `stored backend after A: ${afterA} (focus #${await focused(page)})`);
 await page.close();
 
 // ---------------------------------------------------------------- 8: the backend readout with no query, and after the setting

@@ -7,30 +7,30 @@
   "entry": "cafe.vrmxs",
   "runtime": {
    "name": "vrmxg-game",
-   "version": "0.1.0+31c6c5843624",
+   "version": "0.1.0+3b1c3daa4b79",
    "contract": 1,
    "entry": "index.html",
-   "digest": "669fa0019e10466d570bad590eb4708fee9c869cfe00553edcf5e35fe3db912d"
+   "digest": "61a6df3f346a6051bc704fa65b8340df6ebdcd8a10c00d056331ae3b3fdf4e88"
   },
   "files": 73,
   "projectFiles": 50,
   "runtimeFiles": 23,
-  "bytes": 23483887,
-  "digest": "730195b9507c48f1393e8ad16582dec05997531ed829be090b8b9aa5aa23c893",
-  "manifestSha256": "02188c363d974df8ce8767612422d2c51c2749865a424fb8b945910ea368ae9f"
+  "bytes": 23484933,
+  "digest": "e5d0347784315e3d669a6544f189572155e1b8cc6d152094484e6441e3f9ed79",
+  "manifestSha256": "b9aae8d5a13c23d48951a5d07bd7600140aa6b6e98918ea9583b3d0aba6bdfb7"
  },
  "nodeRuns": [
   {
-   "manifest": "02188c363d974df8ce8767612422d2c51c2749865a424fb8b945910ea368ae9f",
-   "digest": "730195b9507c48f1393e8ad16582dec05997531ed829be090b8b9aa5aa23c893",
+   "manifest": "b9aae8d5a13c23d48951a5d07bd7600140aa6b6e98918ea9583b3d0aba6bdfb7",
+   "digest": "e5d0347784315e3d669a6544f189572155e1b8cc6d152094484e6441e3f9ed79",
    "files": 73,
-   "bytes": 23483887
+   "bytes": 23484933
   },
   {
-   "manifest": "02188c363d974df8ce8767612422d2c51c2749865a424fb8b945910ea368ae9f",
-   "digest": "730195b9507c48f1393e8ad16582dec05997531ed829be090b8b9aa5aa23c893",
+   "manifest": "b9aae8d5a13c23d48951a5d07bd7600140aa6b6e98918ea9583b3d0aba6bdfb7",
+   "digest": "e5d0347784315e3d669a6544f189572155e1b8cc6d152094484e6441e3f9ed79",
    "files": 73,
-   "bytes": 23483887
+   "bytes": 23484933
   }
  ],
  "refusal": {
@@ -69,7 +69,7 @@
   "version": "156.0.8078.4",
   "final": "fe69bad3406ab5f6",
   "steps": 600,
-  "digest": "730195b9507c48f1393e8ad16582dec05997531ed829be090b8b9aa5aa23c893",
+  "digest": "e5d0347784315e3d669a6544f189572155e1b8cc6d152094484e6441e3f9ed79",
   "verified": 48,
   "firstDifference": null,
   "sameLexer": true,
@@ -82,7 +82,7 @@
   {
    "name": "two Node exports are the same bytes",
    "ok": true,
-   "detail": "74 files, manifest 02188c363d974df8"
+   "detail": "74 files, manifest b9aae8d5a13c23d4"
   },
   {
    "name": "each folder is what its manifest lists",
@@ -92,7 +92,7 @@
   {
    "name": "the manifest lists every file with its hash and licence",
    "ok": true,
-   "detail": "50 project files, 23 runtime files, 23483887 bytes"
+   "detail": "50 project files, 23 runtime files, 23484933 bytes"
   },
   {
    "name": "a file with no licence row stops the export, by name",

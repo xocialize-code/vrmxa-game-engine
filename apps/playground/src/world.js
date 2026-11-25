@@ -2,7 +2,7 @@
 // WKWebView) and the Node runner. No DOM, no bundler aliases: whatever differs by runtime comes in as arguments
 // (how to read a file, vrmxa-core, the project's behaviours).
 import { m0Registry } from '@vrmxg/registry/m0';
-import { parse } from '@vrmxg/scene';
+import { parse, flatten } from '@vrmxg/scene';
 import { SceneTree } from '@vrmxg/core';
 import { installPhysics } from '@vrmxg/physics';
 import { installCharacters } from '@vrmxg/character';
@@ -25,6 +25,17 @@ import { installSense } from '@vrmxg/sense';
 import { installGame } from '@vrmxg/game';
 
 const text = (b) => new TextDecoder().decode(b);
+
+/**
+ * Does the scene, prefab instances flattened in, have a node of this type? (A Dialogue inside a prefab counts.) A scene
+ * whose instances can't be flattened is judged by its own nodes: instantiating it says what is wrong.
+ * @param {any} doc @param {Map<string, any>} prefabs @param {string} type
+ */
+export function hasNodeType(doc, prefabs, type) {
+  let nodes = doc.nodes ?? [];
+  try { nodes = flatten(doc, prefabs).nodes; } catch { /* reported by instantiate */ }
+  return nodes.some((n) => n.type === type);
+}
 
 /**
  * Everything a scene of the sample project needs, read once: the scene, its prefabs, the project animations.
@@ -104,7 +115,7 @@ export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = n
   const rules = game ? installGame(tree, { scene: sample.scene }) : null; // game flow (M5 W2), for a world a GameFlow plays
   // conversations with choices (M5 W3, @vrmxg/voice), after input, voice and game, and only for a scene that has a
   // Dialogue node: the service has state, which is in the world hashes, so no other scene's hashes move (AB-T-0630)
-  const dialogue = sample.doc.nodes.some((n) => n.type === 'Dialogue') ? installDialogue(tree) : null;
+  const dialogue = hasNodeType(sample.doc, sample.prefabs, 'Dialogue') ? installDialogue(tree) : null; // prefabs' too
   const save = installSave(tree, { scene: { ref: sample.scene, doc: sample.doc } }); // save games (M2 W9): flags, save files
   const wardrobe = closet && vrmxaCore ? installCloset(tree, { vrmxaCore, closet, spec, stubTextures }) : null;
   await wardrobe?.prepare(sample.doc); lap('closet');

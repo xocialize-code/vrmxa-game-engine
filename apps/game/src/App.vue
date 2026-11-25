@@ -12,7 +12,7 @@ import { GameHost } from './host.js';
 import { GameSettings } from '@vrmxg/game-ui';
 import VolumeControls from '@vrmxg/game-ui/VolumeControls.vue';
 import RebindList from '@vrmxg/game-ui/RebindList.vue';
-import { SettingsStore, localStorageFor, shellStorage, memoryStorage, chosenBackend, gameUiStore } from './settings.js';
+import { SettingsStore, localStorageFor, shellStorage, memoryStorage, chosenBackend, gameUiStore, settingsNote } from './settings.js';
 import { slotRows, latestSave, PLAYER_SLOTS } from './slots.js';
 import { mayLeave } from './closing.js';
 import MenuScreen from './MenuScreen.vue';
@@ -125,7 +125,7 @@ function quitApp() { quitting = true; call('app.quit').catch((e) => { quitting =
 
 const BACKEND_CHOICES = [{ id: 'auto', label: 'Automatic' }, { id: 'webgpu', label: 'WebGPU' }, { id: 'webgl', label: 'WebGL' }];
 function setBackend(backend) { settings.value.set({ backend }).then(noteSettings); }
-function noteSettings() { const s = settings.value; ui.settingsNote = s.error ?? (s.saved ? 'Settings saved.' : 'Saving…'); }
+function noteSettings() { ui.settingsNote = settingsNote(settings.value, uiSettings.value); }
 const backendNote = computed(() => {
   if (ui.choice.from === 'query') return `Set by the page's address (renderer=${ui.choice.backend}): the setting below applies without it.`;
   if (!ui.values) return '';
@@ -172,7 +172,9 @@ onMounted(async () => {
     if (store.error) say(store.error);
     settings.value = store;
     ui.values = store.value;
-    store.on((v) => { ui.values = { ...v }; });
+    // every change and every write's outcome, the volumes' and the rebindings' too (GameSettings writes through this
+    // store): the status line says a failed write, whichever control made it
+    store.on((v) => { ui.values = { ...v }; if (ui.ready) noteSettings(); });
     // the player's volumes and bindings: W3's GameSettings over the `ui` field (a store that can't be read gives defaults)
     const playerSettings = await new GameSettings({ store: gameUiStore(store) }).load();
     if (playerSettings.loadError) say(`The volumes and controls couldn't be read: ${playerSettings.loadError}`);

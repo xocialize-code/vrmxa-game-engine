@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { VirtualDevice } from '@vrmxg/input';
-import { readSettings, chosenBackend, SettingsStore, memoryStorage, defaultSettings, serializeSettings, gameUiStore, SETTINGS_FORMAT } from '../src/settings.js';
+import { readSettings, chosenBackend, SettingsStore, memoryStorage, defaultSettings, serializeSettings, gameUiStore, settingsNote, SETTINGS_FORMAT } from '../src/settings.js';
 import { GameSettings } from '@vrmxg/game-ui';
 import { slotRows, latestSave, formatPlayed, saveName, PLAYER_SLOTS } from '../src/slots.js';
 import { PadNavigator, HeldGate, StepGate, nextIndex, keyCommand, padDirections, PAD } from '../src/nav.js';
@@ -268,4 +268,41 @@ test('the test game\'s exporter refuses a game runtime older than the checkout, 
     assert.throws(() => assertFreshRuntime(GAME_RUNTIME), /is older than this checkout: 1 of its source files changed .*npm run build -w @vrmxg\/game-app/);
     assert.doesNotThrow(() => assertFreshRuntime('/some/other/runtime'), 'another runtime folder isn\'t checked');
   } finally { fs.writeFileSync(stamp, original); }
+});
+
+test('settings: the first form\'s volume and bindings move into the ui document once, and are written back', async () => {
+  const old = JSON.stringify({ format: SETTINGS_FORMAT, version: 1, backend: 'webgl', volume: { master: 0.5, music: 0.2, sfx: 'loud' }, bindings: { jump: [{ key: 'KeyJ' }] } });
+  const storage = memoryStorage(old);
+  const store = new SettingsStore(storage); await store.load();
+  assert.equal(store.value.backend, 'webgl');
+  assert.deepEqual(store.value.ui, { version: 1, volumes: { master: { volume: 0.5, muted: false }, music: { volume: 0.2, muted: false } }, bindings: { jump: [{ key: 'KeyJ' }] } });
+  const written = JSON.parse(storage.text);
+  assert.equal('volume' in written || 'bindings' in written, false, 'the old fields are gone from the file');
+  assert.deepEqual(written.ui.bindings, { jump: [{ key: 'KeyJ' }] });
+  const player = await new GameSettings({ store: gameUiStore(store) }).load();
+  assert.equal(player.data.volumes.music.volume, 0.2, 'GameSettings reads the migrated volumes');
+  assert.equal(player.data.volumes.sfx.volume, 1, 'a bad one: the default');
+  // once: a document that has ui keeps it, whatever old fields are beside it
+  const both = new SettingsStore(memoryStorage(JSON.stringify({ format: SETTINGS_FORMAT, version: 1, ui: { version: 1, bindings: {} }, volume: { master: 0 } }))); await both.load();
+  assert.deepEqual(both.value.ui, { version: 1, bindings: {} });
+});
+
+test('settings: a volume or rebinding write that fails is said in the status line', async () => {
+  const failing = new SettingsStore({ read: async () => null, write: async () => { throw new Error('read-only volume'); } }); await failing.load();
+  const player = await new GameSettings({ store: gameUiStore(failing) }).load();
+  assert.equal(await player.setVolume('music', { volume: 0.3 }), false);
+  assert.match(settingsNote(failing, player), /read-only volume/);
+  const fine = new SettingsStore(memoryStorage()); await fine.load();
+  const ok = await new GameSettings({ store: gameUiStore(fine) }).load();
+  assert.equal(await ok.setVolume('music', { volume: 0.3 }), true);
+  assert.equal(settingsNote(fine, ok), 'Settings saved.');
+});
+
+test('a Dialogue inside a prefab counts: the scene gets the dialogue service', async () => {
+  const { hasNodeType } = await import('../../playground/src/world.js');
+  const prefab = { format: 'vrmxs', version: 1, id: 'p', nodes: [{ id: 'talk', type: 'Dialogue', props: { lines: [{ text: 'Hi' }] } }] };
+  const scene = { format: 'vrmxs', version: 1, id: 's', assets: [{ id: 'chat', type: 'vrmxs', ref: 'prefabs/chat.vrmxs' }], nodes: [{ id: 'root', type: 'Node3D' }, { id: 'chat-1', type: 'Instance', parent: 'root', asset: 'chat' }] };
+  assert.equal(hasNodeType(scene, new Map([['prefabs/chat.vrmxs', prefab]]), 'Dialogue'), true);
+  assert.equal(hasNodeType({ ...scene, nodes: [{ id: 'root', type: 'Node3D' }] }, new Map([['prefabs/chat.vrmxs', prefab]]), 'Dialogue'), false, 'a prefab listed but not placed: none');
+  assert.equal(hasNodeType(scene, new Map(), 'Dialogue'), false, 'a prefab that isn\'t loaded: judged by the scene\'s own nodes');
 });
