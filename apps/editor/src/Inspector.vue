@@ -99,7 +99,7 @@ const pickedFits = () => !!props.picked && dropVerdict(fileKind(props.picked), s
       </div>
       <template v-if="!data.multi">
         <div class="insp-row"><span class="insp-key"><button v-if="data.ov?.name" id="ov-name" type="button" class="ov-dot" :aria-label="ovName('Name', data.ov.name)" :title="`Overridden: the prefab has ${data.ov.name.base}. Click to revert.`" @click="emit('revert', 'name')">●</button>Name</span><input id="field-name" :value="data.name" aria-label="Name" @change="emit('rename', $event.target.value)"></div>
-        <div v-if="!data.inner" class="insp-row"><span class="insp-key">Id</span><input id="field-id" :value="data.id" aria-label="Id" title="The node's id: connections, behaviours and props that name it follow a change" spellcheck="false" @change="emit('setId', $event.target.value)"></div>
+        <div v-if="!data.inner" class="insp-row"><span class="insp-key">Id</span><input id="field-id" :value="data.id" aria-label="Id" title="The node's id: connections, behaviours and props that name it follow a change" spellcheck="false" @focus="$event.target.select()" @change="emit('setId', $event.target.value)"></div>
         <label v-if="!data.inner" class="insp-row">Parent
           <select id="field-parent" :value="data.parent ?? ''" aria-label="Parent" @change="emit('parent', $event.target.value || null)">
             <option value="">(scene)</option>

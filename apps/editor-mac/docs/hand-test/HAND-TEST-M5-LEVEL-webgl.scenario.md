@@ -188,6 +188,7 @@ fresh: false
   expect find("id=prop-size-z").0.value == "1.8"
   act id=node-area action=press
   until find("id=inspector-id").0.name == "Node area"
+  pause 300
   act id=field-id action=set_value value="table-1"   # the committed id
   until find("id=undo").0.name == "Undo Change id area to table-1" timeout=5000
   expect find("id=inspector-id").0.name == "Node table-1"
@@ -201,6 +202,7 @@ fresh: false
   until find("id=pos-z").0.value == "1" timeout=5000
   act id=node-area-2 action=press
   until find("id=inspector-id").0.name == "Node area-2"
+  pause 300
   act id=field-id action=set_value value="table-2"   # the committed id
   until find("id=undo").0.name == "Undo Change id area-2 to table-2" timeout=5000
   expect find("id=inspector-id").0.name == "Node table-2"
@@ -214,6 +216,7 @@ fresh: false
   until find("id=pos-z").0.value == "1" timeout=5000
   act id=node-area-3 action=press
   until find("id=inspector-id").0.name == "Node area-3"
+  pause 300
   act id=field-id action=set_value value="table-3"   # the committed id
   until find("id=undo").0.name == "Undo Change id area-3 to table-3" timeout=5000
   expect find("id=inspector-id").0.name == "Node table-3"
@@ -238,6 +241,7 @@ fresh: false
   until find("role=popupbutton name='Node type to add'").0.value == "GameRules" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gamerules" timeout=5000
+  pause 300
   act id=field-id action=set_value value="rules"   # the committed id
   until find("id=undo").0.name == "Undo Change id gamerules to rules" timeout=5000
   expect find("id=inspector-id").0.name == "Node rules"
@@ -304,6 +308,7 @@ fresh: false
   until find("role=popupbutton name='Node type to add'").0.value == "GameCounter" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gamecounter" timeout=5000
+  pause 300
   act id=field-id action=set_value value="score"   # the committed id
   until find("id=undo").0.name == "Undo Change id gamecounter to score" timeout=5000
   expect find("id=inspector-id").0.name == "Node score"
@@ -328,6 +333,7 @@ fresh: false
   until find("role=popupbutton name='Node type to add'").0.value == "GameCounter" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gamecounter" timeout=5000
+  pause 300
   act id=field-id action=set_value value="served"   # the committed id
   until find("id=undo").0.name == "Undo Change id gamecounter to served" timeout=5000
   expect find("id=inspector-id").0.name == "Node served"
@@ -354,6 +360,7 @@ fresh: false
   until find("role=popupbutton name='Node type to add'").0.value == "GameCounter" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gamecounter" timeout=5000
+  pause 300
   act id=field-id action=set_value value="mistakes"   # the committed id
   until find("id=undo").0.name == "Undo Change id gamecounter to mistakes" timeout=5000
   expect find("id=inspector-id").0.name == "Node mistakes"
@@ -378,6 +385,7 @@ fresh: false
   until find("role=popupbutton name='Node type to add'").0.value == "GameTimer" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gametimer" timeout=5000
+  pause 300
   act id=field-id action=set_value value="clock"   # the committed id
   until find("id=undo").0.name == "Undo Change id gametimer to clock" timeout=5000
   expect find("id=inspector-id").0.name == "Node clock"
@@ -446,16 +454,19 @@ fresh: false
   expect find("id=prop-seconds").0.value == "6"
   act id=node-gametimer action=press
   until find("id=inspector-id").0.name == "Node gametimer"
+  pause 300
   act id=field-id action=set_value value="brew-1"   # the committed id
   until find("id=undo").0.name == "Undo Change id gametimer to brew-1" timeout=5000
   expect find("id=inspector-id").0.name == "Node brew-1"
   act id=node-gametimer-2 action=press
   until find("id=inspector-id").0.name == "Node gametimer-2"
+  pause 300
   act id=field-id action=set_value value="brew-2"   # the committed id
   until find("id=undo").0.name == "Undo Change id gametimer-2 to brew-2" timeout=5000
   expect find("id=inspector-id").0.name == "Node brew-2"
   act id=node-gametimer-3 action=press
   until find("id=inspector-id").0.name == "Node gametimer-3"
+  pause 300
   act id=field-id action=set_value value="brew-3"   # the committed id
   until find("id=undo").0.name == "Undo Change id gametimer-3 to brew-3" timeout=5000
   expect find("id=inspector-id").0.name == "Node brew-3"
@@ -472,6 +483,7 @@ fresh: false
   until find("role=popupbutton name='Node type to add'").0.value == "GameGoal" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gamegoal" timeout=5000
+  pause 300
   act id=field-id action=set_value value="serve"   # the committed id
   until find("id=undo").0.name == "Undo Change id gamegoal to serve" timeout=5000
   expect find("id=inspector-id").0.name == "Node serve"
@@ -525,6 +537,7 @@ fresh: false
   until find("role=popupbutton name='Node type to add'").0.value == "GameGoal" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add gamegoal" timeout=5000
+  pause 300
   act id=field-id action=set_value value="close-till"   # the committed id
   until find("id=undo").0.name == "Undo Change id gamegoal to close-till" timeout=5000
   expect find("id=inspector-id").0.name == "Node close-till"
@@ -562,6 +575,7 @@ fresh: false
   until find("role=popupbutton name='Node type to add'").0.value == "Checkpoint" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add checkpoint" timeout=5000
+  pause 300
   act id=field-id action=set_value value="cp-first"   # the committed id
   until find("id=undo").0.name == "Undo Change id checkpoint to cp-first" timeout=5000
   expect find("id=inspector-id").0.name == "Node cp-first"
@@ -636,6 +650,7 @@ fresh: false
   until find("id=asset-game-items-order-1-vrmxi").count == 1 timeout=10000
   act id=add-game-items-order-1-vrmxi action=press   # the panel's Add, for the trays
   until find("id=undo").0.name == "Undo Add order-1" timeout=10000
+  pause 300
   act id=field-id action=set_value value="tray-1"   # the committed id
   until find("id=undo").0.name == "Undo Change id order-1 to tray-1" timeout=5000
   expect find("id=inspector-id").0.name == "Node tray-1"
@@ -659,6 +674,7 @@ fresh: false
   until find("id=asset-game-items-order-2-vrmxi").count == 1 timeout=10000
   act id=add-game-items-order-2-vrmxi action=press   # the panel's Add, for the trays
   until find("id=undo").0.name == "Undo Add order-2" timeout=10000
+  pause 300
   act id=field-id action=set_value value="tray-2"   # the committed id
   until find("id=undo").0.name == "Undo Change id order-2 to tray-2" timeout=5000
   expect find("id=inspector-id").0.name == "Node tray-2"
@@ -682,6 +698,7 @@ fresh: false
   until find("id=asset-game-items-order-3-vrmxi").count == 1 timeout=10000
   act id=add-game-items-order-3-vrmxi action=press   # the panel's Add, for the trays
   until find("id=undo").0.name == "Undo Add order-3" timeout=10000
+  pause 300
   act id=field-id action=set_value value="tray-3"   # the committed id
   until find("id=undo").0.name == "Undo Change id order-3 to tray-3" timeout=5000
   expect find("id=inspector-id").0.name == "Node tray-3"
@@ -715,6 +732,7 @@ fresh: false
   until find("role=popupbutton name='Node type to add'").0.value == "Dialogue" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add dialogue" timeout=5000
+  pause 300
   act id=field-id action=set_value value="briefing"   # the committed id
   until find("id=undo").0.name == "Undo Change id dialogue to briefing" timeout=5000
   expect find("id=inspector-id").0.name == "Node briefing"
@@ -790,6 +808,7 @@ fresh: false
   until find("role=popupbutton name='Node type to add'").0.value == "Dialogue" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add dialogue" timeout=5000
+  pause 300
   act id=field-id action=set_value value="order-1"   # the committed id
   until find("id=undo").0.name == "Undo Change id dialogue to order-1" timeout=5000
   expect find("id=inspector-id").0.name == "Node order-1"
@@ -887,6 +906,7 @@ fresh: false
   until find("role=popupbutton name='Node type to add'").0.value == "Dialogue" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add dialogue" timeout=5000
+  pause 300
   act id=field-id action=set_value value="order-2"   # the committed id
   until find("id=undo").0.name == "Undo Change id dialogue to order-2" timeout=5000
   expect find("id=inspector-id").0.name == "Node order-2"
@@ -984,6 +1004,7 @@ fresh: false
   until find("role=popupbutton name='Node type to add'").0.value == "Dialogue" timeout=5000
   act id=add-node action=press
   until find("id=undo").0.name == "Undo Add dialogue" timeout=5000
+  pause 300
   act id=field-id action=set_value value="order-3"   # the committed id
   until find("id=undo").0.name == "Undo Change id dialogue to order-3" timeout=5000
   expect find("id=inspector-id").0.name == "Node order-3"

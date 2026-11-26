@@ -71,7 +71,9 @@ function addType(type) {
 /** The node selected in the inspector gets the committed id (every reference follows; none yet). */
 function setId(given, want) {
   if (given === want) return want;
-  S(`act id=field-id action=set_value value=${q(want)}   # the committed id`);
+  // the field selects its text when it takes focus, so the id typed replaces the one the editor gave (typed before focus
+  // landed, a select-all can miss it and the text append: the second full run's dialogues)
+  S('pause 300', `act id=field-id action=set_value value=${q(want)}   # the committed id`);
   undoIs(`Change id ${given} to ${want}`);
   S(`expect find("id=inspector-id").0.name == "Node ${want}"`);
   taken.delete(given); taken.add(want);
