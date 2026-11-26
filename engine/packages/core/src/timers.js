@@ -19,7 +19,15 @@ export const EASINGS = {
 };
 
 export class TimerService {
-  constructor() { /** @type {Map<number, any>} */ this.items = new Map(); this.nextId = 1; }
+  constructor() {
+    /** @type {Map<number, any>} */ this.items = new Map(); this.nextId = 1;
+    /**
+     * The behaviour whose ready() is running (the tree sets it, `readyBehaviour`): a timer or tween made meanwhile is that
+     * behaviour's own (`by`), so the editor's hot reload can cancel it with the behaviour (M6 W2, `cancelMadeBy`). Never in
+     * the state or the hashes.
+     */
+    this.readying = null;
+  }
 
   /**
    * Run `fn` after `seconds` (rounded to whole steps, at least one). `repeat` re-arms it.
@@ -30,7 +38,7 @@ export class TimerService {
    */
   after(owner, seconds, fn, { repeat = false } = {}) {
     const id = this.nextId++;
-    this.items.set(id, { kind: 'timer', id, owner, steps: toSteps(seconds), left: toSteps(seconds), fn, repeat, acc: 0 });
+    this.items.set(id, { kind: 'timer', id, owner, steps: toSteps(seconds), left: toSteps(seconds), fn, repeat, acc: 0, ...this._by() });
     return id;
   }
 
@@ -44,12 +52,15 @@ export class TimerService {
   tween(owner, target, path, to, seconds, { from, ease = 'linear', onDone } = {}) {
     const id = this.nextId++;
     const start = from ?? clone(read(target, path));
-    this.items.set(id, { kind: 'tween', id, owner, target, path, from: start, to, steps: toSteps(seconds), done: 0, ease: EASINGS[ease] ?? EASINGS.linear, onDone, acc: 0 });
+    this.items.set(id, { kind: 'tween', id, owner, target, path, from: start, to, steps: toSteps(seconds), done: 0, ease: EASINGS[ease] ?? EASINGS.linear, onDone, acc: 0, ...this._by() });
     return id;
   }
 
   cancel(id) { this.items.delete(id); }
   cancelOwnedBy(owner) { for (const [id, t] of this.items) if (t.owner === owner) this.items.delete(id); }
+  /** Cancel the timers and tweens a behaviour made in its ready() (`readying`). → how many went */
+  cancelMadeBy(behaviour) { let n = 0; for (const [id, t] of this.items) if (t.by === behaviour) { this.items.delete(id); n++; } return n; }
+  _by() { return this.readying ? { by: this.readying } : {}; }
 
   /**
    * Advance everything by one simulation step, in creation order.
@@ -75,7 +86,7 @@ export class TimerService {
     }
   }
 
-  getState() { return { nextId: this.nextId, items: [...this.items.values()].map(({ fn, onDone, owner, target, ease, ...rest }) => ({ ...rest, owner: owner?.id })) }; }
+  getState() { return { nextId: this.nextId, items: [...this.items.values()].map(({ fn, onDone, owner, target, ease, by, ...rest }) => ({ ...rest, owner: owner?.id })) }; }
 
   /**
    * Restore counters onto the timers this tree already has, matched by id. Timers hold code (closures),

@@ -709,7 +709,7 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
         #expect((j["blinkR"] as? Double ?? 0) > 0.9, "the picture's left is the person's right eye")
         #expect((j["blinkL"] as? Double ?? 1) < 0.25)
         #expect(((j["geo"] as? [String: Any])?["earL"] as? Double ?? 1) < 0.1, "geo keeps the picture's sides")
-        #expect(vrmxgShellVersion == "0.14.0")
+        #expect(vrmxgShellVersion == "0.15.0")
     }
 }
 

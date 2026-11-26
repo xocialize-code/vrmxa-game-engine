@@ -27,7 +27,7 @@ const ui = reactive({
   tree: [], selected: [], inspector: null, assets: [], undo: null, redo: null, dirty: false, valid: true, problems: '',
   nodes: 0, hash: '', saved: '', verify: '', stopped: '', gizmo: 'translate', snap: true, camera: 'orbit', addType: 'Node3D',
   debug: { colliders: false, sensors: false, capsules: false, rays: false }, aids: { outline: true, handles: true, preview: true }, boxSelect: false, clip: 0, previewing: '', frame: '—', build: '—', renderer: '—', rendererNote: '', holds: '', step: 0, prompt: null, fileName: 'built-cafe.vrmxs', captions: [],
-  mcp: '', tl: null, gameSlot: 'slot-1', gameNote: '', paused: false, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
+  mcp: '', tl: null, gameSlot: 'slot-1', gameNote: '', paused: false, behaviourError: '', reload: '', seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
   ask: null, // { title, text, options: [{ id, label }] }: the window's question before it closes (M5 W8)
   // M6 W3: the New Project sheet, the recent projects, the project settings panel (its view; null while closed)
   newProject: { open: false, templates: [], busy: false, error: '' }, recent: [], settings: null, settingsBusy: false, layerProblem: '',
@@ -52,6 +52,13 @@ function fold(id) {
   const list = it?.instance ? 'treeOpen' : 'treeClosed';
   ui[list] = ui[list].includes(id) ? ui[list].filter((x) => x !== id) : [...ui[list], id];
 }
+/** What hot reload is doing while Play runs (M6 W2), as the status says it. */
+function reloadText(r) {
+  if (!r) return '';
+  if (r.off) return `Hot reload ${r.off}`;
+  const said = (l) => [l.kept.length ? `${l.kept.join(', ')} kept` : '', l.restarted.length ? `${l.restarted.join(', ')} restarted` : '', l.added.length ? `${l.added.join(', ')} added` : '', l.removed.length ? `${l.removed.join(', ')} removed` : ''].filter(Boolean).join('; ') || 'nothing in this scene uses them';
+  return `Hot reload watching ${r.watching.join(', ')}${r.n ? ` · reloaded ${r.n} ${r.n === 1 ? 'time' : 'times'}, last at step ${r.last.step}: ${said(r.last)}` : ''}${r.failed ? ` · ${r.failed} failed` : ''}`;
+}
 const findItem = (items, id) => { for (const it of items) { if (it.id === id) return it; const f = findItem(it.children, id); if (f) return f; } return null; };
 const tiles = computed(() => ui.assets.map((a) => ({ ...a, thumb: ui.thumbs[a.ref] ?? null })));
 
@@ -73,6 +80,7 @@ function refresh(kind = 'all') {
   const s = ed.session;
   ui.loading = ed.busy > 0;
   if (ed.error) ui.error = ed.error;
+  ui.behaviourError = ed.behaviourError ?? ''; ui.reload = reloadText(ed.reloadState); // M6 W2: their own fields (AB-T-0654 item 5)
   ui.project = ed.project?.name ?? ''; ui.writable = !!ed.project?.writable; ui.scenes = ed.project?.scenes() ?? []; ui.scene = ed.sceneRef ?? '';
   if (assetsOf !== ed.project?.files) { // the project's files changed (opened, or a save wrote one): the panel and its thumbnails follow
     assetsOf = ed.project?.files; ui.assets = ed.assets().map((a) => ({ ...a }));
@@ -523,6 +531,7 @@ const sheetGroups = shortcutGroups();
       <p v-if="ui.loading" class="overlay">Loading…</p>
       <p v-if="ui.mode === 'playing'" class="overlay playing" role="status">Playing · step {{ ui.step }} · WASD move, E interact</p>
       <pre v-if="ui.error" class="overlay error" role="alert">{{ ui.error }}</pre>
+      <pre v-if="ui.behaviourError" id="behaviour-error" class="overlay error behaviour-error" role="alert" :aria-label="`Behaviours: ${ui.behaviourError}`">{{ ui.behaviourError }}</pre>
       <section v-if="ui.ex.open" id="export-panel" class="export" role="dialog" aria-label="Export">
         <h2>Export</h2>
         <label class="field">Take <select id="export-take" v-model="ui.ex.take" aria-label="Take" :disabled="ui.ex.running" @change="takeSeconds"><option v-for="t in ui.ex.takes" :key="t.id" :value="t.id">{{ t.label }}</option></select></label>
@@ -627,6 +636,7 @@ const sheetGroups = shortcutGroups();
       <output v-if="ui.gameNote" id="game-note" :aria-label="ui.gameNote">{{ ui.gameNote }}</output>
       <output v-if="ui.mcp" id="mcp-state" :aria-label="ui.mcp">{{ ui.mcp }}</output>
       <output v-if="ui.note" id="note" :aria-label="ui.note">{{ ui.note }}</output>
+      <output v-if="ui.reload" id="reload-state" :aria-label="ui.reload">{{ ui.reload }}</output>
       <output v-if="ui.layerProblem" id="layer-problem" class="warn" :aria-label="`Layers: ${ui.layerProblem}`">Layers: {{ ui.layerProblem }}</output>
       <output id="frame-time" :aria-label="`Frame time ${ui.frame}`">{{ ui.frame }}</output>
       <output id="build-time" :aria-label="`Build ${ui.build}`">build {{ ui.build }}</output>
@@ -700,6 +710,7 @@ canvas { display: block; width: 100%; height: 100%; outline: none; }
 .captions p { margin: 4px 0; padding: 6px 12px; border-radius: 8px; background: rgba(10, 12, 16, 0.72); color: #f2f2f2; font-size: 16px; }
 .captions span { opacity: 0.55; } .captions span.said, .captions span.now { opacity: 1; } .captions span.now { color: #ffd76a; }
 .error { color: #c0392b; white-space: pre-wrap; max-width: 80%; max-height: 60%; overflow: auto; top: 44px; }
+.behaviour-error { left: auto; right: 12px; top: 44px; max-width: 45%; max-height: 40%; } /* under the Play status, clear of the captions and the general error */
 .inspector { padding: 0 12px 12px; } .inspector h2 { padding: 8px 0; }
 .inspector .field { justify-content: space-between; margin: 6px 0; } .inspector .field input:not([type=checkbox]), .inspector .field select { width: 150px; max-width: 60%; box-sizing: border-box; }
 .inspector .vec { display: flex; gap: 4px; border: 0; padding: 0; margin: 8px 0; flex-wrap: wrap; min-width: 0; } .inspector .vec legend { color: var(--muted); padding: 0; margin-bottom: 4px; width: 100%; }

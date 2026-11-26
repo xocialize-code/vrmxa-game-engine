@@ -138,6 +138,7 @@ extension FileMethods {
     func mountFolder(_ folder: URL) throws -> [String: Any] {
         granted.insert(folder)
         roots.mountProject(folder)
+        for f in mounted { f() }
         noteRecent(folder)
         let listing = try projectListing()
         return ["path": folder.path, "name": folder.lastPathComponent, "base": WebRoots.projectPrefix, "files": listing.files, "truncated": listing.truncated]
