@@ -7,30 +7,30 @@
   "entry": "cafe.vrmxs",
   "runtime": {
    "name": "vrmxg-game",
-   "version": "0.1.0+3b1c3daa4b79",
+   "version": "0.1.0+4ff8396fd7df",
    "contract": 1,
    "entry": "index.html",
-   "digest": "61a6df3f346a6051bc704fa65b8340df6ebdcd8a10c00d056331ae3b3fdf4e88"
+   "digest": "9cedf352b7ae900f7d6c43431a50c89b5b12bd7f1e9ee7fe661a815ccc3e42ab"
   },
-  "files": 73,
+  "files": 74,
   "projectFiles": 50,
-  "runtimeFiles": 23,
-  "bytes": 23484933,
-  "digest": "e5d0347784315e3d669a6544f189572155e1b8cc6d152094484e6441e3f9ed79",
-  "manifestSha256": "b9aae8d5a13c23d48951a5d07bd7600140aa6b6e98918ea9583b3d0aba6bdfb7"
+  "runtimeFiles": 24,
+  "bytes": 23588492,
+  "digest": "4dd772aea9b2f8dbbc88942f0f28d37b388703b7fe027585ac1d2306b51e9941",
+  "manifestSha256": "61584c0e89008aed74eab08e2f3c0f26f64d91a3ec69529cd0407097764df098"
  },
  "nodeRuns": [
   {
-   "manifest": "b9aae8d5a13c23d48951a5d07bd7600140aa6b6e98918ea9583b3d0aba6bdfb7",
-   "digest": "e5d0347784315e3d669a6544f189572155e1b8cc6d152094484e6441e3f9ed79",
-   "files": 73,
-   "bytes": 23484933
+   "manifest": "61584c0e89008aed74eab08e2f3c0f26f64d91a3ec69529cd0407097764df098",
+   "digest": "4dd772aea9b2f8dbbc88942f0f28d37b388703b7fe027585ac1d2306b51e9941",
+   "files": 74,
+   "bytes": 23588492
   },
   {
-   "manifest": "b9aae8d5a13c23d48951a5d07bd7600140aa6b6e98918ea9583b3d0aba6bdfb7",
-   "digest": "e5d0347784315e3d669a6544f189572155e1b8cc6d152094484e6441e3f9ed79",
-   "files": 73,
-   "bytes": 23484933
+   "manifest": "61584c0e89008aed74eab08e2f3c0f26f64d91a3ec69529cd0407097764df098",
+   "digest": "4dd772aea9b2f8dbbc88942f0f28d37b388703b7fe027585ac1d2306b51e9941",
+   "files": 74,
+   "bytes": 23588492
   }
  ],
  "refusal": {
@@ -65,16 +65,7 @@
   "firstDifference": null,
   "filesRead": 48
  },
- "chromium": {
-  "version": "156.0.8078.4",
-  "final": "fe69bad3406ab5f6",
-  "steps": 600,
-  "digest": "e5d0347784315e3d669a6544f189572155e1b8cc6d152094484e6441e3f9ed79",
-  "verified": 48,
-  "firstDifference": null,
-  "sameLexer": true,
-  "errors": []
- },
+ "chromium": null,
  "mac": [],
  "macRefused": [],
  "macKept": [],
@@ -82,17 +73,17 @@
   {
    "name": "two Node exports are the same bytes",
    "ok": true,
-   "detail": "74 files, manifest b9aae8d5a13c23d4"
+   "detail": "75 files, manifest 61584c0e89008aed"
   },
   {
    "name": "each folder is what its manifest lists",
    "ok": true,
-   "detail": "73 files, 0 missing, 0 changed, 0 extra; 73 files, 0 missing, 0 changed, 0 extra"
+   "detail": "74 files, 0 missing, 0 changed, 0 extra; 74 files, 0 missing, 0 changed, 0 extra"
   },
   {
    "name": "the manifest lists every file with its hash and licence",
    "ok": true,
-   "detail": "50 project files, 23 runtime files, 23484933 bytes"
+   "detail": "50 project files, 24 runtime files, 23588492 bytes"
   },
   {
    "name": "a file with no licence row stops the export, by name",
@@ -118,16 +109,6 @@
    "name": "the loader refuses a file the manifest doesn't list",
    "ok": true,
    "detail": "not_in_build"
-  },
-  {
-   "name": "Chromium's lexer reads the awkward modules, and the game's own, as Node's does",
-   "ok": true,
-   "detail": "14 modules; the game's graph [\"behaviours.js\"]"
-  },
-  {
-   "name": "the build's runtime plays it in Chromium to the same hashes",
-   "ok": true,
-   "detail": "Chromium 156.0.8078.4, final fe69bad3406ab5f6"
   }
  ]
 }
