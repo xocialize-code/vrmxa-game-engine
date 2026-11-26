@@ -1,0 +1,486 @@
+{
+ "spike": "networking",
+ "runtime": "node 26.12.1 (V8 14.6.202.34-node.40)",
+ "rapier": "@dimforge/rapier3d-deterministic-compat",
+ "shim": "jump,nav",
+ "seconds": 10,
+ "server": {
+  "address": "127.0.0.1",
+  "port": "os-chosen"
+ },
+ "ping": {
+  "websocket": {
+   "sent": 1000,
+   "received": 1000,
+   "rttMs": {
+    "n": 1000,
+    "mean": 0.105,
+    "p50": 0.099,
+    "p95": 0.15,
+    "p99": 0.213,
+    "max": 0.525
+   }
+  },
+  "webrtc": {
+   "sent": 1000,
+   "received": 1000,
+   "rttMs": {
+    "n": 1000,
+    "mean": 0.199,
+    "p50": 0.192,
+    "p95": 0.269,
+    "p99": 0.334,
+    "max": 0.677
+   }
+  }
+ },
+ "webrtcCandidates": [
+  "127.0.0.1"
+ ],
+ "runs": [
+  {
+   "transport": "websocket",
+   "profile": "lan",
+   "mode": "lockstep",
+   "delay": 0,
+   "ticks": 600,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "physicsBytes": true,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null,
+    "digestA": "363919f979d76c9d",
+    "digestB": "363919f979d76c9d",
+    "digestReference": "363919f979d76c9d"
+   },
+   "stallRate": 0.0217,
+   "behind": {
+    "n": 600,
+    "mean": 0.052,
+    "p50": 0,
+    "p95": 0,
+    "p99": 2,
+    "max": 4
+   },
+   "tickLatenessMs": {
+    "n": 1200,
+    "mean": 0.713,
+    "p50": 0.01,
+    "p95": 0.697,
+    "p99": 24.308,
+    "max": 80.269
+   },
+   "tickMs": {
+    "n": 600,
+    "mean": 1.282,
+    "p50": 1.365,
+    "p95": 1.922,
+    "p99": 2.109,
+    "max": 25.136
+   },
+   "payloadBytesPerSec": 917,
+   "wireBytesPerSecEstimated": 4243,
+   "network": {
+    "packets": 1188,
+    "lost": 0,
+    "retransmits": 0
+   }
+  },
+  {
+   "transport": "websocket",
+   "profile": "lan",
+   "mode": "rollback",
+   "delay": 0,
+   "ticks": 601,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "physicsBytes": true,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null,
+    "digestA": "363919f979d76c9d",
+    "digestB": "363919f979d76c9d",
+    "digestReference": "363919f979d76c9d"
+   },
+   "stallRate": 0,
+   "behind": {
+    "n": 601,
+    "mean": 0,
+    "p50": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 0
+   },
+   "tickLatenessMs": {
+    "n": 1202,
+    "mean": 0.6,
+    "p50": 0.008,
+    "p95": 0.54,
+    "p99": 22.521,
+    "max": 69.577
+   },
+   "rollbacks": 31,
+   "depth": {
+    "n": 31,
+    "mean": 1.032,
+    "p50": 1,
+    "p95": 1,
+    "p99": 2,
+    "max": 2
+   },
+   "tickMs": {
+    "n": 601,
+    "mean": 2.287,
+    "p50": 1.972,
+    "p95": 4.615,
+    "p99": 8.004,
+    "max": 24.18
+   },
+   "payloadBytesPerSec": 924,
+   "wireBytesPerSecEstimated": 4284,
+   "network": {
+    "packets": 1202,
+    "lost": 0,
+    "retransmits": 0
+   }
+  },
+  {
+   "transport": "websocket",
+   "profile": "typical",
+   "mode": "lockstep",
+   "delay": 15,
+   "ticks": 600,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "physicsBytes": true,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null,
+    "digestA": "c740440f1ad26bbc",
+    "digestB": "c740440f1ad26bbc",
+    "digestReference": "c740440f1ad26bbc"
+   },
+   "stallRate": 0,
+   "behind": {
+    "n": 600,
+    "mean": 0,
+    "p50": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 0
+   },
+   "tickLatenessMs": {
+    "n": 1200,
+    "mean": 0.197,
+    "p50": 0.011,
+    "p95": 0.673,
+    "p99": 0.866,
+    "max": 25.204
+   },
+   "tickMs": {
+    "n": 600,
+    "mean": 0.769,
+    "p50": 0.742,
+    "p95": 0.951,
+    "p99": 1.107,
+    "max": 20.773
+   },
+   "payloadBytesPerSec": 930,
+   "wireBytesPerSecEstimated": 4290,
+   "network": {
+    "packets": 1200,
+    "lost": 18,
+    "retransmits": 18
+   }
+  },
+  {
+   "transport": "websocket",
+   "profile": "typical",
+   "mode": "rollback",
+   "delay": 0,
+   "ticks": 605,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "physicsBytes": true,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null,
+    "digestA": "363919f979d76c9d",
+    "digestB": "363919f979d76c9d",
+    "digestReference": "363919f979d76c9d"
+   },
+   "stallRate": 0.0182,
+   "behind": {
+    "n": 605,
+    "mean": 0.02,
+    "p50": 0,
+    "p95": 0,
+    "p99": 1,
+    "max": 2
+   },
+   "tickLatenessMs": {
+    "n": 1210,
+    "mean": 0.462,
+    "p50": 0.01,
+    "p95": 1.697,
+    "p99": 12.591,
+    "max": 24.35
+   },
+   "rollbacks": 29,
+   "depth": {
+    "n": 29,
+    "mean": 4.621,
+    "p50": 4,
+    "p95": 7,
+    "p99": 12,
+    "max": 12
+   },
+   "tickMs": {
+    "n": 605,
+    "mean": 2.322,
+    "p50": 1.84,
+    "p95": 3.932,
+    "p99": 12.465,
+    "max": 27.888
+   },
+   "payloadBytesPerSec": 915,
+   "wireBytesPerSecEstimated": 4275,
+   "network": {
+    "packets": 1210,
+    "lost": 18,
+    "retransmits": 18
+   }
+  },
+  {
+   "transport": "webrtc",
+   "profile": "lan",
+   "mode": "lockstep",
+   "delay": 0,
+   "ticks": 600,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "physicsBytes": true,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null,
+    "digestA": "363919f979d76c9d",
+    "digestB": "363919f979d76c9d",
+    "digestReference": "363919f979d76c9d"
+   },
+   "stallRate": 0.0083,
+   "behind": {
+    "n": 600,
+    "mean": 0.012,
+    "p50": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 2
+   },
+   "tickLatenessMs": {
+    "n": 1200,
+    "mean": 0.145,
+    "p50": 0.01,
+    "p95": 0.795,
+    "p99": 1.091,
+    "max": 13.373
+   },
+   "tickMs": {
+    "n": 600,
+    "mean": 0.598,
+    "p50": 0.556,
+    "p95": 0.785,
+    "p99": 0.864,
+    "max": 18.413
+   },
+   "payloadBytesPerSec": 924,
+   "wireBytesPerSecEstimated": 6504,
+   "network": {
+    "packets": 1200,
+    "lost": 0,
+    "retransmits": 0
+   }
+  },
+  {
+   "transport": "webrtc",
+   "profile": "lan",
+   "mode": "rollback",
+   "delay": 0,
+   "ticks": 601,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "physicsBytes": true,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null,
+    "digestA": "363919f979d76c9d",
+    "digestB": "363919f979d76c9d",
+    "digestReference": "363919f979d76c9d"
+   },
+   "stallRate": 0,
+   "behind": {
+    "n": 601,
+    "mean": 0,
+    "p50": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 0
+   },
+   "tickLatenessMs": {
+    "n": 1202,
+    "mean": 0.354,
+    "p50": 0.009,
+    "p95": 0.652,
+    "p99": 3.134,
+    "max": 50.95
+   },
+   "rollbacks": 31,
+   "depth": {
+    "n": 31,
+    "mean": 1.032,
+    "p50": 1,
+    "p95": 1,
+    "p99": 2,
+    "max": 2
+   },
+   "tickMs": {
+    "n": 601,
+    "mean": 2.101,
+    "p50": 1.849,
+    "p95": 4.784,
+    "p99": 6.213,
+    "max": 21.895
+   },
+   "payloadBytesPerSec": 938,
+   "wireBytesPerSecEstimated": 6518,
+   "network": {
+    "packets": 1202,
+    "lost": 0,
+    "retransmits": 0
+   }
+  },
+  {
+   "transport": "webrtc",
+   "profile": "typical",
+   "mode": "lockstep",
+   "delay": 4,
+   "ticks": 600,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "physicsBytes": true,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null,
+    "digestA": "79e950a719e68fe0",
+    "digestB": "79e950a719e68fe0",
+    "digestReference": "79e950a719e68fe0"
+   },
+   "stallRate": 0.005,
+   "behind": {
+    "n": 600,
+    "mean": 0.007,
+    "p50": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 2
+   },
+   "tickLatenessMs": {
+    "n": 1200,
+    "mean": 0.147,
+    "p50": 0.01,
+    "p95": 0.489,
+    "p99": 0.841,
+    "max": 23.469
+   },
+   "tickMs": {
+    "n": 600,
+    "mean": 0.561,
+    "p50": 0.487,
+    "p95": 0.856,
+    "p99": 1.11,
+    "max": 18.993
+   },
+   "payloadBytesPerSec": 2398,
+   "wireBytesPerSecEstimated": 7978,
+   "network": {
+    "packets": 1200,
+    "lost": 15,
+    "retransmits": 0
+   }
+  },
+  {
+   "transport": "webrtc",
+   "profile": "typical",
+   "mode": "rollback",
+   "delay": 0,
+   "ticks": 604,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "physicsBytes": true,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null,
+    "digestA": "363919f979d76c9d",
+    "digestB": "363919f979d76c9d",
+    "digestReference": "363919f979d76c9d"
+   },
+   "stallRate": 0,
+   "behind": {
+    "n": 604,
+    "mean": 0,
+    "p50": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 0
+   },
+   "tickLatenessMs": {
+    "n": 1208,
+    "mean": 0.368,
+    "p50": 0.009,
+    "p95": 1.5,
+    "p99": 8.62,
+    "max": 25.845
+   },
+   "rollbacks": 29,
+   "depth": {
+    "n": 29,
+    "mean": 4.138,
+    "p50": 4,
+    "p95": 5,
+    "p99": 6,
+    "max": 6
+   },
+   "tickMs": {
+    "n": 604,
+    "mean": 2.24,
+    "p50": 1.771,
+    "p95": 2.623,
+    "p99": 11.332,
+    "max": 30.116
+   },
+   "payloadBytesPerSec": 2423,
+   "wireBytesPerSecEstimated": 8003,
+   "network": {
+    "packets": 1208,
+    "lost": 15,
+    "retransmits": 0
+   }
+  }
+ ]
+}
