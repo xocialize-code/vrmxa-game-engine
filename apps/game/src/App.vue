@@ -40,9 +40,10 @@ const ask = questions((q) => { ui.question = q; if (!q) nextTick(() => menu.valu
 const top = computed(() => ui.stack.at(-1) ?? null);
 const playing = computed(() => ui.ready && ui.stack.length === 0);
 const backendName = computed(() => ({ webgpu: 'WebGPU', webgl: 'WebGL', 'webgl-fallback': 'WebGL (after the GPU was lost)' })[ui.backend] ?? 'starting');
-const buildDigest = props.build.manifest.digest; // saves another build made are shown as such, and never offered by Continue
-const rows = computed(() => slotRows(ui.saves, { build: buildDigest }));
-const latest = computed(() => { const e = latestSave(ui.saves, { build: buildDigest }); return e ? rows.value.player.concat(rows.value.checkpoints).find((r) => r.slot === e.slot) : null; });
+// saves this build can't restore (another export's, with another fingerprint) are shown as such, and never offered by Continue
+const thisBuild = { digest: props.build.manifest.digest, game: props.build.manifest.game.id, compat: props.build.manifest.compat ?? null };
+const rows = computed(() => slotRows(ui.saves, { build: thisBuild }));
+const latest = computed(() => { const e = latestSave(ui.saves, { build: thisBuild }); return e ? rows.value.player.concat(rows.value.checkpoints).find((r) => r.slot === e.slot) : null; });
 // Load Game opens when there is a save this build can load (Continue picks the newest of them)
 const loadable = computed(() => !!latest.value);
 const slotLabel = (s) => (PLAYER_SLOTS.includes(s) ? `Slot ${PLAYER_SLOTS.indexOf(s) + 1}` : s);

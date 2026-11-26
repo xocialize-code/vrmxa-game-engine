@@ -31,3 +31,20 @@ export function moduleImports(src, name = 'the module') {
   }
   return out;
 }
+
+/**
+ * What a module exports by name, read without running it (M6 W5: which behaviours a project's module provides): its
+ * own exported names, and the specifiers it re-exports whole (`export * from 'x'`, which brings every name of x but
+ * its default). `export * as ns from 'x'` is the one name `ns`.
+ * @param {string} src @param {string} [name] the module, for the error
+ * @returns {{ names: string[], stars: string[] }}
+ */
+export function moduleExports(src, name = 'the module') {
+  let imports, exports;
+  try { [imports, exports] = parse(src, name); } catch {
+    throw new BuildError('bad_file', `${name} can't be read as a module, so what it exports can't be known`, []);
+  }
+  const stars = imports.filter((i) => i.n != null && /^export\s*\*\s*from\b/.test(src.slice(i.ss, i.se))).map((i) => i.n);
+  return { names: exports.map((e) => e.n), stars };
+}
+

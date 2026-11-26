@@ -168,3 +168,26 @@ test('closing the window while a game is exported asks first, and Stop and Close
   sheet.reply('stop');
   assert.deepEqual([await answer, cancelled, ed.gameExporting], [true, 1, null]);
 });
+
+test('the build carries its save-compatibility fingerprint, with what the project\'s behaviours declare (M6 W5)', async () => {
+  const level = JSON.stringify({ assets: [{ ref: 'props/big.glb' }], nodes: [{ id: 'a', type: 'Node3D', behaviours: [{ use: 'spin' }] }] });
+  const p = project({ 'game.json': JSON.stringify({ format: 'vrmxg-game', version: 1, id: 'test-game', entry: 'level.vrmxs', behaviours: 'behaviours.js' }), 'level.vrmxs': level, 'behaviours.js': 'export class spin {}\n', 'LICENCES.md': `${LICENCES}| \`behaviours.js\` | Ours | |\n` });
+  const asked = [];
+  const importBehaviours = async ({ ref, code, sources }) => { asked.push([ref, code.length, [...sources.keys()]]); return { spin: class spin { static describe = { state: { type: 'object' } }; } }; };
+  const s = shell();
+  await exportGame(p, { shell: s, runtime: runtime(), importBehaviours });
+  const manifest = parseManifest(new TextDecoder().decode(s.folder.get(BUILD_FILE)));
+  assert.deepEqual(asked, [['behaviours.js', 64, ['behaviours.js']]], 'the module was imported once, from the sources the export read, with the hash of its code');
+  assert.match(manifest.compat.behaviours.spin, /^state:[0-9a-f]{64}$/);
+  assert.deepEqual(Object.keys(manifest.compat.scenes), ['level.vrmxs']);
+  assert.equal(p.reads.get('behaviours.js'), 2, 'read no more than before: once to trace what it imports, once for its hash and the build');
+});
+
+test('an import that fails counts every project behaviour by its code, as Node\'s exporter does (M6 W5)', async () => {
+  const level = JSON.stringify({ assets: [{ ref: 'props/big.glb' }], nodes: [{ id: 'a', type: 'Node3D', behaviours: [{ use: 'spin' }] }] });
+  const p = project({ 'game.json': JSON.stringify({ format: 'vrmxg-game', version: 1, id: 'test-game', entry: 'level.vrmxs', behaviours: 'behaviours.js' }), 'level.vrmxs': level, 'behaviours.js': 'export class spin {}\n', 'LICENCES.md': `${LICENCES}| \`behaviours.js\` | Ours | |\n` });
+  const s = shell();
+  await exportGame(p, { shell: s, runtime: runtime(), importBehaviours: async () => { throw new Error('no blob: imports here'); } });
+  const manifest = parseManifest(new TextDecoder().decode(s.folder.get(BUILD_FILE)));
+  assert.match(manifest.compat.behaviours.spin, /^code:[0-9a-f]{64}$/, 'the export goes on, counting by code');
+});

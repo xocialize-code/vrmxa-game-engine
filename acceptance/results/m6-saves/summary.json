@@ -1,0 +1,131 @@
+{
+ "task": "AB-T-0631",
+ "what": "saves across game updates on the Morning Rush (acceptance/m6/saves.mjs)",
+ "saveAt": 3000,
+ "steps": 1800,
+ "savedIn": "game/level.vrmxs",
+ "runtime": "0.1.0+c4a7142cc4fc",
+ "build": {
+  "digest": "6ad83f2641d87c56350998b15cf1f320142f2f424ba158b2314256b67b174d26",
+  "fingerprint": "a660e491e265a607042fce0d76b97a9ff8ca25eca8a706669567fe0c8b1fbb93",
+  "parts": {
+   "scenes": "e060c4c00f8211b0893d1d5cc995916c1016190aa68b095a301f5b23cb72bd71",
+   "assets": "c32c360bc536d63e8dbedd8cda4454d207a0d5ef29d1540fcd5d12eba9631381",
+   "behaviours": "4cd897532912c1dd12dd9e0cab6dec6a8974d662244357fc700353d78a2ec73a",
+   "input": "6d0f842892422f4740698ba232ec0d483107c957be672fd48c8c85b20dca8cea",
+   "engine": "5407709623f20d29a084ba44d4a70c25a63a4c4f461b77e6f341d418834a4348"
+  },
+  "behaviours": {
+   "brain": "runtime:0.1.0+c4a7142cc4fc",
+   "player": "runtime:0.1.0+c4a7142cc4fc",
+   "pressToStart": "code:fa530420f7ebe09b872d4865dd060e074fca58bbc596d822ce492d6230a0dd34",
+   "tableZone": "code:fa530420f7ebe09b872d4865dd060e074fca58bbc596d822ce492d6230a0dd34"
+  }
+ },
+ "results": {
+  "texture": {
+   "what": "an image inside props/espresso-machine.glb re-encoded with other pixels",
+   "digestChanged": true,
+   "fingerprintChanged": false,
+   "loaded": true,
+   "steps": 1800,
+   "firstDifference": -1,
+   "same": true,
+   "expect": "loads",
+   "ok": true
+  },
+  "audio": {
+   "what": "sounds/music.wav's samples changed (the same header and length)",
+   "digestChanged": true,
+   "fingerprintChanged": false,
+   "loaded": true,
+   "steps": 1800,
+   "firstDifference": -1,
+   "same": true,
+   "expect": "loads",
+   "ok": true
+  },
+  "release": {
+   "what": "game.json's release 0.1.0 → 0.2.0",
+   "digestChanged": true,
+   "fingerprintChanged": false,
+   "loaded": true,
+   "steps": 1800,
+   "firstDifference": -1,
+   "same": true,
+   "expect": "loads",
+   "ok": true
+  },
+  "behaviour": {
+   "what": "a line added to game/behaviours.js (undeclared: its code counts)",
+   "digestChanged": true,
+   "fingerprintChanged": true,
+   "loaded": false,
+   "error": "This save was made with another version of the game, and this one can't restore it: the code of the behaviours pressToStart and tableZone changed (they declare no state, so any change to their code counts).",
+   "code": "incompatible_save",
+   "parts": [
+    "behaviours"
+   ],
+   "expect": "behaviours",
+   "ok": true
+  },
+  "scene": {
+   "what": "the espresso machine in game/level.vrmxs moved 1 cm",
+   "digestChanged": true,
+   "fingerprintChanged": true,
+   "loaded": false,
+   "error": "This save was made with another version of the game, and this one can't restore it: the scene game/level.vrmxs changed.",
+   "code": "incompatible_save",
+   "parts": [
+    "scenes"
+   ],
+   "expect": "scenes",
+   "ok": true
+  },
+  "item": {
+   "what": "a byte added to game/items/till.vrmxi",
+   "digestChanged": true,
+   "fingerprintChanged": true,
+   "loaded": false,
+   "error": "This save was made with another version of the game, and this one can't restore it: the item game/items/till.vrmxi changed.",
+   "code": "incompatible_save",
+   "parts": [
+    "assets"
+   ],
+   "expect": "assets",
+   "ok": true
+  },
+  "input": {
+   "what": "an action added to game.json's action map",
+   "digestChanged": true,
+   "fingerprintChanged": true,
+   "loaded": false,
+   "error": "This save was made with another version of the game, and this one can't restore it: the game's controls changed (its action map's actions or their order).",
+   "code": "incompatible_save",
+   "parts": [
+    "input"
+   ],
+   "expect": "input",
+   "ok": true
+  },
+  "declared": {
+   "what": "pressToStart declares its state; its shape changed between two exports",
+   "tag": "state:02e645504be5338be0fe0934354975f7309b46d387ceac09f01b76ae8220e550",
+   "loaded": false,
+   "error": "This save was made with another version of the game, and this one can't restore it: the state the behaviour pressToStart keeps changed; the code of the behaviour tableZone changed (it declares no state, so any change to its code counts).",
+   "code": "incompatible_save",
+   "parts": [
+    "behaviours"
+   ],
+   "expect": "behaviours",
+   "ok": true
+  },
+  "replay": {
+   "what": "build A's session log replayed on the texture build",
+   "error": "this log was played on build 6ad83f2641d8; this is build cc31016d2fa9: a log replays only on the build it was played on",
+   "ok": true
+  }
+ },
+ "ok": true,
+ "seconds": 14.7
+}

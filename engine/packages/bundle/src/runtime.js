@@ -8,8 +8,13 @@
 //   - it imports the project's behaviour modules from ./project/ at run time, and its entry carries an import map that
 //     gives them "@vrmxg/core" (the runtime's own copy of the engine's core);
 //   - it has no file named vrmxg-build.json or vrmxg-runtime.json and none under project/.
+//
+// A table may say what the engine in it means for saves (`engine`, M6 W5: its snapshot format, dmath version, maths
+// fingerprint, default action map and its behaviours' declared state; compat.js `engineCompat`). A build's
+// save-compatibility fingerprint reads it; a table without it makes every save depend on the runtime's version.
 import { sha256, sha256Text } from './sha256.js';
 import { BuildError, pathProblem, sortPaths, caseClash } from './paths.js';
+import { checkEngine } from './compat.js';
 
 export const RUNTIME_FILE = 'vrmxg-runtime.json';
 export const RUNTIME_FORMAT = 'vrmxg-runtime';
@@ -51,18 +56,21 @@ export function checkRuntime(doc) {
   if (clash) throw bad(`${clash[0]} and ${clash[1]} differ only by case`, clash);
   if (!paths.includes(doc.entry)) throw bad(`the entry ${doc.entry} is not among the files`, [doc.entry]);
   if (doc.digest !== undefined && doc.digest !== filesDigest(sorted(doc.files))) throw bad('"digest" is not the digest of "files"');
-  return { name: doc.name, runtimeVersion: doc.runtimeVersion, entry: doc.entry, contract: doc.contract, files: sorted(doc.files).map((f) => ({ path: f.path, bytes: f.bytes, sha256: f.sha256, licence: f.licence.trim() })) };
+  let engine;
+  try { engine = checkEngine(doc.engine); } catch (e) { throw bad(e.message); }
+  return { name: doc.name, runtimeVersion: doc.runtimeVersion, entry: doc.entry, contract: doc.contract, engine, files: sorted(doc.files).map((f) => ({ path: f.path, bytes: f.bytes, sha256: f.sha256, licence: f.licence.trim() })) };
 }
 
 const sorted = (files) => { const by = new Map(files.map((f) => [f.path, f])); return sortPaths(by.keys()).map((p) => by.get(p)); };
 
 /**
  * The table of a runtime's files, as vrmxg-runtime.json holds it. Used by the Vite plugin, and by tests.
- * @param {{ name: string, runtimeVersion: string, entry?: string, files: { path: string, bytes: Uint8Array, licence: string }[] }} o
+ * @param {{ name: string, runtimeVersion: string, entry?: string, engine?: any, files: { path: string, bytes: Uint8Array, licence: string }[] }} o
+ *   engine: what the engine means for saves (compat.js `engineCompat`), or absent
  */
-export function runtimeTable({ name, runtimeVersion, entry = 'index.html', files }) {
+export function runtimeTable({ name, runtimeVersion, entry = 'index.html', engine = null, files }) {
   const rows = sorted(files).map((f) => ({ path: f.path, bytes: f.bytes.length, sha256: sha256(f.bytes), licence: f.licence }));
-  const doc = { format: RUNTIME_FORMAT, version: RUNTIME_VERSION, contract: RUNTIME_CONTRACT, name, runtimeVersion, entry, digest: filesDigest(rows), files: rows };
+  const doc = { format: RUNTIME_FORMAT, version: RUNTIME_VERSION, contract: RUNTIME_CONTRACT, name, runtimeVersion, entry, ...(engine ? { engine: checkEngine(engine) } : {}), digest: filesDigest(rows), files: rows };
   checkRuntime(doc);
   return doc;
 }

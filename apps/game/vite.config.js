@@ -4,6 +4,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { vrmxgRuntime } from '@vrmxg/bundle/vite';
 import { runtimeSources } from '@vrmxg/bundle/node';
+import { runtimeEngine } from './scripts/engine-compat.mjs';
 // The game app, built as the runtime every game build is made with (M5 W1, AB-D-0286): `npm run build -w
 // @vrmxg/game-app` writes apps/game/dist with its table (vrmxg-runtime.json) and THIRD-PARTY-LICENCES.txt. vrmxg-export and
 // the editor's Export Game copy that folder into a build as it is. base './': a build is opened from wherever it is served.
@@ -47,6 +48,7 @@ const runtimeStamp = () => ({
     // that writes the table, and the lock files of the installs it takes packages from (this workspace's, and
     // vrmxa-core's own: sql.js and its WebAssembly come from there)
     const files = new Set([here('../../engine/packages/bundle/runtime/vrmxg-core.js'), here('../../package-lock.json'), here('index.html'), here('vite.config.js'), here('../../engine/packages/bundle/src/vite.js'),
+      here('scripts/engine-compat.mjs'), here('../../engine/packages/bundle/src/compat.js'), here('../../engine/packages/dmath/package.json'), // the table's engine (M6 W5)
       ...[path.join(core, 'package.json'), path.join(core, 'package-lock.json')].filter((f) => fs.existsSync(f))]);
     for (const chunk of Object.values(bundle)) {
       if (chunk.type !== 'chunk') continue;
@@ -81,7 +83,7 @@ const devBuild = () => ({
 
 export default defineConfig({
   root: here('.'), base: './', publicDir: false,
-  plugins: [vue(), coreShim(), devBuild(), runtimeStamp(), vrmxgRuntime({ name: 'vrmxg-game', version: runtimeVersion, licence: 'Xocialize original', licences: [['assets/sql-wasm-*.wasm', sqlJsLicence], ['assets/sql-wasm-*.js', sqlJsLicence]] })],
+  plugins: [vue(), coreShim(), devBuild(), runtimeStamp(), vrmxgRuntime({ name: 'vrmxg-game', version: runtimeVersion, engine: runtimeEngine(), licence: 'Xocialize original', licences: [['assets/sql-wasm-*.wasm', sqlJsLicence], ['assets/sql-wasm-*.js', sqlJsLicence]] })],
   optimizeDeps: { exclude: ['sql.js'] },
   resolve: { alias: { '@vrmxa-core': path.join(core, 'src') }, dedupe: ['three'] },
   build: { outDir: here('dist'), emptyOutDir: true, target: 'safari16', chunkSizeWarningLimit: 8000 },

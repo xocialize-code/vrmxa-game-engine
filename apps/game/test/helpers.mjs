@@ -31,9 +31,9 @@ export async function ballGame({ device = null } = {}) {
 }
 
 /** A session on the ball game, as the app makes one (store, stamp, hashes kept). */
-export async function ballSession({ device = new VirtualDevice(), store = new MemoryStore(), hashes = true, stamp = () => '2026-11-24T12:00:00.000Z' } = {}) {
+export async function ballSession({ device = new VirtualDevice(), store = new MemoryStore(), hashes = true, stamp = () => '2026-11-24T12:00:00.000Z', digest = 'test', compat = null } = {}) {
   const g = await ballGame({ device });
-  const session = new GameSession({ game: GAME, digest: 'test', load: g.load, unload: g.unload, store, stamp, scenes: g.scenes, prefabs: g.prefabs, hashes });
+  const session = new GameSession({ game: GAME, digest, compat, load: g.load, unload: g.unload, store, stamp, scenes: g.scenes, prefabs: g.prefabs, hashes });
   return { session, device, store, game: g };
 }
 

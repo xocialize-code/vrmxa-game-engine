@@ -307,22 +307,43 @@ export async function openFolder(dir, o) {
   return build;
 }
 
-const hooked = new Map();
+const hooked = new Map(); // a folder's file URL → the URL of the @vrmxg/core its modules get
+let hook = false, generation = 0;
+const TOKEN = 'vrmxg-load';
 /**
- * What a runtime's import map does, for Node: an importer for a build's modules that hands them `@vrmxg/core`. A
- * project's behaviours import the engine's core by name, and the copy they get has to be the one the world runs on.
- * @param {string} dir the build's folder @param {{ core?: string }} [o] core: the URL of the engine's core (default: the
- *   one this package resolves)
+ * What a runtime's import map does, for Node: an importer for a build's or a project's modules that hands them
+ * `@vrmxg/core`. A project's behaviours import the engine's core by name, and the copy they get has to be the one the
+ * world runs on.
+ *
+ * Every call imports a fresh module graph (AB-T-0654 item 1, M6 W5): the module's URL carries a load token, and a resolve
+ * hook carries the token into every relative specifier of a module inside the folder, so neither the module nor any
+ * module it imports comes from Node's module cache. A long-running process (MCP's server, a test that edits a project
+ * between exports) never reads an older copy, and a load that failed isn't cached for the next try. The export's checks
+ * and its save-compatibility fingerprint both read the declarations of the one graph an export imports.
+ * @param {string} dir the build's (or the project's) folder @param {{ core?: string }} [o] core: the URL of the engine's
+ *   core (default: the one this package resolves)
  * @returns {(p: string) => Promise<Record<string, any>>}
  */
 export function behavioursImporter(dir, { core } = {}) {
   const base = pathToFileURL(fs.realpathSync(path.resolve(dir)) + path.sep).href; // the real path: Node resolves a module's own URL through symlinks (/var → /private/var)
-  const url = core ?? import.meta.resolve('@vrmxg/core');
-  if (!hooked.has(base)) {
-    registerHooks({ resolve(specifier, context, next) { return specifier === '@vrmxg/core' && context.parentURL?.startsWith(base) ? { url: hooked.get(base), shortCircuit: true } : next(specifier, context); } });
+  hooked.set(base, core ?? import.meta.resolve('@vrmxg/core'));
+  if (!hook) {
+    hook = true;
+    registerHooks({
+      resolve(specifier, context, next) {
+        const parent = context.parentURL;
+        const at = parent ? [...hooked.keys()].find((b) => parent.startsWith(b)) : undefined;
+        if (at === undefined) return next(specifier, context);
+        if (specifier === '@vrmxg/core') return { url: hooked.get(at), shortCircuit: true };
+        const r = next(specifier, context), token = new URL(parent).searchParams.get(TOKEN);
+        if (!token || !r.url.startsWith(at)) return r; // a package's module, or the folder's outside a load
+        const u = new URL(r.url);
+        u.searchParams.set(TOKEN, token);
+        return { ...r, url: u.href };
+      },
+    });
   }
-  hooked.set(base, url);
-  return (p) => import(new URL(p.split('/').map(encodeURIComponent).join('/'), base).href);
+  return (p) => import(`${new URL(p.split('/').map(encodeURIComponent).join('/'), base).href}?${TOKEN}=${++generation}`);
 }
 
 /**

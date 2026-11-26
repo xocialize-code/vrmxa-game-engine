@@ -2,9 +2,15 @@
 // role, size, SHA-256 and licence. It is written last, so a folder without it is an unfinished build, and it lists
 // everything but itself. There is no clock, path of the machine or user name in it: the same project and runtime give
 // the same bytes wherever the export runs.
+//
+// `compat` (M6 W5) is the build's save-compatibility fingerprint (compat.js): what a save made with this build needs to
+// be restored, so a later export with the same fingerprint loads it. `digest` stays the whole build's: a session log
+// replays only on the build whose digest it names. A manifest from before M6 has no `compat`, and its saves load only
+// into the build that made them.
 import { BuildError, pathProblem, sortPaths } from './paths.js';
 import { checkGame } from './game.js';
 import { PROJECT_DIR, filesDigest } from './runtime.js';
+import { checkCompat } from './compat.js';
 
 export const BUILD_FILE = 'vrmxg-build.json';
 export const BUILD_FORMAT = 'vrmxg-build';
@@ -19,22 +25,24 @@ const HEX = /^[0-9a-f]{64}$/;
  *   licenceFrom: the pattern row of LICENCES.md that licensed the file (`voice/*.wav`), when no row names it by itself
  * @typedef {{ format: 'vrmxg-build', version: 1, game: import('./game.js').Game,
  *   runtime: { name: string, version: string, contract: number, entry: string, digest: string },
- *   hash: 'sha256', project: string, bytes: number, digest: string, files: BuildFile[] }} Manifest
+ *   compat?: import('./compat.js').Compat, hash: 'sha256', project: string, bytes: number, digest: string, files: BuildFile[] }} Manifest
  */
 
 /**
  * The manifest of a build, keys in their one order.
- * @param {{ game: import('./game.js').Game, runtime: { name: string, runtimeVersion: string, contract: number, entry: string, files: any[] }, files: BuildFile[] }} o
- *   files: every file of the build, the runtime's and the project's (under project/)
+ * @param {{ game: import('./game.js').Game, runtime: { name: string, runtimeVersion: string, contract: number, entry: string, files: any[] }, files: BuildFile[], compat?: import('./compat.js').Compat | null }} o
+ *   files: every file of the build, the runtime's and the project's (under project/); compat: its save-compatibility
+ *   fingerprint (compat.js)
  * @returns {Manifest}
  */
-export function makeManifest({ game, runtime, files }) {
+export function makeManifest({ game, runtime, files, compat = null }) {
   const by = new Map(files.map((f) => [f.path, f]));
   if (by.size !== files.length) throw bad('a file is listed twice');
   const rows = sortPaths(by.keys()).map((p) => { const f = by.get(p); return { path: f.path, role: f.role, bytes: f.bytes, sha256: f.sha256, licence: f.licence, ...(f.licenceFrom ? { licenceFrom: f.licenceFrom } : {}) }; });
   return {
     format: BUILD_FORMAT, version: BUILD_VERSION, game,
     runtime: { name: runtime.name, version: runtime.runtimeVersion, contract: runtime.contract, entry: runtime.entry, digest: filesDigest(runtime.files) },
+    ...(compat ? { compat: checkCompat(compat) } : {}),
     hash: HASH, project: PROJECT_DIR, bytes: rows.reduce((n, f) => n + f.bytes, 0), digest: filesDigest(rows), files: rows,
   };
 }
@@ -57,6 +65,7 @@ export function parseManifest(text) {
   if (m.project !== PROJECT_DIR) throw bad(`"project" is ${JSON.stringify(m.project)}, not "${PROJECT_DIR}"`);
   try { checkGame(m.game); } catch (e) { throw bad(`"game" is not a game document (${e.message})`); }
   if (!m.runtime || typeof m.runtime.entry !== 'string') throw bad('"runtime" has no entry');
+  if (m.compat !== undefined) { try { checkCompat(m.compat); } catch (e) { throw bad(`"compat" is ${e.message}`); } }
   if (!Array.isArray(m.files)) throw bad('"files" is missing');
   let last = null;
   for (const f of m.files) {

@@ -1,12 +1,16 @@
 // Where saves go (M2 W9). One shape for every store:
-//   list() → [{ slot, name, savedAt, step, seconds, scene, bytes, build }]   read(slot) → doc   write(slot, doc)   remove(slot)
-//   build: the digest of the game build that made the save (an app's `extra.build.digest`, M5 W1), or null: a slot list
-//   can tell a save it can't load without reading it
+//   list() → [{ slot, name, savedAt, step, seconds, scene, bytes, build, game, compat }]   read(slot) → doc   write(slot, doc)   remove(slot)
+//   build: the digest of the game build that made the save (an app's `extra.build.digest`, M5 W1), or null; game: that
+//   build's game id (`extra.build.game`), or null; compat: its save-compatibility fingerprint as { format, version,
+//   digest, parts } (`extra.build.compat`, M6 W5), or null: a slot list can tell a save it can't load, and why, without
+//   reading it
 //   MemoryStore    tests, previews
 //   IndexedDBStore a browser (the playground, the editor in a browser)
 //   ShellStore     the Mac shell's saves folder (saves.* bridge methods: the app's own container, no panels)
 //   FsStore        Node (./node: files in a folder)
-const entry = (slot, doc, bytes) => ({ slot, name: doc.name ?? slot, savedAt: doc.savedAt ?? null, step: doc.summary?.step ?? null, seconds: doc.summary?.seconds ?? null, scene: doc.summary?.scene ?? null, bytes, build: doc.extra?.build?.digest ?? null });
+/** A save's build fingerprint as a listing carries it (no per-scene or per-behaviour detail). @param {any} doc */
+export const compatOf = (doc) => { const c = doc?.extra?.build?.compat; return c && typeof c === 'object' ? { format: c.format ?? null, version: c.version ?? null, digest: c.digest ?? null, parts: c.parts ?? null } : null; };
+const entry = (slot, doc, bytes) => ({ slot, name: doc.name ?? slot, savedAt: doc.savedAt ?? null, step: doc.summary?.step ?? null, seconds: doc.summary?.seconds ?? null, scene: doc.summary?.scene ?? null, bytes, build: doc.extra?.build?.digest ?? null, game: doc.extra?.build?.game ?? null, compat: compatOf(doc) });
 
 export class MemoryStore {
   constructor() { this.files = new Map(); }
