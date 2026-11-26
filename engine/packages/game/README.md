@@ -108,6 +108,9 @@ A rule that is wrong must not win or lose a game by accident, so two things are 
   - **Seen, not stored.** The default is what a condition and the view see (so `flags.foundKey eq false` holds);
     reading a value never makes it state. Only its owner's scene gives it a value: a hub that reads `lives` shows 0,
     and the level that owns `lives` still starts it at 3 when the game gets there, hub first or level first.
+  - **Code that writes a read counter starts from what the scene shows.** `game.get(key)` gives the read's default
+    too, so in a hub that reads `"counters": { "lives": 3 }`, `game.add('lives', -1)` gives 2 (not -1) and that
+    write makes `lives` state, carried on like any value the game has (AB-T-0629). Only a write makes it state.
   - A start, a reset and an arrival with nothing all read the same.
   - **A restart gives a scene what it reads back as it arrived.** `restart` starts everything of the scene's own
     again; what it reads from elsewhere is not its own to reset, so a level entered with three lives restarts with
@@ -268,12 +271,12 @@ is asked in finishes whole.
 - A save or a checkpoint taken before a scene change, loaded into a new session, goes on with the unbroken run's
   hashes, across the change and the ones after it.
 
-## Known limit: a timer under a slowed or disabled node
+## A timer under a slowed or disabled node
 
-A `GameTimer` follows its node's `timeScale` and `processMode`. `@vrmxg/core` doesn't keep either in the world
-snapshot yet (AB-T-0627), so a save or a checkpoint taken while a timer's node, or one above it, is slowed or
-disabled restores with the node at full speed, and the timer runs differently from there on. Until that task lands,
-stop a timer with its `stop` action, and slow the whole game with the clock, not a node.
+A `GameTimer` follows its node's `timeScale` and `processMode`. Both are in the world snapshot (`@vrmxg/core`'s
+node record, AB-T-0627), so a save or a checkpoint taken while a timer's node, or one above it, is slowed or disabled
+restores with the node as it was, and the timer runs on as in the unbroken game. The clock's own `timeScale` and
+`paused` are the app's (live play's speed and its pause menu) and aren't saved.
 
 ## Measured
 

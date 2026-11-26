@@ -551,7 +551,7 @@ test('what a scene reads and the game didn\'t bring has its starting value: no w
   const b = await miniFlow({ 'next.vrmxs': lives(3) });
   b.flow.run(3);
   assert.deepEqual([b.flow.view().counters, b.flow.view().outcome], [{ lives: 3 }, null], 'seen as its default, and not lost');
-  assert.deepEqual([captureWorld(b.flow.tree).services.game.data.counters, b.flow.game.get('lives')], [{}, 0], 'seen, not stored: reading a value doesn\'t make it state');
+  assert.deepEqual([captureWorld(b.flow.tree).services.game.data.counters, b.flow.game.get('lives')], [{}, 3], 'seen, not stored: reading a value doesn\'t make it state');
   b.flow.dispose();
   const c = await miniFlow({ 'a.vrmxs': doc('a', [{ id: 'rules', type: 'GameRules' }, { id: 'lives', type: 'GameCounter', props: { start: 1 } }]), 'next.vrmxs': lives(3) });
   c.flow.game.changeScene({ to: 'next.vrmxs' });
@@ -596,6 +596,26 @@ test('a reader\'s default never stands in for the owner\'s start: hub first or l
   await viaHub.flow.runAsync(3);
   assert.deepEqual([viaHub.flow.view().counters, viaHub.flow.view().flags, viaHub.flow.view().goals.sign.done, viaHub.flow.game.arrived], [{ lives: 2 }, { doorOpen: true }, true, { counters: { lives: 2 }, flags: { doorOpen: true }, goals: { escape: { done: false, step: null } } }]);
   viaHub.flow.dispose();
+});
+
+test('code that adds to a read counter the game doesn\'t have yet starts from the read\'s default (AB-T-0629)', async () => {
+  // the review's case: the hub reads `lives` with a default of 3 and takes one; the level owns `lives` (start 3)
+  const hub = doc('hub', [{ id: 'rules', type: 'GameRules', props: { reads: { counters: { lives: 3 } } } }]);
+  const level = doc('level', [{ id: 'rules', type: 'GameRules', props: { lose: state('counters.lives', 'le', 0) } }, { id: 'lives', type: 'GameCounter', props: { start: 3 } }]);
+  const { flow, events } = await miniFlow({ 'hub.vrmxs': hub, 'level.vrmxs': level });
+  flow.run(2);
+  assert.equal(flow.game.get('lives'), 3, 'get() sees the read\'s default, as the view does');
+  assert.equal(flow.game.add('lives', -1), 2, 'and adding starts from it: 2, not -1');
+  flow.flush();
+  assert.deepEqual(events.filter((e) => e.type === 'counter').map(({ key, value, by }) => ({ key, value, by })), [{ key: 'lives', value: 2, by: -1 }]);
+  assert.deepEqual(captureWorld(flow.tree).services.game.data.counters, { lives: 2 }, 'the write made it state');
+  flow.game.changeScene({ to: 'level.vrmxs' });
+  await flow.runAsync(4);
+  assert.deepEqual([flow.scene, flow.view().counters.lives, flow.view().outcome], ['level.vrmxs', 2, null], 'carried into the level as two lives, not lost on arrival');
+  flow.dispose();
+  // a counter the scene neither declares nor reads still starts at 0
+  const w = rulesWorld([{ id: 'rules', type: 'GameRules' }]);
+  assert.equal(w.game.add('coins', 2), 2);
 });
 
 test('a restart of a scene gives what it reads from elsewhere back as it arrived, not as nothing', async () => {

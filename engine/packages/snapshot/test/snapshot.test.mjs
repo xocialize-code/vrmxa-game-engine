@@ -155,3 +155,20 @@ test('the hash: bit-exact numbers, typed arrays by element, key order part of th
   assert.notEqual(hashValue(new Uint8Array([1, 2, 3, 4, 5])), hashValue(new Uint8Array([1, 2, 3, 4, 6])));
   assert.match(hashValue('x'), /^[0-9a-f]{16}$/);
 });
+
+test('a snapshot taken under a slowed and under a disabled subtree re-simulates identically (AB-T-0627)', () => {
+  const rec = recorded();
+  for (const [what, set] of [['slowed', (n) => { n.timeScale = 0.5; }], ['disabled', (n) => { n.processMode = 'disabled'; }]]) {
+    const A = world(); A.input.replay(rec);
+    A.tree.run(100);
+    set(A.tree.find('walker')); // the walker's blink timer, its sway and its walk run at half speed, or not at all
+    const first = recordRun(A.tree, 100);
+    const snap = captureWorld(A.tree);
+    const rest = recordRun(A.tree, 200);
+    const B = world(); B.input.replay(rec);
+    restoreWorld(B.tree, structuredClone(snap));
+    assert.deepEqual(worldHashes(B.tree), first.at(-1).h, `${what}: the restored world hashes as the original did`);
+    assertSameRun(rest, recordRun(B.tree, 200), `${what}: original and restored`);
+    assert.equal(B.tree.find('walker').behaviours[0].blinks, A.tree.find('walker').behaviours[0].blinks, `${what}: the timer kept its schedule`);
+  }
+});

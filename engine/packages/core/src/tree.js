@@ -18,6 +18,7 @@ import { RandomStreams } from './rng.js';
 import { TimerService } from './timers.js';
 
 const NOOP_STEP = Node.prototype.physicsProcess;
+const PROCESS_MODES = new Set(['inherit', 'pausable', 'always', 'disabled']);
 
 export class SceneTree {
   /**
@@ -354,6 +355,10 @@ export class SceneTree {
         props: n.props, behaviours: n.behaviours.map((b) => [b.name, b.params, b.getState()]),
         sm: n.stateMachine?.getState() ?? null,
         ...(n.object3d.visible ? {} : { hidden: true }), // hide() (a light switched off); absent while shown, as before
+        // How fast the subtree runs (AB-T-0627): absent at the defaults, as `hidden` is, so a scene that never sets
+        // them keeps every hash; there from the step code sets them, so a restored world runs as the unbroken one.
+        ...(n.timeScale === 1 ? {} : { ts: n.timeScale }),
+        ...(n.processMode === 'inherit' ? {} : { pm: n.processMode }),
       })),
     };
   }
@@ -373,6 +378,8 @@ export class SceneTree {
       const n = this.byId.get(ns.id);
       if (!n) throw new Error(`snapshot node "${ns.id}" isn't in this tree: restore onto the scene the snapshot came from`);
       ns.behaviours.forEach(([name], i) => { if (n.behaviours[i]?.name !== name) throw new Error(`"${ns.id}" behaviour ${i} is ${n.behaviours[i]?.name}, the snapshot has ${name}`); });
+      if (ns.ts !== undefined && !(typeof ns.ts === 'number' && Number.isFinite(ns.ts) && ns.ts >= 0)) throw new Error(`snapshot node "${ns.id}": time scale ${JSON.stringify(ns.ts)} isn't a number of 0 or more`);
+      if (ns.pm !== undefined && !PROCESS_MODES.has(ns.pm)) throw new Error(`snapshot node "${ns.id}": process mode ${JSON.stringify(ns.pm)} isn't one of ${[...PROCESS_MODES].join(', ')}`);
     }
     this.timers.setState(s.timers);
     this.clock.setState(s.clock);
@@ -382,6 +389,8 @@ export class SceneTree {
       n.object3d.position.fromArray(ns.p); n.object3d.quaternion.fromArray(ns.q); n.object3d.scale.fromArray(ns.s);
       n.props = structuredClone(ns.props);
       n.object3d.visible = !ns.hidden;
+      n.timeScale = ns.ts ?? 1;
+      n.processMode = ns.pm ?? 'inherit';
       ns.behaviours.forEach(([name, params, state], i) => {
         const b = n.behaviours[i];
         for (const k of Object.keys(b.params)) delete b.params[k];

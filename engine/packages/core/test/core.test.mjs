@@ -224,3 +224,38 @@ test('autoload services start before the scene and step first', () => {
   assert.deepEqual(order, ['service ready', 'service step', 'node step', 'service after']);
   assert.equal(tree.services.get('score').points, 11);
 });
+
+test('a node\'s time scale and process mode are in the state: a world restored under a slowed or disabled subtree runs on as the unbroken one (AB-T-0627)', () => {
+  class Ticker extends Behaviour {
+    ready() { this.fired = 0; this.node.after(0.5, () => this.fired++, { repeat: true }); }
+    getState() { return { fired: this.fired }; }
+    setState(s) { this.fired = s.fired; }
+  }
+  const doc = { format: 'vrmxs', version: 1, id: 'ts', nodes: [{ id: 'root', type: 'Node3D' }, { id: 'slow', type: 'Node3D', parent: 'root' }, { id: 'tick', type: 'Node3D', parent: 'slow', behaviours: [{ use: 'ticker' }] }, { id: 'off', type: 'Node3D', parent: 'root', behaviours: [{ use: 'ticker' }] }] };
+  const fresh = () => new SceneTree({ registry: reg, behaviours: new Map([['ticker', Ticker]]), seed: 5 }).instantiate(doc);
+  const plain = fresh().getState();
+  assert.ok(plain.nodes.every((n) => !('ts' in n) && !('pm' in n)), 'absent at the defaults: a scene that sets neither keeps every hash');
+
+  const a = fresh();
+  a.run(10);
+  a.find('slow').timeScale = 0.5; a.find('off').processMode = 'disabled';
+  a.run(50);
+  const snap = structuredClone(a.getState());
+  assert.deepEqual(snap.nodes.filter((n) => n.ts !== undefined || n.pm !== undefined).map(({ id, ts, pm }) => ({ id, ts, pm })), [{ id: 'slow', ts: 0.5, pm: undefined }, { id: 'off', ts: undefined, pm: 'disabled' }]);
+  const b = fresh();
+  b.setState(snap);
+  assert.equal(b.stateHash(), a.stateHash(), 'restored: the same state');
+  assert.deepEqual([b.find('slow').timeScale, b.find('off').processMode], [0.5, 'disabled']);
+  a.run(120); b.run(120);
+  assert.equal(b.stateHash(), a.stateHash(), 'and it runs on the same: the slowed timer at half speed, the disabled one never');
+  assert.deepEqual([a.find('tick').behaviours[0].fired, a.find('off').behaviours[0].fired], [b.find('tick').behaviours[0].fired, b.find('off').behaviours[0].fired]);
+
+  // setting them back to the defaults takes them out of the state again; a restore brings the defaults back too
+  a.find('slow').timeScale = 1; a.find('off').processMode = 'inherit';
+  assert.ok(a.getState().nodes.every((n) => !('ts' in n) && !('pm' in n)));
+  b.setState(a.getState());
+  assert.deepEqual([b.find('slow').timeScale, b.find('off').processMode], [1, 'inherit']);
+  // a value that can't be refuses the restore before anything changes
+  const bad = structuredClone(snap); bad.nodes.find((n) => n.id === 'off').pm = 'sometimes';
+  assert.throws(() => fresh().setState(bad), /snapshot node "off": process mode "sometimes" isn't one of inherit, pausable, always, disabled/);
+});
