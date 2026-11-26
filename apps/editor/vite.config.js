@@ -3,6 +3,7 @@ import path from 'node:path';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { checkRuntimeSources } from '@vrmxg/bundle/node';
+import { listTemplates, CONTENT } from '../../content/templates/tools/new-project.mjs';
 // The editor ships the sample project as its starting project (the site's files, by their refs) and lists it in
 // project-files.json; a project opened in the Mac shell is served under /project/ instead. vrmxa-core is read from the
 // avatar studio beside this repository, in place (AB-D-0249). base './' for the shell's origins.
@@ -70,9 +71,42 @@ const runtimeFiles = () => ({
   },
 });
 
+/**
+ * templates/ (M6 W3, AB-T-0646): New Project's templates. `templates/index.json` lists each with the files a project made
+ * from it holds, by where they are in this web content: the template's own files at templates/<id>/, the sample's at
+ * their refs (the sample is this build's public folder already), anything else under content/ at templates/content/.
+ * The Mac shell's project.create copies them from here.
+ */
+const templateFiles = () => {
+  const web = (source) => (source.startsWith('templates/') ? source : source.startsWith('sample/') ? source.slice('sample/'.length) : `templates/content/${source}`);
+  const templates = listTemplates().map((t) => ({ id: t.id, title: t.title, description: t.description, files: t.files.map((f) => ({ from: web(f.source), to: f.to })) }));
+  const copies = new Map(); // web path → content path, for what the public folder doesn't already serve
+  for (const t of listTemplates()) for (const f of t.files) if (!f.source.startsWith('sample/')) copies.set(web(f.source), f.source);
+  return { index: `${JSON.stringify({ format: 'vrmxg-templates', version: 1, templates }, null, 1)}\n`, copies };
+};
+const templates = () => ({
+  name: 'vrmxg-templates',
+  configureServer(server) {
+    server.middlewares.use((req, res, next) => {
+      const url = decodeURIComponent(req.url.split('?')[0]), at = url.indexOf('/templates/');
+      if (at < 0) { next(); return; }
+      const rel = url.slice(at + 1), t = templateFiles();
+      if (rel === 'templates/index.json') { res.setHeader('content-type', 'application/json'); res.end(t.index); return; }
+      const src = t.copies.get(rel);
+      if (!src) { next(); return; }
+      res.end(fs.readFileSync(path.join(CONTENT, src)));
+    });
+  },
+  generateBundle() {
+    const t = templateFiles();
+    this.emitFile({ type: 'asset', fileName: 'templates/index.json', source: t.index });
+    for (const [to, from] of t.copies) this.emitFile({ type: 'asset', fileName: to, source: fs.readFileSync(path.join(CONTENT, from)) });
+  },
+});
+
 export default defineConfig({
   root: here('.'), base: './', publicDir: sample,
-  plugins: [vue(), projectFiles(), runtimeFiles()],
+  plugins: [vue(), projectFiles(), runtimeFiles(), templates()],
   optimizeDeps: { exclude: ['sql.js'] },
   resolve: { alias: { '@vrmxa-core': here('../../../vrmxa-avatar-studio/packages/vrmxa-core/src') }, dedupe: ['three'] },
   build: { outDir: here('dist'), emptyOutDir: true, target: 'safari16', chunkSizeWarningLimit: 4000 },

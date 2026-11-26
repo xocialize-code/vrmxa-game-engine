@@ -1,7 +1,7 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.13.0"
+public let vrmxgShellVersion = "0.14.0"
 
 /// An app's own menu item (shell 0.7.0, M4 W5): choosing it sends the page `menu.<event>`. A title of "-" is a separator.
 public struct ShellMenuItem: Sendable {
@@ -62,14 +62,18 @@ public struct ShellConfiguration {
     public var asksBeforeClosing: Bool
     /// Seconds the page has to answer `window.closing` before the shell closes anyway (a hung page can't block quitting).
     public var closeTimeout: TimeInterval
+    /// File › Open Recent after Open Project… (shell 0.14.0, M6 W3; ProjectFolders.swift): the projects opened lately,
+    /// each sending the page `menu.openRecent { path }`. false (the default): no such item, as before.
+    public var recentProjects: Bool
     public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = [], pageUndo: Bool = false,
                 statusItem: StatusItemConfiguration? = nil, closeKeepsRunning: Bool = false, dockIcon: Bool = true, setUp: (@MainActor (ShellAppDelegate) -> Void)? = nil,
                 fileItems: [ShellMenuItem] = [], editItems: [ShellMenuItem] = [], menus: [ShellMenu] = [], openTypes: [String] = [],
-                asksBeforeClosing: Bool = false, closeTimeout: TimeInterval = 5, helpItems: [ShellMenuItem] = []) {
+                asksBeforeClosing: Bool = false, closeTimeout: TimeInterval = 5, helpItems: [ShellMenuItem] = [], recentProjects: Bool = false) {
         self.appName = appName; self.scheme = scheme; self.size = size; self.webFolder = webFolder; self.methods = methods; self.pageUndo = pageUndo
         self.statusItem = statusItem; self.closeKeepsRunning = closeKeepsRunning; self.dockIcon = dockIcon; self.setUp = setUp
         self.fileItems = fileItems; self.editItems = editItems; self.menus = menus; self.openTypes = openTypes.map { $0.lowercased() }
         self.asksBeforeClosing = asksBeforeClosing; self.closeTimeout = closeTimeout; self.helpItems = helpItems
+        self.recentProjects = recentProjects
     }
 }
 
@@ -212,7 +216,8 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
             let m = item(i.title, #selector(menuOwn(_:)), i.key, i.modifiers, target: self); m.representedObject = i.event; return m
         }
         let fileOwn = config.fileItems.isEmpty ? [] : config.fileItems.map(own) + [.separator()]
-        menu("File", [item("Open…", #selector(menuOpen), "o", target: self), item("Open Project…", #selector(menuOpenProject), "o", [.command, .shift], target: self), .separator()] + fileOwn +
+        let recent = config.recentProjects ? [recentMenuItem()] : []
+        menu("File", [item("Open…", #selector(menuOpen), "o", target: self), item("Open Project…", #selector(menuOpenProject), "o", [.command, .shift], target: self)] + recent + [.separator()] + fileOwn +
                      [item("Save", #selector(menuSave), "s", target: self), item("Save As…", #selector(menuSaveAs), "s", [.command, .shift], target: self), .separator(),
                       item("Close Window", #selector(NSWindow.performClose(_:)), "w")])
         let undo = config.pageUndo ? item("Undo", #selector(menuUndo), "z", target: self) : item("Undo", Selector(("undo:")), "z")

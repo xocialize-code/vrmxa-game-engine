@@ -41,6 +41,7 @@ public final class FileMethods {
         router.register("project.write") { [unowned self] p in try self.writeProject(p) }
         router.register("project.stat") { [unowned self] p in try self.statProject(p) }
         registerBuild(on: router)
+        registerProjectFolders(on: router) // project.create, project.recent, project.reopen, project.forget (shell 0.14.0)
     }
 
     private func types(_ exts: [String]?) -> [UTType] {
@@ -146,12 +147,9 @@ public final class FileMethods {
             guard panel.runModal() == .OK, let u = panel.url else { throw BridgeError("cancelled", "no project was opened") }
             url = u
         }
-        let folder = url!
-        granted.insert(folder)
-        roots.mountProject(folder)
-        let listing = try projectListing()
-        // `truncated`: the project has more files than the listing holds (M5 W0): what needs every file (Export Game) refuses
-        return ["path": folder.path, "name": folder.lastPathComponent, "base": WebRoots.projectPrefix, "files": listing.files, "truncated": listing.truncated]
+        // mounted, granted and put first among the recent projects (shell 0.14.0, ProjectFolders.swift). `truncated`: the
+        // project has more files than the listing holds (M5 W0): what needs every file (Export Game) refuses
+        return try mountFolder(url!)
     }
 
     /// The most files a project's listing holds.

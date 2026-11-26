@@ -363,7 +363,10 @@ export class EditorHost {
     const timings = {}; // a thumbnail's build (timed: false) leaves the status line's timings alone
     if (timed) this.buildTimings = timings;
     if (heard && !this.audio) this.audio = new AudioOutput(); // made on the first Play: that click is the gesture that lets it sound
-    const world = await buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await this.worldBehaviours(p), timings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial });
+    // the game's controls (Play only) and collision layers (every build: a collider's layer must be one of them), as its
+    // game.json has them now (M6 W3: the project settings write it); none, the engine's defaults
+    const setup = await p.gameSetup?.() ?? { actions: null, physics: null };
+    const world = await buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await this.worldBehaviours(p), timings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial, actions: play ? setup.actions : null, physics: setup.physics });
     this._built++;
     return world;
   }

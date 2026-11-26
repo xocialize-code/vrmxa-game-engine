@@ -1,0 +1,31 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "ending",
+  "assets": [
+    {"id":"cafe","type":"glb","ref":"sets/cafe.glb"},
+    {"id":"hana","type":"vrmxa","ref":"characters/hana.vrmxa"},
+    {"id":"music","type":"audio","ref":"sounds/music.wav"}
+  ],
+  "nodes": [
+    {"id":"root","type":"Node3D","name":"Ending"},
+    {"id":"env","type":"Environment","parent":"root","props":{"ambientIntensity":0.5,"background":"gradient","environmentIntensity":0.35,"skyHorizonColor":"#e6ecf2","skyTopColor":"#7aa6d6"}},
+    {"id":"set","type":"Model","parent":"root","name":"Cafe","asset":"cafe"},
+    {"id":"sun","type":"DirectionalLight","parent":"root","transform":{"q":[-0.354,0.354,0.146,0.854]},"props":{"intensity":2.4,"shadowExtent":10,"shadowPreset":"high"}},
+    {"id":"music","type":"AudioPlayer","parent":"root","name":"Music","asset":"music","props":{"autoplay":true,"bus":"music","loop":true,"volume":0.35}},
+    {"id":"hana","type":"Character","parent":"root","name":"Hana","asset":"hana","transform":{"p":[0,0,-3]},"props":{"controller":"npc"}},
+    {"id":"look-at","type":"Marker","parent":"root","transform":{"p":[0,-0.1,-3]}},
+    {"id":"cam","type":"Camera","parent":"root","transform":{"p":[0.6,1.6,0]},"props":{"focalLength":35,"preset":"fixed","target":"look-at"}},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"keepOutcome":true,"reads":{"counters":["score"]}}},
+    {"id":"linger","type":"GameTimer","parent":"rules","props":{"label":"You made it! Playing again in","seconds":8}}
+  ],
+  "connections": [
+    {"from":"linger","signal":"timeout","to":"rules","call":"changeScene","args":{"reset":true,"to":"level.vrmxs"}}
+  ],
+  "settings": {
+    "physics": {
+      "build": "deterministic",
+      "hz": 60
+    }
+  }
+}

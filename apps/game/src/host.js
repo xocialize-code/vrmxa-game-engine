@@ -75,7 +75,7 @@ export class GameHost {
     for (const d of [this.keyboard, this.mouse, this.gamepad]) this.menuInput.addDevice(d);
     this.uiSettings?.applyTo({ input: this.menuInput, audio: this.audio });
     const load = worldLoader({
-      R, scenes, behaviours, actions, ...this.characters,
+      R, scenes, behaviours, actions, physics: this.game.physics ?? null, ...this.characters, // the game's collision layers (M6 W3)
       options: () => ({ mtoonMaterial: this.render.mtoonMaterial, audioOutput: this.audio, characterCache: this.characterCache }),
       onBuilt: (world) => {
         this.worlds.set(world.tree, world);

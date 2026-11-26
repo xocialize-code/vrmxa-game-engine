@@ -15,6 +15,11 @@ import Inspector from './Inspector.vue';
 import Timeline from '@vrmxg/editor-ui/Timeline.vue'; // shared with the creator (M4 W5)
 import AssetsPanel from '@vrmxg/editor-ui/AssetsPanel.vue'; // M5 W6: thumbnails, filters, search, folders, typed drags
 import { shortcutFor, shortcutGroups } from './shortcuts.js';
+// M6 W3 (AB-T-0646): New Project from a template, Open Recent and the project settings
+import NewProject from './NewProject.vue';
+import ProjectSettings from './ProjectSettings.vue';
+import { ProjectSettings as Settings } from './project-settings.js';
+import { loadTemplates, newProjectFrom, recentProjects, reopenProject, entryScene } from './projects.js';
 
 const canvas = ref(null);
 const ui = reactive({
@@ -24,12 +29,15 @@ const ui = reactive({
   debug: { colliders: false, sensors: false, capsules: false, rays: false }, aids: { outline: true, handles: true, preview: true }, boxSelect: false, clip: 0, previewing: '', frame: '—', build: '—', renderer: '—', holds: '', step: 0, prompt: null, fileName: 'built-cafe.vrmxs', captions: [],
   mcp: '', tl: null, gameSlot: 'slot-1', gameNote: '', paused: false, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
   ask: null, // { title, text, options: [{ id, label }] }: the window's question before it closes (M5 W8)
+  // M6 W3: the New Project sheet, the recent projects, the project settings panel (its view; null while closed)
+  newProject: { open: false, templates: [], busy: false, error: '' }, recent: [], settings: null, settingsBusy: false,
   // M5 W6: the tree's search and folds, the assets panel's thumbnails and picked file, the panels' sizes, the field
   // clipboard, the shortcuts sheet
   docSel: 0, treeQuery: '', treeOpen: [], treeClosed: [], thumbs: {}, thumbStatus: '', picked: '', panels: readLayout(null), fieldClip: null, shortcuts: false, note: '',
   ex: { open: false, takes: [], take: '', seconds: 10, size: '1080p', fps: '30', codec: 'h264', audio: true, name: '', running: false, n: 0, frames: 0, phase: '', result: '', still: '', check: '', canCheck: false, scene: '', checkRows: '', gameName: '', game: '', gameRunning: false, gameN: 0, gameTotal: 0 },
 });
 /** @type {EditorHost} */ let ed = null; // never reactive
+/** @type {Settings | null} */ let settings = null; // the open project's settings while the panel is open (never reactive)
 
 const label = (n) => n.name ? `${n.name} (${n.id})` : n.id;
 const plainTree = (items) => items.map(({ node, children, inner, overridden }) => ({ id: node.id, type: node.type, label: label(node), children: plainTree(children), ...(inner ? { inner: true } : {}), ...(overridden ? { overridden: true } : {}) }));
@@ -125,7 +133,59 @@ onMounted(async () => {
 });
 
 // ---------------------------------------------------------------- commands
-const openProject = () => act(async () => { const p = await openProjectFolder(); await ed.releaseAssetThumbs(); await ed.openProject(p); }); // the last project's thumbnail draw ends first
+const openProject = () => act(async () => { const p = await openProjectFolder(); await switchProject(p); });
+/** Open another project: the last one's thumbnail draw ends first, its settings panel closes, the recent list follows. */
+async function switchProject(p, scene = null) {
+  closeSettings();
+  await ed.releaseAssetThumbs();
+  await ed.openProject(p, scene ?? undefined);
+  refreshRecent();
+}
+const refreshRecent = async () => { ui.recent = await recentProjects(); };
+// New Project (M6 W3): the sheet lists the templates the editor ships; Create… asks the shell for the folder
+const openNewProject = () => act(async () => {
+  if (sheet.asking || ui.mode !== 'editing') return;
+  closeSettings();
+  Object.assign(ui.newProject, { open: true, error: '', busy: false });
+  if (!ui.newProject.templates.length) ui.newProject.templates = await loadTemplates();
+});
+async function createProject({ template, title, id }) {
+  ui.newProject.busy = true; ui.newProject.error = '';
+  try {
+    const p = await newProjectFrom(template, { title, id });
+    ui.newProject.open = false;
+    await act(async () => switchProject(p, await entryScene(p)));
+  } catch (e) {
+    if (e?.code !== 'cancelled') ui.newProject.error = String(e?.message ?? e); // Cancel in the folder panel: back to the sheet
+  } finally { ui.newProject.busy = false; }
+}
+// Open Recent (M6 W3): File › Open Recent in the Mac app, and the toolbar's list; the shell's one list of projects
+const openRecent = (path) => act(async () => {
+  if (!path || sheet.asking || ui.mode !== 'editing') return;
+  ui.newProject.open = false;
+  try { const p = await reopenProject(path); await switchProject(p, await entryScene(p)); } finally { refreshRecent(); }
+});
+// Project settings (M6 W3): the game's title, id, scenes, controls and physics layers; each change one undo step of
+// its own, written to game.json at once. While the panel is open, Undo and Redo (the menu, ⌘Z) are the panel's.
+const openSettings = () => act(async () => {
+  if (sheet.asking || ui.mode !== 'editing' || !ed.project) return;
+  if (!ed.project.writable) throw new Error(`${ed.project.name} is read-only here: open a project folder to change its settings`);
+  ui.newProject.open = false;
+  settings = await Settings.load(ed.project, { onChange: () => { if (settings) ui.settings = settings.view(); } });
+  ui.settings = settings.view();
+});
+function closeSettings() { settings = null; ui.settings = null; }
+const settingsPlan = (row, slot, binding) => settings.planRebind(row, slot, binding);
+async function settingsDo(fn) {
+  if (!settings) return;
+  ui.settingsBusy = true;
+  try { await fn(settings); } catch { /* the panel shows settings.error */ } finally {
+    ui.settingsBusy = false;
+    if (settings) ui.settings = settings.view();
+    refresh(); // a new game.json, or a scene's file list
+  }
+}
+const settingsOp = (name, ...args) => settingsDo((s) => s[name](...args));
 const openScene = () => act(() => (ui.scenes.includes(ui.scene) ? ed.openScene(ui.scene) : null));
 const fileName = () => { const n = ui.fileName.trim() || 'untitled.vrmxs'; return n.endsWith('.vrmxs') ? n : `${n}.vrmxs`; };
 const newScene = () => act(() => ed.newScene(fileName()));
@@ -133,8 +193,8 @@ const openFile = () => act(() => { const f = fileName(); if (!ui.scenes.includes
 const save = () => act(() => ed.save());
 const saveAs = () => act(() => ed.save(fileName()));
 const verify = () => act(() => ed.verifySaved());
-const undo = () => act(() => ed.session.undo());
-const redo = () => act(() => ed.session.redo());
+const undo = () => (settings ? settingsDo((s) => s.undo()) : act(() => ed.session.undo())); // the settings' own history while its panel is open
+const redo = () => (settings ? settingsDo((s) => s.redo()) : act(() => ed.session.redo()));
 const play = () => act(() => (ed.session.mode === 'playing' ? ed.stop() : ed.play()));
 // save games while playing (M2 W9)
 const saveGame = () => act(async () => { const r = await ed.saveGame(ui.gameSlot); ui.gameNote = `saved ${r.slot} at step ${r.step} (${(r.bytes / 1024).toFixed(0)} KB) · ${r.hash}`; });
@@ -295,23 +355,29 @@ const dropOnScene = (e) => { const id = e.dataTransfer.getData('text/x-vrmxg-nod
 
 // keys: the window's own come from shortcuts.js (M5 W6), the table the shortcuts sheet is drawn from; in the Mac shell,
 // Undo / Redo / Save / Duplicate come from the menus. The fly camera keeps its letters while it flies.
-const typing = () => /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName ?? '');
+// a check box, radio or button with focus isn't typing (M6 W3: Edit › Undo after ticking one of the settings' boxes is
+// the settings' undo, not the web view's text undo)
+const typing = () => { const el = /** @type {any} */ (document.activeElement); return /^(SELECT|TEXTAREA)$/.test(el?.tagName ?? '') || (el?.tagName === 'INPUT' && !/^(checkbox|radio|button|submit|reset|range|color)$/.test(el.type)); };
 const KEY_ACTIONS = {
   undo: () => undo(), redo: () => redo(), save: () => save(), duplicate: () => duplicate(), remove: () => remove(),
   gizmoMove: () => setGizmo('translate'), gizmoRotate: () => setGizmo('rotate'), gizmoScale: () => setGizmo('scale'), frame: () => frame(),
   shortcuts: () => { ui.shortcuts = !ui.shortcuts; }, closeSheet: () => { ui.shortcuts = false; },
+  newProject: () => openNewProject(), projectSettings: () => openSettings(),
 };
+/** While the New Project sheet or the settings panel is up, the window's keys are its Undo and Redo only (the settings'). */
+const SHEET_KEYS = new Set(['undo', 'redo']);
 addEventListener('keydown', (e) => {
   if (!ed?.session || typing()) return;
   const s = shortcutFor(e, { inShell, flying: ed.cameraMode === 'fly', editing: ed.session.mode === 'editing', sheet: ui.shortcuts });
   if (!s) return;
   if (s.action === 'remove' && !ui.selected.length) return; // nothing of the scene's selected: a timeline item's Delete
+  if ((ui.settings || ui.newProject.open) && !SHEET_KEYS.has(s.action)) return;
   e.preventDefault();
   KEY_ACTIONS[s.action]?.();
 });
 // Copy and Paste of nodes through the page's clipboard events: ⌘C / ⌘V in a browser, Edit › Copy / Paste in the Mac shell.
 // A text field keeps its own copy and paste. A paste of text that isn't a clip falls back to the editor's own clipboard.
-const nodeEdit = () => ed?.session?.mode === 'editing' && !typing() && !sheet.asking;
+const nodeEdit = () => ed?.session?.mode === 'editing' && !typing() && !sheet.asking && !ui.settings && !ui.newProject.open;
 addEventListener('copy', (e) => {
   if (!nodeEdit() || !ui.docSel || document.getSelection()?.toString()) return;
   const clip = ed.copy();
@@ -337,6 +403,10 @@ addEventListener('beforepaste', (e) => { if (nodeEdit()) e.preventDefault(); });
 if (inShell) {
   call('shell.info').then((i) => { ui.shell = `${i.app} · shell ${i.shell} · ${i.origin}`; });
   on('menu.openProject', openProject); on('menu.save', save); on('menu.saveAs', saveAs);
+  on('menu.newProject', openNewProject); // File › New Project… (M6 W3)
+  on('menu.openRecent', ({ path }) => openRecent(path)); // File › Open Recent › a project (shell 0.14.0)
+  on('menu.projectSettings', openSettings); // File › Project Settings… (M6 W3)
+  refreshRecent();
   on('menu.exportGame', exportGame); // File › Export Game… (M5 W0)
   on('menu.duplicate', () => (typing() ? null : duplicate())); // Edit › Duplicate (M5 W5)
   on('menu.shortcuts', () => { ui.shortcuts = true; }); // Help › Keyboard Shortcuts (M5 W6, shell 0.13.0)
@@ -366,8 +436,11 @@ const sheetGroups = shortcutGroups();
   <div class="app" :class="{ 'with-timeline': !!ui.tl }" :style="gridStyle">
     <header class="bar" role="toolbar" aria-label="Editor controls">
       <strong class="title">VRMXG Editor</strong>
+      <button id="new-project-open" type="button" aria-label="New project" title="New Project… (⇧⌘N): a game from a template" :disabled="ui.mode !== 'editing'" @click="openNewProject">New Project…</button>
       <button v-if="ui.shell" id="open-project" type="button" aria-label="Open project" @click="openProject">Open Project…</button>
+      <select v-if="ui.shell" id="open-recent" value="" aria-label="Open recent project" title="Open Recent" :disabled="ui.mode !== 'editing' || !ui.recent.length" @change="openRecent($event.target.value); $event.target.value = ''"><option value="">Recent…</option><option v-for="r in ui.recent" :key="r.path" :value="r.path" :disabled="!r.exists" :title="r.path">{{ r.name }}{{ r.exists ? '' : ' (gone)' }}</option></select>
       <span class="muted project" id="project-name" :aria-label="`Project ${ui.project}`" :title="ui.project">{{ ui.project }}</span>
+      <button id="project-settings-open" type="button" aria-label="Project settings" title="Project Settings… (⇧⌘P): the game's title, scenes, controls and physics layers" :disabled="!ui.writable || ui.mode !== 'editing'" @click="openSettings">Settings…</button>
       <select id="scene" v-model="ui.scene" aria-label="Scene" title="Open a scene of the project" :disabled="ui.mode !== 'editing'" @change="openScene"><option v-if="!ui.scenes.includes(ui.scene)" :value="ui.scene">{{ ui.scene }} (new)</option><option v-for="s in ui.scenes" :key="s" :value="s">{{ s }}</option></select>
       <input id="file-name" @focus="$event.target.select()" v-model="ui.fileName" class="file-name" aria-label="Scene file name" title="The file New and Save As use, in the project" :disabled="ui.mode !== 'editing'">
       <button id="open-file" type="button" aria-label="Open file" title="Open the scene or sequence named in the file field" :disabled="ui.mode !== 'editing'" @click="openFile">Open</button>
@@ -503,6 +576,9 @@ const sheetGroups = shortcutGroups();
     <div id="split-inspector" class="split split-x edge-left" role="separator" aria-orientation="vertical" tabindex="0" :aria-label="`Inspector panel width${ui.panels.inspector.collapsed ? ', folded' : ''}`" :aria-valuenow="ui.panels.inspector.size" :aria-valuemin="EDITOR_PANELS.inspector.min" :aria-valuemax="EDITOR_PANELS.inspector.max" @pointerdown="dragSplit($event, 'inspector')" @keydown="keySplit($event, 'inspector')" />
     <div :id="`split-${bottomPanel()}`" class="split split-y edge-top" role="separator" aria-orientation="horizontal" tabindex="0" :aria-label="`${ui.tl ? 'Timeline' : 'Assets'} panel height${ui.panels[bottomPanel()].collapsed ? ', folded' : ''}`" :aria-valuenow="ui.panels[bottomPanel()].size" :aria-valuemin="EDITOR_PANELS[bottomPanel()].min" :aria-valuemax="EDITOR_PANELS[bottomPanel()].max" @pointerdown="dragSplit($event, bottomPanel())" @keydown="keySplit($event, bottomPanel())" />
 
+    <NewProject v-if="ui.newProject.open" :templates="ui.newProject.templates" :can-create="!!ui.shell" :busy="ui.newProject.busy" :error="ui.newProject.error" @create="createProject" @cancel="ui.newProject.open = false" />
+    <ProjectSettings v-if="ui.settings" :view="ui.settings" :disabled="ui.settingsBusy" :plan="settingsPlan" @op="settingsOp" @undo="undo" @redo="redo" @close="closeSettings" />
+
     <div v-if="ui.shortcuts" class="ask-back" @click.self="ui.shortcuts = false">
       <section id="shortcuts" class="sheet" role="dialog" aria-label="Keyboard shortcuts" aria-modal="true">
         <div class="row"><h2>Keyboard Shortcuts</h2><button id="shortcuts-close" type="button" aria-label="Close the shortcuts" @click="ui.shortcuts = false">Done</button></div>
@@ -555,7 +631,7 @@ html, body, #app { margin: 0; height: 100%; background: var(--bg); color: var(--
 .status { grid-area: status; border-top: 1px solid var(--line); border-bottom: 0; font-size: 12px; gap: 14px; }
 .title { margin-right: 4px; }
 .file-name { width: 120px; }
-.project { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.project { flex: none; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar:not(.status) { flex-wrap: nowrap; overflow-x: auto; }
 .dock-head select { width: 110px; min-width: 0; }
 .sep { width: 1px; height: 20px; background: var(--line); }

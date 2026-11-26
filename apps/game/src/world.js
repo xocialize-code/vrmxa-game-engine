@@ -43,16 +43,17 @@ export function gameScenes(bytes, game) {
  * @param {object} o
  * @param {any} o.R Rapier @param {ReturnType<typeof gameScenes>} o.scenes
  * @param {Map<string, any>} o.behaviours @param {Record<string, any> | null} [o.actions] the game's action map
+ * @param {{ layers: string[], collides?: Record<string, string[]> } | null} [o.physics] the game's collision layers (game.json "physics", M6 W3)
  * @param {any} [o.vrmxaCore] @param {any} [o.closet] vrmxa-core and its closet module (a game with no characters needs neither)
  * @param {(req: any) => Record<string, any>} [o.options] what this runtime adds to every world (the render host's MToon
  *   class, the audio output, a character cache; `stubTextures` where nothing draws)
  * @param {(world: any, req: any) => void} [o.onBuilt] each world as it is built (a host keeps it, to dispose it later)
  * @returns {(req: { scene: string, seed: number, step: number, reason: string }) => Promise<any>} → the world's tree
  */
-export function worldLoader({ R, scenes, behaviours, actions = null, vrmxaCore = null, closet = null, options = () => ({}), onBuilt = null }) {
+export function worldLoader({ R, scenes, behaviours, actions = null, physics = null, vrmxaCore = null, closet = null, options = () => ({}), onBuilt = null }) {
   return async (req) => {
     const sample = await scenes.sample(req.scene);
-    const world = await buildWorld(R, sample, { vrmxaCore, closet, behaviours, actions, ...options(req), seed: req.seed, step: req.step, game: true });
+    const world = await buildWorld(R, sample, { vrmxaCore, closet, behaviours, actions, physics, ...options(req), seed: req.seed, step: req.step, game: true });
     onBuilt?.(world, req);
     return world.tree;
   };

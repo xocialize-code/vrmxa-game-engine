@@ -278,6 +278,8 @@ export function m0Registry() {
       // Which size props a shape reads (@vrmxg/physics: a box its size; a sphere its radius; a capsule and a cylinder both).
       size: P.vec3({ unit: 'm', sim: true, visibleIf: "shape == 'box'", description: 'Box extents.' }), radius: P.number({ min: 0, unit: 'm', sim: true, step: 0.01, visibleIf: "shape == 'sphere' || shape == 'capsule' || shape == 'cylinder'" }), height: P.number({ min: 0, unit: 'm', sim: true, step: 0.01, visibleIf: "shape == 'capsule' || shape == 'cylinder'" }),
       friction: P.number({ min: 0, default: 0.5, sim: true }), restitution: P.number({ min: 0, max: 1, default: 0, sim: true }),
+      // M6 W3: what @vrmxg/physics already read from a collider's props, now declared, so the inspector edits it
+      layer: P.string({ sim: true, description: 'Its collision layer: one the game names (game.json physics.layers, the editor\'s project settings). None: the first.' }),
     },
   });
   r.define('Area', {

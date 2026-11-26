@@ -1,0 +1,21 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "main",
+  "assets": [],
+  "nodes": [
+    {"id":"root","type":"Node3D","name":"Main"},
+    {"id":"env","type":"Environment","parent":"root","props":{"ambientIntensity":0.5,"background":"gradient","environmentIntensity":0.35,"skyHorizonColor":"#e6ecf2","skyTopColor":"#7aa6d6"}},
+    {"id":"sun","type":"DirectionalLight","parent":"root","transform":{"q":[-0.354,0.354,0.146,0.854]},"props":{"intensity":2.4,"shadowExtent":10,"shadowPreset":"high"}},
+    {"id":"ground","type":"Collider","parent":"root","name":"Ground","transform":{"p":[0,-0.1,0]},"props":{"shape":"box","size":[20,0.2,20]}},
+    {"id":"look-at","type":"Marker","parent":"root","transform":{"p":[0,0.5,0]}},
+    {"id":"cam","type":"Camera","parent":"root","transform":{"p":[0,1.6,6]},"props":{"focalLength":32,"preset":"fixed","target":"look-at"}}
+  ],
+  "connections": [],
+  "settings": {
+    "physics": {
+      "build": "deterministic",
+      "hz": 60
+    }
+  }
+}

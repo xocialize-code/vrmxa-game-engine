@@ -1,0 +1,40 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "level",
+  "assets": [
+    {"id":"cafe","type":"glb","ref":"sets/cafe.glb"},
+    {"id":"mira","type":"vrmxa","ref":"characters/mira.vrmxa"},
+    {"id":"hana","type":"vrmxa","ref":"characters/hana.vrmxa"},
+    {"id":"ambience","type":"audio","ref":"sounds/cafe-ambience.wav"},
+    {"id":"music","type":"audio","ref":"sounds/music.wav"}
+  ],
+  "nodes": [
+    {"id":"root","type":"Node3D","name":"Level"},
+    {"id":"env","type":"Environment","parent":"root","props":{"ambientIntensity":0.5,"background":"gradient","environmentIntensity":0.35,"skyHorizonColor":"#e6ecf2","skyTopColor":"#7aa6d6"}},
+    {"id":"set","type":"Model","parent":"root","name":"Cafe","asset":"cafe"},
+    {"id":"sun","type":"DirectionalLight","parent":"root","transform":{"q":[-0.354,0.354,0.146,0.854]},"props":{"intensity":2.4,"shadowExtent":10,"shadowPreset":"high"}},
+    {"id":"ambience","type":"AudioPlayer","parent":"root","name":"Room tone","asset":"ambience","props":{"autoplay":true,"bus":"ambience","loop":true,"volume":0.6}},
+    {"id":"music","type":"AudioPlayer","parent":"root","name":"Music","asset":"music","props":{"autoplay":true,"bus":"music","loop":true,"volume":0.35}},
+    {"id":"spawn","type":"Marker","parent":"root","name":"Spawn","transform":{"p":[0,0,4]},"props":{"purpose":"spawn"}},
+    {"id":"mira","type":"Character","parent":"root","name":"Mira","asset":"mira","transform":{"p":[0,0,4],"q":[0,1,0,0]},"behaviours":[{"use":"player"}]},
+    {"id":"hana","type":"Character","parent":"root","name":"Hana","asset":"hana","transform":{"p":[-1.5,0,-3]},"props":{"controller":"npc"}},
+    {"id":"cam","type":"Camera","parent":"root","name":"Follow camera","transform":{"p":[0,1.6,7]},"props":{"focalLength":30,"preset":"follow","rig":{"yaw":180},"target":"mira"}},
+    {"id":"goal-zone","type":"Area","parent":"root","name":"Counter","transform":{"p":[0,1,0]},"props":{"shape":"box","size":[1.6,2,0.8]}},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"flags":{"reachedCounter":false}}},
+    {"id":"score","type":"GameCounter","parent":"rules","props":{"label":"Score"}},
+    {"id":"reach-counter","type":"GameGoal","parent":"rules","props":{"text":"Get to the counter","when":{"key":"flags.reachedCounter","test":"state"}}}
+  ],
+  "connections": [
+    {"from":"hana","signal":"ready","to":"hana","call":"lookAt","args":{"target":"mira"}},
+    {"from":"goal-zone","signal":"bodyEntered","to":"rules","call":"setFlag","args":{"flag":"reachedCounter"}},
+    {"from":"reach-counter","signal":"completed","to":"score","call":"add","args":{"by":10}},
+    {"from":"rules","signal":"ended","to":"rules","call":"changeScene","args":{"after":2,"to":"ending.vrmxs"}}
+  ],
+  "settings": {
+    "physics": {
+      "build": "deterministic",
+      "hz": 60
+    }
+  }
+}
