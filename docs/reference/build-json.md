@@ -58,22 +58,24 @@ more rather than less: a refused save is better than one restored wrong.
 |---|---|---|
 | `scenes` | Every `.vrmxs` of the build (the scenes and their prefabs), each as canonical JSON (keys sorted: spacing and key order don't count). `scenes` lists each one's hash by ref, so a refusal names the file | Any edit to a scene or a prefab |
 | `assets` | What else a restore reads the structure of, by ref (`assets`). Items (`.vrmxi`: states, clips, parts, joints) and characters (`.vrmxa`: the node list a pose is restored onto in order, spring bones) whole, as `file:<sha256>`: both are ZIP containers this package doesn't open. glTF models (`.glb`, `.gltf`, `.vrm`) by structure, `gltf:<sha>`: their JSON without images, materials, textures, samplers, buffers, buffer views and an accessor's place in its buffer. Brain documents (`vrmxg-brain`) whole and the game's animation set by each clip's name, duration, looping, root motion and tracks, `json:<sha>` | Any change to an item or a character, a re-texture included; a model's nodes, meshes, accessors (counts, bounds), skins, animations or physics extensions; a brain; a clip added, removed, renamed or retimed |
-| `behaviours` | Every behaviour the scenes attach, by name (`behaviours`). A project behaviour that declares its state (`static describe = { state: <JSON Schema> }` on its class, ) is `state:<sha>` of that schema; a schema that allows anything (`true`, `{}`, annotations only) declares nothing. One that doesn't declare is `code:<sha>`: the game's behaviours module and every module it imports relatively. An engine behaviour is `engine:<sha>` of the state its registry entry declares, or `runtime:<version>` while it declares none | A declared state's shape; any edit to undeclared code; an undeclared engine behaviour on a new runtime |
+| `behaviours` | Every behaviour the scenes attach, by name (`behaviours`). A project behaviour that declares its state (its own `static describe = { state: <JSON Schema> }`, ) is `state:<sha>` of the schema's `stateShape` (canonical, annotations out); a schema that allows anything (`true`, `{}`, annotations only) declares nothing. One that doesn't declare is `code:<sha>`: the game's behaviours module and every module it imports relatively. An engine behaviour is `engine:<sha>` of the state its registry entry declares, or `runtime:<version>` while it declares none | A declared state's shape; any edit to undeclared code; an undeclared engine behaviour on a new runtime |
 | `input` | The action map's actions by name and type, in their order (the game's, or the runtime's default map; a game that spells out the default map is the same). The input snapshot holds axes and buttons in that order. Bindings are a player's settings and aren't in the snapshot | An action added, removed, renamed, retyped or moved |
 | `engine` | The runtime's version, snapshot format, `@vrmxg/dmath` version and portable maths' fingerprint (`@vrmxg/save`'s `mathsFingerprint`). The version stays in until the engine's node types declare their state: `SNAPSHOT_FORMAT` hasn't moved since M0 although they have changed what they keep | A new runtime |
 
 Undeclared stays strict on purpose: changing code that declares nothing refuses every earlier save, never lets one load
 silently into code that might restore it wrong. Which of a scene's behaviours are the project's is read from the
-module's exports without running it (`export * from` followed into the project's modules); what they declare needs
-the module imported. `exportBuild({ importBehaviours })` hands an importer the module, every module it imports
-relatively, as the text the export read, and their hash. The importer links that graph with `linkModules` (each
-relative specifier rewritten to its module's URL, dependencies first) and imports it from data: URLs in Node
-(`moduleImporter` in `./node`) or blob: URLs in the editor (`blobImporter`), never by path. So what is imported is
-exactly what was hashed, and a long-running process (the MCP server, the editor) never reads declarations from a copy
-of a module that its cache holds from before an edit. A graph with an import cycle, or an import that fails for any
-reason, counts every project behaviour by its code, in every exporter alike, so they all write the same manifest
-(`exportToFolder`, the CLI's `--check`, MCP's export and the editor's Export Game). Everything else in the fingerprint
-is read from the project's files and the runtime's table: no clock, no machine.
+module's exports without running it (`export * from` followed into the project's modules). What they declare is read
+from the registry the export's checks use: `exportBuild({ importModule })` imports the game's behaviours module
+once, declares its classes' own `describe`s in that registry (`declareProjectBehaviours`), and the fingerprint takes
+each project entry's `stateShape` (`declaredShape`: W0's canonical shape, with `'true'` and `'{}'` counting as
+undeclared). The editor passes its own registry, the one its play and validation use. An export with neither counts
+every project behaviour by its code.
+
+In Node the importer is `behavioursImporter(folder)` (`./node`), and every call imports a fresh module graph: the
+module's URL carries a load token that a resolve hook carries into every relative specifier inside the folder, so no
+module of the graph comes from Node's module cache (item 1). A long-running process (MCP's server) or an
+export after an edit never reads declarations from an older copy, and a load that failed isn't kept for the next try.
+Everything else in the fingerprint is read from the project's files and the runtime's table: no clock, no machine.
 
 The runtime's table carries what the fingerprint needs from the engine (`engine` in `vrmxg-runtime.json`:
 `{ snapshot, dmath, maths, actions, behaviours }`, written by the Vite plugin's `engine` option; the game app computes

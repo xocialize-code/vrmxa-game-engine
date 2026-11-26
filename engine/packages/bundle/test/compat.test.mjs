@@ -1,8 +1,8 @@
 // The save-compatibility fingerprint (M6 W5, AB-T-0631): what changes it and what doesn't, the reasons a save is
-// refused, and that an exporter with an importer and one without agree until a behaviour declares its state.
+// refused, and that an export that imports the behaviours module and one that doesn't agree until one declares its state.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { exportBuild, parseManifest, compatProblems, compatFingerprint, engineCompat, checkCompat, declaredState, behavioursUsed, stableJson, runtimeTable, serializeRuntime, RUNTIME_FILE, COMPAT_VERSION } from '@vrmxg/bundle';
+import { exportBuild, parseManifest, compatProblems, compatFingerprint, engineCompat, checkCompat, declaredShape, behavioursUsed, stableJson, runtimeTable, serializeRuntime, RUNTIME_FILE, COMPAT_VERSION } from '@vrmxg/bundle';
 import { moduleExports } from '../src/modules.js';
 import { project, memory, enc, GAME } from './helpers.mjs';
 
@@ -21,7 +21,7 @@ const rt = ({ engine = ENGINE, version = '1.0.0' } = {}) => {
   const table = runtimeTable({ name: 'test-runtime', runtimeVersion: version, engine, files: Object.entries(files).map(([path, v]) => ({ path, bytes: enc(v), licence: 'Ours' })) });
   return memory({ ...files, [RUNTIME_FILE]: serializeRuntime(table) });
 };
-/** a stand-in for importing behaviours.js: classes with or without `static describe` */
+/** a stand-in for importing behaviours.js (exportBuild's importModule, M6 W0): classes with or without `static describe` */
 const importer = (classes) => async () => classes;
 const fp = async (p = proj(), r = rt(), o = {}) => (await exportBuild({ project: p, runtime: r, ...o })).compat;
 
@@ -71,29 +71,31 @@ test('undeclared, a behaviour counts by its code: any change to the module or wh
   assert.match(p.text, /the code of the behaviour patrol changed \(it declares no state, so any change to its code counts\)/);
   // with the module imported and no describe, the fingerprint is the one an exporter without an importer makes
   const patrol = class patrol {};
-  assert.deepEqual(await fp(proj(), rt(), { importBehaviours: importer({ patrol }) }), a, 'importing changes nothing until something is declared');
+  assert.deepEqual(await fp(proj(), rt(), { importModule: importer({ patrol }) }), a, 'importing changes nothing until something is declared');
 });
 
 test('declared, a behaviour counts by its state: its code can change, its state shape can\'t', async () => {
   const declared = (state) => importer({ patrol: class patrol { static describe = { params: {}, state }; } });
   const STATE = { type: 'object', properties: { n: { type: 'number' } } };
-  const a = await fp(proj(), rt(), { importBehaviours: declared(STATE) });
+  const a = await fp(proj(), rt(), { importModule: declared(STATE) });
   assert.match(a.behaviours.patrol, /^state:/);
-  const code = await fp(proj({ 'lib/maths.js': 'export const twice = (n) => n + n;\n' }), rt(), { importBehaviours: declared(STATE) });
+  const code = await fp(proj({ 'lib/maths.js': 'export const twice = (n) => n + n;\n' }), rt(), { importModule: declared(STATE) });
   assert.deepEqual(compatProblems(a, code), [], 'the code changed, the declared state didn\'t');
   // the same schema written in another key order is the same state
-  assert.equal((await fp(proj(), rt(), { importBehaviours: declared({ properties: { n: { type: 'number' } }, type: 'object' }) })).digest, a.digest);
-  const shape = await fp(proj(), rt(), { importBehaviours: declared({ type: 'object', properties: { n: { type: 'number' }, wait: { type: 'integer' } } }) });
+  assert.equal((await fp(proj(), rt(), { importModule: declared({ properties: { n: { type: 'number' } }, type: 'object' }) })).digest, a.digest);
+  const shape = await fp(proj(), rt(), { importModule: declared({ type: 'object', properties: { n: { type: 'number' }, wait: { type: 'integer' } } }) });
   assert.deepEqual(compatProblems(a, shape).map((p) => [p.part, p.items, p.text]), [['behaviours', ['patrol'], 'the state the behaviour patrol keeps changed']]);
   // a schema that allows anything declares nothing: the behaviour counts by its code
   for (const anything of [true, {}, { description: 'whatever it keeps', title: 'state' }]) {
-    const c = await fp(proj(), rt(), { importBehaviours: declared(anything) });
+    const c = await fp(proj(), rt(), { importModule: declared(anything) });
     assert.match(c.behaviours.patrol, /^code:/, JSON.stringify(anything));
   }
-  assert.match((await fp(proj(), rt(), { importBehaviours: declared(false) })).behaviours.patrol, /^state:/, 'false (keeps nothing) is a declaration');
-  // `describe` may be a function too (static describe() { … })
-  const fn = await fp(proj(), rt(), { importBehaviours: importer({ patrol: class patrol { static describe() { return { state: STATE }; } } }) });
-  assert.equal(fn.digest, a.digest);
+  assert.match((await fp(proj(), rt(), { importModule: declared({ type: 'null' }) })).behaviours.patrol, /^state:/, '{ type: null } (keeps nothing) is a declaration');
+  // annotations don't count: W0's stateShape takes them out
+  assert.equal((await fp(proj(), rt(), { importModule: declared({ ...STATE, description: 'how many', title: 'n' }) })).digest, a.digest);
+  // a subclass doesn't inherit its parent's describe (Object.hasOwn): it counts by its code
+  const Parent = class patrol { static describe = { params: {}, state: STATE }; };
+  assert.match((await fp(proj(), rt(), { importModule: importer({ patrol: class patrol extends Parent {} }) })).behaviours.patrol, /^code:/);
 });
 
 test('an engine behaviour counts by the state its registry entry declares, and undeclared by the runtime\'s version', async () => {
@@ -159,12 +161,12 @@ test('compatProblems: a fingerprint of another version is refused as such; reaso
 
 test('the pieces: stable JSON, declared state, the behaviours a document attaches, a module\'s exports', () => {
   assert.equal(stableJson({ b: 1, a: [{ d: 2, c: null }] }), '{"a":[{"c":null,"d":2}],"b":1}');
-  assert.equal(declaredState(class {}), undefined);
-  assert.deepEqual(declaredState(class { static describe = { state: { type: 'object' } }; }), { type: 'object' });
-  assert.deepEqual(declaredState({ name: 'greet', state: { type: 'null' } }), { type: 'null' }, 'a registry entry');
-  assert.equal(declaredState({ name: 'brain' }), undefined);
-  assert.equal(declaredState({ name: 'x', state: true }), undefined, 'true allows anything');
-  assert.equal(declaredState(class { static describe = { state: { $comment: 'later' } }; }), undefined, 'annotations only');
+  assert.equal(declaredShape({ name: 'brain' }), null, 'not declared');
+  assert.equal(declaredShape({ name: 'greet', state: { type: 'null' } }), '{"type":"null"}', 'keeps nothing: a declaration');
+  assert.equal(declaredShape({ state: { required: ['b', 'a'], type: 'object' } }), '{"required":["a","b"],"type":"object"}', 'W0\'s canonical shape');
+  assert.equal(declaredShape({ name: 'x', state: true }), null, 'true allows anything');
+  assert.equal(declaredShape({ state: {} }), null, '{} allows anything');
+  assert.equal(declaredShape({ state: { $comment: 'later', description: 'tbd' } }), null, 'annotations only');
   assert.deepEqual([...behavioursUsed({ nodes: [{ behaviours: [{ use: 'a' }] }, { overrides: { 'door/hinge': { behaviours: [{ use: 'b' }] } } }] })].sort(), ['a', 'b']);
   assert.deepEqual(moduleExports("export * from '../b.js';\nexport class p {}\nexport { q as r } from './c.js';\nexport * as ns from './d.js';"), { names: ['p', 'r', 'ns'], stars: ['../b.js'] });
 });
@@ -256,4 +258,23 @@ test('Node\'s exporter imports the project\'s behaviours for what they declare, 
     assert.match(c.compat.behaviours.patrol, /^state:/);
     assert.deepEqual(compatProblems(c.compat, d.compat).map((p) => p.text), ['the state the behaviour patrol keeps changed'], 'a module imported relatively is read from the bytes exported, not the cache');
   } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
+});
+
+test('behavioursImporter loads a fresh graph on every call: an edit in a module imported relatively, and a load that failed, are never served from the cache (AB-T-0654 item 1)', async () => {
+  const { behavioursImporter } = await import('@vrmxg/bundle/node');
+  const fs = await import('node:fs'), os = await import('node:os'), path = await import('node:path');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-importer-'));
+  try {
+    fs.mkdirSync(path.join(dir, 'lib'));
+    fs.writeFileSync(path.join(dir, 'behaviours.js'), "export * from './lib/door.js';\n");
+    fs.writeFileSync(path.join(dir, 'lib/door.js'), "import { Behaviour } from '@vrmxg/core';\nexport class door extends Behaviour {}\nexport const v = 1;\n");
+    const load = behavioursImporter(dir);
+    assert.equal((await load('behaviours.js')).v, 1);
+    fs.writeFileSync(path.join(dir, 'lib/door.js'), "export const v = 2;\n");
+    assert.equal((await load('behaviours.js')).v, 2, 'the submodule as it is now');
+    fs.writeFileSync(path.join(dir, 'lib/door.js'), "throw new Error('half written');\n");
+    await assert.rejects(load('behaviours.js'), /half written/);
+    fs.writeFileSync(path.join(dir, 'lib/door.js'), "export const v = 3;\n");
+    assert.equal((await load('behaviours.js')).v, 3, 'a failed load isn\'t kept for the next try');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });

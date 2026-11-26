@@ -11,10 +11,11 @@
 //             geometry untouched)          → the save loads, and the same input from there gives the same hashes
 //   audio     sounds/music.wav's samples changed (the same header and length)  → the same
 //   release   game.json's release 0.1.0 → 0.2.0                                  → the same
-//   behaviour game/behaviours.js changed (a line added; its behaviours declare no state, so their code counts)
-//                                                                                 → refused: behaviours
-//   declared  pressToStart given `static describe = { state }`, a save made there, then its state's shape changed
-//                                                                                 → refused: the behaviour's state
+//   comment   a line added to game/behaviours.js: the game's own behaviours (pressToStart, tableZone) declare their
+//             state (M6 W0), so their code may change                            → the same
+//   declared  pressToStart's declared state rewritten (null → an object)         → refused: the behaviour's state
+//   code      a build where pressToStart declares nothing (its describe renamed away), a save made there, then a line
+//             added to the module                                                → refused: the behaviour's code
 //   scene     the espresso machine in game/level.vrmxs moved 1 cm                                   → refused: scenes, game/level.vrmxs
 //   item      a byte added to game/items/till.vrmxi (an item counts whole)       → refused: assets
 //   input     an action added to game.json's action map                           → refused: input
@@ -130,27 +131,31 @@ const check = async (name, what, fn, expect) => {
 const T = await check('texture', 'an image inside props/espresso-machine.glb re-encoded with other pixels', () => change('props/espresso-machine.glb', (b) => recolourGlbImage(b, 0)), 'loads');
 await check('audio', 'sounds/music.wav\'s samples changed (the same header and length)', () => change('sounds/music.wav', changeSamples), 'loads');
 await check('release', 'game.json\'s release 0.1.0 → 0.2.0', () => change('game/game.json', (b) => editJson(b, (g) => { g.release = '0.2.0'; })), 'loads');
-await check('behaviour', 'a line added to game/behaviours.js (undeclared: its code counts)', () => change('game/behaviours.js', (b) => Buffer.concat([b, Buffer.from('// a line added by acceptance/m6/saves.mjs\n')])), 'behaviours');
+const addLine = (b) => Buffer.concat([b, Buffer.from('// a line added by acceptance/m6/saves.mjs\n')]);
+await check('comment', 'a line added to game/behaviours.js (its behaviours declare their state: their code may change)', () => change('game/behaviours.js', addLine), 'loads');
+const NULL_STATE = "state: { type: 'null', description: 'Nothing: it reads the input of the step it runs on.' },";
+await check('declared', 'pressToStart\'s declared state rewritten from null to an object', () => change('game/behaviours.js', (b) => Buffer.from(String(b).replace(NULL_STATE, "state: { type: 'object', properties: { pressed: { type: 'boolean' } } },"))), 'behaviours');
 await check('scene', 'the espresso machine in game/level.vrmxs moved 1 cm', () => change('game/level.vrmxs', (b) => editJson(b, moveANode)), 'scenes');
 await check('item', 'a byte added to game/items/till.vrmxi', () => change('game/items/till.vrmxi', (b) => Buffer.concat([b, Buffer.from([0])])), 'assets');
 await check('input', 'an action added to game.json\'s action map', () => change('game/game.json', (b) => editJson(b, (g) => { g.input.actions.crouch = { type: 'button', bindings: [{ key: 'KeyX' }] }; })), 'input');
 
-// a declared state: pressToStart says what it keeps; a save made on that build; then the shape changes
-const declare = (props) => (b) => Buffer.from(String(b).replace('export class pressToStart extends Behaviour {', `export class pressToStart extends Behaviour {\n  static describe = { state: { type: 'null', properties: ${JSON.stringify(props)} } };`));
-change('game/behaviours.js', declare({ v: 1 }));
-const D1 = await exportNow();
-const d1 = await sessionOn(D1, store);
-await d1.session.newGame();
-for (let i = 0; i < 30; i++) await stepWith(d1, { stick: [0, 0], interact: false, choose: null });
-await d1.session.saveSlot('slot-2');
-d1.session.end();
+// undeclared code: a build where pressToStart has no describe of its own (so it counts by the module's code), a save
+// made there, then a line added to the module
+const undeclare = (b) => { const t = String(b), i = t.indexOf('export class pressToStart extends Behaviour {'); if (i < 0 || t.indexOf('static describe = {', i) < 0) throw new Error('game/behaviours.js: no pressToStart with a describe'); const j = t.indexOf('static describe = {', i); return Buffer.from(t.slice(0, j) + 'static notDescribe = {' + t.slice(j + 'static describe = {'.length)); };
+change('game/behaviours.js', undeclare);
+const C1 = await exportNow();
+const c1 = await sessionOn(C1, store);
+await c1.session.newGame();
+for (let i = 0; i < 30; i++) await stepWith(c1, { stick: [0, 0], interact: false, choose: null });
+await c1.session.saveSlot('slot-2');
+c1.session.end();
+change('game/behaviours.js', addLine);
+const C2 = await exportNow();
 restore();
-change('game/behaviours.js', declare({ v: 2 }));
-const D2 = await exportNow();
-restore();
-const dr = await goOn(D2, { slot: 'slot-2', play: false });
-results.declared = { what: 'pressToStart declares its state; its shape changed between two exports', tag: D1.compat.behaviours.pressToStart, ...dr, expect: 'behaviours', ok: !dr.loaded && dr.parts.join() === 'behaviours' && /the state the behaviour pressToStart keeps changed/.test(dr.error) };
-console.log(`${results.declared.ok ? 'ok  ' : 'FAIL'} declared: ${dr.loaded ? 'loaded' : `refused: ${dr.error}`}`);
+const cr = await goOn(C2, { slot: 'slot-2', play: false });
+results.code = { what: 'pressToStart declares nothing; a line added to its module between two exports', tag: C1.compat.behaviours.pressToStart, ...cr, expect: 'behaviours', ok: /^code:/.test(C1.compat.behaviours.pressToStart) && !cr.loaded && cr.parts.join() === 'behaviours' && /the code of the behaviour pressToStart changed/.test(cr.error) };
+console.log(`${results.code.ok ? 'ok  ' : 'FAIL'} code: ${cr.loaded ? 'loaded' : `refused: ${cr.error}`}`);
+results.declared.ok &&= /the state the behaviour pressToStart keeps changed/.test(results.declared.error ?? '');
 
 // a log from build A doesn't replay on the texture build: the whole digest
 const t = await sessionOn(T, store);

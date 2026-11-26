@@ -81,8 +81,8 @@ depends on (the scene documents and prefabs; the items and characters, the model
 animation set's clips; the state each behaviour declares or else its code; the action map in its order; the runtime's
 version, snapshot format and maths; `@vrmxg/bundle`'s README, "Saves across updates"). Every export of a game shares
 its bundle id and so its Saves folder, and `GameSession` loads a file when it is this build's, or another export's with
-the same fingerprint. So a re-export that changed only a texture, a sound or the game's `release` goes on from its
-earlier saves, with the same per-step hashes as the run that never stopped (`acceptance/m6/saves.mjs`).
+the same fingerprint. So a re-export that changed only a texture, a sound, the game's `release` or the code of
+behaviours that declare their state goes on from its earlier saves, with the same per-step hashes as the run that never stopped (`acceptance/m6/saves.mjs`).
 
 A file whose fingerprint differs is refused, and the message says what changed:
 
@@ -219,9 +219,10 @@ game with Save offered, and Resume brought it back. A game that falls back stays
   from a stand-in gamepad and from the keyboard; a key rebound in Settings kept, and on the menus' input after a
   relaunch; the A that opens Settings not pressing the control it focuses; the backend readout.
 - `acceptance/m5/build.mjs --chromium` and `build-wkwebview.sh`: M5 check 1 with this app as the runtime.
-- `node acceptance/m6/saves.mjs` (M6 W5, needs vrmxa-core): saves across updates on the Morning Rush (texture, sound and
-  release re-exports load and play on with the same hashes; behaviour code, a declared state, a scene node and the
-  action map refuse with their reason; the first build's log doesn't replay on the second).
+- `node acceptance/m6/saves.mjs` (M6 W5, needs vrmxa-core): saves across updates on the Morning Rush, 10 checks (texture,
+  sound, release and declared-behaviour code re-exports load and play on with the same hashes; a declared state, a
+  scene node, an item, the action map and undeclared code refuse with their reason; the first build's log doesn't
+  replay on the second).
 - The Mac app: `apps/game-mac/docs/HAND-TEST-M5-GAME.md`.
 
 ## Known limits

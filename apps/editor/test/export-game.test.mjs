@@ -7,6 +7,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { runtimeTable, serializeRuntime, parseManifest, sha256, RUNTIME_FILE, BUILD_FILE } from '@vrmxg/bundle';
 import { questions } from '@vrmxg/editor-ui';
+import { m0Registry } from '@vrmxg/registry/m0';
+import { declareProjectBehaviours } from '@vrmxg/registry';
 import { exportGame, exportClosing } from '../src/export-game.js';
 
 const enc = (s) => new TextEncoder().encode(s);
@@ -169,25 +171,16 @@ test('closing the window while a game is exported asks first, and Stop and Close
   assert.deepEqual([await answer, cancelled, ed.gameExporting], [true, 1, null]);
 });
 
-test('the build carries its save-compatibility fingerprint, with what the project\'s behaviours declare (M6 W5)', async () => {
-  const level = JSON.stringify({ assets: [{ ref: 'props/big.glb' }], nodes: [{ id: 'a', type: 'Node3D', behaviours: [{ use: 'spin' }] }] });
-  const p = project({ 'game.json': JSON.stringify({ format: 'vrmxg-game', version: 1, id: 'test-game', entry: 'level.vrmxs', behaviours: 'behaviours.js' }), 'level.vrmxs': level, 'behaviours.js': 'export class spin {}\n', 'LICENCES.md': `${LICENCES}| \`behaviours.js\` | Ours | |\n` });
-  const asked = [];
-  const importBehaviours = async ({ ref, code, sources }) => { asked.push([ref, code.length, [...sources.keys()]]); return { spin: class spin { static describe = { state: { type: 'object' } }; } }; };
+test('the build carries its save-compatibility fingerprint, with what the editor\'s registry holds of the project\'s behaviours (M6 W5)', async () => {
+  const level = JSON.stringify({ assets: [{ ref: 'props/big.glb' }], nodes: [{ id: 'a', type: 'Node3D', behaviours: [{ use: 'spin' }, { use: 'idle' }] }] });
+  const p = project({ 'game.json': JSON.stringify({ format: 'vrmxg-game', version: 1, id: 'test-game', entry: 'level.vrmxs', behaviours: 'behaviours.js' }), 'level.vrmxs': level, 'behaviours.js': 'export class spin {}\nexport class idle {}\n', 'LICENCES.md': `${LICENCES}| \`behaviours.js\` | Ours | |\n` });
+  // the editor's registry, the project's behaviours declared in it as the editor declares them (M6 W0)
+  const registry = m0Registry();
+  declareProjectBehaviours(registry, { spin: class spin { static describe = { state: { type: 'object' } }; }, idle: class idle {} });
   const s = shell();
-  await exportGame(p, { shell: s, runtime: runtime(), importBehaviours });
+  await exportGame(p, { shell: s, runtime: runtime(), registry });
   const manifest = parseManifest(new TextDecoder().decode(s.folder.get(BUILD_FILE)));
-  assert.deepEqual(asked, [['behaviours.js', 64, ['behaviours.js']]], 'the module was imported once, from the sources the export read, with the hash of its code');
-  assert.match(manifest.compat.behaviours.spin, /^state:[0-9a-f]{64}$/);
+  assert.match(manifest.compat.behaviours.spin, /^state:[0-9a-f]{64}$/, 'declared: its state');
+  assert.match(manifest.compat.behaviours.idle, /^code:[0-9a-f]{64}$/, 'no describe of its own: its code');
   assert.deepEqual(Object.keys(manifest.compat.scenes), ['level.vrmxs']);
-  assert.equal(p.reads.get('behaviours.js'), 2, 'read no more than before: once to trace what it imports, once for its hash and the build');
-});
-
-test('an import that fails counts every project behaviour by its code, as Node\'s exporter does (M6 W5)', async () => {
-  const level = JSON.stringify({ assets: [{ ref: 'props/big.glb' }], nodes: [{ id: 'a', type: 'Node3D', behaviours: [{ use: 'spin' }] }] });
-  const p = project({ 'game.json': JSON.stringify({ format: 'vrmxg-game', version: 1, id: 'test-game', entry: 'level.vrmxs', behaviours: 'behaviours.js' }), 'level.vrmxs': level, 'behaviours.js': 'export class spin {}\n', 'LICENCES.md': `${LICENCES}| \`behaviours.js\` | Ours | |\n` });
-  const s = shell();
-  await exportGame(p, { shell: s, runtime: runtime(), importBehaviours: async () => { throw new Error('no blob: imports here'); } });
-  const manifest = parseManifest(new TextDecoder().decode(s.folder.get(BUILD_FILE)));
-  assert.match(manifest.compat.behaviours.spin, /^code:[0-9a-f]{64}$/, 'the export goes on, counting by code');
 });
