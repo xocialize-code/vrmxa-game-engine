@@ -70,7 +70,8 @@ Every game build and Mac app carries `THIRD-PARTY-LICENCES` for the packages it 
 Content has its own terms, file by file, in each folder's `LICENCES.md` (`content/sample/`, `content/starter/`,
 `content/templates/`). Content we made ("Xocialize original") is released under
 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), as are the starter clips and items. The sample
-characters wrap the VRMXA specification's base model under the VRM Public License 1.0, and a few generated files carry
+characters wrap the VRMXA specification's base model, which is under the VRM Public License 1.0, as are three of the
+sample's items (`sword-pickup`, `switch` and `stool`, the specification's fixtures). A few generated files carry
 their model's terms (MIT, Apache-2.0, DINOv3), each named in its row.
 
 **Built with DINOv3.** Five of the sample's props (`content/sample/props/`: the espresso machine, bench, street lamp,
