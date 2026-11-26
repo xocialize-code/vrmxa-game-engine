@@ -692,6 +692,11 @@
         }
       },
       "postPerEye" : {
+        "frameIds" : [
+          37,
+          37,
+          37
+        ],
         "leftVsMono" : {
           "box" : null,
           "fraction" : 0,
@@ -699,6 +704,12 @@
           "pixels" : 0
         },
         "rightSameFrameVsMonoLeft" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        },
+        "rightSameFrameVsMonoRight" : {
           "box" : [
             0,
             0,
@@ -709,7 +720,25 @@
           "maxChannel" : 212,
           "pixels" : 88739
         },
-        "rightSameFrameVsMonoRight" : {
+        "sameFrameId" : true
+      },
+      "postPerEyeAdvancing" : {
+        "frameIds" : [
+          39,
+          40
+        ],
+        "rightVsMonoLeft" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.24071999999999999,
+          "maxChannel" : 212,
+          "pixels" : 88739
+        },
+        "rightVsMonoRight" : {
           "box" : null,
           "fraction" : 0,
           "maxChannel" : 0,
@@ -948,13 +977,13 @@
       "backend" : "webgpu",
       "display" : {
         "displayHz" : 58.799999999999997,
-        "frames" : 112,
+        "frames" : 111,
         "intervalMs" : {
-          "max" : 184,
-          "mean" : 17.955400000000001,
-          "n" : 112,
+          "max" : 192,
+          "mean" : 18.054099999999998,
+          "n" : 111,
           "p50" : 17,
-          "p95" : 17
+          "p95" : 18
         }
       },
       "frames" : {
@@ -998,27 +1027,27 @@
       "origin" : "vrmxg-spike:\/\/app",
       "page" : "present",
       "renderer" : {
-        "calls" : 5914,
+        "calls" : 5910,
         "triangles" : 216043
       },
       "renderMs" : {
         "interpolated" : {
-          "max" : 255,
-          "mean" : 0.67330000000000001,
+          "max" : 270,
+          "mean" : 0.74219999999999997,
           "n" : 900,
           "p50" : 0,
           "p95" : 1
         },
         "plain" : {
-          "max" : 5093,
-          "mean" : 6.1444000000000001,
+          "max" : 202,
+          "mean" : 0.5,
           "n" : 900,
           "p50" : 0,
           "p95" : 1
         },
         "stereo" : {
-          "max" : 3513,
-          "mean" : 4.2832999999999997,
+          "max" : 288,
+          "mean" : 0.71889999999999998,
           "n" : 900,
           "p50" : 0,
           "p95" : 1
@@ -1218,11 +1247,11 @@
           ]
         ],
         "intervalMs" : {
-          "max" : 4534,
-          "mean" : 32.308199999999999,
+          "max" : 540,
+          "mean" : 18.630099999999999,
           "n" : 292,
           "p50" : 17,
-          "p95" : 18
+          "p95" : 17
         },
         "presentedHzOnThisDisplay" : 58.799999999999997,
         "steps" : 301,
@@ -1239,7 +1268,7 @@
           {
             "distance" : null,
             "frame" : 261,
-            "step" : 269,
+            "step" : 268,
             "target" : null
           }
         ],
@@ -1250,12 +1279,12 @@
         ],
         "jointsPerHand" : 25,
         "mira" : [
-          -1.0863,
+          -1.1066,
           0.025000000000000001,
-          4.8003999999999998
+          4.7999999999999998
         ],
         "recording" : {
-          "bytes" : 8194,
+          "bytes" : 8208,
           "frames" : 301,
           "start" : 0,
           "version" : 2
@@ -1265,8 +1294,133 @@
       "iwer" : "2.8.0",
       "origin" : "vrmxg-spike:\/\/app",
       "page" : "xr",
+      "pixels" : [
+        {
+          "eyes" : {
+            "left" : {
+              "allBlackOrClear" : false,
+              "centre" : [
+                181,
+                198,
+                214,
+                255
+              ],
+              "distinct" : 4,
+              "meanLum" : 192.5,
+              "viewport" : [
+                0,
+                0,
+                640,
+                720
+              ]
+            },
+            "right" : {
+              "allBlackOrClear" : false,
+              "centre" : [
+                181,
+                198,
+                214,
+                255
+              ],
+              "distinct" : 3,
+              "meanLum" : 191.90000000000001,
+              "viewport" : [
+                640,
+                0,
+                640,
+                720
+              ]
+            }
+          },
+          "frame" : 60,
+          "framebuffer" : "default",
+          "leftRightDiffer" : true
+        },
+        {
+          "eyes" : {
+            "left" : {
+              "allBlackOrClear" : false,
+              "centre" : [
+                181,
+                198,
+                214,
+                255
+              ],
+              "distinct" : 7,
+              "meanLum" : 197.5,
+              "viewport" : [
+                0,
+                0,
+                640,
+                720
+              ]
+            },
+            "right" : {
+              "allBlackOrClear" : false,
+              "centre" : [
+                181,
+                198,
+                214,
+                255
+              ],
+              "distinct" : 6,
+              "meanLum" : 195.30000000000001,
+              "viewport" : [
+                640,
+                0,
+                640,
+                720
+              ]
+            }
+          },
+          "frame" : 150,
+          "framebuffer" : "default",
+          "leftRightDiffer" : true
+        },
+        {
+          "eyes" : {
+            "left" : {
+              "allBlackOrClear" : false,
+              "centre" : [
+                181,
+                198,
+                214,
+                255
+              ],
+              "distinct" : 3,
+              "meanLum" : 191.90000000000001,
+              "viewport" : [
+                0,
+                0,
+                640,
+                720
+              ]
+            },
+            "right" : {
+              "allBlackOrClear" : false,
+              "centre" : [
+                181,
+                198,
+                214,
+                255
+              ],
+              "distinct" : 3,
+              "meanLum" : 191.90000000000001,
+              "viewport" : [
+                640,
+                0,
+                640,
+                720
+              ]
+            }
+          },
+          "frame" : 240,
+          "framebuffer" : "default",
+          "leftRightDiffer" : false
+        }
+      ],
       "replay" : {
-        "final" : "3cf4743477d8a997",
+        "final" : "68ef49eba80790fe",
         "firstDiff" : null,
         "handsChangedTheWorld" : true,
         "idleFinal" : "7c31302fc7e5ce8e",
@@ -1370,7 +1524,7 @@
       },
       "mtoonClass" : "be",
       "mtoonMaterials" : 22,
-      "origin" : "http:\/\/127.0.0.1:65499",
+      "origin" : "http:\/\/127.0.0.1:65507",
       "outlineModes" : [
         "none",
         "worldCoordinates"
@@ -1659,7 +1813,7 @@
       },
       "mtoonClass" : "be",
       "mtoonMaterials" : 22,
-      "origin" : "http:\/\/127.0.0.1:65499",
+      "origin" : "http:\/\/127.0.0.1:65507",
       "outlineModes" : [
         "none",
         "screenCoordinates"
@@ -1949,7 +2103,7 @@
       },
       "mtoonClass" : "be",
       "mtoonMaterials" : 22,
-      "origin" : "http:\/\/127.0.0.1:65499",
+      "origin" : "http:\/\/127.0.0.1:65507",
       "outlineModes" : [
         "none",
         "worldCoordinates"
@@ -2014,6 +2168,11 @@
         }
       },
       "postPerEye" : {
+        "frameIds" : [
+          39,
+          39,
+          39
+        ],
         "leftVsMono" : {
           "box" : null,
           "fraction" : 0,
@@ -2021,6 +2180,12 @@
           "pixels" : 0
         },
         "rightSameFrameVsMonoLeft" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        },
+        "rightSameFrameVsMonoRight" : {
           "box" : [
             0,
             0,
@@ -2031,7 +2196,25 @@
           "maxChannel" : 212,
           "pixels" : 88739
         },
-        "rightSameFrameVsMonoRight" : {
+        "sameFrameId" : true
+      },
+      "postPerEyeAdvancing" : {
+        "frameIds" : [
+          41,
+          42
+        ],
+        "rightVsMonoLeft" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.24071999999999999,
+          "maxChannel" : 212,
+          "pixels" : 88739
+        },
+        "rightVsMonoRight" : {
           "box" : null,
           "fraction" : 0,
           "maxChannel" : 0,
@@ -2270,13 +2453,13 @@
       "backend" : "webgpu",
       "display" : {
         "displayHz" : 60,
-        "frames" : 111,
+        "frames" : 112,
         "intervalMs" : {
-          "max" : 196.62,
-          "mean" : 18.143599999999999,
-          "n" : 111,
+          "max" : 173.40000000000001,
+          "mean" : 17.899100000000001,
+          "n" : 112,
           "p50" : 16.66,
-          "p95" : 17.18
+          "p95" : 16.960000000000001
         }
       },
       "frames" : {
@@ -2317,33 +2500,33 @@
         "stereoSame" : true
       },
       "hz" : 90,
-      "origin" : "http:\/\/127.0.0.1:65499",
+      "origin" : "http:\/\/127.0.0.1:65507",
       "page" : "present",
       "renderer" : {
-        "calls" : 5910,
+        "calls" : 5914,
         "triangles" : 216043
       },
       "renderMs" : {
         "interpolated" : {
-          "max" : 258.63999999999999,
-          "mean" : 0.69079999999999997,
+          "max" : 241.56,
+          "mean" : 0.64159999999999995,
           "n" : 900,
-          "p50" : 0.38,
-          "p95" : 0.54000000000000004
+          "p50" : 0.35999999999999999,
+          "p95" : 0.47999999999999998
         },
         "plain" : {
-          "max" : 218.16,
-          "mean" : 0.54530000000000001,
+          "max" : 183.31999999999999,
+          "mean" : 0.46960000000000002,
           "n" : 900,
-          "p50" : 0.29999999999999999,
-          "p95" : 0.38
+          "p50" : 0.26000000000000001,
+          "p95" : 0.32000000000000001
         },
         "stereo" : {
-          "max" : 308.60000000000002,
-          "mean" : 0.73870000000000002,
+          "max" : 189.36000000000001,
+          "mean" : 0.57630000000000003,
           "n" : 900,
-          "p50" : 0.38,
-          "p95" : 0.5
+          "p50" : 0.35999999999999999,
+          "p95" : 0.46000000000000002
         }
       },
       "size" : [
@@ -2540,28 +2723,28 @@
           ]
         ],
         "intervalMs" : {
-          "max" : 517.62,
-          "mean" : 18.560300000000002,
-          "n" : 291,
+          "max" : 445.13999999999999,
+          "mean" : 18.374300000000002,
+          "n" : 290,
           "p50" : 16.66,
-          "p95" : 17.140000000000001
+          "p95" : 16.800000000000001
         },
         "presentedHzOnThisDisplay" : 60,
         "steps" : 300,
-        "xrFrames" : 292
+        "xrFrames" : 291
       },
       "hands" : {
         "choices" : [
           {
-            "distance" : 0.35499999999999998,
+            "distance" : 0.34999999999999998,
             "frame" : 146,
-            "step" : 150,
+            "step" : 151,
             "target" : "mira"
           },
           {
             "distance" : null,
             "frame" : 261,
-            "step" : 268,
+            "step" : 270,
             "target" : null
           }
         ],
@@ -2572,12 +2755,12 @@
         ],
         "jointsPerHand" : 25,
         "mira" : [
-          -1.0906,
+          -1.097,
           0.025000000000000001,
-          4.806
+          4.8112000000000004
         ],
         "recording" : {
-          "bytes" : 8179,
+          "bytes" : 8176,
           "frames" : 300,
           "start" : 0,
           "version" : 2
@@ -2585,10 +2768,135 @@
         "rightPinches" : 2
       },
       "iwer" : "2.8.0",
-      "origin" : "http:\/\/127.0.0.1:65499",
+      "origin" : "http:\/\/127.0.0.1:65507",
       "page" : "xr",
+      "pixels" : [
+        {
+          "eyes" : {
+            "left" : {
+              "allBlackOrClear" : false,
+              "centre" : [
+                181,
+                198,
+                214,
+                255
+              ],
+              "distinct" : 4,
+              "meanLum" : 192.5,
+              "viewport" : [
+                0,
+                0,
+                640,
+                720
+              ]
+            },
+            "right" : {
+              "allBlackOrClear" : false,
+              "centre" : [
+                181,
+                198,
+                214,
+                255
+              ],
+              "distinct" : 3,
+              "meanLum" : 191.90000000000001,
+              "viewport" : [
+                640,
+                0,
+                640,
+                720
+              ]
+            }
+          },
+          "frame" : 60,
+          "framebuffer" : "default",
+          "leftRightDiffer" : true
+        },
+        {
+          "eyes" : {
+            "left" : {
+              "allBlackOrClear" : false,
+              "centre" : [
+                181,
+                198,
+                214,
+                255
+              ],
+              "distinct" : 9,
+              "meanLum" : 198.19999999999999,
+              "viewport" : [
+                0,
+                0,
+                640,
+                720
+              ]
+            },
+            "right" : {
+              "allBlackOrClear" : false,
+              "centre" : [
+                181,
+                198,
+                214,
+                255
+              ],
+              "distinct" : 7,
+              "meanLum" : 197.80000000000001,
+              "viewport" : [
+                640,
+                0,
+                640,
+                720
+              ]
+            }
+          },
+          "frame" : 150,
+          "framebuffer" : "default",
+          "leftRightDiffer" : true
+        },
+        {
+          "eyes" : {
+            "left" : {
+              "allBlackOrClear" : false,
+              "centre" : [
+                181,
+                198,
+                214,
+                255
+              ],
+              "distinct" : 3,
+              "meanLum" : 191.90000000000001,
+              "viewport" : [
+                0,
+                0,
+                640,
+                720
+              ]
+            },
+            "right" : {
+              "allBlackOrClear" : false,
+              "centre" : [
+                181,
+                198,
+                214,
+                255
+              ],
+              "distinct" : 3,
+              "meanLum" : 191.90000000000001,
+              "viewport" : [
+                640,
+                0,
+                640,
+                720
+              ]
+            }
+          },
+          "frame" : 240,
+          "framebuffer" : "default",
+          "leftRightDiffer" : false
+        }
+      ],
       "replay" : {
-        "final" : "cd7b27888279f1a6",
+        "final" : "4f7dba015222a1f3",
         "firstDiff" : null,
         "handsChangedTheWorld" : true,
         "idleFinal" : "1e46840219dcd9d0",

@@ -3,7 +3,7 @@ import fs from 'node:fs';
 const rows = process.argv.slice(2).flatMap((f) => JSON.parse(fs.readFileSync(f, 'utf8')));
 const where = (r) => r.origin === 'chromium-loopback' ? 'Chromium' : `WKWebView ${r.origin}`;
 const d = (x) => x ? `${x.pixels} px / ${x.maxChannel}` : '—';
-console.log('\nstereo: runtime | case | L vs mono | R vs mono | R vs R alone at x=W | no shadows L / R vs mono | outlines L / R | shadows L / R | post per eye L / R(same frame)');
+console.log('\nstereo: runtime | case | L vs mono | R vs mono | R vs R alone at x=W | no shadows L / R vs mono | outlines L / R | shadows L / R | post one node frame: L vs mono L, R vs mono R');
 for (const r of rows.filter((r) => r.result?.page === 'stereo')) {
   const x = r.result;
   console.log([where(r), r.case, d(x.stereo.leftVsMono), d(x.stereo.rightVsMono), d(x.stereo.rightVsRightAloneAtSameOffset), `${d(x.stereoNoShadows.leftVsMono)}, ${d(x.stereoNoShadows.rightVsMono)}`, `${x.outlines.left.pixels} / ${x.outlines.right.pixels}`, `${x.shadows.left.pixels} / ${x.shadows.right.pixels}`, x.postPerEye ? `${d(x.postPerEye.leftVsMono)}, ${d(x.postPerEye.rightSameFrameVsMonoRight)}` : '—', `errors ${r.errors.length}`].join(' | '));

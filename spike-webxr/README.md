@@ -18,7 +18,7 @@ as tasks AB-T-0660 (per-view post), AB-T-0661 (an XR mode in the render host), A
   lists, `WebXRWebGPUBindingsEnabled` ("WebGPU support for WebXR", off by default, unstable), was turned on with
   `_setEnabled:forFeature:` and changed nothing.
 - **No entitlement either.** There is no public WKWebView preference or entitlement for WebXR. macOS WebKit is built
-  without it, so Safari on this Mac lacks it too.
+  without it. Safari on this Mac should lack it too, since it uses the same system WebKit (inferred, not opened).
 - **What it means for the shell.** It has nothing to expose. An XR build of a VRMXG game is a web build opened in a
   headset's browser, not a Mac app.
 - **For comparison:** Chromium on the same Mac has the API (inline sessions work) but no immersive device:
@@ -27,24 +27,28 @@ as tasks AB-T-0660 (per-view post), AB-T-0661 (an XR mode in the render host), A
 **Safari on visionOS: not run (no visionOS simulator runtime, no hardware).**
 - **The runtime isn't installed.** Xcode 27.2 has the visionOS 27.2 SDK and the Apple Vision Pro device types, but no
   visionOS simulator runtime (`xcrun simctl list runtimes` lists only iOS). Installing it is a download of several GB,
-  asked for and not yet answered, so nothing ran there.
+  which is the operator's call, so nothing ran there.
 - **What Apple and WebKit document** (sources only, not measured here):
-  - WebXR (`immersive-vr`) ships on by default since Safari 18 on visionOS 2.
+  - WebXR (`immersive-vr`) shipped in Safari 18 on visionOS 2, drawing with WebGL
+    ([WebKit Features in Safari 18.0](https://webkit.org/blog/15865/webkit-features-in-safari-18-0/)).
   - Input is `transient-pointer`: look and pinch. The input source exists only while the pinch lasts, and its ray is
-    the gaze at the pinch's start. There is no continuous gaze stream.
-  - Hand tracking is a separate feature with a permission prompt.
-  - Safari 26.2 on visionOS draws WebXR with WebGPU.
+    the gaze at the pinch's start. There is no continuous gaze stream. Hand tracking is a separate feature with a
+    permission prompt ([Introducing Natural Input for WebXR in Apple Vision Pro](https://webkit.org/blog/15162/introducing-natural-input-for-webxr-in-apple-vision-pro/);
+    [WWDC24, Build immersive web experiences with WebXR](https://developer.apple.com/wwdc24/10066)).
+  - "Now with Safari 26.2 on visionOS, WebXR supports WebGPU"
+    ([WebKit Features for Safari 26.2](https://webkit.org/blog/17640/webkit-features-for-safari-26-2/)). The page
+    doesn't name `XRGPUBinding` or the `webgpu` session feature, which three r187's WebGPU XR path needs. **Unverified
+    here.**
   - The simulator supports `transient-pointer` (a click is a pinch). Developers report that hand-tracking requests can
-    fail there.
-- **It would very likely work.** The engine's WebGPU XR path (three r187's `XRManager` with `XRGPUBinding` and the
-  `webgpu` session feature) is the path Safari 26.2 on visionOS ships. This spike showed the parts it could, on an
-  emulator: the draw through an `ArrayCamera`, the XR frame loop, and input record and replay.
+    fail there ([Apple Developer Forums](https://developer.apple.com/forums/thread/747652)).
+- **What this spike can and can't say.** On an emulator it showed the draw through an `ArrayCamera`, the XR frame loop
+  and input record and replay. Whether the engine runs in Safari on visionOS is not known: nothing here ran there.
 - **What only hardware can tell:** the presented frame rate, the WebGPU binding in a real session, real hands and pinches.
 - **Loopback reaches the simulator only.** A simulator shares the Mac's loopback, so `http://127.0.0.1:<port>` reaches
   it. A real Vision Pro can't reach the Mac's loopback and would need a secure origin (HTTPS) on the network. That is
   outside this spike (servers stay on loopback) and is the operator's call.
 
-**MToon in stereo on WebGPU: draws correctly in both eyes, with one exception: the post stack is per frame, not per eye.**
+**MToon in stereo on WebGPU: draws correctly in both eyes, except the post stack, which is per frame, not per eye (and drawn per eye, repeats the first eye unless the node frame advances).**
 - **The method.** The stand-in is an `ArrayCamera` of two eyes 63 mm apart, with off-axis frusta (outward wider, as a
   headset's are). three's WebGPU backend draws it per eye with camera-indexed uniforms, the same shader path its WebGPU
   XR session takes. Each eye of the stereo frame is compared, pixel for pixel, with a mono frame drawn through that eye
@@ -60,14 +64,18 @@ as tasks AB-T-0660 (per-view post), AB-T-0661 (an XR mode in the render host), A
   (`outlineWidthMode` `screenCoordinates`, 0.004), they draw in both eyes too: 3,790 and 3,778 pixels, so width under
   asymmetric projections holds per eye.
 - **Shadows draw in both eyes:** 3,223 and 3,472 pixels change when the shadow maps are turned off.
-- **Post per eye is exact.** Drawn once per eye, it matches mono exactly (0 pixels), even for the second eye drawn in
-  the same node frame without advancing it. The render README's gotcha 1 doesn't bite here.
+- **Post per eye works only if the node frame advances between eyes.** The render README's gotcha 1 bites: with both
+  eyes drawn in one node frame (one frame id, nothing awaited between them), the second eye's post output is the
+  first eye's image, identical to mono left (0 pixels apart). Advancing the node frame before the second eye makes it
+  match mono right exactly (0 pixels). Advancing also redraws the shadow maps per eye.
 - **Post through the `ArrayCamera` is wrong.** About 85 % of each eye's pixels change: one vignette and one bloom
   span the double-wide frame, and the vignette darkens each eye's outer side only.
 - **Every runtime agrees.** WKWebView (scheme and loopback) and Chromium give the same results within a few noise
   pixels, with no errors.
 - **On an emulated session:** the same world draws through three's real `XRManager` on the `webgl-fallback` backend
-  (`MToonNodeMaterial` on WebGL2), in Chromium and WKWebView, with no errors.
+  (`MToonNodeMaterial` on WebGL2), in Chromium and WKWebView, with no errors. Only spot pixels were checked: a 5 × 5
+  grid per eye at three frames, never black, varied, and differing between the eyes. Correctness wasn't compared with
+  mono there.
 
 **90 Hz over the 60 Hz step: the simulation doesn't move, and the presentation is smooth.**
 - **Hashes.** The 600 recorded steps hash the same, step by step, headless and drawn at a paced 90 Hz: interpolated,
@@ -94,7 +102,8 @@ as tasks AB-T-0660 (per-view post), AB-T-0661 (an XR mode in the render host), A
   XR and no devices, every step's hash matches the session's, in Chromium and in WKWebView over both origins. The
   hands moved Mira: the run's final hash isn't the idle world's.
 - **The head pose stays out of the hashes.** It drives a camera rig outside the tree, presentation only. Handing three
-  the tree's own Camera node (`?camera=tree`) also replayed identically.
+  the tree's own Camera node (`?camera=tree`, Chromium only, an emulated head that never moves) also replayed
+  identically, so a moving head on the tree's camera is untested.
 - **Real hands, Apple's `transient-pointer` and a real user's gaze:** **not run, no hardware**. IWER's gaze is a
   persistent viewer ray; visionOS's isn't.
 
@@ -122,17 +131,19 @@ members are ignored. WKWebView has no `makeXRCompatible` on WebGL2.
 
 **Stereo** (`stereo.html`, eyes 576 × 640, step 150): pixels that differ / largest channel difference out of 255.
 
-| Runtime, case | Left eye vs mono | Right eye vs mono | Right eye alone at x = W | No shadows, L / R vs mono | Outline pixels L / R | Shadow pixels L / R | Post per eye L / R (same frame) |
+| Runtime, case | Left eye vs mono | Right eye vs mono | Right eye alone at x = W | No shadows, L / R vs mono | Outline pixels L / R | Shadow pixels L / R | Post, one node frame: L vs mono L, R vs mono R |
 |---|---|---|---|---|---|---|---|
 | Chromium, world outlines | 5 / 2 | 2494 / 24 | 5 / 24 | 5 / 2, 9 / 4 | 1223 / 1240 | 3223 / 3474 | |
 | Chromium, screen outlines | 5 / 2 | 2212 / 24 | 5 / 24 | 5 / 2, 9 / 1 | 3790 / 3778 | 2689 / 2978 | |
-| Chromium, post (bloom, vignette) | 312679 / 66 | 313300 / 66 | 507 / 23 | — | 1658 / 1777 | 3176 / 3456 | 0 / 0, 0 / 0 |
+| Chromium, post (bloom, vignette) | 312679 / 66 | 313300 / 66 | 507 / 23 | — | 1658 / 1777 | 3176 / 3456 | 0 / 0, 88739 / 212 (= mono L) |
 | WKWebView loopback, world outlines | 7 / 2 | 2498 / 24 | 9 / 24 | 7 / 2, 13 / 4 | 1223 / 1239 | 3223 / 3472 | |
 | WKWebView loopback, screen outlines | 7 / 2 | 2210 / 24 | 9 / 24 | 7 / 2, 12 / 1 | 3790 / 3778 | 2689 / 2979 | |
-| WKWebView loopback, post | 312682 / 66 | 313301 / 66 | 507 / 23 | — | 1650 / 1768 | 3173 / 3453 | 0 / 0, 0 / 0 |
+| WKWebView loopback, post | 312682 / 66 | 313301 / 66 | 507 / 23 | — | 1650 / 1768 | 3173 / 3453 | 0 / 0, 88739 / 212 (= mono L) |
 
 WKWebView over the scheme gives the same numbers as over loopback. The control (the left eye drawn twice) differs in 0
-pixels everywhere.
+pixels everywhere. In the post rows, the right eye drawn in the same node frame as the left (frame ids 42, 42 in
+Chromium; 39, 39 in WKWebView loopback) is the left eye's image (0 pixels from mono left). Advancing the node frame
+before it (ids 45, 46) makes it match mono right in 0 pixels, in all three runtimes.
 
 **90 Hz** (`present.html`, 1280 × 720, WebGPU, 600 recorded steps at 1/90 s a frame):
 
@@ -150,19 +161,23 @@ pixels everywhere.
 | WKWebView scheme | the same | the same | the same | 2 → `mira`, nothing | 301 frames, 8 KB | same |
 | WKWebView loopback | the same | the same | the same | 2 → `mira`, nothing | 300 frames, 8 KB | same |
 
-The session's frames come from the page's requestAnimationFrame: 60 Hz here, though 90 Hz was granted.
+The session's frames come from the page's requestAnimationFrame: 60 Hz here, though 90 Hz was granted. Pixels read
+from the session's framebuffer (5 × 5 per eye at frames 60, 150 and 240) are never black or clear in either eye, and the
+eyes differ at frames 60 and 150 (at 240 the grid lands on sky and floor in both).
 
 ## What the engine would need (findings, filed as tasks)
 
 1. **A per-view post stack** (`@vrmxg/post`, TSL; AB-T-0660). The stack runs once per frame over the whole target, so through an
    `ArrayCamera` one vignette and one bloom span both eyes. In XR it has to run per view: per layer of the XR array
-   target, or once per eye. Per-eye post was measured exact. The host's split-screen layout already skips post
-   (`render()`'s views branch), the same gap from the other side.
+   target, or once per eye. Once per eye needs the node frame advanced between eyes, or the second eye repeats the
+   first eye's passes (gotcha 1, measured); with it, per-eye post was exact. The host's split-screen layout already
+   skips post (`render()`'s views branch), the same gap from the other side.
 2. **An XR mode in the render host** (`@vrmxg/render`; AB-T-0661). It needs:
    - a head rig outside the tree, presentation only;
    - the XR camera handed to three;
-   - a WebGPU session with the `webgpu` feature and `XRGPUBinding` where the browser has them (visionOS Safari 26.2);
-   - `webgl-fallback` (node materials on WebGL2, as measured here) where it doesn't;
+   - a WebGPU session with the `webgpu` feature and `XRGPUBinding` where the browser has them (Safari 26.2 on visionOS
+     says WebXR supports WebGPU; whether it is this binding is unverified);
+   - `webgl-fallback` (node materials on WebGL2; ran without errors in the emulated session) where it doesn't;
    - an XR frame loop in place of the page's, stepping the 60 Hz clock with interpolation at the headset's rate.
 3. **XR input in `@vrmxg/input`** (AB-T-0662). It needs:
    - binding kinds for hands (`pinch`, a pinch-drag stick) and XR controllers. Their `xr-standard` gamepads aren't in

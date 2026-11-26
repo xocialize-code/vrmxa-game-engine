@@ -4,11 +4,11 @@
   "origin": "chromium-loopback",
   "runtime": "Chrome for Testing 156.0.8078.4 headless",
   "timedOut": false,
-  "seconds": 1.125,
+  "seconds": 1.075,
   "result": {
    "page": "stereo",
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
-   "origin": "http://127.0.0.1:59978",
+   "origin": "http://127.0.0.1:55179",
    "backend": "webgpu",
    "mtoonClass": "be",
    "mtoonMaterials": 22,
@@ -396,11 +396,11 @@
   "origin": "chromium-loopback",
   "runtime": "Chrome for Testing 156.0.8078.4 headless",
   "timedOut": false,
-  "seconds": 1.118,
+  "seconds": 1.055,
   "result": {
    "page": "stereo",
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
-   "origin": "http://127.0.0.1:59978",
+   "origin": "http://127.0.0.1:55179",
    "backend": "webgpu",
    "mtoonClass": "be",
    "mtoonMaterials": 22,
@@ -787,11 +787,11 @@
   "origin": "chromium-loopback",
   "runtime": "Chrome for Testing 156.0.8078.4 headless",
   "timedOut": false,
-  "seconds": 1.147,
+  "seconds": 1.082,
   "result": {
    "page": "stereo",
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
-   "origin": "http://127.0.0.1:59978",
+   "origin": "http://127.0.0.1:55179",
    "backend": "webgpu",
    "mtoonClass": "be",
    "mtoonMaterials": 22,
@@ -955,20 +955,18 @@
      ]
     }
    },
-   "postPerEye": {
-    "leftVsMono": {
+   "postPerEyeAdvancing": {
+    "frameIds": [
+     45,
+     46
+    ],
+    "rightVsMonoRight": {
      "pixels": 0,
      "fraction": 0,
      "maxChannel": 0,
      "box": null
     },
-    "rightSameFrameVsMonoRight": {
-     "pixels": 0,
-     "fraction": 0,
-     "maxChannel": 0,
-     "box": null
-    },
-    "rightSameFrameVsMonoLeft": {
+    "rightVsMonoLeft": {
      "pixels": 88739,
      "fraction": 0.24072,
      "maxChannel": 212,
@@ -978,6 +976,37 @@
       575,
       639
      ]
+    }
+   },
+   "postPerEye": {
+    "leftVsMono": {
+     "pixels": 0,
+     "fraction": 0,
+     "maxChannel": 0,
+     "box": null
+    },
+    "frameIds": [
+     42,
+     42,
+     42
+    ],
+    "sameFrameId": true,
+    "rightSameFrameVsMonoRight": {
+     "pixels": 88739,
+     "fraction": 0.24072,
+     "maxChannel": 212,
+     "box": [
+      0,
+      0,
+      575,
+      639
+     ]
+    },
+    "rightSameFrameVsMonoLeft": {
+     "pixels": 0,
+     "fraction": 0,
+     "maxChannel": 0,
+     "box": null
     }
    },
    "postArrayCamera": {
@@ -1260,11 +1289,11 @@
   "origin": "chromium-loopback",
   "runtime": "Chrome for Testing 156.0.8078.4 headless",
   "timedOut": false,
-  "seconds": 4.902,
+  "seconds": 4.885,
   "result": {
    "page": "present",
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
-   "origin": "http://127.0.0.1:59978",
+   "origin": "http://127.0.0.1:55179",
    "backend": "webgpu",
    "hz": 90,
    "size": [
@@ -1364,34 +1393,34 @@
    "renderMs": {
     "interpolated": {
      "n": 900,
-     "mean": 0.6132,
-     "p50": 0.345,
+     "mean": 0.6105,
+     "p50": 0.35,
      "p95": 0.45,
-     "max": 226.015
+     "max": 223.46
     },
     "plain": {
      "n": 900,
-     "mean": 0.4591,
+     "mean": 0.4604,
      "p50": 0.27,
-     "p95": 0.315,
-     "max": 163.77
+     "p95": 0.305,
+     "max": 166.135
     },
     "stereo": {
      "n": 900,
-     "mean": 0.5486,
+     "mean": 0.5496,
      "p50": 0.355,
-     "p95": 0.42,
-     "max": 163.17
+     "p95": 0.415,
+     "max": 165.685
     }
    },
    "display": {
     "frames": 113,
     "intervalMs": {
      "n": 113,
-     "mean": 17.8459,
+     "mean": 17.8458,
      "p50": 16.665,
      "p95": 16.67,
-     "max": 149.99
+     "max": 149.995
     },
     "displayHz": 60
    },
@@ -1509,11 +1538,11 @@
   "origin": "chromium-loopback",
   "runtime": "Chrome for Testing 156.0.8078.4 headless",
   "timedOut": false,
-  "seconds": 5.92,
+  "seconds": 5.9,
   "result": {
    "page": "xr",
    "ua": "Mozilla/5.0 (X11; Linux x86_64; Quest Pro) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/33.0.0.x.x.x Chrome/126.0.6478.122 VR Safari/537.36",
-   "origin": "http://127.0.0.1:59978",
+   "origin": "http://127.0.0.1:55179",
    "device": "Meta Quest Pro",
    "iwer": "2.8.0",
    "supported": {
@@ -1545,14 +1574,14 @@
     "webgpuSession": false
    },
    "frames": {
-    "xrFrames": 293,
+    "xrFrames": 294,
     "steps": 300,
     "intervalMs": {
-     "n": 292,
-     "mean": 18.0535,
-     "p50": 16.66,
-     "p95": 17.405,
-     "max": 385.755
+     "n": 293,
+     "mean": 17.9676,
+     "p50": 16.665,
+     "p95": 17.28,
+     "max": 375.1
     },
     "firstViews": [
      [
@@ -1641,7 +1670,7 @@
      },
      {
       "frame": 261,
-      "step": 268,
+      "step": 267,
       "target": null,
       "distance": null
      }
@@ -1662,10 +1691,135 @@
     "steps": 300,
     "sameEveryStep": true,
     "firstDiff": null,
-    "final": "d285066daa25bd9b",
+    "final": "ba0b4d2d10a4c4e7",
     "idleFinal": "1e46840219dcd9d0",
     "handsChangedTheWorld": true
    },
+   "pixels": [
+    {
+     "frame": 60,
+     "leftRightDiffer": true,
+     "framebuffer": "default",
+     "eyes": {
+      "left": {
+       "viewport": [
+        0,
+        0,
+        640,
+        720
+       ],
+       "distinct": 4,
+       "meanLum": 192.5,
+       "allBlackOrClear": false,
+       "centre": [
+        181,
+        198,
+        214,
+        255
+       ]
+      },
+      "right": {
+       "viewport": [
+        640,
+        0,
+        640,
+        720
+       ],
+       "distinct": 3,
+       "meanLum": 191.9,
+       "allBlackOrClear": false,
+       "centre": [
+        181,
+        198,
+        214,
+        255
+       ]
+      }
+     }
+    },
+    {
+     "frame": 150,
+     "leftRightDiffer": true,
+     "framebuffer": "default",
+     "eyes": {
+      "left": {
+       "viewport": [
+        0,
+        0,
+        640,
+        720
+       ],
+       "distinct": 8,
+       "meanLum": 196.8,
+       "allBlackOrClear": false,
+       "centre": [
+        181,
+        198,
+        214,
+        255
+       ]
+      },
+      "right": {
+       "viewport": [
+        640,
+        0,
+        640,
+        720
+       ],
+       "distinct": 5,
+       "meanLum": 195,
+       "allBlackOrClear": false,
+       "centre": [
+        181,
+        198,
+        214,
+        255
+       ]
+      }
+     }
+    },
+    {
+     "frame": 240,
+     "leftRightDiffer": false,
+     "framebuffer": "default",
+     "eyes": {
+      "left": {
+       "viewport": [
+        0,
+        0,
+        640,
+        720
+       ],
+       "distinct": 3,
+       "meanLum": 191.9,
+       "allBlackOrClear": false,
+       "centre": [
+        181,
+        198,
+        214,
+        255
+       ]
+      },
+      "right": {
+       "viewport": [
+        640,
+        0,
+        640,
+        720
+       ],
+       "distinct": 3,
+       "meanLum": 191.9,
+       "allBlackOrClear": false,
+       "centre": [
+        181,
+        198,
+        214,
+        255
+       ]
+      }
+     }
+    }
+   ],
    "camera": "rig"
   },
   "errors": [],
@@ -1705,11 +1859,11 @@
   "origin": "chromium-loopback",
   "runtime": "Chrome for Testing 156.0.8078.4 headless",
   "timedOut": false,
-  "seconds": 5.913,
+  "seconds": 5.918,
   "result": {
    "page": "xr",
    "ua": "Mozilla/5.0 (X11; Linux x86_64; Quest Pro) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/33.0.0.x.x.x Chrome/126.0.6478.122 VR Safari/537.36",
-   "origin": "http://127.0.0.1:59978",
+   "origin": "http://127.0.0.1:55179",
    "device": "Meta Quest Pro",
    "iwer": "2.8.0",
    "supported": {
@@ -1741,14 +1895,14 @@
     "webgpuSession": false
    },
    "frames": {
-    "xrFrames": 295,
+    "xrFrames": 294,
     "steps": 300,
     "intervalMs": {
-     "n": 294,
-     "mean": 17.895,
+     "n": 293,
+     "mean": 17.9507,
      "p50": 16.665,
-     "p95": 17.41,
-     "max": 361.675
+     "p95": 16.78,
+     "max": 362.775
     },
     "firstViews": [
      [
@@ -1831,13 +1985,13 @@
     "choices": [
      {
       "frame": 146,
-      "step": 149,
+      "step": 150,
       "target": "mira",
-      "distance": 0.357
+      "distance": 0.355
      },
      {
       "frame": 261,
-      "step": 266,
+      "step": 267,
       "target": null,
       "distance": null
      }
@@ -1846,22 +2000,147 @@
      "version": 2,
      "start": 0,
      "frames": 300,
-     "bytes": 8174
+     "bytes": 8175
     },
     "mira": [
      -1.0962,
      0.025,
-     4.8047
+     4.8064
     ]
    },
    "replay": {
     "steps": 300,
     "sameEveryStep": true,
     "firstDiff": null,
-    "final": "23644abd399d352f",
+    "final": "ba0b4d2d10a4c4e7",
     "idleFinal": "1e46840219dcd9d0",
     "handsChangedTheWorld": true
    },
+   "pixels": [
+    {
+     "frame": 60,
+     "leftRightDiffer": true,
+     "framebuffer": "default",
+     "eyes": {
+      "left": {
+       "viewport": [
+        0,
+        0,
+        640,
+        720
+       ],
+       "distinct": 8,
+       "meanLum": 182.6,
+       "allBlackOrClear": false,
+       "centre": [
+        164,
+        183,
+        208,
+        255
+       ]
+      },
+      "right": {
+       "viewport": [
+        640,
+        0,
+        640,
+        720
+       ],
+       "distinct": 8,
+       "meanLum": 182.6,
+       "allBlackOrClear": false,
+       "centre": [
+        164,
+        183,
+        208,
+        255
+       ]
+      }
+     }
+    },
+    {
+     "frame": 150,
+     "leftRightDiffer": true,
+     "framebuffer": "default",
+     "eyes": {
+      "left": {
+       "viewport": [
+        0,
+        0,
+        640,
+        720
+       ],
+       "distinct": 8,
+       "meanLum": 182.6,
+       "allBlackOrClear": false,
+       "centre": [
+        164,
+        183,
+        208,
+        255
+       ]
+      },
+      "right": {
+       "viewport": [
+        640,
+        0,
+        640,
+        720
+       ],
+       "distinct": 8,
+       "meanLum": 182.6,
+       "allBlackOrClear": false,
+       "centre": [
+        164,
+        183,
+        208,
+        255
+       ]
+      }
+     }
+    },
+    {
+     "frame": 240,
+     "leftRightDiffer": true,
+     "framebuffer": "default",
+     "eyes": {
+      "left": {
+       "viewport": [
+        0,
+        0,
+        640,
+        720
+       ],
+       "distinct": 9,
+       "meanLum": 185.4,
+       "allBlackOrClear": false,
+       "centre": [
+        164,
+        183,
+        208,
+        255
+       ]
+      },
+      "right": {
+       "viewport": [
+        640,
+        0,
+        640,
+        720
+       ],
+       "distinct": 8,
+       "meanLum": 182.6,
+       "allBlackOrClear": false,
+       "centre": [
+        164,
+        183,
+        208,
+        255
+       ]
+      }
+     }
+    }
+   ],
    "camera": "tree"
   },
   "errors": [],

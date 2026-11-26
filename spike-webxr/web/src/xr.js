@@ -29,6 +29,25 @@ function script(device, f, home) {
   L.position.set(home.left[0] + j * 0.08, home.left[1], home.left[2] - k * 0.08);
 }
 
+
+/** A 5 x 5 grid of RGBA pixels inside each eye's viewport of the session's WebGL layer, and what they say. */
+function readEyes(renderer, session, pose, f) {
+  const gl = renderer.backend?.gl, layer = session.renderState.baseLayer;
+  if (!gl || !layer) return { frame: f, error: `no ${gl ? 'base layer' : 'WebGL context'}` };
+  const prev = gl.getParameter(gl.READ_FRAMEBUFFER_BINDING);
+  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, layer.framebuffer ?? null);
+  const px = new Uint8Array(4), eyes = {};
+  for (const v of pose.views) {
+    const vp = layer.getViewport(v), grid = [];
+    for (let j = 1; j <= 5; j++) for (let i = 1; i <= 5; i++) { gl.readPixels(vp.x + Math.floor((vp.width * i) / 6), vp.y + Math.floor((vp.height * j) / 6), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); grid.push([...px]); }
+    const lum = grid.map((p) => (p[0] + p[1] + p[2]) / 3);
+    eyes[v.eye] = { viewport: [vp.x, vp.y, vp.width, vp.height], distinct: new Set(grid.map((p) => p.join(','))).size, meanLum: +(lum.reduce((a, b) => a + b, 0) / lum.length).toFixed(1), allBlackOrClear: grid.every((p) => p[0] + p[1] + p[2] === 0), grid };
+  }
+  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, prev);
+  const L = eyes.left?.grid, R = eyes.right?.grid;
+  return { frame: f, eyes, leftRightDiffer: !!(L && R) && L.some((p, k) => p.join() !== R[k].join()), framebuffer: layer.framebuffer ? 'layer' : 'default' };
+}
+
 run('xr', async () => {
   const device = new XRDevice(metaQuestPro, { stereoEnabled: true });
   device.installRuntime({ forceInstall: true }); // Chromium has a native navigator.xr (no immersive device behind it)
@@ -68,7 +87,7 @@ run('xr', async () => {
   for (const id of ['mira', 'hana-1', 'entrance', 'side-door']) { const n = tree.find(id); if (n) n.object3d.traverse((o) => owner.set(o, id)); }
   walk(tree.root);
   const ray = new Raycaster();
-  const choices = [], hashes = [], intervals = [], views = [];
+  const choices = [], hashes = [], intervals = [], views = [], pixels = [];
   let f = 0, last = null;
   const recordedFrom = tree.clock.step;
   input.record();
@@ -94,6 +113,9 @@ run('xr', async () => {
           } else choices.push({ frame: f, step: tree.clock.step, target: null, ray: 'none' });
         }
         host.frame(last === null ? 1 / 60 : Math.min(0.1, (t - last) / 1000), () => hashes.push(hashValue(worldHashes(tree))));
+        // what the session drew: at three frames, a 5 x 5 grid of pixels inside each eye's viewport of the XR layer,
+        // read back in the frame callback right after the draw (the layer's framebuffer, before it is composited)
+        if ((f === 60 || f === 150 || f === 240) && pose) pixels.push(readEyes(renderer, session, pose, f));
         last = t; f++;
         if (tree.clock.step - recordedFrom >= STEPS) { renderer.setAnimationLoop(null); done(); }
       } catch (e) { renderer.setAnimationLoop(null); fail(e); }
@@ -102,6 +124,7 @@ run('xr', async () => {
   const rec = input.stop();
   await session.end().catch(() => {});
 
+  r.pixels = pixels.map(({ eyes, ...x }) => ({ ...x, eyes: Object.fromEntries(Object.entries(eyes ?? {}).map(([k, e]) => [k, { viewport: e.viewport, distinct: e.distinct, meanLum: e.meanLum, allBlackOrClear: e.allBlackOrClear, centre: e.grid[12] }])) }));
   r.frames = { xrFrames: f, steps: hashes.length, intervalMs: stats(intervals), firstViews: views, presentedHzOnThisDisplay: intervals.length ? +(1000 / stats(intervals).p50).toFixed(1) : null };
   const latched = rec.frames ?? [];
   r.hands = {

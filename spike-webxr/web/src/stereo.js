@@ -139,9 +139,30 @@ run('stereo', async () => {
 
   if (POST) {
     // the second eye in the same node frame: r187 updates a pipeline's passes once per frame id (the render host's
-    // gotcha 1), so a second post render without advancing could show the first eye's passes
-    const seqL = await shot(eyes[0], W, H), seqR = await shot(eyes[1], W, H, { advance: false });
-    r.postPerEye = { leftVsMono: diff(seqL, monoL, W, H), rightSameFrameVsMonoRight: diff(seqR, monoR, W, H), rightSameFrameVsMonoLeft: diff(seqR, monoL, W, H) };
+    // gotcha 1), so a second post render without advancing could show the first eye's passes. Both eyes are drawn in one
+    // readback callback with nothing awaited between them (so no rAF tick can advance the frame id), the node frame's id
+    // recorded before each; the target then holds the right eye, compared with mono right (correct) and mono left (stale)
+    const nodeFrame = host.renderer._nodes?.nodeFrame, ids = [];
+    host.resize(W, H);
+    const rb = readbackFor(host, W, H), same = new Uint8Array(W * H * 4);
+    await rb.draw(() => {
+      host.advanceNodeFrame();
+      host.camera = eyes[0]; ids.push(nodeFrame?.frameId ?? null); host.render(1, false);
+      host.camera = eyes[1]; ids.push(nodeFrame?.frameId ?? null); host.render(1, false);
+      ids.push(nodeFrame?.frameId ?? null);
+    });
+    await rb.readNow(same);
+    // the same, advancing the node frame before the second eye (what a per-eye post would have to do)
+    const ids2 = [], adv = new Uint8Array(W * H * 4);
+    await rb.draw(() => {
+      host.advanceNodeFrame(); host.camera = eyes[0]; ids2.push(nodeFrame?.frameId ?? null); host.render(1, false);
+      host.advanceNodeFrame(); host.camera = eyes[1]; ids2.push(nodeFrame?.frameId ?? null); host.render(1, false);
+    });
+    await rb.readNow(adv);
+    r.postPerEyeAdvancing = { frameIds: ids2, rightVsMonoRight: diff(adv, monoR, W, H), rightVsMonoLeft: diff(adv, monoL, W, H) };
+    const seqL = await shot(eyes[0], W, H);
+    r.postPerEye = { leftVsMono: diff(seqL, monoL, W, H), frameIds: ids, sameFrameId: ids[0] !== null && ids.every((x) => x === ids[0]), rightSameFrameVsMonoRight: diff(same, monoR, W, H), rightSameFrameVsMonoLeft: diff(same, monoL, W, H) };
+    const seqR = same;
     // the post stack through the ArrayCamera: is the frame drawn per eye at all, and where does a screen-space effect sit
     r.postArrayCamera = { leftVsMono: r.stereo.leftVsMono, rightVsMono: r.stereo.rightVsMono };
     if (keep) { pngs.postRightSameFrame = png(seqR, W, H, topDown); }
