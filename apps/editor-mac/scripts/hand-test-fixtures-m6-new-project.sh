@@ -8,3 +8,8 @@ mkdir -p "$tmp"
 rm -rf "$tmp/m6-projects" "$tmp/m6-builds"
 mkdir -p "$tmp/m6-projects" "$tmp/m6-builds"
 echo "projects in $tmp/m6-projects, builds in $tmp/m6-builds"
+# the recent-projects scenario (HAND-TEST-M6-NEW-PROJECT-recent): a folder outside the container, reached only through
+# the save panel (VRMXG_SHELL_PANEL_DIR starts the panel there; the scenario presses Create), as a person's would be
+rm -rf /private/tmp/vrmxg-m6-outside
+mkdir -p /private/tmp/vrmxg-m6-outside
+echo "outside the container: /private/tmp/vrmxg-m6-outside"

@@ -18,7 +18,7 @@
   {
    "name": "cafe-dash: the level's goal on the HUD, won by walking to the counter, and its ending follows",
    "ok": true,
-   "detail": "HUD \"Goal: Get to the counter\", won at step 159 (score 10), then ending.vrmxs at step 285"
+   "detail": "HUD \"Goal: Get to the counter\", won at step 159 (score 10), then ending.vrmxs at step 287"
   },
   {
    "name": "cafe-dash: no errors in the page",
@@ -43,7 +43,7 @@
   {
    "name": "blank: the empty game runs",
    "ok": true,
-   "detail": "main.vrmxs at step 127"
+   "detail": "main.vrmxs at step 129"
   },
   {
    "name": "blank: no errors in the page",
@@ -82,7 +82,7 @@
    "build": "blank",
    "game": "blank",
    "digest": "0d4a8a043b26b3b50168a2de476c87eeaac090f103f971ef6cb2c03d95c07a42",
-   "step": 127,
+   "step": 129,
    "node": {
     "decided": null,
     "ending": null,

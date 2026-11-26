@@ -144,5 +144,5 @@ fresh: false
 
 - [ ] The folder panel: New Project with no hook asks where the folder goes and what it is called; Cancel makes nothing and leaves the sheet open.
   ```steps
-  skip: AppProbe can't type into the system's save panel; a person tries it
+  skip: run by HAND-TEST-M6-NEW-PROJECT-recent.scenario.md, which has no new-project hook (the real save panel)
   ```

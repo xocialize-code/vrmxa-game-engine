@@ -65,12 +65,11 @@ onBeforeUnmount(stop);
 // ---------------------------------------------------------------- actions and layers
 const newAction = ref(''), newActionType = ref('button'), newLayer = ref('');
 const addAction = () => { if (newAction.value.trim()) { op('addAction', newAction.value.trim(), newActionType.value); newAction.value = ''; } };
-const layersWith = (fn) => op('setLayers', fn([...props.view.layers]));
-const renameLayer = (i, name) => layersWith((l) => { l[i] = name; return l; });
-const moveLayer = (i, by) => layersWith((l) => { const [x] = l.splice(i, 1); l.splice(i + by, 0, x); return l; });
-const removeLayer = (i) => layersWith((l) => { l.splice(i, 1); return l; });
-// the first layer added to a game with none keeps "default" (where every collider is now) first, unless it is "default"
-const addLayer = () => { const n = newLayer.value.trim(); if (n) { layersWith((l) => [...(l.length || n === 'default' ? l : ['default']), n]); newLayer.value = ''; } };
+// each its own op: a move is never read as renames (review of PR #52)
+const renameLayer = (from, to) => op('renameLayer', from, to);
+const moveLayer = (name, by) => op('moveLayer', name, by);
+const removeLayer = (name) => op('removeLayer', name);
+const addLayer = () => { const n = newLayer.value.trim(); if (n) { op('addLayer', n); newLayer.value = ''; } };
 const S = (o) => ({ type: 'string', ...o });
 </script>
 
@@ -78,7 +77,7 @@ const S = (o) => ({ type: 'string', ...o });
   <div class="ask-back">
     <section id="project-settings" class="sheet settings" role="dialog" aria-label="Project settings" aria-modal="true">
       <div class="row">
-        <h2>Project Settings <span class="muted small">· {{ view.file }}{{ view.exists ? '' : ' (made by your first change)' }}</span></h2>
+        <h2>Project Settings <span class="muted small" title="Each change is saved at once. Undo keeps its steps while this project is open, panel closed or not.">· {{ view.file }}{{ view.exists ? '' : ' (made by your first change)' }} · saved as you change it</span></h2>
         <span class="row-tools">
           <button id="settings-undo" type="button" :disabled="!view.history.undo || disabled" :aria-label="view.history.undo ? `Undo ${view.history.undo}` : 'Undo'" :title="view.history.undo ?? ''" @click="emit('undo')">Undo</button>
           <button id="settings-redo" type="button" :disabled="!view.history.redo || disabled" :aria-label="view.history.redo ? `Redo ${view.history.redo}` : 'Redo'" :title="view.history.redo ?? ''" @click="emit('redo')">Redo</button>
@@ -101,13 +100,13 @@ const S = (o) => ({ type: 'string', ...o });
           </ul>
 
           <h3>Physics layers</h3>
-          <p class="muted small">A collider names its layer (its Layer prop); none is on the first. {{ view.layers.length ? '' : 'One layer, "default", until you add one.' }}</p>
+          <p class="muted small">A collider or a character names its layer (its Layer prop); none is on the first. A layer a scene uses can't be renamed or removed. {{ view.layers.length ? '' : 'One layer, "default", until you add one.' }}</p>
           <ol class="plain layers" aria-label="Physics layers">
             <li v-for="(l, i) in view.layers" :key="`${i}-${l}`">
-              <input :id="`settings-layer-${i}`" :value="l" class="mono" :aria-label="`Layer ${i + 1} name`" :disabled="disabled" @change="renameLayer(i, $event.target.value)">
-              <button type="button" :aria-label="`Move ${l} up`" :disabled="disabled || i === 0" @click="moveLayer(i, -1)">↑</button>
-              <button type="button" :aria-label="`Move ${l} down`" :disabled="disabled || i === view.layers.length - 1" @click="moveLayer(i, 1)">↓</button>
-              <button type="button" :aria-label="`Remove layer ${l}`" :disabled="disabled" @click="removeLayer(i)">Remove</button>
+              <input :id="`settings-layer-${i}`" :value="l" class="mono" :aria-label="`Layer ${i + 1} name`" :disabled="disabled" @change="renameLayer(l, $event.target.value); $event.target.value = l">
+              <button type="button" :aria-label="`Move ${l} up`" :disabled="disabled || i === 0" @click="moveLayer(l, -1)">↑</button>
+              <button type="button" :aria-label="`Move ${l} down`" :disabled="disabled || i === view.layers.length - 1" @click="moveLayer(l, 1)">↓</button>
+              <button type="button" :aria-label="`Remove layer ${l}`" :disabled="disabled" @click="removeLayer(l)">Remove</button>
             </li>
           </ol>
           <div class="row-tools"><input id="settings-new-layer" v-model="newLayer" class="mono" placeholder="player" aria-label="New layer name" :disabled="disabled" @keydown.enter="addLayer"><button id="settings-add-layer" type="button" aria-label="Add layer" :disabled="disabled || !newLayer.trim()" @click="addLayer">Add Layer</button></div>

@@ -119,37 +119,93 @@ test('an input map in its own file is edited there; game.json is left alone', as
   assert.equal(s.view().inputFile, 'input/controls.json');
 });
 
-test('physics layers: named, renamed through collides, and a matrix kept symmetric; none left, none in game.json', async () => {
+test('physics layers: added, renamed through collides, removed; the matrix kept symmetric; none left, none in game.json', async () => {
   const d = disk(), s = make(d);
-  await s.setLayers(['default', 'player', 'trigger']);
+  await s.addLayer('player');
+  await s.addLayer('trigger');
+  assert.deepEqual(d.json('game.json').physics, { layers: ['default', 'player', 'trigger'] }, '"default" kept first');
   await s.setCollides('trigger', 'default', false);
   await s.setCollides('trigger', 'trigger', false);
-  let p = d.json('game.json').physics;
-  assert.deepEqual(p, { layers: ['default', 'player', 'trigger'], collides: { trigger: ['player'], default: ['default', 'player'] } });
+  assert.deepEqual(d.json('game.json').physics.collides, { trigger: ['player'], default: ['default', 'player'] });
   assert.doesNotThrow(() => checkGame(d.json('game.json')));
   const m = s.view().matrix;
   assert.equal(m[2].with[0].on, false); assert.equal(m[0].with[2].on, false); assert.equal(m[1].with[2].on, true);
-  await s.setLayers(['world', 'player', 'sensor']); // a rename in place carries through collides
-  p = d.json('game.json').physics;
-  assert.deepEqual(p.collides, { sensor: ['player'], world: ['world', 'player'] });
-  await s.setLayers(['world', 'player']); // a layer gone: gone from every list
-  assert.deepEqual(d.json('game.json').physics, { layers: ['world', 'player'] });
-  await assert.rejects(s.setLayers(['a', 'a']), /twice/);
-  await assert.rejects(s.setLayers(['Bad Name']), /isn't a layer name/);
-  await s.setLayers([]);
+  await s.renameLayer('trigger', 'sensor');
+  assert.deepEqual(d.json('game.json').physics, { layers: ['default', 'player', 'sensor'], collides: { sensor: ['player'], default: ['default', 'player'] } });
+  assert.equal(s.history().undo, 'Rename layer trigger to sensor');
+  await s.addLayer('pickup'); // a new layer collides with every layer, and every layer with it
+  assert.deepEqual(d.json('game.json').physics.collides, { sensor: ['player', 'pickup'], default: ['default', 'player', 'pickup'] });
+  await s.removeLayer('sensor');
+  assert.deepEqual(d.json('game.json').physics, { layers: ['default', 'player', 'pickup'] }, 'gone from every list; default collides with all again');
+  await assert.rejects(s.addLayer('player'), /twice/);
+  await assert.rejects(s.addLayer('Bad Name'), /isn't a layer name/);
+  for (const l of ['pickup', 'player', 'default']) await s.removeLayer(l);
   assert.equal('physics' in d.json('game.json'), false);
+});
+
+test('moving a layer moves it: the collision rules stay with their layers (review of PR #52)', async () => {
+  const d = disk(), s = make(d);
+  await s.addLayer('player'); await s.addLayer('enemy');
+  await s.setCollides('player', 'default', false);
+  const before = d.json('game.json').physics.collides;
+  assert.deepEqual(before, { player: ['player', 'enemy'], default: ['default', 'enemy'] });
+  await s.moveLayer('enemy', -1);
+  assert.deepEqual(d.json('game.json').physics, { layers: ['default', 'enemy', 'player'], collides: { player: ['enemy', 'player'], default: ['default', 'enemy'] } });
+  const on = (a, b) => s.view().matrix.find((r) => r.layer === a).with.find((c) => c.layer === b).on;
+  assert.equal(on('player', 'default'), false, 'player still passes through default');
+  assert.equal(on('enemy', 'player'), true); assert.equal(on('enemy', 'default'), true);
+  assert.equal(s.history().undo, 'Move layer enemy up');
+  assert.equal(await s.moveLayer('default', -1), false, 'the first can\'t go up');
+});
+
+test('a layer a scene uses can\'t be renamed or removed: every world with that node would stop being built', async () => {
+  const d = disk();
+  const uses = [{ ref: 'level.vrmxs', node: 'mira', layer: 'player' }, { ref: 'level.vrmxs', node: 'wall', layer: 'plyer' }];
+  const s = make(d, { ...template, physics: { layers: ['default', 'player'] } }, { layerUses: async () => uses });
+  await assert.rejects(s.renameLayer('player', 'hero'), /"player" is in use \(level\.vrmxs: mira\): change those nodes' layer first/);
+  await assert.rejects(s.removeLayer('player'), /"player" is in use/);
+  assert.equal(d.writes.length, 0);
+  await s.addLayer('pickup'); // a node on an unknown layer (a typo) is the editor's warning, not a block on other edits
+  await s.moveLayer('pickup', -1);
+  await s.removeLayer('pickup');
+  assert.deepEqual(d.json('game.json').physics, { layers: ['default', 'player'] });
+});
+
+test('projectLayerUses: every scene as saved, the open one as edited', async () => {
+  const { projectLayerUses } = await import('../src/project-settings.js');
+  const files = { 'a.vrmxs': JSON.stringify({ nodes: [{ id: 'w', props: { layer: 'wall' } }] }), 'b.vrmxs': JSON.stringify({ nodes: [{ id: 'm', props: { layer: 'player' } }] }) };
+  const project = { scenes: () => Object.keys(files), text: async (r) => files[r] };
+  assert.deepEqual(await projectLayerUses(project, { ref: 'b.vrmxs', doc: { nodes: [{ id: 'm', props: { layer: 'hero' } }] } }), [{ ref: 'a.vrmxs', node: 'w', layer: 'wall' }, { ref: 'b.vrmxs', node: 'm', layer: 'hero' }]);
+});
+
+test('a second write that fails puts the first file back, so the disk agrees with the panel (review of PR #52)', async () => {
+  const d = disk({ 'input/controls.json': writeJson({ actions: { jump: { type: 'button', bindings: [{ key: 'Space' }] } } }) });
+  const s = make(d, { ...template, input: 'input/controls.json' }, { input: d.json('input/controls.json') });
+  const write = d.write;
+  s.write = async (ref, text) => { if (ref === 'game.json') throw new Error('the disk is full'); return write(ref, text); };
+  await assert.rejects(s.edit('both', (x) => { x.input.actions.jump.bindings = [{ key: 'KeyJ' }]; x.game.title = 'Both'; }), /not saved: the disk is full/);
+  assert.deepEqual(d.json('input/controls.json').actions.jump.bindings, [{ key: 'Space' }], 'written, then put back');
+  assert.equal(s.view().title, 'New Game');
 });
 
 test('a project with no game.json: the first edit writes one, from its first scene and the default controls', async () => {
   const d = disk(), s = new ProjectSettings({ game: null, files: ['b.vrmxs', 'a.vrmxs', 'prefabs/p.vrmxs'], name: 'My Cafe', write: d.write });
   assert.equal(s.view().exists, false);
   assert.deepEqual(s.view().rows.length > 0, true, 'the engine\'s controls shown');
-  await s.setTitle('My Cafe');
+  await s.setTitle('My Cafe Game');
   const g = d.json('game.json');
-  assert.deepEqual([g.id, g.title, g.entry, g.scenes], ['my-cafe', 'My Cafe', 'b.vrmxs', ['b.vrmxs']]);
+  assert.deepEqual([g.id, g.title, g.entry, g.scenes], ['my-cafe', 'My Cafe Game', 'b.vrmxs', ['b.vrmxs']]);
   assert.deepEqual(g.input.actions, DEFAULT_ACTIONS);
   assert.ok(s.files.includes('game.json'));
   assert.deepEqual(startingGame({ name: '!!', scenes: [] }).id, 'game');
+});
+
+test('an edit that changes nothing writes nothing, not even a first game.json (review of PR #52)', async () => {
+  const d = disk(), s = new ProjectSettings({ game: null, files: ['a.vrmxs'], name: 'a', write: d.write });
+  assert.equal(await s.removeAction('no-such-action'), false);
+  assert.equal(await s.setLayers([]), false);
+  assert.equal(d.writes.length, 0);
+  assert.equal(s.view().exists, false);
 });
 
 test('edits queue: two at once land in order, each its own step', async () => {

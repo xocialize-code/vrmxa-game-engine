@@ -11,7 +11,8 @@ import Foundation
 ///   project.forget { path } | { all: true } → { projects }       drop one recent project, or all of them
 ///
 /// `project.create` asks for the new folder with a save panel (`name`: the name it suggests), or takes
-/// `VRMXG_SHELL_NEW_PROJECT` (a folder; ending in `/`, a folder to make `name` in). The folder must not exist yet, or be
+/// `VRMXG_SHELL_NEW_PROJECT` (a folder; ending in `/`, a folder to make `name` in; `VRMXG_SHELL_PANEL_DIR`, an absolute
+/// path, is only where the panel starts). The folder must not exist yet, or be
 /// empty but for hidden files: a project is never made over anything. Each `from` is a file of the app's own web
 /// content (`templates/level/level.vrmxs`, the sample's `sets/cafe.glb`), refused when it leads outside it; each `to`
 /// is a plain path inside the project (no `..`, no hidden or empty segment, no backslash or colon). Every entry is
@@ -79,10 +80,13 @@ extension FileMethods {
     func newProjectFolder(_ p: BridgeParams) throws -> URL {
         let name = p.string("name") ?? "New Game"
         guard Self.plainPath(name), !name.contains("/") else { throw BridgeError("bad_params", "a project's name is a folder name (\"\(name)\")") }
+        guard name.utf8.count <= 255 else { throw BridgeError("bad_params", "a folder's name is at most 255 bytes (\(name.utf8.count))") }
         if let hook = hook("VRMXG_SHELL_NEW_PROJECT") {
             return env["VRMXG_SHELL_NEW_PROJECT"]!.hasSuffix("/") ? hook.appendingPathComponent(name) : hook
         }
         let panel = NSSavePanel()
+        // where the panel starts (a hand test's folder outside the container; the person still presses Create)
+        if let start = env["VRMXG_SHELL_PANEL_DIR"], start.hasPrefix("/") { panel.directoryURL = URL(fileURLWithPath: start, isDirectory: true) }
         panel.title = p.string("title") ?? "New Project"
         panel.message = "Name the new project's folder and choose where it goes."
         panel.prompt = "Create"
@@ -146,8 +150,13 @@ extension FileMethods {
     /// Put a folder first among the recent projects (a bookmark, security-scoped where there is a sandbox).
     func noteRecent(_ folder: URL) {
         let path = folder.standardizedFileURL.path
-        let data = (try? folder.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil))
-            ?? (try? folder.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil))
+        var data = try? folder.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+        if data == nil {
+            // no sandbox (tests), or no app-scope bookmarks entitlement: a plain bookmark, which a sandboxed app can't
+            // use after a relaunch for a folder outside its container; said, so a hand test can tell
+            data = try? folder.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
+            if data != nil, ProcessInfo.processInfo.environment["APP_SANDBOX_CONTAINER_ID"] != nil { print("[shell] recent project kept without a security scope: \(folder.lastPathComponent)") }
+        }
         guard let data else { return }
         let rest = recentEntries().filter { ($0["path"] as? String) != path }
         defaults.set(Array(([["path": path, "bookmark": data]] + rest).prefix(Self.recentCap)), forKey: Self.recentKey)
@@ -158,30 +167,43 @@ extension FileMethods {
         defaults.set(recentEntries().filter { ($0["path"] as? String) != p }, forKey: Self.recentKey)
     }
 
-    /// The recent projects, newest first: `exists` is false for a folder that has gone (the menu shows it disabled).
+    /// Where a recent project's bookmark leads now, and whether a folder is there. The check runs inside the
+    /// bookmark's security scope (started and stopped here unless the app already holds it): under the App Sandbox a
+    /// folder outside the container can't even be seen after a relaunch without it (review of PR #52). A folder in a
+    /// Trash counts as gone, though its bookmark still finds it.
+    func locate(_ entry: [String: Any]) -> (url: URL?, exists: Bool) {
+        guard let data = entry["bookmark"] as? Data else { return (nil, false) }
+        var stale = false
+        let resolved = (try? URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &stale))
+            ?? (try? URL(resolvingBookmarkData: data, options: [], relativeTo: nil, bookmarkDataIsStale: &stale))
+        guard let folder = resolved?.standardizedFileURL else { return (nil, false) }
+        let started = !scoped.contains(folder) && folder.startAccessingSecurityScopedResource()
+        defer { if started { folder.stopAccessingSecurityScopedResource() } }
+        var isDir: ObjCBool = false
+        let exists = FileManager.default.fileExists(atPath: folder.path, isDirectory: &isDir) && isDir.boolValue && !folder.pathComponents.contains(".Trash")
+        return (folder, exists)
+    }
+
+    /// The recent projects, newest first: `path` is the one the list keeps (what `project.reopen` takes); `name` and
+    /// `location` are where the folder is now, followed through its bookmark when it has moved; `exists` is false for one
+    /// that has gone (the menu shows it disabled).
     func recentProjects() -> [[String: Any]] {
         recentEntries().compactMap { e in
             guard let path = e["path"] as? String else { return nil }
-            var isDir: ObjCBool = false
-            let exists = FileManager.default.fileExists(atPath: path, isDirectory: &isDir) && isDir.boolValue
-            return ["path": path, "name": URL(fileURLWithPath: path).lastPathComponent, "exists": exists]
+            let at = locate(e)
+            let now = at.url?.path ?? path
+            return ["path": path, "name": URL(fileURLWithPath: now).lastPathComponent, "location": now, "exists": at.exists]
         }
     }
 
     func reopenProject(_ p: BridgeParams) throws -> Any? {
         let path = URL(fileURLWithPath: try p.require("path")).standardizedFileURL.path
-        guard let entry = recentEntries().first(where: { ($0["path"] as? String) == path }), let data = entry["bookmark"] as? Data else {
+        guard let entry = recentEntries().first(where: { ($0["path"] as? String) == path }) else {
             throw BridgeError("not_recent", "\(path) isn't a recent project: open it with Open Project…")
         }
-        var stale = false
-        let resolved = (try? URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &stale))
-            ?? (try? URL(resolvingBookmarkData: data, options: [], relativeTo: nil, bookmarkDataIsStale: &stale))
-        guard let folder = resolved?.standardizedFileURL else { forgetRecent(path); throw BridgeError("gone", "\(URL(fileURLWithPath: path).lastPathComponent) can't be found any more") }
+        let at = locate(entry)
+        guard let folder = at.url, at.exists else { throw BridgeError("gone", "\(URL(fileURLWithPath: path).lastPathComponent) can't be found any more") }
         if !scoped.contains(folder), folder.startAccessingSecurityScopedResource() { scoped.insert(folder) }
-        var isDir: ObjCBool = false
-        guard FileManager.default.fileExists(atPath: folder.path, isDirectory: &isDir), isDir.boolValue else {
-            throw BridgeError("gone", "\(folder.lastPathComponent) can't be found any more")
-        }
         if folder.path != path { forgetRecent(path) } // moved: the bookmark followed it, the list follows the bookmark
         return try mountFolder(folder)
     }
@@ -197,7 +219,7 @@ extension ShellAppDelegate {
         let recent = files.recentProjects()
         for r in recent {
             let i = NSMenuItem(title: r["name"] as? String ?? "", action: (r["exists"] as? Bool ?? false) ? #selector(menuOpenRecent(_:)) : nil, keyEquivalent: "")
-            i.target = self; i.representedObject = r["path"]; i.toolTip = r["path"] as? String
+            i.target = self; i.representedObject = r["path"]; i.toolTip = r["location"] as? String
             menu.addItem(i)
         }
         if !recent.isEmpty { menu.addItem(.separator()) }

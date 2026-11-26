@@ -111,3 +111,35 @@ export function defaultGame({ files, entry, id, title }) {
   const slug = (id ?? entry.replace(/\.vrmxs$/, '').replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase()) || 'game';
   return checkGame({ format: GAME_FORMAT, version: GAME_VERSION, id: slug, ...(title ? { title } : {}), entry, scenes: [entry], behaviours: has('behaviours.js'), animations: has('animations.json'), personas: has('personas.json') });
 }
+
+/**
+ * The collision layers a scene's nodes name (a Collider's or an Area's `layer`, a Character's capsule `layer`, and an
+ * instance's overrides of them): `[{ node, layer }]`. A node with none is on the game's first layer.
+ * @param {any} doc a scene document (.vrmxs)
+ * @returns {{ node: string, layer: string }[]}
+ */
+export function layersUsed(doc) {
+  const out = [];
+  for (const n of Array.isArray(doc?.nodes) ? doc.nodes : []) {
+    if (typeof n?.props?.layer === 'string') out.push({ node: String(n.id), layer: n.props.layer });
+    for (const [inner, o] of Object.entries(n?.overrides ?? {})) if (typeof o?.props?.layer === 'string') out.push({ node: `${n.id}/${inner}`, layer: o.props.layer });
+  }
+  return out;
+}
+
+/**
+ * The layers a game has: its physics.layers, or the one layer, "default", when it names none (@vrmxg/physics's Layers).
+ * @param {{ physics?: { layers: string[] } | null } | null} game
+ */
+export const gameLayers = (game) => (game?.physics?.layers?.length ? [...game.physics.layers] : ['default']);
+
+/**
+ * Nodes on a layer the game doesn't have, across documents: `[{ ref, node, layer }]`. Each would stop the world it is
+ * built in (Layers.bit throws), so the export refuses them and the editor's settings won't drop a layer in use.
+ * @param {any} game @param {Iterable<[string, any]>} docs [ref, document]
+ */
+export function unknownLayers(game, docs) {
+  const have = new Set(gameLayers(game)), out = [];
+  for (const [ref, doc] of docs) for (const u of layersUsed(doc)) if (!have.has(u.layer)) out.push({ ref, ...u });
+  return out;
+}

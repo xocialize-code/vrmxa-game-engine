@@ -18,7 +18,7 @@ import { shortcutFor, shortcutGroups } from './shortcuts.js';
 // M6 W3 (AB-T-0646): New Project from a template, Open Recent and the project settings
 import NewProject from './NewProject.vue';
 import ProjectSettings from './ProjectSettings.vue';
-import { ProjectSettings as Settings } from './project-settings.js';
+import { ProjectSettings as Settings, projectLayerUses } from './project-settings.js';
 import { loadTemplates, newProjectFrom, recentProjects, reopenProject, entryScene } from './projects.js';
 
 const canvas = ref(null);
@@ -30,7 +30,7 @@ const ui = reactive({
   mcp: '', tl: null, gameSlot: 'slot-1', gameNote: '', paused: false, seqSet: 'cafe.vrmxs', seqName: 'sequences/untitled.vrmxs',
   ask: null, // { title, text, options: [{ id, label }] }: the window's question before it closes (M5 W8)
   // M6 W3: the New Project sheet, the recent projects, the project settings panel (its view; null while closed)
-  newProject: { open: false, templates: [], busy: false, error: '' }, recent: [], settings: null, settingsBusy: false,
+  newProject: { open: false, templates: [], busy: false, error: '' }, recent: [], settings: null, settingsBusy: false, layerProblem: '',
   // M5 W6: the tree's search and folds, the assets panel's thumbnails and picked file, the panels' sizes, the field
   // clipboard, the shortcuts sheet
   docSel: 0, treeQuery: '', treeOpen: [], treeClosed: [], thumbs: {}, thumbStatus: '', picked: '', panels: readLayout(null), fieldClip: null, shortcuts: false, note: '',
@@ -38,6 +38,7 @@ const ui = reactive({
 });
 /** @type {EditorHost} */ let ed = null; // never reactive
 /** @type {Settings | null} */ let settings = null; // the open project's settings while the panel is open (never reactive)
+/** @type {{ project: any, settings: Settings } | null} */ let kept = null; // the project's settings and their undo history, kept while it is open
 
 const label = (n) => n.name ? `${n.name} (${n.id})` : n.id;
 const plainTree = (items) => items.map(({ node, children, inner, overridden }) => ({ id: node.id, type: node.type, label: label(node), children: plainTree(children), ...(inner ? { inner: true } : {}), ...(overridden ? { overridden: true } : {}) }));
@@ -78,6 +79,7 @@ function refresh(kind = 'all') {
     if (ed.project) ed.startAssetThumbs().catch((e) => console.warn('thumbnails', e));
   }
   ui.gizmo = ed.gizmoMode; ui.snap = ed.snap; ui.camera = ed.cameraMode;
+  ui.layerProblem = ed.layerProblem ?? ''; // a node on a layer the game doesn't have (M6 W3)
   ui.aids = { ...ed.aids.show }; ui.boxSelect = ed.aids.boxSelect; ui.clip = ed.clipboard?.roots.length ?? 0; ui.previewing = ed.aids.previewing ?? ''; // M5 W5
   if (!s) return;
   ui.mode = s.mode; ui.paused = !!ed.paused;
@@ -137,6 +139,7 @@ const openProject = () => act(async () => { const p = await openProjectFolder();
 /** Open another project: the last one's thumbnail draw ends first, its settings panel closes, the recent list follows. */
 async function switchProject(p, scene = null) {
   closeSettings();
+  kept = null; // another project: its own settings, and a history of its own
   await ed.releaseAssetThumbs();
   await ed.openProject(p, scene ?? undefined);
   refreshRecent();
@@ -171,7 +174,14 @@ const openSettings = () => act(async () => {
   if (sheet.asking || ui.mode !== 'editing' || !ed.project) return;
   if (!ed.project.writable) throw new Error(`${ed.project.name} is read-only here: open a project folder to change its settings`);
   ui.newProject.open = false;
-  settings = await Settings.load(ed.project, { onChange: () => { if (settings) ui.settings = settings.view(); } });
+  // the same project's settings again keep their undo history (closing the panel doesn't lose it; another project does)
+  if (kept?.project !== ed.project) {
+    kept = { project: ed.project, settings: await Settings.load(ed.project, {
+      onChange: () => { if (settings) ui.settings = settings.view(); },
+      layerUses: () => projectLayerUses(ed.project, ed.session ? { ref: ed.sceneRef, doc: ed.session.doc } : null), // a layer in use isn't renamed or removed
+    }) };
+  }
+  settings = kept.settings;
   ui.settings = settings.view();
 });
 function closeSettings() { settings = null; ui.settings = null; }
@@ -193,8 +203,9 @@ const openFile = () => act(() => { const f = fileName(); if (!ui.scenes.includes
 const save = () => act(() => ed.save());
 const saveAs = () => act(() => ed.save(fileName()));
 const verify = () => act(() => ed.verifySaved());
-const undo = () => (settings ? settingsDo((s) => s.undo()) : act(() => ed.session.undo())); // the settings' own history while its panel is open
-const redo = () => (settings ? settingsDo((s) => s.redo()) : act(() => ed.session.redo()));
+// the settings' own history while its panel is open; nothing while the New Project sheet is up (the scene is behind it)
+const undo = () => (ui.newProject.open ? null : settings ? settingsDo((s) => s.undo()) : act(() => ed.session.undo()));
+const redo = () => (ui.newProject.open ? null : settings ? settingsDo((s) => s.redo()) : act(() => ed.session.redo()));
 const play = () => act(() => (ed.session.mode === 'playing' ? ed.stop() : ed.play()));
 // save games while playing (M2 W9)
 const saveGame = () => act(async () => { const r = await ed.saveGame(ui.gameSlot); ui.gameNote = `saved ${r.slot} at step ${r.step} (${(r.bytes / 1024).toFixed(0)} KB) · ${r.hash}`; });
@@ -355,21 +366,23 @@ const dropOnScene = (e) => { const id = e.dataTransfer.getData('text/x-vrmxg-nod
 
 // keys: the window's own come from shortcuts.js (M5 W6), the table the shortcuts sheet is drawn from; in the Mac shell,
 // Undo / Redo / Save / Duplicate come from the menus. The fly camera keeps its letters while it flies.
-// a check box, radio or button with focus isn't typing (M6 W3: Edit › Undo after ticking one of the settings' boxes is
-// the settings' undo, not the web view's text undo)
-const typing = () => { const el = /** @type {any} */ (document.activeElement); return /^(SELECT|TEXTAREA)$/.test(el?.tagName ?? '') || (el?.tagName === 'INPUT' && !/^(checkbox|radio|button|submit|reset|range|color)$/.test(el.type)); };
+const typing = () => /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName ?? '');
+// where Edit › Undo and Redo go to the web view's own text undo: a field that edits text. A focused check box, radio,
+// slider or button isn't one (M6 W3: Undo after ticking one of the settings' boxes is the settings' undo); the keys
+// above still treat every form control as typing, so Delete in a check box never deletes the selected nodes
+const editingText = () => { const el = /** @type {any} */ (document.activeElement); return /^(SELECT|TEXTAREA)$/.test(el?.tagName ?? '') || (el?.tagName === 'INPUT' && !/^(checkbox|radio|button|submit|reset|range|color)$/.test(el.type)); };
 const KEY_ACTIONS = {
   undo: () => undo(), redo: () => redo(), save: () => save(), duplicate: () => duplicate(), remove: () => remove(),
   gizmoMove: () => setGizmo('translate'), gizmoRotate: () => setGizmo('rotate'), gizmoScale: () => setGizmo('scale'), frame: () => frame(),
   shortcuts: () => { ui.shortcuts = !ui.shortcuts; }, closeSheet: () => { ui.shortcuts = false; },
-  newProject: () => openNewProject(), projectSettings: () => openSettings(),
 };
 /** While the New Project sheet or the settings panel is up, the window's keys are its Undo and Redo only (the settings'). */
 const SHEET_KEYS = new Set(['undo', 'redo']);
 addEventListener('keydown', (e) => {
-  if (!ed?.session || typing()) return;
+  if (!ed?.session) return;
   const s = shortcutFor(e, { inShell, flying: ed.cameraMode === 'fly', editing: ed.session.mode === 'editing', sheet: ui.shortcuts });
   if (!s) return;
+  if (typing() && !(SHEET_KEYS.has(s.action) && !editingText())) return; // a form control has the keys; Undo and Redo only leave a text field's to it
   if (s.action === 'remove' && !ui.selected.length) return; // nothing of the scene's selected: a timeline item's Delete
   if ((ui.settings || ui.newProject.open) && !SHEET_KEYS.has(s.action)) return;
   e.preventDefault();
@@ -410,8 +423,8 @@ if (inShell) {
   on('menu.exportGame', exportGame); // File › Export Game… (M5 W0)
   on('menu.duplicate', () => (typing() ? null : duplicate())); // Edit › Duplicate (M5 W5)
   on('menu.shortcuts', () => { ui.shortcuts = true; }); // Help › Keyboard Shortcuts (M5 W6, shell 0.13.0)
-  on('menu.undo', () => (typing() ? document.execCommand('undo') : undo()));
-  on('menu.redo', () => (typing() ? document.execCommand('redo') : redo()));
+  on('menu.undo', () => (editingText() ? document.execCommand('undo') : undo()));
+  on('menu.redo', () => (editingText() ? document.execCommand('redo') : redo()));
 }
 
 // Before the window closes or the app quits (the Mac shell asks, shell 0.9.0, AB-T-0593): a scene with unsaved changes
@@ -611,6 +624,7 @@ const sheetGroups = shortcutGroups();
       <output v-if="ui.gameNote" id="game-note" :aria-label="ui.gameNote">{{ ui.gameNote }}</output>
       <output v-if="ui.mcp" id="mcp-state" :aria-label="ui.mcp">{{ ui.mcp }}</output>
       <output v-if="ui.note" id="note" :aria-label="ui.note">{{ ui.note }}</output>
+      <output v-if="ui.layerProblem" id="layer-problem" class="warn" :aria-label="`Layers: ${ui.layerProblem}`">Layers: {{ ui.layerProblem }}</output>
       <output id="frame-time" :aria-label="`Frame time ${ui.frame}`">{{ ui.frame }}</output>
       <output id="build-time" :aria-label="`Build ${ui.build}`">build {{ ui.build }}</output>
       <output id="renderer" :aria-label="`Renderer ${ui.renderer}`">{{ ui.renderer }}</output>
@@ -692,7 +706,7 @@ canvas { display: block; width: 100%; height: 100%; outline: none; }
 .mono { font-family: ui-monospace, monospace; font-size: 11px; }
 .kind { margin: 6px 0 2px; } .small { font-size: 12px; } .muted { color: var(--muted); }
 .toggles { display: flex; gap: 8px; border: 0; margin: 0; padding: 0; } .toggles legend { float: left; margin-right: 4px; color: var(--muted); }
-output { font-variant-numeric: tabular-nums; }
+output { font-variant-numeric: tabular-nums; } .warn { color: #c77b00; }
 .export { position: absolute; right: 12px; top: 8px; width: 320px; max-height: calc(100% - 24px); overflow: auto; padding: 10px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25); box-sizing: border-box; }
 .export .field { justify-content: space-between; margin: 6px 0; gap: 8px; } .export .seg button { padding: 3px 6px; font-size: 12px; } .export .field select, .export .field input:not([type=checkbox]) { width: 180px; box-sizing: border-box; }
 .export .row { display: flex; align-items: center; gap: 8px; margin: 8px 0; } .export progress { flex: 1; }

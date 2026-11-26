@@ -50,6 +50,8 @@ import Testing
         #expect(await refusal([["from": "a.txt", "to": "A.txt"], ["text": "x", "to": "a.txt"]]).contains("listed twice"), "two names a Mac's disk can't both hold")
         #expect(await refusal([["to": "x.txt"]]).contains("needs from, text or base64"))
         #expect(await refusal([] as [Any]).contains("at least one file"))
+        let long = String(repeating: "é", count: 130) // 260 bytes
+        #expect(await router.handle(body: ["method": "project.create", "params": ["name": long, "files": [["from": "a.txt", "to": "a.txt"]]]]).1?.contains("255 bytes") == true)
         #expect(!FileManager.default.fileExists(atPath: target.path), "every refusal came before the folder was made")
     }
 
@@ -102,6 +104,21 @@ import Testing
         #expect(names(await r3.handle(body: ["method": "project.recent"])) == ["one", "two"], "reopening puts it first")
         let notRecent = await r3.handle(body: ["method": "project.reopen", "params": ["path": dir.path]])
         #expect(notRecent.1?.contains("not_recent") == true)
+
+        // a folder that moved is followed through its bookmark: listed under its new name, enabled, and reopened from
+        // there; the list then keeps the new place (review of PR #52)
+        let moved = dir.appendingPathComponent("one-moved")
+        try FileManager.default.moveItem(at: dir.appendingPathComponent("one"), to: moved)
+        let afterMove = later.recentProjects().first { ($0["path"] as? String) == dir.appendingPathComponent("one").standardizedFileURL.path }
+        #expect(afterMove?["name"] as? String == "one-moved" && afterMove?["exists"] as? Bool == true, "still enabled: the bookmark knows where it went")
+        #expect((afterMove?["location"] as? String)?.hasSuffix("/one-moved") == true)
+        let back = try #require(await r3.handle(body: ["method": "project.reopen", "params": ["path": dir.appendingPathComponent("one").path]]).0 as? [String: Any])
+        #expect((back["path"] as? String)?.hasSuffix("/one-moved") == true && back["files"] as? [String] == ["a.vrmxs"])
+        #expect(names(await r3.handle(body: ["method": "project.recent"])) == ["one-moved", "two"])
+        #expect(later.recentProjects().first?["path"] as? String == moved.standardizedFileURL.path, "the list follows the bookmark")
+        try FileManager.default.moveItem(at: moved, to: dir.appendingPathComponent("one"))
+        later.forgetRecent(moved.path)
+        later.noteRecent(dir.appendingPathComponent("one"))
 
         // a folder that has gone is listed as gone, and reopening it says so
         try FileManager.default.removeItem(at: dir.appendingPathComponent("two"))

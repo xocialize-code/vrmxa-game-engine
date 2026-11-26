@@ -35,6 +35,7 @@ import { exportGame } from './export-game.js';
 import { ViewportAids } from './viewport/viewport.js';
 import { ThumbnailQueue } from './thumbs.js';
 import { drawThumbnail } from './thumbs-draw.js';
+import { unknownLayers, gameLayers, layersUsed } from '@vrmxg/bundle';
 import '../../playground/src/sqljs.js'; // vrmxa-core's sql.js for bundles with a database (Mira's)
 
 installPortableMath(); // before anything parses a VRM or steps a world
@@ -366,7 +367,24 @@ export class EditorHost {
     // the game's controls (Play only) and collision layers (every build: a collider's layer must be one of them), as its
     // game.json has them now (M6 W3: the project settings write it); none, the engine's defaults
     const setup = await p.gameSetup?.() ?? { actions: null, physics: null };
-    const world = await buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await this.worldBehaviours(p), timings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial, actions: play ? setup.actions : null, physics: setup.physics });
+    // a node on a layer the game doesn't have (a typo in a collider's layer, a layer since removed) would stop the
+    // world being built: Play refuses with a message naming it; the edit view still builds, with that layer added for
+    // itself only, so the scene can be opened and fixed, and says what is wrong (review of PR #52)
+    let physics = setup.physics;
+    const stray = unknownLayers({ physics }, [[this.sceneRef ?? 'this scene', doc], ...prefabs]);
+    const layerProblem = stray.length ? `${stray.slice(0, 3).map((u) => `${u.ref}: "${u.node}" is on layer "${u.layer}"`).join('; ')}${stray.length > 3 ? ` and ${stray.length - 3} more` : ''}, which the game doesn't have (${gameLayers({ physics }).join(', ')}): add the layer in Project Settings or change the node's layer` : '';
+    if (timed) this.layerProblem = layerProblem; // the view's build, not a thumbnail's
+    if (stray.length && play) throw new Error(`can't play: ${layerProblem}`);
+    if (stray.length) {
+      // room for every layer this scene names, the stray ones included, before the game's others: at most 15 (the 16th
+      // group is ragdolls'), the game's first kept first (where a node with no layer is)
+      const game = gameLayers({ physics }), named = layersUsed(doc).map((u) => u.layer);
+      for (const [, pf] of prefabs) named.push(...layersUsed(pf).map((u) => u.layer));
+      const layers = [...new Set([game[0], ...named, ...stray.map((u) => u.layer), ...game])].slice(0, 15);
+      const collides = Object.fromEntries(Object.entries(physics?.collides ?? {}).filter(([k]) => layers.includes(k)).map(([k, v]) => [k, v.filter((x) => layers.includes(x))]));
+      physics = { layers, ...(Object.keys(collides).length ? { collides } : {}) };
+    }
+    const world = await buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await this.worldBehaviours(p), timings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial, actions: play ? setup.actions : null, physics });
     this._built++;
     return world;
   }

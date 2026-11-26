@@ -9,7 +9,7 @@
 //
 // Rebinding uses @vrmxg/game-ui's plan (the same rows, conflicts and moves the game's own settings menu has) and
 // @vrmxg/input's checks; here the result is the game's map itself, not a player's overrides.
-import { checkGame, GAME_FILE, MAX_LAYERS } from '@vrmxg/bundle';
+import { checkGame, GAME_FILE, MAX_LAYERS, layersUsed, gameLayers } from '@vrmxg/bundle';
 import { DEFAULT_ACTIONS, checkBinding } from '@vrmxg/input';
 import { rebindRows, rebindPlan, describeBinding } from '@vrmxg/game-ui';
 
@@ -28,13 +28,16 @@ export function startingGame({ name = 'game', scenes = [] } = {}) {
 export class ProjectSettings {
   /**
    * @param {{ game: any | null, input?: any | null, files: string[], name?: string,
-   *   write: (ref: string, text: string) => Promise<any>, onChange?: () => void }} o
+   *   write: (ref: string, text: string) => Promise<any>, onChange?: () => void,
+   *   layerUses?: () => Promise<{ ref: string, node: string, layer: string }[]> }} o
    *   game: game.json as parsed (null: the project has none; the first edit writes one); input: the input map's own
    *   file as parsed, when game.json names one; files: the project's files (the scenes come from these)
    */
-  constructor({ game, input = null, files, name = 'game', write, onChange = () => {} }) {
+  constructor({ game, input = null, files, name = 'game', write, onChange = () => {}, layerUses = async () => [] }) {
     this.state = { game: game ? structuredClone(game) : null, input: input ? structuredClone(input) : null };
     this.files = files; this.name = name; this.write = write; this.onChange = onChange;
+    /** Where the project's scenes name collision layers now: [{ ref, node, layer }] (projectLayerUses). */
+    this.layerUses = layerUses;
     this.undoStack = []; this.redoStack = [];
     this.error = ''; // why the last edit didn't happen (refused, or its write failed)
     this._queue = Promise.resolve();
@@ -66,16 +69,18 @@ export class ProjectSettings {
 
   /**
    * One edit: `fn` changes a copy of the settings ({ game, input }); the result is checked, written and made one undo
-   * step. Nothing changed: no step. Refused or failed: the settings stay as they were, `error` says why, and it throws.
-   * @param {string} label @param {(draft: { game: any, input: any }) => void} fn
+   * step. Nothing changed: no step and no write (a project without a game.json gets none from an edit that changes
+   * nothing). Refused or failed: the settings stay as they were, `error` says why, and it throws.
+   * @param {string} label @param {(draft: { game: any, input: any }) => void | Promise<void>} fn
    */
   edit(label, fn) {
     return this._serial(async () => {
       const before = structuredClone(this.state);
       const draft = structuredClone(this.state);
       if (!draft.game) draft.game = startingGame({ name: this.name, scenes: this.files });
-      fn(draft);
-      if (same(draft, before)) return false;
+      const start = structuredClone(draft);
+      await fn(draft);
+      if (same(draft, start)) return false;
       this._check(draft);
       await this._commit(before, draft);
       this.undoStack.push({ label, before, after: structuredClone(draft) });
@@ -111,17 +116,25 @@ export class ProjectSettings {
     }
   }
 
-  /** Write what changed (the input map's file first, then game.json); on a failure, the settings as they were. */
+  /**
+   * Write what changed: the input map's own file, then game.json. On a failure the settings go back as they were, and
+   * a file this commit already wrote is written back as it was (review of PR #52), so the disk and the panel agree.
+   */
   async _commit(before, after) {
     this.state = after;
+    const ref = typeof after.game?.input === 'string' ? after.game.input : null;
+    const writes = [];
+    if (ref && !same(before.input, after.input)) writes.push([ref, writeJson(after.input), before.input ? writeJson(before.input) : null]);
+    if (!same(before.game, after.game)) writes.push([GAME_FILE, writeJson(after.game), before.game ? writeJson(before.game) : null]);
+    const done = [];
     try {
-      const ref = typeof after.game?.input === 'string' ? after.game.input : null;
-      if (ref && !same(before.input, after.input)) await this.write(ref, writeJson(after.input));
-      if (!same(before.game, after.game)) await this.write(GAME_FILE, writeJson(after.game));
+      for (const [file, text, old] of writes) { await this.write(file, text); done.push([file, old]); }
       if (!this.files.includes(GAME_FILE)) this.files = [...this.files, GAME_FILE].sort();
     } catch (e) {
       this.state = before;
-      throw new Error(`not saved: ${e?.message ?? e}`);
+      let restored = true;
+      for (const [file, old] of done.reverse()) { try { if (old !== null) await this.write(file, old); } catch { restored = false; } }
+      throw new Error(`not saved: ${e?.message ?? e}${restored ? '' : ` (and ${done.map(([f]) => f).join(', ')} couldn't be put back: check it in a text editor)`}`);
     }
   }
 
@@ -192,23 +205,60 @@ export class ProjectSettings {
   }
   removeAction(name) { return this.edit(`Remove action ${name}`, (d) => { delete this._map(d)[name]; }); }
 
-  /** The layers' names, in order (a collider with none is on the first). Renames carry through `collides`. */
-  setLayers(names) {
-    return this.edit('Physics layers', (d) => {
+  /**
+   * The layers' names, in order (a node with none is on the first). Only `renames` ({ old: new }) renames a layer, and
+   * carries it through `collides`; any other name is the same layer moved, or a new one (a move used to be read as
+   * renames when the list kept its length, and swapped the layers' rules: review of PR #52). A layer a scene's node
+   * is on (`layerUses`) can't be renamed or removed: every world with that node would stop being built.
+   * @param {string[]} names @param {{ label?: string, renames?: Record<string, string> }} [o]
+   */
+  setLayers(names, { label = 'Physics layers', renames = {} } = {}) {
+    return this.edit(label, async (d) => {
       const next = (names ?? []).map((n) => String(n ?? '').trim());
-      if (!next.length) { delete d.game.physics; return; }
       if (next.length > MAX_LAYERS) throw new Error(`at most ${MAX_LAYERS} layers`);
       const old = d.game.physics?.layers ?? [];
-      const renamed = new Map(old.map((n, i) => [n, old.length === next.length ? next[i] : (next.includes(n) ? n : null)]));
+      const to = (n) => (Object.hasOwn(renames, n) ? renames[n] : n);
+      // a layer in use must still be there after the change
+      const have = new Set(next.length ? next : ['default']);
+      // (a node already on a layer the game doesn't have is the editor's warning to fix, and doesn't block this edit)
+      const known = new Set(gameLayers(d.game));
+      // (a rename doesn't reach into the scenes: their nodes keep the old name, so the old name must stay)
+      const lost = (await this.layerUses()).filter((u) => known.has(u.layer) && !have.has(u.layer));
+      if (lost.length) {
+        const byLayer = [...new Set(lost.map((u) => u.layer))];
+        throw new Error(`${byLayer.map((l) => `"${l}"`).join(', ')} ${byLayer.length > 1 ? 'are' : 'is'} in use (${lost.slice(0, 3).map((u) => `${u.ref}: ${u.node}`).join(', ')}${lost.length > 3 ? `, and ${lost.length - 3} more` : ''}): change those nodes' layer first`);
+      }
+      if (!next.length) { delete d.game.physics; return; }
       const collides = {};
       for (const [k, list] of Object.entries(d.game.physics?.collides ?? {})) {
-        const nk = renamed.get(k);
-        if (nk) collides[nk] = list.map((x) => renamed.get(x)).filter((x) => x && next.includes(x));
-        if (nk && collides[nk].length === next.length) delete collides[nk]; // with every layer: as physics reads none
+        const nk = to(k);
+        if (!next.includes(nk)) continue;
+        collides[nk] = next.filter((x) => list.map(to).includes(x));
+        if (collides[nk].length === next.length) delete collides[nk]; // with every layer: as physics reads none
       }
+      // a layer new to the list collides with everything, as a layer missing from collides does; one a list leaves
+      // out is added to it, so the matrix stays symmetric
+      for (const n of next) if (!old.map(to).includes(n)) for (const k of Object.keys(collides)) collides[k] = next.filter((x) => collides[k].includes(x) || x === n);
+      for (const k of Object.keys(collides)) if (collides[k].length === next.length) delete collides[k];
       d.game.physics = { layers: next, ...(Object.keys(collides).length ? { collides } : {}) };
     });
   }
+  addLayer(name) {
+    const n = String(name ?? '').trim(), l = this.view().layers;
+    // the first layer added to a game with none keeps "default" (where every node is now) first, unless it is "default"
+    return this.setLayers([...(l.length || n === 'default' ? l : ['default']), n], { label: `Add layer ${n}` });
+  }
+  renameLayer(from, to) {
+    const t = String(to ?? '').trim();
+    return this.setLayers(this.view().layers.map((x) => (x === from ? t : x)), { label: `Rename layer ${from} to ${t}`, renames: { [from]: t } });
+  }
+  moveLayer(name, by) {
+    const l = this.view().layers, i = l.indexOf(name), j = i + by;
+    if (i < 0 || j < 0 || j >= l.length) return Promise.resolve(false);
+    const [x] = l.splice(i, 1); l.splice(j, 0, x);
+    return this.setLayers(l, { label: `Move layer ${name} ${by < 0 ? 'up' : 'down'}` });
+  }
+  removeLayer(name) { return this.setLayers(this.view().layers.filter((x) => x !== name), { label: `Remove layer ${name}` }); }
   /**
    * Whether two layers collide, both ways (Rapier pairs two colliders only when each lists the other). A layer that
    * collides with every layer is left out of `collides`, as @vrmxg/physics reads it.
@@ -246,4 +296,22 @@ export class ProjectSettings {
       history: this.history(),
     };
   }
+}
+
+/**
+ * Where a project's scenes and prefabs put nodes on collision layers: [{ ref, node, layer }], the open scene as edited
+ * (its unsaved changes too), every other as saved. What the settings check before a layer is renamed or removed.
+ * @param {{ scenes: () => string[], text: (ref: string) => Promise<string> }} project
+ * @param {{ ref: string | null, doc: any } | null} [open] the scene open in the editor
+ */
+export async function projectLayerUses(project, open = null) {
+  const out = [];
+  for (const ref of project.scenes()) {
+    let doc = null;
+    if (open?.ref === ref && open.doc) doc = open.doc;
+    else { try { doc = JSON.parse(await project.text(ref)); } catch { continue; } }
+    for (const u of layersUsed(doc)) out.push({ ref, ...u });
+  }
+  if (open?.doc && open.ref && !project.scenes().includes(open.ref)) for (const u of layersUsed(open.doc)) out.push({ ref: open.ref, ...u });
+  return out;
 }

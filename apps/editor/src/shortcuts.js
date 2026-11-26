@@ -13,10 +13,10 @@
 // settings panel, M6 W3: its key capture takes any key).
 
 export const SHORTCUTS = [
-  { group: 'File', label: 'New Project…', keys: '⇧⌘N', where: 'menu', menu: 'newProject', codes: ['n'], cmd: true, shift: true, action: 'newProject', editing: true },
+  { group: 'File', label: 'New Project…', keys: '⇧⌘N', where: 'menu', menu: 'newProject', note: 'the Mac app; in a browser, which keeps ⇧⌘N, the toolbar\'s New Project…' },
   { group: 'File', label: 'Open Project…', keys: '⇧⌘O', where: 'menu', menu: 'openProject' },
   { group: 'File', label: 'Open Recent', keys: 'File › Open Recent', where: 'menu', menu: 'openRecent', note: 'or the toolbar\'s Recent list' },
-  { group: 'File', label: 'Project Settings…', keys: '⇧⌘P', where: 'menu', menu: 'projectSettings', codes: ['p'], cmd: true, shift: true, action: 'projectSettings', editing: true },
+  { group: 'File', label: 'Project Settings…', keys: '⇧⌘P', where: 'menu', menu: 'projectSettings', note: 'the Mac app; in a browser, the toolbar\'s Settings…' },
   { group: 'File', label: 'Save', keys: '⌘S', where: 'menu', menu: 'save', codes: ['s'], cmd: true, action: 'save' },
   { group: 'File', label: 'Save As…', keys: '⇧⌘S', where: 'menu', menu: 'saveAs' },
   { group: 'File', label: 'Export Game…', keys: '⇧⌘E', where: 'menu', menu: 'exportGame' },
