@@ -7,7 +7,7 @@ import { checkRuntimeSources } from '@vrmxg/bundle/node';
 import { listTemplates, CONTENT } from '../../content/templates/tools/new-project.mjs';
 // The editor ships the sample project as its starting project (the site's files, by their refs) and lists it in
 // project-files.json; a project opened in the Mac shell is served under /project/ instead. vrmxa-core is read from the
-// avatar studio beside this repository, in place (AB-D-0249). base './' for the shell's origins.
+// repository beside this one (../vrmxa-core, pinned in vrmxa-core.json), in place (AB-D-0249). base './' for the shell's origins.
 const here = (p) => path.resolve(import.meta.dirname, p);
 // THIRD-PARTY-LICENCES.txt in the build (M6 W7, AB-T-0624): the licence texts and notices of what the bundle includes;
 // the Mac app opens it from Help › Third-Party Notices
@@ -25,9 +25,9 @@ const staleRuntime = () => {
   if (s.ok) return null;
   return s.digest === null ? 'it was built without its source stamp' : `${s.changed.length + s.missing.length} of its source files changed since it was built (${[...s.changed, ...s.missing].slice(0, 3).join(', ')})`;
 };
-// vrmxa-core beside the repository, and its real path: Vite checks served files by real path, and a worktree reaches the
-// studio through a symlink (M4 W5)
-const core = here('../../../vrmxa-avatar-studio/packages/vrmxa-core');
+// vrmxa-core beside the repository, and its real path: Vite checks served files by real path, and a worktree reaches it
+// through a symlink in .claude/worktrees/ (M4 W5)
+const core = here('../../../vrmxa-core');
 const coreReal = fs.existsSync(core) ? fs.realpathSync(core) : core;
 
 /** project-files.json (the bundled project's files) and the import map's shim, in dev and in the build. */
@@ -112,7 +112,7 @@ export default defineConfig({
   root: here('.'), base: './', publicDir: sample,
   plugins: [vue(), vrmxgNotices({ name: 'vrmxg-editor', version: pkg.version }), projectFiles(), runtimeFiles(), templates()],
   optimizeDeps: { exclude: ['sql.js'] },
-  resolve: { alias: { '@vrmxa-core': here('../../../vrmxa-avatar-studio/packages/vrmxa-core/src') }, dedupe: ['three'] },
+  resolve: { alias: { '@vrmxa-core': here('../../../vrmxa-core/src') }, dedupe: ['three'] },
   build: { outDir: here('dist'), emptyOutDir: true, target: 'safari16', chunkSizeWarningLimit: 4000 },
   server: { port: 5182, fs: { allow: [here('../..'), core, coreReal] } },
 });

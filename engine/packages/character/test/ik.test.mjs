@@ -1,4 +1,4 @@
-// M2 W8 (AB-T-0531), two-bone IK on the sample cafe (needs vrmxa-avatar-studio beside the repo for Mira): a step under
+// M2 W8 (AB-T-0531), two-bone IK on the sample cafe (needs vrmxa-core beside the repo for Mira): a step under
 // one foot drops her pelvis and bends that leg so both feet stand on their own ground; flat ground changes nothing; a
 // reach brings her hand to a point and lets go; opening the cupboard reaches for its knob; all of it the same every run.
 import { test } from 'node:test';
@@ -28,7 +28,7 @@ async function world(extra = [], miraAt = null) {
 const footY = (m, s) => new Vector3().setFromMatrixPosition(m.vrm.humanoid.getNormalizedBoneNode(`${s}Foot`).matrixWorld).y;
 const handAt = (m, s) => new Vector3().setFromMatrixPosition(m.vrm.humanoid.getNormalizedBoneNode(`${s}Hand`).matrixWorld);
 
-test('feet: flat ground changes nothing; a step under one foot drops the pelvis and lifts that foot onto it', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('feet: flat ground changes nothing; a step under one foot drops the pelvis and lifts that foot onto it', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const flat = await world([], [1.5, 0, 2.5]);
   const m0 = /** @type {any} */ (flat.tree.find('mira'));
   for (let i = 0; i < 90; i++) flat.tree.step();
@@ -47,7 +47,7 @@ test('feet: flat ground changes nothing; a step under one foot drops the pelvis 
   assert.equal(hashValue(worldHashes(W2.tree)), hashValue(worldHashes(W.tree)));
 });
 
-test('hands: a reach brings the hand to the point and lets go; opening the cupboard reaches for its knob', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('hands: a reach brings the hand to the point and lets go; opening the cupboard reaches for its knob', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const W = await world([], [1.5, 0, 2.5]);
   const m = /** @type {any} */ (W.tree.find('mira'));
   for (let i = 0; i < 30; i++) W.tree.step();

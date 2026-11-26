@@ -1,5 +1,5 @@
 // Cast a short's roles (M4 W12, on M4 W6's @vrmxg/cast): each role from a .vrmxa in the project, read through
-// vrmxa-core (beside the repo: ../vrmxa-avatar-studio/packages/vrmxa-core), with the voice its persona names for
+// vrmxa-core (beside the repo: ../vrmxa-core), with the voice its persona names for
 // Kokoro, else the sample's role → preset map (Hana af_heart, Mira af_bella), into the sequence's `roles`. castRole is
 // the creator's own cast, as plain data: the same inputs give the same bytes. Lines already baked in the voice they are
 // cast in keep their bake; any other is listed for tools/bake-lines.mjs. Re-running it changes nothing.
@@ -12,7 +12,7 @@ import { parse, serialize } from '@vrmxg/scene';
 import { readCharacter, rolesOf, castRole } from '@vrmxg/cast';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const CORE = path.resolve(root, '../../../vrmxa-avatar-studio/packages/vrmxa-core/src');
+const CORE = path.resolve(root, '../../../vrmxa-core/src');
 const SAMPLE_VOICES = { 'hana-1': 'af_heart', mira: 'af_bella' };
 const argv = process.argv.slice(2), ref = argv.find((a) => !a.includes('='));
 if (!ref) { console.error('usage: cast-short.mjs <sequence.vrmxs> [ROLE=characters/x.vrmxa …]'); process.exit(2); }

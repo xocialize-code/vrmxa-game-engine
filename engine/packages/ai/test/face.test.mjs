@@ -1,4 +1,4 @@
-// M3 W12 (AB-A-0313): turning to face someone. On the sample cafe (needs vrmxa-avatar-studio beside the repo), Hana turns
+// M3 W12 (AB-A-0313): turning to face someone. On the sample cafe (needs vrmxa-core beside the repo), Hana turns
 // in place to face Mira standing behind her: the character's face(), and the brains' `face` action, which succeeds once
 // she is within ~5° and fails after its time runs out. The turn is state: the same in two runs.
 import { test } from 'node:test';
@@ -30,7 +30,7 @@ const facingError = (hana, mira) => {
   return Math.abs(d);
 };
 
-test('Hana turns to face Mira behind her, eased, and says so', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('Hana turns to face Mira behind her, eased, and says so', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const W = await world(), hana = /** @type {any} */ (W.tree.find('hana-1')), mira = W.tree.find('mira');
   for (let i = 0; i < 10; i++) W.tree.step();
   assert.ok(facingError(hana, mira) > 2.5, 'she starts with her back to Mira');
@@ -44,7 +44,7 @@ test('Hana turns to face Mira behind her, eased, and says so', { skip: !OK && 'n
   assert.equal(hana.ctrl.face, undefined, 'done: nothing left in her state');
 });
 
-test('the brains\' face action succeeds when she faces the target, fails when time runs out; two runs are the same', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('the brains\' face action succeeds when she faces the target, fails when time runs out; two runs are the same', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const run = async (seconds) => {
     const W = await world(), hana = /** @type {any} */ (W.tree.find('hana-1'));
     const ctx = () => ({ node: hana, tree: W.tree, step: W.tree.clock.step });

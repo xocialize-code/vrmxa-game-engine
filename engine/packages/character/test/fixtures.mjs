@@ -8,9 +8,9 @@ import { fileURLToPath } from 'node:url';
 const DEV = new URL('../../../../../', import.meta.url);
 export const PATHS = {
   spec: fileURLToPath(new URL('VRMXA_Specification/assets/spec/spec.vrm', DEV)),
-  core: fileURLToPath(new URL('vrmxa-avatar-studio/packages/vrmxa-core/src/index.js', DEV)),
-  coreAnim: fileURLToPath(new URL('vrmxa-avatar-studio/packages/vrmxa-core/src/anim/index.js', DEV)),
-  full: fileURLToPath(new URL('vrmxa-avatar-studio/packages/vrmxa-core/fixtures/characters/full.vrmxa', DEV)),
+  core: fileURLToPath(new URL('vrmxa-core/src/index.js', DEV)),
+  coreAnim: fileURLToPath(new URL('vrmxa-core/src/anim/index.js', DEV)),
+  full: fileURLToPath(new URL('vrmxa-core/fixtures/characters/full.vrmxa', DEV)),
   vroid10: fileURLToPath(new URL('vrmxa-game-engine/spike-determinism/web/public/models/vroid10.vrm', DEV)),
 };
 export const available = (...keys) => keys.every((k) => fs.existsSync(PATHS[k]));

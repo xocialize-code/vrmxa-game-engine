@@ -6,7 +6,7 @@
 //   node acceptance/m6/templates-game.mjs                    each template made into a project and exported with the game app
 //   node acceptance/m6/templates-game.mjs <build> …          builds the Mac editor's Export Game wrote (the scenario's)
 //
-// Needs vrmxa-avatar-studio beside the repository (the level has characters) and the determinism spike's playwright-core
+// Needs vrmxa-core beside the repository (the level has characters) and the determinism spike's playwright-core
 // and Chrome for Testing, as the other Chromium runners. It draws, so it takes the GPU lock. Writes
 // acceptance/results/m6-templates-game.json; exit 1 when a check fails.
 import fs from 'node:fs';
@@ -23,7 +23,7 @@ import { playTemplate } from './templates-node.mjs';
 
 const here = import.meta.dirname, root = path.join(here, '../..');
 const checks = [], say = (name, ok, detail) => { checks.push({ name, ok, detail }); console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${detail ? `: ${detail}` : ''}`); };
-if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-avatar-studio beside the repository (vrmxa-core): the level has characters'); process.exit(1); }
+if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-core beside the repository: the level has characters'); process.exit(1); }
 
 let builds = process.argv.slice(2).filter((a) => !a.startsWith('--')).map((d) => path.resolve(d));
 if (!builds.length) {

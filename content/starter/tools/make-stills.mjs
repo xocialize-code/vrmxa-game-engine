@@ -2,7 +2,7 @@
 // clip (three-vrm and three-vrm-animation, as an app loads them) and every starter item's model. For looking at, not
 // for comparing: nothing checks their pixels.
 //   node content/starter/tools/make-stills.mjs
-// Writes acceptance/results/m6-starter-set.png and m6-starter-items.png. Needs vrmxa-avatar-studio (vrmxa-core reads the
+// Writes acceptance/results/m6-starter-set.png and m6-starter-items.png. Needs vrmxa-core (it reads the
 // items' ZIPs) and VRMXA_Specification (spec.vrm) beside the repository, and Playwright's Chromium (as the acceptance
 // runners). Takes the GPU lock (acceptance/README.md, "Exactness").
 import fs from 'node:fs';

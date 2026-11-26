@@ -1,4 +1,4 @@
-// M4 W9 (AB-T-0581): takes in the film's world (needs vrmxa-avatar-studio beside the repo for the characters).
+// M4 W9 (AB-T-0581): takes in the film's world (needs vrmxa-core beside the repo for the characters).
 //   - Recording is repeatable: the sample's three takes, recorded again here by the real recorder from their scripted
 //     performers, are the committed logs byte for byte.
 //   - What was performed is what the film plays: Mira's walk in the kept film is the walk of the live take, step for
@@ -23,7 +23,7 @@ import { withTake, faceSetup } from '../src/index.js';
 
 installPortableMath();
 const content = path.resolve(import.meta.dirname, '../../../../content/sample');
-const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-avatar-studio';
+const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-core';
 const golden = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, 'golden.json'), 'utf8'));
 const bytes = async (ref) => new Uint8Array(fs.readFileSync(path.join(content, ref)));
 const behaviours = new Map(Object.entries(projectBehaviours).filter(([, v]) => typeof v === 'function'));

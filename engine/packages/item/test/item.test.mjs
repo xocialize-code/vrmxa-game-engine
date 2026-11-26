@@ -1,5 +1,5 @@
 // W2 (AB-T-0514): VRMXI items in the engine, on the specification's own fixtures and checker. Skips without
-// VRMXA_Specification (with the VRMXI draft) and vrmxa-avatar-studio beside the repository.
+// VRMXA_Specification (with the VRMXI draft) and vrmxa-core beside the repository.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Quaternion } from 'three';
@@ -15,7 +15,7 @@ import { installCharacters } from '@vrmxg/character';
 
 installPortableMath();
 const OK = SPEC && available('core');
-const SKIP = OK ? false : 'needs VRMXA_Specification (fixtures-vrmxi/, tools/check) and vrmxa-avatar-studio beside this repository';
+const SKIP = OK ? false : 'needs VRMXA_Specification (fixtures-vrmxi/, tools/check) and vrmxa-core beside this repository';
 const R = OK ? await loadRapier() : null;
 const core = OK ? await vrmxaCore() : null;
 const check = OK ? await specChecker() : null;

@@ -53,7 +53,7 @@ export const PRESETS = { 'hana-1': 'af_heart', mira: 'af_bella' };
 // vrmxa-core and the characters, beside the repository on the development Mac
 const DEV = new URL('../../../../../', import.meta.url);
 const at = (p) => fileURLToPath(new URL(p, DEV));
-export const CORE = at('vrmxa-avatar-studio/packages/vrmxa-core/src/');
+export const CORE = at('vrmxa-core/src/');
 export const STUDIO = at('vrmxa-avatar-studio/content/characters/out/approved/');
 export const haveCore = fs.existsSync(path.join(CORE, 'index.js'));
 export const haveStudio = fs.existsSync(path.join(STUDIO, 'hana.vrmxa')) && fs.existsSync(path.join(STUDIO, 'mira.vrmxa'));

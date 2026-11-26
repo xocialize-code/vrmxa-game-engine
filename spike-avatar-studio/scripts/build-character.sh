@@ -1,11 +1,11 @@
 #!/bin/sh
 # Builds a character with nothing but the studio's command-line tool (vrmxa-core's `vrmxa`), from the specification's
 # minimal fixture: body and face edits, a hair piece, a fitted top and trousers worn, the 30 starter clips, a persona
-# card and details. Needs vrmxa-avatar-studio and VRMXA_Specification beside this repository.
+# card and details. Needs vrmxa-core, vrmxa-avatar-studio (its sample items) and VRMXA_Specification beside this repository.
 #   spike-avatar-studio/scripts/build-character.sh [out-dir]      (default: spike-avatar-studio/out, git-ignored)
 set -e
 HERE=$(cd "$(dirname "$0")" && pwd); DEV=$(cd "$HERE/../../.." && pwd); OUT=${1:-$HERE/../out}
-CORE=$DEV/vrmxa-avatar-studio/packages/vrmxa-core; F=$DEV/VRMXA_Specification/fixtures
+CORE=$DEV/vrmxa-core; F=$DEV/VRMXA_Specification/fixtures
 I=$DEV/vrmxa-avatar-studio/app/public/models/samples/items; P=$DEV/vrmxa-avatar-studio/app/public/models/p7
 mkdir -p "$OUT"; rm -f "$OUT"/c*.vrmxa "$OUT"/aiko.vrmxa
 v() { (cd "$CORE" && node bin/vrmxa.mjs "$@" --force) | grep -v '^  warning' | head -1; }

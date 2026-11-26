@@ -1,7 +1,7 @@
 // M4 W9 (AB-T-0581): the creator's take deck (src/takes.js) and the agent's `take` command, on the sample short "The
 // Regular". The deck is driven as the window drives it (Record, Stop, Keep or Discard, Remove), with a stand-in creator
 // whose take worlds are the real ones built in Node, stepped by the test in place of the frame loop; the performers are
-// a virtual keyboard, a scripted model and the synthetic face session. Needs vrmxa-avatar-studio beside the repo.
+// a virtual keyboard, a scripted model and the synthetic face session. Needs vrmxa-core beside the repo.
 //   - each kind records, waits in review, and is kept as ONE undo step with its log in the project; undo gives the short
 //     back byte for byte; Discard writes nothing;
 //   - a kept take's tracks are the person's own: a re-script keeps them and moves them with the script;
@@ -34,7 +34,7 @@ const read = (f) => fs.readFileSync(path.join(sample, f), 'utf8');
 const files = fs.readdirSync(sample, { recursive: true }).map((f) => String(f).split(path.sep).join('/'));
 const short = readShorts(files, read(SHORTS_FILE)).find((s) => s.id === 'the-regular');
 const set = parse(read(short.set));
-const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-avatar-studio';
+const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-core';
 const flush = () => new Promise((r) => setImmediate(r));
 
 /** A stand-in creator: what CreatorHost gives the deck, with real take worlds and no renderer. */

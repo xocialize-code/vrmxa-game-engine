@@ -1,7 +1,7 @@
 // M5 W10 (AB-T-0620), M5's exit checks 7 and 10 (the sample game's part): "The Morning Rush" played through the game
 // app in Chromium, and its recorded session replayed exactly.
 //
-//   node acceptance/m5/rush.mjs              (needs vrmxa-avatar-studio beside the repository, and the determinism spike's
+//   node acceptance/m5/rush.mjs              (needs vrmxa-core beside the repository, and the determinism spike's
 //                                             playwright-core and Chrome for Testing, as the other Chromium runners)
 //   … --rebuild                              build apps/game first even when apps/game/dist is there
 //   … --only win|lose                        play one session (and replay it)
@@ -28,6 +28,7 @@ import { installPortableMath } from '@vrmxg/dmath';
 import { loadRapier } from '@vrmxg/physics';
 import { openFolder, behavioursImporter, checkFolder } from '@vrmxg/bundle/node';
 import { acquireGpuLock, sayWaiting } from '../gpu-lock.mjs';
+import { pinState } from '../../scripts/vrmxa-core.mjs';
 import { vrmxaCore, PATHS } from '../../engine/packages/character/test/fixtures.mjs';
 import { gameScenes, worldLoader, freeWorld } from '../../apps/game/src/world.js';
 import { replaySession, firstDifference } from '../../apps/game/src/session.js';
@@ -38,7 +39,8 @@ const here = import.meta.dirname, root = path.join(here, '../..');
 const args = process.argv.slice(2), only = args.includes('--only') ? args[args.indexOf('--only') + 1] : null;
 const RESULTS = path.join(root, 'acceptance/results'), LOGS = path.join(RESULTS, 'm5-rush');
 const checks = [], say = (name, ok, detail) => { checks.push({ name, ok, detail }); console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${detail ? `: ${detail}` : ''}`); };
-if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-avatar-studio beside the repository (vrmxa-core): the game has characters'); process.exit(1); }
+if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-core beside the repository: the game has characters'); process.exit(1); }
+{ const pin = pinState(); if (!pin.ok) { console.error(`${pin.problem}: the logs this records are tied to the build, so it refuses`); process.exit(1); } }
 const GAME = path.join(root, 'apps/game');
 if (args.includes('--rebuild') || !fs.existsSync(path.join(GAME, 'dist/vrmxg-runtime.json'))) execFileSync('npx', ['vite', 'build'], { cwd: GAME, stdio: ['ignore', 'ignore', 'inherit'] });
 

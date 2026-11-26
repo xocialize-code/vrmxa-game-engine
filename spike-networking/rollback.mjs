@@ -46,7 +46,7 @@ const args = process.argv.slice(2), opt = (k, d) => { const i = args.indexOf(`--
 const EVERY = +opt('every', 4), DEPTH = +opt('depth', 8);
 const WORLDS = opt('worlds', 'cafe-2p,cafe-items,cafe-follow-inject,rush-level').split(',');
 const OUT = path.resolve(here, opt('out', 'results/rollback.json'));
-if (!HAS_MODELS) { console.error('needs vrmxa-avatar-studio beside the repository (the characters)'); process.exit(1); }
+if (!HAS_MODELS) { console.error('needs vrmxa-core beside the repository (the characters)'); process.exit(1); }
 
 const now = () => performance.now();
 const hashes = (tree) => worldHashes(tree, { physicsBytes: true });

@@ -1,4 +1,4 @@
-// The split turn in the world (AB-D-0265, the director's default design) on the sample cafe (needs vrmxa-avatar-studio),
+// The split turn in the world (AB-D-0265, the director's default design) on the sample cafe (needs vrmxa-core),
 // with a scripted model that answers line requests with text and verdict requests with JSON. The person speaks as Mira.
 //   - "Could I get a latte?": her line lands first (she speaks while the verdict is asked for), then the verdict's face,
 //     gesture and goal as a second decision; "Mira" in the goal becomes her id and the order her words; Hana makes and
@@ -19,7 +19,7 @@ import * as projectBehaviours from '../../../../content/sample/behaviours.js';
 
 installPortableMath();
 const content = path.resolve(import.meta.dirname, '../../../../content/sample');
-const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-avatar-studio';
+const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-core';
 const flush = () => new Promise((r) => setImmediate(r));
 const isVerdict = (req) => !req.tools.length && /Fill in this JSON object/.test(req.messages.at(-1).content);
 

@@ -1,4 +1,4 @@
-// M2 W9 on the sample cafe (needs vrmxa-avatar-studio beside the repo): the recorded take with items. Saved at step 720,
+// M2 W9 on the sample cafe (needs vrmxa-core beside the repo): the recorded take with items. Saved at step 720,
 // after Mira took the sword into her closet, written to a file, loaded into a fresh world with the take replaying: every
 // step to the end hashes as the run that was saved, and the sword is in her closet, the cupboard and switch end as they
 // did.
@@ -19,7 +19,7 @@ installPortableMath();
 const content = path.resolve(import.meta.dirname, '../../../../content/sample');
 const OK = fs.existsSync(PATHS.core);
 
-test('a save after the sword is taken loads and plays on with the same per-step hashes to the end of the take', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('a save after the sword is taken loads and plays on with the same per-step hashes to the end of the take', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const bytes = async (ref) => new Uint8Array(fs.readFileSync(path.join(content, ref)));
   const sample = await loadSample(bytes);
   const take = JSON.parse(fs.readFileSync(path.join(content, 'input/play-items.json'), 'utf8'));

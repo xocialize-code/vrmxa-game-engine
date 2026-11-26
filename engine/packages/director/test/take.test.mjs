@@ -1,5 +1,5 @@
 // M3 W4 (AB-T-0543): a take of a conversation, its replay, and its bake into a sequence, on the sample cafe (needs
-// vrmxa-avatar-studio). Mira walks in (input/walk-in.json) and the person, speaking as her, talks to Hana (the host);
+// vrmxa-core). Mira walks in (input/walk-in.json) and the person, speaking as her, talks to Hana (the host);
 // the director runs the split turn on a scripted model.
 //   - The take (scene, cast, input, the ai log) replays with no model to the same world at every 30th step.
 //   - takeToSequence: her lines become dialogue clips, the person's become Mira's, the rest a decisions track, the input
@@ -21,7 +21,7 @@ import * as projectBehaviours from '../../../../content/sample/behaviours.js';
 
 installPortableMath();
 const content = path.resolve(import.meta.dirname, '../../../../content/sample');
-const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-avatar-studio';
+const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-core';
 const flush = () => new Promise((r) => setImmediate(r));
 const CAST = { 'hana-1': { behaviours: [{ use: 'brain', preset: 'host' }] } };
 const walkIn = JSON.parse(fs.readFileSync(path.join(content, 'input/walk-in.json'), 'utf8'));

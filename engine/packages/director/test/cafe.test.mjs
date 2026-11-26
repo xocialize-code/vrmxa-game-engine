@@ -1,4 +1,4 @@
-// M3 W0 (AB-T-0539) on the sample cafe (needs vrmxa-avatar-studio beside the repo for the characters). Hana runs the
+// M3 W0 (AB-T-0539) on the sample cafe (needs vrmxa-core beside the repo for the characters). Hana runs the
 // server brain and Mira the customer brain; the person speaks as Mira. With a scripted model:
 //   - a conversation: the request flags Hana as waiting on her next tick, the reply lands on its step as a line with a
 //     face and a look, and two live runs give the same world at every checked step;
@@ -21,7 +21,7 @@ import * as projectBehaviours from '../../../../content/sample/behaviours.js';
 installPortableMath();
 const content = path.resolve(import.meta.dirname, '../../../../content/sample');
 const OK = fs.existsSync(PATHS.core);
-const skip = !OK && 'needs vrmxa-avatar-studio';
+const skip = !OK && 'needs vrmxa-core';
 
 async function cafe() {
   const bytes = async (ref) => new Uint8Array(fs.readFileSync(path.join(content, ref)));

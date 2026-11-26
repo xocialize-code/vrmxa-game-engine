@@ -2,7 +2,7 @@
 // two hosts this repository didn't write, on loopback only, and played to its won ending through each in Chromium by the
 // scripted player (rush-player.js).
 //
-//   node acceptance/m6/sharing.mjs                  both hosts (needs vrmxa-avatar-studio beside the repository, the
+//   node acceptance/m6/sharing.mjs                  both hosts (needs vrmxa-core beside the repository, the
 //                                                    determinism spike's playwright-core and Chrome for Testing, as the
 //                                                    other Chromium runners, Python 3, and docs/'s install: cd docs && npm ci)
 //   … --only python|worker                          one host
@@ -41,7 +41,7 @@ const args = process.argv.slice(2), only = args.includes('--only') ? args[args.i
 const RESULTS = path.join(root, 'acceptance/results'), LOGS = path.join(RESULTS, 'm6-sharing');
 const WRANGLER = path.join(root, 'docs/node_modules/.bin/wrangler');
 const checks = [], say = (name, ok, detail) => { checks.push({ name, ok, detail }); console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${detail ? `: ${detail}` : ''}`); };
-if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-avatar-studio beside the repository (vrmxa-core): the game has characters'); process.exit(1); }
+if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-core beside the repository: the game has characters'); process.exit(1); }
 const hosts = only ? [only] : ['python', 'worker'];
 if (hosts.includes('worker') && !fs.existsSync(WRANGLER)) { console.error('needs docs/\'s install for Wrangler: cd docs && npm ci'); process.exit(1); }
 

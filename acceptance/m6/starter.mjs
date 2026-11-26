@@ -2,7 +2,7 @@
 // Mira cast with the starter's default animation set plays every slot of every set; every starter item used as its
 // type says) in Node, then in headless Chromium through the built playground's ?mode=starter over loopback, with the
 // starter served as the build's starter/ folder. Both must pass, and the browser's results must equal Node's.
-// Writes acceptance/results/m6-starter.json; exit 1 on a failure or a difference. Needs vrmxa-avatar-studio beside the
+// Writes acceptance/results/m6-starter.json; exit 1 on a failure or a difference. Needs vrmxa-core beside the
 // repo and a built playground:
 //   (cd apps/playground && npx vite build) && node acceptance/m6/starter.mjs [--node-only]
 // The check draws nothing, but the page makes a renderer, so the browser part takes the GPU lock (acceptance/README.md,

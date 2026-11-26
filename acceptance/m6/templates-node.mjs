@@ -52,7 +52,7 @@ export async function projectGame(dir) {
 }
 
 if (process.argv[1] === import.meta.filename) {
-  if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-avatar-studio beside the repository (the level has characters)'); process.exit(1); }
+  if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-core beside the repository (the level has characters)'); process.exit(1); }
   const args = process.argv.slice(2), at = args.indexOf('--build');
   const runs = [];
   if (at >= 0) {

@@ -21,12 +21,12 @@ import { readCharacter, rolesOf, applyCast, voicesFor } from '../src/index.js';
 const ROOT = path.resolve(import.meta.dirname, '../../../..');
 const SAMPLE = path.join(ROOT, 'content/sample');
 const DEV = path.resolve(ROOT, '..');
-const CORE = [path.join(DEV, 'vrmxa-avatar-studio/packages/vrmxa-core/src'), path.join(ROOT, '../../../vrmxa-avatar-studio/packages/vrmxa-core/src')].find((p) => fs.existsSync(path.join(p, 'index.js')));
-const STUDIO = CORE ? path.resolve(CORE, '../../../content/characters/out/approved') : null;
+const CORE = [path.join(DEV, 'vrmxa-core/src'), path.join(ROOT, '../../../vrmxa-core/src')].find((p) => fs.existsSync(path.join(p, 'index.js')));
+const STUDIO = path.join(DEV, 'vrmxa-avatar-studio/content/characters/out/approved'); // the studio's own built characters
 const args = process.argv.slice(2);
 const studio = args.includes('--studio');
 const out = args.includes('--out') ? args[args.indexOf('--out') + 1] : null;
-if (!CORE) { console.error('vrmxa-core is not beside the repository (../vrmxa-avatar-studio): it reads the .vrmxa files'); process.exit(2); }
+if (!CORE) { console.error('vrmxa-core is not beside the repository (../vrmxa-core): it reads the .vrmxa files'); process.exit(2); }
 if (studio && !fs.existsSync(path.join(STUDIO, 'hana.vrmxa'))) { console.error(`--studio: no ${path.join(STUDIO, 'hana.vrmxa')} (build it with the studio's content/characters/build.sh)`); process.exit(2); }
 
 const vrmxa = Object.assign({}, ...(await Promise.all(['index.js', 'voice/index.js', 'persona/index.js', 'closet/index.js', 'anim/index.js'].map((f) => import(path.join(CORE, f))))));

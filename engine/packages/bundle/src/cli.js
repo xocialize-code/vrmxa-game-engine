@@ -60,6 +60,10 @@ try {
       console.error(`the game runtime at ${runtime} ${what}: build it again (npm run build -w @vrmxg/game-app)`);
       process.exit(1);
     }
+    // the runtime bundles vrmxa-core from ../vrmxa-core: off the commit vrmxa-core.json pins, its builds differ from
+    // everyone else's and recorded logs won't replay on them (AB-A-0337)
+    const pinScript = path.resolve(import.meta.dirname, '../../../../scripts/vrmxa-core.mjs');
+    if (fs.existsSync(pinScript)) { const pin = (await import(pinScript)).pinState(); if (!pin.ok) console.error(`warning: ${pin.problem}`); }
   }
   const src = gameFile ? projectWithGame(project, gameFile) : folderReader(project);
   const r = check

@@ -3,7 +3,7 @@
 The project M0 runs everywhere (M0 W8, AB-T-0509): the cafe, its doors, Mira (the player) and Hana (an NPC), an
 animation set, a recorded demo walk. Asset refs in the scenes are paths under this folder, so it opens as a project in
 the playground, the MCP server (`node engine/packages/mcp/src/server.js content/sample cafe.vrmxs --behaviours
-behaviours.js --vrmxa-core ../../../vrmxa-avatar-studio/packages/vrmxa-core`) and the engine's tests.
+behaviours.js --vrmxa-core ../../../vrmxa-core`) and the engine's tests.
 
 **Every file has a licence: [LICENCES.md](LICENCES.md)**, checked by `tools/check-licences.mjs` in CI.
 
@@ -34,7 +34,7 @@ behaviours.js --vrmxa-core ../../../vrmxa-avatar-studio/packages/vrmxa-core`) an
 | `looks/morning.cube` | A 17³ LUT: cool lifted shadows, warm highlights (`tools/make-lut.mjs`) |
 | `voice/` | Lines (Kokoro-82M through mlx-audio) with word timings. `voice/lines.json` lists M1–M3's (`tools/make-voice.py`). `tools/bake-lines.mjs <scene>` voices a sequence's dialogue into its track (M4 W7, `@vrmxg/voicing`: clips named by line, engine, voice and words; never written over) and a scene's text-only `say` connections, without touching `lines.json`; `tools/tts-server.py` speaks lines live while playing (the playground's `?tts=http://127.0.0.1:5190/speak`); `tools/voice-server.py` (M3 W3) adds the director's model and speech-to-text on one port (5191): `/v1/chat/completions`, `/transcribe`, `/speak` |
 
-Regenerate with `node content/sample/tools/make-content.mjs` (needs vrmxa-avatar-studio beside the repo for the
+Regenerate with `node content/sample/tools/make-content.mjs` (needs vrmxa-core beside the repo for the
 characters and clips) and `node content/sample/tools/make-input.mjs`; the prop with `tools/generate-prop.mjs` (needs
 Gaea running). Voice lines: `HF_HUB_CACHE=<models> HF_HUB_OFFLINE=1 <python with mlx-audio> -I tools/make-voice.py`
 (only lines without a clip; `--all` remakes them).

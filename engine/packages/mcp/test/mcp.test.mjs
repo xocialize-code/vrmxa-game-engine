@@ -268,8 +268,8 @@ test('answers are compact and bounded', async () => {
   assert.ok(big.length < 24200 && big.includes('cut at 24000'), big.slice(-80));
 });
 
-const CORE = path.join(here, '../../../../../vrmxa-avatar-studio/packages/vrmxa-core');
-test('directors (M3 W10) over stdio on the sample cafe: a profile read, set as one undo step and undone; talk, the answer, the goal; takes listed and replayed', { skip: fs.existsSync(CORE) ? false : 'needs vrmxa-avatar-studio' }, async () => {
+const CORE = path.join(here, '../../../../../vrmxa-core');
+test('directors (M3 W10) over stdio on the sample cafe: a profile read, set as one undo step and undone; talk, the answer, the goal; takes listed and replayed', { skip: fs.existsSync(CORE) ? false : 'needs vrmxa-core' }, async () => {
   const dir = path.join(work, 'directed');
   fs.cpSync(sample, dir, { recursive: true });
   const cafe = JSON.parse(fs.readFileSync(path.join(dir, 'cafe.vrmxs'), 'utf8'));

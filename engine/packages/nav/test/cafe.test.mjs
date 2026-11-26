@@ -1,4 +1,4 @@
-// M2 W6 on the sample cafe (needs vrmxa-avatar-studio beside the repo for the characters): the navmesh bakes from the
+// M2 W6 on the sample cafe (needs vrmxa-core beside the repo for the characters): the navmesh bakes from the
 // set's colliders, the locked staff door blocks its doorway, Hana walks behind the counter (round it, not through it)
 // and Mira walks in through the entrance, both along the crowd's paths on their own controllers; the same every run,
 // and a snapshot mid-walk replays identically.
@@ -28,7 +28,7 @@ async function cafe() {
 }
 const hash = (tree) => hashValue(worldHashes(tree, { physicsBytes: true }));
 
-test('Hana walks behind the counter and Mira walks in, along the navmesh; the same every run; a snapshot mid-walk replays', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('Hana walks behind the counter and Mira walks in, along the navmesh; the same every run; a snapshot mid-walk replays', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const R = await loadRapier();
   const { sample, opts } = await cafe();
   const BEHIND = [0.6, 0, -4.6], INSIDE = [-0.8, 0, 1.2];

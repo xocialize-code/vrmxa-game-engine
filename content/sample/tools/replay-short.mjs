@@ -3,7 +3,7 @@
 // speaker's mouth every step, a snapshot taken mid-line restored into a fresh world. The two runs must give the same
 // final hash, the same mouths and the same per-step run, with every line baked in its role's voice and nobody talking
 // over anybody. Writes acceptance/results/m4-short-replay.json; exit 1 on a difference. Draws nothing, so it takes no
-// GPU lock. Needs vrmxa-avatar-studio beside the repo (vrmxa-core reads the characters).
+// GPU lock. Needs vrmxa-core beside the repo (it reads the characters).
 //   node content/sample/tools/replay-short.mjs [sequences/the-regular.vrmxs]
 import fs from 'node:fs';
 import path from 'node:path';

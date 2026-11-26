@@ -46,7 +46,7 @@ Tests (`npm test`):
 - core personas from both forms, with the app laid over;
 - profiles from traits (the same every time), clamped, and from a model, with the fallback;
 - a trait deciding a utility choice: talkative chats, reserved works;
-- on the cafe (needs `vrmxa-avatar-studio`):
+- on the cafe (needs `vrmxa-core`):
   - each character's id and personas;
   - the director's prompt in §11's order, with her examples, her faces only and her goals;
   - `setProfile` changing the document and the trait, never the bundle;

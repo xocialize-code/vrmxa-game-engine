@@ -14,7 +14,7 @@ import { checkNotices } from '@vrmxg/bundle/notices';
 
 const root = path.resolve(import.meta.dirname, '..');
 // vrmxa-core's own install (sql.js, @cfworker/json-schema come from there), beside the repository (AB-D-0249)
-const core = path.join(root, '../vrmxa-avatar-studio/packages/vrmxa-core');
+const core = path.join(root, '../vrmxa-core');
 const engine = ['three', '@pixiv/three-vrm', '@pixiv/three-vrm-animation', '@dimforge/rapier3d-deterministic-compat', 'navcat', 'mathcat', 'postprocessing', 'three.quarks', '@vue/runtime-core', '@vue/runtime-dom', '@vue/reactivity', '@vue/shared'];
 const fromCore = ['sql.js', '@cfworker/json-schema', 'fflate'];
 // Ajv 8 as @vrmxg/scene imports it (the workspace's root holds ESLint's Ajv 6)

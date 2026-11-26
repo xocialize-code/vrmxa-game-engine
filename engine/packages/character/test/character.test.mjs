@@ -9,7 +9,7 @@ import { available, read, vrmxaCore, testAnimations } from './fixtures.mjs';
 
 installPortableMath();
 const OK = available('spec', 'core', 'coreAnim', 'full');
-const SKIP = OK ? false : 'needs VRMXA_Specification/assets/spec/spec.vrm and vrmxa-avatar-studio beside this repository';
+const SKIP = OK ? false : 'needs VRMXA_Specification/assets/spec/spec.vrm and vrmxa-core beside this repository';
 const R = OK ? await loadRapier() : null;
 const core = OK ? await vrmxaCore() : null;
 const anims = OK ? await testAnimations(core) : null;

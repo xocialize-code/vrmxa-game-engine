@@ -3,7 +3,7 @@
 // door, talks about the weather (she shrugs), calls her along (she follows again) and teases her (she laughs). The director
 // runs the split turn on a scripted model (her lines and verdicts below), so the take is the same every time it is made;
 // it replays with no model. The second fixture beside takes/conversation.json (M3 W4).
-//   node content/sample/tools/make-follow-take.mjs        (needs vrmxa-avatar-studio beside the repo, as the tests do)
+//   node content/sample/tools/make-follow-take.mjs        (needs vrmxa-core beside the repo, as the tests do)
 import fs from 'node:fs';
 import path from 'node:path';
 import { installPortableMath } from '@vrmxg/dmath';

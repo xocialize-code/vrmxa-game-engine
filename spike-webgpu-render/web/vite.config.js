@@ -41,8 +41,8 @@ const saver = {
 export default defineConfig({
   root: here('.'), base: './', publicDir: here('../../content/sample'),
   plugins: [quarksShim, saver],
-  resolve: { alias: { '@vrmxa-core': here('../../../vrmxa-avatar-studio/packages/vrmxa-core/src'), '@content': here('../../content/sample') }, dedupe: ['three'] },
+  resolve: { alias: { '@vrmxa-core': here('../../../vrmxa-core/src'), '@content': here('../../content/sample') }, dedupe: ['three'] },
   optimizeDeps: { exclude: ['sql.js', 'three.quarks'] },
   build: { outDir: here('dist'), emptyOutDir: true, target: 'esnext', chunkSizeWarningLimit: 8000 },
-  server: { port: 5241, host: '127.0.0.1', fs: { allow: [here('../..'), here('../../../vrmxa-avatar-studio/packages/vrmxa-core')] } },
+  server: { port: 5241, host: '127.0.0.1', fs: { allow: [here('../..'), here('../../../vrmxa-core')] } },
 });

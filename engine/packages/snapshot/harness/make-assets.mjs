@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { read, vrmxaCore, testAnimations, available } from '../../character/test/fixtures.mjs';
-if (!available('spec', 'full', 'vroid10', 'core', 'coreAnim')) throw new Error('needs VRMXA_Specification, vrmxa-avatar-studio and spike-determinism/web/public/models/vroid10.vrm beside the repo');
+if (!available('spec', 'full', 'vroid10', 'core', 'coreAnim')) throw new Error('needs VRMXA_Specification, vrmxa-core and spike-determinism/web/public/models/vroid10.vrm beside the repo');
 const here = import.meta.dirname, out = path.join(here, 'public/models');
 fs.mkdirSync(path.join(out, 'clips'), { recursive: true });
 fs.mkdirSync(path.join(out, 'prefabs'), { recursive: true });

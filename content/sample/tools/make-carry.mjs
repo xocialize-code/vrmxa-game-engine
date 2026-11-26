@@ -5,7 +5,7 @@
 // writes every step, which can move the replay of scenes with a hand reach, so the sample game (W10) adds it with its
 // own re-check; until then the layer checks (apps/playground/src/layers-check.js) add it to the document they load.
 //   node content/sample/tools/make-carry.mjs [--check]
-// Needs vrmxa-avatar-studio beside the repo (vrmxa-core writes the .vrma).
+// Needs vrmxa-core beside the repo (it writes the .vrma).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

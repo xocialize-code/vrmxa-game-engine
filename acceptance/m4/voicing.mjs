@@ -2,7 +2,7 @@
 // (apps/playground/src/voicing-check.js), then in headless Chromium through the built playground's ?mode=voicing, over
 // loopback. Both must give the same final world hash, the same hash of every speaker's mouth at every step, and the same
 // per-step run; a snapshot taken mid-line must restore to the same end. Writes acceptance/results/m4-voicing.json; exit 1
-// on a difference. Needs vrmxa-avatar-studio beside the repo (vrmxa-core reads the characters) and a built playground:
+// on a difference. Needs vrmxa-core beside the repo (it reads the characters) and a built playground:
 //   (cd apps/playground && npx vite build) && node acceptance/m4/voicing.mjs [--node-only]
 // It plays no sound and draws nothing, but the page makes a renderer, so it takes the GPU lock (acceptance/README.md).
 import fs from 'node:fs';

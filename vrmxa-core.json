@@ -1,0 +1,5 @@
+{
+  "about": "vrmxa-core, the VRMXA format library the apps bundle and the character tests and acceptance runs read, is a public repository checked out beside this one as ../vrmxa-core, pinned by commit (AB-A-0337). scripts/vrmxa-core.mjs clones it there at this commit and checks it. It needs VRMXA_Specification beside it for the characters' Spec model.",
+  "repository": "xocialize-code/vrmxa-core",
+  "commit": "f3d3c8f33ed7c43cdca05f79558e9a01dcd648ef"
+}

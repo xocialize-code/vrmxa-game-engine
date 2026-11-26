@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { read, vrmxaCore, testAnimations, available } from '../test/fixtures.mjs';
-if (!available('vroid10', 'core', 'coreAnim')) throw new Error('needs spike-determinism/web/public/models/vroid10.vrm and vrmxa-avatar-studio beside the repo');
+if (!available('vroid10', 'core', 'coreAnim')) throw new Error('needs spike-determinism/web/public/models/vroid10.vrm and vrmxa-core beside the repo');
 const out = path.join(import.meta.dirname, 'public/models');
 fs.mkdirSync(path.join(out, 'clips'), { recursive: true });
 fs.writeFileSync(path.join(out, 'vroid10.vrm'), read('vroid10'));

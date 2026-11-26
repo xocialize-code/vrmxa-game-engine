@@ -3,7 +3,7 @@
 // her, talks to Hana (the host brain) at set steps; the director runs the split turn on a scripted model (her lines and
 // verdicts below), so the take is the same every time it is made. The take holds the scene, the cast, the input and the
 // ai log; it replays with no model.
-//   node content/sample/tools/make-conversation.mjs        (needs vrmxa-avatar-studio beside the repo, as the tests do)
+//   node content/sample/tools/make-conversation.mjs        (needs vrmxa-core beside the repo, as the tests do)
 // With --sequence it also writes sequences/conversation.vrmxs (takeToSequence); bake its lines with tools/bake-lines.mjs.
 import fs from 'node:fs';
 import path from 'node:path';

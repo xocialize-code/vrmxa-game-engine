@@ -27,7 +27,7 @@ const here = import.meta.dirname;
 const args = process.argv.slice(2), opt = (k, d) => { const i = args.indexOf(`--${k}`); return i >= 0 ? args[i + 1] : d; };
 const SECONDS = +opt('seconds', 10), STEPS = SECONDS * 60, OUT = path.resolve(here, opt('out', 'results/live.json'));
 const LOOPBACK = '127.0.0.1';
-if (!HAS_MODELS) { console.error('needs vrmxa-avatar-studio beside the repository (the characters)'); process.exit(1); }
+if (!HAS_MODELS) { console.error('needs vrmxa-core beside the repository (the characters)'); process.exit(1); }
 const sleep = (ms) => new Promise((r) => setTimeout(r, Math.max(0, ms)));
 
 // ---------------------------------------------------------------- the loopback server: a game channel and a signalling relay

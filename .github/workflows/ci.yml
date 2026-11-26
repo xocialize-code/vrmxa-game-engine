@@ -1,9 +1,9 @@
 # Lints, type-checks and tests the engine workspace, and runs the spikes that need no models, on every push
 # and pull request.
 # Modelled on xocialize-code/vrmxa-avatar-studio's ci.yml. The VRM models the character spikes need are
-# never committed (see .gitignore), so those suites run on the development Mac only. When the engine starts
-# depending on vrmxa-core (AB-D-0249) this job will check out vrmxa-avatar-studio beside the repository
-# with a read-only deploy key, the way vrmxa-avatar-studio checks out vrmxa-spec.
+# never committed (see .gitignore), so those suites run on the development Mac only. vrmxa-core is public
+# (xocialize-code/vrmxa-core, pinned in vrmxa-core.json, AB-A-0337): CI could clone it with no key, but it
+# doesn't: the tests that read characters also need VRMXA_Specification, which is private, so they skip here.
 name: ci
 
 on:

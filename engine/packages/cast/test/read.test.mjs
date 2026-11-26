@@ -10,7 +10,7 @@ import { CharacterLibrary } from '@vrmxg/character';
 import { readCharacter, castRole, rolesOf } from '../src/index.js';
 import { SAMPLE, STUDIO, haveCore, haveStudio, vrmxaModules, set, sequence, performance, PRESETS } from './helpers.mjs';
 
-const skipCore = haveCore ? false : 'vrmxa-core is not beside the repository (../vrmxa-avatar-studio)';
+const skipCore = haveCore ? false : 'vrmxa-core is not beside the repository (../vrmxa-core)';
 const skipStudio = skipCore || (haveStudio ? false : 'the studio\'s Hana and Mira are not built (vrmxa-avatar-studio/content/characters/out/approved/)');
 const files = { 'characters/hana.vrmxa': path.join(SAMPLE, 'characters/hana.vrmxa'), 'characters/mira.vrmxa': path.join(SAMPLE, 'characters/mira.vrmxa'), 'characters/studio/hana.vrmxa': path.join(STUDIO, 'hana.vrmxa'), 'characters/studio/mira.vrmxa': path.join(STUDIO, 'mira.vrmxa') };
 const bytes = (ref) => new Uint8Array(fs.readFileSync(files[ref] ?? path.join(SAMPLE, ref)));

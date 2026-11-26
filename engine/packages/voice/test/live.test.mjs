@@ -1,6 +1,6 @@
 // W10 (AB-T-0533): live lines are presentation (the simulation is the same with or without a provider, and while an
 // export records), and bakePlan / applyBake turn a sequence's text-only dialogue into clips. Skips the world tests
-// without vrmxa-avatar-studio and spec.vrm.
+// without vrmxa-core and spec.vrm.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -16,7 +16,7 @@ import { available, read, vrmxaCore, testAnimations } from '../../character/test
 
 installPortableMath();
 const OK = available('spec', 'core', 'coreAnim');
-const SKIP = OK ? false : 'needs spec.vrm and vrmxa-avatar-studio beside this repository';
+const SKIP = OK ? false : 'needs spec.vrm and vrmxa-core beside this repository';
 const SAMPLE = path.join(import.meta.dirname, '../../../../content/sample');
 const file = (ref) => new Uint8Array(fs.readFileSync(path.join(SAMPLE, ref)));
 const anims = OK ? await testAnimations(await vrmxaCore()) : null;

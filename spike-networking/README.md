@@ -275,7 +275,7 @@ unchanged.
 
 ## Run it
 
-Needs `vrmxa-avatar-studio` beside the repository (the characters, as the engine's character tests do), `npm ci` at
+Needs `vrmxa-core` beside the repository (the characters, as the engine's character tests do), `npm ci` at
 the root, then:
 
 ```bash

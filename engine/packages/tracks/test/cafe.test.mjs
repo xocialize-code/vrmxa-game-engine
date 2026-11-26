@@ -1,4 +1,4 @@
-// M2 W0 on the sample cafe (needs vrmxa-avatar-studio beside the repo for the characters): an AnimationPlayer in the
+// M2 W0 on the sample cafe (needs vrmxa-core beside the repo for the characters): an AnimationPlayer in the
 // scene's data opens the staff door by an event key, fades the counter light, and plays Hana's talk clip over her
 // locomotion for two seconds. Two runs are identical, and a snapshot taken mid-play restores and replays identically.
 import { test } from 'node:test';
@@ -30,7 +30,7 @@ async function cafe() {
   return { sample, opts: { vrmxaCore: await vrmxaCore(), closet, behaviours, stubTextures: true } };
 }
 
-test('an AnimationPlayer in the cafe opens a door, fades a light and plays Hana\'s talk clip, the same every run', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('an AnimationPlayer in the cafe opens a door, fades a light and plays Hana\'s talk clip, the same every run', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const R = await loadRapier();
   const { sample, opts } = await cafe();
   const run = async (snapAt = null, restore = null) => {

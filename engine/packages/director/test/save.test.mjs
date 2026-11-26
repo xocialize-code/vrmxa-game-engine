@@ -1,4 +1,4 @@
-// M3 W4 (AB-T-0543): saves in the middle of a conversation, on the sample cafe (needs vrmxa-avatar-studio). Hana is the
+// M3 W4 (AB-T-0543): saves in the middle of a conversation, on the sample cafe (needs vrmxa-core). Hana is the
 // host; the director runs the split turn on a scripted model with a slow line (150 steps), so a save can catch her waiting.
 //   - A game saved after the turn, or while she waits, loads into a fresh world and continues, with the log's later
 //     entries, to the same world as the original run at every later sample.
@@ -18,7 +18,7 @@ import * as projectBehaviours from '../../../../content/sample/behaviours.js';
 
 installPortableMath();
 const content = path.resolve(import.meta.dirname, '../../../../content/sample');
-const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-avatar-studio';
+const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-core';
 const flush = () => new Promise((r) => setImmediate(r));
 const isVerdict = (req) => !req.tools.length && /Fill in this JSON object/.test(req.messages.at(-1).content);
 const slowHana = () => scriptedModel((req) => (isVerdict(req) ? { text: '{"emotion": "happy", "gesture": null, "action": null, "goal": null}' } : { text: 'Morning, Mira! The usual?' }), { latency: 150 });

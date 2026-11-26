@@ -49,7 +49,7 @@ exports behaviour classes under the names scenes use (`export { Wander as wander
 (M6 W0) is declared to the registry when the server starts, so `describe` lists it (marked `project`) with its params,
 signals, actions and the state it keeps, and `validate` accepts connections from its signals. `animations.json` at the root, a
 `vrmxa-animations` document whose clips' `file` paths are under the root, gives every character fallback animation sets.
-`.vrmxa` characters need `--vrmxa-core` (the avatar studio's package, injected: AB-D-0249).
+`.vrmxa` characters need `--vrmxa-core` (the public VRMXA library beside the repository, `../vrmxa-core`, injected: AB-D-0249).
 
 Tests (`npm test`, the official MCP client against the server on stdio, on temporary copies): the tool list size; an agent
 describes Camera, makes a mistake the schema refuses, adds a camera to the cafe, sets, undoes, redoes, saves, and the file

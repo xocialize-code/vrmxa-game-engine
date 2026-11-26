@@ -1,4 +1,4 @@
-// M3 W2 (AB-T-0541) on the sample cafe (needs vrmxa-avatar-studio beside the repo), with a scripted model. The person
+// M3 W2 (AB-T-0541) on the sample cafe (needs vrmxa-core beside the repo), with a scripted model. The person
 // speaks as Mira.
 //   - Hana as host: she listens while Mira speaks (looks at her, nods), thinks while the reply is on its way (looks
 //     away), says a filler line past 1.5 s, then the reply; "Could I have a latte?" becomes takeOrder with the order,
@@ -22,7 +22,7 @@ import * as projectBehaviours from '../../../../content/sample/behaviours.js';
 
 installPortableMath();
 const content = path.resolve(import.meta.dirname, '../../../../content/sample');
-const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-avatar-studio';
+const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-core';
 const flush = () => new Promise((r) => setImmediate(r));
 const say = (text, extra = {}) => ({ name: 'say', arguments: { text, to: 'user', ...extra } });
 

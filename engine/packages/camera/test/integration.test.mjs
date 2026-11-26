@@ -1,6 +1,6 @@
 // Input + cameras + characters together (W4 acceptance): 10 s of keyboard and gamepad drive Mira through
 // the player controller, camera-relative to a follow camera the mouse turns; replaying the recording gives
-// the identical end state. Skips without VRMXA_Specification and vrmxa-avatar-studio beside the repo.
+// the identical end state. Skips without VRMXA_Specification and vrmxa-core beside the repo.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { installPortableMath } from '@vrmxg/dmath';
@@ -14,7 +14,7 @@ import { available, read, vrmxaCore, testAnimations } from '../../character/test
 
 installPortableMath();
 const OK = available('spec', 'core', 'coreAnim', 'full');
-const SKIP = OK ? false : 'needs VRMXA_Specification/assets/spec/spec.vrm and vrmxa-avatar-studio beside this repository';
+const SKIP = OK ? false : 'needs VRMXA_Specification/assets/spec/spec.vrm and vrmxa-core beside this repository';
 const R = OK ? await loadRapier() : null;
 const core = OK ? await vrmxaCore() : null;
 const anims = OK ? await testAnimations(core) : null;

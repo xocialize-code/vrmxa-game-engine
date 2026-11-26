@@ -143,7 +143,7 @@ SPIKE_CASES='mode=probe&origin=scheme;mode=export&renderer=webgpu&origin=loopbac
 node web/scripts/summary.mjs                                    # the tables above; writes results/summary.json
 ```
 
-The engine packages and three come from the repo root's `node_modules` (workspaces), so the spike has no install of its own. vrmxa-core is read from `../vrmxa-avatar-studio` as the playground reads it.
+The engine packages and three come from the repo root's `node_modules` (workspaces), so the spike has no install of its own. vrmxa-core is read from `../vrmxa-core` as the playground reads it.
 
 **Modes** (`?mode=`): `probe` (WebGPU in this web view), `view` (one still; `post=anime|none|<comma list>`, `seq=` posts set first, `toggle=`, `big=1`), `bench` (costs; `stages=1` stills per case), `export` (readback timing and two exports; `timing=0` makes export A the page's first renderer; `frames=`), `particles` (`b=fresh`, `fx=0`, `dummy=host|world|materials|objects`, `wgsl=1`, `pixshots=1`). Any page takes `renderer=webgpu|webgl`, `tick=0` (no node-frame tick), `disposeOld=1`, `bloom=threshold` and `outline=<scale>` (stand-in outline width).
 

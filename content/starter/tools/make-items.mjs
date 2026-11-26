@@ -12,7 +12,7 @@
 // Three pickups use mesh2motion's CC0 weapon props (static/assets/props: sword_A, axe_A, hammer_A, with their shared
 // texture), which mesh2motion's LICENSE-CC0.MD and README put under CC0 ("All 3d models"; its props manifest has no
 // per-file licence). Needs reference/mesh2motion-app-main (git-ignored; in a worktree, the main checkout's) and
-// vrmxa-avatar-studio (vrmxa-core packs the ZIP).
+// vrmxa-core (it packs the ZIP).
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
@@ -31,7 +31,7 @@ const check = argv.includes('--check');
 const sourceArg = argv.includes('--source') ? argv[argv.indexOf('--source') + 1] : null;
 const SOURCE = sourceArg ?? [path.join(repo, 'reference/mesh2motion-app-main'), path.join(repo, '../../../reference/mesh2motion-app-main')].find((d) => fs.existsSync(path.join(d, 'static/assets/props_manifest.json')));
 if (!SOURCE) { console.error('mesh2motion not found: pass --source <mesh2motion-app-main> (reference/ is git-ignored)'); process.exit(2); }
-if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-avatar-studio beside the repository (vrmxa-core packs the items)'); process.exit(2); }
+if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-core beside the repository (it packs the items)'); process.exit(2); }
 const licenceText = fs.readFileSync(path.join(SOURCE, 'LICENSE-CC0.MD'), 'utf8');
 if (!/All 3d models/.test(licenceText) || !/CC0 1\.0 Universal/.test(licenceText)) throw new Error('mesh2motion\'s LICENSE-CC0.MD no longer puts its 3d models under CC0: check the licence before using its props');
 const propsManifest = JSON.parse(fs.readFileSync(path.join(SOURCE, 'static/assets/props_manifest.json'), 'utf8'));

@@ -51,7 +51,7 @@ Tests (`npm test`):
 - paths through a doorway, blocked, and back;
 - links shortening a path;
 - the snapshot carrying the navmesh only once changed;
-- on the cafe (needs vrmxa-avatar-studio): Hana walks round the counter to behind it and Mira walks in; two runs are identical; a snapshot mid-walk replays.
+- on the cafe (needs vrmxa-core): Hana walks round the counter to behind it and Mira walks in; two runs are identical; a snapshot mid-walk replays.
 
 Not yet:
 - door traversal animations on links (navcat's crowd has the hooks);

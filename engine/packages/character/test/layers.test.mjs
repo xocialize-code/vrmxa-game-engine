@@ -1,4 +1,4 @@
-// M2 W8 (AB-T-0531), G10 layers on the sample cafe (needs vrmxa-avatar-studio beside the repo for Mira): with a sword in
+// M2 W8 (AB-T-0531), G10 layers on the sample cafe (needs vrmxa-core beside the repo for Mira): with a sword in
 // hand her upper body holds the sword's pose (the sword set's `hold`, masked upperBody) while her legs walk; without it
 // her arms swing; a masked `greet` wave plays over walking without stopping her; the same every run; a snapshot mid-wave
 // replays.
@@ -28,7 +28,7 @@ async function world() {
 const q = (m, bone) => m.vrm.humanoid.getNormalizedBoneNode(bone).quaternion.toArray();
 const angle = (a, b) => { const d = Math.abs(a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3]); return 2 * Math.acos(Math.min(1, d)); };
 
-test('the sword\'s hold layers over walking: upper body in the sword pose, legs walking; a wave plays over the walk', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('the sword\'s hold layers over walking: upper body in the sword pose, legs walking; a wave plays over the walk', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const W = await world(), tree = W.tree, mira = /** @type {any} */ (tree.find('mira'));
   const walk = async (n) => { for (let i = 0; i < n; i++) { mira.input.move = [0, -1.4]; tree.step(); } };
   // without a sword: walking swings the arms
@@ -60,7 +60,7 @@ test('the sword\'s hold layers over walking: upper body in the sword pose, legs 
   assert.equal(mira.graph.gesturing, false, 'the wave ends by itself');
 });
 
-test('layers replay: two runs identical, a snapshot mid-wave restores the same', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('layers replay: two runs identical, a snapshot mid-wave restores the same', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const run = async (snapAt = null, from = null) => {
     const W = await world(), tree = W.tree, mira = /** @type {any} */ (tree.find('mira'));
     if (from) restoreWorld(tree, from);
@@ -80,7 +80,7 @@ test('layers replay: two runs identical, a snapshot mid-wave restores the same',
   assert.equal(c.hash, a.hash, 'restored mid-wave (step 170)');
 });
 
-test('an emote is state: a snapshot taken during one restores, and the expression goes back to 0 a second later (M2 W12)', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('an emote is state: a snapshot taken during one restores, and the expression goes back to 0 a second later (M2 W12)', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const run = async (from = null) => {
     const W = await world(), tree = W.tree, mira = /** @type {any} */ (tree.find('mira'));
     if (from) restoreWorld(tree, from);

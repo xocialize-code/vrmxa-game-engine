@@ -88,7 +88,7 @@ test('the shapes of the states they declare: what a save\'s fingerprint (M6 W5) 
   assert.equal(stateShape(reg.behaviours.get('wander')), null, 'the engine\'s wander hasn\'t declared its state');
 });
 
-const skipPlay = !available('core') ? 'needs vrmxa-avatar-studio beside the repository' : false;
+const skipPlay = !available('core') ? 'needs vrmxa-core beside the repository' : false;
 test('the recorded sessions replay to their hashes, emit every declared signal, and keep the declared state', { skip: skipPlay, timeout: 600000 }, async () => {
   const { installPortableMath } = await import('@vrmxg/dmath');
   const { loadRapier } = await import('@vrmxg/physics');

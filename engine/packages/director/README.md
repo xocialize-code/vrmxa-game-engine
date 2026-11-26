@@ -38,7 +38,7 @@ W.ai.replay(recordedLog);                   // with installDirector(tree, { mode
 - The snapshot and the hash hold only injected events already due. Events queued for later steps (a replayed log) are
   inputs, so a replay is the same world as the live run at every step. A restore keeps the tree's own later inputs.
 
-Measured (Node 26, M5 Max, `npm test`, the sample cafe with a scripted model; needs `vrmxa-avatar-studio` beside the repo):
+Measured (Node 26, M5 Max, `npm test`, the sample cafe with a scripted model; needs `vrmxa-core` beside the repo):
 - **A conversation.** Mira asks for a latte at step 500. Hana is flagged waiting from step 501 and answers 30 steps later:
   a happy face, the line and a look at Mira, all on the same step.
   - Two live runs are the same world every 30 steps.

@@ -1,6 +1,6 @@
 // The HUD on a real character (M5 W3): the prompt for what is in reach comes from @vrmxg/interact, and what the player
 // carries from its inventory, read through HudBinding from the world being played. A spec.vrm character and the VRMXI
-// specification's key fixture; skips without VRMXA_Specification and vrmxa-avatar-studio beside this repository.
+// specification's key fixture; skips without VRMXA_Specification and vrmxa-core beside this repository.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { installPortableMath } from '@vrmxg/dmath';
@@ -17,7 +17,7 @@ import { available, vrmxaCore, read, testAnimations } from '../../character/test
 
 installPortableMath();
 const OK = SPEC && available('core', 'coreAnim', 'spec');
-const SKIP = OK ? false : 'needs VRMXA_Specification (fixtures-vrmxi/), spec.vrm and vrmxa-avatar-studio beside this repository';
+const SKIP = OK ? false : 'needs VRMXA_Specification (fixtures-vrmxi/), spec.vrm and vrmxa-core beside this repository';
 
 /** What HudBinding reads of a session, for one world without the game's rules (it reads the world's services). */
 const session = (tree) => ({ tree, view: () => null, version: '0', held: null, on: () => () => {} });

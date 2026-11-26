@@ -61,7 +61,7 @@ without one hash as before (`acceptance/compare.mjs` 20 of 20, the canonical sim
 
 ## Results (AB-R-0939)
 
-Tests (`npm test`; they skip, and say so, without `VRMXA_Specification` and `vrmxa-avatar-studio` beside the repo):
+Tests (`npm test`; they skip, and say so, without `VRMXA_Specification` and `vrmxa-core` beside the repo):
 walk, run and jump from scripted input (idle → move → jump → fall → land → idle; 1.4 and 4 m/s blends; facing; a
 ~1 m jump); slots switch to an item's set on its tag through vrmxa-core's `resolveSlots`; two runs bit-identical at every
 step; a snapshot mid-crossfade restored into a new tree re-simulates bit-identically; look-at, emote, say, goTo and a
