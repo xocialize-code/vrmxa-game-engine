@@ -111,9 +111,14 @@ rows for checks 4, 8 and 10 say more exactly what was and wasn't shown. **Whethe
   `replay=a.json`) **and truncates long names** in `find`'s output (the frame-rate readout's last word, "scene cha…").
   The frame-rate app was launched through AppProbe's MCP `launch` (the environment as an object), and the readout's
   cut word was mended after the run (`frames/readout-as-read.log` is the text as read; every number was whole).
-- **Validate warns that the sample game's own goals can't be reached** (`serve`, and the title's `press-start`): the
-  game's behaviours complete them through the game service, which `unreachableGoals` can't follow, so `validateGame`
-  makes them warnings, by design. The agent in check 9 read it as that.
+- **Validate warns that two of the sample game's goals can't be reached, for two different reasons.** `serve` is
+  reached from code: `tableZone` calls `game.add('served', 1)` (`content/sample/game/behaviours.js`), which
+  `unreachableGoals` can't follow. `press-start` on `title.vrmxs` is an optional, label-only goal (no `when`) that
+  nothing ever completes: `pressToStart` only changes the scene. It is harmless because optional goals don't count
+  towards a win, and validate doesn't say so: it ignores `optional`. Both are warnings, not problems, only because
+  `codeMayChangeState` downgrades every unreachable goal in the project once its behaviours module mentions the game
+  service, so a mistyped goal key in a project with behaviours would show only as a warning too (AB-T-0641). The agent
+  in check 9 listed the warnings and said it hadn't checked them.
 - **The lose session recorded today is W10's byte for byte**; the win took 6,299 steps against W10's 6,292 (live play
   in a browser lands its inputs on different steps).
 
