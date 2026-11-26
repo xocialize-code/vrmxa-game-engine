@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { declareProjectBehaviours } from '@vrmxg/registry';
-import { wiringView, nodeAfter, propFields, pinValue, layerField, looseSchema, structRows, widgetOf, inspectorFields } from '../src/index.js';
+import { wiringView, nodeAfter, retarget, propFields, pinValue, layerField, looseSchema, structRows, widgetOf, inspectorFields } from '../src/index.js';
 import { loadSFC, render } from './sfc.mjs';
 
 const SAMPLE = path.join(import.meta.dirname, '../../../../content/sample');
@@ -77,6 +77,22 @@ test('a connection into a prefab instance\'s node shows that node\'s actions and
   assert.equal(wiringView(reg, doc, 'serve').connections[0].problem, null, 'not judged without the prefab');
 });
 
+test('a connection retargeted: sent as it is when the new target has its action, held until an action is picked when not', () => {
+  const w = wiringView(reg, level, 'rules');
+  const c = w.connections.find((x) => x.call === 'lookAt');
+  assert.deepEqual(retarget(w, c, 'aoi'), { set: { to: 'aoi' } });
+  assert.deepEqual(retarget(w, c, 'root'), { pending: 'root' });
+  assert.deepEqual(retarget(w, c, 'hana-1'), { clear: true });
+});
+
+test('a behaviour param its declaration doesn\'t have is shown read-only, removable; an unknown behaviour\'s params too', () => {
+  const doc = { ...level, nodes: level.nodes.map((n) => (n.id === 'mira' ? { ...n, behaviours: [{ use: 'player', speed: 3 }, { use: 'nonesuch', mood: 'calm' }] } : n)) };
+  const w = wiringView(reg, doc, 'mira');
+  const extra = w.behaviours[0].fields.find((f) => f.key === 'speed');
+  assert.deepEqual([extra.unknown, extra.enabled, extra.value, extra.widget], [true, false, 3, 'scalar']);
+  assert.deepEqual(w.behaviours[1].fields.map((f) => f.key), ['mood']);
+});
+
 test('pins, layers and the node after', () => {
   assert.equal(pinValue({ default: 'mira', schema: {} }), 'mira');
   assert.equal(pinValue({ default: undefined, schema: { type: 'boolean' } }), false);
@@ -87,6 +103,7 @@ test('pins, layers and the node after', () => {
   assert.equal(f.unknownLayer, 'ghost');
   assert.equal(widgetOf(f.schema, f.meta, f.value), 'enum');
   assert.equal(layerField({ ...collider, value: undefined }, ['default']).unknownLayer, null);
+  assert.equal(layerField({ ...collider, value: undefined, mixed: true }, ['default']).unknownLayer, null, 'a mixed selection isn\'t an unknown layer');
   assert.equal(nodeAfter(level, 'stool-8'), 'till');
   assert.equal(nodeAfter(level, 'order-3'), '');
   assert.equal(wiringView(reg, level, 'nobody'), null);

@@ -19,7 +19,7 @@ import { parse, describeType, serialize, overridesText, prefabNodes } from '@vrm
 import { makeTake, isTake, takeToSequence, installDirector, demoModel, httpModel } from '@vrmxg/director';
 import { shellTTS, httpTTS } from '@vrmxg/voice';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
-import { EditorSession, newSequenceDoc, rowsOf } from '@vrmxg/editor-core';
+import { EditorSession, newSequenceDoc, rowsOf, referencesElsewhere } from '@vrmxg/editor-core';
 import { inspectorFields, sharedFields, sharedAxes, assetEntries, layerField, wiringView, nodeAfter } from '@vrmxg/editor-ui';
 import { AudioOutput } from '@vrmxg/audio';
 import { exportTake, shellSink, hashSink, hashFrame, readbackFor, captureStill, encodePNG, toBase64, SIZES, RATES, CODECS, framesFor, secondsOf } from '@vrmxg/export';
@@ -743,6 +743,19 @@ export class EditorHost {
   setPropOn(ids, key, value) {
     if (ids.length === 1 && this.session.innerNode(ids[0])) return this.session.setOverride(ids[0], `props.${key}`, value);
     return this.session.setPropOn(ids, key, value);
+  }
+
+  /**
+   * Change a node's id (M6 W1): the session rewrites this scene's references, and refuses when another of the project's
+   * files names the node (a sequence filming this scene, a scene placing it as a prefab), which it can't rewrite. The
+   * project's scenes are read for that here, when an id is changed. One undo step.
+   */
+  async setNodeId(id, to) {
+    const s = this.session, p = this.project, ref = this.sceneRef;
+    const docs = new Map();
+    if (p && ref) for (const f of p.files.filter((x) => x.endsWith('.vrmxs') && x !== ref)) { try { docs.set(f, parse(await p.text(f))); } catch { /* a file that doesn't parse names nothing */ } }
+    s.elsewhere = referencesElsewhere(registry, ref ?? '', docs);
+    try { return s.setNodeId(id, to); } finally { s.elsewhere = null; }
   }
 
   /** Rename a node; an inner node's name is an override. */

@@ -5,7 +5,7 @@
 // A behaviour's params are fields like a node's props (propFields: its schema and meta, the registry's own or a project
 // behaviour's static describe). A connection is four picks: the signal (the node's type's and its behaviours'), the target
 // (a node of the scene), the action (the target's), and the arguments, fields by the action's schema.
-import { propFields } from './fields.js';
+import { propFields, looseSchema, widgetOf } from './fields.js';
 
 const named = (o) => Object.entries(o ?? {}).map(([name, m]) => ({ name, description: m?.description ?? '' }));
 
@@ -35,7 +35,13 @@ export function wiringView(reg, doc, id, { nodeOf = () => null } = {}) {
   const behaviours = (node.behaviours ?? []).map((b) => {
     const d = reg.behaviours.get(b.use);
     const { use, ...values } = b;
-    return { use, description: d?.description ?? '', project: d?.source === 'project', known: !!d, fields: d ? propFields(d.params, values) : [] };
+    // a param the behaviour doesn't declare (or every param of one the registry doesn't know) is kept in the file: shown
+    // read-only, removable
+    const extra = Object.entries(values).filter(([k]) => !d?.params[k]).map(([key, value]) => {
+      const schema = looseSchema(value);
+      return { key, schema, meta: {}, widget: widgetOf(schema, {}, value), value, default: undefined, set: true, enabled: false, visible: true, unknown: true, description: `${use} doesn't declare ${key}: kept as it is` };
+    });
+    return { use, description: d?.description ?? '', project: d?.source === 'project', known: !!d, fields: [...(d ? propFields(d.params, values) : []), ...extra] };
   });
   const has = new Set(behaviours.map((b) => b.use));
   const addable = [...reg.behaviours.values()]
@@ -59,6 +65,19 @@ export function wiringView(reg, doc, id, { nodeOf = () => null } = {}) {
     connections.push({ index, signal: c.signal, to: c.to, call: c.call, args: c.args ?? null, fields: act ? propFields(act.args, c.args) : [], problem });
   });
   return { id, behaviours, addable, signals, targets: nodes.map((n) => n.id), actions, connections, incoming };
+}
+
+/**
+ * A connection's target changed in its panel: what to do with it (M6 W1 review). When the new target has the connection's
+ * action, the change is sent as it is ({ set: { to } }); when it hasn't, the panel holds the new target ({ pending }) and
+ * offers that target's actions, and the pick sends both at once ({ to, call }), one undo step. Back to the connection's
+ * own target: nothing to hold ({ clear: true }).
+ * @param {{ actions: Record<string, { name: string }[]> }} wiring @param {{ to: string, call: string }} c @param {string} to
+ * @returns {{ set: { to: string } } | { pending: string } | { clear: true }}
+ */
+export function retarget(wiring, c, to) {
+  if (to === c.to) return { clear: true };
+  return (wiring.actions[to] ?? []).some((a) => a.name === c.call) ? { set: { to } } : { pending: to };
 }
 
 /** The node after `id` in the document's order (what the inspector's Before menu shows), or '' when it is the last. */

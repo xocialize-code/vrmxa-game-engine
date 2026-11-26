@@ -28,7 +28,7 @@ const label = (f) => (props.owner ? `${props.owner} ${f.key}` : f.key);
       <span class="insp-key">{{ f.key }}<span v-if="f.unit" class="muted"> ({{ f.unit }})</span></span>
       <span class="clip-btns">
         <button v-if="!f.set" :id="`${rid(f)}--pin`" type="button" class="clip" :aria-label="`Write ${label(f)} into the file (${JSON.stringify(pinValue(f))})`" :title="`Write the value shown (${JSON.stringify(pinValue(f))}) into the file, so it stays when the default changes`" :disabled="disabled || f.enabled === false" @click="emit('change', f.key, pinValue(f))">＝</button>
-        <button v-else :id="`${rid(f)}--clear`" type="button" class="clip" :aria-label="`Clear ${label(f)}`" title="Back to the default" :disabled="disabled || f.enabled === false" @click="emit('change', f.key, undefined)">↺</button>
+        <button v-else :id="`${rid(f)}--clear`" type="button" class="clip" :aria-label="`${f.unknown ? 'Remove' : 'Clear'} ${label(f)}`" :title="f.unknown ? 'Take it out of the file' : 'Back to the default'" :disabled="disabled || (f.enabled === false && !f.unknown)" @click="emit('change', f.key, undefined)">↺</button>
       </span>
       <ValueField
         v-if="!BLOCK.has(f.widget)" :id="rid(f)" :label="label(f)" :schema="f.schema" :meta="f.meta" :value="f.value" :fallback="f.default"

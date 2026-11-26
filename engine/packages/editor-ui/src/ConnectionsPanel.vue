@@ -4,8 +4,9 @@
 // arguments (fields by the action's schema). A new one is made from the first three. The app turns each event into one
 // undo step (EditorSession connect, setConnection, setConnectionArg, disconnect). Connections into the node are listed.
 // A control's accessible name stays the same while the picks change (an automation's reference to it stays good).
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import FieldRows from './FieldRows.vue';
+import { retarget } from './wiring-ui.js';
 
 const props = defineProps({
   /** wiring-ui.js wiringView's data. */
@@ -23,6 +24,24 @@ function connect() {
   emit('connect', { signal: signal.value, to: to.value, call: call.value });
   signal.value = ''; to.value = ''; call.value = '';
 }
+// a connection whose new target hasn't its action: the target held here until one of its actions is picked
+const pending = ref({});
+watch(() => props.wiring.id, () => { pending.value = {}; }); // another node: nothing held
+function pickTarget(c, to) {
+  const r = retarget(props.wiring, c, to);
+  const { [c.index]: _, ...rest } = pending.value;
+  pending.value = 'pending' in r ? { ...rest, [c.index]: r.pending } : rest;
+  if ('set' in r) emit('set', c.index, r.set);
+}
+function pickAction(c, call) {
+  const to = pending.value[c.index];
+  if (to === undefined) { emit('set', c.index, { call }); return; }
+  if (!call) return;
+  const { [c.index]: _, ...rest } = pending.value;
+  pending.value = rest;
+  emit('set', c.index, { to, call });
+}
+const targetOf = (c) => pending.value[c.index] ?? c.to;
 const cid = (c) => `conn-${c.index}`;
 const said = (c) => `${props.wiring.id}.${c.signal} → ${c.to}.${c.call}`;
 </script>
@@ -42,20 +61,22 @@ const said = (c) => `${props.wiring.id}.${c.signal} → ${c.to}.${c.call}`;
       </div>
       <div class="insp-row">
         <span class="insp-key">Target</span>
-        <select :id="`${cid(c)}-to`" :value="c.to" :aria-label="`Connection ${c.index + 1} target`" :disabled="disabled" @change="emit('set', c.index, { to: $event.target.value })">
+        <select :id="`${cid(c)}-to`" :value="targetOf(c)" :aria-label="`Connection ${c.index + 1} target`" :disabled="disabled" @change="pickTarget(c, $event.target.value)">
           <option v-if="!wiring.targets.includes(c.to)" :value="c.to">{{ c.to }}</option>
           <option v-for="n in wiring.targets" :key="n" :value="n">{{ n }}</option>
         </select>
       </div>
       <div class="insp-row">
         <span class="insp-key">Action</span>
-        <select :id="`${cid(c)}-call`" :value="c.call" :aria-label="`Connection ${c.index + 1} action`" :disabled="disabled" @change="emit('set', c.index, { call: $event.target.value })">
-          <option v-if="!(wiring.actions[c.to] ?? []).some((a) => a.name === c.call)" :value="c.call">{{ c.call }} (missing)</option>
-          <option v-for="a in wiring.actions[c.to] ?? []" :key="a.name" :value="a.name" :title="a.description">{{ a.name }}</option>
+        <select :id="`${cid(c)}-call`" :value="pending[c.index] !== undefined ? '' : c.call" :aria-label="`Connection ${c.index + 1} action`" :disabled="disabled" @change="pickAction(c, $event.target.value)">
+          <option v-if="pending[c.index] !== undefined" value="">Action…</option>
+          <option v-else-if="!(wiring.actions[c.to] ?? []).some((a) => a.name === c.call)" :value="c.call">{{ c.call }} (missing)</option>
+          <option v-for="a in wiring.actions[targetOf(c)] ?? []" :key="a.name" :value="a.name" :title="a.description">{{ a.name }}</option>
         </select>
       </div>
+      <p v-if="pending[c.index] !== undefined" :id="`${cid(c)}-pending`" class="small muted" role="status">{{ pending[c.index] }} has no action {{ c.call }}: pick one of its actions to move the connection there.</p>
       <p v-if="c.problem" :id="`${cid(c)}-problem`" class="small slot-why" role="status">{{ c.problem }}</p>
-      <FieldRows :fields="c.fields" :id-base="`${cid(c)}-arg`" :owner="c.call" :nodes="nodes" :disabled="disabled" @change="(k, v) => emit('arg', c.index, k, v)" @gesture="emit('gesture', $event)" />
+      <FieldRows v-if="pending[c.index] === undefined" :fields="c.fields" :id-base="`${cid(c)}-arg`" :owner="c.call" :nodes="nodes" :disabled="disabled" @change="(k, v) => emit('arg', c.index, k, v)" @gesture="emit('gesture', $event)" />
     </div>
     <div class="wiring-item wiring-new" role="group" aria-label="New connection">
       <div class="insp-row">

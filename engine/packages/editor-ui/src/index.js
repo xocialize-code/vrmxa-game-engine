@@ -22,4 +22,4 @@ export { ASSET_FILTERS, fileKind, assetCategory, folderOf, assetEntries, filterA
 export { parseTreeQuery, rowMatches, filterTree, foldTree } from './tree-ui.js'; // tree search and folding (M5 W6)
 export { EDITOR_PANELS, FOLDED, KEY_STEP, KEY_STEP_BIG, defaultLayout, clampSize, readLayout, resize, toggle, splitterKey, shownSize, writeLayout } from './panels.js'; // panels you resize (M5 W6)
 export { fieldType, copyField, copyTransform, copyPart, pasteVerdict } from './fieldclip.js'; // per-field copy and paste (M5 W6)
-export { wiringView, nodeAfter } from './wiring-ui.js'; // behaviours and connections in the inspector (M6 W1)
+export { wiringView, nodeAfter, retarget } from './wiring-ui.js'; // behaviours and connections in the inspector (M6 W1)

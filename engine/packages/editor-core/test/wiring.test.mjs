@@ -143,7 +143,11 @@ test('connections: made from the four parts, edited part by part, arguments by t
   assert.throws(() => s.setConnection(i, { to: 'score' }), /has no action lookAt/);
   assert.throws(() => s.setConnectionArg(i, 'target', 'nobody'), /must name a node/);
   assert.throws(() => s.connect({ from: 'brew-1', signal: 'timeout', to: 'score', call: 'add', args: { by: 'five' } }), /must be number/);
-  assert.throws(() => s.connect({ from: 'brew-1', signal: 'timeout', to: 'score', call: 'add', args: { much: 5 } }), /additional properties/);
+  // an argument the action doesn't declare is kept, as @vrmxg/scene keeps it (a valid file's connection stays editable)
+  const j = s.connect({ from: 'brew-1', signal: 'timeout', to: 'score', call: 'add', args: { by: 1, much: 5 } });
+  s.setConnection(j, { signal: 'started' });
+  assert.deepEqual(s.doc.connections[j].args, { by: 1, much: 5 });
+  s.undo(); s.undo();
   s.disconnect(i);
   assert.equal(s.history().undo, 'Disconnect table-1.served from aoi.lookAt');
   while (s.history().undo) s.undo();
@@ -239,4 +243,80 @@ test('a drag on a behaviour param or a connection\'s argument is one undo step',
   assert.equal(s.doc.connections[i].args.after, 5);
   s.undo();
   assert.equal(s.doc.connections[i].args.after, 3);
+});
+
+// ---------------------------------------------------------------- the review of PR #60: what an id change can't rewrite
+const allDocs = () => new Map(fs.readdirSync(SAMPLE, { recursive: true }).map(String).filter((f) => f.endsWith('.vrmxs')).map((f) => [f, parse(fs.readFileSync(path.join(SAMPLE, f), 'utf8'))]));
+
+test('a node\'s id: refused, naming the files, when a sequence filming this scene names it', async () => {
+  const { referencesElsewhere } = await import('../src/index.js');
+  const docs = allDocs();
+  const s = new EditorSession({ registry: registry(), text: fs.readFileSync(path.join(SAMPLE, 'cafe.vrmxs'), 'utf8'), prefabs: new Map(prefabs), path: 'cafe.vrmxs' });
+  const before = s.text();
+  s.elsewhere = referencesElsewhere(s.reg, 'cafe.vrmxs', docs);
+  const uses = s.elsewhere('hana-1');
+  assert.ok(uses.length >= 5, JSON.stringify(uses));
+  assert.ok(uses.some((u) => u.file === 'sequences/cafe-morning.vrmxs' && /a sequence filming this scene/.test(u.what)));
+  assert.throws(() => s.setNodeId('hana-1', 'hana'), /hana-1 is named in \d+ other files: .*sequences\/cafe-morning\.vrmxs.*change it there too, or keep this id/);
+  assert.equal(s.text(), before, 'nothing changed');
+  // a node no other file names: changed as before
+  const free = s.doc.nodes.find((n) => s.elsewhere(n.id).length === 0 && n.id !== 'root');
+  s.setNodeId(free.id, `${free.id}-x`);
+  assert.equal(s.node(`${free.id}-x`)?.type, free.type);
+});
+
+test('a node\'s id in an open prefab: refused when a scene or prefab that places it names that node (overrides, connections)', async () => {
+  const { referencesElsewhere } = await import('../src/index.js');
+  const docs = allDocs();
+  const s = new EditorSession({ registry: registry(), doc: structuredClone(docs.get('prefabs/door.vrmxs')), prefabs: new Map(prefabs), path: 'prefabs/door.vrmxs' });
+  s.elsewhere = referencesElsewhere(s.reg, 'prefabs/door.vrmxs', docs);
+  assert.throws(() => s.setNodeId('hinge', 'hinge-a'), /prefabs\/double-door\.vrmxs \(it places this scene as a prefab and names this node/);
+  // a connection from another scene into an instance's node counts too
+  const scene = { format: 'vrmxs', version: 1, id: 'x', assets: [{ id: 'door', type: 'vrmxs', ref: 'prefabs/door.vrmxs' }], nodes: [{ id: 'd', type: 'Instance', asset: 'door' }, { id: 'm', type: 'Marker' }], connections: [{ from: 'm', signal: 'ready', to: 'd/panel', call: 'hide' }] };
+  const with2 = new Map([...docs, ['x.vrmxs', scene]]);
+  assert.deepEqual(referencesElsewhere(s.reg, 'prefabs/door.vrmxs', with2)('panel').map((u) => u.file), ['x.vrmxs']);
+  assert.deepEqual(referencesElsewhere(s.reg, 'prefabs/door.vrmxs', docs)('panel'), [], 'nobody names the panel');
+});
+
+test('a game node\'s key: kept as the old id when a condition names it, so the game can still be won', () => {
+  const s = level();
+  const before = s.text();
+  s.setNodeId('served', 'served-count');
+  assert.equal(s.history().undo, 'Change id served to served-count (its key stays served)');
+  assert.equal(s.node('served-count').props.key, 'served', 'the serve goal and the checkpoint name counters.served');
+  assert.equal(s.node('serve').props.when.of[0].key, 'counters.served', 'the condition is as it was');
+  s.undo();
+  assert.equal(s.text(), before);
+  // one nothing names: its key follows its id (no key written)
+  s.addNode('GameCounter', { id: 'tips', parent: 'rules' });
+  s.setNodeId('tips', 'tip-jar');
+  assert.equal(s.node('tip-jar').props?.key, undefined);
+  assert.equal(s.history().undo, 'Change id tips to tip-jar');
+  // a GameRules' reads count as naming it
+  s.setProp('rules', 'reads', { counters: ['tip-jar'] });
+  s.setNodeId('tip-jar', 'jar');
+  assert.equal(s.node('jar').props.key, 'tip-jar');
+});
+
+test('a connection moved to a target without its action: refused alone, made with the new action in one step (the panel holds the target)', () => {
+  const s = level();
+  const i = s.doc.connections.findIndex((c) => c.call === 'lookAt');
+  assert.throws(() => s.setConnection(i, { to: 'root' }), /root has no action lookAt: pick its action with the new target/);
+  s.setConnection(i, { to: 'look-at', call: 'hide' });
+  assert.deepEqual(s.doc.connections[i], { from: 'rules', signal: 'ready', to: 'look-at', call: 'hide' }, 'lookAt\'s target argument isn\'t one hide takes');
+  assert.equal(s.history().undo, 'Set rules.ready connection\'s to, call');
+});
+
+test('removing a behaviour from a node of a type the registry doesn\'t know keeps its type\'s connections', () => {
+  const doc = parse(LEVEL);
+  doc.nodes.push({ id: 'gadget', type: 'Gizmo', parent: 'root', behaviours: [{ use: 'greet' }] });
+  doc.connections.push({ from: 'gadget', signal: 'buzz', to: 'score', call: 'add' });
+  const s = new EditorSession({ registry: registry(), doc, prefabs: new Map(prefabs) });
+  const before = s.text();
+  // the scene editor refuses edits to a node of an unknown type: the step fails whole, its connections untouched
+  assert.throws(() => s.removeBehaviour('gadget', 'greet'), /unknown node type "Gizmo"/);
+  assert.equal(s.text(), before);
+  // and what removeBehaviour would drop is only what the behaviour gave: buzz isn't greet's
+  const n = s.node('gadget'), had = s.reg.surface(n), after = s.reg.surface({ ...n, behaviours: [] });
+  assert.ok(!had.signals.buzz && !after.signals.buzz, 'the registry can\'t list buzz, so it isn\'t counted as lost');
 });

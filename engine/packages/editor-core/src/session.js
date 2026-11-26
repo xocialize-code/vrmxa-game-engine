@@ -55,6 +55,8 @@ export class EditorSession {
     this.listeners = new Set();
     /** Ids a sequence's tracks may target beyond the document's own (the set's nodes): the app sets it. @type {(() => Set<string>) | null} */
     this.targetIds = null;
+    /** Where the project's other files name this scene's nodes (the app sets it before an id change: ./elsewhere.js). @type {((id: string) => { file: string, what: string }[]) | null} */
+    this.elsewhere = null;
     /** The set document a sequence films (the app sets it): validation sees the sequence in its set. */
     this.setDoc = null;
     /** Timeline commands on the document's sequence (M2 W5), each one undo step. */
@@ -292,7 +294,15 @@ export class EditorSession {
    * speaker), behaviour params that name nodes, other instances' override values, connection ends ("door-1",
    * "door-1/hinge") and node arguments, a sequence's targets and cameras, and the selection. A game node's `key` defaults
    * to its id, so an unset key follows the new id. Refused for an inner node of an instance (its id is the prefab's) and
-   * for an id that isn't free or isn't one ("a-z", "0-9", "-", "_"). → the new id
+   * for an id that isn't free or isn't one ("a-z", "0-9", "-", "_").
+   *
+   * Only this file is rewritten (M6 W1 review): when `elsewhere` (the app sets it: ./elsewhere.js over the project's
+   * files) says another file names the node (a sequence filming this scene, a scene placing it as a prefab), the change
+   * is refused, naming those files, rather than leave them pointing at nothing.
+   *
+   * A game node's `key` defaults to its id (GameCounter, GameTimer, GameGoal). When the node has no key of its own and a
+   * condition here names it ("counters.served", a GameRules' reads), its key is written as the old id in the same step,
+   * so those conditions still find it; otherwise the key follows the id. → the new id
    * @param {string} id @param {string} to
    */
   setNodeId(id, to) {
@@ -303,11 +313,15 @@ export class EditorSession {
     if (to === id) return id;
     if (!/^[A-Za-z0-9_-]+$/.test(to)) throw new Error(`"${to}" can't be an id: letters, digits, "-" and "_" only`);
     if (this.node(to)) throw new Error(`there is already a node called ${to}`);
+    const uses = this.elsewhere?.(id) ?? [];
+    if (uses.length) throw new Error(`${id} is named in ${uses.length === 1 ? 'another file' : `${uses.length} other files`}: ${uses.map((u) => `${u.file} (${u.what})`).join('; ')}. Changing its id here would leave ${uses.length === 1 ? 'it' : 'them'} pointing at nothing: change it there too, or keep this id`);
+    const keeps = this.keyNamed(n);
     const fn = (r) => (baseOf(r) === id ? to + String(r).slice(id.length) : r);
     /** @type {any[]} */ const ops = [{ op: 'renameNode', id, to }];
     for (const x of this.doc.nodes) {
       const nid = x.id === id ? to : x.id;
       const next = mapNodeRefs(this.reg, x, fn, { innerOf: (local) => this.innerBase(x, local) });
+      if (x === n && keeps) next.props = { ...(next.props ?? {}), key: id };
       for (const k of ['props', 'behaviours', 'overrides']) if (!sameJSON(next[k], x[k])) ops.push({ op: 'set', id: nid, path: k, value: next[k] });
     }
     this.doc.connections.forEach((c, index) => {
@@ -320,10 +334,23 @@ export class EditorSession {
       if (!sameJSON(seq, this.doc.sequence)) ops.push({ op: 'setDoc', path: 'sequence', value: seq });
     }
     const sel = this.selection.map(fn);
-    this.run(`Change id ${id} to ${to}`, ops);
+    this.run(`Change id ${id} to ${to}${keeps ? ` (its key stays ${id})` : ''}`, ops);
     this.selection = sel.filter((x) => this.node(x) || this.innerNode(x));
     this.emit({ kind: 'select' });
     return to;
+  }
+
+  /**
+   * Does a condition in this scene name game node `n` by the key it takes from its id? A GameCounter, GameTimer or
+   * GameGoal with no `key` of its own, named as "counters.<id>" ("timers.", "goals.") in any node's props or a
+   * connection's arguments, or listed in a GameRules' `reads`.
+   */
+  keyNamed(n) {
+    const kind = KEYED[n.type];
+    if (!kind || n.props?.key !== undefined) return false;
+    const want = `${kind}.${n.id}`;
+    const hit = (v) => (typeof v === 'string' ? v === want || v.startsWith(`${want}.`) : Array.isArray(v) ? v.some(hit) : v && typeof v === 'object' ? Object.values(v).some(hit) : false);
+    return this.doc.nodes.some((x) => hit(x.props) || (x.type === 'GameRules' && (x.props?.reads?.[kind] ?? []).includes(n.id))) || this.doc.connections.some((c) => hit(c.args));
   }
 
   /**
@@ -374,8 +401,11 @@ export class EditorSession {
     if (!n) throw new Error(`no node ${id}`);
     const left = (n.behaviours ?? []).filter((b) => b.use !== use);
     if (left.length === (n.behaviours ?? []).length) throw new Error(`${id} has no ${use}`);
-    const after = this.reg.surface({ ...n, behaviours: left });
-    const gone = this.doc.connections.map((c, i) => [c, i]).filter(([c]) => (c.from === id && !after.signals[c.signal]) || (c.to === id && !after.actions[c.call])).map(([, i]) => i);
+    // only what the behaviour gave the node goes: a signal or action it had before and hasn't after (a node of a type the
+    // registry doesn't know keeps the connections its type's own members make, which the registry can't list)
+    const before = this.reg.surface(n), after = this.reg.surface({ ...n, behaviours: left });
+    const lost = (have, now, name) => !!have[name] && !now[name];
+    const gone = this.doc.connections.map((c, i) => [c, i]).filter(([c]) => (c.from === id && lost(before.signals, after.signals, c.signal)) || (c.to === id && lost(before.actions, after.actions, c.call))).map(([, i]) => i);
     const ops = [...gone.reverse().map((index) => ({ op: 'disconnect', index })), { op: 'set', id, path: 'behaviours', value: left.length ? clone(left) : undefined }];
     this.run(`Remove ${use} from ${id}`, ops);
     return gone.length;
@@ -419,9 +449,14 @@ export class EditorSession {
     if (this.reg.get(to.type) && !act[c.call]) return `${c.to} has no action ${c.call}`;
     const defs = act[c.call]?.args ?? {};
     if (c.args !== undefined) {
-      const errs = schemaChecker({ type: 'object', additionalProperties: false, properties: Object.fromEntries(Object.entries(defs).map(([k, p]) => [k, p.schema])) })(c.args);
-      if (errs.length) return `${c.call}'s arguments: ${errs.join('; ')}`;
-      for (const [k, v] of Object.entries(c.args)) if (defs[k]?.nodeRef && !this.endNode(v)) return `${c.call}'s ${k} must name a node of this scene; "${v}" isn't one`;
+      if (!c.args || typeof c.args !== 'object' || Array.isArray(c.args)) return `${c.call}'s arguments are an object`;
+      // each argument the action declares is checked against its schema; one it doesn't is kept, as @vrmxg/scene keeps it
+      for (const [k, v] of Object.entries(c.args)) {
+        if (!defs[k]) continue;
+        const errs = checkerOf(defs[k].schema)(v);
+        if (errs.length) return `${c.call}'s ${k}: ${errs.join('; ')}`;
+        if (defs[k].nodeRef && !this.endNode(v)) return `${c.call}'s ${k} must name a node of this scene; "${v}" isn't one`;
+      }
     }
     return null;
   }
@@ -453,6 +488,10 @@ export class EditorSession {
       next = tidyConnection({ ...next, args: Object.fromEntries(Object.entries(next.args).filter(([k]) => Object.hasOwn(defs, k))) });
     }
     if (sameJSON(next, c)) return;
+    if (parts.to !== undefined && parts.call === undefined && next.to !== c.to) {
+      const t = this.endNode(next.to);
+      if (t && this.reg.get(t.type) && !this.reg.surface(t).actions[next.call]) throw new Error(`Connection ${index + 1}: ${next.to} has no action ${next.call}: pick its action with the new target (the panel holds the target until you do)`);
+    }
     const why = this.connectionProblem(next);
     if (why) throw new Error(`Connection ${index + 1}: ${why}`);
     const what = parts.args !== undefined && Object.keys(parts).length === 1 ? 'arguments' : Object.keys(parts).join(', ');
@@ -872,6 +911,15 @@ export class EditorSession {
 }
 
 const sameJSON = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+/** A schema's checker, compiled once per schema (a registry's argument schemas live as long as it does). */
+const checkers = new WeakMap();
+function checkerOf(schema) {
+  if (!schema || typeof schema !== 'object') return () => [];
+  if (!checkers.has(schema)) checkers.set(schema, schemaChecker(schema));
+  return checkers.get(schema);
+}
+/** The game nodes whose key defaults to their id, and the part of the game state a condition names them by. */
+const KEYED = { GameCounter: 'counters', GameTimer: 'timers', GameGoal: 'goals' };
 /** A connection as a file keeps it: its four parts, then its arguments when it has any (an empty set is left out). */
 /** @param {any} c */
 function tidyConnection(c) {

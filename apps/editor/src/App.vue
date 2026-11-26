@@ -287,7 +287,7 @@ const live = (fn) => act(() => ed.session.withGesture(fn)); // during a drag, th
 const onInspector = {
   rename: (v) => act(() => ed.renameNode(ui.inspector.id, v)), // an inner node's name is its instance's override (M5 W6)
   // M6 W1 (AB-T-0638): a node's id and place, its behaviours and connections, each one undo step
-  setId: (v) => act(() => ed.session.setNodeId(ui.inspector.id, v)),
+  setId: (v) => act(() => ed.setNodeId(ui.inspector.id, v)), // refused when another file names the node
   before: (b) => act(() => ed.session.moveBefore(ui.inspector.id, b)),
   behAdd: (use) => act(() => ed.session.addBehaviour(ui.inspector.id, use)),
   behRemove: (use) => act(() => ed.session.removeBehaviour(ui.inspector.id, use)),
