@@ -76,6 +76,10 @@ the game should play from the title menu to an ending.
   game's window asked the game's own question, and Close Without Saving quit the app. The editor's, creator's and
   playground's Mac apps each opened their own notices from Help the same way. The editor's item sits below its
   Keyboard Shortcuts. The playground quit when its window closed with the notices open.
+- **After the merge with main (W2, 2026-11-26):** W2's change to the engine's core moved the runtime again, to
+  vrmxg-game 0.1.0+f7beb7c2367a (build 8ab0fe3f). The rebuilt hardened app passes `release.sh --check`. The scenario
+  wasn't re-run on it: the Mac's screen was locked, so the app couldn't draw. The signing and the shell are the same
+  as in the 41b7e712 run above.
 - **Not checked:** a Developer ID signature, notarisation, stapling and Gatekeeper on another Mac. Those need the
   operator's identity. Gamepads in the sandboxed, hardened app weren't checked either: no real pad was tried, and that
   is AB-T-0642. If a pad turns out to need an entitlement, add only that one, and the entitlement check in `release.sh`
