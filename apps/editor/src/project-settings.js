@@ -29,12 +29,22 @@ export class ProjectSettings {
   /**
    * @param {{ game: any | null, input?: any | null, files: string[], name?: string,
    *   write: (ref: string, text: string) => Promise<any>, onChange?: () => void,
-   *   layerUses?: () => Promise<{ ref: string, node: string, layer: string }[]> }} o
+   *   layerUses?: () => Promise<{ ref: string, node: string, layer: string }[]>, source?: any, seen?: { game: string | null, input: string | null } }} o
    *   game: game.json as parsed (null: the project has none; the first edit writes one); input: the input map's own
    *   file as parsed, when game.json names one; files: the project's files (the scenes come from these)
    */
-  constructor({ game, input = null, files, name = 'game', write, onChange = () => {}, layerUses = async () => [] }) {
+  constructor({ game, input = null, files, name = 'game', write, onChange = () => {}, layerUses = async () => [], source = null, seen = null }) {
     this.state = { game: game ? structuredClone(game) : null, input: input ? structuredClone(input) : null };
+    /**
+     * The project to read again before each change (review of PR #52): its file list (a scene saved since), and
+     * game.json and the input map's file, in case something else (MCP, a text editor) changed them. Null: none.
+     * @type {{ files: string[], has: (ref: string) => boolean, text: (ref: string) => Promise<string> } | null}
+     */
+    this.source = source;
+    /** The text of game.json and the input map's file as last read or written here: what "changed on disk" is measured against. */
+    this.seen = seen ?? { game: null, input: null };
+    /** Said when the files changed on disk and were read again (the undo history starts again there). */
+    this.note = '';
     this.files = files; this.name = name; this.write = write; this.onChange = onChange;
     /** Where the project's scenes name collision layers now: [{ ref, node, layer }] (projectLayerUses). */
     this.layerUses = layerUses;
@@ -45,14 +55,31 @@ export class ProjectSettings {
 
   /** Read a project's settings through its Project (project.js). */
   static async load(project, o = {}) {
-    let game = null, input = null, error = '';
-    if (project.has(GAME_FILE)) {
-      try { game = JSON.parse(await project.text(GAME_FILE)); } catch (e) { error = `${GAME_FILE} isn't JSON (${e.message}): fix it in a text editor, or every edit here starts it again`; }
-      if (game && typeof game.input === 'string' && project.has(game.input)) input = JSON.parse(await project.text(game.input));
-    }
-    const s = new ProjectSettings({ game, input, files: project.files, name: project.name, write: (ref, text) => project.write(ref, text), ...o });
-    s.error = error;
+    const r = await readSettings(project);
+    const s = new ProjectSettings({ game: r.game, input: r.input, files: project.files, name: project.name, write: (ref, text) => project.write(ref, text), source: project, seen: r.seen, ...o });
+    s.error = r.error;
     return s;
+  }
+
+  /**
+   * Catch up with the project before a change, and when the panel opens again (review of PR #52): its file list now
+   * (Project.write replaces the array, so a scene saved since appears), and game.json and the input map's file as they
+   * are on disk. When either changed since this panel last read or wrote it (MCP's game tool, a text editor), the
+   * settings are read again and the undo history starts there, so no step of it writes the other edit away.
+   * → true when they were read again.
+   */
+  async refresh() {
+    const src = this.source;
+    if (!src) return false;
+    this.files = src.files;
+    const r = await readSettings(src);
+    if (r.seen.game === this.seen.game && r.seen.input === this.seen.input) return false;
+    if (r.error) throw new Error(r.error);
+    this.state = { game: r.game, input: r.input };
+    this.seen = r.seen;
+    this.undoStack = []; this.redoStack = [];
+    this.note = `${GAME_FILE} changed on disk: read again, and the undo history starts here`;
+    return true;
   }
 
   get game() { return this.state.game; }
@@ -75,6 +102,7 @@ export class ProjectSettings {
    */
   edit(label, fn) {
     return this._serial(async () => {
+      await this.refresh();
       const before = structuredClone(this.state);
       const draft = structuredClone(this.state);
       if (!draft.game) draft.game = startingGame({ name: this.name, scenes: this.files });
@@ -93,8 +121,11 @@ export class ProjectSettings {
   redo() { return this._serial(async () => this._travel(this.redoStack, this.undoStack, 'after')); }
 
   async _travel(from, to, side) {
+    if (await this.refresh()) return false; // changed on disk: nothing of the old history is undone over it
     const step = from.at(-1);
     if (!step) return false;
+    // an undo or redo can drop a layer as an edit can: a node put on it since keeps it (review of PR #52)
+    await this._keepUsedLayers(this.state.game, step[side].game);
     await this._commit(structuredClone(this.state), structuredClone(step[side]));
     to.push(from.pop());
     return true;
@@ -128,12 +159,17 @@ export class ProjectSettings {
     if (!same(before.game, after.game)) writes.push([GAME_FILE, writeJson(after.game), before.game ? writeJson(before.game) : null]);
     const done = [];
     try {
-      for (const [file, text, old] of writes) { await this.write(file, text); done.push([file, old]); }
+      for (const [file, text, old] of writes) {
+        await this.write(file, text); done.push([file, old]);
+        if (file === GAME_FILE) this.seen.game = text; else this.seen.input = text;
+      }
       if (!this.files.includes(GAME_FILE)) this.files = [...this.files, GAME_FILE].sort();
     } catch (e) {
       this.state = before;
       let restored = true;
-      for (const [file, old] of done.reverse()) { try { if (old !== null) await this.write(file, old); } catch { restored = false; } }
+      for (const [file, old] of done.reverse()) {
+        try { if (old !== null) { await this.write(file, old); if (file === GAME_FILE) this.seen.game = old; else this.seen.input = old; } } catch { restored = false; }
+      }
       throw new Error(`not saved: ${e?.message ?? e}${restored ? '' : ` (and ${done.map(([f]) => f).join(', ')} couldn't be put back: check it in a text editor)`}`);
     }
   }
@@ -218,16 +254,7 @@ export class ProjectSettings {
       if (next.length > MAX_LAYERS) throw new Error(`at most ${MAX_LAYERS} layers`);
       const old = d.game.physics?.layers ?? [];
       const to = (n) => (Object.hasOwn(renames, n) ? renames[n] : n);
-      // a layer in use must still be there after the change
-      const have = new Set(next.length ? next : ['default']);
-      // (a node already on a layer the game doesn't have is the editor's warning to fix, and doesn't block this edit)
-      const known = new Set(gameLayers(d.game));
-      // (a rename doesn't reach into the scenes: their nodes keep the old name, so the old name must stay)
-      const lost = (await this.layerUses()).filter((u) => known.has(u.layer) && !have.has(u.layer));
-      if (lost.length) {
-        const byLayer = [...new Set(lost.map((u) => u.layer))];
-        throw new Error(`${byLayer.map((l) => `"${l}"`).join(', ')} ${byLayer.length > 1 ? 'are' : 'is'} in use (${lost.slice(0, 3).map((u) => `${u.ref}: ${u.node}`).join(', ')}${lost.length > 3 ? `, and ${lost.length - 3} more` : ''}): change those nodes' layer first`);
-      }
+      await this._keepUsedLayers(d.game, { physics: next.length ? { layers: next } : undefined });
       if (!next.length) { delete d.game.physics; return; }
       const collides = {};
       for (const [k, list] of Object.entries(d.game.physics?.collides ?? {})) {
@@ -242,6 +269,18 @@ export class ProjectSettings {
       for (const k of Object.keys(collides)) if (collides[k].length === next.length) delete collides[k];
       d.game.physics = { layers: next, ...(Object.keys(collides).length ? { collides } : {}) };
     });
+  }
+  /**
+   * Refuse a change that leaves out a layer a scene's node is on: every world with that node would stop being built. A
+   * rename doesn't reach into the scenes (their nodes keep the old name, so the old name must stay); a node already on a
+   * layer the game doesn't have is the editor's warning to fix, and doesn't block this change.
+   */
+  async _keepUsedLayers(fromGame, toGame) {
+    const known = new Set(gameLayers(fromGame)), have = new Set(gameLayers(toGame));
+    const lost = (await this.layerUses()).filter((u) => known.has(u.layer) && !have.has(u.layer));
+    if (!lost.length) return;
+    const byLayer = [...new Set(lost.map((u) => u.layer))];
+    throw new Error(`${byLayer.map((l) => `"${l}"`).join(', ')} ${byLayer.length > 1 ? 'are' : 'is'} in use (${lost.slice(0, 3).map((u) => `${u.ref}: ${u.node}`).join(', ')}${lost.length > 3 ? `, and ${lost.length - 3} more` : ''}): change those nodes' layer first`);
   }
   addLayer(name) {
     const n = String(name ?? '').trim(), l = this.view().layers;
@@ -286,7 +325,7 @@ export class ProjectSettings {
     const layers = g?.physics?.layers ?? [];
     const collides = (x, y) => (g?.physics?.collides?.[x] ?? layers).includes(y);
     return {
-      exists: !!g, file: GAME_FILE, error: this.error,
+      exists: !!g, file: GAME_FILE, error: this.error, note: this.note,
       title: g?.title ?? '', id: g?.id ?? '', release: g?.release ?? '',
       entry: g?.entry ?? '', scenes: scenes.map((ref) => ({ ref, included: !!g && (ref === g.entry || (g.scenes ?? []).includes(ref)), entry: ref === g?.entry })),
       inputFile: typeof g?.input === 'string' ? g.input : null, defaultControls: !g?.input,
@@ -314,4 +353,18 @@ export async function projectLayerUses(project, open = null) {
   }
   if (open?.doc && open.ref && !project.scenes().includes(open.ref)) for (const u of layersUsed(open.doc)) out.push({ ref: open.ref, ...u });
   return out;
+}
+
+/**
+ * game.json and the input map's file, parsed, and their text (what ProjectSettings measures "changed on disk" against).
+ * @param {{ has: (ref: string) => boolean, text: (ref: string) => Promise<string> }} project
+ */
+async function readSettings(project) {
+  let game = null, input = null, error = '', gameText = null, inputText = null;
+  if (project.has(GAME_FILE)) {
+    gameText = await project.text(GAME_FILE);
+    try { game = JSON.parse(gameText); } catch (e) { error = `${GAME_FILE} isn't JSON (${e.message}): fix it in a text editor, or every edit here starts it again`; }
+    if (game && typeof game.input === 'string' && project.has(game.input)) { inputText = await project.text(game.input); input = JSON.parse(inputText); }
+  }
+  return { game, input, error, seen: { game: gameText, input: inputText } };
 }

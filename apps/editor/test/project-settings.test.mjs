@@ -214,3 +214,51 @@ test('edits queue: two at once land in order, each its own step', async () => {
   assert.deepEqual([d.json('game.json').title, d.json('game.json').release], ['One', '2.0.0']);
   assert.deepEqual(s.history().undo, 'Version 2.0.0');
 });
+
+/** A project as project.js's: files by ref, a write that replaces the file list (as Project.write does). */
+function projectOn(d, files) {
+  const p = { name: 'p', files: [...files] };
+  p.has = (ref) => d.files.has(ref) || p.files.includes(ref);
+  p.text = async (ref) => d.files.get(ref) ?? '{}';
+  p.write = async (ref, text) => { await d.write(ref, text); if (!p.files.includes(ref)) p.files = [...p.files, ref].sort(); };
+  return p;
+}
+
+test('kept settings catch up: a scene saved since appears, and game.json changed elsewhere is read again, not written over (review of PR #52)', async () => {
+  const d = disk({ 'game.json': writeJson(template) });
+  const project = projectOn(d, ['ending.vrmxs', 'game.json', 'level.vrmxs']);
+  const s = await ProjectSettings.load(project);
+  await s.setTitle('Mine');
+  // a scene saved in the editor since (Project.write gives the project a new file array)
+  await project.write('bonus.vrmxs', '{}');
+  await s.refresh();
+  assert.ok(s.view().scenes.some((x) => x.ref === 'bonus.vrmxs'));
+  // MCP (or a text editor) changes game.json: the next edit builds on that, and the old history can't undo over it
+  d.files.set('game.json', writeJson({ ...d.json('game.json'), release: '9.0.0', id: 'from-mcp' }));
+  await s.setTitle('Mine again');
+  const g = d.json('game.json');
+  assert.deepEqual([g.id, g.release, g.title], ['from-mcp', '9.0.0', 'Mine again'], 'the other edit kept');
+  assert.match(s.view().note, /changed on disk: read again/);
+  assert.deepEqual(s.history(), { undo: 'Title Mine again', redo: null }, 'the history starts again there');
+  d.files.set('game.json', writeJson({ ...d.json('game.json'), title: 'Elsewhere' }));
+  assert.equal(await s.undo(), false, 'an undo after an outside change only reads it');
+  assert.equal(d.json('game.json').title, 'Elsewhere');
+  assert.equal(s.view().title, 'Elsewhere');
+});
+
+test('undo and redo keep a layer a node was put on since (review of PR #52)', async () => {
+  const d = disk();
+  let uses = [];
+  const s = make(d, template, { layerUses: async () => uses });
+  await s.addLayer('npc');
+  uses = [{ ref: 'level.vrmxs', node: 'hana', layer: 'npc' }]; // Hana put on it in the inspector
+  await assert.rejects(s.undo(), /"npc" is in use \(level\.vrmxs: hana\)/);
+  assert.deepEqual(d.json('game.json').physics, { layers: ['default', 'npc'] });
+  assert.deepEqual(s.history().undo, 'Add layer npc', 'still there to undo once the node is off it');
+  uses = [];
+  await s.undo();
+  assert.equal('physics' in d.json('game.json'), false);
+  uses = [{ ref: 'level.vrmxs', node: 'hana', layer: 'default' }];
+  await s.redo(); // adding a layer drops nothing
+  assert.deepEqual(d.json('game.json').physics, { layers: ['default', 'npc'] });
+});

@@ -85,6 +85,7 @@ const S = (o) => ({ type: 'string', ...o });
         </span>
       </div>
       <pre v-if="view.error" id="settings-error" class="error-text" role="alert">{{ view.error }}</pre>
+      <p v-if="view.note" id="settings-disk-note" class="muted small" role="status">{{ view.note }}</p>
 
       <div class="settings-cols">
         <section aria-label="Game">

@@ -3,7 +3,7 @@
   {
    "name": "cafe-dash: the build is whole, every file as its manifest says (cafe-dash)",
    "ok": true,
-   "detail": "whole, 59 files, digest 171a07c08833d5e7"
+   "detail": "whole, 59 files, digest b37f0d3386df0965"
   },
   {
    "name": "cafe-dash: played in Node",
@@ -18,7 +18,7 @@
   {
    "name": "cafe-dash: the level's goal on the HUD, won by walking to the counter, and its ending follows",
    "ok": true,
-   "detail": "HUD \"Goal: Get to the counter\", won at step 159 (score 10), then ending.vrmxs at step 287"
+   "detail": "HUD \"Goal: Get to the counter\", won at step 160 (score 10), then ending.vrmxs at step 287"
   },
   {
    "name": "cafe-dash: no errors in the page",
@@ -28,7 +28,7 @@
   {
    "name": "blank: the build is whole, every file as its manifest says (blank)",
    "ok": true,
-   "detail": "whole, 26 files, digest 0d4a8a043b26b3b5"
+   "detail": "whole, 26 files, digest 21a8f6a641e1644c"
   },
   {
    "name": "blank: played in Node",
@@ -43,7 +43,7 @@
   {
    "name": "blank: the empty game runs",
    "ok": true,
-   "detail": "main.vrmxs at step 129"
+   "detail": "main.vrmxs at step 127"
   },
   {
    "name": "blank: no errors in the page",
@@ -55,9 +55,9 @@
   {
    "build": "cafe-dash",
    "game": "cafe-dash",
-   "digest": "171a07c08833d5e70f25f8460a4420dc566d4b1a4a253006889b65af42a4d114",
+   "digest": "b37f0d3386df0965ac4424bd1debed6fb4dae2e9dfa84d983410c1315010a59d",
    "won": {
-    "step": 159,
+    "step": 160,
     "score": 10
    },
    "ending": "ending.vrmxs",
@@ -81,8 +81,8 @@
   {
    "build": "blank",
    "game": "blank",
-   "digest": "0d4a8a043b26b3b50168a2de476c87eeaac090f103f971ef6cb2c03d95c07a42",
-   "step": 129,
+   "digest": "21a8f6a641e1644c247cff78d3c9e87eb91d4558a84ddb55351e365df249d175",
+   "step": 127,
    "node": {
     "decided": null,
     "ending": null,

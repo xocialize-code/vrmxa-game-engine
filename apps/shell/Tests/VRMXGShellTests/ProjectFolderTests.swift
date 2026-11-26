@@ -128,6 +128,10 @@ import Testing
 
         #expect(names(await r3.handle(body: ["method": "project.forget", "params": ["path": dir.appendingPathComponent("one").path]])).allSatisfy { $0 != "one" })
         #expect(names(await r3.handle(body: ["method": "project.forget", "params": ["all": true]])).isEmpty)
+        // a folder in a Trash is gone, the home folder's or a volume's (review of PR #52)
+        #expect(FileMethods.inTrash(URL(fileURLWithPath: "/Users/someone/.Trash/Cafe Dash")))
+        #expect(FileMethods.inTrash(URL(fileURLWithPath: "/Volumes/Projects/.Trashes/501/Cafe Dash")))
+        #expect(!FileMethods.inTrash(URL(fileURLWithPath: "/Volumes/Projects/Games/Trash Talk")))
         // at most recentCap are kept
         for i in 0..<(FileMethods.recentCap + 3) { later.noteRecent(try tempDir(["p\(i).vrmxs": "{}"])) }
         #expect(later.recentProjects().count == FileMethods.recentCap)

@@ -170,18 +170,26 @@ extension FileMethods {
     /// Where a recent project's bookmark leads now, and whether a folder is there. The check runs inside the
     /// bookmark's security scope (started and stopped here unless the app already holds it): under the App Sandbox a
     /// folder outside the container can't even be seen after a relaunch without it (review of PR #52). A folder in a
-    /// Trash counts as gone, though its bookmark still finds it.
+    /// Trash (the home folder's `.Trash`, or a volume's `.Trashes/<uid>`) counts as gone, though its bookmark still
+    /// finds it. Bookmarks resolve without mounting anything: this runs each time File › Open Recent opens, so a project
+    /// on a volume that isn't mounted shows as gone rather than mounting a server.
     func locate(_ entry: [String: Any]) -> (url: URL?, exists: Bool) {
         guard let data = entry["bookmark"] as? Data else { return (nil, false) }
         var stale = false
-        let resolved = (try? URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &stale))
-            ?? (try? URL(resolvingBookmarkData: data, options: [], relativeTo: nil, bookmarkDataIsStale: &stale))
+        let resolved = (try? URL(resolvingBookmarkData: data, options: [.withSecurityScope, .withoutMounting], relativeTo: nil, bookmarkDataIsStale: &stale))
+            ?? (try? URL(resolvingBookmarkData: data, options: [.withoutMounting], relativeTo: nil, bookmarkDataIsStale: &stale))
         guard let folder = resolved?.standardizedFileURL else { return (nil, false) }
         let started = !scoped.contains(folder) && folder.startAccessingSecurityScopedResource()
         defer { if started { folder.stopAccessingSecurityScopedResource() } }
         var isDir: ObjCBool = false
-        let exists = FileManager.default.fileExists(atPath: folder.path, isDirectory: &isDir) && isDir.boolValue && !folder.pathComponents.contains(".Trash")
+        let exists = FileManager.default.fileExists(atPath: folder.path, isDirectory: &isDir) && isDir.boolValue && !Self.inTrash(folder)
         return (folder, exists)
+    }
+
+    /// Whether a folder is in a Trash: the home folder's (`.Trash`) or a volume's (`.Trashes/<uid>`).
+    static func inTrash(_ url: URL) -> Bool {
+        let parts = url.standardizedFileURL.pathComponents
+        return parts.contains(".Trash") || parts.contains(".Trashes")
     }
 
     /// The recent projects, newest first: `path` is the one the list keeps (what `project.reopen` takes); `name` and

@@ -182,6 +182,8 @@ const openSettings = () => act(async () => {
     }) };
   }
   settings = kept.settings;
+  // the files and game.json as they are now: a scene saved since, or game.json changed by MCP or a text editor
+  try { await settings.refresh(); } catch (e) { settings.error = String(e?.message ?? e); }
   ui.settings = settings.view();
 });
 function closeSettings() { settings = null; ui.settings = null; }
@@ -451,7 +453,7 @@ const sheetGroups = shortcutGroups();
       <strong class="title">VRMXG Editor</strong>
       <button id="new-project-open" type="button" aria-label="New project" title="New Project… (⇧⌘N): a game from a template" :disabled="ui.mode !== 'editing'" @click="openNewProject">New Project…</button>
       <button v-if="ui.shell" id="open-project" type="button" aria-label="Open project" @click="openProject">Open Project…</button>
-      <select v-if="ui.shell" id="open-recent" value="" aria-label="Open recent project" title="Open Recent" :disabled="ui.mode !== 'editing' || !ui.recent.length" @change="openRecent($event.target.value); $event.target.value = ''"><option value="">Recent…</option><option v-for="r in ui.recent" :key="r.path" :value="r.path" :disabled="!r.exists" :title="r.path">{{ r.name }}{{ r.exists ? '' : ' (gone)' }}</option></select>
+      <select v-if="ui.shell" id="open-recent" value="" aria-label="Open recent project" title="Open Recent" :disabled="ui.mode !== 'editing' || !ui.recent.length" @change="openRecent($event.target.value); $event.target.value = ''"><option value="">Recent…</option><option v-for="r in ui.recent" :key="r.path" :value="r.path" :disabled="!r.exists" :title="r.location ?? r.path">{{ r.name }}{{ r.exists ? '' : ' (gone)' }}</option></select>
       <span class="muted project" id="project-name" :aria-label="`Project ${ui.project}`" :title="ui.project">{{ ui.project }}</span>
       <button id="project-settings-open" type="button" aria-label="Project settings" title="Project Settings… (⇧⌘P): the game's title, scenes, controls and physics layers" :disabled="!ui.writable || ui.mode !== 'editing'" @click="openSettings">Settings…</button>
       <select id="scene" v-model="ui.scene" aria-label="Scene" title="Open a scene of the project" :disabled="ui.mode !== 'editing'" @change="openScene"><option v-if="!ui.scenes.includes(ui.scene)" :value="ui.scene">{{ ui.scene }} (new)</option><option v-for="s in ui.scenes" :key="s" :value="s">{{ s }}</option></select>
