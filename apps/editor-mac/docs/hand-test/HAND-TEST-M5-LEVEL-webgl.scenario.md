@@ -241,6 +241,12 @@ fresh: false
   act id=field-id action=set_value value="rules"   # the committed id
   until find("id=undo").0.name == "Undo Change id gamerules to rules" timeout=5000
   expect find("id=inspector-id").0.name == "Node rules"
+  act id=pos-x action=set_value value="0"
+  until find("id=pos-x").0.value == "0" timeout=5000
+  act id=pos-y action=set_value value="0"
+  until find("id=pos-y").0.value == "0" timeout=5000
+  act id=pos-z action=set_value value="0"
+  until find("id=pos-z").0.value == "0" timeout=5000
   act id=prop-flags--newkey action=set_value value=ordered1
   act id=prop-flags--addkey action=press
   until find("id=prop-flags-ordered1").count == 1 timeout=5000
@@ -306,6 +312,12 @@ fresh: false
   keys down   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
+  act id=pos-x action=set_value value="0"
+  until find("id=pos-x").0.value == "0" timeout=5000
+  act id=pos-y action=set_value value="0"
+  until find("id=pos-y").0.value == "0" timeout=5000
+  act id=pos-z action=set_value value="0"
+  until find("id=pos-z").0.value == "0" timeout=5000
   act id=prop-label action=set_value value="Score"
   until find("id=prop-label").0.value == "Score" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
@@ -324,6 +336,12 @@ fresh: false
   keys down   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
+  act id=pos-x action=set_value value="0"
+  until find("id=pos-x").0.value == "0" timeout=5000
+  act id=pos-y action=set_value value="0"
+  until find("id=pos-y").0.value == "0" timeout=5000
+  act id=pos-z action=set_value value="0"
+  until find("id=pos-z").0.value == "0" timeout=5000
   act id=prop-label action=set_value value="Served"
   until find("id=prop-label").0.value == "Served" timeout=5000
   act id=prop-max action=set_value value="1+2"   # arithmetic: the field commits its result
@@ -344,6 +362,12 @@ fresh: false
   keys down   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
+  act id=pos-x action=set_value value="0"
+  until find("id=pos-x").0.value == "0" timeout=5000
+  act id=pos-y action=set_value value="0"
+  until find("id=pos-y").0.value == "0" timeout=5000
+  act id=pos-z action=set_value value="0"
+  until find("id=pos-z").0.value == "0" timeout=5000
   act id=prop-label action=set_value value="Wrong orders"
   until find("id=prop-label").0.value == "Wrong orders" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
@@ -362,6 +386,12 @@ fresh: false
   keys down   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
+  act id=pos-x action=set_value value="0"
+  until find("id=pos-x").0.value == "0" timeout=5000
+  act id=pos-y action=set_value value="0"
+  until find("id=pos-y").0.value == "0" timeout=5000
+  act id=pos-z action=set_value value="0"
+  until find("id=pos-z").0.value == "0" timeout=5000
   act id=prop-label action=set_value value="Until ten o'clock"
   until find("id=prop-label").0.value == "Until ten o'clock" timeout=5000
   act id=prop-seconds action=set_value value="4*60"   # arithmetic: the field commits its result
@@ -384,6 +414,12 @@ fresh: false
   keys down   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
+  act id=pos-x action=set_value value="0"
+  until find("id=pos-x").0.value == "0" timeout=5000
+  act id=pos-y action=set_value value="0"
+  until find("id=pos-y").0.value == "0" timeout=5000
+  act id=pos-z action=set_value value="0"
+  until find("id=pos-z").0.value == "0" timeout=5000
   act id=prop-autostart action=press
   until find("id=prop-autostart").0.value == "0" timeout=5000
   act id=duplicate action=press   # the toolbar's Duplicate (Edit › Duplicate edits text while an inspector field has focus)
@@ -444,6 +480,12 @@ fresh: false
   keys down   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
+  act id=pos-x action=set_value value="0"
+  until find("id=pos-x").0.value == "0" timeout=5000
+  act id=pos-y action=set_value value="0"
+  until find("id=pos-y").0.value == "0" timeout=5000
+  act id=pos-z action=set_value value="0"
+  until find("id=pos-z").0.value == "0" timeout=5000
   act id=prop-text action=set_value value="Serve the three regulars"
   until find("id=prop-text").0.value == "Serve the three regulars" timeout=5000
   act id=prop-when-test action=focus
@@ -491,6 +533,12 @@ fresh: false
   keys down   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
+  act id=pos-x action=set_value value="0"
+  until find("id=pos-x").0.value == "0" timeout=5000
+  act id=pos-y action=set_value value="0"
+  until find("id=pos-y").0.value == "0" timeout=5000
+  act id=pos-z action=set_value value="0"
+  until find("id=pos-z").0.value == "0" timeout=5000
   act id=prop-text action=set_value value="Close the till"
   until find("id=prop-text").0.value == "Close the till" timeout=5000
   act id=prop-when-test action=focus
@@ -522,6 +570,12 @@ fresh: false
   keys down   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
+  act id=pos-x action=set_value value="0"
+  until find("id=pos-x").0.value == "0" timeout=5000
+  act id=pos-y action=set_value value="0"
+  until find("id=pos-y").0.value == "0" timeout=5000
+  act id=pos-z action=set_value value="0"
+  until find("id=pos-z").0.value == "0" timeout=5000
   act id=prop-slot action=set_value value="first-order"
   until find("id=prop-slot").0.value == "first-order" timeout=5000
   act id=prop-label action=set_value value="First order served"
@@ -664,6 +718,12 @@ fresh: false
   act id=field-id action=set_value value="briefing"   # the committed id
   until find("id=undo").0.name == "Undo Change id dialogue to briefing" timeout=5000
   expect find("id=inspector-id").0.name == "Node briefing"
+  act id=pos-x action=set_value value="0"
+  until find("id=pos-x").0.value == "0" timeout=5000
+  act id=pos-y action=set_value value="0"
+  until find("id=pos-y").0.value == "0" timeout=5000
+  act id=pos-z action=set_value value="0"
+  until find("id=pos-z").0.value == "0" timeout=5000
   act id=prop-autostart action=press
   until find("id=prop-autostart").0.value == "1" timeout=5000
   act id=prop-lines--add action=press
@@ -733,6 +793,12 @@ fresh: false
   act id=field-id action=set_value value="order-1"   # the committed id
   until find("id=undo").0.name == "Undo Change id dialogue to order-1" timeout=5000
   expect find("id=inspector-id").0.name == "Node order-1"
+  act id=pos-x action=set_value value="0"
+  until find("id=pos-x").0.value == "0" timeout=5000
+  act id=pos-y action=set_value value="0"
+  until find("id=pos-y").0.value == "0" timeout=5000
+  act id=pos-z action=set_value value="0"
+  until find("id=pos-z").0.value == "0" timeout=5000
   act id=field-name action=set_value value="Aoi's order"
   until find("id=field-name").0.value == "Aoi's order" timeout=5000
   act id=prop-lines--add action=press
@@ -824,6 +890,12 @@ fresh: false
   act id=field-id action=set_value value="order-2"   # the committed id
   until find("id=undo").0.name == "Undo Change id dialogue to order-2" timeout=5000
   expect find("id=inspector-id").0.name == "Node order-2"
+  act id=pos-x action=set_value value="0"
+  until find("id=pos-x").0.value == "0" timeout=5000
+  act id=pos-y action=set_value value="0"
+  until find("id=pos-y").0.value == "0" timeout=5000
+  act id=pos-z action=set_value value="0"
+  until find("id=pos-z").0.value == "0" timeout=5000
   act id=field-name action=set_value value="Ren's order"
   until find("id=field-name").0.value == "Ren's order" timeout=5000
   act id=prop-lines--add action=press
@@ -915,6 +987,12 @@ fresh: false
   act id=field-id action=set_value value="order-3"   # the committed id
   until find("id=undo").0.name == "Undo Change id dialogue to order-3" timeout=5000
   expect find("id=inspector-id").0.name == "Node order-3"
+  act id=pos-x action=set_value value="0"
+  until find("id=pos-x").0.value == "0" timeout=5000
+  act id=pos-y action=set_value value="0"
+  until find("id=pos-y").0.value == "0" timeout=5000
+  act id=pos-z action=set_value value="0"
+  until find("id=pos-z").0.value == "0" timeout=5000
   act id=field-name action=set_value value="Yuki's order"
   until find("id=field-name").0.value == "Yuki's order" timeout=5000
   act id=prop-lines--add action=press

@@ -53,6 +53,9 @@ const tick = (id) => S(`act id=${id} action=press`, `until find("id=${id}").0.va
 const uncheck = (id) => S(`act id=${id} action=press`, `until find("id=${id}").0.value == "0" timeout=5000`);
 const parent = (p) => pick('field-parent', p);
 const position = (p) => { if (!p) return; ['x', 'y', 'z'].forEach((a, i) => number(`pos-${a}`, num(p[i]), p[i])); };
+// the toolbar adds a node where the view looks: one the level keeps at its parent's origin is put back there (the
+// transform then leaves the file, as the committed node has none)
+const origin = () => position([0, 0, 0]);
 // a prop whose committed value is its default: the field shows it already, so its pin writes it into the file
 const pin = (key, owner) => S(`act id=pin-${key} action=press   # the value shown is its default: the pin writes it`, `until find("id=pin-${key}").count == 0 timeout=5000`, ...(owner ? [`expect find("id=undo").0.name == ${q(`Undo Set ${owner}.${key}`)}`] : []));
 
@@ -176,6 +179,7 @@ valid();
 row('The rules: a GameRules node given its id, its seven flags (a map, key by key) and its lose condition (any of: the clock done, two wrong orders), built in the condition\'s menus and rows.');
 const rulesNode = byId('rules');
 setId(addType('GameRules'), 'rules');
+origin();
 flagMap('prop-flags', rulesNode.props.flags);
 S(`until find("id=prop-flags").0.name == "flags, ${Object.keys(rulesNode.props.flags).length} entries"`);
 condition('prop-lose', rulesNode.props.lose);
@@ -186,6 +190,7 @@ row('The counters and the clock under the rules, each given its id (its key in t
 for (const want of game.filter((n) => n.type === 'GameCounter' || (n.type === 'GameTimer' && n.id === 'clock'))) {
   setId(addType(want.type), want.id);
   parent('rules');
+  origin();
   if (want.props.label) text('prop-label', want.props.label);
   if (want.props.max !== undefined) number('prop-max', '1+2', want.props.max);
   if (want.props.seconds !== undefined) number('prop-seconds', '4*60', want.props.seconds);
@@ -196,6 +201,7 @@ row('Three brew timers: one made, Duplicated twice, then all three selected and 
 const brews = game.filter((n) => n.type === 'GameTimer' && n.id.startsWith('brew-'));
 const first = addType('GameTimer');
 parent('rules');
+origin();
 uncheck('prop-autostart');
 const brewIds = [first];
 for (let i = 1; i < brews.length; i++) {
@@ -215,6 +221,7 @@ row('The two goals in order and the checkpoint, each given its id and its condit
 for (const want of game.filter((n) => n.type === 'GameGoal' || n.type === 'Checkpoint')) {
   const id = setId(addType(want.type), want.id);
   parent('rules');
+  origin();
   if (want.type === 'GameGoal') text('prop-text', want.props.text);
   else {
     text('prop-slot', want.props.slot); text('prop-label', want.props.label);
@@ -251,6 +258,7 @@ valid();
 // ---------------------------------------------------------------- 8, 9: the dialogues
 function dialogue(want) {
   setId(addType('Dialogue'), want.id);
+  origin();
   if (want.name) text('field-name', want.name);
   if (want.props.autostart !== undefined && want.props.autostart !== (defaultOf('Dialogue', 'autostart') ?? false)) (want.props.autostart ? tick : uncheck)('prop-autostart');
   want.props.lines.forEach((l, i) => {

@@ -80,7 +80,13 @@ test('the level built through the editor\'s session, from the scenario\'s room, 
   const items = game.filter((n) => n.type === 'Item'), others = game.filter((n) => n.type !== 'Item');
   const after = doc.nodes[doc.nodes.indexOf(items.at(-1)) + 1].id;
   for (const want of items) { const id = s.addFromAsset(asset.get(want.asset)); fill(id, want); s.moveBefore(want.id, after); }
-  for (const want of others) fill(want.type === 'Area' && want.id !== 'table-1' ? s.duplicate([s.selection[0]])[0] : s.addNode(want.type), want);
+  // the toolbar adds where the view looks (the app passes it); the scenario puts a node the level keeps at the origin back
+  const at = [0, 0, 1.983371];
+  for (const want of others) {
+    const id = want.type === 'Area' && want.id !== 'table-1' ? s.duplicate([s.selection[0]])[0] : s.addNode(want.type, { at });
+    if (!want.transform && want.type !== 'Area') s.setTransform(id, { p: [0, 0, 0] });
+    fill(id, want);
+  }
   for (const want of game) for (const { use, ...params } of want.behaviours ?? []) { s.addBehaviour(want.id, use); for (const [k, v] of Object.entries(params)) s.setBehaviourParam(want.id, use, k, v); }
   for (const c of doc.connections) s.connect(c);
   const r = compare(s.doc);
