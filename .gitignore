@@ -24,6 +24,8 @@ apps/playground/results/coverage/
 
 # The sample content's generated CC0 clips are committed (content/sample/LICENCES.md)
 !content/sample/animations/clips/*.vrma
+# and the starter content's CC0 clips, retargeted from mesh2motion (content/starter/LICENCES.md)
+!content/starter/animations/clips/*.vrma
 
 # SwiftPM build folders (apps/shell, apps/*-mac)
 .build/

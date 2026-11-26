@@ -29,6 +29,7 @@ import { coverageCheck } from './coverage-check.js';
 import { voicingCheck } from './voicing-check.js';
 import { takesCheck } from './takes-check.js';
 import { layersCheck, withCarry } from './layers-check.js';
+import { starterAnimationsCheck, starterItemsCheck } from './starter-check.js';
 import { withCrowd } from './budget.js';
 import * as core from '@vrmxa-core/index.js';
 import * as anim from '@vrmxa-core/anim/index.js';
@@ -501,6 +502,18 @@ export class Playground {
   async layersCheck() {
     await this.ready;
     return layersCheck({ R: await loadRapier(), bytes, opts: { vrmxaCore, closet, behaviours } });
+  }
+
+  /**
+   * M6 W4 (?mode=starter): the starter content (content/starter, served as the build's starter/ folder) cast and used:
+   * Mira with the default animation set playing every slot, every starter item's verb done (starter-check.js; the
+   * same code content/starter/test/starter.test.mjs runs in Node). Simulation only.
+   */
+  async starterCheck() {
+    await this.ready;
+    const o = { R: await loadRapier(), bytes, starterBytes: (ref) => bytes(`starter/${ref}`), vrmxaCore };
+    const animations = await starterAnimationsCheck(o), items = await starterItemsCheck(o);
+    return { animations, items, ok: animations.ok && items.ok };
   }
 
   /**

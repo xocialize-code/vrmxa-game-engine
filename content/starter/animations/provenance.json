@@ -1,0 +1,1245 @@
+{
+ "about": "Where each starter clip comes from (content/starter/tools/make-animations.mjs). Every clip is CC0 1.0.",
+ "source": {
+  "project": "mesh2motion",
+  "url": "https://github.com/Mesh2Motion/mesh2motion-app",
+  "licence": "Art (models, rigs, animations) CC0 1.0; code MIT (not used)",
+  "snapshot": "static/assets/manifest.json generated 2026-11-06T20:41:49.612Z",
+  "fps": 24,
+  "skeleton": {
+   "file": "static/assets/human/skeleton.glb",
+   "sha256": "1784d9aa20e24dee3233d97a8ac2f2e0d72cc74f0692b44fcded87d2d3e33f9c"
+  }
+ },
+ "clips": [
+  {
+   "file": "animations/clips/idle.vrma",
+   "name": "idle",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/idle-a.glb",
+    "sha256": "87b14d162867d6448bdf4f3e854e7fbd2901bcabafcc45aa06b64590c88eec15",
+    "clip": "Idle_A",
+    "blend": "rigs/human/idles/animation-human-idle-a.blend",
+    "tags": [
+     "idles",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0129,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "seam",
+      "severity": "fix",
+      "title": "The loop jolts where it wraps"
+     },
+     {
+      "id": "facing-mean",
+      "severity": "fix",
+      "title": "Turned away over the clip"
+     },
+     {
+      "id": "facing-start",
+      "severity": "fix",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/idle-foldArms.vrma",
+   "name": "idle-foldArms",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/idle-foldarms.glb",
+    "sha256": "cf2633678d94edad1b80cfcdc25c4b165bf7ec7141b1177b6f4951f4484efa51",
+    "clip": "Idle_FoldArms",
+    "blend": "rigs/human/idles/animation-human-idle-foldarms.blend",
+    "tags": [
+     "idles",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0139,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "facing-mean",
+      "severity": "fix",
+      "title": "Turned away over the clip"
+     },
+     {
+      "id": "facing-start",
+      "severity": "fix",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/walk.vrma",
+   "name": "walk",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/walk.glb",
+    "sha256": "c961d6dd99856f597ef6f4d986260b5636fb55e8132ff6d0a3765cd8a34aeef1",
+    "clip": "Walk",
+    "blend": "rigs/human/locomotion/animation-human-walk.blend",
+    "tags": [
+     "locomotion",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0148,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     },
+     {
+      "id": "seam",
+      "severity": "fix",
+      "title": "The loop jolts where it wraps"
+     }
+    ],
+    "treadmill": {
+     "speed": 0.812,
+     "direction": -0.2
+    }
+   }
+  },
+  {
+   "file": "animations/clips/run.vrma",
+   "name": "run",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/jog.glb",
+    "sha256": "8262507f43549549daedc4c660ee68d0aec56748140d4e81fd82b2315d37c70b",
+    "clip": "Jog",
+    "blend": "rigs/human/locomotion/animation-human-jog.blend",
+    "tags": [
+     "locomotion",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0365,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": []
+   }
+  },
+  {
+   "file": "animations/clips/jump.vrma",
+   "name": "jump",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/jump-start.glb",
+    "sha256": "3a560b390cd4732f4a4e3f4fdcdf7000f046593ba386a0a3b907834026f62e3a",
+    "clip": "Jump_Start",
+    "blend": "rigs/human/locomotion/animation-human-jump-start.blend",
+    "tags": [
+     "locomotion",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0755,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     },
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/fall.vrma",
+   "name": "fall",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/jump-air.glb",
+    "sha256": "666e9f7afec6e853bda3745296ea9e92626d2fb5ffefb6d5134a66a3a178f6eb",
+    "clip": "Jump_air",
+    "blend": "rigs/human/locomotion/animation-human-jump-air.blend",
+    "tags": [
+     "locomotion",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0788,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "seam",
+      "severity": "fix",
+      "title": "The loop jolts where it wraps"
+     },
+     {
+      "id": "facing-mean",
+      "severity": "fix",
+      "title": "Turned away over the clip"
+     },
+     {
+      "id": "facing-start",
+      "severity": "fix",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/land.vrma",
+   "name": "land",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/jump-land.glb",
+    "sha256": "38a417280d96aa01cf34c56680863aa6435f238e581b0961d79ba06e29a03609",
+    "clip": "Jump_Land",
+    "blend": "rigs/human/locomotion/animation-human-jump-land.blend",
+    "tags": [
+     "locomotion",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.046,
+   "limbErrorDegrees": 0.015,
+   "check": {
+    "problems": [
+     {
+      "id": "floor-below",
+      "severity": "fix",
+      "title": "Feet go under the floor"
+     },
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     },
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/crouch.vrma",
+   "name": "crouch",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/crouch-idle.glb",
+    "sha256": "3a34c46805ac98ceefdda1181d42b466172c6ae55d9c667c8f672cf9c79ba26f",
+    "clip": "Crouch_Idle",
+    "blend": "rigs/human/idles/animation-human-crouch-idle.blend",
+    "tags": [
+     "idles",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0459,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "seam",
+      "severity": "fix",
+      "title": "The loop jolts where it wraps"
+     },
+     {
+      "id": "facing-start",
+      "severity": "fix",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/crouchWalk.vrma",
+   "name": "crouchWalk",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/crouch-walk.glb",
+    "sha256": "2586c27cc4bc67b574ba35b5d95653493e6747a8f1275f65ad56a5ca8ba0ce4a",
+    "clip": "Crouch_Walk",
+    "blend": "rigs/human/locomotion/animation-human-crouch-walk.blend",
+    "tags": [
+     "locomotion",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0589,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "facing-mean",
+      "severity": "fix",
+      "title": "Turned away over the clip"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/sit.vrma",
+   "name": "sit",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/sitting-enter.glb",
+    "sha256": "7a149a9b939b53e2dfa767542b1770cb848b52ee741e7a6ea784a9bec19e5e51",
+    "clip": "Sitting_Enter",
+    "blend": "rigs/human/idles/animation-human-sitting-enter.blend",
+    "tags": [
+     "idles",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0413,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "floor-below",
+      "severity": "fix",
+      "title": "Feet go under the floor"
+     },
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     },
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/sitIdle.vrma",
+   "name": "sitIdle",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/sitting-idle.glb",
+    "sha256": "f727f07d89165bba6baf07eaf93ddb0e68606845c20feaa239f9dac08aa2dc6e",
+    "clip": "Sitting_Idle",
+    "blend": "rigs/human/idles/animation-human-sitting-idle.blend",
+    "tags": [
+     "idles",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0578,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "seam",
+      "severity": "fix",
+      "title": "The loop jolts where it wraps"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/stand.vrma",
+   "name": "stand",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/sitting-exit.glb",
+    "sha256": "0f4472c389cec362dd95356095282b09a6723ec38eae2c0c847aaf4618f92003",
+    "clip": "Sitting_Exit",
+    "blend": "rigs/human/idles/animation-human-sitting-exit.blend",
+    "tags": [
+     "idles",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0329,
+   "limbErrorDegrees": 0.015,
+   "check": {
+    "problems": [
+     {
+      "id": "floor-below",
+      "severity": "fix",
+      "title": "Feet go under the floor"
+     },
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/getUp.vrma",
+   "name": "getUp",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/laytoidle.glb",
+    "sha256": "b6ea557995109f47b0e06ad2aa9c3e57aedbb1b19aef7540ad7e05fe23c03dc6",
+    "clip": "LayToIdle",
+    "blend": "rigs/human/combat/reactions/animation-human-laytoidle.blend",
+    "tags": [
+     "combat",
+     "reactions",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0795,
+   "limbErrorDegrees": 0.016,
+   "check": {
+    "problems": [
+     {
+      "id": "floor-below",
+      "severity": "fix",
+      "title": "Feet go under the floor"
+     },
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/talk.vrma",
+   "name": "talk",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/idle-talking.glb",
+    "sha256": "d955f598b772c2de5832ed33178d7106e7f15251db1a0ca425626325fe6492c9",
+    "clip": "Idle_Talking",
+    "blend": "rigs/human/idles/animation-human-idle-talking.blend",
+    "tags": [
+     "idles",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0128,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "seam",
+      "severity": "fix",
+      "title": "The loop jolts where it wraps"
+     },
+     {
+      "id": "facing-mean",
+      "severity": "fix",
+      "title": "Turned away over the clip"
+     },
+     {
+      "id": "facing-start",
+      "severity": "fix",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/listen.vrma",
+   "name": "listen",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/idle-listening.glb",
+    "sha256": "baf99e376c145322be3a4132603df41c9a125ec603df9f116beaca0011d20f81",
+    "clip": "Idle Listening",
+    "blend": "rigs/human/idles/animation-human-idle-listening.blend",
+    "tags": [
+     "idles"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+   },
+   "lift": 0.0137,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/think.vrma",
+   "name": "think",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/confused.glb",
+    "sha256": "20d0ba8de8aea5fbebfc164a508666472b17faed354ad6ae0fd970ec07a6b1de",
+    "clip": "Confused",
+    "blend": "rigs/human/emotions/animation-human-confused.blend",
+    "tags": [
+     "emotions"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+   },
+   "lift": 0.0089,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": []
+   }
+  },
+  {
+   "file": "animations/clips/greet.vrma",
+   "name": "greet",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/greeting.glb",
+    "sha256": "abf286fad0374970d78e72f1d0d8ce190d4b6d976adf58d8bbd6072d873b88bf",
+    "clip": "Greeting",
+    "blend": "rigs/human/emotes/animation-human-greeting.blend",
+    "tags": [
+     "emotes"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+   },
+   "lift": 0.0005,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/nod.vrma",
+   "name": "nod",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/head-nod.glb",
+    "sha256": "8a44b309edc5c9371e10afa823caa48bfcb2d2cf4fe1faf98f036b429644a8d3",
+    "clip": "Head Nod",
+    "blend": "rigs/human/emotes/animation-human-head-nod.blend",
+    "tags": [
+     "emotes"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+   },
+   "lift": 0.0114,
+   "limbErrorDegrees": 0.013,
+   "check": {
+    "problems": []
+   }
+  },
+  {
+   "file": "animations/clips/clap.vrma",
+   "name": "clap",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/clapping.glb",
+    "sha256": "4d603cf8b90b109950c82f73f11f00232c438670770a57a4ebb901a153319c5a",
+    "clip": "Clapping",
+    "blend": "rigs/human/emotes/animation-human-clapping.blend",
+    "tags": [
+     "emotes"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+   },
+   "lift": 0.0105,
+   "limbErrorDegrees": 0.015,
+   "check": {
+    "problems": [
+     {
+      "id": "seam",
+      "severity": "fix",
+      "title": "The loop does not meet"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/cheer.vrma",
+   "name": "cheer",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/victory-fist-pump.glb",
+    "sha256": "9241e35c368c17d7e4393fe7551a605a38ced35f2ac7b0970e6e8a0ceb256c40",
+    "clip": "Victory Fist Pump",
+    "blend": "rigs/human/emotions/animation-human-victory-fist-pump.blend",
+    "tags": [
+     "emotions"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+   },
+   "lift": 0.0145,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "slide",
+      "severity": "fix",
+      "title": "Feet slide"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/happy.vrma",
+   "name": "happy",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/victory.glb",
+    "sha256": "660f7b607d0b396a863c0036028c81a5ef369309710d2e87ac04f1dfec49715d",
+    "clip": "Victory",
+    "blend": "rigs/human/emotions/animation-human-victory.blend",
+    "tags": [
+     "emotions"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+   },
+   "lift": 0.0289,
+   "limbErrorDegrees": 0.015,
+   "check": {
+    "problems": [
+     {
+      "id": "slide",
+      "severity": "fix",
+      "title": "Feet slide"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/angry.vrma",
+   "name": "angry",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/angry.glb",
+    "sha256": "978b28846a2ca7fa61500fc1d78f7f3c477ca673f208321a4dfcf0fb45bcc05f",
+    "clip": "Angry",
+    "blend": "rigs/human/emotions/animation-human-angry.blend",
+    "tags": [
+     "emotions"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+   },
+   "lift": 0.0341,
+   "limbErrorDegrees": 0.015,
+   "check": {
+    "problems": [
+     {
+      "id": "facing-mean",
+      "severity": "fix",
+      "title": "Turned away over the clip"
+     },
+     {
+      "id": "facing-start",
+      "severity": "fix",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/sip.vrma",
+   "name": "sip",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/consume.glb",
+    "sha256": "93ff67295f91ade0954c02a23633d34668a18153f968e770d4541ca18b19b202",
+    "clip": "Consume",
+    "blend": "rigs/human/activities/animation-human-consume.blend",
+    "tags": [
+     "activities",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.013,
+   "limbErrorDegrees": 0.015,
+   "check": {
+    "problems": [
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/dance.vrma",
+   "name": "dance",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/dance-simple.glb",
+    "sha256": "aa3e2b18ffac97ada71c2086f410d93fcd7735b6bdd338e5d4a3f63cbf260305",
+    "clip": "Dance_Simple",
+    "blend": "rigs/human/emotes/animation-human-dance-simple.blend",
+    "tags": [
+     "emotes",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0214,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "slide",
+      "severity": "fix",
+      "title": "Feet slide"
+     },
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     },
+     {
+      "id": "seam",
+      "severity": "fix",
+      "title": "The loop jolts where it wraps"
+     },
+     {
+      "id": "facing-start",
+      "severity": "fix",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/use.vrma",
+   "name": "use",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/interact.glb",
+    "sha256": "9091ffa013fccc28ad74284e689584ec4254dc0ac13e8e9c31884f9bce2b84f9",
+    "clip": "Interact",
+    "blend": "rigs/human/activities/animation-human-interact.blend",
+    "tags": [
+     "activities",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.013,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/equip.vrma",
+   "name": "equip",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/pickup-table.glb",
+    "sha256": "e766b343577a3f6f12279e84feba804cdf1b0244a4a64015a90922b55777c322",
+    "clip": "PickUp_Table",
+    "blend": "rigs/human/activities/animation-human-pickup-table.blend",
+    "tags": [
+     "activities",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0128,
+   "limbErrorDegrees": 0.015,
+   "check": {
+    "problems": [
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/pickUp.vrma",
+   "name": "pickUp",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/pick-up.glb",
+    "sha256": "e7cce9330a8402d733e06c60291667316182bf3f66b0e247478dfc66ebd75ff4",
+    "clip": "Pick Up",
+    "blend": "rigs/human/activities/animation-human-pick-up.blend",
+    "tags": [
+     "activities"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+   },
+   "lift": 0.0409,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "floor-below",
+      "severity": "fix",
+      "title": "Feet go under the floor"
+     },
+     {
+      "id": "slide",
+      "severity": "fix",
+      "title": "Feet slide"
+     },
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/carry.vrma",
+   "name": "carry",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/walk-carry.glb",
+    "sha256": "6e1c3261d8655016d26abf746c7b8a4e5a052e8dafe65dee0be9b0ec12251678",
+    "clip": "Walk_Carry",
+    "blend": "rigs/human/locomotion/animation-human-walk-carry.blend",
+    "tags": [
+     "locomotion",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0508,
+   "limbErrorDegrees": 0.013,
+   "check": {
+    "problems": [
+     {
+      "id": "speed-missing",
+      "severity": "fix",
+      "title": "Ground speed not recorded"
+     },
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     },
+     {
+      "id": "seam",
+      "severity": "fix",
+      "title": "The loop does not meet"
+     }
+    ],
+    "treadmill": {
+     "speed": 0.616,
+     "direction": -0.4
+    }
+   }
+  },
+  {
+   "file": "animations/clips/push.vrma",
+   "name": "push",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/push.glb",
+    "sha256": "8dd37dfe212f06a94cffbe29dd319f7030741b7892551a584ff687af8cb4e0c7",
+    "clip": "Push",
+    "blend": "rigs/human/activities/animation-human-push.blend",
+    "tags": [
+     "activities",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0121,
+   "limbErrorDegrees": 0.012,
+   "check": {
+    "problems": [
+     {
+      "id": "slide",
+      "severity": "fix",
+      "title": "Feet slide"
+     },
+     {
+      "id": "facing-mean",
+      "severity": "fix",
+      "title": "Turned away over the clip"
+     },
+     {
+      "id": "facing-start",
+      "severity": "fix",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/chestOpen.vrma",
+   "name": "chestOpen",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/chest-open.glb",
+    "sha256": "9114a135144c07b8755c3ac921f8ab31cc621d8881739169688a80c5d31bb0bc",
+    "clip": "Chest_Open",
+    "blend": "rigs/human/activities/animation-human-chest-open.blend",
+    "tags": [
+     "activities",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0181,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/idle-sword.vrma",
+   "name": "idle-sword",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/idle-sword.glb",
+    "sha256": "54e2d11bdfe8f4b1e2e8839d58c4fd09e9fd811fe8011c866ee95fbf62a6784f",
+    "clip": "Idle_Sword",
+    "blend": "rigs/human/combat/melee/animation-human-idle-sword.blend",
+    "tags": [
+     "combat",
+     "melee",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0551,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     },
+     {
+      "id": "seam",
+      "severity": "fix",
+      "title": "The loop jolts where it wraps"
+     },
+     {
+      "id": "facing-mean",
+      "severity": "fix",
+      "title": "Turned away over the clip"
+     },
+     {
+      "id": "facing-start",
+      "severity": "fix",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/swordAttack.vrma",
+   "name": "swordAttack",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/sword-attack.glb",
+    "sha256": "228f86e32a61f2924cc3f559fe82c6a32ace1d3eab34864472ad48cc6dee05c7",
+    "clip": "Sword_Attack",
+    "blend": "rigs/human/combat/melee/animation-human-sword-attack.blend",
+    "tags": [
+     "combat",
+     "melee",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0603,
+   "limbErrorDegrees": 0.015,
+   "check": {
+    "problems": [
+     {
+      "id": "floor-below",
+      "severity": "fix",
+      "title": "Feet go under the floor"
+     },
+     {
+      "id": "slide",
+      "severity": "fix",
+      "title": "Feet slide"
+     },
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     },
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/swordBlock.vrma",
+   "name": "swordBlock",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/sword-block.glb",
+    "sha256": "e0509533376ca175c225b88dce2105288340f18728e745a05c6d5f8e0fa8bce7",
+    "clip": "Sword_Block",
+    "blend": "rigs/human/combat/defense/animation-human-sword-block.blend",
+    "tags": [
+     "combat",
+     "defense",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0506,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     },
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/hit.vrma",
+   "name": "hit",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/hit-chest.glb",
+    "sha256": "7051f57eeb32dd6a0f64eb9926789d5653c1d0e0427bde9340e14cc41f0457fa",
+    "clip": "Hit_Chest",
+    "blend": "rigs/human/combat/reactions/animation-human-hit-chest.blend",
+    "tags": [
+     "combat",
+     "reactions",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.025,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/death.vrma",
+   "name": "death",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/death-a.glb",
+    "sha256": "b2cd811cf25dd0d669b1884bac6a3a292d441eff197ea72a707b2f43a492cf14",
+    "clip": "Death_A",
+    "blend": "rigs/human/combat/reactions/animation-human-death-A.blend",
+    "tags": [
+     "combat",
+     "reactions"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+   },
+   "lift": 0.0293,
+   "limbErrorDegrees": 0.015,
+   "check": {
+    "problems": [
+     {
+      "id": "slide",
+      "severity": "fix",
+      "title": "Feet slide"
+     },
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/punch.vrma",
+   "name": "punch",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/punch-jab.glb",
+    "sha256": "3723568cf799c162c4147aa2c873527a99fcf24812a866c10b556c0a0614c04e",
+    "clip": "Punch_Jab",
+    "blend": "rigs/human/combat/unarmed/animation-human-punch-jab.blend",
+    "tags": [
+     "combat",
+     "unarmed",
+     "quaternius"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+   },
+   "lift": 0.0391,
+   "limbErrorDegrees": 0.013,
+   "check": {
+    "problems": [
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     },
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  },
+  {
+   "file": "animations/clips/kick.vrma",
+   "name": "kick",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/human/animations/kick-front.glb",
+    "sha256": "44f265489d6f0c732be908919bc352b38fbcdf5dcf78ffac475f3d8e1e9e8fe2",
+    "clip": "Kick Front",
+    "blend": "rigs/human/combat/unarmed/animation-human-kick-front.blend",
+    "tags": [
+     "combat",
+     "unarmed"
+    ],
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+   },
+   "lift": 0.0289,
+   "limbErrorDegrees": 0.014,
+   "check": {
+    "problems": [
+     {
+      "id": "travel-in-place",
+      "severity": "fix",
+      "title": "Travels, but marked in place"
+     },
+     {
+      "id": "facing-start",
+      "severity": "warn",
+      "title": "Does not start facing ahead"
+     }
+    ]
+   }
+  }
+ ]
+}

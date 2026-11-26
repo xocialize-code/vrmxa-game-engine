@@ -1,0 +1,808 @@
+{
+ "format": "vrmxa-animations",
+ "version": 1,
+ "clips": [
+  {
+   "sha256": "0512cb3d3af4f4ae2c5cccf2c5becb2de935cedf9f1aa2b2c82582a2510e7077",
+   "file": "animations/clips/idle.vrma",
+   "name": "idle",
+   "duration": 3.0833,
+   "loops": true,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Idle_A\" (static/assets/human/animations/idle-a.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "1dfcffacbd69c6d3b7f020a7bc99eadc570544d70b18008111ccf677b1ed9f77",
+   "file": "animations/clips/idle-foldArms.vrma",
+   "name": "idle-foldArms",
+   "duration": 2.4583,
+   "loops": true,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Idle_FoldArms\" (static/assets/human/animations/idle-foldarms.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "e3823aba08fbc1d47f5c4430d4e472105b8429993afb7e25034daa11206dfa55",
+   "file": "animations/clips/walk.vrma",
+   "name": "walk",
+   "duration": 1.625,
+   "loops": true,
+   "speed": 0.81,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Walk\" (static/assets/human/animations/walk.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "5df3749bfa4dd0edcc0135e8ee196322a7cc5ffd76f1f9dab549a5a024cecd37",
+   "file": "animations/clips/run.vrma",
+   "name": "run",
+   "duration": 1.1667,
+   "loops": true,
+   "speed": 4.49,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Jog\" (static/assets/human/animations/jog.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "4665b43fba35e218a7e6dcd26a4277417d039cdcb632337ed2b32010aef07fd4",
+   "file": "animations/clips/jump.vrma",
+   "name": "jump",
+   "duration": 1.6667,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Jump_Start\" (static/assets/human/animations/jump-start.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "6bae883191d3ca1fabd4e6ab2043e24bf0c22868e9beeff720fb5d4187907725",
+   "file": "animations/clips/fall.vrma",
+   "name": "fall",
+   "duration": 3.0833,
+   "loops": true,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Jump_air\" (static/assets/human/animations/jump-air.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "ea274fa92dd3f9a09a57f830a24ced19d30b236485c779719bc1e0fad0463cc6",
+   "file": "animations/clips/land.vrma",
+   "name": "land",
+   "duration": 1.5833,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Jump_Land\" (static/assets/human/animations/jump-land.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "cf050bc9d10c630584bc0d6d908d55c4bf2f35cae175b8d0072a0f07664d569a",
+   "file": "animations/clips/crouch.vrma",
+   "name": "crouch",
+   "duration": 3.625,
+   "loops": true,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Crouch_Idle\" (static/assets/human/animations/crouch-idle.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "aec683f82e26f09a31ba7f51508852235d67a539768334b13298cba677ba3e6b",
+   "file": "animations/clips/crouchWalk.vrma",
+   "name": "crouchWalk",
+   "duration": 2.4583,
+   "loops": true,
+   "speed": 0.53,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Crouch_Walk\" (static/assets/human/animations/crouch-walk.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "14bd826ca3e774c577ff9da400f09cc33c25d08d73a9d45c58dcff6e9c552cf0",
+   "file": "animations/clips/sit.vrma",
+   "name": "sit",
+   "duration": 1.625,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Sitting_Enter\" (static/assets/human/animations/sitting-enter.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "954a73dac90265505860a1c94063d5b2f9e067bb64c4504fc569008fbc831661",
+   "file": "animations/clips/sitIdle.vrma",
+   "name": "sitIdle",
+   "duration": 2.0417,
+   "loops": true,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Sitting_Idle\" (static/assets/human/animations/sitting-idle.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "15efa0b4fdcabf681de63c47c01e2d762931dac09fa7364bf1d7388442c658d2",
+   "file": "animations/clips/stand.vrma",
+   "name": "stand",
+   "duration": 1.2917,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Sitting_Exit\" (static/assets/human/animations/sitting-exit.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "32479692a5c6ac308652c2064c91d3c6277c21151cd3e3cf8cab312fd649181f",
+   "file": "animations/clips/getUp.vrma",
+   "name": "getUp",
+   "duration": 1.5417,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"LayToIdle\" (static/assets/human/animations/laytoidle.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "f242197d473586b78276b9294bd5b8c8ab99df7b30a326befe62f91fa8f41d30",
+   "file": "animations/clips/talk.vrma",
+   "name": "talk",
+   "duration": 3.625,
+   "loops": true,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Idle_Talking\" (static/assets/human/animations/idle-talking.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "c928dd528105929940a6f468df2fda56cd7fc4777505d625125659cf6dbbccee",
+   "file": "animations/clips/listen.vrma",
+   "name": "listen",
+   "duration": 1.625,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Idle Listening\" (static/assets/human/animations/idle-listening.glb), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "f57624f831a9521908d42e278862a3f9d5d0cb787531ba37c75b6ea7449ccdd8",
+   "file": "animations/clips/think.vrma",
+   "name": "think",
+   "duration": 2.8333,
+   "loops": true,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Confused\" (static/assets/human/animations/confused.glb), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "a956eccda443881c5a42678e5eaf6e9437592494db10d7becb81eecf90faf959",
+   "file": "animations/clips/greet.vrma",
+   "name": "greet",
+   "duration": 4.9167,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Greeting\" (static/assets/human/animations/greeting.glb), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "c0766458fde3f88781e923f1e9a0ef6aff9b0019ababe931be7328b1917da9ae",
+   "file": "animations/clips/nod.vrma",
+   "name": "nod",
+   "duration": 0.7917,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Head Nod\" (static/assets/human/animations/head-nod.glb), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "1662957817d20ee2c6ad38c16d46e5fd12ed011eadffb171700d5ddcb841165e",
+   "file": "animations/clips/clap.vrma",
+   "name": "clap",
+   "duration": 1.4583,
+   "loops": true,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Clapping\" (static/assets/human/animations/clapping.glb), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "564da4c5a42b0cf5b3d616a263895c2c9894029420c9b808e83855264f507a00",
+   "file": "animations/clips/cheer.vrma",
+   "name": "cheer",
+   "duration": 2.4583,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Victory Fist Pump\" (static/assets/human/animations/victory-fist-pump.glb), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "7bd90176e6f9c681eb5fb10bd91603e8b7d6d18d6533baa65f44f87860bb403d",
+   "file": "animations/clips/happy.vrma",
+   "name": "happy",
+   "duration": 1.8333,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Victory\" (static/assets/human/animations/victory.glb), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "91bf359af5b5dfc89ea5ed0103b7d8a3cf479dce62b2625fcef173e7eceab7bb",
+   "file": "animations/clips/angry.vrma",
+   "name": "angry",
+   "duration": 0.75,
+   "loops": true,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Angry\" (static/assets/human/animations/angry.glb), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "c91040650381992a55d397887f67b0cf40ca1f04c03acd25481c944640c5f824",
+   "file": "animations/clips/sip.vrma",
+   "name": "sip",
+   "duration": 1.2917,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Consume\" (static/assets/human/animations/consume.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "c6e8ae29660ee30d7ef9a8fdbb76e61376ad120ad9e7417edf2e38c47cb5643b",
+   "file": "animations/clips/dance.vrma",
+   "name": "dance",
+   "duration": 1.2083,
+   "loops": true,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Dance_Simple\" (static/assets/human/animations/dance-simple.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "1616c4fd958213937de604dcd9fd5cb0fa0670a9c847472f454ae77844dd83e3",
+   "file": "animations/clips/use.vrma",
+   "name": "use",
+   "duration": 2.4583,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Interact\" (static/assets/human/animations/interact.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "a0352c41435d4f077d80c667c81c20db91d461ad93233726237658249d9e8b4f",
+   "file": "animations/clips/equip.vrma",
+   "name": "equip",
+   "duration": 1,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"PickUp_Table\" (static/assets/human/animations/pickup-table.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "5d041514450bac08ce92e92b298936c15ead2173f12c369fad182e1b48364aa8",
+   "file": "animations/clips/pickUp.vrma",
+   "name": "pickUp",
+   "duration": 2.3333,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Pick Up\" (static/assets/human/animations/pick-up.glb), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "bb93b6435c9d601d24d43ef41549ac45925e621f420a1a797d9046d3370ef0cb",
+   "file": "animations/clips/carry.vrma",
+   "name": "carry",
+   "duration": 1.9583,
+   "loops": true,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Walk_Carry\" (static/assets/human/animations/walk-carry.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "97299d9246eb53900abfe023b18704f303e7d0a64fd81e04fd0a1285eaa4b913",
+   "file": "animations/clips/push.vrma",
+   "name": "push",
+   "duration": 3.2917,
+   "loops": true,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Push\" (static/assets/human/animations/push.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "2523eb2923a40f7bf79775db77848a3e7ce10294b125b48f2c92053c9aa9d8b6",
+   "file": "animations/clips/chestOpen.vrma",
+   "name": "chestOpen",
+   "duration": 1.3333,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Chest_Open\" (static/assets/human/animations/chest-open.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "b3d93f4eef91493c2d7a800016de4d77eba971e7dcb18ccccc442ca124ec8bd1",
+   "file": "animations/clips/idle-sword.vrma",
+   "name": "idle-sword",
+   "duration": 2.0417,
+   "loops": true,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Idle_Sword\" (static/assets/human/animations/idle-sword.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "d4453a275bbea86d035c274c830e0aa3fbf1091625b85f3e650225befc38d3cc",
+   "file": "animations/clips/swordAttack.vrma",
+   "name": "swordAttack",
+   "duration": 1.875,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Sword_Attack\" (static/assets/human/animations/sword-attack.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "76e0316c1a28fc198af215eb8809decda93df973c81696f17395d079dff77f3b",
+   "file": "animations/clips/swordBlock.vrma",
+   "name": "swordBlock",
+   "duration": 1.2083,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Sword_Block\" (static/assets/human/animations/sword-block.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "e5458c3df56e7443e1dd73d59ed2ea68929b2211704463183292af08f0c698ae",
+   "file": "animations/clips/hit.vrma",
+   "name": "hit",
+   "duration": 0.375,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Hit_Chest\" (static/assets/human/animations/hit-chest.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "81e58914be976c177bfd8c0a506819198cc81cf7f7c1ee405d8b1676416d0c3a",
+   "file": "animations/clips/death.vrma",
+   "name": "death",
+   "duration": 4.5833,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Death_A\" (static/assets/human/animations/death-a.glb), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "72fdef67adece56bfbea33b58aba9bd396542b1792f031317978bc3612c61b98",
+   "file": "animations/clips/punch.vrma",
+   "name": "punch",
+   "duration": 1.0417,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Punch_Jab\" (static/assets/human/animations/punch-jab.glb, from Quaternius' Universal Animation Library), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  },
+  {
+   "sha256": "0bd500af1c636eaad583b2be2ae35842358c0d4beba78e6ce0c7a11d26ecd1a3",
+   "file": "animations/clips/kick.vrma",
+   "name": "kick",
+   "duration": 1.3333,
+   "loops": false,
+   "rootMotion": "inPlace",
+   "tracks": [
+    "humanoid"
+   ],
+   "licence": "CC0-1.0",
+   "source": "mesh2motion \"Kick Front\" (static/assets/human/animations/kick-front.glb), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs"
+  }
+ ],
+ "sets": [
+  {
+   "id": "default",
+   "name": "Default",
+   "default": true,
+   "priority": 0,
+   "requires": [],
+   "slots": {
+    "idle": [
+     {
+      "clip": "0512cb3d3af4f4ae2c5cccf2c5becb2de935cedf9f1aa2b2c82582a2510e7077",
+      "weight": 3,
+      "blendIn": 0.2
+     },
+     {
+      "clip": "1dfcffacbd69c6d3b7f020a7bc99eadc570544d70b18008111ccf677b1ed9f77",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "walk": [
+     {
+      "clip": "e3823aba08fbc1d47f5c4430d4e472105b8429993afb7e25034daa11206dfa55",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "run": [
+     {
+      "clip": "5df3749bfa4dd0edcc0135e8ee196322a7cc5ffd76f1f9dab549a5a024cecd37",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "jump": [
+     {
+      "clip": "4665b43fba35e218a7e6dcd26a4277417d039cdcb632337ed2b32010aef07fd4",
+      "weight": 1,
+      "blendIn": 0.1
+     }
+    ],
+    "fall": [
+     {
+      "clip": "6bae883191d3ca1fabd4e6ab2043e24bf0c22868e9beeff720fb5d4187907725",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "land": [
+     {
+      "clip": "ea274fa92dd3f9a09a57f830a24ced19d30b236485c779719bc1e0fad0463cc6",
+      "weight": 1,
+      "blendIn": 0.1
+     }
+    ],
+    "sit": [
+     {
+      "clip": "14bd826ca3e774c577ff9da400f09cc33c25d08d73a9d45c58dcff6e9c552cf0",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "sitIdle": [
+     {
+      "clip": "954a73dac90265505860a1c94063d5b2f9e067bb64c4504fc569008fbc831661",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "stand": [
+     {
+      "clip": "15efa0b4fdcabf681de63c47c01e2d762931dac09fa7364bf1d7388442c658d2",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "getUp": [
+     {
+      "clip": "32479692a5c6ac308652c2064c91d3c6277c21151cd3e3cf8cab312fd649181f",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "talk": [
+     {
+      "clip": "f242197d473586b78276b9294bd5b8c8ab99df7b30a326befe62f91fa8f41d30",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "listen": [
+     {
+      "clip": "c928dd528105929940a6f468df2fda56cd7fc4777505d625125659cf6dbbccee",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "upperBody"
+     }
+    ],
+    "think": [
+     {
+      "clip": "f57624f831a9521908d42e278862a3f9d5d0cb787531ba37c75b6ea7449ccdd8",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "upperBody"
+     }
+    ],
+    "greet": [
+     {
+      "clip": "a956eccda443881c5a42678e5eaf6e9437592494db10d7becb81eecf90faf959",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "upperBody"
+     }
+    ],
+    "wave": [
+     {
+      "clip": "a956eccda443881c5a42678e5eaf6e9437592494db10d7becb81eecf90faf959",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "upperBody"
+     }
+    ],
+    "nod": [
+     {
+      "clip": "c0766458fde3f88781e923f1e9a0ef6aff9b0019ababe931be7328b1917da9ae",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "face"
+     }
+    ],
+    "clap": [
+     {
+      "clip": "1662957817d20ee2c6ad38c16d46e5fd12ed011eadffb171700d5ddcb841165e",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "arms"
+     }
+    ],
+    "cheer": [
+     {
+      "clip": "564da4c5a42b0cf5b3d616a263895c2c9894029420c9b808e83855264f507a00",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "arms"
+     }
+    ],
+    "sip": [
+     {
+      "clip": "c91040650381992a55d397887f67b0cf40ca1f04c03acd25481c944640c5f824",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "arms"
+     }
+    ],
+    "emote.happy": [
+     {
+      "clip": "7bd90176e6f9c681eb5fb10bd91603e8b7d6d18d6533baa65f44f87860bb403d",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "upperBody"
+     }
+    ],
+    "emote.angry": [
+     {
+      "clip": "91bf359af5b5dfc89ea5ed0103b7d8a3cf479dce62b2625fcef173e7eceab7bb",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "upperBody"
+     }
+    ],
+    "use": [
+     {
+      "clip": "1616c4fd958213937de604dcd9fd5cb0fa0670a9c847472f454ae77844dd83e3",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "equip": [
+     {
+      "clip": "a0352c41435d4f077d80c667c81c20db91d461ad93233726237658249d9e8b4f",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "carry": [
+     {
+      "clip": "bb93b6435c9d601d24d43ef41549ac45925e621f420a1a797d9046d3370ef0cb",
+      "weight": 1,
+      "blendIn": 0.3
+     }
+    ],
+    "x-vrmxg.crouch": [
+     {
+      "clip": "cf050bc9d10c630584bc0d6d908d55c4bf2f35cae175b8d0072a0f07664d569a",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "x-vrmxg.crouchWalk": [
+     {
+      "clip": "aec683f82e26f09a31ba7f51508852235d67a539768334b13298cba677ba3e6b",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "x-vrmxg.pickUp": [
+     {
+      "clip": "5d041514450bac08ce92e92b298936c15ead2173f12c369fad182e1b48364aa8",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "x-vrmxg.push": [
+     {
+      "clip": "97299d9246eb53900abfe023b18704f303e7d0a64fd81e04fd0a1285eaa4b913",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "x-vrmxg.dance": [
+     {
+      "clip": "c6e8ae29660ee30d7ef9a8fdbb76e61376ad120ad9e7417edf2e38c47cb5643b",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "x-vrmxg.hit": [
+     {
+      "clip": "e5458c3df56e7443e1dd73d59ed2ea68929b2211704463183292af08f0c698ae",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "upperBody"
+     }
+    ],
+    "x-vrmxg.death": [
+     {
+      "clip": "81e58914be976c177bfd8c0a506819198cc81cf7f7c1ee405d8b1676416d0c3a",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "x-vrmxg.punch": [
+     {
+      "clip": "72fdef67adece56bfbea33b58aba9bd396542b1792f031317978bc3612c61b98",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "upperBody"
+     }
+    ],
+    "x-vrmxg.kick": [
+     {
+      "clip": "0bd500af1c636eaad583b2be2ae35842358c0d4beba78e6ce0c7a11d26ecd1a3",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ]
+   }
+  },
+  {
+   "id": "sword",
+   "name": "Sword in hand",
+   "default": false,
+   "priority": 1,
+   "requires": [
+    "held:sword"
+   ],
+   "slots": {
+    "idle": [
+     {
+      "clip": "b3d93f4eef91493c2d7a800016de4d77eba971e7dcb18ccccc442ca124ec8bd1",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "hold": [
+     {
+      "clip": "b3d93f4eef91493c2d7a800016de4d77eba971e7dcb18ccccc442ca124ec8bd1",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "upperBody"
+     }
+    ],
+    "use": [
+     {
+      "clip": "d4453a275bbea86d035c274c830e0aa3fbf1091625b85f3e650225befc38d3cc",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ],
+    "x-vrmxg.block": [
+     {
+      "clip": "76e0316c1a28fc198af215eb8809decda93df973c81696f17395d079dff77f3b",
+      "weight": 1,
+      "blendIn": 0.2,
+      "mask": "upperBody"
+     }
+    ]
+   }
+  },
+  {
+   "id": "chest",
+   "name": "Opening a chest",
+   "default": false,
+   "priority": 1,
+   "requires": [
+    "container:chest"
+   ],
+   "slots": {
+    "use": [
+     {
+      "clip": "2523eb2923a40f7bf79775db77848a3e7ce10294b125b48f2c92053c9aa9d8b6",
+      "weight": 1,
+      "blendIn": 0.2
+     }
+    ]
+   }
+  }
+ ]
+}
