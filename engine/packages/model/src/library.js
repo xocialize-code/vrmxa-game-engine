@@ -78,6 +78,6 @@ export class ModelNode extends Node {
   exitTree() {
     const physics = this.tree.services.get('physics');
     if (physics && this.assetBody !== undefined) { physics.removeBody(this, this.assetBody); this.assetBody = undefined; }
-    if (this.model) this.object3d.remove(this.model);
+    if (this.model) { this.object3d.remove(this.model); this.tree?.detach?.(this.model); } // disposed with the world (AB-T-0626)
   }
 }

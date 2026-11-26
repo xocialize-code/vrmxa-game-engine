@@ -51,7 +51,17 @@ export class SceneTree {
     /** Actions that were called but that no node method or behaviour implements: [{ id, action }]. */
     this.unhandled = [];
     this.doc = null;
+    /**
+     * three.js objects that left this world's graph while it ran and won't be drawn by it again (a removed node's
+     * object, a character's old body, an item's model, a wearable taken off): the host disposes them with the world, as
+     * nothing under the root reaches them any more (AB-T-0626). Presentation only: never in the state or the hashes.
+     * @type {Set<import('three').Object3D>}
+     */
+    this.detached = new Set();
   }
+
+  /** Hand over an object that left the world's graph for good, for the host to dispose with the world (`detached`). */
+  detach(object3d) { if (object3d) this.detached.add(object3d); return object3d; }
 
   // ---------------------------------------------------------------- building
 
@@ -99,6 +109,7 @@ export class SceneTree {
     const parent = node.parent;
     parent.children.splice(parent.children.indexOf(node), 1);
     parent.object3d.remove(node.object3d);
+    this.detach(node.object3d); // what it held: the host disposes it with the world (models, bodies: their exitTree)
     node.parent = null;
     this._order = null;
     this.structureVersion++;
