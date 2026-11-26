@@ -6,23 +6,23 @@
  "build": {
   "game": "morning-rush",
   "files": 116,
-  "bytes": 26215889,
-  "digest": "8ab0fe3f4d563614f42ae775ecf229c852e3a96ae77661f5c86fca984c91ab08",
-  "manifest": "44c819560df14f85c24d0192738099474dad229d1a859d095276def44ae1791d",
-  "runtime": "vrmxg-game 0.1.0+f7beb7c2367a"
+  "bytes": 26216007,
+  "digest": "1117e9d8b6d45e1ce0da0a7799c8a8faabfb03b3cf44bd126c91b5d903ce440b",
+  "manifest": "2518f0042e47bce1e5ba5c11151dddfeb08d014e02dff4558202c03069b30a50",
+  "runtime": "vrmxg-game 0.1.0+17d27d5ca00d"
  },
  "sessions": {
   "win": {
-   "steps": 6296,
+   "steps": 6299,
    "scenes": [
     "game/title.vrmxs",
     "game/level.vrmxs",
     "game/won.vrmxs"
    ],
    "final": {
-    "step": 6296,
+    "step": 6299,
     "scene": "game/title.vrmxs",
-    "hash": "0c7b670f5a1f3ea5"
+    "hash": "43d3a2f6c26f5a1a"
    },
    "seen": {
     "hud": {
@@ -59,7 +59,7 @@
    },
    "tasks": [
     {
-     "step": 6,
+     "step": 7,
      "task": "in game/title.vrmxs"
     },
     {
@@ -246,16 +246,16 @@
    "log": "acceptance/results/m5-rush/win.json"
   },
   "lose": {
-   "steps": 4808,
+   "steps": 4814,
    "scenes": [
     "game/title.vrmxs",
     "game/level.vrmxs",
     "game/lost.vrmxs"
    ],
    "final": {
-    "step": 4808,
+    "step": 4814,
     "scene": "game/title.vrmxs",
-    "hash": "c151a6a6a058981f"
+    "hash": "1c871ead6cb1c5e6"
    },
    "seen": {
     "hud": {
@@ -266,7 +266,7 @@
     "carry": null,
     "choice": null,
     "checkpoint": {
-     "step": 2222,
+     "step": 2220,
      "checkpoints": {
       "first-order": {
        "id": "cp-first",
@@ -278,7 +278,7 @@
    },
    "tasks": [
     {
-     "step": 1,
+     "step": 5,
      "task": "in game/title.vrmxs"
     },
     {
@@ -411,41 +411,41 @@
  },
  "nodeReplays": {
   "win": {
-   "steps": 6296,
+   "steps": 6299,
    "final": {
-    "step": 6296,
+    "step": 6299,
     "scene": "game/title.vrmxs",
-    "hash": "0c7b670f5a1f3ea5"
+    "hash": "43d3a2f6c26f5a1a"
    }
   },
   "lose": {
-   "steps": 4808,
+   "steps": 4814,
    "final": {
-    "step": 4808,
+    "step": 4814,
     "scene": "game/title.vrmxs",
-    "hash": "c151a6a6a058981f"
+    "hash": "1c871ead6cb1c5e6"
    }
   }
  },
  "appReplays": {
   "win-webgpu": {
    "backend": "webgpu",
-   "steps": 6296,
+   "steps": 6299,
    "final": {
-    "step": 6296,
+    "step": 6299,
     "scene": "game/title.vrmxs",
-    "hash": "0c7b670f5a1f3ea5"
+    "hash": "43d3a2f6c26f5a1a"
    },
    "frames": {
-    "frames": 6305,
-    "seconds": 106.2958,
-    "fps": 59.315607954406474,
-    "mean": 16.85896907216495,
+    "frames": 6307,
+    "seconds": 106.3124,
+    "fps": 59.32515868327684,
+    "mean": 16.856254954812112,
     "p50": 16.69999999999709,
-    "p95": 16.70000000001164,
+    "p95": 16.79999999998836,
     "p99": 16.80000000000291,
-    "max": 433.2999999999993,
-    "over25": 13,
+    "max": 450,
+    "over25": 12,
     "over34": 12,
     "width": 1280,
     "height": 720
@@ -454,21 +454,21 @@
   },
   "win-webgl": {
    "backend": "webgl",
-   "steps": 6296,
+   "steps": 6299,
    "final": {
-    "step": 6296,
+    "step": 6299,
     "scene": "game/title.vrmxs",
-    "hash": "0c7b670f5a1f3ea5"
+    "hash": "43d3a2f6c26f5a1a"
    },
    "frames": {
-    "frames": 6298,
-    "seconds": 106.27909999999999,
-    "fps": 59.25906410573669,
-    "mean": 16.87505557319784,
+    "frames": 6305,
+    "seconds": 106.39569999999999,
+    "fps": 59.259913699519814,
+    "mean": 16.874813639968277,
     "p50": 16.69999999999709,
     "p95": 16.70000000001164,
     "p99": 16.80000000000291,
-    "max": 466.6999999999998,
+    "max": 483.40000000000055,
     "over25": 15,
     "over34": 13,
     "width": 1280,
@@ -478,21 +478,21 @@
   },
   "lose-webgpu": {
    "backend": "webgpu",
-   "steps": 4808,
+   "steps": 4814,
    "final": {
-    "step": 4808,
+    "step": 4814,
     "scene": "game/title.vrmxs",
-    "hash": "c151a6a6a058981f"
+    "hash": "1c871ead6cb1c5e6"
    },
    "frames": {
-    "frames": 4819,
-    "seconds": 81.5133,
-    "fps": 59.11918668487228,
-    "mean": 16.914982361485787,
+    "frames": 4820,
+    "seconds": 81.5967,
+    "fps": 59.071016352377,
+    "mean": 16.92877593360996,
     "p50": 16.69999999999709,
     "p95": 16.79999999998836,
     "p99": 16.80000000000291,
-    "max": 449.90000000000055,
+    "max": 466.60000000000036,
     "over25": 15,
     "over34": 12,
     "width": 1280,
@@ -502,22 +502,22 @@
   },
   "lose-webgl": {
    "backend": "webgl",
-   "steps": 4808,
+   "steps": 4814,
    "final": {
-    "step": 4808,
+    "step": 4814,
     "scene": "game/title.vrmxs",
-    "hash": "c151a6a6a058981f"
+    "hash": "1c871ead6cb1c5e6"
    },
    "frames": {
-    "frames": 4814,
-    "seconds": 81.49670000000002,
-    "fps": 59.06987644898504,
-    "mean": 16.92910261736602,
+    "frames": 4816,
+    "seconds": 81.5968,
+    "fps": 59.02192242833052,
+    "mean": 16.942857142857143,
     "p50": 16.69999999999709,
-    "p95": 16.70000000001164,
+    "p95": 16.79999999998836,
     "p99": 16.80000000000291,
-    "max": 450,
-    "over25": 15,
+    "max": 500,
+    "over25": 14,
     "over34": 13,
     "width": 1280,
     "height": 720
@@ -529,12 +529,12 @@
   {
    "name": "the sample game exports with the game app as its runtime (vrmxg-export --game game/game.json)",
    "ok": true,
-   "detail": "116 files, 26.2 MB, digest 8ab0fe3f4d563614"
+   "detail": "116 files, 26.2 MB, digest 1117e9d8b6d45e1c"
   },
   {
    "name": "win: played from the title menu to the won ending, its dialogue choices recorded",
    "ok": true,
-   "detail": "scenes game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6296 steps; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
+   "detail": "scenes game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6299 steps; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
   },
   {
    "name": "win: the HUD showed the goal, score and clock; the tray was carried on the upper body; the checkpoint was taken",
@@ -544,37 +544,37 @@
   {
    "name": "lose: played from the title menu to the lost ending, its dialogue choices recorded",
    "ok": true,
-   "detail": "scenes game/title.vrmxs → game/level.vrmxs → game/lost.vrmxs; 4808 steps; choices ready, espresso, chocolate; ending line \"Hana: Two orders wrong. Let's call it a morning, and try again tomorrow.\""
+   "detail": "scenes game/title.vrmxs → game/level.vrmxs → game/lost.vrmxs; 4814 steps; choices ready, espresso, chocolate; ending line \"Hana: Two orders wrong. Let's call it a morning, and try again tomorrow.\""
   },
   {
    "name": "win: the session played in Chromium replays in Node to the same hash after every step",
    "ok": true,
-   "detail": "6296 steps, final 0c7b670f5a1f3ea5 at step 6296"
+   "detail": "6299 steps, final 43d3a2f6c26f5a1a at step 6299"
   },
   {
    "name": "lose: the session played in Chromium replays in Node to the same hash after every step",
    "ok": true,
-   "detail": "4808 steps, final c151a6a6a058981f at step 4808"
+   "detail": "4814 steps, final 1c871ead6cb1c5e6 at step 4814"
   },
   {
    "name": "win: the game app replays the log drawn on WebGPU to the same hash after every step",
    "ok": true,
-   "detail": "6296 steps on webgpu, final 0c7b670f5a1f3ea5; 6305 frames, p99 16.8 ms"
+   "detail": "6299 steps on webgpu, final 43d3a2f6c26f5a1a; 6307 frames, p99 16.8 ms"
   },
   {
    "name": "win: the game app replays the log drawn on WebGL to the same hash after every step",
    "ok": true,
-   "detail": "6296 steps on webgl, final 0c7b670f5a1f3ea5; 6298 frames, p99 16.8 ms"
+   "detail": "6299 steps on webgl, final 43d3a2f6c26f5a1a; 6305 frames, p99 16.8 ms"
   },
   {
    "name": "lose: the game app replays the log drawn on WebGPU to the same hash after every step",
    "ok": true,
-   "detail": "4808 steps on webgpu, final c151a6a6a058981f; 4819 frames, p99 16.8 ms"
+   "detail": "4814 steps on webgpu, final 1c871ead6cb1c5e6; 4820 frames, p99 16.8 ms"
   },
   {
    "name": "lose: the game app replays the log drawn on WebGL to the same hash after every step",
    "ok": true,
-   "detail": "4808 steps on webgl, final c151a6a6a058981f; 4814 frames, p99 16.8 ms"
+   "detail": "4814 steps on webgl, final 1c871ead6cb1c5e6; 4816 frames, p99 16.8 ms"
   },
   {
    "name": "no errors in the pages",
