@@ -36,7 +36,7 @@ const bid = (use) => `beh-${idPart(use)}`;
         <option value="">Add a behaviour…</option>
         <option v-for="a in wiring.addable" :key="a.name" :value="a.name" :title="a.description">{{ a.name }}</option>
       </select>
-      <button id="beh-add-button" type="button" :aria-label="pick ? `Add behaviour ${pick}` : 'Add a behaviour (pick one first)'" :disabled="disabled || !pick" @click="add">Add</button>
+      <button id="beh-add-button" type="button" aria-label="Add the behaviour picked" :title="pick ? `Add behaviour ${pick}` : 'Pick a behaviour first'" :disabled="disabled || !pick" @click="add">Add</button>
     </div>
   </section>
 </template>

@@ -3,6 +3,7 @@
 // signal (the node's type's and its behaviours'), the target (a node of the scene), the action (the target's) and its
 // arguments (fields by the action's schema). A new one is made from the first three. The app turns each event into one
 // undo step (EditorSession connect, setConnection, setConnectionArg, disconnect). Connections into the node are listed.
+// A control's accessible name stays the same while the picks change (an automation's reference to it stays good).
 import { computed, ref } from 'vue';
 import FieldRows from './FieldRows.vue';
 
@@ -79,7 +80,7 @@ const said = (c) => `${props.wiring.id}.${c.signal} → ${c.to}.${c.call}`;
         </select>
       </div>
       <div class="insp-row wiring-go">
-        <button id="conn-new-add" type="button" :aria-label="signal && to && call ? `Connect ${wiring.id}.${signal} to ${to}.${call}` : 'Connect (pick a signal, a target and an action first)'" :disabled="disabled || !signal || !to || !call" @click="connect">Connect</button>
+        <button id="conn-new-add" type="button" aria-label="Connect the picked signal, target and action" :title="signal && to && call ? `Connect ${wiring.id}.${signal} to ${to}.${call}` : 'Pick a signal, a target and an action first'" :disabled="disabled || !signal || !to || !call" @click="connect">Connect</button>
       </div>
     </div>
     <p v-if="wiring.incoming.length" id="connections-in" class="muted small" :aria-label="`Connections into ${wiring.id}: ${wiring.incoming.map((c) => `${c.from}.${c.signal} calls ${c.call}`).join('; ')}`">
