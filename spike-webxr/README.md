@@ -5,7 +5,7 @@ WebXR in WKWebView on the Mac and in Safari on visionOS, MToon in stereo on WebG
 step, and hands and gaze as input. Stack: three r187 (0.187.0), `@pixiv/three-vrm` 3.5.5 with the `engine/patches`
 patch, the engine's packages at 49cd652. Machine: M5 Max, macOS 27.3 (26C5047e), Xcode 27.2 with the visionOS 27.2 simulator runtime (24N120). No headset.*
 
-*Receipts: AB-R-1167 (WKWebView), AB-R-1168 (stereo), AB-R-1169 (90 Hz), AB-R-1170 (hands and gaze). Findings filed
+*Receipts: AB-R-1167 (WKWebView), AB-R-1175 (visionOS simulator), AB-R-1168 (stereo), AB-R-1169 (90 Hz), AB-R-1170 (hands and gaze). Findings filed
 as tasks AB-T-0660 (per-view post), AB-T-0661 (an XR mode in the render host), AB-T-0662 (XR input).*
 
 ## Verdicts
