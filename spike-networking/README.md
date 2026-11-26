@@ -7,12 +7,13 @@ as AB-T-0657, AB-T-0658 and AB-T-0659.*
 **Verdict: lockstep now, over a WebRTC data channel; rollback later, once three engine gaps are closed.**
 
 Determinism holds over the network. In all 38 networked runs (30 in virtual time, 8 in real time over real loopback
-sockets), both peers and the reference landed on the same world hash at every step (1,200 per run in virtual time, 600 in real time). That held for
-lockstep and rollback, over both delivery modes, under every profile from LAN to 150 ± 50 ms with 5 % loss.
+sockets), both peers and the reference landed on the same world hash, Rapier's whole serialisation included, at every
+step: 1,200 per run in virtual time, 600 in real time. That held for lockstep and rollback, over both delivery modes,
+under every profile from LAN to 150 ± 50 ms with 5 % loss.
 
 Lockstep needs nothing for that. Rollback needs the harness's jump shim (AB-T-0657). As the engine is, rollback peers
-part: at step 26 on the typical profile and step 189 on lan, both of them off the reference (`results/netcode-no-jump-shim.json`).
-The in-band hash checks catch it. With the shim, what separates the two models is what they cost and what the engine
+part: at step 26 on the typical profile and step 189 on lan, both of them off the reference
+(`results/netcode-no-jump-shim.json`). The in-band hash checks catch it. With the shim, what separates the two models is what they cost and what the engine
 can do today.
 
 - **Lockstep works today, with no engine change.** It never restores a snapshot, so it asks no more of the engine than
