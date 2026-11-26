@@ -1537,7 +1537,7 @@ export class EditorHost {
         }
         else {
           if (this.fly) this.fly.update(dt); else this.orbit.update(dt); if (this.box.visible) this.box.update();
-          this.aids.beginFrame(); // WebGPU through the post stack: the frame and the aids reach the canvas together (viewport/composite.js)
+          this.aids.beginFrame(); // WebGPU: the frame and the aids reach the canvas together (viewport/composite.js)
           const drawing = this.host;
           try { drawing.render(1, false); } catch (err) { this.aids.abortFrame(); throw err; }
           // the device went in that draw (M6 W6): the aids would draw on a dead renderer (WebKit throws), so not this frame

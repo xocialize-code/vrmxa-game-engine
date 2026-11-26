@@ -11,7 +11,14 @@
 // premultiplied), and one pass draws both to the canvas: the frame as it is, the aids encoded to sRGB and blended over
 // it by their alpha. The output is set to linear with no tone mapping for that pass, so nothing is converted twice.
 // The world and the render host's scene are untouched; exports, stills and checks draw on other hosts.
-import { Color, LinearSRGBColorSpace, Mesh, MeshBasicMaterial, NoToneMapping, OrthographicCamera, PlaneGeometry, RenderTarget, Scene, Vector2 } from 'three';
+//
+// AB-A-0335: WebGPU without the post stack goes this way too. There three draws a frame with tone mapping into its
+// framebuffer target and tone-maps that whole target on its way to the canvas, so the aids drawn after the frame were
+// tone-mapped with it (`toneMapped: false` does nothing on r187's WebGPURenderer): the selection outline's #ff9a1f
+// reached the canvas as #f19221 under Neutral (acceptance/m6/aids-tonemap.mjs). So the frame is drawn into a linear
+// half-float target (multisampled as the canvas would be), and this pass gives it the renderer's tone mapping and sRGB
+// output (three's own renderOutput, as its output pass would) before laying the aids over it untouched.
+import { Color, HalfFloatType, LinearSRGBColorSpace, Mesh, MeshBasicMaterial, NoToneMapping, OrthographicCamera, PlaneGeometry, RenderTarget, SRGBColorSpace, Scene, Vector2 } from 'three';
 
 const _size = new Vector2(), _clear = new Color();
 
@@ -29,11 +36,32 @@ export class FrameComposite {
   ready() {
     if (this.quad) return true;
     this.loading ??= Promise.all([import('three/webgpu'), import('three/tsl')]).then(([gpu, tsl]) => {
-      const { texture, screenUV, sRGBTransferOETF, max, vec4, mix } = tsl;
+      const { texture, screenUV, sRGBTransferOETF, max, vec4, vec2, mix, renderOutput, uv } = tsl;
       this.frameNode = texture(null, screenUV); this.aidsNode = texture(null, screenUV);
-      const f = this.frameNode, o = this.aidsNode, a = max(o.a, 1e-4);
-      this.material = new gpu.MeshBasicNodeMaterial({ depthTest: false, depthWrite: false, toneMapped: false });
-      this.material.colorNode = vec4(mix(f.rgb, sRGBTransferOETF(o.rgb.div(a)), o.a), 1);
+      const f = this.frameNode, o = this.aidsNode, a = max(o.a, 1e-4), aids = sRGBTransferOETF(o.rgb.div(a));
+      /** The pass's material: the frame as the post stack left it (sRGB), or a linear frame given `mapping` and sRGB. */
+      this.materials = new Map();
+      this.materialFor = (linear, mapping) => {
+        const key = linear ? `linear:${mapping}` : 'srgb';
+        if (!this.materials.has(key)) {
+          const m = new gpu.MeshBasicNodeMaterial({ depthTest: false, depthWrite: false, toneMapped: false });
+          m.colorNode = vec4(mix(linear ? renderOutput(f, mapping, SRGBColorSpace).rgb : f.rgb, aids, o.a), 1);
+          this.materials.set(key, m);
+        }
+        return this.materials.get(key);
+      };
+      this.material = this.materialFor(false);
+      // the camera preview over a linear frame: the inset drawn linear too, given the frame's tone mapping as it is laid in
+      this.insetNode = texture(null, uv().mul(vec2(1, -1)).add(vec2(0, 1))); // a WebGPU target's rows run top down
+      this.insetMaterials = new Map();
+      this.insetMaterialFor = (mapping) => {
+        if (!this.insetMaterials.has(mapping)) {
+          const m = new gpu.MeshBasicNodeMaterial({ depthTest: false, depthWrite: false, toneMapped: false, fog: false });
+          m.colorNode = vec4(renderOutput(this.insetNode, mapping, LinearSRGBColorSpace).rgb, 1);
+          this.insetMaterials.set(mapping, m);
+        }
+        return this.insetMaterials.get(mapping);
+      };
       this.quad = new Mesh(new PlaneGeometry(2, 2), this.material);
       this.quad.frustumCulled = false;
       this.scene.add(this.quad);
@@ -41,19 +69,28 @@ export class FrameComposite {
     return false;
   }
 
-  /** A target the size of the drawing buffer (made again when the size changes). */
-  sized(t, renderer, depthBuffer) {
+  /**
+   * A target the size of the drawing buffer (made again when the size or its kind changes). `linear`: half float and
+   * multisampled as the renderer's canvas, for a frame drawn without the post stack (its tone mapping comes later).
+   */
+  sized(t, renderer, depthBuffer, linear = false) {
     renderer.getDrawingBufferSize(_size);
     const w = Math.max(1, _size.x), h = Math.max(1, _size.y);
-    if (t && t.width === w && t.height === h) return t;
+    if (t && t.width === w && t.height === h && !!t.userData?.linear === linear) return t;
     t?.dispose();
-    return new RenderTarget(w, h, { depthBuffer });
+    const made = linear ? new RenderTarget(w, h, { depthBuffer, type: HalfFloatType, samples: renderer.samples ?? 0 }) : new RenderTarget(w, h, { depthBuffer });
+    made.userData = { linear };
+    return made;
   }
 
-  /** Before the host draws the frame: draw it into the frame target. → whether this frame goes through the targets */
-  beginFrame(renderer) {
+  /**
+   * Before the host draws the frame: draw it into the frame target. → whether this frame goes through the targets.
+   * `linear`: the frame is drawn without the post stack (AB-A-0335), so it comes out linear and this pass tone-maps it.
+   */
+  beginFrame(renderer, { linear = false } = {}) {
     if (!this.ready()) return false;
-    this.frame = this.sized(this.frame, renderer, true);
+    this.linear = linear;
+    this.frame = this.sized(this.frame, renderer, true, linear);
     this.frameNode.value = this.frame.texture;
     this.prevTarget = renderer.getRenderTarget();
     renderer.setRenderTarget(this.frame);
@@ -63,7 +100,7 @@ export class FrameComposite {
 
   /** After the frame: the aids go into their own target, cleared to transparent. */
   beginAids(renderer) {
-    this.aids = this.sized(this.aids, renderer, true);
+    this.aids = this.sized(this.aids, renderer, true, !!this.linear);
     this.aidsNode.value = this.aids.texture;
     this.prevAlpha = renderer.getClearAlpha(); this.prevColor = renderer.getClearColor(_clear).clone();
     renderer.setRenderTarget(this.aids);
@@ -77,6 +114,7 @@ export class FrameComposite {
     renderer.setRenderTarget(this.prevTarget ?? null);
     if (this.prevColor) renderer.setClearColor(this.prevColor, this.prevAlpha);
     const out = renderer.outputColorSpace, tone = renderer.toneMapping, auto = renderer.autoClear;
+    this.quad.material = this.material = this.materialFor(!!this.linear, tone); // the frame's tone mapping, before it is turned off
     try {
       renderer.outputColorSpace = LinearSRGBColorSpace; renderer.toneMapping = NoToneMapping; renderer.autoClear = true;
       renderer.render(this.scene, this.camera);
@@ -90,19 +128,26 @@ export class FrameComposite {
    */
   drawInset(renderer, scene, camera, r, w, h) {
     const pr = renderer.getPixelRatio(), pw = Math.max(1, Math.round(r.width * pr)), ph = Math.max(1, Math.round(r.height * pr));
-    if (!this.inset || this.inset.width !== pw || this.inset.height !== ph) {
+    const linear = !!this.linear;
+    if (!this.inset || this.inset.width !== pw || this.inset.height !== ph || !!this.inset.userData?.linear !== linear) {
       this.inset?.dispose();
-      this.inset = new RenderTarget(pw, ph, { depthBuffer: true });
+      this.inset = linear ? new RenderTarget(pw, ph, { depthBuffer: true, type: HalfFloatType }) : new RenderTarget(pw, ph, { depthBuffer: true });
+      this.inset.userData = { linear };
       this.insetQuad ??= new Mesh(new PlaneGeometry(1, 1), new MeshBasicMaterial({ depthTest: false, depthWrite: false, toneMapped: false, fog: false }));
       this.insetQuad.frustumCulled = false;
-      this.insetQuad.material.map = this.inset.texture;
-      this.insetQuad.material.map.repeat.set(1, -1); this.insetQuad.material.map.offset.set(0, 1); // a WebGPU target's rows run top down
+      this.insetPlain ??= this.insetQuad.material;
+      this.insetPlain.map = this.inset.texture;
+      this.insetPlain.map.repeat.set(1, -1); this.insetPlain.map.offset.set(0, 1); // a WebGPU target's rows run top down
+      this.insetNode.value = this.inset.texture;
       this.insetScene ??= new Scene();
       this.insetScene.add(this.insetQuad);
     }
     // its place in clip space: centre and size as fractions of the viewport, y up
     this.insetQuad.position.set(((r.x + r.width / 2) / w) * 2 - 1, ((r.y + r.height / 2) / h) * 2 - 1, 0);
     this.insetQuad.scale.set((r.width / w) * 2, (r.height / h) * 2, 1);
+    // over a linear frame (no post stack) the preview takes the frame's tone mapping as it is laid in; through the post
+    // stack, as before (AB-T-0635's untone-mapped preview under post is its own matter)
+    this.insetQuad.material = linear ? this.insetMaterialFor(renderer.toneMapping) : (this.insetPlain ?? this.insetQuad.material);
     const auto = renderer.autoClear, shadows = renderer.shadowMap?.autoUpdate, back = renderer.getRenderTarget();
     try {
       if (renderer.shadowMap) renderer.shadowMap.autoUpdate = false;
@@ -118,7 +163,9 @@ export class FrameComposite {
   abort(renderer) { if (this.active) { this.active = false; renderer.setRenderTarget(this.prevTarget ?? null); } }
 
   dispose() {
-    this.frame?.dispose(); this.aids?.dispose(); this.inset?.dispose(); this.quad?.geometry.dispose(); this.material?.dispose();
-    this.insetQuad?.geometry.dispose(); this.insetQuad?.material.dispose();
+    this.frame?.dispose(); this.aids?.dispose(); this.inset?.dispose(); this.quad?.geometry.dispose();
+    for (const m of this.materials?.values() ?? []) m.dispose();
+    this.insetQuad?.geometry.dispose(); this.insetPlain?.dispose();
+    for (const m of this.insetMaterials?.values() ?? []) m.dispose();
   }
 }

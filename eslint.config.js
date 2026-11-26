@@ -27,4 +27,15 @@ export default [
     },
   },
   { files: simulation, plugins: { vrmxg }, rules: { 'vrmxg/deterministic': 'error' } },
+  // what r187's WebGPURenderer doesn't draw (AB-A-0335): no LineLoop (a closed Line instead), no per-material clipping
+  // planes (a ClippingGroup, or a maskNode)
+  {
+    files: ['engine/packages/*/src/**/*.js', 'apps/*/src/**/*.js'],
+    rules: {
+      'no-restricted-syntax': ['error',
+        { selector: "NewExpression[callee.name='LineLoop'], NewExpression[callee.property.name='LineLoop']", message: 'WebGPURenderer (r187) does not draw LineLoop: use a Line whose last point repeats the first (AB-A-0335)' },
+        { selector: "MemberExpression[property.name='clippingPlanes'], Property[key.name='clippingPlanes']", message: 'WebGPURenderer (r187) ignores material.clippingPlanes: use a ClippingGroup or a maskNode (AB-A-0335)' },
+      ],
+    },
+  },
 ];
