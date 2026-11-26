@@ -30,7 +30,8 @@ against the committed level, byte for byte, ids included.
 
 ### M6 W1's run (2026-11-26): all of the level, the committed bytes
 
-AppProbe, 2026-11-26, the editor at 85ba12e (built as 54da857, before the branch was rebased onto main, which added only `spike-webxr/`; shell 0.14.0; Release build), the
+AppProbe, 2026-11-26, the editor at 7d68407 (PR #60 after both review rounds, rebased onto main; shell 0.16.0; Release build;
+the first passing runs were at 85ba12e, built as 54da857, receipts AB-R-1178 and AB-R-1179), the
 Mac unlocked for the real pointer's drag, each run holding the GPU lock: **17 of 17 rows on WebGPU**
 ([`results/m6-level-webgpu/report.md`](hand-test/results/m6-level-webgpu/report.md)) **and 17 of 17 on WebGL**
 ([`results/m6-level-webgl/report.md`](hand-test/results/m6-level-webgl/report.md)). Each saved level
