@@ -1,0 +1,2646 @@
+[
+  {
+    "case" : "stereo.html?w=576&h=640",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "scheme",
+    "pngs" : [
+      "stereo_html_w_576_h_640__scheme__default__diffLeft.png",
+      "stereo_html_w_576_h_640__scheme__default__diffRight.png",
+      "stereo_html_w_576_h_640__scheme__default__monoLeft.png",
+      "stereo_html_w_576_h_640__scheme__default__monoRight.png",
+      "stereo_html_w_576_h_640__scheme__default__stereo.png"
+    ],
+    "result" : {
+      "backend" : "webgpu",
+      "control" : {
+        "monoLeftTwice" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        }
+      },
+      "errorsDuring" : [
+
+      ],
+      "eye" : {
+        "h" : 640,
+        "ipd" : 0.063,
+        "tangents" : {
+          "left" : {
+            "d" : 1.1000000000000001,
+            "l" : 1.05,
+            "r" : 0.80000000000000004,
+            "u" : 0.94999999999999996
+          },
+          "right" : {
+            "d" : 1.1000000000000001,
+            "l" : 0.80000000000000004,
+            "r" : 1.05,
+            "u" : 0.94999999999999996
+          }
+        },
+        "w" : 576
+      },
+      "mtoonClass" : "be",
+      "mtoonMaterials" : 22,
+      "origin" : "vrmxg-spike:\/\/app",
+      "outlineModes" : [
+        "none",
+        "worldCoordinates"
+      ],
+      "outlinePasses" : 4,
+      "outlines" : {
+        "left" : {
+          "box" : [
+            167,
+            227,
+            373,
+            568
+          ],
+          "fraction" : 0.0033180000000000002,
+          "maxChannel" : 79,
+          "pixels" : 1223
+        },
+        "right" : {
+          "box" : [
+            85,
+            227,
+            283,
+            568
+          ],
+          "fraction" : 0.0033609999999999998,
+          "maxChannel" : 65,
+          "pixels" : 1239
+        }
+      },
+      "page" : "stereo",
+      "post" : "none",
+      "shadows" : {
+        "left" : {
+          "box" : [
+            167,
+            252,
+            373,
+            579
+          ],
+          "fraction" : 0.0087430000000000008,
+          "maxChannel" : 46,
+          "pixels" : 3223
+        },
+        "right" : {
+          "box" : [
+            86,
+            252,
+            282,
+            579
+          ],
+          "fraction" : 0.0094179999999999993,
+          "maxChannel" : 46,
+          "pixels" : 3472
+        }
+      },
+      "step" : 150,
+      "stereo" : {
+        "leftVsMono" : {
+          "box" : [
+            232,
+            249,
+            340,
+            371
+          ],
+          "fraction" : 1.9000000000000001e-05,
+          "maxChannel" : 2,
+          "pixels" : 7
+        },
+        "leftVsRight" : {
+          "box" : [
+            0,
+            227,
+            575,
+            639
+          ],
+          "fraction" : 0.24643599999999999,
+          "maxChannel" : 214,
+          "pixels" : 90846
+        },
+        "rightVsMono" : {
+          "box" : [
+            86,
+            249,
+            282,
+            579
+          ],
+          "fraction" : 0.0067759999999999999,
+          "maxChannel" : 24,
+          "pixels" : 2498
+        },
+        "rightVsRightAloneAtSameOffset" : {
+          "box" : [
+            199,
+            249,
+            255,
+            363
+          ],
+          "fraction" : 2.4000000000000001e-05,
+          "maxChannel" : 24,
+          "pixels" : 9
+        }
+      },
+      "stereoNoShadows" : {
+        "leftVsMono" : {
+          "box" : [
+            232,
+            249,
+            340,
+            371
+          ],
+          "fraction" : 1.9000000000000001e-05,
+          "maxChannel" : 2,
+          "pixels" : 7
+        },
+        "rightVsMono" : {
+          "box" : [
+            100,
+            249,
+            264,
+            399
+          ],
+          "fraction" : 3.4999999999999997e-05,
+          "maxChannel" : 4,
+          "pixels" : 13
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead."
+    ]
+  },
+  {
+    "case" : "stereo.html?outline=screen",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "scheme",
+    "pngs" : [
+      "stereo_html_outline_screen__scheme__default__diffLeft.png",
+      "stereo_html_outline_screen__scheme__default__diffRight.png",
+      "stereo_html_outline_screen__scheme__default__monoLeft.png",
+      "stereo_html_outline_screen__scheme__default__monoRight.png",
+      "stereo_html_outline_screen__scheme__default__stereo.png"
+    ],
+    "result" : {
+      "backend" : "webgpu",
+      "control" : {
+        "monoLeftTwice" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        }
+      },
+      "errorsDuring" : [
+
+      ],
+      "eye" : {
+        "h" : 640,
+        "ipd" : 0.063,
+        "tangents" : {
+          "left" : {
+            "d" : 1.1000000000000001,
+            "l" : 1.05,
+            "r" : 0.80000000000000004,
+            "u" : 0.94999999999999996
+          },
+          "right" : {
+            "d" : 1.1000000000000001,
+            "l" : 0.80000000000000004,
+            "r" : 1.05,
+            "u" : 0.94999999999999996
+          }
+        },
+        "w" : 576
+      },
+      "mtoonClass" : "be",
+      "mtoonMaterials" : 22,
+      "origin" : "vrmxg-spike:\/\/app",
+      "outlineModes" : [
+        "none",
+        "screenCoordinates"
+      ],
+      "outlinePasses" : 4,
+      "outlines" : {
+        "left" : {
+          "box" : [
+            165,
+            226,
+            374,
+            569
+          ],
+          "fraction" : 0.010281,
+          "maxChannel" : 223,
+          "pixels" : 3790
+        },
+        "right" : {
+          "box" : [
+            84,
+            226,
+            285,
+            570
+          ],
+          "fraction" : 0.010248,
+          "maxChannel" : 223,
+          "pixels" : 3778
+        }
+      },
+      "page" : "stereo",
+      "post" : "none",
+      "shadows" : {
+        "left" : {
+          "box" : [
+            167,
+            252,
+            373,
+            579
+          ],
+          "fraction" : 0.0072940000000000001,
+          "maxChannel" : 46,
+          "pixels" : 2689
+        },
+        "right" : {
+          "box" : [
+            86,
+            252,
+            282,
+            579
+          ],
+          "fraction" : 0.0080809999999999996,
+          "maxChannel" : 46,
+          "pixels" : 2979
+        }
+      },
+      "step" : 150,
+      "stereo" : {
+        "leftVsMono" : {
+          "box" : [
+            232,
+            249,
+            340,
+            371
+          ],
+          "fraction" : 1.9000000000000001e-05,
+          "maxChannel" : 2,
+          "pixels" : 7
+        },
+        "leftVsRight" : {
+          "box" : [
+            0,
+            226,
+            575,
+            639
+          ],
+          "fraction" : 0.25040699999999999,
+          "maxChannel" : 223,
+          "pixels" : 92310
+        },
+        "rightVsMono" : {
+          "box" : [
+            86,
+            249,
+            282,
+            579
+          ],
+          "fraction" : 0.0059950000000000003,
+          "maxChannel" : 24,
+          "pixels" : 2210
+        },
+        "rightVsRightAloneAtSameOffset" : {
+          "box" : [
+            199,
+            249,
+            255,
+            363
+          ],
+          "fraction" : 2.4000000000000001e-05,
+          "maxChannel" : 24,
+          "pixels" : 9
+        }
+      },
+      "stereoNoShadows" : {
+        "leftVsMono" : {
+          "box" : [
+            232,
+            249,
+            340,
+            371
+          ],
+          "fraction" : 1.9000000000000001e-05,
+          "maxChannel" : 2,
+          "pixels" : 7
+        },
+        "rightVsMono" : {
+          "box" : [
+            92,
+            249,
+            264,
+            399
+          ],
+          "fraction" : 3.3000000000000003e-05,
+          "maxChannel" : 1,
+          "pixels" : 12
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead."
+    ]
+  },
+  {
+    "case" : "stereo.html?post=1",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "scheme",
+    "pngs" : [
+      "stereo_html_post_1__scheme__default__diffLeft.png",
+      "stereo_html_post_1__scheme__default__diffRight.png",
+      "stereo_html_post_1__scheme__default__monoLeft.png",
+      "stereo_html_post_1__scheme__default__monoRight.png",
+      "stereo_html_post_1__scheme__default__postRightSameFrame.png",
+      "stereo_html_post_1__scheme__default__stereo.png"
+    ],
+    "result" : {
+      "backend" : "webgpu",
+      "control" : {
+        "monoLeftTwice" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        }
+      },
+      "errorsDuring" : [
+
+      ],
+      "eye" : {
+        "h" : 640,
+        "ipd" : 0.063,
+        "tangents" : {
+          "left" : {
+            "d" : 1.1000000000000001,
+            "l" : 1.05,
+            "r" : 0.80000000000000004,
+            "u" : 0.94999999999999996
+          },
+          "right" : {
+            "d" : 1.1000000000000001,
+            "l" : 0.80000000000000004,
+            "r" : 1.05,
+            "u" : 0.94999999999999996
+          }
+        },
+        "w" : 576
+      },
+      "mtoonClass" : "be",
+      "mtoonMaterials" : 22,
+      "origin" : "vrmxg-spike:\/\/app",
+      "outlineModes" : [
+        "none",
+        "worldCoordinates"
+      ],
+      "outlinePasses" : 4,
+      "outlines" : {
+        "left" : {
+          "box" : [
+            1,
+            17,
+            562,
+            612
+          ],
+          "fraction" : 0.0044759999999999999,
+          "maxChannel" : 70,
+          "pixels" : 1650
+        },
+        "right" : {
+          "box" : [
+            10,
+            0,
+            573,
+            635
+          ],
+          "fraction" : 0.0047959999999999999,
+          "maxChannel" : 64,
+          "pixels" : 1768
+        }
+      },
+      "page" : "stereo",
+      "post" : [
+        {
+          "effect" : "bloom",
+          "intensity" : 1.2
+        },
+        {
+          "effect" : "vignette"
+        }
+      ],
+      "postArrayCamera" : {
+        "leftVsMono" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.84820399999999996,
+          "maxChannel" : 66,
+          "pixels" : 312682
+        },
+        "rightVsMono" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.84988300000000006,
+          "maxChannel" : 66,
+          "pixels" : 313301
+        }
+      },
+      "postPerEye" : {
+        "leftVsMono" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        },
+        "rightSameFrameVsMonoLeft" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.24071999999999999,
+          "maxChannel" : 212,
+          "pixels" : 88739
+        },
+        "rightSameFrameVsMonoRight" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        }
+      },
+      "shadows" : {
+        "left" : {
+          "box" : [
+            167,
+            252,
+            560,
+            579
+          ],
+          "fraction" : 0.0086070000000000001,
+          "maxChannel" : 46,
+          "pixels" : 3173
+        },
+        "right" : {
+          "box" : [
+            86,
+            35,
+            475,
+            579
+          ],
+          "fraction" : 0.0093670000000000003,
+          "maxChannel" : 46,
+          "pixels" : 3453
+        }
+      },
+      "step" : 150,
+      "stereo" : {
+        "leftVsMono" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.84820399999999996,
+          "maxChannel" : 66,
+          "pixels" : 312682
+        },
+        "leftVsRight" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.24071999999999999,
+          "maxChannel" : 212,
+          "pixels" : 88739
+        },
+        "rightVsMono" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.84988300000000006,
+          "maxChannel" : 66,
+          "pixels" : 313301
+        },
+        "rightVsRightAloneAtSameOffset" : {
+          "box" : [
+            0,
+            0,
+            560,
+            639
+          ],
+          "fraction" : 0.0013749999999999999,
+          "maxChannel" : 23,
+          "pixels" : 507
+        }
+      },
+      "stereoNoShadows" : {
+        "leftVsMono" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.84840800000000005,
+          "maxChannel" : 66,
+          "pixels" : 312757
+        },
+        "rightVsMono" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.84721400000000002,
+          "maxChannel" : 66,
+          "pixels" : 312317
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead."
+    ]
+  },
+  {
+    "case" : "present.html",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "scheme",
+    "result" : {
+      "backend" : "webgpu",
+      "display" : {
+        "displayHz" : 58.799999999999997,
+        "frames" : 112,
+        "intervalMs" : {
+          "max" : 184,
+          "mean" : 17.955400000000001,
+          "n" : 112,
+          "p50" : 17,
+          "p95" : 17
+        }
+      },
+      "frames" : {
+        "alphas" : [
+          [
+            "0.6667",
+            300
+          ],
+          [
+            "0.0000",
+            300
+          ],
+          [
+            "0.3333",
+            299
+          ],
+          [
+            "1.0000",
+            1
+          ]
+        ],
+        "interpolated" : 900,
+        "stepsPerFrame" : {
+          "0" : 300,
+          "1" : 600
+        }
+      },
+      "hashes" : {
+        "firstDiff" : {
+          "interpolated" : null,
+          "plain" : null,
+          "stereo" : null
+        },
+        "headlessFinal" : "cecacdfa8a061e5d",
+        "interpolatedSame" : true,
+        "plainSame" : true,
+        "steps" : 600,
+        "stereoSame" : true
+      },
+      "hz" : 90,
+      "origin" : "vrmxg-spike:\/\/app",
+      "page" : "present",
+      "renderer" : {
+        "calls" : 5914,
+        "triangles" : 216043
+      },
+      "renderMs" : {
+        "interpolated" : {
+          "max" : 255,
+          "mean" : 0.67330000000000001,
+          "n" : 900,
+          "p50" : 0,
+          "p95" : 1
+        },
+        "plain" : {
+          "max" : 5093,
+          "mean" : 6.1444000000000001,
+          "n" : 900,
+          "p50" : 0,
+          "p95" : 1
+        },
+        "stereo" : {
+          "max" : 3513,
+          "mean" : 4.2832999999999997,
+          "n" : 900,
+          "p50" : 0,
+          "p95" : 1
+        }
+      },
+      "size" : [
+        1280,
+        720
+      ],
+      "smoothness" : {
+        "interpolated" : {
+          "cv" : 0,
+          "frames" : 89,
+          "meanMm" : 15.555999999999999,
+          "sample" : [
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56
+          ],
+          "stillFrames" : 0
+        },
+        "plain" : {
+          "cv" : 0.71309999999999996,
+          "frames" : 89,
+          "meanMm" : 15.468,
+          "sample" : [
+            0,
+            23.329999999999998,
+            23.329999999999998,
+            0,
+            23.329999999999998,
+            23.329999999999998,
+            0,
+            23.329999999999998,
+            23.329999999999998
+          ],
+          "stillFrames" : 30
+        },
+        "stereo" : {
+          "cv" : 0,
+          "frames" : 89,
+          "meanMm" : 15.555999999999999,
+          "sample" : [
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56
+          ],
+          "stillFrames" : 0
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead."
+    ]
+  },
+  {
+    "case" : "xr.html",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "scheme",
+    "result" : {
+      "camera" : "rig",
+      "device" : "Meta Quest Pro",
+      "frames" : {
+        "firstViews" : [
+          [
+            {
+              "eye" : "left",
+              "projection" : [
+                1.125,
+                1,
+                0,
+                0
+              ],
+              "x" : -0.0315
+            },
+            {
+              "eye" : "right",
+              "projection" : [
+                1.125,
+                1,
+                0,
+                0
+              ],
+              "x" : 0.0315
+            }
+          ],
+          [
+            {
+              "eye" : "left",
+              "projection" : [
+                1.125,
+                1,
+                0,
+                0
+              ],
+              "x" : -0.0315
+            },
+            {
+              "eye" : "right",
+              "projection" : [
+                1.125,
+                1,
+                0,
+                0
+              ],
+              "x" : 0.0315
+            }
+          ],
+          [
+            {
+              "eye" : "left",
+              "projection" : [
+                1.125,
+                1,
+                0,
+                0
+              ],
+              "x" : -0.0315
+            },
+            {
+              "eye" : "right",
+              "projection" : [
+                1.125,
+                1,
+                0,
+                0
+              ],
+              "x" : 0.0315
+            }
+          ]
+        ],
+        "intervalMs" : {
+          "max" : 4534,
+          "mean" : 32.308199999999999,
+          "n" : 292,
+          "p50" : 17,
+          "p95" : 18
+        },
+        "presentedHzOnThisDisplay" : 58.799999999999997,
+        "steps" : 301,
+        "xrFrames" : 293
+      },
+      "hands" : {
+        "choices" : [
+          {
+            "distance" : 0.36399999999999999,
+            "frame" : 146,
+            "step" : 151,
+            "target" : "mira"
+          },
+          {
+            "distance" : null,
+            "frame" : 261,
+            "step" : 269,
+            "target" : null
+          }
+        ],
+        "inputSources" : [
+          "left:tracked-pointer:hand:gamepad(xr-standard)",
+          "none:gaze",
+          "right:tracked-pointer:hand:gamepad(xr-standard)"
+        ],
+        "jointsPerHand" : 25,
+        "mira" : [
+          -1.0863,
+          0.025000000000000001,
+          4.8003999999999998
+        ],
+        "recording" : {
+          "bytes" : 8194,
+          "frames" : 301,
+          "start" : 0,
+          "version" : 2
+        },
+        "rightPinches" : 2
+      },
+      "iwer" : "2.8.0",
+      "origin" : "vrmxg-spike:\/\/app",
+      "page" : "xr",
+      "replay" : {
+        "final" : "3cf4743477d8a997",
+        "firstDiff" : null,
+        "handsChangedTheWorld" : true,
+        "idleFinal" : "7c31302fc7e5ce8e",
+        "sameEveryStep" : true,
+        "steps" : 301
+      },
+      "session" : {
+        "enabledFeatures" : [
+          "local-floor",
+          "hand-tracking",
+          "gaze-tracking",
+          "viewer",
+          "local"
+        ],
+        "glBinding" : true,
+        "mode" : "immersive-vr",
+        "presenting" : true,
+        "supportedFrameRates" : [
+          72,
+          80,
+          90,
+          120
+        ],
+        "targetFrameRate" : {
+          "asked" : 90,
+          "got" : 90
+        },
+        "webgpuSession" : false
+      },
+      "supported" : {
+        "immersive-ar" : true,
+        "immersive-vr" : true,
+        "inline" : true
+      },
+      "ua" : "Mozilla\/5.0 (X11; Linux x86_64; Quest Pro) AppleWebKit\/537.36 (KHTML, like Gecko) OculusBrowser\/33.0.0.x.x.x Chrome\/126.0.6478.122 VR Safari\/537.36"
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (X11; Linux x86_64; Quest Pro) AppleWebKit\/537.36 (KHTML, like Gecko) OculusBrowser\/33.0.0.x.x.x Chrome\/126.0.6478.122 VR Safari\/537.36",
+    "warnings" : [
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead."
+    ]
+  },
+  {
+    "case" : "stereo.html?w=576&h=640",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "loopback",
+    "pngs" : [
+      "stereo_html_w_576_h_640__loopback__default__diffLeft.png",
+      "stereo_html_w_576_h_640__loopback__default__diffRight.png",
+      "stereo_html_w_576_h_640__loopback__default__monoLeft.png",
+      "stereo_html_w_576_h_640__loopback__default__monoRight.png",
+      "stereo_html_w_576_h_640__loopback__default__stereo.png"
+    ],
+    "result" : {
+      "backend" : "webgpu",
+      "control" : {
+        "monoLeftTwice" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        }
+      },
+      "errorsDuring" : [
+
+      ],
+      "eye" : {
+        "h" : 640,
+        "ipd" : 0.063,
+        "tangents" : {
+          "left" : {
+            "d" : 1.1000000000000001,
+            "l" : 1.05,
+            "r" : 0.80000000000000004,
+            "u" : 0.94999999999999996
+          },
+          "right" : {
+            "d" : 1.1000000000000001,
+            "l" : 0.80000000000000004,
+            "r" : 1.05,
+            "u" : 0.94999999999999996
+          }
+        },
+        "w" : 576
+      },
+      "mtoonClass" : "be",
+      "mtoonMaterials" : 22,
+      "origin" : "http:\/\/127.0.0.1:65499",
+      "outlineModes" : [
+        "none",
+        "worldCoordinates"
+      ],
+      "outlinePasses" : 4,
+      "outlines" : {
+        "left" : {
+          "box" : [
+            167,
+            227,
+            373,
+            568
+          ],
+          "fraction" : 0.0033180000000000002,
+          "maxChannel" : 79,
+          "pixels" : 1223
+        },
+        "right" : {
+          "box" : [
+            85,
+            227,
+            283,
+            568
+          ],
+          "fraction" : 0.0033609999999999998,
+          "maxChannel" : 65,
+          "pixels" : 1239
+        }
+      },
+      "page" : "stereo",
+      "post" : "none",
+      "shadows" : {
+        "left" : {
+          "box" : [
+            167,
+            252,
+            373,
+            579
+          ],
+          "fraction" : 0.0087430000000000008,
+          "maxChannel" : 46,
+          "pixels" : 3223
+        },
+        "right" : {
+          "box" : [
+            86,
+            252,
+            282,
+            579
+          ],
+          "fraction" : 0.0094179999999999993,
+          "maxChannel" : 46,
+          "pixels" : 3472
+        }
+      },
+      "step" : 150,
+      "stereo" : {
+        "leftVsMono" : {
+          "box" : [
+            232,
+            249,
+            340,
+            371
+          ],
+          "fraction" : 1.9000000000000001e-05,
+          "maxChannel" : 2,
+          "pixels" : 7
+        },
+        "leftVsRight" : {
+          "box" : [
+            0,
+            227,
+            575,
+            639
+          ],
+          "fraction" : 0.24643599999999999,
+          "maxChannel" : 214,
+          "pixels" : 90846
+        },
+        "rightVsMono" : {
+          "box" : [
+            86,
+            249,
+            282,
+            579
+          ],
+          "fraction" : 0.0067759999999999999,
+          "maxChannel" : 24,
+          "pixels" : 2498
+        },
+        "rightVsRightAloneAtSameOffset" : {
+          "box" : [
+            199,
+            249,
+            255,
+            363
+          ],
+          "fraction" : 2.4000000000000001e-05,
+          "maxChannel" : 24,
+          "pixels" : 9
+        }
+      },
+      "stereoNoShadows" : {
+        "leftVsMono" : {
+          "box" : [
+            232,
+            249,
+            340,
+            371
+          ],
+          "fraction" : 1.9000000000000001e-05,
+          "maxChannel" : 2,
+          "pixels" : 7
+        },
+        "rightVsMono" : {
+          "box" : [
+            100,
+            249,
+            264,
+            399
+          ],
+          "fraction" : 3.4999999999999997e-05,
+          "maxChannel" : 4,
+          "pixels" : 13
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead."
+    ]
+  },
+  {
+    "case" : "stereo.html?outline=screen",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "loopback",
+    "pngs" : [
+      "stereo_html_outline_screen__loopback__default__diffLeft.png",
+      "stereo_html_outline_screen__loopback__default__diffRight.png",
+      "stereo_html_outline_screen__loopback__default__monoLeft.png",
+      "stereo_html_outline_screen__loopback__default__monoRight.png",
+      "stereo_html_outline_screen__loopback__default__stereo.png"
+    ],
+    "result" : {
+      "backend" : "webgpu",
+      "control" : {
+        "monoLeftTwice" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        }
+      },
+      "errorsDuring" : [
+
+      ],
+      "eye" : {
+        "h" : 640,
+        "ipd" : 0.063,
+        "tangents" : {
+          "left" : {
+            "d" : 1.1000000000000001,
+            "l" : 1.05,
+            "r" : 0.80000000000000004,
+            "u" : 0.94999999999999996
+          },
+          "right" : {
+            "d" : 1.1000000000000001,
+            "l" : 0.80000000000000004,
+            "r" : 1.05,
+            "u" : 0.94999999999999996
+          }
+        },
+        "w" : 576
+      },
+      "mtoonClass" : "be",
+      "mtoonMaterials" : 22,
+      "origin" : "http:\/\/127.0.0.1:65499",
+      "outlineModes" : [
+        "none",
+        "screenCoordinates"
+      ],
+      "outlinePasses" : 4,
+      "outlines" : {
+        "left" : {
+          "box" : [
+            165,
+            226,
+            374,
+            569
+          ],
+          "fraction" : 0.010281,
+          "maxChannel" : 223,
+          "pixels" : 3790
+        },
+        "right" : {
+          "box" : [
+            84,
+            226,
+            285,
+            570
+          ],
+          "fraction" : 0.010248,
+          "maxChannel" : 223,
+          "pixels" : 3778
+        }
+      },
+      "page" : "stereo",
+      "post" : "none",
+      "shadows" : {
+        "left" : {
+          "box" : [
+            167,
+            252,
+            373,
+            579
+          ],
+          "fraction" : 0.0072940000000000001,
+          "maxChannel" : 46,
+          "pixels" : 2689
+        },
+        "right" : {
+          "box" : [
+            86,
+            252,
+            282,
+            579
+          ],
+          "fraction" : 0.0080809999999999996,
+          "maxChannel" : 46,
+          "pixels" : 2979
+        }
+      },
+      "step" : 150,
+      "stereo" : {
+        "leftVsMono" : {
+          "box" : [
+            232,
+            249,
+            340,
+            371
+          ],
+          "fraction" : 1.9000000000000001e-05,
+          "maxChannel" : 2,
+          "pixels" : 7
+        },
+        "leftVsRight" : {
+          "box" : [
+            0,
+            226,
+            575,
+            639
+          ],
+          "fraction" : 0.25040699999999999,
+          "maxChannel" : 223,
+          "pixels" : 92310
+        },
+        "rightVsMono" : {
+          "box" : [
+            86,
+            249,
+            282,
+            579
+          ],
+          "fraction" : 0.0059950000000000003,
+          "maxChannel" : 24,
+          "pixels" : 2210
+        },
+        "rightVsRightAloneAtSameOffset" : {
+          "box" : [
+            199,
+            249,
+            255,
+            363
+          ],
+          "fraction" : 2.4000000000000001e-05,
+          "maxChannel" : 24,
+          "pixels" : 9
+        }
+      },
+      "stereoNoShadows" : {
+        "leftVsMono" : {
+          "box" : [
+            232,
+            249,
+            340,
+            371
+          ],
+          "fraction" : 1.9000000000000001e-05,
+          "maxChannel" : 2,
+          "pixels" : 7
+        },
+        "rightVsMono" : {
+          "box" : [
+            92,
+            249,
+            264,
+            399
+          ],
+          "fraction" : 3.3000000000000003e-05,
+          "maxChannel" : 1,
+          "pixels" : 12
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead."
+    ]
+  },
+  {
+    "case" : "stereo.html?post=1",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "loopback",
+    "pngs" : [
+      "stereo_html_post_1__loopback__default__diffLeft.png",
+      "stereo_html_post_1__loopback__default__diffRight.png",
+      "stereo_html_post_1__loopback__default__monoLeft.png",
+      "stereo_html_post_1__loopback__default__monoRight.png",
+      "stereo_html_post_1__loopback__default__postRightSameFrame.png",
+      "stereo_html_post_1__loopback__default__stereo.png"
+    ],
+    "result" : {
+      "backend" : "webgpu",
+      "control" : {
+        "monoLeftTwice" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        }
+      },
+      "errorsDuring" : [
+
+      ],
+      "eye" : {
+        "h" : 640,
+        "ipd" : 0.063,
+        "tangents" : {
+          "left" : {
+            "d" : 1.1000000000000001,
+            "l" : 1.05,
+            "r" : 0.80000000000000004,
+            "u" : 0.94999999999999996
+          },
+          "right" : {
+            "d" : 1.1000000000000001,
+            "l" : 0.80000000000000004,
+            "r" : 1.05,
+            "u" : 0.94999999999999996
+          }
+        },
+        "w" : 576
+      },
+      "mtoonClass" : "be",
+      "mtoonMaterials" : 22,
+      "origin" : "http:\/\/127.0.0.1:65499",
+      "outlineModes" : [
+        "none",
+        "worldCoordinates"
+      ],
+      "outlinePasses" : 4,
+      "outlines" : {
+        "left" : {
+          "box" : [
+            1,
+            17,
+            562,
+            612
+          ],
+          "fraction" : 0.0044759999999999999,
+          "maxChannel" : 70,
+          "pixels" : 1650
+        },
+        "right" : {
+          "box" : [
+            10,
+            0,
+            573,
+            635
+          ],
+          "fraction" : 0.0047959999999999999,
+          "maxChannel" : 64,
+          "pixels" : 1768
+        }
+      },
+      "page" : "stereo",
+      "post" : [
+        {
+          "effect" : "bloom",
+          "intensity" : 1.2
+        },
+        {
+          "effect" : "vignette"
+        }
+      ],
+      "postArrayCamera" : {
+        "leftVsMono" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.84820399999999996,
+          "maxChannel" : 66,
+          "pixels" : 312682
+        },
+        "rightVsMono" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.84988300000000006,
+          "maxChannel" : 66,
+          "pixels" : 313301
+        }
+      },
+      "postPerEye" : {
+        "leftVsMono" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        },
+        "rightSameFrameVsMonoLeft" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.24071999999999999,
+          "maxChannel" : 212,
+          "pixels" : 88739
+        },
+        "rightSameFrameVsMonoRight" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        }
+      },
+      "shadows" : {
+        "left" : {
+          "box" : [
+            167,
+            252,
+            560,
+            579
+          ],
+          "fraction" : 0.0086070000000000001,
+          "maxChannel" : 46,
+          "pixels" : 3173
+        },
+        "right" : {
+          "box" : [
+            86,
+            35,
+            475,
+            579
+          ],
+          "fraction" : 0.0093670000000000003,
+          "maxChannel" : 46,
+          "pixels" : 3453
+        }
+      },
+      "step" : 150,
+      "stereo" : {
+        "leftVsMono" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.84820399999999996,
+          "maxChannel" : 66,
+          "pixels" : 312682
+        },
+        "leftVsRight" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.24071999999999999,
+          "maxChannel" : 212,
+          "pixels" : 88739
+        },
+        "rightVsMono" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.84988300000000006,
+          "maxChannel" : 66,
+          "pixels" : 313301
+        },
+        "rightVsRightAloneAtSameOffset" : {
+          "box" : [
+            0,
+            0,
+            560,
+            639
+          ],
+          "fraction" : 0.0013749999999999999,
+          "maxChannel" : 23,
+          "pixels" : 507
+        }
+      },
+      "stereoNoShadows" : {
+        "leftVsMono" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.84840800000000005,
+          "maxChannel" : 66,
+          "pixels" : 312757
+        },
+        "rightVsMono" : {
+          "box" : [
+            0,
+            0,
+            575,
+            639
+          ],
+          "fraction" : 0.84721400000000002,
+          "maxChannel" : 66,
+          "pixels" : 312317
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead."
+    ]
+  },
+  {
+    "case" : "present.html",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "loopback",
+    "result" : {
+      "backend" : "webgpu",
+      "display" : {
+        "displayHz" : 60,
+        "frames" : 111,
+        "intervalMs" : {
+          "max" : 196.62,
+          "mean" : 18.143599999999999,
+          "n" : 111,
+          "p50" : 16.66,
+          "p95" : 17.18
+        }
+      },
+      "frames" : {
+        "alphas" : [
+          [
+            "0.6667",
+            300
+          ],
+          [
+            "0.0000",
+            300
+          ],
+          [
+            "0.3333",
+            299
+          ],
+          [
+            "1.0000",
+            1
+          ]
+        ],
+        "interpolated" : 900,
+        "stepsPerFrame" : {
+          "0" : 300,
+          "1" : 600
+        }
+      },
+      "hashes" : {
+        "firstDiff" : {
+          "interpolated" : null,
+          "plain" : null,
+          "stereo" : null
+        },
+        "headlessFinal" : "cecacdfa8a061e5d",
+        "interpolatedSame" : true,
+        "plainSame" : true,
+        "steps" : 600,
+        "stereoSame" : true
+      },
+      "hz" : 90,
+      "origin" : "http:\/\/127.0.0.1:65499",
+      "page" : "present",
+      "renderer" : {
+        "calls" : 5910,
+        "triangles" : 216043
+      },
+      "renderMs" : {
+        "interpolated" : {
+          "max" : 258.63999999999999,
+          "mean" : 0.69079999999999997,
+          "n" : 900,
+          "p50" : 0.38,
+          "p95" : 0.54000000000000004
+        },
+        "plain" : {
+          "max" : 218.16,
+          "mean" : 0.54530000000000001,
+          "n" : 900,
+          "p50" : 0.29999999999999999,
+          "p95" : 0.38
+        },
+        "stereo" : {
+          "max" : 308.60000000000002,
+          "mean" : 0.73870000000000002,
+          "n" : 900,
+          "p50" : 0.38,
+          "p95" : 0.5
+        }
+      },
+      "size" : [
+        1280,
+        720
+      ],
+      "smoothness" : {
+        "interpolated" : {
+          "cv" : 0,
+          "frames" : 89,
+          "meanMm" : 15.555999999999999,
+          "sample" : [
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56
+          ],
+          "stillFrames" : 0
+        },
+        "plain" : {
+          "cv" : 0.71309999999999996,
+          "frames" : 89,
+          "meanMm" : 15.468,
+          "sample" : [
+            0,
+            23.329999999999998,
+            23.329999999999998,
+            0,
+            23.329999999999998,
+            23.329999999999998,
+            0,
+            23.329999999999998,
+            23.329999999999998
+          ],
+          "stillFrames" : 30
+        },
+        "stereo" : {
+          "cv" : 0,
+          "frames" : 89,
+          "meanMm" : 15.555999999999999,
+          "sample" : [
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56,
+            15.56
+          ],
+          "stillFrames" : 0
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead."
+    ]
+  },
+  {
+    "case" : "xr.html",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "loopback",
+    "result" : {
+      "camera" : "rig",
+      "device" : "Meta Quest Pro",
+      "frames" : {
+        "firstViews" : [
+          [
+            {
+              "eye" : "left",
+              "projection" : [
+                1.125,
+                1,
+                0,
+                0
+              ],
+              "x" : -0.0315
+            },
+            {
+              "eye" : "right",
+              "projection" : [
+                1.125,
+                1,
+                0,
+                0
+              ],
+              "x" : 0.0315
+            }
+          ],
+          [
+            {
+              "eye" : "left",
+              "projection" : [
+                1.125,
+                1,
+                0,
+                0
+              ],
+              "x" : -0.0315
+            },
+            {
+              "eye" : "right",
+              "projection" : [
+                1.125,
+                1,
+                0,
+                0
+              ],
+              "x" : 0.0315
+            }
+          ],
+          [
+            {
+              "eye" : "left",
+              "projection" : [
+                1.125,
+                1,
+                0,
+                0
+              ],
+              "x" : -0.0315
+            },
+            {
+              "eye" : "right",
+              "projection" : [
+                1.125,
+                1,
+                0,
+                0
+              ],
+              "x" : 0.0315
+            }
+          ]
+        ],
+        "intervalMs" : {
+          "max" : 517.62,
+          "mean" : 18.560300000000002,
+          "n" : 291,
+          "p50" : 16.66,
+          "p95" : 17.140000000000001
+        },
+        "presentedHzOnThisDisplay" : 60,
+        "steps" : 300,
+        "xrFrames" : 292
+      },
+      "hands" : {
+        "choices" : [
+          {
+            "distance" : 0.35499999999999998,
+            "frame" : 146,
+            "step" : 150,
+            "target" : "mira"
+          },
+          {
+            "distance" : null,
+            "frame" : 261,
+            "step" : 268,
+            "target" : null
+          }
+        ],
+        "inputSources" : [
+          "left:tracked-pointer:hand:gamepad(xr-standard)",
+          "none:gaze",
+          "right:tracked-pointer:hand:gamepad(xr-standard)"
+        ],
+        "jointsPerHand" : 25,
+        "mira" : [
+          -1.0906,
+          0.025000000000000001,
+          4.806
+        ],
+        "recording" : {
+          "bytes" : 8179,
+          "frames" : 300,
+          "start" : 0,
+          "version" : 2
+        },
+        "rightPinches" : 2
+      },
+      "iwer" : "2.8.0",
+      "origin" : "http:\/\/127.0.0.1:65499",
+      "page" : "xr",
+      "replay" : {
+        "final" : "cd7b27888279f1a6",
+        "firstDiff" : null,
+        "handsChangedTheWorld" : true,
+        "idleFinal" : "1e46840219dcd9d0",
+        "sameEveryStep" : true,
+        "steps" : 300
+      },
+      "session" : {
+        "enabledFeatures" : [
+          "local-floor",
+          "hand-tracking",
+          "gaze-tracking",
+          "viewer",
+          "local"
+        ],
+        "glBinding" : true,
+        "mode" : "immersive-vr",
+        "presenting" : true,
+        "supportedFrameRates" : [
+          72,
+          80,
+          90,
+          120
+        ],
+        "targetFrameRate" : {
+          "asked" : 90,
+          "got" : 90
+        },
+        "webgpuSession" : false
+      },
+      "supported" : {
+        "immersive-ar" : true,
+        "immersive-vr" : true,
+        "inline" : true
+      },
+      "ua" : "Mozilla\/5.0 (X11; Linux x86_64; Quest Pro) AppleWebKit\/537.36 (KHTML, like Gecko) OculusBrowser\/33.0.0.x.x.x Chrome\/126.0.6478.122 VR Safari\/537.36"
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (X11; Linux x86_64; Quest Pro) AppleWebKit\/537.36 (KHTML, like Gecko) OculusBrowser\/33.0.0.x.x.x Chrome\/126.0.6478.122 VR Safari\/537.36",
+    "warnings" : [
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+      "THREE.TempNode: This module has been deprecated. Extend Node instead."
+    ]
+  }
+]

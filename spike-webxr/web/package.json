@@ -1,0 +1,13 @@
+{
+  "name": "vrmxg-spike-webxr",
+  "private": true,
+  "type": "module",
+  "description": "WebXR spike (AB-T-0623): not a workspace package; engine packages and three resolve from the repository root",
+  "scripts": {
+    "build": "vite build",
+    "models": "node scripts/models.mjs"
+  },
+  "dependencies": {
+    "iwer": "2.8.0"
+  }
+}

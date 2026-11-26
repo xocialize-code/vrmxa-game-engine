@@ -1,0 +1,1899 @@
+[
+ {
+  "case": "stereo.html?w=576&h=640",
+  "origin": "chromium-loopback",
+  "runtime": "Chrome for Testing 156.0.8078.4 headless",
+  "timedOut": false,
+  "seconds": 1.125,
+  "result": {
+   "page": "stereo",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "origin": "http://127.0.0.1:59978",
+   "backend": "webgpu",
+   "mtoonClass": "be",
+   "mtoonMaterials": 22,
+   "outlinePasses": 4,
+   "outlineModes": [
+    "none",
+    "worldCoordinates"
+   ],
+   "eye": {
+    "w": 576,
+    "h": 640,
+    "ipd": 0.063,
+    "tangents": {
+     "left": {
+      "l": 1.05,
+      "r": 0.8,
+      "u": 0.95,
+      "d": 1.1
+     },
+     "right": {
+      "l": 0.8,
+      "r": 1.05,
+      "u": 0.95,
+      "d": 1.1
+     }
+    }
+   },
+   "step": 150,
+   "post": "none",
+   "control": {
+    "monoLeftTwice": {
+     "pixels": 0,
+     "fraction": 0,
+     "maxChannel": 0,
+     "box": null
+    }
+   },
+   "stereo": {
+    "leftVsMono": {
+     "pixels": 5,
+     "fraction": 0.000014,
+     "maxChannel": 2,
+     "box": [
+      232,
+      249,
+      340,
+      371
+     ]
+    },
+    "rightVsMono": {
+     "pixels": 2494,
+     "fraction": 0.006765,
+     "maxChannel": 24,
+     "box": [
+      86,
+      249,
+      282,
+      579
+     ]
+    },
+    "leftVsRight": {
+     "pixels": 90846,
+     "fraction": 0.246436,
+     "maxChannel": 214,
+     "box": [
+      0,
+      227,
+      575,
+      639
+     ]
+    },
+    "rightVsRightAloneAtSameOffset": {
+     "pixels": 5,
+     "fraction": 0.000014,
+     "maxChannel": 24,
+     "box": [
+      199,
+      249,
+      255,
+      363
+     ]
+    }
+   },
+   "outlines": {
+    "left": {
+     "pixels": 1223,
+     "fraction": 0.003318,
+     "maxChannel": 79,
+     "box": [
+      167,
+      227,
+      373,
+      568
+     ]
+    },
+    "right": {
+     "pixels": 1240,
+     "fraction": 0.003364,
+     "maxChannel": 65,
+     "box": [
+      85,
+      227,
+      283,
+      568
+     ]
+    }
+   },
+   "shadows": {
+    "left": {
+     "pixels": 3223,
+     "fraction": 0.008743,
+     "maxChannel": 46,
+     "box": [
+      167,
+      252,
+      373,
+      579
+     ]
+    },
+    "right": {
+     "pixels": 3474,
+     "fraction": 0.009424,
+     "maxChannel": 46,
+     "box": [
+      86,
+      252,
+      282,
+      579
+     ]
+    }
+   },
+   "stereoNoShadows": {
+    "leftVsMono": {
+     "pixels": 5,
+     "fraction": 0.000014,
+     "maxChannel": 2,
+     "box": [
+      232,
+      249,
+      340,
+      371
+     ]
+    },
+    "rightVsMono": {
+     "pixels": 9,
+     "fraction": 0.000024,
+     "maxChannel": 4,
+     "box": [
+      100,
+      249,
+      264,
+      399
+     ]
+    }
+   },
+   "errorsDuring": []
+  },
+  "errors": [],
+  "warnings": [
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead."
+  ],
+  "isolated": true,
+  "pngs": [
+   "stereo_html_w_576_h_640__chromium__diffLeft.png",
+   "stereo_html_w_576_h_640__chromium__diffRight.png",
+   "stereo_html_w_576_h_640__chromium__monoLeft.png",
+   "stereo_html_w_576_h_640__chromium__monoRight.png",
+   "stereo_html_w_576_h_640__chromium__stereo.png"
+  ],
+  "console": [
+   "error: Failed to load resource: the server responded with a status of 404 (Not Found)",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead."
+  ]
+ },
+ {
+  "case": "stereo.html?outline=screen",
+  "origin": "chromium-loopback",
+  "runtime": "Chrome for Testing 156.0.8078.4 headless",
+  "timedOut": false,
+  "seconds": 1.118,
+  "result": {
+   "page": "stereo",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "origin": "http://127.0.0.1:59978",
+   "backend": "webgpu",
+   "mtoonClass": "be",
+   "mtoonMaterials": 22,
+   "outlinePasses": 4,
+   "outlineModes": [
+    "none",
+    "screenCoordinates"
+   ],
+   "eye": {
+    "w": 576,
+    "h": 640,
+    "ipd": 0.063,
+    "tangents": {
+     "left": {
+      "l": 1.05,
+      "r": 0.8,
+      "u": 0.95,
+      "d": 1.1
+     },
+     "right": {
+      "l": 0.8,
+      "r": 1.05,
+      "u": 0.95,
+      "d": 1.1
+     }
+    }
+   },
+   "step": 150,
+   "post": "none",
+   "control": {
+    "monoLeftTwice": {
+     "pixels": 0,
+     "fraction": 0,
+     "maxChannel": 0,
+     "box": null
+    }
+   },
+   "stereo": {
+    "leftVsMono": {
+     "pixels": 5,
+     "fraction": 0.000014,
+     "maxChannel": 2,
+     "box": [
+      232,
+      249,
+      340,
+      371
+     ]
+    },
+    "rightVsMono": {
+     "pixels": 2212,
+     "fraction": 0.006,
+     "maxChannel": 24,
+     "box": [
+      86,
+      249,
+      282,
+      579
+     ]
+    },
+    "leftVsRight": {
+     "pixels": 92310,
+     "fraction": 0.250407,
+     "maxChannel": 223,
+     "box": [
+      0,
+      226,
+      575,
+      639
+     ]
+    },
+    "rightVsRightAloneAtSameOffset": {
+     "pixels": 5,
+     "fraction": 0.000014,
+     "maxChannel": 24,
+     "box": [
+      199,
+      249,
+      255,
+      363
+     ]
+    }
+   },
+   "outlines": {
+    "left": {
+     "pixels": 3790,
+     "fraction": 0.010281,
+     "maxChannel": 223,
+     "box": [
+      165,
+      226,
+      374,
+      569
+     ]
+    },
+    "right": {
+     "pixels": 3778,
+     "fraction": 0.010248,
+     "maxChannel": 223,
+     "box": [
+      84,
+      226,
+      285,
+      570
+     ]
+    }
+   },
+   "shadows": {
+    "left": {
+     "pixels": 2689,
+     "fraction": 0.007294,
+     "maxChannel": 46,
+     "box": [
+      167,
+      252,
+      373,
+      579
+     ]
+    },
+    "right": {
+     "pixels": 2978,
+     "fraction": 0.008078,
+     "maxChannel": 46,
+     "box": [
+      86,
+      252,
+      282,
+      579
+     ]
+    }
+   },
+   "stereoNoShadows": {
+    "leftVsMono": {
+     "pixels": 5,
+     "fraction": 0.000014,
+     "maxChannel": 2,
+     "box": [
+      232,
+      249,
+      340,
+      371
+     ]
+    },
+    "rightVsMono": {
+     "pixels": 9,
+     "fraction": 0.000024,
+     "maxChannel": 1,
+     "box": [
+      92,
+      249,
+      264,
+      399
+     ]
+    }
+   },
+   "errorsDuring": []
+  },
+  "errors": [],
+  "warnings": [
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead."
+  ],
+  "isolated": true,
+  "pngs": [
+   "stereo_html_outline_screen__chromium__diffLeft.png",
+   "stereo_html_outline_screen__chromium__diffRight.png",
+   "stereo_html_outline_screen__chromium__monoLeft.png",
+   "stereo_html_outline_screen__chromium__monoRight.png",
+   "stereo_html_outline_screen__chromium__stereo.png"
+  ],
+  "console": [
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead."
+  ]
+ },
+ {
+  "case": "stereo.html?post=1",
+  "origin": "chromium-loopback",
+  "runtime": "Chrome for Testing 156.0.8078.4 headless",
+  "timedOut": false,
+  "seconds": 1.147,
+  "result": {
+   "page": "stereo",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "origin": "http://127.0.0.1:59978",
+   "backend": "webgpu",
+   "mtoonClass": "be",
+   "mtoonMaterials": 22,
+   "outlinePasses": 4,
+   "outlineModes": [
+    "none",
+    "worldCoordinates"
+   ],
+   "eye": {
+    "w": 576,
+    "h": 640,
+    "ipd": 0.063,
+    "tangents": {
+     "left": {
+      "l": 1.05,
+      "r": 0.8,
+      "u": 0.95,
+      "d": 1.1
+     },
+     "right": {
+      "l": 0.8,
+      "r": 1.05,
+      "u": 0.95,
+      "d": 1.1
+     }
+    }
+   },
+   "step": 150,
+   "post": [
+    {
+     "effect": "bloom",
+     "intensity": 1.2
+    },
+    {
+     "effect": "vignette"
+    }
+   ],
+   "control": {
+    "monoLeftTwice": {
+     "pixels": 0,
+     "fraction": 0,
+     "maxChannel": 0,
+     "box": null
+    }
+   },
+   "stereo": {
+    "leftVsMono": {
+     "pixels": 312679,
+     "fraction": 0.848196,
+     "maxChannel": 66,
+     "box": [
+      0,
+      0,
+      575,
+      639
+     ]
+    },
+    "rightVsMono": {
+     "pixels": 313300,
+     "fraction": 0.849881,
+     "maxChannel": 66,
+     "box": [
+      0,
+      0,
+      575,
+      639
+     ]
+    },
+    "leftVsRight": {
+     "pixels": 88739,
+     "fraction": 0.24072,
+     "maxChannel": 212,
+     "box": [
+      0,
+      0,
+      575,
+      639
+     ]
+    },
+    "rightVsRightAloneAtSameOffset": {
+     "pixels": 507,
+     "fraction": 0.001375,
+     "maxChannel": 23,
+     "box": [
+      0,
+      0,
+      560,
+      639
+     ]
+    }
+   },
+   "outlines": {
+    "left": {
+     "pixels": 1658,
+     "fraction": 0.004498,
+     "maxChannel": 70,
+     "box": [
+      1,
+      17,
+      562,
+      612
+     ]
+    },
+    "right": {
+     "pixels": 1777,
+     "fraction": 0.00482,
+     "maxChannel": 64,
+     "box": [
+      10,
+      0,
+      573,
+      635
+     ]
+    }
+   },
+   "shadows": {
+    "left": {
+     "pixels": 3176,
+     "fraction": 0.008615,
+     "maxChannel": 46,
+     "box": [
+      167,
+      252,
+      560,
+      579
+     ]
+    },
+    "right": {
+     "pixels": 3456,
+     "fraction": 0.009375,
+     "maxChannel": 46,
+     "box": [
+      86,
+      35,
+      475,
+      579
+     ]
+    }
+   },
+   "stereoNoShadows": {
+    "leftVsMono": {
+     "pixels": 312755,
+     "fraction": 0.848402,
+     "maxChannel": 66,
+     "box": [
+      0,
+      0,
+      575,
+      639
+     ]
+    },
+    "rightVsMono": {
+     "pixels": 312316,
+     "fraction": 0.847211,
+     "maxChannel": 66,
+     "box": [
+      0,
+      0,
+      575,
+      639
+     ]
+    }
+   },
+   "postPerEye": {
+    "leftVsMono": {
+     "pixels": 0,
+     "fraction": 0,
+     "maxChannel": 0,
+     "box": null
+    },
+    "rightSameFrameVsMonoRight": {
+     "pixels": 0,
+     "fraction": 0,
+     "maxChannel": 0,
+     "box": null
+    },
+    "rightSameFrameVsMonoLeft": {
+     "pixels": 88739,
+     "fraction": 0.24072,
+     "maxChannel": 212,
+     "box": [
+      0,
+      0,
+      575,
+      639
+     ]
+    }
+   },
+   "postArrayCamera": {
+    "leftVsMono": {
+     "pixels": 312679,
+     "fraction": 0.848196,
+     "maxChannel": 66,
+     "box": [
+      0,
+      0,
+      575,
+      639
+     ]
+    },
+    "rightVsMono": {
+     "pixels": 313300,
+     "fraction": 0.849881,
+     "maxChannel": 66,
+     "box": [
+      0,
+      0,
+      575,
+      639
+     ]
+    }
+   },
+   "errorsDuring": []
+  },
+  "errors": [],
+  "warnings": [
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead."
+  ],
+  "isolated": true,
+  "pngs": [
+   "stereo_html_post_1__chromium__diffLeft.png",
+   "stereo_html_post_1__chromium__diffRight.png",
+   "stereo_html_post_1__chromium__monoLeft.png",
+   "stereo_html_post_1__chromium__monoRight.png",
+   "stereo_html_post_1__chromium__postRightSameFrame.png",
+   "stereo_html_post_1__chromium__stereo.png"
+  ],
+  "console": [
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead."
+  ]
+ },
+ {
+  "case": "present.html",
+  "origin": "chromium-loopback",
+  "runtime": "Chrome for Testing 156.0.8078.4 headless",
+  "timedOut": false,
+  "seconds": 4.902,
+  "result": {
+   "page": "present",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "origin": "http://127.0.0.1:59978",
+   "backend": "webgpu",
+   "hz": 90,
+   "size": [
+    1280,
+    720
+   ],
+   "hashes": {
+    "steps": 600,
+    "headlessFinal": "cecacdfa8a061e5d",
+    "interpolatedSame": true,
+    "plainSame": true,
+    "stereoSame": true,
+    "firstDiff": {
+     "interpolated": null,
+     "plain": null,
+     "stereo": null
+    }
+   },
+   "frames": {
+    "interpolated": 900,
+    "stepsPerFrame": {
+     "0": 300,
+     "1": 600
+    },
+    "alphas": [
+     [
+      "0.6667",
+      300
+     ],
+     [
+      "0.0000",
+      300
+     ],
+     [
+      "0.3333",
+      299
+     ],
+     [
+      "1.0000",
+      1
+     ]
+    ]
+   },
+   "smoothness": {
+    "interpolated": {
+     "frames": 89,
+     "meanMm": 15.556,
+     "cv": 0,
+     "stillFrames": 0,
+     "sample": [
+      15.56,
+      15.56,
+      15.56,
+      15.56,
+      15.56,
+      15.56,
+      15.56,
+      15.56,
+      15.56
+     ]
+    },
+    "plain": {
+     "frames": 89,
+     "meanMm": 15.468,
+     "cv": 0.7131,
+     "stillFrames": 30,
+     "sample": [
+      0,
+      23.33,
+      23.33,
+      0,
+      23.33,
+      23.33,
+      0,
+      23.33,
+      23.33
+     ]
+    },
+    "stereo": {
+     "frames": 89,
+     "meanMm": 15.556,
+     "cv": 0,
+     "stillFrames": 0,
+     "sample": [
+      15.56,
+      15.56,
+      15.56,
+      15.56,
+      15.56,
+      15.56,
+      15.56,
+      15.56,
+      15.56
+     ]
+    }
+   },
+   "renderMs": {
+    "interpolated": {
+     "n": 900,
+     "mean": 0.6132,
+     "p50": 0.345,
+     "p95": 0.45,
+     "max": 226.015
+    },
+    "plain": {
+     "n": 900,
+     "mean": 0.4591,
+     "p50": 0.27,
+     "p95": 0.315,
+     "max": 163.77
+    },
+    "stereo": {
+     "n": 900,
+     "mean": 0.5486,
+     "p50": 0.355,
+     "p95": 0.42,
+     "max": 163.17
+    }
+   },
+   "display": {
+    "frames": 113,
+    "intervalMs": {
+     "n": 113,
+     "mean": 17.8459,
+     "p50": 16.665,
+     "p95": 16.67,
+     "max": 149.99
+    },
+    "displayHz": 60
+   },
+   "renderer": {
+    "calls": 5918,
+    "triangles": 216043
+   }
+  },
+  "errors": [],
+  "warnings": [
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead."
+  ],
+  "isolated": true,
+  "pngs": [],
+  "console": [
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead."
+  ]
+ },
+ {
+  "case": "xr.html",
+  "origin": "chromium-loopback",
+  "runtime": "Chrome for Testing 156.0.8078.4 headless",
+  "timedOut": false,
+  "seconds": 5.92,
+  "result": {
+   "page": "xr",
+   "ua": "Mozilla/5.0 (X11; Linux x86_64; Quest Pro) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/33.0.0.x.x.x Chrome/126.0.6478.122 VR Safari/537.36",
+   "origin": "http://127.0.0.1:59978",
+   "device": "Meta Quest Pro",
+   "iwer": "2.8.0",
+   "supported": {
+    "inline": true,
+    "immersive-vr": true,
+    "immersive-ar": true
+   },
+   "session": {
+    "mode": "immersive-vr",
+    "enabledFeatures": [
+     "local-floor",
+     "hand-tracking",
+     "gaze-tracking",
+     "viewer",
+     "local"
+    ],
+    "supportedFrameRates": [
+     72,
+     80,
+     90,
+     120
+    ],
+    "targetFrameRate": {
+     "asked": 90,
+     "got": 90
+    },
+    "presenting": true,
+    "glBinding": true,
+    "webgpuSession": false
+   },
+   "frames": {
+    "xrFrames": 293,
+    "steps": 300,
+    "intervalMs": {
+     "n": 292,
+     "mean": 18.0535,
+     "p50": 16.66,
+     "p95": 17.405,
+     "max": 385.755
+    },
+    "firstViews": [
+     [
+      {
+       "eye": "left",
+       "projection": [
+        1.125,
+        1,
+        0,
+        0
+       ],
+       "x": -0.0315
+      },
+      {
+       "eye": "right",
+       "projection": [
+        1.125,
+        1,
+        0,
+        0
+       ],
+       "x": 0.0315
+      }
+     ],
+     [
+      {
+       "eye": "left",
+       "projection": [
+        1.125,
+        1,
+        0,
+        0
+       ],
+       "x": -0.0315
+      },
+      {
+       "eye": "right",
+       "projection": [
+        1.125,
+        1,
+        0,
+        0
+       ],
+       "x": 0.0315
+      }
+     ],
+     [
+      {
+       "eye": "left",
+       "projection": [
+        1.125,
+        1,
+        0,
+        0
+       ],
+       "x": -0.0315
+      },
+      {
+       "eye": "right",
+       "projection": [
+        1.125,
+        1,
+        0,
+        0
+       ],
+       "x": 0.0315
+      }
+     ]
+    ],
+    "presentedHzOnThisDisplay": 60
+   },
+   "hands": {
+    "inputSources": [
+     "left:tracked-pointer:hand:gamepad(xr-standard)",
+     "none:gaze",
+     "right:tracked-pointer:hand:gamepad(xr-standard)"
+    ],
+    "jointsPerHand": 25,
+    "rightPinches": 2,
+    "choices": [
+     {
+      "frame": 146,
+      "step": 150,
+      "target": "mira",
+      "distance": 0.355
+     },
+     {
+      "frame": 261,
+      "step": 268,
+      "target": null,
+      "distance": null
+     }
+    ],
+    "recording": {
+     "version": 2,
+     "start": 0,
+     "frames": 300,
+     "bytes": 8175
+    },
+    "mira": [
+     -1.0962,
+     0.025,
+     4.8064
+    ]
+   },
+   "replay": {
+    "steps": 300,
+    "sameEveryStep": true,
+    "firstDiff": null,
+    "final": "d285066daa25bd9b",
+    "idleFinal": "1e46840219dcd9d0",
+    "handsChangedTheWorld": true
+   },
+   "camera": "rig"
+  },
+  "errors": [],
+  "warnings": [
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead."
+  ],
+  "isolated": true,
+  "pngs": [],
+  "console": [
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead."
+  ]
+ },
+ {
+  "case": "xr.html?camera=tree",
+  "origin": "chromium-loopback",
+  "runtime": "Chrome for Testing 156.0.8078.4 headless",
+  "timedOut": false,
+  "seconds": 5.913,
+  "result": {
+   "page": "xr",
+   "ua": "Mozilla/5.0 (X11; Linux x86_64; Quest Pro) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/33.0.0.x.x.x Chrome/126.0.6478.122 VR Safari/537.36",
+   "origin": "http://127.0.0.1:59978",
+   "device": "Meta Quest Pro",
+   "iwer": "2.8.0",
+   "supported": {
+    "inline": true,
+    "immersive-vr": true,
+    "immersive-ar": true
+   },
+   "session": {
+    "mode": "immersive-vr",
+    "enabledFeatures": [
+     "local-floor",
+     "hand-tracking",
+     "gaze-tracking",
+     "viewer",
+     "local"
+    ],
+    "supportedFrameRates": [
+     72,
+     80,
+     90,
+     120
+    ],
+    "targetFrameRate": {
+     "asked": 90,
+     "got": 90
+    },
+    "presenting": true,
+    "glBinding": true,
+    "webgpuSession": false
+   },
+   "frames": {
+    "xrFrames": 295,
+    "steps": 300,
+    "intervalMs": {
+     "n": 294,
+     "mean": 17.895,
+     "p50": 16.665,
+     "p95": 17.41,
+     "max": 361.675
+    },
+    "firstViews": [
+     [
+      {
+       "eye": "left",
+       "projection": [
+        1.125,
+        1,
+        0,
+        0
+       ],
+       "x": -0.0315
+      },
+      {
+       "eye": "right",
+       "projection": [
+        1.125,
+        1,
+        0,
+        0
+       ],
+       "x": 0.0315
+      }
+     ],
+     [
+      {
+       "eye": "left",
+       "projection": [
+        1.125,
+        1,
+        0,
+        0
+       ],
+       "x": -0.0315
+      },
+      {
+       "eye": "right",
+       "projection": [
+        1.125,
+        1,
+        0,
+        0
+       ],
+       "x": 0.0315
+      }
+     ],
+     [
+      {
+       "eye": "left",
+       "projection": [
+        1.125,
+        1,
+        0,
+        0
+       ],
+       "x": -0.0315
+      },
+      {
+       "eye": "right",
+       "projection": [
+        1.125,
+        1,
+        0,
+        0
+       ],
+       "x": 0.0315
+      }
+     ]
+    ],
+    "presentedHzOnThisDisplay": 60
+   },
+   "hands": {
+    "inputSources": [
+     "left:tracked-pointer:hand:gamepad(xr-standard)",
+     "none:gaze",
+     "right:tracked-pointer:hand:gamepad(xr-standard)"
+    ],
+    "jointsPerHand": 25,
+    "rightPinches": 2,
+    "choices": [
+     {
+      "frame": 146,
+      "step": 149,
+      "target": "mira",
+      "distance": 0.357
+     },
+     {
+      "frame": 261,
+      "step": 266,
+      "target": null,
+      "distance": null
+     }
+    ],
+    "recording": {
+     "version": 2,
+     "start": 0,
+     "frames": 300,
+     "bytes": 8174
+    },
+    "mira": [
+     -1.0962,
+     0.025,
+     4.8047
+    ]
+   },
+   "replay": {
+    "steps": 300,
+    "sameEveryStep": true,
+    "firstDiff": null,
+    "final": "23644abd399d352f",
+    "idleFinal": "1e46840219dcd9d0",
+    "handsChangedTheWorld": true
+   },
+   "camera": "tree"
+  },
+  "errors": [],
+  "warnings": [
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "THREE.TempNode: This module has been deprecated. Extend Node instead."
+  ],
+  "isolated": true,
+  "pngs": [],
+  "console": [
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead.",
+   "warning: THREE.TempNode: This module has been deprecated. Extend Node instead."
+  ]
+ }
+]
