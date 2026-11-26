@@ -1,6 +1,7 @@
 {
   "name": "vrmxg",
   "private": true,
+  "license": "MIT OR Apache-2.0",
   "description": "VRMXG engine workspace: engine packages and (later) apps",
   "type": "module",
   "workspaces": [

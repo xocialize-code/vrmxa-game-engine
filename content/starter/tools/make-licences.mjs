@@ -22,7 +22,8 @@ const itemRows = items.items.map((i) => [i.file, CC0, i.from.prop
 const md = `# Starter content: licences
 
 Every file in \`content/starter/\` and where it comes from. **Everything a game ships from here is CC0 1.0** (decision
-AB-D-0297 item 7): a game builder can use, change and sell it with no credit and no licence question.
+AB-D-0297 item 7): a game builder can use, change and sell it with no credit and no licence question. "Xocialize original" rows are ours,
+released under CC0 1.0 too; the scripts in \`tools/\` are code, under the repository's MIT OR Apache-2.0.
 \`node content/starter/tools/check-licences.mjs\` (CI and \`npm test\`) fails on a file this table doesn't list, a row
 that matches nothing, or a content row whose licence isn't CC0. The rows for clips and items are written by
 \`tools/make-licences.mjs\` from \`animations/provenance.json\` and \`items/provenance.json\`, which hold each file's

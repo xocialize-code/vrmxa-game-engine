@@ -21,7 +21,7 @@ const fromCore = ['sql.js', '@cfworker/json-schema', 'fflate'];
 const ajv = ['ajv', 'engine/packages/scene'];
 
 // the notices our own files carry, which every app's bundle includes: fdlibm's (the maths port), Ajv's (the precompiled
-// meta-schema), navcat's, the lip-sync rules', three-vrm's (vendored)
+// meta-schema), navcat's, the lip-sync rules', three-vrm's (vendored), and the engine's own licence
 const KEPT = Object.fromEntries([
   ['@vrmxg/dmath/src/index.js', 'engine/packages/dmath/src/index.js'],
   ['@vrmxg/registry/src/vendor/ajv-meta-2020.js', 'engine/packages/registry/src/vendor/ajv-meta-2020.js'],
@@ -29,6 +29,8 @@ const KEPT = Object.fromEntries([
   ['@vrmxg/nav/src/vendor/navcat-blocks.js', 'engine/packages/nav/src/vendor/navcat-blocks.js'],
   ['@vrmxg/voice/src/vendor/lipsync-en.js', 'engine/packages/voice/src/vendor/lipsync-en.js'],
   ['@vrmxg/three-vrm/LICENSE', 'engine/vendor/three-vrm/LICENSE'],
+  ['vrmxg/LICENSE-MIT', 'LICENSE-MIT'], // the engine's own licence, MIT OR Apache-2.0
+  ['vrmxg/LICENSE-APACHE', 'LICENSE-APACHE'],
 ].map(([name, file]) => [name, path.join(root, file)]));
 
 /** app → its built web folder and the packages its notices must hold (a name, or [name, the folder it is imported from]) */

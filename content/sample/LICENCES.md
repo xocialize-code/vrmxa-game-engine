@@ -3,8 +3,9 @@
 Every file in `content/sample/` and where it comes from. Nothing ships without a row here:
 `node content/sample/tools/check-licences.mjs` fails on any file this table doesn't list (CI runs it).
 
-"Xocialize original" means made for this repository by Xocialize LLC (by hand or by the scripts in `tools/`), owned
-outright and shippable in our apps.
+"Xocialize original" means made for this repository by Xocialize LLC (by hand or by the scripts in `tools/`), and
+released under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/): use, change and ship it with no credit
+needed. The scripts in `tools/` are code, under the repository's MIT OR Apache-2.0.
 
 ## Scenes, scripts and data
 

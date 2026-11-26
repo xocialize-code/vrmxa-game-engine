@@ -52,7 +52,7 @@
         "bytesIn" : 2488320000,
         "convertMsPerFrame" : 0.14999999999999999,
         "decodeMsPerFrame" : 0,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-h264-2M.mp4",
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-h264-2M.mp4",
         "fileBytes" : 2557463,
         "finishMs" : 11.4,
         "frames" : 300,
@@ -92,7 +92,7 @@
         "bytesIn" : 2488320000,
         "convertMsPerFrame" : 0.14999999999999999,
         "decodeMsPerFrame" : 0,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-hevc-2M.mp4",
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-hevc-2M.mp4",
         "fileBytes" : 2589773,
         "finishMs" : 11.6,
         "frames" : 300,
@@ -132,7 +132,7 @@
         "bytesIn" : 2488320000,
         "convertMsPerFrame" : 0.14999999999999999,
         "decodeMsPerFrame" : 0,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-h264-4M.mp4",
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-h264-4M.mp4",
         "fileBytes" : 5018294,
         "finishMs" : 12.199999999999999,
         "frames" : 300,
@@ -172,7 +172,7 @@
         "bytesIn" : 2488320000,
         "convertMsPerFrame" : 0.14000000000000001,
         "decodeMsPerFrame" : 0,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-hevc-4M.mp4",
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-hevc-4M.mp4",
         "fileBytes" : 5036965,
         "finishMs" : 10.800000000000001,
         "frames" : 300,
@@ -212,7 +212,7 @@
         "bytesIn" : 2488320000,
         "convertMsPerFrame" : 0.14999999999999999,
         "decodeMsPerFrame" : 0,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-h264-8M.mp4",
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-h264-8M.mp4",
         "fileBytes" : 9989728,
         "finishMs" : 12.300000000000001,
         "frames" : 300,
@@ -252,7 +252,7 @@
         "bytesIn" : 2488320000,
         "convertMsPerFrame" : 0.16,
         "decodeMsPerFrame" : 0,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-hevc-8M.mp4",
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-hevc-8M.mp4",
         "fileBytes" : 9968860,
         "finishMs" : 11.699999999999999,
         "frames" : 300,
@@ -292,7 +292,7 @@
         "bytesIn" : 2488320000,
         "convertMsPerFrame" : 0.17000000000000001,
         "decodeMsPerFrame" : 0,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-h264-16M.mp4",
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-h264-16M.mp4",
         "fileBytes" : 19906030,
         "finishMs" : 12.1,
         "frames" : 300,
@@ -332,7 +332,7 @@
         "bytesIn" : 2488320000,
         "convertMsPerFrame" : 0.16,
         "decodeMsPerFrame" : 0,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-hevc-16M.mp4",
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-native-hevc-16M.mp4",
         "fileBytes" : 19934347,
         "finishMs" : 11.300000000000001,
         "frames" : 300,
@@ -372,7 +372,7 @@
       "bytesIn" : 2488320000,
       "convertMsPerFrame" : 0.13,
       "decodeMsPerFrame" : 0,
-      "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-ref.bgra",
+      "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-ref.bgra",
       "frames" : 300,
       "hashMsPerFrame" : 0,
       "schemeBodyKinds" : {
@@ -422,7 +422,7 @@
       "reorderedChunks" : 0,
       "saved" : {
         "bytes" : 1354519,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-avc-high-2M.mp4"
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-avc-high-2M.mp4"
       },
       "status" : "ok",
       "videoBytes" : 1352063,
@@ -466,7 +466,7 @@
       "reorderedChunks" : 0,
       "saved" : {
         "bytes" : 2397351,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-hevc-main-2M.mp4"
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-hevc-main-2M.mp4"
       },
       "status" : "ok",
       "videoBytes" : 2395274,
@@ -510,7 +510,7 @@
       "reorderedChunks" : 0,
       "saved" : {
         "bytes" : 2702571,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-avc-high-4M.mp4"
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-avc-high-4M.mp4"
       },
       "status" : "ok",
       "videoBytes" : 2700431,
@@ -554,7 +554,7 @@
       "reorderedChunks" : 0,
       "saved" : {
         "bytes" : 4752875,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-hevc-main-4M.mp4"
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-hevc-main-4M.mp4"
       },
       "status" : "ok",
       "videoBytes" : 4750798,
@@ -598,7 +598,7 @@
       "reorderedChunks" : 0,
       "saved" : {
         "bytes" : 5497344,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-avc-high-8M.mp4"
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-avc-high-8M.mp4"
       },
       "status" : "ok",
       "videoBytes" : 5495332,
@@ -642,7 +642,7 @@
       "reorderedChunks" : 0,
       "saved" : {
         "bytes" : 9507751,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-hevc-main-8M.mp4"
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-hevc-main-8M.mp4"
       },
       "status" : "ok",
       "videoBytes" : 9505674,
@@ -686,7 +686,7 @@
       "reorderedChunks" : 0,
       "saved" : {
         "bytes" : 10999463,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-avc-high-16M.mp4"
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-avc-high-16M.mp4"
       },
       "status" : "ok",
       "videoBytes" : 10997451,
@@ -730,7 +730,7 @@
       "reorderedChunks" : 0,
       "saved" : {
         "bytes" : 18943957,
-        "file" : "\/Users\/dustinnielson\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-hevc-main-16M.mp4"
+        "file" : "~\/Library\/Containers\/com.xocialize.vrmxg-frame-export-spike\/Data\/tmp\/vrmxg-frame-export\/videos\/q-wc-hevc-main-16M.mp4"
       },
       "status" : "ok",
       "videoBytes" : 18941880,

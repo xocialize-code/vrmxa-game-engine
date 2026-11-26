@@ -17,12 +17,17 @@ export const NOTICES_FILE = 'THIRD-PARTY-LICENCES.txt';
 /** Licence texts for packages that ship none: `<name>.txt`, a scoped name's `/` as `__`. */
 export const SUPPLIED_LICENCES = path.join(import.meta.dirname, '../licences');
 const RULE = `${'='.repeat(78)}\n`;
+/** The engine's own licence (MIT OR Apache-2.0), kept in every build's notices under these names. */
+const ENGINE_ROOT = path.join(import.meta.dirname, '../../../..');
+export const ENGINE_LICENCES = ['LICENSE-MIT', 'LICENSE-APACHE'].map((n) => [`vrmxg/${n}`, path.join(ENGINE_ROOT, n)]);
 
 // a licence file beside the code: LICENSE, LICENCE.md, LICENSE-navcat, NOTICE, COPYING … never a source file
 const isLicenceFile = (n) => /^(licen[cs]e|copying|notice)([-._].*)?$/i.test(n) && !/\.(m?js|ts|json)$/i.test(n);
 // named in a file's licence: anything in node_modules, and a package in this repository that states a licence of its
-// own (@vrmxg/three-vrm, vendored: MIT; @vrmxg/dmath: the fdlibm notice). The rest is ours and says nothing
-const isThirdParty = (real, pkg) => real.includes(`${path.sep}node_modules${path.sep}`) || (!!pkg.licence && pkg.licence !== 'UNLICENSED');
+// own (@vrmxg/three-vrm, vendored: MIT; @vrmxg/dmath: the fdlibm notice). The rest is ours and says nothing, the
+// workspace's root package (`vrmxg`, whose files such as apps/shell/js have no package of their own) included: its
+// licence is the engine's own, kept as ENGINE_LICENCES below
+const isThirdParty = (real, pkg) => real.includes(`${path.sep}node_modules${path.sep}`) || (!pkg.root && !!pkg.licence && pkg.licence !== 'UNLICENSED');
 const inNodeModules = (real) => real.includes(`${path.sep}node_modules${path.sep}`);
 
 /** The package a file belongs to: the nearest package.json with a name, walking up. */
@@ -36,7 +41,7 @@ export function packageOf(file, cache = new Map()) {
     if (fs.existsSync(f)) {
       let p = null;
       try { p = JSON.parse(fs.readFileSync(f, 'utf8')); } catch { p = null; }
-      if (p?.name) { const hit = { dir, name: p.name, version: p.version ?? '', licence: typeof p.license === 'string' ? p.license : p.license?.type ?? '' }; for (const d of walked) cache.set(d, hit); return hit; }
+      if (p?.name) { const hit = { dir, name: p.name, version: p.version ?? '', licence: typeof p.license === 'string' ? p.license : p.license?.type ?? '', root: Array.isArray(p.workspaces) }; for (const d of walked) cache.set(d, hit); return hit; }
     }
     const up = path.dirname(dir);
     if (up === dir) { for (const d of walked) cache.set(d, null); return null; }
@@ -109,6 +114,7 @@ export function bundleNotices(bundle, { title, packages = [] }) {
     }
     included.set(chunk.fileName, [...inChunk.keys()].sort().map((k) => inChunk.get(k)));
   }
+  for (const [key, file] of ENGINE_LICENCES) if (fs.existsSync(file)) kept.set(key, fs.readFileSync(file, 'utf8').trim());
   for (const f of packages) {
     const pkg = fs.existsSync(f) ? packageOf(path.join(fs.realpathSync(f), fs.statSync(f).isDirectory() ? 'package.json' : ''), cache) : null;
     if (!pkg) throw new Error(`third-party notices: ${f} is in no package`);
