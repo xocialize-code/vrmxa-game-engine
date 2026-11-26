@@ -99,6 +99,13 @@ onMounted(async () => {
     catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
     ui.loading = false; refresh(); window.READY = true; return;
   }
+  // AB-A-0335: ?mode=warmup&renderer=webgpu|webgl&warm=0|1&post=0|1: the first frame's compile, with or without host.warmUp()
+  if (mode === 'warmup') {
+    const q = new URLSearchParams(location.search);
+    try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await pg.warmupCheck({ warm: q.get('warm') !== '0', post: q.get('post') !== '0', probe: q.get('probe') ? +q.get('probe') : 0 })) }; ui.notes = `warmup: ${window.__result.backend}, warm-up ${window.__result.warmUpMs} ms, first frame ${window.__result.firstFrameMs} ms`; }
+    catch (e) { window.__result = { mode, error: String(e?.stack ?? e) }; ui.notes = `warmup failed: ${e}`; }
+    ui.loading = false; refresh(); window.READY = true; return;
+  }
   // M4 W8: ?mode=coverage&renderer=webgpu|webgl: the sample script's coverage and a thumbnail per shot (scripts/coverage-chromium.mjs)
   if (mode === 'coverage') {
     try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await pg.coverageCheck()) }; ui.notes = `coverage: ${window.__result.backend}, ${window.__result.shots} shots, thumbnails ${window.__result.sameFromSnapshots ? 'the same' : 'DIFFER'} from snapshots`; }

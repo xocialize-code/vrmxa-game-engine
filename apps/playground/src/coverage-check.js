@@ -6,6 +6,7 @@
 // must give the same pixels. Also a strip of all the thumbnails with their numbers, as the creator's storyboard shows
 // them. The runner (scripts/coverage-chromium.mjs) writes the PNGs to results/coverage/.
 import { RenderHost } from '@vrmxg/render';
+import { particleRenderers } from '@vrmxg/particles';
 import { parse, serialize } from '@vrmxg/scene';
 import { buildSequence } from '@vrmxg/script';
 import { coverByRule, storyboard, lintLine } from '@vrmxg/coverage';
@@ -53,6 +54,7 @@ export async function coverageCheck({ R, bytes, opts, backend, post = null, widt
   const sample = await loadSample(read, SEQ);
   const pass = async (order) => {
     const host = await RenderHost.create({ canvas: document.createElement('canvas'), backend, dprCap: 1, post });
+    await host.loadParticleRenderer(particleRenderers); // before the world attaches, as when the host made it (AB-A-0335)
     const w = await buildWorld(R, sample, { ...opts, mtoonMaterial: host.mtoonMaterial });
     const r = await renderThumbnails({ tree: w.tree, host, board, width, height, order });
     host.dispose(); host.renderer.forceContextLoss?.();

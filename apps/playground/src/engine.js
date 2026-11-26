@@ -6,6 +6,7 @@ import { loadRapier } from '@vrmxg/physics';
 import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
 import { PRESETS } from '@vrmxg/camera';
 import { RenderHost, backendFromQuery } from '@vrmxg/render';
+import { particleRenderers } from '@vrmxg/particles';
 import { renderViews, gridLayout, PRESETS as POST_PRESETS } from '@vrmxg/post';
 import { captureStill, hashFrame, readbackFor } from '@vrmxg/export';
 import { loadSample, buildWorld } from './world.js';
@@ -26,6 +27,7 @@ import { withTwoPlayers, playerLayout } from './split.js';
 import { withCamera, shellCamera, recordedFrames, connectCamera } from '@vrmxg/sense';
 import { framesCheck } from './frames.js';
 import { coverageCheck } from './coverage-check.js';
+import { warmupCheck } from './warmup-check.js';
 import { voicingCheck } from './voicing-check.js';
 import { takesCheck } from './takes-check.js';
 import { layersCheck, withCarry } from './layers-check.js';
@@ -87,6 +89,7 @@ export class Playground {
       canvas: this.canvas, backend, preserveDrawingBuffer,
       post: { loadCube: async (file) => new TextDecoder().decode(await bytes(file)) },
     });
+    await this.host.loadParticleRenderer(particleRenderers); // the cafe's steam draws from the first frame (AB-A-0335)
     const webgl = this.host.backend === 'webgl';
     // speech bubbles in the canvas (M3 W6, troika: the text spike's verdict), the sample's static Noto Sans JP; no CDN
     if (webgl) this.text = new TextLayer({ font: 'fonts/NotoSansJP-Regular.ttf', bold: 'fonts/NotoSansJP-Bold.ttf', unicodeFontsURL: 'fonts/' }).attach(this.host);
@@ -475,6 +478,17 @@ export class Playground {
     const R = await loadRapier();
     const post = { loadCube: async (file) => new TextDecoder().decode(await bytes(file)) };
     return coverageCheck({ R, bytes, opts: { vrmxaCore, closet, behaviours }, backend: this.host.backend, post, ...o });
+  }
+
+  /**
+   * AB-A-0335 (?mode=warmup&renderer=webgpu|webgl&warm=0|1&post=0|1): the first frame's pipeline compile on an offline
+   * host, with or without the render host's warm-up (warmup-check.js). Nothing on the page draws a character first.
+   */
+  async warmupCheck({ warm = true, post = true, probe = 0 } = {}) {
+    await this.ready;
+    const R = await loadRapier(), sample = await loadSample(bytes);
+    const postOptions = post ? { loadCube: async (file) => new TextDecoder().decode(await bytes(file)) } : null;
+    return warmupCheck({ R, sample, opts: { vrmxaCore, closet, behaviours }, backend: this.host.backend, post: postOptions, warm, probe });
   }
 
   /**

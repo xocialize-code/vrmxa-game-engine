@@ -72,6 +72,104 @@ function cafeTree() {
   return tree;
 }
 
+// ---------------------------------------------------------------- what loads on demand (AB-A-0335)
+
+test('AB-A-0335: the host imports neither three.quarks nor the post stack; both load when used', () => {
+  const src = (f) => fs.readFileSync(fileURLToPath(new URL(`../src/${f}`, import.meta.url)), 'utf8');
+  const statics = (text) => [...text.matchAll(/^import\s[^;]*?from\s+'([^']+)'/gm)].map((m) => m[1]);
+  for (const f of ['host.js', 'backend.js', 'views.js', 'debug.js', 'interpolate.js', 'index.js']) {
+    const bad = statics(src(f)).filter((m) => /^three\.quarks|^@vrmxg\/particles|^@vrmxg\/post($|\/tsl)|^postprocessing/.test(m));
+    assert.deepEqual(bad, [], `${f} imports ${bad.join(', ')} statically`);
+  }
+  assert.match(src('host.js'), /from '@vrmxg\/post\/views'/, 'split screen takes renderViews from the light subpath');
+});
+
+test('AB-A-0335: a tree with particles on a host that hasn\'t loaded its particle renderer holds its steps until it has', async () => {
+  const { particleRenderers, installParticles } = await import('@vrmxg/particles');
+  const quarksGL = await import('three.quarks');
+  let release;
+  const gate = new Promise((r) => { release = r; });
+  const later = async () => { await gate; return particleRenderers.webgl(); };
+  const slow = { webgl: later, webgpu: later };
+  const drawn = [];
+  const host = new RenderHost({ renderer: { setPixelRatio() {}, shadowMap: {}, render: () => drawn.push(svc.batch?.constructor ?? null), dispose() {} } });
+  host.particleRenderer = undefined; // a stand-in draws none; this one stands in for a real host that hasn't loaded its class
+  const load = host.loadParticleRenderer.bind(host);
+  host.loadParticleRenderer = () => load(slow); // the service passes particleRenderers; this one waits on the gate
+  const tree = cafeTree();
+  const svc = installParticles(tree);
+  host.attach(tree);
+  assert.equal(svc.batch, null, 'no batch yet');
+  assert.equal(tree.step(), false, 'the step waits for the batch (core\'s holds)');
+  const frame = host.frameAt(3, 1); // an offline frame waits too: no frame is drawn without the batch
+  await new Promise((r) => setTimeout(r, 5));
+  assert.equal(drawn.length, 0);
+  release();
+  await frame;
+  assert.equal(host.particleRenderer, quarksGL.BatchedRenderer);
+  assert.equal(svc.batch?.constructor, quarksGL.BatchedRenderer);
+  assert.deepEqual(drawn, [quarksGL.BatchedRenderer], 'drawn once, with the batch');
+  assert.equal(tree.clock.step, 3);
+  assert.equal(svc.holds(), false);
+  // a host made with a class, and a stand-in, resolve with it at once; without the loaders a host can't load one
+  assert.equal(await new RenderHost({ renderer: { setPixelRatio() {}, shadowMap: {}, render() {}, dispose() {} } }).loadParticleRenderer(particleRenderers), null);
+  const bare = new RenderHost({ renderer: { isWebGLRenderer: true, setPixelRatio() {}, shadowMap: {}, render() {}, dispose() {}, getContext: () => ({}) } });
+  await assert.rejects(bare.loadParticleRenderer(), /particleRenderers/);
+  assert.equal(bare.particleRenderer, undefined, 'a refused load leaves it to load later');
+});
+
+test('AB-A-0335: warmUp compiles through a camera with every layer on, then draws once where nobody sees it', async () => {
+  const { module } = fakeWebGPU();
+  const host = await RenderHost.create({ backend: 'webgpu', navigator: gpuNavigator(), webgpu: module, canvas: {} });
+  const tree = cafeTree();
+  host.attach(tree);
+  const r = host.renderer, calls = [];
+  let target = null;
+  r.compileAsync = async (object, camera, targetScene) => { calls.push({ kind: 'compile', object, mask: camera.layers.mask, targetScene, same: camera === host.cameraNode()?.camera }); };
+  r.getRenderTarget = () => target;
+  r.setRenderTarget = (t) => { target = t; };
+  const render = r.render.bind(r);
+  let pending = null;
+  r.render = (scene, camera) => {
+    const sun = scene.getObjectByProperty('isDirectionalLight', true);
+    pending = sun?.shadow.needsUpdate ?? null;
+    calls.push({ kind: 'draw', mask: camera.layers.mask, target, has: (o) => o.parent === scene, hadModel: scene.children.includes(model) });
+    render(scene, camera);
+    if (sun) sun.shadow.needsUpdate = false; // as three's shadow pass does once it has drawn the map
+  };
+  const view = host.cameraNode().camera;
+  view.layers.set(0); // the view sees layer 0 only
+  const model = new (await import('three')).Object3D(); model.layers.set(1); // a model kept on a hidden layer
+  const res = await host.warmUp(model);
+  assert.equal(res.skipped, undefined);
+  const [compile, draw] = calls;
+  assert.equal(compile.kind, 'compile');
+  assert.equal(compile.mask >>> 0, 0xffffffff, 'compileAsync takes every layer');
+  assert.equal(compile.same, false, 'through a copy: the view camera keeps its layers while compileAsync awaits');
+  assert.equal(compile.targetScene, host.scene, 'a model outside the scene compiles with its lights');
+  assert.equal(draw.kind, 'draw');
+  assert.equal(draw.mask >>> 0, 0xffffffff, 'the draw nobody sees takes every layer too');
+  assert.ok(draw.target?.isRenderTarget, 'into a throwaway target, not the canvas');
+  assert.equal(draw.target.samples, r.samples ?? 0);
+  assert.equal(view.layers.mask, 1, 'the view camera\'s layers are as they were');
+  assert.equal(target, null, 'the renderer draws to the canvas again');
+  assert.equal(model.parent, null, 'the model was in the scene for the draw only');
+  assert.equal(draw.hadModel, true, 'the model is in the scene for the draw');
+  const sun = host.scene.getObjectByProperty('isDirectionalLight', true);
+  assert.ok(sun, 'the cafe tree\'s sun is in the host\'s scene');
+  assert.equal(sun.shadow.needsUpdate, pending, 'a pending shadow update the draw used is pending again');
+  // the whole scene: no target scene; draw: false stops after the compile; a stand-in, or a lost host, does nothing
+  calls.length = 0;
+  await host.warmUp(undefined, { draw: false });
+  assert.deepEqual(calls.map((c) => [c.kind, c.object === host.scene, c.targetScene]), [['compile', true, null]]);
+  const standIn = new RenderHost({ renderer: { setPixelRatio() {}, shadowMap: {}, render() {}, dispose() {} } });
+  assert.deepEqual(await standIn.warmUp(), { ms: 0, skipped: true });
+  host.lost = { api: 'WebGPU', reason: null, message: 'gone' };
+  calls.length = 0;
+  assert.equal((await host.warmUp()).skipped, true);
+  assert.equal(calls.length, 0);
+});
+
 // ---------------------------------------------------------------- the backend choice
 
 test('the ?renderer= switch: webgpu, webgl, auto; anything else is the app\'s default (auto since M4 W3)', () => {
@@ -106,11 +204,16 @@ test('RenderHost.create on WebGPU: an initialised WebGPURenderer on the canvas, 
   assert.equal(host.mtoonMaterial?.name, 'MToonNodeMaterial');
   // M4 W2: particles draw with three.quarks/webgpu's batch renderer (TSL); WebGL hosts keep three.quarks' own
   // AB-T-0590: through @vrmxg/particles/webgpu's subclass, which decodes particle colours per draw
+  // AB-A-0335: loaded on demand, from @vrmxg/particles' particleRenderers (undefined until then)
   const quarksGPU = await import('three.quarks/webgpu'), quarksGL = await import('three.quarks'), particlesGPU = await import('@vrmxg/particles/webgpu');
+  const { particleRenderers } = await import('@vrmxg/particles');
+  assert.equal(host.particleRenderer, undefined, 'not loaded until asked for');
+  assert.equal(await host.loadParticleRenderer(particleRenderers), particlesGPU.BatchedRenderer);
   assert.equal(host.particleRenderer, particlesGPU.BatchedRenderer);
   assert.ok(host.particleRenderer.prototype instanceof quarksGPU.WebGPUBatchedRenderer);
   const gl = new RenderHost({ renderer: { isWebGLRenderer: true, setPixelRatio() {}, shadowMap: {}, render() {}, dispose() {}, getContext: () => ({ drawingBufferWidth: 1, drawingBufferHeight: 1 }) } });
-  assert.equal(gl.particleRenderer, quarksGL.BatchedRenderer);
+  assert.equal(gl.particleRenderer, undefined);
+  assert.equal(await gl.loadParticleRenderer(particleRenderers), quarksGL.BatchedRenderer);
   assert.equal(new RenderHost({ renderer: { setPixelRatio() {}, shadowMap: {}, render() {}, dispose() {} } }).particleRenderer, null, 'a stand-in draws none');
   // a tree's services that draw get the host on attach (the particles service takes particleRenderer from it)
   const tree = cafeTree(), seen = [];

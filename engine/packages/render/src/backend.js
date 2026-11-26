@@ -50,12 +50,17 @@ let webgpuModule = null;
 export const loadWebGPU = () => (webgpuModule ??= import('three/webgpu').catch((e) => { webgpuModule = null; throw e; }));
 
 /**
- * three.quarks/webgpu's BatchedRenderer (WebGPUBatchedRenderer: TSL node materials), the particle renderer a WebGPU host
- * hands to the particles service (M4 W2; spike-webgpu-render: the same particle hashes, AB-R-1006). Loaded with
- * three/webgpu, never by a WebGL page; WebGL's comes from three.quarks itself. It is @vrmxg/particles/webgpu's subclass
- * (AB-T-0590): particle colours decoded per draw, so a frame doesn't depend on which draw first compiled the batch.
+ * The three.quarks BatchedRenderer class a host hands to the particles service, loaded on demand (AB-A-0335: an app with
+ * no particles never fetches three.quarks). 'webgpu' (the default): three.quarks/webgpu's (WebGPUBatchedRenderer: TSL
+ * node materials, M4 W2; spike-webgpu-render: the same particle hashes, AB-R-1006), as @vrmxg/particles/webgpu's
+ * subclass (AB-T-0590: particle colours decoded per draw, so a frame doesn't depend on which draw first compiled the
+ * batch); never loaded by a WebGL page. 'webgl': three.quarks' own. Kept for callers that want the class itself: the host
+ * loads through @vrmxg/particles' `particleRenderers` instead, so it never ships three.quarks to an app without particles.
+ * @param {'webgl' | 'webgpu'} [backend]
  */
-export const loadParticleRenderer = async () => (await import('@vrmxg/particles/webgpu')).BatchedRenderer;
+export const loadParticleRenderer = async (backend = 'webgpu') => backend === 'webgl'
+  ? (await import('three.quarks')).BatchedRenderer
+  : (await import('@vrmxg/particles/webgpu')).BatchedRenderer;
 
 /** One warm-up per three/webgpu module (one per page; a test's stand-in module gets its own). */
 const warmUps = new WeakMap();

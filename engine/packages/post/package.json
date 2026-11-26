@@ -6,7 +6,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.js",
-    "./tsl": "./src/tsl.js"
+    "./tsl": "./src/tsl.js",
+    "./views": "./src/views.js"
   },
   "files": ["src"],
   "sideEffects": false,

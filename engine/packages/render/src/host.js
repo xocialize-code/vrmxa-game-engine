@@ -20,14 +20,13 @@
 // a host in its place (WebGPU again, else three's WebGL2 backend, which still draws the world's node materials) with
 // the same tree, camera and overlays. The simulation is never touched: drawing is outside the determinism boundary, and
 // a draw that throws can't leave the interpolated pose in the simulated transforms (render's finally puts them back).
-import { PCFShadowMap, PMREMGenerator, PerspectiveCamera, SRGBColorSpace, Scene, Vector2, WebGLRenderer } from 'three';
+import { HalfFloatType, PCFShadowMap, PMREMGenerator, PerspectiveCamera, RGBAFormat, RenderTarget, SRGBColorSpace, Scene, Vector2, WebGLRenderer } from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { BatchedRenderer as WebGLBatchedRenderer } from 'three.quarks';
 import { Interpolator } from './interpolate.js';
 import { Views } from './views.js';
-import { renderViews, makePostStack } from '@vrmxg/post';
+import { renderViews } from '@vrmxg/post/views'; // three only: the post stack itself (pmndrs, TSL) loads when asked for
 import { DebugDraw } from './debug.js';
-import { resolveBackend, loadWebGPU, warmUpWebGPU, roomPMREM, isWebGPUBackend, loadParticleRenderer } from './backend.js';
+import { resolveBackend, loadWebGPU, warmUpWebGPU, roomPMREM, isWebGPUBackend } from './backend.js';
 
 /**
  * @typedef {Omit<NonNullable<ConstructorParameters<typeof RenderHost>[0]>, 'post'> & { backend?: import('./backend.js').BackendChoice, navigator?: any, fallbackRenderer?: any, post?: ((renderer: any) => any) | { loadCube?: (file: string) => Promise<string>, multisampling?: number } | null }} CreateOptions
@@ -75,9 +74,13 @@ export class RenderHost {
     this.mtoonMaterial = mtoonMaterial;
     /**
      * The three.quarks BatchedRenderer class for this renderer (M4 W2): a tree's particles service takes it on attach.
-     * null: this host draws no particles (a stand-in, or a WebGPU host made without one).
+     * null: this host draws no particles (a stand-in). undefined: not loaded yet (AB-A-0335): three.quarks is fetched only
+     * when a tree with a particles service attaches, or when the app asks first (`await host.loadParticleRenderer(particleRenderers)`).
+     * @type {any}
      */
-    this.particleRenderer = particleRenderer !== undefined ? particleRenderer : this.backend === 'webgl' ? WebGLBatchedRenderer : null;
+    this.particleRenderer = particleRenderer !== undefined ? particleRenderer : this.backend === 'stand-in' ? null : undefined;
+    /** The particle renderer's load while it is under way (loadParticleRenderer); null otherwise. @type {Promise<any> | null} */
+    this._particleLoad = null;
     const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
     this.renderer.setPixelRatio?.(Math.min(dpr, dprCap));
     this.renderer.outputColorSpace = SRGBColorSpace;
@@ -213,6 +216,7 @@ export class RenderHost {
         host.camera = carried.camera; host.layout = carried.layout; host.interpolate = carried.interpolate; host.onPresent = carried.onPresent;
         for (const o of overlays) o.attach?.(host);
         if (tree) host.attach(tree);
+        await host.ready(); // a world with emitters draws them from the first frame on the new host
         host.replaced = { from: old.backend, lost: old.lost, tried: errors.slice() };
         return host;
       } catch (e) { errors.push(`${backend}: ${e?.message ?? e}`); }
@@ -246,7 +250,10 @@ export class RenderHost {
     }
     const host = await RenderHost._create(rest);
     host._made = { ...again, post };
-    if (host.backend !== 'stand-in') host.setPost(await makePostStack(host.renderer, post));
+    if (host.backend !== 'stand-in') {
+      const { makePostStack } = await import('@vrmxg/post'); // pmndrs on WebGL, the TSL stack on WebGPU: only when asked for
+      host.setPost(await makePostStack(host.renderer, post));
+    }
     return host;
   }
 
@@ -257,8 +264,7 @@ export class RenderHost {
       const renderer = opts.renderer ?? new W.WebGPURenderer({ canvas: opts.canvas, antialias: opts.antialias ?? true, alpha: true, forceWebGL: true });
       await renderer.init();
       mtoonMaterial ??= (await import('@pixiv/three-vrm/nodes')).MToonNodeMaterial;
-      const particleRenderer = opts.particleRenderer ?? (await loadParticleRenderer());
-      return new RenderHost({ ...opts, renderer, webgpu: W, mtoonMaterial, particleRenderer, webglFallback: true });
+      return new RenderHost({ ...opts, renderer, webgpu: W, mtoonMaterial, webglFallback: true });
     }
     const chosen = await resolveBackend(backend, { navigator: nav });
     if (chosen === 'webgl') return new RenderHost({ ...opts, mtoonMaterial });
@@ -278,8 +284,103 @@ export class RenderHost {
       return fellBack('the view\'s renderer');
     }
     mtoonMaterial ??= (await import('@pixiv/three-vrm/nodes')).MToonNodeMaterial; // patched on install (scripts/patch-three-vrm.mjs)
-    const particleRenderer = opts.particleRenderer ?? (await loadParticleRenderer()); // three.quarks/webgpu's, TSL (M4 W2)
-    return new RenderHost({ ...opts, renderer, webgpu: W, mtoonMaterial, particleRenderer });
+    return new RenderHost({ ...opts, renderer, webgpu: W, mtoonMaterial }); // particles: three.quarks/webgpu's, on demand
+  }
+
+  /**
+   * Load the particle renderer for this host's backend (AB-A-0335), once: `renderers` is @vrmxg/particles'
+   * `particleRenderers` ({ webgl, webgpu }: async loaders of three.quarks' BatchedRenderer and @vrmxg/particles/webgpu's),
+   * 'webgpu' on WebGPU and on 'webgl-fallback'. The host itself never imports three.quarks, so an app without particles
+   * neither loads nor ships it. Sets `particleRenderer` and hands it to the attached tree's particles service before
+   * resolving, so a frame drawn after this resolves has its batch. A tree's particles service starts it on attach and
+   * holds its steps meanwhile; an app that wants particles in its very first frame (or checks frames against digests)
+   * awaits it before attaching. A host made with a `particleRenderer` (or a stand-in) resolves with that at once.
+   * @param {{ webgl: () => Promise<any>, webgpu: () => Promise<any> }} renderers
+   * @returns {Promise<any>} the class, or null
+   */
+  loadParticleRenderer(renderers) {
+    if (this.particleRenderer !== undefined) return Promise.resolve(this.particleRenderer);
+    if (!this._particleLoad) {
+      const load = renderers?.[this.backend === 'webgl' ? 'webgl' : 'webgpu'];
+      if (typeof load !== 'function') return Promise.reject(new Error('RenderHost.loadParticleRenderer: pass @vrmxg/particles\' particleRenderers'));
+      this._particleLoad = Promise.resolve().then(load).then((R) => {
+        if (this.particleRenderer === undefined) this.particleRenderer = R ?? null;
+        this._particleLoad = null;
+        if (!this._disposed) this.tree?.services.get('particles')?.attachHost?.(this);
+        return this.particleRenderer;
+      }, (e) => { this._particleLoad = null; throw e; });
+    }
+    return this._particleLoad;
+  }
+
+  /**
+   * Resolves once what this host loads on demand for its tree is in (AB-A-0335: the particle renderer). Offline frames
+   * (frameAt) and stills wait for it, so no frame is drawn with emitters and no batch to draw them.
+   */
+  async ready() {
+    if (this._particleLoad) await this._particleLoad.catch(() => {}); // a failed load draws no particles, as before it was asked
+  }
+
+  /**
+   * Compile the pipelines `object` draws with before it is shown (AB-A-0335). WebKit's first WebGPU compile of the sample
+   * cafe with Mira and Hana makes the first frame take 8.7 s in a fresh WKWebView (the studio measured 10–12 s for its
+   * models; 0.13–0.18 s once cached), and a frame that meets an uncompiled pipeline waits for it. Two steps:
+   *   1. `renderer.compileAsync`: every material's pipeline, compiled in parallel without drawing or blocking the page.
+   *      In r187 it skips what the camera's layers exclude (as render does), so a model kept on a hidden layer would
+   *      compile nothing: it compiles through a copy of the view's camera with every layer enabled. A model not yet in
+   *      the host's scene compiles with the scene's lights and environment (compileAsync's target scene).
+   *   2. WebGPU: one draw nobody sees, into a throwaway target made as three makes its framebuffer target (or through the
+   *      post stack, whose last pass draws into it), through the view's camera with every layer on for that one
+   *      synchronous draw (so no frame shown meanwhile sees a hidden layer), with the object in the scene for it. That
+   *      compiles what compileAsync doesn't: the shadow maps' materials, the post stack's passes, the pipelines that
+   *      differ only by draw state. Lights' pending shadow updates are left as they were. Then it waits for the GPU.
+   * The Environment and lights are brought up to date first (tone mapping decides whether WebGPU draws through its
+   * framebuffer target). WebGL takes step 1 only (WebGLRenderer's compileAsync, parallel where the context allows): a draw
+   * into a target there would compile programs without the canvas's tone mapping, the wrong variants. Nothing simulated is
+   * touched. A no-op on a stand-in, a lost or a disposed host.
+   * @param {any} [object] a model, a node's object3d, or the whole scene (the default: everything the tree shows)
+   * @param {{ camera?: any, draw?: boolean }} [o] the camera it will be seen through (the view's, by default); `draw`:
+   *   step 2 (true)
+   * @returns {Promise<{ ms: number, compileMs?: number, drawMs?: number, skipped?: boolean }>}
+   */
+  async warmUp(object = this.scene, { camera = null, draw = true } = {}) {
+    const r = this.renderer;
+    if (this.lost || this._disposed || typeof r.compileAsync !== 'function') return { ms: 0, skipped: true };
+    const now = () => (typeof performance !== 'undefined' ? performance.now() : 0);
+    const t0 = now();
+    if (this.tree) this.views.update(this.tree);
+    const view = camera ?? this.camera ?? this.tree?.services.get('cameras')?.current?.camera ?? this.fallbackCamera;
+    const lens = view.clone();
+    lens.layers.enableAll();
+    const inScene = object === this.scene || !!object?.isScene;
+    try { await r.compileAsync(object, lens, inScene ? null : this.scene); }
+    catch (e) { if (!this._lostBy(e)) throw e; return { ms: now() - t0, skipped: true }; } // a lost device: nothing to compile for
+    const compileMs = now() - t0;
+    if (!draw || !r.isWebGPURenderer || this.lost || this._disposed) return { ms: compileMs, compileMs };
+    try { this._warmDraw(inScene ? null : object, view); await this.finish(); }
+    catch (e) { if (!this._lostBy(e)) throw e; }
+    return { ms: now() - t0, compileMs, drawMs: now() - t0 - compileMs };
+  }
+
+  /** warmUp's draw nobody sees (WebGPU): the scene (with `object` in it) into a throwaway target. Synchronous. */
+  _warmDraw(object, camera) {
+    const r = this.renderer;
+    const target = new RenderTarget(64, 64, { depthBuffer: r.depth ?? true, stencilBuffer: r.stencil ?? false, type: r._outputBufferType ?? HalfFloatType, format: RGBAFormat, samples: r.samples ?? 0 });
+    const added = object && !object.parent ? (this.scene.add(object), true) : false;
+    const mask = camera.layers.mask, back = r.getRenderTarget(), shadows = [];
+    this.scene.traverse((o) => { if (o.isLight && o.shadow) shadows.push([o.shadow, o.shadow.needsUpdate]); });
+    camera.layers.enableAll();
+    try {
+      r.setRenderTarget(target);
+      if (this.post?.active) this.post.render(this.scene, camera, this.time);
+      else r.render(this.scene, camera);
+    } finally {
+      r.setRenderTarget(back);
+      camera.layers.mask = mask;
+      if (added) this.scene.remove(object);
+      for (const [shadow, pending] of shadows) shadow.needsUpdate = pending;
+      target.dispose();
+    }
   }
 
   /**
@@ -446,6 +547,7 @@ export class RenderHost {
       const camera = this.camera ?? tree.services.get('cameras')?.current?.camera ?? this.fallbackCamera;
       for (const o of this.overlays) { o.update(tree, camera, alpha); if (o.settle) await o.settle(); }
     }
+    if (this._particleLoad) await this.ready(); // the particle renderer, if a tree's emitters asked for it (AB-A-0335)
     this.advanceNodeFrame(); // WebGPU: this frame's passes and shadow maps redraw, though nothing yielded to rAF (gotcha 1)
     this.render(alpha, steps > 0);
     this.last.steps = steps; this.last.alpha = alpha; this.last.held = false;
