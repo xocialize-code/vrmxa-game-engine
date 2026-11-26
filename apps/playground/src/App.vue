@@ -117,6 +117,12 @@ onMounted(async () => {
     catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
     ui.loading = false; refresh(); window.READY = true; return;
   }
+  // M6 W4: ?mode=starter: the starter content cast and used (content/starter/test/starter.test.mjs runs it in Node)
+  if (mode === 'starter') {
+    try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await pg.starterCheck()) }; ui.notes = `starter: ${window.__result.animations.slots.length} slots played, ${window.__result.items.items.length} items used, ${window.__result.ok ? 'all as they should' : `FAILED ${[...window.__result.animations.failures, ...window.__result.items.failures].join(', ')}`}`; }
+    catch (e) { window.__errors?.push(String(e?.stack ?? e)); ui.error = String(e?.stack ?? e); }
+    ui.loading = false; refresh(); window.READY = true; return;
+  }
   // M5 W7: ?mode=layers: Mira's character layers over her walk (acceptance/m5/layers.mjs)
   if (mode === 'layers') {
     try { window.__result = { mode, ua: navigator.userAgent, origin: location.protocol, ...(await pg.layersCheck()) }; ui.notes = `layers: final ${window.__result.final}, restored ${window.__result.restored.same ? 'the same' : 'DIFFERENT'}, legs ${window.__result.legs.sameAsWalkEveryStep ? 'walking\'s' : 'DIFFERENT'}`; }

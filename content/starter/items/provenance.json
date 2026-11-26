@@ -1,0 +1,215 @@
+{
+ "about": "Where each starter item comes from (content/starter/tools/make-items.mjs). Every item is CC0 1.0.",
+ "source": {
+  "project": "mesh2motion",
+  "url": "https://github.com/Mesh2Motion/mesh2motion-app",
+  "licence": "Art (models, rigs, animations) CC0 1.0; code MIT (not used)",
+  "snapshot": "static/assets/props_manifest.json generated 2026-11-06T20:41:56.035Z",
+  "pin": {
+   "repo": "Mesh2Motion/mesh2motion-app",
+   "commit": "7963d4c6f760152c41d60a8bdf52fc75d0d34925",
+   "date": "2026-11-07",
+   "message": "update static assets from latest assets repo",
+   "archive": "https://github.com/Mesh2Motion/mesh2motion-app/archive/7963d4c6f760152c41d60a8bdf52fc75d0d34925.zip",
+   "checked": "every file read is byte-identical (git blob SHA) to this commit, checked 2026-11-25",
+   "assets": {
+    "repo": "Mesh2Motion/mesh2motion-assets",
+    "commit": "5fda3d2430f3e9f0dd18f6a86cad7ac4a03d05d0",
+    "note": "the .blend sources and the vendored CC0 packs (CC0-packs/Quaternius, CC0-packs/Kaykit) with their licence files, before the 2026-10-31 restructure"
+   }
+  }
+ },
+ "items": [
+  {
+   "file": "items/door.vrmxi",
+   "name": "Wooden door",
+   "type": "door",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  },
+  {
+   "file": "items/chest.vrmxi",
+   "name": "Chest",
+   "type": "container",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  },
+  {
+   "file": "items/lever.vrmxi",
+   "name": "Lever",
+   "type": "switch",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  },
+  {
+   "file": "items/button.vrmxi",
+   "name": "Button",
+   "type": "switch",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  },
+  {
+   "file": "items/chair.vrmxi",
+   "name": "Chair",
+   "type": "seat",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  },
+  {
+   "file": "items/bench.vrmxi",
+   "name": "Bench",
+   "type": "seat",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  },
+  {
+   "file": "items/shelf.vrmxi",
+   "name": "Shelf",
+   "type": "x-vrmxg.prop",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  },
+  {
+   "file": "items/table.vrmxi",
+   "name": "Table",
+   "type": "x-vrmxg.prop",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  },
+  {
+   "file": "items/crate.vrmxi",
+   "name": "Crate",
+   "type": "x-vrmxg.prop",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  },
+  {
+   "file": "items/barrel.vrmxi",
+   "name": "Barrel",
+   "type": "x-vrmxg.prop",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  },
+  {
+   "file": "items/coin.vrmxi",
+   "name": "Coin",
+   "type": "pickup",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  },
+  {
+   "file": "items/key.vrmxi",
+   "name": "Key",
+   "type": "pickup",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  },
+  {
+   "file": "items/mug.vrmxi",
+   "name": "Mug",
+   "type": "pickup",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  },
+  {
+   "file": "items/sword.vrmxi",
+   "name": "Sword",
+   "type": "pickup",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/props/sword_A.glb",
+    "sha256": "ffe9ce1812ee269b61860120f07efe596bc272c80c41dde9c5421b41c7831da9",
+    "prop": "sword_A",
+    "category": "sword",
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\"; README, \"Licenses\")",
+    "author": "Kay Lousberg (www.kaylousberg.com), KayKit: Fantasy Weapons Bits 1.0",
+    "pack": "Assets/sword_A.glb (876 indices)",
+    "evidence": "vendored at mesh2motion-assets CC0-packs/Kaykit/KayKit_FantasyWeaponsBits_1.0_FREE (License.txt: Creative Commons Zero, CC0; credit not mandatory); mesh2motion's prop has the pack's mesh (same index count and extents) and its weapons_bits_texture.png"
+   }
+  },
+  {
+   "file": "items/axe.vrmxi",
+   "name": "Axe",
+   "type": "pickup",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/props/axe_A.glb",
+    "sha256": "13b89844f462551cbb9c6ae8c1f8210161165cc6ff59654a40ed9aa0a5982e65",
+    "prop": "axe_A",
+    "category": "axe",
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\"; README, \"Licenses\")",
+    "author": "Kay Lousberg (www.kaylousberg.com), KayKit: Fantasy Weapons Bits 1.0",
+    "pack": "Assets/axe_A.glb (3618 indices)",
+    "evidence": "vendored at mesh2motion-assets CC0-packs/Kaykit/KayKit_FantasyWeaponsBits_1.0_FREE (License.txt: Creative Commons Zero, CC0; credit not mandatory); mesh2motion's prop has the pack's mesh (same index count and extents) and its weapons_bits_texture.png"
+   }
+  },
+  {
+   "file": "items/hammer.vrmxi",
+   "name": "Hammer",
+   "type": "pickup",
+   "licence": "CC0-1.0",
+   "from": {
+    "project": "mesh2motion (github.com/Mesh2Motion/mesh2motion-app)",
+    "file": "static/assets/props/hammer_A.glb",
+    "sha256": "87ec8602dfdfc11d2aed7f8c3aa206d044df0f2783fe1aa0a7cfad71a1711249",
+    "prop": "hammer_A",
+    "category": "hammer",
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\"; README, \"Licenses\")",
+    "author": "Kay Lousberg (www.kaylousberg.com), KayKit: Fantasy Weapons Bits 1.0",
+    "pack": "Assets/hammer_A.glb (1572 indices)",
+    "evidence": "vendored at mesh2motion-assets CC0-packs/Kaykit/KayKit_FantasyWeaponsBits_1.0_FREE (License.txt: Creative Commons Zero, CC0; credit not mandatory); mesh2motion's prop has the pack's mesh (same index count and extents) and its weapons_bits_texture.png"
+   }
+  },
+  {
+   "file": "items/spawn.vrmxi",
+   "name": "Player start",
+   "type": "spawnPoint",
+   "licence": "CC0-1.0",
+   "from": {
+    "generated": "content/starter/tools/make-items.mjs (boxes and cylinders)",
+    "dedication": "Xocialize LLC, CC0 1.0"
+   }
+  }
+ ]
+}

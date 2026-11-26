@@ -1,0 +1,789 @@
+{
+ "check": "M6 W4: the starter content works: Mira cast with the default animation set plays every slot of every set; every starter item does what its type says (open, press, sit, take); the same in Node and in the playground in Chromium",
+ "pass": true,
+ "same": true,
+ "rapier": "@dimforge/rapier3d-deterministic-compat",
+ "node": {
+  "runtime": "node",
+  "version": "v26.12.1",
+  "animations": {
+   "character": "characters/mira.vrmxa",
+   "clips": 37,
+   "expectedClips": 37,
+   "slots": [
+    {
+     "set": "default",
+     "slot": "idle",
+     "clip": [
+      "idle",
+      "idle-foldArms"
+     ],
+     "how": "idle",
+     "moved": 0.09773168750425389,
+     "finite": true,
+     "picked": "idle",
+     "states": [
+      "idle"
+     ]
+    },
+    {
+     "set": "default",
+     "slot": "walk",
+     "clip": [
+      "walk"
+     ],
+     "how": "input.move",
+     "moved": 1.2523296652787677,
+     "finite": true,
+     "picked": "walk",
+     "states": [
+      "move"
+     ]
+    },
+    {
+     "set": "default",
+     "slot": "run",
+     "clip": [
+      "run"
+     ],
+     "how": "input.move",
+     "moved": 1.8689531384595572,
+     "finite": true,
+     "picked": "run",
+     "states": [
+      "move"
+     ]
+    },
+    {
+     "set": "default",
+     "slot": "jump",
+     "clip": [
+      "jump"
+     ],
+     "how": "input.jump",
+     "moved": 1.9563287313868156,
+     "finite": true,
+     "states": [
+      "jump",
+      "fall",
+      "land",
+      "idle"
+     ],
+     "picked": "jump"
+    },
+    {
+     "set": "default",
+     "slot": "fall",
+     "clip": [
+      "fall"
+     ],
+     "how": "input.jump",
+     "moved": 1.9563287313868156,
+     "finite": true,
+     "states": [
+      "jump",
+      "fall",
+      "land",
+      "idle"
+     ],
+     "picked": "fall"
+    },
+    {
+     "set": "default",
+     "slot": "land",
+     "clip": [
+      "land"
+     ],
+     "how": "input.jump",
+     "moved": 1.9563287313868156,
+     "finite": true,
+     "states": [
+      "jump",
+      "fall",
+      "land",
+      "idle"
+     ],
+     "picked": "land"
+    },
+    {
+     "set": "default",
+     "slot": "sit",
+     "clip": [
+      "sit"
+     ],
+     "how": "startAction('sit')",
+     "moved": 1.8091596421700376,
+     "finite": true,
+     "states": [
+      "sit",
+      "sitIdle"
+     ],
+     "picked": "sit"
+    },
+    {
+     "set": "default",
+     "slot": "sitIdle",
+     "clip": [
+      "sitIdle"
+     ],
+     "how": "startAction('sitIdle')",
+     "moved": 1.7044216190785764,
+     "finite": true,
+     "states": [
+      "sitIdle"
+     ],
+     "picked": "sitIdle"
+    },
+    {
+     "set": "default",
+     "slot": "stand",
+     "clip": [
+      "stand"
+     ],
+     "how": "startAction('stand')",
+     "moved": 2.015562911508706,
+     "finite": true,
+     "states": [
+      "stand",
+      "idle"
+     ],
+     "picked": "stand"
+    },
+    {
+     "set": "default",
+     "slot": "getUp",
+     "clip": [
+      "getUp"
+     ],
+     "how": "startAction('getUp')",
+     "moved": 1.8110318883830743,
+     "finite": true,
+     "states": [
+      "getUp",
+      "idle"
+     ],
+     "picked": "getUp"
+    },
+    {
+     "set": "default",
+     "slot": "talk",
+     "clip": [
+      "talk"
+     ],
+     "how": "startAction('talk')",
+     "moved": 1.384697410300926,
+     "finite": true,
+     "states": [
+      "talk"
+     ],
+     "picked": "talk"
+    },
+    {
+     "set": "default",
+     "slot": "listen",
+     "clip": [
+      "listen"
+     ],
+     "how": "startAction('listen') (masked)",
+     "moved": 1.701037643503694,
+     "finite": true,
+     "gesture": true,
+     "picked": "listen"
+    },
+    {
+     "set": "default",
+     "slot": "think",
+     "clip": [
+      "think"
+     ],
+     "how": "startAction('think') (masked)",
+     "moved": 2.1274145570251,
+     "finite": true,
+     "gesture": true,
+     "picked": "think"
+    },
+    {
+     "set": "default",
+     "slot": "greet",
+     "clip": [
+      "greet"
+     ],
+     "how": "startAction('greet') (masked)",
+     "moved": 1.3177127442786118,
+     "finite": true,
+     "gesture": true,
+     "picked": "greet"
+    },
+    {
+     "set": "default",
+     "slot": "wave",
+     "clip": [
+      "greet"
+     ],
+     "how": "startAction('wave') (masked)",
+     "moved": 1.3177127442786118,
+     "finite": true,
+     "gesture": true,
+     "picked": "greet"
+    },
+    {
+     "set": "default",
+     "slot": "nod",
+     "clip": [
+      "nod"
+     ],
+     "how": "startAction('nod') (masked)",
+     "moved": 0.3157638090882973,
+     "finite": true,
+     "gesture": true,
+     "picked": "nod"
+    },
+    {
+     "set": "default",
+     "slot": "clap",
+     "clip": [
+      "clap"
+     ],
+     "how": "startAction('clap') (masked)",
+     "moved": 1.1857617331193695,
+     "finite": true,
+     "gesture": true,
+     "picked": "clap"
+    },
+    {
+     "set": "default",
+     "slot": "cheer",
+     "clip": [
+      "cheer"
+     ],
+     "how": "startAction('cheer') (masked)",
+     "moved": 1.3283091310212272,
+     "finite": true,
+     "gesture": true,
+     "picked": "cheer"
+    },
+    {
+     "set": "default",
+     "slot": "sip",
+     "clip": [
+      "sip"
+     ],
+     "how": "startAction('sip') (masked)",
+     "moved": 1.2861487472735207,
+     "finite": true,
+     "gesture": true,
+     "picked": "sip"
+    },
+    {
+     "set": "default",
+     "slot": "emote.happy",
+     "clip": [
+      "happy"
+     ],
+     "how": "startAction('emote.happy') (masked)",
+     "moved": 3.027673036264445,
+     "finite": true,
+     "gesture": true,
+     "picked": "happy"
+    },
+    {
+     "set": "default",
+     "slot": "emote.angry",
+     "clip": [
+      "angry"
+     ],
+     "how": "startAction('emote.angry') (masked)",
+     "moved": 1.433742479026841,
+     "finite": true,
+     "gesture": true,
+     "picked": "angry"
+    },
+    {
+     "set": "default",
+     "slot": "use",
+     "clip": [
+      "use"
+     ],
+     "how": "startAction('use')",
+     "moved": 1.634967350694305,
+     "finite": true,
+     "states": [
+      "use",
+      "idle"
+     ],
+     "picked": "use"
+    },
+    {
+     "set": "default",
+     "slot": "equip",
+     "clip": [
+      "equip"
+     ],
+     "how": "startAction('take')",
+     "moved": 1.2226049870279132,
+     "finite": true,
+     "states": [
+      "take",
+      "idle"
+     ],
+     "picked": "equip"
+    },
+    {
+     "set": "default",
+     "slot": "carry",
+     "clip": [
+      "carry"
+     ],
+     "how": "playLayer({ layer: 'upperBody', slot })",
+     "moved": 1.147717374022566,
+     "finite": true,
+     "picked": "carry"
+    },
+    {
+     "set": "default",
+     "slot": "x-vrmxg.crouch",
+     "clip": [
+      "crouch"
+     ],
+     "how": "playLayer({ layer: 'body', slot })",
+     "moved": 2.0547105681025832,
+     "finite": true,
+     "picked": "crouch"
+    },
+    {
+     "set": "default",
+     "slot": "x-vrmxg.crouchWalk",
+     "clip": [
+      "crouchWalk"
+     ],
+     "how": "playLayer({ layer: 'body', slot })",
+     "moved": 2.304870786917695,
+     "finite": true,
+     "picked": "crouchWalk"
+    },
+    {
+     "set": "default",
+     "slot": "x-vrmxg.pickUp",
+     "clip": [
+      "pickUp"
+     ],
+     "how": "playLayer({ layer: 'body', slot })",
+     "moved": 2.148907636267169,
+     "finite": true,
+     "picked": "pickUp"
+    },
+    {
+     "set": "default",
+     "slot": "x-vrmxg.push",
+     "clip": [
+      "push"
+     ],
+     "how": "playLayer({ layer: 'body', slot })",
+     "moved": 2.7367783134190824,
+     "finite": true,
+     "picked": "push"
+    },
+    {
+     "set": "default",
+     "slot": "x-vrmxg.dance",
+     "clip": [
+      "dance"
+     ],
+     "how": "playLayer({ layer: 'body', slot })",
+     "moved": 1.0675381740276226,
+     "finite": true,
+     "picked": "dance"
+    },
+    {
+     "set": "default",
+     "slot": "x-vrmxg.hit",
+     "clip": [
+      "hit"
+     ],
+     "how": "startAction('x-vrmxg.hit') (masked)",
+     "moved": 0.21677907145401581,
+     "finite": true,
+     "gesture": true,
+     "picked": "hit"
+    },
+    {
+     "set": "default",
+     "slot": "x-vrmxg.death",
+     "clip": [
+      "death"
+     ],
+     "how": "playLayer({ layer: 'body', slot })",
+     "moved": 1.4227271061722715,
+     "finite": true,
+     "picked": "death"
+    },
+    {
+     "set": "default",
+     "slot": "x-vrmxg.punch",
+     "clip": [
+      "punch"
+     ],
+     "how": "startAction('x-vrmxg.punch') (masked)",
+     "moved": 1.670012767713386,
+     "finite": true,
+     "gesture": true,
+     "picked": "punch"
+    },
+    {
+     "set": "default",
+     "slot": "x-vrmxg.kick",
+     "clip": [
+      "kick"
+     ],
+     "how": "playLayer({ layer: 'body', slot })",
+     "moved": 1.957791628937152,
+     "finite": true,
+     "picked": "kick"
+    },
+    {
+     "set": "sword",
+     "slot": "idle",
+     "clip": [
+      "idle-sword"
+     ],
+     "how": "idle",
+     "moved": 0.15695664143176996,
+     "finite": true,
+     "picked": "idle-sword",
+     "states": [
+      "idle"
+     ]
+    },
+    {
+     "set": "sword",
+     "slot": "hold",
+     "clip": [
+      "idle-sword"
+     ],
+     "how": "hold (a sword in hand)",
+     "moved": 0.15695664143176996,
+     "finite": true,
+     "picked": "idle-sword"
+    },
+    {
+     "set": "sword",
+     "slot": "use",
+     "clip": [
+      "swordAttack"
+     ],
+     "how": "startAction('use')",
+     "moved": 1.8071187111882514,
+     "finite": true,
+     "states": [
+      "use",
+      "idle"
+     ],
+     "picked": "swordAttack"
+    },
+    {
+     "set": "sword",
+     "slot": "x-vrmxg.block",
+     "clip": [
+      "swordBlock"
+     ],
+     "how": "startAction('x-vrmxg.block') (masked)",
+     "moved": 0.563254198522009,
+     "finite": true,
+     "gesture": true,
+     "picked": "swordBlock"
+    },
+    {
+     "set": "chest",
+     "slot": "use",
+     "clip": [
+      "chestOpen"
+     ],
+     "how": "startAction('use')",
+     "moved": 1.881728380750585,
+     "finite": true,
+     "states": [
+      "use",
+      "idle"
+     ],
+     "picked": "chestOpen"
+    }
+   ],
+   "failures": [],
+   "ok": true
+  },
+  "items": {
+   "items": [
+    {
+     "file": "items/door.vrmxi",
+     "name": "Wooden door",
+     "type": "door",
+     "verb": "open",
+     "expect": "state",
+     "prompts": [
+      "open:Open"
+     ],
+     "ok": true,
+     "offered": true,
+     "state": "open",
+     "turned": 1.599,
+     "slot": "use"
+    },
+    {
+     "file": "items/chest.vrmxi",
+     "name": "Chest",
+     "type": "container",
+     "verb": "open",
+     "expect": "state",
+     "prompts": [
+      "open:Open"
+     ],
+     "ok": true,
+     "offered": true,
+     "state": "open",
+     "turned": 1.7,
+     "slot": "use"
+    },
+    {
+     "file": "items/lever.vrmxi",
+     "name": "Lever",
+     "type": "switch",
+     "verb": "use",
+     "expect": "state",
+     "prompts": [
+      "use:Pull"
+     ],
+     "ok": true,
+     "offered": true,
+     "state": "on",
+     "turned": 1.7,
+     "slot": "use"
+    },
+    {
+     "file": "items/button.vrmxi",
+     "name": "Button",
+     "type": "switch",
+     "verb": "use",
+     "expect": "state",
+     "prompts": [
+      "use:Press"
+     ],
+     "ok": true,
+     "offered": true,
+     "state": "on",
+     "turned": 0,
+     "slot": "use"
+    },
+    {
+     "file": "items/chair.vrmxi",
+     "name": "Chair",
+     "type": "seat",
+     "verb": "sit",
+     "expect": "seated",
+     "prompts": [
+      "sit:Sit"
+     ],
+     "ok": true,
+     "offered": true,
+     "seated": true,
+     "slot": "sitIdle",
+     "hipsOnSeat": 0
+    },
+    {
+     "file": "items/bench.vrmxi",
+     "name": "Bench",
+     "type": "seat",
+     "verb": "sit",
+     "expect": "seated",
+     "prompts": [
+      "sit:Sit"
+     ],
+     "ok": true,
+     "offered": true,
+     "seated": true,
+     "slot": "sitIdle",
+     "hipsOnSeat": 0
+    },
+    {
+     "file": "items/shelf.vrmxi",
+     "name": "Shelf",
+     "type": "x-vrmxg.prop",
+     "verb": null,
+     "expect": "still",
+     "prompts": [],
+     "ok": true,
+     "moved": 0,
+     "at": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "file": "items/table.vrmxi",
+     "name": "Table",
+     "type": "x-vrmxg.prop",
+     "verb": null,
+     "expect": "still",
+     "prompts": [],
+     "ok": true,
+     "moved": 0,
+     "at": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "file": "items/crate.vrmxi",
+     "name": "Crate",
+     "type": "x-vrmxg.prop",
+     "verb": null,
+     "expect": "still",
+     "prompts": [],
+     "ok": true,
+     "moved": 0,
+     "at": [
+      0,
+      0.25,
+      0
+     ]
+    },
+    {
+     "file": "items/barrel.vrmxi",
+     "name": "Barrel",
+     "type": "x-vrmxg.prop",
+     "verb": null,
+     "expect": "still",
+     "prompts": [],
+     "ok": true,
+     "moved": 0,
+     "at": [
+      0,
+      0.45,
+      0
+     ]
+    },
+    {
+     "file": "items/coin.vrmxi",
+     "name": "Coin",
+     "type": "pickup",
+     "verb": "take",
+     "expect": "inventory",
+     "prompts": [
+      "take:Pick up"
+     ],
+     "ok": true,
+     "offered": true,
+     "inventory": [
+      "Coin"
+     ],
+     "gone": true
+    },
+    {
+     "file": "items/key.vrmxi",
+     "name": "Key",
+     "type": "pickup",
+     "verb": "take",
+     "expect": "inventory",
+     "prompts": [
+      "take:Pick up"
+     ],
+     "ok": true,
+     "offered": true,
+     "inventory": [
+      "Key"
+     ],
+     "gone": true
+    },
+    {
+     "file": "items/mug.vrmxi",
+     "name": "Mug",
+     "type": "pickup",
+     "verb": "take",
+     "expect": "inventory",
+     "prompts": [
+      "take:Take"
+     ],
+     "ok": true,
+     "offered": true,
+     "inventory": [
+      "Mug"
+     ],
+     "gone": true
+    },
+    {
+     "file": "items/sword.vrmxi",
+     "name": "Sword",
+     "type": "pickup",
+     "verb": "take",
+     "expect": "inventory",
+     "prompts": [
+      "take:Pick up"
+     ],
+     "ok": true,
+     "offered": true,
+     "inventory": [
+      "Sword"
+     ],
+     "gone": true
+    },
+    {
+     "file": "items/axe.vrmxi",
+     "name": "Axe",
+     "type": "pickup",
+     "verb": "take",
+     "expect": "inventory",
+     "prompts": [
+      "take:Pick up"
+     ],
+     "ok": true,
+     "offered": true,
+     "inventory": [
+      "Axe"
+     ],
+     "gone": true
+    },
+    {
+     "file": "items/hammer.vrmxi",
+     "name": "Hammer",
+     "type": "pickup",
+     "verb": "take",
+     "expect": "inventory",
+     "prompts": [
+      "take:Pick up"
+     ],
+     "ok": true,
+     "offered": true,
+     "inventory": [
+      "Hammer"
+     ],
+     "gone": true
+    },
+    {
+     "file": "items/spawn.vrmxi",
+     "name": "Player start",
+     "type": "spawnPoint",
+     "verb": null,
+     "expect": "spawn",
+     "prompts": [],
+     "ok": true,
+     "spawn": "Spawn"
+    }
+   ],
+   "failures": [],
+   "ok": true
+  },
+  "ok": true
+ },
+ "chromium": {
+  "runtime": "chromium",
+  "version": "156.0.8078.4",
+  "mode": "starter",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "origin": "http:",
+  "animations": "the same as node",
+  "items": "the same as node",
+  "ok": true,
+  "errors": []
+ }
+}
