@@ -1,0 +1,1336 @@
+{
+ "spike": "networking",
+ "runtime": "node 26.12.1 (V8 14.6.202.34-node.40)",
+ "rapier": "@dimforge/rapier3d-deterministic-compat",
+ "steps": 1200,
+ "window": 12,
+ "shim": "nav",
+ "profiles": {
+  "lan": {
+   "latency": 2,
+   "jitter": 1,
+   "loss": 0
+  },
+  "typical": {
+   "latency": 50,
+   "jitter": 15,
+   "loss": 0.01
+  }
+ },
+ "overhead": {
+  "reliable": 56,
+  "unreliable": 93
+ },
+ "lockstepDelay": [
+  {
+   "profile": "lan",
+   "transport": "reliable",
+   "byDelay": [
+    {
+     "delay": 0,
+     "stallRate": 0.0008
+    },
+    {
+     "delay": 1,
+     "stallRate": 0
+    },
+    {
+     "delay": 2,
+     "stallRate": 0
+    },
+    {
+     "delay": 3,
+     "stallRate": 0
+    },
+    {
+     "delay": 4,
+     "stallRate": 0
+    },
+    {
+     "delay": 5,
+     "stallRate": 0
+    },
+    {
+     "delay": 6,
+     "stallRate": 0
+    },
+    {
+     "delay": 7,
+     "stallRate": 0
+    },
+    {
+     "delay": 8,
+     "stallRate": 0
+    },
+    {
+     "delay": 9,
+     "stallRate": 0
+    },
+    {
+     "delay": 10,
+     "stallRate": 0
+    },
+    {
+     "delay": 11,
+     "stallRate": 0
+    },
+    {
+     "delay": 12,
+     "stallRate": 0
+    },
+    {
+     "delay": 13,
+     "stallRate": 0
+    },
+    {
+     "delay": 14,
+     "stallRate": 0
+    },
+    {
+     "delay": 15,
+     "stallRate": 0
+    }
+   ],
+   "under1pct": 0,
+   "under01pct": 0
+  },
+  {
+   "profile": "lan",
+   "transport": "unreliable",
+   "byDelay": [
+    {
+     "delay": 0,
+     "stallRate": 0.0008
+    },
+    {
+     "delay": 1,
+     "stallRate": 0
+    },
+    {
+     "delay": 2,
+     "stallRate": 0
+    },
+    {
+     "delay": 3,
+     "stallRate": 0
+    },
+    {
+     "delay": 4,
+     "stallRate": 0
+    },
+    {
+     "delay": 5,
+     "stallRate": 0
+    },
+    {
+     "delay": 6,
+     "stallRate": 0
+    },
+    {
+     "delay": 7,
+     "stallRate": 0
+    },
+    {
+     "delay": 8,
+     "stallRate": 0
+    },
+    {
+     "delay": 9,
+     "stallRate": 0
+    },
+    {
+     "delay": 10,
+     "stallRate": 0
+    },
+    {
+     "delay": 11,
+     "stallRate": 0
+    },
+    {
+     "delay": 12,
+     "stallRate": 0
+    },
+    {
+     "delay": 13,
+     "stallRate": 0
+    },
+    {
+     "delay": 14,
+     "stallRate": 0
+    },
+    {
+     "delay": 15,
+     "stallRate": 0
+    }
+   ],
+   "under1pct": 0,
+   "under01pct": 0
+  },
+  {
+   "profile": "typical",
+   "transport": "reliable",
+   "byDelay": [
+    {
+     "delay": 0,
+     "stallRate": 1
+    },
+    {
+     "delay": 1,
+     "stallRate": 0.9995
+    },
+    {
+     "delay": 2,
+     "stallRate": 0.998
+    },
+    {
+     "delay": 3,
+     "stallRate": 0.6955
+    },
+    {
+     "delay": 4,
+     "stallRate": 0.3037
+    },
+    {
+     "delay": 5,
+     "stallRate": 0.1897
+    },
+    {
+     "delay": 6,
+     "stallRate": 0.0883
+    },
+    {
+     "delay": 7,
+     "stallRate": 0.0775
+    },
+    {
+     "delay": 8,
+     "stallRate": 0.0542
+    },
+    {
+     "delay": 9,
+     "stallRate": 0.0358
+    },
+    {
+     "delay": 10,
+     "stallRate": 0.0217
+    },
+    {
+     "delay": 11,
+     "stallRate": 0.0108
+    },
+    {
+     "delay": 12,
+     "stallRate": 0
+    },
+    {
+     "delay": 13,
+     "stallRate": 0
+    },
+    {
+     "delay": 14,
+     "stallRate": 0
+    },
+    {
+     "delay": 15,
+     "stallRate": 0
+    }
+   ],
+   "under1pct": 12,
+   "under01pct": 12
+  },
+  {
+   "profile": "typical",
+   "transport": "unreliable",
+   "byDelay": [
+    {
+     "delay": 0,
+     "stallRate": 1
+    },
+    {
+     "delay": 1,
+     "stallRate": 0.9995
+    },
+    {
+     "delay": 2,
+     "stallRate": 0.9957
+    },
+    {
+     "delay": 3,
+     "stallRate": 0.0625
+    },
+    {
+     "delay": 4,
+     "stallRate": 0
+    },
+    {
+     "delay": 5,
+     "stallRate": 0
+    },
+    {
+     "delay": 6,
+     "stallRate": 0
+    },
+    {
+     "delay": 7,
+     "stallRate": 0
+    },
+    {
+     "delay": 8,
+     "stallRate": 0
+    },
+    {
+     "delay": 9,
+     "stallRate": 0
+    },
+    {
+     "delay": 10,
+     "stallRate": 0
+    },
+    {
+     "delay": 11,
+     "stallRate": 0
+    },
+    {
+     "delay": 12,
+     "stallRate": 0
+    },
+    {
+     "delay": 13,
+     "stallRate": 0
+    },
+    {
+     "delay": 14,
+     "stallRate": 0
+    },
+    {
+     "delay": 15,
+     "stallRate": 0
+    }
+   ],
+   "under1pct": 4,
+   "under01pct": 4
+  }
+ ],
+ "runs": [
+  {
+   "profile": "lan",
+   "transport": "reliable",
+   "mode": "lockstep",
+   "delay": 0,
+   "ticks": 1200,
+   "finished": true,
+   "a": {
+    "stallRate": 0.0008,
+    "stalls": 1,
+    "behind": {
+     "n": 1200,
+     "mean": 0.001,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 1
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 924,
+    "wireBytesPerSec": 4284,
+    "tickMs": {
+     "n": 1200,
+     "mean": 0.233,
+     "p50": 0.181,
+     "p95": 0.406,
+     "p99": 0.662,
+     "max": 28.341
+    },
+    "stepMs": {
+     "n": 1200,
+     "mean": 0.23,
+     "p50": 0.179,
+     "p95": 0.411,
+     "p99": 0.687,
+     "max": 25.102
+    },
+    "captureMs": {
+     "n": 0
+    },
+    "restoreMs": {
+     "n": 0
+    },
+    "hashChecks": 40,
+    "hashMismatch": 0
+   },
+   "b": {
+    "stallRate": 0,
+    "stalls": 0,
+    "behind": {
+     "n": 1200,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 924,
+    "wireBytesPerSec": 4284,
+    "tickMs": {
+     "n": 1200,
+     "mean": 0.277,
+     "p50": 0.181,
+     "p95": 0.398,
+     "p99": 0.675,
+     "max": 80.327
+    },
+    "stepMs": {
+     "n": 1200,
+     "mean": 0.274,
+     "p50": 0.179,
+     "p95": 0.39,
+     "p99": 0.664,
+     "max": 80.166
+    },
+    "captureMs": {
+     "n": 0
+    },
+    "restoreMs": {
+     "n": 0
+    },
+    "hashChecks": 39,
+    "hashMismatch": 0
+   },
+   "network": {
+    "packets": 2400,
+    "lost": 0,
+    "retransmits": 0
+   },
+   "hashes": {
+    "compared": 1200,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null,
+    "final": "7b479de1a96d8f95"
+   }
+  },
+  {
+   "profile": "lan",
+   "transport": "reliable",
+   "mode": "rollback",
+   "delay": 0,
+   "ticks": 1201,
+   "finished": true,
+   "a": {
+    "stallRate": 0,
+    "stalls": 0,
+    "behind": {
+     "n": 1201,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 924,
+    "wireBytesPerSec": 4284,
+    "rollbacks": 68,
+    "rollbacksPerSec": 3.4,
+    "depth": {
+     "n": 68,
+     "mean": 1,
+     "p50": 1,
+     "p95": 1,
+     "p99": 1,
+     "max": 1
+    },
+    "resimPerTick": {
+     "n": 1201,
+     "mean": 0.057,
+     "p50": 0,
+     "p95": 1,
+     "p99": 1,
+     "max": 1
+    },
+    "mispredictedSteps": 68,
+    "predictedSteps": 1201,
+    "maxAhead": 1,
+    "tickMs": {
+     "n": 1201,
+     "mean": 1.723,
+     "p50": 1.421,
+     "p95": 4.44,
+     "p99": 5.715,
+     "max": 28.623
+    },
+    "stepMs": {
+     "n": 1269,
+     "mean": 0.316,
+     "p50": 0.253,
+     "p95": 0.435,
+     "p99": 1.081,
+     "max": 26.012
+    },
+    "captureMs": {
+     "n": 1269,
+     "mean": 1.202,
+     "p50": 1.154,
+     "p95": 1.389,
+     "p99": 2.217,
+     "max": 3.15
+    },
+    "restoreMs": {
+     "n": 68,
+     "mean": 1.983,
+     "p50": 1.853,
+     "p95": 2.682,
+     "p99": 3.163,
+     "max": 6.72
+    },
+    "hashChecks": 40,
+    "hashMismatch": 33
+   },
+   "b": {
+    "stallRate": 0,
+    "stalls": 0,
+    "behind": {
+     "n": 1201,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 925,
+    "wireBytesPerSec": 4285,
+    "rollbacks": 0,
+    "rollbacksPerSec": 0,
+    "depth": {
+     "n": 0
+    },
+    "resimPerTick": {
+     "n": 1201,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "mispredictedSteps": 0,
+    "predictedSteps": 0,
+    "maxAhead": 0,
+    "tickMs": {
+     "n": 1201,
+     "mean": 1.542,
+     "p50": 1.448,
+     "p95": 2.203,
+     "p99": 2.683,
+     "max": 27.675
+    },
+    "stepMs": {
+     "n": 1201,
+     "mean": 0.299,
+     "p50": 0.253,
+     "p95": 0.419,
+     "p99": 0.981,
+     "max": 27.251
+    },
+    "captureMs": {
+     "n": 1201,
+     "mean": 1.235,
+     "p50": 1.186,
+     "p95": 1.534,
+     "p99": 2.258,
+     "max": 3.304
+    },
+    "restoreMs": {
+     "n": 0
+    },
+    "hashChecks": 40,
+    "hashMismatch": 33
+   },
+   "network": {
+    "packets": 2402,
+    "lost": 0,
+    "retransmits": 0
+   },
+   "hashes": {
+    "compared": 1200,
+    "peersAgree": false,
+    "firstApart": 189,
+    "matchReference": false,
+    "firstOffReference": 189,
+    "final": "919aed46d45fcfdb"
+   }
+  },
+  {
+   "profile": "lan",
+   "transport": "unreliable",
+   "mode": "lockstep",
+   "delay": 0,
+   "ticks": 1200,
+   "finished": true,
+   "a": {
+    "stallRate": 0.0008,
+    "stalls": 1,
+    "behind": {
+     "n": 1200,
+     "mean": 0.001,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 1
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 924,
+    "wireBytesPerSec": 6504,
+    "tickMs": {
+     "n": 1200,
+     "mean": 0.203,
+     "p50": 0.178,
+     "p95": 0.261,
+     "p99": 0.356,
+     "max": 18.876
+    },
+    "stepMs": {
+     "n": 1200,
+     "mean": 0.201,
+     "p50": 0.176,
+     "p95": 0.258,
+     "p99": 0.354,
+     "max": 18.143
+    },
+    "captureMs": {
+     "n": 0
+    },
+    "restoreMs": {
+     "n": 0
+    },
+    "hashChecks": 40,
+    "hashMismatch": 0
+   },
+   "b": {
+    "stallRate": 0,
+    "stalls": 0,
+    "behind": {
+     "n": 1200,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 924,
+    "wireBytesPerSec": 6504,
+    "tickMs": {
+     "n": 1200,
+     "mean": 0.201,
+     "p50": 0.175,
+     "p95": 0.266,
+     "p99": 0.374,
+     "max": 19.022
+    },
+    "stepMs": {
+     "n": 1200,
+     "mean": 0.199,
+     "p50": 0.173,
+     "p95": 0.262,
+     "p99": 0.368,
+     "max": 18.989
+    },
+    "captureMs": {
+     "n": 0
+    },
+    "restoreMs": {
+     "n": 0
+    },
+    "hashChecks": 39,
+    "hashMismatch": 0
+   },
+   "network": {
+    "packets": 2400,
+    "lost": 0,
+    "retransmits": 0
+   },
+   "hashes": {
+    "compared": 1200,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null,
+    "final": "7b479de1a96d8f95"
+   }
+  },
+  {
+   "profile": "lan",
+   "transport": "unreliable",
+   "mode": "rollback",
+   "delay": 0,
+   "ticks": 1201,
+   "finished": true,
+   "a": {
+    "stallRate": 0,
+    "stalls": 0,
+    "behind": {
+     "n": 1201,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 924,
+    "wireBytesPerSec": 6504,
+    "rollbacks": 68,
+    "rollbacksPerSec": 3.4,
+    "depth": {
+     "n": 68,
+     "mean": 1,
+     "p50": 1,
+     "p95": 1,
+     "p99": 1,
+     "max": 1
+    },
+    "resimPerTick": {
+     "n": 1201,
+     "mean": 0.057,
+     "p50": 0,
+     "p95": 1,
+     "p99": 1,
+     "max": 1
+    },
+    "mispredictedSteps": 68,
+    "predictedSteps": 1201,
+    "maxAhead": 1,
+    "tickMs": {
+     "n": 1201,
+     "mean": 1.608,
+     "p50": 1.351,
+     "p95": 4.348,
+     "p99": 5.25,
+     "max": 30.951
+    },
+    "stepMs": {
+     "n": 1269,
+     "mean": 0.276,
+     "p50": 0.218,
+     "p95": 0.331,
+     "p99": 0.448,
+     "max": 27.335
+    },
+    "captureMs": {
+     "n": 1269,
+     "mean": 1.142,
+     "p50": 1.122,
+     "p95": 1.237,
+     "p99": 1.873,
+     "max": 2.141
+    },
+    "restoreMs": {
+     "n": 68,
+     "mean": 1.832,
+     "p50": 1.781,
+     "p95": 2.53,
+     "p99": 2.609,
+     "max": 2.646
+    },
+    "hashChecks": 40,
+    "hashMismatch": 33
+   },
+   "b": {
+    "stallRate": 0,
+    "stalls": 0,
+    "behind": {
+     "n": 1201,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 925,
+    "wireBytesPerSec": 6505,
+    "rollbacks": 0,
+    "rollbacksPerSec": 0,
+    "depth": {
+     "n": 0
+    },
+    "resimPerTick": {
+     "n": 1201,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "mispredictedSteps": 0,
+    "predictedSteps": 0,
+    "maxAhead": 0,
+    "tickMs": {
+     "n": 1201,
+     "mean": 1.485,
+     "p50": 1.369,
+     "p95": 2.249,
+     "p99": 2.674,
+     "max": 30.511
+    },
+    "stepMs": {
+     "n": 1201,
+     "mean": 0.262,
+     "p50": 0.218,
+     "p95": 0.357,
+     "p99": 0.491,
+     "max": 30.19
+    },
+    "captureMs": {
+     "n": 1201,
+     "mean": 1.218,
+     "p50": 1.145,
+     "p95": 1.946,
+     "p99": 2.207,
+     "max": 2.954
+    },
+    "restoreMs": {
+     "n": 0
+    },
+    "hashChecks": 40,
+    "hashMismatch": 33
+   },
+   "network": {
+    "packets": 2402,
+    "lost": 0,
+    "retransmits": 0
+   },
+   "hashes": {
+    "compared": 1200,
+    "peersAgree": false,
+    "firstApart": 189,
+    "matchReference": false,
+    "firstOffReference": 189,
+    "final": "919aed46d45fcfdb"
+   }
+  },
+  {
+   "profile": "typical",
+   "transport": "reliable",
+   "mode": "lockstep",
+   "delay": 12,
+   "ticks": 1200,
+   "finished": true,
+   "a": {
+    "stallRate": 0,
+    "stalls": 0,
+    "behind": {
+     "n": 1200,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 927,
+    "wireBytesPerSec": 4287,
+    "tickMs": {
+     "n": 1200,
+     "mean": 0.203,
+     "p50": 0.172,
+     "p95": 0.27,
+     "p99": 0.434,
+     "max": 20.64
+    },
+    "stepMs": {
+     "n": 1200,
+     "mean": 0.201,
+     "p50": 0.17,
+     "p95": 0.263,
+     "p99": 0.431,
+     "max": 20.614
+    },
+    "captureMs": {
+     "n": 0
+    },
+    "restoreMs": {
+     "n": 0
+    },
+    "hashChecks": 40,
+    "hashMismatch": 0
+   },
+   "b": {
+    "stallRate": 0,
+    "stalls": 0,
+    "behind": {
+     "n": 1200,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 927,
+    "wireBytesPerSec": 4287,
+    "tickMs": {
+     "n": 1200,
+     "mean": 0.203,
+     "p50": 0.172,
+     "p95": 0.271,
+     "p99": 0.422,
+     "max": 20.827
+    },
+    "stepMs": {
+     "n": 1200,
+     "mean": 0.201,
+     "p50": 0.17,
+     "p95": 0.267,
+     "p99": 0.419,
+     "max": 20.805
+    },
+    "captureMs": {
+     "n": 0
+    },
+    "restoreMs": {
+     "n": 0
+    },
+    "hashChecks": 40,
+    "hashMismatch": 0
+   },
+   "network": {
+    "packets": 2400,
+    "lost": 30,
+    "retransmits": 30
+   },
+   "hashes": {
+    "compared": 1200,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null,
+    "final": "d776ac241fcfd4c3"
+   }
+  },
+  {
+   "profile": "typical",
+   "transport": "reliable",
+   "mode": "rollback",
+   "delay": 0,
+   "ticks": 1204,
+   "finished": true,
+   "a": {
+    "stallRate": 0.0091,
+    "stalls": 11,
+    "behind": {
+     "n": 1204,
+     "mean": 0.009,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 1
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 917,
+    "wireBytesPerSec": 4277,
+    "rollbacks": 66,
+    "rollbacksPerSec": 3.29,
+    "depth": {
+     "n": 66,
+     "mean": 4.045,
+     "p50": 4,
+     "p95": 5,
+     "p99": 5,
+     "max": 9
+    },
+    "resimPerTick": {
+     "n": 1204,
+     "mean": 0.222,
+     "p50": 0,
+     "p95": 3,
+     "p99": 4,
+     "max": 9
+    },
+    "mispredictedSteps": 78,
+    "predictedSteps": 1204,
+    "maxAhead": 12,
+    "tickMs": {
+     "n": 1204,
+     "mean": 1.839,
+     "p50": 1.343,
+     "p95": 7.953,
+     "p99": 9.391,
+     "max": 25.624
+    },
+    "stepMs": {
+     "n": 1471,
+     "mean": 0.265,
+     "p50": 0.214,
+     "p95": 0.352,
+     "p99": 0.938,
+     "max": 20.532
+    },
+    "captureMs": {
+     "n": 1471,
+     "mean": 1.152,
+     "p50": 1.114,
+     "p95": 1.296,
+     "p99": 2.023,
+     "max": 2.9
+    },
+    "restoreMs": {
+     "n": 66,
+     "mean": 1.855,
+     "p50": 1.799,
+     "p95": 2.533,
+     "p99": 2.86,
+     "max": 2.903
+    },
+    "hashChecks": 29,
+    "hashMismatch": 28
+   },
+   "b": {
+    "stallRate": 0.005,
+    "stalls": 6,
+    "behind": {
+     "n": 1204,
+     "mean": 0.005,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 1
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 918,
+    "wireBytesPerSec": 4278,
+    "rollbacks": 40,
+    "rollbacksPerSec": 1.99,
+    "depth": {
+     "n": 40,
+     "mean": 3.425,
+     "p50": 3,
+     "p95": 6,
+     "p99": 9,
+     "max": 9
+    },
+    "resimPerTick": {
+     "n": 1204,
+     "mean": 0.114,
+     "p50": 0,
+     "p95": 0,
+     "p99": 3,
+     "max": 9
+    },
+    "mispredictedSteps": 54,
+    "predictedSteps": 1204,
+    "maxAhead": 12,
+    "tickMs": {
+     "n": 1204,
+     "mean": 1.671,
+     "p50": 1.359,
+     "p95": 2.452,
+     "p99": 8.016,
+     "max": 24.973
+    },
+    "stepMs": {
+     "n": 1341,
+     "mean": 0.273,
+     "p50": 0.223,
+     "p95": 0.366,
+     "p99": 1.009,
+     "max": 19.761
+    },
+    "captureMs": {
+     "n": 1341,
+     "mean": 1.166,
+     "p50": 1.124,
+     "p95": 1.316,
+     "p99": 2.101,
+     "max": 3.104
+    },
+    "restoreMs": {
+     "n": 40,
+     "mean": 1.864,
+     "p50": 1.837,
+     "p95": 2.483,
+     "p99": 2.69,
+     "max": 2.69
+    },
+    "hashChecks": 29,
+    "hashMismatch": 29
+   },
+   "network": {
+    "packets": 2408,
+    "lost": 30,
+    "retransmits": 30
+   },
+   "hashes": {
+    "compared": 1200,
+    "peersAgree": false,
+    "firstApart": 26,
+    "matchReference": false,
+    "firstOffReference": 26,
+    "final": "4565b7f813db2764"
+   }
+  },
+  {
+   "profile": "typical",
+   "transport": "unreliable",
+   "mode": "lockstep",
+   "delay": 4,
+   "ticks": 1200,
+   "finished": true,
+   "a": {
+    "stallRate": 0,
+    "stalls": 0,
+    "behind": {
+     "n": 1200,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 2357,
+    "wireBytesPerSec": 7937,
+    "tickMs": {
+     "n": 1200,
+     "mean": 0.19,
+     "p50": 0.158,
+     "p95": 0.252,
+     "p99": 0.408,
+     "max": 20.2
+    },
+    "stepMs": {
+     "n": 1200,
+     "mean": 0.188,
+     "p50": 0.156,
+     "p95": 0.247,
+     "p99": 0.406,
+     "max": 20.15
+    },
+    "captureMs": {
+     "n": 0
+    },
+    "restoreMs": {
+     "n": 0
+    },
+    "hashChecks": 40,
+    "hashMismatch": 0
+   },
+   "b": {
+    "stallRate": 0,
+    "stalls": 0,
+    "behind": {
+     "n": 1200,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 2357,
+    "wireBytesPerSec": 7937,
+    "tickMs": {
+     "n": 1200,
+     "mean": 0.19,
+     "p50": 0.159,
+     "p95": 0.266,
+     "p99": 0.394,
+     "max": 19.741
+    },
+    "stepMs": {
+     "n": 1200,
+     "mean": 0.188,
+     "p50": 0.158,
+     "p95": 0.264,
+     "p99": 0.391,
+     "max": 19.727
+    },
+    "captureMs": {
+     "n": 0
+    },
+    "restoreMs": {
+     "n": 0
+    },
+    "hashChecks": 40,
+    "hashMismatch": 0
+   },
+   "network": {
+    "packets": 2400,
+    "lost": 30,
+    "retransmits": 0
+   },
+   "hashes": {
+    "compared": 1200,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null,
+    "final": "118f14aca0b3fa13"
+   }
+  },
+  {
+   "profile": "typical",
+   "transport": "unreliable",
+   "mode": "rollback",
+   "delay": 0,
+   "ticks": 1204,
+   "finished": true,
+   "a": {
+    "stallRate": 0,
+    "stalls": 0,
+    "behind": {
+     "n": 1204,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 2349,
+    "wireBytesPerSec": 7929,
+    "rollbacks": 64,
+    "rollbacksPerSec": 3.19,
+    "depth": {
+     "n": 64,
+     "mean": 4,
+     "p50": 4,
+     "p95": 5,
+     "p99": 5,
+     "max": 5
+    },
+    "resimPerTick": {
+     "n": 1204,
+     "mean": 0.213,
+     "p50": 0,
+     "p95": 3,
+     "p99": 4,
+     "max": 5
+    },
+    "mispredictedSteps": 76,
+    "predictedSteps": 1204,
+    "maxAhead": 5,
+    "tickMs": {
+     "n": 1204,
+     "mean": 1.828,
+     "p50": 1.345,
+     "p95": 7.578,
+     "p99": 9.527,
+     "max": 25.936
+    },
+    "stepMs": {
+     "n": 1460,
+     "mean": 0.266,
+     "p50": 0.214,
+     "p95": 0.344,
+     "p99": 1.061,
+     "max": 19.665
+    },
+    "captureMs": {
+     "n": 1460,
+     "mean": 1.154,
+     "p50": 1.114,
+     "p95": 1.29,
+     "p99": 2.025,
+     "max": 2.925
+    },
+    "restoreMs": {
+     "n": 64,
+     "mean": 1.897,
+     "p50": 1.784,
+     "p95": 2.832,
+     "p99": 2.85,
+     "max": 3.394
+    },
+    "hashChecks": 31,
+    "hashMismatch": 30
+   },
+   "b": {
+    "stallRate": 0,
+    "stalls": 0,
+    "behind": {
+     "n": 1204,
+     "mean": 0,
+     "p50": 0,
+     "p95": 0,
+     "p99": 0,
+     "max": 0
+    },
+    "sentPacketsPerSec": 60,
+    "payloadBytesPerSec": 2349,
+    "wireBytesPerSec": 7929,
+    "rollbacks": 42,
+    "rollbacksPerSec": 2.09,
+    "depth": {
+     "n": 42,
+     "mean": 3.024,
+     "p50": 3,
+     "p95": 4,
+     "p99": 4,
+     "max": 4
+    },
+    "resimPerTick": {
+     "n": 1204,
+     "mean": 0.105,
+     "p50": 0,
+     "p95": 0,
+     "p99": 3,
+     "max": 4
+    },
+    "mispredictedSteps": 47,
+    "predictedSteps": 1204,
+    "maxAhead": 5,
+    "tickMs": {
+     "n": 1204,
+     "mean": 1.63,
+     "p50": 1.343,
+     "p95": 2.274,
+     "p99": 7.909,
+     "max": 24.966
+    },
+    "stepMs": {
+     "n": 1331,
+     "mean": 0.257,
+     "p50": 0.213,
+     "p95": 0.337,
+     "p99": 0.522,
+     "max": 19.282
+    },
+    "captureMs": {
+     "n": 1331,
+     "mean": 1.156,
+     "p50": 1.121,
+     "p95": 1.298,
+     "p99": 2.008,
+     "max": 2.404
+    },
+    "restoreMs": {
+     "n": 42,
+     "mean": 1.815,
+     "p50": 1.773,
+     "p95": 2.506,
+     "p99": 2.888,
+     "max": 2.888
+    },
+    "hashChecks": 33,
+    "hashMismatch": 33
+   },
+   "network": {
+    "packets": 2408,
+    "lost": 30,
+    "retransmits": 0
+   },
+   "hashes": {
+    "compared": 1200,
+    "peersAgree": false,
+    "firstApart": 26,
+    "matchReference": false,
+    "firstOffReference": 26,
+    "final": "4565b7f813db2764"
+   }
+  }
+ ]
+}

@@ -8,12 +8,22 @@ as AB-T-0657, AB-T-0658 and AB-T-0659.*
 
 Determinism holds over the network. In all 38 networked runs (30 in virtual time, 8 in real time over real loopback
 sockets), both peers and the reference landed on the same world hash at every step (1,200 per run in virtual time, 600 in real time). That held for
-lockstep and rollback, over both delivery modes, under every profile from LAN to 150 ± 50 ms with 5 % loss. Neither
-model loses sync. What separates them is what they cost and what the engine can do today.
+lockstep and rollback, over both delivery modes, under every profile from LAN to 150 ± 50 ms with 5 % loss.
 
-- **Lockstep works today, with no engine change.** It never restores anything, so whatever the engine does in a step
-  stays correct: items taken, the closet, injected ai events, GameFlow's scene changes. Over an unreliable data channel
-  with inputs resent until acknowledged, the input delay that keeps stalls under 1 % is:
+Lockstep needs nothing for that. Rollback needs the harness's jump shim (AB-T-0657). As the engine is, rollback peers
+part: at step 26 on the typical profile and step 189 on lan, both of them off the reference (`results/netcode-no-jump-shim.json`).
+The in-band hash checks catch it. With the shim, what separates the two models is what they cost and what the engine
+can do today.
+
+- **Lockstep works today, with no engine change.** It never restores a snapshot, so it asks no more of the engine than
+  a replay does.
+  - **Run here:** the cafe, with move, run, jump and look.
+  - **Following from M0 to M5's replay results, not run over the network here:** items taken, the closet, GameFlow's
+    scene changes (the sample game's recorded sessions replay identically in WKWebView, AB-R-1143 to 1154).
+  - **Injected ai events** (a director's decisions) stay in sync only if they travel to both peers like inputs, on a
+    step both know.
+
+  Over an unreliable data channel with inputs resent until acknowledged, the input delay that keeps stalls under 1 % is:
 
   | Network | Felt delay | Ticks felt |
   |---|---|---|
@@ -23,7 +33,7 @@ model loses sync. What separates them is what they cost and what the engine can 
   | poor | 133 ms | 8 |
   | bad | 200 ms | 12 |
 
-  A tick costs 0.17 ms (p50) beyond the step. That's fine for a co-op game, a party game or a turn-heavy game, the kind
+  A lockstep tick, its step included, costs 0.17 ms (p50) in the cafe. That's fine for a co-op game, a party game or a turn-heavy game, the kind
   this engine makes now. It's poor for a fighting game.
 - **Rollback holds wherever a snapshot covers the step, and that isn't everywhere yet.**
   - **Where it holds:** restoring a snapshot into the same live tree and re-simulating lands on the unbroken run's
@@ -119,7 +129,7 @@ Line by line:
 | The input service's latched frame; inputs fed per step | yes | Through `replay` (a frame-source API is proposed in AB-T-0659) |
 | Doors, cupboard, light switch, seats, the voice service's line, timers, random streams | yes | cafe-items |
 | A node removed in the window (an item taken) | **no** | `SceneTree.setState` refuses; the forward run carries on unharmed (AB-T-0659) |
-| `ai.inject` (the director's hook) and its log | with help | The snapshot keeps only due events; re-queueing the log past the restored step makes it exact. The director with a model goes through the same hook and log, so it's covered by the same answer |
+| `ai.inject` (the director's hook) and its log | with help | The snapshot keeps only due events; re-queueing the log past the restored step makes it exact. The director with a model uses the same hook and log, but wasn't run |
 | GameFlow's game service, dialogue choices (in the input frame), brains | yes, within a scene | rush-level |
 | A scene change | **no** | The world a snapshot came from is freed |
 | The nav service | yes, but slowly | It re-bakes the navmesh on every restore: about 15 ms of a 17 ms restore (AB-T-0658); shimmed here |
@@ -155,8 +165,10 @@ player-controller latency is common to both and not counted.
 | poor 100 ± 30 ms, 3 % | none up to 15 | 7 (133 ms); under 0.1 %: 8 |
 | bad 150 ± 50 ms, 5 % | none up to 15 | 11 (200 ms); under 0.1 %: 12 |
 
-**With the worlds.** Peer A's view, 1,200 steps; peer B's is alike. Every run has both peers and the reference on the
-same hash at every step, and 7 to 40 in-band hash checks per run, none failed.
+**With the worlds.** Peer A's view, 1,200 steps; peer B's is alike. With the harness's shims, every run has both peers
+and the reference on the same hash at every step, and 7 to 40 in-band hash checks per run, none failed. Without the
+jump shim (`SHIM=nav`, `results/netcode-no-jump-shim.json`), lockstep is unchanged. Every rollback run parts, at step
+189 on lan and step 26 on typical, over both delivery modes.
 
 | Profile | Delivery | Model | Stalls | Rollbacks / s | Depth p50 / p95 / max | Tick p50 / p95 / p99 ms | Wire B/s |
 |---|---|---|---|---|---|---|---|
@@ -264,6 +276,12 @@ node netcode.mjs
 
 Lockstep's delay sweep, then the worlds over five profiles and both delivery modes. About 10 minutes. Writes
 `results/netcode.json`.
+
+```bash
+SHIM=nav node netcode.mjs --profiles lan,typical --quick --out results/netcode-no-jump-shim.json
+```
+
+The same without the jump shim: where the rollback peers part, as the engine is.
 
 ```bash
 node live.mjs
