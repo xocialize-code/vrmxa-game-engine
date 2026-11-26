@@ -23,7 +23,7 @@ import { EditorSession, newSequenceDoc, rowsOf } from '@vrmxg/editor-core';
 import { inspectorFields, sharedFields, sharedAxes, assetEntries } from '@vrmxg/editor-ui';
 import { AudioOutput } from '@vrmxg/audio';
 import { exportTake, shellSink, hashSink, hashFrame, readbackFor, captureStill, encodePNG, toBase64, SIZES, RATES, CODECS, framesFor, secondsOf } from '@vrmxg/export';
-import { inShell, call } from '../../shell/js/shell.js';
+import { inShell, call, on as onShell } from '../../shell/js/shell.js';
 import * as vrmxaMain from '@vrmxa-core/index.js';
 import * as vrmxaAnim from '@vrmxa-core/anim/index.js';
 import * as closet from '@vrmxa-core/closet/index.js';
@@ -32,6 +32,7 @@ import { disposeWorld, disposed } from './dispose.js';
 import { saveScene } from './saving.js';
 import { RetiredWorlds } from './worlds.js';
 import { exportGame } from './export-game.js';
+import { HotReload, freshBehaviours, moduleSources, sameSources } from './reload.js';
 import { ViewportAids } from './viewport/viewport.js';
 import { ThumbnailQueue } from './thumbs.js';
 import { drawThumbnail } from './thumbs-draw.js';
@@ -42,6 +43,9 @@ installPortableMath(); // before anything parses a VRM or steps a world
 CameraControls.install({ THREE: { Vector2, Vector3, Vector4, Quaternion, Matrix4, Spherical, Box3, Sphere, Raycaster } });
 const vrmxaCore = { ...vrmxaMain, ...vrmxaAnim };
 const registry = m0Registry();
+/** A take played across a hot reload of the behaviours (M6 W2): its input says so, and it is never replayed. */
+const reloadedTake = (t) => (t?.input?.reloaded?.length ?? 0) > 0;
+const REPLAY_REFUSED = 'the last play reloaded the project\'s behaviours while it ran, so it can\'t be replayed exactly: play it again without reloading';
 const SNAP = { translate: 0.25, rotate: 15, scale: 0.1 };
 /** Node types the Add menu offers (no asset needed). */
 // M5 W4: the game nodes too, whose lists and conditions the inspector now edits
@@ -104,6 +108,16 @@ export class EditorHost {
     this._built = 0;           // worlds built (AB-T-0592): the status shows how many are still alive
     this.error = '';
     this.behaviourProblems = []; // what the open project's behaviours module got wrong (M6 W0): shown, never fatal
+    /**
+     * The project's behaviours, when they are wrong (M6 W0, W2; AB-T-0654 item 5): a declaration refused when the project
+     * opened, or a hot reload that threw (the old code still running). A field of its own, shown until a load or reload
+     * takes: a build finishing or another error never clears it.
+     */
+    this.behaviourError = '';
+    /** Hot reload while playing (M6 W2, reload.js): { watching, n, last, failed, off } or null; `hot` is the watcher. */
+    this.reloadState = null; this.hot = null;
+    /** The text of the behaviours module graph the editor's classes came from (M6 W2: compared before Play, watched in it). */
+    this.behaviourSources = null;
     this.onChange = null;
     this.busy = 0;
     this._gen = 0; this._frames = []; this._last = null; this._rebuildTimer = null;
@@ -232,12 +246,14 @@ export class EditorHost {
     // A module that won't load or declarations the registry refuses don't keep the project closed: they are shown as a
     // problem, the project's scenes open without them (a scene using one validates with a warning), and an earlier
     // project's declarations go
-    this.behaviourProblems = [];
+    this.behaviourProblems = []; this.behaviourError = '';
     try { declareProjectBehaviours(registry, await project.behaviours()); } catch (err) {
       registry.project(new Map());
       this.behaviourProblems = [String(err?.message ?? err)];
-      this.error = `The project's behaviours: ${this.behaviourProblems[0]}`;
+      this.behaviourError = `The project's behaviours: ${this.behaviourProblems[0]}`;
     }
+    const ref = project.behavioursModule?.ref ?? null;
+    this.behaviourSources = ref ? await moduleSources(project, ref) : null; // what hot reload compares with (M6 W2)
     this.project = project;
     this.R ??= await loadRapier();
     const scene = sceneRef ?? project.scenes().find((s) => !s.startsWith('prefabs/')) ?? null;
@@ -840,6 +856,7 @@ export class EditorHost {
     this.busy++; this.changed();
     try {
       this.audio?.ctx.resume?.();
+      await this.freshenBehaviours(); // the behaviours module as it is now, if it changed since it was read (M6 W2)
       let playDoc = null;
       const world = await this.session.startPlay((doc) => { playDoc = structuredClone(doc); return this.buildFrom(doc, { play: true }); });
       this.audio?.ctx.resume?.();
@@ -868,6 +885,7 @@ export class EditorHost {
       const r = this.canvas.getBoundingClientRect(); this.host.resize(r.width, r.height);
       this._last = null;
       this.canvas.focus();
+      this.startHotReload(world).catch((e) => console.warn('hot reload', e)); // M6 W2: the Mac app only
     } catch (err) { this.error = String(err?.stack ?? err); this.attachGizmo(); }
     finally { this.busy--; this.changed(); }
   }
@@ -879,7 +897,11 @@ export class EditorHost {
     const steps = world?.tree.clock.step ?? 0;
     // a take is what was played: its input and (M3 W4) the ai log, everything injected (a director's requests and
     // decisions, MCP's), so it replays, exports and bakes with no model
+    // (a take recorded across a hot reload carries its input's `reloaded`, M6 W2: it isn't replayed, exported or baked)
     if (world?.input.recording && steps > 0) this.lastTake = { scene: this.sceneRef, doc: this.playDoc, input: structuredClone(world.input.recording), ai: world.ai?.record() ?? [], steps };
+    // a recording started again during the play (MCP's input record) may not carry the mark: what this play reloaded does
+    if (this.lastTake && this.reloadState?.n && !reloadedTake(this.lastTake)) this.lastTake.input.reloaded = [{ ...this.reloadState.last }];
+    this.stopHotReload();
     const r = this.session.stopPlay(() => {
       world.audio?.dispose(); // silence what the play world was playing
       for (const d of Object.values(this.devices ?? {})) world.input.removeDevice?.(d);
@@ -895,6 +917,71 @@ export class EditorHost {
     this.attachGizmo();
     this.changed();
     return this.lastStop;
+  }
+
+  // ---------------------------------------------------------------- hot reload (M6 W2, reload.js)
+
+  /**
+   * Before Play: when the behaviours module graph's text changed since the editor's classes were read (an edit made
+   * while not playing), import it fresh, so the world is built with what is on disk. Declarations the registry refuses
+   * keep the classes the editor had, and say why (behaviourError).
+   */
+  async freshenBehaviours() {
+    const p = this.project, ref = p?.behavioursModule?.ref;
+    if (!ref || !this.behaviourSources) return;
+    const now = await moduleSources(p, ref);
+    if (!now || sameSources(this.behaviourSources, now)) return;
+    try {
+      const { classes, sources } = await freshBehaviours(p)(ref);
+      declareProjectBehaviours(registry, classes);
+      p.reloadedBehaviours(classes);
+      this.behaviourSources = sources; this.behaviourProblems = []; this.behaviourError = '';
+    } catch (e) {
+      this.behaviourSources = now; // tried: the next change is compared with this text
+      this.behaviourError = `The behaviours as they are now didn't load, so Play runs the ones read before: ${e?.message ?? e}`;
+    }
+  }
+
+  /** While playing in the Mac app: watch the behaviours module and what it imports (project.watch), swap changes in. */
+  async startHotReload(world) {
+    this.reloadState = null;
+    const ref = this.project?.behavioursModule?.ref;
+    if (!inShell || !ref || this.playWorld !== world) return;
+    const hot = new HotReload({
+      ref, classes: this.project.behavioursModule.classes, sources: this.behaviourSources,
+      load: freshBehaviours(this.project),
+      watch: (paths) => call('project.watch', { paths }), unwatch: () => call('project.unwatch'),
+      onChanged: (fn) => onShell('project.changed', ({ paths }) => fn(Array.isArray(paths) ? paths : [])),
+      target: () => (this.playWorld === world ? { tree: world.tree, world, registries: [world.tree.registry, registry] } : null),
+      report: (r) => this.hotReloaded(r, hot),
+    });
+    this.hot = hot;
+    try {
+      const watching = await hot.start();
+      if (this.hot === hot) this.reloadState = { watching, n: 0, last: null, failed: 0, off: '' };
+    } catch (e) {
+      // a shell without project.watch (older, or an app that didn't ask for it): Play goes on without hot reload
+      hot.stop();
+      if (this.hot === hot) { this.hot = null; this.reloadState = { watching: [], n: 0, last: null, failed: 0, off: `not watching (${e?.message ?? e})` }; }
+    }
+    this.changed();
+  }
+
+  stopHotReload() { const h = this.hot; this.hot = null; h?.stop(); }
+
+  /** A hot reload's result: the new classes for the project's later worlds, or the error (the old code still runs). */
+  hotReloaded(r, hot) {
+    if (this.hot !== hot || !this.reloadState) return;
+    if (r.ok) {
+      this.project.reloadedBehaviours(r.classes);
+      this.behaviourSources = hot.sources; this.behaviourProblems = []; this.behaviourError = '';
+      const { classes, plan, ...last } = r;
+      this.reloadState = { ...this.reloadState, n: r.n, last, watching: [...hot.sources.keys()] };
+    } else {
+      this.behaviourError = `The behaviours didn't reload at step ${r.step ?? '?'}, so the code from before is still running: ${r.error}`;
+      this.reloadState = { ...this.reloadState, failed: this.reloadState.failed + 1 };
+    }
+    this.changed();
   }
 
   // ---------------------------------------------------------------- save games in play (M2 W9)
@@ -933,7 +1020,7 @@ export class EditorHost {
     const out = [];
     const seq = this.session?.isSequence ? this.session.doc.sequence : null;
     if (seq) out.push({ id: 'sequence', label: `The sequence (${(seq.duration / seq.fps).toFixed(1)} s at ${seq.fps} fps)`, seconds: seq.duration / seq.fps, fps: seq.fps });
-    if (this.lastTake) out.push({ id: 'play', label: `Last play (${(this.lastTake.steps / 60).toFixed(1)} s)`, seconds: this.lastTake.steps / 60 });
+    if (this.lastTake) out.push({ id: 'play', label: `Last play (${(this.lastTake.steps / 60).toFixed(1)} s${reloadedTake(this.lastTake) ? ', reloaded: can\'t be replayed' : ''})`, seconds: this.lastTake.steps / 60, reloaded: reloadedTake(this.lastTake) });
     for (const f of this.project?.takes() ?? []) out.push({ id: f, label: f, seconds: null });
     return out;
   }
@@ -952,6 +1039,7 @@ export class EditorHost {
     let ai = [], steps = null;
     if (id === 'play') {
       if (!this.lastTake) throw new Error('nothing has been played yet');
+      if (reloadedTake(this.lastTake)) throw new Error(REPLAY_REFUSED);
       ({ doc, input } = this.lastTake); ai = this.lastTake.ai ?? []; steps = this.lastTake.steps;
     } else {
       doc = structuredClone(this.session.doc);
@@ -975,11 +1063,13 @@ export class EditorHost {
     let take;
     if (id === 'play') {
       if (!this.lastTake) throw new Error('nothing has been played yet');
+      if (reloadedTake(this.lastTake)) throw new Error(REPLAY_REFUSED);
       const t = this.lastTake;
       take = makeTake({ scene: t.scene, input: t.input, ai: t.ai ?? [], steps: t.steps });
     } else {
       const file = JSON.parse(await this.project.text(id));
       take = isTake(file) ? file : makeTake({ scene: this.sceneRef, input: file, steps: file.frames?.length ?? 0 });
+      if (reloadedTake(take)) throw new Error(`${id} was recorded across a hot reload of the project's behaviours, so it can't be replayed exactly`);
     }
     if (isSequence(parse(await this.project.text(take.scene)))) throw new Error(`${take.scene} is a sequence: bake takes played in a set`);
     const base = (name || `${take.scene.replace(/^.*\//, '').replace(/\.vrmxs$/, '')}-take`).replace(/\.vrmxs$/, '');

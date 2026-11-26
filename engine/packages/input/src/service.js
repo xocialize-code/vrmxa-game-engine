@@ -162,6 +162,9 @@ export class InputService {
   /** Replay a recording: from its start step on, frames come from it instead of the devices. */
   replay(rec) {
     if (rec.version !== 1 && rec.version !== 2) throw new Error(`unknown recording version ${rec.version}`);
+    // a recording made while the editor hot-reloaded the project's behaviours (M6 W2) was played by code that changed
+    // part-way through: replayed from its start by one module, it wouldn't be the session it recorded
+    if (Array.isArray(rec.reloaded) && rec.reloaded.length) throw Object.assign(new Error(`the recording was made across ${rec.reloaded.length === 1 ? 'a hot reload' : `${rec.reloaded.length} hot reloads`} of the project's behaviours (from step ${rec.reloaded[0].step}), so it can't be replayed exactly: play it again without reloading`), { code: 'reloaded' });
     if (rec.axes.join('|') !== this.map.axes.join('|') || rec.buttons.join('|') !== this.map.buttons.join('|')) throw new Error('the recording was made with a different action map');
     this.replaying = { rec, at: 0 };
   }

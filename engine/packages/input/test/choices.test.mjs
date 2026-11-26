@@ -149,3 +149,12 @@ test('peek reads what the devices hold without taking the step\'s mouse deltas',
   tree.step();
   assert.equal(input.axis('look_x'), 40 * 0.0025, 'the step still got the movement');
 });
+
+test('a recording made across a hot reload of the project\'s behaviours (M6 W2) is refused for replay, with why', () => {
+  const a = world();
+  a.input.record(); a.dev.press('KeyD'); a.tree.run(5);
+  const rec = a.input.stop();
+  const marked = JSON.parse(JSON.stringify({ ...rec, reloaded: [{ step: 3, kept: ['walker'], restarted: [] }] }));
+  assert.throws(() => world().input.replay(marked), (e) => e.code === 'reloaded' && /across a hot reload .*\(from step 3\)/.test(e.message));
+  assert.doesNotThrow(() => world().input.replay({ ...rec, reloaded: [] }), 'an empty list marks nothing');
+});

@@ -10,7 +10,8 @@ import VRMXGShell
 // M6 W3 (AB-T-0646, shell 0.14.0): File › New Project… (`menu.newProject`: a game from a template, made through the
 // shell's project.create), File › Open Recent (the shell's recent projects, `menu.openRecent { path }`) and File ›
 // Project Settings… (`menu.projectSettings`). Recent projects are bookmarks, so the app has the app-scope bookmarks
-// entitlement.
+// entitlement. M6 W2 (AB-T-0645, shell 0.15.0): the project watch (`watchesProject`), so a project's behaviours module
+// reloads while the editor plays; no other app asks for it.
 ShellApp.run(ShellConfiguration(appName: "VRMXG Editor", scheme: "vrmxg-editor", pageUndo: true,
                                 fileItems: [ShellMenuItem("New Project…", event: "newProject", key: "n", modifiers: [.command, .shift]),
                                             ShellMenuItem("Project Settings…", event: "projectSettings", key: "p", modifiers: [.command, .shift]), .separator,
@@ -18,4 +19,4 @@ ShellApp.run(ShellConfiguration(appName: "VRMXG Editor", scheme: "vrmxg-editor",
                                 editItems: [ShellMenuItem("Duplicate", event: "duplicate", key: "d")],
                                 asksBeforeClosing: true,
                                 helpItems: [ShellMenuItem("Keyboard Shortcuts", event: "shortcuts", key: "/")],
-                                recentProjects: true))
+                                recentProjects: true, watchesProject: true))

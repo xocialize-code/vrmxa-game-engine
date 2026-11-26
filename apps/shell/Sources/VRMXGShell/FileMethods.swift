@@ -22,6 +22,8 @@ public final class FileMethods {
     var scoped: Set<URL> = []
     /// The game build being written (`build.begin` … `build.end`, BuildFolder.swift).
     var build: BuildFolder?
+    /// Run after a project folder is mounted (shell 0.15.0: the project watch lets the last one go).
+    var mounted: [@MainActor () -> Void] = []
     public init(roots: WebRoots, env: [String: String] = ProcessInfo.processInfo.environment, defaults: UserDefaults = .standard) {
         self.roots = roots; self.env = env; self.defaults = defaults
     }

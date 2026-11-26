@@ -58,6 +58,12 @@ export class SceneTree {
      * @type {Set<import('three').Object3D>}
      */
     this.detached = new Set();
+    /**
+     * The behaviour whose ready() is running, or null: a code listener added meanwhile (`listen`, a node's `on`) is that
+     * behaviour's own, so the editor's hot reload can drop it when the behaviour is swapped for its new code (M6 W2,
+     * `dropListenersOf`). Never in the state or the hashes.
+     */
+    this.readying = null;
   }
 
   /** Hand over an object that left the world's graph for good, for the host to dispose with the world (`detached`). */
@@ -145,9 +151,16 @@ export class SceneTree {
     const pre = (n) => { n.tree = this; order.push(n); n.enterTree(); for (const c of n.children) pre(c); };
     for (const n of nodes) pre(n);
     for (const n of order) this._attachBehaviours(n);
-    const post = (n) => { for (const c of n.children) post(c); n.ready(); for (const b of n.behaviours) b.ready(); n.stateMachine?.start(); if (n !== this.root) this.emit(n, 'ready', {}); };
+    const post = (n) => { for (const c of n.children) post(c); n.ready(); for (const b of n.behaviours) this.readyBehaviour(b); n.stateMachine?.start(); if (n !== this.root) this.emit(n, 'ready', {}); };
     for (const n of nodes) post(n);
     this._order = null;
+  }
+
+  /** A behaviour's ready(), with the code listeners it adds there marked as its own (`readying`). */
+  readyBehaviour(b) {
+    const was = this.readying;
+    this.readying = b;
+    try { b.ready(); } finally { this.readying = was; }
   }
 
   _attachBehaviours(node) {
@@ -176,9 +189,23 @@ export class SceneTree {
 
   /** @returns {() => void} disconnect */
   listen(node, signal, fn) {
-    const entry = { fn };
+    const entry = this.readying ? { fn, owner: this.readying } : { fn };
     this._linksOf(node, signal).push(entry);
     return () => { const l = this._linksOf(node, signal); const i = l.indexOf(entry); if (i >= 0) l.splice(i, 1); };
+  }
+
+  /**
+   * Drop the code listeners a behaviour added in its ready() (`readying`), on every node: the editor's hot reload, once
+   * the behaviour's new code is attached in its place (M6 W2). → how many went
+   */
+  dropListenersOf(owner) {
+    let n = 0;
+    for (const map of this.links.values()) for (const [sig, list] of map) {
+      const kept = list.filter((l) => !(l.fn && l.owner === owner));
+      n += list.length - kept.length;
+      if (kept.length !== list.length) map.set(sig, kept);
+    }
+    return n;
   }
 
   emit(node, signal, payload) {

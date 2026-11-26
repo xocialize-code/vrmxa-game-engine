@@ -81,6 +81,26 @@ connections in the inspector, WebCodecs export in a browser (the spike chose it 
 - Hand test: `apps/editor-mac/docs/HAND-TEST-M6-NEW-PROJECT.md` (scenario beside it); `acceptance/m6/` plays the
   templates in Node and their builds in the game app.
 
+## Hot reload while playing (M6 W2, AB-T-0645)
+
+- In the Mac app, Play watches the project's behaviours module (the one `game.json` names, else `behaviours.js`: what
+  play in place runs is what Export Game ships) and every module it imports relatively, through the shell's
+  `project.watch` (shell 0.15.0, `watchesProject`). Save one in any text editor and it is imported fresh through
+  Export Game's path (`export-game.js` `freshImporter`, blob: URLs, so a graph with an import cycle can't reload) and
+  swapped in on a step boundary, without restarting the scene (`src/reload.js`). Each behaviour the module provides
+  keeps its state (getState, then the new class's ready and setState) when its declared state shape is unchanged
+  (`stateShape`, `@vrmxg/registry`), and restarts on its node otherwise; one that declares no state keeps it only when
+  its class's text is unchanged. The new instance's ready runs either way; the listeners the old one added in its
+  ready go (core's `dropListenersOf`). A timer a behaviour set with a function keeps the old function.
+- A reload that throws (the module won't import, its declarations are refused, a new ready or setState throws) keeps
+  the old code running and shows the error in its own box (`behaviourError`, `#behaviour-error`), as a declaration
+  refused at open does (AB-T-0654 item 5); the status says what is watched and what each reload kept or restarted
+  (`#reload-state`). An edit made while not playing is picked up by the next Play.
+- A play recorded across a reload is marked (its input recording's `reloaded`), and the input service refuses to
+  replay a marked recording: it isn't exported, baked or used as a fixture. An exported build has no watcher
+  (`apps/game/test/no-watcher.test.mjs`). In a browser tab there is no watch, so no hot reload.
+- Hand test: `apps/editor-mac/docs/HAND-TEST-M6-HOT-RELOAD.md` (scenario beside it).
+
 ## Renderer (M4 W3, AB-T-0575)
 
 The editor draws with WebGPU where the page has it, else WebGL: `?renderer=webgl|webgpu|auto` forces either (the
