@@ -1,5 +1,6 @@
 // Every app's built web folder carries THIRD-PARTY-LICENCES.txt with what it must (M6 W7, AB-T-0624): fdlibm's notice,
-// and the licence text of each package named here, as the installed package ships it (or as
+// the notices our own vendored and ported files carry (Ajv's in the precompiled meta-schema among them), and the licence
+// text of each package named here, as the installed package ships it (or as
 // engine/packages/bundle/licences/ supplies it). The lists are written by hand, apart from the plugin's own walk of the
 // bundle, so a plugin that stops seeing a package fails here.
 //
@@ -19,6 +20,17 @@ const fromCore = ['sql.js', '@cfworker/json-schema', 'fflate'];
 // Ajv 8 as @vrmxg/scene imports it (the workspace's root holds ESLint's Ajv 6)
 const ajv = ['ajv', 'engine/packages/scene'];
 
+// the notices our own files carry, which every app's bundle includes: fdlibm's (the maths port), Ajv's (the precompiled
+// meta-schema), navcat's, the lip-sync rules', three-vrm's (vendored)
+const KEPT = Object.fromEntries([
+  ['@vrmxg/dmath/src/index.js', 'engine/packages/dmath/src/index.js'],
+  ['@vrmxg/registry/src/vendor/ajv-meta-2020.js', 'engine/packages/registry/src/vendor/ajv-meta-2020.js'],
+  ['@vrmxg/nav/src/vendor/LICENSE-navcat', 'engine/packages/nav/src/vendor/LICENSE-navcat'],
+  ['@vrmxg/nav/src/vendor/navcat-blocks.js', 'engine/packages/nav/src/vendor/navcat-blocks.js'],
+  ['@vrmxg/voice/src/vendor/lipsync-en.js', 'engine/packages/voice/src/vendor/lipsync-en.js'],
+  ['@vrmxg/three-vrm/LICENSE', 'engine/vendor/three-vrm/LICENSE'],
+].map(([name, file]) => [name, path.join(root, file)]));
+
 /** app → its built web folder and the packages its notices must hold (a name, or [name, the folder it is imported from]) */
 export const APP_NOTICES = {
   game: { dist: 'apps/game/dist', packages: [...engine, 'vue', 'es-module-lexer'] },
@@ -32,7 +44,7 @@ export function appNotices(app) {
   const a = APP_NOTICES[app], dir = path.join(root, a.dist), from = path.join(root, path.dirname(a.dist));
   if (!fs.existsSync(dir)) return null;
   const own = a.packages.filter((p) => typeof p === 'string'), elsewhere = a.packages.filter((p) => typeof p !== 'string');
-  return [...checkNotices(dir, { packages: own, from }), ...elsewhere.flatMap(([n, f]) => checkNotices(dir, { packages: [n], from: path.join(root, f) }).filter((m) => !/fdlibm|without its licence/.test(m))),
+  return [...checkNotices(dir, { packages: own, from, kept: KEPT }), ...elsewhere.flatMap(([n, f]) => checkNotices(dir, { packages: [n], from: path.join(root, f) }).filter((m) => !/fdlibm|without its licence/.test(m))),
     ...(fs.existsSync(core) ? checkNotices(dir, { packages: fromCore, from: core }).filter((m) => !/fdlibm|without its licence/.test(m)) : [`vrmxa-core is not beside the repository (${core}): ${fromCore.join(', ')} not checked`])];
 }
 

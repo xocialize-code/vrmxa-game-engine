@@ -1,6 +1,6 @@
 import AppKit
 
-/// Help › Third-Party Notices (shell 0.15.0, M6 W7, AB-T-0624): every VRMXG app's web build carries
+/// Help › Third-Party Notices (shell 0.16.0, M6 W7, AB-T-0624): every VRMXG app's web build carries
 /// `THIRD-PARTY-LICENCES.txt` (the licence texts and notices of the packages its bundle includes; `@vrmxg/bundle/notices`),
 /// and the shell shows it in a window of its own, read-only, drawn natively so it opens even when the page doesn't. The
 /// item is there whenever the app's web folder holds the file (`ShellConfiguration.noticesFile`), in the app's Help

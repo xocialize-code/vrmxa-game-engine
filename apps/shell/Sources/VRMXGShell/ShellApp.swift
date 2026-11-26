@@ -1,7 +1,7 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.15.0"
+public let vrmxgShellVersion = "0.16.0"
 
 /// An app's own menu item (shell 0.7.0, M4 W5): choosing it sends the page `menu.<event>`. A title of "-" is a separator.
 public struct ShellMenuItem: Sendable {
@@ -65,7 +65,7 @@ public struct ShellConfiguration {
     /// File › Open Recent after Open Project… (shell 0.14.0, M6 W3; ProjectFolders.swift): the projects opened lately,
     /// each sending the page `menu.openRecent { path }`. false (the default): no such item, as before.
     public var recentProjects: Bool
-    /// The third-party notices in the web folder (shell 0.15.0, M6 W7; Notices.swift): when the file is there, Help ›
+    /// The third-party notices in the web folder (shell 0.16.0, M6 W7; Notices.swift): when the file is there, Help ›
     /// Third-Party Notices shows it in a window of the shell's own. nil: no such item.
     public var noticesFile: String?
     public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = [], pageUndo: Bool = false,
@@ -236,7 +236,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         menu("View", [item("Reload", #selector(reload), "r", target: self)])
         for m in config.menus { menu(m.title, m.items.map(own)) }
         menu("Window", [item("Minimize", #selector(NSWindow.performMiniaturize(_:)), "m")])
-        // the app's own Help items, then the third-party notices when the web content carries them (shell 0.15.0)
+        // the app's own Help items, then the third-party notices when the web content carries them (shell 0.16.0)
         let notices = noticesURL == nil ? [] : [item("\(Self.noticesTitle)", #selector(menuNotices), target: self)]
         let help = config.helpItems.map(own) + (config.helpItems.isEmpty || notices.isEmpty ? [] : [.separator()]) + notices
         if !help.isEmpty {

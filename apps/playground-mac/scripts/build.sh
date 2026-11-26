@@ -18,7 +18,7 @@ mkdir -p $app/Contents/MacOS $app/Contents/Resources
 cp $bin/VRMXGPlayground $app/Contents/MacOS/VRMXGPlayground
 for b in $bin/*.bundle; do cp -R $b $app/Contents/Resources/; done
 cp $mac/Config/Info.plist $app/Contents/Info.plist
-# the third-party notices Help › Third-Party Notices opens (shell 0.15.0, M6 W7): every package's licence text and fdlibm's
+# the third-party notices Help › Third-Party Notices opens (shell 0.16.0, M6 W7): every package's licence text and fdlibm's
 node ${mac:h:h}/scripts/check-notices.mjs playground
 cp -R $web/dist $app/Contents/Resources/web
 codesign --force --sign - --entitlements $mac/Config/VRMXGPlayground.entitlements $app

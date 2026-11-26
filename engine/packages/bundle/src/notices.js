@@ -3,7 +3,7 @@
 // @vrmxg/dmath, the vendored lip-sync rules, navcat's blocks, Ajv's precompiled meta-schema). A minified bundle keeps no
 // comments, so those notices have to ship beside the code. The game runtime's plugin (vite.js `vrmxgRuntime`) writes
 // it for every game build; the playground, the editor and the creator take it through `vrmxgNotices`, and their Mac
-// apps open it from Help › Third-Party Notices (the shell, 0.15.0).
+// apps open it from Help › Third-Party Notices (the shell, 0.16.0).
 //
 //   import { vrmxgNotices } from '@vrmxg/bundle/notices';
 //   plugins: [vrmxgNotices({ name: 'vrmxg-editor', version: pkg.version })]
@@ -57,6 +57,15 @@ function headerNotice(file) {
 }
 
 /**
+ * The block a file of this repository adds to the notices (bundleNotices): a licence file's text, or the copyright
+ * notice in a module's header (null: it carries none).
+ * @param {string} file @returns {string | null}
+ */
+export function keptNotice(file) {
+  return isLicenceFile(path.basename(file)) ? fs.readFileSync(file, 'utf8').trim() : headerNotice(file);
+}
+
+/**
  * A package's licence text: its licence files, else the text supplied for it in licences/, else null.
  * @param {{ dir: string, name: string }} p @returns {string | null}
  */
@@ -91,7 +100,7 @@ export function bundleNotices(bundle, { title, packages = [] }) {
       // code kept in this repository (ours, or vendored into it): a notice in the module's header, and the licence
       // files beside it, from its folder up to its package's
       const rel = (f) => `${pkg.name}/${path.relative(pkg.dir, f).split(path.sep).join('/')}`;
-      const notice = headerNotice(real);
+      const notice = keptNotice(real);
       if (notice) kept.set(rel(real), notice);
       for (let d = path.dirname(real); d.startsWith(pkg.dir); d = path.dirname(d)) {
         for (const n of fs.readdirSync(d).sort()) if (isLicenceFile(n) && fs.statSync(path.join(d, n)).isFile()) kept.set(rel(path.join(d, n)), fs.readFileSync(path.join(d, n), 'utf8').trim());
@@ -137,15 +146,22 @@ export function vrmxgNotices({ name, version, packages = [] }) {
 /**
  * Whether a built web folder's notices hold what they must: the file, each named package's licence text as its own
  * package ships it (or as licences/ supplies it), fdlibm's notice, and no package listed without its text.
- * @param {string} dir the built web folder @param {{ packages: string[], from: string }} o packages: names that must be
- *   in (resolved from `from`, a folder of the app's); @returns {string[]} what is missing (none: all there)
+ * @param {string} dir the built web folder @param {{ packages: string[], from: string, kept?: Record<string, string> }} o
+ *   packages: names that must be in (resolved from `from`, a folder of the app's); kept: the blocks our own files add
+ *   that must be in, whole, by their name in the file (`@vrmxg/dmath/src/index.js`) → the file
+ * @returns {string[]} what is missing (none: all there)
  */
-export function checkNotices(dir, { packages, from }) {
+export function checkNotices(dir, { packages, from, kept = {} }) {
   const file = path.join(dir, NOTICES_FILE);
   if (!fs.existsSync(file)) return [`${NOTICES_FILE} is not in ${dir}`];
   const text = fs.readFileSync(file, 'utf8'), out = [];
   if (!text.includes('Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.')) out.push('fdlibm\'s notice (the port in @vrmxg/dmath)');
   if (/No licence file in the package/.test(text)) out.push('a package listed without its licence text');
+  for (const [name, file] of Object.entries(kept)) {
+    const body = keptNotice(file);
+    if (body === null) out.push(`${name}: ${file} carries no notice to keep`);
+    else if (!text.includes(`${RULE}${name}\n${RULE}\n${body}\n`)) out.push(`${name}: its notice`);
+  }
   for (const name of packages) {
     const pkg = findPackage(name, from);
     if (!pkg) { out.push(`${name}: not installed where ${from} would import it`); continue; }
