@@ -192,6 +192,13 @@ test('RenderHost.replace falls back to three\'s WebGL2 backend (node materials s
   await assert.rejects(RenderHost.replace(fourth, { canvas: {}, webgpu: broken.module }));
   const back = await RenderHost.replace(fourth, { canvas: { id: 'later' } });
   assert.deepEqual([back.tree === t3, ov.host === back, back.backend], [true, true, 'webgpu'], 'the second try has the tree and the overlay');
+  // a world changed between the failed try and the next (a Load): `tree` names the one to draw, never the carried one
+  const fifth = await RenderHost.create({ backend: 'webgpu', navigator: gpuNavigator(), webgpu: module, canvas: {} });
+  const unloaded = movingTree(), now = movingTree(); fifth.attach(unloaded); fifth.renderer.backend.device.loseFor('y'); await flush();
+  await assert.rejects(RenderHost.replace(fifth, { canvas: {}, webgpu: broken.module, tree: unloaded }));
+  const again = await RenderHost.replace(fifth, { canvas: {}, tree: now });
+  assert.deepEqual([again.tree === now, unloaded.renderHost ?? null], [true, null], 'the new world, and the let-go one never attached');
+  assert.equal((await RenderHost.replace(again, { canvas: {}, tree: null })).tree, null, 'tree: null draws none');
   // a host that never had the WebGL fallback refuses a WebGPURenderer on WebGL2 still
   const gl2 = new module.WebGPURenderer({ forceWebGL: true }); await gl2.init();
   assert.throws(() => new RenderHost({ renderer: gl2, webgpu: module, mtoonMaterial: {} }), /fell back to its WebGL2 backend/);

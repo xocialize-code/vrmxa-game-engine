@@ -154,11 +154,12 @@ export class GameHost {
     const at = { step: this.session?.step ?? null, scene: this.session?.scene ?? null };
     let host = null;
     try {
-      if (old.tree && old.tree !== this.session?.tree) old.detach(); // a world let go meanwhile isn't drawn again
+      // each try draws the world the session plays now (none, or one a Load started while a try failed and waited), never
+      // one let go meanwhile (`tree` replaces the old host's, and what a failed try carried)
       // WebKit's GPU process takes a few seconds to come back after it was killed, and until then neither WebGPU nor
       // WebGL can be had (seen in the Mac app): try again after each of these waits before giving up
       for (let i = 0; ; i++) {
-        try { host = await RenderHost.replace(old, { canvas: this._freshCanvas(), ...(this.recoverWith ? { backends: this.recoverWith } : {}) }); break; }
+        try { host = await RenderHost.replace(old, { canvas: this._freshCanvas(), tree: this.session?.tree ?? null, ...(this.recoverWith ? { backends: this.recoverWith } : {}) }); break; }
         catch (e) {
           if (i >= this.retryWaits.length) throw e;
           console.warn(`[game] the renderer couldn't be made again yet (${e?.message ?? e}); trying again in ${this.retryWaits[i] / 1000} s`);

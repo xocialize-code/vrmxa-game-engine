@@ -99,6 +99,8 @@ export class EditorHost {
     this.devices = null;
     this.debug = { colliders: false, sensors: false, capsules: false, rays: false };
     this.stats = { frameMs: 0, fps: 0, renderMs: 0, step: 0, buildMs: 0, backend: '', display: '' };
+    /** The error a frame left while the view's device was lost (M6 W6): cleared when the view is back, if still shown. */
+    this._lossError = /** @type {string | null} */ (null);
     this._built = 0;           // worlds built (AB-T-0592): the status shows how many are still alive
     this.error = '';
     this.behaviourProblems = []; // what the open project's behaviours module got wrong (M6 W0): shown, never fatal
@@ -177,7 +179,8 @@ export class EditorHost {
     try {
       if (old.backend === 'webgl') await this._contextRestored(15000);
       host = this._adoptHost(await RenderHost.replace(old, { canvas: this.canvas, backends: [old.backend === 'webgl' ? 'webgl' : 'webgpu'] }));
-      if (this.error && /lost|command encoder|destroyed|invalid/i.test(this.error)) this.error = null; // what the lost frame threw
+      if (this._lossError !== null && this.error === this._lossError) this.error = ''; // only what a lost frame threw, nothing else
+      this._lossError = null;
     } catch (e) {
       this.stats.display = 'lost';
       this.error = `The GPU was lost and the view couldn't be restarted (${e?.message ?? e}). Save, then close the window and open it again.`;
@@ -1366,6 +1369,7 @@ export class EditorHost {
 
   /** Multi-angle view (W3 viewports): the shot being shown, then every VirtualCamera of the sequence, in a grid. */
   drawAngles() {
+    if (this.host.lost) return; // the draw before lost the device (M6 W6): nothing more on that renderer; every caller
     if (!this.angles || this.view !== 'preview' || !this.preview) return;
     const tree = this.preview.world.tree, cams = tree.services.get('cameras');
     const vcams = cams?.virtual ?? [];
@@ -1425,7 +1429,12 @@ export class EditorHost {
         }
         if (this.view !== 'edit' || this.session?.mode === 'playing' || this.live) this.aids.setPageShown(false);
         this.stats.renderMs = this.host.last.renderMs;
-      } catch (err) { this.error = String(err?.stack ?? err); if (this.session?.mode === 'playing') this.stop(); console.error(err); }
+      } catch (err) {
+        this.error = String(err?.stack ?? err); console.error(err);
+        // a frame that failed because the device went (M6 W6): its error is cleared once the view is back, and Play goes on
+        if (this.host?.lost || this._replacingHost) this._lossError = this.error;
+        else if (this.session?.mode === 'playing') this.stop();
+      }
       if (this._frames.length >= 20) {
         this.stats.frameMs = this._frames.reduce((a, b) => a + b, 0) / this._frames.length; this.stats.fps = 1000 / this.stats.frameMs;
         this._frames = [];

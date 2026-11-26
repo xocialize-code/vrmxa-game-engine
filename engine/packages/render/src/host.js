@@ -195,12 +195,15 @@ export class RenderHost {
    * `backends` defaults to `recoveryOrder(old.backend)`: a world built for WebGPU (node materials, TSL particles and
    * post) recovers on WebGPU or on three's WebGL2 backend, which draws the same materials; a WebGL world on WebGL.
    * Throws, naming each backend's failure, when none can be made: the app holds the game and offers Save.
-   * @param {RenderHost} old @param {CreateOptions & { backends?: string[] }} [o] the canvas to draw on, and any option
-   *   to change (a test's stand-in `webgpu`)
+   * `tree`: the world to draw, in place of the old host's (or what a failed try carried): an app whose world changed
+   * meanwhile (a Load between a failed try and the next) names the one it plays now, or null for none.
+   * @param {RenderHost} old @param {CreateOptions & { backends?: string[], tree?: any }} [o] the canvas to draw on, and
+   *   any option to change (a test's stand-in `webgpu`)
    */
-  static async replace(old, { backends = RenderHost.recoveryOrder(old.backend), ...over } = {}) {
+  static async replace(old, { backends = RenderHost.recoveryOrder(old.backend), tree: given = undefined, ...over } = {}) {
     // a second try after a failed one takes what the first carried (the old host has let it all go by then)
-    const { tree, overlays, carried } = old._carry ?? { tree: old.tree, overlays: [...old.overlays], carried: { camera: old.camera, layout: old.layout, interpolate: old.interpolate, onPresent: old.onPresent } };
+    const kept = old._carry ?? { tree: old.tree, overlays: [...old.overlays], carried: { camera: old.camera, layout: old.layout, interpolate: old.interpolate, onPresent: old.onPresent } };
+    const { overlays, carried } = kept, tree = given !== undefined ? given : kept.tree;
     for (const o of overlays) if (o.host === old) o.detach?.();
     old.dispose();
     const errors = [];
