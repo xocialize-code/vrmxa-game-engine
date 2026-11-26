@@ -12,11 +12,11 @@
      "backend": "webgpu",
      "post": false,
      "warmUpMs": null,
-     "firstFrameMs": 8646.2,
-     "secondFrameMs": 5.2,
-     "thirdFrameMs": 3.2,
-     "totalToFirstFrameMs": 8646.2,
-     "buildMs": 1043.1,
+     "firstFrameMs": 8748.7,
+     "secondFrameMs": 4.6,
+     "thirdFrameMs": 2.1,
+     "totalToFirstFrameMs": 8748.7,
+     "buildMs": 1071.5,
      "meshMaterials": 113,
      "errors": [],
      "timedOut": false
@@ -26,11 +26,11 @@
      "backend": "webgpu",
      "post": false,
      "warmUpMs": null,
-     "firstFrameMs": 8752.1,
-     "secondFrameMs": 5.7,
-     "thirdFrameMs": 4,
-     "totalToFirstFrameMs": 8752.1,
-     "buildMs": 1031.1,
+     "firstFrameMs": 8691.8,
+     "secondFrameMs": 4.8,
+     "thirdFrameMs": 3,
+     "totalToFirstFrameMs": 8691.8,
+     "buildMs": 1029.1,
      "meshMaterials": 113,
      "errors": [],
      "timedOut": false
@@ -38,9 +38,9 @@
    ],
    "median": {
     "warmUpMs": null,
-    "firstFrameMs": 8646.2,
-    "secondFrameMs": 5.2,
-    "totalToFirstFrameMs": 8646.2
+    "firstFrameMs": 8720.3,
+    "secondFrameMs": 4.7,
+    "totalToFirstFrameMs": 8720.3
    }
   },
   {
@@ -50,12 +50,12 @@
      "origin": "loopback",
      "backend": "webgpu",
      "post": false,
-     "warmUpMs": 5633.8,
-     "firstFrameMs": 1717.8,
-     "secondFrameMs": 4.6,
-     "thirdFrameMs": 2,
-     "totalToFirstFrameMs": 7351.6,
-     "buildMs": 1030.9,
+     "warmUpMs": 5619.1,
+     "firstFrameMs": 1713.7,
+     "secondFrameMs": 5.4,
+     "thirdFrameMs": 2.9,
+     "totalToFirstFrameMs": 7332.8,
+     "buildMs": 1032.9,
      "meshMaterials": 113,
      "errors": [],
      "timedOut": false
@@ -64,22 +64,22 @@
      "origin": "loopback",
      "backend": "webgpu",
      "post": false,
-     "warmUpMs": 5674.7,
-     "firstFrameMs": 1700,
-     "secondFrameMs": 4.7,
-     "thirdFrameMs": 2.9,
-     "totalToFirstFrameMs": 7374.7,
-     "buildMs": 1034.8,
+     "warmUpMs": 5522,
+     "firstFrameMs": 1665.7,
+     "secondFrameMs": 4,
+     "thirdFrameMs": 2,
+     "totalToFirstFrameMs": 7187.7,
+     "buildMs": 1036.9,
      "meshMaterials": 113,
      "errors": [],
      "timedOut": false
     }
    ],
    "median": {
-    "warmUpMs": 5633.8,
-    "firstFrameMs": 1700,
-    "secondFrameMs": 4.6,
-    "totalToFirstFrameMs": 7351.6
+    "warmUpMs": 5570.6,
+    "firstFrameMs": 1689.7,
+    "secondFrameMs": 4.7,
+    "totalToFirstFrameMs": 7260.3
    }
   },
   {
@@ -90,11 +90,11 @@
      "backend": "webgpu",
      "post": true,
      "warmUpMs": null,
-     "firstFrameMs": 12843.3,
-     "secondFrameMs": 68.2,
-     "thirdFrameMs": 82.6,
-     "totalToFirstFrameMs": 12843.3,
-     "buildMs": 1031.8,
+     "firstFrameMs": 13207.2,
+     "secondFrameMs": 72.7,
+     "thirdFrameMs": 90.8,
+     "totalToFirstFrameMs": 13207.2,
+     "buildMs": 1026.7,
      "meshMaterials": 113,
      "errors": [],
      "timedOut": false
@@ -104,11 +104,11 @@
      "backend": "webgpu",
      "post": true,
      "warmUpMs": null,
-     "firstFrameMs": 12931.4,
-     "secondFrameMs": 66.9,
-     "thirdFrameMs": 82.8,
-     "totalToFirstFrameMs": 12931.4,
-     "buildMs": 1077.8,
+     "firstFrameMs": 12738.6,
+     "secondFrameMs": 67.9,
+     "thirdFrameMs": 83.7,
+     "totalToFirstFrameMs": 12738.6,
+     "buildMs": 1013.6,
      "meshMaterials": 113,
      "errors": [],
      "timedOut": false
@@ -116,9 +116,9 @@
    ],
    "median": {
     "warmUpMs": null,
-    "firstFrameMs": 12843.3,
-    "secondFrameMs": 66.9,
-    "totalToFirstFrameMs": 12843.3
+    "firstFrameMs": 12972.9,
+    "secondFrameMs": 70.3,
+    "totalToFirstFrameMs": 12972.9
    }
   },
   {
@@ -128,12 +128,12 @@
      "origin": "loopback",
      "backend": "webgpu",
      "post": true,
-     "warmUpMs": 10178.7,
-     "firstFrameMs": 88.5,
-     "secondFrameMs": 79.1,
-     "thirdFrameMs": 79.2,
-     "totalToFirstFrameMs": 10267.2,
-     "buildMs": 1055.2,
+     "warmUpMs": 9970.1,
+     "firstFrameMs": 136.5,
+     "secondFrameMs": 81.3,
+     "thirdFrameMs": 78.5,
+     "totalToFirstFrameMs": 10106.6,
+     "buildMs": 1019.3,
      "meshMaterials": 113,
      "errors": [],
      "timedOut": false
@@ -142,22 +142,22 @@
      "origin": "loopback",
      "backend": "webgpu",
      "post": true,
-     "warmUpMs": 10097.2,
-     "firstFrameMs": 85.9,
-     "secondFrameMs": 83.7,
-     "thirdFrameMs": 78.9,
-     "totalToFirstFrameMs": 10183.1,
-     "buildMs": 1026.1,
+     "warmUpMs": 9950.8,
+     "firstFrameMs": 137.8,
+     "secondFrameMs": 80.4,
+     "thirdFrameMs": 80.1,
+     "totalToFirstFrameMs": 10088.6,
+     "buildMs": 1027.6,
      "meshMaterials": 113,
      "errors": [],
      "timedOut": false
     }
    ],
    "median": {
-    "warmUpMs": 10097.2,
-    "firstFrameMs": 85.9,
-    "secondFrameMs": 79.1,
-    "totalToFirstFrameMs": 10183.1
+    "warmUpMs": 9960.5,
+    "firstFrameMs": 137.2,
+    "secondFrameMs": 80.8,
+    "totalToFirstFrameMs": 10097.6
    }
   },
   {
@@ -168,11 +168,11 @@
      "backend": "webgl",
      "post": false,
      "warmUpMs": null,
-     "firstFrameMs": 4125.6,
-     "secondFrameMs": 37.2,
+     "firstFrameMs": 4055.5,
+     "secondFrameMs": 37.9,
      "thirdFrameMs": 1,
-     "totalToFirstFrameMs": 4125.6,
-     "buildMs": 1020.9,
+     "totalToFirstFrameMs": 4055.5,
+     "buildMs": 1019.6,
      "meshMaterials": 113,
      "errors": [],
      "timedOut": false
@@ -182,11 +182,11 @@
      "backend": "webgl",
      "post": false,
      "warmUpMs": null,
-     "firstFrameMs": 4162.2,
-     "secondFrameMs": 36.5,
+     "firstFrameMs": 4106.5,
+     "secondFrameMs": 37.1,
      "thirdFrameMs": 1,
-     "totalToFirstFrameMs": 4162.2,
-     "buildMs": 1013.2,
+     "totalToFirstFrameMs": 4106.5,
+     "buildMs": 1016.3,
      "meshMaterials": 113,
      "errors": [],
      "timedOut": false
@@ -194,9 +194,9 @@
    ],
    "median": {
     "warmUpMs": null,
-    "firstFrameMs": 4125.6,
-    "secondFrameMs": 36.5,
-    "totalToFirstFrameMs": 4125.6
+    "firstFrameMs": 4081,
+    "secondFrameMs": 37.5,
+    "totalToFirstFrameMs": 4081
    }
   },
   {
@@ -206,12 +206,12 @@
      "origin": "loopback",
      "backend": "webgl",
      "post": false,
-     "warmUpMs": 1109.7,
-     "firstFrameMs": 1198,
-     "secondFrameMs": 1.6,
+     "warmUpMs": 1105,
+     "firstFrameMs": 1191.2,
+     "secondFrameMs": 1.7,
      "thirdFrameMs": 0.8,
-     "totalToFirstFrameMs": 2307.7,
-     "buildMs": 1025.9,
+     "totalToFirstFrameMs": 2296.2,
+     "buildMs": 1015.2,
      "meshMaterials": 113,
      "errors": [],
      "timedOut": false
@@ -220,22 +220,100 @@
      "origin": "loopback",
      "backend": "webgl",
      "post": false,
-     "warmUpMs": 1097.6,
-     "firstFrameMs": 1227,
-     "secondFrameMs": 1.5,
+     "warmUpMs": 1087.6,
+     "firstFrameMs": 1183.4,
+     "secondFrameMs": 1.6,
      "thirdFrameMs": 0.8,
-     "totalToFirstFrameMs": 2324.6,
-     "buildMs": 1022.3,
+     "totalToFirstFrameMs": 2271,
+     "buildMs": 1015.9,
      "meshMaterials": 113,
      "errors": [],
      "timedOut": false
     }
    ],
    "median": {
-    "warmUpMs": 1097.6,
-    "firstFrameMs": 1198,
-    "secondFrameMs": 1.5,
-    "totalToFirstFrameMs": 2307.7
+    "warmUpMs": 1096.3,
+    "firstFrameMs": 1187.3,
+    "secondFrameMs": 1.6,
+    "totalToFirstFrameMs": 2283.6
+   }
+  },
+  {
+   "case": "renderer=webgl&warm=0&post=1",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": true,
+     "warmUpMs": null,
+     "firstFrameMs": 6639.1,
+     "secondFrameMs": 3.1,
+     "thirdFrameMs": 2.1,
+     "totalToFirstFrameMs": 6639.1,
+     "buildMs": 1018.3,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    },
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": true,
+     "warmUpMs": null,
+     "firstFrameMs": 6654.6,
+     "secondFrameMs": 3.2,
+     "thirdFrameMs": 2.1,
+     "totalToFirstFrameMs": 6654.6,
+     "buildMs": 1010.9,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": null,
+    "firstFrameMs": 6646.9,
+    "secondFrameMs": 3.2,
+    "totalToFirstFrameMs": 6646.9
+   }
+  },
+  {
+   "case": "renderer=webgl&warm=1&post=1",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": true,
+     "warmUpMs": 1097.6,
+     "firstFrameMs": 3801.6,
+     "secondFrameMs": 3.1,
+     "thirdFrameMs": 2.1,
+     "totalToFirstFrameMs": 4899.2,
+     "buildMs": 1018.1,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    },
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": true,
+     "warmUpMs": 1098.1,
+     "firstFrameMs": 3792.5,
+     "secondFrameMs": 3.3,
+     "thirdFrameMs": 2.2,
+     "totalToFirstFrameMs": 4890.6,
+     "buildMs": 1012.4,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": 1097.8,
+    "firstFrameMs": 3797.1,
+    "secondFrameMs": 3.2,
+    "totalToFirstFrameMs": 4894.9
    }
   }
  ]
