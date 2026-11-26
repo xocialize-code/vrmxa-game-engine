@@ -37,7 +37,7 @@ export function metaSource() {
     '',
     ...ajvLicence.split('\n'),
   ].map((l) => (l ? `// ${l}` : '//')).join('\n');
-  return `${header}\n/* eslint-disable */\n${EQUAL}\n${code.replace(/^"use strict";/, '')}\n`;
+  return `${header}\n/* eslint-disable */\n// @ts-nocheck\n${EQUAL}\n${code.replace(/^"use strict";/, '')}\n`;
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

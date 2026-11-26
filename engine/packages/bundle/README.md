@@ -62,7 +62,7 @@ never compiles**:
   vrmxg-build.json          the manifest: every file in the folder is one it lists
   index.html                the runtime's entry: what a browser or the Mac shell opens
   assets/…, vrmxg-core.js   the rest of the runtime, at the runtime's own paths
-  THIRD-PARTY-LICENCES.txt  the licence texts of what the runtime includes
+  THIRD-PARTY-LICENCES.txt  the licence texts of what the runtime includes (@vrmxg/bundle/notices)
   project/                  the game's files at their refs
     game.json, LICENCES.md, cafe.vrmxs, behaviours.js, characters/mira.vrmxa, …
 ```
@@ -264,7 +264,14 @@ plugins: [vrmxgRuntime({ name: 'vrmxg-game', version: pkg.version, licence: 'Xoc
 The plugin lists every file of the output folder with its hash. A chunk's licence names the packages bundled into
 it. It also writes `THIRD-PARTY-LICENCES.txt`: the licence text of each of those packages, and the copyright notices
 our own modules carry in their headers (fdlibm's in `@vrmxg/dmath`, the vendored lip-sync rules and navcat blocks). A
-minified bundle keeps no comments, so this file is how those notices ship with the code.
+minified bundle keeps no comments, so this file is how those notices ship with the code. That half of the plugin is
+`@vrmxg/bundle/notices` (M6 W7, AB-T-0624): `vrmxgNotices({ name, version })` writes the same file into any app's Vite
+build (the playground's, the editor's and the creator's do), `bundleNotices` gathers it, and `checkNotices` says what a
+built folder's file lacks. A package that ships no licence file takes its text from `licences/` (`licences/README.md`:
+`@cfworker/json-schema`'s, from its repository); a package with neither **stops the build**, where it used to be listed
+with a line saying it had none. `packages` names a package the bundle carries as copied files rather than imports.
+`scripts/check-notices.mjs` holds, apart from the plugin's own walk, the packages each app's file must hold, with
+fdlibm's notice; `acceptance/test/notices.test.mjs` and each Mac app's build script run it.
 
 What a runtime keeps, so any build can sit around it:
 
@@ -312,6 +319,36 @@ reference runtime and goes into a build only when `--runtime` names its folder (
 The runtime's bytes are part of a build's identity. Two Vite builds of the same sources give the same table (checked
 here: the table's SHA-256 after two builds). A build made with another runtime says so in `runtime.digest`, and the
 same project then differs only in the runtime's rows.
+
+## On a static host
+
+M6 W7 (AB-T-0648). A build is a folder of static files and plays from wherever it is served: a plain static server, a
+sub-folder of a site, a Cloudflare Worker's assets. What that rests on, and what was checked (`acceptance/m6/sharing.mjs`):
+
+- **Base paths.** The page and the runtime use relative paths only (`base: './'`, the import map's `./vrmxg-core.js`,
+  the loader's `./vrmxg-build.json` and `./project/`), so `/games/morning-rush/` works as well as `/`. The page opens by
+  its folder (`…/morning-rush/`) or by its file; a Worker's assets redirect `index.html` to the folder, query kept.
+- **MIME types.** Module scripts need a JavaScript type and are refused with `X-Content-Type-Options: nosniff`
+  otherwise; WebAssembly should be `application/wasm` (sql.js and Rapier stream-compile it). Every common server gets
+  both right. The project's own types (`.vrmxs`, `.vrma`, `.vrmxa`, `.vrmxi`) are unknown to servers and come as
+  `application/octet-stream` or with no type: the loader reads them with `fetch` as bytes and never looks.
+- **No custom scheme, no SharedArrayBuffer.** The runtime needs neither. It is single-threaded WebAssembly
+  (AB-L-0346), so a host needs no `Cross-Origin-Opener-Policy` / `Cross-Origin-Embedder-Policy` and the page is not
+  cross-origin isolated. Saves and settings use the page's own storage, keyed by the game's id, so two games on one
+  origin keep theirs apart.
+- **A Content Security Policy without `'unsafe-eval'`.** Nothing in a build generates code from strings: a project's
+  declared schemas are checked by the draft 2020-12 meta-schema precompiled with Ajv standalone
+  (`@vrmxg/registry`'s `src/vendor/ajv-meta-2020.js`, AB-T-0654 item 6), not compiled at run time. The policy a build
+  plays under is `contentSecurityPolicy(indexHtml)` in `@vrmxg/bundle/hosting`: `default-src 'self'`; scripts from
+  the build, `'wasm-unsafe-eval'` (WebAssembly only) and the import map by its hash; the page's style by its hash;
+  `data:` and `blob:` for images, media and fetches (GLTF textures, the closet's images); `blob:` workers (an image
+  resize); no objects, no `<base>`, no forms. A game whose behaviours reach another host adds it (`connect`). The
+  policy is not in the page (a `<meta>` would also bind the Mac app's shell): a host sends it as a header.
+- **A Cloudflare Worker.** `vrmxg-export --worker <build> <out> [--name <worker>]` (`workerFolder`) writes
+  `<out>/public/` (the build, and a `_headers` with the CSP, `nosniff`, and a year's caching for `assets/`, whose names
+  are hashes) and `<out>/wrangler.jsonc` (assets only, no script per request, `workers_dev` and `preview_urls` off).
+  `npx wrangler dev --ip 127.0.0.1` in `<out>` serves it on this Mac; deploying it is the operator's step
+  (`apps/game/HOSTING.md`). A Worker's asset is at most 25 MiB: the Morning Rush's largest file is 4.8 MB.
 
 ## The loader
 
@@ -429,6 +466,16 @@ hashes each file once, as it is written.
   stages and rolled back, then failed again while undoing, a folder reshaped and renamed by case, a planted staging
   manifest, what a killed export left, an incomplete folder) and the command line; the Vite plugin; the sample's build
   replayed against the project (240 steps; skipped without vrmxa-avatar-studio).
+- `node --test test/notices.test.mjs test/hosting.test.mjs` (M6 W7): the notices (a package's text, ours, the chunk
+  each is in, a package with none stopping the build, one supplied from `licences/`, one carried as files) and
+  `checkNotices` seeing a text, fdlibm's notice or the file gone; the CSP from the page's inline import map and style
+  (and the game app's page holding nothing else inline), the `_headers` file, the Worker folder and the command line.
+  `node --test test/meta.test.mjs` in `@vrmxg/registry`: the precompiled meta-schema is what Ajv writes, gives Ajv's
+  compile's verdict on every schema the registry holds and on 30 made to fail, and declares a project's behaviours
+  with code generation from strings turned off.
+- `node acceptance/m6/sharing.mjs` (M6 W7): the Morning Rush served by Python's `http.server` from a sub-folder and by
+  a Worker in Wrangler's local dev server under the build's CSP, both on loopback, played to the won ending in Chromium
+  through each and replayed in Node (`acceptance/results/m6-sharing.json`).
 - `node --test test/export-game.test.mjs` in `apps/editor` (11 tests): Export Game's page side against a stand-in shell; with M6 W5, the editor's path and Node's on the Morning Rush (the same manifest and fingerprint), a declared state edited after the project opened, and a module that won't import refused. `swift test` in
   `apps/shell`: `BuildFolderTests`, the real folder.
 - `node acceptance/m5/build.mjs --chromium --mac … --refused …`, then `acceptance/m5/build-wkwebview.sh`: M5's exit
@@ -438,8 +485,8 @@ hashes each file once, as it is written.
 
 ## Known limits
 
-- **A build has no signature.** See "What is verified, and what is not" above. Signing and notarising a game are
-  outside M5 (M5-PLAN decision 2).
+- **A build has no signature.** See "What is verified, and what is not" above. A game's Mac app is ready for Developer
+  ID signing and notarisation (M6 W7: `apps/game-mac/RELEASE.md`); the web folder itself carries no signature.
 - **The trace follows documents, not code.** A ref a behaviour computes needs `include`.
 - **Most of a scene's path-carrying props are untyped today.** The registry declares `clip`, `effect` and `preset` as
   plain strings, so they are found by reading as a path, not by type (AB-T-0628). A misspelt one with a space in it,

@@ -6,6 +6,8 @@
 //                                                         (content/sample's game/game.json) as the project's game.json
 //   vrmxg-export <project> --check [--runtime <folder>]   run every check and print the manifest's digest; write nothing
 //   vrmxg-export --verify <build>                         is the folder the build its manifest describes?
+//   vrmxg-export --worker <build> <out> [--name <worker>] a Cloudflare Worker folder serving the build as static assets
+//                                                         (hosting.js; deploying it is the operator's step)
 //
 // --runtime defaults to the game app (apps/game/dist: `npm run build -w @vrmxg/game-app`; M5 W1, AB-D-0286), the runtime
 // every game is made with. Without it built the command stops and says so: it never takes another runtime instead, since
@@ -17,16 +19,26 @@ import path from 'node:path';
 import process from 'node:process';
 import { exportBuild } from './export.js';
 import { exportToFolder, folderReader, checkFolder, checkRuntimeSources, projectWithGame, behavioursImporter } from './node.js';
+import { workerFolder } from './hosting.js';
 
 const args = process.argv.slice(2), flag = (name) => { const i = args.indexOf(name); return i < 0 ? null : args.splice(i, 2)[1] ?? ''; };
 const GAME_RUNTIME = path.resolve(import.meta.dirname, '../../../../apps/game/dist');
 // the game app's source stamp, beside its dist (apps/game/vite.config.js writes it): a dist older than the checkout's
 // sources is refused, since every build made with it would carry an old engine without a word
 const GAME_SOURCES = path.resolve(GAME_RUNTIME, '../dist-sources.json');
+const worker = flag('--worker'), workerAs = flag('--name');
 const verify = flag('--verify'), runtime = flag('--runtime') ?? GAME_RUNTIME, gameFile = flag('--game');
 const check = args.includes('--check'), rest = args.filter((a) => !a.startsWith('--'));
 
 try {
+  if (worker !== null) {
+    const out = args.find((a) => !a.startsWith('--'));
+    if (!worker || !out) { console.error('usage: vrmxg-export --worker <build> <out> [--name <worker>]'); process.exit(2); }
+    const r = checkFolder(worker);
+    if (!r.ok) { console.error(`${worker} is not a whole build (${r.state}): export it again`); process.exit(1); }
+    console.log(JSON.stringify(workerFolder({ build: worker, out, name: workerAs ?? undefined }), null, 1));
+    process.exit(0);
+  }
   if (verify !== null) {
     const r = checkFolder(verify);
     console.log(JSON.stringify(r, null, 1));

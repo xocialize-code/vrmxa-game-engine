@@ -183,6 +183,11 @@ Approved with the plan (2026-11-26, AB-D-0297):
    reload is marked as such and isn't used as a replay fixture.
 6. **Sharing means a web folder and a Mac app ready to notarise.** The operator holds the Developer ID, signs,
    notarises and decides where anything is published. No store submission in M6.
+   A build runs under a Content Security Policy without `'unsafe-eval'` (W7, AB-T-0654 item 6): a project's declared
+   schemas are checked by the draft 2020-12 meta-schema precompiled with Ajv standalone, never compiled at run time,
+   and the policy a host should send is `contentSecurityPolicy()` in `@vrmxg/bundle/hosting` (WebAssembly by
+   `'wasm-unsafe-eval'`, the page's import map and style by hash). The page doesn't set it itself: a `<meta>` would bind
+   the Mac shell too.
 7. **Starter content is CC0 only** (mesh2motion's clips and props first), so a builder can ship it without a licence
    question.
 8. **The second game reuses the cafe set.** A new set is content work outside this plan.

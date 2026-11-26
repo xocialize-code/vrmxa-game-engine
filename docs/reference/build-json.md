@@ -19,7 +19,7 @@ runtime keeps contract 1 (its own table is `vrmxg-runtime.json`).
   vrmxg-build.json          the manifest: every file in the folder is one it lists
   index.html                the runtime's entry: what a browser or the Mac shell opens
   assets/…, vrmxg-core.js   the rest of the runtime, at the runtime's own paths
-  THIRD-PARTY-LICENCES.txt  the licence texts of what the runtime includes
+  THIRD-PARTY-LICENCES.txt  the licence texts of what the runtime includes (@vrmxg/bundle/notices)
   project/                  the game's files at their refs
     game.json, LICENCES.md, cafe.vrmxs, behaviours.js, characters/mira.vrmxa, …
 ```

@@ -27,7 +27,10 @@
 // declaration's schemas are set inside larger ones (a scene's), so they are self-contained: no `$ref`, `$id`, `$anchor`
 // or the like, which would resolve against whatever schema holds them.
 
-import { validate as metaValidate } from './vendor/ajv-meta-2020.js';
+import { validate } from './vendor/ajv-meta-2020.js';
+
+/** @type {((schema: unknown) => boolean) & { errors?: { instancePath: string, message?: string }[] | null }} */
+const metaValidate = /** @type {any} */ (validate);
 
 /**
  * The declarations in a project's behaviours: each exported class's `describe`, under the name it is exported as.

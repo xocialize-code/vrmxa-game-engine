@@ -610,6 +610,39 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
         #expect(plain.helpMenu == nil, "no Help menu when the app has none")
     }
 
+    @Test func theThirdPartyNoticesOpenFromHelpWhenTheWebContentCarriesThem() throws {
+        let dir = try tempDir(["web/THIRD-PARTY-LICENCES.txt": "vrmxg-editor 0.1.0: the licences of what it includes.\n\nthree 0.187.0 (MIT)"])
+        let config = ShellConfiguration(appName: "Editor", scheme: "vrmxg-test-\(UUID().uuidString.prefix(8).lowercased())")
+        let d = ShellAppDelegate(config: config)
+        d.noticesOverride = dir.appendingPathComponent("web/THIRD-PARTY-LICENCES.txt")
+        let main = d.buildMenu()
+        #expect(main.items.compactMap { $0.submenu?.title } == ["Editor", "File", "Edit", "View", "Window", "Help"], "a Help menu made for it")
+        let help = try #require(main.items.last?.submenu)
+        let item = try #require(help.item(withTitle: "Third-Party Notices"))
+        #expect(item.target === d && item.action == #selector(ShellAppDelegate.menuNotices))
+        #expect(d.helpMenu === help)
+        #expect(d.showNotices())
+        let w = try #require(d.noticesWindow)
+        let text = try #require((w.contentView as? NSScrollView)?.documentView as? NSTextView)
+        #expect(text.string.contains("three 0.187.0 (MIT)") && !text.isEditable && text.isSelectable)
+        #expect(w.title == "Editor: Third-Party Notices" && w.accessibilityIdentifier() == "shell-notices")
+        #expect(d.showNotices() && d.noticesWindow === w, "a second time brings the same window forward")
+        w.close()
+
+        // after the app's own Help items, below a separator
+        let withOwn = ShellAppDelegate(config: ShellConfiguration(appName: "Editor", scheme: "vrmxg-test-own", helpItems: [ShellMenuItem("Keyboard Shortcuts", event: "shortcuts", key: "/")]))
+        withOwn.noticesOverride = d.noticesOverride
+        let items = try #require(withOwn.buildMenu().items.last?.submenu?.items)
+        #expect(items.map(\.title) == ["Keyboard Shortcuts", "", "Third-Party Notices"] && items[1].isSeparatorItem)
+
+        // no file, no item (and no Help menu for an app with no items of its own)
+        let none = ShellAppDelegate(config: ShellConfiguration(appName: "Editor", scheme: "vrmxg-test-none"))
+        none.noticesOverride = dir.appendingPathComponent("web/missing.txt")
+        #expect(none.buildMenu().items.compactMap { $0.submenu?.title }.last == "Window" && !none.showNotices())
+        let off = ShellAppDelegate(config: ShellConfiguration(appName: "Editor", scheme: "vrmxg-test-off", noticesFile: nil))
+        #expect(off.noticesURL == nil)
+    }
+
     @Test func anOpenedDocumentIsServedLikeABinaryOpen() throws {
         let dir = try tempDir(["web/index.html": "<p>", "cafe order.fountain": "INT. CAFE\n\nHi."])
         let roots = WebRoots(app: dir.appendingPathComponent("web"))
@@ -709,7 +742,7 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
         #expect((j["blinkR"] as? Double ?? 0) > 0.9, "the picture's left is the person's right eye")
         #expect((j["blinkL"] as? Double ?? 1) < 0.25)
         #expect(((j["geo"] as? [String: Any])?["earL"] as? Double ?? 1) < 0.1, "geo keeps the picture's sides")
-        #expect(vrmxgShellVersion == "0.14.0")
+        #expect(vrmxgShellVersion == "0.15.0")
     }
 }
 

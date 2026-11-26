@@ -15,6 +15,8 @@ rm -rf $app
 mkdir -p $app/Contents/MacOS $app/Contents/Resources
 cp "$(swift build -c release --package-path $mac --show-bin-path)/VRMXGEditor" $app/Contents/MacOS/VRMXGEditor
 cp $mac/Config/Info.plist $app/Contents/Info.plist
+# the third-party notices Help › Third-Party Notices opens (shell 0.15.0, M6 W7): every package's licence text and fdlibm's
+node ${mac:h:h}/scripts/check-notices.mjs editor
 cp -R $web/dist $app/Contents/Resources/web
 codesign --force --sign - --entitlements $mac/Config/VRMXGEditor.entitlements $app
 echo "built $app"
