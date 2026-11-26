@@ -1,0 +1,15 @@
+{
+ "name": "present-webgpu",
+ "page": "present",
+ "url": "http://127.0.0.1:5240/present.html?report=present-webgpu",
+ "result": {
+  "page": "present",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15",
+  "origin": "http://127.0.0.1:5240",
+  "failed": "renderer=webgpu: this page has no WebGPU (navigator.gpu or an adapter is missing); use renderer=auto to fall back to WebGL"
+ },
+ "errors": [
+  "ai@http://127.0.0.1:5240/assets/world-rDh19S2m.js:489:13417\nasync _create@http://127.0.0.1:5240/assets/world-rDh19S2m.js:489:19664\nasync create@http://127.0.0.1:5240/assets/world-rDh19S2m.js:489:18867\n@http://127.0.0.1:5240/assets/present-BJOdLidp.js:1:806\nasync i@http://127.0.0.1:5240/assets/report-CQ7agmPr.js:1:1217"
+ ],
+ "warnings": []
+}

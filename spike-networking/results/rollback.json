@@ -1,0 +1,1103 @@
+{
+ "spike": "networking",
+ "what": "rollback round trips: restore in place, re-simulate, compare per-step hashes (physics:bytes included)",
+ "runtime": "node 26.12.1 (V8 14.6.202.34-node.40)",
+ "rapier": "@dimforge/rapier3d-deterministic-compat",
+ "results": [
+  {
+   "world": "cafe-2p",
+   "steps": 1200,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": false,
+   "shim": "jump,nav",
+   "forwardOff": 0,
+   "held": 0,
+   "rollbacks": 299,
+   "resimSteps": 2392,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": null,
+   "divergences": 0,
+   "captureMs": {
+    "n": 1200,
+    "mean": 1.259,
+    "p50": 1.198,
+    "p95": 1.617,
+    "p99": 2.015,
+    "max": 5.712
+   },
+   "restoreMs": {
+    "n": 299,
+    "mean": 1.956,
+    "p50": 1.87,
+    "p95": 2.447,
+    "p99": 2.917,
+    "max": 6.223
+   },
+   "resimStepMs": {
+    "n": 2392,
+    "mean": 0.292,
+    "p50": 0.243,
+    "p95": 0.503,
+    "p99": 0.852,
+    "max": 22.72
+   },
+   "stepMs": {
+    "n": 1200,
+    "mean": 0.353,
+    "p50": 0.301,
+    "p95": 0.525,
+    "p99": 0.99,
+    "max": 28.48
+   },
+   "snapshotBytes": {
+    "n": 20,
+    "mean": 208278.35,
+    "p50": 216121,
+    "p95": 216349,
+    "p99": 216806,
+    "max": 216806
+   },
+   "rapierBytes": {
+    "n": 20,
+    "mean": 61621.05,
+    "p50": 63341,
+    "p95": 63423,
+    "p99": 64039,
+    "max": 64039
+   },
+   "snapshotParts": {
+    "total": 216187,
+    "service:nav": 120230,
+    "service:physics": 63474,
+    "physics:rapierBytes": 63341,
+    "nodes": 26398,
+    "core": 5103,
+    "service:closet": 310,
+    "service:voice": 173,
+    "service:input": 160,
+    "service:ai": 65,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": true
+  },
+  {
+   "world": "cafe-2p",
+   "steps": 1200,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": true,
+   "shim": "jump,nav",
+   "forwardOff": 1200,
+   "held": 0,
+   "rollbacks": 299,
+   "resimSteps": 2392,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": null,
+   "divergences": 0,
+   "captureMs": {
+    "n": 1200,
+    "mean": 1.216,
+    "p50": 1.17,
+    "p95": 1.574,
+    "p99": 1.953,
+    "max": 2.927
+   },
+   "restoreMs": {
+    "n": 299,
+    "mean": 1.875,
+    "p50": 1.816,
+    "p95": 2.275,
+    "p99": 2.626,
+    "max": 2.715
+   },
+   "resimStepMs": {
+    "n": 2392,
+    "mean": 0.333,
+    "p50": 0.302,
+    "p95": 0.501,
+    "p99": 0.846,
+    "max": 19.886
+   },
+   "stepMs": {
+    "n": 1200,
+    "mean": 0.331,
+    "p50": 0.276,
+    "p95": 0.468,
+    "p99": 0.725,
+    "max": 33.643
+   },
+   "snapshotBytes": {
+    "n": 20,
+    "mean": 208283.95,
+    "p50": 216121,
+    "p95": 216349,
+    "p99": 216806,
+    "max": 216806
+   },
+   "rapierBytes": {
+    "n": 20,
+    "mean": 61621.05,
+    "p50": 63341,
+    "p95": 63423,
+    "p99": 64039,
+    "max": 64039
+   },
+   "snapshotParts": {
+    "total": 216187,
+    "service:nav": 120230,
+    "service:physics": 63474,
+    "physics:rapierBytes": 63341,
+    "nodes": 26398,
+    "core": 5103,
+    "service:closet": 310,
+    "service:voice": 173,
+    "service:input": 160,
+    "service:ai": 65,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": true
+  },
+  {
+   "world": "cafe-items",
+   "steps": 1668,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": false,
+   "shim": "jump,nav",
+   "forwardOff": 0,
+   "held": 0,
+   "rollbacks": 414,
+   "resimSteps": 3312,
+   "skipped": 0,
+   "refused": 2,
+   "refusals": [
+    {
+     "from": 540,
+     "at": 548,
+     "message": "snapshot node \"sword\" isn't in this tree: restore onto the scene the snapshot came from"
+    }
+   ],
+   "heldInResim": 0,
+   "firstDivergence": null,
+   "divergences": 0,
+   "captureMs": {
+    "n": 1668,
+    "mean": 1.239,
+    "p50": 1.195,
+    "p95": 1.541,
+    "p99": 1.945,
+    "max": 2.221
+   },
+   "restoreMs": {
+    "n": 414,
+    "mean": 1.907,
+    "p50": 1.849,
+    "p95": 2.369,
+    "p99": 2.67,
+    "max": 3.062
+   },
+   "resimStepMs": {
+    "n": 3312,
+    "mean": 0.267,
+    "p50": 0.234,
+    "p95": 0.412,
+    "p99": 0.724,
+    "max": 22.172
+   },
+   "stepMs": {
+    "n": 1668,
+    "mean": 0.33,
+    "p50": 0.296,
+    "p95": 0.488,
+    "p99": 0.719,
+    "max": 22.016
+   },
+   "snapshotBytes": {
+    "n": 28,
+    "mean": 207863.857,
+    "p50": 212588,
+    "p95": 216523,
+    "p99": 216714,
+    "max": 216714
+   },
+   "rapierBytes": {
+    "n": 28,
+    "mean": 59506.75,
+    "p50": 59677,
+    "p95": 63745,
+    "p99": 63869,
+    "max": 63869
+   },
+   "snapshotParts": {
+    "total": 213319,
+    "service:nav": 120615,
+    "service:physics": 60643,
+    "physics:rapierBytes": 60510,
+    "nodes": 25998,
+    "core": 4936,
+    "service:closet": 450,
+    "service:voice": 174,
+    "service:input": 112,
+    "service:interact": 89,
+    "service:ai": 65,
+    "service:cameras": 41,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": true
+  },
+  {
+   "world": "cafe-follow-inject",
+   "steps": 600,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": false,
+   "shim": "jump,nav",
+   "forwardOff": 0,
+   "held": 0,
+   "rollbacks": 149,
+   "resimSteps": 1192,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": {
+    "step": 112,
+    "during": "re-simulating from 108",
+    "components": [
+     "service:ai"
+    ]
+   },
+   "divergences": 850,
+   "captureMs": {
+    "n": 600,
+    "mean": 1.24,
+    "p50": 1.204,
+    "p95": 1.54,
+    "p99": 1.856,
+    "max": 1.986
+   },
+   "restoreMs": {
+    "n": 149,
+    "mean": 1.903,
+    "p50": 1.815,
+    "p95": 2.613,
+    "p99": 2.76,
+    "max": 3.58
+   },
+   "resimStepMs": {
+    "n": 1192,
+    "mean": 0.268,
+    "p50": 0.219,
+    "p95": 0.443,
+    "p99": 0.686,
+    "max": 19.498
+   },
+   "stepMs": {
+    "n": 600,
+    "mean": 0.333,
+    "p50": 0.279,
+    "p95": 0.494,
+    "p99": 0.734,
+    "max": 19.498
+   },
+   "snapshotBytes": {
+    "n": 10,
+    "mean": 201329.3,
+    "p50": 216810,
+    "p95": 218375,
+    "p99": 218375,
+    "max": 218375
+   },
+   "rapierBytes": {
+    "n": 10,
+    "mean": 59436.5,
+    "p50": 62625,
+    "p95": 63409,
+    "p99": 63409,
+    "max": 63409
+   },
+   "snapshotParts": {
+    "total": 216613,
+    "service:nav": 121978,
+    "service:physics": 62242,
+    "physics:rapierBytes": 62109,
+    "nodes": 25826,
+    "core": 5559,
+    "service:closet": 310,
+    "service:voice": 173,
+    "service:ai": 138,
+    "service:input": 112,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": false
+  },
+  {
+   "world": "cafe-follow-inject",
+   "steps": 600,
+   "every": 4,
+   "depth": 8,
+   "requeue": true,
+   "corrupt": false,
+   "shim": "jump,nav",
+   "forwardOff": 0,
+   "held": 0,
+   "rollbacks": 149,
+   "resimSteps": 1192,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": null,
+   "divergences": 0,
+   "captureMs": {
+    "n": 600,
+    "mean": 1.236,
+    "p50": 1.196,
+    "p95": 1.517,
+    "p99": 1.945,
+    "max": 2.065
+   },
+   "restoreMs": {
+    "n": 149,
+    "mean": 1.86,
+    "p50": 1.819,
+    "p95": 2.296,
+    "p99": 2.553,
+    "max": 2.678
+   },
+   "resimStepMs": {
+    "n": 1192,
+    "mean": 0.26,
+    "p50": 0.216,
+    "p95": 0.412,
+    "p99": 0.583,
+    "max": 18.756
+   },
+   "stepMs": {
+    "n": 600,
+    "mean": 0.321,
+    "p50": 0.266,
+    "p95": 0.475,
+    "p99": 0.623,
+    "max": 19.082
+   },
+   "snapshotBytes": {
+    "n": 10,
+    "mean": 201547.6,
+    "p50": 216916,
+    "p95": 219086,
+    "p99": 219086,
+    "max": 219086
+   },
+   "rapierBytes": {
+    "n": 10,
+    "mean": 59436.5,
+    "p50": 62625,
+    "p95": 63409,
+    "p99": 63409,
+    "max": 63409
+   },
+   "snapshotParts": {
+    "total": 216759,
+    "service:nav": 121978,
+    "service:physics": 62242,
+    "physics:rapierBytes": 62109,
+    "nodes": 25888,
+    "core": 5569,
+    "service:closet": 310,
+    "service:ai": 213,
+    "service:voice": 174,
+    "service:input": 112,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": true
+  },
+  {
+   "world": "rush-level",
+   "steps": 14400,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": false,
+   "shim": "jump,nav",
+   "held": 7,
+   "rollbacks": 3573,
+   "resimSteps": 28584,
+   "skipped": 14,
+   "refused": 12,
+   "refusals": [
+    {
+     "from": 2020,
+     "at": 2028,
+     "message": "snapshot node \"tray-1\" isn't in this tree: restore onto the scene the snapshot came from"
+    },
+    {
+     "from": 3648,
+     "at": 3656,
+     "message": "snapshot node \"tray-2\" isn't in this tree: restore onto the scene the snapshot came from"
+    },
+    {
+     "from": 5160,
+     "at": 5168,
+     "message": "snapshot node \"tray-3\" isn't in this tree: restore onto the scene the snapshot came from"
+    }
+   ],
+   "heldInResim": 0,
+   "firstDivergence": null,
+   "divergences": 0,
+   "decided": {
+    "result": "won",
+    "step": 5331,
+    "scene": "game/level.vrmxs"
+   },
+   "scenes": [
+    "game/title.vrmxs",
+    "game/level.vrmxs",
+    "game/won.vrmxs"
+   ],
+   "captureMs": {
+    "n": 14400,
+    "mean": 1.558,
+    "p50": 1.719,
+    "p95": 2.44,
+    "p99": 2.886,
+    "max": 27.725
+   },
+   "restoreMs": {
+    "n": 3573,
+    "mean": 2.535,
+    "p50": 2.799,
+    "p95": 3.775,
+    "p99": 4.254,
+    "max": 16.966
+   },
+   "resimStepMs": {
+    "n": 28584,
+    "mean": 0.485,
+    "p50": 0.469,
+    "p95": 0.91,
+    "p99": 1.341,
+    "max": 50.05
+   },
+   "stepMs": {
+    "n": 14400,
+    "mean": 0.849,
+    "p50": 0.542,
+    "p95": 0.991,
+    "p99": 1.467,
+    "max": 1519.065
+   },
+   "snapshotBytes": {
+    "n": 240,
+    "mean": 240652.579,
+    "p50": 287030,
+    "p95": 291552,
+    "p99": 291834,
+    "max": 292007
+   },
+   "rapierBytes": {
+    "n": 240,
+    "mean": 49334.575,
+    "p50": 58404,
+    "p95": 59427,
+    "p99": 59781,
+    "max": 59785
+   },
+   "snapshotParts": {
+    "total": 288566,
+    "service:nav": 151995,
+    "nodes": 63064,
+    "service:physics": 58475,
+    "physics:rapierBytes": 58342,
+    "core": 12949,
+    "service:game": 838,
+    "service:voice": 356,
+    "service:closet": 341,
+    "service:input": 112,
+    "service:ai": 65,
+    "service:dialogue": 49,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": true
+  },
+  {
+   "world": "cafe-2p",
+   "steps": 1200,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": false,
+   "shim": "none",
+   "forwardOff": 0,
+   "held": 0,
+   "rollbacks": 299,
+   "resimSteps": 2392,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": {
+    "step": 13,
+    "during": "re-simulating from 12",
+    "components": [
+     "rng",
+     "node:hana-1",
+     "node:cam-2",
+     "state:hana-1",
+     "state:cam-2",
+     "physics",
+     "physics:bytes"
+    ]
+   },
+   "divergences": 1480,
+   "captureMs": {
+    "n": 1200,
+    "mean": 1.182,
+    "p50": 1.149,
+    "p95": 1.44,
+    "p99": 1.78,
+    "max": 5.427
+   },
+   "restoreMs": {
+    "n": 299,
+    "mean": 17.567,
+    "p50": 17.394,
+    "p95": 18.815,
+    "p99": 21.461,
+    "max": 26.433
+   },
+   "resimStepMs": {
+    "n": 2392,
+    "mean": 0.276,
+    "p50": 0.221,
+    "p95": 0.542,
+    "p99": 0.721,
+    "max": 21.547
+   },
+   "stepMs": {
+    "n": 1200,
+    "mean": 0.293,
+    "p50": 0.248,
+    "p95": 0.442,
+    "p99": 0.65,
+    "max": 27.109
+   },
+   "snapshotBytes": {
+    "n": 20,
+    "mean": 208227.7,
+    "p50": 216045,
+    "p95": 216330,
+    "p99": 216787,
+    "max": 216787
+   },
+   "rapierBytes": {
+    "n": 20,
+    "mean": 61621.65,
+    "p50": 63341,
+    "p95": 63435,
+    "p99": 64039,
+    "max": 64039
+   },
+   "snapshotParts": {
+    "total": 216168,
+    "service:nav": 120230,
+    "service:physics": 63474,
+    "physics:rapierBytes": 63341,
+    "nodes": 26398,
+    "core": 5103,
+    "service:closet": 310,
+    "service:voice": 173,
+    "service:input": 160,
+    "service:ai": 65,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": false
+  },
+  {
+   "world": "cafe-2p",
+   "steps": 1200,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": true,
+   "shim": "none",
+   "forwardOff": 1200,
+   "held": 0,
+   "rollbacks": 299,
+   "resimSteps": 2392,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": {
+    "step": 21,
+    "during": "re-simulating from 20",
+    "components": [
+     "rng",
+     "node:hana-1",
+     "node:cam-2",
+     "state:hana-1",
+     "state:cam-2",
+     "physics",
+     "physics:bytes"
+    ]
+   },
+   "divergences": 2352,
+   "captureMs": {
+    "n": 1200,
+    "mean": 1.172,
+    "p50": 1.131,
+    "p95": 1.525,
+    "p99": 1.778,
+    "max": 2.131
+   },
+   "restoreMs": {
+    "n": 299,
+    "mean": 17.849,
+    "p50": 17.439,
+    "p95": 19.345,
+    "p99": 25.12,
+    "max": 40.028
+   },
+   "resimStepMs": {
+    "n": 2392,
+    "mean": 0.328,
+    "p50": 0.275,
+    "p95": 0.552,
+    "p99": 0.778,
+    "max": 23.42
+   },
+   "stepMs": {
+    "n": 1200,
+    "mean": 0.284,
+    "p50": 0.234,
+    "p95": 0.442,
+    "p99": 0.596,
+    "max": 26.436
+   },
+   "snapshotBytes": {
+    "n": 20,
+    "mean": 208151.6,
+    "p50": 215938,
+    "p95": 216236,
+    "p99": 216285,
+    "max": 216285
+   },
+   "rapierBytes": {
+    "n": 20,
+    "mean": 61575.7,
+    "p50": 63339,
+    "p95": 63345,
+    "p99": 63399,
+    "max": 63399
+   },
+   "snapshotParts": {
+    "total": 215950,
+    "service:nav": 120009,
+    "service:physics": 63474,
+    "physics:rapierBytes": 63341,
+    "nodes": 26398,
+    "core": 5106,
+    "service:closet": 310,
+    "service:voice": 173,
+    "service:input": 160,
+    "service:ai": 65,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": false
+  },
+  {
+   "world": "cafe-2p",
+   "steps": 1200,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": false,
+   "shim": "nav",
+   "forwardOff": 0,
+   "held": 0,
+   "rollbacks": 299,
+   "resimSteps": 2392,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": {
+    "step": 13,
+    "during": "re-simulating from 12",
+    "components": [
+     "rng",
+     "node:hana-1",
+     "node:cam-2",
+     "state:hana-1",
+     "state:cam-2",
+     "physics",
+     "physics:bytes"
+    ]
+   },
+   "divergences": 1480,
+   "captureMs": {
+    "n": 1200,
+    "mean": 1.168,
+    "p50": 1.132,
+    "p95": 1.304,
+    "p99": 1.796,
+    "max": 2.63
+   },
+   "restoreMs": {
+    "n": 299,
+    "mean": 1.815,
+    "p50": 1.743,
+    "p95": 2.213,
+    "p99": 2.376,
+    "max": 5.799
+   },
+   "resimStepMs": {
+    "n": 2392,
+    "mean": 0.241,
+    "p50": 0.206,
+    "p95": 0.359,
+    "p99": 0.674,
+    "max": 22.498
+   },
+   "stepMs": {
+    "n": 1200,
+    "mean": 0.265,
+    "p50": 0.23,
+    "p95": 0.376,
+    "p99": 0.723,
+    "max": 19.89
+   },
+   "snapshotBytes": {
+    "n": 20,
+    "mean": 208227.7,
+    "p50": 216045,
+    "p95": 216330,
+    "p99": 216787,
+    "max": 216787
+   },
+   "rapierBytes": {
+    "n": 20,
+    "mean": 61621.65,
+    "p50": 63341,
+    "p95": 63435,
+    "p99": 64039,
+    "max": 64039
+   },
+   "snapshotParts": {
+    "total": 216168,
+    "service:nav": 120230,
+    "service:physics": 63474,
+    "physics:rapierBytes": 63341,
+    "nodes": 26398,
+    "core": 5103,
+    "service:closet": 310,
+    "service:voice": 173,
+    "service:input": 160,
+    "service:ai": 65,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": false
+  },
+  {
+   "world": "cafe-2p",
+   "steps": 1200,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": true,
+   "shim": "nav",
+   "forwardOff": 1200,
+   "held": 0,
+   "rollbacks": 299,
+   "resimSteps": 2392,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": {
+    "step": 21,
+    "during": "re-simulating from 20",
+    "components": [
+     "rng",
+     "node:hana-1",
+     "node:cam-2",
+     "state:hana-1",
+     "state:cam-2",
+     "physics",
+     "physics:bytes"
+    ]
+   },
+   "divergences": 2352,
+   "captureMs": {
+    "n": 1200,
+    "mean": 1.215,
+    "p50": 1.15,
+    "p95": 1.623,
+    "p99": 2.019,
+    "max": 3.073
+   },
+   "restoreMs": {
+    "n": 299,
+    "mean": 1.893,
+    "p50": 1.819,
+    "p95": 2.459,
+    "p99": 2.638,
+    "max": 2.863
+   },
+   "resimStepMs": {
+    "n": 2392,
+    "mean": 0.314,
+    "p50": 0.272,
+    "p95": 0.565,
+    "p99": 0.847,
+    "max": 20.065
+   },
+   "stepMs": {
+    "n": 1200,
+    "mean": 0.3,
+    "p50": 0.246,
+    "p95": 0.525,
+    "p99": 0.776,
+    "max": 21.026
+   },
+   "snapshotBytes": {
+    "n": 20,
+    "mean": 208151.6,
+    "p50": 215938,
+    "p95": 216236,
+    "p99": 216285,
+    "max": 216285
+   },
+   "rapierBytes": {
+    "n": 20,
+    "mean": 61575.7,
+    "p50": 63339,
+    "p95": 63345,
+    "p99": 63399,
+    "max": 63399
+   },
+   "snapshotParts": {
+    "total": 215950,
+    "service:nav": 120009,
+    "service:physics": 63474,
+    "physics:rapierBytes": 63341,
+    "nodes": 26398,
+    "core": 5106,
+    "service:closet": 310,
+    "service:voice": 173,
+    "service:input": 160,
+    "service:ai": 65,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": false
+  },
+  {
+   "world": "cafe-2p",
+   "steps": 1200,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": false,
+   "shim": "jump",
+   "forwardOff": 0,
+   "held": 0,
+   "rollbacks": 299,
+   "resimSteps": 2392,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": null,
+   "divergences": 0,
+   "captureMs": {
+    "n": 1200,
+    "mean": 1.246,
+    "p50": 1.195,
+    "p95": 1.579,
+    "p99": 1.88,
+    "max": 2.867
+   },
+   "restoreMs": {
+    "n": 299,
+    "mean": 18.65,
+    "p50": 18.052,
+    "p95": 23.236,
+    "p99": 26.927,
+    "max": 32.388
+   },
+   "resimStepMs": {
+    "n": 2392,
+    "mean": 0.317,
+    "p50": 0.251,
+    "p95": 0.605,
+    "p99": 0.787,
+    "max": 22.251
+   },
+   "stepMs": {
+    "n": 1200,
+    "mean": 0.344,
+    "p50": 0.299,
+    "p95": 0.548,
+    "p99": 0.761,
+    "max": 22.996
+   },
+   "snapshotBytes": {
+    "n": 20,
+    "mean": 208278.35,
+    "p50": 216121,
+    "p95": 216349,
+    "p99": 216806,
+    "max": 216806
+   },
+   "rapierBytes": {
+    "n": 20,
+    "mean": 61621.05,
+    "p50": 63341,
+    "p95": 63423,
+    "p99": 64039,
+    "max": 64039
+   },
+   "snapshotParts": {
+    "total": 216187,
+    "service:nav": 120230,
+    "service:physics": 63474,
+    "physics:rapierBytes": 63341,
+    "nodes": 26398,
+    "core": 5103,
+    "service:closet": 310,
+    "service:voice": 173,
+    "service:input": 160,
+    "service:ai": 65,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": true
+  },
+  {
+   "world": "cafe-2p",
+   "steps": 1200,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": true,
+   "shim": "jump",
+   "forwardOff": 1200,
+   "held": 0,
+   "rollbacks": 299,
+   "resimSteps": 2392,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": null,
+   "divergences": 0,
+   "captureMs": {
+    "n": 1200,
+    "mean": 1.2,
+    "p50": 1.151,
+    "p95": 1.577,
+    "p99": 1.876,
+    "max": 2.843
+   },
+   "restoreMs": {
+    "n": 299,
+    "mean": 18.135,
+    "p50": 17.84,
+    "p95": 20.9,
+    "p99": 22.881,
+    "max": 32.845
+   },
+   "resimStepMs": {
+    "n": 2392,
+    "mean": 0.37,
+    "p50": 0.325,
+    "p95": 0.612,
+    "p99": 0.822,
+    "max": 22.725
+   },
+   "stepMs": {
+    "n": 1200,
+    "mean": 0.326,
+    "p50": 0.283,
+    "p95": 0.493,
+    "p99": 0.687,
+    "max": 27.281
+   },
+   "snapshotBytes": {
+    "n": 20,
+    "mean": 208283.95,
+    "p50": 216121,
+    "p95": 216349,
+    "p99": 216806,
+    "max": 216806
+   },
+   "rapierBytes": {
+    "n": 20,
+    "mean": 61621.05,
+    "p50": 63341,
+    "p95": 63423,
+    "p99": 64039,
+    "max": 64039
+   },
+   "snapshotParts": {
+    "total": 216187,
+    "service:nav": 120230,
+    "service:physics": 63474,
+    "physics:rapierBytes": 63341,
+    "nodes": 26398,
+    "core": 5103,
+    "service:closet": 310,
+    "service:voice": 173,
+    "service:input": 160,
+    "service:ai": 65,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": true
+  }
+ ]
+}

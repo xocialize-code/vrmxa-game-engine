@@ -31,13 +31,16 @@ const blobUrl = (_ref, src) => URL.createObjectURL(new Blob([src], { type: 'text
  * URLs, revoked once imported) and imported. A fresh graph every time; `@vrmxg/core` reaches it through the page's
  * import map. A graph with an import cycle can't be linked this way and refuses the export.
  * @param {{ bytes: (ref: string) => Promise<Uint8Array> }} project
- * @param {{ url?: (ref: string, source: string) => string }} [o] url: a module's URL from its text (tests: a file)
+ * @param {{ url?: (ref: string, source: string) => string, onGraph?: ((sources: Map<string, string>) => void) | null }} [o] url: a
+ *   module's URL from its text (tests: a file); onGraph: hears the graph's text as read, before it is imported (the
+ *   editor's hot reload, reload.js, watches those files and compares that text)
  * @returns {(ref: string) => Promise<Record<string, any>>}
  */
-export function freshImporter(project, { url = blobUrl } = {}) {
+export function freshImporter(project, { url = blobUrl, onGraph = null } = {}) {
   return async (ref) => {
     globalThis.VRMXG_CORE = core; // what the import map's @vrmxg/core hands project modules (as project.js does)
     const sources = await moduleGraph({ top: ref, read: (r) => project.bytes(r) });
+    onGraph?.(sources);
     const made = [];
     try {
       const top = linkModules({ top: ref, sources, url: (r, src) => { const u = url(r, src); made.push(u); return u; } });

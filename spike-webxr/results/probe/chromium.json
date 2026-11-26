@@ -1,0 +1,115 @@
+[
+ {
+  "case": "index.html",
+  "origin": "chromium-loopback",
+  "runtime": "Chrome for Testing 156.0.8078.4 headless",
+  "timedOut": false,
+  "seconds": 3.054,
+  "result": {
+   "page": "probe",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "origin": "http://127.0.0.1:59410",
+   "isSecureContext": true,
+   "crossOriginIsolated": true,
+   "xrInNavigator": true,
+   "xrType": "object",
+   "globals": {
+    "XRSystem": "function",
+    "XRSession": "function",
+    "XRFrame": "function",
+    "XRView": "function",
+    "XRWebGLLayer": "function",
+    "XRWebGLBinding": "function",
+    "XRGPUBinding": "undefined",
+    "XRHand": "function",
+    "XRInputSource": "function",
+    "XRRigidTransform": "function",
+    "XRMediaBinding": "undefined",
+    "XRProjectionLayer": "function",
+    "XRLayer": "function",
+    "XRReferenceSpace": "function",
+    "XRTransientInputHitTestSource": "function"
+   },
+   "permissionsPolicy": {
+    "xr-spatial-tracking": true
+   },
+   "sessionSupported": {
+    "inline": {
+     "ok": true
+    },
+    "immersive-vr": {
+     "ok": false
+    },
+    "immersive-ar": {
+     "ok": false
+    }
+   },
+   "inlineSession": {
+    "granted": true,
+    "enabledFeatures": [
+     "viewer"
+    ],
+    "visibilityState": "visible",
+    "frameRate": null,
+    "supportedFrameRates": null,
+    "viewerSpace": {
+     "ok": "object"
+    },
+    "localSpace": {
+     "error": "NotSupportedError: Failed to execute 'requestReferenceSpace' on 'XRSession': This device does not support the requested reference space type."
+    }
+   },
+   "webgpu": {
+    "adapter": true,
+    "adapterXrCompatible": true,
+    "features": [
+     "atomic-vec2u-min-max",
+     "bgra8unorm-storage",
+     "chromium-experimental-subgroup-matrix",
+     "clip-distances",
+     "core-features-and-limits",
+     "depth-clip-control",
+     "depth32float-stencil8",
+     "dual-source-blending",
+     "float32-blendable",
+     "float32-filterable",
+     "indirect-first-instance",
+     "primitive-index",
+     "rg11b10ufloat-renderable",
+     "shader-f16",
+     "subgroup-size-control",
+     "subgroups",
+     "texture-component-swizzle",
+     "texture-compression-astc",
+     "texture-compression-astc-sliced-3d",
+     "texture-compression-bc",
+     "texture-compression-bc-sliced-3d",
+     "texture-compression-etc2",
+     "texture-compression-unaligned",
+     "texture-formats-tier1",
+     "texture-formats-tier2",
+     "timestamp-query"
+    ],
+    "info": {
+     "vendor": "apple",
+     "architecture": "metal-3"
+    }
+   },
+   "webgl": {
+    "webgl2": true,
+    "xrCompatibleAttr": false,
+    "makeXRCompatible": "function",
+    "makeXRCompatibleResult": {
+     "error": "InvalidStateError: An attempt was made to use an object that is not, or is no longer, usable."
+    }
+   }
+  },
+  "errors": [],
+  "warnings": [],
+  "isolated": true,
+  "pngs": [],
+  "console": [
+   "error: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+ }
+]

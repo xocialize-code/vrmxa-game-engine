@@ -1,0 +1,303 @@
+{
+ "name": "xr-iwer",
+ "page": "xr",
+ "url": "http://127.0.0.1:5240/xr.html?report=xr-iwer",
+ "result": {
+  "page": "xr",
+  "ua": "Mozilla/5.0 (X11; Linux x86_64; Quest Pro) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/33.0.0.x.x.x Chrome/126.0.6478.122 VR Safari/537.36",
+  "origin": "http://127.0.0.1:5240",
+  "device": "Meta Quest Pro",
+  "iwer": "2.8.0",
+  "supported": {
+   "inline": true,
+   "immersive-vr": true,
+   "immersive-ar": true
+  },
+  "session": {
+   "mode": "immersive-vr",
+   "enabledFeatures": [
+    "local-floor",
+    "hand-tracking",
+    "gaze-tracking",
+    "viewer",
+    "local"
+   ],
+   "supportedFrameRates": [
+    72,
+    80,
+    90,
+    120
+   ],
+   "targetFrameRate": {
+    "asked": 90,
+    "got": 90
+   },
+   "presenting": true,
+   "glBinding": true,
+   "webgpuSession": false
+  },
+  "frames": {
+   "xrFrames": 293,
+   "steps": 300,
+   "intervalMs": {
+    "n": 292,
+    "mean": 35.7466,
+    "p50": 17,
+    "p95": 17,
+    "max": 5539
+   },
+   "firstViews": [
+    [
+     {
+      "eye": "left",
+      "projection": [
+       1.9492,
+       1,
+       0,
+       0
+      ],
+      "x": -0.0315
+     },
+     {
+      "eye": "right",
+      "projection": [
+       1.9492,
+       1,
+       0,
+       0
+      ],
+      "x": 0.0315
+     }
+    ],
+    [
+     {
+      "eye": "left",
+      "projection": [
+       1.9492,
+       1,
+       0,
+       0
+      ],
+      "x": -0.0315
+     },
+     {
+      "eye": "right",
+      "projection": [
+       1.9492,
+       1,
+       0,
+       0
+      ],
+      "x": 0.0315
+     }
+    ],
+    [
+     {
+      "eye": "left",
+      "projection": [
+       1.9492,
+       1,
+       0,
+       0
+      ],
+      "x": -0.0315
+     },
+     {
+      "eye": "right",
+      "projection": [
+       1.9492,
+       1,
+       0,
+       0
+      ],
+      "x": 0.0315
+     }
+    ]
+   ],
+   "presentedHzOnThisDisplay": 58.8
+  },
+  "hands": {
+   "inputSources": [
+    "left:tracked-pointer:hand:gamepad(xr-standard)",
+    "none:gaze",
+    "right:tracked-pointer:hand:gamepad(xr-standard)"
+   ],
+   "jointsPerHand": 25,
+   "rightPinches": 2,
+   "choices": [
+    {
+     "frame": 146,
+     "step": 150,
+     "target": "mira",
+     "distance": 0.357
+    },
+    {
+     "frame": 261,
+     "step": 268,
+     "target": null,
+     "distance": null
+    }
+   ],
+   "recording": {
+    "version": 2,
+    "start": 0,
+    "frames": 300,
+    "bytes": 8175
+   },
+   "mira": [
+    -1.0962,
+    0.025,
+    4.8047
+   ]
+  },
+  "replay": {
+   "steps": 300,
+   "sameEveryStep": true,
+   "firstDiff": null,
+   "final": "be18fe6750ab45ed",
+   "idleFinal": "1e46840219dcd9d0",
+   "handsChangedTheWorld": true
+  },
+  "pixels": [
+   {
+    "frame": 60,
+    "leftRightDiffer": true,
+    "framebuffer": "default",
+    "eyes": {
+     "left": {
+      "viewport": [
+       0,
+       0,
+       512,
+       998
+      ],
+      "distinct": 5,
+      "meanLum": 154,
+      "allBlackOrClear": false,
+      "centre": [
+       181,
+       198,
+       214,
+       255
+      ]
+     },
+     "right": {
+      "viewport": [
+       512,
+       0,
+       512,
+       998
+      ],
+      "distinct": 7,
+      "meanLum": 156.2,
+      "allBlackOrClear": false,
+      "centre": [
+       181,
+       198,
+       214,
+       255
+      ]
+     }
+    }
+   },
+   {
+    "frame": 150,
+    "leftRightDiffer": true,
+    "framebuffer": "default",
+    "eyes": {
+     "left": {
+      "viewport": [
+       0,
+       0,
+       512,
+       998
+      ],
+      "distinct": 11,
+      "meanLum": 150.9,
+      "allBlackOrClear": false,
+      "centre": [
+       249,
+       198,
+       194,
+       255
+      ]
+     },
+     "right": {
+      "viewport": [
+       512,
+       0,
+       512,
+       998
+      ],
+      "distinct": 7,
+      "meanLum": 156.8,
+      "allBlackOrClear": false,
+      "centre": [
+       181,
+       198,
+       214,
+       255
+      ]
+     }
+    }
+   },
+   {
+    "frame": 240,
+    "leftRightDiffer": true,
+    "framebuffer": "default",
+    "eyes": {
+     "left": {
+      "viewport": [
+       0,
+       0,
+       512,
+       998
+      ],
+      "distinct": 5,
+      "meanLum": 154,
+      "allBlackOrClear": false,
+      "centre": [
+       181,
+       198,
+       214,
+       255
+      ]
+     },
+     "right": {
+      "viewport": [
+       512,
+       0,
+       512,
+       998
+      ],
+      "distinct": 4,
+      "meanLum": 153.9,
+      "allBlackOrClear": false,
+      "centre": [
+       181,
+       198,
+       214,
+       255
+      ]
+     }
+    }
+   }
+  ],
+  "camera": "rig"
+ },
+ "errors": [],
+ "warnings": [
+  "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+  "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+  "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+  "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+  "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+  "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+  "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+  "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+  "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+  "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+  "THREE.TempNode: This module has been deprecated. Extend Node instead.",
+  "THREE.TempNode: This module has been deprecated. Extend Node instead."
+ ]
+}

@@ -65,6 +65,10 @@ public struct ShellConfiguration {
     /// File › Open Recent after Open Project… (shell 0.14.0, M6 W3; ProjectFolders.swift): the projects opened lately,
     /// each sending the page `menu.openRecent { path }`. false (the default): no such item, as before.
     public var recentProjects: Bool
+    /// `project.watch` / `project.unwatch` and the `project.changed` event (shell 0.15.0, M6 W2; ProjectWatcher.swift): the
+    /// editor's hot reload of a project's behaviours while it plays. false (the default): the methods don't exist, so no
+    /// other app, a game build least of all, can watch anything.
+    public var watchesProject: Bool
     /// The third-party notices in the web folder (shell 0.16.0, M6 W7; Notices.swift): when the file is there, Help ›
     /// Third-Party Notices shows it in a window of the shell's own. nil: no such item.
     public var noticesFile: String?
@@ -72,12 +76,12 @@ public struct ShellConfiguration {
                 statusItem: StatusItemConfiguration? = nil, closeKeepsRunning: Bool = false, dockIcon: Bool = true, setUp: (@MainActor (ShellAppDelegate) -> Void)? = nil,
                 fileItems: [ShellMenuItem] = [], editItems: [ShellMenuItem] = [], menus: [ShellMenu] = [], openTypes: [String] = [],
                 asksBeforeClosing: Bool = false, closeTimeout: TimeInterval = 5, helpItems: [ShellMenuItem] = [], recentProjects: Bool = false,
-                noticesFile: String? = "THIRD-PARTY-LICENCES.txt") {
+                watchesProject: Bool = false, noticesFile: String? = "THIRD-PARTY-LICENCES.txt") {
         self.appName = appName; self.scheme = scheme; self.size = size; self.webFolder = webFolder; self.methods = methods; self.pageUndo = pageUndo
         self.statusItem = statusItem; self.closeKeepsRunning = closeKeepsRunning; self.dockIcon = dockIcon; self.setUp = setUp
         self.fileItems = fileItems; self.editItems = editItems; self.menus = menus; self.openTypes = openTypes.map { $0.lowercased() }
         self.asksBeforeClosing = asksBeforeClosing; self.closeTimeout = closeTimeout; self.helpItems = helpItems
-        self.recentProjects = recentProjects; self.noticesFile = noticesFile
+        self.recentProjects = recentProjects; self.watchesProject = watchesProject; self.noticesFile = noticesFile
     }
 }
 
@@ -101,6 +105,8 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     lazy var settings = SettingsMethods(appName: config.appName, env: env)
     /// The page's cache in the sandbox (shell 0.13.0, M5 W6: the editor's thumbnails); held for the app's life like the saves
     lazy var cache = CacheMethods(appName: config.appName, env: env)
+    /// The project watch (shell 0.15.0, M6 W2), for an app with `watchesProject`; held for the app's life like the saves
+    lazy var watches = WatchMethods(files: files, emit: { [unowned self] name, payload in self.emit(name, payload) })
     /// The Help menu buildMenu made, if the app has one (NSApp.helpMenu: the system adds its search field there)
     var helpMenu: NSMenu?
     /// The notices window while it is open (Notices.swift)
@@ -153,6 +159,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         saves.register(on: router) // save slots (M2 W9)
         settings.register(on: router) // the app's settings (shell 0.11.0, M5 W1)
         cache.register(on: router) // the page's cache (shell 0.13.0, M5 W6)
+        if config.watchesProject { watches.register(on: router) } // the project watch (shell 0.15.0, M6 W2): the editor only
         // The page quits the app (shell 0.11.0, M5 W1: a game's title menu has Quit). It is the menu's Quit: an app that
         // asks its page before quitting still asks, so the page answers its own question (it asked to go)
         router.register("app.quit") { [unowned self] _ in
@@ -282,6 +289,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
 
     /// The page reloads or its process ended: a close or quit that was waiting for its answer goes on.
     func pageGone() {
+        if config.watchesProject { watches.stop() } // a new page watches what it asks for (shell 0.15.0): nothing of the last one's
         guard config.asksBeforeClosing else { return }
         closing.pageGone()
         closing.unsaved = false // a new page has nothing unsaved until it says so

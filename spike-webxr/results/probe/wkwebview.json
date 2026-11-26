@@ -1,0 +1,358 @@
+[
+  {
+    "case" : "index.html",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "scheme",
+    "result" : {
+      "crossOriginIsolated" : true,
+      "globals" : {
+        "XRFrame" : "undefined",
+        "XRGPUBinding" : "undefined",
+        "XRHand" : "undefined",
+        "XRInputSource" : "undefined",
+        "XRLayer" : "undefined",
+        "XRMediaBinding" : "undefined",
+        "XRProjectionLayer" : "undefined",
+        "XRReferenceSpace" : "undefined",
+        "XRRigidTransform" : "undefined",
+        "XRSession" : "undefined",
+        "XRSystem" : "undefined",
+        "XRTransientInputHitTestSource" : "undefined",
+        "XRView" : "undefined",
+        "XRWebGLBinding" : "undefined",
+        "XRWebGLLayer" : "undefined"
+      },
+      "inlineSession" : null,
+      "isSecureContext" : true,
+      "origin" : "vrmxg-spike:\/\/app",
+      "page" : "probe",
+      "permissionsPolicy" : null,
+      "sessionSupported" : {
+
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+      "webgl" : {
+        "makeXRCompatible" : "undefined",
+        "webgl2" : true,
+        "xrCompatibleAttr" : null
+      },
+      "webgpu" : {
+        "adapter" : true,
+        "adapterXrCompatible" : true,
+        "features" : [
+          "bgra8unorm-storage",
+          "clip-distances",
+          "core-features-and-limits",
+          "depth-clip-control",
+          "depth32float-stencil8",
+          "float16-renderable",
+          "float32-blendable",
+          "float32-filterable",
+          "float32-renderable",
+          "indirect-first-instance",
+          "primitive-index",
+          "rg11b10ufloat-renderable",
+          "shader-f16",
+          "subgroups",
+          "texture-compression-astc",
+          "texture-compression-astc-sliced-3d",
+          "texture-compression-bc",
+          "texture-compression-bc-sliced-3d",
+          "texture-compression-etc2",
+          "texture-formats-tier1",
+          "texture-formats-tier2",
+          "timestamp-query"
+        ],
+        "info" : {
+          "architecture" : "apple",
+          "vendor" : "apple"
+        }
+      },
+      "xrInNavigator" : false,
+      "xrType" : "undefined"
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "index.html",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "loopback",
+    "result" : {
+      "crossOriginIsolated" : true,
+      "globals" : {
+        "XRFrame" : "undefined",
+        "XRGPUBinding" : "undefined",
+        "XRHand" : "undefined",
+        "XRInputSource" : "undefined",
+        "XRLayer" : "undefined",
+        "XRMediaBinding" : "undefined",
+        "XRProjectionLayer" : "undefined",
+        "XRReferenceSpace" : "undefined",
+        "XRRigidTransform" : "undefined",
+        "XRSession" : "undefined",
+        "XRSystem" : "undefined",
+        "XRTransientInputHitTestSource" : "undefined",
+        "XRView" : "undefined",
+        "XRWebGLBinding" : "undefined",
+        "XRWebGLLayer" : "undefined"
+      },
+      "inlineSession" : null,
+      "isSecureContext" : true,
+      "origin" : "http:\/\/127.0.0.1:65495",
+      "page" : "probe",
+      "permissionsPolicy" : null,
+      "sessionSupported" : {
+
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+      "webgl" : {
+        "makeXRCompatible" : "undefined",
+        "webgl2" : true,
+        "xrCompatibleAttr" : null
+      },
+      "webgpu" : {
+        "adapter" : true,
+        "adapterXrCompatible" : true,
+        "features" : [
+          "bgra8unorm-storage",
+          "clip-distances",
+          "core-features-and-limits",
+          "depth-clip-control",
+          "depth32float-stencil8",
+          "float16-renderable",
+          "float32-blendable",
+          "float32-filterable",
+          "float32-renderable",
+          "indirect-first-instance",
+          "primitive-index",
+          "rg11b10ufloat-renderable",
+          "shader-f16",
+          "subgroups",
+          "texture-compression-astc",
+          "texture-compression-astc-sliced-3d",
+          "texture-compression-bc",
+          "texture-compression-bc-sliced-3d",
+          "texture-compression-etc2",
+          "texture-formats-tier1",
+          "texture-formats-tier2",
+          "timestamp-query"
+        ],
+        "info" : {
+          "architecture" : "apple",
+          "vendor" : "apple"
+        }
+      },
+      "xrInNavigator" : false,
+      "xrType" : "undefined"
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "index.html",
+    "errors" : [
+
+    ],
+    "featuresTurnedOn" : [
+      {
+        "category" : 3,
+        "defaultValue" : false,
+        "details" : "Adds WebGPU support for WebXR",
+        "enabled" : true,
+        "key" : "WebXRWebGPUBindingsEnabled",
+        "name" : "WebGPU support for WebXR",
+        "setCallAvailable" : true,
+        "status" : 1
+      }
+    ],
+    "flags" : "xr",
+    "isolated" : true,
+    "origin" : "scheme",
+    "result" : {
+      "crossOriginIsolated" : true,
+      "globals" : {
+        "XRFrame" : "undefined",
+        "XRGPUBinding" : "undefined",
+        "XRHand" : "undefined",
+        "XRInputSource" : "undefined",
+        "XRLayer" : "undefined",
+        "XRMediaBinding" : "undefined",
+        "XRProjectionLayer" : "undefined",
+        "XRReferenceSpace" : "undefined",
+        "XRRigidTransform" : "undefined",
+        "XRSession" : "undefined",
+        "XRSystem" : "undefined",
+        "XRTransientInputHitTestSource" : "undefined",
+        "XRView" : "undefined",
+        "XRWebGLBinding" : "undefined",
+        "XRWebGLLayer" : "undefined"
+      },
+      "inlineSession" : null,
+      "isSecureContext" : true,
+      "origin" : "vrmxg-spike:\/\/app",
+      "page" : "probe",
+      "permissionsPolicy" : null,
+      "sessionSupported" : {
+
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+      "webgl" : {
+        "makeXRCompatible" : "undefined",
+        "webgl2" : true,
+        "xrCompatibleAttr" : null
+      },
+      "webgpu" : {
+        "adapter" : true,
+        "adapterXrCompatible" : true,
+        "features" : [
+          "bgra8unorm-storage",
+          "clip-distances",
+          "core-features-and-limits",
+          "depth-clip-control",
+          "depth32float-stencil8",
+          "float16-renderable",
+          "float32-blendable",
+          "float32-filterable",
+          "float32-renderable",
+          "indirect-first-instance",
+          "primitive-index",
+          "rg11b10ufloat-renderable",
+          "shader-f16",
+          "subgroups",
+          "texture-compression-astc",
+          "texture-compression-astc-sliced-3d",
+          "texture-compression-bc",
+          "texture-compression-bc-sliced-3d",
+          "texture-compression-etc2",
+          "texture-formats-tier1",
+          "texture-formats-tier2",
+          "timestamp-query"
+        ],
+        "info" : {
+          "architecture" : "apple",
+          "vendor" : "apple"
+        }
+      },
+      "xrInNavigator" : false,
+      "xrType" : "undefined"
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "case" : "index.html",
+    "errors" : [
+
+    ],
+    "featuresTurnedOn" : [
+      {
+        "category" : 3,
+        "defaultValue" : false,
+        "details" : "Adds WebGPU support for WebXR",
+        "enabled" : true,
+        "key" : "WebXRWebGPUBindingsEnabled",
+        "name" : "WebGPU support for WebXR",
+        "setCallAvailable" : true,
+        "status" : 1
+      }
+    ],
+    "flags" : "xr",
+    "isolated" : true,
+    "origin" : "loopback",
+    "result" : {
+      "crossOriginIsolated" : true,
+      "globals" : {
+        "XRFrame" : "undefined",
+        "XRGPUBinding" : "undefined",
+        "XRHand" : "undefined",
+        "XRInputSource" : "undefined",
+        "XRLayer" : "undefined",
+        "XRMediaBinding" : "undefined",
+        "XRProjectionLayer" : "undefined",
+        "XRReferenceSpace" : "undefined",
+        "XRRigidTransform" : "undefined",
+        "XRSession" : "undefined",
+        "XRSystem" : "undefined",
+        "XRTransientInputHitTestSource" : "undefined",
+        "XRView" : "undefined",
+        "XRWebGLBinding" : "undefined",
+        "XRWebGLLayer" : "undefined"
+      },
+      "inlineSession" : null,
+      "isSecureContext" : true,
+      "origin" : "http:\/\/127.0.0.1:65495",
+      "page" : "probe",
+      "permissionsPolicy" : null,
+      "sessionSupported" : {
+
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+      "webgl" : {
+        "makeXRCompatible" : "undefined",
+        "webgl2" : true,
+        "xrCompatibleAttr" : null
+      },
+      "webgpu" : {
+        "adapter" : true,
+        "adapterXrCompatible" : true,
+        "features" : [
+          "bgra8unorm-storage",
+          "clip-distances",
+          "core-features-and-limits",
+          "depth-clip-control",
+          "depth32float-stencil8",
+          "float16-renderable",
+          "float32-blendable",
+          "float32-filterable",
+          "float32-renderable",
+          "indirect-first-instance",
+          "primitive-index",
+          "rg11b10ufloat-renderable",
+          "shader-f16",
+          "subgroups",
+          "texture-compression-astc",
+          "texture-compression-astc-sliced-3d",
+          "texture-compression-bc",
+          "texture-compression-bc-sliced-3d",
+          "texture-compression-etc2",
+          "texture-formats-tier1",
+          "texture-formats-tier2",
+          "timestamp-query"
+        ],
+        "info" : {
+          "architecture" : "apple",
+          "vendor" : "apple"
+        }
+      },
+      "xrInNavigator" : false,
+      "xrType" : "undefined"
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  }
+]
