@@ -1,7 +1,8 @@
 // What else is using the GPU (AB-T-0589): a result that must be exact is only as good as the load it ran under, so the
 // runners record it. A snapshot is the GPU's utilisation (IOAccelerator's "Device Utilization %") and the processes of
 // the kinds that draw or compute on it: WebKit (WebContent, GPU), Chromium and Chrome (and their GPU helpers), python, MLX,
-// our harnesses (CinematicsSpike, the native Metal repro `machine`), node, and (M4 W3) the person's own browsers with every helper. Other apps' GPU helpers ("… Helper (GPU)")
+// our harnesses (CinematicsSpike, the native Metal repro `machine`), node, (M4 W3) the person's own browsers with every helper,
+// and (M5 W11) Gaea and its ML plugin workers. Anything else is unseen by name (AB-T-0640). Other apps' GPU helpers ("… Helper (GPU)")
 // are counted, not named. Process names only, no paths or arguments.
 //   import { snapshot, summarise } from './gpu-load.mjs'
 //   node apps/playground/scripts/gpu-load.mjs sample <file.jsonl> [seconds]   append a snapshot every N seconds (15) until killed

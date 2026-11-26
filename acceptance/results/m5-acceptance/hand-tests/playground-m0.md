@@ -15,7 +15,7 @@
 
 - 👀 shot 1: debug draw
 
-![6-1](shots/r6-1.png)
+![6-1](playground-m0-debug-draw.jpg)
 
 <details><summary>Steps (1355 ms)</summary>
 
@@ -35,7 +35,7 @@
 
 - 👀 shot 1: demo walk
 
-![7-1](shots/r7-1.png)
+![7-1](playground-m0-demo-walk.jpg)
 
 <details><summary>Steps (4405 ms)</summary>
 

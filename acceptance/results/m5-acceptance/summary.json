@@ -25,8 +25,20 @@
   "canonicalReblessed": false,
   "firstAttempt": "acceptance/results/m5-acceptance/matrix-first-attempt/: Chromium WebGPU's editor load 2 and its rerun differed from canonical while another project's gaea-boogu-worker held the GPU at up to 99 %, classed quiet because gpu-load.mjs didn't know the name; stopped, gpu-load fixed (c03f0d8), the whole matrix re-run on a quiet GPU"
  },
- "passed": [1, 2, 3, 5, 6, 7, 9],
- "partly": [4, 8, 10],
+ "passed": [
+  1,
+  2,
+  3,
+  5,
+  6,
+  7,
+  9
+ ],
+ "partly": [
+  4,
+  8,
+  10
+ ],
  "failed": [],
  "checks": [
   {
@@ -34,16 +46,32 @@
    "name": "A project exports as a game",
    "verdict": "passed",
    "receipt": "AB-R-1143",
-   "evidence": ["runs/m5-build-node.json", "runs/m5-build-chromium.json", "runs/m5-build-mac.json", "runs/m5-build-wkwebview.json", "hand-tests/export-game.md", "hand-tests/export-refusal.md"],
+   "evidence": [
+    "runs/m5-build-node.json",
+    "runs/m5-build-chromium.json",
+    "runs/m5-build-mac.json",
+    "runs/m5-build-wkwebview.json",
+    "hand-tests/export-game.md",
+    "hand-tests/export-refusal.md"
+   ],
    "notMet": [],
-   "notRun": ["the system's folder panel (VRMXG_SHELL_BUILD stands in for it)", "closing the window while a game exports (the page's tests cover it)"]
+   "notRun": [
+    "the system's folder panel (VRMXG_SHELL_BUILD stands in for it)",
+    "closing the window while a game exports (the page's tests cover it)"
+   ]
   },
   {
    "check": 2,
    "name": "The game app plays it",
    "verdict": "passed",
    "receipt": "AB-R-1144",
-   "evidence": ["runs/m5-game.json", "runs/m5-rush.json", "hand-tests/game.md", "hand-tests/game-webgl.md", "hand-tests/rush.md"],
+   "evidence": [
+    "runs/m5-game.json",
+    "runs/m5-rush.json",
+    "hand-tests/game.md",
+    "hand-tests/game-webgl.md",
+    "hand-tests/rush.md"
+   ],
    "notMet": [],
    "notRun": []
   },
@@ -52,7 +80,11 @@
    "name": "The game has rules",
    "verdict": "passed",
    "receipt": "AB-R-1145",
-   "evidence": ["runs/m5-flow.json", "runs/m5-flow-wkwebview.json", "runs/m5-rush.json"],
+   "evidence": [
+    "runs/m5-flow.json",
+    "runs/m5-flow-wkwebview.json",
+    "runs/m5-rush.json"
+   ],
    "notMet": [],
    "notRun": []
   },
@@ -61,16 +93,31 @@
    "name": "There is a HUD and there are menus",
    "verdict": "partly",
    "receipt": "AB-R-1146",
-   "evidence": ["runs/m5-game.json", "runs/m5-rush.json", "hand-tests/game.md", "hand-tests/rush.md"],
+   "evidence": [
+    "runs/m5-game.json",
+    "runs/m5-rush.json",
+    "hand-tests/game.md",
+    "hand-tests/rush.md"
+   ],
    "notMet": [],
-   "notRun": ["a real gamepad: none attached (GameController listed 0 controllers on 2026-11-25); menus from a gamepad are shown with Chromium's stand-in only", "VoiceOver in a running app (AppProbe reads the same accessibility tree, which isn't VoiceOver speaking it)"]
+   "notRun": [
+    "a real gamepad: none attached (GameController listed 0 controllers on 2026-11-25); menus from a gamepad are shown with Chromium's stand-in only",
+    "VoiceOver in a running app (AppProbe reads the same accessibility tree, which isn't VoiceOver speaking it)",
+    "the HUD's interaction prompt read from the page: no runner reads #hud-prompt (rush-player.js reads the interact service's model); only @vrmxg/game-ui's unit tests do",
+    "a volume changed: every stored volume stays 1 in Chromium, and the Mac app's scenario changes only the renderer (row 10) and moves through the menus (row 6)",
+    "a gamepad binding rebound: only a key (Jump to J) is rebound and kept"
+   ]
   },
   {
    "check": 5,
    "name": "You talk to characters through a dialogue UI",
    "verdict": "passed",
    "receipt": "AB-R-1147",
-   "evidence": ["runs/m5-dialogue.json", "runs/m5-dialogue-wkwebview.json", "runs/m5-rush.json"],
+   "evidence": [
+    "runs/m5-dialogue.json",
+    "runs/m5-dialogue-wkwebview.json",
+    "runs/m5-rush.json"
+   ],
    "notMet": [],
    "notRun": []
   },
@@ -79,7 +126,13 @@
    "name": "You can save and carry on",
    "verdict": "passed",
    "receipt": "AB-R-1148",
-   "evidence": ["runs/m5-flow.json", "runs/m5-flow-wkwebview.json", "runs/m5-game.json", "hand-tests/game.md", "hand-tests/rush.md"],
+   "evidence": [
+    "runs/m5-flow.json",
+    "runs/m5-flow-wkwebview.json",
+    "runs/m5-game.json",
+    "hand-tests/game.md",
+    "hand-tests/rush.md"
+   ],
    "notMet": [],
    "notRun": []
   },
@@ -88,34 +141,80 @@
    "name": "A play session replays exactly",
    "verdict": "passed",
    "receipt": "AB-R-1149",
-   "evidence": ["runs/m5-rush.json", "runs/m5-rush-wkwebview.json", "rush/win.json", "acceptance/results/m5-rush/lose.json (this run's lose log is byte for byte W10's)"],
+   "evidence": [
+    "runs/m5-rush.json",
+    "runs/m5-rush-wkwebview.json",
+    "rush/win.json",
+    "acceptance/results/m5-rush/lose.json (this run's lose log is byte for byte W10's)"
+   ],
    "notMet": [],
-   "notRun": ["a session recorded in the Mac game app (the sessions are recorded in the game app in Chromium; the Mac app replays them for the frame rate)"]
+   "notRun": [
+    "a session recorded in the Mac game app (the sessions are recorded in the game app in Chromium; the Mac app replays them for the frame rate)"
+   ]
   },
   {
    "check": 8,
    "name": "The editor is good enough to build it",
    "verdict": "partly",
    "receipt": "AB-R-1150",
-   "evidence": ["hand-tests/level-2.md", "hand-tests/level-webgl-3.md", "hand-tests/level-compare-webgpu.json", "hand-tests/level-compare-webgl.json", "hand-tests/level-rush-built.vrmxs", "hand-tests/inspector.md", "hand-tests/viewport.md", "hand-tests/viewport-webgl.md", "hand-tests/prefabs-assets.md", "hand-tests/prefabs-assets-webgl.md", "hand-tests/editor-number-drag.md"],
-   "notMet": ["behaviours on the level's new nodes and its 19 connections can't be authored in the editor (AB-T-0638)"],
-   "notRun": ["a dragged number's value changing while the pointer is down (only the result and its one undo step were read)", "⌘ and ⇧ with box select (AppProbe's pointer has no modifiers)", "the selection outline judged by eye (HAND-TEST-M5-VIEWPORT's unticked row)"]
+   "evidence": [
+    "hand-tests/level-2.md",
+    "hand-tests/level-webgl-3.md",
+    "hand-tests/level-compare-webgpu.json",
+    "hand-tests/level-compare-webgl.json",
+    "hand-tests/level-rush-built.vrmxs",
+    "hand-tests/inspector.md",
+    "hand-tests/viewport.md",
+    "hand-tests/viewport-webgl.md",
+    "hand-tests/prefabs-assets.md",
+    "hand-tests/prefabs-assets-webgl.md",
+    "hand-tests/editor-number-drag.md"
+   ],
+   "notMet": [
+    "behaviours on the level's new nodes and its 19 connections can't be authored in the editor (AB-T-0638)",
+    "the committed ids: 21 of the 22 game-layer nodes come out under the ids the editor gives (table-1 → area, served → gamecounter-2, serve → gamegoal …; only till keeps its id). The inspector can't set an id, and the committed connections and tableZone params name the committed ids, so they can't be carried onto the built level as they are (amended into AB-T-0638)"
+   ],
+   "notRun": [
+    "a dragged number's value changing while the pointer is down (only the result and its one undo step were read)",
+    "⌘ and ⇧ with box select (AppProbe's pointer has no modifiers)",
+    "the selection outline judged by eye (HAND-TEST-M5-VIEWPORT's unticked row)"
+   ]
   },
   {
    "check": 9,
    "name": "Agents can build and check a game",
    "verdict": "passed",
-   "receipt": "AB-R-1151",
-   "evidence": ["hand-tests/mcp.md", "hand-tests/mcp-editor-session-m5.json"],
+   "receipt": "AB-R-1154",
+   "evidence": [
+    "hand-tests/mcp-rush.md",
+    "hand-tests/mcp-editor-session-m5-rush.json",
+    "apps/editor-mac/docs/HAND-TEST-M5-MCP-RUSH.md",
+    "hand-tests/mcp-cafe-w9-scenario.md (the superseded run)",
+    "hand-tests/mcp-editor-session-m5-cafe.json (the superseded run)"
+   ],
    "notMet": [],
-   "notRun": ["the skill-only creator session (HAND-TEST-M5-SKILL, AB-T-0608's acceptance) wasn't run again"]
+   "notRun": [
+    "the skill-only creator session (HAND-TEST-M5-SKILL, AB-T-0608's acceptance) wasn't run again"
+   ],
+   "supersedes": "AB-R-1151 (W9's HAND-TEST-M5-MCP on the cafe project, whose game has no rules)"
   },
   {
    "check": 10,
    "name": "M0 to M4 still hold; the sample game at 60 fps",
    "verdict": "partly",
    "receipt": "AB-R-1153",
-   "evidence": ["matrix/summary.json", "m0-m4-rerun/", "hand-tests/playground-m0.md", "hand-tests/editor-m1-editor.md", "hand-tests/editor-m1-export-2.md", "hand-tests/editor-export-check.json", "hand-tests/editor-m2-acceptance-2.md", "hand-tests/editor-sequence-export-check.json", "hand-tests/editor-m2-timeline.md", "frames/summary.json"],
+   "evidence": [
+    "matrix/summary.json",
+    "m0-m4-rerun/",
+    "hand-tests/playground-m0.md",
+    "hand-tests/editor-m1-editor.md",
+    "hand-tests/editor-m1-export-2.md",
+    "hand-tests/editor-export-check.json",
+    "hand-tests/editor-m2-acceptance-2.md",
+    "hand-tests/editor-sequence-export-check.json",
+    "hand-tests/editor-m2-timeline.md",
+    "frames/summary.json"
+   ],
    "frameRate": {
     "what": "the recorded win and loss played back by the Mac game app (?replay=…&loop=600&stats), drawn at 1920×1080 on WebGPU",
     "seconds": 755,
@@ -124,15 +223,33 @@
     "sceneChanges": 24,
     "steadyFps": 59.47,
     "steadyOver25PerMille": 2.87,
-    "sceneChangeWindowFps": [40, 70],
+    "sceneChangeWindowFps": [
+     40,
+     70
+    ],
     "worstFrameMs": 522.8,
-    "webProcessGB": { "first": 0.42, "median": 1.62, "peak": 2.35 },
+    "webProcessGB": {
+     "first": 0.42,
+     "median": 1.62,
+     "peak": 2.35
+    },
     "gpuProcessPeakGB": 0.56,
-    "w10": { "steadyFps": 60.11, "receipt": "AB-R-1137" },
+    "w10": {
+     "steadyFps": 60.11,
+     "receipt": "AB-R-1137"
+    },
     "load": "GPU median 26 %, nothing else drawing; the operator's Microsoft Edge helpers at up to 24 % CPU throughout"
    },
-   "notMet": ["60 fps through a scene change: those windows run 40 to 70 fps and the worst frame is 523 ms while the next world is built"],
-   "notRun": ["live play in the Mac app (AppProbe can't hold keys; the figure is playback of sessions played live in Chromium)", "the base-Mac number (AB-T-0511)", "M3's live parts (the spoken conversation, the camera, the companion), the creator's Mac scenarios and the editor's MCP sessions of M1 to M4"]
+   "notMet": [
+    "60 fps: steady play is 59.47 fps, below 60 and below W10's 60.11 (AB-R-1137)",
+    "60 fps through a scene change: those windows run 40 to 70 fps and the worst frame is 523 ms while the next world is built"
+   ],
+   "notRun": [
+    "live play in the Mac app (AppProbe can't hold keys; the figure is playback of sessions played live in Chromium)",
+    "the base-Mac number (AB-T-0511)",
+    "M3's live parts (the spoken conversation, the camera, the companion), the creator's Mac scenarios and the editor's MCP sessions of M1 to M4"
+   ]
   }
- ]
+ ],
+ "reviewed": "2026-11-26: check 9 re-run on the sample game (AB-R-1154 supersedes AB-R-1151); checks 4, 8 and 10 narrowed; receipts AB-R-1143, 1144, 1146, 1148, 1150 to 1153 amended (SHAs per run, versions, build configs)"
 }

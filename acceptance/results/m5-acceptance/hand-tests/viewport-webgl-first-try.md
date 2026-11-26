@@ -18,7 +18,7 @@
 - 👀 shot 1: end
 - ✅ `find("id=inspector-id").0.name == "Node door-1"`
 
-![2-1](shots/r2-1.png)
+![2-1](shots/viewport-webgl-first-try/r2-1.jpg)
 
 <details><summary>Steps (692 ms)</summary>
 

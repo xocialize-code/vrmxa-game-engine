@@ -40,7 +40,7 @@
 - ✅ `find("id=prop-when-test").0.value == "state"`
 - ❌ `find("id=prop-when-key").0.value == "flags.tillClosed"`, got `"newflags.tillClosed"`
 
-![5-1](shots/r5-1.png)
+![5-1](shots/level-webgpu-failed/r5-1.jpg)
 
 <details><summary>Steps (39740 ms)</summary>
 
@@ -125,7 +125,7 @@
 - ✅ `find("id=verify-result").0.name == "Reopened game/rush-built.vrmxs: same bytes as saved, valid"`
 - ❌ `find("id=doc-state").0.name matches "^Scene game/rush-built.vrmxs 48 nodes saved valid "`, got `"Scene game/rush-built.vrmxs 47 nodes saved valid hash 66f03be7f6a2cd11"`
 
-![13-1](shots/r13-1.png)
+![13-1](shots/level-webgpu-failed/r13-1.jpg)
 
 <details><summary>Steps (1138 ms)</summary>
 

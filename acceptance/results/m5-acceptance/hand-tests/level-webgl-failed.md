@@ -19,7 +19,7 @@
 - ✅ `find("id=project-name").0.name == "Project project-w10-level"`
 - ❌ `find("id=doc-state").0.name matches "^Scene game/rush-built.vrmxs 26 nodes saved valid "`, got `"Scene game/rush-built.vrmxs 47 nodes saved valid hash 66f03be7f6a2cd11"`
 
-![1-1](shots/r1-1.png)
+![1-1](shots/level-webgl-failed/r1-1.jpg)
 
 <details><summary>Steps (96396 ms)</summary>
 
@@ -46,7 +46,7 @@ launched VRMXG Editor pid 51916, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-
 - ✅ `find("role=popupbutton name='Node type to add'").0.value == "GameRules"`
 - ❌ `find("id=undo").0.name == "Undo Add gamerules"`, got `"Undo Add gamerules-2"`
 
-![2-1](shots/r2-1.png)
+![2-1](shots/level-webgl-failed/r2-1.jpg)
 
 <details><summary>Steps (7097 ms)</summary>
 
@@ -73,7 +73,7 @@ launched VRMXG Editor pid 51916, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-
 - ✅ `find("role=popupbutton name='Node type to add'").0.value == "GameCounter"`
 - ❌ `find("id=undo").0.name == "Undo Add gamecounter"`, got `"Undo Add gamecounter-4"`
 
-![3-1](shots/r3-1.png)
+![3-1](shots/level-webgl-failed/r3-1.jpg)
 
 <details><summary>Steps (7001 ms)</summary>
 
@@ -100,7 +100,7 @@ launched VRMXG Editor pid 51916, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-
 - ✅ `find("role=popupbutton name='Node type to add'").0.value == "GameTimer"`
 - ❌ `find("id=undo").0.name == "Undo Add gametimer-2"`, got `"Undo Add gametimer-5"`
 
-![4-1](shots/r4-1.png)
+![4-1](shots/level-webgl-failed/r4-1.jpg)
 
 <details><summary>Steps (6988 ms)</summary>
 
@@ -127,7 +127,7 @@ launched VRMXG Editor pid 51916, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-
 - ✅ `find("role=popupbutton name='Node type to add'").0.value == "GameGoal"`
 - ❌ `find("id=undo").0.name == "Undo Add gamegoal"`, got `"Undo Add gamegoal-3"`
 
-![5-1](shots/r5-1.png)
+![5-1](shots/level-webgl-failed/r5-1.jpg)
 
 <details><summary>Steps (7044 ms)</summary>
 
@@ -154,7 +154,7 @@ launched VRMXG Editor pid 51916, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-
 - ✅ `find("role=popupbutton name='Node type to add'").0.value == "Area"`
 - ❌ `find("id=undo").0.name == "Undo Add area"`, got `"Undo Add area-4"`
 
-![6-1](shots/r6-1.png)
+![6-1](shots/level-webgl-failed/r6-1.jpg)
 
 <details><summary>Steps (7033 ms)</summary>
 
@@ -181,7 +181,7 @@ launched VRMXG Editor pid 51916, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-
 - ✅ `find("id=asset-game-items-till-vrmxi").count == 1`
 - ❌ `find("id=undo").0.name == "Undo Add till"`, got `"Undo Add till-2"`
 
-![7-1](shots/r7-1.png)
+![7-1](shots/level-webgl-failed/r7-1.jpg)
 
 <details><summary>Steps (11988 ms)</summary>
 
@@ -209,7 +209,7 @@ launched VRMXG Editor pid 51916, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-
 - ✅ `find("role=popupbutton name='Node type to add'").0.value == "Dialogue"`
 - ❌ `find("id=undo").0.name == "Undo Add dialogue"`, got `"Undo Add dialogue-5"`
 
-![8-1](shots/r8-1.png)
+![8-1](shots/level-webgl-failed/r8-1.jpg)
 
 <details><summary>Steps (6781 ms)</summary>
 
@@ -236,7 +236,7 @@ launched VRMXG Editor pid 51916, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-
 - ✅ `find("role=popupbutton name='Node type to add'").0.value == "Dialogue"`
 - ❌ `find("id=undo").0.name == "Undo Add dialogue-2"`, got `"Undo Add dialogue-6"`
 
-![9-1](shots/r9-1.png)
+![9-1](shots/level-webgl-failed/r9-1.jpg)
 
 <details><summary>Steps (6248 ms)</summary>
 
@@ -263,7 +263,7 @@ launched VRMXG Editor pid 51916, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-
 - ✅ `find("role=popupbutton name='Node type to add'").0.value == "Dialogue"`
 - ❌ `find("id=undo").0.name == "Undo Add dialogue-3"`, got `"Undo Add dialogue-7"`
 
-![10-1](shots/r10-1.png)
+![10-1](shots/level-webgl-failed/r10-1.jpg)
 
 <details><summary>Steps (6216 ms)</summary>
 
@@ -290,7 +290,7 @@ launched VRMXG Editor pid 51916, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-
 - ✅ `find("role=popupbutton name='Node type to add'").0.value == "Dialogue"`
 - ❌ `find("id=undo").0.name == "Undo Add dialogue-4"`, got `"Undo Add dialogue-8"`
 
-![11-1](shots/r11-1.png)
+![11-1](shots/level-webgl-failed/r11-1.jpg)
 
 <details><summary>Steps (6194 ms)</summary>
 
@@ -318,7 +318,7 @@ launched VRMXG Editor pid 51916, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-
 - ✅ `find("id=verify-result").0.name == "Reopened game/rush-built.vrmxs: same bytes as saved, valid"`
 - ❌ `find("id=doc-state").0.name matches "^Scene game/rush-built.vrmxs 48 nodes saved valid "`, got `"Scene game/rush-built.vrmxs 57 nodes saved valid hash e0f2e09b2b6cc548"`
 
-![13-1](shots/r13-1.png)
+![13-1](shots/level-webgl-failed/r13-1.jpg)
 
 <details><summary>Steps (1011 ms)</summary>
 

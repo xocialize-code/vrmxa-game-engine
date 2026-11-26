@@ -19,7 +19,7 @@
 - ✅ `find("name='Angles: shot, vc-wide, vc-hana, vc-ots, vc-two' exact=true").count >= 1`
 - ✅ `find("id=holds").0.name matches "^Holds [12] worlds of [0-9]+ built"`
 
-![8-1](shots/r8-1.png)
+![8-1](editor-m2-timeline-angles.jpg)
 
 <details><summary>Steps (3102 ms)</summary>
 

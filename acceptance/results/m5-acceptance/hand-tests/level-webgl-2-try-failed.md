@@ -19,7 +19,7 @@
 - ✅ `find("id=asset-game-items-till-vrmxi").count == 1`
 - ❌ `find("id=undo").0.name == "Undo Add till"`, got `"Undo Move area-3"`
 
-![7-1](shots/r7-1.png)
+![7-1](shots/level-webgl-2-try-failed/r7-1.jpg)
 
 <details><summary>Steps (11935 ms)</summary>
 
@@ -48,7 +48,7 @@
 - ✅ `find("id=verify-result").0.name == "Reopened game/rush-built.vrmxs: same bytes as saved, valid"`
 - ❌ `find("id=doc-state").0.name matches "^Scene game/rush-built.vrmxs 48 nodes saved valid "`, got `"Scene game/rush-built.vrmxs 44 nodes saved valid hash 04aaa306bd9e9a40"`
 
-![13-1](shots/r13-1.png)
+![13-1](shots/level-webgl-2-try-failed/r13-1.jpg)
 
 <details><summary>Steps (740 ms)</summary>
 
