@@ -52,7 +52,8 @@ What the runs before taught the scenario and the editor (the same day, the repor
 - **AppProbe types into a field by focusing it and pressing ⌘A after 80 ms**; when the web view's focus landed later,
   the ⌘A missed and the text appended ("dialogueorder-1", "newcounters.served", the cause of M5's "new" placeholder
   note too). The editor's text fields now take focus with their text selected (App.vue), and the Id field selects its
-  text on focus; with that, both backends passed first time.
+  text on focus. With that, WebGPU passed at the next run; WebGL's first run after it lost three rows to screen capture
+  (below), and its next run passed.
 - **The Add and Connect buttons' accessible names followed the picks**, so AppProbe's reference went stale between
   finding and pressing them; their names are fixed now (the detail is in the tooltip).
 - **Screen capture flakes under load:** one WebGL run lost three rows to ScreenCaptureKit (a timeout, then "the user

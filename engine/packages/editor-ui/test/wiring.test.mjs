@@ -68,6 +68,15 @@ test('a regular\'s brain: preset a choice of kinds, vars an open struct whose va
   assert.deepEqual(looseSchema([1]), { type: 'array' });
 });
 
+test('a connection into a prefab instance\'s node shows that node\'s actions and its arguments\' fields (nodeOf)', () => {
+  const doc = { ...level, connections: [{ from: 'serve', signal: 'completed', to: 'door-1/hinge', call: 'open' }] };
+  const hinge = { id: 'door-1/hinge', type: 'RigidBody', behaviours: [{ use: 'hinge' }] };
+  const w = wiringView(reg, doc, 'serve', { nodeOf: (r) => (r === 'door-1/hinge' ? hinge : null) });
+  assert.equal(w.connections[0].problem, null);
+  assert.ok(w.actions['door-1/hinge'].some((a) => a.name === 'open'));
+  assert.equal(wiringView(reg, doc, 'serve').connections[0].problem, null, 'not judged without the prefab');
+});
+
 test('pins, layers and the node after', () => {
   assert.equal(pinValue({ default: 'mira', schema: {} }), 'mira');
   assert.equal(pinValue({ default: undefined, schema: { type: 'boolean' } }), false);

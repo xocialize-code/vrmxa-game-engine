@@ -664,7 +664,7 @@ export class EditorHost {
       p: sharedAxes(tr.map((t) => t.p)), r: sharedAxes(tr.map((t) => t.r)), s: sharedAxes(tr.map((t) => t.s)), props,
       behaviours: nodes.length === 1 ? (n.behaviours ?? []).map((b) => b.use) : [], nodes: s.doc.nodes.map((x) => x.id),
       // M6 W1 (AB-T-0638): one node's behaviours and connections, and the node it comes before in the document's order
-      wiring: nodes.length === 1 ? wiringView(registry, s.doc, n.id) : null, before: nodes.length === 1 ? nodeAfter(s.doc, n.id) : '',
+      wiring: nodes.length === 1 ? wiringView(registry, s.doc, n.id, { nodeOf: (r) => s.endNode(r) }) : null, before: nodes.length === 1 ? nodeAfter(s.doc, n.id) : '',
       sameType: types.length === 1 ? s.doc.nodes.filter((x) => x.type === n.type).map((x) => x.id) : [],
       inner: null, ov: null, overrides: nodes.length === 1 && n.type === 'Instance' ? this.overridesView(n.id) : null,
       // the node's asset slot (M5 W6, AB-T-0606): what it names and the kinds of file it takes, for a drop from the assets panel

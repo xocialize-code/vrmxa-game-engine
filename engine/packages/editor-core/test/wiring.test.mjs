@@ -210,3 +210,33 @@ test('paste remaps a behaviour\'s node params (flat in its entry) and a connecti
   const t2 = pasted.find((n) => n.type === 'Area'), a2 = pasted.find((n) => n.type === 'Character');
   assert.equal(t2.behaviours[0].customer, a2.id);
 });
+
+test('a node\'s id: an instance\'s override value that names it follows (references resolve across the scene, tree.find)', () => {
+  const doc = parse(LEVEL);
+  doc.assets.push({ id: 'door', type: 'vrmxs', ref: 'prefabs/door.vrmxs' });
+  doc.nodes.push({ id: 'door-9', type: 'Instance', parent: 'root', asset: 'door', overrides: { hinge: { behaviours: [{ use: 'switchedBy', item: 'till' }] } } });
+  const s = new EditorSession({ registry: registry(), doc, prefabs: new Map(prefabs) });
+  const before = s.text();
+  s.setNodeId('till', 'register');
+  assert.deepEqual(s.node('door-9').overrides.hinge.behaviours, [{ use: 'switchedBy', item: 'register' }]);
+  assert.equal(s.doc.connections.find((c) => c.signal === 'verb').from, 'register');
+  s.undo();
+  assert.equal(s.text(), before);
+});
+
+test('a drag on a behaviour param or a connection\'s argument is one undo step', () => {
+  const s = level();
+  s.beginGesture();
+  for (const v of [11, 12, 13]) s.withGesture(() => s.setBehaviourParam('table-1', 'tableZone', 'points', v));
+  assert.equal(s.endGesture(), 'Set table-1.tableZone.points');
+  assert.equal(s.node('table-1').behaviours[0].points, 13);
+  s.undo();
+  assert.equal(s.node('table-1').behaviours[0].points, 10, 'one undo takes the whole drag back');
+  const i = s.doc.connections.findIndex((c) => c.call === 'changeScene');
+  s.beginGesture();
+  for (const v of [4, 5]) s.withGesture(() => s.setConnectionArg(i, 'after', v));
+  s.endGesture();
+  assert.equal(s.doc.connections[i].args.after, 5);
+  s.undo();
+  assert.equal(s.doc.connections[i].args.after, 3);
+});

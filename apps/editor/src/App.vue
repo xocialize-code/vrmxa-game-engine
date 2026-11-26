@@ -129,7 +129,8 @@ const act = async (fn) => { try { ui.error = ''; await fn(); } catch (e) { ui.er
 
 // A text field takes focus with its text selected (as Tab gives it), so what is typed replaces it: an automation that focuses
 // a field and types (AppProbe: focus, ⌘A, type) can otherwise see its ⌘A land before the focus does and the text append
-// (M6 W1's level runs: "dialogueorder-1", "newcounters.served"). A click still puts the caret where it lands.
+// (M6 W1's level runs: "dialogueorder-1", "newcounters.served"). A click's mouseup places the caret as a browser does
+// (checked in Chromium; not by hand in the Mac app).
 document.addEventListener('focusin', (e) => {
   const t = e.target;
   if (t instanceof HTMLInputElement && ['text', 'search', ''].includes(t.getAttribute('type') ?? '')) t.select();

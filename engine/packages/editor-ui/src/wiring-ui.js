@@ -13,6 +13,8 @@ const named = (o) => Object.entries(o ?? {}).map(([name, m]) => ({ name, descrip
  * @param {any} reg the registry (with the project's behaviours declared)
  * @param {any} doc the scene document
  * @param {string} id the node
+ * @param {{ nodeOf?: (ref: string) => any }} [o] nodeOf: a node inside a prefab instance ("door-1/hinge") as the instance
+ *   has it (the editor's session.endNode), so a connection into one shows its action and arguments
  * @returns {null | {
  *   id: string,
  *   behaviours: { use: string, description: string, project: boolean, known: boolean, fields: any[] }[],
@@ -24,7 +26,7 @@ const named = (o) => Object.entries(o ?? {}).map(([name, m]) => ({ name, descrip
  *   incoming: { index: number, from: string, signal: string, call: string }[],
  * }}
  */
-export function wiringView(reg, doc, id) {
+export function wiringView(reg, doc, id, { nodeOf = () => null } = {}) {
   const nodes = doc?.nodes ?? [];
   const node = nodes.find((n) => n.id === id);
   if (!node) return null;
@@ -48,10 +50,11 @@ export function wiringView(reg, doc, id) {
   (doc.connections ?? []).forEach((c, index) => {
     if (c.to === id && c.from !== id) incoming.push({ index, from: c.from, signal: c.signal, call: c.call });
     if (c.from !== id) return;
-    const target = byId.get(c.to) ?? null;
+    const target = byId.get(c.to) ?? (c.to?.includes('/') ? nodeOf(c.to) : null);
+    if (target && !actions[c.to]) actions[c.to] = named(reg.surface(target).actions); // an inner node's, for its menu
     const act = target ? reg.surface(target).actions[c.call] : null;
     const problem = !signals.some((s) => s.name === c.signal) && t ? `${id} has no signal ${c.signal}`
-      : !target ? (c.to?.includes('/') ? null : `no node ${c.to}`)
+      : !target ? (c.to?.includes('/') ? null : `no node ${c.to}`) // an inner node whose prefab isn't loaded: not judged
       : reg.get(target.type) && !act ? `${c.to} has no action ${c.call}` : null;
     connections.push({ index, signal: c.signal, to: c.to, call: c.call, args: c.args ?? null, fields: act ? propFields(act.args, c.args) : [], problem });
   });
