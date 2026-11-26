@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { m0Registry } from '@vrmxg/registry/m0';
-import { declareProjectBehaviours, describedBehaviours } from '@vrmxg/registry';
+import { declareProjectBehaviours, describedBehaviours, stateShape } from '@vrmxg/registry';
 import { createValidator, describeBehaviour, parse, schemaChecker } from '@vrmxg/scene';
 import { createHandlers } from '../../engine/packages/mcp/src/tools.js';
 import { available } from '../../engine/packages/character/test/fixtures.mjs';
@@ -81,6 +81,13 @@ test('MCP\'s describe lists the project\'s behaviours, and describes one with it
   assert.deepEqual(h.describe({ behaviour: 'pressToStart' }).state, rushModule.pressToStart.describe.state);
 });
 
+test('the shapes of the states they declare: what a save\'s fingerprint (M6 W5) hashes', () => {
+  const reg = rushRegistry();
+  assert.equal(stateShape(reg.behaviours.get('pressToStart')), '{"type":"null"}');
+  assert.equal(stateShape(reg.behaviours.get('tableZone')), '{"additionalProperties":false,"properties":{"done":{"type":"boolean"},"inside":{"type":"boolean"},"next":{"minimum":0,"type":"integer"}},"required":["done","inside","next"],"type":"object"}');
+  assert.equal(stateShape(reg.behaviours.get('wander')), null, 'the engine\'s wander hasn\'t declared its state');
+});
+
 const skipPlay = !available('core') ? 'needs vrmxa-avatar-studio beside the repository' : false;
 test('the recorded sessions replay to their hashes, emit every declared signal, and keep the declared state', { skip: skipPlay, timeout: 600000 }, async () => {
   const { installPortableMath } = await import('@vrmxg/dmath');
@@ -94,11 +101,12 @@ test('the recorded sessions replay to their hashes, emit every declared signal, 
   const reg = rushRegistry();
   const stateOf = new Map(DECLARED.map((n) => [n, schemaChecker(reg.behaviours.get(n).state)]));
   // each declared behaviour's class, its getState checked against its declared state on every call (the snapshot
-  // hashes every step); a subclass, so what it keeps and how it runs are the class's own
+  // hashes every step); a subclass, so what it keeps and how it runs are the class's own, given the class's describe
+  // (a subclass doesn't inherit one), so the world declares it as the game does
   const bad = [], behaviours = new Map(Object.entries(rushModule).filter(([, v]) => typeof v === 'function').map(([name, C]) => {
     const check = stateOf.get(name);
     if (!check) return [name, C];
-    return [name, class extends C { getState() { const s = super.getState(), p = check(s); if (p.length && bad.length < 5) bad.push(`${name}: ${JSON.stringify(s)} (${p.join('; ')})`); return s; } }];
+    return [name, class extends C { static describe = C.describe; getState() { const s = super.getState(), p = check(s); if (p.length && bad.length < 5) bad.push(`${name}: ${JSON.stringify(s)} (${p.join('; ')})`); return s; } }];
   }));
   // which declared signals the project's behaviours emit: every tree the game builds, its emit watched
   const emitted = new Map(DECLARED.map((n) => [n, new Set()]));

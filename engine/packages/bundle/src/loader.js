@@ -6,7 +6,8 @@
 //   const build = await openBuild(fetchReader('./'));                 // a runtime's page; Node: folderReader(dir).read
 //   const behaviours = await build.behaviours((url) => import(new URL(url, location.href).href));
 //   const scene = parse(await build.text(build.game.entry));          // then build the world with build.bytes as resolve
-import { describedBehaviours } from '@vrmxg/registry';
+import { declareProjectBehaviours } from '@vrmxg/registry';
+import { m0Registry } from '@vrmxg/registry/m0';
 import { sha256 } from './sha256.js';
 import { BuildError, normRef, resolveFrom } from './paths.js';
 import { moduleImports } from './modules.js';
@@ -97,7 +98,9 @@ export class Build {
    *
    * A behaviour that declares itself (M6 W0) carries its declaration in the module, as a static `describe` on its
    * class, so the build needs nothing beside the module to read it: `declareProjectBehaviours(registry, map)` from
-   * @vrmxg/registry (the world builder does it). A declaration that isn't one stops the game here, by name.
+   * @vrmxg/registry (the world builder does it). Each is declared here into the engine's registry, as the world builder
+   * will declare it, so a declaration the registry refuses (a typo'd key, an unknown node type in `on`, a schema that
+   * isn't one, a clash with an engine behaviour's name) stops the game here, by name.
    * @param {(path: string) => Promise<Record<string, any>>} importModule
    * @returns {Promise<Map<string, any>>}
    */
@@ -107,7 +110,7 @@ export class Build {
     await this.modules(ref);
     const mod = await importModule(this.path(ref));
     const map = new Map(Object.entries(mod).filter(([, v]) => typeof v === 'function'));
-    try { describedBehaviours(map); } catch (e) { throw new BuildError('bad_behaviours', `${ref}: ${e.message}`, [ref]); }
+    try { declareProjectBehaviours(m0Registry(), map); } catch (e) { throw new BuildError('bad_behaviours', `${ref}: ${e.message}`, [ref]); }
     return map;
   }
 

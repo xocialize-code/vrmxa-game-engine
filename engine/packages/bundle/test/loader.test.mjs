@@ -138,3 +138,19 @@ test('behaviours come from the build\'s own module, checked before it runs', asy
   const none = await built(project({ 'game.json': JSON.stringify({ ...GAME, behaviours: undefined }) }));
   assert.equal((await none.build.behaviours(async () => { throw new Error('not called'); })).size, 0);
 });
+
+test('a project behaviour\'s declaration the registry refuses stops the game when its module loads (M6 W0)', async () => {
+  const { build } = await built();
+  const said = (describe) => Object.assign(class {}, { describe });
+  const refused = async (describe, why) => {
+    await assert.rejects(build.behaviours(async () => ({ patrol: said(describe) })), (e) => e.name === 'BuildError' && e.code === 'bad_behaviours' && why.test(e.message) && e.files[0] === 'behaviours.js', why.source);
+  };
+  await refused({ signal: {} }, /unknown key "signal"/);
+  await refused({ on: ['Zone'] }, /attaches to "Zone", which is not a node type/);
+  await refused({ params: { a: { type: 'nonsense' } } }, /param a is not JSON Schema/);
+  await refused(() => ({}), /its static describe is an object/);
+  await assert.rejects(build.behaviours(async () => ({ wander: said({}) })), (e) => e.code === 'bad_behaviours' && /has the name of one of the engine's/.test(e.message));
+  // one the registry takes passes, with what it declares
+  const ok = await build.behaviours(async () => ({ patrol: said({ on: ['Character'], signals: { spotted: { args: { who: { type: 'string', nodeRef: true } } } }, state: { type: 'null' } }) }));
+  assert.deepEqual([...ok.keys()], ['patrol']);
+});
