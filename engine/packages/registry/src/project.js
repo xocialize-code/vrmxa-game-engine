@@ -18,12 +18,16 @@
 // `wander`), or a behaviour the registry doesn't know (scenes that use it validate with a warning, as before). A
 // subclass doesn't inherit its parent's: it may keep other state, so it declares its own or none.
 //
-// Every schema in a declaration (each param's, each signal's and action's arguments', the state's) is compiled when it
-// is declared: one that isn't JSON Schema is the declaration's mistake, named here, not every later validation's. A
+// Every schema in a declaration (each param's, each signal's and action's arguments', the state's) is checked when it
+// is declared: one that isn't JSON Schema is the declaration's mistake, named here, not every later validation's. The
+// check is the draft 2020-12 meta-schema compiled ahead of time (vendor/ajv-meta-2020.js, scripts/make-meta.mjs) and
+// each pattern compiled as a regular expression, as Ajv's compile would: nothing here generates code at run time, so a
+// game build declares its behaviours under a Content Security Policy without 'unsafe-eval' (M6 W7, AB-T-0654 item 6),
+// and the exporter, the editor and a build give the same verdict on the same declaration. A
 // declaration's schemas are set inside larger ones (a scene's), so they are self-contained: no `$ref`, `$id`, `$anchor`
 // or the like, which would resolve against whatever schema holds them.
 
-import { Ajv2020 } from 'ajv/dist/2020.js';
+import { validate as metaValidate } from './vendor/ajv-meta-2020.js';
 
 /**
  * The declarations in a project's behaviours: each exported class's `describe`, under the name it is exported as.
@@ -61,20 +65,48 @@ function compiled(b, def) {
 
 /**
  * What in a declared behaviour isn't JSON Schema: each param's schema, each signal's and action's argument's, and the
- * state's, compiled as the scene validator compiles them (draft 2020-12, unknown keywords allowed).
+ * state's, read as the scene validator reads them (draft 2020-12, unknown keywords allowed): the meta-schema, and every
+ * `pattern` and `patternProperties` key a regular expression with the `u` flag.
  * @param {any} b a behaviour as the registry resolves it @returns {string[]}
  */
 export function schemaProblems(b) {
-  const ajv = new Ajv2020({ strict: false, allErrors: true }), out = [];
-  const tryCompile = (where, schema) => {
+  const out = [];
+  const tryCheck = (where, schema) => {
     const scoped = scopeKeys(schema);
     if (scoped.length) { out.push(`behaviour ${b.name}: ${where} uses ${scoped.map((k) => `"${k}"`).join(', ')}: a declaration's schemas are self-contained (it is set inside a scene's schema, where a reference would resolve against that)`); return; }
-    try { ajv.compile(schema); } catch (e) { out.push(`behaviour ${b.name}: ${where} is not JSON Schema (${e.message})`); }
+    const why = schemaFault(schema);
+    if (why) out.push(`behaviour ${b.name}: ${where} is not JSON Schema (${why})`);
   };
-  for (const [k, p] of Object.entries(b.params ?? {})) tryCompile(`param ${k}`, p.schema);
-  for (const kind of ['signals', 'actions']) for (const [m, def] of Object.entries(b[kind] ?? {})) for (const [k, p] of Object.entries(def.args ?? {})) tryCompile(`${kind === 'signals' ? 'signal' : 'action'} ${m}'s argument ${k}`, p.schema);
-  if (b.state !== undefined) tryCompile('its state', b.state);
+  for (const [k, p] of Object.entries(b.params ?? {})) tryCheck(`param ${k}`, p.schema);
+  for (const kind of ['signals', 'actions']) for (const [m, def] of Object.entries(b[kind] ?? {})) for (const [k, p] of Object.entries(def.args ?? {})) tryCheck(`${kind === 'signals' ? 'signal' : 'action'} ${m}'s argument ${k}`, p.schema);
+  if (b.state !== undefined) tryCheck('its state', b.state);
   return out;
+}
+
+/**
+ * Why a value isn't a JSON Schema (draft 2020-12) the scene validator can compile, or null when it is one.
+ * @param {unknown} schema @returns {string | null}
+ */
+export function schemaFault(schema) {
+  if (typeof schema !== 'boolean' && (!schema || typeof schema !== 'object' || Array.isArray(schema))) return 'schema must be object or boolean';
+  if (!metaValidate(schema)) return `schema is invalid: ${(metaValidate.errors ?? []).map((e) => `data${e.instancePath} ${e.message}`).join(', ')}`;
+  return badPattern(schema);
+}
+
+// Where a schema holds schemas (draft 2020-12's applicators, and the older names the meta-schema still accepts)
+const ONE = ['additionalProperties', 'propertyNames', 'items', 'contains', 'not', 'if', 'then', 'else', 'unevaluatedItems', 'unevaluatedProperties', 'additionalItems'];
+const MANY = ['allOf', 'anyOf', 'oneOf', 'prefixItems'];
+const BY_NAME = ['properties', 'patternProperties', '$defs', 'definitions', 'dependentSchemas', 'dependencies'];
+/** The first pattern in a (meta-schema-valid) schema that isn't a regular expression, as Ajv compiles one (`u`). */
+function badPattern(s) {
+  if (!s || typeof s !== 'object') return null;
+  const re = (p) => { try { new RegExp(p, 'u'); return null; } catch (e) { return `${e.message}`; } };
+  if (typeof s.pattern === 'string') { const e = re(s.pattern); if (e) return e; }
+  for (const k of Object.keys(s.patternProperties ?? {})) { const e = re(k); if (e) return e; }
+  for (const k of ONE) { const e = Array.isArray(s[k]) ? s[k].map(badPattern).find(Boolean) : badPattern(s[k]); if (e) return e; }
+  for (const k of MANY) if (Array.isArray(s[k])) for (const x of s[k]) { const e = badPattern(x); if (e) return e; }
+  for (const k of BY_NAME) if (s[k] && typeof s[k] === 'object') for (const x of Object.values(s[k])) { const e = badPattern(x); if (e) return e; }
+  return null;
 }
 
 // Keywords that name or resolve against a schema's place in the whole: refused in a declaration's schemas.

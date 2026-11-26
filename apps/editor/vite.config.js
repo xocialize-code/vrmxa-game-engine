@@ -2,12 +2,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import { vrmxgNotices } from '@vrmxg/bundle/notices';
 import { checkRuntimeSources } from '@vrmxg/bundle/node';
 import { listTemplates, CONTENT } from '../../content/templates/tools/new-project.mjs';
 // The editor ships the sample project as its starting project (the site's files, by their refs) and lists it in
 // project-files.json; a project opened in the Mac shell is served under /project/ instead. vrmxa-core is read from the
 // avatar studio beside this repository, in place (AB-D-0249). base './' for the shell's origins.
 const here = (p) => path.resolve(import.meta.dirname, p);
+// THIRD-PARTY-LICENCES.txt in the build (M6 W7, AB-T-0624): the licence texts and notices of what the bundle includes;
+// the Mac app opens it from Help › Third-Party Notices
+const pkg = JSON.parse(fs.readFileSync(here('package.json'), 'utf8'));
 const sample = here('../../content/sample');
 const listing = () => JSON.stringify(fs.readdirSync(sample, { recursive: true }).map(String).filter((f) => !f.split(path.sep).some((s) => s.startsWith('.')) && fs.statSync(path.join(sample, f)).isFile()).map((f) => f.split(path.sep).join('/')).sort());
 const shim = fs.readFileSync(here('static/vrmxg-core.js'), 'utf8');
@@ -106,7 +110,7 @@ const templates = () => ({
 
 export default defineConfig({
   root: here('.'), base: './', publicDir: sample,
-  plugins: [vue(), projectFiles(), runtimeFiles(), templates()],
+  plugins: [vue(), vrmxgNotices({ name: 'vrmxg-editor', version: pkg.version }), projectFiles(), runtimeFiles(), templates()],
   optimizeDeps: { exclude: ['sql.js'] },
   resolve: { alias: { '@vrmxa-core': here('../../../vrmxa-avatar-studio/packages/vrmxa-core/src') }, dedupe: ['three'] },
   build: { outDir: here('dist'), emptyOutDir: true, target: 'safari16', chunkSizeWarningLimit: 4000 },
