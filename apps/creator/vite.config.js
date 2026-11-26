@@ -14,7 +14,7 @@ const sample = here('../../content/sample');
 const listing = () => JSON.stringify(fs.readdirSync(sample, { recursive: true }).map(String).filter((f) => !f.split(path.sep).some((s) => s.startsWith('.')) && fs.statSync(path.join(sample, f)).isFile()).map((f) => f.split(path.sep).join('/')).sort());
 const shim = fs.readFileSync(here('../editor/static/vrmxg-core.js'), 'utf8');
 // vrmxa-core beside the repository; its real path too, since Vite checks served files by their real paths (a worktree
-// reaches the studio through a symlink)
+// reaches it through a symlink in .claude/worktrees/)
 const core = here('../../../vrmxa-core');
 const coreReal = fs.existsSync(core) ? fs.realpathSync(core) : core;
 

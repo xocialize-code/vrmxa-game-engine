@@ -1,7 +1,7 @@
 // M6 W4 (AB-T-0647): the starter content works in the engine. A VRMXA (the sample's Mira) cast with the default set
 // plays every slot of every set; every item, used as its type says, does what it should (the playground's ?mode=starter
-// runs the same code in a browser: apps/playground/src/starter-check.js). Skips without vrmxa-core (vrmxa-core
-// reads the character and the items) beside the repository.
+// runs the same code in a browser: apps/playground/src/starter-check.js). Skips without vrmxa-core (it reads
+// the character and the items) beside the repository.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';

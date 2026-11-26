@@ -22,7 +22,7 @@ const ROOT = path.resolve(import.meta.dirname, '../../../..');
 const SAMPLE = path.join(ROOT, 'content/sample');
 const DEV = path.resolve(ROOT, '..');
 const CORE = [path.join(DEV, 'vrmxa-core/src'), path.join(ROOT, '../../../vrmxa-core/src')].find((p) => fs.existsSync(path.join(p, 'index.js')));
-const STUDIO = CORE ? path.resolve(CORE, '../../../content/characters/out/approved') : null;
+const STUDIO = path.join(DEV, 'vrmxa-avatar-studio/content/characters/out/approved'); // the studio's own built characters
 const args = process.argv.slice(2);
 const studio = args.includes('--studio');
 const out = args.includes('--out') ? args[args.indexOf('--out') + 1] : null;

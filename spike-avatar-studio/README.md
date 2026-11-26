@@ -139,4 +139,5 @@ node spike-avatar-studio/scripts/cast.mjs                       # the same with 
 node spike-avatar-studio/scripts/live.mjs                       # the studio's live edits on the engine's character
 ```
 
-They need `vrmxa-avatar-studio` and `VRMXA_Specification` beside this repository, as the engine's tests do.
+They need `vrmxa-core`, `vrmxa-avatar-studio` (`build-character.sh` takes its sample items) and `VRMXA_Specification` beside this
+repository.

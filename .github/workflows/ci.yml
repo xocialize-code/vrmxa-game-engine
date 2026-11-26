@@ -2,8 +2,8 @@
 # and pull request.
 # Modelled on xocialize-code/vrmxa-avatar-studio's ci.yml. The VRM models the character spikes need are
 # never committed (see .gitignore), so those suites run on the development Mac only. vrmxa-core is public
-# (xocialize-code/vrmxa-core, pinned in vrmxa-core.json, AB-A-0337): CI needs no key for it. The tests that
-# read characters also need VRMXA_Specification, which is private, so they skip here.
+# (xocialize-code/vrmxa-core, pinned in vrmxa-core.json, AB-A-0337): CI could clone it with no key, but it
+# doesn't: the tests that read characters also need VRMXA_Specification, which is private, so they skip here.
 name: ci
 
 on:

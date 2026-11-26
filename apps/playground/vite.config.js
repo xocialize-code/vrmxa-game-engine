@@ -4,7 +4,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { vrmxgNotices } from '@vrmxg/bundle/notices';
 // The sample project is served as the site's files (scenes, models, clips by their refs); vrmxa-core is read
-// from the avatar studio beside this repository, in place (AB-D-0249). base './' for the Mac wrapper's origins.
+// from its repository beside this one (../vrmxa-core, pinned in vrmxa-core.json), in place (AB-D-0249). base './' for the Mac wrapper's origins.
 const here = (p) => path.resolve(import.meta.dirname, p);
 // THIRD-PARTY-LICENCES.txt in the build (M6 W7, AB-T-0624): the licence texts and notices of what the bundle includes;
 // the Mac app opens it from Help › Third-Party Notices

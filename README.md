@@ -78,9 +78,9 @@ their model's terms (MIT, Apache-2.0, DINOv3), each named in its row.
 planter tree and vending machine) were made with TRELLIS.2, whose DINOv3 conditioner is under the
 [DINOv3 License](https://ai.meta.com/resources/models-and-libraries/dinov3-license/).
 
-**Building the apps.** The engine's packages, tests and the Node acceptance runs need only this repository. The apps
-(playground, editor, creator and game runtime) also need `vrmxa-core`, the VRMXA format library, checked out beside
-it as `../vrmxa-core` at the commit [vrmxa-core.json](vrmxa-core.json) pins (`node scripts/vrmxa-core.mjs` clones it
-there), and every app build bundles it. It is public, [xocialize-code/vrmxa-core](https://github.com/xocialize-code/vrmxa-core),
-and licensed MIT OR Apache-2.0 like the engine. It reads the characters' base model from `VRMXA_Specification` beside
-it.
+**Building the apps.** The engine's packages and tests need only this repository (the tests that read characters skip
+without what follows). The apps (playground, editor, creator and game runtime) and the acceptance runs also need
+`vrmxa-core`, the VRMXA format library, checked out beside it as `../vrmxa-core` at the commit
+[vrmxa-core.json](vrmxa-core.json) pins (`node scripts/vrmxa-core.mjs` clones it there), and every app build bundles it.
+It is public, [xocialize-code/vrmxa-core](https://github.com/xocialize-code/vrmxa-core), and licensed MIT OR Apache-2.0
+like the engine. It reads the characters' base model from `VRMXA_Specification` beside it.

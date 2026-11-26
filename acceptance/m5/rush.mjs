@@ -28,6 +28,7 @@ import { installPortableMath } from '@vrmxg/dmath';
 import { loadRapier } from '@vrmxg/physics';
 import { openFolder, behavioursImporter, checkFolder } from '@vrmxg/bundle/node';
 import { acquireGpuLock, sayWaiting } from '../gpu-lock.mjs';
+import { pinState } from '../../scripts/vrmxa-core.mjs';
 import { vrmxaCore, PATHS } from '../../engine/packages/character/test/fixtures.mjs';
 import { gameScenes, worldLoader, freeWorld } from '../../apps/game/src/world.js';
 import { replaySession, firstDifference } from '../../apps/game/src/session.js';
@@ -39,6 +40,7 @@ const args = process.argv.slice(2), only = args.includes('--only') ? args[args.i
 const RESULTS = path.join(root, 'acceptance/results'), LOGS = path.join(RESULTS, 'm5-rush');
 const checks = [], say = (name, ok, detail) => { checks.push({ name, ok, detail }); console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${detail ? `: ${detail}` : ''}`); };
 if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-core beside the repository: the game has characters'); process.exit(1); }
+{ const pin = pinState(); if (!pin.ok) { console.error(`${pin.problem}: the logs this records are tied to the build, so it refuses`); process.exit(1); } }
 const GAME = path.join(root, 'apps/game');
 if (args.includes('--rebuild') || !fs.existsSync(path.join(GAME, 'dist/vrmxg-runtime.json'))) execFileSync('npx', ['vite', 'build'], { cwd: GAME, stdio: ['ignore', 'ignore', 'inherit'] });
 
