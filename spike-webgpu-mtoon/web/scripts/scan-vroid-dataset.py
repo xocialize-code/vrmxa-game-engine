@@ -54,7 +54,7 @@ for d in dirs:
             if '_BumpMap' in tp: feats.add('normal')
     else: continue
     out.append({'id': mid, 'spec': spec, 'mtoon': nmat, 'feats': sorted(feats), 'mb': round(os.path.getsize(vf)/1e6, 1),
-                'credit': lic.get('credit'), 'user': (m.get('character') or {}).get('user', {}).get('name'), 'gen': g.get('asset', {}).get('generator')})
+                'credit': lic.get('credit'), 'gen': g.get('asset', {}).get('generator')})
     if len(out) >= limit: break
 # The sample: every VRM 1.0, every UV-animated and rim-textured model, then 14 more VRM 0.x spread over exporters
 # and over rim / outline on and off.
