@@ -1,0 +1,242 @@
+{
+ "check": "AB-A-0335: the first frame's pipeline compile in WKWebView over loopback, with and without host.warmUp()",
+ "cold": true,
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+ "pass": true,
+ "cases": [
+  {
+   "case": "renderer=webgpu&warm=0&post=0",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": false,
+     "warmUpMs": null,
+     "firstFrameMs": 8646.2,
+     "secondFrameMs": 5.2,
+     "thirdFrameMs": 3.2,
+     "totalToFirstFrameMs": 8646.2,
+     "buildMs": 1043.1,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    },
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": false,
+     "warmUpMs": null,
+     "firstFrameMs": 8752.1,
+     "secondFrameMs": 5.7,
+     "thirdFrameMs": 4,
+     "totalToFirstFrameMs": 8752.1,
+     "buildMs": 1031.1,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": null,
+    "firstFrameMs": 8646.2,
+    "secondFrameMs": 5.2,
+    "totalToFirstFrameMs": 8646.2
+   }
+  },
+  {
+   "case": "renderer=webgpu&warm=1&post=0",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": false,
+     "warmUpMs": 5633.8,
+     "firstFrameMs": 1717.8,
+     "secondFrameMs": 4.6,
+     "thirdFrameMs": 2,
+     "totalToFirstFrameMs": 7351.6,
+     "buildMs": 1030.9,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    },
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": false,
+     "warmUpMs": 5674.7,
+     "firstFrameMs": 1700,
+     "secondFrameMs": 4.7,
+     "thirdFrameMs": 2.9,
+     "totalToFirstFrameMs": 7374.7,
+     "buildMs": 1034.8,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": 5633.8,
+    "firstFrameMs": 1700,
+    "secondFrameMs": 4.6,
+    "totalToFirstFrameMs": 7351.6
+   }
+  },
+  {
+   "case": "renderer=webgpu&warm=0&post=1",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": true,
+     "warmUpMs": null,
+     "firstFrameMs": 12843.3,
+     "secondFrameMs": 68.2,
+     "thirdFrameMs": 82.6,
+     "totalToFirstFrameMs": 12843.3,
+     "buildMs": 1031.8,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    },
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": true,
+     "warmUpMs": null,
+     "firstFrameMs": 12931.4,
+     "secondFrameMs": 66.9,
+     "thirdFrameMs": 82.8,
+     "totalToFirstFrameMs": 12931.4,
+     "buildMs": 1077.8,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": null,
+    "firstFrameMs": 12843.3,
+    "secondFrameMs": 66.9,
+    "totalToFirstFrameMs": 12843.3
+   }
+  },
+  {
+   "case": "renderer=webgpu&warm=1&post=1",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": true,
+     "warmUpMs": 10178.7,
+     "firstFrameMs": 88.5,
+     "secondFrameMs": 79.1,
+     "thirdFrameMs": 79.2,
+     "totalToFirstFrameMs": 10267.2,
+     "buildMs": 1055.2,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    },
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": true,
+     "warmUpMs": 10097.2,
+     "firstFrameMs": 85.9,
+     "secondFrameMs": 83.7,
+     "thirdFrameMs": 78.9,
+     "totalToFirstFrameMs": 10183.1,
+     "buildMs": 1026.1,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": 10097.2,
+    "firstFrameMs": 85.9,
+    "secondFrameMs": 79.1,
+    "totalToFirstFrameMs": 10183.1
+   }
+  },
+  {
+   "case": "renderer=webgl&warm=0&post=0",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": false,
+     "warmUpMs": null,
+     "firstFrameMs": 4125.6,
+     "secondFrameMs": 37.2,
+     "thirdFrameMs": 1,
+     "totalToFirstFrameMs": 4125.6,
+     "buildMs": 1020.9,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    },
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": false,
+     "warmUpMs": null,
+     "firstFrameMs": 4162.2,
+     "secondFrameMs": 36.5,
+     "thirdFrameMs": 1,
+     "totalToFirstFrameMs": 4162.2,
+     "buildMs": 1013.2,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": null,
+    "firstFrameMs": 4125.6,
+    "secondFrameMs": 36.5,
+    "totalToFirstFrameMs": 4125.6
+   }
+  },
+  {
+   "case": "renderer=webgl&warm=1&post=0",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": false,
+     "warmUpMs": 1109.7,
+     "firstFrameMs": 1198,
+     "secondFrameMs": 1.6,
+     "thirdFrameMs": 0.8,
+     "totalToFirstFrameMs": 2307.7,
+     "buildMs": 1025.9,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    },
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": false,
+     "warmUpMs": 1097.6,
+     "firstFrameMs": 1227,
+     "secondFrameMs": 1.5,
+     "thirdFrameMs": 0.8,
+     "totalToFirstFrameMs": 2324.6,
+     "buildMs": 1022.3,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": 1097.6,
+    "firstFrameMs": 1198,
+    "secondFrameMs": 1.5,
+    "totalToFirstFrameMs": 2307.7
+   }
+  }
+ ]
+}

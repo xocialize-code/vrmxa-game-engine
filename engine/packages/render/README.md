@@ -58,14 +58,57 @@ const lib = installCharacters(tree, { ...opts, mtoonMaterial: host.mtoonMaterial
 |---|---|
 | Backend choice (`backend.js`) | `webgl` (`RenderHost.create`'s own default), `webgpu` (throws where the page has no WebGPU: a forced backend never quietly becomes the other), `auto` (WebGPU where `navigator.gpu` gives an adapter, else WebGL). `backendFromQuery` reads `?renderer=`; without it, `auto`: the playground's and the editor's default since M4 W3 (AB-T-0575). three/webgpu is imported only for WebGPU, in its own chunk |
 | `RenderHost.create` | Resolves the backend; for WebGPU it warms the page up, creates and `await init()`s the view's `WebGPURenderer`, and loads the patched `MToonNodeMaterial` (`host.mtoonMaterial`; null on WebGL, so the loader keeps `MToonMaterial`). `host.backend` says which. three's `WebGPURenderer` falls back to its WebGL2 backend inside `init()` when WebGPU fails there (`requestDevice` after `requestAdapter` succeeded): the host checks `renderer.backend.isWebGPUBackend` (the warm-up's first, before the view's canvas is touched), and then a forced `webgpu` throws while `auto` makes a WebGL host. A failed three/webgpu load or warm-up isn't cached: the next `create` tries again |
-| Post (M4 W1) | `create({ post: { loadCube } })` makes the backend's own stack once the renderer exists: @vrmxg/post's `PostStack` (pmndrs) on WebGL, `TSLPostStack` on WebGPU (`makePostStack`; the TSL module loads only on WebGPU). `loadCube` returns a project `.cube`'s text. `setPost(stack)` installs or replaces one (its lens source, its size, the Environment's `post` on the next frame). A factory in `post` works as before |
+| Post (M4 W1) | `create({ post: { loadCube } })` makes the backend's own stack once the renderer exists: @vrmxg/post's `PostStack` (pmndrs) on WebGL, `TSLPostStack` on WebGPU (`makePostStack`; the TSL module loads only on WebGPU). Since AB-A-0335 @vrmxg/post itself loads only then (a dynamic import): a host made without `post` never loads pmndrs postprocessing. Split screen's `renderViews` comes from `@vrmxg/post/views`, which imports three only. `loadCube` returns a project `.cube`'s text. `setPost(stack)` installs or replaces one (its lens source, its size, the Environment's `post` on the next frame). A factory in `post` works as before |
 | The constructor | Still takes a renderer. A `WebGPURenderer` must come initialised, on its WebGPU backend, with `webgpu` (three/webgpu, for the PMREM) and `mtoonMaterial`; anything less throws rather than half-work |
 | Room environment | `roomEnvironment()` makes the PMREM with three/webgpu's `PMREMGenerator` on WebGPU (it used to return null without WebGL) |
 | Drawing-buffer size | `drawingBufferSize()`: WebGL reads its context as before; WebGPU has none, so `getDrawingBufferSize()`. The post stack and the lens are sized from it |
 | Node frame (gotcha 1) | `frameAt` calls `advanceNodeFrame()` before it draws: r187 updates a RenderPipeline's passes and the shadow maps once per `nodeFrame.frameId`, and only the renderer's own rAF loop advances it, so an export that never yields would draw every frame over the first one's passes. It's the private `renderer._nodes.nodeFrame`; the host throws if a three upgrade moves it |
-| Particles (M4 W2) | `host.particleRenderer`: the three.quarks `BatchedRenderer` class for this renderer, three.quarks' own on WebGL (the default there), `three.quarks/webgpu`'s on WebGPU (`create` loads it with three/webgpu, `loadParticleRenderer`). `attach(tree)` hands the host to every service with an `attachHost(host)`: the particles service takes its batch renderer from it. The tree keeps the host as `tree.renderHost` (cleared on detach), for a service installed later. A stand-in draws none (null) |
+| Particles (M4 W2) | `host.particleRenderer`: the three.quarks `BatchedRenderer` class for this renderer, three.quarks' own on WebGL, @vrmxg/particles/webgpu's (over `three.quarks/webgpu`'s) on WebGPU and on `webgl-fallback`. `attach(tree)` hands the host to every service with an `attachHost(host)`: the particles service takes its batch renderer from it. The tree keeps the host as `tree.renderHost` (cleared on detach), for a service installed later. A stand-in draws none (null). **Loaded on demand** (AB-A-0335): `particleRenderer` is `undefined` until `host.loadParticleRenderer(particleRenderers)` loads it, with @vrmxg/particles' `particleRenderers` (the host never imports three.quarks, so an app without particles neither loads nor ships it). The particles service does that on attach and holds the tree's steps until the batch is in (core's `holds` / `settle`); `frameAt`, `captureStill` and `RenderHost.replace` wait for it (`host.ready()`), so no offline frame is drawn with emitters and no batch. An app that wants particles in its first live frame, or checks frames against digests (the playground), awaits `loadParticleRenderer` before it attaches |
 | Warm-up renderer (gotcha 6) | `warmUpWebGPU()`: one throwaway `WebGPURenderer`, initialised with a room PMREM, created once per page before any other. The page's first `WebGPURenderer` compiles some materials differently, so its frames differ from later renderers' by ±1 in a few pixels. It's kept, not disposed, as the spike measured it |
 | The three-vrm patch | `scripts/patch-three-vrm.mjs` applies `engine/patches/three-vrm-3.5.5-nodes-r187.patch` to `@pixiv/three-vrm`'s `lib/nodes/index.module.js` on install (AB-T-0553's six lines plus patch 5's twelve, AB-T-0586: the light's shadow goes into MToon's toon shading, not its light colour, so shadowed MToon takes the shade colour as on WebGL; AB-D-0274), and replaces the CommonJS `index.cjs` (stock, which loads on r187 and draws wrong) with a stub that throws. `--check` fails unless each file is exactly stock 3.5.5 or exactly patched; CI adds `--require-patched`, which also fails a stock file, so it proves the install patched |
+
+### What an app without post or particles loads (AB-A-0335)
+
+`size/main.js` is the smallest app on the host (`RenderHost.create`, `mtoonMaterial`, `captureStill`, as the avatar
+studio's Quick Look viewer uses them); `node engine/packages/render/size/size.mjs` builds it with Vite and reports what
+loads at start (the entry and its static imports) and what the build ships (every chunk). Before: 1,106,788 bytes at start
+(312,392 gzipped), with pmndrs postprocessing (243 KB rendered), quarks.core (145 KB) and three.quarks (57 KB of its 83 KB) in it;
+1,941,701 bytes shipped. After: 776,396 at start (197,383 gzipped), none of the three; 1,800,783 shipped (three.quarks is
+gone from the build; @vrmxg/post's chunks, 205 KB with pmndrs, ship but never load without `post`). Both runs are in
+`acceptance/results/m6-render-size.json`.
+
+### Warming a model's pipelines up (AB-A-0335)
+
+```js
+await host.warmUp(model);          // before the model is shown (or warmUp() for everything the tree draws)
+scene.add(model);                  // its first frame meets compiled pipelines
+```
+
+WebKit compiles a WebGPU pipeline the first time a draw needs it, and a draw waits. In a fresh WKWebView (loopback, its
+Metal cache cleared) the sample cafe with Mira and Hana took 8.7 s to its first frame; the studio measured 10–12 s for its
+models, 0.13–0.18 s cached. `warmUp(object, { camera, draw })` does two things:
+1. `renderer.compileAsync` through a copy of the view's camera with every layer enabled. r187's compileAsync skips what the
+   camera's layers exclude, as `render` does, so "put it on a hidden layer and compile" compiles nothing on WebGPU. A model
+   not in the host's scene yet compiles with the scene's lights and environment.
+2. On WebGPU, one draw nobody sees, into a throwaway target made like three's framebuffer target (or through the post
+   stack, whose last pass draws into it), through the view's camera with every layer on for that one synchronous draw, the
+   model in the scene for it. That compiles what compileAsync doesn't: the shadow maps' materials, the post stack's
+   passes, pipelines that differ only by draw state. Lights' pending shadow updates are left as they were. Then it waits
+   for the GPU. WebGL takes step 1 only (a draw into a target there compiles programs without the canvas's tone mapping).
+
+It resolves with `{ ms, compileMs, drawMs }`; a stand-in, lost or disposed host returns `{ skipped: true }`. Measured:
+`acceptance/m6/warmup-wkwebview.sh` (the playground's `?mode=warmup`); the numbers are in the receipt named in the PR.
+
+### Tone mapping and `toneMapped: false` on WebGPU
+
+r187's `WebGPURenderer` draws a frame with tone mapping (or an sRGB output) into its framebuffer target and tone-maps the
+whole target on its way to the canvas (`Renderer.needsFrameBufferTarget`), so a material's `toneMapped: false` does
+nothing there: anything drawn into the canvas after the frame, or in it, is tone-mapped with it. The host's debug draw
+lives in `host.scene` and is tone-mapped on WebGPU (its colours read a little darker than on WebGL; they are diagnostics).
+The editor's viewport aids are drawn through its composite pass on WebGPU (`apps/editor/src/viewport/composite.js`), so they
+keep their colours (`acceptance/m6/aids-tonemap.mjs`). r187's WebGPURenderer also doesn't draw `LineLoop` (use a closed
+`Line`) and ignores `material.clippingPlanes` (use a `ClippingGroup` or a `maskNode`): lint refuses both in engine and app
+sources.
 
 **Not in W0:** TSL post (W1, now in: the row above), particles and readback (W2, now in: above and `@vrmxg/export`'s
 `GPUReadback`), both backends in the acceptance and the default flip (W3). The playground's speech bubbles (troika) are

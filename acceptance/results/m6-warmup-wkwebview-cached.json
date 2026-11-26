@@ -1,0 +1,158 @@
+{
+ "check": "AB-A-0335: the first frame's pipeline compile in WKWebView over loopback, with and without host.warmUp()",
+ "cold": false,
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+ "pass": true,
+ "cases": [
+  {
+   "case": "renderer=webgpu&warm=0&post=0",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": false,
+     "warmUpMs": null,
+     "firstFrameMs": 249.7,
+     "secondFrameMs": 3.9,
+     "thirdFrameMs": 2.4,
+     "totalToFirstFrameMs": 249.7,
+     "buildMs": 1037.5,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": null,
+    "firstFrameMs": 249.7,
+    "secondFrameMs": 3.9,
+    "totalToFirstFrameMs": 249.7
+   }
+  },
+  {
+   "case": "renderer=webgpu&warm=1&post=0",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": false,
+     "warmUpMs": 311.8,
+     "firstFrameMs": 10.6,
+     "secondFrameMs": 3.4,
+     "thirdFrameMs": 1.9,
+     "totalToFirstFrameMs": 322.4,
+     "buildMs": 1033,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": 311.8,
+    "firstFrameMs": 10.6,
+    "secondFrameMs": 3.4,
+    "totalToFirstFrameMs": 322.4
+   }
+  },
+  {
+   "case": "renderer=webgpu&warm=0&post=1",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": true,
+     "warmUpMs": null,
+     "firstFrameMs": 282.7,
+     "secondFrameMs": 23.6,
+     "thirdFrameMs": 16.3,
+     "totalToFirstFrameMs": 282.7,
+     "buildMs": 1032,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": null,
+    "firstFrameMs": 282.7,
+    "secondFrameMs": 23.6,
+    "totalToFirstFrameMs": 282.7
+   }
+  },
+  {
+   "case": "renderer=webgpu&warm=1&post=1",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": true,
+     "warmUpMs": 372.6,
+     "firstFrameMs": 27.1,
+     "secondFrameMs": 70.6,
+     "thirdFrameMs": 16.2,
+     "totalToFirstFrameMs": 399.7,
+     "buildMs": 1022,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": 372.6,
+    "firstFrameMs": 27.1,
+    "secondFrameMs": 70.6,
+    "totalToFirstFrameMs": 399.7
+   }
+  },
+  {
+   "case": "renderer=webgl&warm=0&post=0",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": false,
+     "warmUpMs": null,
+     "firstFrameMs": 280,
+     "secondFrameMs": 8.6,
+     "thirdFrameMs": 0.9,
+     "totalToFirstFrameMs": 280,
+     "buildMs": 1014,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": null,
+    "firstFrameMs": 280,
+    "secondFrameMs": 8.6,
+    "totalToFirstFrameMs": 280
+   }
+  },
+  {
+   "case": "renderer=webgl&warm=1&post=0",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": false,
+     "warmUpMs": 48,
+     "firstFrameMs": 208.7,
+     "secondFrameMs": 1.7,
+     "thirdFrameMs": 0.9,
+     "totalToFirstFrameMs": 256.7,
+     "buildMs": 1014.6,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": 48,
+    "firstFrameMs": 208.7,
+    "secondFrameMs": 1.7,
+    "totalToFirstFrameMs": 256.7
+   }
+  }
+ ]
+}

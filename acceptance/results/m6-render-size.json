@@ -1,0 +1,185 @@
+{
+ "check": "AB-A-0335: what the smallest app on the render host loads (engine/packages/render/size/size.mjs)",
+ "app": "RenderHost.create, mtoonMaterial, captureStill (size/main.js)",
+ "vite": "8.3.8",
+ "before": {
+  "sha": "764631f",
+  "initial": {
+   "files": 4,
+   "raw": 1106788,
+   "gzip": 312392
+  },
+  "total": {
+   "files": 9,
+   "raw": 1941701,
+   "gzip": 568832
+  },
+  "lazy": [
+   {
+    "file": "assets/index.module.js",
+    "raw": 10870,
+    "modules": [
+     "@pixiv/three-vrm"
+    ]
+   },
+   {
+    "file": "assets/three.webgpu.js",
+    "raw": 19433,
+    "modules": []
+   },
+   {
+    "file": "assets/three.webgpu.js",
+    "raw": 719802,
+    "modules": [
+     "three"
+    ]
+   },
+   {
+    "file": "assets/tsl.js",
+    "raw": 68890,
+    "modules": [
+     "three",
+     "@vrmxg/post"
+    ]
+   },
+   {
+    "file": "assets/webgpu.js",
+    "raw": 15918,
+    "modules": [
+     "three.quarks",
+     "@vrmxg/particles"
+    ]
+   }
+  ],
+  "packages": {
+   "three": {
+    "bytes": 2580005,
+    "initial": 1209304
+   },
+   "postprocessing": {
+    "bytes": 242883,
+    "initial": 242883
+   },
+   "quarks.core": {
+    "bytes": 145364,
+    "initial": 145364
+   },
+   "three.quarks": {
+    "bytes": 83400,
+    "initial": 56957
+   },
+   "@vrmxg/render": {
+    "bytes": 39118,
+    "initial": 39118
+   },
+   "@vrmxg/post": {
+    "bytes": 37758,
+    "initial": 16093
+   },
+   "@pixiv/three-vrm": {
+    "bytes": 18047,
+    "initial": 0
+   },
+   "@vrmxg/export": {
+    "bytes": 8756,
+    "initial": 8756
+   },
+   "app": {
+    "bytes": 3419,
+    "initial": 3419
+   },
+   "@vrmxg/particles": {
+    "bytes": 1539,
+    "initial": 0
+   }
+  },
+  "vite": "8.3.8"
+ },
+ "after": {
+  "initial": {
+   "files": 3,
+   "raw": 776396,
+   "gzip": 197383
+  },
+  "total": {
+   "files": 9,
+   "raw": 1800783,
+   "gzip": 534741
+  },
+  "lazy": [
+   {
+    "file": "assets/index.module.js",
+    "raw": 10870,
+    "modules": [
+     "@pixiv/three-vrm"
+    ]
+   },
+   {
+    "file": "assets/spec.js",
+    "raw": 2256,
+    "modules": [
+     "@vrmxg/post"
+    ]
+   },
+   {
+    "file": "assets/src.js",
+    "raw": 203318,
+    "modules": [
+     "postprocessing",
+     "@vrmxg/post"
+    ]
+   },
+   {
+    "file": "assets/three.webgpu.js",
+    "raw": 19433,
+    "modules": []
+   },
+   {
+    "file": "assets/three.webgpu.js",
+    "raw": 719623,
+    "modules": [
+     "three"
+    ]
+   },
+   {
+    "file": "assets/tsl.js",
+    "raw": 68887,
+    "modules": [
+     "three",
+     "@vrmxg/post"
+    ]
+   }
+  ],
+  "packages": {
+   "three": {
+    "bytes": 2579799,
+    "initial": 1209098
+   },
+   "postprocessing": {
+    "bytes": 242883,
+    "initial": 0
+   },
+   "@vrmxg/render": {
+    "bytes": 41941,
+    "initial": 41941
+   },
+   "@vrmxg/post": {
+    "bytes": 37758,
+    "initial": 846
+   },
+   "@pixiv/three-vrm": {
+    "bytes": 18047,
+    "initial": 0
+   },
+   "@vrmxg/export": {
+    "bytes": 8779,
+    "initial": 8779
+   },
+   "app": {
+    "bytes": 3419,
+    "initial": 3419
+   }
+  },
+  "vite": "8.3.8"
+ }
+}
