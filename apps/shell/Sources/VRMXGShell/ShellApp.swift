@@ -279,6 +279,7 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
 
     /// The page reloads or its process ended: a close or quit that was waiting for its answer goes on.
     func pageGone() {
+        if config.watchesProject { watches.stop() } // a new page watches what it asks for (shell 0.15.0): nothing of the last one's
         guard config.asksBeforeClosing else { return }
         closing.pageGone()
         closing.unsaved = false // a new page has nothing unsaved until it says so

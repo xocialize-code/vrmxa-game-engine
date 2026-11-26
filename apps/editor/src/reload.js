@@ -14,9 +14,12 @@
 //     it only when its class's source text is unchanged too: nothing says what its state is, so changed code starts
 //     afresh, as the fingerprint counts such a behaviour by its code;
 //   - otherwise it restarts on that node: a new instance, its ready(), its own fresh state.
-// Either way the new instance's ready() runs (it sets up what the behaviour listens to), and the code listeners the old
-// instance added in its own ready() are dropped (core's `readying` / `dropListenersOf`). Timers a behaviour set with a
-// function keep the old function: a limit of in-place reload (the editor's README says so).
+// Either way the new instance's ready() runs (it sets up what the behaviour listens to and the timers it keeps), and the
+// code listeners, timers and tweens the old instance made in its own ready() go (core's `readying`, `dropListenersOf`,
+// `timers.cancelMadeBy`); a kept behaviour's timers start again from its new ready(). What a behaviour sets up anywhere
+// else (its constructor, a step, a signal) isn't known to be its own and stays, running the old code: a limit of
+// in-place reload (the editor's README says so). A failed swap cancels what the new instances made and gives the timer
+// ids back, so the world's state is as it was.
 //
 // A reload that throws (the module won't import, its declarations are refused, a new ready() or setState throws) keeps
 // the old code running, as it was, and shows the error in a field of its own (the host's `behaviourError`, AB-T-0654
@@ -113,7 +116,7 @@ export function swapBehaviours(tree, before, after, plan) {
     return running === old || (!!old && Object.getPrototypeOf(running) === old);
   };
   const touched = new Map([...plan].filter(([name]) => ours(name)));
-  const undo = [], made = [], gone = [];
+  const undo = [], made = [], gone = [], nextId = tree.timers.nextId;
   const did = { kept: new Set(), restarted: new Set(), added: new Set(), removed: new Set() };
   try {
     for (const node of tree.all()) {
@@ -136,16 +139,31 @@ export function swapBehaviours(tree, before, after, plan) {
     }
     for (const m of made) { tree.readyBehaviour(m.b); if (m.state !== null && m.state !== undefined) m.b.setState(m.state); }
   } catch (e) {
-    for (const m of made) tree.dropListenersOf(m.b);
+    for (const m of made) { tree.dropListenersOf(m.b); tree.timers.cancelMadeBy(m.b); }
+    tree.timers.nextId = nextId; // the ids a failed swap took are free again: the state is as it was
     for (const u of undo) u.node.behaviours = u.behaviours;
     tree._order = null;
     throw e;
   }
-  for (const b of gone) tree.dropListenersOf(b);
+  for (const b of gone) { tree.dropListenersOf(b); tree.timers.cancelMadeBy(b); } // what the old code set up in its ready() goes with it
   for (const [name, p] of touched) { if (p.action === 'remove') tree.behaviourClasses.delete(name); else tree.behaviourClasses.set(name, after.get(name)); }
   tree._order = null; // which nodes have step work may have changed
   const sorted = (s) => [...s].sort();
   return { kept: sorted(did.kept), restarted: sorted(did.restarted), added: sorted(did.added), removed: sorted(did.removed), instances: made.length };
+}
+
+/** A take (the last play, a take file, a bare recording as `{ input }`) recorded across a hot reload: its input says so. */
+export const reloadedTake = (t) => (t?.input?.reloaded?.length ?? 0) > 0;
+
+/**
+ * Refuse to replay a take recorded across a hot reload (exported as video, baked into a sequence, replayed as a fixture):
+ * code that changed part-way through wouldn't play it again as it was.
+ * @param {any} take @param {string} id 'play' (the last play) or the take file's ref
+ */
+export function assertReplayable(take, id) {
+  if (!reloadedTake(take)) return;
+  const what = id === 'play' ? 'the last play reloaded the project\'s behaviours while it ran' : `${id} was recorded across a hot reload of the project's behaviours`;
+  throw Object.assign(new Error(`${what}, so it can't be replayed exactly: play it again without reloading`), { code: 'reloaded' });
 }
 
 /**
@@ -192,11 +210,14 @@ export function applyReload({ tree, before, after, registries }) {
  * @param {() => { tree: any, registries: any[], world: any } | null} o.target the play world now (null once stopped)
  * @param {(r: any) => void} o.report a reload's result ({ ok, step, kept, restarted, … } or { ok: false, error })
  * @param {number} [o.settle] ms to wait after a change for more (an editor writes a file in more than one go)
+ * @param {(() => Promise<Map<string, string> | null>) | null} [o.read] the graph's text now, without importing it: once
+ *   the watch is up, a change saved before it was (while Play built its world) is reloaded at once
  */
 export class HotReload {
-  constructor({ ref, classes, sources, load, watch, unwatch, onChanged, target, report, settle = 120 }) {
-    Object.assign(this, { ref, classes, sources, load, watch, unwatch, target, report, settle });
+  constructor({ ref, classes, sources, load, watch, unwatch, onChanged, target, report, settle = 120, read = null }) {
+    Object.assign(this, { ref, classes, sources, load, watch, unwatch, target, report, settle, read });
     this.count = 0; this.running = null; this.again = false; this.stopped = false; this.timer = null;
+    /** The last reload failed, and the running code isn't what is on disk. */ this.failed = false;
     this.off = onChanged((paths) => this.changed(paths));
   }
 
@@ -208,6 +229,10 @@ export class HotReload {
     if (this.stopped) return []; // Play stopped while the module was read: nothing to watch
     await this.watch([...this.sources.keys()]);
     if (this.stopped) { try { await this.unwatch(); } catch { /* gone already */ } return []; }
+    // the shell compares with the files as they were when the watch began: an edit saved between the module's read and
+    // that moment would never be heard, so compare once now (the reload runs on; `running` settles when it is done)
+    const now = this.read ? await this.read() : null;
+    if (now && !sameSources(now, this.sources) && !this.stopped) this.reload();
     return [...this.sources.keys()];
   }
 
@@ -228,21 +253,29 @@ export class HotReload {
 
   async once() {
     let loaded;
-    try { loaded = await this.load(this.ref); } catch (e) { if (!this.stopped) this.report({ ok: false, error: message(e), step: this.target()?.tree.clock.step ?? null }); return; }
+    try { loaded = await this.load(this.ref); } catch (e) {
+      if (!this.stopped) { this.failed = true; this.report({ ok: false, error: message(e), step: this.target()?.tree.clock.step ?? null }); }
+      return;
+    }
     if (this.stopped) return;
     // what is watched follows the graph (an import added or taken out), whether or not the reload takes
-    const same = sameSources(this.sources, loaded.sources);
     if (!sameKeys(this.sources, loaded.sources)) { try { await this.watch([...loaded.sources.keys()]); } catch { /* the old paths stay watched */ } }
-    if (same) return; // written again unchanged (a save with no edit): nothing to reload, nothing marked
+    // `sources` is always the text the running code came from: the same text again (a save with no edit, or an edit that
+    // failed put back) reloads nothing and marks nothing, but after a failure it says the error is over
+    if (sameSources(this.sources, loaded.sources)) {
+      if (this.failed) { this.failed = false; this.report({ ok: true, unchanged: true, n: this.count, step: this.target()?.tree.clock.step ?? null }); }
+      return;
+    }
     const t = this.target();
     if (!t) return;
     const step = t.tree.clock.step;
     let r;
     try { r = applyReload({ tree: t.tree, before: this.classes, after: loaded.classes, registries: t.registries }); } catch (e) {
-      this.sources = loaded.sources; // this text was tried: the next change reloads what is written then
+      this.failed = true;
       this.report({ ok: false, error: message(e), step });
       return;
     }
+    this.failed = false;
     this.classes = loaded.classes; this.sources = loaded.sources; this.count++;
     const entry = { step, kept: r.kept, restarted: r.restarted, added: r.added, removed: r.removed };
     markRecording(t.world, entry);

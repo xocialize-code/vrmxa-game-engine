@@ -156,11 +156,11 @@ export class SceneTree {
     this._order = null;
   }
 
-  /** A behaviour's ready(), with the code listeners it adds there marked as its own (`readying`). */
+  /** A behaviour's ready(), with the code listeners, timers and tweens it makes there marked as its own (`readying`). */
   readyBehaviour(b) {
-    const was = this.readying;
-    this.readying = b;
-    try { b.ready(); } finally { this.readying = was; }
+    const was = this.readying, wasT = this.timers.readying;
+    this.readying = b; this.timers.readying = b;
+    try { b.ready(); } finally { this.readying = was; this.timers.readying = wasT; }
   }
 
   _attachBehaviours(node) {

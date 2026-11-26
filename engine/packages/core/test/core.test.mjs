@@ -279,3 +279,16 @@ test('code listeners a behaviour adds in its ready() are its own, and dropListen
   assert.equal(tree.readying, null);
   assert.ok(!JSON.stringify(tree.getState()).includes('owner'), 'nothing of it is in the state');
 });
+
+test('timers and tweens a behaviour makes in its ready() are its own; cancelMadeBy cancels only those, and `by` is never in the state', () => {
+  class Clocky extends Behaviour { ready() { this.tree.timers.after(this.node, 1, () => {}, { repeat: true }); this.tree.timers.tween(this.node, this.node.object3d, 'position', [1, 0, 0], 1); } }
+  const tree = new SceneTree({ registry: reg, behaviours: new Map([['clocky', Clocky]]) }).instantiate({ format: 'vrmxs', version: 1, id: 't', nodes: [
+    { id: 'a', type: 'Node3D', behaviours: [{ use: 'clocky' }] }, { id: 'b', type: 'Node3D', behaviours: [{ use: 'clocky' }] },
+  ] });
+  tree.timers.after(tree.find('a'), 1, () => {}); // nobody's
+  assert.equal(tree.timers.items.size, 5);
+  assert.equal(tree.timers.readying, null);
+  assert.equal(tree.timers.cancelMadeBy(tree.find('a').behaviours[0]), 2);
+  assert.equal(tree.timers.items.size, 3);
+  assert.ok(!JSON.stringify(tree.getState()).includes('"by"'));
+});
