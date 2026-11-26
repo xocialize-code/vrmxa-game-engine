@@ -1,0 +1,15 @@
+{
+ "check": "M6 W6 (AB-T-0639) in the Mac game app: WebKit's GPU process killed twice under a replay of the unbroken session; the game plays on to the log's final hash (acceptance/m6/device-loss-mac.sh, read with AppProbe)",
+ "ok": true,
+ "date": "2026-11-25",
+ "app": "apps/game-mac morning-rush.app (Release, shell 0.13.0), build 4bb637a86d6b, WebGPU, 1920x1080, macOS 27.3 beta, M5 Max",
+ "log": { "steps": 4333, "final": "83a97551fb38a7d6", "from": "acceptance/results/m6-device-loss/lose.json" },
+ "kills": ["18:53:07 GPU process (pid of the app's own, by responsible process)", "18:53:30 GPU process again"],
+ "frameStats": "4335 frames in 85 s: 50.7 fps, p99 25.0 ms, max 6314.0 ms, 43 over 25 ms, at 1920×1080; 1 replays played, 2 scene changes; GPU lost 2×, made again on webgl-fallback, webgl-fallback; replay ended: 4333 steps, final 83a97551fb38a7d6",
+ "sameFinalHashAsLog": true,
+ "notes": [
+  "With the GPU process really killed, WebGPU could not be had again at once (the new renderer's init fell back inside WebKit), so both recoveries went to three's WebGL2 backend ('webgl-fallback'), which drew the world on; the longest frame, 6.3 s, is the first recovery, with WebKit's GPU process starting again.",
+  "Every per-step hash of this replay is checked in Chromium (device-loss.mjs, 16/16) and in WKWebView (device-loss-wkwebview.sh, 6/6) with device.destroy(), a failing createCommandEncoder and a lost WebGL context; here the final hash is read from the page's readout."
+ ],
+ "still": "acceptance/results/m6-device-loss-mac.png"
+}

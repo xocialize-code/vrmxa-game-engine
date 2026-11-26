@@ -167,7 +167,12 @@ Check switches: `?lose=<step>:<how>[,…]` loses the device as the session reach
 `?recover=<backend>[,…]` picks what is made again. With `?replay=` the result (`window.__result`) carries `losses`,
 `recoveries`, `displays` and `canvases`. `acceptance/m6/device-loss.mjs` plays a session in Chromium, then replays it
 through three losses on WebGPU, one with the WebGL2 fallback and one lost WebGL context, each against the unbroken
-session's hash after every step; `device-loss-wkwebview.sh` does the same in WKWebView.
+session's hash after every step (16 of 16, 2026-11-25); `device-loss-wkwebview.sh` does the same in WKWebView over
+the scheme and loopback (6 of 6). In this app, `device-loss-mac.sh` kills WebKit's real GPU process (the app's own,
+found by its responsible process) twice under the same replay: the game came back both times, on three's WebGL2
+backend (WebGPU couldn't be had again at once after a real kill; the first recovery took one 6.3 s frame), and the
+replay ended on the unbroken session's final hash (`acceptance/results/m6-device-loss-mac.json`). A game that falls
+back stays on WebGL for the rest of the session.
 
 ## Checked
 

@@ -1,0 +1,491 @@
+{
+ "check": "M6 W6 (AB-T-0639) in WKWebView: the game app replays a session to its per-step hashes while its GPU device is lost under it (device.destroy(), a failing createCommandEncoder, a lost WebGL context), made again on WebGPU, on three's WebGL2 backend and on WebGL, over the scheme and loopback",
+ "pass": true,
+ "log": {
+  "build": "4bb637a86d6befb6c5d5053ebc6c9ba1dfdfd7e42e68ad0034d145cc05513f62",
+  "steps": 4333,
+  "final": {
+   "step": 4333,
+   "scene": "game/lost.vrmxs",
+   "hash": "83a97551fb38a7d6"
+  }
+ },
+ "runs": [
+  {
+   "origin": "scheme",
+   "case": "replay=logs/lose.json&renderer=webgpu&lose=60:destroy,961:destroy,2161:encoder",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "steps": 4333,
+   "final": {
+    "hash": "83a97551fb38a7d6",
+    "scene": "game/lost.vrmxs",
+    "step": 4333
+   },
+   "sameAsLog": true,
+   "losses": [
+    {
+     "at": 60,
+     "backend": "webgpu",
+     "how": "destroy",
+     "step": 60
+    },
+    {
+     "at": 961,
+     "backend": "webgpu",
+     "how": "destroy",
+     "step": 961
+    },
+    {
+     "at": 2161,
+     "backend": "webgpu",
+     "how": "encoder",
+     "step": 2161
+    }
+   ],
+   "recoveries": [
+    {
+     "backend": "webgpu",
+     "lost": {
+      "api": "WebGPU",
+      "message": "the GPU device was lost",
+      "reason": "destroyed"
+     },
+     "ms": 5,
+     "scene": "game/title.vrmxs",
+     "step": 60,
+     "tried": []
+    },
+    {
+     "backend": "webgpu",
+     "lost": {
+      "api": "WebGPU",
+      "message": "the GPU device was lost",
+      "reason": "destroyed"
+     },
+     "ms": 5,
+     "scene": "game/level.vrmxs",
+     "step": 961,
+     "tried": []
+    },
+    {
+     "backend": "webgpu",
+     "lost": {
+      "api": "WebGPU",
+      "message": "GPUDevice.createCommandEncoder: Unable to make command encoder.",
+      "reason": "draw failed"
+     },
+     "ms": 11,
+     "scene": "game/level.vrmxs",
+     "step": 2162,
+     "tried": []
+    }
+   ],
+   "displays": [
+    {
+     "step": 60,
+     "text": "The display stopped. Restarting it…"
+    },
+    {
+     "step": 60,
+     "text": ""
+    },
+    {
+     "step": 961,
+     "text": "The display stopped. Restarting it…"
+    },
+    {
+     "step": 961,
+     "text": ""
+    },
+    {
+     "step": 2162,
+     "text": "The display stopped. Restarting it…"
+    },
+    {
+     "step": 2162,
+     "text": ""
+    }
+   ],
+   "frames": {
+    "fps": 57.48760813809783,
+    "frames": 4326,
+    "height": 720,
+    "max": 590,
+    "mean": 17.395053166897828,
+    "over25": 45,
+    "over34": 36,
+    "p50": 17,
+    "p95": 17,
+    "p99": 26,
+    "seconds": 75.251,
+    "width": 1280
+   },
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgpu_lose_60:destroy_961:destroy_2161:encoder__scheme.png"
+  },
+  {
+   "origin": "scheme",
+   "case": "replay=logs/lose.json&renderer=webgpu&recover=webgl-fallback&lose=1261:destroy",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl-fallback",
+   "steps": 4333,
+   "final": {
+    "hash": "83a97551fb38a7d6",
+    "scene": "game/lost.vrmxs",
+    "step": 4333
+   },
+   "sameAsLog": true,
+   "losses": [
+    {
+     "at": 1261,
+     "backend": "webgpu",
+     "how": "destroy",
+     "step": 1261
+    }
+   ],
+   "recoveries": [
+    {
+     "backend": "webgl-fallback",
+     "lost": {
+      "api": "WebGPU",
+      "message": "the GPU device was lost",
+      "reason": "destroyed"
+     },
+     "ms": 15,
+     "scene": "game/level.vrmxs",
+     "step": 1261,
+     "tried": []
+    }
+   ],
+   "displays": [
+    {
+     "step": 1261,
+     "text": "The display stopped. Restarting it…"
+    },
+    {
+     "step": 1261,
+     "text": ""
+    }
+   ],
+   "frames": {
+    "fps": 50.785788899191324,
+    "frames": 4327,
+    "height": 720,
+    "max": 7050,
+    "mean": 19.690547723596026,
+    "over25": 41,
+    "over34": 35,
+    "p50": 17,
+    "p95": 18,
+    "p99": 24,
+    "seconds": 85.201,
+    "width": 1280
+   },
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgpu_recover_webgl-fallback_lose_1261:destroy__scheme.png"
+  },
+  {
+   "origin": "scheme",
+   "case": "replay=logs/lose.json&renderer=webgl&lose=1261:context",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "steps": 4333,
+   "final": {
+    "hash": "83a97551fb38a7d6",
+    "scene": "game/lost.vrmxs",
+    "step": 4333
+   },
+   "sameAsLog": true,
+   "losses": [
+    {
+     "at": 1261,
+     "backend": "webgl",
+     "how": "context",
+     "step": 1261
+    }
+   ],
+   "recoveries": [
+    {
+     "backend": "webgl",
+     "lost": {
+      "api": "WebGL",
+      "message": "the WebGL context was lost",
+      "reason": "context lost"
+     },
+     "ms": 6,
+     "scene": "game/level.vrmxs",
+     "step": 1261,
+     "tried": []
+    }
+   ],
+   "displays": [
+    {
+     "step": 1261,
+     "text": "The display stopped. Restarting it…"
+    },
+    {
+     "step": 1261,
+     "text": ""
+    }
+   ],
+   "frames": {
+    "fps": 57.81302059039115,
+    "frames": 4338,
+    "height": 720,
+    "max": 577,
+    "mean": 17.29714153988013,
+    "over25": 36,
+    "over34": 33,
+    "p50": 17,
+    "p95": 18,
+    "p99": 20,
+    "seconds": 75.035,
+    "width": 1280
+   },
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgl_lose_1261:context__scheme.png"
+  },
+  {
+   "origin": "loopback",
+   "case": "replay=logs/lose.json&renderer=webgpu&lose=60:destroy,961:destroy,2161:encoder",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "steps": 4333,
+   "final": {
+    "hash": "83a97551fb38a7d6",
+    "scene": "game/lost.vrmxs",
+    "step": 4333
+   },
+   "sameAsLog": true,
+   "losses": [
+    {
+     "at": 60,
+     "backend": "webgpu",
+     "how": "destroy",
+     "step": 60
+    },
+    {
+     "at": 961,
+     "backend": "webgpu",
+     "how": "destroy",
+     "step": 961
+    },
+    {
+     "at": 2161,
+     "backend": "webgpu",
+     "how": "encoder",
+     "step": 2161
+    }
+   ],
+   "recoveries": [
+    {
+     "backend": "webgpu",
+     "lost": {
+      "api": "WebGPU",
+      "message": "the GPU device was lost",
+      "reason": "destroyed"
+     },
+     "ms": 3.8400000000001455,
+     "scene": "game/title.vrmxs",
+     "step": 60,
+     "tried": []
+    },
+    {
+     "backend": "webgpu",
+     "lost": {
+      "api": "WebGPU",
+      "message": "the GPU device was lost",
+      "reason": "destroyed"
+     },
+     "ms": 5.120000000002619,
+     "scene": "game/level.vrmxs",
+     "step": 961,
+     "tried": []
+    },
+    {
+     "backend": "webgpu",
+     "lost": {
+      "api": "WebGPU",
+      "message": "GPUDevice.createCommandEncoder: Unable to make command encoder.",
+      "reason": "draw failed"
+     },
+     "ms": 12.180000000000291,
+     "scene": "game/level.vrmxs",
+     "step": 2162,
+     "tried": []
+    }
+   ],
+   "displays": [
+    {
+     "step": 60,
+     "text": "The display stopped. Restarting it…"
+    },
+    {
+     "step": 60,
+     "text": ""
+    },
+    {
+     "step": 961,
+     "text": "The display stopped. Restarting it…"
+    },
+    {
+     "step": 961,
+     "text": ""
+    },
+    {
+     "step": 2162,
+     "text": "The display stopped. Restarting it…"
+    },
+    {
+     "step": 2162,
+     "text": ""
+    }
+   ],
+   "frames": {
+    "fps": 57.28469992201222,
+    "frames": 4322,
+    "height": 720,
+    "max": 650.0200000000004,
+    "mean": 17.456668209162427,
+    "over25": 46,
+    "over34": 37,
+    "p50": 16.660000000003492,
+    "p95": 17.38000000000011,
+    "p99": 25.7599999999984,
+    "seconds": 75.44772,
+    "width": 1280
+   },
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgpu_lose_60:destroy_961:destroy_2161:encoder__loopback.png"
+  },
+  {
+   "origin": "loopback",
+   "case": "replay=logs/lose.json&renderer=webgpu&recover=webgl-fallback&lose=1261:destroy",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl-fallback",
+   "steps": 4333,
+   "final": {
+    "hash": "83a97551fb38a7d6",
+    "scene": "game/lost.vrmxs",
+    "step": 4333
+   },
+   "sameAsLog": true,
+   "losses": [
+    {
+     "at": 1261,
+     "backend": "webgpu",
+     "how": "destroy",
+     "step": 1261
+    }
+   ],
+   "recoveries": [
+    {
+     "backend": "webgl-fallback",
+     "lost": {
+      "api": "WebGPU",
+      "message": "the GPU device was lost",
+      "reason": "destroyed"
+     },
+     "ms": 8.520000000000437,
+     "scene": "game/level.vrmxs",
+     "step": 1261,
+     "tried": []
+    }
+   ],
+   "displays": [
+    {
+     "step": 1261,
+     "text": "The display stopped. Restarting it…"
+    },
+    {
+     "step": 1261,
+     "text": ""
+    }
+   ],
+   "frames": {
+    "fps": 57.29759792367383,
+    "frames": 4327,
+    "height": 720,
+    "max": 749.5799999999981,
+    "mean": 17.452738617980124,
+    "over25": 48,
+    "over34": 36,
+    "p50": 16.660000000003492,
+    "p95": 17.360000000000127,
+    "p99": 26.840000000000146,
+    "seconds": 75.518,
+    "width": 1280
+   },
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgpu_recover_webgl-fallback_lose_1261:destroy__loopback.png"
+  },
+  {
+   "origin": "loopback",
+   "case": "replay=logs/lose.json&renderer=webgl&lose=1261:context",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "steps": 4333,
+   "final": {
+    "hash": "83a97551fb38a7d6",
+    "scene": "game/lost.vrmxs",
+    "step": 4333
+   },
+   "sameAsLog": true,
+   "losses": [
+    {
+     "at": 1261,
+     "backend": "webgl",
+     "how": "context",
+     "step": 1261
+    }
+   ],
+   "recoveries": [
+    {
+     "backend": "webgl",
+     "lost": {
+      "api": "WebGL",
+      "message": "the WebGL context was lost",
+      "reason": "context lost"
+     },
+     "ms": 4.06000000000131,
+     "scene": "game/level.vrmxs",
+     "step": 1261,
+     "tried": []
+    }
+   ],
+   "displays": [
+    {
+     "step": 1261,
+     "text": "The display stopped. Restarting it…"
+    },
+    {
+     "step": 1261,
+     "text": ""
+    }
+   ],
+   "frames": {
+    "fps": 57.82689718191143,
+    "frames": 4340,
+    "height": 720,
+    "max": 549.2000000000007,
+    "mean": 17.29299078341014,
+    "over25": 37,
+    "over34": 34,
+    "p50": 16.660000000003492,
+    "p95": 17.300000000000182,
+    "p99": 21.880000000004657,
+    "seconds": 75.05158,
+    "width": 1280
+   },
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgl_lose_1261:context__loopback.png"
+  }
+ ]
+}
