@@ -249,7 +249,6 @@ async function sweepFlow(name, make, steps) {
     out.restoreMs.push(now() - t);
     out.rollbacks++;
     for (let k = from; k < at; k++) {
-      if (corrupt && k > from) ring.set(k, captureWorld(B.tree)); // the corrected state replaces the mispredicted one
       B.feed(k, B.tree, false);
       t = now(); out.heldInResim += await flowStep(B); out.resimStepMs.push(now() - t); out.resimSteps++;
       const d = compareRuns([ref[k]], [{ step: k + 1, h: hashes(B.tree) }]);
