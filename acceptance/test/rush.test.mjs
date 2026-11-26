@@ -56,7 +56,39 @@ test('the editor scenario that builds the level is up to date with the level (ac
   assert.match(out, /up to date/);
   const { compare } = await import('../m5/rush-level.mjs');
   const r = compare(parse(read('game/level.vrmxs')));
-  assert.ok(r.nodes.every((n) => n.found && n.same), 'the committed level compares as itself');
+  assert.ok(r.same && r.nodes.every((n) => n.found && n.same), 'the committed level compares as itself');
+});
+
+// M6 W1 (AB-T-0638): what the scenario does in the Mac editor, done through the editor's session in Node from the same
+// room: every node added as the editor adds it (the id it gives, then the committed id), Duplicates, the Before menu,
+// pins, behaviours with their params and the 19 connections. The result is the committed level, byte for byte, so the
+// scenario's run can be held to the bytes.
+test('the level built through the editor\'s session, from the scenario\'s room, is the committed level byte for byte', async () => {
+  const { split, rushRegistry, compare } = await import('../m5/rush-level.mjs');
+  const { EditorSession } = await import('@vrmxg/editor-core');
+  const { doc, room, game, behaviours } = split();
+  const s = new EditorSession({ registry: await rushRegistry(), text: serialize(room), prefabs: new Map() });
+  const asset = new Map(doc.assets.map((a) => [a.id, a.ref]));
+  const fill = (id, want) => {
+    s.setNodeId(id, want.id);
+    if (want.name) s.rename(want.id, want.name);
+    if (want.parent !== 'root') s.reparent(want.id, want.parent);
+    for (const [k, v] of Object.entries(want.props ?? {})) s.setProp(want.id, k, v);
+    if (want.transform) s.setTransform(want.id, want.transform);
+  };
+  for (const { id, behaviours: list } of behaviours) for (const { use, ...params } of list) { s.addBehaviour(id, use); for (const [k, v] of Object.entries(params)) s.setBehaviourParam(id, use, k, v); }
+  const items = game.filter((n) => n.type === 'Item'), others = game.filter((n) => n.type !== 'Item');
+  const after = doc.nodes[doc.nodes.indexOf(items.at(-1)) + 1].id;
+  for (const want of items) { const id = s.addFromAsset(asset.get(want.asset)); fill(id, want); s.moveBefore(want.id, after); }
+  for (const want of others) fill(want.type === 'Area' && want.id !== 'table-1' ? s.duplicate([s.selection[0]])[0] : s.addNode(want.type), want);
+  for (const want of game) for (const { use, ...params } of want.behaviours ?? []) { s.addBehaviour(want.id, use); for (const [k, v] of Object.entries(params)) s.setBehaviourParam(want.id, use, k, v); }
+  for (const c of doc.connections) s.connect(c);
+  const r = compare(s.doc);
+  assert.ok(r.same, JSON.stringify({ nodes: r.nodes.filter((n) => !n.same), order: r.order, connections: r.connections.list.filter((c) => !c.same), assets: r.assets, rest: r.rest }));
+  assert.ok(s.validate().ok, s.validate().errors.join('; '));
+  // and every step undoes back to the room
+  while (s.history().undo) s.undo();
+  assert.equal(s.text(), serialize(room));
 });
 
 test('the scripted player wins, loses on two wrong orders, and loses on time (Node)', { skip: skipPlay, timeout: 300000 }, async () => {

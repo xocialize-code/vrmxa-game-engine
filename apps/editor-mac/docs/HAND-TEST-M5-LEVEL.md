@@ -1,27 +1,34 @@
-# The sample game's level, built in the editor (M5 W10, AB-T-0620)
+# The sample game's level, built in the editor (M5 W10, AB-T-0620; completed in M6 W1, AB-T-0638)
 
-M5's exit check 8 for the sample game: its level built in the Mac editor by hand, with no JSON typed. The scenario
-(`hand-test/HAND-TEST-M5-LEVEL.scenario.md`, written by `acceptance/m5/rush-level-scenario.mjs`) starts from the level's
-room and builds its game layer through the inspector (W4's widgets, W5's Duplicate, W6's assets panel and prefab
-overrides); `acceptance/m5/rush-level.mjs
-compare` then finds every game-layer node of the committed level in the saved file, with the same parent, props and
-place. Not built, because the editor can't yet: the three `tableZone` behaviours and the level's connections (AB-T-0638).
+M5's exit check 8 and M6's exit check 5: the sample game's level built in the Mac editor by hand, all of it, with no
+JSON typed. The scenario (`hand-test/HAND-TEST-M5-LEVEL.scenario.md`, written by `acceptance/m5/rush-level-scenario.mjs`)
+starts from the level's room (no game layer, no behaviours, no connections) and builds the rest through the inspector:
+W4's widgets, W5's Duplicate, W6's assets panel and prefab overrides, and M6 W1's Id field, Before menu, pins,
+Behaviours panel (the player's behaviour, the regulars' brains with their vars, the tables' `tableZone` with its seven
+params) and Connections panel (all 19 connections). `acceptance/m5/rush-level.mjs compare` then holds the saved file
+against the committed level, byte for byte, ids included.
 
-- [x] The level's room opens: the set, the doors and stools, Mira, Hana and the three regulars, with no rules yet.
-- [x] The rules: a GameRules node with its seven flags (a map, key by key) and its lose condition (any of: the clock done, two wrong orders), built in the condition's menus and rows.
-- [x] The counters and the clock under the rules: keys, labels, a maximum typed as arithmetic, the clock's 240 seconds typed as 4*60.
-- [x] Three brew timers: one made, Duplicated twice, then all three selected and their seconds typed once for all (one undo step); each given its key.
-- [x] The two goals in order and the checkpoint, each with its condition built in the condition's fields.
-- [x] The three table areas: one made and sized (a vector), Duplicated twice, then all three selected to see the size they share; each named and placed.
-- [x] The till dragged from the assets panel onto the viewport (the real pointer), and the three trays added from the panel; each named, placed and given the state it starts in.
-- [x] Hana's briefing: a Dialogue that starts by itself, three lines (speaker, text, clip, ids and the line after), the first offering two choices that branch.
-- [x] Aoi's order: three lines, the regular's question offering two choices, each setting the order's flags (a map in a row of a list in a row of a list).
-- [x] Ren's order: three lines, the regular's question offering two choices, each setting the order's flags (a map in a row of a list in a row of a list).
-- [x] Yuki's order: three lines, the regular's question offering two choices, each setting the order's flags (a map in a row of a list in a row of a list).
-- [x] A door prefab placed from the assets panel; a prop of its hinge overridden in the inspector, marked as an override (the dot, the Overrides list), reverted by its dot; the door taken out again with Undo, so the level is as committed.
-- [x] Saved, and read back from disk the same bytes, valid; the file is what rush-level.mjs compares with the committed level.
+- [ ] The level's room opens: the set, the doors and stools, Mira, Hana and the three regulars, with no rules, behaviours or connections yet.
+- [ ] Mira plays and the regulars think: the player behaviour added to Mira, a brain to each regular, its preset a path (the brain's kind menu) and its vars a number and a seat (each value's kind menu), from the Behaviours panel.
+- [ ] The three table areas: one made, its shape pinned and its size set (a vector), Duplicated twice, then all three selected to see the size they share; each given its id, name and place.
+- [ ] The rules: a GameRules node given its id, its seven flags (a map, key by key) and its lose condition (any of: the clock done, two wrong orders), built in the condition's menus and rows.
+- [ ] The counters and the clock under the rules, each given its id (its key in the game state follows it): labels, a maximum typed as arithmetic, the clock's 240 seconds typed as 4*60.
+- [ ] Three brew timers: one made, Duplicated twice, then all three selected and their seconds typed once for all (one undo step); each given its id.
+- [ ] The two goals in order and the checkpoint, each given its id and its condition built in the condition's fields; the checkpoint's once pinned (its default, written into the file).
+- [ ] The till dragged from the assets panel onto the viewport (the real pointer), and the three trays added from the panel; each given its id, name, place and the state it starts in, and moved before Mira in the scene's order (the Before menu).
+- [ ] Hana's briefing: a Dialogue given its id, that starts by itself, three lines (speaker, text, clip, ids and the line after), the first offering two choices that branch.
+- [ ] Aoi's order: a Dialogue given its id, three lines, the regular's question offering two choices, each setting the order's flags (a map in a row of a list in a row of a list).
+- [ ] Ren's order: a Dialogue given its id, three lines, the regular's question offering two choices, each setting the order's flags (a map in a row of a list in a row of a list).
+- [ ] Yuki's order: a Dialogue given its id, three lines, the regular's question offering two choices, each setting the order's flags (a map in a row of a list in a row of a list).
+- [ ] Each table area's tableZone, the game's own behaviour (declared by its describe), added from the Behaviours panel with its seven params: the regular, her order's dialogue and the player from node menus (the player pinned: its default), her tray's item and her flags typed, the points pinned (their default).
+- [ ] Connections 1 to 13, from the Connections panel of the node that sends each (signal, target and action picked from lists, arguments by the action's schema): the rules' ready to Hana's lookAt (a node argument), each order's chose to its brew timer and Hana's playLayer (a yes / no pinned false), each brew timer's timeout to its tray's state and Hana's line.
+- [ ] Connections 14 to 19: the serve goal to the till and Hana, the till's verb to setFlag, the till goal to the score (a number), won and lost to changeScene (a delay and a scene); the level's 19 connections, in order.
+- [ ] A door prefab placed from the assets panel; a prop of its hinge overridden in the inspector, marked as an override (the dot, the Overrides list), reverted by its dot; the door taken out again with Undo, so the level is as committed.
+- [ ] Saved, and read back from disk the same bytes, valid; the file is what rush-level.mjs compares with the committed level, byte for byte.
 
 ## Results
+
+### M5's run (2026-11-25, before M6 W1)
 
 AppProbe, 2026-11-25, the editor on `main` after W6 (82d96bf, shell 0.13.0; Release build), the Mac unlocked for the real
 pointer's drag: **13 of 13 rows on WebGPU** ([`results/m5-level-webgpu/report.md`](hand-test/results/m5-level-webgpu/report.md))

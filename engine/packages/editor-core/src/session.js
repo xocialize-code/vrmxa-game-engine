@@ -304,7 +304,7 @@ export class EditorSession {
     if (!/^[A-Za-z0-9_-]+$/.test(to)) throw new Error(`"${to}" can't be an id: letters, digits, "-" and "_" only`);
     if (this.node(to)) throw new Error(`there is already a node called ${to}`);
     const fn = (r) => (baseOf(r) === id ? to + String(r).slice(id.length) : r);
-    const ops = [{ op: 'renameNode', id, to }];
+    /** @type {any[]} */ const ops = [{ op: 'renameNode', id, to }];
     for (const x of this.doc.nodes) {
       const nid = x.id === id ? to : x.id;
       const next = mapNodeRefs(this.reg, x, fn, { innerOf: (local) => this.innerBase(x, local) });
@@ -873,7 +873,9 @@ export class EditorSession {
 
 const sameJSON = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 /** A connection as a file keeps it: its four parts, then its arguments when it has any (an empty set is left out). */
-function tidyConnection({ from, signal, to, call, args, ...rest }) {
+/** @param {any} c */
+function tidyConnection(c) {
+  const { from, signal, to, call, args, ...rest } = c;
   const a = args && Object.keys(args).length ? clone(args) : undefined;
   return { ...clone(rest), from, signal, to, call, ...(a ? { args: a } : {}) };
 }
