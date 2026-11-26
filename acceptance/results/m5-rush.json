@@ -5,11 +5,11 @@
  "chromium": "156.0.8078.4",
  "build": {
   "game": "morning-rush",
-  "files": 116,
-  "bytes": 26216007,
-  "digest": "1117e9d8b6d45e1ce0da0a7799c8a8faabfb03b3cf44bd126c91b5d903ce440b",
-  "manifest": "2518f0042e47bce1e5ba5c11151dddfeb08d014e02dff4558202c03069b30a50",
-  "runtime": "vrmxg-game 0.1.0+17d27d5ca00d"
+  "files": 117,
+  "bytes": 26220023,
+  "digest": "fcbdd8c9eb8058c1c00fef135dc6f821105bdea720bd8164fd6156324ab1526f",
+  "manifest": "ba631c2bf3dec4d1f7a73fb8f6cfeb189e1fe741b788361aa0c3eba63180c499",
+  "runtime": "vrmxg-game 0.1.0+18a4c1fdeaf1"
  },
  "sessions": {
   "win": {
@@ -47,7 +47,7 @@
      ]
     },
     "checkpoint": {
-     "step": 2224,
+     "step": 2227,
      "checkpoints": {
       "first-order": {
        "id": "cp-first",
@@ -59,7 +59,7 @@
    },
    "tasks": [
     {
-     "step": 7,
+     "step": 6,
      "task": "in game/title.vrmxs"
     },
     {
@@ -246,16 +246,16 @@
    "log": "acceptance/results/m5-rush/win.json"
   },
   "lose": {
-   "steps": 4814,
+   "steps": 4815,
    "scenes": [
     "game/title.vrmxs",
     "game/level.vrmxs",
     "game/lost.vrmxs"
    ],
    "final": {
-    "step": 4814,
+    "step": 4815,
     "scene": "game/title.vrmxs",
-    "hash": "1c871ead6cb1c5e6"
+    "hash": "1ae1cae47ad2818e"
    },
    "seen": {
     "hud": {
@@ -266,7 +266,7 @@
     "carry": null,
     "choice": null,
     "checkpoint": {
-     "step": 2220,
+     "step": 2227,
      "checkpoints": {
       "first-order": {
        "id": "cp-first",
@@ -278,7 +278,7 @@
    },
    "tasks": [
     {
-     "step": 5,
+     "step": 6,
      "task": "in game/title.vrmxs"
     },
     {
@@ -419,11 +419,11 @@
    }
   },
   "lose": {
-   "steps": 4814,
+   "steps": 4815,
    "final": {
-    "step": 4814,
+    "step": 4815,
     "scene": "game/title.vrmxs",
-    "hash": "1c871ead6cb1c5e6"
+    "hash": "1ae1cae47ad2818e"
    }
   }
  },
@@ -437,15 +437,15 @@
     "hash": "43d3a2f6c26f5a1a"
    },
    "frames": {
-    "frames": 6307,
-    "seconds": 106.3124,
-    "fps": 59.32515868327684,
-    "mean": 16.856254954812112,
+    "frames": 6306,
+    "seconds": 106.329,
+    "fps": 59.306492114098695,
+    "mean": 16.861560418648907,
     "p50": 16.69999999999709,
-    "p95": 16.79999999998836,
+    "p95": 16.70000000001164,
     "p99": 16.80000000000291,
-    "max": 450,
-    "over25": 12,
+    "max": 433.40000000000055,
+    "over25": 15,
     "over34": 12,
     "width": 1280,
     "height": 720
@@ -461,16 +461,16 @@
     "hash": "43d3a2f6c26f5a1a"
    },
    "frames": {
-    "frames": 6305,
-    "seconds": 106.39569999999999,
-    "fps": 59.259913699519814,
-    "mean": 16.874813639968277,
+    "frames": 6303,
+    "seconds": 106.3457,
+    "fps": 59.26896903212824,
+    "mean": 16.87223544343963,
     "p50": 16.69999999999709,
     "p95": 16.70000000001164,
     "p99": 16.80000000000291,
-    "max": 483.40000000000055,
-    "over25": 15,
-    "over34": 13,
+    "max": 466.7000000000007,
+    "over25": 16,
+    "over34": 14,
     "width": 1280,
     "height": 720
    },
@@ -478,22 +478,22 @@
   },
   "lose-webgpu": {
    "backend": "webgpu",
-   "steps": 4814,
+   "steps": 4815,
    "final": {
-    "step": 4814,
+    "step": 4815,
     "scene": "game/title.vrmxs",
-    "hash": "1c871ead6cb1c5e6"
+    "hash": "1ae1cae47ad2818e"
    },
    "frames": {
-    "frames": 4820,
-    "seconds": 81.5967,
-    "fps": 59.071016352377,
-    "mean": 16.92877593360996,
+    "frames": 4825,
+    "seconds": 81.61350000000002,
+    "fps": 59.12012105840332,
+    "mean": 16.914715025906737,
     "p50": 16.69999999999709,
     "p95": 16.79999999998836,
     "p99": 16.80000000000291,
-    "max": 466.60000000000036,
-    "over25": 15,
+    "max": 433.3000000000002,
+    "over25": 13,
     "over34": 12,
     "width": 1280,
     "height": 720
@@ -502,22 +502,22 @@
   },
   "lose-webgl": {
    "backend": "webgl",
-   "steps": 4814,
+   "steps": 4815,
    "final": {
-    "step": 4814,
+    "step": 4815,
     "scene": "game/title.vrmxs",
-    "hash": "1c871ead6cb1c5e6"
+    "hash": "1ae1cae47ad2818e"
    },
    "frames": {
-    "frames": 4816,
-    "seconds": 81.5968,
-    "fps": 59.02192242833052,
-    "mean": 16.942857142857143,
+    "frames": 4817,
+    "seconds": 81.5801,
+    "fps": 59.04626250764586,
+    "mean": 16.93587294996886,
     "p50": 16.69999999999709,
     "p95": 16.79999999998836,
     "p99": 16.80000000000291,
-    "max": 500,
-    "over25": 14,
+    "max": 450,
+    "over25": 17,
     "over34": 13,
     "width": 1280,
     "height": 720
@@ -529,7 +529,7 @@
   {
    "name": "the sample game exports with the game app as its runtime (vrmxg-export --game game/game.json)",
    "ok": true,
-   "detail": "116 files, 26.2 MB, digest 1117e9d8b6d45e1c"
+   "detail": "117 files, 26.2 MB, digest fcbdd8c9eb8058c1"
   },
   {
    "name": "win: played from the title menu to the won ending, its dialogue choices recorded",
@@ -539,12 +539,12 @@
   {
    "name": "win: the HUD showed the goal, score and clock; the tray was carried on the upper body; the checkpoint was taken",
    "ok": true,
-   "detail": "HUD {\"goal\":\"Goal: Serve the three regulars\",\"score\":\"Score 0\",\"clock\":\"Until ten o'clock 4:00\"}; carrying {\"carrying\":[\"Order for table 1\"],\"layers\":[\"upperBody\"],\"hud\":\"Order for table 1\"}; checkpoint {\"step\":2224,\"checkpoints\":{\"first-order\":{\"id\":\"cp-first\",\"requested\":2213}}}; the first question {\"line\":\"Aoi: Morning! Something warm and milky, please. Not too strong.\",\"choices\":[\"1A latte, then.\",\"2A double espresso?\"]}"
+   "detail": "HUD {\"goal\":\"Goal: Serve the three regulars\",\"score\":\"Score 0\",\"clock\":\"Until ten o'clock 4:00\"}; carrying {\"carrying\":[\"Order for table 1\"],\"layers\":[\"upperBody\"],\"hud\":\"Order for table 1\"}; checkpoint {\"step\":2227,\"checkpoints\":{\"first-order\":{\"id\":\"cp-first\",\"requested\":2213}}}; the first question {\"line\":\"Aoi: Morning! Something warm and milky, please. Not too strong.\",\"choices\":[\"1A latte, then.\",\"2A double espresso?\"]}"
   },
   {
    "name": "lose: played from the title menu to the lost ending, its dialogue choices recorded",
    "ok": true,
-   "detail": "scenes game/title.vrmxs → game/level.vrmxs → game/lost.vrmxs; 4814 steps; choices ready, espresso, chocolate; ending line \"Hana: Two orders wrong. Let's call it a morning, and try again tomorrow.\""
+   "detail": "scenes game/title.vrmxs → game/level.vrmxs → game/lost.vrmxs; 4815 steps; choices ready, espresso, chocolate; ending line \"Hana: Two orders wrong. Let's call it a morning, and try again tomorrow.\""
   },
   {
    "name": "win: the session played in Chromium replays in Node to the same hash after every step",
@@ -554,27 +554,27 @@
   {
    "name": "lose: the session played in Chromium replays in Node to the same hash after every step",
    "ok": true,
-   "detail": "4814 steps, final 1c871ead6cb1c5e6 at step 4814"
+   "detail": "4815 steps, final 1ae1cae47ad2818e at step 4815"
   },
   {
    "name": "win: the game app replays the log drawn on WebGPU to the same hash after every step",
    "ok": true,
-   "detail": "6299 steps on webgpu, final 43d3a2f6c26f5a1a; 6307 frames, p99 16.8 ms"
+   "detail": "6299 steps on webgpu, final 43d3a2f6c26f5a1a; 6306 frames, p99 16.8 ms"
   },
   {
    "name": "win: the game app replays the log drawn on WebGL to the same hash after every step",
    "ok": true,
-   "detail": "6299 steps on webgl, final 43d3a2f6c26f5a1a; 6305 frames, p99 16.8 ms"
+   "detail": "6299 steps on webgl, final 43d3a2f6c26f5a1a; 6303 frames, p99 16.8 ms"
   },
   {
    "name": "lose: the game app replays the log drawn on WebGPU to the same hash after every step",
    "ok": true,
-   "detail": "4814 steps on webgpu, final 1c871ead6cb1c5e6; 4820 frames, p99 16.8 ms"
+   "detail": "4815 steps on webgpu, final 1ae1cae47ad2818e; 4825 frames, p99 16.8 ms"
   },
   {
    "name": "lose: the game app replays the log drawn on WebGL to the same hash after every step",
    "ok": true,
-   "detail": "4814 steps on webgl, final 1c871ead6cb1c5e6; 4816 frames, p99 16.8 ms"
+   "detail": "4815 steps on webgl, final 1ae1cae47ad2818e; 4817 frames, p99 16.8 ms"
   },
   {
    "name": "no errors in the pages",

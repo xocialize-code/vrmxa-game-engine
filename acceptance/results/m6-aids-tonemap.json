@@ -1,0 +1,669 @@
+{
+ "check": "AB-A-0335 aids tone mapping",
+ "ok": true,
+ "checks": [
+  {
+   "cell": "webgpu",
+   "backend": "webgpu",
+   "postActive": false,
+   "composite": false,
+   "outline": "#ff9a1c",
+   "outlineOk": true,
+   "outlinePixels": 0,
+   "dots": {
+    "range": 106,
+    "angle": 0
+   },
+   "dotsOk": true,
+   "handlesTop": [
+    {
+     "colour": "#dba954",
+     "count": 387
+    },
+    {
+     "colour": "#f4d691",
+     "count": 250
+    },
+    {
+     "colour": "#eab54a",
+     "count": 134
+    }
+   ],
+   "frame": {
+    "pixels": 355600,
+    "differ": 0,
+    "maxDiff": 0,
+    "box": null,
+    "samples": [],
+    "directTwice": {
+     "differ": 0,
+     "maxDiff": 0,
+     "box": null,
+     "samples": []
+    }
+   },
+   "errors": [],
+   "frameOk": true
+  },
+  {
+   "cell": "webgpu+post",
+   "backend": "webgpu",
+   "postActive": true,
+   "composite": true,
+   "outline": "#ff9a1c",
+   "outlineOk": true,
+   "outlinePixels": 0,
+   "dots": {
+    "range": 122,
+    "angle": 0
+   },
+   "dotsOk": true,
+   "handlesTop": [
+    {
+     "colour": "#f8c042",
+     "count": 532
+    },
+    {
+     "colour": "#fdc84d",
+     "count": 239
+    },
+    {
+     "colour": "#f4bc3f",
+     "count": 172
+    }
+   ],
+   "frame": {
+    "pixels": 355600,
+    "differ": 355598,
+    "maxDiff": 239,
+    "box": [
+     0,
+     0,
+     699,
+     507
+    ],
+    "samples": [
+     {
+      "at": [
+       135,
+       93
+      ],
+      "via": "#d1d8df",
+      "direct": "#c3d0e0"
+     },
+     {
+      "at": [
+       136,
+       93
+      ],
+      "via": "#d1d8df",
+      "direct": "#c3d0e0"
+     },
+     {
+      "at": [
+       137,
+       93
+      ],
+      "via": "#d1d8df",
+      "direct": "#c3d0e0"
+     },
+     {
+      "at": [
+       138,
+       93
+      ],
+      "via": "#d1d8df",
+      "direct": "#c3d0e0"
+     },
+     {
+      "at": [
+       139,
+       93
+      ],
+      "via": "#d1d8df",
+      "direct": "#c3d0e0"
+     },
+     {
+      "at": [
+       140,
+       93
+      ],
+      "via": "#d1d8df",
+      "direct": "#c3d0e0"
+     }
+    ],
+    "directTwice": {
+     "differ": 0,
+     "maxDiff": 0,
+     "box": null,
+     "samples": []
+    }
+   },
+   "errors": [],
+   "frameOk": true
+  },
+  {
+   "cell": "webgl",
+   "backend": "webgl",
+   "postActive": false,
+   "composite": false,
+   "outline": "#ff9a1c",
+   "outlineOk": true,
+   "outlinePixels": 0,
+   "dots": {
+    "range": 105,
+    "angle": 0
+   },
+   "dotsOk": true,
+   "handlesTop": [
+    {
+     "colour": "#e9b54a",
+     "count": 306
+    },
+    {
+     "colour": "#cc9e5d",
+     "count": 298
+    },
+    {
+     "colour": "#c29442",
+     "count": 186
+    }
+   ],
+   "frame": {
+    "pixels": 355600,
+    "differ": 0,
+    "maxDiff": 0,
+    "box": null,
+    "samples": [],
+    "directTwice": {
+     "differ": 0,
+     "maxDiff": 0,
+     "box": null,
+     "samples": []
+    }
+   },
+   "errors": [],
+   "frameOk": true
+  },
+  {
+   "cell": "webgl+post",
+   "backend": "webgl",
+   "postActive": true,
+   "composite": false,
+   "outline": "#ff9a1c",
+   "outlineOk": true,
+   "outlinePixels": 0,
+   "dots": {
+    "range": 105,
+    "angle": 0
+   },
+   "dotsOk": true,
+   "handlesTop": [
+    {
+     "colour": "#e9b54a",
+     "count": 281
+    },
+    {
+     "colour": "#cc9e5d",
+     "count": 276
+    },
+    {
+     "colour": "#c29442",
+     "count": 186
+    }
+   ],
+   "frame": {
+    "pixels": 355600,
+    "differ": 0,
+    "maxDiff": 0,
+    "box": null,
+    "samples": [],
+    "directTwice": {
+     "differ": 0,
+     "maxDiff": 0,
+     "box": null,
+     "samples": []
+    }
+   },
+   "errors": [],
+   "frameOk": true
+  }
+ ],
+ "runs": [
+  {
+   "renderer": "webgpu",
+   "post": false,
+   "backend": "webgpu",
+   "composite": false,
+   "toneMapping": 7,
+   "exposure": 1,
+   "size": [
+    700,
+    508
+   ],
+   "primary": "counter-light",
+   "authored": {
+    "outline": "#ff9a1f",
+    "rangeDot": "#ffc53d",
+    "angleDot": "#ff8b3e",
+    "lines": "#ffc53d at 0.9 opacity (blended)"
+   },
+   "outline": {
+    "changed": 191,
+    "authored": {
+     "#ff9a1f": 0,
+     "#ffc53d": 0,
+     "#ff8b3e": 0
+    },
+    "top": [
+     {
+      "colour": "#ff9a1c",
+      "count": 146
+     },
+     {
+      "colour": "#8e90e1",
+      "count": 20
+     },
+     {
+      "colour": "#e2968b",
+      "count": 15
+     },
+     {
+      "colour": "#be93bc",
+      "count": 10
+     }
+    ]
+   },
+   "handles": {
+    "changed": 3582,
+    "authored": {
+     "#ff9a1f": 0,
+     "#ffc53d": 106,
+     "#ff8b3e": 0
+    },
+    "top": [
+     {
+      "colour": "#dba954",
+      "count": 387
+     },
+     {
+      "colour": "#f4d691",
+      "count": 250
+     },
+     {
+      "colour": "#eab54a",
+      "count": 134
+     },
+     {
+      "colour": "#f8c041",
+      "count": 128
+     },
+     {
+      "colour": "#cc9e5d",
+      "count": 121
+     },
+     {
+      "colour": "#dba953",
+      "count": 116
+     }
+    ]
+   },
+   "frame": {
+    "pixels": 355600,
+    "differ": 0,
+    "maxDiff": 0,
+    "box": null,
+    "samples": [],
+    "directTwice": {
+     "differ": 0,
+     "maxDiff": 0,
+     "box": null,
+     "samples": []
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "errors": []
+  },
+  {
+   "renderer": "webgpu",
+   "post": true,
+   "backend": "webgpu",
+   "composite": true,
+   "toneMapping": 0,
+   "exposure": 1,
+   "size": [
+    700,
+    508
+   ],
+   "primary": "counter-light",
+   "authored": {
+    "outline": "#ff9a1f",
+    "rangeDot": "#ffc53d",
+    "angleDot": "#ff8b3e",
+    "lines": "#ffc53d at 0.9 opacity (blended)"
+   },
+   "outline": {
+    "changed": 166,
+    "authored": {
+     "#ff9a1f": 0,
+     "#ffc53d": 0,
+     "#ff8b3e": 0
+    },
+    "top": [
+     {
+      "colour": "#ff9a1c",
+      "count": 166
+     }
+    ]
+   },
+   "handles": {
+    "changed": 2067,
+    "authored": {
+     "#ff9a1f": 0,
+     "#ffc53d": 122,
+     "#ff8b3e": 0
+    },
+    "top": [
+     {
+      "colour": "#f8c042",
+      "count": 532
+     },
+     {
+      "colour": "#fdc84d",
+      "count": 239
+     },
+     {
+      "colour": "#f4bc3f",
+      "count": 172
+     },
+     {
+      "colour": "#ffc53d",
+      "count": 122
+     },
+     {
+      "colour": "#efb73b",
+      "count": 113
+     },
+     {
+      "colour": "#fcc243",
+      "count": 99
+     }
+    ]
+   },
+   "frame": {
+    "pixels": 355600,
+    "differ": 355598,
+    "maxDiff": 239,
+    "box": [
+     0,
+     0,
+     699,
+     507
+    ],
+    "samples": [
+     {
+      "at": [
+       135,
+       93
+      ],
+      "via": "#d1d8df",
+      "direct": "#c3d0e0"
+     },
+     {
+      "at": [
+       136,
+       93
+      ],
+      "via": "#d1d8df",
+      "direct": "#c3d0e0"
+     },
+     {
+      "at": [
+       137,
+       93
+      ],
+      "via": "#d1d8df",
+      "direct": "#c3d0e0"
+     },
+     {
+      "at": [
+       138,
+       93
+      ],
+      "via": "#d1d8df",
+      "direct": "#c3d0e0"
+     },
+     {
+      "at": [
+       139,
+       93
+      ],
+      "via": "#d1d8df",
+      "direct": "#c3d0e0"
+     },
+     {
+      "at": [
+       140,
+       93
+      ],
+      "via": "#d1d8df",
+      "direct": "#c3d0e0"
+     }
+    ],
+    "directTwice": {
+     "differ": 0,
+     "maxDiff": 0,
+     "box": null,
+     "samples": []
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "errors": []
+  },
+  {
+   "renderer": "webgl",
+   "post": false,
+   "backend": "webgl",
+   "composite": false,
+   "toneMapping": 7,
+   "exposure": 1,
+   "size": [
+    700,
+    508
+   ],
+   "primary": "counter-light",
+   "authored": {
+    "outline": "#ff9a1f",
+    "rangeDot": "#ffc53d",
+    "angleDot": "#ff8b3e",
+    "lines": "#ffc53d at 0.9 opacity (blended)"
+   },
+   "outline": {
+    "changed": 188,
+    "authored": {
+     "#ff9a1f": 0,
+     "#ffc53d": 0,
+     "#ff8b3e": 0
+    },
+    "top": [
+     {
+      "colour": "#ff9a1c",
+      "count": 149
+     },
+     {
+      "colour": "#97938d",
+      "count": 27
+     },
+     {
+      "colour": "#638fc6",
+      "count": 4
+     },
+     {
+      "colour": "#cb9655",
+      "count": 3
+     },
+     {
+      "colour": "#6390c6",
+      "count": 3
+     },
+     {
+      "colour": "#cb9755",
+      "count": 2
+     }
+    ]
+   },
+   "handles": {
+    "changed": 3652,
+    "authored": {
+     "#ff9a1f": 0,
+     "#ffc53d": 105,
+     "#ff8b3e": 0
+    },
+    "top": [
+     {
+      "colour": "#e9b54a",
+      "count": 306
+     },
+     {
+      "colour": "#cc9e5d",
+      "count": 298
+     },
+     {
+      "colour": "#c29442",
+      "count": 186
+     },
+     {
+      "colour": "#f9cf6f",
+      "count": 154
+     },
+     {
+      "colour": "#ffc53d",
+      "count": 105
+     },
+     {
+      "colour": "#dbaa54",
+      "count": 92
+     }
+    ]
+   },
+   "frame": {
+    "pixels": 355600,
+    "differ": 0,
+    "maxDiff": 0,
+    "box": null,
+    "samples": [],
+    "directTwice": {
+     "differ": 0,
+     "maxDiff": 0,
+     "box": null,
+     "samples": []
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "errors": []
+  },
+  {
+   "renderer": "webgl",
+   "post": true,
+   "backend": "webgl",
+   "composite": false,
+   "toneMapping": 0,
+   "exposure": 1,
+   "size": [
+    700,
+    508
+   ],
+   "primary": "counter-light",
+   "authored": {
+    "outline": "#ff9a1f",
+    "rangeDot": "#ffc53d",
+    "angleDot": "#ff8b3e",
+    "lines": "#ffc53d at 0.9 opacity (blended)"
+   },
+   "outline": {
+    "changed": 188,
+    "authored": {
+     "#ff9a1f": 0,
+     "#ffc53d": 0,
+     "#ff8b3e": 0
+    },
+    "top": [
+     {
+      "colour": "#ff9a1c",
+      "count": 149
+     },
+     {
+      "colour": "#97938d",
+      "count": 27
+     },
+     {
+      "colour": "#638fc6",
+      "count": 4
+     },
+     {
+      "colour": "#cb9655",
+      "count": 3
+     },
+     {
+      "colour": "#6390c6",
+      "count": 3
+     },
+     {
+      "colour": "#cb9755",
+      "count": 2
+     }
+    ]
+   },
+   "handles": {
+    "changed": 3652,
+    "authored": {
+     "#ff9a1f": 0,
+     "#ffc53d": 105,
+     "#ff8b3e": 0
+    },
+    "top": [
+     {
+      "colour": "#e9b54a",
+      "count": 281
+     },
+     {
+      "colour": "#cc9e5d",
+      "count": 276
+     },
+     {
+      "colour": "#c29442",
+      "count": 186
+     },
+     {
+      "colour": "#f9cf6f",
+      "count": 152
+     },
+     {
+      "colour": "#ffc53d",
+      "count": 105
+     },
+     {
+      "colour": "#dbaa54",
+      "count": 91
+     }
+    ]
+   },
+   "frame": {
+    "pixels": 355600,
+    "differ": 0,
+    "maxDiff": 0,
+    "box": null,
+    "samples": [],
+    "directTwice": {
+     "differ": 0,
+     "maxDiff": 0,
+     "box": null,
+     "samples": []
+    }
+   },
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "errors": []
+  }
+ ],
+ "version": "156.0.8078.4"
+}

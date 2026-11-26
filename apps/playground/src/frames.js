@@ -15,6 +15,7 @@
 // runtime with itself (two loads, and WKWebView's two origins).
 import { PerspectiveCamera, Scene, Mesh, PlaneGeometry, MeshBasicMaterial } from 'three';
 import { RenderHost } from '@vrmxg/render';
+import { particleRenderers } from '@vrmxg/particles';
 import { frameToStep } from '@vrmxg/core';
 import { exportTake, hashSink, hashFrame, readbackFor, captureStill, toImageRGBA, framesFor, RATES, SIZES } from '@vrmxg/export';
 import { captureWorld, restoreWorld, worldHashes, hashValue, packRun } from '@vrmxg/snapshot';
@@ -53,7 +54,9 @@ function pngOf(bytes, width, height, topDown, scale = 1) {
   const g = d.getContext('2d'); g.imageSmoothingEnabled = scale < 1; g.drawImage(c, 0, 0, d.width, d.height);
   return d.toDataURL('image/png');
 }
-const offlineHost = (backend, post) => RenderHost.create({ canvas: document.createElement('canvas'), backend, dprCap: 1, post });
+// the particle renderer loads before any world attaches (AB-A-0335), as when the host made it: the same order, the same frames
+const withParticles = async (host) => { await host.loadParticleRenderer(particleRenderers); return host; };
+const offlineHost = (backend, post) => RenderHost.create({ canvas: document.createElement('canvas'), backend, dprCap: 1, post }).then(withParticles);
 const dropHost = (host) => { host.dispose(); host.renderer.forceContextLoss?.(); };
 /** Wait until the GPU has done what was submitted (timings that must include it). */
 const gpuDone = async (host) => { if (host.renderer.isWebGPURenderer) await host.renderer.backend.device.queue.onSubmittedWorkDone(); else host.renderer.getContext().finish(); };
@@ -457,7 +460,7 @@ export async function sameFrame({ R, sample, opts, backend, post = null, size = 
   const [width, height] = SIZES[size], rate = RATES[fps];
   const S = await loadSample(sample.bytes, 'sequences/cafe-morning.vrmxs');
   // ?noAA=1: no MSAA anywhere (the renderer's own framebuffer target and the post stack's scene pass)
-  const host = noAA ? await RenderHost.create({ canvas: document.createElement('canvas'), backend, dprCap: 1, post: noPost ? null : post, antialias: false }) : await offlineHost(backend, noPost ? null : post);
+  const host = noAA ? await withParticles(await RenderHost.create({ canvas: document.createElement('canvas'), backend, dprCap: 1, post: noPost ? null : post, antialias: false })) : await offlineHost(backend, noPost ? null : post);
   if ((noMsaa || noAA) && host.post) host.post.multisampling = 0;
   if (noShadows) host.renderer.shadowMap.enabled = false;
   const w = await buildWorld(R, S, { ...opts, mtoonMaterial: host.mtoonMaterial });

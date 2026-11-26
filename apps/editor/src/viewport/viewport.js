@@ -30,7 +30,7 @@ export class ViewportAids {
     this.ed = ed;
     this.scene = new Scene(); this.scene.name = 'editor-overlay';
     this.outline = new SelectionOutline();
-    this.composite = new FrameComposite(); // WebGPU through the post stack: the frame and the aids drawn to the canvas together (composite.js)
+    this.composite = new FrameComposite(); // WebGPU: the frame and the aids drawn to the canvas together (composite.js)
     this.handles = new ShapeHandles();
     this.scene.add(this.handles.group);
     /** Which aids are on (the toolbar's switches). */
@@ -109,7 +109,7 @@ export class ViewportAids {
     }
     camera.updateMatrixWorld();
     this.updateHandles(editing);
-    // WebGPU through the post stack: the frame went into the composite's target (beginFrame); the aids go into another,
+    // WebGPU: the frame went into the composite's target (beginFrame); the aids go into another,
     // and both are drawn to the canvas together (composite.js)
     const via = this.composite.active;
     if (via) this.composite.beginAids(renderer);
@@ -118,12 +118,13 @@ export class ViewportAids {
   }
 
   /**
-   * Before the host draws the edit view's frame: on WebGPU with the post stack active, the frame is drawn into the
-   * composite's target, to go to the canvas with the aids in one pass (draw()). Call abortFrame if the frame fails.
+   * Before the host draws the edit view's frame: on WebGPU, the frame is drawn into the composite's target, to go to the
+   * canvas with the aids in one pass (draw()), with or without the post stack. Call abortFrame if the frame fails.
    */
   beginFrame() {
+    // WebGPU without post too (AB-A-0335): three tone-maps its whole framebuffer target on the way to the canvas, aids and all
     const r = this.ed.host.renderer;
-    return r.isWebGPURenderer && !!this.ed.host.post?.active ? this.composite.beginFrame(r) : false;
+    return r.isWebGPURenderer ? this.composite.beginFrame(r, { linear: !this.ed.host.post?.active }) : false;
   }
 
   /** The frame failed after beginFrame: back to the canvas. */
@@ -217,7 +218,7 @@ export class ViewportAids {
     // cleared inside its rectangle: the WebGL post stack leaves autoClear off for good, which would draw the preview over
     // the frame and over depth left from earlier frames
     const renderer = ed.host.renderer, auto = renderer.autoClear;
-    // into the composite's target (WebGPU through the post stack): a target draws through its own viewport, not the
+    // into the composite's target (WebGPU): a target draws through its own viewport, not the
     // renderer's, so the preview is drawn whole into one of its own and placed in its corner
     if (this.composite.active) this.composite.drawInset(renderer, ed.host.scene, this.pipCamera, r, w, h);
     else {

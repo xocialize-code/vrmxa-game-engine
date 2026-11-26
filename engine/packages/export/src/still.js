@@ -11,6 +11,7 @@ import { readbackFor } from './gpu-readback.js';
  * @returns {Promise<{ width: number, height: number, rgba: Uint8ClampedArray }>} straight-alpha RGBA, row 0 at the top
  */
 export async function captureStill(host, { width, height, alpha = 1 }) {
+  await host.ready?.(); // what the host loads on demand for its tree (the particle renderer, AB-A-0335) is in first
   const r = host.renderer;
   const prevRatio = r.getPixelRatio(), was = host.drawingBufferSize();
   const cssW = was.width / prevRatio, cssH = was.height / prevRatio;

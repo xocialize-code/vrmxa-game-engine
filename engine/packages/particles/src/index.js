@@ -7,6 +7,7 @@ export { ParticleEmitterNode } from './emitter.js';
 export { ParticlesService, withRandom, stepStream } from './service.js';
 export { BUILTIN, EFFECT_FORMAT, buildSystems, checkEffect } from './effect.js';
 export { TILES, atlasPixels } from './atlas.js';
+export { particleRenderers } from './renderers.js';
 
 /** Give a tree ParticleEmitters and the "particles" service. @param {any} tree @param {{ resolve?: (ref: string) => Promise<Uint8Array> }} [o] */
 export function installParticles(tree, o = {}) {

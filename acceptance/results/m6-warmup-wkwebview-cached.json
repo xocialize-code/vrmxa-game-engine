@@ -1,0 +1,208 @@
+{
+ "check": "AB-A-0335: the first frame's pipeline compile in WKWebView over loopback, with and without host.warmUp()",
+ "cold": false,
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+ "pass": true,
+ "cases": [
+  {
+   "case": "renderer=webgpu&warm=0&post=0",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": false,
+     "warmUpMs": null,
+     "firstFrameMs": 242.1,
+     "secondFrameMs": 4,
+     "thirdFrameMs": 2.2,
+     "totalToFirstFrameMs": 242.1,
+     "buildMs": 1028.9,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": null,
+    "firstFrameMs": 242.1,
+    "secondFrameMs": 4,
+    "totalToFirstFrameMs": 242.1
+   }
+  },
+  {
+   "case": "renderer=webgpu&warm=1&post=0",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": false,
+     "warmUpMs": 330.5,
+     "firstFrameMs": 68.5,
+     "secondFrameMs": 4.2,
+     "thirdFrameMs": 2.8,
+     "totalToFirstFrameMs": 399,
+     "buildMs": 1025.6,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": 330.5,
+    "firstFrameMs": 68.5,
+    "secondFrameMs": 4.2,
+    "totalToFirstFrameMs": 399
+   }
+  },
+  {
+   "case": "renderer=webgpu&warm=0&post=1",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": true,
+     "warmUpMs": null,
+     "firstFrameMs": 280.8,
+     "secondFrameMs": 18.3,
+     "thirdFrameMs": 15.3,
+     "totalToFirstFrameMs": 280.8,
+     "buildMs": 1026.6,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": null,
+    "firstFrameMs": 280.8,
+    "secondFrameMs": 18.3,
+    "totalToFirstFrameMs": 280.8
+   }
+  },
+  {
+   "case": "renderer=webgpu&warm=1&post=1",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgpu",
+     "post": true,
+     "warmUpMs": 414.9,
+     "firstFrameMs": 29.7,
+     "secondFrameMs": 19.3,
+     "thirdFrameMs": 21.7,
+     "totalToFirstFrameMs": 444.6,
+     "buildMs": 1026.9,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": 414.9,
+    "firstFrameMs": 29.7,
+    "secondFrameMs": 19.3,
+    "totalToFirstFrameMs": 444.6
+   }
+  },
+  {
+   "case": "renderer=webgl&warm=0&post=0",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": false,
+     "warmUpMs": null,
+     "firstFrameMs": 281.1,
+     "secondFrameMs": 10.8,
+     "thirdFrameMs": 0.9,
+     "totalToFirstFrameMs": 281.1,
+     "buildMs": 1019.2,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": null,
+    "firstFrameMs": 281.1,
+    "secondFrameMs": 10.8,
+    "totalToFirstFrameMs": 281.1
+   }
+  },
+  {
+   "case": "renderer=webgl&warm=1&post=0",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": false,
+     "warmUpMs": 49.2,
+     "firstFrameMs": 206.2,
+     "secondFrameMs": 1.5,
+     "thirdFrameMs": 0.8,
+     "totalToFirstFrameMs": 255.4,
+     "buildMs": 1009.6,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": 49.2,
+    "firstFrameMs": 206.2,
+    "secondFrameMs": 1.5,
+    "totalToFirstFrameMs": 255.4
+   }
+  },
+  {
+   "case": "renderer=webgl&warm=0&post=1",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": true,
+     "warmUpMs": null,
+     "firstFrameMs": 353.9,
+     "secondFrameMs": 3,
+     "thirdFrameMs": 2.1,
+     "totalToFirstFrameMs": 353.9,
+     "buildMs": 1013.5,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": null,
+    "firstFrameMs": 353.9,
+    "secondFrameMs": 3,
+    "totalToFirstFrameMs": 353.9
+   }
+  },
+  {
+   "case": "renderer=webgl&warm=1&post=1",
+   "runs": [
+    {
+     "origin": "loopback",
+     "backend": "webgl",
+     "post": true,
+     "warmUpMs": 50.6,
+     "firstFrameMs": 279.9,
+     "secondFrameMs": 3,
+     "thirdFrameMs": 2,
+     "totalToFirstFrameMs": 330.5,
+     "buildMs": 1020.7,
+     "meshMaterials": 113,
+     "errors": [],
+     "timedOut": false
+    }
+   ],
+   "median": {
+    "warmUpMs": 50.6,
+    "firstFrameMs": 279.9,
+    "secondFrameMs": 3,
+    "totalToFirstFrameMs": 330.5
+   }
+  }
+ ]
+}

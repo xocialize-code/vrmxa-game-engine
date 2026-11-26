@@ -150,6 +150,7 @@ onMounted(async () => {
   ui.loading = false;
   // a harness's check (M2 W12): export the film as frame hashes and check it against scrubbing
   if (new URLSearchParams(location.search).get('mode') === 'check-export') (await import('./checkmode.js')).checkModeMain(ed);
+  if (new URLSearchParams(location.search).get('mode') === 'check-aids') (await import('./aidscheck.js')).aidsCheckMain(ed); // AB-A-0335
 });
 
 // ---------------------------------------------------------------- commands

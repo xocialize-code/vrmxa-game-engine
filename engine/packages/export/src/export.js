@@ -54,6 +54,7 @@ export async function exportTake({ tree, host, fps, frames, width, height, sink,
   const fixed = tree.services.get('cameras')?.fixed;
   if (fixed !== undefined && Math.abs(fixed - width / height) > 1e-9) throw new Error(`this world frames at a fixed aspect of ${fixed.toFixed(4)}; ${width}×${height} is ${(width / height).toFixed(4)}`);
   host.attach(tree);
+  await host.ready?.(); // the particle renderer, if the tree's emitters asked the host for it (AB-A-0335)
   host.resize(width, height);
   const gl = host.renderer.isWebGPURenderer ? null : host.renderer.getContext();
   const drawn = gl ? { width: gl.drawingBufferWidth, height: gl.drawingBufferHeight } : host.drawingBufferSize();
@@ -234,6 +235,7 @@ function sameBytes(a, b) {
 export async function exportTurntable({ tree, host, camera, fps, frames, width, height, pose, sink, job = {}, check = null, onBytes, onProgress, signal, now = () => 0, inflight = 2, lag = 1, warm = false }) {
   const rate = rationalFps(fps);
   host.attach(tree);
+  await host.ready?.(); // the particle renderer, if the tree's emitters asked the host for it (AB-A-0335)
   host.resize(width, height);
   const was = host.camera;
   camera.aspect = width / height; camera.updateProjectionMatrix();

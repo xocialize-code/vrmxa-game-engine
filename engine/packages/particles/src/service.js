@@ -18,10 +18,15 @@
 // moves to a host on the other backend. Headless, nothing draws, so there is no batch. The batch only draws: quarks'
 // simulation never reads it (a system tells its renderer when its look changes, and that's all), so the particles hash
 // the same with WebGL's batch, WebGPU's or none.
+// AB-A-0335: the host loads that class on demand (`host.particleRenderer` is undefined until then), from this package's
+// `particleRenderers`, so an app without particles neither loads nor ships three.quarks' renderer. Attached to such a
+// host, the service has it load them and holds its steps until the batch is in (core's holds/settle): the world steps
+// exactly as it would have, a little later.
 import { Scene, MeshBasicMaterial, DataTexture, RGBAFormat, SRGBColorSpace, LinearMipmapLinearFilter, LinearFilter, AdditiveBlending, NormalBlending } from 'three';
 import { DT, RandomStream } from '@vrmxg/core';
 import { atlasPixels } from './atlas.js';
 import { BUILTIN, buildSystems, checkEffect } from './effect.js';
+import { particleRenderers } from './renderers.js';
 
 
 /** Run fn with Math.random drawing from a stream (synchronous fn only: single-threaded JS makes the swap safe). */
@@ -58,12 +63,36 @@ export class ParticlesService {
     /** @type {any} */ this._atlas = null;
     /** A clock the caller may give (acceptance timing): the step's own cost accumulates in stepMs. @type {(() => number) | null} */ this.timer = null;
     this.stepMs = 0;
+    /** The host's particle renderer load this service waits on (attachHost); null otherwise. @type {Promise<void> | null} */
+    this._loading = null;
+    /** The host that load is for. @type {any} */
+    this._loadingFor = null;
     if (BatchedRenderer) this.useRenderer(BatchedRenderer);
     else if (tree.renderHost) this.attachHost(tree.renderHost); // installed after a host attached the tree
   }
 
-  /** A render host attached the tree: draw with its BatchedRenderer (null on a host that can't draw particles). */
-  attachHost(host) { this.useRenderer(host.particleRenderer ?? null); }
+  /**
+   * A render host attached the tree: draw with its BatchedRenderer (null on a host that can't draw particles). A host that
+   * hasn't loaded it yet loads it now (it calls attachHost again when it has); the steps are held until then.
+   */
+  attachHost(host) {
+    if (host.particleRenderer === undefined && typeof host.loadParticleRenderer === 'function') {
+      if (this._loadingFor === host) return;
+      const loading = host.loadParticleRenderer(particleRenderers)
+        .catch((e) => { console.error('particles: the host could not load its particle renderer; nothing draws them', e); })
+        .finally(() => { if (this._loading === loading) { this._loading = null; this._loadingFor = null; } });
+      this._loading = loading; this._loadingFor = host;
+      return;
+    }
+    this._loading = null; this._loadingFor = null; // a host with its class (another host's load, if any, no longer matters)
+    this.useRenderer(host.particleRenderer ?? null);
+  }
+
+  /** While the host loads its particle renderer, steps wait (core's holds): no step's particles go undrawn. */
+  holds() { return this._loading != null; }
+
+  /** Resolves once the host's particle renderer is in (or failed to load). */
+  async settle() { await this._loading; }
 
   /**
    * Draw with this three.quarks BatchedRenderer class (WebGL's, or three.quarks/webgpu's), or with none. The same class
@@ -121,7 +150,7 @@ export class ParticlesService {
   }
 
   register(node) {
-    if (!this.batch && this.tree.renderHost) this.attachHost(this.tree.renderHost); // a host attached before this service existed
+    if (!this.batch && !this._loading && this.tree.renderHost) this.attachHost(this.tree.renderHost); // a host attached before this service existed
     const doc = this.effects.get(node.effect);
     if (!doc) throw new Error(`${node.id}: unknown effect "${node.effect}" (built in: ${Object.keys(BUILTIN).join(', ')}; or a project .json named in the scene)`);
     this.ensureStage();
