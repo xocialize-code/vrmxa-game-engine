@@ -198,7 +198,7 @@ const lostDevices = (h) => (LOSE.length ? { losses: lost ?? [], recoveries: h.re
 // what the ?stats readout adds (M6 W6), for a check that reads only the page (AppProbe in the Mac app): each lost GPU
 // device and what it was made again on, and once a replay without a loop has ended, its steps and final hash
 function statsAfter(h) {
-  const r = h.recoveries.length ? `; GPU lost ${h.recoveries.length}×, made again on ${h.recoveries.map((x) => x.backend ?? 'nothing').join(', ')}` : '';
+  const r = h.recoveries.length ? `; GPU lost, display restarted: ${h.recoveries.map((x) => x.backend ?? 'gave up').join(', ')}` : '';
   const run = window.__result?.runs?.at(-1);
   return `${r}${run?.final ? `; replay ended: ${run.steps} steps, final ${run.final.hash}` : window.__result?.error ? `; replay failed: ${window.__result.error}` : ''}`;
 }

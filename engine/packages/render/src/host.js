@@ -123,14 +123,27 @@ export class RenderHost {
      * @type {{ api: string, reason: string | null, message: string } | null}
      */
     this.lost = null;
-    /** Called once, when the device is lost: (lost) => void. The app makes a host in this one's place. */
-    this.onLost = null;
+    this._onLost = null;
     /** RenderHost.create's options, for a host made in this one's place (not the canvas, renderer or backend). @type {any} */
     this._made = null;
     /** On a host made by RenderHost.replace: { from: the lost host's backend, lost, tried: the backends that failed first }. @type {{ from: string, lost: any, tried: string[] } | null} */
     this.replaced = null;
-    this._disposed = false;
+    this._disposed = false; this._said = false;
+    /** What a failed RenderHost.replace kept for another try. @type {any} */
+    this._carry = null;
     this._watchLoss();
+  }
+
+  /**
+   * Called once, when the device is lost: (lost) => void. The app makes a host in this one's place. Set on a host that is
+   * already lost (its device went while RenderHost.replace was still making it: the post stack, the tree's move), it is
+   * called at once, so no loss goes unsaid.
+   * @type {((lost: { api: string, reason: string | null, message: string }) => void) | null}
+   */
+  get onLost() { return this._onLost; }
+  set onLost(fn) {
+    this._onLost = fn ?? null;
+    if (fn && this.lost && !this._disposed && !this._said) { this._said = true; try { fn(this.lost); } catch (e) { console.error(e); } }
   }
 
   /** Watch for a lost device: GPUDevice.lost (any reason, destroy() included), three's onDeviceLost, a lost WebGL context. */
@@ -151,7 +164,9 @@ export class RenderHost {
   _lose(info) {
     if (this.lost || this._disposed) return;
     this.lost = { api: info.api, reason: info.reason ?? null, message: String(info.message ?? 'the device was lost') };
-    try { this.onLost?.(this.lost); } catch (e) { console.error(e); }
+    if (!this._onLost) return; // said when a handler is set (onLost)
+    this._said = true;
+    try { this._onLost(this.lost); } catch (e) { console.error(e); }
   }
 
   /**
@@ -184,9 +199,9 @@ export class RenderHost {
    *   to change (a test's stand-in `webgpu`)
    */
   static async replace(old, { backends = RenderHost.recoveryOrder(old.backend), ...over } = {}) {
-    const tree = old.tree, overlays = [...old.overlays];
-    const carried = { camera: old.camera, layout: old.layout, interpolate: old.interpolate, onPresent: old.onPresent };
-    for (const o of overlays) o.detach?.();
+    // a second try after a failed one takes what the first carried (the old host has let it all go by then)
+    const { tree, overlays, carried } = old._carry ?? { tree: old.tree, overlays: [...old.overlays], carried: { camera: old.camera, layout: old.layout, interpolate: old.interpolate, onPresent: old.onPresent } };
+    for (const o of overlays) if (o.host === old) o.detach?.();
     old.dispose();
     const errors = [];
     for (const backend of backends) {
@@ -199,6 +214,7 @@ export class RenderHost {
         return host;
       } catch (e) { errors.push(`${backend}: ${e?.message ?? e}`); }
     }
+    old._carry = { tree, overlays, carried }; // for another try later (WebKit's GPU process takes a few seconds to come back)
     throw new Error(`the renderer couldn't be made again (${errors.join('; ')})`);
   }
 

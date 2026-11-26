@@ -45,6 +45,61 @@
   "shows": true,
   "error": ""
  },
+ "editEncoder": {
+  "before": {
+   "backend": "webgpu",
+   "tree": true,
+   "step": 0
+  },
+  "after": {
+   "backend": "webgpu",
+   "sameCanvas": true,
+   "world": true,
+   "camera": true,
+   "step": 0,
+   "calls": 309,
+   "oldLost": true,
+   "error": ""
+  },
+  "file": "m6-editor-device-loss-edit-encoder.png"
+ },
+ "playEncoder": {
+  "before": {
+   "backend": "webgpu",
+   "tree": true,
+   "step": 123
+  },
+  "after": {
+   "backend": "webgpu",
+   "sameCanvas": true,
+   "world": true,
+   "camera": true,
+   "step": 180,
+   "calls": 209,
+   "oldLost": true,
+   "error": ""
+  },
+  "file": "m6-editor-device-loss-play-encoder.png",
+  "later": 273
+ },
+ "webgl": {
+  "before": {
+   "backend": "webgl",
+   "tree": true,
+   "step": 0
+  },
+  "after": {
+   "backend": "webgl",
+   "sameCanvas": true,
+   "world": true,
+   "camera": true,
+   "step": 0,
+   "calls": 0,
+   "oldLost": true,
+   "error": ""
+  },
+  "file": "m6-editor-device-loss-webgl-context.png"
+ },
  "checks": [
   {
    "name": "the edit view: made again on WebGPU on the same canvas, with the edit world and the edit camera, drawing",
@@ -60,6 +115,21 @@
    "name": "Stop brings the edit world back on the new host",
    "ok": true,
    "detail": "{\"mode\":\"editing\",\"shows\":true,\"error\":\"\"}"
+  },
+  {
+   "name": "the edit view, createCommandEncoder throwing: made again, the aids not drawn on the dead renderer, no error left",
+   "ok": true,
+   "detail": "{\"backend\":\"webgpu\",\"sameCanvas\":true,\"world\":true,\"camera\":true,\"step\":0,\"calls\":309,\"oldLost\":true,\"error\":\"\"}"
+  },
+  {
+   "name": "Play, createCommandEncoder throwing: made again, play goes on, no error left",
+   "ok": true,
+   "detail": "lost at 123, 273 1.5 s after; {\"backend\":\"webgpu\",\"sameCanvas\":true,\"world\":true,\"camera\":true,\"step\":180,\"calls\":209,\"oldLost\":true,\"error\":\"\"}"
+  },
+  {
+   "name": "WebGL, a lost context restored: made again on WebGL on the same canvas, with the edit world, drawing",
+   "ok": true,
+   "detail": "{\"backend\":\"webgl\",\"sameCanvas\":true,\"world\":true,\"camera\":true,\"step\":0,\"calls\":0,\"oldLost\":true,\"error\":\"\"}"
   },
   {
    "name": "no errors in the page beyond the lost devices' own",

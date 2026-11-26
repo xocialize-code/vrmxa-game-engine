@@ -50,7 +50,9 @@ export class GameHost {
     /** What the status line said and when (M6 W6): { text, step }, a new entry each time it changes. */
     this.displays = [];
     this.recoverWith = recoverWith;
-    this._recovering = false; this._awaitFrame = false; this._losses = /** @type {number[]} */ ([]);
+    /** Waits (ms) between tries to make a lost renderer again, before giving up (M6 W6). */
+    this.retryWaits = [1500, 3000, 6000];
+    this._recovering = false; this._awaitFrame = false; this._losses = /** @type {number[]} */ ([]); this._givenUp = /** @type {RenderHost | null} */ (null);
     this.store = shell.inShell ? new ShellStore(shell.call) : new IndexedDBStore(`vrmxg-game-${this.game.id}`);
     /** @type {Map<any, any>} tree → its world, for disposing it */ this.worlds = new Map();
     this.characterCache = { sources: new Map(), clips: new Map() }; // read bundles and parsed clips, kept between worlds
@@ -133,36 +135,65 @@ export class GameHost {
   async _lost(lost) {
     const old = this.render;
     if (!old || this._recovering) return;
-    this._recovering = true; this.render = null; this._awaitFrame = false;
-    const t0 = performance.now(), at = { step: this.session?.step ?? null, scene: this.session?.scene ?? null };
+    this.render = null; this._awaitFrame = false;
+    const t0 = performance.now();
     this._display('The display stopped. Restarting it…');
     console.warn(`[game] the renderer's device was lost (${lost.api}: ${lost.reason ?? 'no reason'}: ${lost.message}); restarting it`);
     this._losses = [...this._losses.filter((t) => t0 - t < 60000), t0];
+    if (this._losses.length > 3) { old.dispose(); this._gaveUp(old, lost, t0, 'it was lost three times in a minute'); return; }
+    await this._remake(old, lost, t0);
+  }
+
+  /**
+   * Make a render host in place of `old` (lost, or one given up on) and draw the session's world on it. The new host's
+   * onLost is set only once this is done: set on a host whose device already went meanwhile, it is called at once
+   * (RenderHost's onLost), so a loss during recovery recovers again instead of leaving the game undrawn.
+   */
+  async _remake(old, lost, t0 = performance.now()) {
+    this._recovering = true; this._changed();
+    const at = { step: this.session?.step ?? null, scene: this.session?.scene ?? null };
+    let host = null;
     try {
-      if (this._losses.length > 3) throw new Error('it was lost three times in a minute');
       if (old.tree && old.tree !== this.session?.tree) old.detach(); // a world let go meanwhile isn't drawn again
-      const host = await RenderHost.replace(old, { canvas: this._freshCanvas(), ...(this.recoverWith ? { backends: this.recoverWith } : {}) });
-      host.onLost = (l) => this._lost(l);
+      // WebKit's GPU process takes a few seconds to come back after it was killed, and until then neither WebGPU nor
+      // WebGL can be had (seen in the Mac app): try again after each of these waits before giving up
+      for (let i = 0; ; i++) {
+        try { host = await RenderHost.replace(old, { canvas: this._freshCanvas(), ...(this.recoverWith ? { backends: this.recoverWith } : {}) }); break; }
+        catch (e) {
+          if (i >= this.retryWaits.length) throw e;
+          console.warn(`[game] the renderer couldn't be made again yet (${e?.message ?? e}); trying again in ${this.retryWaits[i] / 1000} s`);
+          await new Promise((ok) => setTimeout(ok, this.retryWaits[i]));
+        }
+      }
       const tree = this.session?.tree ?? null; // a game started or loaded meanwhile: its world
       if (tree && host.tree !== tree) host.attach(tree); else if (!tree && host.tree) host.detach();
-      this.render = host;
+      this.render = host; this._givenUp = null;
       this.state.backend = host.backend;
       this._last = null; // no catching up on the time it took
       this._awaitFrame = true; // the status line goes once the new host has drawn a frame
       this.resize();
       this.recoveries.push({ ...at, lost, backend: host.backend, tried: host.replaced?.tried ?? [], ms: performance.now() - t0 });
     } catch (e) {
-      // nothing could draw: the game is held and the pause menu offers Save (the simulation is intact)
-      const message = String(e?.message ?? e);
-      this.recoveries.push({ ...at, lost, failed: message, ms: performance.now() - t0 });
-      this._display(`The display stopped and couldn't be restarted (${message}). Save your game from the pause menu.`);
+      host = null;
+      this._gaveUp(old, lost, t0, String(e?.message ?? e), at);
       console.error(e);
-      this.onCommand('pause');
-      this.pause();
     } finally {
       this._recovering = false;
       this._changed();
     }
+    if (host && this.render === host) host.onLost = (l) => this._lost(l); // after: a loss meanwhile is said now
+  }
+
+  /**
+   * Nothing could draw (or it was lost too often): hold the game, open the pause menu, say to save. The simulation is
+   * intact. Resume tries again (`resume`), with the given-up host's options.
+   */
+  _gaveUp(old, lost, t0, message, at = { step: this.session?.step ?? null, scene: this.session?.scene ?? null }) {
+    this._givenUp = old;
+    this.recoveries.push({ ...at, lost, failed: message, ms: performance.now() - t0 });
+    this._display(`The display stopped and couldn't be restarted (${message}). Save your game from the pause menu; Resume tries again.`);
+    this.onCommand('pause');
+    this.pause();
   }
 
   _display(text) {
@@ -296,6 +327,8 @@ export class GameHost {
   /** Step again. What is held down now (the key or button that closed the menu) doesn't reach the game until let go. */
   resume() {
     if (!this.session?.active) return;
+    // a display given up on (M6 W6): Resume tries to make it again, the count of recent losses started afresh
+    if (!this.render && this._givenUp && !this._recovering) { const old = this._givenUp; this._givenUp = null; this._losses = []; this._display('Restarting the display…'); this._remake(old, old.lost ?? { api: 'none', reason: null, message: 'retry' }); }
     for (const g of [this.keyboard, this.mouse, this.gamepad]) g.arm();
     this.state.playing = true; this.state.paused = false; this._last = null;
     this.audio?.ctx.resume?.();
@@ -343,7 +376,8 @@ export class GameHost {
       const pad = {}; this.pad.read(pad);
       for (const c of this.nav.poll(pad.gamepad ?? null, t / 1000)) this.onCommand(this.state.playing && c === 'start' ? 'pause' : c);
       const tree = this.session?.tree, render = this.render;
-      if (!tree || !render || render.tree !== tree) { this._last = null; this.stepping.update(true); return; }
+      // nothing steps without a render host drawing the session's world: none, another world's, or a lost one (M6 W6)
+      if (!tree || !render || render.tree !== tree || render.lost) { this._last = null; this.stepping.update(true); return; }
       // a menu or a question up (one opened while a save loaded, say), or not playing: nothing steps
       const held = !this.state.playing || this.hold();
       const { step, resumed } = this.stepping.update(held);

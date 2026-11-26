@@ -158,8 +158,11 @@ says its device is lost (`@vrmxg/render`, "A lost GPU device"). The host (`src/h
 3. clears the line once the new host has drawn a frame, and plays on from the same step. Nothing simulated is touched,
    so a session hashes as if nothing happened.
 
-After three losses in a minute, or when no renderer can be made, the game is held paused, the pause menu opens and the
-line says to save (the simulation is intact, so Save works). Worlds built while a renderer is being made take the same
+A renderer that can't be made at once is tried again after 1.5, 3 and 6 s (`retryWaits`): after a real kill WebKit's
+GPU process takes a few seconds to come back, and until then neither WebGPU nor WebGL can be had. After three losses in
+a minute, or when every try fails, the game is held paused, the pause menu opens and the line says to save (the
+simulation is intact, so Save works); Resume tries again. A loss during recovery (the new host's device going while it
+is being made) recovers again: the host's `onLost`, set once it is in place, is called at once for a host already lost. Worlds built while a renderer is being made take the same
 MToon kind. `host.recoveries` lists each loss and what came of it; `host.displays` what the line said.
 
 Check switches: `?lose=<step>:<how>[,…]` loses the device as the session reaches each step (`destroy`:
@@ -169,10 +172,10 @@ Check switches: `?lose=<step>:<how>[,…]` loses the device as the session reach
 through three losses on WebGPU, one with the WebGL2 fallback and one lost WebGL context, each against the unbroken
 session's hash after every step (16 of 16, 2026-11-25); `device-loss-wkwebview.sh` does the same in WKWebView over
 the scheme and loopback (6 of 6). In this app, `device-loss-mac.sh` kills WebKit's real GPU process (the app's own,
-found by its responsible process) twice under the same replay: the game came back both times, on three's WebGL2
-backend (WebGPU couldn't be had again at once after a real kill; the first recovery took one 6.3 s frame), and the
-replay ended on the unbroken session's final hash (`acceptance/results/m6-device-loss-mac.json`). A game that falls
-back stays on WebGL for the rest of the session.
+found by its responsible process) twice under the same replay: the game came back both times by itself, on three's
+WebGL2 backend (after a real kill WebGPU isn't back in time; the longest frame was 1.2 s), and the replay ended on the
+unbroken session's final hash (`acceptance/results/m6-device-loss-mac.json`). Before the retries, the same kill held the
+game with Save offered, and Resume brought it back. A game that falls back stays on WebGL for the rest of the session.
 
 ## Checked
 

@@ -99,12 +99,17 @@ process's GPU load). The host now:
   `'webgl-fallback'`, a WebGPURenderer on three's WebGL2 backend, which draws the node materials a WebGPU world was
   built with; a WebGL host is made again on WebGL), and moves the tree, the camera override, the split-screen layout,
   interpolation and the overlays over. The old renderer is disposed (errors from a dead device ignored). It throws,
-  naming each backend's failure, when none can be made. `host.replaced` says what it came from.
+  naming each backend's failure, when none can be made, and keeps what it carried on the old host for another try.
+  `host.replaced` says what it came from.
+- **says a loss that came early**: `onLost` set on a host that is already lost (its device went while `replace` was
+  still making it) is called at once, so an app that sets it after `replace` resolves never misses one.
 - **never touches the simulation**: the tree isn't stepped or changed, so the next frame draws the world from the step
   it is on and the hashes are those of an unbroken run.
 
 A canvas that had a WebGPU context can't give a WebGL one, so the game app replaces its canvas; the editor and the
-creator keep theirs (their controls listen on it) and try their own backend again only. Tests:
+creator keep theirs (their controls listen on it) and try their own backend again only: WebGPU on WebGPU, and on WebGL
+once the browser restores the lost context (`webglcontextrestored`, waited for up to 15 s; a context the browser never
+restores leaves the view lost, and the editor says to save and reopen the window). Tests:
 `test/device-loss.test.mjs` (a stand-in WebGPU: each way of noticing, the pose put back after a failing draw, replace
 on WebGPU and on the fallback with every step hashing as an unbroken run's, nothing able to draw). In browsers:
 `acceptance/m6/device-loss.mjs` (Chromium) and `device-loss-wkwebview.sh`, through the game app.

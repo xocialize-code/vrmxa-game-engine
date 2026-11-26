@@ -46,7 +46,8 @@ The bookkeeping is `src/worlds.js` (`RetiredWorlds`: `retire`, `sweep`, `use`), 
 it runs (a node removed during play, an item's model, a body the closet replaced, a wearable taken off) is handed to
 the tree as detached (`tree.detach`, `tree.detached`: `@vrmxg/core`'s `remove`, the character's, item's and model's
 `exitTree`, the character's `swapVRM`, the closet's `unhang`), and `disposeWorld` walks those as well as the root
-(AB-T-0626, `test/dispose-detached.test.mjs`).
+(AB-T-0626, `test/dispose-detached.test.mjs`). Known cost: until the world goes, the set keeps all of them (a world
+that removes or swaps a lot holds their memory for its life); bounding it is AB-T-0655.
 
 **Closing asks first (the Mac app, shell 0.9.0, AB-T-0593).** With unsaved changes, File › Close Window, the close
 button and Quit show a sheet in the window: Save (saves, then closes), Don't Save or Cancel. The bundled sample is

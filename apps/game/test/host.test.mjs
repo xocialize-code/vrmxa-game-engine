@@ -39,16 +39,25 @@ test('pause is refused while a game starts or a save loads', () => {
 test('a device lost a fourth time in a minute: the game is held, the pause menu asked for, and the status line says to save', async () => {
   const commands = [];
   const h = {
-    render: { tree: null, lost: { api: 'WebGPU', reason: 'unknown', message: 'gone' } }, session: { step: 400, scene: 'level', tree: null, active: true },
+    render: { tree: null, lost: { api: 'WebGPU', reason: 'unknown', message: 'gone' }, dispose() { this.disposed = true; } }, session: { step: 400, scene: 'level', tree: null, active: true },
     state: { display: '', loading: '', playing: true, paused: false }, recoveries: [], displays: [], _display: GameHost.prototype._display, _losses: [1, 2, 3].map(() => performance.now()), _recovering: false,
     mouse: { device: { unlock() {} } }, audio: null, onCommand: (c) => commands.push(c), _changed() {}, pause: GameHost.prototype.pause,
+    _gaveUp: GameHost.prototype._gaveUp, _givenUp: null,
   };
+  const lostHost = h.render;
   const warn = console.warn, error = console.error; console.warn = console.error = () => {};
   try { await GameHost.prototype._lost.call(h, h.render.lost); } finally { console.warn = warn; console.error = error; }
   assert.deepEqual(commands, ['pause']);
   assert.deepEqual([h.state.playing, h.state.paused, h.render], [false, true, null], 'held: nothing steps or draws');
-  assert.match(h.state.display, /couldn't be restarted \(it was lost three times in a minute\)\. Save your game from the pause menu/);
+  assert.match(h.state.display, /couldn't be restarted \(it was lost three times in a minute\)\. Save your game from the pause menu; Resume tries again/);
+  assert.ok(lostHost.disposed, 'the lost host was let go');
+  assert.equal(h._givenUp, lostHost, 'kept for Resume to try again with its options');
+  // Resume tries again: a fresh count, and _remake with the given-up host
+  const remade = [];
+  Object.assign(h, { keyboard: { arm() {} }, gamepad: { arm() {} }, _remake: (old) => remade.push(old), mouse: { device: { unlock() {} }, arm() {} } });
+  GameHost.prototype.resume.call(h);
+  assert.deepEqual([remade, h._losses, h._givenUp, h.state.display], [[lostHost], [], null, 'Restarting the display…']);
   assert.deepEqual(h.recoveries.map((r) => [r.step, r.scene, r.failed]), [[400, 'level', 'it was lost three times in a minute']]);
-  assert.deepEqual(h.displays.map((d) => [d.step, d.text.slice(0, 22)]), [[400, 'The display stopped. R'], [400, 'The display stopped an']], 'said, then said it couldn\'t');
+  assert.deepEqual(h.displays.map((d) => [d.step, d.text.slice(0, 22)]), [[400, 'The display stopped. R'], [400, 'The display stopped an'], [400, 'Restarting the display']], 'said, said it couldn\'t, then Resume restarting it');
   assert.equal(h._recovering, false);
 });

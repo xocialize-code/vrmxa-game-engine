@@ -13,7 +13,7 @@
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 node "$here/../gpu-lock.mjs" held || exec node "$here/../gpu-lock.mjs" run --who "$0" -- "$0" "$@"
-root="$here/../.."
+root=$(cd "$here/../.." && pwd)
 src="$root/apps/game-mac/build/morning-rush.app"; app="$root/acceptance/build/M6DeviceLoss.app"; log="$root/acceptance/results/m6-device-loss/lose.json"
 [ -d "$src" ] || { echo "build the app first (see the top of this file)"; exit 1; }
 [ -f "$log" ] || { echo "run node acceptance/m6/device-loss.mjs first"; exit 1; }

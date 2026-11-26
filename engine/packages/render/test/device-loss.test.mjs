@@ -185,7 +185,44 @@ test('RenderHost.replace falls back to three\'s WebGL2 backend (node materials s
   const t2 = movingTree(); third.attach(t2);
   await assert.rejects(RenderHost.replace(third, { canvas: {}, webgpu: broken.module }), /the renderer couldn't be made again \(webgpu: .*; webgl-fallback: no adapter\)/);
   assert.equal(t2.renderHost, null, 'detached: no host draws it until the app tries again');
+  // and the app's later try (WebKit's GPU process back) carries the tree and the overlays the failed one took
+  const ov = { host: null, attach(h) { this.host = h; h.overlays.push(this); }, detach() { this.host.overlays = this.host.overlays.filter((o) => o !== this); this.host = null; }, update() {} };
+  const fourth = await RenderHost.create({ backend: 'webgpu', navigator: gpuNavigator(), webgpu: module, canvas: {} });
+  const t3 = movingTree(); fourth.attach(t3); ov.attach(fourth); fourth.renderer.backend.device.loseFor('x'); await flush();
+  await assert.rejects(RenderHost.replace(fourth, { canvas: {}, webgpu: broken.module }));
+  const back = await RenderHost.replace(fourth, { canvas: { id: 'later' } });
+  assert.deepEqual([back.tree === t3, ov.host === back, back.backend], [true, true, 'webgpu'], 'the second try has the tree and the overlay');
   // a host that never had the WebGL fallback refuses a WebGPURenderer on WebGL2 still
   const gl2 = new module.WebGPURenderer({ forceWebGL: true }); await gl2.init();
   assert.throws(() => new RenderHost({ renderer: gl2, webgpu: module, mtoonMaterial: {} }), /fell back to its WebGL2 backend/);
+});
+
+test('a device lost while RenderHost.replace is still making the host (inside the post factory): its onLost, set after, fires at once', async () => {
+  const { module, renderers } = fakeWebGPU();
+  const loseIn = new Set();
+  // the post stack is made after the renderer: the second one's device goes right there, before replace has returned
+  const post = (renderer) => { if (loseIn.has(renderer.id)) renderer.backend.device.loseFor('lost while the post stack was made'); return { renderer, active: false, setSize() {}, configure() {}, dispose() {} }; };
+  const first = await RenderHost.create({ backend: 'webgpu', navigator: gpuNavigator(), webgpu: module, canvas: {}, post });
+  const tree = movingTree(); first.attach(tree);
+  first.renderer.backend.device.loseFor('first'); await flush();
+  loseIn.add(renderers.length); // the next renderer made: the replacement
+  const second = await RenderHost.replace(first, { canvas: { id: 'fresh' } });
+  await flush();
+  assert.ok(second.lost, 'the replacement lost its device before anyone listened');
+  assert.equal(second.lost.message, 'lost while the post stack was made');
+  const said = [];
+  second.onLost = (l) => said.push(l.message); // as an app sets it once replace has resolved
+  assert.deepEqual(said, ['lost while the post stack was made'], 'said at once, not never');
+  second.onLost = (l) => said.push(`again: ${l.message}`);
+  assert.equal(said.length, 1, 'once: a handler set again isn\'t told twice');
+  // and the app's answer to it works: a third host draws the same tree
+  const third = await RenderHost.replace(second, { canvas: { id: 'third' } });
+  assert.equal(third.tree, tree);
+  third.render(1);
+  assert.ok(third.renderer.drawn > 0 && !third.lost);
+  // a host set up before its loss says it through the handler as before, once
+  const seen = [];
+  third.onLost = (l) => seen.push(l.message);
+  third.renderer.backend.device.loseFor('later'); await flush();
+  assert.deepEqual(seen, ['later']);
 });

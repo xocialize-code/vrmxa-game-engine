@@ -5,20 +5,20 @@
  "chromium": "156.0.8078.4",
  "build": {
   "game": "morning-rush",
-  "digest": "4bb637a86d6befb6c5d5053ebc6c9ba1dfdfd7e42e68ad0034d145cc05513f62",
-  "runtime": "vrmxg-game 0.1.0+9a424dbf2744"
+  "digest": "ac3cab2938e3288ba78eb2977c311d10c208fd4a14e8307c245a36b080c7cc86",
+  "runtime": "vrmxg-game 0.1.0+bb413b351184"
  },
  "session": {
-  "steps": 4333,
+  "steps": 4331,
   "scenes": [
    "game/title.vrmxs",
    "game/level.vrmxs",
    "game/lost.vrmxs"
   ],
   "final": {
-   "step": 4333,
+   "step": 4331,
    "scene": "game/lost.vrmxs",
-   "hash": "83a97551fb38a7d6"
+   "hash": "7505538705719a57"
   }
  },
  "runs": {
@@ -55,7 +55,7 @@
      },
      "backend": "webgpu",
      "tried": [],
-     "ms": 2.7999999821186066
+     "ms": 3
     },
     {
      "step": 961,
@@ -67,7 +67,7 @@
      },
      "backend": "webgpu",
      "tried": [],
-     "ms": 14.700000017881393
+     "ms": 10
     },
     {
      "step": 2162,
@@ -79,7 +79,7 @@
      },
      "backend": "webgpu",
      "tried": [],
-     "ms": 19.799999982118607
+     "ms": 12.200000017881393
     }
    ],
    "display": [
@@ -112,7 +112,7 @@
     {
      "file": "m6-device-loss-webgpu-1.png",
      "step": 61,
-     "drawn": 96
+     "drawn": 99
     },
     {
      "file": "m6-device-loss-webgpu-2.png",
@@ -122,26 +122,26 @@
     {
      "file": "m6-device-loss-webgpu-3.png",
      "step": 2170,
-     "drawn": 99
+     "drawn": 102
     }
    ],
-   "steps": 4333,
+   "steps": 4331,
    "final": {
-    "step": 4333,
+    "step": 4331,
     "scene": "game/lost.vrmxs",
-    "hash": "83a97551fb38a7d6"
+    "hash": "7505538705719a57"
    },
    "backend": "webgpu",
    "frames": {
-    "frames": 4325,
-    "seconds": 74.2471,
-    "fps": 58.251433389317555,
-    "mean": 17.166959537572257,
+    "frames": 4327,
+    "seconds": 73.9471,
+    "fps": 58.51480314981926,
+    "mean": 17.08969262768662,
     "p50": 16.69999999999709,
     "p95": 16.799999999995634,
     "p99": 16.80000000000291,
-    "max": 566.6000000000004,
-    "over25": 21,
+    "max": 499.90000000000055,
+    "over25": 18,
     "over34": 14,
     "width": 1280,
     "height": 720
@@ -169,7 +169,7 @@
      },
      "backend": "webgl-fallback",
      "tried": [],
-     "ms": 19.799999982118607
+     "ms": 25.899999976158142
     }
    ],
    "display": [
@@ -186,25 +186,25 @@
     {
      "file": "m6-device-loss-fallback-1.png",
      "step": 1269,
-     "drawn": 102
+     "drawn": 108
     }
    ],
-   "steps": 4333,
+   "steps": 4331,
    "final": {
-    "step": 4333,
+    "step": 4331,
     "scene": "game/lost.vrmxs",
-    "hash": "83a97551fb38a7d6"
+    "hash": "7505538705719a57"
    },
    "backend": "webgl-fallback",
    "frames": {
-    "frames": 4331,
-    "seconds": 74.3804,
-    "fps": 58.227705148130426,
-    "mean": 17.173955206649733,
+    "frames": 4330,
+    "seconds": 74.16369999999999,
+    "fps": 58.38435784622396,
+    "mean": 17.1278752886836,
     "p50": 16.69999999999709,
-    "p95": 16.79999999998836,
+    "p95": 16.70000000001164,
     "p99": 16.80000000000291,
-    "max": 600,
+    "max": 566.5,
     "over25": 15,
     "over34": 13,
     "width": 1280,
@@ -233,7 +233,7 @@
      },
      "backend": "webgl",
      "tried": [],
-     "ms": 5.5999999940395355
+     "ms": 6.300000011920929
     }
    ],
    "display": [
@@ -250,26 +250,26 @@
     {
      "file": "m6-device-loss-webgl-1.png",
      "step": 1269,
-     "drawn": 33
+     "drawn": 34
     }
    ],
-   "steps": 4333,
+   "steps": 4331,
    "final": {
-    "step": 4333,
+    "step": 4331,
     "scene": "game/lost.vrmxs",
-    "hash": "83a97551fb38a7d6"
+    "hash": "7505538705719a57"
    },
    "backend": "webgl",
    "frames": {
-    "frames": 4331,
-    "seconds": 74.08030000000001,
-    "fps": 58.4635861355853,
-    "mean": 17.10466404987301,
+    "frames": 4324,
+    "seconds": 73.9303,
+    "fps": 58.487521354573154,
+    "mean": 17.097664199814986,
     "p50": 16.69999999999709,
     "p95": 16.799999999995634,
     "p99": 16.80000000000291,
     "max": 533.3000000000002,
-    "over25": 16,
+    "over25": 17,
     "over34": 15,
     "width": 1280,
     "height": 720
@@ -282,23 +282,23 @@
    "recoveries": [],
    "display": [],
    "stills": [],
-   "steps": 4333,
+   "steps": 4331,
    "final": {
-    "step": 4333,
+    "step": 4331,
     "scene": "game/lost.vrmxs",
-    "hash": "83a97551fb38a7d6"
+    "hash": "7505538705719a57"
    },
    "backend": "webgpu",
    "frames": {
-    "frames": 4340,
-    "seconds": 73.6638,
-    "fps": 58.91631982059031,
-    "mean": 16.97322580645161,
+    "frames": 4333,
+    "seconds": 73.5638,
+    "fps": 58.90125306196798,
+    "mean": 16.97756750519271,
     "p50": 16.69999999999709,
-    "p95": 16.70000000001164,
+    "p95": 16.79999999998836,
     "p99": 16.80000000000291,
-    "max": 516.6999999999998,
-    "over25": 15,
+    "max": 483.2999999999993,
+    "over25": 13,
     "over34": 12,
     "width": 1280,
     "height": 720
@@ -310,22 +310,22 @@
   {
    "name": "the sample game exports with the game app as its runtime",
    "ok": true,
-   "detail": "116 files, digest 4bb637a86d6befb6"
+   "detail": "116 files, digest ac3cab2938e3288b"
   },
   {
    "name": "the unbroken session: played from the title to the lost ending, a hash after every step",
    "ok": true,
-   "detail": "4333 steps, scenes game/title.vrmxs → game/level.vrmxs → game/lost.vrmxs (the level from step 361)"
+   "detail": "4331 steps, scenes game/title.vrmxs → game/level.vrmxs → game/lost.vrmxs (the level from step 361)"
   },
   {
    "name": "webgpu: the replay gives the unbroken session's hash after every step, through 3 lost devices",
    "ok": true,
-   "detail": "4333 steps, final 83a97551fb38a7d6"
+   "detail": "4331 steps, final 7505538705719a57"
   },
   {
    "name": "webgpu: each loss made a renderer again on the backend asked for, on one fresh canvas",
    "ok": true,
-   "detail": "lost at 60 (destroy on webgpu), 961 (destroy on webgpu), 2161 (encoder on webgpu); made again on webgpu, webgpu, webgpu in 3 ms, 15 ms, 20 ms; 1 canvas"
+   "detail": "lost at 60 (destroy on webgpu), 961 (destroy on webgpu), 2161 (encoder on webgpu); made again on webgpu, webgpu, webgpu in 3 ms, 10 ms, 12 ms; 1 canvas"
   },
   {
    "name": "webgpu: the status line said so while it recovered, and went once a new frame was drawn",
@@ -335,17 +335,17 @@
   {
    "name": "webgpu: it draws again after each recovery",
    "ok": true,
-   "detail": "m6-device-loss-webgpu-1.png at step 61: 96 draws in half a second; m6-device-loss-webgpu-2.png at step 969: 102 draws in half a second; m6-device-loss-webgpu-3.png at step 2170: 99 draws in half a second"
+   "detail": "m6-device-loss-webgpu-1.png at step 61: 99 draws in half a second; m6-device-loss-webgpu-2.png at step 969: 102 draws in half a second; m6-device-loss-webgpu-3.png at step 2170: 102 draws in half a second"
   },
   {
    "name": "fallback: the replay gives the unbroken session's hash after every step, through 1 lost device",
    "ok": true,
-   "detail": "4333 steps, final 83a97551fb38a7d6"
+   "detail": "4331 steps, final 7505538705719a57"
   },
   {
    "name": "fallback: each loss made a renderer again on the backend asked for, on one fresh canvas",
    "ok": true,
-   "detail": "lost at 1261 (destroy on webgpu); made again on webgl-fallback in 20 ms; 1 canvas"
+   "detail": "lost at 1261 (destroy on webgpu); made again on webgl-fallback in 26 ms; 1 canvas"
   },
   {
    "name": "fallback: the status line said so while it recovered, and went once a new frame was drawn",
@@ -355,12 +355,12 @@
   {
    "name": "fallback: it draws again after each recovery",
    "ok": true,
-   "detail": "m6-device-loss-fallback-1.png at step 1269: 102 draws in half a second"
+   "detail": "m6-device-loss-fallback-1.png at step 1269: 108 draws in half a second"
   },
   {
    "name": "webgl: the replay gives the unbroken session's hash after every step, through 1 lost device",
    "ok": true,
-   "detail": "4333 steps, final 83a97551fb38a7d6"
+   "detail": "4331 steps, final 7505538705719a57"
   },
   {
    "name": "webgl: each loss made a renderer again on the backend asked for, on one fresh canvas",
@@ -375,12 +375,12 @@
   {
    "name": "webgl: it draws again after each recovery",
    "ok": true,
-   "detail": "m6-device-loss-webgl-1.png at step 1269: 33 draws in half a second"
+   "detail": "m6-device-loss-webgl-1.png at step 1269: 34 draws in half a second"
   },
   {
    "name": "control: the replay gives the unbroken session's hash after every step",
    "ok": true,
-   "detail": "4333 steps, final 83a97551fb38a7d6"
+   "detail": "4331 steps, final 7505538705719a57"
   },
   {
    "name": "no errors in the pages beyond the lost devices' own",
