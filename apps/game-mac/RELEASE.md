@@ -80,6 +80,11 @@ the game should play from the title menu to an ending.
   vrmxg-game 0.1.0+f7beb7c2367a (build 8ab0fe3f). The rebuilt hardened app passes `release.sh --check`. The scenario
   wasn't re-run on it: the Mac's screen was locked, so the app couldn't draw. The signing and the shell are the same
   as in the 41b7e712 run above.
+- **On merged main (d441b96, 2026-11-26):** W1's registry change (#60) moved the runtime to vrmxg-game
+  0.1.0+17d27d5ca00d (build 1117e9d8), so `acceptance/results/m5-rush/` was re-recorded on it (`rush.mjs`, 11 of 11).
+  The hardened app, built from main, passes `release.sh --check`. Under the GPU lock, AppProbe ran `HAND-TEST-M5-RUSH`
+  on it, 4 of 4, with Slot 1 from the re-recorded `win.json`. Help › Third-Party Notices opened the build's notices
+  ([`docs/hand-test/results/m6-w7-hardened-main/`](docs/hand-test/results/m6-w7-hardened-main/report.md), AB-R-1185).
 - **Not checked:** a Developer ID signature, notarisation, stapling and Gatekeeper on another Mac. Those need the
   operator's identity. Gamepads in the sandboxed, hardened app weren't checked either: no real pad was tried, and that
   is AB-T-0642. If a pad turns out to need an entitlement, add only that one, and the entitlement check in `release.sh`
