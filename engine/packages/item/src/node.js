@@ -117,7 +117,7 @@ export class ItemNode extends Node {
       if (this.frameBody !== undefined) physics.removeBody(this, this.frameBody);
     }
     this.mixer?.stopAllAction();
-    if (this.model) this.object3d.remove(this.model);
+    if (this.model) { this.object3d.remove(this.model); this.tree?.detach?.(this.model); } // disposed with the world (AB-T-0626)
   }
 
   // ---------------------------------------------------------------- states

@@ -121,8 +121,9 @@ app's menu holds them with its own claim (`input.hold('pause-menu')`), so neithe
 devices only; what is latched is recorded, and a replay never looks at it.
 
 **Hosts must install the dialogue service** (`installDialogue`, `@vrmxg/voice`) for scenes with a `Dialogue` node.
-Today only this package's test game does; the game runtime, the editor's Play and MCP's engine are AB-T-0630, and W1
-installs it in the game app.
+Every host that builds a world does, for a scene with one (AB-T-0630): the shared world builder
+(`apps/playground/src/world.js`: the playground, the editor's Play, the game app and the bundle's `play.js`) and MCP's
+headless engine, where an agent answers with `engine_step` `choose: {"dialogue.choose": id}`.
 
 ## Keyboard and gamepad
 

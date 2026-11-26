@@ -336,6 +336,7 @@ export class ClosetService {
   unhang(actor, id) {
     const o = this.hungOn(actor).get(id);
     o?.parent?.remove(o);
+    if (o) this.tree?.detach?.(o); // a wearable taken off or re-hung: disposed with the world (AB-T-0626)
   }
 
   // ---------------------------------------------------------------- snapshots

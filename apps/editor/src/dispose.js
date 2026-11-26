@@ -66,7 +66,9 @@ export function disposeWorld(world) {
   if (physics?.free) { try { physics.free(); out.physics = true; } catch { /* freed already */ } }
   const root = world.tree?.root?.object3d;
   const seen = new Set();
-  root?.traverse?.((o) => {
+  // Under the root, and what left it while the world ran (AB-T-0626): a body the closet replaced, a removed node's
+  // object, an item's model, a wearable taken off. Nothing under the root reaches those any more (`tree.detached`).
+  const visit = (o) => {
     if (o.geometry && !seen.has(o.geometry)) { seen.add(o.geometry); o.geometry.dispose(); out.geometries++; }
     if (o.isSkinnedMesh && o.geometry) out.bytes += detachGeometry(o.geometry); // nothing again for one already detached
     for (const m of [o.material].flat().filter(Boolean)) {
@@ -81,6 +83,9 @@ export function disposeWorld(world) {
       m.dispose(); out.materials++;
     }
     o.skeleton?.boneTexture?.dispose?.();
-  });
+  };
+  root?.traverse?.(visit);
+  for (const o of world.tree?.detached ?? []) o?.traverse?.(visit);
+  world.tree?.detached?.clear?.();
   return out;
 }

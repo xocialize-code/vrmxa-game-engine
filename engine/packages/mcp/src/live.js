@@ -37,14 +37,22 @@ export class LiveView {
    * `replay`: an input recording (path under the project) played from its start step.
    */
   /**
-   * @param {{ steps?: number, hold?: Record<string, number | boolean>, recording?: any }} [opts] recording: an input
-   *   recording (already read) played from its start step
+   * @param {{ steps?: number, hold?: Record<string, number | boolean>, recording?: any, choose?: Record<string, string | number | boolean> }} [opts]
+   *   recording: an input recording (already read) played from its start step; choose: choices the first step latches
    * @param {(tree: any, steps: number) => Promise<void>} [run] how the steps happen (default: now, waiting out held
    *   steps); the editor's live play passes one that lets its frame loop run them in real time
    */
-  async step({ steps = 1, hold, recording } = {}, run = runNow) {
+  async step({ steps = 1, hold, recording, choose } = {}, run = runNow) {
     const tree = this.live, input = tree.services.get('input');
     if (!(steps >= 1 && steps <= 36000)) throw new Error('steps: 1 to 36000');
+    // choices (a conversation's answer: {"dialogue.choose": "latte"}), latched by the first of these steps and kept in
+    // a recording, as a UI hands them over (input.choose). A replay is the input, so it can't take one.
+    if (choose !== undefined) {
+      if (choose === null || typeof choose !== 'object' || Array.isArray(choose)) throw new Error('choose: an object of name → value, e.g. {"dialogue.choose": "latte"}');
+      if (recording || hold) throw new Error('choose: not with hold or replay (a replay is the input); step with choose alone');
+      if (input.replaying) throw new Error('choose: a recording is replaying, and it is the input until it ends');
+      for (const [k, v] of Object.entries(choose)) input.choose(k, v);
+    }
     // a recording plays from its start step, or from now when the world is already past it (a take replayed mid-play)
     if (recording) input.replay({ ...structuredClone(recording), start: Math.max(recording.start ?? 0, tree.clock.step) });
     else if (hold) {
@@ -93,6 +101,10 @@ export class LiveView {
     if (n.type === 'Character' && any.ctrl) {
       const ctrl = any.ctrl;
       out.character = { grounded: ctrl.grounded, jumped: ctrl.jumped, goTo: ctrl.goTo, look: ctrl.look, yaw: r(ctrl.yaw), vy: r(ctrl.vy), move: arr(any.input.move, 3), animation: any.graph?.state, speed: r(any.graph?.speed ?? 0, 3), equipped: [...any.equipped], speaking: !!any.speaking, seat: ctrl.seat ?? null };
+    }
+    if (n.type === 'Dialogue') { // the conversation as the overlay shows it (line, speaker, the choices offered), or none going on
+      const d = tree.services.get('dialogue'), v = d?.view() ?? null;
+      out.dialogue = !d ? { note: 'no dialogue service in this world' } : v?.node === id ? { ...v, answer: v.choices.length ? 'engine_step with choose {"dialogue.choose": <a choice id>}' : undefined } : { active: false, queued: d.queued.includes(id) };
     }
     if (n.type === 'Camera' && any.rig) out.camera = { preset: any.preset, rig: Object.fromEntries(Object.entries(any.rig).map(([k, v]) => [k, typeof v === 'number' ? r(v) : v])), current: tree.services.get('cameras')?.current === n };
     return out;

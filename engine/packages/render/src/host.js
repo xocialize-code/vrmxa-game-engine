@@ -13,6 +13,13 @@
 // (backend.js: 'webgl', 'webgpu' or 'auto'), warms the page's WebGPU up once, and initialises the renderer. On WebGPU
 // the room environment comes from three/webgpu's PMREM, sizes come from the drawing buffer, offline frames advance
 // three's node frame, and characters load with the patched MToonNodeMaterial (`host.mtoonMaterial`).
+//
+// M6 W6 (AB-T-0639): a lost GPU device. WebKit kills its GPU process when a Metal command buffer fails, and every
+// renderer in the page loses its device. The host notices (`GPUDevice.lost`, three's onDeviceLost, a lost WebGL context,
+// or the first draw that throws for it), stops drawing, and calls `onLost`. `RenderHost.replace(old, { canvas })` makes
+// a host in its place (WebGPU again, else three's WebGL2 backend, which still draws the world's node materials) with
+// the same tree, camera and overlays. The simulation is never touched: drawing is outside the determinism boundary, and
+// a draw that throws can't leave the interpolated pose in the simulated transforms (render's finally puts them back).
 import { PCFShadowMap, PMREMGenerator, PerspectiveCamera, SRGBColorSpace, Scene, Vector2, WebGLRenderer } from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { BatchedRenderer as WebGLBatchedRenderer } from 'three.quarks';
@@ -43,19 +50,26 @@ export class RenderHost {
    *   default, MToonMaterial for WebGL)
    * @param {any} [opts.particleRenderer] the three.quarks BatchedRenderer class particles draw with on this renderer (M4 W2):
    *   three.quarks' own for WebGL (the default there), three.quarks/webgpu's for WebGPU (RenderHost.create loads it)
+   * @param {boolean} [opts.webglFallback] take a WebGPURenderer on three's WebGL2 backend (M6 W6): only a host made in
+   *   place of a lost one (`RenderHost.replace`), whose world was built with node materials, asks for it ('webgl-fallback')
    * A WebGPURenderer must come initialised, on its WebGPU backend, with `webgpu` and `mtoonMaterial` (MToonNodeMaterial
    * from '@pixiv/three-vrm/nodes'): RenderHost.create does all of that. Anything less throws rather than half-work (no
    * room environment, characters on the WebGL MToonMaterial, a host that says WebGPU while drawing on WebGL2).
    */
-  constructor({ canvas, renderer, dprCap = 2, antialias = true, interpolate = true, preserveDrawingBuffer = false, post = null, webgpu = null, mtoonMaterial = null, particleRenderer = undefined } = {}) {
+  constructor({ canvas, renderer, dprCap = 2, antialias = true, interpolate = true, preserveDrawingBuffer = false, post = null, webgpu = null, mtoonMaterial = null, particleRenderer = undefined, webglFallback = false } = {}) {
     if (renderer?.isWebGPURenderer) {
       if (renderer._initialized === false) throw new Error('RenderHost: await renderer.init() before handing a WebGPURenderer to the host (or use RenderHost.create)');
-      if (!isWebGPUBackend(renderer)) throw new Error('RenderHost: this WebGPURenderer fell back to its WebGL2 backend in init(); the host draws WebGL through WebGLRenderer (use RenderHost.create with backend "auto")');
+      if (!isWebGPUBackend(renderer) && !webglFallback) throw new Error('RenderHost: this WebGPURenderer fell back to its WebGL2 backend in init(); the host draws WebGL through WebGLRenderer (use RenderHost.create with backend "auto")');
       if (!webgpu || !mtoonMaterial) throw new Error('RenderHost: a WebGPURenderer needs `webgpu` (three/webgpu, for the room environment\'s PMREM) and `mtoonMaterial` (MToonNodeMaterial from \'@pixiv/three-vrm/nodes\'), or use RenderHost.create');
     }
     this.renderer = renderer ?? new WebGLRenderer({ canvas, antialias, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer });
-    /** 'webgpu' (a WebGPURenderer), 'webgl' (a WebGLRenderer) or 'stand-in' (tests). */
-    this.backend = this.renderer.isWebGPURenderer ? 'webgpu' : this.renderer.isWebGLRenderer ? 'webgl' : 'stand-in';
+    /**
+     * 'webgpu' (a WebGPURenderer), 'webgl' (a WebGLRenderer), 'webgl-fallback' (a WebGPURenderer on three's WebGL2
+     * backend: only in place of a lost host, M6 W6) or 'stand-in' (tests).
+     */
+    this.backend = this.renderer.isWebGPURenderer ? (isWebGPUBackend(this.renderer) ? 'webgpu' : 'webgl-fallback') : this.renderer.isWebGLRenderer ? 'webgl' : 'stand-in';
+    /** What a host made in this one's place takes again (RenderHost.replace): the constructor's own options. */
+    this._options = { dprCap, antialias, interpolate, preserveDrawingBuffer };
     this._webgpu = webgpu;
     /** The MToon material class to load characters with (CharacterLibrary's `mtoonMaterial`); null: MToonMaterial. */
     this.mtoonMaterial = mtoonMaterial;
@@ -86,7 +100,8 @@ export class RenderHost {
      * Presentation drawn over the world (M3 W6: @vrmxg/text's speech bubbles): { update(tree, camera, alpha), settle?() }.
      * Updated as each frame is presented, with the blend applied; an offline frame waits for settle() before drawing.
      * They hang in this host's scene, never the tree.
-     * @type {{ update: (tree: any, camera: any, alpha: number) => void, settle?: () => Promise<void> }[]}
+     * `attach(host)` / `detach()`: how one moves to a host made in this one's place (RenderHost.replace, M6 W6).
+     * @type {{ update: (tree: any, camera: any, alpha: number) => void, settle?: () => Promise<void>, attach?: (host: RenderHost) => any, detach?: () => void }[]}
      */
     this.overlays = [];
     /**
@@ -102,6 +117,108 @@ export class RenderHost {
     /** Presentation time of the frame being drawn (s): (step + α) / 60. Time-based post effects use it. */
     this.time = 0;
     this.last = { steps: 0, alpha: 1, renderMs: 0 };
+    /**
+     * Set once this host's GPU device (or WebGL context) is lost (M6 W6): { api, reason, message }. Nothing is drawn from
+     * then on; a host made by RenderHost.replace draws the tree instead. null while drawing works.
+     * @type {{ api: string, reason: string | null, message: string } | null}
+     */
+    this.lost = null;
+    this._onLost = null;
+    /** RenderHost.create's options, for a host made in this one's place (not the canvas, renderer or backend). @type {any} */
+    this._made = null;
+    /** On a host made by RenderHost.replace: { from: the lost host's backend, lost, tried: the backends that failed first }. @type {{ from: string, lost: any, tried: string[] } | null} */
+    this.replaced = null;
+    this._disposed = false; this._said = false;
+    /** What a failed RenderHost.replace kept for another try. @type {any} */
+    this._carry = null;
+    this._watchLoss();
+  }
+
+  /**
+   * Called once, when the device is lost: (lost) => void. The app makes a host in this one's place. Set on a host that is
+   * already lost (its device went while RenderHost.replace was still making it: the post stack, the tree's move), it is
+   * called at once, so no loss goes unsaid.
+   * @type {((lost: { api: string, reason: string | null, message: string }) => void) | null}
+   */
+  get onLost() { return this._onLost; }
+  set onLost(fn) {
+    this._onLost = fn ?? null;
+    if (fn && this.lost && !this._disposed && !this._said) { this._said = true; try { fn(this.lost); } catch (e) { console.error(e); } }
+  }
+
+  /** Watch for a lost device: GPUDevice.lost (any reason, destroy() included), three's onDeviceLost, a lost WebGL context. */
+  _watchLoss() {
+    const r = this.renderer;
+    if (r.isWebGPURenderer) {
+      const three = typeof r.onDeviceLost === 'function' ? r.onDeviceLost.bind(r) : null; // three's own: says so, stops drawing
+      r.onDeviceLost = (info) => { three?.(info); this._lose({ api: info?.api ?? 'WebGPU', reason: info?.reason ?? null, message: info?.message ?? 'the device was lost' }); };
+      // three ignores a device lost by destroy() (its own dispose does that); the host doesn't, unless it is disposing
+      r.backend?.device?.lost?.then?.((info) => this._lose({ api: 'WebGPU', reason: info?.reason ?? null, message: info?.message || 'the GPU device was lost' }));
+    } else if (r.isWebGLRenderer) {
+      this._contextLost = () => this._lose({ api: 'WebGL', reason: 'context lost', message: 'the WebGL context was lost' });
+      r.domElement?.addEventListener?.('webglcontextlost', this._contextLost);
+    }
+  }
+
+  /** The device is gone: stop drawing and say so, once. Not for a host being disposed (its own dispose loses it). */
+  _lose(info) {
+    if (this.lost || this._disposed) return;
+    this.lost = { api: info.api, reason: info.reason ?? null, message: String(info.message ?? 'the device was lost') };
+    if (!this._onLost) return; // said when a handler is set (onLost)
+    this._said = true;
+    try { this._onLost(this.lost); } catch (e) { console.error(e); }
+  }
+
+  /**
+   * Whether a draw that threw did so because the device is gone (WebKit: "createCommandEncoder: Unable to make command
+   * encoder" once its GPU process died, before GPUDevice.lost resolves). → true after marking the host lost
+   */
+  _lostBy(e) {
+    if (this.lost) return true;
+    const r = this.renderer, message = String(e?.message ?? e);
+    const gone = r._isDeviceLost === true
+      || (r.isWebGPURenderer && /command encoder|device (is |was |has been )?(lost|destroyed)|GPUDevice\b.*(lost|destroyed|invalid)/i.test(message))
+      || (r.isWebGLRenderer && r.getContext?.()?.isContextLost?.() === true);
+    if (gone) this._lose({ api: r.isWebGLRenderer ? 'WebGL' : 'WebGPU', reason: 'draw failed', message });
+    return gone;
+  }
+
+  /** The backends a host made in place of a lost one tries, in order (M6 W6): WebGPU again, else WebGL. */
+  static recoveryOrder(backend) { return backend === 'webgl' ? ['webgl'] : ['webgpu', 'webgl-fallback']; }
+
+  /**
+   * A host in place of one whose device was lost (M6 W6, AB-T-0639), on a fresh canvas (a canvas that had a WebGPU
+   * context can't give a WebGL one, and a lost one's context is best left alone): the old host's options, post stack
+   * and MToon kind, on the first of `backends` that works, with its tree, camera override, split-screen layout,
+   * interpolation and overlays moved over. The old host is let go (its renderer disposed; that may fail on a dead
+   * device, and is ignored). The tree isn't touched: the next frame draws the world from the step it is on.
+   * `backends` defaults to `recoveryOrder(old.backend)`: a world built for WebGPU (node materials, TSL particles and
+   * post) recovers on WebGPU or on three's WebGL2 backend, which draws the same materials; a WebGL world on WebGL.
+   * Throws, naming each backend's failure, when none can be made: the app holds the game and offers Save.
+   * `tree`: the world to draw, in place of the old host's (or what a failed try carried): an app whose world changed
+   * meanwhile (a Load between a failed try and the next) names the one it plays now, or null for none.
+   * @param {RenderHost} old @param {CreateOptions & { backends?: string[], tree?: any }} [o] the canvas to draw on, and
+   *   any option to change (a test's stand-in `webgpu`)
+   */
+  static async replace(old, { backends = RenderHost.recoveryOrder(old.backend), tree: given = undefined, ...over } = {}) {
+    // a second try after a failed one takes what the first carried (the old host has let it all go by then)
+    const kept = old._carry ?? { tree: old.tree, overlays: [...old.overlays], carried: { camera: old.camera, layout: old.layout, interpolate: old.interpolate, onPresent: old.onPresent } };
+    const { overlays, carried } = kept, tree = given !== undefined ? given : kept.tree;
+    for (const o of overlays) if (o.host === old) o.detach?.();
+    old.dispose();
+    const errors = [];
+    for (const backend of backends) {
+      try {
+        const host = await RenderHost.create({ ...old._made, ...old._options, ...over, backend: /** @type {any} */ (backend) });
+        host.camera = carried.camera; host.layout = carried.layout; host.interpolate = carried.interpolate; host.onPresent = carried.onPresent;
+        for (const o of overlays) o.attach?.(host);
+        if (tree) host.attach(tree);
+        host.replaced = { from: old.backend, lost: old.lost, tried: errors.slice() };
+        return host;
+      } catch (e) { errors.push(`${backend}: ${e?.message ?? e}`); }
+    }
+    old._carry = { tree, overlays, carried }; // for another try later (WebKit's GPU process takes a few seconds to come back)
+    throw new Error(`the renderer couldn't be made again (${errors.join('; ')})`);
   }
 
   /**
@@ -117,15 +234,32 @@ export class RenderHost {
    * @param {CreateOptions} [opts]
    */
   static async create({ post = null, ...rest } = {}) {
+    // what a host made in this one's place (RenderHost.replace) asks for again: the post stack, the stand-ins; never the
+    // canvas (a fresh one), the renderer or the backend (replace's own order)
+    const again = { ...rest };
+    delete again.canvas; delete again.renderer; delete again.backend;
     // `post` as options (M4 W1): the stack for whichever backend the host got, made once its renderer exists
-    if (!post || typeof post === 'function') return RenderHost._create({ ...rest, post: /** @type {(renderer: any) => any} */ (post || undefined) });
+    if (!post || typeof post === 'function') {
+      const host = await RenderHost._create({ ...rest, post: /** @type {(renderer: any) => any} */ (post || undefined) });
+      host._made = { ...again, post };
+      return host;
+    }
     const host = await RenderHost._create(rest);
+    host._made = { ...again, post };
     if (host.backend !== 'stand-in') host.setPost(await makePostStack(host.renderer, post));
     return host;
   }
 
   /** @param {Omit<CreateOptions, 'post'> & { post?: (renderer: any) => any }} [opts] */
   static async _create({ backend = 'webgl', navigator: nav = globalThis.navigator, webgpu = null, mtoonMaterial = null, fallbackRenderer = null, ...opts } = {}) {
+    if (/** @type {string} */ (backend) === 'webgl-fallback') { // in place of a lost WebGPU host (M6 W6): node materials on WebGL2
+      const W = webgpu ?? await loadWebGPU();
+      const renderer = opts.renderer ?? new W.WebGPURenderer({ canvas: opts.canvas, antialias: opts.antialias ?? true, alpha: true, forceWebGL: true });
+      await renderer.init();
+      mtoonMaterial ??= (await import('@pixiv/three-vrm/nodes')).MToonNodeMaterial;
+      const particleRenderer = opts.particleRenderer ?? (await loadParticleRenderer());
+      return new RenderHost({ ...opts, renderer, webgpu: W, mtoonMaterial, particleRenderer, webglFallback: true });
+    }
     const chosen = await resolveBackend(backend, { navigator: nav });
     if (chosen === 'webgl') return new RenderHost({ ...opts, mtoonMaterial });
     /** WebGPU failed inside a renderer's init(): a forced WebGPU says so; auto takes the WebGL path. */
@@ -324,6 +458,7 @@ export class RenderHost {
    */
   render(alpha = 1, stepped = true) {
     const tree = this.tree;
+    if (this.lost) return; // nothing draws on a lost device: a host made in this one's place does (RenderHost.replace)
     if (alpha < 1 && tree.clock.step === 1) alpha = 1;
     const t0 = typeof performance !== 'undefined' ? performance.now() : 0;
     this.views.update(tree);
@@ -334,14 +469,21 @@ export class RenderHost {
     const camera = this.camera ?? tree.services.get('cameras')?.current?.camera ?? this.fallbackCamera;
     const blend = this.interpolate && alpha < 1;
     if (blend) this.interpolator.apply(alpha);
-    this.onPresent?.(alpha);
-    const views = this.layout?.length ? this.layout.map((v) => ({ ...v, camera: /** @type {any} */ (tree.find(v.camera))?.camera })).filter((v) => v.camera) : null;
-    for (const o of this.overlays) o.update(tree, views?.[0]?.camera ?? camera, alpha);
-    this.time = (tree.clock.step - 1 + alpha) / 60;
-    if (views?.length) renderViews(this.renderer, this.scene, views);
-    else if (this.post?.active) this.post.render(this.scene, camera, this.time);
-    else this.renderer.render(this.scene, camera);
-    if (blend && this.interpolator.restore()) tree.root.object3d.updateMatrixWorld(true);
+    // the blend is written into the simulated transforms for the draw: whatever the draw does (a lost device throws
+    // here), they go back before anything steps again (M6 W6)
+    try {
+      this.onPresent?.(alpha);
+      const views = this.layout?.length ? this.layout.map((v) => ({ ...v, camera: /** @type {any} */ (tree.find(v.camera))?.camera })).filter((v) => v.camera) : null;
+      for (const o of this.overlays) o.update(tree, views?.[0]?.camera ?? camera, alpha);
+      this.time = (tree.clock.step - 1 + alpha) / 60;
+      if (views?.length) renderViews(this.renderer, this.scene, views);
+      else if (this.post?.active) this.post.render(this.scene, camera, this.time);
+      else this.renderer.render(this.scene, camera);
+    } catch (e) {
+      if (!this._lostBy(e)) throw e; // a lost device is said through onLost, not thrown at the frame loop
+    } finally {
+      if (blend && this.interpolator.restore()) tree.root.object3d.updateMatrixWorld(true);
+    }
     this.last.renderMs = (typeof performance !== 'undefined' ? performance.now() : 0) - t0;
   }
 
@@ -355,12 +497,17 @@ export class RenderHost {
   cameraNode() { return this.camera ? null : this.tree?.services.get('cameras')?.current ?? null; }
 
   dispose() {
-    this.post?.dispose?.();
+    this._disposed = true; // its renderer's dispose destroys its device: that isn't a loss
+    if (this._contextLost) this.renderer.domElement?.removeEventListener?.('webglcontextlost', this._contextLost);
+    // on a lost device any of this may throw: the host is let go either way (M6 W6)
+    const quietly = (fn) => { try { const p = fn(); p?.catch?.(() => {}); } catch (e) { if (!this.lost) throw e; } };
+    quietly(() => this.post?.dispose?.());
     this.detach();
-    this.views.dispose(); this.debug.dispose();
+    quietly(() => { this.views.dispose(); this.debug.dispose(); });
     // the WebGPU room texture is its target's: disposing the target frees both
-    if (this._roomTarget) this._roomTarget.dispose(); else this._room?.dispose();
-    this._roomTarget = null; this._pmrem?.dispose();
-    this.renderer.dispose?.();
+    quietly(() => { if (this._roomTarget) this._roomTarget.dispose(); else this._room?.dispose(); });
+    this._roomTarget = null;
+    quietly(() => this._pmrem?.dispose());
+    quietly(() => this.renderer.dispose?.());
   }
 }

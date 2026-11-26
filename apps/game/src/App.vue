@@ -33,12 +33,13 @@ const ui = reactive({
   saves: /** @type {any[]} */ ([]), question: /** @type {any} */ (null),
   choice: /** @type {any} */ ({ backend: 'auto', from: 'settings' }), values: /** @type {any} */ (null), settingsNote: '',
   frames: '', // ?stats: the frame-time readout
+  display: '', // the display's own status (M6 W6): "The display stopped. Restarting it…" until a new frame is drawn
 });
 const ask = questions((q) => { ui.question = q; if (!q) nextTick(() => menu.value?.focusFirst()); });
 
 const top = computed(() => ui.stack.at(-1) ?? null);
 const playing = computed(() => ui.ready && ui.stack.length === 0);
-const backendName = computed(() => ({ webgpu: 'WebGPU', webgl: 'WebGL' })[ui.backend] ?? 'starting');
+const backendName = computed(() => ({ webgpu: 'WebGPU', webgl: 'WebGL', 'webgl-fallback': 'WebGL (after the GPU was lost)' })[ui.backend] ?? 'starting');
 const buildDigest = props.build.manifest.digest; // saves another build made are shown as such, and never offered by Continue
 const rows = computed(() => slotRows(ui.saves, { build: buildDigest }));
 const latest = computed(() => { const e = latestSave(ui.saves, { build: buildDigest }); return e ? rows.value.player.concat(rows.value.checkpoints).find((r) => r.slot === e.slot) : null; });
@@ -49,11 +50,13 @@ const slotLabel = (s) => (PLAYER_SLOTS.includes(s) ? `Slot ${PLAYER_SLOTS.indexO
 function sync() {
   const s = host.value?.state;
   if (!s) return;
-  Object.assign(ui, { backend: s.backend, step: s.step, safeStep: host.value.session?.safeStep ?? 0, scene: s.scene, held: s.held, loading: s.loading, error: s.error ?? '', dirty: s.dirty, lastSlot: s.lastSlot });
+  Object.assign(ui, { display: s.display ?? '', backend: s.backend, step: s.step, safeStep: host.value.session?.safeStep ?? 0, scene: s.scene, held: s.held, loading: s.loading, error: s.error ?? '', dirty: s.dirty, lastSlot: s.lastSlot });
   ui.version++;
   if (inShell) setEdited(s.dirty);
 }
 function say(text) { ui.message = text; }
+// the canvas the game draws on: the host's (a lost renderer's replacement draws on a fresh one, M6 W6), else the first
+function focusView() { (host.value?.canvas ?? canvas.value)?.focus(); }
 
 async function refreshSaves() {
   try { ui.saves = await host.value.slots(); } catch (e) { ui.saves = []; say(`The saves couldn't be listed: ${e?.message ?? e}`); }
@@ -73,12 +76,12 @@ function pause() {
   ui.stack = ['pause'];
   refreshSaves();
 }
-function resume() { ui.stack = []; say(''); host.value.resume(); nextTick(() => canvas.value?.focus()); }
+function resume() { ui.stack = []; say(''); host.value.resume(); nextTick(focusView); }
 
 async function run(fn) {
   try { await fn(); } catch (e) { say(String(e?.message ?? e)); nextTick(() => menu.value?.focusFirst()); }
 }
-const newGame = () => run(async () => { ui.stack = []; say(''); try { await host.value.newGame(); } catch (e) { ui.stack = ['title']; throw e; } nextTick(() => canvas.value?.focus()); });
+const newGame = () => run(async () => { ui.stack = []; say(''); try { await host.value.newGame(); } catch (e) { ui.stack = ['title']; throw e; } nextTick(focusView); });
 const continueGame = () => latest.value && loadSlot(latest.value);
 
 async function loadSlot(row) {
@@ -90,7 +93,7 @@ async function loadSlot(row) {
     ui.stack = [];
     try { await host.value.loadSlot(row.slot); } catch (e) { ui.stack = was; throw e; }
     say(`Loaded ${row.label} at step ${host.value.session.current?.at ?? '?'}.`);
-    nextTick(() => canvas.value?.focus());
+    nextTick(focusView);
   });
 }
 
@@ -178,11 +181,26 @@ async function replayFromQuery(h) {
         replayed.runs = runs.length;
       }
     } while (loop && (performance.now() - t0) / 1000 < loop);
-    window.__result = { mode: 'replay', backend: h.state.backend, runs, frames: h.frameStats(), seconds: (performance.now() - t0) / 1000, errors: window.__errors ?? [], ua: navigator.userAgent };
+    window.__result = { mode: 'replay', backend: h.state.backend, runs, frames: h.frameStats(), seconds: (performance.now() - t0) / 1000, errors: window.__errors ?? [], ua: navigator.userAgent, ...lostDevices(h) };
   } catch (e) {
-    window.__result = { mode: 'replay', error: String(e?.message ?? e), runs, errors: window.__errors ?? [] };
+    window.__result = { mode: 'replay', error: String(e?.message ?? e), runs, errors: window.__errors ?? [], ...lostDevices(h) };
   }
   window.READY = true;
+}
+
+// `?lose=<step>:<how>[,…]` (M6 W6, a check): lose the renderer's device as the session reaches each step (destroy,
+// encoder, context: GameHost.loseDevices). With ?replay the game must play on to the log's hashes; the result says each
+// loss, what the host made again and what the status line said. `?recover=` picks the backends it makes again.
+const LOSE = (query.get('lose') ?? '').split(',').filter(Boolean).map((x) => { const [at, how] = x.split(':'); return { at: Number(at), how }; });
+let lost = null;
+const lostDevices = (h) => (LOSE.length ? { losses: lost ?? [], recoveries: h.recoveries, displays: h.displays, canvases: document.querySelectorAll('canvas').length } : {});
+
+// what the ?stats readout adds (M6 W6), for a check that reads only the page (AppProbe in the Mac app): each lost GPU
+// device and what it was made again on, and once a replay without a loop has ended, its steps and final hash
+function statsAfter(h) {
+  const r = h.recoveries.length ? `; GPU lost, display restarted: ${h.recoveries.map((x) => x.backend ?? 'gave up').join(', ')}` : '';
+  const run = window.__result?.runs?.at(-1);
+  return `${r}${run?.final ? `; replay ended: ${run.steps} steps, final ${run.final.hash}` : window.__result?.error ? `; replay failed: ${window.__result.error}` : ''}`;
 }
 
 // the input service the settings controls read and rebind: the world being played's, else the menus' own (the title)
@@ -215,6 +233,8 @@ onMounted(async () => {
       canvas: canvas.value, build: props.build, backend: ui.choice.backend, characters: props.characters, shell: { inShell, call }, trace: query.has('trace') || (query.has('replay') && !LOOP_SECONDS), onChange: sync, onCommand,
       hold: () => ui.stack.length > 0 || !!ui.question, // nothing steps while a menu or a question is up
       uiSettings: playerSettings,
+      // ?recover=<backend>[,<backend>…]: what a lost renderer is made again on (a check forcing WebGL's path); else WebGPU, then WebGL
+      recoverWith: query.get('recover')?.split(',').filter(Boolean) ?? null,
     });
     host.value = h;
     await h.open(ui.choice.backend);
@@ -223,8 +243,9 @@ onMounted(async () => {
     sync();
     if (query.has('stats') || query.has('replay')) {
       h.keepFrameStats();
-      if (query.has('stats')) setInterval(() => { if (h.state.scene && h.state.scene !== replayed.last) { if (replayed.last) replayed.scenes++; replayed.last = h.state.scene; } const f = h.frameStats(); ui.frames = f && f.frames ? `${f.frames} frames in ${f.seconds.toFixed(0)} s: ${f.fps.toFixed(1)} fps, p99 ${f.p99.toFixed(1)} ms, max ${f.max.toFixed(1)} ms, ${f.over25} over 25 ms, at ${f.width}×${f.height}${query.has('replay') ? `; ${replayed.runs} replays played, ${replayed.scenes} scene changes` : ''}` : 'no frames yet'; }, 1000);
+      if (query.has('stats')) setInterval(() => { if (h.state.scene && h.state.scene !== replayed.last) { if (replayed.last) replayed.scenes++; replayed.last = h.state.scene; } const f = h.frameStats(); ui.frames = f && f.frames ? `${f.frames} frames in ${f.seconds.toFixed(0)} s: ${f.fps.toFixed(1)} fps, p99 ${f.p99.toFixed(1)} ms, max ${f.max.toFixed(1)} ms, ${f.over25} over 25 ms, at ${f.width}×${f.height}${query.has('replay') ? `; ${replayed.runs} replays played, ${replayed.scenes} scene changes` : ''}${statsAfter(h)}` : 'no frames yet'; }, 1000);
     }
+    if (LOSE.length) lost = h.loseDevices(LOSE);
     if (query.has('replay')) replayFromQuery(h);
     // the game doesn't play on behind the question (and nothing more becomes unsaved while it is asked)
     if (inShell) onClosing((reason) => {
@@ -243,12 +264,14 @@ onBeforeUnmount(() => { removeEventListener('keydown', onKey); document.removeEv
 
 <template>
   <main class="game" :class="{ playing }">
-    <canvas id="view" ref="canvas" tabindex="-1" aria-label="The game" @click="host?.capturePointer()" />
+    <!-- a click asks for mouse look: the host listens on the canvas it draws on (a fresh one after a lost GPU device) -->
+    <canvas id="view" ref="canvas" tabindex="-1" aria-label="The game" />
     <GameOverlay :inert="ui.stack.length || ui.question ? '' : null" :session="host?.session ?? null" :settings="uiSettings" :version="ui.version" />
 
     <div v-if="ui.fatal" id="fatal" class="fatal" role="alert">{{ ui.fatal }}</div>
     <div v-else-if="!ui.ready" class="starting" role="status">{{ ui.starting }}</div>
     <div v-if="ui.frames" id="frame-stats" class="frame-stats" role="status">{{ ui.frames }}</div>
+    <div v-if="ui.display" id="display-status" class="loading display" role="status">{{ ui.display }}</div>
     <div v-if="ui.loading || ui.held" id="loading" class="loading" role="status" :aria-label="ui.loading || 'Loading'">{{ ui.loading || 'Loading…' }}</div>
 
     <!-- everything behind the top sheet is inert: Tab, clicks and screen readers reach only the question -->
@@ -374,6 +397,7 @@ html, body, #app { margin: 0; height: 100%; background: #101216; color: var(--in
 .message { position: absolute; left: 50%; bottom: 44px; transform: translateX(-50%); margin: 0; padding: 8px 14px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line); z-index: 6; }
 .message.error { bottom: 92px; border-color: #d66; }
 .loading, .starting { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 10px 18px; border-radius: 10px; background: var(--panel); z-index: 4; }
+.loading.display { top: 18%; max-width: min(80%, 640px); text-align: center; z-index: 6; } /* above the menus: it says why the game is held */
 .fatal { position: absolute; inset: auto 24px 64px; padding: 14px 18px; border-radius: 10px; background: #3a1717; border: 1px solid #d66; z-index: 7; }
 .readouts .faint { opacity: 0.5; }
 .readouts { position: absolute; right: 10px; bottom: 8px; display: flex; gap: 10px; font-size: 11px; color: var(--muted); opacity: 0.75; pointer-events: none; }

@@ -157,6 +157,7 @@ export class CharacterNode extends Node {
     this.vrm.scene.traverse((o) => { for (const c of o.children) if (c.userData.presentation && c.userData.bone) hung.push(c); });
     this.mixer?.stopAllAction();
     this.object3d.remove(this.vrm.scene);
+    this.tree?.detach?.(this.vrm.scene); // the old body: disposed with the world (AB-T-0626)
     this.useVRM(prep);
     for (const c of hung) this.vrm.humanoid?.getRawBoneNode(c.userData.bone)?.add(c);
     this.vrm.update(0);
@@ -168,6 +169,7 @@ export class CharacterNode extends Node {
     if (this.physics) { this.kcc.free(); this.physics.removeBody(this, this.body); }
     this.mixer?.stopAllAction();
     this.object3d.remove(this.vrm.scene);
+    this.tree?.detach?.(this.vrm.scene); // disposed with the world (AB-T-0626)
   }
 
   /** Capsule height: the prop, or the head's height above the feet plus a margin. */

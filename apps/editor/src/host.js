@@ -98,7 +98,9 @@ export class EditorHost {
     this.worlds = new RetiredWorlds({ showing: () => this.host?.tree ?? null }); // worlds let go of (AB-T-0592, worlds.js)
     this.devices = null;
     this.debug = { colliders: false, sensors: false, capsules: false, rays: false };
-    this.stats = { frameMs: 0, fps: 0, renderMs: 0, step: 0, buildMs: 0, backend: '' };
+    this.stats = { frameMs: 0, fps: 0, renderMs: 0, step: 0, buildMs: 0, backend: '', display: '' };
+    /** The error a frame left while the view's device was lost (M6 W6): cleared when the view is back, if still shown. */
+    this._lossError = /** @type {string | null} */ (null);
     this._built = 0;           // worlds built (AB-T-0592): the status shows how many are still alive
     this.error = '';
     this.behaviourProblems = []; // what the open project's behaviours module got wrong (M6 W0): shown, never fatal
@@ -140,10 +142,65 @@ export class EditorHost {
   async _makeHost(backend) {
     const host = await RenderHost.create({ canvas: this.canvas, backend, preserveDrawingBuffer: true, post: this.postOptions() });
     host.camera = this.camera;
+    this._adoptHost(host);
+    host.onLost = (lost) => this._hostLost(lost);
+    return host;
+  }
+
+  /** Draw through this host (the view's first, or one made in place of a lost one, which keeps its camera: the scene's in Play). */
+  _adoptHost(host) {
+    host.debug.set(this.debug);
     this.host = host;
-    this.stats.backend = host.backend;
+    this.stats.backend = host.backend; this.stats.display = '';
+    this._w = this._h = null; // sized again on the next frame
     this.changed();
     return host;
+  }
+
+  /**
+   * The view's GPU device was lost (M6 W6, AB-T-0639; WebKit kills its GPU process when a Metal command buffer fails).
+   * Nothing draws or steps meanwhile (the frame loop skips a lost host), and a host is made in its place on the same
+   * canvas (the orbit and fly controls, the gizmos and the aids listen on it) and backend, with whatever world it showed:
+   * Play goes on from the step it was on. A WebGPU canvas can't take WebGL, so when WebGPU can't be had again the
+   * editor says to save and reopen the window (the game app moves to a fresh canvas and WebGL instead). A lost WebGL
+   * context comes back on the same canvas only once the browser restores it (`webglcontextrestored`, waited for up to
+   * 15 s): until then the context stays lost and nothing can draw on that canvas. An error the lost frame left (the aids
+   * drawing on the dead renderer) is cleared once the view is back. The new host's onLost is set after it is adopted:
+   * set on a host already lost meanwhile, it is called at once, so a loss during recovery recovers again. An export or a
+   * thumbnail drawing on its own offline host when the GPU goes fails with its own error.
+   */
+  async _hostLost(lost) {
+    const old = this.host;
+    if (this._replacingHost || !old) return;
+    this._replacingHost = true;
+    this.stats.display = 'restarting (the GPU was lost)'; this.changed();
+    console.warn(`[editor] the view's device was lost (${lost.api}: ${lost.reason ?? 'no reason'}: ${lost.message}); restarting it`);
+    let host = null;
+    try {
+      if (old.backend === 'webgl') await this._contextRestored(15000);
+      host = this._adoptHost(await RenderHost.replace(old, { canvas: this.canvas, backends: [old.backend === 'webgl' ? 'webgl' : 'webgpu'] }));
+      if (this._lossError !== null && this.error === this._lossError) this.error = ''; // only what a lost frame threw, nothing else
+      this._lossError = null;
+    } catch (e) {
+      this.stats.display = 'lost';
+      this.error = `The GPU was lost and the view couldn't be restarted (${e?.message ?? e}). Save, then close the window and open it again.`;
+      console.error(e);
+    } finally {
+      this._replacingHost = false;
+      this.changed();
+    }
+    if (host && this.host === host) host.onLost = (l) => this._hostLost(l); // after: a loss meanwhile is said now
+  }
+
+  /** Resolves when the view's canvas has its WebGL context back (the browser restores a lost one, or a check does). */
+  _contextRestored(ms) {
+    const gl = this.canvas.getContext('webgl2') ?? this.canvas.getContext('webgl');
+    if (gl && !gl.isContextLost()) return Promise.resolve();
+    return new Promise((ok, fail) => {
+      const done = () => { clearTimeout(t); this.canvas.removeEventListener('webglcontextrestored', done); ok(); };
+      const t = setTimeout(() => { this.canvas.removeEventListener('webglcontextrestored', done); fail(new Error(`the WebGL context wasn't restored in ${ms / 1000} s`)); }, ms);
+      this.canvas.addEventListener('webglcontextrestored', done);
+    });
   }
 
   /** The post stack's options (M2 W3, M4 W1): the backend's own stack, LUTs read from the open project. */
@@ -1312,6 +1369,7 @@ export class EditorHost {
 
   /** Multi-angle view (W3 viewports): the shot being shown, then every VirtualCamera of the sequence, in a grid. */
   drawAngles() {
+    if (this.host.lost) return; // the draw before lost the device (M6 W6): nothing more on that renderer; every caller
     if (!this.angles || this.view !== 'preview' || !this.preview) return;
     const tree = this.preview.world.tree, cams = tree.services.get('cameras');
     const vcams = cams?.virtual ?? [];
@@ -1338,7 +1396,7 @@ export class EditorHost {
       requestAnimationFrame(tick);
       this.sweep(); // retired worlds the view has stopped showing (AB-T-0592)
       const tree = this.host?.tree;
-      if (!tree) return;
+      if (!tree || this.host.lost) { this._last = null; return; } // a lost device: nothing steps or draws until its replacement (M6 W6)
       const dt = this._last === null ? 0 : Math.min(0.25, (t - this._last) / 1000);
       if (this._last !== null) this._frames.push(t - this._last);
       this._last = t;
@@ -1359,17 +1417,24 @@ export class EditorHost {
         else if (this.view === 'preview') {
           if (this.fly) this.fly.update(dt); else this.orbit.update(dt);
           if (this.previewPlaying) this.advancePreview();
-          else if (!this._scrubbing && this.host.tree === this.preview?.world.tree) { this.host.render(this.host.last.alpha ?? 1, false); this.drawAngles(); }
+          else if (!this._scrubbing && this.host.tree === this.preview?.world.tree) { const drawing = this.host; drawing.render(drawing.last.alpha ?? 1, false); if (!drawing.lost && this.host === drawing) this.drawAngles(); }
         }
         else {
           if (this.fly) this.fly.update(dt); else this.orbit.update(dt); if (this.box.visible) this.box.update();
           this.aids.beginFrame(); // WebGPU through the post stack: the frame and the aids reach the canvas together (viewport/composite.js)
-          try { this.host.render(1, false); } catch (err) { this.aids.abortFrame(); throw err; }
-          this.aids.draw();
+          const drawing = this.host;
+          try { drawing.render(1, false); } catch (err) { this.aids.abortFrame(); throw err; }
+          // the device went in that draw (M6 W6): the aids would draw on a dead renderer (WebKit throws), so not this frame
+          if (drawing.lost || this.host !== drawing) this.aids.abortFrame(); else this.aids.draw();
         }
         if (this.view !== 'edit' || this.session?.mode === 'playing' || this.live) this.aids.setPageShown(false);
         this.stats.renderMs = this.host.last.renderMs;
-      } catch (err) { this.error = String(err?.stack ?? err); if (this.session?.mode === 'playing') this.stop(); console.error(err); }
+      } catch (err) {
+        this.error = String(err?.stack ?? err); console.error(err);
+        // a frame that failed because the device went (M6 W6): its error is cleared once the view is back, and Play goes on
+        if (this.host?.lost || this._replacingHost) this._lossError = this.error;
+        else if (this.session?.mode === 'playing') this.stop();
+      }
       if (this._frames.length >= 20) {
         this.stats.frameMs = this._frames.reduce((a, b) => a + b, 0) / this._frames.length; this.stats.fps = 1000 / this.stats.frameMs;
         this._frames = [];

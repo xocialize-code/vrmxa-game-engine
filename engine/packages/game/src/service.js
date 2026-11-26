@@ -221,8 +221,13 @@ export class GameService {
 
   // ---------------------------------------------------------------- the state, changed (inside a step: by actions)
 
-  /** A counter's value (0 when nothing has counted it). */
-  get(key) { return own(this.counters, key) ?? 0; }
+  /**
+   * A counter's value: 0 when nothing has counted it, or, for a counter this scene reads from another (GameRules'
+   * `reads.counters`) that the game doesn't have yet, the read's default, as the view shows it. So code that adds to a
+   * read counter starts from what the scene shows (`lives: 3` then `add('lives', -1)` gives 2, not -1); the write then
+   * makes it state, carried on like any value the game has (AB-T-0629).
+   */
+  get(key) { return own(this.counters, key) ?? (this.reads.counters.includes(key) ? own(this.readDefaults, key) ?? 0 : 0); }
   get score() { return own(this.counters, 'score') ?? 0; }
 
   /** Set a counter (held within its node's min and max). */

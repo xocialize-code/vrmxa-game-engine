@@ -14,7 +14,7 @@ import { installItems } from '@vrmxg/item';
 import { installInteraction } from '@vrmxg/interact';
 import { installCloset } from '@vrmxg/closet';
 import { installAudio } from '@vrmxg/audio';
-import { installVoice } from '@vrmxg/voice';
+import { installVoice, installDialogue } from '@vrmxg/voice';
 import { installTracks } from '@vrmxg/tracks';
 import { installSequence, composeSequence, isSequence } from '@vrmxg/sequence';
 import { installParticles } from '@vrmxg/particles';
@@ -75,6 +75,10 @@ export class EngineSession extends LiveView {
     const ai = installAi(tree, { resolve: (ref) => p.bytes(ref) });
     await ai.prepare(doc);
     for (const pr of ai.presets.values()) await voice.prepare({ nodes: [{ id: 'brain', behaviours: [pr] }] });
+    // conversations with choices (M5 W3), after input, voice and game, as the shared world builder installs them, and
+    // only for a scene with a Dialogue node (its own or a prefab's): the service has state, which is in the world
+    // hashes, so no other scene's hashes move (AB-T-0630). A choice is `input.choose('dialogue.choose', id)`.
+    if (nodes.some((n) => n.type === 'Dialogue')) installDialogue(tree);
     installSave(tree, { scene: { ref: doc.id ?? 'scene', doc } });
     const closetModule = vrmxaCore ? await p.vrmxaCloset() : null;
     const closet = closetModule ? installCloset(tree, { vrmxaCore, closet: closetModule, stubTextures: true }) : null;

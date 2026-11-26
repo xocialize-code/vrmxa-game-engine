@@ -43,7 +43,7 @@ What the server tells a client at initialize:
 | [`redo`](#redo) | headless, editor | Redo the last undone edit. |
 | [`save`](#save) | headless, editor | Write the scene in canonical form (refused with errors). |
 | [`engine_load`](#engine-load) | headless | Start a headless engine (physics, characters, input, cameras) from the scene as edited. |
-| [`engine_step`](#engine-step) | headless, editor | Step at 60 Hz. hold: input actions held meanwhile, e.g. {"move_y": 1, "run": true}; replay: an input recording file. Returns signals fired. |
+| [`engine_step`](#engine-step) | headless, editor | Step at 60 Hz. hold: actions held, e.g. {"move_y": 1}; replay: an input recording file; choose: {"dialogue.choose": id} answers a Dialogue. Returns signals fired. |
 | [`physics`](#physics) | headless, editor | The running world's physics: moving bodies (pose, velocity, sleeping), what each sensor holds, solid contacts. |
 | [`call_action`](#call-action) | headless, editor | Call an action on a live node, e.g. open on a hinge, goTo, say or lookAt on a character. |
 | [`interact`](#interact) | headless, editor | A character does an item's verb (take, use, sit, open), as the player's interact would. |
@@ -332,9 +332,9 @@ Start a headless engine (physics, characters, input, cameras) from the scene as 
 
 *headless, editor*
 
-Step at 60 Hz. hold: input actions held meanwhile, e.g. {"move_y": 1, "run": true}; replay: an input recording file. Returns signals fired.
+Step at 60 Hz. hold: actions held, e.g. {"move_y": 1}; replay: an input recording file; choose: {"dialogue.choose": id} answers a Dialogue. Returns signals fired.
 
-In the editor: Step at 60 Hz (paused: at once; playing: in real time). hold: input actions held meanwhile, e.g. {"move_y": 1, "run": true}; replay: an input recording file. Returns signals fired.
+In the editor: Step at 60 Hz (paused: at once; playing: in real time). hold: actions held, e.g. {"move_y": 1}; replay: an input recording file; choose: {"dialogue.choose": id} answers a Dialogue. Returns signals fired.
 
 ```json
 {
@@ -342,7 +342,8 @@ In the editor: Step at 60 Hz (paused: at once; playing: in real time). hold: inp
   "properties": {
     "steps": { "type": "integer", "minimum": 1, "maximum": 36000 },
     "hold": { "type": "object" },
-    "replay": { "type": "string" }
+    "replay": { "type": "string" },
+    "choose": { "type": "object" }
   }
 }
 ```
