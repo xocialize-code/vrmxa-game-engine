@@ -71,7 +71,11 @@ the game should play from the title menu to an ending.
   the GPU lock, AppProbe ran `HAND-TEST-M5-RUSH`'s scenario on that app, 4 of 4: the title on WebGPU, New Game into
   the level, lost on the clock, and won from Slot 1. Slot 1 was made from the session `acceptance/m6/sharing.mjs`
   recorded. Help › Third-Party Notices opened the build's notices in the shell's window
-  ([`docs/hand-test/results/m6-w7-hardened/`](docs/hand-test/results/m6-w7-hardened/report.md)).
+  ([`docs/hand-test/results/m6-w7-hardened/`](docs/hand-test/results/m6-w7-hardened/report.md); the report is the
+  second run, after the notices window learned to close with the game's window). With the notices open, closing the
+  game's window asked the game's own question, and Close Without Saving quit the app. The editor's, creator's and
+  playground's Mac apps (shell 0.15.0) each opened their own notices from Help the same way. The editor's item sits
+  below its Keyboard Shortcuts. The playground quit when its window closed with the notices open.
 - **Not checked:** a Developer ID signature, notarisation, stapling and Gatekeeper on another Mac. Those need the
   operator's identity. Gamepads in the sandboxed, hardened app weren't checked either: no real pad was tried, and that
   is AB-T-0642. If a pad turns out to need an entitlement, add only that one, and the entitlement check in `release.sh`
