@@ -147,6 +147,15 @@ export function schemaOfValue(v) {
   return { type: t };
 }
 
+/**
+ * The schema of a key an open struct doesn't name and gives no value schema for (a brain's vars): a text, number or yes /
+ * no picked by a kind menu (M6 W1), so a new key's value isn't stuck as text; a list or an object by its shape.
+ */
+export function looseSchema(v) {
+  const t = typeOfValue(v);
+  return t === 'array' || t === 'object' ? schemaOfValue(v) : { type: ['string', 'number', 'boolean'] };
+}
+
 /** A placeholder string a pattern takes, for a new required field. */
 const PLACEHOLDERS = ['new', 'new-1', 'a'];
 
@@ -275,7 +284,7 @@ export function structRows(schema, value) {
   return {
     rows: [
       ...known.map((k) => ({ key: k, schema: props[k] && Object.keys(props[k]).length ? props[k] : schemaOfValue(value?.[k]), required: required.has(k), known: true, set: isObj(value) && Object.hasOwn(value, k) })),
-      ...extra.map((k) => ({ key: k, schema: isObj(r.additionalProperties) ? r.additionalProperties : schemaOfValue(value[k]), required: false, known: false, set: true })),
+      ...extra.map((k) => ({ key: k, schema: isObj(r.additionalProperties) ? r.additionalProperties : looseSchema(value[k]), required: false, known: false, set: true })),
     ],
     open, // more keys may be added
     valueSchema: isObj(r.additionalProperties) ? r.additionalProperties : null,
@@ -337,11 +346,53 @@ export function childOf(parent, k) {
  * @param {{ props?: Record<string, any> }} node
  */
 export function inspectorFields(described, node) {
-  const schemas = described.schema?.properties?.props?.properties ?? {};
-  const set = node?.props ?? {};
+  return fieldsOf(described.schema?.properties?.props?.properties ?? {}, described.propMeta ?? {}, node?.props ?? {});
+}
+
+/**
+ * Fields for a set of registry props ({ key: { schema, meta, nodeRef?, assetTypes? } }) over values: a behaviour's params
+ * over its entry, an action's arguments over a connection's (M6 W1). The same fields inspectorFields makes for a node.
+ * @param {Record<string, any>} defs @param {Record<string, any> | undefined} values
+ */
+export function propFields(defs, values) {
+  const schemas = {}, metas = {};
+  for (const [k, p] of Object.entries(defs ?? {})) {
+    schemas[k] = p?.schema ?? {};
+    metas[k] = { ...(p?.meta ?? {}), ...(p?.assetTypes ? { assetTypes: p.assetTypes } : {}), ...(p?.nodeRef ? { nodeRef: true } : {}) };
+  }
+  return fieldsOf(schemas, metas, values ?? {});
+}
+
+/**
+ * What a field's pin writes: the value it shows while unset (its default), or a schema's fresh value when it has none
+ * (false, 0, ""). Writing it makes the value the file's own, so a later change of the default doesn't change it (M6 W1).
+ */
+export function pinValue(f) {
+  if (f.default !== undefined) return clone(f.default);
+  const v = defaultFor(f.schema ?? {});
+  return v === undefined ? '' : v;
+}
+
+/**
+ * A collision-layer field (`meta.widget: 'layer'`, M6 W1) as a menu of the game's physics layers (game.json), the node's
+ * own value kept as an option when the game doesn't have it, so it's seen (the export and Play refuse it).
+ * @param {any} f a field @param {string[]} layers
+ */
+export function layerField(f, layers) {
+  if (f.meta?.widget !== 'layer') return f;
+  const options = [...layers];
+  const unknown = typeof f.value === 'string' && !options.includes(f.value);
+  if (unknown) options.push(f.value);
+  return {
+    ...f, schema: { ...f.schema, enum: options }, widget: 'enum', enum: options, unknownLayer: unknown ? f.value : null,
+    description: `${f.description ? `${f.description} ` : ''}${unknown ? `"${f.value}" isn't one of the game's layers (${layers.join(', ')}).` : `The game's layers: ${layers.join(', ')} (Project Settings).`}`,
+  };
+}
+
+function fieldsOf(schemas, metas, set) {
   const read = (k) => (set[k] !== undefined ? set[k] : schemas[k]?.default);
   return Object.entries(schemas).map(([key, schema]) => {
-    const meta = described.propMeta?.[key] ?? {};
+    const meta = metas[key] ?? {};
     const value = clone(set[key]);
     return {
       key, schema, meta, widget: widgetOf(schema, meta, value ?? schema.default), value, default: clone(schema.default), set: value !== undefined,

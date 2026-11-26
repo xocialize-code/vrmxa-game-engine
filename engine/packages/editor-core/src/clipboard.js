@@ -13,6 +13,11 @@
 // A clip read back from the system clipboard is data: isClip checks it whole (shape, unique ids, parents inside it
 // with no cycle, a size limit) before anything walks it.
 
+import { prefabNodes } from '@vrmxg/scene';
+import { baseOf, mapNodeRefs, mapArgRefs } from './refs.js';
+
+export { refPaths, mapRefs } from './refs.js';
+
 const clone = (v) => structuredClone(v);
 export const CLIP_FORMAT = 'vrmxg-nodes';
 /** The most nodes, asset entries and connections a clip may hold (a whole level is a few hundred nodes). */
@@ -90,46 +95,6 @@ export function isClip(v) {
   return connections.every((c) => plain(c) && str(c.from) && str(c.to) && str(c.signal) && str(c.call) && (c.args === undefined || plain(c.args)));
 }
 
-/** "door-1/hinge#head" → "door-1": the node of the scene a reference starts from. */
-function baseOf(ref) { return String(ref).split('/')[0].split('#')[0]; }
-
-/**
- * The places a node is named in a props object of `type`: [{ path: string[], each: boolean }] (each: the last step is a
- * list whose items are references), from `nodeRef` props and object props' `meta.nodeRefs`.
- */
-export function refPaths(reg, type) {
-  const out = [];
-  for (const [k, p] of Object.entries(reg.get(type)?.props ?? {})) {
-    if (p.nodeRef) out.push({ path: [k], each: false });
-    for (const r of p.meta?.nodeRefs ?? []) {
-      const each = r.endsWith('[]');
-      out.push({ path: [k, ...r.replace(/\[\]$/, '').split('.')], each });
-    }
-  }
-  return out;
-}
-
-/**
- * Rewrite every reference in a props object: fn(ref) → the new reference, or undefined to drop it. Mutates `props`.
- * @param {any} props @param {{ path: string[], each: boolean }[]} paths @param {(ref: string) => string | undefined} fn
- */
-export function mapRefs(props, paths, fn) {
-  if (!plain(props)) return;
-  for (const { path, each } of paths) {
-    let o = props;
-    for (const k of path.slice(0, -1)) { o = o?.[k]; if (!plain(o)) break; }
-    const last = path.at(-1);
-    if (!plain(o) || o[last] === undefined) continue;
-    if (each) {
-      if (!Array.isArray(o[last])) continue;
-      o[last] = o[last].map((v) => (typeof v === 'string' ? fn(v) : v)).filter((v) => v !== undefined);
-    } else if (typeof o[last] === 'string') {
-      const v = fn(o[last]);
-      if (v === undefined) delete o[last]; else o[last] = v;
-    }
-  }
-}
-
 /**
  * The edit ops that paste a clip into a document. → { ops, roots, ids } (roots: the pasted roots' new ids; ids: old → new)
  * @param {any} doc the target document
@@ -160,7 +125,12 @@ export function pasteOps(doc, reg, clip, { parent, defaultParent, after = false,
   // a reference: into the clip it follows the copy; to a node this document has it stays; anything else is dropped
   const ref = (r) => { const b = baseOf(r); return ids.has(b) ? ids.get(b) + String(r).slice(b.length) : has(b) ? r : undefined; };
   const assetRef = (n) => (clip.assets ?? []).find((a) => a.id === n.asset)?.ref ?? (doc.assets ?? []).find((a) => a.id === n.asset)?.ref;
-  const innerOf = (instance, local) => prefabs.get(assetRef(instance))?.nodes?.find((x) => x.id === local) ?? null;
+  // a node inside an instance, nested ones too ("frame/hinge", AB-T-0635 item 3), as its prefab has it
+  const innerOf = (instance, local) => {
+    const prefab = prefabs.get(assetRef(instance));
+    if (!prefab) return null;
+    try { return prefabNodes(prefab, prefabs).get(local) ?? null; } catch { return null; }
+  };
   const rootParent = (n) => (parent !== undefined ? parent ?? undefined : n.parent !== undefined && has(n.parent) ? n.parent : defaultParent);
   const made = clip.nodes.map((src) => {
     const n = clone(src);
@@ -168,17 +138,8 @@ export function pasteOps(doc, reg, clip, { parent, defaultParent, after = false,
     const p = ids.has(src.parent) ? ids.get(src.parent) : rootParent(src);
     if (p === undefined) delete n.parent; else n.parent = p;
     if (n.asset !== undefined) n.asset = assetIds.get(n.asset) ?? n.asset;
-    mapRefs(n.props, refPaths(reg, n.type), ref);
-    for (const b of n.behaviours ?? []) {
-      const d = reg.behaviours?.get(b.use);
-      for (const k of Object.keys(b.params ?? {})) if (d?.params[k]?.nodeRef && typeof b.params[k] === 'string') { const v = ref(b.params[k]); if (v === undefined) delete b.params[k]; else b.params[k] = v; }
-    }
-    // an instance's overrides: each inner node's values, by that node's own type in the prefab
-    for (const [local, ov] of Object.entries(n.overrides ?? {})) {
-      const inner = innerOf(src, local);
-      if (inner && plain(ov)) mapRefs(ov.props, refPaths(reg, inner.type), ref);
-    }
-    return n;
+    // its props, its behaviours' params (flat in the entry) and an instance's override values, by each inner node's type
+    return mapNodeRefs(reg, n, ref, { innerOf: (local) => innerOf(src, local) });
   });
   // the nodes, each root with its subtree; a duplicate lands right after its original
   const groups = clip.roots.map((r) => { const own = new Set(subtree({ nodes: clip.nodes }, r)); return { root: r, nodes: made.filter((n, i) => own.has(clip.nodes[i].id)) }; });
@@ -192,24 +153,14 @@ export function pasteOps(doc, reg, clip, { parent, defaultParent, after = false,
   } else for (const g of groups) for (const n of g.nodes) ops.push({ op: 'add', node: n });
   // the connections the clip sends: both ends must resolve (into the copies, or to nodes this document has)
   const nodeOf = (r) => {
-    const [b, local] = String(r).split('/');
+    const [b, ...rest] = String(r).split('#')[0].split('/');
     const top = made.find((n) => n.id === b) ?? byId.get(b);
-    return local === undefined ? top : top ? innerOf(top, local) : null;
+    return !rest.length ? top : top ? innerOf(top, rest.join('/')) : null;
   };
   for (const c of clip.connections ?? []) {
     const from = ref(c.from), to = ref(c.to);
     if (from === undefined || to === undefined) continue;
-    const target = nodeOf(to);
-    const argDefs = target ? reg.surface(target).actions?.[c.call]?.args ?? {} : {};
-    let args;
-    if (c.args) {
-      args = {};
-      for (const [k, v] of Object.entries(c.args)) {
-        if (!argDefs[k]?.nodeRef || typeof v !== 'string') { args[k] = clone(v); continue; }
-        const r = ref(v);
-        if (r !== undefined) args[k] = r;
-      }
-    }
+    const args = mapArgRefs(reg, c, nodeOf(to), ref);
     ops.push({ op: 'connect', from, signal: c.signal, to, call: c.call, ...(args ? { args } : {}) });
   }
   return { ops, roots: clip.roots.map((r) => ids.get(r)), ids };

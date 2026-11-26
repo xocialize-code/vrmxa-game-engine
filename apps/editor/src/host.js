@@ -19,8 +19,8 @@ import { parse, describeType, serialize, overridesText, prefabNodes } from '@vrm
 import { makeTake, isTake, takeToSequence, installDirector, demoModel, httpModel } from '@vrmxg/director';
 import { shellTTS, httpTTS } from '@vrmxg/voice';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
-import { EditorSession, newSequenceDoc, rowsOf } from '@vrmxg/editor-core';
-import { inspectorFields, sharedFields, sharedAxes, assetEntries } from '@vrmxg/editor-ui';
+import { EditorSession, newSequenceDoc, rowsOf, referencesElsewhere } from '@vrmxg/editor-core';
+import { inspectorFields, sharedFields, sharedAxes, assetEntries, layerField, wiringView, nodeAfter } from '@vrmxg/editor-ui';
 import { AudioOutput } from '@vrmxg/audio';
 import { exportTake, shellSink, hashSink, hashFrame, readbackFor, captureStill, encodePNG, toBase64, SIZES, RATES, CODECS, framesFor, secondsOf } from '@vrmxg/export';
 import { inShell, call, on as onShell } from '../../shell/js/shell.js';
@@ -251,6 +251,7 @@ export class EditorHost {
     }
     this.behaviourSources = project.behavioursModule?.sources ?? null; // the text those classes came from (M6 W2: what hot reload compares with)
     this.project = project;
+    try { this.gameLayers = gameLayers(await project.gameSetup?.() ?? null); } catch { this.gameLayers = ['default']; } // the inspector's layer menus (M6 W1)
     this.R ??= await loadRapier();
     const scene = sceneRef ?? project.scenes().find((s) => !s.startsWith('prefabs/')) ?? null;
     if (scene) await this.openScene(scene); else await this.newScene();
@@ -651,7 +652,8 @@ export class EditorHost {
     if (!nodes.length) return null;
     const n = nodes.at(-1); // the primary
     const d = describeType(registry, n.type);
-    const props = sharedFields([n, ...nodes.filter((x) => x !== n)].map((x) => inspectorFields(x === n ? d : describeType(registry, x.type), x))); // the primary's order, ranges and value first
+    const props = sharedFields([n, ...nodes.filter((x) => x !== n)].map((x) => inspectorFields(x === n ? d : describeType(registry, x.type), x))) // the primary's order, ranges and value first
+      .map((f) => layerField(f, this.gameLayers ?? ['default'])); // a collision layer: the game's layers (M6 W1)
     const drag = this.session.gesture && this._dragEuler?.gesture === this.session.gesture ? this._dragEuler.by : null;
     const tr = nodes.map((x) => { const t = this.transformOf(x); return drag?.has(x.id) ? { ...t, r: drag.get(x.id) } : t; }); // a rotation drag shows its own angles
     const asset = n.asset ? s.doc.assets.find((a) => a.id === n.asset) : null;
@@ -661,6 +663,8 @@ export class EditorHost {
       name: n.name ?? '', parent: n.parent ?? null, description: types.length === 1 ? d.description : '', asset: asset && nodes.length === 1 ? `${asset.ref} (${asset.type})` : null,
       p: sharedAxes(tr.map((t) => t.p)), r: sharedAxes(tr.map((t) => t.r)), s: sharedAxes(tr.map((t) => t.s)), props,
       behaviours: nodes.length === 1 ? (n.behaviours ?? []).map((b) => b.use) : [], nodes: s.doc.nodes.map((x) => x.id),
+      // M6 W1 (AB-T-0638): one node's behaviours and connections, and the node it comes before in the document's order
+      wiring: nodes.length === 1 ? wiringView(registry, s.doc, n.id, { nodeOf: (r) => s.endNode(r) }) : null, before: nodes.length === 1 ? nodeAfter(s.doc, n.id) : '',
       sameType: types.length === 1 ? s.doc.nodes.filter((x) => x.type === n.type).map((x) => x.id) : [],
       inner: null, ov: null, overrides: nodes.length === 1 && n.type === 'Instance' ? this.overridesView(n.id) : null,
       // the node's asset slot (M5 W6, AB-T-0606): what it names and the kinds of file it takes, for a drop from the assets panel
@@ -676,7 +680,7 @@ export class EditorHost {
     const s = this.session, n = i.node, d = describeType(registry, n.type);
     const view = this.overridesView(i.instance);
     const mine = new Map(view.entries.filter((e) => e.target === i.target).map((e) => [e.field, e]));
-    const props = sharedFields([inspectorFields(d, n)]).map((f) => ({ ...f, ov: mine.get(`props.${f.key}`) ?? null }));
+    const props = sharedFields([inspectorFields(d, n)]).map((f) => ({ ...layerField(f, this.gameLayers ?? ['default']), ov: mine.get(`props.${f.key}`) ?? null }));
     const t = this.transformOf(n), b = this.transformOf(i.base);
     // a node reference inside a prefab names a node of that prefab: the options (and a paste's check) are its ids, not the scene's
     const at = i.target.includes('/') ? `${i.target.slice(0, i.target.lastIndexOf('/'))}/` : '';
@@ -739,6 +743,21 @@ export class EditorHost {
   setPropOn(ids, key, value) {
     if (ids.length === 1 && this.session.innerNode(ids[0])) return this.session.setOverride(ids[0], `props.${key}`, value);
     return this.session.setPropOn(ids, key, value);
+  }
+
+  /**
+   * Change a node's id (M6 W1): the session rewrites this scene's references, and refuses when another of the project's
+   * files names the node (a sequence filming this scene, a scene placing it as a prefab), which it can't rewrite. The
+   * project's scenes are read for that here, when an id is changed. One undo step. The project's file list is the one
+   * the shell gave at open (and files the editor wrote since): a scene another process adds later isn't seen until the
+   * project is opened again (the shell has no call that lists a project's files again).
+   */
+  async setNodeId(id, to) {
+    const s = this.session, p = this.project, ref = this.sceneRef;
+    const docs = new Map();
+    if (p && ref) for (const f of p.files.filter((x) => x.endsWith('.vrmxs') && x !== ref)) { try { docs.set(f, parse(await p.text(f))); } catch { /* a file that doesn't parse names nothing */ } }
+    s.elsewhere = referencesElsewhere(registry, ref ?? '', docs);
+    try { return s.setNodeId(id, to); } finally { s.elsewhere = null; }
   }
 
   /** Rename a node; an inner node's name is an override. */

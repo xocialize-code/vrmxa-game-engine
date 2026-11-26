@@ -140,10 +140,11 @@ test('a struct\'s rows: the schema\'s fields in order, then unknown keys (kept),
   const line = reg.get('Dialogue').props.lines.schema.items;
   const r = structRows(line, { text: 'Hi', mood: 'warm' });
   assert.deepEqual(r.rows.map((x) => [x.key, x.known, x.set, x.required]).slice(0, 3), [['id', true, false, false], ['speaker', true, false, false], ['text', true, true, true]]);
-  assert.deepEqual(r.rows.at(-1), { key: 'mood', schema: { type: 'string' }, required: false, known: false, set: true });
+  // a key the schema doesn't name, with no value schema: its kind (text, number, yes / no) picked beside it (M6 W1)
+  assert.deepEqual(r.rows.at(-1), { key: 'mood', schema: { type: ['string', 'number', 'boolean'] }, required: false, known: false, set: true });
   assert.equal(r.open, false, 'additionalProperties: false');
   const free = structRows({ type: 'object' }, { sight: { range: 12 }, decay: 0.5 });
-  assert.deepEqual(free.rows.map((x) => [x.key, x.schema.type]), [['sight', 'object'], ['decay', 'number']]);
+  assert.deepEqual(free.rows.map((x) => [x.key, x.schema.type]), [['sight', 'object'], ['decay', ['string', 'number', 'boolean']]]);
   assert.equal(free.open, true);
   assert.equal(rowTitle({ id: 'hello', text: 'Hi' }, 0), 'hello');
   assert.equal(rowTitle({ effect: 'bloom' }, 3), 'bloom');

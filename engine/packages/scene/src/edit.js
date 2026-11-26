@@ -1,5 +1,5 @@
 // Edits on a .vrmxs document: add, remove (with its subtree), set a value at a path, reparent,
-// connect / disconnect, add / remove / replace an asset entry, and a batch of these as one step. Each edit is checked against the registry before it applies, returns its
+// connect / disconnect / replace a connection, rename a node's id, add / remove / replace an asset entry, and a batch of these as one step. Each edit is checked against the registry before it applies, returns its
 // inverse, and goes on an undo stack, so an MCP agent's change is as undoable as a user's.
 import { Ajv2020 } from 'ajv/dist/2020.js';
 import { nodeSchema } from './schema.js';
@@ -22,8 +22,16 @@ const mustBeFinite = (what, v) => { const p = nonFinite(v); if (p) throw new Err
  *   by Apply), each returning its inverse like the built-in ones, so one undo step can span the scene and another file
  */
 export function createEditor(reg, doc, { prefabs, ops: extra = {} } = {}) {
-  const ajv = new Ajv2020({ allErrors: true, strict: false });
-  const nodeValidators = new Map([...reg.types.keys()].map((t) => [t, ajv.compile(nodeSchema(reg, t))]));
+  // compiled from the registry as it is now, and again when it changes (a project's behaviours declared or reloaded, M6)
+  let nodeValidators = null, compiledAt = -1;
+  const validators = () => {
+    if (!nodeValidators || compiledAt !== reg.version) {
+      const ajv = new Ajv2020({ allErrors: true, strict: false });
+      nodeValidators = new Map([...reg.types.keys()].map((t) => [t, ajv.compile(nodeSchema(reg, t))]));
+      compiledAt = reg.version;
+    }
+    return nodeValidators;
+  };
   const undoStack = [], redoStack = [];
 
   const index = (id) => doc.nodes.findIndex((n) => n.id === id);
@@ -37,7 +45,7 @@ export function createEditor(reg, doc, { prefabs, ops: extra = {} } = {}) {
 
   // A node must pass its type's schema; unknown types only need the base shape.
   function checkNode(node) {
-    const v = nodeValidators.get(node.type);
+    const v = validators().get(node.type);
     if (!v) return [`unknown node type "${node.type}" (known: ${[...reg.types.keys()].join(', ')})`];
     if (v(node)) return [];
     return v.errors.map((e) => `${node.id}${e.instancePath} ${e.message}${e.params?.allowedValues ? ` (${e.params.allowedValues.join(', ')})` : ''}`);
@@ -114,21 +122,37 @@ export function createEditor(reg, doc, { prefabs, ops: extra = {} } = {}) {
       return inverse;
     },
     connect({ from, signal, to, call, args }) {
-      // "door-1/hinge" addresses a node inside a prefab instance: resolve it in the flattened view.
-      const resolve = (id) => {
-        if (!id.includes('/')) return doc.nodes[need(id)];
-        const n = prefabs ? flatten(doc, prefabs()).nodes.find((x) => x.id === id) : null;
-        if (!n) throw new Error(`no node "${id}" (inner nodes need the instance's prefab loaded)`);
-        return n;
-      };
-      const f = resolve(from), t = resolve(to);
-      const sig = reg.surface(f).signals, act = reg.surface(t).actions;
-      if (reg.get(f.type) && !sig[signal]) throw new Error(`${f.type} "${from}" has no signal "${signal}" (has: ${Object.keys(sig).join(', ')})`);
-      if (reg.get(t.type) && !act[call]) throw new Error(`${t.type} "${to}" has no action "${call}" (has: ${Object.keys(act).join(', ')})`);
+      checkConnection({ from, signal, to, call });
       doc.connections ??= [];
-      const c = { from, signal, to, call, ...(args ? { args } : {}) };
+      const c = { from, signal, to, call, ...(args ? { args: clone(args) } : {}) };
       doc.connections.push(c);
       return { op: 'disconnect', index: doc.connections.length - 1 };
+    },
+    /** Replace connection `index` in place (M6 W1: the connections panel edits one part of it), checked as connect checks. */
+    setConnection({ index: i, connection, restore = false }) {
+      const before = doc.connections?.[i];
+      if (!before) throw new Error(`no connection ${i}`);
+      const { from, signal, to, call, args } = connection ?? {};
+      // its inverse puts back what was there, unchecked: inside a batch's undo the nodes it names may come back after it
+      if (!restore) checkConnection({ from, signal, to, call });
+      mustBeFinite(`connection ${i}`, args);
+      const next = clone(connection);
+      if (next.args === undefined || next.args === null) delete next.args;
+      doc.connections[i] = next;
+      return { op: 'setConnection', index: i, connection: before, restore: true };
+    },
+    /**
+     * Give a node another id (M6 W1): the node and its children's parent. Nothing else: the references to it (props,
+     * behaviour params, connections, other instances' overrides) are the caller's own ops in the same batch.
+     */
+    renameNode({ id, to }) {
+      if (typeof to !== 'string' || !/^[A-Za-z0-9_-]+$/.test(to)) throw new Error(`"${to}" can't be an id: letters, digits, "-" and "_" only`);
+      const i = need(id);
+      if (to === id) throw new Error(`${id} already has that id`);
+      if (index(to) >= 0) throw new Error(`node "${to}" already exists`);
+      doc.nodes[i] = { ...doc.nodes[i], id: to };
+      for (const [j, n] of doc.nodes.entries()) if (n.parent === id) doc.nodes[j] = { ...n, parent: to };
+      return { op: 'renameNode', id: to, to: id };
     },
     disconnect({ index: i }) {
       const [c] = doc.connections.splice(i, 1);
@@ -168,6 +192,21 @@ export function createEditor(reg, doc, { prefabs, ops: extra = {} } = {}) {
       return { op: 'batch', ops: done.reverse(), ...(label ? { label } : {}) };
     },
   };
+  // A connection's ends and parts: "door-1/hinge" addresses a node inside a prefab instance, resolved in the flattened view
+  function resolveEnd(id) {
+    if (typeof id !== 'string' || !id) throw new Error('a connection needs from and to');
+    if (!id.includes('/')) return doc.nodes[need(id)];
+    const n = prefabs ? flatten(doc, prefabs()).nodes.find((x) => x.id === id) : null;
+    if (!n) throw new Error(`no node "${id}" (inner nodes need the instance's prefab loaded)`);
+    return n;
+  }
+  function checkConnection({ from, signal, to, call }) {
+    const f = resolveEnd(from), t = resolveEnd(to);
+    const sig = reg.surface(f).signals, act = reg.surface(t).actions;
+    if (reg.get(f.type) && !sig[signal]) throw new Error(`${f.type} "${from}" has no signal "${signal}" (has: ${Object.keys(sig).join(', ')})`);
+    if (reg.get(t.type) && !act[call]) throw new Error(`${t.type} "${to}" has no action "${call}" (has: ${Object.keys(act).join(', ')})`);
+  }
+
   function run(op) {
     const fn = Object.hasOwn(OPS, op.op) ? OPS[op.op] : Object.hasOwn(extra, op.op) ? extra[op.op] : null;
     if (!fn) throw new Error(`unknown op "${op.op}"`);

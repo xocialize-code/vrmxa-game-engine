@@ -145,7 +145,7 @@ node acceptance/m4/takes.mjs && acceptance/m4/takes-wkwebview.sh                
 # with check-exports.mjs, M2-ACCEPTANCE with check-sequence-exports.mjs, M2-TIMELINE, M4-BACKEND (+ webgl); the game app's
 # M5-GAME (+ webgl) and M5-RUSH; the playground's M0 and M4-BACKEND (+ webgl)
 node acceptance/m5/build.mjs --mac <the four builds> --refused <folder> --kept <folder>
-node acceptance/m5/rush-level.mjs compare <the saved level>
+node acceptance/m5/rush-level.mjs compare <the saved level>   # since M6 W1: the committed level's bytes, ids, behaviours and connections included
 acceptance/m5/rush-frames.sh prepare   # then AppProbe MCP launch at 1920×1112 with VRMXG_QUERY, rush-frames.sh sample, #frame-stats read every 5 s
 node acceptance/m5/rush-frames-summary.mjs <folder>
 ```
