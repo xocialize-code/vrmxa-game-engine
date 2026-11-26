@@ -21,7 +21,8 @@
 // Every schema in a declaration (each param's, each signal's and action's arguments', the state's) is checked when it
 // is declared: one that isn't JSON Schema is the declaration's mistake, named here, not every later validation's. The
 // check is the draft 2020-12 meta-schema compiled ahead of time (vendor/ajv-meta-2020.js, scripts/make-meta.mjs) and
-// each pattern compiled as a regular expression, as Ajv's compile would: nothing here generates code at run time, so a
+// what Ajv's compile refuses beyond it (a pattern that isn't a regular expression, an empty enum, `id`, `nullable`
+// misused), found by walking the schema: nothing here generates code at run time, so a
 // game build declares its behaviours under a Content Security Policy without 'unsafe-eval' (M6 W7, AB-T-0654 item 6),
 // and the exporter, the editor and a build give the same verdict on the same declaration. A
 // declaration's schemas are set inside larger ones (a scene's), so they are self-contained: no `$ref`, `$id`, `$anchor`
@@ -68,8 +69,8 @@ function compiled(b, def) {
 
 /**
  * What in a declared behaviour isn't JSON Schema: each param's schema, each signal's and action's argument's, and the
- * state's, read as the scene validator reads them (draft 2020-12, unknown keywords allowed): the meta-schema, and every
- * `pattern` and `patternProperties` key a regular expression with the `u` flag.
+ * state's, read as the scene validator reads them (draft 2020-12, unknown keywords allowed): the meta-schema, then what
+ * Ajv's compile refuses beyond it (compileFault).
  * @param {any} b a behaviour as the registry resolves it @returns {string[]}
  */
 export function schemaProblems(b) {
@@ -93,22 +94,50 @@ export function schemaProblems(b) {
 export function schemaFault(schema) {
   if (typeof schema !== 'boolean' && (!schema || typeof schema !== 'object' || Array.isArray(schema))) return 'schema must be object or boolean';
   if (!metaValidate(schema)) return `schema is invalid: ${(metaValidate.errors ?? []).map((e) => `data${e.instancePath} ${e.message}`).join(', ')}`;
-  return badPattern(schema);
+  return compileFault(schema);
 }
 
 // Where a schema holds schemas (draft 2020-12's applicators, and the older names the meta-schema still accepts)
 const ONE = ['additionalProperties', 'propertyNames', 'items', 'contains', 'not', 'if', 'then', 'else', 'unevaluatedItems', 'unevaluatedProperties', 'additionalItems'];
 const MANY = ['allOf', 'anyOf', 'oneOf', 'prefixItems'];
 const BY_NAME = ['properties', 'patternProperties', '$defs', 'definitions', 'dependentSchemas', 'dependencies'];
-/** The first pattern in a (meta-schema-valid) schema that isn't a regular expression, as Ajv compiles one (`u`). */
-function badPattern(s) {
-  if (!s || typeof s !== 'object') return null;
+const JSON_TYPES = new Set(['string', 'number', 'integer', 'boolean', 'null', 'object', 'array']);
+// The keywords Ajv compiles code for (its rules): a schema with none of them is always valid and skipped, and only one
+// with some is checked for `$async`. Annotations (title, description, default, examples, deprecated, readOnly,
+// writeOnly, content*), unknown keywords, $defs, definitions and additionalItems (draft 2019) are not rules
+const RULES = new Set(['type', 'nullable', 'enum', 'const', 'format', '$comment', 'multipleOf', 'maximum', 'exclusiveMaximum', 'minimum', 'exclusiveMinimum',
+  'maxLength', 'minLength', 'pattern', 'maxItems', 'minItems', 'uniqueItems', 'maxContains', 'minContains', 'maxProperties', 'minProperties', 'required',
+  'dependentRequired', 'prefixItems', 'items', 'contains', 'additionalProperties', 'properties', 'patternProperties', 'dependentSchemas', 'propertyNames',
+  'dependencies', 'allOf', 'anyOf', 'oneOf', 'not', 'if', 'then', 'else', 'unevaluatedItems', 'unevaluatedProperties', '$ref', '$dynamicRef', '$recursiveRef']);
+
+/**
+ * What Ajv's compile refuses in a schema that passes the meta-schema, found in it or any schema it holds: a pattern that
+ * isn't a regular expression with the `u` flag (a `pattern`, a `patternProperties` key), an empty `enum`, the
+ * draft-04 `id`, `nullable` without a type or contradicting a `null` type (Ajv's OpenAPI keyword), and `$async` in a
+ * schema inside it that has rules. Ajv compiles only the schemas it uses; this looks in
+ * unreferenced `$defs` too, and in an ignored `additionalItems`, `if` or `then`: stricter on purpose.
+ * @param {any} s @param {boolean} [nested] s is inside the declaration's schema @returns {string | null} the first
+ *   refusal, in Ajv's words where it has them
+ */
+function compileFault(s, nested = false) {
+  if (!s || typeof s !== 'object' || Array.isArray(s)) return null;
   const re = (p) => { try { new RegExp(p, 'u'); return null; } catch (e) { return `${e.message}`; } };
   if (typeof s.pattern === 'string') { const e = re(s.pattern); if (e) return e; }
   for (const k of Object.keys(s.patternProperties ?? {})) { const e = re(k); if (e) return e; }
-  for (const k of ONE) { const e = Array.isArray(s[k]) ? s[k].map(badPattern).find(Boolean) : badPattern(s[k]); if (e) return e; }
-  for (const k of MANY) if (Array.isArray(s[k])) for (const x of s[k]) { const e = badPattern(x); if (e) return e; }
-  for (const k of BY_NAME) if (s[k] && typeof s[k] === 'object') for (const x of Object.values(s[k])) { const e = badPattern(x); if (e) return e; }
+  if (Array.isArray(s.enum) && s.enum.length === 0) return 'enum must have non-empty array';
+  if (Object.hasOwn(s, 'id')) return 'NOT SUPPORTED: keyword "id", use "$id" for schema ID';
+  // an asynchronous schema inside the synchronous one (at the top, Ajv would make the whole validator asynchronous)
+  if (nested && s.$async && Object.keys(s).some((k) => RULES.has(k))) return 'async schema in sync schema';
+  if (Object.hasOwn(s, 'nullable')) {
+    const types = (Array.isArray(s.type) ? s.type : s.type ? [s.type] : []).filter((t) => JSON_TYPES.has(t));
+    if (types.includes('null')) { if (s.nullable === false) return 'type: null contradicts nullable: false'; }
+    else if (!types.length && s.nullable !== undefined) return '"nullable" cannot be used without "type"';
+    if (typeof s.nullable !== 'boolean') return 'nullable value must be "boolean"';
+  }
+  const sub = (x) => compileFault(x, true);
+  for (const k of ONE) { const e = Array.isArray(s[k]) ? s[k].map(sub).find(Boolean) : sub(s[k]); if (e) return e; }
+  for (const k of MANY) if (Array.isArray(s[k])) for (const x of s[k]) { const e = sub(x); if (e) return e; }
+  for (const k of BY_NAME) if (s[k] && typeof s[k] === 'object') for (const x of Object.values(s[k])) { const e = sub(x); if (e) return e; }
   return null;
 }
 

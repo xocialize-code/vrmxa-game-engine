@@ -35,6 +35,14 @@ function corpus() {
     { required: ['a', 'a'] }, { items: { prefixItems: [{ type: 'nope' }] } }, { multipleOf: 0 }, { minLength: -1 },
     { pattern: '(' }, { properties: { a: { pattern: '[' } } }, { patternProperties: { '(': {} } }, { anyOf: [{ items: { pattern: '\\' } }] },
     { pattern: '\\p{Letter}+' }, { pattern: '\\p{NotAProperty}' }, { dependentSchemas: { a: { pattern: '(' } } }, { not: { pattern: '*' } },
+    // what Ajv's compile refuses beyond the meta-schema (PR #58's review): an empty enum, the draft-04 id, nullable misused,
+    // at the top and inside
+    { enum: [] }, { id: 'x' }, { nullable: true }, { nullable: false }, { type: 'null', nullable: false }, { type: 'object', nullable: 'yes' }, { type: 'null', nullable: 1 }, { type: ['string', 'null'], nullable: false },
+    { properties: { mode: { enum: [] } } }, { items: { id: 'x' } }, { anyOf: [{ nullable: true }] }, { not: { type: 'null', nullable: false } },
+    { properties: { a: { type: 'object', properties: { b: { enum: [] } } } } }, { allOf: [{ $async: true }] }, { allOf: [{ id: 'x' }] },
+    // and what it takes
+    { type: 'string', nullable: true }, { type: 'null', nullable: true }, { type: 'string', nullable: false }, { enum: [null] }, { properties: { id: { type: 'string' } } },
+    { default: { id: 'x', enum: [] } }, { const: { nullable: true } }, { examples: [{ id: 1 }] },
   ];
   crafted.forEach((s, i) => out.push([`crafted ${i}: ${JSON.stringify(s)}`, s]));
   return out;
@@ -51,7 +59,7 @@ test('the meta-schema check gives Ajv\'s compile\'s verdict on every schema the 
   assert.deepEqual(differ, []);
 });
 
-test('stricter than Ajv\'s compile on purpose: a pattern that isn\'t a regular expression is refused where Ajv never compiles it', () => {
+test('stricter than Ajv\'s compile on purpose: what it refuses is refused where Ajv never compiles it too', () => {
   // Ajv 2020 compiles neither definitions nothing references, nor additionalItems (a draft 2019 keyword), nor an if
   // without then or else, nor a then without if; a broken pattern there is still the declaration's mistake
   const ajv = new Ajv2020({ strict: false, allErrors: true, logger: false });
@@ -59,6 +67,52 @@ test('stricter than Ajv\'s compile on purpose: a pattern that isn\'t a regular e
     assert.doesNotThrow(() => ajv.compile(s), JSON.stringify(s));
     assert.match(schemaFault(s) ?? '', /Invalid regular expression/, JSON.stringify(s));
   }
+  // the same for the rest of what compile refuses, in a schema it never compiles (an if whose then and else hold no rules
+  // is skipped like a lone one)
+  for (const [s, why] of [[{ $defs: { x: { enum: [] } } }, /enum must have non-empty array/], [{ additionalItems: { id: 'x' } }, /NOT SUPPORTED: keyword "id"/], [{ if: { nullable: true }, then: {} }, /"nullable" cannot be used without "type"/]]) {
+    assert.doesNotThrow(() => ajv.compile(s), JSON.stringify(s));
+    assert.match(schemaFault(s) ?? '', why, JSON.stringify(s));
+  }
+});
+
+test('nothing Ajv\'s compile refuses gets past the check: 5,000 random schemas, seeded', () => {
+  let seed = 4242; const rnd = () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
+  const pick = (a) => a[Math.floor(rnd() * a.length)];
+  const vals = {
+    type: ['string', 'null', ['string', 'null'], 'object', 'array', 'strin', []], enum: [[], [1], [1, 1], 'x'], const: [1, null],
+    nullable: [true, false, 'yes'], id: ['x', 1], pattern: ['^a$', '(', '\\p{L}'], minimum: [0, 'x'], minLength: [0, -1],
+    required: [['a'], ['a', 'a']], format: ['email', 'nope', 1], default: [{ id: 1 }], multipleOf: [2, 0], $comment: ['c', 1],
+    description: ['d'], examples: [[1]], $async: [true], foo: [1], minContains: [0, 2], dependentRequired: [{ a: ['b'] }],
+  };
+  const applicators = ['properties', 'items', 'anyOf', 'allOf', 'not', 'additionalProperties', 'contains', 'propertyNames', 'prefixItems', 'unevaluatedProperties', 'dependentSchemas', 'patternProperties', 'if+then', 'if+else', 'dependencies'];
+  const gen = (d) => {
+    if (d > 3 || rnd() < 0.12) return rnd() < 0.5 ? true : {};
+    const s = {};
+    for (let i = 1 + Math.floor(rnd() * 3); i > 0; i--) { const k = pick(Object.keys(vals)); s[k] = pick(vals[k]); }
+    if (rnd() < 0.65) {
+      const a = pick(applicators), sub = () => gen(d + 1);
+      if (['properties', 'dependentSchemas', 'dependencies'].includes(a)) s[a] = { a: sub(), id: sub() };
+      else if (a === 'patternProperties') s[a] = { [pick(['^x', '('])]: sub() };
+      else if (['anyOf', 'allOf', 'prefixItems'].includes(a)) s[a] = [sub(), sub()];
+      else if (a.startsWith('if+')) { s.if = sub(); s[a.slice(3)] = sub(); } else s[a] = sub();
+    }
+    return s;
+  };
+  const ajv = new Ajv2020({ strict: false, allErrors: true, logger: false }), missed = [];
+  let refused = 0;
+  for (let i = 0; i < 5000; i++) {
+    const s = gen(0);
+    let compiles = true;
+    try { ajv.compile(s); } catch { compiles = false; refused++; }
+    if (!compiles && schemaFault(s) === null) missed.push(JSON.stringify(s));
+  }
+  assert.ok(refused > 1000, 'the schemas exercise what compile refuses');
+  assert.deepEqual(missed.slice(0, 5), []);
+});
+
+test('an empty enum in a declaration is refused when it is declared, naming it, not later by the scene validator (PR #58\'s review)', () => {
+  assert.deepEqual(schemaProblems({ name: 'z', params: { mode: { schema: { enum: [] } } } }), ['behaviour z: param mode is not JSON Schema (enum must have non-empty array)']);
+  assert.deepEqual(schemaProblems({ name: 'z', state: { type: 'object', properties: { n: { nullable: true } } } }), ['behaviour z: its state is not JSON Schema ("nullable" cannot be used without "type")']);
 });
 
 test('a declaration\'s problems name the schema and say why', () => {
