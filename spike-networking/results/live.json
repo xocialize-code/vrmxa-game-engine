@@ -1,0 +1,454 @@
+{
+ "spike": "networking",
+ "runtime": "node 26.12.1 (V8 14.6.202.34-node.40)",
+ "rapier": "@dimforge/rapier3d-deterministic-compat",
+ "shim": "jump,nav",
+ "seconds": 10,
+ "server": {
+  "address": "127.0.0.1",
+  "port": "os-chosen"
+ },
+ "ping": {
+  "websocket": {
+   "sent": 1000,
+   "received": 1000,
+   "rttMs": {
+    "n": 1000,
+    "mean": 0.1,
+    "p50": 0.095,
+    "p95": 0.154,
+    "p99": 0.213,
+    "max": 0.529
+   }
+  },
+  "webrtc": {
+   "sent": 1000,
+   "received": 1000,
+   "rttMs": {
+    "n": 1000,
+    "mean": 0.237,
+    "p50": 0.21,
+    "p95": 0.447,
+    "p99": 0.531,
+    "max": 0.735
+   }
+  }
+ },
+ "webrtcCandidates": [
+  "127.0.0.1"
+ ],
+ "runs": [
+  {
+   "transport": "websocket",
+   "profile": "lan",
+   "mode": "lockstep",
+   "delay": 0,
+   "ticks": 600,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null
+   },
+   "stallRate": 0.0183,
+   "behind": {
+    "n": 600,
+    "mean": 0.04,
+    "p50": 0,
+    "p95": 0,
+    "p99": 2,
+    "max": 4
+   },
+   "tickLatenessMs": {
+    "n": 1200,
+    "mean": 0.57,
+    "p50": 0.008,
+    "p95": 0.03,
+    "p99": 17.687,
+    "max": 75.574
+   },
+   "tickMs": {
+    "n": 600,
+    "mean": 0.731,
+    "p50": 0.547,
+    "p95": 1.436,
+    "p99": 1.683,
+    "max": 24.209
+   },
+   "payloadBytesPerSec": 918,
+   "wireBytesPerSec": 4250,
+   "network": {
+    "packets": 1190,
+    "lost": 0,
+    "retransmits": 0
+   }
+  },
+  {
+   "transport": "websocket",
+   "profile": "lan",
+   "mode": "rollback",
+   "delay": 0,
+   "ticks": 601,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null
+   },
+   "stallRate": 0,
+   "behind": {
+    "n": 601,
+    "mean": 0,
+    "p50": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 0
+   },
+   "tickLatenessMs": {
+    "n": 1202,
+    "mean": 0.755,
+    "p50": 0.007,
+    "p95": 0.059,
+    "p99": 33.026,
+    "max": 82.171
+   },
+   "rollbacks": 31,
+   "depth": {
+    "n": 31,
+    "mean": 1.032,
+    "p50": 1,
+    "p95": 1,
+    "p99": 2,
+    "max": 2
+   },
+   "tickMs": {
+    "n": 601,
+    "mean": 2.289,
+    "p50": 1.994,
+    "p95": 5.15,
+    "p99": 6.586,
+    "max": 27.104
+   },
+   "payloadBytesPerSec": 924,
+   "wireBytesPerSec": 4284,
+   "network": {
+    "packets": 1202,
+    "lost": 0,
+    "retransmits": 0
+   }
+  },
+  {
+   "transport": "websocket",
+   "profile": "typical",
+   "mode": "lockstep",
+   "delay": 12,
+   "ticks": 600,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null
+   },
+   "stallRate": 0,
+   "behind": {
+    "n": 600,
+    "mean": 0,
+    "p50": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 0
+   },
+   "tickLatenessMs": {
+    "n": 1200,
+    "mean": 0.103,
+    "p50": 0.008,
+    "p95": 0.053,
+    "p99": 0.64,
+    "max": 27.876
+   },
+   "tickMs": {
+    "n": 600,
+    "mean": 0.65,
+    "p50": 0.6,
+    "p95": 0.868,
+    "p99": 1.084,
+    "max": 19.672
+   },
+   "payloadBytesPerSec": 929,
+   "wireBytesPerSec": 4289,
+   "network": {
+    "packets": 1200,
+    "lost": 18,
+    "retransmits": 18
+   }
+  },
+  {
+   "transport": "websocket",
+   "profile": "typical",
+   "mode": "rollback",
+   "delay": 0,
+   "ticks": 605,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null
+   },
+   "stallRate": 0.0182,
+   "behind": {
+    "n": 605,
+    "mean": 0.02,
+    "p50": 0,
+    "p95": 0,
+    "p99": 1,
+    "max": 2
+   },
+   "tickLatenessMs": {
+    "n": 1210,
+    "mean": 0.534,
+    "p50": 0.008,
+    "p95": 2.768,
+    "p99": 14.097,
+    "max": 31.765
+   },
+   "rollbacks": 30,
+   "depth": {
+    "n": 30,
+    "mean": 4.633,
+    "p50": 4,
+    "p95": 7,
+    "p99": 12,
+    "max": 12
+   },
+   "tickMs": {
+    "n": 605,
+    "mean": 2.502,
+    "p50": 1.933,
+    "p95": 7.802,
+    "p99": 14.383,
+    "max": 32.262
+   },
+   "payloadBytesPerSec": 918,
+   "wireBytesPerSec": 4278,
+   "network": {
+    "packets": 1210,
+    "lost": 18,
+    "retransmits": 18
+   }
+  },
+  {
+   "transport": "webrtc",
+   "profile": "lan",
+   "mode": "lockstep",
+   "delay": 0,
+   "ticks": 600,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null
+   },
+   "stallRate": 0.01,
+   "behind": {
+    "n": 600,
+    "mean": 0.013,
+    "p50": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 2
+   },
+   "tickLatenessMs": {
+    "n": 1200,
+    "mean": 0.073,
+    "p50": 0.008,
+    "p95": 0.093,
+    "p99": 1.162,
+    "max": 15.894
+   },
+   "tickMs": {
+    "n": 600,
+    "mean": 0.69,
+    "p50": 0.649,
+    "p95": 0.853,
+    "p99": 0.98,
+    "max": 21.242
+   },
+   "payloadBytesPerSec": 926,
+   "wireBytesPerSec": 6506,
+   "network": {
+    "packets": 1200,
+    "lost": 0,
+    "retransmits": 0
+   }
+  },
+  {
+   "transport": "webrtc",
+   "profile": "lan",
+   "mode": "rollback",
+   "delay": 0,
+   "ticks": 601,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null
+   },
+   "stallRate": 0,
+   "behind": {
+    "n": 601,
+    "mean": 0,
+    "p50": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 0
+   },
+   "tickLatenessMs": {
+    "n": 1202,
+    "mean": 0.393,
+    "p50": 0.009,
+    "p95": 0.359,
+    "p99": 7.495,
+    "max": 52.651
+   },
+   "rollbacks": 31,
+   "depth": {
+    "n": 31,
+    "mean": 1.032,
+    "p50": 1,
+    "p95": 1,
+    "p99": 2,
+    "max": 2
+   },
+   "tickMs": {
+    "n": 601,
+    "mean": 2.369,
+    "p50": 2.043,
+    "p95": 5.468,
+    "p99": 6.915,
+    "max": 23.956
+   },
+   "payloadBytesPerSec": 942,
+   "wireBytesPerSec": 6522,
+   "network": {
+    "packets": 1202,
+    "lost": 0,
+    "retransmits": 0
+   }
+  },
+  {
+   "transport": "webrtc",
+   "profile": "typical",
+   "mode": "lockstep",
+   "delay": 4,
+   "ticks": 600,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null
+   },
+   "stallRate": 0.005,
+   "behind": {
+    "n": 600,
+    "mean": 0.007,
+    "p50": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 2
+   },
+   "tickLatenessMs": {
+    "n": 1200,
+    "mean": 0.083,
+    "p50": 0.008,
+    "p95": 0.027,
+    "p99": 0.154,
+    "max": 26.181
+   },
+   "tickMs": {
+    "n": 600,
+    "mean": 0.64,
+    "p50": 0.571,
+    "p95": 0.869,
+    "p99": 1.1,
+    "max": 20.193
+   },
+   "payloadBytesPerSec": 2377,
+   "wireBytesPerSec": 7957,
+   "network": {
+    "packets": 1200,
+    "lost": 15,
+    "retransmits": 0
+   }
+  },
+  {
+   "transport": "webrtc",
+   "profile": "typical",
+   "mode": "rollback",
+   "delay": 0,
+   "ticks": 604,
+   "finished": true,
+   "hashes": {
+    "compared": 600,
+    "peersAgree": true,
+    "firstApart": null,
+    "matchReference": true,
+    "firstOffReference": null
+   },
+   "stallRate": 0,
+   "behind": {
+    "n": 604,
+    "mean": 0,
+    "p50": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 0
+   },
+   "tickLatenessMs": {
+    "n": 1208,
+    "mean": 0.389,
+    "p50": 0.009,
+    "p95": 1.414,
+    "p99": 8.467,
+    "max": 28.627
+   },
+   "rollbacks": 29,
+   "depth": {
+    "n": 29,
+    "mean": 4.138,
+    "p50": 4,
+    "p95": 5,
+    "p99": 6,
+    "max": 6
+   },
+   "tickMs": {
+    "n": 604,
+    "mean": 2.35,
+    "p50": 1.858,
+    "p95": 2.894,
+    "p99": 11.515,
+    "max": 31.59
+   },
+   "payloadBytesPerSec": 2412,
+   "wireBytesPerSec": 7992,
+   "network": {
+    "packets": 1208,
+    "lost": 15,
+    "retransmits": 0
+   }
+  }
+ ]
+}
