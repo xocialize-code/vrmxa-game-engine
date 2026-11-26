@@ -18,6 +18,9 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
 
 ## Result: M5's acceptance (2026-11-25, M5 Max, macOS 27.3 26C5047e)
 
+**M5 is done (2026-11-26), by the operator's call**, with checks 4, 8 and 10 passing in part and carried on as
+AB-T-0642, AB-T-0638 and AB-T-0511.
+
 M5's ten exit checks ([M5-PLAN.md](../M5-PLAN.md) "What M5 is done looking like") were run at the M5 commit: main at
 981eaef (W0 to W10 and the status PR #46). The matrix, the Mac runs after 22:15 UTC and the M2 and M3 re-runs ran at
 c03f0d8, which adds only a change to `apps/playground/scripts/gpu-load.mjs` (below); no engine or app code differs.
