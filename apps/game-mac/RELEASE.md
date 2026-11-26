@@ -65,10 +65,13 @@ the game should play from the title menu to an ending.
 
 ## What was checked here, and what wasn't
 
-- **Checked (M6 W7):** the ad hoc, hardened build of the Morning Rush passes `codesign --verify --deep --strict` and
-  `release.sh --check`. `release.sh --check` refuses a copy signed without the hardened runtime. The hardened app
-  launches through AppProbe under the GPU lock, shows its title menu, and starts and plays a session. The receipt names
-  the commit.
+- **Checked (M6 W7, 2026-11-25):** the ad hoc, hardened build of the Morning Rush (build 74e5ba13, runtime
+  vrmxg-game 0.1.0+70fc2a6f92e0, shell 0.15.0) passes `codesign --verify --deep --strict` and `release.sh --check`
+  (`flags=0x10002(adhoc,runtime)`), and `release.sh --check` refuses a copy signed without the hardened runtime. Under
+  the GPU lock, AppProbe ran `HAND-TEST-M5-RUSH`'s scenario on that app, 4 of 4: the title on WebGPU, New Game into
+  the level, lost on the clock, and won from Slot 1. Slot 1 was made from the session `acceptance/m6/sharing.mjs`
+  recorded. Help › Third-Party Notices opened the build's notices in the shell's window
+  ([`docs/hand-test/results/m6-w7-hardened/`](docs/hand-test/results/m6-w7-hardened/report.md)).
 - **Not checked:** a Developer ID signature, notarisation, stapling and Gatekeeper on another Mac. Those need the
   operator's identity. Gamepads in the sandboxed, hardened app weren't checked either: no real pad was tried, and that
   is AB-T-0642. If a pad turns out to need an entitlement, add only that one, and the entitlement check in `release.sh`
