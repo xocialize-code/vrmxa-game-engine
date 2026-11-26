@@ -2,7 +2,7 @@
   "name": "@vrmxg/editor-ui",
   "version": "0.1.0",
   "private": true,
-  "description": "The Vue components the editor and the creator share (M4 W5): the timeline (moved out of apps/editor), the storyboard strip, the render queue panel, and the inspector's widgets (M5 W4: a number field you drag, fields generated from a prop's JSON Schema), over @vrmxg/editor-core's model. What an edit becomes is plain functions, tested in Node; the components are compiled and rendered on the server in the tests.",
+  "description": "The Vue components the editor and the creator share (M4 W5): the timeline (moved out of apps/editor), the storyboard strip, the render queue panel, and the inspector's widgets (M5 W4: a number field you drag, fields generated from a prop's JSON Schema; M6 W1: a node's behaviours and connections), over @vrmxg/editor-core's model. What an edit becomes is plain functions, tested in Node; the components are compiled and rendered on the server in the tests.",
   "type": "module",
   "exports": {
     ".": "./src/index.js",
@@ -11,7 +11,10 @@
     "./RenderQueue.vue": "./src/RenderQueue.vue",
     "./NumberField.vue": "./src/NumberField.vue",
     "./ValueField.vue": "./src/ValueField.vue",
-    "./AssetsPanel.vue": "./src/AssetsPanel.vue"
+    "./AssetsPanel.vue": "./src/AssetsPanel.vue",
+    "./BehavioursPanel.vue": "./src/BehavioursPanel.vue",
+    "./ConnectionsPanel.vue": "./src/ConnectionsPanel.vue",
+    "./FieldRows.vue": "./src/FieldRows.vue"
   },
   "files": [
     "src"

@@ -202,7 +202,7 @@ async function settingsDo(fn) {
   ui.settingsBusy = true;
   try { await fn(settings); } catch { /* the panel shows settings.error */ } finally {
     ui.settingsBusy = false;
-    if (settings) ui.settings = settings.view();
+    if (settings) { ui.settings = settings.view(); ed.gameLayers = settings.view().layers?.length ? [...settings.view().layers] : ['default']; } // the inspector's layer menus (M6 W1)
     refresh(); // a new game.json, or a scene's file list
   }
 }
@@ -277,6 +277,16 @@ const setDebug = () => ed.setDebug({ ...ui.debug });
 const live = (fn) => act(() => ed.session.withGesture(fn)); // during a drag, the edit belongs to it (an MCP edit meanwhile doesn't)
 const onInspector = {
   rename: (v) => act(() => ed.renameNode(ui.inspector.id, v)), // an inner node's name is its instance's override (M5 W6)
+  // M6 W1 (AB-T-0638): a node's id and place, its behaviours and connections, each one undo step
+  setId: (v) => act(() => ed.session.setNodeId(ui.inspector.id, v)),
+  before: (b) => act(() => ed.session.moveBefore(ui.inspector.id, b)),
+  behAdd: (use) => act(() => ed.session.addBehaviour(ui.inspector.id, use)),
+  behRemove: (use) => act(() => ed.session.removeBehaviour(ui.inspector.id, use)),
+  behParam: (use, k, v) => live(() => ed.session.setBehaviourParam(ui.inspector.id, use, k, v)),
+  connAdd: (c) => act(() => ed.session.connect({ from: ui.inspector.id, ...c })),
+  connSet: (i, parts) => act(() => ed.session.setConnection(i, parts)),
+  connArg: (i, k, v) => live(() => ed.session.setConnectionArg(i, k, v)),
+  connRemove: (i) => act(() => ed.session.disconnect(i)),
   parent: (p) => act(() => ed.session.reparent(ui.inspector.id, p)),
   axis: (part, i, v) => live(() => ed.setAxisOn(ui.inspector.ids, part, i, v)),
   prop: (k, v) => live(() => ed.setPropOn(ui.inspector.ids, k, v)),

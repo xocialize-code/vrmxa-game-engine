@@ -10,9 +10,15 @@
 // with Revert and Apply per field and for all of them. A node's asset is a slot an asset of the right kind drops on (or
 // the panel's picked file, by Use), the wrong kind refused (AB-T-0606). Each field, and the transform, copies and pastes
 // into a field of the same type (AB-T-0607).
+// M6 W1 (AB-T-0638): one node's behaviours (params by their schema, the project's own by their describe) and its outgoing
+// connections (signal, target, action, arguments, each picked from a list) in their panels; its id (every reference
+// follows) and its place in the document's order (Before); a pin writes the value an unset prop shows into the file; a
+// collision layer is a menu of the game's physics layers. Each edit is one undo step.
 import { computed, ref } from 'vue';
 import NumberField from '@vrmxg/editor-ui/NumberField.vue';
 import ValueField from '@vrmxg/editor-ui/ValueField.vue';
+import BehavioursPanel from '@vrmxg/editor-ui/BehavioursPanel.vue';
+import ConnectionsPanel from '@vrmxg/editor-ui/ConnectionsPanel.vue';
 import { idPart, pasteVerdict, draggedKind, dropVerdict, dropEffectFor, fileKind, ASSET_MIME } from '@vrmxg/editor-ui';
 
 const props = defineProps({
@@ -22,7 +28,7 @@ const props = defineProps({
   /** The assets panel's picked file, for the asset slot's Use button. */
   picked: { type: String, default: '' },
 });
-const emit = defineEmits(['rename', 'parent', 'axis', 'prop', 'propAxis', 'gesture', 'select', 'revert', 'ovRevert', 'ovApply', 'ovRevertAll', 'ovApplyAll', 'ovCopy', 'slotAsset', 'fieldCopy', 'fieldPaste', 'xformCopy', 'xformPaste']);
+const emit = defineEmits(['setId', 'before', 'behAdd', 'behRemove', 'behParam', 'connAdd', 'connSet', 'connArg', 'connRemove', 'rename', 'parent', 'axis', 'prop', 'propAxis', 'gesture', 'select', 'revert', 'ovRevert', 'ovApply', 'ovRevertAll', 'ovApplyAll', 'ovCopy', 'slotAsset', 'fieldCopy', 'fieldPaste', 'xformCopy', 'xformPaste']);
 const others = computed(() => (props.data ? props.data.nodes.filter((x) => !props.data.ids.includes(x)) : []));
 function also(e) { const id = e.target.value; e.target.value = ''; if (id) emit('select', [id], true); }
 const AXES = ['X', 'Y', 'Z'];
@@ -93,9 +99,16 @@ const pickedFits = () => !!props.picked && dropVerdict(fileKind(props.picked), s
       </div>
       <template v-if="!data.multi">
         <div class="insp-row"><span class="insp-key"><button v-if="data.ov?.name" id="ov-name" type="button" class="ov-dot" :aria-label="ovName('Name', data.ov.name)" :title="`Overridden: the prefab has ${data.ov.name.base}. Click to revert.`" @click="emit('revert', 'name')">●</button>Name</span><input id="field-name" :value="data.name" aria-label="Name" @change="emit('rename', $event.target.value)"></div>
+        <div v-if="!data.inner" class="insp-row"><span class="insp-key">Id</span><input id="field-id" :value="data.id" aria-label="Id" title="The node's id: connections, behaviours and props that name it follow a change" spellcheck="false" @change="emit('setId', $event.target.value)"></div>
         <label v-if="!data.inner" class="insp-row">Parent
           <select id="field-parent" :value="data.parent ?? ''" aria-label="Parent" @change="emit('parent', $event.target.value || null)">
             <option value="">(scene)</option>
+            <option v-for="id in data.nodes.filter((x) => x !== data.id)" :key="id" :value="id">{{ id }}</option>
+          </select>
+        </label>
+        <label v-if="!data.inner" class="insp-row" title="Its place in the scene's order (the order nodes are listed, built and stepped in): the node it comes before">Before
+          <select id="field-before" :value="data.before ?? ''" aria-label="Before" @change="emit('before', $event.target.value || null)">
+            <option value="">(the end)</option>
             <option v-for="id in data.nodes.filter((x) => x !== data.id)" :key="id" :value="id">{{ id }}</option>
           </select>
         </label>
@@ -125,6 +138,7 @@ const pickedFits = () => !!props.picked && dropVerdict(fileKind(props.picked), s
         <div class="insp-row">
           <span class="insp-key"><button v-if="p.ov" :id="`ov-${p.key}`" type="button" class="ov-dot" :aria-label="ovName(p.key, p.ov)" :title="`Overridden: the prefab has ${p.ov.base}. Click to revert.`" @click="emit('revert', `props.${p.key}`)">●</button>{{ p.key }}<span v-if="p.unit" class="muted"> ({{ p.unit }})</span></span>
           <span class="clip-btns">
+            <button v-if="!p.set && p.default !== undefined && !data.multi && !data.inner" :id="`pin-${p.key}`" type="button" class="clip" :aria-label="`Write ${p.key} into the file (${JSON.stringify(p.default)})`" :title="`Write the value shown (${JSON.stringify(p.default)}) into the file, so it stays when the default changes`" :disabled="!p.enabled" @click="emit('prop', p.key, p.default)">＝</button>
             <button :id="`copy-${p.key}`" type="button" class="clip" :aria-label="`Copy ${p.key}`" :disabled="p.mixed" @click="emit('fieldCopy', p)">⧉</button>
             <button :id="`paste-${p.key}`" type="button" class="clip" :disabled="!p.enabled || !canPaste(p).ok" :aria-label="canPaste(p).ok ? `Paste into ${p.key}` : `Paste into ${p.key} (${canPaste(p).reason})`" @click="emit('fieldPaste', p, canPaste(p).value)">⎘</button>
           </span>
@@ -146,7 +160,11 @@ const pickedFits = () => !!props.picked && dropVerdict(fileKind(props.picked), s
       <p v-if="hidden.length" id="props-hidden" class="muted small" :aria-label="`Hidden by their conditions: ${hidden.map((p) => p.key).join(', ')}`" :title="hidden.map((p) => `${p.key}: shown when ${p.visibleIf}`).join('\n')">
         Hidden: {{ hidden.map((p) => p.key).join(', ') }} (their values are kept)
       </p>
-      <p v-if="data.behaviours.length" class="small">Behaviours: {{ data.behaviours.join(', ') }}</p>
+      <template v-if="data.wiring">
+        <BehavioursPanel :wiring="data.wiring" :nodes="data.nodes" @add="emit('behAdd', $event)" @remove="emit('behRemove', $event)" @param="(u, k, v) => emit('behParam', u, k, v)" @gesture="emit('gesture', $event)" />
+        <ConnectionsPanel :wiring="data.wiring" :nodes="data.nodes" @connect="emit('connAdd', $event)" @set="(i, parts) => emit('connSet', i, parts)" @arg="(i, k, v) => emit('connArg', i, k, v)" @disconnect="emit('connRemove', $event)" @gesture="emit('gesture', $event)" />
+      </template>
+      <p v-else-if="data.behaviours.length" id="behaviours-list" class="small">Behaviours: {{ data.behaviours.join(', ') }}<span v-if="data.inner" class="muted"> (the prefab's)</span></p>
       <section v-if="data.overrides" id="overrides" class="overrides" :aria-label="`Prefab overrides of ${data.overrides.id}`">
         <h3>Overrides <span class="muted">· {{ data.overrides.ref }}</span></h3>
         <p id="overrides-summary" class="muted small" :aria-label="`${data.overrides.id}: ${data.overrides.entries.length} overrides of ${data.overrides.ref}; ${data.overrides.users} instances of it in this scene`">
