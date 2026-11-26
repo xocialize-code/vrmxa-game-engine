@@ -208,5 +208,5 @@ function deepFreeze(v) {
   return v;
 }
 
-export { describedBehaviours, declareProjectBehaviours, schemaProblems } from './project.js';
+export { describedBehaviours, declareProjectBehaviours, schemaProblems, schemaFault } from './project.js';
 export { stateShape } from './state.js';

@@ -45,6 +45,7 @@
     "@vrmxg/game": "0.1.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "6.0.11"
+    "@vitejs/plugin-vue": "6.0.11",
+    "@vrmxg/bundle": "0.1.0"
   }
 }

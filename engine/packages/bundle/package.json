@@ -7,14 +7,17 @@
   "exports": {
     ".": "./src/index.js",
     "./node": "./src/node.js",
-    "./vite": "./src/vite.js"
+    "./vite": "./src/vite.js",
+    "./notices": "./src/notices.js",
+    "./hosting": "./src/hosting.js"
   },
   "bin": {
     "vrmxg-export": "./src/cli.js"
   },
   "files": [
     "src",
-    "runtime"
+    "runtime",
+    "licences"
   ],
   "sideEffects": false,
   "scripts": {

@@ -1,7 +1,7 @@
 import AppKit
 import WebKit
 
-public let vrmxgShellVersion = "0.15.0"
+public let vrmxgShellVersion = "0.16.0"
 
 /// An app's own menu item (shell 0.7.0, M4 W5): choosing it sends the page `menu.<event>`. A title of "-" is a separator.
 public struct ShellMenuItem: Sendable {
@@ -69,16 +69,19 @@ public struct ShellConfiguration {
     /// editor's hot reload of a project's behaviours while it plays. false (the default): the methods don't exist, so no
     /// other app, a game build least of all, can watch anything.
     public var watchesProject: Bool
+    /// The third-party notices in the web folder (shell 0.16.0, M6 W7; Notices.swift): when the file is there, Help ›
+    /// Third-Party Notices shows it in a window of the shell's own. nil: no such item.
+    public var noticesFile: String?
     public init(appName: String, scheme: String, size: NSSize = NSSize(width: 1440, height: 900), webFolder: String = "web", methods: [(String, BridgeHandler)] = [], pageUndo: Bool = false,
                 statusItem: StatusItemConfiguration? = nil, closeKeepsRunning: Bool = false, dockIcon: Bool = true, setUp: (@MainActor (ShellAppDelegate) -> Void)? = nil,
                 fileItems: [ShellMenuItem] = [], editItems: [ShellMenuItem] = [], menus: [ShellMenu] = [], openTypes: [String] = [],
                 asksBeforeClosing: Bool = false, closeTimeout: TimeInterval = 5, helpItems: [ShellMenuItem] = [], recentProjects: Bool = false,
-                watchesProject: Bool = false) {
+                watchesProject: Bool = false, noticesFile: String? = "THIRD-PARTY-LICENCES.txt") {
         self.appName = appName; self.scheme = scheme; self.size = size; self.webFolder = webFolder; self.methods = methods; self.pageUndo = pageUndo
         self.statusItem = statusItem; self.closeKeepsRunning = closeKeepsRunning; self.dockIcon = dockIcon; self.setUp = setUp
         self.fileItems = fileItems; self.editItems = editItems; self.menus = menus; self.openTypes = openTypes.map { $0.lowercased() }
         self.asksBeforeClosing = asksBeforeClosing; self.closeTimeout = closeTimeout; self.helpItems = helpItems
-        self.recentProjects = recentProjects; self.watchesProject = watchesProject
+        self.recentProjects = recentProjects; self.watchesProject = watchesProject; self.noticesFile = noticesFile
     }
 }
 
@@ -106,6 +109,10 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
     lazy var watches = WatchMethods(files: files, emit: { [unowned self] name, payload in self.emit(name, payload) })
     /// The Help menu buildMenu made, if the app has one (NSApp.helpMenu: the system adds its search field there)
     var helpMenu: NSMenu?
+    /// The notices window while it is open (Notices.swift)
+    var noticesWindow: NSWindow?
+    /// A notices file in place of the web folder's (tests)
+    var noticesOverride: URL?
     /// The camera (M3 W5): feature frames to the page as `camera.frame` events
     lazy var camera = CameraMethods(emit: { [unowned self] name, payload in self.emit(name, payload) })
     /// The microphone's permission (M3 W3)
@@ -236,8 +243,11 @@ public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigati
         menu("View", [item("Reload", #selector(reload), "r", target: self)])
         for m in config.menus { menu(m.title, m.items.map(own)) }
         menu("Window", [item("Minimize", #selector(NSWindow.performMiniaturize(_:)), "m")])
-        if !config.helpItems.isEmpty {
-            menu("Help", config.helpItems.map(own))
+        // the app's own Help items, then the third-party notices when the web content carries them (shell 0.16.0)
+        let notices = noticesURL == nil ? [] : [item("\(Self.noticesTitle)", #selector(menuNotices), target: self)]
+        let help = config.helpItems.map(own) + (config.helpItems.isEmpty || notices.isEmpty ? [] : [.separator()]) + notices
+        if !help.isEmpty {
+            menu("Help", help)
             helpMenu = main.items.last?.submenu
         }
         return main

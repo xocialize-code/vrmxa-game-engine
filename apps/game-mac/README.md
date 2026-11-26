@@ -13,7 +13,9 @@ apps/game-mac/scripts/build.sh --project content/sample
 The app is `build/<game id>.app`. Its name is the game's title and its bundle identifier is
 `com.xocialize.vrmxg-game.<game id>`, and its version is the game's `release` (else 1.0), all read from the build's manifest, so each game has its own sandbox container
 and, with it, its own saves and settings. The executable (`Sources/VRMXGGame/main.swift`) is the same for every game.
-It is signed ad hoc; notarising a game for other Macs isn't part of M5.
+It is signed ad hoc with the hardened runtime on (M6 W7), so it is ready for Developer ID: signing it with the
+operator's identity, notarising and stapling it are [`RELEASE.md`](RELEASE.md) and `scripts/release.sh` (`--check` runs the
+checks alone). Help › Third-Party Notices opens the build's `THIRD-PARTY-LICENCES.txt` (shell 0.16.0).
 
 - **Origins:** loopback by default; `VRMXG_ORIGIN=scheme` for `vrmxg-game://app/`; `VRMXG_QUERY=renderer=webgl` forces a
   backend. The build's project files are served from `project/` beside the page (with no project folder mounted, the

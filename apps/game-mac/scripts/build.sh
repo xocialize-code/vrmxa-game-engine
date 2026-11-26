@@ -1,6 +1,7 @@
 #!/bin/zsh
 # Builds a game's Mac app on the shared shell (M5 W1, AB-D-0286): one game build's folder as the app's web content,
-# the bundle named after the game (its manifest's title and id), ad hoc signed and sandboxed. SwiftPM, no Xcode project.
+# the bundle named after the game (its manifest's title and id), sandboxed, and signed ad hoc with the hardened runtime on,
+# as a Developer ID build must be (M6 W7: scripts/release.sh and RELEASE.md are the operator's steps from here). SwiftPM, no Xcode project.
 #   apps/game-mac/scripts/build.sh                    the game app's test game, exported here first (build/game)
 #   apps/game-mac/scripts/build.sh <build folder>     a build vrmxg-export or the editor's Export Game wrote
 #   apps/game-mac/scripts/build.sh --project <folder> a project with a game.json (content/sample), exported here first
@@ -22,6 +23,7 @@ else
   node $root/apps/game/scripts/test-game.mjs $build > /dev/null
 fi
 node $root/engine/packages/bundle/src/cli.js --verify $build > /dev/null || { echo "$build is not a whole game build"; exit 1; }
+[[ -f $build/THIRD-PARTY-LICENCES.txt ]] || { echo "$build carries no THIRD-PARTY-LICENCES.txt (its runtime is older than M6 W7): export it again"; exit 1; }
 
 # the game's id, and the app's Info.plist from the template with the game's name, id and version (its game.json's
 # "release", else 1.0; escaped for XML), made before
@@ -43,5 +45,10 @@ mkdir -p $app/Contents/MacOS $app/Contents/Resources
 cp "$(swift build -c release --package-path $mac --show-bin-path)/VRMXGGame" $app/Contents/MacOS/VRMXGGame
 print -r -- "$plist" > $app/Contents/Info.plist
 cp -R $build $app/Contents/Resources/web
-codesign --force --sign - --entitlements $mac/Config/VRMXGGame.entitlements $app
+# extended attributes (Finder info, quarantine, an external volume's resource forks) fail codesign --strict
+xattr -cr $app
+# ad hoc, with the hardened runtime (--options runtime) and no timestamp: what notarisation asks of a build but the
+# identity and the timestamp, which scripts/release.sh adds with the operator's Developer ID
+codesign --force --sign - --options runtime --timestamp=none --entitlements $mac/Config/VRMXGGame.entitlements $app
+codesign --verify --deep --strict $app
 echo "built $app ($title, com.xocialize.vrmxg-game.$id)"
