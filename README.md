@@ -6,8 +6,8 @@ input, audio, NPC AI, capture) for a new editor app, a game UI app and an anime 
 
 | | |
 |---|---|
-| **State** | 2026-11-18. **M0 done**: the runtime core, the playground and its Mac wrapper, sample content, all six exit checks passing ([acceptance/](acceptance/README.md)). **M1 (playable) in progress**: the shared shell, VRMXI items, interaction, the closet at run time, the editor, audio and voice are in; export, MCP in the editor with the rest of the content, and M1's acceptance are next ([M1-PLAN.md](M1-PLAN.md)). |
-| **Read first** | [VRMXG-PRD.md](VRMXG-PRD.md) (the product), [M0-PLAN.md](M0-PLAN.md) (done), [M1-PLAN.md](M1-PLAN.md) (next), [CLAUDE.md](CLAUDE.md) (the area contract and where everything is) |
+| **State** | 2026-11-26. M0 to M5 are done: the runtime, the editor, the anime creator, the game app and a sample game, "The Morning Rush" ([acceptance/](acceptance/README.md)). **M6 (games others can build) is in progress**: behaviours and connections in the editor, hot reload, new projects and starter content, saves across updates and sharing a game are in ([M6-PLAN.md](M6-PLAN.md)). |
+| **Read first** | [VRMXG-PRD.md](VRMXG-PRD.md) (the product), [M6-PLAN.md](M6-PLAN.md) (now), [CLAUDE.md](CLAUDE.md) (the area contract and where everything is) |
 | **Stack** | three r187, `@pixiv/three-vrm` 3.5.5, Rapier (deterministic build), Vue 3, a thin sandboxed WKWebView wrapper for macOS |
 | **Bridge** | Area `vrmxg` on AgentBridge: `bridge assume vrmxg` |
 
@@ -42,12 +42,32 @@ npm run check        # lint (incl. the determinism rule), typecheck, every packa
 | `engine/packages/input` | Action map, keyboard / mouse / gamepad, per-step latching, recording and replay, the player controller (simulation) |
 | `engine/packages/camera` | Physical Camera node, rig presets with a spring arm, the cameras service, physics and mesh picking (simulation) |
 | `engine/packages/snapshot` | World snapshots, per-step component hashes, run comparison; the Node / Chromium / WKWebView determinism harness (simulation) |
-| `engine/packages/render` | The render host: WebGL for MToon, interp| `engine/packages/model` | Model nodes: glTF sets and props, colliders from KHR_physics, a GLB writer for generated content (simulation) |
+| `engine/packages/render` | The render host: WebGPU by default with a WebGL fallback, MToon, interpolation at α that never touches simulated state, Environment and light nodes, shadow presets, debug draw, `warmUp()` |
+| `engine/packages/model` | Model nodes: glTF sets and props, colliders from KHR_physics, a GLB writer for generated content (simulation) |
 | `engine/packages/item` | VRMXI game items: read and check `.vrmxi`, Item nodes with bodies, sensors, joints, states and verbs (simulation) |
-olation at α that never touches simulated state, Environment and light nodes, shadow presets, debug draw |
 | `engine/packages/mcp` | The MCP server: describe types, edit `.vrmxs` with undo, inspect and drive the scene in a headless engine |
 | `engine/vendor/three-vrm` | `@pixiv/three-vrm` 3.5.5 vendored, plus a spring-bone state API |
 | `tools/eslint-plugin-vrmxg` | `vrmxg/deterministic`: the determinism boundary as a lint rule |
 
 The character, particle and export spikes need VRM models that aren't in the repository (see `.gitignore`); their
 READMEs say how to run them on the development Mac.
+
+## Licence
+
+The engine's code is licensed under either of [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE), at your option.
+Unless you say otherwise, any contribution you submit for inclusion is dual-licensed the same way, with no additional
+terms.
+
+Vendored and ported code keeps its own licence, with its notice beside it:
+- the patched `@pixiv/three-vrm` (MIT, `engine/vendor/three-vrm/LICENSE`);
+- navcat (`engine/packages/nav/src/vendor/LICENSE-navcat`);
+- TalkingHead's English lip-sync rules (MIT);
+- fdlibm's notice in `@vrmxg/dmath`.
+
+Every game build and Mac app carries `THIRD-PARTY-LICENCES` for the packages it bundles.
+
+Content has its own terms, file by file, in each folder's `LICENCES.md` (`content/sample/`, `content/starter/`,
+`content/templates/`). Most of it is CC0 or our own.
+
+**Built with DINOv3.** The sample's generated props (`content/sample/props/*.glb`) were made with TRELLIS.2, whose
+DINOv3 conditioner is under the [DINOv3 License](https://ai.meta.com/resources/models-and-libraries/dinov3-license/).
