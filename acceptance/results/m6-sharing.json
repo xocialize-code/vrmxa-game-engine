@@ -6,10 +6,10 @@
  "build": {
   "game": "morning-rush",
   "files": 116,
-  "bytes": 26213724,
-  "digest": "74e5ba13b97592c56a4b2f742fec1f8bf75b68239a06f2cbb77fa84c0fe34481",
-  "manifest": "5f344f527dba1e79de87981c135449c93945b80dc1d1dd8b95ac0763d823d5f4",
-  "runtime": "vrmxg-game 0.1.0+70fc2a6f92e0"
+  "bytes": 26214948,
+  "digest": "41b7e71242027ea41836a46d41c67bdc9fdb39169c29535db70344b39e559018",
+  "manifest": "bfedd1431564e8057a9ad11c51abeb2a536e7fc1ec81d01f108037a4540e8419",
+  "runtime": "vrmxg-game 0.1.0+9b91334892d5"
  },
  "hosts": {
   "python": {
@@ -90,16 +90,16 @@
     "secure": true
    },
    "session": {
-    "steps": 6296,
+    "steps": 6294,
     "scenes": [
      "game/title.vrmxs",
      "game/level.vrmxs",
      "game/won.vrmxs"
     ],
     "final": {
-     "step": 6296,
+     "step": 6294,
      "scene": "game/title.vrmxs",
-     "hash": "0c7b670f5a1f3ea5"
+     "hash": "f9276c7e04127bdf"
     },
     "seen": {
      "hud": {
@@ -139,11 +139,11 @@
    "requests": 311,
    "violations": [],
    "nodeReplay": {
-    "steps": 6296,
+    "steps": 6294,
     "final": {
-     "step": 6296,
+     "step": 6294,
      "scene": "game/title.vrmxs",
-     "hash": "0c7b670f5a1f3ea5"
+     "hash": "f9276c7e04127bdf"
     }
    }
   },
@@ -227,16 +227,16 @@
     "secure": true
    },
    "session": {
-    "steps": 6298,
+    "steps": 6307,
     "scenes": [
      "game/title.vrmxs",
      "game/level.vrmxs",
      "game/won.vrmxs"
     ],
     "final": {
-     "step": 6298,
+     "step": 6307,
      "scene": "game/title.vrmxs",
-     "hash": "4381da0665630266"
+     "hash": "b472a3ced439a8d6"
     },
     "seen": {
      "hud": {
@@ -261,7 +261,7 @@
       ]
      },
      "checkpoint": {
-      "step": 2216,
+      "step": 2220,
       "checkpoints": {
        "first-order": {
         "id": "cp-first",
@@ -278,18 +278,18 @@
    "worker": {
     "name": "vrmxg-morning-rush",
     "files": 117,
-    "bytes": 26250429,
+    "bytes": 26251653,
     "largest": {
      "path": "project/characters/mira.vrmxa",
      "bytes": 4810851
     }
    },
    "nodeReplay": {
-    "steps": 6298,
+    "steps": 6307,
     "final": {
-     "step": 6298,
+     "step": 6307,
      "scene": "game/title.vrmxs",
-     "hash": "4381da0665630266"
+     "hash": "b472a3ced439a8d6"
     }
    }
   }
@@ -298,12 +298,12 @@
   {
    "name": "the sample game exports with the game app as its runtime",
    "ok": true,
-   "detail": "116 files, 26.2 MB, digest 74e5ba13b97592c5"
+   "detail": "116 files, 26.2 MB, digest 41b7e71242027ea4"
   },
   {
    "name": "python: every socket the host listens on is on loopback",
    "ok": true,
-   "detail": "Python 3.15.2 http.server: 127.0.0.1:50502"
+   "detail": "Python 3.15.2 http.server: 127.0.0.1:61562"
   },
   {
    "name": "python: the page and every file the manifest lists are served (scripts as JavaScript, WebAssembly as application/wasm)",
@@ -313,7 +313,7 @@
   {
    "name": "python: played from the title menu to the won ending",
    "ok": true,
-   "detail": "game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6296 steps in 107 s; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
+   "detail": "game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6294 steps in 107 s; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
   },
   {
    "name": "python: no cross-origin isolation and no SharedArrayBuffer, over plain http",
@@ -338,7 +338,7 @@
   {
    "name": "worker: every socket the host listens on is on loopback",
    "ok": true,
-   "detail": "Wrangler 4.167.0 dev (workerd, local): 127.0.0.1:50914, 127.0.0.1:50916, 127.0.0.1:50907, 127.0.0.1:50908, 127.0.0.1:50923, 127.0.0.1:50924, 127.0.0.1:50929"
+   "detail": "Wrangler 4.167.0 dev (workerd, local): 127.0.0.1:61926, 127.0.0.1:61928, 127.0.0.1:61922, 127.0.0.1:61923, 127.0.0.1:61931, 127.0.0.1:61933, 127.0.0.1:61938"
   },
   {
    "name": "worker: the page and every file the manifest lists are served (scripts as JavaScript, WebAssembly as application/wasm)",
@@ -358,7 +358,7 @@
   {
    "name": "worker: played from the title menu to the won ending",
    "ok": true,
-   "detail": "game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6298 steps in 108 s; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
+   "detail": "game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6307 steps in 108 s; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
   },
   {
    "name": "worker: no cross-origin isolation and no SharedArrayBuffer, over plain http",
@@ -383,12 +383,12 @@
   {
    "name": "python: the session played from this host replays in Node to the same hash after every step",
    "ok": true,
-   "detail": "6296 steps, final 0c7b670f5a1f3ea5 at step 6296"
+   "detail": "6294 steps, final f9276c7e04127bdf at step 6294"
   },
   {
    "name": "worker: the session played from this host replays in Node to the same hash after every step",
    "ok": true,
-   "detail": "6298 steps, final 4381da0665630266 at step 6298"
+   "detail": "6307 steps, final b472a3ced439a8d6 at step 6307"
   }
  ]
 }
