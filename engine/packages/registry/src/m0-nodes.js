@@ -100,7 +100,7 @@ export function m0Registry() {
       capsuleHeight: P.number({ min: 0.3, max: 3, unit: 'm', sim: true }),
       walkSpeed: P.number({ min: 0, default: 1.4, unit: 'm/s', sim: true }),
       jumpSpeed: P.number({ min: 0, default: 4.5, unit: 'm/s', sim: true }),
-      layer: P.string({ description: 'Collision layer of the capsule.' }),
+      layer: P.string({ widget: 'layer', description: 'Collision layer of the capsule: one the game names (game.json physics.layers). None: the first.' }),
       mass: P.number({ min: 1, unit: 'kg', sim: true, description: 'Shared among the ragdoll\'s parts when knocked down (60).' }),
       getUpSeconds: P.number({ min: 0.1, max: 10, unit: 's', sim: true, description: 'How long getting up from a ragdoll blends back into animation (1.2).' }),
       head: P.vec3({ unit: 'rad', sim: true, description: 'Turn the head over the animation: [yaw to her left, pitch up, roll to her left shoulder]. Keyed by a face take (M4 W9) or by hand.' }),
@@ -279,7 +279,7 @@ export function m0Registry() {
       size: P.vec3({ unit: 'm', sim: true, visibleIf: "shape == 'box'", description: 'Box extents.' }), radius: P.number({ min: 0, unit: 'm', sim: true, step: 0.01, visibleIf: "shape == 'sphere' || shape == 'capsule' || shape == 'cylinder'" }), height: P.number({ min: 0, unit: 'm', sim: true, step: 0.01, visibleIf: "shape == 'capsule' || shape == 'cylinder'" }),
       friction: P.number({ min: 0, default: 0.5, sim: true }), restitution: P.number({ min: 0, max: 1, default: 0, sim: true }),
       // M6 W3: what @vrmxg/physics already read from a collider's props, now declared, so the inspector edits it
-      layer: P.string({ sim: true, description: 'Its collision layer: one the game names (game.json physics.layers, the editor\'s project settings). None: the first.' }),
+      layer: P.string({ sim: true, widget: 'layer', description: 'Its collision layer: one the game names (game.json physics.layers, the editor\'s project settings). None: the first.' }),
     },
   });
   r.define('Area', {
@@ -370,7 +370,7 @@ export function m0Registry() {
   r.define('Dialogue', {
     extends: 'Node3D', description: 'A conversation: lines said in order by the scene\'s characters, some offering choices that say which line comes next. One conversation runs at a time.',
     props: {
-      lines: { schema: { type: 'array', minItems: 1, items: lineSchema, description: 'The lines, in order. A line\'s next, or a choice\'s to, jumps to another by id.' }, meta: { widget: 'json', sim: true } },
+      lines: { schema: { type: 'array', minItems: 1, items: lineSchema, description: 'The lines, in order. A line\'s next, or a choice\'s to, jumps to another by id.' }, meta: { widget: 'json', sim: true, nodeRefs: ['[].speaker'] } },
       autostart: P.boolean({ default: false, sim: true, description: 'Starts when the scene starts.' }),
       skippable: P.boolean({ default: true, sim: true, description: 'The player may end a line early (the dialogue.advance input).' }),
     },

@@ -23,7 +23,9 @@ import { parseCondition, conditionRefs } from './condition.js';
 // inspector's number field (AB-T-0600), `visibleIf` and `enabledIf`, conditions over the node's other props (AB-T-0602,
 // ./condition.js).
 // An object prop whose fields name nodes says which in `meta.nodeRefs` (M5 W5): dot paths into its value, `[]` for each
-// item of a list (`['target', 'targets[]']`); a value may be "id", "id/inner" or "id#head". Copy and paste remap them.
+// item of a list (`['target', 'targets[]']`, and `'[].speaker'` for a field of each item of a list prop, M6 W1); a value
+// may be "id", "id/inner" or "id#head". Copy and paste remap them, and changing a node's id rewrites them (M6 W1).
+// `widget: 'layer'` (M6 W1) marks a collision layer: the inspector offers the game's physics layers (game.json).
 const OPTIONAL_META = ['step', 'precision', 'visibleIf', 'enabledIf'];
 const base = (schema, opts = {}) => ({
   schema: { ...schema, ...(opts.description ? { description: opts.description } : {}), ...(opts.default !== undefined ? { default: opts.default } : {}) },

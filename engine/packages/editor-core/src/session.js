@@ -7,11 +7,12 @@
 // Play in place: Play takes a snapshot of the document (its canonical text and hash) and hands a copy to the app's
 // world builder; the edited document is never touched while playing. Stop disposes the play world and checks the
 // document is exactly as it was before Play (text and hash), which is the promise the editor makes.
-import { createEditor, createValidator, parse, serialize, prefabNodes, mergeOverride, overrideEntries, withOverride, withoutOverride, applyToPrefab, prefabUsers, fieldValue, innerIds, rawField } from '@vrmxg/scene';
+import { createEditor, createValidator, parse, serialize, prefabNodes, mergeOverride, overrideEntries, withOverride, withoutOverride, applyToPrefab, prefabUsers, fieldValue, innerIds, rawField, schemaChecker } from '@vrmxg/scene';
 import { hashValue } from '@vrmxg/snapshot';
 import { assetType, nodeTypeFor, slug, uniqueId } from './assets.js';
 import { SequenceCommands } from './sequence.js';
 import { copyNodes, pasteOps } from './clipboard.js';
+import { baseOf, mapNodeRefs, mapArgRefs, behaviourRefKeys } from './refs.js';
 import { composeSequence } from '@vrmxg/sequence';
 
 const clone = (v) => structuredClone(v);
@@ -49,6 +50,8 @@ export class EditorSession {
     /** 'editing' | 'playing' */ this.mode = 'editing';
     /** An open gesture (a number field's drag): its own edits fold into one undo step. @type {{ depth: number, ops: any[], recording: boolean } | null} */ this.gesture = null;
     this.play = null;
+    /** The nodes each removal step took with it (children included), by step: what a gesture's fold counts as touched. */
+    this.removed = new WeakMap();
     this.listeners = new Set();
     /** Ids a sequence's tracks may target beyond the document's own (the set's nodes): the app sets it. @type {(() => Set<string>) | null} */
     this.targetIds = null;
@@ -133,7 +136,11 @@ export class EditorSession {
   run(label, ops) {
     if (this.mode !== 'editing') throw new Error(`${label}: stop playing first`);
     if (!ops.length) return;
-    this.editor.apply(ops.length === 1 && !ops[0].label ? { ...ops[0], label } : { op: 'batch', label, ops });
+    // what a removal takes with it (its subtree), counted as touched by the step: a gesture's fold looks (AB-T-0634)
+    const gone = ops.filter((o) => o.op === 'remove' && this.node(o.id)).flatMap((o) => this.subtreeIds(o.id));
+    const step = ops.length === 1 && !ops[0].label ? { ...ops[0], label } : { op: 'batch', label, ops };
+    this.editor.apply(step);
+    if (gone.length) this.removed.set(step, gone);
     if (this.gesture?.recording) this.gesture.ops.push(this.editor.peek().undo); // one of the gesture's own edits
     this.tidySelection();
     this.emit({ kind: 'edit', label });
@@ -277,6 +284,204 @@ export class EditorSession {
   setProp(id, key, value) { const n = this.node(id); this.run(`Set ${id}.${key}`, n ? propOps(n, key, value) : [{ op: 'set', id, path: `props.${key}`, value }]); }
   rename(id, name) { this.run(`Rename ${id}`, [{ op: 'set', id, path: 'name', value: name || undefined }]); }
 
+  // ---------------------------------------------------------------- a node's id and place (M6 W1, AB-T-0638)
+
+  /**
+   * Give a node another id, and rewrite every reference to it in this scene as the same undo step: its children's parent,
+   * node props and the fields object props list (`nodeRef`, `meta.nodeRefs`: a camera's target, a Dialogue line's
+   * speaker), behaviour params that name nodes, other instances' override values, connection ends ("door-1",
+   * "door-1/hinge") and node arguments, a sequence's targets and cameras, and the selection. A game node's `key` defaults
+   * to its id, so an unset key follows the new id. Refused for an inner node of an instance (its id is the prefab's) and
+   * for an id that isn't free or isn't one ("a-z", "0-9", "-", "_"). → the new id
+   * @param {string} id @param {string} to
+   */
+  setNodeId(id, to) {
+    this.mustEdit('Change id');
+    const n = this.node(id);
+    if (!n) throw new Error(this.innerNode(id) ? `${id} is a node of a prefab: its id is the prefab's (change it there)` : `no node ${id}`);
+    to = String(to ?? '').trim();
+    if (to === id) return id;
+    if (!/^[A-Za-z0-9_-]+$/.test(to)) throw new Error(`"${to}" can't be an id: letters, digits, "-" and "_" only`);
+    if (this.node(to)) throw new Error(`there is already a node called ${to}`);
+    const fn = (r) => (baseOf(r) === id ? to + String(r).slice(id.length) : r);
+    const ops = [{ op: 'renameNode', id, to }];
+    for (const x of this.doc.nodes) {
+      const nid = x.id === id ? to : x.id;
+      const next = mapNodeRefs(this.reg, x, fn, { innerOf: (local) => this.innerBase(x, local) });
+      for (const k of ['props', 'behaviours', 'overrides']) if (!sameJSON(next[k], x[k])) ops.push({ op: 'set', id: nid, path: k, value: next[k] });
+    }
+    this.doc.connections.forEach((c, index) => {
+      const target = this.endNode(c.to);
+      const next = { ...c, from: fn(c.from), to: fn(c.to), ...(c.args ? { args: mapArgRefs(this.reg, c, target, fn) } : {}) };
+      if (!sameJSON(next, c)) ops.push({ op: 'setConnection', index, connection: next });
+    });
+    if (this.doc.sequence) {
+      const seq = renameInSequence(this.doc.sequence, fn);
+      if (!sameJSON(seq, this.doc.sequence)) ops.push({ op: 'setDoc', path: 'sequence', value: seq });
+    }
+    const sel = this.selection.map(fn);
+    this.run(`Change id ${id} to ${to}`, ops);
+    this.selection = sel.filter((x) => this.node(x) || this.innerNode(x));
+    this.emit({ kind: 'select' });
+    return to;
+  }
+
+  /**
+   * Move a node to just before another in the document's order (the order nodes are listed, built and stepped in), its
+   * parent unchanged; `before` null: to the end. One undo step ("Move till before mira").
+   * @param {string} id @param {string | null} before
+   */
+  moveBefore(id, before) {
+    const n = this.node(id);
+    if (!n) throw new Error(`no node ${id}`);
+    if (before === id) return;
+    if (before != null && !this.node(before)) throw new Error(`no node ${before}`);
+    const rest = this.doc.nodes.filter((x) => x.id !== id);
+    const index = before == null ? rest.length : rest.findIndex((x) => x.id === before);
+    if (this.doc.nodes.indexOf(n) === index) return;
+    this.run(before == null ? `Move ${id} to the end` : `Move ${id} before ${before}`, [{ op: 'reparent', id, parent: n.parent, index }]);
+  }
+
+  // ---------------------------------------------------------------- behaviours (M6 W1, AB-T-0638)
+  // A node's behaviours are entries { use, ...params } (flat). Registry behaviours and the project's own (declared by
+  // their static describe, M6 W0) are added, removed and edited the same way, each one undo step.
+
+  /** Behaviours that may be added to node `id`: those whose `on` takes its type and that it doesn't have. → their names */
+  addableBehaviours(id) {
+    const n = this.node(id);
+    if (!n) return [];
+    const has = new Set((n.behaviours ?? []).map((b) => b.use));
+    return [...this.reg.behaviours.values()].filter((b) => !has.has(b.name) && (!b.on || b.on.some((o) => this.reg.isA(n.type, o)))).map((b) => b.name);
+  }
+
+  /** Add behaviour `use` to a node, with no params (its defaults). One undo step ("Add tableZone to table-1"). */
+  addBehaviour(id, use) {
+    const n = this.node(id);
+    if (!n) throw new Error(`no node ${id}`);
+    const d = this.reg.behaviours.get(use);
+    if (!d) throw new Error(`no behaviour ${use}`);
+    if (d.on && !d.on.some((o) => this.reg.isA(n.type, o))) throw new Error(`${use} attaches to ${d.on.join(' or ')}, not a ${n.type}`);
+    if ((n.behaviours ?? []).some((b) => b.use === use)) throw new Error(`${id} has ${use} already`);
+    this.run(`Add ${use} to ${id}`, [{ op: 'set', id, path: 'behaviours', value: [...clone(n.behaviours ?? []), { use }] }]);
+  }
+
+  /**
+   * Remove behaviour `use` from a node. The connections that need it go in the same step (one from a signal, or to an
+   * action, that only it gives the node), so the scene stays valid. One undo step. → how many connections went
+   */
+  removeBehaviour(id, use) {
+    const n = this.node(id);
+    if (!n) throw new Error(`no node ${id}`);
+    const left = (n.behaviours ?? []).filter((b) => b.use !== use);
+    if (left.length === (n.behaviours ?? []).length) throw new Error(`${id} has no ${use}`);
+    const after = this.reg.surface({ ...n, behaviours: left });
+    const gone = this.doc.connections.map((c, i) => [c, i]).filter(([c]) => (c.from === id && !after.signals[c.signal]) || (c.to === id && !after.actions[c.call])).map(([, i]) => i);
+    const ops = [...gone.reverse().map((index) => ({ op: 'disconnect', index })), { op: 'set', id, path: 'behaviours', value: left.length ? clone(left) : undefined }];
+    this.run(`Remove ${use} from ${id}`, ops);
+    return gone.length;
+  }
+
+  /**
+   * Set (or with undefined, clear back to its default) one param of a node's behaviour. A param that names a node must
+   * name one this scene has. One undo step ("Set table-1.tableZone.points"); nothing when it holds that value already.
+   */
+  setBehaviourParam(id, use, key, value) {
+    const n = this.node(id);
+    if (!n) throw new Error(`no node ${id}`);
+    const list = clone(n.behaviours ?? []), b = list.find((x) => x.use === use);
+    if (!b) throw new Error(`${id} has no ${use}`);
+    if (key === 'use') throw new Error('"use" names the behaviour: remove it and add another');
+    if (sameJSON(b[key], value)) return;
+    if (value === undefined) delete b[key]; else b[key] = clone(value);
+    if (value !== undefined && behaviourRefKeys(this.reg, use).includes(key) && !this.endNode(value)) throw new Error(`${id}.${use}.${key} must name a node of this scene; "${value}" isn't one`);
+    this.run(`Set ${id}.${use}.${key}`, [{ op: 'set', id, path: 'behaviours', value: list }]);
+  }
+
+  // ---------------------------------------------------------------- connections (M6 W1, AB-T-0638)
+  // A connection: a node's signal → another node's action, with arguments. Each edit is one undo step, and checked as a
+  // whole: the signal is one the sending node has (its type's or a behaviour's), the action one the target has, and the
+  // arguments fit the action's (a node argument names a node of this scene).
+
+  /** The node a connection end or a node reference names ("id", "id/inner", "id#head"), or null. */
+  endNode(ref) {
+    if (typeof ref !== 'string' || !ref) return null;
+    const r = ref.split('#')[0];
+    return this.node(r) ?? this.innerNode(r)?.node ?? null;
+  }
+
+  /** What's wrong with a connection, or null. */
+  connectionProblem(c) {
+    const from = this.endNode(c.from), to = this.endNode(c.to);
+    if (!from) return `no node ${c.from}`;
+    if (!to) return `no node ${c.to}`;
+    const sig = this.reg.surface(from).signals, act = this.reg.surface(to).actions;
+    if (this.reg.get(from.type) && !sig[c.signal]) return `${c.from} has no signal ${c.signal}`;
+    if (this.reg.get(to.type) && !act[c.call]) return `${c.to} has no action ${c.call}`;
+    const defs = act[c.call]?.args ?? {};
+    if (c.args !== undefined) {
+      const errs = schemaChecker({ type: 'object', additionalProperties: false, properties: Object.fromEntries(Object.entries(defs).map(([k, p]) => [k, p.schema])) })(c.args);
+      if (errs.length) return `${c.call}'s arguments: ${errs.join('; ')}`;
+      for (const [k, v] of Object.entries(c.args)) if (defs[k]?.nodeRef && !this.endNode(v)) return `${c.call}'s ${k} must name a node of this scene; "${v}" isn't one`;
+    }
+    return null;
+  }
+
+  /**
+   * Connect a node's signal to another node's action: one undo step ("Connect order-1.chose to brew-1.start"). Empty
+   * arguments are left out. → the connection's index
+   * @param {{ from: string, signal: string, to: string, call: string, args?: Record<string, any> }} c
+   */
+  connect(c) {
+    const next = tidyConnection(c);
+    const why = this.connectionProblem(next);
+    if (why) throw new Error(`Connect: ${why}`);
+    this.run(`Connect ${next.from}.${next.signal} to ${next.to}.${next.call}`, [{ op: 'connect', ...next }]);
+    return this.doc.connections.length - 1;
+  }
+
+  /**
+   * Change connection `index` (any of its signal, target, action and arguments): one undo step. A changed action drops
+   * the arguments it doesn't take. → nothing when it changes nothing
+   * @param {number} index @param {{ signal?: string, to?: string, call?: string, args?: Record<string, any> }} parts
+   */
+  setConnection(index, parts) {
+    const c = this.doc.connections[index];
+    if (!c) throw new Error(`no connection ${index}`);
+    let next = tidyConnection({ ...c, ...parts });
+    if (next.args && (parts.call !== undefined || parts.to !== undefined)) { // arguments the new action doesn't take go
+      const defs = this.reg.surface(this.endNode(next.to) ?? { type: '' }).actions?.[next.call]?.args ?? {};
+      next = tidyConnection({ ...next, args: Object.fromEntries(Object.entries(next.args).filter(([k]) => Object.hasOwn(defs, k))) });
+    }
+    if (sameJSON(next, c)) return;
+    const why = this.connectionProblem(next);
+    if (why) throw new Error(`Connection ${index + 1}: ${why}`);
+    const what = parts.args !== undefined && Object.keys(parts).length === 1 ? 'arguments' : Object.keys(parts).join(', ');
+    this.run(`Set ${c.from}.${c.signal} connection's ${what}`, [{ op: 'setConnection', index, connection: next }]);
+  }
+
+  /** Set (or with undefined, clear) one argument of connection `index`: one undo step. */
+  setConnectionArg(index, key, value) {
+    const c = this.doc.connections[index];
+    if (!c) throw new Error(`no connection ${index}`);
+    const args = { ...(c.args ?? {}) };
+    if (value === undefined) delete args[key]; else args[key] = clone(value);
+    this.setConnection(index, { args });
+  }
+
+  /** Remove connection `index`: one undo step. */
+  disconnect(index) {
+    const c = this.doc.connections[index];
+    if (!c) throw new Error(`no connection ${index}`);
+    this.run(`Disconnect ${c.from}.${c.signal} from ${c.to}.${c.call}`, [{ op: 'disconnect', index }]);
+  }
+
+  /** A prefab node an instance's override addresses ("hinge", "frame/hinge"), as its prefab has it, or null. */
+  innerBase(inst, local) {
+    const prefab = this.prefabOf(inst);
+    if (!prefab) return null;
+    try { return prefabNodes(prefab, this.prefabs).get(local) ?? null; } catch { return null; }
+  }
+
   // ---------------------------------------------------------------- several nodes at once (M5 W4, AB-T-0601)
 
   /**
@@ -346,7 +551,8 @@ export class EditorSession {
   endGesture() {
     const g = this.gesture; this.gesture = null;
     if (!g) return null;
-    const u = this.unwindGesture(g);
+    let u;
+    try { u = this.unwindGesture(g); } catch { return g.ops.length ? this.history().undo : null; } // never expected: the steps stay as they were
     if (!u) return g.ops.length ? this.history().undo : null; // left as its steps, or it had none
     const { mine, before } = u;
     const label = labelOf(mine.at(-1));
@@ -386,7 +592,16 @@ export class EditorSession {
     const mine = since.filter((op) => g.ops.includes(op));
     if (!mine.length) return null;
     const foreign = since.filter((op) => !g.ops.includes(op));
-    const touched = (ops) => new Set(ops.flatMap((op) => (op.op === 'batch' ? op.ops : [op])).map((o) => o.id ?? o.node?.id ?? o.from ?? (o.op === 'setDoc' ? `\u0000doc:${o.path.split('.')[0]}` : '\u0000other')));
+    // the nodes a step touched: each op's node (a rename both its ids), a removal's whole subtree; a connection edit or a
+    // document value by its kind (anything unknown conflicts with everything)
+    const touchedBy = (o) => {
+      if (o.op === 'renameNode') return [o.id, o.to];
+      if (o.op === 'setDoc') return [`\u0000doc:${o.path.split('.')[0]}`];
+      if (o.op === 'setConnection' || o.op === 'disconnect' || o.op === 'reconnectAt') return ['\u0000other'];
+      const id = o.id ?? o.node?.id ?? o.from;
+      return [id ?? '\u0000other'];
+    };
+    const touched = (ops) => new Set(ops.flatMap((op) => [...(this.removed.get(op) ?? []), ...(op.op === 'batch' ? op.ops : [op]).flatMap(touchedBy)]));
     const theirs = touched(foreign);
     if ([...touched(mine)].some((id) => theirs.has(id)) || theirs.has('\u0000other')) return null;
     const before = this.text();
@@ -657,6 +872,19 @@ export class EditorSession {
 }
 
 const sameJSON = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+/** A connection as a file keeps it: its four parts, then its arguments when it has any (an empty set is left out). */
+function tidyConnection({ from, signal, to, call, args, ...rest }) {
+  const a = args && Object.keys(args).length ? clone(args) : undefined;
+  return { ...clone(rest), from, signal, to, call, ...(a ? { args: a } : {}) };
+}
+/** A sequence block with the node ids its tracks target and its shots and clips film from rewritten by `fn`. */
+function renameInSequence(seq, fn) {
+  const out = clone(seq);
+  const at = (o, k) => { if (o && typeof o[k] === 'string') o[k] = fn(o[k]); };
+  for (const s of out.shots ?? []) at(s, 'camera');
+  for (const t of out.tracks ?? []) { at(t, 'target'); for (const c of t.clips ?? []) at(c, 'camera'); }
+  return out;
+}
 const sortDeep = (v) => (Array.isArray(v) ? v.map(sortDeep) : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, sortDeep(v[k])])) : v);
 /** Equal as data, whatever the key order. */
 const sameDeep = (a, b) => JSON.stringify(sortDeep(a)) === JSON.stringify(sortDeep(b));
