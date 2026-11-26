@@ -116,7 +116,7 @@ needed. The scripts in `tools/` are code, under the repository's MIT OR Apache-2
 
 ## Characters
 
-Both bundles are `vrmxa-core`'s own test fixtures (vrmxa-avatar-studio, `packages/vrmxa-core/fixtures/characters/`),
+Both bundles are `vrmxa-core`'s own test fixtures ([xocialize-code/vrmxa-core](https://github.com/xocialize-code/vrmxa-core), `fixtures/characters/`),
 made by its fixture script. Their `avatar.vrm` is **Spec**, the VRMXA base model.
 
 | File | Licence | Source |

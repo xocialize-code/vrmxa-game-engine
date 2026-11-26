@@ -5,7 +5,7 @@
 // body walking's bit for bit, the arms turned, no layer state left. Then two stills of the layers drawn in Chromium
 // (the playground's ?layers: the carry over the walk, and a wave over the carry) and the same walk with no layer.
 // Writes acceptance/results/m5-layers.json (and m5-layers-{walk,carry,wave}.png); exit 1 on a difference. Needs
-// vrmxa-avatar-studio beside the repo (vrmxa-core reads the characters) and a built playground:
+// vrmxa-core beside the repo (it reads the characters) and a built playground:
 //   (cd apps/playground && npx vite build) && node acceptance/m5/layers.mjs [--node-only] [--no-stills]
 // then acceptance/m5/layers-wkwebview.sh for WebKit. The check itself draws nothing, but the page makes a renderer and
 // the stills draw, so the browser part takes the GPU lock (acceptance/README.md, "Exactness").

@@ -99,7 +99,7 @@ for (const profile of PROFS) for (const transport of TRANSPORTS) {
 }
 
 // 2. worlds
-if (!HAS_MODELS) { console.error('worlds need vrmxa-avatar-studio beside the repository'); }
+if (!HAS_MODELS) { console.error('worlds need vrmxa-core beside the repository'); }
 else {
   console.log('worlds');
   for (const profile of PROFS) for (const transport of TRANSPORTS) {

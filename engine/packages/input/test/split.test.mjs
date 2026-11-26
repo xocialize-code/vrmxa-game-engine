@@ -1,4 +1,4 @@
-// M3 W9 (AB-T-0548) on the sample cafe (needs vrmxa-avatar-studio beside the repo for the characters): two players.
+// M3 W9 (AB-T-0548) on the sample cafe (needs vrmxa-core beside the repo for the characters): two players.
 // Mira is player 1 on WASD, Hana player 2 on the arrows, each walking relative to their own follow camera; the gamepad's
 // right stick turns player 2's camera only, the mouse player 1's only. A recording of both players' input replays with
 // the same hash after every step, and a snapshot re-simulates to the same end.
@@ -63,7 +63,7 @@ async function live({ snapAt = null } = {}) {
   return { W, mira, hana, mira0, hana0, seen, run, snap, rec: W.input.stop() };
 }
 
-test('two players move two characters, each relative to their own camera; each camera takes its own player\'s look', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('two players move two characters, each relative to their own camera; each camera takes its own player\'s look', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const { mira, hana, mira0, hana0, seen, W } = await live();
   const dm = mira.object3d.position.clone().sub(mira0), dh = hana.object3d.position.clone().sub(hana0);
   // both follow cameras look into the cafe (−z) behind their players: forward is −z, right +x
@@ -78,7 +78,7 @@ test('two players move two characters, each relative to their own camera; each c
   void HANA_AT;
 });
 
-test('a recording of both players replays with the same hash after every step, and from a snapshot', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('a recording of both players replays with the same hash after every step, and from a snapshot', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const A = await live({ snapAt: SNAP });
   assert.ok(A.rec.axes.includes('p2.move_x') && A.rec.buttons.includes('p2.jump'), 'the recording carries player 2\'s actions');
   const B = await world();

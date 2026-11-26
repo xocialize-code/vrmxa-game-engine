@@ -15,7 +15,7 @@ const listing = () => JSON.stringify(fs.readdirSync(sample, { recursive: true })
 const shim = fs.readFileSync(here('../editor/static/vrmxg-core.js'), 'utf8');
 // vrmxa-core beside the repository; its real path too, since Vite checks served files by their real paths (a worktree
 // reaches the studio through a symlink)
-const core = here('../../../vrmxa-avatar-studio/packages/vrmxa-core');
+const core = here('../../../vrmxa-core');
 const coreReal = fs.existsSync(core) ? fs.realpathSync(core) : core;
 
 const projectFiles = () => ({
@@ -38,7 +38,7 @@ export default defineConfig({
   root: here('.'), base: './', publicDir: sample,
   plugins: [vue(), vrmxgNotices({ name: 'vrmxg-creator', version: pkg.version }), projectFiles()],
   optimizeDeps: { exclude: ['sql.js'] },
-  resolve: { alias: { '@vrmxa-core': here('../../../vrmxa-avatar-studio/packages/vrmxa-core/src') }, dedupe: ['three', 'vue'] },
+  resolve: { alias: { '@vrmxa-core': here('../../../vrmxa-core/src') }, dedupe: ['three', 'vue'] },
   build: { outDir: here('dist'), emptyOutDir: true, target: 'safari16', chunkSizeWarningLimit: 6000 },
   server: { port: 5185, fs: { allow: [here('../..'), core, coreReal] } },
 });

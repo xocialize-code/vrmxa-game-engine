@@ -21,4 +21,4 @@ interact.request(hana, door, 'open');       // NPCs and scripts; the player uses
 Tests (`node --test test/`) run a spec.vrm character against the specification's item fixtures (door, stool, key,
 switch): focus and prompts, opening a door, sitting and standing, taking into the inventory, and a 360-step run with
 interactions that is identical twice and restores from a snapshot taken while seated after a take. They skip without
-VRMXA_Specification (with the VRMXI draft) and vrmxa-avatar-studio beside the repository.
+VRMXA_Specification (with the VRMXI draft) and vrmxa-core beside the repository.

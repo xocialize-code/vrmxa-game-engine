@@ -1,5 +1,5 @@
 // M3 W12 (AB-T-0551): every fixture conversation in content/sample/takes/ replays identically in Node (needs
-// vrmxa-avatar-studio beside the repo for the characters). A take is a world built from step 0 plus its inputs (the cast,
+// vrmxa-core beside the repo for the characters). A take is a world built from step 0 plus its inputs (the cast,
 // the player's recording, the director's ai log and, when the camera was on, the sense log); two replays hash the same
 // at every 30th step. The follower take also shows what it was made for: Hana waits by the door when asked, then follows.
 import { test } from 'node:test';
@@ -44,7 +44,7 @@ test('the fixture takes are takes', () => {
 });
 
 for (const file of TAKES) {
-  test(`takes/${file} replays identically, twice`, { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+  test(`takes/${file} replays identically, twice`, { skip: !OK && 'needs vrmxa-core' }, async () => {
     const take = JSON.parse(fs.readFileSync(path.join(content, 'takes', file), 'utf8'));
     const seen = { nearDoor: 0, followedIn: false };
     const watch = file === 'follow.json' ? (W, k) => {

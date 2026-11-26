@@ -58,7 +58,7 @@ test('a node removed during play and a body handed over as detached are disposed
 const { SPEC, fixture, specChecker } = await import('../../../engine/packages/item/test/fixtures.mjs');
 const { available, vrmxaCore, read, testAnimations, PATHS } = await import('../../../engine/packages/character/test/fixtures.mjs');
 const OK = SPEC && available('core', 'coreAnim', 'spec', 'full');
-const SKIP = OK ? false : 'needs VRMXA_Specification (fixtures-vrmxi/), spec.vrm and vrmxa-avatar-studio beside this repository';
+const SKIP = OK ? false : 'needs VRMXA_Specification (fixtures-vrmxi/), spec.vrm and vrmxa-core beside this repository';
 
 test('a play world that takes an item, swaps a body and takes a wearable off: every object that left disposes with the world', { skip: SKIP }, async () => {
   const [{ loadRapier, installPhysics }, { installInput, VirtualDevice }, { installCharacters }, { installItems }, { installInteraction }, { installCloset }] = await Promise.all(

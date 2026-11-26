@@ -1,6 +1,6 @@
 // M3 exit check 3 (W13): two characters with directors share one resident model through a queue. The character being
 // spoken to goes first, and at most two requests are at the model at once. On the sample cafe (needs
-// vrmxa-avatar-studio beside the repo): Hana and Mira each have a conversation-partner brain and one director over a slow
+// vrmxa-core beside the repo): Hana and Mira each have a conversation-partner brain and one director over a slow
 // scripted model; two goal choices fill both slots, a third waits, then the person talks to Hana: her line goes to the
 // model before the goal choice that queued first, and the model never holds more than two.
 import { test } from 'node:test';
@@ -15,7 +15,7 @@ import { vrmxaCore, PATHS } from '../../character/test/fixtures.mjs';
 
 installPortableMath();
 const content = path.resolve(import.meta.dirname, '../../../../content/sample');
-const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-avatar-studio';
+const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-core';
 const flush = () => new Promise((r) => setImmediate(r));
 
 test('two directors, one model: the character spoken to goes first, at most two requests at the model', { skip }, async () => {

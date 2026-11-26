@@ -79,5 +79,7 @@ planter tree and vending machine) were made with TRELLIS.2, whose DINOv3 conditi
 
 **Building the apps.** The engine's packages, tests and the Node acceptance runs need only this repository. The apps
 (playground, editor, creator and game runtime) also need `vrmxa-core`, the VRMXA format library, checked out beside
-it as `../vrmxa-avatar-studio`, and every app build bundles it. It is licensed MIT OR Apache-2.0 like the engine, but
-its repository isn't public yet.
+it as `../vrmxa-core` at the commit [vrmxa-core.json](vrmxa-core.json) pins (`node scripts/vrmxa-core.mjs` clones it
+there), and every app build bundles it. It is public, [xocialize-code/vrmxa-core](https://github.com/xocialize-code/vrmxa-core),
+and licensed MIT OR Apache-2.0 like the engine. It reads the characters' base model from `VRMXA_Specification` beside
+it.

@@ -49,7 +49,7 @@ test('it exports: every file the game uses has a licence row (the exporter\'s ch
 });
 
 const RUNTIME = path.join(root, 'apps/game/dist/vrmxg-runtime.json');
-const skipPlay = !available('core') ? 'needs vrmxa-avatar-studio beside the repository' : !fs.existsSync(RUNTIME) ? 'needs the game runtime: npm run build -w @vrmxg/game-app' : false;
+const skipPlay = !available('core') ? 'needs vrmxa-core beside the repository' : !fs.existsSync(RUNTIME) ? 'needs the game runtime: npm run build -w @vrmxg/game-app' : false;
 test('the editor scenario that builds the level is up to date with the level (acceptance/m5/rush-level-scenario.mjs)', async () => {
   const { execFileSync } = await import('node:child_process');
   const out = execFileSync(process.execPath, [path.join(root, 'acceptance/m5/rush-level-scenario.mjs'), '--check'], { encoding: 'utf8' });

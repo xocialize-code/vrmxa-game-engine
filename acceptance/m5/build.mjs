@@ -15,7 +15,7 @@
 //   3  a file with no row in LICENCES.md stops the export, and the error names it; so does a scene's reference to a
 //      file in another case than the project has it;
 //   4  the loader opens the build, and its scene plays to the same per-step hashes as the project played straight
-//      from its folder (the recorded walk, 600 steps; needs vrmxa-avatar-studio beside the repository);
+//      from its folder (the recorded walk, 600 steps; needs vrmxa-core beside the repository);
 //   5  (--chromium) the build's own runtime plays it in a browser to those hashes, and the browser's lexer reads a set of
 //      awkward modules as Node's does (the exporter and the loader may run in different engines);
 //   6  (--mac) every build from the Mac editor is the same bytes as Node's.
@@ -96,7 +96,7 @@ const lexer = readLexerCases(moduleImports), lexerOk = LEXER_CASES.every((c, k) 
 say('the lexer reads every awkward module as expected', lexerOk, `${LEXER_CASES.length} modules, ${lexer.filter((x) => x === 'refused').length} refused`);
 
 // 4: the build through the loader against the project played directly
-let replay = { skipped: 'needs vrmxa-avatar-studio beside the repository' }, direct = null, modules = null;
+let replay = { skipped: 'needs vrmxa-core beside the repository' }, direct = null, modules = null;
 if (fs.existsSync(PATHS.core)) {
   installPortableMath();
   const R = await loadRapier(), core = await vrmxaCore(), closet = await import(PATHS.core.replace(/index\.js$/, 'closet/index.js'));

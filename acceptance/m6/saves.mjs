@@ -21,7 +21,7 @@
 //   input     an action added to game.json's action map                           → refused: input
 //
 // And A's session log is refused by the texture build's replay (a log replays only on the whole build it was played
-// on). Needs the game app built (npm run build -w @vrmxg/game-app) and vrmxa-avatar-studio beside the repository.
+// on). Needs the game app built (npm run build -w @vrmxg/game-app) and vrmxa-core beside the repository.
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -41,7 +41,7 @@ import { RUSH_PLANS } from '../m5/rush-node.mjs';
 const here = import.meta.dirname, root = path.join(here, '../..');
 const SAVE_AT = 60 * 50, MORE = 60 * 30, STAMP = () => '2026-11-26T09:00:00.000Z';
 const args = process.argv.slice(2), outFile = args.includes('--out') ? path.resolve(args[args.indexOf('--out') + 1]) : path.join(root, 'acceptance/results/m6-saves/summary.json');
-if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-avatar-studio beside the repository'); process.exit(1); }
+if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-core beside the repository'); process.exit(1); }
 assertFreshRuntime(GAME_RUNTIME);
 installPortableMath();
 

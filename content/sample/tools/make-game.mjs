@@ -13,7 +13,7 @@
 //   game/voice/lines.json              the voiced lines (make-game-voice.py bakes them into game/voice/)
 //
 //   node content/sample/tools/make-game.mjs [--check]     --check: write nothing, exit 1 when a file would change
-// Needs vrmxa-avatar-studio beside the repo (vrmxa-core packs the items and hashes the clip).
+// Needs vrmxa-core beside the repo (it packs the items and hashes the clip).
 import fs from 'node:fs';
 import path from 'node:path';
 import { writeGLBTree } from '@vrmxg/model';

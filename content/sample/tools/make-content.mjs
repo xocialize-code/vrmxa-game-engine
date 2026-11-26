@@ -139,10 +139,10 @@ const cupboardManifest = {
 };
 
 // ---------------------------------------------------------------- characters and clips (need the sibling repos)
-const studio = path.join(dev, 'vrmxa-avatar-studio/packages/vrmxa-core');
-if (fs.existsSync(studio)) {
-  write('characters/mira.vrmxa', fs.readFileSync(path.join(studio, 'fixtures/characters/full.vrmxa')));
-  write('characters/hana.vrmxa', fs.readFileSync(path.join(studio, 'fixtures/characters/minimal.vrmxa')));
+const core = path.join(dev, 'vrmxa-core');
+if (fs.existsSync(core)) {
+  write('characters/mira.vrmxa', fs.readFileSync(path.join(core, 'fixtures/characters/full.vrmxa')));
+  write('characters/hana.vrmxa', fs.readFileSync(path.join(core, 'fixtures/characters/minimal.vrmxa')));
   const { vrmxaCore, testAnimations } = await import(path.join(root, '../../engine/packages/character/test/fixtures.mjs'));
   const a = await testAnimations(await vrmxaCore(), { travel: true, actions: true, layers: true, emotes: true }); // walk and run carry root motion (M0 check 2); use / equip / talk / sit / sitIdle / stand for items (M1 W3); the sword's hold and a greet wave as masked layers (M2 W8, G10)
   const byName = new Map(a.doc.clips.map((c) => [c.sha256, c.name]));
@@ -166,7 +166,7 @@ if (fs.existsSync(studio)) {
   if (SPEC) write('items/switch.vrmxi', fs.readFileSync(path.join(SPEC, 'fixtures-vrmxi/items/switch.vrmxi')));
   // and its stool (a seat: sit, with a seat point and an exit), byte for byte: the cafe's stools (M1 W9)
   if (SPEC) write('items/stool.vrmxi', fs.readFileSync(path.join(SPEC, 'fixtures-vrmxi/items/stool.vrmxi')));
-} else console.log('vrmxa-avatar-studio not beside the repo: characters and clips left as committed');
+} else console.log('vrmxa-core not beside the repo: characters and clips left as committed');
 
 // ---------------------------------------------------------------- scenes: canonical form, validated
 const reg = m0Registry(), { check } = createValidator(reg);

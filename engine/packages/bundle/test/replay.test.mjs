@@ -1,5 +1,5 @@
 // The sample project exported, opened by the loader and played: its world hashes the same after every step as the
-// project played straight from its folder (needs vrmxa-avatar-studio beside the repo; acceptance/m5/build.mjs is the
+// project played straight from its folder (needs vrmxa-core beside the repo; acceptance/m5/build.mjs is the
 // full 600-step check, with the built runtime in Chromium).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -17,7 +17,7 @@ installPortableMath();
 const sample = path.resolve(import.meta.dirname, '../../../../content/sample');
 const OK = fs.existsSync(PATHS.core);
 
-test('the sample\'s build plays to the same per-step hashes as the project', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('the sample\'s build plays to the same per-step hashes as the project', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-bundle-replay-'));
   try {
     const rt = path.join(tmp, 'runtime'), out = path.join(tmp, 'build');

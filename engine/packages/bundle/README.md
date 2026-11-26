@@ -466,7 +466,7 @@ hashes each file once, as it is written.
   folder, pieces and their offsets, the staged files checked against the manifest, a commit failed at each of its
   stages and rolled back, then failed again while undoing, a folder reshaped and renamed by case, a planted staging
   manifest, what a killed export left, an incomplete folder) and the command line; the Vite plugin; the sample's build
-  replayed against the project (240 steps; skipped without vrmxa-avatar-studio).
+  replayed against the project (240 steps; skipped without vrmxa-core).
 - `node --test test/notices.test.mjs test/hosting.test.mjs` (M6 W7): the notices (a package's text, ours, the chunk
   each is in, a package with none stopping the build, one supplied from `licences/`, one carried as files) and
   `checkNotices` seeing a text, fdlibm's notice or the file gone; the CSP from the page's inline import map and style

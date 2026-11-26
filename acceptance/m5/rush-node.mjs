@@ -70,7 +70,7 @@ export async function playRush(dir, plan, { maxSteps = 60 * 400, onStep = null }
 if (process.argv[1] === import.meta.filename) {
   const args = process.argv.slice(2), at = args.indexOf('--build');
   let dir = at >= 0 ? path.resolve(args[at + 1]) : null;
-  if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-avatar-studio beside the repository'); process.exit(1); }
+  if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-core beside the repository'); process.exit(1); }
   if (!dir) { dir = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-rush-')), 'build'); await exportRush(dir); }
   const which = args.find((a, i) => !a.startsWith('--') && args[i - 1] !== '--build') ?? 'all';
   let ok = true;

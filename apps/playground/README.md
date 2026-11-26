@@ -17,7 +17,7 @@ too. "Replay demo walk" plays `content/sample/input/walk-in.json`.
 - **Readouts carry their value in their accessible names** (`Frame time 16.7 ms · 60 fps`, `Step 431`), and the controls
   have ids (`#play`, `#step`, `#replay`), so AppProbe drives it in the Mac wrapper
   (`apps/playground-mac/docs/hand-test/`).
-- **vrmxa-core is read in place** from `../vrmxa-avatar-studio` (AB-D-0249), and its pinned sql.js is loaded the way
+- **vrmxa-core is read in place** from `../vrmxa-core` (AB-D-0249), and its pinned sql.js is loaded the way
   the avatar studio does (`src/sqljs.js`), only when a bundle has a database. Without the studio beside this repository
   the playground doesn't build.
 
@@ -279,7 +279,7 @@ do.
 app (W1) and without models: Hana takes the order in a conversation with three choices, a ball to push to the table
 (collider wires), a 20 s clock, then an ending whose goodbye depends on the order (`engine/packages/game-ui/test/fixtures`).
 It is a page of its own, so this page and its checks don't move, and it imports engine packages only, so it builds
-without vrmxa-avatar-studio. Speech bubbles and name tags are `@vrmxg/text`'s, on the WebGL host. Escape (or a
+without vrmxa-core. Speech bubbles and name tags are `@vrmxg/text`'s, on the WebGL host. Escape (or a
 gamepad's Menu) opens a settings panel of the demo's own with the package's volume and rebinding controls; settings are
 kept in this browser's localStorage, the store the demo supplies.
 

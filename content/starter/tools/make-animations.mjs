@@ -8,7 +8,7 @@
 // builds everything in memory and fails when a committed file differs.
 //
 // Needs, beside the repository (as every character tool does): reference/mesh2motion-app-main (git-ignored; in a
-// worktree, the main checkout's), vrmxa-avatar-studio (vrmxa-core writes and checks the .vrma) and
+// worktree, the main checkout's), vrmxa-core (it writes and checks the .vrma) and
 // VRMXA_Specification (Spec's rig: ground speed is metres per second on Spec, VRMXA §8.4).
 //
 // LICENCE. mesh2motion's art (models, rigs, animations) is CC0 1.0 (its LICENSE-CC0.MD and README, "Licenses"); its
@@ -43,7 +43,7 @@ const check = argv.includes('--check');
 const sourceArg = argv.includes('--source') ? argv[argv.indexOf('--source') + 1] : null;
 const SOURCE = sourceArg ?? [path.join(repo, 'reference/mesh2motion-app-main'), path.join(repo, '../../../reference/mesh2motion-app-main')].find((d) => fs.existsSync(path.join(d, 'static/assets/manifest.json')));
 if (!SOURCE) { console.error('mesh2motion not found: pass --source <mesh2motion-app-main> (reference/ is git-ignored)'); process.exit(2); }
-if (!fs.existsSync(PATHS.core) || !fs.existsSync(PATHS.spec)) { console.error('needs vrmxa-avatar-studio and VRMXA_Specification beside the repository'); process.exit(2); }
+if (!fs.existsSync(PATHS.core) || !fs.existsSync(PATHS.spec)) { console.error('needs vrmxa-core and VRMXA_Specification beside the repository'); process.exit(2); }
 const HUMAN = path.join(SOURCE, 'static/assets/human');
 const manifest = JSON.parse(fs.readFileSync(path.join(SOURCE, 'static/assets/manifest.json'), 'utf8'));
 const byFile = new Map(manifest.rigs.human.animations.map((a) => [a.file.replace(/^human\/animations\//, '').replace(/\.glb$/, ''), a]));

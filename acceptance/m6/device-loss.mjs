@@ -13,7 +13,7 @@
 // while it does and clear it once a new frame is drawn, and draw again (triangles counted after each recovery; a still
 // of each is kept). It draws, so it takes the GPU lock.
 //
-//   node acceptance/m6/device-loss.mjs       (needs vrmxa-avatar-studio beside the repository, and the determinism
+//   node acceptance/m6/device-loss.mjs       (needs vrmxa-core beside the repository, and the determinism
 //                                             spike's playwright-core and Chrome for Testing, as the other Chromium runners)
 //   … --rebuild                              build apps/game first even when apps/game/dist is there
 //
@@ -35,7 +35,7 @@ const here = import.meta.dirname, root = path.join(here, '../..');
 const args = process.argv.slice(2);
 const RESULTS = path.join(root, 'acceptance/results');
 const checks = [], say = (name, ok, detail) => { checks.push({ name, ok, detail }); console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${detail ? `: ${detail}` : ''}`); };
-if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-avatar-studio beside the repository (vrmxa-core): the game has characters'); process.exit(1); }
+if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-core beside the repository: the game has characters'); process.exit(1); }
 const GAME = path.join(root, 'apps/game');
 if (args.includes('--rebuild') || !fs.existsSync(path.join(GAME, 'dist/vrmxg-runtime.json'))) execFileSync('npx', ['vite', 'build'], { cwd: GAME, stdio: ['ignore', 'ignore', 'inherit'] });
 

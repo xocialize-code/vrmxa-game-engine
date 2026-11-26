@@ -27,9 +27,9 @@ const starter = () => ({
 export default defineConfig({
   root: here('.'), base: './', publicDir: here('../../content/sample'),
   plugins: [vue(), vrmxgNotices({ name: 'vrmxg-playground', version: pkg.version }), starter()],
-  resolve: { alias: { '@vrmxa-core': here('../../../vrmxa-avatar-studio/packages/vrmxa-core/src'), '@content': here('../../content/sample') }, dedupe: ['three'] },
+  resolve: { alias: { '@vrmxa-core': here('../../../vrmxa-core/src'), '@content': here('../../content/sample') }, dedupe: ['three'] },
   optimizeDeps: { exclude: ['sql.js'] },
   // game-ui.html: the game UI demo (M5 W3), a page of its own so the playground's page and checks don't move
   build: { outDir: here('dist'), emptyOutDir: true, target: 'safari16', chunkSizeWarningLimit: 4000, rolldownOptions: { input: { main: here('index.html'), 'game-ui': here('game-ui.html') } } },
-  server: { port: 5181, fs: { allow: [here('../..'), here('../../../vrmxa-avatar-studio/packages/vrmxa-core')] } },
+  server: { port: 5181, fs: { allow: [here('../..'), here('../../../vrmxa-core')] } },
 });

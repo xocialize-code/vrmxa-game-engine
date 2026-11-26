@@ -69,6 +69,7 @@ git-ignored; commit only what this session owns, staging by path. `npm run check
 | `reference/` | Godot 4.8-beta source and other reference repos. Read-only |
 | `../VRMXA_Specification/` | The VRMXA / VRMXW specs and the closet protocol (owned elsewhere) |
 | `../vrmxa-companion/` | The companion app (M3 W11, AB-D-0262): its own project and bridge area, on `apps/shell` and the engine's packages by path |
+| `../vrmxa-core/` | vrmxa-core, the VRMXA format library: public ([xocialize-code/vrmxa-core](https://github.com/xocialize-code/vrmxa-core), MIT OR Apache-2.0), pinned by commit in `vrmxa-core.json` (`node scripts/vrmxa-core.mjs` clones and checks it; AB-A-0337). The apps bundle it; the character tests and acceptance runs read it |
 | `../vrmxa-avatar-studio/` | The avatar studio, the first consumer of the VRMX formats |
 
 ## Rules

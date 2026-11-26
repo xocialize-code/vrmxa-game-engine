@@ -1,4 +1,4 @@
-// M2 W7 on the sample cafe (needs vrmxa-avatar-studio beside the repo for the characters): Hana runs on the server
+// M2 W7 on the sample cafe (needs vrmxa-core beside the repo for the characters): Hana runs on the server
 // preset and Mira on the customer preset. Mira comes in, sits on a free stool and calls Hana over; Hana greets her, walks
 // over, asks, hears the order, makes it at the counter and brings it; Mira drinks, stands and leaves. The same every
 // run; a snapshot mid-order replays identically; a director's injected decision lands on its step and replays from the
@@ -47,7 +47,7 @@ export async function play(R, sample, opts, { steps = 3000, snapAt = null, from 
   return { W, events, snap, hash: hash(tree), mira: mira.object3d.position.clone(), hana: tree.find('hana-1').object3d.position.clone() };
 }
 
-test('Hana serves Mira: greet, order, counter, served; Mira sits, orders, drinks, leaves; the same every run; a snapshot mid-order replays', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('Hana serves Mira: greet, order, counter, served; Mira sits, orders, drinks, leaves; the same every run; a snapshot mid-order replays', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const R = await loadRapier();
   const { sample, opts } = await brains();
   const a = await play(R, sample, opts, { steps: 3400, snapAt: 1200 });
@@ -66,7 +66,7 @@ test('Hana serves Mira: greet, order, counter, served; Mira sits, orders, drinks
   assert.equal(c.hash, a.hash, 'restored at step 1200, the same world at 3400');
 });
 
-test('the director hook: an injected decision lands on its step, is logged, and a replay of the log is the same run', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('the director hook: an injected decision lands on its step, is logged, and a replay of the log is the same run', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const R = await loadRapier();
   const { sample, opts } = await brains();
   let log = null;

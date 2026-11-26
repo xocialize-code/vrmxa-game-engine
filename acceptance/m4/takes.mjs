@@ -3,7 +3,7 @@
 // (apps/playground/src/takes-check.js), then in headless Chromium through the built playground's ?mode=takes, over
 // loopback. Both must give the same tracks from each log, the same film text, the same final world hash and the same
 // per-step run; a snapshot taken inside a take must restore to the same end, and each take must do what was performed.
-// Writes acceptance/results/m4-takes.json; exit 1 on a difference. Needs vrmxa-avatar-studio beside the repo (vrmxa-core
+// Writes acceptance/results/m4-takes.json; exit 1 on a difference. Needs vrmxa-core beside the repo (it
 // reads the characters) and a built playground:
 //   (cd apps/playground && npx vite build) && node acceptance/m4/takes.mjs [--node-only]
 // It draws nothing, but the page makes a renderer, so the browser part takes the GPU lock (acceptance/README.md).

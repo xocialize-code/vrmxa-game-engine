@@ -1,6 +1,6 @@
 // The world every peer steps: the sample cafe for two players (M3 W9's split-screen scene: Mira is player 1 on the
 // unprefixed actions, Hana player 2 on `p2.*`), built by the playground's buildWorld exactly as
-// engine/packages/input/test/split.test.mjs builds it. Needs vrmxa-avatar-studio beside the repository (the characters).
+// engine/packages/input/test/split.test.mjs builds it. Needs vrmxa-core beside the repository (the characters).
 //
 // Input reaches the simulation through the input service's replay: each peer keeps one recording object whose frames it
 // writes before stepping (a confirmed frame, or a prediction it may later overwrite). The service reads

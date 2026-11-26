@@ -16,7 +16,7 @@ import { testGameProject } from '../scripts/test-game.mjs';
 import { gameScenes, worldLoader, freeWorld } from '../src/world.js';
 import { GameSession, replaySession, firstDifference } from '../src/session.js';
 
-const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-avatar-studio beside the repository';
+const skip = !fs.existsSync(PATHS.core) && 'needs vrmxa-core beside the repository';
 
 test('the test game: title, Hana answered, level won at the counter, ending, title again; the log replays', { skip, timeout: 600000 }, async () => {
   installPortableMath();

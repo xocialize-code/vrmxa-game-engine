@@ -1,4 +1,4 @@
-// M3 W1 on the sample cafe (needs vrmxa-avatar-studio beside the repo): each character's VRMXA id, core persona (Mira's
+// M3 W1 on the sample cafe (needs vrmxa-core beside the repo): each character's VRMXA id, core persona (Mira's
 // from her bundle, Hana's from the exchange file her app persona names) and app persona; the director's prompt, faces
 // and goals from the persona; @vrmxg/ai's trait input reading the profile; setProfile changing the project's document,
 // never the bundle; and the world itself unchanged by personas (they are data, not state).
@@ -29,7 +29,7 @@ async function cafe({ personas = true } = {}) {
   return buildWorld(await loadRapier(), sample, { vrmxaCore: await vrmxaCore(), closet, behaviours, stubTextures: true });
 }
 
-test('personas in the cafe: ids, core and app personas, the director, the trait input, and the bundle untouched', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('personas in the cafe: ids, core and app personas, the director, the trait input, and the bundle untouched', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const W = await cafe(), P = W.personas;
   assert.equal(P.vrmxaIdOf('hana-1'), HANA); assert.equal(P.vrmxaIdOf('mira'), MIRA);
   assert.equal(P.coreOf('mira').personality, 'Curious and plain-spoken.', "Mira's core persona from her bundle");
@@ -62,7 +62,7 @@ test('personas in the cafe: ids, core and app personas, the director, the trait 
   assert.ok(!JSON.stringify(W.lib.characters.get('mira').persona).includes('talkativeness'), 'no profile in a bundle');
 });
 
-test('personas are data: the cafe steps to the same world with and without them', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('personas are data: the cafe steps to the same world with and without them', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const run = async (personas) => { const W = await cafe({ personas }); for (let i = 0; i < 900; i++) W.tree.step(); return hashValue(worldHashes(W.tree, { physicsBytes: true })); };
   assert.equal(await run(true), await run(false));
 });

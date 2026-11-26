@@ -1,7 +1,7 @@
 // The game UI demo (game-ui.html, M5 W3) in headless Chromium, as a player would use it: the conversation answered from
 // the keyboard (an arrow, then Enter), the settings opened and driven from a gamepad (Menu, the d-pad, A: an emulated
 // standard pad), an action rebound and the page reloaded (a relaunch: the binding is still there), and every control's
-// accessible name read. Builds only the demo page (into build/game-ui), so it needs no vrmxa-avatar-studio. Exit 1 on a
+// accessible name read. Builds only the demo page (into build/game-ui), so it needs no vrmxa-core. Exit 1 on a
 // failed check or a console error. It draws, so it takes the GPU lock.
 //   node apps/playground/scripts/game-ui-check.mjs
 import fs from 'node:fs';

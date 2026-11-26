@@ -1,6 +1,6 @@
 // M5 W1 (AB-T-0616), M5's exit checks 2, 4 (menus) and 6 (slots) in a browser: the game app plays a build.
 //
-//   node acceptance/m5/game.mjs            (needs vrmxa-avatar-studio beside the repository, and the determinism spike's
+//   node acceptance/m5/game.mjs            (needs vrmxa-core beside the repository, and the determinism spike's
 //                                           playwright-core and Chrome for Testing, as the other Chromium runners)
 //   … --rebuild                            build apps/game first even when apps/game/dist is there
 //
@@ -36,7 +36,7 @@ import { replaySession, firstDifference } from '../../apps/game/src/session.js';
 const here = import.meta.dirname, root = path.join(here, '../..');
 const args = process.argv.slice(2);
 const checks = [], say = (name, ok, detail) => { checks.push({ name, ok, detail }); console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${detail ? `: ${detail}` : ''}`); };
-if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-avatar-studio beside the repository (vrmxa-core): the test game has characters'); process.exit(1); }
+if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-core beside the repository: the test game has characters'); process.exit(1); }
 
 if (args.includes('--rebuild') || !fs.existsSync(path.join(GAME_RUNTIME, 'vrmxg-runtime.json'))) execFileSync('npx', ['vite', 'build'], { cwd: path.join(root, 'apps/game'), stdio: ['ignore', 'ignore', 'inherit'] });
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-m5-game-'));

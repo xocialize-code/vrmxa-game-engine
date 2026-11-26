@@ -1,5 +1,5 @@
 // W6 (AB-T-0518): voice lines, lip sync on the step clock, faces. A spec.vrm character says Hana's welcome line
-// (content/sample/voice, Kokoro af_heart with its own word timings). Skips without vrmxa-avatar-studio and spec.vrm.
+// (content/sample/voice, Kokoro af_heart with its own word timings). Skips without vrmxa-core and spec.vrm.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -15,7 +15,7 @@ import { available, read, vrmxaCore, testAnimations } from '../../character/test
 
 installPortableMath();
 const OK = available('spec', 'core', 'coreAnim');
-const SKIP = OK ? false : 'needs spec.vrm and vrmxa-avatar-studio beside this repository';
+const SKIP = OK ? false : 'needs spec.vrm and vrmxa-core beside this repository';
 const SAMPLE = path.join(import.meta.dirname, '../../../../content/sample');
 const file = (ref) => new Uint8Array(fs.readFileSync(path.join(SAMPLE, ref)));
 const CLIP = 'voice/hana-welcome.wav';

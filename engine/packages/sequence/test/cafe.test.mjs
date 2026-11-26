@@ -1,4 +1,4 @@
-// M2 W1 on the sample cafe (needs vrmxa-avatar-studio beside the repo for the characters): sequences/morning.vrmxs
+// M2 W1 on the sample cafe (needs vrmxa-core beside the repo for the characters): sequences/morning.vrmxs
 // plays in its set. Mira walks in on an event key, the camera track cuts and blends between four VirtualCameras, Hana's
 // eyes follow Mira and she says her line on frame 126, the second shot cheats the counter light. Two plays are the same
 // world, and scrubbing (backwards, forwards, from snapshots) lands on the world a straight play reaches.
@@ -28,7 +28,7 @@ export async function morning() {
 const hash = (tree) => hashValue(worldHashes(tree, { physicsBytes: true }));
 async function steps(tree, n) { for (let i = 0; i < n; i++) while (!tree.step()) await tree.settle(); }
 
-test('the morning sequence plays in the cafe: cameras, a walk, eyes, a line, a cheated light; the same every play', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('the morning sequence plays in the cafe: cameras, a walk, eyes, a line, a cheated light; the same every play', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const R = await loadRapier();
   const { sample, opts } = await morning();
   const ids = new Set(sample.doc.nodes.map((n) => n.id));
@@ -58,7 +58,7 @@ test('the morning sequence plays in the cafe: cameras, a walk, eyes, a line, a c
   assert.equal(a.W.sequence.pb.playing, false);
 });
 
-test('scrubbing the morning sequence lands on the world of a straight play', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('scrubbing the morning sequence lands on the world of a straight play', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const R = await loadRapier();
   const { sample, opts } = await morning();
   const ref = await buildWorld(R, sample, opts);

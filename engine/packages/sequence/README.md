@@ -44,7 +44,7 @@ Tests (`npm test`):
 - composing, checks, clips, post values, subtitles (no characters);
 - a world with physics: the camera track switching the brain, events on their step, shots overriding and putting back,
   post values at α, scrubbing (backwards, forwards, from snapshots) equal to straight play, a snapshot mid-shot, baking;
-- on the cafe (needs vrmxa-avatar-studio): the morning sequence twice the same, cameras, Mira's walk, eyes, Hana's line
+- on the cafe (needs vrmxa-core): the morning sequence twice the same, cameras, Mira's walk, eyes, Hana's line
   on frame 126, the cheated light, and scrubbing exact.
 
 ## Casting (M2 W11)

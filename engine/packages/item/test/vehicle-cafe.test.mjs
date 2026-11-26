@@ -1,4 +1,4 @@
-// M3 W8 (AB-T-0547) on the sample cafe (needs vrmxa-avatar-studio beside the repo for Mira): the cart. Mira, beside its
+// M3 W8 (AB-T-0547) on the sample cafe (needs vrmxa-core beside the repo for Mira): the cart. Mira, beside its
 // driver's door, gets in with the interact key, drives along the pavement (W), changes lane (A, then D), brakes (S) and gets out once it
 // has stopped. The run is recorded through the input service; the recording replays with the same hash after every step,
 // and a snapshot taken mid-drive re-simulates to the same end. The camera chases the cart while she drives.
@@ -57,7 +57,7 @@ async function live({ snapAt = null } = {}) {
 
 const chassisAt = (cart) => cart.part('Chassis').getWorldPosition(new Vector3());
 
-test('Mira gets in the cart, drives along the pavement, changes lane, brakes and gets out', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('Mira gets in the cart, drives along the pavement, changes lane, brakes and gets out', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const { mira, cart, seen } = await live();
   assert.ok(seen.seated !== null && seen.seated <= 40, `she got in with the interact key (step ${seen.seated})`);
   assert.equal(cart.current, null, 'the cart has no states');
@@ -74,7 +74,7 @@ test('Mira gets in the cart, drives along the pavement, changes lane, brakes and
   assert.ok(mira.physics.world.world.getCollider(mira.collider).isEnabled(), 'her capsule is back on');
 });
 
-test('the recorded drive replays with the same hash after every step, and from a snapshot taken mid-drive', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('the recorded drive replays with the same hash after every step, and from a snapshot taken mid-drive', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const A = await live({ snapAt: SNAP });
   assert.ok(A.snap.nodes.mira.ctrl.seat, 'the snapshot is mid-drive');
   const B = await world();

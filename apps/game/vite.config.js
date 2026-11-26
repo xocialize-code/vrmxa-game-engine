@@ -13,7 +13,7 @@ import { runtimeEngine } from './scripts/engine-compat.mjs';
 // beside the page, so the app plays it with hot reload (apps/game/scripts/play.mjs makes one).
 const here = (p) => path.resolve(import.meta.dirname, p);
 const pkg = JSON.parse(fs.readFileSync(here('package.json'), 'utf8'));
-const core = here('../../../vrmxa-avatar-studio/packages/vrmxa-core');
+const core = here('../../../vrmxa-core');
 const coreReal = fs.existsSync(core) ? fs.realpathSync(core) : core;
 // sql.js's script and WebAssembly are copied in as files (apps/playground/src/sqljs.js), so no chunk names them: their
 // licence is said here, and its text is in THIRD-PARTY-LICENCES.txt (vrmxa-core imports the package too)

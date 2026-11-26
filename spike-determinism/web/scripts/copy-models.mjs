@@ -4,7 +4,7 @@
 //   vroid10   VRoid Hub 9096495490126901469, VRM 1.0 (licence: modification + corporate use, credit required)
 //   vroid0x   VRoid Hub 1020331055235827291, VRM 0.x (same licence terms)
 //   seed-san  vrm-specification sample (VRM Public License 1.0): springs, constraints, expression overrides
-//   idle / walk / run_b / wave_b .vrma from vrmxa-avatar-studio/assets/motions/kimodo
+//   idle / walk / run_b / wave_b .vrma from vrmxa-core/assets/motions/kimodo
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -14,7 +14,7 @@ const web = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dev = path.resolve(web, '../../..'); // /Volumes/Satechi/Development
 const out = path.join(web, 'public', 'models');
 const physics = path.join(dev, 'vrmxa-game-engine/spike-physics/web/public/models');
-const kimodo = path.join(dev, 'vrmxa-avatar-studio/assets/motions/kimodo');
+const kimodo = path.join(dev, 'vrmxa-core/assets/motions/kimodo');
 const wanted = [
   ['spec.vrm', path.join(physics, 'spec.vrm')],
   ['vroid10.vrm', path.join(physics, 'vroid10.vrm')],

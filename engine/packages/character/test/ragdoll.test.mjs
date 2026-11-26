@@ -1,4 +1,4 @@
-// M3 W7 (AB-T-0546): ragdolls on the sample cafe (needs vrmxa-avatar-studio beside the repo for the characters). Mira and
+// M3 W7 (AB-T-0546): ragdolls on the sample cafe (needs vrmxa-core beside the repo for the characters). Mira and
 // Hana stand on a landing at the top of four steps; each is knocked down the stairs, falls, lies still and gets up,
 // blending back into animation. One mapping for both, no numbers per model. Two runs are the same, and a snapshot taken
 // mid-fall re-simulates to the same end.
@@ -49,7 +49,7 @@ async function fall({ steps = 900, snapAt = null, watch = null } = {}) {
   return { W, cs, run, snap };
 }
 
-test('the mapping: eleven parts from each humanoid, sized from its skeleton', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('the mapping: eleven parts from each humanoid, sized from its skeleton', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const W = await world();
   for (const id of WHO) {
     const c = /** @type {any} */ (W.tree.find(id));
@@ -68,7 +68,7 @@ test('the mapping: eleven parts from each humanoid, sized from its skeleton', { 
   }
 });
 
-test('knocked down the stairs, both characters fall, lie still and get up, blending back into animation', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('knocked down the stairs, both characters fall, lie still and get up, blending back into animation', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const seen = WHO.map(() => ({ phases: [], lowestHips: Infinity, signals: [], nan: false }));
   const { cs } = await fall({
     watch: (k, cs) => cs.forEach((c, i) => {
@@ -93,7 +93,7 @@ test('knocked down the stairs, both characters fall, lie still and get up, blend
   });
 });
 
-test('the fall is the same twice, and a snapshot taken mid-fall re-simulates to the same end', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('the fall is the same twice, and a snapshot taken mid-fall re-simulates to the same end', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const STEPS = 600, AT = KNOCK_AT + SNAP_AFTER;
   const A = await fall({ steps: STEPS, snapAt: AT });
   assert.equal(A.snap.nodes.mira.ragdoll?.phase, 'falling', 'the snapshot is mid-fall');

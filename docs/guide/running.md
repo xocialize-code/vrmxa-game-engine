@@ -12,8 +12,9 @@ guides come later, once their interfaces settle.
 ## What you need
 
 - **Node 26** or newer.
-- **Access to the VRMXG repository.** It is not public. And **`vrmxa-avatar-studio` checked out beside it** (the two folders side by side). The apps read
-  the character library, `vrmxa-core`, from there; without it they don't build.
+- **[vrmxa-core](https://github.com/xocialize-code/vrmxa-core) checked out beside the repository**, as `../vrmxa-core`
+  at the commit `vrmxa-core.json` pins: `node scripts/vrmxa-core.mjs` clones it there. The apps bundle this character
+  library; without it they don't build. It reads the characters' base model from `VRMXA_Specification` beside it.
 - **A Mac** for the Mac apps: macOS 15 or newer for the editor and the creator, macOS 26 for the playground (it links
   the shell's voice). They build with Swift Package Manager; there is no Xcode project.
 
@@ -89,7 +90,7 @@ The MCP server opens the sample project the same way:
 
 ```bash
 node engine/packages/mcp/src/server.js content/sample cafe.vrmxs \
-  --behaviours behaviours.js --vrmxa-core ../../../vrmxa-avatar-studio/packages/vrmxa-core
+  --behaviours behaviours.js --vrmxa-core ../../../vrmxa-core
 ```
 
 The two module paths are relative to the project folder (`content/sample`), not to where the command runs.

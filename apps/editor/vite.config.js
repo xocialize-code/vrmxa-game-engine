@@ -27,7 +27,7 @@ const staleRuntime = () => {
 };
 // vrmxa-core beside the repository, and its real path: Vite checks served files by real path, and a worktree reaches the
 // studio through a symlink (M4 W5)
-const core = here('../../../vrmxa-avatar-studio/packages/vrmxa-core');
+const core = here('../../../vrmxa-core');
 const coreReal = fs.existsSync(core) ? fs.realpathSync(core) : core;
 
 /** project-files.json (the bundled project's files) and the import map's shim, in dev and in the build. */
@@ -112,7 +112,7 @@ export default defineConfig({
   root: here('.'), base: './', publicDir: sample,
   plugins: [vue(), vrmxgNotices({ name: 'vrmxg-editor', version: pkg.version }), projectFiles(), runtimeFiles(), templates()],
   optimizeDeps: { exclude: ['sql.js'] },
-  resolve: { alias: { '@vrmxa-core': here('../../../vrmxa-avatar-studio/packages/vrmxa-core/src') }, dedupe: ['three'] },
+  resolve: { alias: { '@vrmxa-core': here('../../../vrmxa-core/src') }, dedupe: ['three'] },
   build: { outDir: here('dist'), emptyOutDir: true, target: 'safari16', chunkSizeWarningLimit: 4000 },
   server: { port: 5182, fs: { allow: [here('../..'), core, coreReal] } },
 });

@@ -1,4 +1,4 @@
-// M3 W5 on the sample cafe (needs vrmxa-avatar-studio beside the repo for the characters): Hana sees the person at the
+// M3 W5 on the sample cafe (needs vrmxa-core beside the repo for the characters): Hana sees the person at the
 // camera. A scripted session (synth.mjs: appears, waves, nods, shakes, points, leaves) goes live through the detector
 // into the sense service; Hana looks at the viewer when they appear, greets back when they wave, nods back, and looks away
 // when they leave. With her cafe behaviours the reactions are her own actions; with the host brain they run as its
@@ -52,7 +52,7 @@ async function live(opts, { snapAt = null } = {}) {
 }
 
 for (const brain of [false, true]) {
-  test(`Hana sees the person at the camera (${brain ? 'the host brain: reactions as its override' : 'her cafe behaviours: her own actions'})`, { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+  test(`Hana sees the person at the camera (${brain ? 'the host brain: reactions as its override' : 'her cafe behaviours: her own actions'})`, { skip: !OK && 'needs vrmxa-core' }, async () => {
     const { W, acted, looks, said, log } = await live({ brain });
     const types = log.filter((e) => e.type !== 'face').map((e) => (e.type === 'presence' ? (e.present ? 'appeared' : 'left') : e.type));
     assert.deepEqual(types, ['appeared', 'wave', 'nod', 'shake', 'point', 'left'], 'the session, logged by step');
@@ -73,7 +73,7 @@ for (const brain of [false, true]) {
   });
 }
 
-test('the session replays with the camera off, hash for hash, and from a snapshot taken mid-session', { skip: !OK && 'needs vrmxa-avatar-studio' }, async () => {
+test('the session replays with the camera off, hash for hash, and from a snapshot taken mid-session', { skip: !OK && 'needs vrmxa-core' }, async () => {
   const SNAP = 360;
   const A = await live({ brain: true }, { snapAt: SNAP });
   const B = await world({ brain: true });

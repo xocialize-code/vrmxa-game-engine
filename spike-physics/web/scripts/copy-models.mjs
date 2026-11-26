@@ -3,7 +3,7 @@
 //   spec      the VRMXA base character (VRMXA_Specification/assets/spec/spec.vrm)
 //   vroid10   a VRM 1.0 model from the local VRoid dataset (licence: modification + corporate use allowed, credit necessary)
 //   vroid0x   a VRM 0.x model from the same dataset, to check the 0.x path
-//   idle/walk .vrma motions from vrmxa-avatar-studio/assets/motions/kimodo
+//   idle/walk .vrma motions from vrmxa-core/assets/motions/kimodo
 // Override any path with the env var named in the table below.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -18,8 +18,8 @@ const wanted = [
   { key: 'spec', file: 'spec.vrm', env: 'SPIKE_SPEC_VRM', from: path.join(dev, 'VRMXA_Specification/assets/spec/spec.vrm'), label: 'Spec (VRMXA base, VRM 1.0)' },
   { key: 'vroid10', file: 'vroid10.vrm', env: 'SPIKE_VROID10_VRM', from: path.join(DATASET, '9/9096495490126901469/9096495490126901469.vrm'), label: 'VRoid 9096… (VRM 1.0)' },
   { key: 'vroid0x', file: 'vroid0x.vrm', env: 'SPIKE_VROID0X_VRM', from: path.join(DATASET, '1/1020331055235827291/1020331055235827291.vrm'), label: 'VRoid 1020… (VRM 0.x)' },
-  { key: 'idle', file: 'idle.vrma', env: 'SPIKE_IDLE_VRMA', from: path.join(dev, 'vrmxa-avatar-studio/assets/motions/kimodo/idle.vrma') },
-  { key: 'walk', file: 'walk.vrma', env: 'SPIKE_WALK_VRMA', from: path.join(dev, 'vrmxa-avatar-studio/assets/motions/kimodo/walk.vrma') },
+  { key: 'idle', file: 'idle.vrma', env: 'SPIKE_IDLE_VRMA', from: path.join(dev, 'vrmxa-core/assets/motions/kimodo/idle.vrma') },
+  { key: 'walk', file: 'walk.vrma', env: 'SPIKE_WALK_VRMA', from: path.join(dev, 'vrmxa-core/assets/motions/kimodo/walk.vrma') },
 ];
 
 fs.mkdirSync(out, { recursive: true });

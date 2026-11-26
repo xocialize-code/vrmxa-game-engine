@@ -128,7 +128,7 @@ Merging the rows automatically when a project takes in starter content is AB-T-0
   and the starter's clip is the one that plays. Every item is then used through `@vrmxg/interact` as its type says:
   the door swings 1.6 rad, the chest lid and the lever turn 1.7 rad, the button turns on, both seats seat her in
   `sitIdle`, every pickup leaves the world for the inventory, the props stand still, and the spawn point has its node.
-  The run is the same twice. It needs vrmxa-avatar-studio beside the repository, so it **skips in CI** and runs locally
+  The run is the same twice. It needs vrmxa-core beside the repository, so it **skips in CI** and runs locally
   (receipt AB-R-1159).
 - The playground's `?mode=starter` runs the same check in a browser (`window.__result`), from the build's `starter/`
   folder. `acceptance/m6/starter.mjs` runs it in Node and in headless Chromium and requires the same results from both
@@ -137,7 +137,7 @@ Merging the rows automatically when a project takes in starter content is AB-T-0
   (`acceptance/results/m6-starter-set.png`) and every item's model (`m6-starter-items.png`). They are for looking at;
   nothing compares their pixels.
 - `test/tools.test.mjs` checks that the tools remake every committed file byte for byte. It needs mesh2motion,
-  vrmxa-avatar-studio and VRMXA_Specification with the VRMXI draft, so it also **skips in CI** and runs locally.
+  vrmxa-core and VRMXA_Specification with the VRMXI draft, so it also **skips in CI** and runs locally.
 
 ## Remaking it
 

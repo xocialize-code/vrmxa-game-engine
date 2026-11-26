@@ -1,6 +1,6 @@
 // M3 W1 (AB-T-0540). Without a world: core personas from a bundle's database and from the exchange form, the app's
 // overrides laid over, profiles from traits and from a model (with the fallback), and utility weighted by a trait.
-// On the sample cafe (needs vrmxa-avatar-studio): each character's VRMXA id, core and app persona, the director's prompt
+// On the sample cafe (needs vrmxa-core): each character's VRMXA id, core and app persona, the director's prompt
 // and faces from the persona, the trait input reading the profile, and setProfile changing the project's document only.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

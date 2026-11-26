@@ -1,5 +1,5 @@
 // W3 (AB-T-0515): interaction with VRMXI items, a real character (spec.vrm) driven through the action map, the
-// specification's item fixtures. Skips without VRMXA_Specification (with the VRMXI draft) and vrmxa-avatar-studio.
+// specification's item fixtures. Skips without VRMXA_Specification (with the VRMXI draft) and vrmxa-core.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { installPortableMath } from '@vrmxg/dmath';
@@ -16,7 +16,7 @@ import { available, vrmxaCore, read, testAnimations } from '../../character/test
 
 installPortableMath();
 const OK = SPEC && available('core', 'coreAnim', 'spec');
-const SKIP = OK ? false : 'needs VRMXA_Specification (fixtures-vrmxi/), spec.vrm and vrmxa-avatar-studio beside this repository';
+const SKIP = OK ? false : 'needs VRMXA_Specification (fixtures-vrmxi/), spec.vrm and vrmxa-core beside this repository';
 const R = OK ? await loadRapier() : null;
 const core = OK ? await vrmxaCore() : null;
 const check = OK ? await specChecker() : null;

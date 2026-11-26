@@ -135,7 +135,7 @@ creator's `?face=synthetic`.
 
 ## Tests
 
-`npm test` (the in-world ones need `vrmxa-avatar-studio` beside the repo):
+`npm test` (the in-world ones need `vrmxa-core` beside the repo):
 - **`takes.test.mjs`**, no world: key thinning; step and frame arithmetic; each kind's derivation from a small scripted
   log; the sample's three logs against their golden track hashes (`golden.json`); keeping two takes in the sample short
   as two undo steps, exact bytes on undo, removing one.

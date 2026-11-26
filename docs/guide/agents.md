@@ -30,7 +30,7 @@ Register one with Claude Code like this, from the repository's folder:
 ```bash
 # headless, on the sample project's cafe
 claude mcp add vrmxg -- node "$PWD/engine/packages/mcp/src/server.js" "$PWD/content/sample" cafe.vrmxs \
-  --behaviours behaviours.js --vrmxa-core ../../../vrmxa-avatar-studio/packages/vrmxa-core
+  --behaviours behaviours.js --vrmxa-core ../../../vrmxa-core
 
 # the open editor, and the open creator
 claude mcp add vrmxg-editor -- node "$PWD/engine/packages/mcp/src/server.js" --editor

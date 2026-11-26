@@ -1,6 +1,6 @@
 // W4 (AB-T-0516): the closet at run time. Mira is vrmxa-core's full fixture (a top worn, a sword pinned and stowed);
 // the sword pickup is the specification's VRMXI fixture (a takeable item embedding "Short sword", held). Skips without
-// VRMXA_Specification (with the VRMXI draft), spec.vrm and vrmxa-avatar-studio beside this repository.
+// VRMXA_Specification (with the VRMXI draft), spec.vrm and vrmxa-core beside this repository.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { installPortableMath } from '@vrmxg/dmath';
@@ -18,7 +18,7 @@ import { available, vrmxaCore, read, testAnimations, PATHS } from '../../charact
 
 installPortableMath();
 const OK = SPEC && available('core', 'coreAnim', 'spec', 'full');
-const SKIP = OK ? false : 'needs VRMXA_Specification (fixtures-vrmxi/), spec.vrm and vrmxa-avatar-studio beside this repository';
+const SKIP = OK ? false : 'needs VRMXA_Specification (fixtures-vrmxi/), spec.vrm and vrmxa-core beside this repository';
 const R = OK ? await loadRapier() : null;
 const core = OK ? await vrmxaCore() : null;
 const closetLib = OK ? await import(PATHS.core.replace(/index\.js$/, 'closet/index.js')) : null;

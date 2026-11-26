@@ -194,7 +194,7 @@ Suite parts: `fingerprint`, `determinism`, `cadence`, `snapshot`, `calls`, `timi
 | `results/` | `node.json`, `chromium.json`, `wkwebview-scheme.json`, `wkwebview-loopback.json` (full suite); `wkwebview-timing-{coi,nocoi}-{scheme,loopback}.json` (dedicated timing runs); `compare.md` (all tables, generated). |
 | `shots/` | Viewer screenshots from headless Chromium (one per model, mid-walk). |
 
-**Models and clips** (`npm run models`; `web/public/models/` is git-ignored and must never ship): `spec.vrm`, `vroid10.vrm`, `vroid0x.vrm` copied from spike-physics (VRoid Hub models 9096495490126901469 and 1020331055235827291; modification and corporate use allowed, credit required); `seed-san.vrm` from `vrm-specification/samples` (VRM Public License 1.0, VirtualCast, Inc.); `idle`, `walk`, `run_b`, `wave_b` `.vrma` from `vrmxa-avatar-studio/assets/motions/kimodo`.
+**Models and clips** (`npm run models`; `web/public/models/` is git-ignored and must never ship): `spec.vrm`, `vroid10.vrm`, `vroid0x.vrm` copied from spike-physics (VRoid Hub models 9096495490126901469 and 1020331055235827291; modification and corporate use allowed, credit required); `seed-san.vrm` from `vrm-specification/samples` (VRM Public License 1.0, VirtualCast, Inc.); `idle`, `walk`, `run_b`, `wave_b` `.vrma` from `vrmxa-core/assets/motions/kimodo`.
 
 ## Caveats
 

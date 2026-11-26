@@ -7,7 +7,7 @@ import { vrmxgRuntime } from '../src/vite.js';
 // apps read it. base './': a build is opened from wherever its folder is served.
 const here = (p) => path.resolve(import.meta.dirname, p);
 const pkg = JSON.parse(fs.readFileSync(here('../package.json'), 'utf8'));
-const core = here('../../../../../vrmxa-avatar-studio/packages/vrmxa-core');
+const core = here('../../../../../vrmxa-core');
 // sql.js's script and WebAssembly are copied in as files (apps/playground/src/sqljs.js), so no chunk names them: their
 // licence is said here, and its text is in THIRD-PARTY-LICENCES.txt (vrmxa-core imports the package too)
 const sqlJs = (() => { try { return JSON.parse(fs.readFileSync(path.join(core, 'node_modules/sql.js/package.json'), 'utf8')); } catch { return { version: '', license: 'MIT' }; } })();

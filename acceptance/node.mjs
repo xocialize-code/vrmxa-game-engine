@@ -1,5 +1,5 @@
 // The M0 checks that run without a renderer, in Node: the recorded walk with per-step hashes and snapshot/restore,
-// and the player through devices. Writes results/node.json. Needs vrmxa-avatar-studio beside the repo (vrmxa-core
+// and the player through devices. Writes results/node.json. Needs vrmxa-core beside the repo (it
 // reads the characters' bundles).
 import fs from 'node:fs';
 import path from 'node:path';

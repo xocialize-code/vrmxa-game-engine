@@ -8,7 +8,7 @@
 // The logs go to content/sample/performances/the-regular/. They are not kept in the film (sequences/the-regular.vrmxs is
 // untouched): the tests, the acceptance (acceptance/m4/takes.mjs) and the creator's hand test apply them.
 //   node content/sample/tools/make-takes.mjs [--check]
-// Needs vrmxa-avatar-studio beside the repo (vrmxa-core reads the characters).
+// Needs vrmxa-core beside the repo (it reads the characters).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

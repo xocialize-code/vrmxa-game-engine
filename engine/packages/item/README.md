@@ -31,7 +31,7 @@ Not yet: collision filters by layer name (a sensor senses characters, a collider
 item placed in a non-rest state starting already at its joints' targets (it moves there in its first steps), and mesh
 colliders (VRMXI §16 Q2).
 
-Tests (`npm test`; they need `VRMXA_Specification` with the VRMXI draft and `vrmxa-avatar-studio` beside the repo, and skip
+Tests (`npm test`; they need `VRMXA_Specification` with the VRMXI draft and `vrmxa-core` beside the repo, and skip
 otherwise): every valid fixture reads and checks clean, every invalid one is refused with the codes `expected.json`
 names; every M1 type instantiates with its bodies, sensors and joints; the door opens and closes from its verbs, a locked
 door offers nothing; the chest's lid and the switch's lever move by their animations, kinematic bodies following, meshes
