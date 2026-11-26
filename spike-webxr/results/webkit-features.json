@@ -1,0 +1,6014 @@
+[
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "InlineMediaPlaybackRequiresPlaysInlineAttribute",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ServiceWorkerEntitlementDisabledForTesting",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ServiceControlsEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "DisabledAdaptationsMetaTagEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "DownloadAttributeEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "SelectTrailingWhitespaceEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "EnableInheritURIQueryComponent",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "EncryptedMediaAPIEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "RubberBandingForSubScrollableRegionsEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "RequiresUserGestureToStartAudiblePlaybackWhenHidden",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "RequiresUserGestureToLoadVideo",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "RequiresUserGestureForVideoPlayback",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "RequiresUserGestureForMediaPlayback",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "RequiresUserGestureForAudioPlayback",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "RequiresPageVisibilityToPlayAudio",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "PunchOutWhiteBackgroundsInDarkMode",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "PictureInPictureAPIEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "ExtensibleSSOEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "PasswordEchoEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "PassiveTouchListenersAsDefaultOnDocument",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "PDFPluginHUDEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "PDFPluginEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "NeedsKeyboardEventDisambiguationQuirks",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "NeedsFrameNameFallbackToIdQuirk",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "NeedsAdobeFrameReloadingQuirk",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ForceCompositingMode",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "MockScrollbarsEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ForceWebGLUsesLowPower",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "MockScrollbarsControllerEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "MockCaptureDevicesPromptEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "MediaUserGestureInheritsFromDocument",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "MediaPreloadingEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "MediaDataLoadsAutomatically",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "MediaControlsScaleWithPageZoom",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "MediaControlsContextMenusEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "MediaCapabilitiesEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "MathMLEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "LowPowerVideoAudioBufferSizeEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "HiddenPageCSSAnimationSuspensionEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "LoadsImagesAutomatically",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "LoadDeferringEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "LinkPreloadEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "LinkPreconnect",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "LargeImageAsyncDecodingEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "JavaScriptMarkupEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "JavaScriptCanOpenWindowsAutomatically",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "JavaScriptCanAccessClipboard",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "InvisibleAutoplayNotPermitted",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "InterruptVideoOnPageVisibilityChangeEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "InterruptAudioOnPageVisibilityChangeEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "InspectorSupportsShowingCertificate",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "InspectorStartsAttached",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "IncompleteImageBorderEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "IncrementalPDFLoadingEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AXCustomColorModeEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AcceleratedCompositingEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AcceleratedCompositingForFixedPositionEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AXCustomColorSmartSVGPreservation",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AggressiveTileRetentionEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AllowContentSecurityPolicySourceStarToMatchAnyProtocol",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AllowFileAccessFromFileURLs",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AllowMultiElementImplicitSubmission",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AllowTestOnlyIPC",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AllowTestOnlyMockContentFilterIPC",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AllowTestOnlyOriginAccessAllowListIPC",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AllowsAirPlayForMediaPlayback",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AllowsInlineMediaPlayback",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AllowsInlineMediaPlaybackAfterFullscreen",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AllowsPictureInPictureMediaPlayback",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AXCustomColorShowIndicators",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AXCustomColorShowImageClassification",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AnimatedImageAsyncDecodingEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AXCustomColorPreserveImageGrids",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AppleMailPaginationQuirkEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "ApplePayCapabilityDisclosureAllowed",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ApplePayEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AsynchronousSpellCheckingEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AudioControlsScaleWithPageZoom",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AuthorAndUserStylesEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AXCustomColorNeutralizeBlendModes",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AutomaticallyForceEnableScrollingIfNeededToRevealUI",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AXCustomColorModeAppearanceDetectionEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "BackspaceKeyNavigationEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AXCustomColorGradientLuminanceCheck",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AXCustomColorAdjustTextLegibility",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AXCustomColorAdjustSVGImages",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AXCustomColorAdjustImages",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "WirelessPlaybackTargetAPIEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "WindowFocusRestricted",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "WebSocketEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "WebSecurityEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "WebAudioEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "WantsBalancedSetDefersLoadingBehavior",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "VisualViewportEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "VideoQualityIncludesDisplayCompositingEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "VideoPresentationModeAPIEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "VideoPresentationManagerEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "VideoFullscreenRequiresElementFullscreen",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "VP9DecoderEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "UsesSingleWebProcess",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "UsesEncodingDetector",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "UsesBackForwardCache",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "UseSystemAppearance",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "UsePreHTML5ParserQuirks",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "UseImageDocumentForSubframePDF",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "TreatsAnyTextCSSLinkAsStylesheet",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "ThreadedScrollingEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "TextInteractionEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "TextInputClientSelectionUpdatesEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "TextExtractionEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "CaretBrowsingEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "TextAutosizingEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "TextAreasAreResizable",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "TemporaryTileCohortRetentionEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "TelephoneNumberParsingEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ColorFilterEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "TabsToLinks",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "SuppressesIncrementalRendering",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "Standalone",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "ContentChangeObserverEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "ContentDispositionAttachmentSandboxEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ContextMenuQRCodeDetectionEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "SpatialNavigationEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "SourceBufferChangeTypeEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "SmartInsertDeleteEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "ShrinksStandaloneImagesToFit",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShowsURLsInToolTipsEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShowsToolTipOverTruncatedText",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShouldUseServiceWorkerShortTimeout",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShouldSuppressTextInputFromEditingDuringProvisionalNavigation",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShouldRestrictBaseURLSchemes",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "DOMPasteAllowed",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShouldRespectImageOrientation",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShouldPrintBackgrounds",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShouldIgnoreMetaViewport",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShouldEnableTextAutosizingBoost",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "DatabasesEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShouldDisplayTextDescriptions",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShouldDisplaySubtitles",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShouldDisplayCaptions",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShouldDecidePolicyBeforeLoadingQuickLookPreview",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "DeveloperExtrasEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "DeviceOrientationEventEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "DeviceOrientationPermissionAPIEnabled",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShouldConvertPositionStyleOnCopy",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "ShouldConvertInvalidURLsToBlank",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "ShouldAllowUserInstalledFonts",
+    "name" : "",
+    "status" : 0
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the ::target-text CSS pseudo-element",
+    "enabled" : true,
+    "key" : "TargetTextPseudoElementEnabled",
+    "name" : "::target-text pseudo-element",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the :open CSS pseudo-class",
+    "enabled" : true,
+    "key" : "OpenPseudoClassEnabled",
+    "name" : ":open pseudo-class",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable the legacy WebKit-only ::-webkit-search-results-button saved-searches dropdown opt-in",
+    "enabled" : false,
+    "key" : "SearchInputResultsAttributeEnabled",
+    "name" : "<input type=search> results=N attribute",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable showPicker() method on <select>",
+    "enabled" : false,
+    "key" : "SelectShowPickerEnabled",
+    "name" : "<select> showPicker() method",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Turn on ARIA live-region management within WebKit",
+    "enabled" : true,
+    "key" : "IsAriaLiveRegionManagementEnabled",
+    "name" : "ARIA Live Regions in WebKit",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable AVFoundation",
+    "enabled" : true,
+    "key" : "AVFoundationEnabled",
+    "name" : "AVFoundation",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Accelerated CSS and SVG filter rendering",
+    "enabled" : false,
+    "key" : "AcceleratedFiltersEnabled",
+    "name" : "Accelerated Filter Rendering",
+    "status" : 1
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable AccessHandle API",
+    "enabled" : true,
+    "key" : "AccessHandleEnabled",
+    "name" : "AccessHandle API",
+    "status" : 7
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable additional testing APIs for DOM objects",
+    "enabled" : false,
+    "key" : "DOMTestingAPIsEnabled",
+    "name" : "Additional Testing APIs for DOM Objects",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Allow Media Content Types Requirining Hardware As Fallback",
+    "enabled" : true,
+    "key" : "AllowMediaContentTypesRequiringHardwareSupportAsFallback",
+    "name" : "Allow Media Content Types Requirining Hardware As Fallback",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Allow Privacy-Sensitive Operations in Non-Persistent Data Stores",
+    "enabled" : false,
+    "key" : "AllowPrivacySensitiveOperationsInNonPersistentDataStores",
+    "name" : "Allow Privacy-Sensitive Operations in Non-Persistent Data Stores",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "AllowWebGLInWorkers",
+    "name" : "Allow WebGL in Web Workers",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Allow per media element speaker device selection",
+    "enabled" : true,
+    "key" : "PerElementSpeakerSelectionEnabled",
+    "name" : "Allow per media element speaker device selection",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Allow requesting CommitLayerTree before the previous has completed",
+    "enabled" : true,
+    "key" : "AllowMultipleCommitLayerTreePending",
+    "name" : "Allow requesting CommitLayerTree before the previous has completed",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Allow selection of speaker device without related microphone",
+    "enabled" : true,
+    "key" : "ExposeSpeakersWithoutMicrophoneEnabled",
+    "name" : "Allow selection of speaker device without related microphone",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Allow speaker device selection",
+    "enabled" : true,
+    "key" : "ExposeSpeakersEnabled",
+    "name" : "Allow speaker device selection",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AllowTopNavigationToDataURLs",
+    "name" : "Allow top navigation to data: URLs",
+    "status" : 0
+  },
+  {
+    "category" : 8,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "AllowUniversalAccessFromFileURLs",
+    "name" : "Allow universal access from file: URLs",
+    "status" : 3
+  },
+  {
+    "category" : 9,
+    "defaultValue" : true,
+    "details" : "Use the alternate PDF HUD",
+    "enabled" : true,
+    "key" : "UseAlternatePDFHUD",
+    "name" : "Alternate PDF HUD",
+    "status" : 7
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable always allowing loading local Web Archive",
+    "enabled" : false,
+    "key" : "AlwaysAllowLocalWebarchive",
+    "name" : "Always allow loading local Web Archive",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Always enable VPx software decoders",
+    "enabled" : false,
+    "key" : "SWVPDecodersAlwaysEnabled",
+    "name" : "Always enable VPx software decoders",
+    "status" : 2
+  },
+  {
+    "category" : 1,
+    "defaultValue" : false,
+    "details" : "Support for the timeline-trigger, animation-trigger and event-trigger CSS properties",
+    "enabled" : false,
+    "key" : "AnimationTriggersEnabled",
+    "name" : "Animation Triggers",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable App Badge",
+    "enabled" : false,
+    "key" : "AppBadgeEnabled",
+    "name" : "App Badge",
+    "status" : 1
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable App Highlights",
+    "enabled" : false,
+    "key" : "AppHighlightsEnabled",
+    "name" : "App Highlights",
+    "status" : 1
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Use AppKit Gestures",
+    "enabled" : true,
+    "key" : "UseAppKitGestures",
+    "name" : "AppKit Gestures",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Use AppKit gestures to drive gesture event synthesis",
+    "enabled" : true,
+    "key" : "UseAppKitGesturesForGestureEvents",
+    "name" : "AppKit gestures for gesture events",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Use AppKit gestures to drive DOM pointer events directly, rather than deriving them from synthesized mouse events",
+    "enabled" : true,
+    "key" : "UseAppKitGesturesForPointerEvents",
+    "name" : "AppKit gestures for pointer events",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Use async IPC for audio session activation",
+    "enabled" : true,
+    "key" : "AsyncAudioSessionActivationEnabled",
+    "name" : "Async Audio Session Activation",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Perform frame scrolling off the main thread",
+    "enabled" : true,
+    "key" : "AsyncFrameScrollingEnabled",
+    "name" : "Async Frame Scrolling",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Perform overflow scrolling off the main thread",
+    "enabled" : true,
+    "key" : "AsyncOverflowScrollingEnabled",
+    "name" : "Async Overflow Scrolling",
+    "status" : 2
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Enable async stack traces",
+    "enabled" : true,
+    "key" : "AsyncStackTraceEnabled",
+    "name" : "Async Stack Traces",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable the async clipboard API",
+    "enabled" : true,
+    "key" : "AsyncClipboardAPIEnabled",
+    "name" : "Async clipboard API",
+    "status" : 7
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable rich content types in the async clipboard API",
+    "enabled" : true,
+    "key" : "AsyncClipboardRichContentEnabled",
+    "name" : "Async clipboard rich content",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Allow the insertion of attachment elements",
+    "enabled" : false,
+    "key" : "AttachmentElementEnabled",
+    "name" : "Attachment Element",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Use horizontal wide-layout attachment style, requires Attachment Element",
+    "enabled" : false,
+    "key" : "AttachmentWideLayoutEnabled",
+    "name" : "Attachment wide-layout styling",
+    "status" : 0
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable extended audio descriptions for video",
+    "enabled" : true,
+    "key" : "ExtendedAudioDescriptionsEnabled",
+    "name" : "Audio descriptions for video - Extended",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable standard audio descriptions for video",
+    "enabled" : true,
+    "key" : "AudioDescriptionsEnabled",
+    "name" : "Audio descriptions for video - Standard",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable AudioSession API",
+    "enabled" : true,
+    "key" : "DOMAudioSessionEnabled",
+    "name" : "AudioSession API",
+    "status" : 7
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable AudioSession full API",
+    "enabled" : false,
+    "key" : "DOMAudioSessionFullEnabled",
+    "name" : "AudioSession full API",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Automatically Adjust View Scale to Fit Min. Effective Device Width",
+    "enabled" : false,
+    "key" : "AutomaticallyAdjustsViewScaleUsingMinimumEffectiveDeviceWidth",
+    "name" : "Automatically Adjust View Scale",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Beacon API",
+    "enabled" : true,
+    "key" : "BeaconAPIEnabled",
+    "name" : "Beacon API",
+    "status" : 7
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Bidi content aware paste",
+    "enabled" : false,
+    "key" : "BidiContentAwarePasteEnabled",
+    "name" : "Bidi Content Aware Paste",
+    "status" : 2
+  },
+  {
+    "category" : 4,
+    "defaultValue" : false,
+    "details" : "Enable BigInt math helper methods.",
+    "enabled" : false,
+    "key" : "BigIntMathMethodsEnabled",
+    "name" : "BigInt Math Methods",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "BroadcastChannel API",
+    "enabled" : true,
+    "key" : "BroadcastChannelEnabled",
+    "name" : "BroadcastChannel API",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable built-in WebKit managed notifications",
+    "enabled" : false,
+    "key" : "BuiltInNotificationsEnabled",
+    "name" : "Built-In Web Notifications",
+    "status" : 1
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable parsing -internal-auto-base() in author sheet",
+    "enabled" : false,
+    "key" : "CSSInternalAutoBaseParsingEnabled",
+    "name" : "CSS -internal-auto-base() in author sheet",
+    "status" : 2
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable 3D transform behavior for backface-visibility that is specification-compliant but backwards incompatible",
+    "enabled" : false,
+    "key" : "CSS3DTransformBackfaceVisibilityInteroperabilityEnabled",
+    "name" : "CSS 3D Transform Interoperability for backface-visibility",
+    "status" : 5
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the CSS ::picker() pseudo-element",
+    "enabled" : true,
+    "key" : "CSSPickerPseudoElementEnabled",
+    "name" : "CSS ::picker() pseudo-element",
+    "status" : 2
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable support for <image> symbols in CSS @counter-style rules",
+    "enabled" : false,
+    "key" : "CSSCounterStyleAtRuleImageSymbolsEnabled",
+    "name" : "CSS @counter-style <image> symbols",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable CSS @font-face metric override descriptors",
+    "enabled" : true,
+    "key" : "CSSFontFaceMetricOverrideDescriptorsEnabled",
+    "name" : "CSS @font-face metric override descriptors",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable CSS @function rule",
+    "enabled" : true,
+    "key" : "CSSFunctionAtRuleEnabled",
+    "name" : "CSS @function",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable accent-color CSS property",
+    "enabled" : true,
+    "key" : "AccentColorEnabled",
+    "name" : "CSS Accent Color",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the CSS Custom Highlight API highlightsFromPoint() method",
+    "enabled" : true,
+    "key" : "HighlightsFromPointEnabled",
+    "name" : "CSS Custom Highlight API: highlightsFromPoint()",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable input-security CSS property",
+    "enabled" : false,
+    "key" : "CSSInputSecurityEnabled",
+    "name" : "CSS Input Security",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable passing CSS link parameters to linked resources",
+    "enabled" : false,
+    "key" : "CSSLinkParametersEnabled",
+    "name" : "CSS Linked Parameters",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable CSS overscroll-behavior",
+    "enabled" : true,
+    "key" : "OverscrollBehaviorEnabled",
+    "name" : "CSS Overscroll Behavior",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable the CSS Painting API",
+    "enabled" : false,
+    "key" : "CSSPaintingAPIEnabled",
+    "name" : "CSS Painting API",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable CSS Rhythmic Sizing properties",
+    "enabled" : false,
+    "key" : "CSSRhythmicSizingEnabled",
+    "name" : "CSS Rhythmic Sizing",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable CSS Ruby Display types in author styles",
+    "enabled" : false,
+    "key" : "CSSRubyDisplayTypesInAuthorStylesEnabled",
+    "name" : "CSS Ruby Display Types in Author Styles",
+    "status" : 1
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable CSS Scroll Anchoring",
+    "enabled" : true,
+    "key" : "CSSScrollAnchoringEnabled",
+    "name" : "CSS Scroll Anchoring",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable scroll-state value for container-type CSS property",
+    "enabled" : false,
+    "key" : "CSSScrollStateContainerQueriesEnabled",
+    "name" : "CSS Scroll State Container Queries",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the JIT compiler for CSS selectors",
+    "enabled" : true,
+    "key" : "CSSSelectorJITCompilerEnabled",
+    "name" : "CSS Selector JIT Compiler",
+    "status" : 2
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "CSS Spring Animation prototype",
+    "enabled" : false,
+    "key" : "SpringTimingFunctionEnabled",
+    "name" : "CSS Spring Animations",
+    "status" : 1
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable support for CSS Values and Units Module Level 5 tree counting functions sibling-count() and sibling-index()",
+    "enabled" : true,
+    "key" : "CSSTreeCountingFunctionsEnabled",
+    "name" : "CSS Tree Counting Functions",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable the CSS Typed OM Color support",
+    "enabled" : false,
+    "key" : "CSSTypedOMColorEnabled",
+    "name" : "CSS Typed OM: Color Support",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable support for CSS Values and Units Module Level 5 URL modifiers",
+    "enabled" : true,
+    "key" : "CSSURLModifiersEnabled",
+    "name" : "CSS URL Modifiers",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable support for CSS Values and Units Module Level 5 URL integrity() modifier",
+    "enabled" : false,
+    "key" : "CSSURLIntegrityModifierEnabled",
+    "name" : "CSS URL Modifiers: integrity()",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable unprefixed backdrop-filter CSS property",
+    "enabled" : true,
+    "key" : "CSSUnprefixedBackdropFilterEnabled",
+    "name" : "CSS Unprefixed Backdrop Filter",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the unprefixed user-select CSS property",
+    "enabled" : true,
+    "key" : "CSSUserSelectEnabled",
+    "name" : "CSS Unprefixed User Select",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable base value for CSS appearance",
+    "enabled" : false,
+    "key" : "CSSAppearanceBaseEnabled",
+    "name" : "CSS appearance: base",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable CSS Values 5 attr() arbitrary substitution function",
+    "enabled" : true,
+    "key" : "CSSAttrSubstitutionFunctionEnabled",
+    "name" : "CSS attr() substitution function",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable support for CSS Values and Units Module Level 5 axis relative keywords in <position>",
+    "enabled" : true,
+    "key" : "CSSAxisRelativePositionKeywordsEnabled",
+    "name" : "CSS axis relative keywords in <position>",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable CSS baseline-source",
+    "enabled" : false,
+    "key" : "CSSBaselineSourceEnabled",
+    "name" : "CSS baseline-source",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable support for CSS calc-mix()",
+    "enabled" : true,
+    "key" : "CSSCalcMixEnabled",
+    "name" : "CSS calc-mix()",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable support for CSS calc-size()",
+    "enabled" : false,
+    "key" : "CSSCalcSizeFunctionEnabled",
+    "name" : "CSS calc-size()",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable support for CSS color-layers()",
+    "enabled" : false,
+    "key" : "CSSColorLayersEnabled",
+    "name" : "CSS color-layers()",
+    "status" : 5
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the content property on the ::marker pseudo-element",
+    "enabled" : true,
+    "key" : "CSSMarkerContentEnabled",
+    "name" : "CSS content on ::marker",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable support for CSS corner-shape property",
+    "enabled" : true,
+    "key" : "CSSCornerShapeEnabled",
+    "name" : "CSS corner-shape property",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable support for the CSS d property and SVG d presentation attribute",
+    "enabled" : false,
+    "key" : "CSSDPropertyEnabled",
+    "name" : "CSS d property",
+    "status" : 5
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable CSS display: grid-lanes",
+    "enabled" : true,
+    "key" : "GridLanesEnabled",
+    "name" : "CSS display: grid-lanes",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable support for CSS dynamic-range-limit-mix(), but animation stays unsupported",
+    "enabled" : false,
+    "key" : "CSSDynamicRangeLimitMixEnabled",
+    "name" : "CSS dynamic-range-limit-mix()",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable support for CSS dynamic-range-limit value constrained",
+    "enabled" : false,
+    "key" : "CSSConstrainedDynamicRangeLimitEnabled",
+    "name" : "CSS dynamic-range-limit: constrained",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable field-sizing CSS property",
+    "enabled" : true,
+    "key" : "CSSFieldSizingEnabled",
+    "name" : "CSS field-sizing property",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable the balance value for flex-wrap",
+    "enabled" : false,
+    "key" : "CSSFlexWrapBalanceEnabled",
+    "name" : "CSS flex-wrap: balance",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable the oblique-only value for the font-synthesis-style CSS property",
+    "enabled" : false,
+    "key" : "CSSFontSynthesisStyleObliqueOnlyEnabled",
+    "name" : "CSS font-synthesis-style: oblique-only",
+    "status" : 5
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable the font-variant-emoji CSS property",
+    "enabled" : false,
+    "key" : "CSSFontVariantEmojiEnabled",
+    "name" : "CSS font-variant-emoji property",
+    "status" : 5
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the CSS Values 5 ident() function",
+    "enabled" : true,
+    "key" : "CSSIdentFunctionEnabled",
+    "name" : "CSS ident() function",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable CSS Values 5 if() conditional substitution function",
+    "enabled" : true,
+    "key" : "CSSIfFunctionEnabled",
+    "name" : "CSS if() function",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the CSS Values 5 inherit() function",
+    "enabled" : true,
+    "key" : "CSSInheritFunctionEnabled",
+    "name" : "CSS inherit() function",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable CSS line-clamp",
+    "enabled" : false,
+    "key" : "CSSLineClampEnabled",
+    "name" : "CSS line-clamp",
+    "status" : 5
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable CSS line-fit-edge",
+    "enabled" : false,
+    "key" : "CSSLineFitEdgeEnabled",
+    "name" : "CSS line-fit-edge",
+    "status" : 1
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable support for math-depth from MathML Core.",
+    "enabled" : true,
+    "key" : "CSSMathDepthEnabled",
+    "name" : "CSS math-depth",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable support for CSS object-view-box property",
+    "enabled" : true,
+    "key" : "CSSObjectViewBoxEnabled",
+    "name" : "CSS object-view-box property",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable CSS overflow-clip-margin",
+    "enabled" : false,
+    "key" : "CSSOverflowClipMarginEnabled",
+    "name" : "CSS overflow-clip-margin",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable the CSS palette-mix() function",
+    "enabled" : false,
+    "key" : "CSSFontPaletteMixFunctionEnabled",
+    "name" : "CSS palette-mix() function",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable support for CSS Values and Units Module Level 5 random()",
+    "enabled" : true,
+    "key" : "CSSRandomFunctionEnabled",
+    "name" : "CSS random()",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable support for CSS Values and Units Module Level 5 random-item()",
+    "enabled" : true,
+    "key" : "CSSRandomItemFunctionEnabled",
+    "name" : "CSS random-item()",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable scrollbar-color CSS property",
+    "enabled" : true,
+    "key" : "CSSScrollbarColorEnabled",
+    "name" : "CSS scrollbar-color property",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable scrollbar-gutter CSS property",
+    "enabled" : true,
+    "key" : "CSSScrollbarGutterEnabled",
+    "name" : "CSS scrollbar-gutter property",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable scrollbar-width CSS property",
+    "enabled" : true,
+    "key" : "CSSScrollbarWidthEnabled",
+    "name" : "CSS scrollbar-width property",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable the size shorthand for the width and height properties",
+    "enabled" : false,
+    "key" : "CSSSizeShorthandEnabled",
+    "name" : "CSS size shorthand",
+    "status" : 5
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the text-decoration-inset property, defined in CSS Text Decoration 4",
+    "enabled" : true,
+    "key" : "CSSTextDecorationInsetEnabled",
+    "name" : "CSS text-decoration-inset property",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable support for spelling-error and grammar-error values on text-decoration-line",
+    "enabled" : true,
+    "key" : "CSSTextDecorationLineErrorValues",
+    "name" : "CSS text-decoration-line: spelling-error\/grammar-error",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable text-group-align CSS property",
+    "enabled" : false,
+    "key" : "CSSTextGroupAlignEnabled",
+    "name" : "CSS text-group-align property",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable the property text-justify, defined in CSS Text 3",
+    "enabled" : false,
+    "key" : "CSSTextJustifyEnabled",
+    "name" : "CSS text-justify property",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable the property text-spacing-trim, defined in CSS Text 4",
+    "enabled" : false,
+    "key" : "CSSTextSpacingTrimEnabled",
+    "name" : "CSS text-spacing-trim property",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable the math-auto text transform.",
+    "enabled" : false,
+    "key" : "CSSTextTransformMathAutoEnabled",
+    "name" : "CSS text-transform: math-auto",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the pretty value for text-wrap-style",
+    "enabled" : true,
+    "key" : "CSSTextWrapPrettyEnabled",
+    "name" : "CSS text-wrap: pretty",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enable CSS Values 5 toggle() function",
+    "enabled" : false,
+    "key" : "CSSToggleFunctionEnabled",
+    "name" : "CSS toggle() function",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the property white-space-trim, defined in CSS Text 4",
+    "enabled" : true,
+    "key" : "CSSWhiteSpaceTrimEnabled",
+    "name" : "CSS white-space-trim property",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the wrap-inside property, defined in CSS Text 4",
+    "enabled" : true,
+    "key" : "CSSWrapInsideEnabled",
+    "name" : "CSS wrap-inside property",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Cache API",
+    "enabled" : true,
+    "key" : "CacheAPIEnabled",
+    "name" : "Cache API",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable use of predefined canvas color spaces",
+    "enabled" : true,
+    "key" : "CanvasColorSpaceEnabled",
+    "name" : "Canvas Color Spaces",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Allow different color types and pixel formats in 2D canvas",
+    "enabled" : false,
+    "key" : "CanvasColorTypeEnabled",
+    "name" : "Canvas Color Types and ImageData Pixel Formats",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Canvas Filters",
+    "enabled" : false,
+    "key" : "CanvasFiltersEnabled",
+    "name" : "Canvas Filters",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable Canvas Layers",
+    "enabled" : false,
+    "key" : "CanvasLayersEnabled",
+    "name" : "Canvas Layers",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "CanvasUsesAcceleratedDrawing",
+    "name" : "Canvas uses accelerated drawing",
+    "status" : 0
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable Caption Display Settings API",
+    "enabled" : true,
+    "key" : "CaptionDisplaySettingsEnabled",
+    "name" : "Caption Display Settings API",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable stopping child processes with a debugger",
+    "enabled" : false,
+    "key" : "ChildProcessDebuggabilityEnabled",
+    "name" : "Child Process Debuggability",
+    "status" : 2
+  },
+  {
+    "category" : 6,
+    "defaultValue" : true,
+    "details" : "Enable Clear-Site-Data HTTP Header support",
+    "enabled" : true,
+    "key" : "ClearSiteDataHTTPHeaderEnabled",
+    "name" : "Clear-Site-Data HTTP Header",
+    "status" : 6
+  },
+  {
+    "category" : 6,
+    "defaultValue" : false,
+    "details" : "Enable Clear-Site-Data: 'executionContexts' support",
+    "enabled" : false,
+    "key" : "ClearSiteDataExecutionContextsSupportEnabled",
+    "name" : "Clear-Site-Data: 'executionContexts' support",
+    "status" : 4
+  },
+  {
+    "category" : 9,
+    "defaultValue" : true,
+    "details" : "Enable Close Watcher API including dialog closedby attribute",
+    "enabled" : true,
+    "key" : "CloseWatcherEnabled",
+    "name" : "Close Watcher API",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable input elements of type color",
+    "enabled" : true,
+    "key" : "InputTypeColorEnabled",
+    "name" : "Color Inputs",
+    "status" : 7
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "CompositingBordersVisible",
+    "name" : "Compositing borders visible",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "CompositingRepaintCountersVisible",
+    "name" : "Compositing repaint counters visible",
+    "status" : 2
+  },
+  {
+    "category" : 6,
+    "defaultValue" : false,
+    "details" : "Enable compression dictionary transport",
+    "enabled" : false,
+    "key" : "CompressionDictionaryEnabled",
+    "name" : "Compression Dictionary Transport",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Compression Stream API",
+    "enabled" : true,
+    "key" : "CompressionStreamEnabled",
+    "name" : "Compression Stream API",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable internal consistent query parameter filtering",
+    "enabled" : false,
+    "key" : "ConsistentQueryParameterFilteringInternalQuirkEnabled",
+    "name" : "Consistent Query Parameter Filtering Internal",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable consistent query parameter filtering",
+    "enabled" : true,
+    "key" : "ConsistentQueryParameterFilteringQuirkEnabled",
+    "name" : "Consistent Query Parameter Filtering",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable the Contact Picker API",
+    "enabled" : false,
+    "key" : "ContactPickerAPIEnabled",
+    "name" : "Contact Picker API",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Fill content insets with background colors",
+    "enabled" : true,
+    "key" : "ContentInsetBackgroundFillEnabled",
+    "name" : "Content Inset Background Fill",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable Cookie Store API CookieStoreManager which controls cookie change subscriptions for Service Workers",
+    "enabled" : false,
+    "key" : "CookieStoreManagerEnabled",
+    "name" : "Cookie Store API CookieStoreManager",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Cookie Store API",
+    "enabled" : true,
+    "key" : "CookieStoreAPIEnabled",
+    "name" : "Cookie Store API",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "CookieEnabled",
+    "name" : "Cookies Enabled",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "InputMethodUsesCorrectKeyEventOrder",
+    "name" : "Correct key event ordering with composition events",
+    "status" : 1
+  },
+  {
+    "category" : 8,
+    "defaultValue" : true,
+    "details" : "Support for Cross-Origin-Embedder-Policy (COEP) header",
+    "enabled" : true,
+    "key" : "CrossOriginEmbedderPolicyEnabled",
+    "name" : "Cross-Origin-Embedder-Policy (COEP) header",
+    "status" : 6
+  },
+  {
+    "category" : 8,
+    "defaultValue" : true,
+    "details" : "Support for Cross-Origin-Opener-Policy (COOP) header",
+    "enabled" : true,
+    "key" : "CrossOriginOpenerPolicyEnabled",
+    "name" : "Cross-Origin-Opener-Policy (COOP) header",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable custom clipboard types and better security model for clipboard API.",
+    "enabled" : true,
+    "key" : "CustomPasteboardDataEnabled",
+    "name" : "Custom pasteboard data",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable DOM Paste Access Requests",
+    "enabled" : true,
+    "key" : "DOMPasteAccessRequestsEnabled",
+    "name" : "DOM Paste Access Requests",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "MoveBeforeEnabled",
+    "name" : "DOM moveBefore()",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "MutationEventsEnabled",
+    "name" : "DOM mutation events",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "DOMTimersThrottlingEnabled",
+    "name" : "DOM timer throttling enabled",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enables DataTransferItem in the clipboard API",
+    "enabled" : true,
+    "key" : "DataTransferItemsEnabled",
+    "name" : "Data Transfer Items",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable datalist elements",
+    "enabled" : true,
+    "key" : "DataListElementEnabled",
+    "name" : "DataList Element",
+    "status" : 7
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable input elements of type date",
+    "enabled" : true,
+    "key" : "InputTypeDateEnabled",
+    "name" : "Date Input",
+    "status" : 7
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable multiple editable components in date\/time inputs",
+    "enabled" : true,
+    "key" : "DateTimeInputsEditableComponentsEnabled",
+    "name" : "Date\/Time inputs have editable components",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Declarative Web Push",
+    "enabled" : true,
+    "key" : "DeclarativeWebPush",
+    "name" : "Declarative Web Push",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Align the mathvariant attribute with MathML Core, disabling all variants except italic.",
+    "enabled" : false,
+    "key" : "CoreMathMLDeprecateLegacyMathvariant",
+    "name" : "Deprecate legacy mathvariant",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable Deprecation Reporting",
+    "enabled" : false,
+    "key" : "DeprecationReportingEnabled",
+    "name" : "Deprecation Reporting",
+    "status" : 4
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Detachable Media Source API",
+    "enabled" : false,
+    "key" : "DetachableMediaSourceEnabled",
+    "name" : "Detachable Media Source",
+    "status" : 3
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable the Device Posture API",
+    "enabled" : false,
+    "key" : "DevicePostureAPIEnabled",
+    "name" : "Device Posture API",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "DiagnosticLoggingEnabled",
+    "name" : "Diagnostic logging enabled",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable the Digital Credentials API",
+    "enabled" : false,
+    "key" : "DigitalCredentialsEnabled",
+    "name" : "Digital Credentials API",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "input.webkitdirectory \/ dataTransferItem.webkitGetAsEntry()",
+    "enabled" : true,
+    "key" : "DirectoryUploadEnabled",
+    "name" : "Directory Upload",
+    "status" : 0
+  },
+  {
+    "category" : 7,
+    "defaultValue" : false,
+    "details" : "Disable full third-party cookie blocking when Intelligent Tracking Prevention is enabled",
+    "enabled" : false,
+    "key" : "IsThirdPartyCookieBlockingDisabled",
+    "name" : "Disable Full 3rd-Party Cookie Blocking (ITP)",
+    "status" : 3
+  },
+  {
+    "category" : 7,
+    "defaultValue" : false,
+    "details" : "Disable removal of all non-cookie website data after seven days of no user interaction when Intelligent Tracking Prevention is enabled",
+    "enabled" : false,
+    "key" : "IsFirstPartyWebsiteDataRemovalDisabled",
+    "name" : "Disable Removal of Non-Cookie Data After 7 Days of No User Interaction (ITP)",
+    "status" : 3
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Disable WebRTC private relay bypass",
+    "enabled" : false,
+    "key" : "WebRTCRelayBypassDisabled",
+    "name" : "Disable WebRTC private relay bypass",
+    "status" : 4
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Disable anonymous block generation for mixed blocks",
+    "enabled" : false,
+    "key" : "AnonymousBlockGenerationDisabled",
+    "name" : "Disable anonymous block generation",
+    "status" : 1
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "The only MathML element on which href is allowed is <a>.",
+    "enabled" : false,
+    "key" : "MathMLDisableHrefOnNonAnchorElement",
+    "name" : "Disable href attribute on MathML elements",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Causes processes to fully suspend after a delay",
+    "enabled" : true,
+    "key" : "ShouldDropNearSuspendedAssertionAfterDelay",
+    "name" : "Drop Near-Suspended Assertion After Delay",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable dynamic site interventions for broken websites",
+    "enabled" : false,
+    "key" : "DynamicSiteInterventionsEnabled",
+    "name" : "Dynamic Site Interventions",
+    "status" : 1
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Embed Element",
+    "enabled" : true,
+    "key" : "EmbedElementEnabled",
+    "name" : "Embed Element",
+    "status" : 7
+  },
+  {
+    "category" : 6,
+    "defaultValue" : true,
+    "details" : "Enable Accessibility On Demand",
+    "enabled" : true,
+    "key" : "EnableAccessibilityOnDemand",
+    "name" : "Enable Accessibility On Demand",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Stitch adjacent text elements into one in the accessibility tree",
+    "enabled" : true,
+    "key" : "AccessibilityTextStitchingEnabled",
+    "name" : "Enable Accessibility Text Stitching",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "CanvasFingerprintingQuirkEnabled",
+    "name" : "Enable Canvas fingerprinting-related quirk",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Element.currentCSSZoom",
+    "enabled" : true,
+    "key" : "EnableElementCurrentCSSZoom",
+    "name" : "Enable Element.currentCSSZoom",
+    "status" : 6
+  },
+  {
+    "category" : 8,
+    "defaultValue" : true,
+    "details" : "Triggers EnhancedSecurity when insecure HTTP loads occur",
+    "enabled" : true,
+    "key" : "EnhancedSecurityHeuristicsEnabled",
+    "name" : "Enable EnhancedSecurity Heuristics",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "EnumeratingAllNetworkInterfacesEnabled",
+    "name" : "Enable Enumerating All Network Interfaces",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "EnumeratingVisibleNetworkInterfacesEnabled",
+    "name" : "Enable Enumerating Visible Network Interfaces",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable ICE Candidate Filtering",
+    "enabled" : true,
+    "key" : "ICECandidateFilteringEnabled",
+    "name" : "Enable ICE Candidate Filtering",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable legacy EME API",
+    "enabled" : true,
+    "key" : "LegacyEncryptedMediaAPIEnabled",
+    "name" : "Enable Legacy EME API",
+    "status" : 0
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable Mock Capture Devices",
+    "enabled" : false,
+    "key" : "MockCaptureDevicesEnabled",
+    "name" : "Enable Mock Capture Devices",
+    "status" : 2
+  },
+  {
+    "category" : 6,
+    "defaultValue" : true,
+    "details" : "Enable background web content throttling via RunningBoard",
+    "enabled" : true,
+    "key" : "BackgroundWebContentRunningBoardThrottlingEnabled",
+    "name" : "Enable background web content throttling via RunningBoard",
+    "status" : 1
+  },
+  {
+    "category" : 6,
+    "defaultValue" : false,
+    "details" : "Enable background-fetch API",
+    "enabled" : false,
+    "key" : "BackgroundFetchAPIEnabled",
+    "name" : "Enable background-fetch API",
+    "status" : 4
+  },
+  {
+    "category" : 8,
+    "defaultValue" : false,
+    "details" : "Enable debugging features in sandbox",
+    "enabled" : false,
+    "key" : "EnableDebuggingFeaturesInSandbox",
+    "name" : "Enable debugging features in sandbox",
+    "status" : 2
+  },
+  {
+    "category" : 8,
+    "defaultValue" : false,
+    "details" : "Enable experimental sandbox features",
+    "enabled" : false,
+    "key" : "ExperimentalSandboxEnabled",
+    "name" : "Enable experimental sandbox features",
+    "status" : 2
+  },
+  {
+    "category" : 8,
+    "defaultValue" : true,
+    "details" : "Validate file backed blobs were created by the correct web process",
+    "enabled" : true,
+    "key" : "BlobFileAccessEnforcementEnabled",
+    "name" : "Enforce blob backed file access valid for web process",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable enhanced HTML select element parsing quirk for specific applications",
+    "enabled" : false,
+    "key" : "HTMLEnhancedSelectParsingQuirkEnabled",
+    "name" : "Enhanced HTML select element parsing quirk",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable enhanced HTML select element parsing",
+    "enabled" : true,
+    "key" : "HTMLEnhancedSelectParsingEnabled",
+    "name" : "Enhanced HTML select element parsing",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable enhanced HTML select element",
+    "enabled" : true,
+    "key" : "HTMLEnhancedSelectEnabled",
+    "name" : "Enhanced HTML select element",
+    "status" : 6
+  },
+  {
+    "category" : 8,
+    "defaultValue" : true,
+    "details" : "Enables additional Enhanced Security support for certain links",
+    "enabled" : true,
+    "key" : "EnhancedSecurityLinksEnabled",
+    "name" : "Enhanced Security for links",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable the enterKeyHint HTML attribute",
+    "enabled" : true,
+    "key" : "EnterKeyHintEnabled",
+    "name" : "Enter Key Hint",
+    "status" : 2
+  },
+  {
+    "category" : 4,
+    "defaultValue" : false,
+    "details" : "Enable enumerated ARIA attributes",
+    "enabled" : false,
+    "key" : "EnumeratedARIAAttributeReflectionEnabled",
+    "name" : "Enumerated ARIA Attribute Reflection",
+    "status" : 3
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable the Event Timing API and supporting instrumentation",
+    "enabled" : true,
+    "key" : "EventTimingEnabled",
+    "name" : "Event Timing API",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable EventHandler driven smooth keyboard scrolling",
+    "enabled" : true,
+    "key" : "EventHandlerDrivenSmoothKeyboardScrollingEnabled",
+    "name" : "EventHandler driven smooth keyboard scrolling",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable experimental MediaSession coordinator API",
+    "enabled" : false,
+    "key" : "MediaSessionCoordinatorEnabled",
+    "name" : "Experimental MediaSession coordinator API",
+    "status" : 7
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable experimental MediaSession playlist API",
+    "enabled" : false,
+    "key" : "MediaSessionPlaylistEnabled",
+    "name" : "Experimental MediaSession playlist API",
+    "status" : 7
+  },
+  {
+    "category" : 4,
+    "defaultValue" : false,
+    "details" : "Enable LLDB debugging support for WebAssembly (requires new tab)",
+    "enabled" : false,
+    "key" : "WebAssemblyDebuggerEnabled",
+    "name" : "Experimental WebAssembly Debugger (Disables JIT)",
+    "status" : 3
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Enable explicit resource management builtins and syntax.",
+    "enabled" : true,
+    "key" : "ExplicitResourceManagementEnabled",
+    "name" : "Explicit Resource Management",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Expose all capture devices when one is used",
+    "enabled" : true,
+    "key" : "ExposeCaptureDevicesAfterCaptureEnabled",
+    "name" : "Expose all capture devices when one is used",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Expose the system default speaker as a specific device",
+    "enabled" : true,
+    "key" : "ExposeDefaultSpeakerAsSpecificDeviceEnabled",
+    "name" : "Expose the system default speaker as a specific device",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Extended Proofreading",
+    "enabled" : true,
+    "key" : "ExtendedProofreadingEnabled",
+    "name" : "Extended Proofreading",
+    "status" : 2
+  },
+  {
+    "category" : 6,
+    "defaultValue" : false,
+    "details" : "FTP support enabled",
+    "enabled" : false,
+    "key" : "FTPEnabled",
+    "name" : "FTP support enabled",
+    "status" : 3
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Facebook Live Recording Quirk",
+    "enabled" : true,
+    "key" : "FacebookLiveRecordingQuirkEnabled",
+    "name" : "Facebook Live Recording Quirk",
+    "status" : 2
+  },
+  {
+    "category" : 6,
+    "defaultValue" : true,
+    "details" : "Enable ReadableStream request bodies for fetch(). HTTP\/2 (or later) required.",
+    "enabled" : true,
+    "key" : "FetchUploadStreamsEnabled",
+    "name" : "Fetch upload streams",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable File System API",
+    "enabled" : true,
+    "key" : "FileSystemEnabled",
+    "name" : "File System API",
+    "status" : 7
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable FileSystemHandle for postMessage() and structuredClone()",
+    "enabled" : true,
+    "key" : "FileSystemHandleSerializationEnabled",
+    "name" : "File System Handle Serialization",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable File System WritableStream API",
+    "enabled" : true,
+    "key" : "FileSystemWritableStreamEnabled",
+    "name" : "File System WritableStream",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "FileReader API",
+    "enabled" : true,
+    "key" : "FileReaderAPIEnabled",
+    "name" : "FileReader API",
+    "status" : 0
+  },
+  {
+    "category" : 6,
+    "defaultValue" : false,
+    "details" : "Enable Filtering Link Decoration",
+    "enabled" : false,
+    "key" : "FilterLinkDecorationByDefaultEnabled",
+    "name" : "Filter Link Decoration",
+    "status" : 5
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Include video subtitle\/caption cues in Find-in-Page results",
+    "enabled" : false,
+    "key" : "FindInVideoEnabled",
+    "name" : "Find in Video",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Force all navigations to use Enhanced Security",
+    "enabled" : false,
+    "key" : "ForceEnhancedSecurity",
+    "name" : "Force Enhanced Security Mode",
+    "status" : 2
+  },
+  {
+    "category" : 8,
+    "defaultValue" : false,
+    "details" : "Forcing the Lockdown Mode Safe Font Parser independently from Lockdown Mode state",
+    "enabled" : false,
+    "key" : "ForceLockdownFontParserEnabled",
+    "name" : "Force Lockdown Mode Safe Font Parser",
+    "status" : 2
+  },
+  {
+    "category" : 8,
+    "defaultValue" : false,
+    "details" : "Disables Enhanced Security for all navigations",
+    "enabled" : false,
+    "key" : "EnhancedSecurityForceDisabled",
+    "name" : "Force disable Enhanced Security",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable form control refresh for Cocoa platforms",
+    "enabled" : true,
+    "key" : "FormControlRefreshEnabled",
+    "name" : "Form control refresh for Cocoa platforms",
+    "status" : 2
+  },
+  {
+    "category" : 6,
+    "defaultValue" : false,
+    "details" : "Use Resource Monitoring Settings for testing",
+    "enabled" : false,
+    "key" : "IFrameResourceMonitoringTestingSettingsEnabled",
+    "name" : "Frame Resource Monitoring Settings For Testing",
+    "status" : 2
+  },
+  {
+    "category" : 6,
+    "defaultValue" : false,
+    "details" : "Enable Usage Monitoring of Frame Resource Support",
+    "enabled" : false,
+    "key" : "IFrameResourceMonitoringEnabled",
+    "name" : "Frame Resource Monitoring Support",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Fullscreen API based Keyboard Lock",
+    "enabled" : false,
+    "key" : "FullScreenKeyboardLock",
+    "name" : "Fullscreen API based Keyboard Lock",
+    "status" : 1
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Fullscreen API",
+    "enabled" : false,
+    "key" : "FullScreenEnabled",
+    "name" : "Fullscreen API",
+    "status" : 0
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable audio capture in GPU Process",
+    "enabled" : true,
+    "key" : "CaptureAudioInGPUProcessEnabled",
+    "name" : "GPU Process: Audio Capture",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "GPU Process: Block Media Layer Re-hosting in WebContent process",
+    "enabled" : true,
+    "key" : "BlockMediaLayerRehostingInWebContentProcess",
+    "name" : "GPU Process: Block Media Layer Re-hosting",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable canvas rendering in GPU Process",
+    "enabled" : true,
+    "key" : "UseGPUProcessForCanvasRenderingEnabled",
+    "name" : "GPU Process: Canvas Rendering",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable DOM rendering in GPU Process",
+    "enabled" : true,
+    "key" : "UseGPUProcessForDOMRenderingEnabled",
+    "name" : "GPU Process: DOM Rendering",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Do all media loading and playback in the GPU Process",
+    "enabled" : true,
+    "key" : "UseGPUProcessForMediaEnabled",
+    "name" : "GPU Process: Media",
+    "status" : 0
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Display capture in GPU Process",
+    "enabled" : true,
+    "key" : "UseGPUProcessForDisplayCapture",
+    "name" : "GPU Process: Screen and Window capture",
+    "status" : 7
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable video capture in GPU Process",
+    "enabled" : true,
+    "key" : "CaptureVideoInGPUProcessEnabled",
+    "name" : "GPU Process: Video Capture",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Process all WebGL operations in GPU Process",
+    "enabled" : true,
+    "key" : "UseGPUProcessForWebGLEnabled",
+    "name" : "GPU Process: WebGL",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable WebRTC Platform Codecs in GPU Process",
+    "enabled" : true,
+    "key" : "WebRTCPlatformCodecsInGPUProcessEnabled",
+    "name" : "GPU Process: WebRTC Platform Codecs",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Support for Gamepad trigger vibration",
+    "enabled" : false,
+    "key" : "GamepadTriggerRumbleEnabled",
+    "name" : "Gamepad trigger vibration support",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Support for Gamepad.vibrationActuator",
+    "enabled" : true,
+    "key" : "GamepadVibrationActuatorEnabled",
+    "name" : "Gamepad.vibrationActuator support",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Web Gamepad API support",
+    "enabled" : true,
+    "key" : "GamepadsEnabled",
+    "name" : "Gamepads",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Generic Text Track Cue API",
+    "enabled" : true,
+    "key" : "GenericCueAPIEnabled",
+    "name" : "Generic Text Track Cue API",
+    "status" : 7
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Geolocation API",
+    "enabled" : true,
+    "key" : "GeolocationAPIEnabled",
+    "name" : "Geolocation API",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Get(Bounding)ClientRect API return a zoomed rect",
+    "enabled" : true,
+    "key" : "GetBoundingClientRectZoomedEnabled",
+    "name" : "Get(Bounding)ClientRect API zoomed",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "GraphicsContext Filter Rendering",
+    "enabled" : true,
+    "key" : "GraphicsContextFiltersEnabled",
+    "name" : "GraphicsContext Filter Rendering",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable GraphicsLayer accelerated drawing",
+    "enabled" : true,
+    "key" : "AcceleratedDrawingEnabled",
+    "name" : "GraphicsLayer accelerated drawing",
+    "status" : 2
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable HDR Accelerated Apply GainMap",
+    "enabled" : true,
+    "key" : "HDRAcceleratedApplyGainMapEnabled",
+    "name" : "HDR Accelerated Apply GainMap",
+    "status" : 6
+  },
+  {
+    "category" : 9,
+    "defaultValue" : true,
+    "details" : "Enable HTML <model> element",
+    "enabled" : true,
+    "key" : "ModelElementEnabled",
+    "name" : "HTML <model> element",
+    "status" : 6
+  },
+  {
+    "category" : 9,
+    "defaultValue" : false,
+    "details" : "Enable HTML <model> element for model documents",
+    "enabled" : false,
+    "key" : "ModelDocumentEnabled",
+    "name" : "HTML <model> elements for stand-alone document",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "HTML interactive form validation",
+    "enabled" : true,
+    "key" : "InteractiveFormValidationEnabled",
+    "name" : "HTML Interactive Form Validation",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable HTML media elements <audio>, <video> and <track>",
+    "enabled" : true,
+    "key" : "MediaEnabled",
+    "name" : "HTML Media Elements",
+    "status" : 0
+  },
+  {
+    "category" : 9,
+    "defaultValue" : true,
+    "details" : "Enable HTML alpha and colorspace attribute support for input elements of type color",
+    "enabled" : true,
+    "key" : "InputTypeColorEnhancementsEnabled",
+    "name" : "HTML alpha and colorspace attribute support for color inputs",
+    "status" : 6
+  },
+  {
+    "category" : 9,
+    "defaultValue" : true,
+    "details" : "Enable HTML headingoffset & headingreset attribute support",
+    "enabled" : true,
+    "key" : "HeadingOffsetEnabled",
+    "name" : "HTML headingoffset & headingreset attributes",
+    "status" : 6
+  },
+  {
+    "category" : 9,
+    "defaultValue" : true,
+    "details" : "Enable HTML popover attribute support",
+    "enabled" : true,
+    "key" : "PopoverAttributeEnabled",
+    "name" : "HTML popover attribute",
+    "status" : 6
+  },
+  {
+    "category" : 9,
+    "defaultValue" : true,
+    "details" : "Enable popover='hint' type support",
+    "enabled" : true,
+    "key" : "PopoverHintEnabled",
+    "name" : "HTML popover hint type",
+    "status" : 6
+  },
+  {
+    "category" : 9,
+    "defaultValue" : true,
+    "details" : "Enable HTML switch control",
+    "enabled" : true,
+    "key" : "SwitchControlEnabled",
+    "name" : "HTML switch control",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable HTML-in-Canvas",
+    "enabled" : false,
+    "key" : "HTMLInCanvasEnabled",
+    "name" : "HTML-in-Canvas",
+    "status" : 1
+  },
+  {
+    "category" : 8,
+    "defaultValue" : false,
+    "details" : "Enable HTTPS-by-default (HTTPS-First)",
+    "enabled" : false,
+    "key" : "HTTPSByDefaultEnabled",
+    "name" : "HTTPS-by-default (HTTPS-First)",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "HiddenPageDOMTimerThrottlingAutoIncreases",
+    "name" : "Hidden page DOM timer throttling auto-increases",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable hidden page DOM timer throttling",
+    "enabled" : true,
+    "key" : "HiddenPageDOMTimerThrottlingEnabled",
+    "name" : "Hidden page DOM timer throttling",
+    "status" : 0
+  },
+  {
+    "category" : 8,
+    "defaultValue" : false,
+    "details" : "Exclude sites on the high-value fraud target domains list from the shared web process",
+    "enabled" : false,
+    "key" : "SiteIsolationHighValueFraudTargetDomainsEnabled",
+    "name" : "High-value fraud target domains for Site Isolation",
+    "status" : 1
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Horizontal Banner View Overlays",
+    "enabled" : true,
+    "key" : "HorizontalBannerViewOverlaysEnabled",
+    "name" : "Horizontal Banner View Overlays",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable hosted blur material in media controls",
+    "enabled" : true,
+    "key" : "HostedBlurMaterialInMediaControlsEnabled",
+    "name" : "Hosted blur material in media controls",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Use losslessly compressed IOSurfaces",
+    "enabled" : true,
+    "key" : "IOSurfaceLosslessCompressionEnabled",
+    "name" : "IOSurface Lossless Compression",
+    "status" : 2
+  },
+  {
+    "category" : 7,
+    "defaultValue" : false,
+    "details" : "Intelligent Tracking Prevention Debug Mode",
+    "enabled" : false,
+    "key" : "ItpDebugModeEnabled",
+    "name" : "ITP Debug Mode",
+    "status" : 3
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Use idempotent text autosizing mode",
+    "enabled" : false,
+    "key" : "TextAutosizingUsesIdempotentMode",
+    "name" : "Idempotent Text Autosizing",
+    "status" : 0
+  },
+  {
+    "category" : 8,
+    "defaultValue" : false,
+    "details" : "Ignores X-Frame-Options and CSP ancestors",
+    "enabled" : false,
+    "key" : "IgnoreIframeEmbeddingProtectionsEnabled",
+    "name" : "Ignore iframe Embedding Protections",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Trigger image analysis when performing Find-in-Page",
+    "enabled" : false,
+    "key" : "ImageAnalysisDuringFindInPageEnabled",
+    "name" : "Image Analysis for Find-in-Page",
+    "status" : 1
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable Image Capture API",
+    "enabled" : true,
+    "key" : "ImageCaptureEnabled",
+    "name" : "Image Capture API",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable image controls",
+    "enabled" : false,
+    "key" : "ImageControlsEnabled",
+    "name" : "Image Controls",
+    "status" : 1
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Enable deferred module import.",
+    "enabled" : true,
+    "key" : "ImportDeferEnabled",
+    "name" : "Import Defer",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Enable text module import.",
+    "enabled" : true,
+    "key" : "ImportTextEnabled",
+    "name" : "Import Text",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "When true, accessibility-is-ignored is not used to build the core, platform-agnostic accessibility tree, and instead is expected to be applied at any platform-exposed layer.",
+    "enabled" : true,
+    "key" : "IncludeIgnoredInCoreAXTree",
+    "name" : "Include ignored elements in core accessibility tree",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "IndexedDB API",
+    "enabled" : true,
+    "key" : "IndexedDBAPIEnabled",
+    "name" : "IndexedDB API",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Use SQLite in-memory database for ephemeral IndexedDB instead of MemoryIDBBackingStore",
+    "enabled" : true,
+    "key" : "IndexedDBSQLiteMemoryBackingStoreEnabled",
+    "name" : "IndexedDB SQLite Memory Backing Store",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable the getAllRecords() API on IDBObjectStore\/IDBIndex and enable getAll()\/getAllKeys() to accept IDBGetAllOptions and support direction",
+    "enabled" : true,
+    "key" : "IndexedDBGetAllRecordsAndGetAllOptionsEnabled",
+    "name" : "IndexedDB getAllRecords() API and IDBGetAllOptions",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable an accessibility hierarchy for VoiceOver that can be accessed on a secondary thread for improved performance",
+    "enabled" : false,
+    "key" : "IsAccessibilityIsolatedTreeEnabled",
+    "name" : "Isolated Accessibility Tree Mode",
+    "status" : 0
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Expose the Iterator.prototype.chunks and Iterator.prototype.windows methods.",
+    "enabled" : true,
+    "key" : "IteratorChunkingEnabled",
+    "name" : "Iterator Chunking",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Expose the Iterator.includes method.",
+    "enabled" : true,
+    "key" : "IteratorIncludesEnabled",
+    "name" : "Iterator Includes",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Expose the Iterator.prototype.join method.",
+    "enabled" : true,
+    "key" : "IteratorJoinEnabled",
+    "name" : "Iterator Join",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Expose the Iterator.concat method.",
+    "enabled" : true,
+    "key" : "IteratorSequencingEnabled",
+    "name" : "Iterator Sequencing",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Expose JSON source text access feature.",
+    "enabled" : true,
+    "key" : "JSONSourceTextAccessEnabled",
+    "name" : "JSON Source Text Access",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Enable the implementation of JavaScript Promise Integration.",
+    "enabled" : true,
+    "key" : "JSPIEnabled",
+    "name" : "JavaScript Promise Integration",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable JavaScript",
+    "enabled" : true,
+    "key" : "JavaScriptEnabled",
+    "name" : "JavaScript",
+    "status" : 7
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Expose the Iterator.zip and Iterator.zipKeyed methods",
+    "enabled" : true,
+    "key" : "JointIterationEnabled",
+    "name" : "Joint Iteration",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Force the layer-based SVG Engine (LBSE) to create a RenderLayer for every SVG renderer (debugging only)",
+    "enabled" : false,
+    "key" : "LayerBasedSVGEngineForceLayerCreationEnabled",
+    "name" : "LBSE: Force layer creation for all SVG renderers",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Largest Contentful Paint performance entries",
+    "enabled" : true,
+    "key" : "LargestContentfulPaintEnabled",
+    "name" : "Largest Contentful Paint",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable next-generation layer-based SVG Engine (LBSE)",
+    "enabled" : false,
+    "key" : "LayerBasedSVGEngineEnabled",
+    "name" : "Layer-based SVG Engine (LBSE)",
+    "status" : 1
+  },
+  {
+    "category" : 9,
+    "defaultValue" : true,
+    "details" : "Enable lazy iframe loading support",
+    "enabled" : true,
+    "key" : "LazyIframeLoadingEnabled",
+    "name" : "Lazy iframe loading",
+    "status" : 7
+  },
+  {
+    "category" : 9,
+    "defaultValue" : true,
+    "details" : "Enable lazy image loading support",
+    "enabled" : true,
+    "key" : "LazyImageLoadingEnabled",
+    "name" : "Lazy image loading",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Legacy FontFaceSet Constructor API",
+    "enabled" : false,
+    "key" : "FontFaceSetConstructorEnabled",
+    "name" : "Legacy FontFaceSet Constructor API",
+    "status" : 3
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable legacy line layout visual coverage",
+    "enabled" : false,
+    "key" : "LegacyLineLayoutVisualCoverageEnabled",
+    "name" : "Legacy line layout visual coverage",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Legacy showModalDialog() API",
+    "enabled" : false,
+    "key" : "ShowModalDialogEnabled",
+    "name" : "Legacy showModalDialog() API",
+    "status" : 3
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Limit Media Capture to Secure Sites",
+    "enabled" : true,
+    "key" : "MediaCaptureRequiresSecureConnection",
+    "name" : "Limit Media Capture to Secure Sites",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable H264 and PCM with WebM Player and MediaRecorder",
+    "enabled" : false,
+    "key" : "LimitedMatroskaSupportEnabled",
+    "name" : "Limited Matroska Support",
+    "status" : 3
+  },
+  {
+    "category" : 6,
+    "defaultValue" : false,
+    "details" : "Enable link sanitizer",
+    "enabled" : false,
+    "key" : "LinkSanitizerEnabled",
+    "name" : "Link Sanitizer",
+    "status" : 1
+  },
+  {
+    "category" : 6,
+    "defaultValue" : true,
+    "details" : "Enable link rel=preconnect via early hints",
+    "enabled" : true,
+    "key" : "LinkPreconnectEarlyHintsEnabled",
+    "name" : "Link rel=preconnect via HTTP early hints",
+    "status" : 6
+  },
+  {
+    "category" : 6,
+    "defaultValue" : false,
+    "details" : "Enable LinkedPrefetch",
+    "enabled" : false,
+    "key" : "LinkPrefetchEnabled",
+    "name" : "LinkPrefetch",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable loading web archive with ephemeral storage",
+    "enabled" : true,
+    "key" : "LoadWebArchiveWithEphemeralStorageEnabled",
+    "name" : "Load Web Archive with ephemeral storage",
+    "status" : 6
+  },
+  {
+    "category" : 6,
+    "defaultValue" : false,
+    "details" : "Enable Local File Content Sniffing",
+    "enabled" : false,
+    "key" : "LocalFileContentSniffingEnabled",
+    "name" : "Local File Content Sniffing",
+    "status" : 2
+  },
+  {
+    "category" : 6,
+    "defaultValue" : false,
+    "details" : "Enable Local Network Access",
+    "enabled" : false,
+    "key" : "LocalNetworkAccessEnabled",
+    "name" : "Local Network Access",
+    "status" : 1
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Local Storage",
+    "enabled" : true,
+    "key" : "LocalStorageEnabled",
+    "name" : "Local Storage",
+    "status" : 7
+  },
+  {
+    "category" : 8,
+    "defaultValue" : true,
+    "details" : "Try parsing Web fonts with safe font parser in Lockdown Mode",
+    "enabled" : true,
+    "key" : "LockdownFontParserEnabled",
+    "name" : "Lockdown Mode Safe Fonts",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable logging page messages to system console",
+    "enabled" : false,
+    "key" : "LogsPageMessagesToSystemConsoleEnabled",
+    "name" : "Log page messages to system console",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable the proposed Login Status API",
+    "enabled" : false,
+    "key" : "LoginStatusAPIEnabled",
+    "name" : "Login Status API",
+    "status" : 4
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Adopt new size specs for media controls",
+    "enabled" : true,
+    "key" : "MediaControlsMacInlineSizeSpecsEnabled",
+    "name" : "Mac Inline Media Controls Specs",
+    "status" : 5
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable main content user gesture override",
+    "enabled" : false,
+    "key" : "MainContentUserGestureOverrideEnabled",
+    "name" : "Main content user gesture override",
+    "status" : 0
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Managed Media Source API",
+    "enabled" : true,
+    "key" : "ManagedMediaSourceEnabled",
+    "name" : "Managed Media Source API",
+    "status" : 7
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Managed Media Source Requires AirPlay source",
+    "enabled" : true,
+    "key" : "ManagedMediaSourceNeedsAirPlay",
+    "name" : "Managed Media Source Requires AirPlay source",
+    "status" : 7
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Disable features removed from the MathML Core spec.",
+    "enabled" : false,
+    "key" : "CoreMathMLEnabled",
+    "name" : "MathML Core",
+    "status" : 1
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Media Capabilities Extensions",
+    "enabled" : true,
+    "key" : "MediaCapabilitiesExtensionsEnabled",
+    "name" : "Media Capabilities Extensions",
+    "status" : 7
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable media playback functionalities",
+    "enabled" : true,
+    "key" : "MediaPlaybackEnabled",
+    "name" : "Media Playback Functionalities",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Media Session API",
+    "enabled" : true,
+    "key" : "MediaSessionEnabled",
+    "name" : "Media Session API",
+    "status" : 7
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Media Source API",
+    "enabled" : true,
+    "key" : "MediaSourceEnabled",
+    "name" : "Media Source API",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable media devices",
+    "enabled" : false,
+    "key" : "MediaDevicesEnabled",
+    "name" : "Media devices",
+    "status" : 0
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebM support with MediaRecorder",
+    "enabled" : true,
+    "key" : "MediaRecorderEnabledWebM",
+    "name" : "MediaRecorder WebM",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "MediaRecorder",
+    "enabled" : true,
+    "key" : "MediaRecorderEnabled",
+    "name" : "MediaRecorder",
+    "status" : 7
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable MediaSession capture related API",
+    "enabled" : true,
+    "key" : "MediaSessionCaptureToggleAPIEnabled",
+    "name" : "MediaSession capture related API",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable MediaSession hangup, previousslide, nextslide, and enterpictureinpicture actions",
+    "enabled" : false,
+    "key" : "MediaSessionExtendedActionsEnabled",
+    "name" : "MediaSession extended actions",
+    "status" : 4
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "MediaSource in a Worker",
+    "enabled" : true,
+    "key" : "MediaSourceInWorkerEnabled",
+    "name" : "MediaSource in a Worker",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "MediaSource prefers DecompressionSession",
+    "enabled" : true,
+    "key" : "MediaSourcePrefersDecompressionSession",
+    "name" : "MediaSource prefers DecompressionSession",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable MediaStreamTrack Processing",
+    "enabled" : true,
+    "key" : "MediaStreamTrackProcessingEnabled",
+    "name" : "MediaStreamTrack Processing",
+    "status" : 7
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable MediaStreamTrackHandle",
+    "enabled" : false,
+    "key" : "MediaStreamTrackHandleEnabled",
+    "name" : "MediaStreamTrackHandle",
+    "status" : 5
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable the interactive-widget attribute on the viewport meta element",
+    "enabled" : true,
+    "key" : "MetaViewportInteractiveWidgetEnabled",
+    "name" : "Meta Viewport Interactive Widget",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Generate momentum events in WebKit instead of using those delivered by the system",
+    "enabled" : true,
+    "key" : "MomentumScrollingAnimatorEnabled",
+    "name" : "Momentum Scrolling Animator",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable input elements of type month",
+    "enabled" : false,
+    "key" : "InputTypeMonthEnabled",
+    "name" : "Month Input",
+    "status" : 0
+  },
+  {
+    "category" : 4,
+    "defaultValue" : false,
+    "details" : "Enable more currencyDisplay choices for Intl.NumberFormat",
+    "enabled" : false,
+    "key" : "MoreCurrencyDisplayChoicesEnabled",
+    "name" : "More Currency Display Choices",
+    "status" : 4
+  },
+  {
+    "category" : 8,
+    "defaultValue" : false,
+    "details" : "Enable back\/forward cache when site isolation is active",
+    "enabled" : false,
+    "key" : "MultiProcessBackForwardCacheEnabled",
+    "name" : "Multi-Process Back\/Forward Cache",
+    "status" : 4
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Mute Camera on Microphone Interruption",
+    "enabled" : false,
+    "key" : "MuteCameraOnMicrophoneInterruptionEnabled",
+    "name" : "Mute Camera on Microphone Interruption",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Navigation API Precommit Handler",
+    "enabled" : true,
+    "key" : "NavigationAPIPrecommitHandlerEnabled",
+    "name" : "Navigation API Precommit Handler",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Navigation API",
+    "enabled" : true,
+    "key" : "NavigationAPIEnabled",
+    "name" : "Navigation API",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable the navigator.userAgentData JavaScript API",
+    "enabled" : false,
+    "key" : "NavigatorUserAgentDataJavaScriptAPIEnabled",
+    "name" : "Navigator userAgentData JavaScript API",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable site-specific quirks",
+    "enabled" : true,
+    "key" : "NeedsSiteSpecificQuirks",
+    "name" : "Needs Site-Specific Quirks",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "",
+    "enabled" : true,
+    "key" : "NeedsStorageAccessFromFileURLsQuirk",
+    "name" : "Needs storage access from file URLs quirk",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable next-generation grid layout integration (GFC)",
+    "enabled" : true,
+    "key" : "GridFormattingContextIntegrationEnabled",
+    "name" : "Next-generation grid layout integration (GFC)",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "NotificationEvent and ServiceWorkerRegistration.showNotification() support",
+    "enabled" : true,
+    "key" : "NotificationEventEnabled",
+    "name" : "NotificationEvent support",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable the Notifications API",
+    "enabled" : true,
+    "key" : "NotificationsEnabled",
+    "name" : "Notifications",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Support for the Observable API",
+    "enabled" : false,
+    "key" : "ObservableEnabled",
+    "name" : "Observable API",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Serve accessibility hit tests off the main-thread",
+    "enabled" : true,
+    "key" : "AccessibilityThreadHitTestingEnabled",
+    "name" : "Off Main-Thread Accessibility Hit Testing",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Support for the OffscreenCanvas APIs in Workers",
+    "enabled" : true,
+    "key" : "OffscreenCanvasInWorkersEnabled",
+    "name" : "OffscreenCanvas in Workers",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Support for the OffscreenCanvas APIs",
+    "enabled" : true,
+    "key" : "OffscreenCanvasEnabled",
+    "name" : "OffscreenCanvas",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable opaque loading for media",
+    "enabled" : true,
+    "key" : "EnableOpaqueLoadingForMedia",
+    "name" : "Opaque loading for media",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable the OpenID4VP presentation protocols for the Digital Credentials API",
+    "enabled" : true,
+    "key" : "DigitalCredentialsOpenID4VPEnabled",
+    "name" : "OpenID4VP for Digital Credentials API",
+    "status" : 2
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Enable Opportunistic Sweeping and GC",
+    "enabled" : true,
+    "key" : "OpportunisticSweepingAndGarbageCollectionEnabled",
+    "name" : "Opportunistic Sweeping and GC",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable opt-in partitioned cookies",
+    "enabled" : true,
+    "key" : "OptInPartitionedCookiesEnabled",
+    "name" : "Opt-in partitioned cookies (CHIPS)",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable the Origin API",
+    "enabled" : true,
+    "key" : "OriginAPIEnabled",
+    "name" : "Origin API",
+    "status" : 6
+  },
+  {
+    "category" : 8,
+    "defaultValue" : true,
+    "details" : "Support for the Origin-Agent-Cluster HTTP response header and window.originAgentCluster getter",
+    "enabled" : true,
+    "key" : "OriginAgentClusterEnabled",
+    "name" : "Origin-Agent-Cluster header",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable page visibility-based process suppression",
+    "enabled" : true,
+    "key" : "PageVisibilityBasedProcessSuppressionEnabled",
+    "name" : "Page visibility-based process suppression",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Permissions API",
+    "enabled" : true,
+    "key" : "PermissionsAPIEnabled",
+    "name" : "Permissions API",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Picture-in-Picture Playback State Enabled",
+    "enabled" : true,
+    "key" : "PictureInPicturePlaybackStateEnabled",
+    "name" : "Picture-in-Picture Playback State Enabled",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable the Pointer Lock API",
+    "enabled" : true,
+    "key" : "PointerLockEnabled",
+    "name" : "Pointer Lock API",
+    "status" : 2
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Keep an outside list marker as the list item's first child and position it after layout, instead of reparenting it into the descendant that holds the first line box",
+    "enabled" : true,
+    "key" : "ListMarkerPositionedPostLayoutEnabled",
+    "name" : "Position outside list markers after layout",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Prefer page rendering updates near 60 frames per second rather than using the display's refresh rate",
+    "enabled" : true,
+    "key" : "PreferPageRenderingUpdatesNear60FPSEnabled",
+    "name" : "Prefer Page Rendering Updates near 60fps",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Prefers most visible video in element fullscreen.",
+    "enabled" : true,
+    "key" : "VideoFullsceenPrefersMostVisibleHeuristic",
+    "name" : "Prefers most visible video in element fullscreen.",
+    "status" : 6
+  },
+  {
+    "category" : 7,
+    "defaultValue" : false,
+    "details" : "Enable Private Click Measurement Debug Mode",
+    "enabled" : false,
+    "key" : "PrivateClickMeasurementDebugModeEnabled",
+    "name" : "Private Click Measurement Debug Mode",
+    "status" : 3
+  },
+  {
+    "category" : 7,
+    "defaultValue" : true,
+    "details" : "Enable Private Click Measurement Fraud Prevention",
+    "enabled" : true,
+    "key" : "PrivateClickMeasurementFraudPreventionEnabled",
+    "name" : "Private Click Measurement Fraud Prevention",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Private Click Measurement for Cross-Site Link Navigations",
+    "enabled" : true,
+    "key" : "PrivateClickMeasurementEnabled",
+    "name" : "Private Click Measurement",
+    "status" : 0
+  },
+  {
+    "category" : 7,
+    "defaultValue" : true,
+    "details" : "Enable private token usage by third party",
+    "enabled" : true,
+    "key" : "PrivateTokenUsageByThirdPartyEnabled",
+    "name" : "Private Token usage by third party",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : false,
+    "details" : "Expose the Promise.isPromise method.",
+    "enabled" : false,
+    "key" : "PromiseIsPromiseEnabled",
+    "name" : "Promise.isPromise",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable Push API",
+    "enabled" : false,
+    "key" : "PushAPIEnabled",
+    "name" : "Push API",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Quirk to get Mail to load signatures correctly with WebKitLegacy",
+    "enabled" : false,
+    "key" : "LegacyPluginQuirkForMailSignaturesEnabled",
+    "name" : "Quirk to get Mail to load signatures correctly with WebKitLegacy",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Quirk to prevent delayed initial painting on sites using Google's Anti-Flicker optimization",
+    "enabled" : true,
+    "key" : "GoogleAntiFlickerOptimizationQuirkEnabled",
+    "name" : "Quirk to prevent delayed initial painting on sites using Google's Anti-Flicker optimization",
+    "status" : 7
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable RTC Encoded Streams Quirk",
+    "enabled" : true,
+    "key" : "RTCEncodedStreamsQuirkEnabled",
+    "name" : "RTC Encoded Streams Quirk",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Readable Byte Streams",
+    "enabled" : true,
+    "key" : "ReadableByteStreamAPIEnabled",
+    "name" : "ReadableByteStream",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable ReadableStream async iterable",
+    "enabled" : true,
+    "key" : "ReadableStreamIterableEnabled",
+    "name" : "ReadableStream async iterable",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable ReadableStream.from",
+    "enabled" : true,
+    "key" : "ReadableStreamFromEnabled",
+    "name" : "ReadableStream.from",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable ReadableStream\/WritableStream\/TransformStream transfer",
+    "enabled" : true,
+    "key" : "ReadableStreamTransferEnabled",
+    "name" : "ReadableStream\/WritableStream\/TransformStream transfer",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : false,
+    "details" : "Allow the use in regular expressions of \\A, \\z and \\Z from the RegExp Buffer Boundaries proposal",
+    "enabled" : false,
+    "key" : "RegExpBufferBoundariesEnabled",
+    "name" : "RegExp Buffer Boundaries",
+    "status" : 4
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable MediaSessionManager in the UI process",
+    "enabled" : false,
+    "key" : "RemoteMediaSessionManagerEnabled",
+    "name" : "Remote MediaSessionManager",
+    "status" : 1
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Remote Playback API",
+    "enabled" : true,
+    "key" : "RemotePlaybackEnabled",
+    "name" : "Remote Playback API",
+    "status" : 7
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "RemoteSnapshottingEnabled",
+    "name" : "Remote Snapshotting",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Remove Background",
+    "enabled" : true,
+    "key" : "RemoveBackgroundEnabled",
+    "name" : "Remove Background",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable RequestVideoFrameCallback API",
+    "enabled" : true,
+    "key" : "RequestVideoFrameCallbackEnabled",
+    "name" : "RequestVideoFrameCallback",
+    "status" : 7
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Require a recent WebAuthn authentication to set login status",
+    "enabled" : false,
+    "key" : "LoginStatusAPIRequiresWebAuthnEnabled",
+    "name" : "Require WebAuthn with the Login Status API",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Require a user gesture for speaker selection",
+    "enabled" : true,
+    "key" : "SpeakerSelectionRequiresUserGesture",
+    "name" : "Require a user gesture for speaker selection",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Require being in Fullscreen to lock screen orientation",
+    "enabled" : true,
+    "key" : "FullscreenRequirementForScreenOrientationLockingEnabled",
+    "name" : "Require being in Fullscreen to lock screen orientation",
+    "status" : 0
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Require focus to start getUserMedia",
+    "enabled" : true,
+    "key" : "GetUserMediaRequiresFocus",
+    "name" : "Require focus to start getUserMedia",
+    "status" : 2
+  },
+  {
+    "category" : 6,
+    "defaultValue" : true,
+    "details" : "Network process side priority and visibility based resource load scheduling",
+    "enabled" : true,
+    "key" : "ResourceLoadSchedulingEnabled",
+    "name" : "Resource Load Scheduling",
+    "status" : 2
+  },
+  {
+    "category" : 6,
+    "defaultValue" : false,
+    "details" : "Make resource usage overlay visible",
+    "enabled" : false,
+    "key" : "ResourceUsageOverlayVisible",
+    "name" : "Resource usage overlay",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable responding to thermal pressure aggressively",
+    "enabled" : false,
+    "key" : "RespondToThermalPressureAggressively",
+    "name" : "Respond to thermal pressure aggressively",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "SKAttribution",
+    "enabled" : true,
+    "key" : "SKAttributionEnabled",
+    "name" : "SKAttribution",
+    "status" : 0
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable referencing SVG resources (paint servers, etc.) via external or data: URLs",
+    "enabled" : true,
+    "key" : "SVGExternalResourcesEnabled",
+    "name" : "SVG external resources",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Safe Browsing",
+    "enabled" : true,
+    "key" : "SafeBrowsingEnabled",
+    "name" : "Safe Browsing",
+    "status" : 0
+  },
+  {
+    "category" : 7,
+    "defaultValue" : false,
+    "details" : "Enable SameSite strict enforcement to mitigate bounce tracking",
+    "enabled" : false,
+    "key" : "IsSameSiteStrictEnforcementEnabled",
+    "name" : "SameSite strict enforcement (ITP)",
+    "status" : 1
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable scoped custom element registry",
+    "enabled" : true,
+    "key" : "ScopedCustomElementRegistryEnabled",
+    "name" : "Scoped custom element registry",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable Screen Orientation API (Locking \/ Unlocking)",
+    "enabled" : false,
+    "key" : "ScreenOrientationLockingAPIEnabled",
+    "name" : "Screen Orientation API (Locking \/ Unlocking)",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Screen Orientation API",
+    "enabled" : true,
+    "key" : "ScreenOrientationAPIEnabled",
+    "name" : "Screen Orientation API",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Screen Time",
+    "enabled" : true,
+    "key" : "ScreenTimeEnabled",
+    "name" : "Screen Time",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Screen Wake Lock API",
+    "enabled" : true,
+    "key" : "ScreenWakeLockAPIEnabled",
+    "name" : "Screen Wake Lock API",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable ScreenCapture",
+    "enabled" : true,
+    "key" : "ScreenCaptureEnabled",
+    "name" : "ScreenCapture",
+    "status" : 7
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Script tracking privacy logging enabled",
+    "enabled" : false,
+    "key" : "ScriptTrackingPrivacyLoggingEnabled",
+    "name" : "Script Tracking Privacy Logging",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Block network requests to known tracking domains",
+    "enabled" : true,
+    "key" : "ScriptTrackingPrivacyNetworkRequestBlockingEnabled",
+    "name" : "Script Tracking Privacy Network Requests Blocking",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Script tracking privacy protections enabled",
+    "enabled" : true,
+    "key" : "ScriptTrackingPrivacyProtectionsEnabled",
+    "name" : "Script Tracking Privacy Protections",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable behaviors used by scrolling performance tests",
+    "enabled" : false,
+    "key" : "ScrollingPerformanceTestingEnabled",
+    "name" : "Scroll Performance Testing Enabled",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Scroll To Text Fragment Feature Detection",
+    "enabled" : true,
+    "key" : "ScrollToTextFragmentFeatureDetectionEnabled",
+    "name" : "Scroll To Text Fragment Feature Detection",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Scroll To Text Fragment Generation Menu",
+    "enabled" : true,
+    "key" : "ScrollToTextFragmentGenerationEnabled",
+    "name" : "Scroll To Text Fragment Generation",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Scroll To Text Fragment Indicator",
+    "enabled" : true,
+    "key" : "ScrollToTextFragmentIndicatorEnabled",
+    "name" : "Scroll To Text Fragment Indicator",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Scroll To Text Fragment Marking",
+    "enabled" : true,
+    "key" : "ScrollToTextFragmentMarkingEnabled",
+    "name" : "Scroll To Text Fragment Marking",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Scroll To Text Fragment",
+    "enabled" : true,
+    "key" : "ScrollToTextFragmentEnabled",
+    "name" : "Scroll To Text Fragment",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable scroll animator",
+    "enabled" : true,
+    "key" : "ScrollAnimatorEnabled",
+    "name" : "Scroll animator",
+    "status" : 0
+  },
+  {
+    "category" : 8,
+    "defaultValue" : true,
+    "details" : "Allow access to HTTPS-only Web APIs over HTTP",
+    "enabled" : true,
+    "key" : "SecureContextChecksEnabled",
+    "name" : "Secure Context Checks",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Selection Flipping",
+    "enabled" : true,
+    "key" : "SelectionFlippingEnabled",
+    "name" : "Selection Flipping",
+    "status" : 0
+  },
+  {
+    "category" : 6,
+    "defaultValue" : true,
+    "details" : "Enable Service Worker Install Event API",
+    "enabled" : true,
+    "key" : "ServiceWorkerInstallEventEnabled",
+    "name" : "Service Worker Install Event",
+    "status" : 6
+  },
+  {
+    "category" : 6,
+    "defaultValue" : true,
+    "details" : "Enable Service Worker Navigation Preload API",
+    "enabled" : true,
+    "key" : "ServiceWorkerNavigationPreloadEnabled",
+    "name" : "Service Worker Navigation Preload",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Service Workers",
+    "enabled" : true,
+    "key" : "ServiceWorkersEnabled",
+    "name" : "Service Workers",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Session Storage",
+    "enabled" : true,
+    "key" : "SessionStorageEnabled",
+    "name" : "Session Storage",
+    "status" : 7
+  },
+  {
+    "category" : 4,
+    "defaultValue" : false,
+    "details" : "Expose the ShadowRealm object.",
+    "enabled" : false,
+    "key" : "ShadowRealmEnabled",
+    "name" : "ShadowRealm",
+    "status" : 4
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable the Shape Detection API",
+    "enabled" : false,
+    "key" : "ShapeDetection",
+    "name" : "Shape Detection API",
+    "status" : 4
+  },
+  {
+    "category" : 8,
+    "defaultValue" : false,
+    "details" : "Put cross-site frames in a shared Web process",
+    "enabled" : false,
+    "key" : "SiteIsolationSharedProcessEnabled",
+    "name" : "Shared process for Site Isolation",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enabled SharedWorker API",
+    "enabled" : true,
+    "key" : "SharedWorkerEnabled",
+    "name" : "SharedWorker",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Show test-only UI for tweaking accessibility custom color mode settings",
+    "enabled" : false,
+    "key" : "ShowAXCustomColorModeControls",
+    "name" : "Show AX custom color mode controls",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Adds a 'Media Stats' context menu item to <video> when the Develop menu is enabled",
+    "enabled" : false,
+    "key" : "ShowMediaStatsContextMenuItemEnabled",
+    "name" : "Show Media Stats",
+    "status" : 3
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "ShowFrameProcessBordersEnabled",
+    "name" : "Show frame process borders",
+    "status" : 2
+  },
+  {
+    "category" : 8,
+    "defaultValue" : false,
+    "details" : "Put cross-origin iframes in a different process",
+    "enabled" : false,
+    "key" : "SiteIsolationEnabled",
+    "name" : "Site Isolation",
+    "status" : 1
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Make slow frame indicator visible",
+    "enabled" : false,
+    "key" : "SlowFrameIndicatorVisible",
+    "name" : "Slow frame indicator",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Allow Smart Lists to be enabled",
+    "enabled" : false,
+    "key" : "SmartListsAvailable",
+    "name" : "Smart Lists",
+    "status" : 0
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Render projected\/spatial (APMP) video onto a draggable projection in the media controls",
+    "enabled" : false,
+    "key" : "SpatialVideoRenderingEnabled",
+    "name" : "Spatial Video Rendering",
+    "status" : 4
+  },
+  {
+    "category" : 9,
+    "defaultValue" : true,
+    "details" : "SpeculationRules prefetch",
+    "enabled" : true,
+    "key" : "SpeculationRulesPrefetchEnabled",
+    "name" : "SpeculationRules prefetch",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable SpeechRecognition of WebSpeech API",
+    "enabled" : true,
+    "key" : "SpeechRecognitionEnabled",
+    "name" : "SpeechRecognition API",
+    "status" : 7
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "SpeechSynthesis API",
+    "enabled" : true,
+    "key" : "SpeechSynthesisAPIEnabled",
+    "name" : "SpeechSynthesis API",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Storage API Estimate",
+    "enabled" : true,
+    "key" : "StorageAPIEstimateEnabled",
+    "name" : "Storage API Estimate",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Storage API",
+    "enabled" : true,
+    "key" : "StorageAPIEnabled",
+    "name" : "Storage API",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "When enabled, storage access granted to one frame is shared with all same-origin frames on the page",
+    "enabled" : false,
+    "key" : "StorageAccessAPIPerPageScopeEnabled",
+    "name" : "Storage Access API Per-Page Scope",
+    "status" : 1
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable the Storage Access API for cross-site cookie access",
+    "enabled" : true,
+    "key" : "StorageAccessAPIEnabled",
+    "name" : "Storage Access API",
+    "status" : 0
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Support HDR tonemapping during compositing",
+    "enabled" : false,
+    "key" : "SupportHDRCompositorTonemappingEnabled",
+    "name" : "Support HDR Compositor tonemapping",
+    "status" : 4
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Support HDR Display",
+    "enabled" : true,
+    "key" : "SupportHDRDisplayEnabled",
+    "name" : "Support HDR Display",
+    "status" : 6
+  },
+  {
+    "category" : 6,
+    "defaultValue" : true,
+    "details" : "Swap WebContent Processes on cross-site navigations",
+    "enabled" : true,
+    "key" : "ProcessSwapOnCrossSiteNavigationEnabled",
+    "name" : "Swap Processes on Cross-Site Navigation",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Take WebKit:NearSuspended assertions on background web content processes",
+    "enabled" : false,
+    "key" : "ShouldTakeNearSuspendedAssertions",
+    "name" : "Take WebKit:NearSuspended assertions on background web content processes",
+    "status" : 2
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Expose the Temporal object.",
+    "enabled" : true,
+    "key" : "TemporalEnabled",
+    "name" : "Temporal",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Text Animations",
+    "enabled" : true,
+    "key" : "TextAnimationsEnabled",
+    "name" : "Text Animations",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Text Effects",
+    "enabled" : true,
+    "key" : "TextEffectsEnabled",
+    "name" : "Text Effects",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable Text Extraction Debug UI",
+    "enabled" : false,
+    "key" : "TextExtractionDebugUIEnabled",
+    "name" : "Text Extraction Debug UI",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Text Extraction Filter",
+    "enabled" : true,
+    "key" : "TextExtractionFilterEnabled",
+    "name" : "Text Extraction Filter",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable Text Recognition in Videos",
+    "enabled" : true,
+    "key" : "TextRecognitionInVideosEnabled",
+    "name" : "Text Recognition in Videos",
+    "status" : 2
+  },
+  {
+    "category" : 2,
+    "defaultValue" : true,
+    "details" : "Enable Text Shaping Across Inline Boxes",
+    "enabled" : true,
+    "key" : "TextShapingAcrossInlineBoxes",
+    "name" : "Text Shaping Across Inline Boxes",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable Text Tracks in Media Source Extension",
+    "enabled" : false,
+    "key" : "TextTracksInMSEEnabled",
+    "name" : "Text Tracks in MSE",
+    "status" : 4
+  },
+  {
+    "category" : 1,
+    "defaultValue" : true,
+    "details" : "Run qualifying scroll-driven animations on a separate thread",
+    "enabled" : true,
+    "key" : "ThreadedScrollDrivenAnimationsEnabled",
+    "name" : "Threaded Scroll-driven Animations",
+    "status" : 6
+  },
+  {
+    "category" : 1,
+    "defaultValue" : true,
+    "details" : "Run qualifying time-based animations on a separate thread",
+    "enabled" : true,
+    "key" : "ThreadedTimeBasedAnimationsEnabled",
+    "name" : "Threaded Time-based Animations",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Make tiled scrolling indicator visible",
+    "enabled" : false,
+    "key" : "TiledScrollingIndicatorVisible",
+    "name" : "Tiled scrolling indicator",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable input elements of type time",
+    "enabled" : true,
+    "key" : "InputTypeTimeEnabled",
+    "name" : "Time Input",
+    "status" : 7
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Top content inset background can change after scrolling",
+    "enabled" : false,
+    "key" : "TopContentInsetBackgroundCanChangeAfterScrolling",
+    "name" : "Top Content Inset Background Can Change After Scrolling",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Track Configuration API",
+    "enabled" : false,
+    "key" : "TrackConfigurationEnabled",
+    "name" : "Track Configuration API",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Trusted Types",
+    "enabled" : true,
+    "key" : "TrustedTypesEnabled",
+    "name" : "Trusted Types",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable the UndoManager DOM API",
+    "enabled" : false,
+    "key" : "UndoManagerAPIEnabled",
+    "name" : "UndoManager DOM API",
+    "status" : 1
+  },
+  {
+    "category" : 8,
+    "defaultValue" : true,
+    "details" : "Enable Unified PDF Viewer",
+    "enabled" : true,
+    "key" : "UnifiedPDFEnabled",
+    "name" : "Unified PDF Viewer",
+    "status" : 7
+  },
+  {
+    "category" : 8,
+    "defaultValue" : false,
+    "details" : "Enable Upgrading IP addresses and localhost in mixed content",
+    "enabled" : false,
+    "key" : "IPAddressAndLocalhostMixedContentUpgradeTestingEnabled",
+    "name" : "Upgrade IP addresses and localhost in mixed content",
+    "status" : 4
+  },
+  {
+    "category" : 6,
+    "defaultValue" : true,
+    "details" : "Upgrade known hosts to HTTPS",
+    "enabled" : true,
+    "key" : "UpgradeKnownHostsToHTTPSEnabled",
+    "name" : "Upgrade known hosts to HTTPS",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Use AVCaptureDeviceRotationCoordinator API",
+    "enabled" : false,
+    "key" : "UseAVCaptureDeviceRotationCoordinatorAPI",
+    "name" : "Use AVCaptureDeviceRotationCoordinator API",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Use IFC for SVG text rendering",
+    "enabled" : false,
+    "key" : "UseIFCForSVGText",
+    "name" : "Use IFC for SVG text",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Use Microphone Mute Status API",
+    "enabled" : false,
+    "key" : "UseMicrophoneMuteStatusAPI",
+    "name" : "Use Microphone Mute Status API",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable UIProcess-side BackForwardListFrameItem lookup for child frames during Back\/Forward navigation",
+    "enabled" : false,
+    "key" : "UseUIProcessForBackForwardItemLoading",
+    "name" : "Use UIProcess for Back\/Forward Item Loading",
+    "status" : 1
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "UseGiantTiles",
+    "name" : "Use giant tiles",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable User Activation API",
+    "enabled" : true,
+    "key" : "UserActivationAPIEnabled",
+    "name" : "User Activation API",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "UserGesture Promise Propagation",
+    "enabled" : true,
+    "key" : "UserGesturePromisePropagationEnabled",
+    "name" : "UserGesture Promise Propagation",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Validate UserGesture requirements in Service Workers",
+    "enabled" : true,
+    "key" : "ServiceWorkersUserGestureEnabled",
+    "name" : "Validate UserGesture requirements in Service Workers",
+    "status" : 2
+  },
+  {
+    "category" : 8,
+    "defaultValue" : false,
+    "details" : "Verifies that the user gesture for window.open came from the UI process",
+    "enabled" : false,
+    "key" : "VerifyWindowOpenUserGestureFromUIProcess",
+    "name" : "Verify window.open user gesture",
+    "status" : 4
+  },
+  {
+    "category" : 9,
+    "defaultValue" : true,
+    "details" : "Enable support for form controls in vertical writing mode",
+    "enabled" : true,
+    "key" : "VerticalFormControlsEnabled",
+    "name" : "Vertical form control support",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "VideoMediaSampleRenderer fallback to AVSBDL for protected content disabled",
+    "enabled" : true,
+    "key" : "VideoRendererProtectedFallbackDisabled",
+    "name" : "VideoMediaSampleRenderer fallback to AVSBDL for protected content disabled",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "VideoMediaSampleRenderer use DecompressionSession for protected content",
+    "enabled" : false,
+    "key" : "VideoRendererUseDecompressionSessionForProtected",
+    "name" : "VideoMediaSampleRenderer use DecompressionSession for protected content",
+    "status" : 5
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable view gesture debugging",
+    "enabled" : false,
+    "key" : "ViewGestureDebuggingEnabled",
+    "name" : "View gesture debugging",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable the Viewport Segments API",
+    "enabled" : false,
+    "key" : "ViewportSegmentsAPIEnabled",
+    "name" : "Viewport Segments API",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable Visual Translation",
+    "enabled" : true,
+    "key" : "VisualTranslationEnabled",
+    "name" : "Visual Translation",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Visual Viewport API",
+    "enabled" : true,
+    "key" : "VisualViewportAPIEnabled",
+    "name" : "Visual Viewport API",
+    "status" : 7
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable Web API Statistics",
+    "enabled" : false,
+    "key" : "WebAPIStatisticsEnabled",
+    "name" : "Web API Statistics",
+    "status" : 1
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable Web APIs to be exposed in ShadowRealm",
+    "enabled" : false,
+    "key" : "WebAPIsInShadowRealmEnabled",
+    "name" : "Web APIs in ShadowRealm",
+    "status" : 1
+  },
+  {
+    "category" : 1,
+    "defaultValue" : false,
+    "details" : "Support for the CustomEffect interface",
+    "enabled" : false,
+    "key" : "WebAnimationsCustomEffectsEnabled",
+    "name" : "Web Animations custom effects",
+    "status" : 4
+  },
+  {
+    "category" : 1,
+    "defaultValue" : false,
+    "details" : "Support for specifying a custom frame rate for Web Animations",
+    "enabled" : false,
+    "key" : "WebAnimationsCustomFrameRateEnabled",
+    "name" : "Web Animations custom frame rate",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable web archive debug mode",
+    "enabled" : false,
+    "key" : "WebArchiveDebugModeEnabled",
+    "name" : "Web Archive debug mode",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable web archive testing mode",
+    "enabled" : false,
+    "key" : "WebArchiveTestingModeEnabled",
+    "name" : "Web Archive testing mode",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Modern Web Authentication support though AuthenticationServices",
+    "enabled" : true,
+    "key" : "WebAuthenticationASEnabled",
+    "name" : "Web Authentication AuthenticationServices",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Web Authentication support",
+    "enabled" : true,
+    "key" : "WebAuthenticationEnabled",
+    "name" : "Web Authentication",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable Ask To for WebContentRestrictions",
+    "enabled" : true,
+    "key" : "WebContentRestrictionsAskToEnabled",
+    "name" : "Web Content Restrictions Ask To",
+    "status" : 1
+  },
+  {
+    "category" : 8,
+    "defaultValue" : true,
+    "details" : "Enable Transitive Trust for WebContentRestrictions",
+    "enabled" : true,
+    "key" : "WebContentRestrictionsTransitiveTrustEnabled",
+    "name" : "Web Content Restrictions Transitive Trust",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Web Locks API",
+    "enabled" : true,
+    "key" : "WebLocksAPIEnabled",
+    "name" : "Web Locks API",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable level 2 of Web Share API",
+    "enabled" : true,
+    "key" : "WebShareFileAPIEnabled",
+    "name" : "Web Share API Level 2",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable support for share sheet via Web Share API",
+    "enabled" : true,
+    "key" : "WebShareEnabled",
+    "name" : "Web Share",
+    "status" : 0
+  },
+  {
+    "category" : 4,
+    "defaultValue" : false,
+    "details" : "Support for allowing WebAssembly modules to integrate as ES modules",
+    "enabled" : false,
+    "key" : "WebAssemblyESMIntegrationEnabled",
+    "name" : "WebAssembly ES module integration support",
+    "status" : 4
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Enable the implementation of the JS String Builtins proposal.",
+    "enabled" : true,
+    "key" : "WasmJSStringBuiltinsEnabled",
+    "name" : "WebAssembly JS String Builtins",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : false,
+    "details" : "Enable the js-types proposal: type() on WebAssembly.Memory\/Table\/Global\/Tag, and the type field on WebAssembly.Module.imports\/exports descriptors.",
+    "enabled" : false,
+    "key" : "WasmJSTypesEnabled",
+    "name" : "WebAssembly JS Types",
+    "status" : 4
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Enable the toFixedLengthBuffer() and toResizableBuffer() Wasm Memory.prototype functions.",
+    "enabled" : true,
+    "key" : "WasmMemoryToBufferAPIsEnabled",
+    "name" : "WebAssembly Memory to Buffer APIs",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Allow the Memory64 proposal for WebAssembly.",
+    "enabled" : true,
+    "key" : "WasmMemory64Enabled",
+    "name" : "WebAssembly Memory64",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Allow wasm code to access multiple linear memories",
+    "enabled" : true,
+    "key" : "WasmMultiMemoryEnabled",
+    "name" : "WebAssembly Multi-Memory",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Allow the relaxed simd instructions and types from the wasm relaxed simd spec.",
+    "enabled" : true,
+    "key" : "WasmRelaxedSIMDEnabled",
+    "name" : "WebAssembly Relaxed SIMD",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Allow the new simd instructions and types from the wasm simd spec.",
+    "enabled" : true,
+    "key" : "WasmSIMDEnabled",
+    "name" : "WebAssembly SIMD",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : true,
+    "details" : "Allow the new instructions from the wasm tail calls spec.",
+    "enabled" : true,
+    "key" : "WasmTailCallsEnabled",
+    "name" : "WebAssembly Tail Calls",
+    "status" : 6
+  },
+  {
+    "category" : 4,
+    "defaultValue" : false,
+    "details" : "Allow the wide arithmetic instructions from the wasm wide-arithmetic spec.",
+    "enabled" : false,
+    "key" : "WasmWideArithmeticEnabled",
+    "name" : "WebAssembly Wide Arithmetic",
+    "status" : 4
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable WebCodecs AV1 codec",
+    "enabled" : false,
+    "key" : "WebCodecsAV1Enabled",
+    "name" : "WebCodecs AV1 codec",
+    "status" : 5
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebCodecs Audio API",
+    "enabled" : true,
+    "key" : "WebCodecsAudioEnabled",
+    "name" : "WebCodecs Audio API",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebCodecs HEVC codec",
+    "enabled" : true,
+    "key" : "WebCodecsHEVCEnabled",
+    "name" : "WebCodecs HEVC codec",
+    "status" : 7
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebCodecs Image API",
+    "enabled" : true,
+    "key" : "WebCodecsImageEnabled",
+    "name" : "WebCodecs Image API",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebCodecs Video API",
+    "enabled" : true,
+    "key" : "WebCodecsVideoEnabled",
+    "name" : "WebCodecs Video API",
+    "status" : 7
+  },
+  {
+    "category" : 10,
+    "defaultValue" : true,
+    "details" : "Enable support for WebExtensions using the Offscreen API",
+    "enabled" : true,
+    "key" : "WebExtensionOffscreenEnabled",
+    "name" : "WebExtension Offscreen API",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable WebGL extensions that are still in draft status",
+    "enabled" : false,
+    "key" : "WebGLDraftExtensionsEnabled",
+    "name" : "WebGL Draft Extensions",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable WebGL extensions that provide GPU timer queries",
+    "enabled" : false,
+    "key" : "WebGLTimerQueriesEnabled",
+    "name" : "WebGL Timer Queries",
+    "status" : 3
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable WebGL",
+    "enabled" : true,
+    "key" : "WebGLEnabled",
+    "name" : "WebGL",
+    "status" : 7
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "WebGPU High Dynamic Range through canvas configuration tone mapping mode",
+    "enabled" : true,
+    "key" : "WebGPUHDREnabled",
+    "name" : "WebGPU support for HDR",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Adds WebGPU support for WebXR",
+    "enabled" : false,
+    "key" : "WebXRWebGPUBindingsEnabled",
+    "name" : "WebGPU support for WebXR",
+    "status" : 1
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable WebGPU",
+    "enabled" : true,
+    "key" : "WebGPUEnabled",
+    "name" : "WebGPU",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "",
+    "enabled" : false,
+    "key" : "WebInspectorEngineeringSettingsAllowed",
+    "name" : "WebInspector engineering settings allowed",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebRTC AV1 codec",
+    "enabled" : true,
+    "key" : "WebRTCAV1CodecEnabled",
+    "name" : "WebRTC AV1 codec",
+    "status" : 6
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebRTC Audio Latency Adaptation",
+    "enabled" : true,
+    "key" : "WebRTCAudioLatencyAdaptationEnabled",
+    "name" : "WebRTC Audio Latency Adaptation",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable WebRTC DNS Resolution By Socket",
+    "enabled" : false,
+    "key" : "WebRTCDNSResolutionBySocketEnabled",
+    "name" : "WebRTC DNS Resolution By Socket",
+    "status" : 4
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebRTC DTMF",
+    "enabled" : true,
+    "key" : "WebRTCDTMFEnabled",
+    "name" : "WebRTC DTMF",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebRTC Encoded Transform API",
+    "enabled" : true,
+    "key" : "WebRTCEncodedTransformEnabled",
+    "name" : "WebRTC Encoded Transform API",
+    "status" : 7
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable H264 Hardware encoder",
+    "enabled" : true,
+    "key" : "WebRTCH264HardwareEncoderEnabled",
+    "name" : "WebRTC H264 Hardware encoder",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebRTC HEVC codec",
+    "enabled" : true,
+    "key" : "WebRTCH265CodecEnabled",
+    "name" : "WebRTC HEVC codec",
+    "status" : 7
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable WebRTC L4S support",
+    "enabled" : false,
+    "key" : "WebRTCL4SEnabled",
+    "name" : "WebRTC L4S support",
+    "status" : 4
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable WebRTC Media Pipeline Additional Logging",
+    "enabled" : false,
+    "key" : "WebRTCMediaPipelineAdditionalLoggingEnabled",
+    "name" : "WebRTC Media Pipeline Additional Logging",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable RTCPeerConnection Legacy offer options (offerToReceiveAudio, offerToReceiveVideo)",
+    "enabled" : false,
+    "key" : "LegacyWebRTCOfferOptionsEnabled",
+    "name" : "WebRTC Peer Connection Legacy Offer options",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Disable RTCPeerConnection Video Scaling Adaptation",
+    "enabled" : false,
+    "key" : "PeerConnectionVideoScalingAdaptationDisabled",
+    "name" : "WebRTC Peer Connection Video Scaling Adaptation",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable RTCPeerConnection",
+    "enabled" : true,
+    "key" : "PeerConnectionEnabled",
+    "name" : "WebRTC Peer Connection",
+    "status" : 0
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebRTC Remote Video Frame",
+    "enabled" : true,
+    "key" : "WebRTCRemoteVideoFrameEnabled",
+    "name" : "WebRTC Remote Video Frame",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable WebRTC SFrame Transform API",
+    "enabled" : false,
+    "key" : "WebRTCSFrameTransformEnabled",
+    "name" : "WebRTC SFrame Transform API",
+    "status" : 4
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebRTC Sockets Proxying",
+    "enabled" : true,
+    "key" : "WebRTCSocketsProxyingEnabled",
+    "name" : "WebRTC Sockets Proxying",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable setting WebRTC Sockets Service Class",
+    "enabled" : false,
+    "key" : "WebRTCSocketsServiceClassEnabled",
+    "name" : "WebRTC Sockets Service Class",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebRTC VP9 profile 0 codec",
+    "enabled" : true,
+    "key" : "WebRTCVP9Profile0CodecEnabled",
+    "name" : "WebRTC VP9 profile 0 codec",
+    "status" : 2
+  },
+  {
+    "category" : 5,
+    "defaultValue" : true,
+    "details" : "Enable WebRTC VP9 profile 2 codec",
+    "enabled" : true,
+    "key" : "WebRTCVP9Profile2CodecEnabled",
+    "name" : "WebRTC VP9 profile 2 codec",
+    "status" : 7
+  },
+  {
+    "category" : 5,
+    "defaultValue" : false,
+    "details" : "Enable WebRTC interface monitoring via NW",
+    "enabled" : false,
+    "key" : "WebRTCInterfaceMonitoringViaNWEnabled",
+    "name" : "WebRTC interface monitoring via NW",
+    "status" : 2
+  },
+  {
+    "category" : 6,
+    "defaultValue" : true,
+    "details" : "Enable WebTransport",
+    "enabled" : true,
+    "key" : "WebTransportEnabled",
+    "name" : "WebTransport",
+    "status" : 3
+  },
+  {
+    "category" : 0,
+    "defaultValue" : false,
+    "details" : "Enable input elements of type week",
+    "enabled" : false,
+    "key" : "InputTypeWeekEnabled",
+    "name" : "Week Input",
+    "status" : 0
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "preventDefault() is only allowed on the first wheel event in a gesture",
+    "enabled" : true,
+    "key" : "WheelEventGesturesBecomeNonBlocking",
+    "name" : "Wheel Event gestures become non-blocking",
+    "status" : 7
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Force wheel event listeners registered on the window, document or body to be passive",
+    "enabled" : true,
+    "key" : "PassiveWheelListenersAsDefaultOnDocument",
+    "name" : "Wheel Event listeners on the root made passive",
+    "status" : 0
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Allow creating dedicated workers from shared workers",
+    "enabled" : true,
+    "key" : "WorkerInSharedWorkerEnabled",
+    "name" : "Worker in SharedWorker",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Report worker script parse errors on the Worker object",
+    "enabled" : true,
+    "key" : "WorkerParseErrorReportingEnabled",
+    "name" : "Worker parse error reporting",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Write RTF, RTFD and attributed strings to the pasteboard when copying or dragging",
+    "enabled" : true,
+    "key" : "WriteRichTextDataWhenCopyingOrDragging",
+    "name" : "Write RTF on Copy",
+    "status" : 2
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enables support for XSLT",
+    "enabled" : true,
+    "key" : "XSLTEnabled",
+    "name" : "XSLT Support Enabled",
+    "status" : 2
+  },
+  {
+    "category" : 7,
+    "defaultValue" : false,
+    "details" : "Remove all non-cookie website data after just one hour of no user interaction when Intelligent Tracking Prevention is enabled",
+    "enabled" : false,
+    "key" : "IsFirstPartyWebsiteDataRemovalLiveOnTestingEnabled",
+    "name" : "[ITP Live-On] 1 Hour Timeout For Non-Cookie Data Removal",
+    "status" : 3
+  },
+  {
+    "category" : 7,
+    "defaultValue" : false,
+    "details" : "Remove all non-cookie website data after just 30 seconds of no user interaction when Intelligent Tracking Prevention is enabled",
+    "enabled" : false,
+    "key" : "IsFirstPartyWebsiteDataRemovalReproTestingEnabled",
+    "name" : "[ITP Repro] 30 Second Timeout For Non-Cookie Data Removal",
+    "status" : 3
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable the `altitudeAngle` property of the PointerEvents API",
+    "enabled" : true,
+    "key" : "AltitudeAngleEnabled",
+    "name" : "altitudeAngle PointerEvent Property",
+    "status" : 6
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable support for aria-actions",
+    "enabled" : false,
+    "key" : "ARIAActionsSupportEnabled",
+    "name" : "aria-actions",
+    "status" : 4
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable ariaNotify support",
+    "enabled" : true,
+    "key" : "IsARIANotifyEnabled",
+    "name" : "ariaNotify()",
+    "status" : 2
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable the `azimuthAngle` property of the PointerEvents API",
+    "enabled" : true,
+    "key" : "AzimuthAngleEnabled",
+    "name" : "azimuthAngle PointerEvent Property",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable input elements of type datetime-local",
+    "enabled" : true,
+    "key" : "InputTypeDateTimeLocalEnabled",
+    "name" : "datetime-local Inputs",
+    "status" : 7
+  },
+  {
+    "category" : 9,
+    "defaultValue" : true,
+    "details" : "Enable support for hidden=until-found",
+    "enabled" : true,
+    "key" : "HiddenUntilFoundEnabled",
+    "name" : "hidden=until-found",
+    "status" : 6
+  },
+  {
+    "category" : 0,
+    "defaultValue" : true,
+    "details" : "Enable http-equiv attribute",
+    "enabled" : true,
+    "key" : "HTTPEquivEnabled",
+    "name" : "http-equiv",
+    "status" : 7
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable referenceTarget support for aria-owns and ariaOwnsElements",
+    "enabled" : false,
+    "key" : "ShadowRootReferenceTargetEnabledForAriaOwns",
+    "name" : "referenceTarget support for aria-owns",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable setting a referenceTarget on shadow roots",
+    "enabled" : false,
+    "key" : "ShadowRootReferenceTargetEnabled",
+    "name" : "referenceTarget",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "Enable requestIdleCallback support",
+    "enabled" : false,
+    "key" : "RequestIdleCallbackEnabled",
+    "name" : "requestIdleCallback",
+    "status" : 4
+  },
+  {
+    "category" : 3,
+    "defaultValue" : false,
+    "details" : "requestStorageAccess throws execption until reload",
+    "enabled" : false,
+    "key" : "RequestStorageAccessThrowsExceptionUntilReload",
+    "name" : "requestStorageAccess throws execption until reload",
+    "status" : 1
+  },
+  {
+    "category" : 3,
+    "defaultValue" : true,
+    "details" : "Enable scrollend event",
+    "enabled" : true,
+    "key" : "ScrollendEventEnabled",
+    "name" : "scrollend event",
+    "status" : 6
+  },
+  {
+    "category" : 2,
+    "defaultValue" : false,
+    "details" : "Enables the auto-phrase value of the word-break CSS property",
+    "enabled" : false,
+    "key" : "CSSWordBreakAutoPhraseEnabled",
+    "name" : "word-break: auto-phrase enabled",
+    "status" : 5
+  }
+]

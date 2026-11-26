@@ -1,0 +1,146 @@
+{
+ "name": "present-webgl",
+ "page": "present",
+ "url": "http://127.0.0.1:5240/present.html?backend=webgl&report=present-webgl",
+ "result": {
+  "page": "present",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15",
+  "origin": "http://127.0.0.1:5240",
+  "backend": "webgl",
+  "hz": 90,
+  "size": [
+   1280,
+   720
+  ],
+  "hashes": {
+   "steps": 600,
+   "headlessFinal": "cecacdfa8a061e5d",
+   "interpolatedSame": true,
+   "plainSame": true,
+   "stereoSame": true,
+   "firstDiff": {
+    "interpolated": null,
+    "plain": null,
+    "stereo": null
+   }
+  },
+  "frames": {
+   "interpolated": 900,
+   "stepsPerFrame": {
+    "0": 300,
+    "1": 600
+   },
+   "alphas": [
+    [
+     "0.6667",
+     300
+    ],
+    [
+     "0.0000",
+     300
+    ],
+    [
+     "0.3333",
+     299
+    ],
+    [
+     "1.0000",
+     1
+    ]
+   ]
+  },
+  "smoothness": {
+   "interpolated": {
+    "frames": 89,
+    "meanMm": 15.556,
+    "cv": 0,
+    "stillFrames": 0,
+    "sample": [
+     15.56,
+     15.56,
+     15.56,
+     15.56,
+     15.56,
+     15.56,
+     15.56,
+     15.56,
+     15.56
+    ]
+   },
+   "plain": {
+    "frames": 89,
+    "meanMm": 15.468,
+    "cv": 0.7131,
+    "stillFrames": 30,
+    "sample": [
+     0,
+     23.33,
+     23.33,
+     0,
+     23.33,
+     23.33,
+     0,
+     23.33,
+     23.33
+    ]
+   },
+   "stereo": {
+    "frames": 89,
+    "meanMm": 15.556,
+    "cv": 0,
+    "stillFrames": 0,
+    "sample": [
+     15.56,
+     15.56,
+     15.56,
+     15.56,
+     15.56,
+     15.56,
+     15.56,
+     15.56,
+     15.56
+    ]
+   }
+  },
+  "renderMs": {
+   "interpolated": {
+    "n": 900,
+    "mean": 8.3122,
+    "p50": 1,
+    "p95": 7,
+    "max": 5422
+   },
+   "plain": {
+    "n": 900,
+    "mean": 2.8144,
+    "p50": 1,
+    "p95": 8,
+    "max": 291
+   },
+   "stereo": {
+    "n": 900,
+    "mean": 3.52,
+    "p50": 1,
+    "p95": 6,
+    "max": 281
+   }
+  },
+  "display": {
+   "frames": 104,
+   "intervalMs": {
+    "n": 104,
+    "mean": 19.3173,
+    "p50": 17,
+    "p95": 18,
+    "max": 316
+   },
+   "displayHz": 58.8
+  },
+  "renderer": {
+   "calls": 68,
+   "triangles": 206294
+  }
+ },
+ "errors": [],
+ "warnings": []
+}
