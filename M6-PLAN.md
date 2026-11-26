@@ -24,7 +24,21 @@ Carried:
 - `tree.detached` growth: AB-T-0655.
 - MCP's tool list is at about 1,986 of its 2,000 tokens, which W1 and W8 have to make room in.
 
-W1, W2, W7, W8 and the spikes are unblocked.
+**Status (2026-11-26, second wave):** done. Each PR was reviewed by an independent reviewer and re-checked after its fixes.
+- **W1 behaviours and connections in the inspector** (PR #60, AB-T-0638): Behaviours and Connections panels with fields from each schema, a node's id field, and ids referenced in other scenes refused with the files named. The whole sample level is built in the editor and saved byte-identical to `content/sample/game/level.vrmxs`, on WebGPU and WebGL (AB-R-1183, AB-R-1184). That is exit checks 2 and 5, and M5's check 8.
+- **W2 hot reload** (PR #56, AB-T-0645, shell 0.15.0): the editor's play in place swaps a project's behaviours on a step boundary, keeping state when `stateShape` is unchanged and restarting the behaviour when it isn't. A throwing reload keeps the old code. A reloaded session is refused for replay (`reloaded`).
+- **W7 sharing** (PR #58, AB-T-0648 with AB-T-0624, shell 0.16.0): a web build plays from a static host under a CSP with no `'unsafe-eval'` (Ajv precompiled), `vrmxg-export --worker` writes a Worker folder (nothing deployed), the Mac game app is hardened and ad-hoc signed, and every app carries THIRD-PARTY-LICENCES. Signing, notarising and hosting are the operator's steps (`RELEASE.md`, `apps/game/HOSTING.md`).
+- **Networking spike** (PR #57, AB-T-0622): lockstep now, over a WebRTC data channel. Rollback is exact once the engine gaps AB-T-0657 to 0659 close.
+- **WebXR spike** (PR #59, AB-T-0623): no WebXR in WKWebView on the Mac. Safari in the visionOS 27.2 simulator has immersive-vr and `XRGPUBinding` but no WebGPU adapter, and its WebGL 90 Hz run is hash-exact (AB-R-1175). Findings AB-T-0660 to 0662.
+
+Carried from the second wave:
+- Renaming a keyed game node with no `key` renames it in the game state, and conditions that name it don't follow (W1's PR notes it).
+- AB-T-0654 items 2 and 3, the cycle-fallback nits, and a top-level `$async` schema gap.
+- The hardened Mac app's AppProbe scenario on the merged build (last pass AB-R-1181 on 41b7e712).
+- The M5 Rush recordings: #60 changed the registry, so the Rush build went from 8ab0fe3f to 1117e9d8 and the committed logs no longer replay. W7's session is re-recording them on main. CI doesn't replay them against the current build.
+- Still carried from the first wave: AB-T-0626, AB-T-0656 (blocks W11), AB-T-0655, and MCP's token budget.
+
+W8, W9, W10 and W11 wait on the operator's word.
 
 ## What M6 is done looking like
 
