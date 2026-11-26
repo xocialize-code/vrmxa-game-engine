@@ -35,6 +35,7 @@ Carried from the second wave:
 - Renaming a keyed game node with no `key` renames it in the game state, and conditions that name it don't follow (W1's PR notes it).
 - AB-T-0654 items 2 and 3, the cycle-fallback nits, and a top-level `$async` schema gap.
 - The hardened Mac app's AppProbe scenario on the merged build (last pass AB-R-1181 on 41b7e712).
+- The M5 Rush recordings: #60 changed the registry, so the Rush build went from 8ab0fe3f to 1117e9d8 and the committed logs no longer replay. W7's session is re-recording them on main. CI doesn't replay them against the current build.
 - Still carried from the first wave: AB-T-0626, AB-T-0656 (blocks W11), AB-T-0655, and MCP's token budget.
 
 W8, W9, W10 and W11 wait on the operator's word.
