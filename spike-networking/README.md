@@ -1,7 +1,8 @@
 # Spike: networking, lockstep against rollback (AB-T-0622)
 
-*Runs alongside M6 (M6-PLAN "Running alongside M6"). Receipts: RECEIPTS. Engine findings filed as AB-T-0657, AB-T-0658
-and AB-T-0659.*
+*Runs alongside M6 (M6-PLAN "Running alongside M6"). Receipts: AB-R-1162 (lockstep delay), AB-R-1163 (rollback
+depth and cost), AB-R-1164 (snapshot size), AB-R-1165 (bandwidth), AB-R-1166 (what rolls back). Engine findings filed
+as AB-T-0657, AB-T-0658 and AB-T-0659.*
 
 **Verdict: lockstep now, over a WebRTC data channel; rollback later, once three engine gaps are closed.**
 
