@@ -84,7 +84,7 @@ const devBuild = () => ({
 
 export default defineConfig({
   root: here('.'), base: './', publicDir: false,
-  plugins: [vue(), coreShim(), devBuild(), runtimeStamp(), vrmxgRuntime({ name: 'vrmxg-game', version: runtimeVersion, engine: runtimeEngine(), licence: 'Xocialize original', licences: [['assets/sql-wasm-*.wasm', sqlJsLicence], ['assets/sql-wasm-*.js', sqlJsLicence]] })],
+  plugins: [vue(), coreShim(), devBuild(), runtimeStamp(), vrmxgRuntime({ name: 'vrmxg-game', version: runtimeVersion, engine: runtimeEngine(), licence: 'MIT OR Apache-2.0', licences: [['assets/sql-wasm-*.wasm', sqlJsLicence], ['assets/sql-wasm-*.js', sqlJsLicence]] })],
   optimizeDeps: { exclude: ['sql.js'] },
   resolve: { alias: { '@vrmxa-core': path.join(core, 'src') }, dedupe: ['three'] },
   build: { outDir: here('dist'), emptyOutDir: true, target: 'safari16', chunkSizeWarningLimit: 8000 },

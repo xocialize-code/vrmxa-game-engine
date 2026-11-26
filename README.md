@@ -42,7 +42,7 @@ npm run check        # lint (incl. the determinism rule), typecheck, every packa
 | `engine/packages/input` | Action map, keyboard / mouse / gamepad, per-step latching, recording and replay, the player controller (simulation) |
 | `engine/packages/camera` | Physical Camera node, rig presets with a spring arm, the cameras service, physics and mesh picking (simulation) |
 | `engine/packages/snapshot` | World snapshots, per-step component hashes, run comparison; the Node / Chromium / WKWebView determinism harness (simulation) |
-| `engine/packages/render` | The render host: WebGPU by default with a WebGL fallback, MToon, interpolation at α that never touches simulated state, Environment and light nodes, shadow presets, debug draw, `warmUp()` |
+| `engine/packages/render` | The render host: WebGPU in the apps where the browser has it (`auto`), WebGL otherwise, MToon, interpolation at α that never touches simulated state, Environment and light nodes, shadow presets, debug draw, `warmUp()` |
 | `engine/packages/model` | Model nodes: glTF sets and props, colliders from KHR_physics, a GLB writer for generated content (simulation) |
 | `engine/packages/item` | VRMXI game items: read and check `.vrmxi`, Item nodes with bodies, sensors, joints, states and verbs (simulation) |
 | `engine/packages/mcp` | The MCP server: describe types, edit `.vrmxs` with undo, inspect and drive the scene in a headless engine |
@@ -62,12 +62,22 @@ Vendored and ported code keeps its own licence, with its notice beside it:
 - the patched `@pixiv/three-vrm` (MIT, `engine/vendor/three-vrm/LICENSE`);
 - navcat (`engine/packages/nav/src/vendor/LICENSE-navcat`);
 - TalkingHead's English lip-sync rules (MIT);
+- Ajv's meta-schema, precompiled (MIT, `engine/packages/registry/src/vendor/ajv-meta-2020.js`);
 - fdlibm's notice in `@vrmxg/dmath`.
 
 Every game build and Mac app carries `THIRD-PARTY-LICENCES` for the packages it bundles.
 
 Content has its own terms, file by file, in each folder's `LICENCES.md` (`content/sample/`, `content/starter/`,
-`content/templates/`). Most of it is CC0 or our own.
+`content/templates/`). Content we made ("Xocialize original") is released under
+[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), as are the starter clips and items. The sample
+characters wrap the VRMXA specification's base model under the VRM Public License 1.0, and a few generated files carry
+their model's terms (MIT, Apache-2.0, DINOv3), each named in its row.
 
-**Built with DINOv3.** The sample's generated props (`content/sample/props/*.glb`) were made with TRELLIS.2, whose
-DINOv3 conditioner is under the [DINOv3 License](https://ai.meta.com/resources/models-and-libraries/dinov3-license/).
+**Built with DINOv3.** Five of the sample's props (`content/sample/props/`: the espresso machine, bench, street lamp,
+planter tree and vending machine) were made with TRELLIS.2, whose DINOv3 conditioner is under the
+[DINOv3 License](https://ai.meta.com/resources/models-and-libraries/dinov3-license/).
+
+**Building the apps.** The engine's packages, tests and the Node acceptance runs need only this repository. The apps
+(playground, editor, creator and game runtime) also need `vrmxa-core`, the VRMXA format library, checked out beside
+it as `../vrmxa-avatar-studio`, and every app build bundles it. It is licensed MIT OR Apache-2.0 like the engine, but
+its repository isn't public yet.

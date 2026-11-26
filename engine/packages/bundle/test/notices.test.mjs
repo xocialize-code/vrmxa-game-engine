@@ -32,6 +32,17 @@ test('the notices hold each package\'s licence text, our modules\' notices, and 
   assert.deepEqual(n.included.get('assets/a.js').map((s) => s.split(' ')[0]), ['@vrmxg/dmath', 'three']);
 });
 
+test('the engine\'s own licence is in every build\'s notices, and the workspace root is never listed as third party', () => {
+  const shell = path.join(repo, 'apps/shell/js/shell.js'); // no package of its own: it belongs to the workspace root
+  const n = bundleNotices({ 'a.js': chunk('assets/a.js', [shell]) }, { title: 'an-app 1.0.0' });
+  assert.match(n.text, /={78}\nvrmxg\/LICENSE-MIT\n={78}\n\nMIT License\n\nCopyright \(c\) 2026 Xocialize LLC/);
+  assert.match(n.text, /={78}\nvrmxg\/LICENSE-APACHE\n={78}\n\nApache License/);
+  assert.deepEqual(n.included.get('assets/a.js'), []); // ours: not "vrmxg  (MIT OR Apache-2.0)"
+  assert.equal(n.text.match(/vrmxg\/LICENSE-MIT\n/g).length, 1);
+  const none = bundleNotices({ 'a.js': chunk('assets/a.js', [three]) }, { title: 'x 1' }); // and without any of our files
+  assert.match(none.text, /vrmxg\/LICENSE-APACHE\n/);
+});
+
 test('a package that ships no licence text stops the build, naming it', () => {
   const p = fakePackage('no-licence-here');
   try {

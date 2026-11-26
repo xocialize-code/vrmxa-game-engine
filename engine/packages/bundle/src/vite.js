@@ -5,7 +5,7 @@
 // vendored lip-sync rules), because a minified bundle keeps no comments and those notices have to ship with the code.
 //
 //   import { vrmxgRuntime } from '@vrmxg/bundle/vite';
-//   plugins: [vrmxgRuntime({ name: 'vrmxg-game', version: pkg.version, licence: 'Xocialize original' })]
+//   plugins: [vrmxgRuntime({ name: 'vrmxg-game', version: pkg.version, licence: 'MIT OR Apache-2.0' })]
 //
 // Node only (it reads the output folder and the packages' licence files).
 import fs from 'node:fs';
