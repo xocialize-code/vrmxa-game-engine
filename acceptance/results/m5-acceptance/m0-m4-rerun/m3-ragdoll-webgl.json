@@ -1,0 +1,83 @@
+{
+ "url": "http://localhost:5181/?fall&renderer=webgl",
+ "knockedAt": 30,
+ "shots": {
+  "tumbling": {
+   "step": 75,
+   "mira": {
+    "phase": "falling",
+    "at": [
+     2.75,
+     0.925,
+     9
+    ]
+   },
+   "hana": {
+    "phase": "falling",
+    "at": [
+     2.75,
+     0.925,
+     10
+    ]
+   }
+  },
+  "lying": {
+   "step": 180,
+   "mira": {
+    "phase": "falling",
+    "at": [
+     2.75,
+     0.925,
+     9
+    ]
+   },
+   "hana": {
+    "phase": "down",
+    "at": [
+     2.75,
+     0.925,
+     10
+    ]
+   }
+  },
+  "rising": {
+   "step": 310,
+   "mira": {
+    "phase": "rising",
+    "at": [
+     0.922,
+     0.025,
+     8.584
+    ]
+   },
+   "hana": {
+    "phase": "up",
+    "at": [
+     1.013,
+     0.025,
+     9.869
+    ]
+   }
+  },
+  "up": {
+   "step": 420,
+   "mira": {
+    "phase": "up",
+    "at": [
+     0.922,
+     0.025,
+     8.584
+    ]
+   },
+   "hana": {
+    "phase": "up",
+    "at": [
+     1.013,
+     0.025,
+     9.869
+    ]
+   }
+  }
+ },
+ "errors": []
+}

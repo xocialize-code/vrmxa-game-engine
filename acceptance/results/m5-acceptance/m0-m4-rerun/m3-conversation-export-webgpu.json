@@ -1,0 +1,426 @@
+{
+ "runtime": "chromium",
+ "size": "1080p",
+ "scene": "sequences/conversation.vrmxs",
+ "tracks": [
+  "hana-1-says:dialogue",
+  "mira-says:dialogue",
+  "hana-1-decisions:decisions",
+  "input:input"
+ ],
+ "lines": [
+  {
+   "who": "hana-1",
+   "start": 290.4,
+   "clip": true
+  },
+  {
+   "who": "hana-1",
+   "start": 530.4,
+   "clip": true
+  },
+  {
+   "who": "hana-1",
+   "start": 1330.4,
+   "clip": true
+  },
+  {
+   "who": "hana-1",
+   "start": 1690.4,
+   "clip": true
+  },
+  {
+   "who": "hana-1",
+   "start": 2090.4,
+   "clip": true
+  },
+  {
+   "who": "hana-1",
+   "start": 2530.4,
+   "clip": true
+  },
+  {
+   "who": "mira",
+   "start": 258.8,
+   "clip": true
+  },
+  {
+   "who": "mira",
+   "start": 448.4,
+   "clip": true
+  },
+  {
+   "who": "mira",
+   "start": 1284.4,
+   "clip": true
+  },
+  {
+   "who": "mira",
+   "start": 1630,
+   "clip": true
+  },
+  {
+   "who": "mira",
+   "start": 2030,
+   "clip": true
+  },
+  {
+   "who": "mira",
+   "start": 2470,
+   "clip": true
+  }
+ ],
+ "frames": 2929,
+ "seconds": 122.04166666666667,
+ "steps": 7322,
+ "digest": "c2b092f7c674f7a6",
+ "audioHash": "8ad8c0f0",
+ "exportMs": 18096,
+ "checkMs": 2983,
+ "secondExport": {
+  "digest": "c2b092f7c674f7a6",
+  "audioHash": "8ad8c0f0",
+  "sameFrames": true
+ },
+ "distinctFrames": 2832,
+ "subtitles": {
+  "lines": 12,
+  "bytes": 907,
+  "path": null,
+  "error": null,
+  "text": "1\n00:00:10,783 --> 00:00:11,683\nMira: Good morning, Hana!\n\n2\n00:00:12,100 --> 00:00:14,420\nHana: Morning, Mira! You are early today.\n\n3\n00:00:18,683 --> 00:00:21,683\nMira: I could not sleep. Could I get a latte, please?\n\n4\n00:00:22,100 --> 00:00:24,740\nHana: Of course. One latte, coming right up.\n\n5\n00:00:53,517 --> 00:00:55,017\nMira: Thank you. It smells wonderful.\n\n6\n00:00:55,433 --> 00:00:57,753\nHana: Fresh beans this morning. Enjoy it.\n\n7\n00:01:07,917 --> 00:01:10,017\nMira: How long have you had this place?\n\n8\n00:01:10,433 --> 00:01:13,713\nHana: Five years this spring. Feels like longer some days.\n\n9\n00:01:24,583 --> 00:01:26,683\nMira: Do you ever get a day off?\n\n10\n00:01:27,100 --> 00:01:29,100\nHana: Sundays, if the machine behaves.\n\n11\n00:01:42,917 --> 00:01:45,017\nMira: I should get going. See you tomorrow!\n\n12\n00:01:45,433 --> 00:01:48,073\nHana: See you tomorrow, Mira. Good luck today!\n"
+ },
+ "scrub": {
+  "frames": 27,
+  "same": 27,
+  "rows": [
+   {
+    "frame": 0,
+    "step": 0,
+    "alpha": 0,
+    "restored": 0,
+    "ms": 26.9,
+    "scrub": "165843325f220efb",
+    "exported": "165843325f220efb",
+    "same": true,
+    "world": "3b86d920f4b3dd26",
+    "worldSame": true
+   },
+   {
+    "frame": 258,
+    "step": 645,
+    "alpha": 0,
+    "restored": 600,
+    "ms": 27.6,
+    "scrub": "0ac083484f98c43b",
+    "exported": "0ac083484f98c43b",
+    "same": true,
+    "world": "6934fb0697752616",
+    "worldSame": true
+   },
+   {
+    "frame": 280,
+    "step": 700,
+    "alpha": 0,
+    "restored": 600,
+    "ms": 35.8,
+    "scrub": "a9f77d418fef5f40",
+    "exported": "a9f77d418fef5f40",
+    "same": true,
+    "world": "a701e44c0c283148",
+    "worldSame": true
+   },
+   {
+    "frame": 290,
+    "step": 725,
+    "alpha": 0,
+    "restored": 720,
+    "ms": 23.2,
+    "scrub": "cd16660ac5b8546b",
+    "exported": "cd16660ac5b8546b",
+    "same": true,
+    "world": "0f9bfaff2d3ee109",
+    "worldSame": true
+   },
+   {
+    "frame": 300,
+    "step": 750,
+    "alpha": 0,
+    "restored": 720,
+    "ms": 25.4,
+    "scrub": "3f826fb9e0f4628f",
+    "exported": "3f826fb9e0f4628f",
+    "same": true,
+    "world": "254103c48fe02bcb",
+    "worldSame": true
+   },
+   {
+    "frame": 448,
+    "step": 1120,
+    "alpha": 0,
+    "restored": 1080,
+    "ms": 28,
+    "scrub": "97472ef223ccbc78",
+    "exported": "97472ef223ccbc78",
+    "same": true,
+    "world": "5d59ad2eff3ebdea",
+    "worldSame": true
+   },
+   {
+    "frame": 520,
+    "step": 1300,
+    "alpha": 0,
+    "restored": 1200,
+    "ms": 35.4,
+    "scrub": "297f269cebc7ad0b",
+    "exported": "297f269cebc7ad0b",
+    "same": true,
+    "world": "5207a5aaedd3b2bd",
+    "worldSame": true
+   },
+   {
+    "frame": 530,
+    "step": 1325,
+    "alpha": 0,
+    "restored": 1320,
+    "ms": 22.6,
+    "scrub": "a46a0bfdafa70203",
+    "exported": "a46a0bfdafa70203",
+    "same": true,
+    "world": "fa29d61b1a45cbe5",
+    "worldSame": true
+   },
+   {
+    "frame": 540,
+    "step": 1350,
+    "alpha": 0,
+    "restored": 1320,
+    "ms": 26.6,
+    "scrub": "b0fe3ce01bbbef50",
+    "exported": "b0fe3ce01bbbef50",
+    "same": true,
+    "world": "3de2de52bdc6b391",
+    "worldSame": true
+   },
+   {
+    "frame": 1284,
+    "step": 3210,
+    "alpha": 0,
+    "restored": 3120,
+    "ms": 35.2,
+    "scrub": "dca4afe3767fccef",
+    "exported": "dca4afe3767fccef",
+    "same": true,
+    "world": "e8c1f1dce232e85b",
+    "worldSame": true
+   },
+   {
+    "frame": 1320,
+    "step": 3300,
+    "alpha": 0,
+    "restored": 3240,
+    "ms": 31.8,
+    "scrub": "3110528efb8d020d",
+    "exported": "3110528efb8d020d",
+    "same": true,
+    "world": "63f201310f4650ea",
+    "worldSame": true
+   },
+   {
+    "frame": 1330,
+    "step": 3325,
+    "alpha": 0,
+    "restored": 3240,
+    "ms": 35.6,
+    "scrub": "e086f50f7af470fc",
+    "exported": "e086f50f7af470fc",
+    "same": true,
+    "world": "9a081b8b638edcb5",
+    "worldSame": true
+   },
+   {
+    "frame": 1340,
+    "step": 3350,
+    "alpha": 0,
+    "restored": 3240,
+    "ms": 37.3,
+    "scrub": "97ec2af7a1fc52b7",
+    "exported": "97ec2af7a1fc52b7",
+    "same": true,
+    "world": "a25c49997ab3498f",
+    "worldSame": true
+   },
+   {
+    "frame": 1464,
+    "step": 3660,
+    "alpha": 0,
+    "restored": 3600,
+    "ms": 30.4,
+    "scrub": "9bd75f5eaa93ba20",
+    "exported": "9bd75f5eaa93ba20",
+    "same": true,
+    "world": "396c45d04914cebc",
+    "worldSame": true
+   },
+   {
+    "frame": 1630,
+    "step": 4075,
+    "alpha": 0,
+    "restored": 3960,
+    "ms": 36.9,
+    "scrub": "5510f624a4e9514f",
+    "exported": "5510f624a4e9514f",
+    "same": true,
+    "world": "bdd2c421c6feaa33",
+    "worldSame": true
+   },
+   {
+    "frame": 1680,
+    "step": 4200,
+    "alpha": 0,
+    "restored": 4080,
+    "ms": 38.1,
+    "scrub": "9baa1f8dbd1fb133",
+    "exported": "9baa1f8dbd1fb133",
+    "same": true,
+    "world": "a5f19f06f511d340",
+    "worldSame": true
+   },
+   {
+    "frame": 1690,
+    "step": 4225,
+    "alpha": 0,
+    "restored": 4200,
+    "ms": 26.1,
+    "scrub": "d9279a23b6ec1c2a",
+    "exported": "d9279a23b6ec1c2a",
+    "same": true,
+    "world": "c21f14784a4d92b2",
+    "worldSame": true
+   },
+   {
+    "frame": 1700,
+    "step": 4250,
+    "alpha": 0,
+    "restored": 4200,
+    "ms": 29.8,
+    "scrub": "4ba8756a0cb483b4",
+    "exported": "4ba8756a0cb483b4",
+    "same": true,
+    "world": "f6137547bcf87bd6",
+    "worldSame": true
+   },
+   {
+    "frame": 2030,
+    "step": 5075,
+    "alpha": 0,
+    "restored": 5040,
+    "ms": 28.7,
+    "scrub": "71f15839d6d3dc40",
+    "exported": "71f15839d6d3dc40",
+    "same": true,
+    "world": "0692fb61501971a6",
+    "worldSame": true
+   },
+   {
+    "frame": 2080,
+    "step": 5200,
+    "alpha": 0,
+    "restored": 5160,
+    "ms": 28.5,
+    "scrub": "bf78e1d1c2b2db27",
+    "exported": "bf78e1d1c2b2db27",
+    "same": true,
+    "world": "fc311769f0fbe5e3",
+    "worldSame": true
+   },
+   {
+    "frame": 2090,
+    "step": 5225,
+    "alpha": 0,
+    "restored": 5160,
+    "ms": 32.4,
+    "scrub": "2ea4764d98953894",
+    "exported": "2ea4764d98953894",
+    "same": true,
+    "world": "4ac32057fe819c55",
+    "worldSame": true
+   },
+   {
+    "frame": 2100,
+    "step": 5250,
+    "alpha": 0,
+    "restored": 5160,
+    "ms": 36.5,
+    "scrub": "8215efddd86a69a8",
+    "exported": "8215efddd86a69a8",
+    "same": true,
+    "world": "8abcbd9eafd8a785",
+    "worldSame": true
+   },
+   {
+    "frame": 2470,
+    "step": 6175,
+    "alpha": 0,
+    "restored": 6120,
+    "ms": 32.1,
+    "scrub": "80af68f8e9e2c55f",
+    "exported": "80af68f8e9e2c55f",
+    "same": true,
+    "world": "5ebbd0201a47a2c2",
+    "worldSame": true
+   },
+   {
+    "frame": 2520,
+    "step": 6300,
+    "alpha": 0,
+    "restored": 6240,
+    "ms": 33.1,
+    "scrub": "63b8cf18a11b5919",
+    "exported": "63b8cf18a11b5919",
+    "same": true,
+    "world": "c7958d944b2bb775",
+    "worldSame": true
+   },
+   {
+    "frame": 2530,
+    "step": 6325,
+    "alpha": 0,
+    "restored": 6240,
+    "ms": 37,
+    "scrub": "0fe60f8a99f64ed6",
+    "exported": "0fe60f8a99f64ed6",
+    "same": true,
+    "world": "31f54f370b27bd55",
+    "worldSame": true
+   },
+   {
+    "frame": 2540,
+    "step": 6350,
+    "alpha": 0,
+    "restored": 6240,
+    "ms": 39.9,
+    "scrub": "a1b22084776e9669",
+    "exported": "a1b22084776e9669",
+    "same": true,
+    "world": "c5acbe5c7ea6ff4f",
+    "worldSame": true
+   },
+   {
+    "frame": 2928,
+    "step": 7320,
+    "alpha": 0,
+    "restored": 7200,
+    "ms": 51.3,
+    "scrub": "7003460890b45fa9",
+    "exported": "7003460890b45fa9",
+    "same": true,
+    "world": "a46b7ef842cf6e09",
+    "worldSame": true
+   }
+  ]
+ },
+ "errors": [],
+ "editorError": "",
+ "console": []
+}

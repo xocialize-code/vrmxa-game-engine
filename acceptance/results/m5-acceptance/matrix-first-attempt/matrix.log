@@ -1,0 +1,33 @@
+[21:51:16] node: the reference run (acceptance/node.mjs)
+[21:51:43] chromium-webgpu: waiting for a quiet GPU (GPU at 37%)
+[21:53:16] chromium-webgpu acceptance load 1: ok digest 78ab33e0d7508476 = canonical · 31.8 s · GPU 0/0/68% quiet
+[21:53:18] chromium-webgpu backends load 1: ok digest d34ebf75e93190ff = canonical · 1.7 s · GPU 0/2/68% quiet
+[21:53:20] chromium-webgpu backends load 2: ok digest d34ebf75e93190ff = canonical · 2.0 s · GPU 0/2/68% quiet
+[21:53:21] chromium-webgpu backends load 3: ok digest d34ebf75e93190ff = canonical · 1.8 s · GPU 0/32/68% quiet
+[21:53:54] chromium-webgpu frames load 1: ok digest d6784fc3c3d16a2f = canonical · 32.8 s · GPU 0/33/68% quiet
+[21:54:25] chromium-webgpu frames load 2: ok digest d6784fc3c3d16a2f = canonical · 31.2 s · GPU 31/33/48% quiet
+[21:54:30] chromium-webgpu post load 1: ok digest c6a9dc4b14918c84 = canonical · 4.8 s · GPU 31/35/45% quiet
+[21:54:35] chromium-webgpu post load 2: ok digest c6a9dc4b14918c84 = canonical · 4.6 s · GPU 17/35/45% quiet
+[21:54:38] chromium-webgpu coverage load 1: ok digest a1fb834203a54644 = canonical · 3.6 s · GPU 17/35/45% quiet
+[21:54:42] chromium-webgpu coverage load 2: ok digest a1fb834203a54644 = canonical · 3.6 s · GPU 17/37/45% quiet
+[21:54:55] chromium-webgpu budget load 1: ok digest - · 13.0 s · GPU 4/31/45% quiet
+[21:55:10] chromium-webgpu editor load 1: ok digest 8d9ab54914096695 = canonical · 15.0 s · GPU 4/33/59% quiet
+[21:55:25] chromium-webgpu editor load 2: ok digest cba7de5a89ec4294 ≠ canonical 8d9ab54914096695 (1 items: digest) · 14.8 s · GPU 32/79/99% quiet
+[21:55:25] chromium-webgpu editor: load 2 differs (pixels); the GPU was quiet; rerunning once
+[21:55:40] chromium-webgpu editor rerun of load 2: ok digest 2ab2ddaf23e1fe9c ≠ canonical 8d9ab54914096695 (1 items: digest) · 14.9 s · GPU 43/99/99% quiet
+[21:55:40] chromium-webgpu editor: FAILURE (the rerun differs too); --keep-going
+[21:55:40] chromium-webgl: waiting for a quiet GPU (GPU at 85%)
+[21:56:26] chromium-webgl acceptance load 1: ok digest 78ab33e0d7508476 = canonical · 30.5 s · GPU 0/0/69% quiet
+[21:56:28] chromium-webgl backends load 1: ok digest 4c6c9ea72ddc5163 = canonical · 1.8 s · GPU 0/0/69% quiet
+[21:56:29] chromium-webgl backends load 2: ok digest 4c6c9ea72ddc5163 = canonical · 1.8 s · GPU 0/2/69% quiet
+[21:56:31] chromium-webgl backends load 3: ok digest 4c6c9ea72ddc5163 = canonical · 1.8 s · GPU 0/2/69% quiet
+[21:57:07] chromium-webgl frames load 1: ok digest 28e3089104291f3f = canonical · 35.7 s · GPU 0/30/69% quiet
+[21:57:43] chromium-webgl frames load 2: ok digest 28e3089104291f3f = canonical · 36.0 s · GPU 6/34/42% quiet
+[21:57:48] chromium-webgl post load 1: ok digest 321c6f7bcbeef402 = canonical · 4.8 s · GPU 28/35/44% quiet
+[21:57:52] chromium-webgl post load 2: ok digest 321c6f7bcbeef402 = canonical · 4.6 s · GPU 21/35/44% quiet
+[21:57:56] chromium-webgl coverage load 1: ok digest a99d0123ae22e674 = canonical · 3.3 s · GPU 21/28/44% quiet
+[21:57:59] chromium-webgl coverage load 2: ok digest a99d0123ae22e674 = canonical · 3.3 s · GPU 21/26/44% quiet
+[21:58:07] chromium-webgl budget load 1: ok digest - · 8.5 s · GPU 10/26/44% quiet
+[21:58:23] chromium-webgl editor load 1: ok digest 582bf85ae977e517 = canonical · 15.8 s · GPU 10/39/52% quiet
+[21:58:40] chromium-webgl editor load 2: ok digest 582bf85ae977e517 = canonical · 17.2 s · GPU 29/98/99% quiet
+[21:58:41] wkwebview-scheme-webgpu: waiting for a quiet GPU (GPU at 99%)

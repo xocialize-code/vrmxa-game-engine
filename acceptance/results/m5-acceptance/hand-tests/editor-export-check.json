@@ -1,0 +1,313 @@
+{
+ "when": "2026-11-26T00:03:50.935Z",
+ "dir": "~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/exports",
+ "checks": [
+  {
+   "title": "take-a.mp4: 300 frames at 30/1 fps, every frame at n · 1/30 s, 1920×1080 h264 with sound",
+   "ok": true,
+   "evidence": "300 frames decoded (nb_frames 300), video 10.000000 s, largest timestamp error 3.3e-7 s, yuv420p bt709/bt709, B-frames 2; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 7.4 MB"
+  },
+  {
+   "title": "take-b.mp4: 300 frames at 30/1 fps, every frame at n · 1/30 s, 1920×1080 h264 with sound",
+   "ok": true,
+   "evidence": "300 frames decoded (nb_frames 300), video 10.000000 s, largest timestamp error 3.3e-7 s, yuv420p bt709/bt709, B-frames 2; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 7.4 MB"
+  },
+  {
+   "title": "take-4k60.mp4: 600 frames at 60/1 fps, every frame at n · 1/60 s, 3840×2160 h264 with sound",
+   "ok": true,
+   "evidence": "600 frames decoded (nb_frames 600), video 10.000000 s, largest timestamp error 3.3e-7 s, yuv420p bt709/bt709, B-frames 2; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 48.0 MB"
+  },
+  {
+   "title": "prores-a.mov: 300 frames at 30/1 fps, every frame at n · 1/30 s, 1920×1080 prores with sound",
+   "ok": true,
+   "evidence": "300 frames decoded (nb_frames 300), video 10.000000 s, largest timestamp error 3.3e-7 s, yuva444p12le bt709/bt709, B-frames 0; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 194.4 MB"
+  },
+  {
+   "title": "prores-b.mov: 300 frames at 30/1 fps, every frame at n · 1/30 s, 1920×1080 prores with sound",
+   "ok": true,
+   "evidence": "300 frames decoded (nb_frames 300), video 10.000000 s, largest timestamp error 3.3e-7 s, yuva444p12le bt709/bt709, B-frames 0; sound aac 48000 Hz ×2, starts 0.000000 s, 10.000000 s; 194.4 MB"
+  },
+  {
+   "title": "ntsc.mp4: 300 frames at 30000/1001 fps, every frame at n · 1001/30000 s, 1280×720 hevc with sound",
+   "ok": true,
+   "evidence": "300 frames decoded (nb_frames 300), video 10.010000 s, largest timestamp error 3.3e-7 s, yuv420p bt709/bt709, B-frames 2; sound aac 48000 Hz ×2, starts 0.000000 s, 10.010000 s; 2.7 MB"
+  },
+  {
+   "title": "take-a.mp4: the muxed sound lines up with the engine's mix (lag 0 samples)",
+   "ok": true,
+   "evidence": {
+    "wavSamples": 480000,
+    "decodedSamples": 480000,
+    "lag": 0,
+    "correlation": 1
+   }
+  },
+  {
+   "title": "prores-a.mov: the muxed sound lines up with the engine's mix (lag 0 samples)",
+   "ok": true,
+   "evidence": {
+    "wavSamples": 480000,
+    "decodedSamples": 480000,
+    "lag": 0,
+    "correlation": 1
+   }
+  },
+  {
+   "title": "ntsc.mp4: the muxed sound lines up with the engine's mix (lag 0 samples)",
+   "ok": true,
+   "evidence": {
+    "wavSamples": 480480,
+    "decodedSamples": 480480,
+    "lag": 0,
+    "correlation": 1
+   }
+  },
+  {
+   "title": "take-a and take-b: the rendered frames are identical, frame for frame",
+   "ok": true,
+   "evidence": "300 of 300 frame hashes match; 300 distinct frames"
+  },
+  {
+   "title": "the ProRes exports rendered the same frames as the H.264 ones",
+   "ok": true,
+   "evidence": "300 of 300"
+  },
+  {
+   "title": "prores-a and prores-b decode to identical frames",
+   "ok": true,
+   "evidence": "300 of 300 decoded frames identical (ffmpeg framemd5)"
+  },
+  {
+   "title": "the still is a 1920×1080 PNG",
+   "ok": true,
+   "evidence": "png 1920×1080, 125982 bytes"
+  },
+  {
+   "title": "the thumbnail is a 480×270 PNG",
+   "ok": true,
+   "evidence": "png 480×270, 19868 bytes"
+  }
+ ],
+ "results": {
+  "take-a.mp4": {
+   "v": {
+    "codec_name": "h264",
+    "codec_type": "video",
+    "width": 1920,
+    "height": 1080,
+    "has_b_frames": 2,
+    "pix_fmt": "yuv420p",
+    "color_transfer": "bt709",
+    "color_primaries": "bt709",
+    "start_time": "0.000000",
+    "duration": "10.000000",
+    "bit_rate": "5648026",
+    "nb_frames": "300"
+   },
+   "a": {
+    "codec_name": "aac",
+    "codec_type": "audio",
+    "sample_rate": "48000",
+    "channels": 2,
+    "start_time": "0.000000",
+    "duration": "10.000000",
+    "bit_rate": "248140",
+    "nb_frames": "471"
+   },
+   "format": {
+    "duration": "10.000000",
+    "size": "7426141"
+   },
+   "decoded": 300,
+   "maxPtsError": 3.333333342681044e-7,
+   "ok": true,
+   "alignment": {
+    "wavSamples": 480000,
+    "decodedSamples": 480000,
+    "lag": 0,
+    "correlation": 1
+   }
+  },
+  "take-b.mp4": {
+   "v": {
+    "codec_name": "h264",
+    "codec_type": "video",
+    "width": 1920,
+    "height": 1080,
+    "has_b_frames": 2,
+    "pix_fmt": "yuv420p",
+    "color_transfer": "bt709",
+    "color_primaries": "bt709",
+    "start_time": "0.000000",
+    "duration": "10.000000",
+    "bit_rate": "5648026",
+    "nb_frames": "300"
+   },
+   "a": {
+    "codec_name": "aac",
+    "codec_type": "audio",
+    "sample_rate": "48000",
+    "channels": 2,
+    "start_time": "0.000000",
+    "duration": "10.000000",
+    "bit_rate": "248140",
+    "nb_frames": "471"
+   },
+   "format": {
+    "duration": "10.000000",
+    "size": "7426141"
+   },
+   "decoded": 300,
+   "maxPtsError": 3.333333342681044e-7,
+   "ok": true
+  },
+  "take-4k60.mp4": {
+   "v": {
+    "codec_name": "h264",
+    "codec_type": "video",
+    "width": 3840,
+    "height": 2160,
+    "has_b_frames": 2,
+    "pix_fmt": "yuv420p",
+    "color_transfer": "bt709",
+    "color_primaries": "bt709",
+    "start_time": "0.000000",
+    "duration": "10.000000",
+    "bit_rate": "38004215",
+    "nb_frames": "600"
+   },
+   "a": {
+    "codec_name": "aac",
+    "codec_type": "audio",
+    "sample_rate": "48000",
+    "channels": 2,
+    "start_time": "0.000000",
+    "duration": "10.000000",
+    "bit_rate": "248140",
+    "nb_frames": "471"
+   },
+   "format": {
+    "duration": "10.000000",
+    "size": "47987212"
+   },
+   "decoded": 600,
+   "maxPtsError": 3.333333342681044e-7,
+   "ok": true
+  },
+  "prores-a.mov": {
+   "v": {
+    "codec_name": "prores",
+    "codec_type": "video",
+    "width": 1920,
+    "height": 1080,
+    "has_b_frames": 0,
+    "pix_fmt": "yuva444p12le",
+    "color_transfer": "bt709",
+    "color_primaries": "bt709",
+    "start_time": "0.000000",
+    "duration": "10.000000",
+    "bit_rate": "155242944",
+    "nb_frames": "300"
+   },
+   "a": {
+    "codec_name": "aac",
+    "codec_type": "audio",
+    "sample_rate": "48000",
+    "channels": 2,
+    "start_time": "0.000000",
+    "duration": "10.000000",
+    "bit_rate": "248140",
+    "nb_frames": "471"
+   },
+   "format": {
+    "duration": "10.000000",
+    "size": "194371206"
+   },
+   "decoded": 300,
+   "maxPtsError": 3.333333342681044e-7,
+   "ok": true,
+   "alignment": {
+    "wavSamples": 480000,
+    "decodedSamples": 480000,
+    "lag": 0,
+    "correlation": 1
+   }
+  },
+  "prores-b.mov": {
+   "v": {
+    "codec_name": "prores",
+    "codec_type": "video",
+    "width": 1920,
+    "height": 1080,
+    "has_b_frames": 0,
+    "pix_fmt": "yuva444p12le",
+    "color_transfer": "bt709",
+    "color_primaries": "bt709",
+    "start_time": "0.000000",
+    "duration": "10.000000",
+    "bit_rate": "155242944",
+    "nb_frames": "300"
+   },
+   "a": {
+    "codec_name": "aac",
+    "codec_type": "audio",
+    "sample_rate": "48000",
+    "channels": 2,
+    "start_time": "0.000000",
+    "duration": "10.000000",
+    "bit_rate": "248140",
+    "nb_frames": "471"
+   },
+   "format": {
+    "duration": "10.000000",
+    "size": "194371206"
+   },
+   "decoded": 300,
+   "maxPtsError": 3.333333342681044e-7,
+   "ok": true
+  },
+  "ntsc.mp4": {
+   "v": {
+    "codec_name": "hevc",
+    "codec_type": "video",
+    "width": 1280,
+    "height": 720,
+    "has_b_frames": 2,
+    "pix_fmt": "yuv420p",
+    "color_transfer": "bt709",
+    "color_primaries": "bt709",
+    "start_time": "0.000000",
+    "duration": "10.010000",
+    "bit_rate": "1890509",
+    "nb_frames": "300"
+   },
+   "a": {
+    "codec_name": "aac",
+    "codec_type": "audio",
+    "sample_rate": "48000",
+    "channels": 2,
+    "start_time": "0.000000",
+    "duration": "10.010000",
+    "bit_rate": "248666",
+    "nb_frames": "472"
+   },
+   "format": {
+    "duration": "10.010000",
+    "size": "2686054"
+   },
+   "decoded": 300,
+   "maxPtsError": 3.333333342681044e-7,
+   "ok": true,
+   "alignment": {
+    "wavSamples": 480480,
+    "decodedSamples": 480480,
+    "lag": 0,
+    "correlation": 1
+   }
+  },
+  "h264Decoded": {
+   "same": 300,
+   "of": 300
+  }
+ }
+}

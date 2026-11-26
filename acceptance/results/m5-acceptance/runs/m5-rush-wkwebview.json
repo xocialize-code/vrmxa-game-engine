@@ -1,0 +1,266 @@
+{
+ "check": "M5 exit check 7 (the sample game): a session recorded in the game app replays in WKWebView, drawn, on WebGPU and WebGL, over the scheme and loopback, to the per-step hashes it was played with (AB-T-0620)",
+ "pass": true,
+ "logs": {
+  "win": {
+   "build": "168e7920d9081f162804a2422271731caf02e16d2102f12b745dc3c7b86fa70b",
+   "steps": 6299,
+   "final": {
+    "step": 6299,
+    "scene": "game/title.vrmxs",
+    "hash": "43d3a2f6c26f5a1a"
+   }
+  },
+  "lose": {
+   "build": "168e7920d9081f162804a2422271731caf02e16d2102f12b745dc3c7b86fa70b",
+   "steps": 4808,
+   "final": {
+    "step": 4808,
+    "scene": "game/title.vrmxs",
+    "hash": "c151a6a6a058981f"
+   }
+  }
+ },
+ "runs": [
+  {
+   "origin": "scheme",
+   "case": "replay=logs/win.json&renderer=webgpu",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "steps": 6299,
+   "final": {
+    "hash": "43d3a2f6c26f5a1a",
+    "scene": "game/title.vrmxs",
+    "step": 6299
+   },
+   "frames": {
+    "fps": 58.59716309419792,
+    "frames": 6304,
+    "height": 720,
+    "max": 698,
+    "mean": 17.065672588832488,
+    "over25": 43,
+    "over34": 37,
+    "p50": 17,
+    "p95": 18,
+    "p99": 21,
+    "seconds": 107.582,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "win_json_renderer_webgpu__scheme.png"
+  },
+  {
+   "origin": "scheme",
+   "case": "replay=logs/win.json&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "steps": 6299,
+   "final": {
+    "hash": "43d3a2f6c26f5a1a",
+    "scene": "game/title.vrmxs",
+    "step": 6299
+   },
+   "frames": {
+    "fps": 58.79943397631638,
+    "frames": 6316,
+    "height": 720,
+    "max": 567,
+    "mean": 17.006966434452185,
+    "over25": 36,
+    "over34": 30,
+    "p50": 17,
+    "p95": 18,
+    "p99": 18,
+    "seconds": 107.416,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "win_json_renderer_webgl__scheme.png"
+  },
+  {
+   "origin": "scheme",
+   "case": "replay=logs/lose.json&renderer=webgpu",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "steps": 4808,
+   "final": {
+    "hash": "c151a6a6a058981f",
+    "scene": "game/title.vrmxs",
+    "step": 4808
+   },
+   "frames": {
+    "fps": 58.20694997518731,
+    "frames": 4809,
+    "height": 720,
+    "max": 617,
+    "mean": 17.180079018506966,
+    "over25": 39,
+    "over34": 33,
+    "p50": 17,
+    "p95": 18,
+    "p99": 23,
+    "seconds": 82.619,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgpu__scheme.png"
+  },
+  {
+   "origin": "scheme",
+   "case": "replay=logs/lose.json&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "steps": 4808,
+   "final": {
+    "hash": "c151a6a6a058981f",
+    "scene": "game/title.vrmxs",
+    "step": 4808
+   },
+   "frames": {
+    "fps": 58.41158296480281,
+    "frames": 4821,
+    "height": 720,
+    "max": 534,
+    "mean": 17.119892138560466,
+    "over25": 35,
+    "over34": 32,
+    "p50": 17,
+    "p95": 17,
+    "p99": 19,
+    "seconds": 82.535,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgl__scheme.png"
+  },
+  {
+   "origin": "loopback",
+   "case": "replay=logs/win.json&renderer=webgpu",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "steps": 6299,
+   "final": {
+    "hash": "43d3a2f6c26f5a1a",
+    "scene": "game/title.vrmxs",
+    "step": 6299
+   },
+   "frames": {
+    "fps": 58.68331882515141,
+    "frames": 6314,
+    "height": 720,
+    "max": 633.0600000000013,
+    "mean": 17.04061767500792,
+    "over25": 42,
+    "over34": 34,
+    "p50": 16.660000000003492,
+    "p95": 17.5199999999968,
+    "p99": 19.960000000000036,
+    "seconds": 107.59446,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "win_json_renderer_webgpu__loopback.png"
+  },
+  {
+   "origin": "loopback",
+   "case": "replay=logs/win.json&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "steps": 6299,
+   "final": {
+    "hash": "43d3a2f6c26f5a1a",
+    "scene": "game/title.vrmxs",
+    "step": 6299
+   },
+   "frames": {
+    "fps": 58.74727915907014,
+    "frames": 6315,
+    "height": 720,
+    "max": 531.0999999999985,
+    "mean": 17.022064924782267,
+    "over25": 38,
+    "over34": 32,
+    "p50": 16.660000000003492,
+    "p95": 18.24000000000524,
+    "p99": 19.580000000001746,
+    "seconds": 107.49434000000001,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "win_json_renderer_webgl__loopback.png"
+  },
+  {
+   "origin": "loopback",
+   "case": "replay=logs/lose.json&renderer=webgpu",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "steps": 4808,
+   "final": {
+    "hash": "c151a6a6a058981f",
+    "scene": "game/title.vrmxs",
+    "step": 4808
+   },
+   "frames": {
+    "fps": 58.47985793354538,
+    "frames": 4829,
+    "height": 720,
+    "max": 519.4799999999996,
+    "mean": 17.099904742182645,
+    "over25": 39,
+    "over34": 31,
+    "p50": 16.660000000003492,
+    "p95": 18.079999999999927,
+    "p99": 22.139999999999418,
+    "seconds": 82.57543999999999,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgpu__loopback.png"
+  },
+  {
+   "origin": "loopback",
+   "case": "replay=logs/lose.json&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "steps": 4808,
+   "final": {
+    "hash": "c151a6a6a058981f",
+    "scene": "game/title.vrmxs",
+    "step": 4808
+   },
+   "frames": {
+    "fps": 58.61474032662576,
+    "frames": 4829,
+    "height": 720,
+    "max": 487.8800000000001,
+    "mean": 17.06055498032719,
+    "over25": 37,
+    "over34": 28,
+    "p50": 16.679999999993015,
+    "p95": 18.159999999996217,
+    "p99": 20.89999999999418,
+    "seconds": 82.38542,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgl__loopback.png"
+  }
+ ]
+}

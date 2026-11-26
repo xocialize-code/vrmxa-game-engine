@@ -1,0 +1,234 @@
+{
+ "date": "2026-11-25",
+ "client": "claude -p (Claude Code 2.1.319, sonnet), --mcp-config with vrmxg-mcp --editor --port 5193",
+ "exitCode": 0,
+ "mcpServers": [
+  {
+   "name": "vrmxg-editor",
+   "status": "connected",
+   "source": "dynamic"
+  }
+ ],
+ "prompt": "You are connected to the VRMXG editor, which has the sample cafe project open on its scene cafe.vrmxs. The project is a game (game.json). Using only the vrmxg-editor tools:\n1. Read the game's rules (game) and validate the project (game op=validate).\n2. Add a customer, as ONE edit (the edit tool) with the label \"Add a customer\": a second character made from the same asset as Hana (hana-1), with id customer-1 and name \"Customer\", standing at [1.5, 0, 4], controlled as an NPC, with a brain whose preset is the project's customer brain, brains/customer.json.\n3. Add a goal, as ONE edit with the label \"Add the serve goal\". The scene has no game rules yet, so the edit adds: a GameRules node; a GameCounter \"served\" labelled \"Customers served\"; a GameGoal \"serve-customer\" with the text \"Serve the customer\", done once served is at least 1; and what counts it: an Area \"counter-zone\" at [-1.5, 0.6, -2], 2 x 1 x 1 m, whose bodyEntered signal adds 1 to served.\n4. Validate the project again and report what it says. Make no other edits.\n5. Save the scene, then export the game (game op=export). Report the build's path, its number of files and its manifest digest.\nDescribe a node type before you first use it. Do not undo. Finish with a short report of each step.",
+ "calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__vrmxg-editor__game,mcp__vrmxg-editor__describe,mcp__vrmxg-editor__edit,mcp__vrmxg-editor__save,mcp__vrmxg-editor__get_node,mcp__vrmxg-editor__tree",
+    "max_results": 10
+   },
+   "result": "\n\n\n\n\n",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "rules"
+   },
+   "result": "{\"game\":{\"id\":\"cafe\",\"title\":\"The cafe\",\"entry\":\"cafe.vrmxs\",\"scenes\":[\"cafe.vrmxs\"],\"from\":\"game.json\"},\"open\":\"cafe.vrmxs\",\"scenes\":{\"cafe.vrmxs\":{\"rules\":null,\"counters\":[],\"timers\":[],\"goals\":[],\"checkpoints\":[],\"reads\":[],\"sets\":[],\"changesTo\":[]}},\"problems\":[],\"edit\":\"Rules are nodes of the open scene: describe a type (GameRules, GameCounter, GameTimer, GameGoal, Checkpoint), then add_node,",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "validate"
+   },
+   "result": "{\"ok\":true,\"game\":{\"id\":\"cafe\",\"entry\":\"cafe.vrmxs\",\"scenes\":[\"cafe.vrmxs\"]},\"problems\":[],\"warnings\":[],\"checks\":\"game document, scene schemas, rules (each scene and across scenes), colliders (a RigidBody with none), goals (one nothing can complete), references and licence rows (as an export checks them). Read from documents: code and what happens in play are not checked.\",\"note\":\"Names, labels a",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__tree",
+   "input": {},
+   "result": "root (Node3D, \"Cafe\")\n  env (Environment)\n  set (Model)\n  espresso (Model, \"Espresso machine\")\n  sun (DirectionalLight)\n  counter-light (SpotLight)\n  light-switch (Item, \"Counter lights\")\n    switch-sound (AudioPlayer3D, \"Switch click\")\n  entrance-open-sound (AudioPlayer3D, \"Entrance opening\")\n  entrance-close-sound (AudioPlayer3D, \"Entrance closing\")\n  ambience (AudioPlayer, \"Room tone\")\n  music ",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "Character"
+   },
+   "result": "{\"type\":\"Character\",\"extends\":[\"Node3D\"],\"description\":\"A VRMXA character: VRM body, closet, animation sets, voice.\",\"asset\":{\"types\":[\"vrmxa\"],\"required\":true},\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\",\"asset\"],\"description\":\"A VRMXA character: VRM body, closet, animation sets, voice.\",\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$\",\"description\":\"Stable",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "hana-1"
+   },
+   "result": "{\"node\":{\"id\":\"hana-1\",\"type\":\"Character\",\"parent\":\"root\",\"name\":\"Hana\",\"asset\":\"hana\",\"transform\":{\"p\":[-1.5,0,-3]},\"props\":{\"controller\":\"npc\"},\"behaviours\":[{\"radius\":1.5,\"use\":\"wander\"},{\"clip\":\"voice/hana-welcome.wav\",\"cooldown\":30,\"radius\":2.2,\"target\":\"mira\",\"use\":\"greet\"}]},\"signals\":[\"ready\",\"arrived\",\"spoke\",\"lineEnded\",\"dressed\",\"knockedDown\",\"gettingUp\",\"gotUp\",\"faced\"],\"actions\":[\"sho",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "GameRules"
+   },
+   "result": "{\"type\":\"GameRules\",\"extends\":[\"Node3D\"],\"description\":\"A scene's rules: when the game is won and lost, and the flags it starts with. One per scene. Its actions change the game state and move the game to another scene.\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"A scene's rules: when the game is won and lost, and the flags it starts with. One per scene. Its acti",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "GameCounter"
+   },
+   "result": "{\"type\":\"GameCounter\",\"extends\":[\"Node3D\"],\"description\":\"A number the game counts: the score (the counter named \\\"score\\\"), orders taken, coins.\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"A number the game counts: the score (the counter named \\\"score\\\"), orders taken, coins.\",\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$\",\"d",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "GameGoal"
+   },
+   "result": "{\"type\":\"GameGoal\",\"extends\":[\"Node3D\"],\"description\":\"Something to get done: the HUD shows the first one that isn't. Done when its condition first holds, or by its action.\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"Something to get done: the HUD shows the first one that isn't. Done when its condition first holds, or by its action.\",\"properties\":{\"id\":{\"type\":\"",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "Area"
+   },
+   "result": "{\"type\":\"Area\",\"extends\":[\"Collider\",\"Node3D\"],\"description\":\"A sensor volume: reports bodies entering and leaving (door triggers, pickups).\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"A sensor volume: reports bodies entering and leaving (door triggers, pickups).\",\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$\",\"description\":\"S",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__edit",
+   "input": {
+    "label": "Add a customer",
+    "ops": [
+     {
+      "op": "add",
+      "node": {
+       "id": "customer-1",
+       "type": "Character",
+       "parent": "root",
+       "name": "Customer",
+       "asset": "hana",
+       "transform": {
+        "p": [
+         1.5,
+         0,
+         4
+        ]
+       },
+       "props": {
+        "controller": "npc"
+       },
+       "behaviours": [
+        {
+         "use": "brain",
+         "preset": "brains/customer.json"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "result": "1 edit applied as one undo step (\"Add a customer\")",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__edit",
+   "input": {
+    "label": "Add the serve goal",
+    "ops": [
+     {
+      "op": "add",
+      "node": {
+       "id": "rules",
+       "type": "GameRules",
+       "parent": "root"
+      }
+     },
+     {
+      "op": "add",
+      "node": {
+       "id": "served",
+       "type": "GameCounter",
+       "parent": "root",
+       "props": {
+        "label": "Customers served"
+       }
+      }
+     },
+     {
+      "op": "add",
+      "node": {
+       "id": "serve-customer",
+       "type": "GameGoal",
+       "parent": "root",
+       "props": {
+        "text": "Serve the customer",
+        "when": {
+         "test": "state",
+         "key": "counters.served",
+         "op": "ge",
+         "value": 1
+        }
+       }
+      }
+     },
+     {
+      "op": "add",
+      "node": {
+       "id": "counter-zone",
+       "type": "Area",
+       "parent": "root",
+       "transform": {
+        "p": [
+         -1.5,
+         0.6,
+         -2
+        ]
+       },
+       "props": {
+        "shape": "box",
+        "size": [
+         2,
+         1,
+         1
+        ]
+       }
+      }
+     },
+     {
+      "op": "connect",
+      "from": "counter-zone",
+      "signal": "bodyEntered",
+      "to": "served",
+      "call": "add",
+      "args": {
+       "by": 1
+      }
+     }
+    ]
+   },
+   "result": "5 edits applied as one undo step (\"Add the serve goal\")",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "validate"
+   },
+   "result": "{\"ok\":true,\"game\":{\"id\":\"cafe\",\"entry\":\"cafe.vrmxs\",\"scenes\":[\"cafe.vrmxs\"]},\"problems\":[],\"warnings\":[],\"unsaved\":\"cafe.vrmxs is checked as edited: save before export, which reads the project's saved files\",\"checks\":\"game document, scene schemas, rules (each scene and across scenes), colliders (a RigidBody with none), goals (one nothing can complete), references and licence rows (as an export che",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__save",
+   "input": {},
+   "result": "{\"ref\":\"cafe.vrmxs\",\"hash\":\"093db6a0c697f10f\",\"bytes\":7202,\"warnings\":[]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "export"
+   },
+   "result": "{\"id\":\"cafe\",\"title\":\"The cafe\",\"entry\":\"cafe.vrmxs\",\"runtime\":\"vrmxg-game 0.1.0+9baaea7eadfa\",\"files\":74,\"bytes\":23512152,\"digest\":\"30aa62ad26f246890fa52d58abe696c535028912ae481949be31b0e996b5d6da\",\"manifest\":\"237199d683f99e03c12d52e7ad4adefe3c1eddb945e5382d1e738d553c0c15fc\",\"byPattern\":33,\"written\":true,\"path\":\"~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/builds-w9",
+   "isError": false
+  }
+ ],
+ "failed": 0,
+ "costUSD": 0.26680000000000004,
+ "final": "All five steps are done. The second validation passed, the scene is saved and the game is exported.\n\n1. **Read and validate.** The game is \"The cafe\" (`cafe.vrmxs` only). `cafe.vrmxs` had no rules, counters, timers, goals or checkpoints. Validation was clean with no problems or warnings.\n2. **Add a customer.** One edit labelled \"Add a customer\" added the Character `customer-1`, named \"Customer\". It uses the `hana` asset (the same one as `hana-1`), stands at [1.5, 0, 4], is controlled as an NPC, and has a `brain` behaviour with preset `brains/customer.json`. I described Character first.\n3. **Add the goal.** One edit labelled \"Add the serve goal\" added these nodes, all under `root`:\n   - `rules`, a GameRules node.\n   - `served`, a GameCounter labelled \"Customers served\".\n   - `serve-customer`, a GameGoal with the text \"Serve the customer\", done when `counters.served` is at least 1.\n   - `counter-zone`, an Area at [-1.5, 0.6, -2], a 2×1×1 m box.\n   - A connection from `counter-zone`'s `bodyEntered` signal to `served`'s `add` action, with `by: 1`.\n\n   I described GameRules, GameCounter, GameGoal and Area first. I ran step 2 and step 3's edits in parallel, but they don't depend on each other.\n4. **Validate again.** It returned `ok: true` with no problems and no warnings. It noted that `cafe.vrmxs` was checked as edited and had to be saved before export.\n5. **Save and export.** The save wrote `cafe.vrmxs` (7202 bytes, hash `093db6a0c697f10f`) with no warnings. The export wrote the build:\n   - **Path:** `~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/builds-w9/cafe`\n   - **Files:** 74 (23,512,152 bytes)\n   - **Manifest digest:** `237199d683f99e03c12d52e7ad4adefe3c1eddb945e5382d1e738d553c0c15fc`\n   - **Build digest:** `30aa62ad26f246890fa52d58abe696c535028912ae481949be31b0e996b5d6da`\n   - **Runtime:** `vrmxg-game 0.1.0+9baaea7eadfa`\n\nI made no other edits and didn't undo anything."
+}
