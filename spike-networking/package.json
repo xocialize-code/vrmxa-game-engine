@@ -1,0 +1,10 @@
+{
+  "name": "spike-networking",
+  "private": true,
+  "type": "module",
+  "description": "VRMXG networking spike (AB-T-0622): lockstep against rollback. Throwaway. Not a workspace: its own node_modules for the transports; the engine's packages resolve from the repository's.",
+  "dependencies": {
+    "werift": "0.28.0",
+    "ws": "8.23.0"
+  }
+}
