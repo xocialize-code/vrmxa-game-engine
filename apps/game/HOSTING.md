@@ -16,8 +16,9 @@ The build contract, and what was checked, is in `engine/packages/bundle/README.m
   does both. Other types don't matter: the game reads its own files as bytes.
 - **Send no cross-origin isolation headers.** The game doesn't use `SharedArrayBuffer`, so it needs no
   `Cross-Origin-Opener-Policy` or `Cross-Origin-Embedder-Policy`. Adding them does no harm.
-- **Serve it over HTTPS** when it's public. The game also plays over plain `http://` (the checks use loopback), but
-  browsers keep some features to secure contexts, and gamepads are one of them.
+- **Serve it over HTTPS** when it's public. The game plays over plain `http://` on loopback (the checks did), which
+  browsers count as a secure context. On another host, plain `http://` is not secure, and browsers keep some features
+  to secure contexts. Whether the Gamepad API is one of them in every browser wasn't checked here.
 - **Recommended: send the build's Content Security Policy** as a header on every file. `contentSecurityPolicy()` in
   `@vrmxg/bundle/hosting` makes it from the build's `index.html`. It is printed in the `_headers` file that
   `vrmxg-export --worker` writes, so copy it from there. It allows no `eval`. It allows WebAssembly, the page's own
@@ -55,12 +56,17 @@ didn't take the forwarded `--ip`/`--port`. The folder carries a Wrangler config,
 3. `npx wrangler deploy --dry-run` checks the config and what would go up, then `npx wrangler deploy` publishes it.
 4. Open the address and play to an ending. In the browser's console, nothing should report a CSP violation.
 
-Limits worth knowing: a Worker's static asset is at most 25 MiB per file, and there's a cap on the number of files.
-The Morning Rush has 118 files, 26 MB in all, and its largest is 4.8 MB.
+Limits worth knowing: Workers static assets cap each file's size (25 MiB when this was written) and the number of
+files. Check Cloudflare's current limits page before a large game goes up. The Morning Rush has 117 files, 26 MB in
+all, and its largest is 4.8 MB.
 
 ## On other static hosts
 
-- **Cloudflare Pages, Netlify:** publish the Worker folder's `public/`. Both read `_headers`.
+Only two hosts were tested: Python's `http.server` and Wrangler's local dev server. The rest of this section is what
+those hosts document, not something run here.
+
+- **Cloudflare Pages, Netlify:** publish the Worker folder's `public/`. Both document a `_headers` file. The `!` line,
+  which removes a header a broader rule set, is Cloudflare's syntax; on Netlify, drop it and check the caching.
 - **GitHub Pages, S3, a plain web server:** publish the build folder. These hosts don't read `_headers`, so set the
   CSP header in the host's own configuration if you want it.
 - **itch.io and other embedding sites:** upload the build folder zipped, with `index.html` at its root. The game runs

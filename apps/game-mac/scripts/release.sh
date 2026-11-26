@@ -64,8 +64,13 @@ echo "release.sh: $app is signed ($(print -r -- "$info" | sed -n 's/^Signature=/
 version=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' $app/Contents/Info.plist)
 zip=${app:r}-notarize.zip
 ditto -c -k --keepParent $app $zip
-xcrun notarytool submit $zip --keychain-profile "$profile" --wait
+# the verdict read from the result, not the exit status: an Invalid submission isn't promised to exit non-zero
+result=$(xcrun notarytool submit $zip --keychain-profile "$profile" --wait --output-format json)
 rm -f $zip
+print -r -- "$result"
+read -r sub verdict <<< "$(print -r -- "$result" | node -e 'let s="";process.stdin.on("data",(d)=>s+=d).on("end",()=>{const o=JSON.parse(s);process.stdout.write(`${o.id ?? "?"} ${o.status ?? "?"}`)})')"
+[[ "$verdict" == "Accepted" ]] || fail "notarisation $verdict (submission $sub): xcrun notarytool log $sub --keychain-profile $profile says why"
+
 xcrun stapler staple $app
 xcrun stapler validate $app
 spctl --assess --type execute --verbose=4 $app

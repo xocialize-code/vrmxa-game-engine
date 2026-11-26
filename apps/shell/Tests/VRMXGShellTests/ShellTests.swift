@@ -627,7 +627,12 @@ func clickWAV(seconds: Double, at: Int, rate: Int = 48000) -> Data {
         #expect(text.string.contains("three 0.187.0 (MIT)") && !text.isEditable && text.isSelectable)
         #expect(w.title == "Editor: Third-Party Notices" && w.accessibilityIdentifier() == "shell-notices")
         #expect(d.showNotices() && d.noticesWindow === w, "a second time brings the same window forward")
-        w.close()
+        // the app's window closing takes the notices with it (the last window closing still quits)
+        d.window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 10, height: 10), styleMask: [.titled], backing: .buffered, defer: true)
+        d.windowWillClose(Notification(name: NSWindow.willCloseNotification, object: w))
+        #expect(d.noticesWindow === w, "the notices window's own close changes nothing")
+        d.windowWillClose(Notification(name: NSWindow.willCloseNotification, object: d.window))
+        #expect(d.noticesWindow == nil && !w.isVisible)
 
         // after the app's own Help items, below a separator
         let withOwn = ShellAppDelegate(config: ShellConfiguration(appName: "Editor", scheme: "vrmxg-test-own", helpItems: [ShellMenuItem("Keyboard Shortcuts", event: "shortcuts", key: "/")]))

@@ -16,6 +16,14 @@ extension ShellAppDelegate {
 
     static let noticesTitle = "Third-Party Notices"
 
+    /// The app's window is closing (the window's delegate is this): the notices go with it, so the last window closing
+    /// still quits the app as before, rather than leaving the notices open with no game or editor behind them.
+    public func windowWillClose(_ notification: Notification) {
+        guard let closing = notification.object as? NSWindow, closing === window, closing !== noticesWindow else { return }
+        noticesWindow?.close()
+        noticesWindow = nil
+    }
+
     @objc func menuNotices() { showNotices() }
 
     /// Open (or bring forward) the notices window. Returns false when there is no notices file to show.

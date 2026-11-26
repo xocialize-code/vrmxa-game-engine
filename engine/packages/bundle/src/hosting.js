@@ -90,7 +90,7 @@ export function workerFolder({ build, out, name, compatibilityDate = '2026-11-23
   const pub = path.join(out, 'public');
   fs.mkdirSync(pub, { recursive: true });
   let files = 0, bytes = 0, largest = { path: '', bytes: 0 };
-  for (const f of ['index.html', 'vrmxg-build.json', ...manifest.files.map((r) => r.path)]) {
+  for (const f of new Set(['index.html', 'vrmxg-build.json', ...manifest.files.map((r) => r.path)])) { // the runtime's index.html is a listed file too
     const to = path.join(pub, f), from = path.join(build, f);
     fs.mkdirSync(path.dirname(to), { recursive: true });
     fs.copyFileSync(from, to);

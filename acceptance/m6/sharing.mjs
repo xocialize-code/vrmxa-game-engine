@@ -104,6 +104,10 @@ async function survey(host) {
   }
   const page = await fetch(host.base);
   const csp = page.headers.get('content-security-policy');
+  const asset = manifest.files.find((f) => f.path.startsWith('assets/') && f.path.endsWith('.js')).path;
+  const assetRes = await fetch(new URL(asset, host.base)), headersRes = await fetch(new URL('_headers', host.base));
+  await assetRes.arrayBuffer(); await headersRes.arrayBuffer();
+  const caching = { page: page.headers.get('cache-control'), asset: assetRes.headers.get('cache-control'), assetCsp: assetRes.headers.get('content-security-policy') === csp, headersFile: headersRes.status };
   for (const f of ['vrmxg-build.json', ...manifest.files.map((x) => x.path)]) {
     const r = await fetch(new URL(f, host.base));
     const ext = path.extname(f) || f, type = (r.headers.get('content-type') ?? '').split(';')[0];
@@ -111,7 +115,7 @@ async function survey(host) {
     if (r.status !== 200) bad.push(`${f} ${r.status}`);
     await r.arrayBuffer();
   }
-  return { page: { status: page.status, type: page.headers.get('content-type') }, csp, redirects, bad, types: Object.fromEntries(Object.entries(types).sort().map(([k, v]) => [k, [...v]])) };
+  return { page: { status: page.status, type: page.headers.get('content-type') }, csp, caching, redirects, bad, types: Object.fromEntries(Object.entries(types).sort().map(([k, v]) => [k, [...v]])) };
 }
 
 let pw;
@@ -132,6 +136,7 @@ try {
       const jsOk = s.types['.js']?.every((t) => /^(text|application)\/javascript$/.test(t)), wasmOk = s.types['.wasm']?.every((t) => t === 'application/wasm');
       say(`${name}: the page and every file the manifest lists are served (scripts as JavaScript, WebAssembly as application/wasm)`, s.page.status === 200 && s.bad.length === 0 && jsOk && wasmOk,
         `${manifest.files.length + 1} files; page ${s.page.status} ${s.page.type}; ${s.bad.length ? `failed: ${s.bad.join(', ')}; ` : ''}types ${JSON.stringify(s.types)}; redirects ${JSON.stringify(s.redirects)}`);
+      if (name === 'worker') say('worker: the build\'s _headers apply: the page revalidated, assets/ cached for good, the CSP on both, the file itself not served', s.caching.page === 'no-cache' && s.caching.asset === 'public, max-age=31536000, immutable' && s.caching.assetCsp && s.caching.headersFile === 404, JSON.stringify(s.caching));
       if (name === 'worker') say('worker: the page is served with the build\'s Content Security Policy, which allows no eval', !!s.csp && !/'unsafe-eval'/.test(s.csp) && s.csp === contentSecurityPolicy(fs.readFileSync(path.join(dir, 'index.html'), 'utf8')), s.csp ?? 'no CSP header');
 
       // play it

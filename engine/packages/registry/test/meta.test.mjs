@@ -51,6 +51,16 @@ test('the meta-schema check gives Ajv\'s compile\'s verdict on every schema the 
   assert.deepEqual(differ, []);
 });
 
+test('stricter than Ajv\'s compile on purpose: a pattern that isn\'t a regular expression is refused where Ajv never compiles it', () => {
+  // Ajv 2020 compiles neither definitions nothing references, nor additionalItems (a draft 2019 keyword), nor an if
+  // without then or else, nor a then without if; a broken pattern there is still the declaration's mistake
+  const ajv = new Ajv2020({ strict: false, allErrors: true, logger: false });
+  for (const s of [{ $defs: { x: { pattern: '(' } } }, { definitions: { x: { pattern: '(' } } }, { additionalItems: { pattern: '(' } }, { if: { pattern: '(' } }, { then: { pattern: '(' } }]) {
+    assert.doesNotThrow(() => ajv.compile(s), JSON.stringify(s));
+    assert.match(schemaFault(s) ?? '', /Invalid regular expression/, JSON.stringify(s));
+  }
+});
+
 test('a declaration\'s problems name the schema and say why', () => {
   const b = { name: 'z', params: { n: { schema: { type: 'integr' } }, p: { schema: { type: 'string', pattern: '(' } } }, state: { type: 'object' } };
   const problems = schemaProblems(b);

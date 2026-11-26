@@ -348,7 +348,8 @@ sub-folder of a site, a Cloudflare Worker's assets. What that rests on, and what
   `<out>/public/` (the build, and a `_headers` with the CSP, `nosniff`, and a year's caching for `assets/`, whose names
   are hashes) and `<out>/wrangler.jsonc` (assets only, no script per request, `workers_dev` and `preview_urls` off).
   `npx wrangler dev --ip 127.0.0.1` in `<out>` serves it on this Mac; deploying it is the operator's step
-  (`apps/game/HOSTING.md`). A Worker's asset is at most 25 MiB: the Morning Rush's largest file is 4.8 MB.
+  (`apps/game/HOSTING.md`). Workers cap each asset's size (25 MiB when written; `largest` in the result says the
+  build's biggest file: the Morning Rush's is 4.8 MB).
 
 ## The loader
 
@@ -471,8 +472,10 @@ hashes each file once, as it is written.
   `checkNotices` seeing a text, fdlibm's notice or the file gone; the CSP from the page's inline import map and style
   (and the game app's page holding nothing else inline), the `_headers` file, the Worker folder and the command line.
   `node --test test/meta.test.mjs` in `@vrmxg/registry`: the precompiled meta-schema is what Ajv writes, gives Ajv's
-  compile's verdict on every schema the registry holds and on 30 made to fail, and declares a project's behaviours
-  with code generation from strings turned off.
+  compile's verdict on every schema the registry holds and on 30 made to fail (it is stricter on purpose in one way: a
+  pattern that isn't a regular expression is refused even where Ajv never compiles it, in unreferenced `$defs`,
+  `additionalItems`, a lone `if` or `then`), and declares a project's behaviours with code generation from strings
+  turned off.
 - `node acceptance/m6/sharing.mjs` (M6 W7): the Morning Rush served by Python's `http.server` from a sub-folder and by
   a Worker in Wrangler's local dev server under the build's CSP, both on loopback, played to the won ending in Chromium
   through each and replayed in Node (`acceptance/results/m6-sharing.json`).
