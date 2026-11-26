@@ -4,6 +4,13 @@
 // The frame loop steps the session (GameSession.advance → GameFlow.step), never a tree directly: a scene change
 // replaces the world inside a step, and the render host follows it (onWorld). Presentation blends between the last two
 // steps as the render host's own frame() does. While a menu is open nothing steps.
+//
+// A lost GPU device (M6 W6, AB-T-0639): WebKit kills its GPU process when a Metal command buffer fails. The render host
+// says so (onLost) and draws nothing more; this host stops stepping, says "The display stopped…" in a status line, and
+// makes a render host in its place on a fresh canvas (RenderHost.replace: WebGPU again, else three's WebGL2 backend),
+// with the world being played attached as it is. The simulation isn't touched, so play goes on from the same step with
+// the same hashes as an unbroken session (acceptance/m6/device-loss.mjs). The status line goes once a new frame is
+// drawn. When no renderer can be made, the game is held paused and the pause menu offers Save.
 import { RenderHost } from '@vrmxg/render';
 import { loadRapier } from '@vrmxg/physics';
 import { KeyboardDevice, MouseDevice, GamepadDevice, InputService } from '@vrmxg/input';
@@ -30,12 +37,20 @@ export class GameHost {
    * @param {() => boolean} [o.hold] true while a menu or a question is up: nothing steps then, whatever else happens
    * @param {any} [o.uiSettings] the player's volumes and bindings (@vrmxg/game-ui's GameSettings): put on every world's
    *   input service before its first step, and on the audio output
+   * @param {string[] | null} [o.recoverWith] the backends a lost renderer is made again on, in order (null: the render
+   *   host's own order, WebGPU again and then WebGL; `?recover=webgl-fallback` asks for the fallback in a check)
    */
-  constructor({ canvas, build, backend, characters, shell, trace = false, onChange = () => {}, onCommand = () => {}, onEvent = () => {}, hold = () => false, uiSettings = null }) {
+  constructor({ canvas, build, backend, characters, shell, trace = false, onChange = () => {}, onCommand = () => {}, onEvent = () => {}, hold = () => false, uiSettings = null, recoverWith = null }) {
     this.canvas = canvas; this.build = build; this.game = build.game; this.shell = shell;
     this.characters = characters; this.onChange = onChange; this.onCommand = onCommand; this.onEvent = onEvent;
     this.render = /** @type {RenderHost | null} */ (null);
-    this.state = { backend: '', playing: false, paused: false, loading: '', step: 0, scene: null, held: null, error: null, outcome: null, lastSlot: null, dirty: false };
+    this.state = { backend: '', playing: false, paused: false, loading: '', step: 0, scene: null, held: null, error: null, outcome: null, lastSlot: null, dirty: false, display: '' };
+    /** Each lost device and what came of it (M6 W6): { step, scene, lost, backend, tried, ms } or { …, failed }. */
+    this.recoveries = [];
+    /** What the status line said and when (M6 W6): { text, step }, a new entry each time it changes. */
+    this.displays = [];
+    this.recoverWith = recoverWith;
+    this._recovering = false; this._awaitFrame = false; this._losses = /** @type {number[]} */ ([]);
     this.store = shell.inShell ? new ShellStore(shell.call) : new IndexedDBStore(`vrmxg-game-${this.game.id}`);
     /** @type {Map<any, any>} tree → its world, for disposing it */ this.worlds = new Map();
     this.characterCache = { sources: new Map(), clips: new Map() }; // read bundles and parsed clips, kept between worlds
@@ -54,13 +69,18 @@ export class GameHost {
     this.trace = trace;
     this.session = /** @type {GameSession | null} */ (null);
     this._last = null; this._running = false;
-    new ResizeObserver(() => this.resize()).observe(canvas);
+    this._resized = new ResizeObserver(() => this.resize());
+    this._resized.observe(canvas);
+    this._onClick = () => this.capturePointer(); // on the canvas (a click asks for mouse look): moved to a fresh one with it
+    canvas.addEventListener('click', this._onClick);
   }
 
   /** The render host on the backend asked for, the build's behaviours and scenes, Rapier: ready to start a game. */
   async open(backend) {
     const build = this.build;
     this.render = await RenderHost.create({ canvas: this.canvas, backend, post: { loadCube: (file) => build.text(file) } });
+    this.render.onLost = (lost) => this._lost(lost);
+    this._mtoon = this.render.mtoonMaterial; // worlds built while a lost renderer is being replaced take the same kind
     this.state.backend = this.render.backend;
     this.resize();
     const behaviours = await build.behaviours((path) => import(/* @vite-ignore */ new URL(path, location.href).href));
@@ -76,7 +96,7 @@ export class GameHost {
     this.uiSettings?.applyTo({ input: this.menuInput, audio: this.audio });
     const load = worldLoader({
       R, scenes, behaviours, actions, physics: this.game.physics ?? null, ...this.characters, // the game's collision layers (M6 W3)
-      options: () => ({ mtoonMaterial: this.render.mtoonMaterial, audioOutput: this.audio, characterCache: this.characterCache }),
+      options: () => ({ mtoonMaterial: this.render?.mtoonMaterial ?? this._mtoon, audioOutput: this.audio, characterCache: this.characterCache }), // a lost renderer being replaced: the same kind
       onBuilt: (world) => {
         this.worlds.set(world.tree, world);
         for (const d of [this.keyboard, this.mouse, this.gamepad]) world.input.addDevice(d);
@@ -86,7 +106,7 @@ export class GameHost {
     this.session = new GameSession({
       game: this.game, digest: build.manifest.digest, load, unload: (tree) => this._dispose(tree), store: this.store,
       stamp: () => new Date().toISOString(), seed: 1, scenes: docs, prefabs, hashes: this.trace,
-      onWorld: (tree) => { this.render.attach(tree); this.resize(); this._changed(); },
+      onWorld: (tree) => { this.render?.attach(tree); this.resize(); this._changed(); }, // while a renderer is being replaced, it takes the world
       onEvent: (e) => { this.onEvent(e); this._changed(); },
     });
     this._loop();
@@ -102,6 +122,97 @@ export class GameHost {
   }
 
   resize() { const r = this.canvas.getBoundingClientRect(); if (this.render && r.width && r.height) this.render.resize(r.width, r.height); }
+
+  // ---------------------------------------------------------------- a lost GPU device (M6 W6)
+
+  /**
+   * The render host lost its device: make one in its place and draw the world being played on it. Nothing steps
+   * meanwhile (the frame loop needs a render host showing the session's tree), so the next step is the one that was
+   * due. Losses come in bursts when a GPU process dies more than once: after three in a minute, it stops trying.
+   */
+  async _lost(lost) {
+    const old = this.render;
+    if (!old || this._recovering) return;
+    this._recovering = true; this.render = null; this._awaitFrame = false;
+    const t0 = performance.now(), at = { step: this.session?.step ?? null, scene: this.session?.scene ?? null };
+    this._display('The display stopped. Restarting it…');
+    console.warn(`[game] the renderer's device was lost (${lost.api}: ${lost.reason ?? 'no reason'}: ${lost.message}); restarting it`);
+    this._losses = [...this._losses.filter((t) => t0 - t < 60000), t0];
+    try {
+      if (this._losses.length > 3) throw new Error('it was lost three times in a minute');
+      if (old.tree && old.tree !== this.session?.tree) old.detach(); // a world let go meanwhile isn't drawn again
+      const host = await RenderHost.replace(old, { canvas: this._freshCanvas(), ...(this.recoverWith ? { backends: this.recoverWith } : {}) });
+      host.onLost = (l) => this._lost(l);
+      const tree = this.session?.tree ?? null; // a game started or loaded meanwhile: its world
+      if (tree && host.tree !== tree) host.attach(tree); else if (!tree && host.tree) host.detach();
+      this.render = host;
+      this.state.backend = host.backend;
+      this._last = null; // no catching up on the time it took
+      this._awaitFrame = true; // the status line goes once the new host has drawn a frame
+      this.resize();
+      this.recoveries.push({ ...at, lost, backend: host.backend, tried: host.replaced?.tried ?? [], ms: performance.now() - t0 });
+    } catch (e) {
+      // nothing could draw: the game is held and the pause menu offers Save (the simulation is intact)
+      const message = String(e?.message ?? e);
+      this.recoveries.push({ ...at, lost, failed: message, ms: performance.now() - t0 });
+      this._display(`The display stopped and couldn't be restarted (${message}). Save your game from the pause menu.`);
+      console.error(e);
+      this.onCommand('pause');
+      this.pause();
+    } finally {
+      this._recovering = false;
+      this._changed();
+    }
+  }
+
+  _display(text) {
+    if (this.state.display === text) return;
+    this.state.display = text;
+    this.displays.push({ text, step: this.session?.step ?? null });
+    this._changed();
+  }
+
+  /**
+   * A check's lost devices (M6 W6, `?lose=<step>:<how>,…`): each one made on the first frame the session is at or past
+   * its step. `destroy`: GPUDevice.destroy(); `encoder`: createCommandEncoder throws as WebKit's does once its GPU process
+   * has died (the device itself isn't lost); `context`: WEBGL_lose_context's loseContext(). → what was done, as it happens
+   * @param {Array<{ at: number, how: string }>} plan
+   */
+  loseDevices(plan) {
+    const done = [];
+    const tick = () => {
+      const next = plan[done.length];
+      if (!next) return;
+      requestAnimationFrame(tick);
+      const step = this.session?.step ?? -1, render = this.render, r = render?.renderer;
+      if (!r || render.lost || step < next.at) return;
+      const device = r.backend?.device;
+      if (next.how === 'destroy') device.destroy();
+      else if (next.how === 'encoder') device.createCommandEncoder = () => { throw new Error('GPUDevice.createCommandEncoder: Unable to make command encoder.'); };
+      else if (next.how === 'context') r.getContext().getExtension('WEBGL_lose_context').loseContext();
+      else throw new Error(`?lose: no way to lose a device called "${next.how}" (destroy, encoder, context)`);
+      done.push({ ...next, step, backend: render.backend });
+    };
+    requestAnimationFrame(tick);
+    return done;
+  }
+
+  /**
+   * A new canvas in the old one's place (the same id, attributes and styling): a canvas that had a WebGPU context can't
+   * give a WebGL one, and a lost device's context is best left alone. The mouse, the resize watch and the click move.
+   */
+  _freshCanvas() {
+    const old = this.canvas, next = /** @type {HTMLCanvasElement} */ (old.cloneNode(false));
+    const focused = typeof document !== 'undefined' && document.activeElement === old;
+    old.removeEventListener('click', this._onClick);
+    old.replaceWith?.(next);
+    this._resized.unobserve(old); this._resized.observe(next);
+    next.addEventListener('click', this._onClick);
+    this.mouse.device.detach(); this.mouse.device.attach(next);
+    this.canvas = next;
+    if (focused) next.focus?.();
+    return next;
+  }
 
   // ---------------------------------------------------------------- what the menus do
 
@@ -248,6 +359,7 @@ export class GameHost {
       try {
         if (step) { this._frame(tree, dt); this._replayStep(); }
         else render.render(1, false);
+        if (this._awaitFrame && !render.lost && this.render === render) { this._awaitFrame = false; this._display(''); } // a new frame: the display is back
       } catch (e) {
         this.state.error = String(e?.message ?? e); console.error(e);
         this.pause();

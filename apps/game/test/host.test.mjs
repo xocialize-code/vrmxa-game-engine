@@ -32,3 +32,23 @@ test('pause is refused while a game starts or a save loads', () => {
   assert.equal(GameHost.prototype.pause.call(h), false);
   assert.equal(h.state.playing, true);
 });
+
+// M6 W6 (AB-T-0639): a lost GPU device. Recovery itself (a render host made again, play going on with the same hashes)
+// is checked in Chromium (acceptance/m6/device-loss.mjs); here, the stand-in's give-up: after three losses in a minute
+// the game is held paused, the pause menu asked for, and the status line says to save.
+test('a device lost a fourth time in a minute: the game is held, the pause menu asked for, and the status line says to save', async () => {
+  const commands = [];
+  const h = {
+    render: { tree: null, lost: { api: 'WebGPU', reason: 'unknown', message: 'gone' } }, session: { step: 400, scene: 'level', tree: null, active: true },
+    state: { display: '', loading: '', playing: true, paused: false }, recoveries: [], displays: [], _display: GameHost.prototype._display, _losses: [1, 2, 3].map(() => performance.now()), _recovering: false,
+    mouse: { device: { unlock() {} } }, audio: null, onCommand: (c) => commands.push(c), _changed() {}, pause: GameHost.prototype.pause,
+  };
+  const warn = console.warn, error = console.error; console.warn = console.error = () => {};
+  try { await GameHost.prototype._lost.call(h, h.render.lost); } finally { console.warn = warn; console.error = error; }
+  assert.deepEqual(commands, ['pause']);
+  assert.deepEqual([h.state.playing, h.state.paused, h.render], [false, true, null], 'held: nothing steps or draws');
+  assert.match(h.state.display, /couldn't be restarted \(it was lost three times in a minute\)\. Save your game from the pause menu/);
+  assert.deepEqual(h.recoveries.map((r) => [r.step, r.scene, r.failed]), [[400, 'level', 'it was lost three times in a minute']]);
+  assert.deepEqual(h.displays.map((d) => [d.step, d.text.slice(0, 22)]), [[400, 'The display stopped. R'], [400, 'The display stopped an']], 'said, then said it couldn\'t');
+  assert.equal(h._recovering, false);
+});

@@ -145,6 +145,30 @@ ending (five seconds, then the title as a new game). `scripts/test-game.mjs` rea
 its own under `game/`, its `game.json`, its licence rows added) and exports it. It is a fixture to prove the app; the
 sample game itself is M5 W10.
 
+## A lost GPU device (M6 W6, AB-T-0639)
+
+When WebKit's GPU process dies (a Metal command buffer failed, often under another process's GPU load) the render host
+says its device is lost (`@vrmxg/render`, "A lost GPU device"). The host (`src/host.js`, `_lost`):
+
+1. stops stepping (the frame loop needs a render host showing the session's world) and shows "The display stopped.
+   Restarting it…" over the game (`#display-status`, above the menus);
+2. makes a render host in its place on a fresh canvas (the same id and styling: the mouse, the resize watch and the
+   click that asks for mouse look move with it), WebGPU again, else three's WebGL2 backend, with the world being
+   played attached as it is (or the one a load started meanwhile);
+3. clears the line once the new host has drawn a frame, and plays on from the same step. Nothing simulated is touched,
+   so a session hashes as if nothing happened.
+
+After three losses in a minute, or when no renderer can be made, the game is held paused, the pause menu opens and the
+line says to save (the simulation is intact, so Save works). Worlds built while a renderer is being made take the same
+MToon kind. `host.recoveries` lists each loss and what came of it; `host.displays` what the line said.
+
+Check switches: `?lose=<step>:<how>[,…]` loses the device as the session reaches each step (`destroy`:
+`GPUDevice.destroy()`; `encoder`: `createCommandEncoder` throws as WebKit's does; `context`: `WEBGL_lose_context`), and
+`?recover=<backend>[,…]` picks what is made again. With `?replay=` the result (`window.__result`) carries `losses`,
+`recoveries`, `displays` and `canvases`. `acceptance/m6/device-loss.mjs` plays a session in Chromium, then replays it
+through three losses on WebGPU, one with the WebGL2 fallback and one lost WebGL context, each against the unbroken
+session's hash after every step; `device-loss-wkwebview.sh` does the same in WKWebView.
+
 ## Checked
 
 - `npm test` here (40 tests; all but one need no models): the player's settings through `GameSettings` in the `ui` field,

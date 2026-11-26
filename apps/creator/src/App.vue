@@ -21,7 +21,7 @@ const canvas = ref(null), pane = ref(null), picker = ref(null), timeline = ref(n
 const ui = reactive({
   shell: '', project: '', writable: false, loading: true, error: '', mode: 'editing',
   shorts: [], short: null, sets: [], newTitle: 'Second take', newSet: '', newSetPicked: false, saveAsTitle: '',
-  undo: null, redo: null, dirty: false, valid: true, problems: '', nodes: 0, hash: '', renderer: '—', build: '—',
+  undo: null, redo: null, dirty: false, valid: true, problems: '', nodes: 0, hash: '', renderer: '—', rendererNote: '', build: '—',
   script: { text: '', file: '', errors: [], warnings: [], pending: false, dirty: false, last: '' },
   board: null, thumbs: {}, beats: {}, thumbState: '', selectedShot: null,
   tl: null, roles: [], role: '', cast: '', opened: '', saved: '', jobs: [], runner: '', coverage: 'default', unsaved: [],
@@ -34,6 +34,7 @@ let started; const ready = new Promise((r) => { started = r; }); // the first pr
 
 function refresh(kind = 'all') {
   ui.renderer = cr.stats.backend === 'webgpu' ? 'WebGPU' : cr.stats.backend === 'webgl' ? 'WebGL' : '—';
+  ui.rendererNote = cr.stats.display ?? ''; // M6 W6: 'restarting (the GPU was lost)' while a lost view is made again
   ui.build = cr.stats.buildMs ? `${cr.stats.buildMs.toFixed(0)} ms` : '—';
   if (kind === 'stats') return;
   if (kind === 'queue' || kind === 'export' || kind === 'all') { ui.jobs = cr.queue.list(); ui.runner = cr.queue.runner.name; }
@@ -274,7 +275,7 @@ if (inShell) {
       <output v-if="ui.opened" id="open-result" :aria-label="`Opened ${ui.opened}`">Opened {{ ui.opened }}</output>
       <output v-if="ui.unsaved.length" id="memory-files" class="muted" :aria-label="`In memory: ${ui.unsaved.join(', ')}`">in memory: {{ ui.unsaved.join(', ') }}</output>
       <output id="build-time" :aria-label="`Build ${ui.build}`">build {{ ui.build }}</output>
-      <output id="renderer" :aria-label="`Renderer ${ui.renderer}`">{{ ui.renderer }}</output>
+      <output id="renderer" :aria-label="`Renderer ${ui.renderer}${ui.rendererNote ? `, ${ui.rendererNote}` : ''}`">{{ ui.renderer }}<template v-if="ui.rendererNote"> {{ ui.rendererNote }}</template></output>
       <output v-if="ui.mcp" id="mcp-state" :aria-label="ui.mcp">{{ ui.mcp }}</output>
       <span v-if="ui.shell" class="muted" :aria-label="`Shell ${ui.shell}`">{{ ui.shell }}</span>
     </footer>

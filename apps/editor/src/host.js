@@ -98,7 +98,7 @@ export class EditorHost {
     this.worlds = new RetiredWorlds({ showing: () => this.host?.tree ?? null }); // worlds let go of (AB-T-0592, worlds.js)
     this.devices = null;
     this.debug = { colliders: false, sensors: false, capsules: false, rays: false };
-    this.stats = { frameMs: 0, fps: 0, renderMs: 0, step: 0, buildMs: 0, backend: '' };
+    this.stats = { frameMs: 0, fps: 0, renderMs: 0, step: 0, buildMs: 0, backend: '', display: '' };
     this._built = 0;           // worlds built (AB-T-0592): the status shows how many are still alive
     this.error = '';
     this.behaviourProblems = []; // what the open project's behaviours module got wrong (M6 W0): shown, never fatal
@@ -140,10 +140,44 @@ export class EditorHost {
   async _makeHost(backend) {
     const host = await RenderHost.create({ canvas: this.canvas, backend, preserveDrawingBuffer: true, post: this.postOptions() });
     host.camera = this.camera;
+    return this._adoptHost(host);
+  }
+
+  /** Draw through this host (the view's first, or one made in place of a lost one, which keeps its camera: the scene's in Play). */
+  _adoptHost(host) {
+    host.debug.set(this.debug);
+    host.onLost = (lost) => this._hostLost(lost);
     this.host = host;
-    this.stats.backend = host.backend;
+    this.stats.backend = host.backend; this.stats.display = '';
+    this._w = this._h = null; // sized again on the next frame
     this.changed();
     return host;
+  }
+
+  /**
+   * The view's GPU device was lost (M6 W6, AB-T-0639; WebKit kills its GPU process when a Metal command buffer fails).
+   * Nothing draws or steps meanwhile (the frame loop skips a lost host), and a host is made in its place on the same
+   * canvas (the orbit and fly controls, the gizmos and the aids listen on it) and backend, with whatever world it showed:
+   * Play goes on from the step it was on. A WebGPU canvas can't take WebGL, so when WebGPU can't be had again the
+   * editor says to save and reopen the window (the game app moves to a fresh canvas and WebGL instead). An export or a
+   * thumbnail drawing on its own offline host when the GPU goes fails with its own error.
+   */
+  async _hostLost(lost) {
+    const old = this.host;
+    if (this._replacingHost || !old) return;
+    this._replacingHost = true;
+    this.stats.display = 'restarting (the GPU was lost)'; this.changed();
+    console.warn(`[editor] the view's device was lost (${lost.api}: ${lost.reason ?? 'no reason'}: ${lost.message}); restarting it`);
+    try {
+      this._adoptHost(await RenderHost.replace(old, { canvas: this.canvas, backends: [old.backend === 'webgl' ? 'webgl' : 'webgpu'] }));
+    } catch (e) {
+      this.stats.display = 'lost';
+      this.error = `The GPU was lost and the view couldn't be restarted (${e?.message ?? e}). Save, then close the window and open it again.`;
+      console.error(e);
+    } finally {
+      this._replacingHost = false;
+      this.changed();
+    }
   }
 
   /** The post stack's options (M2 W3, M4 W1): the backend's own stack, LUTs read from the open project. */
@@ -1338,7 +1372,7 @@ export class EditorHost {
       requestAnimationFrame(tick);
       this.sweep(); // retired worlds the view has stopped showing (AB-T-0592)
       const tree = this.host?.tree;
-      if (!tree) return;
+      if (!tree || this.host.lost) { this._last = null; return; } // a lost device: nothing steps or draws until its replacement (M6 W6)
       const dt = this._last === null ? 0 : Math.min(0.25, (t - this._last) / 1000);
       if (this._last !== null) this._frames.push(t - this._last);
       this._last = t;

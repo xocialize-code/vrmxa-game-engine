@@ -81,6 +81,34 @@ the patcher's exact-hunk applier; and (W1) `create` with post options on both ba
 **In browsers** (`apps/playground`, `?renderer=webgpu`): `scripts/backends-chromium.mjs` and `backends-wkwebview.sh`
 draw the cafe with Mira offline on both backends (results in `apps/playground/results/`, receipt AB-R-1055).
 
+## A lost GPU device (M6 W6, AB-T-0639)
+
+WebKit kills its GPU process when a Metal command buffer fails, and every renderer in the page loses its device (the
+game app stopped with "createCommandEncoder: Unable to make command encoder", 425 s into a ten-minute run under another
+process's GPU load). The host now:
+
+- **notices**: `GPUDevice.lost` for any reason (three ignores `destroyed`, which its own dispose causes; the host only
+  ignores it while it is disposing), three's `onDeviceLost` (kept: it still logs), `webglcontextlost` on a WebGL
+  canvas, and the first draw that throws for it (WebKit throws from `createCommandEncoder` before `lost` resolves).
+  Another error from a draw is thrown as before.
+- **stops and says so, once**: `host.lost` (`{ api, reason, message }`) is set, `render()` draws nothing more, and
+  `host.onLost(lost)` is called. A draw that throws can't leave the interpolated pose in the simulated transforms:
+  `render()` puts them back in a `finally` (before, a throwing draw left the blend in the world it had drawn).
+- **is made again**: `await RenderHost.replace(old, { canvas, backends })` makes a host with the old one's options,
+  post stack and MToon kind on the first backend that works (`RenderHost.recoveryOrder`: WebGPU again, then
+  `'webgl-fallback'`, a WebGPURenderer on three's WebGL2 backend, which draws the node materials a WebGPU world was
+  built with; a WebGL host is made again on WebGL), and moves the tree, the camera override, the split-screen layout,
+  interpolation and the overlays over. The old renderer is disposed (errors from a dead device ignored). It throws,
+  naming each backend's failure, when none can be made. `host.replaced` says what it came from.
+- **never touches the simulation**: the tree isn't stepped or changed, so the next frame draws the world from the step
+  it is on and the hashes are those of an unbroken run.
+
+A canvas that had a WebGPU context can't give a WebGL one, so the game app replaces its canvas; the editor and the
+creator keep theirs (their controls listen on it) and try their own backend again only. Tests:
+`test/device-loss.test.mjs` (a stand-in WebGPU: each way of noticing, the pose put back after a failing draw, replace
+on WebGPU and on the fallback with every step hashing as an unbroken run's, nothing able to draw). In browsers:
+`acceptance/m6/device-loss.mjs` (Chromium) and `device-loss-wkwebview.sh`, through the game app.
+
 ## The demo (`demo/`)
 
 The W6 harness's cafe (Mira on the recorded input, Hana wandering, the doors) with an Environment, a spot lamp and an

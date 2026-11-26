@@ -37,8 +37,8 @@ export class LiveView {
    * `replay`: an input recording (path under the project) played from its start step.
    */
   /**
-   * @param {{ steps?: number, hold?: Record<string, number | boolean>, recording?: any }} [opts] recording: an input
-   *   recording (already read) played from its start step
+   * @param {{ steps?: number, hold?: Record<string, number | boolean>, recording?: any, choose?: Record<string, string | number | boolean> }} [opts]
+   *   recording: an input recording (already read) played from its start step; choose: choices the first step latches
    * @param {(tree: any, steps: number) => Promise<void>} [run] how the steps happen (default: now, waiting out held
    *   steps); the editor's live play passes one that lets its frame loop run them in real time
    */
