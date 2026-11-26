@@ -10,7 +10,10 @@
    "every": 4,
    "depth": 8,
    "requeue": false,
+   "corrupt": false,
    "shim": "jump,nav",
+   "forwardOff": 0,
+   "held": 0,
    "rollbacks": 299,
    "resimSteps": 2392,
    "skipped": 0,
@@ -21,35 +24,35 @@
    "divergences": 0,
    "captureMs": {
     "n": 1200,
-    "mean": 1.177,
-    "p50": 1.136,
-    "p95": 1.486,
-    "p99": 1.883,
-    "max": 2.583
+    "mean": 1.259,
+    "p50": 1.198,
+    "p95": 1.617,
+    "p99": 2.015,
+    "max": 5.712
    },
    "restoreMs": {
     "n": 299,
-    "mean": 1.842,
-    "p50": 1.767,
-    "p95": 2.336,
-    "p99": 2.755,
-    "max": 5.558
+    "mean": 1.956,
+    "p50": 1.87,
+    "p95": 2.447,
+    "p99": 2.917,
+    "max": 6.223
    },
    "resimStepMs": {
     "n": 2392,
-    "mean": 0.245,
-    "p50": 0.21,
-    "p95": 0.391,
-    "p99": 0.768,
-    "max": 21.242
+    "mean": 0.292,
+    "p50": 0.243,
+    "p95": 0.503,
+    "p99": 0.852,
+    "max": 22.72
    },
    "stepMs": {
     "n": 1200,
-    "mean": 0.279,
-    "p50": 0.236,
-    "p95": 0.417,
-    "p99": 0.806,
-    "max": 21.545
+    "mean": 0.353,
+    "p50": 0.301,
+    "p95": 0.525,
+    "p99": 0.99,
+    "max": 28.48
    },
    "snapshotBytes": {
     "n": 20,
@@ -67,7 +70,90 @@
     "p99": 64039,
     "max": 64039
    },
+   "snapshotParts": {
+    "total": 216187,
+    "service:nav": 120230,
+    "service:physics": 63474,
+    "physics:rapierBytes": 63341,
+    "nodes": 26398,
+    "core": 5103,
+    "service:closet": 310,
+    "service:voice": 173,
+    "service:input": 160,
+    "service:ai": 65,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": true
+  },
+  {
+   "world": "cafe-2p",
+   "steps": 1200,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": true,
+   "shim": "jump,nav",
+   "forwardOff": 1200,
    "held": 0,
+   "rollbacks": 299,
+   "resimSteps": 2392,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": null,
+   "divergences": 0,
+   "captureMs": {
+    "n": 1200,
+    "mean": 1.216,
+    "p50": 1.17,
+    "p95": 1.574,
+    "p99": 1.953,
+    "max": 2.927
+   },
+   "restoreMs": {
+    "n": 299,
+    "mean": 1.875,
+    "p50": 1.816,
+    "p95": 2.275,
+    "p99": 2.626,
+    "max": 2.715
+   },
+   "resimStepMs": {
+    "n": 2392,
+    "mean": 0.333,
+    "p50": 0.302,
+    "p95": 0.501,
+    "p99": 0.846,
+    "max": 19.886
+   },
+   "stepMs": {
+    "n": 1200,
+    "mean": 0.331,
+    "p50": 0.276,
+    "p95": 0.468,
+    "p99": 0.725,
+    "max": 33.643
+   },
+   "snapshotBytes": {
+    "n": 20,
+    "mean": 208283.95,
+    "p50": 216121,
+    "p95": 216349,
+    "p99": 216806,
+    "max": 216806
+   },
+   "rapierBytes": {
+    "n": 20,
+    "mean": 61621.05,
+    "p50": 63341,
+    "p95": 63423,
+    "p99": 64039,
+    "max": 64039
+   },
    "snapshotParts": {
     "total": 216187,
     "service:nav": 120230,
@@ -92,7 +178,10 @@
    "every": 4,
    "depth": 8,
    "requeue": false,
+   "corrupt": false,
    "shim": "jump,nav",
+   "forwardOff": 0,
+   "held": 0,
    "rollbacks": 414,
    "resimSteps": 3312,
    "skipped": 0,
@@ -109,35 +198,35 @@
    "divergences": 0,
    "captureMs": {
     "n": 1668,
-    "mean": 1.152,
-    "p50": 1.124,
-    "p95": 1.3,
-    "p99": 1.78,
-    "max": 2.107
+    "mean": 1.239,
+    "p50": 1.195,
+    "p95": 1.541,
+    "p99": 1.945,
+    "max": 2.221
    },
    "restoreMs": {
     "n": 414,
-    "mean": 1.754,
-    "p50": 1.713,
-    "p95": 2.128,
-    "p99": 2.445,
-    "max": 2.474
+    "mean": 1.907,
+    "p50": 1.849,
+    "p95": 2.369,
+    "p99": 2.67,
+    "max": 3.062
    },
    "resimStepMs": {
     "n": 3312,
-    "mean": 0.235,
-    "p50": 0.216,
-    "p95": 0.328,
-    "p99": 0.717,
-    "max": 19.339
+    "mean": 0.267,
+    "p50": 0.234,
+    "p95": 0.412,
+    "p99": 0.724,
+    "max": 22.172
    },
    "stepMs": {
     "n": 1668,
-    "mean": 0.262,
-    "p50": 0.232,
-    "p95": 0.366,
-    "p99": 0.689,
-    "max": 19.835
+    "mean": 0.33,
+    "p50": 0.296,
+    "p95": 0.488,
+    "p99": 0.719,
+    "max": 22.016
    },
    "snapshotBytes": {
     "n": 28,
@@ -155,7 +244,6 @@
     "p99": 63869,
     "max": 63869
    },
-   "held": 0,
    "snapshotParts": {
     "total": 213319,
     "service:nav": 120615,
@@ -180,7 +268,10 @@
    "every": 4,
    "depth": 8,
    "requeue": false,
+   "corrupt": false,
    "shim": "jump,nav",
+   "forwardOff": 0,
+   "held": 0,
    "rollbacks": 149,
    "resimSteps": 1192,
    "skipped": 0,
@@ -197,35 +288,35 @@
    "divergences": 850,
    "captureMs": {
     "n": 600,
-    "mean": 1.194,
-    "p50": 1.162,
-    "p95": 1.464,
-    "p99": 1.849,
-    "max": 3.024
+    "mean": 1.24,
+    "p50": 1.204,
+    "p95": 1.54,
+    "p99": 1.856,
+    "max": 1.986
    },
    "restoreMs": {
     "n": 149,
-    "mean": 1.817,
-    "p50": 1.778,
-    "p95": 2.223,
-    "p99": 2.693,
-    "max": 2.972
+    "mean": 1.903,
+    "p50": 1.815,
+    "p95": 2.613,
+    "p99": 2.76,
+    "max": 3.58
    },
    "resimStepMs": {
     "n": 1192,
-    "mean": 0.24,
-    "p50": 0.203,
-    "p95": 0.352,
-    "p99": 0.478,
-    "max": 18.914
+    "mean": 0.268,
+    "p50": 0.219,
+    "p95": 0.443,
+    "p99": 0.686,
+    "max": 19.498
    },
    "stepMs": {
     "n": 600,
-    "mean": 0.289,
-    "p50": 0.231,
-    "p95": 0.401,
-    "p99": 0.847,
-    "max": 18.991
+    "mean": 0.333,
+    "p50": 0.279,
+    "p95": 0.494,
+    "p99": 0.734,
+    "max": 19.498
    },
    "snapshotBytes": {
     "n": 10,
@@ -243,7 +334,6 @@
     "p99": 63409,
     "max": 63409
    },
-   "held": 0,
    "snapshotParts": {
     "total": 216613,
     "service:nav": 121978,
@@ -268,7 +358,10 @@
    "every": 4,
    "depth": 8,
    "requeue": true,
+   "corrupt": false,
    "shim": "jump,nav",
+   "forwardOff": 0,
+   "held": 0,
    "rollbacks": 149,
    "resimSteps": 1192,
    "skipped": 0,
@@ -279,35 +372,35 @@
    "divergences": 0,
    "captureMs": {
     "n": 600,
-    "mean": 1.178,
-    "p50": 1.144,
-    "p95": 1.442,
-    "p99": 1.78,
-    "max": 1.986
+    "mean": 1.236,
+    "p50": 1.196,
+    "p95": 1.517,
+    "p99": 1.945,
+    "max": 2.065
    },
    "restoreMs": {
     "n": 149,
-    "mean": 1.716,
-    "p50": 1.671,
-    "p95": 2.083,
-    "p99": 2.349,
-    "max": 2.542
+    "mean": 1.86,
+    "p50": 1.819,
+    "p95": 2.296,
+    "p99": 2.553,
+    "max": 2.678
    },
    "resimStepMs": {
     "n": 1192,
-    "mean": 0.239,
-    "p50": 0.198,
-    "p95": 0.331,
-    "p99": 0.717,
-    "max": 23.853
+    "mean": 0.26,
+    "p50": 0.216,
+    "p95": 0.412,
+    "p99": 0.583,
+    "max": 18.756
    },
    "stepMs": {
     "n": 600,
-    "mean": 0.28,
-    "p50": 0.217,
-    "p95": 0.353,
-    "p99": 0.658,
-    "max": 26.083
+    "mean": 0.321,
+    "p50": 0.266,
+    "p95": 0.475,
+    "p99": 0.623,
+    "max": 19.082
    },
    "snapshotBytes": {
     "n": 10,
@@ -325,7 +418,6 @@
     "p99": 63409,
     "max": 63409
    },
-   "held": 0,
    "snapshotParts": {
     "total": 216759,
     "service:nav": 121978,
@@ -350,7 +442,9 @@
    "every": 4,
    "depth": 8,
    "requeue": false,
+   "corrupt": false,
    "shim": "jump,nav",
+   "held": 7,
    "rollbacks": 3573,
    "resimSteps": 28584,
    "skipped": 14,
@@ -387,43 +481,43 @@
    ],
    "captureMs": {
     "n": 14400,
-    "mean": 1.437,
-    "p50": 1.614,
-    "p95": 2.256,
-    "p99": 2.657,
-    "max": 5.644
+    "mean": 1.558,
+    "p50": 1.719,
+    "p95": 2.44,
+    "p99": 2.886,
+    "max": 27.725
    },
    "restoreMs": {
     "n": 3573,
-    "mean": 2.317,
-    "p50": 2.579,
-    "p95": 3.408,
-    "p99": 3.834,
-    "max": 5.185
+    "mean": 2.535,
+    "p50": 2.799,
+    "p95": 3.775,
+    "p99": 4.254,
+    "max": 16.966
    },
    "resimStepMs": {
     "n": 28584,
-    "mean": 0.409,
-    "p50": 0.413,
-    "p95": 0.678,
-    "p99": 1.174,
-    "max": 48.567
+    "mean": 0.485,
+    "p50": 0.469,
+    "p95": 0.91,
+    "p99": 1.341,
+    "max": 50.05
    },
    "stepMs": {
     "n": 14400,
-    "mean": 0.743,
-    "p50": 0.444,
-    "p95": 0.738,
-    "p99": 1.297,
-    "max": 1512.852
+    "mean": 0.849,
+    "p50": 0.542,
+    "p95": 0.991,
+    "p99": 1.467,
+    "max": 1519.065
    },
    "snapshotBytes": {
     "n": 240,
-    "mean": 240687.504,
-    "p50": 287111,
-    "p95": 291566,
-    "p99": 291908,
-    "max": 292083
+    "mean": 240652.579,
+    "p50": 287030,
+    "p95": 291552,
+    "p99": 291834,
+    "max": 292007
    },
    "rapierBytes": {
     "n": 240,
@@ -459,7 +553,10 @@
    "every": 4,
    "depth": 8,
    "requeue": false,
+   "corrupt": false,
    "shim": "none",
+   "forwardOff": 0,
+   "held": 0,
    "rollbacks": 299,
    "resimSteps": 2392,
    "skipped": 0,
@@ -482,35 +579,35 @@
    "divergences": 1480,
    "captureMs": {
     "n": 1200,
-    "mean": 1.154,
-    "p50": 1.118,
-    "p95": 1.425,
-    "p99": 1.694,
-    "max": 5.589
+    "mean": 1.182,
+    "p50": 1.149,
+    "p95": 1.44,
+    "p99": 1.78,
+    "max": 5.427
    },
    "restoreMs": {
     "n": 299,
-    "mean": 17.141,
-    "p50": 16.934,
-    "p95": 18.288,
-    "p99": 22.508,
-    "max": 30.513
+    "mean": 17.567,
+    "p50": 17.394,
+    "p95": 18.815,
+    "p99": 21.461,
+    "max": 26.433
    },
    "resimStepMs": {
     "n": 2392,
-    "mean": 0.267,
-    "p50": 0.218,
-    "p95": 0.511,
-    "p99": 0.669,
-    "max": 21.354
+    "mean": 0.276,
+    "p50": 0.221,
+    "p95": 0.542,
+    "p99": 0.721,
+    "max": 21.547
    },
    "stepMs": {
     "n": 1200,
-    "mean": 0.275,
-    "p50": 0.228,
-    "p95": 0.417,
-    "p99": 0.603,
-    "max": 27.798
+    "mean": 0.293,
+    "p50": 0.248,
+    "p95": 0.442,
+    "p99": 0.65,
+    "max": 27.109
    },
    "snapshotBytes": {
     "n": 20,
@@ -528,7 +625,6 @@
     "p99": 64039,
     "max": 64039
    },
-   "held": 0,
    "snapshotParts": {
     "total": 216168,
     "service:nav": 120230,
@@ -553,7 +649,106 @@
    "every": 4,
    "depth": 8,
    "requeue": false,
+   "corrupt": true,
+   "shim": "none",
+   "forwardOff": 1200,
+   "held": 0,
+   "rollbacks": 299,
+   "resimSteps": 2392,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": {
+    "step": 21,
+    "during": "re-simulating from 20",
+    "components": [
+     "rng",
+     "node:hana-1",
+     "node:cam-2",
+     "state:hana-1",
+     "state:cam-2",
+     "physics",
+     "physics:bytes"
+    ]
+   },
+   "divergences": 2352,
+   "captureMs": {
+    "n": 1200,
+    "mean": 1.172,
+    "p50": 1.131,
+    "p95": 1.525,
+    "p99": 1.778,
+    "max": 2.131
+   },
+   "restoreMs": {
+    "n": 299,
+    "mean": 17.849,
+    "p50": 17.439,
+    "p95": 19.345,
+    "p99": 25.12,
+    "max": 40.028
+   },
+   "resimStepMs": {
+    "n": 2392,
+    "mean": 0.328,
+    "p50": 0.275,
+    "p95": 0.552,
+    "p99": 0.778,
+    "max": 23.42
+   },
+   "stepMs": {
+    "n": 1200,
+    "mean": 0.284,
+    "p50": 0.234,
+    "p95": 0.442,
+    "p99": 0.596,
+    "max": 26.436
+   },
+   "snapshotBytes": {
+    "n": 20,
+    "mean": 208151.6,
+    "p50": 215938,
+    "p95": 216236,
+    "p99": 216285,
+    "max": 216285
+   },
+   "rapierBytes": {
+    "n": 20,
+    "mean": 61575.7,
+    "p50": 63339,
+    "p95": 63345,
+    "p99": 63399,
+    "max": 63399
+   },
+   "snapshotParts": {
+    "total": 215950,
+    "service:nav": 120009,
+    "service:physics": 63474,
+    "physics:rapierBytes": 63341,
+    "nodes": 26398,
+    "core": 5106,
+    "service:closet": 310,
+    "service:voice": 173,
+    "service:input": 160,
+    "service:ai": 65,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": false
+  },
+  {
+   "world": "cafe-2p",
+   "steps": 1200,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": false,
    "shim": "nav",
+   "forwardOff": 0,
+   "held": 0,
    "rollbacks": 299,
    "resimSteps": 2392,
    "skipped": 0,
@@ -576,35 +771,35 @@
    "divergences": 1480,
    "captureMs": {
     "n": 1200,
-    "mean": 1.139,
-    "p50": 1.095,
-    "p95": 1.38,
-    "p99": 1.822,
-    "max": 5.693
+    "mean": 1.168,
+    "p50": 1.132,
+    "p95": 1.304,
+    "p99": 1.796,
+    "max": 2.63
    },
    "restoreMs": {
     "n": 299,
-    "mean": 1.705,
-    "p50": 1.647,
-    "p95": 2.005,
-    "p99": 2.432,
-    "max": 5.526
+    "mean": 1.815,
+    "p50": 1.743,
+    "p95": 2.213,
+    "p99": 2.376,
+    "max": 5.799
    },
    "resimStepMs": {
     "n": 2392,
-    "mean": 0.233,
-    "p50": 0.203,
-    "p95": 0.344,
-    "p99": 0.691,
-    "max": 21.088
+    "mean": 0.241,
+    "p50": 0.206,
+    "p95": 0.359,
+    "p99": 0.674,
+    "max": 22.498
    },
    "stepMs": {
     "n": 1200,
-    "mean": 0.261,
-    "p50": 0.211,
-    "p95": 0.366,
-    "p99": 0.755,
-    "max": 27.73
+    "mean": 0.265,
+    "p50": 0.23,
+    "p95": 0.376,
+    "p99": 0.723,
+    "max": 19.89
    },
    "snapshotBytes": {
     "n": 20,
@@ -622,7 +817,6 @@
     "p99": 64039,
     "max": 64039
    },
-   "held": 0,
    "snapshotParts": {
     "total": 216168,
     "service:nav": 120230,
@@ -647,7 +841,106 @@
    "every": 4,
    "depth": 8,
    "requeue": false,
+   "corrupt": true,
+   "shim": "nav",
+   "forwardOff": 1200,
+   "held": 0,
+   "rollbacks": 299,
+   "resimSteps": 2392,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": {
+    "step": 21,
+    "during": "re-simulating from 20",
+    "components": [
+     "rng",
+     "node:hana-1",
+     "node:cam-2",
+     "state:hana-1",
+     "state:cam-2",
+     "physics",
+     "physics:bytes"
+    ]
+   },
+   "divergences": 2352,
+   "captureMs": {
+    "n": 1200,
+    "mean": 1.215,
+    "p50": 1.15,
+    "p95": 1.623,
+    "p99": 2.019,
+    "max": 3.073
+   },
+   "restoreMs": {
+    "n": 299,
+    "mean": 1.893,
+    "p50": 1.819,
+    "p95": 2.459,
+    "p99": 2.638,
+    "max": 2.863
+   },
+   "resimStepMs": {
+    "n": 2392,
+    "mean": 0.314,
+    "p50": 0.272,
+    "p95": 0.565,
+    "p99": 0.847,
+    "max": 20.065
+   },
+   "stepMs": {
+    "n": 1200,
+    "mean": 0.3,
+    "p50": 0.246,
+    "p95": 0.525,
+    "p99": 0.776,
+    "max": 21.026
+   },
+   "snapshotBytes": {
+    "n": 20,
+    "mean": 208151.6,
+    "p50": 215938,
+    "p95": 216236,
+    "p99": 216285,
+    "max": 216285
+   },
+   "rapierBytes": {
+    "n": 20,
+    "mean": 61575.7,
+    "p50": 63339,
+    "p95": 63345,
+    "p99": 63399,
+    "max": 63399
+   },
+   "snapshotParts": {
+    "total": 215950,
+    "service:nav": 120009,
+    "service:physics": 63474,
+    "physics:rapierBytes": 63341,
+    "nodes": 26398,
+    "core": 5106,
+    "service:closet": 310,
+    "service:voice": 173,
+    "service:input": 160,
+    "service:ai": 65,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": false
+  },
+  {
+   "world": "cafe-2p",
+   "steps": 1200,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": false,
    "shim": "jump",
+   "forwardOff": 0,
+   "held": 0,
    "rollbacks": 299,
    "resimSteps": 2392,
    "skipped": 0,
@@ -658,35 +951,35 @@
    "divergences": 0,
    "captureMs": {
     "n": 1200,
-    "mean": 1.148,
-    "p50": 1.12,
-    "p95": 1.352,
-    "p99": 1.624,
-    "max": 2.158
+    "mean": 1.246,
+    "p50": 1.195,
+    "p95": 1.579,
+    "p99": 1.88,
+    "max": 2.867
    },
    "restoreMs": {
     "n": 299,
-    "mean": 17.269,
-    "p50": 17.116,
-    "p95": 18.603,
-    "p99": 21.623,
-    "max": 26.497
+    "mean": 18.65,
+    "p50": 18.052,
+    "p95": 23.236,
+    "p99": 26.927,
+    "max": 32.388
    },
    "resimStepMs": {
     "n": 2392,
-    "mean": 0.267,
-    "p50": 0.215,
-    "p95": 0.511,
-    "p99": 0.687,
-    "max": 20.999
+    "mean": 0.317,
+    "p50": 0.251,
+    "p95": 0.605,
+    "p99": 0.787,
+    "max": 22.251
    },
    "stepMs": {
     "n": 1200,
-    "mean": 0.271,
-    "p50": 0.225,
-    "p95": 0.425,
-    "p99": 0.632,
-    "max": 21.705
+    "mean": 0.344,
+    "p50": 0.299,
+    "p95": 0.548,
+    "p99": 0.761,
+    "max": 22.996
    },
    "snapshotBytes": {
     "n": 20,
@@ -704,7 +997,90 @@
     "p99": 64039,
     "max": 64039
    },
+   "snapshotParts": {
+    "total": 216187,
+    "service:nav": 120230,
+    "service:physics": 63474,
+    "physics:rapierBytes": 63341,
+    "nodes": 26398,
+    "core": 5103,
+    "service:closet": 310,
+    "service:voice": 173,
+    "service:input": 160,
+    "service:ai": 65,
+    "service:cameras": 41,
+    "service:interact": 37,
+    "service:save": 37,
+    "service:inventory": 27
+   },
+   "finalMatches": true
+  },
+  {
+   "world": "cafe-2p",
+   "steps": 1200,
+   "every": 4,
+   "depth": 8,
+   "requeue": false,
+   "corrupt": true,
+   "shim": "jump",
+   "forwardOff": 1200,
    "held": 0,
+   "rollbacks": 299,
+   "resimSteps": 2392,
+   "skipped": 0,
+   "refused": 0,
+   "refusals": [],
+   "heldInResim": 0,
+   "firstDivergence": null,
+   "divergences": 0,
+   "captureMs": {
+    "n": 1200,
+    "mean": 1.2,
+    "p50": 1.151,
+    "p95": 1.577,
+    "p99": 1.876,
+    "max": 2.843
+   },
+   "restoreMs": {
+    "n": 299,
+    "mean": 18.135,
+    "p50": 17.84,
+    "p95": 20.9,
+    "p99": 22.881,
+    "max": 32.845
+   },
+   "resimStepMs": {
+    "n": 2392,
+    "mean": 0.37,
+    "p50": 0.325,
+    "p95": 0.612,
+    "p99": 0.822,
+    "max": 22.725
+   },
+   "stepMs": {
+    "n": 1200,
+    "mean": 0.326,
+    "p50": 0.283,
+    "p95": 0.493,
+    "p99": 0.687,
+    "max": 27.281
+   },
+   "snapshotBytes": {
+    "n": 20,
+    "mean": 208283.95,
+    "p50": 216121,
+    "p95": 216349,
+    "p99": 216806,
+    "max": 216806
+   },
+   "rapierBytes": {
+    "n": 20,
+    "mean": 61621.05,
+    "p50": 63341,
+    "p95": 63423,
+    "p99": 64039,
+    "max": 64039
+   },
    "snapshotParts": {
     "total": 216187,
     "service:nav": 120230,

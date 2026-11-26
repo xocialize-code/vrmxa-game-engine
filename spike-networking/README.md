@@ -23,33 +23,36 @@ can do today.
   - **Injected ai events** (a director's decisions) stay in sync only if they travel to both peers like inputs, on a
     step both know.
 
-  Over an unreliable data channel with inputs resent until acknowledged, the input delay that keeps stalls under 1 % is:
+  Over an unreliable data channel with inputs resent until acknowledged, the input delay that keeps stalls under 1 %,
+  over ten network seeds, is:
 
   | Network | Felt delay | Ticks felt |
   |---|---|---|
   | lan | 17 ms | 1 |
   | good | 33 ms | 2 |
   | typical | 83 ms | 5 |
-  | poor | 133 ms | 8 |
+  | poor | 133–150 ms | 8–9 |
   | bad | 200 ms | 12 |
 
-  A lockstep tick, its step included, costs 0.17 ms (p50) in the cafe. That's fine for a co-op game, a party game or a turn-heavy game, the kind
-  this engine makes now. It's poor for a fighting game.
+  A lockstep tick, its step included, costs 0.17 ms (p50) in the cafe. That's fine for a co-op game, a party game or a
+  turn-heavy game, the kind this engine makes now. It's poor for a fighting game.
 - **Rollback holds wherever a snapshot covers the step, and that isn't everywhere yet.**
   - **Where it holds:** restoring a snapshot into the same live tree and re-simulating lands on the unbroken run's
-    hashes, Rapier's whole serialisation included. That held for 4,435 rollbacks over 35,480 re-simulated steps, in
+    hashes, Rapier's whole serialisation included. That held for 4,734 rollbacks over 37,872 re-simulated steps, in
     the two-player cafe, the cafe's items take and inside the sample game's level, with three brains, dialogue choices
-    and the game service.
+    and the game service. 299 of those rollbacks corrected a wrong input (player 2's jump flipped and stick
+    mirrored on every forward step) back to the true one. The rest re-simulated the inputs they ran forward.
   - **Engine gaps:** a pending jump is missing from a Character's snapshot (AB-T-0657). A node removed during the
     window, such as an item taken, can't come back. Injected ai events past the restored step are dropped (AB-T-0659).
   - **Limits:** a window can't cross a scene change.
   - **Cost:** in Node, about 1.3 ms a tick at rest (a snapshot every step costs 1.1 ms, five times the step), plus
     1.8 ms of restore and 1.35 ms per re-simulated step on a rollback. That's p95 4–9 ms and p99 up to 18 ms a tick at
     depth 12. It holds only once the nav service stops re-baking its navmesh on every restore (AB-T-0658): today a
-    restore costs 17 ms, a whole frame.
+    restore costs 17.4 ms, a whole frame.
 - **WebSocket is out for both models beyond about 1 % loss.** TCP's head-of-line blocking holds every later input
   behind a lost one. On the poor profile (3 % loss), lockstep stalls 24 % of ticks even at 15 steps of delay, and
-  rollback's window fills 33–40 % of the time. A data channel `{ ordered: false, maxRetransmits: 0 }` that resends
+  rollback's window fills 33–40 % of the time. Over ten seeds, its delay also varies far more than the data channel's
+  (good 4–6, typical 11–15 steps). A data channel `{ ordered: false, maxRetransmits: 0 }` that resends
   unacknowledged inputs loses nothing but a few bytes. WebSocket is a fallback for a relay, not the transport.
 
 So the first networked game should be lockstep over WebRTC. Rollback is the model to grow into: it removes the delay
@@ -57,7 +60,7 @@ entirely (0 steps felt, at 3 rollbacks a second of depth 1 to 11) and costs the 
 AB-T-0657, AB-T-0658 and AB-T-0659 first, plus a lockstep barrier at scene changes. Whether networking becomes a
 workstream is the operator's call (M6-PLAN decision 2).
 
-Measured 2026-11-25 on a Mac Studio M5 Max (Mac17,14), macOS 27.3, Node 26.12.1 (V8), three r187,
+Measured 2026-11-25, and rerun at the review-fix commit on 2026-11-26, on a Mac Studio M5 Max (Mac17,14), macOS 27.3, Node 26.12.1 (V8), three r187,
 `@dimforge/rapier3d-deterministic-compat` 0.21.0 (the engine's one Rapier build), `@vrmxg/dmath` installed. Node only:
 no GPU, no browser. JSC runs the engine's step about twice as fast as V8 (AB-R-0941), so every millisecond here is a
 Node number, not the shipped one.
@@ -95,9 +98,16 @@ recorded inputs and the director's log decide what can roll back.
     snapshot is taken before every step. When a real input arrives that differs from the prediction, the peer restores
     the snapshot of that step **into the same live tree** and re-simulates to now. If the prediction window (12 steps)
     is full, the peer waits.
-- **What's checked.** The world hash after every step each peer settles on (`worldHashes`, hashed) is compared with the
-  other peer's and with a reference: one world stepping the true inputs alone. The rollback sweeps also compare
-  `physics:bytes` (Rapier's whole serialisation) on every step.
+- **What's checked.**
+  - **Over the network:** the world hash after every step each peer settles on (`worldHashes` with `physics:bytes`,
+    Rapier's whole serialisation, hashed) is compared with the other peer's and with a reference: one world stepping
+    the true inputs alone. Each run's results keep a digest of each peer's per-step hashes and of the reference's, so
+    the JSON itself shows they agree at every step (`hashes.digestA`, `digestB`, `digestReference`).
+  - **In the rollback sweeps:** every component, `physics:bytes` included, on every re-simulated step.
+  - **Corrected inputs:** most sweeps re-simulate with the same inputs they ran forward (a round trip). The two-player
+    cafe also runs **corrupted**: player 2's input is wrong in every forward step (jump flipped, `move_x` mirrored), as
+    a misprediction is, and each rollback re-simulates with the true inputs and re-takes the snapshots it passes. The
+    networked rollback runs correct real mispredictions the same way.
 
 ## Results
 
@@ -114,6 +124,8 @@ compared with the reference on every component, `physics:bytes` included.
 |---|---|---|---|---|
 | cafe-2p: two players, bots, Rapier, characters, cameras, input | 1,200 | 299 | 2,392 | **Every step matches** (with the jump shim) |
 | cafe-2p, `SHIM=0` or `SHIM=nav` | 1,200 | 299 | 2,392 | Parts at step 13 (`rng`, Hana, her camera, `physics`): the jump gap |
+| cafe-2p **corrupted**: every forward step runs player 2 wrong (jump flipped, `move_x` mirrored); rollbacks re-simulate the true inputs | 1,200 | 299 | 2,392 | **Every re-simulated step matches**, and the state after the last rollback; all 1,200 forward steps were off the reference |
+| cafe-2p corrupted, `SHIM=0` or `SHIM=nav` | 1,200 | 299 | 2,392 | Parts at step 21: the jump gap |
 | cafe-items: the sword into the closet, cupboard, a seat, the lights, Hana's voiced greeting, her wander stream | 1,668 | 414 | 3,312 | **Every step matches**; 2 windows refused: the sword left the tree |
 | cafe-follow-inject: a follower brain, 4 `ai.inject` events (lookAt, emote, say, bb) | 600 | 149 | 1,192 | Snapshot alone: parts at step 112 in `service:ai` (850 steps off) |
 | the same, logged events past the restored step re-queued | 600 | 149 | 1,192 | **Every step matches** |
@@ -132,72 +144,79 @@ Line by line:
 | `ai.inject` (the director's hook) and its log | with help | The snapshot keeps only due events; re-queueing the log past the restored step makes it exact. The director with a model uses the same hook and log, but wasn't run |
 | GameFlow's game service, dialogue choices (in the input frame), brains | yes, within a scene | rush-level |
 | A scene change | **no** | The world a snapshot came from is freed |
-| The nav service | yes, but slowly | It re-bakes the navmesh on every restore: about 15 ms of a 17 ms restore (AB-T-0658); shimmed here |
+| The nav service | yes, but slowly | It re-bakes the navmesh on every restore: about 15.5 ms of a 17.4 ms restore (AB-T-0658); shimmed here |
 | A step held by a closet redraw | not exercised | The only window that crossed an equip was refused first |
 
 ### Snapshot size and cost (`rollback.mjs`)
 
 | | Cafe, two players | Sample game level |
 |---|---|---|
-| Snapshot (`v8.serialize`) | 211 KB | 280 KB |
-| of which nav (the navmesh copy) | 117 KB | 148 KB |
-| of which Rapier's bytes | 62 KB | 57 KB |
-| of which nodes' own state / core | 26 KB / 5 KB | 62 KB / 13 KB |
-| Capture | 1.14 / 1.49 / 1.88 / 2.58 ms | 1.61 / 2.26 / 2.66 / 5.64 ms |
-| Restore, in place, nav shim | 1.77 / 2.34 / 2.76 / 5.56 ms | 2.58 / 3.41 / 3.83 / 5.19 ms |
-| Restore, in place, as the engine is | 16.9 / 18.3 / 22.5 / 30.5 ms | — |
-| Step (and a re-simulated step) | 0.24 / 0.42 / 0.81 ms | 0.44 / 0.74 / 1.30 ms |
+| Snapshot (`v8.serialize`) | 211 KiB | 280 KiB |
+| of which nav (the navmesh copy) | 117 KiB | 148 KiB |
+| of which Rapier's bytes | 62 KiB | 57 KiB |
+| of which nodes' own state / core | 26 KiB / 5 KiB | 62 KiB / 13 KiB |
+| Capture | 1.20 / 1.62 / 2.02 / 5.71 ms | 1.72 / 2.44 / 2.89 / 27.7 ms |
+| Restore, in place, nav shim | 1.87 / 2.45 / 2.92 / 6.22 ms | 2.80 / 3.78 / 4.25 / 17.0 ms |
+| Restore, in place, as the engine is | 17.4 / 18.8 / 21.5 / 26.4 ms | — |
+| Step (and a re-simulated step) | 0.30 / 0.53 / 0.99 ms | 0.54 / 0.99 / 1.47 ms |
 
-A 12-step ring of snapshots is about 2.5 MB (cafe) or 3.4 MB (level).
+These are from the sweep, which hashes `physics:bytes` after every step beside the timed work. The networked runs'
+own figures (capture 1.07–1.13 ms, restore 1.65–2.02 ms, step 0.18–0.26 ms, p50) are a little lower.
+
+A 12-step ring of snapshots is about 2.5 MiB (cafe) or 3.3 MiB (level). Sizes are KiB and MiB (1,024 bytes);
+rates below are kB/s (1,000 bytes a second).
 
 ### Lockstep against rollback on the simulated network (`netcode.mjs`)
 
 **Lockstep's input delay.** This is the smallest delay keeping stalls under 1 % of ticks, from a sweep of 0 to 15
-over 1,200 steps per profile with no worlds (stalls depend only on when packets arrive). A lockstep input is taken one
+over 1,200 steps per profile with no worlds (stalls depend only on when packets arrive), over ten network seeds. A
+range is the smallest and largest over the seeds; the world runs use the largest. A lockstep input is taken one
 tick before its step, so delay D is felt as D + 1 ticks. Rollback's D is felt as D ticks. The engine's own one-step
 player-controller latency is common to both and not counted.
 
 | Profile (one way) | Reliable (WebSocket) | Unreliable (data channel) |
 |---|---|---|
 | lan 2 ± 1 ms | 0 (17 ms) | 0 (17 ms) |
-| good 20 ± 5 ms, 0.5 % | 6 (117 ms) | 1 (33 ms); under 0.1 %: 2 |
-| typical 50 ± 15 ms, 1 % | 12 (217 ms) | 4 (83 ms) |
-| poor 100 ± 30 ms, 3 % | none up to 15 | 7 (133 ms); under 0.1 %: 8 |
-| bad 150 ± 50 ms, 5 % | none up to 15 | 11 (200 ms); under 0.1 %: 12 |
+| good 20 ± 5 ms, 0.5 % | 4–6 (83–117 ms); under 0.1 %: 6–7 | 1 (33 ms); under 0.1 %: 2 |
+| typical 50 ± 15 ms, 1 % | 11–15 (200–267 ms); under 0.1 %: 12, or none up to 15 on 2 seeds | 4 (83 ms); under 0.1 %: 4–5 |
+| poor 100 ± 30 ms, 3 % | none up to 15, on any seed | 7–8 (133–150 ms); under 0.1 %: 8–9 |
+| bad 150 ± 50 ms, 5 % | none up to 15, on any seed | 11 (200 ms); under 0.1 %: 11–12 |
 
 **With the worlds.** Peer A's view, 1,200 steps; peer B's is alike. With the harness's shims, every run has both peers
-and the reference on the same hash at every step, and 7 to 40 in-band hash checks per run, none failed. Without the
+and the reference on the same hash at every step (`physics:bytes` included; the per-step digests in the JSON are equal),
+and 7 to 40 in-band hash checks per run, none failed. Without the
 jump shim (`SHIM=nav`, `results/netcode-no-jump-shim.json`), lockstep is unchanged. Every rollback run parts, at step
 189 on lan and step 26 on typical, over both delivery modes.
 
-| Profile | Delivery | Model | Stalls | Rollbacks / s | Depth p50 / p95 / max | Tick p50 / p95 / p99 ms | Wire B/s |
+| Profile | Delivery | Model | Stalls | Rollbacks / s | Depth p50 / p95 / max | Tick p50 / p95 / p99 ms | Wire B/s (estimated) |
 |---|---|---|---|---|---|---|---|
-| lan | unreliable | lockstep d0 | 0.08 % | | | 0.17 / 0.24 / 0.34 | 6,504 |
-| lan | unreliable | rollback d0 | 0 | 3.4 | 1 / 1 / 1 | 1.33 / 4.20 / 5.30 | 6,504 |
-| lan | unreliable | rollback d2 | 0 | 0 | | 1.27 / 2.01 / 2.41 | 6,504 |
-| good | unreliable | lockstep d1 | 0.58 % | | | 0.20 / 0.44 / 0.64 | 6,992 |
-| good | unreliable | rollback d0 | 0 | 3.4 | 2 / 2 / 2 | 1.42 / 5.88 / 7.20 | 6,991 |
-| typical | reliable | lockstep d12 | 0 | | | 0.18 / 0.35 / 0.50 | 4,287 |
-| typical | reliable | rollback d0 | 0.91 % | 3.3 | 4 / 5 / 9 | 1.35 / 7.89 / 9.29 | 4,277 |
-| typical | unreliable | lockstep d4 | 0 | | | 0.17 / 0.30 / 0.43 | 7,937 |
-| typical | unreliable | rollback d0 | 0 | 3.2 | 4 / 5 / 5 | 1.30 / 7.06 / 9.33 | 7,929 |
-| typical | unreliable | rollback d2 | 0 | 3.1 | 2 / 3 / 3 | 1.29 / 4.26 / 6.56 | 7,930 |
+| lan | unreliable | lockstep d0 | 0.08 % | | | 0.18 / 0.26 / 0.36 | 6,504 |
+| lan | unreliable | rollback d0 | 0 | 3.4 | 1 / 1 / 1 | 1.37 / 4.37 / 5.27 | 6,504 |
+| lan | unreliable | rollback d2 | 0 | 0 | | 1.35 / 2.15 / 2.53 | 6,504 |
+| good | unreliable | lockstep d1 | 0.58 % | | | 0.17 / 0.36 / 0.48 | 6,992 |
+| good | unreliable | rollback d0 | 0 | 3.4 | 2 / 2 / 2 | 1.31 / 5.45 / 6.23 | 6,991 |
+| typical | reliable | lockstep d15 | 0 | | | 0.17 / 0.26 / 0.40 | 4,287 |
+| typical | reliable | rollback d0 | 0.91 % | 3.3 | 4 / 5 / 9 | 1.32 / 7.96 / 9.28 | 4,277 |
+| typical | unreliable | lockstep d4 | 0 | | | 0.15 / 0.25 / 0.40 | 7,937 |
+| typical | unreliable | rollback d0 | 0 | 3.2 | 4 / 5 / 5 | 1.27 / 6.94 / 8.90 | 7,929 |
+| typical | unreliable | rollback d2 | 0 | 3.1 | 2 / 3 / 3 | 1.25 / 4.21 / 5.80 | 7,930 |
 | poor | reliable | lockstep d15 | 24.3 % | | | | 3,510 |
 | poor | reliable | rollback d0 | 39.7 % | 2.1 | 7 / 11 / 12 | | 4,268 |
-| poor | unreliable | lockstep d7 | 0.50 % | | | 0.16 / 0.23 / 0.36 | 9,339 |
-| poor | unreliable | rollback d0 | 0 | 3.0 | 7 / 8 / 8 | 1.30 / 9.28 / 13.1 | 9,316 |
-| poor | unreliable | rollback d2 | 0 | 2.9 | 5 / 6 / 6 | 1.32 / 3.96 / 10.9 | 9,324 |
+| poor | unreliable | lockstep d8 | 0 | | | 0.16 / 0.23 / 0.33 | 9,340 |
+| poor | unreliable | rollback d0 | 0 | 3.0 | 7 / 8 / 8 | 1.29 / 9.98 / 13.1 | 9,316 |
+| poor | unreliable | rollback d2 | 0 | 2.9 | 5 / 6 / 6 | 1.29 / 3.49 / 10.3 | 9,324 |
 | bad | reliable | lockstep d15 | 86.5 % | | | | 1,520 |
-| bad | unreliable | lockstep d11 | 0.17 % | | | 0.18 / 0.28 / 0.41 | 10,656 |
-| bad | unreliable | rollback d0 | 0.17 % | 2.8 | 10 / 11 / 12 | 1.31 / 2.64 / 17.7 | 10,621 |
-| bad | unreliable | rollback d2 | 0 | 2.7 | 8 / 9 / 10 | 1.30 / 2.55 / 14.4 | 10,624 |
+| bad | unreliable | lockstep d11 | 0.17 % | | | 0.16 / 0.23 / 0.34 | 10,656 |
+| bad | unreliable | rollback d0 | 0.17 % | 2.8 | 10 / 11 / 12 | 1.29 / 3.11 / 17.0 | 10,621 |
+| bad | unreliable | rollback d2 | 0 | 2.7 | 8 / 9 / 10 | 1.29 / 2.37 / 14.1 | 10,624 |
 
 The rest of the 30 runs are in `results/netcode.json`. The max tick is 17–34 ms in every rollback run, and up to 32 ms
 in lockstep: garbage collection over the snapshots, two worlds in one process.
 
 **Rollback's cost per step.**
 - **At rest:** a tick costs about 1.3 ms, against lockstep's 0.17 ms, because every step takes a snapshot (1.1 ms) to
-  roll back to.
+  roll back to. That assumes a snapshot every step, as the spike takes. A snapshot is only needed for a step run on a
+  predicted input, so on a quiet LAN (or with an input delay that covers the latency) most of that cost goes away.
 - **On a rollback of depth d:** restore (1.8 ms) plus d × (capture + step), about 1.35 ms a step. Depth 5 is about
   8.5 ms; depth 12 about 18 ms.
 - **What a JSC runtime would do:** run it about twice as fast (AB-R-0941). Rendering still has to fit in the same
@@ -209,11 +228,11 @@ in lockstep: garbage collection over the snapshots, two worlds in one process.
 
 **Bandwidth per peer.**
 - **Payload:** 60 packets a second.
-  - Reliable delivery sends each input once: 0.9 KB/s.
-  - Unreliable delivery resends what isn't acknowledged: 0.9 KB/s on a LAN to 5.1 KB/s at 150 ms and 5 % loss.
+  - Reliable delivery sends each input once: 0.9 kB/s.
+  - Unreliable delivery resends what isn't acknowledged: 0.9 kB/s on a LAN to 5.1 kB/s at 150 ms and 5 % loss.
 - **On the wire:** IPv4 headers dominate a 4-byte input.
-  - WebSocket adds about 56 bytes a packet: 4.3 KB/s.
-  - The data channel adds about 93 (UDP, DTLS, SCTP): 6.5–10.7 KB/s.
+  - WebSocket adds about 56 bytes a packet: 4.3 kB/s.
+  - The data channel adds about 93 (UDP, DTLS, SCTP): 6.5–10.7 kB/s.
   - Neither figure counts TCP's ACKs or SCTP's SACKs.
 - **Either way, it's tiny.** Batching two ticks per packet would halve the overhead at a cost of 8 ms.
 
@@ -221,17 +240,17 @@ in lockstep: garbage collection over the snapshots, two worlds in one process.
 
 | | WebSocket (`ws`, TCP) | WebRTC data channel (werift, unordered, no retransmits) |
 |---|---|---|
-| Round trip, 30 bytes | 0.095 / 0.154 / 0.213 ms | 0.21 / 0.45 / 0.53 ms |
+| Round trip, 30 bytes | 0.099 / 0.150 / 0.213 ms | 0.19 / 0.27 / 0.33 ms |
 | ICE candidates | — | 127.0.0.1 only, no STUN or TURN |
-| lan, lockstep d0 | same hashes; 1.8 % stalls | same hashes; 1.0 % stalls |
+| lan, lockstep d0 | same hashes; 2.2 % stalls | same hashes; 0.8 % stalls |
 | lan, rollback d0 | same hashes; depth max 2 | same hashes; depth max 2 |
-| typical (added in the sender), lockstep | d12: same hashes, no stalls | d4: same hashes, 0.5 % stalls |
+| typical (added in the sender), lockstep | d15: same hashes, no stalls | d4: same hashes, 0.5 % stalls |
 | typical, rollback d0 | same hashes; depth p95 7, max 12; 1.8 % stalls | same hashes; depth p95 5, max 6 |
 
-The peers ran in one process on Node's timers, 10 s per run. Ticks landed within 0.03–2.8 ms of due at p95; a few were
-much later, up to 82 ms, while the other world built or garbage was collected. The stalls above the virtual runs'
+The peers ran in one process on Node's timers, 10 s per run. Ticks landed within 0.5–1.7 ms of due at p95; a few were
+much later, up to 80 ms, while the other world built or garbage was collected. The stalls above the virtual runs'
 figures are those late ticks. Real sockets change nothing about agreement: all 8 runs had both peers and the
-reference on the same hash at every step.
+reference on the same hash at every step, `physics:bytes` included (equal per-step digests in `results/live.json`).
 
 ## Engine findings
 
@@ -243,7 +262,7 @@ unchanged.
    existing test snapshots on that step. This is a bug for saves and the editor's restore too, not only rollback.
 2. **AB-T-0658: the nav service re-bakes its navmesh on every restore** once the live mesh has changed (the cafe's
    doors change it from the first step). That's about 15 ms of work it then throws away. Its snapshot also carries the
-   whole navmesh once any tile changed: 117 of 211 KB.
+   whole navmesh once any tile changed: 117 of 211 KiB.
 3. **AB-T-0659: what in-place rollback needs.**
    - Removed nodes must come back (or stay detached through the window).
    - The ai service needs a rewind of its injected events.
