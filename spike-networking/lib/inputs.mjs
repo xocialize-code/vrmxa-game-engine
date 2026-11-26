@@ -1,8 +1,8 @@
 // What each peer's player does, and how one player's input travels.
 //
-// A player's input for one step is six bytes: move_x, move_y, look_x as signed bytes (value / 127; look scaled by
-// LOOK), and a byte of buttons (jump, run, interact, camera_next). The simulation is fed the decoded value on every
-// peer, the local one included, so what travels is exactly what is simulated.
+// A player's input for one step is four bytes (INPUT_BYTES): move_x, move_y, look_x as signed bytes (value / 127;
+// look scaled by LOOK), and a byte of buttons (jump, run, interact, camera_next). The simulation is fed the decoded
+// value on every peer, the local one included, so what travels is exactly what is simulated.
 //
 // The bots are seeded (mulberry32), so a run is the same run every time: a direction held for 20 to 60 steps, sometimes
 // running, a jump now and then, the camera turned a little.

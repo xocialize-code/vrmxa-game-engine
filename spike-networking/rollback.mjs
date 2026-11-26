@@ -4,6 +4,11 @@
 // the same live tree* and re-simulates back to where it was. Every re-simulated step is compared with the reference;
 // the first that differs is reported with the components that differ there.
 //
+// Most worlds re-simulate with the same inputs they ran forward (a round trip). cafe-2p also runs corrupted: its forward
+// pass feeds a wrong input for player 2 (jump flipped, move_x mirrored), as a mispredicted remote input would, and every
+// rollback re-simulates with the true inputs, re-taking the snapshots it passes. Only the re-simulated steps (and the
+// state after the last rollback) are compared there: the forward pass is wrong on purpose.
+//
 //   node rollback.mjs [--worlds cafe-2p,cafe-items,cafe-follow-inject,rush-level] [--every 4] [--depth 8]
 //                     [--out results/rollback.json]
 //
@@ -75,25 +80,26 @@ async function step(tree) { let held = 0; while (!tree.step()) { held++; await t
  * A world's sweep. `make()` → { tree, feed(step), after?(tree), requeue?(tree, fromStep, liveLog), close() }.
  * feed(s) writes the input for step s (before it runs); the same function feeds the reference and the sweep.
  */
-async function sweep(name, make, steps, { requeue = false } = {}) {
+async function sweep(name, make, steps, { requeue = false, corrupt = false } = {}) {
   console.log(`${name}: reference run, ${steps} steps`);
   const A = await make(), ref = [];
   for (let s = 0; s < steps; s++) { A.feed(s, A.tree); await step(A.tree); ref.push({ step: A.tree.clock.step, h: hashes(A.tree) }); }
   A.close();
-  console.log(`${name}: rollback sweep (every ${EVERY}, depth ${DEPTH}${requeue ? ', events re-queued' : ''})`);
+  console.log(`${name}: rollback sweep (every ${EVERY}, depth ${DEPTH}${requeue ? ', events re-queued' : ''}${corrupt ? ', forward inputs corrupted' : ''})`);
   const B = await make(), ring = new Map();
-  const out = { world: name, steps, every: EVERY, depth: DEPTH, requeue, shim: SHIM, rollbacks: 0, resimSteps: 0, skipped: 0, refused: 0, refusals: [], heldInResim: 0, firstDivergence: null, divergences: 0, captureMs: [], restoreMs: [], resimStepMs: [], stepMs: [], snapshotBytes: [], rapierBytes: [] };
+  const out = { world: name, steps, every: EVERY, depth: DEPTH, requeue, corrupt, shim: SHIM, forwardOff: 0, held: 0, rollbacks: 0, resimSteps: 0, skipped: 0, refused: 0, refusals: [], heldInResim: 0, firstDivergence: null, divergences: 0, captureMs: [], restoreMs: [], resimStepMs: [], stepMs: [], snapshotBytes: [], rapierBytes: [] };
   for (let s = 0; s < steps; s++) {
     // the state at clock s, before step s runs
     let t = now(); const snap = captureWorld(B.tree); out.captureMs.push(now() - t);
     ring.set(s, snap); ring.delete(s - DEPTH - 1);
     if (s % 60 === 0) { out.snapshotBytes.push(v8.serialize(snap).length); out.rapierBytes.push(snap.services.physics?.data?.bytes?.length ?? 0); }
     if (s === Math.floor(steps / 2)) out.snapshotParts = parts(snap);
-    B.feed(s, B.tree);
-    t = now(); out.held = (out.held ?? 0) + await step(B.tree); out.stepMs.push(now() - t);
+    B.feed(s, B.tree, corrupt);
+    t = now(); out.held += await step(B.tree); out.stepMs.push(now() - t);
     const at = s + 1;
     const d0 = compareRuns([ref[s]], [{ step: at, h: hashes(B.tree) }]);
-    if (d0 && !out.firstDivergence) { out.firstDivergence = { step: at, during: 'forward', components: d0.components ?? d0 }; }
+    if (d0 && corrupt) out.forwardOff++; // expected: the forward pass ran a wrong input
+    else if (d0 && !out.firstDivergence) { out.firstDivergence = { step: at, during: 'forward', components: d0.components ?? d0 }; }
     if (at % EVERY !== 0 || at < DEPTH) continue;
     const from = at - DEPTH, back = ring.get(from);
     if (!back) { out.skipped++; continue; }
@@ -105,7 +111,8 @@ async function sweep(name, make, steps, { requeue = false } = {}) {
     if (requeue && B.requeue) B.requeue(B.tree, from, liveLog);
     out.rollbacks++;
     for (let k = from; k < at; k++) {
-      B.feed(k, B.tree);
+      if (corrupt && k > from) ring.set(k, captureWorld(B.tree)); // the corrected state replaces the mispredicted one
+      B.feed(k, B.tree, false);
       t = now(); out.heldInResim += await step(B.tree); out.resimStepMs.push(now() - t); out.resimSteps++;
       const d = compareRuns([ref[k]], [{ step: k + 1, h: hashes(B.tree) }]);
       if (d) { out.divergences++; if (!out.firstDivergence) out.firstDivergence = { step: k + 1, during: `re-simulating from ${from}`, components: d.components ?? d }; }
@@ -115,7 +122,7 @@ async function sweep(name, make, steps, { requeue = false } = {}) {
   B.close();
   for (const k of ['captureMs', 'restoreMs', 'resimStepMs', 'stepMs', 'snapshotBytes', 'rapierBytes']) out[k] = stats(out[k]);
   const ok = !out.firstDivergence && out.finalMatches;
-  console.log(`${ok ? 'ok  ' : 'PART'} ${name}: ${out.rollbacks} rollbacks, ${out.resimSteps} steps re-simulated, ${out.skipped} skipped, ${out.refused} refused${out.firstDivergence ? `; first divergence at step ${out.firstDivergence.step} (${out.firstDivergence.during}): ${JSON.stringify(out.firstDivergence.components).slice(0, 200)}` : ''}`);
+  console.log(`${ok ? 'ok  ' : 'PART'} ${name}${corrupt ? ' (corrupted forward)' : ''}: ${out.rollbacks} rollbacks, ${out.resimSteps} steps re-simulated, ${out.skipped} skipped, ${out.refused} refused${corrupt ? `, ${out.forwardOff} forward steps off the reference` : ''}${out.firstDivergence ? `; first divergence at step ${out.firstDivergence.step} (${out.firstDivergence.during}): ${JSON.stringify(out.firstDivergence.components).slice(0, 200)}` : ''}`);
   return out;
 }
 
@@ -127,10 +134,13 @@ const WORLD = {
   'cafe-2p': async () => {
     const steps = 1200, b1 = makeBot(11), b2 = makeBot(22), inputs = [];
     for (let s = 0; s < steps; s++) inputs.push([b1(s), b2(s)]);
-    return [await sweep('cafe-2p', async () => {
+    // a mispredicted player 2: jump flipped, move_x mirrored
+    const wrong = (i) => [i[0], [-i[1][0], i[1][1], i[1][2], i[1][3] ^ 1]];
+    const make = async () => {
       const W = await twoPlayerWorld();
-      return { tree: W.tree, feed: (s) => { W.rec.frames[s] = frameOf(W.rec, inputs[s]); }, close: () => { if (!W.input.isReplaying) throw new Error('the input service stopped replaying'); freeWorld(W); } };
-    }, steps)];
+      return { tree: W.tree, feed: (s, _t, bad = false) => { W.rec.frames[s] = frameOf(W.rec, bad ? wrong(inputs[s]) : inputs[s]); }, close: () => { if (!W.input.isReplaying) throw new Error('the input service stopped replaying'); freeWorld(W); } };
+    };
+    return [await sweep('cafe-2p', make, steps), await sweep('cafe-2p', make, steps, { corrupt: true })];
   },
   'cafe-items': async () => {
     const rec = await recording('input/play-items.json');
@@ -219,14 +229,14 @@ async function sweepFlow(name, make, steps) {
   A.close();
   console.log(`${name}: rollback sweep (every ${EVERY}, depth ${DEPTH})`);
   const B = await make(), ring = new Map();
-  const out = { world: name, steps, every: EVERY, depth: DEPTH, requeue: false, shim: SHIM, rollbacks: 0, resimSteps: 0, skipped: 0, refused: 0, refusals: [], heldInResim: 0, firstDivergence: null, divergences: 0, decided: null, scenes: [...new Set(ref.map((r) => r.scene))], captureMs: [], restoreMs: [], resimStepMs: [], stepMs: [], snapshotBytes: [], rapierBytes: [] };
+  const out = { world: name, steps, every: EVERY, depth: DEPTH, requeue: false, corrupt: false, shim: SHIM, held: 0, rollbacks: 0, resimSteps: 0, skipped: 0, refused: 0, refusals: [], heldInResim: 0, firstDivergence: null, divergences: 0, decided: null, scenes: [...new Set(ref.map((r) => r.scene))], captureMs: [], restoreMs: [], resimStepMs: [], stepMs: [], snapshotBytes: [], rapierBytes: [] };
   for (let s = 0; s < steps; s++) {
     let t = now(); const snap = captureWorld(B.tree, { meta: { scene: B.scene() } }); out.captureMs.push(now() - t);
     ring.set(s, { snap, tree: B.tree }); ring.delete(s - DEPTH - 1);
     if (s % 60 === 0) { out.snapshotBytes.push(v8.serialize(snap).length); out.rapierBytes.push(snap.services.physics?.data?.bytes?.length ?? 0); }
     if (s === 60 * 60) out.snapshotParts = parts(snap); // in the level
     B.feed(s, B.tree);
-    t = now(); await flowStep(B); out.stepMs.push(now() - t);
+    t = now(); out.held += await flowStep(B); out.stepMs.push(now() - t);
     const v = B.flow.view(); if (v.outcome && !out.decided) out.decided = { result: v.outcome, step: v.step, scene: v.scene };
     const at = s + 1;
     const d0 = compareRuns([ref[s]], [{ step: at, h: hashes(B.tree) }]);
@@ -239,7 +249,8 @@ async function sweepFlow(name, make, steps) {
     out.restoreMs.push(now() - t);
     out.rollbacks++;
     for (let k = from; k < at; k++) {
-      B.feed(k, B.tree);
+      if (corrupt && k > from) ring.set(k, captureWorld(B.tree)); // the corrected state replaces the mispredicted one
+      B.feed(k, B.tree, false);
       t = now(); out.heldInResim += await flowStep(B); out.resimStepMs.push(now() - t); out.resimSteps++;
       const d = compareRuns([ref[k]], [{ step: k + 1, h: hashes(B.tree) }]);
       if (d) { out.divergences++; if (!out.firstDivergence) out.firstDivergence = { step: k + 1, during: `re-simulating from ${from}`, components: d.components ?? d }; }
@@ -258,6 +269,6 @@ for (const w of WORLDS) results.push(...await WORLD[w]());
 const doc = { spike: 'networking', what: 'rollback round trips: restore in place, re-simulate, compare per-step hashes (physics:bytes included)', runtime: `node ${process.versions.node} (V8 ${process.versions.v8})`, rapier: RAPIER_BUILD ?? null, results };
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
 let prior = {}; try { prior = JSON.parse(fs.readFileSync(OUT, 'utf8')); } catch { /* first run */ }
-const merged = { ...doc, results: [...(prior.results ?? []).filter((r) => !results.some((x) => x.world === r.world && x.requeue === r.requeue && x.shim === r.shim)), ...results] };
+const merged = { ...doc, results: [...(prior.results ?? []).filter((r) => !results.some((x) => x.world === r.world && x.requeue === r.requeue && !!x.corrupt === !!r.corrupt && x.shim === r.shim)), ...results] };
 fs.writeFileSync(OUT, JSON.stringify(merged, null, 1) + '\n');
 console.log(`wrote ${path.relative(here, OUT)}`);

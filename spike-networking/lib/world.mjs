@@ -44,8 +44,11 @@ export async function twoPlayerWorld() {
 /** Free a world's Rapier memory. */
 export function freeWorld(W) { W.tree.services.get('physics')?.world?.free?.(); }
 
-/** One hash for the whole world after a step (the per-component hashes, hashed). */
-export function stepHash(tree) { return hashValue(worldHashes(tree)); }
+/** One hash for the whole world after a step: the per-component hashes, Rapier's whole serialisation included, hashed. */
+export function stepHash(tree) { return hashValue(worldHashes(tree, { physicsBytes: true })); }
+
+/** One digest of a run's per-step hashes (steps 0 … n−1), so a results file can show two runs agree at every step. */
+export const runDigest = (hashes) => hashValue(hashes.map((h) => h ?? null));
 
 /** The reference: one world stepping both players' true inputs alone; the hash after every step. */
 export async function referenceHashes(in0, in1, steps) {

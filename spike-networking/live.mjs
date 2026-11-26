@@ -19,7 +19,7 @@ import { RAPIER_BUILD } from '@vrmxg/physics';
 import { Peer } from './lib/peer.mjs';
 import { PROFILES, OVERHEAD, RTO_MIN, FAST_RETRANSMIT_GAP } from './lib/net.mjs';
 import { playerInputs, mulberry32 } from './lib/inputs.mjs';
-import { twoPlayerWorld, freeWorld, referenceHashes, HAS_MODELS } from './lib/world.mjs';
+import { twoPlayerWorld, freeWorld, referenceHashes, runDigest, HAS_MODELS } from './lib/world.mjs';
 import { SHIM } from './lib/snap.mjs';
 import { stats } from './lib/stats.mjs';
 
@@ -155,10 +155,10 @@ async function runLive(transport, profileName, mode, delay, ends) {
   const m = A.m, secs = m.ticks / 60;
   return {
     transport, profile: profileName, mode, delay, ticks: k, finished: done(),
-    hashes: { compared: STEPS, peersAgree: apart === null, firstApart: apart, matchReference: off === null, firstOffReference: off },
+    hashes: { compared: STEPS, physicsBytes: true, peersAgree: apart === null, firstApart: apart, matchReference: off === null, firstOffReference: off, digestA: runDigest(Array.from({ length: STEPS }, (_, s) => A.final.get(s))), digestB: runDigest(Array.from({ length: STEPS }, (_, s) => B.final.get(s))), digestReference: runDigest(ref) },
     stallRate: +(m.stalls / m.ticks).toFixed(4), behind: stats(m.behind), tickLatenessMs: stats(lateness),
     ...(mode === 'rollback' ? { rollbacks: m.rollbacks, depth: stats(m.depths) } : {}),
-    tickMs: stats(m.tickMs), payloadBytesPerSec: Math.round(m.sentBytes / secs), wireBytesPerSec: Math.round((m.sentBytes + m.sentPackets * OVERHEAD[net.mode]) / secs),
+    tickMs: stats(m.tickMs), payloadBytesPerSec: Math.round(m.sentBytes / secs), wireBytesPerSecEstimated: Math.round((m.sentBytes + m.sentPackets * OVERHEAD[net.mode]) / secs), // payload + the estimated header overhead
     network: { packets: net.packets, lost: net.lost, retransmits: net.retransmits },
   };
 }
@@ -167,7 +167,7 @@ const out = { spike: 'networking', runtime: `node ${process.versions.node} (V8 $
 let lockDelay = { 'lan|reliable': 1, 'lan|unreliable': 1, 'typical|reliable': 9, 'typical|unreliable': 5 };
 try {
   const nc = JSON.parse(fs.readFileSync(path.join(here, 'results/netcode.json'), 'utf8'));
-  for (const r of nc.lockstepDelay) if (r.under01pct !== null) lockDelay[`${r.profile}|${r.transport}`] = r.under01pct;
+  for (const r of nc.lockstepDelay) if (r.under1pct?.max != null) lockDelay[`${r.profile}|${r.transport}`] = r.under1pct.max; // the largest over the seeds
 } catch { /* the defaults */ }
 
 for (const transport of ['websocket', 'webrtc']) {
@@ -182,7 +182,7 @@ for (const transport of ['websocket', 'webrtc']) {
     const delay = mode === 'lockstep' ? lockDelay[`${profile}|${transport === 'websocket' ? 'reliable' : 'unreliable'}`] : 0;
     const r = await runLive(transport, profile, mode, delay, q.ends);
     out.runs.push(r);
-    console.log(`  ${r.hashes.peersAgree && r.hashes.matchReference ? 'ok  ' : 'APART'} ${transport} ${profile} ${mode} d${delay}: stalls ${(r.stallRate * 100).toFixed(2)} %, tick late p95 ${r.tickLatenessMs.p95} ms${r.depth ? `, rollbacks ${r.rollbacks} depth p95 ${r.depth.p95}` : ''}, ${r.wireBytesPerSec} B/s`);
+    console.log(`  ${r.hashes.peersAgree && r.hashes.matchReference ? 'ok  ' : 'APART'} ${transport} ${profile} ${mode} d${delay}: stalls ${(r.stallRate * 100).toFixed(2)} %, tick late p95 ${r.tickLatenessMs.p95} ms${r.depth ? `, rollbacks ${r.rollbacks} depth p95 ${r.depth.p95}` : ''}, ${r.wireBytesPerSecEstimated} B/s on the wire (estimated)`);
     q.ends.forEach((e) => e.close()); q.close();
   }
 }
