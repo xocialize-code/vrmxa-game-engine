@@ -123,9 +123,19 @@ and 0609; shell 0.12.0): the inspector's widgets, the viewport's aids and handle
 while walking). Then, on 2026-11-25, W6 and W10 (PRs #44 and #45; tasks AB-T-0603, 0606, 0607 and 0620; shell 0.13.0):
 prefab overrides and the assets panel, and "The Morning Rush", the sample game (AB-D-0293; receipts AB-R-1137 and
 1140). W10's check 8 passes in part: the editor can't yet attach behaviours or wire connections (AB-T-0638). Its check
-10 comes from playing back the recorded sessions. Left: W11 (acceptance), and AB-T-0639 (recovering from a lost GPU
-device in the game app). Left from the reviews:
+10 comes from playing back the recorded sessions. Then W11 (AB-T-0621), M5's acceptance, on 2026-11-25 at 981eaef (below). Left:
+AB-T-0639 (recovering from a lost GPU device in the game app). Left from the reviews:
 AB-T-0624, AB-T-0626 to 0632, 0634 and 0635 (AB-T-0631, saves across re-exports, is the operator's decision).
+
+**W11, M5's acceptance (2026-11-25, AB-T-0621, receipts AB-R-1143 to 1154):** the ten checks above, run at main 981eaef
+(the verdict table, what isn't met and what ran: [acceptance/README.md](acceptance/README.md), "Result: M5's acceptance";
+files `acceptance/results/m5-acceptance/`, verdicts in its `summary.json`). **Seven pass (1, 2, 3, 5, 6, 7, 9); three pass
+in part:** check 4 (no real gamepad was attached, and VoiceOver wasn't run in an app), check 8 (the editor can't author
+behaviours or connections, nor give the built nodes the level's ids, AB-T-0638) and check 10 (M0 to M4 hold on both backends, the matrix green in all six cells
+against unchanged canonical digests; the sample game plays back at 59.5 fps in steady play at 1080p on the M5 Max, but
+scene changes run 40 to 70 fps with a 523 ms worst frame, and the base Mac waits on AB-T-0511). None failed. Check 9 ran on the sample game itself (the agent read The Morning Rush's rules and
+added a regular and a goal: `apps/editor-mac/docs/HAND-TEST-M5-MCP-RUSH.md`). **This plan
+isn't marked done: that is the operator's call on this table.**
 
 **W10 (2026-11-25, AB-T-0620):** "The Morning Rush" is `content/sample/game` (its own `game.json`; `vrmxg-export
 --game game/game.json`): title, level, won and lost scenes; three regulars ordered by dialogue choice, trays carried on

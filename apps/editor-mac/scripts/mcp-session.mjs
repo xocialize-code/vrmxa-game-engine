@@ -9,16 +9,19 @@
 // --m5: M5 W9 (AB-T-0619): with the scenario's copy of the sample project open (HAND-TEST-M5-MCP), the agent reads the
 // game's rules, adds a customer and a goal (each one labelled edit), validates the project, saves and exports the game;
 // → mcp-editor-session-m5.json. --port: the bridge's port (the scenario's editor polls 5193, so no other editor meets it).
-//   node apps/editor-mac/scripts/mcp-session.mjs [--model sonnet] [--m2 | --m3 | --m5] [--port N]
+// --rush: M5 W11 (AB-T-0621), check 9 on the sample game itself (HAND-TEST-M5-MCP-RUSH: The Morning Rush open on its
+// level): the agent reads its rules, adds a fourth regular and a goal, validates, saves and exports;
+// → mcp-editor-session-m5-rush.json, on 5193 too.
+//   node apps/editor-mac/scripts/mcp-session.mjs [--model sonnet] [--m2 | --m3 | --m5 | --rush] [--port N]
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 
 const argv = process.argv.slice(2), opt = (k, d) => { const i = argv.indexOf(k); return i < 0 ? d : argv[i + 1]; };
-const model = opt('--model', 'sonnet'), m2 = argv.includes('--m2'), m3 = argv.includes('--m3'), m5 = argv.includes('--m5'), port = opt('--port', m5 ? '5193' : '5183');
+const model = opt('--model', 'sonnet'), m2 = argv.includes('--m2'), m3 = argv.includes('--m3'), rush = argv.includes('--rush'), m5 = argv.includes('--m5') || rush, port = opt('--port', m5 ? '5193' : '5183');
 const server = path.resolve(import.meta.dirname, '../../../engine/packages/mcp/src/server.js');
-const out = path.join(import.meta.dirname, `../docs/hand-test/results/mcp-editor-session${m2 ? '-m2' : m3 ? '-m3' : m5 ? '-m5' : ''}.json`);
+const out = path.join(import.meta.dirname, `../docs/hand-test/results/mcp-editor-session${m2 ? '-m2' : m3 ? '-m3' : rush ? '-m5-rush' : m5 ? '-m5' : ''}.json`);
 const config = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-mcp-session-')), 'mcp.json');
 fs.writeFileSync(config, JSON.stringify({ mcpServers: { 'vrmxg-editor': { command: process.execPath, args: [server, '--editor', '--port', port] } } }));
 
@@ -57,7 +60,14 @@ const promptM5 = `You are connected to the VRMXG editor, which has the sample ca
 4. Validate the project again and report what it says. Make no other edits.
 5. Save the scene, then export the game (game op=export). Report the build's path, its number of files and its manifest digest.
 Describe a node type before you first use it. Do not undo. Finish with a short report of each step.`;
-const prompt = m2 ? promptM2 : m3 ? promptM3 : m5 ? promptM5 : promptM1;
+const promptRush = `You are connected to the VRMXG editor, which has the sample game "The Morning Rush" open on its level, game/level.vrmxs. The project is that game (game.json). Using only the vrmxg-editor tools:
+1. Read the game's rules (game) and validate the project (game op=validate). Report the level's counters, timers and goals, and what wins and loses the game.
+2. Add a fourth regular, as ONE edit (the edit tool) with the label "Add a customer": a character made from the same asset as the regular aoi, with id kai and name "Kai", standing at [1.2, 0, 10.5] facing the cafe as aoi does, controlled as an NPC, with the same brain behaviour as aoi (the preset game/brains/regular.json) but with the vars arrive 120 and seat stool-7. Read aoi before you make Kai.
+3. Add a goal, as ONE edit with the label "Add the greet goal". Under the level's existing GameRules node (rules), add: a GameCounter "greeted" labelled "Greeted"; a GameGoal "greet-kai" with the text "Greet Kai", done once greeted is at least 1; and what counts it: an Area "kai-zone" at [-3.75, 1, -2.2], a 1.5 x 2 x 1.5 m box, whose bodyEntered signal adds 1 to greeted. Change nothing else of the rules.
+4. Read the game's rules again and validate the project again, and report what each says. Make no other edits.
+5. Save the scene, then export the game (game op=export). Report the build's path, its number of files and its manifest digest.
+Describe a node type before you first use it. Do not undo. Finish with a short report of each step.`;
+const prompt = m2 ? promptM2 : m3 ? promptM3 : rush ? promptRush : m5 ? promptM5 : promptM1;
 
 const args = ['-p', prompt, '--model', model, '--mcp-config', config, '--strict-mcp-config', '--output-format', 'stream-json', '--verbose',
   '--allowedTools', 'mcp__vrmxg-editor__*',

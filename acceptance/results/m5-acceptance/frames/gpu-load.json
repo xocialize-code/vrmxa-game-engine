@@ -1,0 +1,38 @@
+{
+ "note": "the GPU load during the frame-rate run, sampled every 5 s (apps/playground/scripts/gpu-load.mjs): utilisation and every GPU-using process seen, names only",
+ "samples": 156,
+ "gpuUtil": {
+  "min": 9,
+  "median": 26,
+  "max": 28
+ },
+ "seen": {
+  "webkit:com.apple.WebKit.GPU": 45.1,
+  "webkit:com.apple.WebKit.WebContent": 124.1,
+  "browser:Microsoft Edge Helper (Renderer)": 14.8,
+  "browser:Microsoft Edge Helper": 23.7,
+  "node:node": 14.8,
+  "browser:Microsoft Edge": 1.2,
+  "browser:msedge_crashpad_handler": 0,
+  "gaea:Gaea": 2.7,
+  "python:Python": 1.9
+ },
+ "first": {
+  "at": 1795648262011,
+  "gpuUtil": 13,
+  "processes": [
+   "browser:Microsoft Edge Helper 16.3%",
+   "node:node 14.8%",
+   "browser:Microsoft Edge Helper 5%",
+   "browser:Microsoft Edge Helper 1.3%",
+   "browser:Microsoft Edge Helper (Renderer) 13.6%"
+  ],
+  "otherGpuHelpers": 1
+ },
+ "last": {
+  "at": 1795649037317,
+  "gpuUtil": 9,
+  "processes": [],
+  "otherGpuHelpers": 1
+ }
+}

@@ -1,0 +1,36 @@
+{
+ "url": "http://localhost:5181/?split&renderer=webgpu",
+ "size": [
+  1920,
+  1067
+ ],
+ "canvas": [
+  1920,
+  1068
+ ],
+ "split": {
+  "median": 2.2,
+  "p90": 3.7,
+  "calls": 274,
+  "triangles": 187464
+ },
+ "one": {
+  "median": 1.2,
+  "p90": 1.3,
+  "calls": 363,
+  "triangles": 73877
+ },
+ "ratio": 1.83,
+ "mira": [
+  -4.43,
+  0.02,
+  8.1
+ ],
+ "hana": [
+  4.07,
+  0.02,
+  8.1
+ ],
+ "step": 140,
+ "errors": []
+}

@@ -1,4 +1,4 @@
-# M0, M1, M2, M3 and M4 acceptance, and M5's checks as they land
+# M0 to M5 acceptance
 
 M0 W9 (AB-T-0510): the six exit checks of [M0-PLAN.md](../M0-PLAN.md) ("What M0 is done looking like"), run on the
 sample cafe (`content/sample`) at one commit, in every runtime, and filed as receipts.
@@ -15,6 +15,141 @@ node acceptance/compare.mjs       # evaluates the six checks: results/summary.js
 that need no renderer; the playground's acceptance mode adds the rendered pass (the walk rendered frame by frame,
 every camera preset, debug draw). Check 4 re-runs the W6 harness (`engine/packages/snapshot/harness`); check 5 is a
 Claude Code session with the MCP server (`results/mcp-session.json`).
+
+## Result: M5's acceptance (2026-11-25, M5 Max, macOS 27.3 26C5047e)
+
+M5's ten exit checks ([M5-PLAN.md](../M5-PLAN.md) "What M5 is done looking like") were run at the M5 commit: main at
+981eaef (W0 to W10 and the status PR #46). The matrix, the Mac runs after 22:15 UTC and the M2 and M3 re-runs ran at
+c03f0d8, which adds only a change to `apps/playground/scripts/gpu-load.mjs` (below); no engine or app code differs.
+**Seven checks pass. Three pass in part (4, 8 and 10):** each has a piece that isn't met or wasn't run, listed under
+the table. None failed. Each check is filed as a receipt (task AB-T-0621); the files are in `results/m5-acceptance/`,
+and `summary.json` holds the verdicts. **Since the PR's review (2026-11-26):** check 9 was run again on the sample game
+itself (W9's scenario runs on the cafe project, whose game has no rules: AB-R-1151 is superseded by AB-R-1154), and the
+rows for checks 4, 8 and 10 say more exactly what was and wasn't shown. **Whether M5 is done is the operator's call:** nothing here marks it done.
+
+| # | Check | Result | Receipt |
+|---|---|---|---|
+| 1 | A project exports as a game | **Passed.** `m5/build.mjs`: Node 8 of 8, Chromium 10 of 10, and with the Mac editor's builds 14 of 14. Four Export Game builds from the Mac editor (the bundled sample twice, the project opened as a folder, File › Export Game…) are Node's build byte for byte: 74 files, manifest `e1b28f2b3d674eb6`, build `c283200a4c3ac809`. An unlicensed file and a reference in the wrong case each stop the export by name; a folder holding someone's file is refused and left alone. The recorded walk plays from the build to `fe69bad3406ab5f6` in Node, Chromium and WKWebView (scheme and loopback, two web views each). AppProbe 6 of 6 and 1 of 1 | AB-R-1143 |
+| 2 | The game app plays it | **Passed.** `m5/game.mjs` 19 of 19 in Chromium: title menu, start, pause, saves, quit, WebGPU with no query and WebGL when forced; the session replays in Node, every step. The Mac game app: 10 of 10 rows with no query (WebGPU), 1 of 1 with `renderer=webgl`. The sample game plays through the app on both backends (check 7) | AB-R-1144 |
+| 3 | The game has rules | **Passed.** `m5/flow*`: 600 steps and seven scene changes hash the same at every step in Node, Chromium and WKWebView over both origins, with steady and varied loading: final `cfe3f7e9828c49b1`, as AB-R-1107. The sample game goes title → level → won or lost → title by its rules, in Node (won at step 5331 with 50 points, lost on two mistakes at 3847, lost on time at 14760) and through the app | AB-R-1145 |
+| 4 | There is a HUD and there are menus | **Partly.** The HUD's goal, score, clock and what Mira carries are read in Chromium and, through the accessibility tree, in the Mac app. The pause menu works from the keyboard in both and from a stand-in gamepad in Chromium; in Settings, the backend is changed and kept in both, and a key rebound and kept in Chromium. **Not run:** the HUD's interaction prompt read from the page (only `@vrmxg/game-ui`'s unit tests read `#hud-prompt`), a volume changed, a gamepad binding rebound, a real gamepad (none was attached: GameController listed 0 controllers), VoiceOver in a running app | AB-R-1146 |
+| 5 | You talk to characters through a dialogue UI | **Passed.** `m5/dialogue*`: the choice clicked on the overlay is in the recording at step 203; Node, Chromium and WKWebView over both origins give the same per-step hashes and the replay takes the same branch: final `81eaec36719b1754`. The sample game's four choices a win are recorded and replay in every runtime (check 7) | AB-R-1147 |
+| 6 | You can save and carry on | **Passed.** `m5/flow*`: the save at step 60 and the checkpoint at step 67 are the same files in every runtime, and each goes on to step 600 with the unbroken run's hashes across five scene changes. `m5/game.mjs`: Slot 1 saved from the menu loads at its step, in a fresh launch too. The Mac game app: a slot loads in a fresh launch at its step; the sample game's save at the till (`rush-save.mjs`, step 5326) loads and one E wins | AB-R-1148 |
+| 7 | A play session replays exactly | **Passed, on fresh recordings.** `m5/rush.mjs` won (6,299 steps, final `43d3a2f6c26f5a1a`) and lost (4,808 steps, `c151a6a6a058981f`) the sample game through the game app's title menu in Chromium, build `168e7920` (the build W10 recorded on). Each log replays to the same hash after every step in Node, in the app on WebGPU and WebGL, and in WKWebView over both origins on both backends (8 of 8) | AB-R-1149 |
+| 8 | The editor is good enough to build it | **Partly.** The level's game layer built by hand in the Mac editor with no JSON typed: 13 of 13 rows on WebGPU and 13 of 13 on WebGL, the same bytes as W10's, all 22 game-layer nodes found with the committed props, parents and places, but under the ids the editor gives them (only `till` keeps its id). W4 to W6's scenarios: inspector 5 of 5, viewport 7 of 7 on each backend, prefabs and assets 11 of 11 on each. A number dragged with the real pointer is one undo step. **Not met:** behaviours on the new nodes and the level's 19 connections (AB-T-0638), and the committed ids, which those connections name | AB-R-1150 |
+| 9 | Agents can build and check a game | **Passed, on the sample game.** With The Morning Rush open on its level (`HAND-TEST-M5-MCP-RUSH`, new), an agent with only the editor's MCP tools (Sonnet) read the game's rules (its counters, timers, goals and lose condition), added a fourth regular, Kai, and a goal under the existing rules (`greeted`, `greet-kai`, the area that counts it), validated, saved and exported: 15 MCP calls, none failed, $0.28. The export (116 files) verifies whole and holds both; the editor's Undo named each edit (MCP), went back to the opened level, and Redo brought them back (AppProbe 4 of 4). `docs/llms.txt` and the `vrmxg` skill are in the repository, the index checked by `npm run check` | AB-R-1154 |
+| 10 | M0 to M4 still hold; 60 fps | **Partly.** **M0 to M4 hold on both backends:** the matrix is green in all six cells against `canonical.json` (not re-blessed), 0 incidents (AB-R-1152), and everything else re-run below passes. **The frame rate:** the recorded sessions played back by the Mac game app at 1080p on WebGPU run 59.5 fps in steady play. **Not met:** 60 fps: steady play is 59.47 fps, below 60 and below W10's 60.11, and scene changes drop to 40 to 70 fps windows with a 523 ms worst frame. **Not run:** live play on the Mac, the base Mac (AB-T-0511) | AB-R-1153 |
+
+### Not green
+
+- **Check 4: no real gamepad, no VoiceOver, and three things not exercised.** No gamepad was connected to this Mac
+  (GameController's `controllers()` was empty), so every gamepad row is Chromium's stand-in through
+  `navigator.getGamepads` (`m5/game.mjs`), and `HAND-TEST-M5-GAME`'s row 12 is still for a person with a pad. The
+  overlays are DOM with accessible names, and AppProbe reads them through the same accessibility tree VoiceOver uses;
+  nobody listened to VoiceOver read them in the app. **Not exercised in an app:** the HUD's interaction prompt
+  (`rush-player.js` reads the interact service's model, not the DOM; only `@vrmxg/game-ui`'s unit tests read
+  `#hud-prompt`); a volume (every stored volume stays 1 in Chromium, and the Mac app's scenario changes only the
+  renderer, row 10, and moves through the menus, row 6); and rebinding a gamepad button (only a key, Jump to J).
+- **Check 8: behaviours, connections and ids (AB-T-0638).** The scenario starts from the level's room with its
+  behaviours, and builds everything else; the three `tableZone` behaviours and the 19 connections stay unauthored, so
+  the level a person can make in the editor doesn't play by itself. **And the ids differ:** `rush-level.mjs` matches
+  nodes by type and key or name, and 21 of the 22 come out under the ids the editor gives (`table-1` → `area`,
+  `served` → `gamecounter-2`, `serve` → `gamegoal`, `order-3` → `dialogue-4`; only `till` keeps its id:
+  [`level-compare-webgpu.json`](results/m5-acceptance/hand-tests/level-compare-webgpu.json)). The inspector renames a
+  node but can't set its id, and the committed level's connections and `tableZone` params name the committed ids, so
+  they can't be carried onto the built level as they are; wiring it in the editor would have to name the editor's ids.
+  AB-T-0638 is amended with both (and its count: 19 connections, not 15). Also: the dragged number's value wasn't watched while the
+  pointer was down (only its result and its one undo step:
+  [`hand-tests/editor-number-drag.md`](results/m5-acceptance/hand-tests/editor-number-drag.md)), box select's ⌘ and
+  ⇧ can't be pressed through AppProbe's pointer, and the selection outline is still judged only in screenshots.
+- **Check 10: below 60 fps, scene changes, playback, the base Mac.** 755 s of the two sessions played back by the Mac app, 44,523
+  frames, 8 replays and 24 scene changes: **steady play 59.47 fps** (37,584 frames in 632 s, 2.87 per mille over 25 ms;
+  W10 measured 60.11, AB-R-1137). The windows that hold a scene change run 40 to 70 fps, and the worst frame is 523 ms
+  while the next world is built. The web process ran 0.42 to 2.35 GB (median 1.62), the GPU process 0.56 GB at most. The
+  GPU was otherwise quiet (median 26 %); the operator's Edge helpers ran at up to 24 % CPU throughout. It is playback of
+  sessions played live in Chromium (whose own replays drew at p99 16.8 ms), not live play on the Mac. The base-Mac
+  figure waits on the hardware (AB-T-0511). No lost GPU device this time (AB-T-0639 is still open).
+
+### Check 10's re-run of M0 to M4
+
+- **The matrix** (`node acceptance/matrix.mjs --keep-going`, c03f0d8, clean tree, 23:31 to 23:51 UTC; files
+  `results/m5-acceptance/matrix/`): every load of every check in all six cells matched its canonical digest, the same
+  digests as AB-R-1087. `compare.mjs` 20 of 20 on each backend; every cell's simulation final is Node's
+  (`fe69bad3406ab5f6`). Masked SSIM 0.994 to 0.997 per look, the anime look 0.993 at ¼ (0.961 full size), the mask
+  0.017 % of the frame. Budget, 20 characters at 1080p: step 2.20 ms (Chromium WebGPU), 2.04 (Chromium WebGL), 2.23
+  (WKWebView loopback WebGPU), 1.69 (WebGL).
+- **Chromium, both backends** (`results/m5-acceptance/m0-m4-rerun/`): M2's editor export and check against scrub,
+  M3's conversation export, ragdoll, split screen and dialogue give M4's re-run's results exactly, timings aside (two
+  views cost 1.0 against 0.5 ms for one on WebGL, 2.2 against 1.2 on WebGPU). M4's takes (final `e50ac8a7e928dc3f`),
+  voicing (`e68bfb9a96f255c5`, mouths `58b2c9d48f735177`) and script (`58cebece…f902`, re-script `490c1711…c991`) in
+  Node, Chromium and WKWebView, as recorded; the backend switch in the built playground, editor and creator passes.
+- **Tests:** `npm run check` 973 of 974 (1 skipped: an MCP test needs a git-ignored model); the shell's 58 Swift tests.
+- **The Mac apps** (AppProbe, `results/m5-acceptance/hand-tests/`): M0 5 of 5 (its two shots judged: the colliders'
+  wireframes, Mira through the entrance), M1 editor 9 of 9, M1 export 6 of 6 with `check-exports.mjs` 14 of 14, M2
+  acceptance 5 of 5 with `check-sequence-exports.mjs` 10 of 10, M2 timeline 7 of 7 (its multi-angle shot judged, the same
+  as M4's), M4 backend 4 of 4 in the playground and the editor. The two export checks are whole on a quiet GPU (on
+  2026-11-24, under load, they gave 11 of 14 and 9 of 10).
+- **Not run again:** M3's live parts (the spoken conversation, the camera, the companion), the creator's Mac scenarios,
+  M4's deliveries from the creator (the matrix's frames and editor checks cover exact frames per backend), and the
+  editor's MCP sessions of M1 to M4.
+
+### Found on the way
+
+- **Another project's GPU jobs were invisible to the GPU check.** Gaea's plugin workers (`gaea-boogu-worker`,
+  `gaea-ace-step-worker`; a headless Gaea at 18 GB) ran outside the GPU lock and held the GPU at up to 99 %, and
+  `gpu-load.mjs` knew neither name, so the matrix's first attempt classed that load quiet: Chromium WebGPU's editor
+  load 2 differed from canonical on its first try and its rerun (its own scrub check 26 of 26 both times), which by the
+  rules is a failure ([`matrix-first-attempt/`](results/m5-acceptance/matrix-first-attempt/)). `gpu-load.mjs` now counts
+  Gaea and its workers (c03f0d8); the matrix was re-run whole once the job had ended, and passed. Chromium WebGL's cell
+  in the first attempt, its editor load 2 at 98 % GPU included, matched canonical.
+- **Flaky scenario steps, each passed on a second run:** the level's first WebGPU run lost row 5 to the known typing
+  race (a value typed into a new row landing after its placeholder: "newflags.tillClosed"); a WebGL run lost row 7's
+  real-pointer drag (it moved an area instead of dropping the till); the WebGL viewport's first run met Edit › Copy
+  still disabled. The first WebGL level run started from the file the WebGPU run had saved (my fixtures, not the app).
+  The failed reports are kept beside the passing ones (`*-failed.md`, `*-first-try.md`).
+- **AppProbe's CLI cuts a value at its commas** (`env=VRMXG_QUERY=replay=a.json,b.json…` reached the app as
+  `replay=a.json`) **and truncates long names** in `find`'s output (the frame-rate readout's last word, "scene cha…").
+  The frame-rate app was launched through AppProbe's MCP `launch` (the environment as an object), and the readout's
+  cut word was mended after the run (`frames/readout-as-read.log` is the text as read; every number was whole).
+- **Validate warns that two of the sample game's goals can't be reached, for two different reasons.** `serve` is
+  reached from code: `tableZone` calls `game.add('served', 1)` (`content/sample/game/behaviours.js`), which
+  `unreachableGoals` can't follow. `press-start` on `title.vrmxs` is an optional, label-only goal (no `when`) that
+  nothing ever completes: `pressToStart` only changes the scene. It is harmless because optional goals don't count
+  towards a win, and validate doesn't say so: it ignores `optional`. Both are warnings, not problems, only because
+  `codeMayChangeState` downgrades every unreachable goal in the project once its behaviours module mentions the game
+  service, so a mistyped goal key in a project with behaviours would show only as a warning too (AB-T-0641). The agent
+  in check 9 listed the warnings and said it hadn't checked them.
+- **The lose session recorded today is W10's byte for byte**; the win took 6,299 steps against W10's 6,292 (live play
+  in a browser lands its inputs on different steps).
+
+### What ran
+
+```sh
+npm ci && npm run build -w @vrmxg/game-app && (cd apps/playground && npx vite build) && (cd apps/editor && npx vite build) && (cd apps/creator && npx vite build)
+npm run check && (cd apps/shell && swift test)
+node acceptance/node.mjs && node acceptance/m5/rush-node.mjs all
+node acceptance/m5/build.mjs --chromium && acceptance/m5/build-wkwebview.sh
+node acceptance/m5/flow.mjs && acceptance/m5/flow-wkwebview.sh
+node acceptance/m5/dialogue.mjs && acceptance/m5/dialogue-wkwebview.sh
+node acceptance/m5/game.mjs
+node acceptance/m5/layers.mjs && acceptance/m5/layers-wkwebview.sh
+node acceptance/m5/rush.mjs && acceptance/m5/rush-wkwebview.sh
+node acceptance/matrix.mjs --keep-going --quiet-wait 120
+node acceptance/m2/editor-chromium.mjs --url <the built editor> --renderer webgpu   # and webgl; m3/conversation-export, ragdoll, split on both, dialogue on WebGL
+node acceptance/m4/takes.mjs && acceptance/m4/takes-wkwebview.sh                   # and voicing, script-chromium, script-wkwebview, backend-switch
+# AppProbe (each under the GPU lock, its fixture script first): the editor's M5-EXPORT-GAME (+ refusal), M5-LEVEL (+ webgl),
+# M5-INSPECTOR, M5-VIEWPORT (+ webgl), M5-PREFABS-ASSETS (+ webgl), M5-MCP-RUSH with mcp-session.mjs --rush (and W9's M5-MCP with --m5, on the cafe), M1-EDITOR, M1-EXPORT
+# with check-exports.mjs, M2-ACCEPTANCE with check-sequence-exports.mjs, M2-TIMELINE, M4-BACKEND (+ webgl); the game app's
+# M5-GAME (+ webgl) and M5-RUSH; the playground's M0 and M4-BACKEND (+ webgl)
+node acceptance/m5/build.mjs --mac <the four builds> --refused <folder> --kept <folder>
+node acceptance/m5/rush-level.mjs compare <the saved level>
+acceptance/m5/rush-frames.sh prepare   # then AppProbe MCP launch at 1920×1112 with VRMXG_QUERY, rush-frames.sh sample, #frame-stats read every 5 s
+node acceptance/m5/rush-frames-summary.mjs <folder>
+```
+
+The runners' own result files (`results/m5-*.json`, `m4-w3/`, `m2-*`, `m3-*`, the hand tests' `results/`) were left as
+their workstreams committed them; this run's copies are under `results/m5-acceptance/` (`runs/`, `matrix/`, `rush/`,
+`frames/`, `m0-m4-rerun/`, `hand-tests/`).
 
 ## M5's checks as they land
 

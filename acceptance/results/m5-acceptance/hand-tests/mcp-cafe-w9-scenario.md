@@ -1,0 +1,13 @@
+# Editor hand test (M5 W9): an agent builds and exports the game, AppProbe scenario: run of Nov 25, 2026 at 3:03 PM
+
+- **App:** VRMXG Editor 0.1.0 (1), apps/editor-mac/build/VRMXGEditor.app
+- **Scenario:** `apps/editor-mac/docs/hand-test/HAND-TEST-M5-MCP.scenario.md`
+- **Checklist:** `apps/editor-mac/docs/HAND-TEST-M5-MCP.md`
+- **Result:** 4 rows: 4 passed, 0 failed, 0 need you; 0 checklist rows have no steps
+
+## Passed
+
+- **1. The project opens on the cafe, linked to the agent's MCP server on its own port, with no …** (checklist line 17): find("id=doc-state").0.name matches "^Scene cafe[^ ]* [0-9]+ nodes saved"; find("id=project-name").0.name == "Project project-w9-mcp"; find("id=doc-state").0.name matches "^Scene cafe[^ ]* [0-9]+ nodes saved"; find("id=doc-state").0.name matches "^Scene cafe\.vrmxs [0-9]+ nodes saved valid hash "; find("id=undo").0.name == "Undo"; find("id=mcp-state").0.name matches "^MCP" (7949 ms)
+- **2. An agent with only the editor's MCP tools adds a customer and a goal, validates, saves an…** (checklist line 18) ◐: partly checked, not: the build folder is checked against its manifest outside the app (vrmxg-export --verify), and the agent's calls are in results/mcp-editor-session-m5.json; find("id=mcp-state").0.name matches "calls"; find("id=undo").0.name == "Undo Add the serve goal (MCP)"; find("id=doc-state").0.name matches "^Scene cafe\.vrmxs [0-9]+ nodes saved valid hash "; find("id=export-game-result").0.name matches "^Exported game cafe: [0-9]+ files, [0-9]+ bytes, entry cafe\.vrmxs, runtime .*/builds-w9/cafe$"; find("role=alert").count == 0; $agent != $opened (48960 ms)
+- **3. Undo walks the agent's edits back one step at a time, each named for the agent; saved, th…** (checklist line 19): find("id=undo").0.name == "Undo Add a customer (MCP)"; find("id=redo").0.name == "Redo Add the serve goal (MCP)"; find("id=undo").0.name == "Undo"; find("id=redo").0.name == "Redo Add a customer (MCP)"; find("id=doc-state").0.name matches "unsaved changes"; find("id=doc-state").0.name == $opened; find("id=redo").0.name == "Redo Add a customer (MCP)" (1898 ms)
+- **4. Redo brings the agent's edits back, each still marked (MCP); saved, the scene is the agen…** (checklist line 20): find("id=undo").0.name == "Undo Add a customer (MCP)"; find("id=undo").0.name == "Undo Add the serve goal (MCP)"; find("id=redo").0.name == "Redo"; find("id=doc-state").0.name == $agent (1803 ms)

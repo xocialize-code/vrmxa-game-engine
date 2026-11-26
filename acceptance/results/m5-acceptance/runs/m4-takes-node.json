@@ -1,0 +1,97 @@
+{
+ "check": "M4 check 5: each take kind replays exactly from its log, in Node and the browser (the same tracks, the same world every step)",
+ "pass": true,
+ "same": true,
+ "node": {
+  "runtime": "node",
+  "version": "v26.12.1",
+  "sequence": "sequences/the-regular.vrmxs",
+  "takes": [
+   {
+    "id": "take-1",
+    "kind": "puppet",
+    "target": "mira",
+    "start": 239,
+    "end": 759,
+    "log": "f464de3ccefc5011",
+    "tracks": [
+     "mira-walk-take-1:move",
+     "mira-gaze-take-1:property",
+     "mira-act-take-1:animation"
+    ],
+    "tracksHash": "97c2d455764d4d6e",
+    "cast": []
+   },
+   {
+    "id": "take-2",
+    "kind": "director",
+    "target": "hana-1",
+    "start": 749,
+    "end": 1349,
+    "log": "30b68881d60d7135",
+    "tracks": [
+     "hana-1-says-take-2:dialogue",
+     "hana-1-face-take-2:expression",
+     "hana-1-act-take-2:animation",
+     "hana-1-decisions-take-2:decisions"
+    ],
+    "tracksHash": "eda5a9adf6e6b2a0",
+    "cast": [
+     "hana-1"
+    ]
+   },
+   {
+    "id": "take-3",
+    "kind": "face",
+    "target": "mira",
+    "start": 1399,
+    "end": 1959,
+    "log": "0beea9760971c0e7",
+    "tracks": [
+     "mira-face-take-3:expression",
+     "mira-head-take-3:property"
+    ],
+    "tracksHash": "9100bfa271fe04df",
+    "cast": []
+   }
+  ],
+  "filmHash": "2fde5736d2e7edee",
+  "filmBytes": 43177,
+  "steps": 2079,
+  "final": "e50ac8a7e928dc3f",
+  "components": 90,
+  "twice": true,
+  "takesChangeTheFilm": true,
+  "restored": {
+   "at": 389,
+   "final": "e50ac8a7e928dc3f",
+   "same": true
+  },
+  "performed": {
+   "miraWalked": 1.0272,
+   "miraJumped": 1.02,
+   "miraLooked": 1,
+   "hanaWalked": 3.1882,
+   "hanaToMira": 1.9764,
+   "lines": [
+    {
+     "text": "The scones just came out, Mira!",
+     "frame": 313,
+     "spokeAt": 782
+    },
+    {
+     "text": "On my way.",
+     "frame": 389,
+     "spokeAt": 972
+    }
+   ],
+   "linesOnTheirFrames": true,
+   "blink": 1,
+   "smile": 0.864,
+   "mouth": 0.631,
+   "headTurn": 0.3561
+  },
+  "runDigest": "ed4e30207c145dfcd4ef9e3f7a737b40a29ba1f1da7ae95d01f57cb1b0ce10d8"
+ },
+ "chromium": null
+}

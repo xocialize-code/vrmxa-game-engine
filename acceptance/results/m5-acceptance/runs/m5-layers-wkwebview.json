@@ -1,0 +1,132 @@
+{
+ "check": "M5 W7: character layers replay exactly, WKWebView scheme and loopback against Node",
+ "pass": true,
+ "node": {
+  "final": "d14fcfab1e02d846",
+  "walkFinal": "1963599cbeda6559",
+  "runDigest": "d09da290f29a9421e59d59c8a24830de1a6171d21efd6bb47fa237070fca8c9c",
+  "restored": {
+   "at": 215,
+   "final": "d14fcfab1e02d846",
+   "same": true
+  }
+ },
+ "runs": [
+  {
+   "origin": "scheme",
+   "case": "mode=layers&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "final": "d14fcfab1e02d846",
+   "walkFinal": "1963599cbeda6559",
+   "steps": 420,
+   "twice": true,
+   "restored": {
+    "at": 215,
+    "final": "d14fcfab1e02d846",
+    "same": true
+   },
+   "legs": {
+    "sameAsWalkEveryStep": true,
+    "stepsChecked": 303,
+    "stepsDiffering": 0
+   },
+   "turned": {
+    "armsWaveOverCarry": 2.6642,
+    "breathLiftsHips": 0.0085,
+    "carryForearm": 1.5335,
+    "wave": 2.6809
+   },
+   "endState": null,
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "scheme",
+   "case": "mode=layers&renderer=webgl&again=1",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "final": "d14fcfab1e02d846",
+   "walkFinal": "1963599cbeda6559",
+   "steps": 420,
+   "twice": true,
+   "restored": {
+    "at": 215,
+    "final": "d14fcfab1e02d846",
+    "same": true
+   },
+   "legs": {
+    "sameAsWalkEveryStep": true,
+    "stepsChecked": 303,
+    "stepsDiffering": 0
+   },
+   "turned": {
+    "armsWaveOverCarry": 2.6642,
+    "breathLiftsHips": 0.0085,
+    "carryForearm": 1.5335,
+    "wave": 2.6809
+   },
+   "endState": null,
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "loopback",
+   "case": "mode=layers&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "final": "d14fcfab1e02d846",
+   "walkFinal": "1963599cbeda6559",
+   "steps": 420,
+   "twice": true,
+   "restored": {
+    "at": 215,
+    "final": "d14fcfab1e02d846",
+    "same": true
+   },
+   "legs": {
+    "sameAsWalkEveryStep": true,
+    "stepsChecked": 303,
+    "stepsDiffering": 0
+   },
+   "turned": {
+    "armsWaveOverCarry": 2.6642,
+    "breathLiftsHips": 0.0085,
+    "carryForearm": 1.5335,
+    "wave": 2.6809
+   },
+   "endState": null,
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "loopback",
+   "case": "mode=layers&renderer=webgl&again=1",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "final": "d14fcfab1e02d846",
+   "walkFinal": "1963599cbeda6559",
+   "steps": 420,
+   "twice": true,
+   "restored": {
+    "at": 215,
+    "final": "d14fcfab1e02d846",
+    "same": true
+   },
+   "legs": {
+    "sameAsWalkEveryStep": true,
+    "stepsChecked": 303,
+    "stepsDiffering": 0
+   },
+   "turned": {
+    "armsWaveOverCarry": 2.6642,
+    "breathLiftsHips": 0.0085,
+    "carryForearm": 1.5335,
+    "wave": 2.6809
+   },
+   "endState": null,
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  }
+ ]
+}

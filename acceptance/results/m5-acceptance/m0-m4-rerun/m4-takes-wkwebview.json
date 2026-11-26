@@ -1,0 +1,200 @@
+{
+ "check": "M4 check 5: each take kind replays exactly from its log, WKWebView scheme and loopback against Node",
+ "pass": true,
+ "node": {
+  "takes": [
+   "take-1 puppet mira 239-759 log f464de3ccefc5011 tracks 97c2d455764d4d6e [mira-walk-take-1:move,mira-gaze-take-1:property,mira-act-take-1:animation] cast ",
+   "take-2 director hana-1 749-1349 log 30b68881d60d7135 tracks eda5a9adf6e6b2a0 [hana-1-says-take-2:dialogue,hana-1-face-take-2:expression,hana-1-act-take-2:animation,hana-1-decisions-take-2:decisions] cast hana-1",
+   "take-3 face mira 1399-1959 log 0beea9760971c0e7 tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
+  ],
+  "filmHash": "2fde5736d2e7edee",
+  "final": "e50ac8a7e928dc3f",
+  "runDigest": "ed4e30207c145dfcd4ef9e3f7a737b40a29ba1f1da7ae95d01f57cb1b0ce10d8"
+ },
+ "runs": [
+  {
+   "origin": "scheme",
+   "case": "mode=takes&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "takes": [
+    "take-1 puppet mira 239-759 log f464de3ccefc5011 tracks 97c2d455764d4d6e [mira-walk-take-1:move,mira-gaze-take-1:property,mira-act-take-1:animation] cast ",
+    "take-2 director hana-1 749-1349 log 30b68881d60d7135 tracks eda5a9adf6e6b2a0 [hana-1-says-take-2:dialogue,hana-1-face-take-2:expression,hana-1-act-take-2:animation,hana-1-decisions-take-2:decisions] cast hana-1",
+    "take-3 face mira 1399-1959 log 0beea9760971c0e7 tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
+   ],
+   "filmHash": "2fde5736d2e7edee",
+   "final": "e50ac8a7e928dc3f",
+   "steps": 2079,
+   "twice": true,
+   "restored": {
+    "at": 389,
+    "final": "e50ac8a7e928dc3f",
+    "same": true
+   },
+   "performed": {
+    "blink": 1,
+    "hanaToMira": 1.9764,
+    "hanaWalked": 3.1882,
+    "headTurn": 0.3561,
+    "lines": [
+     {
+      "frame": 313,
+      "spokeAt": 782,
+      "text": "The scones just came out, Mira!"
+     },
+     {
+      "frame": 389,
+      "spokeAt": 972,
+      "text": "On my way."
+     }
+    ],
+    "linesOnTheirFrames": true,
+    "miraJumped": 1.02,
+    "miraLooked": 1,
+    "miraWalked": 1.0272,
+    "mouth": 0.631,
+    "smile": 0.864
+   },
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "scheme",
+   "case": "mode=takes&renderer=webgl&again=1",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "takes": [
+    "take-1 puppet mira 239-759 log f464de3ccefc5011 tracks 97c2d455764d4d6e [mira-walk-take-1:move,mira-gaze-take-1:property,mira-act-take-1:animation] cast ",
+    "take-2 director hana-1 749-1349 log 30b68881d60d7135 tracks eda5a9adf6e6b2a0 [hana-1-says-take-2:dialogue,hana-1-face-take-2:expression,hana-1-act-take-2:animation,hana-1-decisions-take-2:decisions] cast hana-1",
+    "take-3 face mira 1399-1959 log 0beea9760971c0e7 tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
+   ],
+   "filmHash": "2fde5736d2e7edee",
+   "final": "e50ac8a7e928dc3f",
+   "steps": 2079,
+   "twice": true,
+   "restored": {
+    "at": 389,
+    "final": "e50ac8a7e928dc3f",
+    "same": true
+   },
+   "performed": {
+    "blink": 1,
+    "hanaToMira": 1.9764,
+    "hanaWalked": 3.1882,
+    "headTurn": 0.3561,
+    "lines": [
+     {
+      "frame": 313,
+      "spokeAt": 782,
+      "text": "The scones just came out, Mira!"
+     },
+     {
+      "frame": 389,
+      "spokeAt": 972,
+      "text": "On my way."
+     }
+    ],
+    "linesOnTheirFrames": true,
+    "miraJumped": 1.02,
+    "miraLooked": 1,
+    "miraWalked": 1.0272,
+    "mouth": 0.631,
+    "smile": 0.864
+   },
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "loopback",
+   "case": "mode=takes&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "takes": [
+    "take-1 puppet mira 239-759 log f464de3ccefc5011 tracks 97c2d455764d4d6e [mira-walk-take-1:move,mira-gaze-take-1:property,mira-act-take-1:animation] cast ",
+    "take-2 director hana-1 749-1349 log 30b68881d60d7135 tracks eda5a9adf6e6b2a0 [hana-1-says-take-2:dialogue,hana-1-face-take-2:expression,hana-1-act-take-2:animation,hana-1-decisions-take-2:decisions] cast hana-1",
+    "take-3 face mira 1399-1959 log 0beea9760971c0e7 tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
+   ],
+   "filmHash": "2fde5736d2e7edee",
+   "final": "e50ac8a7e928dc3f",
+   "steps": 2079,
+   "twice": true,
+   "restored": {
+    "at": 389,
+    "final": "e50ac8a7e928dc3f",
+    "same": true
+   },
+   "performed": {
+    "blink": 1,
+    "hanaToMira": 1.9764,
+    "hanaWalked": 3.1882,
+    "headTurn": 0.3561,
+    "lines": [
+     {
+      "frame": 313,
+      "spokeAt": 782,
+      "text": "The scones just came out, Mira!"
+     },
+     {
+      "frame": 389,
+      "spokeAt": 972,
+      "text": "On my way."
+     }
+    ],
+    "linesOnTheirFrames": true,
+    "miraJumped": 1.02,
+    "miraLooked": 1,
+    "miraWalked": 1.0272,
+    "mouth": 0.631,
+    "smile": 0.864
+   },
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  },
+  {
+   "origin": "loopback",
+   "case": "mode=takes&renderer=webgl&again=1",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "takes": [
+    "take-1 puppet mira 239-759 log f464de3ccefc5011 tracks 97c2d455764d4d6e [mira-walk-take-1:move,mira-gaze-take-1:property,mira-act-take-1:animation] cast ",
+    "take-2 director hana-1 749-1349 log 30b68881d60d7135 tracks eda5a9adf6e6b2a0 [hana-1-says-take-2:dialogue,hana-1-face-take-2:expression,hana-1-act-take-2:animation,hana-1-decisions-take-2:decisions] cast hana-1",
+    "take-3 face mira 1399-1959 log 0beea9760971c0e7 tracks 9100bfa271fe04df [mira-face-take-3:expression,mira-head-take-3:property] cast "
+   ],
+   "filmHash": "2fde5736d2e7edee",
+   "final": "e50ac8a7e928dc3f",
+   "steps": 2079,
+   "twice": true,
+   "restored": {
+    "at": 389,
+    "final": "e50ac8a7e928dc3f",
+    "same": true
+   },
+   "performed": {
+    "blink": 1,
+    "hanaToMira": 1.9764,
+    "hanaWalked": 3.1882,
+    "headTurn": 0.3561,
+    "lines": [
+     {
+      "frame": 313,
+      "spokeAt": 782,
+      "text": "The scones just came out, Mira!"
+     },
+     {
+      "frame": 389,
+      "spokeAt": 972,
+      "text": "On my way."
+     }
+    ],
+    "linesOnTheirFrames": true,
+    "miraJumped": 1.02,
+    "miraLooked": 1,
+    "miraWalked": 1.0272,
+    "mouth": 0.631,
+    "smile": 0.864
+   },
+   "sameAsNode": true,
+   "errors": [],
+   "timedOut": false
+  }
+ ]
+}

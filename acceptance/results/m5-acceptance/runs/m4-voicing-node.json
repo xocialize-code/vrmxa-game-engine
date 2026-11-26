@@ -1,0 +1,123 @@
+{
+ "check": "M4 check 3: every line voiced in its character's voice; replay from the baked track exact in Node and the browser",
+ "pass": true,
+ "same": true,
+ "node": {
+  "runtime": "node",
+  "version": "v26.12.1",
+  "sequence": "sequences/cafe-order.vrmxs",
+  "steps": 1951,
+  "final": "e68bfb9a96f255c5",
+  "mouthHash": "58b2c9d48f735177",
+  "components": 75,
+  "lines": [
+   {
+    "track": "hana-1-says",
+    "index": 0,
+    "speaker": "hana-1",
+    "text": "Good morning! What can I get you?",
+    "start": 156,
+    "voice": "af_heart",
+    "clip": "voice/cafe-order-hana-1-says-1-af-heart-b522e02b.wav",
+    "baked": true,
+    "audio": 2.3,
+    "spokeAt": 389,
+    "endedAt": 528
+   },
+   {
+    "track": "mira-says",
+    "index": 0,
+    "speaker": "mira",
+    "text": "Hmm. A latte, please. And one of those croissants.",
+    "start": 225,
+    "voice": "af_bella",
+    "clip": "voice/cafe-order-mira-says-1-af-bella-d6836355.wav",
+    "baked": true,
+    "audio": 3.925,
+    "spokeAt": 562,
+    "endedAt": 798
+   },
+   {
+    "track": "hana-1-says",
+    "index": 1,
+    "speaker": "hana-1",
+    "text": "Coming right up!",
+    "start": 320,
+    "voice": "af_heart",
+    "clip": "voice/cafe-order-hana-1-says-2-af-heart-941e065b.wav",
+    "baked": true,
+    "audio": 1.6,
+    "spokeAt": 799,
+    "endedAt": 896
+   },
+   {
+    "track": "mira-says",
+    "index": 1,
+    "speaker": "mira",
+    "text": "Is it always this quiet in the morning?",
+    "start": 417,
+    "voice": "af_bella",
+    "clip": "voice/cafe-order-mira-says-2-af-bella-69f34d01.wav",
+    "baked": true,
+    "audio": 2.7,
+    "spokeAt": 1042,
+    "endedAt": 1205
+   },
+   {
+    "track": "hana-1-says",
+    "index": 2,
+    "speaker": "hana-1",
+    "text": "Only until the students wake up.",
+    "start": 506,
+    "voice": "af_heart",
+    "clip": "voice/cafe-order-hana-1-says-3-af-heart-11b84882.wav",
+    "baked": true,
+    "audio": 2.375,
+    "spokeAt": 1264,
+    "endedAt": 1407
+   },
+   {
+    "track": "hana-1-says",
+    "index": 3,
+    "speaker": "hana-1",
+    "text": "Here you go. Enjoy!",
+    "start": 640,
+    "voice": "af_heart",
+    "clip": "voice/cafe-order-hana-1-says-4-af-heart-e89c79db.wav",
+    "baked": true,
+    "audio": 2.125,
+    "spokeAt": 1599,
+    "endedAt": 1727
+   },
+   {
+    "track": "mira-says",
+    "index": 2,
+    "speaker": "mira",
+    "text": "Thank you!",
+    "start": 692,
+    "voice": "af_bella",
+    "clip": "voice/cafe-order-mira-says-3-af-bella-ed6bbe4c.wav",
+    "baked": true,
+    "audio": 1.475,
+    "spokeAt": 1729,
+    "endedAt": 1818
+   }
+  ],
+  "everyLineBaked": true,
+  "inTheirVoices": true,
+  "leftToVoice": 0,
+  "playsFromTrack": true,
+  "overlaps": [],
+  "everyLineSpoken": true,
+  "mouthOpens": 1,
+  "restored": {
+   "at": 1305,
+   "line": "Only until the students wake up.",
+   "final": "f0e131a82b992a57",
+   "same": true,
+   "mouthsSame": true
+  },
+  "runDigest": "ed5939eac458036195af391dff9dd0c46103b3b33a64a8ae2a42b71bb50d0b9f"
+ },
+ "chromium": null
+}

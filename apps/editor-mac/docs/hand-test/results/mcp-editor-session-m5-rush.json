@@ -1,0 +1,246 @@
+{
+ "date": "2026-11-26",
+ "client": "claude -p (Claude Code 2.1.319, sonnet), --mcp-config with vrmxg-mcp --editor --port 5193",
+ "exitCode": 0,
+ "mcpServers": [
+  {
+   "name": "vrmxg-editor",
+   "status": "connected",
+   "source": "dynamic"
+  }
+ ],
+ "prompt": "You are connected to the VRMXG editor, which has the sample game \"The Morning Rush\" open on its level, game/level.vrmxs. The project is that game (game.json). Using only the vrmxg-editor tools:\n1. Read the game's rules (game) and validate the project (game op=validate). Report the level's counters, timers and goals, and what wins and loses the game.\n2. Add a fourth regular, as ONE edit (the edit tool) with the label \"Add a customer\": a character made from the same asset as the regular aoi, with id kai and name \"Kai\", standing at [1.2, 0, 10.5] facing the cafe as aoi does, controlled as an NPC, with the same brain behaviour as aoi (the preset game/brains/regular.json) but with the vars arrive 120 and seat stool-7. Read aoi before you make Kai.\n3. Add a goal, as ONE edit with the label \"Add the greet goal\". Under the level's existing GameRules node (rules), add: a GameCounter \"greeted\" labelled \"Greeted\"; a GameGoal \"greet-kai\" with the text \"Greet Kai\", done once greeted is at least 1; and what counts it: an Area \"kai-zone\" at [-3.75, 1, -2.2], a 1.5 x 2 x 1.5 m box, whose bodyEntered signal adds 1 to greeted. Change nothing else of the rules.\n4. Read the game's rules again and validate the project again, and report what each says. Make no other edits.\n5. Save the scene, then export the game (game op=export). Report the build's path, its number of files and its manifest digest.\nDescribe a node type before you first use it. Do not undo. Finish with a short report of each step.",
+ "calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__vrmxg-editor__game,mcp__vrmxg-editor__describe,mcp__vrmxg-editor__edit,mcp__vrmxg-editor__get_node,mcp__vrmxg-editor__save,mcp__vrmxg-editor__validate,mcp__vrmxg-editor__tree",
+    "max_results": 10
+   },
+   "result": "\n\n\n\n\n\n",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "rules"
+   },
+   "result": "{\"game\":{\"id\":\"morning-rush\",\"title\":\"The Morning Rush\",\"entry\":\"game/title.vrmxs\",\"scenes\":[\"game/level.vrmxs\",\"game/lost.vrmxs\",\"game/title.vrmxs\",\"game/won.vrmxs\"],\"from\":\"game.json\"},\"open\":\"game/level.vrmxs\",\"scenes\":{\"game/level.vrmxs\":{\"rules\":{\"id\":\"rules\",\"win\":null,\"lose\":{\"of\":[{\"key\":\"timers.clock.done\",\"test\":\"state\"},{\"key\":\"counters.mistakes\",\"op\":\"ge\",\"test\":\"state\",\"value\":2}],\"te",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "validate"
+   },
+   "result": "{\"ok\":true,\"game\":{\"id\":\"morning-rush\",\"entry\":\"game/title.vrmxs\",\"scenes\":[\"game/level.vrmxs\",\"game/lost.vrmxs\",\"game/title.vrmxs\",\"game/won.vrmxs\"]},\"problems\":[],\"warnings\":[{\"check\":\"scene\",\"scene\":\"game/level.vrmxs\",\"node\":\"table-1\",\"file\":\"game/level.vrmxs\",\"message\":\"/nodes/30 (table-1) unknown behaviour \\\"tableZone\\\" (kept)\"},{\"check\":\"scene\",\"scene\":\"game/level.vrmxs\",\"node\":\"table-2\",\"fi",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "aoi"
+   },
+   "result": "{\"node\":{\"id\":\"aoi\",\"type\":\"Character\",\"parent\":\"root\",\"name\":\"Aoi\",\"asset\":\"hana\",\"transform\":{\"p\":[-1.6,0,9],\"q\":[0,1,0,0]},\"props\":{\"controller\":\"npc\"},\"behaviours\":[{\"preset\":\"game/brains/regular.json\",\"use\":\"brain\",\"vars\":{\"arrive\":8,\"seat\":\"stool-2\"}}]},\"signals\":[\"ready\",\"arrived\",\"spoke\",\"lineEnded\",\"dressed\",\"knockedDown\",\"gettingUp\",\"gotUp\",\"faced\"],\"actions\":[\"show\",\"hide\",\"say\",\"reach\"",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "Character"
+   },
+   "result": "{\"type\":\"Character\",\"extends\":[\"Node3D\"],\"description\":\"A VRMXA character: VRM body, closet, animation sets, voice.\",\"asset\":{\"types\":[\"vrmxa\"],\"required\":true},\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\",\"asset\"],\"description\":\"A VRMXA character: VRM body, closet, animation sets, voice.\",\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$\",\"description\":\"Stable",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "behaviour": "brain"
+   },
+   "result": "{\"behaviour\":\"brain\",\"description\":\"An NPC brain (M2 W7): perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; M3: host, conversationPartner, follower, which a director can talk with; M4: actor, who does only what she is directed to), a brain document in the project (brains/hana.json) or a preset object; vars override its ",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "GameCounter"
+   },
+   "result": "{\"type\":\"GameCounter\",\"extends\":[\"Node3D\"],\"description\":\"A number the game counts: the score (the counter named \\\"score\\\"), orders taken, coins.\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"A number the game counts: the score (the counter named \\\"score\\\"), orders taken, coins.\",\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$\",\"d",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "GameGoal"
+   },
+   "result": "{\"type\":\"GameGoal\",\"extends\":[\"Node3D\"],\"description\":\"Something to get done: the HUD shows the first one that isn't. Done when its condition first holds, or by its action.\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"Something to get done: the HUD shows the first one that isn't. Done when its condition first holds, or by its action.\",\"properties\":{\"id\":{\"type\":\"",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "Area"
+   },
+   "result": "{\"type\":\"Area\",\"extends\":[\"Collider\",\"Node3D\"],\"description\":\"A sensor volume: reports bodies entering and leaving (door triggers, pickups).\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"A sensor volume: reports bodies entering and leaving (door triggers, pickups).\",\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$\",\"description\":\"S",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "rules"
+   },
+   "result": "{\"node\":{\"id\":\"rules\",\"type\":\"GameRules\",\"parent\":\"root\",\"props\":{\"flags\":{\"ordered1\":false,\"ordered2\":false,\"ordered3\":false,\"right1\":false,\"right2\":false,\"right3\":false,\"tillClosed\":false},\"lose\":{\"of\":[{\"key\":\"timers.clock.done\",\"test\":\"state\"},{\"key\":\"counters.mistakes\",\"op\":\"ge\",\"test\":\"state\",\"value\":2}],\"test\":\"any\"}}},\"signals\":[\"ready\",\"won\",\"lost\",\"ended\",\"flagChanged\"],\"actions\":[\"show\"",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__edit",
+   "input": {
+    "label": "Add a customer",
+    "ops": [
+     {
+      "op": "add",
+      "node": {
+       "id": "kai",
+       "type": "Character",
+       "parent": "root",
+       "name": "Kai",
+       "asset": "hana",
+       "transform": {
+        "p": [
+         1.2,
+         0,
+         10.5
+        ],
+        "q": [
+         0,
+         1,
+         0,
+         0
+        ]
+       },
+       "props": {
+        "controller": "npc"
+       },
+       "behaviours": [
+        {
+         "preset": "game/brains/regular.json",
+         "use": "brain",
+         "vars": {
+          "arrive": 120,
+          "seat": "stool-7"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "result": "1 edit applied as one undo step (\"Add a customer\")",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__edit",
+   "input": {
+    "label": "Add the greet goal",
+    "ops": [
+     {
+      "op": "add",
+      "node": {
+       "id": "greeted",
+       "type": "GameCounter",
+       "parent": "rules",
+       "props": {
+        "label": "Greeted"
+       }
+      }
+     },
+     {
+      "op": "add",
+      "node": {
+       "id": "greet-kai",
+       "type": "GameGoal",
+       "parent": "rules",
+       "props": {
+        "text": "Greet Kai",
+        "when": {
+         "test": "state",
+         "key": "counters.greeted",
+         "op": "ge",
+         "value": 1
+        }
+       }
+      }
+     },
+     {
+      "op": "add",
+      "node": {
+       "id": "kai-zone",
+       "type": "Area",
+       "parent": "rules",
+       "transform": {
+        "p": [
+         -3.75,
+         1,
+         -2.2
+        ]
+       },
+       "props": {
+        "shape": "box",
+        "size": [
+         1.5,
+         2,
+         1.5
+        ]
+       }
+      }
+     },
+     {
+      "op": "connect",
+      "from": "kai-zone",
+      "signal": "bodyEntered",
+      "to": "greeted",
+      "call": "add",
+      "args": {
+       "by": 1
+      }
+     }
+    ]
+   },
+   "result": "4 edits applied as one undo step (\"Add the greet goal\")",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "rules"
+   },
+   "result": "{\"game\":{\"id\":\"morning-rush\",\"title\":\"The Morning Rush\",\"entry\":\"game/title.vrmxs\",\"scenes\":[\"game/level.vrmxs\",\"game/lost.vrmxs\",\"game/title.vrmxs\",\"game/won.vrmxs\"],\"from\":\"game.json\"},\"open\":\"game/level.vrmxs\",\"scenes\":{\"game/level.vrmxs\":{\"rules\":{\"id\":\"rules\",\"win\":null,\"lose\":{\"of\":[{\"key\":\"timers.clock.done\",\"test\":\"state\"},{\"key\":\"counters.mistakes\",\"op\":\"ge\",\"test\":\"state\",\"value\":2}],\"te",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "validate"
+   },
+   "result": "{\"ok\":true,\"game\":{\"id\":\"morning-rush\",\"entry\":\"game/title.vrmxs\",\"scenes\":[\"game/level.vrmxs\",\"game/lost.vrmxs\",\"game/title.vrmxs\",\"game/won.vrmxs\"]},\"problems\":[],\"warnings\":[{\"check\":\"scene\",\"scene\":\"game/level.vrmxs\",\"node\":\"table-1\",\"file\":\"game/level.vrmxs\",\"message\":\"/nodes/30 (table-1) unknown behaviour \\\"tableZone\\\" (kept)\"},{\"check\":\"scene\",\"scene\":\"game/level.vrmxs\",\"node\":\"table-2\",\"fi",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__save",
+   "input": {},
+   "result": "{\"ref\":\"game/level.vrmxs\",\"hash\":\"17aca6a1ba1a25f2\",\"bytes\":13599,\"warnings\":[\"/nodes/30 (table-1) unknown behaviour \\\"tableZone\\\" (kept)\",\"/nodes/31 (table-2) unknown behaviour \\\"tableZone\\\" (kept)\",\"/nodes/32 (table-3) unknown behaviour \\\"tableZone\\\" (kept)\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "export"
+   },
+   "result": "{\"id\":\"morning-rush\",\"title\":\"The Morning Rush\",\"entry\":\"game/title.vrmxs\",\"runtime\":\"vrmxg-game 0.1.0+9baaea7eadfa\",\"files\":116,\"bytes\":26137461,\"digest\":\"04683b4a57fc69e2c59a4e76f6d16ab3bdf3f6c8a70eaf861bf1ea583fb413e1\",\"manifest\":\"6cdaf299d5249b2e4b936739aff215659627981ccf4aae2304830aa6d84155a0\",\"byPattern\":74,\"written\":true,\"path\":\"~/Library/Containers/com.xocialize.vrmxg-ed",
+   "isError": false
+  }
+ ],
+ "failed": 0,
+ "costUSD": 0.27957849999999995,
+ "final": "All five steps are done. I made the edits, saved `game/level.vrmxs` and exported the game.\n\n**1. Rules and validation (before any edits)**\n- **Counters:**\n  - `score` starts at 0.\n  - `served` starts at 0 and is capped at 3.\n  - `mistakes` (\"Wrong orders\") starts at 0.\n- **Timers:**\n  - `clock` runs 240 s (\"Until ten o'clock\") and starts automatically.\n  - `brew-1`, `brew-2` and `brew-3` run 6 s each and don't start automatically.\n- **Goals:** `serve` (\"Serve the three regulars\") is done when served ≥ 3 and mistakes < 2. `close-till` (\"Close the till\") is done when the `tillClosed` flag is set. There is also a checkpoint, `cp-first`, once served ≥ 1.\n- **Lose:** the level is lost when `clock` finishes or mistakes reach 2.\n- **Win:** the level's rules set no win condition (`win` is null). Nothing in the rules says what wins it. The level can change to `game/won.vrmxs` or `game/lost.vrmxs`, so the win must be coming from somewhere I can't see, probably a behaviour's code. I didn't check that.\n- **Validation:** `ok`, with no problems. Warnings:\n  - Unknown behaviour `tableZone` on `table-1`, `table-2` and `table-3`, and `pressToStart` on the title's `start` node (all kept).\n  - Goals `serve` and `press-start` can't be completed by any connection in the game's scenes.\n\n**2. Kai (edit \"Add a customer\")**\n- I read `aoi` first: asset `hana`, controller `npc`, rotation `[0,1,0,0]`, and the brain preset `game/brains/regular.json` with vars `arrive 8` and `seat stool-2`.\n- Kai is a Character with asset `hana`, at `[1.2, 0, 10.5]`, rotation `[0,1,0,0]`, controller `npc`.\n- Kai's brain uses the same preset with vars `arrive 120` and `seat stool-7`.\n\n**3. Greet goal (edit \"Add the greet goal\")**\nAll of these sit under `rules`, and I changed nothing else in the rules.\n- Counter `greeted`, labelled \"Greeted\".\n- Goal `greet-kai`, \"Greet Kai\", done when `counters.greeted` ≥ 1.\n- Area `kai-zone` at `[-3.75, 1, -2.2]`, a 1.5 × 2 × 1.5 box.\n- A connection from `kai-zone`'s `bodyEntered` to `greeted.add` with `by` = 1.\n\n**4. Rules and validation after the edits**\n- The rules now list the `greeted` counter and the `greet-kai` goal, and the rules read `counters.greeted`. Nothing else changed.\n- Validation is still `ok` with the same warnings. `greet-kai` raised none, since the connection counts as something that can complete it.\n- It noted that the level was unsaved at that point.\n\n**5. Save and export**\n- **Save:** `game/level.vrmxs` saved (hash `17aca6a1ba1a25f2`).\n- **Build path:** `~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/builds-w11/morning-rush`\n- **Files:** 116 (26,137,461 bytes).\n- **Manifest digest:** `6cdaf299d5249b2e4b936739aff215659627981ccf4aae2304830aa6d84155a0`. The export also returned a separate `digest`, `04683b4a…13e1`.\n\nI did not undo anything.\n\nOne thing to know: `kai-zone` is at `[-3.75, 1, -2.2]`, nowhere near Kai's start at `[1.2, 0, 10.5]`. I placed both as you specified and didn't check how they relate in play. `bodyEntered` fires for any body that enters the zone, so I didn't verify it only counts a greeting of Kai."
+}
