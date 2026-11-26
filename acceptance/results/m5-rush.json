@@ -5,24 +5,24 @@
  "chromium": "156.0.8078.4",
  "build": {
   "game": "morning-rush",
-  "files": 116,
-  "bytes": 26216007,
-  "digest": "1117e9d8b6d45e1ce0da0a7799c8a8faabfb03b3cf44bd126c91b5d903ce440b",
-  "manifest": "2518f0042e47bce1e5ba5c11151dddfeb08d014e02dff4558202c03069b30a50",
-  "runtime": "vrmxg-game 0.1.0+17d27d5ca00d"
+  "files": 117,
+  "bytes": 26219002,
+  "digest": "9285002a7b07e909bcad7a8884d6a5eab8985a142842f9c2e82cd8d4a92c4a4c",
+  "manifest": "f98d099c65d0d37316029baebfb427c42f465b3fd48785677f8781b7d53f0cf7",
+  "runtime": "vrmxg-game 0.1.0+4ff8396fd7df"
  },
  "sessions": {
   "win": {
-   "steps": 6299,
+   "steps": 6296,
    "scenes": [
     "game/title.vrmxs",
     "game/level.vrmxs",
     "game/won.vrmxs"
    ],
    "final": {
-    "step": 6299,
+    "step": 6296,
     "scene": "game/title.vrmxs",
-    "hash": "43d3a2f6c26f5a1a"
+    "hash": "0c7b670f5a1f3ea5"
    },
    "seen": {
     "hud": {
@@ -47,11 +47,11 @@
      ]
     },
     "checkpoint": {
-     "step": 2224,
+     "step": 2217,
      "checkpoints": {
       "first-order": {
        "id": "cp-first",
-       "requested": 2213
+       "requested": 2214
       }
      }
     },
@@ -99,39 +99,39 @@
      "task": "reading (order-1)"
     },
     {
-     "step": 1620,
+     "step": 1621,
      "task": "choose latte"
     },
     {
-     "step": 1621,
+     "step": 1622,
      "task": "listening (order-1)"
     },
     {
-     "step": 1737,
+     "step": 1738,
      "task": "wait by the counter"
     },
     {
-     "step": 1829,
+     "step": 1830,
      "task": "wait by the counter (there)"
     },
     {
-     "step": 1980,
+     "step": 1981,
      "task": "fetch table 1's order"
     },
     {
-     "step": 2025,
+     "step": 2026,
      "task": "fetch table 1's order: interact"
     },
     {
-     "step": 2026,
+     "step": 2027,
      "task": "carry table 1's order"
     },
     {
-     "step": 2214,
+     "step": 2215,
      "task": "wait by the counter"
     },
     {
-     "step": 2308,
+     "step": 2309,
      "task": "wait by the counter (there)"
     },
     {
@@ -266,7 +266,7 @@
     "carry": null,
     "choice": null,
     "checkpoint": {
-     "step": 2220,
+     "step": 2224,
      "checkpoints": {
       "first-order": {
        "id": "cp-first",
@@ -278,7 +278,7 @@
    },
    "tasks": [
     {
-     "step": 5,
+     "step": 6,
      "task": "in game/title.vrmxs"
     },
     {
@@ -411,11 +411,11 @@
  },
  "nodeReplays": {
   "win": {
-   "steps": 6299,
+   "steps": 6296,
    "final": {
-    "step": 6299,
+    "step": 6296,
     "scene": "game/title.vrmxs",
-    "hash": "43d3a2f6c26f5a1a"
+    "hash": "0c7b670f5a1f3ea5"
    }
   },
   "lose": {
@@ -430,22 +430,22 @@
  "appReplays": {
   "win-webgpu": {
    "backend": "webgpu",
-   "steps": 6299,
+   "steps": 6296,
    "final": {
-    "step": 6299,
+    "step": 6296,
     "scene": "game/title.vrmxs",
-    "hash": "43d3a2f6c26f5a1a"
+    "hash": "0c7b670f5a1f3ea5"
    },
    "frames": {
-    "frames": 6307,
-    "seconds": 106.3124,
-    "fps": 59.32515868327684,
-    "mean": 16.856254954812112,
+    "frames": 6308,
+    "seconds": 106.3291,
+    "fps": 59.325245864020296,
+    "mean": 16.856230183893466,
     "p50": 16.69999999999709,
     "p95": 16.79999999998836,
     "p99": 16.80000000000291,
-    "max": 450,
-    "over25": 12,
+    "max": 433.3000000000002,
+    "over25": 14,
     "over34": 12,
     "width": 1280,
     "height": 720
@@ -454,22 +454,22 @@
   },
   "win-webgl": {
    "backend": "webgl",
-   "steps": 6299,
+   "steps": 6296,
    "final": {
-    "step": 6299,
+    "step": 6296,
     "scene": "game/title.vrmxs",
-    "hash": "43d3a2f6c26f5a1a"
+    "hash": "0c7b670f5a1f3ea5"
    },
    "frames": {
-    "frames": 6305,
-    "seconds": 106.39569999999999,
-    "fps": 59.259913699519814,
-    "mean": 16.874813639968277,
+    "frames": 6300,
+    "seconds": 106.3624,
+    "fps": 59.23145773318391,
+    "mean": 16.882920634920634,
     "p50": 16.69999999999709,
     "p95": 16.70000000001164,
     "p99": 16.80000000000291,
-    "max": 483.40000000000055,
-    "over25": 15,
+    "max": 483.39999999999964,
+    "over25": 16,
     "over34": 13,
     "width": 1280,
     "height": 720
@@ -485,15 +485,15 @@
     "hash": "1c871ead6cb1c5e6"
    },
    "frames": {
-    "frames": 4820,
-    "seconds": 81.5967,
-    "fps": 59.071016352377,
-    "mean": 16.92877593360996,
+    "frames": 4827,
+    "seconds": 81.6301,
+    "fps": 59.132599372045355,
+    "mean": 16.91114563911332,
     "p50": 16.69999999999709,
-    "p95": 16.79999999998836,
+    "p95": 16.70000000001164,
     "p99": 16.80000000000291,
-    "max": 466.60000000000036,
-    "over25": 15,
+    "max": 450,
+    "over25": 14,
     "over34": 12,
     "width": 1280,
     "height": 720
@@ -509,16 +509,16 @@
     "hash": "1c871ead6cb1c5e6"
    },
    "frames": {
-    "frames": 4816,
-    "seconds": 81.5968,
-    "fps": 59.02192242833052,
-    "mean": 16.942857142857143,
+    "frames": 4819,
+    "seconds": 81.5801,
+    "fps": 59.07077829029383,
+    "mean": 16.928844158539118,
     "p50": 16.69999999999709,
-    "p95": 16.79999999998836,
+    "p95": 16.799999999995634,
     "p99": 16.80000000000291,
-    "max": 500,
-    "over25": 14,
-    "over34": 13,
+    "max": 450,
+    "over25": 15,
+    "over34": 12,
     "width": 1280,
     "height": 720
    },
@@ -529,17 +529,17 @@
   {
    "name": "the sample game exports with the game app as its runtime (vrmxg-export --game game/game.json)",
    "ok": true,
-   "detail": "116 files, 26.2 MB, digest 1117e9d8b6d45e1c"
+   "detail": "117 files, 26.2 MB, digest 9285002a7b07e909"
   },
   {
    "name": "win: played from the title menu to the won ending, its dialogue choices recorded",
    "ok": true,
-   "detail": "scenes game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6299 steps; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
+   "detail": "scenes game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6296 steps; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
   },
   {
    "name": "win: the HUD showed the goal, score and clock; the tray was carried on the upper body; the checkpoint was taken",
    "ok": true,
-   "detail": "HUD {\"goal\":\"Goal: Serve the three regulars\",\"score\":\"Score 0\",\"clock\":\"Until ten o'clock 4:00\"}; carrying {\"carrying\":[\"Order for table 1\"],\"layers\":[\"upperBody\"],\"hud\":\"Order for table 1\"}; checkpoint {\"step\":2224,\"checkpoints\":{\"first-order\":{\"id\":\"cp-first\",\"requested\":2213}}}; the first question {\"line\":\"Aoi: Morning! Something warm and milky, please. Not too strong.\",\"choices\":[\"1A latte, then.\",\"2A double espresso?\"]}"
+   "detail": "HUD {\"goal\":\"Goal: Serve the three regulars\",\"score\":\"Score 0\",\"clock\":\"Until ten o'clock 4:00\"}; carrying {\"carrying\":[\"Order for table 1\"],\"layers\":[\"upperBody\"],\"hud\":\"Order for table 1\"}; checkpoint {\"step\":2217,\"checkpoints\":{\"first-order\":{\"id\":\"cp-first\",\"requested\":2214}}}; the first question {\"line\":\"Aoi: Morning! Something warm and milky, please. Not too strong.\",\"choices\":[\"1A latte, then.\",\"2A double espresso?\"]}"
   },
   {
    "name": "lose: played from the title menu to the lost ending, its dialogue choices recorded",
@@ -549,7 +549,7 @@
   {
    "name": "win: the session played in Chromium replays in Node to the same hash after every step",
    "ok": true,
-   "detail": "6299 steps, final 43d3a2f6c26f5a1a at step 6299"
+   "detail": "6296 steps, final 0c7b670f5a1f3ea5 at step 6296"
   },
   {
    "name": "lose: the session played in Chromium replays in Node to the same hash after every step",
@@ -559,22 +559,22 @@
   {
    "name": "win: the game app replays the log drawn on WebGPU to the same hash after every step",
    "ok": true,
-   "detail": "6299 steps on webgpu, final 43d3a2f6c26f5a1a; 6307 frames, p99 16.8 ms"
+   "detail": "6296 steps on webgpu, final 0c7b670f5a1f3ea5; 6308 frames, p99 16.8 ms"
   },
   {
    "name": "win: the game app replays the log drawn on WebGL to the same hash after every step",
    "ok": true,
-   "detail": "6299 steps on webgl, final 43d3a2f6c26f5a1a; 6305 frames, p99 16.8 ms"
+   "detail": "6296 steps on webgl, final 0c7b670f5a1f3ea5; 6300 frames, p99 16.8 ms"
   },
   {
    "name": "lose: the game app replays the log drawn on WebGPU to the same hash after every step",
    "ok": true,
-   "detail": "4814 steps on webgpu, final 1c871ead6cb1c5e6; 4820 frames, p99 16.8 ms"
+   "detail": "4814 steps on webgpu, final 1c871ead6cb1c5e6; 4827 frames, p99 16.8 ms"
   },
   {
    "name": "lose: the game app replays the log drawn on WebGL to the same hash after every step",
    "ok": true,
-   "detail": "4814 steps on webgl, final 1c871ead6cb1c5e6; 4816 frames, p99 16.8 ms"
+   "detail": "4814 steps on webgl, final 1c871ead6cb1c5e6; 4819 frames, p99 16.8 ms"
   },
   {
    "name": "no errors in the pages",
