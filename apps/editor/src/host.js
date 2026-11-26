@@ -748,7 +748,9 @@ export class EditorHost {
   /**
    * Change a node's id (M6 W1): the session rewrites this scene's references, and refuses when another of the project's
    * files names the node (a sequence filming this scene, a scene placing it as a prefab), which it can't rewrite. The
-   * project's scenes are read for that here, when an id is changed. One undo step.
+   * project's scenes are read for that here, when an id is changed. One undo step. The project's file list is the one
+   * the shell gave at open (and files the editor wrote since): a scene another process adds later isn't seen until the
+   * project is opened again (the shell has no call that lists a project's files again).
    */
   async setNodeId(id, to) {
     const s = this.session, p = this.project, ref = this.sceneRef;

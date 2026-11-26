@@ -13,6 +13,7 @@ import { assetType, nodeTypeFor, slug, uniqueId } from './assets.js';
 import { SequenceCommands } from './sequence.js';
 import { copyNodes, pasteOps } from './clipboard.js';
 import { baseOf, mapNodeRefs, mapArgRefs, behaviourRefKeys } from './refs.js';
+import { namesKey } from './elsewhere.js';
 import { composeSequence } from '@vrmxg/sequence';
 
 const clone = (v) => structuredClone(v);
@@ -55,7 +56,7 @@ export class EditorSession {
     this.listeners = new Set();
     /** Ids a sequence's tracks may target beyond the document's own (the set's nodes): the app sets it. @type {(() => Set<string>) | null} */
     this.targetIds = null;
-    /** Where the project's other files name this scene's nodes (the app sets it before an id change: ./elsewhere.js). @type {((id: string) => { file: string, what: string }[]) | null} */
+    /** Where the project's other files name this scene's nodes, and which scenes read a game key (the app sets it before an id change: ./elsewhere.js). @type {(((id: string) => { file: string, what: string }[]) & { keyNamed?: (kind: string, key: string) => string[] }) | null} */
     this.elsewhere = null;
     /** The set document a sequence films (the app sets it): validation sees the sequence in its set. */
     this.setDoc = null;
@@ -301,7 +302,7 @@ export class EditorSession {
    * is refused, naming those files, rather than leave them pointing at nothing.
    *
    * A game node's `key` defaults to its id (GameCounter, GameTimer, GameGoal). When the node has no key of its own and a
-   * condition here names it ("counters.served", a GameRules' reads), its key is written as the old id in the same step,
+   * condition here or in another scene names it ("counters.served", a GameRules' reads), its key is written as the old id in the same step,
    * so those conditions still find it; otherwise the key follows the id. → the new id
    * @param {string} id @param {string} to
    */
@@ -343,14 +344,13 @@ export class EditorSession {
   /**
    * Does a condition in this scene name game node `n` by the key it takes from its id? A GameCounter, GameTimer or
    * GameGoal with no `key` of its own, named as "counters.<id>" ("timers.", "goals.") in any node's props or a
-   * connection's arguments, or listed in a GameRules' `reads`.
+   * connection's arguments, or listed in a GameRules' `reads`, here or (through `elsewhere`) in another of the project's
+   * scenes: game state is shared across them (the won and lost scenes read counters.mistakes).
    */
   keyNamed(n) {
     const kind = KEYED[n.type];
     if (!kind || n.props?.key !== undefined) return false;
-    const want = `${kind}.${n.id}`;
-    const hit = (v) => (typeof v === 'string' ? v === want || v.startsWith(`${want}.`) : Array.isArray(v) ? v.some(hit) : v && typeof v === 'object' ? Object.values(v).some(hit) : false);
-    return this.doc.nodes.some((x) => hit(x.props) || (x.type === 'GameRules' && (x.props?.reads?.[kind] ?? []).includes(n.id))) || this.doc.connections.some((c) => hit(c.args));
+    return namesKey(this.doc, kind, n.id) || (this.elsewhere?.keyNamed?.(kind, n.id)?.length ?? 0) > 0;
   }
 
   /**

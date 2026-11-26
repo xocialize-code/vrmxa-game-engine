@@ -320,3 +320,32 @@ test('removing a behaviour from a node of a type the registry doesn\'t know keep
   const n = s.node('gadget'), had = s.reg.surface(n), after = s.reg.surface({ ...n, behaviours: [] });
   assert.ok(!had.signals.buzz && !after.signals.buzz, 'the registry can\'t list buzz, so it isn\'t counted as lost');
 });
+
+test('a game node\'s key: kept when another scene reads it (game state is shared: the won and lost scenes read counters.mistakes)', async () => {
+  const { referencesElsewhere } = await import('../src/index.js');
+  const docs = allDocs();
+  // the sample: the level's mistakes counter, read here and in game/won.vrmxs and game/lost.vrmxs
+  const s = new EditorSession({ registry: registry(), text: LEVEL, prefabs: new Map(prefabs), path: 'game/level.vrmxs' });
+  s.elsewhere = referencesElsewhere(s.reg, 'game/level.vrmxs', docs);
+  assert.deepEqual(s.elsewhere.keyNamed('counters', 'mistakes').sort(), ['game/lost.vrmxs', 'game/won.vrmxs']);
+  // the review's repro: a tips counter named only by another scene
+  s.addNode('GameCounter', { id: 'tips', parent: 'rules' });
+  const won = structuredClone(docs.get('game/won.vrmxs'));
+  won.nodes.push({ id: 'tip-goal', type: 'GameGoal', props: { when: { test: 'state', key: 'counters.tips', op: 'ge', value: 5 } } });
+  s.elsewhere = referencesElsewhere(s.reg, 'game/level.vrmxs', new Map([...docs, ['game/won.vrmxs', won]]));
+  s.setNodeId('tips', 'tip-jar');
+  assert.equal(s.node('tip-jar').props.key, 'tips', 'won.vrmxs still finds counters.tips');
+  assert.equal(s.history().undo, 'Change id tips to tip-jar (its key stays tips)');
+  // a timer read only through another scene's GameRules reads
+  s.addNode('GameTimer', { id: 'rush', parent: 'rules' });
+  const lost = structuredClone(docs.get('game/lost.vrmxs'));
+  lost.nodes.find((n) => n.type === 'GameRules').props.reads = { timers: ['rush'] };
+  s.elsewhere = referencesElsewhere(s.reg, 'game/level.vrmxs', new Map([...docs, ['game/lost.vrmxs', lost]]));
+  s.setNodeId('rush', 'rush-hour');
+  assert.equal(s.node('rush-hour').props.key, 'rush');
+  // nobody reads it anywhere: the key follows the id
+  s.elsewhere = referencesElsewhere(s.reg, 'game/level.vrmxs', docs);
+  s.addNode('GameCounter', { id: 'spare', parent: 'rules' });
+  s.setNodeId('spare', 'spare-2');
+  assert.equal(s.node('spare-2').props?.key, undefined);
+});

@@ -6,6 +6,9 @@
 //   - a scene or prefab that places it as a prefab, directly or through another prefab ("door-1", "entrance/left"): an
 //     instance's overrides are keyed by the prefab's node ids ("hinge", "left/hinge"), and connections address them
 //     ("door-1/hinge").
+// And game state is shared across scenes (M6 W1 review, round 2): another scene's condition may read a counter, timer or
+// goal by its key ("counters.mistakes" in the won and lost scenes). `keyNamed(kind, key)` lists those scenes, so an id
+// change keeps the key of a game node whose key is its id (EditorSession.keyNamed).
 import { prefabUsers } from '@vrmxg/scene';
 import { mapNodeRefs } from './refs.js';
 
@@ -16,7 +19,9 @@ const names = (r, id) => typeof r === 'string' && (r === id || r.startsWith(`${i
  * @param {any} reg the registry (which props and params name nodes)
  * @param {string} ref the scene's path in the project
  * @param {Map<string, any>} docs the project's .vrmxs documents by path, parsed (this scene's own is skipped)
- * @returns {(id: string) => { file: string, what: string }[]} for a node id of the scene, where other files name it
+ * @returns {((id: string) => { file: string, what: string }[]) & { keyNamed: (kind: string, key: string) => string[] }}
+ *   for a node id of the scene, where other files name it; keyNamed: the other scenes whose conditions (or GameRules'
+ *   reads) name game state `<kind>.<key>` ("counters", "timers", "goals")
  */
 export function referencesElsewhere(reg, ref, docs) {
   const films = [...docs].filter(([file, d]) => file !== ref && d?.set === ref);
@@ -25,7 +30,7 @@ export function referencesElsewhere(reg, ref, docs) {
     try { at = prefabUsers(d, docs, ref); } catch { at = []; }
     return [file, d, at];
   }).filter(([, , at]) => at.length);
-  return (id) => {
+  const find = (id) => {
     const out = [];
     for (const [file, d] of films) {
       const seq = d.sequence ?? {};
@@ -48,4 +53,18 @@ export function referencesElsewhere(reg, ref, docs) {
     }
     return out;
   };
+  const others = [...docs].filter(([file]) => file !== ref);
+  find.keyNamed = (kind, key) => others.filter(([, d]) => namesKey(d, kind, key)).map(([file]) => file);
+  return find;
+}
+
+/**
+ * Does a scene name game state `<kind>.<key>` ("counters.served", "timers.clock.done") in any node's props or a
+ * connection's arguments, or list `key` in a GameRules' `reads[kind]`?
+ * @param {any} doc @param {string} kind @param {string} key
+ */
+export function namesKey(doc, kind, key) {
+  const want = `${kind}.${key}`;
+  const hit = (v) => (typeof v === 'string' ? v === want || v.startsWith(`${want}.`) : Array.isArray(v) ? v.some(hit) : v && typeof v === 'object' ? Object.values(v).some(hit) : false);
+  return (doc?.nodes ?? []).some((x) => hit(x.props) || (x.type === 'GameRules' && (x.props?.reads?.[kind] ?? []).includes(key))) || (doc?.connections ?? []).some((c) => hit(c.args));
 }
