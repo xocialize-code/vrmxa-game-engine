@@ -23,7 +23,16 @@ export async function run(name, job) {
   }
   // the Mac wrapper listens on a message handler too (spike-physics' shape); harmless elsewhere
   try { window.webkit?.messageHandlers?.spike?.postMessage(JSON.stringify({ type: 'results', payload: window.__result })); } catch { /* not in the wrapper */ }
+  await report(name);
   window.READY = true;
+}
+
+/** ?report=<name>: send the result to the serving script (scripts/serve.mjs), for browsers nothing automates. */
+export async function report(name) {
+  const to = q.get('report');
+  if (!to) return;
+  const body = JSON.stringify({ name: to, page: name, url: location.href, result: window.__result ?? null, errors: window.__errors, warnings: window.__warnings, pngs: window.__pngs ?? {} });
+  try { await fetch('report', { method: 'POST', body }); out.textContent += `  (reported as ${to})`; } catch (e) { out.textContent += `  (report failed: ${e})`; }
 }
 
 export const stats = (s) => {

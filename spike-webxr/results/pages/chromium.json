@@ -4,14 +4,15 @@
   "origin": "chromium-loopback",
   "runtime": "Chrome for Testing 156.0.8078.4 headless",
   "timedOut": false,
-  "seconds": 1.075,
+  "seconds": 1.117,
   "result": {
    "page": "stereo",
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
-   "origin": "http://127.0.0.1:55179",
+   "origin": "http://127.0.0.1:51332",
    "backend": "webgpu",
    "mtoonClass": "be",
    "mtoonMaterials": 22,
+   "mtoonNodeMaterials": 22,
    "outlinePasses": 4,
    "outlineModes": [
     "none",
@@ -396,14 +397,15 @@
   "origin": "chromium-loopback",
   "runtime": "Chrome for Testing 156.0.8078.4 headless",
   "timedOut": false,
-  "seconds": 1.055,
+  "seconds": 1.041,
   "result": {
    "page": "stereo",
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
-   "origin": "http://127.0.0.1:55179",
+   "origin": "http://127.0.0.1:51332",
    "backend": "webgpu",
    "mtoonClass": "be",
    "mtoonMaterials": 22,
+   "mtoonNodeMaterials": 22,
    "outlinePasses": 4,
    "outlineModes": [
     "none",
@@ -787,14 +789,15 @@
   "origin": "chromium-loopback",
   "runtime": "Chrome for Testing 156.0.8078.4 headless",
   "timedOut": false,
-  "seconds": 1.082,
+  "seconds": 1.056,
   "result": {
    "page": "stereo",
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
-   "origin": "http://127.0.0.1:55179",
+   "origin": "http://127.0.0.1:51332",
    "backend": "webgpu",
    "mtoonClass": "be",
    "mtoonMaterials": 22,
+   "mtoonNodeMaterials": 22,
    "outlinePasses": 4,
    "outlineModes": [
     "none",
@@ -957,8 +960,8 @@
    },
    "postPerEyeAdvancing": {
     "frameIds": [
-     45,
-     46
+     43,
+     44
     ],
     "rightVsMonoRight": {
      "pixels": 0,
@@ -986,9 +989,9 @@
      "box": null
     },
     "frameIds": [
-     42,
-     42,
-     42
+     40,
+     40,
+     40
     ],
     "sameFrameId": true,
     "rightSameFrameVsMonoRight": {
@@ -1285,15 +1288,180 @@
   ]
  },
  {
+  "case": "stereo.html?backend=webgl",
+  "origin": "chromium-loopback",
+  "runtime": "Chrome for Testing 156.0.8078.4 headless",
+  "timedOut": false,
+  "seconds": 0.615,
+  "result": {
+   "page": "stereo",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+   "origin": "http://127.0.0.1:51332",
+   "backend": "webgl",
+   "mtoonClass": "MToonMaterial (WebGL)",
+   "mtoonMaterials": 22,
+   "mtoonNodeMaterials": 0,
+   "outlinePasses": 4,
+   "outlineModes": [
+    "none",
+    "worldCoordinates"
+   ],
+   "eye": {
+    "w": 576,
+    "h": 640,
+    "ipd": 0.063,
+    "tangents": {
+     "left": {
+      "l": 1.05,
+      "r": 0.8,
+      "u": 0.95,
+      "d": 1.1
+     },
+     "right": {
+      "l": 0.8,
+      "r": 1.05,
+      "u": 0.95,
+      "d": 1.1
+     }
+    }
+   },
+   "step": 150,
+   "post": "none",
+   "control": {
+    "monoLeftTwice": {
+     "pixels": 0,
+     "fraction": 0,
+     "maxChannel": 0,
+     "box": null
+    }
+   },
+   "stereo": {
+    "leftVsMono": {
+     "pixels": 0,
+     "fraction": 0,
+     "maxChannel": 0,
+     "box": null
+    },
+    "rightVsMono": {
+     "pixels": 2485,
+     "fraction": 0.006741,
+     "maxChannel": 9,
+     "box": [
+      86,
+      60,
+      282,
+      387
+     ]
+    },
+    "leftVsRight": {
+     "pixels": 100816,
+     "fraction": 0.273481,
+     "maxChannel": 219,
+     "box": [
+      0,
+      0,
+      575,
+      412
+     ]
+    },
+    "rightVsRightAloneAtSameOffset": {
+     "pixels": 0,
+     "fraction": 0,
+     "maxChannel": 0,
+     "box": null
+    }
+   },
+   "outlines": {
+    "left": {
+     "pixels": 1255,
+     "fraction": 0.003404,
+     "maxChannel": 117,
+     "box": [
+      167,
+      71,
+      373,
+      412
+     ]
+    },
+    "right": {
+     "pixels": 1244,
+     "fraction": 0.003375,
+     "maxChannel": 115,
+     "box": [
+      85,
+      71,
+      283,
+      412
+     ]
+    }
+   },
+   "shadows": {
+    "left": {
+     "pixels": 421,
+     "fraction": 0.001142,
+     "maxChannel": 46,
+     "box": [
+      168,
+      79,
+      371,
+      387
+     ]
+    },
+    "right": {
+     "pixels": 421,
+     "fraction": 0.001142,
+     "maxChannel": 46,
+     "box": [
+      92,
+      78,
+      281,
+      387
+     ]
+    }
+   },
+   "stereoNoShadows": {
+    "leftVsMono": {
+     "pixels": 0,
+     "fraction": 0,
+     "maxChannel": 0,
+     "box": null
+    },
+    "rightVsMono": {
+     "pixels": 2190,
+     "fraction": 0.005941,
+     "maxChannel": 9,
+     "box": [
+      86,
+      60,
+      282,
+      387
+     ]
+    }
+   },
+   "errorsDuring": []
+  },
+  "errors": [],
+  "warnings": [],
+  "isolated": true,
+  "pngs": [
+   "stereo_html_backend_webgl__chromium__diffLeft.png",
+   "stereo_html_backend_webgl__chromium__diffRight.png",
+   "stereo_html_backend_webgl__chromium__monoLeft.png",
+   "stereo_html_backend_webgl__chromium__monoRight.png",
+   "stereo_html_backend_webgl__chromium__stereo.png"
+  ],
+  "console": []
+ },
+ {
   "case": "present.html",
   "origin": "chromium-loopback",
   "runtime": "Chrome for Testing 156.0.8078.4 headless",
   "timedOut": false,
-  "seconds": 4.885,
+  "seconds": 4.862,
   "result": {
    "page": "present",
    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
-   "origin": "http://127.0.0.1:55179",
+   "origin": "http://127.0.0.1:51332",
    "backend": "webgpu",
    "hz": 90,
    "size": [
@@ -1393,31 +1561,31 @@
    "renderMs": {
     "interpolated": {
      "n": 900,
-     "mean": 0.6105,
-     "p50": 0.35,
-     "p95": 0.45,
-     "max": 223.46
+     "mean": 0.6041,
+     "p50": 0.345,
+     "p95": 0.445,
+     "max": 219.135
     },
     "plain": {
      "n": 900,
-     "mean": 0.4604,
+     "mean": 0.4565,
      "p50": 0.27,
      "p95": 0.305,
-     "max": 166.135
+     "max": 162.66
     },
     "stereo": {
      "n": 900,
-     "mean": 0.5496,
+     "mean": 0.5473,
      "p50": 0.355,
-     "p95": 0.415,
-     "max": 165.685
+     "p95": 0.41,
+     "max": 165.315
     }
    },
    "display": {
     "frames": 113,
     "intervalMs": {
      "n": 113,
-     "mean": 17.8458,
+     "mean": 17.8459,
      "p50": 16.665,
      "p95": 16.67,
      "max": 149.995
@@ -1538,11 +1706,11 @@
   "origin": "chromium-loopback",
   "runtime": "Chrome for Testing 156.0.8078.4 headless",
   "timedOut": false,
-  "seconds": 5.9,
+  "seconds": 5.928,
   "result": {
    "page": "xr",
    "ua": "Mozilla/5.0 (X11; Linux x86_64; Quest Pro) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/33.0.0.x.x.x Chrome/126.0.6478.122 VR Safari/537.36",
-   "origin": "http://127.0.0.1:55179",
+   "origin": "http://127.0.0.1:51332",
    "device": "Meta Quest Pro",
    "iwer": "2.8.0",
    "supported": {
@@ -1574,14 +1742,14 @@
     "webgpuSession": false
    },
    "frames": {
-    "xrFrames": 294,
+    "xrFrames": 292,
     "steps": 300,
     "intervalMs": {
-     "n": 293,
-     "mean": 17.9676,
-     "p50": 16.665,
-     "p95": 17.28,
-     "max": 375.1
+     "n": 291,
+     "mean": 18.1516,
+     "p50": 16.65,
+     "p95": 17.995,
+     "max": 382.265
     },
     "firstViews": [
      [
@@ -1651,7 +1819,7 @@
       }
      ]
     ],
-    "presentedHzOnThisDisplay": 60
+    "presentedHzOnThisDisplay": 60.1
    },
    "hands": {
     "inputSources": [
@@ -1666,11 +1834,11 @@
       "frame": 146,
       "step": 150,
       "target": "mira",
-      "distance": 0.355
+      "distance": 0.357
      },
      {
       "frame": 261,
-      "step": 267,
+      "step": 269,
       "target": null,
       "distance": null
      }
@@ -1679,19 +1847,19 @@
      "version": 2,
      "start": 0,
      "frames": 300,
-     "bytes": 8175
+     "bytes": 8173
     },
     "mira": [
-     -1.0962,
+     -1.0914,
      0.025,
-     4.8064
+     4.8047
     ]
    },
    "replay": {
     "steps": 300,
     "sameEveryStep": true,
     "firstDiff": null,
-    "final": "ba0b4d2d10a4c4e7",
+    "final": "f92ff8cb1cfec81b",
     "idleFinal": "1e46840219dcd9d0",
     "handsChangedTheWorld": true
    },
@@ -1750,7 +1918,7 @@
         720
        ],
        "distinct": 8,
-       "meanLum": 196.8,
+       "meanLum": 190.7,
        "allBlackOrClear": false,
        "centre": [
         181,
@@ -1766,8 +1934,8 @@
         640,
         720
        ],
-       "distinct": 5,
-       "meanLum": 195,
+       "distinct": 7,
+       "meanLum": 193.2,
        "allBlackOrClear": false,
        "centre": [
         181,
@@ -1859,11 +2027,11 @@
   "origin": "chromium-loopback",
   "runtime": "Chrome for Testing 156.0.8078.4 headless",
   "timedOut": false,
-  "seconds": 5.918,
+  "seconds": 5.882,
   "result": {
    "page": "xr",
    "ua": "Mozilla/5.0 (X11; Linux x86_64; Quest Pro) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/33.0.0.x.x.x Chrome/126.0.6478.122 VR Safari/537.36",
-   "origin": "http://127.0.0.1:55179",
+   "origin": "http://127.0.0.1:51332",
    "device": "Meta Quest Pro",
    "iwer": "2.8.0",
    "supported": {
@@ -1895,14 +2063,14 @@
     "webgpuSession": false
    },
    "frames": {
-    "xrFrames": 294,
+    "xrFrames": 292,
     "steps": 300,
     "intervalMs": {
-     "n": 293,
-     "mean": 17.9507,
+     "n": 291,
+     "mean": 18.0085,
      "p50": 16.665,
-     "p95": 16.78,
-     "max": 362.775
+     "p95": 18.4,
+     "max": 354.155
     },
     "firstViews": [
      [
@@ -1991,7 +2159,7 @@
      },
      {
       "frame": 261,
-      "step": 267,
+      "step": 269,
       "target": null,
       "distance": null
      }
@@ -2012,7 +2180,7 @@
     "steps": 300,
     "sameEveryStep": true,
     "firstDiff": null,
-    "final": "ba0b4d2d10a4c4e7",
+    "final": "c070980b3d99155a",
     "idleFinal": "1e46840219dcd9d0",
     "handsChangedTheWorld": true
    },
@@ -2112,7 +2280,7 @@
         720
        ],
        "distinct": 9,
-       "meanLum": 185.4,
+       "meanLum": 185.7,
        "allBlackOrClear": false,
        "centre": [
         164,

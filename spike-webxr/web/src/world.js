@@ -25,8 +25,10 @@ export const envNodes = ({ post = null } = {}) => [
   { id: 'lamp', type: 'SpotLight', parent: 'root', transform: { p: [0, 3, 5], q: [-0.5, 0, 0, 0.866] }, props: { intensity: 25, angle: 35, range: 9, castShadow: true, shadowPreset: 'low' } },
 ];
 
-let R = null, assets = null;
-export async function loadAll() { R ??= await loadRapier(); assets ??= await loadAssets(files); return { R, assets }; }
+let R = null, assets = null, source = files;
+/** Read the assets some other way (Node: from disk) before the first world is built. */
+export function useFiles(f) { source = f; assets = null; }
+export async function loadAll() { R ??= await loadRapier(); assets ??= await loadAssets(source); return { R, assets }; }
 
 /**
  * A fresh cafe. `replay` plays the recorded input (input.json); `extraNodes` adds scene nodes; `mtoonMaterial` is the

@@ -107,7 +107,7 @@ run('stereo', async () => {
   const monoL = await shot(eyes[0], W, H), monoR = await shot(eyes[1], W, H), monoL2 = await shot(eyes[0], W, H);
   const st = await shot(stereo, 2 * W, H), stL = half(st, 2 * W, H, 0), stR = half(st, 2 * W, H, 1);
   const r = {
-    backend: host.backend, mtoonClass: host.mtoonMaterial?.name ?? 'MToonMaterial (WebGL)', mtoonMaterials: mtoon.length, outlinePasses: outlineMaterials.length,
+    backend: host.backend, mtoonClass: host.mtoonMaterial?.name ?? 'MToonMaterial (WebGL)', mtoonMaterials: mtoon.length, mtoonNodeMaterials: mtoon.filter((m) => m.isMToonNodeMaterial).length, outlinePasses: outlineMaterials.length,
     outlineModes: [...new Set(mtoon.map((m) => m.outlineWidthMode))], eye: { w: W, h: H, ipd: IPD, tangents: TAN }, step: STEP, post: post ?? 'none',
     control: { monoLeftTwice: diff(monoL, monoL2, W, H) },
     stereo: { leftVsMono: diff(stL, monoL, W, H), rightVsMono: diff(stR, monoR, W, H), leftVsRight: diff(monoL, monoR, W, H) },

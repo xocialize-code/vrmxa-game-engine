@@ -1,0 +1,144 @@
+{
+ "name": "stereo-webgl",
+ "page": "stereo",
+ "url": "http://127.0.0.1:5240/stereo.html?backend=webgl&report=stereo-webgl",
+ "result": {
+  "page": "stereo",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15",
+  "origin": "http://127.0.0.1:5240",
+  "backend": "webgl",
+  "mtoonClass": "MToonMaterial (WebGL)",
+  "mtoonMaterials": 22,
+  "mtoonNodeMaterials": 0,
+  "outlinePasses": 4,
+  "outlineModes": [
+   "none",
+   "worldCoordinates"
+  ],
+  "eye": {
+   "w": 576,
+   "h": 640,
+   "ipd": 0.063,
+   "tangents": {
+    "left": {
+     "l": 1.05,
+     "r": 0.8,
+     "u": 0.95,
+     "d": 1.1
+    },
+    "right": {
+     "l": 0.8,
+     "r": 1.05,
+     "u": 0.95,
+     "d": 1.1
+    }
+   }
+  },
+  "step": 150,
+  "post": "none",
+  "control": {
+   "monoLeftTwice": {
+    "pixels": 0,
+    "fraction": 0,
+    "maxChannel": 0,
+    "box": null
+   }
+  },
+  "stereo": {
+   "leftVsMono": {
+    "pixels": 0,
+    "fraction": 0,
+    "maxChannel": 0,
+    "box": null
+   },
+   "rightVsMono": {
+    "pixels": 3,
+    "fraction": 0.000008,
+    "maxChannel": 2,
+    "box": [
+     91,
+     385,
+     262,
+     386
+    ]
+   },
+   "leftVsRight": {
+    "pixels": 84389,
+    "fraction": 0.22892,
+    "maxChannel": 219,
+    "box": [
+     0,
+     0,
+     575,
+     412
+    ]
+   },
+   "rightVsRightAloneAtSameOffset": {
+    "pixels": 0,
+    "fraction": 0,
+    "maxChannel": 0,
+    "box": null
+   }
+  },
+  "outlines": {
+   "left": {
+    "pixels": 880,
+    "fraction": 0.002387,
+    "maxChannel": 101,
+    "box": [
+     167,
+     71,
+     373,
+     412
+    ]
+   },
+   "right": {
+    "pixels": 884,
+    "fraction": 0.002398,
+    "maxChannel": 101,
+    "box": [
+     85,
+     71,
+     283,
+     412
+    ]
+   }
+  },
+  "shadows": {
+   "left": {
+    "pixels": 0,
+    "fraction": 0,
+    "maxChannel": 0,
+    "box": null
+   },
+   "right": {
+    "pixels": 0,
+    "fraction": 0,
+    "maxChannel": 0,
+    "box": null
+   }
+  },
+  "stereoNoShadows": {
+   "leftVsMono": {
+    "pixels": 0,
+    "fraction": 0,
+    "maxChannel": 0,
+    "box": null
+   },
+   "rightVsMono": {
+    "pixels": 3,
+    "fraction": 0.000008,
+    "maxChannel": 2,
+    "box": [
+     91,
+     385,
+     262,
+     386
+    ]
+   }
+  },
+  "errorsDuring": []
+ },
+ "errors": [],
+ "warnings": []
+}

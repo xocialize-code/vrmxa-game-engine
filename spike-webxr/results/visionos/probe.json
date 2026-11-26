@@ -1,0 +1,74 @@
+{
+ "name": "probe",
+ "page": "probe",
+ "url": "http://127.0.0.1:5240/index.html?report=probe",
+ "result": {
+  "page": "probe",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15",
+  "origin": "http://127.0.0.1:5240",
+  "isSecureContext": true,
+  "crossOriginIsolated": false,
+  "xrInNavigator": true,
+  "xrType": "object",
+  "globals": {
+   "XRSystem": "function",
+   "XRSession": "function",
+   "XRFrame": "function",
+   "XRView": "function",
+   "XRWebGLLayer": "function",
+   "XRWebGLBinding": "undefined",
+   "XRGPUBinding": "function",
+   "XRHand": "function",
+   "XRInputSource": "function",
+   "XRRigidTransform": "function",
+   "XRMediaBinding": "undefined",
+   "XRProjectionLayer": "undefined",
+   "XRLayer": "function",
+   "XRReferenceSpace": "function",
+   "XRTransientInputHitTestSource": "undefined"
+  },
+  "permissionsPolicy": null,
+  "sessionSupported": {
+   "inline": {
+    "ok": true
+   },
+   "immersive-vr": {
+    "ok": true
+   },
+   "immersive-ar": {
+    "ok": false
+   }
+  },
+  "inlineSession": {
+   "granted": true,
+   "enabledFeatures": [
+    "viewer"
+   ],
+   "visibilityState": "visible",
+   "frameRate": null,
+   "supportedFrameRates": null,
+   "viewerSpace": {
+    "ok": "object"
+   },
+   "localSpace": {
+    "error": "NotSupportedError: The operation is not supported."
+   }
+  },
+  "webgpu": {
+   "adapter": false,
+   "adapterXrCompatible": false,
+   "features": null,
+   "info": null
+  },
+  "webgl": {
+   "webgl2": true,
+   "xrCompatibleAttr": true,
+   "makeXRCompatible": "function",
+   "makeXRCompatibleResult": {
+    "ok": "resolved"
+   }
+  }
+ },
+ "errors": [],
+ "warnings": []
+}

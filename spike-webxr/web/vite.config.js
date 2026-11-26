@@ -9,7 +9,7 @@ export default defineConfig({
   resolve: { dedupe: ['three'] },
   build: {
     outDir: here('dist'), emptyOutDir: true, target: 'esnext', chunkSizeWarningLimit: 8000,
-    rolldownOptions: { input: { index: here('index.html'), stereo: here('stereo.html'), present: here('present.html'), xr: here('xr.html') } },
+    rolldownOptions: { input: { index: here('index.html'), stereo: here('stereo.html'), present: here('present.html'), xr: here('xr.html'), immersive: here('immersive.html') } },
   },
   server: { host: '127.0.0.1', port: 5240, fs: { allow: [here('../..')] } },
 });

@@ -48,6 +48,7 @@
       },
       "mtoonClass" : "be",
       "mtoonMaterials" : 22,
+      "mtoonNodeMaterials" : 22,
       "origin" : "vrmxg-spike:\/\/app",
       "outlineModes" : [
         "none",
@@ -337,6 +338,7 @@
       },
       "mtoonClass" : "be",
       "mtoonMaterials" : 22,
+      "mtoonNodeMaterials" : 22,
       "origin" : "vrmxg-spike:\/\/app",
       "outlineModes" : [
         "none",
@@ -627,6 +629,7 @@
       },
       "mtoonClass" : "be",
       "mtoonMaterials" : 22,
+      "mtoonNodeMaterials" : 22,
       "origin" : "vrmxg-spike:\/\/app",
       "outlineModes" : [
         "none",
@@ -693,9 +696,9 @@
       },
       "postPerEye" : {
         "frameIds" : [
-          37,
-          37,
-          37
+          33,
+          33,
+          33
         ],
         "leftVsMono" : {
           "box" : null,
@@ -724,8 +727,8 @@
       },
       "postPerEyeAdvancing" : {
         "frameIds" : [
-          39,
-          40
+          35,
+          36
         ],
         "rightVsMonoLeft" : {
           "box" : [
@@ -966,6 +969,177 @@
     ]
   },
   {
+    "case" : "stereo.html?backend=webgl",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "scheme",
+    "pngs" : [
+      "stereo_html_backend_webgl__scheme__default__diffLeft.png",
+      "stereo_html_backend_webgl__scheme__default__diffRight.png",
+      "stereo_html_backend_webgl__scheme__default__monoLeft.png",
+      "stereo_html_backend_webgl__scheme__default__monoRight.png",
+      "stereo_html_backend_webgl__scheme__default__stereo.png"
+    ],
+    "result" : {
+      "backend" : "webgl",
+      "control" : {
+        "monoLeftTwice" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        }
+      },
+      "errorsDuring" : [
+
+      ],
+      "eye" : {
+        "h" : 640,
+        "ipd" : 0.063,
+        "tangents" : {
+          "left" : {
+            "d" : 1.1000000000000001,
+            "l" : 1.05,
+            "r" : 0.80000000000000004,
+            "u" : 0.94999999999999996
+          },
+          "right" : {
+            "d" : 1.1000000000000001,
+            "l" : 0.80000000000000004,
+            "r" : 1.05,
+            "u" : 0.94999999999999996
+          }
+        },
+        "w" : 576
+      },
+      "mtoonClass" : "MToonMaterial (WebGL)",
+      "mtoonMaterials" : 22,
+      "mtoonNodeMaterials" : 0,
+      "origin" : "vrmxg-spike:\/\/app",
+      "outlineModes" : [
+        "none",
+        "worldCoordinates"
+      ],
+      "outlinePasses" : 4,
+      "outlines" : {
+        "left" : {
+          "box" : [
+            167,
+            71,
+            373,
+            412
+          ],
+          "fraction" : 0.0034069999999999999,
+          "maxChannel" : 117,
+          "pixels" : 1256
+        },
+        "right" : {
+          "box" : [
+            85,
+            71,
+            283,
+            412
+          ],
+          "fraction" : 0.003375,
+          "maxChannel" : 115,
+          "pixels" : 1244
+        }
+      },
+      "page" : "stereo",
+      "post" : "none",
+      "shadows" : {
+        "left" : {
+          "box" : [
+            168,
+            79,
+            371,
+            387
+          ],
+          "fraction" : 0.001145,
+          "maxChannel" : 46,
+          "pixels" : 422
+        },
+        "right" : {
+          "box" : [
+            92,
+            78,
+            281,
+            387
+          ],
+          "fraction" : 0.001142,
+          "maxChannel" : 46,
+          "pixels" : 421
+        }
+      },
+      "step" : 150,
+      "stereo" : {
+        "leftVsMono" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        },
+        "leftVsRight" : {
+          "box" : [
+            0,
+            0,
+            575,
+            412
+          ],
+          "fraction" : 0.27348099999999997,
+          "maxChannel" : 219,
+          "pixels" : 100816
+        },
+        "rightVsMono" : {
+          "box" : [
+            86,
+            60,
+            282,
+            387
+          ],
+          "fraction" : 0.0067409999999999996,
+          "maxChannel" : 9,
+          "pixels" : 2485
+        },
+        "rightVsRightAloneAtSameOffset" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        }
+      },
+      "stereoNoShadows" : {
+        "leftVsMono" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        },
+        "rightVsMono" : {
+          "box" : [
+            86,
+            60,
+            282,
+            387
+          ],
+          "fraction" : 0.0059410000000000001,
+          "maxChannel" : 9,
+          "pixels" : 2190
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 1,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
     "case" : "present.html",
     "errors" : [
 
@@ -979,11 +1153,11 @@
         "displayHz" : 58.799999999999997,
         "frames" : 111,
         "intervalMs" : {
-          "max" : 192,
-          "mean" : 18.054099999999998,
+          "max" : 191,
+          "mean" : 18.036000000000001,
           "n" : 111,
           "p50" : 17,
-          "p95" : 18
+          "p95" : 17
         }
       },
       "frames" : {
@@ -1032,22 +1206,22 @@
       },
       "renderMs" : {
         "interpolated" : {
-          "max" : 270,
-          "mean" : 0.74219999999999997,
+          "max" : 247,
+          "mean" : 0.64329999999999998,
           "n" : 900,
           "p50" : 0,
           "p95" : 1
         },
         "plain" : {
-          "max" : 202,
-          "mean" : 0.5,
+          "max" : 182,
+          "mean" : 0.47889999999999999,
           "n" : 900,
           "p50" : 0,
           "p95" : 1
         },
         "stereo" : {
-          "max" : 288,
-          "mean" : 0.71889999999999998,
+          "max" : 265,
+          "mean" : 0.66000000000000003,
           "n" : 900,
           "p50" : 0,
           "p95" : 1
@@ -1247,20 +1421,20 @@
           ]
         ],
         "intervalMs" : {
-          "max" : 540,
-          "mean" : 18.630099999999999,
-          "n" : 292,
+          "max" : 452,
+          "mean" : 18.399999999999999,
+          "n" : 290,
           "p50" : 17,
           "p95" : 17
         },
         "presentedHzOnThisDisplay" : 58.799999999999997,
-        "steps" : 301,
-        "xrFrames" : 293
+        "steps" : 300,
+        "xrFrames" : 291
       },
       "hands" : {
         "choices" : [
           {
-            "distance" : 0.36399999999999999,
+            "distance" : 0.34999999999999998,
             "frame" : 146,
             "step" : 151,
             "target" : "mira"
@@ -1268,7 +1442,7 @@
           {
             "distance" : null,
             "frame" : 261,
-            "step" : 268,
+            "step" : 269,
             "target" : null
           }
         ],
@@ -1279,13 +1453,13 @@
         ],
         "jointsPerHand" : 25,
         "mira" : [
-          -1.1066,
+          -1.1039000000000001,
           0.025000000000000001,
-          4.7999999999999998
+          4.8116000000000003
         ],
         "recording" : {
-          "bytes" : 8208,
-          "frames" : 301,
+          "bytes" : 8172,
+          "frames" : 300,
           "start" : 0,
           "version" : 2
         },
@@ -1346,8 +1520,8 @@
                 214,
                 255
               ],
-              "distinct" : 7,
-              "meanLum" : 197.5,
+              "distinct" : 9,
+              "meanLum" : 198.09999999999999,
               "viewport" : [
                 0,
                 0,
@@ -1363,8 +1537,8 @@
                 214,
                 255
               ],
-              "distinct" : 6,
-              "meanLum" : 195.30000000000001,
+              "distinct" : 7,
+              "meanLum" : 197.80000000000001,
               "viewport" : [
                 640,
                 0,
@@ -1420,12 +1594,12 @@
         }
       ],
       "replay" : {
-        "final" : "68ef49eba80790fe",
+        "final" : "9b71a82a8feab32f",
         "firstDiff" : null,
         "handsChangedTheWorld" : true,
-        "idleFinal" : "7c31302fc7e5ce8e",
+        "idleFinal" : "1e46840219dcd9d0",
         "sameEveryStep" : true,
-        "steps" : 301
+        "steps" : 300
       },
       "session" : {
         "enabledFeatures" : [
@@ -1524,7 +1698,8 @@
       },
       "mtoonClass" : "be",
       "mtoonMaterials" : 22,
-      "origin" : "http:\/\/127.0.0.1:65507",
+      "mtoonNodeMaterials" : 22,
+      "origin" : "http:\/\/127.0.0.1:65516",
       "outlineModes" : [
         "none",
         "worldCoordinates"
@@ -1813,7 +1988,8 @@
       },
       "mtoonClass" : "be",
       "mtoonMaterials" : 22,
-      "origin" : "http:\/\/127.0.0.1:65507",
+      "mtoonNodeMaterials" : 22,
+      "origin" : "http:\/\/127.0.0.1:65516",
       "outlineModes" : [
         "none",
         "screenCoordinates"
@@ -2103,7 +2279,8 @@
       },
       "mtoonClass" : "be",
       "mtoonMaterials" : 22,
-      "origin" : "http:\/\/127.0.0.1:65507",
+      "mtoonNodeMaterials" : 22,
+      "origin" : "http:\/\/127.0.0.1:65516",
       "outlineModes" : [
         "none",
         "worldCoordinates"
@@ -2169,9 +2346,9 @@
       },
       "postPerEye" : {
         "frameIds" : [
-          39,
-          39,
-          39
+          35,
+          35,
+          35
         ],
         "leftVsMono" : {
           "box" : null,
@@ -2200,8 +2377,8 @@
       },
       "postPerEyeAdvancing" : {
         "frameIds" : [
-          41,
-          42
+          37,
+          38
         ],
         "rightVsMonoLeft" : {
           "box" : [
@@ -2442,6 +2619,177 @@
     ]
   },
   {
+    "case" : "stereo.html?backend=webgl",
+    "errors" : [
+
+    ],
+    "flags" : "default",
+    "isolated" : true,
+    "origin" : "loopback",
+    "pngs" : [
+      "stereo_html_backend_webgl__loopback__default__diffLeft.png",
+      "stereo_html_backend_webgl__loopback__default__diffRight.png",
+      "stereo_html_backend_webgl__loopback__default__monoLeft.png",
+      "stereo_html_backend_webgl__loopback__default__monoRight.png",
+      "stereo_html_backend_webgl__loopback__default__stereo.png"
+    ],
+    "result" : {
+      "backend" : "webgl",
+      "control" : {
+        "monoLeftTwice" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        }
+      },
+      "errorsDuring" : [
+
+      ],
+      "eye" : {
+        "h" : 640,
+        "ipd" : 0.063,
+        "tangents" : {
+          "left" : {
+            "d" : 1.1000000000000001,
+            "l" : 1.05,
+            "r" : 0.80000000000000004,
+            "u" : 0.94999999999999996
+          },
+          "right" : {
+            "d" : 1.1000000000000001,
+            "l" : 0.80000000000000004,
+            "r" : 1.05,
+            "u" : 0.94999999999999996
+          }
+        },
+        "w" : 576
+      },
+      "mtoonClass" : "MToonMaterial (WebGL)",
+      "mtoonMaterials" : 22,
+      "mtoonNodeMaterials" : 0,
+      "origin" : "http:\/\/127.0.0.1:65516",
+      "outlineModes" : [
+        "none",
+        "worldCoordinates"
+      ],
+      "outlinePasses" : 4,
+      "outlines" : {
+        "left" : {
+          "box" : [
+            167,
+            71,
+            373,
+            412
+          ],
+          "fraction" : 0.0034069999999999999,
+          "maxChannel" : 117,
+          "pixels" : 1256
+        },
+        "right" : {
+          "box" : [
+            85,
+            71,
+            283,
+            412
+          ],
+          "fraction" : 0.003375,
+          "maxChannel" : 115,
+          "pixels" : 1244
+        }
+      },
+      "page" : "stereo",
+      "post" : "none",
+      "shadows" : {
+        "left" : {
+          "box" : [
+            168,
+            79,
+            371,
+            387
+          ],
+          "fraction" : 0.001145,
+          "maxChannel" : 46,
+          "pixels" : 422
+        },
+        "right" : {
+          "box" : [
+            92,
+            78,
+            281,
+            387
+          ],
+          "fraction" : 0.001142,
+          "maxChannel" : 46,
+          "pixels" : 421
+        }
+      },
+      "step" : 150,
+      "stereo" : {
+        "leftVsMono" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        },
+        "leftVsRight" : {
+          "box" : [
+            0,
+            0,
+            575,
+            412
+          ],
+          "fraction" : 0.27348099999999997,
+          "maxChannel" : 219,
+          "pixels" : 100816
+        },
+        "rightVsMono" : {
+          "box" : [
+            86,
+            60,
+            282,
+            387
+          ],
+          "fraction" : 0.0067409999999999996,
+          "maxChannel" : 9,
+          "pixels" : 2485
+        },
+        "rightVsRightAloneAtSameOffset" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        }
+      },
+      "stereoNoShadows" : {
+        "leftVsMono" : {
+          "box" : null,
+          "fraction" : 0,
+          "maxChannel" : 0,
+          "pixels" : 0
+        },
+        "rightVsMono" : {
+          "box" : [
+            86,
+            60,
+            282,
+            387
+          ],
+          "fraction" : 0.0059410000000000001,
+          "maxChannel" : 9,
+          "pixels" : 2190
+        }
+      },
+      "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)"
+    },
+    "timedOut" : false,
+    "timerRes" : 0.02,
+    "ua" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+    "warnings" : [
+
+    ]
+  },
+  {
     "case" : "present.html",
     "errors" : [
 
@@ -2455,11 +2803,11 @@
         "displayHz" : 60,
         "frames" : 112,
         "intervalMs" : {
-          "max" : 173.40000000000001,
-          "mean" : 17.899100000000001,
+          "max" : 180.84,
+          "mean" : 17.911200000000001,
           "n" : 112,
           "p50" : 16.66,
-          "p95" : 16.960000000000001
+          "p95" : 17.100000000000001
         }
       },
       "frames" : {
@@ -2500,7 +2848,7 @@
         "stereoSame" : true
       },
       "hz" : 90,
-      "origin" : "http:\/\/127.0.0.1:65507",
+      "origin" : "http:\/\/127.0.0.1:65516",
       "page" : "present",
       "renderer" : {
         "calls" : 5914,
@@ -2508,25 +2856,25 @@
       },
       "renderMs" : {
         "interpolated" : {
-          "max" : 241.56,
-          "mean" : 0.64159999999999995,
+          "max" : 245.18000000000001,
+          "mean" : 0.64659999999999995,
           "n" : 900,
           "p50" : 0.35999999999999999,
-          "p95" : 0.47999999999999998
+          "p95" : 0.52000000000000002
         },
         "plain" : {
-          "max" : 183.31999999999999,
-          "mean" : 0.46960000000000002,
+          "max" : 181.5,
+          "mean" : 0.46850000000000003,
           "n" : 900,
           "p50" : 0.26000000000000001,
           "p95" : 0.32000000000000001
         },
         "stereo" : {
-          "max" : 189.36000000000001,
-          "mean" : 0.57630000000000003,
+          "max" : 246.68000000000001,
+          "mean" : 0.62560000000000004,
           "n" : 900,
-          "p50" : 0.35999999999999999,
-          "p95" : 0.46000000000000002
+          "p50" : 0.34000000000000002,
+          "p95" : 0.41999999999999998
         }
       },
       "size" : [
@@ -2723,28 +3071,28 @@
           ]
         ],
         "intervalMs" : {
-          "max" : 445.13999999999999,
-          "mean" : 18.374300000000002,
-          "n" : 290,
+          "max" : 446.36000000000001,
+          "mean" : 18.308199999999999,
+          "n" : 292,
           "p50" : 16.66,
-          "p95" : 16.800000000000001
+          "p95" : 17.140000000000001
         },
         "presentedHzOnThisDisplay" : 60,
         "steps" : 300,
-        "xrFrames" : 291
+        "xrFrames" : 293
       },
       "hands" : {
         "choices" : [
           {
-            "distance" : 0.34999999999999998,
+            "distance" : 0.35599999999999998,
             "frame" : 146,
-            "step" : 151,
+            "step" : 150,
             "target" : "mira"
           },
           {
             "distance" : null,
             "frame" : 261,
-            "step" : 270,
+            "step" : 268,
             "target" : null
           }
         ],
@@ -2755,9 +3103,9 @@
         ],
         "jointsPerHand" : 25,
         "mira" : [
-          -1.097,
+          -1.0935999999999999,
           0.025000000000000001,
-          4.8112000000000004
+          4.8056000000000001
         ],
         "recording" : {
           "bytes" : 8176,
@@ -2768,7 +3116,7 @@
         "rightPinches" : 2
       },
       "iwer" : "2.8.0",
-      "origin" : "http:\/\/127.0.0.1:65507",
+      "origin" : "http:\/\/127.0.0.1:65516",
       "page" : "xr",
       "pixels" : [
         {
@@ -2822,8 +3170,8 @@
                 214,
                 255
               ],
-              "distinct" : 9,
-              "meanLum" : 198.19999999999999,
+              "distinct" : 8,
+              "meanLum" : 190.69999999999999,
               "viewport" : [
                 0,
                 0,
@@ -2840,7 +3188,7 @@
                 255
               ],
               "distinct" : 7,
-              "meanLum" : 197.80000000000001,
+              "meanLum" : 188.59999999999999,
               "viewport" : [
                 640,
                 0,
@@ -2896,7 +3244,7 @@
         }
       ],
       "replay" : {
-        "final" : "4f7dba015222a1f3",
+        "final" : "1bdd4b255a42a6dc",
         "firstDiff" : null,
         "handsChangedTheWorld" : true,
         "idleFinal" : "1e46840219dcd9d0",
