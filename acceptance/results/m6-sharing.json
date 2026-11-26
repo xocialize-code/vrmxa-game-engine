@@ -24,6 +24,12 @@
      "type": "text/html"
     },
     "csp": null,
+    "caching": {
+     "page": null,
+     "asset": null,
+     "assetCsp": true,
+     "headersFile": 404
+    },
     "redirects": {
      "folder without its slash": {
       "status": 301,
@@ -84,16 +90,16 @@
     "secure": true
    },
    "session": {
-    "steps": 6298,
+    "steps": 6296,
     "scenes": [
      "game/title.vrmxs",
      "game/level.vrmxs",
      "game/won.vrmxs"
     ],
     "final": {
-     "step": 6298,
+     "step": 6296,
      "scene": "game/title.vrmxs",
-     "hash": "4381da0665630266"
+     "hash": "0c7b670f5a1f3ea5"
     },
     "seen": {
      "hud": {
@@ -118,7 +124,7 @@
       ]
      },
      "checkpoint": {
-      "step": 2228,
+      "step": 2225,
       "checkpoints": {
        "first-order": {
         "id": "cp-first",
@@ -133,11 +139,11 @@
    "requests": 311,
    "violations": [],
    "nodeReplay": {
-    "steps": 6298,
+    "steps": 6296,
     "final": {
-     "step": 6298,
+     "step": 6296,
      "scene": "game/title.vrmxs",
-     "hash": "4381da0665630266"
+     "hash": "0c7b670f5a1f3ea5"
     }
    }
   },
@@ -159,6 +165,12 @@
      "type": "text/html; charset=utf-8"
     },
     "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'sha256-l5Y51DQ0wtCHrHTpiMMFgCx4aejQh4bwZ9r3eHFp+MM='; style-src 'self' 'sha256-WsnBdwafj/LhcF/SVdZEEQxAmsS6LsWkBvxDAbsGVb0='; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'",
+    "caching": {
+     "page": "no-cache",
+     "asset": "public, max-age=31536000, immutable",
+     "assetCsp": true,
+     "headersFile": 404
+    },
     "redirects": {
      "index.html with a query": {
       "status": 307,
@@ -215,16 +227,16 @@
     "secure": true
    },
    "session": {
-    "steps": 6293,
+    "steps": 6298,
     "scenes": [
      "game/title.vrmxs",
      "game/level.vrmxs",
      "game/won.vrmxs"
     ],
     "final": {
-     "step": 6293,
+     "step": 6298,
      "scene": "game/title.vrmxs",
-     "hash": "f13a1c79dbde2870"
+     "hash": "4381da0665630266"
     },
     "seen": {
      "hud": {
@@ -249,7 +261,7 @@
       ]
      },
      "checkpoint": {
-      "step": 2227,
+      "step": 2216,
       "checkpoints": {
        "first-order": {
         "id": "cp-first",
@@ -265,19 +277,19 @@
    "violations": [],
    "worker": {
     "name": "vrmxg-morning-rush",
-    "files": 118,
-    "bytes": 26251469,
+    "files": 117,
+    "bytes": 26250429,
     "largest": {
      "path": "project/characters/mira.vrmxa",
      "bytes": 4810851
     }
    },
    "nodeReplay": {
-    "steps": 6293,
+    "steps": 6298,
     "final": {
-     "step": 6293,
+     "step": 6298,
      "scene": "game/title.vrmxs",
-     "hash": "f13a1c79dbde2870"
+     "hash": "4381da0665630266"
     }
    }
   }
@@ -291,7 +303,7 @@
   {
    "name": "python: every socket the host listens on is on loopback",
    "ok": true,
-   "detail": "Python 3.15.2 http.server: 127.0.0.1:61226"
+   "detail": "Python 3.15.2 http.server: 127.0.0.1:50502"
   },
   {
    "name": "python: the page and every file the manifest lists are served (scripts as JavaScript, WebAssembly as application/wasm)",
@@ -301,7 +313,7 @@
   {
    "name": "python: played from the title menu to the won ending",
    "ok": true,
-   "detail": "game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6298 steps in 107 s; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
+   "detail": "game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6296 steps in 107 s; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
   },
   {
    "name": "python: no cross-origin isolation and no SharedArrayBuffer, over plain http",
@@ -326,12 +338,17 @@
   {
    "name": "worker: every socket the host listens on is on loopback",
    "ok": true,
-   "detail": "Wrangler 4.167.0 dev (workerd, local): 127.0.0.1:61593, 127.0.0.1:61594, 127.0.0.1:61589, 127.0.0.1:61590, 127.0.0.1:61598, 127.0.0.1:61599, 127.0.0.1:61604"
+   "detail": "Wrangler 4.167.0 dev (workerd, local): 127.0.0.1:50914, 127.0.0.1:50916, 127.0.0.1:50907, 127.0.0.1:50908, 127.0.0.1:50923, 127.0.0.1:50924, 127.0.0.1:50929"
   },
   {
    "name": "worker: the page and every file the manifest lists are served (scripts as JavaScript, WebAssembly as application/wasm)",
    "ok": true,
    "detail": "117 files; page 200 text/html; charset=utf-8; types {\".css\":[\"text/css\"],\".glb\":[\"model/gltf-binary\"],\".html\":[\"text/html\"],\".js\":[\"text/javascript\"],\".json\":[\"application/json\"],\".md\":[\"text/markdown\"],\".txt\":[\"text/plain\"],\".vrma\":[\"\"],\".vrmxa\":[\"\"],\".vrmxi\":[\"\"],\".vrmxs\":[\"\"],\".wasm\":[\"application/wasm\"],\".wav\":[\"audio/wav\"]}; redirects {\"index.html with a query\":{\"status\":307,\"location\":\"/?trace\"}}"
+  },
+  {
+   "name": "worker: the build's _headers apply: the page revalidated, assets/ cached for good, the CSP on both, the file itself not served",
+   "ok": true,
+   "detail": "{\"page\":\"no-cache\",\"asset\":\"public, max-age=31536000, immutable\",\"assetCsp\":true,\"headersFile\":404}"
   },
   {
    "name": "worker: the page is served with the build's Content Security Policy, which allows no eval",
@@ -341,7 +358,7 @@
   {
    "name": "worker: played from the title menu to the won ending",
    "ok": true,
-   "detail": "game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6293 steps in 108 s; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
+   "detail": "game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6298 steps in 108 s; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
   },
   {
    "name": "worker: no cross-origin isolation and no SharedArrayBuffer, over plain http",
@@ -366,12 +383,12 @@
   {
    "name": "python: the session played from this host replays in Node to the same hash after every step",
    "ok": true,
-   "detail": "6298 steps, final 4381da0665630266 at step 6298"
+   "detail": "6296 steps, final 0c7b670f5a1f3ea5 at step 6296"
   },
   {
    "name": "worker: the session played from this host replays in Node to the same hash after every step",
    "ok": true,
-   "detail": "6293 steps, final f13a1c79dbde2870 at step 6293"
+   "detail": "6298 steps, final 4381da0665630266 at step 6298"
   }
  ]
 }
