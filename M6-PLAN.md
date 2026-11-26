@@ -10,6 +10,22 @@ before games. M6 closes that gap, so a game builder who isn't us can make, test 
 tasks on 2026-11-26, and M5's open questions. The theme and the spikes are the operator's choices, and the defaults were
 approved with the plan (2026-11-26, AB-D-0297).*
 
+**Status (2026-11-26):** the first wave is done. Each PR was reviewed by an independent reviewer and re-checked after its fixes.
+- **W0 behaviours that describe themselves** (PR #50, AB-T-0644): `stateShape(behaviour)` in `@vrmxg/registry` is the one state-shape contract W2 and W5 compare.
+- **W3 new project and settings** (PR #52, AB-T-0646): a layer that's in use can't be renamed or removed rather than carried into the scenes; an unknown layer is refused by `planBuild` (`unknown_layer`); the Collider's layer field stays free text until W1's inspector.
+- **W4 starter content** (PR #53, AB-T-0647): 37 CC0 clips and 17 VRMXI items in `content/starter/`. 11 clips rest on mesh2motion's blanket CC0 statement with no recorded author, and asking its maintainer to confirm is the operator's step. Merging starter rows into a project is AB-T-0653.
+- **W5 saves across updates** (PR #51, AB-T-0631): the fingerprint also counts an `assets` part (items, characters, glTF structure, brains, the animation set). That is stricter than decision 3's list. The editor and Node write the same manifest bytes. The editor refuses a behaviours module graph with an import cycle, which Node loads.
+- **W6 a game that keeps running** (PR #54, AB-T-0639, 0630, 0627, 0629): device-loss recovery, with automatic retries while WebKit's GPU process comes back.
+
+Carried:
+- AB-T-0626's 20-times Play loop in the Mac editor.
+- The canonical matrix after W6, never run because the GPU stayed busy: AB-T-0656, which blocks W11.
+- Project-module import follow-ups: AB-T-0654 items 2, 3, 5 and 6.
+- `tree.detached` growth: AB-T-0655.
+- MCP's tool list is at about 1,986 of its 2,000 tokens, which W1 and W8 have to make room in.
+
+W1, W2, W7, W8 and the spikes are unblocked.
+
 ## What M6 is done looking like
 
 M6 is finished when **someone who isn't us can start a project in the editor, build a small game in it (its levels,
