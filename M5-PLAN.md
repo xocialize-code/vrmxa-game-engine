@@ -1,5 +1,17 @@
 # VRMXG M5 plan: a game you can play
 
+**M5 is done (2026-11-26), by the operator's call: seven of its ten exit checks pass, and three pass in part and are
+carried on.** The verdicts are in [acceptance/](acceptance/README.md), "Result: M5's acceptance": receipts AB-R-1143 to
+1154 (task AB-T-0621, PR #47). You can build a small game in the editor, export it, and play it in the game app with
+rules, a HUD, menus, dialogue, save and settings; a recorded session of The Morning Rush replays to the same per-step
+hashes in Node, Chromium and WKWebView on both backends. Carried on:
+- check 4, a real gamepad, VoiceOver, the HUD prompt in a running app, a volume change and a gamepad rebinding
+  (AB-T-0642);
+- check 8, attaching behaviours and wiring connections in the editor, and keeping node ids (AB-T-0638);
+- check 10, the base Mac's frame rate (AB-T-0511); steady play measured 59.47 fps at 1080p on the M5 Max.
+Also open from M5: AB-T-0639 (GPU device loss in the game app), AB-T-0640 (the quiet-GPU check), AB-T-0641 (validate's
+unreachable goals).
+
 *Draft, 2026-11-24 (AB-P-0019: tasks AB-T-0615 to 0623, with the editor's AB-T-0599 to 0609 and the shell's AB-T-0592 and
 0593). M5 picks from the PRD's "Later" row (§8). It builds on M4 (done 2026-11-24: [acceptance/](acceptance/README.md),
 receipts AB-R-1087 to 1099), which made the anime creator and put the engine on WebGPU. Game builders are the one PRD
