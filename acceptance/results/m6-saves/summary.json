@@ -4,20 +4,20 @@
  "saveAt": 3000,
  "steps": 1800,
  "savedIn": "game/level.vrmxs",
- "runtime": "0.1.0+475c68a5eb5a",
+ "runtime": "0.1.0+6a2b40a61997",
  "build": {
   "digest": "80503171cfbc69de58c4e90b196b4dfec3dba075058ef4fc52921e6dbc1951c1",
-  "fingerprint": "6d30560c531bb9145d6e899c0636837204d93ebf8d0b2c4924f05c17b5ea73c2",
+  "fingerprint": "8fea8be5f85487fc24eac79cc08aeb6c938e2d9a1d8e477399b0e5d554183e98",
   "parts": {
    "scenes": "e060c4c00f8211b0893d1d5cc995916c1016190aa68b095a301f5b23cb72bd71",
    "assets": "c32c360bc536d63e8dbedd8cda4454d207a0d5ef29d1540fcd5d12eba9631381",
-   "behaviours": "24a8c1e0536d3fff7cf00f0cc6954dc14437a9ab455844699d3f362b2ad116ee",
+   "behaviours": "758c645669a9a7a75644b129f2cb991a98244186b3670e7cdc853794a25c7fed",
    "input": "6d0f842892422f4740698ba232ec0d483107c957be672fd48c8c85b20dca8cea",
-   "engine": "d925e4c510630d14c29da636c08af4799b25086ca37943e53549926db6548b7d"
+   "engine": "eb7def8cfebc1c49b7e98902a3f9f638bea50f7dc053f28816c5698b2af21edb"
   },
   "behaviours": {
-   "brain": "runtime:0.1.0+475c68a5eb5a",
-   "player": "runtime:0.1.0+475c68a5eb5a",
+   "brain": "runtime:0.1.0+6a2b40a61997",
+   "player": "runtime:0.1.0+6a2b40a61997",
    "pressToStart": "state:bcde375ebd4cbacf651311181173836b169d5a360c6ac158c6a2cdaf49be3f61",
    "tableZone": "state:d57eb7a9ee4bae8b1bc55a74a0a1e0b8da0b5cb3b9faf639196108407878c4ec"
   }
@@ -138,5 +138,5 @@
   }
  },
  "ok": true,
- "seconds": 14.3
+ "seconds": 15.7
 }

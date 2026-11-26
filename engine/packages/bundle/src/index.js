@@ -15,7 +15,7 @@ export { BuildError, pathProblem, isHidden, sortPaths } from './paths.js';
 export { LICENCES_FILE, parseLicences, licenceOf } from './licences.js';
 export { GAME_FILE, GAME_FORMAT, GAME_VERSION, checkGame, checkPhysics, defaultGame, MAX_LAYERS, layersUsed, gameLayers, unknownLayers } from './game.js';
 export { collect, sceneRefs } from './collect.js';
-export { moduleImports, moduleExports } from './modules.js';
+export { moduleImports, moduleExports, moduleGraph, linkModules } from './modules.js';
 export { RUNTIME_FILE, RUNTIME_FORMAT, RUNTIME_VERSION, RUNTIME_CONTRACT, PROJECT_DIR, checkRuntime, runtimeTable, serializeRuntime, filesDigest } from './runtime.js';
 export { BUILD_FILE, BUILD_FORMAT, BUILD_VERSION, makeManifest, serializeManifest, parseManifest } from './manifest.js';
 export { exportBuild, planBuild, behavioursCode } from './export.js';

@@ -5,11 +5,14 @@
 // real folder (BuildFolderTests.swift).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { runtimeTable, serializeRuntime, parseManifest, sha256, RUNTIME_FILE, BUILD_FILE } from '@vrmxg/bundle';
+import { runtimeTable, serializeRuntime, parseManifest, sha256, exportBuild, compatProblems, RUNTIME_FILE, BUILD_FILE } from '@vrmxg/bundle';
 import { questions } from '@vrmxg/editor-ui';
-import { m0Registry } from '@vrmxg/registry/m0';
-import { declareProjectBehaviours } from '@vrmxg/registry';
-import { exportGame, exportClosing } from '../src/export-game.js';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { behavioursImporter, projectWithGame } from '@vrmxg/bundle/node';
+import { exportGame, exportClosing, freshImporter } from '../src/export-game.js';
 
 const enc = (s) => new TextEncoder().encode(s);
 const LICENCES = '| `game.json` | Ours | |\n| `level.vrmxs` | Ours | |\n| `props/*.glb` | CC0-1.0 | |\n| `LICENCES.md` | Ours | |\n';
@@ -171,16 +174,59 @@ test('closing the window while a game is exported asks first, and Stop and Close
   assert.deepEqual([await answer, cancelled, ed.gameExporting], [true, 1, null]);
 });
 
-test('the build carries its save-compatibility fingerprint, with what the editor\'s registry holds of the project\'s behaviours (M6 W5)', async () => {
-  const level = JSON.stringify({ assets: [{ ref: 'props/big.glb' }], nodes: [{ id: 'a', type: 'Node3D', behaviours: [{ use: 'spin' }, { use: 'idle' }] }] });
-  const p = project({ 'game.json': JSON.stringify({ format: 'vrmxg-game', version: 1, id: 'test-game', entry: 'level.vrmxs', behaviours: 'behaviours.js' }), 'level.vrmxs': level, 'behaviours.js': 'export class spin {}\nexport class idle {}\n', 'LICENCES.md': `${LICENCES}| \`behaviours.js\` | Ours | |\n` });
-  // the editor's registry, the project's behaviours declared in it as the editor declares them (M6 W0)
-  const registry = m0Registry();
-  declareProjectBehaviours(registry, { spin: class spin { static describe = { state: { type: 'object' } }; }, idle: class idle {} });
-  const s = shell();
-  await exportGame(p, { shell: s, runtime: runtime(), registry });
-  const manifest = parseManifest(new TextDecoder().decode(s.folder.get(BUILD_FILE)));
-  assert.match(manifest.compat.behaviours.spin, /^state:[0-9a-f]{64}$/, 'declared: its state');
-  assert.match(manifest.compat.behaviours.idle, /^code:[0-9a-f]{64}$/, 'no describe of its own: its code');
-  assert.deepEqual(Object.keys(manifest.compat.scenes), ['level.vrmxs']);
+// The page's importer with files for blob: URLs (Node can't import blob:): each linked module written under its hash
+// into a folder whose modules get @vrmxg/core (behavioursImporter's hook). The rest is the editor's own path.
+const linkedFiles = () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-linked-'));
+  behavioursImporter(dir); // @vrmxg/core for the modules in it
+  const url = (_ref, src) => { const f = path.join(fs.realpathSync(dir), `${sha256(new TextEncoder().encode(src))}.mjs`); fs.writeFileSync(f, src); return pathToFileURL(f).href; };
+  return { dir, url, done: () => fs.rmSync(dir, { recursive: true, force: true }) };
+};
+const BEHAVIOURS_GAME = JSON.stringify({ format: 'vrmxg-game', version: 1, id: 'test-game', entry: 'level.vrmxs', behaviours: 'behaviours.js' });
+const declaring = (type) => `import { Behaviour } from '@vrmxg/core';\nexport * from './lib/idle.js';\nexport class spin extends Behaviour { static describe = { state: { type: '${type}' } }; }\n`;
+
+test('Export Game imports the behaviours module fresh: a declared state edited after the project opened ships with its new shape (M6 W5)', async () => {
+  const files = { 'game.json': BEHAVIOURS_GAME, 'level.vrmxs': JSON.stringify({ assets: [{ ref: 'props/big.glb' }], nodes: [{ id: 'a', type: 'Node3D', behaviours: [{ use: 'spin' }, { use: 'idle' }] }] }),
+    'behaviours.js': declaring('object'), 'lib/idle.js': "import { Behaviour } from '@vrmxg/core';\nexport class idle extends Behaviour {}\n", 'LICENCES.md': `${LICENCES}| \`behaviours.js\` | Ours | |\n| \`lib/idle.js\` | Ours | |\n` };
+  const linked = linkedFiles();
+  try {
+    const p = project(files), s1 = shell();
+    await exportGame(p, { shell: s1, runtime: runtime(), importModule: freshImporter(p, { url: linked.url }) });
+    const m1 = parseManifest(new TextDecoder().decode(s1.folder.get(BUILD_FILE)));
+    assert.match(m1.compat.behaviours.spin, /^state:[0-9a-f]{64}$/, 'declared: its state');
+    assert.match(m1.compat.behaviours.idle, /^code:[0-9a-f]{64}$/, 'no describe of its own (through export * from a submodule): its code');
+    // the state's shape edited on disk, nothing reopened
+    const q = project({ ...files, 'behaviours.js': declaring('array') }), s2 = shell();
+    await exportGame(q, { shell: s2, runtime: runtime(), importModule: freshImporter(q, { url: linked.url }) });
+    const m2 = parseManifest(new TextDecoder().decode(s2.folder.get(BUILD_FILE)));
+    const [why] = compatProblems(m1.compat, m2.compat);
+    assert.equal(why.part, 'behaviours');
+    assert.match(why.text, /^the state the behaviour spin keeps changed; the code of the behaviour idle changed/, 'the new shape, and the undeclared idle by the module\'s code');
+  } finally { linked.done(); }
+});
+
+test('a behaviours module that won\'t import refuses the export, as in Node (bad_behaviours) (M6 W5)', async () => {
+  const files = { 'game.json': BEHAVIOURS_GAME, 'level.vrmxs': JSON.stringify({ assets: [{ ref: 'props/big.glb' }] }), 'behaviours.js': "throw new Error('half written');\n", 'LICENCES.md': `${LICENCES}| \`behaviours.js\` | Ours | |\n` };
+  const linked = linkedFiles();
+  try {
+    const p = project(files), s = shell();
+    await assert.rejects(exportGame(p, { shell: s, runtime: runtime(), importModule: freshImporter(p, { url: linked.url }) }), (e) => e.code === 'bad_behaviours' && /half written/.test(e.message));
+    assert.equal(s.calls.includes('build.begin'), false, 'no folder asked for');
+  } finally { linked.done(); }
+});
+
+test('the Morning Rush: the editor\'s Export Game and Node\'s exporter write the same manifest, the same fingerprint (M6 W5)', async () => {
+  const sample = path.resolve(import.meta.dirname, '../../../content/sample');
+  const src = projectWithGame(sample, 'game/game.json');
+  const rt = runtime();
+  const node = await exportBuild({ project: { files: src.files, read: src.read }, runtime: rt, game: src.game, importModule: behavioursImporter(sample), write: null });
+  const linked = linkedFiles();
+  try {
+    const p = { files: src.files, has: (f) => src.files.includes(f), bytes: src.read };
+    const page = await exportGame(p, { shell: { inShell: false, call: async () => { throw new Error('no shell'); } }, runtime: rt, importModule: freshImporter(p, { url: linked.url }) });
+    assert.match(node.compat.behaviours.pressToStart, /^state:/, 'Node read the declarations of game/behaviours.js');
+    assert.match(node.compat.behaviours.tableZone, /^state:/);
+    assert.equal(page.manifest, node.sha256, 'the same manifest bytes');
+    assert.equal(page.compat, node.compat.digest, 'the same fingerprint');
+  } finally { linked.done(); }
 });

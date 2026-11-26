@@ -217,13 +217,22 @@ module's exports without running it (`export * from` followed into the project's
 from the registry the export's checks use (M6 W0): `exportBuild({ importModule })` imports the game's behaviours module
 once, declares its classes' own `describe`s in that registry (`declareProjectBehaviours`), and the fingerprint takes
 each project entry's `stateShape` (`declaredShape`: W0's canonical shape, with `'true'` and `'{}'` counting as
-undeclared). The editor passes its own registry, the one its play and validation use. An export with neither counts
-every project behaviour by its code.
+undeclared). An export with neither an importer nor a registry that has them counts every project behaviour by its
+code. A module that won't import refuses the export (`bad_behaviours`) in every exporter.
 
 In Node the importer is `behavioursImporter(folder)` (`./node`), and every call imports a fresh module graph: the
 module's URL carries a load token that a resolve hook carries into every relative specifier inside the folder, so no
 module of the graph comes from Node's module cache (AB-T-0654 item 1). A long-running process (MCP's server) or an
 export after an edit never reads declarations from an older copy, and a load that failed isn't kept for the next try.
+
+The editor's Export Game imports the module the same way for each export, not from the declarations it made when the
+project opened (AB-T-0654 item 4): `freshImporter` (apps/editor's export-game.js) reads the game's behaviours module
+(`game.behaviours`, whatever its path) and its relative imports from the project as they are now (`moduleGraph`),
+rewrites each relative specifier to a blob: URL of its module's text (`linkModules`) and imports that. So the editor and
+Node write the same manifest for the same project (checked on the Morning Rush in Node, and in Chromium through the
+real blob: path). One difference is left: a behaviours graph with an import cycle can't be linked from blob: URLs and
+refuses the editor's export, where Node's loads it.
+
 Everything else in the fingerprint is read from the project's files and the runtime's table: no clock, no machine.
 
 The runtime's table carries what the fingerprint needs from the engine (`engine` in `vrmxg-runtime.json`:
@@ -420,7 +429,7 @@ hashes each file once, as it is written.
   stages and rolled back, then failed again while undoing, a folder reshaped and renamed by case, a planted staging
   manifest, what a killed export left, an incomplete folder) and the command line; the Vite plugin; the sample's build
   replayed against the project (240 steps; skipped without vrmxa-avatar-studio).
-- `node --test test/export-game.test.mjs` in `apps/editor` (10 tests): Export Game's page side against a stand-in shell. `swift test` in
+- `node --test test/export-game.test.mjs` in `apps/editor` (11 tests): Export Game's page side against a stand-in shell; with M6 W5, the editor's path and Node's on the Morning Rush (the same manifest and fingerprint), a declared state edited after the project opened, and a module that won't import refused. `swift test` in
   `apps/shell`: `BuildFolderTests`, the real folder.
 - `node acceptance/m5/build.mjs --chromium --mac … --refused …`, then `acceptance/m5/build-wkwebview.sh`: M5's exit
   check 1 on the sample project: 12 of 12 and 4 of 4 (AB-R-1102). The results are in

@@ -1160,7 +1160,9 @@ export class EditorHost {
     let settle = () => {};
     this._gameExport = { abort, done: new Promise((r) => { settle = r; }) };
     try {
-      const r = await exportGame(this.project, { scene: this.sceneRef, name, registry, signal: abort.signal, onProgress: (n, total) => { this.gameExporting = { n, total, phase: 'writing' }; if (n % 8 === 0 || n === total) this.changed('export'); } });
+      // the behaviours module is imported fresh for the export (export-game.js), not taken from the declarations made
+      // when the project was opened: what is on disk now is what ships, and what the save fingerprint counts
+      const r = await exportGame(this.project, { scene: this.sceneRef, name, signal: abort.signal, onProgress: (n, total) => { this.gameExporting = { n, total, phase: 'writing' }; if (n % 8 === 0 || n === total) this.changed('export'); } });
       this.lastGameExport = { ...r, unsaved };
       return this.lastGameExport;
     } catch (e) {
