@@ -74,17 +74,39 @@ frames (`replaying.left`) and starts the next (`replayNext`), so the replay is d
 | Quit to Title | Ends the session |
 | What a game's own scene offers (the test game's "skip the title") | An action in the recorded input frame |
 
-**A save belongs to the build that made it.** Every file the session writes (a player's save, a checkpoint) carries the
-build's digest in `extra.build` (app data the save format already carries: no format change). A file from another build
-is refused with a message saying so: every export of a game shares its bundle id and so its Saves folder, and
-`@vrmxg/save` checks the scene document, the maths and the physics build, not the prefabs, the behaviours, the action map
-or the engine, so such a file could load and then play on differently. `replaySession(log, { digest })` refuses a log
-played on another build.
+**A save loads into any export that restores it the same** (M6 W5, AB-T-0631). Every file the session writes (a
+player's save, a checkpoint) carries in `extra.build` (app data the save format already carries: no format change) the
+build's digest, its game's id and its save-compatibility fingerprint: the manifest's `compat`, over what a restore
+depends on (the scene documents and prefabs; the items and characters, the models' structure, the brains and the
+animation set's clips; the state each behaviour declares or else its code; the action map in its order; the runtime's
+version, snapshot format and maths; `@vrmxg/bundle`'s README, "Saves across updates"). Every export of a game shares
+its bundle id and so its Saves folder, and `GameSession` loads a file when it is this build's, or another export's with
+the same fingerprint. So a re-export that changed only a texture, a sound, the game's `release` or the code of
+behaviours that declare their state goes on from its earlier saves, with the same per-step hashes as the run that never stopped (`acceptance/m6/saves.mjs`).
 
-**So any re-export of a game refuses every earlier save.** The build's digest covers every file of the build: a changed
-texture, a scene, a behaviour, a `release` bump in `game.json`, or a newer runtime gives a new digest, and the saves the
-earlier build wrote are listed as "made with another version" and can't be loaded (Continue skips them). That is M5's
-rule, chosen as the safe one: a save loads only into exactly the build that made it.
+A file whose fingerprint differs is refused, and the message says what changed:
+
+> This save was made with another version of the game, and this one can't restore it: the scene game/level.vrmxs changed.
+
+The other reasons are an item, a character, a model's structure, a brain or the animation set ("the item
+game/items/till.vrmxi changed"), a behaviour's declared state ("the state the behaviour pressToStart keeps changed"), undeclared
+behaviours' code ("the code of the behaviours pressToStart and tableZone changed (they declare no state, so any change
+to their code counts)"), the controls ("the game's controls changed") and the engine. The error's `code` is
+`incompatible_save` and its `problems` list them by part. A save from another game, or one that names no build, is
+refused too (and listed as such: a store's listing names each save's game); so is one from a build before M6 (a digest and no fingerprint), except by the build that made it.
+
+The slot menus read the same from a store's listing without opening a file (`list()` gives each save's `build` digest
+and its `compat` digest and parts): a save this build can't restore is shown as "made with another version" with the
+parts that changed ("its scenes and its controls changed"), can't be loaded, and Continue skips it.
+
+**Replays still compare the whole build.** A session log names the build's digest, and `replaySession(log, { digest })`
+refuses a log played on any other build: a replay is exact only on the bytes it was played on, so even a texture-only
+re-export doesn't replay an earlier log.
+
+**Undeclared means strict.** Until a behaviour declares its state (M6 W0's `static describe`), any change to the
+behaviours module refuses every earlier save. A new runtime refuses them too: the engine part counts the runtime's
+version (which carries its sources' stamp) until the engine's node types declare their state. A re-textured character
+refuses them as well, since a `.vrmxa` counts whole.
 
 **Nothing steps while a menu or a question is up**, whatever else happens: a question that comes up while a save loads
 (the Mac shell's close question) holds the game after the load too (`StepGate` in `src/nav.js`). When stepping starts
@@ -179,10 +201,12 @@ game with Save offered, and Resume brought it back. A game that falls back stays
 
 ## Checked
 
-- `npm test` here (40 tests; all but one need no models): the player's settings through `GameSettings` in the `ui` field,
+- `npm test` here (45 tests; all but one need no models): the player's settings through `GameSettings` in the `ui` field,
   the first form's volume and bindings migrated once, a failed volume write said in the status line; a `Dialogue` inside
   a prefab; a question up while a load ends holds the game, and what was
-  used on it doesn't reach the game; a save from another build, or one that doesn't say, is refused; a log replays only
+  used on it doesn't reach the game; a save from another build, or one that doesn't say, is refused; a save loads into
+  another export with the same fingerprint and plays on to the same per-step hashes, and one whose scenes, behaviours,
+  controls or engine changed is refused with that reason (M6 W5); slot rows for another export's saves; a log replays only
   on its build; a second New Game or load during one is refused (in the session and in the host); a session through scene changes, a save and a load replays to
   the same per-step hashes; Continue in a fresh session; a checkpoint slot refused; a save or a checkpoint whose write
   fails stays unsaved; a save still being written when another loads, or a load that outlives its session (one test per
@@ -195,6 +219,10 @@ game with Save offered, and Resume brought it back. A game that falls back stays
   from a stand-in gamepad and from the keyboard; a key rebound in Settings kept, and on the menus' input after a
   relaunch; the A that opens Settings not pressing the control it focuses; the backend readout.
 - `acceptance/m5/build.mjs --chromium` and `build-wkwebview.sh`: M5 check 1 with this app as the runtime.
+- `node acceptance/m6/saves.mjs` (M6 W5, needs vrmxa-core): saves across updates on the Morning Rush, 10 checks (texture,
+  sound, release and declared-behaviour code re-exports load and play on with the same hashes; a declared state, a
+  scene node, an item, the action map and undeclared code refuse with their reason; the first build's log doesn't
+  replay on the second).
 - The Mac app: `apps/game-mac/docs/HAND-TEST-M5-GAME.md`.
 
 ## Known limits

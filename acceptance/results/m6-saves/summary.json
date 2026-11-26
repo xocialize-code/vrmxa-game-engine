@@ -1,0 +1,142 @@
+{
+ "task": "AB-T-0631",
+ "what": "saves across game updates on the Morning Rush (acceptance/m6/saves.mjs)",
+ "saveAt": 3000,
+ "steps": 1800,
+ "savedIn": "game/level.vrmxs",
+ "runtime": "0.1.0+6a2b40a61997",
+ "build": {
+  "digest": "80503171cfbc69de58c4e90b196b4dfec3dba075058ef4fc52921e6dbc1951c1",
+  "fingerprint": "8fea8be5f85487fc24eac79cc08aeb6c938e2d9a1d8e477399b0e5d554183e98",
+  "parts": {
+   "scenes": "e060c4c00f8211b0893d1d5cc995916c1016190aa68b095a301f5b23cb72bd71",
+   "assets": "c32c360bc536d63e8dbedd8cda4454d207a0d5ef29d1540fcd5d12eba9631381",
+   "behaviours": "758c645669a9a7a75644b129f2cb991a98244186b3670e7cdc853794a25c7fed",
+   "input": "6d0f842892422f4740698ba232ec0d483107c957be672fd48c8c85b20dca8cea",
+   "engine": "eb7def8cfebc1c49b7e98902a3f9f638bea50f7dc053f28816c5698b2af21edb"
+  },
+  "behaviours": {
+   "brain": "runtime:0.1.0+6a2b40a61997",
+   "player": "runtime:0.1.0+6a2b40a61997",
+   "pressToStart": "state:bcde375ebd4cbacf651311181173836b169d5a360c6ac158c6a2cdaf49be3f61",
+   "tableZone": "state:d57eb7a9ee4bae8b1bc55a74a0a1e0b8da0b5cb3b9faf639196108407878c4ec"
+  }
+ },
+ "results": {
+  "texture": {
+   "what": "an image inside props/espresso-machine.glb re-encoded with other pixels",
+   "digestChanged": true,
+   "fingerprintChanged": false,
+   "loaded": true,
+   "steps": 1800,
+   "firstDifference": -1,
+   "same": true,
+   "expect": "loads",
+   "ok": true
+  },
+  "audio": {
+   "what": "sounds/music.wav's samples changed (the same header and length)",
+   "digestChanged": true,
+   "fingerprintChanged": false,
+   "loaded": true,
+   "steps": 1800,
+   "firstDifference": -1,
+   "same": true,
+   "expect": "loads",
+   "ok": true
+  },
+  "release": {
+   "what": "game.json's release 0.1.0 → 0.2.0",
+   "digestChanged": true,
+   "fingerprintChanged": false,
+   "loaded": true,
+   "steps": 1800,
+   "firstDifference": -1,
+   "same": true,
+   "expect": "loads",
+   "ok": true
+  },
+  "comment": {
+   "what": "a line added to game/behaviours.js (its behaviours declare their state: their code may change)",
+   "digestChanged": true,
+   "fingerprintChanged": false,
+   "loaded": true,
+   "steps": 1800,
+   "firstDifference": -1,
+   "same": true,
+   "expect": "loads",
+   "ok": true
+  },
+  "declared": {
+   "what": "pressToStart's declared state rewritten from null to an object",
+   "digestChanged": true,
+   "fingerprintChanged": true,
+   "loaded": false,
+   "error": "This save was made with another version of the game, and this one can't restore it: the state the behaviour pressToStart keeps changed.",
+   "code": "incompatible_save",
+   "parts": [
+    "behaviours"
+   ],
+   "expect": "behaviours",
+   "ok": true
+  },
+  "scene": {
+   "what": "the espresso machine in game/level.vrmxs moved 1 cm",
+   "digestChanged": true,
+   "fingerprintChanged": true,
+   "loaded": false,
+   "error": "This save was made with another version of the game, and this one can't restore it: the scene game/level.vrmxs changed.",
+   "code": "incompatible_save",
+   "parts": [
+    "scenes"
+   ],
+   "expect": "scenes",
+   "ok": true
+  },
+  "item": {
+   "what": "a byte added to game/items/till.vrmxi",
+   "digestChanged": true,
+   "fingerprintChanged": true,
+   "loaded": false,
+   "error": "This save was made with another version of the game, and this one can't restore it: the item game/items/till.vrmxi changed.",
+   "code": "incompatible_save",
+   "parts": [
+    "assets"
+   ],
+   "expect": "assets",
+   "ok": true
+  },
+  "input": {
+   "what": "an action added to game.json's action map",
+   "digestChanged": true,
+   "fingerprintChanged": true,
+   "loaded": false,
+   "error": "This save was made with another version of the game, and this one can't restore it: the game's controls changed (its action map's actions or their order).",
+   "code": "incompatible_save",
+   "parts": [
+    "input"
+   ],
+   "expect": "input",
+   "ok": true
+  },
+  "code": {
+   "what": "pressToStart declares nothing; a line added to its module between two exports",
+   "tag": "code:ebcb6e4219661942acb7d3ef3e86535bf8b7888358351f06503462400549a630",
+   "loaded": false,
+   "error": "This save was made with another version of the game, and this one can't restore it: the code of the behaviour pressToStart changed (it declares no state, so any change to its code counts).",
+   "code": "incompatible_save",
+   "parts": [
+    "behaviours"
+   ],
+   "expect": "behaviours",
+   "ok": true
+  },
+  "replay": {
+   "what": "build A's session log replayed on the texture build",
+   "error": "this log was played on build 80503171cfbc; this is build b6e3aeb7c5ac: a log replays only on the build it was played on",
+   "ok": true
+  }
+ },
+ "ok": true,
+ "seconds": 15.7
+}

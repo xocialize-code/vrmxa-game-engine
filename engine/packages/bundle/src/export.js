@@ -4,8 +4,17 @@
 // write, and each of the project's files is read and hashed once, as it is written. One step runs the project's code:
 // given `importModule` (Node's exporters pass one), the game's behaviours module is imported, as the game will import
 // it, to read what its behaviours declare (M6 W0).
+//
+// The manifest carries the build's save-compatibility fingerprint (compat.js, M6 W5): its scene documents and prefabs,
+// the structure of its items, characters and models, its brains and animation set, the state its behaviours declare
+// (read from the same registry the export's checks use, so both see one import of the module) or, undeclared, their
+// code, its action map and the runtime's engine. Without `importModule` (or a registry that has them) nothing is known
+// to be declared, and every project behaviour counts by its code: strict, never loose.
 import { sha256 } from './sha256.js';
-import { BuildError, checkPath, caseClash, isHidden } from './paths.js';
+import { BuildError, checkPath, caseClash, isHidden, resolveFrom, normRef } from './paths.js';
+import { moduleImports, moduleExports } from './modules.js';
+import { filesDigest } from './runtime.js';
+import { compatFingerprint, assetKind, assetEntry, documentEntry } from './compat.js';
 import { GAME_FILE, checkGame, unknownLayers, gameLayers } from './game.js';
 import { LICENCES_FILE, parseLicences, licenceOf } from './licences.js';
 import { m0Registry } from '@vrmxg/registry/m0';
@@ -41,9 +50,10 @@ async function exportRegistry(game, files, importModule, fail) {
  *   BuildError), with what could be traced. For a check that shows a person everything at once; an export never asks
  *   for it, so what it builds is the same either way
  * @returns {Promise<{ game: import('./game.js').Game, refs: string[], source: Map<string, string>, why: Map<string, string>,
- *   licence: Map<string, { pattern: string, licence: string }>, problems: BuildError[] }>} refs: the files in manifest
- *   order; source: each one's own file in the project; why: the document that named it; licence: each one's row;
- *   problems: with `all`, every refusal (empty: the export would pass these checks)
+ *   licence: Map<string, { pattern: string, licence: string }>, problems: BuildError[], registry: any }>} refs: the files in
+ *   manifest order; source: each one's own file in the project; why: the document that named it; licence: each one's
+ *   row; problems: with `all`, every refusal (empty: the export would pass these checks); registry: the one the trace
+ *   used (the project's behaviours declared in it when they were imported)
  */
 export async function planBuild({ project, game = null, registry = undefined, importModule = null, all = false }) {
   const problems = [];
@@ -75,7 +85,7 @@ export async function planBuild({ project, game = null, registry = undefined, im
   const licence = new Map(refs.map((ref) => [ref, licenceOf(rows, ref)]));
   const unlicensed = hasLicences ? refs.filter((ref) => !licence.get(ref)) : [];
   if (unlicensed.length) fail(new BuildError('no_licence', `no row in ${LICENCES_FILE} for ${unlicensed.join(', ')}: a file with no licence can't go into a build`, unlicensed));
-  return { game, refs, source, why, licence: /** @type {any} */ (licence), problems };
+  return { game, refs, source, why, licence: /** @type {any} */ (licence), problems, registry };
 }
 
 /**
@@ -100,15 +110,17 @@ export async function planBuild({ project, game = null, registry = undefined, im
  *   `behavioursImporter(folder)`): the game's behaviours module is imported with it and its declarations (M6 W0) put in
  *   the default registry, so a project behaviour's asset params are typed references. A module that won't import or a
  *   declaration the registry refuses stops the export (bad_behaviours). Without it the project's behaviours aren't read
- * @returns {Promise<{ manifest: import('./manifest.js').Manifest, text: string, sha256: string, files: number, bytes: number, byPattern: string[] }>}
+ * @returns {Promise<{ manifest: import('./manifest.js').Manifest, text: string, sha256: string, files: number, bytes: number, byPattern: string[], compat: import('./compat.js').Compat }>}
  *   the manifest, its file's text and that text's SHA-256 (two builds are the same bytes exactly when it matches), how
  *   many files and bytes the build holds beside the manifest, and the project's files that no row of LICENCES.md names
- *   one by one (a pattern row licensed them)
+ *   one by one (a pattern row licensed them); compat: the build's save-compatibility fingerprint (also in the manifest)
  */
 export async function exportBuild({ project, runtime, game = null, write = null, ready = null, onProgress = null, registry = undefined, importModule = null }) {
   const plan = await planBuild({ project, game, registry, importModule });
   const { refs, source, licence } = plan;
   game = plan.game;
+  // the behaviours module read without running it, for the fingerprint: its code and the names it exports
+  const behaviours = await behavioursCode({ game, refs, source, read: project.read });
   // the runtime, each file checked against its table
   let table;
   try { table = JSON.parse(text(await runtime.read(RUNTIME_FILE))); } catch (e) { throw new BuildError('bad_runtime', `the runtime has no readable ${RUNTIME_FILE} (${e.message}): build the runtime first`, [RUNTIME_FILE]); }
@@ -125,17 +137,66 @@ export async function exportBuild({ project, runtime, game = null, write = null,
   let done = 0;
   const put = async (path, bytes) => { if (write) await write(path, bytes); onProgress?.(++done, total, path); };
   for (const [path, bytes] of pending) await put(path, bytes);
-  const byPattern = [];
+  const byPattern = [], scenes = [], assets = [], inputRef = typeof game.input === 'string' ? game.input : null;
+  let actions = game.input && typeof game.input === 'object' ? game.input.actions : null;
   for (const ref of refs) {
-    const bytes = await project.read(source.get(ref)), row = licence.get(ref);
+    const bytes = behaviours.bytes.get(ref) ?? await project.read(source.get(ref)), row = licence.get(ref), sha = sha256(bytes);
+    if (/\.vrmxs$/i.test(ref)) scenes.push([ref, json(bytes, ref)]);
+    if (ref === inputRef) { const doc = json(bytes, ref); actions = doc?.actions ?? doc?.input?.actions ?? null; }
+    const kind = assetKind(ref);
+    if (kind === 'document') { const e = documentEntry(json(bytes, ref), { animations: ref === game.animations }); if (e) assets.push([ref, e]); } else if (kind) assets.push([ref, assetEntry(ref, bytes, sha)]);
     // a file licensed by a pattern row (`voice/*.wav`) says so: nobody listed it by name
     const from = row.pattern === ref ? {} : { licenceFrom: row.pattern };
     if (row.pattern !== ref) byPattern.push(ref);
-    out.push({ path: PROJECT_DIR + ref, role: /** @type {const} */ ('project'), bytes: bytes.length, sha256: sha256(bytes), licence: row.licence, ...from });
+    out.push({ path: PROJECT_DIR + ref, role: /** @type {const} */ ('project'), bytes: bytes.length, sha256: sha, licence: row.licence, ...from });
     await put(PROJECT_DIR + ref, bytes);
   }
-  const manifest = makeManifest({ game, runtime: rt, files: out });
+  const compat = compatFingerprint({ scenes, assets, behaviours: { code: behaviours.code, names: behaviours.names, registry: plan.registry }, actions, runtime: { version: rt.runtimeVersion, engine: rt.engine } });
+  const manifest = makeManifest({ game, runtime: rt, files: out, compat });
   const body = serializeManifest(manifest), bodyBytes = new TextEncoder().encode(body);
   if (write) await write(BUILD_FILE, bodyBytes);
-  return { manifest, text: body, sha256: sha256(bodyBytes), files: out.length, bytes: manifest.bytes, byPattern };
+  return { manifest, text: body, sha256: sha256(bodyBytes), files: out.length, bytes: manifest.bytes, byPattern, compat };
+}
+
+const json = (bytes, ref) => {
+  try { return JSON.parse(text(bytes)); } catch (e) { throw new BuildError('bad_file', `${ref} is not JSON: ${e.message}`, [ref]); }
+};
+
+/**
+ * The game's behaviours module, read without running it: the code a fingerprint counts when a behaviour declares no
+ * state (the digest of `<sha256>  <ref>` lines for it and every module it imports relatively, in ref order), and the
+ * names it exports, following `export * from` into the project's modules. The names say which behaviours are the
+ * project's and which the engine's whether or not the module was imported. → { code: null } for a game with no
+ * behaviours module.
+ * @param {{ game: import('./game.js').Game, refs: string[], source: Map<string, string>, read: (ref: string) => Promise<Uint8Array> }} o
+ * @returns {Promise<{ code: string | null, names: Set<string> | null, bytes: Map<string, Uint8Array> }>}
+ *   bytes: each module read, by ref (the export writes these without reading them again)
+ */
+export async function behavioursCode({ game, refs, source, read }) {
+  const bytesOf = new Map();
+  if (!game.behaviours) return { code: null, names: null, bytes: bytesOf };
+  const have = new Set(refs), seen = [normRef(game.behaviours)], rows = [], srcs = new Map();
+  for (let i = 0; i < seen.length; i++) {
+    const ref = seen[i], bytes = await read(source.get(ref) ?? ref), src = text(bytes);
+    bytesOf.set(ref, bytes);
+    rows.push({ path: ref, sha256: sha256(bytes) });
+    srcs.set(ref, src);
+    for (const spec of moduleImports(src, ref)) {
+      if (!/^\.{1,2}\//.test(spec)) continue; // '@vrmxg/core': the runtime's, counted with the engine
+      const target = resolveFrom(ref, spec);
+      if (target !== null && have.has(normRef(target)) && !seen.includes(normRef(target))) seen.push(normRef(target));
+    }
+  }
+  rows.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+  // the names: the module's own, and what each `export * from` brings (never its default)
+  const names = new Set(), visited = new Set();
+  const walk = (ref, top) => {
+    if (visited.has(ref) || !srcs.has(ref)) return;
+    visited.add(ref);
+    const e = moduleExports(srcs.get(ref), ref);
+    for (const n of e.names) if (top || n !== 'default') names.add(n);
+    for (const spec of e.stars) { const t = /^\.{1,2}\//.test(spec) ? resolveFrom(ref, spec) : null; if (t !== null) walk(normRef(t), false); }
+  };
+  walk(normRef(game.behaviours), true);
+  return { code: filesDigest(rows), names, bytes: bytesOf };
 }

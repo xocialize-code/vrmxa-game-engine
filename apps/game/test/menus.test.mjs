@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { VirtualDevice } from '@vrmxg/input';
 import { readSettings, chosenBackend, SettingsStore, memoryStorage, defaultSettings, serializeSettings, gameUiStore, settingsNote, SETTINGS_FORMAT } from '../src/settings.js';
 import { GameSettings } from '@vrmxg/game-ui';
-import { slotRows, latestSave, formatPlayed, saveName, PLAYER_SLOTS } from '../src/slots.js';
+import { slotRows, latestSave, otherBuild, formatPlayed, saveName, PLAYER_SLOTS } from '../src/slots.js';
 import { PadNavigator, HeldGate, StepGate, nextIndex, keyCommand, padDirections, PAD } from '../src/nav.js';
 import { leaveQuestion, mayLeave } from '../src/closing.js';
 
@@ -112,6 +112,32 @@ test('slots: a save another build made is shown as such, can\'t be loaded, and C
   assert.equal(latestSave(list, { build: 'this' }).slot, 'slot-1', 'the newest this build made, not the newest');
   assert.equal(latestSave(list.slice(1), { build: 'this' }), null, 'only other builds\' saves: nothing to continue');
   assert.equal(slotRows(list).player[1].other, false, 'no build to compare with: nothing marked');
+});
+
+test('slots: another export\'s save with this build\'s fingerprint loads; one with another says what changed (M6 W5)', () => {
+  const parts = { scenes: '1'.repeat(64), behaviours: '2'.repeat(64), input: '3'.repeat(64), engine: '4'.repeat(64) };
+  const mine = { digest: 'this', compat: { version: 1, digest: 'f'.repeat(64), parts } };
+  const list = [
+    { slot: 'slot-1', name: 'Before the texture', savedAt: '2026-11-24T10:00:00.000Z', step: 100, seconds: 1.7, scene: 'game/level.vrmxs', build: 'earlier', compat: { version: 1, digest: 'f'.repeat(64), parts } },
+    { slot: 'slot-2', name: 'Before the level changed', savedAt: '2026-11-24T11:00:00.000Z', step: 900, seconds: 15, scene: 'game/level.vrmxs', build: 'older', compat: { version: 1, digest: 'e'.repeat(64), parts: { ...parts, scenes: '9'.repeat(64), input: '8'.repeat(64) } } },
+    { slot: 'slot-3', name: 'Before M6', savedAt: '2026-11-24T09:00:00.000Z', step: 50, seconds: 0.8, scene: 'game/level.vrmxs', build: 'm5', compat: null },
+  ];
+  const { player } = slotRows(list, { build: mine });
+  assert.equal(player[0].other, false, 'the same fingerprint: loadable');
+  assert.equal(player[1].other, true);
+  assert.equal(player[1].why, 'its scenes and its controls changed');
+  assert.equal(player[1].text, 'Slot 2: made with another version of the game, can\'t be loaded (its scenes and its controls changed), 0:15 · 2026-11-24 11:00');
+  assert.equal(player[2].other, true, 'a save from before M6 names no fingerprint');
+  assert.equal(player[2].why, '');
+  assert.equal(latestSave(list, { build: mine }).slot, 'slot-1', 'Continue offers the compatible one');
+  assert.equal(otherBuild(list[0], 'this'), true, 'a build from before M6 (a digest alone) restores only its own');
+  // another game's save in the same folder (a listing that names its game), whatever its fingerprint
+  const theirs = { ...list[0], slot: 'slot-4', game: 'another-game' };
+  assert.equal(otherBuild(theirs, { ...mine, game: 'my-game' }), true);
+  assert.equal(slotRows([theirs], { build: { ...mine, game: 'my-game' } }).player[3].why, 'from another game');
+  assert.equal(otherBuild({ ...list[0], game: 'my-game' }, { ...mine, game: 'my-game' }), false, 'the same game and fingerprint');
+  assert.equal(otherBuild(list[0], { ...mine, game: 'my-game' }), false, 'a listing from before the game id was listed is judged by its fingerprint');
+  assert.equal(otherBuild({ ...list[0], compat: { ...list[0].compat, format: 'something-else' } }, { ...mine, compat: { ...mine.compat, format: 'vrmxg-compat' } }), true, 'another kind of fingerprint');
 });
 
 test('slots: Continue is the newest save the menu knows', () => {

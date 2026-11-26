@@ -4,6 +4,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { MemoryStore } from '@vrmxg/save';
 import { ballSession, ballGame, play, FailingStore } from './helpers.mjs';
+import { compatFingerprint } from '@vrmxg/bundle';
+import { BEHAVIOURS } from '../../../engine/packages/game/test/fixtures/world.js';
 import { GameSession, replaySession, firstDifference, SESSION_FORMAT } from '../src/session.js';
 import { GAME } from './helpers.mjs';
 
@@ -227,7 +229,7 @@ test('a save belongs to the build that made it: another build\'s save, or one th
   await a.session.saveSlot('slot-1');
   a.session.end();
   const saved = await store.read('slot-1');
-  assert.deepEqual(saved.extra.build, { digest: 'test', game: 'ball-game' }, 'the save names its build');
+  assert.deepEqual(saved.extra.build, { digest: 'test', game: 'ball-game' }, 'the save names its build (a build from before M6: no fingerprint)');
   // the same game exported again: another digest, the same store (one bundle id, one Saves folder)
   const g = await ballGame();
   const b = new GameSession({ game: GAME, digest: 'another-build', load: g.load, unload: g.unload, store, scenes: g.scenes, prefabs: g.prefabs });
@@ -244,6 +246,75 @@ test('a save belongs to the build that made it: another build\'s save, or one th
   assert.ok(cp, 'a checkpoint was written');
   assert.equal((await store.read(cp.slot)).extra.build.digest, 'test');
   c.session.end();
+});
+
+// the ball game's fingerprint, as an export makes it (M6 W5): its scene documents, its behaviours' code, its action map
+const fingerprint = async ({ edit = null, code = 'a'.repeat(64), actions = null, engine = undefined } = {}) => {
+  const docs = (await ballGame()).scenes;
+  const scenes = [...docs].map(([ref, doc]) => [ref, edit?.(ref, structuredClone(doc)) ?? doc]);
+  const eng = engine === undefined ? { snapshot: 1, dmath: '0.1.0', maths: '0123456789abcdef', actions: 'b'.repeat(64), behaviours: {} } : engine;
+  return compatFingerprint({ scenes, behaviours: { code, names: new Set(BEHAVIOURS.keys()), exports: null }, actions, runtime: { version: '0.1.0', engine: eng } });
+};
+
+test('a save loads into another export with the same fingerprint, and play goes on with the same per-step hashes (M6 W5)', async () => {
+  const store = new MemoryStore(), compat = await fingerprint();
+  const a = await ballSession({ store, compat });
+  const act = person(a.device);
+  await a.session.newGame();
+  await play(a.session, 150, act);
+  await a.session.saveSlot('slot-1');
+  const saved = await store.read('slot-1');
+  assert.deepEqual(saved.extra.build, { digest: 'test', game: 'ball-game', compat }, 'the save carries the build\'s fingerprint');
+  const listed = (await store.list()).find((e) => e.slot === 'slot-1');
+  assert.deepEqual(listed.compat, { format: compat.format, version: compat.version, digest: compat.digest, parts: compat.parts }, 'and a listing says it without reading the file');
+  assert.equal(listed.game, 'ball-game');
+  const from = a.session.trace.length;
+  await play(a.session, 140, act);
+  const unbroken = a.session.trace.slice(from);
+  a.session.end();
+  // a re-export that changed a texture: another digest, the same fingerprint
+  const b = await ballSession({ store, digest: 'texture-changed', compat: await fingerprint() });
+  await b.session.loadSlot('slot-1');
+  const actB = person(b.device);
+  await play(b.session, 140, actB);
+  assert.equal(firstDifference(b.session.trace, unbroken), -1, 'the same per-step hashes as the run that never stopped');
+  // and what it saves now names the new build
+  await b.session.saveSlot('slot-2');
+  assert.equal((await store.read('slot-2')).extra.build.digest, 'texture-changed');
+  // its session log still names the whole build: a log from the first build won't replay on the second
+  const g = await ballGame();
+  const logA = a.session.last;
+  await assert.rejects(replaySession(logA, { ...g, digest: 'texture-changed' }), /played on build test; this is build texture-chan/);
+  b.session.end();
+});
+
+test('a save is refused by an export whose fingerprint differs, saying what changed (M6 W5)', async () => {
+  const store = new MemoryStore();
+  const a = await ballSession({ store, compat: await fingerprint() });
+  await a.session.newGame();
+  await play(a.session, 30);
+  await a.session.saveSlot('slot-1');
+  a.session.end();
+  const refused = async (compat, re, part) => {
+    const s = await ballSession({ store, digest: 'next', compat });
+    const err = await s.session.loadSlot('slot-1').then(() => null, (e) => e);
+    assert.ok(err, `${part}: refused`);
+    assert.match(err.message, re);
+    assert.equal(err.code, 'incompatible_save');
+    assert.deepEqual(err.problems.map((p) => p.part), [part]);
+    assert.equal(s.session.active, false, 'nothing started');
+  };
+  await refused(await fingerprint({ edit: (ref, doc) => { if (ref === 'level.vrmxs') doc.nodes.push({ id: 'extra', type: 'Node3D' }); return doc; } }), /another version of the game, and this one can't restore it: the scene level\.vrmxs changed\./, 'scenes');
+  await refused(await fingerprint({ code: 'c'.repeat(64) }), /the code of the behaviours .* changed \(they declare no state/, 'behaviours');
+  await refused(await fingerprint({ actions: { move_x: { type: 'axis' }, crouch: { type: 'button' } } }), /the game's controls changed/, 'input');
+  await refused(await fingerprint({ engine: { snapshot: 2, dmath: '0.1.0', maths: '0123456789abcdef', actions: 'b'.repeat(64), behaviours: {} } }), /the engine changed/, 'engine');
+  // a build from before M6 (no fingerprint) restores only its own saves
+  const old = await ballSession({ store, digest: 'next' });
+  await assert.rejects(old.session.loadSlot('slot-1'), /made with another version of the game \(build test\)/);
+  // another game's save, whatever its fingerprint
+  const other = structuredClone(await store.read('slot-1')); other.extra.build.game = 'another-game';
+  const same = await ballSession({ store, compat: await fingerprint() });
+  await assert.rejects(same.session.loadFile(other), /from another game \("another-game"\)/);
 });
 
 test('a log replays only on the build it was played on', async () => {

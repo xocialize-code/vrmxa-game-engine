@@ -94,5 +94,16 @@ test('stores keep, list and remove saves (memory and files)', async () => {
   const stamped = new MemoryStore();
   await stamped.write('slot-3', { ...doc, extra: { build: { digest: 'abc', game: 'cafe' } } });
   assert.equal((await stamped.list())[0].build, 'abc', 'the build that made it, for a slot list (M5 W1)');
+  assert.equal((await stamped.list())[0].compat, null, 'no fingerprint named: null');
+  // the build's save-compatibility fingerprint, without its per-scene detail, for a slot list (M6 W5)
+  const compat = { format: 'vrmxg-compat', version: 1, digest: 'd'.repeat(64), parts: { scenes: '1', behaviours: '2', input: '3', engine: '4' }, scenes: { 'a.vrmxs': '5' }, behaviours: {} };
+  const fsDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-saves-'));
+  for (const store of [new MemoryStore(), new FsStore(fsDir)]) {
+    await store.write('slot-4', { ...doc, extra: { build: { digest: 'abc', game: 'cafe', compat } } });
+    const e = (await store.list()).find((x) => x.slot === 'slot-4');
+    assert.deepEqual(e.compat, { format: 'vrmxg-compat', version: 1, digest: 'd'.repeat(64), parts: compat.parts });
+    assert.equal(e.game, 'cafe');
+  }
+  fs.rmSync(fsDir, { recursive: true, force: true });
   await assert.rejects(new FsStore(fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-'))).write('../evil', doc), /a slot is/);
 });

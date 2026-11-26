@@ -7,7 +7,14 @@
 // Every check runs before a folder is asked for, each file is read and hashed once, and the shell stages what is
 // written, checks it against the manifest (each file's size and SHA-256) and moves it in at the end. An export that fails on the way is aborted (`build.abort`), which leaves the
 // folder as it was: an earlier build whole, and the same folder free for the next try.
-import { exportBuild, defaultGame, fetchReader, GAME_FILE } from '@vrmxg/bundle';
+//
+// The game's behaviours module is imported for each export, as Node's exporter imports it (exportBuild's importModule,
+// M6 W0 and W5): read from the project as it is now, its relative imports rewritten to blob: URLs of their own bytes,
+// so neither the editor's open-time declarations nor the page's module cache can hand the build an older describe.
+// The export's checks and its save-compatibility fingerprint read that one import, and a project gives the same
+// manifest and the same verdict here and in Node (a module that won't import refuses the export, bad_behaviours).
+import * as core from '@vrmxg/core';
+import { exportBuild, defaultGame, fetchReader, moduleGraph, linkModules, GAME_FILE } from '@vrmxg/bundle';
 import { toBase64 } from '@vrmxg/export';
 import { inShell, call } from '../../shell/js/shell.js';
 
@@ -16,16 +23,40 @@ export const RUNTIME_BASE = './game-runtime/';
 /** The most bytes of a file in one bridge message: a larger file crosses in pieces, so no message outgrows this. */
 export const CHUNK = 4 << 20;
 
+const blobUrl = (_ref, src) => URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+
+/**
+ * The page's importer of a project's modules for an export (exportBuild's `importModule`): the module and every module
+ * it imports relatively, read from the project now (moduleGraph), linked to URLs of their own text (linkModules: blob:
+ * URLs, revoked once imported) and imported. A fresh graph every time; `@vrmxg/core` reaches it through the page's
+ * import map. A graph with an import cycle can't be linked this way and refuses the export.
+ * @param {{ bytes: (ref: string) => Promise<Uint8Array> }} project
+ * @param {{ url?: (ref: string, source: string) => string }} [o] url: a module's URL from its text (tests: a file)
+ * @returns {(ref: string) => Promise<Record<string, any>>}
+ */
+export function freshImporter(project, { url = blobUrl } = {}) {
+  return async (ref) => {
+    globalThis.VRMXG_CORE = core; // what the import map's @vrmxg/core hands project modules (as project.js does)
+    const sources = await moduleGraph({ top: ref, read: (r) => project.bytes(r) });
+    const made = [];
+    try {
+      const top = linkModules({ top: ref, sources, url: (r, src) => { const u = url(r, src); made.push(u); return u; } });
+      return await import(/* @vite-ignore */ top);
+    } finally { for (const u of made) if (u.startsWith('blob:')) URL.revokeObjectURL(u); }
+  };
+}
+
 /**
  * @param {{ files: string[], has: (ref: string) => boolean, bytes: (ref: string) => Promise<Uint8Array>, truncated?: boolean }} project
  * @param {{ scene?: string | null, name?: string, onProgress?: ((done: number, total: number, path: string) => void) | null, signal?: AbortSignal | null,
- *   shell?: { inShell: boolean, call: (method: string, params?: any) => Promise<any> }, runtime?: { read: (path: string) => Promise<Uint8Array> }, chunk?: number, registry?: any }} [o]
+ *   shell?: { inShell: boolean, call: (method: string, params?: any) => Promise<any> }, runtime?: { read: (path: string) => Promise<Uint8Array> }, chunk?: number, importModule?: ((ref: string) => Promise<any>) | null, registry?: any }} [o]
  *   scene: the open scene, the game's entry when the project has no game.json; name: the build folder's name (the
  *   game's id); signal: stops the export between two writes (the window is closing), and the folder is left as it was;
- *   shell, runtime, chunk: the Mac shell, the runtime's files and the piece size (tests pass their own); registry: the
- *   editor's, with the project's behaviours declared in it (M6 W0), so their asset params are traced as typed references
+ *   shell, runtime, chunk: the Mac shell, the runtime's files and the piece size (tests pass their own); importModule:
+ *   how the game's behaviours module is imported (default: freshImporter, from the project as it is now); registry: a
+ *   registry to trace with instead, its project behaviours already declared (tests; it skips the import)
  */
-export async function exportGame(project, { scene = null, name = '', onProgress = null, signal = null, shell = { inShell, call }, runtime = { read: fetchReader(RUNTIME_BASE) }, chunk = CHUNK, registry = undefined } = {}) {
+export async function exportGame(project, { scene = null, name = '', onProgress = null, signal = null, shell = { inShell, call }, runtime = { read: fetchReader(RUNTIME_BASE) }, chunk = CHUNK, importModule = freshImporter(project), registry = undefined } = {}) {
   let game = null;
   if (!project.has(GAME_FILE)) {
     if (!scene) throw new Error(`the project has no ${GAME_FILE}, and no scene is open to export as the game`);
@@ -42,14 +73,14 @@ export async function exportGame(project, { scene = null, name = '', onProgress 
   };
   try {
     const r = await exportBuild({
-      project: { files: project.files, read: (ref) => project.bytes(ref), truncated: project.truncated === true }, runtime, game, registry,
+      project: { files: project.files, read: (ref) => project.bytes(ref), truncated: project.truncated === true }, runtime, game, registry, importModule,
       onProgress: (done, total, path) => { stopped(); onProgress?.(done, total, path); },
       // every check has passed: only now is a folder asked for, so a refused export asks for none and replaces nothing
       ready: shell.inShell ? async (plan) => { stopped(); id = (await shell.call('build.begin', { name: name || plan.game.id, title: 'Export Game' })).id; } : null,
       write: shell.inShell ? write : null,
     });
     const g = r.manifest.game;
-    const about = { id: g.id, title: g.title, entry: g.entry, runtime: `${r.manifest.runtime.name} ${r.manifest.runtime.version}`, files: r.files, bytes: r.bytes, digest: r.manifest.digest, manifest: r.sha256, byPattern: r.byPattern.length };
+    const about = { id: g.id, title: g.title, entry: g.entry, runtime: `${r.manifest.runtime.name} ${r.manifest.runtime.version}`, files: r.files, bytes: r.bytes, digest: r.manifest.digest, manifest: r.sha256, compat: r.manifest.compat?.digest ?? null, byPattern: r.byPattern.length };
     if (!shell.inShell) return { ...about, written: false, path: null };
     stopped();
     const ended = await shell.call('build.end', { id });

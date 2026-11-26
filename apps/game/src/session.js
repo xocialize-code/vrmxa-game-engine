@@ -11,11 +11,18 @@
 //   Pause, Resume   the host takes no step while paused: nothing in the world changes, and nothing is recorded
 //   Quit to title   ends the session
 //
-// A save belongs to the build that made it. Every file this session writes (a player's save, a checkpoint) carries the
-// build's digest in its `extra.build`, and a file from another build (another export of the same game: the same bundle
-// id, so the same Saves folder) is refused with a message saying so: @vrmxg/save checks the scene document, the maths and
-// the physics build, not the prefabs, the behaviours, the action map or the engine, so such a file could load and then
-// play on differently. A session log names its build too, and replaySession refuses a log from another one.
+// A save belongs to the builds that can restore it (M6 W5, AB-T-0631). Every file this session writes (a player's save,
+// a checkpoint) carries, in its `extra.build`, the build's digest and its save-compatibility fingerprint (@vrmxg/bundle's
+// compat.js, the manifest's `compat`: the scene documents and prefabs, the state the behaviours declare or else their
+// code, the action map, the engine's snapshot format and maths). A file loads into the build that made it, and into any
+// later export of the game with the same fingerprint: a re-export that changed only a texture, a sound or the game's
+// `release` goes on from its earlier saves with the same per-step hashes. A file whose fingerprint differs is refused
+// with what changed (its scenes, a behaviour's state or code, the controls, the engine); so is one from before M6, which
+// has a digest and no fingerprint, unless it is this build's. (@vrmxg/save checks the scene being restored, the maths and
+// the physics build on its own, as it always has.)
+//
+// A session log names the whole build's digest, and replaySession refuses a log from any other build: a replay is exact
+// only on the build it was played on, so a re-export, however small, doesn't replay an earlier log.
 //
 // None of them is an input: the first two are where a segment of the log starts, and the rest never touch the world.
 // Whatever a game's own scenes offer (a title scene that waits for a button) is an action in the recorded input frame.
@@ -24,6 +31,7 @@
 // No DOM and no wall clock: the time a save is stamped with comes in as `stamp`.
 import { GameFlow, CHECKPOINT_PREFIX } from '@vrmxg/game';
 import { worldHashes, hashValue } from '@vrmxg/snapshot';
+import { compatProblems } from '@vrmxg/bundle';
 
 export const SESSION_FORMAT = 'vrmxg-session';
 export const SESSION_VERSION = 1;
@@ -37,6 +45,8 @@ export class GameSession {
    * @param {object} o
    * @param {{ id: string, entry: string, title?: string }} o.game the build's game document
    * @param {string | null} [o.digest] the build's digest (the log names the build it was played on)
+   * @param {any} [o.compat] the build's save-compatibility fingerprint (its manifest's `compat`): saves another export
+   *   made load when it matches (null: a build from before M6, whose saves load only into it)
    * @param {(req: any) => Promise<any>} o.load builds a world (world.js `worldLoader`)
    * @param {(tree: any) => void} [o.unload] frees one
    * @param {any} [o.store] a @vrmxg/save store: the player's slots and the game's checkpoints
@@ -47,7 +57,7 @@ export class GameSession {
    * @param {(event: any) => void} [o.onEvent] the flow's events (the game's, and scene, loaded, checkpointWritten, …)
    * @param {boolean} [o.hashes] keep a hash of the world after every step (an acceptance run; it costs a hash a step)
    */
-  constructor({ game, digest = null, load, unload = null, store = null, stamp = null, seed = 1, scenes = null, prefabs = null, onWorld = null, onEvent = null, hashes = false }) {
+  constructor({ game, digest = null, compat = null, load, unload = null, store = null, stamp = null, seed = 1, scenes = null, prefabs = null, onWorld = null, onEvent = null, hashes = false }) {
     this.game = game; this.digest = digest;
     this.loadWorld = load; this.unload = unload; this.store = store; this.stamp = stamp;
     /**
@@ -57,7 +67,7 @@ export class GameSession {
      */
     this.segment = 0;
     /** What every file written here says about the build that made it (null: no build, as in some tests). */
-    this.build = digest ? { digest, game: game.id } : null;
+    this.build = digest ? { digest, game: game.id, ...(compat ? { compat } : {}) } : null;
     // the store as the flow sees it: every write (a player's save, a checkpoint) is stamped with the build, and moves
     // safeStep once it has succeeded, only if no other segment began meanwhile
     this._store = store && {
@@ -166,14 +176,35 @@ export class GameSession {
   }
 
   /**
-   * Refuse a save another build made (see the top). A session with no build (tests) loads any file.
+   * Refuse a save this build can't restore (see the top): one from another game, or from another build whose
+   * fingerprint differs or that has none. A session with no build (tests) loads any file. The error says what changed;
+   * its `code` is 'incompatible_save' and its `problems` are @vrmxg/bundle's compatProblems.
    * @param {any} file
    */
   checkBuild(file) {
-    if (!this.build) return;
+    const problems = this.buildProblems(file);
+    if (problems === null) return;
+    throw Object.assign(new Error(problems.message), { code: 'incompatible_save', problems: problems.list });
+  }
+
+  /**
+   * Why this build can't restore a save, or null when it can (checkBuild without the throw).
+   * @param {any} file @returns {{ message: string, list: Array<{ part: string, items: string[], text: string }> } | null}
+   */
+  buildProblems(file) {
+    if (!this.build) return null;
     const b = file?.extra?.build;
-    if (!b?.digest) throw new Error('This save doesn\'t say which version of the game made it, so it can\'t be loaded safely.');
-    if (b.digest !== this.build.digest) throw new Error(`This save was made with another version of the game (build ${String(b.digest).slice(0, 12)}); this one is build ${this.build.digest.slice(0, 12)}. A save loads only into the version that made it.`);
+    if (!b?.digest) return { message: 'This save doesn\'t say which version of the game made it, so it can\'t be loaded safely.', list: [{ part: 'build', items: [], text: 'it names no build' }] };
+    if (b.game && b.game !== this.build.game) return { message: `This save is from another game ("${b.game}"), not this one.`, list: [{ part: 'game', items: [b.game], text: `it is from the game "${b.game}"` }] };
+    if (b.digest === this.build.digest) return null;
+    if (b.compat && this.build.compat) {
+      const list = compatProblems(b.compat, this.build.compat);
+      if (!list.length) return null; // another export, and nothing a restore depends on changed
+      const why = list.map((p) => p.text).join('; ');
+      return { message: `This save was made with another version of the game, and this one can't restore it: ${why}.`, list };
+    }
+    // a build from before M6 on one side: only the build that made the save can restore it
+    return { message: `This save was made with another version of the game (build ${String(b.digest).slice(0, 12)}); this one is build ${this.build.digest.slice(0, 12)}. A save loads only into the version that made it, or a later one that restores it the same.`, list: [{ part: 'build', items: [], text: `${b.compat ? 'this' : 'that'} version doesn't record what its saves depend on` }] };
   }
 
   /** Load a slot of the store: a player's save, or a checkpoint by its full name ("auto-…"). */

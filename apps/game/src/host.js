@@ -106,7 +106,7 @@ export class GameHost {
       },
     });
     this.session = new GameSession({
-      game: this.game, digest: build.manifest.digest, load, unload: (tree) => this._dispose(tree), store: this.store,
+      game: this.game, digest: build.manifest.digest, compat: build.manifest.compat ?? null, load, unload: (tree) => this._dispose(tree), store: this.store,
       stamp: () => new Date().toISOString(), seed: 1, scenes: docs, prefabs, hashes: this.trace,
       onWorld: (tree) => { this.render?.attach(tree); this.resize(); this._changed(); }, // while a renderer is being replaced, it takes the world
       onEvent: (e) => { this.onEvent(e); this._changed(); },
