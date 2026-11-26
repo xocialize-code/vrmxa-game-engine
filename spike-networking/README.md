@@ -13,8 +13,8 @@ under every profile from LAN to 150 ± 50 ms with 5 % loss.
 
 Lockstep needs nothing for that. Rollback needs the harness's jump shim (AB-T-0657). As the engine is, rollback peers
 part: at step 26 on the typical profile and step 189 on lan, both of them off the reference
-(`results/netcode-no-jump-shim.json`). The in-band hash checks catch it. With the shim, what separates the two models is what they cost and what the engine
-can do today.
+(`results/netcode-no-jump-shim.json`). The in-band hash checks catch it. With the shim, what separates the two models is
+what they cost and what the engine can do today.
 
 - **Lockstep works today, with no engine change.** It never restores a snapshot, so it asks no more of the engine than
   a replay does.
@@ -61,10 +61,10 @@ entirely (0 steps felt, at 3 rollbacks a second of depth 1 to 11) and costs the 
 AB-T-0657, AB-T-0658 and AB-T-0659 first, plus a lockstep barrier at scene changes. Whether networking becomes a
 workstream is the operator's call (M6-PLAN decision 2).
 
-Measured 2026-11-25, and rerun at the review-fix commit on 2026-11-26, on a Mac Studio M5 Max (Mac17,14), macOS 27.3, Node 26.12.1 (V8), three r187,
-`@dimforge/rapier3d-deterministic-compat` 0.21.0 (the engine's one Rapier build), `@vrmxg/dmath` installed. Node only:
-no GPU, no browser. JSC runs the engine's step about twice as fast as V8 (AB-R-0941), so every millisecond here is a
-Node number, not the shipped one.
+Measured 2026-11-25, and rerun at the review-fix commit on 2026-11-26, on a Mac Studio M5 Max (Mac17,14), macOS 27.3,
+Node 26.12.1 (V8), three r187, `@dimforge/rapier3d-deterministic-compat` 0.21.0 (the engine's one Rapier build),
+`@vrmxg/dmath` installed. Node only: no GPU, no browser. JSC runs the engine's step about twice as fast as V8
+(AB-R-0941), so every millisecond here is a Node number, not the shipped one.
 
 ## What was asked
 
