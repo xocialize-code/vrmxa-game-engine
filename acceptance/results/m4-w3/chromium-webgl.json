@@ -3,7 +3,7 @@
  "runtime": "chromium",
  "backend": "webgl",
  "ua": "156.0.8078.4",
- "started": "2026-11-23T17:11:03.399Z",
+ "started": "2026-11-26T16:40:43.002Z",
  "checks": {
   "acceptance": {
    "query": "mode=acceptance&renderer=webgl",
@@ -25,58 +25,66 @@
       "snapshot": true,
       "backend": true
      },
-     "ms": 30572,
+     "ms": 30191,
      "wall": {
-      "start": 1795453878938,
-      "end": 1795453909510
+      "start": 1795711401113,
+      "end": 1795711431304
      },
      "gpuLoad": {
       "samples": 11,
       "gpuUtil": {
        "min": 0,
-       "median": 2,
-       "max": 65
+       "median": 0,
+       "max": 68
       },
       "seen": {
-       "browser:Microsoft Edge": 0.1,
+       "webkit:com.apple.WebKit.GPU": 1.3,
+       "webkit:com.apple.WebKit.WebContent": 6.8,
+       "browser:Microsoft Edge Helper": 2.2,
+       "browser:Microsoft Edge": 0,
        "browser:msedge_crashpad_handler": 0,
-       "browser:Microsoft Edge Helper": 0,
-       "browser:Microsoft Edge Helper (Renderer)": 0.1,
-       "webkit:com.apple.WebKit.GPU": 0,
-       "webkit:com.apple.WebKit.WebContent": 0,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "node:node": 12.3,
-       "chromium:Google Chrome for Testing": 10.8,
-       "chromium:chrome_crashpad_handler": 1.2,
-       "chromium:Google Chrome for Testing Helper (GPU)": 43,
-       "chromium:Google Chrome for Testing Helper": 2.4,
-       "chromium:Google Chrome for Testing Helper (Alerts)": 0,
-       "chromium:Google Chrome for Testing Helper (Renderer)": 138.8
+       "browser:Microsoft Edge Helper (Renderer)": 7.6,
+       "gaea:Gaea": 0,
+       "node:node": 101.3,
+       "chromium:Google Chrome for Testing": 30.9,
+       "chromium:chrome_crashpad_handler": 0.7,
+       "chromium:Google Chrome for Testing Helper (GPU)": 13.4,
+       "chromium:Google Chrome for Testing Helper": 7.3,
+       "chromium:Google Chrome for Testing Helper (Alerts)": 5.2,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 138.7
       },
       "first": {
-       "at": 1795453878938,
+       "at": 1795711401113,
        "gpuUtil": 0,
        "processes": [
-        "chromium:Google Chrome for Testing 10.7%",
-        "chromium:chrome_crashpad_handler 1.2%"
+        "webkit:com.apple.WebKit.WebContent 3.1%",
+        "browser:Microsoft Edge Helper 1%",
+        "browser:Microsoft Edge Helper (Renderer) 4.1%",
+        "chromium:Google Chrome for Testing 30.9%",
+        "chromium:Google Chrome for Testing Helper (GPU) 9.1%",
+        "chromium:Google Chrome for Testing Helper 7.3%",
+        "chromium:Google Chrome for Testing Helper 5.3%",
+        "chromium:Google Chrome for Testing Helper (Alerts) 5.2%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795453909000,
-       "gpuUtil": 65,
+       "at": 1795711431299,
+       "gpuUtil": 68,
        "processes": [
-        "node:node 12.3%",
-        "chromium:Google Chrome for Testing 10.8%",
-        "chromium:Google Chrome for Testing Helper (GPU) 43%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 101.1%"
+        "webkit:com.apple.WebKit.WebContent 1.8%",
+        "node:node 101.3%",
+        "browser:Microsoft Edge Helper (Renderer) 4.8%",
+        "chromium:Google Chrome for Testing 9.9%",
+        "chromium:Google Chrome for Testing Helper (GPU) 13.4%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 31.5%"
        ],
        "otherGpuHelpers": 1
       }
      },
      "underLoad": {
-      "loaded": false,
-      "why": "quiet"
+      "loaded": true,
+      "why": "webkit:com.apple.WebKit.WebContent 6.8%, browser:Microsoft Edge Helper (Renderer) 7.6%"
      },
      "errors": [],
      "timedOut": false,
@@ -84,7 +92,7 @@
      "rendered": {
       "frames": 600,
       "renderMs": {
-       "mean": 0.581,
+       "mean": 0.577,
        "p95": 0.7
       },
       "sameAsHeadless": true,
@@ -114,7 +122,7 @@
         "noGrain": 0.9861,
         "grain": 0.9507
        },
-       "views4Ms": 1.4
+       "views4Ms": 1.3
       }
      },
      "kind": "clean"
@@ -144,49 +152,53 @@
       "webgpuBackend": true,
       "distinctFrames": true
      },
-     "ms": 1566,
+     "ms": 1773,
      "wall": {
-      "start": 1795453909523,
-      "end": 1795453911089
+      "start": 1795711431320,
+      "end": 1795711433093
      },
      "gpuLoad": {
       "samples": 5,
       "gpuUtil": {
-       "min": 6,
-       "median": 6,
-       "max": 65
+       "min": 0,
+       "median": 0,
+       "max": 68
       },
       "seen": {
-       "browser:Microsoft Edge": 0.1,
+       "webkit:com.apple.WebKit.GPU": 0.8,
+       "webkit:com.apple.WebKit.WebContent": 6.8,
+       "browser:Microsoft Edge Helper": 1.1,
+       "browser:Microsoft Edge": 0,
        "browser:msedge_crashpad_handler": 0,
-       "browser:Microsoft Edge Helper": 0,
-       "browser:Microsoft Edge Helper (Renderer)": 0.1,
-       "webkit:com.apple.WebKit.GPU": 0,
-       "webkit:com.apple.WebKit.WebContent": 0,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "node:node": 12.3,
-       "chromium:Google Chrome for Testing": 10.8,
+       "browser:Microsoft Edge Helper (Renderer)": 7.6,
+       "gaea:Gaea": 0,
+       "node:node": 101.3,
+       "chromium:Google Chrome for Testing": 9.9,
        "chromium:chrome_crashpad_handler": 0,
-       "chromium:Google Chrome for Testing Helper (GPU)": 43,
-       "chromium:Google Chrome for Testing Helper": 1.7,
-       "chromium:Google Chrome for Testing Helper (Renderer)": 138.8
+       "chromium:Google Chrome for Testing Helper (GPU)": 13.4,
+       "chromium:Google Chrome for Testing Helper": 2.2,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 133.8
       },
       "first": {
-       "at": 1795453896997,
-       "gpuUtil": 6,
+       "at": 1795711419164,
+       "gpuUtil": 0,
        "processes": [
-        "chromium:Google Chrome for Testing Helper (Renderer) 111.2%"
+        "webkit:com.apple.WebKit.WebContent 1.4%",
+        "browser:Microsoft Edge Helper (Renderer) 6.2%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 112.9%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795453909000,
-       "gpuUtil": 65,
+       "at": 1795711431299,
+       "gpuUtil": 68,
        "processes": [
-        "node:node 12.3%",
-        "chromium:Google Chrome for Testing 10.8%",
-        "chromium:Google Chrome for Testing Helper (GPU) 43%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 101.1%"
+        "webkit:com.apple.WebKit.WebContent 1.8%",
+        "node:node 101.3%",
+        "browser:Microsoft Edge Helper (Renderer) 4.8%",
+        "chromium:Google Chrome for Testing 9.9%",
+        "chromium:Google Chrome for Testing Helper (GPU) 13.4%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 31.5%"
        ],
        "otherGpuHelpers": 1
       }
@@ -201,7 +213,7 @@
       1280,
       720
      ],
-     "stillMsWithRead": 30.2,
+     "stillMsWithRead": 30.9,
      "kind": "clean"
     },
     {
@@ -218,58 +230,61 @@
       "webgpuBackend": true,
       "distinctFrames": true
      },
-     "ms": 1581,
+     "ms": 1810,
      "wall": {
-      "start": 1795453911090,
-      "end": 1795453912671
+      "start": 1795711433094,
+      "end": 1795711434904
      },
      "gpuLoad": {
       "samples": 6,
       "gpuUtil": {
-       "min": 6,
-       "median": 7,
-       "max": 65
+       "min": 0,
+       "median": 0,
+       "max": 68
       },
       "seen": {
-       "browser:Microsoft Edge": 0.1,
+       "webkit:com.apple.WebKit.GPU": 0.8,
+       "webkit:com.apple.WebKit.WebContent": 6.8,
+       "browser:Microsoft Edge Helper": 1.6,
+       "browser:Microsoft Edge": 0,
        "browser:msedge_crashpad_handler": 0,
-       "browser:Microsoft Edge Helper": 0,
-       "browser:Microsoft Edge Helper (Renderer)": 0.1,
-       "webkit:com.apple.WebKit.GPU": 0,
-       "webkit:com.apple.WebKit.WebContent": 0,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "node:node": 12.3,
-       "chromium:Google Chrome for Testing": 10.8,
+       "browser:Microsoft Edge Helper (Renderer)": 7.6,
+       "gaea:Gaea": 0,
+       "node:node": 101.3,
+       "chromium:Google Chrome for Testing": 9.9,
        "chromium:chrome_crashpad_handler": 0,
-       "chromium:Google Chrome for Testing Helper (GPU)": 43,
-       "chromium:Google Chrome for Testing Helper": 1.7,
-       "chromium:Google Chrome for Testing Helper (Renderer)": 138.8
+       "chromium:Google Chrome for Testing Helper (GPU)": 39.4,
+       "chromium:Google Chrome for Testing Helper": 2.2,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 133.8
       },
       "first": {
-       "at": 1795453896997,
-       "gpuUtil": 6,
+       "at": 1795711419164,
+       "gpuUtil": 0,
        "processes": [
-        "chromium:Google Chrome for Testing Helper (Renderer) 111.2%"
+        "webkit:com.apple.WebKit.WebContent 1.4%",
+        "browser:Microsoft Edge Helper (Renderer) 6.2%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 112.9%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795453912001,
-       "gpuUtil": 16,
+       "at": 1795711434308,
+       "gpuUtil": 25,
        "processes": [
-        "node:node 5.2%",
-        "chromium:Google Chrome for Testing 5.8%",
-        "chromium:Google Chrome for Testing Helper (GPU) 12.2%",
-        "chromium:Google Chrome for Testing Helper 1.7%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 1.7%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 114.1%"
+        "webkit:com.apple.WebKit.WebContent 3.2%",
+        "browser:Microsoft Edge Helper 1.6%",
+        "node:node 2.5%",
+        "browser:Microsoft Edge Helper (Renderer) 5.3%",
+        "chromium:Google Chrome for Testing 2.7%",
+        "chromium:Google Chrome for Testing Helper (GPU) 39.4%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 127.8%"
        ],
        "otherGpuHelpers": 1
       }
      },
      "underLoad": {
-      "loaded": false,
-      "why": "quiet"
+      "loaded": true,
+      "why": "browser:Microsoft Edge Helper (Renderer) 5.3%"
      },
      "errors": [],
      "timedOut": false,
@@ -277,7 +292,7 @@
       1280,
       720
      ],
-     "stillMsWithRead": 30.4,
+     "stillMsWithRead": 30.9,
      "kind": "clean"
     },
     {
@@ -294,61 +309,64 @@
       "webgpuBackend": true,
       "distinctFrames": true
      },
-     "ms": 1593,
+     "ms": 1807,
      "wall": {
-      "start": 1795453912671,
-      "end": 1795453914264
+      "start": 1795711434905,
+      "end": 1795711436712
      },
      "gpuLoad": {
       "samples": 5,
       "gpuUtil": {
-       "min": 6,
-       "median": 7,
-       "max": 65
+       "min": 0,
+       "median": 0,
+       "max": 68
       },
       "seen": {
-       "browser:Microsoft Edge": 0.1,
+       "webkit:com.apple.WebKit.GPU": 0.8,
+       "webkit:com.apple.WebKit.WebContent": 6.8,
+       "browser:Microsoft Edge Helper": 1.6,
+       "browser:Microsoft Edge": 0,
        "browser:msedge_crashpad_handler": 0,
-       "browser:Microsoft Edge Helper": 0,
-       "browser:Microsoft Edge Helper (Renderer)": 0.1,
-       "webkit:com.apple.WebKit.GPU": 0,
-       "webkit:com.apple.WebKit.WebContent": 0,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "node:node": 12.3,
-       "chromium:Google Chrome for Testing": 10.8,
+       "browser:Microsoft Edge Helper (Renderer)": 7.6,
+       "gaea:Gaea": 0,
+       "node:node": 101.3,
+       "chromium:Google Chrome for Testing": 9.9,
        "chromium:chrome_crashpad_handler": 0,
-       "chromium:Google Chrome for Testing Helper (GPU)": 43,
-       "chromium:Google Chrome for Testing Helper": 1.7,
-       "chromium:Google Chrome for Testing Helper (Renderer)": 138.8
+       "chromium:Google Chrome for Testing Helper (GPU)": 39.4,
+       "chromium:Google Chrome for Testing Helper": 2.2,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 133.8
       },
       "first": {
-       "at": 1795453899995,
-       "gpuUtil": 7,
+       "at": 1795711422169,
+       "gpuUtil": 0,
        "processes": [
-        "node:node 7.8%",
-        "chromium:Google Chrome for Testing 5.2%",
-        "chromium:Google Chrome for Testing Helper 1.2%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 130.3%"
+        "webkit:com.apple.WebKit.WebContent 1.1%",
+        "node:node 7.9%",
+        "browser:Microsoft Edge Helper (Renderer) 6.5%",
+        "chromium:Google Chrome for Testing 4.9%",
+        "chromium:Google Chrome for Testing Helper 1.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 127%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795453912001,
-       "gpuUtil": 16,
+       "at": 1795711434308,
+       "gpuUtil": 25,
        "processes": [
-        "node:node 5.2%",
-        "chromium:Google Chrome for Testing 5.8%",
-        "chromium:Google Chrome for Testing Helper (GPU) 12.2%",
-        "chromium:Google Chrome for Testing Helper 1.7%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 1.7%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 114.1%"
+        "webkit:com.apple.WebKit.WebContent 3.2%",
+        "browser:Microsoft Edge Helper 1.6%",
+        "node:node 2.5%",
+        "browser:Microsoft Edge Helper (Renderer) 5.3%",
+        "chromium:Google Chrome for Testing 2.7%",
+        "chromium:Google Chrome for Testing Helper (GPU) 39.4%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 127.8%"
        ],
        "otherGpuHelpers": 1
       }
      },
      "underLoad": {
-      "loaded": false,
-      "why": "quiet"
+      "loaded": true,
+      "why": "browser:Microsoft Edge Helper (Renderer) 5.3%"
      },
      "errors": [],
      "timedOut": false,
@@ -356,7 +374,7 @@
       1280,
       720
      ],
-     "stillMsWithRead": 30.7,
+     "stillMsWithRead": 30.6,
      "kind": "clean"
     }
    ],
@@ -367,14 +385,14 @@
   },
   "frames": {
    "query": "mode=frames&renderer=webgl&canon=chromium-webgl",
-   "canonical": "70a6468d5263c04b",
+   "canonical": "28e3089104291f3f",
    "pinned": true,
    "loads": [
     {
      "load": 1,
      "label": "load 1",
      "ok": true,
-     "digest": "70a6468d5263c04b",
+     "digest": "28e3089104291f3f",
      "match": true,
      "differ": [],
      "verdicts": {
@@ -391,60 +409,64 @@
       "backend": true,
       "notTimedOut": true
      },
-     "ms": 32923,
+     "ms": 32515,
      "wall": {
-      "start": 1795453914264,
-      "end": 1795453947187
+      "start": 1795711436713,
+      "end": 1795711469228
      },
      "gpuLoad": {
       "samples": 16,
       "gpuUtil": {
-       "min": 6,
-       "median": 36,
-       "max": 65
+       "min": 0,
+       "median": 37,
+       "max": 68
       },
       "seen": {
-       "browser:Microsoft Edge": 0.1,
+       "webkit:com.apple.WebKit.GPU": 1.3,
+       "webkit:com.apple.WebKit.WebContent": 6.9,
+       "browser:Microsoft Edge Helper": 3.1,
+       "browser:Microsoft Edge": 2.1,
        "browser:msedge_crashpad_handler": 0,
-       "browser:Microsoft Edge Helper": 0,
-       "browser:Microsoft Edge Helper (Renderer)": 0.2,
-       "webkit:com.apple.WebKit.GPU": 0,
-       "webkit:com.apple.WebKit.WebContent": 0,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "node:node": 14.2,
-       "chromium:Google Chrome for Testing": 15.2,
+       "browser:Microsoft Edge Helper (Renderer)": 8.6,
+       "gaea:Gaea": 0,
+       "node:node": 101.3,
+       "chromium:Google Chrome for Testing": 17.3,
        "chromium:chrome_crashpad_handler": 0,
-       "chromium:Google Chrome for Testing Helper (GPU)": 43,
-       "chromium:Google Chrome for Testing Helper": 3.8,
-       "chromium:Google Chrome for Testing Helper (Renderer)": 138.8
+       "chromium:Google Chrome for Testing Helper (GPU)": 39.4,
+       "chromium:Google Chrome for Testing Helper": 4.5,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 133.8
       },
       "first": {
-       "at": 1795453899995,
-       "gpuUtil": 7,
+       "at": 1795711422169,
+       "gpuUtil": 0,
        "processes": [
-        "node:node 7.8%",
-        "chromium:Google Chrome for Testing 5.2%",
-        "chromium:Google Chrome for Testing Helper 1.2%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 130.3%"
+        "webkit:com.apple.WebKit.WebContent 1.1%",
+        "node:node 7.9%",
+        "browser:Microsoft Edge Helper (Renderer) 6.5%",
+        "chromium:Google Chrome for Testing 4.9%",
+        "chromium:Google Chrome for Testing Helper 1.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 127%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795453945016,
+       "at": 1795711467310,
        "gpuUtil": 48,
        "processes": [
-        "node:node 4.6%",
-        "chromium:Google Chrome for Testing 6.4%",
-        "chromium:Google Chrome for Testing Helper (GPU) 21%",
-        "chromium:Google Chrome for Testing Helper 3.4%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 87.3%"
+        "webkit:com.apple.WebKit.WebContent 4.7%",
+        "node:node 4.7%",
+        "browser:Microsoft Edge Helper (Renderer) 5.1%",
+        "chromium:Google Chrome for Testing 6.2%",
+        "chromium:Google Chrome for Testing Helper (GPU) 20.3%",
+        "chromium:Google Chrome for Testing Helper 3.3%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 85.9%"
        ],
        "otherGpuHelpers": 1
       }
      },
      "underLoad": {
-      "loaded": false,
-      "why": "quiet"
+      "loaded": true,
+      "why": "browser:Microsoft Edge Helper (Renderer) 8.6%, webkit:com.apple.WebKit.WebContent 6.9%"
      },
      "errors": [],
      "timedOut": false,
@@ -472,26 +494,27 @@
        "backend": "webgl",
        "steps": 2700,
        "audioHash": "7a6ff838",
+       "check": null,
        "ms": {
-        "total": 9783.6,
-        "begin": 0.1,
-        "render": 1841.3,
-        "readback": 2669.5,
-        "wait": 0.3,
-        "audio": 204.2,
+        "total": 9744,
+        "begin": 0,
+        "render": 1818.8,
+        "readback": 2684.3,
+        "wait": 0.7,
+        "audio": 201.3,
         "end": 0
        },
        "perFrameMs": {
-        "render": 1.7,
-        "readback": 2.47,
+        "render": 1.68,
+        "readback": 2.49,
         "wait": 0,
-        "total": 9.06
+        "total": 9.02
        },
-       "framesPerSecond": 110.39,
+       "framesPerSecond": 110.84,
        "steamDrawn": true,
-       "digest": "46a23bf918eb4da7",
+       "digest": "38a9f72fab0d521c",
        "distinct": 1080,
-       "worldDigest": "ac743fcb5a5572b3"
+       "worldDigest": "639c5bf78f575379"
       },
       "second": {
        "frames": 1080,
@@ -506,26 +529,27 @@
        "backend": "webgl",
        "steps": 2700,
        "audioHash": "7a6ff838",
+       "check": null,
        "ms": {
-        "total": 9688.2,
+        "total": 9680.3,
         "begin": 0,
-        "render": 1783.3,
-        "readback": 2658.5,
-        "wait": 0.3,
-        "audio": 197.4,
+        "render": 1776.2,
+        "readback": 2674.6,
+        "wait": 0.1,
+        "audio": 200.6,
         "end": 0.1
        },
        "perFrameMs": {
-        "render": 1.65,
-        "readback": 2.46,
+        "render": 1.64,
+        "readback": 2.48,
         "wait": 0,
-        "total": 8.97
+        "total": 8.96
        },
-       "framesPerSecond": 111.48,
+       "framesPerSecond": 111.57,
        "steamDrawn": true,
-       "digest": "46a23bf918eb4da7",
+       "digest": "38a9f72fab0d521c",
        "distinct": 1080,
-       "worldDigest": "ac743fcb5a5572b3"
+       "worldDigest": "639c5bf78f575379"
       },
       "framesDiffer": [],
       "odd": []
@@ -542,15 +566,15 @@
         "n": 30
        },
        "exportLoopMs": {
-        "median": 2.5,
-        "p95": 3.5,
+        "median": 2.6,
+        "p95": 3.8,
         "min": 2.3,
         "n": 30
        },
        "afterFrameMs": {
-        "median": 2.7,
-        "p95": 2.9,
-        "min": 2.5,
+        "median": 2.8,
+        "p95": 3,
+        "min": 2.7,
         "n": 30
        },
        "hash": "985eb7f629ba0133",
@@ -565,14 +589,14 @@
        },
        "exportLoopMs": {
         "median": 8.6,
-        "p95": 13.3,
-        "min": 8.5,
+        "p95": 13.5,
+        "min": 8.4,
         "n": 30
        },
        "afterFrameMs": {
         "median": 10.3,
-        "p95": 10.5,
-        "min": 9.8,
+        "p95": 10.4,
+        "min": 9.6,
         "n": 30
        },
        "hash": "337eac7ace895766",
@@ -581,13 +605,13 @@
       "1366x768": {
        "renderMs": {
         "median": 0.5,
-        "p95": 0.5,
+        "p95": 0.6,
         "min": 0.4,
         "n": 30
        },
        "exportLoopMs": {
         "median": 1.4,
-        "p95": 1.7,
+        "p95": 1.8,
         "min": 1.3,
         "n": 30
        },
@@ -627,7 +651,7 @@
      "load": 2,
      "label": "load 2",
      "ok": true,
-     "digest": "70a6468d5263c04b",
+     "digest": "28e3089104291f3f",
      "match": true,
      "differ": [],
      "verdicts": {
@@ -644,61 +668,67 @@
       "backend": true,
       "notTimedOut": true
      },
-     "ms": 32870,
+     "ms": 32421,
      "wall": {
-      "start": 1795453947189,
-      "end": 1795453980059
+      "start": 1795711469229,
+      "end": 1795711501650
      },
      "gpuLoad": {
       "samples": 16,
       "gpuUtil": {
-       "min": 9,
-       "median": 38,
-       "max": 49
+       "min": 6,
+       "median": 39,
+       "max": 48
       },
       "seen": {
-       "browser:Microsoft Edge": 0.1,
+       "webkit:com.apple.WebKit.GPU": 1.2,
+       "webkit:com.apple.WebKit.WebContent": 6.8,
+       "browser:Microsoft Edge Helper": 3.1,
+       "browser:Microsoft Edge": 1,
        "browser:msedge_crashpad_handler": 0,
-       "browser:Microsoft Edge Helper": 0,
-       "browser:Microsoft Edge Helper (Renderer)": 0.2,
-       "webkit:com.apple.WebKit.GPU": 0,
-       "webkit:com.apple.WebKit.WebContent": 0,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "node:node": 12.4,
-       "chromium:Google Chrome for Testing": 9.5,
+       "browser:Microsoft Edge Helper (Renderer)": 16.6,
+       "gaea:Gaea": 0,
+       "node:node": 17.7,
+       "chromium:Google Chrome for Testing": 7.1,
        "chromium:chrome_crashpad_handler": 0,
-       "chromium:Google Chrome for Testing Helper (GPU)": 21,
-       "chromium:Google Chrome for Testing Helper": 3.4,
-       "chromium:Google Chrome for Testing Helper (Renderer)": 134
+       "chromium:Google Chrome for Testing Helper (GPU)": 45.7,
+       "chromium:Google Chrome for Testing Helper": 3.3,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 127
       },
       "first": {
-       "at": 1795453933005,
-       "gpuUtil": 38,
+       "at": 1795711455302,
+       "gpuUtil": 39,
        "processes": [
-        "node:node 9.1%",
-        "chromium:Google Chrome for Testing 5.8%",
-        "chromium:Google Chrome for Testing Helper (GPU) 6.4%",
+        "webkit:com.apple.WebKit.WebContent 2.6%",
+        "browser:Microsoft Edge Helper 1.9%",
+        "node:node 13.1%",
+        "browser:Microsoft Edge Helper (Renderer) 4.5%",
+        "browser:Microsoft Edge Helper (Renderer) 8.6%",
+        "chromium:Google Chrome for Testing 6.1%",
+        "chromium:Google Chrome for Testing Helper (GPU) 6.3%",
         "chromium:Google Chrome for Testing Helper 1.5%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 122.6%"
+        "chromium:Google Chrome for Testing Helper (Renderer) 124.1%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795453978024,
-       "gpuUtil": 49,
+       "at": 1795711500315,
+       "gpuUtil": 46,
        "processes": [
-        "node:node 12.4%",
-        "chromium:Google Chrome for Testing 7.1%",
-        "chromium:Google Chrome for Testing Helper (GPU) 16.1%",
-        "chromium:Google Chrome for Testing Helper 2.5%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 94.8%"
+        "webkit:com.apple.WebKit.WebContent 4.7%",
+        "node:node 2.7%",
+        "browser:Microsoft Edge Helper (Renderer) 3.7%",
+        "chromium:Google Chrome for Testing 2.1%",
+        "chromium:Google Chrome for Testing Helper (GPU) 30.5%",
+        "chromium:Google Chrome for Testing Helper 1%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 95.9%"
        ],
        "otherGpuHelpers": 1
       }
      },
      "underLoad": {
-      "loaded": false,
-      "why": "quiet"
+      "loaded": true,
+      "why": "browser:Microsoft Edge Helper (Renderer) 16.6%"
      },
      "errors": [],
      "timedOut": false,
@@ -726,26 +756,27 @@
        "backend": "webgl",
        "steps": 2700,
        "audioHash": "7a6ff838",
+       "check": null,
        "ms": {
-        "total": 9840.3,
+        "total": 9713.2,
         "begin": 0,
-        "render": 1884.2,
-        "readback": 2674.5,
-        "wait": 0.9,
-        "audio": 212.1,
+        "render": 1795.9,
+        "readback": 2676.2,
+        "wait": 0.2,
+        "audio": 203.7,
         "end": 0
        },
        "perFrameMs": {
-        "render": 1.74,
+        "render": 1.66,
         "readback": 2.48,
         "wait": 0,
-        "total": 9.11
+        "total": 8.99
        },
-       "framesPerSecond": 109.75,
+       "framesPerSecond": 111.19,
        "steamDrawn": true,
-       "digest": "46a23bf918eb4da7",
+       "digest": "38a9f72fab0d521c",
        "distinct": 1080,
-       "worldDigest": "ac743fcb5a5572b3"
+       "worldDigest": "639c5bf78f575379"
       },
       "second": {
        "frames": 1080,
@@ -760,26 +791,27 @@
        "backend": "webgl",
        "steps": 2700,
        "audioHash": "7a6ff838",
+       "check": null,
        "ms": {
-        "total": 9714.2,
-        "begin": 0.1,
-        "render": 1799.3,
-        "readback": 2664.3,
-        "wait": 0.3,
-        "audio": 199.3,
+        "total": 9644.7,
+        "begin": 0,
+        "render": 1744.9,
+        "readback": 2675,
+        "wait": 0.8,
+        "audio": 202.4,
         "end": 0
        },
        "perFrameMs": {
-        "render": 1.67,
-        "readback": 2.47,
+        "render": 1.62,
+        "readback": 2.48,
         "wait": 0,
-        "total": 8.99
+        "total": 8.93
        },
-       "framesPerSecond": 111.18,
+       "framesPerSecond": 111.98,
        "steamDrawn": true,
-       "digest": "46a23bf918eb4da7",
+       "digest": "38a9f72fab0d521c",
        "distinct": 1080,
-       "worldDigest": "ac743fcb5a5572b3"
+       "worldDigest": "639c5bf78f575379"
       },
       "framesDiffer": [],
       "odd": []
@@ -797,14 +829,14 @@
        },
        "exportLoopMs": {
         "median": 2.5,
-        "p95": 3.6,
-        "min": 2.3,
+        "p95": 3.8,
+        "min": 2.4,
         "n": 30
        },
        "afterFrameMs": {
         "median": 2.7,
-        "p95": 3,
-        "min": 2.5,
+        "p95": 2.9,
+        "min": 2.4,
         "n": 30
        },
        "hash": "985eb7f629ba0133",
@@ -813,20 +845,20 @@
       "4k": {
        "renderMs": {
         "median": 0.5,
-        "p95": 0.7,
+        "p95": 0.6,
         "min": 0.4,
         "n": 30
        },
        "exportLoopMs": {
-        "median": 8.8,
-        "p95": 12.7,
+        "median": 8.6,
+        "p95": 13.5,
         "min": 8.5,
         "n": 30
        },
        "afterFrameMs": {
-        "median": 10.3,
+        "median": 10,
         "p95": 10.5,
-        "min": 9.7,
+        "min": 9.4,
         "n": 30
        },
        "hash": "337eac7ace895766",
@@ -841,8 +873,8 @@
        },
        "exportLoopMs": {
         "median": 1.4,
-        "p95": 1.6,
-        "min": 1.2,
+        "p95": 1.9,
+        "min": 1.3,
         "n": 30
        },
        "afterFrameMs": {
@@ -906,53 +938,58 @@
       "looksFirstEqualsAgain": true,
       "mask": true
      },
-     "ms": 4296,
+     "ms": 4267,
      "wall": {
-      "start": 1795453980060,
-      "end": 1795453984356
+      "start": 1795711501651,
+      "end": 1795711505918
      },
      "gpuLoad": {
-      "samples": 7,
+      "samples": 6,
       "gpuUtil": {
-       "min": 25,
-       "median": 38,
-       "max": 49
+       "min": 35,
+       "median": 41,
+       "max": 46
       },
       "seen": {
+       "webkit:com.apple.WebKit.GPU": 0.9,
+       "webkit:com.apple.WebKit.WebContent": 4.7,
+       "browser:Microsoft Edge Helper": 3.1,
        "browser:Microsoft Edge": 0,
        "browser:msedge_crashpad_handler": 0,
-       "browser:Microsoft Edge Helper": 0,
-       "browser:Microsoft Edge Helper (Renderer)": 0.1,
-       "webkit:com.apple.WebKit.GPU": 0,
-       "webkit:com.apple.WebKit.WebContent": 0,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "node:node": 13,
-       "chromium:Google Chrome for Testing": 14.5,
+       "browser:Microsoft Edge Helper (Renderer)": 16.6,
+       "gaea:Gaea": 0,
+       "node:node": 45.2,
+       "chromium:Google Chrome for Testing": 23.1,
        "chromium:chrome_crashpad_handler": 0,
-       "chromium:Google Chrome for Testing Helper (GPU)": 20.2,
-       "chromium:Google Chrome for Testing Helper": 2.5,
-       "chromium:Google Chrome for Testing Helper (Renderer)": 120.2
+       "chromium:Google Chrome for Testing Helper (GPU)": 42.3,
+       "chromium:Google Chrome for Testing Helper": 1,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 135.7
       },
       "first": {
-       "at": 1795453966022,
+       "at": 1795711488312,
        "gpuUtil": 37,
        "processes": [
-        "node:node 9%",
-        "chromium:Google Chrome for Testing 5.3%",
-        "chromium:Google Chrome for Testing Helper (GPU) 4.3%",
-        "chromium:Google Chrome for Testing Helper 2.4%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 117.9%"
+        "webkit:com.apple.WebKit.WebContent 1%",
+        "browser:Microsoft Edge Helper 1%",
+        "node:node 10.8%",
+        "browser:Microsoft Edge Helper (Renderer) 4.5%",
+        "browser:Microsoft Edge Helper (Renderer) 1.1%",
+        "chromium:Google Chrome for Testing 1.4%",
+        "chromium:Google Chrome for Testing Helper (GPU) 42.3%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 91.7%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795453984025,
-       "gpuUtil": 25,
+       "at": 1795711503316,
+       "gpuUtil": 35,
        "processes": [
-        "node:node 13%",
-        "chromium:Google Chrome for Testing 14.5%",
-        "chromium:Google Chrome for Testing Helper (GPU) 20.2%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 120.2%"
+        "webkit:com.apple.WebKit.WebContent 4.3%",
+        "node:node 45.2%",
+        "browser:Microsoft Edge Helper (Renderer) 3.4%",
+        "chromium:Google Chrome for Testing 23.1%",
+        "chromium:Google Chrome for Testing Helper (GPU) 15.5%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 135.7%"
        ],
        "otherGpuHelpers": 1
       }
@@ -963,7 +1000,7 @@
      },
      "errors": [],
      "timedOut": false,
-     "stack": "eO",
+     "stack": "Yt",
      "size": [
       1920,
       1080
@@ -1124,50 +1161,58 @@
       "looksFirstEqualsAgain": true,
       "mask": true
      },
-     "ms": 4302,
+     "ms": 4691,
      "wall": {
-      "start": 1795453984357,
-      "end": 1795453988659
+      "start": 1795711505919,
+      "end": 1795711510610
      },
      "gpuLoad": {
-      "samples": 6,
+      "samples": 7,
       "gpuUtil": {
-       "min": 12,
-       "median": 39,
-       "max": 49
+       "min": 30,
+       "median": 38,
+       "max": 46
       },
       "seen": {
-       "browser:Microsoft Edge": 0,
+       "webkit:com.apple.WebKit.GPU": 0.9,
+       "webkit:com.apple.WebKit.WebContent": 4.7,
+       "browser:Microsoft Edge Helper": 3.1,
+       "browser:Microsoft Edge": 1,
        "browser:msedge_crashpad_handler": 0,
-       "browser:Microsoft Edge Helper": 0,
-       "browser:Microsoft Edge Helper (Renderer)": 0.1,
-       "webkit:com.apple.WebKit.GPU": 0,
-       "webkit:com.apple.WebKit.WebContent": 0,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "node:node": 16.2,
-       "chromium:Google Chrome for Testing": 16.3,
+       "browser:Microsoft Edge Helper (Renderer)": 16.6,
+       "gaea:Gaea": 0,
+       "node:node": 45.2,
+       "chromium:Google Chrome for Testing": 27,
        "chromium:chrome_crashpad_handler": 0,
-       "chromium:Google Chrome for Testing Helper (GPU)": 27,
-       "chromium:Google Chrome for Testing Helper": 2.5,
-       "chromium:Google Chrome for Testing Helper (Renderer)": 120.2
+       "chromium:Google Chrome for Testing Helper (GPU)": 30.5,
+       "chromium:Google Chrome for Testing Helper": 5,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 135.7
       },
       "first": {
-       "at": 1795453972019,
-       "gpuUtil": 39,
+       "at": 1795711491315,
+       "gpuUtil": 38,
        "processes": [
-        "chromium:Google Chrome for Testing Helper (GPU) 12.9%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 98.3%"
+        "webkit:com.apple.WebKit.WebContent 3.2%",
+        "browser:Microsoft Edge Helper 3.1%",
+        "browser:Microsoft Edge Helper (Renderer) 5.4%",
+        "browser:Microsoft Edge Helper (Renderer) 3.5%",
+        "chromium:Google Chrome for Testing Helper (GPU) 12.3%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 96.3%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795453987024,
-       "gpuUtil": 12,
+       "at": 1795711509318,
+       "gpuUtil": 33,
        "processes": [
-        "node:node 16.2%",
-        "chromium:Google Chrome for Testing 16.3%",
-        "chromium:Google Chrome for Testing Helper (GPU) 27%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 102.9%"
+        "webkit:com.apple.WebKit.WebContent 4.3%",
+        "browser:Microsoft Edge Helper 2.5%",
+        "node:node 20.1%",
+        "browser:Microsoft Edge Helper (Renderer) 4.3%",
+        "chromium:Google Chrome for Testing 9.7%",
+        "chromium:Google Chrome for Testing Helper (GPU) 8.6%",
+        "chromium:Google Chrome for Testing Helper 2.4%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 126.5%"
        ],
        "otherGpuHelpers": 1
       }
@@ -1178,14 +1223,14 @@
      },
      "errors": [],
      "timedOut": false,
-     "stack": "eO",
+     "stack": "Yt",
      "size": [
       1920,
       1080
      ],
      "costMs": {
-      "none": 0.5,
-      "anime": 1.4
+      "none": 0.6,
+      "anime": 1.5
      },
      "mask": {
       "pixels": 336,
@@ -1347,57 +1392,60 @@
       "no180Issues": true,
       "thumbnails": true
      },
-     "ms": 3210,
+     "ms": 3168,
      "wall": {
-      "start": 1795453988660,
-      "end": 1795453991870
+      "start": 1795711510610,
+      "end": 1795711513778
      },
      "gpuLoad": {
       "samples": 6,
       "gpuUtil": {
-       "min": 12,
-       "median": 38,
-       "max": 49
+       "min": 16,
+       "median": 35,
+       "max": 46
       },
       "seen": {
-       "browser:Microsoft Edge": 0.1,
+       "webkit:com.apple.WebKit.GPU": 0.8,
+       "webkit:com.apple.WebKit.WebContent": 6,
+       "browser:Microsoft Edge Helper": 2.5,
+       "browser:Microsoft Edge": 1,
        "browser:msedge_crashpad_handler": 0,
-       "browser:Microsoft Edge Helper": 0,
-       "browser:Microsoft Edge Helper (Renderer)": 0.1,
-       "webkit:com.apple.WebKit.GPU": 0,
-       "webkit:com.apple.WebKit.WebContent": 0,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "node:node": 16.2,
-       "chromium:Google Chrome for Testing": 16.3,
+       "browser:Microsoft Edge Helper (Renderer)": 16.6,
+       "gaea:Gaea": 0,
+       "node:node": 45.2,
+       "chromium:Google Chrome for Testing": 27,
        "chromium:chrome_crashpad_handler": 0,
-       "chromium:Google Chrome for Testing Helper (GPU)": 41.8,
-       "chromium:Google Chrome for Testing Helper": 2.5,
-       "chromium:Google Chrome for Testing Helper (Renderer)": 167.6
+       "chromium:Google Chrome for Testing Helper (GPU)": 30.5,
+       "chromium:Google Chrome for Testing Helper": 5,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 135.7
       },
       "first": {
-       "at": 1795453975021,
+       "at": 1795711497315,
        "gpuUtil": 42,
        "processes": [
-        "chromium:Google Chrome for Testing Helper (GPU) 13.2%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 98.2%"
+        "webkit:com.apple.WebKit.WebContent 1.8%",
+        "browser:Microsoft Edge Helper (Renderer) 16.6%",
+        "chromium:Google Chrome for Testing Helper (GPU) 12.5%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 94.9%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795453990027,
-       "gpuUtil": 29,
+       "at": 1795711512318,
+       "gpuUtil": 16,
        "processes": [
-        "node:node 1%",
-        "chromium:Google Chrome for Testing 1.7%",
-        "chromium:Google Chrome for Testing Helper (GPU) 41.8%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 167.6%"
+        "webkit:com.apple.WebKit.WebContent 6%",
+        "node:node 2.2%",
+        "browser:Microsoft Edge Helper (Renderer) 6.2%",
+        "chromium:Google Chrome for Testing Helper (GPU) 18.3%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 135.1%"
        ],
        "otherGpuHelpers": 1
       }
      },
      "underLoad": {
-      "loaded": false,
-      "why": "quiet"
+      "loaded": true,
+      "why": "webkit:com.apple.WebKit.WebContent 6%, browser:Microsoft Edge Helper (Renderer) 6.2%"
      },
      "errors": [],
      "timedOut": false,
@@ -1421,65 +1469,62 @@
       "no180Issues": true,
       "thumbnails": true
      },
-     "ms": 3219,
+     "ms": 3159,
      "wall": {
-      "start": 1795453991871,
-      "end": 1795453995090
+      "start": 1795711513779,
+      "end": 1795711516938
      },
      "gpuLoad": {
       "samples": 6,
       "gpuUtil": {
-       "min": 12,
-       "median": 29,
-       "max": 49
+       "min": 16,
+       "median": 33,
+       "max": 46
       },
       "seen": {
-       "browser:Microsoft Edge": 10.9,
+       "webkit:com.apple.WebKit.GPU": 0.8,
+       "webkit:com.apple.WebKit.WebContent": 6,
+       "browser:Microsoft Edge Helper": 2.5,
+       "browser:Microsoft Edge": 1,
        "browser:msedge_crashpad_handler": 0,
-       "browser:Microsoft Edge Helper": 8.1,
-       "browser:Microsoft Edge Helper (Renderer)": 10,
-       "webkit:com.apple.WebKit.GPU": 0,
-       "webkit:com.apple.WebKit.WebContent": 0,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "node:node": 16.2,
-       "chromium:Google Chrome for Testing": 16.3,
+       "browser:Microsoft Edge Helper (Renderer)": 6.4,
+       "gaea:Gaea": 0,
+       "node:node": 45.2,
+       "chromium:Google Chrome for Testing": 27,
        "chromium:chrome_crashpad_handler": 0,
-       "chromium:Google Chrome for Testing Helper (GPU)": 41.8,
-       "chromium:Google Chrome for Testing Helper": 2.5,
-       "chromium:Google Chrome for Testing Helper (Renderer)": 202.3
+       "chromium:Google Chrome for Testing Helper (GPU)": 30.5,
+       "chromium:Google Chrome for Testing Helper": 5,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 154.6
       },
       "first": {
-       "at": 1795453978024,
-       "gpuUtil": 49,
+       "at": 1795711500315,
+       "gpuUtil": 46,
        "processes": [
-        "node:node 12.4%",
-        "chromium:Google Chrome for Testing 7.1%",
-        "chromium:Google Chrome for Testing Helper (GPU) 16.1%",
-        "chromium:Google Chrome for Testing Helper 2.5%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 94.8%"
+        "webkit:com.apple.WebKit.WebContent 4.7%",
+        "node:node 2.7%",
+        "browser:Microsoft Edge Helper (Renderer) 3.7%",
+        "chromium:Google Chrome for Testing 2.1%",
+        "chromium:Google Chrome for Testing Helper (GPU) 30.5%",
+        "chromium:Google Chrome for Testing Helper 1%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 95.9%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795453993038,
-       "gpuUtil": 20,
+       "at": 1795711515321,
+       "gpuUtil": 21,
        "processes": [
-        "browser:Microsoft Edge 10.9%",
-        "browser:Microsoft Edge Helper 8.1%",
-        "browser:Microsoft Edge Helper (Renderer) 10%",
-        "node:node 3.1%",
-        "chromium:Google Chrome for Testing 3.2%",
-        "chromium:Google Chrome for Testing Helper (GPU) 21.3%",
-        "chromium:Google Chrome for Testing Helper 1%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 202.3%",
-        "browser:Microsoft Edge Helper (Renderer) 5.9%"
+        "webkit:com.apple.WebKit.WebContent 4.4%",
+        "browser:Microsoft Edge Helper (Renderer) 6.4%",
+        "chromium:Google Chrome for Testing Helper (GPU) 25.1%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 154.6%"
        ],
        "otherGpuHelpers": 1
       }
      },
      "underLoad": {
       "loaded": true,
-      "why": "browser:Microsoft Edge 10.9%, browser:Microsoft Edge Helper 8.1%, browser:Microsoft Edge Helper (Renderer) 10%"
+      "why": "webkit:com.apple.WebKit.WebContent 6%, browser:Microsoft Edge Helper (Renderer) 6.4%"
      },
      "errors": [],
      "timedOut": false,
@@ -1514,59 +1559,62 @@
       "characters": true,
       "stepUnder5ms": true
      },
-     "ms": 7916,
+     "ms": 7910,
      "wall": {
-      "start": 1795453995090,
-      "end": 1795454003006
+      "start": 1795711516939,
+      "end": 1795711524849
      },
      "gpuLoad": {
       "samples": 8,
       "gpuUtil": {
-       "min": 2,
-       "median": 25,
-       "max": 42
+       "min": 16,
+       "median": 30,
+       "max": 37
       },
       "seen": {
-       "browser:Microsoft Edge": 10.9,
+       "webkit:com.apple.WebKit.GPU": 0.7,
+       "webkit:com.apple.WebKit.WebContent": 6,
+       "browser:Microsoft Edge Helper": 3.5,
+       "browser:Microsoft Edge": 1,
        "browser:msedge_crashpad_handler": 0,
-       "browser:Microsoft Edge Helper": 8.1,
-       "browser:Microsoft Edge Helper (Renderer)": 10,
-       "webkit:com.apple.WebKit.GPU": 0,
-       "webkit:com.apple.WebKit.WebContent": 0,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "node:node": 16.2,
-       "chromium:Google Chrome for Testing": 20.9,
+       "browser:Microsoft Edge Helper (Renderer)": 7.1,
+       "gaea:Gaea": 0,
+       "node:node": 45.2,
+       "chromium:Google Chrome for Testing": 27,
        "chromium:chrome_crashpad_handler": 0,
-       "chromium:Google Chrome for Testing Helper (GPU)": 45.9,
-       "chromium:Google Chrome for Testing Helper": 2.4,
-       "chromium:Google Chrome for Testing Helper (Renderer)": 202.3
+       "chromium:Google Chrome for Testing Helper (GPU)": 56.4,
+       "chromium:Google Chrome for Testing Helper": 5,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 154.6
       },
       "first": {
-       "at": 1795453981024,
-       "gpuUtil": 38,
+       "at": 1795711503316,
+       "gpuUtil": 35,
        "processes": [
-        "node:node 5.7%",
-        "chromium:Google Chrome for Testing 6.9%",
-        "chromium:Google Chrome for Testing Helper (GPU) 7.8%",
-        "chromium:Google Chrome for Testing Helper 2.4%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 2.5%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 116.4%"
+        "webkit:com.apple.WebKit.WebContent 4.3%",
+        "node:node 45.2%",
+        "browser:Microsoft Edge Helper (Renderer) 3.4%",
+        "chromium:Google Chrome for Testing 23.1%",
+        "chromium:Google Chrome for Testing Helper (GPU) 15.5%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 135.7%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795454002031,
-       "gpuUtil": 42,
+       "at": 1795711524326,
+       "gpuUtil": 37,
        "processes": [
-        "chromium:Google Chrome for Testing Helper (GPU) 37.6%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 108.8%"
+        "webkit:com.apple.WebKit.WebContent 4.2%",
+        "browser:Microsoft Edge Helper 1.2%",
+        "browser:Microsoft Edge Helper (Renderer) 6.5%",
+        "chromium:Google Chrome for Testing Helper (GPU) 35.8%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 105.9%"
        ],
        "otherGpuHelpers": 1
       }
      },
      "underLoad": {
       "loaded": true,
-      "why": "browser:Microsoft Edge 10.9%, browser:Microsoft Edge Helper 8.1%, browser:Microsoft Edge Helper (Renderer) 10%"
+      "why": "browser:Microsoft Edge Helper (Renderer) 7.1%"
      },
      "errors": [],
      "timedOut": false,
@@ -1580,22 +1628,22 @@
      "warm": 120,
      "steps": 480,
      "stepMs": {
-      "mean": 1.968,
+      "mean": 1.976,
       "p50": 1.9,
       "p95": 2.3,
-      "max": 2.5
+      "max": 2.7
      },
      "drawMs": {
-      "mean": 3.02,
+      "mean": 3.005,
       "p50": 3,
       "p95": 3.3,
-      "max": 3.9
+      "max": 3.8
      },
      "frameMs": {
-      "mean": 4.993,
-      "p50": 5,
+      "mean": 4.986,
+      "p50": 4.9,
       "p95": 5.4,
-      "max": 6
+      "max": 6.1
      },
      "drawCalls": 639,
      "triangles": 1457608,
@@ -1613,14 +1661,14 @@
   },
   "editor": {
    "query": "mode=check-export&renderer=webgl",
-   "canonical": "59bbb42baa90cecb",
+   "canonical": "582bf85ae977e517",
    "pinned": true,
    "loads": [
     {
      "load": 1,
      "label": "load 1",
      "ok": true,
-     "digest": "59bbb42baa90cecb",
+     "digest": "582bf85ae977e517",
      "match": true,
      "differ": [],
      "verdicts": {
@@ -1631,63 +1679,65 @@
       "scrubSame": true,
       "forwardSame": true
      },
-     "ms": 14424,
+     "ms": 14903,
      "wall": {
-      "start": 1795454003007,
-      "end": 1795454017431
+      "start": 1795711524849,
+      "end": 1795711539752
      },
      "gpuLoad": {
       "samples": 10,
       "gpuUtil": {
-       "min": 2,
-       "median": 42,
-       "max": 54
+       "min": 16,
+       "median": 37,
+       "max": 57
       },
       "seen": {
-       "browser:Microsoft Edge": 10.9,
+       "webkit:com.apple.WebKit.GPU": 0.7,
+       "webkit:com.apple.WebKit.WebContent": 6,
+       "browser:Microsoft Edge Helper": 3.5,
+       "browser:Microsoft Edge": 0.2,
        "browser:msedge_crashpad_handler": 0,
-       "browser:Microsoft Edge Helper": 8.1,
-       "browser:Microsoft Edge Helper (Renderer)": 10,
-       "webkit:com.apple.WebKit.GPU": 0,
-       "webkit:com.apple.WebKit.WebContent": 0,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "node:node": 7.6,
-       "chromium:Google Chrome for Testing": 20.9,
+       "browser:Microsoft Edge Helper (Renderer)": 7.1,
+       "gaea:Gaea": 0,
+       "node:node": 13.5,
+       "chromium:Google Chrome for Testing": 16.4,
        "chromium:chrome_crashpad_handler": 0,
-       "chromium:Google Chrome for Testing Helper (GPU)": 55.3,
-       "chromium:Google Chrome for Testing Helper": 1.6,
-       "chromium:Google Chrome for Testing Helper (Renderer)": 202.3
+       "chromium:Google Chrome for Testing Helper (GPU)": 56.4,
+       "chromium:Google Chrome for Testing Helper": 2.1,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 154.6
       },
       "first": {
-       "at": 1795453990027,
-       "gpuUtil": 29,
+       "at": 1795711512318,
+       "gpuUtil": 16,
        "processes": [
-        "node:node 1%",
-        "chromium:Google Chrome for Testing 1.7%",
-        "chromium:Google Chrome for Testing Helper (GPU) 41.8%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 167.6%"
+        "webkit:com.apple.WebKit.WebContent 6%",
+        "node:node 2.2%",
+        "browser:Microsoft Edge Helper (Renderer) 6.2%",
+        "chromium:Google Chrome for Testing Helper (GPU) 18.3%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 135.1%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795454017039,
-       "gpuUtil": 54,
+       "at": 1795711539333,
+       "gpuUtil": 57,
        "processes": [
-        "chromium:Google Chrome for Testing Helper (GPU) 55.3%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 106.8%"
+        "browser:Microsoft Edge Helper (Renderer) 5.5%",
+        "chromium:Google Chrome for Testing Helper (GPU) 55.2%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 107.3%"
        ],
        "otherGpuHelpers": 1
       }
      },
      "underLoad": {
-      "loaded": false,
-      "why": "quiet"
+      "loaded": true,
+      "why": "browser:Microsoft Edge Helper (Renderer) 6.5%"
      },
      "errors": [],
      "timedOut": false,
      "size": "1080p",
      "frames": 1080,
-     "exportMs": 8488,
+     "exportMs": 8498,
      "scrub": {
       "frames": 26,
       "same": 26
@@ -1964,7 +2014,7 @@
      "load": 2,
      "label": "load 2",
      "ok": true,
-     "digest": "59bbb42baa90cecb",
+     "digest": "582bf85ae977e517",
      "match": true,
      "differ": [],
      "verdicts": {
@@ -1975,67 +2025,68 @@
       "scrubSame": true,
       "forwardSame": true
      },
-     "ms": 14355,
+     "ms": 15031,
      "wall": {
-      "start": 1795454017432,
-      "end": 1795454031787
+      "start": 1795711539753,
+      "end": 1795711554784
      },
      "gpuLoad": {
-      "samples": 9,
+      "samples": 10,
       "gpuUtil": {
-       "min": 40,
-       "median": 48,
-       "max": 57
+       "min": 37,
+       "median": 51,
+       "max": 61
       },
       "seen": {
-       "browser:Microsoft Edge": 0.4,
+       "webkit:com.apple.WebKit.GPU": 0.7,
+       "webkit:com.apple.WebKit.WebContent": 5.5,
+       "browser:Microsoft Edge Helper": 3.3,
+       "browser:Microsoft Edge": 0.2,
        "browser:msedge_crashpad_handler": 0,
-       "browser:Microsoft Edge Helper": 2.8,
-       "browser:Microsoft Edge Helper (Renderer)": 2.8,
-       "webkit:com.apple.WebKit.GPU": 0,
-       "webkit:com.apple.WebKit.WebContent": 0,
-       "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-       "node:node": 6.9,
-       "chromium:Google Chrome for Testing": 5.7,
+       "browser:Microsoft Edge Helper (Renderer)": 6.5,
+       "gaea:Gaea": 0,
+       "node:node": 10.9,
+       "chromium:Google Chrome for Testing": 5.8,
        "chromium:chrome_crashpad_handler": 0,
-       "chromium:Google Chrome for Testing Helper (GPU)": 55.3,
-       "chromium:Google Chrome for Testing Helper": 1.6,
-       "chromium:Google Chrome for Testing Helper (Renderer)": 202.6,
-       "browser:(Microsoft Edge H)": 0
+       "chromium:Google Chrome for Testing Helper (GPU)": 56.3,
+       "chromium:Google Chrome for Testing Helper": 1.8,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 124.6
       },
       "first": {
-       "at": 1795454005033,
-       "gpuUtil": 40,
+       "at": 1795711527331,
+       "gpuUtil": 37,
        "processes": [
-        "browser:Microsoft Edge Helper 2.8%",
-        "browser:Microsoft Edge Helper (Renderer) 2.8%",
-        "node:node 6.9%",
-        "chromium:Google Chrome for Testing 5.7%",
-        "chromium:Google Chrome for Testing Helper (GPU) 11.2%",
-        "chromium:Google Chrome for Testing Helper 1.6%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 124.5%"
+        "webkit:com.apple.WebKit.WebContent 4.2%",
+        "node:node 6.4%",
+        "browser:Microsoft Edge Helper (Renderer) 5.8%",
+        "chromium:Google Chrome for Testing 5.8%",
+        "chromium:Google Chrome for Testing Helper (GPU) 13.7%",
+        "chromium:Google Chrome for Testing Helper 1.8%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 124.6%"
        ],
        "otherGpuHelpers": 1
       },
       "last": {
-       "at": 1795454029037,
-       "gpuUtil": 41,
+       "at": 1795711554338,
+       "gpuUtil": 55,
        "processes": [
-        "chromium:Google Chrome for Testing Helper (GPU) 16.5%",
-        "chromium:Google Chrome for Testing Helper (Renderer) 114.9%"
+        "webkit:com.apple.WebKit.WebContent 5.5%",
+        "browser:Microsoft Edge Helper (Renderer) 5.4%",
+        "chromium:Google Chrome for Testing Helper (GPU) 56.3%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 108.2%"
        ],
        "otherGpuHelpers": 1
       }
      },
      "underLoad": {
-      "loaded": false,
-      "why": "quiet"
+      "loaded": true,
+      "why": "browser:Microsoft Edge Helper (Renderer) 6.5%, webkit:com.apple.WebKit.WebContent 5.5%"
      },
      "errors": [],
      "timedOut": false,
      "size": "1080p",
      "frames": 1080,
-     "exportMs": 8465,
+     "exportMs": 8580,
      "scrub": {
       "frames": 26,
       "same": 26
@@ -2317,52 +2368,59 @@
  },
  "preflight": {
   "quiet": true,
-  "waitedMs": 15258,
+  "waitedMs": 157806,
   "util": 0,
   "why": "quiet"
  },
  "gpuLoad": {
-  "samples": 51,
+  "samples": 52,
   "gpuUtil": {
    "min": 0,
-   "median": 36,
-   "max": 65
+   "median": 37,
+   "max": 68
   },
   "seen": {
-   "browser:Microsoft Edge": 10.9,
+   "webkit:com.apple.WebKit.GPU": 1.3,
+   "webkit:com.apple.WebKit.WebContent": 6.9,
+   "browser:Microsoft Edge Helper": 3.5,
+   "browser:Microsoft Edge": 2.1,
    "browser:msedge_crashpad_handler": 0,
-   "browser:Microsoft Edge Helper": 8.1,
-   "browser:Microsoft Edge Helper (Renderer)": 10,
-   "webkit:com.apple.WebKit.GPU": 0,
-   "webkit:com.apple.WebKit.WebContent": 0,
-   "webkit:com.apple.WebKit.WebContent.EnhancedSecurity": 0,
-   "node:node": 16.2,
-   "chromium:Google Chrome for Testing": 20.9,
-   "chromium:chrome_crashpad_handler": 1.2,
-   "chromium:Google Chrome for Testing Helper (GPU)": 55.3,
-   "chromium:Google Chrome for Testing Helper": 3.8,
-   "chromium:Google Chrome for Testing Helper (Alerts)": 0,
-   "chromium:Google Chrome for Testing Helper (Renderer)": 202.6,
-   "browser:(Microsoft Edge H)": 0
+   "browser:Microsoft Edge Helper (Renderer)": 16.6,
+   "gaea:Gaea": 0,
+   "node:node": 101.3,
+   "chromium:Google Chrome for Testing": 30.9,
+   "chromium:chrome_crashpad_handler": 0.7,
+   "chromium:Google Chrome for Testing Helper (GPU)": 56.4,
+   "chromium:Google Chrome for Testing Helper": 7.3,
+   "chromium:Google Chrome for Testing Helper (Alerts)": 5.2,
+   "chromium:Google Chrome for Testing Helper (Renderer)": 154.6
   },
   "first": {
-   "at": 1795453878938,
+   "at": 1795711401113,
    "gpuUtil": 0,
    "processes": [
-    "chromium:Google Chrome for Testing 10.7%",
-    "chromium:chrome_crashpad_handler 1.2%"
+    "webkit:com.apple.WebKit.WebContent 3.1%",
+    "browser:Microsoft Edge Helper 1%",
+    "browser:Microsoft Edge Helper (Renderer) 4.1%",
+    "chromium:Google Chrome for Testing 30.9%",
+    "chromium:Google Chrome for Testing Helper (GPU) 9.1%",
+    "chromium:Google Chrome for Testing Helper 7.3%",
+    "chromium:Google Chrome for Testing Helper 5.3%",
+    "chromium:Google Chrome for Testing Helper (Alerts) 5.2%"
    ],
    "otherGpuHelpers": 1
   },
   "last": {
-   "at": 1795454029037,
-   "gpuUtil": 41,
+   "at": 1795711554338,
+   "gpuUtil": 55,
    "processes": [
-    "chromium:Google Chrome for Testing Helper (GPU) 16.5%",
-    "chromium:Google Chrome for Testing Helper (Renderer) 114.9%"
+    "webkit:com.apple.WebKit.WebContent 5.5%",
+    "browser:Microsoft Edge Helper (Renderer) 5.4%",
+    "chromium:Google Chrome for Testing Helper (GPU) 56.3%",
+    "chromium:Google Chrome for Testing Helper (Renderer) 108.2%"
    ],
    "otherGpuHelpers": 1
   }
  },
- "ended": "2026-11-23T17:13:51.788Z"
+ "ended": "2026-11-26T16:45:54.785Z"
 }
