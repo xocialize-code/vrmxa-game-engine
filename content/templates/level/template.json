@@ -1,0 +1,17 @@
+{
+ "format": "vrmxg-template",
+ "version": 1,
+ "id": "level",
+ "title": "One level",
+ "description": "A level in the cafe: Mira to play, a goal (get to the counter) and an ending that starts it again. A game that plays from the first minute.",
+ "order": 2,
+ "copy": [
+  { "from": "sample/sets/cafe.glb" },
+  { "from": "sample/characters/mira.vrmxa" },
+  { "from": "sample/characters/hana.vrmxa" },
+  { "from": "sample/animations.json" },
+  { "from": "sample/animations/clips/*.vrma" },
+  { "from": "sample/sounds/cafe-ambience.wav" },
+  { "from": "sample/sounds/music.wav" }
+ ]
+}

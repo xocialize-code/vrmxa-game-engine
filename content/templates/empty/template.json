@@ -1,0 +1,9 @@
+{
+ "format": "vrmxg-template",
+ "version": 1,
+ "id": "empty",
+ "title": "Empty game",
+ "description": "One empty scene with light, ground and a camera, and the engine's default controls. Build from nothing.",
+ "order": 1,
+ "copy": []
+}

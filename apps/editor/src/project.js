@@ -42,6 +42,23 @@ export class Project {
     return r;
   }
 
+  /**
+   * The game's controls and collision layers as its game.json has them now (M6 W3): `actions`, the action map (inline,
+   * or the JSON file `input` names; null: the engine's default), and `physics`, its collision layers (null: one layer).
+   * Read each time it is asked for: the project settings write game.json while the project is open. A game.json that
+   * doesn't parse gives the defaults, as a project without one does (the settings panel says what is wrong with it).
+   */
+  async gameSetup() {
+    if (!this.has('game.json')) return { actions: null, physics: null };
+    try {
+      const g = JSON.parse(await this.text('game.json'));
+      let actions = null;
+      if (typeof g.input === 'string' && this.has(g.input)) actions = JSON.parse(await this.text(g.input)).actions ?? null;
+      else if (g.input && typeof g.input === 'object') actions = g.input.actions ?? null;
+      return { actions, physics: g.physics && Array.isArray(g.physics.layers) ? g.physics : null };
+    } catch { return { actions: null, physics: null }; }
+  }
+
   /** Recorded input in the project (input/*.json, takes/*.json): the takes it can export. */
   takes() { return this.files.filter((f) => /^(input|takes)\/.+\.json$/.test(f)); }
 

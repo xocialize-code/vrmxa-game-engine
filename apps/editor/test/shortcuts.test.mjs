@@ -87,6 +87,10 @@ test('a key press finds its entry: the menus take theirs in the Mac app; fly and
   assert.equal(shortcutFor({ key: 'w', metaKey: true }), null);
   assert.equal(shortcutFor({ key: '/', ctrlKey: true }).action, 'shortcuts');
   const g = shortcutGroups();
-  assert.deepEqual(g.map((x) => x.group), ['File', 'Edit', 'Viewport', 'Fly camera', 'Number fields', 'Timeline', 'Panels', 'Lists', 'Help']);
+  // M6 W3: New Project and Project Settings are the Mac app's menus only: a browser keeps ⇧⌘N (a private window) for itself
+  assert.equal(shortcutFor({ key: 'n', metaKey: true, shiftKey: true }), null, 'the page never claims ⇧⌘N');
+  assert.equal(shortcutFor({ key: 'p', metaKey: true, shiftKey: true }), null);
+  assert.ok(SHORTCUTS.find((x) => x.menu === 'newProject').note.includes('toolbar'), 'the sheet says what a browser uses instead');
+  assert.deepEqual(g.map((x) => x.group), ['File', 'Edit', 'Viewport', 'Fly camera', 'Number fields', 'Timeline', 'Panels', 'Lists', 'Project settings', 'Help']);
   assert.equal(g.reduce((n, x) => n + x.items.length, 0), SHORTCUTS.length);
 });

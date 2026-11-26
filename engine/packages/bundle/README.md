@@ -121,6 +121,7 @@ What Export Game reads to know what the game is (`format: "vrmxg-game"`, `versio
 | `input` | The action map (`@vrmxg/input`'s `actions`): inline as `{ "actions": { … } }`, or a ref to a JSON file holding that. Absent: the engine's default map |
 | `include` | Files no document names, by ref or by pattern (`*` within one folder level) |
 | `ignore` | Strings in the game's documents that look like files and aren't: the export would otherwise stop on them (below) |
+| `physics` | The game's collision layers (M6 W3, the editor's project settings): `{ "layers": ["default", "player", …], "collides"?: { layer: [the layers it collides with] } }`, 1 to 15 names (lowercase letters, digits, `-` and `_`), as `@vrmxg/physics`'s `Layers` reads them; a layer missing from `collides` collides with every layer. A node's `layer` (a Collider's, an Area's, a Character's capsule) names one; a node with none is on the first. Absent: one layer, `default`. Every world of the game is built with it. In the manifest only when the game has it |
 | `release` | The game's own version, as its players see it: one to three numbers with dots (`"1.2.0"`). The Mac game app takes it as its version (M5 W1). Absent: none in the manifest |
 
 A project with no `game.json` can still be exported from the editor: the open scene is the entry, with the project's
@@ -176,7 +177,11 @@ and says when it stopped there) is not exported from.
 **Licences.** Every collected file needs a row in the project's `LICENCES.md`: a table row whose first cell is the
 file's path in backticks (`*` matches within one folder level), the licence in the second cell, in any table of the
 file. It is the rule `content/sample/tools/check-licences.mjs` checks in CI, plus one thing: the licence cell may not
-be empty. A file with no row stops the export before anything is written, and the error (`BuildError`, code
+be empty. **Collision layers.** A node in a collected scene or prefab on a layer the game doesn't have (`physics.layers`, or
+`default` without it) stops the export (`unknown_layer`, naming the scene, the node and the layer): a world with that
+node couldn't be built, so the game wouldn't load. MCP's project check reports it the same way, from the same check.
+
+A file with no row stops the export before anything is written, and the error (`BuildError`, code
 `no_licence`, `files`) names every such file. Files the game doesn't use need no row to export.
 
 What the check does not do (decision AB-D-0284): **it does not read what a licence says.** A row whose licence is

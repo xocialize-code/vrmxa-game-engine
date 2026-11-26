@@ -6,7 +6,7 @@
 // it, to read what its behaviours declare (M6 W0).
 import { sha256 } from './sha256.js';
 import { BuildError, checkPath, caseClash, isHidden } from './paths.js';
-import { GAME_FILE, checkGame } from './game.js';
+import { GAME_FILE, checkGame, unknownLayers, gameLayers } from './game.js';
 import { LICENCES_FILE, parseLicences, licenceOf } from './licences.js';
 import { m0Registry } from '@vrmxg/registry/m0';
 import { declareProjectBehaviours } from '@vrmxg/registry';
@@ -65,6 +65,12 @@ export async function planBuild({ project, game = null, registry = undefined, im
   for (const ref of refs) { try { checkPath(ref, 'the project file'); } catch (e) { fail(e); } }
   const clash = caseClash(refs);
   if (clash) fail(new BuildError('bad_path', `${clash[0]} and ${clash[1]} differ only by case: a Mac's disk can't hold both`, clash));
+  // every collision layer a scene or prefab names is one the game has (M6 W3): a world with a node on any other can't
+  // be built, so the game wouldn't load
+  const docs = [];
+  for (const ref of refs) if (ref.endsWith('.vrmxs')) { try { docs.push([ref, JSON.parse(text(await project.read(ref)))]); } catch { /* collect has said what's wrong with it */ } }
+  const stray = unknownLayers(game, docs);
+  if (stray.length) fail(new BuildError('unknown_layer', `${stray.slice(0, 4).map((u) => `${u.ref}: "${u.node}" is on layer "${u.layer}"`).join('; ')}${stray.length > 4 ? `; and ${stray.length - 4} more` : ''}, which the game doesn't have (its layers: ${gameLayers(game).join(', ')}): add it in game.json's physics.layers (the editor's project settings) or change the node`, [...new Set(stray.map((u) => u.ref))]));
   const rows = hasLicences ? parseLicences(text(await project.read(LICENCES_FILE))) : [];
   const licence = new Map(refs.map((ref) => [ref, licenceOf(rows, ref)]));
   const unlicensed = hasLicences ? refs.filter((ref) => !licence.get(ref)) : [];

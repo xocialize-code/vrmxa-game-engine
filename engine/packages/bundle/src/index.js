@@ -11,7 +11,7 @@
 export { sha256, sha256Text } from './sha256.js';
 export { BuildError, pathProblem, isHidden, sortPaths } from './paths.js';
 export { LICENCES_FILE, parseLicences, licenceOf } from './licences.js';
-export { GAME_FILE, GAME_FORMAT, GAME_VERSION, checkGame, defaultGame } from './game.js';
+export { GAME_FILE, GAME_FORMAT, GAME_VERSION, checkGame, checkPhysics, defaultGame, MAX_LAYERS, layersUsed, gameLayers, unknownLayers } from './game.js';
 export { collect, sceneRefs } from './collect.js';
 export { moduleImports } from './modules.js';
 export { RUNTIME_FILE, RUNTIME_FORMAT, RUNTIME_VERSION, RUNTIME_CONTRACT, PROJECT_DIR, checkRuntime, runtimeTable, serializeRuntime, filesDigest } from './runtime.js';

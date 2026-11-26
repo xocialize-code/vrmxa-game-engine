@@ -21,6 +21,7 @@ What Export Game reads to know what the game is (`format: "vrmxg-game"`, `versio
 | `input` | The action map (`@vrmxg/input`'s `actions`): inline as `{ "actions": { … } }`, or a ref to a JSON file holding that. Absent: the engine's default map |
 | `include` | Files no document names, by ref or by pattern (`*` within one folder level) |
 | `ignore` | Strings in the game's documents that look like files and aren't: the export would otherwise stop on them |
+| `physics` | The game's collision layers (the editor's project settings): `{ "layers": ["default", "player", …], "collides"?: { layer: [the layers it collides with] } }`, 1 to 15 names (lowercase letters, digits, `-` and `_`), as `@vrmxg/physics`'s `Layers` reads them; a layer missing from `collides` collides with every layer. A node's `layer` (a Collider's, an Area's, a Character's capsule) names one; a node with none is on the first. Absent: one layer, `default`. Every world of the game is built with it. In the manifest only when the game has it |
 | `release` | The game's own version, as its players see it: one to three numbers with dots (`"1.2.0"`). The Mac game app takes it as its version. Absent: none in the manifest |
 
 A project with no `game.json` can still be exported from the editor: the open scene is the entry, with the project's

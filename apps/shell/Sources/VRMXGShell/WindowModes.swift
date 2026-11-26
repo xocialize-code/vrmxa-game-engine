@@ -126,5 +126,8 @@ extension ShellAppDelegate: NSWindowDelegate {
 }
 
 extension ShellAppDelegate: NSMenuDelegate {
-    public func menuNeedsUpdate(_ menu: NSMenu) { menu.items.first?.title = windowVisible ? "Hide Window" : "Show Window" }
+    public func menuNeedsUpdate(_ menu: NSMenu) {
+        if menu.title == Self.recentMenuTitle { updateRecentMenu(menu); return } // File › Open Recent (ProjectFolders.swift)
+        menu.items.first?.title = windowVisible ? "Hide Window" : "Show Window"
+    }
 }

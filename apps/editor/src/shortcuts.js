@@ -9,10 +9,14 @@
 // menu item sends), editing (only while editing, not playing), flying: false (not while the fly camera has the keys) }.
 // where: 'window' (App.vue), 'menu' (the Mac app's menu bar; in a browser the window takes the same key), 'number' (a
 // number field), 'timeline', 'splitter' (a panel's edge), 'list' (a focused tree row, asset tile or folder), 'fly' (the
-// fly camera's own keys, three's FlyControls), 'pointer' (mouse gestures, listed for the sheet).
+// fly camera's own keys, three's FlyControls), 'pointer' (mouse gestures, listed for the sheet), 'settings' (the project
+// settings panel, M6 W3: its key capture takes any key).
 
 export const SHORTCUTS = [
+  { group: 'File', label: 'New Project…', keys: '⇧⌘N', where: 'menu', menu: 'newProject', note: 'the Mac app; in a browser, which keeps ⇧⌘N, the toolbar\'s New Project…' },
   { group: 'File', label: 'Open Project…', keys: '⇧⌘O', where: 'menu', menu: 'openProject' },
+  { group: 'File', label: 'Open Recent', keys: 'File › Open Recent', where: 'menu', menu: 'openRecent', note: 'or the toolbar\'s Recent list' },
+  { group: 'File', label: 'Project Settings…', keys: '⇧⌘P', where: 'menu', menu: 'projectSettings', note: 'the Mac app; in a browser, the toolbar\'s Settings…' },
   { group: 'File', label: 'Save', keys: '⌘S', where: 'menu', menu: 'save', codes: ['s'], cmd: true, action: 'save' },
   { group: 'File', label: 'Save As…', keys: '⇧⌘S', where: 'menu', menu: 'saveAs' },
   { group: 'File', label: 'Export Game…', keys: '⇧⌘E', where: 'menu', menu: 'exportGame' },
@@ -46,6 +50,8 @@ export const SHORTCUTS = [
   { group: 'Panels', label: 'Smallest, largest', keys: 'Home End', where: 'splitter', codes: ['home', 'end'] },
   { group: 'Panels', label: 'Fold or unfold', keys: '↩', where: 'splitter', codes: ['enter'] },
   { group: 'Lists', label: 'Pick the focused tree row, asset or folder', keys: '↩', where: 'list', codes: ['enter'] },
+  { group: 'Project settings', label: 'Undo, redo a settings change (while the panel is open)', keys: '⌘Z ⇧⌘Z', where: 'settings' },
+  { group: 'Project settings', label: 'Change a control: press its new key; Esc leaves it as it was', keys: 'Any key', where: 'settings' },
   { group: 'Help', label: 'Keyboard Shortcuts', keys: '⌘/', where: 'menu', menu: 'shortcuts', codes: ['/'], cmd: true, action: 'shortcuts' },
   { group: 'Help', label: 'Close the shortcuts sheet', keys: 'Esc', where: 'window', codes: ['escape'], action: 'closeSheet', sheet: true },
 ];

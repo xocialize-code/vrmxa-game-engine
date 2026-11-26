@@ -60,6 +60,24 @@ A project's own modules (`behaviours.js`) import `@vrmxg/core` by name; the page
 `static/vrmxg-core.js`, which hands them the editor's own engine. Not yet: dragging several timeline items at once, curve editing of keys, a shot list separate from the shot row, MCP tools for sequences (W11), multi-selection gizmos,
 connections in the inspector, WebCodecs export in a browser (the spike chose it as a fallback only).
 
+## New Project, Open Recent and project settings (M6 W3, AB-T-0646)
+
+- **New Project…** (⇧⌘N, the toolbar) lists the templates in `content/templates/` (`templates/index.json`, written by
+  `vite.config.js` with each file's place in the web content) and, in the Mac app, asks the shell's `project.create`
+  (shell 0.14.0) to make the project in a folder the person names, `game.json` written with the game's id and title
+  (`src/projects.js`). The new project opens on its game's entry scene; Open Project still opens the first scene.
+- **Open Recent**: File › Open Recent in the Mac app and the toolbar's Recent list, both the shell's one list
+  (`project.recent`, `project.reopen`: bookmarks, so no panel after a relaunch).
+- **Project Settings…** (⇧⌘P, `src/ProjectSettings.vue` over `src/project-settings.js`): the game's title, id and
+  version (`@vrmxg/editor-ui`'s ValueField), the entry scene and the scenes it can reach, the controls (every action's
+  key and gamepad button, rebound by pressing the new one, with `@vrmxg/game-ui`'s rows and conflict plan; actions of
+  the game's own added and removed), and the physics layers with a collision matrix kept symmetric. Each change is one
+  undo step of the settings' own history (Edit › Undo and Redo are the panel's while it is open) and is written at once
+  to `game.json` (or to the input map's own file when game.json names one), checked as an export checks it; a write
+  that fails leaves the settings as they were. Play in place uses the game's controls and layers from `game.json`.
+- Hand test: `apps/editor-mac/docs/HAND-TEST-M6-NEW-PROJECT.md` (scenario beside it); `acceptance/m6/` plays the
+  templates in Node and their builds in the game app.
+
 ## Renderer (M4 W3, AB-T-0575)
 
 The editor draws with WebGPU where the page has it, else WebGL: `?renderer=webgl|webgpu|auto` forces either (the

@@ -1,0 +1,97 @@
+{
+ "checks": [
+  {
+   "name": "cafe-dash: the build is whole, every file as its manifest says (cafe-dash)",
+   "ok": true,
+   "detail": "whole, 59 files, digest b37f0d3386df0965"
+  },
+  {
+   "name": "cafe-dash: played in Node",
+   "ok": true,
+   "detail": "{\"decided\":{\"result\":\"won\",\"step\":144,\"score\":10},\"ending\":{\"scene\":\"ending.vrmxs\",\"step\":265},\"final\":{\"scene\":\"ending.vrmxs\",\"step\":386,\"goal\":null}}"
+  },
+  {
+   "name": "cafe-dash: the game app opens on its title menu and New Game starts the entry scene",
+   "ok": true,
+   "detail": "\"Cafe Dash Deluxe\", scene level.vrmxs, webgpu"
+  },
+  {
+   "name": "cafe-dash: the level's goal on the HUD, won by walking to the counter, and its ending follows",
+   "ok": true,
+   "detail": "HUD \"Goal: Get to the counter\", won at step 160 (score 10), then ending.vrmxs at step 287"
+  },
+  {
+   "name": "cafe-dash: no errors in the page",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "blank: the build is whole, every file as its manifest says (blank)",
+   "ok": true,
+   "detail": "whole, 26 files, digest 21a8f6a641e1644c"
+  },
+  {
+   "name": "blank: played in Node",
+   "ok": true,
+   "detail": "{\"decided\":null,\"ending\":null,\"final\":{\"scene\":\"main.vrmxs\",\"step\":300,\"goal\":null}}"
+  },
+  {
+   "name": "blank: the game app opens on its title menu and New Game starts the entry scene",
+   "ok": true,
+   "detail": "\"Blank\", scene main.vrmxs, webgpu"
+  },
+  {
+   "name": "blank: the empty game runs",
+   "ok": true,
+   "detail": "main.vrmxs at step 127"
+  },
+  {
+   "name": "blank: no errors in the page",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "results": [
+  {
+   "build": "cafe-dash",
+   "game": "cafe-dash",
+   "digest": "b37f0d3386df0965ac4424bd1debed6fb4dae2e9dfa84d983410c1315010a59d",
+   "won": {
+    "step": 160,
+    "score": 10
+   },
+   "ending": "ending.vrmxs",
+   "node": {
+    "decided": {
+     "result": "won",
+     "step": 144,
+     "score": 10
+    },
+    "ending": {
+     "scene": "ending.vrmxs",
+     "step": 265
+    },
+    "final": {
+     "scene": "ending.vrmxs",
+     "step": 386,
+     "goal": null
+    }
+   }
+  },
+  {
+   "build": "blank",
+   "game": "blank",
+   "digest": "21a8f6a641e1644c247cff78d3c9e87eb91d4558a84ddb55351e365df249d175",
+   "step": 127,
+   "node": {
+    "decided": null,
+    "ending": null,
+    "final": {
+     "scene": "main.vrmxs",
+     "step": 300,
+     "goal": null
+    }
+   }
+  }
+ ]
+}

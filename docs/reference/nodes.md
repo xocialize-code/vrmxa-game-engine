@@ -707,6 +707,7 @@ A collision shape. Under a RigidBody it moves with it; otherwise it is fixed.
 | `height` | number |  | ≥ 0 m | yes | Applies when `shape == 'capsule' \|\| shape == 'cylinder'`. |
 | `friction` | number | `0.5` | ≥ 0 | yes |  |
 | `restitution` | number | `0` | 0 to 1 | yes |  |
+| `layer` | string |  |  | yes | Its collision layer: one the game names (game.json physics.layers, the editor's project settings). None: the first. |
 
 **Signals**
 
@@ -731,7 +732,7 @@ A sensor volume: reports bodies entering and leaving (door triggers, pickups).
 
 None of its own.
 
-Also, from Collider: `shape`, `size`, `radius`, `height`, `friction`, `restitution`.
+Also, from Collider: `shape`, `size`, `radius`, `height`, `friction`, `restitution`, `layer`.
 
 **Signals**
 
