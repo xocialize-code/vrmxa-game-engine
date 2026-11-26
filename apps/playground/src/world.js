@@ -2,6 +2,7 @@
 // WKWebView) and the Node runner. No DOM, no bundler aliases: whatever differs by runtime comes in as arguments
 // (how to read a file, vrmxa-core, the project's behaviours).
 import { m0Registry } from '@vrmxg/registry/m0';
+import { declareProjectBehaviours } from '@vrmxg/registry';
 import { parse, flatten } from '@vrmxg/scene';
 import { SceneTree } from '@vrmxg/core';
 import { installPhysics } from '@vrmxg/physics';
@@ -82,7 +83,9 @@ export async function loadSample(bytes, scene = 'cafe.vrmxs', { animations = 'an
 export async function buildWorld(R, sample, { vrmxaCore, closet = null, spec = null, behaviours, stubTextures = false, seed = 1, timings = null, now = () => 0, characterCache = null, audioOutput = null, sense = false, players = 1, mtoonMaterial = null, actions = null, step = 0, game = false }) {
   let t = now();
   const lap = (k) => { if (timings) { const n = now(); timings[k] = n - t; t = n; } };
-  const tree = new SceneTree({ registry: m0Registry(), prefabs: sample.prefabs, behaviours, seed });
+  const registry = m0Registry();
+  declareProjectBehaviours(registry, behaviours); // the project's declared behaviours (M6 W0): their actions answer connections
+  const tree = new SceneTree({ registry, prefabs: sample.prefabs, behaviours, seed });
   if (step) tree.clock.step = step; // a session's clock (M5 W1), before any service notes the step it starts on
   const input = installInput(tree, actions ? { actions } : players > 1 ? { actions: twoPlayerActions() } : {}); // a game's own map (M5 W0); split screen (M3 W9): p2.* actions
   installPhysics(tree, R);

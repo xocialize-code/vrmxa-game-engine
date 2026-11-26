@@ -87,7 +87,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 
 ## Scene tools (headless and editor)
 
-- [describe](reference/mcp.md#describe): List node types and behaviours, or one type's JSON Schema, units, signals, actions and accepted behaviours. Call before using a type.
+- [describe](reference/mcp.md#describe): List node types and behaviours (the project's too), or one type's or behaviour's JSON Schema, units, signals, actions (a behaviour: its state). Call before using one.
 - [tree](reference/mcp.md#tree): The scene as an indented tree. flatten expands prefab instances; live shows the running world with world positions.
 - [get_node](reference/mcp.md#get-node): A node as stored, with its signals and actions; live: its simulated state (transform, behaviours, body, character, camera).
 - [add_node](reference/mcp.md#add-node): Add a node; props are checked against its type (see describe).

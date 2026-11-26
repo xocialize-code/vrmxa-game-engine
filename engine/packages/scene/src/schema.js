@@ -76,12 +76,18 @@ export function describeType(reg, type) {
   };
 }
 
+// A behaviour, the engine's or the project's (`project: true`, M6 W0). `state` is the JSON Schema of what it keeps,
+// when it declares one; absent, it hasn't said.
 export function describeBehaviour(reg, name) {
   const b = reg.behaviours.get(name);
+  if (!b) throw new Error(`no behaviour "${name}" (the engine's: ${[...reg.behaviours.values()].filter((x) => x.source !== 'project').map((x) => x.name).join(', ')}; the project's: ${[...reg.behaviours.values()].filter((x) => x.source === 'project').map((x) => x.name).join(', ') || 'none'})`);
+  const member = (v) => ({ ...(v.description ? { description: v.description } : {}), args: argsSchema(v.args) });
   return {
-    behaviour: name, description: b.description, on: b.on, schema: behaviourSchema(b),
-    signals: Object.fromEntries(Object.entries(b.signals).map(([k, v]) => [k, { args: argsSchema(v.args) }])),
-    actions: Object.fromEntries(Object.entries(b.actions).map(([k, v]) => [k, { args: argsSchema(v.args) }])),
+    behaviour: name, description: b.description, on: b.on, ...(b.source === 'project' ? { project: true } : {}), schema: behaviourSchema(b),
+    propMeta: Object.fromEntries(Object.entries(b.params).map(([k, p]) => [k, { ...p.meta, ...(p.assetTypes ? { assetTypes: p.assetTypes } : {}), ...(p.nodeRef ? { nodeRef: true } : {}) }])),
+    signals: Object.fromEntries(Object.entries(b.signals).map(([k, v]) => [k, member(v)])),
+    actions: Object.fromEntries(Object.entries(b.actions).map(([k, v]) => [k, member(v)])),
+    ...(b.state !== undefined ? { state: b.state } : {}),
   };
 }
 

@@ -6,6 +6,7 @@
 //   const build = await openBuild(fetchReader('./'));                 // a runtime's page; Node: folderReader(dir).read
 //   const behaviours = await build.behaviours((url) => import(new URL(url, location.href).href));
 //   const scene = parse(await build.text(build.game.entry));          // then build the world with build.bytes as resolve
+import { describedBehaviours } from '@vrmxg/registry';
 import { sha256 } from './sha256.js';
 import { BuildError, normRef, resolveFrom } from './paths.js';
 import { moduleImports } from './modules.js';
@@ -93,6 +94,10 @@ export class Build {
    * (`modules`), so a changed or missing module stops here, before any of them runs. What that does not give: the
    * import itself fetches the files again by URL, so the bytes that run are checked a moment before they are loaded,
    * not as they are loaded, and a module reached only by `import()` of a computed path is not checked at all.
+   *
+   * A behaviour that declares itself (M6 W0) carries its declaration in the module, as a static `describe` on its
+   * class, so the build needs nothing beside the module to read it: `declareProjectBehaviours(registry, map)` from
+   * @vrmxg/registry (the world builder does it). A declaration that isn't one stops the game here, by name.
    * @param {(path: string) => Promise<Record<string, any>>} importModule
    * @returns {Promise<Map<string, any>>}
    */
@@ -101,7 +106,9 @@ export class Build {
     if (!ref) return new Map();
     await this.modules(ref);
     const mod = await importModule(this.path(ref));
-    return new Map(Object.entries(mod).filter(([, v]) => typeof v === 'function'));
+    const map = new Map(Object.entries(mod).filter(([, v]) => typeof v === 'function'));
+    try { describedBehaviours(map); } catch (e) { throw new BuildError('bad_behaviours', `${ref}: ${e.message}`, [ref]); }
+    return map;
   }
 
   /** Read every file of the build, the runtime's too, against the manifest. */

@@ -15,6 +15,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { installPortableMath } from '@vrmxg/dmath';
 import { m0Registry } from '@vrmxg/registry/m0';
+import { declareProjectBehaviours } from '@vrmxg/registry';
 
 installPortableMath(); // before anything parses a VRM or steps a world
 const argv = process.argv.slice(2);
@@ -44,7 +45,10 @@ if (argv.includes('--creator')) {
   const { Project } = await import('./project.js');
   const { createTools } = await import('./headless.js');
   const project = new Project(root, { behaviours: opt('--behaviours'), vrmxaCore: opt('--vrmxa-core'), seed: opt('--seed') ? Number(opt('--seed')) : 1 });
-  ({ tools, call } = createTools({ registry: m0Registry(), project, scene, builds: opt('--builds') ?? null, runtime: opt('--runtime') ?? null }));
+  // the project's own behaviours declare themselves (M6 W0) beside the engine's, before the tools are listed
+  const registry = m0Registry();
+  declareProjectBehaviours(registry, await project.behaviours());
+  ({ tools, call } = createTools({ registry, project, scene, builds: opt('--builds') ?? null, runtime: opt('--runtime') ?? null }));
 }
 
 instructions ??= (await import('./tools.js')).INSTRUCTIONS;

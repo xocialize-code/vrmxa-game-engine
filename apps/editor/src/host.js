@@ -14,6 +14,7 @@ import { renderViews, gridLayout } from '@vrmxg/post';
 import { composeSequence, isSequence, SequencePlayer, subtitles } from '@vrmxg/sequence';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { m0Registry } from '@vrmxg/registry/m0';
+import { declareProjectBehaviours } from '@vrmxg/registry';
 import { parse, describeType, serialize, overridesText, prefabNodes } from '@vrmxg/scene';
 import { makeTake, isTake, takeToSequence, installDirector, demoModel, httpModel } from '@vrmxg/director';
 import { shellTTS, httpTTS } from '@vrmxg/voice';
@@ -168,6 +169,8 @@ export class EditorHost {
 
   async openProject(project, sceneRef) {
     await this.ready;
+    // the project's own behaviours declare themselves beside the engine's (M6 W0), before a session validates with them
+    declareProjectBehaviours(registry, await project.behaviours());
     this.project = project;
     this.R ??= await loadRapier();
     const scene = sceneRef ?? project.scenes().find((s) => !s.startsWith('prefabs/')) ?? null;
