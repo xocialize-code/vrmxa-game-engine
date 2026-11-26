@@ -10,7 +10,7 @@
 //   node scripts/vrmxa-core.mjs --check     only check: exit 1 when it's missing, at another commit, changed or
 //                                           without its dependencies
 //
-// pinState() is the same check for scripts and builds that import this module (the game app's build warns, the
+// pinState() is the same check for scripts that import this module (vrmxg-export warns on the repo's own game runtime, the
 // recorded Rush run refuses).
 // A worktree under .claude/worktrees/ reaches ../vrmxa-core through a symlink there, as it reaches
 // VRMXA_Specification: ln -s <Development>/vrmxa-core .claude/worktrees/vrmxa-core
