@@ -57,8 +57,15 @@ export const parse = (text) => JSON.parse(text);
 // ---------------------------------------------------------------- validation
 
 export function createValidator(reg) {
-  const ajv = new Ajv2020({ allErrors: true, strict: false });
-  const validate = ajv.compile(documentSchema(reg));
+  // compiled from the registry as it is now, and again when it changes (a project's behaviours declared, M6 W0)
+  let compiled = null, at = -1;
+  const validate = (doc) => {
+    if (!compiled || at !== reg.version) { compiled = new Ajv2020({ allErrors: true, strict: false }).compile(documentSchema(reg)); at = reg.version; }
+    const ok = compiled(doc);
+    validate.errors = compiled.errors;
+    return ok;
+  };
+  /** @type {any} */ validate.errors = null;
 
   // Schema errors are hard errors. Lint findings are structural problems the schema can't express
   // (references, cycles) plus warnings for things kept but not understood.
@@ -141,6 +148,16 @@ export function createValidator(reg) {
     return { ok: errors.length === 0, errors, warnings };
   }
   return { check, validateSchema: validate };
+}
+
+/**
+ * A checker for any one JSON Schema (2020-12), as the scene's own validation reads schemas: a behaviour's params
+ * (`describeBehaviour(reg, name).schema`) or the state it declares (`reg.behaviours.get(name).state`, M6 W0).
+ * @param {object | boolean} schema @returns {(value: unknown) => string[]} the problems with a value (none: it fits)
+ */
+export function schemaChecker(schema) {
+  const validate = new Ajv2020({ allErrors: true, strict: false }).compile(schema);
+  return (value) => (validate(value) ? [] : (validate.errors ?? []).map((e) => `${e.instancePath || '/'} ${e.message}${e.params?.allowedValues ? ` (${e.params.allowedValues.join(', ')})` : ''}`));
 }
 
 // Every id an Instance's overrides may target: the prefab's own ids and, through nested

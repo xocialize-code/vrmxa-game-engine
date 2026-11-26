@@ -102,7 +102,7 @@ export class McpLink {
   constructor(ed, { url = 'http://127.0.0.1:5183', onChange, call = null, app = 'VRMXG Editor', hello = null } = {}) {
     this.ed = ed; this.url = `${url.replace(/\/$/, '')}/vrmxg-mcp/exchange`; this.onChange = onChange;
     this.app = app; this.helloInfo = hello;
-    this.call = call ?? caller(createHandlers(m0Registry(), editorTarget(ed)));
+    this.call = call ?? caller(createHandlers(ed.registry ?? m0Registry(), editorTarget(ed))); // the editor's: the project's behaviours too (M6 W0)
     this.state = 'off'; this.last = null; this.calls = 0; this.running = false;
     this.id = Math.random().toString(36).slice(2, 10); // which editor this is, so the bridge serves one at a time
   }

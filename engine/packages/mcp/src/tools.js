@@ -46,8 +46,9 @@ export function toolList(reg, mode = 'headless') {
   const LIVE = { type: 'boolean', description: mode === 'editor' ? 'Read the play world instead of the scene' : 'Read the running engine (engine_load) instead of the file' };
   const none = { type: 'object', properties: {} };
   const tools = [
-    { name: 'describe', description: 'List node types and behaviours, or one type\'s JSON Schema, units, signals, actions and accepted behaviours. Call before using a type.',
-      inputSchema: { type: 'object', properties: { type: { type: 'string', enum: types }, behaviour: { type: 'string', enum: [...reg.behaviours.keys()] } } } },
+    { name: 'describe', description: 'List node types and behaviours (the project\'s too), or one type\'s or behaviour\'s JSON Schema, units, signals, actions (a behaviour: its state). Call before using one.',
+      // behaviour: no enum, as a project's own behaviours are declared when it loads (M6 W0), after this list is made
+      inputSchema: { type: 'object', properties: { type: { type: 'string', enum: types }, behaviour: { type: 'string' } } } },
     { name: 'tree', description: 'The scene as an indented tree. flatten expands prefab instances; live shows the running world with world positions.',
       inputSchema: { type: 'object', properties: { flatten: { type: 'boolean' }, live: LIVE } } },
     { name: 'get_node', description: 'A node as stored, with its signals and actions; live: its simulated state (transform, behaviours, body, character, camera).',
@@ -167,7 +168,7 @@ export function createHandlers(reg, target) {
     describe({ type, behaviour }) {
       if (type) return compactConditions(describeType(reg, type));
       if (behaviour) return describeBehaviour(reg, behaviour);
-      return { types: types.map((t) => ({ type: t, extends: reg.get(t).extends, description: reg.get(t).description })), behaviours: [...reg.behaviours.values()].map((b) => ({ behaviour: b.name, on: b.on, description: b.description })) };
+      return { types: types.map((t) => ({ type: t, extends: reg.get(t).extends, description: reg.get(t).description })), behaviours: [...reg.behaviours.values()].map((b) => ({ behaviour: b.name, on: b.on, description: b.description, ...(b.source === 'project' ? { project: true } : {}) })) };
     },
     tree({ flatten: flat, live }) { const doc = target.doc(); return live ? target.live().treeText() : treeText(flat ? flatten(doc, target.prefabs()).nodes : doc.nodes); },
     get_node({ id, live }) {

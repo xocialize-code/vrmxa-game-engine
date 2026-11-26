@@ -207,7 +207,12 @@ What a runtime keeps, so any build can sit around it:
    `openBuild(fetchReader('./'))`.
 3. It imports the project's behaviour modules from `./project/` at run time (`build.behaviours(importModule)`), and
    its entry carries an import map that gives them `@vrmxg/core`: the runtime's own copy of the engine's core,
-   published on `globalThis.VRMXG_CORE` before the import (`runtime/vrmxg-core.js` is the shim).
+   published on `globalThis.VRMXG_CORE` before the import (`runtime/vrmxg-core.js` is the shim). A behaviour that
+   declares itself (M6 W0) carries its declaration in the module (a static `describe` on its class), so a build needs
+   nothing else to read it; `build.behaviours` declares them into the engine's registry and refuses what it won't take
+   (`bad_behaviours`), and the world builder puts them in the world's registry (`declareProjectBehaviours` from
+   `@vrmxg/registry`). An export given `importModule` (Node's exporters pass `behavioursImporter(folder)`) declares them
+   too, so a project behaviour's asset params are traced as typed references, and refuses the same declarations.
 4. It has no file named `vrmxg-build.json` or `vrmxg-runtime.json` and none under `project/`. Every file has a
    licence in its table.
 

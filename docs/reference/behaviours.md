@@ -13,7 +13,7 @@ The scene holds the name and the params; the project maps the name to code. A sc
 unknown name keeps its data and runs nothing.
 
 A behaviour can add signals and actions to the node it is on. These are the behaviours the registry declares; a
-project can add its own (the sample project's `behaviours.js`).
+project can add its own, and [declare them](#project-behaviours) so the editor, validation and MCP know them.
 
 | Behaviour | Attaches to | What |
 |---|---|---|
@@ -158,3 +158,89 @@ Can be picked up; equips a VRMXW if the item names one.
 | Signal | Arguments |
 |---|---|
 | `pickedUp` | `by` (node id) |
+
+## Project behaviours
+
+A project's behaviours module (`behaviours` in [game.json](./game-json)) exports behaviour classes under the names its
+scenes use. A class declares itself with a static `describe`: the same definition the registry's own behaviours
+have, `{ description, on, params, signals, actions, state }`. Params and arguments are JSON Schema; beside a
+schema's own keywords a param may say `unit`, `widget`, `step`, `precision`, `visibleIf`, `enabledIf`, and
+`nodeRef: true` (a node id) or `assetTypes` (an asset reference). `state` is the JSON Schema of what the behaviour's
+`getState` returns: a behaviour without it hasn't declared its state, and `{ "type": "null" }` declares that it keeps
+none. Saves are checked against it: what they compare is its shape, the schema with its annotations (`description`,
+`title`, `examples`, `$comment`) taken out and its keys sorted, so rewording a description or reordering keys
+changes nothing (`stateShape` in `@vrmxg/registry`).
+
+When a project loads (the editor, the game runtime, the MCP server), its declarations sit in the registry beside
+the engine's: their params are checked against their schemas, a scene may connect their signals and call their
+actions, and MCP's `describe` lists them (marked `project`). A declaration with the name of one of the engine's
+behaviours is an error, and so is a schema that isn't JSON Schema or a key a definition doesn't have. A class with
+no `describe` of its own is code only (a subclass doesn't inherit its parent's): a scene that uses it validates with
+a warning.
+
+```js
+import { Behaviour } from '@vrmxg/core';
+export class tableZone extends Behaviour {
+  static describe = {
+    on: ['Area'],
+    params: { customer: { type: 'string', nodeRef: true }, points: { type: 'integer', minimum: 0, default: 10 } },
+    signals: { served: { args: { right: { type: 'boolean' } } } },
+    state: { type: 'object', properties: { done: { type: 'boolean' } } },
+  };
+  // ready(), physicsProcess(), getState(), setState() …
+}
+```
+
+The sample game, "The Morning Rush", declares 2 (`content/sample/game/behaviours.js`):
+
+### pressToStart
+
+On a title screen: the step one of its input actions goes down, asks the game to change to a scene.
+
+- **Attaches to:** any node (and types that extend them)
+
+**Params**
+
+| Param | Type | Default | What |
+|---|---|---|---|
+| `actions` | list of string | `["interact"]` | The input actions that start (the game's action map names them). |
+| `to` | string |  | The scene the game changes to, as game.json names it. |
+
+**State it keeps**
+
+`null`: Nothing: it reads the input of the step it runs on.
+
+### tableZone
+
+Beside a regular's table (an Area): starts her order's conversation while the player stands there, and takes her tray from the player when it is hers, scoring it.
+
+- **Attaches to:** [Area](./nodes#area) (and types that extend them)
+
+**Params**
+
+| Param | Type | Default | Range, unit | What |
+|---|---|---|---|---|
+| `customer` | node id |  |  | The regular at this table (a Character with a brain). |
+| `dialogue` | node id |  |  | Her order's Dialogue node. |
+| `item` | string |  |  | The VRMXI id of her tray. |
+| `ordered` | string |  |  | The game flag her order sets once it is taken. |
+| `right` | string |  |  | The game flag her choice sets when the order was taken right. |
+| `player` | node id | `"mira"` |  | Who serves (the player's Character). |
+| `points` | integer | `10` | ≥ 0 | Added to the score counter for a right order. |
+| `served` | string | `"served"` |  | The counter a delivery adds 1 to. |
+| `score` | string | `"score"` |  | The counter a right order adds its points to. |
+| `mistakes` | string | `"mistakes"` |  | The counter a wrong order adds 1 to. |
+
+**Signals it adds**
+
+| Signal | Arguments | What |
+|---|---|---|
+| `served` | `customer` (node id): The regular served; `right` (boolean): Whether her order was taken right | The tray was handed over (once): the regular has it and the counters are added to. |
+
+**State it keeps**
+
+| Field | Type | What |
+|---|---|---|
+| `inside` | boolean | The player stands in the area. |
+| `next` | integer | The step it may next try to start the order's conversation on. |
+| `done` | boolean | The tray was handed over. |

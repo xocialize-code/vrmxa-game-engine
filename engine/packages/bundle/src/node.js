@@ -287,7 +287,7 @@ export async function exportToFolder({ project, runtime, out, game = null, gameF
   let stage = null;
   try {
     const r = await exportBuild({
-      project: { files: src.files, read: src.read }, runtime: folderReader(runtime), game, onProgress,
+      project: { files: src.files, read: src.read }, runtime: folderReader(runtime), game, onProgress, importModule: behavioursImporter(project),
       ready: () => { stage = stageFolder(out); }, write: (p, bytes) => stage.write(p, bytes),
     });
     stage.commit();

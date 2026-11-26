@@ -16,7 +16,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { exportBuild } from './export.js';
-import { exportToFolder, folderReader, checkFolder, checkRuntimeSources, projectWithGame } from './node.js';
+import { exportToFolder, folderReader, checkFolder, checkRuntimeSources, projectWithGame, behavioursImporter } from './node.js';
 
 const args = process.argv.slice(2), flag = (name) => { const i = args.indexOf(name); return i < 0 ? null : args.splice(i, 2)[1] ?? ''; };
 const GAME_RUNTIME = path.resolve(import.meta.dirname, '../../../../apps/game/dist');
@@ -51,7 +51,7 @@ try {
   }
   const src = gameFile ? projectWithGame(project, gameFile) : folderReader(project);
   const r = check
-    ? await exportBuild({ project: { files: src.files, read: src.read }, runtime: folderReader(runtime), game: /** @type {any} */ (src).game ?? null, write: null })
+    ? await exportBuild({ project: { files: src.files, read: src.read }, runtime: folderReader(runtime), game: /** @type {any} */ (src).game ?? null, write: null, importModule: behavioursImporter(project) })
     : await exportToFolder({ project, runtime, out, gameFile });
   console.log(JSON.stringify({ game: r.manifest.game.id, entry: r.manifest.game.entry, runtime: `${r.manifest.runtime.name} ${r.manifest.runtime.version}`, files: r.files, bytes: r.bytes, digest: r.manifest.digest, manifest: r.sha256, licensedByPattern: r.byPattern, ...(check ? {} : { out: /** @type {any} */ (r).out }) }, null, 1));
 } catch (e) {

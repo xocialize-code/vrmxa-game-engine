@@ -184,3 +184,29 @@ test('the sample project exports: every file listed with its hash and licence, t
   assert.ok(!files.some((f) => /^project\/(tools|props\/sources|scripts|sequences)\//.test(f.path)), 'the project\'s tools, sources and films are not the game\'s');
   assert.ok(a.manifest.game.input?.actions?.move_x, 'the input map travels in the manifest');
 });
+
+test('with importModule, the project\'s declared behaviours type the export\'s references (M6 W0)', async () => {
+  const { planBuild } = await import('@vrmxg/bundle');
+  // a level whose node uses a project behaviour with an asset param, naming a sound the project doesn't have, by a name
+  // that doesn't look like a file: only the declaration says it is one
+  const level = JSON.stringify({ format: 'vrmxs', version: 1, id: 'level', nodes: [{ id: 'bell', type: 'Node3D', behaviours: [{ use: 'chime', sound: 'sounds/ding' }] }] });
+  const p = project({ 'level.vrmxs': level });
+  const chime = Object.assign(class {}, { describe: { params: { sound: { type: 'string', assetTypes: ['audio'] } } } });
+  const imported = [];
+  const importModule = async (ref) => { imported.push(ref); return { chime }; };
+  // without it: an untyped string that doesn't look like a file, passed over as before
+  await planBuild({ project: p });
+  await assert.rejects(planBuild({ project: p, importModule }), (e) => e.code === 'missing_file' && /level\.vrmxs names sounds\/ding \(bell's chime \(sound\)\)/.test(e.message));
+  assert.deepEqual(imported, ['behaviours.js'], 'the module game.json names');
+  // a registry the caller passes is used as it is: the module isn't imported
+  imported.length = 0;
+  await planBuild({ project: p, importModule, registry: null });
+  assert.deepEqual(imported, []);
+  // a declaration the registry refuses, or a module that won't import, stops the export by name
+  const typo = Object.assign(class {}, { describe: { param: {} } });
+  await assert.rejects(planBuild({ project: p, importModule: async () => ({ chime: typo }) }), (e) => e.code === 'bad_behaviours' && /behaviours\.js: .*unknown key "param"/.test(e.message));
+  await assert.rejects(planBuild({ project: p, importModule: async () => { throw new Error('SyntaxError: nope'); } }), (e) => e.code === 'bad_behaviours' && /behaviours\.js won't import: SyntaxError: nope/.test(e.message));
+  // with `all`, collected beside the rest
+  const all = await planBuild({ project: p, importModule: async () => ({ chime: typo }), all: true });
+  assert.ok(all.problems.some((e) => e.code === 'bad_behaviours'));
+});

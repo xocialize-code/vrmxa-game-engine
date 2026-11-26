@@ -3,6 +3,7 @@
 // being edited (unsaved edits included); stepped on request, with input held or replayed; signals
 // emitted while stepping are logged.
 import { m0Registry } from '@vrmxg/registry/m0';
+import { declareProjectBehaviours } from '@vrmxg/registry';
 import { SceneTree } from '@vrmxg/core';
 import { loadRapier, installPhysics } from '@vrmxg/physics';
 import { installCharacters } from '@vrmxg/character';
@@ -40,7 +41,9 @@ export class EngineSession extends LiveView {
     const p = this.project;
     // a sequence (M2 W1) runs in its set: compose them, and read the set's prefabs too
     if (isSequence(doc)) { doc = composeSequence(doc, parse(new TextDecoder().decode(p.bytes(doc.set)))); prefabs = p.prefabs(doc, new Map(prefabs)); }
-    const tree = new SceneTree({ registry: m0Registry(), prefabs, behaviours: await p.behaviours(), seed: p.seed });
+    const behaviours = await p.behaviours(), registry = m0Registry();
+    declareProjectBehaviours(registry, behaviours); // the project's declared behaviours (M6 W0): their actions answer connections
+    const tree = new SceneTree({ registry, prefabs, behaviours, seed: p.seed });
     installInput(tree);
     installPhysics(tree, await loadRapier());
     // game rules (M5 W9), after physics as @vrmxg/game asks: only for a scene that has them, so a scene without rules

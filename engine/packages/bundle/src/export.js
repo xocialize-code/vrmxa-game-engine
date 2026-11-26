@@ -1,17 +1,31 @@
 // The exporter: a project and a runtime in, a build out. It only reads, hashes and writes, through the reader and the
 // writer its caller hands it, so the same code runs in Node (folders) and in the editor's page (fetch in, the Mac
 // shell's bridge out) and writes the same bytes. Every check passes before `ready` is called and before the first
-// write, and each of the project's files is read and hashed once, as it is written.
+// write, and each of the project's files is read and hashed once, as it is written. One step runs the project's code:
+// given `importModule` (Node's exporters pass one), the game's behaviours module is imported, as the game will import
+// it, to read what its behaviours declare (M6 W0).
 import { sha256 } from './sha256.js';
 import { BuildError, checkPath, caseClash, isHidden } from './paths.js';
 import { GAME_FILE, checkGame } from './game.js';
 import { LICENCES_FILE, parseLicences, licenceOf } from './licences.js';
 import { m0Registry } from '@vrmxg/registry/m0';
+import { declareProjectBehaviours } from '@vrmxg/registry';
 import { collect } from './collect.js';
 import { RUNTIME_FILE, PROJECT_DIR, checkRuntime } from './runtime.js';
 import { BUILD_FILE, makeManifest, serializeManifest } from './manifest.js';
 
 const text = (b) => new TextDecoder().decode(b);
+
+/** The engine's registry, with the game's own behaviours declared in it when they can be imported. */
+// A module the project doesn't have is left to the trace, which names it as a missing file.
+async function exportRegistry(game, files, importModule, fail) {
+  const registry = m0Registry(), ref = game.behaviours;
+  if (!importModule || !ref || !files.includes(ref)) return registry;
+  let mod;
+  try { mod = await importModule(ref); } catch (e) { fail(new BuildError('bad_behaviours', `${ref} won't import: ${e.message}`, [ref])); return registry; }
+  try { declareProjectBehaviours(registry, mod); } catch (e) { fail(new BuildError('bad_behaviours', `${ref}: ${e.message}`, [ref])); }
+  return registry;
+}
 
 /**
  * What a build of a project would hold, and whether it may be made: the game document checked, every file the game
@@ -22,6 +36,7 @@ const text = (b) => new TextDecoder().decode(b);
  * @param {{ files: string[], read: (ref: string) => Promise<Uint8Array>, truncated?: boolean }} o.project as exportBuild takes it
  * @param {any} [o.game] the game document; without it the project's game.json is read
  * @param {any} [o.registry] as exportBuild takes it
+ * @param {((ref: string) => Promise<any>) | null} [o.importModule] as exportBuild takes it
  * @param {boolean} [o.all] collect every refusal instead of throwing the first: they come back as `problems` (each a
  *   BuildError), with what could be traced. For a check that shows a person everything at once; an export never asks
  *   for it, so what it builds is the same either way
@@ -30,7 +45,7 @@ const text = (b) => new TextDecoder().decode(b);
  *   order; source: each one's own file in the project; why: the document that named it; licence: each one's row;
  *   problems: with `all`, every refusal (empty: the export would pass these checks)
  */
-export async function planBuild({ project, game = null, registry = undefined, all = false }) {
+export async function planBuild({ project, game = null, registry = undefined, importModule = null, all = false }) {
   const problems = [];
   const fail = (e) => { if (!all) throw e; problems.push(e); };
   if (project.truncated) throw new BuildError('too_many_files', `the project's listing was cut short at ${project.files.length} files: an export needs every file's name, so nothing was exported`);
@@ -41,11 +56,12 @@ export async function planBuild({ project, game = null, registry = undefined, al
     try { game = JSON.parse(text(await project.read(GAME_FILE))); } catch (e) { throw new BuildError('bad_game', `${GAME_FILE} is not JSON: ${e.message}`, [GAME_FILE]); }
   }
   game = checkGame(game);
+  if (registry === undefined) registry = await exportRegistry(game, files, importModule, fail);
   // what it needs, and whether each file may ship. Only the files the game uses are held to a build's rules for
   // paths: a file it doesn't use can be named anything
   const hasLicences = files.includes(LICENCES_FILE);
   if (!hasLicences) fail(new BuildError('no_licence', `the project has no ${LICENCES_FILE}: every file in a build needs a row in it`, [LICENCES_FILE]));
-  const { refs, source, why } = await collect({ game, files, read: project.read, registry: registry === undefined ? m0Registry() : registry, problems: all ? problems : null });
+  const { refs, source, why } = await collect({ game, files, read: project.read, registry, problems: all ? problems : null });
   for (const ref of refs) { try { checkPath(ref, 'the project file'); } catch (e) { fail(e); } }
   const clash = caseClash(refs);
   if (clash) fail(new BuildError('bad_path', `${clash[0]} and ${clash[1]} differ only by case: a Mac's disk can't hold both`, clash));
@@ -72,14 +88,19 @@ export async function planBuild({ project, game = null, registry = undefined, al
  *   export asks for none
  * @param {((done: number, total: number, path: string) => void) | null} [o.onProgress]
  * @param {any} [o.registry] the node registry, which says which of a scene's props are asset references (default: the
- *   engine's own, @vrmxg/registry/m0; null: only a scene's asset table and a sequence's set are taken as typed)
+ *   engine's own, `@vrmxg/registry/m0`; with importModule, the project's behaviours are declared in it; null: only a
+ *   scene's asset table and a sequence's set are taken as typed)
+ * @param {((ref: string) => Promise<any>) | null} [o.importModule] imports one of the project's modules by its ref (Node:
+ *   `behavioursImporter(folder)`): the game's behaviours module is imported with it and its declarations (M6 W0) put in
+ *   the default registry, so a project behaviour's asset params are typed references. A module that won't import or a
+ *   declaration the registry refuses stops the export (bad_behaviours). Without it the project's behaviours aren't read
  * @returns {Promise<{ manifest: import('./manifest.js').Manifest, text: string, sha256: string, files: number, bytes: number, byPattern: string[] }>}
  *   the manifest, its file's text and that text's SHA-256 (two builds are the same bytes exactly when it matches), how
  *   many files and bytes the build holds beside the manifest, and the project's files that no row of LICENCES.md names
  *   one by one (a pattern row licensed them)
  */
-export async function exportBuild({ project, runtime, game = null, write = null, ready = null, onProgress = null, registry = undefined }) {
-  const plan = await planBuild({ project, game, registry });
+export async function exportBuild({ project, runtime, game = null, write = null, ready = null, onProgress = null, registry = undefined, importModule = null }) {
+  const plan = await planBuild({ project, game, registry, importModule });
   const { refs, source, licence } = plan;
   game = plan.game;
   // the runtime, each file checked against its table

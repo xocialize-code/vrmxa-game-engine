@@ -19,12 +19,13 @@ export const CHUNK = 4 << 20;
 /**
  * @param {{ files: string[], has: (ref: string) => boolean, bytes: (ref: string) => Promise<Uint8Array>, truncated?: boolean }} project
  * @param {{ scene?: string | null, name?: string, onProgress?: ((done: number, total: number, path: string) => void) | null, signal?: AbortSignal | null,
- *   shell?: { inShell: boolean, call: (method: string, params?: any) => Promise<any> }, runtime?: { read: (path: string) => Promise<Uint8Array> }, chunk?: number }} [o]
+ *   shell?: { inShell: boolean, call: (method: string, params?: any) => Promise<any> }, runtime?: { read: (path: string) => Promise<Uint8Array> }, chunk?: number, registry?: any }} [o]
  *   scene: the open scene, the game's entry when the project has no game.json; name: the build folder's name (the
  *   game's id); signal: stops the export between two writes (the window is closing), and the folder is left as it was;
- *   shell, runtime, chunk: the Mac shell, the runtime's files and the piece size (tests pass their own)
+ *   shell, runtime, chunk: the Mac shell, the runtime's files and the piece size (tests pass their own); registry: the
+ *   editor's, with the project's behaviours declared in it (M6 W0), so their asset params are traced as typed references
  */
-export async function exportGame(project, { scene = null, name = '', onProgress = null, signal = null, shell = { inShell, call }, runtime = { read: fetchReader(RUNTIME_BASE) }, chunk = CHUNK } = {}) {
+export async function exportGame(project, { scene = null, name = '', onProgress = null, signal = null, shell = { inShell, call }, runtime = { read: fetchReader(RUNTIME_BASE) }, chunk = CHUNK, registry = undefined } = {}) {
   let game = null;
   if (!project.has(GAME_FILE)) {
     if (!scene) throw new Error(`the project has no ${GAME_FILE}, and no scene is open to export as the game`);
@@ -41,7 +42,7 @@ export async function exportGame(project, { scene = null, name = '', onProgress 
   };
   try {
     const r = await exportBuild({
-      project: { files: project.files, read: (ref) => project.bytes(ref), truncated: project.truncated === true }, runtime, game,
+      project: { files: project.files, read: (ref) => project.bytes(ref), truncated: project.truncated === true }, runtime, game, registry,
       onProgress: (done, total, path) => { stopped(); onProgress?.(done, total, path); },
       // every check has passed: only now is a folder asked for, so a refused export asks for none and replaces nothing
       ready: shell.inShell ? async (plan) => { stopped(); id = (await shell.call('build.begin', { name: name || plan.game.id, title: 'Export Game' })).id; } : null,

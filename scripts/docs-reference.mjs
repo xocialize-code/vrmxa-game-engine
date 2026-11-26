@@ -6,7 +6,8 @@
 //   node scripts/docs-reference.mjs --check   write nothing; exit 1 naming every file that is out of date
 //
 // `npm run check` and CI run --check. What each page is generated from:
-//   nodes, behaviours   @vrmxg/registry's registry (m0Registry): types, props, signals, actions, behaviours
+//   nodes, behaviours   @vrmxg/registry's registry (m0Registry): types, props, signals, actions, behaviours; and the
+//                       behaviours the sample game declares (content/sample/game/behaviours.js, M6 W0)
 //   mcp                 @vrmxg/mcp's tool lists (toolList for headless and editor, shortToolList) and what each server
 //                       says at initialize; the launch line and ports read from src/server.js
 //   creator-commands    apps/creator/src/agent.js's CommandRegistry, with every command's JSON Schema
@@ -28,6 +29,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { m0Registry } from '@vrmxg/registry/m0';
+import { declareProjectBehaviours } from '@vrmxg/registry';
+import * as rushBehaviours from '../content/sample/game/behaviours.js';
 import { documentSchema } from '@vrmxg/scene';
 import { toolList, INSTRUCTIONS, OUTPUT_LIMIT } from '@vrmxg/mcp/tools';
 import { shortToolList, SHORT_INSTRUCTIONS, CONTENT_NOTE, AGENT_MARK } from '@vrmxg/mcp/shorts';
@@ -212,24 +215,74 @@ function nodesPage() {
   });
 }
 
+/** The state a behaviour declares it keeps (M6 W0), or that it hasn't said. */
+function stateOf(b) {
+  const s = b.state;
+  if (s === undefined) return ['*Not declared.*'];
+  const what = (v) => [v.type ? code(Array.isArray(v.type) ? v.type.join(' | ') : v.type) : '', v.description ?? ''].filter(Boolean).join(': ');
+  if (s && typeof s === 'object' && s.properties) return [table(['Field', 'Type', 'What'], Object.entries(s.properties).map(([k, v]) => [code(k), v.type ? (Array.isArray(v.type) ? v.type.join(' | ') : v.type) : 'any', v.description ?? '']))];
+  return [typeof s === 'boolean' ? code(String(s)) : what(s) || code(JSON.stringify(s))];
+}
+
+/** One behaviour's section: what it attaches to, its params, the signals and actions it adds, the state it keeps. */
+function behaviourSection(b, heading) {
+  const out = ['', `${heading} ${b.name}`, '', b.description || '*No description in the registry.*', '', `- **Attaches to:** ${b.on ? b.on.map((o) => `[${o}](./nodes#${slugOf(o)})`).join(', ') : 'any node'} (and types that extend them)`, '', '**Params**', ''];
+  out.push(Object.keys(b.params).length ? table(PROP_HEAD.map((h) => (h === 'Prop' ? 'Param' : h)), propRows(b.params)) : 'None.');
+  if (Object.keys(b.signals).length) out.push('', '**Signals it adds**', '', table(['Signal', 'Arguments', 'What'], memberRows(b.signals)));
+  if (Object.keys(b.actions).length) out.push('', '**Actions it adds**', '', table(['Action', 'Arguments', 'What'], memberRows(b.actions)));
+  if (b.state !== undefined) out.push('', '**State it keeps**', '', ...stateOf(b));
+  return out;
+}
+
 function behavioursPage() {
   const all = [...reg.behaviours.values()];
+  const rush = m0Registry(), declared = declareProjectBehaviours(rush, rushBehaviours).map((n) => rush.behaviours.get(n));
   const out = [
     'A behaviour is a named script attached to a node: an entry in the node\'s `behaviours` list, `{ "use": "<name>", …params }`.',
     'The scene holds the name and the params; the project maps the name to code. A scene never carries code, and an',
     'unknown name keeps its data and runs nothing.',
     '',
     'A behaviour can add signals and actions to the node it is on. These are the behaviours the registry declares; a',
-    'project can add its own (the sample project\'s `behaviours.js`).',
+    'project can add its own, and [declare them](#project-behaviours) so the editor, validation and MCP know them.',
     '',
     table(['Behaviour', 'Attaches to', 'What'], all.map((b) => [`[${code(b.name)}](#${slugOf(b.name)})`, b.on ? b.on.map((o) => `[${o}](./nodes#${slugOf(o)})`).join(', ') : 'any node', b.description])),
   ];
-  for (const b of all) {
-    out.push('', `## ${b.name}`, '', b.description || '*No description in the registry.*', '', `- **Attaches to:** ${b.on ? b.on.map((o) => `[${o}](./nodes#${slugOf(o)})`).join(', ') : 'any node'} (and types that extend them)`, '', '**Params**', '');
-    out.push(Object.keys(b.params).length ? table(PROP_HEAD.map((h) => (h === 'Prop' ? 'Param' : h)), propRows(b.params)) : 'None.');
-    if (Object.keys(b.signals).length) out.push('', '**Signals it adds**', '', table(['Signal', 'Arguments', 'What'], memberRows(b.signals)));
-    if (Object.keys(b.actions).length) out.push('', '**Actions it adds**', '', table(['Action', 'Arguments', 'What'], memberRows(b.actions)));
-  }
+  for (const b of all) out.push(...behaviourSection(b, '##'));
+  out.push(
+    '', '## Project behaviours', '',
+    'A project\'s behaviours module (`behaviours` in [game.json](./game-json)) exports behaviour classes under the names its',
+    'scenes use. A class declares itself with a static `describe`: the same definition the registry\'s own behaviours',
+    'have, `{ description, on, params, signals, actions, state }`. Params and arguments are JSON Schema; beside a',
+    'schema\'s own keywords a param may say `unit`, `widget`, `step`, `precision`, `visibleIf`, `enabledIf`, and',
+    '`nodeRef: true` (a node id) or `assetTypes` (an asset reference). `state` is the JSON Schema of what the behaviour\'s',
+    '`getState` returns: a behaviour without it hasn\'t declared its state, and `{ "type": "null" }` declares that it keeps',
+    'none. Saves are checked against it: what they compare is its shape, the schema with its annotations (`description`,',
+    '`title`, `examples`, `$comment`) taken out and its keys sorted, so rewording a description or reordering keys',
+    'changes nothing (`stateShape` in `@vrmxg/registry`).',
+    '',
+    'When a project loads (the editor, the game runtime, the MCP server), its declarations sit in the registry beside',
+    'the engine\'s: their params are checked against their schemas, a scene may connect their signals and call their',
+    'actions, and MCP\'s `describe` lists them (marked `project`). A declaration with the name of one of the engine\'s',
+    'behaviours is an error, and so is a schema that isn\'t JSON Schema or a key a definition doesn\'t have. A class with',
+    'no `describe` of its own is code only (a subclass doesn\'t inherit its parent\'s): a scene that uses it validates with',
+    'a warning.',
+    '',
+    '```js',
+    'import { Behaviour } from \'@vrmxg/core\';',
+    'export class tableZone extends Behaviour {',
+    '  static describe = {',
+    '    on: [\'Area\'],',
+    '    params: { customer: { type: \'string\', nodeRef: true }, points: { type: \'integer\', minimum: 0, default: 10 } },',
+    '    signals: { served: { args: { right: { type: \'boolean\' } } } },',
+    '    state: { type: \'object\', properties: { done: { type: \'boolean\' } } },',
+    '  };',
+    '  // ready(), physicsProcess(), getState(), setState() …',
+    '}',
+    '```',
+    '',
+    `The sample game, "The Morning Rush", declares ${declared.length} (\`content/sample/game/behaviours.js\`):`,
+  );
+  for (const b of declared) out.push(...behaviourSection(b, '###'));
   return page({
     title: 'Behaviours', order: 20, from: '`@vrmxg/registry` (`m0Registry`)',
     description: `The ${all.length} behaviours the registry declares, with their params and the signals and actions they add.`,

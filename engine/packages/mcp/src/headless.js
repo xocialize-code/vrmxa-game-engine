@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse, serialize, createEditor, changedLines } from '@vrmxg/scene';
 import { exportBuild, defaultGame, GAME_FILE } from '@vrmxg/bundle';
-import { exportToFolder, folderReader, checkFolder } from '@vrmxg/bundle/node';
+import { exportToFolder, folderReader, checkFolder, behavioursImporter } from '@vrmxg/bundle/node';
 import { EngineSession } from './engine.js';
 import { toolList, createHandlers, caller } from './tools.js';
 
@@ -49,7 +49,7 @@ export function createTools({ registry: reg, project, scene, builds = null, runt
       // a project with no game.json is the open scene alone, as the editor's Export Game and `game op=rules` take it
       const game = files.includes(GAME_FILE) ? null : defaultGame({ files, entry: sceneRef });
       // every check and every hash, nothing written: also how the build's name (the game's id) is known before a folder is
-      const checked = await exportBuild({ project: { files, read: src.read }, runtime: folderReader(rt), game, write: null });
+      const checked = await exportBuild({ project: { files, read: src.read }, runtime: folderReader(rt), game, write: null, importModule: behavioursImporter(project.root) });
       if (!builds) return { ...about(checked), written: false, note: 'checked and hashed, nothing written: this server was started without --builds <folder>, which says where builds go. Ask the person to add it.' };
       const out = path.join(path.resolve(builds), name ?? checked.manifest.game.id);
       const r = await exportToFolder({ project: project.root, runtime: rt, out, game });

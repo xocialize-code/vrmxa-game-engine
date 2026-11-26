@@ -14,6 +14,7 @@ import { renderViews, gridLayout } from '@vrmxg/post';
 import { composeSequence, isSequence, SequencePlayer, subtitles } from '@vrmxg/sequence';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
 import { m0Registry } from '@vrmxg/registry/m0';
+import { declareProjectBehaviours } from '@vrmxg/registry';
 import { parse, describeType, serialize, overridesText, prefabNodes } from '@vrmxg/scene';
 import { makeTake, isTake, takeToSequence, installDirector, demoModel, httpModel } from '@vrmxg/director';
 import { shellTTS, httpTTS } from '@vrmxg/voice';
@@ -99,6 +100,7 @@ export class EditorHost {
     this.stats = { frameMs: 0, fps: 0, renderMs: 0, step: 0, buildMs: 0, backend: '' };
     this._built = 0;           // worlds built (AB-T-0592): the status shows how many are still alive
     this.error = '';
+    this.behaviourProblems = []; // what the open project's behaviours module got wrong (M6 W0): shown, never fatal
     this.onChange = null;
     this.busy = 0;
     this._gen = 0; this._frames = []; this._last = null; this._rebuildTimer = null;
@@ -168,10 +170,34 @@ export class EditorHost {
 
   async openProject(project, sceneRef) {
     await this.ready;
+    // the project's own behaviours declare themselves beside the engine's (M6 W0), before a session validates with them.
+    // A module that won't load or declarations the registry refuses don't keep the project closed: they are shown as a
+    // problem, the project's scenes open without them (a scene using one validates with a warning), and an earlier
+    // project's declarations go
+    this.behaviourProblems = [];
+    try { declareProjectBehaviours(registry, await project.behaviours()); } catch (err) {
+      registry.project(new Map());
+      this.behaviourProblems = [String(err?.message ?? err)];
+      this.error = `The project's behaviours: ${this.behaviourProblems[0]}`;
+    }
     this.project = project;
     this.R ??= await loadRapier();
     const scene = sceneRef ?? project.scenes().find((s) => !s.startsWith('prefabs/')) ?? null;
     if (scene) await this.openScene(scene); else await this.newScene();
+  }
+
+  /**
+   * The project's behaviours as a world is built with them. When their declarations were refused (openProject), each
+   * class is handed over as a bare subclass, which has no describe of its own: the world declares none of them, as
+   * the editor's registry doesn't, and runs them as code only instead of refusing to build. A module that wouldn't load
+   * gives none.
+   */
+  async worldBehaviours(p) {
+    if (!this.behaviourProblems.length) return p.behaviours();
+    let map;
+    try { map = await p.behaviours(); } catch { return new Map(); }
+    if (this._bareFor?.map !== map) this._bareFor = { map, bare: new Map([...map].map(([n, C]) => [n, class extends C {}])) };
+    return this._bareFor.bare;
   }
 
   async openScene(ref) {
@@ -337,7 +363,7 @@ export class EditorHost {
     const timings = {}; // a thumbnail's build (timed: false) leaves the status line's timings alone
     if (timed) this.buildTimings = timings;
     if (heard && !this.audio) this.audio = new AudioOutput(); // made on the first Play: that click is the gesture that lets it sound
-    const world = await buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await p.behaviours(), timings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial });
+    const world = await buildWorld(this.R, sample, { vrmxaCore, closet: play ? closet : null, behaviours: await this.worldBehaviours(p), timings, now: () => performance.now(), characterCache: cache ? this.characterCache : null, audioOutput: heard ? this.audio : null, mtoonMaterial });
     this._built++;
     return world;
   }
@@ -1056,7 +1082,7 @@ export class EditorHost {
     let settle = () => {};
     this._gameExport = { abort, done: new Promise((r) => { settle = r; }) };
     try {
-      const r = await exportGame(this.project, { scene: this.sceneRef, name, signal: abort.signal, onProgress: (n, total) => { this.gameExporting = { n, total, phase: 'writing' }; if (n % 8 === 0 || n === total) this.changed('export'); } });
+      const r = await exportGame(this.project, { scene: this.sceneRef, name, registry, signal: abort.signal, onProgress: (n, total) => { this.gameExporting = { n, total, phase: 'writing' }; if (n % 8 === 0 || n === total) this.changed('export'); } });
       this.lastGameExport = { ...r, unsaved };
       return this.lastGameExport;
     } catch (e) {

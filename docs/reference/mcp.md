@@ -30,7 +30,7 @@ What the server tells a client at initialize:
 
 | Tool | In | What |
 |---|---|---|
-| [`describe`](#describe) | headless, editor | List node types and behaviours, or one type's JSON Schema, units, signals, actions and accepted behaviours. Call before using a type. |
+| [`describe`](#describe) | headless, editor | List node types and behaviours (the project's too), or one type's or behaviour's JSON Schema, units, signals, actions (a behaviour: its state). Call before using one. |
 | [`tree`](#tree) | headless, editor | The scene as an indented tree. flatten expands prefab instances; live shows the running world with world positions. |
 | [`get_node`](#get-node) | headless, editor | A node as stored, with its signals and actions; live: its simulated state (transform, behaviours, body, character, camera). |
 | [`add_node`](#add-node) | headless, editor | Add a node; props are checked against its type (see describe). |
@@ -58,20 +58,14 @@ What the server tells a client at initialize:
 
 *headless, editor*
 
-List node types and behaviours, or one type's JSON Schema, units, signals, actions and accepted behaviours. Call before using a type.
+List node types and behaviours (the project's too), or one type's or behaviour's JSON Schema, units, signals, actions (a behaviour: its state). Call before using one.
 
 ```json
 {
   "type": "object",
   "properties": {
     "type": { "type": "string", "enum": ["… 28 values: see the reference"] },
-    "behaviour": {
-      "type": "string",
-      "enum": [
-        "wander", "greet", "switchedBy", "hinge",
-        "noticeViewer", "brain", "player", "pickup"
-      ]
-    }
+    "behaviour": { "type": "string" }
   }
 }
 ```
