@@ -5,6 +5,9 @@ WebXR in WKWebView on the Mac and in Safari on visionOS, MToon in stereo on WebG
 step, and hands and gaze as input. Stack: three r187 (0.187.0), `@pixiv/three-vrm` 3.5.5 with the `engine/patches`
 patch, the engine's packages at 49cd652. Machine: M5 Max, macOS 27.3 (26C5047e), Xcode 27.2. No headset.*
 
+*Receipts: AB-R-1167 (WKWebView), AB-R-1168 (stereo), AB-R-1169 (90 Hz), AB-R-1170 (hands and gaze). Findings filed
+as tasks AB-T-0660 (per-view post), AB-T-0661 (an XR mode in the render host), AB-T-0662 (XR input).*
+
 ## Verdicts
 
 **WKWebView on the Mac: no WebXR, and nothing in the shell can turn it on.**
@@ -151,17 +154,17 @@ The session's frames come from the page's requestAnimationFrame: 60 Hz here, tho
 
 ## What the engine would need (findings, filed as tasks)
 
-1. **A per-view post stack** (`@vrmxg/post`, TSL). The stack runs once per frame over the whole target, so through an
+1. **A per-view post stack** (`@vrmxg/post`, TSL; AB-T-0660). The stack runs once per frame over the whole target, so through an
    `ArrayCamera` one vignette and one bloom span both eyes. In XR it has to run per view: per layer of the XR array
    target, or once per eye. Per-eye post was measured exact. The host's split-screen layout already skips post
    (`render()`'s views branch), the same gap from the other side.
-2. **An XR mode in the render host** (`@vrmxg/render`). It needs:
+2. **An XR mode in the render host** (`@vrmxg/render`; AB-T-0661). It needs:
    - a head rig outside the tree, presentation only;
    - the XR camera handed to three;
    - a WebGPU session with the `webgpu` feature and `XRGPUBinding` where the browser has them (visionOS Safari 26.2);
    - `webgl-fallback` (node materials on WebGL2, as measured here) where it doesn't;
    - an XR frame loop in place of the page's, stepping the 60 Hz clock with interpolation at the headset's rate.
-3. **XR input in `@vrmxg/input`.** It needs:
+3. **XR input in `@vrmxg/input`** (AB-T-0662). It needs:
    - binding kinds for hands (`pinch`, a pinch-drag stick) and XR controllers. Their `xr-standard` gamepads aren't in
      `navigator.getGamepads()`, so `GamepadDevice` never sees them;
    - an `XRDevice` read in the XR frame callback;
