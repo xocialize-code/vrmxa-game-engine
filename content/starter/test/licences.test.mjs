@@ -27,3 +27,22 @@ test('no starter file is git-ignored (a clip left out of the commit would pass t
   try { out = execFileSync('git', ['ls-files', '--others', '--ignored', '--exclude-standard', '.'], { cwd: root, encoding: 'utf8' }); } catch (e) { out = e.stdout ?? ''; }
   assert.deepEqual(out.split('\n').filter((f) => f && !f.endsWith('.DS_Store')), []);
 });
+
+test('the check takes only an exact CC0-1.0 cell, and exempts only code', async () => {
+  const fs = await import('node:fs'), os = await import('node:os');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'starter-licences-'));
+  const put = (rel, data = 'x') => { fs.mkdirSync(path.dirname(path.join(dir, rel)), { recursive: true }); fs.writeFileSync(path.join(dir, rel), data); };
+  const table = (rows) => put('LICENCES.md', `| File | Licence | Source |\n|---|---|---|\n${rows.map(([f, l]) => `| \`${f}\` | ${l} | s |`).join('\n')}\n`);
+  try {
+    put('items/a.vrmxi'); put('tools/make.mjs'); put('tools/mixamo-walk.vrma');
+    table([['LICENCES.md', 'CC0-1.0'], ['items/a.vrmxi', 'CC0-1.0'], ['tools/make.mjs', 'Xocialize original (code)'], ['tools/mixamo-walk.vrma', 'CC0-1.0']]);
+    assert.ok(checkLicences(dir).ok, 'exact CC0 everywhere, code exempt');
+    table([['LICENCES.md', 'CC0-1.0'], ['items/a.vrmxi', 'CC0-1.0 / CC-BY-4.0'], ['tools/make.mjs', 'Xocialize original (code)'], ['tools/mixamo-walk.vrma', 'CC0-1.0']]);
+    assert.deepEqual(checkLicences(dir).notCC0, ['items/a.vrmxi (CC0-1.0 / CC-BY-4.0)'], 'a cell that only starts with CC0 is refused');
+    table([['LICENCES.md', 'CC0-1.0'], ['items/a.vrmxi', 'CC0-1.0'], ['tools/make.mjs', 'Xocialize original (code)'], ['tools/mixamo-walk.vrma', 'Mixamo']]);
+    assert.deepEqual(checkLicences(dir).notCC0, ['tools/mixamo-walk.vrma (Mixamo)'], 'a binary under tools/ isn\'t code');
+    put('test/deep/x.mjs');
+    table([['LICENCES.md', 'CC0-1.0'], ['items/a.vrmxi', 'CC0-1.0'], ['tools/make.mjs', 'Xocialize original (code)'], ['tools/mixamo-walk.vrma', 'CC0-1.0'], ['test/deep/x.mjs', 'Xocialize original (code)']]);
+    assert.deepEqual(checkLicences(dir).notCC0, ['test/deep/x.mjs (Xocialize original (code))'], 'only a .mjs directly in tools/ or test/ is code');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});

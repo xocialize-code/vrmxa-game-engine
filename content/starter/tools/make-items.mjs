@@ -16,11 +16,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
+import { installPortableMath } from '@vrmxg/dmath';
 import { packItem } from '@vrmxg/item';
 import { vrmxaCore, PATHS } from '../../../engine/packages/character/test/fixtures.mjs';
 import { SPEC, specChecker } from '../../../engine/packages/item/test/fixtures.mjs';
 import { writeItemGLB, readPrimitive, box3, cyl3, sphere3 } from './glb.mjs';
 import { ITEMS } from './starter-items.mjs';
+import { PIN, PROPS } from './upstream.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const repo = path.resolve(root, '../..');
@@ -34,6 +36,7 @@ const licenceText = fs.readFileSync(path.join(SOURCE, 'LICENSE-CC0.MD'), 'utf8')
 if (!/All 3d models/.test(licenceText) || !/CC0 1\.0 Universal/.test(licenceText)) throw new Error('mesh2motion\'s LICENSE-CC0.MD no longer puts its 3d models under CC0: check the licence before using its props');
 const propsManifest = JSON.parse(fs.readFileSync(path.join(SOURCE, 'static/assets/props_manifest.json'), 'utf8'));
 const props = new Map(propsManifest.props.map((p) => [p.name, p]));
+installPortableMath(); // glb.mjs's colours go through Math.pow: the same bytes on every machine
 
 const core = await vrmxaCore();
 const checker = SPEC ? await specChecker() : null;
@@ -49,7 +52,9 @@ function prop(name) {
   const rel = `static/assets/${info.file}`;
   const bytes = new Uint8Array(fs.readFileSync(path.join(SOURCE, rel)));
   const p = readPrimitive(bytes);
-  return { mesh: { ...p, key: name, imageKey: 'mesh2motion-weapons' }, from: { project: 'mesh2motion (github.com/Mesh2Motion/mesh2motion-app)', file: rel, sha256: sha256(bytes), prop: name, category: info.category, licence: 'CC0-1.0 (LICENSE-CC0.MD: "All 3d models, blend files, rigs, animations"; README, "Licenses")' } };
+  const made = PROPS[name];
+  if (!made) throw new Error(`${name}: not in tools/upstream.mjs's PROPS: trace its author first`);
+  return { mesh: { ...p, key: name, imageKey: 'mesh2motion-weapons' }, from: { project: 'mesh2motion (github.com/Mesh2Motion/mesh2motion-app)', file: rel, sha256: sha256(bytes), prop: name, category: info.category, licence: 'CC0-1.0 (LICENSE-CC0.MD: "All 3d models, blend files, rigs, animations"; README, "Licenses")', author: made.author, pack: made.pack, evidence: made.evidence } };
 }
 
 const out = new Map(), provenance = [];
@@ -61,9 +66,9 @@ for (const item of ITEMS) {
     ...(item.joints ? { joints: item.joints } : {}), ...(item.states ? { states: item.states } : {}), ...(item.verbs ? { verbs: item.verbs } : {}),
     ...(item.seat ? { seat: item.seat } : {}), ...(item.spawn ? { spawn: item.spawn } : {}),
     takeable: false, extensions: {},
-    meta: META(from ? ['mesh2motion', 'Xocialize LLC'] : ['Xocialize LLC']),
+    meta: META(from ? ['Kay Lousberg (KayKit)', 'mesh2motion', 'Xocialize LLC'] : ['Xocialize LLC']),
     listing: null,
-    origin: from ? { made: 'imported', source: `mesh2motion ${from.file} (CC0 1.0), made into an item by content/starter/tools/make-items.mjs`, sha256: from.sha256 } : { made: 'generated', source: 'content/starter/tools/make-items.mjs' },
+    origin: from ? { made: 'imported', source: `${from.author} (CC0 1.0), as mesh2motion ${from.file} at ${PIN.repo}@${PIN.commit.slice(0, 7)}; made into an item by content/starter/tools/make-items.mjs`, sha256: from.sha256 } : { made: 'generated', source: 'content/starter/tools/make-items.mjs' },
     madeWith: null, thumbnail: null, files: [],
   };
   const bytes = await packItem({ manifest, model, vrmxaCore: core });
@@ -74,7 +79,7 @@ for (const item of ITEMS) {
   out.set(`items/${item.file}`, bytes);
   provenance.push({ file: `items/${item.file}`, name: item.name, type: item.type, licence: 'CC0-1.0', from: from ?? { generated: 'content/starter/tools/make-items.mjs (boxes and cylinders)', dedication: 'Xocialize LLC, CC0 1.0' } });
 }
-out.set('items/provenance.json', `${JSON.stringify({ about: 'Where each starter item comes from (content/starter/tools/make-items.mjs). Every item is CC0 1.0.', source: { project: 'mesh2motion', url: 'https://github.com/Mesh2Motion/mesh2motion-app', licence: 'Art (models, rigs, animations) CC0 1.0; code MIT (not used)', snapshot: `static/assets/props_manifest.json generated ${propsManifest.generated}` }, items: provenance }, null, 1)}\n`);
+out.set('items/provenance.json', `${JSON.stringify({ about: 'Where each starter item comes from (content/starter/tools/make-items.mjs). Every item is CC0 1.0.', source: { project: 'mesh2motion', url: 'https://github.com/Mesh2Motion/mesh2motion-app', licence: 'Art (models, rigs, animations) CC0 1.0; code MIT (not used)', snapshot: `static/assets/props_manifest.json generated ${propsManifest.generated}`, pin: PIN }, items: provenance }, null, 1)}\n`);
 
 const differ = [];
 for (const [rel, data] of out) {

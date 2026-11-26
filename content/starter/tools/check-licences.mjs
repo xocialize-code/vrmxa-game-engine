@@ -1,6 +1,7 @@
 // Fails when a file in content/starter isn't listed in LICENCES.md (a backticked path in a table row; `*` matches within
 // one folder level), when a listed path matches nothing, or when a content file's row isn't CC0 (decision AB-D-0297
-// item 7: starter content is CC0 only). Code (tools/, test/) is the repository's, not content, and never exported.
+// item 7: starter content is CC0 only: the licence cell is exactly `CC0-1.0`). Only code, a `.mjs` file directly in tools/
+// or test/, is exempt: it is the repository's, not content, and never exported. Anything else there needs a CC0 row.
 //   node content/starter/tools/check-licences.mjs
 import fs from 'node:fs';
 import path from 'node:path';
@@ -15,12 +16,12 @@ export function checkLicences(root = path.resolve(import.meta.dirname, '..')) {
   const walk = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (e.name === '.DS_Store') continue; const f = path.join(d, e.name); if (e.isDirectory()) walk(f); else files.push(path.relative(root, f).split(path.sep).join('/')); } };
   walk(root);
   const missing = [], notCC0 = [];
-  const code = (f) => /^(tools|test)\//.test(f);
+  const code = (f) => /^(tools|test)\/[^/]+\.mjs$/.test(f);
   for (const f of files) {
     const m = pats.filter((x) => x.re.test(f));
     if (!m.length) missing.push(f);
     m.forEach((x) => x.hits++);
-    if (!code(f) && m.some((x) => !/^CC0-1\.0\b/.test(x.licence))) notCC0.push(`${f} (${m.map((x) => x.licence).join(', ')})`);
+    if (!code(f) && m.some((x) => x.licence.trim() !== 'CC0-1.0')) notCC0.push(`${f} (${m.map((x) => x.licence).join(', ')})`);
   }
   const stale = pats.filter((x) => !x.hits).map((x) => x.p);
   return { files: files.length, rows: listed.length, missing, stale, notCC0, ok: !missing.length && !stale.length && !notCC0.length };

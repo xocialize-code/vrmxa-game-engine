@@ -33,7 +33,7 @@
       "walk"
      ],
      "how": "input.move",
-     "moved": 1.2573476455251533,
+     "moved": 1.2523296652787677,
      "finite": true,
      "picked": "walk",
      "states": [
@@ -47,7 +47,7 @@
       "run"
      ],
      "how": "input.move",
-     "moved": 1.8911355023519518,
+     "moved": 1.8689531384595572,
      "finite": true,
      "picked": "run",
      "states": [

@@ -33,6 +33,7 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { installPortableMath } from '@vrmxg/dmath';
 import { vrmxaCore, PATHS } from '../../../engine/packages/character/test/fixtures.mjs';
 import { CLIPS, SETS } from './starter-clips.mjs';
+import { PIN, QUATERNIUS, untagged } from './upstream.mjs';
 
 installPortableMath(); // the same bytes on every machine
 const root = path.resolve(import.meta.dirname, '..');
@@ -89,19 +90,24 @@ const r6 = (v) => Math.round(v * 1e6) / 1e6;
 const REST = Object.fromEntries(BONES.map((b) => { const p = parentOf(b); const v = p ? restP[b].clone().sub(restP[p]) : restP[b].clone().sub(centre); return [b, v.toArray().map(r6)]; }));
 
 /**
- * Ground speed when the checker's treadmill finds no steps (a run's feet touch for fewer than its three frames): the
- * mean backward speed of the lowest sole point over the frames it is within 2 cm of the floor, on Spec.
+ * Ground speed on Spec (VRMXA §8.4): for each foot, the frames its lowest sole point is within 3 cm of its own lowest
+ * height across the clip, and the point's backward speed between two such frames; the median of both feet's. The
+ * planted foot moves backward at the ground speed in an in-place clip, so this is the speed at which the feet don't
+ * slide. (vrmxa-core's treadmill wants three frames of contact a step, which a bounding run doesn't give, and it averages
+ * in the heel-to-toe roll: 0.81 m/s for the walk, against 0.72 here.) → { value, samples: [left, right], frames }
  */
-function stanceSpeed(clip) {
+function groundSpeed(clip) {
   const T = core.track(clip, spec);
-  let sum = 0, n = 0;
-  for (let f = 1; f < T.frames; f++) {
-    const lo = (g) => T.soles[g].reduce((a, p) => (p.at[1] < a.at[1] ? p : a));
-    const a = lo(f), b = T.soles[f - 1].find((p) => p.side === a.side && p.bone === a.bone) ?? null;
-    if (!b || a.at[1] > 0.02) continue;
-    sum += (b.at[2] - a.at[2]) * T.fps; n++;
+  const v = [], samples = [];
+  for (const side of ['left', 'right']) {
+    const low = (f) => T.soles[f].filter((p) => p.side === side).reduce((a, p) => (p.at[1] < a.at[1] ? p : a));
+    const ys = Array.from({ length: T.frames }, (_, f) => low(f).at[1]), floor = Math.min(...ys);
+    let n = 0;
+    for (let f = 0; f < T.frames - 1; f++) { const a = low(f), b = low(f + 1); if (a.at[1] - floor < 0.03 && b.at[1] - floor < 0.03 && a.bone === b.bone) { v.push((a.at[2] - b.at[2]) * T.fps); n++; } }
+    samples.push(n);
   }
-  return n ? sum / n : 0;
+  v.sort((x, y) => x - y);
+  return { value: v.length ? +v[v.length >> 1].toFixed(2) : 0, samples, frames: T.frames - 1 };
 }
 
 /** One mesh2motion clip → a .vrma clip record (vrmxa-core's clip shape). */
@@ -170,6 +176,8 @@ for (const c of CLIPS) {
   const srcRel = `static/assets/human/animations/${c.src}.glb`;
   const srcSha = sha256(fs.readFileSync(path.join(SOURCE, srcRel)));
   const quaternius = info.tags.includes('quaternius');
+  const made = quaternius ? QUATERNIUS : untagged(c.src);
+  if (!made) throw new Error(`${c.src}: not tagged quaternius and not in tools/upstream.mjs's UNTAGGED: trace its author first`);
   const extras = { source: `mesh2motion ${srcRel} ("${info.name}", CC0 1.0), retargeted by content/starter/tools/make-animations.mjs`, licence: 'CC0-1.0' };
   const loops = c.loops ?? info.loop;
   const details = { loops, rootMotion: 'inPlace', speed: null };
@@ -181,10 +189,9 @@ for (const c of CLIPS) {
   const standing = T.lowest.filter((_, f) => T.standing[f]);
   const lift = +(-Math.min(...(standing.length ? standing : T.lowest))).toFixed(4); // crouched or seated throughout: every frame
   for (let f = 0; f < clip.frames; f++) clip.hips[f * 3 + 1] += lift;
-  // ground speed on Spec, measured by vrmxa-core's checker (the treadmill of the planted feet), for the move clips
-  const first = core.checkClip(core.readVrma(write()), { details, rig: spec });
-  if (process.env.DEBUG) console.log(c.name, lift, first.numbers.lowestSole, first.numbers.treadmill?.speed, first.problems.map((p) => p.id).join(' '));
-  const speed = c.move ? +(first.numbers.treadmill?.speed ?? stanceSpeed(core.readVrma(write()))).toFixed(2) : null;
+  // ground speed on Spec, for the move clips
+  const ground = c.move ? groundSpeed(core.readVrma(write())) : null;
+  const speed = ground ? ground.value : null;
   if (c.move && !speed) throw new Error(`${c.name}: no ground speed measured`);
   const bytes = write();
   const limbs = limbError(core.readVrma(bytes), dirs);
@@ -195,14 +202,14 @@ for (const c of CLIPS) {
   const file = `animations/clips/${c.name}.vrma`;
   out.set(file, bytes);
   records.push({ sha256: sha, file, name: c.name, duration: +clip.duration.toFixed(4), loops, ...(speed ? { speed } : {}), rootMotion: 'inPlace', tracks: ['humanoid'], licence: 'CC0-1.0', source: `mesh2motion "${info.name}" (${srcRel}${quaternius ? ', from Quaternius\' Universal Animation Library' : ''}), CC0 1.0, retargeted onto the VRM humanoid by content/starter/tools/make-animations.mjs` });
-  provenance.push({ file, name: c.name, licence: 'CC0-1.0', from: { project: 'mesh2motion (github.com/Mesh2Motion/mesh2motion-app)', file: srcRel, sha256: srcSha, clip: info.name, blend: info.source, tags: info.tags, licence: 'CC0-1.0 (LICENSE-CC0.MD: "All 3d models, blend files, rigs, animations")', ...(quaternius ? { origin: 'Quaternius, Universal Animation Library (CC0 1.0)' } : {}) }, lift, limbErrorDegrees: +limbs.toFixed(3), check: { problems: checked.problems.map((p) => ({ id: p.id, severity: p.severity, title: p.title })), ...(checked.numbers.treadmill ? { treadmill: checked.numbers.treadmill } : {}) } });
+  provenance.push({ file, name: c.name, licence: 'CC0-1.0', from: { project: 'mesh2motion (github.com/Mesh2Motion/mesh2motion-app)', file: srcRel, sha256: srcSha, clip: info.name, blend: info.source, tags: info.tags, licence: 'CC0-1.0 (LICENSE-CC0.MD: "All 3d models, blend files, rigs, animations")', author: made.author, evidence: made.evidence }, lift, ...(ground ? { speed: { metresPerSecond: ground.value, method: 'median backward speed of each foot\'s lowest sole point on frames within 3 cm of its own lowest, on Spec', samples: { left: ground.samples[0], right: ground.samples[1], of: ground.frames } } } : {}), limbErrorDegrees: +limbs.toFixed(3), check: { problems: checked.problems.map((p) => ({ id: p.id, severity: p.severity, title: p.title })), ...(checked.numbers.treadmill ? { treadmill: checked.numbers.treadmill } : {}) } });
 }
 const slotEntry = (e) => ({ clip: shaOf.get(e.clip) ?? (() => { throw new Error(`no clip ${e.clip}`); })(), weight: e.weight ?? 1, blendIn: e.blendIn ?? 0.2, ...(e.mask ? { mask: e.mask } : {}) });
 const sets = SETS.map((s) => ({ id: s.id, name: s.name, default: !!s.default, priority: s.priority ?? 0, requires: s.requires ?? [], slots: Object.fromEntries(Object.entries(s.slots).map(([slot, list]) => [slot, list.map(slotEntry)])) }));
 const doc = { format: 'vrmxa-animations', version: 1, clips: records, sets };
 const json = (v) => `${JSON.stringify(v, null, 1)}\n`;
 out.set('animations.json', json(doc));
-out.set('animations/provenance.json', json({ about: 'Where each starter clip comes from (content/starter/tools/make-animations.mjs). Every clip is CC0 1.0.', source: { project: 'mesh2motion', url: 'https://github.com/Mesh2Motion/mesh2motion-app', licence: 'Art (models, rigs, animations) CC0 1.0; code MIT (not used)', snapshot: `static/assets/manifest.json generated ${manifest.generated}`, fps: manifest.rigs.human.fps, skeleton: { file: 'static/assets/human/skeleton.glb', sha256: sha256(fs.readFileSync(path.join(HUMAN, 'skeleton.glb'))) } }, clips: provenance }));
+out.set('animations/provenance.json', json({ about: 'Where each starter clip comes from (content/starter/tools/make-animations.mjs). Every clip is CC0 1.0.', source: { project: 'mesh2motion', url: 'https://github.com/Mesh2Motion/mesh2motion-app', licence: 'Art (models, rigs, animations) CC0 1.0; code MIT (not used)', snapshot: `static/assets/manifest.json generated ${manifest.generated}`, pin: PIN, fps: manifest.rigs.human.fps, skeleton: { file: 'static/assets/human/skeleton.glb', sha256: sha256(fs.readFileSync(path.join(HUMAN, 'skeleton.glb'))) } }, clips: provenance }));
 
 // ---------------------------------------------------------------- write or compare
 const differ = [];

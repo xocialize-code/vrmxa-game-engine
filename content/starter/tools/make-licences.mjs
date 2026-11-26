@@ -13,9 +13,10 @@ const CC0 = 'CC0-1.0';
 const CODE = 'Xocialize original (code)';
 
 const rows = (list) => list.map(([file, licence, source]) => `| \`${file}\` | ${licence} | ${source.replace(/\|/g, '\\|')} |`).join('\n');
-const clipRows = clips.clips.map((c) => [c.file, CC0, `mesh2motion's "${c.from.clip}" (\`${c.from.file}\`, SHA-256 ${short(c.from.sha256)}…; made from \`${c.from.blend}\`)${c.from.origin ? `, from ${c.from.origin}` : ''}; CC0 1.0 by mesh2motion's LICENSE-CC0.MD. Retargeted onto the VRM humanoid by \`tools/make-animations.mjs\``]);
+const by = (author) => (author.startsWith('unrecorded') ? '**author unrecorded** (CC0 per mesh2motion\'s blanket statement; its history shows only its maintainer committing it, no source named)' : `by ${author}`);
+const clipRows = clips.clips.map((c) => [c.file, CC0, `mesh2motion's "${c.from.clip}" (\`${c.from.file}\`, SHA-256 ${short(c.from.sha256)}…; made from \`${c.from.blend}\`), ${by(c.from.author)}; CC0 1.0. Retargeted onto the VRM humanoid by \`tools/make-animations.mjs\``]);
 const itemRows = items.items.map((i) => [i.file, CC0, i.from.prop
-  ? `"${i.name}" (VRMXI \`${i.type}\`): mesh2motion's prop \`${i.from.prop}\` (\`${i.from.file}\`, SHA-256 ${short(i.from.sha256)}…, with its texture), CC0 1.0 by mesh2motion's LICENSE-CC0.MD and README; made into an item (collider, reach, verb) by \`tools/make-items.mjs\``
+  ? `"${i.name}" (VRMXI \`${i.type}\`): ${i.from.author} (\`${i.from.pack}\`), CC0 1.0, as mesh2motion's prop \`${i.from.prop}\` (\`${i.from.file}\`, SHA-256 ${short(i.from.sha256)}…, with its texture); made into an item (collider, reach, verb) by \`tools/make-items.mjs\``
   : `"${i.name}" (VRMXI \`${i.type}\`): generated from boxes and cylinders by \`tools/make-items.mjs\`; Xocialize LLC dedicates it to the public domain (CC0 1.0)`]);
 
 const md = `# Starter content: licences
@@ -27,13 +28,22 @@ that matches nothing, or a content row whose licence isn't CC0. The rows for cli
 \`tools/make-licences.mjs\` from \`animations/provenance.json\` and \`items/provenance.json\`, which hold each file's
 source in full (file, SHA-256, the source's own licence statement).
 
-**mesh2motion** (\`github.com/Mesh2Motion/mesh2motion-app\`, read from the git-ignored \`reference/mesh2motion-app-main\`,
-${clips.source.snapshot}): its art (3D models, rigs, animations) is CC0 1.0 by its \`LICENSE-CC0.MD\` ("All 3d models,
-blend files, rigs, animations") and its README ("Licenses"); its code is MIT, and none of it is copied here. Its
-manifests have no per-file licence, so that dedication covers every clip and prop used. Clips tagged \`quaternius\` there
-come from Quaternius' Universal Animation Library, itself CC0. **Not CC0 in mesh2motion and not used here:** several rig
-variations (Sophia CC-SA 4.0; Jay, Sintel, Bunny and Carrot CC-BY, in its \`src/lib/RigConfig.ts\`). Only its human
-animation GLBs and three weapon props are read; no model or variation is.
+**mesh2motion** (\`${clips.source.pin.repo}\` at \`${clips.source.pin.commit}\`, ${clips.source.pin.date}: every file read is
+byte-identical to that commit; archive \`${clips.source.pin.archive}\`). Its art (3D models, rigs, animations) is CC0 1.0
+by its \`LICENSE-CC0.MD\` ("All 3d models, blend files, rigs, animations") and its README ("Licenses"); its code is MIT,
+and none of it is copied here. Its manifests have no per-file licence. Who made each source, as far as mesh2motion's
+own records say (\`tools/upstream.mjs\`, read from its public history):
+- 26 clips are tagged \`quaternius\`: Quaternius' Universal Animation Library, CC0 (its licence is vendored in
+  \`Mesh2Motion/mesh2motion-assets\` at \`CC0-packs/Quaternius/License.txt\`).
+- The three weapon props are KayKit's Fantasy Weapons Bits 1.0 by Kay Lousberg, CC0 (vendored at
+  \`CC0-packs/Kaykit/\`; mesh2motion's props are the pack's meshes re-exported).
+- **11 clips have no recorded author** (listen, think, greet, nod, clap, cheer, happy, angry, pickUp, death, kick): every
+  commit to their sources is by mesh2motion's maintainer, none names a source, and none is one of its motion captures.
+  Their CC0 rests on mesh2motion's blanket statement.
+
+**Not CC0 in mesh2motion, and not used here:** several rig variations (Sophia CC-SA 4.0; Jay, Sintel, Bunny and Carrot
+CC-BY: its \`src/lib/RigConfig.ts\` and \`mesh2motion-assets/3d-models/CC-SA/\`). Only its human animation GLBs and three
+weapon props are read; no model or variation is.
 
 "Xocialize original (code)" is code made for this repository by Xocialize LLC: the tools and tests that make and check
 the content. They aren't content and no game ships them.
@@ -72,6 +82,7 @@ ${rows([
   ['tools/make-items.mjs', CODE, 'Writes the items and checks them with the VRMXI checker'],
   ['tools/starter-items.mjs', CODE, 'The items: models, states, verbs, seats, and what doing each verb shows'],
   ['tools/glb.mjs', CODE, 'The items\' GLB writer (boxes, cylinders, brought-in meshes, KHR physics, animations)'],
+  ['tools/upstream.mjs', CODE, 'What mesh2motion\'s records say about each source: the pinned commit, authors, history'],
   ['tools/make-stills.mjs', CODE, 'Draws the contact sheets of the set and the pack (acceptance/results/m6-starter-*.png)'],
   ['tools/make-licences.mjs', CODE, 'Writes this table'],
   ['tools/check-licences.mjs', CODE, 'Checks this table'],

@@ -5,6 +5,19 @@
   "url": "https://github.com/Mesh2Motion/mesh2motion-app",
   "licence": "Art (models, rigs, animations) CC0 1.0; code MIT (not used)",
   "snapshot": "static/assets/manifest.json generated 2026-11-06T20:41:49.612Z",
+  "pin": {
+   "repo": "Mesh2Motion/mesh2motion-app",
+   "commit": "7963d4c6f760152c41d60a8bdf52fc75d0d34925",
+   "date": "2026-11-07",
+   "message": "update static assets from latest assets repo",
+   "archive": "https://github.com/Mesh2Motion/mesh2motion-app/archive/7963d4c6f760152c41d60a8bdf52fc75d0d34925.zip",
+   "checked": "every file read is byte-identical (git blob SHA) to this commit, checked 2026-11-25",
+   "assets": {
+    "repo": "Mesh2Motion/mesh2motion-assets",
+    "commit": "5fda3d2430f3e9f0dd18f6a86cad7ac4a03d05d0",
+    "note": "the .blend sources and the vendored CC0 packs (CC0-packs/Quaternius, CC0-packs/Kaykit) with their licence files, before the 2026-10-31 restructure"
+   }
+  },
   "fps": 24,
   "skeleton": {
    "file": "static/assets/human/skeleton.glb",
@@ -27,7 +40,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0129,
    "limbErrorDegrees": 0.014,
@@ -66,7 +80,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0139,
    "limbErrorDegrees": 0.014,
@@ -100,9 +115,19 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0148,
+   "speed": {
+    "metresPerSecond": 0.72,
+    "method": "median backward speed of each foot's lowest sole point on frames within 3 cm of its own lowest, on Spec",
+    "samples": {
+     "left": 22,
+     "right": 22,
+     "of": 39
+    }
+   },
    "limbErrorDegrees": 0.014,
    "check": {
     "problems": [
@@ -138,9 +163,19 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0365,
+   "speed": {
+    "metresPerSecond": 4.55,
+    "method": "median backward speed of each foot's lowest sole point on frames within 3 cm of its own lowest, on Spec",
+    "samples": {
+     "left": 3,
+     "right": 3,
+     "of": 28
+    }
+   },
    "limbErrorDegrees": 0.014,
    "check": {
     "problems": []
@@ -161,7 +196,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0755,
    "limbErrorDegrees": 0.014,
@@ -195,7 +231,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0788,
    "limbErrorDegrees": 0.014,
@@ -234,7 +271,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.046,
    "limbErrorDegrees": 0.015,
@@ -273,7 +311,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0459,
    "limbErrorDegrees": 0.014,
@@ -307,9 +346,19 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0589,
+   "speed": {
+    "metresPerSecond": 0.56,
+    "method": "median backward speed of each foot's lowest sole point on frames within 3 cm of its own lowest, on Spec",
+    "samples": {
+     "left": 31,
+     "right": 22,
+     "of": 59
+    }
+   },
    "limbErrorDegrees": 0.014,
    "check": {
     "problems": [
@@ -336,7 +385,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0413,
    "limbErrorDegrees": 0.014,
@@ -375,7 +425,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0578,
    "limbErrorDegrees": 0.014,
@@ -404,7 +455,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0329,
    "limbErrorDegrees": 0.015,
@@ -439,7 +491,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0795,
    "limbErrorDegrees": 0.016,
@@ -473,7 +526,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0128,
    "limbErrorDegrees": 0.014,
@@ -510,7 +564,9 @@
     "tags": [
      "idles"
     ],
-    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "author": "unrecorded (CC0 per mesh2motion's blanket statement, author unrecorded)",
+    "evidence": "not tagged quaternius; every commit by mesh2motion's maintainer Scott Petrovic: first added in mesh2motion-app e71cd83 (2025-11-14, \"A few more simple human animations\"), then ff452e5; moved to mesh2motion-assets 6a3fa3c (2025-11-19)"
    },
    "lift": 0.0137,
    "limbErrorDegrees": 0.014,
@@ -537,7 +593,9 @@
     "tags": [
      "emotions"
     ],
-    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "author": "unrecorded (CC0 per mesh2motion's blanket statement, author unrecorded)",
+    "evidence": "not tagged quaternius; every commit by mesh2motion's maintainer Scott Petrovic: first added in mesh2motion-app f841f52 (2025-11-12, \"Add some human animations\"); moved 6a3fa3c (2025-11-19), touched up 094fbbd (2025-11-21)"
    },
    "lift": 0.0089,
    "limbErrorDegrees": 0.014,
@@ -558,7 +616,9 @@
     "tags": [
      "emotes"
     ],
-    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "author": "unrecorded (CC0 per mesh2motion's blanket statement, author unrecorded)",
+    "evidence": "not tagged quaternius; every commit by mesh2motion's maintainer Scott Petrovic: first added in mesh2motion-assets c48ce1f (2026-03-13, \"Add a couple more human animations\")"
    },
    "lift": 0.0005,
    "limbErrorDegrees": 0.014,
@@ -585,7 +645,9 @@
     "tags": [
      "emotes"
     ],
-    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "author": "unrecorded (CC0 per mesh2motion's blanket statement, author unrecorded)",
+    "evidence": "not tagged quaternius; every commit by mesh2motion's maintainer Scott Petrovic: first added in mesh2motion-app f841f52 (2025-11-12, \"Add some human animations\"), then ff452e5; moved 6a3fa3c (2025-11-19)"
    },
    "lift": 0.0114,
    "limbErrorDegrees": 0.013,
@@ -606,7 +668,9 @@
     "tags": [
      "emotes"
     ],
-    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "author": "unrecorded (CC0 per mesh2motion's blanket statement, author unrecorded)",
+    "evidence": "not tagged quaternius; every commit by mesh2motion's maintainer Scott Petrovic: first published in the squashed restructure, mesh2motion-assets cd9c0c3 (2026-10-31, added, no earlier history), retimed e4ba3d3 (2026-11-06)"
    },
    "lift": 0.0105,
    "limbErrorDegrees": 0.015,
@@ -633,7 +697,9 @@
     "tags": [
      "emotions"
     ],
-    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "author": "unrecorded (CC0 per mesh2motion's blanket statement, author unrecorded)",
+    "evidence": "not tagged quaternius; every commit by mesh2motion's maintainer Scott Petrovic: first added in mesh2motion-assets c48ce1f (2026-03-13, \"Add a couple more human animations\")"
    },
    "lift": 0.0145,
    "limbErrorDegrees": 0.014,
@@ -660,7 +726,9 @@
     "tags": [
      "emotions"
     ],
-    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "author": "unrecorded (CC0 per mesh2motion's blanket statement, author unrecorded)",
+    "evidence": "not tagged quaternius; every commit by mesh2motion's maintainer Scott Petrovic: first added in mesh2motion-app f841f52 (2025-11-12, \"Add some human animations\"), then ff452e5; moved 6a3fa3c (2025-11-19)"
    },
    "lift": 0.0289,
    "limbErrorDegrees": 0.015,
@@ -687,7 +755,9 @@
     "tags": [
      "emotions"
     ],
-    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "author": "unrecorded (CC0 per mesh2motion's blanket statement, author unrecorded)",
+    "evidence": "not tagged quaternius; every commit by mesh2motion's maintainer Scott Petrovic: first added in mesh2motion-app 2882d36 (2025-11-13, \"Add couple more human animations\"); moved 6a3fa3c (2025-11-19), fixed up 094fbbd and 8a2c14b"
    },
    "lift": 0.0341,
    "limbErrorDegrees": 0.015,
@@ -721,7 +791,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.013,
    "limbErrorDegrees": 0.015,
@@ -750,7 +821,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0214,
    "limbErrorDegrees": 0.014,
@@ -794,7 +866,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.013,
    "limbErrorDegrees": 0.014,
@@ -823,7 +896,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0128,
    "limbErrorDegrees": 0.015,
@@ -850,7 +924,9 @@
     "tags": [
      "activities"
     ],
-    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "author": "unrecorded (CC0 per mesh2motion's blanket statement, author unrecorded)",
+    "evidence": "not tagged quaternius; every commit by mesh2motion's maintainer Scott Petrovic: first published in the squashed restructure, mesh2motion-assets cd9c0c3 (2026-10-31, added, no earlier history), retimed e4ba3d3 (2026-11-06)"
    },
    "lift": 0.0409,
    "limbErrorDegrees": 0.014,
@@ -889,7 +965,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0508,
    "limbErrorDegrees": 0.013,
@@ -932,7 +1009,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0121,
    "limbErrorDegrees": 0.012,
@@ -971,7 +1049,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0181,
    "limbErrorDegrees": 0.014,
@@ -1001,7 +1080,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0551,
    "limbErrorDegrees": 0.014,
@@ -1046,7 +1126,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0603,
    "limbErrorDegrees": 0.015,
@@ -1091,7 +1172,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0506,
    "limbErrorDegrees": 0.014,
@@ -1126,7 +1208,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.025,
    "limbErrorDegrees": 0.014,
@@ -1154,7 +1237,9 @@
      "combat",
      "reactions"
     ],
-    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "author": "unrecorded (CC0 per mesh2motion's blanket statement, author unrecorded)",
+    "evidence": "not tagged quaternius; every commit by mesh2motion's maintainer Scott Petrovic: first added in mesh2motion-assets 3e7261f (2026-06-28, \"Add a few death animations\"), touched 14fb74a and 8a2c14b"
    },
    "lift": 0.0293,
    "limbErrorDegrees": 0.015,
@@ -1189,7 +1274,8 @@
      "quaternius"
     ],
     "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
-    "origin": "Quaternius, Universal Animation Library (CC0 1.0)"
+    "author": "Quaternius (quaternius.com), Universal Animation Library",
+    "evidence": "mesh2motion's manifest tags the clip \"quaternius\"; mesh2motion credits Quaternius for its base human model, rig and animations (src/lib/Generators.ts); Quaternius' CC0 licence is vendored at mesh2motion-assets CC0-packs/Quaternius/License.txt"
    },
    "lift": 0.0391,
    "limbErrorDegrees": 0.013,
@@ -1222,7 +1308,9 @@
      "combat",
      "unarmed"
     ],
-    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")"
+    "licence": "CC0-1.0 (LICENSE-CC0.MD: \"All 3d models, blend files, rigs, animations\")",
+    "author": "unrecorded (CC0 per mesh2motion's blanket statement, author unrecorded)",
+    "evidence": "not tagged quaternius; every commit by mesh2motion's maintainer Scott Petrovic: first published in the squashed restructure, mesh2motion-assets cd9c0c3 (2026-10-31, added, no earlier history), retimed e4ba3d3 (2026-11-06)"
    },
    "lift": 0.0289,
    "limbErrorDegrees": 0.014,
