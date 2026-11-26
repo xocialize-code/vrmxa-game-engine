@@ -130,8 +130,8 @@ overlay is mounted again for it. It is handed the player's `GameSettings`, which
   Neither releases the other's. Claims aren't in the snapshot, so they change no hash.
 - **Conversations** are scene data (`Dialogue` nodes, `@vrmxg/voice`): the shared world builder
   (`apps/playground/src/world.js`) installs the dialogue service for a scene that has one, after input, voice and game,
-  so this runtime, the playground, the editor's Play and the bundle's `play.js` all run them (part of AB-T-0630; MCP's
-  engine is the rest). A `Dialogue` inside a prefab counts: the scene is judged with its instances flattened
+  so this runtime, the playground, the editor's Play and the bundle's `play.js` all run them (AB-T-0630; MCP's
+  headless engine installs it too). A `Dialogue` inside a prefab counts: the scene is judged with its instances flattened
   (`hasNodeType`). A scene without one gets no service, so no other scene's hashes move. A choice reaches the
   simulation as `input.choose('dialogue.choose', id)`, latched by the next step and kept in the recording, so a session
   with a choice replays in Node to the same hashes.

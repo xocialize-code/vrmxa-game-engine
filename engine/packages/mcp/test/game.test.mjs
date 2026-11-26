@@ -356,3 +356,33 @@ test('the project\'s own strings come back marked as data, and nothing acts on t
   assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'level.vrmxs'), 'utf8')).nodes.length, level.nodes.length);
   assert.equal(fs.readFileSync(path.join(builds, 'keep/mine.txt'), 'utf8'), 'mine');
 });
+
+test('a conversation runs in the headless engine, answered with engine_step choose; a scene without one gets no dialogue service (AB-T-0630)', async () => {
+  const dir = copy('talk');
+  const lines = [
+    { id: 'ask', speaker: 'hana', text: 'Good morning! What can I get you?', choices: [{ id: 'latte', text: 'A latte, please.', to: 'latte', set: { order: 'latte' } }, { id: 'tea', text: 'Just tea.', to: 'end', set: { order: 'tea' } }] },
+    { id: 'latte', speaker: 'hana', text: 'One latte, coming up.' },
+  ];
+  fs.writeFileSync(path.join(dir, 'talk.vrmxs'), JSON.stringify({ format: 'vrmxs', version: 1, id: 'talk', assets: [], nodes: [
+    { id: 'root', type: 'Node3D' }, { id: 'hana', type: 'Node3D', name: 'Hana', parent: 'root' },
+    { id: 'floor', type: 'StaticBody', parent: 'root' }, { id: 'floor-shape', type: 'Collider', parent: 'floor', transform: { p: [0, -0.1, 0] }, props: { shape: 'box', size: [10, 0.2, 10] } },
+    { id: 'rules', type: 'GameRules', parent: 'root', props: { flags: { order: '' } } },
+    { id: 'order', type: 'Dialogue', parent: 'root', props: { autostart: true, lines } },
+  ], connections: [] }, null, 2));
+  const { call } = await connect([dir, 'talk.vrmxs']);
+  const loaded = await call('engine_load');
+  assert.ok(loaded.services.includes('dialogue'), `the dialogue service is installed (${loaded.services})`);
+  let node;
+  for (let i = 0; i < 40; i++) { await call('engine_step', { steps: 30 }); node = await call('get_node', { id: 'order', live: true }); if (node.dialogue?.phase === 'choice') break; }
+  const live = node.live ?? node;
+  assert.deepEqual(live.dialogue.choices.map((c) => c.id), ['latte', 'tea'], 'the conversation asks, and get_node shows what it offers');
+  assert.match(await call('engine_step', { steps: 1, choose: { 'dialogue.choose': 'latte' }, hold: { move_y: 1 } }, true), /not with hold or replay/);
+  await call('engine_step', { steps: 2, choose: { 'dialogue.choose': 'latte' } });
+  const { state } = await call('game', { op: 'state' });
+  assert.equal(state.flags.order, 'latte', 'the choice set the game\'s flag');
+  const after = await call('get_node', { id: 'order', live: true });
+  assert.equal((after.live ?? after).dialogue.line, 'latte', 'and the conversation went to the chosen line');
+
+  const { call: c2 } = await connect([copy('no-talk'), 'level.vrmxs']);
+  assert.ok(!(await c2('engine_load')).services.includes('dialogue'), 'a scene without a Dialogue node: no service, so its hashes don\'t move');
+});

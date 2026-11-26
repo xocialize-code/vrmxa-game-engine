@@ -71,8 +71,8 @@ export function toolList(reg, mode = 'headless') {
       ? { name: 'play', description: 'Play the scene in the editor (play), stop (the scene comes back unchanged), pause or resume.',
         inputSchema: { type: 'object', required: ['action'], properties: { action: { type: 'string', enum: ['play', 'stop', 'pause', 'resume'] } } } }
       : { name: 'engine_load', description: 'Start a headless engine (physics, characters, input, cameras) from the scene as edited.', inputSchema: none },
-    { name: 'engine_step', description: `Step at 60 Hz${mode === 'editor' ? ' (paused: at once; playing: in real time)' : ''}. hold: input actions held meanwhile, e.g. {"move_y": 1, "run": true}; replay: an input recording file. Returns signals fired.`,
-      inputSchema: { type: 'object', properties: { steps: { type: 'integer', minimum: 1, maximum: 36000 }, hold: { type: 'object' }, replay: { type: 'string' } } } },
+    { name: 'engine_step', description: `Step at 60 Hz${mode === 'editor' ? ' (paused: at once; playing: in real time)' : ''}. hold: actions held, e.g. {"move_y": 1}; replay: an input recording file; choose: {"dialogue.choose": id} answers a Dialogue. Returns signals fired.`,
+      inputSchema: { type: 'object', properties: { steps: { type: 'integer', minimum: 1, maximum: 36000 }, hold: { type: 'object' }, replay: { type: 'string' }, choose: { type: 'object' } } } },
     { name: 'physics', description: 'The running world\'s physics: moving bodies (pose, velocity, sleeping), what each sensor holds, solid contacts.', inputSchema: none },
     { name: 'call_action', description: 'Call an action on a live node, e.g. open on a hinge, goTo, say or lookAt on a character.',
       inputSchema: { type: 'object', required: ['id', 'action'], properties: { id: ID, action: { type: 'string' }, args: { type: 'object' } } } },
@@ -194,9 +194,9 @@ export function createHandlers(reg, target) {
     },
     engine_load() { return target.load(); },
     play({ action }) { return target.play(action); },
-    async engine_step({ steps, hold, replay }) {
+    async engine_step({ steps, hold, replay, choose }) {
       const view = target.live();
-      const opts = { steps, hold, recording: replay ? await target.recording(replay) : undefined };
+      const opts = { steps, hold, choose, recording: replay ? await target.recording(replay) : undefined };
       return target.step ? target.step(view, opts) : view.step(opts);
     },
     physics() { return target.live().physicsState(); },

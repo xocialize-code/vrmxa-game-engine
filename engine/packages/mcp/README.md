@@ -31,7 +31,7 @@ agent would.
 | `add_node`, `set`, `remove_node`, `reparent`, `connect`, `undo`, `redo` | Edits through `@vrmxg/scene`'s editor: checked against the type's schema, undoable |
 | `validate`, `save` | Schema and reference checks; save writes the canonical form and refuses a scene with errors |
 | `engine_load` | Start the headless engine (input, Rapier physics, characters, cameras) from the scene as edited |
-| `engine_step` | Step at 60 Hz, with input actions held (`{"move_y": 1, "run": true}`) or a recording replayed; returns the signals fired |
+| `engine_step` | Step at 60 Hz, with input actions held (`{"move_y": 1, "run": true}`) or a recording replayed, or choices latched by the first step (`choose: {"dialogue.choose": "latte"}` answers a conversation; `get_node` live on the `Dialogue` shows the line and the choices offered); returns the signals fired. The engine installs the dialogue service for a scene with a `Dialogue` node only (AB-T-0630) |
 | `physics` | Moving bodies (pose, velocity, sleeping), what each sensor holds, solid contacts |
 | `call_action` | Call an action on a live node: `open` on a hinge, `goTo` or `say` on a character |
 | `interact` | A character does an item's verb (take, use, sit, open), as an NPC's request would |

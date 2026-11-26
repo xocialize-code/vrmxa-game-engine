@@ -100,7 +100,7 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [redo](reference/mcp.md#redo): Redo the last undone edit.
 - [save](reference/mcp.md#save): Write the scene in canonical form (refused with errors).
 - [engine_load](reference/mcp.md#engine-load): Start a headless engine (physics, characters, input, cameras) from the scene as edited. (headless only)
-- [engine_step](reference/mcp.md#engine-step): Step at 60 Hz. hold: input actions held meanwhile, e.g. {"move_y": 1, "run": true}; replay: an input recording file. Returns signals fired.
+- [engine_step](reference/mcp.md#engine-step): Step at 60 Hz. hold: actions held, e.g. {"move_y": 1}; replay: an input recording file; choose: {"dialogue.choose": id} answers a Dialogue. Returns signals fired.
 - [physics](reference/mcp.md#physics): The running world's physics: moving bodies (pose, velocity, sleeping), what each sensor holds, solid contacts.
 - [call_action](reference/mcp.md#call-action): Call an action on a live node, e.g. open on a hinge, goTo, say or lookAt on a character.
 - [interact](reference/mcp.md#interact): A character does an item's verb (take, use, sit, open), as the player's interact would.
