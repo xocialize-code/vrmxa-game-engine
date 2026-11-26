@@ -125,12 +125,15 @@ test('AB-A-0335: warmUp compiles through a camera with every layer on, then draw
   host.attach(tree);
   const r = host.renderer, calls = [];
   let target = null;
-  r.compileAsync = async (object, camera, targetScene) => { calls.push({ kind: 'compile', object, mask: camera.layers.mask, targetScene, same: camera === host.cameraNode()?.camera }); };
+  const THREE = await import('three');
+  r.compileAsync = async (object, camera, targetScene) => { calls.push({ kind: 'compile', object, mask: camera.layers.mask, targetScene, same: camera === host.cameraNode()?.camera, lens: camera, at: camera.getWorldPosition(new THREE.Vector3()).toArray(), projection: camera.projectionMatrix.toArray() }); };
   r.getRenderTarget = () => target;
   r.setRenderTarget = (t) => { target = t; };
   const render = r.render.bind(r);
   let pending = null;
+  const frameIds = [];
   r.render = (scene, camera) => {
+    frameIds.push(r._nodes.nodeFrame.frameId);
     const sun = scene.getObjectByProperty('isDirectionalLight', true);
     pending = sun?.shadow.needsUpdate ?? null;
     calls.push({ kind: 'draw', mask: camera.layers.mask, target, has: (o) => o.parent === scene, hadModel: scene.children.includes(model) });
@@ -146,6 +149,12 @@ test('AB-A-0335: warmUp compiles through a camera with every layer on, then draw
   assert.equal(compile.kind, 'compile');
   assert.equal(compile.mask >>> 0, 0xffffffff, 'compileAsync takes every layer');
   assert.equal(compile.same, false, 'through a copy: the view camera keeps its layers while compileAsync awaits');
+  // where the view camera is (a Camera node's three camera is the node's child: a bare clone would sit at the origin)
+  const viewAt = view.getWorldPosition(new THREE.Vector3()).toArray();
+  assert.ok(Math.hypot(viewAt[0], viewAt[1], viewAt[2]) > 1, 'the cafe camera is away from the origin');
+  assert.deepEqual(compile.at.map((v) => +v.toFixed(6)), viewAt.map((v) => +v.toFixed(6)), 'the compile camera sits where the view camera is');
+  assert.deepEqual(compile.projection, view.projectionMatrix.toArray(), 'with its projection');
+  assert.ok(r._nodes.nodeFrame.frameId > frameIds[0], 'the node frame moved on after the hidden draw: the next frame draws its own shadows and passes');
   assert.equal(compile.targetScene, host.scene, 'a model outside the scene compiles with its lights');
   assert.equal(draw.kind, 'draw');
   assert.equal(draw.mask >>> 0, 0xffffffff, 'the draw nobody sees takes every layer too');
@@ -162,12 +171,37 @@ test('AB-A-0335: warmUp compiles through a camera with every layer on, then draw
   calls.length = 0;
   await host.warmUp(undefined, { draw: false });
   assert.deepEqual(calls.map((c) => [c.kind, c.object === host.scene, c.targetScene]), [['compile', true, null]]);
+  assert.equal(calls[0].lens, compile.lens, 'one compile camera per host (r187 keys render objects by camera)');
   const standIn = new RenderHost({ renderer: { setPixelRatio() {}, shadowMap: {}, render() {}, dispose() {} } });
   assert.deepEqual(await standIn.warmUp(), { ms: 0, skipped: true });
   host.lost = { api: 'WebGPU', reason: null, message: 'gone' };
   calls.length = 0;
   assert.equal((await host.warmUp()).skipped, true);
   assert.equal(calls.length, 0);
+});
+
+test('AB-A-0335: on WebGL through the post stack, warmUp compiles for the composer\'s input buffer (and skips before it exists)', async () => {
+  let target = null;
+  const seen = [];
+  const renderer = {
+    isWebGLRenderer: true, setPixelRatio() {}, shadowMap: {}, render() {}, dispose() {}, getContext: () => ({ drawingBufferWidth: 1, drawingBufferHeight: 1 }),
+    getRenderTarget: () => target, setRenderTarget: (t) => { target = t; },
+    compileAsync: (object, camera) => { seen.push(target); return Promise.resolve(); }, // WebGLRenderer.compile runs before the promise
+  };
+  const host = new RenderHost({ renderer });
+  host.setPost = () => {};
+  host.post = { active: true, composer: null };
+  assert.equal((await host.warmUp()).skipped, true, 'no composer yet: nothing to compile against');
+  assert.equal(seen.length, 0);
+  const inputBuffer = { isWebGLRenderTarget: true };
+  host.post.composer = { inputBuffer };
+  const res = await host.warmUp();
+  assert.equal(res.skipped, undefined);
+  assert.deepEqual(seen, [inputBuffer], 'compiled with the input buffer bound (programs keyed linear, as the RenderPass draws)');
+  assert.equal(target, null, 'and the canvas bound again');
+  host.post = null;
+  await host.warmUp();
+  assert.deepEqual(seen, [inputBuffer, null], 'without post: for the canvas');
 });
 
 // ---------------------------------------------------------------- the backend choice

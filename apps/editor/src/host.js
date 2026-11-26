@@ -10,6 +10,7 @@ import { installPortableMath } from '@vrmxg/dmath';
 import { loadRapier } from '@vrmxg/physics';
 import { KeyboardDevice, MouseDevice, GamepadDevice } from '@vrmxg/input';
 import { RenderHost, backendFromQuery } from '@vrmxg/render';
+import { particleRenderers } from '@vrmxg/particles';
 import { renderViews, gridLayout } from '@vrmxg/post';
 import { composeSequence, isSequence, SequencePlayer, subtitles } from '@vrmxg/sequence';
 import { ShellStore, IndexedDBStore } from '@vrmxg/save';
@@ -152,6 +153,9 @@ export class EditorHost {
   /** The view's render host on the chosen backend, with the edit camera (the gizmo and the selection box are the aids' overlay's). */
   async _makeHost(backend) {
     const host = await RenderHost.create({ canvas: this.canvas, backend, preserveDrawingBuffer: true, post: this.postOptions() });
+    // worlds come from buildWorld, which installs particles: the renderer is in before any world attaches (AB-A-0335),
+    // so attaching never holds steps and a preview's first frame after a restore draws its steam
+    await host.loadParticleRenderer(particleRenderers);
     host.camera = this.camera;
     this._adoptHost(host);
     host.onLost = (lost) => this._hostLost(lost);
@@ -218,7 +222,11 @@ export class EditorHost {
   postOptions() { return { loadCube: (file) => this.project.text(file) }; }
 
   /** An offline host on the view's backend, or the one named (exports, checks): its own canvas, pixel ratio 1. */
-  offlineHost(backend = null) { return RenderHost.create({ canvas: document.createElement('canvas'), backend: backend ?? this.host.backend, dprCap: 1, post: this.postOptions() }); }
+  async offlineHost(backend = null) {
+    const host = await RenderHost.create({ canvas: document.createElement('canvas'), backend: backend ?? this.host.backend, dprCap: 1, post: this.postOptions() });
+    await host.loadParticleRenderer(particleRenderers); // before any world attaches, as the view's host (AB-A-0335)
+    return host;
+  }
 
   /** Tell the UI: 'stats' for the readouts only (every few frames), anything else for the panels. */
   changed(kind = 'all') { this.onChange?.(kind); }

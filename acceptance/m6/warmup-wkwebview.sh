@@ -31,7 +31,7 @@ clear_caches() {
   rm -rf "$ucache/com.apple.WebKit.GPU+$id" "$container/Library/Caches/WebKit" "$container/Library/WebKit" 2>/dev/null || true
 }
 runs=${RUNS:-2}
-cases="${CASES:-renderer=webgpu&warm=0&post=0 renderer=webgpu&warm=1&post=0 renderer=webgpu&warm=0&post=1 renderer=webgpu&warm=1&post=1 renderer=webgl&warm=0&post=0 renderer=webgl&warm=1&post=0}"
+cases="${CASES:-renderer=webgpu&warm=0&post=0 renderer=webgpu&warm=1&post=0 renderer=webgpu&warm=0&post=1 renderer=webgpu&warm=1&post=1 renderer=webgl&warm=0&post=0 renderer=webgl&warm=1&post=0 renderer=webgl&warm=0&post=1 renderer=webgl&warm=1&post=1}"
 n=0
 for k in $(seq 1 "$runs"); do
   for c in $cases; do

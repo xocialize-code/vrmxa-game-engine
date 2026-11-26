@@ -214,6 +214,9 @@ export class RenderHost {
       try {
         const host = await RenderHost.create({ ...old._made, ...old._options, ...over, backend: /** @type {any} */ (backend) });
         host.camera = carried.camera; host.layout = carried.layout; host.interpolate = carried.interpolate; host.onPresent = carried.onPresent;
+        // the particle renderer the lost host had loaded, when this one draws the same kind (WebGL's, or the TSL one)
+        const kind = (b) => (b === 'webgl' ? 'webgl' : 'webgpu');
+        if (host.particleRenderer === undefined && old.particleRenderer && kind(old.backend) === kind(host.backend)) host.particleRenderer = old.particleRenderer;
         for (const o of overlays) o.attach?.(host);
         if (tree) host.attach(tree);
         await host.ready(); // a world with emitters draws them from the first frame on the new host
@@ -327,13 +330,17 @@ export class RenderHost {
    * models; 0.13–0.18 s once cached), and a frame that meets an uncompiled pipeline waits for it. Two steps:
    *   1. `renderer.compileAsync`: every material's pipeline, compiled in parallel without drawing or blocking the page.
    *      In r187 it skips what the camera's layers exclude (as render does), so a model kept on a hidden layer would
-   *      compile nothing: it compiles through a copy of the view's camera with every layer enabled. A model not yet in
-   *      the host's scene compiles with the scene's lights and environment (compileAsync's target scene).
+   *      compile nothing: it compiles through the host's own copy of the view camera (its world transform and
+   *      projection; compileAsync frustum-culls) with every layer enabled. A model not yet in the host's scene compiles
+   *      with the scene's lights and environment (compileAsync's target scene). On WebGL through the post stack it
+   *      compiles for the composer's input buffer (linear, as pmndrs' RenderPass draws), building the composer for the
+   *      view camera first if the stack hasn't drawn yet.
    *   2. WebGPU: one draw nobody sees, into a throwaway target made as three makes its framebuffer target (or through the
    *      post stack, whose last pass draws into it), through the view's camera with every layer on for that one
    *      synchronous draw (so no frame shown meanwhile sees a hidden layer), with the object in the scene for it. That
    *      compiles what compileAsync doesn't: the shadow maps' materials, the post stack's passes, the pipelines that
-   *      differ only by draw state. Lights' pending shadow updates are left as they were. Then it waits for the GPU.
+   *      differ only by draw state. Lights' pending shadow updates are left as they were, and the node frame advances,
+   *      so the next frame draws its own shadow maps and passes. Then it waits for the GPU.
    * The Environment and lights are brought up to date first (tone mapping decides whether WebGPU draws through its
    * framebuffer target). WebGL takes step 1 only (WebGLRenderer's compileAsync, parallel where the context allows): a draw
    * into a target there would compile programs without the canvas's tone mapping, the wrong variants. Nothing simulated is
@@ -350,16 +357,45 @@ export class RenderHost {
     const t0 = now();
     if (this.tree) this.views.update(this.tree);
     const view = camera ?? this.camera ?? this.tree?.services.get('cameras')?.current?.camera ?? this.fallbackCamera;
-    const lens = view.clone();
-    lens.layers.enableAll();
+    const lens = this._lensFor(view);
     const inScene = object === this.scene || !!object?.isScene;
-    try { await r.compileAsync(object, lens, inScene ? null : this.scene); }
-    catch (e) { if (!this._lostBy(e)) throw e; return { ms: now() - t0, skipped: true }; } // a lost device: nothing to compile for
+    // WebGL through the post stack: pmndrs' RenderPass draws into the composer's input buffer, whose programs are keyed
+    // linear (no tone mapping), not the canvas's; WebGLRenderer.compile keys programs by the current target, synchronously
+    // (pmndrs' PostStack builds its composer on its first frame, for the scene and camera it draws: built here for the view)
+    if (r.isWebGLRenderer && this.post?.active && !this.post.composer && typeof this.post.build === 'function') this.post.build(this.scene, view);
+    const composer = r.isWebGLRenderer && this.post?.active ? this.post.composer : null;
+    if (r.isWebGLRenderer && this.post?.active && !composer?.inputBuffer) return { ms: now() - t0, skipped: true }; // a stack that can't say
+    try {
+      let compiling;
+      if (composer) {
+        const back = r.getRenderTarget();
+        r.setRenderTarget(composer.inputBuffer);
+        try { compiling = r.compileAsync(object, lens, inScene ? null : this.scene); } finally { r.setRenderTarget(back); }
+      } else compiling = r.compileAsync(object, lens, inScene ? null : this.scene);
+      await compiling;
+    } catch (e) { if (!this._lostBy(e)) throw e; return { ms: now() - t0, skipped: true }; } // a lost device: nothing to compile for
     const compileMs = now() - t0;
     if (!draw || !r.isWebGPURenderer || this.lost || this._disposed) return { ms: compileMs, compileMs };
     try { this._warmDraw(inScene ? null : object, view); await this.finish(); }
     catch (e) { if (!this._lostBy(e)) throw e; }
     return { ms: now() - t0, compileMs, drawMs: now() - t0 - compileMs };
+  }
+
+  /**
+   * warmUp's compile camera: one per host (r187 keys render objects by camera, so a fresh one per call would leave a
+   * set per mesh behind), given the view camera's world transform and projection (a Camera node's three camera is a
+   * child of the node, and compileAsync frustum-culls) and every layer.
+   */
+  _lensFor(view) {
+    if (!this._lens || this._lens.constructor !== view.constructor) this._lens = view.clone(false);
+    const lens = this._lens;
+    lens.copy(view, false);
+    view.updateWorldMatrix(true, false);
+    view.matrixWorld.decompose(lens.position, lens.quaternion, lens.scale);
+    lens.updateMatrixWorld(true);
+    lens.projectionMatrix.copy(view.projectionMatrix); lens.projectionMatrixInverse.copy(view.projectionMatrixInverse);
+    lens.layers.enableAll();
+    return lens;
   }
 
   /** warmUp's draw nobody sees (WebGPU): the scene (with `object` in it) into a throwaway target. Synchronous. */
@@ -380,6 +416,9 @@ export class RenderHost {
       if (added) this.scene.remove(object);
       for (const [shadow, pending] of shadows) shadow.needsUpdate = pending;
       target.dispose();
+      // a later render in the same node frame would reuse this draw's shadow maps and post passes (every layer, the
+      // extra object): the next frame draws its own
+      this.advanceNodeFrame();
     }
   }
 

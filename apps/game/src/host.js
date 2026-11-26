@@ -12,6 +12,7 @@
 // the same hashes as an unbroken session (acceptance/m6/device-loss.mjs). The status line goes once a new frame is
 // drawn. When no renderer can be made, the game is held paused and the pause menu offers Save.
 import { RenderHost } from '@vrmxg/render';
+import { particleRenderers } from '@vrmxg/particles';
 import { loadRapier } from '@vrmxg/physics';
 import { KeyboardDevice, MouseDevice, GamepadDevice, InputService } from '@vrmxg/input';
 import { AudioOutput } from '@vrmxg/audio';
@@ -81,6 +82,8 @@ export class GameHost {
   async open(backend) {
     const build = this.build;
     this.render = await RenderHost.create({ canvas: this.canvas, backend, post: { loadCube: (file) => build.text(file) } });
+    // worlds come from buildWorld, which installs particles: the renderer is in before any world attaches (AB-A-0335)
+    await this.render.loadParticleRenderer(particleRenderers);
     this.render.onLost = (lost) => this._lost(lost);
     this._mtoon = this.render.mtoonMaterial; // worlds built while a lost renderer is being replaced take the same kind
     this.state.backend = this.render.backend;
