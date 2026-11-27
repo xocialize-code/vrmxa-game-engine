@@ -8,6 +8,8 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { toolList, OUTPUT_LIMIT } from '@vrmxg/mcp/tools';
 import { shortToolList } from '@vrmxg/mcp/shorts';
 import { m0Registry } from '@vrmxg/registry/m0';
+import { createTools } from '../../engine/packages/mcp/src/headless.js';
+import { Project } from '../../engine/packages/mcp/src/project.js';
 
 const here = import.meta.dirname, skills = path.join(here, '..'), install = path.join(skills, 'install.mjs');
 const work = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-skills-'));
@@ -38,6 +40,23 @@ test('the skill names only tools, modes and flags the server has', () => {
   const cmds = ['patch_script', 'write_script', 'recast', 'revoice', 'shot_camera', 'queue_export'];
   const agent = fs.readFileSync(path.join(skills, '../apps/creator/src/agent.js'), 'utf8');
   for (const c of cmds) assert.ok(agent.includes(`'${c}'`) && text.includes(c), c);
+});
+
+test('the building rules\' example runs as written on the sample cafe: one step, valid, standing and overlapping as it says', async () => {
+  const section = text.slice(text.indexOf('## Building from parts'), text.indexOf('## Shorts in the creator'));
+  const batch = JSON.parse(/```json\n([\s\S]+?)\n```/.exec(section)[1]);
+  const t = createTools({ registry: m0Registry(), project: new Project(path.join(skills, '../content/sample')), scene: 'cafe.vrmxs' });
+  const r = await t.call('edit', batch);
+  assert.equal(r.isError, false, r.text);
+  assert.match(r.text, /as one undo step \("Bus stop"\)/);
+  assert.deepEqual(JSON.parse((await t.call('validate')).text), { ok: true, errors: [], warnings: [] });
+  assert.deepEqual(JSON.parse((await t.call('game', { op: 'validate' })).text).problems, []);
+  // the numbers the text gives: the kerb sunk 0.02 m into the floor, the parts 0.02 m into the kerb (never saved)
+  const node = (id) => t.doc.nodes.find((n) => n.id === id);
+  const kerb = node('stop-kerb'), h = kerb.props.size[1];
+  assert.ok(Math.abs(kerb.transform.p[1] - (h / 2 - 0.02)) < 1e-9);
+  for (const id of ['stop-bench', 'stop-lamp']) assert.ok(Math.abs(node(id).transform.p[1] - (h - 0.02)) < 1e-9, id);
+  assert.equal(node('stop').transform.p[1], 0, 'the group stands on the floor');
 });
 
 test('install: into a folder, again over itself, never over someone else\'s, and as a link', () => {

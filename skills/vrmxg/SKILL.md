@@ -57,8 +57,8 @@ Every tool answers with compact JSON or an error you can act on. Read before you
 ## Rules that save round trips
 
 - **One edit is one undo step**, on the app's own Undo, shared with the person, labelled "… (MCP)". To make several
-  changes one step, use `edit` with `ops` (add, set, remove, reparent, connect, disconnect, behaviour, setDoc) and a
-  `label`: all apply or none do. `undo` takes back the last step, whoever made it, so don't undo what you didn't do
+  changes one step, use `edit` with `ops` (add, set, remove, reparent, connect, disconnect, behaviour, setDoc, and
+  `addAsset` with `asset: {id, type, ref}` for a file a node will draw) and a `label`: all apply or none do. `undo` takes back the last step, whoever made it, so don't undo what you didn't do
   unless asked.
 - **Behaviours and connections are checked as the editor's inspector checks them.** A param against its schema (an
   unknown one is refused), a node reference must name a node of the scene, a behaviour attaches only to the types
@@ -120,6 +120,44 @@ files) and, in its scenes, rules as nodes:
   exporter's refusal back whole: the file it names, and the line to add (an `ignore` entry in `game.json` for a string
   that only looks like a file). A licence row says the real licence: write one only with the licence the person
   gives you, and otherwise report it; don't invent one.
+
+## Building from parts
+
+A set piece or a prop in a scene is a `Node3D` holding its parts: `Model` nodes (each draws a `.glb` asset of the
+scene's `assets`) and `Collider` nodes (shapes with no look; a box's `size` is its full width, height and depth,
+centred on the node). Transforms are `{p: [x,y,z], q: [x,y,z,w], s: [x,y,z]}` in metres, Y up, each relative to its
+parent. Four rules keep what you build standing, solid and clean:
+
+1. **Plan before you place.** Write down the hierarchy first (the group, then each part and its collider) and a
+   triangle budget for the whole: most of it on the main forms, a little on secondary ones, and almost none on small
+   details. MCP doesn't count triangles; the content tool that made an asset, or its provenance, does. Each `Model`
+   draws its asset's triangles again, even when it reuses an asset.
+2. **Stand things on Y = 0.** Give the group's root its place on the floor (`p[1]` is the floor's height) and put
+   each part's base at its parent's Y = 0. A box collider of height `h` stands on the floor at `p[1] = h / 2`. An
+   asset whose origin isn't at its base goes under a `Node3D` that lifts it. Check the result with a `screenshot`.
+3. **Overlap parts that touch, by 0.02 to 0.05 m.** A leg sinks into the floor, a shelf into its upright, a fixed
+   collider into the collider below it, so nothing floats on a hairline gap and nothing falls through a seam. Don't
+   overlap a `RigidBody`'s collider with another solid: the bodies push apart on the first step.
+4. **Offset flush panels, then check.** A sign, a poster or a trim on a wall flickers (z-fighting) when it shares
+   the wall's plane: move it 0.01 to 0.03 m out along the wall's normal. After assembling, run `validate` and
+   `game op=validate`, fix every problem they name, and run them again. They don't see z-fighting yet, so look at
+   flush parts in a `screenshot`.
+
+A bus stop on the cafe's floor, one undo step: a 0.17 m kerb's collider sunk 0.02 m into the floor
+(`p[1] = 0.17 / 2 - 0.02`), and the bench and lamp sunk 0.02 m into the kerb (`p[1] = 0.17 - 0.02`):
+
+```json
+{"label": "Bus stop", "ops": [
+  {"op": "addAsset", "asset": {"id": "bench", "type": "glb", "ref": "props/bench.glb"}},
+  {"op": "addAsset", "asset": {"id": "lamp", "type": "glb", "ref": "props/street-lamp.glb"}},
+  {"op": "add", "node": {"id": "stop", "type": "Node3D", "parent": "root", "name": "Bus stop", "transform": {"p": [4, 0, -2]}}},
+  {"op": "add", "node": {"id": "stop-kerb", "type": "Collider", "parent": "stop", "props": {"shape": "box", "size": [3, 0.17, 1.2]}, "transform": {"p": [0.4, 0.065, 0]}}},
+  {"op": "add", "node": {"id": "stop-bench", "type": "Model", "parent": "stop", "asset": "bench", "transform": {"p": [0, 0.15, 0]}}},
+  {"op": "add", "node": {"id": "stop-lamp", "type": "Model", "parent": "stop", "asset": "lamp", "transform": {"p": [1.4, 0.15, 0]}}}
+]}
+```
+
+Send it as `edit`, then `validate` and `game op=validate`, and look at it with `screenshot` in the editor.
 
 ## Shorts in the creator
 
