@@ -162,12 +162,14 @@ are drawn over the frame and never reach an export, a still or the game.
 **Play** runs the open scene in the viewport: physics, characters, the behaviours and connections, with the game's
 controls and physics layers from `game.json`. It runs the scene, not the whole game: the game's rules (counters,
 flags, timers, goals, winning and losing, scene changes) run in the game app, so play an exported build to try them
-(Export Game, below). A behaviour that uses the game's state should allow for its absence here. WASD walks, the mouse turns the camera, **E** interacts, and a
-gamepad works too. The status shows the step it is on.
+(Export Game, below). A behaviour that uses the game's state should allow for its absence here.
+
+WASD walks, the mouse turns the camera, **E** interacts, and a gamepad works too. The status shows the step it is on.
 
 Press **Play** again to stop. Stopping puts the scene back as it was before Play, and the status says so ("Stopped:
-scene as before Play"): nothing that happens while playing changes the scene. A behaviour that fails to load is shown
-in a box over the viewport, and the scene plays without it.
+scene as before Play"): nothing that happens while playing changes the scene. A behaviours module that won't load, or
+declarations the engine refuses, are shown in a box over the viewport, and the scene still plays: without the module's
+behaviours, or with the refused ones running as code only.
 
 ![Play in place: Hana calls out the coin](/guide/images/tutorial-play.jpg)
 
@@ -193,16 +195,17 @@ reloads anything. In a browser tab there is no hot reload.
   full disk) says why and keeps the window open.
 - Project Settings save as you change them.
 
-**The game's saves, across updates.** Players save their games in the game app (six slots and checkpoints). When you
-export a new version of your game, a player's earlier saves still load if nothing they depend on changed:
+**The game's saves, across updates.** Players save their games in the game app (six slots, and checkpoints). When you
+export a new version of your game with the same engine, a player's earlier saves still load if nothing a restore reads
+changed:
 
-| Still loads | Refused, with the reason |
+| Still loads | Refused, and the game app says why |
 |---|---|
-| A texture, a sound, a line of dialogue's audio, the HUD, a description reworded | A scene's nodes changed, a behaviour's declared state changed shape, the controls changed, the engine's maths changed |
+| A model's textures and materials, a sound, a line of dialogue's audio, a key or button rebound, a reworded description in a behaviour's `describe` | Any edit to a scene or a prefab; a changed item or character; a model's nodes, meshes or animations; a behaviour's declared state changing shape; any edit to a behaviour that declares no state; an action added, removed or renamed; a new version of the engine |
 
-A behaviour's `describe.state` is what decides it, which is why declaring it matters: a behaviour without one counts
-by its code, so any change to its code refuses earlier saves. Replays (a recorded session played back) compare the
-whole build, so any change refuses those.
+A behaviour's `describe.state` decides it, which is why declaring it matters: a behaviour without one counts by its
+code, so any change to its code refuses earlier saves. Replays (a recorded session played back) compare the whole
+build, so any change refuses those.
 
 ## Export Game
 
@@ -212,8 +215,7 @@ for a folder, so a refused export changes nothing:
 - every file the game uses has a row in `LICENCES.md`;
 - every file a scene names is in the project, with the same case;
 - the behaviours module loads and its declarations are valid, and it is the module `game.json` names (Project Settings
-  › Behaviours): one that only Play runs would leave the build without it, so the export refuses it;
-- the scenes are valid.
+  › Behaviours): one that only Play runs would leave the build without it, so the export refuses it.
 
 Then it writes a folder named after the game's id: the game app, the project's files under `project/`, and
 `vrmxg-build.json`, which lists every file with its SHA-256 and licence. The **Export** panel's line says how many files

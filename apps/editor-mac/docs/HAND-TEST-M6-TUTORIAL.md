@@ -10,7 +10,7 @@ outside the app. The guide's screenshots are the runs' `shot`s.
 ```sh
 apps/editor-mac/scripts/build.sh
 apps/editor-mac/scripts/hand-test-fixtures-m6-tutorial.sh            # webgpu; "webgl" for the twin's folders
-node acceptance/gpu-lock.mjs run --who m6-tutorial -- /Volumes/Satechi/Development/AppProbe/.build/release/appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M6-TUTORIAL.scenario.md
+node acceptance/gpu-lock.mjs run --who m6-tutorial -- appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M6-TUTORIAL.scenario.md
 node acceptance/m6/tutorial.mjs play "$HOME/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/w9-builds/coin-run"
 ```
 
@@ -23,7 +23,7 @@ node acceptance/m6/tutorial.mjs play "$HOME/Library/Containers/com.xocialize.vrm
 - [x] 7. Make the first coin *AppProbe 2026-11-26, both backends: Area `coin-1` placed, shape pinned, size set; `coin` added from the Behaviours panel ("Undo Add coin to coin-1") with its describe's defaults mira, coins, 1; ParticleEmitter `glint-1` under it with the sparks effect.*
 - [x] 8. Wire the coin *AppProbe 2026-11-26, both backends: collected → glint-1 → stop and collected → hana → say ("Undo Connect coin-1.collected to glint-1.stop", "… to hana.say"), the line typed in the argument's field; the scene stayed valid.*
 - [x] 9. Two more coins *AppProbe 2026-11-26, both backends: Duplicate twice made coin-2 and coin-3 with glint-2 and glint-3; coin-2's connections read glint-2 and hana; saved, 22 nodes, valid. The copies keep the name "Coin 1" (the tutorial doesn't rename them). The saved level is byte-identical across the two backends' runs (`results/m6-tutorial-*/level.vrmxs`).*
-- [x] 10. Play it *AppProbe 2026-11-26, both backends: with `env` selected, Play showed Hana's caption "A coin! Keep going, Mira." from the coin at the spawn (#captions, the text matched). The editor's Play has no game service (AB-T-0672), so the counter and goals aren't checked here; step 12 checks them.*
+- [x] 10. Play it *AppProbe 2026-11-26, both backends: with `env` selected, Play showed Hana's caption "A coin! Keep going, Mira." from the coin at the spawn (#captions, the text matched). The editor's Play has no game service (AB-T-0672), so the counter and goals aren't checked here; step 12 checks them. The page's sentence on hot reload isn't exercised here: HAND-TEST-M6-HOT-RELOAD covers it. Walking Mira through the coins in a world without the game service was checked in Node (400 steps, no error, all three glints stopped, Hana's line).*
 - [x] 11. Export the game *AppProbe 2026-11-26, both backends: File › Export Game… wrote `w9-builds/coin-run` (and `w9-builds-webgl/coin-run`); both builds have the digest c809be3c….*
 - [x] 12. Play the build in the game app *2026-11-26, outside the app: `tutorial.mjs play` on each backend's build. Each build is whole and carries `behaviours.js`. Node: coins at steps 2, 68 and 123, each glint stopped by its connection, goals in order, won at 174, then the ending. Game app in Chromium, WebGPU and WebGL: the title menu, New Game, the HUD's "Goal: Collect the three coins" and Hana's caption at step 14 or 15, three coins, "Get to the counter", won, then `ending.vrmxs`, no page errors (`results/m6-tutorial-*/play-build.json`). Not played in the Mac game app (apps/game-mac).*
 

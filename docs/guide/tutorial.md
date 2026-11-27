@@ -223,9 +223,9 @@ the scene ([Hot reload](./editor#hot-reload)).
 
 ## 11. Export the game
 
-Choose **File › Export Game…** and pick a folder. The editor checks everything first (every file has a licence row,
-every scene and behaviour loads), then writes the build, named after the game's id: `coin-run`. The Export panel's
-line says how many files and bytes it wrote.
+Choose **File › Export Game…** and pick a folder. The editor checks everything first: every file the game uses is in
+the project and has a licence row, and the behaviours module loads and is the one `game.json` names. Then it writes the
+build, named after the game's id: `coin-run`. The Export panel's line says how many files and bytes it wrote.
 
 A build is a folder: the game app, your project's files and `vrmxg-build.json`, which lists every file with its hash
 and licence.
