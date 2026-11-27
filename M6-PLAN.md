@@ -215,8 +215,8 @@ Approved with the plan (2026-11-26, AB-D-0297):
   non-programmer needs, or does M7 need more?
 - **Where a builder's games live.** Projects are folders the builder picks; is a default projects folder wanted?
 - **After M6.** The mesheditor review's (`research/mesheditor-review.md`) building rules for agents join W8
-  (AB-T-0678). Its other four recommendations need new tools and change the sample's assets, so they wait for M7,
-  proposed as "worlds you can make" in the PRD (§8):
+  (AB-T-0678). Its other four recommendations need new generators and checks, and some change the sample's assets
+  (decimation always does), so they wait for M7, proposed as "worlds you can make" in the PRD (§8):
   - building pieces (AB-T-0677);
   - an SDF prop generator (AB-T-0676);
   - guarded decimation and LOD (AB-T-0674);
