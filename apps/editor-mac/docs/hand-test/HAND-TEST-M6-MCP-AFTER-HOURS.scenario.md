@@ -20,7 +20,7 @@ env: {"VRMXG_SHELL_PROJECT": "project-w8-after-hours", "VRMXG_SHELL_BUILD": "bui
 fresh: false
 ```
 
-- [ ] The project opens on After Hours' first level, linked to the agent's MCP server on its own port, with no undo step.
+- [ ] The project opens on After Hours' first level, polling for the agent's MCP server on its own port with no other editor holding the link, and with no undo step.
   ```steps
   wait id=open-project enabled=true timeout_ms=60000
   until find("id=doc-state").0.name matches "^Scene cafe[^ ]* [0-9]+ nodes saved" timeout=60000   # the bundled sample first
@@ -32,7 +32,7 @@ fresh: false
   until find("id=doc-state").0.name matches "^Scene after-hours/level\.vrmxs 38 nodes saved valid hash " timeout=60000
   set opened = find("id=doc-state").0.name
   expect find("id=undo").0.name == "Undo"   # nothing is an undo step yet
-  expect find("id=mcp-state").0.name matches "^MCP"   # the page polls vrmxg-mcp --editor --port 5193
+  expect find("id=mcp-state").0.name matches "^MCP(: waiting for vrmxg-mcp --editor$| connected)"   # polling 5193, not "another editor has the link"; the agent's server starts after this row, and row 2 waits for its calls
   shot "opened"
   ```
 
@@ -72,12 +72,17 @@ fresh: false
   shot "after redo"
   ```
 
-- [ ] The second level opens in the editor as the agent saved it: valid, with its book, its shelf and the shelf's behaviour.
+- [ ] The second level opens in the editor as the agent saved it: valid, 41 nodes, with its two books, the store shelf's Area, the shelf's behaviour and its four connections.
   ```steps
   act id=file-name action=set_value value=after-hours/level-2.vrmxs
   act id=open-file action=press
-  until find("id=doc-state").0.name matches "^Scene after-hours/level-2\.vrmxs [0-9]+ nodes saved valid hash " timeout=60000   # 38 copied, book-2, book-2-shelved, zone-store, and any group the building rules led to
+  until find("id=doc-state").0.name matches "^Scene after-hours/level-2\.vrmxs 41 nodes saved valid hash " timeout=60000   # 38 copied, book-2, book-2-shelved, zone-store
   expect find("id=undo").0.name == "Undo"   # opened fresh: the agent's steps were saved, not left in an undo history
+  expect find("id=node-book-2").count == 1   # the second book, on the phone's table
+  expect find("id=node-book-2-shelved").count == 1   # and its shelved copy on the store shelf
+  act id=node-zone-store action=press
+  until find("id=behaviours").0.name == "Behaviours of zone-store: shelf" timeout=10000   # the game's own behaviour
+  expect find("id=connections").0.name == "Connections from zone-store: 4"   # placed: shelved, book-2-shelved; refused: mistakes, hana
   expect find("role=alert").count == 0
   shot "the second level"
   ```

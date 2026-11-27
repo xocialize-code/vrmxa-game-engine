@@ -15,8 +15,10 @@
 // --w8: M6 W8 (AB-T-0649), an agent adds a level to "After Hours" (HAND-TEST-M6-MCP-AFTER-HOURS: the game open on its
 // level): it reads the rules, copies the level into a second one, adds a book and a shelf with the game's own `shelf`
 // behaviour and its connections, names the level in the game with a licence row, sends the first level on to it, and
-// validates and exports. It runs in a folder of its own with the repository's vrmxg skill installed (the Skill tool is
-// its only other tool), and is told to follow the skill's building rules (AB-T-0678); → mcp-editor-session-m6-after-hours.json, on 5193.
+// validates and exports. It runs in a folder of its own with the repository's vrmxg skill installed: the Skill tool is
+// allowed beside the editor's tools, and the client's own ToolSearch (which loads deferred tool schemas, and touches
+// no file) can still appear in the record; Bash, Read, Edit and the rest are refused. It is told to follow the
+// skill's building rules (AB-T-0678); → mcp-editor-session-m6-after-hours.json, on 5193.
 // --headless <project> --out <file>: the same session against vrmxg-mcp headless on a copy of the project (its first
 // level open, builds checked into <project>/../builds), to rehearse a prompt before the Mac run; never the record.
 //   node apps/editor-mac/scripts/mcp-session.mjs [--model sonnet] [--m2 | --m3 | --m5 | --rush | --w8] [--port N] [--headless <dir> --out <file>]
@@ -89,7 +91,7 @@ const promptW8 = `You are connected to the VRMXG editor, which has the game "Aft
 6. Validate the scene and save it. Name the second level in the game's scenes (game op=settings), and give it a licence row with the licence "Xocialize original" and the source "After Hours' second level: a second book for the store shelf, made by an agent through the editor's MCP tools".
 7. Validate the project (game op=validate). If it reports a problem in the second level, fix it there and save again.
 8. Open the first level again (game op=open). As ONE edit labelled "Go on to the second night": when its rules signal won, the scene changes to after-hours/level-2.vrmxs after 3 seconds with reset true (the second night starts as a new game, its counters from zero), in place of the change to after-hours/won.vrmxs. Change nothing else. Save.
-9. Validate the project again and report what it says; make no more edits. Then export the game (game op=export). Report the build's path, its number of files and its manifest digest.
+9. Validate the project again and report what it says; make no more edits. Then export the game (game op=export) with the name "after-hours", the folder this hand test checks. Report the build's path, its number of files and its manifest digest.
 Describe a node type before you first use it. Do not undo. Finish with a short report of each step, including where you put book-2, book-2-shelved and zone-store, and which building rule decided each.`;
 const prompt = m2 ? promptM2 : m3 ? promptM3 : rush ? promptRush : m5 ? promptM5 : w8 ? promptW8 : promptM1;
 // --w8: a folder of its own with the repository's skill installed (.claude/skills/vrmxg), so the session can load it

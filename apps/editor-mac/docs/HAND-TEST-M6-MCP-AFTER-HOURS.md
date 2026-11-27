@@ -17,13 +17,15 @@ node apps/editor-mac/scripts/mcp-session.mjs --w8    # after row 1 passes; recor
 node engine/packages/bundle/src/cli.js --verify "$HOME/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/builds-w8/after-hours"
 ```
 
-- [ ] The project opens on After Hours' first level, linked to the agent's MCP server on its own port, with no undo step.
-- [ ] An agent with only the editor's MCP tools (and the vrmxg skill) adds a second level with a behaviour and its connections, names it in the game, sends the first level on to it, validates and exports; its last edit is in the editor's Undo, marked (MCP), and the build is written.
-- [ ] Undo takes the agent's last step back, named for the agent; saved, the first level is the one that opened.
-- [ ] Redo brings it back, still marked (MCP); saved, the first level is the agent's.
-- [ ] The second level opens in the editor as the agent saved it: valid, with its book, its shelf and the shelf's behaviour.
+- [x] The project opens on After Hours' first level, polling for the agent's MCP server on its own port with no other editor holding the link, and with no undo step.
+- [x] An agent with only the editor's MCP tools (and the vrmxg skill) adds a second level with a behaviour and its connections, names it in the game, sends the first level on to it, validates and exports; its last edit is in the editor's Undo, marked (MCP), and the build is written.
+- [x] Undo takes the agent's last step back, named for the agent; saved, the first level is the one that opened.
+- [x] Redo brings it back, still marked (MCP); saved, the first level is the agent's.
+- [x] The second level opens in the editor as the agent saved it: valid, 41 nodes, with its two books, the store shelf's Area, the shelf's behaviour and its four connections.
 
 ## Results
 
 | Date | Build | Rows | Result |
 |---|---|---|---|
+| 2026-11-27 | Release, ad hoc signed (`scripts/build.sh`), shell 0.16.0, WebGPU, branch `claude/m6-w8-after-hours` on main 606620c | 1–5 | 5 of 5 on the second run (`hand-test/results/m6-mcp-after-hours/`). The agent (Sonnet, 37 calls, none failed, $0.42; `hand-test/results/mcp-editor-session-m6-after-hours.json`) put `book-2` at [3.4, 0.775, −2], `book-2-shelved` at [8.2, 0.615, −5.02] and `zone-store` at [8, 1, −4.3], 1.2 × 2 × 0.9. `--verify` on `builds-w8/after-hours`: whole, 70 files, 18,985,412 bytes, manifest `b5730154…cebd`, the same manifest as the headless rehearsal and the first run. I stopped the first run in row 2, which would have timed out: the prompt didn't name the export, the agent called it `after-hours-2-levels`, and row 2 checks `builds-w8/after-hours`. The prompt now names it |
+| 2026-11-27 | The same, with the Export line's `~` (PR 74's review) | 1, 5 | Rows 1 and 5, tightened after the run above (row 1: polling with no other editor holding the link; row 5: 41 nodes, `book-2`, `book-2-shelved`, and `zone-store`'s `shelf` behaviour and four connections), run again on the project the agent saved, so row 1 opened the agent's first level: 2 of 2 (`hand-test/results/m6-mcp-after-hours/rows-1-5/`). The first run's shots r2 to r5 have the Export line's path painted over (its report says so) |
