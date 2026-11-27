@@ -8,6 +8,8 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { toolList, OUTPUT_LIMIT } from '@vrmxg/mcp/tools';
 import { shortToolList } from '@vrmxg/mcp/shorts';
 import { m0Registry } from '@vrmxg/registry/m0';
+import { createTools } from '../../engine/packages/mcp/src/headless.js';
+import { Project } from '../../engine/packages/mcp/src/project.js';
 
 const here = import.meta.dirname, skills = path.join(here, '..'), install = path.join(skills, 'install.mjs');
 const work = fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-skills-'));
@@ -39,6 +41,55 @@ test('the skill names only tools, modes and flags the server has', () => {
   const agent = fs.readFileSync(path.join(skills, '../apps/creator/src/agent.js'), 'utf8');
   for (const c of cmds) assert.ok(agent.includes(`'${c}'`) && text.includes(c), c);
 });
+
+test('the building rules\' example runs as written on the sample cafe: one step, valid, each prop standing on the floor by its asset\'s real bounds', async () => {
+  const section = text.slice(text.indexOf('## Building from parts'), text.indexOf('## Shorts in the creator'));
+  const batch = JSON.parse(/```json\n([\s\S]+?)\n```/.exec(section)[1]);
+  const t = createTools({ registry: m0Registry(), project: new Project(path.join(skills, '../content/sample')), scene: 'cafe.vrmxs' });
+  const r = await t.call('edit', batch);
+  assert.equal(r.isError, false, r.text);
+  assert.match(r.text, /as one undo step \("Bus stop"\)/);
+  assert.deepEqual(JSON.parse((await t.call('validate')).text), { ok: true, errors: [], warnings: [] });
+  assert.deepEqual(JSON.parse((await t.call('game', { op: 'validate' })).text).problems, []);
+  // each prop as the assets' own bounds have it (read from the .glb files, not from the text): its base sunk 0.02 m into
+  // the floor, its collider the asset's height with the same base and at least its footprint (never saved)
+  const node = (id) => t.doc.nodes.find((n) => n.id === id);
+  assert.equal(node('stop').transform.p[1], 0, 'the group stands on the floor');
+  for (const [part, file] of [['stop-bench', 'bench.glb'], ['stop-lamp', 'street-lamp.glb']]) {
+    const b = glbBounds(path.join(skills, '../content/sample/props', file));
+    const base = node(part).transform.p[1], look = node(`${part}-look`), solid = node(`${part}-solid`);
+    assert.equal(look.props.colliders, 'none', `${part}: the asset brings no colliders of its own`);
+    assert.ok(Math.abs(base - -0.02) < 1e-9, `${part} sinks 0.02 m into the floor`);
+    assert.ok(Math.abs(base + look.transform.p[1] + b.min[1] - -0.02) < 0.001, `${part}'s model stands on its base: ${base + look.transform.p[1] + b.min[1]}`);
+    const [w, h, d] = solid.props.size;
+    assert.ok(Math.abs(base + solid.transform.p[1] - h / 2 - -0.02) < 1e-9, `${part}'s collider stands on the same base`);
+    assert.ok(Math.abs(h - (b.max[1] - b.min[1])) < 0.001, `${part}'s collider is the asset's height`);
+    assert.ok(w >= b.max[0] - b.min[0] - 0.001 && d >= b.max[2] - b.min[2] - 0.001, `${part}'s collider covers the asset's footprint`);
+  }
+});
+
+/** A .glb's bounds in its own space, through its nodes' translations and scales (the sample's props have no rotations). */
+function glbBounds(file) {
+  const bytes = fs.readFileSync(file);
+  const j = JSON.parse(bytes.subarray(20, 20 + bytes.readUInt32LE(12)).toString());
+  const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
+  const walk = (i, t, s) => {
+    const n = j.nodes[i];
+    assert.ok(!n.matrix && !(n.rotation && (n.rotation[0] || n.rotation[1] || n.rotation[2])), `${file}: a rotated node`);
+    const tr = n.translation ?? [0, 0, 0], sc = n.scale ?? [1, 1, 1];
+    const T = t.map((v, k) => v + s[k] * tr[k]), S = s.map((v, k) => v * sc[k]);
+    for (const p of n.mesh != null ? j.meshes[n.mesh].primitives : []) {
+      const a = j.accessors[p.attributes.POSITION];
+      for (let k = 0; k < 3; k++) {
+        const lo = T[k] + S[k] * a.min[k], hi = T[k] + S[k] * a.max[k];
+        min[k] = Math.min(min[k], lo, hi); max[k] = Math.max(max[k], lo, hi);
+      }
+    }
+    for (const c of n.children ?? []) walk(c, T, S);
+  };
+  for (const i of j.scenes[j.scene ?? 0].nodes) walk(i, [0, 0, 0], [1, 1, 1]);
+  return { min, max };
+}
 
 test('install: into a folder, again over itself, never over someone else\'s, and as a link', () => {
   const dest = path.join(work, 'skills');

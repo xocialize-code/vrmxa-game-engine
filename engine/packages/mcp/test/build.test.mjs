@@ -156,7 +156,7 @@ test('project settings: read, set through the editor\'s ProjectSettings (one ste
     [{ scenes: [] }, /level\.vrmxs is the entry scene: it stays in scenes/],
     [{ id: 'Not An Id' }, /id/],
     [{ input: {} }, /input isn't a setting here/],
-    [{ behaviours: 'nothing.js' }, /behaviours: a \.js file of the project/],
+    [{ behaviours: 'nothing.js' }, /nothing\.js isn't in the project/], [{ behaviours: 'level.vrmxs' }, /isn't a JavaScript module/], [{ behaviours: 3 }, /set.behaviours: a \.js or \.mjs file/],
   ]) { const x = await t.call('game', { op: 'settings', set }); assert.ok(x.isError, JSON.stringify(set)); assert.match(x.text, why); }
   // the settings' own history: the agent's steps are there, marked, and its undo writes game.json back
   const st = await t.target.settings();
@@ -237,7 +237,7 @@ test('a root behaviours.js that game.json doesn\'t name: validate warns (an expo
   fs.renameSync(path.join(dir, 'behaviours.tmp'), path.join(dir, 'behaviours.js'));
   const v = await call('game', { op: 'validate' });
   assert.ok(v.warnings.some((w) => w.check === 'behaviour' && /behaviours\.js, which game\.json doesn't name: the editor's Play runs it, but an export leaves it out/.test(w.message)), JSON.stringify(v.warnings));
-  assert.deepEqual((await call('game', { op: 'settings', set: { behaviours: 'behaviours.js' } })).steps, ['Settings: behaviours (MCP)']);
+  assert.deepEqual((await call('game', { op: 'settings', set: { behaviours: 'behaviours.js' } })).steps, ['Behaviours behaviours.js (MCP)']);
   assert.ok(!(await call('game', { op: 'validate' })).warnings.some((w) => /doesn't name/.test(w.message)));
 });
 
@@ -249,7 +249,7 @@ test('new project: when the project made has a root behaviours.js that game.json
   t.target.templates = () => [{ id: 'with-code', title: 'With code', description: '', files: [] }];
   t.target.newProject = async ({ template, title }) => ({ project: dir, template: template.id, title });
   const made = await call('game', { op: 'new', template: 'with-code', title: 'Coded' });
-  assert.deepEqual(made.behaviours, { set: 'behaviours.js', steps: ['Settings: behaviours (MCP)'] });
+  assert.deepEqual(made.behaviours, { set: 'behaviours.js', steps: ['Behaviours behaviours.js (MCP)'] });
   assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'game.json'), 'utf8')).behaviours, 'behaviours.js');
 });
 

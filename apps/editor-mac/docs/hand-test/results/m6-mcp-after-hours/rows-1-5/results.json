@@ -1,0 +1,153 @@
+{
+  "checklist" : "<repo>/apps/editor-mac/docs/HAND-TEST-M6-MCP-AFTER-HOURS.md",
+  "rows" : [
+    {
+      "checklist_line" : 20,
+      "checks" : [
+        {
+          "actual" : "\"Scene cafe-cart.vrmxs 30 nodes saved valid hash 7636dc6e7e38e7e0\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project Sample (bundled)\"",
+          "check" : "find(\"id=project-name\").0.name matches \"^Project \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene cafe-cart.vrmxs 30 nodes saved valid hash 7636dc6e7e38e7e0\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene [^ ]+ [0-9]+ nodes saved\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene after-hours/level.vrmxs 38 nodes saved valid hash 0e1d384a9e8a9dd1\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene after-hours/level\\.vrmxs 38 nodes saved valid hash \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"MCP: waiting for vrmxg-mcp --editor\"",
+          "check" : "find(\"id=mcp-state\").0.name matches \"^MCP(: waiting for vrmxg-mcp --editor$| connected)\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Editor pid 55228, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-27T150240Z.log",
+        "25: wait id=open-project enabled=true timeout_ms=60000 → found after 283 ms: button \"Open project\" #open-project [W:VRMXG Editor/0/0/0/0/0/2@4649] (287 ms)",
+        "26: until find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\" timeout=60000 → ok (2030 ms)",
+        "27: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":44,\"w\":72,\"x\":3190,\"y\":324},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG  (452 ms)",
+        "28: until find(\"id=project-name\").0.name matches \"^Project \" timeout=30000 → ok (1682 ms)",
+        "29: until find(\"id=doc-state\").0.name matches \"^Scene [^ ]+ [0-9]+ nodes saved\" timeout=60000 → ok (44 ms)",
+        "30: act id=file-name action=set_value value=after-hours/level.vrmxs → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3895,\"y\":333},\"help\":\"The file New and Save As use, in the project\",\"id\":\"fi (517 ms)",
+        "31: act id=open-file action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":52,\"x\":4041,\"y\":333},\"help\":\"Open the scene or sequence named in the file field\",\"id\":\"o (50 ms)",
+        "32: until find(\"id=doc-state\").0.name matches \"^Scene after-hours/level\\.vrmxs 38 nodes saved valid hash \" timeout=60000 → ok (571 ms)",
+        "33: set opened = find(\"id=doc-state\").0.name → \"Scene after-hours/level.vrmxs 38 nodes saved valid hash 0e1d384a9e8a9dd1\" (63 ms)",
+        "34: expect find(\"id=undo\").0.name == \"Undo\" → ok (45 ms)",
+        "35: expect find(\"id=mcp-state\").0.name matches \"^MCP(: waiting for vrmxg-mcp --editor$| connected)\" → ok (50 ms)",
+        "36: shot \"opened\" (134 ms)"
+      ],
+      "message" : null,
+      "ms" : 6695,
+      "notes" : [
+        "shot 1: opened"
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+        "<out>/shots/r1-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The project opens on After Hours' first level, polling for the agent's MCP server on its own port with no other editor holding the link, and with no undo step.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 24,
+      "checks" : [
+        {
+          "actual" : "\"Scene after-hours/level-2.vrmxs 41 nodes saved valid hash 8aeef82a27170a0f\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene after-hours/level-2\\.vrmxs 41 nodes saved valid hash \"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-book-2\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-book-2-shelved\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Behaviours of zone-store: shelf\"",
+          "check" : "find(\"id=behaviours\").0.name == \"Behaviours of zone-store: shelf\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Connections from zone-store: 4\"",
+          "check" : "find(\"id=connections\").0.name == \"Connections from zone-store: 4\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"role=alert\").count == 0",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "77: act id=file-name action=set_value value=after-hours/level-2.vrmxs → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3895,\"y\":333},\"help\":\"The file New and Save As use, in the project\",\"id\":\"fi (498 ms)",
+        "78: act id=open-file action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":52,\"x\":4041,\"y\":333},\"help\":\"Open the scene or sequence named in the file field\",\"id\":\"o (77 ms)",
+        "79: until find(\"id=doc-state\").0.name matches \"^Scene after-hours/level-2\\.vrmxs 41 nodes saved valid hash \" timeout=60000 → ok (603 ms)",
+        "80: expect find(\"id=undo\").0.name == \"Undo\" → ok (51 ms)",
+        "81: expect find(\"id=node-book-2\").count == 1 → ok (48 ms)",
+        "82: expect find(\"id=node-book-2-shelved\").count == 1 → ok (48 ms)",
+        "83: act id=node-zone-store action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":262,\"x\":3040,\"y\":1506},\"help\":\"\",\"id\":\"node-zone-store\",\"name\":\"Store shelf (in front) ( (55 ms)",
+        "84: until find(\"id=behaviours\").0.name == \"Behaviours of zone-store: shelf\" timeout=10000 → ok (184 ms)",
+        "85: expect find(\"id=connections\").0.name == \"Connections from zone-store: 4\" → ok (63 ms)",
+        "86: expect find(\"role=alert\").count == 0 → ok (57 ms)",
+        "87: shot \"the second level\" (82 ms)"
+      ],
+      "message" : null,
+      "ms" : 2054,
+      "notes" : [
+        "shot 1: the second level"
+      ],
+      "row" : 5,
+      "section" : "",
+      "shots" : [
+        "<out>/shots/r5-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The second level opens in the editor as the agent saved it: valid, 41 nodes, with its two books, the store shelf's Area, the shelf's behaviour and its four connections.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "<repo>/apps/editor-mac/docs/hand-test/HAND-TEST-M6-MCP-AFTER-HOURS.scenario.md",
+  "summary" : "2 rows: 2 passed, 0 failed, 0 need you; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}

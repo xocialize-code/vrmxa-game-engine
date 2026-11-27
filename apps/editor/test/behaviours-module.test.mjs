@@ -23,6 +23,7 @@ import { ProjectSettings, settingsEdit, writeJson } from '../src/project-setting
 import { declareBehaviours, reloadBehaviours, worldBehaviours } from '../src/host-behaviours.js';
 import { exportGame, exportRefusal, gameExportLine, UNNAMED_BEHAVIOURS } from '../src/export-game.js';
 import { editorTarget } from '../src/mcp.js';
+import { createHandlers, caller } from '@vrmxg/mcp/tools';
 
 // the page's importer with files for blob: URLs (Node can't import blob:), as reload.test.mjs links them
 const linkedFiles = () => {
@@ -111,6 +112,52 @@ test('game.json switched to another module in Project Settings: the editor reads
     assert.deepEqual([...r.declared].sort(), ['beta', 'mover']);
     assert.equal(r.problems, undefined);
     assert.equal(await playedFrom(host, registry), 'second');
+  } finally { linked.done(); }
+});
+
+test('MCP\'s game op=settings on the editor\'s target: set.behaviours reads the module again through behavioursChanged; other keys and the same module don\'t', async () => {
+  // the trigger in @vrmxg/mcp's settingsOp follows the panel's own setBehaviours step ("Behaviours …"), run here end to end:
+  // the game tool, the editor's target, the app's ProjectSettings and the host's read, with no hook called by hand
+  const linked = linkedFiles();
+  try {
+    const { p, disk } = memoryProject({ 'game.json': GAME('behaviours.js'), 'level.vrmxs': LEVEL, 'behaviours.js': MODULE('first', 'alpha'), 'game/other.js': MODULE('second', 'beta') }, linked);
+    const registry = m0Registry(), host = hostFor(p, registry);
+    await declareBehaviours(host, registry, p);
+    const reads = [];
+    const read = host.reloadBehaviours;
+    host.reloadBehaviours = () => { reads.push(JSON.parse(disk.get('game.json')).behaviours); return read(); };
+    const settings = await ProjectSettings.load(p);
+    const call = caller(createHandlers(registry, editorTarget(/** @type {any} */ (host), { settings: async () => settings })));
+    const settingsCall = async (set) => { const r = await call('game', { op: 'settings', set }); assert.equal(r.isError, false, r.text); return JSON.parse(r.text); };
+
+    // another key: game.json is written, the module isn't read
+    let r = await settingsCall({ title: 'Coin Run Deluxe' });
+    assert.deepEqual(r.steps, ['Settings: title (MCP)']);
+    assert.equal(r.behaviours, undefined);
+    assert.deepEqual(reads, []);
+
+    // the module: written, then read by the host, and the answer says what it declared
+    r = await settingsCall({ behaviours: 'game/other.js' });
+    assert.deepEqual(r.steps, ['Behaviours game/other.js (MCP)']);
+    assert.equal(JSON.parse(disk.get('game.json')).behaviours, 'game/other.js');
+    assert.deepEqual(reads, ['game/other.js'], 'read once, after game.json names the new module');
+    assert.equal(r.behaviours.module, 'game/other.js');
+    assert.deepEqual([...r.behaviours.declared].sort(), ['beta', 'mover']);
+    assert.equal(p.behavioursModule.ref, 'game/other.js');
+    assert.deepEqual(projectNames(registry), ['beta', 'mover']);
+    assert.equal(await playedFrom(host, registry), 'second', 'Play builds with the new module');
+
+    // with another key in the same call: the game's keys one step, the module the panel's own next step, still read
+    r = await settingsCall({ title: 'Coin Run', behaviours: 'behaviours.js' });
+    assert.deepEqual(r.steps, ['Settings: title (MCP)', 'Behaviours behaviours.js (MCP)']);
+    assert.deepEqual(settings.undoStack.slice(-2).map((x) => x.label), r.steps, 'the panel\'s own undo steps, marked');
+    assert.deepEqual(reads, ['game/other.js', 'behaviours.js']);
+    assert.equal(await playedFrom(host, registry), 'first');
+
+    // the module game.json names already: no step, nothing read
+    r = await settingsCall({ behaviours: 'behaviours.js' });
+    assert.deepEqual(r.steps, []);
+    assert.deepEqual(reads, ['game/other.js', 'behaviours.js']);
   } finally { linked.done(); }
 });
 

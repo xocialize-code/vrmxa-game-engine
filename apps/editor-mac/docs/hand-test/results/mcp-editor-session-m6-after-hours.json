@@ -1,0 +1,492 @@
+{
+ "date": "2026-11-27",
+ "client": "claude -p (Claude Code 2.1.319, sonnet), --mcp-config with vrmxg-mcp --editor --port 5193",
+ "exitCode": 0,
+ "mcpServers": [
+  {
+   "name": "vrmxg-editor",
+   "status": "connected",
+   "source": "dynamic"
+  }
+ ],
+ "skills": [
+  "vrmxg"
+ ],
+ "prompt": "You are connected to the VRMXG editor, which has the game \"After Hours\" open on its first level, after-hours/level.vrmxs. The project is that game (game.json). Add a second level to it, using only the vrmxg-editor tools. Load the vrmxg skill first and follow it, its building rules included.\n1. Read the game's rules (game) and validate the project (game op=validate). Describe the project's shelf behaviour.\n2. Start the second level as a copy of the first: game op=open with scene after-hours/level-2.vrmxs and from after-hours/level.vrmxs.\n3. As ONE edit (the edit tool) labelled \"A second book\": an Item book-2, named \"Second book\", from the same asset as the book, lying on the phone's table 0.4 m along x from the phone, at the phone's height; and an Item book-2-shelved, named \"Second book (on its shelf)\", from the same asset in its \"away\" state, on the store shelf (shelf-store) where phone-shelved sits on shelf-phones.\n4. As ONE edit labelled \"Open the store shelf\": an Area zone-store, named \"Store shelf (in front)\", in front of the store shelf where zone-phones stands in front of shelf-phones, the same size and shape, standing on the floor. Give it the shelf behaviour with the book's VRMXI id as its item (read it from zone-books). Connect its placed signal to shelved's add and to book-2-shelved's enterState with the state \"shelved\", and its refused signal to mistakes' add and to hana's say with the text \"The store shelf is for the second book.\"\n5. As ONE edit labelled \"Four things tonight\": shelved's max becomes 4, and the tidy goal is done once shelved is at least 4 (with mistakes still under 2), its text \"Put the scarf, the phone and both books on their shelves\".\n6. Validate the scene and save it. Name the second level in the game's scenes (game op=settings), and give it a licence row with the licence \"Xocialize original\" and the source \"After Hours' second level: a second book for the store shelf, made by an agent through the editor's MCP tools\".\n7. Validate the project (game op=validate). If it reports a problem in the second level, fix it there and save again.\n8. Open the first level again (game op=open). As ONE edit labelled \"Go on to the second night\": when its rules signal won, the scene changes to after-hours/level-2.vrmxs after 3 seconds with reset true (the second night starts as a new game, its counters from zero), in place of the change to after-hours/won.vrmxs. Change nothing else. Save.\n9. Validate the project again and report what it says; make no more edits. Then export the game (game op=export) with the name \"after-hours\", the folder this hand test checks. Report the build's path, its number of files and its manifest digest.\nDescribe a node type before you first use it. Do not undo. Finish with a short report of each step, including where you put book-2, book-2-shelved and zone-store, and which building rule decided each.",
+ "calls": [
+  {
+   "tool": "Skill",
+   "input": {
+    "skill": "vrmxg"
+   },
+   "result": "Launching skill: vrmxg",
+   "isError": false
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__vrmxg-editor__game,mcp__vrmxg-editor__edit,mcp__vrmxg-editor__describe,mcp__vrmxg-editor__tree,mcp__vrmxg-editor__get_node,mcp__vrmxg-editor__validate,mcp__vrmxg-editor__save",
+    "max_results": 10
+   },
+   "result": "\n\n\n\n\n\n",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "rules"
+   },
+   "result": "{\"game\":{\"id\":\"after-hours\",\"title\":\"After Hours\",\"entry\":\"after-hours/title.vrmxs\",\"scenes\":[\"after-hours/level.vrmxs\",\"after-hours/lost.vrmxs\",\"after-hours/title.vrmxs\",\"after-hours/won.vrmxs\"],\"from\":\"game.json\"},\"open\":\"after-hours/level.vrmxs\",\"scenes\":{\"after-hours/level.vrmxs\":{\"rules\":{\"id\":\"rules\",\"win\":null,\"lose\":{\"of\":[{\"key\":\"timers.clock.done\",\"test\":\"state\"},{\"key\":\"counters.mistake",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "validate"
+   },
+   "result": "{\"ok\":true,\"game\":{\"id\":\"after-hours\",\"entry\":\"after-hours/title.vrmxs\",\"scenes\":[\"after-hours/level.vrmxs\",\"after-hours/lost.vrmxs\",\"after-hours/title.vrmxs\",\"after-hours/won.vrmxs\"]},\"problems\":[],\"warnings\":[],\"notes\":[{\"check\":\"goal\",\"scene\":\"after-hours/title.vrmxs\",\"node\":\"title\",\"message\":\"GameGoal \\\"title\\\" is optional, a label only: nothing in the game's scenes completes it (it has no \\\"w",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__tree",
+   "input": {},
+   "result": "root (Node3D, \"Level\")\n  env (Environment)\n  cafe (Model)\n  back-room (Model, \"Back room\")\n  moon (DirectionalLight, \"Moonlight\")\n  counter-lamp (SpotLight, \"Counter lamp\")\n  back-room-bulb (PointLight, \"Back room bulb\")\n  ambience (AudioPlayer, \"Room tone\")\n  front-left (Item, \"Front door (left)\")\n  front-right (Item, \"Front door (right)\")\n  staff-door (Item, \"Staff door\")\n  switch (Item, \"Back r",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "Item"
+   },
+   "result": "{\"type\":\"Item\",\"extends\":[\"Node3D\"],\"description\":\"A VRMXI game item: a door, container, pickup, switch, seat or spawn point, with its states and verbs.\",\"asset\":{\"types\":[\"vrmxi\"],\"required\":true},\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\",\"asset\"],\"description\":\"A VRMXI game item: a door, container, pickup, switch, seat or spawn point, with its states and verbs.\",\"properties\":{\"id\":{\"type",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "Area"
+   },
+   "result": "{\"type\":\"Area\",\"extends\":[\"Collider\",\"Node3D\"],\"description\":\"A sensor volume: reports bodies entering and leaving (door triggers, pickups).\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"A sensor volume: reports bodies entering and leaving (door triggers, pickups).\",\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$\",\"description\":\"S",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "book"
+   },
+   "result": "{\"node\":{\"id\":\"book\",\"type\":\"Item\",\"parent\":\"root\",\"name\":\"Book\",\"asset\":\"book\",\"transform\":{\"p\":[7.75,1.165,-5.02]}},\"signals\":[\"ready\",\"stateChanged\",\"verb\",\"entered\",\"exited\"],\"actions\":[\"show\",\"hide\",\"enterState\",\"perform\",\"drive\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "phone"
+   },
+   "result": "{\"node\":{\"id\":\"phone\",\"type\":\"Item\",\"parent\":\"root\",\"name\":\"Phone\",\"asset\":\"phone\",\"transform\":{\"p\":[3,0.775,-2],\"q\":[0,-0.173648,0,0.984808]}},\"signals\":[\"ready\",\"stateChanged\",\"verb\",\"entered\",\"exited\"],\"actions\":[\"show\",\"hide\",\"enterState\",\"perform\",\"drive\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "book-shelved"
+   },
+   "result": "{\"node\":{\"id\":\"book-shelved\",\"type\":\"Item\",\"parent\":\"root\",\"name\":\"Book (on its shelf)\",\"asset\":\"book\",\"transform\":{\"p\":[-5.82,0.615,-3.4],\"q\":[0,0.707107,0,0.707107]},\"props\":{\"state\":\"away\"}},\"signals\":[\"ready\",\"stateChanged\",\"verb\",\"entered\",\"exited\"],\"actions\":[\"show\",\"hide\",\"enterState\",\"perform\",\"drive\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "phone-shelved"
+   },
+   "result": "{\"node\":{\"id\":\"phone-shelved\",\"type\":\"Item\",\"parent\":\"root\",\"name\":\"Phone (on its shelf)\",\"asset\":\"phone\",\"transform\":{\"p\":[4.4,0.615,-5.82]},\"props\":{\"state\":\"away\"}},\"signals\":[\"ready\",\"stateChanged\",\"verb\",\"entered\",\"exited\"],\"actions\":[\"show\",\"hide\",\"enterState\",\"perform\",\"drive\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "shelf-phones"
+   },
+   "result": "{\"node\":{\"id\":\"shelf-phones\",\"type\":\"Item\",\"parent\":\"root\",\"name\":\"Phones and keys\",\"asset\":\"shelf\",\"transform\":{\"p\":[4.2,0,-5.82]}},\"signals\":[\"ready\",\"stateChanged\",\"verb\",\"entered\",\"exited\"],\"actions\":[\"show\",\"hide\",\"enterState\",\"perform\",\"drive\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "shelf-store"
+   },
+   "result": "{\"node\":{\"id\":\"shelf-store\",\"type\":\"Item\",\"parent\":\"root\",\"name\":\"Store shelf\",\"asset\":\"shelf\",\"transform\":{\"p\":[8,0,-5.02]}},\"signals\":[\"ready\",\"stateChanged\",\"verb\",\"entered\",\"exited\"],\"actions\":[\"show\",\"hide\",\"enterState\",\"perform\",\"drive\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "zone-phones"
+   },
+   "result": "{\"node\":{\"id\":\"zone-phones\",\"type\":\"Area\",\"parent\":\"root\",\"name\":\"Phones and keys (in front)\",\"transform\":{\"p\":[4.2,1,-5.1]},\"props\":{\"shape\":\"box\",\"size\":[1.2,2,0.9]},\"behaviours\":[{\"item\":\"b2c41d6e-7a3f-4e58-9b10-af7e0a0d0c02\",\"use\":\"shelf\"}]},\"signals\":[\"ready\",\"bodyEntered\",\"bodyExited\",\"placed\",\"refused\"],\"actions\":[\"show\",\"hide\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "zone-books"
+   },
+   "result": "{\"node\":{\"id\":\"zone-books\",\"type\":\"Area\",\"parent\":\"root\",\"name\":\"Books (in front)\",\"transform\":{\"p\":[-5.1,1,-3.2]},\"props\":{\"shape\":\"box\",\"size\":[0.9,2,1.2]},\"behaviours\":[{\"item\":\"b2c41d6e-7a3f-4e58-9b10-af7e0a0d0c03\",\"use\":\"shelf\"}]},\"signals\":[\"ready\",\"bodyEntered\",\"bodyExited\",\"placed\",\"refused\"],\"actions\":[\"show\",\"hide\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "Character"
+   },
+   "result": "{\"type\":\"Character\",\"extends\":[\"Node3D\"],\"description\":\"A VRMXA character: VRM body, closet, animation sets, voice.\",\"asset\":{\"types\":[\"vrmxa\"],\"required\":true},\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\",\"asset\"],\"description\":\"A VRMXA character: VRM body, closet, animation sets, voice.\",\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$\",\"description\":\"Stable",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "GameCounter"
+   },
+   "result": "{\"type\":\"GameCounter\",\"extends\":[\"Node3D\"],\"description\":\"A number the game counts: the score (the counter named \\\"score\\\"), orders taken, coins.\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"A number the game counts: the score (the counter named \\\"score\\\"), orders taken, coins.\",\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$\",\"d",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "GameGoal"
+   },
+   "result": "{\"type\":\"GameGoal\",\"extends\":[\"Node3D\"],\"description\":\"Something to get done: the HUD shows the first one that isn't. Done when its condition first holds, or by its action.\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"Something to get done: the HUD shows the first one that isn't. Done when its condition first holds, or by its action.\",\"properties\":{\"id\":{\"type\":\"",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "GameRules"
+   },
+   "result": "{\"type\":\"GameRules\",\"extends\":[\"Node3D\"],\"description\":\"A scene's rules: when the game is won and lost, and the flags it starts with. One per scene. Its actions change the game state and move the game to another scene.\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"A scene's rules: when the game is won and lost, and the flags it starts with. One per scene. Its acti",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "zone-phones"
+   },
+   "result": "{\"node\":{\"id\":\"zone-phones\",\"type\":\"Area\",\"parent\":\"root\",\"name\":\"Phones and keys (in front)\",\"transform\":{\"p\":[4.2,1,-5.1]},\"props\":{\"shape\":\"box\",\"size\":[1.2,2,0.9]},\"behaviours\":[{\"item\":\"b2c41d6e-7a3f-4e58-9b10-af7e0a0d0c02\",\"use\":\"shelf\"}]},\"signals\":[\"ready\",\"bodyEntered\",\"bodyExited\",\"placed\",\"refused\"],\"actions\":[\"show\",\"hide\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "open",
+    "scene": "after-hours/level-2.vrmxs",
+    "from": "after-hours/level.vrmxs"
+   },
+   "result": "{\"open\":\"after-hours/level-2.vrmxs\",\"new\":true,\"from\":\"after-hours/level.vrmxs\",\"nodes\":38,\"note\":\"not saved yet: save writes it; name it in game op=settings scenes for a scene change to reach it\"}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__edit",
+   "input": {
+    "label": "A second book",
+    "ops": [
+     {
+      "op": "add",
+      "node": {
+       "id": "book-2",
+       "type": "Item",
+       "parent": "root",
+       "name": "Second book",
+       "asset": "book",
+       "transform": {
+        "p": [
+         3.4,
+         0.775,
+         -2
+        ]
+       }
+      }
+     },
+     {
+      "op": "add",
+      "node": {
+       "id": "book-2-shelved",
+       "type": "Item",
+       "parent": "root",
+       "name": "Second book (on its shelf)",
+       "asset": "book",
+       "transform": {
+        "p": [
+         8.2,
+         0.615,
+         -5.02
+        ]
+       },
+       "props": {
+        "state": "away"
+       }
+      }
+     }
+    ]
+   },
+   "result": "2 edits applied as one undo step (\"A second book\")",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__edit",
+   "input": {
+    "label": "Open the store shelf",
+    "ops": [
+     {
+      "op": "add",
+      "node": {
+       "id": "zone-store",
+       "type": "Area",
+       "parent": "root",
+       "name": "Store shelf (in front)",
+       "transform": {
+        "p": [
+         8,
+         1,
+         -4.3
+        ]
+       },
+       "props": {
+        "shape": "box",
+        "size": [
+         1.2,
+         2,
+         0.9
+        ]
+       }
+      }
+     },
+     {
+      "op": "behaviour",
+      "id": "zone-store",
+      "use": "shelf",
+      "params": {
+       "item": "b2c41d6e-7a3f-4e58-9b10-af7e0a0d0c03"
+      }
+     },
+     {
+      "op": "connect",
+      "from": "zone-store",
+      "signal": "placed",
+      "to": "shelved",
+      "call": "add",
+      "args": {}
+     },
+     {
+      "op": "connect",
+      "from": "zone-store",
+      "signal": "placed",
+      "to": "book-2-shelved",
+      "call": "enterState",
+      "args": {
+       "state": "shelved"
+      }
+     },
+     {
+      "op": "connect",
+      "from": "zone-store",
+      "signal": "refused",
+      "to": "mistakes",
+      "call": "add",
+      "args": {}
+     },
+     {
+      "op": "connect",
+      "from": "zone-store",
+      "signal": "refused",
+      "to": "hana",
+      "call": "say",
+      "args": {
+       "text": "The store shelf is for the second book."
+      }
+     }
+    ]
+   },
+   "result": "6 edits applied as one undo step (\"Open the store shelf\")",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__edit",
+   "input": {
+    "label": "Four things tonight",
+    "ops": [
+     {
+      "op": "set",
+      "id": "shelved",
+      "path": "props.max",
+      "value": 4
+     },
+     {
+      "op": "set",
+      "id": "tidy",
+      "path": "props.when",
+      "value": {
+       "test": "all",
+       "of": [
+        {
+         "test": "state",
+         "key": "counters.shelved",
+         "op": "ge",
+         "value": 4
+        },
+        {
+         "test": "state",
+         "key": "counters.mistakes",
+         "op": "lt",
+         "value": 2
+        }
+       ]
+      }
+     },
+     {
+      "op": "set",
+      "id": "tidy",
+      "path": "props.text",
+      "value": "Put the scarf, the phone and both books on their shelves"
+     }
+    ]
+   },
+   "result": "3 edits applied as one undo step (\"Four things tonight\")",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__validate",
+   "input": {},
+   "result": "{\"ok\":true,\"errors\":[],\"warnings\":[]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__save",
+   "input": {},
+   "result": "{\"ref\":\"after-hours/level-2.vrmxs\",\"hash\":\"8aeef82a27170a0f\",\"bytes\":10533,\"warnings\":[]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "settings"
+   },
+   "result": "{\"settings\":{\"file\":\"game.json\",\"exists\":true,\"title\":\"After Hours\",\"id\":\"after-hours\",\"release\":\"0.1.0\",\"entry\":\"after-hours/title.vrmxs\",\"scenes\":[\"after-hours/level.vrmxs\",\"after-hours/lost.vrmxs\",\"after-hours/title.vrmxs\",\"after-hours/won.vrmxs\"],\"otherScenes\":[\"after-hours/level-2.vrmxs\",\"cafe-cart.vrmxs\",\"cafe-follow.vrmxs\",\"cafe-split.vrmxs\",\"cafe-stairs.vrmxs\",\"cafe-talk.vrmxs\",\"cafe.vrmxs",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "settings",
+    "set": {
+     "scenes": [
+      "after-hours/level.vrmxs",
+      "after-hours/level-2.vrmxs",
+      "after-hours/lost.vrmxs",
+      "after-hours/title.vrmxs",
+      "after-hours/won.vrmxs"
+     ],
+     "licence": {
+      "file": "after-hours/level-2.vrmxs",
+      "licence": "Xocialize original",
+      "source": "After Hours' second level: a second book for the store shelf, made by an agent through the editor's MCP tools"
+     }
+    }
+   },
+   "result": "{\"settings\":{\"file\":\"game.json\",\"exists\":true,\"title\":\"After Hours\",\"id\":\"after-hours\",\"release\":\"0.1.0\",\"entry\":\"after-hours/title.vrmxs\",\"scenes\":[\"after-hours/level-2.vrmxs\",\"after-hours/level.vrmxs\",\"after-hours/lost.vrmxs\",\"after-hours/title.vrmxs\",\"after-hours/won.vrmxs\"],\"otherScenes\":[\"cafe-cart.vrmxs\",\"cafe-follow.vrmxs\",\"cafe-split.vrmxs\",\"cafe-stairs.vrmxs\",\"cafe-talk.vrmxs\",\"cafe.vrmxs",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "validate"
+   },
+   "result": "{\"ok\":true,\"game\":{\"id\":\"after-hours\",\"entry\":\"after-hours/title.vrmxs\",\"scenes\":[\"after-hours/level-2.vrmxs\",\"after-hours/level.vrmxs\",\"after-hours/lost.vrmxs\",\"after-hours/title.vrmxs\",\"after-hours/won.vrmxs\"]},\"problems\":[],\"warnings\":[],\"notes\":[{\"check\":\"goal\",\"scene\":\"after-hours/title.vrmxs\",\"node\":\"title\",\"message\":\"GameGoal \\\"title\\\" is optional, a label only: nothing in the game's scenes",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "open",
+    "scene": "after-hours/level.vrmxs"
+   },
+   "result": "{\"open\":\"after-hours/level.vrmxs\",\"new\":false,\"nodes\":38}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "rules"
+   },
+   "result": "{\"node\":{\"id\":\"rules\",\"type\":\"GameRules\",\"parent\":\"root\",\"props\":{\"lose\":{\"of\":[{\"key\":\"timers.clock.done\",\"test\":\"state\"},{\"key\":\"counters.mistakes\",\"op\":\"ge\",\"test\":\"state\",\"value\":2}],\"test\":\"any\"}}},\"signals\":[\"ready\",\"won\",\"lost\",\"ended\",\"flagChanged\"],\"actions\":[\"show\",\"hide\",\"win\",\"lose\",\"setFlag\",\"clearFlag\",\"changeScene\",\"restart\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__edit",
+   "input": {
+    "label": "Go on to the second night",
+    "ops": [
+     {
+      "op": "disconnect",
+      "from": "rules",
+      "signal": "won",
+      "to": "rules",
+      "call": "changeScene"
+     },
+     {
+      "op": "connect",
+      "from": "rules",
+      "signal": "won",
+      "to": "rules",
+      "call": "changeScene",
+      "args": {
+       "to": "after-hours/level-2.vrmxs",
+       "after": 3,
+       "reset": true
+      }
+     }
+    ]
+   },
+   "result": "2 edits applied as one undo step (\"Go on to the second night\")",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__validate",
+   "input": {},
+   "result": "{\"ok\":true,\"errors\":[],\"warnings\":[]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__save",
+   "input": {},
+   "result": "{\"ref\":\"after-hours/level.vrmxs\",\"hash\":\"0e1d384a9e8a9dd1\",\"bytes\":9628,\"warnings\":[]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "validate"
+   },
+   "result": "{\"ok\":true,\"game\":{\"id\":\"after-hours\",\"entry\":\"after-hours/title.vrmxs\",\"scenes\":[\"after-hours/level-2.vrmxs\",\"after-hours/level.vrmxs\",\"after-hours/lost.vrmxs\",\"after-hours/title.vrmxs\",\"after-hours/won.vrmxs\"]},\"problems\":[],\"warnings\":[],\"notes\":[{\"check\":\"goal\",\"scene\":\"after-hours/title.vrmxs\",\"node\":\"title\",\"message\":\"GameGoal \\\"title\\\" is optional, a label only: nothing in the game's scenes",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "rules"
+   },
+   "result": "{\"game\":{\"id\":\"after-hours\",\"title\":\"After Hours\",\"entry\":\"after-hours/title.vrmxs\",\"scenes\":[\"after-hours/level-2.vrmxs\",\"after-hours/level.vrmxs\",\"after-hours/lost.vrmxs\",\"after-hours/title.vrmxs\",\"after-hours/won.vrmxs\"],\"from\":\"game.json\"},\"open\":\"after-hours/level.vrmxs\",\"scenes\":{\"after-hours/level-2.vrmxs\":{\"rules\":{\"id\":\"rules\",\"win\":null,\"lose\":{\"of\":[{\"key\":\"timers.clock.done\",\"test\":\"st",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "export",
+    "name": "after-hours"
+   },
+   "result": "{\"id\":\"after-hours\",\"title\":\"After Hours\",\"entry\":\"after-hours/title.vrmxs\",\"runtime\":\"vrmxg-game 0.1.0+01c4bb509d4b\",\"files\":70,\"bytes\":18985412,\"digest\":\"6ac598519d2205672f29d39f13119542209c7795f0865a5994c4815e2437d2af\",\"manifest\":\"b57301540d54b5a0666b5777b3d4cc4c08940c42a1342f9429e10aae4a99cebd\",\"compat\":\"3940aa3f605ebdacbbe848d495e0b70d3d360d5f1a7a1c996f637596d11239fc\",\"byPattern\":27,\"written\"",
+   "isError": false
+  }
+ ],
+ "failed": 0,
+ "costUSD": 0.42453949999999996,
+ "final": "The second level is built, saved and named in `game.json`, and the game is exported. Both project validations came back with no problems and no warnings. The one note is the title scene's optional \"title\" goal, which is only a label. I only validated; I didn't play either level.\n\n**1. Rules and shelf behaviour.** The project had four scenes: title, level, lost and won. Level 1's `rules` had no win condition, so it wins when every non-optional goal is done. It loses when the clock runs out or mistakes reach 2. `shelved` capped at 3, and `tidy` was done at `shelved` ≥ 3 with `mistakes` < 2.\n\nThe shelf behaviour sits on an Area in front of a shelf. When the player stands there and presses interact, the item whose VRMXI id it names leaves her inventory and the Area emits `placed`. Anything else stays in her hands and it emits `refused`. It gives one answer per visit. The first validation was clean.\n\n**2. Level 2.** I opened `after-hours/level-2.vrmxs` as an unsaved copy of level 1 (38 nodes).\n\n**3. \"A second book\".**\n- **`book-2`:** at [3.4, 0.775, -2], the phone's x plus 0.4 and the phone's own y and z, from the `book` asset. The phone's spot is the building rule \"stand things on Y = 0, parts sit at their parent's base\". I took \"0.4 m along x\" as +x, and gave it no rotation, unlike the phone, which is turned.\n- **`book-2-shelved`:** at [8.2, 0.615, -5.02], in the \"away\" state. I copied `phone-shelved`'s offset from its shelf, +0.2 in x and 0.615 in y, onto `shelf-store`. The rule here is to match the existing shelf pattern, with the book resting on the shelf's own surface height.\n\n**4. \"Open the store shelf\".**\n- **`zone-store`:** at [8, 1, -4.3], box 1.2 × 2 × 0.9, shelf behaviour with item `b2c41d6e-7a3f-4e58-9b10-af7e0a0d0c03` (read from `zone-books`).\n- **Placement rules:** its y of 1 is half the 2 m height, so it stands on the floor (rule 2). It sits 0.72 m in front of the shelf, the same offset `zone-phones` has from `shelf-phones`.\n- **Signals:** `placed` goes to `shelved` add and to `book-2-shelved` enterState \"shelved\". `refused` goes to `mistakes` add and to `hana` say \"The store shelf is for the second book.\"\n\n**5. \"Four things tonight\".** `shelved` max is 4, and `tidy` is done at `shelved` ≥ 4 with `mistakes` < 2. Its text is \"Put the scarf, the phone and both books on their shelves\".\n\n**6. Save and settings.** The scene validated and saved. I added it to `scenes` in `game.json`, and `LICENCES.md` now has its row (\"Xocialize original\", with your source text).\n\n**7. Project validation.** No problems in the second level, so nothing needed fixing.\n\n**8. \"Go on to the second night\".** In level 1, the `won` signal now calls `changeScene` to `after-hours/level-2.vrmxs` after 3 seconds with reset true. It replaces the change to `won.vrmxs`, and I changed nothing else. Saved.\n\n**9. Final validation and export.** The final validation was the clean result above, with no edits after it.\n- **Build path:** `~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/builds-w8/after-hours`\n- **Files:** 70\n- **Manifest digest:** `b57301540d54b5a0666b5777b3d4cc4c08940c42a1342f9429e10aae4a99cebd`\n\nLevel 2 is a copy of level 1's rules, so winning there still goes to `won.vrmxs`. That was outside your steps, so I left it."
+}
