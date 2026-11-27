@@ -40,13 +40,31 @@ const walk = (root, dir = root, out = []) => {
  *   projects in (without it, none is made: the same reason); behaviourProblems: why the project's behaviours weren't
  *   declared (server.js declares them before the tools are listed)
  */
+/**
+ * The prefabs a session reads, loaded from the project when first asked for (a prefab an edit has just placed, or one
+ * nested in it), as the target before M6 W8 read them afresh on every call.
+ * @param {import('./project.js').Project} project @param {any} doc
+ */
+function projectPrefabs(project, doc) {
+  class OnDemand extends Map {
+    get(ref) {
+      if (!super.has(ref) && typeof ref === 'string' && ref.endsWith('.vrmxs')) {
+        try { if (project.exists(ref)) super.set(ref, parse(fs.readFileSync(project.file(ref), 'utf8'))); } catch { /* not a file of the project, or not a scene: the scene's own check names it */ }
+      }
+      return super.get(ref);
+    }
+    has(ref) { return this.get(ref) !== undefined; }
+  }
+  return project.prefabs(doc, new OnDemand());
+}
+
 export function createTools({ registry: reg, project: first, scene, builds = null, runtime = null, projects = null, behaviourProblems = [] }) {
   const at = { project: first, scenePath: '', sceneRef: '', session: /** @type {any} */ (null), savedText: '', engine: /** @type {any} */ (null), settings: /** @type {any} */ (null), behaviourProblems };
   /** Open a scene of the current project: its file, or (`doc`) a document not yet saved as `ref` (`unsaved`: a copy is). */
   const openScene = (ref, doc = null, { unsaved = false } = {}) => {
     const scenePath = at.project.file(ref);
     const d = doc ?? parse(fs.readFileSync(scenePath, 'utf8'));
-    const prefabs = at.project.prefabs(d);
+    const prefabs = projectPrefabs(at.project, d);
     at.session = new EditorSession({ registry: reg, doc: d, prefabs, path: ref });
     at.scenePath = scenePath;
     at.sceneRef = path.relative(at.project.root, scenePath).split(path.sep).join('/'); // as game.json and changeScene name it

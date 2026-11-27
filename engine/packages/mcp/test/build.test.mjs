@@ -127,8 +127,10 @@ test('connections: checked as the inspector checks them; disconnect by index or 
   ] });
   assert.ok(r.isError); assert.match(r.text, /^ops\[2\] \(connect\): Connect: add's by: .*Nothing was applied$/);
   assert.equal(t.session.text(), mid); assert.equal(depth(), dm);
-  assert.equal(t.session.history().redo, null, 'a failed batch leaves nothing to redo (its own steps are gone, as any new edit drops redo)');
   assert.equal(redo, 'Second zone (MCP)');
+  assert.equal(t.session.history().redo, redo, 'a refused batch leaves the Redo as it was (the person\'s too)');
+  const single = await t.call('edit', { ops: [{ op: 'behaviour', id: 'zone-x', use: 'scoreZone' }] });
+  assert.ok(single.isError); assert.equal(t.session.history().redo, redo);
 });
 
 test('project settings: read, set through the editor\'s ProjectSettings (one step each, marked, written at once), refused when wrong; its own undo takes a step back', async () => {
@@ -223,6 +225,23 @@ test('new project: the templates listed; none made without --projects; with it, 
   assert.equal(v.ok, true, JSON.stringify(v.problems));
   assert.equal((await call('game', { op: 'settings' })).settings.title, 'Cafe Dash');
   assert.match((await t.call('game', { op: 'new', template: 'empty', title: 'Cafe Dash' })).text, /isn't empty/, 'never into a project that is there');
+});
+
+test('prefabs load when an edit places one the scene didn\'t use: validate, the flattened tree and the engine see it', async () => {
+  const { dir, t, call } = await open('prefabs');
+  for (const f of ['prefabs/door.vrmxs', 'props/door-frame.glb', 'props/door-panel.glb']) { fs.mkdirSync(path.dirname(path.join(dir, f)), { recursive: true }); fs.copyFileSync(path.join(sample, f), path.join(dir, f)); }
+  await call('edit', { label: 'A door', ops: [
+    { op: 'addAsset', asset: { id: 'door', type: 'vrmxs', ref: 'prefabs/door.vrmxs' } },
+    { op: 'add', node: { id: 'door-1', type: 'Instance', parent: 'root', asset: 'door', transform: { p: [0, 0, -3] } } },
+  ] });
+  assert.ok(t.session.prefabs.has('prefabs/door.vrmxs'), 'read from the project when first asked for');
+  const v = await call('validate');
+  assert.equal(v.ok, true, JSON.stringify(v.errors));
+  assert.match(await call('tree', { flatten: true }), /door-1\/hinge/);
+  const inner = (await call('get_node', { id: 'door-1/hinge' })).node;
+  assert.equal(inner.type, 'RigidBody');
+  assert.ok((await call('engine_load')).nodes > 9);
+  await call('connect', { from: 'gate', signal: 'bodyEntered', to: 'door-1/hinge', call: 'open' });
 });
 
 // ---------------------------------------------------------------- validate (documents, no server)

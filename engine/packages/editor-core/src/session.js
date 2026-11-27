@@ -156,7 +156,8 @@ export class EditorSession {
    * Run several commands as one undo step (M6 W8: an MCP batch of behaviour, connection and node edits). The steps
    * `fn`'s commands make become one, labelled `label`, each checked as it ran; all or nothing, so a command that throws
    * undoes the ones before it and the scene is as it was. Steps that come back to where they began make none. `fn` is
-   * synchronous (the commands are), so nothing else edits in between. Nested: the outer one folds. Without a label, one
+   * synchronous (the commands are), so nothing else edits in between. A refusal leaves no Redo (the first step cleared
+   * it), so a caller that can tries the commands on a copy first (MCP's edit does). Nested: the outer one folds. Without a label, one
    * step keeps its own and several take `fallback`. → what `fn` returns
    * @template T @param {string | null} label @param {() => T} fn @param {string} [fallback] @returns {T}
    */

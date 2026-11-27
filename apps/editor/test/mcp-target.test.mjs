@@ -59,6 +59,8 @@ test('the editor\'s target: settings and New Project are the app\'s; validate he
   const { call } = standIn();
   const target = editorTarget(/** @type {any} */ (standIn().ed), { settings: async () => 'S' });
   assert.equal(await target.settings(), 'S');
+  const playing = standIn(); playing.ed.session.mode = 'playing';
+  assert.match((await playing.call('game', { op: 'settings' })).text, /stop playing first/);
   assert.deepEqual(target.behaviours(), { ref: 'behaviours.js', names: ['blink'], problems: [] });
   const none = editorTarget(/** @type {any} */ (standIn().ed));
   assert.equal(none.settings, undefined, 'no app: no settings');

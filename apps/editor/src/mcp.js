@@ -66,7 +66,7 @@ export function editorTarget(ed, app = {}) {
     },
     // M6 W8: building games. The behaviours module the editor loaded (its exports, and why it didn't load or declare)
     behaviours: () => ({ ref: ed.project?.behavioursModule?.ref ?? null, names: ed.project?.behavioursModule ? [...ed.project.behavioursModule.classes.keys()] : null, problems: ed.behaviourProblems ?? [] }),
-    ...(app.settings ? { settings: () => app.settings() } : {}),
+    ...(app.settings ? { settings: () => { if (ed.session?.mode === 'playing') throw new Error('stop playing first: the project settings change while editing'); return app.settings(); } } : {}),
     /** Open a scene of the project, or a new one (the editor's New Scene, or a copy of `from` saved as the new name). */
     async openScene({ scene, from }) {
       if (!ed.project) throw new Error('no project is open in the editor');

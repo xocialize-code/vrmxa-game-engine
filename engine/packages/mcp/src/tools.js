@@ -220,6 +220,7 @@ export function createHandlers(reg, target) {
       if (!Array.isArray(ops) || !ops.length) throw new Error('ops: one or more edit ops');
       // the step's name: the label given; else one command's own ("Add scoreZone to zone"); else how many edits
       const notes = [], s = target.session(), depth = s.editor.peek().undoDepth;
+      tryFirst(s, ops); // a refused batch leaves the editor's Redo as it was
       asAgent(s, () => s.compose(label !== undefined ? `${label}${MARK}` : null, () => ops.forEach((o, i) => {
         try { const n = editOp(s, o); if (n) notes.push(n); } catch (e) { throw new Error(`ops[${i}] (${o?.op ?? 'no op'}): ${e.message}${ops.length > 1 ? '. Nothing was applied' : ''}`); }
       }), `${ops.length > 1 ? `${ops.length} edits` : ops[0]?.op === 'behaviour' ? `${ops[0].use} on ${ops[0].id}` : `${ops[0]?.op} ${ops[0]?.id ?? ''}`.trim()}${MARK}`));
@@ -317,6 +318,22 @@ export function asAgent(s, fn) {
   const own = Object.hasOwn(s, 'run'), run = s.run;
   s.run = (label, ops) => run.call(s, String(label).endsWith(MARK) ? label : `${label}${MARK}`, ops);
   try { return fn(s); } finally { if (own) s.run = run; else delete s.run; }
+}
+
+/**
+ * Run a batch on a copy of the session first, and throw what it throws: the session's own first step would clear its
+ * Redo (the person's too), and a rollback can't bring that back. Same registry, prefabs (a copy of the map: an Apply
+ * replaces entries), references elsewhere and set, so the copy refuses exactly what the session would.
+ * @param {any} s an EditorSession @param {any[]} ops
+ */
+function tryFirst(s, ops) {
+  if (s.mode !== 'editing') return; // refused before any step: nothing to lose
+  const Session = s.constructor;
+  const trial = new Session({ registry: s.reg, doc: structuredClone(s.doc), prefabs: new Map(s.prefabs), path: s.path });
+  trial.elsewhere = s.elsewhere; trial.targetIds = s.targetIds; trial.setDoc = s.setDoc;
+  trial.compose('trial', () => ops.forEach((o, i) => {
+    try { editOp(trial, o); } catch (e) { throw new Error(`ops[${i}] (${o?.op ?? 'no op'}): ${e.message}${ops.length > 1 ? '. Nothing was applied' : ''}`); }
+  }));
 }
 
 /** One op of an `edit` batch, inside the batch's compose: → a note for the answer, or nothing. */
