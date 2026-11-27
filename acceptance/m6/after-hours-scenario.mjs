@@ -3,7 +3,7 @@
 // its WebGL twin), from the build plan (content/sample/tools/after-hours-plan.mjs).
 //
 // The plan is run through the editor's own EditorSession here, headless, as tools/make-after-hours.mjs runs it to write
-// the committed scenes (content/sample/tools/after-hours-build.mjs): beside each op this writes the steps that make it in
+// the committed scenes (content/sample/tools/make-after-hours.mjs): beside each op this writes the steps that make it in
 // the app, reading the session as it goes, so every id the editor gives, every undo step's name and the scene's hash
 // after each row are the ones the app must show. A row ends by holding the app's scene hash to the session's: a step that
 // lands differently fails in its own row, and the last row of each scene wants the committed file's hash.
@@ -31,7 +31,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { propFields, pinValue, idPart } from '@vrmxg/editor-ui';
 import { hashValue } from '@vrmxg/snapshot';
-import { afterHoursRegistry, buildScenes } from '../../content/sample/tools/after-hours-build.mjs';
+import { afterHoursRegistry, buildScenes } from '../../content/sample/tools/make-after-hours.mjs';
 import { GAME, FILES, SCENE } from '../../content/sample/tools/after-hours-plan.mjs';
 
 const root = path.resolve(import.meta.dirname, '../..');

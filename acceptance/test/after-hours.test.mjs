@@ -15,7 +15,7 @@ import { planBuild } from '@vrmxg/bundle';
 import { projectWithGame } from '@vrmxg/bundle/node';
 import { stateShape } from '@vrmxg/registry';
 import { available } from '../../engine/packages/character/test/fixtures.mjs';
-import { afterHoursRegistry, buildScenes, afterHoursGame } from '../../content/sample/tools/after-hours-build.mjs';
+import { afterHoursRegistry, buildScenes, afterHoursGame } from '../../content/sample/tools/make-after-hours.mjs';
 import { LOST, SHELVES } from '../../content/sample/tools/after-hours-plan.mjs';
 
 const root = path.resolve(import.meta.dirname, '../..'), sample = path.join(root, 'content/sample');

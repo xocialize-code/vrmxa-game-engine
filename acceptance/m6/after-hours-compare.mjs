@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { parse, createValidator } from '@vrmxg/scene';
 import { checkFolder } from '@vrmxg/bundle/node';
-import { afterHoursRegistry } from '../../content/sample/tools/after-hours-build.mjs';
+import { afterHoursRegistry } from '../../content/sample/tools/make-after-hours.mjs';
 import { SCENES, GAME } from '../../content/sample/tools/after-hours-plan.mjs';
 import { playAfterHours, AFTER_HOURS_PLANS } from './after-hours-node.mjs';
 

@@ -327,7 +327,8 @@ test('a game node\'s key: kept when another scene reads it (game state is shared
   // the sample: the level's mistakes counter, read here and in game/won.vrmxs and game/lost.vrmxs
   const s = new EditorSession({ registry: registry(), text: LEVEL, prefabs: new Map(prefabs), path: 'game/level.vrmxs' });
   s.elsewhere = referencesElsewhere(s.reg, 'game/level.vrmxs', docs);
-  assert.deepEqual(s.elsewhere.keyNamed('counters', 'mistakes').sort(), ['game/lost.vrmxs', 'game/won.vrmxs']);
+  // (the sample's second game, after-hours/, has a mistakes counter of its own, named in its scenes too: M6 W10)
+  assert.deepEqual(s.elsewhere.keyNamed('counters', 'mistakes').filter((f) => f.startsWith('game/')).sort(), ['game/lost.vrmxs', 'game/won.vrmxs']);
   // the review's repro: a tips counter named only by another scene
   s.addNode('GameCounter', { id: 'tips', parent: 'rules' });
   const won = structuredClone(docs.get('game/won.vrmxs'));
