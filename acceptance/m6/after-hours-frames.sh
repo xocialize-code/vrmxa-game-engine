@@ -14,9 +14,12 @@
 #   acceptance/m6/after-hours-frames.sh sample <out> its web processes once a second until the app quits
 #                                                   (apps/editor-mac/scripts/web-footprint.py), into <out>/footprint.json
 #
-# Between prepare and the two samplers, AppProbe launches the copy at 1920×1080 with
-# VRMXG_QUERY="replay=logs/win.json,logs/lose.json&loop=600&stats" under the GPU lock; after ten minutes it is quit (kill -9:
-# an app AppProbe launched ignores SIGTERM), and acceptance/m5/rush-frames-summary.mjs <out> sums it up.
+# Between prepare and the two samplers, AppProbe launches the copy at 1920×1112 pt (a 1920×1080 canvas) with
+#   appprobe launch app=acceptance/build/M6AfterHoursFrames.app width=1920 height=1112 \
+#     'env={"VRMXG_QUERY":"replay=logs/win.json,logs/lose.json&loop=600&stats"}'
+# (the env as JSON: the CLI splits env=K=V on commas, and the query has one) under the GPU lock; after ten minutes it is
+# quit (kill -9: an app AppProbe launched ignores SIGTERM), and acceptance/m5/rush-frames-summary.mjs <out> sums it up.
+# The poll reads the readout's text through `find text=fps` (`text=frames in` matches nothing).
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root="$here/../.."
@@ -40,8 +43,9 @@ case "${1:-}" in
     out=${2:?usage: after-hours-frames.sh poll <out>}; mkdir -p "$out"
     ap=/Volumes/Satechi/Development/AppProbe/.build/release/appprobe
     while pid=$(pgrep -f M6AfterHoursFrames.app/Contents/MacOS | head -1) && [ -n "$pid" ]; do
-      line=$("$ap" find "app=$pid" 'text=frames in' 2>/dev/null | grep -o '[0-9]* frames in [^"]*scene changes' | head -1 || true)
-      [ -n "$line" ] && echo "$(date +%s) $line" >> "$out/readout.log"
+      raw=$("$ap" find "app=$pid" 'text=fps' 2>&1 || true)
+      line=$(printf '%s' "$raw" | grep -o '[0-9]* frames in [^"]*scene change' | head -1 | sed 's/$/s/' || true)   # AppProbe cuts a long text at ~120 characters: "4 scene change…"
+      if [ -n "$line" ]; then echo "$(date +%s) $line" >> "$out/readout.log"; else echo "$(date +%s) no readout: $(printf '%s' "$raw" | head -3 | tr '\n' ' ')"; fi
       sleep 5
     done;;
   sample)

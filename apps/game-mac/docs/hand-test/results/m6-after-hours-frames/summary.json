@@ -1,0 +1,1086 @@
+{
+ "check": "M6 W10 (AB-T-0651), M6 exit check 12 (the second game): ten minutes of After Hours in the Mac game app at 1080p (its two recorded sessions replayed drawn, loop=600, WebGPU); the web process's memory once a second. readout.log was rebuilt from poll.log: AppProbe cuts the readout's text at ~120 characters (\"27 scene cha…\"), every number kept as read",
+ "canvas": "1920×1080",
+ "stoppedAt": null,
+ "complete": true,
+ "seconds": 655,
+ "frames": 38832,
+ "fps": 59.3,
+ "p99": 20.5,
+ "max": 202.7,
+ "over25": 217,
+ "replays": 9,
+ "sceneChanges": 27,
+ "steady": {
+  "windows": 97,
+  "seconds": 495,
+  "frames": 29626,
+  "fps": 59.85,
+  "over25": 49,
+  "fewestFramesInAWindow": 291,
+  "note": "the poller stamps whole seconds, so a window is 4 to 6 s long: a single window's rate is not exact, the steady total is",
+  "framesOver25PerMille": 1.65
+ },
+ "sceneChangeWindows": {
+  "windows": 30,
+  "over25": 166,
+  "fps": [
+   52.8,
+   57,
+   59.6,
+   56.2,
+   59,
+   60,
+   50.2,
+   54.6,
+   57,
+   59.6,
+   55.8,
+   58.8,
+   60,
+   71.8,
+   54.8,
+   56.8,
+   59.6,
+   55.2,
+   59,
+   59.2,
+   56.8,
+   58.8,
+   60.2,
+   59.6,
+   46,
+   58.8,
+   59.2,
+   55.6,
+   71,
+   49.3
+  ]
+ },
+ "memory": {
+  "samples": 658,
+  "firstGB": 0.14,
+  "medianGB": 0.85,
+  "peakGB": 1.18,
+  "lastGB": 0.44,
+  "gpuPeakGB": 0.5
+ },
+ "windows": [
+  {
+   "at": 10,
+   "seconds": 6,
+   "frames": 317,
+   "fps": 52.833333333333336,
+   "over25": 13,
+   "sceneChange": true
+  },
+  {
+   "at": 15,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 20,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 25,
+   "seconds": 5,
+   "frames": 302,
+   "fps": 60.4,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 30,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 1,
+   "sceneChange": false
+  },
+  {
+   "at": 35,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 40,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 45,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 50,
+   "seconds": 5,
+   "frames": 302,
+   "fps": 60.4,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 55,
+   "seconds": 6,
+   "frames": 301,
+   "fps": 50.166666666666664,
+   "over25": 1,
+   "sceneChange": false
+  },
+  {
+   "at": 60,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 66,
+   "seconds": 5,
+   "frames": 361,
+   "fps": 72.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 71,
+   "seconds": 5,
+   "frames": 285,
+   "fps": 57,
+   "over25": 7,
+   "sceneChange": true
+  },
+  {
+   "at": 76,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 81,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 86,
+   "seconds": 5,
+   "frames": 298,
+   "fps": 59.6,
+   "over25": 4,
+   "sceneChange": true
+  },
+  {
+   "at": 91,
+   "seconds": 5,
+   "frames": 281,
+   "fps": 56.2,
+   "over25": 9,
+   "sceneChange": true
+  },
+  {
+   "at": 96,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 101,
+   "seconds": 6,
+   "frames": 301,
+   "fps": 50.166666666666664,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 107,
+   "seconds": 5,
+   "frames": 302,
+   "fps": 60.4,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 112,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 117,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 122,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 128,
+   "seconds": 5,
+   "frames": 351,
+   "fps": 70.2,
+   "over25": 5,
+   "sceneChange": false
+  },
+  {
+   "at": 133,
+   "seconds": 5,
+   "frames": 295,
+   "fps": 59,
+   "over25": 2,
+   "sceneChange": true
+  },
+  {
+   "at": 138,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 143,
+   "seconds": 5,
+   "frames": 300,
+   "fps": 60,
+   "over25": 2,
+   "sceneChange": true
+  },
+  {
+   "at": 148,
+   "seconds": 6,
+   "frames": 301,
+   "fps": 50.166666666666664,
+   "over25": 2,
+   "sceneChange": true
+  },
+  {
+   "at": 153,
+   "seconds": 5,
+   "frames": 273,
+   "fps": 54.6,
+   "over25": 10,
+   "sceneChange": true
+  },
+  {
+   "at": 158,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 163,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 168,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 173,
+   "seconds": 5,
+   "frames": 302,
+   "fps": 60.4,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 178,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 184,
+   "seconds": 5,
+   "frames": 361,
+   "fps": 72.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 189,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 194,
+   "seconds": 6,
+   "frames": 302,
+   "fps": 50.333333333333336,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 199,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 1,
+   "sceneChange": false
+  },
+  {
+   "at": 204,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 209,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 214,
+   "seconds": 5,
+   "frames": 285,
+   "fps": 57,
+   "over25": 7,
+   "sceneChange": true
+  },
+  {
+   "at": 219,
+   "seconds": 5,
+   "frames": 302,
+   "fps": 60.4,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 224,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 229,
+   "seconds": 5,
+   "frames": 298,
+   "fps": 59.6,
+   "over25": 4,
+   "sceneChange": true
+  },
+  {
+   "at": 235,
+   "seconds": 6,
+   "frames": 335,
+   "fps": 55.833333333333336,
+   "over25": 8,
+   "sceneChange": true
+  },
+  {
+   "at": 240,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 245,
+   "seconds": 5,
+   "frames": 302,
+   "fps": 60.4,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 250,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 255,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 260,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 265,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 1,
+   "sceneChange": false
+  },
+  {
+   "at": 270,
+   "seconds": 5,
+   "frames": 294,
+   "fps": 58.8,
+   "over25": 5,
+   "sceneChange": false
+  },
+  {
+   "at": 275,
+   "seconds": 5,
+   "frames": 294,
+   "fps": 58.8,
+   "over25": 2,
+   "sceneChange": true
+  },
+  {
+   "at": 280,
+   "seconds": 6,
+   "frames": 301,
+   "fps": 50.166666666666664,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 285,
+   "seconds": 5,
+   "frames": 300,
+   "fps": 60,
+   "over25": 2,
+   "sceneChange": true
+  },
+  {
+   "at": 291,
+   "seconds": 5,
+   "frames": 359,
+   "fps": 71.8,
+   "over25": 3,
+   "sceneChange": true
+  },
+  {
+   "at": 296,
+   "seconds": 5,
+   "frames": 274,
+   "fps": 54.8,
+   "over25": 10,
+   "sceneChange": true
+  },
+  {
+   "at": 301,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 306,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 311,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 316,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 321,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 326,
+   "seconds": 6,
+   "frames": 302,
+   "fps": 50.333333333333336,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 331,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 336,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 341,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 1,
+   "sceneChange": false
+  },
+  {
+   "at": 348,
+   "seconds": 5,
+   "frames": 362,
+   "fps": 72.4,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 353,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 358,
+   "seconds": 5,
+   "frames": 284,
+   "fps": 56.8,
+   "over25": 6,
+   "sceneChange": true
+  },
+  {
+   "at": 363,
+   "seconds": 6,
+   "frames": 301,
+   "fps": 50.166666666666664,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 368,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 373,
+   "seconds": 5,
+   "frames": 298,
+   "fps": 59.6,
+   "over25": 5,
+   "sceneChange": true
+  },
+  {
+   "at": 378,
+   "seconds": 5,
+   "frames": 276,
+   "fps": 55.2,
+   "over25": 10,
+   "sceneChange": true
+  },
+  {
+   "at": 383,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 389,
+   "seconds": 5,
+   "frames": 361,
+   "fps": 72.2,
+   "over25": 1,
+   "sceneChange": false
+  },
+  {
+   "at": 394,
+   "seconds": 5,
+   "frames": 302,
+   "fps": 60.4,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 399,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 404,
+   "seconds": 6,
+   "frames": 301,
+   "fps": 50.166666666666664,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 409,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 414,
+   "seconds": 5,
+   "frames": 294,
+   "fps": 58.8,
+   "over25": 5,
+   "sceneChange": false
+  },
+  {
+   "at": 419,
+   "seconds": 5,
+   "frames": 295,
+   "fps": 59,
+   "over25": 2,
+   "sceneChange": true
+  },
+  {
+   "at": 424,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 429,
+   "seconds": 5,
+   "frames": 296,
+   "fps": 59.2,
+   "over25": 5,
+   "sceneChange": true
+  },
+  {
+   "at": 435,
+   "seconds": 6,
+   "frames": 341,
+   "fps": 56.833333333333336,
+   "over25": 7,
+   "sceneChange": true
+  },
+  {
+   "at": 440,
+   "seconds": 5,
+   "frames": 292,
+   "fps": 58.4,
+   "over25": 2,
+   "sceneChange": false
+  },
+  {
+   "at": 445,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 450,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 455,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 460,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 465,
+   "seconds": 5,
+   "frames": 302,
+   "fps": 60.4,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 470,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 475,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 481,
+   "seconds": 6,
+   "frames": 361,
+   "fps": 60.166666666666664,
+   "over25": 1,
+   "sceneChange": false
+  },
+  {
+   "at": 486,
+   "seconds": 5,
+   "frames": 302,
+   "fps": 60.4,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 491,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 496,
+   "seconds": 5,
+   "frames": 293,
+   "fps": 58.6,
+   "over25": 4,
+   "sceneChange": false
+  },
+  {
+   "at": 501,
+   "seconds": 5,
+   "frames": 294,
+   "fps": 58.8,
+   "over25": 3,
+   "sceneChange": true
+  },
+  {
+   "at": 506,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 511,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 2,
+   "sceneChange": true
+  },
+  {
+   "at": 516,
+   "seconds": 5,
+   "frames": 298,
+   "fps": 59.6,
+   "over25": 3,
+   "sceneChange": true
+  },
+  {
+   "at": 521,
+   "seconds": 6,
+   "frames": 276,
+   "fps": 46,
+   "over25": 9,
+   "sceneChange": true
+  },
+  {
+   "at": 526,
+   "seconds": 5,
+   "frames": 302,
+   "fps": 60.4,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 531,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 537,
+   "seconds": 5,
+   "frames": 361,
+   "fps": 72.2,
+   "over25": 1,
+   "sceneChange": false
+  },
+  {
+   "at": 542,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 547,
+   "seconds": 5,
+   "frames": 302,
+   "fps": 60.4,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 552,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 557,
+   "seconds": 5,
+   "frames": 294,
+   "fps": 58.8,
+   "over25": 4,
+   "sceneChange": false
+  },
+  {
+   "at": 562,
+   "seconds": 5,
+   "frames": 294,
+   "fps": 58.8,
+   "over25": 4,
+   "sceneChange": true
+  },
+  {
+   "at": 567,
+   "seconds": 6,
+   "frames": 301,
+   "fps": 50.166666666666664,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 572,
+   "seconds": 5,
+   "frames": 296,
+   "fps": 59.2,
+   "over25": 6,
+   "sceneChange": true
+  },
+  {
+   "at": 577,
+   "seconds": 5,
+   "frames": 278,
+   "fps": 55.6,
+   "over25": 11,
+   "sceneChange": true
+  },
+  {
+   "at": 583,
+   "seconds": 5,
+   "frames": 291,
+   "fps": 58.2,
+   "over25": 4,
+   "sceneChange": false
+  },
+  {
+   "at": 588,
+   "seconds": 5,
+   "frames": 300,
+   "fps": 60,
+   "over25": 1,
+   "sceneChange": false
+  },
+  {
+   "at": 594,
+   "seconds": 5,
+   "frames": 361,
+   "fps": 72.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 599,
+   "seconds": 5,
+   "frames": 302,
+   "fps": 60.4,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 604,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 609,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 1,
+   "sceneChange": false
+  },
+  {
+   "at": 614,
+   "seconds": 6,
+   "frames": 301,
+   "fps": 50.166666666666664,
+   "over25": 1,
+   "sceneChange": false
+  },
+  {
+   "at": 619,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 624,
+   "seconds": 5,
+   "frames": 302,
+   "fps": 60.4,
+   "over25": 2,
+   "sceneChange": false
+  },
+  {
+   "at": 629,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 1,
+   "sceneChange": false
+  },
+  {
+   "at": 634,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 1,
+   "sceneChange": false
+  },
+  {
+   "at": 639,
+   "seconds": 5,
+   "frames": 293,
+   "fps": 58.6,
+   "over25": 5,
+   "sceneChange": false
+  },
+  {
+   "at": 645,
+   "seconds": 5,
+   "frames": 355,
+   "fps": 71,
+   "over25": 2,
+   "sceneChange": true
+  },
+  {
+   "at": 650,
+   "seconds": 5,
+   "frames": 301,
+   "fps": 60.2,
+   "over25": 0,
+   "sceneChange": false
+  },
+  {
+   "at": 655,
+   "seconds": 6,
+   "frames": 296,
+   "fps": 49.333333333333336,
+   "over25": 6,
+   "sceneChange": true
+  }
+ ]
+}
