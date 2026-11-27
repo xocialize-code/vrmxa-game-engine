@@ -108,7 +108,9 @@ files) and, in its scenes, rules as nodes:
   collides with), each change one step of the settings' own Undo, written at once. A layer a node is on can't be
   removed. `set: {licence: {file, licence, source}}` adds a `LICENCES.md` row for a file you made.
 - `game op=new` lists the project templates; with `template` and `title` it makes a project (headless: in
-  `--projects`; the editor: where the person picks) and opens its entry scene.
+  `--projects`; the editor: where the person picks) and opens its entry scene. A root `behaviours.js` is named in
+  `game.json` as it is made: the editor's Play runs that module either way, but an export ships only the one
+  `game.json` names (validate warns about one it doesn't).
 - `game op=validate` also checks the project's behaviours (one nobody has is a problem, one with no `describe` a
   warning). A goal nothing in the scenes completes is a problem, unless code could reach it (a project behaviour is
   given the key it reads, or the code names it): then a warning saying how. An optional goal nothing completes is a

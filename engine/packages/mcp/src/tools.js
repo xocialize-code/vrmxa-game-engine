@@ -283,7 +283,15 @@ export function createHandlers(reg, target) {
         if (typeof title !== 'string' || !title.trim()) throw new Error('title: the new game\'s title');
         if (name !== undefined && !/^[a-z0-9][a-z0-9-]{0,63}$/.test(name)) throw new Error('name: the game\'s id, in lowercase letters, digits and hyphens');
         if (target.unsaved?.()) throw new Error(`${target.sceneRef?.() ?? 'the open scene'} has unsaved changes: save first (a new project closes it)`);
-        return need('newProject')({ template: t, title: title.trim(), id: name });
+        const made = await need('newProject')({ template: t, title: title.trim(), id: name });
+        // a project with a root behaviours.js gets it named in game.json, or an export would leave it out (the editor's
+        // Play runs it either way): one step of the settings' undo
+        const st = target.settings ? await target.settings() : null;
+        if (st?.game && !st.game.behaviours && st.files.includes('behaviours.js')) {
+          const r = /** @type {any} */ (await settingsOp(st, { behaviours: 'behaviours.js' }, need('project')));
+          return { ...made, behaviours: { set: 'behaviours.js', steps: r.steps } };
+        }
+        return made;
       }
       if (op === 'state') {
         const g = target.live().live.services.get('game');

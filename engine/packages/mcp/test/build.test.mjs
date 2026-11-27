@@ -227,6 +227,31 @@ test('new project: the templates listed; none made without --projects; with it, 
   assert.match((await t.call('game', { op: 'new', template: 'empty', title: 'Cafe Dash' })).text, /isn't empty/, 'never into a project that is there');
 });
 
+test('a root behaviours.js that game.json doesn\'t name: validate warns (an export would leave it out), and settings names it', async () => {
+  const { dir, call } = await open('unnamed-behaviours');
+  fs.renameSync(path.join(dir, 'behaviours.js'), path.join(dir, 'behaviours.tmp'));
+  const game = JSON.parse(fs.readFileSync(path.join(dir, 'game.json'), 'utf8'));
+  delete game.behaviours;
+  fs.writeFileSync(path.join(dir, 'game.json'), `${JSON.stringify(game, null, 1)}\n`);
+  fs.renameSync(path.join(dir, 'behaviours.tmp'), path.join(dir, 'behaviours.js'));
+  const v = await call('game', { op: 'validate' });
+  assert.ok(v.warnings.some((w) => w.check === 'behaviour' && /behaviours\.js, which game\.json doesn't name: the editor's Play runs it, but an export leaves it out/.test(w.message)), JSON.stringify(v.warnings));
+  assert.deepEqual((await call('game', { op: 'settings', set: { behaviours: 'behaviours.js' } })).steps, ['Settings: behaviours (MCP)']);
+  assert.ok(!(await call('game', { op: 'validate' })).warnings.some((w) => /doesn't name/.test(w.message)));
+});
+
+test('new project: when the project made has a root behaviours.js that game.json doesn\'t name, it is named, one settings step', async () => {
+  const { dir, t, call } = await open('code-template');
+  const game = JSON.parse(fs.readFileSync(path.join(dir, 'game.json'), 'utf8')); delete game.behaviours;
+  fs.writeFileSync(path.join(dir, 'game.json'), `${JSON.stringify(game, null, 1)}\n`);
+  // the target's own New Project is tested above; here it stands in for one that made this folder and opened it
+  t.target.templates = () => [{ id: 'with-code', title: 'With code', description: '', files: [] }];
+  t.target.newProject = async ({ template, title }) => ({ project: dir, template: template.id, title });
+  const made = await call('game', { op: 'new', template: 'with-code', title: 'Coded' });
+  assert.deepEqual(made.behaviours, { set: 'behaviours.js', steps: ['Settings: behaviours (MCP)'] });
+  assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'game.json'), 'utf8')).behaviours, 'behaviours.js');
+});
+
 test('prefabs load when an edit places one the scene didn\'t use: validate, the flattened tree and the engine see it', async () => {
   const { dir, t, call } = await open('prefabs');
   for (const f of ['prefabs/door.vrmxs', 'props/door-frame.glb', 'props/door-panel.glb']) { fs.mkdirSync(path.dirname(path.join(dir, f)), { recursive: true }); fs.copyFileSync(path.join(sample, f), path.join(dir, f)); }

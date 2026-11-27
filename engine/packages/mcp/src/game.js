@@ -375,6 +375,8 @@ export async function validateGame(project, { open = null, registry: reg, unsave
     problems.push(...c.problems); warnings.push(...c.warnings);
   }
   if (behaviours) { const b = behaviourProblems(flat, reg, behaviours, game); problems.push(...b.problems); warnings.push(...b.warnings); }
+  // the editor's Play runs a root behaviours.js that game.json doesn't name, and an export leaves it out (W9's finding)
+  if (game && !game.behaviours && src.files.includes('behaviours.js')) warnings.push({ check: 'behaviour', file: GAME_FILE, message: `the project has behaviours.js, which ${GAME_FILE} doesn't name: the editor's Play runs it, but an export leaves it out, so the build plays without it. Name it: game op=settings with set {"behaviours": "behaviours.js"}` });
   // goals: only when every scene could be read whole (a prefab that isn't there might hold the connection that does it)
   // An optional goal (a label only: it never counts towards a win) that nothing completes is a note, never a problem
   // (AB-T-0641). A goal code could reach is a warning naming how; one it couldn't is a problem, whatever else the code does.
