@@ -32,7 +32,7 @@ export function imageStats(rgba) {
   const mean = sum / n, sd = Math.sqrt(Math.max(0, sq / n - mean * mean));
   return { meanLuma: Math.round(mean * 10) / 10, sdLuma: Math.round(sd * 10) / 10, blank: sd < 2 };
 }
-import { createValidator, flatten, describeType, describeBehaviour } from '@vrmxg/scene';
+import { createValidator, flatten, describeType, describeBehaviour, schemaChecker, prefabNodes } from '@vrmxg/scene';
 import { describeRules, OPS } from '@vrmxg/game';
 import { LICENCES_FILE, parseLicences, licenceOf } from '@vrmxg/bundle';
 import { gameRules, validateGame, refusal, GAME_NOTE } from './game.js';
@@ -388,6 +388,12 @@ function editOp(s, o) {
   // a node's behaviours go through the behaviour op, where each param is checked (the scene's schema keeps an unknown
   // param, and doesn't follow a node reference)
   if (op === 'set' && /^behaviours(\.|$)/.test(String(a.path ?? ''))) throw new Error(`behaviours are set with {op:"behaviour", id, use, params} (each param checked against its schema), not set on "${a.path}"`);
+  // an instance's overrides may give its inner nodes behaviours: checked by the same rules (a locked door, an angle)
+  if (op === 'set' && /^overrides(\.|$)/.test(String(a.path ?? ''))) {
+    const n = s.node(a.id);
+    if (n?.type === 'Instance') { const next = structuredClone(n); setAt(next, a.path, a.value); overrideBehaviours(s, next); }
+  }
+  if (op === 'add' && a.node?.type === 'Instance' && a.node.overrides) overrideBehaviours(s, a.node);
   if (op === 'add' && Array.isArray(a.node?.behaviours) && a.node.behaviours.length) {
     const { behaviours, ...node } = a.node;
     if (behaviours.some((b) => !b || typeof b !== 'object' || typeof b.use !== 'string')) throw new Error(`${node.id}: each behaviour is { use, ...params }`);
@@ -397,6 +403,55 @@ function editOp(s, o) {
   }
   s.run(NODE_LABEL[op]?.(a) ?? `${op} ${a.id ?? a.node?.id ?? a.path ?? ''}`.trim(), [{ op, ...a }]);
   return null;
+}
+
+/** A value set at a dotted path of a copy (undefined deletes it), as @vrmxg/scene's set does. */
+function setAt(obj, path, value) {
+  const ks = String(path).split('.'); let o = obj;
+  for (const k of ks.slice(0, -1)) { if (o[k] == null || typeof o[k] !== 'object') o[k] = {}; o = o[k]; }
+  if (value === undefined) delete o[ks.at(-1)]; else o[ks.at(-1)] = value;
+}
+
+/**
+ * The behaviours an instance's overrides give its inner nodes, checked by the behaviour op's rules: an inner node the
+ * prefab has, a behaviour the registry knows that attaches to that node's type, only params it declares, each against
+ * its schema, and a node reference naming a node of the scene or of the prefab. `{ use, remove: true }` drops one the
+ * prefab's node has. (The scene's schema keeps an unknown param and doesn't follow a reference: review of PR #67.)
+ * @param {any} s an EditorSession @param {any} inst the Instance node as it would be
+ */
+function overrideBehaviours(s, inst) {
+  const over = inst.overrides;
+  if (over === undefined) return;
+  if (!over || typeof over !== 'object' || Array.isArray(over)) throw new Error(`${inst.id}.overrides: an object of inner nodes' overrides`);
+  for (const [local, o] of Object.entries(over)) {
+    if (!o || typeof o !== 'object' || o.behaviours === undefined) continue;
+    const where = `${inst.id}.overrides.${local}.behaviours`;
+    if (!s.prefabOf(inst)) throw new Error(`${where}: the instance's prefab isn't loaded (add its asset first)`);
+    const inner = s.innerBase(inst, local);
+    if (!inner) throw new Error(`${where}: the prefab has no node "${local}"`);
+    if (!Array.isArray(o.behaviours)) throw new Error(`${where}: a list of { use, ...params }`);
+    let locals = [];
+    try { locals = [...prefabNodes(s.prefabOf(inst), s.prefabs).keys()]; } catch { /* a nested prefab that isn't there: no local names */ }
+    for (const b of o.behaviours) {
+      if (!b || typeof b !== 'object' || typeof b.use !== 'string') throw new Error(`${where}: each entry is { use, ...params }`);
+      const { use, remove, ...params } = b;
+      if (remove !== undefined) {
+        if (remove !== true || Object.keys(params).length) throw new Error(`${where}: { use, remove: true } drops one, with nothing else`);
+        if (!(inner.behaviours ?? []).some((x) => x.use === use)) throw new Error(`${where}: "${local}" has no ${use} to remove`);
+        continue;
+      }
+      const d = s.reg.behaviours.get(use);
+      if (!d) throw new Error(`${where}: no behaviour "${use}" (describe lists the engine's and the project's)`);
+      if (d.on && !d.on.some((t) => s.reg.isA(inner.type, t))) throw new Error(`${where}: ${use} attaches to ${d.on.join(' or ')}, not a ${inner.type}`);
+      for (const [k, v] of Object.entries(params)) {
+        const p = d.params?.[k];
+        if (!p) throw new Error(`${where}: ${use} has no param "${k}" (its params: ${Object.keys(d.params ?? {}).join(', ') || 'none'})`);
+        const errs = schemaChecker(p.schema)(v);
+        if (errs.length) throw new Error(`${where}: ${use}'s ${k}: ${errs.join('; ')}`);
+        if (p.nodeRef && !(s.endNode(v) || locals.includes(String(v).split('#')[0]))) throw new Error(`${where}: ${use}'s ${k} must name a node of this scene or of the prefab; "${v}" isn't one`);
+      }
+    }
+  }
 }
 
 /** Remove a connection by its index, or by its ends when exactly one matches. */
@@ -421,7 +476,7 @@ function disconnectOp(s, { index, from, signal, to, call }) {
 function behaviourOp(s, { id, use, params, remove }) {
   if (typeof id !== 'string' || typeof use !== 'string') throw new Error('behaviour: id (the node) and use (the behaviour\'s name)');
   const n = s.node(id);
-  if (!n) throw new Error(s.innerNode(id) ? `${id} is a node of a prefab: its behaviours are the prefab's (open it, or override on the instance)` : `no node ${id}`);
+  if (!n) throw new Error(s.innerNode(id) ? `${id} is a node of a prefab: its behaviours are the prefab's (open the prefab, or set the instance's overrides.<inner>.behaviours, checked as this op checks them)` : `no node ${id}`);
   if (params !== undefined && (!params || typeof params !== 'object' || Array.isArray(params))) throw new Error('behaviour: params is an object { name: value }');
   if (remove) {
     if (params) throw new Error('behaviour: remove takes no params');

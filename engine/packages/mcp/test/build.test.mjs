@@ -336,6 +336,32 @@ test('settings: a refused key leaves game.json as it was, whatever came before i
   assert.match((await t.call('edit', { ops: [{ op: 'behaviour', id: 'zone', use: 'scoreZone' }] })).text, /no behaviour "scoreZone"/, 'the old module\'s are gone');
 });
 
+test('an instance\'s overrides give inner nodes behaviours by the same rules (review of PR #67): set and add alike', async () => {
+  const { dir, t, call } = await open('override-behaviours');
+  for (const f of ['prefabs/door.vrmxs', 'props/door-frame.glb', 'props/door-panel.glb']) { fs.mkdirSync(path.dirname(path.join(dir, f)), { recursive: true }); fs.copyFileSync(path.join(sample, f), path.join(dir, f)); }
+  await call('edit', { ops: [{ op: 'addAsset', asset: { id: 'door', type: 'vrmxs', ref: 'prefabs/door.vrmxs' } }, { op: 'add', node: { id: 'door-1', type: 'Instance', parent: 'root', asset: 'door' } }] });
+  const before = t.session.text();
+  for (const [value, why] of [
+    [[{ use: 'switchedBy', bogus: 1, item: 'nobody' }], /door-1\.overrides\.hinge\.behaviours: switchedBy has no param "bogus"/],
+    [[{ use: 'switchedBy', item: 'nobody' }], /switchedBy's item must name a node of this scene or of the prefab; "nobody" isn't one/],
+    [[{ use: 'hinge', locked: 'yes' }], /hinge's locked: .*boolean/],
+    [[{ use: 'hinge', openAngle: 90 }, { use: 'scoreZone' }], /scoreZone attaches to Area, not a RigidBody/],
+    [[{ use: 'blink' }], /no behaviour "blink"/],
+    [[{ use: 'switchedBy', remove: true }], /"hinge" has no switchedBy to remove/],
+  ]) {
+    for (const r of [await t.call('set', { id: 'door-1', path: 'overrides.hinge.behaviours', value }), await t.call('set', { id: 'door-1', path: 'overrides', value: { hinge: { behaviours: value } } })]) { assert.ok(r.isError, JSON.stringify(value)); assert.match(r.text, why); }
+    assert.equal(t.session.text(), before);
+  }
+  assert.match((await t.call('set', { id: 'door-1', path: 'overrides.nope.behaviours', value: [{ use: 'hinge' }] })).text, /the prefab has no node "nope"/);
+  const added = await t.call('add_node', { node: { id: 'door-2', type: 'Instance', parent: 'root', asset: 'door', overrides: { hinge: { behaviours: [{ use: 'switchedBy', bogus: 1 }] } } } });
+  assert.ok(added.isError); assert.match(added.text, /door-2\.overrides\.hinge\.behaviours: switchedBy has no param "bogus"/);
+  // what overrides are for: a locked door, a switch on the prefab's own trigger, a door that opens the other way
+  await call('set', { id: 'door-1', path: 'overrides.hinge.behaviours', value: [{ use: 'hinge', locked: true }, { use: 'switchedBy', item: 'trigger' }] });
+  await call('add_node', { node: { id: 'door-2', type: 'Instance', parent: 'root', asset: 'door', overrides: { hinge: { behaviours: [{ use: 'hinge', openAngle: -100 }] } } } });
+  const v = await call('validate'); assert.equal(v.ok, true, JSON.stringify(v.errors));
+  assert.match((await t.call('edit', { ops: [{ op: 'behaviour', id: 'door-1/hinge', use: 'hinge' }] })).text, /set the instance's overrides\.<inner>\.behaviours, checked as this op checks them/);
+});
+
 // ---------------------------------------------------------------- validate (documents, no server)
 
 const files = (o) => ({ files: Object.keys(o).sort(), read: async (ref) => { if (!(ref in o)) throw new Error(`no ${ref}`); return new TextEncoder().encode(o[ref]); } });
