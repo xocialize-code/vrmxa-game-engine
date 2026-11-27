@@ -39,8 +39,8 @@ case "${1:-}" in
   poll)
     out=${2:?usage: after-hours-frames.sh poll <out>}; mkdir -p "$out"
     ap=/Volumes/Satechi/Development/AppProbe/.build/release/appprobe
-    while pgrep -f M6AfterHoursFrames.app/Contents/MacOS > /dev/null; do
-      line=$("$ap" find app=M6AfterHoursFrames 'text=frames in' 2>/dev/null | grep -o '[0-9]* frames in .*scene changes' | head -1 || true)
+    while pid=$(pgrep -f M6AfterHoursFrames.app/Contents/MacOS | head -1) && [ -n "$pid" ]; do
+      line=$("$ap" find "app=$pid" 'text=frames in' 2>/dev/null | grep -o '[0-9]* frames in [^"]*scene changes' | head -1 || true)
       [ -n "$line" ] && echo "$(date +%s) $line" >> "$out/readout.log"
       sleep 5
     done;;

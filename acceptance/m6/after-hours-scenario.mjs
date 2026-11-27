@@ -56,12 +56,15 @@ const undoIs = (label) => S(`until find("id=undo").0.name == ${q(`Undo ${label}`
 const hashIs = (s, why = 'the scene so far is what the editor\'s session makes of the plan') => S(`until find("id=doc-state").0.name matches " hash ${s.hash()}$" timeout=10000   # ${why}`);
 // a web view's select: AppProbe's typing reaches its type-ahead one letter at a time, so open its menu (Down on the focused
 // select) and press the item by name
-const choose = (target, find, want) => S(`act ${target} action=focus`, 'pause 300', 'keys down   # opens the select\'s menu', `act surface=app role=menuitem name=${q(want)} exact=true action=press`, `until find("${find}").0.value == ${q(want)} timeout=5000`);
+// (each pause measured: shorter, a pick now and then lands on the select focused before, or not at all)
+const choose = (target, find, want) => S(`act ${target} action=focus`, 'pause 600', 'keys down   # opens the select\'s menu', 'pause 400', `act surface=app role=menuitem name=${q(want)} exact=true action=press`, `until find("${find}").0.value == ${q(want)} timeout=5000`);
 const pick = (id, want) => choose(`id=${id}`, `id=${id}`, want);
 // a menu that resets once it has acted (Add a behaviour…, a new connection's parts): no value to wait for
-const pickOnce = (id, want) => S(`act id=${id} action=focus`, 'pause 300', 'keys down   # opens the select\'s menu', `act surface=app role=menuitem name=${q(want)} exact=true action=press`, 'pause 300');
+const pickOnce = (id, want) => S(`act id=${id} action=focus`, 'pause 600', 'keys down   # opens the select\'s menu', 'pause 400', `act surface=app role=menuitem name=${q(want)} exact=true action=press`, 'pause 600');
 const select = (id) => S(`act id=node-${id} action=press`, `until find("id=inspector-id").0.name == "Node ${id}"`);
-const text = (id, value) => S(`act id=${id} action=set_value value=${q(value)}`, `until find("id=${id}").0.value == ${q(value)} timeout=5000`);
+// focused first and given a moment: set_value types after 80 ms, and keys sent before the web view moves its focus reach
+// the control focused before (a button just pressed: the toolbar Add pressed twice, an id typed into nothing)
+const text = (id, value) => S(`act id=${id} action=focus`, 'pause 250', `act id=${id} action=set_value value=${q(value)}`, `until find("id=${id}").0.value == ${q(value)} timeout=5000`);
 const number = (id, typed, value) => S(`act id=${id} action=set_value value=${q(typed)}${typed !== String(value) ? '   # arithmetic: the field commits its result' : ''}`, `until find("id=${id}").0.value == ${q(num(value))} timeout=5000`);
 const tick = (id) => S(`act id=${id} action=press`, `until find("id=${id}").0.value == "1" timeout=5000`);
 const uncheck = (id) => S(`act id=${id} action=press`, `until find("id=${id}").0.value == "0" timeout=5000`);
@@ -213,7 +216,7 @@ const ui = {
     S('act id=paste action=press   # what the level shares, with fresh ids', `until find("id=undo").0.name == ${q(`Undo ${s.history().undo}`)} timeout=10000`);
     for (const id of roots) { S(`until find("id=node-${id}").count == 1 timeout=5000`); pasted.add(id); }
   },
-  add(n, given) {
+  add(n, given, s) {
     groupRow(n);
     if (n.from) {
       const word = path.basename(n.from).replace(/\.[^.]+$/, '');
@@ -223,13 +226,13 @@ const ui = {
       choose('role=popupbutton name="Node type to add"', "role=popupbutton name='Node type to add'", n.type);
       S('act id=add-node action=press');
     }
-    S(`until find("id=undo").0.name == ${q(`Undo Add ${given}`)} timeout=10000`);
+    S(`until find("id=undo").0.name == ${q(`Undo Add ${given}`)} timeout=10000`, `expect find("id=doc-state").0.name matches "^Scene ${lastScene.ref} ${s.doc.nodes.length} nodes "   # one node added, not two`);
     nodeStates.set(given, { id: given, props: {} });
   },
   setId(given, want, s) {
     // the field selects its text when it takes focus, so the id typed replaces the one the editor gave
     if (pasted.delete(given)) select(given); // a paste selects all it pasted: one at a time, for its id
-    S('pause 300', `act id=field-id action=set_value value=${q(want)}   # the plan's id`);
+    S('act id=field-id action=focus', 'pause 300', `act id=field-id action=set_value value=${q(want)}   # the plan's id`);
     S(`until find("id=undo").0.name == ${q(`Undo ${s.history().undo}`)} timeout=5000`, `expect find("id=inspector-id").0.name == "Node ${want}"`);
     const n = nodeStates.get(given) ?? { props: {} };
     nodeStates.delete(given); nodeStates.set(want, { ...n, id: want });

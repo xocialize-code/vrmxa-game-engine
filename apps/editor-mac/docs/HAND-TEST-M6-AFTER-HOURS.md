@@ -1,5 +1,45 @@
 # The second game, "After Hours", built in the editor (M6 W10, AB-T-0651)
 
+M6's exit check 6 ([M6-PLAN.md](../../../M6-PLAN.md)): a second game, different from the Morning Rush, built in the Mac
+editor by an AppProbe scenario from New Project to Export Game. Every scene, node, behaviour attachment and connection
+is made through the editor's UI (the toolbar, the assets panel, the inspector's fields, the Behaviours and Connections
+panels, Copy and Paste, Project Settings), with no JSON typed. The one file of the game written by hand is its
+behaviour, `content/sample/after-hours/behaviours.js` (the shelf that checks what is put on it, declared the W0 way).
+
+**The game.** In the sample cafe after closing, Mira finds what the day's customers left behind (a scarf and a phone on
+the tables, a book in the back room behind the locked staff door, which the light switch beside it opens) and puts each
+on its shelf before Hana locks up. The inventory carries more than one thing; Hana gives hints at the counter; two
+wrong shelves or the 180 s clock lose it. Its files are in `content/sample/after-hours/`.
+
+**How the scenario is made and held to the bytes.** The game is one build plan
+(`content/sample/tools/after-hours-plan.mjs`). `content/sample/tools/make-after-hours.mjs` applies it to the editor's own
+`EditorSession` and `ProjectSettings` headless and writes what they save: the committed scenes and game.json.
+`acceptance/m6/after-hours-scenario.mjs` runs the same plan and writes, beside each op, the AppProbe steps that make it in
+the app. It reads the session as it goes for every id the editor gives, every undo step's name and the scene's hash at
+the end of each row. So a step that lands differently fails in its own row, and each scene's save row wants the
+committed file's size and hash. Afterwards `acceptance/m6/after-hours-compare.mjs` holds the project's scenes,
+game.json and behaviours module to the committed ones byte for byte, and plays the editor's exported build to both
+endings in Node.
+
+**What comes in from outside the app.** The editor has no file import yet (taking in starter content is AB-T-0653), so
+row 2's trigger screenshot has `apps/editor-mac/scripts/after-hours-files.mjs` copy the game's own files into the new
+project, as a builder would in the Finder: the hand-written behaviour, the three lost things and the back room
+(`make-after-hours.mjs`), the starter content's shelf, the sample's door and switch, and their licence rows.
+
+**Run it.**
+
+```sh
+apps/editor-mac/scripts/build.sh
+apps/editor-mac/scripts/hand-test-fixtures-m6-after-hours.sh
+node apps/editor-mac/scripts/after-hours-files.mjs &        # waits for row 2's trigger
+node acceptance/gpu-lock.mjs run --who after-hours -- appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M6-AFTER-HOURS.scenario.md
+T="$HOME/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp"
+node acceptance/m6/after-hours-compare.mjs "$T/w10-projects/After Hours" "$T/w10-builds/after-hours"
+```
+
+The WebGL twin is `hand-test/HAND-TEST-M6-AFTER-HOURS-webgl.scenario.md` (run the fixtures again first). The rows run in
+order in one launch.
+
 <!-- rows: the scenario's, kept in step by acceptance/m6/after-hours-scenario.mjs -->
 - [ ] File › New Project… makes a game from "One level", named "After Hours": made in a new folder and opened on the template's level.
 - [ ] The game's own files come in from outside the app, as a builder copies them into the project's folder: the shelf behaviour written by hand, the lost things, the starter content's shelf, the back room, the sample's door and switch, a licence row for each; File › Open Recent reopens the project and the assets panel lists them.

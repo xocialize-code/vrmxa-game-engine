@@ -10,7 +10,8 @@
 //   - items/cafe-door.vrmxi, items/switch.vrmxi
 //                                         the sample's door and light switch
 // from content/sample, and adds each file's row from content/sample/LICENCES.md to the project's LICENCES.md (a game
-// build refuses a file with no row). It never touches a committed file. It exits once the files are in, or after 30 min.
+// build refuses a file with no row), and the rows of the four scenes the builder then makes in the editor. It never
+// touches a committed file. It exits once the files are in, or after 30 min.
 //
 //   node apps/editor-mac/scripts/after-hours-files.mjs [--project <folder>] [--triggers <folder>]
 import fs from 'node:fs';
@@ -43,6 +44,8 @@ for (const f of FILES) {
   if (!r) { console.error(`no licence row for ${f} in content/sample/LICENCES.md`); process.exit(1); }
   add.push(r);
 }
+// the rows for the four scenes the builder is about to make in the editor (a build refuses a file with no row)
+for (const f of ['after-hours/title.vrmxs', 'after-hours/level.vrmxs', 'after-hours/won.vrmxs', 'after-hours/lost.vrmxs']) add.push(rows.find((l) => l.startsWith(`| \`${f}\` |`)));
 const licences = path.join(project, 'LICENCES.md');
 fs.writeFileSync(licences, `${fs.readFileSync(licences, 'utf8').replace(/\n*$/, '\n')}${add.join('\n')}\n`);
 console.log(`copied ${FILES.length} files into ${project}, with their licence rows`);
