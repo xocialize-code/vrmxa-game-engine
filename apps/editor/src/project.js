@@ -128,6 +128,9 @@ export class Project {
     return (this._behaviours = classes);
   }
 
+  /** game.json's behaviours module changed (M6 W9): the next behaviours() reads the module it names now. */
+  forgetBehaviours() { this._behaviours = null; this.behavioursModule = undefined; }
+
   /** Hot reload (M6 W2, reload.js) took the module's new classes, read from `sources`: worlds built from now on run them. */
   reloadedBehaviours(classes, sources = null) {
     this.behavioursModule = { ref: this.behavioursModule?.ref ?? null, classes: new Map(classes), sources };

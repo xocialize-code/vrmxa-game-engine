@@ -38,8 +38,9 @@ claude mcp add vrmxg-creator -- node "$PWD/engine/packages/mcp/src/server.js" --
 ```
 
 `--behaviours` and `--vrmxa-core` are paths relative to the project folder. Characters (`.vrmxa`) need `--vrmxa-core`,
-which is the avatar studio's library. `--builds <folder>` says where a game export is written (without it, an export is
-checked and hashed but not written), and `--runtime <folder>` which runtime it is made with.
+which is the avatar studio's library. Without `--behaviours`, the project's behaviours are the module its `game.json`
+names. `--builds <folder>` says where a game export is written (without it, an export is checked and hashed but not
+written), `--runtime <folder>` which runtime it is made with, and `--projects <folder>` where a new project is made.
 
 **How the editor and creator modes connect.** The server listens on this machine only (127.0.0.1, port 5183 for the
 editor and 5184 for the creator), and the app connects to it. The Mac apps connect by default. In a browser, add `?mcp`
@@ -84,7 +85,18 @@ See [Determinism](./determinism).
   scenes it changes to), and the running game's state;
 - validate the whole project: a body with no collider, a file with no row in `LICENCES.md`, a reference to a file the
   project doesn't have, a goal nothing can complete, and each scene's rules, every problem naming its node or file;
-- export the game as a build, with the exporter's refusal passed back whole when it refuses.
+- export the game as a build, with the exporter's refusal passed back whole when it refuses;
+- read and change the project's settings (`game.json`: title, id, entry, scenes, behaviours module, physics layers and
+  which collide), each change a step of the editor's Project Settings undo, and add a `LICENCES.md` row for a new file;
+- open another scene of the project, or start a new one, empty or as a copy of another: a new level;
+- make a new project from a template (headless: in the `--projects` folder; in the editor: where the person picks).
+
+Behaviours and connections are scene edits (`edit` with `behaviour`, `connect` and `disconnect` operations, and
+`connect`), checked as the editor's inspector checks them: a param against its schema, a behaviour only on the node types it
+takes, a connection's signal, action and arguments. A project's own behaviours are attached the same way once they
+declare themselves with a static `describe`. Validate also checks that every behaviour a scene uses is the engine's or
+the project module's, and tells a goal code could reach (a warning naming how) from one nothing can (a problem); an
+optional goal nothing completes is a note.
 
 The rules themselves are nodes (`GameRules`, `GameCounter`, `GameTimer`, `GameGoal`, `Checkpoint`), so they are read
 and changed with the scene tools like any other node, one undo step per edit.

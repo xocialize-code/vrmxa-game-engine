@@ -32,7 +32,8 @@ import { buildWorld } from '../../playground/src/world.js';
 import { disposeWorld, disposed } from './dispose.js';
 import { saveScene } from './saving.js';
 import { RetiredWorlds } from './worlds.js';
-import { exportGame } from './export-game.js';
+import { exportGame, exportRefusal } from './export-game.js';
+import { declareBehaviours, reloadBehaviours, worldBehaviours } from './host-behaviours.js';
 import { HotReload, freshBehaviours, moduleSources, sameSources, reloadedTake, assertReplayable } from './reload.js';
 import { ViewportAids } from './viewport/viewport.js';
 import { ThumbnailQueue } from './thumbs.js';
@@ -251,13 +252,7 @@ export class EditorHost {
     // A module that won't load or declarations the registry refuses don't keep the project closed: they are shown as a
     // problem, the project's scenes open without them (a scene using one validates with a warning), and an earlier
     // project's declarations go
-    this.behaviourProblems = []; this.behaviourError = '';
-    try { declareProjectBehaviours(registry, await project.behaviours()); } catch (err) {
-      registry.project(new Map());
-      this.behaviourProblems = [String(err?.message ?? err)];
-      this.behaviourError = `The project's behaviours: ${this.behaviourProblems[0]}`;
-    }
-    this.behaviourSources = project.behavioursModule?.sources ?? null; // the text those classes came from (M6 W2: what hot reload compares with)
+    await this.declareBehaviours(project);
     this.project = project;
     try { this.gameLayers = gameLayers(await project.gameSetup?.() ?? null); } catch { this.gameLayers = ['default']; } // the inspector's layer menus (M6 W1)
     this.R ??= await loadRapier();
@@ -268,19 +263,14 @@ export class EditorHost {
     if (scene) await this.openScene(scene); else await this.newScene();
   }
 
-  /**
-   * The project's behaviours as a world is built with them. When their declarations were refused (openProject), each
-   * class is handed over as a bare subclass, which has no describe of its own: the world declares none of them, as
-   * the editor's registry doesn't, and runs them as code only instead of refusing to build. A module that wouldn't load
-   * gives none.
-   */
-  async worldBehaviours(p) {
-    if (!this.behaviourProblems.length) return p.behaviours();
-    let map;
-    try { map = await p.behaviours(); } catch { return new Map(); }
-    if (this._bareFor?.map !== map) this._bareFor = { map, bare: new Map([...map].map(([n, C]) => [n, class extends C {}])) };
-    return this._bareFor.bare;
-  }
+  /** Declare a project's behaviours module into the editor's registry (host-behaviours.js). */
+  async declareBehaviours(project) { return declareBehaviours(this, registry, project); }
+
+  /** game.json's behaviours module changed: read the one it names now (M6 W9, host-behaviours.js). → { module, declared, problems? } */
+  async reloadBehaviours() { return reloadBehaviours(this, registry); }
+
+  /** The project's behaviours as a world is built with them (host-behaviours.js). */
+  async worldBehaviours(p) { return worldBehaviours(this, p); }
 
   async openScene(ref) {
     if (this.session?.mode === 'playing') this.stop();
@@ -309,6 +299,28 @@ export class EditorHost {
     this.edit = null;
     await this.rebuild();
     this.changed();
+  }
+
+  /**
+   * A new scene that starts as a copy of `from` (M6 W8: MCP's `game op=open` with `from`, a new level from an old one):
+   * `from` as it is saved, with its id made the new file's, open as `ref` and unsaved until Save writes it.
+   */
+  async copyScene(from, ref) {
+    if (this.session?.mode === 'playing') this.stop();
+    this.busy++; this.changed();
+    try {
+      const doc = { ...parse(await this.project.text(from)), id: ref.replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-') }; // as newScene names one
+      await this.loadSet(doc);
+      const prefabs = await this.project.prefabs(this.setScene ? composeSequence(doc, this.setScene.doc) : doc);
+      this.session = new EditorSession({ registry, doc, prefabs, path: ref });
+      this.session.savedText = ''; // not on disk yet
+      this.adoptSession();
+      this.sceneRef = ref;
+      this.session.on((e) => this.onSession(e));
+      this.edit = null;
+      await this.rebuild();
+      this.frameAll();
+    } finally { this.busy--; this.changed(); }
   }
 
   /** A sequence document films a set: read it (its nodes are what tracks target). */
@@ -1293,10 +1305,10 @@ export class EditorHost {
     } catch (e) {
       // the folder panel was cancelled, or the window is closing (cancelGameExport): nothing was exported, nothing is wrong
       if (e?.code === 'cancelled' || e?.code === 'aborted') return null;
-      // a refusal is the export's answer, shown where its result is: which file, and why (the exporter's, or the shell's
-      // for a folder that holds something that isn't a build)
-      if (e?.name !== 'BuildError' && e?.code !== 'not_empty') throw e;
-      this.lastGameExport = { refused: e.code, message: e.message, files: e.files };
+      // a refusal is the export's answer, shown where its result is (export-game.js exportRefusal)
+      const refused = exportRefusal(e);
+      if (!refused) throw e;
+      this.lastGameExport = refused;
       return this.lastGameExport;
     } finally { this.gameExporting = null; this._gameExport = null; settle(); this.changed(); }
   }

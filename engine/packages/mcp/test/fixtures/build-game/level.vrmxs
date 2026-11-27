@@ -1,0 +1,20 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "level",
+  "assets": [],
+  "nodes": [
+    {"id":"root","type":"Node3D"},
+    {"id":"floor","type":"Collider","parent":"root","transform":{"p":[0,-0.5,0]},"props":{"shape":"box","size":[20,1,20]}},
+    {"id":"zone","type":"Area","parent":"root","transform":{"p":[1.5,0.6,0]},"props":{"shape":"box","size":[1,1,1]}},
+    {"id":"gate","type":"Area","parent":"root","transform":{"p":[-1.5,0.6,0]},"props":{"shape":"box","size":[1,1,1]}},
+    {"id":"lamp","type":"PointLight","parent":"root","transform":{"p":[0,2,0]}},
+    {"id":"rules","type":"GameRules","parent":"root"},
+    {"id":"points","type":"GameCounter","parent":"rules","props":{"label":"Points"}},
+    {"id":"visits","type":"GameCounter","parent":"rules","props":{"label":"Visits"}},
+    {"id":"visit","type":"GameGoal","parent":"rules","props":{"text":"Visit the gate","when":{"key":"counters.visits","op":"ge","test":"state","value":1}}}
+  ],
+  "connections": [
+    {"from":"gate","signal":"bodyEntered","to":"visits","call":"add"}
+  ]
+}

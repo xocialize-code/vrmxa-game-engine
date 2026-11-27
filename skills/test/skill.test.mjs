@@ -30,7 +30,7 @@ test('the skill names only tools, modes and flags the server has', () => {
     assert.ok(text.includes(`\`${t}`), `the skill doesn't mention ${t}`);
   }
   const server = fs.readFileSync(path.join(skills, '../engine/packages/mcp/src/server.js'), 'utf8');
-  for (const flag of ['--editor', '--creator', '--behaviours', '--vrmxa-core', '--builds', '--runtime', '--port']) {
+  for (const flag of ['--editor', '--creator', '--behaviours', '--vrmxa-core', '--builds', '--runtime', '--projects', '--port']) {
     assert.ok(server.includes(`'${flag}'`), `server.js has no ${flag}`);
     assert.ok(text.includes(flag), `the skill doesn't mention ${flag}`);
   }

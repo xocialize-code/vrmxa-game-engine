@@ -1,0 +1,9 @@
+{
+ "format": "vrmxg-game",
+ "version": 1,
+ "id": "build-test",
+ "title": "Build test",
+ "entry": "level.vrmxs",
+ "scenes": ["level.vrmxs"],
+ "behaviours": "behaviours.js"
+}

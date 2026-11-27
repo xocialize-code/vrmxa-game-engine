@@ -17,8 +17,8 @@ import { rebindRows, rebindPlan, describeBinding } from '@vrmxg/game-ui';
 export const writeJson = (doc) => `${JSON.stringify(doc, null, 1)}\n`;
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const sceneFile = (f) => f.endsWith('.vrmxs') && !f.startsWith('prefabs/') && !f.startsWith('sequences/');
-// a module a game can name as its behaviours (M6 W10): a project's .js files, not the editor's or a build's own
-const scriptFile = (f) => f.endsWith('.js') && !f.startsWith('tools/') && !f.startsWith('node_modules/') && !f.includes('/.');
+/** A file that can be a game's behaviours module (M6 W9): JavaScript, outside a folder of installed packages. */
+const behavioursFile = (f) => /\.m?js$/.test(f) && !f.split('/').includes('node_modules');
 
 /** A game.json for a project that has none: its first scene as the entry, the engine's default controls. */
 export function startingGame({ name = 'game', scenes = [] } = {}) {
@@ -190,6 +190,20 @@ export class ProjectSettings {
       if (!(d.game.scenes ?? []).includes(ref)) d.game.scenes = [...(d.game.scenes ?? []), ref].sort();
     });
   }
+  /**
+   * The game's behaviours module (M6 W9): a .js file of the project, or none. What a build takes; Play in place also
+   * runs a root behaviours.js that game.json doesn't name, and Export Game refuses that until it is named here.
+   */
+  setBehaviours(ref) {
+    const r = ref ? String(ref) : null;
+    return this.edit(r ? `Behaviours ${r}` : 'No behaviours module', (d) => {
+      if (!r) { delete d.game.behaviours; return; }
+      if (!behavioursFile(r)) throw new Error(`${r} isn't a JavaScript module (.js or .mjs)`);
+      if (!this.files.includes(r)) throw new Error(`${r} isn't in the project: save it into the project's folder, then open the project again (File › Open Recent)`);
+      d.game.behaviours = r;
+    });
+  }
+
   /** A scene in the game (reachable by a scene change) or out of it; the entry is always in. */
   setScene(ref, included) {
     return this.edit(`${included ? 'Add' : 'Remove'} scene ${ref}`, (d) => {
@@ -197,17 +211,6 @@ export class ProjectSettings {
       const list = new Set(d.game.scenes ?? [d.game.entry]);
       if (included) list.add(ref); else list.delete(ref);
       d.game.scenes = [...list].sort();
-    });
-  }
-
-  /**
-   * The game's behaviours module (M6 W10): a .js file of the project, whose classes the scenes' behaviours name (and
-   * which play in place runs and an export ships), or none (undefined: the key leaves game.json).
-   */
-  setBehaviours(ref) {
-    return this.edit(ref ? `Behaviours ${ref}` : 'No behaviours module', (d) => {
-      if (ref && !scriptFile(ref)) throw new Error(`${ref} isn't a behaviours module: a .js file of the project`);
-      if (ref) d.game.behaviours = ref; else delete d.game.behaviours;
     });
   }
 
@@ -340,7 +343,9 @@ export class ProjectSettings {
     return {
       exists: !!g, file: GAME_FILE, error: this.error, note: this.note,
       title: g?.title ?? '', id: g?.id ?? '', release: g?.release ?? '',
-      behaviours: g?.behaviours ?? '', scripts: this.files.filter(scriptFile).sort(),
+      behaviours: g?.behaviours ?? '', modules: this.files.filter(behavioursFile).sort(),
+      // Play runs the root behaviours.js, a build doesn't (M6 W9): said beside the choice until it is named
+      unnamedBehaviours: !!g && !g.behaviours && this.files.includes('behaviours.js'),
       entry: g?.entry ?? '', scenes: scenes.map((ref) => ({ ref, included: !!g && (ref === g.entry || (g.scenes ?? []).includes(ref)), entry: ref === g?.entry })),
       inputFile: typeof g?.input === 'string' ? g.input : null, defaultControls: !g?.input,
       actions: Object.entries(actions).map(([name, a]) => ({ name, type: a.type, bindings: a.bindings.length })),
@@ -349,6 +354,21 @@ export class ProjectSettings {
       history: this.history(),
     };
   }
+}
+
+/**
+ * One settings edit as the panel makes it (App.vue's settingsDo): `fn` runs on the settings (a refused edit leaves its
+ * reason in settings.error and doesn't throw here), then, when game.json's behaviours module is another one than before
+ * (an edit, an undo or a redo), `onModuleChange` reads it (M6 W9: EditorHost.reloadBehaviours), so the inspector, Play
+ * and Export Game use the module the build will. What onModuleChange throws is thrown.
+ * @param {ProjectSettings} settings @param {(s: ProjectSettings) => Promise<any>} fn
+ * @param {{ onModuleChange?: (module: string | null) => Promise<any> }} [o]
+ */
+export async function settingsEdit(settings, fn, { onModuleChange } = {}) {
+  const before = settings.view().behaviours;
+  try { await fn(settings); } catch { /* settings.error says why */ }
+  const after = settings.view().behaviours;
+  if (after !== before) await onModuleChange?.(after || null);
 }
 
 /**

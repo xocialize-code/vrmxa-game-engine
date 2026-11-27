@@ -9,7 +9,8 @@ import path from 'node:path';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { m0Registry } from '@vrmxg/registry/m0';
-import { createValidator, parse, createEditor } from '@vrmxg/scene';
+import { createValidator, parse } from '@vrmxg/scene';
+import { EditorSession } from '@vrmxg/editor-core';
 import { toolList, createHandlers, caller } from '@vrmxg/mcp';
 
 const here = import.meta.dirname;
@@ -65,12 +66,17 @@ async function fakeEditor(port, { stop }) {
   const reg = m0Registry();
   const doc = parse(fs.readFileSync(path.join(coreFixtures, 'cafe.vrmxs'), 'utf8'));
   const prefabs = new Map(Object.keys(prefabFiles).map((k) => [k, parse(fs.readFileSync(prefabFiles[k], 'utf8'))]));
-  const ed = createEditor(reg, doc, { prefabs: () => prefabs });
+  // the editor's own session, as apps/editor/src/mcp.js's target has it: node ops labelled "(MCP)", commands marked by
+  // the handlers (M6 W8)
+  const session = new EditorSession({ registry: reg, doc, prefabs });
+  const ed = session.editor;
   const log = [];
+  session.on((e) => { if (e.kind === 'edit') log.push(e.label); });
   const target = {
+    session: () => session,
     doc: () => doc, prefabs: () => prefabs,
-    apply: (op, label) => { ed.apply({ ...op, label }); log.push(label); },
-    undo: () => ed.undo(), redo: () => ed.redo(),
+    apply: (op, label) => session.run(`${label} (MCP)`, [op]),
+    undo: () => session.undo(), redo: () => session.redo(),
     live: () => { throw new Error('not playing: call play first'); },
     play: (action) => ({ mode: action === 'play' ? 'playing' : 'editing' }),
     screenshot: async ({ width, height }) => ({ data: Buffer.from('png').toString('base64'), width, height }),
@@ -110,11 +116,17 @@ test('editor mode: tool calls reach the open editor through the bridge; its edit
   const shot = await call('screenshot', { width: 320, height: 180 });
   assert.equal(shot.content[0].type, 'image'); assert.equal(shot.content[1].text, '320×180 PNG');
   assert.equal((await call('undo')).content[0].text, 'undone');
+  // M6 W8: a behaviour and a connection, each a step of the editor's own history, marked for the agent
+  assert.ok(!(await call('edit', { ops: [{ op: 'behaviour', id: 'root', use: 'switchedBy', params: { state: 'on' } }] })).isError);
+  assert.ok(!(await call('connect', { from: 'root', signal: 'ready', to: 'root', call: 'hide' })).isError);
+  assert.ok(!(await call('edit', { ops: [{ op: 'disconnect', from: 'root', signal: 'ready' }, { op: 'behaviour', id: 'root', use: 'switchedBy', remove: true }], label: 'Unwire' })).isError);
   stop.done = true;
   const { ed, log } = await page;
-  assert.deepEqual(log, ['Add cam-mcp']);
+  assert.equal(log[0], 'Add cam-mcp (MCP)');
+  assert.ok(log.every((l) => l.endsWith(' (MCP)')), JSON.stringify(log));
+  assert.deepEqual(ed.history().map((o) => o.label), ['switchedBy on root (MCP)', 'Connect root.ready to root.hide (MCP)', 'Unwire (MCP)'], 'one step each, marked');
   assert.ok(!ed.doc.nodes.some((n) => n.id === 'cam-mcp'), 'undone in the editor');
-  assert.equal(ed.peek().redo.label, 'Add cam-mcp', 'the editor\'s history names it');
+  assert.equal(ed.history().length, 3);
 });
 
 test('an agent describes Camera, adds a camera to the cafe, saves, and the file validates', async () => {

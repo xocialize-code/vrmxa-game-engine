@@ -262,3 +262,24 @@ test('undo and redo keep a layer a node was put on since (review of PR #52)', as
   await s.redo(); // adding a layer drops nothing
   assert.deepEqual(d.json('game.json').physics, { layers: ['default', 'npc'] });
 });
+
+test('the behaviours module (M6 W9): a .js file of the project, one undo step; none takes the key out; Play\'s fallback is said until named', async () => {
+  const d = disk();
+  const s = new ProjectSettings({ game: template, files: ['behaviours.js', 'game.json', 'level.vrmxs', 'lib/util.mjs', 'node_modules/x/index.js', 'notes.txt'], write: d.write });
+  assert.deepEqual(s.view().modules, ['behaviours.js', 'lib/util.mjs'], 'JavaScript in the project, no installed packages');
+  assert.equal(s.view().behaviours, '');
+  assert.equal(s.view().unnamedBehaviours, true, 'Play runs the root behaviours.js, a build would not');
+  await s.setBehaviours('behaviours.js');
+  assert.equal(d.json('game.json').behaviours, 'behaviours.js');
+  assert.doesNotThrow(() => checkGame(d.json('game.json')), 'what is written exports');
+  assert.deepEqual(s.history(), { undo: 'Behaviours behaviours.js', redo: null });
+  assert.equal(s.view().unnamedBehaviours, false);
+  await assert.rejects(s.setBehaviours('notes.txt'), /isn't a JavaScript module/);
+  await assert.rejects(s.setBehaviours('missing.js'), /isn't in the project: save it into the project's folder, then open the project again/);
+  await s.setBehaviours(null);
+  assert.equal('behaviours' in d.json('game.json'), false, 'none: the key goes');
+  assert.equal(s.history().undo, 'No behaviours module');
+  await s.undo();
+  assert.equal(d.json('game.json').behaviours, 'behaviours.js');
+  assert.equal(new ProjectSettings({ game: template, files: ['game.json', 'level.vrmxs'], write: d.write }).view().unnamedBehaviours, false, 'no behaviours.js: nothing to say');
+});

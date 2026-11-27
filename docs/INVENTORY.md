@@ -76,8 +76,8 @@ Also in the workspace:
 |---|---|---|---|---|
 | `creator` (the anime creator) | S A | `apps/creator/README.md` | Moving: the unsaved-changes sheet (AB-T-0593), the inspector work (AB-T-0599 to 0607). Performance takes are in (W9, AB-T-0581); their live check with a camera waits (AB-T-0557) | **later**: the guide waits for the UI. Its MCP commands and `shorts.json` are generated; how to run it is on the running page |
 | `creator-mac` | S | `apps/creator-mac/README.md`; the AppProbe scenario in `docs/hand-test/` | Moving with the creator | later, with the creator's guide |
-| `editor` | G A | `apps/editor/README.md` | Moving: AB-T-0599 to 0607 rework the inspector, the viewport and the assets panel; AB-T-0592 | **later**: the guide waits for the UI. How to run it is on the running page |
-| `editor-mac` | G | `apps/editor-mac/README.md`; the AppProbe scenarios | Moving with the editor | later, with the editor's guide |
+| `editor` | G A | `apps/editor/README.md` | Settling: the inspector, viewport, assets panel, behaviours and connections, New Project, hot reload and Export Game are in (M5, M6) | **page**: `guide/editor.md` (every panel, with screenshots) and `guide/tutorial.md` (New Project to an exported game, followed by an AppProbe scenario, so it can't drift from the app) |
+| `editor-mac` | G | `apps/editor-mac/README.md`; the AppProbe scenarios | Moving with the editor | **page**: the editor guide and the tutorial; `HAND-TEST-M6-TUTORIAL` follows the tutorial |
 | `playground` | C G | `apps/playground/README.md` | Stable (a test harness, not a product) | page (running the apps) |
 | `playground-mac` | C | `apps/playground-mac/README.md` | Stable | page (running the apps) |
 | `shell` (the shared Mac shell, Swift) | C | `apps/shell/README.md`, `apps/shell/Voice/README.md` | Moving: AB-T-0593 (ask before closing), AB-A-0324 (a ZONOS3 voice backend) | later: a bridge-method reference generated from the shell is a phase 2 candidate |

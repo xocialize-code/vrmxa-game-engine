@@ -14,7 +14,7 @@ when one is out of date. If a page here disagrees with the engine, the build is 
 | Page | What | Generated from |
 |---|---|---|
 | [Node types](./nodes) | The 28 node types of a VRMXG scene, with each one's props, signals and actions. | `@vrmxg/registry` (`m0Registry`) |
-| [Behaviours](./behaviours) | The 8 behaviours the registry declares, with their params and the signals and actions they add. | `@vrmxg/registry` (`m0Registry`) |
+| [Behaviours](./behaviours) | The 8 behaviours the registry declares, with their params and the signals and actions they add, and how a project declares its own. | `@vrmxg/registry` (`m0Registry`) |
 | [MCP servers and tools](./mcp) | The vrmxg-mcp server's three modes (headless, editor, creator) and every tool with its input schema. | `@vrmxg/mcp` (`toolList`, `shortToolList`, `src/server.js`) |
 | [Creator commands](./creator-commands) | The 8 commands an agent runs in the creator through the command tool, each with its JSON Schema. | `apps/creator/src/agent.js` (`creatorCommands`) |
 | [The .vrmxs scene file](./vrmxs) | Every field of a .vrmxs scene document, with the JSON Schema it is checked against. | `@vrmxg/scene` (`documentSchema`) over the registry |

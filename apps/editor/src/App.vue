@@ -9,7 +9,7 @@ import { inShell, call, on, onClosing, setEdited } from '../../shell/js/shell.js
 import { questions, filterTree, foldTree, readLayout, writeLayout, resize as resizePanel, toggle as togglePanel, splitterKey, shownSize, EDITOR_PANELS, dropVerdict, dropEffectFor, draggedKind, ASSET_MIME, fileKind, copyField, copyTransform, copyPart } from '@vrmxg/editor-ui';
 import { isClip } from '@vrmxg/editor-core';
 import { editorClosing } from './closing.js';
-import { exportClosing } from './export-game.js';
+import { exportClosing, gameExportLine } from './export-game.js';
 import TreeItem from './TreeItem.vue';
 import Inspector from './Inspector.vue';
 import Timeline from '@vrmxg/editor-ui/Timeline.vue'; // shared with the creator (M4 W5)
@@ -18,7 +18,7 @@ import { shortcutFor, shortcutGroups } from './shortcuts.js';
 // M6 W3 (AB-T-0646): New Project from a template, Open Recent and the project settings
 import NewProject from './NewProject.vue';
 import ProjectSettings from './ProjectSettings.vue';
-import { ProjectSettings as Settings, projectLayerUses } from './project-settings.js';
+import { ProjectSettings as Settings, projectLayerUses, settingsEdit } from './project-settings.js';
 import { loadTemplates, newProjectFrom, recentProjects, reopenProject, entryScene } from './projects.js';
 
 const canvas = ref(null);
@@ -120,7 +120,7 @@ function refresh(kind = 'all') {
   ui.ex.canCheck = x?.take === 'sequence' && !!x.frameHashes?.length;
   ui.ex.checkRows = c ? c.rows.map((r) => `${r.frame} ${r.scrub} ${r.exported}`).join('; ') : '';
   const g = ed.lastGameExport; // Export Game (M5 W0)
-  ui.ex.game = g?.refused ? `Game export refused (${g.refused}): ${g.message}` : g ? `${g.written ? 'Exported' : 'Checked'} game ${g.id}: ${g.files} files, ${g.bytes} bytes, entry ${g.entry}, runtime ${g.runtime} · build ${g.digest.slice(0, 16)} · manifest ${g.manifest.slice(0, 16)}${g.byPattern ? ` · ${g.byPattern} files licensed by a pattern row` : ''}${g.unsaved ? ' · the open scene has unsaved changes, which are not in it' : ''}${g.written ? ` · ${g.path}` : ' · not written: a build folder needs the Mac app or vrmxg-export'}` : '';
+  ui.ex.game = gameExportLine(g);
   ui.ex.still = ed.lastStill ? `${ed.lastStill.thumbnail ? 'Thumbnail' : 'Still'} ${ed.lastStill.path ?? ed.lastStill.name} · ${ed.lastStill.bytes} bytes` : '';
   ui.stopped = ed.lastStop ? `scene ${ed.lastStop.restored && ed.lastStop.hash === ed.lastStop.before ? 'as before Play' : 'CHANGED'} (${ed.lastStop.hash}), view ${ed.lastStop.viewSame ? 'unchanged' : 'CHANGED'}` : '';
 }
@@ -142,7 +142,7 @@ onMounted(async () => {
   // MCP: on in the Mac app, or with ?mcp (=port, or =off) in a browser; vrmxg-mcp --editor listens on 127.0.0.1:5183
   const q = new URLSearchParams(location.search).get('mcp');
   if ((inShell && q !== 'off') || (q && q !== 'off')) {
-    const link = new McpLink(ed, { url: `http://127.0.0.1:${/^\d+$/.test(q ?? '') ? q : 5183}`, onChange: () => { ui.mcp = link.state === 'off' ? 'MCP: waiting for vrmxg-mcp --editor' : link.state === 'taken' ? 'MCP: another editor has the link' : `MCP ${link.state}${link.last ? ` · ${link.last}` : ''} · ${link.calls} calls`; } });
+    const link = new McpLink(ed, { url: `http://127.0.0.1:${/^\d+$/.test(q ?? '') ? q : 5183}`, hooks: { settings: projectSettings, newProject: newProjectForAgent }, onChange: () => { ui.mcp = link.state === 'off' ? 'MCP: waiting for vrmxg-mcp --editor' : link.state === 'taken' ? 'MCP: another editor has the link' : `MCP ${link.state}${link.last ? ` · ${link.last}` : ''} · ${link.calls} calls`; } });
     window.__mcp = link; link.onChange(); link.start();
   }
   loadPanels(); // the panels' sizes as last left (M5 W6)
@@ -191,26 +191,54 @@ const openRecent = (path) => act(async () => {
 // its own, written to game.json at once. While the panel is open, Undo and Redo (the menu, ⌘Z) are the panel's.
 const openSettings = () => act(async () => {
   if (sheet.asking || ui.mode !== 'editing' || !ed.project) return;
-  if (!ed.project.writable) throw new Error(`${ed.project.name} is read-only here: open a project folder to change its settings`);
   ui.newProject.open = false;
-  // the same project's settings again keep their undo history (closing the panel doesn't lose it; another project does)
-  if (kept?.project !== ed.project) {
-    kept = { project: ed.project, settings: await Settings.load(ed.project, {
-      onChange: () => { if (settings) ui.settings = settings.view(); },
-      layerUses: () => projectLayerUses(ed.project, ed.session ? { ref: ed.sceneRef, doc: ed.session.doc } : null), // a layer in use isn't renamed or removed
-    }) };
-  }
-  settings = kept.settings;
-  // the files and game.json as they are now: a scene saved since, or game.json changed by MCP or a text editor
+  const s = await projectSettings({ refresh: false });
+  settings = s;
+  // the files and game.json as they are now: a scene saved since, or game.json changed by a text editor
   try { await settings.refresh(); } catch (e) { settings.error = String(e?.message ?? e); }
   ui.settings = settings.view();
 });
+/**
+ * The open project's settings: one per project, kept while it is open, so the panel and MCP (M6 W8) share one undo
+ * history (closing the panel doesn't lose it; another project does). Each change refreshes the panel when it is open
+ * and the inspector's layer menus.
+ */
+async function projectSettings({ refresh = true } = {}) {
+  if (!ed.project) throw new Error('no project is open in the editor');
+  if (!ed.project.writable) throw new Error(`${ed.project.name} is read-only here: open a project folder to change its settings`);
+  if (kept?.project !== ed.project) {
+    /** @type {Settings | null} */ let s = null;
+    s = await Settings.load(ed.project, {
+      onChange: () => {
+        if (settings) ui.settings = settings.view();
+        if (s && kept?.settings === s) { const l = s.view().layers; ed.gameLayers = l.length ? [...l] : ['default']; } // the inspector's layer menus (M6 W1)
+      },
+      layerUses: () => projectLayerUses(ed.project, ed.session ? { ref: ed.sceneRef, doc: ed.session.doc } : null), // a layer in use isn't renamed or removed
+    });
+    kept = { project: ed.project, settings: s };
+  }
+  if (refresh) await kept.settings.refresh();
+  return kept.settings;
+}
+/** New Project for MCP (M6 W8): the sheet's own path, a template the editor ships, the shell's folder panel for where. */
+async function newProjectForAgent({ template, title, id }) {
+  if (sheet.asking || ui.mode !== 'editing') throw new Error('the editor is busy (a sheet is open, or it is playing)');
+  ui.newProject.open = false;
+  let p;
+  try { p = await newProjectFrom(template, { title, ...(id ? { id } : {}) }); } catch (e) {
+    if (e?.code === 'cancelled') throw new Error('New Project was cancelled in the folder panel: nothing was made');
+    throw e;
+  }
+  await switchProject(p, await entryScene(p));
+  return { project: p.name, title, template: template.id, files: p.files.length, open: ed.sceneRef, note: 'the editor has the new project open on its entry scene' };
+}
 function closeSettings() { settings = null; ui.settings = null; }
 const settingsPlan = (row, slot, binding) => settings.planRebind(row, slot, binding);
 async function settingsDo(fn) {
   if (!settings) return;
   ui.settingsBusy = true;
-  try { await fn(settings); } catch { /* the panel shows settings.error */ } finally {
+  // the behaviours module changed (M6 W9): the inspector, Play and Export Game use the one game.json names now
+  try { await settingsEdit(settings, fn, { onModuleChange: () => ed.reloadBehaviours() }); } catch (e) { ed.error = String(e?.message ?? e); } finally {
     ui.settingsBusy = false;
     if (settings) { ui.settings = settings.view(); ed.gameLayers = settings.view().layers?.length ? [...settings.view().layers] : ['default']; } // the inspector's layer menus (M6 W1)
     refresh(); // a new game.json, or a scene's file list
@@ -245,7 +273,8 @@ const checkScrub = () => act(() => ed.checkExportAgainstScrub());
 const bakeTake = () => act(async () => { const ref = await ed.bakeTake(ui.ex.take, ui.ex.name.trim() || null); ui.ex.open = false; await ed.openScene(ref); });
 const exportVideo = () => act(() => ed.exportVideo({ take: ui.ex.take, seconds: +ui.ex.seconds, size: ui.ex.size, fps: ui.ex.fps, codec: ui.ex.codec, audio: ui.ex.audio, name: ui.ex.name.trim() }));
 // not while the window is asking something (the close sheet, M5 W8): that question first, as the menu can't know of it
-const exportGame = () => (sheet.asking ? null : act(() => ed.exportGame({ name: ui.ex.gameName.trim() })));
+// File › Export Game… opens the Export panel (M6 W9): its line is where the result, or the refusal, is said
+const exportGame = () => { if (sheet.asking) return null; if (ui.mode === 'editing') ui.ex.open = true; return act(() => ed.exportGame({ name: ui.ex.gameName.trim() })); };
 const saveStill = () => act(() => ed.saveStill(ui.ex.size));
 const thumbnail = () => act(() => ed.makeThumbnail());
 const select = (id, add) => act(() => ed.session.select([id], { add }));
@@ -537,7 +566,7 @@ const sheetGroups = shortcutGroups();
         <button id="paste" type="button" :aria-label="ui.clip ? `Paste ${ui.clip} node${ui.clip > 1 ? 's' : ''}` : 'Paste'" title="Paste (⌘V)" :disabled="!ui.clip || ui.mode !== 'editing'" @click="pasteNodes()">Paste</button>
       </div>
       <div class="tree-search">
-        <input id="tree-search" v-model="ui.treeQuery" type="search" placeholder="Search: name, id, type:Light, is:overridden" aria-label="Search the scene tree">
+        <input id="tree-search" v-model="ui.treeQuery" type="search" placeholder="Search: name, id, type:point, is:overridden" aria-label="Search the scene tree">
         <output v-if="shownTree.matches !== null" id="tree-matches" :aria-label="`${shownTree.matches} matching nodes`">{{ shownTree.matches }}</output>
       </div>
       <ul class="tree" role="tree" aria-label="Scene tree" @dragover.prevent @drop.prevent="dropOnScene">
@@ -680,7 +709,9 @@ html, body, #app { margin: 0; height: 100%; background: var(--bg); color: var(--
 .file-name { width: 120px; }
 .project { flex: none; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar:not(.status) { flex-wrap: nowrap; overflow-x: auto; }
-.dock-head select { width: 110px; min-width: 0; }
+.dock-head select { width: 110px; min-width: 0; flex: none; }
+/* the Scene panel's head: its node type menu kept whole (it shrank to nothing beside the heading), the buttons wrapping */
+.dock.left .dock-head { flex-wrap: wrap; }
 .sep { width: 1px; height: 20px; background: var(--line); }
 .field { display: flex; align-items: center; gap: 6px; color: var(--muted); }
 button, select, input { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; }
