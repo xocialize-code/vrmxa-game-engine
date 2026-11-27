@@ -1,0 +1,6 @@
+scheme   check=input/walk-in.json&steps=600             build 7d0bb9a4e6ce158c final fe69bad3406ab5f6 same as Node  
+scheme   check=input/walk-in.json&steps=600&again=1     build 7d0bb9a4e6ce158c final fe69bad3406ab5f6 same as Node  
+loopback check=input/walk-in.json&steps=600             build 7d0bb9a4e6ce158c final fe69bad3406ab5f6 same as Node  
+loopback check=input/walk-in.json&steps=600&again=1     build 7d0bb9a4e6ce158c final fe69bad3406ab5f6 same as Node  
+PASS
+### m5-build-wkwebview: acceptance/m5/build-wkwebview.sh — started 2026-11-27T17:26:14Z, ended 2026-11-27T17:26:22Z, exit 0

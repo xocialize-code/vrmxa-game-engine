@@ -1,0 +1,22 @@
+ Particle system powered by three.quarks. https://quarks.art/
+ok   rush: a fresh export is whole: 117 files, digest 689c41cac7b79e20
+ok   rush lose: the log names this build: log 689c41cac7b7, export 689c41cac7b7
+ok   rush lose: replays in Node to the same hash after every step: 4819 steps, final 7827a18e8b107a1c
+ok   rush lose: the game app replays it drawn on WebGPU to the same hash after every step: 4819 steps on webgpu, final 7827a18e8b107a1c; 4827 frames, p99 16.8 ms
+ok   rush lose: the game app replays it drawn on WebGL to the same hash after every step: 4819 steps on webgl, final 7827a18e8b107a1c; 4823 frames, p99 16.8 ms
+ok   rush win: the log names this build: log 689c41cac7b7, export 689c41cac7b7
+ok   rush win: replays in Node to the same hash after every step: 6298 steps, final 4381da0665630266
+ok   rush win: the game app replays it drawn on WebGPU to the same hash after every step: 6298 steps on webgpu, final 4381da0665630266; 6310 frames, p99 16.8 ms
+ok   rush win: the game app replays it drawn on WebGL to the same hash after every step: 6298 steps on webgl, final 4381da0665630266; 6307 frames, p99 16.8 ms
+ok   after-hours: a fresh export is whole: 69 files, digest 61a49e385ae41bd4
+ok   after-hours lose: the log names this build: log 61a49e385ae4, export 61a49e385ae4
+ok   after-hours lose: replays in Node to the same hash after every step: 3526 steps, final 1911b477d418a6c8
+ok   after-hours lose: the game app replays it drawn on WebGPU to the same hash after every step: 3526 steps on webgpu, final 1911b477d418a6c8; 3518 frames, p99 16.8 ms
+ok   after-hours lose: the game app replays it drawn on WebGL to the same hash after every step: 3526 steps on webgl, final 1911b477d418a6c8; 3512 frames, p99 16.8 ms
+ok   after-hours win: the log names this build: log 61a49e385ae4, export 61a49e385ae4
+ok   after-hours win: replays in Node to the same hash after every step: 4945 steps, final 9da9445d3b8dcec8
+ok   after-hours win: the game app replays it drawn on WebGPU to the same hash after every step: 4945 steps on webgpu, final 9da9445d3b8dcec8; 4936 frames, p99 16.8 ms
+ok   after-hours win: the game app replays it drawn on WebGL to the same hash after every step: 4945 steps on webgl, final 9da9445d3b8dcec8; 4934 frames, p99 16.8 ms
+ok   no errors in the pages
+all replays match
+### replay-logs: node acceptance/m6/replay-logs.mjs --out acceptance/results/m6-acceptance/replay-logs.json — started 2026-11-27T16:12:01Z, ended 2026-11-27T16:23:19Z, exit 0

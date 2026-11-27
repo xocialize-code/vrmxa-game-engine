@@ -1,0 +1,87 @@
+{
+ "task": "AB-T-0652",
+ "milestone": "M6",
+ "commit": "5d5f42e52c8cf1e51f525933544f8dfe69a2ee6b",
+ "date": "2026-11-27",
+ "machine": {
+  "model": "Mac17,14",
+  "chip": "Apple M5 Max",
+  "macOS": "27.3 (26C5047e)"
+ },
+ "verdicts": {
+  "1": {
+   "check": "A project starts in the editor",
+   "result": "partly",
+   "notMet": "starter content not in the templates (AB-T-0653)",
+   "receipt": "AB-R-1200"
+  },
+  "2": {
+   "check": "Behaviours and connections are authored in the inspector",
+   "result": "passed",
+   "receipt": "AB-R-1201"
+  },
+  "3": {
+   "check": "A project's own behaviours describe themselves",
+   "result": "passed",
+   "receipt": "AB-R-1202"
+  },
+  "4": {
+   "check": "A behaviour reloads while you play",
+   "result": "passed",
+   "receipt": "AB-R-1203"
+  },
+  "5": {
+   "check": "The level is built by hand, all of it",
+   "result": "passed",
+   "receipt": "AB-R-1201"
+  },
+  "6": {
+   "check": "A second game is built in the editor",
+   "result": "passed",
+   "receipt": "AB-R-1204"
+  },
+  "7": {
+   "check": "Saves survive an update",
+   "result": "partly",
+   "notMet": "a HUD-only re-export refuses earlier saves: the fingerprint's engine part counts the runtime's version (AB-T-0679)",
+   "unitTestedOnly": "the engine's maths refusal",
+   "receipt": "AB-R-1205"
+  },
+  "8": {
+   "check": "A game keeps running and can be shared",
+   "result": "passed",
+   "receipt": "AB-R-1206"
+  },
+  "9": {
+   "check": "There is a game builder's guide",
+   "result": "passed",
+   "receipt": "AB-R-1207"
+  },
+  "10": {
+   "check": "Agents can build a game too",
+   "result": "passed",
+   "receipt": "AB-R-1208"
+  },
+  "11": {
+   "check": "The spikes have verdicts",
+   "result": "passed",
+   "receipt": "AB-R-1209"
+  },
+  "12": {
+   "check": "M0 to M5 still hold; After Hours at 60 fps at 1080p",
+   "result": "partly",
+   "notMet": "the canonical matrix fails by its rules on single odd WebGPU loads in both full runs; b5b2527 fails the same way today (AB-T-0666)",
+   "notRun": "live play on the Mac; the base Mac (AB-T-0511); M5's other Mac scenarios and M0 to M4's Mac scenarios and Chromium checks",
+   "steadyFps": 60.0,
+   "receipts": [
+    "AB-R-1211",
+    "AB-R-1210"
+   ],
+   "steadyFpsNote": "met in this run; W10 measured 59.58 the same way on the same build"
+  }
+ },
+ "passed": 9,
+ "partly": 3,
+ "failed": 0,
+ "doneIsTheOperatorsCall": true
+}

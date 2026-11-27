@@ -1,0 +1,56 @@
+[33m[IMPORT_IS_UNDEFINED] [0mImport `tslFn` will always be undefined because there is no matching export in '../../node_modules/three/build/three.webgpu.js'
+     [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m ../../node_modules/@pixiv/three-vrm/lib/nodes/index.module.js:106:12 [38;5;246m][0m
+     [38;5;246m│[0m
+ [38;5;246m106 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mr[0m[38;5;249me[0m[38;5;249mt[0m[38;5;249mu[0m[38;5;249mr[0m[38;5;249mn[0m[38;5;249m [0mTHREE_WEBGPU.tslFn[38;5;249m([0m[38;5;249mj[0m[38;5;249ms[0m[38;5;249mF[0m[38;5;249mu[0m[38;5;249mn[0m[38;5;249mc[0m[38;5;249m)[0m[38;5;249m;[0m
+ [38;5;240m    │[0m            ─────────┬────────  
+ [38;5;240m    │[0m                     ╰────────── 
+[38;5;246m─────╯[0m
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0m../../node_modules/three/build/three.module.js is dynamically imported by ../../../../../../vrmxa-core/src/anim/fbx.js but also statically imported by ../../engine/packages/camera/src/brain.js, ../../engine/packages/camera/src/camera.js, ../../engine/packages/camera/src/path.js, ../../engine/packages/camera/src/pick.js, ../../engine/packages/camera/src/virtual.js, ..., dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0m../../../../../../vrmxa-core/src/vrmxw.js is dynamically imported by ../../../../../../vrmxa-core/src/vrmxa.js but also statically imported by ../../../../../../vrmxa-core/src/closet/ops.js, ../../../../../../vrmxa-core/src/index.js, ../../../../../../vrmxa-core/src/vrmxa.js, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0m../../../../../../vrmxa-core/src/checker.js is dynamically imported by ../../../../../../vrmxa-core/src/vrmxa.js, ../../../../../../vrmxa-core/src/vrmxw.js but also statically imported by ../../../../../../vrmxa-core/src/anim/motion.js, ../../../../../../vrmxa-core/src/index.js, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0m../../../../../../vrmxa-core/src/closet/avatar.js is dynamically imported by ../../../../../../vrmxa-core/src/closet/ops.js but also statically imported by ../../../../../../vrmxa-core/src/closet/index.js, dynamic import will not move module into another chunk.
+
+Building for production...
+[Planning deferred tasks]
+[22 / 34]
+[23 / 35] VRMXGShell
+[35 / 117]
+[45 / 117]
+[48 / 117]
+[55 / 117]
+[58 / 117]
+[67 / 117]
+[69 / 117]
+[72 / 117]
+[73 / 117]
+[90 / 117]
+[97 / 117]
+[103 / 117]
+[104 / 117]
+[105 / 117]
+<repo>/apps/shell/Sources/VRMXGShell/ShellApp.swift:283:89: [1;33mwarning: [1;39mmain actor-isolated property 'config' can not be referenced from a nonisolated context[0;0m
+ [0;36m91 |[0;0m @MainActor
+ [0;36m92 |[0;0m public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDelegate {
+ [0;36m93 |[0;0m     public let config: ShellConfiguration
+    [0;36m|[0;0m                `- [1;39mnote: [1;39mproperty declared here[0;0m
+ [0;36m94 |[0;0m     public internal(set) var window: NSWindow!
+ [0;36m95 |[0;0m     public internal(set) var webView: WKWebView!
+    [0;36m:[0;0m
+[0;36m281 |[0;0m     /// document controller (it says it can't open them), and nothing is granted.
+[0;36m282 |[0;0m     public override func responds(to aSelector: Selector!) -> Bool {
+[0;36m283 |[0;0m         if aSelector == #selector(NSApplicationDelegate.application(_:open:)) { return !config.openTypes.isEmpty }
+    [0;36m|[0;0m                                                                                         `- [1;33mwarning: [1;39mmain actor-isolated property 'config' can not be referenced from a nonisolated con[106 / 117] VRMXGShell
+text[0;0m
+[0;36m284 |[0;0m         return super.responds(to: aSelector)
+[0;36m285 |[0;0m     }
+[113 / 118] VRMXGGame-product
+[117 / 119] VRMXGGame-product
+[118 / 119] VRMXGGame-product
+Build complete! (9.37 sec)
+<repo>/apps/game-mac/build/after-hours.app: replacing existing signature
+built <repo>/apps/game-mac/build/after-hours.app (After Hours, com.xocialize.vrmxg-game.after-hours)
+exit 0

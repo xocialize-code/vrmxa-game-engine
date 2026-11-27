@@ -1,0 +1,11 @@
+{
+ "check": "M6 W11 re-run of M6 W6's Mac case (AB-T-0639, exit check 8): WebKit's GPU process killed twice under a replay of the unbroken session in the hardened Mac game app; the game plays on to the log's final hash (acceptance/m6/device-loss-mac.sh, read with AppProbe)",
+ "ok": true,
+ "date": "2026-11-27",
+ "commit": "5d5f42e",
+ "app": "apps/game-mac morning-rush.app (Release, shell 0.16.0, ad hoc signed, hardened runtime), build 689c41cac7b7, WebGPU, 1920x1080, macOS 27.3 (26C5047e), M5 Max",
+ "log": { "steps": 4333, "final": "83a97551fb38a7d6", "from": "acceptance/m6/device-loss.mjs's session played at 5d5f42e (runner-results/m6-device-loss/lose.json); the committed acceptance/results/m6-device-loss/lose.json is on the older build ac3cab29" },
+ "kills": ["19:28:38 UTC the app's own GPU process (by responsible process)", "19:29:00 UTC again"],
+ "frameStats": "4338 frames in 76 s: 57.1 fps, p99 22.8 ms, max 728.4 ms, 40 over 25 ms, at 1920×1080; 1 replays played, 2 scene changes; GPU lost, display restarted: webgl-fallback, webgl-fallback; replay ended: 4333 steps, final 83a97551fb38a7d6",
+ "sameFinalHashAsLog": true
+}

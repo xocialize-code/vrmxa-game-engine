@@ -1,0 +1,10 @@
+[16:12:04] gpu-lock: waiting for pid 87974 (acceptance/m6/replay-logs.mjs)
+[16:56:36] chromium-webgpu frames load 1: VERDICTS FAIL digest bd439a9009758949 ≠ canonical d6784fc3c3d16a2f (1 items: filmSecond) · 30.7 s · GPU 9/37/42% quiet
+[16:56:36] chromium-webgpu frames: load 1 fails filmTwiceIdentical (pixels); the GPU was quiet; rerunning once
+[16:57:06] chromium-webgpu frames rerun of load 1: ok digest d6784fc3c3d16a2f = canonical · 30.8 s · GPU 25/37/48% quiet
+[16:57:07] chromium-webgpu frames: FAILURE (the rerun is clean, but the GPU was quiet during the failed load: not AB-T-0589); --keep-going
+[16:57:21] chromium-webgpu editor load 1: ok digest 8d9ab54914096695 = canonical · 14.4 s · GPU 34/37/75% quiet
+[16:57:35] chromium-webgpu editor load 2: ok digest 8d9ab54914096695 = canonical · 14.3 s · GPU 31/36/80% quiet
+[16:57:50] chromium-webgpu editor load 3: ok digest 8d9ab54914096695 = canonical · 14.5 s · GPU 26/36/80% quiet
+[16:57:50] matrix FAILED; 0 AB-T-0589 incidents
+exit 1

@@ -1,0 +1,244 @@
+Building for debugging...
+[Planning deferred tasks]
+[28 / 52]
+[29 / 53] VRMXGShell
+[40 / 153]
+[50 / 153]
+[53 / 153]
+[61 / 153]
+[66 / 153]
+[72 / 153]
+[77 / 153]
+[78 / 153]
+[95 / 153]
+[102 / 153]
+[109 / 153]
+[110 / 153]
+[129 / 153] VRMXGShell
+[130 / 153] VRMXGShell
+[137 / 153] VRMXGShell
+<repo>/apps/shell/Sources/VRMXGShell/ShellApp.swift:283:89: [1;33mwarning: [1;39mmain actor-isolated property 'config' can not be referenced from a nonisolated context[0;0m
+ [0;36m91 |[0;0m @MainActor
+ [0;36m92 |[0;0m public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDelegate {
+ [0;36m93 |[0;0m     public let config: ShellConfiguration
+    [0;36m|[0;0m                `- [1;39mnote: [1;39mproperty declared here[0;0m
+ [0;36m94 |[0;0m     public internal(set) var window: NSWindow!
+ [0;36m95 |[0;0m     public internal(set) var webView: WKWebView!
+    [0;36m:[0;0m
+[0;36m281 |[0;0m     /// document controller (it says it can't open them), and nothing is granted.
+[0;36m282 |[0;0m     public override func responds(to aSelector: Selector!) -> Bool {
+[0;36m283 |[0;0m         if aSelector == #selector(NSApplicationDelegate.application(_:open:)) { return !config.openTypes.isEmpty }
+    [0;36m|[0;0m                                                                                         `- [1;33mwarning: [1;39mmain actor-isolated property 'config' can not be referenced from a nonisolated context[0;0m
+[0;36m284 |[0;0m         return super.responds(to: aSelector)
+[0;36m285 |[0;0m     }
+[143 / 154] VRMXGShellTests-product
+[144 / 165]
+[147 / 165]
+[154 / 165] VRMXGShellTests-product
+[159 / 165] VRMXGShellTests-product
+[161 / 165] VRMXGShellTests-product
+Build complete! (9.53 sec)
+Test Suite 'All tests' started at 2026-11-27 07:23:45.907.
+Test Suite 'All tests' passed at 2026-11-27 07:23:45.908.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+◇ Test run started.
+↳ Testing Library Version: 2403
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite BinaryOpenTests started.
+◇ Suite OpenDocumentsTests started.
+◇ Suite MicrophoneTests started.
+◇ Suite DeliveryTests started.
+◇ Suite AppMenuTests started.
+◇ Suite WindowModeTests started.
+◇ Suite FileMethodTests started.
+◇ Suite CloseQuestionTests started.
+◇ Suite SettingsMethodTests started.
+◇ Suite CacheMethodTests started.
+◇ Suite FaceShapeTests started.
+◇ Suite ProjectFolderTests started.
+◇ Suite EncoderStarvation started.
+◇ Suite WebRootsTests started.
+◇ Suite SaveMethodTests started.
+◇ Suite LoopbackTests started.
+◇ Suite ProjectWatchTests started.
+◇ Suite BuildFolderTests started.
+◇ Suite EncoderDeterminismExperiment started.
+◇ Suite PostRouterTests started.
+◇ Suite ExportTests started.
+◇ Test onlyAnAppThatNamesTypesTakesOpenDocuments() started.
+◇ Test filesOpenedDuringAReloadWaitForThePage() started.
+◇ Suite BridgeTests started.
+◇ Test theThirdPartyNoticesOpenFromHelpWhenTheWebContentCarriesThem() started.
+◇ Test anOpenedDocumentIsServedLikeABinaryOpen() started.
+◇ Test appItemsInFileAndAppMenusSendTheirEvents() started.
+◇ Test closeKeepsRunningWithAStatusItem() started.
+◇ Test statusAndRequestThroughTheBridge() started.
+◇ Test appItemsInAHelpMenuAfterWindow() started.
+◇ Test soundAtLagZero(codec:) started.
+◇ Test readsNothingThenWhatWasWritten() started.
+◇ Test aHungPageCannotBlockTheDelegate() started.
+◇ Test mediaCaptureOnlyForOurOwnOriginsAndDeclaredDevices() started.
+◇ Test aPageThatHangsWithItsQuestionUpAndUnsavedWorkAsksThePerson() started.
+◇ Test anAppThatDoesNotAskClosesAsBefore() started.
+◇ Test aPageThatHangsWhileItAsksCannotBlockEither() started.
+◇ Test openSaveAndProjectThroughTheAutomationHooks() started.
+◇ Test floatingAndBackToNormal() started.
+◇ Test thePageHearsThePersonsOwnEyes() started.
+◇ Test aPageThatGoesLetsTheCloseGoOn() started.
+◇ Test quittingWaitsForThePagesAnswer() started.
+◇ Test thePageIsAskedAndItsAnswerDecides() started.
+◇ Test closingTheWindowWaitsForThePagesAnswer() started.
+◇ Test appItemsAtTheEndOfTheEditMenuSendTheirEvents() started.
+◇ Test theDelegateKeepsThePagesWordOnUnsavedWorkAndRoutesQuitAgain() started.
+◇ Test theSameFaceTiltedMovedOrFartherAwayReadsTheSame() started.
+◇ Test waitHoldsForThePersonAndAskingAgainStartsTheTimeoutAgain() started.
+◇ Test missThenHitByAnyKey() started.
+◇ Test createRefusesBadEntriesBeforeTouchingAnything() started.
+◇ Test exportsIntoTheProject() started.
+◇ Test askingAgainWhileThePageAsksIsThePersonsWayOut() started.
+◇ Test aPageThatDoesNotAnswerCannotBlockQuitting() started.
+◇ Test refusesBadAndBigEntries() started.
+◇ Test aGameBuildsOwnProjectFolderWhenNothingIsMounted() started.
+◇ Test createIsRefusedOverAnythingAndLeavesAnEmptyFolderAsItWas() started.
+◇ Test noStarvation() started.
+◇ Test serveBase64RememberReopenAndForget() started.
+◇ Test measuresEachPartOnItsOwn() started.
+◇ Test openRecentMenuIsBuiltFromTheListAndSendsItsPath() started.
+◇ Test fsEventsReportAnEditorsSaveThroughTheBridge() started.
+◇ Test servesTheAppAndNothingOutsideIt() started.
+◇ Test aBuildIsStagedPieceByPieceAndMovedInAtTheEnd() started.
+◇ Test aBusyPageWithUnsavedWorkIsNotClosedWithoutAsking() started.
+◇ Test createCopiesATemplateAndMountsIt() started.
+◇ Test getHeadAndOtherMethods() started.
+◇ Test case passing 1 argument codec → "h264" to soundAtLagZero(codec:) started.
+◇ Test recentProjectsReopenWithNoPanelAndAreForgotten() started.
+◇ Test case passing 1 argument codec → "prores4444" to soundAtLagZero(codec:) started.
+◇ Test refusesNoTextAndTooMuch() started.
+◇ Test case passing 1 argument codec → "hevc" to soundAtLagZero(codec:) started.
+◇ Test writeListReadAndRemoveSlots() started.
+◇ Test aWatchedFileThatChangesIsReportedAndNothingElseIs() started.
+◇ Test variant(_:) started.
+◇ Test routesByPrefixAndParsesTheQuery() started.
+◇ Test onlyPathsInsideTheProjectAreWatched() started.
+◇ Test noAppWatchesUnlessItAsks() started.
+◇ Test mountsAProjectAtProjectSlash() started.
+◇ Test rowsBottomUpFromWebGLAndTopDownFromWebGPU() started.
+◇ Test h264WithAudioIsFrameExact() started.
+◇ Test proResEncodesDecodeTheSameAndHashesMatch() started.
+◇ Test dispatchesAndReturnsValues() started.
+◇ Test errorsComeBackAsValues() started.
+◇ Test frameHashIsThePagesHashFrame() started.
+◇ Test subtitlesLandBesideTheFile() started.
+◇ Test refusesMissingFrames() started.
+◇ Test ntscRateLandsEveryFrameExactly() started.
+◇ Test case passing 1 argument v → "abr" to variant(_:) started.
+✔ Test noStarvation() passed after 0.001 seconds.
+✔ Test thePageHearsThePersonsOwnEyes() passed after 0.001 seconds.
+✔ Test rowsBottomUpFromWebGLAndTopDownFromWebGPU() passed after 0.001 seconds.
+◇ Test case passing 1 argument v → "quality" to variant(_:) started.
+✔ Suite EncoderStarvation passed after 0.001 seconds.
+✔ Test theSameFaceTiltedMovedOrFartherAwayReadsTheSame() passed after 0.001 seconds.
+◇ Test case passing 1 argument v → "noreorder" to variant(_:) started.
+✔ Test variant(_:) with 3 test cases passed after 0.001 seconds.
+✔ Suite EncoderDeterminismExperiment passed after 0.001 seconds.
+✔ Test frameHashIsThePagesHashFrame() passed after 0.001 seconds.
+✔ Test measuresEachPartOnItsOwn() passed after 0.001 seconds.
+✔ Suite FaceShapeTests passed after 0.001 seconds.
+✔ Test mountsAProjectAtProjectSlash() passed after 0.002 seconds.
+✔ Test aGameBuildsOwnProjectFolderWhenNothingIsMounted() passed after 0.002 seconds.
+✔ Test getHeadAndOtherMethods() passed after 0.002 seconds.
+✔ Suite LoopbackTests passed after 0.002 seconds.
+✔ Test servesTheAppAndNothingOutsideIt() passed after 0.002 seconds.
+✔ Suite WebRootsTests passed after 0.002 seconds.
+✔ Test routesByPrefixAndParsesTheQuery() passed after 0.003 seconds.
+✔ Suite PostRouterTests passed after 0.003 seconds.
+✔ Test statusAndRequestThroughTheBridge() passed after 0.060 seconds.
+✔ Test readsNothingThenWhatWasWritten() passed after 0.061 seconds.
+✔ Test subtitlesLandBesideTheFile() passed after 0.136 seconds.
+✔ Test refusesMissingFrames() passed after 0.137 seconds.
+✔ Test closeKeepsRunningWithAStatusItem() passed after 0.251 seconds.
+✔ Test soundAtLagZero(codec:) with 3 test cases passed after 0.267 seconds.
+✔ Test ntscRateLandsEveryFrameExactly() passed after 0.286 seconds.
+✔ Test h264WithAudioIsFrameExact() passed after 0.291 seconds.
+✔ Test anAppThatDoesNotAskClosesAsBefore() passed after 0.320 seconds.
+✔ Test closingTheWindowWaitsForThePagesAnswer() passed after 0.351 seconds.
+✔ Test missThenHitByAnyKey() passed after 0.353 seconds.
+✔ Test proResEncodesDecodeTheSameAndHashesMatch() passed after 0.384 seconds.
+✔ Suite ExportTests passed after 0.385 seconds.
+✔ Test theDelegateKeepsThePagesWordOnUnsavedWorkAndRoutesQuitAgain() passed after 0.413 seconds.
+✔ Test createRefusesBadEntriesBeforeTouchingAnything() passed after 0.417 seconds.
+✔ Test floatingAndBackToNormal() passed after 0.454 seconds.
+✔ Suite WindowModeTests passed after 0.454 seconds.
+✔ Test openSaveAndProjectThroughTheAutomationHooks() passed after 0.522 seconds.
+✔ Suite FileMethodTests passed after 0.522 seconds.
+✔ Test serveBase64RememberReopenAndForget() passed after 0.525 seconds.
+✔ Suite BinaryOpenTests passed after 0.526 seconds.
+✔ Test quittingWaitsForThePagesAnswer() passed after 0.551 seconds.
+[shell] not opened (not one of ["fountain"]): ["y.png"]
+✔ Test aBuildIsStagedPieceByPieceAndMovedInAtTheEnd() passed after 0.574 seconds.
+◇ Test atTheEndTheStagedFilesAreCheckedAgainstTheManifestBeforeAnythingMoves() started.
+✔ Test createCopiesATemplateAndMountsIt() passed after 0.577 seconds.
+✔ Test refusesNoTextAndTooMuch() passed after 0.579 seconds.
+✔ Suite SettingsMethodTests passed after 0.580 seconds.
+✔ Test writeListReadAndRemoveSlots() passed after 0.580 seconds.
+✔ Suite SaveMethodTests passed after 0.581 seconds.
+✔ Test createIsRefusedOverAnythingAndLeavesAnEmptyFolderAsItWas() passed after 0.584 seconds.
+✔ Test recentProjectsReopenWithNoPanelAndAreForgotten() passed after 0.606 seconds.
+✔ Test refusesBadAndBigEntries() passed after 0.609 seconds.
+✔ Test dispatchesAndReturnsValues() passed after 0.608 seconds.
+✔ Suite CacheMethodTests passed after 0.609 seconds.
+✔ Test errorsComeBackAsValues() passed after 0.608 seconds.
+✔ Suite BridgeTests passed after 0.609 seconds.
+✔ Test anOpenedDocumentIsServedLikeABinaryOpen() passed after 1.029 seconds.
+✔ Test onlyAnAppThatNamesTypesTakesOpenDocuments() passed after 1.029 seconds.
+✔ Test filesOpenedDuringAReloadWaitForThePage() passed after 1.029 seconds.
+✔ Test theThirdPartyNoticesOpenFromHelpWhenTheWebContentCarriesThem() passed after 1.029 seconds.
+✔ Suite OpenDocumentsTests passed after 1.029 seconds.
+✔ Test appItemsInFileAndAppMenusSendTheirEvents() passed after 1.036 seconds.
+✔ Test appItemsInAHelpMenuAfterWindow() passed after 1.036 seconds.
+✔ Test atTheEndTheStagedFilesAreCheckedAgainstTheManifestBeforeAnythingMoves() passed after 0.537 seconds.
+◇ Test anEarlierBuildIsReplacedOnlyAtTheEndAndNothingElseIsEverTouched() started.
+[shell] the page didn't answer window.closing in 5.0 s: closing
+✔ Test aPageThatGoesLetsTheCloseGoOn() passed after 1.115 seconds.
+✔ Test mediaCaptureOnlyForOurOwnOriginsAndDeclaredDevices() passed after 1.115 seconds.
+✔ Test appItemsAtTheEndOfTheEditMenuSendTheirEvents() passed after 1.115 seconds.
+✔ Suite MicrophoneTests passed after 1.116 seconds.
+✔ Suite AppMenuTests passed after 1.116 seconds.
+[shell] the page didn't answer window.closing in 5.0 s: closing
+✔ Test thePageIsAskedAndItsAnswerDecides() passed after 1.115 seconds.
+[shell] the page didn't answer window.closing in 5.0 s, and it has unsaved work: asking
+✔ Test openRecentMenuIsBuiltFromTheListAndSendsItsPath() passed after 1.115 seconds.
+✔ Suite ProjectFolderTests passed after 1.116 seconds.
+✔ Test anEarlierBuildIsReplacedOnlyAtTheEndAndNothingElseIsEverTouched() passed after 0.024 seconds.
+◇ Test aCommitThatFailsPutsTheEarlierBuildBack() started.
+✔ Test aWatchedFileThatChangesIsReportedAndNothingElseIs() passed after 1.136 seconds.
+✔ Test onlyPathsInsideTheProjectAreWatched() passed after 1.136 seconds.
+✔ Test noAppWatchesUnlessItAsks() passed after 1.136 seconds.
+✔ Test exportsIntoTheProject() passed after 1.139 seconds.
+✔ Suite DeliveryTests passed after 1.139 seconds.
+✔ Test aCommitThatFailsPutsTheEarlierBuildBack() passed after 0.046 seconds.
+◇ Test aFailedOrAbandonedExportLeavesTheFolderAsItWas() started.
+✔ Test aFailedOrAbandonedExportLeavesTheFolderAsItWas() passed after 0.009 seconds.
+◇ Test whatACutShortExportLeftIsClearedAndOnlyWhatTheManifestVouchesForIsMovedIn() started.
+✔ Test whatACutShortExportLeftIsClearedAndOnlyWhatTheManifestVouchesForIsMovedIn() passed after 0.010 seconds.
+◇ Test aProjectListingCutShortSaysSo() started.
+✔ Test aProjectListingCutShortSaysSo() passed after 0.002 seconds.
+✔ Suite BuildFolderTests passed after 1.205 seconds.
+✔ Test aHungPageCannotBlockTheDelegate() passed after 1.237 seconds.
+✔ Test aPageThatDoesNotAnswerCannotBlockQuitting() passed after 1.375 seconds.
+[shell] the page stopped answering while it was asking (10.0 s), and it has unsaved work: asking
+[shell] the page didn't answer window.closing in 5.0 s, and it has unsaved work: asking
+✔ Test aPageThatHangsWithItsQuestionUpAndUnsavedWorkAsksThePerson() passed after 1.723 seconds.
+✔ Test fsEventsReportAnEditorsSaveThroughTheBridge() passed after 1.792 seconds.
+✔ Suite ProjectWatchTests passed after 1.792 seconds.
+[shell] the page didn't answer window.closing in 5.0 s, and it has unsaved work: asking
+[shell] the page didn't answer window.closing in 5.0 s: closing
+✔ Test askingAgainWhileThePageAsksIsThePersonsWayOut() passed after 2.131 seconds.
+✔ Test waitHoldsForThePersonAndAskingAgainStartsTheTimeoutAgain() passed after 2.265 seconds.
+[shell] the page didn't answer window.closing in 5.0 s: closing
+✔ Test aBusyPageWithUnsavedWorkIsNotClosedWithoutAsking() passed after 2.397 seconds.
+[shell] the page stopped answering while it was asking (10.0 s): closing
+✔ Test aPageThatHangsWhileItAsksCannotBlockEither() passed after 2.591 seconds.
+✔ Suite CloseQuestionTests passed after 2.592 seconds.
+✔ Test run with 68 tests in 22 suites passed after 2.592 seconds.
+### shell-swift-test: swift test --package-path apps/shell — started 2026-11-27T15:23:35Z, ended 2026-11-27T15:23:48Z, exit 0

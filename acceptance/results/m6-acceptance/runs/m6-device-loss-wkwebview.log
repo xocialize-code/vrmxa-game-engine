@@ -1,0 +1,8 @@
+scheme   renderer=webgpu&lose=60:destroy,961:destroy,2161:encoder         steps 4333 final 83a97551fb38a7d6 same as the log lost at 60 destroy, 961 destroy, 2161 encoder, made again on webgpu, webgpu, webgpu   
+scheme   renderer=webgpu&recover=webgl-fallback&lose=1261:destroy         steps 4333 final 83a97551fb38a7d6 same as the log lost at 1261 destroy, made again on webgl-fallback   
+scheme   renderer=webgl&lose=1261:context                                 steps 4333 final 83a97551fb38a7d6 same as the log lost at 1261 context, made again on webgl   
+loopback renderer=webgpu&lose=60:destroy,961:destroy,2161:encoder         steps 4333 final 83a97551fb38a7d6 same as the log lost at 60 destroy, 961 destroy, 2161 encoder, made again on webgpu, webgpu, webgpu   
+loopback renderer=webgpu&recover=webgl-fallback&lose=1261:destroy         steps 4333 final 83a97551fb38a7d6 same as the log lost at 1261 destroy, made again on webgl-fallback   
+loopback renderer=webgl&lose=1261:context                                 steps 4333 final 83a97551fb38a7d6 same as the log lost at 1261 context, made again on webgl   
+PASS
+### m6-device-loss-wkwebview: acceptance/m6/device-loss-wkwebview.sh — started 2026-11-27T17:33:39Z, ended 2026-11-27T17:41:21Z, exit 0

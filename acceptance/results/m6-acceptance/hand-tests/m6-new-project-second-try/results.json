@@ -1,0 +1,528 @@
+{
+  "checklist" : "<repo>/apps/editor-mac/docs/HAND-TEST-M6-NEW-PROJECT.md",
+  "rows" : [
+    {
+      "checklist_line" : 22,
+      "checks" : [
+        {
+          "actual" : "\"Scene cafe-cart.vrmxs 30 nodes saved valid hash 7636dc6e7e38e7e0\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=template-level\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=template-empty\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"cafe-dash\"",
+          "check" : "find(\"id=new-project-id\").0.value == \"cafe-dash\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene level.vrmxs 14 nodes saved valid hash 9d7e4d4c0198d790\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 14 nodes saved valid\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project Cafe Dash\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project Cafe Dash\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"role=alert\").count == 0",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Editor pid 97794, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-27T180437Z.log",
+        "23: wait id=new-project-open enabled=true timeout_ms=40000 → found after 293 ms: button \"New project\" #new-project-open help=\"New Project… (⇧⌘N): a game from a template\" [W:VRMXG Editor/0/0/0/0/0/1@53dc] (297 ms)",
+        "24: until find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\" timeout=60000 → ok (1506 ms)",
+        "25: menu \"File › New Project…\" press → pressed File › New Project… (177 ms)",
+        "26: wait id=new-project timeout_ms=10000 → found after 804 ms: group \"New project\" #new-project [W:VRMXG Editor/0/0/0/0/8@0543] (804 ms)",
+        "27: expect find(\"id=template-level\").0.value == \"1\" → ok (45 ms)",
+        "28: expect find(\"id=template-empty\").count == 1 → ok (47 ms)",
+        "29: act id=new-project-title action=set_value value=\"Cafe Dash\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":534,\"x\":3736,\"y\":587},\"help\":\"\",\"id\":\"new-project-title\",\"name\":\"Game title\",\"ref\":\" (459 ms)",
+        "30: until find(\"id=new-project-id\").0.value == \"cafe-dash\" → ok (22 ms)",
+        "31: act id=new-project-create action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":78,\"x\":4192,\"y\":708},\"help\":\"\",\"id\":\"new-project-create\",\"name\":\"Create project\",\"ref\":\" (13 ms)",
+        "32: wait id=new-project gone=true timeout_ms=30000 → gone after 257 ms (257 ms)",
+        "33: until find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 14 nodes saved valid\" timeout=60000 → ok (917 ms)",
+        "34: expect find(\"id=project-name\").0.name == \"Project Cafe Dash\" → ok (30 ms)",
+        "35: expect find(\"role=alert\").count == 0 → ok (24 ms)"
+      ],
+      "message" : null,
+      "ms" : 5080,
+      "notes" : [
+
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "File › New Project… makes a game from \"One level\": named in the sheet, made in a new folder, opened on its level.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 23,
+      "checks" : [
+        {
+          "actual" : "\"Playing · step 102 · WASD move, E interact\"",
+          "check" : "find(\"text=Playing · step\").0.name matches \"step [1-9][0-9]{2}\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Stopped: scene as before Play (9d7e4d4c0198d790), view unchanged\"",
+          "check" : "find(\"id=stop-result\").0.name matches \"^Stopped: scene as before Play\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "41: act id=play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":79,\"x\":5415,\"y\":333},\"help\":\"\",\"id\":\"play\",\"name\":\"Play\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (20 ms)",
+        "42: until find(\"text=Playing · step\").0.name matches \"step [1-9][0-9]{2}\" timeout=60000 → ok (2959 ms)",
+        "43: act id=play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":79,\"x\":4756,\"y\":333},\"help\":\"\",\"id\":\"play\",\"name\":\"Stop\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (23 ms)",
+        "44: until find(\"id=stop-result\").0.name matches \"^Stopped: scene as before Play\" timeout=20000 → ok (101 ms)"
+      ],
+      "message" : null,
+      "ms" : 3316,
+      "notes" : [
+
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Play in place plays the new level, and Stop puts the scene back as it was.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 24,
+      "checks" : [
+        {
+          "actual" : "\"Cafe Dash\"",
+          "check" : "find(\"id=settings-title\").0.value == \"Cafe Dash\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"cafe-dash\"",
+          "check" : "find(\"id=settings-id\").0.value == \"cafe-dash\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Title Cafe Dash Deluxe\"",
+          "check" : "find(\"id=settings-undo\").0.name == \"Undo Title Cafe Dash Deluxe\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Cafe Dash\"",
+          "check" : "find(\"id=settings-title\").0.value == \"Cafe Dash\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Redo Title Cafe Dash Deluxe\"",
+          "check" : "find(\"id=settings-redo\").0.name == \"Redo Title Cafe Dash Deluxe\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Cafe Dash Deluxe\"",
+          "check" : "find(\"id=settings-title\").0.value == \"Cafe Dash Deluxe\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=settings-error\").count == 0",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "50: menu \"File › Project Settings…\" press → pressed File › Project Settings… (146 ms)",
+        "51: wait id=project-settings timeout_ms=10000 → found after 234 ms: group \"Project settings\" #project-settings [W:VRMXG Editor/0/0/0/0/8@dea6] (234 ms)",
+        "52: expect find(\"id=settings-title\").0.value == \"Cafe Dash\" → ok (28 ms)",
+        "53: expect find(\"id=settings-id\").0.value == \"cafe-dash\" → ok (32 ms)",
+        "54: act id=settings-title action=set_value value=\"Cafe Dash Deluxe\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":221,\"x\":3562,\"y\":512},\"help\":\"\",\"id\":\"settings-title\",\"name\":\"Game title\",\"ref\":\"W:V (426 ms)",
+        "55: until find(\"id=settings-undo\").0.name == \"Undo Title Cafe Dash Deluxe\" → ok (66 ms)",
+        "56: menu \"Edit › Undo\" press → pressed Edit › Undo (157 ms)",
+        "57: until find(\"id=settings-title\").0.value == \"Cafe Dash\" → ok (46 ms)",
+        "58: expect find(\"id=settings-redo\").0.name == \"Redo Title Cafe Dash Deluxe\" → ok (26 ms)",
+        "59: menu \"Edit › Redo\" press → pressed Edit › Redo (150 ms)",
+        "60: until find(\"id=settings-title\").0.value == \"Cafe Dash Deluxe\" → ok (45 ms)",
+        "61: expect find(\"id=settings-error\").count == 0 → ok (26 ms)"
+      ],
+      "message" : null,
+      "ms" : 1608,
+      "notes" : [
+
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Project Settings: a title change is one undo step, written to game.json; Edit › Undo and Redo work on the settings while the panel is open.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 25,
+      "checks" : [
+        {
+          "actual" : "\"Press a key for Jump, or Escape to cancel\"",
+          "check" : "find(\"id=settings-bind-jump-keyboard\").0.name == \"Press a key for Jump, or Escape to cancel\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Jump, keyboard: J. Change\"",
+          "check" : "find(\"id=settings-bind-jump-keyboard\").0.name == \"Jump, keyboard: J. Change\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Jump: J\"",
+          "check" : "find(\"id=settings-undo\").0.name == \"Undo Jump: J\"",
+          "ok" : true
+        },
+        {
+          "actual" : "87",
+          "check" : "find(\"text=E is Interact now. Move it to Jump?\").count > 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Jump, keyboard: E. Change\"",
+          "check" : "find(\"id=settings-bind-jump-keyboard\").0.name == \"Jump, keyboard: E. Change\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Interact, keyboard: Left click. Change\"",
+          "check" : "find(\"id=settings-bind-interact-keyboard\").0.name == \"Interact, keyboard: Left click. Change\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Jump, keyboard: J. Change\"",
+          "check" : "find(\"id=settings-bind-jump-keyboard\").0.name == \"Jump, keyboard: J. Change\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Interact, keyboard: E, Left click. Change\"",
+          "check" : "find(\"id=settings-bind-interact-keyboard\").0.name == \"Interact, keyboard: E, Left click. Change\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "67: act id=settings-bind-jump-keyboard action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":125,\"x\":3999,\"y\":722},\"help\":\"\",\"id\":\"settings-bind-jump-keyboard\",\"name\":\"Jump, keyboar (28 ms)",
+        "68: until find(\"id=settings-bind-jump-keyboard\").0.name == \"Press a key for Jump, or Escape to cancel\" → ok (12 ms)",
+        "69: keys keys=j → {\"sent\":true} (109 ms)",
+        "70: until find(\"id=settings-bind-jump-keyboard\").0.name == \"Jump, keyboard: J. Change\" → ok (15 ms)",
+        "71: expect find(\"id=settings-undo\").0.name == \"Undo Jump: J\" → ok (10 ms)",
+        "72: act id=settings-bind-jump-keyboard action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":125,\"x\":3999,\"y\":722},\"help\":\"\",\"id\":\"settings-bind-jump-keyboard\",\"name\":\"Jump, keyboar (11 ms)",
+        "73: keys keys=e → {\"sent\":true} (111 ms)",
+        "74: until find(\"text=E is Interact now. Move it to Jump?\").count > 0 → ok (19 ms)",
+        "75: act id=settings-rebind-move action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":63,\"x\":4029,\"y\":860},\"help\":\"\",\"id\":\"settings-rebind-move\",\"name\":\"Move It\",\"ref\":\"W:VRM (14 ms)",
+        "76: until find(\"id=settings-bind-jump-keyboard\").0.name == \"Jump, keyboard: E. Change\" → ok (38 ms)",
+        "77: expect find(\"id=settings-bind-interact-keyboard\").0.name == \"Interact, keyboard: Left click. Change\" → ok (26 ms)",
+        "78: menu \"Edit › Undo\" press → pressed Edit › Undo (144 ms)",
+        "79: until find(\"id=settings-bind-jump-keyboard\").0.name == \"Jump, keyboard: J. Change\" → ok (48 ms)",
+        "80: expect find(\"id=settings-bind-interact-keyboard\").0.name == \"Interact, keyboard: E, Left click. Change\" → ok (29 ms)"
+      ],
+      "message" : null,
+      "ms" : 843,
+      "notes" : [
+
+      ],
+      "row" : 4,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "Rebinding: Jump takes the key pressed (J); a key another action has (E, Interact's) asks first, Move It moves it, and Undo puts both back.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 26,
+      "checks" : [
+
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "86: act id=settings-new-layer action=set_value value=player commit=none → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":156,\"x\":3410,\"y\":846},\"help\":\"\",\"id\":\"settings-new-layer\",\"name\":\"New layer name\",\"r (384 ms)"
+      ],
+      "message" : "DISABLED: button \"Add layer\" is disabled: ",
+      "ms" : 1707,
+      "notes" : [
+        "shot 1: end"
+      ],
+      "row" : 5,
+      "section" : "",
+      "shots" : [
+        "<repo>/acceptance/results/m6-acceptance/hand-tests/m6-new-project/shots/r5-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "error",
+      "text" : "Physics layers: added by name, and the collision matrix changes both layers at once.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 27,
+      "checks" : [
+
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+
+      ],
+      "message" : "ELEMENT_NOT_FOUND: no element matches id=export-open",
+      "ms" : 448,
+      "notes" : [
+        "shot 1: end"
+      ],
+      "row" : 6,
+      "section" : "",
+      "shots" : [
+        "<repo>/acceptance/results/m6-acceptance/hand-tests/m6-new-project/shots/r6-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "error",
+      "text" : "Export Game writes the new game's build, named by its id.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 28,
+      "checks" : [
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=template-empty\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"blank\"",
+          "check" : "find(\"id=new-project-id\").0.value == \"blank\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene main.vrmxs 6 nodes saved valid hash cc3145221e8ae6bd\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene main.vrmxs 6 nodes saved valid\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project Blank\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project Blank\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Playing · step 120 · WASD move, E interact\"",
+          "check" : "find(\"text=Playing · step\").0.name matches \"step [1-9][0-9]{2}\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Stopped: scene as before Play (cc3145221e8ae6bd), view unchanged\"",
+          "check" : "find(\"id=stop-result\").0.name matches \"^Stopped: scene as before Play\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Exported game blank: 27 files, 8721538 bytes, entry main.vrmxs, runtime vrmxg-game 0.1.0+01c4bb509d4b · build 0d374e9c40b7ca14 · manifest a5c87f28aa6f0f20 · ~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/m6-builds/blank\"",
+          "check" : "find(\"id=export-game-result\").0.name matches \"^Exported game blank: .*entry main.vrmxs.*/m6-builds/blank$\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "113: menu \"File › New Project…\" press → pressed File › New Project… (159 ms)",
+        "114: wait id=new-project timeout_ms=10000 → found after 35 ms: group \"New project\" #new-project [W:VRMXG Editor/0/0/0/0/8@0543] (35 ms)",
+        "115: act id=template-empty action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":100,\"w\":426,\"x\":3410,\"y\":479},\"help\":\"\",\"id\":\"template-empty\",\"name\":\"Template Empty game: One  (26 ms)",
+        "116: until find(\"id=template-empty\").0.value == \"1\" → ok (20 ms)",
+        "117: act id=new-project-title action=set_value value=\"Blank\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":534,\"x\":3736,\"y\":587},\"help\":\"\",\"id\":\"new-project-title\",\"name\":\"Game title\",\"ref\":\" (427 ms)",
+        "118: until find(\"id=new-project-id\").0.value == \"blank\" → ok (16 ms)",
+        "119: act id=new-project-create action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":78,\"x\":4192,\"y\":708},\"help\":\"\",\"id\":\"new-project-create\",\"name\":\"Create project\",\"ref\":\" (22 ms)",
+        "120: wait id=new-project gone=true timeout_ms=30000 → gone after 387 ms (387 ms)",
+        "121: until find(\"id=doc-state\").0.name matches \"^Scene main.vrmxs 6 nodes saved valid\" timeout=60000 → ok (10 ms)",
+        "122: expect find(\"id=project-name\").0.name == \"Project Blank\" → ok (14 ms)",
+        "123: act id=play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":79,\"x\":4552,\"y\":333},\"help\":\"\",\"id\":\"play\",\"name\":\"Play\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (12 ms)",
+        "124: until find(\"text=Playing · step\").0.name matches \"step [1-9][0-9]{2}\" timeout=60000 → ok (18 ms)",
+        "125: act id=play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":79,\"x\":4756,\"y\":333},\"help\":\"\",\"id\":\"play\",\"name\":\"Stop\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (58 ms)",
+        "126: until find(\"id=stop-result\").0.name matches \"^Stopped: scene as before Play\" timeout=20000 → ok (17 ms)",
+        "127: menu \"File › Export Game…\" press → pressed File › Export Game… (157 ms)",
+        "128: until find(\"id=export-game-result\").0.name matches \"^Exported game blank: .*entry main.vrmxs.*/m6-builds/blank$\" timeout=120000 → ok (321 ms)"
+      ],
+      "message" : null,
+      "ms" : 1928,
+      "notes" : [
+
+      ],
+      "row" : 7,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "New Project from \"Empty game\": the project opens on its one scene, plays, and exports.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 29,
+      "checks" : [
+        {
+          "actual" : "\"Blank\"",
+          "check" : "menu(\"File › Open Recent\").items.0.name == \"Blank\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project Cafe Dash\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project Cafe Dash\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene level.vrmxs 14 nodes saved valid hash 9d7e4d4c0198d790\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 14 nodes saved valid\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Recent…\"",
+          "check" : "find(\"id=open-recent\").0.value == \"Recent…\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "133: expect menu(\"File › Open Recent\").items.0.name == \"Blank\" → ok (162 ms)",
+        "134: menu \"File › Open Recent › Cafe Dash\" press → pressed File › Open Recent › Cafe Dash (170 ms)",
+        "135: until find(\"id=project-name\").0.name == \"Project Cafe Dash\" timeout=30000 → ok (1104 ms)",
+        "136: until find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 14 nodes saved valid\" timeout=60000 → ok (27 ms)",
+        "137: expect find(\"id=open-recent\").0.value == \"Recent…\" → ok (22 ms)"
+      ],
+      "message" : null,
+      "ms" : 1708,
+      "notes" : [
+
+      ],
+      "row" : 8,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "File › Open Recent reopens the first project, with no panel, on its level.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 30,
+      "checks" : [
+
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+
+      ],
+      "message" : "run outside the app: node acceptance/m6/templates-game.mjs <container>/tmp/m6-builds/cafe-dash <container>/tmp/m6-builds/blank",
+      "ms" : 0,
+      "notes" : [
+
+      ],
+      "row" : 9,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "skipped",
+      "text" : "The builds are whole, and the game app plays each: the level to its ending (`templates-game.mjs`, outside the app).",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 31,
+      "checks" : [
+
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+
+      ],
+      "message" : "run by HAND-TEST-M6-NEW-PROJECT-recent.scenario.md, which has no new-project hook (the real save panel)",
+      "ms" : 0,
+      "notes" : [
+
+      ],
+      "row" : 10,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "skipped",
+      "text" : "The folder panel: New Project with no hook asks where the folder goes and what it is called; Cancel makes nothing and leaves the sheet open.",
+      "undo" : null
+    }
+  ],
+  "scenario" : "<repo>/apps/editor-mac/docs/hand-test/HAND-TEST-M6-NEW-PROJECT.scenario.md",
+  "summary" : "10 rows: 6 passed, 0 failed, 2 errors, 0 need you, 2 skipped; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}

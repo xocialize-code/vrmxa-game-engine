@@ -1,0 +1,3 @@
+ Particle system powered by three.quarks. https://quarks.art/
+{"project":"tea-time","game":"tea-time","pass":true,"decided":{"result":"won","step":144,"score":10},"ending":{"scene":"ending.vrmxs","step":265},"final":{"scene":"ending.vrmxs","step":386,"goal":null},"ms":666}
+### w11-agent-build-node: node acceptance/m6/templates-node.mjs --build <scratch>/w11-agent/builds/tea-time — started 2026-11-27T16:33:33Z, ended 2026-11-27T16:33:34Z, exit 0

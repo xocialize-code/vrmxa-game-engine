@@ -1,0 +1,4098 @@
+{
+ "cell": "chromium-webgpu",
+ "runtime": "chromium",
+ "backend": "webgpu",
+ "ua": "156.0.8078.4",
+ "started": "2026-11-27T15:50:21.451Z",
+ "checks": {
+  "acceptance": {
+   "query": "mode=acceptance&renderer=webgpu",
+   "canonical": "78ab33e0d7508476",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "78ab33e0d7508476",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "sameAsNode": true,
+      "renderedSameAsHeadless": true,
+      "snapshot": true,
+      "backend": true
+     },
+     "ms": 30776,
+     "wall": {
+      "start": 1795794631976,
+      "end": 1795794662752
+     },
+     "gpuLoad": {
+      "samples": 11,
+      "gpuUtil": {
+       "min": 4,
+       "median": 4,
+       "max": 64
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.1,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 0.4,
+       "browser:Microsoft Edge": 1.4,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 20.5,
+       "chromium:Google Chrome for Testing": 9.9,
+       "chromium:chrome_crashpad_handler": 1.4,
+       "chromium:Google Chrome for Testing Helper (GPU)": 65.7,
+       "chromium:Google Chrome for Testing Helper": 2.8,
+       "chromium:Google Chrome for Testing Helper (Alerts)": 0,
+       "gaea:Gaea": 2.3,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 132
+      },
+      "first": {
+       "at": 1795794631976,
+       "gpuUtil": 7,
+       "processes": [
+        "node:node 2.9%",
+        "chromium:Google Chrome for Testing 9.9%",
+        "chromium:chrome_crashpad_handler 1.4%",
+        "chromium:chrome_crashpad_handler 1%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794662036,
+       "gpuUtil": 64,
+       "processes": [
+        "chromium:Google Chrome for Testing 8.4%",
+        "chromium:Google Chrome for Testing Helper (GPU) 65.7%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 106.3%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "final": "fe69bad3406ab5f6",
+     "rendered": {
+      "frames": 600,
+      "renderMs": {
+       "mean": 0.528,
+       "p95": 0.7
+      },
+      "sameAsHeadless": true,
+      "calls": 62339,
+      "triangles": 92268231,
+      "debug": {
+       "colliders": 62,
+       "sensors": 14,
+       "capsules": 2
+      },
+      "post": {
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ],
+       "costMs": {
+        "none1080p": 1.5,
+        "none4k": 3.1,
+        "anime1080p": 3.5,
+        "anime4k": 8.5
+       },
+       "ssim": {
+        "noGrain": 0.9843,
+        "grain": 0.9489
+       },
+       "views4Ms": 3.9
+      }
+     },
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  },
+  "backends": {
+   "query": "mode=backends&renderer=webgpu",
+   "canonical": "d34ebf75e93190ff",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "d34ebf75e93190ff",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "distinctFrames": true
+     },
+     "ms": 1774,
+     "wall": {
+      "start": 1795794662769,
+      "end": 1795794664543
+     },
+     "gpuLoad": {
+      "samples": 5,
+      "gpuUtil": {
+       "min": 4,
+       "median": 4,
+       "max": 64
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.1,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 0.4,
+       "browser:Microsoft Edge": 0.4,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 12.7,
+       "chromium:Google Chrome for Testing": 8.4,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 65.7,
+       "chromium:Google Chrome for Testing Helper": 2.8,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 118.9,
+       "gaea:Gaea": 0
+      },
+      "first": {
+       "at": 1795794650028,
+       "gpuUtil": 4,
+       "processes": [
+        "chromium:Google Chrome for Testing Helper (Renderer) 112.9%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794662036,
+       "gpuUtil": 64,
+       "processes": [
+        "chromium:Google Chrome for Testing 8.4%",
+        "chromium:Google Chrome for Testing Helper (GPU) 65.7%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 106.3%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": [
+      1280,
+      720
+     ],
+     "stillMsWithRead": 27.8,
+     "kind": "clean"
+    },
+    {
+     "load": 2,
+     "label": "load 2",
+     "ok": true,
+     "digest": "d34ebf75e93190ff",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "distinctFrames": true
+     },
+     "ms": 1806,
+     "wall": {
+      "start": 1795794664543,
+      "end": 1795794666349
+     },
+     "gpuLoad": {
+      "samples": 6,
+      "gpuUtil": {
+       "min": 4,
+       "median": 4,
+       "max": 64
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.1,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 0.4,
+       "browser:Microsoft Edge": 0.4,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 12.7,
+       "chromium:Google Chrome for Testing": 18.3,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 65.7,
+       "chromium:Google Chrome for Testing Helper": 4.9,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 119.4,
+       "gaea:Gaea": 0
+      },
+      "first": {
+       "at": 1795794650028,
+       "gpuUtil": 4,
+       "processes": [
+        "chromium:Google Chrome for Testing Helper (Renderer) 112.9%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794665036,
+       "gpuUtil": 38,
+       "processes": [
+        "node:node 5.1%",
+        "chromium:Google Chrome for Testing 18.3%",
+        "chromium:Google Chrome for Testing Helper (GPU) 13.2%",
+        "chromium:Google Chrome for Testing Helper 4.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 13.4%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 3.6%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 119.4%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": [
+      1280,
+      720
+     ],
+     "stillMsWithRead": 27.3,
+     "kind": "clean"
+    },
+    {
+     "load": 3,
+     "label": "load 3",
+     "ok": true,
+     "digest": "d34ebf75e93190ff",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "distinctFrames": true
+     },
+     "ms": 1793,
+     "wall": {
+      "start": 1795794666350,
+      "end": 1795794668143
+     },
+     "gpuLoad": {
+      "samples": 6,
+      "gpuUtil": {
+       "min": 4,
+       "median": 25,
+       "max": 64
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.1,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 0.4,
+       "browser:Microsoft Edge": 0.4,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 19.8,
+       "chromium:Google Chrome for Testing": 18.3,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 65.7,
+       "chromium:Google Chrome for Testing Helper": 4.9,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 119.4,
+       "gaea:Gaea": 0
+      },
+      "first": {
+       "at": 1795794653029,
+       "gpuUtil": 4,
+       "processes": [
+        "chromium:Google Chrome for Testing Helper (Renderer) 116.4%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794668043,
+       "gpuUtil": 25,
+       "processes": [
+        "node:node 19.8%",
+        "chromium:Google Chrome for Testing 2.4%",
+        "chromium:Google Chrome for Testing Helper (GPU) 13.8%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 114.6%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": [
+      1280,
+      720
+     ],
+     "stillMsWithRead": 26.9,
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  },
+  "frames": {
+   "query": "mode=frames&renderer=webgpu&canon=chromium-webgpu",
+   "canonical": "d6784fc3c3d16a2f",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": false,
+     "digest": "8c635c74ed6812ed",
+     "match": false,
+     "differ": [
+      "filmSecond"
+     ],
+     "verdicts": {
+      "particlesSameAsHeadless": true,
+      "particlesDrawnByHost": true,
+      "particlesDistinctFrames": true,
+      "restoredSame": true,
+      "filmTwiceIdentical": false,
+      "stillMatchesCanvas": true,
+      "readbackHasContent": true,
+      "exportAfterStillSame": true,
+      "alphaPremultiplied": true,
+      "noErrors": true,
+      "backend": true,
+      "notTimedOut": true
+     },
+     "ms": 29918,
+     "wall": {
+      "start": 1795794668143,
+      "end": 1795794698061
+     },
+     "gpuLoad": {
+      "samples": 15,
+      "gpuUtil": {
+       "min": 4,
+       "median": 38,
+       "max": 64
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.6,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 0.9,
+       "browser:Microsoft Edge": 0.5,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 19.8,
+       "chromium:Google Chrome for Testing": 18.3,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 65.7,
+       "chromium:Google Chrome for Testing Helper": 4.9,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 134.6,
+       "gaea:Gaea": 0
+      },
+      "first": {
+       "at": 1795794656028,
+       "gpuUtil": 4,
+       "processes": [
+        "node:node 12.7%",
+        "chromium:Google Chrome for Testing 4.8%",
+        "chromium:Google Chrome for Testing Helper 2.8%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 115.7%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794698043,
+       "gpuUtil": 48,
+       "processes": [
+        "node:node 7.2%",
+        "chromium:Google Chrome for Testing 1.6%",
+        "chromium:Google Chrome for Testing Helper (GPU) 40.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 128.8%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "particles": {
+      "final": "09ef4d21b00189d1",
+      "distinctFrames": 361,
+      "batch": {
+       "renderer": "three.quarks/webgpu",
+       "batches": 3,
+       "particles": 1149
+      }
+     },
+     "film": {
+      "frames": 1080,
+      "first": {
+       "frames": 1080,
+       "audioBytes": 8640044,
+       "fps": [
+        24,
+        1
+       ],
+       "seconds": 45,
+       "width": 1920,
+       "height": 1080,
+       "backend": "webgpu",
+       "steps": 2700,
+       "audioHash": "7a6ff838",
+       "check": null,
+       "ms": {
+        "total": 8662.1,
+        "begin": 226.9,
+        "render": 2153.1,
+        "readback": 803,
+        "wait": 2.8,
+        "audio": 206.6,
+        "end": 0
+       },
+       "perFrameMs": {
+        "render": 1.99,
+        "readback": 0.74,
+        "wait": 0,
+        "total": 8.02
+       },
+       "framesPerSecond": 124.68,
+       "steamDrawn": true,
+       "digest": "50d3922419201ff4",
+       "distinct": 1080,
+       "worldDigest": "639c5bf78f575379"
+      },
+      "second": {
+       "frames": 1080,
+       "audioBytes": 8640044,
+       "fps": [
+        24,
+        1
+       ],
+       "seconds": 45,
+       "width": 1920,
+       "height": 1080,
+       "backend": "webgpu",
+       "steps": 2700,
+       "audioHash": "7a6ff838",
+       "check": null,
+       "ms": {
+        "total": 8823.9,
+        "begin": 214.1,
+        "render": 2113.7,
+        "readback": 807.3,
+        "wait": 2.9,
+        "audio": 218.6,
+        "end": 0
+       },
+       "perFrameMs": {
+        "render": 1.96,
+        "readback": 0.75,
+        "wait": 0,
+        "total": 8.17
+       },
+       "framesPerSecond": 122.39,
+       "steamDrawn": true,
+       "digest": "59c346e4907c208a",
+       "distinct": 1080,
+       "worldDigest": "639c5bf78f575379"
+      },
+      "framesDiffer": [
+       27,
+       730,
+       776
+      ],
+      "odd": [
+       {
+        "export": "second",
+        "frame": 27,
+        "hash": "9a08286f13ec3568",
+        "canonical": "bb73943b2cbaf6c4",
+        "topDown": true
+       },
+       {
+        "export": "second",
+        "frame": 730,
+        "hash": "a38e6676daa763d6",
+        "canonical": "56d9e830b0bd2520",
+        "topDown": true
+       },
+       {
+        "export": "second",
+        "frame": 776,
+        "hash": "7823fb7728af9ae5",
+        "canonical": "3a7a574e3fb0a182",
+        "topDown": true
+       }
+      ]
+     },
+     "readback": {
+      "still640": {
+       "content": 1
+      },
+      "1080p": {
+       "renderMs": {
+        "median": 1.3,
+        "p95": 1.9,
+        "min": 1.2,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 0.3,
+        "p95": 1.8,
+        "min": 0.1,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 0.5,
+        "p95": 0.8,
+        "min": 0.4,
+        "n": 30
+       },
+       "hash": "4c1ad7c1dbc06059",
+       "content": 1
+      },
+      "4k": {
+       "renderMs": {
+        "median": 2,
+        "p95": 3.7,
+        "min": 1.5,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 1.7,
+        "p95": 4.2,
+        "min": 0.5,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 1.2,
+        "p95": 1.5,
+        "min": 1.1,
+        "n": 30
+       },
+       "hash": "5b8569da41e816bb",
+       "content": 1
+      },
+      "1366x768": {
+       "renderMs": {
+        "median": 1.2,
+        "p95": 1.7,
+        "min": 1.1,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 0.2,
+        "p95": 1.3,
+        "min": 0,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 0.4,
+        "p95": 0.8,
+        "min": 0.3,
+        "n": 30
+       },
+       "hash": "ebcc87643cfbd9e3",
+       "content": 1
+      }
+     },
+     "alpha": {
+      "raw": [
+       127,
+       0,
+       0,
+       128
+      ],
+      "toImageRGBA": [
+       253,
+       0,
+       0,
+       128
+      ],
+      "clearCorner": [
+       127,
+       0,
+       0,
+       128
+      ]
+     },
+     "kind": "pixels"
+    },
+    {
+     "load": 1,
+     "label": "rerun of load 1",
+     "ok": false,
+     "digest": "f0350a1aad71fae4",
+     "match": false,
+     "differ": [
+      "film",
+      "filmSecond"
+     ],
+     "verdicts": {
+      "particlesSameAsHeadless": true,
+      "particlesDrawnByHost": true,
+      "particlesDistinctFrames": true,
+      "restoredSame": true,
+      "filmTwiceIdentical": false,
+      "stillMatchesCanvas": true,
+      "readbackHasContent": true,
+      "exportAfterStillSame": true,
+      "alphaPremultiplied": true,
+      "noErrors": true,
+      "backend": true,
+      "notTimedOut": true
+     },
+     "ms": 31219,
+     "wall": {
+      "start": 1795794698069,
+      "end": 1795794729288
+     },
+     "gpuLoad": {
+      "samples": 15,
+      "gpuUtil": {
+       "min": 21,
+       "median": 38,
+       "max": 48
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.6,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 1.7,
+       "browser:Microsoft Edge": 4.1,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 15.8,
+       "chromium:Google Chrome for Testing": 5.4,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 40.9,
+       "chromium:Google Chrome for Testing Helper": 2.1,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 136.7,
+       "gaea:Gaea": 0
+      },
+      "first": {
+       "at": 1795794686045,
+       "gpuUtil": 38,
+       "processes": [
+        "node:node 12.9%",
+        "chromium:Google Chrome for Testing 2.2%",
+        "chromium:Google Chrome for Testing Helper (GPU) 27.2%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 134.6%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794728052,
+       "gpuUtil": 38,
+       "processes": [
+        "node:node 15.8%",
+        "chromium:Google Chrome for Testing 5.4%",
+        "chromium:Google Chrome for Testing Helper (GPU) 19%",
+        "chromium:Google Chrome for Testing Helper 2.1%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 124.2%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "particles": {
+      "final": "09ef4d21b00189d1",
+      "distinctFrames": 361,
+      "batch": {
+       "renderer": "three.quarks/webgpu",
+       "batches": 3,
+       "particles": 1149
+      }
+     },
+     "film": {
+      "frames": 1080,
+      "first": {
+       "frames": 1080,
+       "audioBytes": 8640044,
+       "fps": [
+        24,
+        1
+       ],
+       "seconds": 45,
+       "width": 1920,
+       "height": 1080,
+       "backend": "webgpu",
+       "steps": 2700,
+       "audioHash": "7a6ff838",
+       "check": null,
+       "ms": {
+        "total": 9234.7,
+        "begin": 224.4,
+        "render": 2277.2,
+        "readback": 855.8,
+        "wait": 3.2,
+        "audio": 211.8,
+        "end": 0
+       },
+       "perFrameMs": {
+        "render": 2.11,
+        "readback": 0.79,
+        "wait": 0,
+        "total": 8.55
+       },
+       "framesPerSecond": 116.95,
+       "steamDrawn": true,
+       "digest": "5264e0d456bfd835",
+       "distinct": 1080,
+       "worldDigest": "639c5bf78f575379"
+      },
+      "second": {
+       "frames": 1080,
+       "audioBytes": 8640044,
+       "fps": [
+        24,
+        1
+       ],
+       "seconds": 45,
+       "width": 1920,
+       "height": 1080,
+       "backend": "webgpu",
+       "steps": 2700,
+       "audioHash": "7a6ff838",
+       "check": null,
+       "ms": {
+        "total": 8971.9,
+        "begin": 211.4,
+        "render": 2187.1,
+        "readback": 829,
+        "wait": 4.4,
+        "audio": 205.8,
+        "end": 0
+       },
+       "perFrameMs": {
+        "render": 2.03,
+        "readback": 0.77,
+        "wait": 0,
+        "total": 8.31
+       },
+       "framesPerSecond": 120.38,
+       "steamDrawn": true,
+       "digest": "40b28acbf83c2e0d",
+       "distinct": 1080,
+       "worldDigest": "639c5bf78f575379"
+      },
+      "framesDiffer": [
+       62,
+       73,
+       105,
+       608,
+       862,
+       1060
+      ],
+      "odd": [
+       {
+        "export": "first",
+        "frame": 73,
+        "hash": "16052683020ab638",
+        "canonical": "03c11488f26a5d61",
+        "topDown": true
+       },
+       {
+        "export": "first",
+        "frame": 105,
+        "hash": "b5919202e2236085",
+        "canonical": "7a0216c11782be65",
+        "topDown": true
+       },
+       {
+        "export": "first",
+        "frame": 862,
+        "hash": "42cfa9d065266799",
+        "canonical": "0db12d8b73dca2c5",
+        "topDown": true
+       },
+       {
+        "export": "first",
+        "frame": 1060,
+        "hash": "29a34693e38ee7ed",
+        "canonical": "21798193e87925be",
+        "topDown": true
+       },
+       {
+        "export": "second",
+        "frame": 62,
+        "hash": "cc9b78f228540b93",
+        "canonical": "2e7e92931d944bf9",
+        "topDown": true
+       },
+       {
+        "export": "second",
+        "frame": 608,
+        "hash": "e395cad43072d585",
+        "canonical": "905a44f25dbe296f",
+        "topDown": true
+       }
+      ]
+     },
+     "readback": {
+      "still640": {
+       "content": 1
+      },
+      "1080p": {
+       "renderMs": {
+        "median": 1.5,
+        "p95": 2.2,
+        "min": 1.2,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 0.3,
+        "p95": 1.5,
+        "min": 0.1,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 0.5,
+        "p95": 0.7,
+        "min": 0.4,
+        "n": 30
+       },
+       "hash": "4c1ad7c1dbc06059",
+       "content": 1
+      },
+      "4k": {
+       "renderMs": {
+        "median": 1.9,
+        "p95": 2.9,
+        "min": 1.5,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 1.3,
+        "p95": 3.5,
+        "min": 0.5,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 1.3,
+        "p95": 2.2,
+        "min": 1.2,
+        "n": 30
+       },
+       "hash": "5b8569da41e816bb",
+       "content": 1
+      },
+      "1366x768": {
+       "renderMs": {
+        "median": 1.2,
+        "p95": 1.9,
+        "min": 1,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 0.1,
+        "p95": 1.2,
+        "min": 0.1,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 0.4,
+        "p95": 0.6,
+        "min": 0.3,
+        "n": 30
+       },
+       "hash": "ebcc87643cfbd9e3",
+       "content": 1
+      }
+     },
+     "alpha": {
+      "raw": [
+       127,
+       0,
+       0,
+       128
+      ],
+      "toImageRGBA": [
+       253,
+       0,
+       0,
+       128
+      ],
+      "clearCorner": [
+       127,
+       0,
+       0,
+       128
+      ]
+     },
+     "kind": "pixels"
+    }
+   ],
+   "incidents": [],
+   "failure": {
+    "load": 1,
+    "why": "the rerun differs too",
+    "failed": {
+     "load": 1,
+     "kind": "pixels",
+     "digest": "8c635c74ed6812ed",
+     "differ": [
+      "filmSecond"
+     ],
+     "verdicts": [
+      "filmTwiceIdentical"
+     ],
+     "gpuLoad": {
+      "samples": 15,
+      "gpuUtil": {
+       "min": 4,
+       "median": 38,
+       "max": 64
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.6,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 0.9,
+       "browser:Microsoft Edge": 0.5,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 19.8,
+       "chromium:Google Chrome for Testing": 18.3,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 65.7,
+       "chromium:Google Chrome for Testing Helper": 4.9,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 134.6,
+       "gaea:Gaea": 0
+      },
+      "first": {
+       "at": 1795794656028,
+       "gpuUtil": 4,
+       "processes": [
+        "node:node 12.7%",
+        "chromium:Google Chrome for Testing 4.8%",
+        "chromium:Google Chrome for Testing Helper 2.8%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 115.7%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794698043,
+       "gpuUtil": 48,
+       "processes": [
+        "node:node 7.2%",
+        "chromium:Google Chrome for Testing 1.6%",
+        "chromium:Google Chrome for Testing Helper (GPU) 40.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 128.8%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "oddFrames": [
+      {
+       "export": "second",
+       "frame": 27,
+       "hash": "9a08286f13ec3568",
+       "canonical": "bb73943b2cbaf6c4",
+       "tiles": [
+        "cb4bda32",
+        "54a9cda5",
+        "8d7a568",
+        "31ef8a28",
+        "dd01165d",
+        "7df24222",
+        "ee6fdb62",
+        "1f92ecae",
+        "3d50aa8",
+        "1ffc24b8",
+        "e145b042",
+        "6f08d52a",
+        "88cb7fff",
+        "9ef5642f",
+        "fd3d6363",
+        "f949d933",
+        "56a93a08",
+        "3ffbd688",
+        "f2862959",
+        "e9b2a5c5",
+        "d20fd0f5",
+        "557d8296",
+        "d9b2fa6a",
+        "cc0edeee",
+        "8da54a47",
+        "f49cb3c9",
+        "308a739f",
+        "5a624ddd",
+        "19de0185",
+        "9ecb729d",
+        "62a97b5e",
+        "27cbb1a",
+        "5ee95be4",
+        "5a60cbce",
+        "3690c351",
+        "1bfe9ce4",
+        "bd0d2484",
+        "74bf1509",
+        "5732f9",
+        "25617e55",
+        "af5f8c50",
+        "cf343946",
+        "a731fdda",
+        "49f3d95",
+        "472eeda0",
+        "fe1e49fe",
+        "4ebc3140",
+        "91765461",
+        "e4496709",
+        "e38d1a3d",
+        "e78cfe1c",
+        "738e1e35",
+        "152770c8",
+        "5c3b6c0d",
+        "f52498a1",
+        "f998dffc",
+        "d6776e9f",
+        "8408b4d8",
+        "e827fe2c",
+        "37b4a5e",
+        "1050bc24",
+        "9742701d",
+        "86f60616",
+        "1881c6fd",
+        "d66f3699",
+        "45a77418",
+        "9d695599",
+        "32fcda19",
+        "5328514e",
+        "1cfe9abf",
+        "85523941",
+        "8b6a59f4",
+        "e479542c",
+        "5332235",
+        "ebf6a689",
+        "1428c28f",
+        "cf412043",
+        "ff137c28",
+        "afd16509",
+        "8e654c3f",
+        "adf160ab",
+        "edf29598",
+        "2da9f69d",
+        "e2c27db0",
+        "511dcb60",
+        "7dd84b91",
+        "705110db",
+        "6ab6be50",
+        "d7dddbc6",
+        "4537d0c9",
+        "1af6fb88",
+        "5e7cbf3c",
+        "4b538d1b",
+        "bca3b66b",
+        "e0c8f4a0",
+        "a6c1fabc",
+        "7c3ca6b8",
+        "dc2cc9a7",
+        "88eaf0c7",
+        "902cc4c6",
+        "440ad0c3",
+        "737a998f",
+        "bbccee68",
+        "8b4ecb82",
+        "a0f8bae8",
+        "1b0d9f88",
+        "321a98c9",
+        "c7be9137",
+        "27414d5d",
+        "bf3372f9",
+        "eec73eb3",
+        "49ed2518",
+        "21ad8318",
+        "df0835f0",
+        "cefc19d9",
+        "7fc4d702",
+        "75ca36c0",
+        "33bf44ca",
+        "2dbc4fea",
+        "be867f42",
+        "5e8dd5f8",
+        "8be38fc0",
+        "2664f4b5",
+        "6d1a0abd",
+        "dd36210b",
+        "735505ba",
+        "80ff872e",
+        "89b1c9c5",
+        "f237ba1e",
+        "536b9cf0",
+        "3c97c7e",
+        "32289187",
+        "497acf60",
+        "d07ae731",
+        "787fef1f",
+        "2427c831",
+        "281eb519",
+        "61c5e258",
+        "5276f1d7",
+        "7abb6772",
+        "3cd228e3",
+        "492b6bc1",
+        "cddc0ef5",
+        "6e7242aa"
+       ],
+       "topDown": true
+      },
+      {
+       "export": "second",
+       "frame": 730,
+       "hash": "a38e6676daa763d6",
+       "canonical": "56d9e830b0bd2520",
+       "tiles": [
+        "e4d04b7",
+        "74280427",
+        "ff5bde3f",
+        "8077ac19",
+        "2f9d4b42",
+        "8ba26a09",
+        "2dc39f9e",
+        "30645dd6",
+        "6349f690",
+        "d75a8487",
+        "516d9fd1",
+        "23c9042a",
+        "6a94c483",
+        "77766897",
+        "9eec0830",
+        "51c1291b",
+        "1118c1ef",
+        "ea66a34e",
+        "a0cede1f",
+        "54dee109",
+        "1ba80c8f",
+        "4edf5216",
+        "9e68a872",
+        "6fe5b396",
+        "16e24e8a",
+        "ec5c87b5",
+        "4949f6fd",
+        "b8fe25d2",
+        "84eda2b1",
+        "d42af095",
+        "8983c8da",
+        "cbc8b202",
+        "a49b5762",
+        "883ccc7d",
+        "3bd04582",
+        "b11dc332",
+        "89c6a796",
+        "767514e4",
+        "f4b89cd9",
+        "5ed167a0",
+        "87b6a239",
+        "23e3af47",
+        "74dbebf9",
+        "e596ddbb",
+        "b5db17fc",
+        "9b448152",
+        "6089f175",
+        "f58f791b",
+        "94cf7c72",
+        "4e5a2d1b",
+        "54acacc7",
+        "7a953735",
+        "27f3bc09",
+        "db08de5b",
+        "3397aa0c",
+        "4965cdf7",
+        "a2d308e2",
+        "7d21d360",
+        "b17b9e5d",
+        "40506b83",
+        "87cc3e20",
+        "3645e47e",
+        "ee3aba5b",
+        "bf4fc732",
+        "5aa2a1d9",
+        "81accd44",
+        "d3d64ad",
+        "a69387a0",
+        "ddcb06b1",
+        "87e65bf5",
+        "bdd9f0b3",
+        "2cc248f7",
+        "1f47ab0f",
+        "4480fb5d",
+        "f17bd1f8",
+        "66ec206c",
+        "239dfbf9",
+        "6d2fda3f",
+        "105168b7",
+        "3db60a9d",
+        "49a11d15",
+        "d9ee1d13",
+        "388dc9a2",
+        "72d8fb6",
+        "61e76bbd",
+        "778731b0",
+        "6697f58",
+        "6df6a979",
+        "103a3b0b",
+        "51b09f4e",
+        "936f3436",
+        "972222ab",
+        "c26b4297",
+        "7bdf56e",
+        "219d3f8",
+        "b25909f1",
+        "bfb8af20",
+        "e1459917",
+        "428cb0c5",
+        "4755766",
+        "82b6a2aa",
+        "b1155ed6",
+        "a2455d31",
+        "8df04b11",
+        "2b38bae8",
+        "b8a4301f",
+        "76f5c47d",
+        "670a4f0c",
+        "2bfaab87",
+        "46cdbeed",
+        "b48e38c0",
+        "7e8c80c4",
+        "c0fe76db",
+        "afec418f",
+        "81aac4a3",
+        "21e50e00",
+        "376e9c30",
+        "48f4c6c9",
+        "e9f6e6b7",
+        "614460d9",
+        "4e307860",
+        "a6121405",
+        "cdd98ecb",
+        "458b9276",
+        "e1c41935",
+        "43d3b2c4",
+        "40a4fd30",
+        "b8d9e4da",
+        "969f65b7",
+        "c6bc61fb",
+        "80823b75",
+        "981389c5",
+        "2a8c9684",
+        "282d3742",
+        "7c5678e5",
+        "56a00578",
+        "798c2d91",
+        "72eb81c0",
+        "8cca81bf",
+        "4db4b746",
+        "cba4680",
+        "40b2bb6f",
+        "abad593b",
+        "2aa1ba5a"
+       ],
+       "topDown": true
+      },
+      {
+       "export": "second",
+       "frame": 776,
+       "hash": "7823fb7728af9ae5",
+       "canonical": "3a7a574e3fb0a182",
+       "tiles": [
+        "b9456e69",
+        "b89b47ef",
+        "3fe95360",
+        "1fe4eea",
+        "4e6e0a8f",
+        "a3ae5562",
+        "ef350e86",
+        "77af413a",
+        "c1640c0a",
+        "59073453",
+        "2f09cca9",
+        "6249d7e9",
+        "d4f4813c",
+        "2cca78b3",
+        "f23ee411",
+        "851472d9",
+        "3c83d0e3",
+        "e6e8d2d9",
+        "a92c669e",
+        "17711965",
+        "4a55ce8b",
+        "bed74154",
+        "94feaf54",
+        "e028421e",
+        "c13b6b32",
+        "96be48fe",
+        "72d660d1",
+        "51057548",
+        "4c16ebd8",
+        "3c70718d",
+        "fbe9bd31",
+        "b90ed90",
+        "eff02be5",
+        "cbb6915",
+        "73cb223",
+        "99dae959",
+        "a4147d70",
+        "615eb54f",
+        "31027f39",
+        "24100fff",
+        "d4b5a34b",
+        "6c730909",
+        "6bb2ad1c",
+        "6aee7472",
+        "301e398b",
+        "39b8e9d",
+        "a2870f1b",
+        "f627432c",
+        "13ba7c00",
+        "2b192c24",
+        "5fd3142",
+        "ba5d377e",
+        "74d889ce",
+        "c9444394",
+        "13262d34",
+        "71044486",
+        "95e92c80",
+        "6d393140",
+        "36ade95f",
+        "62082769",
+        "ccce5ba",
+        "88b1dbda",
+        "cb0807df",
+        "250721",
+        "9c0f4e81",
+        "ff956541",
+        "450da0bd",
+        "e2dc6e46",
+        "aba586fc",
+        "23a5995a",
+        "8d7e4cec",
+        "5df8a8f5",
+        "59bf0542",
+        "fccdfefb",
+        "1bd7bf4c",
+        "73b7b014",
+        "39d09bb5",
+        "76021b88",
+        "36ddf29d",
+        "c04aafaf",
+        "78c1b56a",
+        "9fb419cf",
+        "c4dd8837",
+        "7415b6d",
+        "7bbb3504",
+        "55c0fae5",
+        "e55b5986",
+        "9bb5bd76",
+        "276f692e",
+        "4bf43e48",
+        "aa46d889",
+        "1fec4ef9",
+        "b33ca9c3",
+        "f9eebd5a",
+        "e4835225",
+        "7958f1d5",
+        "adb7d5ad",
+        "6a265db5",
+        "c5718d6",
+        "f6a03b02",
+        "e46d50a7",
+        "55cd4db5",
+        "c565996d",
+        "841b8a19",
+        "f67d8486",
+        "7eefc843",
+        "406c3b31",
+        "b5c24da5",
+        "3e230946",
+        "b5d5674a",
+        "5c397370",
+        "95b5b551",
+        "a72f2f59",
+        "c1e2dce3",
+        "2e6218e7",
+        "2ac203e9",
+        "47299a45",
+        "5368098d",
+        "66a91f01",
+        "92d4d2e9",
+        "52eb608c",
+        "692f0d8d",
+        "29c0b4e6",
+        "92ffcdc2",
+        "b1df7a95",
+        "a4f05ff9",
+        "98bdd519",
+        "6b4b5396",
+        "e8038409",
+        "4bf7d058",
+        "84c9b432",
+        "874daad7",
+        "e9d993e2",
+        "f9e47ba6",
+        "d30d80bb",
+        "fe61b176",
+        "f72dd647",
+        "28046963",
+        "1d89a2bf",
+        "95b7d944",
+        "61b20ac0",
+        "3c785219",
+        "104a4bdd",
+        "b5acae3b"
+       ],
+       "topDown": true
+      }
+     ],
+     "pixels": {
+      "second-frame27": {
+       "size": [
+        1920,
+        1080
+       ],
+       "tiles": [
+        72
+       ],
+       "count": 23,
+       "max": 5,
+       "pixels": [
+        {
+         "x": 1026,
+         "y": 551,
+         "failed": [
+          104,
+          103,
+          103,
+          255
+         ],
+         "rerun": [
+          106,
+          105,
+          104,
+          255
+         ]
+        },
+        {
+         "x": 1026,
+         "y": 552,
+         "failed": [
+          109,
+          108,
+          108,
+          255
+         ],
+         "rerun": [
+          110,
+          109,
+          109,
+          255
+         ]
+        },
+        {
+         "x": 1027,
+         "y": 552,
+         "failed": [
+          102,
+          100,
+          99,
+          255
+         ],
+         "rerun": [
+          100,
+          98,
+          97,
+          255
+         ]
+        },
+        {
+         "x": 1027,
+         "y": 553,
+         "failed": [
+          101,
+          99,
+          98,
+          255
+         ],
+         "rerun": [
+          99,
+          97,
+          96,
+          255
+         ]
+        },
+        {
+         "x": 1055,
+         "y": 557,
+         "failed": [
+          64,
+          64,
+          64,
+          255
+         ],
+         "rerun": [
+          64,
+          64,
+          65,
+          255
+         ]
+        },
+        {
+         "x": 1054,
+         "y": 558,
+         "failed": [
+          69,
+          69,
+          70,
+          255
+         ],
+         "rerun": [
+          71,
+          71,
+          72,
+          255
+         ]
+        },
+        {
+         "x": 1054,
+         "y": 559,
+         "failed": [
+          74,
+          74,
+          74,
+          255
+         ],
+         "rerun": [
+          79,
+          79,
+          79,
+          255
+         ]
+        },
+        {
+         "x": 1053,
+         "y": 560,
+         "failed": [
+          81,
+          80,
+          81,
+          255
+         ],
+         "rerun": [
+          82,
+          81,
+          82,
+          255
+         ]
+        },
+        {
+         "x": 1048,
+         "y": 561,
+         "failed": [
+          68,
+          67,
+          68,
+          255
+         ],
+         "rerun": [
+          67,
+          67,
+          68,
+          255
+         ]
+        },
+        {
+         "x": 1054,
+         "y": 569,
+         "failed": [
+          74,
+          73,
+          73,
+          255
+         ],
+         "rerun": [
+          74,
+          74,
+          74,
+          255
+         ]
+        },
+        {
+         "x": 1055,
+         "y": 569,
+         "failed": [
+          80,
+          79,
+          80,
+          255
+         ],
+         "rerun": [
+          79,
+          78,
+          79,
+          255
+         ]
+        },
+        {
+         "x": 1037,
+         "y": 570,
+         "failed": [
+          85,
+          84,
+          83,
+          255
+         ],
+         "rerun": [
+          85,
+          83,
+          83,
+          255
+         ]
+        },
+        {
+         "x": 1054,
+         "y": 570,
+         "failed": [
+          80,
+          79,
+          79,
+          255
+         ],
+         "rerun": [
+          82,
+          82,
+          82,
+          255
+         ]
+        },
+        {
+         "x": 1054,
+         "y": 571,
+         "failed": [
+          81,
+          81,
+          81,
+          255
+         ],
+         "rerun": [
+          82,
+          82,
+          82,
+          255
+         ]
+        },
+        {
+         "x": 1054,
+         "y": 575,
+         "failed": [
+          73,
+          72,
+          72,
+          255
+         ],
+         "rerun": [
+          75,
+          74,
+          74,
+          255
+         ]
+        },
+        {
+         "x": 1055,
+         "y": 575,
+         "failed": [
+          71,
+          70,
+          70,
+          255
+         ],
+         "rerun": [
+          70,
+          69,
+          69,
+          255
+         ]
+        },
+        {
+         "x": 1031,
+         "y": 576,
+         "failed": [
+          102,
+          101,
+          100,
+          255
+         ],
+         "rerun": [
+          101,
+          100,
+          99,
+          255
+         ]
+        },
+        {
+         "x": 1053,
+         "y": 576,
+         "failed": [
+          76,
+          76,
+          76,
+          255
+         ],
+         "rerun": [
+          77,
+          76,
+          76,
+          255
+         ]
+        },
+        {
+         "x": 1054,
+         "y": 576,
+         "failed": [
+          73,
+          72,
+          72,
+          255
+         ],
+         "rerun": [
+          74,
+          73,
+          73,
+          255
+         ]
+        },
+        {
+         "x": 1055,
+         "y": 576,
+         "failed": [
+          72,
+          71,
+          71,
+          255
+         ],
+         "rerun": [
+          69,
+          68,
+          69,
+          255
+         ]
+        },
+        {
+         "x": 1053,
+         "y": 577,
+         "failed": [
+          93,
+          94,
+          96,
+          255
+         ],
+         "rerun": [
+          93,
+          94,
+          97,
+          255
+         ]
+        },
+        {
+         "x": 1054,
+         "y": 577,
+         "failed": [
+          73,
+          73,
+          73,
+          255
+         ],
+         "rerun": [
+          72,
+          72,
+          72,
+          255
+         ]
+        },
+        {
+         "x": 1055,
+         "y": 577,
+         "failed": [
+          70,
+          69,
+          69,
+          255
+         ],
+         "rerun": [
+          68,
+          68,
+          68,
+          255
+         ]
+        }
+       ]
+      },
+      "second-frame730": {
+       "size": [
+        1920,
+        1080
+       ],
+       "tiles": [
+        26,
+        42,
+        58
+       ],
+       "count": 173,
+       "max": 20,
+       "pixels": [
+        {
+         "x": 1264,
+         "y": 220,
+         "failed": [
+          86,
+          85,
+          86,
+          255
+         ],
+         "rerun": [
+          89,
+          89,
+          90,
+          255
+         ]
+        },
+        {
+         "x": 1265,
+         "y": 220,
+         "failed": [
+          81,
+          81,
+          81,
+          255
+         ],
+         "rerun": [
+          83,
+          83,
+          84,
+          255
+         ]
+        },
+        {
+         "x": 1266,
+         "y": 221,
+         "failed": [
+          81,
+          81,
+          81,
+          255
+         ],
+         "rerun": [
+          80,
+          80,
+          80,
+          255
+         ]
+        },
+        {
+         "x": 1267,
+         "y": 221,
+         "failed": [
+          76,
+          76,
+          76,
+          255
+         ],
+         "rerun": [
+          75,
+          75,
+          75,
+          255
+         ]
+        },
+        {
+         "x": 1269,
+         "y": 222,
+         "failed": [
+          68,
+          67,
+          67,
+          255
+         ],
+         "rerun": [
+          68,
+          67,
+          68,
+          255
+         ]
+        },
+        {
+         "x": 1270,
+         "y": 222,
+         "failed": [
+          61,
+          60,
+          61,
+          255
+         ],
+         "rerun": [
+          63,
+          62,
+          62,
+          255
+         ]
+        },
+        {
+         "x": 1304,
+         "y": 222,
+         "failed": [
+          44,
+          44,
+          46,
+          255
+         ],
+         "rerun": [
+          49,
+          48,
+          50,
+          255
+         ]
+        },
+        {
+         "x": 1305,
+         "y": 222,
+         "failed": [
+          197,
+          189,
+          174,
+          255
+         ],
+         "rerun": [
+          192,
+          184,
+          168,
+          255
+         ]
+        },
+        {
+         "x": 1270,
+         "y": 223,
+         "failed": [
+          63,
+          62,
+          63,
+          255
+         ],
+         "rerun": [
+          62,
+          61,
+          62,
+          255
+         ]
+        },
+        {
+         "x": 1271,
+         "y": 223,
+         "failed": [
+          57,
+          56,
+          57,
+          255
+         ],
+         "rerun": [
+          56,
+          55,
+          56,
+          255
+         ]
+        },
+        {
+         "x": 1272,
+         "y": 223,
+         "failed": [
+          51,
+          50,
+          51,
+          255
+         ],
+         "rerun": [
+          51,
+          50,
+          52,
+          255
+         ]
+        },
+        {
+         "x": 1304,
+         "y": 223,
+         "failed": [
+          48,
+          48,
+          51,
+          255
+         ],
+         "rerun": [
+          33,
+          34,
+          37,
+          255
+         ]
+        },
+        {
+         "x": 1275,
+         "y": 224,
+         "failed": [
+          45,
+          44,
+          45,
+          255
+         ],
+         "rerun": [
+          44,
+          43,
+          44,
+          255
+         ]
+        },
+        {
+         "x": 1276,
+         "y": 225,
+         "failed": [
+          39,
+          39,
+          40,
+          255
+         ],
+         "rerun": [
+          39,
+          39,
+          39,
+          255
+         ]
+        },
+        {
+         "x": 1277,
+         "y": 225,
+         "failed": [
+          36,
+          35,
+          37,
+          255
+         ],
+         "rerun": [
+          36,
+          36,
+          37,
+          255
+         ]
+        },
+        {
+         "x": 1279,
+         "y": 226,
+         "failed": [
+          31,
+          29,
+          31,
+          255
+         ],
+         "rerun": [
+          30,
+          28,
+          31,
+          255
+         ]
+        },
+        {
+         "x": 1280,
+         "y": 226,
+         "failed": [
+          33,
+          31,
+          33,
+          255
+         ],
+         "rerun": [
+          32,
+          30,
+          32,
+          255
+         ]
+        },
+        {
+         "x": 1280,
+         "y": 227,
+         "failed": [
+          30,
+          27,
+          30,
+          255
+         ],
+         "rerun": [
+          31,
+          28,
+          31,
+          255
+         ]
+        },
+        {
+         "x": 1299,
+         "y": 233,
+         "failed": [
+          151,
+          162,
+          182,
+          255
+         ],
+         "rerun": [
+          152,
+          163,
+          183,
+          255
+         ]
+        },
+        {
+         "x": 1299,
+         "y": 234,
+         "failed": [
+          152,
+          163,
+          184,
+          255
+         ],
+         "rerun": [
+          151,
+          163,
+          183,
+          255
+         ]
+        },
+        {
+         "x": 1301,
+         "y": 234,
+         "failed": [
+          123,
+          133,
+          150,
+          255
+         ],
+         "rerun": [
+          123,
+          134,
+          151,
+          255
+         ]
+        },
+        {
+         "x": 1299,
+         "y": 235,
+         "failed": [
+          156,
+          167,
+          187,
+          255
+         ],
+         "rerun": [
+          155,
+          167,
+          187,
+          255
+         ]
+        },
+        {
+         "x": 1299,
+         "y": 236,
+         "failed": [
+          156,
+          168,
+          187,
+          255
+         ],
+         "rerun": [
+          157,
+          169,
+          188,
+          255
+         ]
+        },
+        {
+         "x": 1299,
+         "y": 238,
+         "failed": [
+          156,
+          168,
+          187,
+          255
+         ],
+         "rerun": [
+          157,
+          169,
+          188,
+          255
+         ]
+        },
+        {
+         "x": 1299,
+         "y": 239,
+         "failed": [
+          154,
+          167,
+          186,
+          255
+         ],
+         "rerun": [
+          155,
+          167,
+          186,
+          255
+         ]
+        },
+        {
+         "x": 1299,
+         "y": 240,
+         "failed": [
+          158,
+          171,
+          189,
+          255
+         ],
+         "rerun": [
+          159,
+          171,
+          189,
+          255
+         ]
+        },
+        {
+         "x": 1202,
+         "y": 242,
+         "failed": [
+          99,
+          97,
+          99,
+          255
+         ],
+         "rerun": [
+          99,
+          98,
+          99,
+          255
+         ]
+        },
+        {
+         "x": 1298,
+         "y": 242,
+         "failed": [
+          165,
+          178,
+          196,
+          255
+         ],
+         "rerun": [
+          165,
+          178,
+          197,
+          255
+         ]
+        },
+        {
+         "x": 1202,
+         "y": 243,
+         "failed": [
+          87,
+          86,
+          87,
+          255
+         ],
+         "rerun": [
+          87,
+          86,
+          88,
+          255
+         ]
+        },
+        {
+         "x": 1299,
+         "y": 243,
+         "failed": [
+          154,
+          167,
+          186,
+          255
+         ],
+         "rerun": [
+          154,
+          166,
+          185,
+          255
+         ]
+        },
+        {
+         "x": 1201,
+         "y": 244,
+         "failed": [
+          76,
+          75,
+          76,
+          255
+         ],
+         "rerun": [
+          75,
+          74,
+          76,
+          255
+         ]
+        },
+        {
+         "x": 1299,
+         "y": 245,
+         "failed": [
+          156,
+          168,
+          187,
+          255
+         ],
+         "rerun": [
+          155,
+          168,
+          187,
+          255
+         ]
+        }
+       ]
+      },
+      "second-frame776": {
+       "size": [
+        1920,
+        1080
+       ],
+       "tiles": [
+        73
+       ],
+       "count": 1,
+       "max": 1,
+       "pixels": [
+        {
+         "x": 1116,
+         "y": 531,
+         "failed": [
+          66,
+          66,
+          67,
+          255
+         ],
+         "rerun": [
+          67,
+          66,
+          67,
+          255
+         ]
+        }
+       ]
+      }
+     },
+     "rerun": {
+      "kind": "pixels",
+      "ok": false,
+      "digest": "f0350a1aad71fae4",
+      "match": false,
+      "gpuLoad": {
+       "samples": 15,
+       "gpuUtil": {
+        "min": 21,
+        "median": 38,
+        "max": 48
+       },
+       "seen": {
+        "browser:Microsoft Edge Helper (Renderer)": 0.6,
+        "webkit:com.apple.WebKit.WebContent": 0,
+        "webkit:com.apple.WebKit.GPU": 0,
+        "browser:Microsoft Edge Helper": 1.7,
+        "browser:Microsoft Edge": 4.1,
+        "browser:msedge_crashpad_handler": 0,
+        "node:node": 15.8,
+        "chromium:Google Chrome for Testing": 5.4,
+        "chromium:chrome_crashpad_handler": 0,
+        "chromium:Google Chrome for Testing Helper (GPU)": 40.9,
+        "chromium:Google Chrome for Testing Helper": 2.1,
+        "chromium:Google Chrome for Testing Helper (Renderer)": 136.7,
+        "gaea:Gaea": 0
+       },
+       "first": {
+        "at": 1795794686045,
+        "gpuUtil": 38,
+        "processes": [
+         "node:node 12.9%",
+         "chromium:Google Chrome for Testing 2.2%",
+         "chromium:Google Chrome for Testing Helper (GPU) 27.2%",
+         "chromium:Google Chrome for Testing Helper (Renderer) 134.6%"
+        ],
+        "otherGpuHelpers": 1
+       },
+       "last": {
+        "at": 1795794728052,
+        "gpuUtil": 38,
+        "processes": [
+         "node:node 15.8%",
+         "chromium:Google Chrome for Testing 5.4%",
+         "chromium:Google Chrome for Testing Helper (GPU) 19%",
+         "chromium:Google Chrome for Testing Helper 2.1%",
+         "chromium:Google Chrome for Testing Helper (Renderer) 124.2%"
+        ],
+        "otherGpuHelpers": 1
+       }
+      }
+     }
+    }
+   },
+   "ok": false,
+   "allLoadsMatch": false
+  },
+  "post": {
+   "query": "mode=post&renderer=webgpu",
+   "canonical": "c6a9dc4b14918c84",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "c6a9dc4b14918c84",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "exportsIdentical": true,
+      "exportsDistinct": true,
+      "notFlat": true,
+      "looksFirstEqualsAgain": true,
+      "mask": true
+     },
+     "ms": 4597,
+     "wall": {
+      "start": 1795794730112,
+      "end": 1795794734709
+     },
+     "gpuLoad": {
+      "samples": 7,
+      "gpuUtil": {
+       "min": 23,
+       "median": 38,
+       "max": 41
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.2,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 1.7,
+       "browser:Microsoft Edge": 4.1,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 15.8,
+       "chromium:Google Chrome for Testing": 10.5,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 38.3,
+       "chromium:Google Chrome for Testing Helper": 3,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 137.7,
+       "gaea:Gaea": 0
+      },
+      "first": {
+       "at": 1795794716052,
+       "gpuUtil": 38,
+       "processes": [
+        "node:node 11.4%",
+        "chromium:Google Chrome for Testing 2.9%",
+        "chromium:Google Chrome for Testing Helper (GPU) 19.7%",
+        "chromium:Google Chrome for Testing Helper 2.1%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 99.8%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794734056,
+       "gpuUtil": 28,
+       "processes": [
+        "node:node 8.9%",
+        "chromium:Google Chrome for Testing 2.3%",
+        "chromium:Google Chrome for Testing Helper (GPU) 21.3%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 137.7%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "stack": "l",
+     "size": [
+      1920,
+      1080
+     ],
+     "costMs": {
+      "none": 2.4,
+      "anime": 3.7
+     },
+     "mask": {
+      "pixels": 342,
+      "share": 0.00016,
+      "hidden": 11,
+      "objects": [
+       "Face_(merged)(Clone)_1:N00_000_00_EyeIris_00_EYE (Instance)",
+       "Face_(merged)(Clone)_2:N00_000_00_EyeHighlight_00_EYE (Instance)",
+       "Face_(merged)(Clone)_5:N00_000_00_FaceBrow_00_FACE (Instance)",
+       "Face_(merged)(Clone)_6:N00_000_00_FaceEyelash_00_FACE (Instance)",
+       "Face_(merged)(Clone)_7:N00_000_00_FaceEyeline_00_FACE (Instance)",
+       "LineSegments:LineBasicMaterial"
+      ]
+     },
+     "looks": {
+      "none": {
+       "hash": "7c360b4e",
+       "again": "7c360b4e",
+       "firstEqualsAgain": true,
+       "lumaStd": 64.02,
+       "colours": 2881,
+       "newPipeline": true,
+       "passes": []
+      },
+      "clean": {
+       "hash": "0990ae70",
+       "again": "0990ae70",
+       "firstEqualsAgain": true,
+       "lumaStd": 63.64,
+       "colours": 3861,
+       "newPipeline": true,
+       "passes": [
+        "scene(MSAA4)",
+        "merged(bloom(mipmap 8)+toneMapping())"
+       ]
+      },
+      "anime": {
+       "hash": "c08ba208",
+       "again": "c08ba208",
+       "firstEqualsAgain": true,
+       "lumaStd": 61.86,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeNoGrain": {
+       "hash": "ee39e5cc",
+       "again": "ee39e5cc",
+       "firstEqualsAgain": true,
+       "lumaStd": 61.92,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeLut": {
+       "hash": "352128c9",
+       "again": "352128c9",
+       "firstEqualsAgain": true,
+       "lumaStd": 65.75,
+       "colours": 4096,
+       "newPipeline": true,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeLut85": {
+       "hash": "e950f306",
+       "again": "e950f306",
+       "firstEqualsAgain": true,
+       "lumaStd": 65.14,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeOverlays": {
+       "hash": "e3db9c23",
+       "again": "e3db9c23",
+       "firstEqualsAgain": true,
+       "lumaStd": 62.6,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeShallow": {
+       "hash": "3841983b",
+       "again": "3841983b",
+       "firstEqualsAgain": true,
+       "lumaStd": 60.05,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      }
+     },
+     "kind": "clean"
+    },
+    {
+     "load": 2,
+     "label": "load 2",
+     "ok": true,
+     "digest": "c6a9dc4b14918c84",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "exportsIdentical": true,
+      "exportsDistinct": true,
+      "notFlat": true,
+      "looksFirstEqualsAgain": true,
+      "mask": true
+     },
+     "ms": 4553,
+     "wall": {
+      "start": 1795794734710,
+      "end": 1795794739263
+     },
+     "gpuLoad": {
+      "samples": 6,
+      "gpuUtil": {
+       "min": 21,
+       "median": 38,
+       "max": 41
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.3,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 1.7,
+       "browser:Microsoft Edge": 4.1,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 15.8,
+       "chromium:Google Chrome for Testing": 10.5,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 38.3,
+       "chromium:Google Chrome for Testing Helper": 3,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 137.7,
+       "gaea:Gaea": 0
+      },
+      "first": {
+       "at": 1795794722056,
+       "gpuUtil": 39,
+       "processes": [
+        "chromium:Google Chrome for Testing Helper (GPU) 35.4%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 106.1%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794737057,
+       "gpuUtil": 21,
+       "processes": [
+        "node:node 12.7%",
+        "chromium:Google Chrome for Testing 8.5%",
+        "chromium:Google Chrome for Testing Helper (GPU) 10.5%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 128.2%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "stack": "l",
+     "size": [
+      1920,
+      1080
+     ],
+     "costMs": {
+      "none": 2.2,
+      "anime": 3.9
+     },
+     "mask": {
+      "pixels": 342,
+      "share": 0.00016,
+      "hidden": 11,
+      "objects": [
+       "Face_(merged)(Clone)_1:N00_000_00_EyeIris_00_EYE (Instance)",
+       "Face_(merged)(Clone)_2:N00_000_00_EyeHighlight_00_EYE (Instance)",
+       "Face_(merged)(Clone)_5:N00_000_00_FaceBrow_00_FACE (Instance)",
+       "Face_(merged)(Clone)_6:N00_000_00_FaceEyelash_00_FACE (Instance)",
+       "Face_(merged)(Clone)_7:N00_000_00_FaceEyeline_00_FACE (Instance)",
+       "LineSegments:LineBasicMaterial"
+      ]
+     },
+     "looks": {
+      "none": {
+       "hash": "7c360b4e",
+       "again": "7c360b4e",
+       "firstEqualsAgain": true,
+       "lumaStd": 64.02,
+       "colours": 2881,
+       "newPipeline": true,
+       "passes": []
+      },
+      "clean": {
+       "hash": "0990ae70",
+       "again": "0990ae70",
+       "firstEqualsAgain": true,
+       "lumaStd": 63.64,
+       "colours": 3861,
+       "newPipeline": true,
+       "passes": [
+        "scene(MSAA4)",
+        "merged(bloom(mipmap 8)+toneMapping())"
+       ]
+      },
+      "anime": {
+       "hash": "c08ba208",
+       "again": "c08ba208",
+       "firstEqualsAgain": true,
+       "lumaStd": 61.86,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeNoGrain": {
+       "hash": "ee39e5cc",
+       "again": "ee39e5cc",
+       "firstEqualsAgain": true,
+       "lumaStd": 61.92,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeLut": {
+       "hash": "352128c9",
+       "again": "352128c9",
+       "firstEqualsAgain": true,
+       "lumaStd": 65.75,
+       "colours": 4096,
+       "newPipeline": true,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeLut85": {
+       "hash": "e950f306",
+       "again": "e950f306",
+       "firstEqualsAgain": true,
+       "lumaStd": 65.14,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+lut3D(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeOverlays": {
+       "hash": "e3db9c23",
+       "again": "e3db9c23",
+       "firstEqualsAgain": true,
+       "lumaStd": 62.6,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      },
+      "animeShallow": {
+       "hash": "3841983b",
+       "again": "3841983b",
+       "firstEqualsAgain": true,
+       "lumaStd": 60.05,
+       "colours": 4096,
+       "newPipeline": false,
+       "passes": [
+        "scene(MSAA4)",
+        "normals(override, full res)",
+        "characterMask(layer 2, ½ res)",
+        "edges(custom TSL)",
+        "dof(pmndrs port)",
+        "merged(bloom(mipmap 8)+hueSaturation+brightnessContrast(sRGB)+toneMapping()+vignette+grain+anime(custom TSL))",
+        "chromaticAberration(custom TSL)"
+       ]
+      }
+     },
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  },
+  "coverage": {
+   "query": "mode=coverage&renderer=webgpu",
+   "canonical": "a1fb834203a54644",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "a1fb834203a54644",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "sameFromSnapshots": true,
+      "no180Issues": true,
+      "thumbnails": true
+     },
+     "ms": 3569,
+     "wall": {
+      "start": 1795794739264,
+      "end": 1795794742833
+     },
+     "gpuLoad": {
+      "samples": 6,
+      "gpuUtil": {
+       "min": 21,
+       "median": 32,
+       "max": 41
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.3,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 1.7,
+       "browser:Microsoft Edge": 4.1,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 15.8,
+       "chromium:Google Chrome for Testing": 15.2,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 38.3,
+       "chromium:Google Chrome for Testing Helper": 3.3,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 137.7,
+       "gaea:Gaea": 0
+      },
+      "first": {
+       "at": 1795794725056,
+       "gpuUtil": 41,
+       "processes": [
+        "browser:Microsoft Edge 4.1%",
+        "browser:Microsoft Edge Helper 1.7%",
+        "chromium:Google Chrome for Testing Helper (GPU) 38.3%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 107.2%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794740054,
+       "gpuUtil": 32,
+       "processes": [
+        "node:node 13%",
+        "chromium:Google Chrome for Testing 15.2%",
+        "chromium:Google Chrome for Testing Helper (GPU) 5.7%",
+        "chromium:Google Chrome for Testing Helper 3.3%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 4.8%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 1.4%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 123.6%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "shots": 11,
+     "sequenceHash": "00aa93b391faab2e",
+     "restoredInReverse": 10,
+     "kind": "clean"
+    },
+    {
+     "load": 2,
+     "label": "load 2",
+     "ok": true,
+     "digest": "a1fb834203a54644",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "sameFromSnapshots": true,
+      "no180Issues": true,
+      "thumbnails": true
+     },
+     "ms": 3579,
+     "wall": {
+      "start": 1795794742834,
+      "end": 1795794746413
+     },
+     "gpuLoad": {
+      "samples": 7,
+      "gpuUtil": {
+       "min": 21,
+       "median": 28,
+       "max": 38
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 58,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 1.3,
+       "browser:Microsoft Edge": 0.6,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 24,
+       "chromium:Google Chrome for Testing": 30.4,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 21.3,
+       "chromium:Google Chrome for Testing Helper": 3.3,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 154.6,
+       "gaea:Gaea": 0
+      },
+      "first": {
+       "at": 1795794728052,
+       "gpuUtil": 38,
+       "processes": [
+        "node:node 15.8%",
+        "chromium:Google Chrome for Testing 5.4%",
+        "chromium:Google Chrome for Testing Helper (GPU) 19%",
+        "chromium:Google Chrome for Testing Helper 2.1%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 124.2%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794746054,
+       "gpuUtil": 30,
+       "processes": [
+        "node:node 2.2%",
+        "chromium:Google Chrome for Testing Helper (GPU) 12.2%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 154.6%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": true,
+      "why": "browser:Microsoft Edge Helper (Renderer) 58%"
+     },
+     "errors": [],
+     "timedOut": false,
+     "shots": 11,
+     "sequenceHash": "00aa93b391faab2e",
+     "restoredInReverse": 10,
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": true
+  },
+  "budget": {
+   "query": "mode=budget&renderer=webgpu",
+   "canonical": null,
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": null,
+     "match": null,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "characters": true,
+      "stepUnder5ms": true
+     },
+     "ms": 12508,
+     "wall": {
+      "start": 1795794746413,
+      "end": 1795794758921
+     },
+     "gpuLoad": {
+      "samples": 9,
+      "gpuUtil": {
+       "min": 16,
+       "median": 30,
+       "max": 35
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 58,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 1.3,
+       "browser:Microsoft Edge": 0.6,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 24,
+       "chromium:Google Chrome for Testing": 30.4,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 40.8,
+       "chromium:Google Chrome for Testing Helper": 3.3,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 154.6,
+       "gaea:Gaea": 0
+      },
+      "first": {
+       "at": 1795794734056,
+       "gpuUtil": 28,
+       "processes": [
+        "node:node 8.9%",
+        "chromium:Google Chrome for Testing 2.3%",
+        "chromium:Google Chrome for Testing Helper (GPU) 21.3%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 137.7%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794758062,
+       "gpuUtil": 34,
+       "processes": [
+        "chromium:Google Chrome for Testing Helper (GPU) 37.5%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 72.2%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "backend": "webgpu",
+     "isWebGPUBackend": true,
+     "size": [
+      1920,
+      1080
+     ],
+     "characters": 20,
+     "warm": 120,
+     "steps": 480,
+     "stepMs": {
+      "mean": 2.268,
+      "p50": 2.3,
+      "p95": 2.6,
+      "max": 2.8
+     },
+     "drawMs": {
+      "mean": 6.03,
+      "p50": 6,
+      "p95": 6.4,
+      "max": 7.7
+     },
+     "frameMs": {
+      "mean": 12.208,
+      "p50": 12.2,
+      "p95": 13.2,
+      "max": 14.3
+     },
+     "drawCalls": null,
+     "triangles": null,
+     "budget": {
+      "stepMs": 5,
+      "frameMs": 16.666666666666668
+     },
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": null,
+   "ok": true,
+   "allLoadsMatch": false
+  },
+  "editor": {
+   "query": "mode=check-export&renderer=webgpu",
+   "canonical": "8d9ab54914096695",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": true,
+     "digest": "4f1ef6d304e4c235",
+     "match": false,
+     "differ": [
+      "digest"
+     ],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "scrubSame": true,
+      "forwardSame": true
+     },
+     "ms": 14316,
+     "wall": {
+      "start": 1795794758921,
+      "end": 1795794773237
+     },
+     "gpuLoad": {
+      "samples": 10,
+      "gpuUtil": {
+       "min": 16,
+       "median": 34,
+       "max": 82
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.1,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 0.3,
+       "browser:Microsoft Edge": 0.2,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 8.7,
+       "chromium:Google Chrome for Testing": 5.8,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 85.4,
+       "chromium:Google Chrome for Testing Helper": 2,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 154.6,
+       "gaea:Gaea": 0
+      },
+      "first": {
+       "at": 1795794746054,
+       "gpuUtil": 30,
+       "processes": [
+        "node:node 2.2%",
+        "chromium:Google Chrome for Testing Helper (GPU) 12.2%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 154.6%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794773064,
+       "gpuUtil": 82,
+       "processes": [
+        "node:node 1.6%",
+        "chromium:Google Chrome for Testing 2.5%",
+        "chromium:Google Chrome for Testing Helper (GPU) 85.4%",
+        "chromium:Google Chrome for Testing Helper 1.1%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 109.8%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": "1080p",
+     "frames": 1080,
+     "exportMs": 7127,
+     "scrub": {
+      "frames": 26,
+      "same": 26
+     },
+     "subtitles": {
+      "lines": 4,
+      "bytes": 272
+     },
+     "rows": [
+      {
+       "frame": 0,
+       "step": 0,
+       "alpha": 0,
+       "restored": 0,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 84,
+       "step": 210,
+       "alpha": 0,
+       "restored": 120,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 120,
+       "step": 300,
+       "alpha": 0,
+       "restored": 240,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 167,
+       "step": 417,
+       "alpha": 0.5,
+       "restored": 360,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 168,
+       "step": 420,
+       "alpha": 0,
+       "restored": 360,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 252,
+       "step": 630,
+       "alpha": 0,
+       "restored": 600,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 335,
+       "step": 837,
+       "alpha": 0.5,
+       "restored": 720,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 336,
+       "step": 840,
+       "alpha": 0,
+       "restored": 720,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 400,
+       "step": 1000,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 408,
+       "step": 1020,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 410,
+       "step": 1025,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 468,
+       "step": 1170,
+       "alpha": 0,
+       "restored": 1080,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 470,
+       "step": 1175,
+       "alpha": 0,
+       "restored": 1080,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 556,
+       "step": 1390,
+       "alpha": 0,
+       "restored": 1320,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 560,
+       "step": 1400,
+       "alpha": 0,
+       "restored": 1320,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 599,
+       "step": 1497,
+       "alpha": 0.5,
+       "restored": 1440,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 600,
+       "step": 1500,
+       "alpha": 0,
+       "restored": 1440,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 699,
+       "step": 1747,
+       "alpha": 0.5,
+       "restored": 1680,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 735,
+       "step": 1837,
+       "alpha": 0.5,
+       "restored": 1800,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 869,
+       "step": 2172,
+       "alpha": 0.5,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 870,
+       "step": 2175,
+       "alpha": 0,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 904,
+       "step": 2260,
+       "alpha": 0,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 975,
+       "step": 2437,
+       "alpha": 0.5,
+       "restored": 2400,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1000,
+       "step": 2500,
+       "alpha": 0,
+       "restored": 2400,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1010,
+       "step": 2525,
+       "alpha": 0,
+       "restored": 2520,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1079,
+       "step": 2697,
+       "alpha": 0.5,
+       "restored": 2640,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      }
+     ],
+     "kind": "pixels"
+    },
+    {
+     "load": 1,
+     "label": "rerun of load 1",
+     "ok": true,
+     "digest": "8d9ab54914096695",
+     "match": true,
+     "differ": [],
+     "verdicts": {
+      "noErrors": true,
+      "notTimedOut": true,
+      "backend": true,
+      "webgpuBackend": true,
+      "scrubSame": true,
+      "forwardSame": true
+     },
+     "ms": 14507,
+     "wall": {
+      "start": 1795794773238,
+      "end": 1795794787745
+     },
+     "gpuLoad": {
+      "samples": 9,
+      "gpuUtil": {
+       "min": 25,
+       "median": 36,
+       "max": 82
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.2,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 0.7,
+       "browser:Microsoft Edge": 0.4,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 8.7,
+       "chromium:Google Chrome for Testing": 5.8,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 85.4,
+       "chromium:Google Chrome for Testing Helper": 1.9,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 247.1,
+       "gaea:Gaea": 0.7
+      },
+      "first": {
+       "at": 1795794761061,
+       "gpuUtil": 30,
+       "processes": [
+        "node:node 8.7%",
+        "chromium:Google Chrome for Testing 5.8%",
+        "chromium:Google Chrome for Testing Helper (GPU) 18%",
+        "chromium:Google Chrome for Testing Helper 1.5%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 142.7%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794785068,
+       "gpuUtil": 25,
+       "processes": [
+        "node:node 5.3%",
+        "chromium:Google Chrome for Testing 5.8%",
+        "chromium:Google Chrome for Testing Helper (GPU) 9.6%",
+        "chromium:Google Chrome for Testing Helper 1.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 119.7%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "size": "1080p",
+     "frames": 1080,
+     "exportMs": 7335,
+     "scrub": {
+      "frames": 26,
+      "same": 26
+     },
+     "subtitles": {
+      "lines": 4,
+      "bytes": 272
+     },
+     "rows": [
+      {
+       "frame": 0,
+       "step": 0,
+       "alpha": 0,
+       "restored": 0,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 84,
+       "step": 210,
+       "alpha": 0,
+       "restored": 120,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 120,
+       "step": 300,
+       "alpha": 0,
+       "restored": 240,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 167,
+       "step": 417,
+       "alpha": 0.5,
+       "restored": 360,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 168,
+       "step": 420,
+       "alpha": 0,
+       "restored": 360,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 252,
+       "step": 630,
+       "alpha": 0,
+       "restored": 600,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 335,
+       "step": 837,
+       "alpha": 0.5,
+       "restored": 720,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 336,
+       "step": 840,
+       "alpha": 0,
+       "restored": 720,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 400,
+       "step": 1000,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 408,
+       "step": 1020,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 410,
+       "step": 1025,
+       "alpha": 0,
+       "restored": 960,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 468,
+       "step": 1170,
+       "alpha": 0,
+       "restored": 1080,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 470,
+       "step": 1175,
+       "alpha": 0,
+       "restored": 1080,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 556,
+       "step": 1390,
+       "alpha": 0,
+       "restored": 1320,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 560,
+       "step": 1400,
+       "alpha": 0,
+       "restored": 1320,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 599,
+       "step": 1497,
+       "alpha": 0.5,
+       "restored": 1440,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 600,
+       "step": 1500,
+       "alpha": 0,
+       "restored": 1440,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 699,
+       "step": 1747,
+       "alpha": 0.5,
+       "restored": 1680,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 735,
+       "step": 1837,
+       "alpha": 0.5,
+       "restored": 1800,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 869,
+       "step": 2172,
+       "alpha": 0.5,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 870,
+       "step": 2175,
+       "alpha": 0,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 904,
+       "step": 2260,
+       "alpha": 0,
+       "restored": 2160,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 975,
+       "step": 2437,
+       "alpha": 0.5,
+       "restored": 2400,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1000,
+       "step": 2500,
+       "alpha": 0,
+       "restored": 2400,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1010,
+       "step": 2525,
+       "alpha": 0,
+       "restored": 2520,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      },
+      {
+       "frame": 1079,
+       "step": 2697,
+       "alpha": 0.5,
+       "restored": 2640,
+       "same": true,
+       "worldSame": true,
+       "forwardSame": true,
+       "forwardWorld": true
+      }
+     ],
+     "kind": "clean"
+    }
+   ],
+   "incidents": [],
+   "failure": {
+    "load": 1,
+    "why": "the rerun is clean, but the GPU was quiet during the failed load: not AB-T-0589",
+    "failed": {
+     "load": 1,
+     "kind": "pixels",
+     "digest": "4f1ef6d304e4c235",
+     "differ": [
+      "digest"
+     ],
+     "verdicts": [],
+     "gpuLoad": {
+      "samples": 10,
+      "gpuUtil": {
+       "min": 16,
+       "median": 34,
+       "max": 82
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.1,
+       "webkit:com.apple.WebKit.WebContent": 0,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 0.3,
+       "browser:Microsoft Edge": 0.2,
+       "browser:msedge_crashpad_handler": 0,
+       "node:node": 8.7,
+       "chromium:Google Chrome for Testing": 5.8,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 85.4,
+       "chromium:Google Chrome for Testing Helper": 2,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 154.6,
+       "gaea:Gaea": 0
+      },
+      "first": {
+       "at": 1795794746054,
+       "gpuUtil": 30,
+       "processes": [
+        "node:node 2.2%",
+        "chromium:Google Chrome for Testing Helper (GPU) 12.2%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 154.6%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795794773064,
+       "gpuUtil": 82,
+       "processes": [
+        "node:node 1.6%",
+        "chromium:Google Chrome for Testing 2.5%",
+        "chromium:Google Chrome for Testing Helper (GPU) 85.4%",
+        "chromium:Google Chrome for Testing Helper 1.1%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 109.8%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "oddFrames": [],
+     "pixels": {},
+     "rerun": {
+      "kind": "clean",
+      "ok": true,
+      "digest": "8d9ab54914096695",
+      "match": true,
+      "gpuLoad": {
+       "samples": 9,
+       "gpuUtil": {
+        "min": 25,
+        "median": 36,
+        "max": 82
+       },
+       "seen": {
+        "browser:Microsoft Edge Helper (Renderer)": 0.2,
+        "webkit:com.apple.WebKit.WebContent": 0,
+        "webkit:com.apple.WebKit.GPU": 0,
+        "browser:Microsoft Edge Helper": 0.7,
+        "browser:Microsoft Edge": 0.4,
+        "browser:msedge_crashpad_handler": 0,
+        "node:node": 8.7,
+        "chromium:Google Chrome for Testing": 5.8,
+        "chromium:chrome_crashpad_handler": 0,
+        "chromium:Google Chrome for Testing Helper (GPU)": 85.4,
+        "chromium:Google Chrome for Testing Helper": 1.9,
+        "chromium:Google Chrome for Testing Helper (Renderer)": 247.1,
+        "gaea:Gaea": 0.7
+       },
+       "first": {
+        "at": 1795794761061,
+        "gpuUtil": 30,
+        "processes": [
+         "node:node 8.7%",
+         "chromium:Google Chrome for Testing 5.8%",
+         "chromium:Google Chrome for Testing Helper (GPU) 18%",
+         "chromium:Google Chrome for Testing Helper 1.5%",
+         "chromium:Google Chrome for Testing Helper (Renderer) 142.7%"
+        ],
+        "otherGpuHelpers": 1
+       },
+       "last": {
+        "at": 1795794785068,
+        "gpuUtil": 25,
+        "processes": [
+         "node:node 5.3%",
+         "chromium:Google Chrome for Testing 5.8%",
+         "chromium:Google Chrome for Testing Helper (GPU) 9.6%",
+         "chromium:Google Chrome for Testing Helper 1.9%",
+         "chromium:Google Chrome for Testing Helper (Renderer) 119.7%"
+        ],
+        "otherGpuHelpers": 1
+       }
+      }
+     }
+    }
+   },
+   "ok": false,
+   "allLoadsMatch": false
+  }
+ },
+ "preflight": {
+  "quiet": true,
+  "waitedMs": 10214,
+  "util": 5,
+  "why": "quiet"
+ },
+ "gpuLoad": {
+  "samples": 52,
+  "gpuUtil": {
+   "min": 4,
+   "median": 32,
+   "max": 82
+  },
+  "seen": {
+   "browser:Microsoft Edge Helper (Renderer)": 58,
+   "webkit:com.apple.WebKit.WebContent": 0,
+   "webkit:com.apple.WebKit.GPU": 0,
+   "browser:Microsoft Edge Helper": 1.7,
+   "browser:Microsoft Edge": 4.1,
+   "browser:msedge_crashpad_handler": 0,
+   "node:node": 24,
+   "chromium:Google Chrome for Testing": 30.4,
+   "chromium:chrome_crashpad_handler": 1.4,
+   "chromium:Google Chrome for Testing Helper (GPU)": 85.4,
+   "chromium:Google Chrome for Testing Helper": 4.9,
+   "chromium:Google Chrome for Testing Helper (Alerts)": 0,
+   "gaea:Gaea": 2.3,
+   "chromium:Google Chrome for Testing Helper (Renderer)": 247.1
+  },
+  "first": {
+   "at": 1795794631976,
+   "gpuUtil": 7,
+   "processes": [
+    "node:node 2.9%",
+    "chromium:Google Chrome for Testing 9.9%",
+    "chromium:chrome_crashpad_handler 1.4%",
+    "chromium:chrome_crashpad_handler 1%"
+   ],
+   "otherGpuHelpers": 1
+  },
+  "last": {
+   "at": 1795794785068,
+   "gpuUtil": 25,
+   "processes": [
+    "node:node 5.3%",
+    "chromium:Google Chrome for Testing 5.8%",
+    "chromium:Google Chrome for Testing Helper (GPU) 9.6%",
+    "chromium:Google Chrome for Testing Helper 1.9%",
+    "chromium:Google Chrome for Testing Helper (Renderer) 119.7%"
+   ],
+   "otherGpuHelpers": 1
+  }
+ },
+ "ended": "2026-11-27T15:53:07.747Z"
+}

@@ -1,0 +1,5 @@
+ Particle system powered by three.quarks. https://quarks.art/
+ok   win: {"result":"won","step":5331,"score":50,"counters":{"mistakes":0,"score":50,"served":3}} → {"scene":"game/won.vrmxs","step":5512} (3.4 s)
+ok   lose: {"result":"lost","step":3847,"score":0,"counters":{"mistakes":2,"score":0,"served":2}} → {"scene":"game/lost.vrmxs","step":4028} (2.5 s)
+ok   time: {"result":"lost","step":14760,"score":0,"counters":{"mistakes":0,"score":0,"served":0}} → {"scene":"game/lost.vrmxs","step":14941} (6.9 s)
+### rush-node: node acceptance/m5/rush-node.mjs all — started 2026-11-27T15:24:12Z, ended 2026-11-27T15:24:25Z, exit 0

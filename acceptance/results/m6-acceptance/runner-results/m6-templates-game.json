@@ -1,0 +1,97 @@
+{
+ "checks": [
+  {
+   "name": "build-empty: the build is whole, every file as its manifest says (template-empty)",
+   "ok": true,
+   "detail": "whole, 27 files, digest b2e724e834531723"
+  },
+  {
+   "name": "build-empty: played in Node",
+   "ok": true,
+   "detail": "{\"decided\":null,\"ending\":null,\"final\":{\"scene\":\"main.vrmxs\",\"step\":300,\"goal\":null}}"
+  },
+  {
+   "name": "build-empty: the game app opens on its title menu and New Game starts the entry scene",
+   "ok": true,
+   "detail": "\"Template empty\", scene main.vrmxs, webgpu"
+  },
+  {
+   "name": "build-empty: the empty game runs",
+   "ok": true,
+   "detail": "main.vrmxs at step 124"
+  },
+  {
+   "name": "build-empty: no errors in the page",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "build-level: the build is whole, every file as its manifest says (template-level)",
+   "ok": true,
+   "detail": "whole, 60 files, digest 24c697bc32aaf22e"
+  },
+  {
+   "name": "build-level: played in Node",
+   "ok": true,
+   "detail": "{\"decided\":{\"result\":\"won\",\"step\":144,\"score\":10},\"ending\":{\"scene\":\"ending.vrmxs\",\"step\":265},\"final\":{\"scene\":\"ending.vrmxs\",\"step\":386,\"goal\":null}}"
+  },
+  {
+   "name": "build-level: the game app opens on its title menu and New Game starts the entry scene",
+   "ok": true,
+   "detail": "\"Template level\", scene level.vrmxs, webgpu"
+  },
+  {
+   "name": "build-level: the level's goal on the HUD, won by walking to the counter, and its ending follows",
+   "ok": true,
+   "detail": "HUD \"Goal: Get to the counter\", won at step 158 (score 10), then ending.vrmxs at step 278"
+  },
+  {
+   "name": "build-level: no errors in the page",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "results": [
+  {
+   "build": "build-empty",
+   "game": "template-empty",
+   "digest": "b2e724e8345317234a9c1f8f2172ac1755595d11ebd02def20a32cf2a99757b8",
+   "step": 124,
+   "node": {
+    "decided": null,
+    "ending": null,
+    "final": {
+     "scene": "main.vrmxs",
+     "step": 300,
+     "goal": null
+    }
+   }
+  },
+  {
+   "build": "build-level",
+   "game": "template-level",
+   "digest": "24c697bc32aaf22e1a402a3a4c4ce433dfc4535ad486a445d5d28c473654f069",
+   "won": {
+    "step": 158,
+    "score": 10
+   },
+   "ending": "ending.vrmxs",
+   "node": {
+    "decided": {
+     "result": "won",
+     "step": 144,
+     "score": 10
+    },
+    "ending": {
+     "scene": "ending.vrmxs",
+     "step": 265
+    },
+    "final": {
+     "scene": "ending.vrmxs",
+     "step": 386,
+     "goal": null
+    }
+   }
+  }
+ ]
+}

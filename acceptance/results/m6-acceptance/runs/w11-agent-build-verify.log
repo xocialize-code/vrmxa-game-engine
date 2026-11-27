@@ -1,0 +1,12 @@
+{
+ "ok": true,
+ "state": "whole",
+ "files": 60,
+ "bytes": 19433874,
+ "digest": "810b9325e482f1db0c3d590c5ce73eab8255c5848a5fb60a33f6db17aca05277",
+ "manifest": "cb10086e6f784d9c21d07ac9e538c08772a5e643f4df32b7f3a7f10a7c0d3d2a",
+ "missing": [],
+ "changed": [],
+ "extra": []
+}
+### w11-agent-build-verify: node engine/packages/bundle/src/cli.js --verify <scratch>/w11-agent/builds/tea-time — started 2026-11-27T16:33:33Z, ended 2026-11-27T16:33:33Z, exit 0

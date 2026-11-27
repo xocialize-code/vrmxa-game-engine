@@ -1,4 +1,4 @@
-# M0 to M5 acceptance
+# M0 to M6 acceptance
 
 M0 W9 (AB-T-0510): the six exit checks of [M0-PLAN.md](../M0-PLAN.md) ("What M0 is done looking like"), run on the
 sample cafe (`content/sample`) at one commit, in every runtime, and filed as receipts.
@@ -15,6 +15,192 @@ node acceptance/compare.mjs       # evaluates the six checks: results/summary.js
 that need no renderer; the playground's acceptance mode adds the rendered pass (the walk rendered frame by frame,
 every camera preset, debug draw). Check 4 re-runs the W6 harness (`engine/packages/snapshot/harness`); check 5 is a
 Claude Code session with the MCP server (`results/mcp-session.json`).
+
+## Result: M6's acceptance (2026-11-27, M5 Max, macOS 27.3 26C5047e)
+
+M6's twelve exit checks ([M6-PLAN.md](../M6-PLAN.md), "What M6 is done looking like") were run at the M6 commit: main at
+5d5f42e (W0 to W10, the spikes, and PR #74). Every run used apps built at that commit: the game app's runtime
+`0.1.0+01c4bb509d4b`, and the Mac editor, playground and game apps on shell 0.16.0. The tree's only change was this
+PR's `apps/editor-mac/scripts/mcp-session.mjs` (a new `--w11` mode), which no app loads.
+
+**Nine checks pass. Three pass in part (1, 7 and 12).** None failed. Each part that isn't met is listed under the table.
+Each check is filed as a receipt (task AB-T-0652); the files are in `results/m6-acceptance/`, and `summary.json` holds
+the verdicts. Where an earlier workstream's receipt was taken at an older commit, the check was run again at 5d5f42e.
+**Whether M6 is done is the operator's call:** nothing here marks it done.
+
+| # | Check | Result | Receipt |
+|---|---|---|---|
+| 1 | A project starts in the editor | **Partly.** `HAND-TEST-M6-NEW-PROJECT` 8 of 8 (on its third run) and `-recent` 2 of 2. New Project works from both templates, as do the settings (title, rebinding, physics layers), Open Recent, and the real folder panel. The entry scene is set in Project Settings in check 6's scenario (`settings-entry`). `new-project-mac.mjs` and `templates-game.mjs` pass 22 of 22 on what the editor made: each project holds exactly its template's files, every file with a licence row; both builds are whole; the level is won and the empty game runs, in Node and in the game app. **Not met:** the starter content isn't in the templates. `content/templates/level/template.json` copies the sample's cafe, characters and clips (AB-T-0653) | AB-R-1200 |
+| 2 | Behaviours and connections are authored in the inspector | **Passed.** `HAND-TEST-M5-LEVEL` 17 of 17 on WebGPU and 17 of 17 on WebGL (on its third run). Through the Behaviours and Connections panels it adds the player behaviour, three brains and three `tableZone`s by their schemas, all 19 connections and every id. The saved level is the committed one byte for byte (check 5) | AB-R-1201 |
+| 3 | A project's own behaviours describe themselves | **Passed.**<br>• Both games' modules declare theirs: `tableZone` and `pressToStart` in `game/behaviours.js`, and `shelf` in `after-hours/behaviours.js`, with its `item` param and `placed` and `refused` signals.<br>• The inspector edits `tableZone`'s seven params from its describe (check 2's row 13).<br>• After Hours' 12 connections from `shelf`'s signals validate and save on both backends (check 6).<br>• In PR 74's session, MCP's `behaviour` op attached `shelf` with its `item` param; that op refuses a behaviour with no declaration.<br>• The registry's declaration tests pass in `npm run check` | AB-R-1202 |
+| 4 | A behaviour reloads while you play | **Passed.** `HAND-TEST-M6-HOT-RELOAD` 7 of 7:<br>• a saved edit reloads in play, state kept;<br>• a throwing reload keeps the old code and shows the error;<br>• a changed state shape restarts the behaviour;<br>• the session is refused for replay.<br>An exported build never reloads: `apps/game/test/no-watcher.test.mjs` passes | AB-R-1203 |
+| 5 | The level is built by hand, all of it | **Passed.** Check 2's runs: `rush-level.mjs compare` finds each backend's saved level equal to `content/sample/game/level.vrmxs`: 12,871 of 12,871 bytes, 48 of 48 nodes and 19 of 19 connections, ids included, valid. M5's check 8 is complete | AB-R-1201 |
+| 6 | A second game is built in the editor | **Passed.**<br>• `HAND-TEST-M6-AFTER-HOURS` 27 of 27 on WebGPU (second run) and 27 of 27 on WebGL, from New Project to Export Game.<br>• `after-hours-compare.mjs`: the four scenes, game.json and the hand-written `behaviours.js` are the committed bytes, and each Export Game build is whole and plays to both endings in Node.<br>• The committed sessions (build `61a49e385ae4`, which a fresh export names) replay exactly: Node 2 of 2, the game app in Chromium 4 of 4, and WKWebView 8 of 8 (both origins, both backends). Win: 4,945 steps, final `9da9445d3b8dcec8`. Lose: 3,526 steps, `1911b477d418a6c8`.<br>• Played again through the menus, the game recorded W10's sessions byte for byte | AB-R-1204 |
+| 7 | Saves survive an update | **Partly.** `saves.mjs` 10 of 10 on the Morning Rush:<br>• A save loads after a re-export that changes only a texture, the music's samples, the release or a declared behaviour's comment; 1,800 steps on give the same hashes.<br>• It is refused, with the reason named, after a change to a declared state, an undeclared behaviour's code, a scene, an item or the action map.<br>• The old session log is refused by the new build's replay.<br>• The engine's maths refusal is unit-tested only (`compat.test.mjs`), not shown end to end with its message.<br>**Not met:** a re-export that changes only the HUD refuses earlier saves. The fingerprint's engine part counts the runtime's version, which stamps every source the game app bundles, the HUD's among them (AB-T-0679) | AB-R-1205 |
+| 8 | A game keeps running and can be shared | **Passed.**<br>• **Device loss:** `device-loss.mjs` 16 of 16, `device-loss-wkwebview.sh` 6 of 6 and `editor-device-loss.mjs` 7 of 7. In the hardened Mac app, WebKit's GPU process was killed twice; the game came back on the WebGL2 fallback each time and ended on the log's hash (4,333 steps, `83a97551fb38a7d6`).<br>• **Static hosts:** `sharing.mjs` 19 of 19. The Rush was won from Python's `http.server` and from Wrangler dev under the build's CSP with no eval.<br>• **Mac build:** `morning-rush.app` passes `codesign --verify --deep --strict` (flags adhoc, runtime) and `HAND-TEST-M5-RUSH` 4 of 4, with Third-Party Notices in its Help menu.<br>• **Notices:** `check-notices.mjs` passes for the editor, playground, creator and game.<br>Signing, notarising and hosting stay the operator's steps | AB-R-1206 |
+| 9 | There is a game builder's guide | **Passed.** `HAND-TEST-M6-TUTORIAL` follows `docs/guide/tutorial.md` step by step: 11 of 11 on WebGPU and 11 of 11 on WebGL, and the two runs' levels are byte-identical. Step 12 plays each run's build in Node and in the game app on both backends: 11 of 11 each. As in W9, three rows are checked in part: walking Mira (steps 2 and 10) is step 12's, and step 5's file is the page's own code saved by a helper, not typed. The site isn't deployed (the operator's step) | AB-R-1207 |
+| 10 | Agents can build a game too | **Passed.**<br>• **From a template (new, headless):** in the editor, `game op=new` asks the person for a folder, so this ran headless. An agent with only `vrmxg-mcp` (`mcp-session.mjs --w11`, Sonnet) made "Tea Time" from the level template. It gave Hana `greet` with four params, added an Area with two connections, then validated, saved and exported: 19 calls, none failed, $0.28. The build verifies whole (60 files) and plays to its ending in Node.<br>• **A level for the second game:** PR 74's session in the Mac editor (5 of 5, 37 calls, none failed; `git diff 0ffd294 5d5f42e` is empty) | AB-R-1208 |
+| 11 | The spikes have verdicts | **Passed.** `spike-networking/` (lockstep now, rollback once AB-T-0657 to 0659 close) and `spike-webxr/` (no WebXR in WKWebView on the Mac; visionOS Safari has no WebGPU adapter) each have a README with a verdict, run instructions and raw JSON | AB-R-1209 |
+| 12 | M0 to M5 still hold; After Hours at 60 fps | **Partly.**<br>• **The frame rate is met in this run:** the Mac game app replayed After Hours' sessions for 665 s at 1080p on WebGPU, steady 60.0 fps (30,301 frames in 505 s). W10 measured 59.58 the same way on the same build this morning, so this is at the bar, not above it.<br>• **Everything else re-run passes:** M5's scripts on both backends, the Rush's committed sessions in Node, Chromium and WKWebView, `npm run check` and the shell's tests.<br>• **Not met:** the canonical matrix fails by its own rules in both full runs. Single WebGPU loads differ from canonical (a film exported twice in one load differs, and an editor digest once), never on WebGL. b5b2527, the commit AB-T-0656 found canonical, fails the same way today, so this is the machine, not M6's code (AB-T-0666).<br>• **Not run:** live play on the Mac; the base Mac (AB-T-0511); M5's other Mac scenarios (the editor's inspector, viewport, prefabs and assets, and export; the game app's `M5-GAME`); M0 to M4's Mac scenarios and M2 to M4's Chromium checks | AB-R-1211, AB-R-1210 |
+
+### Not green
+
+- **Check 1: the templates carry the sample's content, not the starter content (AB-T-0653).** New Project's "One
+  level" copies `sample/sets/cafe.glb`, the sample's Mira and Hana, its animation set and its clips. The starter's 37
+  CC0 clips and 17 items (M6 W4) aren't in either template, because merging the starter's licence rows into a project
+  is AB-T-0653. Every file a template does copy has its licence row.
+- **Check 7: a HUD-only re-export refuses earlier saves (AB-T-0679).** The game app's runtime version is
+  `0.1.0+<12 hex>`, a stamp of every source file it bundles, `@vrmxg/game-ui` among them. The fingerprint's engine
+  part counts that version, and so do the engine's undeclared behaviours. `@vrmxg/bundle`'s README keeps it there on
+  purpose until the engine's node types declare their state, and `compat.test.mjs` asserts that a new runtime with the
+  same snapshot format and maths still refuses. So the check's HUD example is the one thing in its list that doesn't
+  load. Texture, audio, release and a declared behaviour's comment do, end to end.
+- **Check 12: the matrix.** Two full runs at 5d5f42e, with `--keep-going` and `canonical.json` untouched:
+
+  | Run (UTC) | Odd loads | Canonical cells |
+  |---|---|---|
+  | 15:49 to 16:10 (`matrix/`) | Chromium WebGPU `frames` (`filmSecond`, and the rerun's film) and `editor` (rerun canonical); WKWebView scheme WebGPU `editor` (rerun canonical); WKWebView loopback WebGPU `frames` (`filmSecond`) | 3 of 6 (the WebGL cells) |
+  | 19:41 to 20:01 (`matrix-final/`) | WKWebView loopback WebGPU `frames` load 1 (`filmSecond`, rerun canonical) | 5 of 6 |
+
+  Both runs had:
+  - 0 AB-T-0589 incidents (every odd load was classed quiet);
+  - `compare.mjs` 20 of 20 per backend, and every cell's simulation final `fe69bad3406ab5f6`, Node's;
+  - masked SSIM 0.994 to 0.997 per look, and the anime look 0.961 full size (0.993 at ¼), as in M5's run;
+  - a 20-character budget at 1080p of 1.68 to 2.30 ms per step;
+  - every WebGL cell canonical.
+
+  The odd film frames fail `filmTwiceIdentical`: two exports in the same load differ by single frames. That is
+  nondeterminism within a load, not a digest that moved, so there is no commit to bisect.
+
+  The same three-load Chromium WebGPU `frames,editor` run was made at both commits:
+
+  | Commit | `frames` | `editor` |
+  |---|---|---|
+  | b5b2527: main after W6 and PR #63, canonical 6 of 6 for AB-T-0656 ([`b5b2527-frames-editor.log`](results/m6-acceptance/runs/b5b2527-frames-editor.log)) | load 1 odd (`filmSecond`), rerun canonical | 3 of 3 |
+  | 5d5f42e ([`matrix-frames-editor-5d5f42e.log`](results/m6-acceptance/runs/matrix-frames-editor-5d5f42e.log)) | load 2 odd, rerun canonical | 3 of 3 |
+
+  The same failure at the commit that was canonical is what clears M6's code; the diff since b5b2527 isn't the
+  argument (the editor changed a lot in W8 to W10).
+
+  The load check classed every odd load quiet. That isn't proof: IOAccelerator's per-process GPU time, sampled every
+  10 s ([`gpu-time-summary.json`](results/m6-acceptance/runs/gpu-time-summary.json)), started at 16:15, after run 1's
+  odd loads, and was kept only as a summary, so no odd load can be matched to its window. Over 16:15 to 19:56 it shows
+  the runners and WindowServer (up to 16.2%, while someone used the Mac); other apps used at most 10.6% of any 10-second
+  window, and that one was a browser. The operator's active desktop isn't ruled out as the trigger. Either way this is
+  AB-T-0666 again: on 2026-11-26 the same cell drew single odd frames for about 30 minutes on a GPU classed quiet. This time it came and went for
+  four hours (15:26 to 19:56 UTC), most in the first hour. AB-T-0666 is amended with today's runs.
+- **Check 12: playback, not live play; the base Mac.** The frame rate replays sessions played in Chromium, as W10's
+  did. Over 665 s the run had 28 scene changes, with their windows at 47 to 68 fps. The worst frame was 210.5 ms. The
+  web process peaked at 1.48 GB (median 1.04) and the GPU process at 0.51 GB. The 1-minute load at the start was 3.46,
+  above W10's gate of 3; the excess was the Claude desktop app and WindowServer. The base Mac waits on AB-T-0511.
+- **"M0 to M5 still hold"** is read as: no regression from M5's verdicts. M5's partial checks 4 and 10 stay carried
+  (AB-T-0642, AB-T-0511), and its check 8 is now complete (check 5).
+- **Checked in part inside passing checks.** These are named in the rows above and leave each check's wording met:
+  - check 9's three tutorial rows;
+  - check 4's module that first appears while the project is open (AB-T-0670).
+- **Carried tasks whose wording isn't an exit check:**
+  - AB-T-0626 (the 20-times Play loop) and AB-T-0655 (`tree.detached`);
+  - AB-T-0654 (module import in long-lived processes);
+  - AB-T-0671 (a hidden ParticleEmitter keeps emitting);
+  - AB-T-0672 (the editor's Play has no game service: rules and goals run only in builds, which is why checks 6 and
+    9 play builds to their endings);
+  - AB-T-0673 (prototype-polluting prop paths).
+
+### Check 12's re-run of M0 to M5
+
+- **Tests:**
+  - `npm run check` 1,176 of 1,177 (1 skipped, as in M5);
+  - the shell's 68 Swift tests;
+  - `acceptance/node.mjs` (walk final `fe69bad3406ab5f6`);
+  - `rush-node.mjs all` and `after-hours-node.mjs all` (won, lost, lost on time);
+  - `templates-node.mjs` 2 of 2.
+- **M5's scripts, at the M6 commit** (`results/m6-acceptance/runs/`, `runner-results/`):
+  - `build.mjs --chromium` 10 of 10, and `build-wkwebview.sh` 4 of 4 (build `7d0bb9a4e6ce158c`, walk final `fe69bad3406ab5f6`);
+  - `flow` 4 of 4 in WKWebView, final `cfe3f7e9828c49b1`;
+  - `dialogue` 4 of 4, `81eaec36719b1754`, M5's finals;
+  - `game.mjs` 19 of 19;
+  - `layers` in Node, Chromium and WKWebView 4 of 4 (`d14fcfab1e02d846`);
+  - `starter.mjs` (38 slots, 17 items, Chromium equal to Node) and `templates-game.mjs` 10 of 10.
+
+  `flow`, `dialogue`, `layers` and `starter` wrote result files identical to the committed ones.
+- **The committed session logs, replayed without recording** ([`replay-logs.json`](results/m6-acceptance/replay-logs.json),
+  `acceptance/m6/replay-logs.mjs`, new). A fresh export of each game names the build its logs were played on: the
+  Rush's `689c41cac7b7` and After Hours' `61a49e385ae4`. Each log replays in Node and in the game app on WebGPU and
+  WebGL, and `rush-wkwebview.sh` and `after-hours-wkwebview.sh` give 8 of 8 each. Rush: win 6,298 steps
+  (`4381da0665630266`), lose 4,819 (`7827a18e8b107a1c`). `rush.mjs` played fresh sessions through the menus (6,294
+  and 4,812 steps) and replayed them on both backends. Those logs are in `runner-results/m5-rush/`; the committed ones
+  are unchanged.
+- **Not run again:** M0 to M4's Mac scenarios (M1's editor and export, M2's timeline and acceptance, M4's backend
+  switch), M2 and M3's Chromium checks, M4's takes, voicing and script runs, M3's live parts, the creator's Mac
+  scenarios, M5's editor scenarios other than the level (inspector, viewport, prefabs and assets, export), and the game
+  app's `M5-GAME`. The matrix covers M0 to M4's rendering on both backends. M6 changed the editor a lot, so these are a
+  real gap, listed under check 12's row.
+
+### Found on the way
+
+- **A symlinked harness voids the matrix's WKWebView cells.** A worktree has no
+  `spike-cinematics/mac/build/CinematicsSpike.app`, and the first attempt linked the main checkout's. `matrix.mjs`'s
+  `cp -R` copies a link as a link. So `AcceptanceMatrix.app` and `AcceptanceMatrixEditor.app` were one app: the
+  playground cell loaded the editor's page and timed out at 900 s. Its web folder was also written into the main
+  checkout's harness, which was rebuilt from its own `dist` with `SKIP_WEB=1`. The attempt was stopped and is kept
+  for its Chromium cells only (`matrix-first-attempt/`). **Copy the harness into a worktree; don't link it.**
+- **One WKWebView replay hung.** The first `rush-wkwebview.sh` (16:23 UTC) sat for 31 minutes with an empty window.
+  The scheme WebGPU case timed out at 900 s, and the next case idled at 1% CPU. Alone, the same cases ran at once
+  (4,826 and 4,841 frames, no error), and the whole script then passed 8 of 8. Not reproduced.
+- **AppProbe scenarios lost rows to typing and menu races, and passed on a rerun.** All runs were on the same build
+  and fresh fixtures; every failed report is kept beside the passing one (`*-first-try`, `*-second-try`).
+  - New Project: a J key press not received (row 4); Add Layer pressed before the typed name registered (row 5).
+  - The level's WebGL run: the Id field not found (row 12); a typed id cut to `a7b-1c2d3e4f5a61`; menu items missing.
+  - After Hours' WebGPU run: W10's closing-menu race (row 13).
+  - Another session was using the Mac meanwhile ("2 users", WindowServer at 30 to 45%).
+- **The committed `results/m6-device-loss/lose.json` is on an older build** (`ac3cab29`). `device-loss.mjs` records
+  its session again every run, so its checks are unaffected. The Mac device-loss run used this run's log
+  (`runner-results/m6-device-loss/lose.json`).
+- **PR #71 is W9's, not W8's.** It holds W9's follow-ups; W8 is #67, #68 and #74 (`M6-PLAN.md`'s third-wave status says so).
+
+### What ran
+
+```sh
+npm ci && (cd spike-determinism/web && npm ci) && (cd docs && npm ci)       # docs/: Wrangler for sharing.mjs
+cp -R <main checkout>/spike-cinematics/mac/build/CinematicsSpike.app spike-cinematics/mac/build/   # a copy, not a link
+npm run build -w @vrmxg/game-app && (cd apps/playground && npx vite build) && (cd apps/editor && npx vite build) && (cd apps/creator && npx vite build)
+SKIP_WEB=1 apps/editor-mac/scripts/build.sh && SKIP_WEB=1 apps/playground-mac/scripts/build.sh
+acceptance/m6/after-hours-frames.sh build      # and the Rush's Mac app: export to apps/game-mac/build/rush, SKIP_WEB=1 apps/game-mac/scripts/build.sh it
+npm run check && swift test --package-path apps/shell
+node acceptance/node.mjs && node acceptance/m5/rush-node.mjs all && node acceptance/m6/after-hours-node.mjs all
+node acceptance/m6/templates-node.mjs && node acceptance/m6/saves.mjs
+node acceptance/matrix.mjs --keep-going --quiet-wait 120          # twice; and --runtimes chromium --backends webgpu --checks frames,editor --loads 3 here and at b5b2527
+node acceptance/m6/replay-logs.mjs && acceptance/m5/rush-wkwebview.sh && acceptance/m6/after-hours-wkwebview.sh   # the committed logs
+node acceptance/m5/build.mjs --chromium && acceptance/m5/build-wkwebview.sh
+node acceptance/m5/flow.mjs && acceptance/m5/flow-wkwebview.sh && node acceptance/m5/dialogue.mjs && acceptance/m5/dialogue-wkwebview.sh
+node acceptance/m5/game.mjs && node acceptance/m5/layers.mjs && acceptance/m5/layers-wkwebview.sh
+node acceptance/m6/device-loss.mjs && acceptance/m6/device-loss-wkwebview.sh && node acceptance/m6/editor-device-loss.mjs
+node acceptance/m6/sharing.mjs && node acceptance/m6/starter.mjs && node acceptance/m6/templates-game.mjs
+node acceptance/m5/rush.mjs && node acceptance/m6/after-hours.mjs                        # fresh sessions; then the committed logs restored
+node apps/editor-mac/scripts/mcp-session.mjs --w11 <empty folder> --out results/m6-acceptance/mcp-new-project-session.json
+# AppProbe, the GPU lock held throughout, each with its fixture script first: the editor's M6-NEW-PROJECT (+ -recent),
+# M6-HOT-RELOAD, M5-LEVEL (+ -webgl), M6-AFTER-HOURS (+ -webgl, after-hours-files.mjs beside it), M6-TUTORIAL (+ -webgl);
+# the game app's M5-RUSH on the hardened morning-rush.app
+node acceptance/m6/new-project-mac.mjs <container>/tmp/m6-projects && node acceptance/m6/templates-game.mjs <the two builds>
+node acceptance/m5/rush-level.mjs compare <the saved level>
+node acceptance/m6/after-hours-compare.mjs "<container>/tmp/w10-projects/After Hours" <container>/tmp/w10-builds/after-hours
+node acceptance/m6/tutorial.mjs play <container>/tmp/w9-builds[-webgl]/coin-run
+acceptance/m6/device-loss-mac.sh       # then #frame-stats read with AppProbe
+acceptance/m6/after-hours-frames.sh prepare   # then AppProbe MCP launch at 1920×1112 with VRMXG_QUERY, poll and sample, kill -9 after 660 s
+node acceptance/m5/rush-frames-summary.mjs results/m6-acceptance/frames
+```
+
+The runners' own result files were restored after each run; this run's copies are in `results/m6-acceptance/`:
+
+| Folder | What |
+|---|---|
+| `runs/` | Every command's log |
+| `runner-results/` | The runners' JSON |
+| `matrix/`, `matrix-final/` | The two full matrix runs: summaries and cell JSON; not the per-step runs, `node.json` or odd-frame PNGs |
+| `matrix-frames-rerun/`, `matrix-frames-editor-5d5f42e/` | The three-load Chromium WebGPU runs |
+| `hand-tests/` | AppProbe reports and `results.json`, without their screenshots; home paths are written as `~` |
+| `frames/` | The frame-rate run |
+| `mcp-new-project*` | The headless agent session and the level it saved |
 
 ## Result: M5's acceptance (2026-11-25, M5 Max, macOS 27.3 26C5047e)
 

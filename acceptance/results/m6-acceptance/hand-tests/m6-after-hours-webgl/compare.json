@@ -1,0 +1,81 @@
+{
+ "check": "M6 exit check 6 (AB-T-0651): \"After Hours\" built in the Mac editor from New Project; the saved scenes, game.json and behaviours against the committed ones, byte for byte; the exported build played to both endings",
+ "ok": true,
+ "checks": [
+  {
+   "name": "after-hours/level.vrmxs: the saved scene is the committed one, byte for byte, ids included, and valid",
+   "ok": true,
+   "detail": "9611 of 9611 bytes"
+  },
+  {
+   "name": "after-hours/title.vrmxs: the saved scene is the committed one, byte for byte, ids included, and valid",
+   "ok": true,
+   "detail": "1815 of 1815 bytes"
+  },
+  {
+   "name": "after-hours/won.vrmxs: the saved scene is the committed one, byte for byte, ids included, and valid",
+   "ok": true,
+   "detail": "2370 of 2370 bytes"
+  },
+  {
+   "name": "after-hours/lost.vrmxs: the saved scene is the committed one, byte for byte, ids included, and valid",
+   "ok": true,
+   "detail": "2357 of 2357 bytes"
+  },
+  {
+   "name": "game.json: the project's is the committed after-hours/game.json, byte for byte",
+   "ok": true,
+   "detail": "2289 of 2289 bytes"
+  },
+  {
+   "name": "after-hours/behaviours.js: the project's is the committed after-hours/behaviours.js, byte for byte",
+   "ok": true,
+   "detail": "4532 of 4532 bytes"
+  },
+  {
+   "name": "the exported build is whole against its manifest",
+   "ok": true,
+   "detail": "69 files"
+  },
+  {
+   "name": "the editor's build plays to the won ending in Node (the scripted player, win)",
+   "ok": true,
+   "detail": "{\"result\":\"won\",\"step\":3983,\"counters\":{\"mistakes\":0,\"shelved\":3}} → {\"scene\":\"after-hours/won.vrmxs\",\"step\":4164}"
+  },
+  {
+   "name": "the editor's build plays to the lost ending in Node (the scripted player, lose)",
+   "ok": true,
+   "detail": "{\"result\":\"lost\",\"step\":2555,\"counters\":{\"mistakes\":2,\"shelved\":0}} → {\"scene\":\"after-hours/lost.vrmxs\",\"step\":2736}"
+  }
+ ],
+ "plays": {
+  "win": {
+   "decided": {
+    "result": "won",
+    "step": 3983,
+    "counters": {
+     "mistakes": 0,
+     "shelved": 3
+    }
+   },
+   "ending": {
+    "scene": "after-hours/won.vrmxs",
+    "step": 4164
+   }
+  },
+  "lose": {
+   "decided": {
+    "result": "lost",
+    "step": 2555,
+    "counters": {
+     "mistakes": 2,
+     "shelved": 0
+    }
+   },
+   "ending": {
+    "scene": "after-hours/lost.vrmxs",
+    "step": 2736
+   }
+  }
+ }
+}

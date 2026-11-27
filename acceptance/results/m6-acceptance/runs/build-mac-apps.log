@@ -1,0 +1,997 @@
+Building for production...
+[Planning deferred tasks]
+[22 / 34]
+[23 / 35] VRMXGShell
+[35 / 117]
+[45 / 117]
+[48 / 117]
+[55 / 117]
+[58 / 117]
+[67 / 117]
+[69 / 117]
+[72 / 117]
+[73 / 117]
+[90 / 117]
+[97 / 117]
+[103 / 117]
+[104 / 117]
+[105 / 117]
+<repo>/apps/shell/Sources/VRMXGShell/ShellApp.swift:283:89: [1;33mwarning: [1;39mmain actor-isolated property 'config' can not be referenced from a nonisolated context[0;0m
+ [0;36m91 |[0;0m @MainActor
+ [0;36m92 |[0;0m public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDelegate {
+ [0;36m93 |[0;0m     public let config: ShellConfiguration
+    [0;36m|[0;0m                `- [1;39mnote: [1;39mproperty declared here[0;0m
+ [0;36m94 |[0;0m     public internal(set) var window: NSWindow!
+ [0;36m95 |[0;0m     public internal(set) var webView: WKWebView!
+    [0;36m:[0;0m
+[0;36m281 |[0;0m     /// document controller (it says it can't open them), and nothing is granted.
+[0;36m282 |[0;0m     public override func responds(to aSelector: Selector!) -> Bool {
+[0;36m283 |[0;0m         if aSelector == #selector(NSApplicationDelegate.application(_:open:)) { return !config.openTypes.isEmpty }
+    [0;36m|[0;0m                                                                                         `- [1;33mwarning: [1;39mmain actor-isolated property 'config' can not be referenced from a nonisolated con[106 / 117] VRMXGShell
+text[0;0m
+[0;36m284 |[0;0m         return super.responds(to: aSelector)
+[0;36m285 |[0;0m     }
+[113 / 118] VRMXGEditor-product
+[115 / 119] VRMXGEditor-product
+[117 / 119] VRMXGEditor-product
+[118 / 119] VRMXGEditor-product
+Build complete! (9.88 sec)
+editor: THIRD-PARTY-LICENCES.txt holds every notice it must
+<repo>/apps/editor-mac/build/VRMXGEditor.app: replacing existing signature
+built <repo>/apps/editor-mac/build/VRMXGEditor.app
+Fetching https://github.com/xocialize/mlx-swift from cache
+Fetching https://github.com/xocialize/kokoro-mlx-swift.git from cache
+Fetching https://github.com/huggingface/swift-huggingface from cache
+Fetching https://github.com/xocialize/mlx-audio-dsp.git from cache
+Fetching https://github.com/xocialize/mlx-nemotron-stt-swift from cache
+Fetching https://github.com/xocialize/mlx-engine-swift from cache
+Fetching https://github.com/apple/swift-collections.git from cache
+Fetching https://github.com/ml-explore/mlx-swift-lm from cache
+Fetching https://github.com/xocialize/tts-orchestrator-kit from cache
+Fetching https://github.com/xocialize/mlx-qwen-llm-swift from cache
+Fetching https://github.com/apple/swift-numerics from cache
+Fetching https://github.com/mattt/EventSource.git from cache
+Fetching https://github.com/huggingface/swift-jinja.git from cache
+Fetched https://github.com/xocialize/mlx-nemotron-stt-swift from cache (0.04s)
+Fetched https://github.com/xocialize/mlx-audio-dsp.git from cache (0.04s)
+Fetched https://github.com/xocialize/tts-orchestrator-kit from cache (0.04s)
+Fetching https://github.com/xocialize/mlx-constrained-decoding-swift from cache
+Fetching https://github.com/apple/swift-asn1.git from cache
+Fetching https://github.com/xocialize/voice-chat-kit from cache
+Fetched https://github.com/xocialize/mlx-swift from cache (0.07s)
+Fetched https://github.com/xocialize/kokoro-mlx-swift.git from cache (0.07s)
+Fetched https://github.com/huggingface/swift-jinja.git from cache (0.08s)
+Fetched https://github.com/xocialize/mlx-qwen-llm-swift from cache (0.09s)
+Fetching https://github.com/apple/swift-crypto.git from cache
+Fetched https://github.com/mattt/EventSource.git from cache (0.11s)
+Fetching https://github.com/ibireme/yyjson.git from cache
+Fetching https://github.com/xocialize/mlx-gepard-swift from cache
+Fetching https://github.com/apple/swift-argument-parser from cache
+Fetched https://github.com/xocialize/mlx-constrained-decoding-swift from cache (0.04s)
+Fetched https://github.com/xocialize/mlx-engine-swift from cache (0.13s)
+Fetched https://github.com/xocialize/voice-chat-kit from cache (0.06s)
+Fetching https://github.com/swiftlang/swift-syntax.git from cache
+Fetching https://github.com/xocialize/audio-polish-kit.git from cache
+Fetching https://github.com/xocialize/mlx-kokoro-tts-swift from cache
+Fetched https://github.com/xocialize/mlx-gepard-swift from cache (0.05s)
+Fetching https://github.com/huggingface/swift-transformers from cache
+Fetched https://github.com/ml-explore/mlx-swift-lm from cache (0.17s)
+Fetched https://github.com/xocialize/audio-polish-kit.git from cache (0.04s)
+Fetching https://github.com/xocialize/DesignScaffold from cache
+Fetched https://github.com/apple/swift-collections.git from cache (0.19s)
+Fetched https://github.com/apple/swift-argument-parser from cache (0.08s)
+Fetching https://github.com/xocialize/mlx-lfm-llm-swift from cache
+Fetched https://github.com/xocialize/mlx-kokoro-tts-swift from cache (0.05s)
+Fetching https://github.com/xocialize/nemotron-asr-mlx-swift.git from cache
+Fetched https://github.com/xocialize/mlx-lfm-llm-swift from cache (0.03s)
+Fetched https://github.com/xocialize/nemotron-asr-mlx-swift.git from cache (0.04s)
+Fetched https://github.com/swiftlang/swift-syntax.git from cache (0.12s)
+Fetched https://github.com/xocialize/DesignScaffold from cache (0.09s)
+Fetched https://github.com/apple/swift-asn1.git from cache (0.23s)
+Fetched https://github.com/huggingface/swift-huggingface from cache (0.30s)
+Fetched https://github.com/apple/swift-numerics from cache (0.31s)
+Fetched https://github.com/huggingface/swift-transformers from cache (0.20s)
+Fetched https://github.com/ibireme/yyjson.git from cache (0.33s)
+Fetched https://github.com/apple/swift-crypto.git from cache (0.43s)
+Creating working copy for https://github.com/xocialize/mlx-swift
+Creating working copy for https://github.com/apple/swift-numerics
+Creating working copy for https://github.com/xocialize/mlx-audio-dsp.git
+Creating working copy for https://github.com/ml-explore/mlx-swift-lm
+Creating working copy for https://github.com/apple/swift-collections.git
+Creating working copy for https://github.com/huggingface/swift-huggingface
+Creating working copy for https://github.com/xocialize/mlx-engine-swift
+Creating working copy for https://github.com/xocialize/mlx-nemotron-stt-swift
+Creating working copy for https://github.com/mattt/EventSource.git
+Creating working copy for https://github.com/xocialize/mlx-qwen-llm-swift
+Creating working copy for https://github.com/xocialize/tts-orchestrator-kit
+Creating working copy for https://github.com/xocialize/kokoro-mlx-swift.git
+Creating working copy for https://github.com/huggingface/swift-jinja.git
+Creating working copy for https://github.com/xocialize/mlx-constrained-decoding-swift
+Creating working copy for https://github.com/ibireme/yyjson.git
+Creating working copy for https://github.com/xocialize/voice-chat-kit
+Working copy of https://github.com/xocialize/tts-orchestrator-kit resolved at 0.2.0
+Working copy of https://github.com/xocialize/kokoro-mlx-swift.git resolved at 0.2.1
+Creating working copy for https://github.com/xocialize/mlx-gepard-swift
+Creating working copy for https://github.com/swiftlang/swift-syntax.git
+Working copy of https://github.com/xocialize/mlx-constrained-decoding-swift resolved at 0.1.0
+Creating working copy for https://github.com/apple/swift-asn1.git
+Working copy of https://github.com/xocialize/voice-chat-kit resolved at 0.5.0
+Creating working copy for https://github.com/xocialize/audio-polish-kit.git
+Working copy of https://github.com/xocialize/mlx-gepard-swift resolved at 0.4.4
+Working copy of https://github.com/xocialize/audio-polish-kit.git resolved at 0.1.0
+Creating working copy for https://github.com/xocialize/mlx-kokoro-tts-swift
+Creating working copy for https://github.com/huggingface/swift-transformers
+Working copy of https://github.com/xocialize/mlx-audio-dsp.git resolved at 0.1.0
+Working copy of https://github.com/xocialize/mlx-qwen-llm-swift resolved at 0.7.0
+Creating working copy for https://github.com/apple/swift-argument-parser
+Creating working copy for https://github.com/xocialize/DesignScaffold
+Working copy of https://github.com/mattt/EventSource.git resolved at 1.6.0
+Working copy of https://github.com/apple/swift-numerics resolved at 1.1.1
+Creating working copy for https://github.com/xocialize/nemotron-asr-mlx-swift.git
+Creating working copy for https://github.com/apple/swift-crypto.git
+Working copy of https://github.com/xocialize/mlx-nemotron-stt-swift resolved at 0.4.0
+Working copy of https://github.com/xocialize/mlx-engine-swift resolved at 0.82.1
+Creating working copy for https://github.com/xocialize/mlx-lfm-llm-swift
+Working copy of https://github.com/huggingface/swift-jinja.git resolved at 3.2.1
+Working copy of https://github.com/ml-explore/mlx-swift-lm resolved at 3.33.0
+Working copy of https://github.com/apple/swift-asn1.git resolved at 1.7.4
+Working copy of https://github.com/ibireme/yyjson.git resolved at 0.13.0
+Working copy of https://github.com/huggingface/swift-huggingface resolved at 0.13.0
+Working copy of https://github.com/xocialize/mlx-kokoro-tts-swift resolved at 0.6.0
+Working copy of https://github.com/apple/swift-collections.git resolved at 1.7.6
+Working copy of https://github.com/xocialize/mlx-lfm-llm-swift resolved at 0.5.0
+Working copy of https://github.com/xocialize/DesignScaffold resolved at 0.26.0
+Working copy of https://github.com/apple/swift-argument-parser resolved at 1.8.2
+Working copy of https://github.com/huggingface/swift-transformers resolved at 1.4.0
+Working copy of https://github.com/swiftlang/swift-syntax.git resolved at 603.0.2
+Working copy of https://github.com/xocialize/nemotron-asr-mlx-swift.git resolved at 0.2.0
+Working copy of https://github.com/apple/swift-crypto.git resolved at 4.5.2
+Working copy of https://github.com/xocialize/mlx-swift resolved at 0.33.1
+warning: 'playground-mac': dependency 'mlx-swift' is not used by any target
+warning: 'playground-mac': dependency 'mlx-swift' is not used by any target
+Building for production...
+[Computing dependencies]
+[Pre-planning 1 / 1433]
+[Planning deferred tasks]
+[302 / 811]
+[308 / 811]
+[313 / 818] VRMXGShell
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/dot.metal:3:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/dot.h:5:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:9:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:157:54: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+                                                     ^
+                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:158:55: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+                                                      ^
+                                                      , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:159:70: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+                                                                     ^
+                                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:305:78: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+                                                                             ^
+                                                                             , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:309:35: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+        .real == bfloat16_t(-5.0f));
+                                  ^
+                                  , ""
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/dot.metal:3:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/dot.h:5:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:80:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+  ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:83:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+  ^
+7 warnings generated.
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/random.metal:3:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:9:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:157:54: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+                                                     ^
+                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:158:55: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+                                                      ^
+                                                      , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:159:70: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+                                                                     ^
+                                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:305:78: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+                                                                             ^
+                                                                             , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:309:35: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+        .real == bfloat16_t(-5.0f));
+                                  ^
+                                  , ""
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/random.metal:3:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:80:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+  ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:83:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+  ^
+7 warnings generated.
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/scaled_dot_product_attention_vjp.metal:3:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:9:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:157:54: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+                                                     ^
+                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:158:55: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+                                                      ^
+                                                      , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:159:70: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+                                                                     ^
+                                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:305:78: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+                                                                             ^
+                                                                             , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:309:35: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+        .real == bfloat16_t(-5.0f));
+                                  ^
+                                  , ""
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/scaled_dot_product_attention_vjp.metal:3:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:80:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+  ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:83:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+  ^
+7 warnings generated.
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/rope.metal:5:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:9:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:157:54: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+                                                     ^
+                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:158:55: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+                                                      ^
+                                                      , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:159:70: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+                                                                     ^
+                                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:305:78: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+                                                                             ^
+                                                                             , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:309:35: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+        .real == bfloat16_t(-5.0f));
+                                  ^
+                                  , ""
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/rope.metal:5:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:80:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+  ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:83:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+  ^
+7 warnings generated.
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/searchsorted.metal:6:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:9:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:157:54: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+                                                     ^
+                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:158:55: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+                                                      ^
+                                                      , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:159:70: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+                                                                     ^
+                                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:305:78: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+                                                                             ^
+                                                                             , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:309:35: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+        .real == bfloat16_t(-5.0f));
+                                  ^
+                                  , ""
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/searchsorted.metal:6:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:80:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+  ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:83:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+  ^
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/searchsorted.metal:7:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/sort.h:43:8: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+    if constexpr (metal::is_floating_point_v<T>) {
+       ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/sort.h:49:15: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+    } else if constexpr (metal::is_same_v<T, complex64_t>) {
+              ^
+9 warnings generated.
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/rms_norm.metal:6:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:9:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:157:54: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+                                                     ^
+                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:158:55: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+                                                      ^
+                                                      , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:159:70: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+                                                                     ^
+                                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:305:78: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+                                                                             ^
+                                                                             , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:309:35: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+        .real == bfloat16_t(-5.0f));
+                                  ^
+                                  , ""
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/rms_norm.metal:6:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:80:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+  ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:83:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+  ^
+7 warnings generated.
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/layer_norm.metal:6:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:9:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:157:54: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+                                                     ^
+                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:158:55: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+                                                      ^
+                                                      , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:159:70: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+                                                                     ^
+                                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:305:78: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+                                                                             ^
+                                                                             , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:309:35: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+        .real == bfloat16_t(-5.0f));
+                                  ^
+                                  , ""
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/layer_norm.metal:6:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:80:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+  ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:83:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+  ^
+7 warnings generated.
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/conv.metal:8:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:9:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:157:54: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+                                                     ^
+                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:158:55: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+                                                      ^
+                                                      , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:159:70: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+                                                                     ^
+                                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:305:78: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+                                                                             ^
+                                                                             , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:309:35: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+        .real == bfloat16_t(-5.0f));
+                                  ^
+                                  , ""
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/conv.metal:8:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:80:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+  ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:83:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+  ^
+7 warnings generated.
+[323 / 825]
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/arg_reduce.metal:6:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:9:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:157:54: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+                                                     ^
+                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:158:55: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+                                                      ^
+                                                      , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:159:70: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+                                                                     ^
+                                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:305:78: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+                                                                             ^
+                                                                             , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:309:35: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+        .real == bfloat16_t(-5.0f));
+                                  ^
+                                  , ""
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/arg_reduce.metal:6:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:80:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+  ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:83:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+  ^
+7 warnings generated.
+[327 / 825]
+[330 / 850] EventSource
+[339 / 920]
+[351 / 994]
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update_vjp.metal:1:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update_vjp.h:7:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/atomic.h:106:8: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+    if constexpr (metal::is_floating_point_v<T>) {
+       ^
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update_vjp.metal:1:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update_vjp.h:8:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:9:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:157:54: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+                                                     ^
+                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:158:55: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+                                                      ^
+                                                      , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:159:70: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+                                                                     ^
+                                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:305:78: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+                                                                             ^
+                                                                             , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:309:35: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+        .real == bfloat16_t(-5.0f));
+                                  ^
+                                  , ""
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update_vjp.metal:1:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update_vjp.h:8:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:80:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+  ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:83:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+  ^
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update_vjp.metal:2:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+    PROCESS_CHUNK_SG(false, S_tile, C);
+    ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:103:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_M(K_tile, k_ + kk, Dk * Hk, B)                                      \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:104:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_MT(KT_tile, k_ + kk, Dk * Hk, B)                                    \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:62:6: note: expanded from macro 'LOAD_MT'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:125:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_M(K_tile, k_ + kk, Dk * Hk, B)                                      \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:134:5: note: expanded from macro 'PROCESS_CHUNK_SG'
+    LOAD_M(V_tile, v_ + dv_idx, Dv * Hv, B)                                    \
+    ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:143:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_M(Q_tile, q_ + kk, Hk * Dk, B)                                      \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:144:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_MT(K_tile, k_ + kk, Hk * Dk, B)                                     \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:62:6: note: expanded from macro 'LOAD_MT'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:162:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_MT(K_tile, k_ + kk, Hk * Dk, B)                                     \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:62:6: note: expanded from macro 'LOAD_MT'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+    PROCESS_CHUNK_SG(true, S_tile, short(T - t));
+    ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:103:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_M(K_tile, k_ + kk, Dk * Hk, B)                                      \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:104:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_MT(KT_tile, k_ + kk, Dk * Hk, B)                                    \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:62:6: note: expanded from macro 'LOAD_MT'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:125:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_M(K_tile, k_ + kk, Dk * Hk, B)                                      \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:134:5: note: expanded from macro 'PROCESS_CHUNK_SG'
+    LOAD_M(V_tile, v_ + dv_idx, Dv * Hv, B)                                    \
+    ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:143:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_M(Q_tile, q_ + kk, Hk * Dk, B)                                      \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:144:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_MT(K_tile, k_ + kk, Hk * Dk, B)                                     \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:62:6: note: expanded from macro 'LOAD_MT'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:162:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_MT(K_tile, k_ + kk, Hk * Dk, B)                                     \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:62:6: note: expanded from macro 'LOAD_MT'
+  if constexpr (B) {                                                           \
+     ^
+22 warnings generated.
+[373 / 994]
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/scaled_dot_product_attention.metal:4:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:9:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:157:54: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+                                                     ^
+                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:158:55: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+                                                      ^
+                                                      , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:159:70: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+                                                                     ^
+                                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:305:78: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+                                                                             ^
+                                                                             , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:309:35: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+        .real == bfloat16_t(-5.0f));
+                                  ^
+                                  , ""
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/scaled_dot_product_attention.metal:4:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:80:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+  ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:83:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+  ^
+7 warnings generated.
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.metal:1:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:4:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:9:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:157:54: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+                                                     ^
+                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:158:55: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+                                                      ^
+                                                      , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:159:70: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+                                                                     ^
+                                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:305:78: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+                                                                             ^
+                                                                             , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/complex.h:309:35: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+        .real == bfloat16_t(-5.0f));
+                                  ^
+                                  , ""
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.metal:1:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:4:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:80:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+  ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/utils.h:83:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+  ^
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.metal:1:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+    PROCESS_CHUNK_SG(false, S_tile, C);
+    ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:103:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_M(K_tile, k_ + kk, Dk * Hk, B)                                      \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:104:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_MT(KT_tile, k_ + kk, Dk * Hk, B)                                    \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:62:6: note: expanded from macro 'LOAD_MT'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:125:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_M(K_tile, k_ + kk, Dk * Hk, B)                                      \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:134:5: note: expanded from macro 'PROCESS_CHUNK_SG'
+    LOAD_M(V_tile, v_ + dv_idx, Dv * Hv, B)                                    \
+    ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:143:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_M(Q_tile, q_ + kk, Hk * Dk, B)                                      \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:144:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_MT(K_tile, k_ + kk, Hk * Dk, B)                                     \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:62:6: note: expanded from macro 'LOAD_MT'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:249:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:162:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_MT(K_tile, k_ + kk, Hk * Dk, B)                                     \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:62:6: note: expanded from macro 'LOAD_MT'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+    PROCESS_CHUNK_SG(true, S_tile, short(T - t));
+    ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:103:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_M(K_tile, k_ + kk, Dk * Hk, B)                                      \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:104:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_MT(KT_tile, k_ + kk, Dk * Hk, B)                                    \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:62:6: note: expanded from macro 'LOAD_MT'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:125:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_M(K_tile, k_ + kk, Dk * Hk, B)                                      \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:134:5: note: expanded from macro 'PROCESS_CHUNK_SG'
+    LOAD_M(V_tile, v_ + dv_idx, Dv * Hv, B)                                    \
+    ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:143:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_M(Q_tile, q_ + kk, Hk * Dk, B)                                      \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:50:6: note: expanded from macro 'LOAD_M'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:144:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_MT(K_tile, k_ + kk, Hk * Dk, B)                                     \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:62:6: note: expanded from macro 'LOAD_MT'
+  if constexpr (B) {                                                           \
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:258:5: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:162:7: note: expanded from macro 'PROCESS_CHUNK_SG'
+      LOAD_MT(K_tile, k_ + kk, Hk * Dk, B)                                     \
+      ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/gated_delta_update.h:62:6: note: expanded from macro 'LOAD_MT'
+  if constexpr (B) {                                                           \
+     ^
+21 warnings generated.
+[383 / 994]
+[392 / 994]
+[403 / 994]
+[410 / 994]
+[422 / 994]
+[428 / 994]
+[437 / 994]
+[443 / 994]
+[450 / 994]
+[457 / 994]
+[460 / 994]
+[469 / 994]
+[475 / 994]
+[482 / 994] MLXCXGrammar
+[487 / 994]
+[492 / 994]
+[493 / 994]
+[497 / 994]
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/steel_attention.metal:4:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../utils.h:9:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../complex.h:157:54: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex32_t) == 2 * sizeof(half));
+                                                     ^
+                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../complex.h:158:55: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex64_t) == 2 * sizeof(float));
+                                                      ^
+                                                      , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../complex.h:159:70: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+static_assert(sizeof(complex_t<bfloat16_t>) == 2 * sizeof(bfloat16_t));
+                                                                     ^
+                                                                     , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../complex.h:305:78: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+    (complex_t<half>{1.0h, 2.0h} * complex_t<half>{3.0h, 4.0h}).real == -5.0h);
+                                                                             ^
+                                                                             , ""
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../complex.h:309:35: warning: 'static_assert' with no message is a C++17 extension [-Wc++17-extensions]
+        .real == bfloat16_t(-5.0f));
+                                  ^
+                                  , ""
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/steel_attention.metal:4:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../utils.h:80:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> max = complex_t<T>(
+  ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../utils.h:83:3: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+  inline static constexpr constant complex_t<T> min = complex_t<T>(
+  ^
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/steel_attention.metal:6:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../steel/attn/kernels/steel_attention.h:3:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../steel/attn/attn.h:6:
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../steel/attn/../../steel/attn/mma.h:11:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../steel/attn/../../steel/utils/integral_constant.h:105:6: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+  if constexpr (start < stop) {
+     ^
+In file included from <repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/steel_attention.metal:6:
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../steel/attn/kernels/steel_attention.h:234:6: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+  if constexpr (!q_in_registers) {
+     ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../steel/attn/kernels/steel_attention.h:314:10: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+      if constexpr (!q_in_registers) {
+         ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../steel/attn/kernels/steel_attention.h:323:10: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+      if constexpr (!q_in_registers) {
+         ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../steel/attn/kernels/steel_attention.h:330:8: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+    if constexpr (WN == 2) {
+       ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../steel/attn/kernels/steel_attention.h:441:16: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+            if constexpr (is_bool) {
+               ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../steel/attn/kernels/steel_attention.h:511:14: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+          if constexpr (BD >= 128) {
+             ^
+<repo>/apps/playground-mac/.build/checkouts/mlx-swift/Source/Cmlx/mlx-generated/metal/steel/attn/kernels/../../../steel/attn/kernels/steel_attention.h:521:14: warning: constexpr if is a C++17 extension [-Wc++17-extensions]
+          if constexpr (BD >= 128) {
+             ^
+15 warnings generated.
+[502 / 994]
+[503 / 994] Crypto
+[512 / 994]
+[519 / 994]
+[526 / 994]
+[533 / 994] EventSource
+[542 / 994]
+[547 / 994]
+[549 / 994] MLXCXGrammar
+[553 / 994] Cmlx
+[567 / 994] Cmlx
+[575 / 994] Cmlx
+[581 / 994] VRMXGShell
+[582 / 994] Cmlx
+[588 / 994] Cmlx
+[590 / 994] Cmlx
+[592 / 994] Cmlx
+[596 / 994] Cmlx
+[601 / 994] Cmlx
+[605 / 994] Cmlx
+[606 / 994] Cmlx
+[607 / 994] Cmlx
+[608 / 994] Cmlx
+[609 / 994] Cmlx
+[612 / 994] Cmlx
+[614 / 994] Cmlx
+[618 / 994] Cmlx
+[619 / 994] Cmlx
+[623 / 994] Cmlx
+[626 / 994] Cmlx
+[629 / 994] Cmlx
+[630 / 994] Cmlx
+[634 / 994] Cmlx
+[635 / 994] Cmlx
+[637 / 994] Cmlx
+[638 / 994] Cmlx
+[640 / 994] Cmlx
+[644 / 994] Cmlx
+[647 / 994] Cmlx
+[650 / 994] Cmlx
+[652 / 994] Cmlx
+[659 / 994] Cmlx
+[666 / 994] Cmlx
+[669 / 994] Cmlx
+[671 / 994] Cmlx
+[673 / 994] Cmlx
+[676 / 994] Cmlx
+[677 / 994] Cmlx
+[680 / 994] Cmlx
+[681 / 994] Cmlx
+<repo>/apps/shell/Sources/VRMXGShell/ShellApp.swift:283:89: [1;33mwarning: [1;39mmain actor-isolated property 'config' can not be referenced from a nonisolated context[0;0m
+ [0;36m91 |[0;0m @MainActor
+ [0;36m92 |[0;0m public final class ShellAppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDelegate {
+ [0;36m93 |[0;0m     public let config: ShellConfiguration
+    [0;36m|[0;0m                `- [1;39mnote: [1;39mproperty declared here[0;0m
+ [0;36m94 |[0;0m     public internal(set) var window: NSWindow!
+ [0;36m95 |[0;0m     public internal(set) var webView: WKWebView!
+    [0;36m:[0;0m
+[0;36m281 |[0;0m     /// document controller (it says it can't open them), and nothing is granted.
+[0;36m282 |[0;0m     public override func responds(to aSelector: Selector!) -> Bool {
+[0;36m283 |[0;0m         if aSelector == #selector(NSApplicationDelegate.application(_:open:)) { return !config.openTypes.isEmpty }
+    [0;36m|[0;0m                                                                                         `- [1;33mwarning: [1;39mmain actor-isolated property 'config' can not be referenced from a nonisolated context[0;0m
+[0;36m284 |[0;0m         return super.responds(to: aSelector)
+[0;36m285 |[0;0m     }
+[684 / 994] Cmlx
+[692 / 994] Cmlx
+[693 / 994] Cmlx
+[696 / 994] Cmlx
+[698 / 994] Cmlx
+[699 / 994] Cmlx
+[702 / 994] Cmlx
+[703 / 994] Cmlx
+[708 / 994] Cmlx
+[709 / 994] Cmlx
+[712 / 994] Cmlx
+[714 / 994] Cmlx
+[716 / 994] Cmlx
+[718 / 994] Cmlx
+[719 / 994] Cmlx
+[721 / 994] Cmlx
+[725 / 994] Cmlx
+[728 / 994] Cmlx
+[729 / 994] Cmlx
+[731 / 994] Cmlx
+[732 / 994] yyjson
+[736 / 1005]
+[743 / 1005]
+[754 / 1005] MLXHuggingFaceMacros
+[758 / 1005] HuggingFace
+[764 / 1037]
+[776 / 1038]
+[785 / 1040] EventSource
+[786 / 1040]
+[793 / 1042]
+[802 / 1044]
+[813 / 1045] MLXMemoryPolicy
+[816 / 1046]
+[824 / 1047] Numerics
+[833 / 1049]
+[839 / 1051] Cmlx
+[842 / 1054]
+[843 / 1054] VRMXGVoiceCore
+[855 / 1054] OrderedCollections
+[862 / 1055] Jinja
+[864 / 1056] Cmlx
+[864 / 1056] yyjson
+[865 / 1056] MLXMemoryPolicy
+[871 / 1056] Cmlx
+[871 / 1056] HuggingFace
+[887 / 1061] MLXFast
+[902 / 1066] MLXFFT
+[913 / 1067] MLXAudioDSP
+[922 / 1107]
+[927 / 1107]
+[932 / 1107]
+[934 / 1107]
+[938 / 1107]
+[941 / 1107]
+[947 / 1107]
+[949 / 1107]
+[950 / 1107]
+[953 / 1107]
+[954 / 1107] MLXAudioDSP
+[959 / 1107] MLXNN
+[967 / 1110] MLXOptimizers
+[971 / 1112] KokoroMLX
+[986 / 1138]
+[991 / 1138]
+[993 / 1138]
+[996 / 1138]
+[997 / 1138]
+[998 / 1138] MLXOptimizers
+[1004 / 1139] MLXLMCommon
+[1006 / 1140] NemotronASR
+[1012 / 1141] MLXNemotronSTT
+[1014 / 1142] MLXNemotronSTT
+[1019 / 1142] MLXServeCore
+[1025 / 1143] VoiceListening
+[1027 / 1144] VoiceListening
+[1032 / 1144] KokoroMLX
+[1038 / 1145] MLXKokoroTTS
+[1040 / 1146] MLXKokoroTTS
+[1045 / 1146] Cmlx
+[1056 / 1146] VoiceListening
+[1059 / 1146] Jinja
+[1066 / 1147] Hub
+[1070 / 1151]
+[1071 / 1151] Hub
+[1078 / 1152] Tokenizers
+[1080 / 1153] Tokenizers
+[1086 / 1153] MLXLMCommon
+[1096 / 1157] MLXConstrainedDecoding
+[1105 / 1162] MLXConstrainedDecoding
+[1111 / 1162] MLXGuidedGeneration
+[1118 / 1163] MLXFoundationModels
+[1120 / 1164] MLXFoundationModels
+[1127 / 1165] MLXHuggingFace
+[1129 / 1166] MLXHuggingFace
+[1135 / 1166] MLXVLM
+[1141 / 1166] MLXLLM
+[1148 / 1167] MLXQwenLLM
+[1151 / 1169] MLXQwenLLM
+[1158 / 1170] VRMXGVoice
+[1161 / 1172] VRMXGVoice
+[1168 / 1173] VRMXGPlayground-product
+[1170 / 1174] VRMXGPlayground-product
+[1172 / 1174] VRMXGPlayground-product
+[1173 / 1174] VRMXGPlayground-product
+Build complete! (90.25 sec)
+playground: THIRD-PARTY-LICENCES.txt holds every notice it must
+<repo>/apps/playground-mac/build/VRMXGPlayground.app: replacing existing signature
+built <repo>/apps/playground-mac/build/VRMXGPlayground.app

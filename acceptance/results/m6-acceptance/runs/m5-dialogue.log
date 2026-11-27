@@ -1,0 +1,93 @@
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+{
+ "same": true,
+ "final": "81eaec36719b1754",
+ "all": "ab0c1cd998b86b8c",
+ "recording": {
+  "version": 2,
+  "start": 0,
+  "frames": 520,
+  "hash": "18d8abae5119d424",
+  "choices": [
+   [
+    203,
+    {
+     "dialogue.choose": "latte"
+    }
+   ]
+  ]
+ },
+ "replay": {
+  "same": true,
+  "final": "81eaec36719b1754",
+  "diverges": null
+ },
+ "changes": [
+  [
+   470,
+   "ending.vrmxs",
+   false
+  ]
+ ],
+ "view": {
+  "scene": "ending.vrmxs",
+  "score": 35,
+  "flags": {
+   "order": "latte"
+  },
+  "outcome": "won"
+ },
+ "nodeWithSlowLoading": {
+  "same": true,
+  "problems": []
+ },
+ "chromium": [
+  {
+   "delay": "steady",
+   "same": true,
+   "problems": [],
+   "errors": [],
+   "final": "81eaec36719b1754",
+   "dom": {
+    "clicked": "Choice 1 of 3: A latte, please.",
+    "labels": [
+     "Choice 1 of 3: A latte, please.",
+     "Choice 2 of 3: Just tea, thanks.",
+     "Choice 3 of 3: Nothing yet."
+    ],
+    "hud": [
+     "Goal: Take Hana's order",
+     "Score 0",
+     "Until closing 0:17"
+    ],
+    "focused": "dialogue-choice-latte"
+   }
+  },
+  {
+   "delay": "varied",
+   "same": true,
+   "problems": [],
+   "errors": [],
+   "final": "81eaec36719b1754",
+   "dom": {
+    "clicked": "Choice 1 of 3: A latte, please.",
+    "labels": [
+     "Choice 1 of 3: A latte, please.",
+     "Choice 2 of 3: Just tea, thanks.",
+     "Choice 3 of 3: Nothing yet."
+    ],
+    "hud": [
+     "Goal: Take Hana's order",
+     "Score 0",
+     "Until closing 0:17"
+    ],
+    "focused": "dialogue-choice-latte"
+   }
+  }
+ ]
+}
+### m5-dialogue: node acceptance/m5/dialogue.mjs — started 2026-11-27T17:26:27Z, ended 2026-11-27T17:26:29Z, exit 0

@@ -1,0 +1,1753 @@
+
+> check
+> npm run lint && npm run typecheck && npm test && node scripts/docs-reference.mjs --check
+
+
+> lint
+> eslint engine tools scripts skills eslint.config.js content apps/playground/src apps/playground/scripts apps/playground/vite.config.js apps/editor/src apps/editor/static apps/editor/test apps/editor/vite.config.js apps/creator/src apps/creator/test apps/creator/vite.config.js apps/game/src apps/game/test apps/game/scripts apps/game/vite.config.js acceptance apps/shell/js
+
+
+> typecheck
+> tsc -p tsconfig.json
+
+
+> test
+> npm test --workspaces --if-present && node --test acceptance/test/ skills/test/ content/starter/test/
+
+
+> @vrmxg/ai@0.1.0 test
+> node --test test/
+
+✔ curves are polynomials clamped to 0…1 (0.491333ms)
+✔ a sequence runs actions in order across ticks, resolving blackboard references; set writes paths (0.744958ms)
+✔ utility: the best option runs, hysteresis holds it, a better one takes over and the old action is cancelled (0.158916ms)
+✔ guard, until, cooldown and repeat (0.117ms)
+✔ tree state is plain data: a copy taken mid-run resumes identically (0.388833ms)
+✔ every preset compiles; the vocabulary and node types describe themselves (0.1635ms)
+✔ brain documents (M2 W11): prepare reads the ones a scene names by path, checks their format, and their trees compile (0.365833ms)
+✔ every preset the ai package has is one the scene schema accepts (M3 W10: host, conversationPartner, follower were refused) (3.799292ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ Hana serves Mira: greet, order, counter, served; Mira sits, orders, drinks, leaves; the same every run; a snapshot mid-order replays (3457.577458ms)
+✔ the director hook: an injected decision lands on its step, is logged, and a replay of the log is the same run (1734.649042ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ Hana turns to face Mira behind her, eased, and says so (650.8795ms)
+✔ the brains' face action succeeds when she faces the target, fails when time runs out; two runs are the same (1458.083584ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5359.288875
+
+> @vrmxg/audio@0.1.0 test
+> node --test test/
+
+✔ WAV headers give a clip's exact length; samples read back (0.780792ms)
+✔ a player plays from the step play() is called on and finishes on the step its clip ends; loops never finish (13.777875ms)
+✔ sound never changes the simulation: the same run hashes the same with an output and without; snapshots restore mid-clip (10.25825ms)
+✔ live: a sound starts at the offset the step clock gives (plus the output latency), positional ones at their place; stop and restart follow (2.021375ms)
+✔ the recorder keeps, per step, what plays and where the listener is (plain data for the offline mix) (0.955625ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 126.47
+
+> @vrmxg/bundle@0.1.0 test
+> node --test test/
+
+✔ a scene brings its prefabs, their models, brains by path, voice lines and their timings; a module its imports (11.308042ms)
+✔ what nothing names stays out: tools, an unused clip, notes (0.432125ms)
+✔ include adds files no document names, by ref or by pattern (0.6375ms)
+✔ the order of the listing does not change the result (0.418291ms)
+✔ a named file the project lacks stops the trace and is named (0.78875ms)
+✔ a reference in another case than the file stops the export, naming the scene and both spellings (0.387291ms)
+✔ a reference to a file the project lacks stops the export, naming the scene and the reference (0.509125ms)
+✔ what a scene's schema types as a file is taken exactly, spaces and all (0.359708ms)
+✔ the registry says which props are files and which never are (0.660917ms)
+✔ an untyped string is a reference when it reads as a path: one word, or into a folder the project has (1.032167ms)
+✔ ./ and the Unicode form of a name are normalised, and a build spells a name one way (0.548042ms)
+✔ a reference beside its document is followed: a line's timings name their clip by file name (0.258708ms)
+✔ a module's imports are read by a lexer: every awkward case, and what must be refused (2.942375ms)
+✔ the repository's own built bundles lex: a minified module is read, not refused (33.89675ms)
+✔ in a trace: only a module's own files and the core, and nothing that can't be known (0.785416ms)
+✔ the game document is checked, and its defaults filled in (0.266209ms)
+✔ a project with no game.json is one scene and what it has (0.293833ms)
+✔ the manifest carries the fingerprint, and its digest is still the whole build's (17.638333ms)
+✔ a texture, a sound or the game's release changes the build's digest and not its fingerprint (7.902459ms)
+✔ a changed scene or prefab refuses the save and names it (3.590791ms)
+✔ undeclared, a behaviour counts by its code: any change to the module or what it imports refuses (2.797334ms)
+✔ declared, a behaviour counts by its state: its code can change, its state shape can't (9.667792ms)
+✔ an engine behaviour counts by the state its registry entry declares, and undeclared by the runtime's version (2.526375ms)
+✔ the action map counts by its actions' names and types, not its bindings (5.807125ms)
+✔ the engine part: the snapshot format, the dmath version and the maths; a runtime that doesn't say counts by its version (3.604541ms)
+✔ compatProblems: a fingerprint of another version is refused as such; reasons come in their parts' order (0.247958ms)
+✔ the pieces: stable JSON, declared state, the behaviours a document attaches, a module's exports (0.348208ms)
+✔ `export * from` a project module counts its names as the project's behaviours (0.674334ms)
+✔ assets: a model counts by its structure, an item or a character whole (3.87225ms)
+✔ assets: a brain counts whole, the animation set by its clips' names and timing, not their bytes (2.337834ms)
+✔ Node's exporter imports the project's behaviours for what they declare, and an edit is never read from the cache (89.237708ms)
+✔ behavioursImporter loads a fresh graph on every call: an edit in a module imported relatively, and a load that failed, are never served from the cache (AB-T-0654 item 1) (1.823917ms)
+✔ a build holds the runtime, the project under project/, and a manifest listing every file with its hash and licence (17.709542ms)
+✔ the digest is what shasum would print over the listing, and names the build (5.563417ms)
+✔ the same project and runtime give the same bytes: again, and with the files listed in another order (3.51875ms)
+✔ a file with no row in LICENCES.md stops the export, and the error names it (3.201667ms)
+✔ a project with no LICENCES.md, or no game.json and no game given, is refused (1.275ms)
+✔ a runtime that is not what its table lists stops the export before anything is written (1.404166ms)
+✔ a runtime may not use the build's own names, and every file of it needs a licence (0.513917ms)
+✔ ready is called once every check has passed, before the first write; a refused export never reaches it (2.191834ms)
+✔ each of the project's files is read once for its bytes (0.930417ms)
+✔ a file licensed by a pattern row says so in the manifest; one named by its own row doesn't (1.203667ms)
+✔ only the files a game uses are held to a build's rules for names; a listing cut short stops the export (1.369958ms)
+✔ a manifest whose game is not a game document is refused as a manifest (0.900583ms)
+✔ with no writer the export checks and hashes everything and writes nothing (1.099875ms)
+✔ progress counts every file (0.79975ms)
+✔ the sample project exports: every file listed with its hash and licence, twice the same (121.288083ms)
+✔ with importModule, the project's declared behaviours type the export's references (M6 W0) (2.586584ms)
+✔ the CSP allows the page's own inline import map and style by hash, WebAssembly, and no eval (1.471834ms)
+✔ the game app's page is what the CSP is made from: one inline script (the import map), one inline style, nothing else inline (0.316583ms)
+✔ the _headers file sets the CSP on everything and caches only the hashed assets for good (0.191542ms)
+✔ a Worker folder holds the build as static assets with its _headers, and a config that publishes nowhere yet (165.206875ms)
+✔ a Worker's name from a game id (0.112833ms)
+✔ rows are the lines whose first cell is a backticked path (0.908167ms)
+✔ a * matches within one folder level, an escaped bar stays in its cell, and an exact row beats a pattern (0.253125ms)
+✔ the sample project: every file has a row, as CI's checker finds (4.347042ms)
+✔ a build opens: the game, the runtime, the project's files by ref (17.672833ms)
+✔ a ref the manifest does not list is refused by name (2.16325ms)
+✔ a file that is not the one exported is refused; with verify off it is read as it is (2.138167ms)
+✔ verifyAll reads every file, the runtime's too (1.350291ms)
+✔ a folder with no manifest, or one that has been edited, is not a build (1.950792ms)
+✔ the input map: inline, from a file, or none (3.137875ms)
+✔ every module the behaviours import is checked before any of them runs (2.316416ms)
+✔ a module the loader can't account for is not imported (4.811583ms)
+✔ a ref is found as the exporter spelled it: ./ and the Unicode form don't matter, case does (1.017333ms)
+✔ behaviours come from the build's own module, checked before it runs (2.125917ms)
+✔ a project behaviour's declaration the registry refuses stops the game when its module loads (M6 W0) (4.249666ms)
+✔ a project folder exports to a build folder, twice the same, and each is what its manifest lists (42.594ms)
+✔ a folder that is not the build its manifest describes is found out (11.399959ms)
+✔ an export goes into an empty folder or over an earlier build, never over anything else (25.27125ms)
+✔ an earlier build with a stray file beside it is refused before anything is deleted (14.414084ms)
+✔ a link in the folder is never written or deleted through (33.621125ms)
+✔ only regular files an earlier manifest lists are removed: a row that names a folder deletes nothing in it (10.499292ms)
+✔ an earlier manifest of another version, or one that isn't a build's, is not licence to clear the folder (28.201792ms)
+✔ an export that fails on the way leaves the earlier build whole and the folder free for the next try (24.083667ms)
+✔ a file in pieces: each names where it begins, and one sent twice or out of turn is refused (0.789125ms)
+✔ at the end the staged files are checked against the manifest before anything moves (20.700041ms)
+✔ a commit leaves the earlier build or the new one, never neither (182.824334ms)
+✔ a folder whose manifest lists files that are not there is incomplete, and says so everywhere (92.97125ms)
+✔ nothing in a staging folder is licence to delete or overwrite anything outside it (3.115458ms)
+✔ what a cut-short export left is cleared away, and only what the folder's own manifest vouches for is moved in (39.918666ms)
+✔ a refused export leaves the earlier build as it was (9.406292ms)
+✔ the command line: an export, a check, a verify, and a refusal that names the file (556.461125ms)
+✔ a project's behaviours import from the build with the engine's own core (1.315708ms)
+✔ the notices hold each package's licence text, our modules' notices, and say which chunk carries what (2.151875ms)
+✔ the engine's own licence is in every build's notices, and the workspace root is never listed as third party (1.679542ms)
+✔ a package that ships no licence text stops the build, naming it (1.746959ms)
+✔ a package that ships none takes its text from engine/packages/bundle/licences/ (1.605875ms)
+✔ a package carried as copied files, not imported, is listed through packages (1.640959ms)
+✔ vrmxgNotices writes the file into a build (0.784167ms)
+✔ checkNotices fails when a package's licence text, fdlibm's notice or the file itself is missing (2.777292ms)
+✔ checkNotices fails when a notice one of our files carries is missing, or no longer what the file says (2.799917ms)
+✔ collision layers: kept in the layers' order, after the game's other keys; none, none in the manifest (0.967292ms)
+✔ collision layers: what physics would refuse is refused here, by name, before a build is written (0.297167ms)
+✔ a node on a layer the game doesn't have stops the export, by scene, node and layer (MCP's check says the same) (5.242959ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ the sample's build plays to the same per-step hashes as the project (1588.715834ms)
+✔ the standard vectors (0.534042ms)
+✔ every length from 0 to 300 bytes matches node:crypto (3.968875ms)
+✔ a megabyte, and a view into a larger buffer (9.661917ms)
+✔ a game's release: kept as written, after the game's other keys; anything else refused, by name (0.868542ms)
+✔ a source stamp names every file with its hash; the check finds a file changed or gone since (3.551375ms)
+✔ vrmxg-export refuses the game runtime when its stamp says the sources changed since it was built (133.750875ms)
+✔ the table lists every file of the output with its hash and licence, and is a runtime the exporter accepts (7.434875ms)
+✔ the notices hold each package's licence text and the notices our own modules carry (3.951083ms)
+✔ the same output gives the same table (5.699583ms)
+ℹ tests 105
+ℹ suites 0
+ℹ pass 105
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1829.114
+
+> @vrmxg/camera@0.1.0 test
+> node --test test/
+
+✔ the lens: field of view from focal length and sensor, thin-lens depth of field (3.984958ms)
+✔ every preset can be switched to at run time and places the camera as it should (34.344542ms)
+✔ the spring arm pulls in against a wall and eases back out (4.34575ms)
+✔ look input turns the current camera only; camera_next cycles its preset (0.721416ms)
+✔ picking: the physics ray finds the floor and the avatar (0.699667ms)
+✔ mesh picking through three-mesh-bvh hits a skinned mesh where its pose puts it, not its rest shape (3.359417ms)
+✔ the lens: the research's worked example, gate fit, the inverse, post DOF numbers (0.507125ms)
+✔ bodies: follow settles at its offset, orbit at its radius, a turntable turns, a dolly rides its path (9.301542ms)
+✔ aims: lookAt centres the target; the composer holds it at its screen point; group framing fits both (2.805333ms)
+✔ shot / reverse shot keep to one side of the 180° line (0.112333ms)
+✔ noise is seeded and bounded; an impulse shakes and decays (2.617209ms)
+✔ the brain: priority, then the latest activation; eased blends; cuts; an override; the camera gets the lens (1.261792ms)
+✔ cameras replay identically; a snapshot taken mid-blend restores and re-simulates to the same world (49.914708ms)
+✔ the aspect the composer frames with is a simulation input: a fixed aspect holds through a resize (2.9235ms)
+✔ every world frames at a fixed 16:9 by default (M3 W4, AB-T-0538): a play take in a 4:3 window, resized mid-run, steps as at 16:9 (6.282417ms)
+✔ 10 s of keyboard + gamepad drive the character; replaying the recording reaches the identical end state (473.316667ms)
+✔ clicking: the mesh picker hits the skinned character, the physics ray the floor (161.190541ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 821.470292
+
+> @vrmxg/cast@0.1.0 test
+> node --test test/
+
+✔ the roles come from the script: cue, node id, lines and performance tracks (0.943917ms)
+✔ a role is cast from a picked .vrmxa: the character, her persona's voice and expressions, her wardrobe (304.296333ms)
+✔ casting the file the set already uses reuses its asset; the role names it and adds none (1.127208ms)
+✔ recasting swaps the character, keeps the role's performance byte for byte, and lists her lines for re-bake in the new voice (1.705625ms)
+✔ a recast in the same voice keeps the bake; a voice picked by hand re-bakes (30.237209ms)
+✔ a bake made before casting: the clip's recorded voice decides; a voice nobody recorded is kept with a warning, or re-baked (1.596125ms)
+✔ in the editor: a cast and a recast, each with the re-bake its hook makes, are one undo step each; undo and redo give exact bytes (6.688083ms)
+✔ the re-bake hook: no answer leaves the lines to speak live; a failing hook casts nothing; an edit while it runs refuses the cast (2.245917ms)
+✔ the same inputs give the same sequence bytes (2.100709ms)
+✔ re-scripting after a cast keeps the casting, and the re-bake isn't taken for a hand edit (2.688292ms)
+✔ voices: the persona's Kokoro preset, else the map, else a preset no other role has; a voice the shell can't speak is said (0.818916ms)
+✔ allowed expressions come from the persona; a face the kept performance wears that she doesn't allow is reported, not changed (0.285875ms)
+✔ wardrobe: her own closet, or one of her outfits by name; an outfit she lacks is an error; the closet puts it on at play (0.697584ms)
+✔ a role the script doesn't have, and a role cast from an asset nobody has, are errors (0.28725ms)
+✔ two roles in one voice are said: a persona's, a map's, a hand-picked one; the free voice skips voices taken (1.361834ms)
+✔ casting a role as she is keeps the voice handed to her, though another role has since taken it (1.097459ms)
+✔ a cast file whose bytes changed updates its asset in place, even while a sequence node uses it; the editor agrees (1.112417ms)
+✔ only characters are roles: a cast entry for the music player isn't one, and casting it is refused (0.289125ms)
+✔ readCharacter: a card from vrmxa-core's readers (a stand-in module here, so it runs in CI) (0.4595ms)
+✔ on the committed sample, voiced (M4 W7): a cast in the voice its lines were baked in keeps them; a recast lists them, and leaves the other role's (0.880584ms)
+✔ the sample's characters: Mira's persona with a voice the shell can't speak, Hana with no persona (315.718542ms)
+✔ the studio's Hana and Mira: each persona names her Kokoro preset (AB-A-0323); recast loads in the character library (931.918875ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1386.315208
+
+> @vrmxg/character@0.1.0 test
+> node --test test/
+
+✔ slerpInto and sampleTrack agree with three's slerp (through dmath) (0.806667ms)
+✔ layerDefs: the four default layers, and a layers prop checked (0.309542ms)
+✔ a wave on the upper-body layer plays over walk without disturbing the legs (every step, bit for bit) (429.664583ms)
+✔ a carried pose on the upper body over walk: the arms hold the tray while the legs walk (the sample game's case) (316.541333ms)
+✔ additive adds the clip's difference from rest; overwrite at half weight is halfway (272.046458ms)
+✔ a clip played on a playing layer cross-fades; a snapshot mid-fade restores into the unbroken run's following steps (475.798083ms)
+✔ a sequence's animation track with a layer plays on that layer (a function of the frame), and checkTrack knows it (262.854625ms)
+✔ the layers prop is read by value (an edit in place counts); a layer it drops stops; a one-shot at rate 2 fades out inside its clip; the same loop asked again goes on (125.843ms)
+✔ a bad layers value never throws inside the step: keyed onto a scene without the prop, the defaults play; a weight is clamped; it is said (241.724542ms)
+✔ a layer dropped from the prop between steps: the snapshot restored into a world of the edited document plays what the unbroken run plays (255.90225ms)
+✔ walks, runs and jumps from scripted input: slots, blend, controller, facing (290.763ms)
+✔ animation slots follow what is worn (resolveSlots on equipped tags) (244.392209ms)
+✔ two runs are bit-identical at every step (435.763208ms)
+✔ snapshot mid-crossfade, restore into a new tree, re-simulate: bit-identical, through the state API only (385.054917ms)
+✔ look-at, expressions, say, goTo and a bone attachment (288.280667ms)
+✔ travel root motion: the clip's authored speed moves the character and the hips stay over it (131.010125ms)
+✔ travel root motion blends from the speed asked for: a run input becomes a run, not a walk held at walk speed (135.731916ms)
+✔ props.head turns the head over the animation and lets go: on bones no clip animates the turn neither builds up nor stays (M4 W9) (246.170834ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ feet: flat ground changes nothing; a step under one foot drops the pelvis and lifts that foot onto it (1809.238417ms)
+✔ hands: a reach brings the hand to the point and lets go; opening the cupboard reaches for its knob (1004.417041ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ the sword's hold layers over walking: upper body in the sword pose, legs walking; a wave plays over the walk (799.446916ms)
+✔ layers replay: two runs identical, a snapshot mid-wave restores the same (1661.929125ms)
+✔ an emote is state: a snapshot taken during one restores, and the expression goes back to 0 a second later (M2 W12) (1002.3235ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ the mapping: eleven parts from each humanoid, sized from its skeleton (594.058417ms)
+✔ knocked down the stairs, both characters fall, lie still and get up, blending back into animation (973.92575ms)
+✔ the fall is the same twice, and a snapshot taken mid-fall re-simulates to the same end (2070.658625ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3811.8665
+
+> @vrmxg/closet@0.1.0 test
+> node --test test/
+
+  take (pinned): on the step 0.274 ms; off the step (add, put on) 2 ms
+✔ taking the sword pickup puts the Short sword in Mira's hand on that step, changes her idle, and fills her closet (341.77425ms)
+✔ moving the pinned sword between its states moves its model between bones; taking it off removes it (253.387167ms)
+  redraw (take off, avatar.vrm drawn and parsed): 161 ms
+✔ taking off the top swaps the body on exactly the scheduled step, holding it until the redraw is ready (707.485583ms)
+✔ a run that takes the sword and takes off the top is identical twice; a snapshot after the take restores (1908.132666ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3428.152958
+
+> @vrmxg/core@0.1.0 test
+> node --test test/
+
+✔ the cafe scene instantiates: every node, connection and behaviour; it saves back byte for byte (2.919584ms)
+✔ remove and re-add keep the tree, the three.js graph and the connections consistent (1.43675ms)
+✔ a trigger's bodyEntered opens the door through the connection, and opened reaches a listener (0.710125ms)
+✔ lifecycle order follows Godot: enterTree parent first, ready children first, exitTree children first (0.168708ms)
+✔ 600 steps with RNG, timers, tweens and a state machine are identical on two runs (8.800333ms)
+✔ pause, process modes and time scale (0.76325ms)
+✔ clock: frames at 24, 25, 30, 60 and 29.97 fps map to a step and α exactly; live play accumulates (0.365708ms)
+✔ random streams: named, independent, reproducible, snapshot-able (0.302ms)
+✔ changes inside an instance save as overrides, and the saved scene validates (434.69475ms)
+✔ unknown node types and behaviours run as plain nodes and survive the round-trip (1.732167ms)
+✔ autoload services start before the scene and step first (0.347334ms)
+✔ a node's time scale and process mode are in the state: a world restored under a slowed or disabled subtree runs on as the unbroken one (AB-T-0627) (1.411625ms)
+✔ code listeners a behaviour adds in its ready() are its own, and dropListenersOf drops only those (M6 W2 hot reload) (0.275333ms)
+✔ timers and tweens a behaviour makes in its ready() are its own; cancelMadeBy cancels only those, and `by` is never in the state (0.198458ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 596.312625
+
+> @vrmxg/coverage@0.1.0 test
+> node --test test/
+
+✔ the 180° lint flags a cut across the line, and not a neutral shot or a deliberate cross (8.2715ms)
+✔ the lint places cameras by their bodies: follow close-ups from their target, a dolly unchecked (2.233833ms)
+✔ the lint reads what plays: a shot's override and a transform track move a camera, a turntable is unchecked (2.306833ms)
+✔ cuts are where the live clip changes: a clip laid over a longer one cuts in and back out (169.55875ms)
+✔ a camera id says what it films: a person's pick is still that camera after a re-script (101.416792ms)
+✔ replacing a shot's camera is one edit: one undo step, exact bytes on undo and redo, a new camera in the same step (324.743167ms)
+✔ a replaced camera is the person's: a re-script keeps it on its shot, following the shot's new timing (3.34575ms)
+✔ the storyboard: a thumbnail frame per shot, its camera, rig and people, and whether it is a hand edit (2.701375ms)
+✔ the sample gets coverage by rule: establishing, master, close-ups on beats, shot / reverse (304.619958ms)
+✔ an establishing wide per scene, further back and higher than the two-shot (0.592791ms)
+✔ shot / reverse: both setups on the side of the 180° line the scene is shot from; the side is a choice (3.155333ms)
+✔ three people: each pair's line is crossed by none of its cameras (0.608417ms)
+✔ close-ups on beats: (beat), (pause), an expression from a parenthetical or a tag; a gesture alone isn't one (0.585458ms)
+✔ two-shots for overlapping lines; voice-over plays in the master; a lone speaker gets her close-up (0.584458ms)
+✔ people who move between marks get cameras placed for where they stand then (0.78775ms)
+✔ a move inside a shot is a cut: the shot is filmed in two pieces, each placed for where people stand, and the line holds (4.567292ms)
+✔ a move on a cut: the camera after it keeps the side the camera before it was on (16.499458ms)
+✔ deterministic: the same script and marks give the same cameras, byte for byte, under native or portable maths (7.037417ms)
+✔ boxes: a point in one, a segment through one, turned or not (0.874708ms)
+✔ the set's blockers: its Collider nodes and its Models' colliders, where the nodes put them (0.222542ms)
+✔ the cafe, after the move to the window table: no camera by rule stands in or behind the set (14.641708ms)
+✔ a close-up of two people more than 3 m apart shows at least three-quarters of the face (3.147291ms)
+✔ a group shot the set leaves a little short is pulled in on its own side; with no room, it takes the other (1.204167ms)
+✔ the lint reports a camera a person put in or behind geometry; the storyboard carries it (1.647791ms)
+✔ coverByRule with blockers plugs into the script as before (0.754417ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 902.903
+
+> @vrmxg/director@0.1.0 test
+> node --test test/
+
+ Particle system powered by three.quarks. https://quarks.art/
+✔ a conversation: the wait is in the step, the line lands on its step, and two live runs are the same world (4492.089375ms)
+✔ bad replies are rejected in the world: nothing of them is said, and Hana still serves Mira (1406.498292ms)
+✔ a model that never answers times out; the tree carries on and a late answer is dropped (653.565625ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ host: listen, think, a filler, the reply; an order she heard is made and brought without asking; replays exactly (4302.822625ms)
+✔ lingering: a talkative Hana stays in a quiet conversation about three times longer than a reserved one (1982.147125ms)
+✔ follower: "wait by the door" sends her there to wait; "follow me" brings her back to Mira (974.2495ms)
+✔ goal choice on a salient event: asked after the step it fired in, once per cooldown (627.080458ms)
+✔ turn-taking: a reply that arrives while Mira is still speaking waits for her to finish (at most 2 s) (639.915625ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ two directors, one model: the character spoken to goes first, at most two requests at the model (898.91125ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ a game saved mid-conversation loads and continues to the same world; the history travels as extra (2854.525875ms)
+✔ loaded into a live world, a question the save caught is interrupted and asked again (1269.566334ms)
+✔ tools are the action vocabulary narrowed to the moment (0.643625ms)
+✔ the bad-reply fixtures are each rejected, with the reason (1.02425ms)
+✔ good replies: calls parsed and normalised; text alone is a line; say carries its face, gesture and look (0.2465ms)
+✔ prompts follow VRMXA §11: persona, then memory, then the conversation, then the moment; the hash is stable (0.913708ms)
+✔ a line holding markup is not speech (M3 W3: what LFM2.5 wrote when it slipped) (0.399917ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ the split turn: the line lands first, the verdict second; the order is made and brought; replays exactly (4303.631625ms)
+✔ a goodbye ends the conversation by rule, even when the verdict is not JSON; a verdict that never comes leaves the line (768.09775ms)
+✔ a goal choice on an event is a verdict alone (625.410709ms)
+✔ lines are cleaned; goodbyes are decided by rule (0.570666ms)
+✔ verdicts: parsed through fences and chatter; the usual wrong shapes mapped (0.47375ms)
+✔ salvage: the line stands alone; parts that do not fit are dropped with a reason; a goodbye ends (1.104583ms)
+✔ the two requests: the line call has no tools; the verdict lists only the moment's choices (0.201542ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ a take replays exactly; baked into a sequence it says her lines on the same steps and makes the order (5406.517083ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ the fixture takes are takes (0.582167ms)
+✔ takes/conversation.json replays identically, twice (3998.031ms)
+✔ takes/follow.json replays identically, twice (2361.275458ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8716.0555
+
+> @vrmxg/dmath@0.1.0 test
+> node --test test/
+
+✔ sin: within 1 ulp of native on 2000 seeded inputs (0.434458ms)
+✔ sin: edge cases match native (NaN, signed zero, infinities, thresholds) (0.198292ms)
+✔ sin: output bits match the golden digest (0.040333ms)
+✔ cos: within 1 ulp of native on 2000 seeded inputs (0.026291ms)
+✔ cos: edge cases match native (NaN, signed zero, infinities, thresholds) (0.031917ms)
+✔ cos: output bits match the golden digest (0.026708ms)
+✔ tan: within 1 ulp of native on 2000 seeded inputs (0.03ms)
+✔ tan: edge cases match native (NaN, signed zero, infinities, thresholds) (0.023833ms)
+✔ tan: output bits match the golden digest (0.037209ms)
+✔ asin: within 1 ulp of native on 2000 seeded inputs (0.063292ms)
+✔ asin: edge cases match native (NaN, signed zero, infinities, thresholds) (0.036166ms)
+✔ asin: output bits match the golden digest (0.021833ms)
+✔ acos: within 1 ulp of native on 2000 seeded inputs (0.016625ms)
+✔ acos: edge cases match native (NaN, signed zero, infinities, thresholds) (0.022ms)
+✔ acos: output bits match the golden digest (0.01375ms)
+✔ atan: within 1 ulp of native on 2000 seeded inputs (0.0165ms)
+✔ atan: edge cases match native (NaN, signed zero, infinities, thresholds) (0.012834ms)
+✔ atan: output bits match the golden digest (0.015667ms)
+✔ atan2: within 1 ulp of native on 2000 seeded inputs (0.013125ms)
+✔ atan2: edge cases match native (NaN, signed zero, infinities, thresholds) (0.012041ms)
+✔ atan2: output bits match the golden digest (0.011625ms)
+✔ exp: within 1 ulp of native on 2000 seeded inputs (0.012542ms)
+✔ exp: edge cases match native (NaN, signed zero, infinities, thresholds) (0.011292ms)
+✔ exp: output bits match the golden digest (0.010791ms)
+✔ log: within 1 ulp of native on 2000 seeded inputs (0.019958ms)
+✔ log: edge cases match native (NaN, signed zero, infinities, thresholds) (0.012125ms)
+✔ log: output bits match the golden digest (0.017ms)
+✔ pow: within 1 ulp of native on 2000 seeded inputs (0.012083ms)
+✔ pow: edge cases match native (NaN, signed zero, infinities, thresholds) (0.01275ms)
+✔ pow: output bits match the golden digest (0.01125ms)
+✔ cbrt: within 1 ulp of native on 2000 seeded inputs (0.011292ms)
+✔ cbrt: edge cases match native (NaN, signed zero, infinities, thresholds) (0.011625ms)
+✔ cbrt: output bits match the golden digest (0.017667ms)
+✔ hypot: within 1 ulp of native on 2000 seeded inputs (0.011042ms)
+✔ hypot: edge cases match native (NaN, signed zero, infinities, thresholds) (0.011292ms)
+✔ hypot: output bits match the golden digest (0.026833ms)
+✔ installPortableMath replaces and restores all twelve functions (0.08025ms)
+✔ withPortableMath swaps in, returns the value, restores, and nests (0.122709ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 93.190708
+
+> @vrmxg/editor-core@0.1.0 test
+> node --test test/
+
+✔ freshId takes the trailing number off and counts on from 2 (0.379917ms)
+✔ Duplicate: a fresh id, in place after the original under its parent, connections kept, one undo step (504.446291ms)
+✔ Duplicate: a node with children gets fresh ids all the way down, node references inside the copy point at the copy (143.318166ms)
+✔ Duplicate: a prefab instance keeps its overrides and gets a fresh id (317.122ms)
+✔ Copy and Paste: into the same scene (fresh ids) and into another (asset entries brought along, outside references dropped) (648.090583ms)
+✔ Paste under a chosen parent, and refused while playing (102.723083ms)
+✔ resizeShape: the props and the position in one undo step, rounded; the inspector reads the same props (99.278834ms)
+✔ a copy takes the connections its nodes send, not those sent to them; a reference into a copied instance follows the copy (100.367792ms)
+✔ a clip from the clipboard is checked whole: cycles, duplicate ids, stray parents and oversize clips are not clips (0.589792ms)
+✔ references nested in object props and in prefab overrides follow the copy, and are dropped where the scene lacks them (577.691667ms)
+✔ the asset list shows the project's placeable files with the node type each makes (4.624917ms)
+✔ building the cafe from the asset list: add, move, edit, reparent, delete; every step undoes and redoes; save, reopen byte for byte, valid (732.189042ms)
+✔ the sample cafe opens and saves unchanged; a refused edit leaves nothing behind (124.487292ms)
+✔ play in place: the play world is built from a copy, edits are refused while playing, Stop leaves the scene exactly as before (108.499709ms)
+✔ selection: replace, add (the last is primary), unknown ids dropped, deleted nodes leave it, undo doesn't reselect (106.403208ms)
+✔ regenerating a line (M3 W4): spoken, its clip and timings written, then one undo step that undo reverses (0.641041ms)
+✔ M4 W7: new words take a voiced line's whole bake with them: regenerateLine and a text edit; other edits keep it (7.365625ms)
+✔ two lights selected: an intensity change sets both, as one undo step that undo restores in one (506.632625ms)
+✔ the multi-edit: one id is setProp's step; nodes already holding the value get no op; an invalid value changes none (125.086333ms)
+✔ several transforms as one step: Position X on a selection, each node keeping its own Y and Z (109.946417ms)
+✔ a drag is one undo step: live edits while it moves, folded on release, labelled as the last (108.877666ms)
+✔ a drag that ends where it began leaves no step; Escape undoes it (107.765542ms)
+✔ an edit from elsewhere during a drag (MCP: the session's run, not the gesture's) stays its own step (105.223541ms)
+✔ MCP edits are unaffected: setProp and run as before, one step each (104.441416ms)
+✔ the review's cases: an abandoned drag leaves nothing to redo; node references are checked on a node with no props; one axis on each node (110.538625ms)
+✔ a number that isn't finite is refused from any source: the session, the scene editor, the validator (306.92325ms)
+✔ the tree lists an instance's prefab nodes as inner children; they can be selected (200.340875ms)
+✔ an edit of an inner node is an override, marked; Revert gives the bytes of a door never overridden (136.420917ms)
+✔ Apply writes the prefab; every other instance follows; one undo step puts both back; Save writes the prefab (388.00425ms)
+✔ Apply through a nested instance writes the outer prefab's override; an invalid result is refused (339.365792ms)
+✔ a drag of an inner node's field is one gesture step (108.279209ms)
+✔ a file into a node's asset slot: one undo step; the wrong kind is refused; an unused entry goes (319.268708ms)
+✔ an edit an override can't express (taking away a key or value the prefab has) is refused, not kept without the change (112.862042ms)
+✔ Apply: this scene's other instances that set the same value follow the prefab again, in the same undo step (287.840917ms)
+✔ placing a prefab: it must be loaded, and must not lead back to this scene; another prefab drops the overrides it can't resolve (100.097333ms)
+✔ an instance whose prefab isn't there lists its overrides as unresolved, and Revert clears them (96.84925ms)
+✔ Save As can't make a cycle: a scene placing a prefab is refused as that prefab's file, or one it places (97.461917ms)
+✔ a preset fills the job and explicit fields win; ids count up (0.916208ms)
+✔ the stub runner renders nothing and reports the frames it would draw, in order, one job at a time (0.3555ms)
+✔ a failing runner fails its job and the queue goes on (0.171ms)
+✔ cancel: a queued job never runs; the running one sees its signal and ends cancelled (0.190042ms)
+✔ queued jobs reorder among themselves; a job is removed once it is not running (0.154084ms)
+✔ a runner that reports a cancel (a closed save panel) ends its job cancelled, not failed (0.109334ms)
+✔ run({ only }) renders that job alone; a run asked for meanwhile waits its turn (0.200375ms)
+✔ a runner that finishes although Cancel came too late leaves a done job that says so (0.120167ms)
+✔ delivery presets (M4 W10): every codec at 1080p24 and 4K24 with the extras; a backend and the redraw check per job (0.220042ms)
+✔ the redraw check by default for a delivery drawn on WebGPU, never for a film preset or WebGL (AB-D-0280) (0.115625ms)
+✔ one geometry: x and frame invert, zoom keeps its anchor, scroll never goes negative, ticks adapt (0.524708ms)
+✔ snapping: a threshold in pixels is the same feel at every zoom; markers, shots, keys and clip edges attract (0.46825ms)
+✔ building a 3-shot sequence from commands: each one undo step; undo and redo walk it; save and reopen are the same bytes (346.657084ms)
+✔ commands refuse what the sequence check refuses, and leave no undo step (0.589083ms)
+✔ a node's id: every reference follows it in one undo step (parent, behaviour params, connections and their node args, speakers) (566.439625ms)
+✔ a node's id: refused when taken, not an id, or a prefab's node; nothing changes (164.645292ms)
+✔ a node's id: a connection into an instance ("door-9/hinge") and a sequence's targets follow the instance (132.519375ms)
+✔ behaviours: the registry's and the project's own are added (with their defaults), edited and removed, each one undo step (355.42125ms)
+✔ removing a behaviour takes the connections that need it in the same step; undo brings both back (379.74025ms)
+✔ connections: made from the four parts, edited part by part, arguments by the action's schema, removed; each one undo step (13.099417ms)
+✔ a node's place in the document: moved before another, one undo step (1.474ms)
+✔ the project's behaviours declared after the session opened: the session's checks know them (AB-T-0638) (231.268917ms)
+✔ AB-T-0634: an agent removing a dragged node's parent mid-drag doesn't throw or lose the drag's edit (115.333584ms)
+✔ paste remaps a behaviour's node params (flat in its entry) and a connection into a nested instance (AB-T-0635 item 3) (337.968208ms)
+✔ a node's id: an instance's override value that names it follows (references resolve across the scene, tree.find) (121.733125ms)
+✔ a drag on a behaviour param or a connection's argument is one undo step (112.6795ms)
+✔ a node's id: refused, naming the files, when a sequence filming this scene names it (4.015792ms)
+✔ a node's id in an open prefab: refused when a scene or prefab that places it names that node (overrides, connections) (1.716833ms)
+✔ a game node's key: kept as the old id when a condition names it, so the game can still be won (105.552042ms)
+✔ a connection moved to a target without its action: refused alone, made with the new action in one step (the panel holds the target) (0.426708ms)
+✔ removing a behaviour from a node of a type the registry doesn't know keeps its type's connections (98.765709ms)
+✔ a game node's key: kept when another scene reads it (game state is shared: the won and lost scenes read counters.mistakes) (101.278541ms)
+✔ compose (M6 W8): several commands one undo step, all or nothing; without a label one step keeps its own (103.360792ms)
+ℹ tests 70
+ℹ suites 0
+ℹ pass 70
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3085.204792
+
+> @vrmxg/editor-ui@0.1.0 test
+> node --test test/
+
+✔ nothing unsaved: no question, the window closes (0.398625ms)
+✔ unsaved changes where Save works: Save, Don't Save, Cancel (0.357167ms)
+✔ where nothing can be saved to disk, there is no Save to offer, and Cancel comes first (0.181ms)
+✔ the timeline draws every row, item and control from plain data (59.47425ms)
+✔ the storyboard strip: a card per shot, its thumbnail or its camera, its script line (4.397ms)
+✔ the render queue panel lists jobs with their states (7.028083ms)
+✔ the number field: a real input with its id, accessible name and value; mixed says so (4.481584ms)
+✔ generated fields: a dialogue's lines as rows with their own fields, a map, a vector, a condition, a choice (23.955375ms)
+✔ a colour typed as hex: #rgb or #rrggbb, any case, with or without #; anything else is refused (M6 W10) (0.514875ms)
+✔ no M0 prop with a schema gets a JSON box: every type's and behaviour's props have a real widget (1.501417ms)
+✔ widgets from schema, meta and, for untyped data, the value (0.093833ms)
+✔ a game condition is edited under its test's branch; changing the test brings that branch's required fields (278.340625ms)
+✔ a new row is valid under its schema: a dialogue line, a choice, a track, a reads entry (188.768416ms)
+✔ anyOf branches: the post stack (a preset or a list of effects) and a brain's preset (0.19875ms)
+✔ edits keep what they don't touch, unknown keys included (0.231458ms)
+✔ a struct's rows: the schema's fields in order, then unknown keys (kept), and whether more may be added (0.167333ms)
+✔ curves: keys as a preview line, and the next key (0.098666ms)
+✔ ids and names: a row's id counts from 0, its name from 1 (0.148584ms)
+✔ a node's fields carry its values, defaults, step and precision, and whether its conditions hold (0.32375ms)
+✔ several nodes: the props they share, mixed where they differ (AB-T-0601) (0.316708ms)
+✔ several nodes' vector props: each axis its common value, null where they differ (0.124209ms)
+✔ arithmetic: + - * / %, unary signs, parentheses, a comma as the decimal point (0.749583ms)
+✔ the field's source has no eval or new Function (0.490542ms)
+✔ a typed value is clamped, rounded to the precision, whole for an integer; junk keeps the old value (0.12625ms)
+✔ arrow keys step by the schema's step; Shift is fine (×0.1), Alt coarse (×10) (0.403917ms)
+✔ a drag moves one step per pixel from where it started, on the step's grid, within min and max (0.120375ms)
+✔ shown values drop trailing zeros; the fill bar needs both ends (0.065ms)
+✔ the review's cases: a fine drag stores what the field shows; an integer field stays whole at a fractional bound (0.062625ms)
+✔ the coordinator's review: a huge typed number is never committed as Infinity; an ambiguous comma is refused (0.072416ms)
+✔ a question shows, waits, and resolves with the person's choice (0.433ms)
+✔ a second question while one is up is answered "cancel" and never shown; the first keeps its sheet and its answer (0.101792ms)
+✔ cards follow the shots, with time, cameras, the script line and notes (0.707583ms)
+✔ job status lines (0.167084ms)
+✔ the queue form: a delivery preset carries its extras as ticked; the backend and the redraw check per job (M4 W10) (0.103917ms)
+✔ the queue form's redraw check: ticked by default for a delivery drawn on WebGPU, as the person leaves it otherwise (AB-D-0280) (0.061375ms)
+✔ labels are what accessibility and the scenarios read (0.323042ms)
+✔ a move, a trim and a no-op (0.287ms)
+✔ arrow nudges: one frame, ten with shift, never before frame 0 (0.075458ms)
+✔ selection and delete (0.107042ms)
+✔ the selection panel's fields (0.106834ms)
+✔ the forms: tracks, clips by type, keys by channel (0.143333ms)
+✔ the timeline's keys: Delete removes a selected item even after the editor's window listener took the key (M5 W6 review) (0.08925ms)
+✔ assets: a category per file, Items lists only .vrmxi, search and folders narrow it (5.329583ms)
+✔ drops: a .glb on a Model's asset slot, never a .wav; node slots take tree rows; the viewport what a type places (0.190167ms)
+✔ tree search keeps matches and their ancestors; type: and is:overridden; folding (0.302709ms)
+✔ panels: sizes clamp, fold, resize by key, and a bad settings file falls back to the defaults (0.324542ms)
+✔ per-field copy and paste: only into a field of the same type, within its range (0.615584ms)
+✔ the assets panel draws tiles, filters, folders and Add buttons from plain data (29.800625ms)
+✔ copy and paste take values that arrive as reactive proxies (the inspector's), which structuredClone refuses (0.488708ms)
+✔ an asset field pastes only into one taking the same kinds of file (0.058083ms)
+✔ every drop target asks for an effect its drag allows (else the browser drops nothing): tree rows link to node slots (0.496625ms)
+✔ a table area: its project behaviour's params as fields (node menus, numbers, text), its signals with the Area's own (1.124167ms)
+✔ a dialogue's connections: each its signal, target, action and arguments by the action's schema; what calls it listed (0.463958ms)
+✔ a regular's brain: preset a choice of kinds, vars an open struct whose values pick their kind (0.224458ms)
+✔ a connection into a prefab instance's node shows that node's actions and its arguments' fields (nodeOf) (0.168333ms)
+✔ a connection retargeted: sent as it is when the new target has its action, held until an action is picked when not (0.139375ms)
+✔ a behaviour param its declaration doesn't have is shown read-only, removable; an unknown behaviour's params too (0.155542ms)
+✔ pins, layers and the node after (0.155916ms)
+✔ the panels render every control with its id and accessible name, no JSON box (84.729042ms)
+ℹ tests 59
+ℹ suites 0
+ℹ pass 59
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 609.395208
+
+> @vrmxg/export@0.1.0 test
+> node --test test/
+
+✔ the redraw check: every frame drawn twice, the same pictures as a plain export (6.057ms)
+✔ the redraw check outvotes an odd draw, first or second, and refuses three different pictures (2.688833ms)
+✔ onBytes sees each frame before the sink, in order (0.317542ms)
+✔ a turntable orbits a held world once and puts the host's camera back (1.187208ms)
+✔ stills: each shot's middle frame, once, in order, scaled to the export rate (0.137084ms)
+✔ thumbnails: a box filter in integers, any size down (5.559333ms)
+✔ the orbit starts in front, turns once, and the fit distance frames a person (0.078292ms)
+✔ a delivery's files sit in one folder, named after it (0.173125ms)
+✔ the frame plan: every rate lands on exact steps and α (0.559125ms)
+✔ an export shows what live play shows, frame for frame, and never changes the simulation (31.825708ms)
+✔ two exports of the same take hash the same frame for frame; a started tree is refused (2.519542ms)
+✔ a cancelled export tells the sink (4.202334ms)
+✔ the take's mix: a sound begun on step k is heard from (k + 1) / 60 s, cut to the frames' length (4.501417ms)
+✔ a take is exported at its world's fixed aspect (M3 W4, AB-T-0538): another shape is refused, not reframed (0.194917ms)
+✔ a cancel at the last frame still stops the export before the sink finishes the file (M4 W5) (6.659917ms)
+✔ row order: top-down, row padding stripped, toImageRGBA leaves the rows where they are; the same image as WebGL's bottom-up rows (1.340333ms)
+✔ draw() renders into the output target as if to the canvas, and puts the previous output back even when the draw throws (0.286833ms)
+✔ the ring of 3: frame n is read into slot n % 3 and taken a frame later from its own buffer; a full slot or an empty take is refused (1.067208ms)
+✔ readbackFor: one WebGPU readback per renderer, its one output target resized for each size; WebGL gets a new pixel-pack one (0.377834ms)
+✔ a target that receives no output draw (r187's second output target) throws at the probe instead of reading empty frames (0.457375ms)
+✔ the ring under cancellation and stills: release() mid-map rejects only the take; a slot being taken is not free; a failed copy still unmaps (11.414333ms)
+✔ exportTake on WebGPU: every frame drawn into the output target, taken through the ring in order, the sink told the rows are top-down (8.353875ms)
+✔ captureStill on WebGPU: the frame at the still's size, the right way up, and the view put back (1.391875ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 162.795375
+
+> @vrmxg/game@0.1.0 test
+> node --test test/
+
+✔ 1. a checkpoint is never taken on the step the game is decided, by its condition or by its action (8.839292ms)
+✔ 2. loadCheckpoint loads the session's own newest file: before the store has written it, after a newer one, after a failed write (128.975417ms)
+✔ 3. a countdown driven to nothing times out; a stopwatch is a timer without seconds, and stays one (2.046542ms)
+✔ 4. a comparison with nothing to compare is false, whichever op, and no key is special (0.154292ms)
+✔ 4. a condition that reads what its scene doesn't declare stops the scene, naming the node and the key (2.6005ms)
+✔ 4. a counter, a flag, a timer or a goal can have any name but "__proto__" (1.244667ms)
+✔ 5. a checkpoint asked for while the world can't be saved waits, in the state, for the first step that can (0.834875ms)
+✔ 5. a checkpoint still waiting when the scene changes is not taken, and says so: state, file and events agree (1.529542ms)
+✔ 5. a world that turns out unsavable at the boundary: no file, and checkpointFailed says why (0.497041ms)
+✔ 6. the game is decided once a step: a win and a loss on the same step is a win, whatever asked for each (1.384416ms)
+✔ a carry that throws fails the change once: the built world is freed, not rebuilt, and the session stays where it was (0.579042ms)
+✔ a load stops an input recording in progress and hands it over; it is never dropped (69.59925ms)
+✔ waiting for a load: runAsync and settle wait for it instead of spinning (50.003583ms)
+✔ a win or a loss asked for late in a step is never lost to a scene change on that step, whatever the service order (4.787792ms)
+✔ a player's save can't take a checkpoint's name: saveTo refuses the reserved prefix and says why (1.249375ms)
+✔ a scene reads what another scene owns by listing it in its rules' reads, without owning it (1.911333ms)
+✔ what a scene reads and the game didn't bring has its starting value: no way of playing can stop the game at a scene change (3.27175ms)
+✔ a reader's default never stands in for the owner's start: hub first or level first, the level is the same (1.494ms)
+✔ code that adds to a read counter the game doesn't have yet starts from the read's default (AB-T-0629) (0.639584ms)
+✔ a restart of a scene gives what it reads from elsewhere back as it arrived, not as nothing (2.180334ms)
+✔ the whole-game check sees game nodes inside prefab instances, and never refuses what it couldn't read (1.611ms)
+✔ what a document can prove wrong is refused before the game starts: a read no scene declares, a change to no scene (1.185584ms)
+✔ a checkpoint taken on the step a loss is asked for late is not written, and the game takes it back (1.111875ms)
+✔ a refused tree.add leaves nothing behind: no node, no declaration, no state (0.364583ms)
+✔ a connection that asks a game node for what it can't do is caught when the rules start; at run time it is refused, not thrown (1.918833ms)
+✔ the scene schema refuses a countdown of no seconds, and takes reads (291.552625ms)
+✔ a 600-step session changes scene seven times, each on its step, and carries the game with it (114.24025ms)
+✔ the same run again, and with loading that takes any time, has the same hashes at every step (127.7405ms)
+✔ a held step is an error for run(); runAsync and settle wait it out; a preload during `after` means no held step (19.79375ms)
+✔ a save taken before a scene change loads and goes on with the unbroken run's hashes across it (126.295166ms)
+✔ a load replaces the world being played, mid-session; a file that can't load leaves it alone (12.214083ms)
+✔ a checkpoint is written at its declared point, by the game, and loads like any save (15.180416ms)
+✔ nobody plays: the level's clock runs out, the game is lost, and the ending keeps that (5.227708ms)
+✔ a recording being made goes on across scene changes, and replays the session (24.608ms)
+✔ what a HUD binds to outlives worlds: one listener, the view of whichever scene is played (4.71825ms)
+✔ a host that builds the wrong world is told; a failed load surfaces on the step of the change (1.359667ms)
+✔ a later request replaces a pending one: the world built for the first is unloaded, not played (1.087458ms)
+✔ carried across a change: game-scoped values, and the services the flow is told to carry (0.760583ms)
+✔ live play: frame() runs the due steps and presents; a loading world is a hitch, not a different run (4.183541ms)
+✔ a condition is data in ai's test shape: state compares a value by path, all / any / not compose (0.708458ms)
+✔ a condition that isn't one is named with its path (0.142583ms)
+✔ the registry lists the game nodes, with the tests and ops the package runs (2.152917ms)
+✔ the scene schema validates the rules: the fixture scenes pass and are canonical, wrong rules are refused (337.353166ms)
+✔ describeRules reads a scene's rules without running it (0.648041ms)
+✔ counters: the score is the counter "score"; min and max hold; a change is a signal and an event (1.833291ms)
+✔ flags: set, cleared, tested; a scene's rules give the values a game starts with (0.646917ms)
+✔ timers count steps: a countdown times out on its step; stop, start, reset and addTime; a paused node's clock holds (1.134ms)
+✔ goals are done in the scene's order when their condition holds; without a win condition, all of them is a win (0.936959ms)
+✔ win and lose: a tie is a win; a timeout's connection can lose; once decided the result stands and the clock stops (1.951625ms)
+✔ what a HUD reads: the view is plain data, and events arrive outside the step (0.894666ms)
+✔ a scene change is only recorded: at the next boundary, or after seconds; a later request replaces it (0.491667ms)
+✔ the game state is in the world snapshot and in every step's hashes (25.128333ms)
+✔ scenes that can't start say why: two rules, a name used twice, a condition that isn't one (1.569375ms)
+ℹ tests 53
+ℹ suites 0
+ℹ pass 53
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 729.587292
+
+> @vrmxg/game-ui@0.1.0 test
+> node --test test/
+
+✔ the HUD: every readout is text that says its value whole, nothing hidden from a screen reader (20.151958ms)
+✔ the dialogue box: the speaker and line, numbered choices as buttons with which-of-how-many names (7.233542ms)
+✔ the root overlay draws the HUD, captions and the dialogue from one model (8.380291ms)
+✔ the settings controls: a slider and a mute button per bus; a key and a button slot per action; all navigable (10.106333ms)
+✔ the box: who speaks, the words as they are said, Continue while a skippable line plays (0.5745ms)
+✔ the choices: numbered, with accessible names that say which of how many (0.155417ms)
+✔ captions leave out the line the box already shows (0.08575ms)
+✔ a choice and a skip go to the input service as recorded choices (0.06075ms)
+✔ bindings read as key caps and gamepad buttons (0.577333ms)
+✔ a countdown reads what is left, rounded up; a stopwatch what has gone; from limit, not from left (0.085583ms)
+✔ the HUD shows the goal, the score, the labelled counters and the declared, labelled timers (0.764333ms)
+✔ before a world exists the HUD is empty, not broken (0.056917ms)
+✔ the prompt is the player's, with the keys that answer it and an accessible name (0.321375ms)
+✔ "Saved" comes on checkpointWritten, never on the game's checkpoint, and lasts a number of steps (0.10375ms)
+✔ the HUD shows the prompt for the key in reach with the keys that take it, then the key carried (121.761292ms)
+✔ keys map to the UI's actions (0.589167ms)
+✔ the gamepad: the d-pad and the stick move, A accepts, B goes back; edges once, held directions repeat by frames (0.373375ms)
+✔ the gamepad: what is held on the first frame the pad is seen is ignored until let go (the A that opened a menu) (0.162958ms)
+✔ what an action does to the controls: focus wraps, sliders step, accept clicks, back leaves (0.132417ms)
+✔ a held or repeated Enter or Space never activates a control it didn't go down on (review) (0.113791ms)
+✔ the guard judges only the overlays' controls and keyboard clicks: text fields and pointer clicks are left alone (review) (0.061875ms)
+✔ a conversation with a choice plays, is in the recording, and replays to the same branch and per-step hashes (153.839583ms)
+✔ the overlay holds the devices while Hana talks, and lets go when she is done (25.935291ms)
+✔ the HUD updates from the step: goal, score, timer, "Saved" on the checkpoint written, the result (32.184084ms)
+✔ a rebinding in settings is used by the next step, survives a relaunch, and an older recording replays the same after it (57.853709ms)
+✔ settings go on a world a save loads into (7.439792ms)
+✔ the overlay and the app each hold the devices with their own claim: neither lets go of the other's (review) (1.056416ms)
+✔ "Saved" shows after a store that takes longer than the notice lasts (review) (12.481667ms)
+✔ unmounted between a scene change and its next read, the overlay releases its claim from the new world's input too (review) (1.484875ms)
+✔ stored settings are read whatever the store held: gaps filled, damage replaced (0.697666ms)
+✔ a volume change applies to the output at once and is saved; a relaunch applies it again (0.49825ms)
+✔ an action rebound in settings is used by the next step and survives a relaunch (5.267459ms)
+✔ writes land in the order they were asked for (22.688833ms)
+✔ the rebinding list: a row per button action, a row per direction of an axis, what can't be rebound shown fixed (0.52175ms)
+✔ capturing a key or a button rebinds one slot and keeps the rest (0.18775ms)
+✔ a write that fails is remembered and never stops the next one (review) (0.12525ms)
+✔ rebinding Move right to A, Move left's key: warned, and on confirm moved, never bound twice (review) (16.618459ms)
+✔ a store that fails to read never stops the app: defaults, and the error kept (review) (0.120541ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 587.303834
+
+> @vrmxg/input@0.1.0 test
+> node --test test/
+
+✔ a choice is latched by the next step, read on that step only, and is in the snapshot state only then (3.191917ms)
+✔ a choice takes a string, a number or a boolean, under a name (0.741791ms)
+✔ a recording carries the choice in its step's frame, and a replay makes it on the same step with no UI (2.457042ms)
+✔ a recording without a choice is version 1, as before, and a version 1 recording replays (1.196834ms)
+✔ a choice handed over at a scene change is latched by the next world (1.630709ms)
+✔ while an overlay holds the devices the actions read nothing, choices pass, and a held button stays up until let go (0.430459ms)
+✔ holders: each claim is its own; the devices are the game's once nobody holds them; claims go with a scene change (0.4015ms)
+✔ peek reads what the devices hold without taking the step's mouse deltas (0.276875ms)
+✔ a recording made across a hot reload of the project's behaviours (M6 W2) is refused for replay, with why (0.991541ms)
+✔ the action map: keys, gamepad axes with deadzones, mouse deltas, buttons from any binding (0.499584ms)
+✔ record 10 s of keyboard, mouse and gamepad, replay it: the identical end state, devices ignored (7.256084ms)
+✔ button edges, and a recording refuses a different action map (0.983667ms)
+✔ the map takes its own copy: rebinding one world never changes the defaults or another world (3.311708ms)
+✔ an action rebound is used by the next step, and the old key no longer is (0.960292ms)
+✔ overrides are what differs from the project's map; applying them elsewhere gives the same bindings (1.85075ms)
+✔ stored overrides that don't fit this game are left out and listed, never thrown (0.643542ms)
+✔ a binding is checked for its action's type (0.248792ms)
+✔ a recording made before a rebinding replays the same after it, and one made after it replays on the default map (2.031375ms)
+✔ a scene change carries the player's bindings to the next world's input (0.590959ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ the two-player map: player 1 on the keyboard's left and the mouse, player 2 on the arrows and the gamepad (0.525625ms)
+✔ two players move two characters, each relative to their own camera; each camera takes its own player's look (734.334833ms)
+✔ a recording of both players replays with the same hash after every step, and from a snapshot (1624.852834ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2523.321875
+
+> @vrmxg/interact@0.1.0 test
+> node --test test/
+
+✔ walking up to the door focuses it, the prompt names the verb, and interact opens it with the use slot (98.896208ms)
+✔ sitting puts the character on the seat point with sit then sitIdle; moving stands it up at the exit, control back (50.393708ms)
+✔ taking a key that isn't takeable puts it in the inventory and removes it from the world (21.739917ms)
+✔ a run with interactions is identical twice, and restores from a snapshot taken while seated and after a take (277.2485ms)
+✔ carry (M5 W7): a take verb with carry plays it on the upper-body layer while she walks; release lets it go (34.407458ms)
+✔ a carry that can't play refuses the take before anything changes (M5 W7) (12.942209ms)
+✔ a carry goes with the inventory to the next scene and is held there from its first step; a connection releases it (M5 W7) (50.140792ms)
+✔ a carry slot naming a clip she doesn't have refuses the take before anything changes (M5 W7) (12.327375ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 740.482833
+
+> @vrmxg/item@0.1.0 test
+> node --test test/
+
+✔ every valid fixture reads and checks clean; every invalid one is refused with the codes the specification names (15.166ms)
+✔ every M1 type instantiates as an Item node with its bodies, colliders, sensors and joints (51.680542ms)
+✔ the door opens and closes from its verbs; the hinge moves the leaf; locked offers nothing (16.441375ms)
+✔ the chest's lid and the switch's lever move by their own animations, kinematic bodies following; shown meshes follow state (6.638541ms)
+✔ a sensor reports a character entering and leaving by its name; other bodies and the item's own parts don't count (44.16375ms)
+✔ item state is in the world snapshot: a door snapshotted mid-swing restores and re-simulates bit for bit (41.849916ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ Mira gets in the cart, drives along the pavement, changes lane, brakes and gets out (903.582541ms)
+✔ the recorded drive replays with the same hash after every step, and from a snapshot taken mid-drive (1932.763542ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3021.682084
+
+> @vrmxg/mcp@0.1.0 test
+> node --test test/
+
+ Particle system powered by three.quarks. https://quarks.art/
+✔ behaviours: attach (the project's and the engine's), params by schema, remove with the connections it made possible; each one step marked (MCP) (731.780209ms)
+✔ connections: checked as the inspector checks them; disconnect by index or by its ends; a batch is one step, all or nothing (425.364208ms)
+✔ project settings: read, set through the editor's ProjectSettings (one step each, marked, written at once), refused when wrong; its own undo takes a step back (208.609208ms)
+✔ scenes: open a new one (empty, or a copy of another), refused over unsaved changes; saved, the game names it and validates (1167.029208ms)
+✔ new project: the templates listed; none made without --projects; with it, made from a template and opened on its entry scene, with its own behaviours (282.29475ms)
+✔ a root behaviours.js that game.json doesn't name: validate warns (an export would leave it out), and settings names it (448.032542ms)
+✔ new project: when the project made has a root behaviours.js that game.json doesn't name, it is named, one settings step (2.80275ms)
+✔ prefabs load when an edit places one the scene didn't use: validate, the flattened tree and the engine see it (508.625541ms)
+✔ a prefab placed and connected to in one batch (review of PR #67): the trial finds the prefab the session would (249.172875ms)
+✔ edit runs only an agent's ops (review of PR #67): no way round the behaviour and connection checks (791.173542ms)
+✔ settings: a refused key leaves game.json as it was, whatever came before it (review of PR #67); a new behaviours module is read at once (644.273375ms)
+✔ an instance's overrides give inner nodes behaviours by the same rules (review of PR #67): set and add alike (1396.658042ms)
+✔ no path or key an agent sends reaches a prototype (review of PR #68): every tool route refused, nothing polluted (8.143875ms)
+✔ validate covers the project's behaviours: one nobody has is a problem, one with no describe a warning, a declared one's signals connect (807.941584ms)
+✔ validate, AB-T-0641: an optional goal nothing completes is a note; a goal code could reach is a warning naming how; a misspelled key is a problem though the code uses the game service (1582.248042ms)
+✔ validate on the sample game (AB-T-0641's acceptance): serve is a warning naming the code path, press-start an optional-goal note (568.519333ms)
+✔ validate names each of the three problems on a project made to have them, and nothing else (521.883541ms)
+✔ each problem fixed through the tools, validate is ok: one edit per fix, each undoable (1075.7505ms)
+✔ game rules: every scene side by side, with what only the whole game shows (469.03575ms)
+✔ the scene tools refuse rules that would stop the scene: validate and save name the node and the key (741.514583ms)
+✔ export: refused until saved, refusals passed back whole (the file, the ignore line), then a build (1256.305709ms)
+✔ export without --builds checks and hashes, and writes nothing (581.462ms)
+✔ game state: the running world's game, as a HUD sees it; a scene without rules says why there is none (1061.755875ms)
+✔ the checks read documents: colliders under plain nodes, sensors only, goals by chains, bounds and code (3.582666ms)
+✔ describe fits every node type in one answer: a condition is given once, not three levels deep per prop (6.087291ms)
+✔ describe says when a prop applies (M5 W4, AB-T-0602): a light's shadow settings, a collider's sizes (1.249042ms)
+✔ goals are judged across the whole game, as play carries values (the review's cases) (0.566542ms)
+✔ without game.json the open scene is the game, for rules, validate and export alike; a scene outside the game is said (1528.070708ms)
+✔ a prefab's rules read what the scene it goes into declares: validate and save don't judge them alone (783.467666ms)
+✔ validate: each problem once, and every one names its node or file (1244.772167ms)
+✔ validate shows every export refusal at once, and agrees with export on the same project (2451.8875ms)
+✔ the project's own strings come back marked as data, and nothing acts on them (385.856917ms)
+✔ a conversation runs in the headless engine, answered with engine_step choose; a scene without one gets no dialogue service (AB-T-0630) (666.809541ms)
+ Particle system powered by three.quarks. https://quarks.art/
+  tool list: 21 tools ≈ 1958 tokens headless, 22 ≈ 2087 for the editor
+✔ the tool list is generic and small: 21 tools under 2,000 tokens headless, 22 under 2,200 for the editor; instructions at initialize (221.390083ms)
+✔ editor mode: tool calls reach the open editor through the bridge; its edits carry labels and undo there (1066.96275ms)
+✔ an agent describes Camera, adds a camera to the cafe, saves, and the file validates (1245.821542ms)
+✔ inspect: the walker walks through the entrance trigger, the door swings open, physics and the hinge say so (667.045375ms)
+﹣ inspect on the cafe: Mira replays the recorded walk, the entrance door opens, the hinge reports its angle (0.09625ms) # needs snapshot/harness/public/models (node make-assets.mjs)
+✔ sequences (M2 W11): the outline from the file, edits as one undo step (setDoc), frames seeked exactly with a world hash (701.582583ms)
+✔ brain (M2 W11): inspect, inject a goal on a step, record and replay through the handlers (2.608875ms)
+✔ answers are compact and bounded (0.110125ms)
+✔ directors (M3 W10) over stdio on the sample cafe: a profile read, set as one undo step and undone; talk, the answer, the goal; takes listed and replayed (1535.717334ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ the short tools: at most 10, under 2,000 tokens, each an object schema whose required args it declares (0.60625ms)
+✔ checkArgs: the schema subset commands use (0.180958ms)
+✔ a registry runs commands only with arguments that fit their schemas; an edit command that makes two steps is a bug (0.542ms)
+✔ asAgent marks each step once and is otherwise the session (0.069375ms)
+✔ vrmxg-mcp --creator: the short tools and instructions at initialize; calls reach the creator's page through the bridge (646.258417ms)
+✔ vrmxg-mcp --creator with no creator open answers with what to do (532.5225ms)
+ℹ tests 48
+ℹ suites 0
+ℹ pass 47
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 13117.907042
+
+> @vrmxg/model@0.1.0 test
+> node --test test/
+
+✔ the GLB writer: a valid binary glTF with meshes, materials and KHR physics shapes (0.740875ms)
+✔ a Model node shows its GLB and gets its colliders and triggers from it, at the node's pose (35.727417ms)
+✔ Models inside prefab instances load; two nodes share one parsed file; removing frees the body (6.361042ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 223.341834
+
+> @vrmxg/nav@0.1.0 test
+> node --test test/
+
+ Particle system powered by three.quarks. https://quarks.art/
+✔ Hana walks behind the counter and Mira walks in, along the navmesh; the same every run; a snapshot mid-walk replays (3077.97ms)
+✔ the soup is the fixed colliders; tall boxes lose their tops (39.266834ms)
+✔ bake, then paths: through the doorway, round a blocker, back when it lifts; links shorten a path (59.975667ms)
+✔ a snapshot carries the navmesh only once it changed; restore gives the same paths (36.603834ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3300.840208
+
+> @vrmxg/particles@0.1.0 test
+> node --test test/
+
+ Particle system powered by three.quarks. https://quarks.art/
+✔ built-in effects are valid documents; bad ones are named; the atlas is drawn (44.367542ms)
+✔ emitters emit: steam rises, dust settles, sparks burst once a cycle and fall (49.387291ms)
+✔ the same particles every run; the seed and the emitter change them (98.097292ms)
+✔ a snapshot mid-effect restores and replays identically (particles, emission state, bursts) (61.835416ms)
+✔ stop ends emission and a non-looping effect signals finished; presentation emitters stay out of the hash (35.742625ms)
+✔ a fresh world restored mid-effect steps each emitter exactly as the run did (generators know their memory slots before any spawn) (122.043792ms)
+✔ the batch renderer is the host's: none headless, WebGL's or WebGPU's, swapped mid-run; the particles hash the same with each (61.262083ms)
+✔ a particles service installed after a host attached the tree still draws with the host's renderer (tree.renderHost) (9.849292ms)
+✔ WebGPU: a batch compiles to one shader whatever the output colour space, so the first draw to compile it decides nothing (50.974709ms)
+✔ WebGPU: the decode follows the renderer drawing (1 for an sRGB output, 0 inside a linear pass), and survives rebuilt materials and batches (12.637125ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 716.922584
+
+> @vrmxg/persona@0.1.0 test
+> node --test test/
+
+ Particle system powered by three.quarks. https://quarks.art/
+✔ personas in the cafe: ids, core and app personas, the director, the trait input, and the bundle untouched (1110.130625ms)
+✔ personas are data: the cafe steps to the same world with and without them (2389.775166ms)
+✔ core personas from a bundle database and from the exchange form; the app laid over (0.943625ms)
+✔ profiles: from traits (deterministic), clamped, and from a model with a fallback (0.592708ms)
+✔ a trait weights utility: a talkative character chats, a reserved one gets back to work, deterministically (0.579167ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3720.562041
+
+> @vrmxg/physics@0.1.0 test
+> node --test test/
+
+✔ the door prefab swings open when a kinematic body enters its trigger, and closes when it leaves (126.848792ms)
+✔ a locked door ignores its trigger (13.095208ms)
+✔ two runs are bit-identical at every step (49.178792ms)
+✔ snapshot at step 300, restore into a new tree, re-simulate to 600: bit-identical (23.141958ms)
+✔ ray and shape casts return nodes; layers filter them (2.563083ms)
+✔ contact signals only for bodies someone listens to; a body's mass is shared by its colliders (3.98575ms)
+✔ colliders from a GLB's KHR_physics_rigid_bodies / OMI data, read tolerantly (1.042125ms)
+✔ removing an instance removes its bodies and colliders; debug lines cover every collider (2.231834ms)
+✔ a hinge by frames turns about its x and stops at its limits; a ball joint at its limits per axis (84.656ms)
+✔ a ragdoll falls onto the floor, its parts never touch each other, its limits hold (53.3385ms)
+✔ the fall is bit-identical twice, and from a snapshot taken mid-fall (58.719208ms)
+✔ a car settles on its springs, drives forward, turns left and stops (132.7785ms)
+✔ the drive is bit-identical twice, and from a snapshot taken mid-drive (53.077ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 846.613041
+
+> @vrmxg/post@0.1.0 test
+> node --test test/
+
+✔ a preset expands; a list runs in the anime order whatever order it is written in; defaults fill in (0.779041ms)
+✔ unknown effects and presets are refused, naming what there is; only the list of effects forces a rebuild (0.268708ms)
+✔ viewport grids fill the canvas (0.154375ms)
+✔ settle() waits for a LUT the spec loads; a failed load settles too (M2 W12: an offline frame waits for its grade) (5.321708ms)
+✔ the LUT's intensity on WebGL (M4 W1 review): below 1 it blends NORMAL at that opacity; at 1 it stays SRC, drawing as before (3.39425ms)
+✔ the same effects, in the same order, as the WebGL stack; every effect says what it is under TSL (3.078417ms)
+✔ gotcha 4: every pass and texture is sized to the drawing buffer when the pipeline is built, before any frame (1.579167ms)
+✔ canary for gotcha 4: r187's DepthOfFieldNode still sizes itself from its input on its first frame (mrdoob/three.js#35620) (0.392708ms)
+✔ gotcha 4: render() keeps one pipeline per structure — one that comes back is reused; values and cameras never rebuild (1.419375ms)
+✔ the cache is an LRU of cacheSize structures: the least recently drawn is disposed with every target it owns, and rebuilds sized (3.299167ms)
+✔ a LUT's arrival evicts the look without it (it won't come back) (4.252708ms)
+✔ dispose() frees every render target: each cached pipeline's own (bloom, DOF, textures) and the shared passes (1.2ms)
+✔ gotcha 5: the character mask is a ½-resolution pass of the character layer with an override material; no material mrtNode (0.322542ms)
+✔ canary for gotcha 5: r187 has no MRTNode.isCompatible, so a material mrtNode would still break non-MRT passes (#35373, fixed for r188) (0.199666ms)
+✔ gotcha 5's pass draws without the scene's background, environment and fog, and puts them back (0.408917ms)
+✔ canary for gotcha 7: r187's toneMapping() returns a vec4 whatever it is given (0.335667ms)
+✔ gotcha 7: in the built graph, toneMapping() takes the vec4 and is never joined into another vec4 (0.981292ms)
+✔ gotcha 1: an offline frame advances three's node frame before the stack draws, so its passes redraw (4.226583ms)
+✔ resolution-independent lengths: px at 1080p scale with the output's height; the aberration follows the aspect (0.161917ms)
+✔ the grade's uniforms are pmndrs' (hue matrix, saturation and contrast factors) (0.141041ms)
+✔ LUTs: settle() waits for the .cube; its arrival is a new structure; a failed load settles to none (7.355875ms)
+✔ lutFromCubeTSL keeps the .cube's values (to half precision) (1.218416ms)
+✔ makePostStack: pmndrs on WebGL, TSL on WebGPU (loaded only there); the .cube text reaches both (0.355709ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 177.393417
+
+> @vrmxg/registry@0.1.0 test
+> node --test test/
+
+✔ the evaluator: names, literals, comparisons, && || ! and parentheses (1.600666ms)
+✔ a malformed condition fails closed: the field is shown and editable (0.269542ms)
+✔ nothing in a condition runs code: no member access, calls or globals (0.396417ms)
+✔ the registry checks conditions when a type is defined: they parse and read the type's own props (0.663ms)
+✔ the M0 lights, collider and environment say when their props apply (2.118ms)
+✔ src/vendor/ajv-meta-2020.js is what scripts/make-meta.mjs writes from the installed Ajv (106.78225ms)
+✔ the meta-schema check gives Ajv's compile's verdict on every schema the registry holds and on schemas made to fail (147.836084ms)
+✔ stricter than Ajv's compile on purpose: what it refuses is refused where Ajv never compiles it too (7.847167ms)
+✔ nothing Ajv's compile refuses gets past the check: 5,000 random schemas, seeded (239.982375ms)
+✔ an empty enum in a declaration is refused when it is declared, naming it, not later by the scene validator (PR #58's review) (0.25125ms)
+✔ a declaration's problems name the schema and say why (0.131583ms)
+✔ declaring a project's behaviours generates no code: it works with code generation from strings turned off (71.819667ms)
+✔ a prop written as bare JSON Schema reads as P would have made it; one P made is kept (1.260792ms)
+✔ state: kept as declared, absent when not declared (not the same as declaring none) (0.451917ms)
+✔ signals and actions are { description, args }, nothing else (0.205875ms)
+✔ the registry keeps its own frozen copy of a declared state (3.686083ms)
+✔ stateShape: the canonical state schema without annotations, the one thing a declared state is compared by (1.25075ms)
+✔ a schema that isn't JSON Schema is refused when declared, not at every validation after (1.493458ms)
+✔ a subclass doesn't inherit its parent's describe: it may keep other state (0.112292ms)
+✔ the classes of a module that carry a describe are its declarations, under the names they are exported as (0.0985ms)
+✔ project behaviours sit beside the engine's; a clash with an engine behaviour is an error and changes nothing (0.730167ms)
+✔ a project behaviour must attach to node types the registry has, and its conditions read its own params (0.75925ms)
+✔ define flattens inheritance: props, signals and actions accumulate; overrides win (0.72325ms)
+✔ define refuses duplicates and unknown parents (0.262125ms)
+✔ prop types carry JSON Schema and metadata (units, widgets, simulation flag) (0.581625ms)
+✔ surface: a node has its type's signals and actions plus its behaviours' (1.735292ms)
+✔ the fixture set (M0–M3, plus M5 W2's five game nodes and W3's Dialogue): 28 types, 8 behaviours (M3 W5: noticeViewer), all derived from Node3D (0.519542ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 735.416583
+
+> @vrmxg/render@0.1.0 test
+> node --test test/
+
+✔ a draw that throws for a lost device: no throw at the frame loop, said once, and the simulated pose is put back (47.327458ms)
+✔ GPUDevice.lost for any reason (destroy() too, which three ignores) and three's onDeviceLost mark the host lost; its own dispose doesn't (4.101375ms)
+✔ RenderHost.replace: WebGPU again on a fresh canvas with the same tree, camera and overlays, and play goes on from the same step (150.847708ms)
+✔ RenderHost.replace falls back to three's WebGL2 backend (node materials still draw) when WebGPU can't be had; throws when nothing can (10.004583ms)
+✔ a device lost while RenderHost.replace is still making the host (inside the post factory): its onLost, set after, fires at once (5.483167ms)
+✔ frame 0 of a film draws the first step: the look, the shot's camera and its overrides are in it (36.637042ms)
+✔ nothing of the simulation changes: the world after an export's frames is a headless run's, step for step (31.628042ms)
+✔ every frame that would blend with step 0 draws step 1 as it is; the next ones are as before (4.014792ms)
+✔ a scrub back to frame 0 draws what the export's frame 0 drew, on the same world (18.029875ms)
+✔ α = 1 asks for a step as simulated and gets it, step 0 included (1.439708ms)
+✔ simulation hashes are the same headless, rendered with interpolation, and rendered without (324.475834ms)
+✔ at a 120 Hz display the rendered walker moves every frame; without interpolation it judders (9.688708ms)
+✔ the blend never stays in the objects, and never fires change callbacks (1.818167ms)
+✔ a frame with no steps after a restore draws the restored step, not a blend with what was drawn before it (M2 W12) (10.666541ms)
+✔ lights, shadows and the Environment follow their nodes and props (2.3905ms)
+✔ debug draw: a wire for every collider, the door triggers as sensors, rays from the camera's spring arm (2.47275ms)
+✔ attaching another tree rebuilds its views and wires (and drops the old tree's) (2.476292ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ AB-A-0335: the host imports neither three.quarks nor the post stack; both load when used (1.666875ms)
+✔ AB-A-0335: a tree with particles on a host that hasn't loaded its particle renderer holds its steps until it has (20.7075ms)
+✔ AB-A-0335: warmUp compiles through a camera with every layer on, then draws once where nobody sees it (27.607041ms)
+✔ AB-A-0335: on WebGL through the post stack, warmUp compiles for the composer's input buffer (and skips before it exists) (0.273625ms)
+✔ the ?renderer= switch: webgpu, webgl, auto; anything else is the app's default (auto since M4 W3) (0.084125ms)
+✔ auto takes WebGPU where navigator.gpu gives an adapter, and falls back to WebGL otherwise; a forced webgpu throws without it (0.101209ms)
+✔ RenderHost.create on WebGPU: an initialised WebGPURenderer on the canvas, the patched MToonNodeMaterial for characters (2.4795ms)
+✔ WebGPU failing inside the warm-up's init(): a forced webgpu throws, auto makes a WebGL host before touching the canvas (0.474375ms)
+✔ WebGPU failing inside the view renderer's init(): a forced webgpu throws, auto falls back to WebGL; the renderer is disposed (0.4175ms)
+✔ a host made directly with a WebGPURenderer must have it on WebGPU, with webgpu and mtoonMaterial (no half-working host) (0.229292ms)
+✔ a failed warm-up isn't cached: the next create tries again (0.319875ms)
+✔ gotcha 6: one warm-up WebGPURenderer, initialised with a room PMREM, comes before the view's and every later renderer (0.581291ms)
+✔ gotcha 6: WebGL hosts never touch WebGPU (no warm-up, no three/webgpu) (0.091125ms)
+✔ gotcha 1: frameAt advances the node frame once before each offline frame; live frames leave it to three's rAF loop (2.200625ms)
+✔ gotcha 1 on WebGL is a no-op, and a WebGPURenderer without the private node frame fails loudly (0.168666ms)
+✔ canary: three r187 still advances nodeFrame only in its own rAF loop, through the private renderer._nodes (0.541917ms)
+✔ WebGPU's PMREM makes the room environment (it used to be null without WebGL), and the Environment uses it (0.852083ms)
+✔ the post stack and the lens are sized from the drawing buffer on WebGPU (it has no GL context) (0.684ms)
+✔ M4 W1: create({ post: { loadCube } }) makes the backend's own stack (TSL on WebGPU, pmndrs on WebGL), sized and lens-fed (10.882625ms)
+✔ the three-vrm patch is applied on install: MToonNodeMaterial loads on r187 and carries the load fix and five fidelity fixes (3.841167ms)
+✔ patch 5: a shadowed MToon fragment keeps the full light and takes the shadow into its toon shading (shade colour, as GLSL) (0.548375ms)
+✔ patch 5: a light that casts no shadow on this object (or a custom getShadow pass) is left as it was (0.211583ms)
+✔ patch-three-vrm: --require-patched fails a stock install (CI proves the install patched); a changed file fails --check (1.971625ms)
+✔ patch-three-vrm updates a file patched by an earlier patch: undoes it back to stock, then applies the current one (1.53375ms)
+✔ patch-three-vrm: the earlier three-vrm patch undoes to the stock hash the current one starts from (1.518208ms)
+✔ patch-three-vrm runs as a script through a symlink with a space and # in its path (import.meta.main) (77.9425ms)
+✔ three-vrm's CommonJS nodes build (stock, unpatched) is stubbed out: require() throws instead of drawing wrong (0.458375ms)
+✔ patch-three-vrm applies hunks exactly and refuses a file that changed (0.181959ms)
+ℹ tests 45
+ℹ suites 0
+ℹ pass 45
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 690.581916
+
+> @vrmxg/save@0.1.0 test
+> node --test test/
+
+ Particle system powered by three.quarks. https://quarks.art/
+save file 235 KB; 948 steps replayed identically after the load
+✔ a save after the sword is taken loads and plays on with the same per-step hashes to the end of the take (2375.502ms)
+✔ typed arrays, -0, NaN and maps survive encode / decode exactly; base64 matches the platform's (0.848958ms)
+✔ save mid-fall, load into a fresh world: the same per-step hashes on; flags come back (104.7705ms)
+✔ a save names what it needs; a different scene, Rapier build or format is refused with the reason (4.80725ms)
+✔ stores keep, list and remove saves (memory and files) (3.221ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2585.385708
+
+> @vrmxg/scene@0.1.0 test
+> node --test test/
+
+✔ an instance's overrides as a diff: field, prefab value, instance value, change (1.414583ms)
+✔ added, removed and stale overrides are told apart (0.441083ms)
+✔ setting a field writes the least override; the prefab's own value drops it (0.569458ms)
+✔ revert: the scene's bytes match an instance never overridden, through the editor's undo (520.743958ms)
+✔ apply: the value goes into the prefab, every instance follows, the prefab stays valid (1.163375ms)
+✔ apply through a nested path writes the outer prefab's own override of its inner instance (0.332375ms)
+✔ prefab users: direct and nested instances by address (0.178542ms)
+✔ an editor's own ops join the undo history beside the document's (one step across two files) (166.210542ms)
+✔ validate agrees with Apply: an override that drops a behaviour a prefab's own connection calls is an error (0.894959ms)
+✔ after any declaration the registry accepts, a scene still validates; what would break it is refused (841.189041ms)
+✔ examples validate with no errors or warnings, and are in canonical form (351.47025ms)
+✔ schema catches typed errors with useful messages (0.478292ms)
+✔ lint catches references the schema cannot: parents, cycles, signals, actions, override targets (0.454417ms)
+✔ unknown types, props and behaviours survive a round-trip, reported as warnings (0.477625ms)
+✔ flatten: nested prefabs get path ids, overrides apply by inner id, behaviours merge by use (0.184ms)
+✔ edits: typed checks, inverse ops, undo/redo restore the exact text, one-line diffs (188.026125ms)
+✔ connections reach inside prefab instances by path, in edits and in lint (0.686292ms)
+✔ describe gives an agent everything for a type: schema, units, signals, actions, behaviours (1.211667ms)
+✔ a batch (an asset and the node using it) is one undo step, all or nothing; assets in use can't be removed (122.964541ms)
+✔ setAsset replaces an asset entry in place, even one a node uses; undo puts the old entry back (0.817542ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 945.999292
+
+> @vrmxg/script@0.1.0 test
+> node --test test/
+
+✔ the sample builds: numbered shots, the cast on its marks, cameras and a brain (4.693875ms)
+✔ a dialogue track per speaker, the speaker's look-at, and a performance from tags and parentheticals (1.970541ms)
+✔ the sequence is valid in its set: checkSequence, composeSequence and the schema (353.973083ms)
+✔ deterministic: the same script gives the same bytes, and re-scripting an unchanged script changes nothing (5.845709ms)
+✔ the coverage hook replaces the default cameras; vocabularies narrow the tags (0.806625ms)
+✔ a coverage hook may cut inside a shot (splits, M4 W8): a clip of its own per piece, kept through a re-script (3.032417ms)
+✔ a parenthetical may hold any word: "constructor" or "valueOf" looks up nothing in the vocabularies (0.652208ms)
+✔ voice-over, off-screen and dual dialogue; marks moved by [[at]]; behaviours kept on request (0.658084ms)
+✔ the sample reads as scene, action, cues, dialogue, parentheticals and transitions (2.275334ms)
+✔ the subset: forced elements, scene numbers, extensions, dual dialogue, notes, boneyard, sections (0.31475ms)
+✔ ids survive edits elsewhere: insert, delete and reorder other beats (0.541291ms)
+✔ an edited beat keeps its id when the last build's beat table is given (4.143125ms)
+✔ errors point at script lines (0.319917ms)
+✔ the build adds errors at lines: unknown characters, marks and tags out of place (0.282583ms)
+✔ review fixes: a boneyard line inside dialogue, dual dialogue placement, title keys, two spaces, tag spacing (0.201209ms)
+✔ shot numbers: between, letters in reading order, and a warning where nothing fits (0.872833ms)
+✔ a hand-moved gesture is marked, kept and moves with its line when a line is added above (6.374542ms)
+✔ editing a line's words updates the dialogue and keeps the line's hand edits; a cut line takes its own clips with it (2.096833ms)
+✔ a deleted generated clip stays deleted; a deleted generated track stays deleted; release gives a beat back (2.129791ms)
+✔ hand keys on an expression are kept (the group is listed as hand); the other groups follow the script (1.64575ms)
+✔ a person's own track, shot and marker move with the beat they fell in (0.898583ms)
+✔ a hand-trimmed line gives the line its length; a baked voice is kept while its words are (3.677084ms)
+✔ hand-set shots and duration are kept; generated shots give way (1.027584ms)
+✔ a swapped camera or a shot given overrides keeps following its shot's timing; a retimed one doesn't (1.833125ms)
+✔ in the editor: a re-script is one undo step; undo and redo restore exact bytes; errors change nothing (373.606666ms)
+✔ re-scripting is deterministic: the same edits from the same document give the same bytes (5.377541ms)
+✔ an edited line keeps its own id when the line before it by the same speaker is cut (2.065625ms)
+✔ a cut line takes its hand-edited dialogue, look, shot and face keys with it, and says so (1.042166ms)
+✔ cutting a line takes the keys the script generated for it, changed or not, and keeps the keys the person added near it (2.774958ms)
+✔ cutting an action with a move takes the move the script keyed (even nudged) and keeps a key the person added on the track (1.162791ms)
+✔ generated nodes: a moved mark moves the wide; a cast member cut entirely loses her camera; hand-moved nodes stay (157.540292ms)
+✔ a sequence opened from its file, re-scripted with the same script, is unchanged (keys in the file's order) (2.766917ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 697.422375
+
+> @vrmxg/sense@0.1.0 test
+> node --test test/
+
+ Particle system powered by three.quarks. https://quarks.art/
+✔ Hana sees the person at the camera (her cafe behaviours: her own actions) (1375.969292ms)
+✔ Hana sees the person at the camera (the host brain: reactions as its override) (1001.899334ms)
+✔ the session replays with the camera off, hash for hash, and from a snapshot taken mid-session (2614.457125ms)
+✔ hand shapes: open, pointing, a fist (0.724333ms)
+✔ the script: appeared, wave, nod, shake, point, left; in order, once each, and the same every run (1.608667ms)
+✔ not gestures: an open hand held still, looking down, turning one way; and nothing while no one is there (0.739584ms)
+✔ farther away (half the face size, half the swing): the same events (0.327291ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5179.968625
+
+> @vrmxg/sequence@0.1.0 test
+> node --test test/
+
+ Particle system powered by three.quarks. https://quarks.art/
+✔ the morning sequence plays in the cafe: cameras, a walk, eyes, a line, a cheated light; the same every play (1782.189458ms)
+✔ scrubbing the morning sequence lands on the world of a straight play (1830.155709ms)
+✔ composing: the set's nodes keep their ids, the sequence's join under the root; clashes are refused (0.777875ms)
+✔ casting (M2 W11): sequence.cast recasts set nodes for the film (props merged, behaviours and transform replaced); the set is untouched (0.166917ms)
+✔ roles (M4 W6, @vrmxg/cast): a role cast from another .vrmxa gives its node that asset, with the cast as well; the set is untouched (0.166875ms)
+✔ checks, clips, post values and SRT subtitles (0.764ms)
+✔ playing: the camera track switches the brain, events fire on their step, shots override and put back (79.221292ms)
+✔ post values follow the frame and α (presentation only) (6.668625ms)
+✔ scrubbing lands on exactly the world of a straight play, from snapshots and backwards (28.511292ms)
+✔ a snapshot mid-shot restores the sequence (overrides, camera, playback) and replays the same (9.1395ms)
+✔ baking: a baked span replays the cached take even when the live simulation would differ (21.020042ms)
+✔ a move track (M4 W9) is her walking intent from its first key to its last; a walk begun after a cut owns her place; lookAt tracks hand back (7.511917ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3804.498667
+
+> @vrmxg/snapshot@0.1.0 test
+> node --test test/
+
+✔ a recorded 10 s run hashes identically twice, and the world really moves (165.048959ms)
+✔ a snapshot at step 300, restored into a fresh world and re-simulated to 600, is the same run (77.345625ms)
+✔ a Math.random slipped into a behaviour is caught: the first step and the component are named (52.447792ms)
+✔ restoring refuses what it cannot bring back: a timer made at run time, another scene (3.227459ms)
+✔ the hash: bit-exact numbers, typed arrays by element, key order part of the value (0.227708ms)
+✔ a snapshot taken under a slowed and under a disabled subtree re-simulates identically (AB-T-0627) (57.084ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 601.71025
+
+> @vrmxg/takes@0.1.0 test
+> node --test test/
+
+✔ reduceKeys keeps what the line between kept keys would miss by more than the tolerance (0.707916ms)
+✔ a value applied on a step is keyed at the frame that step arrives at (0.123834ms)
+✔ a puppet take: held keys become a move key where the intent changes, relative to the camera; a stop ends it (4.160792ms)
+✔ a puppet take: the eyes turn while a look key is held, are thinned, and are given back; gestures are clips as long as their slots (1.733125ms)
+✔ a director take: her line, face, gesture and look are tracks; a goal is a decisions key and gives her the actor's brain (0.691166ms)
+✔ a face take: the synthetic session blinks, smiles, lifts her brows, talks, winks and turns her head, from rest and back to it (2.879166ms)
+✔ face samples from blendshape scores and from the shell's feature frames (0.155417ms)
+✔ a take document is checked: its kind, its steps, and that its log is its own (0.3065ms)
+✔ the sample's three logs give their golden tracks, and the film with them kept its golden text (6.026167ms)
+✔ keeping a take is one undo step; undo gives the film back byte for byte; removing one is a step too (391.22525ms)
+✔ a director take's brain: given only to a character who has none, and only that brain is taken away again (5.172875ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ recording is repeatable, and the kept film plays what was performed (6114.267459ms)
+✔ the film with the three takes kept replays exactly: twice the same, a snapshot inside a take restored, every take performed (5728.745917ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12043.530875
+
+> @vrmxg/tracks@0.1.0 test
+> node --test test/
+
+ Particle system powered by three.quarks. https://quarks.art/
+✔ an AnimationPlayer in the cafe opens a door, fades a light and plays Hana's talk clip, the same every run (1756.061666ms)
+✔ keys: linear between keys, held outside, eased into a key, step keys, colours and arrays blend (0.723333ms)
+✔ holds on twos and threes; transforms slerp; expressions per name (0.287167ms)
+✔ animation: clips cross-fade by their blend-ins, the track fades against locomotion, times in seconds (0.181125ms)
+✔ events fire once as playback crosses them; checks catch bad tracks (0.162958ms)
+✔ an AnimationPlayer plays on the step clock: props, transforms on twos, events once, finished at its end (3.420958ms)
+✔ jumping to a frame shows what playing to it shows; snapshot and restore replay identically; loop and seek (4.87775ms)
+✔ release (M4 W9): a released track holds its target only between its keys; a released animation track plays over the one before (0.327208ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1930.734459
+
+> @vrmxg/voice@0.1.0 test
+> node --test test/
+
+✔ a conversation's lines are read and checked: ids resolved, every problem named with its path (0.981584ms)
+✔ a conversation that can't be right is refused when its node enters, and leaves nothing behind (5.1405ms)
+✔ the lines play in order, the conversation waits for a choice, and the choice takes its branch and sets its flags (4.88475ms)
+✔ a choice behind a condition is offered when it holds, and a line behind one is passed over when it doesn't (2.269709ms)
+✔ a line ends early on the advance input, and only when the conversation is skippable (1.062375ms)
+✔ autostart starts the conversation on the world's first step (after a scene change has carried the game in) (0.382458ms)
+✔ one conversation at a time; stop ends it where it is; a node that leaves takes its conversation with it (0.89275ms)
+✔ a conversation replays as played: the recording carries the choice and takes the same branch, with the same per-step hashes (17.618708ms)
+✔ a snapshot taken while the conversation waits for an answer restores and goes on as the unbroken run (14.002167ms)
+✔ lines edited under a question (the editor's play, an MCP edit) never throw in the step (review) (1.943875ms)
+✔ advance false is no skip (review) (0.365417ms)
+✔ a voiced line ends on the same step with and without the audio service: its length is data, never the decoded WAV (review) (10.111833ms)
+✔ a clip with no timings file is timed by its text, not the tail alone (review) (0.442625ms)
+✔ the detector: starts after 80 ms of speech, ends after 450 ms of quiet, keeps the pre-roll, flags blips (4.795458ms)
+✔ the WAV encoder writes 16-bit mono PCM (0.14475ms)
+✔ the STT providers: the loopback posts the WAV, the shell sends base64 (0.161667ms)
+✔ listenTo: speaking on at the start, off at the end, then the transcript to the director; blips and noise tags dropped (2.792375ms)
+✔ decodeWav reads back what encodeWav wrote (16-bit) and 32-bit float (0.351667ms)
+✔ wavFrames: a recording as a live microphone, paced by the clock, with lead and tail silence, then the detector hears it (1.722459ms)
+✔ shellListen: the shell's microphone events drive the director, and it reopens after each utterance until stopped (0.287834ms)
+✔ a live line is heard once its clip arrives (from that step, its voice by speaker), and the simulation is the same as without a provider (115.492125ms)
+✔ while the audio service records (an export), live clips are left out (26.54675ms)
+✔ a failing provider is given up after three failures; lines still run on their estimate (25.13775ms)
+✔ httpTTS posts { text, voice } as text/plain and decodes the base64 clip (0.267ms)
+✔ bakePlan lists the text-only dialogue (stable ids, voices by speaker); applyBake points it at the clips (0.304ms)
+  best lag 20 ms (+ = mouth leads), r 0.447 at it, r 0.434 at 0
+✔ a scene connection makes Hana say the line: spoke now, the mouth moves on the step clock, lineEnded after the clip (78.79325ms)
+✔ lip sync against the audio: the mouth leads or lags the clip's loudness by no more than 50 ms (the spike's measure) (3.435209ms)
+✔ a run with dialogue is identical twice and restores from a snapshot taken mid-line; faces blink and glance (435.393625ms)
+✔ text-only lines mouth estimated timings; a missing timings file falls back to the same estimate (0.152ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 660.158708
+
+> @vrmxg/voicing@0.1.0 test
+> node --test test/
+
+✔ the plan: every line still to bake with its role's voice and a clip named by line, engine, voice and words; one line; one role; a fallback voice (5.941917ms)
+✔ line ids are unique per track: two track ids that slug alike get their own ids and files (1.796916ms)
+✔ the bake: the WAV and its timings written, and the bake fields: words with the engine's offset, visemes from them, the audio's length (6.403125ms)
+✔ in the editor: voicing every line is one undo step; regenerating one line, then one character, is one undo step each; exact bytes on undo and redo; no file written over (19.097792ms)
+✔ regenerating a line in the voice and words it has changes nothing (no step); a new take gets a name of its own, one step (14.991708ms)
+✔ the editor op and the pure path agree byte for byte; new words for one line are part of its one step (8.591ms)
+✔ a failing voice applies nothing and removes what it wrote; an edit anywhere in the document while the lines speak refuses the voicing, and removes them too (155.705208ms)
+✔ two voicings of the same line at once take turns: the second finds the first's take, nothing is written twice (4.03325ms)
+✔ a recast with the voicing hook: the role's lines re-baked in the new voice, recast and re-bake one undo step (11.922959ms)
+✔ a re-script keeps the bake of every line whose words are unchanged, and drops only the changed line's (8.716625ms)
+✔ lines that talk over each other are reported; fitting them to their speech with a re-script is one step, and then nothing overlaps (14.055ms)
+✔ what plays is the track: the voice service takes a baked line's words, visemes and length, not the WAV's or the rules'; subtitles end with the last word (1.669542ms)
+✔ music and sound effects go on their buses: an audio track per bus, one undo step each; lines never on an audio track; nothing past the end unasked; never a muted track (2.472417ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 372.565625
+
+> eslint-plugin-vrmxg@0.1.0 test
+> node --test test/
+
+✔ import { installPortableMath, sin, pow } from '@vrmxg/dmath';
+     installPortableMath();
+     const f64 = new Float64Array(1); const u32 = new Uint32Array(f64.buffer);
+     export const step = (s, dt) => { const a = Math.sin(s.t) * Math.sqrt(dt); s.v = Math.pow(a, 2) + Math.abs(s.v) + Math.floor(s.t) + Math.imul(3, 5) + Math.trunc(dt); s.t += dt; return sin(a) + pow(2, 0.5); }; (31.291458ms)
+✔ node.quaternion.setFromAxisAngle(axis, angle); (0.671917ms)
+✔ const r = body.rotation(); const t = body.translation(); (0.559666ms)
+✔ const r = Math.max(Math.min(x, 1), 0) + Math.round(y) + Math.hypot(a, b) + Math.atan2(y, x) + Math.exp(z) + Math.log(w) + Math.cbrt(v); (0.8635ms)
+✔ const rng = createRng(seed); const v = rng.next(); (0.56925ms)
+✔ const settings = { rotationSpeed: 1 }; settings.rotationSpeed = 2; (0.659291ms)
+✔ obj["rot" + "ation"] = q; (0.423875ms)
+✔ const s = Math; const t = s.sin(1); (0.469791ms)
+✔ const x = Math.random(); (1.012291ms)
+✔ const x = globalThis.Math.random(); (0.587458ms)
+✔ const { random } = Math; (0.445709ms)
+✔ crypto.getRandomValues(buf); (0.41725ms)
+✔ const id = crypto.randomUUID(); (0.98625ms)
+✔ const t = Date.now(); (0.390708ms)
+✔ const t = performance.now(); (0.315458ms)
+✔ const t = new Date(); (0.304292ms)
+✔ const t = Date(); (0.29925ms)
+✔ const t = process.hrtime(); (0.295583ms)
+✔ setTimeout(tick, 16); (0.299916ms)
+✔ setInterval(tick, 16); (0.32425ms)
+✔ requestAnimationFrame(tick); (0.294708ms)
+✔ window.requestAnimationFrame(tick); (0.281583ms)
+✔ const y = x ** 2; (0.317041ms)
+✔ y **= 2; (0.243958ms)
+✔ const y = Math.sinh(x); (0.293667ms)
+✔ const y = Math.cosh(x); (0.296ms)
+✔ const y = Math.tanh(x); (0.308333ms)
+✔ const y = Math.asinh(x); (0.299042ms)
+✔ const y = Math.acosh(x); (0.907375ms)
+✔ const y = Math.atanh(x); (0.404459ms)
+✔ const y = Math.expm1(x); (0.311792ms)
+✔ const y = Math.log1p(x); (0.276833ms)
+✔ const y = Math.log2(x); (0.256041ms)
+✔ const y = Math.log10(x); (0.231916ms)
+✔ const { log2, sin } = Math; (0.260625ms)
+✔ const y = Math["log10"](x); (0.228458ms)
+✔ vrm.scene.rotation.y = Math.PI; (0.231084ms)
+✔ const e = bone.rotation; (0.214625ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 151.142417
+
+> @vrmxg/creator@0.1.0 test
+> node --test test/
+
+  short tools: 7 ≈ 415 tokens; instructions 546 characters
+✔ the tool list is generic and under budget: 7 tools under 2,000 tokens, object schemas, and instructions that mark content (0.847458ms)
+✔ commands come from a registry with schemas: describe lists them and gives each schema; bad args are refused with no step (5.559459ms)
+✔ text from files comes back as content, never as instructions: the script, its lines, any file read (10.365ms)
+✔ the script: patched and rewritten, each one undo step marked (MCP) that undoes to the exact bytes; an error changes nothing (11.935166ms)
+✔ a recast re-voices the role's lines in the new voice in the same undo step (applyCast rebake through @vrmxg/voicing) (20.731084ms)
+✔ casting with no TTS: takes in the project still serve; lines that need speaking are cast unvoiced and listed (5.139334ms)
+✔ re-voicing: one line with new words, one role in another voice, a new take; each one step marked (MCP); a take found is not spoken again (16.328292ms)
+✔ a shot's camera: an existing one, or a new one on a rig; each one step marked (MCP); kept through a re-script (197.713042ms)
+✔ render a frame and queue an export: no undo step; the job keeps the short as it was queued (1.981834ms)
+✔ the editor: a Save that fails keeps the window and leaves the scene unsaved, so the next close asks again (208.809416ms)
+✔ the editor: a failed Save from the menu, then a close: the sheet still comes; Cancel and Don't Save (128.669792ms)
+✔ the creator: a saved short with a sequence edit, Save fails: the window stays and the short is still unsaved (9.102ms)
+✔ the creator: nothing is saved until every file of the save is written: the script fails, then shorts.json for a new short (7.445875ms)
+✔ the creator: a saved short, its coverage changed, shorts.json fails: still unsaved, and the next close asks (121.14725ms)
+✔ the creator: a saved short's own setting is unsaved work even with the sequence back as saved; Don't Save puts it back (107.480709ms)
+✔ the creator: another question while the close sheet is up is refused, and the close still gets its answer (4.394083ms)
+✔ the creator: the read-only sample can't be saved: Cancel or Close Anyway, and files saved only in memory count (3.199ms)
+✔ a job's base name: the given name, else short, size, rate and (for a delivery) codec (0.555125ms)
+✔ a turntable sees its character alone (lights and environment kept), and everything comes back (1.501416ms)
+✔ a turntable frames the character's box: centred on it, far enough to fit (1.041708ms)
+✔ the runner refuses a job whose short isn't open, or whose snapshot is gone (0.746083ms)
+✔ deliver mode: options from the query, and what two runs must agree on (0.348583ms)
+✔ opening the sample short changes nothing: its script builds the committed sequence (8.973958ms)
+✔ a script edit re-scripts the sequence as one undo step and keeps a hand edit; undo brings the script back (350.0145ms)
+✔ a script with an error changes nothing and points at its line (1.721375ms)
+✔ a new short builds from its script with cameras by rule, the same bytes twice (2.821042ms)
+✔ typing that isn't applied yet survives a timeline edit, and is applied after it (4.269875ms)
+✔ a world lets go of its physics, geometries, materials and textures, once each (1.397709ms)
+✔ a character's vertex data and its textures' image bitmaps are given back at once (0.533292ms)
+✔ New Short "Morning" and Save As "Morning" never take sequences/morning.vrmxs (hand-made, 288 frames) (1.99025ms)
+✔ an opened x.fountain never replaces short x: it gets a free id (0.392125ms)
+✔ drafts stay out of shorts.json until saved, and a discarded draft is gone (0.924125ms)
+✔ placing an opened file: new, the same bytes, or a clash that asks (0.276125ms)
+✔ a .vrmxs is a set, a sequence or a prefab; its missing refs are named (0.570542ms)
+✔ a manifest entry with no coverage keeps the cameras of a sequence that exists, as a discovered short does (0.405625ms)
+✔ the sample project lists its two shorts: The Order (default cameras) first, The Regular (by rule) (0.693708ms)
+✔ opening The Regular changes nothing: its script, covered by rule, builds the committed sequence (18.064584ms)
+✔ The Regular: a minute long, valid in the cafe, every line voiced in its role's voice, no overlaps, no line crossed (3.870625ms)
+✔ The Regular's take is hand-keyed: its clips carry no src, so the script keeps them as the person's (0.4245ms)
+✔ the park, the set made with Gaea, films a script: New Short over park.vrmxs builds by rule, valid, on its marks (5.340084ms)
+✔ the page says it is asking at once, then what the person decided (8.689292ms)
+✔ a decision that fails, or isn't a plain yes, keeps the window (5.506209ms)
+✔ the page tells the shell when its unsaved state changes, and only then (1.703458ms)
+✔ slugs and title pages (2.447417ms)
+✔ the sample's shorts, found from its scripts: a committed sequence keeps its cameras (0.973291ms)
+✔ shorts.json round-trips and is checked (0.548ms)
+✔ beats point the storyboard at script lines; errors list by line (4.205208ms)
+✔ the script text follows undo and redo through the document's hashes (0.116458ms)
+✔ file kinds, a set made from a model, and a new short's script (372.076291ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ a puppet take: Record at the playhead, Stop, Keep is one undo step with its log in the project; Discard writes nothing (2256.398166ms)
+✔ a director take and a face take: what she is told and answers, a synthetic face, each kept in one step; a re-script keeps them (2053.025708ms)
+✔ an agent lists takes, keeps one from its log and removes one: each a step marked (MCP) (7.367666ms)
+✔ a world nothing shows is disposed at once; one the view shows waits until the view moves on (0.996917ms)
+✔ a world in use (a scrub stepping and drawing it) is not disposed under the work, however often it is used (0.207208ms)
+✔ with the real dispose: a retired world is disposed once, and one that throws loses no other (0.737708ms)
+ℹ tests 55
+ℹ suites 0
+ℹ pass 55
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4563.925333
+
+> @vrmxg/editor@0.1.0 test
+> node --test test/
+
+✔ game.json switched to another module in Project Settings: the editor reads it at once, Play runs it, Undo goes back, MCP's route too (20.087042ms)
+✔ MCP's game op=settings on the editor's target: set.behaviours reads the module again through behavioursChanged; other keys and the same module don't (5.755334ms)
+✔ a module that won't load after the switch is the host's problem, shown, and Play builds without it (2.128875ms)
+✔ a root behaviours.js game.json doesn't name: Export Game's refusal is what the host keeps (lastGameExport) and the Export line says it (0.317625ms)
+✔ a node removed during play and a body handed over as detached are disposed with the world, skinned buffers detached (5.098042ms)
+✔ a play world that takes an item, swaps a body and takes a wearable off: every object that left disposes with the world (700.114209ms)
+✔ an export asks for the folder once every check has passed, writes each file once, and ends the build (7.248917ms)
+✔ a file larger than one piece crosses the bridge in pieces, in order (2.253792ms)
+✔ a refused export asks for no folder (1.59975ms)
+✔ an export that fails on the way is aborted, and the same folder takes the next try (3.496916ms)
+✔ a cancelled folder panel exports nothing and aborts nothing; a browser tab checks and hashes only (1.33325ms)
+✔ a project with no game.json exports the open scene, and with no scene says so (1.469291ms)
+✔ an export stopped on the way (the window is closing) is aborted like a failed one (1.381958ms)
+✔ closing the window while a game is exported asks first, and Stop and Close waits for the export to let go (0.268709ms)
+✔ Export Game imports the behaviours module fresh: a declared state edited after the project opened ships with its new shape (M6 W5) (15.016875ms)
+✔ a behaviours module that won't import refuses the export, as in Node (bad_behaviours) (M6 W5) (1.32075ms)
+✔ the Morning Rush: the editor's Export Game and Node's exporter write the same manifest, the same fingerprint (M6 W5) (158.533666ms)
+✔ a root behaviours.js that game.json doesn't name refuses the export and says how to name it, asking for no folder (M6 W9) (2.564584ms)
+✔ the Export line shows a home folder as ~, so a screenshot of it carries no account name; other paths as they are (PR 74) (0.220666ms)
+✔ the editor's target: behaviours and connections are steps of the open session's Undo, marked (MCP) (612.073416ms)
+✔ the editor's target: game op=open opens, makes or copies a scene through the host, and refuses over unsaved changes (1.614959ms)
+✔ the editor's target: settings and New Project are the app's; validate hears the behaviours module the editor loaded (2.25875ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ two templates, an empty game and one level, in the order New Project shows them (4.1855ms)
+✔ template empty: a project made from it is licensed file by file, valid, and plans as a build (368.002208ms)
+✔ template level: a project made from it is licensed file by file, valid, and plans as a build (323.061208ms)
+✔ templates are checked: paths, patterns that match nothing, two files for one place (0.368541ms)
+✔ New Project asks the shell to copy the template's files and write game.json as the new game's, then opens its entry (2.216167ms)
+✔ played in Node: the empty game runs; the level is won by walking to the counter, and its ending follows (793.112291ms)
+✔ title, id and version: each one undo step, written to game.json as the editor writes it (2.746083ms)
+✔ what an export would refuse is refused, and says why; nothing is written (0.695334ms)
+✔ a write that fails leaves the settings as they were, and the next edit writes again (1.018333ms)
+✔ scenes: the entry and the scenes the game can reach (prefabs and sequences aren't scenes to start in) (0.550583ms)
+✔ rebinding: a key moves out of where it was, as the game's own menu moves it; one step; Default Controls puts the engine's back (1.663834ms)
+✔ the game's own actions: added with nothing bound, then bound, then removed (1.436416ms)
+✔ an input map in its own file is edited there; game.json is left alone (0.220834ms)
+✔ physics layers: added, renamed through collides, removed; the matrix kept symmetric; none left, none in game.json (2.462875ms)
+✔ moving a layer moves it: the collision rules stay with their layers (review of PR #52) (0.818083ms)
+✔ a layer a scene uses can't be renamed or removed: every world with that node would stop being built (0.725083ms)
+✔ projectLayerUses: every scene as saved, the open one as edited (0.224208ms)
+✔ a second write that fails puts the first file back, so the disk agrees with the panel (review of PR #52) (0.168333ms)
+✔ a project with no game.json: the first edit writes one, from its first scene and the default controls (0.344292ms)
+✔ an edit that changes nothing writes nothing, not even a first game.json (review of PR #52) (0.145584ms)
+✔ edits queue: two at once land in order, each its own step (0.298834ms)
+✔ kept settings catch up: a scene saved since appears, and game.json changed elsewhere is read again, not written over (review of PR #52) (0.932458ms)
+✔ undo and redo keep a layer a node was put on since (review of PR #52) (0.527292ms)
+✔ the behaviours module (M6 W9): a .js file of the project, one undo step; none takes the key out; Play's fallback is said until named (0.658417ms)
+✔ a project's first scene: the first at its top level, so a game in a folder of its own doesn't come first by name (1.694541ms)
+✔ reloadPlan: keep when the declared state shape is unchanged (stateShape), restart when it changed; undeclared by code (5.114583ms)
+✔ a swap keeps state across a reload when the shape is unchanged and restarts it otherwise, without restarting the scene (3.8645ms)
+✔ a reload that throws keeps the old code running, untouched: a ready() that throws, refused declarations (1.907125ms)
+✔ an engine class installed under a name stays: only the module's own classes are swapped (0.684417ms)
+✔ markRecording marks a play's input recording, which the input service then refuses to replay (1.7745ms)
+✔ the watcher reloads what changed through the fresh import, keeps or restarts, reports a throw and keeps the old code, and marks the recording (17.8845ms)
+✔ a good reload doesn't double a repeating timer made in ready(): the old one goes, the new code's runs once (0.836916ms)
+✔ a reload rolled back leaves no timer behind: the state, the timer ids and what fires are as before (0.711292ms)
+✔ a failed edit put back clears the error without reloading: after an import that fails, and after a swap that throws (4.650042ms)
+✔ an edit saved before the watch began (while Play built its world) is reloaded once the watch is up (3.034792ms)
+✔ opening a project imports its behaviours fresh: a second project at the same /project/ URL gets its own module, and the sources are the text read (1.877958ms)
+✔ a take recorded across a reload is refused for export, baking and replay (takeWorld, bakeTake), with why (0.1865ms)
+✔ Save As over a prefab the scene places is refused, nothing written (215.216167ms)
+✔ a prefab an Apply changed is written before the scene, and marked saved (455.375459ms)
+✔ the window binds its keys only through the table (3.124875ms)
+✔ a panel edge's arrow keys stop at the edge; the editor leaves Delete to the timeline when the scene has no selection (0.293917ms)
+✔ every menu event the page hears and every menu key of the Mac app is listed (0.399417ms)
+✔ the number field, timeline, splitters, lists and fly camera list their keys (1.464209ms)
+✔ a key press finds its entry: the menus take theirs in the Mac app; fly and play modes leave some out (0.289459ms)
+✔ each file is drawn once; an unchanged one isn't drawn again; a file with none or a failed draw has no thumbnail (1.379ms)
+✔ cached by path, size and modification time: a changed file is drawn again, a cached one is read (0.19975ms)
+✔ a newer list overtakes an older one at its next file, and its picture of a changed file is dropped (1.504792ms)
+✔ release waits for the draw in hand, stops the rest and lets the host go; the next load starts again (7.885958ms)
+✔ the cache is per project: the same path and mtime in another project is drawn, not read (0.202666ms)
+✔ shapeOf: colliders and sensors with physics' defaults, lights with the registry's, nothing for other nodes (0.867209ms)
+✔ a box: a handle on each face; dragging a face moves only that face (the node shifts by half), and the inspector's size follows (0.478292ms)
+✔ snapping rounds the size the drag gives (the far face never moves) (0.090708ms)
+✔ spheres, capsules, cylinders and lights (0.292709ms)
+✔ closestOnLine: a ray straight across a handle's axis; parallel gives nothing (0.156833ms)
+✔ shape wireframes: a box has 12 edges, each shape some segments, all in pairs of points (0.833042ms)
+✔ rectangle select: wholly inside picks, partly inside or behind the camera doesn't (0.152459ms)
+✔ the view cube: ends where the camera sees them; each end's angles; the short way round (0.353584ms)
+✔ the preview sits in the bottom right at 16:9, at least 160 px wide (0.106958ms)
+✔ the preview poses a rigged Camera and a VirtualCamera and leaves the edit world exactly as it was (2.64825ms)
+✔ the outline's stand-ins skin and place every vertex where the selected meshes draw it (a character placed away from the origin) (1.7075ms)
+✔ handle edge cases: short capsules, a spot light of range 0, wild drags, rays along the axis (0.192791ms)
+ℹ tests 83
+ℹ suites 0
+ℹ pass 83
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1660.7175
+
+> @vrmxg/game-app@0.1.0 test
+> node --test test/
+
+ Particle system powered by three.quarks. https://quarks.art/
+✔ a second New Game or Load while one is under way is refused, and the first is unaffected (0.484791ms)
+✔ a failed load says why and leaves nothing loading (0.090917ms)
+✔ pause is refused while a game starts or a save loads (0.049791ms)
+✔ a device lost a fourth time in a minute: the game is held, the pause menu asked for, and the status line says to save (0.694625ms)
+✔ a renderer that can't be made at once is tried again after a wait, with the world the session plays now; a Resume meanwhile starts nothing (31.278875ms)
+✔ settings: each field is read on its own, and a bad one costs only itself (0.725875ms)
+✔ settings: the renderer= query wins over the stored backend (0.100166ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ settings: a change applies at once and counts as saved only once written; writes land in order (2.112208ms)
+✔ settings: a write that fails says so and leaves them unsaved; a store that can't be read gives the defaults (0.215167ms)
+✔ settings: game-ui's GameSettings keeps the player's volumes and bindings in the document's ui field, and a failed write says so (0.411833ms)
+✔ slots: six player slots in order, the game's checkpoints newest first, nothing else (0.279166ms)
+✔ slots: a save another build made is shown as such, can't be loaded, and Continue never offers it (0.122125ms)
+✔ slots: another export's save with this build's fingerprint loads; one with another says what changed (M6 W5) (0.118917ms)
+✔ slots: Continue is the newest save the menu knows (0.054125ms)
+✔ slots: time played, and a save's name (0.087375ms)
+✔ a gamepad: a change counts, a held direction repeats on the frame clock, a button held when first seen waits (0.186709ms)
+✔ a gamepad: after a stalled frame a held direction repeats once, not on every frame after it (0.05425ms)
+✔ a gamepad: the left stick past half-way is a direction (0.040167ms)
+✔ the keyboard: arrows move, Escape goes back, Enter and Space are the buttons' own (0.066792ms)
+✔ after a menu, what was held when the game took over is hidden until it is let go (0.207ms)
+✔ nothing steps while a menu or a question is up; when it closes, what was used on it doesn't reach the game (0.1175ms)
+✔ after a menu, a stick still tilted is hidden until it is back near the middle (0.061208ms)
+✔ nothing unsaved: no question; unsaved: one that offers saving into the last slot (0.094291ms)
+✔ the answer: go on, stay, or save first; a save that fails keeps the game and says why (0.119416ms)
+✔ the test game's exporter refuses a game runtime older than the checkout, as vrmxg-export does (57.461125ms)
+✔ settings: the first form's volume and bindings move into the ui document once, and are written back (0.206583ms)
+✔ settings: a volume or rebinding write that fails is said in the status line (0.143708ms)
+✔ a Dialogue inside a prefab counts: the scene gets the dialogue service (51.615291ms)
+✔ nothing a game build runs can watch or hot-reload: the app, the engine, the Mac app, a built runtime (40.777333ms)
+✔ the check above can fail: the editor, which does hot-reload, is caught by it (3.42325ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ a new game starts in the entry scene at step 0 and records from there (118.871083ms)
+✔ a session through scene changes, a save and a load replays to the same per-step hashes (1217.815417ms)
+✔ the log survives Quit to Title, and the next New Game starts a fresh one (114.871042ms)
+✔ Continue from the title starts a session from a save, and it replays (361.353666ms)
+✔ a player can't save into a checkpoint's slot (24.682625ms)
+✔ a save whose write fails throws and leaves the progress unsaved (26.742959ms)
+✔ a checkpoint counts as kept once the store has it, and not when its write fails (234.737208ms)
+✔ a save that can't load leaves the game being played as it was (24.4775ms)
+✔ a replay refuses a log that isn't one, and one whose segment starts elsewhere (24.285667ms)
+✔ a save still being written when another one loads keeps the new timeline unsaved (360.6565ms)
+✔ a load that outlives its session (Quit to Title while it loads) frees its world and says so (73.954292ms)
+✔ one session change at a time: a second New Game or load while one is under way is refused (49.127541ms)
+✔ a save belongs to the build that made it: another build's save, or one that doesn't say, is refused (145.429292ms)
+✔ a save loads into another export with the same fingerprint, and play goes on with the same per-step hashes (M6 W5) (520.113625ms)
+✔ a save is refused by an export whose fingerprint differs, saying what changed (M6 W5) (30.083042ms)
+✔ a log replays only on the build it was played on (51.148541ms)
+✔ a session played back in the app (replay, M5 W10): each segment from its start, the recorded input, the same per-step hashes (741.16075ms)
+✔ a replay refuses a log from another build, and one that isn't a log (0.448041ms)
+✔ a save loaded over a replay (the pause menu during ?replay) is the player's game again: their store, their seed, a log of its own (364.110167ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ the test game: title, Hana answered, level won at the counter, ending, title again; the log replays (3122.00325ms)
+ℹ tests 50
+ℹ suites 0
+ℹ pass 50
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4661.805375
+ Particle system powered by three.quarks. https://quarks.art/
+✔ the game's scenes are valid and canonical, and the whole game passes its own check (669.354167ms)
+✔ the level's rules: a 180 s clock, one goal, lost on time or two wrong shelves, a checkpoint, a change to each ending (0.314375ms)
+✔ the committed scenes and game.json are what the editor's session and project settings make of the plan, byte for byte (914.700417ms)
+✔ the editor scenario that builds the game is up to date with the plan (acceptance/m6/after-hours-scenario.mjs) (805.122958ms)
+✔ it exports: every file the game uses has a licence row (the exporter's checks, nothing written) (13.51625ms)
+✔ the shelf declares its params, its placed and refused signals and its state (M6 W0), and each shelf in the level names its own thing (0.327916ms)
+✔ the scripted player wins, loses on two wrong shelves, loses on time, and a double tap at a shelf counts once (Node) (9240.1705ms)
+✔ a load: clean, pixels (digest or exactness verdicts only) or broken (any functional verdict) (0.511667ms)
+✔ AB-T-0589 only for pixel faults, under load, with a clean rerun (0.660916ms)
+✔ a functional failure is a failure whatever the rerun and the load (0.508292ms)
+✔ take, status, release; a second take waits for the first (38.958875ms)
+✔ a stale lock (dead owner) is taken over by exactly one of several waiters at a time (530.27975ms)
+✔ a status read racing the holder's release never throws (252.225625ms)
+✔ inside a holder's child the take is a no-op that names the outer holder (0.78225ms)
+✔ game: THIRD-PARTY-LICENCES.txt holds fdlibm's notice and every named package's licence text (0.582625ms)
+✔ playground: THIRD-PARTY-LICENCES.txt holds fdlibm's notice and every named package's licence text (0.070625ms)
+✔ editor: THIRD-PARTY-LICENCES.txt holds fdlibm's notice and every named package's licence text (0.042583ms)
+✔ creator: THIRD-PARTY-LICENCES.txt holds fdlibm's notice and every named package's licence text (0.040292ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ the game's behaviours module is the one game.json names, and only its own two behaviours declare themselves (0.598291ms)
+✔ tableZone's params in the level validate against its schema, and wrong ones don't (1262.093792ms)
+✔ a connection from a declared project signal validates; without the declarations it doesn't (1089.182333ms)
+✔ MCP's describe lists the project's behaviours, and describes one with its signals and state (1.088541ms)
+✔ the shapes of the states they declare: what a save's fingerprint (M6 W5) hashes (0.799834ms)
+✔ the recorded sessions replay to their hashes, emit every declared signal, and keep the declared state (10564.167084ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ the game's scenes are valid and canonical, and every one of its rules can start (697.945875ms)
+✔ the level's rules: a 240 s clock, two goals in order, lost on time or two mistakes, a checkpoint, a change to each ending (0.250166ms)
+✔ it exports: every file the game uses has a licence row (the exporter's checks, nothing written) (43.28375ms)
+✔ the editor scenario that builds the level is up to date with the level (acceptance/m5/rush-level-scenario.mjs) (127.190042ms)
+✔ the level built through the editor's session, from the scenario's room, is the committed level byte for byte (766.947375ms)
+✔ the scripted player wins, loses on two wrong orders, and loses on time (Node) (19777.744208ms)
+✔ every step of the tutorial is a row of the scenario and of its checklist, by its heading, in order (1.779959ms)
+✔ the WebGL twin is the scenario but for its env and renderer lines (0.54025ms)
+✔ the page's behaviour declares itself: params with defaults, the collected signal, its state shape (108.613292ms)
+✔ the licence row goes at the end of the LICENCES.md table, once (0.476125ms)
+✔ every file in content/starter has a licence row, and every content file is CC0 (3.760417ms)
+✔ LICENCES.md is what tools/make-licences.mjs writes from the clips' and items' provenance (96.927709ms)
+✔ no starter file is git-ignored (a clip left out of the commit would pass the licence check here and fail elsewhere) (38.73325ms)
+✔ the check takes only an exact CC0-1.0 cell, and exempts only code (3.018ms)
+✔ every clip is there, with its SHA-256, a VRMC_vrm_animation 1.0 GLB, CC0, from mesh2motion (6.489916ms)
+✔ every slot names a clip of the document, and the default set fills what the engine plays (0.392542ms)
+✔ Mira cast with the starter set plays every slot of every set, the starter's clip each time (8550.10375ms)
+✔ every starter item does what its type says: open, press, sit, take; props stand still; the spawn point has its node (3330.183709ms)
+✔ the item check is the same twice (simulation only, no clock) (6729.322667ms)
+✔ make-animations.mjs remakes the clips, animations.json and their provenance byte for byte (1133.489625ms)
+✔ make-items.mjs remakes every item byte for byte, each valid by the VRMXI checker (190.606291ms)
+ Particle system powered by three.quarks. https://quarks.art/
+✔ the vrmxg skill: front matter a client reads, and a body small enough to load whole (0.8245ms)
+✔ the skill names only tools, modes and flags the server has (11.608625ms)
+✔ the building rules' example runs as written on the sample cafe: one step, valid, each prop standing on the floor by its asset's real bounds (1421.607875ms)
+✔ install: into a folder, again over itself, never over someone else's, and as a link (274.171125ms)
+✔ install never removes its own source, and a folder option needs a folder (194.264083ms)
+✔ install refuses a target that contains its source (the repo cloned into the skills folder), even with --force (66.495208ms)
+✔ install: no home folder, a dangling link, and a copy with hand edits are each refused without --force (327.136375ms)
+ℹ tests 52
+ℹ suites 0
+ℹ pass 52
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 21701.032458
+docs reference: 14 generated files are up to date
+EXIT 0

@@ -1,0 +1,10 @@
+scheme   replay=logs/win.json&renderer=webgpu     backend webgpu steps 6298 final 4381da0665630266 same as the log  
+scheme   replay=logs/win.json&renderer=webgl      backend webgl  steps 6298 final 4381da0665630266 same as the log  
+scheme   replay=logs/lose.json&renderer=webgpu    backend webgpu steps 4819 final 7827a18e8b107a1c same as the log  
+scheme   replay=logs/lose.json&renderer=webgl     backend webgl  steps 4819 final 7827a18e8b107a1c same as the log  
+loopback replay=logs/win.json&renderer=webgpu     backend webgpu steps 6298 final 4381da0665630266 same as the log  
+loopback replay=logs/win.json&renderer=webgl      backend webgl  steps 6298 final 4381da0665630266 same as the log  
+loopback replay=logs/lose.json&renderer=webgpu    backend webgpu steps 4819 final 7827a18e8b107a1c same as the log  
+loopback replay=logs/lose.json&renderer=webgl     backend webgl  steps 4819 final 7827a18e8b107a1c same as the log  
+PASS
+### rush-wkwebview: acceptance/m5/rush-wkwebview.sh both — started 2026-11-27T17:01:22Z, ended 2026-11-27T17:14:07Z, exit 0

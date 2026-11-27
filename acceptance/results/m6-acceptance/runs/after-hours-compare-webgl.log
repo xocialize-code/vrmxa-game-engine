@@ -1,0 +1,12 @@
+ Particle system powered by three.quarks. https://quarks.art/
+ok   after-hours/level.vrmxs: the saved scene is the committed one, byte for byte, ids included, and valid: 9611 of 9611 bytes
+ok   after-hours/title.vrmxs: the saved scene is the committed one, byte for byte, ids included, and valid: 1815 of 1815 bytes
+ok   after-hours/won.vrmxs: the saved scene is the committed one, byte for byte, ids included, and valid: 2370 of 2370 bytes
+ok   after-hours/lost.vrmxs: the saved scene is the committed one, byte for byte, ids included, and valid: 2357 of 2357 bytes
+ok   game.json: the project's is the committed after-hours/game.json, byte for byte: 2289 of 2289 bytes
+ok   after-hours/behaviours.js: the project's is the committed after-hours/behaviours.js, byte for byte: 4532 of 4532 bytes
+ok   the exported build is whole against its manifest: 69 files
+ok   the editor's build plays to the won ending in Node (the scripted player, win): {"result":"won","step":3983,"counters":{"mistakes":0,"shelved":3}} → {"scene":"after-hours/won.vrmxs","step":4164}
+ok   the editor's build plays to the lost ending in Node (the scripted player, lose): {"result":"lost","step":2555,"counters":{"mistakes":2,"shelved":0}} → {"scene":"after-hours/lost.vrmxs","step":2736}
+all checks pass
+### after-hours-compare-webgl: node acceptance/m6/after-hours-compare.mjs ~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/w10-projects/After Hours ~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/w10-builds/after-hours --out acceptance/results/m6-acceptance/hand-tests/m6-after-hours-webgl/compare.json — started 2026-11-27T19:19:17Z, ended 2026-11-27T19:19:20Z, exit 0

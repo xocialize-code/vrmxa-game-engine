@@ -1,0 +1,25 @@
+{
+ "what": "GPU time per process from IOAccelerator's AGXDeviceUserClient accumulatedGPUTime, sampled every 10 s (scratchpad gputime-log.py), 16:15 to 19:56 UTC on 2026-11-27, covering the matrix's and the runners' work. 'com.apple.WebKit' is every WebKit GPU process, ours (the WKWebView harnesses, the Mac apps) and any other app's.",
+ "first": "16:12:25",
+ "last": "20:01:53",
+ "samples": 1373,
+ "perProcess": {
+  "com.apple.WebKit": {
+   "totalGpuSeconds": 1014.5,
+   "maxShareOfA10sWindow": "34.7%"
+  },
+  "WindowServer": {
+   "totalGpuSeconds": 486.8,
+   "maxShareOfA10sWindow": "16.2%"
+  },
+  "Chrome for Testing (the runners)": {
+   "totalGpuSeconds": 392.2,
+   "maxShareOfA10sWindow": "35.9%"
+  },
+  "every other app, summed": {
+   "totalGpuSeconds": 72.3,
+   "largestSingleAppShareOfA10sWindow": "10.6%"
+  }
+ },
+ "note": "Other apps are summed, not named. No other app used more than 10.6% of the GPU's time in any 10-s window. WindowServer drew the operator's display throughout (up to 16.2%)."
+}

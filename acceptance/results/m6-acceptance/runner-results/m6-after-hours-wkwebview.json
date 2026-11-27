@@ -1,0 +1,266 @@
+{
+ "check": "M6 exit check 6 (the second game, After Hours): a session recorded in the game app replays in WKWebView, drawn, on WebGPU and WebGL, over the scheme and loopback, to the per-step hashes it was played with (AB-T-0651)",
+ "pass": true,
+ "logs": {
+  "win": {
+   "build": "61a49e385ae41bd4ebbfe03f3db8bb097c30fcfc2eb69e12f23ecc174e0c88eb",
+   "steps": 4945,
+   "final": {
+    "step": 4945,
+    "scene": "after-hours/title.vrmxs",
+    "hash": "9da9445d3b8dcec8"
+   }
+  },
+  "lose": {
+   "build": "61a49e385ae41bd4ebbfe03f3db8bb097c30fcfc2eb69e12f23ecc174e0c88eb",
+   "steps": 3526,
+   "final": {
+    "step": 3526,
+    "scene": "after-hours/title.vrmxs",
+    "hash": "1911b477d418a6c8"
+   }
+  }
+ },
+ "runs": [
+  {
+   "origin": "scheme",
+   "case": "replay=logs/win.json&renderer=webgpu",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "steps": 4945,
+   "final": {
+    "hash": "9da9445d3b8dcec8",
+    "scene": "after-hours/title.vrmxs",
+    "step": 4945
+   },
+   "frames": {
+    "fps": 59.10793571009706,
+    "frames": 4939,
+    "height": 720,
+    "max": 218,
+    "mean": 16.918202065195384,
+    "over25": 34,
+    "over34": 19,
+    "p50": 17,
+    "p95": 18,
+    "p99": 21,
+    "seconds": 83.559,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "win_json_renderer_webgpu__scheme.png"
+  },
+  {
+   "origin": "scheme",
+   "case": "replay=logs/win.json&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "steps": 4945,
+   "final": {
+    "hash": "9da9445d3b8dcec8",
+    "scene": "after-hours/title.vrmxs",
+    "step": 4945
+   },
+   "frames": {
+    "fps": 59.08954956032781,
+    "frames": 4939,
+    "height": 720,
+    "max": 252,
+    "mean": 16.923466288722413,
+    "over25": 21,
+    "over34": 19,
+    "p50": 17,
+    "p95": 18,
+    "p99": 19,
+    "seconds": 83.585,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "win_json_renderer_webgl__scheme.png"
+  },
+  {
+   "origin": "scheme",
+   "case": "replay=logs/lose.json&renderer=webgpu",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "steps": 3526,
+   "final": {
+    "hash": "1911b477d418a6c8",
+    "scene": "after-hours/title.vrmxs",
+    "step": 3526
+   },
+   "frames": {
+    "fps": 58.78029632351713,
+    "frames": 3519,
+    "height": 720,
+    "max": 219,
+    "mean": 17.012503552145496,
+    "over25": 26,
+    "over34": 19,
+    "p50": 17,
+    "p95": 18,
+    "p99": 22,
+    "seconds": 59.867,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgpu__scheme.png"
+  },
+  {
+   "origin": "scheme",
+   "case": "replay=logs/lose.json&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "steps": 3526,
+   "final": {
+    "hash": "1911b477d418a6c8",
+    "scene": "after-hours/title.vrmxs",
+    "step": 3526
+   },
+   "frames": {
+    "fps": 58.76859449002735,
+    "frames": 3524,
+    "height": 720,
+    "max": 249,
+    "mean": 17.01589103291714,
+    "over25": 21,
+    "over34": 17,
+    "p50": 17,
+    "p95": 18,
+    "p99": 19,
+    "seconds": 59.964,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgl__scheme.png"
+  },
+  {
+   "origin": "loopback",
+   "case": "replay=logs/win.json&renderer=webgpu",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "steps": 4945,
+   "final": {
+    "hash": "9da9445d3b8dcec8",
+    "scene": "after-hours/title.vrmxs",
+    "step": 4945
+   },
+   "frames": {
+    "fps": 59.22125722372469,
+    "frames": 4948,
+    "height": 720,
+    "max": 219.03999999999996,
+    "mean": 16.885828617623282,
+    "over25": 32,
+    "over34": 19,
+    "p50": 16.660000000003492,
+    "p95": 17.55999999999767,
+    "p99": 19.979999999995925,
+    "seconds": 83.55108,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "win_json_renderer_webgpu__loopback.png"
+  },
+  {
+   "origin": "loopback",
+   "case": "replay=logs/win.json&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "steps": 4945,
+   "final": {
+    "hash": "9da9445d3b8dcec8",
+    "scene": "after-hours/title.vrmxs",
+    "step": 4945
+   },
+   "frames": {
+    "fps": 59.10587754007718,
+    "frames": 4947,
+    "height": 720,
+    "max": 251.84000000000015,
+    "mean": 16.918791186577725,
+    "over25": 32,
+    "over34": 19,
+    "p50": 16.660000000003492,
+    "p95": 17.520000000004075,
+    "p99": 19.76000000000022,
+    "seconds": 83.69726,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "win_json_renderer_webgl__loopback.png"
+  },
+  {
+   "origin": "loopback",
+   "case": "replay=logs/lose.json&renderer=webgpu",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgpu",
+   "steps": 3526,
+   "final": {
+    "hash": "1911b477d418a6c8",
+    "scene": "after-hours/title.vrmxs",
+    "step": 3526
+   },
+   "frames": {
+    "fps": 58.85772950342566,
+    "frames": 3527,
+    "height": 720,
+    "max": 216.19999999999982,
+    "mean": 16.99012191664304,
+    "over25": 34,
+    "over34": 18,
+    "p50": 16.660000000003492,
+    "p95": 17.55999999999767,
+    "p99": 23.919999999998254,
+    "seconds": 59.92416,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgpu__loopback.png"
+  },
+  {
+   "origin": "loopback",
+   "case": "replay=logs/lose.json&renderer=webgl",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+   "backend": "webgl",
+   "steps": 3526,
+   "final": {
+    "hash": "1911b477d418a6c8",
+    "scene": "after-hours/title.vrmxs",
+    "step": 3526
+   },
+   "frames": {
+    "fps": 58.77583097869251,
+    "frames": 3530,
+    "height": 720,
+    "max": 258.3800000000001,
+    "mean": 17.013796033994335,
+    "over25": 24,
+    "over34": 19,
+    "p50": 16.660000000003492,
+    "p95": 17.599999999998545,
+    "p99": 19.799999999999272,
+    "seconds": 60.0587,
+    "width": 1280
+   },
+   "sameAsLog": true,
+   "errors": [],
+   "timedOut": false,
+   "png": "lose_json_renderer_webgl__loopback.png"
+  }
+ ]
+}

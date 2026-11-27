@@ -1,0 +1,15 @@
+ Particle system powered by three.quarks. https://quarks.art/
+ok   the second game exports with the game app as its runtime (vrmxg-export --game after-hours/game.json): 69 files, 19.0 MB, digest 61a49e385ae41bd4
+ok   win: played from the title menu to the won ending, its dialogue choices recorded: scenes after-hours/title.vrmxs → after-hours/level.vrmxs → after-hours/won.vrmxs; 4945 steps; choices how, book; ending line "Hana: Not one thing on the wrong shelf. Goodnight, Mira!"
+ok   win: the HUD showed the goal, the counters and the clock; Hana gave a hint; two things in her inventory at once; the switch opened the staff door; the checkpoint was taken: HUD {"goal":"Goal: Put the scarf, the phone and the book on their shelves","counters":["On their shelves 0","Wrong shelves 0"],"clock":"Until Hana locks up 3:00"}; hint {"line":"Hana: Need a hand?","choices":["1Where does the scarf go?","2And the phone?","3Where is the book?","4I'm fine, thanks."]}; carrying {"carrying":["Scarf","Phone"],"hud":"ScarfPhone"}; door {"step":2551,"state":"open"}; checkpoint {"step":3104,"checkpoints":{"first-shelved":{"id":"cp-first","requested":3093}}}
+ok   lose: played from the title menu to the lost ending, its dialogue choices recorded: scenes after-hours/title.vrmxs → after-hours/level.vrmxs → after-hours/lost.vrmxs; 3526 steps; choices ready; ending line "Hana: That's two things on the wrong shelf. Let's sort it out tomorrow."
+ok   lose: each wrong shelf was refused and counted (two), Hana said so: [{"step":1947,"caption":"Hana: The bookshelf is for books!"},{"step":2558,"caption":"Hana: That doesn't go with the phones."}]
+ok   win: the session played in Chromium replays in Node to the same hash after every step: 4945 steps, final 9da9445d3b8dcec8 at step 4945
+ok   lose: the session played in Chromium replays in Node to the same hash after every step: 3526 steps, final 1911b477d418a6c8 at step 3526
+ok   win: the game app replays the log drawn on WebGPU to the same hash after every step: 4945 steps on webgpu, final 9da9445d3b8dcec8; 4936 frames, p99 16.8 ms
+ok   win: the game app replays the log drawn on WebGL to the same hash after every step: 4945 steps on webgl, final 9da9445d3b8dcec8; 4932 frames, p99 16.8 ms
+ok   lose: the game app replays the log drawn on WebGPU to the same hash after every step: 3526 steps on webgpu, final 1911b477d418a6c8; 3518 frames, p99 16.8 ms
+ok   lose: the game app replays the log drawn on WebGL to the same hash after every step: 3526 steps on webgl, final 1911b477d418a6c8; 3515 frames, p99 16.8 ms
+ok   no errors in the pages
+all checks pass
+### m6-after-hours-fresh: node acceptance/m6/after-hours.mjs — started 2026-11-27T17:51:44Z, ended 2026-11-27T17:58:59Z, exit 0

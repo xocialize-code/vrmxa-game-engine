@@ -1,0 +1,645 @@
+ Particle system powered by three.quarks. https://quarks.art/
+{
+ "final": "fe69bad3406ab5f6",
+ "components": 65,
+ "snapshot": {
+  "at": 300,
+  "matchesAtRestore": true,
+  "rerunMatches": true,
+  "divergence": null,
+  "physicsBytes": 63009
+ },
+ "play": {
+  "states": [
+   "fall",
+   "idle",
+   "jump",
+   "land",
+   "move"
+  ],
+  "maxSpeed": 4,
+  "maxRunWeight": 1,
+  "travelSteps": 410,
+  "airborneSteps": 54,
+  "maxHeight": 1.02,
+  "groundedAtEnd": true,
+  "miraEnd": [
+   -0.5,
+   0.025,
+   1.633
+  ],
+  "hanaMovedM": 0.343,
+  "slots": [
+   "idle",
+   "walk",
+   "run",
+   "jump",
+   "fall",
+   "land",
+   "use",
+   "equip",
+   "talk",
+   "sit",
+   "sitIdle",
+   "stand",
+   "getUp",
+   "greet",
+   "wave",
+   "nod",
+   "cheer",
+   "sip",
+   "shrug",
+   "point",
+   "laugh",
+   "x-lookAround",
+   "x-stretch",
+   "x-headTilt"
+  ],
+  "idleClip": "idle-shift",
+  "equipped": [
+   "stowed:sword",
+   "top:shell",
+   "weapon:sword"
+  ],
+  "doorSignals": [
+   {
+    "step": 113,
+    "node": "entrance-left",
+    "signal": "stateChanged",
+    "to": "open"
+   },
+   {
+    "step": 235,
+    "node": "entrance-left",
+    "signal": "stateChanged",
+    "to": "closed"
+   }
+  ],
+  "staffDoor": {
+   "type": "door",
+   "state": "locked",
+   "verbs": [],
+   "tags": [
+    "door:wood",
+    "door:locked"
+   ],
+   "takeable": false,
+   "joints": {
+    "hinge": {
+     "type": "hinge",
+     "body": "Leaf",
+     "sleeping": true
+    }
+   }
+  }
+ },
+ "stepMs": {
+  "mean": 0.39,
+  "p50": 0.201,
+  "p95": 0.507
+ },
+ "devices": {
+  "keyboardWalk": {
+   "state": "move",
+   "speed": 1.4,
+   "z": 8.123
+  },
+  "keyboardRun": {
+   "state": "move",
+   "speed": 4,
+   "runWeight": 1
+  },
+  "keyboardJump": {
+   "airborneSteps": 53,
+   "height": 1.02,
+   "landed": true
+  },
+  "gamepadStick": {
+   "state": "move",
+   "speed": 1.4,
+   "movedM": 1.377
+  },
+  "gamepadJump": {
+   "airborneSteps": 53
+  },
+  "mouseLook": {
+   "yawChange": -0.5
+  },
+  "cameraNext": {
+   "from": "follow",
+   "to": "overShoulder"
+  },
+  "takeSword": {
+   "prompts": [
+    "take:sword"
+   ],
+   "idleBefore": "default",
+   "idleAfter": "sword",
+   "taken": true,
+   "worn": [
+    "b11a6647:null",
+    "2de0bbfe:stowed",
+    "bd8b3324:held"
+   ],
+   "equipped": [
+    "held:sword",
+    "stowed:sword",
+    "top:shell",
+    "weapon:sword"
+   ],
+   "closetWorn": [
+    "b11a6647",
+    "2de0bbfe",
+    "bd8b3324"
+   ]
+  }
+ },
+ "items": {
+  "steps": 1668,
+  "final": "839977dbb8fa2e9a",
+  "components": 65,
+  "snapshot": {
+   "at": 720,
+   "afterEquip": true,
+   "matchesAtRestore": true,
+   "rerunMatches": true,
+   "divergence": null
+  },
+  "prompts": {
+   "open:entrance-left": {
+    "step": 115,
+    "prompt": "Close"
+   },
+   "sit:stool-8": {
+    "step": 520,
+    "prompt": "Sit"
+   },
+   "take:sword": {
+    "step": 523,
+    "prompt": "Take"
+   },
+   "sit:stool-7": {
+    "step": 615,
+    "prompt": "Sit"
+   },
+   "open:cupboard": {
+    "step": 750,
+    "prompt": "Open"
+   },
+   "sit:stool-5": {
+    "step": 1410,
+    "prompt": "Sit"
+   },
+   "use:light-switch": {
+    "step": 1522,
+    "prompt": "Switch off"
+   }
+  },
+  "states": [
+   "idle",
+   "move",
+   "sit",
+   "sitIdle",
+   "stand",
+   "take",
+   "use"
+  ],
+  "seatedAt": 906,
+  "swordTakenAt": 548,
+  "closet": {
+   "worn": [
+    "held",
+    "stowed"
+   ],
+   "held": [
+    "held:sword"
+   ],
+   "idleSet": "sword"
+  },
+  "items": {
+   "cupboard": "open",
+   "light-switch": "off",
+   "sword": "taken"
+  },
+  "itemSignals": [
+   {
+    "step": 773,
+    "node": "cupboard",
+    "signal": "stateChanged",
+    "to": "open"
+   },
+   {
+    "step": 1546,
+    "node": "light-switch",
+    "signal": "stateChanged",
+    "to": "off"
+   }
+  ],
+  "hana": {
+   "speakingSteps": 301,
+   "firstLineAt": 475,
+   "mouthMax": 1,
+   "lookingAtMira": 1668,
+   "blinks": 6,
+   "caption": {
+    "name": "Hana",
+    "text": "Oh, hi! Welcome to the cafe. Sit anywhere you like, and I'll bring you a menu."
+   },
+   "glances": 23
+  }
+ },
+ "cinematic": {
+  "steps": 300,
+  "final": "ed04cba782982b1a",
+  "components": 79,
+  "snapshot": {
+   "at": 180,
+   "rerunMatches": true,
+   "divergence": null
+  },
+  "doorAt": 31,
+  "cameraChanges": [
+   "0:null>orbit",
+   "160:orbit>dolly"
+  ],
+  "talkMax": 1,
+  "light": 18,
+  "cine": {
+   "p": [
+    -0.222,
+    1.751,
+    1.222
+   ],
+   "focalLength": 40,
+   "live": "dolly"
+  }
+ },
+ "sequence": {
+  "steps": 721,
+  "final": "460bd404e1802d27",
+  "components": 78,
+  "cameraChanges": [
+   "0:vc-wide",
+   "299:vc-hana",
+   "479:vc-ots",
+   "629:vc-two"
+  ],
+  "shots": [
+   "0:s1",
+   "299:s2",
+   "479:s3",
+   "629:s4"
+  ],
+  "spokeAt": 314,
+  "lightInShot2": 30,
+  "light": 18,
+  "mira": [
+   -0.789,
+   0.025,
+   1.477
+  ],
+  "post": "anime",
+  "scrub": [
+   {
+    "frame": 287,
+    "step": 717,
+    "restored": null,
+    "stepped": 717,
+    "ms": 207.3,
+    "hash": "9737c5b77331a72b",
+    "matches": true
+   },
+   {
+    "frame": 40,
+    "step": 100,
+    "restored": 0,
+    "stepped": 100,
+    "ms": 47.8,
+    "hash": "32b88490608b5ce2",
+    "matches": true
+   },
+   {
+    "frame": 130,
+    "step": 325,
+    "restored": 240,
+    "stepped": 85,
+    "ms": 39.5,
+    "hash": "9a4aa4e6ff8e16d5",
+    "matches": true
+   },
+   {
+    "frame": 200,
+    "step": 500,
+    "restored": 480,
+    "stepped": 20,
+    "ms": 22.2,
+    "hash": "3d22b0435f761522",
+    "matches": true
+   },
+   {
+    "frame": 129,
+    "step": 322,
+    "restored": 240,
+    "stepped": 82,
+    "ms": 37.2,
+    "hash": "42740d4d4b5795ba",
+    "matches": true
+   },
+   {
+    "frame": 250,
+    "step": 625,
+    "restored": 600,
+    "stepped": 25,
+    "ms": 22.3,
+    "hash": "adb8851f627d2584",
+    "matches": true
+   }
+  ],
+  "subtitles": "1\n00:00:05,250 --> 00:00:10,250\nHana: Oh, hi! Welcome to the cafe. Sit anywhere you like, and I'll bring you a menu.\n"
+ },
+ "particles": {
+  "steps": 360,
+  "final": "09ef4d21b00189d1",
+  "components": 150,
+  "snapshot": {
+   "at": 180,
+   "rerunMatches": true,
+   "divergence": null
+  },
+  "emitters": 43,
+  "peakParticles": 1207,
+  "live": {
+   "steam": 28,
+   "dust": 9,
+   "sparks": 0
+  },
+  "stepMs": 0.233,
+  "batches": 0
+ },
+ "brains": {
+  "steps": 3400,
+  "final": "4f81cc3cfab5a827",
+  "components": 64,
+  "snapshot": {
+   "at": 1200,
+   "rerunMatches": true,
+   "divergence": null
+  },
+  "events": [
+   "368:mira:sits stool-2",
+   "453:hana-1:Welcome in!",
+   "834:hana-1:Hi! What can I get you?",
+   "835:mira:A latte, please.",
+   "963:hana-1:Coming right up!",
+   "2014:hana-1:Here you go. Enjoy!",
+   "2488:mira:stands"
+  ],
+  "left": true,
+  "nav": {
+   "polys": 110,
+   "tiles": 18,
+   "bakeMs": 15.5,
+   "blocked": [
+    "item:door-1"
+   ]
+  },
+  "stepMs": 0.22
+ },
+ "save": {
+  "savedAt": 720,
+  "steps": 1668,
+  "store": "memory",
+  "bytes": 240346,
+  "file": "64798ed7cd786dc3",
+  "final": "839977dbb8fa2e9a",
+  "saveMs": 3.4,
+  "loadMs": 19.7,
+  "requires": {
+   "snapshot": 1,
+   "rapier": {
+    "rapier": "@dimforge/rapier3d-deterministic-compat",
+    "version": "0.21.0"
+   },
+   "maths": "74e1b9d66938c586",
+   "services": [
+    "ai",
+    "cameras",
+    "closet",
+    "input",
+    "interact",
+    "inventory",
+    "nav",
+    "physics",
+    "save",
+    "voice"
+   ],
+   "scene": {
+    "ref": "cafe.vrmxs",
+    "hash": "a43983253d30aab0"
+   }
+  }
+ },
+ "film": {
+  "steps": 2700,
+  "seconds": 45,
+  "final": "2789ccf6f365749e",
+  "components": 81,
+  "snapshot": {
+   "at": 1750,
+   "rerunMatches": true,
+   "divergence": null
+  },
+  "beats": {
+   "lines": [
+    {
+     "step": 1024,
+     "who": "hana-1",
+     "text": "Good morning! What can I get you?",
+     "apart": 2.04
+    },
+    {
+     "step": 1174,
+     "who": "mira",
+     "text": "A latte, please. And one of those croissants.",
+     "apart": 2.02
+    },
+    {
+     "step": 1399,
+     "who": "hana-1",
+     "text": "Coming right up!",
+     "apart": 2.02
+    },
+    {
+     "step": 2259,
+     "who": "hana-1",
+     "text": "Here you go. Enjoy!",
+     "apart": 2.03
+    }
+   ],
+   "cameras": [
+    "0:vc-establish",
+    "419:vc-door",
+    "839:vc-two",
+    "1019:vc-ots",
+    "1389:vc-hana",
+    "1499:vc-machine",
+    "2174:vc-two",
+    "2524:vc-establish"
+   ],
+   "steam": {
+    "step": 1750,
+    "hanaFromMachine": 0.71
+   },
+   "served": 2384,
+   "music": 420,
+   "seated": 613
+  },
+  "brains": [
+   "mira:brains/customer.json",
+   "hana-1:brains/hana.json"
+  ],
+  "stepMs": 0.252
+ },
+ "conversation": {
+  "steps": 7200,
+  "events": 30,
+  "decisions": 12,
+  "final": "605004a4a0349dde",
+  "components": 64,
+  "snapshot": {
+   "at": 3600,
+   "rerunMatches": true,
+   "divergence": null
+  },
+  "lines": [
+   "725:Morning, Mira! You are early today.",
+   "1325:Of course. One latte, coming right up.",
+   "1967:Here you go. Enjoy!",
+   "2080:Welcome in!",
+   "3325:Fresh beans this morning. Enjoy it.",
+   "4225:Five years this spring. Feels like longer some days.",
+   "5225:Sundays, if the machine behaves.",
+   "6325:See you tomorrow, Mira. Good luck today!"
+  ],
+  "stepMs": 0.163
+ },
+ "ragdoll": {
+  "steps": 600,
+  "knock": 30,
+  "final": "44e73e1c0956b23d",
+  "components": 65,
+  "snapshot": {
+   "at": 70,
+   "midFall": true,
+   "rerunMatches": true,
+   "divergence": null
+  },
+  "falls": {
+   "mira": {
+    "phases": [
+     "up@1",
+     "falling@30",
+     "down@244",
+     "rising@284",
+     "up@356"
+    ],
+    "lowestHips": 0.089,
+    "end": [
+     0.922,
+     0.025,
+     8.584
+    ],
+    "standing": 0.895
+   },
+   "hana-1": {
+    "phases": [
+     "up@1",
+     "falling@30",
+     "down@144",
+     "rising@184",
+     "up@256"
+    ],
+    "lowestHips": 0.094,
+    "end": [
+     1.013,
+     0.025,
+     9.869
+    ],
+    "standing": 0.9
+   }
+  },
+  "landing": 0.9,
+  "stepMs": 0.268
+ },
+ "vehicle": {
+  "steps": 540,
+  "final": "71eebd6b685854d6",
+  "components": 66,
+  "replay": {
+   "matches": true,
+   "divergence": null
+  },
+  "snapshot": {
+   "at": 260,
+   "midDrive": true,
+   "rerunMatches": true,
+   "divergence": null
+  },
+  "drive": {
+   "seated": 31,
+   "left": 421,
+   "maxSpeed": 4.151,
+   "chased": 390,
+   "cartFrom": [
+    4,
+    0,
+    10.5
+   ],
+   "cartEnd": [
+    -1.955,
+    0.373,
+    11.681
+   ],
+   "miraEnd": [
+    -1.676,
+    0.025,
+    12.801
+   ],
+   "parked": true
+  },
+  "stepMs": 0.283
+ },
+ "split": {
+  "steps": 320,
+  "final": "2cddd92f0dfe3deb",
+  "components": 66,
+  "actions": {
+   "axes": 9,
+   "buttons": 8
+  },
+  "play": {
+   "mira": [
+    -4.667,
+    -1.4
+   ],
+   "hana": [
+    4.667,
+    -1.4
+   ],
+   "hanaAirSteps": 54,
+   "cam2Turned": -0.889,
+   "cam1Turned": 0
+  },
+  "replay": {
+   "matches": true,
+   "divergence": null
+  },
+  "snapshot": {
+   "at": 160,
+   "rerunMatches": true,
+   "divergence": null
+  },
+  "stepMs": 0.222
+ }
+}
+### node-acceptance: node acceptance/node.mjs — started 2026-11-27T15:23:48Z, ended 2026-11-27T15:24:12Z, exit 0

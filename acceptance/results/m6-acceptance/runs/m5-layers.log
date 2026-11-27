@@ -1,0 +1,143 @@
+ Particle system powered by three.quarks. https://quarks.art/
+{
+ "runtime": "node",
+ "version": "v26.12.1",
+ "steps": 420,
+ "final": "d14fcfab1e02d846",
+ "walkFinal": "1963599cbeda6559",
+ "components": 64,
+ "twice": true,
+ "layersChangeTheRun": true,
+ "restored": {
+  "at": 215,
+  "final": "d14fcfab1e02d846",
+  "same": true
+ },
+ "legs": {
+  "stepsChecked": 303,
+  "stepsDiffering": 0,
+  "sameAsWalkEveryStep": true
+ },
+ "turned": {
+  "wave": 2.6809,
+  "carryForearm": 1.5335,
+  "armsWaveOverCarry": 2.6642,
+  "breathLiftsHips": 0.0085
+ },
+ "stateSteps": 318,
+ "endState": null,
+ "walked": 0
+}
+{
+ "runtime": "chromium",
+ "load": 1,
+ "version": "156.0.8078.4",
+ "mode": "layers",
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "origin": "http:",
+ "steps": 420,
+ "final": "d14fcfab1e02d846",
+ "walkFinal": "1963599cbeda6559",
+ "components": 64,
+ "twice": true,
+ "layersChangeTheRun": true,
+ "restored": {
+  "at": 215,
+  "final": "d14fcfab1e02d846",
+  "same": true
+ },
+ "legs": {
+  "stepsChecked": 303,
+  "stepsDiffering": 0,
+  "sameAsWalkEveryStep": true
+ },
+ "turned": {
+  "wave": 2.6809,
+  "carryForearm": 1.5335,
+  "armsWaveOverCarry": 2.6642,
+  "breathLiftsHips": 0.0085
+ },
+ "stateSteps": 318,
+ "endState": null,
+ "walked": 0,
+ "errors": []
+}
+{
+ "runtime": "chromium",
+ "load": 2,
+ "version": "156.0.8078.4",
+ "mode": "layers",
+ "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+ "origin": "http:",
+ "steps": 420,
+ "final": "d14fcfab1e02d846",
+ "walkFinal": "1963599cbeda6559",
+ "components": 64,
+ "twice": true,
+ "layersChangeTheRun": true,
+ "restored": {
+  "at": 215,
+  "final": "d14fcfab1e02d846",
+  "same": true
+ },
+ "legs": {
+  "stepsChecked": 303,
+  "stepsDiffering": 0,
+  "sameAsWalkEveryStep": true
+ },
+ "turned": {
+  "wave": 2.6809,
+  "carryForearm": 1.5335,
+  "armsWaveOverCarry": 2.6642,
+  "breathLiftsHips": 0.0085
+ },
+ "stateSteps": 318,
+ "endState": null,
+ "walked": 0,
+ "errors": []
+}
+{
+ "walk": {
+  "step": 90,
+  "at": [
+   1.598,
+   0.025,
+   9.587
+  ],
+  "state": "move",
+  "layers": [],
+  "file": "acceptance/results/m5-layers-walk.png",
+  "errors": []
+ },
+ "carry": {
+  "step": 90,
+  "at": [
+   1.598,
+   0.025,
+   9.587
+  ],
+  "state": "move",
+  "layers": [
+   "upperBody"
+  ],
+  "file": "acceptance/results/m5-layers-carry.png",
+  "errors": []
+ },
+ "wave": {
+  "step": 100,
+  "at": [
+   1.831,
+   0.025,
+   9.597
+  ],
+  "state": "move",
+  "layers": [
+   "upperBody",
+   "arms"
+  ],
+  "file": "acceptance/results/m5-layers-wave.png",
+  "errors": []
+ }
+}
+PASS same hashes
+### m5-layers: node acceptance/m5/layers.mjs — started 2026-11-27T17:26:54Z, ended 2026-11-27T17:27:08Z, exit 0

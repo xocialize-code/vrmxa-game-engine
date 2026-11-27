@@ -1,0 +1,12 @@
+ Particle system powered by three.quarks. https://quarks.art/
+ok   build-empty: the build is whole, every file as its manifest says (template-empty): whole, 27 files, digest b2e724e834531723
+ok   build-empty: played in Node: {"decided":null,"ending":null,"final":{"scene":"main.vrmxs","step":300,"goal":null}}
+ok   build-empty: the game app opens on its title menu and New Game starts the entry scene: "Template empty", scene main.vrmxs, webgpu
+ok   build-empty: the empty game runs: main.vrmxs at step 124
+ok   build-empty: no errors in the page
+ok   build-level: the build is whole, every file as its manifest says (template-level): whole, 60 files, digest 24c697bc32aaf22e
+ok   build-level: played in Node: {"decided":{"result":"won","step":144,"score":10},"ending":{"scene":"ending.vrmxs","step":265},"final":{"scene":"ending.vrmxs","step":386,"goal":null}}
+ok   build-level: the game app opens on its title menu and New Game starts the entry scene: "Template level", scene level.vrmxs, webgpu
+ok   build-level: the level's goal on the HUD, won by walking to the counter, and its ending follows: HUD "Goal: Get to the counter", won at step 158 (score 10), then ending.vrmxs at step 278
+ok   build-level: no errors in the page
+### m6-templates-game: node acceptance/m6/templates-game.mjs — started 2026-11-27T17:41:58Z, ended 2026-11-27T17:42:08Z, exit 0

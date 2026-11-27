@@ -1,0 +1,22 @@
+ Particle system powered by three.quarks. https://quarks.art/
+ok   the sample game exports with the game app as its runtime: 117 files, 26.3 MB, digest 689c41cac7b79e20
+ok   python: every socket the host listens on is on loopback: Python 3.15.2 http.server: 127.0.0.1:61977
+ok   python: the page and every file the manifest lists are served (scripts as JavaScript, WebAssembly as application/wasm): 118 files; page 200 text/html; types {".css":["text/css"],".glb":["model/gltf-binary"],".html":["text/html"],".js":["text/javascript"],".json":["application/json"],".md":["text/markdown"],".txt":["text/plain"],".vrma":["application/octet-stream"],".vrmxa":["application/octet-stream"],".vrmxi":["application/octet-stream"],".vrmxs":["application/octet-stream"],".wasm":["application/wasm"],".wav":["audio/x-wav"]}; redirects {"folder without its slash":{"status":301,"location":"/games/morning-rush/"},"index.html with a query":{"status":200,"location":null}}
+ok   python: played from the title menu to the won ending: game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6292 steps in 107 s; choices ready, latte, iced-tea, green-tea; ending line "Hana: Not one mistake. Best morning rush ever, Mira!"
+ok   python: no cross-origin isolation and no SharedArrayBuffer, over plain http: {"protocol":"http:","crossOriginIsolated":false,"sharedArrayBuffer":"undefined","secure":true}
+ok   python: every request the page made was for a file of the build and succeeded: 312 responses (205 URLs)
+ok   python: no Content Security Policy violation was reported: none (this host sets no policy)
+ok   python: no errors in the page
+ok   worker: every socket the host listens on is on loopback: Wrangler 4.167.0 dev (workerd, local): 127.0.0.1:62334, 127.0.0.1:62336, 127.0.0.1:62329, 127.0.0.1:62330, 127.0.0.1:62338, 127.0.0.1:62339, 127.0.0.1:62345
+ok   worker: the page and every file the manifest lists are served (scripts as JavaScript, WebAssembly as application/wasm): 118 files; page 200 text/html; charset=utf-8; types {".css":["text/css"],".glb":["model/gltf-binary"],".html":["text/html"],".js":["text/javascript"],".json":["application/json"],".md":["text/markdown"],".txt":["text/plain"],".vrma":[""],".vrmxa":[""],".vrmxi":[""],".vrmxs":[""],".wasm":["application/wasm"],".wav":["audio/wav"]}; redirects {"index.html with a query":{"status":307,"location":"/?trace"}}
+ok   worker: the build's _headers apply: the page revalidated, assets/ cached for good, the CSP on both, the file itself not served: {"page":"no-cache","asset":"public, max-age=31536000, immutable","assetCsp":true,"headersFile":404}
+ok   worker: the page is served with the build's Content Security Policy, which allows no eval: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'sha256-l5Y51DQ0wtCHrHTpiMMFgCx4aejQh4bwZ9r3eHFp+MM='; style-src 'self' 'sha256-WsnBdwafj/LhcF/SVdZEEQxAmsS6LsWkBvxDAbsGVb0='; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'
+ok   worker: played from the title menu to the won ending: game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6295 steps in 108 s; choices ready, latte, iced-tea, green-tea; ending line "Hana: Not one mistake. Best morning rush ever, Mira!"
+ok   worker: no cross-origin isolation and no SharedArrayBuffer, over plain http: {"protocol":"http:","crossOriginIsolated":false,"sharedArrayBuffer":"undefined","secure":true}
+ok   worker: every request the page made was for a file of the build and succeeded: 312 responses (205 URLs)
+ok   worker: no Content Security Policy violation was reported (under the build's CSP): none, with the policy on
+ok   worker: no errors in the page
+ok   python: the session played from this host replays in Node to the same hash after every step: 6292 steps, final a54843fb3c9716ff at step 6292
+ok   worker: the session played from this host replays in Node to the same hash after every step: 6295 steps, final 65fa30e12c06b6d6 at step 6295
+all checks pass
+### m6-sharing: node acceptance/m6/sharing.mjs — started 2026-11-27T17:59:08Z, ended 2026-11-27T18:02:57Z, exit 0

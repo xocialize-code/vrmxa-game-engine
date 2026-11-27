@@ -21,7 +21,11 @@
 // skill's building rules (AB-T-0678); → mcp-editor-session-m6-after-hours.json, on 5193.
 // --headless <project> --out <file>: the same session against vrmxg-mcp headless on a copy of the project (its first
 // level open, builds checked into <project>/../builds), to rehearse a prompt before the Mac run; never the record.
-//   node apps/editor-mac/scripts/mcp-session.mjs [--model sonnet] [--m2 | --m3 | --m5 | --rush | --w8] [--port N] [--headless <dir> --out <file>]
+// --w11 <work folder> --out <file>: M6 W11 (AB-T-0652), exit check 10's first clause, which the --w8 session doesn't
+// cover: an agent starts a project from a template (game op=new), attaches a behaviour with its params, wires
+// connections, validates and exports. Headless (vrmxg-mcp with --projects, --builds and --runtime under the work
+// folder, started on a copy of the empty template), because in the editor op=new asks the person for a folder.
+//   node apps/editor-mac/scripts/mcp-session.mjs [--model sonnet] [--m2 | --m3 | --m5 | --rush | --w8] [--port N] [--headless <dir> --out <file>] [--w11 <dir> --out <file>]
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -30,11 +34,19 @@ import { spawn, execFileSync } from 'node:child_process';
 const argv = process.argv.slice(2), opt = (k, d) => { const i = argv.indexOf(k); return i < 0 ? d : argv[i + 1]; };
 const model = opt('--model', 'sonnet'), m2 = argv.includes('--m2'), m3 = argv.includes('--m3'), rush = argv.includes('--rush'), w8 = argv.includes('--w8'), m5 = argv.includes('--m5') || rush, port = opt('--port', m5 || w8 ? '5193' : '5183');
 const server = path.resolve(import.meta.dirname, '../../../engine/packages/mcp/src/server.js');
-const headless = opt('--headless', null);
+const headless = opt('--headless', null), w11 = opt('--w11', null);
 if (headless && (!w8 || !opt('--out', null))) { console.error('--headless rehearses --w8, and needs --out (never the committed record)'); process.exit(2); }
-const out = headless ? path.resolve(opt('--out')) : path.join(import.meta.dirname, `../docs/hand-test/results/mcp-editor-session${m2 ? '-m2' : m3 ? '-m3' : rush ? '-m5-rush' : m5 ? '-m5' : w8 ? '-m6-after-hours' : ''}.json`);
+if (w11 && !opt('--out', null)) { console.error('--w11 needs --out'); process.exit(2); }
+if (w11) {
+  if (fs.existsSync(path.resolve(w11)) && fs.readdirSync(path.resolve(w11)).length) { console.error(`--w11: ${w11} isn't empty`); process.exit(2); }
+  for (const d of ['projects', 'builds']) fs.mkdirSync(path.resolve(w11, d), { recursive: true });
+  fs.cpSync(path.resolve(import.meta.dirname, '../../../content/templates/empty'), path.resolve(w11, 'start'), { recursive: true });
+}
+const out = headless || w11 ? path.resolve(opt('--out')) : path.join(import.meta.dirname, `../docs/hand-test/results/mcp-editor-session${m2 ? '-m2' : m3 ? '-m3' : rush ? '-m5-rush' : m5 ? '-m5' : w8 ? '-m6-after-hours' : ''}.json`);
 const config = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-mcp-session-')), 'mcp.json');
-const serve = headless
+const serve = w11
+  ? [server, path.resolve(w11, 'start'), 'main.vrmxs', '--projects', path.resolve(w11, 'projects'), '--builds', path.resolve(w11, 'builds'), '--runtime', path.resolve(import.meta.dirname, '../../game/dist')]
+  : headless
   ? [server, path.resolve(headless), 'after-hours/level.vrmxs', '--builds', path.resolve(headless, '../builds'), '--runtime', path.resolve(import.meta.dirname, '../../game/dist')]
   : [server, '--editor', '--port', port];
 if (headless) fs.mkdirSync(path.resolve(headless, '../builds'), { recursive: true });
@@ -93,7 +105,14 @@ const promptW8 = `You are connected to the VRMXG editor, which has the game "Aft
 8. Open the first level again (game op=open). As ONE edit labelled "Go on to the second night": when its rules signal won, the scene changes to after-hours/level-2.vrmxs after 3 seconds with reset true (the second night starts as a new game, its counters from zero), in place of the change to after-hours/won.vrmxs. Change nothing else. Save.
 9. Validate the project again and report what it says; make no more edits. Then export the game (game op=export) with the name "after-hours", the folder this hand test checks. Report the build's path, its number of files and its manifest digest.
 Describe a node type before you first use it. Do not undo. Finish with a short report of each step, including where you put book-2, book-2-shelved and zone-store, and which building rule decided each.`;
-const prompt = m2 ? promptM2 : m3 ? promptM3 : rush ? promptRush : m5 ? promptM5 : w8 ? promptW8 : promptM1;
+const promptW11 = `You are connected to the VRMXG game engine's MCP tools (vrmxg-editor), headless, on a scratch project. Using only those tools, make a new game:
+1. List the project templates (game op=new with no template), then start a new project from the "level" template with the title "Tea Time" (game op=new). Read its rules (game) and validate it (game op=validate).
+2. As ONE edit (the edit tool) labelled "Hana greets": give Hana (hana) the registry's greet behaviour, with Mira (mira) as its target, a radius of 3 m, the text "Welcome! The tea is on the counter." and a cooldown of 30 s. Describe the behaviour first.
+3. As ONE edit labelled "A tea table": an Area tea-zone, named "Tea table", a box 1.5 m across and 1 m tall standing on the floor 2 m from Hana. Connect its bodyEntered signal to score's add with by 5, and to hana's say with the text "Mind, it's hot."
+4. Validate the scene and save it. Validate the project (game op=validate); if it reports a problem, fix it and save again.
+5. Export the game (game op=export) with the name "tea-time". Report the build's path, its number of files and its manifest digest.
+Describe a node type before you first use it. Do not undo. Finish with a short report of each step.`;
+const prompt = w11 ? promptW11 : m2 ? promptM2 : m3 ? promptM3 : rush ? promptRush : m5 ? promptM5 : w8 ? promptW8 : promptM1;
 // --w8: a folder of its own with the repository's skill installed (.claude/skills/vrmxg), so the session can load it
 let cwd = process.cwd();
 if (w8) {
@@ -128,7 +147,7 @@ for (const e of events) {
   }
 }
 const record = {
-  date: new Date().toISOString().slice(0, 10), client: `claude -p (${init?.claude_code_version ? `Claude Code ${init.claude_code_version}` : 'Claude Code'}, ${model}), --mcp-config with vrmxg-mcp ${headless ? 'headless (a rehearsal)' : `--editor --port ${port}`}`,
+  date: new Date().toISOString().slice(0, 10), client: `claude -p (${init?.claude_code_version ? `Claude Code ${init.claude_code_version}` : 'Claude Code'}, ${model}), --mcp-config with vrmxg-mcp ${w11 ? 'headless (--projects, --builds, --runtime)' : headless ? 'headless (a rehearsal)' : `--editor --port ${port}`}`,
   exitCode: code, mcpServers: init?.mcp_servers ?? null, ...(w8 ? { skills: (init?.skills ?? []).filter((k) => /vrmxg/.test(typeof k === 'string' ? k : k?.name ?? '')) } : {}), prompt, calls,
   failed: calls.filter((c) => c.isError).length, costUSD: result?.total_cost_usd ?? null, final: result?.result ?? null,
 };
@@ -137,6 +156,7 @@ fs.mkdirSync(path.dirname(out), { recursive: true });
 // nor the --w8 session's own temporary folder (the Skill tool's answer names where the skill is)
 let text = JSON.stringify(record, null, 1);
 if (w8) for (const d of new Set([fs.realpathSync(cwd), cwd])) text = text.split(d).join('<session folder>');
+if (w11) for (const d of new Set([fs.realpathSync(path.resolve(w11)), path.resolve(w11)])) text = text.split(d).join('<work folder>');
 fs.writeFileSync(out, text.split(os.homedir()).join('~') + '\n');
 console.log(`${calls.length} tool calls, ${record.failed} failed, $${record.costUSD} → ${path.relative(process.cwd(), out)}`);
 for (const c of calls) console.log(`${c.isError ? '✖' : '✔'} ${c.tool.replace('mcp__vrmxg-editor__', '')} ${JSON.stringify(c.input).slice(0, 120)}`);

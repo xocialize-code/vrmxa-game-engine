@@ -1,0 +1,163 @@
+{
+  "checklist" : "<repo>/apps/editor-mac/docs/HAND-TEST-M6-NEW-PROJECT.md",
+  "rows" : [
+    {
+      "checklist_line" : 31,
+      "checks" : [
+        {
+          "actual" : "\"Scene cafe-cart.vrmxs 30 nodes saved valid hash 7636dc6e7e38e7e0\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Outside Game\"",
+          "check" : "find(\"surface=app id=saveAsNameTextField\").0.value == \"Outside Game\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"vrmxg-m6-outside\"",
+          "check" : "find(\"surface=app role=popupbutton name=Where\").0.value == \"vrmxg-m6-outside\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Create project\"",
+          "check" : "find(\"id=new-project-create\").0.name == \"Create project\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=new-project-error\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=new-project\").count == 1",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Editor pid 97965, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-27T180557Z.log",
+        "21: wait id=new-project-open enabled=true timeout_ms=40000 → found after 273 ms: button \"New project\" #new-project-open help=\"New Project… (⇧⌘N): a game from a template\" [W:VRMXG Editor/0/0/0/0/0/1@53dc] (278 ms)",
+        "22: until find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\" timeout=60000 → ok (1486 ms)",
+        "23: menu \"File › New Project…\" press → pressed File › New Project… (179 ms)",
+        "24: wait id=new-project timeout_ms=10000 → found after 813 ms: group \"New project\" #new-project [W:VRMXG Editor/0/0/0/0/8@0543] (813 ms)",
+        "25: act id=new-project-title action=set_value value=\"Outside Game\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":534,\"x\":3736,\"y\":587},\"help\":\"\",\"id\":\"new-project-title\",\"name\":\"Game title\",\"ref\":\" (460 ms)",
+        "26: act id=new-project-create action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":78,\"x\":4192,\"y\":708},\"help\":\"\",\"id\":\"new-project-create\",\"name\":\"Create project\",\"ref\":\" (14 ms)",
+        "27: wait window=save-panel id=OKButton timeout_ms=15000 → found after 409 ms: button \"Create\" #OKButton [W:save-panel/0/10@8c1a] (409 ms)",
+        "28: expect find(\"surface=app id=saveAsNameTextField\").0.value == \"Outside Game\" → ok (91 ms)",
+        "29: expect find(\"surface=app role=popupbutton name=Where\").0.value == \"vrmxg-m6-outside\" → ok (60 ms)",
+        "30: act window=save-panel id=CancelButton action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":81,\"x\":3835,\"y\":681},\"id\":\"CancelButton\",\"name\":\"Cancel\",\"ref\":\"W:save-panel/0/9@dd08\",\" (121 ms)",
+        "31: until find(\"id=new-project-create\").0.name == \"Create project\" timeout=10000 → ok (451 ms)",
+        "32: expect find(\"id=new-project-error\").count == 0 → ok (42 ms)",
+        "33: expect find(\"id=new-project\").count == 1 → ok (45 ms)"
+      ],
+      "message" : null,
+      "ms" : 4914,
+      "notes" : [
+
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "The folder panel: New Project with no hook asks where the folder goes and what it is called; Cancel makes nothing and leaves the sheet open.",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 32,
+      "checks" : [
+        {
+          "actual" : "\"Project Outside Game\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project Outside Game\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene level.vrmxs 14 nodes saved valid hash 9d7e4d4c0198d790\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 14 nodes saved valid\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene cafe-cart.vrmxs 30 nodes saved valid hash 7636dc6e7e38e7e0\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Outside Game\"",
+          "check" : "menu(\"File › Open Recent\").items.0.name == \"Outside Game\"",
+          "ok" : true
+        },
+        {
+          "actual" : "true",
+          "check" : "menu(\"File › Open Recent\").items.0.enabled == true",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project Outside Game\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project Outside Game\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene level.vrmxs 14 nodes saved valid hash 9d7e4d4c0198d790\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 14 nodes saved valid\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"role=alert\").count == 0",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "39: act id=new-project-create action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":78,\"x\":4192,\"y\":708},\"help\":\"\",\"id\":\"new-project-create\",\"name\":\"Create project\",\"ref\":\" (45 ms)",
+        "40: wait window=save-panel id=OKButton timeout_ms=15000 → found after 154 ms: button \"Create\" #OKButton {disabled} [W:save-panel/0/10@8c1a] (154 ms)",
+        "41: act window=save-panel id=OKButton action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":26,\"w\":81,\"x\":3922,\"y\":681},\"id\":\"OKButton\",\"name\":\"Create\",\"ref\":\"W:save-panel/0/10@8c1a\",\"rol (193 ms)",
+        "42: until find(\"id=project-name\").0.name == \"Project Outside Game\" timeout=30000 → ok (46 ms)",
+        "43: until find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 14 nodes saved valid\" timeout=60000 → ok (958 ms)",
+        "launched VRMXG Editor pid 97988, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-27T180607Z.log",
+        "44: relaunch (3357 ms)",
+        "45: wait id=new-project-open enabled=true timeout_ms=40000 → found after 267 ms: button \"New project\" #new-project-open help=\"New Project… (⇧⌘N): a game from a template\" [W:VRMXG Editor/0/0/0/0/0/1@53dc] (273 ms)",
+        "46: until find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\" timeout=60000 → ok (2059 ms)",
+        "47: expect menu(\"File › Open Recent\").items.0.name == \"Outside Game\" → ok (186 ms)",
+        "48: expect menu(\"File › Open Recent\").items.0.enabled == true → ok (157 ms)",
+        "49: menu \"File › Open Recent › Outside Game\" press → pressed File › Open Recent › Outside Game (145 ms)",
+        "50: until find(\"id=project-name\").0.name == \"Project Outside Game\" timeout=30000 → ok (1165 ms)",
+        "51: until find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 14 nodes saved valid\" timeout=60000 → ok (45 ms)",
+        "52: expect find(\"role=alert\").count == 0 → ok (19 ms)"
+      ],
+      "message" : null,
+      "ms" : 9053,
+      "notes" : [
+
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "File › Open Recent reopens a project outside the app's container after a relaunch (the sandbox's grant kept as a bookmark).",
+      "undo" : null
+    }
+  ],
+  "scenario" : "<repo>/apps/editor-mac/docs/hand-test/HAND-TEST-M6-NEW-PROJECT-recent.scenario.md",
+  "summary" : "2 rows: 2 passed, 0 failed, 0 need you; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}

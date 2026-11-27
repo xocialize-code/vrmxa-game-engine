@@ -1,0 +1,13 @@
+ok   the build is whole, every file as its manifest says (coin-run): whole, 61 files, digest b335b1e9e1d98c07
+ok   the build carries behaviours.js, named by game.json: behaviours behaviours.js
+ Particle system powered by three.quarks. https://quarks.art/
+ok   Node: three coins, each glint stopped by its connection, the goals in order, won, then the ending: {"coins":[{"step":2,"coins":1,"stopped":[true,false,false]},{"step":68,"coins":2,"stopped":[true,true,false]},{"step":123,"coins":3,"stopped":[true,true,true]}],"goals":["Collect the three coins","Get to the counter",null],"won":{"result":"won","step":174},"ending":"ending.vrmxs"}
+ok   webgpu: the game app opens on its title menu, New Game starts the level: "Coin Run", webgpu
+ok   webgpu: the coin at the spawn is collected at once, its glint stopped, Hana's line; the HUD shows the first goal: step 13, HUD "Goal: Collect the three coins", captions ["Hana: A coin! Keep going, Mira."]
+ok   webgpu: three coins collected, every glint stopped, "Get to the counter" next, won, then the ending: 3 coins at step 108, won at 159, then ending.vrmxs
+ok   webgpu: no errors in the page
+ok   webgl: the game app opens on its title menu, New Game starts the level: "Coin Run", webgl
+ok   webgl: the coin at the spawn is collected at once, its glint stopped, Hana's line; the HUD shows the first goal: step 14, HUD "Goal: Collect the three coins", captions ["Hana: A coin! Keep going, Mira."]
+ok   webgl: three coins collected, every glint stopped, "Get to the counter" next, won, then the ending: 3 coins at step 109, won at 159, then ending.vrmxs
+ok   webgl: no errors in the page
+### tutorial-play-webgpu: node acceptance/m6/tutorial.mjs play ~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/w9-builds/coin-run — started 2026-11-27T19:20:46Z, ended 2026-11-27T19:20:59Z, exit 0

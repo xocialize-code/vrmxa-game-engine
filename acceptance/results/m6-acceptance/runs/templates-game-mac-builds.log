@@ -1,0 +1,12 @@
+ Particle system powered by three.quarks. https://quarks.art/
+ok   cafe-dash: the build is whole, every file as its manifest says (cafe-dash): whole, 60 files, digest 72393a044aea6947
+ok   cafe-dash: played in Node: {"decided":{"result":"won","step":144,"score":10},"ending":{"scene":"ending.vrmxs","step":265},"final":{"scene":"ending.vrmxs","step":386,"goal":null}}
+ok   cafe-dash: the game app opens on its title menu and New Game starts the entry scene: "Cafe Dash Deluxe", scene level.vrmxs, webgpu
+ok   cafe-dash: the level's goal on the HUD, won by walking to the counter, and its ending follows: HUD "Goal: Get to the counter", won at step 158 (score 10), then ending.vrmxs at step 281
+ok   cafe-dash: no errors in the page
+ok   blank: the build is whole, every file as its manifest says (blank): whole, 27 files, digest 0d374e9c40b7ca14
+ok   blank: played in Node: {"decided":null,"ending":null,"final":{"scene":"main.vrmxs","step":300,"goal":null}}
+ok   blank: the game app opens on its title menu and New Game starts the entry scene: "Blank", scene main.vrmxs, webgpu
+ok   blank: the empty game runs: main.vrmxs at step 123
+ok   blank: no errors in the page
+### templates-game-mac-builds: node acceptance/m6/templates-game.mjs ~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/m6-builds/cafe-dash ~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/m6-builds/blank — started 2026-11-27T18:05:38Z, ended 2026-11-27T18:05:48Z, exit 0

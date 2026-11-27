@@ -1,0 +1,105 @@
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+{
+ "same": true,
+ "final": "cfe3f7e9828c49b1",
+ "all": "b6aec5264f0bb44d",
+ "changes": [
+  [
+   11,
+   "level.vrmxs",
+   false
+  ],
+  [
+   148,
+   "ending.vrmxs",
+   false
+  ],
+  [
+   208,
+   "title.vrmxs",
+   true
+  ],
+  [
+   267,
+   "level.vrmxs",
+   false
+  ],
+  [
+   404,
+   "ending.vrmxs",
+   false
+  ],
+  [
+   464,
+   "title.vrmxs",
+   true
+  ],
+  [
+   523,
+   "level.vrmxs",
+   false
+  ]
+ ],
+ "save": {
+  "from": 60,
+  "scene": "level.vrmxs",
+  "bytes": 16316,
+  "file": "c53aec7b878050b5",
+  "steps": 540,
+  "same": true,
+  "diverges": null,
+  "final": "cfe3f7e9828c49b1"
+ },
+ "checkpoint": {
+  "from": 67,
+  "scene": "level.vrmxs",
+  "bytes": 16689,
+  "file": "51744c6e9ca9d208",
+  "steps": 533,
+  "same": true,
+  "diverges": null,
+  "final": "cfe3f7e9828c49b1"
+ },
+ "nodeWithSlowLoading": {
+  "same": true,
+  "problems": []
+ },
+ "chromium": [
+  {
+   "delay": "steady",
+   "same": true,
+   "problems": [],
+   "errors": [],
+   "final": "cfe3f7e9828c49b1",
+   "loading": {
+    "delays": [
+     4
+    ],
+    "heldBoundaries": 7
+   }
+  },
+  {
+   "delay": "varied",
+   "same": true,
+   "problems": [],
+   "errors": [],
+   "final": "cfe3f7e9828c49b1",
+   "loading": {
+    "delays": [
+     9,
+     0,
+     12,
+     3,
+     7,
+     1
+    ],
+    "heldBoundaries": 7
+   }
+  }
+ ]
+}
+### m5-flow: node acceptance/m5/flow.mjs — started 2026-11-27T17:26:22Z, ended 2026-11-27T17:26:24Z, exit 0
