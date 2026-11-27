@@ -6,11 +6,20 @@ import { m0Registry } from '@vrmxg/registry/m0';
 import { describeType, describeBehaviour, createValidator } from '@vrmxg/scene';
 import {
   widgetOf, resolveSchema, branchesOf, branchIndex, defaultFor, matches, setIn, getIn, listAdd, listRemove, listMove, rowActions,
-  mapRename, mapAdd, mapRemove, freshKey, structRows, fitBranch, rowTitle, isCurve, curvePoints, nextCurveKey, childOf, inspectorFields, sharedFields, sharedAxes, fieldName,
+  mapRename, mapAdd, mapRemove, freshKey, structRows, fitBranch, rowTitle, isCurve, curvePoints, nextCurveKey, childOf, inspectorFields, sharedFields, sharedAxes, fieldName, hexColor,
 } from '../src/index.js';
 
 const reg = m0Registry();
 const fieldsOf = (node) => inspectorFields(describeType(reg, node.type), node);
+
+test('a colour typed as hex: #rgb or #rrggbb, any case, with or without #; anything else is refused (M6 W10)', () => {
+  assert.equal(hexColor('#141A2E'), '#141a2e');
+  assert.equal(hexColor('141a2e'), '#141a2e');
+  assert.equal(hexColor(' #fa0 '), '#ffaa00');
+  for (const bad of ['', '#12345', '#1234567', 'red', '#ggg', null, undefined]) assert.equal(hexColor(bad), null, String(bad));
+  // what it gives fits the registry's colour schema
+  assert.match(hexColor('#ABCDEF'), new RegExp(reg.get('PointLight').props.color.schema.pattern));
+});
 
 test('no M0 prop with a schema gets a JSON box: every type\'s and behaviour\'s props have a real widget', () => {
   const seen = new Map();

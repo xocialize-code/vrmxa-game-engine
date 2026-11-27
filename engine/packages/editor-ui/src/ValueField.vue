@@ -12,7 +12,7 @@ import NumberField from './NumberField.vue';
 import { draggedKind, dropVerdict, dropEffectFor, fileKind, ASSET_MIME, NODE_MIME } from './assets-ui.js';
 import {
   plain, widgetOf, fitBranch, branchesOf, branchIndex, defaultFor, matches, setIn, listAdd, listRemove, listMove, rowActions,
-  mapRename, mapAdd, mapRemove, freshKey, structRows, rowTitle, curvePoints, nextCurveKey, childOf, schemaOfValue,
+  mapRename, mapAdd, mapRemove, freshKey, structRows, rowTitle, curvePoints, nextCurveKey, childOf, schemaOfValue, hexColor,
 } from './fields.js';
 
 const props = defineProps({
@@ -73,6 +73,8 @@ const numOpts = computed(() => ({
 const setText = (raw) => set(raw === '' && props.optional ? undefined : raw);
 const MIXED = '__mixed';
 const setNode = (raw) => { if (raw !== MIXED) setText(raw); };
+// a colour typed as hex: taken when it is one (#rgb or #rrggbb, any case), else the field shows the colour again
+const setHex = (e) => { const c = hexColor(e.target.value); if (c) set(c); else e.target.value = props.mixed ? '' : (shown.value ?? '#ffffff'); };
 function setJson(raw) { try { set(raw === '' ? undefined : JSON.parse(raw)); } catch { /* not JSON: kept as it was */ } }
 
 // enum: options by index, so numbers and strings both round-trip
@@ -161,7 +163,11 @@ const setKey = (i, j, v) => set(setIn(keys.value, [i, j], v));
 
   <input v-else-if="widget === 'string'" :id="id" :value="mixed ? '' : (shown ?? '')" :placeholder="mixed ? 'mixed' : ''" :aria-label="name" :disabled="disabled" @change="setText($event.target.value)">
 
-  <input v-else-if="widget === 'color'" :id="id" type="color" :value="mixed ? '#808080' : (shown ?? '#ffffff')" :aria-label="name" :disabled="disabled" @change="set($event.target.value)">
+  <!-- a colour: the well, and its hex typed (M6 W10: a well takes no typing, nor a value through accessibility) -->
+  <span v-else-if="widget === 'color'" class="vf-color">
+    <input :id="id" type="color" :value="mixed ? '#808080' : (shown ?? '#ffffff')" :aria-label="name" :disabled="disabled" @change="set($event.target.value)">
+    <input :id="`${id}--hex`" class="mono vf-hex" :value="mixed ? '' : (shown ?? '#ffffff')" :placeholder="mixed ? 'mixed' : '#rrggbb'" :aria-label="`${name} as hex`" :disabled="disabled" maxlength="7" @change="setHex($event)">
+  </span>
 
   <select v-else-if="widget === 'node'" :id="id" :value="mixed ? MIXED : (shown ?? '')" :aria-label="name" :disabled="disabled" @change="setNode($event.target.value)" @dragenter="over" @dragover="over" @dragleave="refusing = ''" @drop.prevent="dropped">
     <option v-if="mixed" :value="MIXED">(mixed)</option>
@@ -257,6 +263,8 @@ const setKey = (i, j, v) => set(setIn(keys.value, [i, j], v));
 .vf-vec { display: flex; gap: 4px; min-width: 0; flex: 1 1 auto; }
 .vf-vec .num { flex: 1 1 0; }
 .vf-scalar, .vf-choice { display: flex; gap: 4px; flex-wrap: wrap; align-items: flex-start; min-width: 0; }
+.vf-color { display: flex; gap: 4px; align-items: center; min-width: 0; }
+.vf-hex { width: 7.5em; }
 .vf-list, .vf-struct, .vf-map, .vf-curve { display: flex; flex-direction: column; gap: 4px; width: 100%; min-width: 0; border-left: 2px solid var(--line, #3335); padding-left: 6px; box-sizing: border-box; }
 .vf-row { display: flex; flex-direction: column; gap: 2px; }
 .vf-row-head { display: flex; align-items: center; gap: 4px; min-width: 0; }

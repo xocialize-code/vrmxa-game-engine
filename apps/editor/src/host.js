@@ -38,6 +38,7 @@ import { HotReload, freshBehaviours, moduleSources, sameSources, reloadedTake, a
 import { ViewportAids } from './viewport/viewport.js';
 import { ThumbnailQueue } from './thumbs.js';
 import { drawThumbnail } from './thumbs-draw.js';
+import { firstScene } from './project-settings.js';
 import { unknownLayers, gameLayers, layersUsed } from '@vrmxg/bundle';
 import '../../playground/src/sqljs.js'; // vrmxa-core's sql.js for bundles with a database (Mira's)
 
@@ -256,7 +257,10 @@ export class EditorHost {
     this.project = project;
     try { this.gameLayers = gameLayers(await project.gameSetup?.() ?? null); } catch { this.gameLayers = ['default']; } // the inspector's layer menus (M6 W1)
     this.R ??= await loadRapier();
-    const scene = sceneRef ?? project.scenes().find((s) => !s.startsWith('prefabs/')) ?? null;
+    // no scene asked for: the first at the project's top level, else the first in a folder (firstScene, M6 W10). Not
+    // game.json's entry: a folder copy of the sample carries the Morning Rush's game.json, and what it opens on first
+    // (cafe-cart.vrmxs) is what earlier hand tests wait for; File › Open Recent and New Project open the entry
+    const scene = sceneRef ?? firstScene(project.scenes().filter((s) => !s.startsWith('prefabs/')));
     if (scene) await this.openScene(scene); else await this.newScene();
   }
 

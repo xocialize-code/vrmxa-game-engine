@@ -1,0 +1,158 @@
+{
+ "format": "vrmxg-game",
+ "version": 1,
+ "id": "after-hours",
+ "title": "After Hours",
+ "release": "0.1.0",
+ "entry": "after-hours/title.vrmxs",
+ "scenes": [
+  "after-hours/level.vrmxs",
+  "after-hours/lost.vrmxs",
+  "after-hours/title.vrmxs",
+  "after-hours/won.vrmxs"
+ ],
+ "animations": "animations.json",
+ "input": {
+  "actions": {
+   "move_x": {
+    "type": "axis",
+    "bindings": [
+     {
+      "key": "KeyD",
+      "value": 1
+     },
+     {
+      "key": "KeyA",
+      "value": -1
+     },
+     {
+      "key": "ArrowRight",
+      "value": 1
+     },
+     {
+      "key": "ArrowLeft",
+      "value": -1
+     },
+     {
+      "gamepadAxis": 0,
+      "deadzone": 0.15
+     }
+    ]
+   },
+   "move_y": {
+    "type": "axis",
+    "bindings": [
+     {
+      "key": "KeyW",
+      "value": 1
+     },
+     {
+      "key": "KeyS",
+      "value": -1
+     },
+     {
+      "key": "ArrowUp",
+      "value": 1
+     },
+     {
+      "key": "ArrowDown",
+      "value": -1
+     },
+     {
+      "gamepadAxis": 1,
+      "deadzone": 0.15,
+      "scale": -1
+     }
+    ]
+   },
+   "look_x": {
+    "type": "axis",
+    "bindings": [
+     {
+      "mouse": "dx",
+      "scale": 0.0025
+     },
+     {
+      "gamepadAxis": 2,
+      "deadzone": 0.1,
+      "scale": 0.05
+     }
+    ]
+   },
+   "look_y": {
+    "type": "axis",
+    "bindings": [
+     {
+      "mouse": "dy",
+      "scale": 0.0025
+     },
+     {
+      "gamepadAxis": 3,
+      "deadzone": 0.1,
+      "scale": 0.05
+     }
+    ]
+   },
+   "zoom": {
+    "type": "axis",
+    "bindings": [
+     {
+      "mouse": "wheel",
+      "scale": 0.002
+     }
+    ]
+   },
+   "jump": {
+    "type": "button",
+    "bindings": [
+     {
+      "key": "Space"
+     },
+     {
+      "gamepadButton": 0
+     }
+    ]
+   },
+   "run": {
+    "type": "button",
+    "bindings": [
+     {
+      "key": "ShiftLeft"
+     },
+     {
+      "key": "ShiftRight"
+     },
+     {
+      "gamepadButton": 10
+     }
+    ]
+   },
+   "interact": {
+    "type": "button",
+    "bindings": [
+     {
+      "key": "KeyE"
+     },
+     {
+      "mouseButton": 0
+     },
+     {
+      "gamepadButton": 2
+     }
+    ]
+   },
+   "camera_next": {
+    "type": "button",
+    "bindings": [
+     {
+      "key": "KeyC"
+     },
+     {
+      "gamepadButton": 3
+     }
+    ]
+   }
+  }
+ },
+ "behaviours": "after-hours/behaviours.js"
+}

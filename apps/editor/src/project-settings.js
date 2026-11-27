@@ -20,9 +20,19 @@ const sceneFile = (f) => f.endsWith('.vrmxs') && !f.startsWith('prefabs/') && !f
 /** A file that can be a game's behaviours module (M6 W9): JavaScript, outside a folder of installed packages. */
 const behavioursFile = (f) => /\.m?js$/.test(f) && !f.split('/').includes('node_modules');
 
-/** A game.json for a project that has none: its first scene as the entry, the engine's default controls. */
+/**
+ * A project's first scene, of `refs` (in the project's order, by name): the first at its top level, else the first in a
+ * folder. A game kept in a folder of its own (the sample's after-hours/, M6 W10) doesn't come first by name. What the
+ * editor opens when no scene is asked for, and a project without game.json starts in. → a ref, or null
+ * @param {string[]} refs
+ */
+export function firstScene(refs) {
+  return refs.find((r) => !r.includes('/')) ?? refs[0] ?? null;
+}
+
+/** A game.json for a project that has none: its first scene (firstScene) as the entry, the engine's default controls. */
 export function startingGame({ name = 'game', scenes = [] } = {}) {
-  const entry = scenes.find(sceneFile) ?? 'main.vrmxs';
+  const entry = firstScene(scenes.filter(sceneFile)) ?? 'main.vrmxs';
   const id = String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 64) || 'game';
   return { format: 'vrmxg-game', version: 1, id, title: String(name).trim() || id, entry, scenes: [entry], input: { actions: structuredClone(DEFAULT_ACTIONS) } };
 }

@@ -94,6 +94,17 @@ export function branchIndex(schema, value) {
   return byType >= 0 ? byType : 0;
 }
 
+/**
+ * A colour typed as hex (M6 W10, a colour field's text beside its well): "#rgb" or "#rrggbb", with or without the "#",
+ * any case → "#rrggbb" in lower case; anything else → null.
+ */
+export function hexColor(raw) {
+  const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(raw ?? '').trim());
+  if (!m) return null;
+  const h = m[1].toLowerCase();
+  return `#${h.length === 3 ? [...h].map((c) => c + c).join('') : h}`;
+}
+
 /** A value that looks like a curve: two or more [x, y, ease?] keys with numbers first (a property track's keys). */
 export function isCurve(v) {
   return Array.isArray(v) && v.length > 0 && v.every((k) => Array.isArray(k) && k.length >= 2 && k.length <= 3 && typeof k[0] === 'number' && typeof k[1] === 'number' && (k[2] === undefined || typeof k[2] === 'string'));
