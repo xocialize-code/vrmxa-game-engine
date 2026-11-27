@@ -1,0 +1,458 @@
+{
+ "check": "M6 W10: After Hours won and lost through the game app in Chromium by a scripted player; each recorded session replayed in Node and in the game app on WebGPU and WebGL to the same per-step hashes (AB-T-0651, exit check 6)",
+ "ok": true,
+ "node": "v26.12.1",
+ "chromium": "156.0.8078.4",
+ "build": {
+  "game": "after-hours",
+  "files": 69,
+  "bytes": 18974044,
+  "digest": "e627a6153bf85c147f362698e8fd4eeac11f209dd0fa9e974cde1ba55b326f85",
+  "manifest": "0b3290a6370215160fce5c305137d763d5d1be9e8006c18e8692bfd62bd52484",
+  "runtime": "vrmxg-game 0.1.0+e513c0497664"
+ },
+ "sessions": {
+  "win": {
+   "steps": 4951,
+   "scenes": [
+    "after-hours/title.vrmxs",
+    "after-hours/level.vrmxs",
+    "after-hours/won.vrmxs"
+   ],
+   "final": {
+    "step": 4951,
+    "scene": "after-hours/title.vrmxs",
+    "hash": "b6cfbc7f65f7f8a2"
+   },
+   "seen": {
+    "title": "Goal: After Hours: the cafe after closing",
+    "hud": {
+     "goal": "Goal: Put the scarf, the phone and the book on their shelves",
+     "counters": [
+      "On their shelves 0",
+      "Wrong shelves 0"
+     ],
+     "clock": "Until Hana locks up 3:00"
+    },
+    "hint": {
+     "line": "Hana: Need a hand?",
+     "choices": [
+      "1Where does the scarf go?",
+      "2And the phone?",
+      "3Where is the book?",
+      "4I'm fine, thanks."
+     ]
+    },
+    "carrying": {
+     "carrying": [
+      "Scarf",
+      "Phone"
+     ],
+     "hud": "ScarfPhone"
+    },
+    "door": {
+     "step": 2551,
+     "state": "open"
+    },
+    "checkpoint": {
+     "step": 3101,
+     "checkpoints": {
+      "first-shelved": {
+       "id": "cp-first",
+       "requested": 3093
+      }
+     }
+    },
+    "refused": [],
+    "endingLine": "Hana: Not one thing on the wrong shelf. Goodnight, Mira!"
+   },
+   "tasks": [
+    {
+     "step": 6,
+     "task": "in after-hours/title.vrmxs"
+    },
+    {
+     "step": 361,
+     "task": "listening (briefing)"
+    },
+    {
+     "step": 999,
+     "task": "reading (briefing)"
+    },
+    {
+     "step": 1038,
+     "task": "choose how"
+    },
+    {
+     "step": 1039,
+     "task": "listening (briefing)"
+    },
+    {
+     "step": 1327,
+     "task": "ask Hana where the book is"
+    },
+    {
+     "step": 1386,
+     "task": "listening (hints)"
+    },
+    {
+     "step": 1456,
+     "task": "reading (hints)"
+    },
+    {
+     "step": 1495,
+     "task": "choose book"
+    },
+    {
+     "step": 1496,
+     "task": "listening (hints)"
+    },
+    {
+     "step": 1828,
+     "task": "pick up the scarf"
+    },
+    {
+     "step": 2027,
+     "task": "pick up the scarf: interact"
+    },
+    {
+     "step": 2028,
+     "task": "pick up the phone"
+    },
+    {
+     "step": 2286,
+     "task": "pick up the phone: interact"
+    },
+    {
+     "step": 2287,
+     "task": "open the back room"
+    },
+    {
+     "step": 2538,
+     "task": "open the back room: interact"
+    },
+    {
+     "step": 2539,
+     "task": "pick up the book"
+    },
+    {
+     "step": 2832,
+     "task": "pick up the book: interact"
+    },
+    {
+     "step": 2833,
+     "task": "put the phone on its shelf"
+    },
+    {
+     "step": 3093,
+     "task": "put the phone on its shelf: interact"
+    },
+    {
+     "step": 3094,
+     "task": "put the book on its shelf"
+    },
+    {
+     "step": 3702,
+     "task": "put the book on its shelf: interact"
+    },
+    {
+     "step": 3703,
+     "task": "put the scarf on its shelf"
+    },
+    {
+     "step": 3982,
+     "task": "put the scarf on its shelf: interact"
+    },
+    {
+     "step": 3983,
+     "task": "game won"
+    },
+    {
+     "step": 4164,
+     "task": "in after-hours/won.vrmxs"
+    },
+    {
+     "step": 4884,
+     "task": "in after-hours/title.vrmxs"
+    }
+   ],
+   "log": "acceptance/results/m6-after-hours/win.json"
+  },
+  "lose": {
+   "steps": 3526,
+   "scenes": [
+    "after-hours/title.vrmxs",
+    "after-hours/level.vrmxs",
+    "after-hours/lost.vrmxs"
+   ],
+   "final": {
+    "step": 3526,
+    "scene": "after-hours/title.vrmxs",
+    "hash": "1911b477d418a6c8"
+   },
+   "seen": {
+    "title": "Goal: After Hours: the cafe after closing",
+    "hud": {
+     "goal": "Goal: Put the scarf, the phone and the book on their shelves",
+     "counters": [
+      "On their shelves 0",
+      "Wrong shelves 0"
+     ],
+     "clock": "Until Hana locks up 3:00"
+    },
+    "hint": null,
+    "carrying": null,
+    "door": null,
+    "checkpoint": null,
+    "refused": [
+     {
+      "step": 1942,
+      "caption": "Hana: The bookshelf is for books!"
+     },
+     {
+      "step": 2566,
+      "caption": "Hana: That doesn't go with the phones."
+     }
+    ],
+    "endingLine": "Hana: That's two things on the wrong shelf. Let's sort it out tomorrow."
+   },
+   "tasks": [
+    {
+     "step": 6,
+     "task": "in after-hours/title.vrmxs"
+    },
+    {
+     "step": 361,
+     "task": "listening (briefing)"
+    },
+    {
+     "step": 999,
+     "task": "reading (briefing)"
+    },
+    {
+     "step": 1038,
+     "task": "choose ready"
+    },
+    {
+     "step": 1039,
+     "task": "listening (briefing)"
+    },
+    {
+     "step": 1297,
+     "task": "pick up the scarf"
+    },
+    {
+     "step": 1497,
+     "task": "pick up the scarf: interact"
+    },
+    {
+     "step": 1498,
+     "task": "put the scarf on the books shelf"
+    },
+    {
+     "step": 1938,
+     "task": "put the scarf on the books shelf: interact"
+    },
+    {
+     "step": 1939,
+     "task": "put the scarf on the phones shelf"
+    },
+    {
+     "step": 2554,
+     "task": "put the scarf on the phones shelf: interact"
+    },
+    {
+     "step": 2555,
+     "task": "game lost"
+    },
+    {
+     "step": 2736,
+     "task": "in after-hours/lost.vrmxs"
+    },
+    {
+     "step": 3456,
+     "task": "in after-hours/title.vrmxs"
+    }
+   ],
+   "log": "acceptance/results/m6-after-hours/lose.json"
+  }
+ },
+ "nodeReplays": {
+  "win": {
+   "steps": 4951,
+   "final": {
+    "step": 4951,
+    "scene": "after-hours/title.vrmxs",
+    "hash": "b6cfbc7f65f7f8a2"
+   }
+  },
+  "lose": {
+   "steps": 3526,
+   "final": {
+    "step": 3526,
+    "scene": "after-hours/title.vrmxs",
+    "hash": "1911b477d418a6c8"
+   }
+  }
+ },
+ "appReplays": {
+  "win-webgpu": {
+   "backend": "webgpu",
+   "steps": 4951,
+   "final": {
+    "step": 4951,
+    "scene": "after-hours/title.vrmxs",
+    "hash": "b6cfbc7f65f7f8a2"
+   },
+   "frames": {
+    "frames": 4942,
+    "seconds": 83.16340000000001,
+    "fps": 59.4251798267026,
+    "mean": 16.827883447996765,
+    "p50": 16.69999999999709,
+    "p95": 16.70000000001164,
+    "p99": 16.80000000000291,
+    "max": 216.79999999999927,
+    "over25": 9,
+    "over34": 9,
+    "width": 1280,
+    "height": 720
+   },
+   "error": null
+  },
+  "win-webgl": {
+   "backend": "webgl",
+   "steps": 4951,
+   "final": {
+    "step": 4951,
+    "scene": "after-hours/title.vrmxs",
+    "hash": "b6cfbc7f65f7f8a2"
+   },
+   "frames": {
+    "frames": 4936,
+    "seconds": 83.19659999999999,
+    "fps": 59.32934759353147,
+    "mean": 16.855064829821718,
+    "p50": 16.69999999999709,
+    "p95": 16.70000000001164,
+    "p99": 16.80000000000291,
+    "max": 266.6999999999998,
+    "over25": 11,
+    "over34": 10,
+    "width": 1280,
+    "height": 720
+   },
+   "error": null
+  },
+  "lose-webgpu": {
+   "backend": "webgpu",
+   "steps": 3526,
+   "final": {
+    "step": 3526,
+    "scene": "after-hours/title.vrmxs",
+    "hash": "1911b477d418a6c8"
+   },
+   "frames": {
+    "frames": 3517,
+    "seconds": 59.431,
+    "fps": 59.177870135114674,
+    "mean": 16.8982087005971,
+    "p50": 16.69999999999709,
+    "p95": 16.799999999995634,
+    "p99": 16.80000000000291,
+    "max": 233.39999999999964,
+    "over25": 9,
+    "over34": 9,
+    "width": 1280,
+    "height": 720
+   },
+   "error": null
+  },
+  "lose-webgl": {
+   "backend": "webgl",
+   "steps": 3526,
+   "final": {
+    "step": 3526,
+    "scene": "after-hours/title.vrmxs",
+    "hash": "1911b477d418a6c8"
+   },
+   "frames": {
+    "frames": 3514,
+    "seconds": 59.464299999999994,
+    "fps": 59.094280097470254,
+    "mean": 16.92211155378486,
+    "p50": 16.69999999999709,
+    "p95": 16.799999999995634,
+    "p99": 16.80000000000291,
+    "max": 249.89999999999964,
+    "over25": 10,
+    "over34": 9,
+    "width": 1280,
+    "height": 720
+   },
+   "error": null
+  }
+ },
+ "checks": [
+  {
+   "name": "the second game exports with the game app as its runtime (vrmxg-export --game after-hours/game.json)",
+   "ok": true,
+   "detail": "69 files, 19.0 MB, digest e627a6153bf85c14"
+  },
+  {
+   "name": "win: played from the title menu to the won ending, its dialogue choices recorded",
+   "ok": true,
+   "detail": "scenes after-hours/title.vrmxs → after-hours/level.vrmxs → after-hours/won.vrmxs; 4951 steps; choices how, book; ending line \"Hana: Not one thing on the wrong shelf. Goodnight, Mira!\""
+  },
+  {
+   "name": "win: the HUD showed the goal, the counters and the clock; Hana gave a hint; two things in her inventory at once; the switch opened the staff door; the checkpoint was taken",
+   "ok": true,
+   "detail": "HUD {\"goal\":\"Goal: Put the scarf, the phone and the book on their shelves\",\"counters\":[\"On their shelves 0\",\"Wrong shelves 0\"],\"clock\":\"Until Hana locks up 3:00\"}; hint {\"line\":\"Hana: Need a hand?\",\"choices\":[\"1Where does the scarf go?\",\"2And the phone?\",\"3Where is the book?\",\"4I'm fine, thanks.\"]}; carrying {\"carrying\":[\"Scarf\",\"Phone\"],\"hud\":\"ScarfPhone\"}; door {\"step\":2551,\"state\":\"open\"}; checkpoint {\"step\":3101,\"checkpoints\":{\"first-shelved\":{\"id\":\"cp-first\",\"requested\":3093}}}"
+  },
+  {
+   "name": "lose: played from the title menu to the lost ending, its dialogue choices recorded",
+   "ok": true,
+   "detail": "scenes after-hours/title.vrmxs → after-hours/level.vrmxs → after-hours/lost.vrmxs; 3526 steps; choices ready; ending line \"Hana: That's two things on the wrong shelf. Let's sort it out tomorrow.\""
+  },
+  {
+   "name": "lose: each wrong shelf was refused and counted (two), Hana said so",
+   "ok": true,
+   "detail": "[{\"step\":1942,\"caption\":\"Hana: The bookshelf is for books!\"},{\"step\":2566,\"caption\":\"Hana: That doesn't go with the phones.\"}]"
+  },
+  {
+   "name": "win: the session played in Chromium replays in Node to the same hash after every step",
+   "ok": true,
+   "detail": "4951 steps, final b6cfbc7f65f7f8a2 at step 4951"
+  },
+  {
+   "name": "lose: the session played in Chromium replays in Node to the same hash after every step",
+   "ok": true,
+   "detail": "3526 steps, final 1911b477d418a6c8 at step 3526"
+  },
+  {
+   "name": "win: the game app replays the log drawn on WebGPU to the same hash after every step",
+   "ok": true,
+   "detail": "4951 steps on webgpu, final b6cfbc7f65f7f8a2; 4942 frames, p99 16.8 ms"
+  },
+  {
+   "name": "win: the game app replays the log drawn on WebGL to the same hash after every step",
+   "ok": true,
+   "detail": "4951 steps on webgl, final b6cfbc7f65f7f8a2; 4936 frames, p99 16.8 ms"
+  },
+  {
+   "name": "lose: the game app replays the log drawn on WebGPU to the same hash after every step",
+   "ok": true,
+   "detail": "3526 steps on webgpu, final 1911b477d418a6c8; 3517 frames, p99 16.8 ms"
+  },
+  {
+   "name": "lose: the game app replays the log drawn on WebGL to the same hash after every step",
+   "ok": true,
+   "detail": "3526 steps on webgl, final 1911b477d418a6c8; 3514 frames, p99 16.8 ms"
+  },
+  {
+   "name": "no errors in the pages",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}
