@@ -17,6 +17,8 @@ import { rebindRows, rebindPlan, describeBinding } from '@vrmxg/game-ui';
 export const writeJson = (doc) => `${JSON.stringify(doc, null, 1)}\n`;
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const sceneFile = (f) => f.endsWith('.vrmxs') && !f.startsWith('prefabs/') && !f.startsWith('sequences/');
+// a module a game can name as its behaviours (M6 W10): a project's .js files, not the editor's or a build's own
+const scriptFile = (f) => f.endsWith('.js') && !f.startsWith('tools/') && !f.startsWith('node_modules/') && !f.includes('/.');
 
 /** A game.json for a project that has none: its first scene as the entry, the engine's default controls. */
 export function startingGame({ name = 'game', scenes = [] } = {}) {
@@ -198,6 +200,17 @@ export class ProjectSettings {
     });
   }
 
+  /**
+   * The game's behaviours module (M6 W10): a .js file of the project, whose classes the scenes' behaviours name (and
+   * which play in place runs and an export ships), or none (undefined: the key leaves game.json).
+   */
+  setBehaviours(ref) {
+    return this.edit(ref ? `Behaviours ${ref}` : 'No behaviours module', (d) => {
+      if (ref && !scriptFile(ref)) throw new Error(`${ref} isn't a behaviours module: a .js file of the project`);
+      if (ref) d.game.behaviours = ref; else delete d.game.behaviours;
+    });
+  }
+
   /** The map being edited inside a draft (made inline from the engine's default the first time). */
   _map(d) {
     if (typeof d.game.input === 'string') { d.input ??= { actions: {} }; d.input.actions ??= {}; return d.input.actions; }
@@ -327,6 +340,7 @@ export class ProjectSettings {
     return {
       exists: !!g, file: GAME_FILE, error: this.error, note: this.note,
       title: g?.title ?? '', id: g?.id ?? '', release: g?.release ?? '',
+      behaviours: g?.behaviours ?? '', scripts: this.files.filter(scriptFile).sort(),
       entry: g?.entry ?? '', scenes: scenes.map((ref) => ({ ref, included: !!g && (ref === g.entry || (g.scenes ?? []).includes(ref)), entry: ref === g?.entry })),
       inputFile: typeof g?.input === 'string' ? g.input : null, defaultControls: !g?.input,
       actions: Object.entries(actions).map(([name, a]) => ({ name, type: a.type, bindings: a.bindings.length })),

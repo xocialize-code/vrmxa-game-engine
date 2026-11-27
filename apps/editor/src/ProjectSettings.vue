@@ -99,6 +99,7 @@ const S = (o) => ({ type: 'string', ...o });
           <ul class="plain" aria-label="Scenes in the game">
             <li v-for="s in view.scenes" :key="s.ref"><label><input :id="`settings-scene-${s.ref}`" type="checkbox" :checked="s.included" :disabled="disabled || s.entry" :aria-label="`${s.ref} is in the game${s.entry ? ' (the entry)' : ''}`" @change="op('setScene', s.ref, $event.target.checked)"> {{ s.ref }}<span v-if="s.entry" class="muted small"> (entry)</span></label></li>
           </ul>
+          <div class="field"><span>Behaviours</span><ValueField id="settings-behaviours" label="Behaviours module" :schema="{ enum: view.scripts }" :value="view.behaviours || undefined" :disabled="disabled || (!view.scripts.length && !view.behaviours)" @change="(v) => op('setBehaviours', v)" /></div>
 
           <h3>Physics layers</h3>
           <p class="muted small">A collider or a character names its layer (its Layer prop); none is on the first. A layer a scene uses can't be renamed or removed. {{ view.layers.length ? '' : 'One layer, "default", until you add one.' }}</p>
