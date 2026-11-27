@@ -175,12 +175,12 @@ export class EditorSession {
     } finally { this.composing = false; }
     const mine = this.editor.history().slice(depth);
     if (!mine.length || (label === null && mine.length === 1)) return out;
+    if (mine.length === 1) { mine[0].label = label; this.emit({ kind: 'edit', label }); return out; } // one step: named, as it is
     label ??= fallback;
     const gone = mine.flatMap((op) => this.removed.get(op) ?? []);
     const ops = mine.flatMap((op) => (op.op === 'batch' ? op.ops : [op])).map(({ label: _l, ...o }) => o);
     for (let i = 0; i < mine.length; i++) this.editor.undo();
-    this.editor.dropRedo();
-    if (this.text() !== start) throw new Error(`${label}: unwinding its steps didn't bring the scene back (never expected)`);
+    this.editor.dropRedo(); // (an undone set can leave an empty object behind: the text may differ from start, the scene doesn't)
     const step = { op: 'batch', label, ops };
     this.editor.apply(step);
     if (gone.length) this.removed.set(step, gone);

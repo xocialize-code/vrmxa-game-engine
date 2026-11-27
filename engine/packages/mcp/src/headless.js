@@ -72,6 +72,13 @@ export function createTools({ registry: reg, project: first, scene, builds = nul
     at.session.savedText = at.savedText;
   };
   openScene(scene);
+  /** Work in the project at `root` (new, or read again): its behaviours module (game.json's) declared in place of the last one's. */
+  const adopt = async (root) => {
+    at.project = new Project(root, { vrmxaCore: at.project.vrmxaCorePath ?? undefined, seed: at.project.seed });
+    at.behaviourProblems = [];
+    try { declareProjectBehaviours(reg, await at.project.behaviours()); } catch (e) { reg.project(new Map()); at.behaviourProblems = [String(e?.message ?? e)]; }
+    at.engine = new EngineSession(at.project, { director: process.env.VRMXG_DIRECTOR ?? null });
+  };
   at.engine = new EngineSession(at.project, { director: process.env.VRMXG_DIRECTOR ?? null });
   const doc = () => at.session.doc;
   const prefabs = () => at.session.prefabs;
@@ -137,11 +144,17 @@ export function createTools({ registry: reg, project: first, scene, builds = nul
       const exists = at.project.exists(ref);
       if (from !== undefined && exists) throw new Error(`${ref} exists already: open it without from, or name a new scene`);
       if (from !== undefined && !at.project.exists(from)) throw new Error(`no scene ${from} to copy`);
-      const id = ref.split('/').pop().replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-');
+      const id = ref.replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-'); // as the editor's New Scene names one ("rooms/new.vrmxs": rooms-new)
       if (exists) openScene(ref);
       else if (from !== undefined) openScene(ref, { ...parse(fs.readFileSync(at.project.file(from), 'utf8')), id }, { unsaved: true });
       else openScene(ref, EditorSession.empty(reg, id).doc);
       return { open: at.sceneRef, new: !exists, ...(from !== undefined ? { from } : {}), nodes: doc().nodes.length, ...(exists ? {} : { note: 'not saved yet: save writes it; name it in game op=settings scenes for a scene change to reach it' }) };
+    },
+    /** game.json's behaviours module changed (game op=settings): read the project again, its module declared afresh. */
+    async behavioursChanged() {
+      await adopt(at.project.root);
+      const declared = [...reg.behaviours.values()].filter((b) => b.source === 'project').map((b) => b.name);
+      return { module: at.project.behavioursRef, declared, ...(at.behaviourProblems.length ? { problems: at.behaviourProblems } : {}) };
     },
     templates: () => listTemplates(),
     /** A project from a template in the --projects folder, opened on its entry scene with its own behaviours. */
@@ -149,10 +162,7 @@ export function createTools({ registry: reg, project: first, scene, builds = nul
       if (!projects) throw new Error('this server was started without --projects <folder>, which says where new projects go: ask the person to add it');
       const root = path.join(path.resolve(projects), id ?? gameIdFrom(title));
       const r = makeProject(template.id, root, { title, ...(id ? { gameId: id } : {}) });
-      at.project = new Project(root, { vrmxaCore: at.project.vrmxaCorePath ?? undefined, seed: at.project.seed });
-      at.behaviourProblems = [];
-      try { declareProjectBehaviours(reg, await at.project.behaviours()); } catch (e) { reg.project(new Map()); at.behaviourProblems = [String(e?.message ?? e)]; }
-      at.engine = new EngineSession(at.project, { director: process.env.VRMXG_DIRECTOR ?? null });
+      await adopt(root);
       at.settings = null;
       const entry = JSON.parse(fs.readFileSync(at.project.file(GAME_FILE), 'utf8')).entry;
       openScene(entry);

@@ -279,11 +279,12 @@ const codeName = (key) => { const [head, k] = String(key).split('.'); return hea
  * the game has no behaviours. `literals`: every string literal in those modules, the names code can use by itself
  * (`game.add('served', 1)`, a describe's default `'served'`).
  * @param {any} game @param {{ files: string[], read: (ref: string) => Promise<Uint8Array> }} project
- * @returns {Promise<{ mentions: boolean, literals: Map<string, string>, unreadable: boolean }>} literals: name → the module that has it
+ * @returns {Promise<{ mentions: boolean, literals: Map<string, string>, completes: Map<string, string>, unreadable: boolean }>} literals:
+ *   name → the module that has it; completes: the goals it completes by name (`complete('key')`, `completeGoal('key')`)
  */
 async function codeFacts(game, project) {
-  const literals = new Map();
-  if (!game?.behaviours) return { mentions: false, literals, unreadable: false };
+  const literals = new Map(), completes = new Map();
+  if (!game?.behaviours) return { mentions: false, literals, completes, unreadable: false };
   const seen = new Set(), queue = [game.behaviours];
   let mentions = false;
   try {
@@ -294,6 +295,7 @@ async function codeFacts(game, project) {
       const src = text(await project.read(ref));
       if (/['"`]game['"`]/.test(src)) mentions = true;
       const bare = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, ''); // comments' words aren't names code uses
+      for (const m of bare.matchAll(/complete(?:Goal)?\(\s*['"`]([^'"`$\\]+)['"`]/g)) if (!completes.has(m[1])) completes.set(m[1], ref); // a goal completed by name
       for (const m of bare.matchAll(/'((?:[^'\\\n]|\\.)*)'|"((?:[^"\\\n]|\\.)*)"|`([^`$\\]*)`/g)) { const v = m[1] ?? m[2] ?? m[3]; if (v && !literals.has(v)) literals.set(v, ref); }
       for (const spec of moduleImports(src, ref)) {
         if (!/^\.{1,2}\//.test(spec)) continue;
@@ -302,21 +304,27 @@ async function codeFacts(game, project) {
         queue.push(parts.join('/'));
       }
     }
-  } catch { return { mentions: true, literals, unreadable: true }; } // a module that can't be read or lexed: unknown, so it might
-  return { mentions, literals, unreadable: false };
+  } catch { return { mentions: true, literals, completes, unreadable: true }; } // a module that can't be read or lexed: unknown, so it might
+  return { mentions, literals, completes, unreadable: false };
 }
 
 /**
- * Where code could reach a stuck goal (AB-T-0641): the goal's own key (code completes a goal by name), or a name its
- * condition reads, used by a project behaviour of the game's scenes as a param (its value there, or its declared
- * default: `tableZone`'s `served`, which its code adds to), or written in the code as a string. → the first such path,
- * as words, or null when there is none: then the goal is a problem whatever else the code does.
+ * Where code could reach a stuck goal (AB-T-0641). The goal itself, when the code completes it by name
+ * (`complete('key')`, `completeGoal('key')`) or names `goals.<key>`. Or a counter, flag, timer or checkpoint slot its
+ * condition reads, when a project behaviour of the game's scenes is given that name (a param's value there, or its
+ * declared default: `tableZone`'s `served`, which its code adds to), or the code writes it as a string. Only the names
+ * the condition reads count: a goal key or a signal that happens to share a name with a counter reaches nothing. →
+ * the first such path, as words, or null when there is none: then the goal is a problem whatever else the code does.
  * @param {{ key: string, reads: string[] }} g @param {Map<string, { nodes: any[] }>} flat @param {any} reg
- * @param {{ literals: Map<string, string>, unreadable: boolean }} code
+ * @param {{ literals: Map<string, string>, completes: Map<string, string>, unreadable: boolean }} code
  */
 function codePath(g, flat, reg, code) {
   if (code.unreadable) return 'its behaviours module couldn\'t be read';
-  const names = [...new Set([g.key, ...g.reads.map(codeName).filter(Boolean)])];
+  if (code.completes.has(g.key)) return `${code.completes.get(g.key)} completes "${g.key}" by name`;
+  const asRead = [...code.literals.keys()].find((x) => x === `goals.${g.key}` || x.startsWith(`goals.${g.key}.`));
+  if (asRead !== undefined) return `${code.literals.get(asRead)} names "${asRead}"`;
+  const names = [...new Set(g.reads.filter((k) => !String(k).startsWith('goals.')).map(codeName).filter(Boolean))];
+  if (!names.length) return null;
   for (const [scene, w] of flat) {
     for (const n of w.nodes) {
       for (const b of n.behaviours ?? []) {

@@ -149,6 +149,23 @@ const treeText = (nodes) => {
  */
 export function createHandlers(reg, target) {
   const { check } = createValidator(reg);
+  /**
+   * Edit ops as one undo step of the open session, all or nothing, marked (MCP): tried on a copy first (a refused batch
+   * leaves the Redo as it was), then folded by EditorSession.compose. The step's name: `label`; else one command's own
+   * ("Add scoreZone to zone"); else the op's. → the step's name (null when nothing changed) and notes for the answer
+   * @param {any[]} ops @param {string} [label]
+   */
+  const runOps = (ops, label) => {
+    const notes = [], s = target.session(), depth = s.editor.peek().undoDepth;
+    tryFirst(s, ops);
+    const one = ops.length === 1 ? ops[0] : null;
+    const fallback = !one ? `${ops.length} edits` : one.op === 'behaviour' ? `${one.use} on ${one.id}` : `${one.op} ${one.id ?? one.node?.id ?? ''}`.trim();
+    asAgent(s, () => s.compose(label !== undefined ? `${label}${MARK}` : null, () => ops.forEach((o, i) => {
+      try { const n = editOp(s, o); if (n) notes.push(n); } catch (e) { throw new Error(`${ops.length > 1 ? `ops[${i}] (${o?.op ?? 'no op'}): ` : ''}${e.message}${ops.length > 1 ? '. Nothing was applied' : ''}`); }
+    }), `${fallback}${MARK}`));
+    const name = s.editor.peek().undoDepth > depth ? String(s.history().undo).replace(/ \(MCP\)$/, '') : null;
+    return { name, notes };
+  };
   const need = (k) => { if (!target[k]) throw new Error(`${k === 'settings' ? 'project settings' : k === 'openScene' ? 'opening scenes' : 'New Project'} isn't available here`); return (...a) => target[k](...a); };
   const types = [...reg.types.keys()];
   // The scene's schema and references, and its rules (M5 W9): a condition that reads a counter, flag, timer or goal the
@@ -182,10 +199,11 @@ export function createHandlers(reg, target) {
       const s = reg.surface(n);
       return { node: n, signals: Object.keys(s.signals), actions: Object.keys(s.actions) };
     },
-    add_node({ node, index }) { target.apply({ op: 'add', node, index }, `Add ${node.id}`); return `added ${node.id}`; },
-    set({ id, path: p, value }) { target.apply({ op: 'set', id, path: p, value }, `Set ${id} ${p}`); return `${id}.${p} = ${JSON.stringify(value)}`; },
-    remove_node({ id }) { target.apply({ op: 'remove', id }, `Delete ${id}`); return `removed ${id}`; },
-    reparent({ id, parent, index }) { target.apply({ op: 'reparent', id, parent, index }, `Move ${id} under ${parent ?? 'the root'}`); return `${id} now under ${parent ?? '(root)'}`; },
+    // the node tools are one-op batches (M6 W8): the same checks as edit's ops (a node's behaviours by their schemas)
+    add_node({ node, index }) { runOps([{ op: 'add', node, index }], `Add ${node?.id}`); return `added ${node?.id}`; },
+    set({ id, path: p, value }) { runOps([{ op: 'set', id, path: p, value }], `Set ${id} ${p}`); return `${id}.${p} = ${JSON.stringify(value)}`; },
+    remove_node({ id }) { runOps([{ op: 'remove', id }], `Delete ${id}`); return `removed ${id}`; },
+    reparent({ id, parent, index }) { runOps([{ op: 'reparent', id, parent, index }], `Move ${id} under ${parent ?? 'the root'}`); return `${id} now under ${parent ?? '(root)'}`; },
     // checked as the inspector's Connections panel checks it (EditorSession.connect: the signal the sender has, the
     // target's action, each argument against the action's schema, a node argument naming a node here)
     connect({ from, signal, to, call, args }) { asAgent(target.session(), (s) => s.connect({ from, signal, to, call, args })); return `connected ${from}.${signal} -> ${to}.${call}`; },
@@ -218,13 +236,8 @@ export function createHandlers(reg, target) {
      */
     edit({ ops, label }) {
       if (!Array.isArray(ops) || !ops.length) throw new Error('ops: one or more edit ops');
-      // the step's name: the label given; else one command's own ("Add scoreZone to zone"); else how many edits
-      const notes = [], s = target.session(), depth = s.editor.peek().undoDepth;
-      tryFirst(s, ops); // a refused batch leaves the editor's Redo as it was
-      asAgent(s, () => s.compose(label !== undefined ? `${label}${MARK}` : null, () => ops.forEach((o, i) => {
-        try { const n = editOp(s, o); if (n) notes.push(n); } catch (e) { throw new Error(`ops[${i}] (${o?.op ?? 'no op'}): ${e.message}${ops.length > 1 ? '. Nothing was applied' : ''}`); }
-      }), `${ops.length > 1 ? `${ops.length} edits` : ops[0]?.op === 'behaviour' ? `${ops[0].use} on ${ops[0].id}` : `${ops[0]?.op} ${ops[0]?.id ?? ''}`.trim()}${MARK}`));
-      const name = s.editor.peek().undoDepth > depth ? String(s.history().undo).replace(/ \(MCP\)$/, '') : label ?? `${ops.length} edits`;
+      const { name, notes } = runOps(ops, label);
+      if (name === null) return `${ops.length > 1 ? `${ops.length} edits` : 'the edit'} changed nothing: no undo step`;
       return `${ops.length} edit${ops.length > 1 ? 's' : ''} applied as one undo step ("${name}")${notes.length ? `; ${notes.join('; ')}` : ''}`;
     },
     async sequence({ frame, path }) {
@@ -268,7 +281,7 @@ export function createHandlers(reg, target) {
      * Mac shell's), and a refusal comes back whole.
      */
     async game({ op = 'rules', name, scene, from, set, template, title }) {
-      if (op === 'settings') return settingsOp(await need('settings')(), set, need('project'));
+      if (op === 'settings') return settingsOp(await need('settings')(), set, need('project'), { behaviours: target.behavioursChanged });
       if (op === 'open') {
         if (typeof scene !== 'string' || !/^[^/.][^\\:]*\.vrmxs$/.test(scene) || scene.split('/').some((p) => !p || p.startsWith('.'))) throw new Error('scene: a .vrmxs path in the project, e.g. "level-2.vrmxs"');
         if (from !== undefined && (typeof from !== 'string' || !from.endsWith('.vrmxs'))) throw new Error('from: the .vrmxs scene to copy');
@@ -288,7 +301,7 @@ export function createHandlers(reg, target) {
         // Play runs it either way): one step of the settings' undo
         const st = target.settings ? await target.settings() : null;
         if (st?.game && !st.game.behaviours && st.files.includes('behaviours.js')) {
-          const r = /** @type {any} */ (await settingsOp(st, { behaviours: 'behaviours.js' }, need('project')));
+          const r = /** @type {any} */ (await settingsOp(st, { behaviours: 'behaviours.js' }, need('project'), { behaviours: target.behavioursChanged }));
           return { ...made, behaviours: { set: 'behaviours.js', steps: r.steps } };
         }
         return made;
@@ -336,13 +349,31 @@ export function asAgent(s, fn) {
  */
 function tryFirst(s, ops) {
   if (s.mode !== 'editing') return; // refused before any step: nothing to lose
-  const Session = s.constructor;
-  const trial = new Session({ registry: s.reg, doc: structuredClone(s.doc), prefabs: new Map(s.prefabs), path: s.path });
+  const Session = s.constructor, base = s.prefabs;
+  // the session's prefabs as it finds them (headless loads one from the project when first asked for); what the
+  // trial writes (an Apply replaces a prefab) stays in the trial
+  class Over extends Map {
+    get(k) { return super.has(k) ? super.get(k) : base.get(k); }
+    has(k) { return super.has(k) || base.has(k); }
+  }
+  const trial = new Session({ registry: s.reg, doc: structuredClone(s.doc), prefabs: new Over(base), path: s.path });
   trial.elsewhere = s.elsewhere; trial.targetIds = s.targetIds; trial.setDoc = s.setDoc;
-  trial.compose('trial', () => ops.forEach((o, i) => {
-    try { editOp(trial, o); } catch (e) { throw new Error(`ops[${i}] (${o?.op ?? 'no op'}): ${e.message}${ops.length > 1 ? '. Nothing was applied' : ''}`); }
+  trial.compose(null, () => ops.forEach((o, i) => {
+    try { editOp(trial, o); } catch (e) { throw new Error(`${ops.length > 1 ? `ops[${i}] (${o?.op ?? 'no op'}): ` : ''}${e.message}${ops.length > 1 ? '. Nothing was applied' : ''}`); }
   }));
 }
+
+/** The ops @vrmxg/scene's editor runs for an agent as they are; the rest are the editor's commands, or refused. */
+const RAW = new Set(['add', 'set', 'remove', 'reparent', 'setDoc', 'addAsset', 'removeAsset', 'setAsset']);
+const REFUSED = {
+  batch: 'edit is the batch: list its ops in one edit',
+  setConnection: 'disconnect it and connect it again (each checked)',
+  reconnectAt: 'disconnect it and connect it again (each checked)',
+  restore: 'it is an undo\'s own op',
+  prefab: 'it is an Apply\'s own op',
+  renameNode: 'a node\'s id is changed in the editor\'s inspector, which follows every reference to it',
+};
+const NODE_LABEL = { add: (a) => `Add ${a.node?.id}`, set: (a) => `Set ${a.id} ${a.path}`, remove: (a) => `Delete ${a.id}`, reparent: (a) => `Move ${a.id} under ${a.parent ?? 'the root'}` };
 
 /** One op of an `edit` batch, inside the batch's compose: → a note for the answer, or nothing. */
 function editOp(s, o) {
@@ -352,13 +383,26 @@ function editOp(s, o) {
   if (op === 'connect') { s.connect({ from: a.from, signal: a.signal, to: a.to, call: a.call, args: a.args }); return null; }
   if (op === 'disconnect') return disconnectOp(s, a);
   if (op === 'behaviour') return behaviourOp(s, a);
-  s.run(`${op} ${a.id ?? a.node?.id ?? a.path ?? ''}`.trim(), [{ op, ...a }]); // add, set, remove, reparent, setDoc, …: @vrmxg/scene's editor
+  if (Object.hasOwn(REFUSED, op)) throw new Error(`"${op}" isn't an agent's op: ${REFUSED[op]}`);
+  if (!RAW.has(op)) throw new Error(`unknown op "${op}" (add, set, remove, reparent, connect, disconnect, behaviour, setDoc, addAsset, removeAsset, setAsset)`);
+  // a node's behaviours go through the behaviour op, where each param is checked (the scene's schema keeps an unknown
+  // param, and doesn't follow a node reference)
+  if (op === 'set' && /^behaviours(\.|$)/.test(String(a.path ?? ''))) throw new Error(`behaviours are set with {op:"behaviour", id, use, params} (each param checked against its schema), not set on "${a.path}"`);
+  if (op === 'add' && Array.isArray(a.node?.behaviours) && a.node.behaviours.length) {
+    const { behaviours, ...node } = a.node;
+    if (behaviours.some((b) => !b || typeof b !== 'object' || typeof b.use !== 'string')) throw new Error(`${node.id}: each behaviour is { use, ...params }`);
+    s.run(NODE_LABEL.add(a), [{ op, ...a, node }]);
+    for (const { use, ...params } of behaviours) behaviourOp(s, { id: node.id, use, params: Object.keys(params).length ? params : undefined, remove: false });
+    return null;
+  }
+  s.run(NODE_LABEL[op]?.(a) ?? `${op} ${a.id ?? a.node?.id ?? a.path ?? ''}`.trim(), [{ op, ...a }]);
   return null;
 }
 
 /** Remove a connection by its index, or by its ends when exactly one matches. */
 function disconnectOp(s, { index, from, signal, to, call }) {
   let i = index;
+  if (i === undefined && [from, signal, to, call].every((x) => x === undefined)) throw new Error('disconnect: index (the connection\'s place in the scene\'s list), or its ends (from, signal, to, call: one or more)');
   if (i === undefined) {
     const hits = s.doc.connections.map((c, k) => [c, k]).filter(([c]) => (from === undefined || c.from === from) && (signal === undefined || c.signal === signal) && (to === undefined || c.to === to) && (call === undefined || c.call === call));
     if (hits.length !== 1) throw new Error(`disconnect: ${hits.length ? `${hits.length} connections match (give index: ${hits.map(([c, k]) => `${k} ${c.from}.${c.signal}->${c.to}.${c.call}`).join(', ')})` : 'no connection matches'}`);
@@ -403,7 +447,7 @@ function behaviourOp(s, { id, use, params, remove }) {
  *        { collides: { layer: [layers it collides with] } }  one step per pair that changes
  * @param {any} st a ProjectSettings @param {Record<string, any> | undefined} set
  */
-async function settingsOp(st, set, project) {
+async function settingsOp(st, set, project, changed = null) {
   const view = () => {
     const v = st.view(), g = st.game ?? {};
     return {
@@ -419,9 +463,25 @@ async function settingsOp(st, set, project) {
   const KEYS = ['title', 'id', 'release', 'entry', 'scenes', 'behaviours', 'layers', 'collides', 'licence'];
   const bad = Object.keys(set).filter((k) => !KEYS.includes(k));
   if (bad.length) throw new Error(`set: ${bad.join(', ')} ${bad.length > 1 ? 'aren\'t settings' : 'isn\'t a setting'} here (${KEYS.join(', ')}; controls are rebound in the editor's Project Settings)`);
+  // every change tried first on a copy of the settings that writes nothing, so a refused key leaves game.json as it was
+  // (a key after a good one used to be refused with the good one already written)
+  await st.refresh?.();
+  const trial = new st.constructor({ game: st.game, input: st.state?.input ?? null, files: st.files, name: st.name, write: async () => {}, layerUses: st.layerUses });
+  await applySettings(trial, set, [], (fn) => fn());
+  if (set.licence !== undefined) await licenceRow(st, project, set.licence, { check: true });
   const proto = Object.getPrototypeOf(st);
   const marked = (fn) => { st.edit = (label, f) => proto.edit.call(st, `${label}${MARK}`, f); try { return fn(); } finally { delete st.edit; } };
   const steps = [];
+  await applySettings(st, set, steps, marked);
+  let reloaded;
+  if (steps.some((x) => /^Settings: .*behaviours/.test(x)) && changed?.behaviours) reloaded = await changed.behaviours();
+  let licence;
+  if (set.licence !== undefined) licence = await licenceRow(st, project, set.licence);
+  return { settings: view(), steps: steps.map((x) => `${x}${MARK}`), ...(licence ? { licence } : {}), ...(reloaded ? { behaviours: reloaded } : {}), undo: steps.length ? 'each step is one of the project settings\' own Undo (the editor\'s Project Settings panel), not the scene\'s' : undefined, note: GAME_NOTE };
+}
+
+/** Settings' changes on a ProjectSettings, in order, each through its own commands (`marked` labels them). */
+async function applySettings(st, set, steps, marked) {
   const game = Object.fromEntries(Object.entries(set).filter(([k]) => ['title', 'id', 'release', 'entry', 'scenes', 'behaviours'].includes(k)));
   if (Object.keys(game).length) {
     const label = `Settings: ${Object.keys(game).join(', ')}`;
@@ -442,9 +502,6 @@ async function settingsOp(st, set, project) {
       }
     }
   }
-  let licence;
-  if (set.licence !== undefined) licence = await licenceRow(st, project, set.licence);
-  return { settings: view(), steps: steps.map((x) => `${x}${MARK}`), ...(licence ? { licence } : {}), undo: steps.length ? 'each step is one of the project settings\' own Undo (the editor\'s Project Settings panel), not the scene\'s' : undefined, note: GAME_NOTE };
 }
 
 /**
@@ -452,13 +509,14 @@ async function settingsOp(st, set, project) {
  * has none. Added after the table's last row, written at once with the settings' writer; it is a file, not a setting,
  * so it has no undo here (the row is removed in a text editor). Refused for a file a row already licenses.
  */
-async function licenceRow(st, project, { file, licence, source } = /** @type {any} */ ({})) {
+async function licenceRow(st, project, { file, licence, source } = /** @type {any} */ ({}), { check = false } = {}) {
   if (typeof file !== 'string' || typeof licence !== 'string' || !licence.trim()) throw new Error('set.licence: { file, licence, source }: a file of the project, its licence, and where it comes from');
   const src = await project();
   if (!src.files.includes(file)) throw new Error(`set.licence: ${file} isn't a file of the project (save it first)`);
   const has = src.files.includes(LICENCES_FILE), md = has ? new TextDecoder().decode(await src.read(LICENCES_FILE)) : '';
   const row = licenceOf(parseLicences(md), file);
   if (row) throw new Error(`set.licence: ${file} is licensed already, by the row \`${row.pattern}\` (${row.licence})`);
+  if (check) return null;
   const cell = (v) => String(v ?? '').replace(/\r?\n/g, ' ').replace(/\|/g, '\\|').trim();
   const line = `| \`${file}\` | ${cell(licence)} | ${cell(source) || '(not given)'} |`;
   const lines = md.split('\n'), last = lines.findLastIndex((l) => /^\|/.test(l));

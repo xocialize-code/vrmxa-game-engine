@@ -316,7 +316,7 @@ export class EditorHost {
     if (this.session?.mode === 'playing') this.stop();
     this.busy++; this.changed();
     try {
-      const doc = { ...parse(await this.project.text(from)), id: ref.split('/').pop().replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-') };
+      const doc = { ...parse(await this.project.text(from)), id: ref.replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-') }; // as newScene names one
       await this.loadSet(doc);
       const prefabs = await this.project.prefabs(this.setScene ? composeSequence(doc, this.setScene.doc) : doc);
       this.session = new EditorSession({ registry, doc, prefabs, path: ref });

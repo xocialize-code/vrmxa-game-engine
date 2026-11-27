@@ -237,6 +237,14 @@ from shorter `sequence` and `brain` descriptions.
 | `game op=open` | `game` | Opens another scene of the project, or a new one (`from`: a copy of another, unsaved until saved). Refused over unsaved changes |
 | `game op=new` | `game` | Lists the templates (`content/templates`), or makes a project from one: headless in `--projects/<game id>` (`tools/new-project.mjs`'s `makeProject`), in the editor through New Project (the shell's folder panel). The project opens on its entry scene, with its own behaviours declared in place of the last project's |
 
+**Only an agent's ops.** `edit` runs `add`, `set`, `remove`, `reparent`, `setDoc` and the asset ops as
+`@vrmxg/scene`'s editor has them, plus the commands above. It refuses `batch`, `setConnection`, `reconnectAt`,
+`restore`, `renameNode` and `prefab`, which would get round the checks. A `set` on `behaviours…` is refused (use the
+behaviour op). A node added with behaviours gets each one through the behaviour op. The node tools (`add_node`, `set`,
+`remove_node`, `reparent`) are one-op batches on the same path. `game op=settings` tries the whole change on a copy
+first, so a refused key writes nothing. Headless, a new `behaviours` module is read and declared at once. The editor
+reads it when the project opens.
+
 **Undo and the mark.**
 - A batch (`edit`) is one undo step, all or nothing: `EditorSession.compose` folds the steps its commands make, and a
   command that throws undoes the ones before it.

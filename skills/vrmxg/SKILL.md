@@ -50,7 +50,8 @@ Every tool answers with compact JSON or an error you can act on. Read before you
    `{"op":"behaviour","id":"zone","use":"scoreZone","params":{"by":2}}` attaches it if the node hasn't it and sets
    its params; `"params":{"by":null}` puts one back to its default; `"remove":true` takes it off, with the
    connections only it made possible. `{"op":"disconnect","index":2}` (or `from`, `signal`, `to`, `call` when one
-   matches) removes a connection. Creator: `command {command, args}`.
+   matches) removes a connection. `set` doesn't reach `behaviours` (use the behaviour op), and `add_node`'s
+  behaviours are checked the same way. Creator: `command {command, args}`.
 4. **Check.** `validate` for the scene, `game op=validate` for the whole project, `render` or `screenshot` for a frame.
 
 ## Rules that save round trips

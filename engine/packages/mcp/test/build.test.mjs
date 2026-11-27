@@ -199,6 +199,7 @@ test('scenes: open a new one (empty, or a copy of another), refused over unsaved
   assert.deepEqual(v.game.scenes, ['level-2.vrmxs', 'level.vrmxs']);
   // an empty new one, and back to one that exists; a path that isn't a scene's is refused
   assert.equal((await call('game', { op: 'open', scene: 'rooms/empty.vrmxs' })).nodes, 1);
+  assert.equal(t.doc.id, 'rooms-empty', 'named as the editor\'s New Scene names it');
   assert.equal((await call('game', { op: 'open', scene: 'level.vrmxs' })).new, false);
   assert.equal(t.doc.nodes.find((n) => n.id === 'lamp').props.intensity, 2);
   for (const scene of ['../outside.vrmxs', 'level.json', '.hidden.vrmxs']) assert.ok((await t.call('game', { op: 'open', scene })).isError, scene);
@@ -269,6 +270,72 @@ test('prefabs load when an edit places one the scene didn\'t use: validate, the 
   await call('connect', { from: 'gate', signal: 'bodyEntered', to: 'door-1/hinge', call: 'open' });
 });
 
+test('a prefab placed and connected to in one batch (review of PR #67): the trial finds the prefab the session would', async () => {
+  const { dir, t, call } = await open('prefab-batch');
+  for (const f of ['prefabs/door.vrmxs', 'props/door-frame.glb', 'props/door-panel.glb']) { fs.mkdirSync(path.dirname(path.join(dir, f)), { recursive: true }); fs.copyFileSync(path.join(sample, f), path.join(dir, f)); }
+  await call('edit', { label: 'A door that opens', ops: [
+    { op: 'addAsset', asset: { id: 'door', type: 'vrmxs', ref: 'prefabs/door.vrmxs' } },
+    { op: 'add', node: { id: 'door-1', type: 'Instance', parent: 'root', asset: 'door' } },
+    { op: 'connect', from: 'gate', signal: 'bodyEntered', to: 'door-1/hinge', call: 'open' },
+  ] });
+  assert.ok(t.doc.connections.some((c) => c.to === 'door-1/hinge'));
+  assert.equal(t.session.history().undo, 'A door that opens (MCP)');
+});
+
+test('edit runs only an agent\'s ops (review of PR #67): no way round the behaviour and connection checks', async () => {
+  const { t, call } = await open('ops');
+  const before = t.session.text();
+  for (const [op, why] of [
+    [{ op: 'batch', ops: [{ op: 'connect', from: 'zone', signal: 'nope', to: 'lamp', call: 'hide' }] }, /"batch" isn't an agent's op: edit is the batch/],
+    [{ op: 'setConnection', index: 0, connection: { from: 'gate', signal: 'nope', to: 'lamp', call: 'hide' } }, /"setConnection" isn't an agent's op/],
+    [{ op: 'reconnectAt', index: 0, connection: {} }, /"reconnectAt" isn't an agent's op/],
+    [{ op: 'restore', index: 0, node: { id: 'x', type: 'NoSuchType' } }, /"restore" isn't an agent's op/],
+    [{ op: 'renameNode', id: 'lamp', to: 'light' }, /"renameNode" isn't an agent's op: a node's id is changed in the editor's inspector/],
+    [{ op: 'prefab', ref: 'x', doc: {} }, /"prefab" isn't an agent's op/],
+    [{ op: 'explode' }, /unknown op "explode"/],
+    [{ op: 'set', id: 'zone', path: 'behaviours', value: [{ use: 'scoreZone', amount: 3 }] }, /behaviours are set with \{op:"behaviour"/],
+    [{ op: 'set', id: 'zone', path: 'behaviours.0.target', value: 'nobody' }, /behaviours are set with/],
+    [{ op: 'add', node: { id: 'z2', type: 'Area', parent: 'root', behaviours: [{ use: 'scoreZone', amount: 3 }] } }, /scoreZone has no param "amount"/],
+    [{ op: 'add', node: { id: 'z2', type: 'Area', parent: 'root', behaviours: [{ use: 'scoreZone', target: 'nobody' }] } }, /must name a node of this scene; "nobody" isn't one/],
+    [{ op: 'add', node: { id: 'z2', type: 'Area', parent: 'root', behaviours: [{ use: 'blink' }] } }, /no behaviour "blink"/],
+    [{ op: 'disconnect' }, /disconnect: index .*or its ends/],
+  ]) {
+    const r = await t.call('edit', { ops: [op] });
+    assert.ok(r.isError, JSON.stringify(op)); assert.match(r.text, why);
+    assert.equal(t.session.text(), before);
+  }
+  const viaSet = await t.call('set', { id: 'zone', path: 'behaviours', value: [{ use: 'scoreZone', amount: 3 }] });
+  assert.ok(viaSet.isError); assert.match(viaSet.text, /behaviours are set with/);
+  const viaAdd = await t.call('add_node', { node: { id: 'z2', type: 'Area', parent: 'root', behaviours: [{ use: 'scoreZone', amount: 3 }] } });
+  assert.ok(viaAdd.isError); assert.equal(t.session.text(), before);
+  // a node added with good behaviours: one step, each param checked, the step named for the node
+  assert.equal(await call('add_node', { node: { id: 'z2', type: 'Area', parent: 'root', behaviours: [{ use: 'scoreZone', by: 3, target: 'lamp' }] } }), 'added z2');
+  assert.deepEqual(t.doc.nodes.find((n) => n.id === 'z2').behaviours, [{ use: 'scoreZone', by: 3, target: 'lamp' }]);
+  assert.equal(t.session.history().undo, 'Add z2 (MCP)');
+  // an edit that changes nothing says so, and makes no step
+  const d = t.session.editor.peek().undoDepth;
+  assert.equal(await call('edit', { ops: [{ op: 'behaviour', id: 'z2', use: 'scoreZone', params: { by: 3 } }] }), 'the edit changed nothing: no undo step');
+  assert.equal(t.session.editor.peek().undoDepth, d);
+});
+
+test('settings: a refused key leaves game.json as it was, whatever came before it (review of PR #67); a new behaviours module is read at once', async () => {
+  const { dir, t, call } = await open('settings-whole');
+  const file = () => fs.readFileSync(path.join(dir, 'game.json'), 'utf8'), start = file();
+  for (const [set, why] of [
+    [{ title: 'Changed', layers: 'x' }, /set\.layers: the layers' names/],
+    [{ layers: ['default', 'props'], collides: { nope: [] } }, /set\.collides\.nope: a layer/],
+    [{ title: 'Changed', licence: { file: 'nothing.txt', licence: 'CC0-1.0' } }, /nothing\.txt isn't a file of the project/],
+  ]) { const r = await t.call('game', { op: 'settings', set }); assert.ok(r.isError, JSON.stringify(set)); assert.match(r.text, why); assert.equal(file(), start); }
+  assert.equal((await t.target.settings()).history().undo, null, 'no step either');
+  // headless reads a new behaviours module at once: its behaviours attach without a restart
+  fs.writeFileSync(path.join(dir, 'more.js'), `import { Behaviour } from '@vrmxg/core';\nexport class glow extends Behaviour {\n  static describe = { description: 'Glows.', params: { level: { type: 'number', minimum: 0, default: 1 } } };\n  getState() { return null; }\n}\n`);
+  const r = await call('game', { op: 'settings', set: { behaviours: 'more.js' } });
+  assert.deepEqual(r.behaviours, { module: 'more.js', declared: ['glow'] });
+  await call('edit', { ops: [{ op: 'behaviour', id: 'lamp', use: 'glow', params: { level: 2 } }] });
+  assert.deepEqual(t.doc.nodes.find((n) => n.id === 'lamp').behaviours, [{ use: 'glow', level: 2 }]);
+  assert.match((await t.call('edit', { ops: [{ op: 'behaviour', id: 'zone', use: 'scoreZone' }] })).text, /no behaviour "scoreZone"/, 'the old module\'s are gone');
+});
+
 // ---------------------------------------------------------------- validate (documents, no server)
 
 const files = (o) => ({ files: Object.keys(o).sort(), read: async (ref) => { if (!(ref in o)) throw new Error(`no ${ref}`); return new TextEncoder().encode(o[ref]); } });
@@ -310,12 +377,14 @@ test('validate, AB-T-0641: an optional goal nothing completes is a note; a goal 
     goal('typo', at('counters.pionts')),
     goal('stars', at('counters.stars')),
     goal('hint', null, { optional: true }),
+    goal('scored', at('counters.pionts')), // the review's case: its key is a signal's name in the module
+    goal('points-goal', at('counters.pionts'), { key: 'points' }), // and this one's a counter's
   ]);
   const src = fs.readFileSync(path.join(fixture, 'behaviours.js'), 'utf8');
   const p = (code) => files({ 'game.json': game, 'level.vrmxs': level, 'behaviours.js': code, 'LICENCES.md': LIC(['game.json', 'level.vrmxs', 'behaviours.js', 'LICENCES.md']) });
   const v = await validateGame(p(src), { registry: reg, behaviours: { ref: 'behaviours.js', names: ['scoreZone', 'blink'], problems: [] } });
   const goals = (list) => list.filter((x) => x.check === 'goal').map((x) => x.node);
-  assert.deepEqual(goals(v.problems), ['typo', 'stars']);
+  assert.deepEqual(goals(v.problems), ['typo', 'stars', 'scored', 'points-goal']);
   assert.match(v.problems.find((x) => x.node === 'typo').message, /counters\.pionts never changes.*The project's behaviours use the game service, but none of them is given, or names, what it reads/);
   assert.deepEqual(goals(v.warnings), ['score']);
   assert.match(v.warnings.find((x) => x.node === 'score').message, /Code may: the project behaviour scoreZone on "zone" \(level\.vrmxs\) has counter "points" \(its default\)/);
@@ -326,7 +395,10 @@ test('validate, AB-T-0641: an optional goal nothing completes is a note; a goal 
   assert.match(v2.warnings.find((x) => x.node === 'stars').message, /Code may: behaviours\.js names "stars"/);
   const quiet = src.replace("this.tree.services.get('game')?.add(this.params.counter ?? 'points', by);", '');
   const v3 = await validateGame(p(quiet), { registry: reg });
-  assert.deepEqual(goals(v3.problems), ['score', 'typo', 'stars']);
+  assert.deepEqual(goals(v3.problems), ['score', 'typo', 'stars', 'scored', 'points-goal']);
+  // a goal the code completes by name is reached, whatever its condition
+  const v4 = await validateGame(p(`${src}\nexport const finish = (game) => game.completeGoal('typo');\n`), { registry: reg });
+  assert.match(v4.warnings.find((x) => x.node === 'typo').message, /Code may: behaviours\.js completes "typo" by name/);
   assert.deepEqual(goals(v3.notes), ['hint'], 'an optional goal is a note either way');
 });
 
