@@ -211,3 +211,66 @@ slots, a clamped start, a read value's default); no `game.json`; a scene outside
 (each one edit), validated, saved and exported it: 17 calls, none failed
 (`apps/editor-mac/docs/hand-test/results/mcp-editor-session-m5.json`). Its two steps walk back and forth in the editor's
 Undo, to the opened hash and back to the agent's.
+
+## Building games (M6 W8, AB-T-0649)
+
+```sh
+node engine/packages/mcp/src/server.js <project-root> <scene.vrmxs> [--builds <folder>] [--projects <folder>]
+```
+
+An agent can now build a game from nothing: start a project from a template, open and make scenes, attach behaviours
+with their params, wire connections, set the project's settings and export. Nothing new in the tool list: the ops fold
+into `edit`, `connect` and `game`, and the list got smaller. Headless: 21 tools at about 1,958 tokens (it was 1,986,
+under the 2,000 the test holds it to). The editor: 22 tools at about 2,087 (it was 2,116, under 2,200). The room came
+from `add_node`'s copy of the 28-type enum (`describe` keeps it, and an unknown type is refused with the list), and
+from shorter `sequence` and `brain` descriptions.
+
+**The editor's own commands, in both modes.** The headless target now edits through `@vrmxg/editor-core`'s
+`EditorSession`, the class the editor uses. So both modes run the same checks, and nothing writes documents directly:
+
+| Op | Where | What |
+|---|---|---|
+| `{op:"behaviour", id, use, params, remove}` | `edit` | Attaches `use` (the engine's or the project's, declared by its static `describe`) if the node hasn't it, then sets each param (`null` puts one back to its default), or removes it with the connections only it made possible: `addBehaviour`, `setBehaviourParam`, `removeBehaviour`. Each param is checked against its schema, an unknown one is refused, and a node reference must name a node of the scene. The behaviour must attach to the node's type |
+| `connect`, `{op:"connect"}` | tool, `edit` | `EditorSession.connect`, as the inspector's Connections panel checks it: the sender's signals (its type's and its behaviours'), the target's actions, and each argument against the action's schema |
+| `{op:"disconnect", index}` | `edit` | Removes a connection by index, or by `from`/`signal`/`to`/`call` when exactly one matches (several matching are listed with their indexes) |
+| `game op=settings` | `game` | `game.json` as Project Settings shows it. With `set`, the panel's own `ProjectSettings` changes it: `title`, `id`, `release`, `entry`, `scenes`, `behaviours` (one step), `layers` (one step; a layer a node is on can't go) and `collides` (one step per pair). Each change is checked as an export checks it and written at once. `set.licence: {file, licence, source}` adds a `LICENCES.md` row (a file, so it has no undo) |
+| `game op=open` | `game` | Opens another scene of the project, or a new one (`from`: a copy of another, unsaved until saved). Refused over unsaved changes |
+| `game op=new` | `game` | Lists the templates (`content/templates`), or makes a project from one: headless in `--projects/<game id>` (`tools/new-project.mjs`'s `makeProject`), in the editor through New Project (the shell's folder panel). The project opens on its entry scene, with its own behaviours declared in place of the last project's |
+
+**Undo and the mark.**
+- A batch (`edit`) is one undo step, all or nothing: `EditorSession.compose` folds the steps its commands make, and a
+  command that throws undoes the ones before it.
+- Every step is marked " (MCP)" in the editor's Undo. Session commands are marked through `asAgent`, which puts the
+  mark on the session's own `run` for the call, so `this.run` inside `addBehaviour` gets it too.
+- Settings changes are steps of the Project Settings undo, which `App.vue` keeps one of per project. MCP and the panel
+  share that history. MCP's `undo` acts on the scene.
+
+**Validate (`game op=validate`).**
+- **The project's behaviours.** The target reports its behaviours module: the editor's loaded module, or headless,
+  game.json's `behaviours` (else `behaviours.js`) when `--behaviours` isn't given. A behaviour neither the engine nor
+  the module has is a problem on each node that uses it. One the module exports with no `describe` is a warning. A
+  module that didn't load or declare is one problem on its file. A connection from a behaviour's signal is checked by
+  the scene schema.
+- **AB-T-0641.** An optional goal that nothing completes is a `notes` entry ("a label only"), never a problem. A goal
+  nothing in the scenes completes is a problem, unless code could reach it, which makes it a warning that says how:
+  - a project behaviour in a game scene is given, as a param value or its declared default, the goal's key or a name
+    its condition reads (the Morning Rush's `serve`: `tableZone` on `table-1` has `served` "served");
+  - or the module's code names it as a string.
+  Both need the module to use the game service. A misspelled key is a problem even then.
+
+**Checked.**
+- `test/build.test.mjs`, on copies of `test/fixtures/build-game`, a small game whose `scoreZone` keys the game state
+  by a param, as `tableZone` does. It covers each op:
+  - behaviours attached, refused by schema, reset and removed with their connections;
+  - connections checked, and disconnected by index and by ends;
+  - a batch as one step, and a failed batch rolling back with no redo left over;
+  - settings set, refused, written as the editor writes them, and undone by the panel's history, with the in-use layer
+    guard on the undo too;
+  - a new level copied, licensed, named in the game and validated;
+  - a project made from the `level` template with `--projects` and validated, and none made without it;
+  - validate's behaviour checks;
+  - AB-T-0641 on hand-made documents (a misspelled counter is a problem, a param-keyed one a warning, an optional goal
+    a note) and on the Morning Rush (`serve` a warning naming `tableZone`, `press-start` a note).
+- `test/mcp.test.mjs`'s editor-mode test drives a stand-in editor on an `EditorSession` through the bridge, and reads
+  each behaviour and connection step back marked (MCP).
+- `editor-core`'s `wiring.test.mjs` checks `compose` itself.

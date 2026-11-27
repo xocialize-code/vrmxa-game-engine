@@ -16,7 +16,7 @@ From a checkout of the engine, `vrmxg-mcp` is `node engine/packages/mcp/src/serv
 
 | Mode | Start | Works on |
 |---|---|---|
-| Headless | `vrmxg-mcp <project> <scene.vrmxs> [--behaviours behaviours.js] [--vrmxa-core <dir>] [--builds <dir>] [--runtime <dir>]` | One scene file, edited with undo, and a headless engine in Node |
+| Headless | `vrmxg-mcp <project> <scene.vrmxs> [--behaviours behaviours.js] [--vrmxa-core <dir>] [--builds <dir>] [--runtime <dir>] [--projects <dir>]` | One scene of a project, edited with undo (the editor's own commands), and a headless engine in Node |
 | Editor | `vrmxg-mcp --editor [--port 5183]` | The scene open in the VRMXG editor: its Undo, its play world, its view |
 | Creator | `vrmxg-mcp --creator [--port 5184]` | The short open in the VRMXG creator: script, cast, voices, cameras, render queue |
 
@@ -25,10 +25,12 @@ claude mcp add vrmxg-editor -- node "$PWD/engine/packages/mcp/src/server.js" --e
 claude mcp add vrmxg-creator -- node "$PWD/engine/packages/mcp/src/server.js" --creator
 ```
 
-- Paths after the project (`--behaviours`, `--vrmxa-core`) are relative to it. `.vrmxa` characters need `--vrmxa-core`
-  (the avatar studio's library).
-- `--builds` is where `game op=export` writes builds; without it an export is checked and hashed, not written. Ask the
-  person where builds go rather than choosing.
+- Paths after the project (`--behaviours`, `--vrmxa-core`) are relative to it. Without `--behaviours`, the project's
+  own behaviours are the module `game.json` names (else `behaviours.js`), as the editor loads them. `.vrmxa`
+  characters need `--vrmxa-core` (the avatar studio's library).
+- `--builds` is where `game op=export` writes builds; without it an export is checked and hashed, not written.
+  `--projects` is where `game op=new` makes projects; without it none is made. Ask the person where builds and
+  projects go rather than choosing. In the editor, both are the person's folder panel.
 - The editor and creator connect to the server (127.0.0.1 only). The Mac apps do by default; in a browser add
   `?mcp=<port>` to the app's address. One app has the link at a time. "No editor is connected" means the app isn't
   open or is polling another port.
@@ -44,14 +46,24 @@ Every tool answers with compact JSON or an error you can act on. Read before you
    gives one command's argument schema. Don't guess a prop or an argument: the schema is the truth, and an unknown
    one is refused.
 3. **Act.** Scene: `add_node`, `set` (a dotted path such as `props.focalLength`), `remove_node`, `reparent`,
-   `connect` (a signal to an action), or `edit` with several ops. Creator: `command {command, args}`.
+   `connect` (a signal to an action), or `edit` with several ops. Behaviours are `edit` ops:
+   `{"op":"behaviour","id":"zone","use":"scoreZone","params":{"by":2}}` attaches it if the node hasn't it and sets
+   its params; `"params":{"by":null}` puts one back to its default; `"remove":true` takes it off, with the
+   connections only it made possible. `{"op":"disconnect","index":2}` (or `from`, `signal`, `to`, `call` when one
+   matches) removes a connection. Creator: `command {command, args}`.
 4. **Check.** `validate` for the scene, `game op=validate` for the whole project, `render` or `screenshot` for a frame.
 
 ## Rules that save round trips
 
 - **One edit is one undo step**, on the app's own Undo, shared with the person, labelled "… (MCP)". To make several
-  changes one step, use `edit` with `ops` (add, set, remove, reparent, connect, setDoc) and a `label`: all apply or
-  none do. `undo` takes back the last step, whoever made it, so don't undo what you didn't do unless asked.
+  changes one step, use `edit` with `ops` (add, set, remove, reparent, connect, disconnect, behaviour, setDoc) and a
+  `label`: all apply or none do. `undo` takes back the last step, whoever made it, so don't undo what you didn't do
+  unless asked.
+- **Behaviours and connections are checked as the editor's inspector checks them.** A param against its schema (an
+  unknown one is refused), a node reference must name a node of the scene, a behaviour attaches only to the types
+  its `on` names, a connection's signal must be one the sender has (its type's or a behaviour's), the action one the
+  target has, and each argument must fit. A project behaviour is attachable once it declares itself (a static
+  `describe` in its module); `describe` lists them, marked `project`.
 - **Read a document value before replacing it.** Sequences and settings are edited with `setDoc` on a path
   (`sequence.tracks.4`, `settings.personas`); `sequence {path}` returns what is there now.
 - **Validate before saving.** `save` refuses a scene with errors and says which.
@@ -61,8 +73,9 @@ Every tool answers with compact JSON or an error you can act on. Read before you
 - **The engine is deterministic.** `engine_step` replays; a sequence frame or render returns a world hash. Compare
   hashes instead of judging pictures. In the editor, `engine_step` while playing runs in real time; pause first to
   step at once.
-- **Check what is open.** The editor's tools act on the open scene, the creator's on the open short. If it isn't the
-  one the task names, say so and stop: there is no tool to open another.
+- **Check what is open.** The editor's tools act on the open scene, the creator's on the open short. `game op=open
+  {scene}` opens another scene of the project (save first: it refuses over unsaved changes). The creator has no tool
+  to open another short: if it isn't the one the task names, say so and stop.
 
 ## Games
 
@@ -87,10 +100,23 @@ files) and, in its scenes, rules as nodes:
 - `game` (op `rules`) shows every scene's rules; `game op=state` the running game; `game op=validate` the project:
   bodies with no collider, files with no `LICENCES.md` row, references to missing files, goals nothing can reach, and
   each scene's rules. Each problem names its node or file.
+- **A new level** is a new scene: `game op=open {scene: "level-2.vrmxs", from: "level.vrmxs"}` starts it as a copy
+  of another (without `from`, empty), unsaved until `save`. Then name it in the game (`game op=settings` with
+  `set: {scenes: [...]}`) and wire a `changeScene` to it from a scene that goes there.
+- `game op=settings` reads `game.json` as the editor's Project Settings shows it; with `set` it changes `title`,
+  `id`, `release`, `entry`, `scenes`, `behaviours`, `layers` and `collides` (`{"props": ["props"]}`: the layers one
+  collides with), each change one step of the settings' own Undo, written at once. A layer a node is on can't be
+  removed. `set: {licence: {file, licence, source}}` adds a `LICENCES.md` row for a file you made.
+- `game op=new` lists the project templates; with `template` and `title` it makes a project (headless: in
+  `--projects`; the editor: where the person picks) and opens its entry scene.
+- `game op=validate` also checks the project's behaviours (one nobody has is a problem, one with no `describe` a
+  warning). A goal nothing in the scenes completes is a problem, unless code could reach it (a project behaviour is
+  given the key it reads, or the code names it): then a warning saying how. An optional goal nothing completes is a
+  note: a label only.
 - `game op=export` builds the game through the exporter. It refuses unsaved scenes (save first) and passes the
   exporter's refusal back whole: the file it names, and the line to add (an `ignore` entry in `game.json` for a string
-  that only looks like a file). A missing licence row is the person's to write, with the real licence: report it,
-  don't invent one.
+  that only looks like a file). A licence row says the real licence: write one only with the licence the person
+  gives you, and otherwise report it; don't invent one.
 
 ## Shorts in the creator
 

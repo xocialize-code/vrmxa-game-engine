@@ -4,6 +4,7 @@
 //   vrmxg-mcp <project-root> <scene.vrmxs> [--behaviours <module.js>] [--vrmxa-core <package dir>] [--seed N]
 //                                          [--builds <folder>] [--runtime <folder>]   where `game op=export` writes builds
 //                                          (without --builds an export is checked, not written), and the runtime it uses
+//                                          [--projects <folder>]   where `game op=new` makes projects (M6 W8)
 //   vrmxg-mcp --editor [--port 5183]
 //   vrmxg-mcp --creator [--port 5184]      the short open in the VRMXG creator (M4 W11)
 //
@@ -41,14 +42,16 @@ if (argv.includes('--creator')) {
 } else {
   const positional = argv.filter((a, i) => !a.startsWith('--') && !argv[i - 1]?.startsWith('--'));
   const [root, scene] = positional;
-  if (!root || !scene) { console.error('usage: vrmxg-mcp <project-root> <scene.vrmxs> [--behaviours m.js] [--vrmxa-core dir] [--seed N] [--builds dir] [--runtime dir] | vrmxg-mcp --editor [--port N] | vrmxg-mcp --creator [--port N]'); process.exit(2); }
+  if (!root || !scene) { console.error('usage: vrmxg-mcp <project-root> <scene.vrmxs> [--behaviours m.js] [--vrmxa-core dir] [--seed N] [--builds dir] [--runtime dir] [--projects dir] | vrmxg-mcp --editor [--port N] | vrmxg-mcp --creator [--port N]'); process.exit(2); }
   const { Project } = await import('./project.js');
   const { createTools } = await import('./headless.js');
   const project = new Project(root, { behaviours: opt('--behaviours'), vrmxaCore: opt('--vrmxa-core'), seed: opt('--seed') ? Number(opt('--seed')) : 1 });
   // the project's own behaviours declare themselves (M6 W0) beside the engine's, before the tools are listed
-  const registry = m0Registry();
-  declareProjectBehaviours(registry, await project.behaviours());
-  ({ tools, call } = createTools({ registry, project, scene, builds: opt('--builds') ?? null, runtime: opt('--runtime') ?? null }));
+  // (game.json's module when --behaviours isn't given, M6 W8); a module that won't load or declare is game op=validate's
+  // to report, as the editor shows it, and the scenes are edited without it
+  const registry = m0Registry(), behaviourProblems = [];
+  try { declareProjectBehaviours(registry, await project.behaviours()); } catch (e) { registry.project(new Map()); behaviourProblems.push(String(e?.message ?? e)); console.error(`vrmxg-mcp: the project's behaviours: ${e?.message ?? e}`); }
+  ({ tools, call } = createTools({ registry, project, scene, builds: opt('--builds') ?? null, runtime: opt('--runtime') ?? null, projects: opt('--projects') ?? null, behaviourProblems }));
 }
 
 instructions ??= (await import('./tools.js')).INSTRUCTIONS;

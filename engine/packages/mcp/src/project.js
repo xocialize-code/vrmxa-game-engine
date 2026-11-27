@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parse } from '@vrmxg/scene';
+import { behavioursImporter } from '@vrmxg/bundle/node';
 
 export class Project {
   /**
@@ -15,10 +16,26 @@ export class Project {
    */
   constructor(root, { behaviours, vrmxaCore, seed = 1 } = {}) {
     this.root = path.resolve(root);
+    // without --behaviours, the module the game names (game.json's "behaviours"), else behaviours.js at the root: the
+    // module the editor loads, play in place runs and an export ships (M6 W8), so validate knows the project's own
+    behaviours ??= this.gameBehaviours();
     this.behavioursPath = behaviours ? path.resolve(this.root, behaviours) : null;
     this.vrmxaCorePath = vrmxaCore ? path.resolve(this.root, vrmxaCore) : null;
     this.seed = seed;
+    /** @type {Promise<Map<string, any>> | undefined} the behaviours, once read */ this._behaviours = undefined;
   }
+
+  /** The behaviours module the editor would load: game.json's "behaviours" when it names a file, else behaviours.js, else null. */
+  gameBehaviours() {
+    try {
+      const ref = JSON.parse(fs.readFileSync(path.join(this.root, 'game.json'), 'utf8'))?.behaviours;
+      if (typeof ref === 'string' && fs.existsSync(this.file(ref))) return ref;
+    } catch { /* no game.json, or one that doesn't parse: game op=validate says so */ }
+    return fs.existsSync(path.join(this.root, 'behaviours.js')) ? 'behaviours.js' : null;
+  }
+
+  /** The behaviours module's path under the root, or null. */
+  get behavioursRef() { return this.behavioursPath ? path.relative(this.root, this.behavioursPath).split(path.sep).join('/') : null; }
 
   /** A path under the root (refusing ones that leave it). */
   file(ref) {
@@ -41,9 +58,16 @@ export class Project {
     return map;
   }
 
-  async behaviours() {
+  /** The project's behaviours, read once (as a plain import() was: Node keeps a module it has loaded). */
+  behaviours() { return (this._behaviours ??= this.loadBehaviours()); }
+
+  async loadBehaviours() {
     if (!this.behavioursPath) return new Map();
-    const mod = await import(pathToFileURL(this.behavioursPath).href);
+    // a module of the project's folder is imported as an export imports it (@vrmxg/bundle/node's behavioursImporter: its
+    // `@vrmxg/core` is the engine's wherever the folder is, as a project New Project made outside the repository needs);
+    // one named outside the folder (--behaviours elsewhere) plainly
+    const ref = this.behavioursRef;
+    const mod = ref && !ref.startsWith('../') ? await behavioursImporter(this.root)(ref) : await import(pathToFileURL(this.behavioursPath).href);
     const src = mod.default ?? mod.behaviours ?? mod;
     // Exports named as scenes name behaviours; anything that isn't a behaviour class is ignored.
     return new Map(src instanceof Map ? src : Object.entries(src).filter(([, v]) => typeof v === 'function' && typeof v.prototype?.getState === 'function'));

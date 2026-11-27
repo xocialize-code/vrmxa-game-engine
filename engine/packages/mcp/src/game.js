@@ -150,7 +150,7 @@ export function colliderProblems(scene, nodes, reg) {
  * with its signal) is taken to change. What it can't see at all is code: a behaviour that calls the game service
  * itself. `validateGame` makes such a goal a warning when the project's behaviours mention the service.
  * @param {Map<string, { nodes: any[], connections: any[] }>} scenes flattened, by name
- * @returns {Array<{ scene: string, node: string, key: string, why: string }>}
+ * @returns {Array<{ scene: string, node: string, key: string, why: string, optional: boolean, reads: string[] }>}
  */
 export function unreachableGoals(scenes) {
   const info = new Map(); // scene → its game nodes by key (checkpoints: every node per slot), its rules, the calls on each node
@@ -256,26 +256,45 @@ export function unreachableGoals(scenes) {
     if (reach.goals.has(key)) continue;
     const when = g.props?.when;
     if (when !== undefined && checkCondition(when).length) continue; // not a condition: the rules' own check says so
-    out.push({ scene, node: g.id, key, why: when === undefined ? 'it has no "when" condition and no connection calls its complete action' : `no connection calls its complete action, and its "when" can never hold (${[...new Set(why(when, scene))].join('; ') || 'as the game starts it doesn\'t, and nothing it reads changes'})` });
+    out.push({ scene, node: g.id, key, optional: g.props?.optional === true, reads: when === undefined ? [] : keysRead(when), why: when === undefined ? 'it has no "when" condition and no connection calls its complete action' : `no connection calls its complete action, and its "when" can never hold (${[...new Set(why(when, scene))].join('; ') || 'as the game starts it doesn\'t, and nothing it reads changes'})` });
   }
   return out;
 }
 
+/** The state keys a condition reads ("counters.served", "flags.tillClosed", "timers.clock.done"). */
+function keysRead(c, out = []) {
+  if (!c || typeof c !== 'object') return out;
+  if (c.test === 'all' || c.test === 'any') for (const x of c.of ?? []) keysRead(x, out);
+  else if (c.test === 'not') keysRead(c.of, out);
+  else if (typeof c.key === 'string' && !out.includes(c.key)) out.push(c.key);
+  return out;
+}
+
+/** The name code would use for a state key: a counter's, flag's, timer's or goal's key ("counters.served" → "served"). */
+const codeName = (key) => { const [head, k] = String(key).split('.'); return head === 'score' ? 'score' : ['counters', 'flags', 'timers', 'goals', 'checkpoints'].includes(head) ? k ?? null : null; };
+
 /**
- * Could the project's own code change the game state? True when its behaviours module, or a module that one imports,
- * mentions the game service by name (`services.get('game')`), or can't be read. False when the game has no behaviours.
+ * What the project's own code could do to the game state, read from its text (AB-T-0641). `mentions`: its behaviours
+ * module, or a module that one imports, names the game service (`services.get('game')`), or can't be read; false when
+ * the game has no behaviours. `literals`: every string literal in those modules, the names code can use by itself
+ * (`game.add('served', 1)`, a describe's default `'served'`).
  * @param {any} game @param {{ files: string[], read: (ref: string) => Promise<Uint8Array> }} project
+ * @returns {Promise<{ mentions: boolean, literals: Map<string, string>, unreadable: boolean }>} literals: name → the module that has it
  */
-async function codeMayChangeState(game, project) {
-  if (!game?.behaviours) return false;
+async function codeFacts(game, project) {
+  const literals = new Map();
+  if (!game?.behaviours) return { mentions: false, literals, unreadable: false };
   const seen = new Set(), queue = [game.behaviours];
+  let mentions = false;
   try {
     while (queue.length) {
       const ref = queue.shift();
       if (seen.has(ref) || seen.size > 200) continue;
       seen.add(ref);
       const src = text(await project.read(ref));
-      if (/['"`]game['"`]/.test(src)) return true;
+      if (/['"`]game['"`]/.test(src)) mentions = true;
+      const bare = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, ''); // comments' words aren't names code uses
+      for (const m of bare.matchAll(/'((?:[^'\\\n]|\\.)*)'|"((?:[^"\\\n]|\\.)*)"|`([^`$\\]*)`/g)) { const v = m[1] ?? m[2] ?? m[3]; if (v && !literals.has(v)) literals.set(v, ref); }
       for (const spec of moduleImports(src, ref)) {
         if (!/^\.{1,2}\//.test(spec)) continue;
         const parts = [...ref.split('/').slice(0, -1)];
@@ -283,8 +302,36 @@ async function codeMayChangeState(game, project) {
         queue.push(parts.join('/'));
       }
     }
-  } catch { return true; } // a module that can't be read or lexed: unknown, so it might
-  return false;
+  } catch { return { mentions: true, literals, unreadable: true }; } // a module that can't be read or lexed: unknown, so it might
+  return { mentions, literals, unreadable: false };
+}
+
+/**
+ * Where code could reach a stuck goal (AB-T-0641): the goal's own key (code completes a goal by name), or a name its
+ * condition reads, used by a project behaviour of the game's scenes as a param (its value there, or its declared
+ * default: `tableZone`'s `served`, which its code adds to), or written in the code as a string. → the first such path,
+ * as words, or null when there is none: then the goal is a problem whatever else the code does.
+ * @param {{ key: string, reads: string[] }} g @param {Map<string, { nodes: any[] }>} flat @param {any} reg
+ * @param {{ literals: Map<string, string>, unreadable: boolean }} code
+ */
+function codePath(g, flat, reg, code) {
+  if (code.unreadable) return 'its behaviours module couldn\'t be read';
+  const names = [...new Set([g.key, ...g.reads.map(codeName).filter(Boolean)])];
+  for (const [scene, w] of flat) {
+    for (const n of w.nodes) {
+      for (const b of n.behaviours ?? []) {
+        const d = reg.behaviours.get(b.use);
+        if (d?.source !== 'project') continue;
+        for (const [k, p] of Object.entries(d.params ?? {})) {
+          const v = Object.hasOwn(b, k) ? b[k] : p.schema?.default ?? p.default;
+          const hit = names.find((x) => v === x || (Array.isArray(v) && v.includes(x)));
+          if (hit !== undefined) return `the project behaviour ${b.use} on "${n.id}" (${scene}) has ${k} "${hit}"${Object.hasOwn(b, k) ? '' : ' (its default)'}`;
+        }
+      }
+    }
+  }
+  const lit = names.find((x) => code.literals.has(x));
+  return lit !== undefined ? `${code.literals.get(lit)} names "${lit}"` : null;
 }
 
 // ---------------------------------------------------------------- validate
@@ -298,12 +345,13 @@ async function codeMayChangeState(game, project) {
  *   goal       a goal nothing can complete
  *   reference, licence, export   what an export would refuse (@vrmxg/bundle's planBuild: the exporter's own checks)
  * @param {{ files: string[], read: (ref: string) => Promise<Uint8Array>, truncated?: boolean }} project
- * @param {{ open?: { ref: string | null, doc: any } | null, registry: any, unsaved?: boolean }} o
+ * @param {{ open?: { ref: string | null, doc: any } | null, registry: any, unsaved?: boolean, behaviours?: { ref: string | null, names: string[] | null, problems?: string[] } | null }} o
+ *   behaviours: the project's behaviours module as the target loaded it (its exports, and why it didn't load or declare)
  */
-export async function validateGame(project, { open = null, registry: reg, unsaved = false }) {
+export async function validateGame(project, { open = null, registry: reg, unsaved = false, behaviours = null }) {
   const src = withOpen(project, open);
   const { game, scenes, prefabs, problems } = await readGame(src, open?.ref ?? null);
-  const warnings = [];
+  const warnings = [], notes = [];
   const { check } = createValidator(reg);
   const flat = new Map();
   for (const [name, doc] of scenes) {
@@ -326,15 +374,20 @@ export async function validateGame(project, { open = null, registry: reg, unsave
     const c = colliderProblems(name, w.nodes, reg);
     problems.push(...c.problems); warnings.push(...c.warnings);
   }
+  if (behaviours) { const b = behaviourProblems(flat, reg, behaviours, game); problems.push(...b.problems); warnings.push(...b.warnings); }
   // goals: only when every scene could be read whole (a prefab that isn't there might hold the connection that does it)
+  // An optional goal (a label only: it never counts towards a win) that nothing completes is a note, never a problem
+  // (AB-T-0641). A goal code could reach is a warning naming how; one it couldn't is a problem, whatever else the code does.
   if (flat.size === scenes.size && scenes.size) {
     const stuck = unreachableGoals(flat);
-    const code = stuck.length ? await codeMayChangeState(game, src) : false;
+    const code = stuck.some((g) => !g.optional) ? await codeFacts(game, src) : null;
     for (const g of stuck) {
       if (ruled.has(`${g.scene}\0${g.node}`)) continue; // its rules problem says why: the scene wouldn't start
+      if (g.optional) { notes.push({ check: 'goal', scene: g.scene, node: g.node, message: `GameGoal "${g.node}" is optional, a label only: nothing in the game's scenes completes it (${g.why}), and it doesn't count towards a win` }); continue; }
       const fix = `Connect a signal to "${g.node}".complete, or to what its condition reads (describe GameGoal)`;
-      if (code) warnings.push({ check: 'goal', scene: g.scene, node: g.node, message: `GameGoal "${g.node}": nothing in the game's scenes can complete it: ${g.why}. The project's behaviours use the game service, and code isn't read here: if none of them does it, this goal can't be reached. ${fix}` });
-      else problems.push({ check: 'goal', scene: g.scene, node: g.node, message: `GameGoal "${g.node}": nothing can complete it: ${g.why}. ${fix}` });
+      const how = code?.mentions ? codePath(g, flat, reg, code) : null;
+      if (how) warnings.push({ check: 'goal', scene: g.scene, node: g.node, message: `GameGoal "${g.node}": no connection in the game's scenes completes it: ${g.why}. Code may: ${how}. Code isn't run here: if it doesn't, this goal can't be reached. ${fix}` });
+      else problems.push({ check: 'goal', scene: g.scene, node: g.node, message: `GameGoal "${g.node}": nothing can complete it: ${g.why}.${code?.mentions ? ' The project\'s behaviours use the game service, but none of them is given, or names, what it reads.' : ''} ${fix}` });
     }
   }
   // what an export would refuse: the exporter's own first half, on the same files
@@ -350,11 +403,39 @@ export async function validateGame(project, { open = null, registry: reg, unsave
   return {
     ok: problems.length === 0,
     game: game ? { id: game.id, entry: game.entry, scenes: game.scenes } : null,
-    problems, warnings,
+    problems, warnings, ...(notes.length ? { notes } : {}),
     ...(unsaved ? { unsaved: `${open?.ref} is checked as edited: save before export, which reads the project's saved files` } : {}),
-    checks: 'game document, scene schemas, rules (each scene and across scenes), colliders (a RigidBody with none), goals (one nothing can complete), references and licence rows (as an export checks them). Read from documents: code and what happens in play are not checked.',
+    checks: 'game document, scene schemas, rules (each scene and across scenes), colliders (a RigidBody with none), behaviours (each one the engine\'s or the project module\'s, declared), goals (one nothing can complete; code read for the names it uses, not run), references and licence rows (as an export checks them). What happens in play is not checked.',
     note: GAME_NOTE,
   };
+}
+
+/**
+ * The project's behaviours, as the game's scenes use them (M6 W8). A behaviour no one has (neither the engine nor the
+ * project's module) can't be built: a problem, on each node. One the module has but doesn't declare (no static
+ * describe) runs, but its params aren't checked and its signals can't be connected: a warning, once. A module that
+ * didn't load or declare: a problem on its file. Connections from a declared behaviour's signals are the scene
+ * schema's check (each scene above).
+ * @param {Map<string, { nodes: any[] }>} flat @param {any} reg
+ * @param {{ ref: string | null, names: string[] | null, problems?: string[] }} mod @param {any} game
+ */
+export function behaviourProblems(flat, reg, mod, game) {
+  const problems = [], warnings = [], file = mod.ref ?? game?.behaviours ?? GAME_FILE;
+  for (const m of mod.problems ?? []) problems.push({ check: 'behaviour', file, message: `the project's behaviours: ${m}` });
+  if (game?.behaviours && mod.ref && game.behaviours !== mod.ref) warnings.push({ check: 'behaviour', file: GAME_FILE, message: `${GAME_FILE} names ${game.behaviours} as the game's behaviours, and these were read from ${mod.ref}: an export ships ${game.behaviours}` });
+  const exported = new Set(mod.names ?? []), undeclared = new Set();
+  for (const [scene, w] of flat) {
+    for (const n of w.nodes) {
+      for (const b of n.behaviours ?? []) {
+        if (typeof b?.use !== 'string' || reg.behaviours.has(b.use)) continue;
+        if (mod.names && exported.has(b.use)) { undeclared.add(b.use); continue; }
+        if (!mod.names && (mod.problems ?? []).length) continue; // the module didn't load: its problem says so
+        problems.push({ check: 'behaviour', scene, node: n.id, file: scene, message: `"${n.id}" uses the behaviour ${b.use}, which neither the engine nor ${mod.ref ? `the project's ${mod.ref}` : 'the project (it has no behaviours module)'} has: a world can't be built with it. Name a behaviour describe lists${mod.ref ? `, or export ${b.use} from ${mod.ref}` : ''}` });
+      }
+    }
+  }
+  for (const u of undeclared) warnings.push({ check: 'behaviour', file, message: `${u} (in ${file}) has no static describe: it runs, but its params aren't checked and nothing can connect to its signals. Give it a describe (params, signals, state)` });
+  return { problems, warnings };
 }
 
 /** The node a scene validator message is about ("/nodes/3 …", "/connections/0 …"), as { node }, or nothing. */

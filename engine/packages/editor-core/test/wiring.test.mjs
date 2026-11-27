@@ -349,3 +349,35 @@ test('a game node\'s key: kept when another scene reads it (game state is shared
   s.setNodeId('spare', 'spare-2');
   assert.equal(s.node('spare-2').props?.key, undefined);
 });
+
+test('compose (M6 W8): several commands one undo step, all or nothing; without a label one step keeps its own', () => {
+  const s = level();
+  const before = s.text(), depth = () => s.editor.peek().undoDepth;
+  // a behaviour attached, a param, a connection from its signal: one step, undone and redone whole
+  s.compose('Wire a third zone', () => {
+    s.addNode('Area', { id: 'zone-x', parent: 'root' });
+    s.addBehaviour('zone-x', 'tableZone');
+    s.setBehaviourParam('zone-x', 'tableZone', 'points', 20);
+    s.connect({ from: 'zone-x', signal: 'served', to: 'rules', call: 'setFlag', args: { flag: 'x' } });
+  });
+  assert.equal(depth(), 1);
+  assert.equal(s.history().undo, 'Wire a third zone');
+  undoRedo(s, before);
+  // a throw undoes what ran before it, and leaves no step and nothing to redo
+  const mid = s.text();
+  assert.throws(() => s.compose('Broken', () => { s.addBehaviour('zone-x', 'wander'); }), /wander attaches to Character/);
+  assert.throws(() => s.compose('Broken', () => { s.setBehaviourParam('zone-x', 'tableZone', 'points', 30); s.connect({ from: 'zone-x', signal: 'nope', to: 'rules', call: 'win' }); }), /has no signal nope/);
+  assert.equal(s.text(), mid); assert.equal(depth(), 1); assert.equal(s.history().redo, null);
+  // no label: one step keeps its own name; several take the fallback; none makes none; nested folds into the outer
+  s.compose(null, () => s.setBehaviourParam('zone-x', 'tableZone', 'points', 5));
+  assert.equal(s.history().undo, 'Set zone-x.tableZone.points');
+  s.compose(null, () => { s.setBehaviourParam('zone-x', 'tableZone', 'points', 6); s.rename('zone-x', 'X'); }, '2 edits');
+  assert.equal(s.history().undo, '2 edits');
+  const d = depth();
+  s.compose('Nothing', () => {});
+  s.compose('Outer', () => { s.compose('Inner', () => s.rename('zone-x', 'Y')); s.rename('zone-x', 'Z'); });
+  assert.equal(depth(), d + 1); assert.equal(s.history().undo, 'Outer');
+  // steps that come back to where they began make none
+  s.compose('There and back', () => { s.rename('zone-x', 'W'); s.rename('zone-x', 'Z'); });
+  assert.equal(depth(), d + 1);
+});

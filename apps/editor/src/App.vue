@@ -142,7 +142,7 @@ onMounted(async () => {
   // MCP: on in the Mac app, or with ?mcp (=port, or =off) in a browser; vrmxg-mcp --editor listens on 127.0.0.1:5183
   const q = new URLSearchParams(location.search).get('mcp');
   if ((inShell && q !== 'off') || (q && q !== 'off')) {
-    const link = new McpLink(ed, { url: `http://127.0.0.1:${/^\d+$/.test(q ?? '') ? q : 5183}`, onChange: () => { ui.mcp = link.state === 'off' ? 'MCP: waiting for vrmxg-mcp --editor' : link.state === 'taken' ? 'MCP: another editor has the link' : `MCP ${link.state}${link.last ? ` · ${link.last}` : ''} · ${link.calls} calls`; } });
+    const link = new McpLink(ed, { url: `http://127.0.0.1:${/^\d+$/.test(q ?? '') ? q : 5183}`, hooks: { settings: projectSettings, newProject: newProjectForAgent }, onChange: () => { ui.mcp = link.state === 'off' ? 'MCP: waiting for vrmxg-mcp --editor' : link.state === 'taken' ? 'MCP: another editor has the link' : `MCP ${link.state}${link.last ? ` · ${link.last}` : ''} · ${link.calls} calls`; } });
     window.__mcp = link; link.onChange(); link.start();
   }
   loadPanels(); // the panels' sizes as last left (M5 W6)
@@ -191,20 +191,47 @@ const openRecent = (path) => act(async () => {
 // its own, written to game.json at once. While the panel is open, Undo and Redo (the menu, ⌘Z) are the panel's.
 const openSettings = () => act(async () => {
   if (sheet.asking || ui.mode !== 'editing' || !ed.project) return;
-  if (!ed.project.writable) throw new Error(`${ed.project.name} is read-only here: open a project folder to change its settings`);
   ui.newProject.open = false;
-  // the same project's settings again keep their undo history (closing the panel doesn't lose it; another project does)
-  if (kept?.project !== ed.project) {
-    kept = { project: ed.project, settings: await Settings.load(ed.project, {
-      onChange: () => { if (settings) ui.settings = settings.view(); },
-      layerUses: () => projectLayerUses(ed.project, ed.session ? { ref: ed.sceneRef, doc: ed.session.doc } : null), // a layer in use isn't renamed or removed
-    }) };
-  }
-  settings = kept.settings;
-  // the files and game.json as they are now: a scene saved since, or game.json changed by MCP or a text editor
+  const s = await projectSettings({ refresh: false });
+  settings = s;
+  // the files and game.json as they are now: a scene saved since, or game.json changed by a text editor
   try { await settings.refresh(); } catch (e) { settings.error = String(e?.message ?? e); }
   ui.settings = settings.view();
 });
+/**
+ * The open project's settings: one per project, kept while it is open, so the panel and MCP (M6 W8) share one undo
+ * history (closing the panel doesn't lose it; another project does). Each change refreshes the panel when it is open
+ * and the inspector's layer menus.
+ */
+async function projectSettings({ refresh = true } = {}) {
+  if (!ed.project) throw new Error('no project is open in the editor');
+  if (!ed.project.writable) throw new Error(`${ed.project.name} is read-only here: open a project folder to change its settings`);
+  if (kept?.project !== ed.project) {
+    /** @type {Settings | null} */ let s = null;
+    s = await Settings.load(ed.project, {
+      onChange: () => {
+        if (settings) ui.settings = settings.view();
+        if (s && kept?.settings === s) { const l = s.view().layers; ed.gameLayers = l.length ? [...l] : ['default']; } // the inspector's layer menus (M6 W1)
+      },
+      layerUses: () => projectLayerUses(ed.project, ed.session ? { ref: ed.sceneRef, doc: ed.session.doc } : null), // a layer in use isn't renamed or removed
+    });
+    kept = { project: ed.project, settings: s };
+  }
+  if (refresh) await kept.settings.refresh();
+  return kept.settings;
+}
+/** New Project for MCP (M6 W8): the sheet's own path, a template the editor ships, the shell's folder panel for where. */
+async function newProjectForAgent({ template, title, id }) {
+  if (sheet.asking || ui.mode !== 'editing') throw new Error('the editor is busy (a sheet is open, or it is playing)');
+  ui.newProject.open = false;
+  let p;
+  try { p = await newProjectFrom(template, { title, ...(id ? { id } : {}) }); } catch (e) {
+    if (e?.code === 'cancelled') throw new Error('New Project was cancelled in the folder panel: nothing was made');
+    throw e;
+  }
+  await switchProject(p, await entryScene(p));
+  return { project: p.name, title, template: template.id, files: p.files.length, open: ed.sceneRef, note: 'the editor has the new project open on its entry scene' };
+}
 function closeSettings() { settings = null; ui.settings = null; }
 const settingsPlan = (row, slot, binding) => settings.planRebind(row, slot, binding);
 async function settingsDo(fn) {
