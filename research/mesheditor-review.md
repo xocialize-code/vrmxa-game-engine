@@ -22,11 +22,12 @@ VRMXG could take. This is a reading of its source at one commit. Nothing was ins
   - Terrain heights are 8-bit.
   - Its undo is a stack of closures. Ours is document-level and covers MCP edits.
 - **Its agent layer is the opposite of ours.**
-  - It sends up to 53 function schemas on every request, roughly 25,000 to 28,000 tokens.
-  - One of its tools runs model-written JavaScript.
+  - By default it sends 20 core function schemas on every request, about 12,000 tokens. With every tool on it sends
+    53, roughly 25,000 to 28,000 tokens.
+  - One of its tools runs model-written JavaScript, and that tool is in the default set.
   - Our MCP lists hold 21 tools at about 1,958 tokens (22 at 2,087 in the editor).
   - A few rules from its skills are worth copying into ours.
-- **The code is clean Apache-2.0. The bundled assets are not.**
+- **The code is Apache-2.0, apart from two credits whose terms aren't confirmed. The bundled assets are not.**
   - The default font's metadata says CC BY-SA 3.0.
   - No source is recorded for the decal images or the demo models, and some models are named after Mario and GTA.
   - Take no assets.
@@ -74,7 +75,7 @@ Lines by area, roughly:
   - Ported files stay Apache-2.0 inside our MIT OR Apache-2.0 packages. The README lists them as it lists navcat and
     fdlibm.
 - **Two credits come with no licence text.**
-  - `reference/mesheditor/src/tools/textureUtils.ts:226`, `:1294` and `:1383` say "adapted from img2threejs". A GitHub
+  - `reference/mesheditor/src/tools/textureUtils.ts:226`, `:1294` and `:1383` say "adapted from img2threejs", and `:248`, `:638`, `:649` and `:1169` mention it too. A GitHub
     search finds an `img2threejs/img2threejs` repo marked Apache-2.0. I didn't confirm it is the source.
   - `reference/mesheditor/src/sdf/sdfPrimitives.ts:79` and `:119` credit Inigo Quilez's distance functions, with no
     licence named.
@@ -112,7 +113,7 @@ day; M is a few days. They are numbered as in the recommendations.
   - mesheditor makes no LOD chains and has no convex decomposition.
 - **What it would do for us.**
   - Our five TRELLIS props in `content/sample/props/` are 35,000 to 40,000 triangles each, counted from their GLBs.
-  - The PRD has meshopt at import and a `LOD` node, both P1.
+  - The PRD has meshopt compression for props (§5.19) and a `LOD` node (§5.3), both P1. Neither simplifies meshes.
 - **Port or dependency:** no new dependency.
   - three r187 already ships meshoptimizer 1.1's simplifier (MIT) in `examples/jsm/libs/meshopt_simplifier.module.js`.
     It is one WASM instance, with no workers.
@@ -123,7 +124,7 @@ day; M is a few days. They are numbered as in the recommendations.
 - **Caution:** run it on props and sets only. It would touch a VRM's geometry under its skin and morph data.
 
 **2. Coplanar-overlap (z-fighting) check.** `reference/mesheditor/src/geometry/zFightingDetector.ts:341`
-(`detectZFighting`, 745 lines).
+(`detectZFighting`, in a 745-line file).
 - **What it is.**
   - It buckets triangles from every mesh on a 0.2 m grid (`:357`).
   - It pairs triangles that are near-coplanar within a plane and an angle tolerance.
@@ -155,7 +156,7 @@ day; M is a few days. They are numbered as in the recommendations.
 - **Licence:** none if written fresh.
 - **Size:** M.
 
-**4. Parametric building pieces.** `reference/mesheditor/src/geometry/architecture.ts:182-1006`.
+**4. Parametric building pieces.** `reference/mesheditor/src/geometry/architecture.ts:182-1185`.
 - **What it is.**
   - Walls with openings (rect, arch or round, each with an optional frame), a plinth and a cornice.
   - Arches, columns, stairs and roofs, and mouldings from profile presets.
@@ -194,13 +195,13 @@ All paths in this table are under `reference/mesheditor/`.
 | Shrinkwrap, baking | Closest point tests every triangle (`src/sculpting/SculptController.ts:2526-2545`). The baker's raycast is a linear scan with an AABB reject (`src/baking/TextureBaker.ts:759`). Its AO is a cavity estimate | `three-mesh-bvh`, which `@vrmxg/camera` already uses, does both properly |
 | UV unwrapping | The header says LSCM (`src/uv/UVUnwrapController.ts:59`). The code floods charts by angle and projects each onto the plane of its average normal (`:600-603`, `:648-654`), then relaxes interiors twice (`:697`). Overlap means `uvSurfaceArea > 1.05` (`:1214`). Packing is by shelves (`:1002`) | Use xatlas (MIT) when lightmaps arrive (P2). Its report fields (islands, coverage, texel density in px/m) make a fair checklist |
 | Sculpting | Seven brushes (`src/sculpting/SculptController.ts:30-37`). Each dab scans every vertex, with no dynamic topology and X symmetry only | No use. Characters arrive finished as VRMXA |
-| Booleans | Babylon's CSG2, which wraps Manifold, with the old CSG as fallback (`src/MeshEditorService.ts:3564-3600`). It calls `InitializeCSG2Async()` with no arguments (`:475`). In Babylon 9.29.0, that fetches `https://unpkg.com/manifold-3d@3.4.0` at runtime | For booleans (P2), bundle manifold-3d (Apache-2.0) or three-bvh-csg (MIT) ourselves. A runtime CDN fetch fails offline and in our hardened app |
+| Booleans | Babylon's CSG2, which wraps Manifold, with the old CSG as fallback (`src/MeshEditorService.ts:3564-3600`). It calls `InitializeCSG2Async()` with no arguments (`:475`). In Babylon 9.29.0, that fetches `https://unpkg.com/manifold-3d@3.4.0` at runtime | If booleans are ever planned (the PRD's CSG row, P2, plans only blockout primitives), bundle manifold-3d (Apache-2.0) or three-bvh-csg (MIT) ourselves. A runtime CDN fetch fails offline and in our hardened app |
 | Terrain | A painted heightmap and a three-layer RGB splat map on Babylon's `TerrainMaterial`. Heights are one grey byte per pixel (`src/heightmap/HeightmapController.ts:1122-1126`), so 256 levels. The presets use a seeded integer hash noise (`:844-848`); a path tool carves roads (`:1349`) | 8-bit heights terrace. Not now (see Watch) |
 | Import and export | Babylon's loaders and serializers for GLB, OBJ and STL. `.ply` is accepted (`src/services/InputAndFileService.ts:189`) and handed to Babylon's loaders. Collada goes through three's `ColladaLoader` and `GLTFExporter` (`src/loaders/ColladaConverter.ts:1-3`) | three r187 has the OBJ, STL, PLY, FBX, Collada and 3MF loaders and the OBJ, STL, PLY and glTF exporters |
 | Rigging | Envelope weights, inverse distance to the fourth power (`src/rigging/WeightPaintController.ts:553`, `:629`), on its own humanoid, quadruped and spine skeletons | Not VRM humanoid. VRMXW wearables use the character's rig |
 | Undo | Closures holding full vertex snapshots, capped at 100 steps (`src/MeshEditorService.ts:230`, `:1712-1750`; `src/types.ts:18`) | Ours is document-level, also undoes MCP edits, and is tested through MCP |
 | Gizmos, viewport | Babylon's `GizmoManager`, a highlight layer, marquee select, and touch controls (one-finger orbit, a Touch Bar) | M5 W5 gave us the same set. Touch matters only if the editor reaches iPad |
-| Web Component | `<mesh-editor>`, with `openModel`, `exportGLB` and plugins (`src/web-component/MeshEditorElement.ts:248-333`). A host adapter adds "Save to Host" (`src/adapters/HostAppAdapter.ts:5-45`) | Embedding it brings Babylon, the CDN fetch, the eval tool and the LLM key settings. Unknown: whether its GLB export keeps the `KHR_physics_*` extensions our `door-frame.glb` uses |
+| Web Component | `<mesh-editor>`, with `openModel`, `exportGLB` and plugins (`src/web-component/MeshEditorElement.ts:248-333`). A host adapter adds "Save to Host App" (`src/adapters/HostAppAdapter.ts:5-45`) | Embedding it brings Babylon, the CDN fetch, the eval tool and the LLM key settings. Unknown: whether its GLB export keeps the `KHR_physics_*` extensions our `door-frame.glb` uses |
 | Tests | Vitest on `NullEngine` in jsdom. Playwright on SwiftShader, not run in CI | The same shape as our Node tests and Chromium acceptance. Ours add three runtimes, hashes and AppProbe |
 | Splats, voxels, decals, 3D text, texture paint | Babylon features in thin wrappers | Splats stay on the PlayCanvas review's watch list. three has `DecalGeometry` and `TextGeometry` |
 
@@ -209,12 +210,13 @@ All paths in this table are under `reference/mesheditor/`.
 | | mesheditor | VRMXG |
 |---|---|---|
 | Protocol | OpenAI function calling, from the app to an LLM of the user's choice (`reference/mesheditor/src/tools/ToolInterface.ts:6-13`). No MCP server | MCP over stdio, headless or in the editor |
-| Tools sent | Every enabled tool, on every request (`reference/mesheditor/src/AIAgentService.ts:1456-1457`, `:2462`). That is up to 53: 49 `modeler_*` and 4 `cad_*`. The z-fighting tool sits behind a setting (`:1416`) | 21 headless and 22 in the editor, all generic. `describe` gives a type's schema on demand |
-| Size | Roughly 25,000 to 28,000 tokens: the tools' source text divided by four, not serialised JSON. `modeler_create_sdf_mesh` alone is about 1,900 | About 1,958 headless and 2,087 in the editor. `engine/packages/mcp/test/mcp.test.mjs` holds them under 2,000 and 2,200 |
+| Tools sent | Every enabled tool, on every request (`reference/mesheditor/src/AIAgentService.ts:1462-1464`, `:2462`). By default that is the 20 core tools (`:123-146`, `:172`, `:1415-1426`), the code-running tool among them. The "all" preset (`:1448-1453`) sends 53: 49 `modeler_*` and 4 `cad_*`. The z-fighting tool sits behind a setting (`:1416`) | 21 headless and 22 in the editor, all generic. `describe` gives a type's schema on demand |
+| Size | About 12,000 tokens for the 20 default tools, and 25,000 to 28,000 for all 53: the tools' description and parameter text divided by four, not serialised JSON. `modeler_create_sdf_mesh` alone is about 1,900 | About 1,958 headless and 2,087 in the editor. `engine/packages/mcp/test/mcp.test.mjs` holds them under 2,000 and 2,200 |
 | Code execution | `modeler_execute_babylon_code` builds an `AsyncFunction` from the model's output (`reference/mesheditor/src/tools/builtin/ExecuteBabylonCodeTool.ts:237-238`) | None. Builds run under a CSP with no `unsafe-eval` |
 | Agent edits and undo | Recorded like any other action | One undo step per edit, marked, shared with the person |
 
-One tool per feature costs twelve to fourteen times our budget, and it grows with every feature. Our generic design
+One tool per feature costs about six times our budget by default, and twelve to fourteen times with every tool on.
+It grows with every feature. Our generic design
 stands. Take the check-then-fix loop and the skill rules (candidate 5).
 
 ## Fit and risk
@@ -224,7 +226,7 @@ stands. Take the check-then-fix loop and the skill rules (candidate 5).
 - **Determinism.** Every candidate runs at author time or in the editor, and its output is baked into a GLB. So
   `Math.sin` and wall clocks don't matter there. Two guards still apply:
   - nothing generated at load time may feed physics unless it goes through `dmath`;
-  - generated or decimated files change asset bytes, which W5's save fingerprint counts.
+  - generated or decimated files change the glTF structure, which W5's save fingerprint counts.
 - **WKWebView.** No candidate needs threads. Run decimation in Node first, as a content tool. Try three's simplifier
   in the scheme origin only when the editor needs it.
 - **Bundle size.**
