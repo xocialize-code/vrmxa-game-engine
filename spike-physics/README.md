@@ -97,5 +97,5 @@ SPIKE_ORIGIN=loopback mac/build/PhysicsSpike.app/Contents/MacOS/PhysicsSpike
 
 **Models:** `npm run models` copies them into `web/public/models/`, which is not in git and must never ship:
 - `spec.vrm`, from `VRMXA_Specification`.
-- Two VRoid Hub models from the local dataset: `9096495490126901469` (VRM 1.0) and `1020331055235827291` (VRM 0.x). Their licences allow modification and corporate use, with credit required.
+- Two VRoid Hub models from the local dataset: `9096495490126901469` (VRM 1.0) and `1020331055235827291` (VRM 0.x). Their licences allow modification and corporate use, with credit required. Pictures of them are not committed either (`.gitignore`, AB-T-0668).
 - The idle and walk `.vrma` motions, from `vrmxa-core`.

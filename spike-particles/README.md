@@ -103,9 +103,7 @@ CPU ms per simulation step, over 300 steps after 120 warm-up steps. Each configu
 
 ### 3. Anime look
 
-![Contact sheet](shots/contact-sheet-vroid10.png)
-
-The shots are in `shots/`, rendered in WKWebView next to a VRM 1.0 VRoid model in MToon, at fixed frames (impact at frame 5, sparkles 150, speed lines 90, sweat drop 40). Every sprite comes from a procedural hard-edged atlas (`src/core/atlas.js`), so there are no soft gradients anywhere.
+The shots were rendered in WKWebView next to a VRM 1.0 VRoid model in MToon, at fixed frames (impact at frame 5, sparkles 150, speed lines 90, sweat drop 40). Every sprite comes from a procedural hard-edged atlas (`src/core/atlas.js`), so there are no soft gradients anywhere. They show a VRoid Hub model (spike-physics' `vroid10`), so they stay local and out of git (`.gitignore`); `mac/scripts/run.sh shots` makes them again (AB-T-0668).
 
 - **three.quarks handles stylised, hard-edged effects well.**
   - Stretched billboards give speed-scaled spark streaks and speed lines.
@@ -199,7 +197,7 @@ Page query options:
 | `web/src/App.vue` | Modes: interactive, autorun (adds pixel-scrub and draw calls), shots, debug, WebGPU |
 | `mac/` | The wrapper from spike-physics, renamed, plus PNG capture (`scripts/run.sh` copies out of the sandbox) |
 | `results/` | `node.json`, `wkwebview-scheme.json`, `wkwebview-loopback.json`, `wkwebview-webgpu.json`, `bundle-size.json` |
-| `shots/` | Per-effect PNGs, the contact sheet and the WebGPU shots |
+| `shots/` | The WebGPU shots (no VRM in them); the per-effect PNGs and the contact sheet, which show a VRoid Hub model, are made here but not committed |
 
 **Models:** `npm run models` copies them from `spike-physics/web/public/models/` into `web/public/models/`. That folder is git-ignored and must never ship. The VRoid models' licences require credit.
 

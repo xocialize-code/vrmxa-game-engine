@@ -3,3 +3,5 @@ mac/build/
 web/dist/
 web/node_modules/
 web/public/models/
+# Pictures of the VRoid Hub models stay local (AB-T-0668).
+shots/*vroid*.png
