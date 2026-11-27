@@ -2,16 +2,19 @@
 
 **M6 is done (2026-11-27), by the operator's call: nine of its twelve exit checks pass, and three pass in part and are
 carried on.** The verdicts are in [acceptance/](acceptance/README.md), "Result: M6's acceptance": receipts AB-R-1200 to
-1211 (task AB-T-0652, PR #75). Someone who isn't us can start a project in the editor, attach behaviours and wire
-connections in the inspector, hot reload a project's own behaviours, build a second game ("After Hours") there, share
-it from a static host or a hardened Mac app, and follow a guide that ends in a game; an agent can do the same through
-MCP. Carried on:
+1211 (task AB-T-0652, PR #75). A game builder can start a project in the editor, attach behaviours and wire
+connections in the inspector, hot reload a project's own behaviours, build a second game ("After Hours") there, and
+follow a guide that ends in a game. A game is ready to share from a static host or a hardened Mac app (shown on the
+Morning Rush; signing, notarising and hosting stay the operator's steps). Through MCP, an agent can start a project
+from a template, attach behaviours with their params, wire connections and export, and one added a level to After
+Hours. Carried on:
 - check 1, starter content in the templates, which still copy the sample's (AB-T-0653);
 - check 7, a HUD-only re-export refusing earlier saves, because the runtime's version is in the save's fingerprint
   (AB-T-0679);
 - check 12, the canonical matrix failing by its rules on single odd WebGPU loads, which b5b2527 shows today too
-  (AB-T-0666), and frames dropping at scene changes (47 to 68 fps, worst frame 210.5 ms); steady play measured 60.0 fps.
-Also open from M6: AB-T-0670 to 0673 (editor gaps, prop paths), AB-T-0680 (AppProbe first-try races), and the rollback
+  (AB-T-0666); scene changes' 5-second windows run 47 to 68 fps, worst frame 210.5 ms, against steady play's 60.0 fps;
+  and the base Mac and the Mac scenarios not re-run (AB-T-0511).
+Also open from M6: AB-T-0670 to 0673 (editor, particles and prop-path gaps), AB-T-0680 (AppProbe first-try races), and the rollback
 work AB-T-0657 to 0659. M7 (proposed in the PRD) waits on the operator's scoping.
 
 *Approved by the operator 2026-11-26 (AB-P-0020: tasks AB-T-0644 to 0652 with AB-T-0638, 0631, 0639, 0624, 0630, 0627, 0629 and 0626; decision AB-D-0297). M6 builds on M5 (done 2026-11-26 by the
@@ -85,7 +88,7 @@ Carried from the third wave:
   version (AB-T-0679).
 - **Check 12:** the canonical matrix fails by its rules on single odd WebGPU loads. b5b2527, which was canonical,
   fails the same way today, so it is the machine and not the code (AB-T-0666). After Hours ran 60.0 fps steady in
-  this run (W10: 59.58), but frames drop at scene changes (47 to 68 fps, worst frame 210.5 ms).
+  this run (W10: 59.58), but scene changes' 5-second windows run 47 to 68 fps (worst frame 210.5 ms).
 
 None failed. M6 was called done on this table (2026-11-27).
 

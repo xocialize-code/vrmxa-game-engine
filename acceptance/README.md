@@ -19,7 +19,7 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
 ## Result: M6's acceptance (2026-11-27, M5 Max, macOS 27.3 26C5047e)
 
 **M6 is done (2026-11-27), by the operator's call**, with checks 1, 7 and 12 passing in part and carried on as
-AB-T-0653, AB-T-0679 and AB-T-0666 (with the scene-change frame drops).
+AB-T-0653, AB-T-0679 and AB-T-0666 (with the scene-change frame drops; the base Mac waits on AB-T-0511).
 
 M6's twelve exit checks ([M6-PLAN.md](../M6-PLAN.md), "What M6 is done looking like") were run at the M6 commit: main at
 5d5f42e (W0 to W10, the spikes, and PR #74). Every run used apps built at that commit: the game app's runtime
@@ -222,7 +222,7 @@ c03f0d8, which adds only a change to `apps/playground/scripts/gpu-load.mjs` (bel
 the table. None failed. Each check is filed as a receipt (task AB-T-0621); the files are in `results/m5-acceptance/`,
 and `summary.json` holds the verdicts. **Since the PR's review (2026-11-26):** check 9 was run again on the sample game
 itself (W9's scenario runs on the cafe project, whose game has no rules: AB-R-1151 is superseded by AB-R-1154), and the
-rows for checks 4, 8 and 10 say more exactly what was and wasn't shown. **Whether M5 is done is the operator's call:** nothing here marks it done.
+rows for checks 4, 8 and 10 say more exactly what was and wasn't shown.
 
 | # | Check | Result | Receipt |
 |---|---|---|---|
