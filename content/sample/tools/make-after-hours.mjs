@@ -16,17 +16,12 @@
 // Needs vrmxa-core beside the repo (it packs the items).
 import fs from 'node:fs';
 import path from 'node:path';
-import { Euler, Quaternion } from 'three';
 import { writeGLB, writeGLBTree } from '@vrmxg/model';
 import { packItem } from '@vrmxg/item';
-import { m0Registry } from '@vrmxg/registry/m0';
-import { declareProjectBehaviours } from '@vrmxg/registry';
 import { createValidator, parse, serialize } from '@vrmxg/scene';
-import { EditorSession } from '@vrmxg/editor-core';
 import { vrmxaCore as loadCore } from '../../../engine/packages/character/test/fixtures.mjs';
-import { ProjectSettings } from '../../../apps/editor/src/project-settings.js';
-import { personalGame } from '../../templates/templates.js';
-import { DIR, LOST, SCENES, GAME } from './after-hours-plan.mjs';
+import { DIR, LOST } from './after-hours-plan.mjs';
+import { afterHoursRegistry, buildScenes, afterHoursGame } from './after-hours-build.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const repo = path.resolve(root, '../..');
@@ -104,85 +99,19 @@ write(`${DIR}/props/back-room.glb`, writeGLB({ name: 'back-room', generator: GEN
 ] }));
 
 // ---------------------------------------------------------------- the scenes, through the editor's session
-const reg = m0Registry();
-declareProjectBehaviours(reg, await import(path.join(root, DIR, 'behaviours.js')));
+const reg = await afterHoursRegistry();
 const { check: validate } = createValidator(reg);
-
-/** The inspector's rotation fields: Euler degrees (YXZ) to a quaternion (apps/editor/src/host.js quatFromDeg). */
-const quatFromDeg = (r) => new Quaternion().setFromEuler(new Euler((r[0] * Math.PI) / 180, (r[1] * Math.PI) / 180, (r[2] * Math.PI) / 180, 'YXZ')).toArray();
-/** What the inspector shows of a node's transform (host.js transformOf). */
-function transformOf(n) {
-  const t = n.transform ?? {};
-  const e = new Euler().setFromQuaternion(new Quaternion().fromArray(t.q ?? [0, 0, 0, 1]), 'YXZ');
-  const deg = (r) => Math.round((r * 180) / Math.PI * 1000) / 1000;
-  return { p: t.p ?? [0, 0, 0], r: [deg(e.x), deg(e.y), deg(e.z)] };
-}
-/** One field of the position or rotation typed (host.js setAxisOn): the others kept as the inspector shows them. */
-function setAxis(s, id, part, axis, value) {
-  const v = [...transformOf(s.node(id))[part]];
-  if (v[axis] === value) return;
-  v[axis] = value;
-  s.setTransforms([{ id, t: part === 'r' ? { q: quatFromDeg(v) } : { p: v } }]);
-}
-
-/** Apply one scene of the plan to a new session (as File › New with its file name); `prev` is the scene built before. */
-function buildScene(scene, prev, clip) {
-  const s = EditorSession.empty(reg, scene.ref.replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-'));
-  s.rename('root', scene.root);
-  for (const step of scene.steps) {
-    if (step.copy) { clip.value = prev.copy(step.copy); continue; }
-    if (step.paste) {
-      const roots = s.paste(clip.value);
-      for (const id of roots) s.setNodeId(id, step.paste[id]);
-      continue;
-    }
-    if (step.connect) {
-      const { args, ...c } = step.connect;
-      const index = s.connect(c);
-      for (const [k, v] of Object.entries(args ?? {})) s.setConnectionArg(index, k, v);
-      continue;
-    }
-    const n = step.node;
-    let id = n.from ? s.addFromAsset(n.from) : s.addNode(n.type);
-    if (id !== n.id) id = s.setNodeId(id, n.id);
-    if (n.name) s.rename(id, n.name);
-    if (n.parent) s.reparent(id, n.parent);
-    (n.p ?? [0, 0, 0]).forEach((v, i) => setAxis(s, id, 'p', i, v));
-    (n.r ?? [0, 0, 0]).forEach((v, i) => setAxis(s, id, 'r', i, v));
-    for (const [k, v] of Object.entries(n.props ?? {})) s.setProp(id, k, v);
-    for (const { use, ...params } of n.behaviours ?? []) {
-      s.addBehaviour(id, use);
-      for (const [k, v] of Object.entries(params)) s.setBehaviourParam(id, use, k, v);
-    }
-  }
-  return s;
-}
-
-const clip = { value: null };
-let prev = null;
-for (const scene of SCENES) {
-  const s = buildScene(scene, prev, clip);
-  const text = s.text();
+for (const { scene, session } of buildScenes(reg)) {
+  const text = session.text();
   const r = validate(parse(text), { prefabs: new Map() });
   if (!r.ok) throw new Error(`${scene.ref}: ${r.errors.join('\n')}`);
   if (r.warnings.length) console.log(`${scene.ref}: ${r.warnings.length} warnings: ${r.warnings.join('; ')}`);
   if (serialize(parse(text)) !== text) throw new Error(`${scene.ref}: not canonical after a round trip`);
   write(scene.ref, text);
-  prev = s;
 }
 
 // ---------------------------------------------------------------- the game document, through the editor's settings
-// New Project from "One level" (the template's game.json, its id and title the sheet's), then the settings panel: the
-// entry scene, the game's scenes in and the template's out, and the behaviours module.
-const template = personalGame(fs.readFileSync(path.join(repo, 'content/templates/level/game.json'), 'utf8'), { id: GAME.id, title: GAME.title });
-const files = new Map([['game.json', template]]);
-const sceneFiles = ['level.vrmxs', 'ending.vrmxs', ...SCENES.map((x) => x.ref)].sort();
-const settings = new ProjectSettings({ game: JSON.parse(template), files: [...files.keys(), ...sceneFiles, GAME.behaviours].sort(), name: GAME.title, write: async (ref, t) => { files.set(ref, t); } });
-await settings.setEntry(GAME.entry);
-for (const ref of GAME.scenes) await settings.setScene(ref, true);
-for (const ref of GAME.drop) await settings.setScene(ref, false);
-await settings.setBehaviours(GAME.behaviours);
-write(`${DIR}/game.json`, files.get('game.json'));
+write(`${DIR}/game.json`, await afterHoursGame());
 
 if (check) {
   console.log(changed.length ? `would change: ${changed.join(', ')}` : `${DIR}/ is up to date`);

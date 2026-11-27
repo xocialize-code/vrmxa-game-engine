@@ -261,7 +261,10 @@ export class EditorHost {
     this.project = project;
     try { this.gameLayers = gameLayers(await project.gameSetup?.() ?? null); } catch { this.gameLayers = ['default']; } // the inspector's layer menus (M6 W1)
     this.R ??= await loadRapier();
-    const scene = sceneRef ?? project.scenes().find((s) => !s.startsWith('prefabs/')) ?? null;
+    // no scene asked for: the first at the project's top level (a game's own folder, the sample's after-hours/, doesn't
+    // come first by name: M6 W10), else the first in a folder
+    const scenes = project.scenes().filter((s) => !s.startsWith('prefabs/'));
+    const scene = sceneRef ?? scenes.find((s) => !s.includes('/')) ?? scenes[0] ?? null;
     if (scene) await this.openScene(scene); else await this.newScene();
   }
 

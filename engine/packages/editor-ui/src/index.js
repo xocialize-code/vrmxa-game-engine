@@ -16,7 +16,7 @@ export { DRAG_THRESHOLD, evalArithmetic, roundTo, constrain, parseNumber, stepMu
 export {
   plain, matches, resolveSchema, branchesOf, branchIndex, isCurve, widgetOf, schemaOfValue, defaultFor, setIn, getIn, listAdd, listRemove, listMove, rowActions,
   mapRename, mapAdd, mapRemove, freshKey, structRows, fitBranch, rowTitle, curvePoints, nextCurveKey, idPart, childOf, inspectorFields, shownValue, sharedFields, sharedAxes, fieldName,
-  looseSchema, propFields, pinValue, layerField,
+  looseSchema, propFields, pinValue, layerField, hexColor,
 } from './fields.js'; // the inspector's fields (M5 W4)
 export { ASSET_FILTERS, fileKind, assetCategory, folderOf, assetEntries, filterAssets, filterCounts, assetFolders, ASSET_MIME, NODE_MIME, NODE_DRAG_ALLOWED, ASSET_DRAG_ALLOWED, dropEffectFor, effectPermits, dragTypes, draggedKind, dropVerdict, dropVerdictFor } from './assets-ui.js'; // the assets panel (M5 W6)
 export { parseTreeQuery, rowMatches, filterTree, foldTree } from './tree-ui.js'; // tree search and folding (M5 W6)
