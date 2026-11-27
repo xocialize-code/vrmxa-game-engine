@@ -32,7 +32,7 @@ export function imageStats(rgba) {
   const mean = sum / n, sd = Math.sqrt(Math.max(0, sq / n - mean * mean));
   return { meanLuma: Math.round(mean * 10) / 10, sdLuma: Math.round(sd * 10) / 10, blank: sd < 2 };
 }
-import { createValidator, flatten, describeType, describeBehaviour } from '@vrmxg/scene';
+import { createValidator, flatten, describeType, describeBehaviour, schemaChecker } from '@vrmxg/scene';
 import { describeRules, OPS } from '@vrmxg/game';
 import { LICENCES_FILE, parseLicences, licenceOf } from '@vrmxg/bundle';
 import { gameRules, validateGame, refusal, GAME_NOTE } from './game.js';
@@ -120,6 +120,7 @@ function compactConditions(described) {
 
 /** The value at a setDoc path ("sequence.tracks.4.keys", "settings.physics"): what an edit would replace. */
 function docAt(doc, path) {
+  safePath('sequence', path);
   const parts = String(path).split('.');
   if (parts[0] !== 'sequence' && parts[0] !== 'settings') throw new Error(`path: under sequence or settings, as setDoc writes (not "${path}")`);
   let v = doc;
@@ -206,7 +207,7 @@ export function createHandlers(reg, target) {
     reparent({ id, parent, index }) { runOps([{ op: 'reparent', id, parent, index }], `Move ${id} under ${parent ?? 'the root'}`); return `${id} now under ${parent ?? '(root)'}`; },
     // checked as the inspector's Connections panel checks it (EditorSession.connect: the signal the sender has, the
     // target's action, each argument against the action's schema, a node argument naming a node here)
-    connect({ from, signal, to, call, args }) { asAgent(target.session(), (s) => s.connect({ from, signal, to, call, args })); return `connected ${from}.${signal} -> ${to}.${call}`; },
+    connect({ from, signal, to, call, args }) { safeValue('connect.args', args); asAgent(target.session(), (s) => s.connect({ from, signal, to, call, args })); return `connected ${from}.${signal} -> ${to}.${call}`; },
     validate() { return checkScene(); },
     undo() { return target.undo() ? 'undone' : 'nothing to undo'; },
     redo() { return target.redo() ? 'redone' : 'nothing to redo'; },
@@ -380,14 +381,24 @@ function editOp(s, o) {
   if (!o || typeof o !== 'object' || typeof o.op !== 'string') throw new Error('each op is an object with "op"');
   const { op, ...a } = o;
   delete a.label; // the batch's label is the step's
+  safeValue(op, a);
   if (op === 'connect') { s.connect({ from: a.from, signal: a.signal, to: a.to, call: a.call, args: a.args }); return null; }
   if (op === 'disconnect') return disconnectOp(s, a);
   if (op === 'behaviour') return behaviourOp(s, a);
   if (Object.hasOwn(REFUSED, op)) throw new Error(`"${op}" isn't an agent's op: ${REFUSED[op]}`);
+  safeOp(op, a);
   if (!RAW.has(op)) throw new Error(`unknown op "${op}" (add, set, remove, reparent, connect, disconnect, behaviour, setDoc, addAsset, removeAsset, setAsset)`);
   // a node's behaviours go through the behaviour op, where each param is checked (the scene's schema keeps an unknown
   // param, and doesn't follow a node reference)
   if (op === 'set' && /^behaviours(\.|$)/.test(String(a.path ?? ''))) throw new Error(`behaviours are set with {op:"behaviour", id, use, params} (each param checked against its schema), not set on "${a.path}"`);
+  // an instance's overrides may give its inner nodes behaviours: checked by the same rules (a locked door, an angle)
+  if (op === 'set' && /^overrides(\.|$)/.test(String(a.path ?? ''))) {
+    const n = s.node(a.id);
+    if (n && n.type !== 'Instance') throw new Error(`${a.id} is a ${n.type}: only an Instance has overrides (of its prefab's nodes)`);
+    if (n) { const next = structuredClone(n); setAt(next, a.path, a.value); overrideBehaviours(s, next); }
+  }
+  if (op === 'add' && a.node?.overrides !== undefined && a.node.type !== 'Instance') throw new Error(`${a.node.id} is a ${a.node.type}: only an Instance has overrides (of its prefab's nodes)`);
+  if (op === 'add' && a.node?.type === 'Instance' && a.node.overrides) overrideBehaviours(s, a.node);
   if (op === 'add' && Array.isArray(a.node?.behaviours) && a.node.behaviours.length) {
     const { behaviours, ...node } = a.node;
     if (behaviours.some((b) => !b || typeof b !== 'object' || typeof b.use !== 'string')) throw new Error(`${node.id}: each behaviour is { use, ...params }`);
@@ -397,6 +408,74 @@ function editOp(s, o) {
   }
   s.run(NODE_LABEL[op]?.(a) ?? `${op} ${a.id ?? a.node?.id ?? a.path ?? ''}`.trim(), [{ op, ...a }]);
   return null;
+}
+
+/** Names that reach an object's prototype: never a path segment or a key an agent sends. */
+const UNSAFE = new Set(['__proto__', 'constructor', 'prototype']);
+/** A dotted path with no segment that reaches a prototype. @param {string} what @param {any} path */
+function safePath(what, path) {
+  const bad = String(path ?? '').split('.').find((k) => UNSAFE.has(k));
+  if (bad !== undefined) throw new Error(`${what}: "${bad}" can't be part of a path`);
+}
+/** A value with no own key that reaches a prototype, at any depth. */
+function safeValue(what, v, depth = 0) {
+  if (!v || typeof v !== 'object' || depth > 64) return;
+  for (const k of Object.keys(v)) { if (UNSAFE.has(k)) throw new Error(`${what}: "${k}" can't be a key`); safeValue(what, v[k], depth + 1); }
+}
+/** Every path and value an op carries, checked before it reaches the scene's editor (its setPath walks paths as given). */
+function safeOp(op, a) {
+  if (a.path !== undefined) safePath(`${op} ${a.id ?? ''}`.trim(), a.path);
+  for (const k of ['value', 'node', 'asset', 'args', 'params']) if (a[k] !== undefined) safeValue(`${op}.${k}`, a[k]);
+}
+
+/** A value set at a dotted path of a copy (undefined deletes it), as @vrmxg/scene's set does. */
+function setAt(obj, path, value) {
+  safePath('set', path);
+  const ks = String(path).split('.'); let o = obj;
+  for (const k of ks.slice(0, -1)) { if (o[k] == null || typeof o[k] !== 'object') o[k] = {}; o = o[k]; }
+  if (value === undefined) delete o[ks.at(-1)]; else o[ks.at(-1)] = value;
+}
+
+/**
+ * The behaviours an instance's overrides give its inner nodes, checked by the behaviour op's rules: an inner node the
+ * prefab has, a behaviour the registry knows that attaches to that node's type, only params it declares, each against
+ * its schema, and a node reference naming a node of the scene by its id there (an inner one as "<instance>/<inner>",
+ * since flattening copies params as they are). `{ use, remove: true }` drops one the
+ * prefab's node has. (The scene's schema keeps an unknown param and doesn't follow a reference: review of PR #67.)
+ * @param {any} s an EditorSession @param {any} inst the Instance node as it would be
+ */
+function overrideBehaviours(s, inst) {
+  const over = inst.overrides;
+  if (over === undefined) return;
+  if (!over || typeof over !== 'object' || Array.isArray(over)) throw new Error(`${inst.id}.overrides: an object of inner nodes' overrides`);
+  for (const [local, o] of Object.entries(over)) {
+    if (!o || typeof o !== 'object' || o.behaviours === undefined) continue;
+    const where = `${inst.id}.overrides.${local}.behaviours`;
+    if (!s.prefabOf(inst)) throw new Error(`${where}: the instance's prefab isn't loaded (add its asset first)`);
+    const inner = s.innerBase(inst, local);
+    if (!inner) throw new Error(`${where}: the prefab has no node "${local}"`);
+    if (!Array.isArray(o.behaviours)) throw new Error(`${where}: a list of { use, ...params }`);
+    for (const b of o.behaviours) {
+      if (!b || typeof b !== 'object' || typeof b.use !== 'string') throw new Error(`${where}: each entry is { use, ...params }`);
+      const { use, remove, ...params } = b;
+      if (remove !== undefined) {
+        if (remove !== true || Object.keys(params).length) throw new Error(`${where}: { use, remove: true } drops one, with nothing else`);
+        if (!(inner.behaviours ?? []).some((x) => x.use === use)) throw new Error(`${where}: "${local}" has no ${use} to remove`);
+        continue;
+      }
+      const d = s.reg.behaviours.get(use);
+      if (!d) throw new Error(`${where}: no behaviour "${use}" (describe lists the engine's and the project's)`);
+      if (d.on && !d.on.some((t) => s.reg.isA(inner.type, t))) throw new Error(`${where}: ${use} attaches to ${d.on.join(' or ')}, not a ${inner.type}`);
+      for (const [k, v] of Object.entries(params)) {
+        const p = d.params?.[k];
+        if (!p) throw new Error(`${where}: ${use} has no param "${k}" (its params: ${Object.keys(d.params ?? {}).join(', ') || 'none'})`);
+        const errs = schemaChecker(p.schema)(v);
+        if (errs.length) throw new Error(`${where}: ${use}'s ${k}: ${errs.join('; ')}`);
+        // by its scene-wide id: flattening copies params as they are, and the world finds nodes by id ("door-1/trigger")
+        if (p.nodeRef && !s.endNode(v)) throw new Error(`${where}: ${use}'s ${k} must name a node of this scene by its id here (a node of the prefab as "${inst.id}/<inner>"); "${v}" isn't one`);
+      }
+    }
+  }
 }
 
 /** Remove a connection by its index, or by its ends when exactly one matches. */
@@ -421,7 +500,7 @@ function disconnectOp(s, { index, from, signal, to, call }) {
 function behaviourOp(s, { id, use, params, remove }) {
   if (typeof id !== 'string' || typeof use !== 'string') throw new Error('behaviour: id (the node) and use (the behaviour\'s name)');
   const n = s.node(id);
-  if (!n) throw new Error(s.innerNode(id) ? `${id} is a node of a prefab: its behaviours are the prefab's (open it, or override on the instance)` : `no node ${id}`);
+  if (!n) throw new Error(s.innerNode(id) ? `${id} is a node of a prefab: its behaviours are the prefab's (open the prefab, or set the instance's overrides.<inner>.behaviours, checked as this op checks them)` : `no node ${id}`);
   if (params !== undefined && (!params || typeof params !== 'object' || Array.isArray(params))) throw new Error('behaviour: params is an object { name: value }');
   if (remove) {
     if (params) throw new Error('behaviour: remove takes no params');

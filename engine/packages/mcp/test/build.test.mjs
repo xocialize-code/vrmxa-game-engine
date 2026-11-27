@@ -336,6 +336,62 @@ test('settings: a refused key leaves game.json as it was, whatever came before i
   assert.match((await t.call('edit', { ops: [{ op: 'behaviour', id: 'zone', use: 'scoreZone' }] })).text, /no behaviour "scoreZone"/, 'the old module\'s are gone');
 });
 
+test('an instance\'s overrides give inner nodes behaviours by the same rules (review of PR #67): set and add alike', async () => {
+  const { dir, t, call } = await open('override-behaviours');
+  for (const f of ['prefabs/door.vrmxs', 'props/door-frame.glb', 'props/door-panel.glb']) { fs.mkdirSync(path.dirname(path.join(dir, f)), { recursive: true }); fs.copyFileSync(path.join(sample, f), path.join(dir, f)); }
+  await call('edit', { ops: [{ op: 'addAsset', asset: { id: 'door', type: 'vrmxs', ref: 'prefabs/door.vrmxs' } }, { op: 'add', node: { id: 'door-1', type: 'Instance', parent: 'root', asset: 'door' } }] });
+  const before = t.session.text();
+  for (const [value, why] of [
+    [[{ use: 'switchedBy', bogus: 1, item: 'nobody' }], /door-1\.overrides\.hinge\.behaviours: switchedBy has no param "bogus"/],
+    [[{ use: 'switchedBy', item: 'nobody' }], /switchedBy's item must name a node of this scene by its id here \(a node of the prefab as "door-1\/<inner>"\); "nobody" isn't one/],
+    [[{ use: 'switchedBy', item: 'trigger' }], /"trigger" isn't one/], // the prefab's own name: the flattened world has door-1/trigger
+    [[{ use: 'hinge', locked: 'yes' }], /hinge's locked: .*boolean/],
+    [[{ use: 'hinge', openAngle: 90 }, { use: 'scoreZone' }], /scoreZone attaches to Area, not a RigidBody/],
+    [[{ use: 'blink' }], /no behaviour "blink"/],
+    [[{ use: 'switchedBy', remove: true }], /"hinge" has no switchedBy to remove/],
+  ]) {
+    for (const r of [await t.call('set', { id: 'door-1', path: 'overrides.hinge.behaviours', value }), await t.call('set', { id: 'door-1', path: 'overrides', value: { hinge: { behaviours: value } } })]) { assert.ok(r.isError, JSON.stringify(value)); assert.match(r.text, why); }
+    assert.equal(t.session.text(), before);
+  }
+  assert.match((await t.call('set', { id: 'door-1', path: 'overrides.nope.behaviours', value: [{ use: 'hinge' }] })).text, /the prefab has no node "nope"/);
+  const added = await t.call('add_node', { node: { id: 'door-2', type: 'Instance', parent: 'root', asset: 'door', overrides: { hinge: { behaviours: [{ use: 'switchedBy', bogus: 1 }] } } } });
+  assert.ok(added.isError); assert.match(added.text, /door-2\.overrides\.hinge\.behaviours: switchedBy has no param "bogus"/);
+  // what overrides are for: a locked door, a switch on the prefab's own trigger, a door that opens the other way
+  await call('set', { id: 'door-1', path: 'overrides.hinge.behaviours', value: [{ use: 'hinge', locked: true }, { use: 'switchedBy', item: 'door-1/trigger' }] });
+  await call('add_node', { node: { id: 'door-2', type: 'Instance', parent: 'root', asset: 'door', overrides: { hinge: { behaviours: [{ use: 'hinge', openAngle: -100 }] } } } });
+  const v = await call('validate'); assert.equal(v.ok, true, JSON.stringify(v.errors));
+  // only an Instance has overrides
+  const before2 = t.session.text();
+  assert.match((await t.call('set', { id: 'zone', path: 'overrides.x.behaviours', value: [{ use: 'hinge' }] })).text, /zone is a Area: only an Instance has overrides/);
+  assert.match((await t.call('add_node', { node: { id: 'z9', type: 'Area', parent: 'root', overrides: { x: { behaviours: [] } } } })).text, /z9 is a Area: only an Instance has overrides/);
+  assert.equal(t.session.text(), before2);
+  assert.match((await t.call('edit', { ops: [{ op: 'behaviour', id: 'door-1/hinge', use: 'hinge' }] })).text, /set the instance's overrides\.<inner>\.behaviours, checked as this op checks them/);
+});
+
+test('no path or key an agent sends reaches a prototype (review of PR #68): every tool route refused, nothing polluted', async () => {
+  const { t } = await open('prototype');
+  const before = t.session.text();
+  const J = (x) => JSON.parse(x); // as MCP's JSON arrives: "__proto__" an own key
+  for (const [tool, args, why] of [
+    ['set', { id: 'lamp', path: 'props.__proto__.polluted', value: 1 }, /"__proto__" can't be part of a path/],
+    ['set', { id: 'door', path: 'overrides.__proto__.polluted', value: 1 }, /"__proto__" can't be part of a path/],
+    ['set', { id: 'lamp', path: 'props.constructor.prototype.polluted', value: 1 }, /"constructor" can't be part of a path/],
+    ['edit', { ops: [{ op: 'set', id: 'lamp', path: 'transform.__proto__.polluted', value: 1 }] }, /"__proto__" can't be part of a path/],
+    ['edit', { ops: [{ op: 'setDoc', path: 'settings.__proto__.polluted', value: 1 }] }, /"__proto__" can't be part of a path/],
+    ['set', J('{"id":"lamp","path":"props","value":{"__proto__":{"polluted":1}}}'), /"__proto__" can't be a key/],
+    ['add_node', J('{"node":{"id":"x","type":"Node3D","parent":"root","props":{"__proto__":{"polluted":1}}}}'), /"__proto__" can't be a key/],
+    ['edit', J('{"ops":[{"op":"behaviour","id":"zone","use":"scoreZone","params":{"__proto__":{"polluted":1}}}]}'), /"__proto__" can't be a key/],
+    ['edit', J('{"ops":[{"op":"connect","from":"gate","signal":"bodyEntered","to":"points","call":"add","args":{"__proto__":{"polluted":1}}}]}'), /"__proto__" can't be a key/],
+    ['connect', J('{"from":"gate","signal":"bodyEntered","to":"points","call":"add","args":{"__proto__":{"polluted":1}}}'), /"__proto__" can't be a key/],
+    ['sequence', { path: 'settings.__proto__' }, /"__proto__" can't be part of a path/],
+  ]) {
+    const r = await t.call(tool, args);
+    assert.ok(r.isError, `${tool} ${JSON.stringify(args)}`); assert.match(r.text, why);
+    assert.equal(/** @type {any} */ ({}).polluted, undefined, `${tool}: Object.prototype untouched`);
+  }
+  assert.equal(t.session.text(), before);
+});
+
 // ---------------------------------------------------------------- validate (documents, no server)
 
 const files = (o) => ({ files: Object.keys(o).sort(), read: async (ref) => { if (!(ref in o)) throw new Error(`no ${ref}`); return new TextEncoder().encode(o[ref]); } });
