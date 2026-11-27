@@ -72,7 +72,9 @@ connections in the inspector, WebCodecs export in a browser (the spike chose it 
 - **Open Recent**: File › Open Recent in the Mac app and the toolbar's Recent list, both the shell's one list
   (`project.recent`, `project.reopen`: bookmarks, so no panel after a relaunch).
 - **Project Settings…** (⇧⌘P, `src/ProjectSettings.vue` over `src/project-settings.js`): the game's title, id and
-  version (`@vrmxg/editor-ui`'s ValueField), the entry scene and the scenes it can reach, the controls (every action's
+  version (`@vrmxg/editor-ui`'s ValueField), its behaviours module (a `.js` file of the project, M6 W9: what a build
+  takes, read again at once by the inspector and Play, `EditorHost.reloadBehaviours`; Play also runs an unnamed root
+  `behaviours.js`, and the panel says so until it is named, while Export Game refuses it on the Export line), the entry scene and the scenes it can reach, the controls (every action's
   key and gamepad button, rebound by pressing the new one, with `@vrmxg/game-ui`'s rows and conflict plan; actions of
   the game's own added and removed), and the physics layers with a collision matrix kept symmetric. Each change is one
   undo step of the settings' own history (Edit › Undo and Redo are the panel's while it is open) and is written at once
@@ -83,8 +85,8 @@ connections in the inspector, WebCodecs export in a browser (the spike chose it 
 
 ## Hot reload while playing (M6 W2, AB-T-0645)
 
-- In the Mac app, Play watches the project's behaviours module (the one `game.json` names, else `behaviours.js`: what
-  play in place runs is what Export Game ships) and every module it imports relatively, through the shell's
+- In the Mac app, Play watches the project's behaviours module (the one `game.json` names, else `behaviours.js`; a
+  build takes only the named one, so Export Game refuses a root `behaviours.js` that `game.json` doesn't name, M6 W9) and every module it imports relatively, through the shell's
   `project.watch` (shell 0.15.0, `watchesProject`). Save one in any text editor and it is imported fresh through
   Export Game's path (`export-game.js` `freshImporter`, blob: URLs, so a graph with an import cycle can't reload) and
   swapped in on a step boundary, without restarting the scene (`src/reload.js`). Each behaviour the module provides

@@ -80,8 +80,8 @@ export function editorTarget(ed, app = {}) {
       if (ed.error) throw new Error(ed.error);
       return { open: ed.sceneRef, new: !exists, ...(from !== undefined ? { from } : {}), nodes: session().doc.nodes.length, ...(exists ? {} : { note: 'not saved yet: save writes it; name it in game op=settings scenes for a scene change to reach it' }) };
     },
-    /** game.json's behaviours module changed: the editor reads it when a project opens (Play reads it afresh). */
-    behavioursChanged: () => ({ module: null, note: 'the editor loads the project\'s behaviours module when the project opens: reopen the project to attach and connect the new module\'s behaviours' }),
+    /** game.json's behaviours module changed: the editor reads the module it names now (M6 W9; one added since the project opened needs a reopen). */
+    behavioursChanged: () => ed.reloadBehaviours(),
     templates: () => (app.templates ?? loadTemplates)(),
     ...(app.newProject ? { newProject: (o) => app.newProject(o) } : {}),
     recording: async (ref) => JSON.parse(await ed.project.text(ref)),

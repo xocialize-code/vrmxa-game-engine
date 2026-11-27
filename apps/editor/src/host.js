@@ -251,6 +251,16 @@ export class EditorHost {
     // A module that won't load or declarations the registry refuses don't keep the project closed: they are shown as a
     // problem, the project's scenes open without them (a scene using one validates with a warning), and an earlier
     // project's declarations go
+    await this.declareBehaviours(project);
+    this.project = project;
+    try { this.gameLayers = gameLayers(await project.gameSetup?.() ?? null); } catch { this.gameLayers = ['default']; } // the inspector's layer menus (M6 W1)
+    this.R ??= await loadRapier();
+    const scene = sceneRef ?? project.scenes().find((s) => !s.startsWith('prefabs/')) ?? null;
+    if (scene) await this.openScene(scene); else await this.newScene();
+  }
+
+  /** Declare a project's behaviours module into the editor's registry, keeping what went wrong as a problem (openProject). */
+  async declareBehaviours(project) {
     this.behaviourProblems = []; this.behaviourError = '';
     try { declareProjectBehaviours(registry, await project.behaviours()); } catch (err) {
       registry.project(new Map());
@@ -258,11 +268,22 @@ export class EditorHost {
       this.behaviourError = `The project's behaviours: ${this.behaviourProblems[0]}`;
     }
     this.behaviourSources = project.behavioursModule?.sources ?? null; // the text those classes came from (M6 W2: what hot reload compares with)
-    this.project = project;
-    try { this.gameLayers = gameLayers(await project.gameSetup?.() ?? null); } catch { this.gameLayers = ['default']; } // the inspector's layer menus (M6 W1)
-    this.R ??= await loadRapier();
-    const scene = sceneRef ?? project.scenes().find((s) => !s.startsWith('prefabs/')) ?? null;
-    if (scene) await this.openScene(scene); else await this.newScene();
+  }
+
+  /**
+   * game.json's behaviours module changed (Project Settings › Behaviours, MCP's game op=settings; M6 W9): forget the
+   * module read when the project opened and read the one game.json names now, so the inspector, Play and Export Game
+   * all use the module the build will. A module added to the folder since the project opened isn't in its file list
+   * until the project is opened again (AB-T-0670). → { module, declared, problems? }
+   */
+  async reloadBehaviours() {
+    const p = this.project;
+    if (!p) return null;
+    p.forgetBehaviours();
+    await this.declareBehaviours(p);
+    this.changed();
+    const declared = [...registry.behaviours.values()].filter((b) => b.source === 'project').map((b) => b.name);
+    return { module: p.behavioursModule?.ref ?? null, declared, ...(this.behaviourProblems.length ? { problems: [...this.behaviourProblems] } : {}) };
   }
 
   /**
@@ -1314,7 +1335,8 @@ export class EditorHost {
       if (e?.code === 'cancelled' || e?.code === 'aborted') return null;
       // a refusal is the export's answer, shown where its result is: which file, and why (the exporter's, or the shell's
       // for a folder that holds something that isn't a build)
-      if (e?.name !== 'BuildError' && e?.code !== 'not_empty') throw e;
+      // (and the editor's own: a root behaviours.js game.json doesn't name, which Play would run and a build wouldn't, M6 W9)
+      if (e?.name !== 'BuildError' && e?.code !== 'not_empty' && e?.code !== 'unnamed_behaviours') throw e;
       this.lastGameExport = { refused: e.code, message: e.message, files: e.files };
       return this.lastGameExport;
     } finally { this.gameExporting = null; this._gameExport = null; settle(); this.changed(); }

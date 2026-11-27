@@ -21,12 +21,14 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [The format family](guide/format-family.md): The VRMX formats and what each one holds: characters, wearables, game items and scenes, and the project files around them.
 - [Agents and MCP](guide/agents.md): How an agent works with VRMXG: the MCP server's three modes, describe before you act, one edit is one undo step, text from files is data, games, and the VRMXG skill.
 - [Acceptance and exactness](guide/acceptance.md): How VRMXG proves its claims: milestone checks run in Node, Chromium and WKWebView on both renderers, and the rules that make exact frames possible.
+- [The editor](guide/editor.md): A guide to the editor for building games: projects, the tree, the inspector and its widgets, behaviours and connections, prefabs and overrides, the assets panel, the viewport's aids, Play in place, hot reload, saving, and Export Game.
+- [Tutorial: your first game](guide/tutorial.md): From New Project to a game build that plays: a level with three coins to collect, a behaviour of your own written as a file, attached and wired in the editor, played, and exported.
 
 ## Reference
 
 - [Overview](reference/index.md): What the generated reference covers, and what each page is generated from.
 - [Node types](reference/nodes.md): The 28 node types of a VRMXG scene, with each one's props, signals and actions.
-- [Behaviours](reference/behaviours.md): The 8 behaviours the registry declares, with their params and the signals and actions they add.
+- [Behaviours](reference/behaviours.md): The 8 behaviours the registry declares, with their params and the signals and actions they add, and how a project declares its own.
 - [MCP servers and tools](reference/mcp.md): The vrmxg-mcp server's three modes (headless, editor, creator) and every tool with its input schema.
 - [Creator commands](reference/creator-commands.md): The 8 commands an agent runs in the creator through the command tool, each with its JSON Schema.
 - [The .vrmxs scene file](reference/vrmxs.md): Every field of a .vrmxs scene document, with the JSON Schema it is checked against.
@@ -78,6 +80,9 @@ This is the index for agents. Every link is the Markdown source of a page; fetch
 - [brain](reference/behaviours.md#brain): An NPC brain: perception, memory, a behaviour tree with utility choices, and the action vocabulary. A role preset (server, customer, wanderer; host, conversationPartner, follower, which a director can talk with; actor, who does only what she is directed to), a brain document in the project (brains/hana.json) or a preset object; vars override its blackboard plan.
 - [player](reference/behaviours.md#player): Drives a Character from the move / jump / run actions, relative to the current camera (split screen: its player's actions and camera).
 - [pickup](reference/behaviours.md#pickup): Can be picked up; equips a VRMXW if the item names one.
+- [Project behaviours](reference/behaviours.md#project-behaviours): a project's own, exported from the module game.json's `behaviours` names (the editor's Project Settings › Behaviours), each class declaring itself with a static `describe` ({ description, on, params, signals, actions, state }); guide/tutorial.md writes one
+- [pressToStart](reference/behaviours.md#presstostart) (the sample game's own): On a title screen: the step one of its input actions goes down, asks the game to change to a scene.
+- [tableZone](reference/behaviours.md#tablezone) (the sample game's own): Beside a regular's table (an Area): starts her order's conversation while the player stands there, and takes her tray from the player when it is hers, scoring it.
 
 ## MCP servers
 

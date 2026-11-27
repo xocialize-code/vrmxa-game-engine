@@ -12,7 +12,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { behavioursImporter, projectWithGame } from '@vrmxg/bundle/node';
-import { exportGame, exportClosing, freshImporter } from '../src/export-game.js';
+import { exportGame, exportClosing, freshImporter, UNNAMED_BEHAVIOURS } from '../src/export-game.js';
 
 const enc = (s) => new TextEncoder().encode(s);
 const LICENCES = '| `game.json` | Ours | |\n| `level.vrmxs` | Ours | |\n| `props/*.glb` | CC0-1.0 | |\n| `LICENCES.md` | Ours | |\n';
@@ -228,5 +228,22 @@ test('the Morning Rush: the editor\'s Export Game and Node\'s exporter write the
     assert.match(node.compat.behaviours.tableZone, /^state:/);
     assert.equal(page.manifest, node.sha256, 'the same manifest bytes');
     assert.equal(page.compat, node.compat.digest, 'the same fingerprint');
+  } finally { linked.done(); }
+});
+
+test('a root behaviours.js that game.json doesn\'t name refuses the export and says how to name it, asking for no folder (M6 W9)', async () => {
+  // Play in place runs it (project.js behavioursRef), a build wouldn't: refused rather than shipped without it
+  const files = { 'behaviours.js': 'export {};\n', 'LICENCES.md': `${LICENCES}| \`behaviours.js\` | Ours | |\n` };
+  const s = shell();
+  await assert.rejects(exportGame(project(files), { shell: s, runtime: runtime() }), (e) => e.code === 'unnamed_behaviours' && e.message === UNNAMED_BEHAVIOURS);
+  assert.deepEqual(s.calls, [], 'no folder asked for');
+  assert.match(UNNAMED_BEHAVIOURS, /Project Settings › Behaviours/);
+  // named (as Project Settings writes it), it exports, the module in the build
+  const named = project({ ...files, 'game.json': JSON.stringify({ format: 'vrmxg-game', version: 1, id: 'test-game', entry: 'level.vrmxs', behaviours: 'behaviours.js' }) });
+  const linked = linkedFiles();
+  try {
+    const s2 = shell();
+    await exportGame(named, { shell: s2, runtime: runtime(), importModule: freshImporter(named, { url: linked.url }) });
+    assert.ok(s2.folder.has('project/behaviours.js'));
   } finally { linked.done(); }
 });

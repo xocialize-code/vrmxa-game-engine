@@ -234,9 +234,15 @@ function behaviourSection(b, heading) {
   return out;
 }
 
+/** The behaviours the sample game declares (content/sample/game/behaviours.js), as a registry holds them. */
+function rushDeclared() {
+  const rush = m0Registry();
+  return declareProjectBehaviours(rush, rushBehaviours).map((n) => rush.behaviours.get(n));
+}
+
 function behavioursPage() {
   const all = [...reg.behaviours.values()];
-  const rush = m0Registry(), declared = declareProjectBehaviours(rush, rushBehaviours).map((n) => rush.behaviours.get(n));
+  const declared = rushDeclared();
   const out = [
     'A behaviour is a named script attached to a node: an entry in the node\'s `behaviours` list, `{ "use": "<name>", …params }`.',
     'The scene holds the name and the params; the project maps the name to code. A scene never carries code, and an',
@@ -267,6 +273,15 @@ function behavioursPage() {
     'no `describe` of its own is code only (a subclass doesn\'t inherit its parent\'s): a scene that uses it validates with',
     'a warning.',
     '',
+    'A build takes only the module `game.json` names, so name it (the editor\'s Project Settings › Behaviours writes it).',
+    'The editor\'s Play in place also runs a `behaviours.js` at the project\'s root that `game.json` doesn\'t name, and its',
+    'Export Game refuses such a project rather than build it without its behaviours (`vrmxg-export` leaves such a module',
+    'out). The editor reads the module when the project opens, when Project Settings names another one, and before a',
+    'Play when its text has changed; a module file added while the project is open is seen once the project is opened',
+    'again. While it plays, saving the module reloads it in place, a behaviour keeping its state when its declared state',
+    'has the same shape and starting again on its node when it hasn\'t. The [tutorial](../guide/tutorial) writes one,',
+    'attaches it and wires its signal.',
+    '',
     '```js',
     'import { Behaviour } from \'@vrmxg/core\';',
     'export class tableZone extends Behaviour {',
@@ -285,7 +300,7 @@ function behavioursPage() {
   for (const b of declared) out.push(...behaviourSection(b, '###'));
   return page({
     title: 'Behaviours', order: 20, from: '`@vrmxg/registry` (`m0Registry`)',
-    description: `The ${all.length} behaviours the registry declares, with their params and the signals and actions they add.`,
+    description: `The ${all.length} behaviours the registry declares, with their params and the signals and actions they add, and how a project declares its own.`,
     body: out.join('\n'),
   });
 }
@@ -863,6 +878,9 @@ function llms() {
   for (const s of sections) out.push('', `## ${s.title}`, '', ...s.pages.map(link));
   out.push('', '## Node types', '', ...[...reg.types.values()].map((t) => `- [${t.name}](reference/nodes.md#${slugOf(t.name)}): ${t.description}`));
   out.push('', '## Behaviours', '', ...[...reg.behaviours.values()].map((b) => `- [${b.name}](reference/behaviours.md#${slugOf(b.name)}): ${b.description || `on ${b.on?.join(', ') ?? 'any node'}`}`));
+  out.push(
+    '- [Project behaviours](reference/behaviours.md#project-behaviours): a project\'s own, exported from the module game.json\'s `behaviours` names (the editor\'s Project Settings › Behaviours), each class declaring itself with a static `describe` ({ description, on, params, signals, actions, state }); guide/tutorial.md writes one',
+    ...rushDeclared().map((b) => `- [${b.name}](reference/behaviours.md#${slugOf(b.name)}) (the sample game's own): ${b.description}`));
   out.push('', '## MCP servers', '',
     `- [vrmxg-mcp (headless)](reference/mcp.md): \`${usage[0]}\`: ${headless.length} tools on one scene file and a headless engine`,
     `- [vrmxg-mcp --editor](reference/mcp.md): ${editor.length} tools on the scene open in the VRMXG editor (127.0.0.1:${editorPort})`,

@@ -6,8 +6,8 @@ order: 2
 
 # Running the apps and the sample
 
-This page gets the apps running on the sample project. It is not a guide to using them: the creator's and the editor's
-guides come later, once their interfaces settle.
+This page gets the apps running on the sample project. It is not a guide to using them: [the editor](./editor) and the
+[tutorial](./tutorial) are, for building games. The creator's guide comes later, once its interface settles.
 
 ## What you need
 

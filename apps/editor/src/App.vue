@@ -237,7 +237,10 @@ const settingsPlan = (row, slot, binding) => settings.planRebind(row, slot, bind
 async function settingsDo(fn) {
   if (!settings) return;
   ui.settingsBusy = true;
+  const module = settings.view().behaviours;
   try { await fn(settings); } catch { /* the panel shows settings.error */ } finally {
+    // the behaviours module changed (M6 W9): the inspector, Play and Export Game use the one game.json names now
+    if (settings && settings.view().behaviours !== module) { try { await ed.reloadBehaviours(); } catch (e) { ed.error = String(e?.message ?? e); } }
     ui.settingsBusy = false;
     if (settings) { ui.settings = settings.view(); ed.gameLayers = settings.view().layers?.length ? [...settings.view().layers] : ['default']; } // the inspector's layer menus (M6 W1)
     refresh(); // a new game.json, or a scene's file list
@@ -272,7 +275,8 @@ const checkScrub = () => act(() => ed.checkExportAgainstScrub());
 const bakeTake = () => act(async () => { const ref = await ed.bakeTake(ui.ex.take, ui.ex.name.trim() || null); ui.ex.open = false; await ed.openScene(ref); });
 const exportVideo = () => act(() => ed.exportVideo({ take: ui.ex.take, seconds: +ui.ex.seconds, size: ui.ex.size, fps: ui.ex.fps, codec: ui.ex.codec, audio: ui.ex.audio, name: ui.ex.name.trim() }));
 // not while the window is asking something (the close sheet, M5 W8): that question first, as the menu can't know of it
-const exportGame = () => (sheet.asking ? null : act(() => ed.exportGame({ name: ui.ex.gameName.trim() })));
+// File › Export Game… opens the Export panel (M6 W9): its line is where the result, or the refusal, is said
+const exportGame = () => { if (sheet.asking) return null; if (ui.mode === 'editing') ui.ex.open = true; return act(() => ed.exportGame({ name: ui.ex.gameName.trim() })); };
 const saveStill = () => act(() => ed.saveStill(ui.ex.size));
 const thumbnail = () => act(() => ed.makeThumbnail());
 const select = (id, add) => act(() => ed.session.select([id], { add }));
@@ -564,7 +568,7 @@ const sheetGroups = shortcutGroups();
         <button id="paste" type="button" :aria-label="ui.clip ? `Paste ${ui.clip} node${ui.clip > 1 ? 's' : ''}` : 'Paste'" title="Paste (⌘V)" :disabled="!ui.clip || ui.mode !== 'editing'" @click="pasteNodes()">Paste</button>
       </div>
       <div class="tree-search">
-        <input id="tree-search" v-model="ui.treeQuery" type="search" placeholder="Search: name, id, type:Light, is:overridden" aria-label="Search the scene tree">
+        <input id="tree-search" v-model="ui.treeQuery" type="search" placeholder="Search: name, id, type:point, is:overridden" aria-label="Search the scene tree">
         <output v-if="shownTree.matches !== null" id="tree-matches" :aria-label="`${shownTree.matches} matching nodes`">{{ shownTree.matches }}</output>
       </div>
       <ul class="tree" role="tree" aria-label="Scene tree" @dragover.prevent @drop.prevent="dropOnScene">
@@ -707,7 +711,9 @@ html, body, #app { margin: 0; height: 100%; background: var(--bg); color: var(--
 .file-name { width: 120px; }
 .project { flex: none; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar:not(.status) { flex-wrap: nowrap; overflow-x: auto; }
-.dock-head select { width: 110px; min-width: 0; }
+.dock-head select { width: 110px; min-width: 0; flex: none; }
+/* the Scene panel's head: its node type menu kept whole (it shrank to nothing beside the heading), the buttons wrapping */
+.dock.left .dock-head { flex-wrap: wrap; }
 .sep { width: 1px; height: 20px; background: var(--line); }
 .field { display: flex; align-items: center; gap: 6px; color: var(--muted); }
 button, select, input { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; }

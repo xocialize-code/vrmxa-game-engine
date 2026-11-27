@@ -1,5 +1,5 @@
 <script setup>
-// The project settings panel (M6 W3, AB-T-0646): the game (title, id, version), its scenes (the entry and the scenes it
+// The project settings panel (M6 W3, AB-T-0646): the game (title, id, version, its behaviours module: M6 W9), its scenes (the entry and the scenes it
 // can reach), its controls (every action's key and gamepad button, rebound by pressing the new one; the game's own
 // actions added and removed) and its physics layers (names, and which pairs collide). Each change is one undo step of
 // the project's settings (project-settings.js) and is written to game.json at once. The text fields are
@@ -93,6 +93,9 @@ const S = (o) => ({ type: 'string', ...o });
           <div class="field"><span>Title</span><ValueField id="settings-title" label="Game title" :schema="S({})" :value="view.title" :optional="false" :disabled="disabled" @change="(v) => op('setTitle', v ?? '')" /></div>
           <div class="field"><span>Id</span><ValueField id="settings-id" label="Game id" :schema="S({ pattern: '^[a-z0-9][a-z0-9-]{0,63}$' })" :value="view.id" :optional="false" :disabled="disabled" @change="(v) => op('setId', v ?? '')" /></div>
           <div class="field"><span>Version</span><ValueField id="settings-release" label="Game version" :schema="S({})" :value="view.release" :disabled="disabled" @change="(v) => op('setRelease', v ?? '')" /></div>
+
+          <div class="field"><span>Behaviours</span><ValueField id="settings-behaviours" label="Behaviours module" :schema="{ enum: [null, ...view.modules] }" :value="view.behaviours || null" :optional="false" :disabled="disabled" @change="(v) => op('setBehaviours', v ?? null)" /></div>
+          <p v-if="view.unnamedBehaviours" id="settings-behaviours-note" class="muted small" role="status">behaviours.js runs when you play here, but a build takes only the module chosen here: choose it to export it.</p>
 
           <h3>Scenes</h3>
           <div class="field"><span>Starts in</span><ValueField id="settings-entry" label="Entry scene" :schema="{ enum: view.scenes.map((s) => s.ref) }" :value="view.entry || undefined" :disabled="disabled || !view.scenes.length" @change="(v) => op('setEntry', v)" /></div>
