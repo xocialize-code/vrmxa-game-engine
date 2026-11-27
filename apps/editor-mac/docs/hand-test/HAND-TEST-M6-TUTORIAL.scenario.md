@@ -11,7 +11,8 @@ Run `apps/editor-mac/scripts/build.sh`, launch the app once (its container must 
 and the scenario's text editor in the background: `acceptance/m6/tutorial.mjs files`, which saves the page's
 `behaviours.js` and licence row into the new project when step 5 writes its trigger screenshot), then, holding the GPU
 lock, `appprobe checklist scenario=apps/editor-mac/docs/hand-test/HAND-TEST-M6-TUTORIAL.scenario.md`. Last, step 12
-outside the app: `node acceptance/m6/tutorial.mjs play <container>/tmp/w9-builds/coin-run`. The WebGL twin
+outside the app: `node acceptance/m6/tutorial.mjs play <container>/tmp/w9-builds/coin-run`. `VRMXG_SHELL_BUILD`
+names that exact folder (the fixtures make it empty), standing in for the folder the reader creates in the panel. The WebGL twin
 (`-webgl.scenario.md`, fixtures `… webgl`) differs only in its `env` (`VRMXG_QUERY=renderer=webgl`, its own folders)
 and the renderer line; the test holds the two equal otherwise.
 
@@ -19,7 +20,7 @@ and the renderer line; the test holds the two equal otherwise.
 app: VRMXG Editor
 launch: ../../build/VRMXGEditor.app
 checklist: ../HAND-TEST-M6-TUTORIAL.md
-env: {"VRMXG_SHELL_NEW_PROJECT": "w9-projects/", "VRMXG_SHELL_BUILD": "w9-builds/", "VRMXG_SHELL_SETTINGS": "w9-settings.json", "VRMXG_SHELL_CACHE": "w9-cache"}
+env: {"VRMXG_SHELL_NEW_PROJECT": "w9-projects/", "VRMXG_SHELL_BUILD": "w9-builds/coin-run", "VRMXG_SHELL_SETTINGS": "w9-settings.json", "VRMXG_SHELL_CACHE": "w9-cache"}
 fresh: false
 ```
 
@@ -145,12 +146,19 @@ fresh: false
   until find("id=project-name").0.name == "Project Coin Run" timeout=30000
   until find("id=doc-state").0.name matches "^Scene level.vrmxs 16 nodes saved valid" timeout=90000   # the counter and the goal kept
   expect find("id=behaviour-error").count == 0   # the module loaded and declared itself
+  menu "File › Export Game…" press   # "try File › Export Game… before you set it"
+  wait id=export-panel timeout_ms=10000   # "the Export panel opens"
+  until find("id=export-game-result").0.name matches "^Game export refused .unnamed_behaviours.: behaviours.js runs when you play here, but game.json doesn't name it.*Project Settings › Behaviours" timeout=30000   # "with the refusal on its line, saying what to do"
+  expect find("role=alert").count == 0   # on the Export line, not the window's error
+  act id=export-open action=press   # the panel closed again: row 11 opens it from the menu
+  wait id=export-panel gone=true timeout_ms=5000
   menu "File › Project Settings…" press   # "Then choose File › Project Settings…"
   wait id=project-settings timeout_ms=10000
   expect find("id=settings-behaviours-note").count == 1   # Play would run it, a build wouldn't: said until it is named
   act id=settings-behaviours action=focus   # "under Behaviours, pick behaviours.js"
-  pause 300
+  pause 500   # the settings sheet just opened: let the menu's control settle (a pick was once lost here)
   keys down
+  pause 300
   act surface=app role=menuitem name="behaviours.js" exact=true action=press
   until find("id=settings-undo").0.name == "Undo Behaviours behaviours.js" timeout=10000
   expect find("id=settings-behaviours-note").count == 0
@@ -294,9 +302,12 @@ fresh: false
   expect find("id=node-glint-3").count == 1
   act id=node-coin-2 action=press
   until find("id=inspector-id").0.name == "Node coin-2"
+  pause 300
   expect find("id=conn-6-to").0.value == "glint-2"   # "retargeted to the copy: coin-2 stops glint-2" (its copies are the scene's connections 7 and 8)
   expect find("id=conn-7-to").0.value == "hana"   # "and still has Hana say her line"
-  act id=pos-x action=set_value value="0"   # "coin-2: Position 0, 0.5, 2.6"
+  act id=field-name action=set_value value="Coin 2"   # "coin-2: Name Coin 2"
+  until find("id=field-name").0.value == "Coin 2" timeout=5000
+  act id=pos-x action=set_value value="0"   # "Position 0, 0.5, 2.6"
   until find("id=pos-x").0.value == "0" timeout=5000
   act id=pos-y action=set_value value="0.5"
   until find("id=pos-y").0.value == "0.5" timeout=5000
@@ -304,7 +315,10 @@ fresh: false
   until find("id=pos-z").0.value == "2.6" timeout=5000
   act id=node-coin-3 action=press
   until find("id=inspector-id").0.name == "Node coin-3"
-  act id=pos-x action=set_value value="0"   # "coin-3: Position 0, 0.5, 1.3"
+  pause 300
+  act id=field-name action=set_value value="Coin 3"   # "coin-3: Name Coin 3"
+  until find("id=field-name").0.value == "Coin 3" timeout=5000
+  act id=pos-x action=set_value value="0"   # "Position 0, 0.5, 1.3"
   until find("id=pos-x").0.value == "0" timeout=5000
   act id=pos-y action=set_value value="0.5"
   until find("id=pos-y").0.value == "0.5" timeout=5000
@@ -313,6 +327,8 @@ fresh: false
   act id=save action=press   # "Then Save"
   until find("id=saved").0.name matches "^Saved level.vrmxs · [0-9]+ bytes" timeout=20000
   until find("id=doc-state").0.name matches "^Scene level.vrmxs 22 nodes saved valid" timeout=20000   # "The scene is valid"
+  expect find("id=node-coin-3").0.name contains "Coin 3"   # the copies named
+  shot "editor-window"
   ```
 
 - [ ] 10. Play it
@@ -332,10 +348,10 @@ fresh: false
 
 - [ ] 11. Export the game
   ```steps
-  act id=export-open action=press   # the Export panel, where the result line is
-  wait id=export-game timeout_ms=5000
+  expect find("id=export-panel").count == 0   # closed since row 6
   menu "File › Export Game…" press   # "Choose File › Export Game…"
-  until find("id=export-game-result").0.name matches "^Exported game coin-run: [0-9]+ files, [0-9]+ bytes, entry level.vrmxs, runtime vrmxg-game .*/w9-builds[^/]*/coin-run$" timeout=180000   # "named after the game's id: coin-run"
+  wait id=export-panel timeout_ms=10000   # "The Export panel opens"
+  until find("id=export-game-result").0.name matches "^Exported game coin-run: [0-9]+ files, [0-9]+ bytes, entry level.vrmxs, runtime vrmxg-game .*/w9-builds[^/]*/coin-run$" timeout=180000   # "create an empty folder, coin-run, and choose it" (VRMXG_SHELL_BUILD names that folder: the shell writes into exactly it)
   expect find("role=alert").count == 0
   ```
 

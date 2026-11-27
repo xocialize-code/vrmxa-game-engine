@@ -39,7 +39,7 @@ export const SHORTCUTS = [
   { group: 'Fly camera', label: 'Roll', keys: 'Q E', where: 'fly', codes: ['q', 'e'] },
   { group: 'Fly camera', label: 'Pitch and turn', keys: '↑ ↓ ← →', where: 'fly', codes: ['arrowup', 'arrowdown', 'arrowleft', 'arrowright'] },
   { group: 'Fly camera', label: 'Slower', keys: '⇧', where: 'fly', codes: ['shift'] },
-  { group: 'Number fields', label: 'Step up, down (⇧ ×10, ⌥ ×0.1)', keys: '↑ ↓', where: 'number', codes: ['arrowup', 'arrowdown'] },
+  { group: 'Number fields', label: 'Step up, down (⇧ ×0.1, ⌥ ×10)', keys: '↑ ↓', where: 'number', codes: ['arrowup', 'arrowdown'] },
   { group: 'Number fields', label: 'Commit what you typed (arithmetic too)', keys: '↩', where: 'number', codes: ['enter'] },
   { group: 'Number fields', label: 'Put it back; cancel a drag', keys: 'Esc', where: 'number', codes: ['escape'] },
   { group: 'Timeline', label: 'Play, pause', keys: 'Space', where: 'timeline', codes: [' '] },

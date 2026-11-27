@@ -17,7 +17,7 @@ builds="$tmp/w9-builds$suffix"
 triggers="/private/tmp/vrmxg-w9-tutorial$suffix"
 mkdir -p "$tmp"
 rm -rf "$projects" "$builds" "$tmp/w9-settings$suffix.json" "$tmp/w9-cache$suffix" "$triggers"
-mkdir -p "$projects" "$builds" "$triggers"
+mkdir -p "$projects" "$builds/coin-run" "$triggers" # coin-run: the empty folder the tutorial has the reader create for the build
 echo "projects in $projects, builds in $builds"
 nohup node "$root/acceptance/m6/tutorial.mjs" files "$projects" "$triggers" > "$triggers/files.log" 2>&1 &
 echo "the scenario's text editor: pid $!, log $triggers/files.log"

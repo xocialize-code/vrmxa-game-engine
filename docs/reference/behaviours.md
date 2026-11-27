@@ -180,10 +180,12 @@ a warning.
 
 A build takes only the module `game.json` names, so name it (the editor's Project Settings › Behaviours writes it).
 The editor's Play in place also runs a `behaviours.js` at the project's root that `game.json` doesn't name, and its
-Export Game refuses such a project rather than build it without its behaviours. The editor reads the module when the
-project opens and again before a Play when it has changed; while it plays, saving the module reloads it in place,
-a behaviour keeping its state when its declared state has the same shape and starting again on its node when it
-hasn't. The [tutorial](../guide/tutorial) writes one, attaches it and wires its signal.
+Export Game refuses such a project rather than build it without its behaviours (`vrmxg-export` leaves such a module
+out). The editor reads the module when the project opens, when Project Settings names another one, and before a
+Play when its text has changed; a module file added while the project is open is seen once the project is opened
+again. While it plays, saving the module reloads it in place, a behaviour keeping its state when its declared state
+has the same shape and starting again on its node when it hasn't. The [tutorial](../guide/tutorial) writes one,
+attaches it and wires its signal.
 
 ```js
 import { Behaviour } from '@vrmxg/core';

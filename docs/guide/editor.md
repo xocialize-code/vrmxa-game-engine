@@ -58,23 +58,26 @@ The right panel edits the selected node. It is generated from the node type's sc
 type has a field, and nothing is typed as JSON. The [node reference](../reference/nodes) lists every type and prop.
 
 - **Id**: the name connections, behaviours and other props use for the node. Change it and every reference in the
-  scene follows. A node another file names (a game condition, another scene) can't be renamed here.
+  scene follows. A node another file depends on by its id (a sequence that films the scene, a scene that places this
+  one as a prefab) can't be renamed: the refusal names the files. A counter, timer or goal another scene's condition
+  reads keeps its old id as its `key`, so the condition still finds it.
 - **Name, Parent, Before** (its place among its siblings, which is the order the scene runs them in).
 - **Position, rotation** (degrees) **and scale**.
-- **Every prop by its widget.** Numbers are dragged (drag the field sideways), stepped with ↑ and ↓ (⇧ ×10, ⌥ ×0.1)
+- **Every prop by its widget.** Numbers are dragged (drag the field sideways), stepped with ↑ and ↓ (⇧ ×0.1, ⌥ ×10)
   or typed, arithmetic included: `4*60` is 240. Vectors have a field per axis; colours a picker; a node prop a menu of
   the scene's nodes; a file prop takes a file dragged from the assets panel; lists and maps add and remove rows; a
   choice between shapes (a condition's test) has a menu for its kind.
 - **Defaults and pins.** A prop that isn't set shows its default. The pin writes the default into the scene, so the
   scene keeps it even if the engine's default changes; the reset takes a set prop back out.
 - **Props that don't apply are hidden or greyed out**: a box collider shows its size, not a radius.
-- **Several nodes at once.** **Also select** and **Select every Area** (for the selected type) select more without a
-  modifier key. A field where the nodes differ reads *mixed*; typing a value sets it on all of them, as one undo step.
+- **Several nodes at once.** The **Also select…** menu and the **All 3 Area** button (every node of the selected
+  type) select more without a modifier key. A field where the nodes differ shows **—** (or *mixed*); typing a value
+  sets it on all of them, as one undo step.
 - **Copy and paste a value**: the ⧉ and ⎘ buttons beside a prop copy its value and paste it into the same prop of
   another node (and the transform's, its position, rotation and scale).
 
-Every change is one step of **Edit › Undo**, and the Undo button's name says what it undoes ("Undo Set coins.label").
-A drag is one step, however long it lasts.
+Every change is one step of **Edit › Undo**; the toolbar's Undo button names the step in its tooltip ("Undo Set
+coins.label"). A drag is one step, however long it lasts.
 
 ## Behaviours and connections
 
@@ -85,13 +88,21 @@ Under the props are two panels that make a scene a game.
 **Behaviours.** A behaviour is code attached to a node. The **Add a behaviour…** menu lists the behaviours that attach to
 the node's type: the engine's own (`player`, `wander`, `brain`, `pickup`, …, in the
 [behaviours reference](../reference/behaviours)) and the project's. Each behaviour on the node shows its params, edited
-like props, by their schema. Remove takes it off.
+like props, by their schema. Its **×** takes it off.
 
 A project's own behaviours come from its **behaviours module**: a JavaScript file the project names in Project
 Settings, usually `behaviours.js`. A class declares its params, the signals it sends and the state it keeps with a
 `static describe`, which is how the panel knows its fields. The [tutorial](./tutorial#_5-write-the-coin-behaviour)
-writes one, and [Project behaviours](../reference/behaviours#project-behaviours) has every key. The editor reads the
-module when the project opens, and again before each Play when it has changed.
+writes one, and [Project behaviours](../reference/behaviours#project-behaviours) has every key.
+
+When the editor reads the module:
+
+- when the project opens;
+- when you choose another module in Project Settings › Behaviours;
+- before each Play, if its text has changed since it was read (and while it plays, when you save it: hot reload).
+
+A module file you add to the folder while the project is open isn't seen until you open the project again (File ›
+Open Recent): the editor lists a project's files when it opens it.
 
 **Connections.** A connection says: *when this node sends this signal, call this action on that node, with these
 arguments*. The panel lists the selected node's outgoing connections. To add one, pick a **signal** (the node type's
@@ -110,7 +121,8 @@ one: a frame, a hinged leaf and a trigger area, placed as many times as the cafe
 
 - **Place** one from the assets panel (prefabs are listed with the scenes' other files).
 - **Fold it open** in the tree to see its nodes (`door-1/hinge`). Selecting one edits it as an **override** of that
-  instance only: a dot marks each overridden prop, with the prefab's own value beside it. Click the dot to revert.
+  instance only: a dot marks each overridden prop, and its tooltip gives the prefab's own value. Click the dot to
+  revert.
 - The instance's **Overrides** list in the inspector has every override it carries. **Revert** takes one out;
   **Apply** writes it into the prefab's own file instead, so every instance gets it. The editor names the file and its
   other instances before it applies, and Apply is one undo step across both files. Save writes the prefab too.
@@ -133,7 +145,7 @@ animations.
 ## The viewport
 
 The middle of the window is the scene as it will look, drawn with WebGPU where the Mac has it, else WebGL (the status
-bar's **Renderer** says which).
+bar says which).
 
 - **Orbit** (drag), **pan** (right-drag) and **dolly** (scroll), or switch the toolbar to **Fly** (WASD, R and F up
   and down, the arrows to turn). **F** frames the selection.
@@ -203,32 +215,37 @@ changed:
 |---|---|
 | A model's textures and materials, a sound, a line of dialogue's audio, a key or button rebound, a reworded description in a behaviour's `describe` | Any edit to a scene or a prefab; a changed item or character; a model's nodes, meshes or animations; a behaviour's declared state changing shape; any edit to a behaviour that declares no state; an action added, removed or renamed; a new version of the engine |
 
-A behaviour's `describe.state` decides it, which is why declaring it matters: a behaviour without one counts by its
-code, so any change to its code refuses earlier saves. Replays (a recorded session played back) compare the whole
-build, so any change refuses those.
+A behaviour's `describe.state` decides it, which is why declaring it matters. A project behaviour the game's scenes
+use that declares no `state` is counted by the text of the whole behaviours module (and what it imports): while any
+such behaviour is attached, any edit to the module, a reworded description included, refuses earlier saves. When every
+project behaviour the scenes use declares its state, only a change to a state's shape does. Replays (a recorded
+session played back) compare the whole build, so any change refuses those.
 
 ## Export Game
 
-**File › Export Game…** (⇧⌘E) makes the build players get. The editor checks everything first and only then asks
-for a folder, so a refused export changes nothing:
+**File › Export Game…** (⇧⌘E) makes the build players get. It opens the **Export** panel, whose line says what
+happened. The editor checks everything first and only then asks for a folder, so a refused export changes nothing:
 
 - every file the game uses has a row in `LICENCES.md`;
 - every file a scene names is in the project, with the same case;
 - the behaviours module loads and its declarations are valid, and it is the module `game.json` names (Project Settings
   › Behaviours): one that only Play runs would leave the build without it, so the export refuses it.
 
-Then it writes a folder named after the game's id: the game app, the project's files under `project/`, and
-`vrmxg-build.json`, which lists every file with its SHA-256 and licence. The **Export** panel's line says how many files
-and bytes it wrote, or which file was refused and why. The build is made from the saved files: unsaved changes in the
+Then it asks for a folder: choose or create an empty one (or the folder of an earlier build of the game, which it
+replaces; a folder holding anything else is refused). It writes the game app, the project's files under `project/`,
+and `vrmxg-build.json`, which lists every file with its SHA-256 and licence. The Export panel's line says how many
+files and bytes it wrote, or what was refused and why. The build is made from the saved files: unsaved changes in the
 open scene aren't in it, and the line says so.
 
 A build plays:
 
 - **in a browser**, from any static web host, or locally with `node apps/game/scripts/play.mjs <build folder>`.
-  `vrmxg-export <project> <out> --worker` also writes a folder ready for a Cloudflare Worker; putting a game on the web
-  is yours to do;
-- **as a Mac app**: `apps/game-mac/scripts/build.sh <build folder>` makes `build/<game id>.app`, named after the game,
-  with its own saves. It is ready to be signed with a Developer ID and notarised; signing and notarising are steps for
-  whoever publishes the game.
+  `vrmxg-export --worker <build folder> <out> [--name <worker>]` turns a finished build into a folder ready for a
+  Cloudflare Worker; putting a game on the web is yours to do;
+- **as a Mac app**: `apps/game-mac/scripts/build.sh <build folder>` makes `apps/game-mac/build/<game id>.app`, named
+  after the game, with its own saves. It is ready to be signed with a Developer ID and notarised; signing and
+  notarising are steps for whoever publishes the game.
 
-The same build comes from Node: `vrmxg-export <project folder> <out>` writes the same bytes the editor does.
+The same build comes from Node: `vrmxg-export <project folder> <out>` writes the same bytes the editor does, once
+`game.json` names the behaviours module. (Unlike the editor, `vrmxg-export` doesn't yet refuse a root `behaviours.js`
+that `game.json` doesn't name: it leaves it out.)

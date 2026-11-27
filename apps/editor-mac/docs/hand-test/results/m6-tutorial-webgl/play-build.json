@@ -3,7 +3,7 @@
   {
    "name": "the build is whole, every file as its manifest says (coin-run)",
    "ok": true,
-   "detail": "whole, 61 files, digest c809be3cc36ae9d2"
+   "detail": "whole, 61 files, digest b335b1e9e1d98c07"
   },
   {
    "name": "the build carries behaviours.js, named by game.json",
@@ -28,7 +28,7 @@
   {
    "name": "webgpu: three coins collected, every glint stopped, \"Get to the counter\" next, won, then the ending",
    "ok": true,
-   "detail": "3 coins at step 111, won at 159, then ending.vrmxs"
+   "detail": "3 coins at step 110, won at 160, then ending.vrmxs"
   },
   {
    "name": "webgpu: no errors in the page",
@@ -48,7 +48,7 @@
   {
    "name": "webgl: three coins collected, every glint stopped, \"Get to the counter\" next, won, then the ending",
    "ok": true,
-   "detail": "3 coins at step 108, won at 161, then ending.vrmxs"
+   "detail": "3 coins at step 107, won at 158, then ending.vrmxs"
   },
   {
    "name": "webgl: no errors in the page",
@@ -59,7 +59,7 @@
  "results": {
   "build": "coin-run",
   "game": "coin-run",
-  "digest": "c809be3cc36ae9d2ffff93d5596f42c7e243cd830e24c3f72aa3830d12812157",
+  "digest": "b335b1e9e1d98c076994a2bb1b3086653cccfcac24c12dad08e5d5bf9800e7e5",
   "runs": [
    {
     "where": "node",
@@ -107,16 +107,16 @@
     "where": "chromium-webgpu",
     "title": "Coin Run",
     "first": 15,
-    "three": 111,
-    "won": 159,
+    "three": 110,
+    "won": 160,
     "ending": "ending.vrmxs"
    },
    {
     "where": "chromium-webgl",
     "title": "Coin Run",
     "first": 14,
-    "three": 108,
-    "won": 161,
+    "three": 107,
+    "won": 158,
     "ending": "ending.vrmxs"
    }
   ]

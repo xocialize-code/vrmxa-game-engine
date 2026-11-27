@@ -73,7 +73,8 @@ connections in the inspector, WebCodecs export in a browser (the spike chose it 
   (`project.recent`, `project.reopen`: bookmarks, so no panel after a relaunch).
 - **Project Settings…** (⇧⌘P, `src/ProjectSettings.vue` over `src/project-settings.js`): the game's title, id and
   version (`@vrmxg/editor-ui`'s ValueField), its behaviours module (a `.js` file of the project, M6 W9: what a build
-  takes; Play also runs an unnamed root `behaviours.js`, and the panel says so until it is named), the entry scene and the scenes it can reach, the controls (every action's
+  takes, read again at once by the inspector and Play, `EditorHost.reloadBehaviours`; Play also runs an unnamed root
+  `behaviours.js`, and the panel says so until it is named, while Export Game refuses it on the Export line), the entry scene and the scenes it can reach, the controls (every action's
   key and gamepad button, rebound by pressing the new one, with `@vrmxg/game-ui`'s rows and conflict plan; actions of
   the game's own added and removed), and the physics layers with a collision matrix kept symmetric. Each change is one
   undo step of the settings' own history (Edit › Undo and Redo are the panel's while it is open) and is written at once

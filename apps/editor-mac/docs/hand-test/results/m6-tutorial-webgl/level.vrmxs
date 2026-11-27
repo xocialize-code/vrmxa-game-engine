@@ -28,9 +28,9 @@
     {"id":"coins","type":"GameCounter","parent":"rules","props":{"label":"Coins"}},
     {"id":"coin-1","type":"Area","parent":"root","name":"Coin 1","transform":{"p":[0,0.5,4]},"props":{"shape":"box","size":[1,1,0.6]},"behaviours":[{"use":"coin"}]},
     {"id":"glint-1","type":"ParticleEmitter","parent":"coin-1","props":{"effect":"sparks"}},
-    {"id":"coin-2","type":"Area","parent":"root","name":"Coin 1","transform":{"p":[0,0.5,2.6]},"props":{"shape":"box","size":[1,1,0.6]},"behaviours":[{"use":"coin"}]},
+    {"id":"coin-2","type":"Area","parent":"root","name":"Coin 2","transform":{"p":[0,0.5,2.6]},"props":{"shape":"box","size":[1,1,0.6]},"behaviours":[{"use":"coin"}]},
     {"id":"glint-2","type":"ParticleEmitter","parent":"coin-2","props":{"effect":"sparks"}},
-    {"id":"coin-3","type":"Area","parent":"root","name":"Coin 1","transform":{"p":[0,0.5,1.3]},"props":{"shape":"box","size":[1,1,0.6]},"behaviours":[{"use":"coin"}]},
+    {"id":"coin-3","type":"Area","parent":"root","name":"Coin 3","transform":{"p":[0,0.5,1.3]},"props":{"shape":"box","size":[1,1,0.6]},"behaviours":[{"use":"coin"}]},
     {"id":"glint-3","type":"ParticleEmitter","parent":"coin-3","props":{"effect":"sparks"}}
   ],
   "connections": [

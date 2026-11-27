@@ -68,7 +68,7 @@ export function withLicenceRow(text, row) {
 export function webglTwin(text) {
   const out = text
     .replace(/^(# .*AppProbe scenario)$/m, '$1, WebGL forced')
-    .replace(/^env: \{(.*)\}$/m, (_, body) => `env: {"VRMXG_QUERY": "renderer=webgl", ${body.replace(/"w9-(projects|builds)\/"/g, '"w9-$1-webgl/"').replace('"w9-settings.json"', '"w9-settings-webgl.json"').replace('"w9-cache"', '"w9-cache-webgl"')}}`)
+    .replace(/^env: \{(.*)\}$/m, (_, body) => `env: {"VRMXG_QUERY": "renderer=webgl", ${body.replace('"w9-projects/"', '"w9-projects-webgl/"').replace('"w9-builds/coin-run"', '"w9-builds-webgl/coin-run"').replace('"w9-settings.json"', '"w9-settings-webgl.json"').replace('"w9-cache"', '"w9-cache-webgl"')}}`)
     .replace('Renderer WebGPU', 'Renderer WebGL')
     .replaceAll('/tmp/vrmxg-w9-tutorial/', '/tmp/vrmxg-w9-tutorial-webgl/');
   if (out === text) throw new Error('the scenario has none of the lines its twin changes');

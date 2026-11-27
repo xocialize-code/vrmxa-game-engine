@@ -57,38 +57,38 @@
 
       ],
       "log" : [
-        "launched VRMXG Editor pid 98392, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-27T032112Z.log",
-        "21: wait id=open-project enabled=true timeout_ms=40000 → found after 299 ms: button \"Open project\" #open-project [W:VRMXG Editor/0/0/0/0/0/2@4649] (306 ms)",
-        "22: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":44,\"w\":72,\"x\":3190,\"y\":324},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG  (326 ms)",
-        "23: until find(\"id=project-name\").0.name == \"Project w9-guide-project\" timeout=30000 → ok (2625 ms)",
-        "24: act id=file-name action=set_value value=w9-tour.vrmxs → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3877,\"y\":333},\"help\":\"The file New and Save As use, in the project\",\"id\":\"fi (869 ms)",
+        "launched VRMXG Editor pid 55184, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-27T044210Z.log",
+        "21: wait id=open-project enabled=true timeout_ms=40000 → found after 327 ms: button \"Open project\" #open-project [W:VRMXG Editor/0/0/0/0/0/2@4649] (333 ms)",
+        "22: act id=open-project action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":44,\"w\":72,\"x\":3190,\"y\":324},\"help\":\"\",\"id\":\"open-project\",\"name\":\"Open project\",\"ref\":\"W:VRMXG  (161 ms)",
+        "23: until find(\"id=project-name\").0.name == \"Project w9-guide-project\" timeout=30000 → ok (2991 ms)",
+        "24: act id=file-name action=set_value value=w9-tour.vrmxs → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":3877,\"y\":333},\"help\":\"The file New and Save As use, in the project\",\"id\":\"fi (956 ms)",
         "25: act id=open-file action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":52,\"x\":4023,\"y\":333},\"help\":\"Open the scene or sequence named in the file field\",\"id\":\"o (57 ms)",
-        "26: until find(\"id=doc-state\").0.name matches \"^Scene w9-tour.vrmxs 10 nodes saved valid\" timeout=60000 → ok (304 ms)",
-        "27: set CLEAN = find(\"id=doc-state\").0.name → \"Scene w9-tour.vrmxs 10 nodes saved valid hash 15527b721164a73f\" (39 ms)",
-        "28: act id=fold-door-a action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":19,\"w\":14,\"x\":3062,\"y\":582},\"help\":\"\",\"id\":\"fold-door-a\",\"name\":\"Expand door-a\",\"ref\":\"W:VRMXG  (44 ms)",
-        "29: until find(\"id=node-door-a/hinge\").count == 1 → ok (50 ms)",
-        "30: act id=node-door-a/hinge action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":3040,\"y\":652},\"help\":\"\",\"id\":\"node-door-a/hinge\",\"name\":\"door-a/hinge, RigidBody (41 ms)",
+        "26: until find(\"id=doc-state\").0.name matches \"^Scene w9-tour.vrmxs 10 nodes saved valid\" timeout=60000 → ok (299 ms)",
+        "27: set CLEAN = find(\"id=doc-state\").0.name → \"Scene w9-tour.vrmxs 10 nodes saved valid hash 15527b721164a73f\" (50 ms)",
+        "28: act id=fold-door-a action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":19,\"w\":14,\"x\":3062,\"y\":582},\"help\":\"\",\"id\":\"fold-door-a\",\"name\":\"Expand door-a\",\"ref\":\"W:VRMXG  (41 ms)",
+        "29: until find(\"id=node-door-a/hinge\").count == 1 → ok (49 ms)",
+        "30: act id=node-door-a/hinge action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":3040,\"y\":652},\"help\":\"\",\"id\":\"node-door-a/hinge\",\"name\":\"door-a/hinge, RigidBody (42 ms)",
         "31: until find(\"id=inspector-inner\").count == 1 → ok (78 ms)",
-        "32: act id=prop-mass action=set_value value=20 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":136,\"x\":4492,\"y\":859},\"help\":\"\",\"id\":\"prop-mass\",\"name\":\"mass\",\"ref\":\"W:VRMXG Editor (455 ms)",
-        "33: until find(\"id=undo\").0.name == \"Undo Override door-a/hinge.mass\" → ok (112 ms)",
-        "34: expect find(\"id=ov-mass\").0.name == \"mass overrides the prefab (prefab: 12): revert\" → ok (50 ms)",
-        "35: expect find(\"id=overrides-summary\").count == 1 → ok (52 ms)",
-        "36: shot \"editor-override\" (138 ms)",
-        "37: act id=ov-mass action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":13,\"w\":13,\"x\":4353,\"y\":867},\"help\":\"Overridden: the prefab has 12. Click to revert.\",\"id\":\"ov-m (55 ms)",
-        "38: until find(\"id=ov-mass\").count == 0 → ok (162 ms)",
-        "39: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":52,\"x\":4647,\"y\":333},\"help\":\"Revert door-a/hinge.mass\",\"id\":\"undo\",\"name\":\"Undo Revert d (53 ms)",
-        "40: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":52,\"x\":3814,\"y\":333},\"help\":\"Override door-a/hinge.mass\",\"id\":\"undo\",\"name\":\"Undo Overri (176 ms)",
-        "41: until find(\"id=doc-state\").0.name == $CLEAN timeout=5000 → ok (123 ms)"
+        "32: act id=prop-mass action=set_value value=20 → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":136,\"x\":4492,\"y\":859},\"help\":\"\",\"id\":\"prop-mass\",\"name\":\"mass\",\"ref\":\"W:VRMXG Editor (459 ms)",
+        "33: until find(\"id=undo\").0.name == \"Undo Override door-a/hinge.mass\" → ok (115 ms)",
+        "34: expect find(\"id=ov-mass\").0.name == \"mass overrides the prefab (prefab: 12): revert\" → ok (44 ms)",
+        "35: expect find(\"id=overrides-summary\").count == 1 → ok (41 ms)",
+        "36: shot \"editor-override\" (141 ms)",
+        "37: act id=ov-mass action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":13,\"w\":13,\"x\":4353,\"y\":867},\"help\":\"Overridden: the prefab has 12. Click to revert.\",\"id\":\"ov-m (60 ms)",
+        "38: until find(\"id=ov-mass\").count == 0 → ok (145 ms)",
+        "39: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":52,\"x\":4647,\"y\":333},\"help\":\"Revert door-a/hinge.mass\",\"id\":\"undo\",\"name\":\"Undo Revert d (45 ms)",
+        "40: act id=undo action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":52,\"x\":3814,\"y\":333},\"help\":\"Override door-a/hinge.mass\",\"id\":\"undo\",\"name\":\"Undo Overri (132 ms)",
+        "41: until find(\"id=doc-state\").0.name == $CLEAN timeout=5000 → ok (120 ms)"
       ],
       "message" : null,
-      "ms" : 6610,
+      "ms" : 6894,
       "notes" : [
         "shot 1: editor-override"
       ],
       "row" : 1,
       "section" : "",
       "shots" : [
-        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-GUIDE-SHOTS.scenario-2026-11-27T032112Z/shots/r1-1.png"
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-GUIDE-SHOTS.scenario-2026-11-27T044210Z/shots/r1-1.png"
       ],
       "stall_ms" : null,
       "status" : "passed",
@@ -121,16 +121,16 @@
 
       ],
       "log" : [
-        "46: act id=node-zone action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":3040,\"y\":821},\"help\":\"\",\"id\":\"node-zone\",\"name\":\"Trigger (zone), Area\",\"ref\":\"W: (62 ms)",
-        "47: until find(\"id=inspector-id\").0.name == \"Node zone\" → ok (62 ms)",
-        "49: shot \"editor-handles\" (112 ms)",
-        "50: act id=node-cam action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":3040,\"y\":869},\"help\":\"\",\"id\":\"node-cam\",\"name\":\"Camera (cam), Camera\",\"ref\":\"W:V (56 ms)",
-        "51: until find(\"id=inspector-id\").0.name == \"Node cam\" → ok (115 ms)",
-        "53: shot \"editor-preview\" (115 ms)",
-        "54: expect find(\"id=doc-state\").0.name == $CLEAN → ok (49 ms)"
+        "46: act id=node-zone action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":3040,\"y\":821},\"help\":\"\",\"id\":\"node-zone\",\"name\":\"Trigger (zone), Area\",\"ref\":\"W: (54 ms)",
+        "47: until find(\"id=inspector-id\").0.name == \"Node zone\" → ok (76 ms)",
+        "49: shot \"editor-handles\" (80 ms)",
+        "50: act id=node-cam action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":3040,\"y\":869},\"help\":\"\",\"id\":\"node-cam\",\"name\":\"Camera (cam), Camera\",\"ref\":\"W:V (47 ms)",
+        "51: until find(\"id=inspector-id\").0.name == \"Node cam\" → ok (75 ms)",
+        "53: shot \"editor-preview\" (82 ms)",
+        "54: expect find(\"id=doc-state\").0.name == $CLEAN → ok (50 ms)"
       ],
       "message" : null,
-      "ms" : 3867,
+      "ms" : 3820,
       "notes" : [
         "shot 1: editor-handles",
         "shot 2: editor-preview"
@@ -138,8 +138,8 @@
       "row" : 2,
       "section" : "",
       "shots" : [
-        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-GUIDE-SHOTS.scenario-2026-11-27T032112Z/shots/r2-1.png",
-        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-GUIDE-SHOTS.scenario-2026-11-27T032112Z/shots/r2-2.png"
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-GUIDE-SHOTS.scenario-2026-11-27T044210Z/shots/r2-1.png",
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-GUIDE-SHOTS.scenario-2026-11-27T044210Z/shots/r2-2.png"
       ],
       "stall_ms" : null,
       "status" : "passed",
@@ -162,20 +162,20 @@
 
       ],
       "log" : [
-        "59: until find(\"text=thumbnails\").count > 0 timeout=60000 → ok (56 ms)",
-        "60: act id=assets-search action=set_value value=door → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":453,\"x\":3877,\"y\":1049},\"help\":\"\",\"id\":\"assets-search\",\"name\":\"Search assets\",\"ref\":\" (462 ms)",
-        "62: shot \"editor-assets\" (104 ms)",
-        "63: act id=assets-search action=set_value value=\" \" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":453,\"x\":3877,\"y\":1049},\"help\":\"\",\"id\":\"assets-search\",\"name\":\"Search assets\",\"ref\":\" (446 ms)"
+        "59: until find(\"text=thumbnails\").count > 0 timeout=60000 → ok (59 ms)",
+        "60: act id=assets-search action=set_value value=door → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":453,\"x\":3877,\"y\":1049},\"help\":\"\",\"id\":\"assets-search\",\"name\":\"Search assets\",\"ref\":\" (468 ms)",
+        "62: shot \"editor-assets\" (80 ms)",
+        "63: act id=assets-search action=set_value value=\" \" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":453,\"x\":3877,\"y\":1049},\"help\":\"\",\"id\":\"assets-search\",\"name\":\"Search assets\",\"ref\":\" (435 ms)"
       ],
       "message" : null,
-      "ms" : 4383,
+      "ms" : 4329,
       "notes" : [
         "shot 1: editor-assets"
       ],
       "row" : 3,
       "section" : "",
       "shots" : [
-        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-GUIDE-SHOTS.scenario-2026-11-27T032112Z/shots/r3-1.png"
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-GUIDE-SHOTS.scenario-2026-11-27T044210Z/shots/r3-1.png"
       ],
       "stall_ms" : null,
       "status" : "passed",

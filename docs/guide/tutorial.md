@@ -164,7 +164,8 @@ again: **File › Open Recent › Coin Run**. Then choose **File › Project Set
 **Behaviours**, and press **Done**.
 
 Play in place runs a `behaviours.js` at the project's root by itself, but a build takes only the module the game
-names in `game.json`, which this setting writes. Until it is set, Export Game refuses the project and says why.
+names in `game.json`, which this setting writes. Until it is set, Export Game refuses the project: try **File › Export
+Game…** before you set it, and the **Export** panel opens with the refusal on its line, saying what to do.
 
 ![Project Settings with behaviours.js chosen](/guide/images/tutorial-settings.jpg)
 
@@ -205,8 +206,10 @@ With `coin-1` selected, press **Duplicate** at the top of the Scene panel twice 
 and its connections with it, retargeted to the copy: `coin-2` stops `glint-2`, and still has Hana say her line. Put
 them on the way to the counter:
 
-- `coin-2`: **Position** 0, 0.5, 2.6;
-- `coin-3`: **Position** 0, 0.5, 1.3.
+- `coin-2`: **Name** `Coin 2`, **Position** 0, 0.5, 2.6;
+- `coin-3`: **Name** `Coin 3`, **Position** 0, 0.5, 1.3.
+
+(A copy keeps the name it was copied from, so without this all three would read "Coin 1" in the tree.)
 
 Then **Save** (⌘S). The scene is valid: the status bar at the bottom says so.
 
@@ -223,9 +226,10 @@ the scene ([Hot reload](./editor#hot-reload)).
 
 ## 11. Export the game
 
-Choose **File › Export Game…** and pick a folder. The editor checks everything first: every file the game uses is in
-the project and has a licence row, and the behaviours module loads and is the one `game.json` names. Then it writes the
-build, named after the game's id: `coin-run`. The Export panel's line says how many files and bytes it wrote.
+Choose **File › Export Game…**. The **Export** panel opens, and the editor checks everything first: every file the
+game uses is in the project and has a licence row, and the behaviours module loads and is the one `game.json` names.
+Then it asks where the build goes: create an empty folder, `coin-run`, and choose it. The Export panel's line says how
+many files and bytes it wrote, and where.
 
 A build is a folder: the game app, your project's files and `vrmxg-build.json`, which lists every file with its hash
 and licence.
@@ -236,15 +240,17 @@ The build plays in any browser from a static web server, and as a Mac app:
 
 ```bash
 node apps/game/scripts/play.mjs <build folder>          # serves it on loopback and prints the address
-apps/game-mac/scripts/build.sh <build folder>           # build/coin-run.app, named after the game
+apps/game-mac/scripts/build.sh <build folder>           # apps/game-mac/build/coin-run.app, named after the game
 ```
 
 The game app opens on its title menu. Choose **New Game**. The HUD shows the goal, "Collect the three coins"; walk
 through them and it changes to "Get to the counter"; reach the counter and the game is won, the ending plays, then
 the level starts again.
 
-![The build in the game app: the first coin collected, Hana's line, the HUD's goal](/guide/images/tutorial-game.jpg) [Sharing a build](./editor#export-game) has the rest: hosting it on the web and
-getting a Mac app ready to sign.
+![The build in the game app: the first coin collected, Hana's line, the HUD's goal](/guide/images/tutorial-game.jpg)
+
+[Export Game](./editor#export-game) in the editor guide has the rest: hosting a build on the web and getting a Mac
+app ready to sign.
 
 ## Where next
 
