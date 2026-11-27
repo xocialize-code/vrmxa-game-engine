@@ -54,13 +54,16 @@ const valid = () => S('expect find("id=doc-state").0.name matches " valid "   # 
 const undoIs = (label) => S(`until find("id=undo").0.name == ${q(`Undo ${label}`)} timeout=5000`);
 /** The scene in the app is the session's, byte for byte: its hash. */
 const hashIs = (s, why = 'the scene so far is what the editor\'s session makes of the plan') => S(`until find("id=doc-state").0.name matches " hash ${s.hash()}$" timeout=10000   # ${why}`);
-// a web view's select: AppProbe's typing reaches its type-ahead one letter at a time, so open its menu (Down on the focused
-// select) and press the item by name
-// (each pause measured: shorter, a pick now and then lands on the select focused before, or not at all)
-const choose = (target, find, want) => S(`act ${target} action=focus`, 'pause 600', 'keys down   # opens the select\'s menu', 'pause 400', `act surface=app role=menuitem name=${q(want)} exact=true action=press`, `until find("${find}").0.value == ${q(want)} timeout=5000`);
+// A web view's select: focused, opened by Down, its item pressed by name (HAND-TEST-M5-LEVEL's way; AppProbe's typing
+// reaches its type-ahead one letter at a time, set_value doesn't change it and `pick` sees no menu of WebKit's). Measured
+// in the first full runs: now and then a Down opened nothing, or the menu closed again before its item was pressed (an
+// edit schedules a rebuild of the edit view, and when it lands the inspector is drawn again). So each pick waits for the
+// view to settle, then presses Down until the item is there: a menu's items are in the tree only while it is open.
+const open = (target, want) => ['pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close', `act ${target} action=focus`, 'pause 400', `until find("surface=app role=menuitem name='${want}' exact=true").count >= 1 do keys down tries=4   # opens the select's menu`];
+const choose = (target, find, want) => S(...open(target, want), `act surface=app role=menuitem name=${q(want)} exact=true action=press`, `until find("${find}").0.value == ${q(want)} timeout=5000`);
 const pick = (id, want) => choose(`id=${id}`, `id=${id}`, want);
 // a menu that resets once it has acted (Add a behaviour…, a new connection's parts): no value to wait for
-const pickOnce = (id, want) => S(`act id=${id} action=focus`, 'pause 600', 'keys down   # opens the select\'s menu', 'pause 400', `act surface=app role=menuitem name=${q(want)} exact=true action=press`, 'pause 600');
+const pickOnce = (id, want) => S(...open(`id=${id}`, want), `act surface=app role=menuitem name=${q(want)} exact=true action=press`, 'pause 600');
 const select = (id) => S(`act id=node-${id} action=press`, `until find("id=inspector-id").0.name == "Node ${id}"`);
 // focused first and given a moment: set_value types after 80 ms, and keys sent before the web view moves its focus reach
 // the control focused before (a button just pressed: the toolbar Add pressed twice, an id typed into nothing)
@@ -200,7 +203,7 @@ const ui = {
   copy(ids) {
     row(`What every scene shares, brought from the level into the next with the toolbar's Copy: ${ids.join(', ')} selected (Also select), copied.`);
     select(ids[0]);
-    for (const id of ids.slice(1)) S('act id=inspector-also action=focus', 'pause 300', 'keys down   # "Also select": its menu', `act surface=app role=menuitem name=${q(id)} exact=true action=press`, 'pause 300');
+    for (const id of ids.slice(1)) S(...open('id=inspector-also', id), `act surface=app role=menuitem name=${q(id)} exact=true action=press`, 'pause 300');
     S(`until find("id=inspector-id").0.name == "${ids.length} nodes: ${ids.join(', ')}" timeout=5000`, 'act id=copy action=press', `until find("id=paste").0.name == "Paste ${ids.length} nodes" timeout=5000`);
   },
   newScene(scene) {

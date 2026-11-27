@@ -57,10 +57,10 @@ fresh: false
   ```steps
   menu "File › Project Settings…" press
   wait id=project-settings timeout_ms=10000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=settings-behaviours action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='after-hours/behaviours.js' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="after-hours/behaviours.js" exact=true action=press
   until find("id=settings-behaviours").0.value == "after-hours/behaviours.js" timeout=5000
   until find("id=settings-undo").0.name == "Undo Behaviours after-hours/behaviours.js" timeout=5000   # one step, named for what it did
@@ -85,10 +85,10 @@ fresh: false
   until find("id=field-name").0.value == "Level" timeout=5000
   until find("id=undo").0.name == "Undo Rename root" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Environment' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Environment" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Environment" timeout=5000
   act id=add-node action=press
@@ -105,10 +105,10 @@ fresh: false
   until find("id=pos-y").0.value == "0" timeout=5000
   act id=pos-z action=set_value value="0"
   until find("id=pos-z").0.value == "0" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-background action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='gradient' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="gradient" exact=true action=press
   until find("id=prop-background").0.value == "gradient" timeout=5000
   act id=prop-skyTopColor--hex action=set_value value="#141a2e"   # the colour, as hex
@@ -148,10 +148,10 @@ fresh: false
   act id=pos-z action=set_value value="0"
   until find("id=pos-z").0.value == "0" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='DirectionalLight' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="DirectionalLight" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "DirectionalLight" timeout=5000
   act id=add-node action=press
@@ -182,17 +182,17 @@ fresh: false
   until find("id=prop-intensity").0.value == "0.7" timeout=5000
   act id=prop-shadowExtent action=set_value value="10"
   until find("id=prop-shadowExtent").0.value == "10" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-shadowPreset action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='high' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="high" exact=true action=press
   until find("id=prop-shadowPreset").0.value == "high" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='SpotLight' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="SpotLight" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "SpotLight" timeout=5000
   act id=add-node action=press
@@ -224,10 +224,10 @@ fresh: false
   act id=prop-angle action=set_value value="40"
   until find("id=prop-angle").0.value == "40" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='PointLight' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="PointLight" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "PointLight" timeout=5000
   act id=add-node action=press
@@ -276,10 +276,10 @@ fresh: false
   until find("id=pos-z").0.value == "0" timeout=5000
   act id=prop-autoplay action=press
   until find("id=prop-autoplay").0.value == "1" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-bus action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='ambience' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="ambience" exact=true action=press
   until find("id=prop-bus").0.value == "ambience" timeout=5000
   act id=prop-loop action=press
@@ -618,10 +618,10 @@ fresh: false
   until find("id=pos-y").0.value == "0" timeout=5000
   act id=pos-z action=set_value value="-2.6"
   until find("id=pos-z").0.value == "-2.6" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=beh-add action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='player' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="player" exact=true action=press
   pause 600
   act id=beh-add-button action=press
@@ -642,17 +642,17 @@ fresh: false
   until find("id=pos-y").0.value == "0" timeout=5000
   act id=pos-z action=set_value value="-4.95"
   until find("id=pos-z").0.value == "-4.95" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-controller action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='npc' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="npc" exact=true action=press
   until find("id=prop-controller").0.value == "npc" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Marker' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Marker" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Marker" timeout=5000
   act id=add-node action=press
@@ -670,10 +670,10 @@ fresh: false
   act id=pos-z action=set_value value="-0.8"
   until find("id=pos-z").0.value == "-0.8" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Camera' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Camera" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Camera" timeout=5000
   act id=add-node action=press
@@ -692,16 +692,16 @@ fresh: false
   until find("id=pos-z").0.value == "8.2" timeout=5000
   act id=prop-focalLength action=set_value value="20"
   until find("id=prop-focalLength").0.value == "20" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-preset action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='fixed' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="fixed" exact=true action=press
   until find("id=prop-preset").0.value == "fixed" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-target action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='look-at' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="look-at" exact=true action=press
   until find("id=prop-target").0.value == "look-at" timeout=5000
   until find("id=doc-state").0.name matches " hash f374f8d3a509faa7$" timeout=10000   # the scene so far is what the editor's session makes of the plan
@@ -710,10 +710,10 @@ fresh: false
 - [ ] The shelves' areas, each with the game's own shelf behaviour from the Behaviours panel and the item that belongs on it (its VRMXI id typed), and the counter's area; each area's shape pinned and its size a vector.
   ```steps
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Area' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Area" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Area" timeout=5000
   act id=add-node action=press
@@ -743,10 +743,10 @@ fresh: false
   until find("id=prop-size-y").0.value == "2" timeout=5000
   act id=prop-size-z action=set_value value="1.2"
   until find("id=prop-size-z").0.value == "1.2" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=beh-add action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='shelf' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="shelf" exact=true action=press
   pause 600
   act id=beh-add-button action=press
@@ -757,10 +757,10 @@ fresh: false
   act id=beh-shelf-item action=set_value value="b2c41d6e-7a3f-4e58-9b10-af7e0a0d0c01"
   until find("id=beh-shelf-item").0.value == "b2c41d6e-7a3f-4e58-9b10-af7e0a0d0c01" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Area' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Area" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Area" timeout=5000
   act id=add-node action=press
@@ -790,10 +790,10 @@ fresh: false
   until find("id=prop-size-y").0.value == "2" timeout=5000
   act id=prop-size-z action=set_value value="0.9"
   until find("id=prop-size-z").0.value == "0.9" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=beh-add action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='shelf' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="shelf" exact=true action=press
   pause 600
   act id=beh-add-button action=press
@@ -804,10 +804,10 @@ fresh: false
   act id=beh-shelf-item action=set_value value="b2c41d6e-7a3f-4e58-9b10-af7e0a0d0c02"
   until find("id=beh-shelf-item").0.value == "b2c41d6e-7a3f-4e58-9b10-af7e0a0d0c02" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Area' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Area" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Area" timeout=5000
   act id=add-node action=press
@@ -837,10 +837,10 @@ fresh: false
   until find("id=prop-size-y").0.value == "2" timeout=5000
   act id=prop-size-z action=set_value value="1.2"
   until find("id=prop-size-z").0.value == "1.2" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=beh-add action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='shelf' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="shelf" exact=true action=press
   pause 600
   act id=beh-add-button action=press
@@ -851,10 +851,10 @@ fresh: false
   act id=beh-shelf-item action=set_value value="b2c41d6e-7a3f-4e58-9b10-af7e0a0d0c03"
   until find("id=beh-shelf-item").0.value == "b2c41d6e-7a3f-4e58-9b10-af7e0a0d0c03" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Area' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Area" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Area" timeout=5000
   act id=add-node action=press
@@ -890,10 +890,10 @@ fresh: false
 - [ ] The rules (lost when the clock runs out or after two wrong shelves, built in the condition's menus and rows), two counters, the clock, the goal and the checkpoint under them.
   ```steps
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='GameRules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="GameRules" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameRules" timeout=5000
   act id=add-node action=press
@@ -910,10 +910,10 @@ fresh: false
   until find("id=pos-y").0.value == "0" timeout=5000
   act id=pos-z action=set_value value="0"
   until find("id=pos-z").0.value == "0" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-lose-test action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='any' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="any" exact=true action=press
   until find("id=prop-lose-test").0.value == "any" timeout=5000
   until find("id=prop-lose-of-0").count == 1 timeout=5000
@@ -929,19 +929,19 @@ fresh: false
   pause 250
   act id=prop-lose-of-1-key action=set_value value="counters.mistakes"
   until find("id=prop-lose-of-1-key").0.value == "counters.mistakes" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-lose-of-1-op action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='ge' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="ge" exact=true action=press
   until find("id=prop-lose-of-1-op").0.value == "ge" timeout=5000
   act id=prop-lose-of-1-value action=set_value value="2"
   until find("id=prop-lose-of-1-value").0.value == "2" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='GameCounter' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="GameCounter" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameCounter" timeout=5000
   act id=add-node action=press
@@ -952,10 +952,10 @@ fresh: false
   act id=field-id action=set_value value="shelved"   # the plan's id
   until find("id=undo").0.name == "Undo Change id gamecounter to shelved" timeout=5000
   expect find("id=inspector-id").0.name == "Node shelved"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=field-parent action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
   act id=pos-x action=set_value value="0"
@@ -971,10 +971,10 @@ fresh: false
   act id=prop-max action=set_value value="3"
   until find("id=prop-max").0.value == "3" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='GameCounter' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="GameCounter" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameCounter" timeout=5000
   act id=add-node action=press
@@ -985,10 +985,10 @@ fresh: false
   act id=field-id action=set_value value="mistakes"   # the plan's id
   until find("id=undo").0.name == "Undo Change id gamecounter to mistakes" timeout=5000
   expect find("id=inspector-id").0.name == "Node mistakes"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=field-parent action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
   act id=pos-x action=set_value value="0"
@@ -1002,10 +1002,10 @@ fresh: false
   act id=prop-label action=set_value value="Wrong shelves"
   until find("id=prop-label").0.value == "Wrong shelves" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='GameTimer' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="GameTimer" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameTimer" timeout=5000
   act id=add-node action=press
@@ -1016,10 +1016,10 @@ fresh: false
   act id=field-id action=set_value value="clock"   # the plan's id
   until find("id=undo").0.name == "Undo Change id gametimer to clock" timeout=5000
   expect find("id=inspector-id").0.name == "Node clock"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=field-parent action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
   act id=pos-x action=set_value value="0"
@@ -1035,10 +1035,10 @@ fresh: false
   act id=prop-seconds action=set_value value="180"
   until find("id=prop-seconds").0.value == "180" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='GameGoal' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="GameGoal" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameGoal" timeout=5000
   act id=add-node action=press
@@ -1049,10 +1049,10 @@ fresh: false
   act id=field-id action=set_value value="tidy"   # the plan's id
   until find("id=undo").0.name == "Undo Change id gamegoal to tidy" timeout=5000
   expect find("id=inspector-id").0.name == "Node tidy"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=field-parent action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
   act id=pos-x action=set_value value="0"
@@ -1065,10 +1065,10 @@ fresh: false
   pause 250
   act id=prop-text action=set_value value="Put the scarf, the phone and the book on their shelves"
   until find("id=prop-text").0.value == "Put the scarf, the phone and the book on their shelves" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-when-test action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='all' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="all" exact=true action=press
   until find("id=prop-when-test").0.value == "all" timeout=5000
   until find("id=prop-when-of-0").count == 1 timeout=5000
@@ -1077,10 +1077,10 @@ fresh: false
   pause 250
   act id=prop-when-of-0-key action=set_value value="counters.shelved"
   until find("id=prop-when-of-0-key").0.value == "counters.shelved" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-when-of-0-op action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='ge' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="ge" exact=true action=press
   until find("id=prop-when-of-0-op").0.value == "ge" timeout=5000
   act id=prop-when-of-0-value action=set_value value="3"
@@ -1092,19 +1092,19 @@ fresh: false
   pause 250
   act id=prop-when-of-1-key action=set_value value="counters.mistakes"
   until find("id=prop-when-of-1-key").0.value == "counters.mistakes" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-when-of-1-op action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='lt' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="lt" exact=true action=press
   until find("id=prop-when-of-1-op").0.value == "lt" timeout=5000
   act id=prop-when-of-1-value action=set_value value="2"
   until find("id=prop-when-of-1-value").0.value == "2" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Checkpoint' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Checkpoint" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Checkpoint" timeout=5000
   act id=add-node action=press
@@ -1115,10 +1115,10 @@ fresh: false
   act id=field-id action=set_value value="cp-first"   # the plan's id
   until find("id=undo").0.name == "Undo Change id checkpoint to cp-first" timeout=5000
   expect find("id=inspector-id").0.name == "Node cp-first"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=field-parent action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
   act id=pos-x action=set_value value="0"
@@ -1138,16 +1138,16 @@ fresh: false
   act id=pin-once action=press   # the value shown is its default: the pin writes it
   until find("id=pin-once").count == 0 timeout=5000
   expect find("id=undo").0.name == "Undo Set cp-first.once"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-when-test action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='all' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="all" exact=true action=press
   until find("id=prop-when-test").0.value == "all" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-when-test action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='state' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="state" exact=true action=press
   until find("id=prop-when-test").0.value == "state" timeout=5000
   pause 500   # a row just made: let it settle before its "new" placeholder is replaced (typed too soon, the value lands after it)
@@ -1155,10 +1155,10 @@ fresh: false
   pause 250
   act id=prop-when-key action=set_value value="counters.shelved"
   until find("id=prop-when-key").0.value == "counters.shelved" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-when-op action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='ge' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="ge" exact=true action=press
   until find("id=prop-when-op").0.value == "ge" timeout=5000
   act id=prop-when-value action=set_value value="1"
@@ -1169,10 +1169,10 @@ fresh: false
 - [ ] Hana's briefing: a Dialogue that starts by itself, three lines, the first offering two choices that branch.
   ```steps
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Dialogue' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Dialogue" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Dialogue" timeout=5000
   act id=add-node action=press
@@ -1276,10 +1276,10 @@ fresh: false
 - [ ] Hana's hints: a Dialogue of four lines, the first offering four choices.
   ```steps
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Dialogue' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Dialogue" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Dialogue" timeout=5000
   act id=add-node action=press
@@ -1431,51 +1431,51 @@ fresh: false
   ```steps
   act id=node-rules action=press
   until find("id=inspector-id").0.name == "Node rules"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='ready' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="ready" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='hana' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="hana" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='lookAt' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="lookAt" exact=true action=press
   pause 600
   act id=conn-new-add action=press
   until find("id=undo").0.name == "Undo Connect rules.ready to hana.lookAt" timeout=5000
   until find("id=conn-0").count == 1 timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-0-arg-target action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='mira' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="mira" exact=true action=press
   until find("id=conn-0-arg-target").0.value == "mira" timeout=5000
   act id=node-counter action=press
   until find("id=inspector-id").0.name == "Node counter"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='bodyEntered' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="bodyEntered" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='hints' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="hints" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='start' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="start" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1483,22 +1483,22 @@ fresh: false
   until find("id=conn-1").count == 1 timeout=5000
   act id=node-switch action=press
   until find("id=inspector-id").0.name == "Node switch"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='verb' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="verb" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='staff-door' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="staff-door" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='enterState' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="enterState" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1515,22 +1515,22 @@ fresh: false
   ```steps
   act id=node-zone-coats action=press
   until find("id=inspector-id").0.name == "Node zone-coats"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='placed' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="placed" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='shelved' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="shelved" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='add' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="add" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1538,22 +1538,22 @@ fresh: false
   until find("id=conn-3").count == 1 timeout=5000
   act id=node-zone-coats action=press
   until find("id=inspector-id").0.name == "Node zone-coats"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='placed' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="placed" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='scarf-shelved' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="scarf-shelved" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='enterState' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="enterState" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1565,22 +1565,22 @@ fresh: false
   until find("id=conn-4-arg-state").0.value == "shelved" timeout=5000
   act id=node-zone-coats action=press
   until find("id=inspector-id").0.name == "Node zone-coats"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='refused' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="refused" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='mistakes' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="mistakes" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='add' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="add" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1588,22 +1588,22 @@ fresh: false
   until find("id=conn-5").count == 1 timeout=5000
   act id=node-zone-coats action=press
   until find("id=inspector-id").0.name == "Node zone-coats"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='refused' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="refused" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='hana' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="hana" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='say' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="say" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1615,22 +1615,22 @@ fresh: false
   until find("id=conn-6-arg-text").0.value == "Not on the coat shelf, Mira!" timeout=5000
   act id=node-zone-phones action=press
   until find("id=inspector-id").0.name == "Node zone-phones"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='placed' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="placed" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='shelved' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="shelved" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='add' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="add" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1638,22 +1638,22 @@ fresh: false
   until find("id=conn-7").count == 1 timeout=5000
   act id=node-zone-phones action=press
   until find("id=inspector-id").0.name == "Node zone-phones"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='placed' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="placed" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='phone-shelved' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="phone-shelved" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='enterState' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="enterState" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1665,22 +1665,22 @@ fresh: false
   until find("id=conn-8-arg-state").0.value == "shelved" timeout=5000
   act id=node-zone-phones action=press
   until find("id=inspector-id").0.name == "Node zone-phones"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='refused' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="refused" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='mistakes' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="mistakes" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='add' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="add" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1688,22 +1688,22 @@ fresh: false
   until find("id=conn-9").count == 1 timeout=5000
   act id=node-zone-phones action=press
   until find("id=inspector-id").0.name == "Node zone-phones"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='refused' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="refused" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='hana' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="hana" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='say' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="say" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1715,22 +1715,22 @@ fresh: false
   until find("id=conn-10-arg-text").0.value == "That doesn't go with the phones." timeout=5000
   act id=node-zone-books action=press
   until find("id=inspector-id").0.name == "Node zone-books"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='placed' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="placed" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='shelved' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="shelved" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='add' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="add" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1738,22 +1738,22 @@ fresh: false
   until find("id=conn-11").count == 1 timeout=5000
   act id=node-zone-books action=press
   until find("id=inspector-id").0.name == "Node zone-books"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='placed' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="placed" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='book-shelved' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="book-shelved" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='enterState' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="enterState" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1765,22 +1765,22 @@ fresh: false
   until find("id=conn-12-arg-state").0.value == "shelved" timeout=5000
   act id=node-zone-books action=press
   until find("id=inspector-id").0.name == "Node zone-books"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='refused' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="refused" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='mistakes' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="mistakes" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='add' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="add" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1788,22 +1788,22 @@ fresh: false
   until find("id=conn-13").count == 1 timeout=5000
   act id=node-zone-books action=press
   until find("id=inspector-id").0.name == "Node zone-books"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='refused' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="refused" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='hana' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="hana" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='say' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="say" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1820,22 +1820,22 @@ fresh: false
   ```steps
   act id=node-rules action=press
   until find("id=inspector-id").0.name == "Node rules"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='won' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="won" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='changeScene' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="changeScene" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1849,22 +1849,22 @@ fresh: false
   until find("id=conn-15-arg-to").0.value == "after-hours/won.vrmxs" timeout=5000
   act id=node-rules action=press
   until find("id=inspector-id").0.name == "Node rules"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='lost' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="lost" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='changeScene' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="changeScene" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -1893,24 +1893,28 @@ fresh: false
   ```steps
   act id=node-env action=press
   until find("id=inspector-id").0.name == "Node env"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=inspector-also action=focus
-  pause 300
-  keys down   # "Also select": its menu
+  pause 400
+  until find("surface=app role=menuitem name='cafe' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="cafe" exact=true action=press
   pause 300
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=inspector-also action=focus
-  pause 300
-  keys down   # "Also select": its menu
+  pause 400
+  until find("surface=app role=menuitem name='moon' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="moon" exact=true action=press
   pause 300
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=inspector-also action=focus
-  pause 300
-  keys down   # "Also select": its menu
+  pause 400
+  until find("surface=app role=menuitem name='counter-lamp' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="counter-lamp" exact=true action=press
   pause 300
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=inspector-also action=focus
-  pause 300
-  keys down   # "Also select": its menu
+  pause 400
+  until find("surface=app role=menuitem name='ambience' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="ambience" exact=true action=press
   pause 300
   until find("id=inspector-id").0.name == "5 nodes: env, cafe, moon, counter-lamp, ambience" timeout=5000
@@ -1973,10 +1977,10 @@ fresh: false
   until find("id=undo").0.name == "Undo Change id ambience-2 to ambience" timeout=5000
   expect find("id=inspector-id").0.name == "Node ambience"
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Marker' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Marker" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Marker" timeout=5000
   act id=add-node action=press
@@ -1994,10 +1998,10 @@ fresh: false
   act id=pos-z action=set_value value="6"
   until find("id=pos-z").0.value == "6" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Camera' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Camera" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Camera" timeout=5000
   act id=add-node action=press
@@ -2016,23 +2020,23 @@ fresh: false
   until find("id=pos-z").0.value == "14" timeout=5000
   act id=prop-focalLength action=set_value value="28"
   until find("id=prop-focalLength").0.value == "28" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-preset action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='fixed' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="fixed" exact=true action=press
   until find("id=prop-preset").0.value == "fixed" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-target action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='look-at' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="look-at" exact=true action=press
   until find("id=prop-target").0.value == "look-at" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='GameRules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="GameRules" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameRules" timeout=5000
   act id=add-node action=press
@@ -2050,10 +2054,10 @@ fresh: false
   act id=pos-z action=set_value value="0"
   until find("id=pos-z").0.value == "0" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='GameTimer' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="GameTimer" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameTimer" timeout=5000
   act id=add-node action=press
@@ -2064,10 +2068,10 @@ fresh: false
   act id=field-id action=set_value value="intro"   # the plan's id
   until find("id=undo").0.name == "Undo Change id gametimer to intro" timeout=5000
   expect find("id=inspector-id").0.name == "Node intro"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=field-parent action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
   act id=pos-x action=set_value value="0"
@@ -2083,10 +2087,10 @@ fresh: false
   act id=prop-seconds action=set_value value="6"
   until find("id=prop-seconds").0.value == "6" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='GameGoal' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="GameGoal" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameGoal" timeout=5000
   act id=add-node action=press
@@ -2097,10 +2101,10 @@ fresh: false
   act id=field-id action=set_value value="title"   # the plan's id
   until find("id=undo").0.name == "Undo Change id gamegoal to title" timeout=5000
   expect find("id=inspector-id").0.name == "Node title"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=field-parent action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
   act id=pos-x action=set_value value="0"
@@ -2122,22 +2126,22 @@ fresh: false
   ```steps
   act id=node-intro action=press
   until find("id=inspector-id").0.name == "Node intro"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='timeout' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="timeout" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='changeScene' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="changeScene" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -2229,17 +2233,17 @@ fresh: false
   until find("id=pos-y").0.value == "0" timeout=5000
   act id=pos-z action=set_value value="-3.3"
   until find("id=pos-z").0.value == "-3.3" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-controller action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='npc' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="npc" exact=true action=press
   until find("id=prop-controller").0.value == "npc" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Marker' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Marker" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Marker" timeout=5000
   act id=add-node action=press
@@ -2257,10 +2261,10 @@ fresh: false
   act id=pos-z action=set_value value="-3.3"
   until find("id=pos-z").0.value == "-3.3" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Camera' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Camera" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Camera" timeout=5000
   act id=add-node action=press
@@ -2279,23 +2283,23 @@ fresh: false
   until find("id=pos-z").0.value == "-0.6" timeout=5000
   act id=prop-focalLength action=set_value value="35"
   until find("id=prop-focalLength").0.value == "35" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-preset action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='fixed' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="fixed" exact=true action=press
   until find("id=prop-preset").0.value == "fixed" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-target action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='look-at' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="look-at" exact=true action=press
   until find("id=prop-target").0.value == "look-at" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='GameRules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="GameRules" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameRules" timeout=5000
   act id=add-node action=press
@@ -2331,10 +2335,10 @@ fresh: false
   act id=prop-reads-counters-1 action=set_value value="mistakes"
   until find("id=prop-reads-counters-1").0.value == "mistakes" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='GameTimer' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="GameTimer" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameTimer" timeout=5000
   act id=add-node action=press
@@ -2345,10 +2349,10 @@ fresh: false
   act id=field-id action=set_value value="outro"   # the plan's id
   until find("id=undo").0.name == "Undo Change id gametimer to outro" timeout=5000
   expect find("id=inspector-id").0.name == "Node outro"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=field-parent action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
   act id=pos-x action=set_value value="0"
@@ -2364,10 +2368,10 @@ fresh: false
   act id=prop-seconds action=set_value value="12"
   until find("id=prop-seconds").0.value == "12" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Dialogue' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Dialogue" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Dialogue" timeout=5000
   act id=add-node action=press
@@ -2411,10 +2415,10 @@ fresh: false
   pause 250
   act id=prop-lines-0-when-key action=set_value value="counters.mistakes"
   until find("id=prop-lines-0-when-key").0.value == "counters.mistakes" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-lines-0-when-op action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='eq' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="eq" exact=true action=press
   until find("id=prop-lines-0-when-op").0.value == "eq" timeout=5000
   act id=prop-lines-0-when-value action=set_value value="0"
@@ -2456,22 +2460,22 @@ fresh: false
   ```steps
   act id=node-outro action=press
   until find("id=inspector-id").0.name == "Node outro"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='timeout' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="timeout" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='changeScene' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="changeScene" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -2565,17 +2569,17 @@ fresh: false
   until find("id=pos-y").0.value == "0" timeout=5000
   act id=pos-z action=set_value value="-3.3"
   until find("id=pos-z").0.value == "-3.3" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-controller action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='npc' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="npc" exact=true action=press
   until find("id=prop-controller").0.value == "npc" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Marker' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Marker" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Marker" timeout=5000
   act id=add-node action=press
@@ -2593,10 +2597,10 @@ fresh: false
   act id=pos-z action=set_value value="-3.3"
   until find("id=pos-z").0.value == "-3.3" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Camera' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Camera" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Camera" timeout=5000
   act id=add-node action=press
@@ -2615,23 +2619,23 @@ fresh: false
   until find("id=pos-z").0.value == "-0.6" timeout=5000
   act id=prop-focalLength action=set_value value="35"
   until find("id=prop-focalLength").0.value == "35" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-preset action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='fixed' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="fixed" exact=true action=press
   until find("id=prop-preset").0.value == "fixed" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-target action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='look-at' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="look-at" exact=true action=press
   until find("id=prop-target").0.value == "look-at" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='GameRules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="GameRules" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameRules" timeout=5000
   act id=add-node action=press
@@ -2667,10 +2671,10 @@ fresh: false
   act id=prop-reads-counters-1 action=set_value value="mistakes"
   until find("id=prop-reads-counters-1").0.value == "mistakes" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='GameTimer' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="GameTimer" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "GameTimer" timeout=5000
   act id=add-node action=press
@@ -2681,10 +2685,10 @@ fresh: false
   act id=field-id action=set_value value="outro"   # the plan's id
   until find("id=undo").0.name == "Undo Change id gametimer to outro" timeout=5000
   expect find("id=inspector-id").0.name == "Node outro"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=field-parent action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   until find("id=field-parent").0.value == "rules" timeout=5000
   act id=pos-x action=set_value value="0"
@@ -2700,10 +2704,10 @@ fresh: false
   act id=prop-seconds action=set_value value="12"
   until find("id=prop-seconds").0.value == "12" timeout=5000
   act id=file-name action=focus   # off the menu first, so focusing it again takes
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act role=popupbutton name="Node type to add" action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='Dialogue' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="Dialogue" exact=true action=press
   until find("role=popupbutton name='Node type to add'").0.value == "Dialogue" timeout=5000
   act id=add-node action=press
@@ -2747,10 +2751,10 @@ fresh: false
   pause 250
   act id=prop-lines-0-when-key action=set_value value="counters.mistakes"
   until find("id=prop-lines-0-when-key").0.value == "counters.mistakes" timeout=5000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=prop-lines-0-when-op action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='ge' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="ge" exact=true action=press
   until find("id=prop-lines-0-when-op").0.value == "ge" timeout=5000
   act id=prop-lines-0-when-value action=set_value value="2"
@@ -2777,22 +2781,22 @@ fresh: false
   ```steps
   act id=node-outro action=press
   until find("id=inspector-id").0.name == "Node outro"
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-signal action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='timeout' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="timeout" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-to action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='rules' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="rules" exact=true action=press
   pause 600
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=conn-new-call action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='changeScene' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="changeScene" exact=true action=press
   pause 600
   act id=conn-new-add action=press
@@ -2821,10 +2825,10 @@ fresh: false
   ```steps
   menu "File › Project Settings…" press
   wait id=project-settings timeout_ms=10000
+  pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close
   act id=settings-entry action=focus
-  pause 600
-  keys down   # opens the select's menu
   pause 400
+  until find("surface=app role=menuitem name='after-hours/title.vrmxs' exact=true").count >= 1 do keys down tries=4   # opens the select's menu
   act surface=app role=menuitem name="after-hours/title.vrmxs" exact=true action=press
   until find("id=settings-entry").0.value == "after-hours/title.vrmxs" timeout=5000
   until find("id=settings-undo").0.name == "Undo Entry scene after-hours/title.vrmxs" timeout=5000
