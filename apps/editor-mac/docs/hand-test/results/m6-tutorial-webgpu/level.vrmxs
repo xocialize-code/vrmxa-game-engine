@@ -1,0 +1,54 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "level",
+  "assets": [
+    {"id":"cafe","type":"glb","ref":"sets/cafe.glb"},
+    {"id":"mira","type":"vrmxa","ref":"characters/mira.vrmxa"},
+    {"id":"hana","type":"vrmxa","ref":"characters/hana.vrmxa"},
+    {"id":"ambience","type":"audio","ref":"sounds/cafe-ambience.wav"},
+    {"id":"music","type":"audio","ref":"sounds/music.wav"}
+  ],
+  "nodes": [
+    {"id":"root","type":"Node3D","name":"Level"},
+    {"id":"env","type":"Environment","parent":"root","props":{"ambientIntensity":0.5,"background":"gradient","environmentIntensity":0.35,"skyHorizonColor":"#e6ecf2","skyTopColor":"#7aa6d6"}},
+    {"id":"set","type":"Model","parent":"root","name":"Cafe","asset":"cafe"},
+    {"id":"sun","type":"DirectionalLight","parent":"root","transform":{"q":[-0.354,0.354,0.146,0.854]},"props":{"intensity":2.4,"shadowExtent":10,"shadowPreset":"high"}},
+    {"id":"ambience","type":"AudioPlayer","parent":"root","name":"Room tone","asset":"ambience","props":{"autoplay":true,"bus":"ambience","loop":true,"volume":0.6}},
+    {"id":"music","type":"AudioPlayer","parent":"root","name":"Music","asset":"music","props":{"autoplay":true,"bus":"music","loop":true,"volume":0.35}},
+    {"id":"spawn","type":"Marker","parent":"root","name":"Spawn","transform":{"p":[0,0,4]},"props":{"purpose":"spawn"}},
+    {"id":"mira","type":"Character","parent":"root","name":"Mira","asset":"mira","transform":{"p":[0,0,4],"q":[0,1,0,0]},"behaviours":[{"use":"player"}]},
+    {"id":"hana","type":"Character","parent":"root","name":"Hana","asset":"hana","transform":{"p":[-1.5,0,-3]},"props":{"controller":"npc"}},
+    {"id":"cam","type":"Camera","parent":"root","name":"Follow camera","transform":{"p":[0,1.6,7]},"props":{"focalLength":30,"preset":"follow","rig":{"yaw":180},"target":"mira"}},
+    {"id":"goal-zone","type":"Area","parent":"root","name":"Counter","transform":{"p":[0,1,0]},"props":{"shape":"box","size":[1.6,2,0.8]}},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"flags":{"reachedCounter":false}}},
+    {"id":"score","type":"GameCounter","parent":"rules","props":{"label":"Score"}},
+    {"id":"collect-coins","type":"GameGoal","parent":"rules","props":{"text":"Collect the three coins","when":{"key":"counters.coins","op":"ge","test":"state","value":3}}},
+    {"id":"reach-counter","type":"GameGoal","parent":"rules","props":{"text":"Get to the counter","when":{"key":"flags.reachedCounter","test":"state"}}},
+    {"id":"coins","type":"GameCounter","parent":"rules","props":{"label":"Coins"}},
+    {"id":"coin-1","type":"Area","parent":"root","name":"Coin 1","transform":{"p":[0,0.5,4]},"props":{"shape":"box","size":[1,1,0.6]},"behaviours":[{"use":"coin"}]},
+    {"id":"glint-1","type":"ParticleEmitter","parent":"coin-1","props":{"effect":"sparks"}},
+    {"id":"coin-2","type":"Area","parent":"root","name":"Coin 1","transform":{"p":[0,0.5,2.6]},"props":{"shape":"box","size":[1,1,0.6]},"behaviours":[{"use":"coin"}]},
+    {"id":"glint-2","type":"ParticleEmitter","parent":"coin-2","props":{"effect":"sparks"}},
+    {"id":"coin-3","type":"Area","parent":"root","name":"Coin 1","transform":{"p":[0,0.5,1.3]},"props":{"shape":"box","size":[1,1,0.6]},"behaviours":[{"use":"coin"}]},
+    {"id":"glint-3","type":"ParticleEmitter","parent":"coin-3","props":{"effect":"sparks"}}
+  ],
+  "connections": [
+    {"from":"hana","signal":"ready","to":"hana","call":"lookAt","args":{"target":"mira"}},
+    {"from":"goal-zone","signal":"bodyEntered","to":"rules","call":"setFlag","args":{"flag":"reachedCounter"}},
+    {"from":"reach-counter","signal":"completed","to":"score","call":"add","args":{"by":10}},
+    {"from":"rules","signal":"ended","to":"rules","call":"changeScene","args":{"after":2,"to":"ending.vrmxs"}},
+    {"from":"coin-1","signal":"collected","to":"glint-1","call":"stop"},
+    {"from":"coin-1","signal":"collected","to":"hana","call":"say","args":{"text":"A coin! Keep going, Mira."}},
+    {"from":"coin-2","signal":"collected","to":"glint-2","call":"stop"},
+    {"from":"coin-2","signal":"collected","to":"hana","call":"say","args":{"text":"A coin! Keep going, Mira."}},
+    {"from":"coin-3","signal":"collected","to":"glint-3","call":"stop"},
+    {"from":"coin-3","signal":"collected","to":"hana","call":"say","args":{"text":"A coin! Keep going, Mira."}}
+  ],
+  "settings": {
+    "physics": {
+      "build": "deterministic",
+      "hz": 60
+    }
+  }
+}

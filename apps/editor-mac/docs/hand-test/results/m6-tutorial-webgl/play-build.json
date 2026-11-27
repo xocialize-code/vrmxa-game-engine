@@ -1,0 +1,124 @@
+{
+ "checks": [
+  {
+   "name": "the build is whole, every file as its manifest says (coin-run)",
+   "ok": true,
+   "detail": "whole, 61 files, digest c809be3cc36ae9d2"
+  },
+  {
+   "name": "the build carries behaviours.js, named by game.json",
+   "ok": true,
+   "detail": "behaviours behaviours.js"
+  },
+  {
+   "name": "Node: three coins, each glint stopped by its connection, the goals in order, won, then the ending",
+   "ok": true,
+   "detail": "{\"coins\":[{\"step\":2,\"coins\":1,\"stopped\":[true,false,false]},{\"step\":68,\"coins\":2,\"stopped\":[true,true,false]},{\"step\":123,\"coins\":3,\"stopped\":[true,true,true]}],\"goals\":[\"Collect the three coins\",\"Get to the counter\",null],\"won\":{\"result\":\"won\",\"step\":174},\"ending\":\"ending.vrmxs\"}"
+  },
+  {
+   "name": "webgpu: the game app opens on its title menu, New Game starts the level",
+   "ok": true,
+   "detail": "\"Coin Run\", webgpu"
+  },
+  {
+   "name": "webgpu: the coin at the spawn is collected at once, its glint stopped, Hana's line; the HUD shows the first goal",
+   "ok": true,
+   "detail": "step 15, HUD \"Goal: Collect the three coins\", captions [\"Hana: A coin! Keep going, Mira.\"]"
+  },
+  {
+   "name": "webgpu: three coins collected, every glint stopped, \"Get to the counter\" next, won, then the ending",
+   "ok": true,
+   "detail": "3 coins at step 111, won at 159, then ending.vrmxs"
+  },
+  {
+   "name": "webgpu: no errors in the page",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "webgl: the game app opens on its title menu, New Game starts the level",
+   "ok": true,
+   "detail": "\"Coin Run\", webgl"
+  },
+  {
+   "name": "webgl: the coin at the spawn is collected at once, its glint stopped, Hana's line; the HUD shows the first goal",
+   "ok": true,
+   "detail": "step 14, HUD \"Goal: Collect the three coins\", captions [\"Hana: A coin! Keep going, Mira.\"]"
+  },
+  {
+   "name": "webgl: three coins collected, every glint stopped, \"Get to the counter\" next, won, then the ending",
+   "ok": true,
+   "detail": "3 coins at step 108, won at 161, then ending.vrmxs"
+  },
+  {
+   "name": "webgl: no errors in the page",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "results": {
+  "build": "coin-run",
+  "game": "coin-run",
+  "digest": "c809be3cc36ae9d2ffff93d5596f42c7e243cd830e24c3f72aa3830d12812157",
+  "runs": [
+   {
+    "where": "node",
+    "coins": [
+     {
+      "step": 2,
+      "coins": 1,
+      "stopped": [
+       true,
+       false,
+       false
+      ]
+     },
+     {
+      "step": 68,
+      "coins": 2,
+      "stopped": [
+       true,
+       true,
+       false
+      ]
+     },
+     {
+      "step": 123,
+      "coins": 3,
+      "stopped": [
+       true,
+       true,
+       true
+      ]
+     }
+    ],
+    "goals": [
+     "Collect the three coins",
+     "Get to the counter",
+     null
+    ],
+    "won": {
+     "result": "won",
+     "step": 174
+    },
+    "ending": "ending.vrmxs"
+   },
+   {
+    "where": "chromium-webgpu",
+    "title": "Coin Run",
+    "first": 15,
+    "three": 111,
+    "won": 159,
+    "ending": "ending.vrmxs"
+   },
+   {
+    "where": "chromium-webgl",
+    "title": "Coin Run",
+    "first": 14,
+    "three": 108,
+    "won": 161,
+    "ending": "ending.vrmxs"
+   }
+  ]
+ }
+}

@@ -59,12 +59,28 @@ export function freshImporter(project, { url = blobUrl, onGraph = null } = {}) {
  *   how the game's behaviours module is imported (default: freshImporter, from the project as it is now); registry: a
  *   registry to trace with instead, its project behaviours already declared (tests; it skips the import)
  */
+/** What Export Game says when Play would run the root behaviours.js but game.json doesn't name it (M6 W9). */
+export const UNNAMED_BEHAVIOURS = 'behaviours.js runs when you play here, but game.json doesn\'t name it, so the build would leave it out: choose it in File › Project Settings › Behaviours, then export again';
+
+/**
+ * Play in place falls back to the root behaviours.js when game.json names no module (project.js behavioursRef), but a
+ * build takes only the module game.json names (@vrmxg/bundle checkGame). So an export from a project in that state
+ * would play without its behaviours and nothing would say so: it is refused, and the message says how to name it.
+ * A game.json that doesn't parse is left to the export, which says so.
+ */
+async function namedBehaviours(project) {
+  if (!project.has('behaviours.js')) return;
+  let doc = null;
+  try { doc = JSON.parse(new TextDecoder().decode(await project.bytes(GAME_FILE))); } catch { return; }
+  if (doc && typeof doc === 'object' && (doc.behaviours === undefined || doc.behaviours === null)) throw Object.assign(new Error(UNNAMED_BEHAVIOURS), { code: 'unnamed_behaviours' });
+}
+
 export async function exportGame(project, { scene = null, name = '', onProgress = null, signal = null, shell = { inShell, call }, runtime = { read: fetchReader(RUNTIME_BASE) }, chunk = CHUNK, importModule = freshImporter(project), registry = undefined } = {}) {
   let game = null;
   if (!project.has(GAME_FILE)) {
     if (!scene) throw new Error(`the project has no ${GAME_FILE}, and no scene is open to export as the game`);
     game = defaultGame({ files: project.files, entry: scene });
-  }
+  } else await namedBehaviours(project);
   let id = null; // the shell's handle on this export, once a folder is chosen
   const stopped = () => { if (signal?.aborted) throw Object.assign(new Error('the export was stopped'), { code: 'aborted' }); };
   const write = async (path, bytes) => {

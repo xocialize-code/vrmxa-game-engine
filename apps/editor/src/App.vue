@@ -707,7 +707,9 @@ html, body, #app { margin: 0; height: 100%; background: var(--bg); color: var(--
 .file-name { width: 120px; }
 .project { flex: none; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar:not(.status) { flex-wrap: nowrap; overflow-x: auto; }
-.dock-head select { width: 110px; min-width: 0; }
+.dock-head select { width: 110px; min-width: 0; flex: none; }
+/* the Scene panel's head: its node type menu kept whole (it shrank to nothing beside the heading), the buttons wrapping */
+.dock.left .dock-head { flex-wrap: wrap; }
 .sep { width: 1px; height: 20px; background: var(--line); }
 .field { display: flex; align-items: center; gap: 6px; color: var(--muted); }
 button, select, input { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; }

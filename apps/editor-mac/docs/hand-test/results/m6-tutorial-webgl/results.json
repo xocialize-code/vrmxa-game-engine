@@ -1,0 +1,1088 @@
+{
+  "checklist" : "apps/editor-mac/docs/HAND-TEST-M6-TUTORIAL.md",
+  "rows" : [
+    {
+      "checklist_line" : 17,
+      "checks" : [
+        {
+          "actual" : "\"Scene cafe-cart.vrmxs 30 nodes saved valid hash 7636dc6e7e38e7e0\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Renderer WebGL\"",
+          "check" : "find(\"id=renderer\").0.name == \"Renderer WebGL\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=template-level\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"coin-run\"",
+          "check" : "find(\"id=new-project-id\").0.value == \"coin-run\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene level.vrmxs 14 nodes saved valid hash 9d7e4d4c0198d790\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 14 nodes saved valid\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project Coin Run\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project Coin Run\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"role=alert\").count == 0",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "launched VRMXG Editor pid 7475, log ~/Library/Caches/AppProbe/logs/VRMXGEditor-2026-11-27T034056Z.log",
+        "28: wait id=new-project-open enabled=true timeout_ms=40000 → found after 2282 ms: button \"New project\" #new-project-open help=\"New Project… (⇧⌘N): a game from a template\" [W:VRMXG Editor/0/0/0/0/0/1@53dc] (2290 ms)",
+        "29: until find(\"id=doc-state\").0.name matches \"^Scene cafe[^ ]* [0-9]+ nodes saved\" timeout=90000 → ok (613 ms)",
+        "30: expect find(\"id=renderer\").0.name == \"Renderer WebGL\" → ok (118 ms)",
+        "31: menu \"File › New Project…\" press → pressed File › New Project… (199 ms)",
+        "32: wait id=new-project timeout_ms=10000 → found after 72 ms: group \"New project\" #new-project [W:VRMXG Editor/0/0/0/0/8@0543] (72 ms)",
+        "33: act id=template-level action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":100,\"w\":426,\"x\":3844,\"y\":479},\"help\":\"\",\"id\":\"template-level\",\"name\":\"Template One level: A lev (64 ms)",
+        "34: until find(\"id=template-level\").0.value == \"1\" → ok (57 ms)",
+        "35: act id=new-project-title action=set_value value=\"Coin Run\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":534,\"x\":3736,\"y\":587},\"help\":\"\",\"id\":\"new-project-title\",\"name\":\"Game title\",\"ref\":\" (631 ms)",
+        "36: until find(\"id=new-project-id\").0.value == \"coin-run\" → ok (5 ms)",
+        "37: shot \"tutorial-new-project\" (154 ms)",
+        "38: act id=new-project-create action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":78,\"x\":4192,\"y\":708},\"help\":\"\",\"id\":\"new-project-create\",\"name\":\"Create project\",\"ref\":\" (19 ms)",
+        "39: wait id=new-project gone=true timeout_ms=30000 → gone after 267 ms (267 ms)",
+        "40: until find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 14 nodes saved valid\" timeout=90000 → ok (1108 ms)",
+        "41: expect find(\"id=project-name\").0.name == \"Project Coin Run\" → ok (25 ms)",
+        "42: expect find(\"role=alert\").count == 0 → ok (24 ms)"
+      ],
+      "message" : null,
+      "ms" : 6192,
+      "notes" : [
+        "shot 1: tutorial-new-project"
+      ],
+      "row" : 1,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-TUTORIAL-webgl.scenario-2026-11-27T034056Z/shots/r1-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "1. Make the project from the One level template",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 18,
+      "checks" : [
+        {
+          "actual" : "\"Playing · step 109 · WASD move, E interact\"",
+          "check" : "find(\"text=Playing · step\").0.name matches \"step [1-9][0-9]{2}\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Stopped: scene as before Play (9d7e4d4c0198d790), view unchanged\"",
+          "check" : "find(\"id=stop-result\").0.name matches \"^Stopped: scene as before Play\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "47: act id=play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":79,\"x\":5402,\"y\":333},\"help\":\"\",\"id\":\"play\",\"name\":\"Play\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (37 ms)",
+        "48: until find(\"text=Playing · step\").0.name matches \"step [1-9][0-9]{2}\" timeout=90000 → ok (3043 ms)",
+        "49: act id=play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":79,\"x\":4757,\"y\":333},\"help\":\"\",\"id\":\"play\",\"name\":\"Stop\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (30 ms)",
+        "50: until find(\"id=stop-result\").0.name matches \"^Stopped: scene as before Play\" timeout=20000 → ok (40 ms)"
+      ],
+      "message" : null,
+      "ms" : 3401,
+      "notes" : [
+
+      ],
+      "row" : 2,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "2. Play the template once",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 19,
+      "checks" : [
+        {
+          "actual" : "\"GameCounter\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"GameCounter\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add gamecounter\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add gamecounter\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Change id gamecounter to coins\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Change id gamecounter to coins\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"rules\"",
+          "check" : "find(\"id=field-parent\").0.value == \"rules\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=pos-x\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=pos-y\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=pos-z\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Coins\"",
+          "check" : "find(\"id=prop-label\").0.value == \"Coins\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Set coins.label\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Set coins.label\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "56: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":2865,\"y\":333},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (28 ms)",
+        "57: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":111,\"x\":3150,\"y\":402},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/ (26 ms)",
+        "59: keys down → {\"sent\":true} (107 ms)",
+        "60: act surface=app role=menuitem name=\"GameCounter\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":3138,\"y\":786},\"id\":\"_popUpItemAction:\",\"name\":\"GameCounter\",\"ref\":\"A/0/0/1/16@7e (65 ms)",
+        "61: until find(\"role=popupbutton name='Node type to add'\").0.value == \"GameCounter\" timeout=5000 → ok (587 ms)",
+        "62: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":3266,\"y\":400},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (28 ms)",
+        "63: until find(\"id=undo\").0.name == \"Undo Add gamecounter\" timeout=5000 → ok (572 ms)",
+        "65: act id=field-id action=set_value value=\"coins\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4461,\"y\":571},\"help\":\"The node's id: connections, behaviours and props that  (445 ms)",
+        "66: until find(\"id=undo\").0.name == \"Undo Change id gamecounter to coins\" timeout=5000 → ok (381 ms)",
+        "67: act id=field-parent action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":150,\"x\":4461,\"y\":603},\"help\":\"\",\"id\":\"field-parent\",\"name\":\"Parent\",\"ref\":\"W:VRMXG Edito (31 ms)",
+        "69: keys down → {\"sent\":true} (110 ms)",
+        "70: act surface=app role=menuitem name=\"rules\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":150,\"x\":4448,\"y\":867},\"id\":\"_popUpItemAction:\",\"name\":\"rules\",\"ref\":\"A/0/0/1/12@f7e8\",\"r (55 ms)",
+        "71: until find(\"id=field-parent\").0.value == \"rules\" timeout=5000 → ok (888 ms)",
+        "72: act id=pos-x action=set_value value=\"0\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4367,\"y\":704},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (432 ms)",
+        "73: until find(\"id=pos-x\").0.value == \"0\" timeout=5000 → ok (29 ms)",
+        "74: act id=pos-y action=set_value value=\"0\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":70,\"x\":4454,\"y\":704},\"help\":\"\",\"id\":\"pos-y\",\"name\":\"Position Y\",\"ref\":\"W:VRMXG Edito (432 ms)",
+        "75: until find(\"id=pos-y\").0.value == \"0\" timeout=5000 → ok (28 ms)",
+        "76: act id=pos-z action=set_value value=\"0\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":70,\"x\":4541,\"y\":704},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (436 ms)",
+        "77: until find(\"id=pos-z\").0.value == \"0\" timeout=5000 → ok (24 ms)",
+        "78: act id=prop-label action=set_value value=\"Coins\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4461,\"y\":1008},\"help\":\"\",\"id\":\"prop-label\",\"name\":\"label\",\"ref\":\"W:VRMXG Edi (433 ms)",
+        "79: until find(\"id=prop-label\").0.value == \"Coins\" timeout=5000 → ok (272 ms)",
+        "80: until find(\"id=undo\").0.name == \"Undo Set coins.label\" timeout=5000 → ok (27 ms)"
+      ],
+      "message" : null,
+      "ms" : 6593,
+      "notes" : [
+
+      ],
+      "row" : 3,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "3. Count the coins",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 20,
+      "checks" : [
+        {
+          "actual" : "\"GameGoal\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"GameGoal\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add gamegoal\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add gamegoal\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Change id gamegoal to collect-coins\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Change id gamegoal to collect-coins\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"rules\"",
+          "check" : "find(\"id=field-parent\").0.value == \"rules\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=pos-x\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=pos-y\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=pos-z\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"reach-counter\"",
+          "check" : "find(\"id=field-before\").0.value == \"reach-counter\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Collect the three coins\"",
+          "check" : "find(\"id=prop-text\").0.value == \"Collect the three coins\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"state\"",
+          "check" : "find(\"id=prop-when-test\").0.value == \"state\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"counters.coins\"",
+          "check" : "find(\"id=prop-when-key\").0.value == \"counters.coins\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"ge\"",
+          "check" : "find(\"id=prop-when-op\").0.value == \"ge\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"3\"",
+          "check" : "find(\"id=prop-when-value\").0.value == \"3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene level.vrmxs 16 nodes unsaved changes valid hash 5df253ebaa7f7e8e\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "85: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":2865,\"y\":333},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (29 ms)",
+        "86: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":111,\"x\":3150,\"y\":402},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/ (27 ms)",
+        "88: keys down → {\"sent\":true} (113 ms)",
+        "89: act surface=app role=menuitem name=\"GameGoal\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":3138,\"y\":450},\"id\":\"_popUpItemAction:\",\"name\":\"GameGoal\",\"ref\":\"A/0/0/1/18@fd9b\" (61 ms)",
+        "90: until find(\"role=popupbutton name='Node type to add'\").0.value == \"GameGoal\" timeout=5000 → ok (601 ms)",
+        "91: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":3266,\"y\":400},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (27 ms)",
+        "92: until find(\"id=undo\").0.name == \"Undo Add gamegoal\" timeout=5000 → ok (409 ms)",
+        "94: act id=field-id action=set_value value=\"collect-coins\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4461,\"y\":588},\"help\":\"The node's id: connections, behaviours and props that  (428 ms)",
+        "95: until find(\"id=undo\").0.name == \"Undo Change id gamegoal to collect-coins\" timeout=5000 → ok (261 ms)",
+        "96: act id=field-parent action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":150,\"x\":4461,\"y\":620},\"help\":\"\",\"id\":\"field-parent\",\"name\":\"Parent\",\"ref\":\"W:VRMXG Edito (28 ms)",
+        "98: keys down → {\"sent\":true} (107 ms)",
+        "99: act surface=app role=menuitem name=\"rules\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":150,\"x\":4448,\"y\":883},\"id\":\"_popUpItemAction:\",\"name\":\"rules\",\"ref\":\"A/0/0/1/12@f7e8\",\"r (53 ms)",
+        "100: until find(\"id=field-parent\").0.value == \"rules\" timeout=5000 → ok (770 ms)",
+        "101: act id=pos-x action=set_value value=\"0\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4367,\"y\":721},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (435 ms)",
+        "102: until find(\"id=pos-x\").0.value == \"0\" timeout=5000 → ok (26 ms)",
+        "103: act id=pos-y action=set_value value=\"0\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":70,\"x\":4454,\"y\":721},\"help\":\"\",\"id\":\"pos-y\",\"name\":\"Position Y\",\"ref\":\"W:VRMXG Edito (431 ms)",
+        "104: until find(\"id=pos-y\").0.value == \"0\" timeout=5000 → ok (27 ms)",
+        "105: act id=pos-z action=set_value value=\"0\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":70,\"x\":4541,\"y\":721},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (433 ms)",
+        "106: until find(\"id=pos-z\").0.value == \"0\" timeout=5000 → ok (27 ms)",
+        "107: act id=field-before action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":150,\"x\":4461,\"y\":647},\"help\":\"\",\"id\":\"field-before\",\"name\":\"Before\",\"ref\":\"W:VRMXG Edito (30 ms)",
+        "109: keys down → {\"sent\":true} (105 ms)",
+        "110: act surface=app role=menuitem name=\"reach-counter\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":150,\"x\":4448,\"y\":982},\"id\":\"_popUpItemAction:\",\"name\":\"reach-counter\",\"ref\":\"A/0/0/1/14@ (62 ms)",
+        "111: until find(\"id=field-before\").0.value == \"reach-counter\" timeout=5000 → ok (764 ms)",
+        "112: act id=prop-text action=set_value value=\"Collect the three coins\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4461,\"y\":929},\"help\":\"\",\"id\":\"prop-text\",\"name\":\"text\",\"ref\":\"W:VRMXG Editor (459 ms)",
+        "113: until find(\"id=prop-text\").0.value == \"Collect the three coins\" timeout=5000 → ok (341 ms)",
+        "114: act id=prop-when-test action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":174,\"x\":4437,\"y\":981},\"help\":\"\",\"id\":\"prop-when-test\",\"name\":\"when test\",\"ref\":\"W:VRMXG  (63 ms)",
+        "116: keys down → {\"sent\":true} (114 ms)",
+        "117: act surface=app role=menuitem name=\"state\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":174,\"x\":4424,\"y\":981},\"id\":\"_popUpItemAction:\",\"name\":\"state\",\"ref\":\"A/0/0/1/0@8955\",\"ro (108 ms)",
+        "118: until find(\"id=prop-when-test\").0.value == \"state\" timeout=5000 → ok (918 ms)",
+        "120: act id=prop-when-key action=set_value value=\"counters.coins\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":174,\"x\":4437,\"y\":1010},\"help\":\"\",\"id\":\"prop-when-key\",\"name\":\"when key\",\"ref\":\"W:VRM (441 ms)",
+        "121: until find(\"id=prop-when-key\").0.value == \"counters.coins\" timeout=5000 → ok (313 ms)",
+        "122: act id=prop-when-op action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":174,\"x\":4437,\"y\":1040},\"help\":\"\",\"id\":\"prop-when-op\",\"name\":\"when op\",\"ref\":\"W:VRMXG Edi (36 ms)",
+        "124: keys down → {\"sent\":true} (111 ms)",
+        "125: act surface=app role=menuitem name=\"ge\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":174,\"x\":4424,\"y\":1112},\"id\":\"_popUpItemAction:\",\"name\":\"ge\",\"ref\":\"A/0/0/1/3@989e\",\"role (69 ms)",
+        "126: until find(\"id=prop-when-op\").0.value == \"ge\" timeout=5000 → ok (837 ms)",
+        "127: act id=prop-when-value action=set_value value=\"3\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":160,\"x\":4451,\"y\":1090},\"help\":\"\",\"id\":\"prop-when-value\",\"name\":\"when value\",\"ref\":\"W (452 ms)",
+        "128: until find(\"id=prop-when-value\").0.value == \"3\" timeout=5000 → ok (281 ms)",
+        "129: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (36 ms)",
+        "130: shot \"tutorial-goal\" (95 ms)"
+      ],
+      "message" : null,
+      "ms" : 12519,
+      "notes" : [
+        "shot 1: tutorial-goal"
+      ],
+      "row" : 4,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-TUTORIAL-webgl.scenario-2026-11-27T034056Z/shots/r4-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "4. Add the goal",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 21,
+      "checks" : [
+
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "135: screenshot path=/tmp/vrmxg-w9-tutorial-webgl/write-behaviour.png → /tmp/vrmxg-w9-tutorial-webgl/write-behaviour.png (1600×1000) (89 ms)"
+      ],
+      "message" : null,
+      "ms" : 2341,
+      "notes" : [
+
+      ],
+      "row" : 5,
+      "section" : "",
+      "shots" : [
+        "/tmp/vrmxg-w9-tutorial-webgl/write-behaviour.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "5. Write the coin behaviour",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 22,
+      "checks" : [
+        {
+          "actual" : "\"Saved level.vrmxs · 3070 bytes · 5df253ebaa7f7e8e\"",
+          "check" : "find(\"id=saved\").0.name matches \"^Saved level.vrmxs\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Project Coin Run\"",
+          "check" : "find(\"id=project-name\").0.name == \"Project Coin Run\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene level.vrmxs 16 nodes saved valid hash 5df253ebaa7f7e8e\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 16 nodes saved valid\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=behaviour-error\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=settings-behaviours-note\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Behaviours behaviours.js\"",
+          "check" : "find(\"id=settings-undo\").0.name == \"Undo Behaviours behaviours.js\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=settings-behaviours-note\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=settings-error\").count == 0",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "142: act id=save action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":48,\"x\":3492,\"y\":333},\"help\":\"\",\"id\":\"save\",\"name\":\"Save\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (33 ms)",
+        "143: until find(\"id=saved\").0.name matches \"^Saved level.vrmxs\" timeout=20000 → ok (45 ms)",
+        "144: menu \"File › Open Recent › Coin Run\" press → pressed File › Open Recent › Coin Run (154 ms)",
+        "145: until find(\"id=project-name\").0.name == \"Project Coin Run\" timeout=30000 → ok (257 ms)",
+        "146: until find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 16 nodes saved valid\" timeout=90000 → ok (980 ms)",
+        "147: expect find(\"id=behaviour-error\").count == 0 → ok (22 ms)",
+        "148: menu \"File › Project Settings…\" press → pressed File › Project Settings… (151 ms)",
+        "149: wait id=project-settings timeout_ms=10000 → found after 43 ms: group \"Project settings\" #project-settings [W:VRMXG Editor/0/0/0/0/8@dea6] (43 ms)",
+        "150: expect find(\"id=settings-behaviours-note\").count == 1 → ok (29 ms)",
+        "151: act id=settings-behaviours action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":221,\"x\":3562,\"y\":609},\"help\":\"\",\"id\":\"settings-behaviours\",\"name\":\"Behaviours module\",\"r (34 ms)",
+        "153: keys down → {\"sent\":true} (112 ms)",
+        "154: act surface=app role=menuitem name=\"behaviours.js\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":220,\"x\":3549,\"y\":632},\"id\":\"_popUpItemAction:\",\"name\":\"behaviours.js\",\"ref\":\"A/0/0/1/1@8 (39 ms)",
+        "155: until find(\"id=settings-undo\").0.name == \"Undo Behaviours behaviours.js\" timeout=10000 → ok (579 ms)",
+        "156: expect find(\"id=settings-behaviours-note\").count == 0 → ok (29 ms)",
+        "157: expect find(\"id=settings-error\").count == 0 → ok (33 ms)",
+        "158: shot \"tutorial-settings\" (77 ms)",
+        "159: act id=settings-done action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":78,\"x\":4175,\"y\":449},\"help\":\"\",\"id\":\"settings-done\",\"name\":\"Close the project settings\", (34 ms)",
+        "160: wait id=project-settings gone=true timeout_ms=5000 → gone after 22 ms (22 ms)"
+      ],
+      "message" : null,
+      "ms" : 3220,
+      "notes" : [
+        "shot 1: tutorial-settings"
+      ],
+      "row" : 6,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-TUTORIAL-webgl.scenario-2026-11-27T034056Z/shots/r6-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "6. Read the behaviour in",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 23,
+      "checks" : [
+        {
+          "actual" : "\"Area\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"Area\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add area\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add area\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Change id area to coin-1\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Change id area to coin-1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Coin 1\"",
+          "check" : "find(\"id=field-name\").0.value == \"Coin 1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=pos-x\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0.5\"",
+          "check" : "find(\"id=pos-y\").0.value == \"0.5\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"4\"",
+          "check" : "find(\"id=pos-z\").0.value == \"4\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=pin-shape\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=prop-size-x\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=prop-size-y\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0.6\"",
+          "check" : "find(\"id=prop-size-z\").0.value == \"0.6\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"coin\"",
+          "check" : "find(\"id=beh-add\").0.value == \"coin\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add coin to coin-1\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add coin to coin-1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=beh-coin\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"mira\"",
+          "check" : "find(\"id=beh-coin-player\").0.value == \"mira\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"coins\"",
+          "check" : "find(\"id=beh-coin-counter\").0.value == \"coins\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1\"",
+          "check" : "find(\"id=beh-coin-value\").0.value == \"1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"ParticleEmitter\"",
+          "check" : "find(\"role=popupbutton name='Node type to add'\").0.value == \"ParticleEmitter\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Add particleemitter\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Add particleemitter\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Change id particleemitter to glint-1\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Change id particleemitter to glint-1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"coin-1\"",
+          "check" : "find(\"id=field-parent\").0.value == \"coin-1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=pos-x\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=pos-y\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=pos-z\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"sparks\"",
+          "check" : "find(\"id=prop-effect\").0.value == \"sparks\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene level.vrmxs 18 nodes unsaved changes valid hash ad313879f72440de\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "165: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":2865,\"y\":333},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (29 ms)",
+        "166: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":111,\"x\":3150,\"y\":402},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/ (33 ms)",
+        "168: keys down → {\"sent\":true} (119 ms)",
+        "169: act surface=app role=menuitem name=\"Area\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":3138,\"y\":258},\"id\":\"_popUpItemAction:\",\"name\":\"Area\",\"ref\":\"A/0/0/1/12@e8da\",\"ro (65 ms)",
+        "170: until find(\"role=popupbutton name='Node type to add'\").0.value == \"Area\" timeout=5000 → ok (624 ms)",
+        "171: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":3266,\"y\":400},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (25 ms)",
+        "172: until find(\"id=undo\").0.name == \"Undo Add area\" timeout=5000 → ok (511 ms)",
+        "174: act id=field-id action=set_value value=\"coin-1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4461,\"y\":571},\"help\":\"The node's id: connections, behaviours and props that  (448 ms)",
+        "175: until find(\"id=undo\").0.name == \"Undo Change id area to coin-1\" timeout=5000 → ok (255 ms)",
+        "176: act id=field-name action=set_value value=\"Coin 1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4461,\"y\":539},\"help\":\"\",\"id\":\"field-name\",\"name\":\"Name\",\"ref\":\"W:VRMXG Edito (445 ms)",
+        "177: until find(\"id=field-name\").0.value == \"Coin 1\" timeout=5000 → ok (246 ms)",
+        "178: act id=pos-x action=set_value value=\"0\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4367,\"y\":704},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (442 ms)",
+        "179: until find(\"id=pos-x\").0.value == \"0\" timeout=5000 → ok (46 ms)",
+        "180: act id=pos-y action=set_value value=\"0.5\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":70,\"x\":4454,\"y\":704},\"help\":\"\",\"id\":\"pos-y\",\"name\":\"Position Y\",\"ref\":\"W:VRMXG Edito (441 ms)",
+        "181: until find(\"id=pos-y\").0.value == \"0.5\" timeout=5000 → ok (49 ms)",
+        "182: act id=pos-z action=set_value value=\"4\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":70,\"x\":4541,\"y\":704},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (441 ms)",
+        "183: until find(\"id=pos-z\").0.value == \"4\" timeout=5000 → ok (36 ms)",
+        "184: act id=pin-shape action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":14,\"w\":13,\"x\":4421,\"y\":884},\"help\":\"Write the value shown (\\\"box\\\") into the file, so it stays  (32 ms)",
+        "185: until find(\"id=pin-shape\").count == 0 timeout=5000 → ok (33 ms)",
+        "186: act id=prop-size-x action=set_value value=\"1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":33,\"x\":4475,\"y\":908},\"help\":\"\",\"id\":\"prop-size-x\",\"name\":\"size X\",\"ref\":\"W:VRMXG Edi (788 ms)",
+        "187: until find(\"id=prop-size-x\").0.value == \"1\" timeout=5000 → ok (245 ms)",
+        "188: act id=prop-size-y action=set_value value=\"1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":34,\"x\":4497,\"y\":913},\"help\":\"\",\"id\":\"prop-size-y\",\"name\":\"size Y\",\"ref\":\"W:VRMXG Edi (438 ms)",
+        "189: until find(\"id=prop-size-y\").0.value == \"1\" timeout=5000 → ok (229 ms)",
+        "190: act id=prop-size-z action=set_value value=\"0.6\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":34,\"x\":4547,\"y\":913},\"help\":\"\",\"id\":\"prop-size-z\",\"name\":\"size Z\",\"ref\":\"W:VRMXG Edi (461 ms)",
+        "191: until find(\"id=prop-size-z\").0.value == \"0.6\" timeout=5000 → ok (256 ms)",
+        "192: act id=beh-add action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":160,\"x\":4353,\"y\":1168},\"help\":\"\",\"id\":\"beh-add\",\"name\":\"Behaviour to add\",\"ref\":\"W:VRMXG (27 ms)",
+        "194: keys down → {\"sent\":true} (105 ms)",
+        "195: act surface=app role=menuitem name=\"coin\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":160,\"x\":4340,\"y\":1216},\"id\":\"_popUpItemAction:\",\"name\":\"coin\",\"ref\":\"A/0/0/1/2@5150\",\"ro (57 ms)",
+        "197: until find(\"id=beh-add\").0.value == \"coin\" timeout=5000 → ok (360 ms)",
+        "198: act id=beh-add-button action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":4568,\"y\":1166},\"help\":\"Add behaviour coin\",\"id\":\"beh-add-button\",\"name\":\"Add the  (36 ms)",
+        "199: until find(\"id=undo\").0.name == \"Undo Add coin to coin-1\" timeout=5000 → ok (39 ms)",
+        "200: until find(\"id=beh-coin\").count == 1 timeout=5000 → ok (372 ms)",
+        "201: expect find(\"id=beh-coin-player\").0.value == \"mira\" → ok (34 ms)",
+        "202: expect find(\"id=beh-coin-counter\").0.value == \"coins\" → ok (31 ms)",
+        "203: expect find(\"id=beh-coin-value\").0.value == \"1\" → ok (33 ms)",
+        "204: shot \"tutorial-behaviour\" (83 ms)",
+        "205: act id=file-name action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":139,\"x\":2865,\"y\":333},\"help\":\"The file New and Save As use, in the project\",\"id\":\"file-n (38 ms)",
+        "206: act role=popupbutton name=\"Node type to add\" action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":111,\"x\":3150,\"y\":402},\"help\":\"\",\"name\":\"Node type to add\",\"ref\":\"W:VRMXG Editor/0/0/0/0/ (33 ms)",
+        "208: keys down → {\"sent\":true} (113 ms)",
+        "209: act surface=app role=menuitem name=\"ParticleEmitter\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":145,\"x\":3138,\"y\":330},\"id\":\"_popUpItemAction:\",\"name\":\"ParticleEmitter\",\"ref\":\"A/0/0/1/9 (60 ms)",
+        "210: until find(\"role=popupbutton name='Node type to add'\").0.value == \"ParticleEmitter\" timeout=5000 → ok (620 ms)",
+        "211: act id=add-node action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":43,\"x\":3266,\"y\":400},\"help\":\"\",\"id\":\"add-node\",\"name\":\"Add node\",\"ref\":\"W:VRMXG Editor/0 (38 ms)",
+        "212: until find(\"id=undo\").0.name == \"Undo Add particleemitter\" timeout=5000 → ok (37 ms)",
+        "214: act id=field-id action=set_value value=\"glint-1\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4461,\"y\":416},\"help\":\"The node's id: connections, behaviours and props that  (497 ms)",
+        "215: until find(\"id=undo\").0.name == \"Undo Change id particleemitter to glint-1\" timeout=5000 → ok (266 ms)",
+        "216: act id=field-parent action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":150,\"x\":4461,\"y\":448},\"help\":\"\",\"id\":\"field-parent\",\"name\":\"Parent\",\"ref\":\"W:VRMXG Edito (27 ms)",
+        "218: keys down → {\"sent\":true} (106 ms)",
+        "219: act surface=app role=menuitem name=\"coin-1\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":150,\"x\":4448,\"y\":832},\"id\":\"_popUpItemAction:\",\"name\":\"coin-1\",\"ref\":\"A/0/0/1/17@bd1e\",\" (63 ms)",
+        "220: until find(\"id=field-parent\").0.value == \"coin-1\" timeout=5000 → ok (770 ms)",
+        "221: act id=pos-x action=set_value value=\"0\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4367,\"y\":549},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (437 ms)",
+        "222: until find(\"id=pos-x\").0.value == \"0\" timeout=5000 → ok (46 ms)",
+        "223: act id=pos-y action=set_value value=\"0\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":70,\"x\":4454,\"y\":549},\"help\":\"\",\"id\":\"pos-y\",\"name\":\"Position Y\",\"ref\":\"W:VRMXG Edito (443 ms)",
+        "224: until find(\"id=pos-y\").0.value == \"0\" timeout=5000 → ok (54 ms)",
+        "225: act id=pos-z action=set_value value=\"0\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":70,\"x\":4541,\"y\":549},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (445 ms)",
+        "226: until find(\"id=pos-z\").0.value == \"0\" timeout=5000 → ok (43 ms)",
+        "227: act id=prop-effect action=set_value value=\"sparks\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":150,\"x\":4461,\"y\":725},\"help\":\"\",\"id\":\"prop-effect\",\"name\":\"effect\",\"ref\":\"W:VRMXG Ed (439 ms)",
+        "228: until find(\"id=prop-effect\").0.value == \"sparks\" timeout=5000 → ok (258 ms)",
+        "229: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (28 ms)"
+      ],
+      "message" : null,
+      "ms" : 15170,
+      "notes" : [
+        "shot 1: tutorial-behaviour"
+      ],
+      "row" : 7,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-TUTORIAL-webgl.scenario-2026-11-27T034056Z/shots/r7-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "7. Make the first coin",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 24,
+      "checks" : [
+        {
+          "actual" : "\"Node coin-1\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node coin-1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"collected\"",
+          "check" : "find(\"id=conn-new-signal\").0.value == \"collected\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"glint-1\"",
+          "check" : "find(\"id=conn-new-to\").0.value == \"glint-1\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"stop\"",
+          "check" : "find(\"id=conn-new-call\").0.value == \"stop\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Connect coin-1.collected to glint-1.stop\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Connect coin-1.collected to glint-1.stop\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=conn-4\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"collected\"",
+          "check" : "find(\"id=conn-new-signal\").0.value == \"collected\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"hana\"",
+          "check" : "find(\"id=conn-new-to\").0.value == \"hana\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"say\"",
+          "check" : "find(\"id=conn-new-call\").0.value == \"say\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Undo Connect coin-1.collected to hana.say\"",
+          "check" : "find(\"id=undo\").0.name == \"Undo Connect coin-1.collected to hana.say\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=conn-5\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"A coin! Keep going, Mira.\"",
+          "check" : "find(\"id=conn-5-arg-text\").0.value == \"A coin! Keep going, Mira.\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene level.vrmxs 18 nodes unsaved changes valid hash 7cda016d774a048d\"",
+          "check" : "find(\"id=doc-state\").0.name matches \" valid \"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "234: act id=node-coin-1 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":3040,\"y\":893},\"help\":\"\",\"id\":\"node-coin-1\",\"name\":\"Coin 1 (coin-1), Area\",\"ref\": (29 ms)",
+        "235: until find(\"id=inspector-id\").0.name == \"Node coin-1\" → ok (38 ms)",
+        "238: act id=conn-new-signal action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":152,\"x\":4452,\"y\":1304},\"help\":\"\",\"id\":\"conn-new-signal\",\"name\":\"New connection signal\",\" (48 ms)",
+        "240: keys down → {\"sent\":true} (109 ms)",
+        "241: act surface=app role=menuitem name=\"collected\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":151,\"x\":4440,\"y\":1170},\"id\":\"_popUpItemAction:\",\"name\":\"collected\",\"ref\":\"A/0/0/1/4@feb8 (84 ms)",
+        "243: until find(\"id=conn-new-signal\").0.value == \"collected\" timeout=5000 → ok (347 ms)",
+        "244: act id=conn-new-to action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":152,\"x\":4452,\"y\":1102},\"help\":\"\",\"id\":\"conn-new-to\",\"name\":\"New connection target\",\"ref\" (38 ms)",
+        "246: keys down → {\"sent\":true} (110 ms)",
+        "247: act surface=app role=menuitem name=\"glint-1\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":151,\"x\":4440,\"y\":1533},\"id\":\"_popUpItemAction:\",\"name\":\"glint-1\",\"ref\":\"A/0/0/1/18@8db5\" (77 ms)",
+        "249: until find(\"id=conn-new-to\").0.value == \"glint-1\" timeout=5000 → ok (343 ms)",
+        "250: act id=conn-new-call action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":152,\"x\":4452,\"y\":1129},\"help\":\"\",\"id\":\"conn-new-call\",\"name\":\"New connection action\",\"re (41 ms)",
+        "252: keys down → {\"sent\":true} (109 ms)",
+        "253: act surface=app role=menuitem name=\"stop\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":151,\"x\":4440,\"y\":1224},\"id\":\"_popUpItemAction:\",\"name\":\"stop\",\"ref\":\"A/0/0/1/4@6f81\",\"ro (79 ms)",
+        "255: until find(\"id=conn-new-call\").0.value == \"stop\" timeout=5000 → ok (339 ms)",
+        "256: act id=conn-new-add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4360,\"y\":1156},\"help\":\"Connect coin-1.collected to glint-1.stop\",\"id\":\"conn-new-a (39 ms)",
+        "257: until find(\"id=undo\").0.name == \"Undo Connect coin-1.collected to glint-1.stop\" timeout=5000 → ok (39 ms)",
+        "258: until find(\"id=conn-4\").count == 1 timeout=5000 → ok (380 ms)",
+        "260: act id=conn-new-signal action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":152,\"x\":4452,\"y\":1104},\"help\":\"\",\"id\":\"conn-new-signal\",\"name\":\"New connection signal\",\" (40 ms)",
+        "262: keys down → {\"sent\":true} (111 ms)",
+        "263: act surface=app role=menuitem name=\"collected\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":151,\"x\":4440,\"y\":1200},\"id\":\"_popUpItemAction:\",\"name\":\"collected\",\"ref\":\"A/0/0/1/4@feb8 (86 ms)",
+        "265: until find(\"id=conn-new-signal\").0.value == \"collected\" timeout=5000 → ok (63 ms)",
+        "266: act id=conn-new-to action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":152,\"x\":4452,\"y\":1131},\"help\":\"\",\"id\":\"conn-new-to\",\"name\":\"New connection target\",\"ref\" (34 ms)",
+        "268: keys down → {\"sent\":true} (110 ms)",
+        "269: act surface=app role=menuitem name=\"hana\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":151,\"x\":4440,\"y\":1347},\"id\":\"_popUpItemAction:\",\"name\":\"hana\",\"ref\":\"A/0/0/1/9@359c\",\"ro (76 ms)",
+        "271: until find(\"id=conn-new-to\").0.value == \"hana\" timeout=5000 → ok (63 ms)",
+        "272: act id=conn-new-call action=focus → {\"action\":\"focus\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":22,\"w\":152,\"x\":4452,\"y\":1158},\"help\":\"\",\"id\":\"conn-new-call\",\"name\":\"New connection action\",\"re (37 ms)",
+        "274: keys down → {\"sent\":true} (106 ms)",
+        "275: act surface=app role=menuitem name=\"say\" exact=true action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":24,\"w\":151,\"x\":4440,\"y\":1230},\"id\":\"_popUpItemAction:\",\"name\":\"say\",\"ref\":\"A/0/0/1/3@449d\",\"rol (83 ms)",
+        "277: until find(\"id=conn-new-call\").0.value == \"say\" timeout=5000 → ok (369 ms)",
+        "278: act id=conn-new-add action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4360,\"y\":1185},\"help\":\"Connect coin-1.collected to hana.say\",\"id\":\"conn-new-add\", (35 ms)",
+        "279: until find(\"id=undo\").0.name == \"Undo Connect coin-1.collected to hana.say\" timeout=5000 → ok (40 ms)",
+        "280: until find(\"id=conn-5\").count == 1 timeout=5000 → ok (393 ms)",
+        "281: act id=conn-5-arg-text action=set_value value=\"A coin! Keep going, Mira.\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":147,\"x\":4457,\"y\":988},\"help\":\"\",\"id\":\"conn-5-arg-text\",\"name\":\"say text\",\"ref\":\"W:VR (455 ms)",
+        "282: until find(\"id=conn-5-arg-text\").0.value == \"A coin! Keep going, Mira.\" timeout=5000 → ok (250 ms)",
+        "283: expect find(\"id=doc-state\").0.name matches \" valid \" → ok (30 ms)",
+        "284: shot \"tutorial-connections\" (83 ms)"
+      ],
+      "message" : null,
+      "ms" : 8957,
+      "notes" : [
+        "shot 1: tutorial-connections"
+      ],
+      "row" : 8,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-TUTORIAL-webgl.scenario-2026-11-27T034056Z/shots/r8-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "8. Wire the coin",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 25,
+      "checks" : [
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-coin-2\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-coin-3\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-glint-2\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=node-glint-3\").count == 1",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Node coin-2\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node coin-2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"glint-2\"",
+          "check" : "find(\"id=conn-6-to\").0.value == \"glint-2\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"hana\"",
+          "check" : "find(\"id=conn-7-to\").0.value == \"hana\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=pos-x\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0.5\"",
+          "check" : "find(\"id=pos-y\").0.value == \"0.5\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"2.6\"",
+          "check" : "find(\"id=pos-z\").0.value == \"2.6\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Node coin-3\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node coin-3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0\"",
+          "check" : "find(\"id=pos-x\").0.value == \"0\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"0.5\"",
+          "check" : "find(\"id=pos-y\").0.value == \"0.5\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"1.3\"",
+          "check" : "find(\"id=pos-z\").0.value == \"1.3\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Saved level.vrmxs · 4409 bytes · 60d5e349e219d16a\"",
+          "check" : "find(\"id=saved\").0.name matches \"^Saved level.vrmxs · [0-9]+ bytes\"",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Scene level.vrmxs 22 nodes saved valid hash 60d5e349e219d16a\"",
+          "check" : "find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 22 nodes saved valid\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "289: act id=duplicate action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":76,\"x\":3113,\"y\":432},\"help\":\"Duplicate (⌘D)\",\"id\":\"duplicate\",\"name\":\"Duplicate selectio (37 ms)",
+        "290: until find(\"id=node-coin-2\").count == 1 timeout=5000 → ok (409 ms)",
+        "291: act id=duplicate action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":76,\"x\":3113,\"y\":432},\"help\":\"Duplicate (⌘D)\",\"id\":\"duplicate\",\"name\":\"Duplicate selectio (48 ms)",
+        "292: until find(\"id=node-coin-3\").count == 1 timeout=5000 → ok (398 ms)",
+        "293: expect find(\"id=node-glint-2\").count == 1 → ok (34 ms)",
+        "294: expect find(\"id=node-glint-3\").count == 1 → ok (30 ms)",
+        "295: act id=node-coin-2 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":3040,\"y\":942},\"help\":\"\",\"id\":\"node-coin-2\",\"name\":\"Coin 1 (coin-2), Area\",\"ref\": (35 ms)",
+        "296: until find(\"id=inspector-id\").0.name == \"Node coin-2\" → ok (39 ms)",
+        "297: expect find(\"id=conn-6-to\").0.value == \"glint-2\" → ok (29 ms)",
+        "298: expect find(\"id=conn-7-to\").0.value == \"hana\" → ok (34 ms)",
+        "299: act id=pos-x action=set_value value=\"0\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4367,\"y\":101},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (442 ms)",
+        "300: until find(\"id=pos-x\").0.value == \"0\" timeout=5000 → ok (33 ms)",
+        "301: act id=pos-y action=set_value value=\"0.5\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":70,\"x\":4454,\"y\":704},\"help\":\"\",\"id\":\"pos-y\",\"name\":\"Position Y\",\"ref\":\"W:VRMXG Edito (434 ms)",
+        "302: until find(\"id=pos-y\").0.value == \"0.5\" timeout=5000 → ok (32 ms)",
+        "303: act id=pos-z action=set_value value=\"2.6\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":70,\"x\":4541,\"y\":704},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (437 ms)",
+        "304: until find(\"id=pos-z\").0.value == \"2.6\" timeout=5000 → ok (37 ms)",
+        "305: act id=node-coin-3 action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":3040,\"y\":990},\"help\":\"\",\"id\":\"node-coin-3\",\"name\":\"Coin 1 (coin-3), Area\",\"ref\": (37 ms)",
+        "306: until find(\"id=inspector-id\").0.name == \"Node coin-3\" → ok (41 ms)",
+        "307: act id=pos-x action=set_value value=\"0\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":69,\"x\":4367,\"y\":704},\"help\":\"\",\"id\":\"pos-x\",\"name\":\"Position X\",\"ref\":\"W:VRMXG Edito (446 ms)",
+        "308: until find(\"id=pos-x\").0.value == \"0\" timeout=5000 → ok (32 ms)",
+        "309: act id=pos-y action=set_value value=\"0.5\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":70,\"x\":4454,\"y\":704},\"help\":\"\",\"id\":\"pos-y\",\"name\":\"Position Y\",\"ref\":\"W:VRMXG Edito (438 ms)",
+        "310: until find(\"id=pos-y\").0.value == \"0.5\" timeout=5000 → ok (36 ms)",
+        "311: act id=pos-z action=set_value value=\"1.3\" → {\"action\":\"set_value\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":70,\"x\":4541,\"y\":704},\"help\":\"\",\"id\":\"pos-z\",\"name\":\"Position Z\",\"ref\":\"W:VRMXG Edito (443 ms)",
+        "312: until find(\"id=pos-z\").0.value == \"1.3\" timeout=5000 → ok (32 ms)",
+        "313: act id=save action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":48,\"x\":3492,\"y\":333},\"help\":\"\",\"id\":\"save\",\"name\":\"Save\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (35 ms)",
+        "314: until find(\"id=saved\").0.name matches \"^Saved level.vrmxs · [0-9]+ bytes\" timeout=20000 → ok (42 ms)",
+        "315: until find(\"id=doc-state\").0.name matches \"^Scene level.vrmxs 22 nodes saved valid\" timeout=20000 → ok (34 ms)"
+      ],
+      "message" : null,
+      "ms" : 4376,
+      "notes" : [
+
+      ],
+      "row" : 9,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "9. Two more coins",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 26,
+      "checks" : [
+        {
+          "actual" : "\"Node env\"",
+          "check" : "find(\"id=inspector-id\").0.name == \"Node env\"",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"id=captions\").count > 0",
+          "ok" : true
+        },
+        {
+          "actual" : "1",
+          "check" : "find(\"text='Keep going, Mira'\").count > 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Playing · step 107 · WASD move, E interact\"",
+          "check" : "find(\"text=Playing · step\").0.name matches \"step [1-9][0-9]{2}\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"id=behaviour-error\").count == 0",
+          "ok" : true
+        },
+        {
+          "actual" : "\"Stopped: scene as before Play (60d5e349e219d16a), view unchanged\"",
+          "check" : "find(\"id=stop-result\").0.name matches \"^Stopped: scene as before Play\"",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "320: act id=node-env action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":25,\"w\":279,\"x\":3040,\"y\":531},\"help\":\"\",\"id\":\"node-env\",\"name\":\"env, Environment\",\"ref\":\"W:VRMXG (36 ms)",
+        "321: until find(\"id=inspector-id\").0.name == \"Node env\" → ok (42 ms)",
+        "322: act id=play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":79,\"x\":4552,\"y\":333},\"help\":\"\",\"id\":\"play\",\"name\":\"Play\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (32 ms)",
+        "323: until find(\"id=captions\").count > 0 timeout=90000 → ok (1508 ms)",
+        "324: expect find(\"text='Keep going, Mira'\").count > 0 → ok (38 ms)",
+        "325: shot \"tutorial-play\" (98 ms)",
+        "326: until find(\"text=Playing · step\").0.name matches \"step [1-9][0-9]{2}\" timeout=60000 → ok (1223 ms)",
+        "327: expect find(\"id=behaviour-error\").count == 0 → ok (35 ms)",
+        "328: act id=play action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":79,\"x\":4757,\"y\":333},\"help\":\"\",\"id\":\"play\",\"name\":\"Stop\",\"ref\":\"W:VRMXG Editor/0/0/0/0/0 (35 ms)",
+        "329: until find(\"id=stop-result\").0.name matches \"^Stopped: scene as before Play\" timeout=20000 → ok (50 ms)"
+      ],
+      "message" : null,
+      "ms" : 3347,
+      "notes" : [
+        "shot 1: tutorial-play"
+      ],
+      "row" : 10,
+      "section" : "",
+      "shots" : [
+        "~/Library/Caches/AppProbe/runs/HAND-TEST-M6-TUTORIAL-webgl.scenario-2026-11-27T034056Z/shots/r10-1.png"
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "10. Play it",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 27,
+      "checks" : [
+        {
+          "actual" : "\"Exported game coin-run: 61 files, 19437003 bytes, entry level.vrmxs, runtime vrmxg-game 0.1.0+e513c0497664 · build c809be3cc36ae9d2 · manifest c6c8a7c361d49bcc · 26 files licensed by a pattern row · ~/Library/Containers…",
+          "check" : "find(\"id=export-game-result\").0.name matches \"^Exported game coin-run: [0-9]+ files, [0-9]+ bytes, entry level.vrmxs, runtime vrmxg-game .*/w9-builds[^/]*/coin-run$\"",
+          "ok" : true
+        },
+        {
+          "actual" : "0",
+          "check" : "find(\"role=alert\").count == 0",
+          "ok" : true
+        }
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+        "335: act id=export-open action=press → {\"action\":\"press\",\"delivery\":\"delivered\",\"element\":{\"frame\":{\"h\":27,\"w\":59,\"x\":4392,\"y\":333},\"help\":\"\",\"id\":\"export-open\",\"name\":\"Export\",\"ref\":\"W:VRMXG Editor/ (33 ms)",
+        "336: wait id=export-game timeout_ms=5000 → found after 38 ms: button \"Export game\" #export-game help=\"The project as a playable build: the runtime, the game's files and a manifest of every file's hash an (38 ms)",
+        "337: menu \"File › Export Game…\" press → pressed File › Export Game… (144 ms)",
+        "338: until find(\"id=export-game-result\").0.name matches \"^Exported game coin-run: [0-9]+ files, [0-9]+ bytes, entry level.vrmxs, runtime vrmxg-game .*/w9-builds[^/]*/coin-run$\" timeout=180000 → ok (356 ms)",
+        "339: expect find(\"role=alert\").count == 0 → ok (36 ms)"
+      ],
+      "message" : null,
+      "ms" : 843,
+      "notes" : [
+
+      ],
+      "row" : 11,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "passed",
+      "text" : "11. Export the game",
+      "undo" : null
+    },
+    {
+      "checklist_line" : 28,
+      "checks" : [
+
+      ],
+      "events" : [
+
+      ],
+      "judgments" : [
+
+      ],
+      "log" : [
+
+      ],
+      "message" : "run outside the app: node acceptance/m6/tutorial.mjs play <container>/tmp/w9-builds/coin-run (Node, and the game app in Chromium on WebGPU and WebGL)",
+      "ms" : 0,
+      "notes" : [
+
+      ],
+      "row" : 12,
+      "section" : "",
+      "shots" : [
+
+      ],
+      "stall_ms" : null,
+      "status" : "skipped",
+      "text" : "12. Play the build in the game app",
+      "undo" : null
+    }
+  ],
+  "scenario" : "apps/editor-mac/docs/hand-test/HAND-TEST-M6-TUTORIAL-webgl.scenario.md",
+  "summary" : "12 rows: 11 passed, 0 failed, 0 need you, 1 skipped; 0 checklist rows have no steps",
+  "uncovered" : [
+
+  ]
+}
