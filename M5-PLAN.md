@@ -146,8 +146,7 @@ in part:** check 4 (no real gamepad was attached, and VoiceOver wasn't run in an
 behaviours or connections, nor give the built nodes the level's ids, AB-T-0638) and check 10 (M0 to M4 hold on both backends, the matrix green in all six cells
 against unchanged canonical digests; the sample game plays back at 59.5 fps in steady play at 1080p on the M5 Max, but
 scene changes run 40 to 70 fps with a 523 ms worst frame, and the base Mac waits on AB-T-0511). None failed. Check 9 ran on the sample game itself (the agent read The Morning Rush's rules and
-added a regular and a goal: `apps/editor-mac/docs/HAND-TEST-M5-MCP-RUSH.md`). **This plan
-isn't marked done: that is the operator's call on this table.**
+added a regular and a goal: `apps/editor-mac/docs/HAND-TEST-M5-MCP-RUSH.md`).
 
 **W10 (2026-11-25, AB-T-0620):** "The Morning Rush" is `content/sample/game` (its own `game.json`; `vrmxg-export
 --game game/game.json`): title, level, won and lost scenes; three regulars ordered by dialogue choice, trays carried on

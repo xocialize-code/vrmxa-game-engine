@@ -6,8 +6,8 @@ input, audio, NPC AI, capture) for a new editor app, a game UI app and an anime 
 
 | | |
 |---|---|
-| **State** | 2026-11-26. M0 to M5 are done: the runtime, the editor, the anime creator, the game app and a sample game, "The Morning Rush" ([acceptance/](acceptance/README.md)). **M6 (games others can build) is in progress**: behaviours and connections in the editor, hot reload, new projects and starter content, saves across updates and sharing a game are in ([M6-PLAN.md](M6-PLAN.md)). |
-| **Read first** | [VRMXG-PRD.md](VRMXG-PRD.md) (the product), [M6-PLAN.md](M6-PLAN.md) (now), [CLAUDE.md](CLAUDE.md) (the area contract and where everything is) |
+| **State** | 2026-11-27. M0 to M6 are done: the runtime, the editor, the anime creator, the game app, a sample game, "The Morning Rush", and games others can build: behaviours and connections in the editor, hot reload, new projects, saves across updates, sharing a game, a game builder's guide and a second game made in the editor, "After Hours" ([acceptance/](acceptance/README.md), [M6-PLAN.md](M6-PLAN.md)). M7 (worlds you can make) is proposed in the PRD and waits on the operator's scoping. |
+| **Read first** | [VRMXG-PRD.md](VRMXG-PRD.md) (the product), [M6-PLAN.md](M6-PLAN.md) (the latest milestone), [CLAUDE.md](CLAUDE.md) (the area contract and where everything is) |
 | **Stack** | three r187, `@pixiv/three-vrm` 3.5.5, Rapier (deterministic build), Vue 3, a thin sandboxed WKWebView wrapper for macOS |
 | **Bridge** | Area `vrmxg` on AgentBridge: `bridge assume vrmxg` |
 
