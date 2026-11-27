@@ -1,6 +1,6 @@
 {
- "check": "M5 exit check 10 (the sample game): ten minutes of play in the Mac game app at 1080p; the web process's memory once a second (AB-T-0620)",
- "canvas": "1920×1080",
+ "check": "M6 W11, exit check 12 (After Hours): ten minutes of the recorded sessions replayed by the Mac game app at 1080p on WebGPU at 5d5f42e; the web process's memory once a second (AB-T-0652; acceptance/m6/after-hours-frames.sh, summed by acceptance/m5/rush-frames-summary.mjs)",
+ "canvas": "1920\u00d71080",
  "stoppedAt": null,
  "complete": true,
  "seconds": 665,

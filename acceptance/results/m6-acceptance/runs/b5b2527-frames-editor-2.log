@@ -1,0 +1,9 @@
+[20:30:01] chromium-webgpu frames load 1: VERDICTS FAIL digest 0707db1708556779 ≠ canonical d6784fc3c3d16a2f (2 items: film, filmSecond) · 29.6 s · GPU 0/37/40% quiet
+[20:30:01] chromium-webgpu frames: load 1 fails filmTwiceIdentical (pixels); the GPU was quiet; rerunning once
+[20:30:31] chromium-webgpu frames rerun of load 1: VERDICTS FAIL digest 61d61503cf995324 ≠ canonical d6784fc3c3d16a2f (1 items: filmSecond) · 29.7 s · GPU 35/38/42% quiet
+[20:30:31] chromium-webgpu frames: FAILURE (the rerun differs too); --keep-going
+[20:30:45] chromium-webgpu editor load 1: ok digest 8d9ab54914096695 = canonical · 14.0 s · GPU 33/38/65% quiet
+[20:30:59] chromium-webgpu editor load 2: ok digest 8d9ab54914096695 = canonical · 14.1 s · GPU 33/38/82% quiet
+[20:31:13] chromium-webgpu editor load 3: ok digest 8d9ab54914096695 = canonical · 14.1 s · GPU 28/38/83% quiet
+[20:31:13] matrix FAILED; 0 AB-T-0589 incidents
+exit 1

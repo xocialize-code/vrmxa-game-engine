@@ -60,7 +60,8 @@
   "10": {
    "check": "Agents can build a game too",
    "result": "passed",
-   "receipt": "AB-R-1208"
+   "receipt": "AB-R-1208",
+   "note": "the editor session is PR 74's, recorded at adaa198 and not re-run; the template session ran at 5d5f42e"
   },
   "11": {
    "check": "The spikes have verdicts",
@@ -70,7 +71,7 @@
   "12": {
    "check": "M0 to M5 still hold; After Hours at 60 fps at 1080p",
    "result": "partly",
-   "notMet": "the canonical matrix fails by its rules on single odd WebGPU loads in both full runs; b5b2527 fails the same way today (AB-T-0666)",
+   "notMet": "scene changes drop to 47 to 68 fps windows, worst frame 210.5 ms; and the canonical matrix fails by its rules on single odd WebGPU loads in both full runs, as b5b2527 does today (AB-T-0666)",
    "notRun": "live play on the Mac; the base Mac (AB-T-0511); M5's other Mac scenarios and M0 to M4's Mac scenarios and Chromium checks",
    "steadyFps": 60.0,
    "receipts": [

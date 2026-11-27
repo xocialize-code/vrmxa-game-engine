@@ -20,12 +20,14 @@ Claude Code session with the MCP server (`results/mcp-session.json`).
 
 M6's twelve exit checks ([M6-PLAN.md](../M6-PLAN.md), "What M6 is done looking like") were run at the M6 commit: main at
 5d5f42e (W0 to W10, the spikes, and PR #74). Every run used apps built at that commit: the game app's runtime
-`0.1.0+01c4bb509d4b`, and the Mac editor, playground and game apps on shell 0.16.0. The tree's only change was this
-PR's `apps/editor-mac/scripts/mcp-session.mjs` (a new `--w11` mode), which no app loads.
+`0.1.0+01c4bb509d4b`, and the Mac editor, playground and game apps on shell 0.16.0. While the runs went, the tree's
+only changes were this PR's: `apps/editor-mac/scripts/mcp-session.mjs` (a new `--w11` mode, which no app loads) and,
+from 17:30 UTC, `M6-PLAN.md`'s status text.
 
 **Nine checks pass. Three pass in part (1, 7 and 12).** None failed. Each part that isn't met is listed under the table.
 Each check is filed as a receipt (task AB-T-0652); the files are in `results/m6-acceptance/`, and `summary.json` holds
-the verdicts. Where an earlier workstream's receipt was taken at an older commit, the check was run again at 5d5f42e.
+the verdicts. Where an earlier workstream's receipt was taken at an older commit, the check was run again at 5d5f42e, with one
+exception: check 10's editor session is PR 74's, recorded at adaa198 and not re-run.
 **Whether M6 is done is the operator's call:** nothing here marks it done.
 
 | # | Check | Result | Receipt |
@@ -39,9 +41,9 @@ the verdicts. Where an earlier workstream's receipt was taken at an older commit
 | 7 | Saves survive an update | **Partly.** `saves.mjs` 10 of 10 on the Morning Rush:<br>• A save loads after a re-export that changes only a texture, the music's samples, the release or a declared behaviour's comment; 1,800 steps on give the same hashes.<br>• It is refused, with the reason named, after a change to a declared state, an undeclared behaviour's code, a scene, an item or the action map.<br>• The old session log is refused by the new build's replay.<br>• The engine's maths refusal is unit-tested only (`compat.test.mjs`), not shown end to end with its message.<br>**Not met:** a re-export that changes only the HUD refuses earlier saves. The fingerprint's engine part counts the runtime's version, which stamps every source the game app bundles, the HUD's among them (AB-T-0679) | AB-R-1205 |
 | 8 | A game keeps running and can be shared | **Passed.**<br>• **Device loss:** `device-loss.mjs` 16 of 16, `device-loss-wkwebview.sh` 6 of 6 and `editor-device-loss.mjs` 7 of 7. In the hardened Mac app, WebKit's GPU process was killed twice; the game came back on the WebGL2 fallback each time and ended on the log's hash (4,333 steps, `83a97551fb38a7d6`).<br>• **Static hosts:** `sharing.mjs` 19 of 19. The Rush was won from Python's `http.server` and from Wrangler dev under the build's CSP with no eval.<br>• **Mac build:** `morning-rush.app` passes `codesign --verify --deep --strict` (flags adhoc, runtime) and `HAND-TEST-M5-RUSH` 4 of 4, with Third-Party Notices in its Help menu.<br>• **Notices:** `check-notices.mjs` passes for the editor, playground, creator and game.<br>Signing, notarising and hosting stay the operator's steps | AB-R-1206 |
 | 9 | There is a game builder's guide | **Passed.** `HAND-TEST-M6-TUTORIAL` follows `docs/guide/tutorial.md` step by step: 11 of 11 on WebGPU and 11 of 11 on WebGL, and the two runs' levels are byte-identical. Step 12 plays each run's build in Node and in the game app on both backends: 11 of 11 each. As in W9, three rows are checked in part: walking Mira (steps 2 and 10) is step 12's, and step 5's file is the page's own code saved by a helper, not typed. The site isn't deployed (the operator's step) | AB-R-1207 |
-| 10 | Agents can build a game too | **Passed.**<br>• **From a template (new, headless):** in the editor, `game op=new` asks the person for a folder, so this ran headless. An agent with only `vrmxg-mcp` (`mcp-session.mjs --w11`, Sonnet) made "Tea Time" from the level template. It gave Hana `greet` with four params, added an Area with two connections, then validated, saved and exported: 19 calls, none failed, $0.28. The build verifies whole (60 files) and plays to its ending in Node.<br>• **A level for the second game:** PR 74's session in the Mac editor (5 of 5, 37 calls, none failed; `git diff 0ffd294 5d5f42e` is empty) | AB-R-1208 |
+| 10 | Agents can build a game too | **Passed.**<br>• **From a template (new, headless):** in the editor, `game op=new` asks the person for a folder, so this ran headless. An agent with only `vrmxg-mcp` (`mcp-session.mjs --w11`, Sonnet) made "Tea Time" from the level template at 5d5f42e. It gave Hana `greet` with four params, added an Area with two connections, then validated, saved and exported: 18 MCP calls (and one ToolSearch), none failed, $0.28. The build verifies whole (60 files) and plays to its ending in Node.<br>• **A level for the second game:** PR 74's session in the Mac editor (5 of 5, 37 calls, none failed), recorded at adaa198 and not re-run. Since then, PR 74's review changed `skills/vrmxg/SKILL.md`'s building rules (which the session loaded: a prop stands on a `Node3D` at its base, its lift from the asset's bounds), the Export line's path display in `export-game.js` (`homeShort`), and a doc comment in `mcp/src/tools.js`. Rows 1 and 5, tightened in that review, were run again on the agent's saved project (`rows-1-5/`) | AB-R-1208 |
 | 11 | The spikes have verdicts | **Passed.** `spike-networking/` (lockstep now, rollback once AB-T-0657 to 0659 close) and `spike-webxr/` (no WebXR in WKWebView on the Mac; visionOS Safari has no WebGPU adapter) each have a README with a verdict, run instructions and raw JSON | AB-R-1209 |
-| 12 | M0 to M5 still hold; After Hours at 60 fps | **Partly.**<br>• **The frame rate is met in this run:** the Mac game app replayed After Hours' sessions for 665 s at 1080p on WebGPU, steady 60.0 fps (30,301 frames in 505 s). W10 measured 59.58 the same way on the same build this morning, so this is at the bar, not above it.<br>• **Everything else re-run passes:** M5's scripts on both backends, the Rush's committed sessions in Node, Chromium and WKWebView, `npm run check` and the shell's tests.<br>• **Not met:** the canonical matrix fails by its own rules in both full runs. Single WebGPU loads differ from canonical (a film exported twice in one load differs, and an editor digest once), never on WebGL. b5b2527, the commit AB-T-0656 found canonical, fails the same way today, so this is the machine, not M6's code (AB-T-0666).<br>• **Not run:** live play on the Mac; the base Mac (AB-T-0511); M5's other Mac scenarios (the editor's inspector, viewport, prefabs and assets, and export; the game app's `M5-GAME`); M0 to M4's Mac scenarios and M2 to M4's Chromium checks | AB-R-1211, AB-R-1210 |
+| 12 | M0 to M5 still hold; After Hours at 60 fps | **Partly.**<br>• **The frame rate is met in this run:** the Mac game app replayed After Hours' sessions for 665 s at 1080p on WebGPU, steady 60.0 fps (30,301 frames in 505 s). W10 measured 59.58 the same way on the same build this morning, so this is at the bar, not above it.<br>• **Everything else re-run passes:** M5's scripts on both backends, the Rush's committed sessions in Node, Chromium and WKWebView, `npm run check` and the shell's tests.<br>• **Not met:** scene changes drop the frame rate, as in M5: their 5-second windows run 47 to 68 fps, and the worst frame is 210.5 ms while the next world is built.<br>• **Not met:** the canonical matrix fails by its own rules in both full runs. Single WebGPU loads differ from canonical (a film exported twice in one load differs, and an editor digest once), never on WebGL. b5b2527, the commit AB-T-0656 found canonical, fails the same way today, so this is the machine, not M6's code (AB-T-0666).<br>• **Not run:** live play on the Mac; the base Mac (AB-T-0511); M5's other Mac scenarios (the editor's inspector, viewport, prefabs and assets, and export; the game app's `M5-GAME`); M0 to M4's Mac scenarios and M2 to M4's Chromium checks | AB-R-1211, AB-R-1210 |
 
 ### Not green
 
@@ -59,7 +61,7 @@ the verdicts. Where an earlier workstream's receipt was taken at an older commit
 
   | Run (UTC) | Odd loads | Canonical cells |
   |---|---|---|
-  | 15:49 to 16:10 (`matrix/`) | Chromium WebGPU `frames` (`filmSecond`, and the rerun's film) and `editor` (rerun canonical); WKWebView scheme WebGPU `editor` (rerun canonical); WKWebView loopback WebGPU `frames` (`filmSecond`) | 3 of 6 (the WebGL cells) |
+  | 15:49 to 16:10 (`matrix/`) | Chromium WebGPU `frames` (`filmSecond`; the rerun's `film` and `filmSecond` too) and `editor` (rerun canonical); WKWebView scheme WebGPU `editor` (rerun canonical); WKWebView loopback WebGPU `frames` load 2 (`filmSecond`; its rerun failed `filmTwiceIdentical` too, though its digest was canonical) | 3 of 6 (the WebGL cells) |
   | 19:41 to 20:01 (`matrix-final/`) | WKWebView loopback WebGPU `frames` load 1 (`filmSecond`, rerun canonical) | 5 of 6 |
 
   Both runs had:
@@ -76,8 +78,9 @@ the verdicts. Where an earlier workstream's receipt was taken at an older commit
 
   | Commit | `frames` | `editor` |
   |---|---|---|
-  | b5b2527: main after W6 and PR #63, canonical 6 of 6 for AB-T-0656 ([`b5b2527-frames-editor.log`](results/m6-acceptance/runs/b5b2527-frames-editor.log)) | load 1 odd (`filmSecond`), rerun canonical | 3 of 3 |
-  | 5d5f42e ([`matrix-frames-editor-5d5f42e.log`](results/m6-acceptance/runs/matrix-frames-editor-5d5f42e.log)) | load 2 odd, rerun canonical | 3 of 3 |
+  | b5b2527 (16:56): main after W6 and PR #63, canonical 6 of 6 for AB-T-0656 ([`b5b2527-frames-editor.log`](results/m6-acceptance/runs/b5b2527-frames-editor.log), run in a throwaway worktree of that commit; no summary kept) | load 1 odd (`filmSecond`), rerun canonical | 3 of 3 |
+  | b5b2527 again (20:29), its summary stamped with the commit and a clean tree ([`b5b2527-frames-editor/summary-partial.json`](results/m6-acceptance/b5b2527-frames-editor/summary-partial.json), [`runs/b5b2527-frames-editor-2.log`](results/m6-acceptance/runs/b5b2527-frames-editor-2.log)) | load 1 odd (`film`, `filmSecond`), the rerun odd too | 3 of 3 |
+  | 5d5f42e (17:23; [`matrix-frames-editor-5d5f42e/summary-partial.json`](results/m6-acceptance/matrix-frames-editor-5d5f42e/summary-partial.json)) | load 2 odd, rerun canonical | 3 of 3 |
 
   The same failure at the commit that was canonical is what clears M6's code; the diff since b5b2527 isn't the
   argument (the editor changed a lot in W8 to W10).
@@ -153,6 +156,7 @@ the verdicts. Where an earlier workstream's receipt was taken at an older commit
   - The level's WebGL run: the Id field not found (row 12); a typed id cut to `a7b-1c2d3e4f5a61`; menu items missing.
   - After Hours' WebGPU run: W10's closing-menu race (row 13).
   - Another session was using the Mac meanwhile ("2 users", WindowServer at 30 to 45%).
+  - Making the select and type steps wait for their value is AB-T-0680.
 - **The committed `results/m6-device-loss/lose.json` is on an older build** (`ac3cab29`). `device-loss.mjs` records
   its session again every run, so its checks are unaffected. The Mac device-loss run used this run's log
   (`runner-results/m6-device-loss/lose.json`).
@@ -169,7 +173,8 @@ acceptance/m6/after-hours-frames.sh build      # and the Rush's Mac app: export 
 npm run check && swift test --package-path apps/shell
 node acceptance/node.mjs && node acceptance/m5/rush-node.mjs all && node acceptance/m6/after-hours-node.mjs all
 node acceptance/m6/templates-node.mjs && node acceptance/m6/saves.mjs
-node acceptance/matrix.mjs --keep-going --quiet-wait 120          # twice; and --runtimes chromium --backends webgpu --checks frames,editor --loads 3 here and at b5b2527
+node acceptance/matrix.mjs --keep-going --quiet-wait 120          # run 1; run 2 with --quiet-wait 60
+node acceptance/matrix.mjs --runtimes chromium --backends webgpu --checks frames,editor --loads 3 --keep-going --quiet-wait 60   # here, and twice at b5b2527
 node acceptance/m6/replay-logs.mjs && acceptance/m5/rush-wkwebview.sh && acceptance/m6/after-hours-wkwebview.sh   # the committed logs
 node acceptance/m5/build.mjs --chromium && acceptance/m5/build-wkwebview.sh
 node acceptance/m5/flow.mjs && acceptance/m5/flow-wkwebview.sh && node acceptance/m5/dialogue.mjs && acceptance/m5/dialogue-wkwebview.sh
@@ -177,7 +182,7 @@ node acceptance/m5/game.mjs && node acceptance/m5/layers.mjs && acceptance/m5/la
 node acceptance/m6/device-loss.mjs && acceptance/m6/device-loss-wkwebview.sh && node acceptance/m6/editor-device-loss.mjs
 node acceptance/m6/sharing.mjs && node acceptance/m6/starter.mjs && node acceptance/m6/templates-game.mjs
 node acceptance/m5/rush.mjs && node acceptance/m6/after-hours.mjs                        # fresh sessions; then the committed logs restored
-node apps/editor-mac/scripts/mcp-session.mjs --w11 <empty folder> --out results/m6-acceptance/mcp-new-project-session.json
+node apps/editor-mac/scripts/mcp-session.mjs --w11 <empty folder> --out acceptance/results/m6-acceptance/mcp-new-project-session.json
 # AppProbe, the GPU lock held throughout, each with its fixture script first: the editor's M6-NEW-PROJECT (+ -recent),
 # M6-HOT-RELOAD, M5-LEVEL (+ -webgl), M6-AFTER-HOURS (+ -webgl, after-hours-files.mjs beside it), M6-TUTORIAL (+ -webgl);
 # the game app's M5-RUSH on the hardened morning-rush.app
@@ -197,7 +202,8 @@ The runners' own result files were restored after each run; this run's copies ar
 | `runs/` | Every command's log |
 | `runner-results/` | The runners' JSON |
 | `matrix/`, `matrix-final/` | The two full matrix runs: summaries and cell JSON; not the per-step runs, `node.json` or odd-frame PNGs |
-| `matrix-frames-rerun/`, `matrix-frames-editor-5d5f42e/` | The three-load Chromium WebGPU runs |
+| `matrix-frames-rerun/` | The three-load Chromium WebGPU `frames` rerun after run 1 (its cell JSON; it stopped at load 1's failure) |
+| `matrix-frames-editor-5d5f42e/`, `b5b2527-frames-editor/` | The three-load Chromium WebGPU `frames,editor` runs at each commit: `summary-partial.json` (a subset run's summary, with its commit) and the cell JSON |
 | `hand-tests/` | AppProbe reports and `results.json`, without their screenshots; home paths are written as `~` |
 | `frames/` | The frame-rate run |
 | `mcp-new-project*` | The headless agent session and the level it saved |

@@ -32,7 +32,9 @@ const GAMES = {
 };
 const args = process.argv.slice(2);
 const outAt = args.indexOf('--out'), out = outAt < 0 ? null : args[outAt + 1];
-const named = args.filter((a, i) => !a.startsWith('--') && i !== outAt + 1);
+const named = args.filter((a, i) => !a.startsWith('--') && (outAt < 0 || i !== outAt + 1));
+const unknown = named.filter((n) => !Object.hasOwn(GAMES, n));
+if (unknown.length) { console.error(`no game named ${unknown.join(', ')}: ${Object.keys(GAMES).join(' or ')}`); process.exit(2); }
 const games = named.length ? named : Object.keys(GAMES);
 if (!fs.existsSync(PATHS.core)) { console.error('needs vrmxa-core beside the repository: the games have characters'); process.exit(1); }
 
@@ -64,10 +66,14 @@ for (const game of games) {
   });
   await new Promise((r) => server.listen(0, '127.0.0.1', () => r(null)));
   const base = `http://127.0.0.1:${/** @type {any} */ (server.address()).port}/index.html`;
-  for (const name of fs.readdirSync(logs).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)).sort()) {
+  const names = fs.existsSync(logs) ? fs.readdirSync(logs).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)).sort() : [];
+  say(`${game}: its committed logs are there`, names.length > 0, names.length ? names.join(', ') : `none in ${path.relative(root, logs)}`);
+  for (const name of names) {
     const log = JSON.parse(fs.readFileSync(path.join(logs, `${name}.json`), 'utf8'));
     const entry = g.logs[name] = { steps: log.hashes.length, final: log.hashes.at(-1), digest: log.game.digest };
-    say(`${game} ${name}: the log names this build`, log.game.digest === exported.manifest.digest, `log ${log.game.digest.slice(0, 12)}, export ${exported.manifest.digest.slice(0, 12)}`);
+    const sameBuild = log.game.digest === exported.manifest.digest;
+    say(`${game} ${name}: the log names this build`, sameBuild, `log ${log.game.digest.slice(0, 12)}, export ${exported.manifest.digest.slice(0, 12)}`);
+    if (!sameBuild) continue; // replaySession refuses a log from another build: nothing to replay
     const replay = await replaySession(log, { digest: build.manifest.digest, load, unload: freeWorld, scenes: docs.scenes, prefabs: docs.prefabs });
     const diff = firstDifference(replay, log.hashes);
     entry.node = { steps: replay.length, final: replay.at(-1)?.hash ?? null, same: diff < 0 && replay.length === log.hashes.length };

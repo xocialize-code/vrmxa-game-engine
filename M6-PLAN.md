@@ -34,9 +34,9 @@ Carried:
 Carried from the second wave:
 - Renaming a keyed game node with no `key` renames it in the game state, and conditions that name it don't follow (W1's PR notes it).
 - AB-T-0654 items 2 and 3, the cycle-fallback nits, and a top-level `$async` schema gap.
-- The hardened Mac app's AppProbe scenario on the merged build (last pass AB-R-1181 on 41b7e712).
-- The M5 Rush recordings: #60 changed the registry, so the Rush build went from 8ab0fe3f to 1117e9d8 and the committed logs no longer replay. W7's session is re-recording them on main. CI doesn't replay them against the current build.
-- Still carried from the first wave: AB-T-0626, AB-T-0656 (blocks W11), AB-T-0655, and MCP's token budget.
+- The hardened Mac app's AppProbe scenario on the merged build (last pass AB-R-1181 on 41b7e712). Since done: AB-R-1185 on d441b96, and at 5d5f42e in W11 (AB-R-1206).
+- The M5 Rush recordings: #60 changed the registry, so the Rush build went from 8ab0fe3f to 1117e9d8 and the committed logs no longer replay. CI doesn't replay them against the current build. Since done: re-recorded with W10 (build 689c41cac7b7, AB-R-1199), and they replay exactly at 5d5f42e (W11, AB-R-1211).
+- Still carried from the first wave: AB-T-0626, AB-T-0656 (blocks W11; since done, below), AB-T-0655, and MCP's token budget.
 
 **Status (2026-11-27, third wave):** done. Each PR was reviewed by an independent reviewer and re-checked after its fixes.
 - **W8 agents** (PRs #67, #68 and #74; AB-T-0649 with AB-T-0641 and AB-T-0678):
@@ -63,7 +63,6 @@ Carried from the third wave:
   - A hidden ParticleEmitter keeps emitting (AB-T-0671).
   - The editor's Play has no game service (AB-T-0672).
 - Prototype-polluting prop paths (AB-T-0673).
-- PR 74's first, unredacted screenshots may stay fetchable on GitHub by SHA until GitHub collects them; asking GitHub Support to purge them sooner is the operator's step.
 
 **W11, M6's acceptance** (AB-T-0652): run at 5d5f42e on 2026-11-27, receipts AB-R-1200 to 1211. The verdict table is in
 [acceptance/](acceptance/README.md), "Result: M6's acceptance". **Nine checks pass and three pass in part:**
