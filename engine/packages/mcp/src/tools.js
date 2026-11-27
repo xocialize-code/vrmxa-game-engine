@@ -553,7 +553,7 @@ async function settingsOp(st, set, project, changed = null) {
   const steps = [];
   await applySettings(st, set, steps, marked);
   let reloaded;
-  if (steps.some((x) => /^Settings: .*behaviours/.test(x)) && changed?.behaviours) reloaded = await changed.behaviours();
+  if (steps.some((x) => /^(Behaviours |No behaviours module$)/.test(x)) && changed?.behaviours) reloaded = await changed.behaviours();
   let licence;
   if (set.licence !== undefined) licence = await licenceRow(st, project, set.licence);
   return { settings: view(), steps: steps.map((x) => `${x}${MARK}`), ...(licence ? { licence } : {}), ...(reloaded ? { behaviours: reloaded } : {}), undo: steps.length ? 'each step is one of the project settings\' own Undo (the editor\'s Project Settings panel), not the scene\'s' : undefined, note: GAME_NOTE };
@@ -561,10 +561,16 @@ async function settingsOp(st, set, project, changed = null) {
 
 /** Settings' changes on a ProjectSettings, in order, each through its own commands (`marked` labels them). */
 async function applySettings(st, set, steps, marked) {
-  const game = Object.fromEntries(Object.entries(set).filter(([k]) => ['title', 'id', 'release', 'entry', 'scenes', 'behaviours'].includes(k)));
+  const game = Object.fromEntries(Object.entries(set).filter(([k]) => ['title', 'id', 'release', 'entry', 'scenes'].includes(k)));
   if (Object.keys(game).length) {
     const label = `Settings: ${Object.keys(game).join(', ')}`;
     if (await marked(() => st.edit(label, (d) => setGameKeys(d.game, game, st.files)))) steps.push(label);
+  }
+  // the module through the panel's own command (its checks and its label), so the two never disagree
+  if (set.behaviours !== undefined) {
+    if (set.behaviours !== null && set.behaviours !== '' && typeof set.behaviours !== 'string') throw new Error('set.behaviours: a .js or .mjs file of the project, or null for none');
+    const label = set.behaviours ? `Behaviours ${set.behaviours}` : 'No behaviours module';
+    if (await marked(() => st.setBehaviours(set.behaviours || null))) steps.push(label);
   }
   if (set.layers !== undefined) {
     if (!Array.isArray(set.layers) || set.layers.some((x) => typeof x !== 'string')) throw new Error('set.layers: the layers\' names, in order');
@@ -616,10 +622,6 @@ function setGameKeys(g, set, files) {
   }
   if (set.entry !== undefined) { g.entry = sceneOf(set.entry, 'entry'); if (!(g.scenes ?? []).includes(g.entry)) g.scenes = [...(g.scenes ?? []), g.entry].sort(); }
   else if (set.scenes !== undefined && !g.scenes.includes(g.entry)) throw new Error(`${g.entry} is the entry scene: it stays in scenes (set another entry first)`);
-  if (set.behaviours !== undefined) {
-    if (set.behaviours && (typeof set.behaviours !== 'string' || !set.behaviours.endsWith('.js') || !files.includes(set.behaviours))) throw new Error(`behaviours: a .js file of the project (not ${JSON.stringify(set.behaviours)})`);
-    if (set.behaviours) g.behaviours = set.behaviours; else delete g.behaviours;
-  }
 }
 
 /**

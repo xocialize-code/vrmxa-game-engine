@@ -116,7 +116,7 @@ test('game.json switched to another module in Project Settings: the editor reads
 });
 
 test('MCP\'s game op=settings on the editor\'s target: set.behaviours reads the module again through behavioursChanged; other keys and the same module don\'t', async () => {
-  // the trigger in @vrmxg/mcp's settingsOp matches the step's label ("Settings: …behaviours"), run here end to end:
+  // the trigger in @vrmxg/mcp's settingsOp follows the panel's own setBehaviours step ("Behaviours …"), run here end to end:
   // the game tool, the editor's target, the app's ProjectSettings and the host's read, with no hook called by hand
   const linked = linkedFiles();
   try {
@@ -138,7 +138,7 @@ test('MCP\'s game op=settings on the editor\'s target: set.behaviours reads the 
 
     // the module: written, then read by the host, and the answer says what it declared
     r = await settingsCall({ behaviours: 'game/other.js' });
-    assert.deepEqual(r.steps, ['Settings: behaviours (MCP)']);
+    assert.deepEqual(r.steps, ['Behaviours game/other.js (MCP)']);
     assert.equal(JSON.parse(disk.get('game.json')).behaviours, 'game/other.js');
     assert.deepEqual(reads, ['game/other.js'], 'read once, after game.json names the new module');
     assert.equal(r.behaviours.module, 'game/other.js');
@@ -147,10 +147,10 @@ test('MCP\'s game op=settings on the editor\'s target: set.behaviours reads the 
     assert.deepEqual(projectNames(registry), ['beta', 'mover']);
     assert.equal(await playedFrom(host, registry), 'second', 'Play builds with the new module');
 
-    // with another key in the same step, still read
+    // with another key in the same call: the game's keys one step, the module the panel's own next step, still read
     r = await settingsCall({ title: 'Coin Run', behaviours: 'behaviours.js' });
-    assert.equal(r.steps.length, 1);
-    assert.match(r.steps[0], /^Settings: .*behaviours.* \(MCP\)$/);
+    assert.deepEqual(r.steps, ['Settings: title (MCP)', 'Behaviours behaviours.js (MCP)']);
+    assert.deepEqual(settings.undoStack.slice(-2).map((x) => x.label), r.steps, 'the panel\'s own undo steps, marked');
     assert.deepEqual(reads, ['game/other.js', 'behaviours.js']);
     assert.equal(await playedFrom(host, registry), 'first');
 
