@@ -357,6 +357,21 @@ export class ProjectSettings {
 }
 
 /**
+ * One settings edit as the panel makes it (App.vue's settingsDo): `fn` runs on the settings (a refused edit leaves its
+ * reason in settings.error and doesn't throw here), then, when game.json's behaviours module is another one than before
+ * (an edit, an undo or a redo), `onModuleChange` reads it (M6 W9: EditorHost.reloadBehaviours), so the inspector, Play
+ * and Export Game use the module the build will. What onModuleChange throws is thrown.
+ * @param {ProjectSettings} settings @param {(s: ProjectSettings) => Promise<any>} fn
+ * @param {{ onModuleChange?: (module: string | null) => Promise<any> }} [o]
+ */
+export async function settingsEdit(settings, fn, { onModuleChange } = {}) {
+  const before = settings.view().behaviours;
+  try { await fn(settings); } catch { /* settings.error says why */ }
+  const after = settings.view().behaviours;
+  if (after !== before) await onModuleChange?.(after || null);
+}
+
+/**
  * Where a project's scenes and prefabs put nodes on collision layers: [{ ref, node, layer }], the open scene as edited
  * (its unsaved changes too), every other as saved. What the settings check before a layer is renamed or removed.
  * @param {{ scenes: () => string[], text: (ref: string) => Promise<string> }} project

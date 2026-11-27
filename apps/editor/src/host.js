@@ -32,7 +32,8 @@ import { buildWorld } from '../../playground/src/world.js';
 import { disposeWorld, disposed } from './dispose.js';
 import { saveScene } from './saving.js';
 import { RetiredWorlds } from './worlds.js';
-import { exportGame } from './export-game.js';
+import { exportGame, exportRefusal } from './export-game.js';
+import { declareBehaviours, reloadBehaviours, worldBehaviours } from './host-behaviours.js';
 import { HotReload, freshBehaviours, moduleSources, sameSources, reloadedTake, assertReplayable } from './reload.js';
 import { ViewportAids } from './viewport/viewport.js';
 import { ThumbnailQueue } from './thumbs.js';
@@ -259,46 +260,14 @@ export class EditorHost {
     if (scene) await this.openScene(scene); else await this.newScene();
   }
 
-  /** Declare a project's behaviours module into the editor's registry, keeping what went wrong as a problem (openProject). */
-  async declareBehaviours(project) {
-    this.behaviourProblems = []; this.behaviourError = '';
-    try { declareProjectBehaviours(registry, await project.behaviours()); } catch (err) {
-      registry.project(new Map());
-      this.behaviourProblems = [String(err?.message ?? err)];
-      this.behaviourError = `The project's behaviours: ${this.behaviourProblems[0]}`;
-    }
-    this.behaviourSources = project.behavioursModule?.sources ?? null; // the text those classes came from (M6 W2: what hot reload compares with)
-  }
+  /** Declare a project's behaviours module into the editor's registry (host-behaviours.js). */
+  async declareBehaviours(project) { return declareBehaviours(this, registry, project); }
 
-  /**
-   * game.json's behaviours module changed (Project Settings › Behaviours, MCP's game op=settings; M6 W9): forget the
-   * module read when the project opened and read the one game.json names now, so the inspector, Play and Export Game
-   * all use the module the build will. A module added to the folder since the project opened isn't in its file list
-   * until the project is opened again (AB-T-0670). → { module, declared, problems? }
-   */
-  async reloadBehaviours() {
-    const p = this.project;
-    if (!p) return null;
-    p.forgetBehaviours();
-    await this.declareBehaviours(p);
-    this.changed();
-    const declared = [...registry.behaviours.values()].filter((b) => b.source === 'project').map((b) => b.name);
-    return { module: p.behavioursModule?.ref ?? null, declared, ...(this.behaviourProblems.length ? { problems: [...this.behaviourProblems] } : {}) };
-  }
+  /** game.json's behaviours module changed: read the one it names now (M6 W9, host-behaviours.js). → { module, declared, problems? } */
+  async reloadBehaviours() { return reloadBehaviours(this, registry); }
 
-  /**
-   * The project's behaviours as a world is built with them. When their declarations were refused (openProject), each
-   * class is handed over as a bare subclass, which has no describe of its own: the world declares none of them, as
-   * the editor's registry doesn't, and runs them as code only instead of refusing to build. A module that wouldn't load
-   * gives none.
-   */
-  async worldBehaviours(p) {
-    if (!this.behaviourProblems.length) return p.behaviours();
-    let map;
-    try { map = await p.behaviours(); } catch { return new Map(); }
-    if (this._bareFor?.map !== map) this._bareFor = { map, bare: new Map([...map].map(([n, C]) => [n, class extends C {}])) };
-    return this._bareFor.bare;
-  }
+  /** The project's behaviours as a world is built with them (host-behaviours.js). */
+  async worldBehaviours(p) { return worldBehaviours(this, p); }
 
   async openScene(ref) {
     if (this.session?.mode === 'playing') this.stop();
@@ -1333,11 +1302,10 @@ export class EditorHost {
     } catch (e) {
       // the folder panel was cancelled, or the window is closing (cancelGameExport): nothing was exported, nothing is wrong
       if (e?.code === 'cancelled' || e?.code === 'aborted') return null;
-      // a refusal is the export's answer, shown where its result is: which file, and why (the exporter's, or the shell's
-      // for a folder that holds something that isn't a build)
-      // (and the editor's own: a root behaviours.js game.json doesn't name, which Play would run and a build wouldn't, M6 W9)
-      if (e?.name !== 'BuildError' && e?.code !== 'not_empty' && e?.code !== 'unnamed_behaviours') throw e;
-      this.lastGameExport = { refused: e.code, message: e.message, files: e.files };
+      // a refusal is the export's answer, shown where its result is (export-game.js exportRefusal)
+      const refused = exportRefusal(e);
+      if (!refused) throw e;
+      this.lastGameExport = refused;
       return this.lastGameExport;
     } finally { this.gameExporting = null; this._gameExport = null; settle(); this.changed(); }
   }

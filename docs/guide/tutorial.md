@@ -160,12 +160,14 @@ into a build):
 ## 6. Read the behaviour in
 
 The editor reads a project's files when it opens the project, so save the level (**Save**, ⌘S) and open the project
-again: **File › Open Recent › Coin Run**. Then choose **File › Project Settings…**, pick `behaviours.js` under
-**Behaviours**, and press **Done**.
+again: **File › Open Recent › Coin Run**.
 
 Play in place runs a `behaviours.js` at the project's root by itself, but a build takes only the module the game
-names in `game.json`, which this setting writes. Until it is set, Export Game refuses the project: try **File › Export
-Game…** before you set it, and the **Export** panel opens with the refusal on its line, saying what to do.
+names in `game.json`. Until it is named, Export Game refuses the project: try **File › Export Game…** now, and the
+**Export** panel opens with the refusal on its line, saying what to do. Close the panel (the toolbar's **Export**).
+
+Then choose **File › Project Settings…**, pick `behaviours.js` under **Behaviours** (this writes it into `game.json`),
+and press **Done**.
 
 ![Project Settings with behaviours.js chosen](/guide/images/tutorial-settings.jpg)
 

@@ -146,11 +146,11 @@ fresh: false
   until find("id=project-name").0.name == "Project Coin Run" timeout=30000
   until find("id=doc-state").0.name matches "^Scene level.vrmxs 16 nodes saved valid" timeout=90000   # the counter and the goal kept
   expect find("id=behaviour-error").count == 0   # the module loaded and declared itself
-  menu "File › Export Game…" press   # "try File › Export Game… before you set it"
+  menu "File › Export Game…" press   # "try File › Export Game… now"
   wait id=export-panel timeout_ms=10000   # "the Export panel opens"
   until find("id=export-game-result").0.name matches "^Game export refused .unnamed_behaviours.: behaviours.js runs when you play here, but game.json doesn't name it.*Project Settings › Behaviours" timeout=30000   # "with the refusal on its line, saying what to do"
   expect find("role=alert").count == 0   # on the Export line, not the window's error
-  act id=export-open action=press   # the panel closed again: row 11 opens it from the menu
+  act id=export-open action=press   # "Close the panel (the toolbar's Export)": row 11 opens it from the menu
   wait id=export-panel gone=true timeout_ms=5000
   menu "File › Project Settings…" press   # "Then choose File › Project Settings…"
   wait id=project-settings timeout_ms=10000
