@@ -6,23 +6,23 @@
  "build": {
   "game": "after-hours",
   "files": 69,
-  "bytes": 18974044,
-  "digest": "e627a6153bf85c147f362698e8fd4eeac11f209dd0fa9e974cde1ba55b326f85",
-  "manifest": "0b3290a6370215160fce5c305137d763d5d1be9e8006c18e8692bfd62bd52484",
-  "runtime": "vrmxg-game 0.1.0+e513c0497664"
+  "bytes": 18974666,
+  "digest": "61a49e385ae41bd4ebbfe03f3db8bb097c30fcfc2eb69e12f23ecc174e0c88eb",
+  "manifest": "4d938ca668d140c49cd607e58ba769b5ddf620aab3e77a1bf64a47ce701afb12",
+  "runtime": "vrmxg-game 0.1.0+01c4bb509d4b"
  },
  "sessions": {
   "win": {
-   "steps": 4951,
+   "steps": 4945,
    "scenes": [
     "after-hours/title.vrmxs",
     "after-hours/level.vrmxs",
     "after-hours/won.vrmxs"
    ],
    "final": {
-    "step": 4951,
+    "step": 4945,
     "scene": "after-hours/title.vrmxs",
-    "hash": "b6cfbc7f65f7f8a2"
+    "hash": "9da9445d3b8dcec8"
    },
    "seen": {
     "title": "Goal: After Hours: the cafe after closing",
@@ -51,11 +51,11 @@
      "hud": "ScarfPhone"
     },
     "door": {
-     "step": 2551,
+     "step": 2550,
      "state": "open"
     },
     "checkpoint": {
-     "step": 3101,
+     "step": 3104,
      "checkpoints": {
       "first-shelved": {
        "id": "cp-first",
@@ -206,11 +206,11 @@
     "checkpoint": null,
     "refused": [
      {
-      "step": 1942,
+      "step": 1947,
       "caption": "Hana: The bookshelf is for books!"
      },
      {
-      "step": 2566,
+      "step": 2558,
       "caption": "Hana: That doesn't go with the phones."
      }
     ],
@@ -279,11 +279,11 @@
  },
  "nodeReplays": {
   "win": {
-   "steps": 4951,
+   "steps": 4945,
    "final": {
-    "step": 4951,
+    "step": 4945,
     "scene": "after-hours/title.vrmxs",
-    "hash": "b6cfbc7f65f7f8a2"
+    "hash": "9da9445d3b8dcec8"
    }
   },
   "lose": {
@@ -298,22 +298,22 @@
  "appReplays": {
   "win-webgpu": {
    "backend": "webgpu",
-   "steps": 4951,
+   "steps": 4945,
    "final": {
-    "step": 4951,
+    "step": 4945,
     "scene": "after-hours/title.vrmxs",
-    "hash": "b6cfbc7f65f7f8a2"
+    "hash": "9da9445d3b8dcec8"
    },
    "frames": {
-    "frames": 4942,
-    "seconds": 83.16340000000001,
-    "fps": 59.4251798267026,
-    "mean": 16.827883447996765,
+    "frames": 4937,
+    "seconds": 83.0801,
+    "fps": 59.42457941191693,
+    "mean": 16.828053473769497,
     "p50": 16.69999999999709,
     "p95": 16.70000000001164,
     "p99": 16.80000000000291,
-    "max": 216.79999999999927,
-    "over25": 9,
+    "max": 200,
+    "over25": 11,
     "over34": 9,
     "width": 1280,
     "height": 720
@@ -322,22 +322,22 @@
   },
   "win-webgl": {
    "backend": "webgl",
-   "steps": 4951,
+   "steps": 4945,
    "final": {
-    "step": 4951,
+    "step": 4945,
     "scene": "after-hours/title.vrmxs",
-    "hash": "b6cfbc7f65f7f8a2"
+    "hash": "9da9445d3b8dcec8"
    },
    "frames": {
-    "frames": 4936,
-    "seconds": 83.19659999999999,
-    "fps": 59.32934759353147,
-    "mean": 16.855064829821718,
+    "frames": 4933,
+    "seconds": 83.1134,
+    "fps": 59.35264349671654,
+    "mean": 16.84844921954186,
     "p50": 16.69999999999709,
     "p95": 16.70000000001164,
     "p99": 16.80000000000291,
-    "max": 266.6999999999998,
-    "over25": 11,
+    "max": 233.30000000000018,
+    "over25": 13,
     "over34": 10,
     "width": 1280,
     "height": 720
@@ -353,15 +353,15 @@
     "hash": "1911b477d418a6c8"
    },
    "frames": {
-    "frames": 3517,
-    "seconds": 59.431,
-    "fps": 59.177870135114674,
-    "mean": 16.8982087005971,
+    "frames": 3519,
+    "seconds": 59.414300000000004,
+    "fps": 59.22816560996258,
+    "mean": 16.883859050866725,
     "p50": 16.69999999999709,
-    "p95": 16.799999999995634,
+    "p95": 16.700000000004366,
     "p99": 16.80000000000291,
-    "max": 233.39999999999964,
-    "over25": 9,
+    "max": 200.10000000000036,
+    "over25": 10,
     "over34": 9,
     "width": 1280,
     "height": 720
@@ -377,15 +377,15 @@
     "hash": "1911b477d418a6c8"
    },
    "frames": {
-    "frames": 3514,
-    "seconds": 59.464299999999994,
-    "fps": 59.094280097470254,
-    "mean": 16.92211155378486,
+    "frames": 3515,
+    "seconds": 59.4311,
+    "fps": 59.144118146896155,
+    "mean": 16.907852062588905,
     "p50": 16.69999999999709,
     "p95": 16.799999999995634,
     "p99": 16.80000000000291,
-    "max": 249.89999999999964,
-    "over25": 10,
+    "max": 216.59999999999945,
+    "over25": 13,
     "over34": 9,
     "width": 1280,
     "height": 720
@@ -397,17 +397,17 @@
   {
    "name": "the second game exports with the game app as its runtime (vrmxg-export --game after-hours/game.json)",
    "ok": true,
-   "detail": "69 files, 19.0 MB, digest e627a6153bf85c14"
+   "detail": "69 files, 19.0 MB, digest 61a49e385ae41bd4"
   },
   {
    "name": "win: played from the title menu to the won ending, its dialogue choices recorded",
    "ok": true,
-   "detail": "scenes after-hours/title.vrmxs → after-hours/level.vrmxs → after-hours/won.vrmxs; 4951 steps; choices how, book; ending line \"Hana: Not one thing on the wrong shelf. Goodnight, Mira!\""
+   "detail": "scenes after-hours/title.vrmxs → after-hours/level.vrmxs → after-hours/won.vrmxs; 4945 steps; choices how, book; ending line \"Hana: Not one thing on the wrong shelf. Goodnight, Mira!\""
   },
   {
    "name": "win: the HUD showed the goal, the counters and the clock; Hana gave a hint; two things in her inventory at once; the switch opened the staff door; the checkpoint was taken",
    "ok": true,
-   "detail": "HUD {\"goal\":\"Goal: Put the scarf, the phone and the book on their shelves\",\"counters\":[\"On their shelves 0\",\"Wrong shelves 0\"],\"clock\":\"Until Hana locks up 3:00\"}; hint {\"line\":\"Hana: Need a hand?\",\"choices\":[\"1Where does the scarf go?\",\"2And the phone?\",\"3Where is the book?\",\"4I'm fine, thanks.\"]}; carrying {\"carrying\":[\"Scarf\",\"Phone\"],\"hud\":\"ScarfPhone\"}; door {\"step\":2551,\"state\":\"open\"}; checkpoint {\"step\":3101,\"checkpoints\":{\"first-shelved\":{\"id\":\"cp-first\",\"requested\":3093}}}"
+   "detail": "HUD {\"goal\":\"Goal: Put the scarf, the phone and the book on their shelves\",\"counters\":[\"On their shelves 0\",\"Wrong shelves 0\"],\"clock\":\"Until Hana locks up 3:00\"}; hint {\"line\":\"Hana: Need a hand?\",\"choices\":[\"1Where does the scarf go?\",\"2And the phone?\",\"3Where is the book?\",\"4I'm fine, thanks.\"]}; carrying {\"carrying\":[\"Scarf\",\"Phone\"],\"hud\":\"ScarfPhone\"}; door {\"step\":2550,\"state\":\"open\"}; checkpoint {\"step\":3104,\"checkpoints\":{\"first-shelved\":{\"id\":\"cp-first\",\"requested\":3093}}}"
   },
   {
    "name": "lose: played from the title menu to the lost ending, its dialogue choices recorded",
@@ -417,12 +417,12 @@
   {
    "name": "lose: each wrong shelf was refused and counted (two), Hana said so",
    "ok": true,
-   "detail": "[{\"step\":1942,\"caption\":\"Hana: The bookshelf is for books!\"},{\"step\":2566,\"caption\":\"Hana: That doesn't go with the phones.\"}]"
+   "detail": "[{\"step\":1947,\"caption\":\"Hana: The bookshelf is for books!\"},{\"step\":2558,\"caption\":\"Hana: That doesn't go with the phones.\"}]"
   },
   {
    "name": "win: the session played in Chromium replays in Node to the same hash after every step",
    "ok": true,
-   "detail": "4951 steps, final b6cfbc7f65f7f8a2 at step 4951"
+   "detail": "4945 steps, final 9da9445d3b8dcec8 at step 4945"
   },
   {
    "name": "lose: the session played in Chromium replays in Node to the same hash after every step",
@@ -432,22 +432,22 @@
   {
    "name": "win: the game app replays the log drawn on WebGPU to the same hash after every step",
    "ok": true,
-   "detail": "4951 steps on webgpu, final b6cfbc7f65f7f8a2; 4942 frames, p99 16.8 ms"
+   "detail": "4945 steps on webgpu, final 9da9445d3b8dcec8; 4937 frames, p99 16.8 ms"
   },
   {
    "name": "win: the game app replays the log drawn on WebGL to the same hash after every step",
    "ok": true,
-   "detail": "4951 steps on webgl, final b6cfbc7f65f7f8a2; 4936 frames, p99 16.8 ms"
+   "detail": "4945 steps on webgl, final 9da9445d3b8dcec8; 4933 frames, p99 16.8 ms"
   },
   {
    "name": "lose: the game app replays the log drawn on WebGPU to the same hash after every step",
    "ok": true,
-   "detail": "3526 steps on webgpu, final 1911b477d418a6c8; 3517 frames, p99 16.8 ms"
+   "detail": "3526 steps on webgpu, final 1911b477d418a6c8; 3519 frames, p99 16.8 ms"
   },
   {
    "name": "lose: the game app replays the log drawn on WebGL to the same hash after every step",
    "ok": true,
-   "detail": "3526 steps on webgl, final 1911b477d418a6c8; 3514 frames, p99 16.8 ms"
+   "detail": "3526 steps on webgl, final 1911b477d418a6c8; 3515 frames, p99 16.8 ms"
   },
   {
    "name": "no errors in the pages",

@@ -44,7 +44,7 @@ case "${1:-}" in
     ap=${APPPROBE:-$(command -v appprobe || echo /Volumes/Satechi/Development/AppProbe/.build/release/appprobe)}   # APPPROBE, else appprobe on PATH, else the fleet's release build
     while pid=$(pgrep -f M6AfterHoursFrames.app/Contents/MacOS | head -1) && [ -n "$pid" ]; do
       raw=$("$ap" find "app=$pid" 'text=fps' 2>&1 || true)
-      line=$(printf '%s' "$raw" | grep -o '[0-9]* frames in [^"]*scene change' | head -1 | sed 's/$/s/' || true)   # AppProbe cuts a long text at ~120 characters: "4 scene change…"
+      line=$(printf '%s' "$raw" | grep -o '[0-9]* frames in [^"]*[0-9] scene[^"]*' | head -1 | sed 's/ scene[^"]*$/ scene changes/' || true)   # AppProbe cuts a long text at ~120 characters, and later in the run (longer counts) "scene changes" itself: "27 scene cha…"
       if [ -n "$line" ]; then echo "$(date +%s) $line" >> "$out/readout.log"; else echo "$(date +%s) no readout: $(printf '%s' "$raw" | head -3 | tr '\n' ' ')"; fi
       sleep 5
     done;;
