@@ -1,0 +1,25 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "after-hours-title",
+  "assets": [
+    {"id":"cafe","type":"glb","ref":"sets/cafe.glb"},
+    {"id":"cafe-ambience","type":"audio","ref":"sounds/cafe-ambience.wav"}
+  ],
+  "nodes": [
+    {"id":"root","type":"Node3D","name":"Title"},
+    {"id":"env","type":"Environment","parent":"root","props":{"ambientIntensity":0.35,"background":"gradient","environmentIntensity":0.2,"exposure":0.9,"skyHorizonColor":"#3a4258","skyTopColor":"#141a2e"}},
+    {"id":"cafe","type":"Model","parent":"root","asset":"cafe"},
+    {"id":"moon","type":"DirectionalLight","parent":"root","name":"Moonlight","transform":{"q":[-0.397131,0.309976,0.144544,0.851651]},"props":{"color":"#b9c6ff","intensity":0.7,"shadowExtent":10,"shadowPreset":"high"}},
+    {"id":"counter-lamp","type":"SpotLight","parent":"root","name":"Counter lamp","transform":{"p":[0,2.9,-3.2],"q":[-0.642788,0,0,0.766044]},"props":{"angle":40,"color":"#ffd59a","intensity":16,"range":7}},
+    {"id":"ambience","type":"AudioPlayer","parent":"root","name":"Room tone","asset":"cafe-ambience","props":{"autoplay":true,"bus":"ambience","loop":true,"volume":0.4}},
+    {"id":"look-at","type":"Marker","parent":"root","transform":{"p":[0,0.1,6]}},
+    {"id":"cam","type":"Camera","parent":"root","transform":{"p":[3.5,1.8,14]},"props":{"focalLength":28,"preset":"fixed","target":"look-at"}},
+    {"id":"rules","type":"GameRules","parent":"root"},
+    {"id":"intro","type":"GameTimer","parent":"rules","props":{"label":"The night shift starts in","seconds":6}},
+    {"id":"title","type":"GameGoal","parent":"rules","props":{"optional":true,"text":"After Hours: the cafe after closing"}}
+  ],
+  "connections": [
+    {"from":"intro","signal":"timeout","to":"rules","call":"changeScene","args":{"to":"after-hours/level.vrmxs"}}
+  ]
+}

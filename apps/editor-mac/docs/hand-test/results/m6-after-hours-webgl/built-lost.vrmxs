@@ -1,0 +1,27 @@
+{
+  "format": "vrmxs",
+  "version": 1,
+  "id": "after-hours-lost",
+  "assets": [
+    {"id":"cafe","type":"glb","ref":"sets/cafe.glb"},
+    {"id":"cafe-ambience","type":"audio","ref":"sounds/cafe-ambience.wav"},
+    {"id":"hana","type":"vrmxa","ref":"characters/hana.vrmxa"}
+  ],
+  "nodes": [
+    {"id":"root","type":"Node3D","name":"Lost"},
+    {"id":"env","type":"Environment","parent":"root","props":{"ambientIntensity":0.35,"background":"gradient","environmentIntensity":0.2,"exposure":0.9,"skyHorizonColor":"#3a4258","skyTopColor":"#141a2e"}},
+    {"id":"cafe","type":"Model","parent":"root","asset":"cafe"},
+    {"id":"moon","type":"DirectionalLight","parent":"root","name":"Moonlight","transform":{"q":[-0.397131,0.309976,0.144544,0.851651]},"props":{"color":"#b9c6ff","intensity":0.7,"shadowExtent":10,"shadowPreset":"high"}},
+    {"id":"counter-lamp","type":"SpotLight","parent":"root","name":"Counter lamp","transform":{"p":[0,2.9,-3.2],"q":[-0.642788,0,0,0.766044]},"props":{"angle":40,"color":"#ffd59a","intensity":16,"range":7}},
+    {"id":"ambience","type":"AudioPlayer","parent":"root","name":"Room tone","asset":"cafe-ambience","props":{"autoplay":true,"bus":"ambience","loop":true,"volume":0.4}},
+    {"id":"hana","type":"Character","parent":"root","name":"Hana","asset":"hana","transform":{"p":[0.2,0,-3.3]},"props":{"controller":"npc"}},
+    {"id":"look-at","type":"Marker","parent":"root","transform":{"p":[0.2,-0.1,-3.3]}},
+    {"id":"cam","type":"Camera","parent":"root","transform":{"p":[0.9,1.6,-0.6]},"props":{"focalLength":35,"preset":"fixed","target":"look-at"}},
+    {"id":"rules","type":"GameRules","parent":"root","props":{"reads":{"counters":["shelved","mistakes"]}}},
+    {"id":"outro","type":"GameTimer","parent":"rules","props":{"label":"Back to the title in","seconds":12}},
+    {"id":"closing","type":"Dialogue","parent":"root","props":{"autostart":true,"lines":[{"id":"shelves","next":"end","speaker":"hana","text":"That's two things on the wrong shelf. Let's sort it out tomorrow.","when":{"key":"counters.mistakes","op":"ge","test":"state","value":2}},{"id":"time","speaker":"hana","text":"It's late, Mira. I'm locking up; the rest can wait until tomorrow."}]}}
+  ],
+  "connections": [
+    {"from":"outro","signal":"timeout","to":"rules","call":"changeScene","args":{"reset":true,"to":"after-hours/title.vrmxs"}}
+  ]
+}
