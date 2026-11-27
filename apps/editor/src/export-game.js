@@ -71,13 +71,24 @@ export function exportRefusal(e) {
 }
 
 /**
- * The Export panel's line for the last game export (EditorHost.lastGameExport): a refusal, or what was written or checked.
+ * A folder's path as the Export line shows it: a macOS home folder (`/Users/<name>`) as `~`, so the line, and any
+ * screenshot of it, doesn't carry the person's account name. The page isn't told the home folder, so this goes by the
+ * path's shape. Display only: the build's own records keep the path as the shell gave it.
+ * @param {string} path
+ */
+export function homeShort(path) {
+  return typeof path === 'string' ? path.replace(/^\/Users\/[^/]+(?=\/|$)/, '~') : path;
+}
+
+/**
+ * The Export panel's line for the last game export (EditorHost.lastGameExport): a refusal, or what was written or
+ * checked, the build folder's path shortened by homeShort.
  * @param {any} g
  */
 export function gameExportLine(g) {
   if (!g) return '';
   if (g.refused) return `Game export refused (${g.refused}): ${g.message}`;
-  return `${g.written ? 'Exported' : 'Checked'} game ${g.id}: ${g.files} files, ${g.bytes} bytes, entry ${g.entry}, runtime ${g.runtime} · build ${g.digest.slice(0, 16)} · manifest ${g.manifest.slice(0, 16)}${g.byPattern ? ` · ${g.byPattern} files licensed by a pattern row` : ''}${g.unsaved ? ' · the open scene has unsaved changes, which are not in it' : ''}${g.written ? ` · ${g.path}` : ' · not written: a build folder needs the Mac app or vrmxg-export'}`;
+  return `${g.written ? 'Exported' : 'Checked'} game ${g.id}: ${g.files} files, ${g.bytes} bytes, entry ${g.entry}, runtime ${g.runtime} · build ${g.digest.slice(0, 16)} · manifest ${g.manifest.slice(0, 16)}${g.byPattern ? ` · ${g.byPattern} files licensed by a pattern row` : ''}${g.unsaved ? ' · the open scene has unsaved changes, which are not in it' : ''}${g.written ? ` · ${homeShort(g.path)}` : ' · not written: a build folder needs the Mac app or vrmxg-export'}`;
 }
 
 /** What Export Game says when Play would run the root behaviours.js but game.json doesn't name it (M6 W9). */

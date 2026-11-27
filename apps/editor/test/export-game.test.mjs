@@ -12,7 +12,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { behavioursImporter, projectWithGame } from '@vrmxg/bundle/node';
-import { exportGame, exportClosing, freshImporter, UNNAMED_BEHAVIOURS } from '../src/export-game.js';
+import { exportGame, exportClosing, freshImporter, UNNAMED_BEHAVIOURS, gameExportLine, homeShort } from '../src/export-game.js';
 
 const enc = (s) => new TextEncoder().encode(s);
 const LICENCES = '| `game.json` | Ours | |\n| `level.vrmxs` | Ours | |\n| `props/*.glb` | CC0-1.0 | |\n| `LICENCES.md` | Ours | |\n';
@@ -246,4 +246,20 @@ test('a root behaviours.js that game.json doesn\'t name refuses the export and s
     await exportGame(named, { shell: s2, runtime: runtime(), importModule: freshImporter(named, { url: linked.url }) });
     assert.ok(s2.folder.has('project/behaviours.js'));
   } finally { linked.done(); }
+});
+
+test('the Export line shows a home folder as ~, so a screenshot of it carries no account name; other paths as they are (PR 74)', () => {
+  assert.equal(homeShort('/Users/someone/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/builds-w8/after-hours'), '~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/builds-w8/after-hours');
+  assert.equal(homeShort('/Users/someone'), '~');
+  assert.equal(homeShort('/Volumes/Work/builds/game'), '/Volumes/Work/builds/game');
+  assert.equal(homeShort('/private/Users/someone/x'), '/private/Users/someone/x'); // only a path that starts at /Users
+  assert.equal(homeShort('/Users'), '/Users');
+  const g = { written: true, id: 'after-hours', files: 70, bytes: 18985412, entry: 'after-hours/title.vrmxs', runtime: 'vrmxg-game 0.1.0+01c4bb509d4b',
+    digest: '6ac598519d2205672f29d39f13119542209c7795f0865a5994c4815e2437d2af', manifest: 'b57301540d54b5a0666b5777b3d4cc4c08940c42a1342f9429e10aae4a99cebd',
+    byPattern: 27, path: '/Users/someone/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/builds-w8/after-hours' };
+  const line = gameExportLine(g);
+  assert.ok(!line.includes('/Users/'), line);
+  assert.ok(line.endsWith(' · ~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/builds-w8/after-hours'), line);
+  // the hand tests' pattern for an export into builds-w8 still matches the shortened line
+  assert.match(line, /^Exported game after-hours: [0-9]+ files, [0-9]+ bytes, entry after-hours\/title\.vrmxs, runtime .*\/builds-w8\/after-hours$/);
 });

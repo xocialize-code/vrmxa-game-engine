@@ -521,7 +521,9 @@ function behaviourOp(s, { id, use, params, remove }) {
  * The project's settings (M6 W8): game.json as the editor's Project Settings panel shows it, and with `set`, changed
  * through that panel's own commands (ProjectSettings: the same checks, written to game.json at once). Each change is a
  * step of the settings' own Undo, marked (MCP); the scene's undo is a different history.
- *   set: { title, id, release, entry, scenes, behaviours }  one step: the game's keys
+ *   set: { title, id, release, entry, scenes }  one step: the game's keys
+ *        { behaviours: file | null }             a step of its own (ProjectSettings.setBehaviours: its checks, and
+ *                                                the editor reads the module again); so { title, behaviours } is two
  *        { layers: [names] }                                 one step (a layer a node is on can't go)
  *        { collides: { layer: [layers it collides with] } }  one step per pair that changes
  * @param {any} st a ProjectSettings @param {Record<string, any> | undefined} set

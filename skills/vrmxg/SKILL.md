@@ -134,7 +134,9 @@ parent. Four rules keep what you build standing, solid and clean:
    draws its asset's triangles again, even when it reuses an asset.
 2. **Stand things on Y = 0.** Give the group's root its place on the floor (`p[1]` is the floor's height) and put
    each part's base at its parent's Y = 0. A box collider of height `h` stands on the floor at `p[1] = h / 2`. An
-   asset whose origin isn't at its base goes under a `Node3D` that lifts it. Check the result with a `screenshot`.
+   asset whose origin isn't at its base goes under a `Node3D` at its base, lifted inside it by the origin's height.
+   That height comes from the asset's bounds, which MCP doesn't report: ask the tool that made it, or measure it in a
+   `screenshot` against a known height. Check the result with a `screenshot`.
 3. **Overlap parts that touch, by 0.02 to 0.05 m.** A leg sinks into the floor, a shelf into its upright, a fixed
    collider into the collider below it, so nothing floats on a hairline gap and nothing falls through a seam. Don't
    overlap a `RigidBody`'s collider with another solid: the bodies push apart on the first step.
@@ -143,20 +145,28 @@ parent. Four rules keep what you build standing, solid and clean:
    `game op=validate`, fix every problem they name, and run them again. They don't see z-fighting yet, so look at
    flush parts in a `screenshot`.
 
-A bus stop on the cafe's floor, one undo step: a 0.17 m kerb's collider sunk 0.02 m into the floor
-(`p[1] = 0.17 / 2 - 0.02`), and the bench and lamp sunk 0.02 m into the kerb (`p[1] = 0.17 - 0.02`):
+A bus stop on the cafe's floor, one undo step. Each prop is a `Node3D` at its base, sunk 0.02 m into the floor
+(`p[1] = -0.02`), holding the prop's `Model` lifted to stand on that base and a box `Collider` of the prop's size at
+`p[1] = h / 2`. `bench.glb` and `street-lamp.glb` have their origins at their centres: the bench is 0.9452 m tall
+(origin 0.4726 m up), the lamp 3.4 m (origin 1.7 m up). Their own colliders are off (`colliders: "none"`), since
+they bring none. The pair is about 75,000 triangles, a lot for one stop:
 
 ```json
 {"label": "Bus stop", "ops": [
   {"op": "addAsset", "asset": {"id": "bench", "type": "glb", "ref": "props/bench.glb"}},
   {"op": "addAsset", "asset": {"id": "lamp", "type": "glb", "ref": "props/street-lamp.glb"}},
   {"op": "add", "node": {"id": "stop", "type": "Node3D", "parent": "root", "name": "Bus stop", "transform": {"p": [4, 0, -2]}}},
-  {"op": "add", "node": {"id": "stop-kerb", "type": "Collider", "parent": "stop", "props": {"shape": "box", "size": [3, 0.17, 1.2]}, "transform": {"p": [0.4, 0.065, 0]}}},
-  {"op": "add", "node": {"id": "stop-bench", "type": "Model", "parent": "stop", "asset": "bench", "transform": {"p": [0, 0.15, 0]}}},
-  {"op": "add", "node": {"id": "stop-lamp", "type": "Model", "parent": "stop", "asset": "lamp", "transform": {"p": [1.4, 0.15, 0]}}}
+  {"op": "add", "node": {"id": "stop-bench", "type": "Node3D", "parent": "stop", "name": "Bench", "transform": {"p": [0, -0.02, 0]}}},
+  {"op": "add", "node": {"id": "stop-bench-look", "type": "Model", "parent": "stop-bench", "asset": "bench", "props": {"colliders": "none"}, "transform": {"p": [0, 0.4726, 0]}}},
+  {"op": "add", "node": {"id": "stop-bench-solid", "type": "Collider", "parent": "stop-bench", "props": {"shape": "box", "size": [0.83, 0.9452, 1.7]}, "transform": {"p": [0, 0.4726, 0]}}},
+  {"op": "add", "node": {"id": "stop-lamp", "type": "Node3D", "parent": "stop", "name": "Street lamp", "transform": {"p": [1.2, -0.02, 0]}}},
+  {"op": "add", "node": {"id": "stop-lamp-look", "type": "Model", "parent": "stop-lamp", "asset": "lamp", "props": {"colliders": "none"}, "transform": {"p": [0, 1.7, 0]}}},
+  {"op": "add", "node": {"id": "stop-lamp-solid", "type": "Collider", "parent": "stop-lamp", "props": {"shape": "box", "size": [0.43, 3.4, 0.44]}, "transform": {"p": [0, 1.7, 0]}}}
 ]}
 ```
 
+There's no kerb because the sample has no kerb asset, and a `Collider` alone draws nothing. A part that stands on
+another sinks into it the same way: its `Node3D` goes at the lower part's top minus 0.02 m.
 Send it as `edit`, then `validate` and `game op=validate`, and look at it with `screenshot` in the editor.
 
 ## Shorts in the creator
