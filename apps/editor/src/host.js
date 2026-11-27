@@ -308,6 +308,28 @@ export class EditorHost {
     this.changed();
   }
 
+  /**
+   * A new scene that starts as a copy of `from` (M6 W8: MCP's `game op=open` with `from`, a new level from an old one):
+   * `from` as it is saved, with its id made the new file's, open as `ref` and unsaved until Save writes it.
+   */
+  async copyScene(from, ref) {
+    if (this.session?.mode === 'playing') this.stop();
+    this.busy++; this.changed();
+    try {
+      const doc = { ...parse(await this.project.text(from)), id: ref.replace(/\.vrmxs$/, '').replace(/[^A-Za-z0-9_-]/g, '-') }; // as newScene names one
+      await this.loadSet(doc);
+      const prefabs = await this.project.prefabs(this.setScene ? composeSequence(doc, this.setScene.doc) : doc);
+      this.session = new EditorSession({ registry, doc, prefabs, path: ref });
+      this.session.savedText = ''; // not on disk yet
+      this.adoptSession();
+      this.sceneRef = ref;
+      this.session.on((e) => this.onSession(e));
+      this.edit = null;
+      await this.rebuild();
+      this.frameAll();
+    } finally { this.busy--; this.changed(); }
+  }
+
   /** A sequence document films a set: read it (its nodes are what tracks target). */
   async loadSet(doc) {
     this.setScene = isSequence(doc) ? { ref: doc.set, doc: parse(await this.project.text(doc.set)) } : null;

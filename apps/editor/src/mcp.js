@@ -7,11 +7,19 @@ import { m0Registry } from '@vrmxg/registry/m0';
 import { createHandlers, caller, imageStats } from '@vrmxg/mcp/tools';
 import { LiveView } from '@vrmxg/mcp/live';
 import { toBase64 } from '@vrmxg/export';
+import { loadTemplates } from './projects.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-/** The tools' target over an EditorHost. @param {import('./host.js').EditorHost} ed */
-export function editorTarget(ed) {
+/**
+ * The tools' target over an EditorHost. `app` (M6 W8) is what the app holds beyond the host: the open project's
+ * settings (App.vue keeps one ProjectSettings per project, with its undo history and the panel's view), and New
+ * Project, which closes the settings panel and opens the new project as File › New Project does.
+ * @param {import('./host.js').EditorHost} ed
+ * @param {{ settings?: () => Promise<any>, newProject?: (o: { template: any, title: string, id?: string }) => Promise<any>, templates?: () => Promise<any[]> }} [app]
+ *   templates: New Project's list (by default the editor's web content's, as the sheet reads it)
+ */
+export function editorTarget(ed, app = {}) {
   const view = new LiveView();
   view.notRunning = 'not playing: call play with action "play" first';
   const session = () => { if (!ed.session) throw new Error('no scene is open in the editor'); return ed.session; };
@@ -23,6 +31,7 @@ export function editorTarget(ed) {
     return view;
   };
   return {
+    session,
     doc: () => session().doc,
     prefabs: () => session().prefabs,
     apply: (op, label) => session().run(`${label} (MCP)`, [op]), // refused while playing, as the editor's own edits are
@@ -55,6 +64,26 @@ export function editorTarget(ed) {
       delete about.unsaved; // the tool refuses an export with unsaved changes before it gets here
       return about;
     },
+    // M6 W8: building games. The behaviours module the editor loaded (its exports, and why it didn't load or declare)
+    behaviours: () => ({ ref: ed.project?.behavioursModule?.ref ?? null, names: ed.project?.behavioursModule ? [...ed.project.behavioursModule.classes.keys()] : null, problems: ed.behaviourProblems ?? [] }),
+    ...(app.settings ? { settings: () => { if (ed.session?.mode === 'playing') throw new Error('stop playing first: the project settings change while editing'); return app.settings(); } } : {}),
+    /** Open a scene of the project, or a new one (the editor's New Scene, or a copy of `from` saved as the new name). */
+    async openScene({ scene, from }) {
+      if (!ed.project) throw new Error('no project is open in the editor');
+      if (session().mode === 'playing') throw new Error('stop playing first');
+      const exists = ed.project.has(scene);
+      if (from !== undefined && exists) throw new Error(`${scene} exists already: open it without from, or name a new scene`);
+      if (from !== undefined && !ed.project.has(from)) throw new Error(`no scene ${from} to copy`);
+      if (exists) await ed.openScene(scene);
+      else if (from !== undefined) await ed.copyScene(from, scene);
+      else await ed.newScene(scene);
+      if (ed.error) throw new Error(ed.error);
+      return { open: ed.sceneRef, new: !exists, ...(from !== undefined ? { from } : {}), nodes: session().doc.nodes.length, ...(exists ? {} : { note: 'not saved yet: save writes it; name it in game op=settings scenes for a scene change to reach it' }) };
+    },
+    /** game.json's behaviours module changed: the editor reads it when a project opens (Play reads it afresh). */
+    behavioursChanged: () => ({ module: null, note: 'the editor loads the project\'s behaviours module when the project opens: reopen the project to attach and connect the new module\'s behaviours' }),
+    templates: () => (app.templates ?? loadTemplates)(),
+    ...(app.newProject ? { newProject: (o) => app.newProject(o) } : {}),
     recording: async (ref) => JSON.parse(await ed.project.text(ref)),
     takes: async () => ed.project.takes().filter((f) => f.startsWith('takes/')),
     // the persona service of the play world, or of the editor's own view when not playing (profiles are edited there)
@@ -98,11 +127,11 @@ export function editorTarget(ed) {
 
 /** The page's end of the bridge: poll, run, answer. The creator (M4 W11) brings its own tools (`call`) and name. */
 export class McpLink {
-  /** @param {import('./host.js').EditorHost} ed @param {{ url?: string, onChange?: () => void, call?: (name: string, args: any) => Promise<any>, app?: string, hello?: () => object }} [o] */
-  constructor(ed, { url = 'http://127.0.0.1:5183', onChange, call = null, app = 'VRMXG Editor', hello = null } = {}) {
+  /** @param {import('./host.js').EditorHost} ed @param {{ url?: string, onChange?: () => void, call?: (name: string, args: any) => Promise<any>, app?: string, hello?: () => object, hooks?: Parameters<typeof editorTarget>[1] }} [o] */
+  constructor(ed, { url = 'http://127.0.0.1:5183', onChange, call = null, app = 'VRMXG Editor', hello = null, hooks = {} } = {}) {
     this.ed = ed; this.url = `${url.replace(/\/$/, '')}/vrmxg-mcp/exchange`; this.onChange = onChange;
     this.app = app; this.helloInfo = hello;
-    this.call = call ?? caller(createHandlers(ed.registry ?? m0Registry(), editorTarget(ed))); // the editor's: the project's behaviours too (M6 W0)
+    this.call = call ?? caller(createHandlers(ed.registry ?? m0Registry(), editorTarget(ed, hooks))); // the editor's: the project's behaviours too (M6 W0)
     this.state = 'off'; this.last = null; this.calls = 0; this.running = false;
     this.id = Math.random().toString(36).slice(2, 10); // which editor this is, so the bridge serves one at a time
   }

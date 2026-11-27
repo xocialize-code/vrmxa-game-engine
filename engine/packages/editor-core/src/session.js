@@ -153,6 +153,44 @@ export class EditorSession {
   redo() { this.mustEdit('Redo'); const h = this.history().redo; if (!this.editor.redo()) return false; this.tidySelection(); this.emit({ kind: 'redo', label: h }); return true; }
 
   /**
+   * Run several commands as one undo step (M6 W8: an MCP batch of behaviour, connection and node edits). The steps
+   * `fn`'s commands make become one, labelled `label`, each checked as it ran; all or nothing, so a command that throws
+   * undoes the ones before it and the scene is as it was. Steps that come back to where they began make none. `fn` is
+   * synchronous (the commands are), so nothing else edits in between. A refusal leaves no Redo (the first step cleared
+   * it), so a caller that can tries the commands on a copy first (MCP's edit does). Nested: the outer one folds. Without a label, one
+   * step keeps its own and several take `fallback`. → what `fn` returns
+   * @template T @param {string | null} label @param {() => T} fn @param {string} [fallback] @returns {T}
+   */
+  compose(label, fn, fallback = 'Edits') {
+    this.mustEdit(label ?? fallback);
+    if (this.composing) return fn();
+    const depth = this.editor.peek().undoDepth, start = this.text();
+    let out;
+    this.composing = true;
+    try { out = fn(); } catch (e) {
+      const undid = this.editor.history().length > depth;
+      while (this.editor.history().length > depth) this.editor.undo();
+      if (undid) { this.editor.dropRedo(); this.tidySelection(); this.emit({ kind: 'undo', label: label ?? fallback }); }
+      throw e;
+    } finally { this.composing = false; }
+    const mine = this.editor.history().slice(depth);
+    if (!mine.length || (label === null && mine.length === 1)) return out;
+    if (mine.length === 1) { mine[0].label = label; this.emit({ kind: 'edit', label }); return out; } // one step: named, as it is
+    label ??= fallback;
+    const gone = mine.flatMap((op) => this.removed.get(op) ?? []);
+    const ops = mine.flatMap((op) => (op.op === 'batch' ? op.ops : [op])).map(({ label: _l, ...o }) => o);
+    for (let i = 0; i < mine.length; i++) this.editor.undo();
+    this.editor.dropRedo(); // (an undone set can leave an empty object behind: the text may differ from start, the scene doesn't)
+    const step = { op: 'batch', label, ops };
+    this.editor.apply(step);
+    if (gone.length) this.removed.set(step, gone);
+    if (this.text() === start) { this.editor.undo(); this.editor.dropRedo(); } // back where it began: no step
+    this.tidySelection();
+    this.emit({ kind: 'edit', label });
+    return out;
+  }
+
+  /**
    * Place a project file in the scene: its asset entry (reused when the document already has one for the ref) and a
    * node of the type the registry gives it, at `at`, under `parent`. Selects it. → the node's id
    * @param {string} ref @param {{ at?: number[], q?: number[], parent?: string, name?: string, id?: string }} [opts]
