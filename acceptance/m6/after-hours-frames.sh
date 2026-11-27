@@ -41,7 +41,7 @@ case "${1:-}" in
     echo "$app";;
   poll)
     out=${2:?usage: after-hours-frames.sh poll <out>}; mkdir -p "$out"
-    ap=/Volumes/Satechi/Development/AppProbe/.build/release/appprobe
+    ap=${APPPROBE:-$(command -v appprobe || echo /Volumes/Satechi/Development/AppProbe/.build/release/appprobe)}   # APPPROBE, else appprobe on PATH, else the fleet's release build
     while pid=$(pgrep -f M6AfterHoursFrames.app/Contents/MacOS | head -1) && [ -n "$pid" ]; do
       raw=$("$ap" find "app=$pid" 'text=fps' 2>&1 || true)
       line=$(printf '%s' "$raw" | grep -o '[0-9]* frames in [^"]*scene change' | head -1 | sed 's/$/s/' || true)   # AppProbe cuts a long text at ~120 characters: "4 scene change…"

@@ -68,7 +68,7 @@ test('the shelf declares its params, its placed and refused signals and its stat
   const d = reg.behaviours.get('shelf');
   assert.equal(d.source, 'project');
   assert.deepEqual(Object.keys(d.signals).sort(), ['placed', 'refused']);
-  assert.equal(stateShape(d), '{"additionalProperties":false,"properties":{"done":{"type":"boolean"},"inside":{"type":"boolean"}},"required":["done","inside"],"type":"object"}');
+  assert.equal(stateShape(d), '{"additionalProperties":false,"properties":{"answered":{"type":"boolean"},"done":{"type":"boolean"},"inside":{"type":"boolean"}},"required":["answered","done","inside"],"type":"object"}');
   const level = parse(read('after-hours/level.vrmxs'));
   for (const s of SHELVES) {
     const zone = level.nodes.find((n) => n.id === `zone-${s.key}`);
@@ -79,9 +79,10 @@ test('the shelf declares its params, its placed and refused signals and its stat
 
 const RUNTIME = path.join(root, 'apps/game/dist/vrmxg-runtime.json');
 const skipPlay = !available('core') ? 'needs vrmxa-core beside the repository' : !fs.existsSync(RUNTIME) ? 'needs the game runtime: npm run build -w @vrmxg/game-app' : false;
-test('the scripted player wins, loses on two wrong shelves, and loses on time (Node)', { skip: skipPlay, timeout: 300000 }, async () => {
+test('the scripted player wins, loses on two wrong shelves, loses on time, and a double tap at a shelf counts once (Node)', { skip: skipPlay, timeout: 300000 }, async () => {
   const { exportAfterHours, playAfterHours, AFTER_HOURS_PLANS } = await import('../m6/after-hours-node.mjs');
   const dir = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'vrmxg-after-hours-test-')), 'build');
+  let seen = null;
   try {
     await exportAfterHours(dir);
     const win = await playAfterHours(dir, AFTER_HOURS_PLANS.win);
@@ -92,6 +93,16 @@ test('the scripted player wins, loses on two wrong shelves, and loses on time (N
     assert.equal(lose.decided?.result, 'lost', lose.trail.join('\n'));
     assert.deepEqual(lose.decided.counters, { mistakes: 2, shelved: 0 });
     assert.equal(lose.ending?.scene, 'after-hours/lost.vrmxs');
+    // a double tap at a shelf: one answer a visit (review of PR 73). After each right placing, two presses more with the
+    // other things still in her hands: no wrong shelf counted, still won
+    const tapped = await playAfterHours(dir, { ...AFTER_HOURS_PLANS.win, repress: 2 });
+    assert.equal(tapped.decided?.result, "won", tapped.trail.join("\n"));
+    assert.deepEqual(tapped.decided.counters, { mistakes: 0, shelved: 3 });
+    assert.ok(tapped.trail.some((t) => / press again at the phones shelf: interact$/.test(t)), "the extra presses were made");
+    // and at a wrong shelf: the extra presses there count no second mistake; the next shelf is the second
+    const wrongTapped = await playAfterHours(dir, { ...AFTER_HOURS_PLANS.lose, repress: 2 }, { onStep: (flow) => { const v = flow.view(); if (v.scene === "after-hours/level.vrmxs" && v.counters?.mistakes === 2 && seen === null) seen = flow.tree.find("mira").object3d.position.z; } });
+    assert.equal(wrongTapped.decided?.result, "lost");
+    assert.ok(seen !== null && seen < -4.5, "the second mistake was at the phones shelf (z -4.9), not the books shelf twice (z -3.2)");
     const time = await playAfterHours(dir, AFTER_HOURS_PLANS.time);
     assert.equal(time.decided?.result, 'lost');
     assert.equal(time.decided.counters.mistakes, 0);

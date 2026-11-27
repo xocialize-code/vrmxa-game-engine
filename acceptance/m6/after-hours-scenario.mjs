@@ -14,8 +14,8 @@
 //     behaviour written by hand, the lost things, the starter content's shelf, the back room, the sample's door and
 //     switch, and a licence row for each (apps/editor-mac/scripts/after-hours-files.mjs, which waits beside the
 //     scenario for its trigger screenshot); File › Open Recent reopens the project to see them;
-//   - Project Settings names the behaviours module (the field M6 W10 adds), and the project is reopened so the editor
-//     loads it and knows the shelf by its describe;
+//   - Project Settings names the behaviours module (its Behaviours field, M6 W9), which the editor then reads in place,
+//     so it knows the shelf by its describe;
 //   - the level, then the title, the won and the lost scenes: New with the scene's file name, every node from the
 //     toolbar or the assets panel, given its id, name, parent, place and turn, its props by their widgets (pins where a
 //     value is its default), behaviours from the Behaviours panel, connections from the Connections panel; what every
@@ -158,12 +158,11 @@ S(`menu "File › Open Recent › ${PROJECT}" press`, `until find("id=project-na
 for (const ref of [FILES.scarf, FILES.shelf, FILES.backRoom, FILES.switch]) S(`act id=assets-search action=set_value value=${path.basename(ref).replace(/\.[^.]+$/, '')}`, `until find("id=asset-${fileId(ref)}").count == 1 timeout=15000   # ${ref} is in the project`);
 S('act id=assets-search action=set_value value=" "   # a space: the whole list again');
 
-row('Project Settings: the behaviours module is the hand-written after-hours/behaviours.js, one undo step written to game.json; the project opened again loads it, so the inspector knows the shelf by its describe.');
+row('Project Settings: the behaviours module is the hand-written after-hours/behaviours.js (the Behaviours field), one undo step written to game.json; the editor reads the module in place, so the inspector knows the shelf by its describe.');
 S('menu "File › Project Settings…" press', 'wait id=project-settings timeout_ms=10000');
 pick('settings-behaviours', GAME.behaviours);
 S(`until find("id=settings-undo").0.name == ${q(`Undo Behaviours ${GAME.behaviours}`)} timeout=5000   # one step, named for what it did`);
-S('act id=settings-done action=press', 'wait id=project-settings gone=true timeout_ms=5000');
-S(`menu "File › Open Recent › ${PROJECT}" press`, `until find("id=project-name").0.name == "Project ${PROJECT}" timeout=30000`, 'until find("id=doc-state").0.name matches "^Scene level.vrmxs [0-9]+ nodes saved valid" timeout=60000', 'expect find("role=alert").count == 0   # the module loaded and its declaration was taken');
+S('act id=settings-done action=press', 'wait id=project-settings gone=true timeout_ms=5000', 'pause 1500   # game.json\'s module changed: the editor reads it (M6 W9)', 'expect find("role=alert").count == 0   # the module loaded and its declaration was taken (the shelf is offered in the Behaviours panel, row 8)');
 
 // ---------------------------------------------------------------- the scenes
 // rows are grouped by what they build; the plan's steps run in order, each group's title saying what is in it

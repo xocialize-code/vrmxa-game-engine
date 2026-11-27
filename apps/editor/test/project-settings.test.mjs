@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { checkGame } from '@vrmxg/bundle';
 import { DEFAULT_ACTIONS } from '@vrmxg/input';
-import { ProjectSettings, writeJson, startingGame } from '../src/project-settings.js';
+import { ProjectSettings, writeJson, startingGame, firstScene } from '../src/project-settings.js';
 
 const root = path.join(import.meta.dirname, '../../..');
 const template = JSON.parse(fs.readFileSync(path.join(root, 'content/templates/level/game.json'), 'utf8'));
@@ -282,4 +282,21 @@ test('the behaviours module (M6 W9): a .js file of the project, one undo step; n
   await s.undo();
   assert.equal(d.json('game.json').behaviours, 'behaviours.js');
   assert.equal(new ProjectSettings({ game: template, files: ['game.json', 'level.vrmxs'], write: d.write }).view().unnamedBehaviours, false, 'no behaviours.js: nothing to say');
+});
+
+// M6 W10 (review of PR 73): the scene the editor opens when none is asked for (host.openProject) and the entry of a
+// project without game.json: the first at the project's top level, else the first in a folder
+test('a project\'s first scene: the first at its top level, so a game in a folder of its own doesn\'t come first by name', () => {
+  assert.equal(firstScene(['after-hours/level.vrmxs', 'cafe-cart.vrmxs', 'cafe.vrmxs', 'game/level.vrmxs']), 'cafe-cart.vrmxs');
+  assert.equal(firstScene(['game/level.vrmxs', 'game/title.vrmxs']), 'game/level.vrmxs', 'only folders: the first by name');
+  assert.equal(firstScene([]), null);
+  // the sample project as the shell lists it (by name): what the editor opens on, as before after-hours/ was added
+  const root = path.resolve(import.meta.dirname, '../../../content/sample');
+  const walk = (d, pre = '') => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name), `${pre}${e.name}/`) : [`${pre}${e.name}`]));
+  const scenes = walk(root).filter((f) => f.endsWith('.vrmxs')).sort();
+  assert.ok(scenes[0].startsWith('after-hours/'), 'the test means something: a folder scene sorts first');
+  assert.equal(firstScene(scenes.filter((s) => !s.startsWith('prefabs/'))), 'cafe-cart.vrmxs');
+  // and a project without game.json starts in the same scene (not a sequence, not a prefab)
+  assert.equal(startingGame({ name: 'x', scenes: ['after-hours/level.vrmxs', 'level.vrmxs', 'sequences/a.vrmxs'] }).entry, 'level.vrmxs');
+  assert.equal(startingGame({ name: 'x', scenes: ['prefabs/door.vrmxs', 'sequences/a.vrmxs', 'w/one.vrmxs'] }).entry, 'w/one.vrmxs');
 });

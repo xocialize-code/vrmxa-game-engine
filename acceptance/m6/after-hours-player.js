@@ -35,12 +35,14 @@ export const AFTER_HOURS = {
 };
 
 /**
- * @param {{ briefing?: string, hint?: string | null, shelves?: string[], wrong?: string[], think?: number }} [plan]
- *   think: frames spent reading a question before answering it (40)
+ * @param {{ briefing?: string, hint?: string | null, shelves?: string[], wrong?: string[], repress?: number, think?: number }} [plan]
+ *   think: frames spent reading a question before answering it (40); repress: presses more at each shelf once it has
+ *   answered, before moving on (a double tap: the shelf takes one answer a visit)
  */
 export function createAfterHoursPlayer(plan = {}) {
   const P = AFTER_HOURS.points, shelves = plan.shelves ?? ['phones', 'books', 'coats'];
-  let lastPress = -1000, chosen = null, asked = null, hinted = !plan.hint, route = null;
+  let lastPress = -1000, chosen = null, asked = null, hinted = !plan.hint, route = null, pressedAt = null, linger = null;
+  const lingered = new Set();
   const neighbours = new Map(Object.keys(P).map((k) => [k, []]));
   for (const [a, b] of AFTER_HOURS.edges) { neighbours.get(a).push(b); neighbours.get(b).push(a); }
   const dist = (a, b) => Math.sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]));
@@ -107,7 +109,7 @@ export function createAfterHoursPlayer(plan = {}) {
           if (prompt?.item === item && step - lastPress > 20) { lastPress = step; return { ...idle(`${task}: interact`), interact: true }; }
           return idle(`${task} (waiting for the prompt)`);
         }
-        if (press && step - lastPress > 30) { lastPress = step; return { ...idle(`${task}: interact`), interact: true }; }
+        if (press && step - lastPress > 30) { lastPress = step; pressedAt = goal; return { ...idle(`${task}: interact`), interact: true }; }
         return idle(`${task} (there)`);
       }
       const cam = tree.services.get('cameras')?.forPlayer?.(1);
@@ -115,24 +117,35 @@ export function createAfterHoursPlayer(plan = {}) {
       const ux = (to[0] - here[0]) / d, uz = (to[1] - here[1]) / d, slow = last && d < 0.6 ? 0.55 : 1;
       return { stick: [(ux * rx + uz * rz) * slow, (ux * fx + uz * fz) * slow], interact: false, choose: null, task };
     };
-    if (!hinted) return go('counter', `ask Hana where the ${plan.hint} is`);
-    const things = AFTER_HOURS.things;
-    if (plan.wrong) { // the scarf only, then onto the wrong shelves, one mistake each
-      if (tree.find('scarf')) return go('scarf', 'pick up the scarf', { item: 'scarf' });
-      const shelf = plan.wrong[view.counters?.mistakes ?? 0];
-      if (shelf) return go(shelf, `put the scarf on the ${shelf} shelf`, { press: true });
+    const next = () => {
+      if (!hinted) return go('counter', `ask Hana where the ${plan.hint} is`);
+      const things = AFTER_HOURS.things;
+      if (plan.wrong) { // the scarf only, then onto the wrong shelves, one mistake each
+        if (tree.find('scarf')) return go('scarf', 'pick up the scarf', { item: 'scarf' });
+        const shelf = plan.wrong[view.counters?.mistakes ?? 0];
+        if (shelf) return go(shelf, `put the scarf on the ${shelf} shelf`, { press: true });
+        return go('mid', 'wait');
+      }
+      for (const t of things) {
+        if (!tree.find(t.at)) continue;
+        if (t.key === 'book' && tree.find('staff-door')?.current !== 'open') return go('switch', 'open the back room', { item: 'switch' });
+        return go(t.at, `pick up the ${t.key}`, { item: t.at });
+      }
+      for (const s of shelves) {
+        const t = things.find((x) => x.shelf === s);
+        if (holds(t.id)) return go(s, `put the ${t.key} on its shelf`, { press: true });
+      }
       return go('mid', 'wait');
+    };
+    const d = next();
+    // plan.repress: once a shelf has answered (the task moved on), stay and press that many times more, as a double tap
+    if (plan.repress && pressedAt && route?.goal !== pressedAt && !lingered.has(pressedAt)) { lingered.add(pressedAt); linger = { goal: pressedAt, left: plan.repress }; }
+    if (linger?.left > 0) {
+      const again = go(linger.goal, `press again at the ${linger.goal} shelf`, { press: true });
+      if (again.interact) linger.left--;
+      return again;
     }
-    for (const t of things) {
-      if (!tree.find(t.at)) continue;
-      if (t.key === 'book' && tree.find('staff-door')?.current !== 'open') return go('switch', 'open the back room', { item: 'switch' });
-      return go(t.at, `pick up the ${t.key}`, { item: t.at });
-    }
-    for (const s of shelves) {
-      const t = things.find((x) => x.shelf === s);
-      if (holds(t.id)) return go(s, `put the ${t.key} on its shelf`, { press: true });
-    }
-    return go('mid', 'wait');
+    return d;
   }
   return { decide };
 }

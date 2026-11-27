@@ -53,7 +53,7 @@ fresh: false
   act id=assets-search action=set_value value=" "   # a space: the whole list again
   ```
 
-- [ ] Project Settings: the behaviours module is the hand-written after-hours/behaviours.js, one undo step written to game.json; the project opened again loads it, so the inspector knows the shelf by its describe.
+- [ ] Project Settings: the behaviours module is the hand-written after-hours/behaviours.js (the Behaviours field), one undo step written to game.json; the editor reads the module in place, so the inspector knows the shelf by its describe.
   ```steps
   menu "File › Project Settings…" press
   wait id=project-settings timeout_ms=10000
@@ -68,10 +68,8 @@ fresh: false
   until find("id=settings-undo").0.name == "Undo Behaviours after-hours/behaviours.js" timeout=5000   # one step, named for what it did
   act id=settings-done action=press
   wait id=project-settings gone=true timeout_ms=5000
-  menu "File › Open Recent › After Hours" press
-  until find("id=project-name").0.name == "Project After Hours" timeout=30000
-  until find("id=doc-state").0.name matches "^Scene level.vrmxs [0-9]+ nodes saved valid" timeout=60000
-  expect find("role=alert").count == 0   # the module loaded and its declaration was taken
+  pause 1500   # game.json's module changed: the editor reads it (M6 W9)
+  expect find("role=alert").count == 0   # the module loaded and its declaration was taken (the shelf is offered in the Behaviours panel, row 8)
   ```
 
 - [ ] The level: New with its file name (after-hours/level.vrmxs), its root named; the environment at night (a gradient sky by its colour wells), the cafe and the back room from the assets panel, the moonlight, the counter lamp and the back room's bulb (colours, turns, numbers), the room tone.
