@@ -1,0 +1,19 @@
+ Particle system powered by three.quarks. https://quarks.art/
+ok   the sample game exports with the game app as its runtime: 117 files, digest 689c41cac7b79e20
+ok   the unbroken session: played from the title to the lost ending, a hash after every step: 4333 steps, scenes game/title.vrmxs → game/level.vrmxs → game/lost.vrmxs (the level from step 361)
+ok   webgpu: the replay gives the unbroken session's hash after every step, through 3 lost devices: 4333 steps, final 83a97551fb38a7d6
+ok   webgpu: each loss made a renderer again on the backend asked for, on one fresh canvas: lost at 60 (destroy on webgpu), 961 (destroy on webgpu), 2161 (encoder on webgpu); made again on webgpu, webgpu, webgpu in 3 ms, 10 ms, 13 ms; 1 canvas
+ok   webgpu: the status line said so while it recovered, and went once a new frame was drawn: 60: "The display stopped. Restarting it…" → 60: "" → 961: "The display stopped. Restarting it…" → 961: "" → 2162: "The display stopped. Restarting it…" → 2162: ""
+ok   webgpu: it draws again after each recovery: m6-device-loss-webgpu-1.png at step 61: 102 draws in half a second; m6-device-loss-webgpu-2.png at step 969: 102 draws in half a second; m6-device-loss-webgpu-3.png at step 2170: 99 draws in half a second
+ok   fallback: the replay gives the unbroken session's hash after every step, through 1 lost device: 4333 steps, final 83a97551fb38a7d6
+ok   fallback: each loss made a renderer again on the backend asked for, on one fresh canvas: lost at 1261 (destroy on webgpu); made again on webgl-fallback in 23 ms; 1 canvas
+ok   fallback: the status line said so while it recovered, and went once a new frame was drawn: 1261: "The display stopped. Restarting it…" → 1261: ""
+ok   fallback: it draws again after each recovery: m6-device-loss-fallback-1.png at step 1269: 99 draws in half a second
+ok   webgl: the replay gives the unbroken session's hash after every step, through 1 lost device: 4333 steps, final 83a97551fb38a7d6
+ok   webgl: each loss made a renderer again on the backend asked for, on one fresh canvas: lost at 1261 (context on webgl); made again on webgl in 10 ms; 1 canvas
+ok   webgl: the status line said so while it recovered, and went once a new frame was drawn: 1261: "The display stopped. Restarting it…" → 1261: ""
+ok   webgl: it draws again after each recovery: m6-device-loss-webgl-1.png at step 1269: 34 draws in half a second
+ok   control: the replay gives the unbroken session's hash after every step: 4333 steps, final 83a97551fb38a7d6
+ok   no errors in the pages beyond the lost devices' own
+all checks pass
+### m6-device-loss: node acceptance/m6/device-loss.mjs — started 2026-11-27T17:27:27Z, ended 2026-11-27T17:33:39Z, exit 0

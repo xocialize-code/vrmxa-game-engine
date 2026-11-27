@@ -1,0 +1,10 @@
+scheme   replay=logs/win.json&renderer=webgpu     backend webgpu steps 4945 final 9da9445d3b8dcec8 same as the log  
+scheme   replay=logs/win.json&renderer=webgl      backend webgl  steps 4945 final 9da9445d3b8dcec8 same as the log  
+scheme   replay=logs/lose.json&renderer=webgpu    backend webgpu steps 3526 final 1911b477d418a6c8 same as the log  
+scheme   replay=logs/lose.json&renderer=webgl     backend webgl  steps 3526 final 1911b477d418a6c8 same as the log  
+loopback replay=logs/win.json&renderer=webgpu     backend webgpu steps 4945 final 9da9445d3b8dcec8 same as the log  
+loopback replay=logs/win.json&renderer=webgl      backend webgl  steps 4945 final 9da9445d3b8dcec8 same as the log  
+loopback replay=logs/lose.json&renderer=webgpu    backend webgpu steps 3526 final 1911b477d418a6c8 same as the log  
+loopback replay=logs/lose.json&renderer=webgl     backend webgl  steps 3526 final 1911b477d418a6c8 same as the log  
+PASS
+### after-hours-wkwebview: acceptance/m6/after-hours-wkwebview.sh both — started 2026-11-27T17:14:07Z, ended 2026-11-27T17:23:47Z, exit 0

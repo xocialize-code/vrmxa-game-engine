@@ -1,0 +1,140 @@
+{
+ "check": "M6 W6: the editor survives a lost GPU device in the edit view and in Play (Chromium, WebGPU; AB-T-0639)",
+ "ok": true,
+ "node": "v26.12.1",
+ "chromium": "156.0.8078.4",
+ "edit": {
+  "before": {
+   "backend": "webgpu",
+   "tree": true,
+   "step": 0
+  },
+  "after": {
+   "backend": "webgpu",
+   "sameCanvas": true,
+   "world": true,
+   "camera": true,
+   "step": 0,
+   "calls": 259,
+   "oldLost": true,
+   "error": ""
+  },
+  "file": "m6-editor-device-loss-edit.png"
+ },
+ "play": {
+  "before": {
+   "backend": "webgpu",
+   "tree": true,
+   "step": 122
+  },
+  "after": {
+   "backend": "webgpu",
+   "sameCanvas": true,
+   "world": true,
+   "camera": true,
+   "step": 177,
+   "calls": 209,
+   "oldLost": true,
+   "error": ""
+  },
+  "file": "m6-editor-device-loss-play.png",
+  "later": 271
+ },
+ "stopped": {
+  "mode": "editing",
+  "shows": true,
+  "error": ""
+ },
+ "editEncoder": {
+  "before": {
+   "backend": "webgpu",
+   "tree": true,
+   "step": 0
+  },
+  "after": {
+   "backend": "webgpu",
+   "sameCanvas": true,
+   "world": true,
+   "camera": true,
+   "step": 0,
+   "calls": 259,
+   "oldLost": true,
+   "error": ""
+  },
+  "file": "m6-editor-device-loss-edit-encoder.png"
+ },
+ "playEncoder": {
+  "before": {
+   "backend": "webgpu",
+   "tree": true,
+   "step": 124
+  },
+  "after": {
+   "backend": "webgpu",
+   "sameCanvas": true,
+   "world": true,
+   "camera": true,
+   "step": 180,
+   "calls": 209,
+   "oldLost": true,
+   "error": ""
+  },
+  "file": "m6-editor-device-loss-play-encoder.png",
+  "later": 275
+ },
+ "webgl": {
+  "before": {
+   "backend": "webgl",
+   "tree": true,
+   "step": 0
+  },
+  "after": {
+   "backend": "webgl",
+   "sameCanvas": true,
+   "world": true,
+   "camera": true,
+   "step": 0,
+   "calls": 0,
+   "oldLost": true,
+   "error": ""
+  },
+  "file": "m6-editor-device-loss-webgl-context.png"
+ },
+ "checks": [
+  {
+   "name": "the edit view: made again on WebGPU on the same canvas, with the edit world and the edit camera, drawing",
+   "ok": true,
+   "detail": "{\"backend\":\"webgpu\",\"sameCanvas\":true,\"world\":true,\"camera\":true,\"step\":0,\"calls\":259,\"oldLost\":true,\"error\":\"\"}"
+  },
+  {
+   "name": "Play: made again on the same canvas with the play world through the scene's camera, and play goes on from its step",
+   "ok": true,
+   "detail": "lost at step 122, drawing again at 177, at 271 1.5 s later; {\"backend\":\"webgpu\",\"sameCanvas\":true,\"world\":true,\"camera\":true,\"step\":177,\"calls\":209,\"oldLost\":true,\"error\":\"\"}"
+  },
+  {
+   "name": "Stop brings the edit world back on the new host",
+   "ok": true,
+   "detail": "{\"mode\":\"editing\",\"shows\":true,\"error\":\"\"}"
+  },
+  {
+   "name": "the edit view, createCommandEncoder throwing: made again, the aids not drawn on the dead renderer, no error left",
+   "ok": true,
+   "detail": "{\"backend\":\"webgpu\",\"sameCanvas\":true,\"world\":true,\"camera\":true,\"step\":0,\"calls\":259,\"oldLost\":true,\"error\":\"\"}"
+  },
+  {
+   "name": "Play, createCommandEncoder throwing: made again, play goes on, no error left",
+   "ok": true,
+   "detail": "lost at 124, 275 1.5 s after; {\"backend\":\"webgpu\",\"sameCanvas\":true,\"world\":true,\"camera\":true,\"step\":180,\"calls\":209,\"oldLost\":true,\"error\":\"\"}"
+  },
+  {
+   "name": "WebGL, a lost context restored: made again on WebGL on the same canvas, with the edit world, drawing",
+   "ok": true,
+   "detail": "{\"backend\":\"webgl\",\"sameCanvas\":true,\"world\":true,\"camera\":true,\"step\":0,\"calls\":0,\"oldLost\":true,\"error\":\"\"}"
+  },
+  {
+   "name": "no errors in the page beyond the lost devices' own",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

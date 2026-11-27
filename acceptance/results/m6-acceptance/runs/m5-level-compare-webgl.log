@@ -1,0 +1,2 @@
+the same bytes as the committed level (12871 of 12871): 48 of 48 nodes, 19 of 19 connections, ids included; the built scene is valid
+### m5-level-compare-webgl: node acceptance/m5/rush-level.mjs compare ~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/project-w10-level/game/rush-built.vrmxs --out acceptance/results/m6-acceptance/hand-tests/m5-level-webgl/compare.json — started 2026-11-27T18:38:08Z, ended 2026-11-27T18:38:08Z, exit 0

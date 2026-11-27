@@ -1,0 +1,363 @@
+{
+ "check": "M6 exit check 5 / M5 exit check 8 (the sample game's level built in the Mac editor, all of it: AB-T-0620, AB-T-0638): the saved level against the committed one, byte for byte",
+ "ok": true,
+ "valid": true,
+ "same": true,
+ "bytes": {
+  "want": 12871,
+  "got": 12871
+ },
+ "nodes": [
+  {
+   "node": "root",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "env",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "set",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "espresso",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "sun",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "counter-light",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "ambience",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "music",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "entrance-left",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "entrance-right",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "door-staff",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "stool-1",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "stool-2",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "stool-3",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "stool-4",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "stool-5",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "stool-6",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "stool-7",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "stool-8",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "till",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "tray-1",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "tray-2",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "tray-3",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "mira",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "hana-1",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "aoi",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "ren",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "yuki",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "look-at",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "cam",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "table-1",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "table-2",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "table-3",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "rules",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "score",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "served",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "mistakes",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "clock",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "brew-1",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "brew-2",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "brew-3",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "serve",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "close-till",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "cp-first",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "briefing",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "order-1",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "order-2",
+   "found": true,
+   "same": true
+  },
+  {
+   "node": "order-3",
+   "found": true,
+   "same": true
+  }
+ ],
+ "extra": [],
+ "order": true,
+ "connections": {
+  "want": 19,
+  "got": 19,
+  "same": 19,
+  "list": [
+   {
+    "index": 0,
+    "want": "rules.ready → hana-1.lookAt",
+    "same": true
+   },
+   {
+    "index": 1,
+    "want": "order-1.chose → brew-1.start",
+    "same": true
+   },
+   {
+    "index": 2,
+    "want": "order-1.chose → hana-1.playLayer",
+    "same": true
+   },
+   {
+    "index": 3,
+    "want": "brew-1.timeout → tray-1.enterState",
+    "same": true
+   },
+   {
+    "index": 4,
+    "want": "brew-1.timeout → hana-1.say",
+    "same": true
+   },
+   {
+    "index": 5,
+    "want": "order-2.chose → brew-2.start",
+    "same": true
+   },
+   {
+    "index": 6,
+    "want": "order-2.chose → hana-1.playLayer",
+    "same": true
+   },
+   {
+    "index": 7,
+    "want": "brew-2.timeout → tray-2.enterState",
+    "same": true
+   },
+   {
+    "index": 8,
+    "want": "brew-2.timeout → hana-1.say",
+    "same": true
+   },
+   {
+    "index": 9,
+    "want": "order-3.chose → brew-3.start",
+    "same": true
+   },
+   {
+    "index": 10,
+    "want": "order-3.chose → hana-1.playLayer",
+    "same": true
+   },
+   {
+    "index": 11,
+    "want": "brew-3.timeout → tray-3.enterState",
+    "same": true
+   },
+   {
+    "index": 12,
+    "want": "brew-3.timeout → hana-1.say",
+    "same": true
+   },
+   {
+    "index": 13,
+    "want": "serve.completed → till.enterState",
+    "same": true
+   },
+   {
+    "index": 14,
+    "want": "serve.completed → hana-1.say",
+    "same": true
+   },
+   {
+    "index": 15,
+    "want": "till.verb → rules.setFlag",
+    "same": true
+   },
+   {
+    "index": 16,
+    "want": "close-till.completed → score.add",
+    "same": true
+   },
+   {
+    "index": 17,
+    "want": "rules.won → rules.changeScene",
+    "same": true
+   },
+   {
+    "index": 18,
+    "want": "rules.lost → rules.changeScene",
+    "same": true
+   }
+  ],
+  "extra": []
+ },
+ "assets": {
+  "same": true,
+  "missing": [],
+  "extra": []
+ },
+ "rest": []
+}

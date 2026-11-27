@@ -1,0 +1,14 @@
+ Particle system powered by three.quarks. https://quarks.art/
+ok   the sample game exports with the game app as its runtime (vrmxg-export --game game/game.json): 117 files, 26.3 MB, digest 689c41cac7b79e20
+ok   win: played from the title menu to the won ending, its dialogue choices recorded: scenes game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6294 steps; choices ready, latte, iced-tea, green-tea; ending line "Hana: Not one mistake. Best morning rush ever, Mira!"
+ok   win: the HUD showed the goal, score and clock; the tray was carried on the upper body; the checkpoint was taken: HUD {"goal":"Goal: Serve the three regulars","score":"Score 0","clock":"Until ten o'clock 4:00"}; carrying {"carrying":["Order for table 1"],"layers":["upperBody"],"hud":"Order for table 1"}; checkpoint {"step":2220,"checkpoints":{"first-order":{"id":"cp-first","requested":2213}}}; the first question {"line":"Aoi: Morning! Something warm and milky, please. Not too strong.","choices":["1A latte, then.","2A double espresso?"]}
+ok   lose: played from the title menu to the lost ending, its dialogue choices recorded: scenes game/title.vrmxs → game/level.vrmxs → game/lost.vrmxs; 4812 steps; choices ready, espresso, chocolate; ending line "Hana: Two orders wrong. Let's call it a morning, and try again tomorrow."
+ok   win: the session played in Chromium replays in Node to the same hash after every step: 6294 steps, final f9276c7e04127bdf at step 6294
+ok   lose: the session played in Chromium replays in Node to the same hash after every step: 4812 steps, final fe9c03c1bf33e937 at step 4812
+ok   win: the game app replays the log drawn on WebGPU to the same hash after every step: 6294 steps on webgpu, final f9276c7e04127bdf; 6304 frames, p99 16.8 ms
+ok   win: the game app replays the log drawn on WebGL to the same hash after every step: 6294 steps on webgl, final f9276c7e04127bdf; 6295 frames, p99 16.8 ms
+ok   lose: the game app replays the log drawn on WebGPU to the same hash after every step: 4812 steps on webgpu, final fe9c03c1bf33e937; 4821 frames, p99 16.8 ms
+ok   lose: the game app replays the log drawn on WebGL to the same hash after every step: 4812 steps on webgl, final fe9c03c1bf33e937; 4815 frames, p99 16.8 ms
+ok   no errors in the pages
+all checks pass
+### m5-rush-fresh: node acceptance/m5/rush.mjs — started 2026-11-27T17:42:08Z, ended 2026-11-27T17:51:44Z, exit 0

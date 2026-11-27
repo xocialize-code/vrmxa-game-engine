@@ -1,0 +1,227 @@
+{
+ "date": "2026-11-27",
+ "client": "claude -p (Claude Code 2.1.319, sonnet), --mcp-config with vrmxg-mcp headless (--projects, --builds, --runtime)",
+ "exitCode": 0,
+ "mcpServers": [
+  {
+   "name": "vrmxg-editor",
+   "status": "connected",
+   "source": "dynamic"
+  }
+ ],
+ "prompt": "You are connected to the VRMXG game engine's MCP tools (vrmxg-editor), headless, on a scratch project. Using only those tools, make a new game:\n1. List the project templates (game op=new with no template), then start a new project from the \"level\" template with the title \"Tea Time\" (game op=new). Read its rules (game) and validate it (game op=validate).\n2. As ONE edit (the edit tool) labelled \"Hana greets\": give Hana (hana) the registry's greet behaviour, with Mira (mira) as its target, a radius of 3 m, the text \"Welcome! The tea is on the counter.\" and a cooldown of 30 s. Describe the behaviour first.\n3. As ONE edit labelled \"A tea table\": an Area tea-zone, named \"Tea table\", a box 1.5 m across and 1 m tall standing on the floor 2 m from Hana. Connect its bodyEntered signal to score's add with by 5, and to hana's say with the text \"Mind, it's hot.\"\n4. Validate the scene and save it. Validate the project (game op=validate); if it reports a problem, fix it and save again.\n5. Export the game (game op=export) with the name \"tea-time\". Report the build's path, its number of files and its manifest digest.\nDescribe a node type before you first use it. Do not undo. Finish with a short report of each step.",
+ "calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__vrmxg-editor__game,mcp__vrmxg-editor__describe,mcp__vrmxg-editor__edit,mcp__vrmxg-editor__validate,mcp__vrmxg-editor__save,mcp__vrmxg-editor__tree,mcp__vrmxg-editor__get_node",
+    "max_results": 10
+   },
+   "result": "\n\n\n\n\n\n",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "new"
+   },
+   "result": "{\"templates\":[{\"template\":\"empty\",\"title\":\"Empty game\",\"description\":\"One empty scene with light, ground and a camera, and the engine's default controls. Build from nothing.\",\"files\":3},{\"template\":\"level\",\"title\":\"One level\",\"description\":\"A level in the cafe: Mira to play, a goal (get to the counter) and an ending that starts it again. A game that plays from the first minute.\",\"files\":37}],\"make",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "new",
+    "template": "level",
+    "title": "Tea Time"
+   },
+   "result": "{\"project\":\"<work folder>/projects/tea-time\",\"game\":{\"id\":\"tea-time\",\"title\":\"Tea Time\"},\"template\":\"level\",\"files\":37,\"open\":\"level.vrmxs\",\"note\":\"the server works in the new project now: its entry scene is open\"}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "rules"
+   },
+   "result": "{\"game\":{\"id\":\"tea-time\",\"title\":\"Tea Time\",\"entry\":\"level.vrmxs\",\"scenes\":[\"ending.vrmxs\",\"level.vrmxs\"],\"from\":\"game.json\"},\"open\":\"level.vrmxs\",\"scenes\":{\"ending.vrmxs\":{\"rules\":{\"id\":\"rules\",\"win\":null,\"lose\":null,\"flags\":{},\"reads\":{\"counters\":[\"score\"],\"flags\":[],\"timers\":[],\"goals\":[],\"checkpoints\":[]},\"defaults\":{},\"keepOutcome\":true},\"counters\":[],\"timers\":[{\"id\":\"linger\",\"key\":\"linger\",\"",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "validate"
+   },
+   "result": "{\"ok\":true,\"game\":{\"id\":\"tea-time\",\"entry\":\"level.vrmxs\",\"scenes\":[\"ending.vrmxs\",\"level.vrmxs\"]},\"problems\":[],\"warnings\":[],\"checks\":\"game document, scene schemas, rules (each scene and across scenes), colliders (a RigidBody with none), behaviours (each one the engine's or the project module's, declared), goals (one nothing can complete; code read for the names it uses, not run), references and ",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__tree",
+   "input": {},
+   "result": "root (Node3D, \"Level\")\n  env (Environment)\n  set (Model, \"Cafe\")\n  sun (DirectionalLight)\n  ambience (AudioPlayer, \"Room tone\")\n  music (AudioPlayer, \"Music\")\n  spawn (Marker, \"Spawn\")\n  mira (Character, \"Mira\")\n  hana (Character, \"Hana\")\n  cam (Camera, \"Follow camera\")\n  goal-zone (Area, \"Counter\")\n  rules (GameRules)\n    score (GameCounter)\n    reach-counter (GameGoal)",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "behaviour": "greet"
+   },
+   "result": "{\"behaviour\":\"greet\",\"description\":\"Says a line to someone who comes close (looking at them), then waits a while before greeting again.\",\"on\":[\"Character\"],\"schema\":{\"type\":\"object\",\"required\":[\"use\"],\"description\":\"Says a line to someone who comes close (looking at them), then waits a while before greeting again.\",\"properties\":{\"use\":{\"const\":\"greet\"},\"target\":{\"type\":\"string\",\"description\":\"Who ",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "Area"
+   },
+   "result": "{\"type\":\"Area\",\"extends\":[\"Collider\",\"Node3D\"],\"description\":\"A sensor volume: reports bodies entering and leaving (door triggers, pickups).\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"A sensor volume: reports bodies entering and leaving (door triggers, pickups).\",\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$\",\"description\":\"S",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "hana"
+   },
+   "result": "{\"node\":{\"id\":\"hana\",\"type\":\"Character\",\"parent\":\"root\",\"name\":\"Hana\",\"asset\":\"hana\",\"transform\":{\"p\":[-1.5,0,-3]},\"props\":{\"controller\":\"npc\"}},\"signals\":[\"ready\",\"arrived\",\"spoke\",\"lineEnded\",\"dressed\",\"knockedDown\",\"gettingUp\",\"gotUp\",\"faced\"],\"actions\":[\"show\",\"hide\",\"say\",\"reach\",\"goTo\",\"emote\",\"lookAt\",\"knockDown\",\"getUp\",\"playLayer\",\"stopLayer\",\"releaseCarry\",\"layerWeight\",\"face\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "score"
+   },
+   "result": "{\"node\":{\"id\":\"score\",\"type\":\"GameCounter\",\"parent\":\"rules\",\"props\":{\"label\":\"Score\"}},\"signals\":[\"ready\",\"changed\"],\"actions\":[\"show\",\"hide\",\"add\",\"set\",\"reset\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__get_node",
+   "input": {
+    "id": "goal-zone"
+   },
+   "result": "{\"node\":{\"id\":\"goal-zone\",\"type\":\"Area\",\"parent\":\"root\",\"name\":\"Counter\",\"transform\":{\"p\":[0,1,0]},\"props\":{\"shape\":\"box\",\"size\":[1.6,2,0.8]}},\"signals\":[\"ready\",\"bodyEntered\",\"bodyExited\"],\"actions\":[\"show\",\"hide\"]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "Character"
+   },
+   "result": "{\"type\":\"Character\",\"extends\":[\"Node3D\"],\"description\":\"A VRMXA character: VRM body, closet, animation sets, voice.\",\"asset\":{\"types\":[\"vrmxa\"],\"required\":true},\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\",\"asset\"],\"description\":\"A VRMXA character: VRM body, closet, animation sets, voice.\",\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$\",\"description\":\"Stable",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__describe",
+   "input": {
+    "type": "GameCounter"
+   },
+   "result": "{\"type\":\"GameCounter\",\"extends\":[\"Node3D\"],\"description\":\"A number the game counts: the score (the counter named \\\"score\\\"), orders taken, coins.\",\"asset\":null,\"schema\":{\"type\":\"object\",\"required\":[\"id\",\"type\"],\"description\":\"A number the game counts: the score (the counter named \\\"score\\\"), orders taken, coins.\",\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$\",\"d",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__edit",
+   "input": {
+    "label": "Hana greets",
+    "ops": [
+     {
+      "op": "behaviour",
+      "id": "hana",
+      "use": "greet",
+      "params": {
+       "target": "mira",
+       "radius": 3,
+       "text": "Welcome! The tea is on the counter.",
+       "cooldown": 30
+      }
+     }
+    ]
+   },
+   "result": "1 edit applied as one undo step (\"Hana greets\")",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__edit",
+   "input": {
+    "label": "A tea table",
+    "ops": [
+     {
+      "op": "add",
+      "node": {
+       "id": "tea-zone",
+       "type": "Area",
+       "parent": "root",
+       "name": "Tea table",
+       "transform": {
+        "p": [
+         0.5,
+         0.5,
+         -3
+        ]
+       },
+       "props": {
+        "shape": "box",
+        "size": [
+         1.5,
+         1,
+         1.5
+        ]
+       }
+      }
+     },
+     {
+      "op": "connect",
+      "from": "tea-zone",
+      "signal": "bodyEntered",
+      "to": "score",
+      "call": "add",
+      "args": {
+       "by": 5
+      }
+     },
+     {
+      "op": "connect",
+      "from": "tea-zone",
+      "signal": "bodyEntered",
+      "to": "hana",
+      "call": "say",
+      "args": {
+       "text": "Mind, it's hot."
+      }
+     }
+    ]
+   },
+   "result": "3 edits applied as one undo step (\"A tea table\")",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__validate",
+   "input": {},
+   "result": "{\"ok\":true,\"errors\":[],\"warnings\":[]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__save",
+   "input": {},
+   "result": "{\"saved\":\"level.vrmxs\",\"changedLines\":{\"added\":6,\"removed\":3,\"total\":9},\"warnings\":[]}",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "validate"
+   },
+   "result": "{\"ok\":true,\"game\":{\"id\":\"tea-time\",\"entry\":\"level.vrmxs\",\"scenes\":[\"ending.vrmxs\",\"level.vrmxs\"]},\"problems\":[],\"warnings\":[],\"checks\":\"game document, scene schemas, rules (each scene and across scenes), colliders (a RigidBody with none), behaviours (each one the engine's or the project module's, declared), goals (one nothing can complete; code read for the names it uses, not run), references and ",
+   "isError": false
+  },
+  {
+   "tool": "mcp__vrmxg-editor__game",
+   "input": {
+    "op": "export",
+    "name": "tea-time"
+   },
+   "result": "{\"id\":\"tea-time\",\"title\":\"Tea Time\",\"entry\":\"level.vrmxs\",\"runtime\":\"vrmxg-game 0.1.0+01c4bb509d4b\",\"files\":60,\"bytes\":19433874,\"digest\":\"810b9325e482f1db0c3d590c5ce73eab8255c5848a5fb60a33f6db17aca05277\",\"manifest\":\"cb10086e6f784d9c21d07ac9e538c08772a5e643f4df32b7f3a7f10a7c0d3d2a\",\"licensedByPattern\":[\"animations/clips/cheer.vrma\",\"animations/clips/equip.vrma\",\"animations/clips/fall.vrma\",\"animati",
+   "isError": false
+  }
+ ],
+ "failed": 0,
+ "costUSD": 0.2816264,
+ "final": "Tea Time is built, saved and exported, and both validations came back clean.\n\n1. **New project.** The templates are `empty` and `level`. I started \"Tea Time\" from `level`, which has 37 files and opens `level.vrmxs`. Its rules show a `score` counter and a \"Get to the counter\" goal, with no problems. The first `game op=validate` was ok.\n2. **\"Hana greets\".** I described `greet` first. One edit gave `hana` the behaviour with target `mira`, radius 3 m, the text \"Welcome! The tea is on the counter.\" and a cooldown of 30 s.\n3. **\"A tea table\".** I described `Area`, `Character` and `GameCounter` first. One edit added Area `tea-zone`, named \"Tea table\".\n   - It is a box 1.5 m across, 1 m tall and 1.5 m deep, centred at (0.5, 0.5, -3) so it stands on the floor.\n   - Hana is at (-1.5, 0, -3), so the table is 2 m from her.\n   - The brief gave no depth, so I chose 1.5 m.\n   - `bodyEntered` is connected to `score` `add` with by 5, and to `hana` `say` with \"Mind, it's hot.\"\n4. **Validate and save.** Scene validation had no errors or warnings, and the scene saved as `level.vrmxs`. The project validate was ok with no problems, so nothing needed fixing.\n5. **Export** as `tea-time`:\n   - **Build path:** `<work folder>/builds/tea-time`\n   - **Files:** 60 (19,433,874 bytes)\n   - **Manifest digest:** `cb10086e6f784d9c21d07ac9e538c08772a5e643f4df32b7f3a7f10a7c0d3d2a`\n   - The export also returned a separate `digest`, `810b9325e482f1db0c3d590c5ce73eab8255c5848a5fb60a33f6db17aca05277`. I took the manifest digest from the `manifest` field.\n\nI didn't undo anything. The validations check structure and references, not what happens in play, so I haven't run the greeting or the tea table."
+}

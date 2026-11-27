@@ -1,0 +1,7 @@
+ Particle system powered by three.quarks. https://quarks.art/
+scheme   mode=layers&renderer=webgl       final d14fcfab1e02d846 same as Node checks pass  
+scheme   mode=layers&renderer=webgl&again=1 final d14fcfab1e02d846 same as Node checks pass  
+loopback mode=layers&renderer=webgl       final d14fcfab1e02d846 same as Node checks pass  
+loopback mode=layers&renderer=webgl&again=1 final d14fcfab1e02d846 same as Node checks pass  
+PASS
+### m5-layers-wkwebview: acceptance/m5/layers-wkwebview.sh — started 2026-11-27T17:27:08Z, ended 2026-11-27T17:27:27Z, exit 0

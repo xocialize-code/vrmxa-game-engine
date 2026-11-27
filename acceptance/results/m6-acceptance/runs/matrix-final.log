@@ -1,0 +1,111 @@
+[19:41:56] node: the reference run (acceptance/node.mjs)
+[19:43:01] chromium-webgpu acceptance load 1: ok digest 78ab33e0d7508476 = canonical · 30.5 s · GPU 0/0/75% quiet
+[19:43:03] chromium-webgpu backends load 1: ok digest d34ebf75e93190ff = canonical · 1.7 s · GPU 0/0/75% quiet
+[19:43:04] chromium-webgpu backends load 2: ok digest d34ebf75e93190ff = canonical · 1.8 s · GPU 0/0/75% quiet
+[19:43:06] chromium-webgpu backends load 3: ok digest d34ebf75e93190ff = canonical · 1.8 s · GPU 0/0/75% quiet
+[19:43:36] chromium-webgpu frames load 1: ok digest d6784fc3c3d16a2f = canonical · 29.3 s · GPU 0/35/75% quiet
+[19:44:04] chromium-webgpu frames load 2: ok digest d6784fc3c3d16a2f = canonical · 28.9 s · GPU 19/39/46% quiet
+[19:44:09] chromium-webgpu post load 1: ok digest c6a9dc4b14918c84 = canonical · 4.2 s · GPU 31/39/46% quiet
+[19:44:13] chromium-webgpu post load 2: ok digest c6a9dc4b14918c84 = canonical · 4.3 s · GPU 28/36/46% quiet
+[19:44:17] chromium-webgpu coverage load 1: ok digest a1fb834203a54644 = canonical · 3.5 s · GPU 21/33/46% quiet
+[19:44:20] chromium-webgpu coverage load 2: ok digest a1fb834203a54644 = canonical · 3.5 s · GPU 21/31/46% quiet
+[19:44:32] chromium-webgpu budget load 1: ok digest - · 12.4 s · GPU 21/31/42% quiet
+[19:44:46] chromium-webgpu editor load 1: ok digest 8d9ab54914096695 = canonical · 14.0 s · GPU 29/33/77% quiet
+[19:45:00] chromium-webgpu editor load 2: ok digest 8d9ab54914096695 = canonical · 14.0 s · GPU 28/33/77% quiet
+[19:45:01] chromium-webgl: waiting for a quiet GPU (GPU at 82%)
+[19:45:46] chromium-webgl acceptance load 1: ok digest 78ab33e0d7508476 = canonical · 30.2 s · GPU 0/0/71% quiet
+[19:45:48] chromium-webgl backends load 1: ok digest 4c6c9ea72ddc5163 = canonical · 1.8 s · GPU 0/0/71% quiet
+[19:45:50] chromium-webgl backends load 2: ok digest 4c6c9ea72ddc5163 = canonical · 1.8 s · GPU 0/2/71% quiet
+[19:45:52] chromium-webgl backends load 3: ok digest 4c6c9ea72ddc5163 = canonical · 1.8 s · GPU 0/0/71% quiet
+[19:46:24] chromium-webgl frames load 1: ok digest 28e3089104291f3f = canonical · 32.5 s · GPU 0/36/71% quiet
+[19:46:57] chromium-webgl frames load 2: ok digest 28e3089104291f3f = canonical · 32.4 s · GPU 6/39/49% quiet
+[19:47:01] chromium-webgl post load 1: ok digest 321c6f7bcbeef402 = canonical · 4.7 s · GPU 28/38/49% quiet
+[19:47:06] chromium-webgl post load 2: ok digest 321c6f7bcbeef402 = canonical · 4.3 s · GPU 28/41/49% quiet
+[19:47:09] chromium-webgl coverage load 1: ok digest a99d0123ae22e674 = canonical · 3.2 s · GPU 18/37/49% quiet
+[19:47:12] chromium-webgl coverage load 2: ok digest a99d0123ae22e674 = canonical · 3.1 s · GPU 18/30/49% quiet
+[19:47:20] chromium-webgl budget load 1: ok digest - · 7.9 s · GPU 7/28/39% quiet
+[19:47:35] chromium-webgl editor load 1: ok digest 582bf85ae977e517 = canonical · 15.0 s · GPU 7/39/51% quiet
+[19:47:50] chromium-webgl editor load 2: ok digest 582bf85ae977e517 = canonical · 14.9 s · GPU 34/49/65% quiet
+[19:47:50] wkwebview-scheme-webgpu: waiting for a quiet GPU (GPU at 75%)
+[19:48:47] wkwebview-scheme-webgpu acceptance load 1: ok digest 78ab33e0d7508476 = canonical · 41.9 s · GPU 0/0/51% quiet
+[19:48:49] wkwebview-scheme-webgpu backends load 1: ok digest 72ee142295cd642f = canonical · 2.1 s · GPU 0/0/50% quiet
+[19:48:51] wkwebview-scheme-webgpu backends load 2: ok digest 72ee142295cd642f = canonical · 2.1 s · GPU 0/0/50% quiet
+[19:48:53] wkwebview-scheme-webgpu backends load 3: ok digest 72ee142295cd642f = canonical · 2.1 s · GPU 0/43/50% quiet
+[19:49:35] wkwebview-scheme-webgpu frames load 1: ok digest 04966d261a42b86b = canonical · 41.2 s · GPU 0/35/50% quiet
+[19:50:17] wkwebview-scheme-webgpu frames load 2: ok digest 04966d261a42b86b = canonical · 42.5 s · GPU 31/35/56% quiet
+[19:50:23] wkwebview-scheme-webgpu post load 1: ok digest 8defe4bdef17decd = canonical · 5.8 s · GPU 24/33/44% quiet
+[19:50:29] wkwebview-scheme-webgpu post load 2: ok digest 8defe4bdef17decd = canonical · 5.8 s · GPU 9/33/44% quiet
+[19:50:33] wkwebview-scheme-webgpu coverage load 1: ok digest de0ac1cdc8032a40 = canonical · 4.3 s · GPU 9/33/55% quiet
+[19:50:37] wkwebview-scheme-webgpu coverage load 2: ok digest de0ac1cdc8032a40 = canonical · 4.3 s · GPU 9/33/55% quiet
+[19:50:57] wkwebview-scheme-webgpu editor load 1: ok digest 540ef4041209d64c = canonical · 20.0 s · GPU 9/38/75% quiet
+[19:51:17] wkwebview-scheme-webgpu editor load 2: ok digest 540ef4041209d64c = canonical · 19.4 s · GPU 28/39/75% quiet
+[19:51:17] wkwebview-scheme-webgl: waiting for a quiet GPU (GPU at 82%)
+[19:52:11] wkwebview-scheme-webgl acceptance load 1: ok digest 78ab33e0d7508476 = canonical · 39.0 s · GPU 0/0/74% quiet
+[19:52:13] wkwebview-scheme-webgl backends load 1: ok digest 1cd4c92e626a4202 = canonical · 2.2 s · GPU 0/0/74% quiet
+[19:52:15] wkwebview-scheme-webgl backends load 2: ok digest 1cd4c92e626a4202 = canonical · 2.1 s · GPU 0/0/74% quiet
+[19:52:17] wkwebview-scheme-webgl backends load 3: ok digest 1cd4c92e626a4202 = canonical · 2.1 s · GPU 0/39/74% quiet
+[19:52:53] wkwebview-scheme-webgl frames load 1: ok digest 86c02b57ce66e867 = canonical · 35.8 s · GPU 0/35/74% quiet
+[19:53:29] wkwebview-scheme-webgl frames load 2: ok digest 86c02b57ce66e867 = canonical · 35.8 s · GPU 9/35/41% quiet
+[19:53:35] wkwebview-scheme-webgl post load 1: ok digest 2327291e0578459e = canonical · 6.2 s · GPU 19/35/40% quiet
+[19:53:41] wkwebview-scheme-webgl post load 2: ok digest 2327291e0578459e = canonical · 6.2 s · GPU 19/25/40% quiet
+[19:53:45] wkwebview-scheme-webgl coverage load 1: ok digest 104c9bf9e83de230 = canonical · 3.8 s · GPU 8/23/35% quiet
+[19:53:49] wkwebview-scheme-webgl coverage load 2: ok digest 104c9bf9e83de230 = canonical · 3.8 s · GPU 8/23/39% quiet
+[19:54:06] wkwebview-scheme-webgl editor load 1: ok digest 500f6ed85a4d27b0 = canonical · 17.2 s · GPU 8/39/57% quiet
+[19:54:23] wkwebview-scheme-webgl editor load 2: ok digest 500f6ed85a4d27b0 = canonical · 17.0 s · GPU 10/46/80% quiet
+[19:55:17] wkwebview-loopback-webgpu acceptance load 1: ok digest 78ab33e0d7508476 = canonical · 43.2 s · GPU 0/0/80% quiet
+[19:55:19] wkwebview-loopback-webgpu backends load 1: ok digest 72ee142295cd642f = canonical · 2.2 s · GPU 0/0/80% quiet
+[19:55:21] wkwebview-loopback-webgpu backends load 2: ok digest 72ee142295cd642f = canonical · 2.3 s · GPU 0/0/80% quiet
+[19:55:23] wkwebview-loopback-webgpu backends load 3: ok digest 72ee142295cd642f = canonical · 2.2 s · GPU 0/0/80% quiet
+[19:56:06] wkwebview-loopback-webgpu frames load 1: VERDICTS FAIL digest 81bdd363047bd5a3 ≠ canonical 04966d261a42b86b (1 items: filmSecond) · 42.6 s · GPU 0/35/80% quiet
+[19:56:06] wkwebview-loopback-webgpu frames: load 1 fails filmTwiceIdentical (pixels); the GPU was quiet; rerunning once
+[19:56:48] wkwebview-loopback-webgpu frames rerun of load 1: ok digest 04966d261a42b86b = canonical · 42.4 s · GPU 32/35/43% quiet
+[19:56:49] wkwebview-loopback-webgpu frames: FAILURE (the rerun is clean, but the GPU was quiet during the failed load: not AB-T-0589); --keep-going
+[19:56:55] wkwebview-loopback-webgpu post load 1: ok digest 8defe4bdef17decd = canonical · 5.9 s · GPU 31/33/41% chromium:Google Chrome for Testing 10.5%
+[19:57:01] wkwebview-loopback-webgpu post load 2: ok digest 8defe4bdef17decd = canonical · 6.0 s · GPU 30/32/41% quiet
+[19:57:05] wkwebview-loopback-webgpu coverage load 1: ok digest de0ac1cdc8032a40 = canonical · 4.3 s · GPU 30/32/35% quiet
+[19:57:10] wkwebview-loopback-webgpu coverage load 2: ok digest de0ac1cdc8032a40 = canonical · 4.3 s · GPU 30/33/55% quiet
+[19:57:25] wkwebview-loopback-webgpu budget load 1: ok digest - · 15.6 s · GPU 19/35/56% quiet
+[19:57:45] wkwebview-loopback-webgpu editor load 1: ok digest 540ef4041209d64c = canonical · 19.9 s · GPU 25/39/56% quiet
+[19:58:06] wkwebview-loopback-webgpu editor load 2: ok digest 540ef4041209d64c = canonical · 20.7 s · GPU 15/39/60% quiet
+[19:58:06] wkwebview-loopback-webgl: waiting for a quiet GPU (GPU at 76%)
+[19:59:01] wkwebview-loopback-webgl acceptance load 1: ok digest 78ab33e0d7508476 = canonical · 39.8 s · GPU 0/0/72% quiet
+[19:59:03] wkwebview-loopback-webgl backends load 1: ok digest 1cd4c92e626a4202 = canonical · 2.2 s · GPU 0/12/72% quiet
+[19:59:05] wkwebview-loopback-webgl backends load 2: ok digest 1cd4c92e626a4202 = canonical · 2.2 s · GPU 0/12/72% quiet
+[19:59:08] wkwebview-loopback-webgl backends load 3: ok digest 1cd4c92e626a4202 = canonical · 2.2 s · GPU 0/12/72% quiet
+[19:59:44] wkwebview-loopback-webgl frames load 1: ok digest 86c02b57ce66e867 = canonical · 36.1 s · GPU 0/36/72% quiet
+[20:00:20] wkwebview-loopback-webgl frames load 2: ok digest 86c02b57ce66e867 = canonical · 36.1 s · GPU 0/35/42% quiet
+[20:00:26] wkwebview-loopback-webgl post load 1: ok digest 2327291e0578459e = canonical · 6.4 s · GPU 0/33/42% quiet
+[20:00:33] wkwebview-loopback-webgl post load 2: ok digest 2327291e0578459e = canonical · 6.3 s · GPU 0/28/42% quiet
+[20:00:36] wkwebview-loopback-webgl coverage load 1: ok digest 104c9bf9e83de230 = canonical · 3.9 s · GPU 0/7/32% quiet
+[20:00:40] wkwebview-loopback-webgl coverage load 2: ok digest 104c9bf9e83de230 = canonical · 3.9 s · GPU 0/8/28% quiet
+[20:00:50] wkwebview-loopback-webgl budget load 1: ok digest - · 10.0 s · GPU 0/7/52% quiet
+[20:01:08] wkwebview-loopback-webgl editor load 1: ok digest 500f6ed85a4d27b0 = canonical · 17.3 s · GPU 0/29/56% quiet
+[20:01:25] wkwebview-loopback-webgl editor load 2: ok digest 500f6ed85a4d27b0 = canonical · 17.2 s · GPU 28/45/75% quiet
+[20:01:25] compare.mjs on webgpu: 20/20
+[20:01:26] compare.mjs on webgl: 20/20
+[20:01:30] SSIM chromium none          0.994 masked 0.994 (¼ 0.997; masked share 0.00017; >8 levels 0.00797)
+[20:01:30] SSIM chromium clean         0.9971 masked 0.9971 (¼ 0.9997; masked share 0.00017; >8 levels 0.00311)
+[20:01:30] SSIM chromium anime         0.9611 masked 0.9611 (¼ 0.9933; masked share 0.00017; >8 levels 0.0131)
+[20:01:30] SSIM chromium animeNoGrain  0.996 masked 0.996 (¼ 0.9961; masked share 0.00017; >8 levels 0.01285)
+[20:01:30] SSIM chromium animeLut      0.9958 masked 0.9958 (¼ 0.996; masked share 0.00017; >8 levels 0.01292)
+[20:01:30] SSIM chromium animeLut85    0.9958 masked 0.9958 (¼ 0.996; masked share 0.00017; >8 levels 0.01287)
+[20:01:30] SSIM chromium animeOverlays 0.9961 masked 0.9962 (¼ 0.9963; masked share 0.00017; >8 levels 0.012)
+[20:01:30] SSIM chromium animeShallow  0.995 masked 0.995 (¼ 0.9974; masked share 0.00017; >8 levels 0.03011)
+[20:01:30] SSIM wkwebview-scheme anime         0.9611 masked 0.9611 (¼ 0.9933; masked share 0.00017; >8 levels 0.01311)
+[20:01:30] SSIM wkwebview-scheme animeLut      0.9958 masked 0.9958 (¼ 0.996; masked share 0.00017; >8 levels 0.01292)
+[20:01:30] SSIM wkwebview-scheme animeLut85    0.9958 masked 0.9958 (¼ 0.996; masked share 0.00017; >8 levels 0.01287)
+[20:01:30] SSIM wkwebview-scheme animeNoGrain  0.996 masked 0.996 (¼ 0.9961; masked share 0.00017; >8 levels 0.01286)
+[20:01:30] SSIM wkwebview-scheme animeOverlays 0.9961 masked 0.9961 (¼ 0.9962; masked share 0.00017; >8 levels 0.01201)
+[20:01:30] SSIM wkwebview-scheme animeShallow  0.995 masked 0.995 (¼ 0.9974; masked share 0.00017; >8 levels 0.03011)
+[20:01:30] SSIM wkwebview-scheme clean         0.9971 masked 0.9971 (¼ 0.9997; masked share 0.00017; >8 levels 0.00312)
+[20:01:30] SSIM wkwebview-scheme none          0.9939 masked 0.994 (¼ 0.997; masked share 0.00017; >8 levels 0.00798)
+[20:01:30] SSIM wkwebview-loopback anime         0.9611 masked 0.9611 (¼ 0.9933; masked share 0.00017; >8 levels 0.01311)
+[20:01:30] SSIM wkwebview-loopback animeLut      0.9958 masked 0.9958 (¼ 0.996; masked share 0.00017; >8 levels 0.01292)
+[20:01:30] SSIM wkwebview-loopback animeLut85    0.9958 masked 0.9958 (¼ 0.996; masked share 0.00017; >8 levels 0.01287)
+[20:01:30] SSIM wkwebview-loopback animeNoGrain  0.996 masked 0.996 (¼ 0.9961; masked share 0.00017; >8 levels 0.01286)
+[20:01:30] SSIM wkwebview-loopback animeOverlays 0.9961 masked 0.9961 (¼ 0.9962; masked share 0.00017; >8 levels 0.01201)
+[20:01:30] SSIM wkwebview-loopback animeShallow  0.995 masked 0.995 (¼ 0.9974; masked share 0.00017; >8 levels 0.03011)
+[20:01:30] SSIM wkwebview-loopback clean         0.9971 masked 0.9971 (¼ 0.9997; masked share 0.00017; >8 levels 0.00312)
+[20:01:30] SSIM wkwebview-loopback none          0.9939 masked 0.994 (¼ 0.997; masked share 0.00017; >8 levels 0.00798)
+[20:01:30] matrix FAILED; 0 AB-T-0589 incidents
+### matrix-final: node acceptance/matrix.mjs --keep-going --quiet-wait 60 — started 2026-11-27T19:41:55Z, ended 2026-11-27T20:01:30Z, exit 1

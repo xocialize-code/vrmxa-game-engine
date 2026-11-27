@@ -1,0 +1,6 @@
+[16:11:29] chromium-webgpu frames load 1: VERDICTS FAIL digest 6c71010b15ee8e60 ≠ canonical d6784fc3c3d16a2f (1 items: filmSecond) · 30.5 s · GPU 0/36/52% quiet
+[16:11:29] chromium-webgpu frames: load 1 fails filmTwiceIdentical (pixels); the GPU was quiet; rerunning once
+[16:12:00] chromium-webgpu frames rerun of load 1: VERDICTS FAIL digest 99f978bb5d0baddf ≠ canonical d6784fc3c3d16a2f (1 items: filmSecond) · 30.7 s · GPU 0/36/52% quiet
+[16:12:01] chromium-webgpu frames: FAILURE (the rerun differs too); --keep-going
+[16:12:01] matrix FAILED; 0 AB-T-0589 incidents
+### matrix-frames-rerun: node acceptance/matrix.mjs --runtimes chromium --backends webgpu --checks frames --loads 3 --keep-going --quiet-wait 60 — started 2026-11-27T16:10:48Z, ended 2026-11-27T16:12:01Z, exit 1

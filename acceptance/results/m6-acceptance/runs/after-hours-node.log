@@ -1,0 +1,5 @@
+ Particle system powered by three.quarks. https://quarks.art/
+ok   win: {"result":"won","step":3983,"counters":{"mistakes":0,"shelved":3}} → {"scene":"after-hours/won.vrmxs","step":4164} (1.6 s)
+ok   lose: {"result":"lost","step":2555,"counters":{"mistakes":2,"shelved":0}} → {"scene":"after-hours/lost.vrmxs","step":2736} (1.1 s)
+ok   time: {"result":"lost","step":11160,"counters":{"mistakes":0,"shelved":0}} → {"scene":"after-hours/lost.vrmxs","step":11341} (2.4 s)
+### after-hours-node: node acceptance/m6/after-hours-node.mjs all — started 2026-11-27T15:24:26Z, ended 2026-11-27T15:24:31Z, exit 0

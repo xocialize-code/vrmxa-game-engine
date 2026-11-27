@@ -1,0 +1,13 @@
+ Particle system powered by three.quarks. https://quarks.art/
+ok   two Node exports are the same bytes: 75 files, manifest 699baca62139c521
+ok   each folder is what its manifest lists: 74 files, 0 missing, 0 changed, 0 extra; 74 files, 0 missing, 0 changed, 0 extra
+ok   the manifest lists every file with its hash and licence: 50 project files, 24 runtime files, 23638362 bytes
+ok   a file with no licence row stops the export, by name: "no row in LICENCES.md for props/found-on-the-web.glb: a file with no licence can't go into a build"
+ok   a reference in another case than the file stops the export, naming the scene: "cafe.vrmxs names Sets/cafe.glb, and the project's file is sets/cafe.glb: the case differs, and a build's files are found by their exact names"
+ok   the lexer reads every awkward module as expected: 14 modules, 3 refused
+ok   the loaded build plays to the project's per-step hashes: 600 steps, 65 components, final fe69bad3406ab5f6; 48 files read and checked
+ok   the loader refuses a file the manifest doesn't list: not_in_build
+ok   Chromium's lexer reads the awkward modules, and the game's own, as Node's does: 14 modules; the game's graph ["behaviours.js"]
+ok   the build's runtime plays it in Chromium to the same hashes: Chromium 156.0.8078.4, final fe69bad3406ab5f6
+passed: 10 of 10; build 7d0bb9a4e6ce158c, manifest 699baca62139c521
+### m5-build: node acceptance/m5/build.mjs --chromium — started 2026-11-27T17:26:10Z, ended 2026-11-27T17:26:14Z, exit 0

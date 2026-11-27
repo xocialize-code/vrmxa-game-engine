@@ -1,0 +1,4 @@
+{"runtime":"node","ok":true,"slots":38,"slotFailures":[],"items":17,"itemFailures":[]}
+{"runtime":"chromium","ok":true,"slots":38,"slotFailures":[],"items":17,"itemFailures":[],"errors":[]}
+PASS Chromium's results are Node's
+### m6-starter: node acceptance/m6/starter.mjs — started 2026-11-27T17:41:40Z, ended 2026-11-27T17:41:58Z, exit 0

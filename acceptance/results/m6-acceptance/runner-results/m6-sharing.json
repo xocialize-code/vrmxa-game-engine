@@ -1,0 +1,394 @@
+{
+ "check": "M6 W7: The Morning Rush's web build served by a plain static server (Python) and by a Cloudflare Worker run locally (Wrangler dev, workerd), on loopback only, played to the won ending through each in Chromium, each session replayed in Node (AB-T-0648, exit check 8)",
+ "ok": true,
+ "node": "v26.12.1",
+ "chromium": "156.0.8078.4",
+ "build": {
+  "game": "morning-rush",
+  "files": 117,
+  "bytes": 26268872,
+  "digest": "689c41cac7b79e20740561577079a2d4bc7767795129762dfed80bc8227fd429",
+  "manifest": "d596a646e6c37ba9001f1dd1bc8f4a231b02d3bed887e6d5764df1aca35e0d61",
+  "runtime": "vrmxg-game 0.1.0+01c4bb509d4b"
+ },
+ "hosts": {
+  "python": {
+   "host": "Python 3.15.2 http.server",
+   "base": "http://127.0.0.1:<port>/games/morning-rush/",
+   "sockets": [
+    "127.0.0.1:<port>"
+   ],
+   "survey": {
+    "page": {
+     "status": 200,
+     "type": "text/html"
+    },
+    "csp": null,
+    "caching": {
+     "page": null,
+     "asset": null,
+     "assetCsp": true,
+     "headersFile": 404
+    },
+    "redirects": {
+     "folder without its slash": {
+      "status": 301,
+      "location": "/games/morning-rush/"
+     },
+     "index.html with a query": {
+      "status": 200,
+      "location": null
+     }
+    },
+    "bad": [],
+    "types": {
+     ".css": [
+      "text/css"
+     ],
+     ".glb": [
+      "model/gltf-binary"
+     ],
+     ".html": [
+      "text/html"
+     ],
+     ".js": [
+      "text/javascript"
+     ],
+     ".json": [
+      "application/json"
+     ],
+     ".md": [
+      "text/markdown"
+     ],
+     ".txt": [
+      "text/plain"
+     ],
+     ".vrma": [
+      "application/octet-stream"
+     ],
+     ".vrmxa": [
+      "application/octet-stream"
+     ],
+     ".vrmxi": [
+      "application/octet-stream"
+     ],
+     ".vrmxs": [
+      "application/octet-stream"
+     ],
+     ".wasm": [
+      "application/wasm"
+     ],
+     ".wav": [
+      "audio/x-wav"
+     ]
+    }
+   },
+   "env": {
+    "protocol": "http:",
+    "crossOriginIsolated": false,
+    "sharedArrayBuffer": "undefined",
+    "secure": true
+   },
+   "session": {
+    "steps": 6292,
+    "scenes": [
+     "game/title.vrmxs",
+     "game/level.vrmxs",
+     "game/won.vrmxs"
+    ],
+    "final": {
+     "step": 6292,
+     "scene": "game/title.vrmxs",
+     "hash": "a54843fb3c9716ff"
+    },
+    "seen": {
+     "hud": {
+      "goal": "Goal: Serve the three regulars",
+      "score": "Score 0",
+      "clock": "Until ten o'clock 4:00"
+     },
+     "carry": {
+      "carrying": [
+       "Order for table 1"
+      ],
+      "layers": [
+       "upperBody"
+      ],
+      "hud": "Order for table 1"
+     },
+     "choice": {
+      "line": "Aoi: Morning! Something warm and milky, please. Not too strong.",
+      "choices": [
+       "1A latte, then.",
+       "2A double espresso?"
+      ]
+     },
+     "checkpoint": {
+      "step": 2219,
+      "checkpoints": {
+       "first-order": {
+        "id": "cp-first",
+        "requested": 2213
+       }
+      }
+     },
+     "endingLine": "Hana: Not one mistake. Best morning rush ever, Mira!"
+    },
+    "log": "acceptance/results/m6-sharing/python-win.json"
+   },
+   "requests": 312,
+   "violations": [],
+   "nodeReplay": {
+    "steps": 6292,
+    "final": {
+     "step": 6292,
+     "scene": "game/title.vrmxs",
+     "hash": "a54843fb3c9716ff"
+    }
+   }
+  },
+  "worker": {
+   "host": "Wrangler 4.167.0 dev (workerd, local)",
+   "base": "http://127.0.0.1:<port>/",
+   "sockets": [
+    "127.0.0.1:<port>",
+    "127.0.0.1:<port>",
+    "127.0.0.1:<port>",
+    "127.0.0.1:<port>",
+    "127.0.0.1:<port>",
+    "127.0.0.1:<port>",
+    "127.0.0.1:<port>"
+   ],
+   "survey": {
+    "page": {
+     "status": 200,
+     "type": "text/html; charset=utf-8"
+    },
+    "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'sha256-l5Y51DQ0wtCHrHTpiMMFgCx4aejQh4bwZ9r3eHFp+MM='; style-src 'self' 'sha256-WsnBdwafj/LhcF/SVdZEEQxAmsS6LsWkBvxDAbsGVb0='; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'",
+    "caching": {
+     "page": "no-cache",
+     "asset": "public, max-age=31536000, immutable",
+     "assetCsp": true,
+     "headersFile": 404
+    },
+    "redirects": {
+     "index.html with a query": {
+      "status": 307,
+      "location": "/?trace"
+     }
+    },
+    "bad": [],
+    "types": {
+     ".css": [
+      "text/css"
+     ],
+     ".glb": [
+      "model/gltf-binary"
+     ],
+     ".html": [
+      "text/html"
+     ],
+     ".js": [
+      "text/javascript"
+     ],
+     ".json": [
+      "application/json"
+     ],
+     ".md": [
+      "text/markdown"
+     ],
+     ".txt": [
+      "text/plain"
+     ],
+     ".vrma": [
+      ""
+     ],
+     ".vrmxa": [
+      ""
+     ],
+     ".vrmxi": [
+      ""
+     ],
+     ".vrmxs": [
+      ""
+     ],
+     ".wasm": [
+      "application/wasm"
+     ],
+     ".wav": [
+      "audio/wav"
+     ]
+    }
+   },
+   "env": {
+    "protocol": "http:",
+    "crossOriginIsolated": false,
+    "sharedArrayBuffer": "undefined",
+    "secure": true
+   },
+   "session": {
+    "steps": 6295,
+    "scenes": [
+     "game/title.vrmxs",
+     "game/level.vrmxs",
+     "game/won.vrmxs"
+    ],
+    "final": {
+     "step": 6295,
+     "scene": "game/title.vrmxs",
+     "hash": "65fa30e12c06b6d6"
+    },
+    "seen": {
+     "hud": {
+      "goal": "Goal: Serve the three regulars",
+      "score": "Score 0",
+      "clock": "Until ten o'clock 4:00"
+     },
+     "carry": {
+      "carrying": [
+       "Order for table 1"
+      ],
+      "layers": [
+       "upperBody"
+      ],
+      "hud": "Order for table 1"
+     },
+     "choice": {
+      "line": "Aoi: Morning! Something warm and milky, please. Not too strong.",
+      "choices": [
+       "1A latte, then.",
+       "2A double espresso?"
+      ]
+     },
+     "checkpoint": {
+      "step": 2225,
+      "checkpoints": {
+       "first-order": {
+        "id": "cp-first",
+        "requested": 2214
+       }
+      }
+     },
+     "endingLine": "Hana: Not one mistake. Best morning rush ever, Mira!"
+    },
+    "log": "acceptance/results/m6-sharing/worker-win.json"
+   },
+   "requests": 312,
+   "violations": [],
+   "worker": {
+    "name": "vrmxg-morning-rush",
+    "files": 118,
+    "bytes": 26305962,
+    "largest": {
+     "path": "project/characters/mira.vrmxa",
+     "bytes": 4810851
+    }
+   },
+   "nodeReplay": {
+    "steps": 6295,
+    "final": {
+     "step": 6295,
+     "scene": "game/title.vrmxs",
+     "hash": "65fa30e12c06b6d6"
+    }
+   }
+  }
+ },
+ "checks": [
+  {
+   "name": "the sample game exports with the game app as its runtime",
+   "ok": true,
+   "detail": "117 files, 26.3 MB, digest 689c41cac7b79e20"
+  },
+  {
+   "name": "python: every socket the host listens on is on loopback",
+   "ok": true,
+   "detail": "Python 3.15.2 http.server: 127.0.0.1:61977"
+  },
+  {
+   "name": "python: the page and every file the manifest lists are served (scripts as JavaScript, WebAssembly as application/wasm)",
+   "ok": true,
+   "detail": "118 files; page 200 text/html; types {\".css\":[\"text/css\"],\".glb\":[\"model/gltf-binary\"],\".html\":[\"text/html\"],\".js\":[\"text/javascript\"],\".json\":[\"application/json\"],\".md\":[\"text/markdown\"],\".txt\":[\"text/plain\"],\".vrma\":[\"application/octet-stream\"],\".vrmxa\":[\"application/octet-stream\"],\".vrmxi\":[\"application/octet-stream\"],\".vrmxs\":[\"application/octet-stream\"],\".wasm\":[\"application/wasm\"],\".wav\":[\"audio/x-wav\"]}; redirects {\"folder without its slash\":{\"status\":301,\"location\":\"/games/morning-rush/\"},\"index.html with a query\":{\"status\":200,\"location\":null}}"
+  },
+  {
+   "name": "python: played from the title menu to the won ending",
+   "ok": true,
+   "detail": "game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6292 steps in 107 s; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
+  },
+  {
+   "name": "python: no cross-origin isolation and no SharedArrayBuffer, over plain http",
+   "ok": true,
+   "detail": "{\"protocol\":\"http:\",\"crossOriginIsolated\":false,\"sharedArrayBuffer\":\"undefined\",\"secure\":true}"
+  },
+  {
+   "name": "python: every request the page made was for a file of the build and succeeded",
+   "ok": true,
+   "detail": "312 responses (205 URLs)"
+  },
+  {
+   "name": "python: no Content Security Policy violation was reported",
+   "ok": true,
+   "detail": "none (this host sets no policy)"
+  },
+  {
+   "name": "python: no errors in the page",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "worker: every socket the host listens on is on loopback",
+   "ok": true,
+   "detail": "Wrangler 4.167.0 dev (workerd, local): 127.0.0.1:62334, 127.0.0.1:62336, 127.0.0.1:62329, 127.0.0.1:62330, 127.0.0.1:62338, 127.0.0.1:62339, 127.0.0.1:62345"
+  },
+  {
+   "name": "worker: the page and every file the manifest lists are served (scripts as JavaScript, WebAssembly as application/wasm)",
+   "ok": true,
+   "detail": "118 files; page 200 text/html; charset=utf-8; types {\".css\":[\"text/css\"],\".glb\":[\"model/gltf-binary\"],\".html\":[\"text/html\"],\".js\":[\"text/javascript\"],\".json\":[\"application/json\"],\".md\":[\"text/markdown\"],\".txt\":[\"text/plain\"],\".vrma\":[\"\"],\".vrmxa\":[\"\"],\".vrmxi\":[\"\"],\".vrmxs\":[\"\"],\".wasm\":[\"application/wasm\"],\".wav\":[\"audio/wav\"]}; redirects {\"index.html with a query\":{\"status\":307,\"location\":\"/?trace\"}}"
+  },
+  {
+   "name": "worker: the build's _headers apply: the page revalidated, assets/ cached for good, the CSP on both, the file itself not served",
+   "ok": true,
+   "detail": "{\"page\":\"no-cache\",\"asset\":\"public, max-age=31536000, immutable\",\"assetCsp\":true,\"headersFile\":404}"
+  },
+  {
+   "name": "worker: the page is served with the build's Content Security Policy, which allows no eval",
+   "ok": true,
+   "detail": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'sha256-l5Y51DQ0wtCHrHTpiMMFgCx4aejQh4bwZ9r3eHFp+MM='; style-src 'self' 'sha256-WsnBdwafj/LhcF/SVdZEEQxAmsS6LsWkBvxDAbsGVb0='; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'"
+  },
+  {
+   "name": "worker: played from the title menu to the won ending",
+   "ok": true,
+   "detail": "game/title.vrmxs → game/level.vrmxs → game/won.vrmxs; 6295 steps in 108 s; choices ready, latte, iced-tea, green-tea; ending line \"Hana: Not one mistake. Best morning rush ever, Mira!\""
+  },
+  {
+   "name": "worker: no cross-origin isolation and no SharedArrayBuffer, over plain http",
+   "ok": true,
+   "detail": "{\"protocol\":\"http:\",\"crossOriginIsolated\":false,\"sharedArrayBuffer\":\"undefined\",\"secure\":true}"
+  },
+  {
+   "name": "worker: every request the page made was for a file of the build and succeeded",
+   "ok": true,
+   "detail": "312 responses (205 URLs)"
+  },
+  {
+   "name": "worker: no Content Security Policy violation was reported (under the build's CSP)",
+   "ok": true,
+   "detail": "none, with the policy on"
+  },
+  {
+   "name": "worker: no errors in the page",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "python: the session played from this host replays in Node to the same hash after every step",
+   "ok": true,
+   "detail": "6292 steps, final a54843fb3c9716ff at step 6292"
+  },
+  {
+   "name": "worker: the session played from this host replays in Node to the same hash after every step",
+   "ok": true,
+   "detail": "6295 steps, final 65fa30e12c06b6d6 at step 6295"
+  }
+ ]
+}

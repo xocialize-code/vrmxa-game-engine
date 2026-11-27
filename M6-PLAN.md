@@ -34,11 +34,46 @@ Carried:
 Carried from the second wave:
 - Renaming a keyed game node with no `key` renames it in the game state, and conditions that name it don't follow (W1's PR notes it).
 - AB-T-0654 items 2 and 3, the cycle-fallback nits, and a top-level `$async` schema gap.
-- The hardened Mac app's AppProbe scenario on the merged build (last pass AB-R-1181 on 41b7e712).
-- The M5 Rush recordings: #60 changed the registry, so the Rush build went from 8ab0fe3f to 1117e9d8 and the committed logs no longer replay. W7's session is re-recording them on main. CI doesn't replay them against the current build.
-- Still carried from the first wave: AB-T-0626, AB-T-0656 (blocks W11), AB-T-0655, and MCP's token budget.
+- The hardened Mac app's AppProbe scenario on the merged build (last pass AB-R-1181 on 41b7e712). Since done: AB-R-1185 on d441b96, and at 5d5f42e in W11 (AB-R-1206).
+- The M5 Rush recordings: #60 changed the registry, so the Rush build went from 8ab0fe3f to 1117e9d8 and the committed logs no longer replay. CI doesn't replay them against the current build. Since done: re-recorded with W10 (build 689c41cac7b7, AB-R-1199), and they replay exactly at 5d5f42e (W11, AB-R-1211).
+- Still carried from the first wave: AB-T-0626, AB-T-0656 (blocks W11; since done, below), AB-T-0655, and MCP's token budget.
 
-W8, W9, W10 and W11 wait on the operator's word.
+**Status (2026-11-27, third wave):** done. Each PR was reviewed by an independent reviewer and re-checked after its fixes.
+- **W8 agents** (PRs #67, #68 and #74; AB-T-0649 with AB-T-0641 and AB-T-0678):
+  - `game op=new` makes a project from a template. Headless, it needs `--projects`; in the editor, the person picks the folder.
+  - MCP also gained behaviour and connection ops, project settings, and a level opened as a copy of another.
+  - A batch is one undo step, marked " (MCP)". Validate covers project behaviours, notes optional goals, and treats a goal that code doesn't reach as a problem.
+  - #68 checks the behaviours an instance's overrides give its inner nodes.
+  - #74: an agent added a second level to After Hours in the Mac editor, and the skill gained its building rules. The agent made 37 calls, none failed, and AppProbe passed 5 of 5.
+- **W9 the game builder's guide** (PRs #69 and #71, AB-T-0650):
+  - `docs/guide/editor.md`, and the tutorial "Coin Run" (`docs/guide/tutorial.md`).
+  - `HAND-TEST-M6-TUTORIAL` follows the tutorial in the Mac editor, 11 of 11 rows on both backends (AB-R-1195).
+  - Export Game refuses a root `behaviours.js` that game.json doesn't name; Project Settings › Behaviours names it.
+  - Deploying the site is the operator's step.
+- **W10 the second game, "After Hours"** (PR #73, AB-T-0651):
+  - Built from New Project to Export Game by AppProbe, 27 of 27 rows on both backends, its scenes the committed bytes (AB-R-1198).
+  - Its recorded sessions replay exactly in Node, Chromium and WKWebView (AB-R-1199).
+  - It ran 59.58 fps steady at 1080p in the Mac game app (AB-R-1197).
+- **AB-T-0656** (the canonical matrix after W6) is done: 6 of 6 cells on PR #63's run. The intermittent Chromium WebGPU film cell is AB-T-0666.
+
+Carried from the third wave:
+- Templates still copy the sample's content, not the starter content (AB-T-0653).
+- Three editor gaps:
+  - A module that appears while the project is open needs a reopen (AB-T-0670).
+  - A hidden ParticleEmitter keeps emitting (AB-T-0671).
+  - The editor's Play has no game service (AB-T-0672).
+- Prototype-polluting prop paths (AB-T-0673).
+
+**W11, M6's acceptance** (AB-T-0652): run at 5d5f42e on 2026-11-27, receipts AB-R-1200 to 1211. The verdict table is in
+[acceptance/](acceptance/README.md), "Result: M6's acceptance". **Nine checks pass and three pass in part:**
+- **Check 1:** the templates carry the sample's content, not the starter content (AB-T-0653).
+- **Check 7:** a HUD-only re-export refuses earlier saves, because the fingerprint's engine part counts the runtime's
+  version (AB-T-0679).
+- **Check 12:** the canonical matrix fails by its rules on single odd WebGPU loads. b5b2527, which was canonical,
+  fails the same way today, so it is the machine and not the code (AB-T-0666). After Hours ran 60.0 fps steady in
+  this run (W10: 59.58).
+
+None failed. Whether M6 is done is the operator's call.
 
 ## What M6 is done looking like
 

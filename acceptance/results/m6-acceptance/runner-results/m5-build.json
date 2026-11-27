@@ -1,0 +1,133 @@
+{
+ "check": "M5 exit check 1: a project exports as a game (AB-T-0615)",
+ "ok": true,
+ "node": "v26.12.1",
+ "build": {
+  "game": "cafe",
+  "entry": "cafe.vrmxs",
+  "runtime": {
+   "name": "vrmxg-game",
+   "version": "0.1.0+01c4bb509d4b",
+   "contract": 1,
+   "entry": "index.html",
+   "digest": "abf91f722f224d9833e75e4ead70849bad3ee5bdefe94f9c55e55952da2fa6c6"
+  },
+  "files": 74,
+  "projectFiles": 50,
+  "runtimeFiles": 24,
+  "bytes": 23638362,
+  "digest": "7d0bb9a4e6ce158c1eb5f777545dfb9917551e5eb132ae8906cef788583b0553",
+  "manifestSha256": "699baca62139c5219c11777bfdf15d7e6bae3a44c915820c0a8505a63f642c6f"
+ },
+ "nodeRuns": [
+  {
+   "manifest": "699baca62139c5219c11777bfdf15d7e6bae3a44c915820c0a8505a63f642c6f",
+   "digest": "7d0bb9a4e6ce158c1eb5f777545dfb9917551e5eb132ae8906cef788583b0553",
+   "files": 74,
+   "bytes": 23638362
+  },
+  {
+   "manifest": "699baca62139c5219c11777bfdf15d7e6bae3a44c915820c0a8505a63f642c6f",
+   "digest": "7d0bb9a4e6ce158c1eb5f777545dfb9917551e5eb132ae8906cef788583b0553",
+   "files": 74,
+   "bytes": 23638362
+  }
+ ],
+ "refusal": {
+  "code": "no_licence",
+  "message": "no row in LICENCES.md for props/found-on-the-web.glb: a file with no licence can't go into a build",
+  "files": [
+   "props/found-on-the-web.glb"
+  ]
+ },
+ "wrongCase": {
+  "code": "missing_file",
+  "message": "cafe.vrmxs names Sets/cafe.glb, and the project's file is sets/cafe.glb: the case differs, and a build's files are found by their exact names",
+  "files": [
+   "Sets/cafe.glb",
+   "sets/cafe.glb"
+  ]
+ },
+ "lexer": {
+  "cases": 14,
+  "digest": "84abc6cb6dec04f56f6c7e410e6b79bcb2ac7d02b6bed75adb7ab09ccd8f7eba",
+  "modules": [
+   "behaviours.js"
+  ]
+ },
+ "replay": {
+  "steps": 600,
+  "take": "input/walk-in.json",
+  "components": 65,
+  "final": "fe69bad3406ab5f6",
+  "hashesDigest": "08fbc831304b23181e6ccbac619d05931665b3c794e67df34c21e7f747c0e0a9",
+  "viaBuild": "fe69bad3406ab5f6",
+  "firstDifference": null,
+  "filesRead": 48
+ },
+ "chromium": {
+  "version": "156.0.8078.4",
+  "final": "fe69bad3406ab5f6",
+  "steps": 600,
+  "digest": "7d0bb9a4e6ce158c1eb5f777545dfb9917551e5eb132ae8906cef788583b0553",
+  "verified": 48,
+  "firstDifference": null,
+  "sameLexer": true,
+  "errors": []
+ },
+ "mac": [],
+ "macRefused": [],
+ "macKept": [],
+ "checks": [
+  {
+   "name": "two Node exports are the same bytes",
+   "ok": true,
+   "detail": "75 files, manifest 699baca62139c521"
+  },
+  {
+   "name": "each folder is what its manifest lists",
+   "ok": true,
+   "detail": "74 files, 0 missing, 0 changed, 0 extra; 74 files, 0 missing, 0 changed, 0 extra"
+  },
+  {
+   "name": "the manifest lists every file with its hash and licence",
+   "ok": true,
+   "detail": "50 project files, 24 runtime files, 23638362 bytes"
+  },
+  {
+   "name": "a file with no licence row stops the export, by name",
+   "ok": true,
+   "detail": "\"no row in LICENCES.md for props/found-on-the-web.glb: a file with no licence can't go into a build\""
+  },
+  {
+   "name": "a reference in another case than the file stops the export, naming the scene",
+   "ok": true,
+   "detail": "\"cafe.vrmxs names Sets/cafe.glb, and the project's file is sets/cafe.glb: the case differs, and a build's files are found by their exact names\""
+  },
+  {
+   "name": "the lexer reads every awkward module as expected",
+   "ok": true,
+   "detail": "14 modules, 3 refused"
+  },
+  {
+   "name": "the loaded build plays to the project's per-step hashes",
+   "ok": true,
+   "detail": "600 steps, 65 components, final fe69bad3406ab5f6; 48 files read and checked"
+  },
+  {
+   "name": "the loader refuses a file the manifest doesn't list",
+   "ok": true,
+   "detail": "not_in_build"
+  },
+  {
+   "name": "Chromium's lexer reads the awkward modules, and the game's own, as Node's does",
+   "ok": true,
+   "detail": "14 modules; the game's graph [\"behaviours.js\"]"
+  },
+  {
+   "name": "the build's runtime plays it in Chromium to the same hashes",
+   "ok": true,
+   "detail": "Chromium 156.0.8078.4, final fe69bad3406ab5f6"
+  }
+ ]
+}

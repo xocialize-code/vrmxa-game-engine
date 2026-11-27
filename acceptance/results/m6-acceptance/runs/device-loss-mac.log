@@ -1,0 +1,5 @@
+log: 4333 steps, final 83a97551fb38a7d6
+app 1549
+killed its GPU process 1556 at 11:28:38
+killed its GPU process 1591 at 11:29:00
+read #frame-stats with AppProbe once the replay has ended (about a minute), then: kill -9 1549

@@ -1,0 +1,13 @@
+ok   Cafe Dash: exactly the "level" template's files: 37 files
+ok   Cafe Dash: every file has a licence row
+ok   Cafe Dash: plans as a build
+ok   Cafe Dash: game.json has the game's id and title: cafe-dash, "Cafe Dash Deluxe"
+ok   Cafe Dash: Jump is on J, Interact keeps E (the move to E undone): {"type":"button","bindings":[{"key":"KeyJ"},{"gamepadButton":0}]}
+ok   Cafe Dash: the physics layers and their matrix, both ways: {"layers":["default","player","pickup"],"collides":{"default":["default","player"],"pickup":["player","pickup"]}}
+ok   Cafe Dash: nothing else of the template's game.json changed
+ok   Blank: exactly the "empty" template's files: 3 files
+ok   Blank: every file has a licence row
+ok   Blank: plans as a build
+ok   Blank: game.json has the game's id and title: blank, "Blank"
+ok   Blank: the template's game.json but for its id and title
+### new-project-mac: node acceptance/m6/new-project-mac.mjs ~/Library/Containers/com.xocialize.vrmxg-editor/Data/tmp/m6-projects — started 2026-11-27T18:05:38Z, ended 2026-11-27T18:05:38Z, exit 0

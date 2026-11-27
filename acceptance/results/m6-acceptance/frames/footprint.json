@@ -1,0 +1,9476 @@
+{
+ "what": "phys_footprint (bytes) of the web processes the app is responsible for, sampled with footprint(1)",
+ "label": "",
+ "app": "M6AfterHoursFrames.app",
+ "started": "2026-11-27T19:30:28Z",
+ "every": 1.0,
+ "samples": 660,
+ "peak": {
+  "WebContent": 1593378496,
+  "GPU": 547194776,
+  "Networking": 14451360
+ },
+ "peakGB": {
+  "WebContent": 1.48,
+  "GPU": 0.51,
+  "Networking": 0.01
+ },
+ "series": [
+  {
+   "t": 0.0,
+   "unix": 1795807828.19,
+   "GPU": 371672240,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 6144600,
+   "WebContent": 433325232
+  },
+  {
+   "t": 1.01,
+   "unix": 1795807829.2,
+   "GPU": 309019824,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882456,
+   "WebContent": 415892656
+  },
+  {
+   "t": 2.01,
+   "unix": 1795807830.2,
+   "GPU": 309085360,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882456,
+   "WebContent": 417662128
+  },
+  {
+   "t": 3.01,
+   "unix": 1795807831.2,
+   "GPU": 306840752,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882456,
+   "WebContent": 417252528
+  },
+  {
+   "t": 4.02,
+   "unix": 1795807832.21,
+   "GPU": 309216432,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784152,
+   "WebContent": 417547440
+  },
+  {
+   "t": 5.02,
+   "unix": 1795807833.21,
+   "GPU": 309724432,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 6013552,
+   "WebContent": 577062184
+  },
+  {
+   "t": 6.02,
+   "unix": 1795807834.21,
+   "GPU": 541181584,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5980808,
+   "WebContent": 1358202392
+  },
+  {
+   "t": 7.03,
+   "unix": 1795807835.22,
+   "GPU": 541181584,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964424,
+   "WebContent": 1347880472
+  },
+  {
+   "t": 8.03,
+   "unix": 1795807836.22,
+   "GPU": 530515600,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964424,
+   "WebContent": 1358136856
+  },
+  {
+   "t": 9.03,
+   "unix": 1795807837.22,
+   "GPU": 527468176,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964424,
+   "WebContent": 1370195504
+  },
+  {
+   "t": 10.04,
+   "unix": 1795807838.22,
+   "GPU": 527779472,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964424,
+   "WebContent": 1383286320
+  },
+  {
+   "t": 11.04,
+   "unix": 1795807839.23,
+   "GPU": 527746704,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1396393520
+  },
+  {
+   "t": 12.04,
+   "unix": 1795807840.23,
+   "GPU": 527697552,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1408484936
+  },
+  {
+   "t": 13.04,
+   "unix": 1795807841.23,
+   "GPU": 528451216,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1420478024
+  },
+  {
+   "t": 14.05,
+   "unix": 1795807842.24,
+   "GPU": 528713360,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1425753672
+  },
+  {
+   "t": 15.05,
+   "unix": 1795807843.24,
+   "GPU": 529352336,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1438500448
+  },
+  {
+   "t": 16.05,
+   "unix": 1795807844.24,
+   "GPU": 529483408,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1425655392
+  },
+  {
+   "t": 17.06,
+   "unix": 1795807845.24,
+   "GPU": 529237624,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1346717304
+  },
+  {
+   "t": 18.06,
+   "unix": 1795807846.25,
+   "GPU": 529057400,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1344374392
+  },
+  {
+   "t": 19.06,
+   "unix": 1795807847.25,
+   "GPU": 529172088,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1341736568
+  },
+  {
+   "t": 20.07,
+   "unix": 1795807848.26,
+   "GPU": 529303160,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1342113400
+  },
+  {
+   "t": 21.07,
+   "unix": 1795807849.26,
+   "GPU": 529237624,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1342539384
+  },
+  {
+   "t": 22.07,
+   "unix": 1795807850.26,
+   "GPU": 529303184,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1358005880
+  },
+  {
+   "t": 23.07,
+   "unix": 1795807851.26,
+   "GPU": 532940456,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1361675896
+  },
+  {
+   "t": 24.08,
+   "unix": 1795807852.27,
+   "GPU": 532383400,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1348028024
+  },
+  {
+   "t": 25.08,
+   "unix": 1795807853.27,
+   "GPU": 532170408,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1348290168
+  },
+  {
+   "t": 26.08,
+   "unix": 1795807854.27,
+   "GPU": 531187368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1345930872
+  },
+  {
+   "t": 27.08,
+   "unix": 1795807855.27,
+   "GPU": 531089064,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1346094712
+  },
+  {
+   "t": 28.09,
+   "unix": 1795807856.27,
+   "GPU": 531367592,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1345242744
+  },
+  {
+   "t": 29.09,
+   "unix": 1795807857.28,
+   "GPU": 532022976,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1356269176
+  },
+  {
+   "t": 30.09,
+   "unix": 1795807858.28,
+   "GPU": 532088512,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1338558072
+  },
+  {
+   "t": 31.09,
+   "unix": 1795807859.28,
+   "GPU": 531875520,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1344308856
+  },
+  {
+   "t": 32.1,
+   "unix": 1795807860.29,
+   "GPU": 531924672,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1344226936
+  },
+  {
+   "t": 33.1,
+   "unix": 1795807861.29,
+   "GPU": 531826368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1342244472
+  },
+  {
+   "t": 34.11,
+   "unix": 1795807862.3,
+   "GPU": 532055744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1350272632
+  },
+  {
+   "t": 35.11,
+   "unix": 1795807863.3,
+   "GPU": 532088512,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1341687416
+  },
+  {
+   "t": 36.11,
+   "unix": 1795807864.3,
+   "GPU": 532137664,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1341769336
+  },
+  {
+   "t": 37.12,
+   "unix": 1795807865.31,
+   "GPU": 532383424,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1341212280
+  },
+  {
+   "t": 38.12,
+   "unix": 1795807866.31,
+   "GPU": 532072128,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1349748344
+  },
+  {
+   "t": 39.12,
+   "unix": 1795807867.31,
+   "GPU": 532121280,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1341113976
+  },
+  {
+   "t": 40.13,
+   "unix": 1795807868.32,
+   "GPU": 535824088,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1341032056
+  },
+  {
+   "t": 41.13,
+   "unix": 1795807869.32,
+   "GPU": 535627480,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1340900984
+  },
+  {
+   "t": 42.13,
+   "unix": 1795807870.32,
+   "GPU": 535840472,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1349437048
+  },
+  {
+   "t": 43.14,
+   "unix": 1795807871.33,
+   "GPU": 535971544,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1349420664
+  },
+  {
+   "t": 44.14,
+   "unix": 1795807872.33,
+   "GPU": 535922392,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1341294200
+  },
+  {
+   "t": 45.15,
+   "unix": 1795807873.34,
+   "GPU": 536069848,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1341146744
+  },
+  {
+   "t": 46.15,
+   "unix": 1795807874.34,
+   "GPU": 536397528,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341851256
+  },
+  {
+   "t": 47.16,
+   "unix": 1795807875.34,
+   "GPU": 536331992,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341245048
+  },
+  {
+   "t": 48.16,
+   "unix": 1795807876.35,
+   "GPU": 536119000,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341277816
+  },
+  {
+   "t": 49.17,
+   "unix": 1795807877.35,
+   "GPU": 536151768,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1349715576
+  },
+  {
+   "t": 50.17,
+   "unix": 1795807878.36,
+   "GPU": 536282840,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341179512
+  },
+  {
+   "t": 51.17,
+   "unix": 1795807879.36,
+   "GPU": 536315608,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341245048
+  },
+  {
+   "t": 52.17,
+   "unix": 1795807880.36,
+   "GPU": 536938200,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341343352
+  },
+  {
+   "t": 53.17,
+   "unix": 1795807881.36,
+   "GPU": 536495832,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341359736
+  },
+  {
+   "t": 54.18,
+   "unix": 1795807882.37,
+   "GPU": 536348376,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341392504
+  },
+  {
+   "t": 55.18,
+   "unix": 1795807883.37,
+   "GPU": 536544984,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341245048
+  },
+  {
+   "t": 56.18,
+   "unix": 1795807884.37,
+   "GPU": 536381144,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341310584
+  },
+  {
+   "t": 57.19,
+   "unix": 1795807885.38,
+   "GPU": 536397528,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341703800
+  },
+  {
+   "t": 58.19,
+   "unix": 1795807886.38,
+   "GPU": 536233688,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341785720
+  },
+  {
+   "t": 59.19,
+   "unix": 1795807887.38,
+   "GPU": 536315608,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1350092408
+  },
+  {
+   "t": 60.19,
+   "unix": 1795807888.38,
+   "GPU": 536364760,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341589112
+  },
+  {
+   "t": 61.2,
+   "unix": 1795807889.39,
+   "GPU": 536430296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341572728
+  },
+  {
+   "t": 62.2,
+   "unix": 1795807890.39,
+   "GPU": 537020120,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341539960
+  },
+  {
+   "t": 63.2,
+   "unix": 1795807891.39,
+   "GPU": 537069272,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1341179512
+  },
+  {
+   "t": 64.2,
+   "unix": 1795807892.39,
+   "GPU": 536594136,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1341245048
+  },
+  {
+   "t": 65.21,
+   "unix": 1795807893.39,
+   "GPU": 536823512,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1341032056
+  },
+  {
+   "t": 66.21,
+   "unix": 1795807894.4,
+   "GPU": 539756368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882528,
+   "WebContent": 1385449080
+  },
+  {
+   "t": 67.21,
+   "unix": 1795807895.4,
+   "GPU": 539690832,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 1384089208
+  },
+  {
+   "t": 68.22,
+   "unix": 1795807896.4,
+   "GPU": 539887440,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 1374340728
+  },
+  {
+   "t": 69.22,
+   "unix": 1795807897.41,
+   "GPU": 545687376,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 1416840872
+  },
+  {
+   "t": 70.23,
+   "unix": 1795807898.41,
+   "GPU": 547194776,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 1593378496
+  },
+  {
+   "t": 71.23,
+   "unix": 1795807899.42,
+   "GPU": 538478272,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 1183106752
+  },
+  {
+   "t": 72.23,
+   "unix": 1795807900.42,
+   "GPU": 537806528,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 968836800
+  },
+  {
+   "t": 73.24,
+   "unix": 1795807901.42,
+   "GPU": 534070976,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 970655424
+  },
+  {
+   "t": 74.24,
+   "unix": 1795807902.43,
+   "GPU": 533038784,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 970540736
+  },
+  {
+   "t": 75.25,
+   "unix": 1795807903.43,
+   "GPU": 533087936,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 973620928
+  },
+  {
+   "t": 76.25,
+   "unix": 1795807904.44,
+   "GPU": 533038784,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 973588160
+  },
+  {
+   "t": 77.25,
+   "unix": 1795807905.44,
+   "GPU": 533055168,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 973539008
+  },
+  {
+   "t": 78.26,
+   "unix": 1795807906.44,
+   "GPU": 533186240,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 973506240
+  },
+  {
+   "t": 79.26,
+   "unix": 1795807907.45,
+   "GPU": 533219008,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 972932800
+  },
+  {
+   "t": 80.26,
+   "unix": 1795807908.45,
+   "GPU": 533251776,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 972932800
+  },
+  {
+   "t": 81.26,
+   "unix": 1795807909.45,
+   "GPU": 535168704,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 973981376
+  },
+  {
+   "t": 82.26,
+   "unix": 1795807910.45,
+   "GPU": 524781296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1003570880
+  },
+  {
+   "t": 83.27,
+   "unix": 1795807911.46,
+   "GPU": 527058672,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 995444416
+  },
+  {
+   "t": 84.27,
+   "unix": 1795807912.46,
+   "GPU": 383158000,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 986973888
+  },
+  {
+   "t": 85.28,
+   "unix": 1795807913.47,
+   "GPU": 383190768,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 987023040
+  },
+  {
+   "t": 86.28,
+   "unix": 1795807914.47,
+   "GPU": 383239920,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 987039424
+  },
+  {
+   "t": 87.29,
+   "unix": 1795807915.48,
+   "GPU": 378291784,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 748881600
+  },
+  {
+   "t": 88.29,
+   "unix": 1795807916.48,
+   "GPU": 367380064,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 11551392,
+   "WebContent": 758335168
+  },
+  {
+   "t": 89.3,
+   "unix": 1795807917.48,
+   "GPU": 514557656,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 1123321536
+  },
+  {
+   "t": 90.3,
+   "unix": 1795807918.49,
+   "GPU": 514590424,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 1109673664
+  },
+  {
+   "t": 91.3,
+   "unix": 1795807919.49,
+   "GPU": 506693336,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 1108018880
+  },
+  {
+   "t": 92.3,
+   "unix": 1795807920.49,
+   "GPU": 506545880,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 1108133568
+  },
+  {
+   "t": 93.31,
+   "unix": 1795807921.5,
+   "GPU": 506447576,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 1107920576
+  },
+  {
+   "t": 94.31,
+   "unix": 1795807922.5,
+   "GPU": 506431192,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1109116608
+  },
+  {
+   "t": 95.31,
+   "unix": 1795807923.5,
+   "GPU": 506414808,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1108166336
+  },
+  {
+   "t": 96.32,
+   "unix": 1795807924.51,
+   "GPU": 506365656,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1110607552
+  },
+  {
+   "t": 97.32,
+   "unix": 1795807925.51,
+   "GPU": 506365656,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1109034688
+  },
+  {
+   "t": 98.33,
+   "unix": 1795807926.52,
+   "GPU": 506644184,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1108707008
+  },
+  {
+   "t": 99.33,
+   "unix": 1795807927.52,
+   "GPU": 506627800,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1108739776
+  },
+  {
+   "t": 100.34,
+   "unix": 1795807928.52,
+   "GPU": 506726104,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1111688896
+  },
+  {
+   "t": 101.34,
+   "unix": 1795807929.53,
+   "GPU": 506726104,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1110410944
+  },
+  {
+   "t": 102.34,
+   "unix": 1795807930.53,
+   "GPU": 506758872,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1109690048
+  },
+  {
+   "t": 103.34,
+   "unix": 1795807931.53,
+   "GPU": 506644184,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1109886656
+  },
+  {
+   "t": 104.35,
+   "unix": 1795807932.54,
+   "GPU": 506644184,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1110050496
+  },
+  {
+   "t": 105.35,
+   "unix": 1795807933.54,
+   "GPU": 506824456,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5800584,
+   "WebContent": 1115408064
+  },
+  {
+   "t": 106.36,
+   "unix": 1795807934.55,
+   "GPU": 507725576,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1115670208
+  },
+  {
+   "t": 107.36,
+   "unix": 1795807935.55,
+   "GPU": 507856648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1115915968
+  },
+  {
+   "t": 108.36,
+   "unix": 1795807936.55,
+   "GPU": 507856648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1124697792
+  },
+  {
+   "t": 109.37,
+   "unix": 1795807937.56,
+   "GPU": 509544200,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1116341952
+  },
+  {
+   "t": 110.37,
+   "unix": 1795807938.56,
+   "GPU": 508053256,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1116554944
+  },
+  {
+   "t": 111.37,
+   "unix": 1795807939.56,
+   "GPU": 510199560,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1112950464
+  },
+  {
+   "t": 112.37,
+   "unix": 1795807940.56,
+   "GPU": 507856648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1113065152
+  },
+  {
+   "t": 113.38,
+   "unix": 1795807941.57,
+   "GPU": 510330632,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1113065152
+  },
+  {
+   "t": 114.38,
+   "unix": 1795807942.57,
+   "GPU": 507987720,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1113016000
+  },
+  {
+   "t": 115.39,
+   "unix": 1795807943.57,
+   "GPU": 507938568,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1121486528
+  },
+  {
+   "t": 116.39,
+   "unix": 1795807944.58,
+   "GPU": 510150408,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1113130688
+  },
+  {
+   "t": 117.39,
+   "unix": 1795807945.58,
+   "GPU": 508053256,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1112934080
+  },
+  {
+   "t": 118.4,
+   "unix": 1795807946.59,
+   "GPU": 507758344,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1121535680
+  },
+  {
+   "t": 119.4,
+   "unix": 1795807947.59,
+   "GPU": 507889416,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1120569024
+  },
+  {
+   "t": 120.4,
+   "unix": 1795807948.59,
+   "GPU": 507905800,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1112065728
+  },
+  {
+   "t": 121.41,
+   "unix": 1795807949.6,
+   "GPU": 510199560,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1112065728
+  },
+  {
+   "t": 122.41,
+   "unix": 1795807950.6,
+   "GPU": 510215944,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1120650944
+  },
+  {
+   "t": 123.42,
+   "unix": 1795807951.61,
+   "GPU": 511084296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5784200,
+   "WebContent": 1120683712
+  },
+  {
+   "t": 124.42,
+   "unix": 1795807952.61,
+   "GPU": 508872456,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1112835776
+  },
+  {
+   "t": 125.43,
+   "unix": 1795807953.62,
+   "GPU": 509151032,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 11600544,
+   "WebContent": 1160693464
+  },
+  {
+   "t": 126.43,
+   "unix": 1795807954.62,
+   "GPU": 509216592,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1161168576
+  },
+  {
+   "t": 127.43,
+   "unix": 1795807955.62,
+   "GPU": 509216592,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1143686848
+  },
+  {
+   "t": 128.44,
+   "unix": 1795807956.63,
+   "GPU": 507184952,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1072187072
+  },
+  {
+   "t": 129.44,
+   "unix": 1795807957.63,
+   "GPU": 510183344,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1296697024
+  },
+  {
+   "t": 130.45,
+   "unix": 1795807958.64,
+   "GPU": 508741432,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 886982336
+  },
+  {
+   "t": 131.45,
+   "unix": 1795807959.64,
+   "GPU": 508626744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 886556352
+  },
+  {
+   "t": 132.46,
+   "unix": 1795807960.64,
+   "GPU": 507299640,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 886589120
+  },
+  {
+   "t": 133.46,
+   "unix": 1795807961.65,
+   "GPU": 507283256,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 886965952
+  },
+  {
+   "t": 134.46,
+   "unix": 1795807962.65,
+   "GPU": 507168568,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 892077760
+  },
+  {
+   "t": 135.47,
+   "unix": 1795807963.66,
+   "GPU": 507234104,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 892159680
+  },
+  {
+   "t": 136.47,
+   "unix": 1795807964.66,
+   "GPU": 507135800,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 892192448
+  },
+  {
+   "t": 137.47,
+   "unix": 1795807965.66,
+   "GPU": 506955576,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 892290752
+  },
+  {
+   "t": 138.47,
+   "unix": 1795807966.66,
+   "GPU": 506955576,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 891766464
+  },
+  {
+   "t": 139.48,
+   "unix": 1795807967.67,
+   "GPU": 506922808,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 891766464
+  },
+  {
+   "t": 140.48,
+   "unix": 1795807968.67,
+   "GPU": 509609784,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 903120576
+  },
+  {
+   "t": 141.49,
+   "unix": 1795807969.67,
+   "GPU": 503072568,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 893781696
+  },
+  {
+   "t": 142.49,
+   "unix": 1795807970.68,
+   "GPU": 510281504,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 919127744
+  },
+  {
+   "t": 143.5,
+   "unix": 1795807971.68,
+   "GPU": 363382560,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 918914752
+  },
+  {
+   "t": 144.5,
+   "unix": 1795807972.69,
+   "GPU": 363382560,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 918816448
+  },
+  {
+   "t": 145.51,
+   "unix": 1795807973.69,
+   "GPU": 363382560,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 918881984
+  },
+  {
+   "t": 146.51,
+   "unix": 1795807974.7,
+   "GPU": 363333408,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 918996672
+  },
+  {
+   "t": 147.51,
+   "unix": 1795807975.7,
+   "GPU": 363333408,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 918750912
+  },
+  {
+   "t": 148.51,
+   "unix": 1795807976.7,
+   "GPU": 512984912,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1157105344
+  },
+  {
+   "t": 149.52,
+   "unix": 1795807977.71,
+   "GPU": 512821048,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1131464384
+  },
+  {
+   "t": 150.52,
+   "unix": 1795807978.71,
+   "GPU": 503613240,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1111279296
+  },
+  {
+   "t": 151.53,
+   "unix": 1795807979.71,
+   "GPU": 503547704,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1110394560
+  },
+  {
+   "t": 152.53,
+   "unix": 1795807980.72,
+   "GPU": 503613240,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1110296256
+  },
+  {
+   "t": 153.53,
+   "unix": 1795807981.72,
+   "GPU": 503646008,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1111230144
+  },
+  {
+   "t": 154.54,
+   "unix": 1795807982.73,
+   "GPU": 503531320,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1111738048
+  },
+  {
+   "t": 155.54,
+   "unix": 1795807983.73,
+   "GPU": 503662392,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1112295104
+  },
+  {
+   "t": 156.55,
+   "unix": 1795807984.74,
+   "GPU": 503596856,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1110148800
+  },
+  {
+   "t": 157.55,
+   "unix": 1795807985.74,
+   "GPU": 503809848,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1110148800
+  },
+  {
+   "t": 158.56,
+   "unix": 1795807986.74,
+   "GPU": 503809848,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1109984960
+  },
+  {
+   "t": 159.56,
+   "unix": 1795807987.75,
+   "GPU": 504022840,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1112704704
+  },
+  {
+   "t": 160.56,
+   "unix": 1795807988.75,
+   "GPU": 503809848,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1112721088
+  },
+  {
+   "t": 161.57,
+   "unix": 1795807989.75,
+   "GPU": 503940920,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1110116032
+  },
+  {
+   "t": 162.57,
+   "unix": 1795807990.76,
+   "GPU": 503809848,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1110148800
+  },
+  {
+   "t": 163.57,
+   "unix": 1795807991.76,
+   "GPU": 503809848,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1110116032
+  },
+  {
+   "t": 164.58,
+   "unix": 1795807992.77,
+   "GPU": 503842664,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1106773696
+  },
+  {
+   "t": 165.58,
+   "unix": 1795807993.77,
+   "GPU": 505317248,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1118111424
+  },
+  {
+   "t": 166.59,
+   "unix": 1795807994.78,
+   "GPU": 505153408,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1112753856
+  },
+  {
+   "t": 167.59,
+   "unix": 1795807995.78,
+   "GPU": 504924032,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1112966848
+  },
+  {
+   "t": 168.59,
+   "unix": 1795807996.78,
+   "GPU": 504924032,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1110329024
+  },
+  {
+   "t": 169.59,
+   "unix": 1795807997.78,
+   "GPU": 504924032,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1110361792
+  },
+  {
+   "t": 170.6,
+   "unix": 1795807998.79,
+   "GPU": 504924032,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1110378176
+  },
+  {
+   "t": 171.6,
+   "unix": 1795807999.79,
+   "GPU": 504907648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1109952192
+  },
+  {
+   "t": 172.6,
+   "unix": 1795808000.79,
+   "GPU": 504907648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1110050496
+  },
+  {
+   "t": 173.61,
+   "unix": 1795808001.8,
+   "GPU": 504907648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1115113152
+  },
+  {
+   "t": 174.61,
+   "unix": 1795808002.8,
+   "GPU": 504907648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1115113152
+  },
+  {
+   "t": 175.62,
+   "unix": 1795808003.8,
+   "GPU": 504907648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1115440832
+  },
+  {
+   "t": 176.62,
+   "unix": 1795808004.81,
+   "GPU": 504907648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1124009664
+  },
+  {
+   "t": 177.62,
+   "unix": 1795808005.81,
+   "GPU": 505055104,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1115408064
+  },
+  {
+   "t": 178.62,
+   "unix": 1795808006.81,
+   "GPU": 507332480,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1123993280
+  },
+  {
+   "t": 179.63,
+   "unix": 1795808007.82,
+   "GPU": 505169792,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1115391680
+  },
+  {
+   "t": 180.63,
+   "unix": 1795808008.82,
+   "GPU": 505038720,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1123894976
+  },
+  {
+   "t": 181.64,
+   "unix": 1795808009.83,
+   "GPU": 505038720,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1115522752
+  },
+  {
+   "t": 182.64,
+   "unix": 1795808010.83,
+   "GPU": 504727424,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1115621056
+  },
+  {
+   "t": 183.64,
+   "unix": 1795808011.83,
+   "GPU": 504498048,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1115965120
+  },
+  {
+   "t": 184.64,
+   "unix": 1795808012.83,
+   "GPU": 504694656,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1124337344
+  },
+  {
+   "t": 185.65,
+   "unix": 1795808013.83,
+   "GPU": 504645504,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1124304576
+  },
+  {
+   "t": 186.65,
+   "unix": 1795808014.83,
+   "GPU": 504448896,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1115932352
+  },
+  {
+   "t": 187.65,
+   "unix": 1795808015.84,
+   "GPU": 504596352,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1115735744
+  },
+  {
+   "t": 188.65,
+   "unix": 1795808016.84,
+   "GPU": 504661888,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1115850432
+  },
+  {
+   "t": 189.65,
+   "unix": 1795808017.84,
+   "GPU": 504579968,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1115752128
+  },
+  {
+   "t": 190.66,
+   "unix": 1795808018.85,
+   "GPU": 504350592,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1115948736
+  },
+  {
+   "t": 191.66,
+   "unix": 1795808019.85,
+   "GPU": 504350592,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1124452032
+  },
+  {
+   "t": 192.67,
+   "unix": 1795808020.86,
+   "GPU": 504547200,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1115834048
+  },
+  {
+   "t": 193.67,
+   "unix": 1795808021.86,
+   "GPU": 504399744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1115932352
+  },
+  {
+   "t": 194.68,
+   "unix": 1795808022.87,
+   "GPU": 504907648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1116538560
+  },
+  {
+   "t": 195.68,
+   "unix": 1795808023.87,
+   "GPU": 504645504,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1116571328
+  },
+  {
+   "t": 196.68,
+   "unix": 1795808024.87,
+   "GPU": 504448896,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1116522176
+  },
+  {
+   "t": 197.69,
+   "unix": 1795808025.88,
+   "GPU": 504448896,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1116489408
+  },
+  {
+   "t": 198.69,
+   "unix": 1795808026.88,
+   "GPU": 504285056,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1116587712
+  },
+  {
+   "t": 199.7,
+   "unix": 1795808027.89,
+   "GPU": 504285056,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1116587712
+  },
+  {
+   "t": 200.7,
+   "unix": 1795808028.89,
+   "GPU": 504285056,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1116653248
+  },
+  {
+   "t": 201.7,
+   "unix": 1795808029.89,
+   "GPU": 503318400,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1116653248
+  },
+  {
+   "t": 202.7,
+   "unix": 1795808030.89,
+   "GPU": 503154560,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1116587712
+  },
+  {
+   "t": 203.71,
+   "unix": 1795808031.9,
+   "GPU": 503154560,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1116554944
+  },
+  {
+   "t": 204.71,
+   "unix": 1795808032.9,
+   "GPU": 503531392,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1116866240
+  },
+  {
+   "t": 205.71,
+   "unix": 1795808033.9,
+   "GPU": 503170944,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1116767936
+  },
+  {
+   "t": 206.72,
+   "unix": 1795808034.91,
+   "GPU": 503170944,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1116702400
+  },
+  {
+   "t": 207.72,
+   "unix": 1795808035.91,
+   "GPU": 503302016,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5816968,
+   "WebContent": 1116538560
+  },
+  {
+   "t": 208.73,
+   "unix": 1795808036.92,
+   "GPU": 506005424,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1165215424
+  },
+  {
+   "t": 209.73,
+   "unix": 1795808037.92,
+   "GPU": 506152880,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1156728512
+  },
+  {
+   "t": 210.73,
+   "unix": 1795808038.92,
+   "GPU": 503711664,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1147782848
+  },
+  {
+   "t": 211.74,
+   "unix": 1795808039.92,
+   "GPU": 515852160,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1146275544
+  },
+  {
+   "t": 212.74,
+   "unix": 1795808040.93,
+   "GPU": 507611008,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1286506200
+  },
+  {
+   "t": 213.74,
+   "unix": 1795808041.93,
+   "GPU": 505710464,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1275070168
+  },
+  {
+   "t": 214.75,
+   "unix": 1795808042.94,
+   "GPU": 505776000,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 1274922712
+  },
+  {
+   "t": 215.75,
+   "unix": 1795808043.94,
+   "GPU": 505448032,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 893634264
+  },
+  {
+   "t": 216.76,
+   "unix": 1795808044.95,
+   "GPU": 505464416,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 893306560
+  },
+  {
+   "t": 217.76,
+   "unix": 1795808045.95,
+   "GPU": 505579176,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 896272064
+  },
+  {
+   "t": 218.77,
+   "unix": 1795808046.96,
+   "GPU": 505480872,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 896272064
+  },
+  {
+   "t": 219.77,
+   "unix": 1795808047.96,
+   "GPU": 505431720,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 896272064
+  },
+  {
+   "t": 220.78,
+   "unix": 1795808048.96,
+   "GPU": 505513640,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 896353984
+  },
+  {
+   "t": 221.78,
+   "unix": 1795808049.97,
+   "GPU": 505480872,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 896190144
+  },
+  {
+   "t": 222.78,
+   "unix": 1795808050.97,
+   "GPU": 505513640,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5833352,
+   "WebContent": 896059072
+  },
+  {
+   "t": 223.79,
+   "unix": 1795808051.98,
+   "GPU": 507528896,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 905676480
+  },
+  {
+   "t": 224.79,
+   "unix": 1795808052.98,
+   "GPU": 503334544,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 938690240
+  },
+  {
+   "t": 225.79,
+   "unix": 1795808053.98,
+   "GPU": 505611944,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 938821312
+  },
+  {
+   "t": 226.8,
+   "unix": 1795808054.99,
+   "GPU": 361334440,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 930334400
+  },
+  {
+   "t": 227.8,
+   "unix": 1795808055.99,
+   "GPU": 361350824,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 930301632
+  },
+  {
+   "t": 228.81,
+   "unix": 1795808057.0,
+   "GPU": 361350824,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 930907840
+  },
+  {
+   "t": 229.81,
+   "unix": 1795808058.0,
+   "GPU": 361219752,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5849736,
+   "WebContent": 930252480
+  },
+  {
+   "t": 230.82,
+   "unix": 1795808059.01,
+   "GPU": 361678552,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 14451360,
+   "WebContent": 988579520
+  },
+  {
+   "t": 231.82,
+   "unix": 1795808060.01,
+   "GPU": 510297816,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1159874264
+  },
+  {
+   "t": 232.82,
+   "unix": 1795808061.01,
+   "GPU": 510281408,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1113900760
+  },
+  {
+   "t": 233.82,
+   "unix": 1795808062.01,
+   "GPU": 501892800,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1113622232
+  },
+  {
+   "t": 234.83,
+   "unix": 1795808063.02,
+   "GPU": 501958336,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1113753304
+  },
+  {
+   "t": 235.83,
+   "unix": 1795808064.02,
+   "GPU": 501991104,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1114048216
+  },
+  {
+   "t": 236.84,
+   "unix": 1795808065.02,
+   "GPU": 502040256,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1114736320
+  },
+  {
+   "t": 237.84,
+   "unix": 1795808066.03,
+   "GPU": 502040256,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1113212608
+  },
+  {
+   "t": 238.84,
+   "unix": 1795808067.03,
+   "GPU": 502482624,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1130907328
+  },
+  {
+   "t": 239.85,
+   "unix": 1795808068.03,
+   "GPU": 502482624,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1113310912
+  },
+  {
+   "t": 240.85,
+   "unix": 1795808069.04,
+   "GPU": 502286016,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1113638592
+  },
+  {
+   "t": 241.85,
+   "unix": 1795808070.04,
+   "GPU": 502286016,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1113376448
+  },
+  {
+   "t": 242.86,
+   "unix": 1795808071.05,
+   "GPU": 502204096,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1115883200
+  },
+  {
+   "t": 243.86,
+   "unix": 1795808072.05,
+   "GPU": 502400704,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1114343104
+  },
+  {
+   "t": 244.87,
+   "unix": 1795808073.05,
+   "GPU": 502466240,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1113245376
+  },
+  {
+   "t": 245.87,
+   "unix": 1795808074.06,
+   "GPU": 502154944,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1113376448
+  },
+  {
+   "t": 246.87,
+   "unix": 1795808075.06,
+   "GPU": 502138560,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1113278144
+  },
+  {
+   "t": 247.87,
+   "unix": 1795808076.06,
+   "GPU": 503826184,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118406336
+  },
+  {
+   "t": 248.87,
+   "unix": 1795808077.06,
+   "GPU": 502859528,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118373568
+  },
+  {
+   "t": 249.88,
+   "unix": 1795808078.07,
+   "GPU": 502843144,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118373568
+  },
+  {
+   "t": 250.88,
+   "unix": 1795808079.07,
+   "GPU": 504334088,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1126926016
+  },
+  {
+   "t": 251.88,
+   "unix": 1795808080.07,
+   "GPU": 502908680,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118422720
+  },
+  {
+   "t": 252.89,
+   "unix": 1795808081.08,
+   "GPU": 502908680,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118422720
+  },
+  {
+   "t": 253.89,
+   "unix": 1795808082.08,
+   "GPU": 502712072,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118488256
+  },
+  {
+   "t": 254.9,
+   "unix": 1795808083.09,
+   "GPU": 504268552,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118521024
+  },
+  {
+   "t": 255.9,
+   "unix": 1795808084.09,
+   "GPU": 504399624,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118488256
+  },
+  {
+   "t": 256.9,
+   "unix": 1795808085.09,
+   "GPU": 504399624,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1119012544
+  },
+  {
+   "t": 257.91,
+   "unix": 1795808086.09,
+   "GPU": 502793992,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1127007936
+  },
+  {
+   "t": 258.91,
+   "unix": 1795808087.1,
+   "GPU": 502810376,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1118537408
+  },
+  {
+   "t": 259.91,
+   "unix": 1795808088.1,
+   "GPU": 504497928,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1118471872
+  },
+  {
+   "t": 260.92,
+   "unix": 1795808089.11,
+   "GPU": 502810376,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1118668480
+  },
+  {
+   "t": 261.92,
+   "unix": 1795808090.11,
+   "GPU": 502843144,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1118668480
+  },
+  {
+   "t": 262.92,
+   "unix": 1795808091.11,
+   "GPU": 502597384,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1118668480
+  },
+  {
+   "t": 263.92,
+   "unix": 1795808092.11,
+   "GPU": 502581000,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1118701248
+  },
+  {
+   "t": 264.93,
+   "unix": 1795808093.12,
+   "GPU": 502581000,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1127270080
+  },
+  {
+   "t": 265.93,
+   "unix": 1795808094.12,
+   "GPU": 502662920,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1127204544
+  },
+  {
+   "t": 266.94,
+   "unix": 1795808095.12,
+   "GPU": 502548232,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1118668480
+  },
+  {
+   "t": 267.94,
+   "unix": 1795808096.13,
+   "GPU": 502794040,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 11584160,
+   "WebContent": 1166984920
+  },
+  {
+   "t": 268.95,
+   "unix": 1795808097.13,
+   "GPU": 503072592,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1167312576
+  },
+  {
+   "t": 269.95,
+   "unix": 1795808098.14,
+   "GPU": 502794064,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1149798080
+  },
+  {
+   "t": 270.95,
+   "unix": 1795808099.14,
+   "GPU": 502695784,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1070073536
+  },
+  {
+   "t": 271.96,
+   "unix": 1795808100.15,
+   "GPU": 505284264,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 906102464
+  },
+  {
+   "t": 272.96,
+   "unix": 1795808101.15,
+   "GPU": 501778088,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 893519552
+  },
+  {
+   "t": 273.97,
+   "unix": 1795808102.16,
+   "GPU": 504121000,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 893372096
+  },
+  {
+   "t": 274.98,
+   "unix": 1795808103.16,
+   "GPU": 504186536,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 893437632
+  },
+  {
+   "t": 275.98,
+   "unix": 1795808104.16,
+   "GPU": 507332264,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 893290176
+  },
+  {
+   "t": 276.98,
+   "unix": 1795808105.17,
+   "GPU": 507332264,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 898385600
+  },
+  {
+   "t": 277.98,
+   "unix": 1795808106.17,
+   "GPU": 507332264,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 898352832
+  },
+  {
+   "t": 278.99,
+   "unix": 1795808107.18,
+   "GPU": 507332264,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 898451136
+  },
+  {
+   "t": 279.99,
+   "unix": 1795808108.18,
+   "GPU": 507332264,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 898418368
+  },
+  {
+   "t": 280.99,
+   "unix": 1795808109.18,
+   "GPU": 507332264,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 898352832
+  },
+  {
+   "t": 282.0,
+   "unix": 1795808110.19,
+   "GPU": 507332264,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 898221760
+  },
+  {
+   "t": 283.0,
+   "unix": 1795808111.19,
+   "GPU": 513099456,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 907429568
+  },
+  {
+   "t": 284.01,
+   "unix": 1795808112.2,
+   "GPU": 502515224,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 686196416
+  },
+  {
+   "t": 285.01,
+   "unix": 1795808113.2,
+   "GPU": 506775088,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 711231168
+  },
+  {
+   "t": 286.02,
+   "unix": 1795808114.2,
+   "GPU": 362497584,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 711329472
+  },
+  {
+   "t": 287.02,
+   "unix": 1795808115.21,
+   "GPU": 362563120,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 711247552
+  },
+  {
+   "t": 288.03,
+   "unix": 1795808116.21,
+   "GPU": 362563120,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 711247552
+  },
+  {
+   "t": 289.03,
+   "unix": 1795808117.22,
+   "GPU": 362579504,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 711378624
+  },
+  {
+   "t": 290.04,
+   "unix": 1795808118.22,
+   "GPU": 362530352,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 711231168
+  },
+  {
+   "t": 291.04,
+   "unix": 1795808119.23,
+   "GPU": 510822056,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1127532272
+  },
+  {
+   "t": 292.04,
+   "unix": 1795808120.23,
+   "GPU": 510838440,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1116964592
+  },
+  {
+   "t": 293.05,
+   "unix": 1795808121.24,
+   "GPU": 503776936,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1116391152
+  },
+  {
+   "t": 294.05,
+   "unix": 1795808122.24,
+   "GPU": 503776936,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1116014320
+  },
+  {
+   "t": 295.06,
+   "unix": 1795808123.25,
+   "GPU": 503793320,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1116178160
+  },
+  {
+   "t": 296.06,
+   "unix": 1795808124.25,
+   "GPU": 503858856,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1116833520
+  },
+  {
+   "t": 297.07,
+   "unix": 1795808125.26,
+   "GPU": 503858856,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1116800752
+  },
+  {
+   "t": 298.07,
+   "unix": 1795808126.26,
+   "GPU": 503989928,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1117849328
+  },
+  {
+   "t": 299.07,
+   "unix": 1795808127.26,
+   "GPU": 504350376,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1132922608
+  },
+  {
+   "t": 300.08,
+   "unix": 1795808128.27,
+   "GPU": 504792744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1115719408
+  },
+  {
+   "t": 301.08,
+   "unix": 1795808129.27,
+   "GPU": 504546984,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1115637464
+  },
+  {
+   "t": 302.09,
+   "unix": 1795808130.28,
+   "GPU": 504596136,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118897880
+  },
+  {
+   "t": 303.09,
+   "unix": 1795808131.28,
+   "GPU": 506939048,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118406360
+  },
+  {
+   "t": 304.1,
+   "unix": 1795808132.29,
+   "GPU": 504596136,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1116260056
+  },
+  {
+   "t": 305.1,
+   "unix": 1795808133.29,
+   "GPU": 504546984,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1115719384
+  },
+  {
+   "t": 306.1,
+   "unix": 1795808134.29,
+   "GPU": 504546984,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1115834072
+  },
+  {
+   "t": 307.11,
+   "unix": 1795808135.3,
+   "GPU": 504481472,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1112327896
+  },
+  {
+   "t": 308.11,
+   "unix": 1795808136.3,
+   "GPU": 504661744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1123665624
+  },
+  {
+   "t": 309.11,
+   "unix": 1795808137.3,
+   "GPU": 504661744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118275288
+  },
+  {
+   "t": 310.12,
+   "unix": 1795808138.31,
+   "GPU": 504301296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118308056
+  },
+  {
+   "t": 311.12,
+   "unix": 1795808139.31,
+   "GPU": 504448752,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1115735768
+  },
+  {
+   "t": 312.12,
+   "unix": 1795808140.31,
+   "GPU": 504301296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1115768536
+  },
+  {
+   "t": 313.13,
+   "unix": 1795808141.32,
+   "GPU": 504497904,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1115703000
+  },
+  {
+   "t": 314.13,
+   "unix": 1795808142.32,
+   "GPU": 504301296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1115735768
+  },
+  {
+   "t": 315.13,
+   "unix": 1795808143.32,
+   "GPU": 504301296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1115768536
+  },
+  {
+   "t": 316.14,
+   "unix": 1795808144.33,
+   "GPU": 504301296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1120863960
+  },
+  {
+   "t": 317.14,
+   "unix": 1795808145.33,
+   "GPU": 506644208,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1120863960
+  },
+  {
+   "t": 318.15,
+   "unix": 1795808146.34,
+   "GPU": 504202992,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1120929496
+  },
+  {
+   "t": 319.15,
+   "unix": 1795808147.34,
+   "GPU": 504104688,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1129465560
+  },
+  {
+   "t": 320.15,
+   "unix": 1795808148.34,
+   "GPU": 504235760,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1120896728
+  },
+  {
+   "t": 321.16,
+   "unix": 1795808149.34,
+   "GPU": 504006384,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1120929496
+  },
+  {
+   "t": 322.16,
+   "unix": 1795808150.35,
+   "GPU": 504006384,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1120995032
+  },
+  {
+   "t": 323.16,
+   "unix": 1795808151.35,
+   "GPU": 504137456,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1129563864
+  },
+  {
+   "t": 324.17,
+   "unix": 1795808152.36,
+   "GPU": 504006384,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121060568
+  },
+  {
+   "t": 325.17,
+   "unix": 1795808153.36,
+   "GPU": 503908080,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121060568
+  },
+  {
+   "t": 326.17,
+   "unix": 1795808154.36,
+   "GPU": 503908080,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121093336
+  },
+  {
+   "t": 327.17,
+   "unix": 1795808155.36,
+   "GPU": 504055536,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1130497752
+  },
+  {
+   "t": 328.18,
+   "unix": 1795808156.37,
+   "GPU": 504006384,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1129416408
+  },
+  {
+   "t": 329.18,
+   "unix": 1795808157.37,
+   "GPU": 504006384,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1130792664
+  },
+  {
+   "t": 330.18,
+   "unix": 1795808158.37,
+   "GPU": 504006384,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121208024
+  },
+  {
+   "t": 331.18,
+   "unix": 1795808159.37,
+   "GPU": 504088304,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121142488
+  },
+  {
+   "t": 332.19,
+   "unix": 1795808160.38,
+   "GPU": 503908080,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121109720
+  },
+  {
+   "t": 333.19,
+   "unix": 1795808161.38,
+   "GPU": 503842544,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121060568
+  },
+  {
+   "t": 334.2,
+   "unix": 1795808162.38,
+   "GPU": 503842544,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1129694936
+  },
+  {
+   "t": 335.2,
+   "unix": 1795808163.39,
+   "GPU": 503891696,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121126104
+  },
+  {
+   "t": 336.2,
+   "unix": 1795808164.39,
+   "GPU": 506267376,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121126104
+  },
+  {
+   "t": 337.2,
+   "unix": 1795808165.39,
+   "GPU": 504432368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121126104
+  },
+  {
+   "t": 338.21,
+   "unix": 1795808166.4,
+   "GPU": 506300144,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121158872
+  },
+  {
+   "t": 339.21,
+   "unix": 1795808167.4,
+   "GPU": 504088304,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121175256
+  },
+  {
+   "t": 340.22,
+   "unix": 1795808168.4,
+   "GPU": 503858928,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121126104
+  },
+  {
+   "t": 341.22,
+   "unix": 1795808169.4,
+   "GPU": 503858928,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121191640
+  },
+  {
+   "t": 342.22,
+   "unix": 1795808170.41,
+   "GPU": 505349872,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121158872
+  },
+  {
+   "t": 343.22,
+   "unix": 1795808171.41,
+   "GPU": 503858928,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121126104
+  },
+  {
+   "t": 344.23,
+   "unix": 1795808172.41,
+   "GPU": 503858928,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121126104
+  },
+  {
+   "t": 345.23,
+   "unix": 1795808173.42,
+   "GPU": 503858928,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121126104
+  },
+  {
+   "t": 346.23,
+   "unix": 1795808174.42,
+   "GPU": 503858928,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121191640
+  },
+  {
+   "t": 347.24,
+   "unix": 1795808175.43,
+   "GPU": 504350448,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121060568
+  },
+  {
+   "t": 348.24,
+   "unix": 1795808176.43,
+   "GPU": 504481520,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121093336
+  },
+  {
+   "t": 349.25,
+   "unix": 1795808177.44,
+   "GPU": 503973616,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121027800
+  },
+  {
+   "t": 350.25,
+   "unix": 1795808178.44,
+   "GPU": 503842544,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121027800
+  },
+  {
+   "t": 351.26,
+   "unix": 1795808179.45,
+   "GPU": 507021136,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931680,
+   "WebContent": 1161184984
+  },
+  {
+   "t": 352.26,
+   "unix": 1795808180.45,
+   "GPU": 509118288,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915272,
+   "WebContent": 1152812760
+  },
+  {
+   "t": 353.26,
+   "unix": 1795808181.45,
+   "GPU": 509118288,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915272,
+   "WebContent": 1152304856
+  },
+  {
+   "t": 354.26,
+   "unix": 1795808182.45,
+   "GPU": 509282224,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915272,
+   "WebContent": 1303824088
+  },
+  {
+   "t": 355.27,
+   "unix": 1795808183.45,
+   "GPU": 509413296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915272,
+   "WebContent": 1297073880
+  },
+  {
+   "t": 356.27,
+   "unix": 1795808184.46,
+   "GPU": 506333104,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1287505624
+  },
+  {
+   "t": 357.28,
+   "unix": 1795808185.46,
+   "GPU": 505988800,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 895928024
+  },
+  {
+   "t": 358.28,
+   "unix": 1795808186.47,
+   "GPU": 505923264,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 898057944
+  },
+  {
+   "t": 359.28,
+   "unix": 1795808187.47,
+   "GPU": 505923264,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 897877720
+  },
+  {
+   "t": 360.28,
+   "unix": 1795808188.47,
+   "GPU": 505923264,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 900908760
+  },
+  {
+   "t": 361.29,
+   "unix": 1795808189.48,
+   "GPU": 505923264,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 900875992
+  },
+  {
+   "t": 362.29,
+   "unix": 1795808190.48,
+   "GPU": 505890496,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 900875992
+  },
+  {
+   "t": 363.3,
+   "unix": 1795808191.49,
+   "GPU": 505890496,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 900875992
+  },
+  {
+   "t": 364.31,
+   "unix": 1795808192.49,
+   "GPU": 505956032,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 900777688
+  },
+  {
+   "t": 365.31,
+   "unix": 1795808193.5,
+   "GPU": 505956032,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 900810456
+  },
+  {
+   "t": 366.31,
+   "unix": 1795808194.5,
+   "GPU": 507447024,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 901957336
+  },
+  {
+   "t": 367.32,
+   "unix": 1795808195.51,
+   "GPU": 507381512,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 935413464
+  },
+  {
+   "t": 368.32,
+   "unix": 1795808196.51,
+   "GPU": 506889992,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 927139544
+  },
+  {
+   "t": 369.33,
+   "unix": 1795808197.52,
+   "GPU": 362563120,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 680445656
+  },
+  {
+   "t": 370.33,
+   "unix": 1795808198.52,
+   "GPU": 362563120,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 680494808
+  },
+  {
+   "t": 371.34,
+   "unix": 1795808199.53,
+   "GPU": 362563120,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 680478424
+  },
+  {
+   "t": 372.34,
+   "unix": 1795808200.53,
+   "GPU": 362513968,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 680445656
+  },
+  {
+   "t": 373.35,
+   "unix": 1795808201.54,
+   "GPU": 365348424,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964472,
+   "WebContent": 769165016
+  },
+  {
+   "t": 374.35,
+   "unix": 1795808202.54,
+   "GPU": 513394368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1125828312
+  },
+  {
+   "t": 375.36,
+   "unix": 1795808203.55,
+   "GPU": 503727808,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1116899032
+  },
+  {
+   "t": 376.36,
+   "unix": 1795808204.55,
+   "GPU": 503760576,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1116817112
+  },
+  {
+   "t": 377.36,
+   "unix": 1795808205.55,
+   "GPU": 503842496,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1116882648
+  },
+  {
+   "t": 378.37,
+   "unix": 1795808206.56,
+   "GPU": 503695040,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1116931800
+  },
+  {
+   "t": 379.37,
+   "unix": 1795808207.56,
+   "GPU": 503695040,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1117767384
+  },
+  {
+   "t": 380.38,
+   "unix": 1795808208.57,
+   "GPU": 503776960,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1116669656
+  },
+  {
+   "t": 381.38,
+   "unix": 1795808209.57,
+   "GPU": 503776960,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118832344
+  },
+  {
+   "t": 382.39,
+   "unix": 1795808210.58,
+   "GPU": 503908032,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1116604120
+  },
+  {
+   "t": 383.39,
+   "unix": 1795808211.58,
+   "GPU": 503776960,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1116735192
+  },
+  {
+   "t": 384.4,
+   "unix": 1795808212.59,
+   "GPU": 503760576,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1119209176
+  },
+  {
+   "t": 385.4,
+   "unix": 1795808213.59,
+   "GPU": 503776960,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1119192792
+  },
+  {
+   "t": 386.4,
+   "unix": 1795808214.59,
+   "GPU": 503908032,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1116587736
+  },
+  {
+   "t": 387.41,
+   "unix": 1795808215.6,
+   "GPU": 504022720,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1116538584
+  },
+  {
+   "t": 388.42,
+   "unix": 1795808216.6,
+   "GPU": 504071872,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1134905048
+  },
+  {
+   "t": 389.42,
+   "unix": 1795808217.61,
+   "GPU": 504334040,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121912536
+  },
+  {
+   "t": 390.43,
+   "unix": 1795808218.61,
+   "GPU": 504088280,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121879768
+  },
+  {
+   "t": 391.43,
+   "unix": 1795808219.62,
+   "GPU": 504071896,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1122010840
+  },
+  {
+   "t": 392.43,
+   "unix": 1795808220.62,
+   "GPU": 504022744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121945304
+  },
+  {
+   "t": 393.44,
+   "unix": 1795808221.63,
+   "GPU": 503924440,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1130448600
+  },
+  {
+   "t": 394.44,
+   "unix": 1795808222.63,
+   "GPU": 506267352,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1122010840
+  },
+  {
+   "t": 395.44,
+   "unix": 1795808223.63,
+   "GPU": 503924440,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121945304
+  },
+  {
+   "t": 396.45,
+   "unix": 1795808224.64,
+   "GPU": 503793368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121945304
+  },
+  {
+   "t": 397.45,
+   "unix": 1795808225.64,
+   "GPU": 505284312,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121945304
+  },
+  {
+   "t": 398.46,
+   "unix": 1795808226.65,
+   "GPU": 503776984,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121978072
+  },
+  {
+   "t": 399.46,
+   "unix": 1795808227.65,
+   "GPU": 503776984,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121945304
+  },
+  {
+   "t": 400.46,
+   "unix": 1795808228.65,
+   "GPU": 503809752,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1130514136
+  },
+  {
+   "t": 401.47,
+   "unix": 1795808229.66,
+   "GPU": 503842520,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121945304
+  },
+  {
+   "t": 402.47,
+   "unix": 1795808230.66,
+   "GPU": 503842520,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1122010840
+  },
+  {
+   "t": 403.47,
+   "unix": 1795808231.66,
+   "GPU": 503842520,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121912536
+  },
+  {
+   "t": 404.48,
+   "unix": 1795808232.67,
+   "GPU": 503924440,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121978072
+  },
+  {
+   "t": 405.48,
+   "unix": 1795808233.67,
+   "GPU": 503826136,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1121945304
+  },
+  {
+   "t": 406.48,
+   "unix": 1795808234.67,
+   "GPU": 503826136,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121945304
+  },
+  {
+   "t": 407.49,
+   "unix": 1795808235.67,
+   "GPU": 503711448,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1130530520
+  },
+  {
+   "t": 408.49,
+   "unix": 1795808236.67,
+   "GPU": 503563992,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1130530520
+  },
+  {
+   "t": 409.49,
+   "unix": 1795808237.68,
+   "GPU": 503760600,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121945304
+  },
+  {
+   "t": 410.49,
+   "unix": 1795808238.68,
+   "GPU": 503957328,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5948064,
+   "WebContent": 1170671320
+  },
+  {
+   "t": 411.49,
+   "unix": 1795808239.68,
+   "GPU": 505677648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1170753240
+  },
+  {
+   "t": 412.5,
+   "unix": 1795808240.69,
+   "GPU": 506185552,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1153369816
+  },
+  {
+   "t": 413.5,
+   "unix": 1795808241.69,
+   "GPU": 506890160,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1306199768
+  },
+  {
+   "t": 414.51,
+   "unix": 1795808242.69,
+   "GPU": 507037592,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1298056920
+  },
+  {
+   "t": 415.51,
+   "unix": 1795808243.7,
+   "GPU": 505907096,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1288554200
+  },
+  {
+   "t": 416.51,
+   "unix": 1795808244.7,
+   "GPU": 505972632,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1288455896
+  },
+  {
+   "t": 417.52,
+   "unix": 1795808245.7,
+   "GPU": 505890520,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 896681688
+  },
+  {
+   "t": 418.52,
+   "unix": 1795808246.71,
+   "GPU": 505824984,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 903546584
+  },
+  {
+   "t": 419.53,
+   "unix": 1795808247.71,
+   "GPU": 505841368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 901777112
+  },
+  {
+   "t": 420.53,
+   "unix": 1795808248.72,
+   "GPU": 505841368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 901809880
+  },
+  {
+   "t": 421.54,
+   "unix": 1795808249.73,
+   "GPU": 505906904,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 901711576
+  },
+  {
+   "t": 422.54,
+   "unix": 1795808250.73,
+   "GPU": 505939672,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 901695192
+  },
+  {
+   "t": 423.54,
+   "unix": 1795808251.73,
+   "GPU": 505874136,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 901695192
+  },
+  {
+   "t": 424.55,
+   "unix": 1795808252.73,
+   "GPU": 505874136,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 901760728
+  },
+  {
+   "t": 425.55,
+   "unix": 1795808253.74,
+   "GPU": 507807472,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898888,
+   "WebContent": 902645464
+  },
+  {
+   "t": 426.55,
+   "unix": 1795808254.74,
+   "GPU": 471549680,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898888,
+   "WebContent": 919635672
+  },
+  {
+   "t": 427.56,
+   "unix": 1795808255.75,
+   "GPU": 499484400,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898888,
+   "WebContent": 936249048
+  },
+  {
+   "t": 428.56,
+   "unix": 1795808256.75,
+   "GPU": 362530328,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898888,
+   "WebContent": 681445080
+  },
+  {
+   "t": 429.56,
+   "unix": 1795808257.75,
+   "GPU": 362513944,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898888,
+   "WebContent": 681395928
+  },
+  {
+   "t": 430.57,
+   "unix": 1795808258.76,
+   "GPU": 362628632,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898888,
+   "WebContent": 681314008
+  },
+  {
+   "t": 431.57,
+   "unix": 1795808259.76,
+   "GPU": 362513944,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 681248472
+  },
+  {
+   "t": 432.58,
+   "unix": 1795808260.77,
+   "GPU": 362677784,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 11633336,
+   "WebContent": 703366872
+  },
+  {
+   "t": 433.58,
+   "unix": 1795808261.77,
+   "GPU": 516867776,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1127335664
+  },
+  {
+   "t": 434.59,
+   "unix": 1795808262.78,
+   "GPU": 507971264,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1117816560
+  },
+  {
+   "t": 435.59,
+   "unix": 1795808263.78,
+   "GPU": 437864128,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1117832944
+  },
+  {
+   "t": 436.6,
+   "unix": 1795808264.79,
+   "GPU": 437782208,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1117767408
+  },
+  {
+   "t": 437.6,
+   "unix": 1795808265.79,
+   "GPU": 437749440,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1117767408
+  },
+  {
+   "t": 438.61,
+   "unix": 1795808266.8,
+   "GPU": 437831360,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118652120
+  },
+  {
+   "t": 439.61,
+   "unix": 1795808267.8,
+   "GPU": 438486720,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1117685464
+  },
+  {
+   "t": 440.61,
+   "unix": 1795808268.8,
+   "GPU": 438273728,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1119717080
+  },
+  {
+   "t": 441.62,
+   "unix": 1795808269.8,
+   "GPU": 438208192,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1117603544
+  },
+  {
+   "t": 442.62,
+   "unix": 1795808270.81,
+   "GPU": 438273728,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1117636312
+  },
+  {
+   "t": 443.63,
+   "unix": 1795808271.81,
+   "GPU": 438273728,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1117472472
+  },
+  {
+   "t": 444.63,
+   "unix": 1795808272.81,
+   "GPU": 438404800,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1120028376
+  },
+  {
+   "t": 445.63,
+   "unix": 1795808273.82,
+   "GPU": 438273728,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1118537432
+  },
+  {
+   "t": 446.63,
+   "unix": 1795808274.82,
+   "GPU": 438273728,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1117456088
+  },
+  {
+   "t": 447.64,
+   "unix": 1795808275.82,
+   "GPU": 438273728,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1117406936
+  },
+  {
+   "t": 448.64,
+   "unix": 1795808276.83,
+   "GPU": 438683328,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1134937816
+  },
+  {
+   "t": 449.64,
+   "unix": 1795808277.83,
+   "GPU": 438650584,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1114392280
+  },
+  {
+   "t": 450.65,
+   "unix": 1795808278.84,
+   "GPU": 438486768,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1125795544
+  },
+  {
+   "t": 451.65,
+   "unix": 1795808279.84,
+   "GPU": 438257392,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1121535704
+  },
+  {
+   "t": 452.66,
+   "unix": 1795808280.85,
+   "GPU": 438273776,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1120110296
+  },
+  {
+   "t": 453.66,
+   "unix": 1795808281.85,
+   "GPU": 438306544,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1117538008
+  },
+  {
+   "t": 454.66,
+   "unix": 1795808282.85,
+   "GPU": 438322928,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1117538008
+  },
+  {
+   "t": 455.67,
+   "unix": 1795808283.85,
+   "GPU": 438322928,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1117570776
+  },
+  {
+   "t": 456.67,
+   "unix": 1795808284.86,
+   "GPU": 439813872,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1117570776
+  },
+  {
+   "t": 457.67,
+   "unix": 1795808285.86,
+   "GPU": 438322928,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1114130136
+  },
+  {
+   "t": 458.68,
+   "unix": 1795808286.86,
+   "GPU": 438503152,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1122617048
+  },
+  {
+   "t": 459.68,
+   "unix": 1795808287.87,
+   "GPU": 438372080,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1122682584
+  },
+  {
+   "t": 460.68,
+   "unix": 1795808288.87,
+   "GPU": 438372080,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1122649816
+  },
+  {
+   "t": 461.69,
+   "unix": 1795808289.88,
+   "GPU": 438306544,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1131087576
+  },
+  {
+   "t": 462.69,
+   "unix": 1795808290.88,
+   "GPU": 439420656,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1122649816
+  },
+  {
+   "t": 463.69,
+   "unix": 1795808291.88,
+   "GPU": 438208240,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1122682584
+  },
+  {
+   "t": 464.7,
+   "unix": 1795808292.89,
+   "GPU": 438208240,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1122617048
+  },
+  {
+   "t": 465.7,
+   "unix": 1795808293.89,
+   "GPU": 438208240,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1131185880
+  },
+  {
+   "t": 466.71,
+   "unix": 1795808294.89,
+   "GPU": 440551152,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1122584280
+  },
+  {
+   "t": 467.71,
+   "unix": 1795808295.9,
+   "GPU": 439568112,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1122617048
+  },
+  {
+   "t": 468.72,
+   "unix": 1795808296.9,
+   "GPU": 437225200,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1122649816
+  },
+  {
+   "t": 469.72,
+   "unix": 1795808297.91,
+   "GPU": 437503728,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1131087576
+  },
+  {
+   "t": 470.72,
+   "unix": 1795808298.91,
+   "GPU": 437585648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1131185880
+  },
+  {
+   "t": 471.73,
+   "unix": 1795808299.92,
+   "GPU": 437438192,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1122617048
+  },
+  {
+   "t": 472.73,
+   "unix": 1795808300.92,
+   "GPU": 437307120,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1122715352
+  },
+  {
+   "t": 473.73,
+   "unix": 1795808301.92,
+   "GPU": 437438192,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1122977496
+  },
+  {
+   "t": 474.74,
+   "unix": 1795808302.93,
+   "GPU": 437143280,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1123010264
+  },
+  {
+   "t": 475.74,
+   "unix": 1795808303.93,
+   "GPU": 437290736,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1131579096
+  },
+  {
+   "t": 476.74,
+   "unix": 1795808304.93,
+   "GPU": 437159664,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1131562712
+  },
+  {
+   "t": 477.75,
+   "unix": 1795808305.94,
+   "GPU": 437225200,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1122928344
+  },
+  {
+   "t": 478.75,
+   "unix": 1795808306.94,
+   "GPU": 437585648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1131611864
+  },
+  {
+   "t": 479.76,
+   "unix": 1795808307.95,
+   "GPU": 437618416,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1123108568
+  },
+  {
+   "t": 480.76,
+   "unix": 1795808308.95,
+   "GPU": 438765296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1123075800
+  },
+  {
+   "t": 481.76,
+   "unix": 1795808309.95,
+   "GPU": 438781680,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1123108568
+  },
+  {
+   "t": 482.77,
+   "unix": 1795808310.96,
+   "GPU": 438666992,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 1123075800
+  },
+  {
+   "t": 483.77,
+   "unix": 1795808311.96,
+   "GPU": 438535896,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1123075800
+  },
+  {
+   "t": 484.78,
+   "unix": 1795808312.96,
+   "GPU": 438535896,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1123075800
+  },
+  {
+   "t": 485.78,
+   "unix": 1795808313.97,
+   "GPU": 438535896,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1123075800
+  },
+  {
+   "t": 486.78,
+   "unix": 1795808314.97,
+   "GPU": 438535896,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1123075800
+  },
+  {
+   "t": 487.78,
+   "unix": 1795808315.97,
+   "GPU": 438535896,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1123075800
+  },
+  {
+   "t": 488.79,
+   "unix": 1795808316.97,
+   "GPU": 439813848,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1122944728
+  },
+  {
+   "t": 489.79,
+   "unix": 1795808317.98,
+   "GPU": 438896344,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1123010264
+  },
+  {
+   "t": 490.8,
+   "unix": 1795808318.98,
+   "GPU": 441009880,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1123043032
+  },
+  {
+   "t": 491.8,
+   "unix": 1795808319.99,
+   "GPU": 440878808,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1122977496
+  },
+  {
+   "t": 492.8,
+   "unix": 1795808320.99,
+   "GPU": 438666968,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1122977496
+  },
+  {
+   "t": 493.81,
+   "unix": 1795808322.0,
+   "GPU": 438978360,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964472,
+   "WebContent": 1163265752
+  },
+  {
+   "t": 494.81,
+   "unix": 1795808323.0,
+   "GPU": 441337656,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1154778840
+  },
+  {
+   "t": 495.81,
+   "unix": 1795808324.0,
+   "GPU": 441190200,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1154402008
+  },
+  {
+   "t": 496.82,
+   "unix": 1795808325.01,
+   "GPU": 465684328,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1289570008
+  },
+  {
+   "t": 497.82,
+   "unix": 1795808326.01,
+   "GPU": 465717096,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931656,
+   "WebContent": 1282705112
+  },
+  {
+   "t": 498.83,
+   "unix": 1795808327.02,
+   "GPU": 462538600,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 1281607384
+  },
+  {
+   "t": 499.83,
+   "unix": 1795808328.02,
+   "GPU": 462423744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 898074328
+  },
+  {
+   "t": 500.84,
+   "unix": 1795808329.03,
+   "GPU": 462423744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 900237016
+  },
+  {
+   "t": 501.84,
+   "unix": 1795808330.03,
+   "GPU": 462472896,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 907462360
+  },
+  {
+   "t": 502.84,
+   "unix": 1795808331.03,
+   "GPU": 462423744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 903022296
+  },
+  {
+   "t": 503.85,
+   "unix": 1795808332.04,
+   "GPU": 462423744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 902989528
+  },
+  {
+   "t": 504.85,
+   "unix": 1795808333.04,
+   "GPU": 462423744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 902923992
+  },
+  {
+   "t": 505.85,
+   "unix": 1795808334.04,
+   "GPU": 462423744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5882504,
+   "WebContent": 902923992
+  },
+  {
+   "t": 506.86,
+   "unix": 1795808335.05,
+   "GPU": 462472896,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 902923992
+  },
+  {
+   "t": 507.86,
+   "unix": 1795808336.05,
+   "GPU": 460080832,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5866120,
+   "WebContent": 902940376
+  },
+  {
+   "t": 508.86,
+   "unix": 1795808337.05,
+   "GPU": 463963888,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898888,
+   "WebContent": 912197336
+  },
+  {
+   "t": 509.87,
+   "unix": 1795808338.06,
+   "GPU": 463505160,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898888,
+   "WebContent": 929089240
+  },
+  {
+   "t": 510.87,
+   "unix": 1795808339.06,
+   "GPU": 320898824,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898888,
+   "WebContent": 929122008
+  },
+  {
+   "t": 511.88,
+   "unix": 1795808340.06,
+   "GPU": 319244040,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898888,
+   "WebContent": 929154776
+  },
+  {
+   "t": 512.88,
+   "unix": 1795808341.07,
+   "GPU": 319244040,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898888,
+   "WebContent": 929089240
+  },
+  {
+   "t": 513.88,
+   "unix": 1795808342.07,
+   "GPU": 319244040,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898888,
+   "WebContent": 929105624
+  },
+  {
+   "t": 514.88,
+   "unix": 1795808343.07,
+   "GPU": 319244040,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898888,
+   "WebContent": 929056472
+  },
+  {
+   "t": 515.89,
+   "unix": 1795808344.08,
+   "GPU": 322013008,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1098221272
+  },
+  {
+   "t": 516.89,
+   "unix": 1795808345.08,
+   "GPU": 522684144,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1154909936
+  },
+  {
+   "t": 517.9,
+   "unix": 1795808346.09,
+   "GPU": 519522032,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1143719664
+  },
+  {
+   "t": 518.9,
+   "unix": 1795808347.09,
+   "GPU": 514492144,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1143342832
+  },
+  {
+   "t": 519.91,
+   "unix": 1795808348.09,
+   "GPU": 514590448,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1143686896
+  },
+  {
+   "t": 520.91,
+   "unix": 1795808349.1,
+   "GPU": 514672368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1143097072
+  },
+  {
+   "t": 521.92,
+   "unix": 1795808350.1,
+   "GPU": 514655984,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1143981808
+  },
+  {
+   "t": 522.92,
+   "unix": 1795808351.11,
+   "GPU": 514311920,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1142933232
+  },
+  {
+   "t": 523.93,
+   "unix": 1795808352.11,
+   "GPU": 514246384,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1145095920
+  },
+  {
+   "t": 524.93,
+   "unix": 1795808353.12,
+   "GPU": 514377456,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1142982384
+  },
+  {
+   "t": 525.93,
+   "unix": 1795808354.12,
+   "GPU": 514442992,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1142900464
+  },
+  {
+   "t": 526.94,
+   "unix": 1795808355.13,
+   "GPU": 514393840,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1146226416
+  },
+  {
+   "t": 527.95,
+   "unix": 1795808356.13,
+   "GPU": 514262768,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1145767664
+  },
+  {
+   "t": 528.95,
+   "unix": 1795808357.13,
+   "GPU": 514459376,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1143129840
+  },
+  {
+   "t": 529.95,
+   "unix": 1795808358.14,
+   "GPU": 514262768,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1143129840
+  },
+  {
+   "t": 530.95,
+   "unix": 1795808359.14,
+   "GPU": 514426608,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1143162608
+  },
+  {
+   "t": 531.96,
+   "unix": 1795808360.14,
+   "GPU": 514311944,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1139754736
+  },
+  {
+   "t": 532.96,
+   "unix": 1795808361.15,
+   "GPU": 514328352,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1148290800
+  },
+  {
+   "t": 533.97,
+   "unix": 1795808362.16,
+   "GPU": 515835680,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1148290800
+  },
+  {
+   "t": 534.97,
+   "unix": 1795808363.16,
+   "GPU": 514344736,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1148290800
+  },
+  {
+   "t": 535.97,
+   "unix": 1795808364.16,
+   "GPU": 514344736,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1156794096
+  },
+  {
+   "t": 536.98,
+   "unix": 1795808365.17,
+   "GPU": 514426656,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1148274416
+  },
+  {
+   "t": 537.98,
+   "unix": 1795808366.17,
+   "GPU": 514344736,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1148290800
+  },
+  {
+   "t": 538.99,
+   "unix": 1795808367.17,
+   "GPU": 514393888,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1156794096
+  },
+  {
+   "t": 539.99,
+   "unix": 1795808368.17,
+   "GPU": 514459424,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1148290800
+  },
+  {
+   "t": 540.99,
+   "unix": 1795808369.18,
+   "GPU": 514459424,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1148290800
+  },
+  {
+   "t": 541.99,
+   "unix": 1795808370.18,
+   "GPU": 514590496,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1148307184
+  },
+  {
+   "t": 542.99,
+   "unix": 1795808371.18,
+   "GPU": 516802336,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1157662448
+  },
+  {
+   "t": 544.0,
+   "unix": 1795808372.18,
+   "GPU": 516818720,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1148110576
+  },
+  {
+   "t": 545.0,
+   "unix": 1795808373.19,
+   "GPU": 514475808,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1148208880
+  },
+  {
+   "t": 546.01,
+   "unix": 1795808374.19,
+   "GPU": 514475808,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1148110576
+  },
+  {
+   "t": 547.01,
+   "unix": 1795808375.2,
+   "GPU": 516654880,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1148143344
+  },
+  {
+   "t": 548.02,
+   "unix": 1795808376.21,
+   "GPU": 514328352,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1148192496
+  },
+  {
+   "t": 549.02,
+   "unix": 1795808377.21,
+   "GPU": 514328352,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1156663024
+  },
+  {
+   "t": 550.03,
+   "unix": 1795808378.22,
+   "GPU": 514541344,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1156728560
+  },
+  {
+   "t": 551.04,
+   "unix": 1795808379.23,
+   "GPU": 518178616,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1156663024
+  },
+  {
+   "t": 552.05,
+   "unix": 1795808380.24,
+   "GPU": 519669560,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1148258032
+  },
+  {
+   "t": 553.05,
+   "unix": 1795808381.24,
+   "GPU": 521029480,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5980856,
+   "WebContent": 1196852976
+  },
+  {
+   "t": 554.06,
+   "unix": 1795808382.25,
+   "GPU": 520898408,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1179944688
+  },
+  {
+   "t": 555.06,
+   "unix": 1795808383.25,
+   "GPU": 518408040,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1179469552
+  },
+  {
+   "t": 556.07,
+   "unix": 1795808384.26,
+   "GPU": 523552760,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1323615984
+  },
+  {
+   "t": 557.08,
+   "unix": 1795808385.27,
+   "GPU": 523618296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1315686128
+  },
+  {
+   "t": 558.09,
+   "unix": 1795808386.28,
+   "GPU": 520243192,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1314588400
+  },
+  {
+   "t": 559.1,
+   "unix": 1795808387.29,
+   "GPU": 520243192,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1314653936
+  },
+  {
+   "t": 560.11,
+   "unix": 1795808388.3,
+   "GPU": 521389880,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 922584816
+  },
+  {
+   "t": 561.12,
+   "unix": 1795808389.31,
+   "GPU": 517293880,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 896173808
+  },
+  {
+   "t": 562.13,
+   "unix": 1795808390.32,
+   "GPU": 514606904,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 904660720
+  },
+  {
+   "t": 563.14,
+   "unix": 1795808391.33,
+   "GPU": 514606904,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 904546032
+  },
+  {
+   "t": 564.15,
+   "unix": 1795808392.33,
+   "GPU": 514541368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 904578800
+  },
+  {
+   "t": 565.16,
+   "unix": 1795808393.34,
+   "GPU": 514541368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 904677104
+  },
+  {
+   "t": 566.17,
+   "unix": 1795808394.35,
+   "GPU": 514541368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 904562416
+  },
+  {
+   "t": 567.18,
+   "unix": 1795808395.36,
+   "GPU": 514541368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 904611568
+  },
+  {
+   "t": 568.19,
+   "unix": 1795808396.37,
+   "GPU": 516687648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931680,
+   "WebContent": 914753264
+  },
+  {
+   "t": 569.2,
+   "unix": 1795808397.38,
+   "GPU": 517490440,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931680,
+   "WebContent": 923649776
+  },
+  {
+   "t": 570.2,
+   "unix": 1795808398.38,
+   "GPU": 517572384,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931680,
+   "WebContent": 923059952
+  },
+  {
+   "t": 571.21,
+   "unix": 1795808399.39,
+   "GPU": 371607328,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931680,
+   "WebContent": 923125488
+  },
+  {
+   "t": 572.22,
+   "unix": 1795808400.4,
+   "GPU": 371607328,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931680,
+   "WebContent": 923092720
+  },
+  {
+   "t": 573.22,
+   "unix": 1795808401.41,
+   "GPU": 371607328,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931680,
+   "WebContent": 923109104
+  },
+  {
+   "t": 574.23,
+   "unix": 1795808402.42,
+   "GPU": 371574560,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 922896112
+  },
+  {
+   "t": 575.23,
+   "unix": 1795808403.42,
+   "GPU": 374474600,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5980856,
+   "WebContent": 1012172528
+  },
+  {
+   "t": 576.23,
+   "unix": 1795808404.42,
+   "GPU": 523519728,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1163953904
+  },
+  {
+   "t": 577.24,
+   "unix": 1795808405.42,
+   "GPU": 523503320,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1121240816
+  },
+  {
+   "t": 578.25,
+   "unix": 1795808406.43,
+   "GPU": 512722648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1121257200
+  },
+  {
+   "t": 579.25,
+   "unix": 1795808407.43,
+   "GPU": 512722648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1121322736
+  },
+  {
+   "t": 580.26,
+   "unix": 1795808408.44,
+   "GPU": 512722648,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1121191664
+  },
+  {
+   "t": 581.27,
+   "unix": 1795808409.45,
+   "GPU": 512591576,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1122797296
+  },
+  {
+   "t": 582.28,
+   "unix": 1795808410.46,
+   "GPU": 512657112,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1121175280
+  },
+  {
+   "t": 583.29,
+   "unix": 1795808411.47,
+   "GPU": 512657112,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1123337968
+  },
+  {
+   "t": 584.29,
+   "unix": 1795808412.48,
+   "GPU": 512640728,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1121158896
+  },
+  {
+   "t": 585.3,
+   "unix": 1795808413.49,
+   "GPU": 512640728,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1121191664
+  },
+  {
+   "t": 586.3,
+   "unix": 1795808414.49,
+   "GPU": 512657112,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1123731184
+  },
+  {
+   "t": 587.3,
+   "unix": 1795808415.49,
+   "GPU": 512673496,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1123600112
+  },
+  {
+   "t": 588.31,
+   "unix": 1795808416.5,
+   "GPU": 512558808,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1123321584
+  },
+  {
+   "t": 589.32,
+   "unix": 1795808417.51,
+   "GPU": 512755416,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1122125552
+  },
+  {
+   "t": 590.33,
+   "unix": 1795808418.52,
+   "GPU": 512640728,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1120978672
+  },
+  {
+   "t": 591.34,
+   "unix": 1795808419.53,
+   "GPU": 512640728,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1120978672
+  },
+  {
+   "t": 592.35,
+   "unix": 1795808420.54,
+   "GPU": 512853744,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1117570800
+  },
+  {
+   "t": 593.36,
+   "unix": 1795808421.54,
+   "GPU": 513591048,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1129973488
+  },
+  {
+   "t": 594.36,
+   "unix": 1795808422.55,
+   "GPU": 513378056,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1123485424
+  },
+  {
+   "t": 595.37,
+   "unix": 1795808423.56,
+   "GPU": 513197832,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1123518192
+  },
+  {
+   "t": 596.38,
+   "unix": 1795808424.57,
+   "GPU": 513197832,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1120995056
+  },
+  {
+   "t": 597.39,
+   "unix": 1795808425.58,
+   "GPU": 513099528,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1120913136
+  },
+  {
+   "t": 598.4,
+   "unix": 1795808426.59,
+   "GPU": 513263368,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1138083568
+  },
+  {
+   "t": 599.4,
+   "unix": 1795808427.59,
+   "GPU": 513296136,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1120945904
+  },
+  {
+   "t": 600.41,
+   "unix": 1795808428.6,
+   "GPU": 513033992,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1117570800
+  },
+  {
+   "t": 601.41,
+   "unix": 1795808429.6,
+   "GPU": 513033992,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126123248
+  },
+  {
+   "t": 602.41,
+   "unix": 1795808430.6,
+   "GPU": 515376904,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126106864
+  },
+  {
+   "t": 603.42,
+   "unix": 1795808431.61,
+   "GPU": 515393288,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1134659312
+  },
+  {
+   "t": 604.42,
+   "unix": 1795808432.61,
+   "GPU": 512984840,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1134790384
+  },
+  {
+   "t": 605.43,
+   "unix": 1795808433.62,
+   "GPU": 512984840,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1126221552
+  },
+  {
+   "t": 606.43,
+   "unix": 1795808434.62,
+   "GPU": 512984840,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1126254320
+  },
+  {
+   "t": 607.44,
+   "unix": 1795808435.62,
+   "GPU": 514574088,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1126139632
+  },
+  {
+   "t": 608.44,
+   "unix": 1795808436.63,
+   "GPU": 513033992,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1134675696
+  },
+  {
+   "t": 609.45,
+   "unix": 1795808437.64,
+   "GPU": 515376904,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1126237936
+  },
+  {
+   "t": 610.45,
+   "unix": 1795808438.64,
+   "GPU": 512591624,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1126270704
+  },
+  {
+   "t": 611.46,
+   "unix": 1795808439.65,
+   "GPU": 514983688,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1126254320
+  },
+  {
+   "t": 612.46,
+   "unix": 1795808440.65,
+   "GPU": 512722696,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1134708464
+  },
+  {
+   "t": 613.47,
+   "unix": 1795808441.66,
+   "GPU": 512673544,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1134708464
+  },
+  {
+   "t": 614.48,
+   "unix": 1795808442.67,
+   "GPU": 512673544,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1126467312
+  },
+  {
+   "t": 615.49,
+   "unix": 1795808443.68,
+   "GPU": 512673544,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1126532848
+  },
+  {
+   "t": 616.5,
+   "unix": 1795808444.69,
+   "GPU": 512804616,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126516464
+  },
+  {
+   "t": 617.51,
+   "unix": 1795808445.69,
+   "GPU": 512460552,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126483696
+  },
+  {
+   "t": 618.52,
+   "unix": 1795808446.7,
+   "GPU": 512460552,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1134937840
+  },
+  {
+   "t": 619.52,
+   "unix": 1795808447.71,
+   "GPU": 512460552,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126434544
+  },
+  {
+   "t": 620.53,
+   "unix": 1795808448.72,
+   "GPU": 512460552,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126401776
+  },
+  {
+   "t": 621.54,
+   "unix": 1795808449.73,
+   "GPU": 512821000,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126401776
+  },
+  {
+   "t": 622.55,
+   "unix": 1795808450.74,
+   "GPU": 512591624,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126369008
+  },
+  {
+   "t": 623.56,
+   "unix": 1795808451.75,
+   "GPU": 514934536,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126434544
+  },
+  {
+   "t": 624.57,
+   "unix": 1795808452.76,
+   "GPU": 512460552,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126565616
+  },
+  {
+   "t": 625.58,
+   "unix": 1795808453.77,
+   "GPU": 512624392,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126549232
+  },
+  {
+   "t": 626.58,
+   "unix": 1795808454.77,
+   "GPU": 514131720,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126450928
+  },
+  {
+   "t": 627.59,
+   "unix": 1795808455.78,
+   "GPU": 512526088,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126401776
+  },
+  {
+   "t": 628.59,
+   "unix": 1795808456.78,
+   "GPU": 514066184,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1134970608
+  },
+  {
+   "t": 629.59,
+   "unix": 1795808457.78,
+   "GPU": 512722696,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126434544
+  },
+  {
+   "t": 630.6,
+   "unix": 1795808458.79,
+   "GPU": 514082568,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126401776
+  },
+  {
+   "t": 631.6,
+   "unix": 1795808459.79,
+   "GPU": 515180296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126352624
+  },
+  {
+   "t": 632.61,
+   "unix": 1795808460.79,
+   "GPU": 514885384,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 1126352624
+  },
+  {
+   "t": 633.62,
+   "unix": 1795808461.8,
+   "GPU": 512411400,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1126385392
+  },
+  {
+   "t": 634.62,
+   "unix": 1795808462.81,
+   "GPU": 514754312,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1126582000
+  },
+  {
+   "t": 635.63,
+   "unix": 1795808463.82,
+   "GPU": 512411400,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 1126582000
+  },
+  {
+   "t": 636.64,
+   "unix": 1795808464.83,
+   "GPU": 517769064,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1166788336
+  },
+  {
+   "t": 637.65,
+   "unix": 1795808465.84,
+   "GPU": 512886632,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1157908208
+  },
+  {
+   "t": 638.66,
+   "unix": 1795808466.85,
+   "GPU": 512886632,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1157809904
+  },
+  {
+   "t": 639.67,
+   "unix": 1795808467.86,
+   "GPU": 516212704,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 1310377712
+  },
+  {
+   "t": 640.68,
+   "unix": 1795808468.87,
+   "GPU": 514934608,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5964448,
+   "WebContent": 901334768
+  },
+  {
+   "t": 641.69,
+   "unix": 1795808469.88,
+   "GPU": 514934608,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 901269232
+  },
+  {
+   "t": 642.7,
+   "unix": 1795808470.89,
+   "GPU": 515049296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 901269232
+  },
+  {
+   "t": 643.71,
+   "unix": 1795808471.9,
+   "GPU": 514967376,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 903464688
+  },
+  {
+   "t": 644.72,
+   "unix": 1795808472.91,
+   "GPU": 514967376,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 897812208
+  },
+  {
+   "t": 645.72,
+   "unix": 1795808473.91,
+   "GPU": 515098448,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 906135280
+  },
+  {
+   "t": 646.72,
+   "unix": 1795808474.91,
+   "GPU": 514967376,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 906168048
+  },
+  {
+   "t": 647.73,
+   "unix": 1795808475.92,
+   "GPU": 515032912,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 906135280
+  },
+  {
+   "t": 648.74,
+   "unix": 1795808476.93,
+   "GPU": 514918224,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 906200816
+  },
+  {
+   "t": 649.75,
+   "unix": 1795808477.94,
+   "GPU": 514852688,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 906184432
+  },
+  {
+   "t": 650.76,
+   "unix": 1795808478.95,
+   "GPU": 514852688,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5898912,
+   "WebContent": 906086128
+  },
+  {
+   "t": 651.77,
+   "unix": 1795808479.95,
+   "GPU": 516474704,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931680,
+   "WebContent": 915375856
+  },
+  {
+   "t": 652.78,
+   "unix": 1795808480.96,
+   "GPU": 515688296,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931680,
+   "WebContent": 932726512
+  },
+  {
+   "t": 653.79,
+   "unix": 1795808481.97,
+   "GPU": 371033696,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931680,
+   "WebContent": 685770480
+  },
+  {
+   "t": 654.8,
+   "unix": 1795808482.98,
+   "GPU": 370771552,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931680,
+   "WebContent": 685754096
+  },
+  {
+   "t": 655.8,
+   "unix": 1795808483.99,
+   "GPU": 370787936,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931680,
+   "WebContent": 685688560
+  },
+  {
+   "t": 656.81,
+   "unix": 1795808485.0,
+   "GPU": 370787936,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5931680,
+   "WebContent": 685819632
+  },
+  {
+   "t": 657.81,
+   "unix": 1795808486.0,
+   "GPU": 370787936,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5915296,
+   "WebContent": 685672176
+  },
+  {
+   "t": 658.81,
+   "unix": 1795808487.0,
+   "GPU": 520390432,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5980832,
+   "WebContent": 1164543752
+  },
+  {
+   "t": 659.81,
+   "unix": 1795808488.0,
+   "GPU": 520423176,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5980832,
+   "WebContent": 1123059464
+  },
+  {
+   "t": 660.82,
+   "unix": 1795808489.01,
+   "GPU": 512231176,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5980832,
+   "WebContent": 1121994504
+  },
+  {
+   "t": 661.83,
+   "unix": 1795808490.01,
+   "GPU": 512296712,
+   "pids": {
+    "GPU": 1790,
+    "Networking": 1794,
+    "WebContent": 1795
+   },
+   "Networking": 5980832,
+   "WebContent": 1122060040
+  }
+ ],
+ "breakdowns": [
+  {
+   "t": 0.0,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 429982896,
+     "regions": 6677
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 240549888,
+     "regions": 229
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 151240704,
+     "regions": 48
+    }
+   ]
+  },
+  {
+   "t": 15.05,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1438942816,
+     "regions": 7172
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 710148096,
+     "regions": 697
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 370229248,
+     "regions": 91
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 314261504,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 21528576,
+     "regions": 5
+    }
+   ]
+  },
+  {
+   "t": 30.09,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1338525304,
+     "regions": 7779
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 668286976,
+     "regions": 1320
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 366936064,
+     "regions": 92
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 259506176,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 20889600,
+     "regions": 5
+    }
+   ]
+  },
+  {
+   "t": 45.15,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1341113976,
+     "regions": 8456
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673415168,
+     "regions": 1996
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 364036096,
+     "regions": 92
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 259506176,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 20922368,
+     "regions": 5
+    }
+   ]
+  },
+  {
+   "t": 60.19,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1341556344,
+     "regions": 9145
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673447936,
+     "regions": 2679
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 363888640,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 259506176,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 21053440,
+     "regions": 5
+    }
+   ]
+  },
+  {
+   "t": 75.25,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 973473472,
+     "regions": 9673
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 452984832,
+     "regions": 3208
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 361283584,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 114262016,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 20987904,
+     "regions": 5
+    }
+   ]
+  },
+  {
+   "t": 90.3,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1109722816,
+     "regions": 6858
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 668352512,
+     "regions": 359
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362643456,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32243712,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 21692416,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 16859136,
+     "regions": 55
+    }
+   ]
+  },
+  {
+   "t": 105.35,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1115358912,
+     "regions": 7459
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673415168,
+     "regions": 992
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 363872256,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32210944,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 21807104,
+     "regions": 5
+    }
+   ]
+  },
+  {
+   "t": 120.4,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1112065728,
+     "regions": 8063
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673415168,
+     "regions": 1598
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 360284160,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32210944,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 21839872,
+     "regions": 5
+    }
+   ]
+  },
+  {
+   "t": 135.47,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 892159680,
+     "regions": 8656
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 453017600,
+     "regions": 2183
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 360251392,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32145408,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 22069248,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 16924672,
+     "regions": 57
+    }
+   ]
+  },
+  {
+   "t": 150.52,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1111279296,
+     "regions": 6906
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 668319744,
+     "regions": 399
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362774528,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32161792,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 22921216,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 17088512,
+     "regions": 60
+    }
+   ]
+  },
+  {
+   "t": 165.58,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1118045888,
+     "regions": 7497
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 676249600,
+     "regions": 1023
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 361807872,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32161792,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 22953984,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 17154048,
+     "regions": 61
+    }
+   ]
+  },
+  {
+   "t": 180.63,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1123927744,
+     "regions": 8097
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 681951232,
+     "regions": 1627
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 361807872,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32161792,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 23068672,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 17285120,
+     "regions": 61
+    }
+   ]
+  },
+  {
+   "t": 195.68,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1116538560,
+     "regions": 8823
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673415168,
+     "regions": 2330
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 361857024,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32161792,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 23216128,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 18071552,
+     "regions": 66
+    }
+   ]
+  },
+  {
+   "t": 210.73,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1147881152,
+     "regions": 6982
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 704757760,
+     "regions": 499
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 361611264,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32161792,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 23166976,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 18481152,
+     "regions": 69
+    }
+   ]
+  },
+  {
+   "t": 225.79,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 938804928,
+     "regions": 6765
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 495697920,
+     "regions": 258
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 361529344,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32129024,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 23281664,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 18399232,
+     "regions": 71
+    }
+   ]
+  },
+  {
+   "t": 240.85,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1113638592,
+     "regions": 7224
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 668319744,
+     "regions": 713
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362561536,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 23576576,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 19070976,
+     "regions": 72
+    }
+   ]
+  },
+  {
+   "t": 255.9,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1118488256,
+     "regions": 6849
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673447936,
+     "regions": 365
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362545152,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 23609344,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 19087360,
+     "regions": 72
+    }
+   ]
+  },
+  {
+   "t": 270.95,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1177700032,
+     "regions": 6977
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 732381184,
+     "regions": 464
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362496000,
+     "regions": 93
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 23740416,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 18989056,
+     "regions": 75
+    }
+   ]
+  },
+  {
+   "t": 286.02,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 711198400,
+     "regions": 6758
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362332160,
+     "regions": 93
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 265846784,
+     "regions": 255
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 23855104,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 19202048,
+     "regions": 76
+    }
+   ]
+  },
+  {
+   "t": 301.08,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1115571928,
+     "regions": 7238
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 668286976,
+     "regions": 746
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362938368,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24133632,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 20299776,
+     "regions": 80
+    }
+   ]
+  },
+  {
+   "t": 316.14,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1120896728,
+     "regions": 7831
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673447936,
+     "regions": 1340
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362921984,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24166400,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 20480000,
+     "regions": 80
+    }
+   ]
+  },
+  {
+   "t": 331.18,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1121142488,
+     "regions": 8521
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673447936,
+     "regions": 2014
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362921984,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24231936,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 20545536,
+     "regions": 81
+    }
+   ]
+  },
+  {
+   "t": 346.23,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1120995032,
+     "regions": 9179
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673382400,
+     "regions": 2684
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362872832,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24199168,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 20660224,
+     "regions": 82
+    }
+   ]
+  },
+  {
+   "t": 361.29,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 900875992,
+     "regions": 9688
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 453181440,
+     "regions": 3186
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362823680,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24231936,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 20725760,
+     "regions": 84
+    }
+   ]
+  },
+  {
+   "t": 376.36,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1116849880,
+     "regions": 6931
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 668319744,
+     "regions": 405
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362889216,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24428544,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 21102592,
+     "regions": 85
+    }
+   ]
+  },
+  {
+   "t": 391.43,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1121945304,
+     "regions": 7543
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673447936,
+     "regions": 1043
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362872832,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24461312,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 21299200,
+     "regions": 85
+    }
+   ]
+  },
+  {
+   "t": 406.48,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1130448600,
+     "regions": 8135
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 681918464,
+     "regions": 1638
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362872832,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24510464,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 21299200,
+     "regions": 85
+    }
+   ]
+  },
+  {
+   "t": 421.54,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 901695192,
+     "regions": 8749
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 452984832,
+     "regions": 2238
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362872832,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24526848,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 21397504,
+     "regions": 87
+    }
+   ]
+  },
+  {
+   "t": 436.6,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1117800176,
+     "regions": 6995
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 668352512,
+     "regions": 447
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 363085824,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24592384,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 21626880,
+     "regions": 91
+    }
+   ]
+  },
+  {
+   "t": 451.65,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1121568472,
+     "regions": 7598
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 670957568,
+     "regions": 1077
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 363053056,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24707072,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 22986752,
+     "regions": 94
+    }
+   ]
+  },
+  {
+   "t": 466.71,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1122682584,
+     "regions": 8207
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673513472,
+     "regions": 1694
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 363053056,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24707072,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 21561344,
+     "regions": 91
+    }
+   ]
+  },
+  {
+   "t": 481.76,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1123010264,
+     "regions": 8929
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673382400,
+     "regions": 2400
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 363053056,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24739840,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 21889024,
+     "regions": 92
+    }
+   ]
+  },
+  {
+   "t": 496.82,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1289570008,
+     "regions": 9603
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 839385088,
+     "regions": 3062
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 363053056,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24739840,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 22315008,
+     "regions": 94
+    }
+   ]
+  },
+  {
+   "t": 511.88,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 929154776,
+     "regions": 10056
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 478887936,
+     "regions": 3512
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 362987520,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24788992,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 22495232,
+     "regions": 97
+    }
+   ]
+  },
+  {
+   "t": 526.94,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1146291952,
+     "regions": 7269
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 671154176,
+     "regions": 745
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 364085248,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 54837248,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24903680,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 23674880,
+     "regions": 98
+    }
+   ]
+  },
+  {
+   "t": 541.99,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1148356336,
+     "regions": 7854
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673775616,
+     "regions": 1334
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 364085248,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 54837248,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24903680,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 23150592,
+     "regions": 97
+    }
+   ]
+  },
+  {
+   "t": 557.08,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1315620592,
+     "regions": 8565
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 840990720,
+     "regions": 2019
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 364036096,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 54837248,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 24985600,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 22970368,
+     "regions": 99
+    }
+   ]
+  },
+  {
+   "t": 572.22,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 923092720,
+     "regions": 6883
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 470548480,
+     "regions": 335
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 363790336,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 25526272,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 23232512,
+     "regions": 101
+    }
+   ]
+  },
+  {
+   "t": 587.3,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1123600112,
+     "regions": 7321
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 670892032,
+     "regions": 797
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 363724800,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 26001408,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 23134208,
+     "regions": 103
+    }
+   ]
+  },
+  {
+   "t": 602.41,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1126139632,
+     "regions": 7943
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673480704,
+     "regions": 1415
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 363757568,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 26066944,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 22970368,
+     "regions": 103
+    }
+   ]
+  },
+  {
+   "t": 617.51,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1126450928,
+     "regions": 8641
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673447936,
+     "regions": 2111
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 363741184,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 26083328,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 23314432,
+     "regions": 105
+    }
+   ]
+  },
+  {
+   "t": 632.61,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 1126418160,
+     "regions": 9317
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 673513472,
+     "regions": 2790
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 363675648,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 26066944,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 23314432,
+     "regions": 105
+    }
+   ]
+  },
+  {
+   "t": 647.73,
+   "pid": 1795,
+   "top": [
+    {
+     "category": "TOTAL",
+     "dirty": 906200816,
+     "regions": 9849
+    },
+    {
+     "category": "Owned physical footprint (unmapped) (graphics)",
+     "dirty": 453050368,
+     "regions": 3305
+    },
+    {
+     "category": "WebKit Malloc",
+     "dirty": 363659264,
+     "regions": 94
+    },
+    {
+     "category": "WebAssembly Memory",
+     "dirty": 32227328,
+     "regions": 484
+    },
+    {
+     "category": "JS JIT Generated Code",
+     "dirty": 26132480,
+     "regions": 5
+    },
+    {
+     "category": "Untagged",
+     "dirty": 23429120,
+     "regions": 108
+    }
+   ]
+  }
+ ]
+}

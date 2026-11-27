@@ -1,0 +1,2179 @@
+{
+ "cell": "chromium-webgpu",
+ "runtime": "chromium",
+ "backend": "webgpu",
+ "ua": "156.0.8078.4",
+ "started": "2026-11-27T16:10:48.685Z",
+ "checks": {
+  "frames": {
+   "query": "mode=frames&renderer=webgpu&canon=chromium-webgpu",
+   "canonical": "d6784fc3c3d16a2f",
+   "pinned": true,
+   "loads": [
+    {
+     "load": 1,
+     "label": "load 1",
+     "ok": false,
+     "digest": "6c71010b15ee8e60",
+     "match": false,
+     "differ": [
+      "filmSecond"
+     ],
+     "verdicts": {
+      "particlesSameAsHeadless": true,
+      "particlesDrawnByHost": true,
+      "particlesDistinctFrames": true,
+      "restoredSame": true,
+      "filmTwiceIdentical": false,
+      "stillMatchesCanvas": true,
+      "readbackHasContent": true,
+      "exportAfterStillSame": true,
+      "alphaPremultiplied": true,
+      "noErrors": true,
+      "backend": true,
+      "notTimedOut": true
+     },
+     "ms": 30522,
+     "wall": {
+      "start": 1795795859117,
+      "end": 1795795889639
+     },
+     "gpuLoad": {
+      "samples": 11,
+      "gpuUtil": {
+       "min": 0,
+       "median": 36,
+       "max": 52
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.2,
+       "webkit:com.apple.WebKit.WebContent": 0.3,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 0.2,
+       "browser:Microsoft Edge": 0.3,
+       "browser:msedge_crashpad_handler": 0,
+       "gaea:Gaea": 1.5,
+       "node:node": 12.3,
+       "chromium:Google Chrome for Testing": 8.9,
+       "chromium:chrome_crashpad_handler": 1.2,
+       "chromium:Google Chrome for Testing Helper (GPU)": 38.6,
+       "chromium:Google Chrome for Testing Helper": 2,
+       "chromium:Google Chrome for Testing Helper (Alerts)": 0,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 125.5
+      },
+      "first": {
+       "at": 1795795859117,
+       "gpuUtil": 0,
+       "processes": [
+        "node:node 4.4%",
+        "chromium:Google Chrome for Testing 7.8%",
+        "chromium:chrome_crashpad_handler 1.2%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795795889182,
+       "gpuUtil": 52,
+       "processes": [
+        "node:node 2.4%",
+        "chromium:Google Chrome for Testing 8.9%",
+        "chromium:Google Chrome for Testing Helper (GPU) 38.6%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 112.1%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "particles": {
+      "final": "09ef4d21b00189d1",
+      "distinctFrames": 361,
+      "batch": {
+       "renderer": "three.quarks/webgpu",
+       "batches": 3,
+       "particles": 1149
+      }
+     },
+     "film": {
+      "frames": 1080,
+      "first": {
+       "frames": 1080,
+       "audioBytes": 8640044,
+       "fps": [
+        24,
+        1
+       ],
+       "seconds": 45,
+       "width": 1920,
+       "height": 1080,
+       "backend": "webgpu",
+       "steps": 2700,
+       "audioHash": "7a6ff838",
+       "check": null,
+       "ms": {
+        "total": 8706.3,
+        "begin": 226.6,
+        "render": 2194.1,
+        "readback": 805.7,
+        "wait": 4.2,
+        "audio": 206.7,
+        "end": 0
+       },
+       "perFrameMs": {
+        "render": 2.03,
+        "readback": 0.75,
+        "wait": 0,
+        "total": 8.06
+       },
+       "framesPerSecond": 124.05,
+       "steamDrawn": true,
+       "digest": "50d3922419201ff4",
+       "distinct": 1080,
+       "worldDigest": "639c5bf78f575379"
+      },
+      "second": {
+       "frames": 1080,
+       "audioBytes": 8640044,
+       "fps": [
+        24,
+        1
+       ],
+       "seconds": 45,
+       "width": 1920,
+       "height": 1080,
+       "backend": "webgpu",
+       "steps": 2700,
+       "audioHash": "7a6ff838",
+       "check": null,
+       "ms": {
+        "total": 8928.2,
+        "begin": 206.7,
+        "render": 2162.3,
+        "readback": 807.3,
+        "wait": 3.1,
+        "audio": 210.6,
+        "end": 0
+       },
+       "perFrameMs": {
+        "render": 2,
+        "readback": 0.75,
+        "wait": 0,
+        "total": 8.27
+       },
+       "framesPerSecond": 120.97,
+       "steamDrawn": true,
+       "digest": "70bd79533bde99f3",
+       "distinct": 1080,
+       "worldDigest": "639c5bf78f575379"
+      },
+      "framesDiffer": [
+       47,
+       68,
+       105,
+       773,
+       834
+      ],
+      "odd": [
+       {
+        "export": "second",
+        "frame": 47,
+        "hash": "a60a3eff56b4c58e",
+        "canonical": "132f25b74607ca34",
+        "topDown": true
+       },
+       {
+        "export": "second",
+        "frame": 68,
+        "hash": "41fda170bc797c0e",
+        "canonical": "5bc168002c1e03aa",
+        "topDown": true
+       },
+       {
+        "export": "second",
+        "frame": 105,
+        "hash": "36e79bf515b05684",
+        "canonical": "7a0216c11782be65",
+        "topDown": true
+       },
+       {
+        "export": "second",
+        "frame": 773,
+        "hash": "51696b5ad55baa98",
+        "canonical": "4aa87f1677aabdc1",
+        "topDown": true
+       },
+       {
+        "export": "second",
+        "frame": 834,
+        "hash": "6a9c019f5e5f259f",
+        "canonical": "0e0a95277144850b"
+       }
+      ]
+     },
+     "readback": {
+      "still640": {
+       "content": 1
+      },
+      "1080p": {
+       "renderMs": {
+        "median": 1.6,
+        "p95": 2.3,
+        "min": 1.3,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 0.3,
+        "p95": 1.4,
+        "min": 0.1,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 0.5,
+        "p95": 1.4,
+        "min": 0.4,
+        "n": 30
+       },
+       "hash": "4c1ad7c1dbc06059",
+       "content": 1
+      },
+      "4k": {
+       "renderMs": {
+        "median": 2.7,
+        "p95": 4.2,
+        "min": 2.3,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 1.7,
+        "p95": 4,
+        "min": 0.5,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 1.3,
+        "p95": 2.4,
+        "min": 1.1,
+        "n": 30
+       },
+       "hash": "5b8569da41e816bb",
+       "content": 1
+      },
+      "1366x768": {
+       "renderMs": {
+        "median": 1.4,
+        "p95": 1.7,
+        "min": 1.2,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 0.2,
+        "p95": 1.2,
+        "min": 0,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 0.4,
+        "p95": 0.7,
+        "min": 0.3,
+        "n": 30
+       },
+       "hash": "ebcc87643cfbd9e3",
+       "content": 1
+      }
+     },
+     "alpha": {
+      "raw": [
+       127,
+       0,
+       0,
+       128
+      ],
+      "toImageRGBA": [
+       253,
+       0,
+       0,
+       128
+      ],
+      "clearCorner": [
+       127,
+       0,
+       0,
+       128
+      ]
+     },
+     "kind": "pixels"
+    },
+    {
+     "load": 1,
+     "label": "rerun of load 1",
+     "ok": false,
+     "digest": "99f978bb5d0baddf",
+     "match": false,
+     "differ": [
+      "filmSecond"
+     ],
+     "verdicts": {
+      "particlesSameAsHeadless": true,
+      "particlesDrawnByHost": true,
+      "particlesDistinctFrames": true,
+      "restoredSame": true,
+      "filmTwiceIdentical": false,
+      "stillMatchesCanvas": true,
+      "readbackHasContent": true,
+      "exportAfterStillSame": true,
+      "alphaPremultiplied": true,
+      "noErrors": true,
+      "backend": true,
+      "notTimedOut": true
+     },
+     "ms": 30709,
+     "wall": {
+      "start": 1795795889649,
+      "end": 1795795920358
+     },
+     "gpuLoad": {
+      "samples": 15,
+      "gpuUtil": {
+       "min": 0,
+       "median": 36,
+       "max": 52
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.2,
+       "webkit:com.apple.WebKit.WebContent": 0.2,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 0.1,
+       "browser:Microsoft Edge": 0.2,
+       "browser:msedge_crashpad_handler": 0,
+       "gaea:Gaea": 2.7,
+       "node:node": 12.3,
+       "chromium:Google Chrome for Testing": 8.9,
+       "chromium:chrome_crashpad_handler": 0,
+       "chromium:Google Chrome for Testing Helper (GPU)": 38.6,
+       "chromium:Google Chrome for Testing Helper": 2.9,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 133.8,
+       "python:Python": 0
+      },
+      "first": {
+       "at": 1795795877179,
+       "gpuUtil": 37,
+       "processes": [
+        "node:node 12.3%",
+        "chromium:Google Chrome for Testing 2.6%",
+        "chromium:Google Chrome for Testing Helper (GPU) 33.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 125.5%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795795919199,
+       "gpuUtil": 45,
+       "processes": [
+        "node:node 10.7%",
+        "chromium:Google Chrome for Testing 5.9%",
+        "chromium:Google Chrome for Testing Helper (GPU) 11.6%",
+        "chromium:Google Chrome for Testing Helper 2.9%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 121%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "timedOut": false,
+     "particles": {
+      "final": "09ef4d21b00189d1",
+      "distinctFrames": 361,
+      "batch": {
+       "renderer": "three.quarks/webgpu",
+       "batches": 3,
+       "particles": 1149
+      }
+     },
+     "film": {
+      "frames": 1080,
+      "first": {
+       "frames": 1080,
+       "audioBytes": 8640044,
+       "fps": [
+        24,
+        1
+       ],
+       "seconds": 45,
+       "width": 1920,
+       "height": 1080,
+       "backend": "webgpu",
+       "steps": 2700,
+       "audioHash": "7a6ff838",
+       "check": null,
+       "ms": {
+        "total": 8968,
+        "begin": 235.5,
+        "render": 2198.2,
+        "readback": 804.2,
+        "wait": 3.2,
+        "audio": 217.8,
+        "end": 0
+       },
+       "perFrameMs": {
+        "render": 2.04,
+        "readback": 0.74,
+        "wait": 0,
+        "total": 8.3
+       },
+       "framesPerSecond": 120.43,
+       "steamDrawn": true,
+       "digest": "50d3922419201ff4",
+       "distinct": 1080,
+       "worldDigest": "639c5bf78f575379"
+      },
+      "second": {
+       "frames": 1080,
+       "audioBytes": 8640044,
+       "fps": [
+        24,
+        1
+       ],
+       "seconds": 45,
+       "width": 1920,
+       "height": 1080,
+       "backend": "webgpu",
+       "steps": 2700,
+       "audioHash": "7a6ff838",
+       "check": null,
+       "ms": {
+        "total": 8892.3,
+        "begin": 214.9,
+        "render": 2106.2,
+        "readback": 789.1,
+        "wait": 2.9,
+        "audio": 201.4,
+        "end": 0
+       },
+       "perFrameMs": {
+        "render": 1.95,
+        "readback": 0.73,
+        "wait": 0,
+        "total": 8.23
+       },
+       "framesPerSecond": 121.45,
+       "steamDrawn": true,
+       "digest": "878a89d7c88e1b64",
+       "distinct": 1080,
+       "worldDigest": "639c5bf78f575379"
+      },
+      "framesDiffer": [
+       731,
+       1050
+      ],
+      "odd": [
+       {
+        "export": "second",
+        "frame": 731,
+        "hash": "917cea0637f06c81",
+        "canonical": "e55c819749453c3e",
+        "topDown": true
+       },
+       {
+        "export": "second",
+        "frame": 1050,
+        "hash": "ee8addc6048dd004",
+        "canonical": "7b70a57013012b63",
+        "topDown": true
+       }
+      ]
+     },
+     "readback": {
+      "still640": {
+       "content": 1
+      },
+      "1080p": {
+       "renderMs": {
+        "median": 1.5,
+        "p95": 2,
+        "min": 1.1,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 0.3,
+        "p95": 1.3,
+        "min": 0.1,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 0.5,
+        "p95": 0.6,
+        "min": 0.4,
+        "n": 30
+       },
+       "hash": "4c1ad7c1dbc06059",
+       "content": 1
+      },
+      "4k": {
+       "renderMs": {
+        "median": 2,
+        "p95": 2.9,
+        "min": 1.7,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 1.6,
+        "p95": 3.5,
+        "min": 0.6,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 1.2,
+        "p95": 1.5,
+        "min": 1.1,
+        "n": 30
+       },
+       "hash": "5b8569da41e816bb",
+       "content": 1
+      },
+      "1366x768": {
+       "renderMs": {
+        "median": 1.3,
+        "p95": 2.1,
+        "min": 1.2,
+        "n": 30
+       },
+       "exportLoopMs": {
+        "median": 0.2,
+        "p95": 1.3,
+        "min": 0.1,
+        "n": 30
+       },
+       "afterFrameMs": {
+        "median": 0.4,
+        "p95": 0.7,
+        "min": 0.3,
+        "n": 30
+       },
+       "hash": "ebcc87643cfbd9e3",
+       "content": 1
+      }
+     },
+     "alpha": {
+      "raw": [
+       127,
+       0,
+       0,
+       128
+      ],
+      "toImageRGBA": [
+       253,
+       0,
+       0,
+       128
+      ],
+      "clearCorner": [
+       127,
+       0,
+       0,
+       128
+      ]
+     },
+     "kind": "pixels"
+    }
+   ],
+   "incidents": [],
+   "failure": {
+    "load": 1,
+    "why": "the rerun differs too",
+    "failed": {
+     "load": 1,
+     "kind": "pixels",
+     "digest": "6c71010b15ee8e60",
+     "differ": [
+      "filmSecond"
+     ],
+     "verdicts": [
+      "filmTwiceIdentical"
+     ],
+     "gpuLoad": {
+      "samples": 11,
+      "gpuUtil": {
+       "min": 0,
+       "median": 36,
+       "max": 52
+      },
+      "seen": {
+       "browser:Microsoft Edge Helper (Renderer)": 0.2,
+       "webkit:com.apple.WebKit.WebContent": 0.3,
+       "webkit:com.apple.WebKit.GPU": 0,
+       "browser:Microsoft Edge Helper": 0.2,
+       "browser:Microsoft Edge": 0.3,
+       "browser:msedge_crashpad_handler": 0,
+       "gaea:Gaea": 1.5,
+       "node:node": 12.3,
+       "chromium:Google Chrome for Testing": 8.9,
+       "chromium:chrome_crashpad_handler": 1.2,
+       "chromium:Google Chrome for Testing Helper (GPU)": 38.6,
+       "chromium:Google Chrome for Testing Helper": 2,
+       "chromium:Google Chrome for Testing Helper (Alerts)": 0,
+       "chromium:Google Chrome for Testing Helper (Renderer)": 125.5
+      },
+      "first": {
+       "at": 1795795859117,
+       "gpuUtil": 0,
+       "processes": [
+        "node:node 4.4%",
+        "chromium:Google Chrome for Testing 7.8%",
+        "chromium:chrome_crashpad_handler 1.2%"
+       ],
+       "otherGpuHelpers": 1
+      },
+      "last": {
+       "at": 1795795889182,
+       "gpuUtil": 52,
+       "processes": [
+        "node:node 2.4%",
+        "chromium:Google Chrome for Testing 8.9%",
+        "chromium:Google Chrome for Testing Helper (GPU) 38.6%",
+        "chromium:Google Chrome for Testing Helper (Renderer) 112.1%"
+       ],
+       "otherGpuHelpers": 1
+      }
+     },
+     "underLoad": {
+      "loaded": false,
+      "why": "quiet"
+     },
+     "errors": [],
+     "oddFrames": [
+      {
+       "export": "second",
+       "frame": 47,
+       "hash": "a60a3eff56b4c58e",
+       "canonical": "132f25b74607ca34",
+       "tiles": [
+        "7f905622",
+        "26c44d84",
+        "88c07fea",
+        "ae35f8e0",
+        "f336c4c",
+        "c87770fa",
+        "6fab8fa4",
+        "54506fba",
+        "e8c7d9c8",
+        "a6b23fb3",
+        "990a6b92",
+        "750144f2",
+        "8b2c3c5b",
+        "5c819925",
+        "2d7943da",
+        "bd19e823",
+        "3d60a67b",
+        "ac1bfcb0",
+        "a46e15cf",
+        "dbe4995",
+        "ead55da3",
+        "75bb3b3a",
+        "50ecba8f",
+        "96fb50ba",
+        "ed5ec077",
+        "64ebc711",
+        "6c267005",
+        "83ea8850",
+        "f064d397",
+        "4b10cae3",
+        "175ffe7b",
+        "1d5a0310",
+        "ccf78017",
+        "5e1eb08",
+        "2f7fd822",
+        "251411c6",
+        "8779b44b",
+        "852c066b",
+        "47e1459a",
+        "816cf0b2",
+        "4ecac3ce",
+        "6a79d8a5",
+        "41c14da3",
+        "9534361f",
+        "9c068b9f",
+        "e74d6bbc",
+        "43854d7e",
+        "6d85af1c",
+        "bac6fe3d",
+        "59821755",
+        "e35a61cf",
+        "9fab621a",
+        "f975e3d5",
+        "fb71e812",
+        "f6f97704",
+        "bce28a21",
+        "8e1e0c18",
+        "87b496bc",
+        "1afb981a",
+        "4aaaf7ed",
+        "173c268a",
+        "5449c46b",
+        "27dbe92d",
+        "ab73b0ce",
+        "7eeb6bef",
+        "340368ad",
+        "9654e034",
+        "31e67c41",
+        "e379354b",
+        "23958efa",
+        "f912f1d9",
+        "9614ab18",
+        "5822fda0",
+        "2c1d67f8",
+        "75c2a807",
+        "2427d6ac",
+        "c9249c82",
+        "70727af3",
+        "8a9135ee",
+        "a9aeeffc",
+        "e6d4e1eb",
+        "ba47edaf",
+        "93868ee4",
+        "efb40b22",
+        "91cae9e",
+        "78d640a7",
+        "7882d820",
+        "2485bb14",
+        "8e4b3f58",
+        "c0c842ca",
+        "3aa96e3c",
+        "ab371d85",
+        "79c35da3",
+        "6ebe34b5",
+        "67324d9c",
+        "284f1faf",
+        "d093a93",
+        "ff857e5d",
+        "d804b68e",
+        "f86945b9",
+        "589eb22",
+        "33bd94d1",
+        "1fc7f055",
+        "fbc835ee",
+        "f55e86",
+        "d11e6b9",
+        "c6ba0796",
+        "dd56bb87",
+        "bcc80db6",
+        "52edba0e",
+        "fce8492d",
+        "6b8f74dd",
+        "e552ce1",
+        "df0a7dbd",
+        "66a12b58",
+        "89fb9232",
+        "3fdd31d3",
+        "eadb3110",
+        "625d1aee",
+        "732f8806",
+        "cab134a7",
+        "9a7300a0",
+        "4156de1",
+        "ad65258d",
+        "f662ad45",
+        "a37d2cf4",
+        "1b8a681c",
+        "35fe97e7",
+        "734ce3c2",
+        "a45f1d1e",
+        "c6bff25d",
+        "86c32e0e",
+        "632a432c",
+        "5a591497",
+        "9c983c83",
+        "98cbe096",
+        "3f6024d8",
+        "8630fd09",
+        "f3ab6c97",
+        "bc05f1ce",
+        "6f8be178",
+        "e152ba20",
+        "63fdfbc3",
+        "f8a742bb"
+       ],
+       "topDown": true
+      },
+      {
+       "export": "second",
+       "frame": 68,
+       "hash": "41fda170bc797c0e",
+       "canonical": "5bc168002c1e03aa",
+       "tiles": [
+        "8dbfe4a5",
+        "9190e26c",
+        "462a2b83",
+        "5d535801",
+        "35fe0933",
+        "25931b53",
+        "61ad492",
+        "ac8a64fa",
+        "3218f380",
+        "4b27f0e8",
+        "473e48bb",
+        "bd25cccf",
+        "defd27a",
+        "250a2329",
+        "f42b8773",
+        "dc028fe1",
+        "cc7e7699",
+        "344e9305",
+        "18b556ca",
+        "5857ac25",
+        "2c9c15e5",
+        "ca39c300",
+        "4823b784",
+        "cf0487a2",
+        "c9809253",
+        "4e8b719b",
+        "1355a98d",
+        "98293e70",
+        "2821cc9c",
+        "94be340e",
+        "7768186e",
+        "d32d7774",
+        "68dbe089",
+        "7da3db31",
+        "60b60109",
+        "6384ae63",
+        "7d5b21c2",
+        "21e7a88c",
+        "1d5232b5",
+        "f6dd7fae",
+        "ecb9f313",
+        "28284782",
+        "cc999c0b",
+        "38a534da",
+        "7b474df0",
+        "7614547c",
+        "a7c19b79",
+        "1bc054d2",
+        "50592522",
+        "b488fd82",
+        "578750d7",
+        "2abc056a",
+        "47fea4aa",
+        "e73c6597",
+        "ee842bff",
+        "10a0e75e",
+        "8856b5df",
+        "c4f29791",
+        "4ab335f4",
+        "f11dbd9a",
+        "f6a93dfe",
+        "fd019b3b",
+        "9f1069f6",
+        "af173e2e",
+        "336a412d",
+        "3eb9f870",
+        "8a9004be",
+        "ae9506dd",
+        "74c4b3d6",
+        "322f89b2",
+        "ea7ea71f",
+        "31ef167",
+        "4fa291a3",
+        "a51efa01",
+        "7272565f",
+        "423f1249",
+        "28064454",
+        "7b39d51b",
+        "594256e7",
+        "52e38d77",
+        "60b75a1b",
+        "32b1b16b",
+        "4fd0c29b",
+        "8ab2d68",
+        "7e5315a3",
+        "624ca1c1",
+        "955f97d8",
+        "6ebe987e",
+        "1b62fa68",
+        "1769fe7b",
+        "2c60369d",
+        "877738c0",
+        "79e4bb",
+        "303d68c1",
+        "a1998458",
+        "457b45fe",
+        "166df81b",
+        "35f751bf",
+        "f45b1c17",
+        "df34783",
+        "8a43218d",
+        "9ebecf87",
+        "7722f1a8",
+        "5e43582b",
+        "e7fe3d0e",
+        "30ea8f3f",
+        "79db7a0e",
+        "c6e1b927",
+        "de2be45c",
+        "b6cfab5e",
+        "8b0e1296",
+        "254d215c",
+        "5daf5a58",
+        "10d22a6c",
+        "77abed4a",
+        "b12916d7",
+        "cad79a16",
+        "b3d43ce8",
+        "fdd6d185",
+        "1371fede",
+        "aa0ab541",
+        "12e0dc1b",
+        "f450449f",
+        "dc46cd4f",
+        "13a328fc",
+        "c4d0a1aa",
+        "22f72e5b",
+        "e25f3e9d",
+        "193609eb",
+        "41b5755f",
+        "c20c451c",
+        "e80980de",
+        "ee738b21",
+        "bdfc6191",
+        "e6427adb",
+        "ce62c434",
+        "7869b365",
+        "bfb06c09",
+        "ab437eae",
+        "4c495b01",
+        "5833dfc4",
+        "acc968c",
+        "d3143c40",
+        "2bb4722f"
+       ],
+       "topDown": true
+      },
+      {
+       "export": "second",
+       "frame": 105,
+       "hash": "36e79bf515b05684",
+       "canonical": "7a0216c11782be65",
+       "tiles": [
+        "ba88a1c0",
+        "34df5b35",
+        "cba94d47",
+        "367ab9b6",
+        "43cbed1b",
+        "d9a14543",
+        "5c7d526d",
+        "aa025bb6",
+        "f9d7a9ca",
+        "7a834ef6",
+        "65c205fc",
+        "c83c7e79",
+        "cd2d906e",
+        "150485b4",
+        "6467859b",
+        "b6d864fd",
+        "dde2ec42",
+        "1495f572",
+        "6969004a",
+        "16788be2",
+        "28e85c1b",
+        "ad3d009",
+        "6a2170c3",
+        "43746ba9",
+        "c8d36be7",
+        "ce3bea9a",
+        "c58db005",
+        "636e84d0",
+        "ffd71570",
+        "62029442",
+        "862b3696",
+        "27ce9401",
+        "110529a1",
+        "502edbfc",
+        "44171035",
+        "afdb17f3",
+        "114fb00e",
+        "709cca2b",
+        "37166d5d",
+        "bd17d01a",
+        "f3387323",
+        "d6553469",
+        "4e22634c",
+        "6fcc2360",
+        "b7780859",
+        "ee8dd970",
+        "35792248",
+        "5bdcc10b",
+        "98be85eb",
+        "bef3e1a0",
+        "22d548fd",
+        "13357eb8",
+        "92d4333e",
+        "e00fd038",
+        "571bd0c5",
+        "d1262a13",
+        "49003ebf",
+        "b7966e4e",
+        "c2e73f97",
+        "6816d3c6",
+        "dc048f55",
+        "6ef3a592",
+        "fe961492",
+        "35efcde",
+        "48b88d4",
+        "42033db",
+        "645d7d49",
+        "d4846132",
+        "5bf37019",
+        "6ed1cf49",
+        "35a1a950",
+        "604f8ebb",
+        "1676bf53",
+        "60c6eecb",
+        "f49a0d98",
+        "7bd736c6",
+        "1bb4df8e",
+        "13d5238f",
+        "ff5dedd9",
+        "4d91d209",
+        "fbc65b4b",
+        "955e1267",
+        "2cd7d5c4",
+        "9208e2fe",
+        "1fc40e17",
+        "f05e2b2b",
+        "bd878ed0",
+        "4e66819d",
+        "6fc5d3d7",
+        "ea95d35a",
+        "1ad69c32",
+        "60d7650b",
+        "1fa1847",
+        "84b8daf9",
+        "cefc82b5",
+        "84948653",
+        "9a02373a",
+        "aba1acc1",
+        "c3ce5c60",
+        "8e25922",
+        "60d86508",
+        "b8365b90",
+        "d48460b5",
+        "bbdaea1",
+        "b4c5979a",
+        "2dd166b2",
+        "895c3934",
+        "b88e0eee",
+        "b656b9dc",
+        "47a6e4f0",
+        "234fd6bd",
+        "5b908a62",
+        "bc4239a",
+        "d1f6203",
+        "2388fa9f",
+        "cff91ff5",
+        "48eb0248",
+        "5a7bd95a",
+        "99331fc4",
+        "c97691bf",
+        "1bbf7cc",
+        "3d2c24de",
+        "6e9ddeff",
+        "97e9f3a1",
+        "7d858aae",
+        "9284337",
+        "246b9f81",
+        "dd4da2fd",
+        "de49297",
+        "e81813b5",
+        "db2abb10",
+        "29088a5a",
+        "6791cfef",
+        "64600a80",
+        "607493c9",
+        "3a0d667b",
+        "cd088b2e",
+        "5f233192",
+        "970e1de0",
+        "d38e4967",
+        "92c9689",
+        "9573e442",
+        "e977b728",
+        "52aba11a"
+       ],
+       "topDown": true
+      },
+      {
+       "export": "second",
+       "frame": 773,
+       "hash": "51696b5ad55baa98",
+       "canonical": "4aa87f1677aabdc1",
+       "tiles": [
+        "9ac1dae5",
+        "f10cd781",
+        "c0416c39",
+        "852c3af8",
+        "982a9091",
+        "40251efa",
+        "7853d76d",
+        "9d2c054c",
+        "7f6fb22d",
+        "69365e5d",
+        "a30349cf",
+        "42ea3584",
+        "afba3125",
+        "1ba2082b",
+        "13b82b62",
+        "b62314fd",
+        "f1ed5336",
+        "280bd23c",
+        "40225b5f",
+        "8f6d15c7",
+        "e207cea1",
+        "2598b7b1",
+        "d791c682",
+        "1c6a2695",
+        "dbd91bb7",
+        "71aa96e4",
+        "95613b76",
+        "d18965e0",
+        "a4cec8ae",
+        "6429e3e6",
+        "5ac9c3f9",
+        "9b132801",
+        "b27b7b53",
+        "96c80141",
+        "ba68a1a5",
+        "ee2da8c5",
+        "262939be",
+        "fa1272ae",
+        "4808e4bc",
+        "8c518bfd",
+        "f5dd2feb",
+        "e6a302e7",
+        "5ee8ac60",
+        "d146e336",
+        "7b882eba",
+        "764a074b",
+        "fca87c49",
+        "8a27c71a",
+        "9cc0596a",
+        "afaa6fef",
+        "47e5d614",
+        "c0ef24a0",
+        "a3994828",
+        "a66a37f1",
+        "b2f20d96",
+        "cb514690",
+        "a8df911b",
+        "2c010ab7",
+        "39c92d6b",
+        "9271346a",
+        "694b6994",
+        "f8f6ed82",
+        "79b41e3c",
+        "664b2b32",
+        "7f813f23",
+        "2b0561e4",
+        "2d7534f8",
+        "d8987a9e",
+        "e136fdf2",
+        "71423fb0",
+        "b3d05dac",
+        "5cebd34",
+        "2cdcc93f",
+        "85488522",
+        "d769e7e7",
+        "918bf29c",
+        "35f73a00",
+        "77d12e6c",
+        "e6e145b",
+        "ef8fb53",
+        "6f71f975",
+        "93e23e5a",
+        "56919a87",
+        "aa7c7af0",
+        "33ec1077",
+        "49330627",
+        "b9848213",
+        "e0db5ec0",
+        "1456961c",
+        "5fd835fc",
+        "87400ab0",
+        "c3fdc7f0",
+        "e2d2e0c6",
+        "ca5162c5",
+        "42fdb0a8",
+        "75509140",
+        "71643556",
+        "a7984d14",
+        "7ff5b725",
+        "cbe74dc7",
+        "80891f30",
+        "91420735",
+        "2b6f48f1",
+        "c1d7e3e4",
+        "4509563f",
+        "b3fef5b7",
+        "bd568ad8",
+        "d1977c4a",
+        "f0ed6e46",
+        "6c9dfc1a",
+        "92c7b4ee",
+        "244ae835",
+        "e0af7b31",
+        "97ec637",
+        "ffebdc21",
+        "2f3f0f6e",
+        "76f9bc8c",
+        "e580647c",
+        "5ba0b1cb",
+        "530db8b",
+        "64080223",
+        "cdcdf38f",
+        "8097c499",
+        "3804c628",
+        "efc7bda8",
+        "147d84d5",
+        "a876f059",
+        "eafafc50",
+        "ecc3fcdc",
+        "5fbfacab",
+        "1caa6315",
+        "ecc9687",
+        "182ad3ff",
+        "763e4d2e",
+        "fadb164a",
+        "f3d2321b",
+        "f1b38ab8",
+        "132c19f2",
+        "86a80bd7",
+        "4f4e0481",
+        "b63abd1b",
+        "5910ba44",
+        "6db04865",
+        "f003017d"
+       ],
+       "topDown": true
+      },
+      {
+       "export": "second",
+       "frame": 834,
+       "hash": "6a9c019f5e5f259f",
+       "canonical": "0e0a95277144850b"
+      }
+     ],
+     "pixels": {
+      "second-frame47": {
+       "size": [
+        1920,
+        1080
+       ],
+       "tiles": [
+        72
+       ],
+       "count": 4,
+       "max": 4,
+       "pixels": [
+        {
+         "x": 1050,
+         "y": 579,
+         "failed": [
+          168,
+          161,
+          150,
+          255
+         ],
+         "rerun": [
+          169,
+          161,
+          150,
+          255
+         ]
+        },
+        {
+         "x": 1073,
+         "y": 583,
+         "failed": [
+          85,
+          92,
+          103,
+          255
+         ],
+         "rerun": [
+          86,
+          92,
+          103,
+          255
+         ]
+        },
+        {
+         "x": 1074,
+         "y": 583,
+         "failed": [
+          33,
+          33,
+          35,
+          255
+         ],
+         "rerun": [
+          33,
+          32,
+          35,
+          255
+         ]
+        },
+        {
+         "x": 1072,
+         "y": 585,
+         "failed": [
+          48,
+          47,
+          49,
+          255
+         ],
+         "rerun": [
+          52,
+          51,
+          53,
+          255
+         ]
+        }
+       ]
+      },
+      "second-frame68": {
+       "size": [
+        1920,
+        1080
+       ],
+       "tiles": [
+        72
+       ],
+       "count": 3,
+       "max": 2,
+       "pixels": [
+        {
+         "x": 1066,
+         "y": 527,
+         "failed": [
+          130,
+          124,
+          123,
+          255
+         ],
+         "rerun": [
+          131,
+          124,
+          124,
+          255
+         ]
+        },
+        {
+         "x": 1067,
+         "y": 527,
+         "failed": [
+          117,
+          116,
+          117,
+          255
+         ],
+         "rerun": [
+          115,
+          114,
+          115,
+          255
+         ]
+        },
+        {
+         "x": 1067,
+         "y": 528,
+         "failed": [
+          103,
+          101,
+          102,
+          255
+         ],
+         "rerun": [
+          102,
+          101,
+          102,
+          255
+         ]
+        }
+       ]
+      },
+      "second-frame105": {
+       "size": [
+        1920,
+        1080
+       ],
+       "tiles": [
+        72
+       ],
+       "count": 7,
+       "max": 28,
+       "pixels": [
+        {
+         "x": 1066,
+         "y": 577,
+         "failed": [
+          83,
+          82,
+          82,
+          255
+         ],
+         "rerun": [
+          85,
+          84,
+          84,
+          255
+         ]
+        },
+        {
+         "x": 1067,
+         "y": 577,
+         "failed": [
+          89,
+          87,
+          87,
+          255
+         ],
+         "rerun": [
+          116,
+          115,
+          115,
+          255
+         ]
+        },
+        {
+         "x": 1072,
+         "y": 578,
+         "failed": [
+          85,
+          84,
+          84,
+          255
+         ],
+         "rerun": [
+          84,
+          83,
+          84,
+          255
+         ]
+        },
+        {
+         "x": 1070,
+         "y": 579,
+         "failed": [
+          88,
+          87,
+          87,
+          255
+         ],
+         "rerun": [
+          87,
+          86,
+          86,
+          255
+         ]
+        },
+        {
+         "x": 1072,
+         "y": 579,
+         "failed": [
+          53,
+          52,
+          52,
+          255
+         ],
+         "rerun": [
+          54,
+          53,
+          53,
+          255
+         ]
+        },
+        {
+         "x": 1073,
+         "y": 583,
+         "failed": [
+          85,
+          91,
+          101,
+          255
+         ],
+         "rerun": [
+          85,
+          91,
+          102,
+          255
+         ]
+        },
+        {
+         "x": 1074,
+         "y": 583,
+         "failed": [
+          37,
+          36,
+          37,
+          255
+         ],
+         "rerun": [
+          37,
+          35,
+          37,
+          255
+         ]
+        }
+       ]
+      },
+      "second-frame773": {
+       "size": [
+        1920,
+        1080
+       ],
+       "tiles": [
+        25,
+        56,
+        71,
+        72,
+        88,
+        89
+       ],
+       "count": 76,
+       "max": 5,
+       "pixels": [
+        {
+         "x": 1102,
+         "y": 163,
+         "failed": [
+          224,
+          221,
+          213,
+          255
+         ],
+         "rerun": [
+          225,
+          222,
+          213,
+          255
+         ]
+        },
+        {
+         "x": 1103,
+         "y": 164,
+         "failed": [
+          224,
+          220,
+          212,
+          255
+         ],
+         "rerun": [
+          223,
+          220,
+          211,
+          255
+         ]
+        },
+        {
+         "x": 1103,
+         "y": 165,
+         "failed": [
+          223,
+          220,
+          212,
+          255
+         ],
+         "rerun": [
+          222,
+          219,
+          211,
+          255
+         ]
+        },
+        {
+         "x": 1104,
+         "y": 167,
+         "failed": [
+          222,
+          219,
+          211,
+          255
+         ],
+         "rerun": [
+          223,
+          220,
+          211,
+          255
+         ]
+        },
+        {
+         "x": 1104,
+         "y": 168,
+         "failed": [
+          223,
+          219,
+          211,
+          255
+         ],
+         "rerun": [
+          223,
+          220,
+          212,
+          255
+         ]
+        },
+        {
+         "x": 1104,
+         "y": 169,
+         "failed": [
+          221,
+          218,
+          210,
+          255
+         ],
+         "rerun": [
+          222,
+          219,
+          211,
+          255
+         ]
+        },
+        {
+         "x": 1105,
+         "y": 170,
+         "failed": [
+          222,
+          219,
+          211,
+          255
+         ],
+         "rerun": [
+          221,
+          218,
+          210,
+          255
+         ]
+        },
+        {
+         "x": 1105,
+         "y": 171,
+         "failed": [
+          223,
+          219,
+          212,
+          255
+         ],
+         "rerun": [
+          222,
+          219,
+          211,
+          255
+         ]
+        },
+        {
+         "x": 1106,
+         "y": 173,
+         "failed": [
+          221,
+          217,
+          209,
+          255
+         ],
+         "rerun": [
+          222,
+          218,
+          210,
+          255
+         ]
+        },
+        {
+         "x": 1106,
+         "y": 174,
+         "failed": [
+          219,
+          216,
+          207,
+          255
+         ],
+         "rerun": [
+          220,
+          216,
+          208,
+          255
+         ]
+        },
+        {
+         "x": 1106,
+         "y": 175,
+         "failed": [
+          218,
+          214,
+          206,
+          255
+         ],
+         "rerun": [
+          219,
+          215,
+          207,
+          255
+         ]
+        },
+        {
+         "x": 1107,
+         "y": 175,
+         "failed": [
+          221,
+          217,
+          209,
+          255
+         ],
+         "rerun": [
+          220,
+          217,
+          209,
+          255
+         ]
+        },
+        {
+         "x": 1106,
+         "y": 176,
+         "failed": [
+          221,
+          217,
+          210,
+          255
+         ],
+         "rerun": [
+          221,
+          218,
+          210,
+          255
+         ]
+        },
+        {
+         "x": 1107,
+         "y": 176,
+         "failed": [
+          221,
+          217,
+          209,
+          255
+         ],
+         "rerun": [
+          220,
+          216,
+          208,
+          255
+         ]
+        },
+        {
+         "x": 1107,
+         "y": 177,
+         "failed": [
+          221,
+          218,
+          210,
+          255
+         ],
+         "rerun": [
+          220,
+          217,
+          209,
+          255
+         ]
+        },
+        {
+         "x": 1108,
+         "y": 179,
+         "failed": [
+          221,
+          218,
+          210,
+          255
+         ],
+         "rerun": [
+          222,
+          218,
+          210,
+          255
+         ]
+        },
+        {
+         "x": 1108,
+         "y": 180,
+         "failed": [
+          219,
+          215,
+          207,
+          255
+         ],
+         "rerun": [
+          218,
+          215,
+          206,
+          255
+         ]
+        },
+        {
+         "x": 1108,
+         "y": 181,
+         "failed": [
+          219,
+          216,
+          208,
+          255
+         ],
+         "rerun": [
+          220,
+          217,
+          209,
+          255
+         ]
+        },
+        {
+         "x": 1109,
+         "y": 181,
+         "failed": [
+          233,
+          228,
+          219,
+          255
+         ],
+         "rerun": [
+          232,
+          228,
+          219,
+          255
+         ]
+        },
+        {
+         "x": 1046,
+         "y": 451,
+         "failed": [
+          49,
+          49,
+          50,
+          255
+         ],
+         "rerun": [
+          49,
+          49,
+          49,
+          255
+         ]
+        },
+        {
+         "x": 1047,
+         "y": 451,
+         "failed": [
+          48,
+          47,
+          48,
+          255
+         ],
+         "rerun": [
+          48,
+          48,
+          49,
+          255
+         ]
+        },
+        {
+         "x": 1046,
+         "y": 454,
+         "failed": [
+          45,
+          45,
+          46,
+          255
+         ],
+         "rerun": [
+          45,
+          45,
+          45,
+          255
+         ]
+        },
+        {
+         "x": 1046,
+         "y": 455,
+         "failed": [
+          45,
+          44,
+          45,
+          255
+         ],
+         "rerun": [
+          44,
+          44,
+          45,
+          255
+         ]
+        },
+        {
+         "x": 1047,
+         "y": 456,
+         "failed": [
+          43,
+          42,
+          43,
+          255
+         ],
+         "rerun": [
+          43,
+          43,
+          43,
+          255
+         ]
+        },
+        {
+         "x": 1046,
+         "y": 457,
+         "failed": [
+          45,
+          45,
+          45,
+          255
+         ],
+         "rerun": [
+          44,
+          44,
+          45,
+          255
+         ]
+        },
+        {
+         "x": 1046,
+         "y": 458,
+         "failed": [
+          44,
+          44,
+          44,
+          255
+         ],
+         "rerun": [
+          44,
+          43,
+          44,
+          255
+         ]
+        },
+        {
+         "x": 1047,
+         "y": 458,
+         "failed": [
+          43,
+          43,
+          44,
+          255
+         ],
+         "rerun": [
+          44,
+          43,
+          44,
+          255
+         ]
+        },
+        {
+         "x": 1048,
+         "y": 466,
+         "failed": [
+          36,
+          35,
+          36,
+          255
+         ],
+         "rerun": [
+          35,
+          35,
+          36,
+          255
+         ]
+        },
+        {
+         "x": 1049,
+         "y": 466,
+         "failed": [
+          36,
+          35,
+          37,
+          255
+         ],
+         "rerun": [
+          35,
+          35,
+          36,
+          255
+         ]
+        },
+        {
+         "x": 1048,
+         "y": 467,
+         "failed": [
+          36,
+          36,
+          37,
+          255
+         ],
+         "rerun": [
+          36,
+          35,
+          36,
+          255
+         ]
+        },
+        {
+         "x": 1048,
+         "y": 468,
+         "failed": [
+          36,
+          35,
+          36,
+          255
+         ],
+         "rerun": [
+          35,
+          35,
+          36,
+          255
+         ]
+        },
+        {
+         "x": 1049,
+         "y": 468,
+         "failed": [
+          36,
+          36,
+          36,
+          255
+         ],
+         "rerun": [
+          36,
+          35,
+          36,
+          255
+         ]
+        }
+       ]
+      }
+     },
+     "rerun": {
+      "kind": "pixels",
+      "ok": false,
+      "digest": "99f978bb5d0baddf",
+      "match": false,
+      "gpuLoad": {
+       "samples": 15,
+       "gpuUtil": {
+        "min": 0,
+        "median": 36,
+        "max": 52
+       },
+       "seen": {
+        "browser:Microsoft Edge Helper (Renderer)": 0.2,
+        "webkit:com.apple.WebKit.WebContent": 0.2,
+        "webkit:com.apple.WebKit.GPU": 0,
+        "browser:Microsoft Edge Helper": 0.1,
+        "browser:Microsoft Edge": 0.2,
+        "browser:msedge_crashpad_handler": 0,
+        "gaea:Gaea": 2.7,
+        "node:node": 12.3,
+        "chromium:Google Chrome for Testing": 8.9,
+        "chromium:chrome_crashpad_handler": 0,
+        "chromium:Google Chrome for Testing Helper (GPU)": 38.6,
+        "chromium:Google Chrome for Testing Helper": 2.9,
+        "chromium:Google Chrome for Testing Helper (Renderer)": 133.8,
+        "python:Python": 0
+       },
+       "first": {
+        "at": 1795795877179,
+        "gpuUtil": 37,
+        "processes": [
+         "node:node 12.3%",
+         "chromium:Google Chrome for Testing 2.6%",
+         "chromium:Google Chrome for Testing Helper (GPU) 33.9%",
+         "chromium:Google Chrome for Testing Helper (Renderer) 125.5%"
+        ],
+        "otherGpuHelpers": 1
+       },
+       "last": {
+        "at": 1795795919199,
+        "gpuUtil": 45,
+        "processes": [
+         "node:node 10.7%",
+         "chromium:Google Chrome for Testing 5.9%",
+         "chromium:Google Chrome for Testing Helper (GPU) 11.6%",
+         "chromium:Google Chrome for Testing Helper 2.9%",
+         "chromium:Google Chrome for Testing Helper (Renderer) 121%"
+        ],
+        "otherGpuHelpers": 1
+       }
+      }
+     }
+    }
+   },
+   "ok": false,
+   "allLoadsMatch": false
+  }
+ },
+ "preflight": {
+  "quiet": true,
+  "waitedMs": 10219,
+  "util": 4,
+  "why": "quiet"
+ },
+ "gpuLoad": {
+  "samples": 21,
+  "gpuUtil": {
+   "min": 0,
+   "median": 36,
+   "max": 52
+  },
+  "seen": {
+   "browser:Microsoft Edge Helper (Renderer)": 0.2,
+   "webkit:com.apple.WebKit.WebContent": 0.3,
+   "webkit:com.apple.WebKit.GPU": 0,
+   "browser:Microsoft Edge Helper": 0.2,
+   "browser:Microsoft Edge": 0.3,
+   "browser:msedge_crashpad_handler": 0,
+   "gaea:Gaea": 2.7,
+   "node:node": 12.3,
+   "chromium:Google Chrome for Testing": 8.9,
+   "chromium:chrome_crashpad_handler": 1.2,
+   "chromium:Google Chrome for Testing Helper (GPU)": 38.6,
+   "chromium:Google Chrome for Testing Helper": 2.9,
+   "chromium:Google Chrome for Testing Helper (Alerts)": 0,
+   "chromium:Google Chrome for Testing Helper (Renderer)": 133.8,
+   "python:Python": 0
+  },
+  "first": {
+   "at": 1795795859117,
+   "gpuUtil": 0,
+   "processes": [
+    "node:node 4.4%",
+    "chromium:Google Chrome for Testing 7.8%",
+    "chromium:chrome_crashpad_handler 1.2%"
+   ],
+   "otherGpuHelpers": 1
+  },
+  "last": {
+   "at": 1795795919199,
+   "gpuUtil": 45,
+   "processes": [
+    "node:node 10.7%",
+    "chromium:Google Chrome for Testing 5.9%",
+    "chromium:Google Chrome for Testing Helper (GPU) 11.6%",
+    "chromium:Google Chrome for Testing Helper 2.9%",
+    "chromium:Google Chrome for Testing Helper (Renderer) 121%"
+   ],
+   "otherGpuHelpers": 1
+  }
+ },
+ "ended": "2026-11-27T16:12:01.476Z"
+}

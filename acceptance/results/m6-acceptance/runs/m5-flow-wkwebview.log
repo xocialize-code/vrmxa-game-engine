@@ -1,0 +1,10 @@
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+scheme steady same as Node cfe3f7e9828c49b1 save true checkpoint true  [] 
+scheme varied same as Node cfe3f7e9828c49b1 save true checkpoint true  [] 
+loopback steady same as Node cfe3f7e9828c49b1 save true checkpoint true  [] 
+loopback varied same as Node cfe3f7e9828c49b1 save true checkpoint true  [] 
+### m5-flow-wkwebview: acceptance/m5/flow-wkwebview.sh — started 2026-11-27T17:26:24Z, ended 2026-11-27T17:26:27Z, exit 0

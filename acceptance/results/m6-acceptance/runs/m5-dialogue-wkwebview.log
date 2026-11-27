@@ -1,0 +1,10 @@
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+scheme steady same as Node 81eaec36719b1754 replay true clicked Choice 1 of 3: A latte, please. focused dialogue-choice-latte  [] 
+scheme varied same as Node 81eaec36719b1754 replay true clicked Choice 1 of 3: A latte, please. focused dialogue-choice-latte  [] 
+loopback steady same as Node 81eaec36719b1754 replay true clicked Choice 1 of 3: A latte, please. focused dialogue-choice-latte  [] 
+loopback varied same as Node 81eaec36719b1754 replay true clicked Choice 1 of 3: A latte, please. focused dialogue-choice-latte  [] 
+### m5-dialogue-wkwebview: acceptance/m5/dialogue-wkwebview.sh — started 2026-11-27T17:26:29Z, ended 2026-11-27T17:26:31Z, exit 0

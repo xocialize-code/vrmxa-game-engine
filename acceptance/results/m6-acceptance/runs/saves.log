@@ -1,0 +1,14 @@
+ Particle system powered by three.quarks. https://quarks.art/
+build A 689c41cac7b7 (fingerprint 2f11d26b5dae): saved at step 3000 in game/level.vrmxs, 1800 steps on (4.0 s)
+ok   texture: loaded, 1800 steps on, the same hashes
+ok   audio: loaded, 1800 steps on, the same hashes
+ok   release: loaded, 1800 steps on, the same hashes
+ok   comment: loaded, 1800 steps on, the same hashes
+ok   declared: refused (behaviours): This save was made with another version of the game, and this one can't restore it: the state the behaviour pressToStart keeps changed.
+ok   scene: refused (scenes): This save was made with another version of the game, and this one can't restore it: the scene game/level.vrmxs changed.
+ok   item: refused (assets): This save was made with another version of the game, and this one can't restore it: the item game/items/till.vrmxi changed.
+ok   input: refused (input): This save was made with another version of the game, and this one can't restore it: the game's controls changed (its action map's actions or their order).
+ok   code: refused: This save was made with another version of the game, and this one can't restore it: the code of the behaviour pressToStart changed (it declares no state, so any change to its code counts).
+ok   replay: this log was played on build 689c41cac7b7; this is build dc844c30827c: a log replays only on the build it was played on
+PASS → acceptance/results/m6-acceptance/saves-summary.json
+### saves: node acceptance/m6/saves.mjs --out acceptance/results/m6-acceptance/saves-summary.json — started 2026-11-27T15:24:32Z, ended 2026-11-27T15:24:46Z, exit 0

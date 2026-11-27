@@ -1,0 +1,251 @@
+{
+ "check": "M6 W11: the committed session logs of The Morning Rush and After Hours replayed at this commit in Node and in the game app on WebGPU and WebGL (AB-T-0652, exit checks 6 and 12)",
+ "node": "v26.12.1",
+ "chromium": "156.0.8078.4",
+ "games": {
+  "rush": {
+   "build": {
+    "digest": "689c41cac7b79e20740561577079a2d4bc7767795129762dfed80bc8227fd429",
+    "files": 117,
+    "runtime": "vrmxg-game 0.1.0+01c4bb509d4b"
+   },
+   "logs": {
+    "lose": {
+     "steps": 4819,
+     "final": {
+      "step": 4819,
+      "scene": "game/title.vrmxs",
+      "hash": "7827a18e8b107a1c"
+     },
+     "digest": "689c41cac7b79e20740561577079a2d4bc7767795129762dfed80bc8227fd429",
+     "node": {
+      "steps": 4819,
+      "final": "7827a18e8b107a1c",
+      "same": true
+     },
+     "webgpu": {
+      "backend": "webgpu",
+      "steps": 4819,
+      "final": "7827a18e8b107a1c",
+      "frames": 4827,
+      "p99": 16.80000000000291,
+      "error": null,
+      "same": true
+     },
+     "webgl": {
+      "backend": "webgl",
+      "steps": 4819,
+      "final": "7827a18e8b107a1c",
+      "frames": 4823,
+      "p99": 16.80000000000291,
+      "error": null,
+      "same": true
+     }
+    },
+    "win": {
+     "steps": 6298,
+     "final": {
+      "step": 6298,
+      "scene": "game/title.vrmxs",
+      "hash": "4381da0665630266"
+     },
+     "digest": "689c41cac7b79e20740561577079a2d4bc7767795129762dfed80bc8227fd429",
+     "node": {
+      "steps": 6298,
+      "final": "4381da0665630266",
+      "same": true
+     },
+     "webgpu": {
+      "backend": "webgpu",
+      "steps": 6298,
+      "final": "4381da0665630266",
+      "frames": 6310,
+      "p99": 16.80000000000291,
+      "error": null,
+      "same": true
+     },
+     "webgl": {
+      "backend": "webgl",
+      "steps": 6298,
+      "final": "4381da0665630266",
+      "frames": 6307,
+      "p99": 16.80000000000291,
+      "error": null,
+      "same": true
+     }
+    }
+   }
+  },
+  "after-hours": {
+   "build": {
+    "digest": "61a49e385ae41bd4ebbfe03f3db8bb097c30fcfc2eb69e12f23ecc174e0c88eb",
+    "files": 69,
+    "runtime": "vrmxg-game 0.1.0+01c4bb509d4b"
+   },
+   "logs": {
+    "lose": {
+     "steps": 3526,
+     "final": {
+      "step": 3526,
+      "scene": "after-hours/title.vrmxs",
+      "hash": "1911b477d418a6c8"
+     },
+     "digest": "61a49e385ae41bd4ebbfe03f3db8bb097c30fcfc2eb69e12f23ecc174e0c88eb",
+     "node": {
+      "steps": 3526,
+      "final": "1911b477d418a6c8",
+      "same": true
+     },
+     "webgpu": {
+      "backend": "webgpu",
+      "steps": 3526,
+      "final": "1911b477d418a6c8",
+      "frames": 3518,
+      "p99": 16.80000000000291,
+      "error": null,
+      "same": true
+     },
+     "webgl": {
+      "backend": "webgl",
+      "steps": 3526,
+      "final": "1911b477d418a6c8",
+      "frames": 3512,
+      "p99": 16.80000000000291,
+      "error": null,
+      "same": true
+     }
+    },
+    "win": {
+     "steps": 4945,
+     "final": {
+      "step": 4945,
+      "scene": "after-hours/title.vrmxs",
+      "hash": "9da9445d3b8dcec8"
+     },
+     "digest": "61a49e385ae41bd4ebbfe03f3db8bb097c30fcfc2eb69e12f23ecc174e0c88eb",
+     "node": {
+      "steps": 4945,
+      "final": "9da9445d3b8dcec8",
+      "same": true
+     },
+     "webgpu": {
+      "backend": "webgpu",
+      "steps": 4945,
+      "final": "9da9445d3b8dcec8",
+      "frames": 4936,
+      "p99": 16.80000000000291,
+      "error": null,
+      "same": true
+     },
+     "webgl": {
+      "backend": "webgl",
+      "steps": 4945,
+      "final": "9da9445d3b8dcec8",
+      "frames": 4934,
+      "p99": 16.80000000000291,
+      "error": null,
+      "same": true
+     }
+    }
+   }
+  }
+ },
+ "ok": true,
+ "checks": [
+  {
+   "name": "rush: a fresh export is whole",
+   "ok": true,
+   "detail": "117 files, digest 689c41cac7b79e20"
+  },
+  {
+   "name": "rush lose: the log names this build",
+   "ok": true,
+   "detail": "log 689c41cac7b7, export 689c41cac7b7"
+  },
+  {
+   "name": "rush lose: replays in Node to the same hash after every step",
+   "ok": true,
+   "detail": "4819 steps, final 7827a18e8b107a1c"
+  },
+  {
+   "name": "rush lose: the game app replays it drawn on WebGPU to the same hash after every step",
+   "ok": true,
+   "detail": "4819 steps on webgpu, final 7827a18e8b107a1c; 4827 frames, p99 16.8 ms"
+  },
+  {
+   "name": "rush lose: the game app replays it drawn on WebGL to the same hash after every step",
+   "ok": true,
+   "detail": "4819 steps on webgl, final 7827a18e8b107a1c; 4823 frames, p99 16.8 ms"
+  },
+  {
+   "name": "rush win: the log names this build",
+   "ok": true,
+   "detail": "log 689c41cac7b7, export 689c41cac7b7"
+  },
+  {
+   "name": "rush win: replays in Node to the same hash after every step",
+   "ok": true,
+   "detail": "6298 steps, final 4381da0665630266"
+  },
+  {
+   "name": "rush win: the game app replays it drawn on WebGPU to the same hash after every step",
+   "ok": true,
+   "detail": "6298 steps on webgpu, final 4381da0665630266; 6310 frames, p99 16.8 ms"
+  },
+  {
+   "name": "rush win: the game app replays it drawn on WebGL to the same hash after every step",
+   "ok": true,
+   "detail": "6298 steps on webgl, final 4381da0665630266; 6307 frames, p99 16.8 ms"
+  },
+  {
+   "name": "after-hours: a fresh export is whole",
+   "ok": true,
+   "detail": "69 files, digest 61a49e385ae41bd4"
+  },
+  {
+   "name": "after-hours lose: the log names this build",
+   "ok": true,
+   "detail": "log 61a49e385ae4, export 61a49e385ae4"
+  },
+  {
+   "name": "after-hours lose: replays in Node to the same hash after every step",
+   "ok": true,
+   "detail": "3526 steps, final 1911b477d418a6c8"
+  },
+  {
+   "name": "after-hours lose: the game app replays it drawn on WebGPU to the same hash after every step",
+   "ok": true,
+   "detail": "3526 steps on webgpu, final 1911b477d418a6c8; 3518 frames, p99 16.8 ms"
+  },
+  {
+   "name": "after-hours lose: the game app replays it drawn on WebGL to the same hash after every step",
+   "ok": true,
+   "detail": "3526 steps on webgl, final 1911b477d418a6c8; 3512 frames, p99 16.8 ms"
+  },
+  {
+   "name": "after-hours win: the log names this build",
+   "ok": true,
+   "detail": "log 61a49e385ae4, export 61a49e385ae4"
+  },
+  {
+   "name": "after-hours win: replays in Node to the same hash after every step",
+   "ok": true,
+   "detail": "4945 steps, final 9da9445d3b8dcec8"
+  },
+  {
+   "name": "after-hours win: the game app replays it drawn on WebGPU to the same hash after every step",
+   "ok": true,
+   "detail": "4945 steps on webgpu, final 9da9445d3b8dcec8; 4936 frames, p99 16.8 ms"
+  },
+  {
+   "name": "after-hours win: the game app replays it drawn on WebGL to the same hash after every step",
+   "ok": true,
+   "detail": "4945 steps on webgl, final 9da9445d3b8dcec8; 4934 frames, p99 16.8 ms"
+  },
+  {
+   "name": "no errors in the pages",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}
