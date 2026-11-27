@@ -140,7 +140,7 @@ Sizes are rough: S about a day, M a few days, L a week or more.
 | W5 | **Saves across updates** | S | none | AB-T-0631 | The fingerprint (below, decision 3): over what restore depends on, not the whole build; a texture-only re-export loads the save, a behaviour state change refuses it, replays compare the whole build |
 | W6 | **A game that keeps running** | M | none | AB-T-0639, 0630, 0627, 0629, 0626 | Device-loss recovery in the render host and the game app (a forced loss mid-session matches an unbroken run's hashes); the dialogue service in every host; time scale and process mode in the snapshot; the counter default; disposal of what leaves a world's root |
 | W7 | **Sharing a game** | M | W5 | AB-T-0648, AB-T-0624 | A web build that plays from a static host (checked by serving one locally and from a Worker preview); a Mac build with hardened runtime and entitlements ready for Developer ID; notices in every Mac app. The operator signs, notarises and deploys |
-| W8 | **Agents** | S | W0, W1, W3 | AB-T-0649 | MCP: new project from a template, behaviour and connection ops, project settings; validate covers project behaviours and the optional-goal fix (AB-T-0641); the skill and `llms.txt` updated |
+| W8 | **Agents** | S | W0, W1, W3 | AB-T-0649 | MCP: new project from a template, behaviour and connection ops, project settings; validate covers project behaviours and the optional-goal fix (AB-T-0641); the skill and `llms.txt` updated, with the mesheditor review's four building rules for agents (AB-T-0678, added 2026-11-26) |
 | W9 | **The game builder's guide** | M | W1, W3 | AB-T-0650 | An editor guide with screenshots and a tutorial from New Project to Export Game, in `docs/guide/`; a scenario that follows the tutorial in the Mac editor; the generated reference covers project behaviours |
 | W10 | **The second game** | M | W1–W4 | AB-T-0651 | "After Hours" built through the editor by an AppProbe scenario, its own behaviour written as a file; a recorded session replayed in three runtimes on both backends; an agent session adds a level |
 | W11 | **M6 acceptance** | S | all | AB-T-0652 | The twelve checks above, run and filed as receipts; M0 to M5 re-run at the M6 commit on both backends |
@@ -214,6 +214,13 @@ Approved with the plan (2026-11-26, AB-D-0297):
 - **Visual scripting** stays skipped (PRD §5.2). Does the connections panel plus declared behaviours cover what a
   non-programmer needs, or does M7 need more?
 - **Where a builder's games live.** Projects are folders the builder picks; is a default projects folder wanted?
+- **After M6.** The mesheditor review's (`research/mesheditor-review.md`) building rules for agents join W8
+  (AB-T-0678). Its other four recommendations need new generators and checks, and some change the sample's assets
+  (decimation always does), so they wait for M7, proposed as "worlds you can make" in the PRD (§8):
+  - building pieces (AB-T-0677);
+  - an SDF prop generator (AB-T-0676);
+  - guarded decimation and LOD (AB-T-0674);
+  - a coplanar-overlap check (AB-T-0675).
 
 ## Risks
 
