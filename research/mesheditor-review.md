@@ -75,8 +75,9 @@ Lines by area, roughly:
   - Ported files stay Apache-2.0 inside our MIT OR Apache-2.0 packages. The README lists them as it lists navcat and
     fdlibm.
 - **Two credits come with no licence text.**
-  - `reference/mesheditor/src/tools/textureUtils.ts:226`, `:1294` and `:1383` say "adapted from img2threejs", and `:248`, `:638`, `:649` and `:1169` mention it too. A GitHub
-    search finds an `img2threejs/img2threejs` repo marked Apache-2.0. I didn't confirm it is the source.
+  - `reference/mesheditor/src/tools/textureUtils.ts:226`, `:1294` and `:1383` say "adapted from img2threejs", and
+    `:248`, `:638`, `:649` and `:1169` mention it too. A GitHub search finds an `img2threejs/img2threejs` repo marked
+    Apache-2.0. I didn't confirm it is the source.
   - `reference/mesheditor/src/sdf/sdfPrimitives.ts:79` and `:119` credit Inigo Quilez's distance functions, with no
     licence named.
   - Don't port either file as code until its source and terms are confirmed. Write ours from the published formulas.
@@ -216,8 +217,7 @@ All paths in this table are under `reference/mesheditor/`.
 | Agent edits and undo | Recorded like any other action | One undo step per edit, marked, shared with the person |
 
 One tool per feature costs about six times our budget by default, and twelve to fourteen times with every tool on.
-It grows with every feature. Our generic design
-stands. Take the check-then-fix loop and the skill rules (candidate 5).
+It grows with every feature. Our generic design stands. Take the check-then-fix loop and the skill rules (candidate 5).
 
 ## Fit and risk
 
@@ -262,7 +262,7 @@ Sizes: S is about a day, M a few days. The operator approved all five on 2026-11
 ## Not checked
 
 - Nothing was installed, built or run, so there are no bundle sizes, timings or quality comparisons.
-- The token figure is an estimate from source text, not a measured serialisation.
+- The token figures are estimates from the tools' description and parameter text, not a measured serialisation.
 - Whether Babylon's GLB export keeps `KHR_physics_rigid_bodies` and `KHR_implicit_shapes`.
 - Where the decals and demo models came from, and whether the img2threejs and Inigo Quilez credits carry terms.
 - Transitive dependency licences.
