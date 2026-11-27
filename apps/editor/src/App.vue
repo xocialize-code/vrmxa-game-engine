@@ -9,7 +9,7 @@ import { inShell, call, on, onClosing, setEdited } from '../../shell/js/shell.js
 import { questions, filterTree, foldTree, readLayout, writeLayout, resize as resizePanel, toggle as togglePanel, splitterKey, shownSize, EDITOR_PANELS, dropVerdict, dropEffectFor, draggedKind, ASSET_MIME, fileKind, copyField, copyTransform, copyPart } from '@vrmxg/editor-ui';
 import { isClip } from '@vrmxg/editor-core';
 import { editorClosing } from './closing.js';
-import { exportClosing } from './export-game.js';
+import { exportClosing, gameExportLine } from './export-game.js';
 import TreeItem from './TreeItem.vue';
 import Inspector from './Inspector.vue';
 import Timeline from '@vrmxg/editor-ui/Timeline.vue'; // shared with the creator (M4 W5)
@@ -18,7 +18,7 @@ import { shortcutFor, shortcutGroups } from './shortcuts.js';
 // M6 W3 (AB-T-0646): New Project from a template, Open Recent and the project settings
 import NewProject from './NewProject.vue';
 import ProjectSettings from './ProjectSettings.vue';
-import { ProjectSettings as Settings, projectLayerUses } from './project-settings.js';
+import { ProjectSettings as Settings, projectLayerUses, settingsEdit } from './project-settings.js';
 import { loadTemplates, newProjectFrom, recentProjects, reopenProject, entryScene } from './projects.js';
 
 const canvas = ref(null);
@@ -120,7 +120,7 @@ function refresh(kind = 'all') {
   ui.ex.canCheck = x?.take === 'sequence' && !!x.frameHashes?.length;
   ui.ex.checkRows = c ? c.rows.map((r) => `${r.frame} ${r.scrub} ${r.exported}`).join('; ') : '';
   const g = ed.lastGameExport; // Export Game (M5 W0)
-  ui.ex.game = g?.refused ? `Game export refused (${g.refused}): ${g.message}` : g ? `${g.written ? 'Exported' : 'Checked'} game ${g.id}: ${g.files} files, ${g.bytes} bytes, entry ${g.entry}, runtime ${g.runtime} · build ${g.digest.slice(0, 16)} · manifest ${g.manifest.slice(0, 16)}${g.byPattern ? ` · ${g.byPattern} files licensed by a pattern row` : ''}${g.unsaved ? ' · the open scene has unsaved changes, which are not in it' : ''}${g.written ? ` · ${g.path}` : ' · not written: a build folder needs the Mac app or vrmxg-export'}` : '';
+  ui.ex.game = gameExportLine(g);
   ui.ex.still = ed.lastStill ? `${ed.lastStill.thumbnail ? 'Thumbnail' : 'Still'} ${ed.lastStill.path ?? ed.lastStill.name} · ${ed.lastStill.bytes} bytes` : '';
   ui.stopped = ed.lastStop ? `scene ${ed.lastStop.restored && ed.lastStop.hash === ed.lastStop.before ? 'as before Play' : 'CHANGED'} (${ed.lastStop.hash}), view ${ed.lastStop.viewSame ? 'unchanged' : 'CHANGED'}` : '';
 }
@@ -237,10 +237,8 @@ const settingsPlan = (row, slot, binding) => settings.planRebind(row, slot, bind
 async function settingsDo(fn) {
   if (!settings) return;
   ui.settingsBusy = true;
-  const module = settings.view().behaviours;
-  try { await fn(settings); } catch { /* the panel shows settings.error */ } finally {
-    // the behaviours module changed (M6 W9): the inspector, Play and Export Game use the one game.json names now
-    if (settings && settings.view().behaviours !== module) { try { await ed.reloadBehaviours(); } catch (e) { ed.error = String(e?.message ?? e); } }
+  // the behaviours module changed (M6 W9): the inspector, Play and Export Game use the one game.json names now
+  try { await settingsEdit(settings, fn, { onModuleChange: () => ed.reloadBehaviours() }); } catch (e) { ed.error = String(e?.message ?? e); } finally {
     ui.settingsBusy = false;
     if (settings) { ui.settings = settings.view(); ed.gameLayers = settings.view().layers?.length ? [...settings.view().layers] : ['default']; } // the inspector's layer menus (M6 W1)
     refresh(); // a new game.json, or a scene's file list

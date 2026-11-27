@@ -231,7 +231,7 @@ happened. The editor checks everything first and only then asks for a folder, so
 - the behaviours module loads and its declarations are valid, and it is the module `game.json` names (Project Settings
   › Behaviours): one that only Play runs would leave the build without it, so the export refuses it.
 
-Then it asks for a folder: choose or create an empty one (or the folder of an earlier build of the game, which it
+Then it asks for a folder: choose or create an empty one (or the folder of an earlier build, which it
 replaces; a folder holding anything else is refused). It writes the game app, the project's files under `project/`,
 and `vrmxg-build.json`, which lists every file with its SHA-256 and licence. The Export panel's line says how many
 files and bytes it wrote, or what was refused and why. The build is made from the saved files: unsaved changes in the

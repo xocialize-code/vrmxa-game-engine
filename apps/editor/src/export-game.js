@@ -59,6 +59,27 @@ export function freshImporter(project, { url = blobUrl, onGraph = null } = {}) {
  *   how the game's behaviours module is imported (default: freshImporter, from the project as it is now); registry: a
  *   registry to trace with instead, its project behaviours already declared (tests; it skips the import)
  */
+/**
+ * An export's failure as the refusal the Export line shows, or null when it isn't one (then it is the window's error).
+ * Refusals: the exporter's (BuildError: which file, and why), the shell's for a folder that holds something that isn't a
+ * build (not_empty), and the editor's own, a root behaviours.js game.json doesn't name (unnamed_behaviours, M6 W9).
+ * @param {any} e → { refused, message, files } | null
+ */
+export function exportRefusal(e) {
+  if (e?.name !== 'BuildError' && e?.code !== 'not_empty' && e?.code !== 'unnamed_behaviours') return null;
+  return { refused: e.code, message: e.message, files: e.files };
+}
+
+/**
+ * The Export panel's line for the last game export (EditorHost.lastGameExport): a refusal, or what was written or checked.
+ * @param {any} g
+ */
+export function gameExportLine(g) {
+  if (!g) return '';
+  if (g.refused) return `Game export refused (${g.refused}): ${g.message}`;
+  return `${g.written ? 'Exported' : 'Checked'} game ${g.id}: ${g.files} files, ${g.bytes} bytes, entry ${g.entry}, runtime ${g.runtime} · build ${g.digest.slice(0, 16)} · manifest ${g.manifest.slice(0, 16)}${g.byPattern ? ` · ${g.byPattern} files licensed by a pattern row` : ''}${g.unsaved ? ' · the open scene has unsaved changes, which are not in it' : ''}${g.written ? ` · ${g.path}` : ' · not written: a build folder needs the Mac app or vrmxg-export'}`;
+}
+
 /** What Export Game says when Play would run the root behaviours.js but game.json doesn't name it (M6 W9). */
 export const UNNAMED_BEHAVIOURS = 'behaviours.js runs when you play here, but game.json doesn\'t name it, so the build would leave it out: choose it in File › Project Settings › Behaviours, then export again';
 
