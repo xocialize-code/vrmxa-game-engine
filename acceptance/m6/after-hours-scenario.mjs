@@ -59,7 +59,7 @@ const hashIs = (s, why = 'the scene so far is what the editor\'s session makes o
 // in the first full runs: now and then a Down opened nothing, or the menu closed again before its item was pressed (an
 // edit schedules a rebuild of the edit view, and when it lands the inspector is drawn again). So each pick waits for the
 // view to settle, then presses Down until the item is there: a menu's items are in the tree only while it is open.
-const open = (target, want) => ['pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close', `act ${target} action=focus`, 'pause 400', `until find("surface=app role=menuitem name='${want}' exact=true").count >= 1 do keys down tries=4   # opens the select's menu`];
+const open = (target, want) => ['pause 700   # the edit before rebuilds the view, and its end redraws the inspector: an open menu would close', `act ${target} action=focus`, 'pause 900   # focus scrolls the inspector to it: a menu opened while it scrolls closes', 'keys down   # opens the select\'s menu', 'pause 600   # let it open (a second Down while it opens closes it again: slower on WebGL)', `until find("surface=app role=menuitem name='${want}' exact=true").count >= 1 do keys down tries=3   # a Down that opened nothing gets another`];
 const choose = (target, find, want) => S(...open(target, want), `act surface=app role=menuitem name=${q(want)} exact=true action=press`, `until find("${find}").0.value == ${q(want)} timeout=5000`);
 const pick = (id, want) => choose(`id=${id}`, `id=${id}`, want);
 // a menu that resets once it has acted (Add a behaviour…, a new connection's parts): no value to wait for
